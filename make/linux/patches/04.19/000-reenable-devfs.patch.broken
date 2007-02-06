@@ -1,0 +1,164 @@
+--- linux-2.6.13.1.orig/drivers/mtd/mtdchar.c	2005-09-14 12:22:35.000000000 +0200
++++ linux-2.6.13.1/drivers/mtd/mtdchar.c	2006-12-08 22:36:58.000000000 +0100
+@@ -15,21 +15,33 @@
+ #include <linux/fs.h>
+ #include <asm/uaccess.h>
+ 
++#ifdef CONFIG_DEVFS_FS
++#include <linux/devfs_fs_kernel.h>
++#else
+ #include <linux/device.h>
+ 
+ static struct class *mtd_class;
++#endif
+ 
+ static void mtd_notify_add(struct mtd_info* mtd)
+ {
+ 	if (!mtd)
+ 		return;
+ 
++#ifdef CONFIG_DEVFS_FS
++	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
++			S_IFCHR | S_IRUGO | S_IWUGO, "mtd/%d", mtd->index);
++
++	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
++			S_IFCHR | S_IRUGO, "mtd/%dro", mtd->index);
++#else
+ 	class_device_create(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
+ 			    NULL, "mtd%d", mtd->index);
+ 	
+ 	class_device_create(mtd_class, 
+ 			    MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
+ 			    NULL, "mtd%dro", mtd->index);
++#endif
+ }
+ 
+ static void mtd_notify_remove(struct mtd_info* mtd)
+@@ -37,8 +49,13 @@
+ 	if (!mtd)
+ 		return;
+ 
++#ifdef CONFIG_DEVFS_FS
++	devfs_remove("mtd/%d", mtd->index);
++	devfs_remove("mtd/%dro", mtd->index);
++#else
+ 	class_device_destroy(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2));
+ 	class_device_destroy(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1));
++#endif);
+ }
+ 
+ static struct mtd_notifier notifier = {
+@@ -46,6 +63,23 @@
+ 	.remove	= mtd_notify_remove,
+ };
+ 
++#ifdef CONFIG_DEVFS_FS
++	static inline void mtdchar_devfs_init(void)
++	{
++		devfs_mk_dir("mtd");
++		register_mtd_user(&notifier);
++	}
++	static inline void mtdchar_devfs_exit(void)
++	{
++		unregister_mtd_user(&notifier);
++		devfs_remove("mtd");
++	}
++	#else /* !DEVFS */
++	#define mtdchar_devfs_init() do { } while(0)
++	#define mtdchar_devfs_exit() do { } while(0)
++#endif
++
++
+ /*
+  * We use file->private_data to store a pointer to the MTDdevice.
+  * Since alighment is at least 32 bits, we have 2 bits free for OTP
+@@ -644,6 +678,9 @@
+ 		return -EAGAIN;
+ 	}
+ 
++#ifdef CONFIG_DEVFS_FS
++	mtdchar_devfs_init();
++#else
+ 	mtd_class = class_create(THIS_MODULE, "mtd");
+ 
+ 	if (IS_ERR(mtd_class)) {
+@@ -653,13 +690,18 @@
+ 	}
+ 
+ 	register_mtd_user(&notifier);
++#endif
+ 	return 0;
+ }
+ 
+ static void __exit cleanup_mtdchar(void)
+ {
++#ifdef CONFIG_DEVFS_FS
++	mtdchar_devfs_exit();
++#else
+ 	unregister_mtd_user(&notifier);
+ 	class_destroy(mtd_class);
++#endif
+ 	unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
+ }
+ 
+
+--- linux-2.6.13.1.orig/fs/Kconfig	2005-10-19 09:40:38.000000000 +0200
++++ linux-2.6.13.1/fs/Kconfig	2006-12-08 22:20:46.000000000 +0100
+@@ -761,6 +761,57 @@
+         help
+         Exports the dump image of crashed kernel in ELF format.
+ 
++config DEVFS_FS
++	bool "/dev file system support (OBSOLETE)"
++	depends on EXPERIMENTAL
++	help
++	  This is support for devfs, a virtual file system (like /proc) which
++	  provides the file system interface to device drivers, normally found
++	  in /dev. Devfs does not depend on major and minor number
++	  allocations. Device drivers register entries in /dev which then
++	  appear automatically, which means that the system administrator does
++	  not have to create character and block special device files in the
++	  /dev directory using the mknod command (or MAKEDEV script) anymore.
++
++	  This is work in progress. If you want to use this, you *must* read
++	  the material in <file:Documentation/filesystems/devfs/>, especially
++	  the file README there.
++
++	  Note that devfs no longer manages /dev/pts!  If you are using UNIX98
++	  ptys, you will also need to mount the /dev/pts filesystem (devpts).
++
++	  Note that devfs has been obsoleted by udev,
++	  <http://www.kernel.org/pub/linux/utils/kernel/hotplug/>.
++	  It has been stripped down to a bare minimum and is only provided for
++	  legacy installations that use its naming scheme which is
++	  unfortunately different from the names normal Linux installations
++	  use.
++
++	  If unsure, say N.
++
++config DEVFS_MOUNT
++	bool "Automatically mount at boot"
++	depends on DEVFS_FS
++	help
++	  This option appears if you have CONFIG_DEVFS_FS enabled. Setting
++	  this to 'Y' will make the kernel automatically mount devfs onto /dev
++	  when the system is booted, before the init thread is started.
++	  You can override this with the "devfs=nomount" boot option.
++
++	  If unsure, say N.
++
++config DEVFS_DEBUG
++	bool "Debug devfs"
++	depends on DEVFS_FS
++	help
++	  If you say Y here, then the /dev file system code will generate
++	  debugging messages. See the file
++	  <file:Documentation/filesystems/devfs/boot-options> for more
++	  details.
++
++	  If unsure, say N.
++
++
+ config SYSFS
+ 	bool "sysfs file system support" if EMBEDDED
+ 	default y

@@ -1,0 +1,98 @@
+diff -ruN uClibc-0.9.28.orig/libc/inet/resolv.c uClibc-0.9.28/libc/inet/resolv.c
+--- uClibc-0.9.28.orig/libc/inet/resolv.c	2005-08-18 00:49:41.000000000 +0200
++++ uClibc-0.9.28/libc/inet/resolv.c	2006-03-22 16:18:45.000000000 +0100
+@@ -1446,7 +1446,7 @@
+ 	buf+=sizeof(char **)*(ALIAS_DIM);
+ 	buflen-=sizeof(char **)*(ALIAS_DIM);
+ 
+-	if (action!=GETHOSTENT) {
++	{
+ #ifdef __UCLIBC_HAS_IPV6__
+ 		char *p=buf;
+ 		size_t len=buflen;
+@@ -1486,10 +1486,12 @@
+ 		if (buflen < 80)
+ 			return ERANGE;
+ 
+-		__open_etc_hosts(&fp);
+-		if (fp == NULL) {
+-			result=NULL;
+-			return errno;
++		if (action!=GETHOSTENT) {
++			__open_etc_hosts(&fp);
++		    if (fp == NULL) {
++			    result=NULL;
++			    return errno;
++		    }
+ 		}
+ 	}
+ 
+@@ -1518,7 +1520,6 @@
+ 
+ 		if (action==GETHOSTENT) {
+ 			/* Return whatever the next entry happens to be. */
+-			break;
+ 		} else if (action==GET_HOSTS_BYADDR) {
+ 			if (strcmp(name, alias[0]) != 0)
+ 				continue;
+@@ -1640,7 +1641,7 @@
+ #endif /* __UCLIBC_HAS_IPV6__ */
+ 		sizeof(char *)*(ALIAS_DIM) +
+ 	    80/*namebuffer*/ + 2/* margin */];
+-    struct hostent *host;
++    struct hostent *host = 0;
+ 
+     LOCK;
+     gethostent_r(&h, buf, sizeof(buf), &host, &h_errno);
+diff -ruN uClibc-0.9.28.orig/libc/sysdeps/linux/arm/syscall.c uClibc-0.9.28/libc/sysdeps/linux/arm/syscall.c
+--- uClibc-0.9.28.orig/libc/sysdeps/linux/arm/syscall.c	2005-08-18 00:49:41.000000000 +0200
++++ uClibc-0.9.28/libc/sysdeps/linux/arm/syscall.c	2006-01-13 12:51:12.000000000 +0100
+@@ -23,6 +23,18 @@
+ #include <sys/types.h>
+ #include <sys/syscall.h>
+ 
++#ifndef __NR_syscall			
++#ifndef __NR_SYSCALL_BASE	
++
++#if defined(__thumb__)
++#define __NR_SYSCALL_BASE	0
++#else
++#define __NR_SYSCALL_BASE	0x900000
++#endif
++#endif
++
++#define __NR_syscall			(__NR_SYSCALL_BASE+113)
++#endif
+ 
+ long syscall(long sysnum, long a, long b, long c, long d, long e, long f)
+ {
+diff -ruN uClibc-0.9.28.orig/utils/Makefile uClibc-0.9.28/utils/Makefile
+--- uClibc-0.9.28.orig/utils/Makefile	2005-08-18 00:49:41.000000000 +0200
++++ uClibc-0.9.28/utils/Makefile	2005-10-31 13:47:22.000000000 +0100
+@@ -43,7 +43,8 @@
+ readelf.c ldconfig.c ldd.c:	headers
+ 
+ readelf: readelf.c
+-	$(CC) $(CFLAGS) $^ -o $@
++#	$(CC) $(CFLAGS) $^  -L $(INSTALL_DIR)/lib -l dl -o $@
++	$(CC) $(CFLAGS) $^  -o $@
+ 	$(STRIPTOOL) -s -x -R .note -R .comment $@
+ 
+ ifeq ($(strip $(UCLIBC_STATIC_LDCONFIG)),y)
+@@ -59,6 +60,7 @@
+ 	$(STRIPTOOL) -s -x -R .note -R .comment $@
+ 
+ ldd: ldd.c
++#	$(CC) $(CFLAGS) $(PIEFLAG) $(LDPIEFLAG) -L $(INSTALL_DIR)/lib -l dl
+ 	$(CC) $(CFLAGS) $(PIEFLAG) $(LDPIEFLAG) \
+ 		-DUCLIBC_RUNTIME_PREFIX=\"$(RUNTIME_PREFIX)\" \
+ 		-DUCLIBC_LDSO=$(UCLIBC_LDSO) -I. -I../ldso/include \
+@@ -66,7 +68,7 @@
+ 	$(STRIPTOOL) -s -x -R .note -R .comment $@
+ 
+ iconv: ../libc/misc/wchar/wchar.c
+-	$(CC) $(CFLAGS) $(PIEFLAG) $(LDPIEFLAG) \
++	$(CC) $(CFLAGS) $(PIEFLAG) $(LDPIEFLAG) -L $(INSTALL_DIR)/lib -l dl \
+ 		-DL_iconv_main \
+ 		$^ -o $@
+ 	$(STRIPTOOL) -s -x -R .note -R .comment $@

@@ -1,0 +1,207 @@
+diff -Naur org/linux-2.4.17_mvl21/include/linux/netfilter_ipv4/ip_conntrack.h linux-2.4.17_mvl21/include/linux/netfilter_ipv4/ip_conntrack.h
+--- org/linux-2.4.17_mvl21/include/linux/netfilter_ipv4/ip_conntrack.h	2006-01-31 20:23:36.000000000 +0100
++++ linux-2.4.17_mvl21/include/linux/netfilter_ipv4/ip_conntrack.h	2006-02-01 23:29:23.000000000 +0100
+@@ -151,6 +151,12 @@
+ 	} help;
+ };
+ 
++struct ip_conntrack_counter
++{
++	u_int64_t packets;
++	u_int64_t bytes;
++};
++
+ struct ip_conntrack
+ {
+ 	/* Usage count in here is 1 for hash table/destruct timer, 1 per skb,
+@@ -166,6 +172,12 @@
+ 	/* Timer function; drops refcnt when it goes off. */
+ 	struct timer_list timeout;
+ 
++
++#ifdef CONFIG_IP_NF_CT_ACCT
++	/* Accounting Information (same cache line as other written members) */
++	struct ip_conntrack_counter counters[IP_CT_DIR_MAX];
++#endif
++
+ 	/* If we're expecting another related connection, this will be
+            in expected linked list */
+ 	struct list_head sibling_list;
+@@ -252,8 +264,10 @@
+ 			  const struct ip_conntrack_tuple *orig);
+ 
+ /* Refresh conntrack for this many jiffies */
+-extern void ip_ct_refresh(struct ip_conntrack *ct,
+-			  unsigned long extra_jiffies);
++extern void ip_ct_refresh_acct(struct ip_conntrack *ct,
++			       enum ip_conntrack_info ctinfo,
++			       const struct iphdr *iph,
++			       unsigned long extra_jiffies);
+ 
+ /* These are for NAT.  Icky. */
+ /* Call me when a conntrack is destroyed. */
+diff -Naur org/linux-2.4.17_mvl21/net/ipv4/netfilter/Config.in linux-2.4.17_mvl21/net/ipv4/netfilter/Config.in
+--- org/linux-2.4.17_mvl21/net/ipv4/netfilter/Config.in	2006-02-01 22:35:45.000000000 +0100
++++ linux-2.4.17_mvl21/net/ipv4/netfilter/Config.in	2006-02-01 23:43:41.000000000 +0100
+@@ -6,6 +6,7 @@
+ 
+ tristate 'Connection tracking (required for masq/NAT)' CONFIG_IP_NF_CONNTRACK
+ if [ "$CONFIG_IP_NF_CONNTRACK" != "n" ]; then
++  dep_mbool    '  Connection tracking flow accounting' CONFIG_IP_NF_CT_ACCT $CONFIG_IP_NF_CONNTRACK
+   dep_tristate '  FTP protocol support' CONFIG_IP_NF_FTP $CONFIG_IP_NF_CONNTRACK
+   dep_tristate '  TFTP protocol support' CONFIG_IP_NF_TFTP $CONFIG_IP_NF_CONNTRACK
+   dep_tristate '  talk protocol support' CONFIG_IP_NF_TALK $CONFIG_IP_NF_CONNTRACK
+diff -Naur org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_core.c linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_core.c
+--- org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_core.c	2006-01-31 20:23:36.000000000 +0100
++++ linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_core.c	2006-02-01 23:35:05.000000000 +0100
+@@ -1092,21 +1092,39 @@
+ 	MOD_DEC_USE_COUNT;
+ }
+ 
++static inline void ct_add_counters(struct ip_conntrack *ct,
++				enum ip_conntrack_info ctinfo,
++				const struct iphdr *iph)
++{
++#ifdef CONFIG_IP_NF_CT_ACCT
++	if (iph) {
++		ct->counters[CTINFO2DIR(ctinfo)].packets++;
++		ct->counters[CTINFO2DIR(ctinfo)].bytes +=
++					ntohs(iph->tot_len);
++	}
++#endif
++}
++
+ /* Refresh conntrack for this many jiffies. */
+-void ip_ct_refresh(struct ip_conntrack *ct, unsigned long extra_jiffies)
++void ip_ct_refresh_acct(struct ip_conntrack *ct, 
++			enum ip_conntrack_info ctinfo,
++			const struct iphdr *iph,
++			unsigned long extra_jiffies)
+ {
+ 	IP_NF_ASSERT(ct->timeout.data == (unsigned long)ct);
+ 
+ 	WRITE_LOCK(&ip_conntrack_lock);
+ 	/* If not in hash table, timer will not be active yet */
+-	if (!is_confirmed(ct))
++	if (!is_confirmed(ct)) {
+ 		ct->timeout.expires = extra_jiffies;
+-	else {
++		ct_add_counters(ct, ctinfo, iph);
++	} else {
+ 		/* Need del_timer for race avoidance (may already be dying). */
+ 		if (del_timer(&ct->timeout)) {
+ 			ct->timeout.expires = jiffies + extra_jiffies;
+ 			add_timer(&ct->timeout);
+ 		}
++		ct_add_counters(ct, ctinfo, iph);
+ 	}
+ 	WRITE_UNLOCK(&ip_conntrack_lock);
+ }
+diff -Naur org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_generic.c linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_generic.c
+--- org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_generic.c	2004-04-08 09:35:46.000000000 +0200
++++ linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_generic.c	2006-02-01 23:08:22.000000000 +0100
+@@ -41,9 +41,9 @@
+ /* Returns verdict for packet, or -1 for invalid. */
+ static int established(struct ip_conntrack *conntrack,
+ 		       struct iphdr *iph, size_t len,
+-		       enum ip_conntrack_info conntrackinfo)
++		       enum ip_conntrack_info ctinfo)
+ {
+-	ip_ct_refresh(conntrack, ip_ct_generic_timeout);
++	ip_ct_refresh_acct(conntrack, ctinfo, iph, ip_ct_generic_timeout);
+ 	return NF_ACCEPT;
+ }
+ 
+diff -Naur org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_icmp.c linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_icmp.c
+--- org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_icmp.c	2004-04-08 09:35:46.000000000 +0200
++++ linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_icmp.c	2006-02-01 23:36:49.000000000 +0100
+@@ -82,7 +82,7 @@
+ 			ct->timeout.function((unsigned long)ct);
+ 	} else {
+ 		atomic_inc(&ct->proto.icmp.count);
+-		ip_ct_refresh(ct, ip_ct_icmp_timeout);
++		ip_ct_refresh_acct(ct, ctinfo, iph, ip_ct_icmp_timeout);
+ 	}
+ 
+ 	return NF_ACCEPT;
+diff -Naur org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_tcp.c linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
+--- org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_tcp.c	2004-07-09 17:05:46.000000000 +0200
++++ linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_tcp.c	2006-02-01 23:38:26.000000000 +0100
+@@ -801,7 +801,7 @@
+ 				set_bit(IPS_ASSURED_BIT, &conntrack->status);
+ 		}
+ 	}
+-	ip_ct_refresh(conntrack, 
++	ip_ct_refresh_acct(conntrack, ctinfo, iph,
+ 		conntrack->proto.tcp.retrans >= ip_ct_tcp_max_retrans
+ 		&& *tcp_timeouts[new_state] > ip_ct_tcp_timeout_max_retrans ?
+ 		ip_ct_tcp_timeout_max_retrans : *tcp_timeouts[new_state]);
+diff -Naur org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_udp.c linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_udp.c
+--- org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_udp.c	2004-04-08 09:35:46.000000000 +0200
++++ linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_proto_udp.c	2006-02-01 23:12:08.000000000 +0100
+@@ -47,16 +47,16 @@
+ /* Returns verdict for packet, and may modify conntracktype */
+ static int udp_packet(struct ip_conntrack *conntrack,
+ 		      struct iphdr *iph, size_t len,
+-		      enum ip_conntrack_info conntrackinfo)
++		      enum ip_conntrack_info ctinfo)
+ {
+ 	/* If we've seen traffic both ways, this is some kind of UDP
+ 	   stream.  Extend timeout. */
+ 	if (conntrack->status & IPS_SEEN_REPLY) {
+-		ip_ct_refresh(conntrack, ip_ct_udp_timeout_stream);
++		ip_ct_refresh_acct(conntrack, ctinfo, iph, ip_ct_udp_timeout_stream);
+ 		/* Also, more likely to be important, and not a probe */
+ 		set_bit(IPS_ASSURED_BIT, &conntrack->status);
+ 	} else
+-		ip_ct_refresh(conntrack, ip_ct_udp_timeout);
++		ip_ct_refresh_acct(conntrack, ctinfo, iph, ip_ct_udp_timeout);
+ 
+ 	return NF_ACCEPT;
+ }
+diff -Naur org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_standalone.c linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_standalone.c
+--- org/linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_standalone.c	2006-01-31 20:23:36.000000000 +0100
++++ linux-2.4.17_mvl21/net/ipv4/netfilter/ip_conntrack_standalone.c	2006-02-01 23:40:38.000000000 +0100
+@@ -80,6 +80,17 @@
+ 	return len;
+ }
+ 
++#ifdef CONFIG_IP_NF_CT_ACCT
++static unsigned int
++print_counters(char *buffer, struct ip_conntrack_counter *counter)
++{
++	return sprintf(buffer, "packets=%llu bytes=%llu ", 
++			counter->packets, counter->bytes);
++}
++#else
++#define print_counters(x, y)	0
++#endif
++
+ static unsigned int
+ print_conntrack(char *buffer, const struct ip_conntrack *conntrack)
+ {
+@@ -99,11 +110,15 @@
+ 	len += print_tuple(buffer + len,
+ 			   &conntrack->tuplehash[IP_CT_DIR_ORIGINAL].tuple,
+ 			   proto);
++	len += print_counters(buffer + len,
++				&conntrack->counters[IP_CT_DIR_ORIGINAL]);
+ 	if (!(conntrack->status & IPS_SEEN_REPLY))
+ 		len += sprintf(buffer + len, "[UNREPLIED] ");
+ 	len += print_tuple(buffer + len,
+ 			   &conntrack->tuplehash[IP_CT_DIR_REPLY].tuple,
+ 			   proto);
++	len += print_counters(buffer + len,
++				&conntrack->counters[IP_CT_DIR_REPLY]);
+ 	if (conntrack->status & IPS_ASSURED)
+ 		len += sprintf(buffer + len, "[ASSURED] ");
+ 	len += sprintf(buffer + len, "use=%u ",
+@@ -491,7 +506,7 @@
+ EXPORT_SYMBOL(ip_conntrack_helper_register);
+ EXPORT_SYMBOL(ip_conntrack_helper_unregister);
+ EXPORT_SYMBOL(ip_ct_selective_cleanup);
+-EXPORT_SYMBOL(ip_ct_refresh);
++EXPORT_SYMBOL(ip_ct_refresh_acct);
+ EXPORT_SYMBOL(ip_ct_find_proto);
+ EXPORT_SYMBOL(ip_ct_find_helper);
+ EXPORT_SYMBOL(ip_conntrack_expect_related);

@@ -1,0 +1,18 @@
+--- sshpty.c.orig	2006-03-12 05:52:51.000000000 +0100
++++ sshpty.c	2006-09-14 23:47:10.000000000 +0200
+@@ -396,7 +396,7 @@
+ 		}
+ 	}
+ 
+-	if ((st.st_mode & (S_IRWXU|S_IRWXG|S_IRWXO)) != mode) {
++/*	if ((st.st_mode & (S_IRWXU|S_IRWXG|S_IRWXO)) != mode) {
+ 		if (chmod(tty_name, mode) < 0) {
+ 			if (errno == EROFS &&
+ 			    (st.st_mode & (S_IRGRP | S_IROTH)) == 0) {
+@@ -408,5 +408,5 @@
+ 				    tty_name, mode, strerror(errno));
+ 			}
+ 		}
+-	}
++	}*/
+ }

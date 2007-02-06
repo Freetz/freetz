@@ -1,0 +1,12 @@
+config DS_PACKAGE_OPENVPN
+	bool "openvpn 2.1_rc1"
+	select DS_LIB_libssl
+	default n
+	help
+	    VPN Server
+
+config DS_PACKAGE_OPENVPN_WITH_LZO
+	bool "With lzo"
+	depends on DS_PACKAGE_OPENVPN
+	select DS_LIB_liblzo2
+	default y

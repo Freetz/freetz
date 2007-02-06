@@ -1,0 +1,50 @@
+--- etc/init.d/rc.S.orig	2006-03-20 17:33:06.000000000 +0100
++++ etc/init.d/rc.S	2006-03-20 17:34:33.000000000 +0100
+@@ -84,8 +83,12 @@
+ ##########################################################################################
+ # rc.S for 2.6 Kernel
+ ##########################################################################################
+-mount -n /proc
+-mount /var
++mount -o nosuid -t tmpfs dev /dev
++mkdir -p /dev/pts
++mount -o nosuid,noexec -t devpts devpts /dev/pts
++mount -o nosuid,nodev,noexec -t sysfs sysfs /sys
++mount -a
++/sbin/makedevs -d /etc/device.table /
+ ##########################################################################################
+ #
+ #
+--- etc.orig/hotplug/run_mount	2006-12-06 17:37:26.000000000 +0100
++++ etc/hotplug/run_mount	2006-12-12 16:40:07.000000000 +0100
+@@ -9,7 +9,7 @@
+ FTPUID=1000
+ FTPGID=0
+ MSTART=/sbin/start_mediasrv
+-SYSFS=/var/sysfs
++SYSFS=/sys
+ 
+ # Ask the system's configuration for the status of the readonly flag:
+ # (Translates flag's yes/no to ro/rw)
+--- etc.orig/hotplug/storage	2006-12-06 17:37:26.000000000 +0100
++++ etc/hotplug/storage	2006-12-12 16:40:15.000000000 +0100
+@@ -4,7 +4,7 @@
+ # v20061206 -WK- Modifactions for SAMBA; FTP disablable; stop operation
+ 
+ DEVMAP=/var/media/devmap
+-SYSFS=/var/sysfs
++SYSFS=/sys
+ TIMEOUT=30
+ FTPUID=1000
+ FTPGID=0
+--- etc.orig/fstab	2006-12-06 17:37:25.000000000 +0100
++++ etc/fstab	2006-12-12 16:44:08.000000000 +0100
+@@ -1,6 +1,6 @@
+ # /etc/fstab: static file system information.
+ #
+ # <file system> <mount point>   <type>  <options>               <dump>  <pass>
+-/dev/root        /              auto    defaults,errors=continue  0       0
+ proc             /proc          proc    defaults                  0       0
+ ramfs		     /var		    ramfs	defaults			      0       0
++sysfs		 /sys		sysfs	nosuid,nodev,noexec	  0	  0
+

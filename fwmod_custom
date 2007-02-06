@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Custom firmware modifications
+
+# Directories:
+#  ./firmware	- untared firmware
+#  ./filesystem	- unpacked filesystem squashfs
+#  ./kernel	- unpacked kernel & hidden kernel squashfs
+
+all() {
+	dummy=0
+}
+
+clean() {
+	dummy=0
+}
+
+case "$1" in
+	""|all)
+		all
+		;;
+	clean)
+		clean
+		;;
+	*)
+		echo "Usage: $0 {all|clean}" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,23 @@
+diff -burN linux-2.6.13.1/drivers/usb/serial/ftdi_sio.c linux-2.6.13.1/drivers/usb/serial/ftdi_sio.c
+--- linux-2.6.13.1/drivers/usb/serial/ftdi_sio.c	2005-09-14 12:22:35.000000000 +0200
++++ linux-2.6.13.1/drivers/usb/serial/ftdi_sio.c	2006-11-28 21:21:24.000000000 +0100
+@@ -432,6 +432,7 @@
+ 	{ USB_DEVICE(FTDI_VID, FTDI_MHAM_Y6_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_MHAM_Y8_PID) },
+ 	{ USB_DEVICE(EVOLUTION_VID, EVOLUTION_ER1_PID) },
++ 	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID) },
+ 	{ }						/* Terminating entry */
+ };
+ 
+diff -burN linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h
+--- linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h	2005-09-14 12:22:35.000000000 +0200
++++ linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h	2006-11-28 21:21:46.000000000 +0100
+@@ -44,6 +44,8 @@
+ #define FTDI_XF_635_PID 0xFC0D	/* 635: 20x4 Character Display */
+ #define FTDI_XF_640_PID 0xFC0E	/* 640: Two line Display */
+ #define FTDI_XF_642_PID 0xFC0F	/* 642: Two line Display */
++#define WBE_VID                      0x104F
++#define WBE_SMARTMOUSE_PID   0x0002  /* Smartmouse USB */
+ 
+ /* Video Networks Limited / Homechoice in the UK use an ftdi-based device for their 1Mb */
+ /* broadband internet service.  The following PID is exhibited by the usb device supplied */

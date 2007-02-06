@@ -1,0 +1,53 @@
+comment "*** not all packages support selected language ***"
+	depends on ! DS_LANG_DE
+
+config DS_SELECTED_LANG_ONLY
+	bool "Packages supporting selected language only"
+	depends on ! DS_LANG_DE
+	default n
+	help
+	    Show only packages, which support the
+	    selected language. Packages not supporting
+	    your selected language can be installed, but
+	    they will be in default language (german).
+
+comment "Packages"
+
+source make/bftpd/Config.in
+source make/callmonitor/Config.in
+source make/checkmaild/Config.in
+source make/dnsmasq/Config.in
+source make/dropbear/Config.in
+source make/inadyn/Config.in
+source make/knock/Config.in
+source make/mc/Config.in
+source make/openvpn/Config.in
+source make/privoxy/Config.in
+source make/samba/Config.in
+source make/screen/Config.in
+source make/stunnel/Config.in
+source make/tor/Config.in
+source make/virtualip-cgi/Config.in
+source make/vpnc/Config.in
+
+comment "Orangebox Webinterface"
+
+source make/orangebox/Config.in
+
+comment "Extensions"
+
+source make/syslogd-cgi/Config.in
+source make/wol-cgi/Config.in
+
+comment "Testing"
+
+source make/transmission/Config.in
+source make/mini_fo/Config.in
+
+comment "Unstable"
+
+source make/firewall-cgi/Config.in
+
+comment "Obsolete"
+
+source make/telefon/Config.in
