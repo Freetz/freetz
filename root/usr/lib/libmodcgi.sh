@@ -7,8 +7,8 @@ cat << EOF
 <div class="menu">
 <div id="status"><a href="/cgi-bin/status.cgi">Status</a></div>
 <div id="logs" class="su"><a href="/cgi-bin/logs.cgi">Logs</a></div>
-<div id="daemons"><a href="/cgi-bin/daemons.cgi">$(lang de:"Dienste" en:"Services")</a></div>
-<div id="settings"><a href="/cgi-bin/settings.cgi">$(lang de:"Einstellungen" en:"Settings")</a></div>
+<div id="daemons"><a href="/cgi-bin/daemons.cgi">Dienste</a></div>
+<div id="settings"><a href="/cgi-bin/settings.cgi">Einstellungen</a></div>
 EOF
 
 if [ "$1" = "settings" -a -r "/mod/etc/reg/file.reg" ]; then
@@ -18,7 +18,7 @@ if [ "$1" = "settings" -a -r "/mod/etc/reg/file.reg" ]; then
 fi
 
 cat << EOF
-<div id="packages"><a href="/cgi-bin/packages.cgi">$(lang de:"Pakete" en:"Packages")</a></div>
+<div id="packages"><a href="/cgi-bin/packages.cgi">Pakete</a></div>
 EOF
 
 if [ "$1" != "settings" -a -r "/mod/etc/reg/cgi.reg" ]; then
@@ -29,19 +29,23 @@ fi
 
 cat << EOF
 <div id="extras"><a href="/cgi-bin/extras.cgi">Extras</a></div>
+EOF
+cat << EOF
+<div id="backup_restore"><a href="/cgi-bin/backup_restore.cgi">Sichern/Wiederherstellen</a></div>
 </div>
 EOF
 }
 
 cgi_begin() {
 cat << EOF
+Content-type: text/html; charset=iso-8859-1
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<meta http-equiv="Content-Language" content="$(lang de:"de" en:"en")">
+<meta http-equiv="Content-Language" content="de">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
 <title>DS-MOD - $1</title>
@@ -90,7 +94,7 @@ cat << EOF
 </tr>
 <tr>
 <td width="20"><img src="/images/edge_lb.png" width="20" height="20" border="0" alt=""></td>
-<td width="$_cgi_width" id="edgebottom"><div class="opt">$(lang de:"optimiert f&uuml;r Mozilla Firefox" en:"optimized for Mozilla Firefox")</div></td>
+<td width="$_cgi_width" id="edgebottom"><div class="opt">optimiert f&uuml;r Mozilla Firefox</div></td>
 <td width="20"><img src="/images/edge_rb.png" width="20" height="20" border="0" alt=""></td>
 </tr>
 </table>
