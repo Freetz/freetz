@@ -73,5 +73,6 @@ stat_button 'reboot' 'Reboot'
 stat_button 'restart_dsld' 'Restart dsld'
 stat_button 'cleanup' 'Cleanup tffs'
 stat_button 'downgrade' 'Downgrade Mod'
+stat_button 'fw_attrib' '$(lang de:"Attribute bereinigen" en:"Cleanup attributes")'
 
 cgi_end
