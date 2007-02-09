@@ -64,6 +64,20 @@ case "$MOD_CGI_CMD" in
 		echo '<form action="/cgi-bin/status.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
 		cgi_end
 		;;
+	fw_attrib)
+		cgi_begin '$(lang de:"Attribute bereinigen" en:"Cleanup attributes")'
+		echo '<p>$(lang de:"Entfernt Merker f&uuml;r \"nicht unterst&uuml;tzte &Auml;nderungen\"" en:"Cleans up marker for \"unauthorized changes\"")</p>'
+		echo -n '<pre>$(lang de:"bereinige Attribute" en:"cleaning up attributes")...'
+		major=$(grep tffs /proc/devices)
+		tffs_major=${major%%tffs}
+		rm -f /var/flash/fw_attrib
+		mknod /var/flash/fw_attrib c $tffs_major 87
+		echo -n "" > /var/flash/fw_attrib
+		rm -f /var/flash/fw_attrib
+		echo ' $(lang de:"fertig" en:"done").</pre>'
+		echo '<form action="/cgi-bin/status.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+		cgi_end
+		;;
 	restart_dsld)
 		cgi_begin '$(lang de:"Starte dsld neu" en:"Restart dsld")...'
 		echo -n '<pre>Stopping dsld...<br>'
