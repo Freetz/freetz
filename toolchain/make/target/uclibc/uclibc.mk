@@ -50,13 +50,12 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		PREFIX= \
 		DEVEL_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/ \
-		install_runtime install_dev
-	# Build the host utils.  Need to add an install target...
-	$(MAKE) -C $(UCLIBC_DIR)/utils \
-		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
-		HOSTCC="$(HOSTCC)" \
-		hostutils
-	touch -c $@
+		install_runtime 
+	$(MAKE) -C $(UCLIBC_DIR) \
+		PREFIX= \
+		DEVEL_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/ \
+		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/ \
+		install_dev
 
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
 	$(MAKE) -C $(UCLIBC_DIR) \
@@ -70,5 +69,18 @@ uclibc-configured: $(UCLIBC_DIR)/.configured
 
 uclibc:	$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a \
 	$(ROOT_DIR)/lib/libc.so.0
+	
+uclibc-utils:
+	# Build the host utils.  Need to add an install target...
+	$(MAKE) -C $(UCLIBC_DIR)/utils \
+		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
+		HOSTCC="$(HOSTCC)" \
+		hostutils
+	touch -c $@
+	# Build the utils. 
+	$(MAKE) -C $(UCLIBC_DIR) \
+		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
+		HOSTCC="$(HOSTCC)" \
+		utils
 
 #.PHONY: uclibc-configured uclibc
