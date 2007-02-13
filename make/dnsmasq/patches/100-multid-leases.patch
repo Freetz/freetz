@@ -101,19 +101,20 @@
    struct dhcp_lease *lease_tmp;
 --- src/rfc2131.c	2006-10-19 08:54:54.000000000 +0200
 +++ src/rfc2131.c	2007-01-06 15:20:43.000000000 +0100
-@@ -364,6 +364,7 @@
+@@ -379,6 +379,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
  	      if (hostname)
  		lease_set_hostname(lease, hostname, daemon->domain_suffix, 1); 
 + 		lease_set_ifrname(lease, iface_name);
  	      lease_set_expires(lease, 0xffffffff, now); /* infinite lease */
  	      
- 	      p = do_req_options(context, p, end, NULL, daemon, 
-@@ -847,6 +848,7 @@
- 	  lease_set_hwaddr(lease, mess->chaddr, clid, mess->hlen, mess->htype, clid_len);
+ 	      clear_packet(mess, end);
+@@ -871,7 +872,7 @@
+ 	    }
  	  if (hostname)
  	    lease_set_hostname(lease, hostname, daemon->domain_suffix, hostname_auth);
+-	  
 +	    lease_set_ifrname(lease, iface_name);
  	  lease_set_expires(lease, time, now);
- 	  	  
- 	  mess->siaddr = context->local;
+ 	  	
+ 	  log_packet(daemon, "ACK", &mess->yiaddr, emac, emac_len, iface_name, hostname);  

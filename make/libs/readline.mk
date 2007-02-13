@@ -84,12 +84,8 @@ readline-precompiled: readline
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
-ifeq ($(strip $(DS_LIB_libreadline)),y)
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libreadline*.so* root/usr/lib/
-endif
-ifeq ($(strip $(DS_LIB_libhistory)),y)
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libhistory*.so* root/usr/lib/
-endif
 endif
 
 readline-source: $(READLINE_DIR)/.unpacked
