@@ -24,13 +24,13 @@ $(LUA_DIR)/$(LUA_TARGET_BINARY): $(LUA_DIR)/.unpacked
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(LUA_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
-		CFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include $(TARGET_CFLAGS)" \
+		MYCFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include $(TARGET_CFLAGS)" \
 		AR="$(TARGET_CROSS)ar rcu" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		MYLDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
 		INSTALL_ROOT=/usr \
 		PKG_VERSION="$(LUA_VERSION)" \
-		all linux
+		linux
 
 $(PACKAGES_DIR)/.lua-$(LUA_VERSION): $(DL_DIR)/$(LUA_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LUA_PKG_SOURCE)
@@ -42,7 +42,7 @@ lua-package: $(PACKAGES_DIR)/.lua-$(LUA_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(LUA_PKG_SOURCE) lua-$(LUA_VERSION)
 
 
-lua-precompiled: $(LUA_DIR)/$(LUA_TARGET_BINARY)
+lua-precompiled: $(LUA_DIR)/$(LUA_TARGET_BINARY) lua
 	$(TARGET_STRIP) $(LUA_DIR)/src/$(LUA_TARGET_BINARY)
 	cp $(LUA_DIR)/src/$(LUA_TARGET_BINARY) $(LUA_TARGET_DIR)/
 
