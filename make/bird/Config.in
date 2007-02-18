@@ -1,0 +1,15 @@
+config DS_PACKAGE_BIRD
+	bool "bird 1.0.11"
+	default n
+	help
+	    The BIRD Internet Routing Daemon
+
+config DS_PACKAGE_BIRDC
+	bool "birdc"
+	depends on DS_PACKAGE_BIRD
+	select DS_LIB_libncurses
+	select DS_LIB_libreadline
+	select DS_LIB_libhistory
+	default y
+	help
+	    birdc (command-line interface for bird)
