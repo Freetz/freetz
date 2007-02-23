@@ -14,7 +14,7 @@ case "$1" in
 		rm -f /var/tmp/ethers
 
 		echo -e "127.0.0.1\tlocalhost" > /var/tmp/hosts
-		echo -e "$(echo 'ar7cfg.ethinterfaces[eth0].ipaddr' | ar7cfgctl -s)\tfritz.box" >> /var/tmp/hosts
+		echo -e "$(echo 'ar7cfg.ethinterfaces[eth0].ipaddr' | ar7cfgctl -s 2>/dev/null)\tfritz.box" >> /var/tmp/hosts
 		touch /var/tmp/ethers
 
 		# ATA fix
