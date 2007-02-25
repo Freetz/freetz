@@ -46,9 +46,9 @@ $(TCPDUMP_DIR)/.configured: libpcap $(TCPDUMP_DIR)/.unpacked
 	touch $@
 
 $(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY): $(TCPDUMP_DIR)/.configured
-	( cd $(TCPDUMP_DIR); \
+	( PATH="$(TARGET_PATH)" \
 		CCOPT="$(TARGET_CFLAGS)" INCLS="-I. -I$(TARGET_MAKE_PATH)/../usr/include" \
-		make all \
+		make -C $(TCPDUMP_DIR) all \
 	);
 
 $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION): $(DL_DIR)/$(TCPDUMP_PKG_SOURCE)

@@ -43,9 +43,9 @@ $(STREAMRIPPER_DIR)/.configured: mad $(STREAMRIPPER_DIR)/.unpacked
 	touch $@
 
 $(STREAMRIPPER_DIR)/$(STREAMRIPPER_TARGET_BINARY): $(STREAMRIPPER_DIR)/.configured
-	( cd $(STREAMRIPPER_DIR); \
+	( PATH="$(TARGET_PATH)" \
 		CPPFLAGS+="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		make all \
+		make -C all $(TCPDUMP_DIR) \
 	);
 
 $(PACKAGES_DIR)/.streamripper-$(STREAMRIPPER_VERSION): $(DL_DIR)/$(STREAMRIPPER_PKG_SOURCE)

@@ -27,7 +27,8 @@ $(PINGTUNNEL_DIR)/.unpacked: $(DL_DIR)/$(PINGTUNNEL_SOURCE)
 	touch $@
 
 $(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY): libpcap $(PINGTUNNEL_DIR)/.unpacked
-	$(MAKE) CC="$(TARGET_CC)" \
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(GNU_TARGET_NAME)" \
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include -DVERSION='\"$(PINGTUNNEL_VERSION)\"'" \
 		LDOPTS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib -lpthread -lpcap" \
