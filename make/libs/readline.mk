@@ -4,12 +4,6 @@ READLINE_SITE:=ftp://ftp.cwru.edu/pub/bash
 READLINE_DIR:=$(SOURCE_DIR)/readline-$(READLINE_VERSION)
 READLINE_MAKE_DIR:=$(MAKE_DIR)/libs
 
-ifeq ($(strip $(DS_LIB_libncurses)),y)
-READLINE_CURSES:=--with-curses
-else
-READLINE_CURSES:=
-endif
-
 $(DL_DIR)/$(READLINE_SOURCE):
 	wget -P $(DL_DIR) $(READLINE_SITE)/$(READLINE_SOURCE)
 
@@ -17,14 +11,14 @@ $(READLINE_DIR)/.unpacked: $(DL_DIR)/$(READLINE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(READLINE_SOURCE)
 	touch $@
 
-$(READLINE_DIR)/.configured: $(READLINE_DIR)/.unpacked
+$(READLINE_DIR)/.configured: ncurses $(READLINE_DIR)/.unpacked
 	( cd $(READLINE_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/include -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-	        LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib -L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
+		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
+		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -46,7 +40,7 @@ $(READLINE_DIR)/.configured: $(READLINE_DIR)/.unpacked
 		--enable-static \
 		--disable-multibyte \
 		--without-purify \
-		$(READLINE_CURSES) \
+		--with-curses \
 		$(DISABLE_LARGEFILE) \
 	);
 	touch $@
@@ -58,10 +52,6 @@ $(READLINE_DIR)/.compiled: $(READLINE_DIR)/.configured
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so \
  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so: $(READLINE_DIR)/.compiled
-	-PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(READLINE_DIR) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		uninstall
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(READLINE_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -78,6 +68,7 @@ ifeq ($(strip $(DS_LIB_libhistory)),y)
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libhistory*.so* root/usr/lib/
 endif
 else
+
 readline: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so
 readline-precompiled: readline
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*

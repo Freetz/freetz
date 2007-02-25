@@ -13,17 +13,9 @@ BIRD_TARGET_BIRD_BINARY:=bird
 BIRD_TARGET_BIRDC_BINARY:=birdc
 BIRD_CLIENT:=--enable-client
 else
-BIRD_TARGET_BINARY:=bird
+BIRD_TARGET_BIRD_BINARY:=bird
 BIRD_CLIENT:=--disable-client
 endif
-
-BIRD_CONFIGURE_OPTIONS=\
-  --disable-debug \
-  --disable-memcheck \
-  --disable-warnings \
-  $(BIRD_CLIENT) \
-  --disable-ipv6 \
-
 
 $(DL_DIR)/$(BIRD_SOURCE):
 	wget -P $(DL_DIR) $(BIRD_SITE)/$(BIRD_SOURCE)
@@ -42,8 +34,8 @@ $(BIRD_DIR)/.configured: readline $(BIRD_DIR)/.unpacked
 	( cd $(BIRD_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -D_XOPEN_SOURCE=600" \
-		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/include -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include -D_XOPEN_SOURCE=600" \
-		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib -L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib -static-libgcc" \
+		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include -D_XOPEN_SOURCE=600" \
+		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
 		bird_cv_c_endian=little-endian \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
@@ -65,7 +57,11 @@ $(BIRD_DIR)/.configured: readline $(BIRD_DIR)/.unpacked
 		--mandir=/usr/share/man \
 		$(DISABLE_LARGEFILE) \
 		$(DISABLE_NLS) \
-		$(BIRD_CONFIGURE_OPTIONS) \
+		--disable-debug \
+  		--disable-memcheck \
+		--disable-warnings \
+		$(BIRD_CLIENT) \
+		--disable-ipv6 \
 	);
 	touch $@
 
@@ -89,14 +85,14 @@ bird-package: $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 
 bird-precompiled: $(BIRD_DIR)/.installed bird
 	$(TARGET_STRIP) $(BIRD_DIR)/$(BIRD_TARGET_BIRD_BINARY)
-	ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
+ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
 		$(TARGET_STRIP) $(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY)
-	endif
+endif
 	mkdir -p $(BIRD_TARGET_DIR)
 	cp $(BIRD_DIR)/$(BIRD_TARGET_BIRD_BINARY) $(BIRD_TARGET_DIR)
-	ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
-		cp $(BIRD_DIR)/$(BIRD_BIRDC_TARGET_BINARY) $(BIRD_TARGET_DIR)
-	endif
+ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
+		cp $(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY) $(BIRD_TARGET_DIR)
+endif
 
 bird-source: $(BIRD_DIR)/.unpacked $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 

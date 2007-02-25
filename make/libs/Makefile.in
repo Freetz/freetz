@@ -4,6 +4,10 @@ LIBS+=uclibcxx
 endif
 endif
 
+ifeq ($(strip $(DS_LIB_libffi)),y)
+LIBS+=ffi-sable
+endif
+
 ifeq ($(strip $(DS_LIB_libgpg_error)),y)
 LIBS+=libgpg-error
 endif
@@ -18,6 +22,10 @@ endif
 
 ifeq ($(strip $(DS_LIB_libevent)),y)
 LIBS+=libevent
+endif
+
+ifeq ($(strip $(DS_LIB_libfuse)),y)
+LIBS+=fuse
 endif
 
 ifeq ($(strip $(DS_LIB_libmad)),y)
