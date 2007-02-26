@@ -98,5 +98,4 @@ fuse-uninstall:
 
 fuse-dirclean:
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so.*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.a
 	rm -rf $(FUSE_DIR)

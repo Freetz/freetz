@@ -29,9 +29,8 @@ fi
 
 cat << EOF
 <div id="extras"><a href="/cgi-bin/extras.cgi">Extras</a></div>
-EOF
-cat << EOF
 <div id="backup_restore"><a href="/cgi-bin/backup_restore.cgi">Sichern/Wiederherstellen</a></div>
+<div id="rudi_shell"><a href="/cgi-bin/rudi_shell.cgi" target="_blank">Rudi-Shell</a></div>
 </div>
 EOF
 }
