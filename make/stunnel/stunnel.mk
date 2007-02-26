@@ -28,7 +28,7 @@ $(STUNNEL_DIR)/.unpacked: $(DL_DIR)/$(STUNNEL_SOURCE)
 	done
 	touch $@
 
-$(STUNNEL_DIR)/.configured:  $(STUNNEL_DIR)/.unpacked openssl
+$(STUNNEL_DIR)/.configured: $(STUNNEL_DIR)/.unpacked openssl zlib
 	( cd $(STUNNEL_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \

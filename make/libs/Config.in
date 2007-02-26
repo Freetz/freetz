@@ -352,6 +352,15 @@ config DS_LIB_libpcap
 
 endmenu
 
+menu "matrixssl"
+
+config DS_LIB_libmatrixssl
+	bool "libmatrixssl.so"
+	select DS_LIB_libpthread
+	default n
+
+endmenu
+
 menu "openssl"
 
 config DS_LIB_libcrypto
@@ -374,7 +383,7 @@ config DS_LIB_libreadline
 config DS_LIB_libhistory
 	bool "libhistory.so"
 	default n
-	depends on DS_LIB_libreadline
+	select DS_LIB_libreadline
 
 endmenu
 
