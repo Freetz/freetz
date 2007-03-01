@@ -1,4 +1,4 @@
-VPNC_VERSION:=0.3.3
+VPNC_VERSION:=0.4.0
 VPNC_SOURCE:=vpnc-$(VPNC_VERSION).tar.gz
 VPNC_SITE:=http://www.unix-ag.uni-kl.de/~massar/vpnc
 VPNC_DIR:=$(SOURCE_DIR)/vpnc-$(VPNC_VERSION)
@@ -19,15 +19,14 @@ $(DL_DIR)/$(VPNC_PKG_SOURCE):
 $(VPNC_DIR)/.unpacked: $(DL_DIR)/$(VPNC_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(VPNC_SOURCE)
 	for i in $(VPNC_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(VPNC_DIR) -p0 < $$i; \
+		patch -d $(VPNC_DIR) -p1 < $$i; \
 	done
 	touch $@
 
-$(VPNC_DIR)/$(VPNC_TARGET_BINARY): openssl libgcrypt $(VPNC_DIR)/.unpacked
+$(VPNC_DIR)/$(VPNC_TARGET_BINARY): $(VPNC_DIR)/.unpacked #openssl libgcrypt
 	PATH=$(TARGET_PATH) \
-	CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
 	$(MAKE) CC="$(TARGET_CC)" \
-		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
+		EXTRA_CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include" \
 		EXTRA_LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
 		-C $(VPNC_DIR)
 

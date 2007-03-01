@@ -1,0 +1,41 @@
+--- vpnc-0.4.0/vpnc-script	2007-02-18 12:52:03.000000000 +0100
++++ vpnc-0.4.0.patched/vpnc-script	2007-02-25 11:34:06.000000000 +0100
+@@ -107,7 +107,7 @@
+ }
+ 
+ do_ifconfig() {
+-	ifconfig "$TUNDEV" inet "$INTERNAL_IP4_ADDRESS" $ifconfig_syntax_ptp "$INTERNAL_IP4_ADDRESS" netmask 255.255.255.255 mtu 1412 up
++	ifconfig "$TUNDEV" "$INTERNAL_IP4_ADDRESS" $ifconfig_syntax_ptp "$INTERNAL_IP4_ADDRESS" netmask 255.255.255.255 mtu 1412 up
+ }
+ 
+ destroy_tun_device() {
+@@ -388,6 +388,18 @@
+ 	fi
+ }
+ 
++start_vpn_nat() {
++	iptables -A forwarding_rule -o $TUNDEV -j ACCEPT
++	iptables -A forwarding_rule -i $TUNDEV -j ACCEPT
++	iptables -t nat -A postrouting_rule -o $TUNDEV -j MASQUERADE
++}
++
++stop_vpn_nat() {
++	iptables -t nat -D postrouting_rule -o $TUNDEV -j MASQUERADE
++	iptables -D forwarding_rule -i $TUNDEV -j ACCEPT
++	iptables -D forwarding_rule -o $TUNDEV -j ACCEPT
++}
++
+ ####
+ 
+ if [ -z "$reason" ]; then
+@@ -401,8 +413,10 @@
+ 		;;
+ 	connect)
+ 		do_connect
++		start_vpn_nat
+ 		;;
+ 	disconnect)
++		stop_vpn_nat
+ 		do_disconnect
+ 		;;
+ 	*)
