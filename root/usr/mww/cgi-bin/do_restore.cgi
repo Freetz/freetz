@@ -1,4 +1,4 @@
-#!/usr/bin/haserl -u -U /var/tmp
+#!/usr/bin/haserl -u 200 -U /var/tmp
 <?
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
@@ -6,7 +6,7 @@ cgi_begin 'Konfiguration wiederherstellen (Restore)' 'do_restore'
 ?>
 <h1>Wiederherstellung (Restore)</h1>
 
-<?if test -n "$FORM_uploadfile" ?>
+<? if test -n "$FORM_uploadfile"; then ?>
   Sie haben gerade die Datei <b><? echo -n $FORM_uploadfile_name ?></b> hochgeladen.<br>
   Sie ist unter dem temporären Namen <i><? echo $FORM_uploadfile ?></i> auf der Fritz!Box gespeichert.<br>
   Die Dateigröße beträgt <? cat $FORM_uploadfile | wc -c ?> Bytes.</p>
@@ -32,14 +32,14 @@ cgi_begin 'Konfiguration wiederherstellen (Restore)' 'do_restore'
       (sleep 5; reboot)&
      fi
   ?></pre>
-<?el?>
+<? else ?>
   Sie haben keine Sicherungs-Datei zum Hochladen ausgewählt. Der Zustand
   der Fritz!Box wurde nicht verändert.
-<?fi?>
+<? fi ?>
 
 <p>
 <form action="/cgi-bin/status.cgi" method=GET>
-  <input type=submit value=Zurück zur Übersicht>
+  <input type=submit value="Zurück zur Übersicht">
 </form><p>
 
 <? cgi_end ?>
