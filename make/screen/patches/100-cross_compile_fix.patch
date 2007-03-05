@@ -1,4 +1,5 @@
---- configure.orig	2003-12-05 14:46:53.000000000 +0100
+diff -urN screen-4.0.2.old/configure screen-4.0.2.dev/configure
+--- configure	2003-12-05 14:46:53.000000000 +0100
 +++ configure	2005-05-05 12:13:03.000000000 +0200
 @@ -124,7 +124,7 @@
    fi
@@ -478,7 +479,8 @@
  
        rm -f $ac_file
        mv $tmp/config.h $ac_file
---- pty.c.orig	2003-09-08 16:26:18.000000000 +0200
+diff -urN screen-4.0.2.old/pty.c screen-4.0.2.dev/pty.c
+--- pty.c	2003-09-08 16:26:18.000000000 +0200
 +++ pty.c	2005-05-05 12:32:20.000000000 +0200
 @@ -34,9 +34,9 @@
  #endif
@@ -493,7 +495,7 @@
  
  #if defined(sun) && defined(LOCKPTY) && !defined(TIOCEXCL)
  # include <sys/ttold.h>
---- configure.orig	2005-05-24 18:49:30.000000000 +0200
+--- configure.old	2005-05-24 18:49:30.000000000 +0200
 +++ configure	2005-05-24 18:49:54.000000000 +0200
 @@ -6598,8 +6598,6 @@
  LIBS="$oldlibs"
@@ -504,3 +506,24 @@
  oldlibs="$LIBS"
  LIBS="$LIBS -lsun"
  { echo "$as_me:$LINENO: checking IRIX sun library..." >&5
+diff -ur screen.old/sched.h screen.dev/sched.h
+--- sched.h	2002-01-08 16:42:43.000000000 +0100
++++ sched.h	2007-03-02 17:03:48.475830776 +0100
+@@ -22,6 +22,11 @@
+  * $Id$ FAU
+  */
+ 
++#ifndef __SCHED_H
++#define __SCHED_H
++
++#include <sys/time.h>
++
+ struct event
+ {
+   struct event *next;
+@@ -41,3 +46,5 @@
+ #define EV_READ		1
+ #define EV_WRITE	2
+ #define EV_ALWAYS	3
++
++#endif

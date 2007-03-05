@@ -1,5 +1,5 @@
 # based on OpenWrt SVN
-OPENVPN_VERSION:=2.1_rc1
+OPENVPN_VERSION:=2.1_rc2
 OPENVPN_SOURCE:=openvpn-$(OPENVPN_VERSION).tar.gz
 OPENVPN_SITE:=http://openvpn.net/release
 OPENVPN_DIR:=$(SOURCE_DIR)/openvpn-$(OPENVPN_VERSION)

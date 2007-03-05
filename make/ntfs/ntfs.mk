@@ -106,7 +106,7 @@ ntfs-clean:
 ntfs-dirclean:
 	rm -rf $(NTFS_DIR)
 	rm -rf $(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
-	rm -f $(PACKAGES_DIR)/.ntfs--$(NTFS_VERSION)
+	rm -f $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 
 ntfs-list:
 ifeq ($(strip $(DS_PACKAGE_NTFS)),y)
