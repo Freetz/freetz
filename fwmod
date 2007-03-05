@@ -165,17 +165,10 @@ else
 	UNSQUASHFS_TOOL="unsquashfs"
 fi
 
-#if [ "$DS_REPLACE_KERNEL" == "y" ]
-#then
-#	MKSQUASHFS_TOOL="mksquashfs-lzma"
-#else
-#	MKSQUASHFS_TOOL="mksquashfs"
-#fi
-
-#2.6.13 is lzma aware
+#2.6.13.1 has lzma-support
 MKSQUASHFS_TOOL="mksquashfs-lzma"
 
-#own tar to avoid strange problems
+#use own tar to avoid strange problems
 TAR_TOOL="tar"
 
 TOOLS_DIR="${ABS_BASE_DIR}/${TOOLS_SUBDIR}"
@@ -201,6 +194,7 @@ DYNAMIC_PACKAGES_FILE="${BASE_DIR}/.dynamic"
 STATIC_ADDON_FILE="${ADDON_DIR}/static.pkg"
 DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 
+KERNEL_LAYOUT="${DS_KERNEL_LAYOUT}"
 
 modpatch()
 {
@@ -911,8 +905,8 @@ then
 	done
 		
 	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}generating modules.dep"
-	${SOURCE_SUBDIR}/depmod.pl -b ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio \
-		-F ${KERNEL_REP_DIR}/System.map > /dev/null 2>&1
+	${SOURCE_SUBDIR}/depmod.pl -b ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-${KERNEL_LAYOUT} \
+		-F ${KERNEL_REP_DIR}/System.map
 		
 	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}copying files"
 	"$TAR" -cf - -C "${KERNEL_REP_DIR}/root" --exclude=lib --exclude=usr/lib \

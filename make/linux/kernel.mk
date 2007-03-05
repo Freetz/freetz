@@ -1,12 +1,12 @@
 KERNEL_SUBVERSION:=iln6
 KERNEL_BOARD_REF:=$(KERNEL_REF)
+KERNEL_LAYOUT:=$(DS_KERNEL_LAYOUT)
 KERNEL_ARCH:=mips
 KERNEL_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
-KERNEL_BUILD_DIR_N:=kernel_ohio-8mb_build
 KERNEL_BUILD_DIR_N:=kernel_8mb_26_build
-KERNEL_IMAGE:=kernel/linux-2.6.13.1/ram_zimage.bin
 KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
+KERNEL_IMAGE:=kernel/linux-2.6.13.1/ram_zimage.bin
 KERNEL_TARGET_DIR:=kernel
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_REF).$(AVM_VERSION)
@@ -15,68 +15,12 @@ KERNEL_MODULES_DIR:=$(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)
 
 $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
 	mkdir -p $(KERNEL_DIR)
-ifeq ($(AVM_VERSION),04.15)
 	cp -a $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N) $(KERNEL_BUILD_DIR)
-endif
-ifeq ($(AVM_VERSION),04.19)
-	cp -a $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/FRITZBox_Sources/$(KERNEL_BUILD_DIR_N) $(KERNEL_BUILD_DIR)
-endif
-ifeq ($(AVM_VERSION),04.29)
-	cp -a $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N) $(KERNEL_BUILD_DIR)
-endif
 
 	for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
 		patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
 	done
 
-ifeq ($(AVM_VERSION),04.15)
-	# Version 04.15 source corrections
-	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
-		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
-	done
-	# Correct other symlinks
-	for i in ar7wdt.h avm_event.h avm_led.h avm_profile.h; do \
-		ln -sf ../../drivers/char/avm_new/linux_$$i \
-			$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/$$i; \
-	done
-	ln -sf ../../drivers/char/avm_power/linux_avm_power.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_power.h
-	ln -sf ../../drivers/net/avm_cpmac/linux_adm_reg.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/adm_reg.h	
-	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_cpmac.h	
-	rm -f $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/drivers/atm/dsl_hal_export.c
-	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-2.6.13.1 $(KERNEL_DIR)/linux 
-endif
-ifeq ($(AVM_VERSION),04.19)
-	# Version 04.19 source corrections
-	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
-		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
-	done
-	# Correct other symlinks
-	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/drivers/usb/misc/usbauth/Makefile.26 \
-	    $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/drivers/usb/ahci/Makefile.26
-	for i in ar7wdt.h avm_event.h avm_led.h avm_profile.h; do \
-		ln -sf ../../drivers/char/avm_new/linux_$$i \
-			$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/$$i; \
-	done
-	ln -sf ../../drivers/char/avm_power/linux_avm_power.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_power.h
-	ln -sf ../../drivers/char/ubik2/linux_ubik2_debug.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/ubik2_debug.h	
-	ln -sf ../../drivers/char/ubik2/linux_ubik2_interface.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/ubik2_interface.h
-	ln -sf ../../drivers/char/ubik2/linux_ubik2_ul.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/ubik2_ul.h
-	ln -sf ../../drivers/isdn/capi_oslib/linux_capi_oslib.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/capi_oslib.h	
-	ln -sf ../../drivers/net/avm_cpmac/linux_adm_reg.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/adm_reg.h	
-	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_cpmac.h	
-	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-2.6.13.1 $(KERNEL_DIR)/linux 
-endif
-ifeq ($(AVM_VERSION),04.29)
 	# Version 04.29 source corrections
 	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
@@ -103,27 +47,10 @@ ifeq ($(AVM_VERSION),04.29)
 	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_cpmac.h	
 	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-2.6.13.1 $(KERNEL_DIR)/linux 
-endif
 	touch $@
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
-ifeq ($(AVM_VERSION),04.15)
-	$(MAKE) -C $(KERNEL_BUILD_DIR) \
-		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
-		CROSS_COMPILE="$(KERNEL_CROSS)" \
-		ARCH=$(KERNEL_ARCH) \
-		oldconfig
-endif
-ifeq ($(AVM_VERSION),04.19)
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	$(MAKE) -C $(KERNEL_BUILD_DIR) \
-		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
-		CROSS_COMPILE="$(KERNEL_CROSS)" \
-		ARCH=$(KERNEL_ARCH) \
-		autoconf.h oldconfig
-endif
-ifeq ($(AVM_VERSION),04.29)
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
@@ -136,7 +63,6 @@ ifeq ($(AVM_VERSION),04.29)
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		ARCH=$(KERNEL_ARCH) \
 		prepare
-endif
 	touch $@
 
 $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma
@@ -179,14 +105,13 @@ kernel-precompiled: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) \
 	cp $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
 	mkdir -p $(KERNEL_MODULES_DIR)
 	tar -cf - -C $(KERNEL_BUILD_DIR)/modules \
-		--exclude=lib/modules/2.6.13.1-ohio/build \
-		--exclude=lib/modules/2.6.13.1-ohio/pcmcia \
-		--exclude=lib/modules/2.6.13.1-ohio/kernel/drivers/bluetooth \
-		--exclude=lib/modules/2.6.13.1-ohio/kernel/net/bluetooth \
+		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/build \
+		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/pcmcia \
+		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/drivers/bluetooth \
+		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/net/bluetooth \
 		. | tar -xf - -C $(KERNEL_MODULES_DIR)
 	cp  $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/System.map $(KERNEL_TARGET_DIR)/System.map
-#	$(SOURCE_DIR)/depmod.pl -b $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-ohio \
-	$(SOURCE_DIR)/depmod.pl -b $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-ar7 \
+	$(SOURCE_DIR)/depmod.pl -b $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT) \
 		-F $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/System.map
 	echo "$(KERNEL_SUBVERSION)" > $(KERNEL_TARGET_DIR)/.version-$(KERNEL_REF)-$(AVM_VERSION)
 

@@ -34,7 +34,11 @@ choice
 	help
 	    Select your box type here.
 
-
+	config DS_TYPE_FON_WLAN_7050
+		depends on DS_AVM_VERSION_04_29
+		select DS_LIB_libm
+		bool "Fon WLAN 7050"
+	
 	config DS_TYPE_FON_WLAN_7140
 		depends on DS_AVM_VERSION_04_29
 		select DS_LIB_libm
@@ -90,6 +94,7 @@ config DS_TYPE_LANG_STRING
 
 config DS_TYPE_STRING
 	string
+	default "7050"		if DS_TYPE_FON_WLAN_7050
 	default "7170"		if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
 	default "7170_labor"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR
 	default "7140"		if DS_TYPE_FON_WLAN_7140
@@ -132,6 +137,8 @@ config DS_TARGET_REF
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7170
+	default "4mb_26"	if DS_TYPE_FON_WLAN_7050
+	
 
 config DS_KERNEL_REF
 	string "Kernel ref"		if DS_TYPE_CUSTOM
@@ -140,10 +147,21 @@ config DS_KERNEL_REF
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_FON_WLAN_7170
+	default "4mb_26"	if DS_TYPE_FON_WLAN_7050
+
+config DS_KERNEL_LAYOUT
+	string "Kernel ref"		if DS_TYPE_CUSTOM
+	default "ohio"			if DS_TYPE_FON_WLAN_7140 || \
+					   DS_TYPE_FON_WLAN_7141 || \
+					   DS_TYPE_SPEEDPORT_W701V || \
+					   DS_TYPE_SPEEDPORT_W900V || \
+					   DS_TYPE_FON_WLAN_7170
+	default "ar7"			if DS_TYPE_FON_WLAN_7050
 
 config DS_HIDDEN_ROOT
 	bool "Hidden root"		if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_FON_WLAN_7140 || \
+	default y			if DS_TYPE_FON_WLAN_7050 || \
+						 DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
@@ -156,7 +174,8 @@ config DS_HIDDEN_ROOT
 config DS_CONTIGUOUS_HIDDEN_ROOT
 	bool "Contiguous"		if DS_TYPE_CUSTOM
 	depends on DS_HIDDEN_ROOT
-	default n			if DS_TYPE_FON_WLAN_7140 || \
+	default n			if DS_TYPE_FON_WLAN_7050 || \
+						 DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
@@ -169,7 +188,8 @@ config DS_CONTIGUOUS_HIDDEN_ROOT
 
 config DS_SQUASHFS_LZMA
 	bool "Lzma squashfs"		if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_FON_WLAN_7140 || \
+	default y			if DS_TYPE_FON_WLAN_7050 || \
+						 DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
@@ -180,7 +200,8 @@ config DS_SQUASHFS_LZMA
 
 config DS_ROOTFS_VARTAR
 	bool "RootFS contains var.tar"	if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_FON_WLAN_7140 || \
+	default y			if DS_TYPE_FON_WLAN_7050 || \
+						 DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
@@ -199,6 +220,7 @@ config DS_KERNEL_MTD_SIZE
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_FON_WLAN_7170 || \
 					   DS_TYPE_CUSTOM && DS_HIDDEN_ROOT
+	default 59			if DS_TYPE_FON_WLAN_7050
 	help
 	    Number of 64K blocks in the kernel mtd device.
 
@@ -212,7 +234,8 @@ config DS_FILESYSTEM_MTD_SIZE
 
 config DS_HAS_PHONE
 	bool "Has Phone"		if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_FON_WLAN_7140 || \
+	default y			if DS_TYPE_FON_WLAN_7050 || \
+						 DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
@@ -223,7 +246,8 @@ config DS_HAS_PHONE
 
 config DS_HAS_WLAN
 	bool "Has WLAN"			if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_FON_WLAN_7140 || \
+	default y			if DS_TYPE_FON_WLAN_7050 || \
+						 DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
@@ -234,7 +258,8 @@ config DS_HAS_WLAN
 
 config DS_HAS_USB
 	bool "Has USB"			if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_FON_WLAN_7140 || \
+	default y			if DS_TYPE_FON_WLAN_7050 || \
+						 DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7170 || \
 					   DS_TYPE_SPEEDPORT_W900V
@@ -263,6 +288,7 @@ comment "Brandings (if exist)"
 config DS_BRANDING_1und1
 	bool "1und1"
 	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
+		 	 DS_TYPE_FON_WLAN_7050 || \
 		   DS_TYPE_FON_WLAN_7141 || \
 		   DS_TYPE_FON_WLAN_7170 || \
 		   DS_TYPE_CUSTOM
@@ -271,6 +297,7 @@ config DS_BRANDING_1und1
 config DS_BRANDING_avm
 	bool "avm"
 	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
+			 DS_TYPE_FON_WLAN_7050 || \
 		   DS_TYPE_FON_WLAN_7140 || \
 		   DS_TYPE_FON_WLAN_7141 || \
 		   DS_TYPE_FON_WLAN_7170 || \
@@ -322,13 +349,20 @@ config DS_REMOVE_ASSISTANT
 	help
 	    Removes the network assistant from the
 	    webmenu.
-
-config DS_REMOVE_CDROM_ISO
-	bool "Remove cdrom.iso"
-	depends on DS_HAS_USB && ! DS_HAS_USB_HOST
+	    
+config DS_REMOVE_LIBTR069
+	bool "Remove libtr069"
+	depends on DS_TYPE_FON_WLAN_7050
 	default n
 	help
-	    Removes the file /lib/modules/cdrom.iso.
+	    Removes libtr069 to save space.
+
+#config DS_REMOVE_CDROM_ISO
+#	bool "Remove cdrom.iso"
+#	depends on DS_HAS_USB && ! DS_HAS_USB_HOST
+#	default n
+#	help
+#	    Removes the file /lib/modules/cdrom.iso.
 
 config DS_PATCH_ATA
 	bool "Patch ata"
@@ -368,17 +402,6 @@ config DS_PATCH_USBSTORAGE
 	default n
         help
 	    Change the name of USB storage dir to uStorXY
-
-#config DS_PATCH_ORANGE
-#	bool "Patch webmenu orange"
-#	depends on DS_TYPE_FON_WLAN_7140 || \
-#		   DS_TYPE_FON_WLAN_7141 || \
-#		   DS_TYPE_FON_WLAN_7170 || \
-#		   DS_TYPE_SPEEDPORT_W701V || \
-#		   DS_TYPE_CUSTOM
-#	default n
-#        help
-#	    Makes the webinterface orange
 
 comment "Mod"
 
@@ -426,6 +449,7 @@ config DS_DL_OVERRIDE
 config DS_DL_SITE
 	string "Firmware site"								if DS_DL_OVERRIDE
 	depends on ! DS_TYPE_LABOR
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7050/firmware"		if DS_TYPE_FON_WLAN_7050
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"	if DS_TYPE_FON_WLAN_7170
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"	if DS_TYPE_FON_WLAN_7140
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"	if DS_TYPE_FON_WLAN_7141
@@ -435,6 +459,7 @@ config DS_DL_SITE
 
 config DS_DL_SOURCE
 	string "Firmware source"							if DS_DL_OVERRIDE
+	default "fritz.box_fon_wlan_7050.14.04.30.image"				if DS_TYPE_FON_WLAN_7050
 	default "fritz.box_fon_wlan_7170.29.04.29.image"				if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
 	default "fritz.box_fon_wlan_7140.30.04.30.image"				if DS_TYPE_FON_WLAN_7140
 	default "fritz.box_fon_wlan_7141.40.04.30.image"				if DS_TYPE_FON_WLAN_7141

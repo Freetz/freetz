@@ -1596,16 +1596,14 @@ diff -burN linux-2.6.13.1.orig/arch/mips/mips-boards/ohio/inflater/zimage.script
 diff -burN linux-2.6.13.1.orig/Makefile linux-2.6.13.1/Makefile
 --- linux-2.6.13.1.orig/Makefile	2006-09-30 23:14:09.000000000 +0200
 +++ linux-2.6.13.1/Makefile	2006-11-13 15:50:24.000000000 +0100
-@@ -504,6 +504,23 @@
+@@ -504,6 +504,21 @@
  # Defaults vmlinux but it is usually overriden in the arch makefile
  all: vmlinux
  
-+ifeq ($(CONFIG_MIPS_OHIO),y)
 +INTEL_GCC	= gcc
 +DD		= dd
 +DD_BS           =  64k
 +SREC2BIN	= $(TOPDIR)/srec2bin
-+endif
 +
 +ram_zimage:	vmlinux srec2bin
 +	$(MAKE) ram_zimage -C arch/$(ARCH)/mips-boards/ohio/inflater
@@ -1620,7 +1618,17 @@ diff -burN linux-2.6.13.1.orig/Makefile linux-2.6.13.1/Makefile
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  CFLAGS		+= -Os
  else
-@@ -949,7 +966,8 @@
+@@ -533,6 +548,9 @@
+ NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
+ CHECKFLAGS     += $(NOSTDINC_FLAGS)
+ 
++# improve gcc optimization
++CFLAGS += $(call cc-option,-funit-at-a-time,)
++
+ # warn about C99 declaration after statement
+ CFLAGS += $(call cc-option,-Wdeclaration-after-statement,)
+ 
+@@ -949,7 +967,8 @@
  # Directories & files removed with 'make clean'
  CLEAN_DIRS  += $(MODVERDIR)
  CLEAN_FILES +=	vmlinux System.map \
@@ -1630,4 +1638,3 @@ diff -burN linux-2.6.13.1.orig/Makefile linux-2.6.13.1/Makefile
  
  # Directories & files removed with 'make mrproper'
  MRPROPER_DIRS  += include/config include2
-diff -burN linux-2.6.13.1.orig/.version linux-2.6.13.1/.version
