@@ -1,6 +1,11 @@
 config DS_PACKAGE_CLASSPATH
 	bool "classpath 0.93 (binary only)"
-#	depends on DS_LIB_libpcap
+	select DS_LIB_libjavaio
+	select DS_LIB_libjavalang
+	select DS_LIB_libjavareflect
+	select DS_LIB_libjavanet
+	select DS_LIB_libjavanio
+  select DS_LIB_libjavautil
 	default n
 	help
 	    Classes for jamvm

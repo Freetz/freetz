@@ -80,10 +80,8 @@ ffi-sable-install: ffi-sable-precompiled
 
 ffi-sable-uninstall:
 	rm -rf root/usr/lib/libffi*.so*
-#	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBFFI-SABLE_DIR) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" uninstall
 
 ffi-sable-dirclean:
-#	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBFFI-SABLE_DIR) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" uninstall
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so.*
 	rm -rf $(FFI-SABLE_DIR)
 

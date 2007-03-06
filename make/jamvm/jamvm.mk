@@ -38,7 +38,7 @@ $(JAMVM_DIR)/.configured: ffi-sable classpath $(JAMVM_DIR)/.unpacked
 		--build="$(GNU_HOST_NAME)" \
 		--enable-ffi \
 		--disable-int-threading \
-		--with-classpath-install-dir="/usr/share/classpath" \
+		--with-classpath-install-dir="/usr/lib/classpath" \
 	);
 	touch $@
 

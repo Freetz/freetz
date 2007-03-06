@@ -1,3 +1,31 @@
+menu "classpath"
+
+config DS_LIB_libjavaio
+	bool "libjavaio.so"
+	default n
+
+config DS_LIB_libjavalang
+	bool "libjavalang.so"
+	default n
+
+config DS_LIB_libjavareflect
+	bool "libjavareflect.so"
+	default n
+
+config DS_LIB_libjavanet
+	bool "libjavanet.so"
+	default n
+
+config DS_LIB_libjavanio
+	bool "libjavanio.so"
+	default n
+
+config DS_LIB_libjavautil
+	bool "libjavautil.so"
+	default n
+
+endmenu
+
 config DS_LIB_libgcc_s
 	bool "libgcc_s.so.1"
 	default n
@@ -309,6 +337,15 @@ config DS_LIB_libgcrypt
 	bool "libgcrypt.so"
 	select DS_LIB_libgpg_error
 	select DS_LIB_libnsl
+	default n
+
+endmenu
+
+
+menu "ntfs-3g"
+
+config DS_LIB_libntfs
+	bool "libntfs-3g.so"
 	default n
 
 endmenu

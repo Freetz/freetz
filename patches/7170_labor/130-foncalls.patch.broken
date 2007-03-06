@@ -1,5 +1,5 @@
---- usr/www/all/html/de/fon/foncalls.js.orig	2007-01-11 16:12:47.000000000 +0100
-+++ usr/www/all/html/de/fon/foncalls.js	2007-01-27 14:14:42.000000000 +0100
+--- usr/www/all/html/de/fon/foncalls.js.orig	2006-11-18 19:28:26.000000000 +0100
++++ usr/www/all/html/de/fon/foncalls.js	2006-11-18 19:57:10.000000000 +0100
 @@ -3,17 +3,17 @@
  <style type="text/css">
  <!--
@@ -26,40 +26,29 @@
  #tLegende {margin:auto}
  #tLegende td {padding: 2px 2px;}
  #tClient a:link, #tClient a:visited { color: black; }
-@@ -86,9 +86,6 @@
- 	jslEnable("uiPostClearJournal");
- 	jslFormSubmitEx(jslGetValue("uiPostMenu"), "foncalls");
- }
--function uiDoHelp() {
--	jslPopHelp("hilfe_fon_anrufliste");
--}
- function uiDoExport() {
- 	document.getElementById("uiPostExport").submit();
- }
-@@ -148,18 +145,18 @@
+@@ -148,18 +148,20 @@
  }
  function uiNummerDisplay (nr, name) {
  	var buchname = GetBuchName(name);
 -	if (nr=="" && buchname=="") return g_txtUnbekannt;
--	if ("<? query telcfg:settings/UseClickToDial ?>" == "1") {
++	if (nr=="" && buchname=="") return g_sym0 + g_txtUnbekannt;
+ 	if ("<? query telcfg:settings/UseClickToDial ?>" == "1") {
 -		if (nr == "") return span(buchname);
 -		if (buchname == "") {
 -			return "<nobr>" +
 -			"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
--		}
--		return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
-+	if (nr=="" && buchname=="") return g_sym0 + g_txtUnbekannt;
-+	if ("1" == "1") {
 +		if (nr == "") return g_sym0 + span(buchname);
 +		if (buchname == "") return "<nobr>" + uiRufnummerInfo (nr) +"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
 +		return "<nobr>" +  g_sym0 + "<a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
+ 		}
+ 		return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
  	} else {
 -		return span(buchname=="" ? nr:buchname);
 +		return (buchname=="" ? uiRufnummerInfo(nr):g_sym0) + span(buchname=="" ? nr:buchname);
  	}
  }
 +function uiRufnummerInfo (nr) {
-+	return "<a href=\"http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "+nr+")\" target=\"_blank\" title=\"Rckwï¿½tssuche bei dasoertliche.de nach "+nr+"\"><img src=\"../html/<? echo $var:lang ?>/images/bearbeiten.gif\"></a>";
++	return "<a href=\"http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "+nr+")\" target=\"_blank\" title=\"Rückwärtssuche bei dasoertliche.de nach "+nr+"\"><img src=\"../html/<? echo $var:lang ?>/images/bearbeiten.gif\"></a>";
 +}
  function uiRouteDisplay (n, t) {
  	var name;

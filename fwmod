@@ -194,8 +194,6 @@ DYNAMIC_PACKAGES_FILE="${BASE_DIR}/.dynamic"
 STATIC_ADDON_FILE="${ADDON_DIR}/static.pkg"
 DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 
-KERNEL_LAYOUT="${DS_KERNEL_LAYOUT}"
-
 modpatch()
 {
 	if [ "$DS_VERBOSITY_LEVEL" -ge 2 ]
@@ -763,7 +761,8 @@ then
 		ln -s ../var/tmp/onlinechanged "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 
 		[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}installing libs"
-		for i in $(cd "${ROOT_DIR}" && find lib usr/lib -type d -name .svn -prune -false , \
+		for i in $(cd "${ROOT_DIR}" && find lib usr/lib \
+								-type d -name .svn -prune -false , \
 		                                                -type f -name "*.so*")
 		do
 			bn="$(basename "$i")"
@@ -905,7 +904,7 @@ then
 	done
 		
 	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}generating modules.dep"
-	${SOURCE_SUBDIR}/depmod.pl -b ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-${KERNEL_LAYOUT} \
+	${SOURCE_SUBDIR}/depmod.pl -b ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-${DS_KERNEL_LAYOUT} \
 		-F ${KERNEL_REP_DIR}/System.map
 		
 	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}copying files"
