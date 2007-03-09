@@ -1,5 +1,5 @@
 # based on OpenWrt SVN
-DROPBEAR_VERSION:=0.48.1
+DROPBEAR_VERSION:=0.49
 DROPBEAR_SOURCE:=dropbear-$(DROPBEAR_VERSION).tar.gz
 DROPBEAR_SITE:=http://matt.ucc.asn.au/dropbear/releases
 DROPBEAR_DIR:=$(SOURCE_DIR)/dropbear-$(DROPBEAR_VERSION)

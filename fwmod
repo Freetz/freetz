@@ -767,7 +767,7 @@ then
 		do
 			bn="$(basename "$i")"
 			lib="${bn%\.so*}"
-			lib="$(echo "$lib" | sed -e 's/-[\.0-9a-z]*$//')"
+			lib="$(echo "$lib" | sed -e 's/-[0-9][\.0-9a-z]*$//')"
 			if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]
 			then
 				[ "$DS_VERBOSITY_LEVEL" -ge 2 ] && echo "${L2}${bn}"

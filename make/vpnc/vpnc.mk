@@ -23,7 +23,7 @@ $(VPNC_DIR)/.unpacked: $(DL_DIR)/$(VPNC_SOURCE)
 	done
 	touch $@
 
-$(VPNC_DIR)/$(VPNC_TARGET_BINARY): $(VPNC_DIR)/.unpacked #openssl libgcrypt
+$(VPNC_DIR)/$(VPNC_TARGET_BINARY): $(VPNC_DIR)/.unpacked openssl libgcrypt
 	PATH=$(TARGET_PATH) \
 	$(MAKE) CC="$(TARGET_CC)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include" \
