@@ -33,6 +33,10 @@ choice
 	config DS_TYPE_FON_5050
 		depends on DS_AVM_VERSION_04_29
 		bool "Fon 5050"
+		
+	config DS_TYPE_FON_WLAN_7050
+		depends on DS_AVM_VERSION_04_29
+		bool "Fon WLAN 7050"
 
 	config DS_TYPE_FON_WLAN_7140
 		depends on DS_AVM_VERSION_04_29
@@ -167,15 +171,15 @@ config DS_KERNEL_REF
 
 config DS_KERNEL_LAYOUT
 	string "Kernel ref"		if DS_TYPE_CUSTOM
-	default "ohio"			if DS_TYPE_FON_WLAN_7140 || \
+	default "ohio"			if DS_TYPE_2170 || \
+					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7170
-	default "ar7"			if DS_TYPE_2170 || \
+	    				   DS_TYPE_FON_WLAN_7170 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON_5050 || \
+					   DS_TYPE_SPEEDPORT_W701V || \
+					   DS_TYPE_SPEEDPORT_W900V
+	default "ar7"			if DS_TYPE_FON_5050 || \
 					   DS_TYPE_FON_WLAN_7050
 
 config DS_HIDDEN_ROOT
@@ -301,24 +305,32 @@ config DS_HAS_WLAN
 
 config DS_HAS_USB
 	bool "Has USB"			if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
+	default y			if DS_TYPE_2170 || \
+					   DS_TYPE_FON_5050 || \
+					   DS_TYPE_WLAN_3131 || \
+					   DS_TYPE_WLAN_3170 || \
+					   DS_TYPE_FON_WLAN_7050 
+	default n			if DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_SPEEDPORT_W900V
-	default n			if DS_TYPE_SPEEDPORT_W701V || \
+					   DS_TYPE_SPEEDPORT_W701V || \
+					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_CUSTOM
 	help
 	    Select this if you have a box with USB.
 
 config DS_HAS_USB_HOST
 	bool "USB host"			if DS_TYPE_CUSTOM
-	depends on DS_HAS_USB
-	default y			if DS_TYPE_FON_WLAN_7140 || \
+	default y			if DS_TYPE_2170 || \
+					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7170 || \
+					   DS_TYPE_WLAN_3131 || \
+					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_SPEEDPORT_W900V
-	default n			
+	default n			if DS_TYPE_FON_5050 || \
+					   DS_TYPE_FON_WLAN_7050 || \
+					   DS_TYPE_SPEEDPORT_W701V
 	help
 	    Select this if your USB port is a host adapter
 
@@ -413,12 +425,12 @@ config DS_REMOVE_USB_MODULE
 	help
 	    Removes avalanche_usb.ko to save space.
 
-#config DS_REMOVE_CDROM_ISO
-#	bool "Remove cdrom.iso"
-#	depends on DS_HAS_USB && ! DS_HAS_USB_HOST
-#	default n
-#	help
-#	    Removes the file /lib/modules/cdrom.iso.
+config DS_REMOVE_CDROM_ISO
+	bool "Remove cdrom.iso"
+	depends on DS_HAS_USB && ! DS_TYPE_FON_WLAN_7050
+	default n
+	help
+	    Removes the file /lib/modules/cdrom.iso.
 
 config DS_PATCH_ATA
 	bool "Patch ata"
