@@ -4,7 +4,7 @@ OPENVPN_SOURCE:=openvpn-$(OPENVPN_VERSION).tar.gz
 OPENVPN_SITE:=http://openvpn.net/release
 OPENVPN_DIR:=$(SOURCE_DIR)/openvpn-$(OPENVPN_VERSION)
 OPENVPN_TARGET_BINARY:=openvpn
-OPENVPN_PKG_VERSION:=0.6b
+OPENVPN_PKG_VERSION:=0.6c
 OPENVPN_PKG_SITE:=http://netfreaks.org/ds-mod
 ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_LZO)),y)
 OPENVPN_PKG_NAME:=openvpn-lzo-$(OPENVPN_VERSION)

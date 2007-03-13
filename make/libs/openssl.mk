@@ -1,4 +1,4 @@
-OPENSSL_VERSION:=0.9.8d
+OPENSSL_VERSION:=0.9.8e
 OPENSSL_SOURCE:=openssl-$(OPENSSL_VERSION).tar.gz
 OPENSSL_SITE:=http://www.openssl.org/source/
 OPENSSL_DIR:=$(SOURCE_DIR)/openssl-$(OPENSSL_VERSION)
