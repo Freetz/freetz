@@ -7,6 +7,7 @@ DROPBEAR_MAKE_DIR:=$(MAKE_DIR)/dropbear
 DROPBEAR_TARGET_BINARY:=dropbearmulti
 DROPBEAR_PKG_VERSION:=0.5
 DROPBEAR_PKG_SITE:=http://www.eiband.info/dsmod
+DROPBEAR_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 ifeq ($(strip $(DS_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
 DROPBEAR_PKG_NAME:=dropbear-sshd-$(DROPBEAR_VERSION)
 DROPBEAR_PKG_SOURCE:=dropbear-$(DROPBEAR_VERSION)-dsmod-$(DROPBEAR_PKG_VERSION)-sshd-only.tar.bz2

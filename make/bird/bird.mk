@@ -8,14 +8,26 @@ BIRD_PKG_SITE:=http://www.heimpold.de/dsmod
 BIRD_PKG_NAME:=bird-$(BIRD_VERSION)
 BIRD_PKG_SOURCE:=bird-$(BIRD_VERSION)-dsmod-$(BIRD_PKG_VERSION).tar.bz2
 BIRD_TARGET_DIR:=$(PACKAGES_DIR)/$(BIRD_PKG_NAME)/root/usr/sbin
-ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
 BIRD_TARGET_BIRD_BINARY:=bird
 BIRD_TARGET_BIRDC_BINARY:=birdc
+ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
 BIRD_CLIENT:=--enable-client
 else
-BIRD_TARGET_BIRD_BINARY:=bird
 BIRD_CLIENT:=--disable-client
 endif
+ifeq ($(strip $(DS_PACKAGE_BIRD_DEBUG)),y)
+BIRD_DEBUG:=--enable-debug
+else
+BIRD_DEBUG:=--disable-debug
+endif
+
+BIRD_CONFIGURE_OPTIONS=\
+  $(BIRD_DEBUG) \
+  --disable-memcheck \
+  --disable-warnings \
+  $(BIRD_CLIENT) \
+  --disable-ipv6 \
+
 
 $(DL_DIR)/$(BIRD_SOURCE):
 	wget -P $(DL_DIR) $(BIRD_SITE)/$(BIRD_SOURCE)
@@ -30,7 +42,7 @@ $(BIRD_DIR)/.unpacked: $(DL_DIR)/$(BIRD_SOURCE)
 	done
 	touch $@
 
-$(BIRD_DIR)/.configured: readline $(BIRD_DIR)/.unpacked
+$(BIRD_DIR)/.configured: readline ncurses $(BIRD_DIR)/.unpacked
 	( cd $(BIRD_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -D_XOPEN_SOURCE=600" \
@@ -57,11 +69,7 @@ $(BIRD_DIR)/.configured: readline $(BIRD_DIR)/.unpacked
 		--mandir=/usr/share/man \
 		$(DISABLE_LARGEFILE) \
 		$(DISABLE_NLS) \
-		--disable-debug \
-  		--disable-memcheck \
-		--disable-warnings \
-		$(BIRD_CLIENT) \
-		--disable-ipv6 \
+		$(BIRD_CONFIGURE_OPTIONS) \
 	);
 	touch $@
 
@@ -86,18 +94,22 @@ bird-package: $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 bird-precompiled: $(BIRD_DIR)/.installed bird
 	$(TARGET_STRIP) $(BIRD_DIR)/$(BIRD_TARGET_BIRD_BINARY)
 ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
-		$(TARGET_STRIP) $(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY)
+	$(TARGET_STRIP) $(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY)
 endif
 	mkdir -p $(BIRD_TARGET_DIR)
 	cp $(BIRD_DIR)/$(BIRD_TARGET_BIRD_BINARY) $(BIRD_TARGET_DIR)
 ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
-		cp $(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY) $(BIRD_TARGET_DIR)
+	cp $(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY) $(BIRD_TARGET_DIR)
 endif
 
 bird-source: $(BIRD_DIR)/.unpacked $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 
 bird-clean:
 	-$(MAKE) -C $(BIRD_DIR) clean
+	rm -f $(PACKAGES_BUILD_DIR)/$(BIRD_PKG_SOURCE)
+	rm -f $(BIRD_DIR)/.configured
+	rm -f $(BIRD_DIR)/.built
+	rm -f $(BIRD_DIR)/.installed
 	rm -f $(PACKAGES_BUILD_DIR)/$(BIRD_PKG_SOURCE)
 
 bird-dirclean:
@@ -107,7 +119,7 @@ bird-dirclean:
 
 bird-list:
 ifeq ($(strip $(DS_PACKAGE_BIRD)),y)
-	@echo "S60bird-$(BIRD_VERSION)" >> .static
+	@echo "S80bird-$(BIRD_VERSION)" >> .static
 else
-	@echo "S60bird-$(BIRD_VERSION)" >> .dynamic
+	@echo "S80bird-$(BIRD_VERSION)" >> .dynamic
 endif

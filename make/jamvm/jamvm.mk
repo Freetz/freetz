@@ -6,10 +6,10 @@ JAMVM_MAKE_DIR:=$(MAKE_DIR)/jamvm
 JAMVM_TARGET_DIR:=$(PACKAGES_DIR)/jamvm-$(JAMVM_VERSION)/root/usr/bin
 JAMVM_TARGET_BINARY:=jamvm
 JAMVM_PKG_VERSION:=0.1
-#JAMVM_PKG_SOURCE:=jamvm-$(JAMVM_VERSION)-dsmod-$(JAMVM_PKG_VERSION).tar.bz2
-#JAMVM_PKG_SITE:=http://www.eiband.info/dsmod
+JAMVM_PKG_SOURCE:=jamvm-$(JAMVM_VERSION)-dsmod-$(JAMVM_PKG_VERSION).tar.bz2
+JAMVM_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 JAMVM_PKG_SOURCE:=jamvm-$(JAMVM_VERSION)-dsmod-binary-only.tar.bz2
-#JAMVM_PKG_SITE:=http://www.eiband.info/dsmod/testing
+
 
 
 $(DL_DIR)/$(JAMVM_SOURCE):
@@ -38,9 +38,11 @@ $(JAMVM_DIR)/.configured: ffi-sable classpath $(JAMVM_DIR)/.unpacked
 		--build="$(GNU_HOST_NAME)" \
 		--enable-ffi \
 		--disable-int-threading \
-		--with-classpath-install-dir="/usr/lib/classpath" \
+		--enable-trace \
 	);
 	touch $@
+	
+	#--with-classpath-install-dir="/usr/lib/classpath"
 
 $(JAMVM_DIR)/$(JAMVM_TARGET_BINARY): $(JAMVM_DIR)/.configured
 	( cd $(JAMVM_DIR)/src; \

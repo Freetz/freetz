@@ -6,6 +6,7 @@ NTFS_MAKE_DIR:=$(MAKE_DIR)/ntfs
 NTFS_TARGET_DIR:=$(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)/root/usr/bin
 NTFS_TARGET_BINARY:=ntfs-3g
 NTFS_PKG_SOURCE:=ntfs-$(NTFS_VERSION)-dsmod.tar.bz2
+NTFS_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 $(DL_DIR)/$(NTFS_SOURCE):
 	wget -P $(DL_DIR) $(NTFS_SITE)/$(NTFS_SOURCE)
@@ -87,7 +88,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so: $(NTFS_DIR)/src/.libs/$(N
 		install
 	touch -c $@
 
-ntfs-precompiled: $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so ntfs
+ntfs-precompiled: ntfs $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so
 	$(TARGET_STRIP) $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY)
 	cp $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY) $(NTFS_TARGET_DIR)/
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)

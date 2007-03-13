@@ -7,8 +7,7 @@ VPNC_TARGET_DIR:=$(PACKAGES_DIR)/vpnc-$(VPNC_VERSION)/root/sbin
 VPNC_TARGET_BINARY:=vpnc
 VPNC_PKG_VERSION:=0.2
 VPNC_PKG_SOURCE:=vpnc-$(VPNC_VERSION)-dsmod-$(VPNC_PKG_VERSION).tar.bz2
-VPNC_PKG_SITE:=http://www.running-sheep.com/members/leo
-
+VPNC_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 $(DL_DIR)/$(VPNC_SOURCE):
 	wget -P $(DL_DIR) $(VPNC_SITE)/$(VPNC_SOURCE)

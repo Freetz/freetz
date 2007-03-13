@@ -6,6 +6,7 @@ LUA_MAKE_DIR:=$(MAKE_DIR)/lua
 LUA_TARGET_DIR:=$(PACKAGES_DIR)/lua-$(LUA_VERSION)/root/usr/bin
 LUA_TARGET_BINARY:=lua
 LUA_PKG_SOURCE:=lua-$(LUA_VERSION)-dsmod.tar.bz2
+LUA_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 $(DL_DIR)/$(LUA_SOURCE):
 	wget -P $(DL_DIR) $(LUA_SITE)/$(LUA_SOURCE)

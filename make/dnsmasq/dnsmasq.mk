@@ -7,7 +7,8 @@ DNSMASQ_TARGET_DIR:=$(PACKAGES_DIR)/dnsmasq-$(DNSMASQ_VERSION)/root/usr/sbin
 DNSMASQ_TARGET_BINARY:=src/dnsmasq
 DNSMASQ_PKG_VERSION:=0.5
 DNSMASQ_PKG_SOURCE:=dnsmasq-$(DNSMASQ_VERSION)-dsmod-$(DNSMASQ_PKG_VERSION).tar.bz2
-DNSMASQ_PKG_SITE:=http://www.eiband.info/dsmod
+#DNSMASQ_PKG_SITE:=http://www.eiband.info/dsmod
+DNSMASQ_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 
 $(DL_DIR)/$(DNSMASQ_SOURCE):

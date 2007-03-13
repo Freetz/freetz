@@ -1,6 +1,6 @@
 MINI_FO_VERSION:=0.1
 MINI_FO_PKG_SOURCE:=mini_fo-dsmod-$(MINI_FO_VERSION).tar.bz2
-MINI_FO_PKG_SITE:=http://www.eiband.info/dsmod
+MINI_FO_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 $(DL_DIR)/$(MINI_FO_PKG_SOURCE):
 	@wget -P $(DL_DIR) $(MINI_FO_PKG_SITE)/$(MINI_FO_PKG_SOURCE)

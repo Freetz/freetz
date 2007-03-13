@@ -7,7 +7,7 @@ STUNNEL_MAKE_DIR:=$(MAKE_DIR)/stunnel
 STUNNEL_TARGET_BINARY:=src/stunnel
 STUNNEL_PKG_NAME:=stunnel-$(STUNNEL_VERSION)
 STUNNEL_PKG_VERSION:=0.1b
-#STUNNEL_PKG_SITE:=http://---/ds-mod
+STUNNEL_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 STUNNEL_PKG_NAME:=stunnel-$(STUNNEL_VERSION)
 STUNNEL_PKG_SOURCE:=stunnel-$(STUNNEL_VERSION)-dsmod-$(STUNNEL_PKG_VERSION).tar.bz2
 STUNNEL_TARGET_DIR:=$(PACKAGES_DIR)/$(STUNNEL_PKG_NAME)/root/usr/sbin
@@ -28,7 +28,7 @@ $(STUNNEL_DIR)/.unpacked: $(DL_DIR)/$(STUNNEL_SOURCE)
 	done
 	touch $@
 
-$(STUNNEL_DIR)/.configured: $(STUNNEL_DIR)/.unpacked openssl zlib
+$(STUNNEL_DIR)/.configured:  $(STUNNEL_DIR)/.unpacked openssl
 	( cd $(STUNNEL_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \

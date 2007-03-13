@@ -5,7 +5,8 @@ BFTPD_DIR:=$(SOURCE_DIR)/bftpd-$(BFTPD_VERSION)
 BFTPD_MAKE_DIR:=$(MAKE_DIR)/bftpd
 BFTPD_TARGET_BINARY:=bftpd
 BFTPD_PKG_VERSION:=0.5
-BFTPD_PKG_SITE:=http://www.eiband.info/dsmod
+#BFTPD_PKG_SITE:=http://www.eiband.info/dsmod
+BFTPD_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)
 BFTPD_PKG_NAME:=bftpd-zlib-$(BFTPD_VERSION)
 BFTPD_PKG_SOURCE:=bftpd-$(BFTPD_VERSION)-dsmod-$(BFTPD_PKG_VERSION)-with-zlib.tar.bz2
