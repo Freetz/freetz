@@ -58,7 +58,9 @@ sec_begin '$(lang de:"Sicherheit" en:"Security")'
 cat << EOF
 <p>$(lang de:"Authentifizierungsmethode" en:"Authentification Type"): <input id="m7" type="radio" name="auth_type" value="static" onclick="changeauth('static')"$static_chk><label for="m7"> $(lang de:"statisch" en:"static")</label>&nbsp;<input id="m8" type="radio" name="auth_type" value="certs" onclick="changeauth('certs')"$certs_chk><label for="m8"> $(lang de:"Zertifikate" en:"Certificates")</label></p>
 <p>Cipher: <select id="cipher" name="cipher"><option value="BF-CBC"$bf_chk>Blowfish</option><option value="AES-128-CBC"$aes128_chk>AES 128</option><option value="AES-256-CBC"$aes256_chk>AES 256</option><option value="DES-EDE3-CBC"$des3_chk>Triple-DES</option></select><br /><small>$(lang de:"Muss auf Server <b>und</b> Client identisch sein" en:"Must be equal on server <b>and</b> client")</small></p>
+<div id="div_tls">
 <p><input type="hidden" name="tls_auth" value=""><input id="k10" type="checkbox" name="tls_auth" value="yes"$tlsauth_chk><label for="k10">TLS-$(lang de:"Authentifizierung (nur mit Zertifikaten)" en:"Auth (only when used with certificates)")</label>
+</div>
 EOF
 
 sec_end
@@ -70,11 +72,11 @@ cat << EOF
 <div id="div_endpoint">
 <h2>$(lang de:"Entfernter Endpunkt (nur f&uuml;r" en:"Remote endpoint (only for") TUN)</h2>
 <p>$(lang de:"IP-Adresse" en:"IP-Address"): <input id="remote_ip" size="12" maxlength="16" type="text" name="remote_ip" value="$(httpd -e "$OPENVPN_LZO_REMOTE_IP")"></p>
-</div>
 <div id="div_vpn">
-<p>$(lang de:"Netzwerk Adresse (nur f&uuml;r" en:"Network Address (only for") TUN-Server):<br /><input id="vpn_net" type="text" size="30" maxlength="33" name="vpn_net" value="$(httpd -e "$OPENVPN_LZO_VPN_NET")"><br /><small>Syntax: &lt;ip&gt; &lt;subnetmask&gt;</small></p>
+<h2>$(lang de:"Netzwerksegment (nur f&uuml;r" en:"Network segment (only for") TUN-Server)</h2>
+<p><input id="vpn_net" type="text" size="30" maxlength="33" name="vpn_net" value="$(httpd -e "$OPENVPN_LZO_VPN_NET")"><br /><small>Syntax: &lt;ip&gt; &lt;subnetmask&gt;</small></p>
 </div>
-
+</div>
 EOF
 
 sec_end
@@ -133,11 +135,13 @@ function changemode(value) {
 		case "server":
 			fieldsets[FIELDSET_SERVER].style.display = "block";
 			fieldsets[FIELDSET_CLIENT].style.display = "none";
+			document.getElementById("div_vpn").style.display = "block";
 			document.getElementById("div_dhcp").style.display = "block";
 			break;
 		case "client":
 			fieldsets[FIELDSET_SERVER].style.display = "none";
 			fieldsets[FIELDSET_CLIENT].style.display = "block";
+			document.getElementById("div_vpn").style.display = "none";
 			document.getElementById("div_dhcp").style.display = "none";
 			break;
 	}
@@ -148,12 +152,10 @@ function changetype(value) {
 	switch (value) {
 		case "tun":
 			document.getElementById("div_endpoint").style.display = "block";
-			document.getElementById("div_vpn").style.display = "block";
 			document.getElementById("div_client_dhcp").style.display = "none";
 			break;
 		case "tap":
 			document.getElementById("div_endpoint").style.display = "none";
-			document.getElementById("div_vpn").style.display = "none";
 			document.getElementById("div_client_dhcp").style.display = "block";
 			break;
 	}
@@ -163,16 +165,20 @@ function changeauth(value) {
   if(window.opera) return;
 	switch (value) {
 		case "static":
+			document.getElementById("div_tls").style.display = "none";
 			document.getElementById("div_dhcp").style.display = "none";
 			document.getElementById("div_client_pull").style.display = "none";
 			break;
 		case "certs":
+			document.getElementById("div_tls").style.display = "block";
 			document.getElementById("div_dhcp").style.display = "block";
 			document.getElementById("div_client_pull").style.display = "block";
 			break;
 	}
 }
-changemode('"$OPENVPN_LZO_MODE"');changetype('"$OPENVPN_LZO_TYPE"');changeauth('"$OPENVPN_LZO_AUTH_TYPE"');
+changemode('$OPENVPN_LZO_MODE');
+changetype('$OPENVPN_LZO_TYPE');
+changeauth('$OPENVPN_LZO_AUTH_TYPE');
 </script>
 EOF
 
