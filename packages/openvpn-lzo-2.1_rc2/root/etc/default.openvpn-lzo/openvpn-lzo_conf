@@ -142,9 +142,8 @@ if [ "$OPENVPN_LZO_COMPLZO" == "yes" ]; then
 	echo "comp-lzo"
 fi
 if [ "$OPENVPN_LZO_KEEPALIVE" == "yes" ]; then
-	if [ "$OPENVPN_LZO_MODE" == "server" ]; then
-		echo "keepalive $OPENVPN_LZO_KEEPALIVE_PING $OPENVPN_LZO_KEEPALIVE_TIMEOUT"
-	else
+	echo "keepalive $OPENVPN_LZO_KEEPALIVE_PING $OPENVPN_LZO_KEEPALIVE_TIMEOUT"
+	if [ "$OPENVPN_LZO_MODE" == "client" ]; then
 		echo "resolv-retry infinite"
 	fi
 fi
