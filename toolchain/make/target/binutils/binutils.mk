@@ -1,6 +1,6 @@
 BINUTILS_VERSION:=$(TARGET_TOOLCHAIN_BINUTILS_VERSION)
 BINUTILS_SOURCE:=binutils-$(BINUTILS_VERSION).tar.bz2
-BINUTILS_SITE:=http://ftp.kernel.org/pub/linux/devel/binutils
+BINUTILS_SITE:=http://ftp.gnu.org/gnu/binutils
 BINUTILS_DIR:=$(TARGET_TOOLCHAIN_DIR)/binutils-$(BINUTILS_VERSION)
 BINUTILS_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/binutils
 
