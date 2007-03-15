@@ -1,5 +1,6 @@
---- etc/profile.orig	2005-09-23 23:42:39.734242624 +0200
-+++ etc/profile	2005-09-23 23:44:30.772362264 +0200
+diff -burN etc.orig/profile etc/profile
+--- etc.orig/profile	2007-03-13 16:16:48.000000000 +0100
++++ etc/profile	2007-03-15 21:03:56.000000000 +0100
 @@ -1,8 +1,11 @@
  # /etc/profile
  #
@@ -11,5 +12,14 @@
 +export LD_LIBRARY_PATH=/mod/lib
 +
  ####################################################################
- echo "ermittle die aktuelle TTY"                                                
- tty=`ls -l /proc/$$/fd/0`                                                       
+ if [ "$CONFIG_PRODUKT" = "Fritz_Box_Profi" ] ; then
+     if [ -e $CONFIG_ENVIRONMENT_PATH/environment ] ; then
+@@ -39,7 +42,7 @@
+         echo "Serielles Terminal"
+         ;;
+     /dev/ttyS0)
+-        stty -F /dev/ttyS0  rows 50 cols 132 
++        stty -F /dev/ttyS0
+         echo -e "\033[50;132q\c"    # Steuersequenz für CapiTerm: 50 Zeile, 132 Spalten
+         echo "Serielles Terminal"
+         ;;

@@ -531,7 +531,10 @@ then
 	rm -f "${DIR}/.modified"
 
 	# Copy the unpacked directory
-	cp -r "$ORG_DIR" "$MOD_DIR"
+	#cp -r "$ORG_DIR" "$MOD_DIR"
+	mkdir -p "$MOD_DIR"
+	"$TAR" -cf - -C "$ORG_DIR" --exclude=dev . | 
+	"$TAR" -xf - -C "$MOD_DIR" || exit 1
 
 	echo "applying patches"
 
