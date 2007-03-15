@@ -20,9 +20,9 @@ $(DL_DIR)/$(JAMVM_PKG_SOURCE):
 
 $(JAMVM_DIR)/.unpacked: $(DL_DIR)/$(JAMVM_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(JAMVM_SOURCE)
-#	for i in $(JAMVM_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(JAMVM_DIR) -p1 < $$i; \
-#	done
+	for i in $(JAMVM_MAKE_DIR)/patches/*.patch; do \
+		patch -d $(JAMVM_DIR) -p0 < $$i; \
+	done
 	touch $@
 
 $(JAMVM_DIR)/.configured: ffi-sable classpath $(JAMVM_DIR)/.unpacked
@@ -38,11 +38,10 @@ $(JAMVM_DIR)/.configured: ffi-sable classpath $(JAMVM_DIR)/.unpacked
 		--build="$(GNU_HOST_NAME)" \
 		--enable-ffi \
 		--disable-int-threading \
-		--enable-trace \
+		--with-classpath-install-dir="/usr/lib/classpath" \
 	);
 	touch $@
 	
-	#--with-classpath-install-dir="/usr/lib/classpath"
 
 $(JAMVM_DIR)/$(JAMVM_TARGET_BINARY): $(JAMVM_DIR)/.configured
 	( cd $(JAMVM_DIR)/src; \

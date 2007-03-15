@@ -14,7 +14,7 @@ $(LZMA_DIR)/.unpacked: $(DL_DIR)/$(LZMA_SOURCE)
 	@rm -rf $(LZMA_DIR) && mkdir -p $(LZMA_DIR)
 	unzip -q $(DL_DIR)/$(LZMA_SOURCE) -d $(LZMA_DIR)
 	chmod -R +w $(LZMA_DIR)
-	dos2unix $(LZMA_DIR)/SRC/7zip/Compress/LZMA/LZMADecoder.*
+	sed -e 's/\x0D//' -i $(LZMA_DIR)/SRC/7zip/Compress/LZMA/LZMADecoder.*
 	for i in $(LZMA_MAKE_DIR)/patches/*.lzma.patch; do \
 		patch -d $(LZMA_DIR) -p0 < $$i; \
 	done
