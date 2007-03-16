@@ -16,5 +16,9 @@ TARGET_TOOLCHAIN_STAGING_DIR:=$(shell pwd)/$(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLC
 
 TARGET_TOOLCHAIN_PATH:=$(TARGET_TOOLCHAIN_STAGING_DIR)/bin:/bin:/sbin:/usr/bin:/usr/sbin
 
+ifeq ($(strip $(DS_DOWNLOAD_TOOLCHAIN)),y)
+TOOLCHAIN:=download-toolchain
+else
 TOOLCHAIN+=kernel-toolchain
 TOOLCHAIN+=target-toolchain
+endif

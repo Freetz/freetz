@@ -104,6 +104,9 @@ choice
     config DS_TYPE_LABOR_ECO
     bool "ECO"
     
+    config DS_TYPE_LABOR_FON
+    bool "FON"
+    
     config DS_TYPE_LABOR_USB
     bool "USB"
     
@@ -127,10 +130,10 @@ config DS_TYPE_STRING
 	default "7141"		if DS_TYPE_FON_WLAN_7141
 	default "7150"		if DS_TYPE_FON_WLAN_7150
 	default "7170"		if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
-	default "7170_labor"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR	
+	default "7170_labor"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR	
 	default "W701V"		if DS_TYPE_SPEEDPORT_W701V
 	default "W900V"		if DS_TYPE_SPEEDPORT_W900V
-	default "custom"		if DS_TYPE_CUSTOM
+	default "custom"	if DS_TYPE_CUSTOM
 
 comment "Custom options"
 	depends on DS_TYPE_CUSTOM
@@ -574,6 +577,7 @@ config DS_DL_SOURCE
 	default "fritz.box_fon_wlan_7140.30.04.30.image"		if DS_TYPE_FON_WLAN_7140
 	default "fritz.box_fon_wlan_7141.40.04.30.image"		if DS_TYPE_FON_WLAN_7141
 	default "fritz.fon_7150.annexb.38.04.30.image"				if DS_TYPE_FON_WLAN_7150
+	default "firmware-avm-1und1-freenet-29.04.31-6537-FRITZ.Box_Fon_WLAN_7170_PHONE.AnnexB.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_FON
 	default "FRITZ.Box_Fon_WLAN_7170_ECO.AnnexB.29.04.31-6320.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_ECO
 	default "FRITZ.Box_Fon_WLAN_7170_AURA.AnnexB.29.04.31-6251.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_USB
 	default "FRITZ.Box_Fon_WLAN_7170_VPN.AnnexB.29.04.31-6111.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_VPN
@@ -661,7 +665,12 @@ menu "Compiler options"
 
 comment "*** only needed for the 'precompiled' target ***"
 
+config DS_DOWNLOAD_TOOLCHAIN
+	bool "Use precompiled toolchain"
+	default y
+	
 config DS_EXTERNAL_COMPILER
+	depends on ! DS_DOWNLOAD_TOOLCHAIN
 	bool "Use external compiler"
 	default n
 
