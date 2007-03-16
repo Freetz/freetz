@@ -1,0 +1,261 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=inadyn
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+start() {
+	configured=''
+
+	if [ "$INADYN_ACTIVE0" = 'yes' ]; then
+		configured=$configured+'.'
+		echo -n 'Starting Inadyn Client 0...'
+		OPTIONS="--background --verbose $INADYN_VERBOSE0 $INADYN_OPTIONS0"
+		if [ ! -z "$INADYN_USER0" ]; then
+			OPTIONS="$OPTIONS --username $INADYN_USER0"
+		fi
+		if [ ! -z "$INADYN_ALIAS0" ]; then
+			OPTIONS="$OPTIONS --alias $INADYN_ALIAS0"
+		fi
+		if [ ! -z "$INADYN_PASS0" ]; then
+			OPTIONS="$OPTIONS --password $INADYN_PASS0"
+		fi
+		OPTIONS="$OPTIONS --dyndns_system"
+		case "$INADYN_SERVICE0" in
+			dyndns.org) OPTIONS="$OPTIONS dyndns@dyndns.org" ;;
+			dyndns.org-statdns) OPTIONS="$OPTIONS statdns@dyndns.org" ;;
+			dyndns.org-custom) OPTIONS="$OPTIONS custom@dyndns.org" ;;
+			afraid.org) OPTIONS="$OPTIONS default@freedns.afraid.org" ;;
+			zoneedit.com) OPTIONS="$OPTIONS default@zoneedit.com" ;;
+			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
+			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
+		esac
+		$DAEMON $OPTIONS > /dev/null 2>&1
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed starting Client 0.'
+			exit $exitval
+		fi
+	fi
+
+	if [ "$INADYN_ACTIVE1" = 'yes' ]; then
+		configured=$configured+'.'
+		echo -n 'Starting Inadyn Client 1...'
+		OPTIONS="--background --verbose $INADYN_VERBOSE1 $INADYN_OPTIONS1"
+		if [ ! -z "$INADYN_USER1" ]; then
+			OPTIONS="$OPTIONS --username $INADYN_USER1"
+		fi
+		if [ ! -z "$INADYN_ALIAS1" ]; then
+			OPTIONS="$OPTIONS --alias $INADYN_ALIAS1"
+		fi
+		if [ ! -z "$INADYN_PASS1" ]; then
+			OPTIONS="$OPTIONS --password $INADYN_PASS1"
+		fi
+		OPTIONS="$OPTIONS --dyndns_system"
+		case "$INADYN_SERVICE1" in
+			dyndns.org) OPTIONS="$OPTIONS dyndns@dyndns.org" ;;
+			dyndns.org-statdns) OPTIONS="$OPTIONS statdns@dyndns.org" ;;
+			dyndns.org-custom) OPTIONS="$OPTIONS custom@dyndns.org" ;;
+			afraid.org) OPTIONS="$OPTIONS default@freedns.afraid.org" ;;
+			zoneedit.com) OPTIONS="$OPTIONS default@zoneedit.com" ;;
+			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
+			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
+		esac
+		$DAEMON $OPTIONS > /dev/null 2>&1
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed starting Client 1.'
+			exit $exitval
+		fi
+	fi
+
+	if [ "$INADYN_ACTIVE2" = 'yes' ]; then
+		configured=$configured+'.'
+		echo -n 'Starting Inadyn Client 2...'
+		OPTIONS="--background --verbose $INADYN_VERBOSE2 $INADYN_OPTIONS2"
+		if [ ! -z "$INADYN_USER2" ]; then
+			OPTIONS="$OPTIONS --username $INADYN_USER2"
+		fi
+		if [ ! -z "$INADYN_ALIAS2" ]; then
+			OPTIONS="$OPTIONS --alias $INADYN_ALIAS2"
+		fi
+		if [ ! -z "$INADYN_PASS2" ]; then
+			OPTIONS="$OPTIONS --password $INADYN_PASS2"
+		fi
+		OPTIONS="$OPTIONS --dyndns_system"
+		case "$INADYN_SERVICE2" in
+			dyndns.org) OPTIONS="$OPTIONS dyndns@dyndns.org" ;;
+			dyndns.org-statdns) OPTIONS="$OPTIONS statdns@dyndns.org" ;;
+			dyndns.org-custom) OPTIONS="$OPTIONS custom@dyndns.org" ;;
+			afraid.org) OPTIONS="$OPTIONS default@freedns.afraid.org" ;;
+			zoneedit.com) OPTIONS="$OPTIONS default@zoneedit.com" ;;
+			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
+			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
+		esac
+		$DAEMON $OPTIONS > /dev/null 2>&1
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed starting Client 2.'
+			exit $exitval
+		fi
+	fi
+
+	if [ "$INADYN_ACTIVE3" = 'yes' ]; then
+		configured=$configured+'.'
+		echo -n 'Starting Inadyn Client 3...'
+		OPTIONS="--background --verbose $INADYN_VERBOSE3 $INADYN_OPTIONS3"
+		if [ ! -z "$INADYN_USER3" ]; then
+			OPTIONS="$OPTIONS --username $INADYN_USER3"
+		fi
+		if [ ! -z "$INADYN_ALIAS3" ]; then
+			OPTIONS="$OPTIONS --alias $INADYN_ALIAS3"
+		fi
+		if [ ! -z "$INADYN_PASS3" ]; then
+			OPTIONS="$OPTIONS --password $INADYN_PASS3"
+		fi
+		OPTIONS="$OPTIONS --dyndns_system"
+		case "$INADYN_SERVICE3" in
+			dyndns.org) OPTIONS="$OPTIONS dyndns@dyndns.org" ;;
+			dyndns.org-statdns) OPTIONS="$OPTIONS statdns@dyndns.org" ;;
+			dyndns.org-custom) OPTIONS="$OPTIONS custom@dyndns.org" ;;
+			afraid.org) OPTIONS="$OPTIONS default@freedns.afraid.org" ;;
+			zoneedit.com) OPTIONS="$OPTIONS default@zoneedit.com" ;;
+			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
+			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
+		esac
+		$DAEMON $OPTIONS > /dev/null 2>&1
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed starting Client 3.'
+			exit $exitval
+		fi
+	fi
+
+	if [ "$INADYN_ACTIVE4" = 'yes' ]; then
+		configured=$configured+'.'
+		echo -n 'Starting Inadyn Client 4...'
+		OPTIONS="--background --verbose $INADYN_VERBOSE4 $INADYN_OPTIONS4"
+		if [ ! -z "$INADYN_USER4" ]; then
+			OPTIONS="$OPTIONS --username $INADYN_USER4"
+		fi
+		if [ ! -z "$INADYN_ALIAS4" ]; then
+			OPTIONS="$OPTIONS --alias $INADYN_ALIAS4"
+		fi
+		if [ ! -z "$INADYN_PASS4" ]; then
+			OPTIONS="$OPTIONS --password $INADYN_PASS4"
+		fi
+		OPTIONS="$OPTIONS --dyndns_system"
+		case "$INADYN_SERVICE4" in
+			dyndns.org) OPTIONS="$OPTIONS dyndns@dyndns.org" ;;
+			dyndns.org-statdns) OPTIONS="$OPTIONS statdns@dyndns.org" ;;
+			dyndns.org-custom) OPTIONS="$OPTIONS custom@dyndns.org" ;;
+			afraid.org) OPTIONS="$OPTIONS default@freedns.afraid.org" ;;
+			zoneedit.com) OPTIONS="$OPTIONS default@zoneedit.com" ;;
+			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
+			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
+		esac
+		$DAEMON $OPTIONS > /dev/null 2>&1
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed starting Client 4.'
+			exit $exitval
+		fi
+	fi
+
+	if [ -z $configured ]; then
+		echo -n 'failed starting Inadyn - not configured'
+	fi
+}
+
+stop() {
+	echo -n 'Stopping Inadyn...'
+
+	if [ ! -z "$(pidof "$DAEMON")" ]; then
+		killall -15 $DAEMON > /dev/null 2>&1
+		exitval=$?
+	fi
+	
+	sleep 1
+	
+	if [ ! -z "$(pidof "$DAEMON")" ]; then
+		killall -9 $DAEMON > /dev/null 2>&1
+		exitval=$?
+	fi
+	
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+
+		if type modreg > /dev/null; then
+			modreg cgi $DAEMON 'Inadyn'
+		fi
+
+		if [ "$INADYN_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ ! -z "$(pidof $DAEMON)" ]; then
+			echo "$DAEMON already started."
+		else
+			start
+		fi
+		;;
+	unload)
+		stop
+		modunreg cgi $DAEMON
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,37 @@
+#!/bin/sh
+
+cat <<EOF
+confdir /mod/etc/privoxy
+actionsfile standard
+actionsfile default
+filterfile default.filter
+enable-edit-actions 0
+logdir /var/log
+logfile privoxy.log
+# debug   4096
+debug   8192
+EOF
+
+[ -r "/tmp/flash/user.action" ] && echo "actionsfile /tmp/flash/user"
+
+[ -r "/tmp/flash/user.filter" ] && echo "filterfile /tmp/flash/user.filter"
+
+echo "toggle $PRIVOXY_TOGGLE"
+
+echo "listen-address $PRIVOXY_LISTEN_ADDRESS:$PRIVOXY_LISTEN_PORT"
+
+[ "$PRIVOXY_FORWARD_SOCKS" ] && echo "forward-socks4a / $PRIVOXY_FORWARD_SOCKS ."
+
+if [ ! -z "$PRIVOXY_PERMIT_ACCESS" ]; then
+	echo "$PRIVOXY_PERMIT_ACCESS" | grep -v "^#" | while read -r permit; do
+		[ -n "$permit" ] && echo "permit-access $permit"
+	done
+	echo ""
+fi
+
+if [ ! -z "$PRIVOXY_DENY_ACCESS" ]; then
+	echo "$PRIVOXY_DENY_ACCESS" | grep -v "^#" | while read -r deny; do
+		[ -n "$deny" ] && echo "deny-access $deny"
+	done
+	echo ""
+fi

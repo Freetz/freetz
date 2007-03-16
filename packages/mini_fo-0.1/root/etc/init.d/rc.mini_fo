@@ -1,0 +1,58 @@
+#!/bin/sh
+
+start() {
+	mounted_proc=0
+	if [ ! -e /proc/mounts ]; then
+  	    echo "*** Mounting proc-fs. ***"
+    	    mount proc
+    	    mounted_proc=1
+	else
+  	    echo "mini_fo already started."
+    	    exit
+	fi
+
+	if grep "/ mini_fo" /proc/mounts > /dev/null; then
+  	    echo "*** Already running from mini_fo, done. ***"
+	    umount /rom/proc
+    	    if [ $mounted_proc = 1 ]; then
+		umount proc
+    	    fi
+    	    mount -o bind /rom/var/sto /sto
+    	    exit
+	fi
+
+	echo "*** Switching to mini_fo-root ... ***"
+
+	set -e 
+
+	insmod /lib/modules/2.6.13.1-ohio/kernel/fs/mini_fo/mini_fo.ko
+	mount -t tmpfs none /var
+	mkdir /var/sto
+	mount -t mini_fo -o base=/,sto=/var/sto / /sto
+	cd /sto
+	mkdir rom
+	pivot_root . rom 
+
+	sleep 1
+	kill -1 1
+}
+
+case "$1" in 
+	""|load)
+		start
+		;;
+	status)
+		if grep "/ mini_fo" /proc/mounts > /dev/null; then
+			echo 'running'
+		else
+			echo 'stopped'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
+		
