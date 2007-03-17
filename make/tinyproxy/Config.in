@@ -1,0 +1,33 @@
+config DS_PACKAGE_TINYPROXY
+	bool "tinyproxy 1.7.0"
+	select DS_LIB_libresolv
+	select DS_LIB_libnsl
+	default n
+	help
+		Tinyproxy is a lightweight HTTP and HTTPS proxy.
+		http://tinyproxy.sourceforge.net
+
+config DS_COMPILE_TINYPROXY_WITH_TRANSPARENT_PROXY
+	prompt "Enable transparent proxying"
+	bool
+	default y
+	depends DS_PACKAGE_TINYPROXY
+
+config DS_COMPILE_TINYPROXY_WITH_FILTER
+	prompt "Enable filtering support"
+	bool
+	default y
+	depends DS_PACKAGE_TINYPROXY
+
+config DS_COMPILE_TINYPROXY_WITH_UPSTREAM
+	prompt "Enable upstream support"
+	bool
+	default n
+	depends DS_PACKAGE_TINYPROXY
+
+config DS_COMPILE_TINYPROXY_WITH_SOCKS
+	prompt "Enable SOCKS support"
+	#bool
+	default n
+	depends DS_PACKAGE_TINYPROXY
+
