@@ -1,4 +1,4 @@
-comment "*** only needed for the 'toolchain' target ***"
+comment "*** only needed for 'build toolchain' ***"
 	depends on DS_EXTERNAL_COMPILER || DS_DOWNLOAD_TOOLCHAIN
 
 comment "BIG FAT WARNING: Never build a firmware with current settings!"
@@ -7,7 +7,7 @@ comment "BIG FAT WARNING: Never build a firmware with current settings!"
 choice
 
 	prompt "Target compiler"
-	default DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
 
 	config DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 		bool "gcc-4.1.0-uClibc-0.9.28"
