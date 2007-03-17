@@ -101,6 +101,7 @@ kernel-precompiled: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) \
                     $(SOURCE_DIR)/depmod.pl
 
 	cp $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
+	rm -rf $(KERNEL_MODULES_DIR)/lib
 	mkdir -p $(KERNEL_MODULES_DIR)
 	tar -cf - -C $(KERNEL_BUILD_DIR)/modules \
 		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/build \
