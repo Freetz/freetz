@@ -33,7 +33,7 @@ $(TOOLS_DIR)/busybox: $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION)/busybox
 	@ln -s busybox $(TOOLS_DIR)/makedevs
 #	@ln -s busybox $(TOOLS_DIR)/tar
 
-busybox: $(TOOLS_DIR)/busybox
+busybox-tools: $(TOOLS_DIR)/busybox
 
 busybox-tools-clean:
 	-$(MAKE) -C $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION) clean
