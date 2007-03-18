@@ -7,42 +7,41 @@ comment "BIG FAT WARNING: Never build a firmware with current settings!"
 choice
 
 	prompt "Target compiler"
-	default DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	depends on ! DS_DOWNLOAD_TOOLCHAIN
 
 	config DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 		bool "gcc-4.1.0-uClibc-0.9.28"
 
 	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 		bool "gcc-4.1.1-uClibc-0.9.28"	
-		
-#	config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
-#		bool "gcc-4.1.2-uClibc-0.9.28.3"
+# not working
+#	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+#		bool "gcc-4.1.1-uClibc-0.9.28.3"
 	
-	config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-		bool "gcc-4.1.2-uClibc-0.9.28"
-
 endchoice
+
+config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	bool
+	default "y" if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_TARGET_GCC_VERSION
 	string
 	default "4.1.0"		if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
-	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
 
 config DS_TARGET_UCLIBC_VERSION
 	string
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-	default "0.9.28.3"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
+	default "0.9.28.3"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
 
 config DS_TARGET_BINUTILS_VERSION
 	string
 	default "2.16.91.0.6"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
+	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
 
 choice
 
@@ -54,6 +53,9 @@ choice
 
 	config DS_TARGET_UCLIBC_CONFIG_8MB_26
 		bool "8MB_26"
+	
+	config DS_TARGET_UCLIBC_CONFIG_4MB_26
+		bool "4MB_26"
 
 endchoice
 
@@ -86,6 +88,7 @@ choice
 
 	prompt "Kernel compiler"
 	default DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+	depends ! DS_DOWNLOAD_TOOLCHAIN
 	
 	config DS_KERNEL_COMPILER_GCC_3_3_2_GLIBC_2_3_2
 		bool "gcc-3.3.2-glibc-2.3.2"
@@ -102,3 +105,7 @@ config DS_KERNEL_GCC_VERSION
 config DS_KERNEL_GLIBC_VERSION
 	string
 	default "2.3.6" if DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+
+config DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+	bool
+	default "y" if DS_DOWNLOAD_TOOLCHAIN
