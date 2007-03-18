@@ -16,13 +16,13 @@ download-toolchain: $(TOOLCHAIN_DIR)/kernel/.installed $(TOOLCHAIN_DIR)/target/.
 $(TOOLCHAIN_DIR)/kernel/.installed: $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
 	$(TOOLS_DIR)/busybox tar -xaf $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) -C $(TOOLCHAIN_DIR)/build
-	@ln -s $(BUILD_DIR)/$(CROSSTOOL_COMPILER)/mipsel-unknown-linux-gnu $(TOOLCHAIN_DIR)/kernel
+	-@ln -s $(BUILD_DIR)/$(CROSSTOOL_COMPILER)/mipsel-unknown-linux-gnu $(TOOLCHAIN_DIR)/kernel
 	@touch $@
 
 $(TOOLCHAIN_DIR)/target/.installed: $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
 	$(TOOLS_DIR)/busybox tar -xaf $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) -C $(TOOLCHAIN_DIR)/build
-	@ln -s $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TOOLCHAIN_DIR)/target
+	-@ln -s $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TOOLCHAIN_DIR)/target
 	@touch $@
 
 ifeq ($(strip $(DS_DOWNLOAD_TOOLCHAIN)),y)

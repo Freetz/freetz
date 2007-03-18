@@ -15,9 +15,9 @@ BUSYBOX_HOST_BINARY:=busybox
 $(BUSYBOX_TOOLS_DIR)/.unpacked: $(DL_DIR)/$(BUSYBOX_SOURCE)
 	mkdir -p $(BUSYBOX_TOOLS_DIR)
 	tar -C $(BUSYBOX_TOOLS_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(BUSYBOX_SOURCE)
-#	for i in $(BUSYBOX_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(BUSYBOX_DIR) -p0 < $$i; \
-#	done
+	for i in $(BUSYBOX_MAKE_DIR)/patches/*.patch; do \
+		patch -d $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION) -p0 < $$i; \
+	done
 	touch $@
 
 $(BUSYBOX_TOOLS_DIR)/.configured: $(BUSYBOX_TOOLS_DIR)/.unpacked $(BUSYBOX_TOOLS_CONFIG_FILE)

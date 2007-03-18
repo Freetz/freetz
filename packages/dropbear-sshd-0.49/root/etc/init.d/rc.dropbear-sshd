@@ -7,12 +7,12 @@ DAEMON=dropbear
 
 case "$1" in
 	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+		if [ ! -r "/mod/etc/conf/$DAEMON-sshd.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
 		fi
 
-		. /mod/etc/conf/$DAEMON.cfg
+		. /mod/etc/conf/$DAEMON-sshd.cfg
 		;;
 esac
 
@@ -34,18 +34,18 @@ start() {
 
 	[ -e "/mod/root/.ssh" ] || ln -s /tmp/flash/.ssh /mod/root/.ssh
 
-	if [ "$DROPBEAR_PWDAUTH" = "yes" ]; then
+	if [ "$DROPBEAR_SSHD_PWDAUTH" = "yes" ]; then
 		if cat /var/tmp/shadow | grep '^root:\*:' > /dev/null; then
 			echo "Error[$DAEMON]: no root password set - run 'modpasswd root'" 1>&2
 			exit 1
 		fi
 	else
-		DROPBEAR_OPTIONS="-s $DROPBEAR_OPTIONS"
+		DROPBEAR_SSHD_OPTIONS="-s $DROPBEAR_SSHD_OPTIONS"
 	fi
 
 	echo -n 'Starting ssh server...'
 	set -o noglob
-	$DAEMON -p "$DROPBEAR_PORT" $DROPBEAR_OPTIONS
+	$DAEMON -p "$DROPBEAR_SSHD_PORT" $DROPBEAR_SSHD_OPTIONS
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -71,13 +71,13 @@ case "$1" in
 	""|load)
 		[ -d "/tmp/flash/.ssh" ] || mkdir /tmp/flash/.ssh
 
-		modreg cgi 'dropbear' 'Dropbear'
+		modreg cgi 'dropbear-sshd' 'Dropbear'
 
-		deffile='/mod/etc/default.dropbear/authorized_keys.def'
+		deffile='/mod/etc/default.dropbear-sshd/authorized_keys.def'
 		[ -r "/tmp/flash/authorized_keys.def" ] && deffile='/tmp/flash/authorized_keys.def'
 		modreg file 'authorized_keys' 'Authorized keys' 0 "$deffile"
 
-		if [ "$DROPBEAR_ENABLED" != "yes" ]; then
+		if [ "$DROPBEAR_SSHD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1;
 		fi
@@ -87,7 +87,7 @@ case "$1" in
 	unload)
 		stop
 		modunreg file 'authorized_keys'
-		modunreg cgi 'dropbear'
+		modunreg cgi 'dropbear-sshd'
 		;;
 	start)
 		start

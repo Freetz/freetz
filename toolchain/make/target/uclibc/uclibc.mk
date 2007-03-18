@@ -82,5 +82,7 @@ uclibc-utils:
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		HOSTCC="$(HOSTCC)" \
 		utils
+	cp $(UCLIBC_DIR)/utils/ldd.host $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/
+	
 
-#.PHONY: uclibc-configured uclibc
+.PHONY: uclibc-configured uclibc
