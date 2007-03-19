@@ -1,6 +1,7 @@
 config DS_PACKAGE_ORANGEBOX
-	bool "orangebox 1.01"
-	depends on  DS_TYPE_FON_WLAN_7141 || \
+	bool "orangebox 1.05"
+	depends on  DS_TYPE_FON_WLAN_7140 || \
+		    DS_TYPE_FON_WLAN_7141 || \
 		    DS_TYPE_FON_WLAN_7170 || \
 		    DS_TYPE_SPEEDPORT_W701V || \
 		    DS_TYPE_CUSTOM
@@ -14,10 +15,3 @@ config DS_PACKAGE_ORANGEBOX_TSB
 	default n
 	help
 	    TSB-LCR Button
-
-config DS_PACKAGE_ORANGEBOX_CALLPATCH
-	bool "callpatch"
-	depends on DS_PACKAGE_ORANGEBOX
-	default n
-	help
-	    CallPatch
