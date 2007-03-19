@@ -1,0 +1,11 @@
+--- configure.orig	2006-04-10 14:41:47.000000000 +0200
++++ configure	2006-04-10 14:42:14.000000000 +0200
+@@ -284,7 +284,7 @@
+ rm -f config.jam
+ cat > config.jam << EOF
+ CC          = $CC ;
+-LINK        = $CC ;
++LINK        = $CC -static-libgcc ;
+ CCFLAGS     = $CFLAGS ;
+ DEFINES     = $DEFINES ;
+ LINKLIBS    = $LINKLIBS ;

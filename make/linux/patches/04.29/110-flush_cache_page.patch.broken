@@ -1,0 +1,12 @@
+diff -burN linux-2.6.13.1.orig/arch/mips/mm/cache.c linux-2.6.13.1/arch/mips/mm/cache.c
+--- linux-2.6.13.1.orig/arch/mips/mm/cache.c	2005-09-14 12:22:35.000000000 +0200
++++ linux-2.6.13.1/arch/mips/mm/cache.c	2007-03-04 23:11:59.000000000 +0100
+@@ -27,6 +27,8 @@
+ void (*flush_icache_range)(unsigned long start, unsigned long end);
+ void (*flush_icache_page)(struct vm_area_struct *vma, struct page *page);
+ 
++EXPORT_SYMBOL(flush_cache_page);
++
+ /* MIPS specific cache operations */
+ void (*flush_cache_sigtramp)(unsigned long addr);
+ void (*flush_data_cache_page)(unsigned long addr);

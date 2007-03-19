@@ -1,0 +1,20 @@
+--- dll.c.orig	2007-03-15 23:48:26.000000000 +0100
++++ dll.c	2007-03-15 23:47:44.000000000 +0100
+@@ -321,7 +321,7 @@
+ void unloadDll(DllEntry *dll) {
+     void *on_unload;
+ 
+-    TRACE("<DLL: Unloading DLL %s\n" dll->name);
++    TRACE("<DLL: Unloading DLL %s\n", dll->name);
+ 
+     if((on_unload = nativeLibSym(dll->handle, "JNI_OnUnload")) != NULL)
+         (*(void (*)(JavaVM*, void*))on_unload)(&invokeIntf, NULL);
+@@ -345,7 +345,7 @@
+ void unloadClassLoaderDlls(Object *loader) {
+     int unloaded = 0;
+ 
+-    TRACE("<DLL: Unloading DLLs for loader %x\n" loader);
++    TRACE("<DLL: Unloading DLLs for loader %x\n", loader);
+ 
+ #undef ITERATE
+ #define ITERATE(ptr)                                          \

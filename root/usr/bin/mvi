@@ -1,0 +1,40 @@
+#! /bin/sh
+if [ -z "$1" ]; then
+	echo "Usage: $0 <configfile>" 1>&2
+	exit 1
+fi
+
+dir="$(dirname "$1")"
+base="$(basename "$1")"
+
+case "$(realpath "$dir")/" in
+	/var/tmp/flash/*)
+		vi $1
+		exitval=$?
+		if [ $exitval -ne 0 ]; then
+			exit $exitval
+		fi
+
+		/usr/bin/modsave flash
+		;;
+	/var/mod/etc/conf/*)
+		pkg="${base%.cfg}"
+		if [ -r "/mod/etc/default.$pkg/$pkg.cfg" ]; then
+			vi $1
+			exitval=$?
+			if [ $exitval -ne 0 ]; then
+				exit $exitval
+			fi
+
+			/usr/bin/modconf save $pkg
+			/usr/bin/modsave flash
+		else
+			echo 'ERROR: file not found!' 1>&2
+			exit 1
+		fi
+		;;
+	*)
+		echo 'Use only with files in /var/tmp/flash/ and /var/mod/etc/conf/' 1>&2
+		exit 1
+		;;
+esac

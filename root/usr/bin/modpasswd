@@ -1,0 +1,128 @@
+#!/bin/sh
+#
+# Usage: modpasswd [<username>|load|save|dsmod]
+
+TMP=/var/tmp
+FLASH=$TMP/flash
+
+case "$1" in
+	"")
+		echo ''
+		echo '## CHANGE ROOT PASSWORD ##'
+		echo ''
+
+		$0 root noflash
+		exitval=$?
+		[ $exitval -ne 0 ] && exit $exitval
+
+		echo ''
+		echo '## CHANGE WEBCONFIG PASSWORD ##'
+		echo ''
+
+		$0 dsmod noflash
+		exitval=$?
+		[ $exitval -ne 0 ] && exit $exitval
+
+		/usr/bin/modsave flash
+		;;
+	load)
+		TMPPASSWD=$TMP/.passwd.tmp
+		TMPSHADOW=$TMP/.shadow.tmp
+
+		[ -e "$FLASH/shadow.save" ] || exit 0
+
+		rm -f $TMPPASSWD
+		rm -f $TMPSHADOW
+
+		userid=0
+
+		for line in $(cat $FLASH/shadow.save); do
+			user="$(echo $line | sed -e 's/:[^:]*$//')"
+
+			if [ "$user" = "root" ]; then
+				echo 'root:x:0:0:root:/mod/root:/bin/sh' >> $TMPPASSWD
+				[ -d "/mod/root" ] || mkdir /mod/root
+			else
+				let userid="userid+1"
+				echo "$user:x:$userid:1:$user:/mod/home/$user:/bin/sh" >> $TMPPASSWD
+				[ -d "/mod/home/$user" ] || mkdir /mod/home/$user
+			fi
+
+			echo "$line:12332:0:99999:7:::" >> $TMPSHADOW
+		done
+
+		if cat $TMPPASSWD | grep "^root:" > /dev/null; then
+			cp $TMPPASSWD /var/tmp/passwd
+			cp $TMPSHADOW /var/tmp/shadow
+			rm -f $TMPPASSWD
+			rm -f $TMPSHADOW
+
+			(
+				cd /mod/home/
+				for user in *; do
+					[ "$user" = "*" ] || chown $user:users $user
+				done
+			)
+		else
+			rm -f $TMPPASSWD
+			rm -f $TMPSHADOW
+			echo "ERROR: no user 'root'" 1>&2
+			exit 1
+		fi
+		;;
+	save)
+		if [ -e "/var/tmp/shadow" ]; then
+			cat /var/tmp/shadow | sed -e 's/:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*$//' > $FLASH/shadow.save
+			chmod 600 $FLASH/shadow.save
+		else
+			rm -f $FLASH/shadow.save
+		fi
+		;;
+	dsmod)
+		echo 'Changing password for admin (ds-mod webconfig)'
+		echo 'This password should be different from root'"'"'s password.'
+		echo 'No "weak password" warnings are generated.'
+		echo ''
+		echo 'The webinterface may have major bugs allowing to execute'
+		echo 'arbitrary code. USE AT YOUR OWN RISK!'
+		echo ''
+
+		stty -echo
+
+		echo -n 'Enter new password: '
+		read -r passwd1
+		echo ''
+		echo -n 'Re-enter new password: '
+		read -r passwd2
+		echo ''
+
+		stty echo
+
+		if [ "$passwd1" != "$passwd2" -o -z "$passwd1" ]; then
+			echo 'Passwords do not match or empty password.' 1>&2
+			echo 'modpasswd: The password for admin (ds-mod webconfig) is unchanged.' 1>&2
+			echo '' 1>&2
+			exit 1
+		fi
+
+		/usr/bin/modconf set mod MOD_HTTPD_PASSWD=$(/sbin/httpd -m "$passwd1")
+
+		echo 'modpasswd: Password for admin (ds-mod webconfig) changed.'
+		echo ''
+
+		/usr/bin/modconf save mod
+
+                [ "$2" = "noflash" ] || /usr/bin/modsave flash
+		;;
+	*)
+		passwd "$1"
+		exitval=$?
+		[ $exitval -ne 0 ] && exit $exitval
+
+		$0 save
+
+		[ "$2" = "noflash" ] || /usr/bin/modsave flash
+		;;
+esac
+
+exit 0

@@ -1,0 +1,133 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=dnsmasq
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+start() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+
+	echo -n 'Starting dnsmasq...'
+	if [ "$1" != "nomultid" ]; then
+		multid -s > /dev/null 2>&1
+	fi
+	$DAEMON -p "$DNSMASQ_DNS_PORT" $DNSMASQ_OPTIONS
+	exitval=$?
+	if [ "$1" != "nomultid" ]; then
+		multid > /dev/null 2>&1
+	fi
+
+	if [ ! -L "/var/flash/multid.leases" -a \
+	     "$DNSMASQ_DHCP" = "yes" ]; then
+		rm -f /var/flash/multid.leases
+		touch /var/tmp/multid.leases
+		ln -s /var/tmp/multid.leases /var/flash/multid.leases
+	fi
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping dnsmasq...'
+	if [ "$1" != "nomultid" ]; then
+		multid -s > /dev/null 2>&1
+	fi
+	killall $DAEMON > /dev/null 2>&1
+	exitval=$?
+	if [ "$1" != "nomultid" ]; then
+		multid > /dev/null 2>&1
+	fi
+
+	rm -f /mod/etc/$DAEMON.conf
+
+	if [ -L "/var/flash/multid.leases" ]; then
+		major="$(grep tffs /proc/devices)"
+		rm -f /var/flash/multid.leases
+		mknod /var/flash/multid.leases c ${major%%tffs} $((0x70))
+	fi
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+        ""|load)
+		modreg cgi 'dnsmasq' 'Dnsmasq'
+
+		if [ "$DNSMASQ_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ -e "/var/run/dnsmasq.pid" ]; then
+			echo "$DAEMON already started."
+		else
+			if [ -z "$(pidof multid)" ]; then
+				start nomultid
+			else
+				start
+			fi
+		fi
+		;;
+	unload)
+		stop
+		modunreg cgi 'dnsmasq'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		multid -s > /dev/null 2>&1
+		stop nomultid
+		sleep 1
+		start nomultid
+		multid > /dev/null 2>&1
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

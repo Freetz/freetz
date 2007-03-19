@@ -1,0 +1,38 @@
+diff -burN networking.orig/ether-wake.c networking/ether-wake.c
+--- networking.orig/ether-wake.c	2007-01-24 22:34:34.000000000 +0100
++++ networking/ether-wake.c	2007-02-23 13:42:58.000000000 +0100
+@@ -105,6 +105,10 @@
+ static inline int get_fill(unsigned char *pkt, struct ether_addr *eaddr, int broadcast);
+ static inline int get_wol_pw(const char *ethoptarg, unsigned char *wol_passwd);
+ 
++#define ETHERWAKE_OPT_BROADCAST	1
++#define ETHERWAKE_OPT_IFNAME	2	
++#define ETHERWAKE_OPT_PASS	4
++
+ int ether_wake_main(int argc, char *argv[])
+ {
+ 	char *ifname = "eth0", *pass = NULL;
+@@ -174,7 +178,7 @@
+ 	bb_debug_dump_packet(outpack, pktsize);
+ 
+ 	/* This is necessary for broadcasts to work */
+-	if (flags /*& 1 [OPT_BROADCAST]*/) {
++	if (flags && ETHERWAKE_OPT_BROADCAST) {
+ 		if (setsockopt_broadcast(s) < 0)
+ 			bb_perror_msg("SO_BROADCAST");
+ 	}
+@@ -230,12 +234,12 @@
+ 		bb_show_usage();
+ }
+ 
+-static inline int get_fill(unsigned char *pkt, struct ether_addr *eaddr, int broadcast)
++static inline int get_fill(unsigned char *pkt, struct ether_addr *eaddr, int flags)
+ {
+ 	int offset, i;
+ 	unsigned char *station_addr = eaddr->ether_addr_octet;
+ 
+-	if (broadcast)
++	if (flags && ETHERWAKE_OPT_BROADCAST)
+ 		memset(pkt+0, 0xff, 6);
+ 	else
+ 		memcpy(pkt, station_addr, 6);

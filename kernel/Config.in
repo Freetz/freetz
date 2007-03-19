@@ -1,0 +1,462 @@
+
+menu "drivers"
+
+config DS_MODULE_loop
+	bool "loop.ko"
+	default n
+
+config DS_MODULE_nbd
+	bool "nbd.ko"
+	default n
+
+
+		        
+config DS_MODULE_cdrom
+	bool "cdrom.ko"   
+	default n         
+	
+
+config DS_MODULE_capiconn
+	bool "capiconn.ko"
+	default n
+
+config DS_MODULE_nand
+	bool "nand.ko"
+	default n
+
+config DS_MODULE_ohio_nand
+	bool "ohio_nand.ko"
+	default n
+
+config DS_MODULE_dummy
+	bool "dummy.ko"
+	default n
+
+#config DS_MODULE_cpphy_entry_high
+#	bool "cpphy_entry_high.ko"
+#	default n
+	
+#config DS_MODULE_cpphy_entry_high_switch
+#	bool "cpphy_entry_high_switch.ko"
+#	default n
+	
+config DS_MODULE_scsi_mod
+	bool "scsi_mod.ko"
+	default n
+
+config DS_MODULE_sd_mod
+	bool "sd_mod.ko"
+	select DS_MODULE_scsi_mod
+	default n
+
+config DS_MODULE_sg
+	bool "sg.ko"
+	select DS_MODULE_scsi_mod
+	default n
+	
+config DS_MODULE_sr_mod
+	bool "sr_mod.ko"
+	select DS_MODULE_scsi_mod
+	default n
+	
+config DS_MODULE_usblp
+	bool "usblp.ko"
+	select DS_MODULE_usbcore
+	default n
+	
+config DS_MODULE_usb_storage
+	bool "usb-storage.ko"
+	select DS_MODULE_scsi_mod
+	select DS_MODULE_usbcore
+	default n
+
+config DS_MODULE_usbmon
+	bool "usbmon.ko"
+	default n
+
+config DS_MODULE_usbcore
+	bool "usbcore.ko"
+	default n
+
+config DS_MODULE_usbserial
+	bool "usbserial.ko"
+	default n
+
+config DS_MODULE_pl2303
+	bool "pl2303.ko"
+	select DS_MODULE_usbserial
+	default n
+	
+config DS_MODULE_ftdi_sio
+	bool "ftdi_sio.ko"
+	select DS_MODULE_usbserial
+	default n
+
+endmenu
+
+menu "fs"
+
+
+config DS_MODULE_cifs
+	bool "cifs.ko"   
+	default n 
+
+config DS_MODULE_coda
+	bool "coda.ko"   
+	default n 
+
+config DS_MODULE_ext3
+	bool "ext3.ko"
+	select DS_MODULE_jbd
+	select DS_MODULE_mbcache
+	default n
+
+config DS_MODULE_ext2
+	bool "ext2.ko"
+	default n
+
+config DS_MODULE_fat
+	bool "fat.ko"
+	default n
+
+config DS_MODULE_fuse
+	bool "fuse.ko"
+	default n
+
+config DS_MODULE_jbd
+	bool "jbd.ko"
+	default n
+
+config DS_MODULE_lockd
+	bool "lockd.ko"
+	select DS_MODULE_sunrpc
+	default n
+
+config DS_MODULE_mini_fo
+	bool "mini_fo.ko"
+	default n
+
+config DS_MODULE_minix
+	bool "minix.ko"
+	default n
+
+config DS_MODULE_nfsd
+	bool "nfsd.ko"
+	select DS_MODULE_lockd
+	select DS_MODULE_exportfs
+	default n
+	
+config DS_MODULE_exportfs
+	bool "exportfs.ko"
+	default n
+
+config DS_MODULE_nfs
+	bool "nfs.ko"
+	select DS_MODULE_lockd
+	default n
+
+config DS_MODULE_nls_cp437
+	bool "nls_cp437.ko"
+	default n
+
+config DS_MODULE_nls_cp852
+	bool "nls_cp852.ko"
+	default n
+
+config DS_MODULE_nls_iso8859_15
+	bool "nls_iso8859-15.ko"
+	default n
+
+config DS_MODULE_nls_iso8859_1
+	bool "nls_iso8859-1.ko"
+	default n
+
+config DS_MODULE_ntfs
+	bool "ntfs.ko"
+	default n
+
+config DS_MODULE_reiserfs
+	bool "reiserfs.ko"
+	default n
+
+config DS_MODULE_smbfs
+	bool "smbfs.ko"
+	default n
+
+config DS_MODULE_unionfs
+	bool "unionfs.ko"
+	default n
+
+config DS_MODULE_vfat
+	bool "vfat.ko"
+	select DS_MODULE_fat
+	default n
+	
+config DS_MODULE_msdods
+	bool "msdos.ko"
+	default n
+	
+config DS_MODULE_jffs2
+	bool "jffs2.ko"
+	default n
+
+config DS_MODULE_mbcache
+	bool "mbcache.ko"
+	default n
+
+endmenu
+
+menu "net"
+
+config DS_MODULE_ip_conntrack_ftp
+	bool "ip_conntrack_ftp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+
+config DS_MODULE_ip_conntrack_h323
+	bool "ip_conntrack_h323.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+
+config DS_MODULE_ip_conntrack_irc
+	bool "ip_conntrack_irc.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+
+config DS_MODULE_ip_conntrack
+	bool "ip_conntrack.ko"
+	default n
+
+config DS_MODULE_ip_conntrack_pptp
+	bool "ip_conntrack_pptp.ko"
+	select DS_MODULE_ip_conntrack_proto_gre
+	default n
+
+config DS_MODULE_ip_conntrack_proto_esp
+	bool "ip_conntrack_proto_esp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+
+config DS_MODULE_ip_conntrack_proto_gre
+	bool "ip_conntrack_proto_gre.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+
+config DS_MODULE_ip_conntrack_rpc_tcp
+	bool "ip_conntrack_rpc_tcp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+
+config DS_MODULE_ip_conntrack_rpc_udp
+	bool "ip_conntrack_rpc_udp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+
+config DS_MODULE_ip_conntrack_tftp
+	bool "ip_conntrack_tftp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+
+config DS_MODULE_ip_nat_ftp
+	bool "ip_nat_ftp.ko"
+	select DS_MODULE_iptable_nat
+	default n
+
+config DS_MODULE_ip_nat_h323
+	bool "ip_nat_h323.ko"
+	select DS_MODULE_iptable_nat
+	default n
+
+config DS_MODULE_ip_nat_irc
+	bool "ip_nat_irc.ko"
+	select DS_MODULE_iptable_nat
+	default n
+
+config DS_MODULE_ip_nat_pptp
+	bool "ip_nat_pptp.ko"
+	select DS_MODULE_ip_conntrack_proto_gre
+	select DS_MODULE_iptable_nat
+	default n
+
+config DS_MODULE_ip_nat_proto_esp
+	bool "ip_nat_proto_esp.ko"
+	select DS_MODULE_iptable_nat
+	default n
+
+config DS_MODULE_ip_nat_proto_gre
+	bool "ip_nat_proto_gre.ko"
+	select DS_MODULE_iptable_nat
+	default n
+
+config DS_MODULE_ip_nat_tftp
+	bool "ip_nat_tftp.ko"
+	select DS_MODULE_iptable_nat
+	default n
+
+config DS_MODULE_iptable_filter
+	bool "iptable_filter.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_iptable_mangle
+	bool "iptable_mangle.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_iptable_nat
+	bool "iptable_nat.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ip_tables
+	bool "ip_tables.ko"
+	default n
+
+config DS_MODULE_ipt_CFG
+	bool "ipt_CFG.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_connmark
+	bool "ipt_connmark.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_CONNMARK
+	bool "ipt_CONNMARK.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_conntrack
+	bool "ipt_conntrack.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_helper
+	bool "ipt_helper.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_ipp2p
+	bool "ipt_ipp2p.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_iprange
+	bool "ipt_iprange.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_length
+	bool "ipt_length.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_limit
+	bool "ipt_limit.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_LOG
+	bool "ipt_LOG.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_mac
+	bool "ipt_mac.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_mark
+	bool "ipt_mark.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_MARK
+	bool "ipt_MARK.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_MASQUERADE
+	bool "ipt_MASQUERADE.ko"
+	select DS_MODULE_iptable_nat
+	default n
+
+config DS_MODULE_ipt_mip
+	bool "ipt_mip.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_multiport
+	bool "ipt_multiport.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_psd
+	bool "ipt_psd.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_record_rpc
+	bool "ipt_record_rpc.ko"
+	select DS_MODULE_ip_conntrack_rpc_tcp
+	select DS_MODULE_ip_conntrack_rpc_udp
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_REDIRECT
+	bool "ipt_REDIRECT.ko"
+	select DS_MODULE_iptable_nat
+	default n
+
+config DS_MODULE_ipt_REJECT
+	bool "ipt_REJECT.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_ROUTE
+	bool "ipt_ROUTE.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_state
+	bool "ipt_state.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_tcpmss
+	bool "ipt_tcpmss.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_TCPMSS
+	bool "ipt_TCPMSS.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_tos
+	bool "ipt_tos.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_TOS
+	bool "ipt_TOS.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_ipt_ttl
+	bool "ipt_ttl.ko"
+	select DS_MODULE_ip_tables
+	default n
+
+config DS_MODULE_sunrpc
+	bool "sunrpc.ko"
+	default n
+
+endmenu
