@@ -1,5 +1,7 @@
 # Makefile for danisahne mod
 #
+# $Id$
+#
 # Copyright (C) 1999-2004 by Erik Andersen <andersen@codepoet.org>
 # Copyright (C) 2005-2006 by Daniel Eiband <eiband@online.de>
 #
