@@ -1,0 +1,111 @@
+comment "*** only needed for 'build toolchain' ***"
+	depends on DS_EXTERNAL_COMPILER || DS_DOWNLOAD_TOOLCHAIN
+
+comment "BIG FAT WARNING: Never build a firmware with current settings!"
+	depends on ! DS_TARGET_UCLIBC_CONFIG_MOD_26
+
+choice
+
+	prompt "Target compiler"
+	default DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	depends on ! DS_DOWNLOAD_TOOLCHAIN
+
+	config DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+		bool "gcc-4.1.0-uClibc-0.9.28"
+
+	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+		bool "gcc-4.1.1-uClibc-0.9.28"	
+# not working
+#	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+#		bool "gcc-4.1.1-uClibc-0.9.28.3"
+	
+endchoice
+
+config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	bool
+	default "y" if DS_DOWNLOAD_TOOLCHAIN
+
+config DS_TARGET_GCC_VERSION
+	string
+	default "4.1.0"		if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+
+config DS_TARGET_UCLIBC_VERSION
+	string
+	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "0.9.28.3"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+
+config DS_TARGET_BINUTILS_VERSION
+	string
+	default "2.16.91.0.6"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+
+choice
+
+	prompt "uClibc config"
+	default DS_TARGET_UCLIBC_CONFIG_MOD_26
+
+	config DS_TARGET_UCLIBC_CONFIG_MOD_26
+		bool "mod_26 (recommended)"
+
+	config DS_TARGET_UCLIBC_CONFIG_8MB_26
+		bool "8MB_26"
+	
+	config DS_TARGET_UCLIBC_CONFIG_4MB_26
+		bool "4MB_26"
+
+endchoice
+
+config DS_TARGET_UCLIBC_REF
+	string
+	default "mod"		if DS_TARGET_UCLIBC_CONFIG_MOD
+	default "mod_26"	if DS_TARGET_UCLIBC_CONFIG_MOD_26
+	default "orig-4mb_26"	if DS_TARGET_UCLIBC_CONFIG_4MB_26
+	default "orig-8mb_26"	if DS_TARGET_UCLIBC_CONFIG_8MB_26
+
+config DS_TARGET_GXX
+	bool "  Build g++"
+	default y
+
+config DS_TARGET_CCACHE
+	bool "  Build ccache"
+	default y
+	help
+	    ccache is optional, but speeds up compilation
+
+config DS_TARGET_NLS
+	bool "  Native language support (NLS)"
+	default n
+
+config DS_TARGET_LFS
+	bool "  Large file support (LFS)"
+	default n
+
+choice
+
+	prompt "Kernel compiler"
+	default DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+	depends ! DS_DOWNLOAD_TOOLCHAIN
+	
+	config DS_KERNEL_COMPILER_GCC_3_3_2_GLIBC_2_3_2
+		bool "gcc-3.3.2-glibc-2.3.2"
+
+	config DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+		bool "gcc-3.4.5-glibc-2.3.6"
+
+endchoice
+
+config DS_KERNEL_GCC_VERSION
+	string
+	default "3.4.5" if DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+
+config DS_KERNEL_GLIBC_VERSION
+	string
+	default "2.3.6" if DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+
+config DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+	bool
+	default "y" if DS_DOWNLOAD_TOOLCHAIN

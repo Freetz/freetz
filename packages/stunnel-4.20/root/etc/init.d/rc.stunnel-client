@@ -1,0 +1,111 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=stunnel
+PIDFILE="/var/run/$DAEMON-client.pid"
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+is_running() {
+	local pid
+	[ -e "$PIDFILE" ] && read pid < "$PIDFILE" && 
+	kill -EXIT "$pid" 2> /dev/null
+}
+
+start() {
+	{
+		if [ -x "/tmp/flash/${DAEMON}-client_conf" ]; then
+			/tmp/flash/${DAEMON}-client_conf
+		else
+			/mod/etc/default.$DAEMON/client_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}-client.extra" ]; then
+			cat /tmp/flash/${DAEMON}-client.extra
+		fi
+
+		if [ -r "/tmp/flash/stunnel_clsvcs" ]; then
+			cat /tmp/flash/stunnel_clsvcs
+		fi
+	} > /mod/etc/${DAEMON}-client.conf
+
+	echo -n 'Starting stunnel client...'
+
+	$DAEMON /mod/etc/${DAEMON}-client.conf
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping stunnel client...'
+	read pid < "$PIDFILE" &&
+	kill -USR1 "$pid" > /dev/null 2>&1
+}
+
+case "$1" in
+	""|load)
+		export STUNNEL_CONFIGURED="1"
+		modreg cgi 'stunnel' 'Stunnel'
+
+		deffile="/mod/etc/default.$DAEMON/stunnel_clsvcs.def"
+		[ -r "/tmp/flash/stunnel_clsvcs.def" ] && deffile='/tmp/flash/stunnel_clsvcs.def'
+		modreg file 'stunnel_clsvcs' 'Stunnel services (cl)' 0 "$deffile"
+
+		if [ "$STUNNEL_CLIENTENABLED" != "yes" ]; then
+			echo "$DEAMON client is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg file 'stunnel_clsvcs'
+		modunreg cgi 'stunnel'
+		;;
+	start)
+		start
+		;;
+	stop)
+		if ! is_running; then
+			echo "$DAEMON is not running" >&2
+			exit 1
+		fi
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if is_running; then
+			echo 'running'
+		else
+			echo 'stopped'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
+

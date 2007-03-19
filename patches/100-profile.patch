@@ -1,0 +1,34 @@
+diff -burN etc.orig/profile etc/profile
+--- etc.orig/profile	2007-03-13 16:16:48.000000000 +0100
++++ etc/profile	2007-03-16 00:18:27.000000000 +0100
+@@ -1,8 +1,11 @@
+ # /etc/profile
+ #
+-VERBOSE_RC_CONF=y
++VERBOSE_RC_CONF=n
+ . /etc/init.d/rc.conf
+ 
++export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
++export LD_LIBRARY_PATH=/mod/lib
++
+ ####################################################################
+ if [ "$CONFIG_PRODUKT" = "Fritz_Box_Profi" ] ; then
+     if [ -e $CONFIG_ENVIRONMENT_PATH/environment ] ; then
+@@ -26,8 +29,6 @@
+ case $tty in
+     /dev/pts/0)
+         stty erase ^H                                                                   
+-        getcons $tty                                                               
+-        echo "Console Ausgaben auf dieses Terminal umgelenkt"
+         ;;
+     /dev/pts/*)
+         stty erase ^H                                                                   
+@@ -39,7 +40,7 @@
+         echo "Serielles Terminal"
+         ;;
+     /dev/ttyS0)
+-        stty -F /dev/ttyS0  rows 50 cols 132 
++        stty -F /dev/ttyS0
+         echo -e "\033[50;132q\c"    # Steuersequenz für CapiTerm: 50 Zeile, 132 Spalten
+         echo "Serielles Terminal"
+         ;;

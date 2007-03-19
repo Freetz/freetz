@@ -1,0 +1,25 @@
+Pakete von Hand installieren
+----------------------------
+
+Pakete, die noch nicht in den Mod integriert sind, können als sogenanntes
+"Addon Paket" installiert werden. Dazu das gewünschte Paket herunterladen und
+nach ./addon entpacken.
+
+z.B.:
+tar -C addon -xjvf /pfad/zu/addon_paket-0.1-dsmod.tar.bz2
+
+Danach muss das Paket in der Liste ./addon/static.pkg in eine neue Zeile
+eingetragen werden (im obigen Beispiel: addon_paket-0.1). Addon Pakete werden
+nach den integrierten Paketen in der Reihenfolge des Auftretens in
+./addon/static.pkg gestartet. Ein erneutes
+
+make
+
+aktualisiert das modifizierte Firmware Image.
+
+Falls es sich bei dem Addon Paket um eine andere Version eines bereits
+integrierten Pakets handelt, so sollte das ursprüngliche Paket mit
+
+make menuconfig
+
+unter "Package selection" deaktiviert werden, um Versionskonflikte zu vermeiden.

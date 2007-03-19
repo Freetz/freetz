@@ -1,0 +1,27 @@
+--- networking/httpd.c	2007-01-19 22:22:59.000000000 +0100
++++ networking/httpd.c	2007-01-22 13:09:03.000000000 +0100
+@@ -137,6 +137,7 @@
+ 	const char *query;
+ 
+ 	USE_FEATURE_HTTPD_CGI(char *referer;)
++	USE_FEATURE_HTTPD_CGI(char *user_agent;)
+ 
+ 	const char *configFile;
+ 
+@@ -1066,6 +1067,7 @@
+ 			if (cp) *cp = '\0'; /* delete :PORT */
+ 			setenv1("REMOTE_ADDR", p);
+ 		}
++ 		setenv1("HTTP_USER_AGENT", config->user_agent);
+ #if ENABLE_FEATURE_HTTPD_SET_REMOTE_PORT_TO_ENV
+ 		setenv_long("REMOTE_PORT", config->port);
+ #endif
+@@ -1629,6 +1631,8 @@
+ 					content_type = strdup(skip_whitespace(buf + sizeof("Content-Type:")-1));
+ 				} else if ((STRNCASECMP(buf, "Referer:") == 0)) {
+ 					config->referer = strdup(skip_whitespace(buf + sizeof("Referer:")-1));
++				} else if ((STRNCASECMP(buf, "User-Agent:") == 0)) {
++					config->user_agent = strdup(skip_whitespace(buf + sizeof("User-Agent:")-1));
+ 				}
+ #endif
+ 

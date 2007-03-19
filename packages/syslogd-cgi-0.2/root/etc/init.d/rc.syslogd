@@ -1,0 +1,157 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=syslogd
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+start() {
+
+	if [ "$SYSLOGD_NETWORK" = "no" -a "$SYSLOGD_LOCAL" = "no" ] || [ "$SYSLOGD_NETWORK" = "yes" -a -z "$SYSLOGD_HOST" ]; then  
+  	echo -n 'Syslogd misconfigured. Please correct your settings!'
+  	echo -n 'Starting with default options'
+  	$DAEMON -C > /dev/null 2>&1
+  	exit 1
+	fi
+	
+	echo -n 'Starting syslogd...'
+
+	if [ "$SYSLOGD_LOCAL" = "yes" ]; then
+	
+	  SYSLOGD_OPTIONS="-L"
+	  
+		case "$SYSLOGD_LOGGING" in
+		circular_buffer) 
+			if [ ! -z "$SYSLOGD_BUFFER_MAXSIZE" -a "$SYSLOGD_BUFFER_MAXSIZE" -ne "16" ]; then
+				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C $SYSLOGD_BUFFER_MAXSIZE"
+			else
+				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C"
+			fi
+		;;
+		log_to_file)	
+
+			if [ ! -z "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
+				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -O $SYSLOGD_ALTERNATIVE_LOGFILE "
+			fi
+			if [ "$SYSLOGD_MAXFILES" -gt "1" ]; then
+				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -b $SYSLOGD_MAXFILES -s $SYSLOGD_MAXSIZE "
+			fi
+		;;
+		esac
+	fi
+
+	if [ "$SYSLOGD_NETWORK" = "yes" ]; then  
+		if [ ! -z "$SYSLOGD_PORT" -a "$SYSLOGD_PORT" -ne "514" ]; then
+			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -R $SYSLOGD_HOST:$SYSLOGD_PORT" 
+		else
+			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -R $SYSLOGD_HOST"
+		fi
+	fi
+	
+	$DAEMON $SYSLOGD_OPTIONS $SYSLOGD_EXPERT_OPTIONS > /dev/null 2>&1
+	exitval1=$?
+	
+	if [ "$SYSLOGD_KLOGD" = "yes" ]; then
+		/sbin/klogd > /dev/null 2>&1
+	fi
+	exitval2=$?
+	
+	if [ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit 1
+	fi
+}
+
+stop () {
+	echo -n 'Stopping syslogd...'
+	killall $DAEMON > /dev/null 2>&1
+	exitval=$?
+
+	rm -f /mod/etc/$DAEMON.conf
+	
+	#klogd stoppen?
+	if [ ! -z "$(pidof klogd)" ]; then
+		killall klogd > /dev/null 2>&1
+	fi
+	
+	#Logfile loeschen?
+	if [ -e "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
+		rm $SYSLOGD_ALTERNATIVE_LOGFILE
+	fi
+	if [ -e "/var/log/messages" ]; then
+		rm /var/log/messages
+	fi
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+		if type modreg > /dev/null; then
+			modreg cgi $DAEMON 'Syslogd'
+			modreg extra $DAEMON 'Logfile/Ringpuffer anzeigen' 1 'log'	
+		fi
+
+		if [ "$SYSLOGD_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ ! -z "$(pidof $DAEMON)" ]; then
+			echo "$DAEMON already started."
+		else
+			start
+		fi
+		;;
+	unload)
+		stop
+		if type modunreg > /dev/null; then
+			modunreg cgi $DAEMON
+			modunreg extra $DAEMON 'log'
+		fi
+		;;
+	start)
+		if [ -z "$(pidof $DAEMON)" ]; then
+			start
+		else
+			exit 0
+		fi
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac

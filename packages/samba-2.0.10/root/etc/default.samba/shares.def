@@ -1,0 +1,9 @@
+CAPTION='$(lang de:"Freigaben" en:"Shares") (Samba)'
+DESCRIPTION='Syntax: &lt;path&gt; &lt;name&gt; &lt;guest-ok&gt; &lt;read-only&gt; [&lt;comment&gt;]<br>
+($(lang de:"z.B.: /var/tmp/share freigabe 1 0 Meine Freigabe" en:"e.g. /var/tmp/share myshare 1 0 My Share"))'
+
+CONFIG_FILE='/tmp/flash/samba/shares'
+CONFIG_SAVE='modsave flash; if [ -n "$(pidof smbd)" ]; then echo ""; /mod/etc/init.d/rc.samba config; /mod/etc/init.d/rc.smbd restart; fi'
+CONFIG_TYPE='text'
+
+TEXT_ROWS=16

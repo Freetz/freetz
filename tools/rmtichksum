@@ -1,0 +1,73 @@
+#!/usr/bin/perl
+#
+#   TI checksum removal tool
+#
+#   Copyright (C) 2006 Daniel Eiband <eiband@online.de>
+#   taken from Enrik Berkhan's recover tool
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+use strict;
+use warnings;
+
+use Fcntl qw(SEEK_END SEEK_SET);
+use Getopt::Std;
+
+our %opt;
+getopts('nf:', \%opt);
+
+sub usage {
+  print STDERR <<EOF
+Usage: rmtichksum [-n] [-v] -f <file>
+       -n         no remove
+       -f <file>  file to remove checksum from 
+EOF
+}
+
+if ($opt{f} eq '') {
+  usage();
+  exit 1;
+}
+
+my $name = $opt{f};
+  
+open F, "+<$name" or die "open: $!";
+my $size = (stat F)[7];
+die "stat: $!" unless defined($size);
+if ($size >= 8) {
+  seek F, -8, SEEK_END or die "seek: $!";
+  my $magic;
+  my $checksum;
+  read F, $magic, 4;
+  read F, $checksum, 4;
+  if (unpack("V", $magic) == 0xC453DE23) {
+    $checksum = unpack("V", $checksum);
+    unless ($opt{n}) {
+      $size -= 8;
+      truncate F, $size or die "truncate: $!";
+      printf "checksum removed: %08X\n", $checksum;
+    } else {
+      printf "checksum found: %08X\n", $checksum;
+    }
+  } else {
+    print "no checksum found.\n";
+    close F;
+    exit 2;
+  }
+}
+close F;
+
+exit 0;

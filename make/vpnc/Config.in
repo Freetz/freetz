@@ -1,0 +1,9 @@
+config DS_PACKAGE_VPNC
+	bool "vpnc 0.4"
+	depends on DS_LANG_DE || ! DS_SELECTED_LANG_ONLY
+	select DS_LIB_libnsl
+	select DS_LIB_libgpg_error
+	select DS_LIB_libgcrypt
+	default n
+	help
+	    Cisco IPSec VPN Client

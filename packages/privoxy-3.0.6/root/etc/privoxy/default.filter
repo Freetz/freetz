@@ -1,0 +1,200 @@
+FILTER: js-annoyances Get rid of particularly annoying JavaScript abuse
+s|(?:\w+\.)+referrer|"Not Your Business!"|gisU
+s/(\W\s*)((this|window)\.(default)?status)\s*=\s*((['"]).*?(?<!\\)\6)/$1if(typeof(this.href) != 'undefined') $2 = $5 + ' URL: ' + this.href;else return false/ig
+s/(<body\s+[^>]*)onunload/$1never/siU
+s|(<script.*)window\.onunload(?=.*</script>)|$1never|sigU
+s/(open\s*\([^\)]+resizable=)(["']?)(?:no|0)\2/$1$2yes$2/sigU
+s/(open\s*\([^\)]+location=)(["']?)(?:no|0)\2/$1$2yes$2/sigU 
+s/(open\s*\([^\)]+status=)(["']?)(?:no|0)\2/$1$2yes$2/sigU 
+s/(open\s*\([^\)]+scroll(?:ing|bars)=)(["']?)(?:no|0)\2/$1$2auto$2/sigU 
+s/(open\s*\([^\)]+menubar=)(["']?)(?:no|0)\2/$1$2yes$2/sigU 
+s/(open\s*\([^\)]+toolbar=)(["']?)(?:no|0)\2/$1$2yes$2/sigU 
+s/(open\s*\([^\)]+directories=)(["']?)(?:no|0)\2/$1$2yes$2/sigU 
+s/(open\s*\([^\)]+fullscreen=)(["']?)(?:yes|1)\2/$1$2no$2/sigU
+s/(open\s*\([^\)]+always(?:raised|lowered)=)(["']?)(?:yes|1)\2/$1$2no$2/sigU
+s/(open\s*\([^\)]+z-?lock=)(["']?)(?:yes|1)\2/$1$2no$2/sigU
+s/(open\s*\([^\)]+hotkeys=)(["']?)(?:yes|1)\2/$1$2no$2/sigU
+s/(open\s*\([^\)]+titlebar=)(["']?)(?:no|0)\2/$1$2yes$2/sigU
+s/(open\s*\([^\)]+always(?:raised|lowered)=)(["']?)(?:yes|1)\2/$1$2no$2/sigU
+FILTER: js-events Kill all JS event bindings and timers (Radically destructive! Only for extra nasty sites)
+s/(on|event\.)((mouse(over|out|down|up|move))|(un)?load|contextmenu|selectstart)/never/ig
+s/(alert|confirm)\s*\(/concat(/ig
+s/settimeout\(/concat(/ig
+FILTER: html-annoyances Get rid of particularly annoying HTML abuse
+s/(<a\s+href[^>]+resizable=)(['"]?)(?:no|0)\2/$1$2yes$2/igU 
+s/(<a\s+href[^>]+location=)(['"]?)(?:no|0)\2/$1$2yes$2/igU 
+s/(<a\s+href[^>]+status=)(['"]?)(?:no|0)\2/$1$2yes1$2/igU
+s/(<a\s+href[^>]+scrolling=)(['"]?)(?:no|0)\2/$1$2auto$2/igU
+s/(<a\s+href[^>]+menubar=)(['"]?)(?:no|0)\2/$1$2yes$2/igU
+s-</?(blink|marquee).*>--sigU
+FILTER: content-cookies Kill cookies that come in the HTML or JS content
+s|(\w+\.)+cookie(?=[ \t\r\n]*=)(?!='aab)|ZappedCookie|ig
+s|<meta\s+http-equiv=['"]?set-cookie.*>|<!-- ZappedCookie -->|igU
+FILTER: refresh-tags Kill automatic refresh tags (for dial-on-demand setups)
+s/<meta\s+http-equiv\s*=\s*(['"]?)refresh\1\s+content\s*=\s*(['"]?)\d{2,}\s*(;\s*url\s*=\s*([^>\2]*))?\2/<link rev="x-refresh" href="$4"/iU
+FILTER: unsolicited-popups Disable only unsolicited pop-up windows
+s+([^'"]\s*<head.*>)(?=\s*[^'"])+$1<script>function PrivoxyWindowOpen(){return(null);}</script>+isU
+s+([^\w\s.]\s*)((window|this|parent)\.)?open\s*\(+$1PrivoxyWindowOpen(+ig
+s+([^'"]\s*</html>)(?!\s*(\\n|'|"))+$1<script>function PrivoxyWindowOpen(a, b, c){return(window.open(a, b, c));}</script>+iU     
+FILTER: all-popups Kill all popups in JavaScript and HTML
+s/((\W\s*)(window|this|parent)\.)open\s*\\?\(/$1concat(/ig  # JavaScript
+s/\starget\s*=\s*(['"]?)_?(blank|new)\1?/ notarget/ig        # HTML
+FILTER: img-reorder Reorder attributes in &lt;img> tags to make the banners-by-* filters more effective
+s|<img\s+?([^>]*) src\s*=\s*(['"])([^>\\\2]+)\2|<img src=$2$3$2 $1|siUg
+s|<img\s+?([^>]*) src\s*=\s*([^'">\\\s]+)|<img src=$2 $1|sig
+s|<img (src=(?:(['"])[^>\\\\2]*\2\|[^'">\\\s]+?))([^>]*)\s+width\s*=\s*(["']?)(\d+?)\4|<img $1 width=$4$5$4$3|siUg
+FILTER: banners-by-size Kill banners by size
+s@<img\s+(?:src\s*=\s*(['"]?)([^>\\\1\s]+)\1)?[^>]*?(width=(['"]?)88\4)[^>]*?(height=(['"]?)31\6)[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed-$2-by-size$1 $3 $5>@sig
+s@<img\s+(?:src\s*=\s*(['"]?)([^>\\\1\s]+)\1)?[^>]*?(width=(['"]?)120\4)[^>]*?(height=(['"]?)(?:600?|90|240)\6)[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed-$2-by-size$1 $3 $5>@sig
+s@<img\s+(?:src\s*=\s*(['"]?)([^>\\\1\s]+)\1)?[^>]*?(width=(['"]?)125\4)[^>]*?(height=(['"]?)125\6)[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed-$2-by-size$1 $3 $5>@sig
+s@<img\s+(?:src\s*=\s*(['"]?)([^>\\\1\s]+)\1)?[^>]*?(width=(['"]?)160\4)[^>]*?(height=(['"]?)600\6)[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed-$2-by-size$1 $3 $5>@sig
+s@<img\s+(?:src\s*=\s*(['"]?)([^>\\\1\s]+)\1)?[^>]*?(width=(['"]?)180\4)[^>]*?(height=(['"]?)150\6)[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed-$2-by-size$1 $3 $5>@sig
+s@<img\s+(?:src\s*=\s*(['"]?)([^>\\\1\s]+)\1)?[^>]*?(width=(['"]?)(?:234|468)\4)[^>]*?(height=(['"]?)60\6)[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed-$2-by-size$1 $3 $5>@sig
+s@<img\s+(?:src\s*=\s*(['"]?)([^>\\\1\s]+)\1)?[^>]*?(width=(['"]?)240\4)[^>]*?(height=(['"]?)400\6)[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed-$2-by-size$1 $3 $5>@sig
+s@<img\s+(?:src\s*=\s*(['"]?)([^>\\\1\s]+)\1)?[^>]*?(width=(['"]?)(?:250|300)\4)[^>]*?(height=(['"]?)250\6)[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed-$2-by-size$1 $3 $5>@sig
+s@<img\s+(?:src\s*=\s*(['"]?)([^>\\\1\s]+)\1)?[^>]*?(width=(['"]?)336\4)[^>]*?(height=(['"]?)280\6)[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed-$2-by-size$1 $3 $5>@sig
+FILTER: banners-by-link Kill banners by their links to known clicktrackers
+s@<a\s+href\s*=\s*(['"]?)([^>\1\s]*?(?:\
+  adclick                             # See www.dn.se \
+| atwola\.com/(?:link|redir)          # see www.cnn.com \
+| /jump/                              # redirs for doublecklick.net ads \
+| tracker | counter                   # common \
+| adlog\.pl                           # see sf.net \
+)[^>\1\s]*)\1[^>]*>\s*<img\s+(?:src\s*=\s*(['"]?)([^>\\\3\s]+)\3)?[^>]*((?:width|height)\s*=\s*(['"]?)\d+?\6)[^>]*((?:width|height)\s*=\s*(['"]?)\d+?\8)[^>]*>\
+@<img $5 $7 src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed $4 by link to $2$1>@sigx
+s@<a\s+href\s*=\s*(['"]?)([^>\1\s]*?(?:adclick|atwola\.com/(?:link|redir)|doubleclick\.net/jump/|tracker|counter|adlog\.pl)[^>\1\s]*)\1[^>]*>\s*<img\s+(?:src\s*=\s*(['"]?)([^>\\\3\s]+)\3)?[^>]*>@<img src=$1http://config.privoxy.org/send-banner?type=auto$1 border="0" title=$1Killed $4 by link to $2$1>@sig
+FILTER: webbugs Squish WebBugs (1x1 invisible GIFs used for user tracking)
+s@<img[^>]*\s(?:width|height)\s*=\s*['"]?[01](?=\D)[^>]*\s(?:width|height)\s*=\s*['"]?[01](?=\D)[^>]*?>@@siUg
+FILTER: tiny-textforms Extend those tiny textareas up to 40x80 and kill the hard wrap
+s/(<textarea[^>]*?)(?:\s*(?:rows|cols)=(['"]?)\d+\2)+/$1 rows=$2\40$2 cols=$2\80$2/ig 
+s/(<textarea[^>]*?)wrap=(['"]?)hard\2/$1/ig
+FILTER: jumping-windows Prevent windows from resizing and moving themselves
+s/(?<=[\W])(?:window|this|self)\.(?:move|resize)(?:to|by)\(/''.concat(/ig
+FILTER: frameset-borders Give frames a border and make them resizable
+s/(<frameset\s+[^>]*)framespacing=(['"]?)(no|0)\2/$1/igU
+s/(<frameset\s+[^>]*)frameborder=(['"]?)(no|0)\2/$1/igU
+s/(<frameset\s+[^>]*)border=(['"]?)(no|0)\2/$1/igU
+s/(<frame\s+[^>]*)noresize/$1/igU
+s/(<frame\s+[^>]*)frameborder=(['"]?)(no|0)\2/$1/igU 
+s/(<frame\s+[^>]*)scrolling=(['"]?)(no|0)\2/$1/igU
+FILTER: demoronizer Fix MS's non-standard use of standard charsets
+s/(&\#[0-2]\d\d)\s/$1; /g
+s/\xE2\x80\x94/ -- /g
+s/\x82/,/g
+s/\x84/,,/g
+s/\x85/.../g
+s/\x8B/</g
+s/\x8C/Oe/g
+s/\x91/`/g
+s/\x92/'/g
+s/(\x93|\x94)/"/g
+s/\x95/&middot;/g
+s/\x96/-/g
+s/\x97/--/g
+s/\x9B/>/g                  # 155
+FILTER: shockwave-flash Kill embedded Shockwave Flash objects
+s|<object [^>]*macromedia.*</object>|<!-- Squished Shockwave Object -->|sigU
+s|<embed [^>]*(application/x-shockwave-flash\|\.swf).*>(.*</embed>)?|<!-- Squished Shockwave Flash Embed -->|sigU
+FILTER: quicktime-kioskmode Make Quicktime movies saveable
+s/(<embed\s+[^>]*)kioskmode\s*=\s*(["']?)true\2/$1/ig 
+FILTER: fun Text replacements for subversive browsing fun!
+s/microsoft(?!.[^\s])/MicroSuck/ig
+s* (?:industry|world)[ -]leading \
+|  cutting[ -]edge \
+|  customer[ -]focused \
+|  market[ -]driven \
+|  award[ -]winning # Comments are OK, too! \
+|  high[ -]performance \
+|  solutions[ -]based \
+|  unmatched \
+|  unparalleled \
+|  unrivalled \
+*$0<sup><font color="red"><b>Bingo!</b></font></sup> \
+*igx
+s/(M|m)edien(?![^<]*>)/$1&auml;dchen/Ug
+FILTER: crude-parental Crude parental filtering (demo only)
+s%^.*(?<!middle)(?<!sus)(?<!es)sex.*$%<html><head><title>Blocked</title></head><body><h3>Blocked due to possible adult content. Please see <a href="http://dmoz.org/Kids_and_Teens/">this site</a>.</h3></body></html>%is
+s+^.*warez.*$+<html><head><title>No Warez</title></head><body><h3>You're not searching for illegal stuff, are you?</h3></body></html>+is
+FILTER: ie-exploits Disable some known Internet Explorer bug exploits
+s%f\("javascript:location.replace\('mk:@MSITStore:C:'\)"\);%alert\("This page looks like it tries to use a vulnerability described here:\n http://online.securityfocus.com/archive/1/298748/2002-11-02/2002-11-08/2"\);%siU
+s/(<a[^>]*href[^>]*)(?:\x01|\x02|\x03|%0[012])@/$1MALICIOUS-LINK@/ig
+s%<script language="JavaScript">(window\.open|1;''\.concat)\("readme\.eml", null, "resizable=no,top=6000,left=6000"\)</script>%<br><font size="7"> WARNING: This Server is infected with <a href="http://www.cert.org/advisories/CA-2001-26.html">Nimda</a>!</font>%g
+FILTER: site-specifics Cure for site-specific problems. Don't apply generally!
+s/indexOf\("x11"\)/indexOf("x13")/
+s/mylogfunc()//g
+s|<a href="(.+?)">(?:Continue to message\|Weiter zu Nachricht)</a>|<meta http-equiv="refresh" content="0; URL=$1">|ig
+s|<input type="hidden" name="REDIRECT" value="(.+?)">|<meta http-equiv="refresh" content="0; URL=$1">|i
+ 
+s|<IMG SRC="http://media.monster.com/mm/usen/my/no_thanks_211x40.gif".+?>|<meta http-equiv="refresh" content="0; URL=http://my.monster.com/resume.asp">|i 
+s|(<img [^>]*)onload|$1never|sig
+s|(<INPUT name="\d{2,4}" type="RADIO" value="0") CHECKED |$1|g
+s|<INPUT name="\d{2,4}" type="RADIO" value="3" |$0 checked|g
+FILTER: no-ping Removes non-standard ping attributes in &lt;a> and &lt;area> tags.
+s@(<a(?:rea)?[^>]*?)\sping=(['"]?)([^"'>]+)\2([>\s]?)@\
+<strong style="color:white; background-color:red;" title="Privoxy removed ping target '$3'">PING!</strong>\n$1$4@ig
+FILTER: google CSS-based block for Google text ads. Also removes a width limitation and the toolbar advertisement.
+s@</head>@<style type="text/css">\n\
+ /* Style sheet inserted by Privoxy's google filter. */\n\
+ \#fbc, \#fbl, \#ra, .rhh {visibility: hidden !important;}\n\
+ \#tpa1,\#tpa2,\#tpa3,\#tpa4,\#tpa5,\#tpa5, \#spl, .ch, \#ads,\
+ \#toolbar, \#google_ads_frame{display: none !important;}\n\
+ .main_body, .j {width: 100%}\n</style>\n$0@
+s@<div style=\"padding-top:11px;min-width:500px\">@<div id="main_body">@
+s@(<table cellspacing=0 cellpadding=0 width=25% align=right bgcolor=\#ffffff border=0\
+|</font></td></tr></tbody></table><table align=\"right\" bgcolor=\"\#ffffff\"\
+|<table cellspacing=0 cellpadding=0 align=right bgcolor=\#ffffff border=0\
+|<table style=\"clear:both\" align=right width=25% cellspacing=\"0\" cellpadding=\"0\"\
+ border=\"0\" bgcolor=\"\#ffffff\")@$0 id="ads"@
+s@(<br clear=all><table)( border=0 cellpadding=9><tr><td)@$1 id="toolbar"$2@
+FILTER: yahoo CSS-based block for Yahoo text ads. Also removes a width limitation.
+s@</head>@\n<style type="text/css">\n\
+ /* Style sheet inserted by Privoxy's yahoo filter. */\n\
+ \#symadbn, \#ymadbn, .yschbox, \#yschsec, .yschhd, \#yschanswr, .yschftad,\
+ .yschspn, .yschspns, \#ygrp-sponsored-links {display: none !important;}\n\
+ \#yschpri, \#yschweb {width: 100% !important; max-width: 100% !important;}\n\
+ \#yschqcon, \#yschtg {width: auto !important; /* No useless horizontal scrollbar please */}\n\
+</style>\n$0@
+FILTER: msn CSS-based block for MSN text ads. Also removes tracking URLs and a width limitation.
+s@</head>@<style type="text/css">\n\
+ /* Style sheet inserted by Privoxy's msn filter. */\n\
+ .msn_ads {display: none !important;}\n\
+ \#results, .flank, .results_area_flank, .results_area_stroke, .SearchSection .not\
+ {width: 99% /*!important*/; min-width: 99% !important;\
+ max-width: 100% !important; /* width:100% sometimes causes horizontal scrollbars */}\n\
+ /* Make continue links harder to miss */\n\
+ \#pagination_bottom a {padding: .3em .5em .3em .5em; border: 1px solid \#e6e6e6;}\n\
+ \#pagination_bottom li, \#pagination_bottom li .selected, li .nextPage \
+ {margin: 0 !important; cursor: auto; border: none; padding:.1em;}\n\
+ \#pagination_bottom li .prevPage {padding-right: 1.5em !important;}\n\
+ \#pagination_bottom li .selected {border: none;}\n\
+ .selected a {background-color: \#d2eaf6; border: 1px solid \#b7d8ee;}\n\
+ /* Remove "suggestions". They are next to worthless but partly overlap with the search results */\n\
+ .suggestion, \#nys_right {clear: both; display:none;}\n\
+ </style>\n$0@
+s@(<div[^>]*) id=(["']?)ads_[^\2]*\2@$1 class="msn_ads"@Uig
+s@(<a[^>]*href=\")http://g.msn.com/.*\?(http://.*)(&amp;&amp;DI=.*)(\")@$1$2$4@Ug
+s@(<a[^>]*)gping=\".*\"@$1 title="URL cleaned up by Privoxy's msn filter"@Ug
+FILTER: blogspot Cleans up some Blogspot blogs. Read the fine print before using this.
+s@</head>@<style type="text/css">\n\
+ /* Style sheet inserted by Privoxy's blogspot filter. */\n\
+ \#powered-by {display: none !important;}\n\
+ \#wrap4, \#wrapper {margin-top: 0px }\n\
+ \#blogheader, \#header {margin-top: 0.5em !important}\n\
+ \#content {width: 98% }\n\
+ \#main {width: 70% }\n\
+ \#sidebar {width: 29% }\n\
+ .post-body {overflow: auto;}\n\
+ .blogComments {width: 100%; overflow: auto;}\n</style>\n$0@
+s@<body.*(?:<div id="space-for-ie"></div>|(<div id="(?:content|wrap4|wrapper)))@<body>\
+ <!-- Privoxy's blogspot filter ditched some garbage here -->$1@Us
+s@(<div style=\"[^\"]*width:)30em@$1 100%@
+s@background:url\(\"http://www.blogblog.com/rounders[^\"]*\"\).*;@/*$0*/@Ug
+s@(background:\#[a-f\d]{3})( url\(\"http://www.blogblog.com/rounders[^\"]*\"\).*;)@$1 ;/*$2*/@Ug
+FILTER: x-httpd-php-to-html Header filter to change the Content-Type from x-httpd-php to html.
+s@^(Content-Type:) application/x-httpd-php@$1 text/html@
+FILTER: html-to-xml Header filter to change the Content-Type from html to xml.
+s@^(Content-Type:) text/html(;.*)?$@$1 application/xhtml+xml$2@
+FILTER: xml-to-html Header filter to change the Content-Type from xml to html.
+s@^(Content-Type:) (?:application|text)/(?:xhtml\+)?xml(;.*)?$@$1 text/html$2@
+FILTER: hide-tor-exit-notation Header filter to remove the Tor exit node notation in Host and Referer headers.
+s@^((?:Referer|Host):\s*(?:https?://)?[^/]*)\.[^\./]*?\.exit@$1@i

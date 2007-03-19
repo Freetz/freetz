@@ -1,0 +1,439 @@
+menu "classpath"
+
+config DS_LIB_libjavaio
+	bool "libjavaio.so"
+	default n
+
+config DS_LIB_libjavalang
+	bool "libjavalang.so"
+	default n
+
+config DS_LIB_libjavareflect
+	bool "libjavareflect.so"
+	default n
+
+config DS_LIB_libjavanet
+	bool "libjavanet.so"
+	default n
+
+config DS_LIB_libjavanio
+	bool "libjavanio.so"
+	default n
+
+config DS_LIB_libjavautil
+	bool "libjavautil.so"
+	default n
+
+endmenu
+
+config DS_LIB_libgcc_s
+	bool "libgcc_s.so.1"
+	default n
+
+menu "uClibc"
+
+config DS_LIB_ld_uClibc
+	bool "ld-uClibc-0.9.28.so"
+	default n
+
+config DS_LIB_libcrypt
+	bool "libcrypt-0.9.28.so"
+	default n
+
+config DS_LIB_libdl
+	bool "libdl-0.9.28.so"
+	default n
+
+config DS_LIB_libm
+	bool "libm-0.9.28.so"
+	default n
+
+config DS_LIB_libnsl
+	bool "libnsl-0.9.28.so"
+	default n
+
+config DS_LIB_libpthread
+	bool "libpthread-0.9.28.so"
+	default n
+
+config DS_LIB_libresolv
+	bool "libresolv-0.9.28.so"
+	default n
+
+config DS_LIB_libuClibc
+	bool "libuClibc-0.9.28.so"
+	default n
+
+config DS_LIB_libutil
+	bool "libutil-0.9.28.so"
+	default n
+
+endmenu
+
+menu "uClibc++"
+
+config DS_LIB_libuClibcxx
+	bool "libuClibc++-0.2.1.so"
+	default n
+
+endmenu
+
+menu "ffi-sable"
+
+config DS_LIB_libffi
+	bool "libffi.so"
+	default n
+	
+endmenu
+
+menu "fuse"
+
+config DS_LIB_libfuse
+	bool "libfuse.so"
+	default n
+	
+endmenu
+
+menu "iptables"
+depends on DS_REPLACE_KERNEL
+
+config DS_LIB_libipt_addrtype
+	bool "libipt_addrtype.so"
+	default n
+
+config DS_LIB_libipt_ah
+	bool "libipt_ah.so"
+	default n
+
+config DS_LIB_libipt_CLASSIFY
+	bool "libipt_CLASSIFY.so"
+	default n
+
+config DS_LIB_libipt_comment
+	bool "libipt_comment.so"
+	default n
+
+config DS_LIB_libipt_connlimit
+	bool "libipt_connlimit.so"
+	default n
+
+config DS_LIB_libipt_connmark
+	bool "libipt_connmark.so"
+	default n
+
+config DS_LIB_libipt_CONNMARK
+	bool "libipt_CONNMARK.so"
+	default n
+
+config DS_LIB_libipt_conntrack
+	bool "libipt_conntrack.so"
+	default n
+
+config DS_LIB_libipt_DNAT
+	bool "libipt_DNAT.so"
+	default n
+
+config DS_LIB_libipt_dscp
+	bool "libipt_dscp.so"
+	default n
+
+config DS_LIB_libipt_DSCP
+	bool "libipt_DSCP.so"
+	default n
+
+config DS_LIB_libipt_ecn
+	bool "libipt_ecn.so"
+	default n
+
+config DS_LIB_libipt_ECN
+	bool "libipt_ECN.so"
+	default n
+
+config DS_LIB_libipt_esp
+	bool "libipt_esp.so"
+	default n
+
+config DS_LIB_libipt_hashlimit
+	bool "libipt_hashlimit.so"
+	default n
+
+config DS_LIB_libipt_helper
+	bool "libipt_helper.so"
+	default n
+
+config DS_LIB_libipt_icmp
+	bool "libipt_icmp.so"
+	default n
+
+config DS_LIB_libipt_ipp2p
+	bool "libipt_ipp2p.so"
+	default n
+
+config DS_LIB_libipt_iprange
+	bool "libipt_iprange.so"
+	default n
+
+config DS_LIB_libipt_length
+	bool "libipt_length.so"
+	default n
+
+config DS_LIB_libipt_limit
+	bool "libipt_limit.so"
+	default n
+
+config DS_LIB_libipt_LOG
+	bool "libipt_LOG.so"
+	default n
+
+config DS_LIB_libipt_mac
+	bool "libipt_mac.so"
+	default n
+
+config DS_LIB_libipt_mark
+	bool "libipt_mark.so"
+	default n
+
+config DS_LIB_libipt_MARK
+	bool "libipt_MARK.so"
+	default n
+
+config DS_LIB_libipt_MASQUERADE
+	bool "libipt_MASQUERADE.so"
+	default n
+
+config DS_LIB_libipt_MIRROR
+	bool "libipt_MIRROR.so"
+	default n
+
+config DS_LIB_libipt_multiport
+	bool "libipt_multiport.so"
+	default n
+
+config DS_LIB_libipt_NETMAP
+	bool "libipt_NETMAP.so"
+	default n
+
+config DS_LIB_libipt_NFQUEUE
+	bool "libipt_NFQUEUE.so"
+	default n
+
+config DS_LIB_libipt_NOTRACK
+	bool "libipt_NOTRACK.so"
+	default n
+
+config DS_LIB_libipt_owner
+	bool "libipt_owner.so"
+	default n
+
+config DS_LIB_libipt_physdev
+	bool "libipt_physdev.so"
+	default n
+
+config DS_LIB_libipt_pkttype
+	bool "libipt_pkttype.so"
+	default n
+
+config DS_LIB_libipt_policy
+	bool "libipt_policy.so"
+	default n
+
+config DS_LIB_libipt_realm
+	bool "libipt_realm.so"
+	default n
+
+config DS_LIB_libipt_REDIRECT
+	bool "libipt_REDIRECT.so"
+	default n
+
+config DS_LIB_libipt_REJECT
+	bool "libipt_REJECT.so"
+	default n
+
+config DS_LIB_libipt_rpc
+	bool "libipt_rpc.so"
+	default n
+
+config DS_LIB_libipt_SAME
+	bool "libipt_SAME.so"
+	default n
+
+config DS_LIB_libipt_sctp
+	bool "libipt_sctp.so"
+	default n
+
+config DS_LIB_libipt_SNAT
+	bool "libipt_SNAT.so"
+	default n
+
+config DS_LIB_libipt_standard
+	bool "libipt_standard.so"
+	default n
+
+config DS_LIB_libipt_state
+	bool "libipt_state.so"
+	default n
+
+config DS_LIB_libipt_TARPIT
+	bool "libipt_TARPIT.so"
+	default n
+
+config DS_LIB_libipt_tcpmss
+	bool "libipt_tcpmss.so"
+	default n
+
+config DS_LIB_libipt_TCPMSS
+	bool "libipt_TCPMSS.so"
+	default n
+
+config DS_LIB_libipt_tcp
+	bool "libipt_tcp.so"
+	default n
+
+config DS_LIB_libipt_tos
+	bool "libipt_tos.so"
+	default n
+
+config DS_LIB_libipt_TOS
+	bool "libipt_TOS.so"
+	default n
+
+config DS_LIB_libipt_TRACE
+	bool "libipt_TRACE.so"
+	default n
+
+config DS_LIB_libipt_ttl
+	bool "libipt_ttl.so"
+	default n
+
+config DS_LIB_libipt_TTL
+	bool "libipt_TTL.so"
+	default n
+
+config DS_LIB_libipt_udp
+	bool "libipt_udp.so"
+	default n
+
+config DS_LIB_libipt_ULOG
+	bool "libipt_ULOG.so"
+	default n
+
+config DS_LIB_libipt_unclean
+	bool "libipt_unclean.so"
+	default n
+
+endmenu
+
+menu "jpeg2"
+
+config DS_LIB_libjpeg
+	bool "libjpeg.so"
+	default n
+endmenu
+menu "libgpg-error"
+
+config DS_LIB_libgpg_error
+	bool "libgpg-error.so"
+	default n
+
+endmenu
+
+menu "libgcrypt"
+
+config DS_LIB_libgcrypt
+	bool "libgcrypt.so"
+	select DS_LIB_libgpg_error
+	select DS_LIB_libnsl
+	default n
+
+endmenu
+
+
+menu "ntfs-3g"
+
+config DS_LIB_libntfs
+	bool "libntfs-3g.so"
+	default n
+
+endmenu
+
+menu "lzo2"
+
+config DS_LIB_liblzo2
+	bool "liblzo2.so"
+	default n
+
+endmenu
+
+menu "libevent"
+
+config DS_LIB_libevent
+	bool "libevent.so"
+	default n
+endmenu
+
+menu "mad"
+
+config DS_LIB_libmad
+	bool "libmad.so"
+	default n
+
+endmenu
+
+menu "libncurses"
+
+config DS_LIB_libncurses
+	bool "libncurses.so"
+	default n
+
+endmenu
+
+menu "libpcap"
+
+config DS_LIB_libpcap
+	bool "libpcap.so"
+	default n
+
+endmenu
+
+menu "matrixssl"
+
+config DS_LIB_libmatrixssl
+	bool "libmatrixssl.so"
+	select DS_LIB_libpthread
+	default n
+
+endmenu
+
+menu "openssl"
+
+config DS_LIB_libcrypto
+	bool "libcrypto.so"
+	default n
+
+config DS_LIB_libssl
+	bool "libssl.so"
+	select DS_LIB_libcrypto
+	default n
+
+endmenu
+
+menu "readline"
+
+config DS_LIB_libreadline
+	bool "libreadline.so"
+	default n
+
+config DS_LIB_libhistory
+	bool "libhistory.so"
+	default n
+	select DS_LIB_libreadline
+
+endmenu
+
+menu "zlib"
+
+config DS_LIB_libz
+	bool "libz.so"
+	default n
+
+endmenu

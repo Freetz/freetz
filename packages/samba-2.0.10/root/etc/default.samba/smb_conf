@@ -1,0 +1,50 @@
+#!/bin/sh
+
+cat << EOF
+[global]
+interfaces=$SAMBA_INTERFACES
+guest account=samba
+workgroup=$SAMBA_WORKGROUP
+netbios name=$SAMBA_NETBIOS_NAME
+server string=$SAMBA_SERVER_STRING
+null passwords=yes
+security=share
+preferred master=$SAMBA_MASTER
+os level=$SAMBA_OS_LEVEL
+log level=2
+character set=ISO8859-1
+client code page=850
+EOF
+
+if [ "$SAMBA_DEFAULT_SHARE" = "yes" ]; then
+cat << EOF
+[$(lang de:"freigabe" en:"share")]
+comment=$(lang de:"Standard Freigabe" en:"Default share")
+path=/mod/home/samba
+guest ok=yes
+read only=no
+EOF
+fi
+
+if [ -r "/tmp/flash/samba/shares" ]; then
+	cat /tmp/flash/samba/shares | grep -v "^#" | while read -r path name gk ro comment; do
+		if [ -n "$path" -a -n "$name" -a -d "$path" ]; then
+			case "$gk" in
+				1|y|yes|Y|YES)  gk="yes" ;;
+				0|n|no|N|NO|"") gk="no"  ;;
+			esac
+			case "$ro" in
+				1|y|yes|Y|YES)  ro="yes" ;;
+				0|n|no|N|NO|"") ro="no"  ;;
+			esac
+
+			cat << EOF
+[$name]
+comment=$comment
+path=$path
+guest ok=$gk
+read only=$ro
+EOF
+		fi
+	done
+fi

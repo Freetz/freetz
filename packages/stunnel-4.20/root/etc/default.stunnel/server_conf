@@ -1,0 +1,35 @@
+#!/bin/sh
+
+echo "# stunnel Server Config"
+
+cat <<EOF
+pid = /var/run/stunnel-server.pid
+foreground = no
+
+EOF
+
+cat <<EOF
+client = no
+
+EOF
+
+if [ ! -z "$STUNNEL_SSLOPTIONS" ]; then
+	echo "options = $STUNNEL_SSLOPTIONS"
+fi
+
+cat <<EOF
+RNDbytes = 1024
+RNDfile = /var/tmp/.stunnel_server_rnd
+RNDoverwrite = yes
+
+socket = a:TCP_NODELAY=1
+
+EOF
+
+if [ ! -z "$STUNNEL_VERBOSE" ]; then
+	echo "debug = $STUNNEL_VERBOSE"
+fi
+
+cat <<EOF
+
+EOF

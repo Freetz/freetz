@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# Usage: modload [force]
+
+TMPFILE=/tmp/.load.tmp.$$
+
+trap "rm -f $TMPFILE" EXIT
+
+[ -d "/tmp/flash" -a "$1" != "force" ] && exit 0
+
+echo -n 'Loading /var/flash/ds_mod...'
+if cat /var/flash/ds_mod > $TMPFILE 2> /dev/null; then
+	if tar -xf $TMPFILE -C /tmp/ 2> /dev/null; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit 1
+	fi
+else
+	echo 'does not exist.'
+	echo -n 'Creating /var/flash/ds_mod...'
+	[ -d "/tmp/flash" ] || mkdir -p /tmp/flash
+	tar -cf - flash -C /tmp/ > /var/flash/ds_mod
+	echo 'done.'
+fi
+
+[ -e "/mod/etc/default.mod" ] || ln -s /etc/default.mod /mod/etc/default.mod
+[ -e "/mod/usr/lib/cgi-bin/mod" ] || ln -s /usr/lib/cgi-bin/mod /mod/usr/lib/cgi-bin/mod
+
+echo -n 'Loading passwords...'
+/usr/bin/modpasswd load
+echo 'done.'
+
+echo -n 'Loading hosts...'
+/usr/bin/modhosts load
+echo 'done.'
+
+echo -n 'Loading config...'
+/usr/bin/modconf load mod
+if [ -e "/etc/static.pkg" ]; then
+	for pkg in $(cat /etc/static.pkg); do
+		[ -e "/mod/pkg/$pkg" ] || ln -s / /mod/pkg/$pkg
+		[ -d "/etc/default.$pkg" -a ! -e "/mod/etc/default.$pkg" ] && \
+			ln -s /etc/default.$pkg /mod/etc/default.$pkg
+		[ -d "/usr/lib/cgi-bin/$pkg" -a ! -e "/mod/usr/lib/cgi-bin/$pkg" ] && \
+			ln -s /usr/lib/cgi-bin/$pkg /mod/usr/lib/cgi-bin/$pkg
+		[ -x "/usr/lib/cgi-bin/$pkg.cgi" -a ! -e "/mod/usr/lib/cgi-bin/$pkg.cgi" ] && \
+			ln -s /usr/lib/cgi-bin/$pkg.cgi /mod/usr/lib/cgi-bin/$pkg.cgi
+		[ -x "/etc/init.d/rc.$pkg" -a ! -e "/mod/etc/init.d/rc.$pkg" ] && \
+			ln -s /etc/init.d/rc.$pkg /mod/etc/init.d/rc.$pkg
+		[ -r "/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load $pkg
+	done
+fi
+echo 'done.'
+
+echo -n 'Loading modules...'
+# firewall-cgi workaround
+netfilterdir=/lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/net/ipv4/netfilter
+[ -f "$netfilterdir/ip_tables.o" ] && modprobe ip_tables
+[ -f "$netfilterdir/ip_conntrack.o" ] && modprobe ip_conntrack
+
+if [ -r "/tmp/flash/modules" ]; then
+	cat /tmp/flash/modules | grep -v "^#" | while read -r module; do
+		[ -z "$module" ] || modprobe $module
+	done
+fi
+echo 'done.'
+
+exit 0

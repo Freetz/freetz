@@ -1,0 +1,64 @@
+--- lynx2-8-5.orig/src/chrtrans/makefile.in	2004-01-08 03:03:09.000000000 +0100
++++ lynx2-8-5/src/chrtrans/makefile.in	2007-03-02 13:00:37.721024805 +0100
+@@ -15,7 +15,9 @@
+ top_builddir	= ../..
+ 
+ LIBS		= @LIBS@ $(SITE_LIBS)
++HOSTLIBS	= #
+ LDFLAGS		= @LDFLAGS@
++HOSTLDFLAGS	= #
+ 
+ INTLLIB		= @INTLDIR_MAKE@@INTLLIBS@
+ 
+@@ -27,6 +29,12 @@
+ CC		= @CC@
+ CPP		= @CPP@
+ CFLAGS		= @CFLAGS@
++HOSTCC		= gcc
++HOSTCPP		= gcc -E
++HOSTLD		= ld
++HOSTCFLAGS	= -Os -W -Wall -pipe -Wbad-function-cast -Wcast-align -Wcast-qual -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wshadow -Wstrict-prototypes -Wundef
++HOSTDEFS	= -DHAVE_CONFIG_H
++HOSTCPPFLAGS	= -DLINUX -D_GNU_SOURCE
+ 
+ x		= @EXEEXT@
+ o		= .@OBJEXT@
+@@ -40,6 +48,15 @@
+ 		$(INTLDIR_CPPFLAGS) $(SITE_DEFS)
+ CC_OPTS		= $(CPP_OPTS) $(CFLAGS)
+ 
++HOSTCPP_OPTS	= $(HOSTDEFS) $(HOSTCPPFLAGS) \
++		-I$(top_builddir) \
++		-I$(top_srcdir)/src \
++		-I$(top_srcdir)/src/chrtrans \
++		-I$(top_srcdir)/$(WWWINC) \
++		-I$(top_srcdir)/ \
++		$(INTLDIR_CPPFLAGS) $(SITE_DEFS)
++HOSTCC_OPTS	= $(HOSTCPP_OPTS) $(HOSTCFLAGS)
++
+ #
+ # This file contains the font map for the default (hardware) font
+ #
+@@ -97,7 +114,7 @@
+ tables: $(TABLES)
+ 
+ makeuctb$x: makeuctb$o
+-	$(CC) $(CC_OPTS) $(LDFLAGS) -o $@ makeuctb$o $(INTLLIB) $(LIBS)
++	$(HOSTCC) $(HOSTCC_OPTS) $(HOSTLDFLAGS) -o $@ makeuctb$o $(INTLLIB) $(HOSTLIBS)
+ 
+ makeuctb$o: $(srcdir)/UCkd.h $(srcdir)/makeuctb.c
+ 
+@@ -105,11 +122,11 @@
+ 
+ .c$o:
+ @RULE_CC@
+-	@ECHO_CC@$(CC) $(CC_OPTS) -c $(srcdir)/$*.c
++	@ECHO_CC@$(HOSTCC) $(HOSTCC_OPTS) -c $(srcdir)/$*.c
+ 
+ .c.i:
+ @RULE_CC@
+-	@ECHO_CC@$(CPP) -C $(CPP_OPTS) $(srcdir)/$*.c >$@
++	@ECHO_CC@$(HOSTCPP) -C $(HOSTCPP_OPTS) $(srcdir)/$*.c >$@
+ 
+ .tbl.h:
+ 	./makeuctb$x $(srcdir)/$*.tbl $*.h
