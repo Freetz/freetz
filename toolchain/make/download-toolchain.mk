@@ -2,7 +2,7 @@ KERNEL_TOOLCHAIN_VERSION:=0.1
 TARGET_TOOLCHAIN_VERSION:=0.1
 TARGET_TOOLCHAIN_SOURCE:=target-toolchain-dsmod-$(TARGET_TOOLCHAIN_VERSION).tar.lzma
 KERNEL_TOOLCHAIN_SOURCE:=kernel-toolchain-dsmod-$(KERNEL_TOOLCHAIN_VERSION).tar.lzma
-TOOLCHAIN_SITE:=
+TOOLCHAIN_SITE:=https://dsmod.wirsind.info/precompiled
 
 
 $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE):
@@ -27,6 +27,7 @@ $(TOOLCHAIN_DIR)/target/.installed: $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) $(TOOLS
 
 ifeq ($(strip $(DS_DOWNLOAD_TOOLCHAIN)),y)
 toolchain-dirclean:
+	rm -rf $(TOOLCHAIN_DIR)/build
 	rm -rf $(TOOLCHAIN_DIR)/kernel
 	rm -rf $(TOOLCHAIN_DIR)/target
 endif

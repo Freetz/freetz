@@ -17,7 +17,7 @@ case "$1" in
 esac
 
 pidfile() {
-	ps | grep " $DAEMON -p $MOD_HTTPD_PORT" | grep -v grep | awk '{print $1}' | head -1 > /var/run/$DAEMON.pid
+	ps | grep " $DAEMON -p $MOD_HTTPD_PORT" | grep -v grep | sed -r 's/ *([0-9]+).*/\1/' | head -1 > /var/run/$DAEMON.pid
 }
 
 start() {
