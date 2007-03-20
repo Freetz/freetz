@@ -23,7 +23,8 @@ $(TCPDUMP_DIR)/.unpacked: $(DL_DIR)/$(TCPDUMP_SOURCE)
 	done
 	touch $@
 
-$(TCPDUMP_DIR)/.configured: libpcap $(TCPDUMP_DIR)/.unpacked
+$(TCPDUMP_DIR)/.configured: $(TCPDUMP_DIR)/.unpacked \
+			    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so
 	( cd $(TCPDUMP_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		BUILD_CC="$(TARGET_CC)" \

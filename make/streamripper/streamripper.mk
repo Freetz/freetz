@@ -23,7 +23,8 @@ $(STREAMRIPPER_DIR)/.unpacked: $(DL_DIR)/$(STREAMRIPPER_SOURCE)
 	done
 	touch $@
 
-$(STREAMRIPPER_DIR)/.configured: mad $(STREAMRIPPER_DIR)/.unpacked
+$(STREAMRIPPER_DIR)/.configured: $(STREAMRIPPER_DIR)/.unpacked \
+				 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so
 	( cd $(STREAMRIPPER_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \

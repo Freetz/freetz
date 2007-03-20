@@ -23,7 +23,8 @@ $(KNOCK_DIR)/.unpacked: $(DL_DIR)/$(KNOCK_SOURCE)
 	#done
 	touch $@
 
-$(KNOCK_DIR)/.configured: libpcap $(KNOCK_DIR)/.unpacked
+$(KNOCK_DIR)/.configured: $(KNOCK_DIR)/.unpacked \
+			  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so
 	( cd $(KNOCK_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/include -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \

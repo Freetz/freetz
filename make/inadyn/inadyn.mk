@@ -30,8 +30,6 @@ $(INADYN_DIR)/$(INADYN_TARGET_BINARY): $(INADYN_DIR)/.unpacked
 	LDFLAGS="-static-libgcc" \
 	-C $(INADYN_DIR)/inadyn 
 
-
-
 $(PACKAGES_DIR)/.$(INADYN_PKG_NAME): $(DL_DIR)/$(INADYN_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(INADYN_PKG_SOURCE)
 	@touch $@

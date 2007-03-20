@@ -22,7 +22,9 @@ $(VPNC_DIR)/.unpacked: $(DL_DIR)/$(VPNC_SOURCE)
 	done
 	touch $@
 
-$(VPNC_DIR)/$(VPNC_TARGET_BINARY): $(VPNC_DIR)/.unpacked libgpg-error libgcrypt
+$(VPNC_DIR)/$(VPNC_TARGET_BINARY):  $(VPNC_DIR)/.unpacked \
+				    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt.so \
+				    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so 
 	PATH=$(TARGET_PATH) \
 	$(MAKE) CC="$(TARGET_CC)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include" \

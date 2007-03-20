@@ -42,7 +42,8 @@ $(LYNX_DIR)/.unpacked: $(DL_DIR)/$(LYNX_SOURCE)
 	done
 	touch $@
 
-$(LYNX_DIR)/.configured: $(LYNX_DIR)/.unpacked ncurses
+$(LYNX_DIR)/.configured: $(LYNX_DIR)/.unpacked \
+			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
 	( cd $(LYNX_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \

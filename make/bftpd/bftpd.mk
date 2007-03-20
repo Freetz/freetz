@@ -32,7 +32,8 @@ $(BFTPD_DIR)/.unpacked: $(DL_DIR)/$(BFTPD_SOURCE)
 	done
 	touch $@
 
-$(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked zlib
+$(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked \
+			  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so
 	( cd $(BFTPD_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \

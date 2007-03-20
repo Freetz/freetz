@@ -24,7 +24,8 @@ $(MATRIXTUNNEL_DIR)/.unpacked: $(DL_DIR)/$(MATRIXTUNNEL_SOURCE)
 #	done
 	touch $@
 
-$(MATRIXTUNNEL_DIR)/.configured: $(MATRIXTUNNEL_DIR)/.unpacked matrixssl
+$(MATRIXTUNNEL_DIR)/.configured: $(MATRIXTUNNEL_DIR)/.unpacked \
+				 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
 	( cd $(MATRIXTUNNEL_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \

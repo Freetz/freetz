@@ -25,7 +25,9 @@ $(JAMVM_DIR)/.unpacked: $(DL_DIR)/$(JAMVM_SOURCE)
 	done
 	touch $@
 
-$(JAMVM_DIR)/.configured: ffi-sable classpath $(JAMVM_DIR)/.unpacked
+$(JAMVM_DIR)/.configured: $(JAMVM_DIR)/.unpacked \
+			  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so \
+			  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
 	( cd $(JAMVM_DIR); rm -f config.status; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \

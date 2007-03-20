@@ -21,7 +21,8 @@ $(NTFS_DIR)/.unpacked: $(DL_DIR)/$(NTFS_SOURCE)
 	done
 	touch $@
 
-$(NTFS_DIR)/.configured: fuse $(NTFS_DIR)/.unpacked
+$(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked \
+			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so
 	(cd $(NTFS_DIR); rm -f config.cache; \
 		touch configure.in ; \
 		touch aclocal.m4 ; \

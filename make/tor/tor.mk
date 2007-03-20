@@ -25,7 +25,9 @@ $(TOR_DIR)/.unpacked: $(DL_DIR)/$(TOR_SOURCE)
 	done
 	touch $@
 
-$(TOR_DIR)/.configured: openssl libevent $(TOR_DIR)/.unpacked
+$(TOR_DIR)/.configured: $(TOR_DIR)/.unpacked \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.so \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so
 	( cd $(TOR_DIR); rm -f config.status; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
