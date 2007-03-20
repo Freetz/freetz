@@ -64,7 +64,7 @@ $(PACKAGES_DIR)/.mc-$(MC_VERSION): $(DL_DIR)/$(MC_PKG_SOURCE)
 mc: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
 
 mc-package: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(MC_PKG_SOURCE) mc-$(MC_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(MC_PKG_SOURCE) mc-$(MC_VERSION)
 
 mc-precompiled: $(MC_DIR)/src/$(MC_TARGET_BINARY) mc
 	$(TARGET_STRIP) $(MC_DIR)/src/$(MC_TARGET_BINARY)

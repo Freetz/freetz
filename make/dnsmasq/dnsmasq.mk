@@ -31,7 +31,7 @@ $(DNSMASQ_DIR)/$(DNSMASQ_TARGET_BINARY): $(DNSMASQ_DIR)/.unpacked
 		-C $(DNSMASQ_DIR)
 
 $(PACKAGES_DIR)/.dnsmasq-$(DNSMASQ_VERSION): $(DL_DIR)/$(DNSMASQ_PKG_SOURCE)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(DNSMASQ_PKG_SOURCE)
+	@tar -C $(PACKAGES_DIR) --exclude .svn -xjf $(DL_DIR)/$(DNSMASQ_PKG_SOURCE)
 	@touch $@
 
 dnsmasq: $(PACKAGES_DIR)/.dnsmasq-$(DNSMASQ_VERSION)

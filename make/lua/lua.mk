@@ -40,7 +40,7 @@ $(PACKAGES_DIR)/.lua-$(LUA_VERSION): $(DL_DIR)/$(LUA_PKG_SOURCE)
 lua: $(PACKAGES_DIR)/.lua-$(LUA_VERSION)
 
 lua-package: $(PACKAGES_DIR)/.lua-$(LUA_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(LUA_PKG_SOURCE) lua-$(LUA_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LUA_PKG_SOURCE) lua-$(LUA_VERSION)
 
 
 lua-precompiled: $(LUA_DIR)/$(LUA_TARGET_BINARY) lua

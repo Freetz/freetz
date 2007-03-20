@@ -109,7 +109,7 @@ $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION): $(DL_DIR)/$(SAMBA_PKG_SOURCE)
 samba: $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 
 samba-package: $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(SAMBA_PKG_SOURCE) samba-$(SAMBA_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(SAMBA_PKG_SOURCE) samba-$(SAMBA_VERSION)
 
 samba-precompiled: $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_NMBD_BINARY) samba
 	$(TARGET_STRIP) $(SAMBA_DIR)/source/bin/*

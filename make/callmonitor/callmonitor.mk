@@ -12,7 +12,7 @@ $(PACKAGES_DIR)/.callmonitor-$(CALLMONITOR_VERSION): $(DL_DIR)/$(CALLMONITOR_PKG
 callmonitor: $(PACKAGES_DIR)/.callmonitor-$(CALLMONITOR_VERSION)
 
 callmonitor-package: $(PACKAGES_DIR)/.callmonitor-$(CALLMONITOR_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(CALLMONITOR_PKG_SOURCE) callmonitor-$(CALLMONITOR_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CALLMONITOR_PKG_SOURCE) callmonitor-$(CALLMONITOR_VERSION)
 
 callmonitor-precompiled:
 

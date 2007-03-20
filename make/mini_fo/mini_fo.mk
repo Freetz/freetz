@@ -12,7 +12,7 @@ $(PACKAGES_DIR)/.mini_fo-$(MINI_FO_VERSION): $(DL_DIR)/$(MINI_FO_PKG_SOURCE)
 mini_fo: $(PACKAGES_DIR)/.mini_fo-$(MINI_FO_VERSION)
 
 mini_fo-package: $(PACKAGES_DIR)/.mini_fo-$(MINI_FO_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(MINI_FO_PKG_SOURCE) mini_fo-$(MINI_FO_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(MINI_FO_PKG_SOURCE) mini_fo-$(MINI_FO_VERSION)
 
 mini_fo-precompiled:
 

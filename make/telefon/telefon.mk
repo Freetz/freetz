@@ -13,7 +13,7 @@ $(PACKAGES_DIR)/.telefon-$(TELEFON_VERSION): $(DL_DIR)/$(TELEFON_PKG_SOURCE)
 telefon: $(PACKAGES_DIR)/.telefon-$(TELEFON_VERSION)
 
 telefon-package: $(PACKAGES_DIR)/.telefon-$(TELEFON_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(TELEFON_PKG_SOURCE) telefon-$(TELEFON_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TELEFON_PKG_SOURCE) telefon-$(TELEFON_VERSION)
 
 telefon-precompiled:
 

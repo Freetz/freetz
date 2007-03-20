@@ -43,7 +43,7 @@ inadyn-precompiled: $(INADYN_DIR)/$(INADYN_TARGET_BINARY) inadyn
 	cp $(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY) $(INADYN_TARGET_DIR)/
 
 inadyn-package: $(PACKAGES_DIR)/.$(INADYN_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(INADYN_PKG_SOURCE) $(INADYN_PKG_NAME) 
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(INADYN_PKG_SOURCE) $(INADYN_PKG_NAME) 
 
 inadyn-source: $(INADYN_DIR)/.unpacked $(PACKAGES_DIR)/.$(INADYN_PKG_NAME)
 

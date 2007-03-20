@@ -22,7 +22,6 @@ $(DECO_DIR)/.unpacked: $(DL_DIR)/$(DECO_SOURCE)
 		patch -d $(DECO_DIR) -p1 < $$i; \
 	done
 	touch $@
-
 $(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked $(TARGET_MAKE_PATH)/../usr/lib/libncurses.so
 	( cd $(DECO_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -56,7 +55,7 @@ $(DECO_DIR)/$(DECO_TARGET_BINARY): $(DECO_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(DECO_DIR)
 
 $(PACKAGES_DIR)/.deco-$(DECO_VERSION): $(DL_DIR)/$(DECO_PKG_SOURCE)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(DECO_PKG_SOURCE)
+	@tar -C $(PACKAGES_DIR) --exclude .svn -xjf $(DL_DIR)/$(DECO_PKG_SOURCE)
 	@touch $@
 
 deco: $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
