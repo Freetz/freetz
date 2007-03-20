@@ -23,7 +23,7 @@ $(DECO_DIR)/.unpacked: $(DL_DIR)/$(DECO_SOURCE)
 	done
 	touch $@
 $(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked \
-			 $(TARGET_TOOLCHAIN_DIR)/usr/lib/libncurses.so
+			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
 	( cd $(DECO_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
