@@ -43,8 +43,8 @@ $(BIRD_DIR)/.unpacked: $(DL_DIR)/$(BIRD_SOURCE)
 	touch $@
 
 $(BIRD_DIR)/.configured: $(BIRD_DIR)/.unpacked \
-			    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so \
-			    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
+			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so \
+			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
 	( cd $(BIRD_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -D_XOPEN_SOURCE=600" \

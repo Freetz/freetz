@@ -11,7 +11,8 @@ $(READLINE_DIR)/.unpacked: $(DL_DIR)/$(READLINE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(READLINE_SOURCE)
 	touch $@
 
-$(READLINE_DIR)/.configured: ncurses $(READLINE_DIR)/.unpacked
+$(READLINE_DIR)/.configured: $(READLINE_DIR)/.unpacked \
+			     $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
 	( cd $(READLINE_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
