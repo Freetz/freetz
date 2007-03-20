@@ -23,7 +23,7 @@ $(DECO_DIR)/.unpacked: $(DL_DIR)/$(DECO_SOURCE)
 	done
 	touch $@
 
-$(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked
+$(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked $(TARGET_MAKE_PATH)/../usr/lib/libncurses.so
 	( cd $(DECO_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -52,7 +52,7 @@ $(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked
 	);
 	touch $@
 
-$(DECO_DIR)/src/$(DECO_TARGET_BINARY): $(DECO_DIR)/.configured
+$(DECO_DIR)/$(DECO_TARGET_BINARY): $(DECO_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(DECO_DIR)
 
 $(PACKAGES_DIR)/.deco-$(DECO_VERSION): $(DL_DIR)/$(DECO_PKG_SOURCE)
@@ -64,7 +64,7 @@ deco: $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
 deco-package: $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(DECO_PKG_SOURCE) deco-$(DECO_VERSION)
 
-deco-precompiled: $(DECO_DIR)/src/$(DECO_TARGET_BINARY) deco
+deco-precompiled: $(DECO_DIR)/$(DECO_TARGET_BINARY) deco
 	$(TARGET_STRIP) $(DECO_DIR)/$(DECO_TARGET_BINARY)
 	cp $(DECO_DIR)/$(DECO_TARGET_BINARY) $(DECO_TARGET_DIR)/$(DECO_TARGET_BINARY)
 	cp $(DECO_DIR)/profile $(DECO_TARGET_DIR)/../lib/deco
