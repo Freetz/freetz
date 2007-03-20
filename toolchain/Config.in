@@ -109,3 +109,52 @@ config DS_KERNEL_GLIBC_VERSION
 config DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
 	bool
 	default "y" if DS_DOWNLOAD_TOOLCHAIN
+
+comment "Gdb Options"
+
+config DS_PACKAGE_GDB
+	bool
+    
+config DS_PACKAGE_GDB_FULL
+	bool "Build gdb debugger for the Target"
+	default n
+	select DS_LIB_libncurses
+	help
+	    Build the full gdb debugger to run on the target.
+
+config DS_PACKAGE_GDB_SERVER
+	bool "Build gdb server for the Target"
+	default n
+	help
+	    Build the gdbserver stub to run on the target.
+	    A full gdb is needed to debug the progam.
+
+config DS_PACKAGE_GDB_HOST
+	bool "Build gdb for the Host"
+	default n
+	help
+	    Build gdb to run on the host to debug programs run on the target.
+choice
+	prompt "GDB debugger Version"
+	default DS_GDB_VERSION_6_6
+	depends on DS_PACKAGE_GDB || DS_PACKAGE_GDB_SERVER || DS_PACKAGE_GDB_HOST
+	help
+	  Select the version of gdb you wish to use.
+
+	config DS_GDB_VERSION_6_3
+		bool "gdb 6.3"
+
+	config DS_GDB_VERSION_6_4
+		bool "gdb 6.4"
+
+	config DS_GDB_VERSION_6_6
+		bool "gdb 6.6"
+
+endchoice
+
+config DS_GDB_VERSION
+	string
+	default "6.3"      if DS_GDB_VERSION_6_3
+	default "6.4"      if DS_GDB_VERSION_6_4
+	default "6.6"      if DS_GDB_VERSION_6_6
+
