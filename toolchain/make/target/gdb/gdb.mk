@@ -199,3 +199,13 @@ TARGETS+=gdbhost
 endif
 
 gdb: uclibc $(TARGETS)
+
+gdb-clean:
+	-$(MAKE) -C $(GDB_HOST_DIR) clean
+	-$(MAKE) -C $(GDB_SERVER_DIR) clean
+	-$(MAKE) -C $(GDB_DIR) clean
+	
+gdb-dirclean:
+	rm -rf $(GDB_HOST_DIR)
+	rm -rf $(GDB_SERVER_DIR)
+	rm -rf $(GDB_DIR)
