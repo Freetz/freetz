@@ -198,4 +198,4 @@ ifeq ($(strip $(DS_PACKAGE_GDB_HOST)),y)
 TARGETS+=gdbhost
 endif
 
-gdb: $(TARGETS)
+gdb: uclibc $(TARGETS)
