@@ -45,7 +45,7 @@ else
 	case "$CONFIG_TYPE" in
 		text)
 			echo "<form action=\"/cgi-bin/save.cgi?form=file_$id\" method=\"post\">"
-			echo -n '<textarea style="width: 500px;" name="content" rows="'"$TEXT_ROWS"'" cols="60" warp="off">'
+			echo -n '<textarea style="width: 500px;" name="content" rows="'"$TEXT_ROWS"'" cols="60" wrap="off">'
 			[ -r "$CONFIG_FILE" ] && httpd -e "$(cat $CONFIG_FILE)"
 			echo '</textarea>'
 			echo '<div class="btn"><input type="submit" value="$(lang de:"&Uuml;bernehmen" en:"Apply")"></div>'
