@@ -27,9 +27,6 @@ $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE)
 	# Should probably integrate this into the patch.
 	touch  $(GDB_DIR)/.unpacked
 
-gdb-dirclean:
-	rm -rf $(GDB_DIR)
-
 ######################################################################
 #
 # gdb target
@@ -206,6 +203,7 @@ gdb-clean:
 	-$(MAKE) -C $(GDB_DIR) clean
 	
 gdb-dirclean:
+	rm -rf $(GDB_DIR)
 	rm -rf $(GDB_HOST_DIR)
 	rm -rf $(GDB_SERVER_DIR)
 	rm -rf $(GDB_DIR)
