@@ -1,3 +1,14 @@
+menu "crypto"
+
+config DS_MODULE_arc4
+	bool "arc4.ko"
+	default n
+
+config DS_MODULE_sha1
+	bool "sha1.ko"
+	default n
+
+endmenu
 
 menu "drivers"
 
@@ -8,8 +19,6 @@ config DS_MODULE_loop
 config DS_MODULE_nbd
 	bool "nbd.ko"
 	default n
-
-
 		        
 config DS_MODULE_cdrom
 	bool "cdrom.ko"   
@@ -40,6 +49,31 @@ config DS_MODULE_dummy
 #	bool "cpphy_entry_high_switch.ko"
 #	default n
 	
+config DS_MODULE_ppp_async
+	bool "ppp_async.ko"
+	select DS_MODULE_ppp_generic
+	select DS_MODULE_crc-ccitt
+	default n
+	
+config DS_MODULE_ppp_deflate
+	bool "ppp_deflate.ko"
+	select DS_MODULE_ppp_generic
+	default n
+	
+config DS_MODULE_ppp_generic
+	bool "ppp_generic.ko"
+	select DS_MODULE_slhc
+	default n
+	
+config DS_MODULE_ppp_mppe_mppc
+	bool "ppp_mppe_mppc.ko"
+	select DS_MODULE_ppp_generic
+	default n
+	
+config DS_MODULE_scsi_mod
+	bool "scsi_mod.ko"
+	default n
+
 config DS_MODULE_scsi_mod
 	bool "scsi_mod.ko"
 	default n
@@ -57,6 +91,10 @@ config DS_MODULE_sg
 config DS_MODULE_sr_mod
 	bool "sr_mod.ko"
 	select DS_MODULE_scsi_mod
+	default n
+	
+config DS_MODULE_slhc
+	bool "slhc.ko"
 	default n
 	
 config DS_MODULE_usblp
@@ -204,6 +242,13 @@ config DS_MODULE_mbcache
 	bool "mbcache.ko"
 	default n
 
+endmenu
+
+menu "lib"
+
+config DS_MODULE_crc_ccitt
+	bool "crc_ccitt.ko"
+	default n
 endmenu
 
 menu "net"
