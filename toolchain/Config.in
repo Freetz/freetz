@@ -15,33 +15,38 @@ choice
 
 	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 		bool "gcc-4.1.1-uClibc-0.9.28"	
+
+config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+		bool "gcc-4.1.2-uClibc-0.9.28"	
 # not working
-#	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
-#		bool "gcc-4.1.1-uClibc-0.9.28.3"
+#	config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
+#		bool "gcc-4.1.2-uClibc-0.9.28.3"
 	
 endchoice
-
-config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	bool
-	default "y" if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_TARGET_GCC_VERSION
 	string
 	default "4.1.0"		if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
+	default "4.1.1"		if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_TARGET_UCLIBC_VERSION
 	string
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "0.9.28.3"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "0.9.28.3"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
+	default "0.9.28"	if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_TARGET_BINUTILS_VERSION
 	string
 	default "2.16.91.0.6"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
+	default "2.17"		if DS_DOWNLOAD_TOOLCHAIN
 
 choice
 
@@ -67,22 +72,45 @@ config DS_TARGET_UCLIBC_REF
 	default "orig-8mb_26"	if DS_TARGET_UCLIBC_CONFIG_8MB_26
 
 config DS_TARGET_GXX
-	bool "  Build g++"
-	default y
-
-config DS_TARGET_CCACHE
-	bool "  Build ccache"
+	bool "Build g++ for target toolchain"
 	default y
 	help
-	    ccache is optional, but speeds up compilation
+		g++ is the traditional nickname of GNU C++, a freely redistributable
+		C++ compiler. It is part of gcc, the GNU compiler suite, and is
+		currently part of that distribution. 
+
+config DS_TARGET_CCACHE
+	bool "Build ccache for target toolchain"
+	default y
+	help
+		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
+		compilers, using the -E compiler switch and a hash to detect when a
+		compilation can be satisfied from cache. This often results in a 5 to 10
+		times speedup in common compilations.
+		
+		The idea came from Erik Thiele wrote the original compilercache program
+		as a bourne shell script. ccache is a re-implementation of Erik's idea
+		in C with more features and better performance.
 
 config DS_TARGET_NLS
-	bool "  Native language support (NLS)"
+	bool "Native language support (NLS) for target toolchain"
 	default n
+	help
+		Support NLS-enabled programs and Linux tools on target system.
+		
+		Example:
+		    $ ls /foo/bar
+		    ls: /foo/bar: No such file or directory
+		    $ export LANG=de_DE.8859-1
+		    $ ls /foo/bar
+		    ls: /foo/bar: Datei oder Verzeichnis nicht gefunden
 
 config DS_TARGET_LFS
-	bool "  Large file support (LFS)"
+	bool "Large file support (LFS) for target toolchain"
 	default n
+	help
+		Support files > 2 GB on target system. This is desirable for Torrent
+		clients, for example.
 
 choice
 
@@ -101,41 +129,39 @@ endchoice
 config DS_KERNEL_GCC_VERSION
 	string
 	default "3.4.5" if DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+	default "3.4.5" if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_KERNEL_GLIBC_VERSION
 	string
 	default "2.3.6" if DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+	default "2.3.6" if DS_DOWNLOAD_TOOLCHAIN
 
-config DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
-	bool
-	default "y" if DS_DOWNLOAD_TOOLCHAIN
-
-comment "Gdb Options"
+comment "GNU debugger (gdb)"
 
 config DS_PACKAGE_GDB
 	bool
     
 config DS_PACKAGE_GDB_FULL
-	bool "Build gdb debugger for the Target"
+	bool "Build gdb for target"
 	default n
 	select DS_LIB_libncurses
 	help
 	    Build the full gdb debugger to run on the target.
 
 config DS_PACKAGE_GDB_SERVER
-	bool "Build gdb server for the Target"
+	bool "Build gdb server for target"
 	default n
 	help
 	    Build the gdbserver stub to run on the target.
 	    A full gdb is needed to debug the progam.
 
 config DS_PACKAGE_GDB_HOST
-	bool "Build gdb for the Host"
+	bool "Build gdb for host"
 	default n
 	help
 	    Build gdb to run on the host to debug programs run on the target.
 choice
-	prompt "GDB debugger Version"
+	prompt "gdb version"
 	default DS_GDB_VERSION_6_6
 	depends on DS_PACKAGE_GDB || DS_PACKAGE_GDB_SERVER || DS_PACKAGE_GDB_HOST
 	help
@@ -157,4 +183,3 @@ config DS_GDB_VERSION
 	default "6.3"      if DS_GDB_VERSION_6_3
 	default "6.4"      if DS_GDB_VERSION_6_4
 	default "6.6"      if DS_GDB_VERSION_6_6
-

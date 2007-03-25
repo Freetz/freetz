@@ -22,7 +22,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 
 target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
                   kernel-configured uclibc-configured \
-                  $(TARGET_TOOLCHAIN) | kernel-toolchain
+                  $(TARGET_TOOLCHAIN)
 	
 
 target-toolchain-source: $(TARGET_TOOLCHAIN_DIR) \

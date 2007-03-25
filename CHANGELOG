@@ -5,9 +5,33 @@ TODO:
 - give W900V a AVM-Webinterface (from 7150)
 - bird and netsnmp don't build with more than one job
 
+Latest changes:
+- Fix menuconfig warning concerning download toolchain
+- Remove kernel-toolchain from target-toolchain prerequisites 
+- Add gcc-4.1.2 to target toolchain menu after it has been fixed
+- FUSE module got lost when removed KERNEL_MODULES_DIR
+- Add mirror for download toolchain
+- Added, fixed and enhanced a few help texts for menuconfig in Config.in and
+  toolchain/Config.in.
+- Introducing detailed help texts for menuconfig's shared library section.
+  Unfortunately, this blows up libs/Config.in immensely - even more so, because
+  sub-menus cannot get their own help texts for technical reasons. So, for menus
+  containing several entries there is a lot of redundancy (i.e. repetition). The
+  worst example is iptables, but there are others as well.
+- Add xdelta3 (for binary diffs) to build tools
+- Added and enhanced menuconfig help texts for several packages: screen,
+  matrixtunnel, lynx, dropbear, wol-cgi, mini_fo, lua, callmonitor, samba, mc,
+  cifsmount, deco.
+- Set tinyproxy autostart to manual
+- Bump 5050 Firmware to 04.31
+- Add patch and modules for mppe-mppc
+- Increase MOD_LIMIT default to 61440
+- Extra patch for soft-float problem
+- Delete some unnecessary files
+- Forgot to add patches for gdb 6.3 and 6.4
+
 === patch ds-0.2.9_26-14.1-p2 ===
 
-- forgot to add patches for gdb 6.3 and 6.4
 - add ubik2_boot_0, ubik2_boot_last to device.table (should fix 7050 Image)
 - chmod +x for 250-orangebox.sh
 

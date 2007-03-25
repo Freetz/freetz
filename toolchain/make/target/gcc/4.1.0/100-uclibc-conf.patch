@@ -1,14 +1,11 @@
 --- gcc-4.1.0/gcc/config/t-linux-uclibc
 +++ gcc-4.1.0/gcc/config/t-linux-uclibc
-@@ -0,0 +1,8 @@
+@@ -0,0 +1,5 @@
 +# Remove glibc specific files added in t-linux
 +SHLIB_MAPFILES := $(filter-out $(srcdir)/config/libgcc-glibc.ver, $(SHLIB_MAPFILES))
 +
 +# Use unwind-dw2-fde instead of unwind-dw2-fde-glibc
 +LIB2ADDEH := $(subst unwind-dw2-fde-glibc.c,unwind-dw2-fde.c,$(LIB2ADDEH))
-+
-+# compile libcc with softfloat (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=8765)
-+TARGET_LIBGCC2_CFLAGS= -fPIC -msoft-float
 --- gcc-4.1.0/gcc/config.gcc
 +++ gcc-4.1.0/gcc/config.gcc
 @@ -1887,7 +1887,7 @@ s390x-ibm-tpf*)

@@ -87,22 +87,27 @@ $(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY): $(FUSE_DIR)/.compiled $(PACKAGES_DIR)/
 	cp $(FUSE_DIR)/util/$(FUSE_TARGET_BINARY) $(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY)
 	touch -c $@ 
 
-$(FUSE_DIR)/.module: $(FUSE_DIR)/.compiled
+$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse: $(FUSE_DIR)/.compiled
 	mkdir -p $(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
-	cp -a $(FUSE_DIR)/kernel/fuse.ko $(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
-	touch $@
-	
+	cp -a $(FUSE_DIR)/kernel/fuse.ko $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
+
 $(PACKAGES_DIR)/.$(FUSE_PKG_NAME): $(DL_DIR)/$(FUSE_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(FUSE_PKG_SOURCE)
 	@touch $@
 
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-fuse fuse-precompiled: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME) $(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY) $(FUSE_DIR)/.module
+fuse fuse-precompiled: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME) \
+		       $(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY) \
+		       $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
 	@echo 'External compiler used. Trying to copy libfuse from external Toolchain...'
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libfuse*.so* root/usr/lib/
 
 else
-fuse: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so $(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY) $(FUSE_DIR)/.module
+fuse:	$(PACKAGES_DIR)/.$(FUSE_PKG_NAME) \
+	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so \
+	$(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY) \
+	$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
+	
 fuse-precompiled: fuse
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* root/usr/lib/
