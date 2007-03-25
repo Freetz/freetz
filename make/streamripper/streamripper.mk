@@ -23,7 +23,8 @@ $(STREAMRIPPER_DIR)/.unpacked: $(DL_DIR)/$(STREAMRIPPER_SOURCE)
 	done
 	touch $@
 
-$(STREAMRIPPER_DIR)/.configured: mad $(STREAMRIPPER_DIR)/.unpacked
+$(STREAMRIPPER_DIR)/.configured: $(STREAMRIPPER_DIR)/.unpacked \
+				 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so
 	( cd $(STREAMRIPPER_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -52,7 +53,7 @@ $(PACKAGES_DIR)/.streamripper-$(STREAMRIPPER_VERSION): $(DL_DIR)/$(STREAMRIPPER_
 streamripper: $(PACKAGES_DIR)/.streamripper-$(STREAMRIPPER_VERSION)
 
 streamripper-package: $(PACKAGES_DIR)/.streamripper-$(STREAMRIPPER_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(STREAMRIPPER_PKG_SOURCE) streamripper-$(STREAMRIPPER_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(STREAMRIPPER_PKG_SOURCE) streamripper-$(STREAMRIPPER_VERSION)
 
 streamripper-precompiled: $(STREAMRIPPER_DIR)/$(STREAMRIPPER_TARGET_BINARY) streamripper
 	$(TARGET_STRIP) $(STREAMRIPPER_DIR)/$(STREAMRIPPER_TARGET_BINARY)

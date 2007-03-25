@@ -21,7 +21,8 @@ $(NTFS_DIR)/.unpacked: $(DL_DIR)/$(NTFS_SOURCE)
 	done
 	touch $@
 
-$(NTFS_DIR)/.configured: fuse $(NTFS_DIR)/.unpacked
+$(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked \
+			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so
 	(cd $(NTFS_DIR); rm -f config.cache; \
 		touch configure.in ; \
 		touch aclocal.m4 ; \
@@ -79,7 +80,7 @@ $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION): $(DL_DIR)/$(NTFS_PKG_SOURCE)
 ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 
 ntfs-package: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE) ntfs-$(NTFS_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE) ntfs-$(NTFS_VERSION)
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so: $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \

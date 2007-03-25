@@ -28,7 +28,9 @@ $(OPENVPN_DIR)/.unpacked: $(DL_DIR)/$(OPENVPN_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(OPENVPN_SOURCE)
 	touch $@
 
-$(OPENVPN_DIR)/.configured: openssl lzo $(OPENVPN_DIR)/.unpacked
+$(OPENVPN_DIR)/.configured: $(OPENVPN_DIR)/.unpacked \
+			    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so \
+			    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so
 	( cd $(OPENVPN_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \

@@ -23,7 +23,8 @@ $(SCREEN_DIR)/.unpacked: $(DL_DIR)/$(SCREEN_SOURCE)
 	done
 	touch $@
 
-$(SCREEN_DIR)/.configured: $(SCREEN_DIR)/.unpacked ncurses
+$(SCREEN_DIR)/.configured: $(SCREEN_DIR)/.unpacked \
+			   $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
 	( cd $(SCREEN_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -68,7 +69,7 @@ $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION): $(DL_DIR)/$(SCREEN_PKG_SOURCE)
 screen: $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION)
 
 screen-package: $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(SCREEN_PKG_SOURCE) screen-$(SCREEN_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(SCREEN_PKG_SOURCE) screen-$(SCREEN_VERSION)
 
 screen-precompiled: $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY) screen
 	$(TARGET_STRIP) $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY)

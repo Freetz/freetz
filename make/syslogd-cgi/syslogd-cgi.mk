@@ -13,7 +13,7 @@ $(PACKAGES_DIR)/.syslogd-cgi-$(SYSLOGD_CGI_VERSION): $(DL_DIR)/$(SYSLOGD_CGI_PKG
 syslogd-cgi: $(PACKAGES_DIR)/.syslogd-cgi-$(SYSLOGD_CGI_VERSION)
 
 syslogd-cgi-package: $(PACKAGES_DIR)/.syslogd-cgi-$(SYSLOGD_CGI_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(SYSLOGD_CGI_PKG_SOURCE) syslogd-cgi-$(SYSLOGD_CGI_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(SYSLOGD_CGI_PKG_SOURCE) syslogd-cgi-$(SYSLOGD_CGI_VERSION)
 
 syslogd-cgi-precompiled:
 

@@ -25,7 +25,9 @@ $(JAMVM_DIR)/.unpacked: $(DL_DIR)/$(JAMVM_SOURCE)
 	done
 	touch $@
 
-$(JAMVM_DIR)/.configured: ffi-sable classpath $(JAMVM_DIR)/.unpacked
+$(JAMVM_DIR)/.configured: $(JAMVM_DIR)/.unpacked \
+			  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so \
+			  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
 	( cd $(JAMVM_DIR); rm -f config.status; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -55,7 +57,7 @@ $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION): $(DL_DIR)/$(JAMVM_PKG_SOURCE)
 jamvm: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
 
 jamvm-package: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(JAMVM_PKG_SOURCE) jamvm-$(JAMVM_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE)  --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(JAMVM_PKG_SOURCE) jamvm-$(JAMVM_VERSION)
 
 jamvm-precompiled: $(JAMVM_DIR)/$(JAMVM_TARGET_BINARY) jamvm
 	$(TARGET_STRIP) $(JAMVM_DIR)/src/$(JAMVM_TARGET_BINARY)

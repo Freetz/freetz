@@ -13,7 +13,7 @@ $(PACKAGES_DIR)/.firewall-cgi-$(FIREWALL_CGI_VERSION): $(DL_DIR)/$(FIREWALL_CGI_
 firewall-cgi: $(PACKAGES_DIR)/.firewall-cgi-$(FIREWALL_CGI_VERSION)
 
 firewall-cgi-package: $(PACKAGES_DIR)/.firewall-cgi-$(FIREWALL_CGI_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(FIREWALL_CGI_PKG_SOURCE) firewall-cgi-$(FIREWALL_CGI_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(FIREWALL_CGI_PKG_SOURCE) firewall-cgi-$(FIREWALL_CGI_VERSION)
 
 firewall-cgi-precompiled:
 

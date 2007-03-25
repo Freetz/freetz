@@ -109,7 +109,7 @@ fuse-precompiled: fuse
 endif
 
 fuse-package: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE) $(FUSE_PKG_NAME)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE) $(FUSE_PKG_NAME)
 
 fuse-source: $(FUSE_DIR)/.unpacked $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
 

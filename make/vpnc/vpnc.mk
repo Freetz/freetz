@@ -22,7 +22,9 @@ $(VPNC_DIR)/.unpacked: $(DL_DIR)/$(VPNC_SOURCE)
 	done
 	touch $@
 
-$(VPNC_DIR)/$(VPNC_TARGET_BINARY): $(VPNC_DIR)/.unpacked libgpg-error libgcrypt
+$(VPNC_DIR)/$(VPNC_TARGET_BINARY):  $(VPNC_DIR)/.unpacked \
+				    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt.so \
+				    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so 
 	PATH=$(TARGET_PATH) \
 	$(MAKE) CC="$(TARGET_CC)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include" \
@@ -36,7 +38,7 @@ $(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION): $(DL_DIR)/$(VPNC_PKG_SOURCE)
 vpnc: $(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION)
 
 vpnc-package: $(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(VPNC_PKG_SOURCE) vpnc-$(VPNC_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(VPNC_PKG_SOURCE) vpnc-$(VPNC_VERSION)
 
 vpnc-precompiled: $(VPNC_DIR)/$(VPNC_TARGET_BINARY) vpnc
 	$(TARGET_STRIP) $(VPNC_DIR)/$(VPNC_TARGET_BINARY)

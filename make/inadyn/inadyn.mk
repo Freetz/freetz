@@ -30,8 +30,6 @@ $(INADYN_DIR)/$(INADYN_TARGET_BINARY): $(INADYN_DIR)/.unpacked
 	LDFLAGS="-static-libgcc" \
 	-C $(INADYN_DIR)/inadyn 
 
-
-
 $(PACKAGES_DIR)/.$(INADYN_PKG_NAME): $(DL_DIR)/$(INADYN_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(INADYN_PKG_SOURCE)
 	@touch $@
@@ -43,7 +41,7 @@ inadyn-precompiled: $(INADYN_DIR)/$(INADYN_TARGET_BINARY) inadyn
 	cp $(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY) $(INADYN_TARGET_DIR)/
 
 inadyn-package: $(PACKAGES_DIR)/.$(INADYN_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(INADYN_PKG_SOURCE) $(INADYN_PKG_NAME) 
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(INADYN_PKG_SOURCE) $(INADYN_PKG_NAME) 
 
 inadyn-source: $(INADYN_DIR)/.unpacked $(PACKAGES_DIR)/.$(INADYN_PKG_NAME)
 

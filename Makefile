@@ -217,8 +217,8 @@ ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
 
 sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
          $(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(TOOLS_SOURCE)
-precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) libgcc-installed \
-             $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
+precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(ROOT_DIR)/lib/libc.so.0 \
+		libgcc-installed $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
 else
 

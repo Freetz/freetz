@@ -32,7 +32,8 @@ $(BFTPD_DIR)/.unpacked: $(DL_DIR)/$(BFTPD_SOURCE)
 	done
 	touch $@
 
-$(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked zlib
+$(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked \
+			  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so
 	( cd $(BFTPD_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -76,7 +77,7 @@ $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME): $(DL_DIR)/$(BFTPD_PKG_SOURCE)
 bftpd: $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 
 bftpd-package: $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(BFTPD_PKG_SOURCE) $(BFTPD_PKG_NAME) 
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(BFTPD_PKG_SOURCE) $(BFTPD_PKG_NAME) 
 
 bftpd-precompiled: $(BFTPD_DIR)/$(BFTPD_TARGET_BINARY) bftpd
 	$(TARGET_STRIP) $(BFTPD_DIR)/$(BFTPD_TARGET_BINARY)

@@ -30,7 +30,7 @@ $(CIFSMOUNT_DIR)/$(CIFSMOUNT_BINARY): $(CIFSMOUNT_DIR)/.unpacked
 	) 
 
 $(PACKAGES_DIR)/.cifsmount-$(CIFSMOUNT_VERSION): $(DL_DIR)/$(CIFSMOUNT_PKG_SOURCE)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CIFSMOUNT_PKG_SOURCE)
+	@tar -C $(PACKAGES_DIR) --exclude .svn -xjf $(DL_DIR)/$(CIFSMOUNT_PKG_SOURCE)
 	@touch $@
 
 cifsmount: $(PACKAGES_DIR)/.cifsmount-$(CIFSMOUNT_VERSION)

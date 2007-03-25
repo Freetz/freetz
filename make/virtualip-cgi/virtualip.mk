@@ -13,7 +13,7 @@ $(PACKAGES_DIR)/.virtualip-cgi-$(VIRTUALIP_CGI_VERSION): $(DL_DIR)/$(VIRTUALIP_C
 virtualip-cgi: $(PACKAGES_DIR)/.virtualip-cgi-$(VIRTUALIP_CGI_VERSION)
 
 virtualip-cgi-package: $(PACKAGES_DIR)/.virtualip-cgi-$(VIRTUALIP_CGI_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(VIRTUALIP_CGI_PKG_SOURCE) virtualip-cgi-$(VIRTUALIP_CGI_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(VIRTUALIP_CGI_PKG_SOURCE) virtualip-cgi-$(VIRTUALIP_CGI_VERSION)
 
 virtualip-cgi-precompiled:
 

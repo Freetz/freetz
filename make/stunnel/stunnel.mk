@@ -28,7 +28,8 @@ $(STUNNEL_DIR)/.unpacked: $(DL_DIR)/$(STUNNEL_SOURCE)
 	done
 	touch $@
 
-$(STUNNEL_DIR)/.configured:  $(STUNNEL_DIR)/.unpacked openssl
+$(STUNNEL_DIR)/.configured:  $(STUNNEL_DIR)/.unpacked \
+			     $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so
 	( cd $(STUNNEL_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -69,7 +70,7 @@ $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME): $(DL_DIR)/$(STUNNEL_PKG_SOURCE)
 stunnel: $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME)
 
 stunnel-package: $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) -cjf $(PACKAGES_BUILD_DIR)/$(STUNNEL_PKG_SOURCE) $(STUNNEL_PKG_NAME)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(STUNNEL_PKG_SOURCE) $(STUNNEL_PKG_NAME)
 
 stunnel-precompiled: $(STUNNEL_DIR)/$(STUNNEL_TARGET_BINARY) stunnel
 	$(TARGET_STRIP) $(STUNNEL_DIR)/$(STUNNEL_TARGET_BINARY)

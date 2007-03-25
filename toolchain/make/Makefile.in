@@ -16,6 +16,8 @@ TARGET_TOOLCHAIN_STAGING_DIR:=$(shell pwd)/$(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLC
 
 TARGET_TOOLCHAIN_PATH:=$(TARGET_TOOLCHAIN_STAGING_DIR)/bin:/bin:/sbin:/usr/bin:/usr/sbin
 
+TARGET_TOOLCHAIN_GDB_VERSION:=$(strip $(subst ",, $(DS_GDB_VERSION)))
+
 ifeq ($(strip $(DS_DOWNLOAD_TOOLCHAIN)),y)
 TOOLCHAIN:=download-toolchain
 else

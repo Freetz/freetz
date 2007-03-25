@@ -4,7 +4,7 @@ KERNEL_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 KERNEL_BUILD_DIR_N:=kernel_8mb_26_build
 KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
-KERNEL_IMAGE:=kernel/linux-2.6.13.1/ram_zimage.bin
+KERNEL_IMAGE:=kernel/linux-2.6.13.1/vmlinux.eva_pad
 KERNEL_TARGET_DIR:=kernel
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_REF).$(AVM_VERSION)
@@ -63,7 +63,7 @@ $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 		prepare
 	touch $@
 
-$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma
+$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR) \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
@@ -75,7 +75,7 @@ $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		ARCH=$(KERNEL_ARCH) \
-		ram_zimage_pad
+		$$(basename $(KERNEL_IMAGE))
 
 $(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
@@ -133,7 +133,7 @@ kernel-source: $(KERNEL_DIR)/.unpacked
 
 kernel-clean:
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	$(MAKE) -C $(KERNEL_BUILD_DIR) \
+	-$(MAKE) -C $(KERNEL_BUILD_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		BOARD_REF="$(KERNEL_BOARD_REF)" \
