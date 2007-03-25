@@ -3,230 +3,182 @@ $Id$
 TODO:
 - classpath, jamvm
 - give W900V a AVM-Webinterface (from 7150)
-- orangebox (?)
 - bird and netsnmp don't build with more than one job
-- deco
 
-revision 113:
-- forgot to add patches for gdb 6.3 and 6.4
-revision 112:
+Latest changes:
+- Fix menuconfig warning concerning download toolchain
+- Remove kernel-toolchain from target-toolchain prerequisites 
+- Add gcc-4.1.2 to target toolchain menu after it has been fixed
+- FUSE module got lost when removed KERNEL_MODULES_DIR
+- Add mirror for download toolchain
+- Added, fixed and enhanced a few help texts for menuconfig in Config.in and
+  toolchain/Config.in.
+- Introducing detailed help texts for menuconfig's shared library section.
+  Unfortunately, this blows up libs/Config.in immensely - even more so, because
+  sub-menus cannot get their own help texts for technical reasons. So, for menus
+  containing several entries there is a lot of redundancy (i.e. repetition). The
+  worst example is iptables, but there are others as well.
+- Add xdelta3 (for binary diffs) to build tools
+- Added and enhanced menuconfig help texts for several packages: screen,
+  matrixtunnel, lynx, dropbear, wol-cgi, mini_fo, lua, callmonitor, samba, mc,
+  cifsmount, deco.
+- Set tinyproxy autostart to manual
+- Bump 5050 Firmware to 04.31
+- Add patch and modules for mppe-mppc
+- Increase MOD_LIMIT default to 61440
+- Extra patch for soft-float problem
+- Delete some unnecessary files
+- Forgot to add patches for gdb 6.3 and 6.4
+
+=== patch ds-0.2.9_26-14.1-p2 ===
+
 - add ubik2_boot_0, ubik2_boot_last to device.table (should fix 7050 Image)
-revision 109/110:
-- delete/add 250-orangebox.sh (with chmod +x)
-revision 108:
+- chmod +x for 250-orangebox.sh
+
+=== patch ds-0.2.9_26-14.1-p1 ===
+
 - hide depmod output
-revision 107:
 - fixed gdb-dirclean target
-revision 106:
 - fixed 120-rc.S-dev.patch for 2170,3131,3170,5050,7050
-revision 105:
 - added gdb-clean and gdb-dirclean targets
-revision 104:
 - reverted .phony targets (toolchain)
 - fixes gdb build
-revision 103:
 - added 140-printk.patch for 7140 and 7141
-revision 102:
 - fixed deco (select DS_LIB_libncurses)
-revision 101:
-- fix typo in \root\usr\mww\cgi-bin\file.cgi
-revision 100:
+- fix typo in /root/usr/mww/cgi-bin/file.cgi
 - add printk.patch for labors
-revision 99:
 - libraries are also having dependencies...
-revision 98:
+
+=== release ds-0.2.9_26-14.1 ===
+
 - fixed jamvm patch (100-fix-trace.patch)
-revision 97:
 - fixed typo in deco.mk
-revision 96:
 - changed all library-dependencies in packages makefiles. Hopefully there will
   be no more sensless configure runs.
-revision 95:
 - add "--exclude .svn" to tar for all package-targets
-revision 94:
 - added gdb
-revision 93:
 - fixed deco.mk (forgot ncurses dependency, wrong path)
-revision 92:
 - removed ar7kernel-loader
 - added evalzmaloader (thanks Enrik) http://www.wehavemorefun.de/fritzbox/EVA
-revision 91:
 - fix error with download and external toolchain:
-	uClibc-libs are not in /root/lib
+  uClibc-libs are not in /root/lib
 - updated download toolchain to 0.2
-revision 90:
 - add/remove patches for (non-working) uClibc-0.9.28.3/1
-revision 89:
 - fix 7170 Labor patches
-revision 84
+
+=== release ds-0.2.9_26-14 ===
+
 - fix precompiled toolchain download URL in toolchain/make/download-toolchain.mk
 - add forgotten cpmaccfg in make/Config.in
 - remove precompiled libs from root/lib
-revision 83
 - Moving all files back to SVN project's trunk, because we have given up plans
   to merge the repository with Danisahne's Sourceforge repository one day
   (licencing issues concerning AVM copyrighted file patches). So we thought we
   could as well have our own trunk again.
-revisions 73-82
-- SVN repository restructuring experiments gone bad
-revision 72:
 - added download location for toolchain (thanks @ DPR)
 - updated orangebox to 1.05
-revision 70:
 - fixed download toolchain
 - disable tr069 if selected openssl
 - updated orangebox to 1.02
-revision 69:
 - fix dropbear-sshd-only package
-revision 68:
 - try different binutil download locations (stable, developer) for target toolchain
-revision 67:
 - fixed rebuilding of a kernel with different modules
-revision 66:
 - small fixes in download-toolchain.mk, kernel/Config.in and make/deco/Config.in
-revision 65:
 - worked on precompiled toolchain
 - fixed netsnmp-package
 - added busybox patch
 - updated 7050 to 04.31
 - updated 7170_phone_labor to 6572
 - added deco and tinyproxy
-revision 63:
 - prepare for downloadable toolchain (i386)
-revision 62:
 - added more packages to ./packages
-revision 60:
 - updated netsnmp-package to 0.2
 - added tinyproxy-1.7.0 package
 - added deco-39 package
-revision 59:
 - new patch fixes mc-4.5.0 build error on GNOME systems
-revision 58:
 - change in lzma.mk (dos2unix no more needed, thanks aholler)
-revision 57:
 - remove getcons (not working for me)
 - fixed typo in menuconfig (uClibc-version)
 - fixed busybox patch (440-httpd_chdir.patch)
 - added fon_7150
-revision 56:
 - fixed openvpn-lzo_conf
-revision 55:
 - fixed download location of target toolchain binutils
-revision 54:
 - fixed openvpn-lzo.cgi
-revision 53:
 - fixed Config.in
 - fixed pingtunnel/Config.in
 - fixed jamvm/Config.in
-revision 52:
 - fixed target "openvpn-package" (exclude .svn directories)
-revision 51:
 - added ./packages/openvpn-2.1_rc2/
-revision 50:
 - updated openssl to 0.9.8e
 - updated to openvpn-2.1_rc2-dsmod-0.6c
 - removed ./dl/openvpn-2.1_rc2-dsmod-0.6b.tar.bz2
-revision 49:
 - fixed bug in modhosts (http://www.ip-phone-forum.de/showthread.php?t=128048)
 - removed packages from dl/
 - updated bird.mk
-revision 46:
 - added 2170, 3131, 3170 and 5050 (untested)
 - added cifsmount (Package and kernel-patch)
 - removed iptables from vpnc-script
-revision 45:
 - updated dropbear to 0.49
 - added debootstrap, lynx and netsnmp (thanks to derheimi)
 - added gcc-4.1.2 to toolchain-options
-revision 43:
 - fixed classpath, fuse, jamvm, ntfs
 - updated callmonitor to 1.8.3
 - other small changes
-revision 42:
 - added 7050
-revision 41:
 - updated openvpn to 2.1_rc2
 - downgrade matrixssl to 1.7.3 (because of download-source)
 - fixed ntfs-3g (2 fuse patches)
-revision 40:
 - more busybox-patches
 - vpnc updated to 0.4.0
-revision 39:
 - updated backup/restore-cgi to Haserl 0.9.x syntax
-revision 38:
 - added matrixssl-1-8-3-open (lib)
 - added matrixtunnel-0.2 (package)
-revision 36:
 - added Rudi-Shell
-revision 35:
 - minor fixes in bird.mk, readline.mk
 - added fuse 2.6.3
 - added ntfs-3g-1.0
 - added classpath-0.93
 - added libffi-sable-3325
 - added jamvm-1.4.5
-revision 34:
 - minor fixes in pingtunnel.mk, streamripper.mk, tcpdump.mk and bird.mk
 - added busybox-patch (tar -t segfault)
-revision 33:
 - added pingtunnel
 - minor fixes in libpcap-patches, busybox-patches
-revision 32:
 - added tcpdump
 - haserl updated to 0.9.16
 - minor changes in file.cgi, modhosts
-revision 31:
 - added bird-1.0.11 (thanks to derheimi)
-revision 30:
 - added streamripper-1.61.17
 - added libmad-0.15.1b 
-revision 28:
 - added Lua scripting language
 - updated dnsmasq to version 2.38
-revision 25:
 - updated busybox-patches
 - make target for uclibc-utils
-revision 24:
 - added backup/restore-cgi
-revision 19:
 - added 7140 30.04.30
-revision 17:
 - moved missing files into branch
-revision 16:
 - restructured SVN to hold branches (for a later merge into official svn)
-revision 15:
 - added haserl
-revision 14:
 - target toolchain update (binutils 2.17, gcc-4.1.1, uclibc-0.9.28.1) (edit: not working)
-revision 13:
 - added libpcap
 - added knock-package
 - updatet 7141 to 40.04.30
-revision 12:
 - added cpmaccfg-package
-revision 11:
 - added shadow000's webinterface mod (orangebox)
-revision 10:
 - fixed calllist for labor-firmwares (foncalls.patch)
 - update to busybox-1.4.1
 - cpmac-ioctl.patch
 - kernel-printk.patch
-revision 8:
 - update to busybox-1.4.0
 - added some kernel-modules (ntfs, cifs, smbfs)
-revision 5:
 - fixed W701V-webmenu patch
-revision 4:
 - more W701V fixes
 - added some iptable-modules
-revision 3:
 - updated openvpn-Package to 0.6b
 - updated .version
 - fixed W701V patch
 - added avm-ftpd-remove patch
-revision 2:
 - fixed modules_install with parallel make
 - added unionfs 
 - added libreadline
-revision 1:
 - initial checkin
