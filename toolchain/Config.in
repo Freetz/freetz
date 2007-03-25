@@ -15,33 +15,40 @@ choice
 
 	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 		bool "gcc-4.1.1-uClibc-0.9.28"	
+
+config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+		bool "gcc-4.1.2-uClibc-0.9.28"	
 # not working
-#	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
-#		bool "gcc-4.1.1-uClibc-0.9.28.3"
+#	config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
+#		bool "gcc-4.1.2-uClibc-0.9.28.3"
 	
 endchoice
 
 config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 	bool
-	default "y" if DS_DOWNLOAD_TOOLCHAIN
+	default "y" 
+	depends on DS_DOWNLOAD_TOOLCHAIN
 
 config DS_TARGET_GCC_VERSION
 	string
 	default "4.1.0"		if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
 
 config DS_TARGET_UCLIBC_VERSION
 	string
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "0.9.28.3"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "0.9.28.3"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
 
 config DS_TARGET_BINUTILS_VERSION
 	string
 	default "2.16.91.0.6"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28_3
+	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
 
 choice
 
@@ -131,7 +138,8 @@ config DS_KERNEL_GLIBC_VERSION
 
 config DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
 	bool
-	default "y" if DS_DOWNLOAD_TOOLCHAIN
+	default "y" 
+	depends on DS_DOWNLOAD_TOOLCHAIN
 
 comment "GNU debugger (gdb)"
 
@@ -180,4 +188,3 @@ config DS_GDB_VERSION
 	default "6.3"      if DS_GDB_VERSION_6_3
 	default "6.4"      if DS_GDB_VERSION_6_4
 	default "6.6"      if DS_GDB_VERSION_6_6
-
