@@ -3,4 +3,9 @@ config DS_PACKAGE_MINI_FO
 	select DS_MODULE_mini_fo
 	default n
 	help
-	    Makes the filesystem writeable. Changes are not stored over reboot.
+	    Makes the filesystem writeable. Changes are not reboot-persistent,
+	    unless stored on a hard disk or on flash storage media. The way mini_fo
+	    is configured here creates the overlay filesystem in the router's RAM
+	    disk, so they definitely are *not* reboot-persistent. Nonetheless,
+	    mini_fo is tremendously helpful, eliminating the need for tricks like
+	    'mount -o bind' etc.
