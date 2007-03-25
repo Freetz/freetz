@@ -9,7 +9,7 @@ choice
 	prompt "Source version"
 	default DS_AVM_VERSION_04_29
 	help
-	    AVM's source package version
+	    AVM source package version
 
 	config DS_AVM_VERSION_04_29
 		"bool "04.29"
@@ -94,7 +94,7 @@ config DS_TYPE_LABOR
 	depends on DS_TYPE_FON_WLAN_7170
 	default n
 	help
-	    Enable this to compile the mod based on a labor firmware.
+	    Enable this to compile the mod based on an AVM "labor" firmware.
 choice
 
     prompt "Labor version"
@@ -162,7 +162,7 @@ config DS_REPLACE_KERNEL
 	select DS_LIB_libnsl
 	default n
 	help
-	    Replace AVM-kernel with self build kernel.
+	    Replace AVM kernel with self-built kernel.
 
 config DS_TARGET_REF
 	string "Target ref"		if DS_TYPE_CUSTOM
@@ -177,9 +177,6 @@ config DS_TARGET_REF
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON_5050 || \
 					   DS_TYPE_FON_WLAN_7050
-					
-
-	
 
 config DS_KERNEL_REF
 	string "Kernel ref"		if DS_TYPE_CUSTOM
