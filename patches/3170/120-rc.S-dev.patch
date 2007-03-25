@@ -1,6 +1,6 @@
 --- etc/init.d/rc.S.orig	2006-03-20 17:33:06.000000000 +0100
 +++ etc/init.d/rc.S	2006-03-20 17:34:33.000000000 +0100
-@@ -69,8 +69,10 @@
+@@ -69,8 +69,11 @@
   fi
   echo "SET error,0 = $((0x40 + (4 * ($1 - 1)) + 1))" >/dev/new_led
  }
@@ -9,6 +9,7 @@
 +mount -o nosuid -t tmpfs dev /dev
 +mkdir -p /dev/pts
 +mount -o nosuid,noexec -t devpts devpts /dev/pts
++mount -a
 +/sbin/makedevs -d /etc/device.table /
  #file "./arch/etc/init.d/rc.watchdog.sh", 0
   echo init-start 120 >/dev/watchdog

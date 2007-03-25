@@ -53,4 +53,4 @@ binutils-dependancies:
 
 binutils: binutils-dependancies $(BINUTILS_DIR)/.installed
 
-#.PHONY: binutils binutils-dependancies
+.PHONY: binutils binutils-dependancies

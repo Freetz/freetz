@@ -27,9 +27,6 @@ $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE)
 	# Should probably integrate this into the patch.
 	touch  $(GDB_DIR)/.unpacked
 
-gdb-dirclean:
-	rm -rf $(GDB_DIR)
-
 ######################################################################
 #
 # gdb target
@@ -198,4 +195,15 @@ ifeq ($(strip $(DS_PACKAGE_GDB_HOST)),y)
 TARGETS+=gdbhost
 endif
 
-gdb: $(TARGETS)
+gdb: uclibc $(TARGETS)
+
+gdb-clean:
+	-$(MAKE) -C $(GDB_HOST_DIR) clean
+	-$(MAKE) -C $(GDB_SERVER_DIR) clean
+	-$(MAKE) -C $(GDB_DIR) clean
+	
+gdb-dirclean:
+	rm -rf $(GDB_DIR)
+	rm -rf $(GDB_HOST_DIR)
+	rm -rf $(GDB_SERVER_DIR)
+	rm -rf $(GDB_DIR)

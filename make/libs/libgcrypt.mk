@@ -15,7 +15,8 @@ $(LIBGCRYPT_DIR)/.unpacked: $(DL_DIR)/$(LIBGCRYPT_SOURCE)
 	done
 	touch $@
 
-$(LIBGCRYPT_DIR)/.configured: $(LIBGCRYPT_DIR)/.unpacked libgpg-error
+$(LIBGCRYPT_DIR)/.configured: $(LIBGCRYPT_DIR)/.unpacked \
+			      $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so
 	( cd $(LIBGCRYPT_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \

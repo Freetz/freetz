@@ -139,4 +139,4 @@ gcc-initial: uclibc-configured binutils $(GCC_BUILD_DIR1)/.installed
 
 gcc:  uclibc-configured binutils gcc-initial uclibc $(GCC_BUILD_DIR2)/.installed
 
-#.PHONY: gcc gcc-initial
+.PHONY: gcc gcc-initial
