@@ -1044,6 +1044,10 @@ then
 		fi
 	fi
 
+	# Remove left over Subversion directories
+	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "Checking for left over Subversion directories"
+	find "$MOD_DIR" -type d -name .svn | xargs rm -rf
+
 	if [ ! -s "$RAW_HIDDEN" ]
 	then
 		echo "ERROR: no hidden squashfs found" 1>&2
