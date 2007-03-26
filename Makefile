@@ -1,9 +1,10 @@
-# Makefile for danisahne mod
+# Makefile for danisahne mod, Kernel 2.6 series (DS-Mod_26)
 #
 # $Id$
 #
 # Copyright (C) 1999-2004 by Erik Andersen <andersen@codepoet.org>
 # Copyright (C) 2005-2006 by Daniel Eiband <eiband@online.de>
+# Copyright (C) 2006-2007 by Oliver Metz, Alexander Kriegisch, Mickey & Co.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
