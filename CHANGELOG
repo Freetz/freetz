@@ -6,6 +6,16 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- Updated cifsmount package to 0.2: added CGI (web config) for up to three
+  mounts; added init.d start/stop scripts; added script 'cifsmount' for more
+  convenient command line (un-)mounting.
+- Fixed 'tar --exclude .svn' for dnsmasq, cifsmount and deco: option was not
+  set for '*-package' targets (tar -c), but for unpack targets (tar -x).
+- Remove "depends on DS_REPLACE_KERNEL" for iptables libs 
+- Checking for and cleaning up Subversion directories in build/modified
+  before packing firmware image
+- Updated copyright notices and acknowledgements
+- Updated MOTD to reflect DS-Mod_26 series (different ASCII art) 
 - Fix menuconfig warning concerning download toolchain
 - Remove kernel-toolchain from target-toolchain prerequisites 
 - Add gcc-4.1.2 to target toolchain menu after it has been fixed
