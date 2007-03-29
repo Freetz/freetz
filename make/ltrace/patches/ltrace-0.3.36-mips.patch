@@ -390,6 +390,17 @@ diff -ru Makefile.in Makefile.in
  LDFLAGS		=
  LIBS		=	@LIBS@
 diff -ru options.c options.c
+--- Makefile.in	2007-03-29 14:53:37.000000000 +0200
++++ Makefile.in	2007-03-29 14:53:42.000000000 +0200
+@@ -16,7 +16,7 @@
+ CC		=	@CC@
+ CPPFLAGS	=	-I$(TOPDIR) -I$(TOPDIR)/sysdeps/$(OS) -I- @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)\" @CPPFLAGS@
+ CFLAGS		=	-Wall @CFLAGS@
+-LDFLAGS		=
++LDFLAGS		= 	@LDFLAGS@
+ LIBS		=	@LIBS@
+ 
+ INSTALL		=	@INSTALL@
 --- options.c	2004-11-09 13:31:39.000000000 +0100
 +++ options.c	2005-04-20 17:43:23.000000000 +0200
 @@ -24,6 +24,8 @@
