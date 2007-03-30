@@ -964,7 +964,7 @@ then
 		for pkg in $(cat "$STATIC_ADDON_FILE" | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' | grep -v '^#' | grep -v '^$')
 		do
 			[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}${pkg} (addon)"
-			pkg_name="$(echo "$pkg" | sed -e 's/-[0-9.]*$//' -e 's/-cgi$//')"
+			pkg_name="$(echo "$pkg" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//')"
 
 			if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]
 			then
