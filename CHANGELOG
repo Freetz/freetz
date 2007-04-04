@@ -6,10 +6,14 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
-- Added libelf library needed by ltrace (BUILD OK, BUT UNTESTED)
+- Suppress tar "lone zero block" warning when unpacking certain firmware images
+- External IP can now be determined without calling external servers:
+    a) CGI template ip.txt for AVM websrv displays external IP in browser
+    b) Shell script /bin/get_ip prints external IP to stdout (no line-feed)
+- Added libelf library needed by ltrace - BUILD OK, BUT UNTESTED
 - Added section "debug helpers" in menuconfig
 - Added debug helper package strace (binary only)
-- Added debug helper package ltrace (binary only) - DOES NOT COMPILE YET
+- Added debug helper package ltrace (binary only) - COMPILES, BUT CRASHES
 - Updated cifsmount package to 0.2: added CGI (web config) for up to three
   mounts; added init.d start/stop scripts; added script 'cifsmount' for more
   convenient command line (un-)mounting.
