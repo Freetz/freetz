@@ -1,4 +1,4 @@
-FAKEROOT_VERSION:=1.5.8
+FAKEROOT_VERSION:=1.5.10
 FAKEROOT_SOURCE:=fakeroot_$(FAKEROOT_VERSION).tar.gz
 FAKEROOT_SITE:=http://ftp.debian.org/debian/pool/main/f/fakeroot
 FAKEROOT_DIR:=$(SOURCE_DIR)/fakeroot-$(FAKEROOT_VERSION)
@@ -51,4 +51,3 @@ fakeroot-dirclean:
 
 fakeroot-distclean:
 	rm -rf $(TOOLS_DIR)/usr
-
