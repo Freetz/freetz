@@ -1111,6 +1111,11 @@ then
 
 	#generating fakeroot-file
 	echo "#!/bin/sh" > _fakeroot
+	# TODO: Oliver, this line seems to be superfluous because fakeroot assumes
+	# that everything belongs to root:root anyway after startup (unless
+	# specified otherwise with the -u switch not used here). Even though I fixed
+	# fakeroot so it does not complain about chown anymore on newer systems, I
+	# think it is safe to remove this line.
 	echo "chown -R root:root $FILESYSTEM_MOD_DIR" >> _fakeroot
 	echo "( cd $FILESYSTEM_MOD_DIR && $MAKEDEVS -d $MAKEDEVS_FILE ./ > /dev/null" \
 	    	"&& ${TOOLS_DIR}/${MKSQUASHFS_TOOL} * ${ABS_BASE_DIR}/${FILESYSTEM_MOD} -le -noappend -all-root " \

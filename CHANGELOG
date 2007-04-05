@@ -6,6 +6,9 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- Fix fakeroot problems with chown (operation not permitted) on systems with
+  newer glibc + coreutils combinations using *at(). The version has been
+  promoted to fakeroot-1.5.10 and a new patch for *at() is available.
 - Fix package virtualip-cgi and promote to version 0.4.1. There were bugs in
   the make script and in the download package itself.
 - Fixed 'tar --exclude .svn' for dnsmasq, cifsmount and deco: option was not
