@@ -133,7 +133,7 @@ kernel-source: $(KERNEL_DIR)/.unpacked
 
 kernel-clean:
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	-$(MAKE) -C $(KERNEL_BUILD_DIR) \
+	$(MAKE) -C $(KERNEL_BUILD_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		BOARD_REF="$(KERNEL_BOARD_REF)" \
