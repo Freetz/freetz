@@ -19,9 +19,12 @@ Latest changes:
 - Fix package virtualip-cgi and promote to version 0.4.1. There were bugs in
   the make script and in the download package itself.
 - Suppress tar "lone zero block" warning when unpacking certain firmware images
-- External IP can now be determined without calling external servers:
-    a) CGI template ip.txt for AVM websrv displays external IP in browser
-    b) Shell script /bin/get_ip prints external IP to stdout (no line-feed)
+- External IP can now be determined without calling external servers: Shell
+  script /bin/get_ip prints external IP to stdout, giving the user a choice
+  between three different methods:
+    -w, --webcm    - webcm CGI handler method [default]
+    -d, --dsld     - showdsldstat method (use only with kernel 2.6 firmwares)
+    -e, --extquery - external site query method (ask whatismyip.org)
 - Added libelf library needed by ltrace - BUILD OK, BUT UNTESTED
 - Added section "debug helpers" in menuconfig
 - Added debug helper package strace (binary only)
