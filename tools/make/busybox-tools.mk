@@ -26,20 +26,20 @@ $(BUSYBOX_TOOLS_DIR)/.configured: $(BUSYBOX_TOOLS_DIR)/.unpacked $(BUSYBOX_TOOLS
 	touch $@
 
 $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION)/busybox: $(BUSYBOX_TOOLS_DIR)/.configured
-	$(MAKE) -C $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION) 
+	$(MAKE) -C $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION) ARCH=x86-64
 
 $(TOOLS_DIR)/busybox: $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION)/busybox
 	cp $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION)/$(BUSYBOX_HOST_BINARY) $(TOOLS_DIR)/$(BUSYBOX_HOST_BINARY)
 	@ln -s busybox $(TOOLS_DIR)/makedevs
-#	@ln -s busybox $(TOOLS_DIR)/tar
 
 busybox-tools: $(TOOLS_DIR)/busybox
 
 busybox-tools-clean:
 	-$(MAKE) -C $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION) clean
+	rm -f $(TOOLS_DIR)/busybox
+	rm -f $(TOOLS_DIR)/makedevs
 
 busybox-tools-dirclean:
 	rm -rf $(BUSYBOX_TOOLS_DIR)
-	rm -rf $(TOOLS_DIR)/busybox
-	rm -rf $(TOOLS_DIR)/makedevs
-#	rm -rf $(TOOLS_DIR)/tar
+	rm -f $(TOOLS_DIR)/busybox
+	rm -f $(TOOLS_DIR)/makedevs
