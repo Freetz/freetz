@@ -1,6 +1,6 @@
-SYSLOGD_CGI_VERSION:=0.2
+SYSLOGD_CGI_VERSION:=0.2.1
 SYSLOGD_CGI_PKG_SOURCE:=syslogd-cgi-$(SYSLOGD_CGI_VERSION)-dsmod.tar.bz2
-SYSLOGD_CGI_PKG_SITE:=http://www.eiband.info/dsmod
+SYSLOGD_CGI_PKG_SITE:=http://scrum-master.de/download/dsmod
 
 
 $(DL_DIR)/$(SYSLOGD_CGI_PKG_SOURCE):
