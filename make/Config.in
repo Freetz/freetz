@@ -6,13 +6,11 @@ config DS_SELECTED_LANG_ONLY
 	depends on ! DS_LANG_DE
 	default n
 	help
-	    Show only packages, which support the
-	    selected language. Packages not supporting
-	    your selected language can be installed, but
-	    they will be in default language (german).
+	    Show only packages supporting the selected language. Packages not
+	    supporting your selected language can be installed, but they will be in
+	    default language (usually German).
 
-comment "Packages"
-
+menu "Standard packages"
 source make/bftpd/Config.in
 source make/bird/Config.in
 source make/callmonitor/Config.in
@@ -37,19 +35,17 @@ source make/tcpdump/Config.in
 source make/tor/Config.in
 source make/virtualip-cgi/Config.in
 source make/vpnc/Config.in
+endmenu
 
-comment "Orangebox Webinterface"
-
-source make/orangebox/Config.in
-
-comment "Extensions"
-
+menu "Web interface"
 source make/syslogd-cgi/Config.in
 source make/wol-cgi/Config.in
+source make/orangebox/Config.in
+endmenu
 
-comment "Testing"
-
-source make/classpath/Config.in
+menu "Testing"
+# Included by jamvm for a cleaner menu structure
+# source make/classpath/Config.in
 source make/debootstrap/Config.in
 source make/fuse/Config.in
 source make/jamvm/Config.in
@@ -60,7 +56,10 @@ source make/ntfs/Config.in
 source make/streamripper/Config.in
 source make/tinyproxy/Config.in
 source make/transmission/Config.in
+endmenu
 
-comment "Unstable"
+comment "Unstable--------------------------------"
 
-source make/firewall-cgi/Config.in
+source make/iptables/Config.in
+# Included by iptables for a cleaner menu structure
+# source make/firewall-cgi/Config.in

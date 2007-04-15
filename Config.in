@@ -4,6 +4,8 @@ config DS_HAVE_DOT_CONFIG
 	bool
 	default y
 
+comment "General --------------------------------"
+
 choice
 
 	prompt "Source version"
@@ -90,7 +92,7 @@ choice
 endchoice
 
 config DS_TYPE_LABOR
-	bool "LABOR (EXPERIMENTAL)"
+	bool "Labor (EXPERIMENTAL)"
 	depends on DS_TYPE_FON_WLAN_7170
 	default n
 	help
@@ -135,7 +137,7 @@ config DS_TYPE_STRING
 	default "W900V"		if DS_TYPE_SPEEDPORT_W900V
 	default "custom"	if DS_TYPE_CUSTOM
 
-comment "Custom options"
+comment "Custom options -------------------------"
 	depends on DS_TYPE_CUSTOM
 
 config DS_INSTALL_BASE
@@ -366,14 +368,14 @@ config DS_HAS_USB_HOST
 	help
 	    Select this if your USB port is a host adapter
 
-comment "Brandings"
+comment "Brandings ------------------------------"
 	depends on ! DS_TYPE_SPEEDPORT_W701V && ! DS_TYPE_SPEEDPORT_W900V && ! DS_TYPE_CUSTOM
 	
-comment "Brandings (if exist)"
+comment "Brandings (if exist) -------------------"
 	depends on DS_TYPE_CUSTOM
 
 config DS_BRANDING_1und1
-	bool "1und1"
+	bool "1&1"
 	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
 		   DS_TYPE_FON_5050 || \
 		   DS_TYPE_FON_WLAN_7050 || \
@@ -384,7 +386,7 @@ config DS_BRANDING_1und1
 	default y
 
 config DS_BRANDING_avm
-	bool "avm"
+	bool "AVM"
 	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
 		   DS_TYPE_2170 || \
 		   DS_TYPE_FON_5050 || \
@@ -399,51 +401,50 @@ config DS_BRANDING_avm
 	default y
 
 config DS_BRANDING_avme
-	bool "avme"
+	bool "AVM international"
 	depends on DS_TYPE_CUSTOM
 	default y
 
 config DS_BRANDING_aol
-	bool "aol"
+	bool "AOL"
 	depends on DS_TYPE_FON_WLAN_7140 || \
 	DS_TYPE_CUSTOM
 	default y
 
 config DS_BRANDING_arcor
-	bool "arcor"
+	bool "Arcor"
 	depends on DS_TYPE_CUSTOM
 	default y
 
 config DS_BRANDING_freenet
-	bool "freenet"
+	bool "Freenet"
 	depends on DS_TYPE_FON_WLAN_7150 || \
 		   DS_TYPE_FON_WLAN_7170 || \
 		   DS_TYPE_CUSTOM
 	default y
 
 config DS_BRANDING_tcom
-	bool "tcom"
+	bool "T-Com"
 	depends on DS_TYPE_SPEEDPORT_W701V || \
 		   DS_TYPE_SPEEDPORT_W900V
 	default y
 	
 
-comment "Patches"
+comment "Patches --------------------------------"
 
 config DS_REMOVE_HELP
 	bool "Remove help"
 	depends on ! DS_TYPE_SPEEDPORT_W900V
 	default n
 	help
-	    Removes the help pages from the webmenu.
+	    Removes the help pages from the web menu.
 
 config DS_REMOVE_ASSISTANT
 	bool "Remove assistant"
 	depends on ! DS_TYPE_SPEEDPORT_W900V
 	default n
 	help
-	    Removes the network assistant from the
-	    webmenu.
+	    Removes the network assistant from the web menu.
 	    
 config DS_REMOVE_LIBTR069
 	bool "Remove libtr069"
@@ -471,42 +472,38 @@ config DS_PATCH_ATA
 	depends on DS_TYPE_SPEEDPORT_W701V
 	default n
 	help
-	    Patches the ATA mode configuration pages
-	    into the webmenu.
+	    Patches the ATA mode configuration pages into the web menu.
 
 config DS_PATCH_ENUM
 	bool "Patch enum"
 	depends on DS_HAS_PHONE && ! DS_TYPE_SPEEDPORT_W900V
 	default n
 	help
-	    Patches the enum configuration pages into
-	    the webmenu.
+	    Patches the enum configuration pages into the web menu.
 
 #config DS_PATCH_INTERNATIONAL
 #	bool "Patch international"
 #	depends on DS_HAS_PHONE && DS_TYPE_LANG_DE && ! DS_TYPE_SPEEDPORT_W900V
 #	default y
 #	help
-#	    Reveals some options from the international
-#	    firmware in the webmenu.
+#	    Reveals some options from the international firmware in the web menu.
 
 config DS_PATCH_SIGNED
-	bool "Patch webmenu signed message"
+	bool "Patch web menu signed message"
 	depends on ! DS_TYPE_SPEEDPORT_W900V && ! DS_TYPE_2170 && ! DS_TYPE_WLAN_3131 \
 		     && ! DS_TYPE_WLAN_3170
 	default n
         help
-	    Hides the "unsupported changes" message
-	    from the webinterface.
+	    Hides the "unsupported changes" message from the web interface.
 
 config DS_PATCH_USBSTORAGE
-	bool "Patch USB-storage names"
+	bool "Patch USB storage names"
 	depends on DS_HAS_USB_HOST
 	default n
         help
 	    Change the name of USB storage dir to uStorXY
 
-comment "Mod"
+comment "Mod ------------------------------------"
 
 choice
 
@@ -546,8 +543,7 @@ config DS_DL_OVERRIDE
 	bool "Override firmware source"
 	default n
 	help
-	    Enable this to override automatically generated
-	    entries.
+	    Enable this to override automatically generated entries.
 
 config DS_DL_SITE
 	string "Firmware site"									if DS_DL_OVERRIDE
@@ -585,13 +581,13 @@ config DS_DL_SOURCE
 	default "fritz.box..."																		if DS_TYPE_CUSTOM
                                                             
 config DS_DL_SITE2                                          
-	string "AVM Webinterface DL Site"	if DS_DL_OVERRIDE       
+	string "AVM web interface DL Site"	if DS_DL_OVERRIDE       
 	depends on DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch" 	if DS_TYPE_SPEEDPORT_W701V
 	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"			if DS_TYPE_SPEEDPORT_W900V
 	
 config DS_DL_SOURCE2
-	string "AVM Webinterface firmware source"	if DS_DL_OVERRIDE
+	string "AVM web interface firmware source"	if DS_DL_OVERRIDE
 	depends on DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
 	default "fritz.box_fon_wlan_7170.29.04.29.image" if DS_TYPE_SPEEDPORT_W701V
 	default "fritz.fon_7150.annexb.38.04.30.image"   if DS_TYPE_SPEEDPORT_W900V
@@ -629,10 +625,10 @@ config DS_FAVICON_STRING
 
 choice
 
-	prompt "Squashfs blocksize"
+	prompt "SquashFS block size"
 	default DS_SQUASHFS_BLOCKSIZE_65536
 	help
-	    Blocksize of the root filesystem (and hidden squashfs)
+	    Block size of the root filesystem (and hidden SquashFS)
 
 	config DS_SQUASHFS_BLOCKSIZE_ORIG
 		bool "original"
@@ -661,7 +657,7 @@ menu "Compiler options"
 
 choice
 
-	prompt "Toolchain"
+	prompt "Toolchains"
 	default DS_DOWNLOAD_TOOLCHAIN
 	help
 	    Download Toolchain, build toolchain, use external toolchain

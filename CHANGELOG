@@ -6,6 +6,21 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- Major menuconfig restructuring. For example (there is more):
+  * Iptables' shared libs and kernel modules are dependent on a top level
+    setting and can be deselected as  whole groups.
+  * JamVM + classpath + ffi-sable can now be found in one place and are also
+    interdependent.
+  * Sub-menus in packages section
+  * Major case first letters in package names
+  * More and improved menu descriptions
+  * Removed redundant library descriptions for iptables and classpath stuff by
+    putting them in groups (see above).
+  * Some changes in include structure ('source' commands in Config.in files),
+    e.g. several libs' descriptions are now closer to their required top level
+    applications.
+- Fix firmware build: iptables binary was always included in image, even if not
+  selected in menuconfig.
 - Fix syslogd ring buffer size parameter leading to "Starting syslogd...failed";
   package version updated to 0.2.1
 - Mini_fo package now listed as regular package, not "testing" anymore (no
