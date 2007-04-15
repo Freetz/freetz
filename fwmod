@@ -367,7 +367,7 @@ then
 
 	echo "unpacking firmware image"
 	mkdir "$FIRMWARE_DIR"
-	"$TAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || exit 1
+	"$TAR" -xif "$FIRMWARE" -C "$FIRMWARE_DIR" || exit 1
 
 	# Do the images exist ?
 	if [ ! -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ]
@@ -460,7 +460,7 @@ then
 
 	echo "unpacking var.tar"
 	mkdir "$VARTAR_DIR"
-	"$TAR" -xf "$VARTAR" -C "$VARTAR_DIR" || exit 1
+	"$TAR" -xif "$VARTAR" -C "$VARTAR_DIR" || exit 1
 
 	# Unpacking second firmware image
 	if [ -n "$FIRMWARE2" ]
@@ -963,7 +963,7 @@ then
 		for pkg in $(cat "$STATIC_ADDON_FILE" | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' | grep -v '^#' | grep -v '^$')
 		do
 			[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}${pkg} (addon)"
-			pkg_name="$(echo "$pkg" | sed -e 's/-[0-9.]*$//' -e 's/-cgi$//')"
+			pkg_name="$(echo "$pkg" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//')"
 
 			if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]
 			then

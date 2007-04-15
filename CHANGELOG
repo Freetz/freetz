@@ -32,10 +32,18 @@ Latest changes:
   This avoids an error when subsequently calling 'make precompiled' again.
 - Fix mini_fo: use modprobe instead of insmod, because module path can differ
   with other box types. Package updated to 0.2.
+- External IP can now be determined without calling external servers: Shell
+  script /bin/get_ip prints external IP to stdout, giving the user a choice
+  between three different methods:
+    -w, --webcm    - webcm CGI handler method [default]
+    -d, --dsld     - showdsldstat method (use only with kernel 2.6 firmwares)
+    -e, --extquery - external site query method (ask whatismyip.org)
 - Fix typo in make target 'kernel-clean'
 - netsnmp.cgi is now executable, so the package can be web-configured.
 - Fix typo in kernel/Config.in: DS_MODULE_crc-ccitt -> DS_MODULE_crc_ccitt.
   So menuconfig no longer complains about DS_MODULE_ppp_async.
+- Suppress tar "lone zero block" warning when unpacking certain firmware images
+- Don't be so restrictive on addon-names (e.g. openvpn-2.1.offline)
 
 === release ds-0.2.9_26-14.2 ===
 
@@ -46,7 +54,7 @@ Latest changes:
   the make script and in the download package itself.
 - Fixed 'tar --exclude .svn' for dnsmasq, cifsmount and deco: option was not
   set for '*-package' targets (tar -c), but for unpack targets (tar -x).
-- Remove "depends on DS_REPLACE_KERNEL" for iptables libs 
+- Remove "depends on DS_REPLACE_KERNEL" for iptables libs
 - Checking for and cleaning up Subversion directories in build/modified
   before packing firmware image
 - Updated copyright notices and acknowledgements
