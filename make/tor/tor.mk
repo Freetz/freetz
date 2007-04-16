@@ -16,7 +16,7 @@ $(DL_DIR)/$(TOR_SOURCE):
 	wget -P $(DL_DIR) $(TOR_SITE)/$(TOR_SOURCE)
 
 $(DL_DIR)/$(TOR_PKG_SOURCE):
-	@wget -P $(DL_DIR) $(TOR_PKG_SITE)/$(TOR_PKG_SOURCE)
+	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TOR_PKG_SOURCE) $(TOR_PKG_SITE)
 
 $(TOR_DIR)/.unpacked: $(DL_DIR)/$(TOR_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(TOR_SOURCE)

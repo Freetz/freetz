@@ -6,6 +6,22 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- Cross-cutting changes in ds-mod-specific package download:
+  * New shell script tools/ds_download provides a uniform way to download
+    ds-mod-specific packages such as application and add-on packages as well
+    as precompiled toolchains. The script first checks a predefined list of
+    download servers (mirrors) and only uses an optionally provided "original"
+    server as fallback, which is important for new package versions not
+    available on mirrors yet.
+  * New variable DL_TOOL in Makefile points to tools/ds_download
+  * List of download sites (mirrors) can be edited in menuconfig (Advanced
+    options -> DS-Mod package download sites). Currently there are three slots
+    for download servers, two of which are meant to be preset with default
+    values and one with an optional user-defined mirror. This enables users
+    to set up their private mirrors on their own LAN or WAN servers.
+  * *.mk files loading mod-specific packages have all been made "mirror-aware",
+    i.e. they all call DL_TOOL with the appropriate parameters. Specifically,
+    all former primary download sites have been preserved as fallback servers.
 - Major menuconfig restructuring. For example (there is more):
   * Iptables' shared libs and kernel modules are dependent on a top level
     setting and can be deselected as  whole groups.

@@ -12,7 +12,7 @@ $(DL_DIR)/$(LUA_SOURCE):
 	wget -P $(DL_DIR) $(LUA_SITE)/$(LUA_SOURCE)
 
 $(DL_DIR)/$(LUA_PKG_SOURCE):
-	@wget -P $(DL_DIR) $(LUA_PKG_SITE)/$(LUA_PKG_SOURCE)
+	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(LUA_PKG_SOURCE) $(LUA_PKG_SITE)
 
 $(LUA_DIR)/.unpacked: $(DL_DIR)/$(LUA_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LUA_SOURCE)

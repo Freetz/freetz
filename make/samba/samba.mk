@@ -16,7 +16,7 @@ $(DL_DIR)/$(SAMBA_SOURCE):
 	wget --passive-ftp -P $(DL_DIR) $(SAMBA_SITE)/$(SAMBA_SOURCE)
 
 $(DL_DIR)/$(SAMBA_PKG_SOURCE):
-	@wget -P $(DL_DIR) $(SAMBA_PKG_SITE)/$(SAMBA_PKG_SOURCE)
+	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(SAMBA_PKG_SOURCE) $(SAMBA_PKG_SITE)
 
 $(SAMBA_DIR)/.unpacked: $(DL_DIR)/$(SAMBA_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(SAMBA_SOURCE)

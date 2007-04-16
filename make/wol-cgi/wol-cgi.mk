@@ -4,7 +4,7 @@ WOL_CGI_PKG_SITE:=http://www.eiband.info/dsmod
 
 
 $(DL_DIR)/$(WOL_CGI_PKG_SOURCE):
-	@wget -P $(DL_DIR) $(WOL_CGI_PKG_SITE)/$(WOL_CGI_PKG_SOURCE)
+	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(WOL_CGI_PKG_SOURCE) $(WOL_CGI_PKG_SITE)
 
 $(PACKAGES_DIR)/.wol-cgi-$(WOL_CGI_VERSION): $(DL_DIR)/$(WOL_CGI_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(WOL_CGI_PKG_SOURCE)

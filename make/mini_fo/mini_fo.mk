@@ -1,9 +1,9 @@
 MINI_FO_VERSION:=0.2
 MINI_FO_PKG_SOURCE:=mini_fo-dsmod-$(MINI_FO_VERSION).tar.bz2
-MINI_FO_PKG_SITE:=http://scrum-master.de/download/dsmod
+MINI_FO_PKG_SITE:=http://dsmod.3dfxatwork.de
 
 $(DL_DIR)/$(MINI_FO_PKG_SOURCE):
-	@wget -P $(DL_DIR) $(MINI_FO_PKG_SITE)/$(MINI_FO_PKG_SOURCE)
+	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(MINI_FO_PKG_SOURCE) $(MINI_FO_PKG_SITE)
 
 $(PACKAGES_DIR)/.mini_fo-$(MINI_FO_VERSION): $(DL_DIR)/$(MINI_FO_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(MINI_FO_PKG_SOURCE)
