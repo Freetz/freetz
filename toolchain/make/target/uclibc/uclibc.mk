@@ -6,7 +6,7 @@ UCLIBC_SOURCE:=uClibc-$(UCLIBC_VERSION).tar.bz2
 UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
 UCLIBC_PACKAGE_VERSION:=0.1
 UCLIBC_PACKAGE:=uClibc-$(UCLIBC_VERSION)-dsmod-$(UCLIBC_PACKAGE_VERSION).tar.bz2
-UCLIBC_PACKAGE_SITE:=http://dsmod.wirsind.info/precompiled
+UCLIBC_PACKAGE_SITE:=http://dsmod.wirsind.info
 
 $(DL_DIR)/$(UCLIBC_SOURCE):
 	wget -P $(DL_DIR) $(UCLIBC_SOURCE_SITE)/$(UCLIBC_SOURCE)

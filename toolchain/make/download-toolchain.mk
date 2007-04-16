@@ -2,7 +2,7 @@ KERNEL_TOOLCHAIN_VERSION:=0.1
 TARGET_TOOLCHAIN_VERSION:=0.2
 TARGET_TOOLCHAIN_SOURCE:=target-toolchain-dsmod-$(TARGET_TOOLCHAIN_VERSION).tar.lzma
 KERNEL_TOOLCHAIN_SOURCE:=kernel-toolchain-dsmod-$(KERNEL_TOOLCHAIN_VERSION).tar.lzma
-TOOLCHAIN_SITE:=http://dsmod.wirsind.info/precompiled
+TOOLCHAIN_SITE:=http://dsmod.wirsind.info
 
 
 $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE):
