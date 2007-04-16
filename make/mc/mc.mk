@@ -9,12 +9,11 @@ MC_PKG_VERSION:=0.2
 MC_PKG_SOURCE:=mc-$(MC_VERSION)-dsmod-$(MC_PKG_VERSION).tar.bz2
 MC_PKG_SITE:=http://www.eiband.info/dsmod
 
-
 $(DL_DIR)/$(MC_SOURCE):
 	wget -P $(DL_DIR) $(MC_SITE)/$(MC_SOURCE)
 
 $(DL_DIR)/$(MC_PKG_SOURCE):
-	@wget -P $(DL_DIR) $(MC_PKG_SITE)/$(MC_PKG_SOURCE)
+	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(MC_PKG_SOURCE) $(MC_PKG_SITE)
 
 $(MC_DIR)/.unpacked: $(DL_DIR)/$(MC_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MC_SOURCE)

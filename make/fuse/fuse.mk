@@ -14,7 +14,7 @@ $(DL_DIR)/$(FUSE_SOURCE):
 	wget -P $(DL_DIR) $(FUSE_SITE)/$(FUSE_SOURCE)
 	
 $(DL_DIR)/$(FUSE_PKG_SOURCE):
-	@wget -P $(DL_DIR) $(FUSE_PKG_SITE)/$(FUSE_PKG_SOURCE)
+	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(FUSE_PKG_SOURCE) $(FUSE_PKG_SITE)
 
 $(FUSE_DIR)/.unpacked: $(DL_DIR)/$(FUSE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FUSE_SOURCE)
