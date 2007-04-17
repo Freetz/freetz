@@ -6,6 +6,16 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- Added libelf library needed by ltrace - BUILD OK, BUT UNTESTED
+- Added section "debug helpers" in menuconfig
+- Added debug helper package strace (binary only)
+- Added debug helper package ltrace (binary only) - COMPILES, BUT CRASHES
+- Updated cifsmount package to 0.2: added CGI (web config) for up to three
+  mounts; added init.d start/stop scripts; added script 'cifsmount' for more
+  convenient command line (un-)mounting.
+
+=== release ds-0.2.9_26-14.3 ===
+
 - Cross-cutting changes in ds-mod-specific package download:
   * New shell script tools/ds_download provides a uniform way to download
     ds-mod-specific packages such as application and add-on packages as well
@@ -59,13 +69,6 @@ Latest changes:
 - Fix typo in kernel/Config.in: DS_MODULE_crc-ccitt -> DS_MODULE_crc_ccitt.
   So menuconfig no longer complains about DS_MODULE_ppp_async.
 - Suppress tar "lone zero block" warning when unpacking certain firmware images
-- Added libelf library needed by ltrace - BUILD OK, BUT UNTESTED
-- Added section "debug helpers" in menuconfig
-- Added debug helper package strace (binary only)
-- Added debug helper package ltrace (binary only) - COMPILES, BUT CRASHES
-- Updated cifsmount package to 0.2: added CGI (web config) for up to three
-  mounts; added init.d start/stop scripts; added script 'cifsmount' for more
-  convenient command line (un-)mounting.
 - Don't be so restrictive on addon-names (e.g. openvpn-2.1.offline)
 
 === release ds-0.2.9_26-14.2 ===
