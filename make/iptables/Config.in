@@ -1,0 +1,420 @@
+config DS_PACKAGE_IPTABLES
+	bool "Iptables 1.3.6"
+	default n
+	help
+		Netfilter/iptables
+
+		Netfilter is the set of hooks within the Linux kernel for intercepting
+		and manipulating network packets. The best-known component on top of
+		netfilter is the firewall which filters packets, but the hooks are also
+		used by a component which performs network address translation, and by
+		another which provides ipchains backwards compatibility. These
+		components are usually Loadable Kernel Modules.
+
+		iptables is the name of the user space tool by which administrators
+		create rules for the packet filtering and NAT modules. While technically
+		iptables is merely the tool which controls the packet filtering and NAT
+		components within the kernel, the name iptables is often used to refer
+		to the entire infrastructure, including netfilter, connection tracking
+		and NAT, as well as the tool itself. iptables is a standard part of all
+		modern Linux distributions.
+
+# Include here for a cleaner menu structure (list packages before modules/libs)
+source make/firewall-cgi/Config.in
+
+config DS_PACKAGE_IPTABLES_KERNEL_MODULES
+	bool "Iptables kernel modules"
+	requires DS_PACKAGE_IPTABLES
+	default n
+	help
+		Linux kernel modules for iptables
+
+		Please note that some kernel modules have corresponding shared libraries
+		and vice versa, so please make sure to select both of them, if they are
+		needed for your purpose.
+
+menu "Select kernel modules"
+	requires DS_PACKAGE_IPTABLES_KERNEL_MODULES
+config DS_MODULE_ip_conntrack_ftp
+	bool "ip_conntrack_ftp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+config DS_MODULE_ip_conntrack_h323
+	bool "ip_conntrack_h323.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+config DS_MODULE_ip_conntrack_irc
+	bool "ip_conntrack_irc.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+config DS_MODULE_ip_conntrack
+	bool "ip_conntrack.ko"
+	default n
+config DS_MODULE_ip_conntrack_pptp
+	bool "ip_conntrack_pptp.ko"
+	select DS_MODULE_ip_conntrack_proto_gre
+	default n
+config DS_MODULE_ip_conntrack_proto_esp
+	bool "ip_conntrack_proto_esp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+config DS_MODULE_ip_conntrack_proto_gre
+	bool "ip_conntrack_proto_gre.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+config DS_MODULE_ip_conntrack_rpc_tcp
+	bool "ip_conntrack_rpc_tcp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+config DS_MODULE_ip_conntrack_rpc_udp
+	bool "ip_conntrack_rpc_udp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+config DS_MODULE_ip_conntrack_tftp
+	bool "ip_conntrack_tftp.ko"
+	select DS_MODULE_ip_conntrack
+	default n
+config DS_MODULE_ip_nat_ftp
+	bool "ip_nat_ftp.ko"
+	select DS_MODULE_iptable_nat
+	default n
+config DS_MODULE_ip_nat_h323
+	bool "ip_nat_h323.ko"
+	select DS_MODULE_iptable_nat
+	default n
+config DS_MODULE_ip_nat_irc
+	bool "ip_nat_irc.ko"
+	select DS_MODULE_iptable_nat
+	default n
+config DS_MODULE_ip_nat_pptp
+	bool "ip_nat_pptp.ko"
+	select DS_MODULE_ip_conntrack_proto_gre
+	select DS_MODULE_iptable_nat
+	default n
+config DS_MODULE_ip_nat_proto_esp
+	bool "ip_nat_proto_esp.ko"
+	select DS_MODULE_iptable_nat
+	default n
+config DS_MODULE_ip_nat_proto_gre
+	bool "ip_nat_proto_gre.ko"
+	select DS_MODULE_iptable_nat
+	default n
+config DS_MODULE_ip_nat_tftp
+	bool "ip_nat_tftp.ko"
+	select DS_MODULE_iptable_nat
+	default n
+config DS_MODULE_iptable_filter
+	bool "iptable_filter.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_iptable_mangle
+	bool "iptable_mangle.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_iptable_nat
+	bool "iptable_nat.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ip_tables
+	bool "ip_tables.ko"
+	default n
+config DS_MODULE_ipt_CFG
+	bool "ipt_CFG.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_connmark
+	bool "ipt_connmark.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_CONNMARK
+	bool "ipt_CONNMARK.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_conntrack
+	bool "ipt_conntrack.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_helper
+	bool "ipt_helper.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_ipp2p
+	bool "ipt_ipp2p.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_iprange
+	bool "ipt_iprange.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_length
+	bool "ipt_length.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_limit
+	bool "ipt_limit.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_LOG
+	bool "ipt_LOG.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_mac
+	bool "ipt_mac.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_mark
+	bool "ipt_mark.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_MARK
+	bool "ipt_MARK.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_MASQUERADE
+	bool "ipt_MASQUERADE.ko"
+	select DS_MODULE_iptable_nat
+	default n
+config DS_MODULE_ipt_mip
+	bool "ipt_mip.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_multiport
+	bool "ipt_multiport.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_psd
+	bool "ipt_psd.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_record_rpc
+	bool "ipt_record_rpc.ko"
+	select DS_MODULE_ip_conntrack_rpc_tcp
+	select DS_MODULE_ip_conntrack_rpc_udp
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_REDIRECT
+	bool "ipt_REDIRECT.ko"
+	select DS_MODULE_iptable_nat
+	default n
+config DS_MODULE_ipt_REJECT
+	bool "ipt_REJECT.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_ROUTE
+	bool "ipt_ROUTE.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_state
+	bool "ipt_state.ko"
+	select DS_MODULE_ip_conntrack
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_tcpmss
+	bool "ipt_tcpmss.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_TCPMSS
+	bool "ipt_TCPMSS.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_tos
+	bool "ipt_tos.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_TOS
+	bool "ipt_TOS.ko"
+	select DS_MODULE_ip_tables
+	default n
+config DS_MODULE_ipt_ttl
+	bool "ipt_ttl.ko"
+	select DS_MODULE_ip_tables
+	default n
+endmenu
+
+config DS_PACKAGE_IPTABLES_SHARED_LIBS
+	bool "Iptables shared libraries"
+	requires DS_PACKAGE_IPTABLES
+	default n
+	help
+		Shared Libraries for iptables
+		
+		Please note that some kernel modules have corresponding shared libraries
+		and vice versa, so please make sure to select both of them, if they are
+		needed for your purpose.
+
+menu "Select shared libraries"
+	requires DS_PACKAGE_IPTABLES_SHARED_LIBS
+config DS_LIB_libipt_addrtype
+	bool "libipt_addrtype.so"
+	default n
+config DS_LIB_libipt_ah
+	bool "libipt_ah.so"
+	default n
+config DS_LIB_libipt_CLASSIFY
+	bool "libipt_CLASSIFY.so"
+	default n
+config DS_LIB_libipt_comment
+	bool "libipt_comment.so"
+	default n
+config DS_LIB_libipt_connlimit
+	bool "libipt_connlimit.so"
+	default n
+config DS_LIB_libipt_connmark
+	bool "libipt_connmark.so"
+	default n
+config DS_LIB_libipt_CONNMARK
+	bool "libipt_CONNMARK.so"
+	default n
+config DS_LIB_libipt_conntrack
+	bool "libipt_conntrack.so"
+	default n
+config DS_LIB_libipt_DNAT
+	bool "libipt_DNAT.so"
+	default n
+config DS_LIB_libipt_dscp
+	bool "libipt_dscp.so"
+	default n
+config DS_LIB_libipt_DSCP
+	bool "libipt_DSCP.so"
+	default n
+config DS_LIB_libipt_ecn
+	bool "libipt_ecn.so"
+	default n
+config DS_LIB_libipt_ECN
+	bool "libipt_ECN.so"
+	default n
+config DS_LIB_libipt_esp
+	bool "libipt_esp.so"
+	default n
+config DS_LIB_libipt_hashlimit
+	bool "libipt_hashlimit.so"
+	default n
+config DS_LIB_libipt_helper
+	bool "libipt_helper.so"
+	default n
+config DS_LIB_libipt_icmp
+	bool "libipt_icmp.so"
+	default n
+config DS_LIB_libipt_ipp2p
+	bool "libipt_ipp2p.so"
+	default n
+config DS_LIB_libipt_iprange
+	bool "libipt_iprange.so"
+	default n
+config DS_LIB_libipt_length
+	bool "libipt_length.so"
+	default n
+config DS_LIB_libipt_limit
+	bool "libipt_limit.so"
+	default n
+config DS_LIB_libipt_LOG
+	bool "libipt_LOG.so"
+	default n
+config DS_LIB_libipt_mac
+	bool "libipt_mac.so"
+	default n
+config DS_LIB_libipt_mark
+	bool "libipt_mark.so"
+	default n
+config DS_LIB_libipt_MARK
+	bool "libipt_MARK.so"
+	default n
+config DS_LIB_libipt_MASQUERADE
+	bool "libipt_MASQUERADE.so"
+	default n
+config DS_LIB_libipt_MIRROR
+	bool "libipt_MIRROR.so"
+	default n
+config DS_LIB_libipt_multiport
+	bool "libipt_multiport.so"
+	default n
+config DS_LIB_libipt_NETMAP
+	bool "libipt_NETMAP.so"
+	default n
+config DS_LIB_libipt_NFQUEUE
+	bool "libipt_NFQUEUE.so"
+	default n
+config DS_LIB_libipt_NOTRACK
+	bool "libipt_NOTRACK.so"
+	default n
+config DS_LIB_libipt_owner
+	bool "libipt_owner.so"
+	default n
+config DS_LIB_libipt_physdev
+	bool "libipt_physdev.so"
+	default n
+config DS_LIB_libipt_pkttype
+	bool "libipt_pkttype.so"
+	default n
+config DS_LIB_libipt_policy
+	bool "libipt_policy.so"
+	default n
+config DS_LIB_libipt_realm
+	bool "libipt_realm.so"
+	default n
+config DS_LIB_libipt_REDIRECT
+	bool "libipt_REDIRECT.so"
+	default n
+config DS_LIB_libipt_REJECT
+	bool "libipt_REJECT.so"
+	default n
+config DS_LIB_libipt_rpc
+	bool "libipt_rpc.so"
+	default n
+config DS_LIB_libipt_SAME
+	bool "libipt_SAME.so"
+	default n
+config DS_LIB_libipt_sctp
+	bool "libipt_sctp.so"
+	default n
+config DS_LIB_libipt_SNAT
+	bool "libipt_SNAT.so"
+	default n
+config DS_LIB_libipt_standard
+	bool "libipt_standard.so"
+	default n
+config DS_LIB_libipt_state
+	bool "libipt_state.so"
+	default n
+config DS_LIB_libipt_TARPIT
+	bool "libipt_TARPIT.so"
+	default n
+config DS_LIB_libipt_tcpmss
+	bool "libipt_tcpmss.so"
+	default n
+config DS_LIB_libipt_TCPMSS
+	bool "libipt_TCPMSS.so"
+	default n
+config DS_LIB_libipt_tcp
+	bool "libipt_tcp.so"
+	default n
+config DS_LIB_libipt_tos
+	bool "libipt_tos.so"
+	default n
+config DS_LIB_libipt_TOS
+	bool "libipt_TOS.so"
+	default n
+config DS_LIB_libipt_TRACE
+	bool "libipt_TRACE.so"
+	default n
+config DS_LIB_libipt_ttl
+	bool "libipt_ttl.so"
+	default n
+config DS_LIB_libipt_TTL
+	bool "libipt_TTL.so"
+	default n
+config DS_LIB_libipt_udp
+	bool "libipt_udp.so"
+	default n
+config DS_LIB_libipt_ULOG
+	bool "libipt_ULOG.so"
+	default n
+config DS_LIB_libipt_unclean
+	bool "libipt_unclean.so"
+	default n
+endmenu
