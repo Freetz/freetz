@@ -8,9 +8,12 @@ BUSYBOX_SITE:=http://www.busybox.net/downloads
 BUSYBOX_HOST_DIR:=busybox
 BUSYBOX_HOST_BINARY:=busybox
 
-
-#$(DL_DIR)/$(BUSYBOX_SOURCE):
-#	wget -P $(DL_DIR) $(BUSYBOX_SITE)/$(BUSYBOX_SOURCE)
+# Activate on demand to avoid collision with identical target for regular
+# busybox package
+ifneq ($(strip $(DS_HAVE_DOT_CONFIG)),y)
+$(DL_DIR)/$(BUSYBOX_SOURCE): $(DL_DIR)
+	wget -P $(DL_DIR) $(BUSYBOX_SITE)/$(BUSYBOX_SOURCE)
+endif
 
 $(BUSYBOX_TOOLS_DIR)/.unpacked: $(DL_DIR)/$(BUSYBOX_SOURCE)
 	mkdir -p $(BUSYBOX_TOOLS_DIR)

@@ -6,6 +6,14 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- tools/make/busybox-tools.mk: activate download target on demand to avoid
+  collision with identical target for regular busybox on one hand and to
+  avoid make complaining about a missing target when building tools busybox
+  from scratch on the other hand.
+- tools/ds_download: changed 'od -D' to 'od -d' to make it compatible with
+  old versions of GNU coreutils (e.g. od 5.2.1)
+
+=== in preparation for release ds26-15 ===
 - Added libelf library needed by ltrace - BUILD OK, BUT UNTESTED
 - Added section "debug helpers" in menuconfig
 - Added debug helper package strace (binary only)
@@ -14,7 +22,7 @@ Latest changes:
   mounts; added init.d start/stop scripts; added script 'cifsmount' for more
   convenient command line (un-)mounting.
 
-=== release ds-0.2.9_26-14.3 ===
+=== release ds26-14.3 ===
 
 - Cross-cutting changes in ds-mod-specific package download:
   * New shell script tools/ds_download provides a uniform way to download
