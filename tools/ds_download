@@ -40,7 +40,7 @@ rand()
 {
   # Create random 1-byte integer (for up to 255 download sites).
   # If more bytes are needed, increase 'count' parameter.
-  rnd=$(dd if=/dev/urandom bs=1 count=1 2> /dev/null | od -D | head -n 1 | awk '{print $2}')
+  rnd=$(dd if=/dev/urandom bs=1 count=1 2> /dev/null | od -d | head -n 1 | awk '{print $2}')
   # Normalise random number to return a value in range 1..$1
   echo $(( $rnd % $1 + 1 ))
 }
