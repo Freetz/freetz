@@ -32,7 +32,7 @@ static char menu_backtitle[128];
 static const char mconf_readme[] =
 "Overview\n"
 "--------\n"
-"Some features may be built directly into Buildroot.  Some features\n"
+"Some features may be built directly into DS-Mod.  Some features\n"
 "may be completely removed altogether.  There are also certain\n"
 "parameters which are not really features, but must be\n"
 "entered in as decimal or hexadecimal numbers or possibly text.\n"
@@ -194,11 +194,11 @@ load_config_text[] =
 	"last retrieved.  Leave blank to abort.",
 load_config_help[] =
 	"\n"
-	"For various reasons, one may wish to keep several different Buildroot\n"
+	"For various reasons, one may wish to keep several different DS-Mod\n"
 	"configurations available on a single machine.\n"
 	"\n"
 	"If you have saved a previous configuration in a file other than the\n"
-	"Buildroot's default, entering the name of the file here will allow you\n"
+	"DS-Mod's default, entering the name of the file here will allow you\n"
 	"to modify that configuration.\n"
 	"\n"
 	"If you are uncertain, then you have probably never used alternate\n"
@@ -208,7 +208,7 @@ save_config_text[] =
 	"as an alternate.  Leave blank to abort.",
 save_config_help[] =
 	"\n"
-	"For various reasons, one may wish to keep different Buildroot\n"
+	"For various reasons, one may wish to keep different DS-Mod\n"
 	"configurations available on a single machine.\n"
 	"\n"
 	"Entering a file name here will allow you to later retrieve, modify\n"
@@ -937,7 +937,7 @@ int main(int ac, char **av)
 	conf_parse(av[1]);
 	conf_read(NULL);
 
-	snprintf(menu_backtitle, 128, "Buildroot Configuration");
+	snprintf(menu_backtitle, 128, "DS-Mod_26 (ds26) Configuration");
 
 	mode = getenv("MENUCONFIG_MODE");
 	if (mode) {
@@ -957,17 +957,17 @@ int main(int ac, char **av)
 	init_dialog();
 	do {
 		stat = dialog_yesno(NULL,
-				    "Do you wish to save your new Buildroot configuration?", 5, 60);
+				    "Do you wish to save your new DS-Mod configuration?", 5, 60);
 	} while (stat < 0);
 	end_dialog();
 
 	if (stat == 0) {
 		conf_write(NULL);
 		printf("\n\n"
-			"*** End of Buildroot configuration.\n"
+			"*** End of DS-Mod configuration.\n"
 			"*** Check the top-level Makefile for additional configuration options.\n\n");
 	} else
-		printf("\n\nYour Buildroot configuration changes were NOT saved.\n\n");
+		printf("\n\nYour DS-Mod configuration changes were NOT saved.\n\n");
 
 	return 0;
 }

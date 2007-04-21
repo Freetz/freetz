@@ -548,7 +548,7 @@ int main(int ac, char **av)
 	case ask_silent:
 		if (stat(".config", &tmpstat)) {
 			printf("***\n"
-				"*** You have not yet configured Buildroot!\n"
+				"*** You have not yet configured DS-Mod!\n"
 				"***\n"
 				"*** Please run some configurator (e.g. \"make oldconfig\" or\n"
 				"*** \"make menuconfig\" or \"make config\").\n"
@@ -576,7 +576,7 @@ int main(int ac, char **av)
 		check_conf(&rootmenu);
 	} while (conf_cnt);
 	if (conf_write(NULL)) {
-		fprintf(stderr, "\n*** Error during writing of the Buildroot configuration.\n\n");
+		fprintf(stderr, "\n*** Error during writing of the DS-Mod configuration.\n\n");
 		return 1;
 	}
 	return 0;

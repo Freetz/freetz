@@ -1,4 +1,10 @@
-# Makefile for buildroot2
+# Makefile for DS-Mod_26 (ds26)
+#
+# Taken from buildroot2 with only slight non-functional modifications
+# (strings changed from 'Buildroot' to 'DS-Mod').
+#
+# Original version can be obtained this way:
+# svn://uclibc.org/trunk/buildroot/package/config
 #
 # Copyright (C) 2002-2005 Erik Andersen <andersen@codepoet.org>
 #
