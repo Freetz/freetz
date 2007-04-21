@@ -31,14 +31,14 @@ char *defconfig_file;
 static int indent = 1;
 static int valid_stdin = 1;
 static int conf_cnt;
-static char line[128];
+static signed char line[128];
 static struct menu *rootEntry;
 
 static char nohelp_text[] = "Sorry, no help available for this option yet.\n";
 
-static void strip(char *str)
+static void strip(signed char *str)
 {
-	char *p = str;
+	signed char *p = str;
 	int l;
 
 	while ((isspace(*p)))
@@ -548,7 +548,7 @@ int main(int ac, char **av)
 	case ask_silent:
 		if (stat(".config", &tmpstat)) {
 			printf("***\n"
-				"*** You have not yet configured danisahne-mod!\n"
+				"*** You have not yet configured Buildroot!\n"
 				"***\n"
 				"*** Please run some configurator (e.g. \"make oldconfig\" or\n"
 				"*** \"make menuconfig\" or \"make config\").\n"
@@ -576,7 +576,7 @@ int main(int ac, char **av)
 		check_conf(&rootmenu);
 	} while (conf_cnt);
 	if (conf_write(NULL)) {
-		fprintf(stderr, "\n*** Error during writing of the danisahne-mod configuration.\n\n");
+		fprintf(stderr, "\n*** Error during writing of the Buildroot configuration.\n\n");
 		return 1;
 	}
 	return 0;

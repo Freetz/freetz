@@ -25,6 +25,8 @@ static bool zconf_endtoken(int token, int starttoken, int endtoken);
 
 struct symbol *symbol_hash[257];
 
+static struct menu *current_menu, *current_entry;
+
 #define YYERROR_VERBOSE
 %}
 %expect 40
@@ -485,7 +487,7 @@ void conf_parse(const char *name)
 	sym_init();
 	menu_init();
 	modules_sym = sym_lookup("MODULES", 0);
-	rootmenu.prompt = menu_add_prop(P_MENU, "Danisahne-mod Configuration", NULL, NULL);
+	rootmenu.prompt = menu_add_prop(P_MENU, "Buildroot Configuration", NULL, NULL);
 
 	//zconfdebug = 1;
 	zconfparse();
@@ -681,6 +683,7 @@ void zconfdump(FILE *out)
 }
 
 #include "lex.zconf.c"
+#include "util.c"
 #include "confdata.c"
 #include "expr.c"
 #include "symbol.c"
