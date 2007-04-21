@@ -6,6 +6,16 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- Improved menuconfig tool adopted from buildroot2:
+  * Comprehensive online help
+  * Options' help texts also show dependency information:
+    + Which condition(s) does an option depend on?
+    + By which other option(s) was an option selected?
+    + Which other options does an option select?
+    + Where is an option defined (file name + line no.)?
+  * Seach mode: wildcard search for option names via "/" hotkey.
+    By the way: search mode also has online help.
+- Added download mirror #3 to Config.in
 - tools/make/busybox-tools.mk: activate download target on demand to avoid
   collision with identical target for regular busybox on one hand and to
   avoid make complaining about a missing target when building tools busybox
