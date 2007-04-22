@@ -570,10 +570,6 @@ then
 				modpatch "$FILESYSTEM_MOD_DIR" "$i"
 		    done
 
-		    if [ "$DS_REPLACE_KERNEL" == "y" ]
-		    then
-			    [ "$DS_HIDDEN_ROOT" == "y" ] || modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-no-hidden-mount.patch"
-		    fi
 	    else
 		    if [ ! -d "${PATCHES_DIR}/${DS_TYPE_STRING}" ]; then
 			echo "ERROR: missing ${PATCHES_DIR}/${DS_TYPE_STRING}" 1>&2
