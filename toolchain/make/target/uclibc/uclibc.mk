@@ -63,7 +63,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/ \
 		install_dev
 
-ifeq ($(strip DS_BUILD_TOOLCHAIN)),y)
+ifeq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
 	$(MAKE) -C $(UCLIBC_DIR) \
 		PREFIX="$(shell pwd)/$(ROOT_DIR)/" \
