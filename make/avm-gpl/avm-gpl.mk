@@ -2,7 +2,7 @@ ifeq ($(AVM_VERSION),04.30)
 AVM_SOURCE_PREFIX:=7141
 endif
 
-AVM_SOURCE:=fritzbox$(AVM_SOURCE_PREFIX)-source-files-$(AVM_VERSION).tar.$(AVM_SOURCE_SUFFIX)
+AVM_SOURCE:=fritzbox$(AVM_SOURCE_PREFIX)-source-files-$(AVM_VERSION).tar.bz2
 AVM_SITE:=ftp://ftp.avm.de/develper/opensrc
 AVM_DIR:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
 
