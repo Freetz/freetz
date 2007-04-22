@@ -15,11 +15,15 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
 	mkdir -p $(KERNEL_DIR)
 	cp -a $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N) $(KERNEL_BUILD_DIR)
 
-	for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
+	for i in $(KERNEL_MAKE_DIR)/patches/*.patch; do \
 		patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
 	done
+	# Version specific patches
+#	for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
+#		patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
+#	done
 
-	# Version 04.29 source corrections
+	# Version 04.29/04.30 source corrections
 	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
 	done
@@ -109,9 +113,7 @@ kernel-precompiled: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) \
 		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/drivers/bluetooth \
 		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/net/bluetooth \
 		. | tar -xf - -C $(KERNEL_MODULES_DIR)
-	cp  $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/System.map $(KERNEL_TARGET_DIR)/System.map
-	$(SOURCE_DIR)/depmod.pl -b $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT) \
-		-F $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/System.map
+	cp  $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/System.map $(KERNEL_TARGET_DIR)/System-$(KERNEL_REF)-$(AVM_VERSION).map
 	echo "$(KERNEL_SUBVERSION)" > $(KERNEL_TARGET_DIR)/.version-$(KERNEL_REF)-$(AVM_VERSION)
 
 kernel-configured: $(KERNEL_DIR)/.configured
