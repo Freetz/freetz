@@ -50,7 +50,7 @@ $(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked \
 		--exec-prefix=/usr \
 		--bindir=/usr/bin \
 		--datadir=/usr/share \
-		--includedir=$(TARGET_MAKE_PATH)/../usr/include \
+		--includedir=/usr/include \
 		--infodir=/usr/share/info \
 		--libdir=/usr/lib \
 		--libexecdir=/usr/lib \
