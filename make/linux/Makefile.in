@@ -2,7 +2,6 @@ KERNEL_REF:=$(strip $(subst ",, $(DS_KERNEL_REF)))
 KERNEL_LAYOUT:=$(strip $(subst ",, $(DS_KERNEL_LAYOUT)))
 KERNEL_ARCH:=mips
 
-ifeq ($(AVM_VERSION),04.29)
 KERNEL_DUMMY_MAKE_FILES = \
 	kernel/linux-2.6.13.1/drivers/char/ubik2/Makefile \
 	kernel/linux-2.6.13.1/drivers/char/dect_io/Makefile \
@@ -20,13 +19,11 @@ KERNEL_DUMMY_MAKE_FILES = \
 	kernel/linux-2.6.13.1/drivers/isdn/isdn_fon4/Makefile \
 	kernel/linux-2.6.13.1/drivers/isdn/isdn_fon5/Makefile \
 	kernel/linux-2.6.13.1/drivers/isdn/isdn_fon6/Makefile \
-	kernel/linux-2.6.13.1/drivers/net/usb/Makefile \
 	kernel/linux-2.6.13.1/drivers/net/avm_usb/Makefile \
 	kernel/linux-2.6.13.1/drivers/net/rfcntl/Makefile \
 	kernel/linux-2.6.13.1/drivers/net/ti_davinci_emac/Makefile \
 	kernel/linux-2.6.13.1/drivers/net/wireless/avm_wlan/Makefile \
 	kernel/linux-2.6.13.1/drivers/video/davinci/Makefile \
 	kernel/linux-2.6.13.1/sound/oss/davinci/Makefile
-endif
 
 TARGETS+=kernel
