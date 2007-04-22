@@ -1,6 +1,6 @@
 BFTPD_VERSION:=1.6
 BFTPD_SOURCE:=bftpd-$(BFTPD_VERSION).tar.gz
-BFTPD_SITE:=http://bftpd.sourceforge.net/downloads/src
+BFTPD_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bftpd
 BFTPD_DIR:=$(SOURCE_DIR)/bftpd-$(BFTPD_VERSION)
 BFTPD_MAKE_DIR:=$(MAKE_DIR)/bftpd
 BFTPD_TARGET_BINARY:=bftpd

@@ -576,7 +576,7 @@ config DS_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170_VPN.AnnexB.29.04.31-6111.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_VPN
 	default "fritz.box_wlan_3131.50.04.31.image"			if DS_TYPE_WLAN_3131
 	default "fritz.box_wlan_3170.49.04.31.image"			if DS_TYPE_WLAN_3170
-	default "fw_Speedport_W_701_V.33.04.25.image"			if DS_TYPE_SPEEDPORT_W701V
+	default "fw_Speedport_W701V_V33.04.26.image"			if DS_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W_900V.34.04.21.image"			if DS_TYPE_SPEEDPORT_W900V
 	default "fritz.box..."																		if DS_TYPE_CUSTOM
                                                             
@@ -635,10 +635,11 @@ config DS_MOD_DL_SITE_2
 		the default servers #1 and #2, many packages have another server name
 		in their make file, so a user-defined mirror should rarely be necessary.
 	    
-comment "Download site #3 - default: empty (reserved for later use)"
+comment "Download site #3 - default: http://dsmod.magenbrot.net"
 
 config DS_MOD_DL_SITE_3
 	string ""
+	default "http://dsmod.magenbrot.net"
 	help
 		Download site #3 for DS-Mod packages like 'mc-4.5.0-dsmod-0.2.tar.bz2',
 		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
