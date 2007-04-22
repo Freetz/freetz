@@ -1,6 +1,6 @@
 BFTPD_VERSION:=1.6
 BFTPD_SOURCE:=bftpd-$(BFTPD_VERSION).tar.gz
-BFTPD_SITE:=http://bftpd.sourceforge.net/downloads/src
+BFTPD_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bftpd
 BFTPD_DIR:=$(SOURCE_DIR)/bftpd-$(BFTPD_VERSION)
 BFTPD_MAKE_DIR:=$(MAKE_DIR)/bftpd
 BFTPD_TARGET_BINARY:=bftpd
@@ -50,7 +50,7 @@ $(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked \
 		--exec-prefix=/usr \
 		--bindir=/usr/bin \
 		--datadir=/usr/share \
-		--includedir=/usr/include \
+		--includedir=$(TARGET_MAKE_PATH)/../usr/include \
 		--infodir=/usr/share/info \
 		--libdir=/usr/lib \
 		--libexecdir=/usr/lib \
