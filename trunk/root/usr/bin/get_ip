@@ -1,0 +1,58 @@
+#!/bin/sh
+
+helpmsg()
+{
+  echo "get_ip - determine external IP address"
+  echo
+  echo "Usage: $0 [option]"
+  echo "    -w, --webcm    - use webcm CGI handler method [default]"
+  echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)"
+  echo "    -e, --extquery - use external site query method (ask whatismyip.org)"
+  echo "    -?, --help     - print this help message"
+  echo
+}
+
+local ip=""
+local retval=0
+
+case "$1" in
+  ""|-w|--webcm)
+    local pw=$(/bin/allcfgconv -C ar7 -c -o - | sed -ne '/^webui[[:space:]]*{/,/^}/{
+/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
+}' | grep '^password=' | cut -d '"' -f2)
+    retval=$?
+    if [ $retval != 0 ]; then
+      echo "get_ip error (exit code $retval)" >&2
+      exit $retval
+    fi
+    # Sometimes this call returned nothing at all, minutes later it worked
+    # correctly again. Hopefully, this becomes more reliable with POST instead
+    # of GET. Anyway, we will keep this line for a while.
+    #ip=$(REQUEST_METHOD="GET" REMOTE_ADDR="127.0.0.1" QUERY_STRING="getpage=/usr/www/all/html/query.txt&login:command/password=$pw&var:cnt=1&var:n0=connection0:pppoe:status/ip" /usr/www/html/cgi-bin/webcm | sed -e '1,/^$/d;$d')
+    export POST_DATA="getpage=/usr/www/all/html/query.txt&login:command/password=$pw&var:cnt=1&var:n0=connection0:pppoe:status/ip"
+    ip=$(echo -n "$POST_DATA" | REQUEST_METHOD="POST" REMOTE_ADDR="127.0.0.1" CONTENT_TYPE="application/x-www-form-urlencoded" CONTENT_LENGTH=${#POST_DATA} /usr/www/html/cgi-bin/webcm | sed -e '1,/^$/d;$d')
+    retval=$?
+    ;;
+  -d|--dsld)
+    ip=$(/sbin/showdsldstat | grep "0: ip" | cut -d\/ -f1 | cut -d ' ' -f3)
+    retval=$?
+    ;;
+  -e|--extquery)
+    ip=$(wget -q -O - http://whatismyip.org)
+    retval=$?
+    ;;
+  -?|--help)
+    helpmsg
+    exit 0
+    ;;
+  *)
+    helpmsg >&2
+    exit 1
+esac
+
+if [ $retval == 0 ]; then
+  echo "$ip"
+  exit 0
+fi
+echo "get_ip error (exit code $retval)" >&2
+exit $retval

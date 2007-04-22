@@ -1,0 +1,11 @@
+config DS_PACKAGE_MATRIXTUNNEL
+	bool "Matrixtunnel 0.2 (binary only)"
+	select DS_LIB_libmatrixssl
+	select DS_LIB_libpthread
+	default n
+	help
+	    SSL tunnel based on matrixssl. Matrixtunnel is a stripped down version
+	    of stunnel based on matrixssl library. Essentially, this package makes
+	    your router's websrv or httpd SSL-enabled, offering you the option of
+	    remote configuration via WWW or secure remote use of features like
+	    Rudi-Shell.

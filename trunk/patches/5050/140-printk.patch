@@ -1,0 +1,11 @@
+--- etc/init.d/rc.S.orig	2006-03-20 17:33:06.000000000 +0100
++++ etc/init.d/rc.S	2006-03-20 17:34:33.000000000 +0100
+@@ -435,7 +435,7 @@
+ #file "stdin", 28
+ #file "./arch/etc/init.d/rc.ubik2.sh", 0
+ ubik2_params=
+-modprobe ubik2 takeover_printk=1 $ubik2_params
++modprobe ubik2 takeover_printk=0 $ubik2_params
+ cat /dev/debug &
+ count=0
+ while ! /bin/ubik2_boot -d -r -0 /lib/modules/ubik/boot-ubik2-sport.lod -3 /lib/modules/ubik/ubik2-firmware.lod ; do

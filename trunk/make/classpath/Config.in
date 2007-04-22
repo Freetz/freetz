@@ -1,0 +1,50 @@
+config DS_PACKAGE_CLASSPATH
+	bool "GNU classpath 0.93 (binary only)"
+	default n
+	requires DS_PACKAGE_JAMVM
+	select DS_LIB_libjavaio
+	select DS_LIB_libjavalang
+	select DS_LIB_libjavareflect
+	select DS_LIB_libjavanet
+	select DS_LIB_libjavanio
+	select DS_LIB_libjavautil
+	help
+		GNU Classpath, Essential Libraries for Java, is a GNU project to create 
+		free core class libraries for use with virtual machines and compilers
+		for the java programming language. Classpath is still a work in
+		progress. The first public release will be version 1.0.
+
+menu "GNU classpath Java class libraries"
+	requires DS_PACKAGE_CLASSPATH
+
+config DS_LIB_libjavalang
+	bool "libjavalang.so"
+	default n
+	help
+		Java core language classes
+config DS_LIB_libjavaio
+	bool "libjavaio.so"
+	default n
+	help
+		Java I/O classes
+config DS_LIB_libjavautil
+	bool "libjavautil.so"
+	default n
+	help
+		Java utility classes
+config DS_LIB_libjavareflect
+	bool "libjavareflect.so"
+	default n
+	help
+		Java reflection API
+config DS_LIB_libjavanet
+	bool "libjavanet.so"
+	default n
+	help
+		Java networking classes
+config DS_LIB_libjavanio
+	bool "libjavanio.so"
+	default n
+	help
+		Java new I/O classes
+endmenu

@@ -1,0 +1,48 @@
+config DS_PACKAGE_JAMVM
+	bool "JamVM 1.4.4 (binary only)"
+	select DS_PACKAGE_CLASSPATH
+	select DS_LIB_libffi
+	default n
+	help
+	    JamVM - extremely small Java VM
+
+		JamVM is a new Java Virtual Machine which conforms to the JVM
+		specification version 2 (blue book). In comparison to most other VM's
+		(free and commercial) it is extremely small, with a stripped executable
+		on PowerPC of only ~160K, and Intel 140K. However, unlike other small
+		VMs (e.g. KVM) it is designed to support the full specification, and
+		includes support for object finalisation, Soft/Weak/Phantom References,
+		class-unloading, the Java Native Interface (JNI) and the Reflection API.
+
+		Class Libraries: JamVM is designed to use the GNU Classpath Java class
+		library. A number of classes are reference classes which must be
+		modified for a particular VM. These are provided along with JamVM (see
+		INSTALL). JamVM should always work with the latest development snapshot
+		of Classpath (currently 0.93). It should also work with the latest
+		version direct from CVS, and the upcoming 0.94 snapshot (but check the
+		Classpath mailing lists for possible patches). Later snapshots of
+		Classpath may also work, if no modifications have been made to the VM
+		interface.
+		
+		Note, JamVM will not work with the class library from Sun or IBM's
+		Virtual Machines.
+
+# Include here a cleaner menu structure
+source make/classpath/Config.in
+
+config DS_LIB_libffi
+	bool "ffi-sable (libffi.so)"
+	requires DS_PACKAGE_JAMVM
+	help
+		libffi is a library that really only provides the lowest, machine
+		dependent layer of a fully featured foreign function interface. A layer
+		must exist above libffi that handles type conversions for values passed
+		between the two languages. ffi stands for Foreign Function Interface.
+		A foreign function interface is the popular name for the interface that
+		allows code written in one language to call code written in another
+		language.
+
+		NOTE:
+		At the moment, this library is only used by JamVM. If any other package
+		should need it, the fixed dependency can be removed and the library be
+		put into the general library section of menuconfig.

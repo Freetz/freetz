@@ -1,0 +1,491 @@
+#!/bin/sh -e
+
+unset TMP TEMP TMPDIR || true
+
+###########################################################################
+
+if [ "$DEBOOTSTRAP_DIR" = "" ]; then
+  if [ -x /debootstrap/debootstrap ]; then
+    DEBOOTSTRAP_DIR=/debootstrap
+  else
+    DEBOOTSTRAP_DIR=/usr/lib/debootstrap
+  fi
+fi
+
+if [ -x "/usr/bin/gettext" ]; then
+  USE_GETTEXT_INTERACTION=yes
+fi
+
+DEVICES_TARGZ=$DEBOOTSTRAP_DIR/devices.tar.gz
+
+. $DEBOOTSTRAP_DIR/functions
+exec 4>&1
+
+GETTEXT_LANG=$LANG
+LANG=C
+USE_COMPONENTS=main
+KEYRING=""
+VARIANT=""
+
+DEF_MIRROR="http://ftp.debian.org/debian"
+
+export LANG USE_COMPONENTS
+umask 022
+
+###########################################################################
+
+## phases: 
+##   finddebs dldebs printdebs first_stage second_stage
+
+RESOLVE_DEPS=true
+
+WHAT_TO_DO="finddebs dldebs first_stage second_stage"
+am_doing_phase () {
+  # usage:   if am_doing_phase finddebs; then ...; fi
+  local x;
+  for x in "$@"; do
+    if echo " $WHAT_TO_DO " | grep -q " $1 "; then return 0; fi
+  done
+  return 1
+}
+
+###########################################################################
+
+usage_err()
+{
+  info USAGE1 "usage: [OPTION]... <suite> <target> [<mirror> [<script>]]"
+  info USAGE2 "Try \`${0##*/} --help' for more information."
+  error "$@"
+}
+
+usage()
+{
+  echo "Usage: ${0##*/} [OPTION]... <suite> <target> [<mirror> [<script>]]"
+  echo "Bootstrap Debian base system."
+  echo
+  cat <<EOF
+      --help                 display this help and exit
+      --verbose              don't turn off the output of wget
+
+      --download-only        download packages, but don't perform installation
+      --print-debs           print the packages to be installed, and exit
+
+      --arch A               set the target architecture (use if no dpkg)
+                               [ --arch powerpc ]
+
+      --include=A,B,C        adds specified names to the list of base packages
+      --exclude=A,B,C        removes specified packages from the list
+      --components=A,B,C     use packages from the listed components of the 
+                             archive
+      --variant=X            use variant X of the bootstrap scripts
+                             (currently supported variants: buildd, fakechroot)
+      --keyring=K            check Release files against keyring K
+      --no-resolve-deps      don't try to resolve dependencies automatically
+
+      --unpack-tarball T     acquire .debs from a tarball instead of http
+      --make-tarball T       download .debs and create a tarball (tgz format)
+
+      --boot-floppies        used for internal purposes by boot-floppies
+      --debian-installer     used for internal purposes by debian-installer
+EOF
+}
+
+###########################################################################
+
+if [ "$PKGDETAILS" = "" ]; then
+  error 1 NO_PKGDETAILS "No pkgdetails available; either install perl, or build pkgdetails.c from source"
+fi
+
+###########################################################################
+
+if [ $# != 0 ] ; then
+  while true ; do
+    case "$1" in
+      --help)
+        usage
+        exit 0
+        ;;
+      --boot-floppies)
+        if [ -n "$USE_DEBIANINSTALLER_INTERACTION" ] ; then
+          error 1 ARG_BFDI "Can only use one of --boot-floppies and --debian-installer"
+        fi
+        if ! (echo -n "" >&3) 2>/dev/null; then
+          error 1 ARG_BFBYHAND "If running debootstrap by hand, don't use --boot-floppies"
+        fi
+        USE_BOOTFLOPPIES_INTERACTION=yes
+        unset USE_GETTEXT_INTERACTION
+        shift
+        ;;
+      --debian-installer)
+        if [ -n "$USE_BOOTFLOPPIES_INTERACTION" ] ; then
+          error 1 ARG_BFDI "Can only use one of --boot-floppies and --debian-installer"
+        fi
+        if ! (echo -n "" >&3) 2>/dev/null; then
+          error 1 ARG_DIBYHAND "If running debootstrap by hand, don't use --debian-installer"
+        fi
+        USE_DEBIANINSTALLER_INTERACTION=yes
+        shift
+        ;;
+      --foreign)
+	WHAT_TO_DO="finddebs dldebs first_stage"
+	shift
+	;;
+      --second-stage)
+	WHAT_TO_DO="finddebs second_stage"
+        SECOND_STAGE_ONLY=true
+	shift
+	;;
+      --print-debs)
+        WHAT_TO_DO="finddebs printdebs kill_target"
+        shift
+        ;;
+      --download-only)
+	WHAT_TO_DO="finddebs dldebs"
+        shift
+        ;;
+      --make-tarball)
+        WHAT_TO_DO="finddebs dldebs maketarball kill_target"
+        if [ -n "$2" ] ; then
+          MAKE_TARBALL="$2"
+          shift 2
+        else
+          error 1 NEEDARG "option requires an argument %s" "$1"
+        fi
+        ;;
+      --resolve-deps)
+        # redundant, but avoids breaking compatability
+        RESOLVE_DEPS=true
+        shift
+        ;;
+      --no-resolve-deps)
+        RESOLVE_DEPS=false
+        shift
+        ;;
+      --keep-debootstrap-dir)
+        KEEP_DEBOOTSTRAP_DIR=true
+        shift
+        ;;
+      --arch)
+        if [ -n "$2" ] ; then
+          ARCH="$2"
+          shift 2
+        else
+          error 1 NEEDARG "option requires an argument %s" "$1"
+        fi
+        ;;
+      --unpack-tarball)
+        if [ -n "$2" ] ; then
+          if [ ! -f "$2" ] ; then
+            error 1 NOTARBALL "%s: No such file or directory" "$2"
+          fi
+          UNPACK_TARBALL="$2"
+          shift 2
+        else
+          error 1 NEEDARG "option requires an argument %s" "$1"
+        fi
+        ;;
+      --include*)
+        additional="$(echo $1 | cut -f2 -d"="|tr , " ")"
+        shift 1
+        ;;
+      --exclude*)
+        exclude="$(echo $1 | cut -f2 -d"="|tr , " ")"
+        shift 1
+        ;;
+      --verbose)
+        verbose=true
+        export verbose
+        shift 1
+        ;;
+      --components*)
+        USE_COMPONENTS="$(echo "$1" | cut -f2 -d"="|tr , "|")"
+        if [ "$USE_COMPONENTS" = "" ]; then
+          error 1 NEEDARG "option requires an argument %s" "$1"
+        fi
+        export USE_COMPONENTS
+        shift 1
+        ;;
+      --variant*)
+        VARIANT="$(echo "$1" | cut -f2 -d"=")"
+        shift 1
+        ;;
+      --keyring*)
+        if ! gpgv --version >/dev/null 2>&1; then
+            error 1 NEEDGPGV "gpgv not installed, but required for Release verification"
+        fi
+        KEYRING="$(echo "$1" | cut -f2 -d"=")"
+        if [ "$KEYRING" = "" ]; then
+          error 1 NEEDARG "option requires an argument %s" "$1"
+        fi
+        shift 1
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+fi
+
+###########################################################################
+
+if [ "$SECOND_STAGE_ONLY" = "true" ]; then
+  SUITE=$(cat $DEBOOTSTRAP_DIR/suite)
+  ARCH=$(cat $DEBOOTSTRAP_DIR/arch)
+  if [ -e $DEBOOTSTRAP_DIR/variant ]; then
+    VARIANT=$(cat $DEBOOTSTRAP_DIR/variant)
+    SUPPORTED_VARIANTS="$VARIANT"
+  fi
+  TARGET=/
+  MIRRORS=null:
+  SCRIPT=$DEBOOTSTRAP_DIR/suite-script
+else
+  if [ "$1" = "" -o "$2" = "" ]; then
+    usage_err 1 NEEDSUITETARGET "You must specify a suite and a target."
+  fi
+  SUITE="$1"
+  TARGET="$2"
+  TARGET="${TARGET%/}"
+  if [ "${TARGET#/}" = "${TARGET}" ]; then
+    if [ "${TARGET%/*}" = "$TARGET" ] ; then
+      TARGET="$(echo `pwd`/$TARGET)"
+    else
+      TARGET="$(cd ${TARGET%/*}; echo `pwd`/${TARGET##*/})"
+    fi
+  fi
+
+  MIRRORS="$DEF_MIRROR"
+  SCRIPT="$DEBOOTSTRAP_DIR/scripts/$1"
+  if [ -n "$VARIANT" -a -e "${SCRIPT}.${VARIANT}" ]; then
+    SCRIPT="${SCRIPT}.${VARIANT}"
+    SUPPORTED_VARIANTS="$VARIANT"
+  fi
+  if [ "$3" != "" ]; then
+    MIRRORS="$3"
+    MIRRORS="${MIRRORS%/}"
+    if [ "$4" != "" ]; then
+      SCRIPT="$4"
+    fi
+  fi
+fi
+
+###########################################################################
+
+if [ "$ARCH" != "" ]; then
+  true
+elif [ -x /usr/bin/dpkg ] && /usr/bin/dpkg --print-installation-architecture >/dev/null 2>&1
+then
+  ARCH=`/usr/bin/dpkg --print-installation-architecture`
+elif [ -e $DEBOOTSTRAP_DIR/arch ]; then
+  ARCH=`cat $DEBOOTSTRAP_DIR/arch`
+else
+  error 1 WHATARCH "Couldn't work out current architecture"
+fi
+
+export MIRRORS ARCH SUITE TARGET
+
+if am_doing_phase first_stage second_stage; then
+  if [ -x /usr/bin/id ] && [ `id -u` -ne 0 ]; then
+    error 1 NEEDROOT "debootstrap can only run as root"
+  fi
+fi
+
+if [ ! -e "$SCRIPT" ]; then
+  error 1 NOSCRIPT "No such script: %s" "$SCRIPT"
+fi
+
+###########################################################################
+
+if [ "$TARGET" != "" ]; then
+  mkdir -p "$TARGET/debootstrap"
+fi
+
+###########################################################################
+
+# Use of fd's by functions/scripts:
+#
+#    stdin/stdout/stderr: used normally
+#    fd 4: I:/W:/etc information
+#    fd 5,6: spare for functions
+#    fd 7,8: spare for scripts
+
+if [ "$USE_DEBIANINSTALLER_INTERACTION" = yes ]; then
+  #    stdout=stderr: full log of debootstrap run
+  #    fd 3: I:/W:/etc information
+  exec 4>&3
+elif [ "$USE_BOOTFLOPPIES_INTERACTION" = yes ]; then
+  #    stdout=stderr: full log of debootstrap run
+  #    fd 3: I:/W:/etc information
+  exec 4>&3
+elif am_doing_phase printdebs; then
+  #    stderr: I:/W:/etc information
+  #    stdout: debs needed
+  exec 4>&2
+else
+  #    stderr: used in exceptional circumstances only
+  #    stdout: I:/W:/etc information
+  #    $TARGET/debootstrap/debootstrap.log: full log of debootstrap run
+  exec 4>&1
+  exec >>$TARGET/debootstrap/debootstrap.log
+  exec 2>&1
+fi
+
+###########################################################################
+
+if [ "$UNPACK_TARBALL" ]; then
+  if [ "${UNPACK_TARBALL#/}" = "$UNPACK_TARBALL" ]; then
+    error 1 TARPATH "Tarball must be given a complete path"
+  fi
+  if [ "${UNPACK_TARBALL%.tar}" != "$UNPACK_TARBALL" ]; then
+    (cd "$TARGET" && tar -xf "$UNPACK_TARBALL")
+  elif [ "${UNPACK_TARBALL%.tgz}" != "$UNPACK_TARBALL" ]; then
+    (cd "$TARGET" && zcat "$UNPACK_TARBALL" | tar -xf -)
+  else
+    error 1 NOTTAR "Unknown tarball: must be either .tar or .tgz"
+  fi
+fi
+
+###########################################################################
+
+. "$SCRIPT"
+
+ok=false
+for v in $SUPPORTED_VARIANTS; do
+  if doing_variant $v; then ok=true; fi
+done
+if ! $ok; then
+  error 1 UNSUPPVARIANT "unsupported variant"
+fi
+
+###########################################################################
+
+if am_doing_phase finddebs; then
+  if [ "$FINDDEBS_NEEDS_INDICES" = "true" -o "$RESOLVE_DEPS" = "true" ]; then
+    download_indices
+    GOT_INDICES=true
+  fi
+
+  work_out_debs
+
+  base=$(without "$base $additional" "$exclude")
+
+  if [ "$RESOLVE_DEPS" = true ]; then
+    requiredX=$(echo $(echo $required | tr ' ' '\n' | sort | uniq))
+    baseX=$(echo $(echo $base | tr ' ' '\n' | sort | uniq))
+
+    baseN=$(without "$baseX" "$requiredX")
+    baseU=$(without "$baseX" "$baseN")
+
+    if [ "$baseU" != "" ]; then
+      info REDUNDANTBASE "Found packages in base already in required: %s" "$baseU"
+      sleep 5
+    fi
+
+    info RESOLVEREQ "Resolving dependencies of required packages..."
+    required=$(resolve_deps $requiredX)
+    info RESOLVEBASE "Resolving dependencies of base packages..."
+    base=$(resolve_deps $baseX)
+    base=$(without "$base" "$required")
+
+    requiredX=$(without "$required" "$requiredX")
+    baseX=$(without "$base" "$baseX")
+    if [ "$requiredX" != "" ]; then
+      info NEWREQUIRED "Found additional required dependencies: %s" "$requiredX"
+      sleep 5
+    fi
+    if [ "$baseX" != "" ]; then
+      info NEWBASE "Found additional base dependencies: %s" "$baseX"
+      sleep 5
+    fi
+  fi
+
+  all_debs="$required $base"
+fi
+
+if am_doing_phase printdebs; then
+  echo "$all_debs"
+fi
+
+if am_doing_phase dldebs; then
+  if [ "$GOT_INDICES" != "true" ]; then
+    download_indices
+  fi
+  download $all_debs
+fi
+
+if am_doing_phase maketarball; then
+  (cd $TARGET;
+   tar czf - var/lib/apt var/cache/apt) >$MAKE_TARBALL
+fi
+
+if am_doing_phase first_stage; then
+  # first stage sets up the chroot -- no calls should be made to 
+  # "chroot $TARGET" here; but they should be possible by the time it's
+  # finished
+  first_stage_install
+
+  if ! am_doing_phase second_stage; then
+    cp "$0"                        $TARGET/debootstrap/debootstrap
+    cp $DEBOOTSTRAP_DIR/functions  $TARGET/debootstrap/functions
+    cp $SCRIPT                     $TARGET/debootstrap/suite-script
+    echo "$ARCH"                  >$TARGET/debootstrap/arch
+    echo "$SUITE"                 >$TARGET/debootstrap/suite
+    [ "" = "$VARIANT" ] ||
+      echo "$VARIANT"             >$TARGET/debootstrap/variant
+    echo "$required"              >$TARGET/debootstrap/required
+    echo "$base"                  >$TARGET/debootstrap/base
+
+    chmod 755 $TARGET/debootstrap/debootstrap
+  fi
+fi
+
+if am_doing_phase second_stage; then
+  if [ "$SECOND_STAGE_ONLY" = true ]; then
+    required="$(cat $DEBOOTSTRAP_DIR/required)"
+    base="$(cat $DEBOOTSTRAP_DIR/base)"
+    all_debs="$required $base"
+  fi
+
+  # second stage uses the chroot to clean itself up -- has to be able to
+  # work from entirely within the chroot (in case we've booted into it,
+  # possibly over NFS eg)
+
+  second_stage_install
+
+  # create sources.list
+  # first, kill debootstrap.invalid sources.list
+  if [ -e "$TARGET/etc/apt/sources.list" ]; then
+    rm -f "$TARGET/etc/apt/sources.list"
+  fi
+  if [ "${MIRRORS#http://}" != "$MIRRORS" ]; then
+    setup_apt_sources ${MIRRORS%% *}
+    mv_invalid_to ${MIRRORS%% *}
+  else
+    setup_apt_sources $DEF_MIRROR
+    mv_invalid_to $DEF_MIRROR
+  fi
+
+  if [ -e $TARGET/debootstrap/debootstrap.log ]; then
+    cp $TARGET/debootstrap/debootstrap.log $TARGET/var/log/bootstrap.log
+  fi
+  sync
+
+  if [ "$KEEP_DEBOOTSTRAP_DIR" = true ]; then
+    if [ -x $TARGET/debootstrap/debootstrap ]; then
+      chmod 644 "$TARGET/debootstrap/debootstrap"
+    fi
+  else
+    rm -rf "$TARGET/debootstrap"
+  fi
+fi
+
+if am_doing_phase kill_target; then
+  if [ "$KEEP_DEBOOTSTRAP_DIR" != true ]; then
+    info KILLTARGET "Deleting target directory"
+    rm -rf "$TARGET"
+  fi
+fi
+
+if [ -n "$USE_BOOTFLOPPIES_INTERACTION" ] ; then
+  echo "I: debootstrap: Successfully completed" # goes to /dev/tty4
+  sleep 1 || true # give the user a second to see the success notice.
+fi

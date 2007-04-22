@@ -1,0 +1,26 @@
+--- etc/init.d/rc.S.orig	2006-03-20 17:33:06.000000000 +0100
++++ etc/init.d/rc.S	2006-03-20 17:34:33.000000000 +0100
+@@ -84,8 +84,11 @@
+ ##########################################################################################
+ # rc.S for 2.6 Kernel
+ ##########################################################################################
+-mount -n /proc
+-mount /var
++mount -o nosuid -t tmpfs dev /dev
++mkdir -p /dev/pts
++mount -o nosuid,noexec -t devpts devpts /dev/pts
++mount -a
++/sbin/makedevs -d /etc/device.table /
+ ##########################################################################################
+ #
+ #
+--- etc/fstab	2006-12-06 17:37:25.000000000 +0100
++++ etc/fstab	2006-12-12 16:44:08.000000000 +0100
+@@ -1,6 +1,6 @@
+ # /etc/fstab: static file system information.
+ #
+ # <file system> <mount point>   <type>  <options>               <dump>  <pass>
+-/dev/root        /              auto    defaults,errors=continue  0       0
+ proc             /proc          proc    defaults                  0       0
+ ramfs		     /var		    ramfs	defaults			      0       0
++sysfs		 /var/sysfs		sysfs	nosuid,nodev,noexec	  0	  0

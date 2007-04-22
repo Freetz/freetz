@@ -1,0 +1,30 @@
+#! /bin/sh
+# nmcedit: clone of nvi script of avm fritzbox!fon; C. Ostheimer 2006; http://www.spblinux.de/fbox/
+# usage: nmcedit config file, e.g. nmcedit /var/flash/debug.cfg
+ if [ -z "$1" -o ! -e "$1" ] ; then
+	echo "usage: $0 <config-filename>"
+	exit 1
+ fi
+ if which mcedit; then
+  MCEDIT=`which mcedit`
+ else
+  echo "error mcedit not found"
+  exit 1
+ fi
+ if ! [ -x $MCEDIT ]; then
+  echo "error: mc with editor mcedit not found"
+ else
+  dir="$(dirname "$1")"
+
+  case "$(realpath "$dir")" in
+	/var/flash)
+	        cat $1 >/var/nmcedit.tmp.$PPID && $MCEDIT /var/nmcedit.tmp.$PPID && cat /var/nmcedit.tmp.$PPID > $1
+                rm -f  /var/nmcedit.tmp.$PPID
+        	[ -f /var/nmcedit.tmp.${PPID}~ ] && rm /var/nmcedit.tmp.${PPID}~
+                ;;
+	*)
+                echo 'Use only with files in /var/flash/*' 1>&2
+                exit 1
+                ;;
+  esac
+ fi

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+cat << EOF
+domain-needed
+bogus-priv
+EOF
+if [ "$DNSMASQ_DHCP" = "yes" ]; then
+	echo "$DNSMASQ_DHCP_RANGE" | grep -v "^#" | while read -r range; do
+		[ -n "$range" ] && echo "dhcp-range=$range"
+	done
+fi
+[ "$DNSMASQ_ETHERS" = "yes" ] && echo "read-ethers"

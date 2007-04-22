@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+export TERMINFO=/mod/pkg/mc/usr/share/terminfo
+[ -f "$TERMINFO/$TERM" ] || export TERM=xterm
+[ -d "/mod/root/.mc" ] || mkdir /mod/root/.mc
+touch /mod/root/.mc/hotlist
+export HOME=/mod/root
+$0.bin -c $@

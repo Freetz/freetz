@@ -1,0 +1,46 @@
+diff -burN linux-2.6.13.1.orig/Makefile linux-2.6.13.1/Makefile
+--- linux-2.6.13.1.orig/Makefile	2006-09-30 23:14:09.000000000 +0200
++++ linux-2.6.13.1/Makefile	2006-11-13 15:50:24.000000000 +0100
+@@ -504,6 +504,33 @@
+ # Defaults vmlinux but it is usually overriden in the arch makefile
+ all: vmlinux
+ 
++DD		= dd
++
++vmlinux.bin: vmlinux
++	$(CROSS_COMPILE)objcopy -S -O binary $(TOPDIR)/vmlinux vmlinux.bin
++
++vmlinux.lzma: vmlinux.bin
++	if [ -x ../../../../../../tools/lzma ]; then \
++	  ../../../../../../tools/lzma e -lc1 -lp2 -pb2 \
++	    vmlinux.bin vmlinux.lzma; \
++	else \
++	  lzma e -lc1 -lp2 -pb2 vmlinux.bin vmlinux.lzma; \
++	fi
++
++vmlinux.eva: vmlinux.lzma
++	loadaddr=$$($(AWK) '/A _text/ { print "0x"$$1; }' < System.map); \
++	entry=$$($(AWK) '/T kernel_entry/ { print "0x"$$1; }' < System.map); \
++	echo $$loadaddr $$entry; \
++	if [ -x ../../../../../../tools/lzma2eva ]; then \
++	  ../../../../../../tools/lzma2eva $$loadaddr $$entry \
++	    vmlinux.lzma vmlinux.eva; \
++	else \
++	  lzma2eva $$loadaddr $$entry vmlinux.lzma vmlinux.eva; \
++	fi
++
++vmlinux.eva_pad: vmlinux.eva
++	$(DD) if=vmlinux.eva of=vmlinux.eva_pad bs=256 conv=sync
++
+ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+ CFLAGS		+= -Os
+ else
+@@ -948,7 +975,7 @@
+ 
+ # Directories & files removed with 'make clean'
+ CLEAN_DIRS  += $(MODVERDIR)
+-CLEAN_FILES +=	vmlinux System.map \
++CLEAN_FILES +=	vmlinux vmlinux.bin vmlinux.lzma vmlinux.eva System.map \
+                 .tmp_kallsyms* .tmp_version .tmp_vmlinux* .tmp_System.map
+ 
+ # Directories & files removed with 'make mrproper'

@@ -1,0 +1,123 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+
+case "$1" in
+        ""|load|start|restart|config)
+		if [ ! -r "/mod/etc/conf/samba.cfg" ]; then
+			echo "Error[samba]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/samba.cfg
+		;;
+esac
+
+config() {
+	(
+		if [ -x "/tmp/flash/smb_conf" ]; then
+			/tmp/flash/smb_conf
+		else
+			/mod/etc/default.samba/smb_conf
+		fi
+
+		if [ -r "/tmp/flash/smb.extra" ]; then
+			cat /tmp/flash/smb.extra
+		fi
+	) > /mod/etc/smb.conf
+}
+
+start() {
+	if [ ! -d "/var/run/samba" ]; then
+		mkdir /var/run/samba
+	fi
+
+	echo -n "Looking for user 'samba'..."
+	if cat /var/tmp/passwd | grep '^samba:' > /dev/null; then
+		echo 'ok.'
+	else
+		/usr/bin/modpasswd save
+		echo 'samba:*' >> /tmp/flash/shadow.save
+		/usr/bin/modpasswd load
+		echo 'added.'
+	fi
+
+	config
+
+	if [ ! -e "/var/tmp/samba" ]; then
+		ln -sf /mod/home/samba /var/tmp/samba
+	fi
+
+	/mod/etc/init.d/rc.nmbd start
+	/mod/etc/init.d/rc.smbd start
+}
+
+stop () {
+	/mod/etc/init.d/rc.nmbd stop
+	/mod/etc/init.d/rc.smbd stop
+
+	rm -f /mod/etc/smb.conf
+}
+
+case "$1" in
+	""|load)
+		[ -d "/tmp/flash/samba" ] || mkdir /tmp/flash/samba
+
+		modreg cgi 'samba' 'Samba'
+
+		deffile='/mod/etc/default.samba/lmhosts.def'
+		[ -r "/tmp/flash/samba/lmhosts.def" ] && deffile='/tmp/flash/samba/lmhosts.def'
+		modreg file 'lmhosts' 'Lmhosts' 1 "$deffile"
+		deffile='/mod/etc/default.samba/shares.def'
+		[ -r "/tmp/flash/samba/shares.def" ] && deffile='/tmp/flash/samba/shares.def'
+		modreg file 'shares' '$(lang de:"Freigaben" en:"Shares")' 1 "$deffile"
+
+		[ -x "/mod/etc/init.d/rc.nmbd" ] || \
+			ln -sf "$(realpath /mod/pkg/samba/etc/init.d/rc.nmbd)" /mod/etc/init.d/rc.nmbd
+		[ -x "/mod/etc/init.d/rc.smbd" ] || \
+			ln -sf "$(realpath /mod/pkg/samba/etc/init.d/rc.smbd)" /mod/etc/init.d/rc.smbd
+		[ -d "/mod/usr/share/samba" ] || \
+			ln -sf "$(realpath /mod/pkg/samba/usr/share/samba)" /mod/usr/share/samba
+
+		if [ "$SAMBA_ENABLED" != "yes" ]; then
+			echo "samba is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg file 'lmhosts'
+		modunreg file 'shares'
+		modunreg cgi 'samba'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof smbd)" -o -z "$(pidof nmbd)" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	config)
+		config
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
