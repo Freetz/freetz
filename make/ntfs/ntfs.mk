@@ -1,11 +1,12 @@
-NTFS_VERSION:=1.0
+NTFS_VERSION:=1.417
 NTFS_SOURCE:=ntfs-3g-$(NTFS_VERSION).tgz
 NTFS_SITE:=http://www.ntfs-3g.org/
 NTFS_DIR:=$(SOURCE_DIR)/ntfs-3g-$(NTFS_VERSION)
 NTFS_MAKE_DIR:=$(MAKE_DIR)/ntfs
 NTFS_TARGET_DIR:=$(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)/root/usr/bin
 NTFS_TARGET_BINARY:=ntfs-3g
-NTFS_PKG_SOURCE:=ntfs-$(NTFS_VERSION)-dsmod.tar.bz2
+NTFS_PKG_VERSION:=0.1
+NTFS_PKG_SOURCE:=ntfs-$(NTFS_VERSION)-dsmod-$(NTFS_PKG_VERSION).tar.bz2
 NTFS_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 $(DL_DIR)/$(NTFS_SOURCE):
@@ -16,9 +17,9 @@ $(DL_DIR)/$(NTFS_PKG_SOURCE):
 
 $(NTFS_DIR)/.unpacked: $(DL_DIR)/$(NTFS_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NTFS_SOURCE)
-	for i in $(NTFS_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(NTFS_DIR) -p0 < $$i; \
-	done
+#	for i in $(NTFS_MAKE_DIR)/patches/*.patch; do \
+#		patch -d $(NTFS_DIR) -p0 < $$i; \
+#	done
 	touch $@
 
 $(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked \
