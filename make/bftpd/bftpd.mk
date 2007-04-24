@@ -11,10 +11,12 @@ ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)
 BFTPD_PKG_NAME:=bftpd-zlib-$(BFTPD_VERSION)
 BFTPD_PKG_SOURCE:=bftpd-$(BFTPD_VERSION)-dsmod-$(BFTPD_PKG_VERSION)-with-zlib.tar.bz2
 BFTPD_ZLIB:=--enable-libz
+BFTPD_LIBZLIB:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so
 else
 BFTPD_PKG_NAME:=bftpd-$(BFTPD_VERSION)
 BFTPD_PKG_SOURCE:=bftpd-$(BFTPD_VERSION)-dsmod-$(BFTPD_PKG_VERSION).tar.bz2
 BFTPD_ZLIB:=
+BFTPD_LIBZLIB:=
 endif
 BFTPD_TARGET_DIR:=$(PACKAGES_DIR)/$(BFTPD_PKG_NAME)/root/usr/sbin
 
@@ -32,14 +34,13 @@ $(BFTPD_DIR)/.unpacked: $(DL_DIR)/$(BFTPD_SOURCE)
 	done
 	touch $@
 
-$(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked \
-			  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so
+$(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked $(BFTPD_LIBZLIB)
 	( cd $(BFTPD_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
