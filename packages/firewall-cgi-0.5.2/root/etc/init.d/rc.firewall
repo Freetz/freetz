@@ -118,9 +118,11 @@ load_modules() {
 	modprobe ip_conntrack_ftp
 	modprobe ipt_mac
 	modprobe ipt_multiport
+	modprobe ipt_iprange
 }
 
 remove_modules() {
+	rmmod ipt_iprange
 	rmmod ip_conntrack_ftp
 	rmmod ipt_mac
 	rmmod ipt_multiport
