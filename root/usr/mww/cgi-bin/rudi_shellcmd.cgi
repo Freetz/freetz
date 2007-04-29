@@ -1,7 +1,8 @@
 #!/usr/bin/haserl -u -U /var/tmp
 <? if [ "$FORM_display_mode" = "binary" ]; then
+	[ -z $FORM_download_name ] && FORM_download_name=rudi_download
 	echo 'Content-Type: application/octet-stream'
-	echo -n 'Content-Disposition: attachment; filename="rudi_download'
+	echo -n "Content-Disposition: attachment; filename='$FORM_download_name'"
 	if [ "$FORM_tar" = "true" ]; then echo -n '.tar'; fi
 	if [ "$FORM_gz" = "true" ]; then echo -n '.gz'; fi
 	echo -e '"\n'

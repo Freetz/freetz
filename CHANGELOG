@@ -6,6 +6,24 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- Busybox patch for 'ash' shell: When a remote client (e.g. ssh) was killed,
+  the remaining shell process would get into an endless loop stressing the CPU
+  with >90%, makinf the system slow, unresponsive and possibly instable.
+- Rudi shell: new optional environment variable (or non-GUI POST parameter,
+  respecively) enables users to define a target name for files downloaded via
+  scripting.
+- Menuconfig: help texts for all brandings explaining briefly what a branding
+  is and explaining that at least one of them should be selected for the
+  firmware to work.
+- Bump callmonitor version to 1.9.2
+- Fix busybox rebuild when config changes (copied from openwrt) 
+- Add FritzBox Fon (06.04.30) to ds26
+- Disable CONFIG_KMOD kernel option (module auto-loader) because of missing
+  symbol in original kernel. This is needed to make iptables run smoothly, but
+  also makes it necessary to load iptables modules with modprobe or insmod.
+- Update Firewall CGI to explicitly use modprobe/rmmod, because CONFIG_KMOD
+  was removed from default kernel config
+- Version update for USB and VPN 'labor' firmware (AURA 7125, VPN 6937)
 - Patches to inotify-enable uClibc
 - New binary package 'inotify-tools' (inotifywait, inotifywatch)
 - Ntfs3g: bump version to 1.417
