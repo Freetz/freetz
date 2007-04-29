@@ -109,8 +109,34 @@ log_chain() {
 	fi
 }
 
+load_modules() {
+	modprobe ip_tables
+	modprobe ip_conntrack hashsize=255
+	modprobe ipt_LOG
+	modprobe iptable_filter
+	modprobe ipt_state
+	modprobe ip_conntrack_ftp
+	modprobe ipt_mac
+	modprobe ipt_multiport
+	modprobe ipt_iprange
+}
+
+remove_modules() {
+	rmmod ipt_iprange
+	rmmod ip_conntrack_ftp
+	rmmod ipt_mac
+	rmmod ipt_multiport
+	rmmod ipt_state
+	rmmod iptable_filter
+	rmmod ipt_LOG
+	rmmod ip_conntrack
+	rmmod ip_tables
+}
+	
 start() {
 	echo -n 'Starting firewall...'
+	
+	load_modules
 
 	echo 0 > /tmp/.mac_chain
 	echo 0 > /tmp/.port_chain
@@ -234,6 +260,8 @@ stop() {
 	iptables -F
 	iptables -X
 	iptables -Z
+	
+	remove_modules
 
 	echo 'done.'
 }
