@@ -1119,56 +1119,16 @@ then
 		exit 1
 	fi
 
-	if [ "$DS_REPLACE_KERNEL" == "y" ] && \
-	   [ "$DS_HIDDEN_ROOT" != "y" -o "$DS_CONTIGUOUS_HIDDEN_ROOT" == "y" ]
+	echo "merging kernel image"
+	dd if="$RAW_KERNEL_MOD" of="$KERNEL_MOD" bs=256 conv=sync 2> /dev/null
+	cat "$RAW_HIDDEN_MOD" >> "$KERNEL_MOD"
+
+	if [ ! -s "$KERNEL_MOD" ]
 	then
-		# Check size of raw kernel image
-		let KERNEL_LIMIT="$DS_KERNEL_MTD_SIZE*65536"
-		let KERNEL_SIZE="$(cat "$RAW_KERNEL_MOD" | wc -c)"
-
-		[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}kernel raw: $KERNEL_SIZE (max: $KERNEL_LIMIT)"
-
-		if [ "$KERNEL_SIZE" -eq 0 ]
-		then
-			echo "ERROR: kernel is empty" 1>&2
-			exit 1
-		fi
-		if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]
-		then
-			let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
-			echo "ERROR: kernel is $DIFF bytes too big" 1>&2
-			exit 1
-		fi
-
-		dd if="$RAW_KERNEL_MOD" of="${MOD_DIR}/.img.tmp" bs=256 conv=sync 2> /dev/null
-		cat "$FILESYSTEM_MOD" >> "${MOD_DIR}/.img.tmp"
-		dd if="${MOD_DIR}/.img.tmp" of="$KERNEL_MOD" bs=64k count="$DS_KERNEL_MTD_SIZE" conv=sync 2> /dev/null
-		dd if="${MOD_DIR}/.img.tmp" of="$FILESYSTEM_MOD" bs=64k skip="$DS_KERNEL_MTD_SIZE" conv=sync 2> /dev/null
-		rm -f "${MOD_DIR}/.img.tmp"
-	else
-		if [ "$DS_HIDDEN_ROOT" != "y" ]
-		then
-			echo "creating hidden squashfs"
-			( cd "$HIDDEN_MOD_DIR" && "${TOOLS_DIR}/${MKSQUASHFS_TOOL}" * "${ABS_BASE_DIR}/${RAW_HIDDEN_MOD}" -le -noappend -all-root -b "$KERNEL_BLOCKSIZE" -info > ../../kernelsquashfs.log 2>&1 )
-
-			if [ ! -s "$RAW_HIDDEN_MOD" ]
-			then
-				echo "ERROR: creation of hidden squashfs failed" 1>&2
-				exit 1
-			fi
-		fi
-
-		echo "merging kernel image"
-		dd if="$RAW_KERNEL_MOD" of="$KERNEL_MOD" bs=256 conv=sync 2> /dev/null
-		cat "$RAW_HIDDEN_MOD" >> "$KERNEL_MOD"
-
-		if [ ! -s "$KERNEL_MOD" ]
-		then
-			echo "ERROR: kernel merging failed" 1>&2
-			exit 1
-		fi
+		echo "ERROR: kernel merging failed" 1>&2
+		exit 1
 	fi
-
+	
 	# Check size of kernel image
 	let KERNEL_LIMIT="$DS_KERNEL_MTD_SIZE*65536"
 	let KERNEL_SIZE="$(cat "$KERNEL_MOD" | wc -c)"
