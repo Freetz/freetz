@@ -19,7 +19,8 @@ esac
 
 start() {
 	echo -n 'Starting snmpd...'
-
+	
+	mkdir /var/lib/snmp
 	$DAEMON $SNMPDOPTS
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
