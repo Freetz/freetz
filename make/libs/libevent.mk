@@ -1,6 +1,6 @@
 # released under the GNU public license v2
 #
-LIBEVENT_VERSION:=1.2a
+LIBEVENT_VERSION:=1.3b
 LIBEVENT_SOURCE:=libevent-$(LIBEVENT_VERSION).tar.gz
 LIBEVENT_SITE:=http://www.monkey.org/~provos
 LIBEVENT_DIR:=$(SOURCE_DIR)/libevent-$(LIBEVENT_VERSION)

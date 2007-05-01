@@ -1,6 +1,6 @@
 # released under the GNU public license v2
 #
-TOR_VERSION:=0.1.1.26
+TOR_VERSION:=0.1.2.13
 TOR_SOURCE:=tor-$(TOR_VERSION).tar.gz
 TOR_SITE:=http://tor.eff.org/dist
 TOR_DIR:=$(SOURCE_DIR)/tor-$(TOR_VERSION)
@@ -31,10 +31,9 @@ $(TOR_DIR)/.configured: $(TOR_DIR)/.unpacked \
 	( cd $(TOR_DIR); rm -f config.status; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../include \
-		-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../lib \
-		-L$(TARGET_MAKE_PATH)/../usr/lib -levent" \
+		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
+		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		CROSS_COMPILE="yes" \
 		ac_cv_libevent_linker_option='(none)' \
 		ac_cv_openssl_linker_option='(none)' \
 		ac_cv_libevent_normal=yes \
@@ -64,6 +63,8 @@ $(TOR_DIR)/.configured: $(TOR_DIR)/.unpacked \
 		  --enable-shared \
 		  --disable-static \
 		  --with-gnu-ld \
+		  --with-ssl-dir="$(TARGET_MAKE_PATH)/../usr/lib" \
+		  --with-libevent-dir="$(TARGET_MAKE_PATH)/../usr/lib" \
 	);
 	touch $@
 
