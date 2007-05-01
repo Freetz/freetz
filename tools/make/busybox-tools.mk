@@ -18,7 +18,7 @@ endif
 $(BUSYBOX_TOOLS_DIR)/.unpacked: $(DL_DIR)/$(BUSYBOX_SOURCE)
 	mkdir -p $(BUSYBOX_TOOLS_DIR)
 	tar -C $(BUSYBOX_TOOLS_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(BUSYBOX_SOURCE)
-	for i in $(BUSYBOX_MAKE_DIR)/patches/*.patch; do \
+	for i in $(BUSYBOX_MAKE_DIR)/patches/*.busybox.patch; do \
 		patch -d $(BUSYBOX_TOOLS_DIR)/busybox-$(BUSYBOX_VERSION) -p0 < $$i; \
 	done
 	touch $@
