@@ -1,4 +1,4 @@
-FUSE_VERSION:=2.6.3
+FUSE_VERSION:=2.6.5
 FUSE_SOURCE:=fuse-$(FUSE_VERSION).tar.gz
 FUSE_SITE:=http://mesh.dl.sourceforge.net/sourceforge/fuse
 FUSE_DIR:=$(SOURCE_DIR)/fuse-$(FUSE_VERSION)
