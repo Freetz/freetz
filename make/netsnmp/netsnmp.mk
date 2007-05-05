@@ -156,7 +156,7 @@ netsnmp: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 netsnmp-package: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NETSNMP_PKG_SOURCE) $(NETSNMP_PKG_NAME)
 
-netsnmp-precompiled: $(NETSNMP_DIR)/.installed netsnmp
+netsnmp-precompiled: uclibc $(NETSNMP_DIR)/.installed netsnmp
 	$(TARGET_STRIP) $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY) \
 	                $(NETSNMP_DIR)/$(NETSNMP_TARGET_LIBS)
 	mkdir -p $(NETSNMP_TARGET_DIR) $(NETSNMP_TARGET_LIBDIR)

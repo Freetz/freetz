@@ -64,7 +64,7 @@ strace: $(PACKAGES_DIR)/.strace-$(STRACE_VERSION)
 strace-package: $(PACKAGES_DIR)/.strace-$(STRACE_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(STRACE_PKG_SOURCE) strace-$(STRACE_VERSION)
 
-strace-precompiled: $(STRACE_DIR)/$(STRACE_TARGET_BINARY) strace
+strace-precompiled: uclibc $(STRACE_DIR)/$(STRACE_TARGET_BINARY) strace
 	$(TARGET_STRIP) $(STRACE_DIR)/$(STRACE_TARGET_BINARY)
 	cp $(STRACE_DIR)/$(STRACE_TARGET_BINARY) $(STRACE_TARGET_DIR)/
 

@@ -38,7 +38,7 @@ cifsmount: $(PACKAGES_DIR)/.cifsmount-$(CIFSMOUNT_VERSION)
 cifsmount-package: $(PACKAGES_DIR)/.cifsmount-$(CIFSMOUNT_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CIFSMOUNT_PKG_SOURCE) cifsmount-$(CIFSMOUNT_VERSION)
 
-cifsmount-precompiled: $(CIFSMOUNT_DIR)/$(CIFSMOUNT_BINARY) cifsmount
+cifsmount-precompiled: uclibc $(CIFSMOUNT_DIR)/$(CIFSMOUNT_BINARY) cifsmount
 	$(TARGET_STRIP) $(CIFSMOUNT_DIR)/$(CIFSMOUNT_BINARY)
 	cp $(CIFSMOUNT_DIR)/$(CIFSMOUNT_BINARY) $(CIFSMOUNT_TARGET_DIR)/
 

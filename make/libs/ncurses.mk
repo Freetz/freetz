@@ -80,7 +80,7 @@ ncurses ncurses-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libncurses*.so* root/usr/lib/
 else
 ncurses: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
-ncurses-precompiled: ncurses
+ncurses-precompiled: uclibc ncurses
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*.so* root/usr/lib/
 endif

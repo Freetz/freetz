@@ -28,9 +28,7 @@ $(OPENVPN_DIR)/.unpacked: $(DL_DIR)/$(OPENVPN_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(OPENVPN_SOURCE)
 	touch $@
 
-$(OPENVPN_DIR)/.configured: $(OPENVPN_DIR)/.unpacked \
-			    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so \
-			    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so
+$(OPENVPN_DIR)/.configured: $(OPENVPN_DIR)/.unpacked
 	( cd $(OPENVPN_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -83,7 +81,7 @@ openvpn: $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME)
 openvpn-package: $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(OPENVPN_PKG_SOURCE) $(OPENVPN_PKG_NAME)
 
-openvpn-precompiled: $(OPENVPN_DIR)/$(OPENVPN_TARGET_BINARY) openvpn
+openvpn-precompiled: uclibc lzo-precompiled openssl-precompiled $(OPENVPN_DIR)/$(OPENVPN_TARGET_BINARY) openvpn
 	$(TARGET_STRIP) $(OPENVPN_DIR)/$(OPENVPN_TARGET_BINARY)
 	cp $(OPENVPN_DIR)/$(OPENVPN_TARGET_BINARY) $(OPENVPN_TARGET_DIR)/
 

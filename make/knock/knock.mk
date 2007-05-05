@@ -23,8 +23,7 @@ $(KNOCK_DIR)/.unpacked: $(DL_DIR)/$(KNOCK_SOURCE)
 	#done
 	touch $@
 
-$(KNOCK_DIR)/.configured: $(KNOCK_DIR)/.unpacked \
-			  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so
+$(KNOCK_DIR)/.configured: $(KNOCK_DIR)/.unpacked
 	( cd $(KNOCK_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/include -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
@@ -54,7 +53,7 @@ knock: $(PACKAGES_DIR)/.$(KNOCK_PKG_NAME)
 knock-package: $(PACKAGES_DIR)/.$(KNOCK_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(KNOCK_PKG_SOURCE) $(KNOCK_PKG_NAME)
 
-knock-precompiled: $(KNOCK_DIR)/$(KNOCK_TARGET_BINARY) knock
+knock-precompiled: uclibc libpcap-precompiled $(KNOCK_DIR)/$(KNOCK_TARGET_BINARY) knock 
 	$(TARGET_STRIP) $(KNOCK_DIR)/$(KNOCK_TARGET_BINARY)
 	$(TARGET_STRIP) $(KNOCK_DIR)/knockd
 	cp $(KNOCK_DIR)/$(KNOCK_TARGET_BINARY) $(KNOCK_TARGET_DIR)/usr/bin/$(KNOCK_TARGET_BINARY)

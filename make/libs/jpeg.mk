@@ -68,7 +68,7 @@ jpeg jpeg-precompiled:
 #	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libjpeg*.so* root/usr/lib/
 else
 jpeg: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so
-jpeg-precompiled: jpeg
+jpeg-precompiled: uclibc jpeg
 #	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so*
 #	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so* root/usr/lib/
 endif

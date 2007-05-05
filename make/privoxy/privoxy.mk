@@ -25,7 +25,6 @@ $(PRIVOXY_DIR)/.unpacked: $(DL_DIR)/$(PRIVOXY_SOURCE)
 	done
 	touch $@
 
-
 $(PRIVOXY_DIR)/.configured: $(PRIVOXY_DIR)/.unpacked
 	( cd $(PRIVOXY_DIR); rm -f config.status; \
 		autoheader; \
@@ -76,7 +75,7 @@ privoxy: $(PACKAGES_DIR)/.$(PRIVOXY_PKG_NAME)
 privoxy-package: $(PACKAGES_DIR)/.$(PRIVOXY_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(PRIVOXY_PKG_SOURCE) $(PRIVOXY_PKG_NAME)
 
-privoxy-precompiled: $(PRIVOXY_DIR)/$(PRIVOXY_TARGET_BINARY) privoxy
+privoxy-precompiled: uclibc $(PRIVOXY_DIR)/$(PRIVOXY_TARGET_BINARY) privoxy
 	$(TARGET_STRIP) $(PRIVOXY_DIR)/$(PRIVOXY_TARGET_BINARY)
 	cp $(PRIVOXY_DIR)/$(PRIVOXY_TARGET_BINARY) $(PRIVOXY_TARGET_DIR)/root/usr/sbin
 	for s in `find $(PRIVOXY_DIR)/templates/ -type f`; do \

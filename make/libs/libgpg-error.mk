@@ -54,7 +54,7 @@ libgpg-error libgpg-error-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/usr/lib/libgpg-error*.so* root/usr/lib/
 else
 libgpg-error: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so
-libgpg-error-precompiled: libgpg-error
+libgpg-error-precompiled: uclibc libgpg-error
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*.so* root/usr/lib/
 endif

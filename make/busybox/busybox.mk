@@ -56,7 +56,7 @@ busybox-links: $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
 		CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(BUSYBOX_DIR) busybox.links
 
-busybox-precompiled: $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) busybox-links
+busybox-precompiled: uclibc $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) busybox-links
 	$(TARGET_STRIP) $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
 	cp $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF)
 	cp $(BUSYBOX_DIR)/busybox.links $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links

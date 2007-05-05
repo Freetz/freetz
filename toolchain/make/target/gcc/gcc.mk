@@ -75,15 +75,12 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked
 	sed -i -e 's/\.eh_frame/.text/' $(GCC_BUILD_DIR1)/gcc/defaults.h
 	touch $@
 
-$(GCC_BUILD_DIR1)/.compiled: $(GCC_BUILD_DIR1)/.configured $(BINUTILS_DIR)/.installed
+$(GCC_BUILD_DIR1)/.compiled: $(GCC_BUILD_DIR1)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR1) all-gcc
 	touch $@
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(GCC_BUILD_DIR1)/.compiled
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR1) install-gcc
-
-$(GCC_BUILD_DIR1)/.installed: $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc
-	touch $@
 
 ##############################################################################
 #
@@ -115,7 +112,7 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(TARGET_TOOLCHAIN_STAGING_D
 
 $(GCC_BUILD_DIR2)/.compiled: $(GCC_BUILD_DIR2)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR2) all
-	touch $@
+	touch $(GCC_BUILD_DIR2)/.compiled
 
 $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR2) install
@@ -133,9 +130,9 @@ endif
 		   	$(GNU_TARGET_NAME)$${app##$(REAL_GNU_TARGET_NAME)}; \
 		done; \
 	);
-	touch $@
+	touch $(GCC_BUILD_DIR2)/.installed
 
-gcc-initial: uclibc-configured binutils $(GCC_BUILD_DIR1)/.installed
+gcc-initial: uclibc-configured binutils $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc
 
 gcc:  uclibc-configured binutils gcc-initial uclibc $(GCC_BUILD_DIR2)/.installed
 

@@ -43,7 +43,7 @@ matrixssl matrixssl-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libmatrixssl.so* root/usr/lib/
 else
 matrixssl: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
-matrixssl-precompiled: matrixssl
+matrixssl-precompiled: uclibc uclibc matrixssl
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so*
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libmatrixssl.so* root/usr/lib/

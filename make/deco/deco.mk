@@ -22,8 +22,7 @@ $(DECO_DIR)/.unpacked: $(DL_DIR)/$(DECO_SOURCE)
 		patch -d $(DECO_DIR) -p1 < $$i; \
 	done
 	touch $@
-$(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked \
-			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
+$(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked
 	( cd $(DECO_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -64,7 +63,7 @@ deco: $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
 deco-package: $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(DECO_PKG_SOURCE) deco-$(DECO_VERSION)
 
-deco-precompiled: $(DECO_DIR)/$(DECO_TARGET_BINARY) deco
+deco-precompiled: uclibc ncurses-precompiled $(DECO_DIR)/$(DECO_TARGET_BINARY) deco
 	$(TARGET_STRIP) $(DECO_DIR)/$(DECO_TARGET_BINARY)
 	cp $(DECO_DIR)/$(DECO_TARGET_BINARY) $(DECO_TARGET_DIR)/$(DECO_TARGET_BINARY)
 	cp $(DECO_DIR)/profile $(DECO_TARGET_DIR)/../lib/deco

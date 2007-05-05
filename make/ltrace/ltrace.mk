@@ -67,7 +67,7 @@ ltrace-package: $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LTRACE_PKG_SOURCE) ltrace-$(LTRACE_VERSION)
 
 
-ltrace-precompiled: $(LTRACE_DIR)/$(LTRACE_TARGET_BINARY) ltrace
+ltrace-precompiled: uclibc libelf-precompiled $(LTRACE_DIR)/$(LTRACE_TARGET_BINARY) ltrace
 	$(TARGET_STRIP) $(LTRACE_DIR)/$(LTRACE_TARGET_BINARY)
 	cp $(LTRACE_DIR)/$(LTRACE_TARGET_BINARY) $(LTRACE_TARGET_DIR)/
 

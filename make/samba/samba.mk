@@ -96,7 +96,7 @@ $(SAMBA_DIR)/.configured: $(SAMBA_DIR)/.unpacked
 	touch $@
 
 $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_NMBD_BINARY) : $(SAMBA_DIR)/.configured
-	$(MAKE) -C $(SAMBA_DIR)/source \
+	$(MAKE1) -C $(SAMBA_DIR)/source \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC=$(TARGET_CC) \
 		LD=$(TARGET_LD) \
@@ -111,7 +111,7 @@ samba: $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 samba-package: $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(SAMBA_PKG_SOURCE) samba-$(SAMBA_VERSION)
 
-samba-precompiled: $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_NMBD_BINARY) samba
+samba-precompiled: uclibc $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_NMBD_BINARY) samba
 	$(TARGET_STRIP) $(SAMBA_DIR)/source/bin/*
 	cp $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_TARGET_DIR)/
 	cp $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_NMBD_BINARY) $(SAMBA_TARGET_DIR)/
@@ -134,4 +134,3 @@ else
 	@echo "S40samba-$(SAMBA_VERSION)" >> .dynamic
 endif
 
-.NOTPARALLEL: samba-precompiled

@@ -11,12 +11,10 @@ ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)
 BFTPD_PKG_NAME:=bftpd-zlib-$(BFTPD_VERSION)
 BFTPD_PKG_SOURCE:=bftpd-$(BFTPD_VERSION)-dsmod-$(BFTPD_PKG_VERSION)-with-zlib.tar.bz2
 BFTPD_ZLIB:=--enable-libz
-BFTPD_LIBZLIB:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so
+BFTPD_LIBS:=zlib-precompiled
 else
 BFTPD_PKG_NAME:=bftpd-$(BFTPD_VERSION)
 BFTPD_PKG_SOURCE:=bftpd-$(BFTPD_VERSION)-dsmod-$(BFTPD_PKG_VERSION).tar.bz2
-BFTPD_ZLIB:=
-BFTPD_LIBZLIB:=
 endif
 BFTPD_TARGET_DIR:=$(PACKAGES_DIR)/$(BFTPD_PKG_NAME)/root/usr/sbin
 
@@ -80,7 +78,7 @@ bftpd: $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 bftpd-package: $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(BFTPD_PKG_SOURCE) $(BFTPD_PKG_NAME) 
 
-bftpd-precompiled: $(BFTPD_DIR)/$(BFTPD_TARGET_BINARY) bftpd
+bftpd-precompiled: uclibc $(BFTPD_LIBS) $(BFTPD_DIR)/$(BFTPD_TARGET_BINARY) bftpd
 	$(TARGET_STRIP) $(BFTPD_DIR)/$(BFTPD_TARGET_BINARY)
 	cp $(BFTPD_DIR)/$(BFTPD_TARGET_BINARY) $(BFTPD_TARGET_DIR)/
 

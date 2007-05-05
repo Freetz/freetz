@@ -48,7 +48,7 @@ uclibcxx uclibcxx-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../lib/libuClibc++*.so* root/lib/
 else
 uclibcxx: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++.so
-uclibcxx-precompiled: uclibcxx
+uclibcxx-precompiled: uclibc uclibcxx
 	chmod 755 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so* root/lib/

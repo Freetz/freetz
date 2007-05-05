@@ -65,7 +65,7 @@ mc: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
 mc-package: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(MC_PKG_SOURCE) mc-$(MC_VERSION)
 
-mc-precompiled: $(MC_DIR)/src/$(MC_TARGET_BINARY) mc
+mc-precompiled: uclibc $(MC_DIR)/src/$(MC_TARGET_BINARY) mc
 	$(TARGET_STRIP) $(MC_DIR)/src/$(MC_TARGET_BINARY)
 	$(TARGET_STRIP) $(MC_DIR)/src/cons.saver
 	cp $(MC_DIR)/src/$(MC_TARGET_BINARY) $(MC_TARGET_DIR)/$(MC_TARGET_BINARY).bin

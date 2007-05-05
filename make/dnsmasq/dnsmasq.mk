@@ -38,7 +38,7 @@ dnsmasq: $(PACKAGES_DIR)/.dnsmasq-$(DNSMASQ_VERSION)
 dnsmasq-package: $(PACKAGES_DIR)/.dnsmasq-$(DNSMASQ_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(DNSMASQ_PKG_SOURCE) dnsmasq-$(DNSMASQ_VERSION)
 
-dnsmasq-precompiled: $(DNSMASQ_DIR)/$(DNSMASQ_TARGET_BINARY) dnsmasq
+dnsmasq-precompiled: uclibc $(DNSMASQ_DIR)/$(DNSMASQ_TARGET_BINARY) dnsmasq
 	$(TARGET_STRIP) $(DNSMASQ_DIR)/$(DNSMASQ_TARGET_BINARY)
 	cp $(DNSMASQ_DIR)/$(DNSMASQ_TARGET_BINARY) $(DNSMASQ_TARGET_DIR)/
 

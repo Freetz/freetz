@@ -75,7 +75,7 @@ libelf libelf-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libelf*.so* root/usr/lib/
 else
 libelf: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so
-libelf-precompiled: libelf
+libelf-precompiled: uclibc libelf
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so* root/usr/lib/
 endif

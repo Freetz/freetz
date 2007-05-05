@@ -66,7 +66,7 @@ ffi-sable ffi-sable-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libffi*.so* root/usr/lib/
 else
 ffi-sable: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so
-ffi-sable-precompiled: ffi-sable
+ffi-sable-precompiled: uclibc ffi-sable
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so* root/usr/lib/
 endif

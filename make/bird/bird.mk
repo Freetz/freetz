@@ -42,9 +42,7 @@ $(BIRD_DIR)/.unpacked: $(DL_DIR)/$(BIRD_SOURCE)
 	done
 	touch $@
 
-$(BIRD_DIR)/.configured: $(BIRD_DIR)/.unpacked \
-			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so \
-			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
+$(BIRD_DIR)/.configured: $(BIRD_DIR)/.unpacked
 	( cd $(BIRD_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -D_XOPEN_SOURCE=600" \
@@ -93,7 +91,7 @@ bird: $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 bird-package: $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(BIRD_PKG_SOURCE) $(BIRD_PKG_NAME)
 
-bird-precompiled: $(BIRD_DIR)/.installed bird
+bird-precompiled: uclibc ncurses-precompiled readline-precompiled $(BIRD_DIR)/.installed bird
 	$(TARGET_STRIP) $(BIRD_DIR)/$(BIRD_TARGET_BIRD_BINARY)
 ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
 	$(TARGET_STRIP) $(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY)

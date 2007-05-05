@@ -47,7 +47,7 @@ transmission: $(PACKAGES_DIR)/.transmission-$(TRANSMISSION_VERSION)
 transmission-package: $(PACKAGES_DIR)/.transmission-$(TRANSMISSION_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TRANSMISSION_PKG_SOURCE) transmission-$(TRANSMISSION_VERSION)
 
-transmission-precompiled: $(TRANSMISSION_DIR)/cli/$(TRANSMISSION_TARGET_BINARY) transmission
+transmission-precompiled: uclibc $(TRANSMISSION_DIR)/cli/$(TRANSMISSION_TARGET_BINARY) transmission
 	$(TARGET_STRIP) $(TRANSMISSION_DIR)/cli/$(TRANSMISSION_TARGET_BINARY)
 	cp $(TRANSMISSION_DIR)/cli/$(TRANSMISSION_TARGET_BINARY) $(TRANSMISSION_TARGET_DIR)/
 

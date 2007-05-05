@@ -70,7 +70,7 @@ cpmaccfg: $(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME)
 cpmaccfg-package: $(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CPMACCFG_PKG_SOURCE) $(CPMACCFG_PKG_NAME)
 
-cpmaccfg-precompiled: $(CPMACCFG_DIR)/.installed cpmaccfg
+cpmaccfg-precompiled: uclibc $(CPMACCFG_DIR)/.installed cpmaccfg
 	$(TARGET_STRIP) $(CPMACCFG_DIR)/$(CPMACCFG_TARGET_BINARY)
 	mkdir -p $(CPMACCFG_TARGET_DIR)
 	cp $(CPMACCFG_DIR)/$(CPMACCFG_TARGET_BINARY) $(CPMACCFG_TARGET_DIR)

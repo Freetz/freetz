@@ -1,4 +1,4 @@
-CLASSPATH_VERSION:=0.93
+CLASSPATH_VERSION:=0.95
 CLASSPATH_SOURCE:=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_SITE:=ftp://ftp.gnu.org/gnu/classpath
 CLASSPATH_DIR:=$(SOURCE_DIR)/classpath-$(CLASSPATH_VERSION)
@@ -42,7 +42,7 @@ $(CLASSPATH_DIR)/.configured: $(CLASSPATH_DIR)/.unpacked
 		--disable-gconf-peer \
 		--without-libiconv-prefix \
 		--disable-plugin \
-		--with-jikes \
+		--with-ecj \
 		--disable-Werror \
 	);
 	touch $@
@@ -70,7 +70,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so: $(CLASSPATH_DI
 		install
 	touch -c $@
 
-classpath-precompiled: $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_DIR)/.installed classpath
+classpath-precompiled: uclibc $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_DIR)/.installed classpath
 	cp $(CLASSPATH_DIR)/lib/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_TARGET_DIR)/
 	
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)

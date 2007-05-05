@@ -22,8 +22,7 @@ $(NTFS_DIR)/.unpacked: $(DL_DIR)/$(NTFS_SOURCE)
 #	done
 	touch $@
 
-$(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked \
-			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so
+$(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked
 	(cd $(NTFS_DIR); rm -f config.cache; \
 		touch configure.in ; \
 		touch aclocal.m4 ; \
@@ -90,7 +89,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so: $(NTFS_DIR)/src/.libs/$(N
 		install
 	touch -c $@
 
-ntfs-precompiled: ntfs $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so
+ntfs-precompiled: uclibc fuse-precompiled ntfs $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so
 	$(TARGET_STRIP) $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY)
 	cp $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY) $(NTFS_TARGET_DIR)/
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)

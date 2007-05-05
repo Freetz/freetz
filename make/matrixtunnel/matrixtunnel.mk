@@ -24,8 +24,7 @@ $(MATRIXTUNNEL_DIR)/.unpacked: $(DL_DIR)/$(MATRIXTUNNEL_SOURCE)
 #	done
 	touch $@
 
-$(MATRIXTUNNEL_DIR)/.configured: $(MATRIXTUNNEL_DIR)/.unpacked \
-				 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
+$(MATRIXTUNNEL_DIR)/.configured: $(MATRIXTUNNEL_DIR)/.unpacked
 	( cd $(MATRIXTUNNEL_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -60,7 +59,7 @@ $(MATRIXTUNNEL_DIR)/.configured: $(MATRIXTUNNEL_DIR)/.unpacked \
 
 $(MATRIXTUNNEL_DIR)/$(MATRIXTUNNEL_TARGET_BINARY): $(MATRIXTUNNEL_DIR)/.configured
 	( PATH="$(TARGET_PATH)" \
-		make -C $(MATRIXTUNNEL_DIR)/src all \
+		$(MAKE) -C $(MATRIXTUNNEL_DIR)/src all \
 	);
 
 $(PACKAGES_DIR)/.matrixtunnel-$(MATRIXTUNNEL_VERSION): $(DL_DIR)/$(MATRIXTUNNEL_PKG_SOURCE)
@@ -72,7 +71,7 @@ matrixtunnel: $(PACKAGES_DIR)/.matrixtunnel-$(MATRIXTUNNEL_VERSION)
 matrixtunnel-package: $(PACKAGES_DIR)/.matrixtunnel-$(MATRIXTUNNEL_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(MATRIXTUNNEL_PKG_SOURCE) matrixtunnel-$(MATRIXTUNNEL_VERSION)
 
-matrixtunnel-precompiled: $(MATRIXTUNNEL_DIR)/$(MATRIXTUNNEL_TARGET_BINARY) matrixtunnel
+matrixtunnel-precompiled: uclibc matrixssl-precompiled $(MATRIXTUNNEL_DIR)/$(MATRIXTUNNEL_TARGET_BINARY) matrixtunnel
 	$(TARGET_STRIP) $(MATRIXTUNNEL_DIR)/src/$(MATRIXTUNNEL_TARGET_BINARY)
 	cp $(MATRIXTUNNEL_DIR)/src/$(MATRIXTUNNEL_TARGET_BINARY) $(MATRIXTUNNEL_TARGET_DIR)/
 

@@ -75,7 +75,7 @@ openssl openssl-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libcrypto*.so* root/usr/lib/
 else
 openssl: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so
-openssl-precompiled: openssl
+openssl-precompiled: uclibc openssl
 	chmod 755 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*.so*
 	chmod 755 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*.so*
@@ -88,6 +88,7 @@ openssl-source: $(OPENSSL_DIR)/.unpacked
 
 openssl-clean:
 	-$(MAKE) -C $(OPENSSL_DIR) clean
-
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl* root/usr/lib/libssl*.so*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto* root/usr/lib/libcrypto*.so*
 openssl-dirclean:
 	rm -rf $(OPENSSL_DIR)

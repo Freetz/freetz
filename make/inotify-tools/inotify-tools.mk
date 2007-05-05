@@ -67,7 +67,7 @@ inotify-tools: $(PACKAGES_DIR)/.inotify-tools-$(INOTIFY_TOOLS_VERSION)
 inotify-tools-package: $(PACKAGES_DIR)/.inotify-tools-$(INOTIFY_TOOLS_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(INOTIFY_TOOLS_PKG_SOURCE) inotify-tools-$(INOTIFY_TOOLS_VERSION)
 
-inotify-tools-precompiled: $(INOTIFY_TOOLS_DIR)/.compiled inotify-tools
+inotify-tools-precompiled: uclibc $(INOTIFY_TOOLS_DIR)/.compiled inotify-tools
 	$(TARGET_STRIP) $(INOTIFY_TOOLS_DIR)/src/.libs/inotifywait
 	$(TARGET_STRIP) $(INOTIFY_TOOLS_DIR)/src/.libs/inotifywatch
 	$(TARGET_STRIP) $(INOTIFY_TOOLS_DIR)/libinotifytools/src/.libs/libinotifytools.so.$(INOTIFY_TOOLS_LIB_VERSION)

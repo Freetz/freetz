@@ -62,7 +62,7 @@ lzo lzo-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/liblzo*.so* root/usr/lib/
 else
 lzo: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so
-lzo-precompiled: lzo
+lzo-precompiled: uclibc lzo
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo*.so* root/usr/lib/
 endif

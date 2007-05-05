@@ -23,8 +23,7 @@ $(SCREEN_DIR)/.unpacked: $(DL_DIR)/$(SCREEN_SOURCE)
 	done
 	touch $@
 
-$(SCREEN_DIR)/.configured: $(SCREEN_DIR)/.unpacked \
-			   $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
+$(SCREEN_DIR)/.configured: $(SCREEN_DIR)/.unpacked
 	( cd $(SCREEN_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -60,7 +59,7 @@ $(SCREEN_DIR)/.configured: $(SCREEN_DIR)/.unpacked \
 	touch $@
 
 $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY): $(SCREEN_DIR)/.configured
-	PATH="$(TARGET_PATH)" make -C $(SCREEN_DIR)
+	PATH="$(TARGET_PATH)" $(MAKE) -C $(SCREEN_DIR)
 
 $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION): $(DL_DIR)/$(SCREEN_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(SCREEN_PKG_SOURCE)
@@ -71,7 +70,7 @@ screen: $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION)
 screen-package: $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(SCREEN_PKG_SOURCE) screen-$(SCREEN_VERSION)
 
-screen-precompiled: $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY) screen
+screen-precompiled: uclibc ncurses-precompiled $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY) screen
 	$(TARGET_STRIP) $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY)
 	cp $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY) $(SCREEN_TARGET_DIR)/$(SCREEN_TARGET_BINARY).bin
 

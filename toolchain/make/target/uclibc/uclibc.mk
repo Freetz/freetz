@@ -42,7 +42,7 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.unpacked | kernel-configured
 		install_dev
 	touch $@
 
-$(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(GCC_BUILD_DIR1)/.installed
+$(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured
 	$(MAKE) -C $(UCLIBC_DIR) \
 		PREFIX= \
 		DEVEL_PREFIX=/ \

@@ -42,8 +42,7 @@ $(LYNX_DIR)/.unpacked: $(DL_DIR)/$(LYNX_SOURCE)
 	done
 	touch $@
 
-$(LYNX_DIR)/.configured: $(LYNX_DIR)/.unpacked \
-			 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
+$(LYNX_DIR)/.configured: $(LYNX_DIR)/.unpacked
 	( cd $(LYNX_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -92,7 +91,7 @@ lynx: $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 lynx-package: $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LYNX_PKG_SOURCE) $(LYNX_PKG_NAME)
 
-lynx-precompiled: $(LYNX_DIR)/.installed lynx
+lynx-precompiled: uclibc ncurses-precompiled $(LYNX_DIR)/.installed lynx
 	$(TARGET_STRIP) $(LYNX_DIR)/$(LYNX_TARGET_BINARY)
 	mkdir -p $(LYNX_TARGET_DIR)
 	cp $(LYNX_DIR)/$(LYNX_TARGET_BINARY) $(LYNX_TARGET_DIR)

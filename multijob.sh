@@ -1,4 +1,4 @@
 #!/bin/sh 
-PARALLELMFLAGS="-j 2" make kernel-toolchain 
-make -j 2 target-toolchain
-make -j 2 packages-precompiled
+echo "Number of jobs is now adjusted over menuconfig."
+echo "Advanced options->Compiler options->Number of jobs"
+echo "multijob.sh will be removed in fututre releases"

@@ -68,7 +68,7 @@ libevent libevent-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libevent*.so* root/usr/lib/
 else
 libevent: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.so
-libevent-precompiled: libevent
+libevent-precompiled: uclibc libevent
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*.so* root/usr/lib/
 endif

@@ -34,9 +34,6 @@ $(BINUTILS_DIR)/binutils/objdump: $(BINUTILS_DIR)/.configured
 $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR)/binutils/objdump
 	$(MAKE) -C $(BINUTILS_DIR) install
 
-$(BINUTILS_DIR)/.installed: $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ld
-	touch $@
-
 binutils-dependancies:
 	@if ! which bison > /dev/null ; then \
 		echo -e "\n\nYou must install 'bison' on your build machine\n"; \
@@ -51,6 +48,6 @@ binutils-dependancies:
 		exit 1; \
 	fi;
 
-binutils: binutils-dependancies $(BINUTILS_DIR)/.installed
+binutils: binutils-dependancies $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ld
 
 .PHONY: binutils binutils-dependancies

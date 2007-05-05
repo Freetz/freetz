@@ -52,7 +52,7 @@ ctorrent: $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
 ctorrent-package: $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CTORRENT_PKG_SOURCE) ctorrent-$(CTORRENT_VERSION)
 
-ctorrent-precompiled: $(CTORRENT_DIR)/$(CTORRENT_TARGET_BINARY) ctorrent
+ctorrent-precompiled: uclibc $(CTORRENT_DIR)/$(CTORRENT_TARGET_BINARY) ctorrent
 	$(TARGET_STRIP) $(CTORRENT_DIR)/$(CTORRENT_TARGET_BINARY)
 	cp $(CTORRENT_DIR)/$(CTORRENT_TARGET_BINARY) $(CTORRENT_TARGET_DIR)/
 

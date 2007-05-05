@@ -25,9 +25,7 @@ $(TOR_DIR)/.unpacked: $(DL_DIR)/$(TOR_SOURCE)
 	done
 	touch $@
 
-$(TOR_DIR)/.configured: $(TOR_DIR)/.unpacked \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.so \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so
+$(TOR_DIR)/.configured: $(TOR_DIR)/.unpacked 
 	( cd $(TOR_DIR); rm -f config.status; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -81,7 +79,7 @@ tor: $(PACKAGES_DIR)/.$(TOR_PKG_NAME)
 tor-package: $(PACKAGES_DIR)/.$(TOR_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TOR_PKG_SOURCE) $(TOR_PKG_NAME)
 
-tor-precompiled: $(TOR_DIR)/$(TOR_TARGET_BINARY) tor
+tor-precompiled: uclibc openssl-precompiled libevent-precompiled $(TOR_DIR)/$(TOR_TARGET_BINARY) tor
 	$(TARGET_STRIP) $(TOR_DIR)/$(TOR_TARGET_BINARY)
 	cp $(TOR_DIR)/$(TOR_TARGET_BINARY) $(TOR_TARGET_DIR)/
 

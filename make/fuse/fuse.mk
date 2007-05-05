@@ -108,7 +108,7 @@ fuse:	$(PACKAGES_DIR)/.$(FUSE_PKG_NAME) \
 	$(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY) \
 	$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
 	
-fuse-precompiled: fuse
+fuse-precompiled: uclibc fuse
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* root/usr/lib/
 endif

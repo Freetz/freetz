@@ -11,8 +11,7 @@ $(READLINE_DIR)/.unpacked: $(DL_DIR)/$(READLINE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(READLINE_SOURCE)
 	touch $@
 
-$(READLINE_DIR)/.configured: $(READLINE_DIR)/.unpacked \
-			     $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
+$(READLINE_DIR)/.configured: $(READLINE_DIR)/.unpacked
 	( cd $(READLINE_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
@@ -71,7 +70,7 @@ endif
 else
 
 readline: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so
-readline-precompiled: readline
+readline-precompiled: uclibc ncurses-precompiled readline
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*

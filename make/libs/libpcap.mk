@@ -81,7 +81,7 @@ libpcap libpcap-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libpcap*.so* root/usr/lib/
 else
 libpcap: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so
-libpcap-precompiled: libpcap
+libpcap-precompiled: uclibc libpcap
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so* root/usr/lib/
 endif

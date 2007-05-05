@@ -58,7 +58,7 @@ debootstrap: $(PACKAGES_DIR)/.$(DEBOOTSTRAP_PKG_NAME)
 debootstrap-package: $(PACKAGES_DIR)/.$(DEBOOTSTRAP_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(DEBOOTSTRAP_PKG_SOURCE) $(DEBOOTSTRAP_PKG_NAME)
 
-debootstrap-precompiled: $(DEBOOTSTRAP_DIR)/.installed debootstrap
+debootstrap-precompiled: uclibc $(DEBOOTSTRAP_DIR)/.installed debootstrap
 	mkdir -p $(DEBOOTSTRAP_TARGET_ROOTDIR)
 	cp -a $(DEBOOTSTRAP_DIR)/target/* $(DEBOOTSTRAP_TARGET_ROOTDIR)
 

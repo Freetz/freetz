@@ -52,7 +52,7 @@ zlib zlib-precompiled:
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libz*.so* root/usr/lib/
 else
 zlib: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so
-zlib-precompiled: zlib
+zlib-precompiled: uclibc zlib
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so* root/usr/lib/
 endif

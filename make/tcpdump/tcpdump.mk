@@ -22,8 +22,7 @@ $(TCPDUMP_DIR)/.unpacked: $(DL_DIR)/$(TCPDUMP_SOURCE)
 	done
 	touch $@
 
-$(TCPDUMP_DIR)/.configured: $(TCPDUMP_DIR)/.unpacked \
-			    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so
+$(TCPDUMP_DIR)/.configured: $(TCPDUMP_DIR)/.unpacked 
 	( cd $(TCPDUMP_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		BUILD_CC="$(TARGET_CC)" \
@@ -46,7 +45,7 @@ $(TCPDUMP_DIR)/.configured: $(TCPDUMP_DIR)/.unpacked \
 $(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY): $(TCPDUMP_DIR)/.configured
 	( PATH="$(TARGET_PATH)" \
 		CCOPT="$(TARGET_CFLAGS)" INCLS="-I. -I$(TARGET_MAKE_PATH)/../usr/include" \
-		make -C $(TCPDUMP_DIR) all \
+		$(MAKE) -C $(TCPDUMP_DIR) all \
 	);
 
 $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION): $(DL_DIR)/$(TCPDUMP_PKG_SOURCE)
@@ -58,7 +57,7 @@ tcpdump: $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
 tcpdump-package: $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TCPDUMP_PKG_SOURCE) tcpdump-$(TCPDUMP_VERSION)
 
-tcpdump-precompiled: $(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY) tcpdump
+tcpdump-precompiled: uclibc libpcap-precompiled $(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY) tcpdump
 	$(TARGET_STRIP) $(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY)
 	cp $(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY) $(TCPDUMP_TARGET_DIR)/
 

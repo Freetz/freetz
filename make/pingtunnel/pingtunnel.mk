@@ -24,8 +24,7 @@ $(PINGTUNNEL_DIR)/.unpacked: $(DL_DIR)/$(PINGTUNNEL_SOURCE)
 #	done
 	touch $@
 
-$(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY): $(PINGTUNNEL_DIR)/.unpacked \
-					       $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so
+$(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY): $(PINGTUNNEL_DIR)/.unpacked
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(GNU_TARGET_NAME)" \
 		CFLAGS="$(TARGET_CFLAGS) -static-libgcc -I$(TARGET_MAKE_PATH)/../usr/include -DVERSION='\"$(PINGTUNNEL_VERSION)\"'" \
@@ -41,7 +40,7 @@ pingtunnel: $(PACKAGES_DIR)/.pingtunnel-$(PINGTUNNEL_VERSION)
 pingtunnel-package: $(PACKAGES_DIR)/.pingtunnel-$(PINGTUNNEL_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(PINGTUNNEL_PKG_SOURCE) pingtunnel-$(PINGTUNNEL_VERSION)
 
-pingtunnel-precompiled: $(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY) pingtunnel
+pingtunnel-precompiled: uclibc libpcap-precompiled $(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY) pingtunnel
 	$(TARGET_STRIP) $(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY)
 	mkdir -p $(PINGTUNNEL_TARGET_DIR)/
 	cp $(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY) $(PINGTUNNEL_TARGET_DIR)/
