@@ -6,6 +6,24 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- Enhance fwmod so it can be used to handle FW images by either specifying an
+  alternative DOT_CONFIG file name or by explicitly providing command line
+  parameters for often-used settings needed to unpack different firmware
+  versions. Just call fwmod without any parameters to get a proper description.
+  BTW: The DOT_CONFIG alternative may be a very small file consisting only of
+  about five settings, if fwmod is just used to unpack (-u) an image.
+- New package ctorrent 1.3.4-dnh3
+- Bump transmission to version 0.72
+- Fix awk segfault (busybox) when called without any parameters
+- Bump Labor ECO version to 29.04.32-7153
+- Clean up some obsolete code in Config.in and fwmod
+- Fix small error in netsnmp package (update to 0.3): create /var/lib/snmp
+- Rename BUSYBOX_MAKE_DIR to BUSYBOX_TOOLS_MAKE_DIR in
+  tools/make/busybox-tools.mk. This provides for cleaner handling of the two
+  different BB versions in DS-Mod during builds.
+- Bump libevent version to 1.3b
+- Bump tor version to 0.1.2.13
+- Update tor package to 0.1.2.13
 - Mod version number now says ds26-14.x rather than ds-0.2.9-14
 - Bugfix for tools/busybox: make-include tried to apply all tools patches
   instead of only busybox-specific ones. I wonder why nobody ever complained.

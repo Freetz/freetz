@@ -27,20 +27,29 @@
 # - most tools are taken from Christian Volkmann's mod-0.57
 #   <http://www.ip-phone-forum.de/showthread.php?t=65894>
 #
-# Special Thanks to Andreas BÃ¼hmann, Christian Volkmann, Enrik Berkhan,
+# Special Thanks to Andreas Bühmann, Christian Volkmann, Enrik Berkhan,
 # SpeedyBZ and all members on ip-phone-forum.de who contributed to this mod
 
 
 usage()
 {
-	echo "Usage: fwmod [-u|-m|-p|-a] [-d <dir>] <orig_firmware> [<tk_firmware>]" 1>&2
-	echo "       -a:       unpack, modify and pack firmware image (-ump)" 1>&2
-	echo "       -d <dir>: build directory" 1>&2
-	echo "       -m:       modify previously unpacked image" 1>&2
-	echo "       -p:       pack firmware image" 1>&2
-	echo "       -u:       unpack firmware image" 1>&2
-	echo "       -l:       force lzma decompression" 1>&2
-	echo "       -z:       force zlib decompression" 1>&2
+	echo "Usage: fwmod [-u|-m|-p|-a|-h <y/n>|-c <y/n>|-v <y/n>] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]" 1>&2
+	echo "  actions" 1>&2
+	echo "    -u         unpack firmware image" 1>&2
+	echo "    -m         modify previously unpacked image" 1>&2
+	echo "    -p         pack firmware image" 1>&2
+	echo "    -a         all: unpack, modify and pack firmware image (-u -m -p)" 1>&2
+	echo "  options" 1>&2
+	echo "    -l         force lzma decompression (default: no)" 1>&2
+	echo "    -z         force zlib decompression (default: yes)" 1>&2
+	echo "    -h <y/n>   hidden root on/off" 1>&2
+	echo "    -c <y/n>   contiguous hidden root on/off" 1>&2
+	echo "    -v <y/n>   var.tar in root-fs on/off" 1>&2
+	echo "  input/output" 1>&2
+	echo "    -i <cfg>   input file for configuration data (default: .config)" 1>&2
+	echo "    -d <dir>   build directory (default: <orig_firmware>.mod)" 1>&2
+	echo "    <orig_fw>  original firmware name" 1>&2
+	echo "    <tk_fw>    2nd firmware name (e.g. for merging in web UI)" 1>&2
 }
 
 # Dont run this script as root
@@ -50,16 +59,31 @@ then
 	exit 1
 fi
 
-DOT_CONFIG="$(dirname "$0")/.config"
+L1='  '
+L2='    '
 
+# Default values
+DS_VERBOSITY_LEVEL=0
+DOT_CONFIG="$(dirname "$0")/.config"
+CMDLINE_OPTS="umpad:i:lzh:c:v:"
+
+# Default config override?
+# NOTE: Both 'getopts' must have an identical argument list!
+while getopts "$CMDLINE_OPTS" opt
+do
+	if [ "$opt" == "i" ]; then
+		DOT_CONFIG="$OPTARG"
+		echo $DOT_CCONFIG
+	fi
+done
+
+# Config file readable?
+# NOTE: Both 'getopts' must have an identical argument list!
 if [ ! -r "$DOT_CONFIG" ]
 then
 	echo "ERROR: not configured" 1>&2
 	exit 1
 fi
-
-L1='  '
-L2='    '
 
 # Load config
 . "$DOT_CONFIG"
@@ -71,7 +95,12 @@ DO_PACK=0
 DIR=''
 _OPT=0
 
-while getopts "ad:mpulz" opt
+# Reset command line option counter
+OPTIND=0
+
+# Get other options besides '-i <file>'
+# NOTE: Both 'getopts' must have an identical argument list!
+while getopts "$CMDLINE_OPTS" opt
 do
 	case "$opt" in
 		u)
@@ -95,11 +124,46 @@ do
 		d)
 			DIR="$OPTARG"
 			;;
+		i)
+			# Do nothing, DOT_CONFIG has been assigned already
+			;;
 		l)
 			DS_SQUASHFS_LZMA="y"
 			;;
 		z)
 			DS_SQUASHFS_LZMA="n"
+			;;
+		h)
+			if [ "$OPTARG" == "y" ]; then
+				DS_HIDDEN_ROOT="y"
+			elif [ "$OPTARG" == "n" ]; then
+				DS_HIDDEN_ROOT="n"
+				DS_CONTIGUOUS_HIDDEN_ROOT="n"
+			else
+				usage
+				exit 1
+			fi
+			;;
+		c)
+			if [ "$OPTARG" == "y" ]; then
+				DS_HIDDEN_ROOT="y"
+				DS_CONTIGUOUS_HIDDEN_ROOT="y"
+			elif [ "$OPTARG" == "n" ]; then
+				DS_CONTIGUOUS_HIDDEN_ROOT="n"
+			else
+				usage
+				exit 1
+			fi
+			;;
+		v)
+			if [ "$OPTARG" == "y" ]; then
+				DS_ROOTFS_VARTAR="y"
+			elif [ "$OPTARG" == "n" ]; then
+				DS_ROOTFS_VARTAR="n"
+			else
+				usage
+				exit 1
+			fi
 			;;
 		*)
 			usage
@@ -107,7 +171,6 @@ do
 			;;
 	esac
 done
-
 shift $(($OPTIND - 1))
 
 if [ $# -ne 1 -a $# -ne 2 ]
