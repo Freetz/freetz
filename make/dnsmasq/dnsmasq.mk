@@ -1,4 +1,4 @@
-DNSMASQ_VERSION:=2.38
+DNSMASQ_VERSION:=2.39
 DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_SITE:=http://thekelleys.org.uk/dnsmasq
 DNSMASQ_DIR:=$(SOURCE_DIR)/dnsmasq-$(DNSMASQ_VERSION)
@@ -7,7 +7,6 @@ DNSMASQ_TARGET_DIR:=$(PACKAGES_DIR)/dnsmasq-$(DNSMASQ_VERSION)/root/usr/sbin
 DNSMASQ_TARGET_BINARY:=src/dnsmasq
 DNSMASQ_PKG_VERSION:=0.5
 DNSMASQ_PKG_SOURCE:=dnsmasq-$(DNSMASQ_VERSION)-dsmod-$(DNSMASQ_PKG_VERSION).tar.bz2
-#DNSMASQ_PKG_SITE:=http://www.eiband.info/dsmod
 DNSMASQ_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 
