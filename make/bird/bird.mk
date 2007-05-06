@@ -76,7 +76,7 @@ $(BIRD_DIR)/.configured: $(BIRD_DIR)/.unpacked
 $(BIRD_DIR)/.built: $(BIRD_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		LD="$(TARGET_LD)" \
-		$(MAKE) -C $(BIRD_DIR)
+		$(MAKE1) -C $(BIRD_DIR)
 	touch $@
 
 $(BIRD_DIR)/.installed: $(BIRD_DIR)/.built
