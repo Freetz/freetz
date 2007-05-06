@@ -86,7 +86,7 @@ php: $(PACKAGES_DIR)/.php-$(PHP_VERSION)
 php-package: $(PACKAGES_DIR)/.php-$(PHP_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(PHP_PKG_SOURCE) apache-$(APACHE_VERSION)
 
-php-precompiled: $(PHP_DIR)/sapi/cgi/$(PHP_TARGET_BINARY) php
+php-precompiled: uclibc $(PHP_DIR)/sapi/cgi/$(PHP_TARGET_BINARY) php
 	$(TARGET_STRIP) $(PHP_DIR)/sapi/cgi/$(PHP_TARGET_BINARY)
 	cp $(PHP_DIR)/sapi/cgi/$(PHP_TARGET_BINARY) $(PHP_TARGET_DIR)/$(PHP_TARGET_BINARY)
 

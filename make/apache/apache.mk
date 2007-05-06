@@ -54,7 +54,7 @@ apache: $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
 apache-package: $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(APACHE_PKG_SOURCE) apache-$(APACHE_VERSION)
 
-apache-precompiled: $(APACHE_DIR)/src/$(APACHE_TARGET_BINARY) apache
+apache-precompiled: uclibc $(APACHE_DIR)/src/$(APACHE_TARGET_BINARY) apache
 	$(TARGET_STRIP) $(APACHE_DIR)/src/$(APACHE_TARGET_BINARY)
 	cp $(APACHE_DIR)/src/$(APACHE_TARGET_BINARY) $(APACHE_TARGET_DIR)/$(APACHE_TARGET_BINARY)
 
