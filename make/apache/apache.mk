@@ -9,9 +9,9 @@ APACHE_PKG_VERSION:=0.1
 APACHE_PKG_SOURCE:=apache-$(APACHE_VERSION)-dsmod-$(APACHE_PKG_VERSION).tar.bz2
 APACHE_PKG_SITE:=http://dsmod.magenbrot.net
 ifeq ($(strip $(DS_APACHE_STATIC)),y)
-APACHE_LDFLAGS:=-static -O2
+APACHE_LDFLAGS:=-static
 else
-APACHE_LDFLAGS:=-O2
+APACHE_LDFLAGS:=
 endif
 
 $(DL_DIR)/$(APACHE_SOURCE):

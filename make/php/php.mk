@@ -34,7 +34,7 @@ $(PHP_DIR)/.configured: $(PHP_DIR)/.unpacked
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="-O2" \
+		LDFLAGS="" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
