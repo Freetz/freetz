@@ -80,15 +80,10 @@ mad-source: $(MAD_DIR)/.unpacked
 
 mad-clean:
 	-$(MAKE) -C $(MAD_DIR) clean
-
-mad-install: mad-precompiled
-
-mad-uninstall:
-	rm -rf root/usr/lib/libmad*.so*
-#	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBMAD_DIR) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" uninstall
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*
+	rm -rf root/usr/lib/libmad*.so.*
+	
 
 mad-dirclean:
-#	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBMAD_DIR) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" uninstall
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*.so.*
 	rm -rf $(MAD_DIR)
 

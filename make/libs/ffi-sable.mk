@@ -75,13 +75,9 @@ ffi-sable-source: $(FFI-SABLE_DIR)/.unpacked
 
 ffi-sable-clean:
 	-$(MAKE) -C $(FFI-SABLE_DIR) clean
-
-ffi-sable-install: ffi-sable-precompiled
-
-ffi-sable-uninstall:
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*
 	rm -rf root/usr/lib/libffi*.so*
 
 ffi-sable-dirclean:
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so.*
 	rm -rf $(FFI-SABLE_DIR)
 

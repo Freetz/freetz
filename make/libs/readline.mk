@@ -83,12 +83,10 @@ readline-source: $(READLINE_DIR)/.unpacked
 
 readline-clean:
 	-$(MAKE) -C $(READLINE_DIR) clean
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*
+	rm -rf root/usr/lib/libreadline*.so*
+	rm -rf root/usr/lib/libhistory*.so*
 
-readline-dirclean: readline-stagingclean
+readline-dirclean:
 	rm -rf $(READLINE_DIR)
-
-readline-stagingclean:
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
-	rm -f $(READLINE_DIR)/.installed
-

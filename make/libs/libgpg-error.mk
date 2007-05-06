@@ -63,6 +63,8 @@ libgpg-error-source: $(LIBGPG_ERROR_DIR)/.unpacked
 
 libgpg-error-clean:
 	-$(MAKE) -C $(LIBGPG_ERROR_DIR) clean
-
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*
+	rm -rf root/usr/lib/libgpg-error*.so*
+	
 libgpg-error-dirclean:
 	rm -rf $(LIBGPG_ERROR_DIR)

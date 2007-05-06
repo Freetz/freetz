@@ -89,6 +89,7 @@ ncurses-source: $(NCURSES_DIR)/.unpacked
 
 ncurses-clean:
 	-$(MAKE) -C $(NCURSES_DIR) clean
-
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
+	rm -rf root/usr/lib/libncurses*.so*
 ncurses-dirclean:
 	rm -rf $(NCURSES_DIR)

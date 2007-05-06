@@ -43,7 +43,7 @@ $(JPEG_DIR)/.configured: $(JPEG_DIR)/.unpacked
 		--sysconfdir=/etc \
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
-		--disable-shared \
+		--enable-shared \
 		--enable-static \
 	);
 	touch $@
@@ -65,27 +65,20 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so: $(JPEG_DIR)/.compiled
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
 jpeg jpeg-precompiled:
 	@echo 'External compiler used. Skipping libjpeg...'
-#	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libjpeg*.so* root/usr/lib/
+	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libjpeg*.so* root/usr/lib/
 else
 jpeg: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so
 jpeg-precompiled: uclibc jpeg
-#	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so*
-#	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so* root/usr/lib/
+	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so*
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so* root/usr/lib/
 endif
 
 jpeg-source: $(JPEG_DIR)/.unpacked
 
 jpeg-clean:
 	-$(MAKE) -C $(JPEG_DIR) clean
-
-jpeg-install: jpeg-precompiled
-
-jpeg-uninstall:
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*
 	rm -rf root/usr/lib/libjpeg*.so*
-#	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBJPEG_DIR) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" uninstall
 
 jpeg-dirclean:
-#	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBJPEG_DIR) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" uninstall
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so.*
 	rm -rf $(JPEG_DIR)
-

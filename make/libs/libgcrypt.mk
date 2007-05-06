@@ -69,6 +69,8 @@ libgcrypt-source: $(LIBGCRYPT_DIR)/.unpacked
 
 libgcrypt-clean:
 	-$(MAKE) -C $(LIBGCRYPT_DIR) clean
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*
+	rm -rf root/usr/lib/libgcrypt*.so*
 
 libgcrypt-dirclean:
 	rm -rf $(LIBGCRYPT_DIR)

@@ -58,6 +58,8 @@ uclibcxx-source: $(UCLIBCXX_DIR)/.unpacked
 
 uclibcxx-clean:
 	-$(MAKE) -C $(UCLIBCXX_DIR) clean
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++* 
+	rm -rf root/lib/libuClibc++*.so* 
 
 uclibcxx-dirclean:
 	rm -rf $(UCLIBCXX_DIR)

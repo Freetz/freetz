@@ -90,16 +90,9 @@ libpcap-source: $(LIBPCAP_DIR)/.unpacked
 
 libpcap-clean:
 	-$(MAKE) -C $(LIBPCAP_DIR) clean
-
-libpcap-install: libpcap-precompiled
-
-libpcap-uninstall:
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.a
 	rm -rf root/usr/lib/libpcap*.so*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.a
 
 libpcap-dirclean:
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.a
 	rm -rf $(LIBPCAP_DIR)
 

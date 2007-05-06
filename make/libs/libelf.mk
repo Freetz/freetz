@@ -84,15 +84,9 @@ libelf-source: $(LIBELF_DIR)/.unpacked
 
 libelf-clean:
 	-$(MAKE) -C $(LIBELF_DIR) clean
-
-libelf-install: libelf-precompiled
-
-libelf-uninstall:
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*
 	rm -rf root/usr/lib/libelf*.so*
-#	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBLIBELF_DIR) instroot="$(TARGET_TOOLCHAIN_STAGING_DIR)" uninstall
 
 libelf-dirclean:
-#	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBLIBELF_DIR) instroot="$(TARGET_TOOLCHAIN_STAGING_DIR)" uninstall
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so.*
 	rm -rf $(LIBELF_DIR)
 

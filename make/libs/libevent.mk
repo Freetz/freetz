@@ -77,6 +77,8 @@ libevent-source: $(LIBEVENT_DIR)/.unpacked
 
 libevent-clean:
 	-$(MAKE) -C $(LIBEVENT_DIR) clean
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*
+	rm -rf root/usr/lib/libevent*.so*
 
 libevent-dirclean:
 	rm -rf $(LIBEVENT_DIR)

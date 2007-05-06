@@ -88,7 +88,10 @@ openssl-source: $(OPENSSL_DIR)/.unpacked
 
 openssl-clean:
 	-$(MAKE) -C $(OPENSSL_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl* root/usr/lib/libssl*.so*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto* root/usr/lib/libcrypto*.so*
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl* 
+	rm -rf root/usr/lib/libssl*.so*
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto* 
+	rm -rf root/usr/lib/libcrypto*.so*
+	
 openssl-dirclean:
 	rm -rf $(OPENSSL_DIR)

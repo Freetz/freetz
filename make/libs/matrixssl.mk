@@ -53,11 +53,9 @@ matrixssl-source: $(MATRIXSSL_DIR)/.unpacked
 
 matrixssl-clean:
 	-$(MAKE) -C $(MATRIXSSL_DIR)/src clean
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl*
+	rm -rf root/usr/lib/libmatrixssl*.so*
 
-matrixssl-dirclean: matrixssl-stagingclean
+matrixssl-dirclean: 
 	rm -rf $(MATRIXSSL_DIR)
-
-matrixssl-stagingclean:
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl*.so*
-	rm -f $(MATRIXSSL_DIR)/.installed
 

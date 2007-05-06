@@ -75,13 +75,8 @@ usb-source: $(USB_DIR)/.unpacked
 
 usb-clean:
 	-$(MAKE) -C $(USB_DIR) clean
-
-usb-install: usb-precompiled
-
-usb-uninstall:
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*
 	rm -rf root/usr/lib/libusb*.so*
 
 usb-dirclean:
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so.*
 	rm -rf $(USB_DIR)
-

@@ -71,6 +71,8 @@ lzo-source: $(LZO_DIR)/.unpacked
 
 lzo-clean:
 	-$(MAKE) -C $(LZO_DIR) clean
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo*
+	rm -rf  root/usr/lib/liblzo*.so*
 
 lzo-dirclean:
 	rm -rf $(LZO_DIR)
