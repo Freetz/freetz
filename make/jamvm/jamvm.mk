@@ -38,15 +38,13 @@ $(JAMVM_DIR)/.configured: $(JAMVM_DIR)/.unpacked
 		--build="$(GNU_HOST_NAME)" \
 		--enable-ffi \
 		--disable-int-threading \
-		--with-classpath-install-dir="/usr/lib/classpath" \
+		--with-classpath-install-dir="/usr/share/classpath" \
 	);
 	touch $@
 	
 
-$(JAMVM_DIR)/$(JAMVM_TARGET_BINARY): $(JAMVM_DIR)/.configured
-	( cd $(JAMVM_DIR)/src; \
-		make $(TARGET_CONFIGURE_OPTS) \
-	);
+$(JAMVM_DIR)/src/$(JAMVM_TARGET_BINARY): $(JAMVM_DIR)/.configured
+	$(MAKE) -C $(JAMVM_DIR)/src $(TARGET_CONFIGURE_OPTS) 
 
 $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION): $(DL_DIR)/$(JAMVM_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(JAMVM_PKG_SOURCE)
@@ -57,7 +55,7 @@ jamvm: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
 jamvm-package: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE)  --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(JAMVM_PKG_SOURCE) jamvm-$(JAMVM_VERSION)
 
-jamvm-precompiled: uclibc ffi-sable-precompiled classpath-precompiled $(JAMVM_DIR)/$(JAMVM_TARGET_BINARY) jamvm
+jamvm-precompiled: uclibc ffi-sable-precompiled classpath-precompiled $(JAMVM_DIR)/src/$(JAMVM_TARGET_BINARY) jamvm
 	$(TARGET_STRIP) $(JAMVM_DIR)/src/$(JAMVM_TARGET_BINARY)
 	cp $(JAMVM_DIR)/src/$(JAMVM_TARGET_BINARY) $(JAMVM_TARGET_DIR)/
 	$(TARGET_STRIP) $(JAMVM_DIR)/src/.libs/libjvm*.so*

@@ -3,7 +3,7 @@ CLASSPATH_SOURCE:=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_SITE:=ftp://ftp.gnu.org/gnu/classpath
 CLASSPATH_DIR:=$(SOURCE_DIR)/classpath-$(CLASSPATH_VERSION)
 CLASSPATH_MAKE_DIR:=$(MAKE_DIR)/classpath
-CLASSPATH_TARGET_DIR:=$(PACKAGES_DIR)/classpath-$(CLASSPATH_VERSION)/root/usr/lib/classpath
+CLASSPATH_TARGET_DIR:=$(PACKAGES_DIR)/classpath-$(CLASSPATH_VERSION)/root/usr/share/classpath
 CLASSPATH_TARGET_BINARY:=mini.jar #glibj.zip
 CLASSPATH_PKG_VERSION:=0.1
 CLASSPATH_PKG_SOURCE:=CLASSPATH-$(CLASSPATH_VERSION)-dsmod-$(CLASSPATH_PKG_VERSION).tar.bz2
@@ -47,7 +47,7 @@ $(CLASSPATH_DIR)/.configured: $(CLASSPATH_DIR)/.unpacked
 	);
 	touch $@
 
-$(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY): $(CLASSPATH_DIR)/.configured
+$(CLASSPATH_DIR)/lib/$(CLASSPATH_TARGET_BINARY): $(CLASSPATH_DIR)/.configured
 	( cd $(CLASSPATH_DIR); \
 		make $(TARGET_CONFIGURE_OPTS); \
 	);
@@ -63,21 +63,20 @@ classpath: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
 classpath-package: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CLASSPATH_PKG_SOURCE) classpath-$(CLASSPATH_VERSION)
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so: $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY)
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so: $(CLASSPATH_DIR)/lib/$(CLASSPATH_TARGET_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(CLASSPATH_DIR)/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	touch -c $@
 
-classpath-precompiled: uclibc $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_DIR)/.installed classpath
+classpath-precompiled: uclibc $(CLASSPATH_DIR)/lib/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_DIR)/.installed classpath
 	cp $(CLASSPATH_DIR)/lib/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_TARGET_DIR)/
 	
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
 $(CLASSPATH_DIR)/.installed:
 	mkdir -p root/usr/lib/classpath
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/classpath/lib*.so* root/usr/lib/classpath
-	( cd $(CLASSPATH_DIR)/lib; cp mini.jar $(CLASSPATH_TARGET_DIR);		
 	touch $@
 else
 $(CLASSPATH_DIR)/.installed: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so

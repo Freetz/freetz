@@ -41,12 +41,12 @@ $(HASERL_DIR)/.configured: $(HASERL_DIR)/.unpacked
 	    );
 	touch $@
 
-$(HASERL_DIR)/$(HASERL_TARGET_BINARY): $(HASERL_DIR)/.configured
+$(HASERL_DIR)/src/$(HASERL_TARGET_BINARY): $(HASERL_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) CROSS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(HASERL_DIR)
 
-haserl-precompiled: uclibc $(HASERL_DIR)/$(HASERL_TARGET_BINARY)
+haserl-precompiled: uclibc $(HASERL_DIR)/src/$(HASERL_TARGET_BINARY)
 	$(TARGET_STRIP) $(HASERL_DIR)/src/$(HASERL_TARGET_BINARY)
 	cp $(HASERL_DIR)/src/$(HASERL_TARGET_BINARY) $(HASERL_TARGET_DIR)/
 

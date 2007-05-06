@@ -23,7 +23,7 @@ $(INADYN_DIR)/.unpacked: $(DL_DIR)/$(INADYN_SOURCE)
 	done
 	touch $@
 
-$(INADYN_DIR)/$(INADYN_TARGET_BINARY): $(INADYN_DIR)/.unpacked
+$(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY): $(INADYN_DIR)/.unpacked
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) CC="mipsel-linux-gcc" STRIP="mipsel-linux-strip" \
 	CFLAGS="$(TARGET_CFLAGS)" \
@@ -36,7 +36,7 @@ $(PACKAGES_DIR)/.$(INADYN_PKG_NAME): $(DL_DIR)/$(INADYN_PKG_SOURCE)
 
 inadyn: $(PACKAGES_DIR)/.$(INADYN_PKG_NAME)
 
-inadyn-precompiled: uclibc $(INADYN_DIR)/$(INADYN_TARGET_BINARY) inadyn
+inadyn-precompiled: uclibc $(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY) inadyn
 	$(TARGET_STRIP) $(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY)
 	cp $(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY) $(INADYN_TARGET_DIR)/
 
