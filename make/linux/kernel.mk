@@ -14,14 +14,13 @@ KERNEL_MODULES_DIR:=$(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)
 $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
 	mkdir -p $(KERNEL_DIR)
 	cp -a $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N) $(KERNEL_BUILD_DIR)
-
 	for i in $(KERNEL_MAKE_DIR)/patches/*.patch; do \
 		patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
 	done
 	# Version specific patches
-#	for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
-#		patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
-#	done
+	#for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
+	#	patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
+	#done
 
 	# Version 04.29/04.30 source corrections
 	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
@@ -101,8 +100,7 @@ $(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 	touch $@
 
 kernel-precompiled: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) \
-                    $(KERNEL_DIR)/.modules \
-                    $(SOURCE_DIR)/depmod.pl
+                    $(KERNEL_DIR)/.modules
 
 	cp $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
 	rm -rf $(KERNEL_MODULES_DIR)/lib

@@ -24,8 +24,6 @@ $(BUSYBOX_DIR)/.unpacked: $(DL_DIR)/$(BUSYBOX_SOURCE)
 
 $(BUSYBOX_DIR)/.configured: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
 	cp $(BUSYBOX_CONFIG_FILE) $(BUSYBOX_DIR)/.config
-#	sed -i -e "s,^CROSS_COMPILE.*,CROSS_COMPILE?=$(TARGET_MAKE_PATH)/$(TARGET_CROSS),g" \
-#		$(BUSYBOX_DIR)/Makefile
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
@@ -50,25 +48,21 @@ busybox-menuconfig: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
 		
 	cp $(BUSYBOX_DIR)/.config $(BUSYBOX_CONFIG_FILE)
 
-busybox-links: $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
+$(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links: $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(BUSYBOX_DIR) busybox.links
 
-busybox-precompiled: uclibc $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) busybox-links
+busybox-precompiled: uclibc $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
 	$(TARGET_STRIP) $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
 	cp $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF)
 	cp $(BUSYBOX_DIR)/busybox.links $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
 
 busybox-clean:
 	-$(MAKE) -C $(BUSYBOX_DIR) clean
-	rm -f $(SOURCE_DIR)/depmod.pl
 
 busybox-dirclean:
 	rm -rf $(BUSYBOX_DIR)
-
-$(SOURCE_DIR)/depmod.pl: $(BUSYBOX_DIR)/.unpacked
-	cp $(BUSYBOX_DIR)/examples/depmod.pl $@
 
 .PHONY: busybox-menuconfig
