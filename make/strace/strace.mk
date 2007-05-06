@@ -1,6 +1,4 @@
-STRACE_VERSION:=4.5.12
-# This one did not compile without problems
-# STRACE_VERSION:=4.5.15
+STRACE_VERSION:=4.5.15
 STRACE_SOURCE:=strace-$(STRACE_VERSION).tar.bz2
 STRACE_SITE:=http://mesh.dl.sourceforge.net/sourceforge/strace
 STRACE_DIR:=$(SOURCE_DIR)/strace-$(STRACE_VERSION)
@@ -18,9 +16,9 @@ $(DL_DIR)/$(STRACE_PKG_SOURCE):
 
 $(STRACE_DIR)/.unpacked: $(DL_DIR)/$(STRACE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(STRACE_SOURCE)
-#	for i in $(STRACE_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(STRACE_DIR) -p0 < $$i; \
-#	done
+	for i in $(STRACE_MAKE_DIR)/patches/*.patch; do \
+		patch -d $(STRACE_DIR) -p0 < $$i; \
+	done
 	touch $@
 
 $(STRACE_DIR)/.configured: $(STRACE_DIR)/.unpacked
