@@ -1,7 +1,7 @@
 ifeq ($(strip $(DS_TARGET_CCACHE)),y)
-TARGET_TOOLCHAIN:=binutils gcc ccache uclibc-utils gdb
+TARGET_TOOLCHAIN:=binutils gcc ccache gdb
 else
-TARGET_TOOLCHAIN:=binutils gcc uclibc-utils gdb
+TARGET_TOOLCHAIN:=binutils gcc gdb
 endif
 
 include $(TOOLCHAIN_DIR)/make/target/*/*.mk
