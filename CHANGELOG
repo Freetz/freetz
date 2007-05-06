@@ -6,6 +6,29 @@ TODO:
 - bird and netsnmp don't build with more than one job
 
 Latest changes:
+- Mention 'make precompiled' in previously outdated README
+- Hierarchical build structure improvements strive to avoid unnecessary
+  recompiles, especially unwanted toolchain rebuilds. All packages'
+  'precompiled' targets now depend on target 'uclibc', on the other hand, so
+  they are rebuilt when necessary.
+- Multi-job build improvements:
+  * Added new config option for multiple jobs. This can now be configured in
+    menuconfig.
+  * New multijob config option will be used for kernel toolchain, target
+    toolchain, libs and packages.
+  * Targets that cannot be compiled with multiple jobs should use $(MAKE1)
+    instead of $(MAKE).
+  * multijob.sh is not needed anymore and will be removed in future releases.
+    It now does not do anything anymore, just prints a "deprecated" warning.
+  * Target "packages-precompiled" is removed because it is obsolete with these
+    changes.
+- Add uClibc config for 04.30
+- Bump classpath to version 0.95
+- Bump FUSE to version 2.6.5
+- Fix typo in make/libs/Makefile.in concerning libpcap, making it dependent on
+  libncurses config switch accidentally.
+- Bump dnsmasq version to 2.39
+- Extension for W701V: /sbin/mailer is copied from tk-firmware
 - Enhance fwmod so it can be used to handle FW images by either specifying an
   alternative DOT_CONFIG file name or by explicitly providing command line
   parameters for often-used settings needed to unpack different firmware
