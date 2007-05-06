@@ -137,7 +137,7 @@ $(NETSNMP_DIR)/.configured: $(NETSNMP_DIR)/.unpacked
 
 $(NETSNMP_DIR)/.built: $(NETSNMP_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-	$(MAKE) -C $(NETSNMP_DIR)
+	$(MAKE1) -C $(NETSNMP_DIR)
 	touch $@
 
 $(NETSNMP_DIR)/.installed: $(NETSNMP_DIR)/.built
