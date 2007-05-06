@@ -82,7 +82,9 @@ uclibc-configured: $(UCLIBC_DIR)/.configured
 uclibc:	$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a \
 	$(ROOT_DIR)/lib/libc.so.0
 	
-uclibc-utils:
+uclibc-utils: uclibc $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/ldd.host
+
+$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/ldd.host:
 	# Build the host utils.  Need to add an install target...
 	$(MAKE) -C $(UCLIBC_DIR)/utils \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
@@ -95,6 +97,6 @@ uclibc-utils:
 		HOSTCC="$(HOSTCC)" \
 		utils
 	cp $(UCLIBC_DIR)/utils/ldd.host $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/
-	
+	touch -c $@
 
 .PHONY: uclibc-configured uclibc
