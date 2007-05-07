@@ -948,8 +948,10 @@ then
 	fi	
 
 	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L0}installing modules"
-	for i in $(cd "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}" && find . -type d -name .svn -prune -false , \
-				                                                                                              -type f \( -name modules.dep -o -name "*.ko" \))
+	for i in $( \
+		cd "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}" && \
+		find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
+	)
 	do
 		bn="$(basename "$i")"
 		mod="${bn%\.ko}"
@@ -965,7 +967,7 @@ then
 	done
 		
 	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}generating modules.dep"
-	${SOURCE_SUBDIR}/depmod.pl -b ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-${DS_KERNEL_LAYOUT} \
+	${TOOLS_SUBDIR}/depmod.pl -b ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-${DS_KERNEL_LAYOUT} \
 		-F ${KERNEL_REP_DIR}/System-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.map 2> /dev/null
 		
 	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}copying files"
