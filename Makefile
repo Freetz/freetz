@@ -158,8 +158,7 @@ else
 	fi
 endif
 
-ifeq ($(strip $(DS_TYPE_SPEEDPORT_W701V)),y)
-
+ifneq ($(strip $(DS_DL_SOURCE2)),)
 IMAGE2:=$(strip $(DL_DIR)/$(DS_DL_SOURCE2))
 DL_IMAGE+=$(IMAGE2)
 
@@ -167,20 +166,7 @@ $(DL_DIR)/$(DS_DL_SOURCE2):
 	@./fwmod_download -C $(DL_DIR) $(DS_DL_SITE2) $(DS_DL_SOURCE2) > /dev/null
 	@echo "done."
 	@echo ""
-
 endif
-ifeq ($(strip $(DS_TYPE_SPEEDPORT_W900V)),y)
-
-IMAGE2:=$(strip $(DL_DIR)/$(DS_DL_SOURCE2))
-DL_IMAGE+=$(IMAGE2)
-
-$(DL_DIR)/$(DS_DL_SOURCE2):
-	@./fwmod_download -C $(DL_DIR) $(DS_DL_SITE2) $(DS_DL_SOURCE2) > /dev/null
-	@echo "done."
-	@echo ""
-
-endif
-
 
 package-list: package-list-clean $(PACKAGES_LIST)
 	@touch .static

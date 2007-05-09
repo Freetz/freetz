@@ -1,0 +1,105 @@
+diff -burN usr.orig/www/all/html/de/fon/sip1.js usr/www/all/html/de/fon/sip1.js
+--- usr.orig/www/all/html/de/fon/sip1.js	2007-01-24 21:07:40.000000000 +0100
++++ usr/www/all/html/de/fon/sip1.js	2007-01-24 21:41:16.000000000 +0100
+@@ -1,6 +1,7 @@
+ <? setvariable var:showtcom 0 ?>
+ <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>
+ <? if eq $var:OEM aol '<? setvariable var:showtcom 1 ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:showtcom 1 ?>' ?>
+ <!--		../fon/sip.js		-->
+ <style type="text/css">
+ <!--
+diff -burN usr.orig/www/all/html/de/internet/authform.html usr/www/all/html/de/internet/authform.html
+--- usr.orig/www/all/html/de/internet/authform.html	2007-01-24 21:07:40.000000000 +0100
++++ usr/www/all/html/de/internet/authform.html	2007-01-24 21:43:40.000000000 +0100
+@@ -13,6 +13,7 @@
+ <? if eq $var:OEM freenet `<? setvariable var:allprovider 1 ?>` ?>
+ <? if eq $var:OEM aol `<? setvariable var:allprovider 1 ?>` ?>
+ <? if eq $var:OEM avm `<? setvariable var:allprovider 1 ?>` ?>
++<? if eq $var:OEM tcom `<? setvariable var:allprovider 1 ?>` ?>
+ <? if eq $var:allprovider 1 `
+ 		<option value="1u1">$var:afTxt02</option>
+ 		<option value="AOL">$var:afTxt06</option>
+diff -burN usr.orig/www/all/html/de/internet/pp_wanbridge.html usr/www/all/html/de/internet/pp_wanbridge.html
+--- usr.orig/www/all/html/de/internet/pp_wanbridge.html	2007-01-24 21:07:40.000000000 +0100
++++ usr/www/all/html/de/internet/pp_wanbridge.html	2007-01-24 21:45:09.000000000 +0100
+@@ -3,7 +3,7 @@
+ <? include ../html/config.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "Speedport" ?>' ?>
+ <? include ../html/$var:lang/internet/pp_wanbridge.inc ?>
+ <head>
+ <title><? echo $var:txt00 ?></title>
+ <? setvariable var:evtxt08 "Online-Zähler" ?>
+diff -burN usr.orig/www/all/html/de/menus/menuwatch.html usr/www/all/html/de/menus/menuwatch.html
+--- usr.orig/www/all/html/de/menus/menuwatch.html	2007-01-24 21:07:40.000000000 +0100
++++ usr/www/all/html/de/menus/menuwatch.html	2007-01-24 21:50:25.000000000 +0100
+@@ -5,7 +5,7 @@
+ <? include ../html/$var:lang/menus/menu2.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "Speedport" ?>' ?>
+ <head>
+ <title><? echo $var:BoxName ?></title>
+ <meta http-equiv=content-type content="text/html; charset=iso-8859-1">
+diff -burN usr.orig/www/all/html/de/fon/routing.js usr/www/all/html/de/fon/routing.js
+--- usr.orig/www/all/html/de/fon/routing.js	2007-03-13 16:16:49.000000000 +0100
++++ usr/www/all/html/de/fon/routing.js	2007-05-09 23:18:12.000000000 +0200
+@@ -16,6 +16,7 @@
+ <? if eq $var:OEM avm `<? setvariable var:showLCRdata 1 ?>` ?>
+ <? if eq $var:OEM avme `<? setvariable var:showLCRdata 1 ?>` ?>
+ <? if eq $var:OEM freenet `<? setvariable var:showLCRdata 1 ?>` ?>
++<? if eq $var:OEM tcom `<? setvariable var:showLCRdata 1 ?>` ?>
+ <? include ../html/$var:lang/js/val.js ?>
+ <? include ../html/$var:lang/js/jsl.js ?>
+ var g_mldDelete		= "Wollen Sie diesen Eintrag löschen ?";
+diff -burN usr.orig/www/all/html/de/fon/sip1.html usr/www/all/html/de/fon/sip1.html
+--- usr.orig/www/all/html/de/fon/sip1.html	2007-03-13 16:16:49.000000000 +0100
++++ usr/www/all/html/de/fon/sip1.html	2007-05-09 23:18:46.000000000 +0200
+@@ -62,6 +62,20 @@
+ 						<option value="TOnline">$var:Text12</option>
+ 						<option value="Webde">$var:Text11</option>
+ `?>
++<? if eq $var:OEM tcom `
++						<option value="1u1">$var:Text4</option>
++						<option value="AOL">$var:Text9</option>
++						<option value="Arcor">$var:Text7</option>
++						<option value="Dus">$var:Text13</option>
++						<option value="Freenet">$var:Text8</option>
++						<option value="GMX">$var:Text5</option>
++						<option value="Inode">$var:Text55</option>
++						<option value="SuP">$var:Text6</option>
++						<option value="Sipgate">$var:Text10</option>
++						<option value="Strato">$var:Text44</option>
++						<option value="TOnline">$var:Text12</option>
++						<option value="Webde">$var:Text11</option>
++`?>
+ 						<option value="Sonst">$var:Text14</option>
+ 					</select></td>
+ 				</tr>
+diff -burN usr.orig/www/all/html/de/internet/pp_user.html usr/www/all/html/de/internet/pp_user.html
+--- usr.orig/www/all/html/de/internet/pp_user.html	2007-03-13 16:16:50.000000000 +0100
++++ usr/www/all/html/de/internet/pp_user.html	2007-05-09 23:19:00.000000000 +0200
+@@ -3,7 +3,7 @@
+ <? include ../html/config.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "Speedport" ?>' ?>
+ <? include ../html/$var:lang/internet/pp_user.inc ?>
+ <head>
+ <title><? echo $var:txt00 ?></title>
+diff -burN usr.orig/www/all/html/de/system/extended.js usr/www/all/html/de/system/extended.js
+--- usr.orig/www/all/html/de/system/extended.js	2007-03-13 16:16:50.000000000 +0100
++++ usr/www/all/html/de/system/extended.js	2007-05-09 23:19:24.000000000 +0200
+@@ -15,6 +15,7 @@
+ <? if eq $var:OEM avm `<? setvariable var:ShowUsePstn 1 ?>` ?>
+ <? if eq $var:OEM freenet `<? setvariable var:ShowUsePstn 1 ?>` ?>
+ <? if eq $var:OEM 1und1 `<? setvariable var:ShowUsePstn 1 ?>` ?>
++<? if eq $var:OEM tcom `<? setvariable var:ShowUsePstn 1 ?>` ?>
+ <? if eq $var:ShowUsePstn 1 `
+ 	jslSetChecked("uiViewPstn", jslGetValue("uiPostPstn") == "1");
+ ` ?>
