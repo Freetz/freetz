@@ -24,6 +24,12 @@ $(BUSYBOX_DIR)/.unpacked: $(DL_DIR)/$(BUSYBOX_SOURCE)
 
 $(BUSYBOX_DIR)/.configured: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
 	cp $(BUSYBOX_CONFIG_FILE) $(BUSYBOX_DIR)/.config
+ifeq ($(DS_TARGET_LFS),y)
+	$(SED) "s/^.*CONFIG_LFS.*/CONFIG_LFS=y/;" $(BUSYBOX_DIR)/.config
+else
+	$(SED) "s/^.*CONFIG_LFS.*/CONFIG_LFS=n/;" $(BUSYBOX_DIR)/.config
+	$(SED) "s/^.*FDISK_SUPPORT_LARGE_DISKS.*/FDISK_SUPPORT_LARGE_DISKS=n/;" $(BUSYBOX_DIR)/.config
+endif
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
@@ -61,6 +67,8 @@ busybox-precompiled: uclibc $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TA
 
 busybox-clean:
 	-$(MAKE) -C $(BUSYBOX_DIR) clean
+	rm -rf $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF) \
+		$(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
 
 busybox-dirclean:
 	rm -rf $(BUSYBOX_DIR)

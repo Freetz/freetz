@@ -62,6 +62,7 @@ zlib-source: $(ZLIB_DIR)/.unpacked
 zlib-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/z{lib,conf}.h
 	rm -rf root/usr/lib/libz*.so* 
 	
 zlib-dirclean:

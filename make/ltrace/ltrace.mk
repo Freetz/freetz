@@ -1,6 +1,4 @@
-LTRACE_VERSION:=0.3.36
-# Currently no patch available for this version
-# LTRACE_VERSION:=0.4
+LTRACE_VERSION:=0.4
 LTRACE_SOURCE:=ltrace_$(LTRACE_VERSION).orig.tar.gz
 LTRACE_SITE:=http://ftp.debian.org/debian/pool/main/l/ltrace
 LTRACE_DIR:=$(SOURCE_DIR)/ltrace-$(LTRACE_VERSION)
@@ -18,9 +16,9 @@ $(DL_DIR)/$(LTRACE_PKG_SOURCE):
 
 $(LTRACE_DIR)/.unpacked: $(DL_DIR)/$(LTRACE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LTRACE_SOURCE)
-	for i in $(LTRACE_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(LTRACE_DIR) -p0 < $$i; \
-	done
+#	for i in $(LTRACE_MAKE_DIR)/patches/*.patch; do \
+#		patch -d $(LTRACE_DIR) -p0 < $$i; \
+#	done
 	touch $@
 
 $(LTRACE_DIR)/.configured: $(LTRACE_DIR)/.unpacked

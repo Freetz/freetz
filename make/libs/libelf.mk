@@ -1,4 +1,4 @@
-LIBELF_VERSION:=0.8.5
+LIBELF_VERSION:=0.8.9
 LIBELF_SOURCE:=libelf-$(LIBELF_VERSION).tar.gz
 LIBELF_SITE:=http://www.mr511.de/software
 LIBELF_DIR:=$(SOURCE_DIR)/libelf-$(LIBELF_VERSION)
@@ -24,6 +24,7 @@ $(LIBELF_DIR)/.configured: $(LIBELF_DIR)/.unpacked
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		LDSHARED="$(TARGET_CC) -static-libgcc" \
+		mr_cv_working_memmove=yes \
 		mr_cv_target_elf=yes \
 		libelf_64bit=yes \
 		libelf_cv_struct_elf64_ehdr=yes \
@@ -52,21 +53,19 @@ $(LIBELF_DIR)/.configured: $(LIBELF_DIR)/.unpacked
 		$(DISABLE_LARGEFILE) \
 		--enable-shared \
 		--enable-static \
-		--enable-elf64=yes \
 	);
 	touch $@
 
 $(LIBELF_DIR)/.compiled: $(LIBELF_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(LIBELF_DIR) -j1 \
-		$(TARGET_CONFIGURE_OPTS) 
+		$(TARGET_CONFIGURE_OPTS)  -C $(LIBELF_DIR)
+		
 	touch $@
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so: $(LIBELF_DIR)/.compiled
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(LIBELF_DIR) -j1 \
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
 		instroot="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		all install
+		-C $(LIBELF_DIR) install
 	touch -c $@
 
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
@@ -89,4 +88,3 @@ libelf-clean:
 
 libelf-dirclean:
 	rm -rf $(LIBELF_DIR)
-

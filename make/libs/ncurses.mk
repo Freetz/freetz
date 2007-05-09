@@ -61,14 +61,13 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.unpacked
 	touch $@
 
 $(NCURSES_DIR)/.compiled: $(NCURSES_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(NCURSES_DIR) \
-		$(TARGET_CONFIGURE_OPTS) \
-		libs
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
+		-C $(NCURSES_DIR) $(TARGET_CONFIGURE_OPTS) \
+		libs panel menu form headers
 	touch $@
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so: $(NCURSES_DIR)/.compiled
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
 		-C $(NCURSES_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install.libs install.data

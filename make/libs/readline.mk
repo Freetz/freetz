@@ -19,6 +19,7 @@ $(READLINE_DIR)/.configured: $(READLINE_DIR)/.unpacked
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
 		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		bash_cv_func_sigsetjmp=yes \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -36,12 +37,6 @@ $(READLINE_DIR)/.configured: $(READLINE_DIR)/.unpacked
 		--localstatedir=/var \
 		--mandir=/usr/share/man \
 		--sbindir=/usr/sbin \
-		--enable-shared \
-		--enable-static \
-		--disable-multibyte \
-		--without-purify \
-		--with-curses \
-		$(DISABLE_LARGEFILE) \
 	);
 	touch $@
 
@@ -82,9 +77,8 @@ endif
 readline-source: $(READLINE_DIR)/.unpacked
 
 readline-clean:
+	$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" -C $(READLINE_DIR) uninstall
 	-$(MAKE) -C $(READLINE_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*
 	rm -rf root/usr/lib/libreadline*.so*
 	rm -rf root/usr/lib/libhistory*.so*
 

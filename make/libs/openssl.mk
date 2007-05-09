@@ -36,25 +36,15 @@ $(OPENSSL_DIR)/.configured: $(OPENSSL_DIR)/.unpacked
 	touch $@
 
 $(OPENSSL_DIR)/.compiled: $(OPENSSL_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(OPENSSL_DIR) \
-		MAKEDEPPROG="$(TARGET_CC)" \
-		depend
-	PATH=$(TARGET_TOOLCHAIN_PATH) SHARED_LDFLAGS=-static-libgcc $(MAKE) \
-		-C $(OPENSSL_DIR) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) SHARED_LDFLAGS=-static-libgcc $(MAKE1) \
 		CC="$(TARGET_CC)" \
+		-C $(OPENSSL_DIR) \
 		AR="$(TARGET_CROSS)ar r" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
-		all
-	PATH=$(TARGET_TOOLCHAIN_PATH) SHARED_LDFLAGS=-static-libgcc $(MAKE) \
-		-C $(OPENSSL_DIR) \
-		CC="$(TARGET_CC)" \
-		AR="$(TARGET_CROSS)ar r" \
-		RANLIB="$(TARGET_CROSS)ranlib" \
-		build-shared
+		all build-shared
 	# Work around openssl build bug to link libssl.so with libcrypto.so.
 	-rm $(OPENSSL_DIR)/libssl.so.*.*.*
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
 		-C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \
 		CCOPTS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
@@ -88,10 +78,10 @@ openssl-source: $(OPENSSL_DIR)/.unpacked
 
 openssl-clean:
 	-$(MAKE) -C $(OPENSSL_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl* 
-	rm -rf root/usr/lib/libssl*.so*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto* 
-	rm -rf root/usr/lib/libcrypto*.so*
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/openssl
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl* root/usr/lib/libssl*.so*
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto* root/usr/lib/libcrypto*.so*
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/openssl
 	
 openssl-dirclean:
 	rm -rf $(OPENSSL_DIR)

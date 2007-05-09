@@ -1,8 +1,8 @@
 ifeq ($(strip $(DS_TARGET_CCACHE)),y)
-TARGET_TOOLCHAIN:=binutils gcc ccache gdb
-else
-TARGET_TOOLCHAIN:=binutils gcc gdb
+	CCACHE:=ccache
 endif
+
+TARGET_TOOLCHAIN:=binutils gcc $(CCACHE) gdb
 
 include $(TOOLCHAIN_DIR)/make/target/*/*.mk
 
@@ -12,11 +12,16 @@ $(TARGET_TOOLCHAIN_DIR):
 
 $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@
+	@mkdir -p $@/bin
 	@mkdir -p $@/lib
 	@mkdir -p $@/include
+	@mkdir -p $@/usr
 	@mkdir -p $@/$(REAL_GNU_TARGET_NAME)
-	@ln -sf ../lib $@/$(REAL_GNU_TARGET_NAME)/lib
-#moved from target-toolchain because link is needed for uclibc-build
+	@ln -snf ../include $@/usr/include
+	@ln -snf ../lib $@/usr/lib
+	@ln -snf ../lib $@/$(REAL_GNU_TARGET_NAME)/lib
+	#moved from target-toolchain because link is needed for uclibc-build
+	#TODO: prehaps the next 2 Steps schould be done somewhere else?
 	@rm -f $(TOOLCHAIN_DIR)/target
 	@ln -s $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TOOLCHAIN_DIR)/target
 

@@ -1,3 +1,5 @@
+ifeq ($(DS_BUILD_TOOLCHAIN),y)
+
 UCLIBC_VERSION:=$(TARGET_TOOLCHAIN_UCLIBC_VERSION)
 UCLIBC_DIR:=$(TARGET_TOOLCHAIN_DIR)/uClibc-$(UCLIBC_VERSION)
 UCLIBC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/uclibc
@@ -22,13 +24,29 @@ $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE)
 	done
 	touch $@
 
-$(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.unpacked | kernel-configured
+$(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked | kernel-configured
 	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(AVM_VERSION) $(UCLIBC_DIR)/.config
 	sed -i -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(LINUX_HEADERS_DIR)\",g' $(UCLIBC_DIR)/.config
 	sed -i -e 's,^CROSS=.*,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS),g' $(UCLIBC_DIR)/Rules.mak
+ifeq ($(DS_TARGET_LFS),y)
+	$(SED) 's,.*UCLIBC_HAS_LFS.*,UCLIBC_HAS_LFS=y,g' $(UCLIBC_DIR)/.config
+else
+	$(SED) 's,.*UCLIBC_HAS_LFS.*,UCLIBC_HAS_LFS=n,g' $(UCLIBC_DIR)/.config
+	$(SED) '/.*UCLIBC_HAS_FOPEN_LARGEFILE_MODE.*/d' $(UCLIBC_DIR)/.config
+	echo "# UCLIBC_HAS_FOPEN_LARGEFILE_MODE is not set" >> $(UCLIBC_DIR)/.config
+endif
+	$(SED) 's,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y,g' $(UCLIBC_DIR)/.config
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/lib
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/lib
+	$(MAKE1) -C $(UCLIBC_DIR) \
+		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		DEVEL_PREFIX=/usr/ \
+		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		HOSTCC="$(HOSTCC)" \
+		oldconfig
+
+$(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
 		DEVEL_PREFIX=/usr/ \
@@ -115,3 +133,5 @@ $(ROOT_DIR)/usr/bin/ldd:
 	touch -c $(ROOT_DIR)/usr/bin/ldd	    
 
 .PHONY: uclibc-configured uclibc
+
+endif
