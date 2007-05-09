@@ -24,6 +24,7 @@ choice
 	
 	config DS_TYPE_FON
 		select DS_AVM_VERSION_04_30
+		select DS_LIB_libgcc_s
 		bool "Fon"
 		
 	config DS_TYPE_FON_5050
@@ -374,6 +375,7 @@ config DS_HAS_USB
 					   DS_TYPE_FON_WLAN_7050 
 	default n			if DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
+					   DS_TYPE_FON_WLAN_7150 || \
 					   DS_TYPE_FON_WLAN_7170 || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
