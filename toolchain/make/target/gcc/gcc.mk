@@ -75,7 +75,7 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked
 	);
 	mkdir -p $(GCC_BUILD_DIR1)/gcc
 	cp $(GCC_DIR)/gcc/defaults.h $(GCC_BUILD_DIR1)/gcc/defaults.h
-	$(SED)-i -e 's/\.eh_frame/.text/' $(GCC_BUILD_DIR1)/gcc/defaults.h
+	$(SED) -i -e 's/\.eh_frame/.text/' $(GCC_BUILD_DIR1)/gcc/defaults.h
 	touch $@
 
 $(GCC_BUILD_DIR1)/.compiled: $(GCC_BUILD_DIR1)/.configured
