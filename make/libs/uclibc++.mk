@@ -15,9 +15,9 @@ $(UCLIBCXX_DIR)/.unpacked: $(DL_DIR)/$(UCLIBCXX_SOURCE)
 $(UCLIBCXX_DIR)/.configured: $(UCLIBCXX_DIR)/.unpacked
 	cp $(UCLIBCXX_MAKE_DIR)/Config.uclibc++ $(UCLIBCXX_DIR)/.config
 ifeq ($(DS_TARGET_LFS),y)
-	sed -i -e 's,^.*UCLIBCXX_HAS_LFS.*,UCLIBCXX_HAS_LFS=y,g' $(UCLIBCXX_DIR)/.config
+	$(SED) -i -e 's,^.*UCLIBCXX_HAS_LFS.*,UCLIBCXX_HAS_LFS=y,g' $(UCLIBCXX_DIR)/.config
 else
-	sed -i -e 's,^.*UCLIBCXX_HAS_LFS.*,UCLIBCXX_HAS_LFS=n,g' $(UCLIBCXX_DIR)/.config
+	$(SED) -i -e 's,^.*UCLIBCXX_HAS_LFS.*,UCLIBCXX_HAS_LFS=n,g' $(UCLIBCXX_DIR)/.config
 endif
 	touch $@
 

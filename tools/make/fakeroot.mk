@@ -14,7 +14,7 @@ fakeroot-source: $(DL_DIR)/$(FAKEROOT_SOURCE)
 $(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE)
 	@rm -rf $(FAKEROOT_DIR) && mkdir -p $(FAKEROOT_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FAKEROOT_SOURCE)
-	sed "s,getopt --version,getopt --version 2>/dev/null," \
+	$(SED) "s,getopt --version,getopt --version 2>/dev/null," \
 		$(FAKEROOT_DIR)/scripts/fakeroot.in
 	for i in $(FAKEROOT_MAKE_DIR)/patches/*.fakeroot.patch; do \
 		patch -d $(FAKEROOT_DIR) -p0 < $$i; \
@@ -37,9 +37,9 @@ $(FAKEROOT_DIR)/faked: $(FAKEROOT_DIR)/.configured
 
 $(TOOLS_DIR)/usr/bin/fakeroot: $(FAKEROOT_DIR)/faked
 	$(MAKE) DESTDIR=$(FAKEROOT_DESTDIR) -C $(FAKEROOT_DIR) install
-	sed -i -e 's,^PREFIX=.*,PREFIX=$(FAKEROOT_DESTDIR)/usr,g' $(TOOLS_DIR)/usr/bin/fakeroot
-	sed -i -e 's,^BINDIR=.*,BINDIR=$(FAKEROOT_DESTDIR)/usr/bin,g' $(TOOLS_DIR)/usr/bin/fakeroot
-	sed -i -e 's,^PATHS=.*,PATHS=$(FAKEROOT_DESTDIR)/usr/lib,g' $(TOOLS_DIR)/usr/bin/fakeroot
+	$(SED) -i -e 's,^PREFIX=.*,PREFIX=$(FAKEROOT_DESTDIR)/usr,g' $(TOOLS_DIR)/usr/bin/fakeroot
+	$(SED) -i -e 's,^BINDIR=.*,BINDIR=$(FAKEROOT_DESTDIR)/usr/bin,g' $(TOOLS_DIR)/usr/bin/fakeroot
+	$(SED) -i -e 's,^PATHS=.*,PATHS=$(FAKEROOT_DESTDIR)/usr/lib,g' $(TOOLS_DIR)/usr/bin/fakeroot
 
 fakeroot: $(TOOLS_DIR)/usr/bin/fakeroot
 

@@ -19,7 +19,7 @@ $(OPENSSL_DIR)/.unpacked: $(DL_DIR)/$(OPENSSL_SOURCE)
 	touch $@
 
 $(OPENSSL_DIR)/.configured: $(OPENSSL_DIR)/.unpacked
-	sed -i -e 's/DS_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
+	$(SED) -i -e 's/DS_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
 	( cd $(OPENSSL_DIR); \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		./Configure linux-ds-mod \
