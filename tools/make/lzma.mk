@@ -1,32 +1,28 @@
-LZMA_VERSION:=406
-LZMA_SOURCE:=lzma$(LZMA_VERSION).zip
-LZMA_SITE:=http://www.7-zip.org/dl
+LZMA_VERSION:=443
+LZMA_SOURCE:=lzma$(LZMA_VERSION).tar.bz2
+LZMA_SITE:=http://mesh.dl.sourceforge.net/sourceforge/sevenzip
 LZMA_DIR:=$(SOURCE_DIR)/lzma$(LZMA_VERSION)
 LZMA_MAKE_DIR:=$(TOOLS_DIR)/make
-LZMA_ALONE_DIR:=$(LZMA_DIR)/SRC/7zip/Compress/LZMA_Alone
-LZMA_LIB_DIR:=$(LZMA_DIR)/SRC/7zip/Compress/LZMA_Lib
+LZMA_ALONE_DIR:=$(LZMA_DIR)/C/7zip/Compress/LZMA_Alone
+LZMA_LIB_DIR:=$(LZMA_DIR)/C/7zip/Compress/LZMA_Lib
 
 
 $(DL_DIR)/$(LZMA_SOURCE):
 	wget -P $(DL_DIR) $(LZMA_SITE)/$(LZMA_SOURCE)
 
 $(LZMA_DIR)/.unpacked: $(DL_DIR)/$(LZMA_SOURCE)
-	@rm -rf $(LZMA_DIR) && mkdir -p $(LZMA_DIR)
-	unzip -q $(DL_DIR)/$(LZMA_SOURCE) -d $(LZMA_DIR)
-	chmod -R +w $(LZMA_DIR)
-	$(SED) -e 's/\x0D//' -i $(LZMA_DIR)/SRC/7zip/Compress/LZMA/LZMADecoder.*
+	mkdir -p $(LZMA_DIR)
+	tar -C $(LZMA_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LZMA_SOURCE)
 	for i in $(LZMA_MAKE_DIR)/patches/*.lzma.patch; do \
-		patch -d $(LZMA_DIR) -p0 < $$i; \
+		patch -d $(LZMA_DIR) -p1 < $$i; \
 	done
 	touch $@
 
 $(LZMA_ALONE_DIR)/lzma: $(LZMA_DIR)/.unpacked
-	$(MAKE) CXX="$(TOOLS_CXX) -O3 -Wall" \
-		-C $(LZMA_ALONE_DIR)
+	$(MAKE) -f makefile.gcc -C $(LZMA_ALONE_DIR)
 
 $(LZMA_LIB_DIR)/liblzma.a: $(LZMA_DIR)/.unpacked
-	$(MAKE) CXX="$(TOOLS_CXX) -O3 -Wall" AR="$(TOOLS_AR)" \
-		-C $(LZMA_LIB_DIR)
+	$(MAKE) -C $(LZMA_LIB_DIR)
 	touch -c $@
 
 $(LZMA_DIR)/liblzma.a: $(LZMA_LIB_DIR)/liblzma.a
