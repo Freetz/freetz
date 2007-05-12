@@ -1,4 +1,4 @@
-IPTABLES_VERSION:=1.3.6
+IPTABLES_VERSION:=1.3.7
 IPTABLES_SOURCE:=iptables-$(IPTABLES_VERSION).tar.bz2
 IPTABLES_SITE:=http://netfilter.org/projects/iptables/files
 IPTABLES_DIR:=$(SOURCE_DIR)/iptables-$(IPTABLES_VERSION)
@@ -15,7 +15,7 @@ $(DL_DIR)/$(IPTABLES_SOURCE):
 $(IPTABLES_DIR)/.unpacked $(IPTABLES_DIR_SYMLINK)/.unpacked: $(DL_DIR)/$(IPTABLES_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(IPTABLES_SOURCE)
 	for i in $(IPTABLES_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(IPTABLES_DIR) -p0 < $$i; \
+		patch -d $(IPTABLES_DIR) -p1 < $$i; \
 	done
 	chmod +x $(IPTABLES_DIR)/extensions/.*-test
 	touch $@
