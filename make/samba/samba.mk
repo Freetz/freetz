@@ -5,8 +5,8 @@ SAMBA_SITE:=ftp://se.samba.org/pub/samba/stable
 SAMBA_DIR:=$(SOURCE_DIR)/samba-$(SAMBA_VERSION)
 SAMBA_MAKE_DIR:=$(MAKE_DIR)/samba
 SAMBA_TARGET_DIR:=$(PACKAGES_DIR)/samba-$(SAMBA_VERSION)/root/usr/sbin
-SAMBA_TARGET_SMBD_BINARY:=smbd
-SAMBA_TARGET_NMBD_BINARY:=nmbd
+SAMBA_TARGET_SMBD_BINARY:=source/bin/smbd
+SAMBA_TARGET_NMBD_BINARY:=source/bin/nmbd
 SAMBA_PKG_VERSION:=0.1
 SAMBA_PKG_SOURCE:=samba-$(SAMBA_VERSION)-dsmod-$(SAMBA_PKG_VERSION).tar.bz2
 SAMBA_PKG_SITE:=http://www.eiband.info/dsmod
@@ -95,7 +95,7 @@ $(SAMBA_DIR)/.configured: $(SAMBA_DIR)/.unpacked
 	);
 	touch $@
 
-$(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_NMBD_BINARY) : $(SAMBA_DIR)/.configured
+$(SAMBA_DIR)/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/$(SAMBA_TARGET_NMBD_BINARY) : $(SAMBA_DIR)/.configured
 	$(MAKE1) -C $(SAMBA_DIR)/source \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC=$(TARGET_CC) \
@@ -111,10 +111,10 @@ samba: $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 samba-package: $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(SAMBA_PKG_SOURCE) samba-$(SAMBA_VERSION)
 
-samba-precompiled: uclibc $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_NMBD_BINARY) samba
+samba-precompiled: uclibc $(SAMBA_DIR)/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/$(SAMBA_TARGET_NMBD_BINARY) samba
 	$(TARGET_STRIP) $(SAMBA_DIR)/source/bin/*
-	cp $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_TARGET_DIR)/
-	cp $(SAMBA_DIR)/source/bin/$(SAMBA_TARGET_NMBD_BINARY) $(SAMBA_TARGET_DIR)/
+	cp $(SAMBA_DIR)/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_TARGET_DIR)/
+	cp $(SAMBA_DIR)/$(SAMBA_TARGET_NMBD_BINARY) $(SAMBA_TARGET_DIR)/
 
 samba-source: $(SAMBA_DIR)/.unpacked $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 

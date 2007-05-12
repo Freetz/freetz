@@ -9,8 +9,8 @@ BIRD_PKG_NAME:=bird-$(BIRD_VERSION)
 BIRD_PKG_SOURCE:=bird-$(BIRD_VERSION)-dsmod-$(BIRD_PKG_VERSION).tar.bz2
 BIRD_TARGET_DIR:=$(PACKAGES_DIR)/$(BIRD_PKG_NAME)/root/usr/sbin
 BIRD_TARGET_BIRD_BINARY:=bird
-BIRD_TARGET_BIRDC_BINARY:=birdc
 ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
+BIRD_TARGET_BIRDC_BINARY:=birdc
 BIRD_CLIENT:=--enable-client
 else
 BIRD_CLIENT:=--disable-client
@@ -73,13 +73,8 @@ $(BIRD_DIR)/.configured: $(BIRD_DIR)/.unpacked
 	);
 	touch $@
 
-$(BIRD_DIR)/.built: $(BIRD_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		LD="$(TARGET_LD)" \
-		$(MAKE1) -C $(BIRD_DIR)
-	touch $@
-
-$(BIRD_DIR)/.installed: $(BIRD_DIR)/.built
+$(BIRD_DIR)/$(BIRD_TARGET_BIRD_BINARY) $(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY): $(BIRD_DIR)/.configured
+	PATH="$(TARGET_PATH)" LD="$(TARGET_LD)" $(MAKE1) -C $(BIRD_DIR)
 	touch $@
 
 $(PACKAGES_DIR)/.$(BIRD_PKG_NAME): $(DL_DIR)/$(BIRD_PKG_SOURCE)
@@ -91,7 +86,8 @@ bird: $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 bird-package: $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(BIRD_PKG_SOURCE) $(BIRD_PKG_NAME)
 
-bird-precompiled: uclibc ncurses-precompiled readline-precompiled $(BIRD_DIR)/.installed bird
+bird-precompiled: uclibc ncurses-precompiled readline-precompiled $(BIRD_DIR)/$(BIRD_TARGET_BIRD_BINARY) \
+					$(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY) bird
 	$(TARGET_STRIP) $(BIRD_DIR)/$(BIRD_TARGET_BIRD_BINARY)
 ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
 	$(TARGET_STRIP) $(BIRD_DIR)/$(BIRD_TARGET_BIRDC_BINARY)
@@ -106,10 +102,6 @@ bird-source: $(BIRD_DIR)/.unpacked $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 
 bird-clean:
 	-$(MAKE) -C $(BIRD_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(BIRD_PKG_SOURCE)
-	rm -f $(BIRD_DIR)/.configured
-	rm -f $(BIRD_DIR)/.built
-	rm -f $(BIRD_DIR)/.installed
 	rm -f $(PACKAGES_BUILD_DIR)/$(BIRD_PKG_SOURCE)
 
 bird-dirclean:

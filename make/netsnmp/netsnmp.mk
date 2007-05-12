@@ -135,12 +135,10 @@ $(NETSNMP_DIR)/.configured: $(NETSNMP_DIR)/.unpacked
 	);
 	touch $@
 
-$(NETSNMP_DIR)/.built: $(NETSNMP_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-	$(MAKE1) -C $(NETSNMP_DIR)
-	touch $@
+$(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY): $(NETSNMP_DIR)/.configured
+	PATH="$(TARGET_PATH)" $(MAKE1) -C $(NETSNMP_DIR)
 
-$(NETSNMP_DIR)/.installed: $(NETSNMP_DIR)/.built
+$(NETSNMP_DIR)/.installed: $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY)
 	mkdir $(NETSNMP_DIR)/targetroot
 	$(MAKE) -C $(NETSNMP_DIR) \
 		INSTALL_PREFIX="`pwd`/$(NETSNMP_DIR)/targetroot" \
@@ -168,6 +166,7 @@ netsnmp-source: $(NETSNMP_DIR)/.unpacked $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 netsnmp-clean:
 	-$(MAKE) -C $(NETSNMP_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(NETSNMP_PKG_SOURCE)
+	rm -f $(NETSNMP_DIR)/.installed
 
 netsnmp-dirclean:
 	rm -rf $(NETSNMP_DIR)

@@ -3,7 +3,7 @@ HASERL_SOURCE:=haserl-$(HASERL_VERSION).tar.gz
 HASERL_SITE:=http://mesh.dl.sourceforge.net/sourceforge/haserl
 HASERL_DIR:=$(SOURCE_DIR)/haserl-$(HASERL_VERSION)
 HASERL_TARGET_DIR:=root/usr/bin
-HASERL_TARGET_BINARY:=haserl
+HASERL_TARGET_BINARY:=src/haserl
 
 
 $(DL_DIR)/$(HASERL_SOURCE):
@@ -41,14 +41,14 @@ $(HASERL_DIR)/.configured: $(HASERL_DIR)/.unpacked
 	    );
 	touch $@
 
-$(HASERL_DIR)/src/$(HASERL_TARGET_BINARY): $(HASERL_DIR)/.configured
+$(HASERL_DIR)/$(HASERL_TARGET_BINARY): $(HASERL_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) CROSS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(HASERL_DIR)
 
-haserl-precompiled: uclibc $(HASERL_DIR)/src/$(HASERL_TARGET_BINARY)
-	$(TARGET_STRIP) $(HASERL_DIR)/src/$(HASERL_TARGET_BINARY)
-	cp $(HASERL_DIR)/src/$(HASERL_TARGET_BINARY) $(HASERL_TARGET_DIR)/
+haserl-precompiled: uclibc $(HASERL_DIR)/$(HASERL_TARGET_BINARY)
+	$(TARGET_STRIP) $(HASERL_DIR)/$(HASERL_TARGET_BINARY)
+	cp $(HASERL_DIR)/$(HASERL_TARGET_BINARY) $(HASERL_TARGET_DIR)/
 
 haserl-source: $(HASERL_DIR)/.unpacked
 

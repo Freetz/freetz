@@ -3,7 +3,7 @@ INADYN_SOURCE:=inadyn.v$(INADYN_VERSION).zip
 INADYN_SITE:=http://inadyn.ina-tech.net
 INADYN_DIR:=$(SOURCE_DIR)/inadyn-$(INADYN_VERSION)
 INADYN_MAKE_DIR:=$(MAKE_DIR)/inadyn
-INADYN_TARGET_BINARY:=inadyn
+INADYN_TARGET_BINARY:=inadyn/bin/linux/inadyn
 INADYN_PKG_VERSION:=0.3
 INADYN_PKG_SITE:=http://www.stieber-online.de/ds-mod
 INADYN_PKG_NAME:=inadyn-$(INADYN_VERSION)
@@ -23,12 +23,10 @@ $(INADYN_DIR)/.unpacked: $(DL_DIR)/$(INADYN_SOURCE)
 	done
 	touch $@
 
-$(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY): $(INADYN_DIR)/.unpacked
-	PATH="$(TARGET_PATH)" \
-	$(MAKE) CC="mipsel-linux-gcc" STRIP="mipsel-linux-strip" \
-	CFLAGS="$(TARGET_CFLAGS)" \
-	LDFLAGS="-static-libgcc" \
-	-C $(INADYN_DIR)/inadyn 
+$(INADYN_DIR)/$(INADYN_TARGET_BINARY): $(INADYN_DIR)/.unpacked
+	PATH="$(TARGET_PATH)" $(MAKE) CC="mipsel-linux-gcc" \
+		STRIP="mipsel-linux-strip" CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="-static-libgcc" -C $(INADYN_DIR)/inadyn 
 
 $(PACKAGES_DIR)/.$(INADYN_PKG_NAME): $(DL_DIR)/$(INADYN_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(INADYN_PKG_SOURCE)
@@ -36,9 +34,9 @@ $(PACKAGES_DIR)/.$(INADYN_PKG_NAME): $(DL_DIR)/$(INADYN_PKG_SOURCE)
 
 inadyn: $(PACKAGES_DIR)/.$(INADYN_PKG_NAME)
 
-inadyn-precompiled: uclibc $(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY) inadyn
-	$(TARGET_STRIP) $(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY)
-	cp $(INADYN_DIR)/inadyn/bin/linux/$(INADYN_TARGET_BINARY) $(INADYN_TARGET_DIR)/
+inadyn-precompiled: uclibc $(INADYN_DIR)/$(INADYN_TARGET_BINARY) inadyn
+	$(TARGET_STRIP) $(INADYN_DIR)/$(INADYN_TARGET_BINARY)
+	cp $(INADYN_DIR)/$(INADYN_TARGET_BINARY) $(INADYN_TARGET_DIR)/
 
 inadyn-package: $(PACKAGES_DIR)/.$(INADYN_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(INADYN_PKG_SOURCE) $(INADYN_PKG_NAME) 

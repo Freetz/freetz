@@ -4,7 +4,7 @@ LUA_SITE:=http://www.lua.org/ftp
 LUA_DIR:=$(SOURCE_DIR)/lua-$(LUA_VERSION)
 LUA_MAKE_DIR:=$(MAKE_DIR)/lua
 LUA_TARGET_DIR:=$(PACKAGES_DIR)/lua-$(LUA_VERSION)/root/usr/bin
-LUA_TARGET_BINARY:=lua
+LUA_TARGET_BINARY:=src/lua
 LUA_PKG_SOURCE:=lua-$(LUA_VERSION)-dsmod.tar.bz2
 LUA_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
@@ -21,7 +21,7 @@ $(LUA_DIR)/.unpacked: $(DL_DIR)/$(LUA_SOURCE)
 	done
 	touch $@
 
-$(LUA_DIR)/src/$(LUA_TARGET_BINARY): $(LUA_DIR)/.unpacked
+$(LUA_DIR)/$(LUA_TARGET_BINARY): $(LUA_DIR)/.unpacked
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(LUA_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
@@ -43,9 +43,9 @@ lua-package: $(PACKAGES_DIR)/.lua-$(LUA_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LUA_PKG_SOURCE) lua-$(LUA_VERSION)
 
 
-lua-precompiled: uclibc $(LUA_DIR)/src/$(LUA_TARGET_BINARY) lua
-	$(TARGET_STRIP) $(LUA_DIR)/src/$(LUA_TARGET_BINARY)
-	cp $(LUA_DIR)/src/$(LUA_TARGET_BINARY) $(LUA_TARGET_DIR)/
+lua-precompiled: uclibc $(LUA_DIR)/$(LUA_TARGET_BINARY) lua
+	$(TARGET_STRIP) $(LUA_DIR)/$(LUA_TARGET_BINARY)
+	cp $(LUA_DIR)/$(LUA_TARGET_BINARY) $(LUA_TARGET_DIR)/
 
 lua-source: $(LUA_DIR)/.unpacked $(PACKAGES_DIR)/.lua-$(LUA_VERSION)
 

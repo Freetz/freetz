@@ -4,7 +4,7 @@ MC_SITE:=http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/old
 MC_DIR:=$(SOURCE_DIR)/mc-$(MC_VERSION)
 MC_MAKE_DIR:=$(MAKE_DIR)/mc
 MC_TARGET_DIR:=$(PACKAGES_DIR)/mc-$(MC_VERSION)/root/usr/bin
-MC_TARGET_BINARY:=mc
+MC_TARGET_BINARY:=src/mc
 MC_PKG_VERSION:=0.2
 MC_PKG_SOURCE:=mc-$(MC_VERSION)-dsmod-$(MC_PKG_VERSION).tar.bz2
 MC_PKG_SITE:=http://www.eiband.info/dsmod
@@ -53,7 +53,7 @@ $(MC_DIR)/.configured: $(MC_DIR)/.unpacked
 	);
 	touch $@
 
-$(MC_DIR)/src/$(MC_TARGET_BINARY): $(MC_DIR)/.configured
+$(MC_DIR)/$(MC_TARGET_BINARY): $(MC_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(MC_DIR)
 
 $(PACKAGES_DIR)/.mc-$(MC_VERSION): $(DL_DIR)/$(MC_PKG_SOURCE)
@@ -65,10 +65,10 @@ mc: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
 mc-package: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(MC_PKG_SOURCE) mc-$(MC_VERSION)
 
-mc-precompiled: uclibc $(MC_DIR)/src/$(MC_TARGET_BINARY) mc
-	$(TARGET_STRIP) $(MC_DIR)/src/$(MC_TARGET_BINARY)
+mc-precompiled: uclibc $(MC_DIR)/$(MC_TARGET_BINARY) mc
+	$(TARGET_STRIP) $(MC_DIR)/$(MC_TARGET_BINARY)
 	$(TARGET_STRIP) $(MC_DIR)/src/cons.saver
-	cp $(MC_DIR)/src/$(MC_TARGET_BINARY) $(MC_TARGET_DIR)/$(MC_TARGET_BINARY).bin
+	cp $(MC_DIR)/$(MC_TARGET_BINARY) $(MC_TARGET_DIR)/mc.bin
 	cp $(MC_DIR)/src/cons.saver $(MC_TARGET_DIR)/cons.saver
 
 mc-source: $(MC_DIR)/.unpacked $(PACKAGES_DIR)/.mc-$(MC_VERSION)

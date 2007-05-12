@@ -4,7 +4,7 @@ CLASSPATH_SITE:=ftp://ftp.gnu.org/gnu/classpath
 CLASSPATH_DIR:=$(SOURCE_DIR)/classpath-$(CLASSPATH_VERSION)
 CLASSPATH_MAKE_DIR:=$(MAKE_DIR)/classpath
 CLASSPATH_TARGET_DIR:=$(PACKAGES_DIR)/classpath-$(CLASSPATH_VERSION)/root/usr/share/classpath
-CLASSPATH_TARGET_BINARY:=mini.jar #glibj.zip
+CLASSPATH_TARGET_BINARY:=lib/mini.jar #glibj.zip
 CLASSPATH_PKG_VERSION:=0.1
 CLASSPATH_PKG_SOURCE:=CLASSPATH-$(CLASSPATH_VERSION)-dsmod-$(CLASSPATH_PKG_VERSION).tar.bz2
 CLASSPATH_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
@@ -47,10 +47,8 @@ $(CLASSPATH_DIR)/.configured: $(CLASSPATH_DIR)/.unpacked
 	);
 	touch $@
 
-$(CLASSPATH_DIR)/lib/$(CLASSPATH_TARGET_BINARY): $(CLASSPATH_DIR)/.configured
-	( cd $(CLASSPATH_DIR); \
-		make $(TARGET_CONFIGURE_OPTS); \
-	);
+$(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY): $(CLASSPATH_DIR)/.configured
+	make $(TARGET_CONFIGURE_OPTS) -C $(CLASSPATH_DIR)
 	cp $(CLASSPATH_MAKE_DIR)/mini.classlist $(CLASSPATH_DIR)/lib;
 	( cd $(CLASSPATH_DIR)/lib; fastjar -Mcf mini.jar -@ < mini.classlist );
 
@@ -63,15 +61,13 @@ classpath: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
 classpath-package: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CLASSPATH_PKG_SOURCE) classpath-$(CLASSPATH_VERSION)
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so: $(CLASSPATH_DIR)/lib/$(CLASSPATH_TARGET_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(CLASSPATH_DIR)/native/jni \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		install
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so: $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY)
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(CLASSPATH_DIR)/native/jni \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
 	touch -c $@
 
-classpath-precompiled: uclibc $(CLASSPATH_DIR)/lib/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_DIR)/.installed classpath
-	cp $(CLASSPATH_DIR)/lib/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_TARGET_DIR)/
+classpath-precompiled: uclibc $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_DIR)/.installed classpath
+	cp $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_TARGET_DIR)/
 	
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
 $(CLASSPATH_DIR)/.installed:

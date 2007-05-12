@@ -4,7 +4,7 @@ NTFS_SITE:=http://www.ntfs-3g.org/
 NTFS_DIR:=$(SOURCE_DIR)/ntfs-3g-$(NTFS_VERSION)
 NTFS_MAKE_DIR:=$(MAKE_DIR)/ntfs
 NTFS_TARGET_DIR:=$(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)/root/usr/bin
-NTFS_TARGET_BINARY:=ntfs-3g
+NTFS_TARGET_BINARY:=src/.libs/ntfs-3g
 NTFS_PKG_VERSION:=0.1
 NTFS_PKG_SOURCE:=ntfs-$(NTFS_VERSION)-dsmod-$(NTFS_PKG_VERSION).tar.bz2
 NTFS_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
@@ -67,7 +67,7 @@ $(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked
 			--disable-mtab \
 	);
 	
-$(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY): $(NTFS_DIR)/.configured
+$(NTFS_DIR)/$(NTFS_TARGET_BINARY): $(NTFS_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
@@ -82,16 +82,17 @@ ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 ntfs-package: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE) ntfs-$(NTFS_VERSION)
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so: $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY)
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so: $(NTFS_DIR)/$(NTFS_TARGET_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(NTFS_DIR)/libntfs-3g \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	touch -c $@
 
-ntfs-precompiled: uclibc fuse-precompiled ntfs $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so
-	$(TARGET_STRIP) $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY)
-	cp $(NTFS_DIR)/src/.libs/$(NTFS_TARGET_BINARY) $(NTFS_TARGET_DIR)/
+ntfs-precompiled: uclibc fuse-precompiled $(NTFS_DIR)/$(NTFS_TARGET_BINARY) \
+					$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so ntfs
+	$(TARGET_STRIP) $(NTFS_DIR)/$(NTFS_TARGET_BINARY)
+	cp $(NTFS_DIR)/$(NTFS_TARGET_BINARY) $(NTFS_TARGET_DIR)/
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
 			cp -a $(TARGET_MAKE_PATH)/../usr/lib/libntfs*.so* root/usr/lib/
 else

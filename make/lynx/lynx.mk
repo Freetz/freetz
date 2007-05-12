@@ -73,13 +73,8 @@ $(LYNX_DIR)/.configured: $(LYNX_DIR)/.unpacked
 	);
 	touch $@
 
-$(LYNX_DIR)/.built: $(LYNX_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		LD="$(TARGET_LD)" \
-		$(MAKE) -C $(LYNX_DIR)
-	touch $@
-
-$(LYNX_DIR)/.installed: $(LYNX_DIR)/.built
+$(LYNX_DIR)/$(LYNX_TARGET_BINARY): $(LYNX_DIR)/.configured
+	PATH="$(TARGET_PATH)" LD="$(TARGET_LD)" $(MAKE) -C $(LYNX_DIR)
 	touch $@
 
 $(PACKAGES_DIR)/.$(LYNX_PKG_NAME): $(DL_DIR)/$(LYNX_PKG_SOURCE)
@@ -91,7 +86,7 @@ lynx: $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 lynx-package: $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LYNX_PKG_SOURCE) $(LYNX_PKG_NAME)
 
-lynx-precompiled: uclibc ncurses-precompiled $(LYNX_DIR)/.installed lynx
+lynx-precompiled: uclibc ncurses-precompiled $(LYNX_DIR)/$(LYNX_TARGET_BINARY) lynx
 	$(TARGET_STRIP) $(LYNX_DIR)/$(LYNX_TARGET_BINARY)
 	mkdir -p $(LYNX_TARGET_DIR)
 	cp $(LYNX_DIR)/$(LYNX_TARGET_BINARY) $(LYNX_TARGET_DIR)
@@ -101,9 +96,6 @@ lynx-source: $(LYNX_DIR)/.unpacked $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 
 lynx-clean:
 	-$(MAKE) -C $(LYNX_DIR) clean
-	rm -f $(LYNX_DIR)/.installed
-	rm -f $(LYNX_DIR)/.built
-	rm -f $(LYNX_DIR)/.configured
 	rm -f $(PACKAGES_BUILD_DIR)/$(LYNX_PKG_SOURCE)
 
 lynx-dirclean:

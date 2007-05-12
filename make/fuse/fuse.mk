@@ -7,7 +7,7 @@ FUSE_PKG_NAME:=fuse-$(FUSE_VERSION)
 FUSE_PKG_VERSION:=0.1
 FUSE_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 FUSE_PKG_SOURCE:=fuse-$(FUSE_VERSION)-dsmod-$(FUSE_PKG_VERSION).tar.bz2
-FUSE_TARGET_BINARY:=fusermount
+FUSE_TARGET_BINARY:=util/fusermount
 FUSE_TARGET_DIR:=$(PACKAGES_DIR)/$(FUSE_PKG_NAME)/root/usr/sbin
 
 $(DL_DIR)/$(FUSE_SOURCE):
@@ -83,8 +83,8 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so: $(FUSE_DIR)/.compiled
 	touch -c $@
 
 $(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY): $(FUSE_DIR)/.compiled $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
-	$(TARGET_STRIP) $(FUSE_DIR)/util/$(FUSE_TARGET_BINARY)
-	cp $(FUSE_DIR)/util/$(FUSE_TARGET_BINARY) $(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY)
+	$(TARGET_STRIP) $(FUSE_DIR)/$(FUSE_TARGET_BINARY)
+	cp $(FUSE_DIR)/$(FUSE_TARGET_BINARY) $(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY)
 	touch -c $@ 
 
 $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse: $(FUSE_DIR)/.compiled
@@ -103,12 +103,12 @@ fuse fuse-precompiled: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME) \
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libfuse*.so* root/usr/lib/
 
 else
-fuse:	$(PACKAGES_DIR)/.$(FUSE_PKG_NAME) \
-	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so \
-	$(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY) \
-	$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
+fuse:	$(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
 	
-fuse-precompiled: uclibc fuse
+fuse-precompiled: uclibc $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so \
+					$(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY) \
+					$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse \
+					fuse
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* root/usr/lib/
 endif

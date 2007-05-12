@@ -52,14 +52,8 @@ $(CPMACCFG_DIR)/.configured: $(CPMACCFG_DIR)/.unpacked
 	);
 	touch $@
 
-$(CPMACCFG_DIR)/.built: $(CPMACCFG_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		LD="$(TARGET_LD)" \
-		$(MAKE) -C $(CPMACCFG_DIR)
-	touch $@
-
-$(CPMACCFG_DIR)/.installed: $(CPMACCFG_DIR)/.built
-	touch $@
+$(CPMACCFG_DIR)/$(CPMACCFG_TARGET_BINARY): $(CPMACCFG_DIR)/.configured
+	PATH="$(TARGET_PATH)" LD="$(TARGET_LD)" $(MAKE) -C $(CPMACCFG_DIR)
 
 $(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME): $(DL_DIR)/$(CPMACCFG_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CPMACCFG_PKG_SOURCE)
@@ -70,7 +64,7 @@ cpmaccfg: $(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME)
 cpmaccfg-package: $(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CPMACCFG_PKG_SOURCE) $(CPMACCFG_PKG_NAME)
 
-cpmaccfg-precompiled: uclibc $(CPMACCFG_DIR)/.installed cpmaccfg
+cpmaccfg-precompiled: uclibc $(CPMACCFG_DIR)/$(CPMACCFG_TARGET_BINARY) cpmaccfg
 	$(TARGET_STRIP) $(CPMACCFG_DIR)/$(CPMACCFG_TARGET_BINARY)
 	mkdir -p $(CPMACCFG_TARGET_DIR)
 	cp $(CPMACCFG_DIR)/$(CPMACCFG_TARGET_BINARY) $(CPMACCFG_TARGET_DIR)
@@ -79,8 +73,6 @@ cpmaccfg-source: $(CPMACCFG_DIR)/.unpacked $(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME)
 
 cpmaccfg-clean:
 	-$(MAKE) -C $(CPMACCFG_DIR) clean
-	rm -f $(CPMACCFG_DIR)/.installed
-	rm -f $(CPMACCFG_DIR)/.built
 	rm -f $(CPMACCFG_DIR)/.configured
 	rm -f $(PACKAGES_BUILD_DIR)/$(CPMACCFG_PKG_SOURCE)
 

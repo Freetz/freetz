@@ -1,4 +1,3 @@
-http://dfn.dl.sourceforge.net/sourceforge/inotify-tools/inotify-tools-3.8.tar.gz
 INOTIFY_TOOLS_VERSION:=3.8
 INOTIFY_TOOLS_LIB_VERSION:=0.3.1
 INOTIFY_TOOLS_SOURCE:=inotify-tools-$(INOTIFY_TOOLS_VERSION).tar.gz
