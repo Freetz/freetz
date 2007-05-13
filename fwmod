@@ -604,7 +604,7 @@ then
 
 	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}applying patches (${DS_TYPE_STRING}-${DS_TYPE_LANG_STRING})"
 	
-	if [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ]
+	if [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ]  || [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
 	    #no webinterface no patches...
 	    for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh 
@@ -709,7 +709,7 @@ then
 	sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
 	# execute patch scripts
-	if [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ]
+	if [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
 	    for i in "${PATCHES_DIR}/"*.sh
 	    do
