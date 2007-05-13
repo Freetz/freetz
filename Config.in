@@ -90,9 +90,6 @@ choice
 	config DS_TYPE_LANG_DE
 		bool "de - deutsch"
 
-	config DS_TYPE_LANG_EN
-		bool "en - international"
-		depends on DS_TYPE_FON_WLAN_7140
 endchoice
 
 config DS_TYPE_LABOR
@@ -124,21 +121,6 @@ endchoice
 config DS_TYPE_LANG_STRING
 	string
 	default "de"			if DS_TYPE_LANG_DE
-	default "en"			if DS_TYPE_LANG_EN
-
-choice
-
-    prompt "Annex"
-    depends on DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN
-    default DS_TYPE_ANNEX_B
-			
-    config DS_TYPE_ANNEX_A
-        bool "A"
-
-    config DS_TYPE_ANNEX_B
-	bool "B"
-						
-endchoice
 
 config DS_TYPE_STRING
 	string
@@ -636,9 +618,7 @@ config DS_DL_SITE
         default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch"			if DS_TYPE_FON
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5050/firmware"				if DS_TYPE_FON_5050
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7050/firmware"			if DS_TYPE_FON_WLAN_7050
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"		if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/english/annex_a"	if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/english/annex_b"	if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"		if DS_TYPE_FON_WLAN_7140
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"		if DS_TYPE_FON_WLAN_7141
 	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"				if DS_TYPE_FON_WLAN_7150
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"		if DS_TYPE_FON_WLAN_7170
@@ -655,9 +635,7 @@ config DS_DL_SOURCE
 	default "fritz.box_fon_5050.12.04.31.image"			if DS_TYPE_FON_5050
 	default "fritz.box_fon_wlan_7050.14.04.31.image"		if DS_TYPE_FON_WLAN_7050
 	default "fritz.box_fon_wlan_7170.29.04.29.image"		if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
-	default "fritz.box_fon_wlan_7140.30.04.30.image"		if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE
-	default "fritz.box_fon_wlan_7140.annex.a.en.39.04.26.image"	if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
-	default "fritz.box_fon_wlan_7140.en.30.04.26.image"		if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
+	default "fritz.box_fon_wlan_7140.30.04.30.image"		if DS_TYPE_FON_WLAN_7140
 	default "fritz.box_fon_wlan_7141.40.04.30.image"		if DS_TYPE_FON_WLAN_7141
 	default "fritz.fon_7150.annexb.38.04.30.image"				if DS_TYPE_FON_WLAN_7150
 	default "FRITZ.Box_Fon_WLAN_7170_PHONE.AnnexB.29.04.31-6572.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_PHONE
