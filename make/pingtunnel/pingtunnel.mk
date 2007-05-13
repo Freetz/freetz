@@ -42,7 +42,6 @@ pingtunnel-package: $(PACKAGES_DIR)/.pingtunnel-$(PINGTUNNEL_VERSION)
 
 pingtunnel-precompiled: uclibc libpcap-precompiled $(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY) pingtunnel
 	$(TARGET_STRIP) $(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY)
-	mkdir -p $(PINGTUNNEL_TARGET_DIR)/
 	cp $(PINGTUNNEL_DIR)/$(PINGTUNNEL_TARGET_BINARY) $(PINGTUNNEL_TARGET_DIR)/
 
 pingtunnel-source: $(PINGTUNNEL_DIR)/.unpacked $(PACKAGES_DIR)/.pingtunnel-$(PINGTUNNEL_VERSION)

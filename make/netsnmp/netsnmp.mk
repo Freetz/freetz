@@ -137,13 +137,10 @@ $(NETSNMP_DIR)/.configured: $(NETSNMP_DIR)/.unpacked
 
 $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY): $(NETSNMP_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE1) -C $(NETSNMP_DIR)
-
-$(NETSNMP_DIR)/.installed: $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY)
-	mkdir $(NETSNMP_DIR)/targetroot
-	$(MAKE) -C $(NETSNMP_DIR) \
+	PATH="$(TARGET_PATH)" $(MAKE) -C $(NETSNMP_DIR) \
 		INSTALL_PREFIX="`pwd`/$(NETSNMP_DIR)/targetroot" \
 		install
-	touch $@
+	touch -c $@
 
 $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME): $(DL_DIR)/$(NETSNMP_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NETSNMP_PKG_SOURCE)
@@ -154,10 +151,9 @@ netsnmp: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 netsnmp-package: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NETSNMP_PKG_SOURCE) $(NETSNMP_PKG_NAME)
 
-netsnmp-precompiled: uclibc $(NETSNMP_DIR)/.installed netsnmp
+netsnmp-precompiled: uclibc $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY) netsnmp
 	$(TARGET_STRIP) $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY) \
 	                $(NETSNMP_DIR)/$(NETSNMP_TARGET_LIBS)
-	mkdir -p $(NETSNMP_TARGET_DIR) $(NETSNMP_TARGET_LIBDIR)
 	cp $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY) $(NETSNMP_TARGET_DIR)
 	cp -a $(NETSNMP_DIR)/$(NETSNMP_TARGET_LIBS) $(NETSNMP_TARGET_LIBDIR)
 
@@ -166,7 +162,6 @@ netsnmp-source: $(NETSNMP_DIR)/.unpacked $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 netsnmp-clean:
 	-$(MAKE) -C $(NETSNMP_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(NETSNMP_PKG_SOURCE)
-	rm -f $(NETSNMP_DIR)/.installed
 
 netsnmp-dirclean:
 	rm -rf $(NETSNMP_DIR)

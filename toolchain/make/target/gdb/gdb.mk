@@ -163,13 +163,13 @@ $(GDB_HOST_DIR)/gdb/gdb: $(GDB_HOST_DIR)/.configured
 	$(MAKE) -C $(GDB_HOST_DIR)
 	strip $(GDB_HOST_DIR)/gdb/gdb
 
-$(TARGET_CROSS)gdb: $(GDB_HOST_DIR)/gdb/gdb
+$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(TARGET_CROSS)gdb: $(GDB_HOST_DIR)/gdb/gdb
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; \
 	install -c $(GDB_HOST_DIR)/gdb/gdb $(TARGET_CROSS)gdb; \
 	ln -fs $(TARGET_CROSS)gdb $(GNU_TARGET_NAME)-gdb; \
 	);
 
-gdbhost: $(TARGET_CROSS)gdb
+gdbhost: $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(TARGET_CROSS)gdb
 
 gdbhost-clean:
 	$(MAKE) -C $(GDB_HOST_DIR) clean

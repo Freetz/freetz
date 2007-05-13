@@ -79,6 +79,7 @@ $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		ARCH=$(KERNEL_ARCH) \
 		$$(basename $(KERNEL_IMAGE))
+	touch -c $@
 
 $(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
@@ -99,9 +100,7 @@ $(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 		modules_install
 	touch $@
 
-kernel-precompiled: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) \
-                    $(KERNEL_DIR)/.modules
-
+kernel-precompiled: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_DIR)/.modules
 	cp $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
 	rm -rf $(KERNEL_MODULES_DIR)/lib
 	mkdir -p $(KERNEL_MODULES_DIR)
