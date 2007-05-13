@@ -1,0 +1,13 @@
+diff -burN miscutils.orig/makedevs.c miscutils/makedevs.c
+--- miscutils.orig/makedevs.c	2007-03-18 17:59:34.000000000 +0100
++++ miscutils/makedevs.c	2007-05-13 19:51:06.000000000 +0200
+@@ -84,7 +84,8 @@
+ 		bb_error_msg_and_die("root directory not specified");
+ 	}
+ 
+-	xchdir(rootdir);
++	/* I don't know what this line has lost here?
++	xchdir(rootdir); */
+ 
+ 	umask(0);
+ 

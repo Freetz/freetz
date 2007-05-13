@@ -1167,15 +1167,9 @@ then
 	fi
 
 	echo "creating filesystem image"
-
-	#generating fakeroot-file
-	echo "#!/bin/sh" > _fakeroot
-	echo "( cd $FILESYSTEM_MOD_DIR && $MAKEDEVS -d $MAKEDEVS_FILE ./ > /dev/null" \
-	    	"&& ${TOOLS_DIR}/${MKSQUASHFS_TOOL} * ${ABS_BASE_DIR}/${FILESYSTEM_MOD} -le -noappend -all-root " \
-		"-b $FILESYSTEM_BLOCKSIZE -info > ../filesystemsquashfs.log 2>&1 )" >> _fakeroot
-	chmod a+x _fakeroot
-	"$FAKEROOT" -- ./_fakeroot
-	rm -f _fakeroot
+	"$FAKEROOT" -s fakechroot.save $MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
+	"$FAKEROOT" -i fakechroot.save $TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD -le -noappend -all-root -b $FILESYSTEM_BLOCKSIZE -info >> $MOD_DIR/filesystem.log 2>&1
+	rm -f fakechroot.save
 
 	if [ ! -s "$FILESYSTEM_MOD" ]
 	then
