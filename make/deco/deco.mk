@@ -65,7 +65,7 @@ deco-package: $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
 
 deco-precompiled: uclibc ncurses-precompiled $(DECO_DIR)/$(DECO_TARGET_BINARY) deco
 	$(TARGET_STRIP) $(DECO_DIR)/$(DECO_TARGET_BINARY)
-	cp $(DECO_DIR)/$(DECO_TARGET_BINARY) $(DECO_TARGET_DIR)/$(DECO_TARGET_BINARY)
+	cp $(DECO_DIR)/$(DECO_TARGET_BINARY) $(DECO_TARGET_DIR)/
 	cp $(DECO_DIR)/profile $(DECO_TARGET_DIR)/../lib/deco
 	cp $(DECO_DIR)/menu $(DECO_TARGET_DIR)/../lib/deco
 
