@@ -16,7 +16,7 @@ $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE)
 $(CCACHE_DIR)/.patched: $(CCACHE_DIR)/.unpacked
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
-	$(SED )-i -e "s,getenv(\"CCACHE_PATH\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache\",g" \
+	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache\",g" \
 		$(CCACHE_DIR)/execute.c
 	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
 		$(CCACHE_DIR)/ccache.c
