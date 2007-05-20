@@ -1,4 +1,4 @@
-SYSLOGD_CGI_VERSION:=0.2.1
+SYSLOGD_CGI_VERSION:=0.2.2
 SYSLOGD_CGI_PKG_SOURCE:=syslogd-cgi-$(SYSLOGD_CGI_VERSION)-dsmod.tar.bz2
 SYSLOGD_CGI_PKG_SITE:=http://dsmod.3dfxatwork.de
 
