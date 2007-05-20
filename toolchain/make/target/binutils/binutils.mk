@@ -5,12 +5,13 @@ BINUTILS_DEVELOPER_SITE:=http://ftp.kernel.org/pub/linux/devel/binutils
 BINUTILS_DIR:=$(TARGET_TOOLCHAIN_DIR)/binutils-$(BINUTILS_VERSION)
 BINUTILS_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/binutils
 
-
 $(DL_DIR)/$(BINUTILS_SOURCE):
+	mkdir -p $(DL_DIR)
 	wget -P $(DL_DIR) $(BINUTILS_STABLE_SITE)/$(BINUTILS_SOURCE) || \
 	wget -P $(DL_DIR) $(BINUTILS_DEVELOPER_SITE)/$(BINUTILS_SOURCE)
 
 $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE)
+	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(BINUTILS_SOURCE)
 	for i in $(BINUTILS_MAKE_DIR)/$(BINUTILS_VERSION)/*.patch; do \
                 patch -d $(BINUTILS_DIR) -p1 < $$i; \

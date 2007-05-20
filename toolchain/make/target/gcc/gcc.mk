@@ -41,9 +41,11 @@ GCC_EXTRA_CONFIG_OPTIONS:=
 
 
 $(DL_DIR)/$(GCC_SOURCE):
+	mkdir -p $(DL_DIR)
 	wget --passive-ftp -P $(DL_DIR) $(GCC_SITE)/$(GCC_SOURCE)
 
 $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE)
+	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GCC_SOURCE)
 	for i in $(GCC_MAKE_DIR)/$(GCC_VERSION)/*.patch; do \
 		patch -d $(GCC_DIR) -p1 < $$i; \

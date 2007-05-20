@@ -12,12 +12,14 @@ UCLIBC_PACKAGE_SITE:=http://dsmod.wirsind.info
 LINUX_HEADERS_DIR:=$(shell pwd)/$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel/linux
 
 $(DL_DIR)/$(UCLIBC_SOURCE):
+	mkdir -p $(DL_DIR)
 	wget -P $(DL_DIR) $(UCLIBC_SOURCE_SITE)/$(UCLIBC_SOURCE)
 
 $(DL_DIR)/$(UCLIBC_PACKAGE):
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(UCLIBC_PACKAGE) $(UCLIBC_PACKAGE_SITE)
 
 $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE)
+	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(UCLIBC_SOURCE)
 	for i in $(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION)/*.patch; do \
 	    patch -d $(UCLIBC_DIR) -p1 < $$i; \
