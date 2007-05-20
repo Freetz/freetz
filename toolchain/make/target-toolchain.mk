@@ -1,7 +1,9 @@
 #include this stuff only when DS_BUILD_TOOLCHAIN is selected
 ifneq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
-	include $(TOOLCHAIN_DIR)/make/target/*/*.mk
+	include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
 else
+
+include $(TOOLCHAIN_DIR)/make/target/*/*.mk
 
 ifeq ($(strip $(DS_TARGET_CCACHE)),y)
 	CCACHE:=ccache
