@@ -1,11 +1,13 @@
+#include this stuff only when DS_BUILD_TOOLCHAIN is selected
+ifneq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
+	include $(TOOLCHAIN_DIR)/make/target/*/*.mk
+else
+
 ifeq ($(strip $(DS_TARGET_CCACHE)),y)
 	CCACHE:=ccache
 endif
 
 TARGET_TOOLCHAIN:=binutils gcc $(CCACHE) gdb
-
-include $(TOOLCHAIN_DIR)/make/target/*/*.mk
-
 
 $(TARGET_TOOLCHAIN_DIR):
 	@mkdir -p $@
@@ -29,7 +31,6 @@ target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
                   kernel-configured uclibc-configured \
                   $(TARGET_TOOLCHAIN)
 	
-
 target-toolchain-source: $(TARGET_TOOLCHAIN_DIR) \
 	$(UCLIBC_DIR)/.unpacked \
 	$(BINUTILS_DIR)/.unpacked \
@@ -54,3 +55,5 @@ target-toolchain-dirclean:
 target-toolchain-distclean: target-toolchain-dirclean
 	rm -rf $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
 	rm -f $(TOOLCHAIN_DIR)/target
+
+endif

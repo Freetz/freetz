@@ -1,3 +1,6 @@
+#include this stuff only when DS_BUILD_TOOLCHAIN is selected
+ifeq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
+
 include $(TOOLCHAIN_DIR)/make/kernel/*/*.mk
 
 
@@ -15,3 +18,5 @@ kernel-toolchain-dirclean:
 kernel-toolchain-distclean: kernel-toolchain-dirclean
 	rm -rf $(TOOLCHAIN_BUILD_DIR)/$(CROSSTOOL_COMPILER)
 	rm -f $(TOOLCHAIN_DIR)/kernel
+
+endif
