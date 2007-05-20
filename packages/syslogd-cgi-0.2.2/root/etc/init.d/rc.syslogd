@@ -20,7 +20,7 @@ start() {
 
 	if [ "$SYSLOGD_NETWORK" = "no" -a "$SYSLOGD_LOCAL" = "no" ] || [ "$SYSLOGD_NETWORK" = "yes" -a -z "$SYSLOGD_HOST" ]; then  
   	echo -n 'Syslogd misconfigured. Please correct your settings!'
-  	echo -n 'Starting with default options'
+  	echo -n 'Starting with default options.'
   	$DAEMON -C > /dev/null 2>&1
   	exit 1
 	fi
@@ -33,7 +33,7 @@ start() {
 	  
 		case "$SYSLOGD_LOGGING" in
 		circular_buffer) 
-			if [ ! -z "$SYSLOGD_BUFFER_MAXSIZE" -a "$SYSLOGD_BUFFER_MAXSIZE" -ne "16" ]; then
+			if [ ! -z "$SYSLOGD_BUFFER_MAXSIZE" ]; then
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C$SYSLOGD_BUFFER_MAXSIZE"
 			else
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C"
@@ -59,6 +59,11 @@ start() {
 		fi
 	fi
 	
+	#fallback
+	if [ -z "$SYSLOGD_OPTIONS" ] && [ -z "$SYSLOGD_EXPERT_OPTIONS" ]; then
+		SYSLOGD_OPTIONS="-b 1 -s 16"
+	fi
+    
 	$DAEMON $SYSLOGD_OPTIONS $SYSLOGD_EXPERT_OPTIONS > /dev/null 2>&1
 	exitval1=$?
 	
@@ -82,12 +87,12 @@ stop () {
 
 	rm -f /mod/etc/$DAEMON.conf
 	
-	#klogd stoppen?
+	#stop klogd
 	if [ ! -z "$(pidof klogd)" ]; then
 		killall klogd > /dev/null 2>&1
 	fi
 	
-	#Logfile loeschen?
+	#delete logfile
 	if [ -e "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
 		rm $SYSLOGD_ALTERNATIVE_LOGFILE
 	fi
