@@ -1,4 +1,4 @@
-CALLMONITOR_VERSION:=1.9.2
+CALLMONITOR_VERSION:=1.9.5
 CALLMONITOR_PKG_SOURCE:=callmonitor-$(CALLMONITOR_VERSION)-dsmod.tar.bz2
 CALLMONITOR_PKG_SITE:=http://download.berlios.de/callmonitor
 
