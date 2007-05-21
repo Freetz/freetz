@@ -4,6 +4,72 @@ TODO:
 - classpath, jamvm
 
 Latest changes:
+- Many makefile changes, some big, some small, some cosmetic, to
+    * make the hierarchical build more consistent,
+    * avoid spurious unnecessary rebuilds,
+    * not always include toolchain stuff into big makefile,
+    * add each single 'tools' package to 'noconfig_targets',
+    * make DL_DIR and PACKAGES_DIR order-only prerequisites for many dependent
+      targets,
+    * rename busybox-tools targets so they do not collide with busybox package
+      targets anymore, but adhere to naming conventions instead,
+    * get make structure more in sync with Buildroot,
+    * create a clearer dependency structure and
+    * achieve world domination in general...
+- Multi-job build improvements:
+    * Added new config option for multiple jobs. This can now be configured in
+      menuconfig.
+    * New multijob config option will be used for kernel toolchain, target
+      toolchain, libs and packages.
+    * Targets that cannot be compiled with multiple jobs should use $(MAKE1)
+      instead of $(MAKE).
+    * multijob.sh is not needed anymore and will be removed in future releases.
+      It now does not do anything anymore, just prints a "deprecated" warning.
+    * Target "packages-precompiled" is removed because it is obsolete with these
+      changes.
+- Enhance fwmod so it can be used to handle FW images by either specifying an
+  alternative DOT_CONFIG file name or by explicitly providing command line
+  parameters for often-used settings needed to unpack different firmware
+  versions. Just call fwmod without any parameters to get a proper description.
+  BTW: The DOT_CONFIG alternative may be a very small file consisting only of
+  about five settings, if fwmod is just used to unpack (-u) an image.
+- New packages + libs:
+    * Added section 'debug helpers' in menuconfig
+    * Debug helper package strace (binary only)
+    * Binary package inotify-tools (inotifywait, inotifywatch), including
+      patches to inotify-enable uClibc
+    * Spindown-CGI and sg3_utils (by IPPF user 'derheimi')
+    * Libusb added to menuconfig
+    * Apache 1.3.37 + PHP 5.2.1 package group added. Please cf. menuconfig
+      online help (press 'H' at packages / testing / Apache + PHP) for more
+      information and/or check out http://www.ip-phone-forum.de/showthread.php?t=127089
+      for tips, tricks, patches and extensions.
+    * Ctorrent 1.3.4-dnh3
+- Updates packages + libs:
+    * Callmonitor 1.9.5
+    * Syslogd-CGI 0.2.2: allow rotating log files with a value of '-b 1'
+    * SquashFS 2.2-r
+    * Lzma 4.43
+    * Iptables 1.3.7
+    * Classpath 0.95
+    * FUSE 2.6.5
+    * Dnsmasq 2.39
+    * Transmission 0.72
+    * Libevent 1.3b
+    * Tor 0.1.2.13
+    * Cifsmount package 0.2 features a CGI (web config) interface for up to
+      three mounts, start/stop scripts and convenience script 'cifsmount' for
+      more easier command line (un-)mounting.
+- Firmware updates:
+    * 7050 firmware 14.04.33
+    * Remove 7140 international (kernel 2.4.17_mvl21)
+    * Update ECO-Labor to 29.04.33-7238
+    * Add AVM web interface for W900V
+    * Extension for W701V: /sbin/mailer is copied from tk-firmware
+- Mount sysfs to /sys, symlink /var/sysfs to /sys
+- Set gcc-4.1.2 as default compiler for target toolchain
+- Compile CRC_CCITT as module (Config.4mb_26)
+- Update default busybox configs
 - Sync uclibc.mk with buildroot structure
 - Fix typo in fwmod: libc.so.0 was not copied into firmware, but as it already
   exists nobody noticed this.
@@ -11,71 +77,23 @@ Latest changes:
 - depmod.pl moved to tools directory and removed from kernel build
 - Fix netsnmp build (fails with multiple jobs) 
 - Fix bird build (fails with multiple jobs)
-- Fix some wrong dependencies that caused unnecessary rebuilds of targets that
-  were compiled successfully
-- Add libusb to menuconfig
-- Apache 1.3.37 + PHP 5.2.1 package group added. Please cf. menuconfig online
-  help (press 'H' at packages / testing / Apache + PHP) for more information
-  and/or check out http://www.ip-phone-forum.de/showthread.php?t=127089 for
-  tips, tricks, patches and extensions.
 - Mention 'make precompiled' in previously outdated README
-- Hierarchical build structure improvements strive to avoid unnecessary
-  recompiles, especially unwanted toolchain rebuilds. All packages'
-  'precompiled' targets now depend on target 'uclibc', on the other hand, so
-  they are rebuilt when necessary.
-- Multi-job build improvements:
-  * Added new config option for multiple jobs. This can now be configured in
-    menuconfig.
-  * New multijob config option will be used for kernel toolchain, target
-    toolchain, libs and packages.
-  * Targets that cannot be compiled with multiple jobs should use $(MAKE1)
-    instead of $(MAKE).
-  * multijob.sh is not needed anymore and will be removed in future releases.
-    It now does not do anything anymore, just prints a "deprecated" warning.
-  * Target "packages-precompiled" is removed because it is obsolete with these
-    changes.
 - Add uClibc config for 04.30
-- Bump classpath to version 0.95
-- Bump FUSE to version 2.6.5
 - Fix typo in make/libs/Makefile.in concerning libpcap, making it dependent on
   libncurses config switch accidentally.
-- Bump dnsmasq version to 2.39
-- Extension for W701V: /sbin/mailer is copied from tk-firmware
-- Enhance fwmod so it can be used to handle FW images by either specifying an
-  alternative DOT_CONFIG file name or by explicitly providing command line
-  parameters for often-used settings needed to unpack different firmware
-  versions. Just call fwmod without any parameters to get a proper description.
-  BTW: The DOT_CONFIG alternative may be a very small file consisting only of
-  about five settings, if fwmod is just used to unpack (-u) an image.
-- New package ctorrent 1.3.4-dnh3
-- Bump transmission to version 0.72
 - Fix awk segfault (busybox) when called without any parameters
-- Bump Labor ECO version to 29.04.32-7153
 - Clean up some obsolete code in Config.in and fwmod
 - Fix small error in netsnmp package (update to 0.3): create /var/lib/snmp
-- Rename BUSYBOX_MAKE_DIR to BUSYBOX_TOOLS_MAKE_DIR in
-  tools/make/busybox-tools.mk. This provides for cleaner handling of the two
-  different BB versions in DS-Mod during builds.
-- Bump libevent version to 1.3b
-- Bump tor version to 0.1.2.13
-- Update tor package to 0.1.2.13
 - Mod version number now says ds26-14.x rather than ds-0.2.9-14
 - Bugfix for tools/busybox: make-include tried to apply all tools patches
-  instead of only busybox-specific ones. I wonder why nobody ever complained.
+  instead of only busybox-specific ones.
 
 === in preparation for release ds26-15 ===
 
-- Patches to inotify-enable uClibc
-- New binary package 'inotify-tools' (inotifywait, inotifywatch)
 - Added libelf library needed by ltrace - BUILD OK, BUT UNTESTED
-- Added section "debug helpers" in menuconfig
-- Added debug helper package strace (binary only)
 - Added debug helper package ltrace (binary only) - COMPILES, BUT CRASHES
-- Updated cifsmount package to 0.2: added CGI (web config) for up to three
-  mounts; added init.d start/stop scripts; added script 'cifsmount' for more
-  convenient command line (un-)mounting.
 
- === release ds26-14.4 ===
+=== release ds26-14.4 ===
 
 - Busybox patch for 'ash' shell: When a remote client (e.g. ssh) was killed,
   the remaining shell process would get into an endless loop stressing the CPU
