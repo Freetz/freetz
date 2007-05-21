@@ -29,10 +29,10 @@ LYNX_CONFIGURE_OPTIONS=\
   --disable-source-cache \
   --disable-trace \
 
-$(DL_DIR)/$(LYNX_SOURCE):
+$(DL_DIR)/$(LYNX_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(LYNX_SITE)/$(LYNX_SOURCE)
 
-$(DL_DIR)/$(LYNX_PKG_SOURCE):
+$(DL_DIR)/$(LYNX_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(LYNX_PKG_SOURCE) $(LYNX_PKG_SITE)
 
 $(LYNX_DIR)/.unpacked: $(DL_DIR)/$(LYNX_SOURCE)
@@ -77,7 +77,7 @@ $(LYNX_DIR)/$(LYNX_TARGET_BINARY): $(LYNX_DIR)/.configured
 	PATH="$(TARGET_PATH)" LD="$(TARGET_LD)" $(MAKE) -C $(LYNX_DIR)
 	touch $@
 
-$(PACKAGES_DIR)/.$(LYNX_PKG_NAME): $(DL_DIR)/$(LYNX_PKG_SOURCE)
+$(PACKAGES_DIR)/.$(LYNX_PKG_NAME): $(DL_DIR)/$(LYNX_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LYNX_PKG_SOURCE)
 	@touch $@
 

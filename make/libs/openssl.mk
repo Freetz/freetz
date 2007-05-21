@@ -8,7 +8,7 @@ OPENSSL_NO_CIPHERS:=no-idea no-md2 no-mdc2 no-rc5 no-sha0 no-rmd160 no-aes192
 OPENSSL_OPTIONS:=shared no-ec no-err no-fips no-hw no-krb5 no-threads no-zlib no-engines
 # zlib-dynamic
 
-$(DL_DIR)/$(OPENSSL_SOURCE):
+$(DL_DIR)/$(OPENSSL_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(OPENSSL_SITE)/$(OPENSSL_SOURCE)
 
 $(OPENSSL_DIR)/.unpacked: $(DL_DIR)/$(OPENSSL_SOURCE)

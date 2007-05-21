@@ -4,7 +4,7 @@ LIBELF_SITE:=http://www.mr511.de/software
 LIBELF_DIR:=$(SOURCE_DIR)/libelf-$(LIBELF_VERSION)
 LIBELF_MAKE_DIR:=$(MAKE_DIR)/libs
 
-$(DL_DIR)/$(LIBELF_SOURCE):
+$(DL_DIR)/$(LIBELF_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(LIBELF_SITE)/$(LIBELF_SOURCE)
 
 $(LIBELF_DIR)/.unpacked: $(DL_DIR)/$(LIBELF_SOURCE)

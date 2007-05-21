@@ -6,7 +6,7 @@ HASERL_TARGET_DIR:=root/usr/bin
 HASERL_TARGET_BINARY:=src/haserl
 
 
-$(DL_DIR)/$(HASERL_SOURCE):
+$(DL_DIR)/$(HASERL_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(HASERL_SITE)/$(HASERL_SOURCE)
 
 $(HASERL_DIR)/.unpacked: $(DL_DIR)/$(HASERL_SOURCE)

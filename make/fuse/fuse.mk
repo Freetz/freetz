@@ -10,10 +10,10 @@ FUSE_PKG_SOURCE:=fuse-$(FUSE_VERSION)-dsmod-$(FUSE_PKG_VERSION).tar.bz2
 FUSE_TARGET_BINARY:=util/fusermount
 FUSE_TARGET_DIR:=$(PACKAGES_DIR)/$(FUSE_PKG_NAME)/root/usr/sbin
 
-$(DL_DIR)/$(FUSE_SOURCE):
+$(DL_DIR)/$(FUSE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(FUSE_SITE)/$(FUSE_SOURCE)
 	
-$(DL_DIR)/$(FUSE_PKG_SOURCE):
+$(DL_DIR)/$(FUSE_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(FUSE_PKG_SOURCE) $(FUSE_PKG_SITE)
 
 $(FUSE_DIR)/.unpacked: $(DL_DIR)/$(FUSE_SOURCE)
@@ -91,7 +91,7 @@ $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse: $(FU
 	mkdir -p $(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
 	cp -a $(FUSE_DIR)/kernel/fuse.ko $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
 
-$(PACKAGES_DIR)/.$(FUSE_PKG_NAME): $(DL_DIR)/$(FUSE_PKG_SOURCE)
+$(PACKAGES_DIR)/.$(FUSE_PKG_NAME): $(DL_DIR)/$(FUSE_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(FUSE_PKG_SOURCE)
 	@touch $@
 

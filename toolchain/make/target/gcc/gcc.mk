@@ -40,8 +40,7 @@ GCC_USE_SJLJ_EXCEPTIONS:=--enable-sjlj-exceptions
 GCC_EXTRA_CONFIG_OPTIONS:=
 
 
-$(DL_DIR)/$(GCC_SOURCE):
-	mkdir -p $(DL_DIR)
+$(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
 	wget --passive-ftp -P $(DL_DIR) $(GCC_SITE)/$(GCC_SOURCE)
 
 $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE)

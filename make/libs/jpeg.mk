@@ -5,7 +5,7 @@ JPEG_DIR:=$(SOURCE_DIR)/jpeg-$(JPEG_VERSION)
 JPEG_MAKE_DIR:=$(MAKE_DIR)/libs
 
 
-$(DL_DIR)/$(JPEG_SOURCE):
+$(DL_DIR)/$(JPEG_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(JPEG_SITE)/$(JPEG_SOURCE)
 
 $(JPEG_DIR)/.unpacked: $(DL_DIR)/$(JPEG_SOURCE)

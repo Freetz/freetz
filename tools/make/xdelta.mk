@@ -6,7 +6,7 @@ XDELTA_MAKE_DIR:=$(TOOLS_DIR)/make
 XDELTA_DESTDIR:=$(shell pwd)/$(TOOLS_DIR)
 
 
-$(DL_DIR)/$(XDELTA_SOURCE):
+$(DL_DIR)/$(XDELTA_SOURCE): | $(DL_DIR)
 	 wget -P $(DL_DIR) $(XDELTA_SITE)/$(XDELTA_SOURCE)
 
 xdelta-source: $(DL_DIR)/$(XDELTA_SOURCE)

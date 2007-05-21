@@ -6,7 +6,7 @@ MATRIXSSL_SITE:=http://downloads.openwrt.org/sources
 MATRIXSSL_DIR:=$(SOURCE_DIR)/matrixssl
 MATRIXSSL_MAKE_DIR:=$(MAKE_DIR)/libs
 
-$(DL_DIR)/$(MATRIXSSL_SOURCE):
+$(DL_DIR)/$(MATRIXSSL_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(MATRIXSSL_SITE)/$(MATRIXSSL_SOURCE)
 
 $(MATRIXSSL_DIR)/.unpacked: $(DL_DIR)/$(MATRIXSSL_SOURCE)

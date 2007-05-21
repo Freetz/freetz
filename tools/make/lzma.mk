@@ -7,7 +7,7 @@ LZMA_ALONE_DIR:=$(LZMA_DIR)/C/7zip/Compress/LZMA_Alone
 LZMA_LIB_DIR:=$(LZMA_DIR)/C/7zip/Compress/LZMA_Lib
 
 
-$(DL_DIR)/$(LZMA_SOURCE):
+$(DL_DIR)/$(LZMA_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(LZMA_SITE)/$(LZMA_SOURCE)
 
 $(LZMA_DIR)/.unpacked: $(DL_DIR)/$(LZMA_SOURCE)

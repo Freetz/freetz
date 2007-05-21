@@ -6,7 +6,7 @@ AVM_SOURCE:=fritzbox$(AVM_SOURCE_PREFIX)-source-files-$(AVM_VERSION).tar.bz2
 AVM_SITE:=ftp://ftp.avm.de/develper/opensrc
 AVM_DIR:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
 
-$(DL_DIR)/$(AVM_SOURCE):
+$(DL_DIR)/$(AVM_SOURCE): | $(DL_DIR)
 	wget --passive-ftp -P $(DL_DIR) $(AVM_SITE)/$(AVM_SOURCE)
 
 $(AVM_DIR)/.unpacked: $(DL_DIR)/$(AVM_SOURCE)

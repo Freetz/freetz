@@ -9,11 +9,10 @@ DECO_PKG_VERSION:=0.1
 DECO_PKG_SOURCE:=deco-$(DECO_VERSION)-dsmod-$(DECO_PKG_VERSION).tar.bz2
 DECO_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
-
-$(DL_DIR)/$(DECO_SOURCE):
+$(DL_DIR)/$(DECO_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(DECO_SITE)/$(DECO_SOURCE)
 
-$(DL_DIR)/$(DECO_PKG_SOURCE):
+$(DL_DIR)/$(DECO_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(DECO_PKG_SOURCE) $(DECO_PKG_SITE)
 
 $(DECO_DIR)/.unpacked: $(DL_DIR)/$(DECO_SOURCE)
@@ -54,7 +53,7 @@ $(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked
 $(DECO_DIR)/$(DECO_TARGET_BINARY): $(DECO_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(DECO_DIR)
 
-$(PACKAGES_DIR)/.deco-$(DECO_VERSION): $(DL_DIR)/$(DECO_PKG_SOURCE)
+$(PACKAGES_DIR)/.deco-$(DECO_VERSION): $(DL_DIR)/$(DECO_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(DECO_PKG_SOURCE)
 	@touch $@
 

@@ -5,7 +5,7 @@ ZLIB_DIR:=$(SOURCE_DIR)/zlib-$(ZLIB_VERSION)
 ZLIB_MAKE_DIR:=$(MAKE_DIR)/libs
 
 
-$(DL_DIR)/$(ZLIB_SOURCE):
+$(DL_DIR)/$(ZLIB_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(ZLIB_SITE)/$(ZLIB_SOURCE)
 
 $(ZLIB_DIR)/.unpacked: $(DL_DIR)/$(ZLIB_SOURCE)

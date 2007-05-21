@@ -4,7 +4,7 @@ FFI-SABLE_SITE:=http://ftp.iasi.roedu.net/mirrors/openwrt.org/sources
 FFI-SABLE_DIR:=$(SOURCE_DIR)/libffi-sable-$(FFI-SABLE_VERSION)
 FFI-SABLE_MAKE_DIR:=$(MAKE_DIR)/libs
 
-$(DL_DIR)/$(FFI-SABLE_SOURCE):
+$(DL_DIR)/$(FFI-SABLE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(FFI-SABLE_SITE)/$(FFI-SABLE_SOURCE)
 
 $(FFI-SABLE_DIR)/.unpacked: $(DL_DIR)/$(FFI-SABLE_SOURCE)

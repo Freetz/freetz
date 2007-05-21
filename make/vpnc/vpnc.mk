@@ -9,10 +9,10 @@ VPNC_PKG_VERSION:=0.2
 VPNC_PKG_SOURCE:=vpnc-$(VPNC_VERSION)-dsmod-$(VPNC_PKG_VERSION).tar.bz2
 VPNC_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
-$(DL_DIR)/$(VPNC_SOURCE):
+$(DL_DIR)/$(VPNC_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(VPNC_SITE)/$(VPNC_SOURCE)
 
-$(DL_DIR)/$(VPNC_PKG_SOURCE):
+$(DL_DIR)/$(VPNC_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(VPNC_PKG_SOURCE) $(VPNC_PKG_SITE)
 
 $(VPNC_DIR)/.unpacked: $(DL_DIR)/$(VPNC_SOURCE)
@@ -29,7 +29,7 @@ $(VPNC_DIR)/$(VPNC_TARGET_BINARY):  $(VPNC_DIR)/.unpacked
 		EXTRA_LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
 		-C $(VPNC_DIR)
 
-$(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION): $(DL_DIR)/$(VPNC_PKG_SOURCE)
+$(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION): $(DL_DIR)/$(VPNC_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(VPNC_PKG_SOURCE)
 	@touch $@
 

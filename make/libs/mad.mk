@@ -5,7 +5,7 @@ MAD_DIR:=$(SOURCE_DIR)/libmad-$(MAD_VERSION)
 MAD_MAKE_DIR:=$(MAKE_DIR)/libs
 
 
-$(DL_DIR)/$(MAD_SOURCE):
+$(DL_DIR)/$(MAD_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(MAD_SITE)/$(MAD_SOURCE)
 
 $(MAD_DIR)/.unpacked: $(DL_DIR)/$(MAD_SOURCE)

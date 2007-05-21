@@ -30,12 +30,6 @@ CONFIG_CONFIG_IN=Config.in
 CONFIG_DEFCONFIG=.defconfig
 CONFIG=tools/config
 
-noconfig_targets:=menuconfig config oldconfig defconfig tools
-
-ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
--include $(TOPDIR)/.config
-endif
-
 MAKE:=make
 IMAGE:=
 LOCALIP:=
@@ -54,6 +48,7 @@ TOOLS_DIR:=tools
 PACKAGES_BUILD_DIR:=$(PACKAGES_DIR)/$(BUILD_DIR)
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 
+SED:=sed
 DL_TOOL:=$(TOOLS_DIR)/ds_download
 
 all: step
@@ -61,6 +56,12 @@ world: $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
        $(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
+
+noconfig_targets:=menuconfig config oldconfig defconfig tools $(TOOLS)
+
+ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
+-include $(TOPDIR)/.config
+endif
 
 TOOLS_CLEAN:=$(patsubst %,%-clean,$(TOOLS))
 TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))
@@ -348,7 +349,5 @@ dist: distclean
 	rm -f .exclude-dist
 
 .PHONY: all world step menuconfig config oldconfig defconfig exclude-lists tools recover \
-        clean dirclean distclean common-clean common-dirclean common-distclean dist \
-	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
-        $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
-        $(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
+	clean dirclean distclean common-clean common-dirclean common-distclean dist \
+	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE)

@@ -6,7 +6,7 @@ CCACHE_BINARY:=ccache
 CCACHE_TARGET_BINARY:=usr/bin/ccache
 
 
-$(DL_DIR)/$(CCACHE_SOURCE):
+$(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(CCACHE_SITE)/$(CCACHE_SOURCE)
 
 $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE)

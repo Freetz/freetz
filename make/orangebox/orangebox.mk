@@ -2,14 +2,14 @@ ORANGEBOX_VERSION:=1.05
 ORANGEBOX_PKG_SOURCE:=orangebox-$(ORANGEBOX_VERSION)-dsmod.tar.bz2
 #ORANGEBOX_PKG_SITE:=http://
 
-$(DL_DIR)/$(ORANGEBOX_PKG_SOURCE):
+$(DL_DIR)/$(ORANGEBOX_PKG_SOURCE): | $(DL_DIR)
 	@echo ""
 	@echo "Please copy the following file into the 'dl' sub-directory manually:"
 	@echo "$(ORANGEBOX_PKG_SOURCE)"
 	@echo ""
 	@exit 3
 
-$(PACKAGES_DIR)/.orangebox-$(ORANGEBOX_VERSION): $(DL_DIR)/$(ORANGEBOX_PKG_SOURCE)
+$(PACKAGES_DIR)/.orangebox-$(ORANGEBOX_VERSION): $(DL_DIR)/$(ORANGEBOX_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(ORANGEBOX_PKG_SOURCE)
 	@touch $@
 

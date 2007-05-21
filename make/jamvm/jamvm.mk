@@ -10,12 +10,10 @@ JAMVM_PKG_SOURCE:=jamvm-$(JAMVM_VERSION)-dsmod-$(JAMVM_PKG_VERSION).tar.bz2
 JAMVM_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 JAMVM_PKG_SOURCE:=jamvm-$(JAMVM_VERSION)-dsmod-binary-only.tar.bz2
 
-
-
-$(DL_DIR)/$(JAMVM_SOURCE):
+$(DL_DIR)/$(JAMVM_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(JAMVM_SITE)/$(JAMVM_SOURCE)
 
-$(DL_DIR)/$(JAMVM_PKG_SOURCE):
+$(DL_DIR)/$(JAMVM_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(JAMVM_PKG_SOURCE) $(JAMVM_PKG_SITE)
 
 $(JAMVM_DIR)/.unpacked: $(DL_DIR)/$(JAMVM_SOURCE)
@@ -46,7 +44,7 @@ $(JAMVM_DIR)/.configured: $(JAMVM_DIR)/.unpacked
 $(JAMVM_DIR)/$(JAMVM_TARGET_BINARY): $(JAMVM_DIR)/.configured
 	$(MAKE) -C $(JAMVM_DIR)/src $(TARGET_CONFIGURE_OPTS) 
 
-$(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION): $(DL_DIR)/$(JAMVM_PKG_SOURCE)
+$(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION): $(DL_DIR)/$(JAMVM_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(JAMVM_PKG_SOURCE)
 	@touch $@
 

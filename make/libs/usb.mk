@@ -5,7 +5,7 @@ USB_DIR:=$(SOURCE_DIR)/libusb-$(USB_VERSION)
 USB_MAKE_DIR:=$(MAKE_DIR)/libs
 
 
-$(DL_DIR)/$(USB_SOURCE):
+$(DL_DIR)/$(USB_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(USB_SITE)/$(USB_SOURCE)
 
 $(USB_DIR)/.unpacked: $(DL_DIR)/$(USB_SOURCE)

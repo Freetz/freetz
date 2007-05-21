@@ -4,7 +4,7 @@ LZO_SITE:=http://www.oberhumer.com/opensource/lzo/download/
 LZO_DIR:=$(SOURCE_DIR)/lzo-$(LZO_VERSION)
 LZO_MAKE_DIR:=$(MAKE_DIR)/libs
 
-$(DL_DIR)/$(LZO_SOURCE):
+$(DL_DIR)/$(LZO_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(LZO_SITE)/$(LZO_SOURCE)
 
 $(LZO_DIR)/.unpacked: $(DL_DIR)/$(LZO_SOURCE)

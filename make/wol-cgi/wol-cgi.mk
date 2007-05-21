@@ -3,10 +3,10 @@ WOL_CGI_PKG_SOURCE:=wol-cgi-$(WOL_CGI_VERSION)-dsmod.tar.bz2
 WOL_CGI_PKG_SITE:=http://www.eiband.info/dsmod
 
 
-$(DL_DIR)/$(WOL_CGI_PKG_SOURCE):
+$(DL_DIR)/$(WOL_CGI_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(WOL_CGI_PKG_SOURCE) $(WOL_CGI_PKG_SITE)
 
-$(PACKAGES_DIR)/.wol-cgi-$(WOL_CGI_VERSION): $(DL_DIR)/$(WOL_CGI_PKG_SOURCE)
+$(PACKAGES_DIR)/.wol-cgi-$(WOL_CGI_VERSION): $(DL_DIR)/$(WOL_CGI_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(WOL_CGI_PKG_SOURCE)
 	@touch $@
 

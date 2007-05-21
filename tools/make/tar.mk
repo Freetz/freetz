@@ -3,7 +3,7 @@ TAR_SOURCE:=tar-$(TAR_VERSION).tar.bz2
 TAR_SITE:=http://ftp.gnu.org/gnu/tar
 TAR_DIR:=$(SOURCE_DIR)/tar-$(TAR_VERSION)
 
-$(DL_DIR)/$(TAR_SOURCE):
+$(DL_DIR)/$(TAR_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(TAR_SITE)/$(TAR_SOURCE)
 
 $(TAR_DIR)/.unpacked: $(DL_DIR)/$(TAR_SOURCE)

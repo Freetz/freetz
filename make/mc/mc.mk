@@ -9,10 +9,10 @@ MC_PKG_VERSION:=0.2
 MC_PKG_SOURCE:=mc-$(MC_VERSION)-dsmod-$(MC_PKG_VERSION).tar.bz2
 MC_PKG_SITE:=http://www.eiband.info/dsmod
 
-$(DL_DIR)/$(MC_SOURCE):
+$(DL_DIR)/$(MC_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(MC_SITE)/$(MC_SOURCE)
 
-$(DL_DIR)/$(MC_PKG_SOURCE):
+$(DL_DIR)/$(MC_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(MC_PKG_SOURCE) $(MC_PKG_SITE)
 
 $(MC_DIR)/.unpacked: $(DL_DIR)/$(MC_SOURCE)
@@ -56,7 +56,7 @@ $(MC_DIR)/.configured: $(MC_DIR)/.unpacked
 $(MC_DIR)/$(MC_TARGET_BINARY): $(MC_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(MC_DIR)
 
-$(PACKAGES_DIR)/.mc-$(MC_VERSION): $(DL_DIR)/$(MC_PKG_SOURCE)
+$(PACKAGES_DIR)/.mc-$(MC_VERSION): $(DL_DIR)/$(MC_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(MC_PKG_SOURCE)
 	@touch $@
 

@@ -8,10 +8,10 @@ LUA_TARGET_BINARY:=src/lua
 LUA_PKG_SOURCE:=lua-$(LUA_VERSION)-dsmod.tar.bz2
 LUA_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
-$(DL_DIR)/$(LUA_SOURCE):
+$(DL_DIR)/$(LUA_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(LUA_SITE)/$(LUA_SOURCE)
 
-$(DL_DIR)/$(LUA_PKG_SOURCE):
+$(DL_DIR)/$(LUA_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(LUA_PKG_SOURCE) $(LUA_PKG_SITE)
 
 $(LUA_DIR)/.unpacked: $(DL_DIR)/$(LUA_SOURCE)
@@ -33,7 +33,7 @@ $(LUA_DIR)/$(LUA_TARGET_BINARY): $(LUA_DIR)/.unpacked
 		PKG_VERSION="$(LUA_VERSION)" \
 		linux
 
-$(PACKAGES_DIR)/.lua-$(LUA_VERSION): $(DL_DIR)/$(LUA_PKG_SOURCE)
+$(PACKAGES_DIR)/.lua-$(LUA_VERSION): $(DL_DIR)/$(LUA_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LUA_PKG_SOURCE)
 	@touch $@
 
