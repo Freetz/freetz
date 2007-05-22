@@ -7,6 +7,7 @@ UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
 UCLIBC_PACKAGE_VERSION:=0.2
 UCLIBC_PACKAGE:=uClibc-$(UCLIBC_VERSION)-dsmod-$(UCLIBC_PACKAGE_VERSION).tar.bz2
 UCLIBC_PACKAGE_SITE:=http://dsmod.wirsind.info
+UCLIBC_PREREQUISITES:=
 LINUX_HEADERS_DIR:=$(shell pwd)/$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel/linux
 
 $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
@@ -116,8 +117,13 @@ endif
 
 uclibc-configured: $(UCLIBC_DIR)/.configured
 
-uclibc:	$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a \
-	$(ROOT_DIR)/lib/libc.so.0
+ifeq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
+UCLIBC_PREREQUISITES+=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
+else
+UCLIBC_PREREQUISITES+=$(ROOT_DIR)/lib/libc.so.0
+endif
+
+uclibc:	$(UCLIBC_PREREQUISITES)
 
 uclibc-target-utils: $(ROOT_DIR)/usr/bin/ldd
 
