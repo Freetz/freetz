@@ -66,7 +66,8 @@ $(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked
 			--with-kernel="$(shell pwd)/../$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/" \
 			--disable-mtab \
 	);
-	
+	touch $@
+
 $(NTFS_DIR)/$(NTFS_TARGET_BINARY): $(NTFS_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		ARCH="$(KERNEL_ARCH)" \
