@@ -53,7 +53,7 @@ DL_TOOL:=$(TOOLS_DIR)/ds_download
 
 all: step
 world: $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
-       $(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
+	$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
@@ -142,16 +142,18 @@ else
 				echo -n "Use the latest firmware $$latest? (y/n) "; \
 				read yn; \
 				case "$$yn" in \
-					[yY]*) sed -e 's/# DS_DL_OVERRIDE is not set/DS_DL_OVERRIDE=y/' \
-					           -e 's/DL_SOURCE="$(DL_SOURCE)"/DL_SOURCE="'"$$latest"'"/' \
-					           .config > .config.tmp; \
-					       mv .config.tmp .config; \
-					       echo ""; \
-					       echo "Re-run \`make' for the changes to take effect."; \
-					       echo "WARNING: This configuration is probably untested!"; \
-					       echo ""; \
-					       break ;; \
-					[nN]*) break ;; \
+					[yY]*) \
+						sed -e 's/# DS_DL_OVERRIDE is not set/DS_DL_OVERRIDE=y/' \
+							-e 's/DL_SOURCE="$(DL_SOURCE)"/DL_SOURCE="'"$$latest"'"/' \
+							.config > .config.tmp; \
+						mv .config.tmp .config; \
+						echo ""; \
+						echo "Re-run \`make' for the changes to take effect."; \
+						echo "WARNING: This configuration is probably untested!"; \
+						echo ""; \
+						break ;; \
+					[nN]*) \
+						break ;; \
 				esac; \
 			done; \
 			exit 3; \
@@ -206,19 +208,19 @@ toolchain: $(DL_DIR) $(SOURCE_DIR) $(TOOLCHAIN)
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
 
 sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
-         $(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(TOOLS_SOURCE)
+	$(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(TOOLS_SOURCE)
 precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(ROOT_DIR)/lib/libc.so.0 \
-		libgcc-installed $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
+	libgcc-installed $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
 else
 
 libs: $(DL_DIR) $(SOURCE_DIR) libgcc-installed $(LIBS_PRECOMPILED)
 
 sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
-         $(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(LIBS_SOURCE) $(TOOLCHAIN_SOURCE) $(TOOLS_SOURCE)
+	$(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(LIBS_SOURCE) $(TOOLCHAIN_SOURCE) $(TOOLS_SOURCE)
 
 precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend libgcc-installed \
-             $(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
+	$(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
 endif
 
@@ -227,10 +229,10 @@ dirclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN_
 distclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN_DISTCLEAN) $(TOOLS_DISTCLEAN) common-distclean
 
 .PHONY: firmware package-list package-list-clean sources precompiled toolchain toolchain-depend libs \
-        $(TARGETS) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) $(TARGETS_PRECOMPILED) \
-        $(PACKAGES) $(PACKAGES_BUILD) $(PACKAGES_CLEAN) $(PACKAGES_DIRCLEAN) $(PACKAGES_LIST) $(PACKAGES_SOURCE) $(PACKAGES_PRECOMPILED) \
-        $(LIBS) $(LIBS_CLEAN) $(LIBS_DIRCLEAN) $(LIBS_SOURCE) $(LIBS_PRECOMPILED) \
-        $(TOOLCHAIN) $(TOOLCHAIN_CLEAN) $(TOOLCHAIN_DIRCLEAN) $(TOOLCHAIN_DISTCLEAN) $(TOOLCHAIN_SOURCE)
+	$(TARGETS) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) $(TARGETS_PRECOMPILED) \
+	$(PACKAGES) $(PACKAGES_BUILD) $(PACKAGES_CLEAN) $(PACKAGES_DIRCLEAN) $(PACKAGES_LIST) $(PACKAGES_SOURCE) $(PACKAGES_PRECOMPILED) \
+	$(LIBS) $(LIBS_CLEAN) $(LIBS_DIRCLEAN) $(LIBS_SOURCE) $(LIBS_PRECOMPILED) \
+	$(TOOLCHAIN) $(TOOLCHAIN_CLEAN) $(TOOLCHAIN_DIRCLEAN) $(TOOLCHAIN_DISTCLEAN) $(TOOLCHAIN_SOURCE)
 
 else
 
@@ -271,17 +273,19 @@ else
 			echo -n "from $(IMAGE)? (y/n) "; \
 			read yn; \
 			case "$$yn" in \
-				[yY]*) echo ""; \
-				       if [ -z "$(LOCALIP)" ]; then \
-				           echo "If this fails try to specify a local IP adress. Your"; \
-				           echo "local IP has to be in the 192.168.178.0/24 subnet."; \
-				           echo "e.g. make recover LOCALIP=192.168.178.20"; \
-				           echo ""; \
-				           $$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -f "$$(pwd)/$(IMAGE)"; \
-				       else \
-				           $$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$$(pwd)/$(IMAGE)"; \
-				       fi; break ;; \
-				[nN]*) break ;; \
+				[yY]*) \
+					echo ""; \
+					if [ -z "$(LOCALIP)" ]; then \
+						echo "If this fails try to specify a local IP adress. Your"; \
+						echo "local IP has to be in the 192.168.178.0/24 subnet."; \
+						echo "e.g. make recover LOCALIP=192.168.178.20"; \
+						echo ""; \
+						$$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -f "$$(pwd)/$(IMAGE)"; \
+					else \
+						$$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$$(pwd)/$(IMAGE)"; \
+					fi; break ;; \
+				[nN]*) \
+					break ;; \
 			esac; \
 		done; \
 	fi
@@ -313,9 +317,9 @@ defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 
 exclude-lists:
 	@for i in root kernel/root; do \
-		( \
-			cd $$i; find . -type d -name .svn -prune \
-		) > "$$(dirname "$$i")"/.exclude; \
+	( \
+		cd $$i; find . -type d -name .svn -prune \
+	) > "$$(dirname "$$i")"/.exclude; \
 	done
 
 common-clean:
@@ -343,9 +347,15 @@ common-distclean: common-clean
 dist: distclean
 	version="$$(cat .version)"; \
 	dir="$$(cat .version | sed -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
-	( cd ../; find "$$dir" -type d -name .svn -prune; \
-	  echo "$${dir}/.exclude-dist" ) > .exclude-dist; \
-	( cd ../; tar --exclude-from="$${dir}/.exclude-dist" -cvjf "$${version}.tar.bz2" "$$dir" )
+	( \
+		cd ../; \
+		find "$$dir" -type d -name .svn -prune; \
+		echo "$${dir}/.exclude-dist" \
+	) > .exclude-dist; \
+	( \
+		cd ../; \
+		tar --exclude-from="$${dir}/.exclude-dist" -cvjf "$${version}.tar.bz2" "$$dir" \
+	)
 	rm -f .exclude-dist
 
 .PHONY: all world step menuconfig config oldconfig defconfig exclude-lists tools recover \
