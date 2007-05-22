@@ -2,11 +2,12 @@ PHP_VERSION:=5.2.1
 PHP_SOURCE:=php-$(PHP_VERSION).tar.bz2
 # A really strange URL
 PHP_SITE:=http://www.php.net/get/$(PHP_SOURCE)/from/de.php.net/mirror
-PHP_DIR:=$(SOURCE_DIR)/php-$(PHP_VERSION)
 PHP_MAKE_DIR:=$(MAKE_DIR)/php
-PHP_TARGET_BINARY:=php
+PHP_DIR:=$(SOURCE_DIR)/php-$(PHP_VERSION)
+PHP_BINARY:=$(PHP_DIR)/sapi/cgi/php
 # Use Apache package directory for PHP
-PHP_TARGET_DIR:=$(APACHE_TARGET_DIR)/cgi-bin
+PHP_TARGET_DIR:=$(APACHE_TARGET_DIR)
+PHP_TARGET_BINARY:=$(PHP_TARGET_DIR)/cgi-bin/php
 PHP_PKG_VERSION:=$(APACHE_PKG_VERSION)
 PHP_PKG_SOURCE:=$(APACHE_PKG_SOURCE)
 PHP_PKG_SITE:=$(APACHE_PKG_SITE)
@@ -73,21 +74,23 @@ $(PHP_DIR)/.configured: $(PHP_DIR)/.unpacked
 	);
 	touch $@
 
-$(PHP_DIR)/sapi/cgi/$(PHP_TARGET_BINARY): $(PHP_DIR)/.configured
+$(PHP_BINARY): $(PHP_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(PHP_DIR)
 
 $(PACKAGES_DIR)/.php-$(PHP_VERSION): $(DL_DIR)/$(PHP_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(PHP_PKG_SOURCE)
 	@touch $@
 
+$(PHP_TARGET_BINARY): $(PHP_BINARY)
+	$(TARGET_STRIP) $(PHP_BINARY)
+	cp $(PHP_BINARY) $(PHP_TARGET_BINARY)
+
 php: $(PACKAGES_DIR)/.php-$(PHP_VERSION)
 
 php-package: $(PACKAGES_DIR)/.php-$(PHP_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(PHP_PKG_SOURCE) apache-$(APACHE_VERSION)
 
-php-precompiled: uclibc $(PHP_DIR)/sapi/cgi/$(PHP_TARGET_BINARY) php
-	$(TARGET_STRIP) $(PHP_DIR)/sapi/cgi/$(PHP_TARGET_BINARY)
-	cp $(PHP_DIR)/sapi/cgi/$(PHP_TARGET_BINARY) $(PHP_TARGET_DIR)/$(PHP_TARGET_BINARY)
+php-precompiled: uclibc php $(PHP_TARGET_BINARY)
 
 php-source: $(PHP_DIR)/.unpacked $(PACKAGES_DIR)/.php-$(PHP_VERSION)
 
@@ -103,7 +106,7 @@ php-dirclean:
 	rm -f $(PACKAGES_DIR)/.php-$(PHP_VERSION)
 
 php-uninstall:
-	rm -f $(PHP_TARGET_DIR)/$(PHP_TARGET_BINARY)
+	rm -f $(PHP_TARGET_BINARY)
 
 php-list:
 #ifeq ($(strip $(DS_PACKAGE_PHP)),y)

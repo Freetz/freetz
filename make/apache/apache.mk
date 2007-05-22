@@ -1,10 +1,11 @@
 APACHE_VERSION:=1.3.37
 APACHE_SOURCE:=apache_$(APACHE_VERSION).tar.gz
 APACHE_SITE:=http://ftp.uni-erlangen.de/pub/mirrors/apache/httpd
-APACHE_DIR:=$(SOURCE_DIR)/apache_$(APACHE_VERSION)
 APACHE_MAKE_DIR:=$(MAKE_DIR)/apache
+APACHE_DIR:=$(SOURCE_DIR)/apache_$(APACHE_VERSION)
+APACHE_BINARY:=$(APACHE_DIR)/src/apache
 APACHE_TARGET_DIR:=$(PACKAGES_DIR)/apache-$(APACHE_VERSION)
-APACHE_TARGET_BINARY:=apache
+APACHE_TARGET_BINARY:=$(APACHE_TARGET_DIR)/apache
 APACHE_PKG_VERSION:=0.1
 APACHE_PKG_SOURCE:=apache-$(APACHE_VERSION)-dsmod-$(APACHE_PKG_VERSION).tar.bz2
 APACHE_PKG_SITE:=http://dsmod.magenbrot.net
@@ -42,21 +43,23 @@ $(APACHE_DIR)/.configured: $(APACHE_DIR)/.unpacked
 	);
 	touch $@
 
-$(APACHE_DIR)/src/$(APACHE_TARGET_BINARY): $(APACHE_DIR)/.configured
+$(APACHE_BINARY): $(APACHE_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(APACHE_DIR)
 
 $(PACKAGES_DIR)/.apache-$(APACHE_VERSION): $(DL_DIR)/$(APACHE_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(APACHE_PKG_SOURCE)
 	@touch $@
 
+$(APACHE_TARGET_BINARY): $(APACHE_BINARY)
+	$(TARGET_STRIP) $(APACHE_BINARY)
+	cp $(APACHE_BINARY) $(APACHE_TARGET_BINARY)
+
 apache: $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
 
 apache-package: $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(APACHE_PKG_SOURCE) apache-$(APACHE_VERSION)
 
-apache-precompiled: uclibc $(APACHE_DIR)/src/$(APACHE_TARGET_BINARY) apache
-	$(TARGET_STRIP) $(APACHE_DIR)/src/$(APACHE_TARGET_BINARY)
-	cp $(APACHE_DIR)/src/$(APACHE_TARGET_BINARY) $(APACHE_TARGET_DIR)/$(APACHE_TARGET_BINARY)
+apache-precompiled: uclibc apache $(APACHE_TARGET_BINARY)
 
 apache-source: $(APACHE_DIR)/.unpacked $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
 
@@ -72,7 +75,7 @@ apache-dirclean:
 	rm -f $(PACKAGES_DIR)/.php-$(PHP_VERSION)
 
 apache-uninstall:
-	rm -f $(APACHE_TARGET_DIR)/$(APACHE_TARGET_BINARY)
+	rm -f $(APACHE_TARGET_BINARY)
 
 apache-list:
 #ifeq ($(strip $(DS_PACKAGE_APACHE)),y)

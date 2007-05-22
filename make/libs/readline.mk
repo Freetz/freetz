@@ -3,6 +3,7 @@ READLINE_SOURCE:=readline-$(READLINE_VERSION).tar.gz
 READLINE_SITE:=ftp://ftp.cwru.edu/pub/bash
 READLINE_DIR:=$(SOURCE_DIR)/readline-$(READLINE_VERSION)
 READLINE_MAKE_DIR:=$(MAKE_DIR)/libs
+READLINE_PREREQUISITES:=
 
 $(DL_DIR)/$(READLINE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(READLINE_SITE)/$(READLINE_SOURCE)
@@ -46,32 +47,59 @@ $(READLINE_DIR)/.compiled: $(READLINE_DIR)/.configured
 	touch $@
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so \
- $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so: $(READLINE_DIR)/.compiled
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so.$(READLINE_VERSION) \
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so \
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so.$(READLINE_VERSION): \
+$(READLINE_DIR)/.compiled
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(READLINE_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-readline readline-precompiled:
-	@echo 'External compiler used. Skipping readline...'
 ifeq ($(strip $(DS_LIB_libreadline)),y)
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libreadline*.so* root/usr/lib/
+READLINE_PREREQUISITES+=root/usr/lib/libreadline.so root/usr/lib/libreadline.so.$(READLINE_VERSION)
 endif
 ifeq ($(strip $(DS_LIB_libhistory)),y)
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libhistory*.so* root/usr/lib/
+READLINE_PREREQUISITES+=root/usr/lib/libhistory.so root/usr/lib/libhistory.so.$(READLINE_VERSION)
 endif
+
+ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
+
+root/usr/lib/libreadline.so \
+root/usr/lib/libreadline.so.$(READLINE_VERSION):
+	@echo 'External compiler used. Skipping libreadline...'
+	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libreadline*.so* root/usr/lib/
+root/usr/lib/libhistory.so \
+root/usr/lib/libhistory.so.$(READLINE_VERSION):
+	@echo 'External compiler used. Skipping libhistory...'
+	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libhistory*.so* root/usr/lib/
+
+readline readline-precompiled: $(READLINE_PREREQUISITES)
+
 else
 
-readline: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so
-readline-precompiled: uclibc ncurses-precompiled readline
+root/usr/lib/libreadline.so \
+root/usr/lib/libreadline.so.$(READLINE_VERSION):
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
-	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
+	#cp -a $(TARGET_MAKE_PATH)/../usr/lib/libreadline*.so* root/usr/lib/
+	cp -$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so* root/usr/lib/
+root/usr/lib/libhistory.so \
+root/usr/lib/libhistory.so.$(READLINE_VERSION):
+	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libreadline*.so* root/usr/lib/
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libhistory*.so* root/usr/lib/
+	#cp -a $(TARGET_MAKE_PATH)/../usr/lib/libhistory*.so* root/usr/lib/
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so* root/usr/lib/
+
+readline: \
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so \
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so.$(READLINE_VERSION) \
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so \
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so.$(READLINE_VERSION)
+
+readline-precompiled: uclibc ncurses-precompiled readline $(READLINE_PREREQUISITES)
+
 endif
 
 readline-source: $(READLINE_DIR)/.unpacked

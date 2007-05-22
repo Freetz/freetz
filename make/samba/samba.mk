@@ -2,11 +2,13 @@
 SAMBA_VERSION:=2.0.10
 SAMBA_SOURCE:=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_SITE:=ftp://se.samba.org/pub/samba/stable
-SAMBA_DIR:=$(SOURCE_DIR)/samba-$(SAMBA_VERSION)
 SAMBA_MAKE_DIR:=$(MAKE_DIR)/samba
-SAMBA_TARGET_DIR:=$(PACKAGES_DIR)/samba-$(SAMBA_VERSION)/root/usr/sbin
-SAMBA_TARGET_SMBD_BINARY:=source/bin/smbd
-SAMBA_TARGET_NMBD_BINARY:=source/bin/nmbd
+SAMBA_DIR:=$(SOURCE_DIR)/samba-$(SAMBA_VERSION)
+SAMBA_SMBD_BINARY:=$(SAMBA_DIR)/source/bin/smbd
+SAMBA_NMBD_BINARY:=$(SAMBA_DIR)/source/bin/nmbd
+SAMBA_TARGET_DIR:=$(PACKAGES_DIR)/samba-$(SAMBA_VERSION)
+SAMBA_TARGET_SMBD_BINARY:=$(SAMBA_TARGET_DIR)/root/usr/sbin/smbd
+SAMBA_TARGET_NMBD_BINARY:=$(SAMBA_TARGET_DIR)/root/usr/sbin/nmbd
 SAMBA_PKG_VERSION:=0.1
 SAMBA_PKG_SOURCE:=samba-$(SAMBA_VERSION)-dsmod-$(SAMBA_PKG_VERSION).tar.bz2
 SAMBA_PKG_SITE:=http://www.eiband.info/dsmod
@@ -95,7 +97,7 @@ $(SAMBA_DIR)/.configured: $(SAMBA_DIR)/.unpacked
 	);
 	touch $@
 
-$(SAMBA_DIR)/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/$(SAMBA_TARGET_NMBD_BINARY) : $(SAMBA_DIR)/.configured
+$(SAMBA_SMBD_BINARY) $(SAMBA_NMBD_BINARY): $(SAMBA_DIR)/.configured
 	$(MAKE1) -C $(SAMBA_DIR)/source \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC=$(TARGET_CC) \
@@ -106,15 +108,20 @@ $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION): $(DL_DIR)/$(SAMBA_PKG_SOURCE) | $(PACKA
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(SAMBA_PKG_SOURCE)
 	@touch $@
 
+$(SAMBA_TARGET_SMBD_BINARY): $(SAMBA_SMBD_BINARY)
+	$(TARGET_STRIP) $(SAMBA_SMBD_BINARY)
+	cp $(SAMBA_SMBD_BINARY) $(SAMBA_TARGET_SMBD_BINARY)
+
+$(SAMBA_TARGET_NMBD_BINARY): $(SAMBA_NMBD_BINARY)
+	$(TARGET_STRIP) $(SAMBA_NMBD_BINARY)
+	cp $(SAMBA_NMBD_BINARY) $(SAMBA_TARGET_NMBD_BINARY)
+
 samba: $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 
 samba-package: $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(SAMBA_PKG_SOURCE) samba-$(SAMBA_VERSION)
 
-samba-precompiled: uclibc $(SAMBA_DIR)/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_DIR)/$(SAMBA_TARGET_NMBD_BINARY) samba
-	$(TARGET_STRIP) $(SAMBA_DIR)/source/bin/*
-	cp $(SAMBA_DIR)/$(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_TARGET_DIR)/
-	cp $(SAMBA_DIR)/$(SAMBA_TARGET_NMBD_BINARY) $(SAMBA_TARGET_DIR)/
+samba-precompiled: uclibc samba $(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_TARGET_NMBD_BINARY)
 
 samba-source: $(SAMBA_DIR)/.unpacked $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 
@@ -127,10 +134,13 @@ samba-dirclean:
 	rm -rf $(PACKAGES_DIR)/samba-$(SAMBA_VERSION)
 	rm -f $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 
+samba-uninstall:
+	rm -f $(SAMBA_TARGET_SMBD_BINARY)
+	rm -f $(SAMBA_TARGET_NMBD_BINARY)
+
 samba-list:
 ifeq ($(strip $(DS_PACKAGE_SAMBA)),y)
 	@echo "S40samba-$(SAMBA_VERSION)" >> .static
 else
 	@echo "S40samba-$(SAMBA_VERSION)" >> .dynamic
 endif
-

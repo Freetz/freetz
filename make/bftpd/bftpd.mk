@@ -1,11 +1,10 @@
 BFTPD_VERSION:=1.8
 BFTPD_SOURCE:=bftpd-$(BFTPD_VERSION).tar.gz
 BFTPD_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bftpd
-BFTPD_DIR:=$(SOURCE_DIR)/bftpd-$(BFTPD_VERSION)
 BFTPD_MAKE_DIR:=$(MAKE_DIR)/bftpd
-BFTPD_TARGET_BINARY:=bftpd
+BFTPD_DIR:=$(SOURCE_DIR)/bftpd-$(BFTPD_VERSION)
+BFTPD_BINARY:=$(BFTPD_DIR)/bftpd
 BFTPD_PKG_VERSION:=0.5
-#BFTPD_PKG_SITE:=http://www.eiband.info/dsmod
 BFTPD_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)
 BFTPD_PKG_NAME:=bftpd-zlib-$(BFTPD_VERSION)
@@ -16,7 +15,8 @@ else
 BFTPD_PKG_NAME:=bftpd-$(BFTPD_VERSION)
 BFTPD_PKG_SOURCE:=bftpd-$(BFTPD_VERSION)-dsmod-$(BFTPD_PKG_VERSION).tar.bz2
 endif
-BFTPD_TARGET_DIR:=$(PACKAGES_DIR)/$(BFTPD_PKG_NAME)/root/usr/sbin
+BFTPD_TARGET_DIR:=$(PACKAGES_DIR)/$(BFTPD_PKG_NAME)
+BFTPD_TARGET_BINARY:=$(BFTPD_TARGET_DIR)/root/usr/sbin/bftpd
 
 
 $(DL_DIR)/$(BFTPD_SOURCE): | $(DL_DIR)
@@ -63,24 +63,26 @@ $(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked $(BFTPD_LIBZLIB)
 	);
 	touch $@
 
-$(BFTPD_DIR)/$(BFTPD_TARGET_BINARY): $(BFTPD_DIR)/.configured
+$(BFTPD_BINARY): $(BFTPD_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
 		LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
-		-C $(BFTPD_DIR) 
+		-C $(BFTPD_DIR)
 
 $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME): $(DL_DIR)/$(BFTPD_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(BFTPD_PKG_SOURCE)
 	@touch $@
+
+$(BFTPD_TARGET_BINARY): $(BFTPD_BINARY)
+	$(TARGET_STRIP) $(BFTPD_BINARY)
+	cp $(BFTPD_BINARY) $(BFTPD_TARGET_BINARY)
 
 bftpd: $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 
 bftpd-package: $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(BFTPD_PKG_SOURCE) $(BFTPD_PKG_NAME) 
 
-bftpd-precompiled: uclibc $(BFTPD_LIBS) $(BFTPD_DIR)/$(BFTPD_TARGET_BINARY) bftpd
-	$(TARGET_STRIP) $(BFTPD_DIR)/$(BFTPD_TARGET_BINARY)
-	cp $(BFTPD_DIR)/$(BFTPD_TARGET_BINARY) $(BFTPD_TARGET_DIR)/
+bftpd-precompiled: uclibc $(BFTPD_LIBS) bftpd $(BFTPD_TARGET_BINARY)
 
 bftpd-source: $(BFTPD_DIR)/.unpacked $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 
@@ -92,6 +94,9 @@ bftpd-dirclean:
 	rm -rf $(BFTPD_DIR)
 	rm -rf $(PACKAGES_DIR)/$(BFTPD_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
+
+bftpd-uninstall:
+	rm -f $(BFTPD_TARGET_BINARY)
 
 bftpd-list:
 ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)
