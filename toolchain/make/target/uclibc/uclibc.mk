@@ -1,12 +1,10 @@
-ifeq ($(DS_BUILD_TOOLCHAIN),y)
-
 UCLIBC_VERSION:=$(TARGET_TOOLCHAIN_UCLIBC_VERSION)
 UCLIBC_DIR:=$(TARGET_TOOLCHAIN_DIR)/uClibc-$(UCLIBC_VERSION)
 UCLIBC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/uclibc
 UCLIBC_VERSION:=$(TARGET_TOOLCHAIN_UCLIBC_VERSION)
 UCLIBC_SOURCE:=uClibc-$(UCLIBC_VERSION).tar.bz2
 UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
-UCLIBC_PACKAGE_VERSION:=0.1
+UCLIBC_PACKAGE_VERSION:=0.2
 UCLIBC_PACKAGE:=uClibc-$(UCLIBC_VERSION)-dsmod-$(UCLIBC_PACKAGE_VERSION).tar.bz2
 UCLIBC_PACKAGE_SITE:=http://dsmod.wirsind.info
 LINUX_HEADERS_DIR:=$(shell pwd)/$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel/linux
@@ -30,10 +28,10 @@ $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked | kernel-configured
 	$(SED) -i -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(LINUX_HEADERS_DIR)\",g' $(UCLIBC_DIR)/.config
 	$(SED) -i -e 's,^CROSS=.*,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS),g' $(UCLIBC_DIR)/Rules.mak
 ifeq ($(DS_TARGET_LFS),y)
-	$(SED) 's,.*UCLIBC_HAS_LFS.*,UCLIBC_HAS_LFS=y,g' $(UCLIBC_DIR)/.config
+	$(SED) -i -e 's,.*UCLIBC_HAS_LFS.*,UCLIBC_HAS_LFS=y,g' $(UCLIBC_DIR)/.config
 else
-	$(SED) 's,.*UCLIBC_HAS_LFS.*,UCLIBC_HAS_LFS=n,g' $(UCLIBC_DIR)/.config
-	$(SED) '/.*UCLIBC_HAS_FOPEN_LARGEFILE_MODE.*/d' $(UCLIBC_DIR)/.config
+	$(SED) -i -e 's,.*UCLIBC_HAS_LFS.*,UCLIBC_HAS_LFS=n,g' $(UCLIBC_DIR)/.config
+	$(SED) -i -e '/.*UCLIBC_HAS_FOPEN_LARGEFILE_MODE.*/d' $(UCLIBC_DIR)/.config
 	echo "# UCLIBC_HAS_FOPEN_LARGEFILE_MODE is not set" >> $(UCLIBC_DIR)/.config
 endif
 	$(SED) 's,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y,g' $(UCLIBC_DIR)/.config
@@ -135,4 +133,3 @@ $(ROOT_DIR)/usr/bin/ldd:
 
 .PHONY: uclibc-configured uclibc
 
-endif

@@ -18,9 +18,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#If using an external toolchain, don't include any of this stuff.
-ifeq ($(DS_BUILD_TOOLCHAIN),y)
-
 GCC_VERSION:=$(TARGET_TOOLCHAIN_GCC_VERSION)
 GCC_SOURCE:=gcc-$(GCC_VERSION).tar.bz2
 GCC_SITE:=ftp://gcc.gnu.org/pub/gcc/releases/gcc-$(GCC_VERSION)
@@ -142,4 +139,3 @@ gcc:  uclibc-configured binutils gcc-initial uclibc $(GCC_BUILD_DIR2)/.installed
 
 .PHONY: gcc gcc-initial
 
-endif

@@ -2,7 +2,7 @@
 ifeq ($(strip $(DS_DOWNLOAD_TOOLCHAIN)),y)
 
 KERNEL_TOOLCHAIN_VERSION:=0.1
-TARGET_TOOLCHAIN_VERSION:=0.2
+TARGET_TOOLCHAIN_VERSION:=0.3
 TARGET_TOOLCHAIN_SOURCE:=target-toolchain-dsmod-$(TARGET_TOOLCHAIN_VERSION).tar.lzma
 KERNEL_TOOLCHAIN_SOURCE:=kernel-toolchain-dsmod-$(KERNEL_TOOLCHAIN_VERSION).tar.lzma
 TOOLCHAIN_SITE:=http://dsmod.wirsind.info
@@ -29,7 +29,7 @@ $(TOOLCHAIN_DIR)/target/.installed: $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) $(TOOLS
 	-@ln -s $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TOOLCHAIN_DIR)/target
 	@touch $@
 
-toolchain-dirclean:
+toolchain-distclean:
 	rm -rf $(TOOLCHAIN_DIR)/build
 	rm -rf $(TOOLCHAIN_DIR)/kernel
 	rm -rf $(TOOLCHAIN_DIR)/target
