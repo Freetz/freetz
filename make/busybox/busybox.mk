@@ -43,6 +43,19 @@ $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY): $(BUSYBOX_DIR)/.configured
 		ARCH="mipsel" \
 		-C $(BUSYBOX_DIR)
 
+$(BUSYBOX_DIR)/busybox.links: $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
+	$(MAKE) CC="$(TARGET_CC)" \
+		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		-C $(BUSYBOX_DIR) busybox.links
+
+$(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF): $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
+	$(TARGET_STRIP) $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
+	cp $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF)
+
+$(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links: $(BUSYBOX_DIR)/busybox.links
+	cp $(BUSYBOX_DIR)/busybox.links $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
+
 busybox-source: $(BUSYBOX_DIR)/.unpacked
 
 busybox-menuconfig: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
@@ -54,16 +67,7 @@ busybox-menuconfig: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
 		
 	cp $(BUSYBOX_DIR)/.config $(BUSYBOX_CONFIG_FILE)
 
-$(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links: $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
-	$(MAKE) CC="$(TARGET_CC)" \
-		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		-C $(BUSYBOX_DIR) busybox.links
-
-busybox-precompiled: uclibc $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
-	$(TARGET_STRIP) $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
-	cp $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF)
-	cp $(BUSYBOX_DIR)/busybox.links $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
+busybox-precompiled: uclibc $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
 
 busybox-clean:
 	-$(MAKE) -C $(BUSYBOX_DIR) clean
