@@ -83,13 +83,11 @@ root/usr/lib/libreadline.so \
 root/usr/lib/libreadline.so.$(READLINE_VERSION):
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
-	#cp -a $(TARGET_MAKE_PATH)/../usr/lib/libreadline*.so* root/usr/lib/
 	cp -$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so* root/usr/lib/
 root/usr/lib/libhistory.so \
 root/usr/lib/libhistory.so.$(READLINE_VERSION):
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
-	#cp -a $(TARGET_MAKE_PATH)/../usr/lib/libhistory*.so* root/usr/lib/
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so* root/usr/lib/
 
 readline: \

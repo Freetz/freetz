@@ -1,9 +1,10 @@
 CIFSMOUNT_VERSION:=1.10
 CIFSMOUNT_SOURCE:=mount.cifs.tar.bz2
-CIFSMOUNT_DIR:=$(SOURCE_DIR)/cifsmount-$(CIFSMOUNT_VERSION)
 CIFSMOUNT_MAKE_DIR:=$(MAKE_DIR)/cifsmount
-CIFSMOUNT_TARGET_DIR:=$(PACKAGES_DIR)/cifsmount-$(CIFSMOUNT_VERSION)/root/usr/sbin
-CIFSMOUNT_BINARY:=mount.cifs
+CIFSMOUNT_DIR:=$(SOURCE_DIR)/cifsmount-$(CIFSMOUNT_VERSION)
+CIFSMOUNT_BINARY:=$(CIFSMOUNT_DIR)/mount.cifs
+CIFSMOUNT_TARGET_DIR:=$(PACKAGES_DIR)/cifsmount-$(CIFSMOUNT_VERSION)
+CIFSMOUNT_TARGET_BINARY:=$(CIFSMOUNT_TARGET_DIR)/root/usr/sbin/mount.cifs
 CIFSMOUNT_PKG_VERSION:=0.2
 CIFSMOUNT_PKG_SOURCE:=cifsmount-$(CIFSMOUNT_VERSION)-dsmod-$(CIFSMOUNT_PKG_VERSION).tar.bz2
 CIFSMOUNT_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
@@ -23,11 +24,15 @@ $(CIFSMOUNT_DIR)/.unpacked: $(CIFSMOUNT_MAKE_DIR)/$(CIFSMOUNT_SOURCE)
 #	done
 	touch $@
 
-$(CIFSMOUNT_DIR)/$(CIFSMOUNT_BINARY): $(CIFSMOUNT_DIR)/.unpacked
+$(CIFSMOUNT_BINARY): $(CIFSMOUNT_DIR)/.unpacked
 	(cd $(CIFSMOUNT_DIR); \
-	    PATH=$(TARGET_PATH) \
-	    $(TARGET_CC) $(TARGET_CFLAGS) -static-libgcc -o mount.cifs mount.cifs.c\
-	) 
+		PATH=$(TARGET_PATH) \
+		$(TARGET_CC) $(TARGET_CFLAGS) -static-libgcc -o mount.cifs mount.cifs.c\
+	)
+
+$(CIFSMOUNT_TARGET_BINARY): $(CIFSMOUNT_BINARY)
+	$(TARGET_STRIP) $(CIFSMOUNT_BINARY)
+	cp $(CIFSMOUNT_BINARY) $(CIFSMOUNT_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.cifsmount-$(CIFSMOUNT_VERSION): $(DL_DIR)/$(CIFSMOUNT_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CIFSMOUNT_PKG_SOURCE)
@@ -38,9 +43,7 @@ cifsmount: $(PACKAGES_DIR)/.cifsmount-$(CIFSMOUNT_VERSION)
 cifsmount-package: $(PACKAGES_DIR)/.cifsmount-$(CIFSMOUNT_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CIFSMOUNT_PKG_SOURCE) cifsmount-$(CIFSMOUNT_VERSION)
 
-cifsmount-precompiled: uclibc $(CIFSMOUNT_DIR)/$(CIFSMOUNT_BINARY) cifsmount
-	$(TARGET_STRIP) $(CIFSMOUNT_DIR)/$(CIFSMOUNT_BINARY)
-	cp $(CIFSMOUNT_DIR)/$(CIFSMOUNT_BINARY) $(CIFSMOUNT_TARGET_DIR)/
+cifsmount-precompiled: uclibc cifsmount $(CIFSMOUNT_TARGET_BINARY)
 
 cifsmount-source: $(CIFSMOUNT_DIR)/.unpacked $(PACKAGES_DIR)/.cifsmount-$(CIFSMOUNT_VERSION)
 
@@ -52,6 +55,9 @@ cifsmount-dirclean:
 	rm -rf $(CIFSMOUNT_DIR)
 	rm -rf $(PACKAGES_DIR)/cifsmount-$(CIFSMOUNT_VERSION)
 	rm -f $(PACKAGES_DIR)/.cifsmount-$(CIFSMOUNT_VERSION)
+
+cifsmount-uninstall:
+	rm -f $(CIFSMOUNT_TARGET_BINARY)
 
 cifsmount-list:
 ifeq ($(strip $(DS_PACKAGE_CIFSMOUNT)),y)

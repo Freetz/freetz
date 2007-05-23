@@ -1,10 +1,11 @@
 CLASSPATH_VERSION:=0.95
 CLASSPATH_SOURCE:=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_SITE:=ftp://ftp.gnu.org/gnu/classpath
-CLASSPATH_DIR:=$(SOURCE_DIR)/classpath-$(CLASSPATH_VERSION)
 CLASSPATH_MAKE_DIR:=$(MAKE_DIR)/classpath
-CLASSPATH_TARGET_DIR:=$(PACKAGES_DIR)/classpath-$(CLASSPATH_VERSION)/root/usr/share/classpath
-CLASSPATH_TARGET_BINARY:=lib/mini.jar #glibj.zip
+CLASSPATH_DIR:=$(SOURCE_DIR)/classpath-$(CLASSPATH_VERSION)
+CLASSPATH_BINARY:=$(CLASSPATH_DIR)/lib/mini.jar
+CLASSPATH_TARGET_DIR:=$(PACKAGES_DIR)/classpath-$(CLASSPATH_VERSION)
+CLASSPATH_TARGET_BINARY:=$(CLASSPATH_TARGET_DIR)/root/usr/share/classpath/mini.jar
 CLASSPATH_PKG_VERSION:=0.1
 CLASSPATH_PKG_SOURCE:=CLASSPATH-$(CLASSPATH_VERSION)-dsmod-$(CLASSPATH_PKG_VERSION).tar.bz2
 CLASSPATH_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
@@ -45,10 +46,13 @@ $(CLASSPATH_DIR)/.configured: $(CLASSPATH_DIR)/.unpacked
 	);
 	touch $@
 
-$(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY): $(CLASSPATH_DIR)/.configured
-	make $(TARGET_CONFIGURE_OPTS) -C $(CLASSPATH_DIR)
+$(CLASSPATH_BINARY): $(CLASSPATH_DIR)/.configured
+	$(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(CLASSPATH_DIR)
 	cp $(CLASSPATH_MAKE_DIR)/mini.classlist $(CLASSPATH_DIR)/lib;
 	( cd $(CLASSPATH_DIR)/lib; fastjar -Mcf mini.jar -@ < mini.classlist );
+
+$(CLASSPATH_TARGET_BINARY): $(CLASSPATH_BINARY)
+	cp $(CLASSPATH_BINARY) $(CLASSPATH_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION): $(DL_DIR)/$(CLASSPATH_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CLASSPATH_PKG_SOURCE)
@@ -59,14 +63,13 @@ classpath: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
 classpath-package: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CLASSPATH_PKG_SOURCE) classpath-$(CLASSPATH_VERSION)
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so: $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY)
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so: $(CLASSPATH_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(CLASSPATH_DIR)/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
 	touch -c $@
 
-classpath-precompiled: uclibc $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_DIR)/.installed classpath
-	cp $(CLASSPATH_DIR)/$(CLASSPATH_TARGET_BINARY) $(CLASSPATH_TARGET_DIR)/
-	
+classpath-precompiled: uclibc $(CLASSPATH_DIR)/.installed classpath $(CLASSPATH_TARGET_BINARY)
+
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
 $(CLASSPATH_DIR)/.installed:
 	mkdir -p root/usr/lib/classpath
@@ -80,7 +83,6 @@ $(CLASSPATH_DIR)/.installed: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/l
 	touch $@
 endif
 
-
 classpath-source: $(CLASSPATH_DIR)/.unpacked $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
 
 classpath-clean:
@@ -91,6 +93,11 @@ classpath-dirclean:
 	rm -rf $(CLASSPATH_DIR)
 	rm -rf $(PACKAGES_DIR)/classpath-$(CLASSPATH_VERSION)
 	rm -f $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
+
+classpath-uninstall:
+	rm -f $(CLASSPATH_TARGET_BINARY)
+	rm -rf root/usr/lib/classpath
+	rm -f $(CLASSPATH_DIR)/.installed
 
 classpath-list:
 ifeq ($(strip $(DS_PACKAGE_CLASSPATH)),y)
