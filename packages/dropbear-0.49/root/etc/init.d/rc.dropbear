@@ -57,7 +57,7 @@ start() {
 
 stop() {
 	echo -n 'Stopping ssh server...'
-	killall $DAEMON > /dev/null 2>&1
+	kill $(cat /var/run/$DAEMON.pid) > /dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -101,10 +101,10 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
+		if [ -s "/var/run/$DAEMON.pid" ]; then
+ 			echo 'running'
 		else
-			echo 'running'
+			echo 'stopped'
 		fi
 		;;
 	*)
