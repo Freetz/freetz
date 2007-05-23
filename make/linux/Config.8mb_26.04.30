@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.13.1
-# Sat Mar 24 22:40:42 2007
+# Wed May 23 11:13:20 2007
 #
 CONFIG_MIPS=y
 # CONFIG_MIPS64 is not set
@@ -350,7 +350,25 @@ CONFIG_NET_CLS_U32=m
 # CONFIG_NET_PKTGEN is not set
 # CONFIG_HAMRADIO is not set
 # CONFIG_IRDA is not set
-# CONFIG_BT is not set
+CONFIG_BT=m
+CONFIG_BT_L2CAP=m
+# CONFIG_BT_SCO is not set
+CONFIG_BT_RFCOMM=m
+CONFIG_BT_RFCOMM_TTY=y
+# CONFIG_BT_BNEP is not set
+# CONFIG_BT_CMTP is not set
+# CONFIG_BT_HIDP is not set
+
+#
+# Bluetooth device drivers
+#
+CONFIG_BT_HCIUSB=m
+CONFIG_BT_HCIUSB_SCO=y
+# CONFIG_BT_HCIUART is not set
+# CONFIG_BT_HCIBCM203X is not set
+# CONFIG_BT_HCIBPA10X is not set
+# CONFIG_BT_HCIBFUSB is not set
+# CONFIG_BT_HCIVHCI is not set
 
 #
 # Device Drivers
@@ -868,7 +886,10 @@ CONFIG_USB_AHCI=m
 #
 # USB Device Class drivers
 #
-# CONFIG_USB_BLUETOOTH_TTY is not set
+
+#
+# USB Bluetooth TTY can only be used with disabled Bluetooth subsystem
+#
 # CONFIG_USB_ACM is not set
 CONFIG_USB_PRINTER=m
 

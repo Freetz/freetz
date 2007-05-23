@@ -107,8 +107,6 @@ kernel-precompiled: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_DIR)/.modules
 	tar -cf - -C $(KERNEL_BUILD_DIR)/modules \
 		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/build \
 		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/pcmcia \
-		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/drivers/bluetooth \
-		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/net/bluetooth \
 		. | tar -xf - -C $(KERNEL_MODULES_DIR)
 	cp  $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/System.map $(KERNEL_TARGET_DIR)/System-$(KERNEL_REF)-$(AVM_VERSION).map
 	echo "$(KERNEL_SUBVERSION)" > $(KERNEL_TARGET_DIR)/.version-$(KERNEL_REF)-$(AVM_VERSION)
