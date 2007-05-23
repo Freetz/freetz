@@ -24,7 +24,6 @@ choice
 	
 	config DS_TYPE_FON
 		select DS_AVM_VERSION_04_30
-		select DS_LIB_libgcc_s
 		bool "Fon"
 		
 	config DS_TYPE_FON_5050
@@ -33,7 +32,6 @@ choice
 		
 	config DS_TYPE_FON_WLAN_7050
 		select DS_AVM_VERSION_04_29
-		select DS_LIB_libgcc_s
 		bool "Fon WLAN 7050"
 
 	config DS_TYPE_FON_WLAN_7140
@@ -50,7 +48,6 @@ choice
 
 	config DS_TYPE_FON_WLAN_7170
 		select DS_AVM_VERSION_04_29
-		select DS_LIB_libgcc_s
 		bool "Fon WLAN 7170"
 	
 	config DS_TYPE_WLAN_3131
@@ -150,6 +147,7 @@ config DS_INSTALL_BASE
 	select DS_LIB_libpthread
 	select DS_LIB_libuClibc
 	select DS_LIB_libm
+	select DS_LIB_libgcc_s
 	default y
 	help
 	    This is mandatory

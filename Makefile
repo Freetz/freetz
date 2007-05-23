@@ -161,12 +161,12 @@ else
 	fi
 endif
 
-ifneq ($(strip $(DS_DL_SOURCE2)),)
-IMAGE2:=$(strip $(DL_DIR)/$(DS_DL_SOURCE2))
+ifneq ($(strip $(DL_SOURCE2)),)
+IMAGE2:=$(DL_DIR)/$(DS_DL_SOURCE2)
 DL_IMAGE+=$(IMAGE2)
 
-$(DL_DIR)/$(DS_DL_SOURCE2):
-	@./fwmod_download -C $(DL_DIR) $(DS_DL_SITE2) $(DS_DL_SOURCE2) > /dev/null
+$(DL_DIR)/$(DL_SOURCE2):
+	@./fwmod_download -C $(DL_DIR) $(DL_SITE2) $(DL_SOURCE2) > /dev/null
 	@echo "done."
 	@echo ""
 endif
