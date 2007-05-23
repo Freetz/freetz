@@ -1,0 +1,18 @@
+diff -burN no_lib.orig/Makefile.linux no_lib/Makefile.linux
+--- no_lib.orig/Makefile.linux	2007-04-18 20:31:14.000000000 +0200
++++ no_lib/Makefile.linux	2007-05-23 12:32:35.000000000 +0200
+@@ -30,11 +30,11 @@
+ MAN_PREF = man8
+ 
+ OS_FLAGS = -DSG3_UTILS_LINUX
+-LARGE_FILE_FLAGS = -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+-EXTRA_FLAGS = $(OS_FLAGS) $(LARGE_FILE_FLAGS)
++# LARGE_FILE_FLAGS = -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
++# EXTRA_FLAGS = $(OS_FLAGS) $(LARGE_FILE_FLAGS)
+ 
+ # CFLAGS = -O2 -Wall -W $(EXTRA_FLAGS)
+-CFLAGS = -g -O2 -Wall -W $(EXTRA_FLAGS)
++# CFLAGS = -g -O2 -Wall -W $(EXTRA_FLAGS)
+ # CFLAGS = -g -O2 -W -DSG_KERNEL_INCLUDES $(EXTRA_FLAGS)
+ # CFLAGS = -g -O2 -Wall -W -pedantic -std=c99 $(EXTRA_FLAGS)
+ # CFLAGS = -g -O2 -Wall -W -pedantic -std=gnu++98 $(EXTRA_FLAGS)
