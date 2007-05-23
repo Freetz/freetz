@@ -1,0 +1,80 @@
+--- file.c.orig	2007-01-15 21:25:52.000000000 +0100
++++ file.c	2007-05-23 14:59:32.000000000 +0200
+@@ -1641,7 +1641,7 @@
+ struct tcb *tcp;
+ long addr;
+ {
+-	struct statfs64 statbuf;
++	struct statfs statbuf;
+ 
+ 	if (syserror(tcp) || !verbose(tcp)) {
+ 		tprintf("%#lx", addr);
+@@ -1676,7 +1676,7 @@
+ 		printpath(tcp, tcp->u_arg[0]);
+ 		tprintf(", %lu, ", tcp->u_arg[1]);
+ 	} else {
+-		if (tcp->u_arg[1] == sizeof (struct statfs64))
++		if (tcp->u_arg[1] == sizeof (struct statfs))
+ 			printstatfs64(tcp, tcp->u_arg[2]);
+ 		else
+ 			tprintf("{???}");
+@@ -1691,7 +1691,7 @@
+ 	if (entering(tcp)) {
+ 		tprintf("%lu, %lu, ", tcp->u_arg[0], tcp->u_arg[1]);
+ 	} else {
+-		if (tcp->u_arg[1] == sizeof (struct statfs64))
++		if (tcp->u_arg[1] == sizeof (struct statfs))
+ 			printstatfs64(tcp, tcp->u_arg[2]);
+ 		else
+ 			tprintf("{???}");
+--- linux.orig/mips/syscallent.h	2007-05-23 14:51:46.000000000 +0200
++++ linux/mips/syscallent.h	2007-05-23 14:56:10.000000000 +0200
+@@ -4209,15 +4209,19 @@
+ 	{ 0,	0,	printargs,		"SYS_4208"	}, /* 4208 */
+ 	{ 0,	0,	printargs,		"SYS_4209"	}, /* 4209 */
+ 	{ 6,	0,	sys_mmap,		"mmap"		}, /* 4210 */
++#ifdef _LFS64_LARGEFILE
+ 	{ 4,	TF,	sys_truncate64,		"truncate64"	}, /* 4211 */
+ 	{ 4,	TD,	sys_ftruncate64,	"ftruncate64"	}, /* 4212 */
++#endif
+ 	{ 2,	TF,	printargs,		"stat64"	}, /* 4213 */
+ 	{ 2,	TF,	sys_lstat64,		"lstat64"	}, /* 4214 */
+ 	{ 2,	TD,	sys_fstat64,		"fstat64"	}, /* 4215 */
+ 	{ 2,	TF,	sys_pivotroot,		"pivot_root"	}, /* 4216 */
+ 	{ 3,	0,	printargs,		"mincore"	}, /* 4217 */
+ 	{ 3,	0,	sys_madvise,		"madvise"	}, /* 4218 */
++#ifdef _LFS64_LARGEFILE
+ 	{ 3,	TF,	sys_getdents64,		"getdents64"	}, /* 4219 */
++#endif	
+ 	{ 3,	TD,	sys_fcntl,		"fcntl64"	}, /* 4220 */
+ 	{ 0,	0,	printargs,		"SYS_4221"	}, /* 4221 */
+ 	{ 0,	0,	printargs,		"gettid"	}, /* 4222 */
+--- linux.orig/syscallent.h	2007-05-23 14:03:25.000000000 +0200
++++ linux/syscallent.h	2007-05-23 14:55:05.000000000 +0200
+@@ -228,14 +228,15 @@
+ 	{ 0,	TP,	sys_vfork,		"vfork", SYS_vfork }, /* 190 */
+ 	{ 2,	0,	sys_getrlimit,		"getrlimit"	}, /* 191 */
+ 	{ 6,	0,	sys_mmap,		"mmap2"		}, /* 192 */
++#ifdef _LFS64_LARGEFILE
+ 	{ 3,	TF,	sys_truncate64,		"truncate64"	}, /* 193 */
+ 	{ 3,	TD,	sys_ftruncate64,	"ftruncate64"	}, /* 194 */
++#endif
+ 	{ 2,	TF,	sys_stat64,		"stat64"	}, /* 195 */
+ 	{ 2,	TF,	sys_lstat64,		"lstat64"	}, /* 196 */
+ 	{ 2,	TD,	sys_fstat64,		"fstat64"	}, /* 197 */
+ 	{ 3,	TF,	sys_chown,		"lchown32"	}, /* 198 */
+ 	{ 0,	0,	sys_getuid,		"getuid32"	}, /* 199 */
+-
+ 	{ 0,	0,	sys_getgid,		"getgid32"	}, /* 200 */
+ 	{ 0,	0,	sys_geteuid,		"geteuid32"	}, /* 201 */
+ 	{ 0,	0,	sys_geteuid,		"getegid32"	}, /* 202 */
+@@ -256,7 +257,9 @@
+ 	{ 2,	TF,	sys_pivotroot,		"pivot_root"	}, /* 217 */
+ 	{ 3,	0,	sys_mincore,		"mincore"	}, /* 218 */
+ 	{ 3,	0,	sys_madvise,		"madvise"	}, /* 219 */
++#ifdef _LFS64_LARGEFILE
+ 	{ 4,	TD,	sys_getdents64,		"getdents64"	}, /* 220 */
++#endif
+ 	{ 3,	TD,	sys_fcntl,		"fcntl64"	}, /* 221 */
+ 	{ 4,	0,	printargs,		"SYS_222"	}, /* 222 */
+ /*TODO*/{ 5,	0,	printargs,		"security"	}, /* 223 */

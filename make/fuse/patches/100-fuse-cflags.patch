@@ -1,0 +1,105 @@
+diff -burN fuse-2.6.5.orig/example/Makefile.am fuse-2.6.5/example/Makefile.am
+--- fuse-2.6.5.orig/example/Makefile.am	2006-12-09 19:51:13.000000000 +0100
++++ fuse-2.6.5/example/Makefile.am	2007-05-23 13:34:12.000000000 +0200
+@@ -1,6 +1,6 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-AM_CPPFLAGS = -I$(top_srcdir)/include -D_FILE_OFFSET_BITS=64 -D_REENTRANT
++AM_CPPFLAGS = -I$(top_srcdir)/include -D_REENTRANT
+ noinst_PROGRAMS = fusexmp fusexmp_fh null hello hello_ll
+ 
+ LDADD = ../lib/libfuse.la -lpthread
+diff -burN fuse-2.6.5.orig/example/Makefile.in fuse-2.6.5/example/Makefile.in
+--- fuse-2.6.5.orig/example/Makefile.in	2007-04-29 11:13:26.000000000 +0200
++++ fuse-2.6.5/example/Makefile.in	2007-05-23 13:34:19.000000000 +0200
+@@ -196,7 +196,7 @@
+ target_cpu = @target_cpu@
+ target_os = @target_os@
+ target_vendor = @target_vendor@
+-AM_CPPFLAGS = -I$(top_srcdir)/include -D_FILE_OFFSET_BITS=64 -D_REENTRANT
++AM_CPPFLAGS = -I$(top_srcdir)/include -D_REENTRANT
+ LDADD = ../lib/libfuse.la -lpthread
+ fusexmp_fh_LDADD = ../lib/libfuse.la ../lib/libulockmgr.la -lpthread
+ all: all-am
+diff -burN fuse-2.6.5.orig/fuse.pc.in fuse-2.6.5/fuse.pc.in
+--- fuse-2.6.5.orig/fuse.pc.in	2006-12-09 19:52:22.000000000 +0100
++++ fuse-2.6.5/fuse.pc.in	2007-05-23 13:34:05.000000000 +0200
+@@ -7,4 +7,4 @@
+ Description: Filesystem in Userspace
+ Version: @VERSION@
+ Libs: -L${libdir} -lfuse @libfuse_libs@
+-Cflags: -I${includedir}/fuse -D_FILE_OFFSET_BITS=64
++Cflags: -I${includedir}/fuse
+diff -burN fuse-2.6.5.orig/include/fuse_common.h fuse-2.6.5/include/fuse_common.h
+--- fuse-2.6.5.orig/include/fuse_common.h	2006-12-09 19:51:13.000000000 +0100
++++ fuse-2.6.5/include/fuse_common.h	2007-05-23 13:35:23.000000000 +0200
+@@ -26,9 +26,9 @@
+ #define FUSE_VERSION FUSE_MAKE_VERSION(FUSE_MAJOR_VERSION, FUSE_MINOR_VERSION)
+ 
+ /* This interface uses 64 bit off_t */
+-#if _FILE_OFFSET_BITS != 64
++/*#if _FILE_OFFSET_BITS != 64
+ #error Please add -D_FILE_OFFSET_BITS=64 to your compile flags!
+-#endif
++#endif*/
+ 
+ #ifdef __cplusplus
+ extern "C" {
+diff -burN fuse-2.6.5.orig/lib/Makefile.am fuse-2.6.5/lib/Makefile.am
+--- fuse-2.6.5.orig/lib/Makefile.am	2007-04-29 11:05:56.000000000 +0200
++++ fuse-2.6.5/lib/Makefile.am	2007-05-23 13:34:48.000000000 +0200
+@@ -1,7 +1,7 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+ AM_CPPFLAGS = -I$(top_srcdir)/include -DFUSERMOUNT_DIR=\"$(bindir)\" \
+- -D_FILE_OFFSET_BITS=64 -D_REENTRANT -DFUSE_USE_VERSION=26
++ -D_REENTRANT -DFUSE_USE_VERSION=26
+ 
+ lib_LTLIBRARIES = libfuse.la libulockmgr.la
+ 
+diff -burN fuse-2.6.5.orig/lib/Makefile.in fuse-2.6.5/lib/Makefile.in
+--- fuse-2.6.5.orig/lib/Makefile.in	2007-04-29 11:13:27.000000000 +0200
++++ fuse-2.6.5/lib/Makefile.in	2007-05-23 13:34:52.000000000 +0200
+@@ -199,7 +199,7 @@
+ target_os = @target_os@
+ target_vendor = @target_vendor@
+ AM_CPPFLAGS = -I$(top_srcdir)/include -DFUSERMOUNT_DIR=\"$(bindir)\" \
+- -D_FILE_OFFSET_BITS=64 -D_REENTRANT -DFUSE_USE_VERSION=26
++ -D_REENTRANT -DFUSE_USE_VERSION=26
+ 
+ lib_LTLIBRARIES = libfuse.la libulockmgr.la
+ @BSD_FALSE@mount_source = mount.c
+diff -burN fuse-2.6.5.orig/util/Makefile.am fuse-2.6.5/util/Makefile.am
+--- fuse-2.6.5.orig/util/Makefile.am	2006-12-09 19:51:15.000000000 +0100
++++ fuse-2.6.5/util/Makefile.am	2007-05-23 13:34:31.000000000 +0200
+@@ -1,12 +1,12 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-AM_CPPFLAGS = -D_FILE_OFFSET_BITS=64 
++AM_CPPFLAGS =
+ bin_PROGRAMS = fusermount ulockmgr_server
+ 
+ fusermount_SOURCES = fusermount.c
+ 
+ ulockmgr_server_SOURCES = ulockmgr_server.c
+-ulockmgr_server_CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_REENTRANT 
++ulockmgr_server_CPPFLAGS = -D_REENTRANT 
+ ulockmgr_server_LDFLAGS = -pthread
+ 
+ install-exec-hook:
+diff -burN fuse-2.6.5.orig/util/Makefile.in fuse-2.6.5/util/Makefile.in
+--- fuse-2.6.5.orig/util/Makefile.in	2007-04-29 11:13:28.000000000 +0200
++++ fuse-2.6.5/util/Makefile.in	2007-05-23 13:34:40.000000000 +0200
+@@ -185,10 +185,10 @@
+ target_cpu = @target_cpu@
+ target_os = @target_os@
+ target_vendor = @target_vendor@
+-AM_CPPFLAGS = -D_FILE_OFFSET_BITS=64 
++AM_CPPFLAGS =
+ fusermount_SOURCES = fusermount.c
+ ulockmgr_server_SOURCES = ulockmgr_server.c
+-ulockmgr_server_CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_REENTRANT 
++ulockmgr_server_CPPFLAGS = -D_REENTRANT 
+ ulockmgr_server_LDFLAGS = -pthread
+ EXTRA_DIST = mount.fuse udev.rules init_script
+ all: all-am
