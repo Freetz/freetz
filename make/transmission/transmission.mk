@@ -32,7 +32,7 @@ $(TRANSMISSION_DIR)/.configured: $(TRANSMISSION_DIR)/.unpacked
 	( cd $(TRANSMISSION_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include" \
+		CFLAGS="$(TARGET_CFLAGS)  $(CFLAGS_LARGEFILE) -I$(TARGET_MAKE_PATH)/../usr/include" \
 		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
 		./configure \
 		--prefix=/usr \
