@@ -1,10 +1,11 @@
 CTORRENT_VERSION:=1.3.4-dnh3
 CTORRENT_SOURCE:=ctorrent-$(CTORRENT_VERSION).tar.gz
 CTORRENT_SITE:=http://www.rahul.net/dholmes/ctorrent/
-CTORRENT_DIR:=$(SOURCE_DIR)/ctorrent-dnh3
 CTORRENT_MAKE_DIR:=$(MAKE_DIR)/ctorrent
-CTORRENT_TARGET_DIR:=$(PACKAGES_DIR)/ctorrent-$(CTORRENT_VERSION)/root/usr/bin
-CTORRENT_TARGET_BINARY:=ctorrent
+CTORRENT_DIR:=$(SOURCE_DIR)/ctorrent-dnh3
+CTORRENT_BINARY:=$(CTORRENT_DIR)/ctorrent
+CTORRENT_TARGET_DIR:=$(PACKAGES_DIR)/ctorrent-$(CTORRENT_VERSION)
+CTORRENT_TARGET_BINARY:=$(CTORRENT_TARGET_DIR)/root/usr/bin/ctorrent
 CTORRENT_PKG_VERSION:=0.1
 CTORRENT_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 CTORRENT_PKG_SOURCE:=ctorrent-$(CTORRENT_VERSION)-dsmod-binary-only.tar.bz2
@@ -39,9 +40,13 @@ $(CTORRENT_DIR)/.configured: $(CTORRENT_DIR)/.unpacked
 	);
 	touch $@
 
-$(CTORRENT_DIR)/$(CTORRENT_TARGET_BINARY): $(CTORRENT_DIR)/.configured
+$(CTORRENT_BINARY): $(CTORRENT_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(CTORRENT_DIR) all
+
+$(CTORRENT_TARGET_BINARY): $(CTORRENT_BINARY)
+	$(TARGET_STRIP) $(CTORRENT_BINARY)
+	cp $(CTORRENT_BINARY) $(CTORRENT_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION): $(DL_DIR)/$(CTORRENT_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CTORRENT_PKG_SOURCE)
@@ -52,9 +57,7 @@ ctorrent: $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
 ctorrent-package: $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CTORRENT_PKG_SOURCE) ctorrent-$(CTORRENT_VERSION)
 
-ctorrent-precompiled: uclibc $(CTORRENT_DIR)/$(CTORRENT_TARGET_BINARY) ctorrent
-	$(TARGET_STRIP) $(CTORRENT_DIR)/$(CTORRENT_TARGET_BINARY)
-	cp $(CTORRENT_DIR)/$(CTORRENT_TARGET_BINARY) $(CTORRENT_TARGET_DIR)/
+ctorrent-precompiled: uclibc ctorrent $(CTORRENT_TARGET_BINARY)
 
 ctorrent-source: $(CTORRENT_DIR)/.unpacked $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
 
@@ -66,6 +69,9 @@ ctorrent-dirclean:
 	rm -rf $(CTORRENT_DIR)
 	rm -rf $(PACKAGES_DIR)/ctorrent-$(CTORRENT_VERSION)
 	rm -f $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
+
+ctorrent-uninstall:
+	rm -f $(CTORRENT_TARGET_BINARY)
 
 ctorrent-list:
 ifeq ($(strip $(DS_PACKAGE_CTORRENT)),y)

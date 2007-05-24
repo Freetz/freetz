@@ -1,10 +1,11 @@
 DECO_VERSION:=39
 DECO_SOURCE:=deco$(DECO_VERSION).tgz
 DECO_SITE:=http://mesh.dl.sourceforge.net/sourceforge/deco
-DECO_DIR:=$(SOURCE_DIR)/deco$(DECO_VERSION)
 DECO_MAKE_DIR:=$(MAKE_DIR)/deco
-DECO_TARGET_DIR:=$(PACKAGES_DIR)/deco-$(DECO_VERSION)/root/usr/bin
-DECO_TARGET_BINARY:=deco
+DECO_DIR:=$(SOURCE_DIR)/deco$(DECO_VERSION)
+DECO_BINARY:=$(DECO_DIR)/deco
+DECO_TARGET_DIR:=$(PACKAGES_DIR)/deco-$(DECO_VERSION)
+DECO_TARGET_BINARY:=$(DECO_TARGET_DIR)/root/usr/bin/deco
 DECO_PKG_VERSION:=0.1
 DECO_PKG_SOURCE:=deco-$(DECO_VERSION)-dsmod-$(DECO_PKG_VERSION).tar.bz2
 DECO_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
@@ -21,6 +22,7 @@ $(DECO_DIR)/.unpacked: $(DL_DIR)/$(DECO_SOURCE)
 		patch -d $(DECO_DIR) -p1 < $$i; \
 	done
 	touch $@
+
 $(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked
 	( cd $(DECO_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -50,8 +52,15 @@ $(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked
 	);
 	touch $@
 
-$(DECO_DIR)/$(DECO_TARGET_BINARY): $(DECO_DIR)/.configured
+$(DECO_BINARY): $(DECO_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(DECO_DIR)
+
+$(DECO_TARGET_BINARY): $(DECO_BINARY)
+	$(TARGET_STRIP) $(DECO_BINARY)
+	cp $(DECO_BINARY) $(DECO_TARGET_BINARY)
+	@# Don't copy these, because they are already part of the package:
+	@#cp $(DECO_DIR)/profile $(DECO_TARGET_DIR)/root/usr/lib/deco/profile
+	@#cp $(DECO_DIR)/menu $(DECO_TARGET_DIR)/root/usr/lib/deco/menu
 
 $(PACKAGES_DIR)/.deco-$(DECO_VERSION): $(DL_DIR)/$(DECO_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(DECO_PKG_SOURCE)
@@ -62,11 +71,7 @@ deco: $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
 deco-package: $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(DECO_PKG_SOURCE) deco-$(DECO_VERSION)
 
-deco-precompiled: uclibc ncurses-precompiled $(DECO_DIR)/$(DECO_TARGET_BINARY) deco
-	$(TARGET_STRIP) $(DECO_DIR)/$(DECO_TARGET_BINARY)
-	cp $(DECO_DIR)/$(DECO_TARGET_BINARY) $(DECO_TARGET_DIR)/
-	cp $(DECO_DIR)/profile $(DECO_TARGET_DIR)/../lib/deco
-	cp $(DECO_DIR)/menu $(DECO_TARGET_DIR)/../lib/deco
+deco-precompiled: uclibc ncurses-precompiled deco $(DECO_TARGET_BINARY)
 
 deco-source: $(DECO_DIR)/.unpacked $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
 
@@ -78,6 +83,9 @@ deco-dirclean:
 	rm -rf $(DECO_DIR)
 	rm -rf $(PACKAGES_DIR)/deco-$(DECO_VERSION)
 	rm -f $(PACKAGES_DIR)/.deco-$(DECO_VERSION)
+
+deco-uninstall:
+	rm -f $(DECO_TARGET_BINARY)
 
 deco-list:
 ifeq ($(strip $(DS_PACKAGE_DECO)),y)
