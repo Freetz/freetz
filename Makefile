@@ -188,14 +188,14 @@ firmware-nocompile: tools $(DL_IMAGE) package-list exclude-lists
 	@echo "WARNING: There are no packages selected. To install packages type"
 	@echo "         \`make menuconfig' and change to the 'Package selection' submenu."
 	@echo ""
-firmware: firmware-nocompile precompiled
 else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
-firmware: firmware-nocompile precompiled
 endif
 	@rm -f firmware_*.image
 	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
 	@mv $(BUILD_DIR)/$(DS_TYPE_STRING)*.image ./
+
+firmware: firmware-nocompile precompiled
 
 test: $(BUILD_DIR)/.modified
 	@echo "no tests defined"
