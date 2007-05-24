@@ -183,13 +183,15 @@ package-list-clean:
 	@rm -f .static .dynamic
 
 ifeq ($(strip $(PACKAGES)),)
-firmware: tools $(DL_IMAGE) package-list exclude-lists
+firmware-nocompile: tools $(DL_IMAGE) package-list exclude-lists
 	@echo ""
 	@echo "WARNING: There are no packages selected. To install packages type"
 	@echo "         \`make menuconfig' and change to the 'Package selection' submenu."
 	@echo ""
+firmware: firmware-nocompile precompiled
 else
-firmware: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
+firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
+firmware: firmware-nocompile precompiled
 endif
 	@rm -f firmware_*.image
 	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
@@ -237,8 +239,6 @@ distclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN
 else
 
 step: menuconfig
-
-
 clean: $(TOOLS_CLEAN) common-clean
 dirclean: $(TOOLS_DIRCLEAN) common-dirclean
 distclean: $(TOOLS_DISTCLEAN) common-distclean
