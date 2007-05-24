@@ -3,14 +3,15 @@
 TOR_VERSION:=0.1.2.13
 TOR_SOURCE:=tor-$(TOR_VERSION).tar.gz
 TOR_SITE:=http://tor.eff.org/dist
-TOR_DIR:=$(SOURCE_DIR)/tor-$(TOR_VERSION)
 TOR_MAKE_DIR:=$(MAKE_DIR)/tor
-TOR_TARGET_BINARY:=src/or/tor
+TOR_DIR:=$(SOURCE_DIR)/tor-$(TOR_VERSION)
+TOR_BINARY:=$(TOR_DIR)/src/or/tor
 TOR_PKG_VERSION:=0.6
 TOR_PKG_SITE:=http://netfreaks.org/ds-mod
 TOR_PKG_NAME:=tor-$(TOR_VERSION)
 TOR_PKG_SOURCE:=tor-$(TOR_VERSION)-dsmod-$(TOR_PKG_VERSION).tar.bz2
-TOR_TARGET_DIR:=$(PACKAGES_DIR)/$(TOR_PKG_NAME)/root/usr/sbin
+TOR_TARGET_DIR:=$(PACKAGES_DIR)/$(TOR_PKG_NAME)
+TOR_TARGET_BINARY:=$(TOR_TARGET_DIR)/root/usr/sbin/tor
 
 $(DL_DIR)/$(TOR_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(TOR_SITE)/$(TOR_SOURCE)
@@ -66,9 +67,13 @@ $(TOR_DIR)/.configured: $(TOR_DIR)/.unpacked
 	);
 	touch $@
 
-$(TOR_DIR)/$(TOR_TARGET_BINARY): $(TOR_DIR)/.configured
+$(TOR_BINARY): $(TOR_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) CFLAGS="$(TARGET_CFLAGS)" -C $(TOR_DIR)
+	
+$(TOR_TARGET_BINARY): $(TOR_BINARY)
+	$(TARGET_STRIP) $(TOR_BINARY)
+	cp $(TOR_BINARY) $(TOR_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.$(TOR_PKG_NAME): $(DL_DIR)/$(TOR_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(TOR_PKG_SOURCE)
@@ -79,9 +84,7 @@ tor: $(PACKAGES_DIR)/.$(TOR_PKG_NAME)
 tor-package: $(PACKAGES_DIR)/.$(TOR_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TOR_PKG_SOURCE) $(TOR_PKG_NAME)
 
-tor-precompiled: uclibc openssl-precompiled libevent-precompiled $(TOR_DIR)/$(TOR_TARGET_BINARY) tor
-	$(TARGET_STRIP) $(TOR_DIR)/$(TOR_TARGET_BINARY)
-	cp $(TOR_DIR)/$(TOR_TARGET_BINARY) $(TOR_TARGET_DIR)/
+tor-precompiled: uclibc openssl-precompiled libevent-precompiled $(TOR_TARGET_BINARY) tor
 
 tor-source: $(TOR_DIR)/.unpacked $(PACKAGES_DIR)/.$(TOR_PKG_NAME)
 
@@ -93,6 +96,10 @@ tor-dirclean:
 	rm -rf $(TOR_DIR)
 	rm -rf $(PACKAGES_DIR)/$(TOR_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(TOR_PKG_NAME)
+	
+tor-uninstall:
+	rm -f $(TOR_TARGET_BINARY)
+
 
 tor-list:
 ifeq ($(strip $(DS_PACKAGE_TOR)),y)

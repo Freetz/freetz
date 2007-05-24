@@ -1,13 +1,14 @@
 TCPDUMP_VERSION:=3.9.4
 TCPDUMP_SOURCE:=tcpdump-$(TCPDUMP_VERSION).tar.gz
 TCPDUMP_SITE:=http://www.tcpdump.org/release
-TCPDUMP_DIR:=$(SOURCE_DIR)/tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_MAKE_DIR:=$(MAKE_DIR)/tcpdump
-TCPDUMP_TARGET_DIR:=$(PACKAGES_DIR)/tcpdump-$(TCPDUMP_VERSION)/root/usr/bin
-TCPDUMP_TARGET_BINARY:=tcpdump
+TCPDUMP_DIR:=$(SOURCE_DIR)/tcpdump-$(TCPDUMP_VERSION)
+TCPDUMP_BINARY:=$(TCPDUMP_DIR)/tcpdump
 TCPDUMP_PKG_VERSION:=0.1
 TCPDUMP_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 TCPDUMP_PKG_SOURCE:=tcpdump-$(TCPDUMP_VERSION)-dsmod-binary-only.tar.bz2
+TCPDUMP_TARGET_DIR:=$(PACKAGES_DIR)/tcpdump-$(TCPDUMP_VERSION)
+TCPDUMP_TARGET_BINARY:=$(TCPDUMP_TARGET_DIR)/root/usr/bin/tcpdump
 
 $(DL_DIR)/$(TCPDUMP_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(TCPDUMP_SITE)/$(TCPDUMP_SOURCE)
@@ -42,11 +43,14 @@ $(TCPDUMP_DIR)/.configured: $(TCPDUMP_DIR)/.unpacked
 	);
 	touch $@
 
-$(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY): $(TCPDUMP_DIR)/.configured
-	( PATH="$(TARGET_PATH)" \
+$(TCPDUMP_BINARY): $(TCPDUMP_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
 		CCOPT="$(TARGET_CFLAGS)" INCLS="-I. -I$(TARGET_MAKE_PATH)/../usr/include" \
-		$(MAKE) -C $(TCPDUMP_DIR) all \
-	);
+		$(MAKE) -C $(TCPDUMP_DIR) all 
+
+$(TCPDUMP_TARGET_BINARY): $(TCPDUMP_BINARY)
+	$(TARGET_STRIP) $(TCPDUMP_BINARY)
+	cp $(TCPDUMP_BINARY) $(TCPDUMP_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION): $(DL_DIR)/$(TCPDUMP_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(TCPDUMP_PKG_SOURCE)
@@ -57,9 +61,7 @@ tcpdump: $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
 tcpdump-package: $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TCPDUMP_PKG_SOURCE) tcpdump-$(TCPDUMP_VERSION)
 
-tcpdump-precompiled: uclibc libpcap-precompiled $(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY) tcpdump
-	$(TARGET_STRIP) $(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY)
-	cp $(TCPDUMP_DIR)/$(TCPDUMP_TARGET_BINARY) $(TCPDUMP_TARGET_DIR)/
+tcpdump-precompiled: uclibc libpcap-precompiled $(TCPDUMP_TARGET_BINARY) tcpdump
 
 tcpdump-source: $(TCPDUMP_DIR)/.unpacked $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
 
@@ -71,6 +73,9 @@ tcpdump-dirclean:
 	rm -rf $(TCPDUMP_DIR)
 	rm -rf $(PACKAGES_DIR)/tcpdump-$(TCPDUMP_VERSION)
 	rm -f $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
+
+tcpdump-uninstall:
+	rm -f $(TCPDUMP_TARGET_BINARY)
 
 tcpdump-list:
 ifeq ($(strip $(DS_PACKAGE_TCPDUMP)),y)
