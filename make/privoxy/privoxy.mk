@@ -3,14 +3,15 @@
 PRIVOXY_VERSION:=3.0.6
 PRIVOXY_SOURCE:=privoxy-$(PRIVOXY_VERSION)-stable-src.tar.gz
 PRIVOXY_SITE:=http://surfnet.dl.sourceforge.net/sourceforge/ijbswa
-PRIVOXY_DIR:=$(SOURCE_DIR)/privoxy-$(PRIVOXY_VERSION)-stable
 PRIVOXY_MAKE_DIR:=$(MAKE_DIR)/privoxy
-PRIVOXY_TARGET_BINARY:=privoxy
+PRIVOXY_DIR:=$(SOURCE_DIR)/privoxy-$(PRIVOXY_VERSION)-stable
+PRIVOXY_BINARY:=$(PRIVOXY_DIR)/privoxy
 PRIVOXY_PKG_VERSION:=0.4
 PRIVOXY_PKG_SITE:=http://netfreaks.org/ds-mod
 PRIVOXY_PKG_NAME:=privoxy-$(PRIVOXY_VERSION)
 PRIVOXY_PKG_SOURCE:=privoxy-$(PRIVOXY_VERSION)-dsmod-$(PRIVOXY_PKG_VERSION).tar.bz2
 PRIVOXY_TARGET_DIR:=$(PACKAGES_DIR)/$(PRIVOXY_PKG_NAME)
+PRIVOXY_TARGET_BINARY:=$(PRIVOXY_TARGET_DIR)/root/usr/sbin/privoxy
 
 $(DL_DIR)/$(PRIVOXY_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(PRIVOXY_SITE)/$(PRIVOXY_SOURCE)
@@ -62,9 +63,22 @@ $(PRIVOXY_DIR)/.configured: $(PRIVOXY_DIR)/.unpacked
 	);
 	touch $@
 
-$(PRIVOXY_DIR)/$(PRIVOXY_TARGET_BINARY): $(PRIVOXY_DIR)/.configured
+$(PRIVOXY_BINARY): $(PRIVOXY_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) -C $(PRIVOXY_DIR)
+
+$(PRIVOXY_TARGET_BINARY): $(PRIVOXY_BINARY)
+	$(TARGET_STRIP) $(PRIVOXY_BINARY)
+	cp $(PRIVOXY_BINARY) $(PRIVOXY_TARGET_BINARY)
+	for s in `find $(PRIVOXY_DIR)/templates/ -type f`; do \
+		d=$$(basename $$s); \
+		egrep -v "^#\ " $$s | egrep -v "^#*$$" >$(PRIVOXY_TARGET_DIR)/root/etc/privoxy/templates/$$d; \
+	done
+	for s in $(PRIVOXY_DIR)/default.filter $(PRIVOXY_DIR)/default.action $(PRIVOXY_DIR)/standard.action \
+		$(PRIVOXY_DIR)/user.action $(PRIVOXY_DIR)/user.filter; do \
+		d=$$(basename $$s); \
+		egrep -v "^#" $$s | egrep -v "^$$" >$(PRIVOXY_TARGET_DIR)/root/etc/privoxy/$$d; \
+	done; true
 
 $(PACKAGES_DIR)/.$(PRIVOXY_PKG_NAME): $(DL_DIR)/$(PRIVOXY_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(PRIVOXY_PKG_SOURCE)
@@ -75,18 +89,7 @@ privoxy: $(PACKAGES_DIR)/.$(PRIVOXY_PKG_NAME)
 privoxy-package: $(PACKAGES_DIR)/.$(PRIVOXY_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(PRIVOXY_PKG_SOURCE) $(PRIVOXY_PKG_NAME)
 
-privoxy-precompiled: uclibc $(PRIVOXY_DIR)/$(PRIVOXY_TARGET_BINARY) privoxy
-	$(TARGET_STRIP) $(PRIVOXY_DIR)/$(PRIVOXY_TARGET_BINARY)
-	cp $(PRIVOXY_DIR)/$(PRIVOXY_TARGET_BINARY) $(PRIVOXY_TARGET_DIR)/root/usr/sbin
-	for s in `find $(PRIVOXY_DIR)/templates/ -type f`; do \
-		d=$$(basename $$s); \
-		egrep -v "^#\ " $$s | egrep -v "^#*$$" >$(PRIVOXY_TARGET_DIR)/root/etc/privoxy/templates/$$d; \
-	done
-	for s in $(PRIVOXY_DIR)/default.filter $(PRIVOXY_DIR)/default.action $(PRIVOXY_DIR)/standard.action \
-		$(PRIVOXY_DIR)/user.action $(PRIVOXY_DIR)/user.filter; do \
-		d=$$(basename $$s); \
-		egrep -v "^#" $$s | egrep -v "^$$" >$(PRIVOXY_TARGET_DIR)/root/etc/privoxy/$$d; \
-	done; true
+privoxy-precompiled: uclibc privoxy $(PRIVOXY_TARGET_BINARY)
 
 privoxy-source: $(PRIVOXY_DIR)/.unpacked $(PACKAGES_DIR)/.$(PRIVOXY_PKG_NAME)
 
@@ -98,6 +101,9 @@ privoxy-dirclean:
 	rm -rf $(PRIVOXY_DIR)
 	rm -rf $(PACKAGES_DIR)/$(PRIVOXY_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(PRIVOXY_PKG_NAME)
+
+privoxy-uninstall:
+	rm -f $(PRIVOXY_TARGET_BINARY)
 
 privoxy-list:
 ifeq ($(strip $(DS_PACKAGE_PRIVOXY)),y)

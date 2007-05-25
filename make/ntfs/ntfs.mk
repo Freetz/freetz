@@ -1,13 +1,15 @@
 NTFS_VERSION:=1.417
+NTFS_LIB_VERSION:=2.0.0
 NTFS_SOURCE:=ntfs-3g-$(NTFS_VERSION).tgz
 NTFS_SITE:=http://www.ntfs-3g.org/
-NTFS_DIR:=$(SOURCE_DIR)/ntfs-3g-$(NTFS_VERSION)
 NTFS_MAKE_DIR:=$(MAKE_DIR)/ntfs
-NTFS_TARGET_DIR:=$(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)/root/usr/bin
-NTFS_TARGET_BINARY:=src/.libs/ntfs-3g
+NTFS_DIR:=$(SOURCE_DIR)/ntfs-3g-$(NTFS_VERSION)
+NTFS_BINARY:=$(NTFS_DIR)/src/.libs/ntfs-3g
 NTFS_PKG_VERSION:=0.1
 NTFS_PKG_SOURCE:=ntfs-$(NTFS_VERSION)-dsmod-$(NTFS_PKG_VERSION).tar.bz2
 NTFS_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
+NTFS_TARGET_DIR:=$(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
+NTFS_TARGET_BINARY:=$(NTFS_TARGET_DIR)/root/usr/bin/ntfs-3g
 
 $(DL_DIR)/$(NTFS_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(NTFS_SITE)/$(NTFS_SOURCE)
@@ -68,49 +70,65 @@ $(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked
 	);
 	touch $@
 
-$(NTFS_DIR)/$(NTFS_TARGET_BINARY): $(NTFS_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		ARCH="$(KERNEL_ARCH)" \
+$(NTFS_BINARY): $(NTFS_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
 		-C $(NTFS_DIR) all
+
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so: $(NTFS_BINARY)
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(NTFS_DIR)/libntfs-3g \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
+	touch -c $@
+
+$(NTFS_TARGET_BINARY): $(NTFS_BINARY)
+	$(TARGET_STRIP) $(NTFS_BINARY)
+	cp $(NTFS_BINARY) $(NTFS_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION): $(DL_DIR)/$(NTFS_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NTFS_PKG_SOURCE)
 	@touch $@
 
-ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
-
 ntfs-package: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE) ntfs-$(NTFS_VERSION)
-
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so: $(NTFS_DIR)/$(NTFS_TARGET_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(NTFS_DIR)/libntfs-3g \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		install
-	touch -c $@
-
-ntfs-precompiled: uclibc fuse-precompiled $(NTFS_DIR)/$(NTFS_TARGET_BINARY) \
-					$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so ntfs
-	$(TARGET_STRIP) $(NTFS_DIR)/$(NTFS_TARGET_BINARY)
-	cp $(NTFS_DIR)/$(NTFS_TARGET_BINARY) $(NTFS_TARGET_DIR)/
+					
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-			cp -a $(TARGET_MAKE_PATH)/../usr/lib/libntfs*.so* root/usr/lib/
+
+root/usr/lib/libntfs-3g.so root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION):
+	@echo 'External compiler used. Skipping ntfs...'
+	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libntfs*.so* root/usr/lib/
+ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION) root/usr/lib/libntfs-3g.so \
+		root/usr/lib/libntfs.so-3g.$(NTFS_LIB_VERSION)
+		
 else
-			$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so*
-			cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so* root/usr/lib/
+
+root/usr/lib/libntfs-3g.so root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION):
+	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so*
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so* root/usr/lib/
+ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so
+
 endif
+
+ntfs-precompiled: uclibc fuse-precompiled ntfs $(NTFS_TARGET_BINARY) \
+					root/usr/lib/libntfs-3g.so root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION)
 
 ntfs-source: $(NTFS_DIR)/.unpacked $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 
 ntfs-clean:
 	-$(MAKE) -C $(NTFS_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE)
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*
+	rm -rf root/usr/lib/libntfs*.so*
 
 ntfs-dirclean:
 	rm -rf $(NTFS_DIR)
 	rm -rf $(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
 	rm -f $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
+
+ntfs-uninstall:
+	rm -f $(NTFS_TARGET_BINARY)
 
 ntfs-list:
 ifeq ($(strip $(DS_PACKAGE_NTFS)),y)

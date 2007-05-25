@@ -93,7 +93,7 @@ tinyproxy: $(PACKAGES_DIR)/.$(TINYPROXY_PKG_NAME)
 tinyproxy-package: $(PACKAGES_DIR)/.$(TINYPROXY_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TINYPROXY_PKG_SOURCE) $(TINYPROXY_PKG_NAME) 
 
-tinyproxy-precompiled: uclibc $(TINYPROXY_TARGET_BINARY) tinyproxy
+tinyproxy-precompiled: uclibc tinyproxy $(TINYPROXY_TARGET_BINARY)
 
 tinyproxy-source: $(TINYPROXY_DIR)/.unpacked $(PACKAGES_DIR)/.$(TINYPROXY_PKG_NAME)
 

@@ -3,20 +3,22 @@ OPENVPN_VERSION:=2.1_rc2
 OPENVPN_SOURCE:=openvpn-$(OPENVPN_VERSION).tar.gz
 OPENVPN_SITE:=http://openvpn.net/release
 OPENVPN_DIR:=$(SOURCE_DIR)/openvpn-$(OPENVPN_VERSION)
-OPENVPN_TARGET_BINARY:=openvpn
+OPENVPN_BINARY:=$(OPENVPN_DIR)/openvpn
 OPENVPN_PKG_VERSION:=0.6c
 OPENVPN_PKG_SITE:=http://netfreaks.org/ds-mod
 ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_LZO)),y)
 OPENVPN_PKG_NAME:=openvpn-lzo-$(OPENVPN_VERSION)
 OPENVPN_PKG_SOURCE:=openvpn-$(OPENVPN_VERSION)-dsmod-$(OPENVPN_PKG_VERSION)-lzo.tar.bz2
 DISABLE_LZO:=
+OPENVPN_LZO:=lzo-precompiled 
 else
 OPENVPN_PKG_NAME:=openvpn-$(OPENVPN_VERSION)
 OPENVPN_PKG_SOURCE:=openvpn-$(OPENVPN_VERSION)-dsmod-$(OPENVPN_PKG_VERSION).tar.bz2
 DISABLE_LZO:=--disable-lzo
+OPENVPN_LZO:=
 endif
-OPENVPN_TARGET_DIR:=$(PACKAGES_DIR)/$(OPENVPN_PKG_NAME)/root/usr/sbin
-
+OPENVPN_TARGET_DIR:=$(PACKAGES_DIR)/$(OPENVPN_PKG_NAME)
+OPENVPN_TARGET_BINARY:=$(OPENVPN_TARGET_DIR)/root/usr/sbin/openvpn
 
 $(DL_DIR)/$(OPENVPN_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(OPENVPN_SITE)/$(OPENVPN_SOURCE)
@@ -68,10 +70,14 @@ $(OPENVPN_DIR)/.configured: $(OPENVPN_DIR)/.unpacked
 	);
 	touch $@
 
-$(OPENVPN_DIR)/$(OPENVPN_TARGET_BINARY): $(OPENVPN_DIR)/.configured
+$(OPENVPN_BINARY): $(OPENVPN_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) -C $(OPENVPN_DIR)
 
+$(OPENVPN_TARGET_BINARY): $(OPENVPN_BINARY)
+	$(TARGET_STRIP) $(OPENVPN_BINARY)
+	cp $(OPENVPN_BINARY) $(OPENVPN_TARGET_BINARY)
+	
 $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME): $(DL_DIR)/$(OPENVPN_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(OPENVPN_PKG_SOURCE)
 	@touch $@
@@ -81,9 +87,7 @@ openvpn: $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME)
 openvpn-package: $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(OPENVPN_PKG_SOURCE) $(OPENVPN_PKG_NAME)
 
-openvpn-precompiled: uclibc lzo-precompiled openssl-precompiled $(OPENVPN_DIR)/$(OPENVPN_TARGET_BINARY) openvpn
-	$(TARGET_STRIP) $(OPENVPN_DIR)/$(OPENVPN_TARGET_BINARY)
-	cp $(OPENVPN_DIR)/$(OPENVPN_TARGET_BINARY) $(OPENVPN_TARGET_DIR)/
+openvpn-precompiled: uclibc $(OPENVPN_LZO) openssl-precompiled openvpn $(OPENVPN_TARGET_BINARY)
 
 openvpn-source: $(OPENVPN_DIR)/.unpacked $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME)
 
@@ -95,6 +99,9 @@ openvpn-dirclean:
 	rm -rf $(OPENVPN_DIR)
 	rm -rf $(PACKAGES_DIR)/$(OPENVPN_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME)
+
+openvpn-uninstall:
+	rm -f $(OPENVPN_TARGET_BINARY)
 
 openvpn-list:
 ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_LZO)),y)

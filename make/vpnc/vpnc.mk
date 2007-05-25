@@ -44,7 +44,7 @@ vpnc-package: $(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(VPNC_PKG_SOURCE) vpnc-$(VPNC_VERSION)
 
 vpnc-precompiled: uclibc libgcrypt-precompiled libgpg-error-precompiled \
-		    $(VPNC_TARGET_BINARY) vpnc
+		    vpnc $(VPNC_TARGET_BINARY)
 
 vpnc-source: $(VPNC_DIR)/.unpacked $(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION)
 

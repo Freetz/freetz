@@ -61,7 +61,7 @@ tcpdump: $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
 tcpdump-package: $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TCPDUMP_PKG_SOURCE) tcpdump-$(TCPDUMP_VERSION)
 
-tcpdump-precompiled: uclibc libpcap-precompiled $(TCPDUMP_TARGET_BINARY) tcpdump
+tcpdump-precompiled: uclibc libpcap-precompiled tcpdump $(TCPDUMP_TARGET_BINARY)
 
 tcpdump-source: $(TCPDUMP_DIR)/.unpacked $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
 

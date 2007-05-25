@@ -15,7 +15,7 @@ spindown-cgi: $(PACKAGES_DIR)/.spindown-cgi-$(SPINDOWN_CGI_VERSION)
 spindown-cgi-package: $(PACKAGES_DIR)/.spindown-cgi-$(SPINDOWN_CGI_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(SPINDOWN_CGI_PKG_SOURCE) spindown-cgi-$(SPINDOWN_CGI_VERSION)
 
-spindown-cgi-precompiled:
+spindown-cgi-precompiled: spindown-cgi
 
 spindown-cgi-source: $(PACKAGES_DIR)/.spindown-cgi-$(SPINDOWN_CGI_VERSION)
 

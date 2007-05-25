@@ -1,13 +1,14 @@
 SCREEN_VERSION:=4.0.2
 SCREEN_SOURCE:=screen-$(SCREEN_VERSION).tar.gz
 SCREEN_SITE:=http://ftp.gnu.org/gnu/screen
-SCREEN_DIR:=$(SOURCE_DIR)/screen-$(SCREEN_VERSION)
 SCREEN_MAKE_DIR:=$(MAKE_DIR)/screen
-SCREEN_TARGET_DIR:=$(PACKAGES_DIR)/screen-$(SCREEN_VERSION)/root/usr/bin
-SCREEN_TARGET_BINARY:=screen
+SCREEN_DIR:=$(SOURCE_DIR)/screen-$(SCREEN_VERSION)
+SCREEN_BINARY:=screen
 SCREEN_PKG_VERSION:=0.1
 SCREEN_PKG_SOURCE:=screen-$(SCREEN_VERSION)-dsmod-$(SCREEN_PKG_VERSION).tar.bz2
 SCREEN_PKG_SITE:=http://www.eiband.info/dsmod
+SCREEN_TARGET_DIR:=$(PACKAGES_DIR)/screen-$(SCREEN_VERSION)
+SCREEN_TARGET_BINARY:=$(SCREEN_TARGET_DIR)/root/usr/bin/screen.bin
 
 
 $(DL_DIR)/$(SCREEN_SOURCE): | $(DL_DIR)
@@ -29,7 +30,7 @@ $(SCREEN_DIR)/.configured: $(SCREEN_DIR)/.unpacked
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
 		$(foreach flag,rename fchmod fchown strerror lstat _exit utimes vsnprintf getcwd setlocale strftime,ac_cv_func_$(flag)=yes ) \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
@@ -58,8 +59,12 @@ $(SCREEN_DIR)/.configured: $(SCREEN_DIR)/.unpacked
 	);
 	touch $@
 
-$(SCREEN_DIR)/$(SCREEN_TARGET_BINARY): $(SCREEN_DIR)/.configured
+$(SCREEN_BINARY): $(SCREEN_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(SCREEN_DIR)
+
+$(SCREEN_TARGET_BINARY): $(SCREEN_BINARY)
+	$(TARGET_STRIP) $(SCREEN_BINARY)
+	cp $(SCREEN_BINARY) $(SCREEN_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION): $(DL_DIR)/$(SCREEN_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(SCREEN_PKG_SOURCE)
@@ -70,9 +75,7 @@ screen: $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION)
 screen-package: $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(SCREEN_PKG_SOURCE) screen-$(SCREEN_VERSION)
 
-screen-precompiled: uclibc ncurses-precompiled $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY) screen
-	$(TARGET_STRIP) $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY)
-	cp $(SCREEN_DIR)/$(SCREEN_TARGET_BINARY) $(SCREEN_TARGET_DIR)/$(SCREEN_TARGET_BINARY).bin
+screen-precompiled: uclibc ncurses-precompiled screen $(SCREEN_TARGET_BINARY)
 
 screen-source: $(SCREEN_DIR)/.unpacked $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION)
 
@@ -85,6 +88,9 @@ screen-dirclean:
 	rm -rf $(PACKAGES_DIR)/screen-$(SCREEN_VERSION)
 	rm -f $(PACKAGES_DIR)/.screen-$(SCREEN_VERSION)
 
+screen-uninstall:
+	rm -f $(SCREEN_TARGET_BINARY)
+	
 screen-list:
 ifeq ($(strip $(DS_PACKAGE_SCREEN)),y)
 	@echo "S99screen-$(SCREEN_VERSION)" >> .static

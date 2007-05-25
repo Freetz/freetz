@@ -84,7 +84,7 @@ tor: $(PACKAGES_DIR)/.$(TOR_PKG_NAME)
 tor-package: $(PACKAGES_DIR)/.$(TOR_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TOR_PKG_SOURCE) $(TOR_PKG_NAME)
 
-tor-precompiled: uclibc openssl-precompiled libevent-precompiled $(TOR_TARGET_BINARY) tor
+tor-precompiled: uclibc openssl-precompiled libevent-precompiled tor $(TOR_TARGET_BINARY)
 
 tor-source: $(TOR_DIR)/.unpacked $(PACKAGES_DIR)/.$(TOR_PKG_NAME)
 

@@ -18,7 +18,7 @@ orangebox: $(PACKAGES_DIR)/.orangebox-$(ORANGEBOX_VERSION)
 orangebox-package: $(PACKAGES_DIR)/.orangebox-$(ORANGEBOX_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(ORANGEBOX_PKG_SOURCE) orangebox-$(ORANGEBOX_VERSION)
 
-orangebox-precompiled:
+orangebox-precompiled: orangebox
 
 orangebox-source: $(PACKAGES_DIR)/.orangebox-$(ORANGEBOX_VERSION)
 

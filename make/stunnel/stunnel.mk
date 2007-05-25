@@ -2,23 +2,22 @@
 STUNNEL_VERSION:=4.20
 STUNNEL_SOURCE:=stunnel-$(STUNNEL_VERSION).tar.gz
 STUNNEL_SITE:=http://www.stunnel.org/download/stunnel/src
-STUNNEL_DIR:=$(SOURCE_DIR)/stunnel-$(STUNNEL_VERSION)
 STUNNEL_MAKE_DIR:=$(MAKE_DIR)/stunnel
-STUNNEL_TARGET_BINARY:=src/stunnel
+STUNNEL_DIR:=$(SOURCE_DIR)/stunnel-$(STUNNEL_VERSION)
+STUNNEL_BINARY:=$(STUNNEL_DIR)/src/stunnel
 STUNNEL_PKG_NAME:=stunnel-$(STUNNEL_VERSION)
 STUNNEL_PKG_VERSION:=0.1b
 STUNNEL_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 STUNNEL_PKG_NAME:=stunnel-$(STUNNEL_VERSION)
 STUNNEL_PKG_SOURCE:=stunnel-$(STUNNEL_VERSION)-dsmod-$(STUNNEL_PKG_VERSION).tar.bz2
-STUNNEL_TARGET_DIR:=$(PACKAGES_DIR)/$(STUNNEL_PKG_NAME)/root/usr/sbin
-SSL_PATH:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
+STUNNEL_TARGET_DIR:=$(PACKAGES_DIR)/$(STUNNEL_PKG_NAME)
+STUNNEL_TARGET_BINARY:=$(STUNNEL_TARGET_DIR)/root/usr/sbin/stunnel
 
 
 $(DL_DIR)/$(STUNNEL_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(STUNNEL_SITE)/$(STUNNEL_SOURCE)
 
 $(DL_DIR)/$(STUNNEL_PKG_SOURCE): | $(DL_DIR)
-#	@cp $(ADDON_DIR)/$(STUNNEL_PKG_SOURCE) $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(STUNNEL_PKG_SOURCE) $(STUNNEL_PKG_SITE)
 
 $(STUNNEL_DIR)/.unpacked: $(DL_DIR)/$(STUNNEL_SOURCE)
@@ -32,8 +31,8 @@ $(STUNNEL_DIR)/.configured:  $(STUNNEL_DIR)/.unpacked
 	( cd $(STUNNEL_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		LDFLAGS="-static-libgcc -L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
+		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
+		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -54,13 +53,17 @@ $(STUNNEL_DIR)/.configured:  $(STUNNEL_DIR)/.unpacked
 		$(DISABLE_NLS) \
 		--disable-libwrap \
 		--with-threads=fork \
-		--with-ssl="$(SSL_PATH)" \
+		--with-ssl="$(TARGET_MAKE_PATH)/../usr" \
 	);
 	touch $@
 
-$(STUNNEL_DIR)/$(STUNNEL_TARGET_BINARY): $(STUNNEL_DIR)/.configured
+$(STUNNEL_BINARY): $(STUNNEL_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) -C $(STUNNEL_DIR)
+
+$(STUNNEL_TARGET_BINARY): $(STUNNEL_BINARY)
+	$(TARGET_STRIP) $(STUNNEL_BINARY)
+	cp $(STUNNEL_BINARY) $(STUNNEL_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME): $(DL_DIR)/$(STUNNEL_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(STUNNEL_PKG_SOURCE)
@@ -71,9 +74,7 @@ stunnel: $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME)
 stunnel-package: $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(STUNNEL_PKG_SOURCE) $(STUNNEL_PKG_NAME)
 
-stunnel-precompiled: uclibc openssl-precompiled $(STUNNEL_DIR)/$(STUNNEL_TARGET_BINARY) stunnel
-	$(TARGET_STRIP) $(STUNNEL_DIR)/$(STUNNEL_TARGET_BINARY)
-	cp $(STUNNEL_DIR)/$(STUNNEL_TARGET_BINARY) $(STUNNEL_TARGET_DIR)/
+stunnel-precompiled: uclibc openssl-precompiled  stunnel $(STUNNEL_TARGET_BINARY)
 
 stunnel-source: $(STUNNEL_DIR)/.unpacked $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME)
 
@@ -85,6 +86,9 @@ stunnel-dirclean:
 	rm -rf $(STUNNEL_DIR)
 	rm -rf $(PACKAGES_DIR)/$(STUNNEL_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME)
+
+stunnel-uninstall:
+	rm -f $(STUNNEL_TARGET_BINARY)
 
 stunnel-list:
 ifeq ($(strip $(DS_PACKAGE_STUNNEL)),y)

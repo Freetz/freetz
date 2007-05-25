@@ -15,7 +15,7 @@ wol-cgi: $(PACKAGES_DIR)/.wol-cgi-$(WOL_CGI_VERSION)
 wol-cgi-package: $(PACKAGES_DIR)/.wol-cgi-$(WOL_CGI_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(WOL_CGI_PKG_SOURCE) wol-cgi-$(WOL_CGI_VERSION)
 
-wol-cgi-precompiled:
+wol-cgi-precompiled: wol-cgi
 
 wol-cgi-source: $(PACKAGES_DIR)/.wol-cgi-$(WOL_CGI_VERSION)
 

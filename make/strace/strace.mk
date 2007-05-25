@@ -1,12 +1,13 @@
 STRACE_VERSION:=4.5.15
 STRACE_SOURCE:=strace-$(STRACE_VERSION).tar.bz2
 STRACE_SITE:=http://mesh.dl.sourceforge.net/sourceforge/strace
-STRACE_DIR:=$(SOURCE_DIR)/strace-$(STRACE_VERSION)
 STRACE_MAKE_DIR:=$(MAKE_DIR)/strace
-STRACE_TARGET_DIR:=$(PACKAGES_DIR)/strace-$(STRACE_VERSION)/root/usr/sbin
-STRACE_TARGET_BINARY:=strace
+STRACE_DIR:=$(SOURCE_DIR)/strace-$(STRACE_VERSION)
+STRACE_BINARY:=$(STRACE_DIR)/strace
 STRACE_PKG_SOURCE:=strace-$(STRACE_VERSION)-dsmod.tar.bz2
 STRACE_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
+STRACE_TARGET_DIR:=$(PACKAGES_DIR)/strace-$(STRACE_VERSION)
+STRACE_TARGET_BINARY:=$(STRACE_TARGET_DIR)/root/usr/sbin/strace
 
 $(DL_DIR)/$(STRACE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(STRACE_SITE)/$(STRACE_SOURCE)
@@ -50,8 +51,12 @@ $(STRACE_DIR)/.configured: $(STRACE_DIR)/.unpacked
 	);
 	touch $@
 
-$(STRACE_DIR)/$(STRACE_TARGET_BINARY): $(STRACE_DIR)/.configured
+$(STRACE_BINARY): $(STRACE_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(STRACE_DIR)
+
+$(STRACE_TARGET_BINARY): $(STRACE_BINARY)
+	$(TARGET_STRIP) $(STRACE_BINARY)
+	cp $(STRACE_BINARY) $(STRACE_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.strace-$(STRACE_VERSION): $(DL_DIR)/$(STRACE_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(STRACE_PKG_SOURCE)
@@ -62,9 +67,7 @@ strace: $(PACKAGES_DIR)/.strace-$(STRACE_VERSION)
 strace-package: $(PACKAGES_DIR)/.strace-$(STRACE_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(STRACE_PKG_SOURCE) strace-$(STRACE_VERSION)
 
-strace-precompiled: uclibc $(STRACE_DIR)/$(STRACE_TARGET_BINARY) strace
-	$(TARGET_STRIP) $(STRACE_DIR)/$(STRACE_TARGET_BINARY)
-	cp $(STRACE_DIR)/$(STRACE_TARGET_BINARY) $(STRACE_TARGET_DIR)/
+strace-precompiled: uclibc strace $(STRACE_TARGET_BINARY)
 
 strace-source: $(STRACE_DIR)/.unpacked $(PACKAGES_DIR)/.strace-$(STRACE_VERSION)
 
@@ -77,6 +80,9 @@ strace-dirclean:
 	rm -rf $(PACKAGES_DIR)/strace-$(STRACE_VERSION)
 	rm -f $(PACKAGES_DIR)/.strace-$(STRACE_VERSION)
 
+strace-uninstall:
+	rm -f $(STRACE_TARGET_BINARY)
+	
 strace-list:
 ifeq ($(strip $(DS_PACKAGE_STRACE)),y)
 	@echo "S40strace-$(STRACE_VERSION)" >> .static

@@ -1,16 +1,16 @@
 NETSNMP_VERSION:=5.1.2
 NETSNMP_SOURCE:=net-snmp-$(NETSNMP_VERSION).tar.gz
 NETSNMP_SITE:=http://mesh.dl.sourceforge.net/sourceforge/net-snmp
-NETSNMP_DIR:=$(SOURCE_DIR)/net-snmp-$(NETSNMP_VERSION)
 NETSNMP_MAKE_DIR:=$(MAKE_DIR)/netsnmp
-NETSNMP_TARGET_BINARY:=targetroot/usr/sbin/snmpd
+NETSNMP_DIR:=$(SOURCE_DIR)/net-snmp-$(NETSNMP_VERSION)
+NETSNMP_BINARY:=$(NETSNMP_DIR)/agent/snmpd
 NETSNMP_PKG_VERSION:=0.3
 NETSNMP_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 NETSNMP_PKG_NAME:=netsnmp-$(NETSNMP_VERSION)
 NETSNMP_PKG_SOURCE:=netsnmp-$(NETSNMP_VERSION)-dsmod-$(NETSNMP_PKG_VERSION).tar.bz2
-NETSNMP_TARGET_DIR:=$(PACKAGES_DIR)/$(NETSNMP_PKG_NAME)/root/usr/sbin
-NETSNMP_TARGET_LIBS:=targetroot/usr/lib/*.so*
-NETSNMP_TARGET_LIBDIR:=$(PACKAGES_DIR)/$(NETSNMP_PKG_NAME)/root/usr/lib
+NETSNMP_TARGET_DIR:=$(PACKAGES_DIR)/$(NETSNMP_PKG_NAME)
+NETSNMP_TARGET_BINARY:=$(NETSNMP_TARGET_DIR)/root/usr/sbin/snmpd
+NETSNMP_TARGET_LIBS:=$(NETSNMP_TARGET_DIR)/root/usr/lib/*.so*
 
 SNMP_MIB_MODULES_INCLUDED:=\
   host/hr_device \
@@ -66,7 +66,7 @@ SNMP_TRANSPORTS_EXCLUDED:=Callback TCP TCPv6 UDPv6 Unix
 
 PKG_CONFIGURE_OPTIONS:=\
   --enable-shared \
-  --enable-static \
+  --disable-static \
   --with-endianness=little \
   --with-logfile=/var/log/snmpd.log \
   --with-persistent-directory=/var/lib/snmp \
@@ -111,6 +111,7 @@ $(NETSNMP_DIR)/.configured: $(NETSNMP_DIR)/.unpacked
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
 		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		ac_cv_CAN_USE_SYSCTL=no \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -134,13 +135,26 @@ $(NETSNMP_DIR)/.configured: $(NETSNMP_DIR)/.unpacked
 		$(PKG_CONFIGURE_OPTIONS) \
 	);
 	touch $@
+	
+$(NETSNMP_BINARY): $(NETSNMP_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
+		$(MAKE1) -C $(NETSNMP_DIR)
 
-$(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY): $(NETSNMP_DIR)/.configured
-	PATH="$(TARGET_PATH)" $(MAKE1) -C $(NETSNMP_DIR)
-	PATH="$(TARGET_PATH)" $(MAKE) -C $(NETSNMP_DIR) \
-		INSTALL_PREFIX="`pwd`/$(NETSNMP_DIR)/targetroot" \
-		install
-	touch -c $@
+$(NETSNMP_TARGET_BINARY): $(NETSNMP_BINARY)
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) INSTALL_PREFIX="$(shell pwd)/$(NETSNMP_TARGET_DIR)/root" \
+	    -C $(NETSNMP_DIR) install;
+	# Remove unnecessary things 
+	rm -rf $(NETSNMP_TARGET_DIR)/root/share $(NETSNMP_TARGET_DIR)/root/usr/info \
+		$(NETSNMP_TARGET_DIR)/root/usr/man $(NETSNMP_TARGET_DIR)/root/usr/share \
+		$(NETSNMP_TARGET_DIR)/root/usr/include
+	rm -rf $(NETSNMP_TARGET_DIR)/root/usr/lib/*.la
+	# Install the "broken" headers
+	cp $(NETSNMP_DIR)/agent/mibgroup/struct.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
+	cp $(NETSNMP_DIR)/agent/mibgroup/util_funcs.h $(TARGET_MAKE_PATH)/../include/net-snmp
+	cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_MAKE_PATH)/../include/net-snmp/library
+	cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
+	$(TARGET_STRIP) $(NETSNMP_TARGET_BINARY) $(NETSNMP_TARGET_LIBS)
 
 $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME): $(DL_DIR)/$(NETSNMP_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NETSNMP_PKG_SOURCE)
@@ -151,11 +165,7 @@ netsnmp: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 netsnmp-package: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NETSNMP_PKG_SOURCE) $(NETSNMP_PKG_NAME)
 
-netsnmp-precompiled: uclibc $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY) netsnmp
-	$(TARGET_STRIP) $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY) \
-	                $(NETSNMP_DIR)/$(NETSNMP_TARGET_LIBS)
-	cp $(NETSNMP_DIR)/$(NETSNMP_TARGET_BINARY) $(NETSNMP_TARGET_DIR)
-	cp -a $(NETSNMP_DIR)/$(NETSNMP_TARGET_LIBS) $(NETSNMP_TARGET_LIBDIR)
+netsnmp-precompiled: uclibc netsnmp $(NETSNMP_TARGET_BINARY) 
 
 netsnmp-source: $(NETSNMP_DIR)/.unpacked $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 
@@ -167,6 +177,10 @@ netsnmp-dirclean:
 	rm -rf $(NETSNMP_DIR)
 	rm -rf $(PACKAGES_DIR)/$(NETSNMP_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
+
+netsnmp-uninstall:
+	rm -f $(NETSNMP_TARGET_BINARY) 
+	rm -f $(NETSNMP_TARGET_LIBS)
 
 netsnmp-list:
 ifeq ($(strip $(DS_PACKAGE_NETSNMP)),y)
