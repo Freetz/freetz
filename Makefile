@@ -195,7 +195,7 @@ endif
 	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
 	@mv $(BUILD_DIR)/$(DS_TYPE_STRING)*.image ./
 
-firmware: firmware-nocompile precompiled
+firmware: precompiled firmware-nocompile 
 
 test: $(BUILD_DIR)/.modified
 	@echo "no tests defined"
