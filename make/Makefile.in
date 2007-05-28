@@ -72,11 +72,9 @@ TARGET_CONFIGURE_OPTS:= \
 DL_SITE:=$(strip $(subst ",, $(DS_DL_SITE)))
 DL_SOURCE:=$(strip $(subst ",, $(DS_DL_SOURCE)))
 
-ifeq ($(strip $(DS_DL_SOURCE2)),y)
-
+ifneq ($(strip $(DS_DL_SOURCE2)),)
 DL_SITE2:=$(strip $(subst ",, $(DS_DL_SITE2)))
 DL_SOURCE2:=$(strip $(subst ",, $(DS_DL_SOURCE2)))
-
 endif
 
 LIBGCC:=libgcc_s.so.1

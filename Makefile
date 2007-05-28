@@ -162,7 +162,7 @@ else
 endif
 
 ifneq ($(strip $(DL_SOURCE2)),)
-IMAGE2:=$(DL_DIR)/$(DS_DL_SOURCE2)
+IMAGE2:=$(DL_DIR)/$(DL_SOURCE2)
 DL_IMAGE+=$(IMAGE2)
 
 $(DL_DIR)/$(DL_SOURCE2):
