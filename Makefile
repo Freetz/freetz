@@ -191,7 +191,6 @@ firmware-nocompile: tools $(DL_IMAGE) package-list exclude-lists
 else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
 endif
-	@rm -f firmware_*.image
 	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
 	@mv $(BUILD_DIR)/$(DS_TYPE_STRING)*.image ./
 
@@ -326,7 +325,7 @@ common-clean:
 	./fwmod_custom clean
 	rm -f .static .dynamic
 	rm -f .exclude .exclude-dist kernel/.exclude
-	rm -f firmware_*.image
+	rm -f *.image
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
