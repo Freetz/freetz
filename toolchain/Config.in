@@ -4,7 +4,7 @@ comment "BIG FAT WARNING: Never build a firmware with current settings!"
 choice
 
 	prompt "Target compiler"
-	default DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
 	depends on ! DS_DOWNLOAD_TOOLCHAIN
 
 	config DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
@@ -13,11 +13,11 @@ choice
 	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 		bool "gcc-4.1.1-uClibc-0.9.28"	
 
-config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
 		bool "gcc-4.1.2-uClibc-0.9.28"	
-# not working
-#	config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
-#		bool "gcc-4.1.2-uClibc-0.9.28.3"
+
+	config DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+		bool "gcc-4.2.0-uClibc-0.9.28"			
 	
 endchoice
 
@@ -26,24 +26,24 @@ config DS_TARGET_GCC_VERSION
 	default "4.1.0"		if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
-	default "4.1.2"		if DS_DOWNLOAD_TOOLCHAIN
+	default "4.2.0"		if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "4.2.0"		if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_TARGET_UCLIBC_VERSION
 	string
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-	default "0.9.28.3"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
+	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
 	default "0.9.28"	if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_TARGET_BINUTILS_VERSION
 	string
 	default "2.16.91.0.6"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
-	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28_3
-	default "2.17"		if DS_DOWNLOAD_TOOLCHAIN
+	default "2.17"			if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "2.17"			if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "2.17.50.0.16"	if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "2.17.50.0.16"	if DS_DOWNLOAD_TOOLCHAIN
 
 choice
 
@@ -70,7 +70,8 @@ config DS_TARGET_UCLIBC_REF
 
 config DS_TARGET_GXX
 	bool "Build g++ for target toolchain" if DS_BUILD_TOOLCHAIN || DS_EXTERNAL_TOOLCHAIN
-	default y
+	default y if ! DS_DOWNLOAD_TOOLCHAIN
+	default n if DS_DOWNLOAD_TOOLCHAIN
 	help
 		g++ is the traditional nickname of GNU C++, a freely redistributable
 		C++ compiler. It is part of gcc, the GNU compiler suite, and is
@@ -78,7 +79,8 @@ config DS_TARGET_GXX
 
 config DS_TARGET_CCACHE
 	bool "Build ccache for target toolchain" if DS_BUILD_TOOLCHAIN || DS_EXTERNAL_TOOLCHAIN
-	default y
+	default y if ! DS_DOWNLOAD_TOOLCHAIN
+	default n if DS_DOWNLOAD_TOOLCHAIN
 	help
 		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
 		compilers, using the -E compiler switch and a hash to detect when a
