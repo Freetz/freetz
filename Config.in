@@ -498,14 +498,12 @@ comment "Patches --------------------------------"
 
 config DS_REMOVE_HELP
 	bool "Remove help"
-	depends on ! DS_TYPE_SPEEDPORT_W900V
 	default n
 	help
 	    Removes the help pages from the web menu.
 
 config DS_REMOVE_ASSISTANT
 	bool "Remove assistant"
-	depends on ! DS_TYPE_SPEEDPORT_W900V
 	default n
 	help
 	    Removes the network assistant from the web menu.
@@ -540,7 +538,7 @@ config DS_PATCH_ATA
 
 config DS_PATCH_ENUM
 	bool "Patch enum"
-	depends on DS_HAS_PHONE && ! DS_TYPE_SPEEDPORT_W900V
+	depends on DS_HAS_PHONE
 	default n
 	help
 	    Patches the enum configuration pages into the web menu.
@@ -554,8 +552,7 @@ config DS_PATCH_ENUM
 
 config DS_PATCH_SIGNED
 	bool "Patch web menu signed message"
-	depends on ! DS_TYPE_SPEEDPORT_W900V && ! DS_TYPE_2170 && ! DS_TYPE_WLAN_3131 \
-		     && ! DS_TYPE_WLAN_3170
+	depends on ! DS_TYPE_2170 && ! DS_TYPE_WLAN_3131 && ! DS_TYPE_WLAN_3170
 	default n
         help
 	    Hides the "unsupported changes" message from the web interface.
