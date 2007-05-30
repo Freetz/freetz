@@ -1,6 +1,6 @@
 # released under the GNU public license v2
 #
-TOR_VERSION:=0.1.2.13
+TOR_VERSION:=0.1.2.14
 TOR_SOURCE:=tor-$(TOR_VERSION).tar.gz
 TOR_SITE:=http://tor.eff.org/dist
 TOR_MAKE_DIR:=$(MAKE_DIR)/tor
@@ -21,9 +21,9 @@ $(DL_DIR)/$(TOR_PKG_SOURCE): | $(DL_DIR)
 
 $(TOR_DIR)/.unpacked: $(DL_DIR)/$(TOR_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(TOR_SOURCE)
-	for i in $(TOR_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(TOR_DIR) -p1 < $$i; \
-	done
+	#for i in $(TOR_MAKE_DIR)/patches/*.patch; do \
+	#	patch -d $(TOR_DIR) -p1 < $$i; \
+	#done
 	touch $@
 
 $(TOR_DIR)/.configured: $(TOR_DIR)/.unpacked 
