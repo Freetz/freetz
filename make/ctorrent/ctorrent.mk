@@ -18,9 +18,9 @@ $(DL_DIR)/$(CTORRENT_PKG_SOURCE): | $(DL_DIR)
 
 $(CTORRENT_DIR)/.unpacked: $(DL_DIR)/$(CTORRENT_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CTORRENT_SOURCE)
-#	for i in $(CTORRENT_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(CTORRENT_DIR) -p1 < $$i; \
-#	done
+	for i in $(CTORRENT_MAKE_DIR)/patches/*.patch; do \
+		patch -d $(CTORRENT_DIR) -p0 < $$i; \
+	done
 	touch $@
 
 $(CTORRENT_DIR)/.configured: $(CTORRENT_DIR)/.unpacked 
@@ -57,7 +57,7 @@ ctorrent: $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
 ctorrent-package: $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CTORRENT_PKG_SOURCE) ctorrent-$(CTORRENT_VERSION)
 
-ctorrent-precompiled: uclibc ctorrent $(CTORRENT_TARGET_BINARY)
+ctorrent-precompiled: uclibc uclibcxx ctorrent $(CTORRENT_TARGET_BINARY)
 
 ctorrent-source: $(CTORRENT_DIR)/.unpacked $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
 
