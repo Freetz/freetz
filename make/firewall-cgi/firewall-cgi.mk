@@ -14,7 +14,8 @@ firewall-cgi: $(PACKAGES_DIR)/.firewall-cgi-$(FIREWALL_CGI_VERSION)
 firewall-cgi-package: $(PACKAGES_DIR)/.firewall-cgi-$(FIREWALL_CGI_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(FIREWALL_CGI_PKG_SOURCE) firewall-cgi-$(FIREWALL_CGI_VERSION)
 
-firewall-cgi-precompiled:
+# If a compile should ever be necessary, don't forget to add 'uclibc' to prerequisites
+firewall-cgi-precompiled: firewall-cgi
 
 firewall-cgi-source: $(PACKAGES_DIR)/.firewall-cgi-$(FIREWALL_CGI_VERSION)
 
@@ -24,6 +25,9 @@ firewall-cgi-clean:
 firewall-cgi-dirclean:
 	rm -rf $(PACKAGES_DIR)/firewall-cgi-$(FIREWALL_CGI_VERSION)
 	rm -f $(PACKAGES_DIR)/.firewall-cgi-$(FIREWALL_CGI_VERSION)
+
+# Nothing to do here at the moment
+firewall-cgi-uninstall:
 
 firewall-cgi-list:
 ifeq ($(strip $(DS_PACKAGE_FIREWALL_CGI)),y)

@@ -1,18 +1,25 @@
 FUSE_VERSION:=2.6.5
 FUSE_SOURCE:=fuse-$(FUSE_VERSION).tar.gz
 FUSE_SITE:=http://mesh.dl.sourceforge.net/sourceforge/fuse
-FUSE_DIR:=$(SOURCE_DIR)/fuse-$(FUSE_VERSION)
 FUSE_MAKE_DIR:=$(MAKE_DIR)/fuse
+FUSE_DIR:=$(SOURCE_DIR)/fuse-$(FUSE_VERSION)
+FUSE_BINARY:=$(FUSE_DIR)/util/fusermount
+FUSE_MOD_BINARY:=$(FUSE_DIR)/kernel/fuse.ko
+FUSE_LIB_BINARY:=$(FUSE_DIR)/lib/.libs/libfuse.so.$(FUSE_VERSION)
 FUSE_PKG_NAME:=fuse-$(FUSE_VERSION)
 FUSE_PKG_VERSION:=0.1
 FUSE_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 FUSE_PKG_SOURCE:=fuse-$(FUSE_VERSION)-dsmod-$(FUSE_PKG_VERSION).tar.bz2
-FUSE_TARGET_BINARY:=util/fusermount
-FUSE_TARGET_DIR:=$(PACKAGES_DIR)/$(FUSE_PKG_NAME)/root/usr/sbin
+FUSE_TARGET_DIR:=$(PACKAGES_DIR)/$(FUSE_PKG_NAME)
+FUSE_TARGET_BINARY:=$(FUSE_TARGET_DIR)/root/usr/sbin/fusermount
+FUSE_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
+FUSE_MOD_TARGET_BINARY:=$(FUSE_MOD_TARGET_DIR)/fuse.ko
+FUSE_LIB_TARGET_DIR:=root/usr/lib
+FUSE_LIB_TARGET_BINARY:=$(FUSE_LIB_TARGET_DIR)/libfuse.so.$(FUSE_VERSION)
 
 $(DL_DIR)/$(FUSE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(FUSE_SITE)/$(FUSE_SOURCE)
-	
+
 $(DL_DIR)/$(FUSE_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(FUSE_PKG_SOURCE) $(FUSE_PKG_SITE)
 
@@ -66,51 +73,54 @@ $(FUSE_DIR)/.configured: $(FUSE_DIR)/.unpacked
 	);
 	touch $@
 
-$(FUSE_DIR)/.compiled: $(FUSE_DIR)/.configured
+$(FUSE_BINARY) $(FUSE_MOD_BINARY) $(FUSE_LIB_BINARY): $(FUSE_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
+		-C $(FUSE_DIR) \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
-		-C $(FUSE_DIR) all
-	touch $@
+		all
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so: $(FUSE_DIR)/.compiled
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$(FUSE_VERSION): $(FUSE_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
 		-C $(FUSE_DIR) \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	touch -c $@
-
-$(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY): $(FUSE_DIR)/.compiled $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
-	$(TARGET_STRIP) $(FUSE_DIR)/$(FUSE_TARGET_BINARY)
-	cp $(FUSE_DIR)/$(FUSE_TARGET_BINARY) $(FUSE_TARGET_DIR)/
-	touch -c $@ 
-
-$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse: $(FUSE_DIR)/.compiled
-	mkdir -p $(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
-	cp -a $(FUSE_DIR)/kernel/fuse.ko $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
 
 $(PACKAGES_DIR)/.$(FUSE_PKG_NAME): $(DL_DIR)/$(FUSE_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(FUSE_PKG_SOURCE)
 	@touch $@
 
+$(FUSE_TARGET_BINARY): $(FUSE_BINARY) $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
+	$(TARGET_STRIP) $(FUSE_BINARY)
+	cp $(FUSE_BINARY) $(FUSE_TARGET_BINARY)
+
+$(FUSE_MOD_TARGET_BINARY): $(FUSE_MOD_BINARY)
+	@echo "### KERNEL_MODULES_DIR  := $(KERNEL_MODULES_DIR)"
+	@echo "### FUSE_MOD_TARGET_DIR := $(FUSE_MOD_TARGET_DIR)"
+	mkdir -p $(FUSE_MOD_TARGET_DIR)
+	$(TARGET_STRIP) $(FUSE_MOD_BINARY)
+	cp $(FUSE_MOD_BINARY) $(FUSE_MOD_TARGET_BINARY)
+
+fuse: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
+
 ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-fuse fuse-precompiled: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME) \
-		       $(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY) \
-		       $(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
+
+$(FUSE_LIB_TARGET_BINARY): $(TARGET_MAKE_PATH)/../usr/lib/libfuse.so.$(FUSE_VERSION)
 	@echo 'External compiler used. Trying to copy libfuse from external Toolchain...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libfuse*.so* root/usr/lib/
+	cp $(TARGET_MAKE_PATH)/../usr/lib/libfuse*.so* $(FUSE_LIB_TARGET_DIR)
+
+fuse-precompiled: fuse $(FUSE_TARGET_BINARY) $(FUSE_MOD_TARGET_BINARY) $(FUSE_LIB_TARGET_BINARY)
 
 else
-fuse:	$(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
-	
-fuse-precompiled: uclibc $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so \
-					$(FUSE_TARGET_DIR)/$(FUSE_TARGET_BINARY) \
-					$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse \
-					fuse
+
+$(FUSE_LIB_TARGET_BINARY): $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$(FUSE_VERSION)
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* root/usr/lib/
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_LIB_TARGET_DIR)
+
+fuse-precompiled: uclibc fuse $(FUSE_TARGET_BINARY) $(FUSE_MOD_TARGET_BINARY) $(FUSE_LIB_TARGET_BINARY)
+
 endif
 
 fuse-package: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
@@ -123,7 +133,9 @@ fuse-clean:
 	rm -f $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE)
 	
 fuse-uninstall:
-	rm -rf root/usr/lib/libfuse*.so*
+	rm -f $(FUSE_TARGET_BINARY)
+	rm -f $(FUSE_MOD_TARGET_BINARY)
+	rm -rf $(FUSE_LIB_TARGET_DIR)/libfuse*.so*
 
 fuse-dirclean:
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so.*
