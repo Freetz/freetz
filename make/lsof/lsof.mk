@@ -2,12 +2,13 @@
 LSOF_VERSION:=4.78
 LSOF_SOURCE:=lsof_$(LSOF_VERSION).dfsg.1.orig.tar.gz
 LSOF_SITE:=http://ftp2.de.debian.org/debian/pool/main/l/lsof
-LSOF_DIR:=$(SOURCE_DIR)/lsof-$(LSOF_VERSION).dfsg.1
 LSOF_MAKE_DIR:=$(MAKE_DIR)/lsof
-LSOF_TARGET_DIR:=$(PACKAGES_DIR)/lsof-$(LSOF_VERSION)/root/usr/bin
-LSOF_TARGET_BINARY:=lsof
+LSOF_DIR:=$(SOURCE_DIR)/lsof-$(LSOF_VERSION).dfsg.1
+LSOF_BINARY:=$(LSOF_DIR)/lsof
 LSOF_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 LSOF_PKG_SOURCE:=lsof-$(LSOF_VERSION)-dsmod-binary-only.tar.bz2
+LSOF_TARGET_DIR:=$(PACKAGES_DIR)/lsof-$(LSOF_VERSION)
+LSOF_TARGET_BINARY:=$(LSOF_TARGET_DIR)/root/usr/bin/lsof
 
 LSOF_CFLAGS:=
 ifeq ($(DS_TARGET_LFS),y)
@@ -31,10 +32,14 @@ $(LSOF_DIR)/.configured: $(LSOF_DIR)/.unpacked
 	(cd $(LSOF_DIR); echo n | $(TARGET_CONFIGURE_OPTS) DEBUG="$(TARGET_CFLAGS) $(LSOF_CFLAGS)" ./Configure linux)
 	touch $@
 
-$(LSOF_DIR)/$(LSOF_TARGET_BINARY): $(LSOF_DIR)/.configured
+$(LSOF_BINARY): $(LSOF_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) $(TARGET_CONFIGURE_OPTS) \
 	CC=$(TARGET_CC) CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="-static-libgcc" \
 	DEBUG="$(TARGET_CFLAGS) $(DS_LSOF_CFLAGS)" -C $(LSOF_DIR)
+
+$(LSOF_TARGET_BINARY): $(LSOF_BINARY) 
+	$(TARGET_STRIP) $(LSOF_BINARY) 
+	cp $(LSOF_BINARY) $(LSOF_TARGET_BINARY)
 
 $(PACKAGES_DIR)/.lsof-$(LSOF_VERSION): $(DL_DIR)/$(LSOF_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LSOF_PKG_SOURCE)
@@ -45,9 +50,7 @@ lsof: $(PACKAGES_DIR)/.lsof-$(LSOF_VERSION)
 lsof-package: $(PACKAGES_DIR)/.lsof-$(LSOF_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LSOF_PKG_SOURCE) lsof-$(LSOF_VERSION)
 
-lsof-precompiled: uclibc $(LSOF_DIR)/$(LSOF_TARGET_BINARY) lsof
-	$(TARGET_STRIP) $(LSOF_DIR)/$(LSOF_TARGET_BINARY)
-	cp $(LSOF_DIR)/$(LSOF_TARGET_BINARY) $(LSOF_TARGET_DIR)/
+lsof-precompiled: uclibc lsof $(LSOF_TARGET_BINARY) 
 
 lsof-source: $(LSOF_DIR)/.unpacked $(PACKAGES_DIR)/.lsof-$(LSOF_VERSION)
 
@@ -59,6 +62,9 @@ lsof-dirclean:
 	rm -rf $(LSOF_DIR)
 	rm -rf $(PACKAGES_DIR)/lsof-$(LSOF_VERSION)
 	rm -f $(PACKAGES_DIR)/.lsof-$(LSOF_VERSION)
+
+lsof-uninstall: 
+            rm -f $(LSOF_TARGET_BINARY)
 
 lsof-list:
 ifeq ($(strip $(DS_PACKAGE_LSOF)),y)

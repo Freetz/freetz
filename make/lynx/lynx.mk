@@ -1,16 +1,18 @@
 LYNX_VERSION:=2.8.5
 LYNX_SOURCE:=lynx$(LYNX_VERSION).tar.bz2
 LYNX_SITE:=http://lynx.isc.org/lynx$(LYNX_VERSION)
-LYNX_DIR:=$(SOURCE_DIR)/lynx2-8-5
 LYNX_MAKE_DIR:=$(MAKE_DIR)/lynx
+LYNX_DIR:=$(SOURCE_DIR)/lynx2-8-5
+LYNX_BINARY:=$(LYNX_DIR)/lynx
 LYNX_PKG_VERSION:=0.1
 LYNX_PKG_SITE:=http://www.heimpold.de/dsmod
 LYNX_PKG_NAME:=lynx-$(LYNX_VERSION)
 LYNX_PKG_SOURCE:=lynx-$(LYNX_VERSION)-dsmod-$(LYNX_PKG_VERSION).tar.bz2
-LYNX_TARGET_DIR:=$(PACKAGES_DIR)/$(LYNX_PKG_NAME)/root/usr/bin
-LYNX_TARGET_BINARY:=lynx
-LYNX_TARGET_CFGDIR:=$(PACKAGES_DIR)/$(LYNX_PKG_NAME)/root/etc
-LYNX_TARGET_CFG:=lynx.cfg
+LYNX_CFG:=$(LYNX_DIR)/lynx.cfg
+LYNX_TARGET_CFGDIR:=$(PACKAGES_DIR)/$(LYNX_PKG_NAME)
+LYNX_TARGET_CFG:=$(LYNX_TARGET_CFGDIR)/root/etc/lynx.cfg
+LYNX_TARGET_DIR:=$(PACKAGES_DIR)/$(LYNX_PKG_NAME)
+LYNX_TARGET_BINARY:=$(LYNX_TARGET_DIR)/root/usr/bin/lynx
 
 LYNX_CONFIGURE_OPTIONS=\
   --enable-warnings \
@@ -73,9 +75,16 @@ $(LYNX_DIR)/.configured: $(LYNX_DIR)/.unpacked
 	);
 	touch $@
 
-$(LYNX_DIR)/$(LYNX_TARGET_BINARY): $(LYNX_DIR)/.configured
+$(LYNX_BINARY) $(LYNX_CFG): $(LYNX_DIR)/.configured
 	PATH="$(TARGET_PATH)" LD="$(TARGET_LD)" $(MAKE) -C $(LYNX_DIR)
 	touch $@
+
+$(LYNX_TARGET_BINARY): $(LYNX_BINARY) 
+	$(TARGET_STRIP) $(LYNX_BINARY) 
+	cp $(LYNX_BINARY) $(LYNX_TARGET_BINARY)
+
+$(LYNX_TARGET_CFG): $(LYNX_CFG)
+		cp $(LYNX_CFG) $(LYNX_TARGET_CFG)
 
 $(PACKAGES_DIR)/.$(LYNX_PKG_NAME): $(DL_DIR)/$(LYNX_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LYNX_PKG_SOURCE)
@@ -86,11 +95,7 @@ lynx: $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 lynx-package: $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LYNX_PKG_SOURCE) $(LYNX_PKG_NAME)
 
-lynx-precompiled: uclibc ncurses-precompiled $(LYNX_DIR)/$(LYNX_TARGET_BINARY) lynx
-	$(TARGET_STRIP) $(LYNX_DIR)/$(LYNX_TARGET_BINARY)
-	mkdir -p $(LYNX_TARGET_DIR)
-	cp $(LYNX_DIR)/$(LYNX_TARGET_BINARY) $(LYNX_TARGET_DIR)
-	cp $(LYNX_DIR)/$(LYNX_TARGET_CFG) $(LYNX_TARGET_CFGDIR)
+lynx-precompiled: uclibc ncurses-precompiled lynx $(LYNX_TARGET_BINARY) $(LYNX_TARGET_CFG)
 
 lynx-source: $(LYNX_DIR)/.unpacked $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 
@@ -103,6 +108,9 @@ lynx-dirclean:
 	rm -rf $(PACKAGES_DIR)/$(LYNX_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 
+lynx-uninstall: 
+            rm -f $(LYNX_TARGET_BINARY)
+            rm -f $(LYNX_TARGET_CFG)
 lynx-list:
 ifeq ($(strip $(DS_PACKAGE_LYNX)),y)
 	@echo "S99lynx-$(LYNX_VERSION)" >> .static
