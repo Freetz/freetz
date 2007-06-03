@@ -52,7 +52,7 @@ diff -burN console-tools/getcons.c console-tools/getcons.c
 + *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 + */
 +
-+#include "busybox.h"
++#include "libbb.h"
 +#include <getopt.h>	/* for struct option */
 +
 +static const struct option getcons_long_options[] = {
@@ -80,7 +80,7 @@ diff -burN console-tools/getcons.c console-tools/getcons.c
 +		device = argv[optind];
 +    } else {
 +		if (flags & OPT_GETCONS_RESET)
-+			device = CONSOLE_DEV;
++			device = DEV_CONSOLE;
 +	}
 +
 +	if (-1 == ioctl(xopen(device, O_RDONLY), TIOCCONS)) {
@@ -102,14 +102,14 @@ diff -burN console-tools/Kbuild console-tools/Kbuild
 diff -burN include/applets.h include/applets.h
 --- include/applets.h	2007-03-18 17:59:34.000000000 +0100
 +++ include/applets.h	2007-05-28 16:02:56.000000000 +0200
-@@ -133,6 +133,7 @@
+@@ -135,6 +135,7 @@
  USE_FTPGET(APPLET_ODDNAME(ftpget, ftpgetput, _BB_DIR_USR_BIN, _BB_SUID_NEVER,ftpget))
  USE_FTPPUT(APPLET_ODDNAME(ftpput, ftpgetput, _BB_DIR_USR_BIN, _BB_SUID_NEVER,ftpput))
  USE_FUSER(APPLET(fuser, _BB_DIR_USR_BIN, _BB_SUID_NEVER))
-+USE_GETCONS(APPLET(getcons, _BB_DIR_SBIN, _BB_SUID_NEVER))
++USE_GETCONS(APPLET(getcons, _BB_DIR_BIN, _BB_SUID_NEVER))
+ USE_GETENFORCE(APPLET(getenforce, _BB_DIR_USR_SBIN, _BB_SUID_NEVER))
  USE_GETOPT(APPLET(getopt, _BB_DIR_BIN, _BB_SUID_NEVER))
- USE_GETTY(APPLET(getty, _BB_DIR_SBIN, _BB_SUID_NEVER))
- USE_GREP(APPLET(grep, _BB_DIR_BIN, _BB_SUID_NEVER))
+ USE_GETSEBOOL(APPLET(getsebool, _BB_DIR_USR_SBIN, _BB_SUID_NEVER))
 diff -burN include/usage.h include/usage.h
 --- include/usage.h	2007-03-18 17:59:34.000000000 +0100
 +++ include/usage.h	2007-05-28 15:47:00.000000000 +0200
