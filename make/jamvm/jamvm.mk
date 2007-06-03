@@ -1,10 +1,14 @@
 JAMVM_VERSION:=1.4.5
+JAMVM_UGLY_VERSION:=0.0.0
 JAMVM_SOURCE:=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_SITE:=http://mesh.dl.sourceforge.net/sourceforge/jamvm
-JAMVM_DIR:=$(SOURCE_DIR)/jamvm-$(JAMVM_VERSION)
 JAMVM_MAKE_DIR:=$(MAKE_DIR)/jamvm
-JAMVM_TARGET_DIR:=$(PACKAGES_DIR)/jamvm-$(JAMVM_VERSION)/root/usr/bin
-JAMVM_TARGET_BINARY:=src/jamvm
+JAMVM_DIR:=$(SOURCE_DIR)/jamvm-$(JAMVM_VERSION)
+JAMVM_BINARY:=$(JAMVM_DIR)/src/jamvm
+JAMVM_LIB_BINARY:=$(JAMVM_DIR)/src/.libs/libjvm.so.$(JAMVM_UGLY_VERSION)
+JAMVM_TARGET_DIR:=$(PACKAGES_DIR)/jamvm-$(JAMVM_VERSION)
+JAMVM_TARGET_BINARY:=$(JAMVM_TARGET_DIR)/root/usr/bin/jamvm
+JAMVM_TARGET_LIB_BINARY:=$(JAMVM_TARGET_DIR)/root/usr/lib/libjvm.so.$(JAMVM_UGLY_VERSION)
 JAMVM_PKG_VERSION:=0.1
 JAMVM_PKG_SOURCE:=jamvm-$(JAMVM_VERSION)-dsmod-$(JAMVM_PKG_VERSION).tar.bz2
 JAMVM_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
@@ -41,8 +45,16 @@ $(JAMVM_DIR)/.configured: $(JAMVM_DIR)/.unpacked
 	touch $@
 	
 
-$(JAMVM_DIR)/$(JAMVM_TARGET_BINARY): $(JAMVM_DIR)/.configured
+$(JAMVM_BINARY) $(JAMVM_LIB_BINARY): $(JAMVM_DIR)/.configured
 	$(MAKE) -C $(JAMVM_DIR)/src $(TARGET_CONFIGURE_OPTS) 
+
+$(JAMVM_TARGET_BINARY): $(JAMVM_BINARY)
+	$(TARGET_STRIP) $(JAMVM_BINARY)
+	cp $(JAMVM_BINARY) $(JAMVM_TARGET_BINARY)
+
+$(JAMVM_TARGET_LIB_BINARY): $(JAMVM_LIB_BINARY)
+	$(TARGET_STRIP) $(JAMVM_LIB_BINARY)
+	cp -a $(JAMVM_DIR)/src/.libs/libjvm*.so* $(JAMVM_TARGET_DIR)/root/usr/lib
 
 $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION): $(DL_DIR)/$(JAMVM_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(JAMVM_PKG_SOURCE)
@@ -51,13 +63,10 @@ $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION): $(DL_DIR)/$(JAMVM_PKG_SOURCE) | $(PACKA
 jamvm: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
 
 jamvm-package: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE)  --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(JAMVM_PKG_SOURCE) jamvm-$(JAMVM_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(JAMVM_PKG_SOURCE) jamvm-$(JAMVM_VERSION)
 
-jamvm-precompiled: uclibc ffi-sable-precompiled classpath-precompiled $(JAMVM_DIR)/$(JAMVM_TARGET_BINARY) jamvm
-	$(TARGET_STRIP) $(JAMVM_DIR)/$(JAMVM_TARGET_BINARY)
-	cp $(JAMVM_DIR)/$(JAMVM_TARGET_BINARY) $(JAMVM_TARGET_DIR)/
-	$(TARGET_STRIP) $(JAMVM_DIR)/src/.libs/libjvm*.so*
-	cp $(JAMVM_DIR)/src/.libs/libjvm*.so* $(JAMVM_TARGET_DIR)/../lib
+jamvm-precompiled: uclibc ffi-sable-precompiled classpath-precompiled jamvm \
+		$(JAMVM_TARGET_BINARY) $(JAMVM_TARGET_LIB_BINARY)
 
 jamvm-source: $(JAMVM_DIR)/.unpacked $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
 
@@ -69,6 +78,10 @@ jamvm-dirclean:
 	rm -rf $(JAMVM_DIR)
 	rm -rf $(PACKAGES_DIR)/jamvm-$(JAMVM_VERSION)
 	rm -f $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
+
+jamvm-uninstall:
+	rm -f $(JAMVM_TARGET_BINARY)
+	rm -f $(JAMVM_TARGET_DIR)/root/usr/lib/libjvm*.so*
 
 jamvm-list:
 ifeq ($(strip $(DS_PACKAGE_JAMVM)),y)

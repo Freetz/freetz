@@ -1,21 +1,27 @@
-FFI-SABLE_VERSION:=3325
-FFI-SABLE_SOURCE:=libffi-sable-$(FFI-SABLE_VERSION).tar.gz
-FFI-SABLE_SITE:=http://ftp.iasi.roedu.net/mirrors/openwrt.org/sources
-FFI-SABLE_DIR:=$(SOURCE_DIR)/libffi-sable-$(FFI-SABLE_VERSION)
-FFI-SABLE_MAKE_DIR:=$(MAKE_DIR)/libs
+FFI_SABLE_VERSION:=3325
+FFI_SABLE_LIB_VERSION:=4.0.1
+FFI_SABLE_SOURCE:=libffi-sable-$(FFI_SABLE_VERSION).tar.gz
+FFI_SABLE_SITE:=http://ftp.iasi.roedu.net/mirrors/openwrt.org/sources
+FFI_SABLE_MAKE_DIR:=$(MAKE_DIR)/libs
+FFI_SABLE_DIR:=$(SOURCE_DIR)/libffi-sable-$(FFI_SABLE_VERSION)
+FFI_SABLE_BINARY:=$(FFI_SABLE_DIR)/.libs/libffi.so.$(FFI_SABLE_LIB_VERSION)
+FFI_SABLE_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)
+FFI_SABLE_STAGING_BINARY:=$(FFI_SABLE_STAGING_DIR)/usr/lib/libffi.so.$(FFI_SABLE_LIB_VERSION)
+FFI_SABLE_TARGET_DIR:=root/usr/lib/
+FFI_SABLE_TARGET_BINARY:=$(FFI_SABLE_TARGET_DIR)/libffi.so.$(FFI_SABLE_LIB_VERSION)
 
-$(DL_DIR)/$(FFI-SABLE_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(FFI-SABLE_SITE)/$(FFI-SABLE_SOURCE)
+$(DL_DIR)/$(FFI_SABLE_SOURCE): | $(DL_DIR)
+	wget -P $(DL_DIR) $(FFI_SABLE_SITE)/$(FFI_SABLE_SOURCE)
 
-$(FFI-SABLE_DIR)/.unpacked: $(DL_DIR)/$(FFI-SABLE_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FFI-SABLE_SOURCE)
-#	for i in $(FFI-SABLE_MAKE_DIR)/patches/*.ffi-sable.patch; do \
-#		patch -d $(FFI-SABLE_DIR) -p0 < $$i; \
+$(FFI_SABLE_DIR)/.unpacked: $(DL_DIR)/$(FFI_SABLE_SOURCE)
+	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FFI_SABLE_SOURCE)
+#	for i in $(FFI_SABLE_MAKE_DIR)/patches/*.ffi-sable.patch; do \
+#		patch -d $(FFI_SABLE_DIR) -p0 < $$i; \
 #	done
 	touch $@
 
-$(FFI-SABLE_DIR)/.configured: $(FFI-SABLE_DIR)/.unpacked
-	( cd $(FFI-SABLE_DIR); rm -f config.cache; \
+$(FFI_SABLE_DIR)/.configured: $(FFI_SABLE_DIR)/.unpacked
+	( cd $(FFI_SABLE_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
@@ -47,32 +53,36 @@ $(FFI-SABLE_DIR)/.configured: $(FFI-SABLE_DIR)/.unpacked
 	);
 	touch $@
 
-$(FFI-SABLE_DIR)/.compiled: $(FFI-SABLE_DIR)/.configured
+$(FFI_SABLE_BINARY): $(FFI_SABLE_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(FFI-SABLE_DIR) \
+		$(MAKE) -C $(FFI_SABLE_DIR) \
 		$(TARGET_CONFIGURE_OPTS) 
 	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so: $(FFI-SABLE_DIR)/.compiled
+$(FFI_SABLE_STAGING_BINARY): $(FFI_SABLE_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(FFI-SABLE_DIR) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		$(MAKE) -C $(FFI_SABLE_DIR) \
+		DESTDIR="$(FFI_SABLE_STAGING_DIR)" \
 		install
 	touch -c $@
 
-ffi-sable: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so
+$(FFI_SABLE_TARGET_BINARY): $(FFI_SABLE_STAGING_BINARY)
+	$(TARGET_STRIP) $(FFI_SABLE_STAGING_BINARY)
+	cp -a $(FFI_SABLE_STAGING_DIR)/usr/lib/libffi*.so* $(FFI_SABLE_TARGET_DIR)/
 
-ffi-sable-precompiled: uclibc ffi-sable
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so* root/usr/lib/
+ffi-sable: $(FFI_SABLE_STAGING_BINARY)
 
-ffi-sable-source: $(FFI-SABLE_DIR)/.unpacked
+ffi-sable-precompiled: uclibc ffi-sable $(FFI_SABLE_TARGET_BINARY)
+
+ffi-sable-source: $(FFI_SABLE_DIR)/.unpacked
 
 ffi-sable-clean:
-	-$(MAKE) -C $(FFI-SABLE_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*
-	rm -rf root/usr/lib/libffi*.so*
+	-$(MAKE) -C $(FFI_SABLE_DIR) clean
+	rm -f $(FFI_SABLE_STAGING_DIR)/usr/lib/libffi*.so*
+
+ffi-sable-uninstall:
+	rm -f $(FFI_SABLE_TARGET_DIR)/libffi*.so*
 
 ffi-sable-dirclean:
-	rm -rf $(FFI-SABLE_DIR)
+	rm -rf $(FFI_SABLE_DIR)
 

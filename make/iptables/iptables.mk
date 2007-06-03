@@ -1,10 +1,11 @@
 IPTABLES_VERSION:=1.3.7
 IPTABLES_SOURCE:=iptables-$(IPTABLES_VERSION).tar.bz2
 IPTABLES_SITE:=http://netfilter.org/projects/iptables/files
-IPTABLES_DIR:=$(SOURCE_DIR)/iptables-$(IPTABLES_VERSION)
 IPTABLES_MAKE_DIR:=$(MAKE_DIR)/iptables
+IPTABLES_DIR:=$(SOURCE_DIR)/iptables-$(IPTABLES_VERSION)
+IPTABLES_BINARY:=$(IPTABLES_DIR)/iptables
 IPTABLES_TARGET_DIR:=kernel/root/usr/sbin
-IPTABLES_TARGET_BINARY:=iptables
+IPTABLES_TARGET_BINARY:=$(IPTABLES_TARGET_DIR)/iptables
 IPTABLES_EXTENSIONS_DIR:=kernel/root/usr/lib/iptables
 IPTABLES_KERNEL_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel
 
@@ -20,8 +21,8 @@ $(IPTABLES_DIR)/.unpacked $(IPTABLES_DIR_SYMLINK)/.unpacked: $(DL_DIR)/$(IPTABLE
 	chmod +x $(IPTABLES_DIR)/extensions/.*-test
 	touch $@
 
-$(IPTABLES_DIR)/$(IPTABLES_TARGET_BINARY): $(IPTABLES_DIR)/.unpacked \
-                                           $(IPTABLES_KERNEL_DIR)/.unpacked
+$(IPTABLES_BINARY): \
+		$(IPTABLES_DIR)/.unpacked $(IPTABLES_KERNEL_DIR)/.unpacked
 	$(MAKE) KERNEL_DIR="$(shell pwd)/$(IPTABLES_KERNEL_DIR)/linux" \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
@@ -31,16 +32,23 @@ $(IPTABLES_DIR)/$(IPTABLES_TARGET_BINARY): $(IPTABLES_DIR)/.unpacked \
 		DO_IPV6=0 \
 		-C $(IPTABLES_DIR)
 
-iptables-precompiled: uclibc $(IPTABLES_DIR)/$(IPTABLES_TARGET_BINARY)
-	$(TARGET_STRIP) $(IPTABLES_DIR)/$(IPTABLES_TARGET_BINARY)
+$(IPTABLES_TARGET_BINARY): $(IPTABLES_BINARY)
+	$(TARGET_STRIP) $(IPTABLES_BINARY)
+	cp $(IPTABLES_BINARY) $(IPTABLES_TARGET_BINARY)
 	$(TARGET_STRIP) $(IPTABLES_DIR)/extensions/*.so
-	cp $(IPTABLES_DIR)/$(IPTABLES_TARGET_BINARY) $(IPTABLES_TARGET_DIR)/
+	mkdir -p $(IPTABLES_EXTENSIONS_DIR)
 	cp $(IPTABLES_DIR)/extensions/*.so $(IPTABLES_EXTENSIONS_DIR)/
+
+iptables-precompiled: uclibc $(IPTABLES_TARGET_BINARY)
 
 iptables-source: $(IPTABLES_DIR)/.unpacked
 
 iptables-clean:
 	-$(MAKE) -C $(IPTABLES_DIR) clean
+
+iptables-uninstall:
+	rm -f $(IPTABLES_TARGET_BINARY)
+	rm -f $(IPTABLES_EXTENSIONS_DIR)/*
 
 iptables-dirclean:
 	rm -rf $(IPTABLES_DIR)
