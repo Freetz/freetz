@@ -1,4 +1,4 @@
-LUA_VERSION:=5.1.1
+LUA_VERSION:=5.1.2
 LUA_SOURCE:=lua-$(LUA_VERSION).tar.gz
 LUA_SITE:=http://www.lua.org/ftp
 LUA_MAKE_DIR:=$(MAKE_DIR)/lua
