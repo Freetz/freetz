@@ -838,9 +838,11 @@ choice
 endchoice
 
 config DS_TARGET_CROSS
+	string
 	default "mipsel-linux-uclibc-"
 
 config DS_TARGET_MAKE_PATH
+	string
 	default "toolchain/target/bin"
 
 config DS_TARGET_CFLAGS
@@ -854,9 +856,11 @@ config DS_JLEVEL
 	    Number of jobs to run simultanesouly
 
 config DS_KERNEL_CROSS
+	string
 	default "mipsel-unknown-linux-gnu-"
 
 config DS_KERNEL_MAKE_PATH
+	string
 	default "toolchain/kernel/bin"
 
 source toolchain/Config.in
