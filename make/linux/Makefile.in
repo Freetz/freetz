@@ -3,6 +3,8 @@ KERNEL_LAYOUT:=$(strip $(subst ",, $(DS_KERNEL_LAYOUT)))
 KERNEL_ARCH:=mips
 KERNEL_TARGET_DIR:=kernel
 KERNEL_MODULES_DIR:=$(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)
+KERNEL_SOURCE_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel/linux
+KERNEL_HEADERS_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel/linux/include
 
 KERNEL_DUMMY_MAKE_FILES = \
 	kernel/linux-2.6.13.1/drivers/char/ubik2/Makefile \

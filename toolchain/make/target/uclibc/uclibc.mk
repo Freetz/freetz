@@ -4,17 +4,11 @@ UCLIBC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/uclibc
 UCLIBC_VERSION:=$(TARGET_TOOLCHAIN_UCLIBC_VERSION)
 UCLIBC_SOURCE:=uClibc-$(UCLIBC_VERSION).tar.bz2
 UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
-UCLIBC_PACKAGE_VERSION:=0.3
-UCLIBC_PACKAGE:=uClibc-$(UCLIBC_VERSION)-dsmod-$(UCLIBC_PACKAGE_VERSION).tar.bz2
-UCLIBC_PACKAGE_SITE:=http://dsmod.wirsind.info
-UCLIBC_PREREQUISITES:=
-LINUX_HEADERS_DIR:=$(shell pwd)/$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel/linux
+UCLIBC_KERNEL_SOURCE_DIR:=$(KERNEL_SOURCE_DIR)
+UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DIR)
 
 $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(UCLIBC_SOURCE_SITE)/$(UCLIBC_SOURCE)
-
-$(DL_DIR)/$(UCLIBC_PACKAGE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(UCLIBC_PACKAGE) $(UCLIBC_PACKAGE_SITE)
 
 $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)
@@ -26,7 +20,7 @@ $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE)
 
 $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked | kernel-configured
 	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(AVM_VERSION) $(UCLIBC_DIR)/.config
-	$(SED) -i -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(LINUX_HEADERS_DIR)\",g' $(UCLIBC_DIR)/.config
+	$(SED) -i -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(shell pwd)/$(UCLIBC_KERNEL_SOURCE_DIR)\",g' $(UCLIBC_DIR)/.config
 	$(SED) -i -e 's,^CROSS=.*,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS),g' $(UCLIBC_DIR)/Rules.mak
 ifeq ($(strip $(DS_TARGET_LFS)),y)
 	$(SED) -i -e 's,.*UCLIBC_HAS_LFS.*,UCLIBC_HAS_LFS=y,g' $(UCLIBC_DIR)/.config
@@ -55,10 +49,10 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 		pregen install_dev
 	# Install the kernel headers to the first stage gcc include dir if necessary
 	if [ ! -f $(TARGET_TOOLCHAIN_STAGING_DIR)/include/linux/version.h ] ; then \
-	    cp -pLR $(LINUX_HEADERS_DIR)/include/asm $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
-	    cp -pLR $(LINUX_HEADERS_DIR)/include/linux $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
-	    if [ -d $(LINUX_HEADERS_DIR)/include/asm-generic ] ; then \
-		cp -pLR $(LINUX_HEADERS_DIR)/include/asm-generic \
+	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
+	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
+	    if [ -d $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic ] ; then \
+		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
 		$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
 	    fi; \
 	fi;			
@@ -73,6 +67,7 @@ $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured
 		all
 	touch -c $@
 
+ifeq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		PREFIX= \
@@ -81,10 +76,10 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		install_runtime install_dev
 	# Install the kernel headers to the staging dir if necessary
 	if [ ! -f $(TARGET_TOOLCHAIN_STAGING_DIR)/include/linux/version.h ] ; then \
-	    cp -pLR $(LINUX_HEADERS_DIR)/include/asm $(TARGET_TOOLCHAIN_STAGING_DIR)/include/ ; \
-	    cp -pLR $(LINUX_HEADERS_DIR)/include/linux $(TARGET_TOOLCHAIN_STAGING_DIR)/include/ ; \
-	    if [ -d $(LINUX_HEADERS_DIR)/include/asm-generic ] ; then \
-		cp -pLR $(LINUX_HEADERS_DIR)/include/asm-generic \
+	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_STAGING_DIR)/include/ ; \
+	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_STAGING_DIR)/include/ ; \
+	    if [ -d $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic ] ; then \
+		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
 		    $(TARGET_TOOLCHAIN_STAGING_DIR)/include/ ; \
 	    fi; \
 	fi;								    
@@ -101,7 +96,6 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -s ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(REAL_GNU_TARGET_NAME)-ldconfig)
 	touch -c $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
 
-ifeq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		PREFIX="$(shell pwd)/$(ROOT_DIR)/" \
@@ -110,20 +104,19 @@ $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
 		install_runtime
 	touch -c $@
 else
-$(ROOT_DIR)/lib/libc.so.0: $(DL_DIR)/$(UCLIBC_PACKAGE)
-	tar -C $(ROOT_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(UCLIBC_PACKAGE)
+$(TARGET_MAKE_PATH)/../lib/libc.a: $(TOOLCHAIN_DIR)/target/.installed
+	touch -c $@
+
+$(ROOT_DIR)/lib/libc.so.0: $(TARGET_MAKE_PATH)/../lib/libc.a
+	for i in $(UCLIBC_FILES); do \
+		cp -a $(TARGET_MAKE_PATH)/../lib/$$i $(ROOT_DIR)/lib/$$i; \
+	done
 	touch -c $@
 endif
 
 uclibc-configured: $(UCLIBC_DIR)/.configured
 
-ifeq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
-UCLIBC_PREREQUISITES+=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
-else
-UCLIBC_PREREQUISITES+=$(ROOT_DIR)/lib/libc.so.0
-endif
-
-uclibc:	$(UCLIBC_PREREQUISITES)
+uclibc:	$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
 
 uclibc-target-utils: $(ROOT_DIR)/usr/bin/ldd
 
