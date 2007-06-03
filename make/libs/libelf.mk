@@ -18,12 +18,11 @@ $(LIBELF_DIR)/.configured: $(LIBELF_DIR)/.unpacked
 	( cd $(LIBELF_DIR); rm -f config.{cache,status} ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
-		CC="$(TARGET_CC)" \
+		CC="$(TARGET_CC) -static-libgcc" \
 		LD="$(TARGET_LD)" \
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
-		LDSHARED="$(TARGET_CC) -static-libgcc" \
 		mr_cv_working_memmove=yes \
 		mr_cv_target_elf=yes \
 		libelf_64bit=yes \
@@ -53,13 +52,13 @@ $(LIBELF_DIR)/.configured: $(LIBELF_DIR)/.unpacked
 		$(DISABLE_LARGEFILE) \
 		--enable-shared \
 		--enable-static \
+		--enable-elf64=yes \
 	);
 	touch $@
 
 $(LIBELF_DIR)/.compiled: $(LIBELF_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		$(TARGET_CONFIGURE_OPTS)  -C $(LIBELF_DIR)
-		
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(LIBELF_DIR)
 	touch $@
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so: $(LIBELF_DIR)/.compiled
@@ -69,6 +68,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so: $(LIBELF_DIR)/.compiled
 	touch -c $@
 
 libelf: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so
+
 libelf-precompiled: uclibc libelf
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so* root/usr/lib/
