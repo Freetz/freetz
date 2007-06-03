@@ -2,8 +2,9 @@ HASERL_VERSION:=0.9.16
 HASERL_SOURCE:=haserl-$(HASERL_VERSION).tar.gz
 HASERL_SITE:=http://mesh.dl.sourceforge.net/sourceforge/haserl
 HASERL_DIR:=$(SOURCE_DIR)/haserl-$(HASERL_VERSION)
+HASERL_BINARY:=$(HASERL_DIR)/src/haserl
 HASERL_TARGET_DIR:=root/usr/bin
-HASERL_TARGET_BINARY:=src/haserl
+HASERL_TARGET_BINARY:=$(HASERL_TARGET_DIR)/haserl
 
 
 $(DL_DIR)/$(HASERL_SOURCE): | $(DL_DIR)
@@ -38,21 +39,26 @@ $(HASERL_DIR)/.configured: $(HASERL_DIR)/.unpacked
 		--sysconfdir=/etc \
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
-	    );
+	);
 	touch $@
 
-$(HASERL_DIR)/$(HASERL_TARGET_BINARY): $(HASERL_DIR)/.configured
+$(HASERL_BINARY): $(HASERL_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) CROSS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" -C $(HASERL_DIR)
 
-haserl-precompiled: uclibc $(HASERL_DIR)/$(HASERL_TARGET_BINARY)
-	$(TARGET_STRIP) $(HASERL_DIR)/$(HASERL_TARGET_BINARY)
-	cp $(HASERL_DIR)/$(HASERL_TARGET_BINARY) $(HASERL_TARGET_DIR)/
+$(HASERL_TARGET_BINARY): $(HASERL_BINARY)
+	$(TARGET_STRIP) $(HASERL_BINARY)
+	cp $(HASERL_BINARY) $(HASERL_TARGET_BINARY)
+
+haserl-precompiled: uclibc $(HASERL_TARGET_BINARY)
 
 haserl-source: $(HASERL_DIR)/.unpacked
 
 haserl-clean:
 	-$(MAKE) -C $(HASERL_DIR) clean
+
+haserl-uninstall:
+	rm -f $(HASERL_TARGET_BINARY)
 
 haserl-dirclean:
 	rm -rf $(HASERL_DIR)

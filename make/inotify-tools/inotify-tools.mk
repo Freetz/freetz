@@ -2,9 +2,15 @@ INOTIFY_TOOLS_VERSION:=3.8
 INOTIFY_TOOLS_LIB_VERSION:=0.3.1
 INOTIFY_TOOLS_SOURCE:=inotify-tools-$(INOTIFY_TOOLS_VERSION).tar.gz
 INOTIFY_TOOLS_SITE:=http://mesh.dl.sourceforge.net/sourceforge/inotify-tools
-INOTIFY_TOOLS_DIR:=$(SOURCE_DIR)/inotify-tools-$(INOTIFY_TOOLS_VERSION)
 INOTIFY_TOOLS_MAKE_DIR:=$(MAKE_DIR)/inotify-tools
-INOTIFY_TOOLS_TARGET_DIR:=$(PACKAGES_DIR)/inotify-tools-$(INOTIFY_TOOLS_VERSION)/root/usr
+INOTIFY_TOOLS_DIR:=$(SOURCE_DIR)/inotify-tools-$(INOTIFY_TOOLS_VERSION)
+INOTIFY_TOOLS_INWAIT_BINARY:=$(INOTIFY_TOOLS_DIR)/src/.libs/inotifywait
+INOTIFY_TOOLS_INWATCH_BINARY:=$(INOTIFY_TOOLS_DIR)/src/.libs/inotifywatch
+INOTIFY_TOOLS_LIB_BINARY:=$(INOTIFY_TOOLS_DIR)/libinotifytools/src/.libs/libinotifytools.so.$(INOTIFY_TOOLS_LIB_VERSION)
+INOTIFY_TOOLS_TARGET_DIR:=$(PACKAGES_DIR)/inotify-tools-$(INOTIFY_TOOLS_VERSION)
+INOTIFY_TOOLS_INWAIT_TARGET_BINARY:=$(INOTIFY_TOOLS_TARGET_DIR)/root/usr/bin/inotifywait
+INOTIFY_TOOLS_INWATCH_TARGET_BINARY:=$(INOTIFY_TOOLS_TARGET_DIR)/root/usr/bin/inotifywatch
+INOTIFY_TOOLS_LIB_TARGET_BINARY:=$(INOTIFY_TOOLS_TARGET_DIR)/root/usr/lib/libinotifytools.so.$(INOTIFY_TOOLS_LIB_VERSION)
 INOTIFY_TOOLS_PKG_VERSION:=0.1
 INOTIFY_TOOLS_PKG_SOURCE:=inotify-tools-$(INOTIFY_TOOLS_VERSION)-dsmod-$(INOTIFY_TOOLS_PKG_VERSION).tar.bz2
 INOTIFY_TOOLS_PKG_SITE:=http://dsmod.magenbrot.net
@@ -53,9 +59,21 @@ $(INOTIFY_TOOLS_DIR)/.configured: $(INOTIFY_TOOLS_DIR)/.unpacked
 	);
 	touch $@
 
-$(INOTIFY_TOOLS_DIR)/.compiled: $(INOTIFY_TOOLS_DIR)/.configured
+$(INOTIFY_TOOLS_INWAIT_BINARY) $(INOTIFY_TOOLS_INWATCH_BINARY) $(INOTIFY_TOOLS_LIB_BINARY): $(INOTIFY_TOOLS_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(INOTIFY_TOOLS_DIR)
 	touch $@
+
+$(INOTIFY_TOOLS_INWAIT_TARGET_BINARY): $(INOTIFY_TOOLS_INWAIT_BINARY)
+	$(TARGET_STRIP) $(INOTIFY_TOOLS_INWAIT_BINARY)
+	cp $(INOTIFY_TOOLS_INWAIT_BINARY) $(INOTIFY_TOOLS_INWAIT_TARGET_BINARY)
+
+$(INOTIFY_TOOLS_INWATCH_TARGET_BINARY): $(INOTIFY_TOOLS_INWATCH_BINARY)
+	$(TARGET_STRIP) $(INOTIFY_TOOLS_INWATCH_BINARY)
+	cp $(INOTIFY_TOOLS_INWATCH_BINARY) $(INOTIFY_TOOLS_INWATCH_TARGET_BINARY)
+
+$(INOTIFY_TOOLS_LIB_TARGET_BINARY): $(INOTIFY_TOOLS_LIB_BINARY)
+	$(TARGET_STRIP) $(INOTIFY_TOOLS_LIB_BINARY)
+	cp -a $(INOTIFY_TOOLS_DIR)/libinotifytools/src/.libs/libinotifytools.so* $(INOTIFY_TOOLS_TARGET_DIR)/root/usr/lib/
 
 $(PACKAGES_DIR)/.inotify-tools-$(INOTIFY_TOOLS_VERSION): $(DL_DIR)/$(INOTIFY_TOOLS_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(INOTIFY_TOOLS_PKG_SOURCE)
@@ -66,20 +84,12 @@ inotify-tools: $(PACKAGES_DIR)/.inotify-tools-$(INOTIFY_TOOLS_VERSION)
 inotify-tools-package: $(PACKAGES_DIR)/.inotify-tools-$(INOTIFY_TOOLS_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(INOTIFY_TOOLS_PKG_SOURCE) inotify-tools-$(INOTIFY_TOOLS_VERSION)
 
-inotify-tools-precompiled: uclibc $(INOTIFY_TOOLS_DIR)/.compiled inotify-tools
-	$(TARGET_STRIP) $(INOTIFY_TOOLS_DIR)/src/.libs/inotifywait
-	$(TARGET_STRIP) $(INOTIFY_TOOLS_DIR)/src/.libs/inotifywatch
-	$(TARGET_STRIP) $(INOTIFY_TOOLS_DIR)/libinotifytools/src/.libs/libinotifytools.so.$(INOTIFY_TOOLS_LIB_VERSION)
-	cp $(INOTIFY_TOOLS_DIR)/src/.libs/inotifywait $(INOTIFY_TOOLS_TARGET_DIR)/bin
-	cp $(INOTIFY_TOOLS_DIR)/src/.libs/inotifywatch $(INOTIFY_TOOLS_TARGET_DIR)/bin
-	cp -d $(INOTIFY_TOOLS_DIR)/libinotifytools/src/.libs/libinotifytools.so* $(INOTIFY_TOOLS_TARGET_DIR)/lib
+inotify-tools-precompiled: uclibc inotify-tools \
+		$(INOTIFY_TOOLS_INWAIT_TARGET_BINARY) \
+		$(INOTIFY_TOOLS_INWATCH_TARGET_BINARY) \
+		$(INOTIFY_TOOLS_LIB_TARGET_BINARY)
 
 inotify-tools-source: $(INOTIFY_TOOLS_DIR)/.unpacked $(PACKAGES_DIR)/.inotify-tools-$(INOTIFY_TOOLS_VERSION)
-
-inotify-tools-uninstall:
-	rm -f $(INOTIFY_TOOLS_TARGET_DIR)/bin/inotifywait
-	rm -f $(INOTIFY_TOOLS_TARGET_DIR)/bin/inotifywatch
-	rm -f $(INOTIFY_TOOLS_TARGET_DIR)/lib/libinotifytools.so*
 
 inotify-tools-clean:
 	-$(MAKE) -C $(INOTIFY_TOOLS_DIR) clean
@@ -90,6 +100,11 @@ inotify-tools-dirclean:
 	rm -rf $(INOTIFY_TOOLS_DIR)
 	rm -rf $(PACKAGES_DIR)/inotify-tools-$(INOTIFY_TOOLS_VERSION)
 	rm -f $(PACKAGES_DIR)/.inotify-tools-$(INOTIFY_TOOLS_VERSION)
+
+inotify-tools-uninstall:
+	rm -f $(INOTIFY_TOOLS_INWAIT_TARGET_BINARY)
+	rm -f $(INOTIFY_TOOLS_INWATCH_TARGET_BINARY)
+	rm -f $(INOTIFY_TOOLS_TARGET_DIR)/root/usr/lib/libinotifytools.so*
 
 inotify-tools-list:
 ifeq ($(strip $(DS_PACKAGE_INOTIFY_TOOLS)),y)
