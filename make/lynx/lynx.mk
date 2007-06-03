@@ -109,8 +109,9 @@ lynx-dirclean:
 	rm -f $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
 
 lynx-uninstall: 
-            rm -f $(LYNX_TARGET_BINARY)
-            rm -f $(LYNX_TARGET_CFG)
+	rm -f $(LYNX_TARGET_BINARY)
+	rm -f $(LYNX_TARGET_CFG)
+
 lynx-list:
 ifeq ($(strip $(DS_PACKAGE_LYNX)),y)
 	@echo "S99lynx-$(LYNX_VERSION)" >> .static

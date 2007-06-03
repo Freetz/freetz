@@ -64,7 +64,7 @@ lsof-dirclean:
 	rm -f $(PACKAGES_DIR)/.lsof-$(LSOF_VERSION)
 
 lsof-uninstall: 
-            rm -f $(LSOF_TARGET_BINARY)
+	rm -f $(LSOF_TARGET_BINARY)
 
 lsof-list:
 ifeq ($(strip $(DS_PACKAGE_LSOF)),y)

@@ -61,7 +61,7 @@ lua-dirclean:
 	rm -f $(PACKAGES_DIR)/.lua-$(LUA_VERSION)
 
 lua-uninstall: 
-            rm -f $(LUA_TARGET_BINARY)
+	rm -f $(LUA_TARGET_BINARY)
 
 lua-list:
 ifeq ($(strip $(DS_PACKAGE_LUA)),y)

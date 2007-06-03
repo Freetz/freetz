@@ -3,12 +3,12 @@ MC_SOURCE:=mc-$(MC_VERSION).tar.gz
 MC_SITE:=http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/old
 MC_MAKE_DIR:=$(MAKE_DIR)/mc
 MC_DIR:=$(SOURCE_DIR)/mc-$(MC_VERSION)
-MC_BINARY:=$(MC_DIR)src/mc
+MC_BINARY:=$(MC_DIR)/src/mc
 MC_PKG_VERSION:=0.2
 MC_PKG_SOURCE:=mc-$(MC_VERSION)-dsmod-$(MC_PKG_VERSION).tar.bz2
 MC_PKG_SITE:=http://www.eiband.info/dsmod
 MC_TARGET_DIR:=$(PACKAGES_DIR)/mc-$(MC_VERSION)
-MC_TARGET_BINARY:=$(MC_TARGET_DIR)/root/usr/bin/mc
+MC_TARGET_BINARY:=$(MC_TARGET_DIR)/root/usr/bin/mc.bin
 
 $(DL_DIR)/$(MC_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(MC_SITE)/$(MC_SOURCE)
