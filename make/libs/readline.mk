@@ -64,21 +64,6 @@ ifeq ($(strip $(DS_LIB_libhistory)),y)
 READLINE_PREREQUISITES+=root/usr/lib/libhistory.so root/usr/lib/libhistory.so.$(READLINE_VERSION)
 endif
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-
-root/usr/lib/libreadline.so \
-root/usr/lib/libreadline.so.$(READLINE_VERSION):
-	@echo 'External compiler used. Skipping libreadline...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libreadline*.so* root/usr/lib/
-root/usr/lib/libhistory.so \
-root/usr/lib/libhistory.so.$(READLINE_VERSION):
-	@echo 'External compiler used. Skipping libhistory...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libhistory*.so* root/usr/lib/
-
-readline readline-precompiled: $(READLINE_PREREQUISITES)
-
-else
-
 root/usr/lib/libreadline.so \
 root/usr/lib/libreadline.so.$(READLINE_VERSION):
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
@@ -97,8 +82,6 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so \
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so.$(READLINE_VERSION)
 
 readline-precompiled: uclibc ncurses-precompiled readline $(READLINE_PREREQUISITES)
-
-endif
 
 readline-source: $(READLINE_DIR)/.unpacked
 

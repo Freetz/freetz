@@ -42,17 +42,12 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++.so: $(UCLIBCXX_DIR)/.compiled
 	ln -sf $(REAL_GNU_TARGET_NAME)-g++-uc $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-g++-uc
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-uclibcxx uclibcxx-precompiled:
-	@echo 'External compiler used. Skipping uclibc++...'
-	cp -a $(TARGET_MAKE_PATH)/../lib/libuClibc++*.so* root/lib/
-else
 uclibcxx: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++.so
+
 uclibcxx-precompiled: uclibc uclibcxx
 	chmod 755 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so* root/lib/
-endif
 
 uclibcxx-source: $(UCLIBCXX_DIR)/.unpacked
 

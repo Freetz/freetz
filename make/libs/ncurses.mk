@@ -74,22 +74,13 @@ $(NCURSES_DIR)/.compiled
 		install.libs install.data
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-
-root/usr/lib/libncurses.so root/usr/lib/libncurses.so.$(NCURSES_VERSION):
-	@echo 'External compiler used. Skipping ncurses...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libncurses*.so* root/usr/lib/
-ncurses ncurses-precompiled: root/usr/lib/libncurses.so root/usr/lib/libncurses.so.$(NCURSES_VERSION)
-
-else
-
 root/usr/lib/libncurses.so root/usr/lib/libncurses.so.$(NCURSES_VERSION):
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*.so* root/usr/lib/
-ncurses: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
-ncurses-precompiled: uclibc ncurses root/usr/lib/libncurses.so root/usr/lib/libncurses.so.$(NCURSES_VERSION)
 
-endif
+ncurses: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
+
+ncurses-precompiled: uclibc ncurses root/usr/lib/libncurses.so root/usr/lib/libncurses.so.$(NCURSES_VERSION)
 
 ncurses-source: $(NCURSES_DIR)/.unpacked
 

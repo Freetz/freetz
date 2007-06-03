@@ -48,16 +48,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so: $(LIBGPG_ERROR_DIR)/.co
 		install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-libgpg-error libgpg-error-precompiled:
-	@echo 'External compiler used. Trying to copy libgpg-error from external Toolchain...'
-	cp -a $(TARGET_MAKE_PATH)/usr/lib/libgpg-error*.so* root/usr/lib/
-else
 libgpg-error: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so
+
 libgpg-error-precompiled: uclibc libgpg-error
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*.so* root/usr/lib/
-endif
 
 libgpg-error-source: $(LIBGPG_ERROR_DIR)/.unpacked
 

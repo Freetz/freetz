@@ -835,19 +835,13 @@ choice
 	config DS_BUILD_TOOLCHAIN
 	    bool "Build toolchain (requires 4GB diskspace)"
 	
-	config DS_EXTERNAL_COMPILER
-	    bool "Use external compiler"
-	
 endchoice
 
 config DS_TARGET_CROSS
-	string "Target cross (appropriate mipsel-linux-uclibc-gcc)" if DS_EXTERNAL_COMPILER
 	default "mipsel-linux-uclibc-"
 
 config DS_TARGET_MAKE_PATH
-	string "Target make path"		if DS_EXTERNAL_COMPILER
-	default "/path/to/target-cross/bin"	if DS_EXTERNAL_COMPILER
-	default "toolchain/target/bin"		if ! DS_EXTERNAL_COMPILER
+	default "toolchain/target/bin"
 
 config DS_TARGET_CFLAGS
 	string "Target compiler flags"
@@ -860,13 +854,10 @@ config DS_JLEVEL
 	    Number of jobs to run simultanesouly
 
 config DS_KERNEL_CROSS
-	string "Kernel cross (mipsel-glibc-linux-gcc 3.4.5)" if DS_EXTERNAL_COMPILER
 	default "mipsel-unknown-linux-gnu-"
 
 config DS_KERNEL_MAKE_PATH
-	string "Kernel make path"		if DS_EXTERNAL_COMPILER
-	default "/path/to/kernel-cross/bin"	if DS_EXTERNAL_COMPILER
-	default "toolchain/kernel/bin"		if ! DS_EXTERNAL_COMPILER
+	default "toolchain/kernel/bin"
 
 source toolchain/Config.in
 

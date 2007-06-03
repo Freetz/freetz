@@ -62,16 +62,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.so: $(LIBEVENT_DIR)/.compiled
 		install-strip
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-libevent libevent-precompiled:
-	@echo 'External compiler used. Trying to copy libevent from external Toolchain...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libevent*.so* root/usr/lib/
-else
 libevent: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.so
+
 libevent-precompiled: uclibc libevent
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*.so* root/usr/lib/
-endif
 
 libevent-source: $(LIBEVENT_DIR)/.unpacked
 

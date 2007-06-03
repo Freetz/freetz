@@ -68,16 +68,10 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so: $(LIBELF_DIR)/.compiled
 		-C $(LIBELF_DIR) install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-libelf libelf-precompiled:
-	@echo 'External compiler used. Skipping libelf...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libelf*.so* root/usr/lib/
-else
 libelf: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so
 libelf-precompiled: uclibc libelf
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so* root/usr/lib/
-endif
 
 libelf-source: $(LIBELF_DIR)/.unpacked
 

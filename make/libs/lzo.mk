@@ -56,16 +56,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so: $(LZO_DIR)/.compiled
 		install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-lzo lzo-precompiled:
-	@echo 'External compiler used. Trying to copy liblzo...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/liblzo*.so* root/usr/lib/
-else
 lzo: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so
+
 lzo-precompiled: uclibc lzo
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo*.so* root/usr/lib/
-endif
 
 lzo-source: $(LZO_DIR)/.unpacked
 

@@ -58,30 +58,23 @@ $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION): $(DL_DIR)/$(CLASSPATH_PKG_SOURC
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CLASSPATH_PKG_SOURCE)
 	@touch $@
 
-classpath: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
-
-classpath-package: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CLASSPATH_PKG_SOURCE) classpath-$(CLASSPATH_VERSION)
-
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so: $(CLASSPATH_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(CLASSPATH_DIR)/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
 	touch -c $@
 
-classpath-precompiled: uclibc $(CLASSPATH_DIR)/.installed classpath $(CLASSPATH_TARGET_BINARY)
-
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-$(CLASSPATH_DIR)/.installed:
-	mkdir -p root/usr/lib/classpath
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/classpath/lib*.so* root/usr/lib/classpath
-	touch $@
-else
 $(CLASSPATH_DIR)/.installed: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
 	mkdir -p root/usr/lib/classpath
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/lib*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/lib*.so* root/usr/lib/classpath
 	touch $@
-endif
+
+classpath: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
+
+classpath-package: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CLASSPATH_PKG_SOURCE) classpath-$(CLASSPATH_VERSION)
+
+classpath-precompiled: uclibc $(CLASSPATH_DIR)/.installed classpath $(CLASSPATH_TARGET_BINARY)
 
 classpath-source: $(CLASSPATH_DIR)/.unpacked $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
 

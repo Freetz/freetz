@@ -37,17 +37,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so: $(MATRIXSSL_DIR)/.compi
 	ln -sf matrixSsl/matrixSsl.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl.h
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-matrixssl matrixssl-precompiled:
-	@echo 'External compiler used. Skipping matrixssl...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libmatrixssl.so* root/usr/lib/
-else
 matrixssl: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
 matrixssl-precompiled: uclibc uclibc matrixssl
 	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so*
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so*
 	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libmatrixssl.so* root/usr/lib/
-endif
 
 matrixssl-source: $(MATRIXSSL_DIR)/.unpacked
 

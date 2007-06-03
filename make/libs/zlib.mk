@@ -46,16 +46,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so: $(ZLIB_DIR)/.compiled
 		install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-zlib zlib-precompiled:
-	@echo 'External compiler used. Trying to copy libz from external Toolchain...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libz*.so* root/usr/lib/
-else
 zlib: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so
+
 zlib-precompiled: uclibc zlib
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so* root/usr/lib/
-endif
 
 zlib-source: $(ZLIB_DIR)/.unpacked
 

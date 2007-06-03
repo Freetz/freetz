@@ -60,16 +60,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so: $(FFI-SABLE_DIR)/.compiled
 		install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-ffi-sable ffi-sable-precompiled:
-	@echo 'External compiler used. Skipping libffi-sable...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libffi*.so* root/usr/lib/
-else
 ffi-sable: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so
+
 ffi-sable-precompiled: uclibc ffi-sable
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so* root/usr/lib/
-endif
 
 ffi-sable-source: $(FFI-SABLE_DIR)/.unpacked
 

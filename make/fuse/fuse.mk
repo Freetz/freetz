@@ -101,25 +101,13 @@ $(FUSE_MOD_TARGET_BINARY): $(FUSE_MOD_BINARY)
 	$(TARGET_STRIP) $(FUSE_MOD_BINARY)
 	cp $(FUSE_MOD_BINARY) $(FUSE_MOD_TARGET_BINARY)
 
-fuse: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
-
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-
-$(FUSE_LIB_TARGET_BINARY): $(TARGET_MAKE_PATH)/../usr/lib/libfuse.so.$(FUSE_VERSION)
-	@echo 'External compiler used. Trying to copy libfuse from external Toolchain...'
-	cp $(TARGET_MAKE_PATH)/../usr/lib/libfuse*.so* $(FUSE_LIB_TARGET_DIR)
-
-fuse-precompiled: fuse $(FUSE_TARGET_BINARY) $(FUSE_MOD_TARGET_BINARY) $(FUSE_LIB_TARGET_BINARY)
-
-else
-
 $(FUSE_LIB_TARGET_BINARY): $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$(FUSE_VERSION)
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_LIB_TARGET_DIR)
 
-fuse-precompiled: uclibc fuse $(FUSE_TARGET_BINARY) $(FUSE_MOD_TARGET_BINARY) $(FUSE_LIB_TARGET_BINARY)
+fuse: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
 
-endif
+fuse-precompiled: uclibc fuse $(FUSE_TARGET_BINARY) $(FUSE_MOD_TARGET_BINARY) $(FUSE_LIB_TARGET_BINARY)
 
 fuse-package: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE) $(FUSE_PKG_NAME)
@@ -130,17 +118,17 @@ fuse-clean:
 	-$(MAKE) -C $(FUSE_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE)
 	
-fuse-uninstall:
-	rm -f $(FUSE_TARGET_BINARY)
-	rm -f $(FUSE_MOD_TARGET_BINARY)
-	rm -rf $(FUSE_LIB_TARGET_DIR)/libfuse*.so*
-
 fuse-dirclean:
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so.*
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.a
 	rm -rf $(FUSE_DIR)
 	rm -rf $(PACKAGES_DIR)/$(FUSE_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
+
+fuse-uninstall:
+	rm -f $(FUSE_TARGET_BINARY)
+	rm -f $(FUSE_MOD_TARGET_BINARY)
+	rm -rf $(FUSE_LIB_TARGET_DIR)/libfuse*.so*
 
 fuse-list:
 ifeq ($(strip $(DS_PACKAGE_FUSE)),y)

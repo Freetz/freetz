@@ -206,15 +206,6 @@ toolchain: $(DL_DIR) $(SOURCE_DIR) $(TOOLCHAIN)
 	@echo "          $(TOOLCHAIN_DIR)/target/ - uClibc compiler for the userspace"
 	@echo ""
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-
-sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
-	$(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(TOOLS_SOURCE)
-precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(ROOT_DIR)/lib/libc.so.0 \
-	libgcc-installed $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
-
-else
-
 libs: $(DL_DIR) $(SOURCE_DIR) libgcc-installed $(LIBS_PRECOMPILED)
 
 sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
@@ -222,8 +213,6 @@ sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
 
 precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend libgcc-installed \
 	$(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
-
-endif
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN) $(LIBS_CLEAN) $(TOOLCHAIN_CLEAN) $(TOOLS_CLEAN) common-clean
 dirclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN_DIRCLEAN) $(TOOLS_DIRCLEAN) common-dirclean

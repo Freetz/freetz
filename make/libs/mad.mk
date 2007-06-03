@@ -65,16 +65,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so: $(MAD_DIR)/.compiled
 		install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-mad mad-precompiled:
-	@echo 'External compiler used. Skipping libmad...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libmad*.so* root/usr/lib/
-else
 mad: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so
+
 mad-precompiled: uclibc mad
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*.so* root/usr/lib/
-endif
 
 mad-source: $(MAD_DIR)/.unpacked
 

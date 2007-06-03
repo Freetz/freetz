@@ -75,16 +75,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so: $(LIBPCAP_DIR)/.compiled
 		install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-libpcap libpcap-precompiled:
-	@echo 'External compiler used. Skipping libpcap...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libpcap*.so* root/usr/lib/
-else
 libpcap: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so
+
 libpcap-precompiled: uclibc libpcap
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so* root/usr/lib/
-endif
 
 libpcap-source: $(LIBPCAP_DIR)/.unpacked
 

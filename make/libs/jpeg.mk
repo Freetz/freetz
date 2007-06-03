@@ -62,16 +62,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so: $(JPEG_DIR)/.compiled
 		install-headers install-lib
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-jpeg jpeg-precompiled:
-	@echo 'External compiler used. Skipping libjpeg...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libjpeg*.so* root/usr/lib/
-else
 jpeg: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so
+
 jpeg-precompiled: uclibc jpeg
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so* root/usr/lib/
-endif
 
 jpeg-source: $(JPEG_DIR)/.unpacked
 

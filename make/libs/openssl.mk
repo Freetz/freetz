@@ -58,13 +58,8 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so: $(OPENSSL_DIR)/.compiled
 		install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-openssl openssl-precompiled:
-	@echo 'External compiler used. Skipping openssl...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libssl*.so* root/usr/lib/
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libcrypto*.so* root/usr/lib/
-else
 openssl: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so
+
 openssl-precompiled: uclibc openssl
 	chmod 755 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*.so*
 	chmod 755 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*.so*
@@ -72,7 +67,6 @@ openssl-precompiled: uclibc openssl
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*.so* root/usr/lib/
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*.so* root/usr/lib/
-endif
 
 openssl-source: $(OPENSSL_DIR)/.unpacked
 

@@ -54,16 +54,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt.so: $(LIBGCRYPT_DIR)/.compiled
 		install
 	touch -c $@
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-libgcrypt libgcrypt-precompiled:
-	@echo 'External compiler used. Skipping libgcrypt...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libgcrypt*.so* root/usr/lib/
-else
 libgcrypt: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt.so
+
 libgcrypt-precompiled: uclibc libgcrypt
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*.so* root/usr/lib/
-endif
 
 libgcrypt-source: $(LIBGCRYPT_DIR)/.unpacked
 

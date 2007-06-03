@@ -94,22 +94,11 @@ $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION): $(DL_DIR)/$(NTFS_PKG_SOURCE) | $(PACKAGES
 ntfs-package: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE) ntfs-$(NTFS_VERSION)
 					
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
-
-root/usr/lib/libntfs-3g.so root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION):
-	@echo 'External compiler used. Skipping ntfs...'
-	cp -a $(TARGET_MAKE_PATH)/../usr/lib/libntfs*.so* root/usr/lib/
-ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION) root/usr/lib/libntfs-3g.so \
-		root/usr/lib/libntfs.so-3g.$(NTFS_LIB_VERSION)
-		
-else
-
 root/usr/lib/libntfs-3g.so root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION):
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so* root/usr/lib/
-ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so
 
-endif
+ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so
 
 ntfs-precompiled: uclibc fuse-precompiled ntfs $(NTFS_TARGET_BINARY) \
 					root/usr/lib/libntfs-3g.so root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION)
