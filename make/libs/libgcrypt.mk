@@ -1,8 +1,13 @@
 LIBGCRYPT_VERSION:=1.2.2
+LIBGCRYPT_LIB_VERSION:=11.2.1
 LIBGCRYPT_SOURCE:=libgcrypt-$(LIBGCRYPT_VERSION).tar.gz
 LIBGCRYPT_SITE:=http://ftp.gnupg.org/gcrypt/libgcrypt
-LIBGCRYPT_DIR:=$(SOURCE_DIR)/libgcrypt-$(LIBGCRYPT_VERSION)
 LIBGCRYPT_MAKE_DIR:=$(MAKE_DIR)/libs
+LIBGCRYPT_DIR:=$(SOURCE_DIR)/libgcrypt-$(LIBGCRYPT_VERSION)
+LIBGCRYPT_BINARY:=$(LIBGCRYPT_DIR)/src/.libs/libgcrypt.so.$(LIBGCRYPT_LIB_VERSION)
+LIBGCRYPT_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt.so.$(LIBGCRYPT_LIB_VERSION)
+LIBGCRYPT_TARGET_DIR:=root/usr/lib
+LIBGCRYPT_TARGET_BINARY:=$(LIBGCRYPT_TARGET_DIR)/libgcrypt.so.$(LIBGCRYPT_LIB_VERSION)
 
 
 $(DL_DIR)/$(LIBGCRYPT_SOURCE): | $(DL_DIR)
@@ -40,11 +45,10 @@ $(LIBGCRYPT_DIR)/.configured: $(LIBGCRYPT_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBGCRYPT_DIR)/.compiled: $(LIBGCRYPT_DIR)/.configured
+$(LIBGCRYPT_BINARY): $(LIBGCRYPT_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBGCRYPT_DIR)
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt.so: $(LIBGCRYPT_DIR)/.compiled
+$(LIBGCRYPT_STAGING_BINARY): $(LIBGCRYPT_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(LIBGCRYPT_DIR) \
 		prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
@@ -52,20 +56,23 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt.so: $(LIBGCRYPT_DIR)/.compiled
 		bindir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin \
 		datadir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share \
 		install
-	touch -c $@
 
-libgcrypt: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt.so
+$(LIBGCRYPT_TARGET_BINARY): $(LIBGCRYPT_STAGING_BINARY)
+	$(TARGET_STRIP) $(LIBGCRYPT_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*.so* $(LIBGCRYPT_TARGET_DIR)/
 
-libgcrypt-precompiled: uclibc libgcrypt
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*.so* root/usr/lib/
+libgcrypt: $(LIBGCRYPT_STAGING_BINARY)
+
+libgcrypt-precompiled: uclibc libgcrypt $(LIBGCRYPT_TARGET_BINARY)
 
 libgcrypt-source: $(LIBGCRYPT_DIR)/.unpacked
 
 libgcrypt-clean:
 	-$(MAKE) -C $(LIBGCRYPT_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*
-	rm -rf root/usr/lib/libgcrypt*.so*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*
+
+libgcrypt-uninstall:
+	rm -f $(LIBGCRYPT_TARGET_DIR)/libgcrypt*.so*
 
 libgcrypt-dirclean:
 	rm -rf $(LIBGCRYPT_DIR)

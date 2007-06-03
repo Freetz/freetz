@@ -1,10 +1,13 @@
-# released under the GNU public license v2
-#
 LIBEVENT_VERSION:=1.3b
+LIBEVENT_LIB_VERSION:=1.0.3
 LIBEVENT_SOURCE:=libevent-$(LIBEVENT_VERSION).tar.gz
 LIBEVENT_SITE:=http://www.monkey.org/~provos
-LIBEVENT_DIR:=$(SOURCE_DIR)/libevent-$(LIBEVENT_VERSION)
 LIBEVENT_MAKE_DIR:=$(MAKE_DIR)/libs
+LIBEVENT_DIR:=$(SOURCE_DIR)/libevent-$(LIBEVENT_VERSION)
+LIBEVENT_BINARY:=$(LIBEVENT_DIR)/.libs/libevent-$(LIBEVENT_VERSION).so.$(LIBEVENT_LIB_VERSION)
+LIBEVENT_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent-$(LIBEVENT_VERSION).so.$(LIBEVENT_LIB_VERSION)
+LIBEVENT_TARGET_DIR:=root/usr/lib
+LIBEVENT_TARGET_BINARY:=$(LIBEVENT_TARGET_DIR)/libevent-$(LIBEVENT_VERSION).so.$(LIBEVENT_LIB_VERSION)
 
 $(DL_DIR)/$(LIBEVENT_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(LIBEVENT_SITE)/$(LIBEVENT_SOURCE)
@@ -47,33 +50,35 @@ $(LIBEVENT_DIR)/.configured: $(LIBEVENT_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBEVENT_DIR)/.compiled: $(LIBEVENT_DIR)/.configured
+$(LIBEVENT_BINARY): $(LIBEVENT_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(LIBEVENT_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
 		libevent.la
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.so: $(LIBEVENT_DIR)/.compiled
+$(LIBEVENT_STAGING_BINARY): $(LIBEVENT_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(LIBEVENT_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install-strip
-	touch -c $@
 
-libevent: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.so
+$(LIBEVENT_TARGET_BINARY): $(LIBEVENT_STAGING_BINARY)
+	$(TARGET_STRIP) $(LIBEVENT_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*.so* $(LIBEVENT_TARGET_DIR)/
 
-libevent-precompiled: uclibc libevent
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*.so* root/usr/lib/
+libevent: $(LIBEVENT_STAGING_BINARY)
+
+libevent-precompiled: uclibc libevent $(LIBEVENT_TARGET_BINARY)
 
 libevent-source: $(LIBEVENT_DIR)/.unpacked
 
 libevent-clean:
 	-$(MAKE) -C $(LIBEVENT_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*
-	rm -rf root/usr/lib/libevent*.so*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*
+
+libevent-uninstall:
+	rm -f $(LIBEVENT_TARGET_DIR)/libevent*.so*
 
 libevent-dirclean:
 	rm -rf $(LIBEVENT_DIR)

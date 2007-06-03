@@ -1,8 +1,13 @@
 MAD_VERSION:=0.15.1b
+MAD_LIB_VERSION:=0.2.1
 MAD_SOURCE:=libmad-$(MAD_VERSION).tar.gz
 MAD_SITE:=http://mesh.dl.sourceforge.net/sourceforge/mad
-MAD_DIR:=$(SOURCE_DIR)/libmad-$(MAD_VERSION)
 MAD_MAKE_DIR:=$(MAKE_DIR)/libs
+MAD_DIR:=$(SOURCE_DIR)/libmad-$(MAD_VERSION)
+MAD_BINARY:=$(MAD_DIR)/.libs/libmad.so.$(MAD_LIB_VERSION)
+MAD_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so.$(MAD_LIB_VERSION)
+MAD_TARGET_DIR:=root/usr/lib
+MAD_TARGET_BINARY:=$(MAD_TARGET_DIR)/libmad.so.$(MAD_LIB_VERSION)
 
 
 $(DL_DIR)/$(MAD_SOURCE): | $(DL_DIR)
@@ -52,33 +57,33 @@ $(MAD_DIR)/.configured: $(MAD_DIR)/.unpacked
 	);
 	touch $@
 
-$(MAD_DIR)/.compiled: $(MAD_DIR)/.configured
+$(MAD_BINARY): $(MAD_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(MAD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) 
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so: $(MAD_DIR)/.compiled
+$(MAD_STAGING_BINARY): $(MAD_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(MAD_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	touch -c $@
 
-mad: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so
+$(MAD_TARGET_BINARY): $(MAD_STAGING_BINARY)
+	$(TARGET_STRIP) $(MAD_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*.so* $(MAD_TARGET_DIR)/
 
-mad-precompiled: uclibc mad
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*.so* root/usr/lib/
+mad: $(MAD_STAGING_BINARY)
+
+mad-precompiled: uclibc mad $(MAD_TARGET_BINARY)
 
 mad-source: $(MAD_DIR)/.unpacked
 
 mad-clean:
 	-$(MAKE) -C $(MAD_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*
-	rm -rf root/usr/lib/libmad*.so.*
-	
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*
+
+mad-uninstall:
+	rm -f $(MAD_TARGET_DIR)/libmad*.so*
 
 mad-dirclean:
 	rm -rf $(MAD_DIR)
-

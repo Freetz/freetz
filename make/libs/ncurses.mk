@@ -1,8 +1,13 @@
 NCURSES_VERSION:=5.5
+NCURSES_LIB_VERSION:=$(NCURSES_VERSION)
 NCURSES_SOURCE:=ncurses-$(NCURSES_VERSION).tar.gz
 NCURSES_SITE:=http://ftp.gnu.org/pub/gnu/ncurses
 NCURSES_MAKE_DIR:=$(MAKE_DIR)/libs
 NCURSES_DIR:=$(SOURCE_DIR)/ncurses-$(NCURSES_VERSION)
+NCURSES_BINARY:=$(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_LIB_VERSION)
+NCURSES_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so.$(NCURSES_LIB_VERSION)
+NCURSES_TARGET_DIR:=root/usr/lib
+NCURSES_TARGET_BINARY:=$(NCURSES_TARGET_DIR)/libncurses.so.$(NCURSES_LIB_VERSION)
 
 $(DL_DIR)/$(NCURSES_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(NCURSES_SITE)/$(NCURSES_SOURCE)
@@ -59,35 +64,33 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.unpacked
 	);
 	touch $@
 
-$(NCURSES_DIR)/.compiled: $(NCURSES_DIR)/.configured
+$(NCURSES_BINARY): $(NCURSES_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
 		-C $(NCURSES_DIR) $(TARGET_CONFIGURE_OPTS) \
 		libs panel menu form headers
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so \
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so.$(NCURSES_VERSION): \
-$(NCURSES_DIR)/.compiled
+$(NCURSES_STAGING_BINARY): $(NCURSES_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
 		-C $(NCURSES_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install.libs install.data
-	touch -c $@
 
-root/usr/lib/libncurses.so root/usr/lib/libncurses.so.$(NCURSES_VERSION):
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*.so* root/usr/lib/
+$(NCURSES_TARGET_BINARY): $(NCURSES_STAGING_BINARY)
+	$(TARGET_STRIP) $(NCURSES_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*.so* $(NCURSES_TARGET_DIR)/
 
-ncurses: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
+ncurses: $(NCURSES_STAGING_BINARY)
 
-ncurses-precompiled: uclibc ncurses root/usr/lib/libncurses.so root/usr/lib/libncurses.so.$(NCURSES_VERSION)
+ncurses-precompiled: uclibc ncurses $(NCURSES_TARGET_BINARY)
 
 ncurses-source: $(NCURSES_DIR)/.unpacked
 
 ncurses-clean:
 	-$(MAKE) -C $(NCURSES_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
-	rm -rf root/usr/lib/libncurses*.so*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
+
+ncurses-uninstall:
+	rm -f $(NCURSES_TARGET_DIR)/libncurses*.so*
 
 ncurses-dirclean:
 	rm -rf $(NCURSES_DIR)

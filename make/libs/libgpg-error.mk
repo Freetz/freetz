@@ -1,7 +1,12 @@
 LIBGPG_ERROR_VERSION:=1.1
+LIBGPG_ERROR_LIB_VERSION:=0.1.4
 LIBGPG_ERROR_SOURCE:=libgpg-error-$(LIBGPG_ERROR_VERSION).tar.gz
 LIBGPG_ERROR_SITE:=http://ftp.gnupg.org/gcrypt/libgpg-error
 LIBGPG_ERROR_DIR:=$(SOURCE_DIR)/libgpg-error-$(LIBGPG_ERROR_VERSION)
+LIBGPG_ERROR_BINARY:=$(LIBGPG_ERROR_DIR)/src/.libs/libgpg-error.so.$(LIBGPG_ERROR_LIB_VERSION)
+LIBGPG_ERROR_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so.$(LIBGPG_ERROR_LIB_VERSION)
+LIBGPG_ERROR_TARGET_DIR:=root/usr/lib
+LIBGPG_ERROR_TARGET_BINARY:=$(LIBGPG_ERROR_TARGET_DIR)/libgpg-error.so.$(LIBGPG_ERROR_LIB_VERSION)
 
 
 $(DL_DIR)/$(LIBGPG_ERROR_SOURCE): | $(DL_DIR)
@@ -34,11 +39,10 @@ $(LIBGPG_ERROR_DIR)/.configured: $(LIBGPG_ERROR_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBGPG_ERROR_DIR)/.compiled: $(LIBGPG_ERROR_DIR)/.configured
+$(LIBGPG_ERROR_BINARY): $(LIBGPG_ERROR_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBGPG_ERROR_DIR)
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so: $(LIBGPG_ERROR_DIR)/.compiled
+$(LIBGPG_ERROR_STAGING_BINARY): $(LIBGPG_ERROR_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(LIBGPG_ERROR_DIR) \
 		prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
@@ -46,20 +50,23 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so: $(LIBGPG_ERROR_DIR)/.co
 		bindir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin \
 		datadir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share \
 		install
-	touch -c $@
 
-libgpg-error: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so
+$(LIBGPG_ERROR_TARGET_BINARY): $(LIBGPG_ERROR_STAGING_BINARY)
+	$(TARGET_STRIP) $(LIBGPG_ERROR_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*.so* $(LIBGPG_ERROR_TARGET_DIR)/
 
-libgpg-error-precompiled: uclibc libgpg-error
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*.so* root/usr/lib/
+libgpg-error: $(LIBGPG_ERROR_STAGING_BINARY)
+
+libgpg-error-precompiled: uclibc libgpg-error $(LIBGPG_ERROR_TARGET_BINARY)
 
 libgpg-error-source: $(LIBGPG_ERROR_DIR)/.unpacked
 
 libgpg-error-clean:
 	-$(MAKE) -C $(LIBGPG_ERROR_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*
-	rm -rf root/usr/lib/libgpg-error*.so*
-	
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*
+
+libgpg-error-uninstall:
+	rm -f $(LIBGPG_ERROR_TARGET_DIR)/libgpg-error*.so*
+
 libgpg-error-dirclean:
 	rm -rf $(LIBGPG_ERROR_DIR)
