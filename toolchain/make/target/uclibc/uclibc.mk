@@ -121,7 +121,8 @@ uclibc:	$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
 uclibc-target-utils: $(ROOT_DIR)/usr/bin/ldd
 
 $(ROOT_DIR)/usr/bin/ldd:
-	# Build the utils. 
+	# Build the utils.
+	# TODO: Remove ldd from $(ROOT_DIR) 
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		PREFIX=$(shell pwd)/$(ROOT_DIR) utils install_utils
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils
@@ -131,4 +132,3 @@ $(ROOT_DIR)/usr/bin/ldd:
 	touch -c $(ROOT_DIR)/usr/bin/ldd	    
 
 .PHONY: uclibc-configured uclibc
-
