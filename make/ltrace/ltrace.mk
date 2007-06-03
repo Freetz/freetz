@@ -16,9 +16,10 @@ $(DL_DIR)/$(LTRACE_PKG_SOURCE): | $(DL_DIR)
 
 $(LTRACE_DIR)/.unpacked: $(DL_DIR)/$(LTRACE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LTRACE_SOURCE)
-#	for i in $(LTRACE_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(LTRACE_DIR) -p0 < $$i; \
-#	done
+	for i in $(LTRACE_MAKE_DIR)/patches/*.patch; do \
+		patch -d $(LTRACE_DIR) -p1 < $$i; \
+	done
+	( cd $(LTRACE_DIR); ./autogen.sh );
 	touch $@
 
 $(LTRACE_DIR)/.configured: $(LTRACE_DIR)/.unpacked
@@ -53,7 +54,7 @@ $(LTRACE_DIR)/.configured: $(LTRACE_DIR)/.unpacked
 	touch $@
 
 $(LTRACE_DIR)/$(LTRACE_TARGET_BINARY): $(LTRACE_DIR)/.configured
-	PATH="$(TARGET_PATH)" $(MAKE) -C $(LTRACE_DIR) ARCH=mips
+	PATH="$(TARGET_PATH)" $(MAKE) -C $(LTRACE_DIR) ARCH=mipsel
 	
 $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION): $(DL_DIR)/$(LTRACE_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LTRACE_PKG_SOURCE)
@@ -72,7 +73,7 @@ ltrace-precompiled: uclibc libelf-precompiled $(LTRACE_DIR)/$(LTRACE_TARGET_BINA
 ltrace-source: $(LTRACE_DIR)/.unpacked $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION)
 
 ltrace-clean:
-	-$(MAKE) -C $(LTRACE_DIR) clean ARCH=mips
+	-$(MAKE) -C $(LTRACE_DIR) clean ARCH=mipsel
 	rm -f $(PACKAGES_BUILD_DIR)/$(LTRACE_PKG_SOURCE)
 
 ltrace-dirclean:
