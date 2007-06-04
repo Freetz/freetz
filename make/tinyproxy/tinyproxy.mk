@@ -99,7 +99,7 @@ tinyproxy-source: $(TINYPROXY_DIR)/.unpacked $(PACKAGES_DIR)/.$(TINYPROXY_PKG_NA
 
 tinyproxy-clean:
 	-$(MAKE) -C $(TINYPROXY_DIR) clean
-	rm $(TINYPROXY_DIR)/$(TINYPROXY_TARGET_BINARY)
+	rm -f $(TINYPROXY_DIR)/$(TINYPROXY_TARGET_BINARY)
 	rm -f $(PACKAGES_BUILD_DIR)/$(TINYPROXY_PKG_SOURCE)
 
 tinyproxy-dirclean:
