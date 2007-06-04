@@ -28,7 +28,7 @@ Content-Type: text/html; charset=ISO-8859-1
 	</script>
 </head>
 <body>
-	<h1>Rudi(mentär)-Shell</h1>
+	<!--h1>Rudi(mentär)-Shell</h1-->
 	<form action="/cgi-bin/rudi_shellcmd.cgi" target="shellcmd" method=POST enctype="multipart/form-data">
 		<textarea id="script_code" name="script" rows="10" cols="80"></textarea><p>
 		<input type=submit value="Skript ausführen">&nbsp;&nbsp;
