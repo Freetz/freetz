@@ -1,8 +1,13 @@
 LIBELF_VERSION:=0.8.9
+LIBELF_LIB_VERSION:=$(LIBELF_VERSION)
 LIBELF_SOURCE:=libelf-$(LIBELF_VERSION).tar.gz
 LIBELF_SITE:=http://www.mr511.de/software
-LIBELF_DIR:=$(SOURCE_DIR)/libelf-$(LIBELF_VERSION)
 LIBELF_MAKE_DIR:=$(MAKE_DIR)/libs
+LIBELF_DIR:=$(SOURCE_DIR)/libelf-$(LIBELF_VERSION)
+LIBELF_BINARY:=$(LIBELF_DIR)/lib/libelf.so.$(LIBELF_LIB_VERSION)
+LIBELF_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so.$(LIBELF_LIB_VERSION)
+LIBELF_TARGET_DIR:=root/usr/lib
+LIBELF_TARGET_BINARY:=$(LIBELF_TARGET_DIR)/libelf.so.$(LIBELF_LIB_VERSION)
 
 $(DL_DIR)/$(LIBELF_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(LIBELF_SITE)/$(LIBELF_SOURCE)
@@ -56,29 +61,31 @@ $(LIBELF_DIR)/.configured: $(LIBELF_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBELF_DIR)/.compiled: $(LIBELF_DIR)/.configured
+$(LIBELF_BINARY): $(LIBELF_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBELF_DIR)
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so: $(LIBELF_DIR)/.compiled
+$(LIBELF_STAGING_BINARY): $(LIBELF_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
 		instroot="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		-C $(LIBELF_DIR) install
-	touch -c $@
 
-libelf: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so
+$(LIBELF_TARGET_BINARY): $(LIBELF_STAGING_BINARY)
+	$(TARGET_STRIP) $(LIBELF_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so* $(LIBELF_TARGET_DIR)/
 
-libelf-precompiled: uclibc libelf
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so* root/usr/lib/
+libelf: $(LIBELF_STAGING_BINARY)
+
+libelf-precompiled: uclibc libelf $(LIBELF_TARGET_BINARY)
 
 libelf-source: $(LIBELF_DIR)/.unpacked
 
 libelf-clean:
 	-$(MAKE) -C $(LIBELF_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*
-	rm -rf root/usr/lib/libelf*.so*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*
+
+libelf-uninstall:
+	rm -f $(LIBELF_TARGET_DIR)/libelf*.so*
 
 libelf-dirclean:
 	rm -rf $(LIBELF_DIR)

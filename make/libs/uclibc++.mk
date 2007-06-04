@@ -1,8 +1,13 @@
 UCLIBCXX_VERSION:=0.2.1
+UCLIBCXX_LIB_VERSION:=$(UCLIBCXX_VERSION)
 UCLIBCXX_SOURCE:=uClibc++-$(UCLIBCXX_VERSION).tar.bz2
 UCLIBCXX_SITE:=http://cxx.uclibc.org/src/
-UCLIBCXX_DIR:=$(SOURCE_DIR)/uClibc++-$(UCLIBCXX_VERSION)
 UCLIBCXX_MAKE_DIR:=$(MAKE_DIR)/libs
+UCLIBCXX_DIR:=$(SOURCE_DIR)/uClibc++-$(UCLIBCXX_VERSION)
+UCLIBCXX_BINARY:=$(UCLIBCXX_DIR)/src/libuClibc++-$(UCLIBCXX_LIB_VERSION).so
+UCLIBCXX_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++-$(UCLIBCXX_LIB_VERSION).so
+UCLIBCXX_TARGET_DIR:=root/lib
+UCLIBCXX_TARGET_BINARY:=$(UCLIBCXX_TARGET_DIR)/libuClibc++-$(UCLIBCXX_LIB_VERSION).so
 
 
 $(DL_DIR)/$(UCLIBCXX_SOURCE): | $(DL_DIR)
@@ -21,16 +26,15 @@ else
 endif
 	touch $@
 
-$(UCLIBCXX_DIR)/.compiled: $(UCLIBCXX_DIR)/.configured
+$(UCLIBCXX_BINARY): $(UCLIBCXX_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(UCLIBCXX_DIR) \
 		CC="$(TARGET_CC)" \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		all
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++.so: $(UCLIBCXX_DIR)/.compiled
+$(UCLIBCXX_STAGING_BINARY): $(UCLIBCXX_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
@@ -40,21 +44,24 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++.so: $(UCLIBCXX_DIR)/.compiled
 	mv $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/g++-uc \
 	   $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
 	ln -sf $(REAL_GNU_TARGET_NAME)-g++-uc $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-g++-uc
-	touch -c $@
 
-uclibcxx: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++.so
+$(UCLIBCXX_TARGET_BINARY): $(UCLIBCXX_STAGING_BINARY)
+	chmod 755 $(UCLIBCXX_STAGING_BINARY)
+	$(TARGET_STRIP) $(UCLIBCXX_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so* $(UCLIBCXX_TARGET_DIR)/
 
-uclibcxx-precompiled: uclibc uclibcxx
-	chmod 755 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so*
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so* root/lib/
+uclibcxx: $(UCLIBCXX_STAGING_BINARY)
+
+uclibcxx-precompiled: uclibc uclibcxx $(UCLIBCXX_TARGET_BINARY)
 
 uclibcxx-source: $(UCLIBCXX_DIR)/.unpacked
 
 uclibcxx-clean:
 	-$(MAKE) -C $(UCLIBCXX_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++* 
-	rm -rf root/lib/libuClibc++*.so* 
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++* 
+
+uclibcxx-uninstall:
+	rm -f $(UCLIBCXX_TARGET_DIR)/libuClibc++*.so*
 
 uclibcxx-dirclean:
 	rm -rf $(UCLIBCXX_DIR)

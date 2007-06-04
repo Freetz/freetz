@@ -1,8 +1,13 @@
 JPEG_VERSION:=6b
+JPEG_LIB_VERSION:=62.0.0
 JPEG_SOURCE:=jpegsrc.v$(JPEG_VERSION).tar.gz
 JPEG_SITE:=http://ijg.org/files
-JPEG_DIR:=$(SOURCE_DIR)/jpeg-$(JPEG_VERSION)
 JPEG_MAKE_DIR:=$(MAKE_DIR)/libs
+JPEG_DIR:=$(SOURCE_DIR)/jpeg-$(JPEG_VERSION)
+JPEG_BINARY:=$(JPEG_DIR)/.libs/libjpeg.so.$(JPEG_LIB_VERSION)
+JPEG_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so.$(JPEG_LIB_VERSION)
+JPEG_TARGET_DIR:=root/usr/lib
+JPEG_TARGET_BINARY:=$(JPEG_TARGET_DIR)/libjpeg.so.$(JPEG_LIB_VERSION)
 
 
 $(DL_DIR)/$(JPEG_SOURCE): | $(DL_DIR)
@@ -48,32 +53,34 @@ $(JPEG_DIR)/.configured: $(JPEG_DIR)/.unpacked
 	);
 	touch $@
 
-$(JPEG_DIR)/.compiled: $(JPEG_DIR)/.configured
+$(JPEG_BINARY): $(JPEG_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(JPEG_DIR) \
 		$(TARGET_CONFIGURE_OPTS) all
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so: $(JPEG_DIR)/.compiled
+$(JPEG_STAGING_BINARY): $(JPEG_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(JPEG_DIR) \
 		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		install-headers install-lib
-	touch -c $@
 
-jpeg: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so
+$(JPEG_TARGET_BINARY): $(JPEG_STAGING_BINARY)
+	$(TARGET_STRIP) $(JPEG_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so* $(JPEG_TARGET_DIR)/
 
-jpeg-precompiled: uclibc jpeg
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so* root/usr/lib/
+jpeg: $(JPEG_STAGING_BINARY)
+
+jpeg-precompiled: uclibc jpeg $(JPEG_TARGET_BINARY)
 
 jpeg-source: $(JPEG_DIR)/.unpacked
 
 jpeg-clean:
 	-$(MAKE) -C $(JPEG_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*
-	rm -rf root/usr/lib/libjpeg*.so*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*
+
+jpeg-uninstall:
+	rm -f $(JPEG_TARGET_DIR)/libjpeg*.so*
 
 jpeg-dirclean:
 	rm -rf $(JPEG_DIR)

@@ -103,7 +103,7 @@ $(FUSE_MOD_TARGET_BINARY): $(FUSE_MOD_BINARY)
 
 $(FUSE_LIB_TARGET_BINARY): $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$(FUSE_VERSION)
 	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_LIB_TARGET_DIR)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_LIB_TARGET_DIR)/
 
 fuse: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
 
@@ -117,10 +117,10 @@ fuse-source: $(FUSE_DIR)/.unpacked $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
 fuse-clean:
 	-$(MAKE) -C $(FUSE_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE)
-	
+
 fuse-dirclean:
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so.*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.a
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so.*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.a
 	rm -rf $(FUSE_DIR)
 	rm -rf $(PACKAGES_DIR)/$(FUSE_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
@@ -128,7 +128,7 @@ fuse-dirclean:
 fuse-uninstall:
 	rm -f $(FUSE_TARGET_BINARY)
 	rm -f $(FUSE_MOD_TARGET_BINARY)
-	rm -rf $(FUSE_LIB_TARGET_DIR)/libfuse*.so*
+	rm -f $(FUSE_LIB_TARGET_DIR)/libfuse*.so*
 
 fuse-list:
 ifeq ($(strip $(DS_PACKAGE_FUSE)),y)

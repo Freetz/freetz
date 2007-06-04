@@ -1,9 +1,16 @@
 READLINE_VERSION:=5.2
+READLINE_LIB_VERSION:=$(READLINE_VERSION)
 READLINE_SOURCE:=readline-$(READLINE_VERSION).tar.gz
 READLINE_SITE:=ftp://ftp.cwru.edu/pub/bash
-READLINE_DIR:=$(SOURCE_DIR)/readline-$(READLINE_VERSION)
 READLINE_MAKE_DIR:=$(MAKE_DIR)/libs
-READLINE_PREREQUISITES:=
+READLINE_DIR:=$(SOURCE_DIR)/readline-$(READLINE_VERSION)
+READLINE_READLINE_BINARY:=$(READLINE_DIR)/shlib/libreadline.so.$(READLINE_LIB_VERSION)
+READLINE_HISTORY_BINARY:=$(READLINE_DIR)/shlib/libhistory.so.$(READLINE_LIB_VERSION)
+READLINE_STAGING_READLINE_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so.$(READLINE_LIB_VERSION)
+READLINE_STAGING_HISTORY_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so.$(READLINE_LIB_VERSION)
+READLINE_TARGET_DIR:=root/usr/lib
+READLINE_TARGET_READLINE_BINARY:=$(READLINE_TARGET_DIR)/libreadline.so.$(READLINE_LIB_VERSION)
+READLINE_TARGET_HISTORY_BINARY:=$(READLINE_TARGET_DIR)/libhistory.so.$(READLINE_LIB_VERSION)
 
 $(DL_DIR)/$(READLINE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(READLINE_SITE)/$(READLINE_SOURCE)
@@ -41,55 +48,40 @@ $(READLINE_DIR)/.configured: $(READLINE_DIR)/.unpacked
 	);
 	touch $@
 
-$(READLINE_DIR)/.compiled: $(READLINE_DIR)/.configured
+$(READLINE_READLINE_BINARY) $(READLINE_HISTORY_BINARY): $(READLINE_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(READLINE_DIR)
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so \
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so.$(READLINE_VERSION) \
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so \
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so.$(READLINE_VERSION): \
-$(READLINE_DIR)/.compiled
+$(READLINE_STAGING_READLINE_BINARY) $(READLINE_STAGING_HISTORY_BINARY): \
+		$(READLINE_READLINE_BINARY) $(READLINE_HISTORY_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(READLINE_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	touch -c $@
 
-ifeq ($(strip $(DS_LIB_libreadline)),y)
-READLINE_PREREQUISITES+=root/usr/lib/libreadline.so root/usr/lib/libreadline.so.$(READLINE_VERSION)
-endif
-ifeq ($(strip $(DS_LIB_libhistory)),y)
-READLINE_PREREQUISITES+=root/usr/lib/libhistory.so root/usr/lib/libhistory.so.$(READLINE_VERSION)
-endif
+$(READLINE_TARGET_READLINE_BINARY) $(READLINE_TARGET_HISTORY_BINARY): \
+		$(READLINE_STAGING_READLINE_BINARY) $(READLINE_STAGING_HISTORY_BINARY)
+	chmod 755 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
+	chmod 755 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
+	$(TARGET_STRIP) $(READLINE_STAGING_READLINE_BINARY)
+	$(TARGET_STRIP) $(READLINE_STAGING_HISTORY_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so* $(READLINE_TARGET_DIR)/
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so* $(READLINE_TARGET_DIR)/
 
-root/usr/lib/libreadline.so \
-root/usr/lib/libreadline.so.$(READLINE_VERSION):
-	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline*.so* root/usr/lib/
-root/usr/lib/libhistory.so \
-root/usr/lib/libhistory.so.$(READLINE_VERSION):
-	chmod 0644 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so* root/usr/lib/
+readline: $(READLINE_STAGING_READLINE_BINARY) $(READLINE_STAGING_HISTORY_BINARY)
 
-readline: \
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so \
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so.$(READLINE_VERSION) \
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so \
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so.$(READLINE_VERSION)
-
-readline-precompiled: uclibc ncurses-precompiled readline $(READLINE_PREREQUISITES)
+readline-precompiled: uclibc ncurses-precompiled readline \
+		$(READLINE_TARGET_READLINE_BINARY) $(READLINE_TARGET_HISTORY_BINARY)
 
 readline-source: $(READLINE_DIR)/.unpacked
 
 readline-clean:
 	$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" -C $(READLINE_DIR) uninstall
 	-$(MAKE) -C $(READLINE_DIR) clean
-	rm -rf root/usr/lib/libreadline*.so*
-	rm -rf root/usr/lib/libhistory*.so*
+
+readline-uninstall:
+	rm -f $(READLINE_TARGET_DIR)/libreadline*.so*
+	rm -f $(READLINE_TARGET_DIR)/libhistory*.so*
 
 readline-dirclean:
 	rm -rf $(READLINE_DIR)

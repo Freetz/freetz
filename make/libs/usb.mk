@@ -1,8 +1,14 @@
 USB_VERSION:=0.1.12
+USB_SHORT_VERSION:=0.1
+USB_LIB_VERSION:=4.4.4
 USB_SOURCE:=libusb-$(USB_VERSION).tar.gz
 USB_SITE:=http://prdownloads.sourceforge.net/libusb
-USB_DIR:=$(SOURCE_DIR)/libusb-$(USB_VERSION)
 USB_MAKE_DIR:=$(MAKE_DIR)/libs
+USB_DIR:=$(SOURCE_DIR)/libusb-$(USB_VERSION)
+USB_BINARY:=$(USB_DIR)/.libs/libusb-$(USB_SHORT_VERSION).so.$(USB_LIB_VERSION)
+USB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-$(USB_SHORT_VERSION).so.$(USB_LIB_VERSION)
+USB_TARGET_DIR:=root/usr/lib
+USB_TARGET_BINARY:=$(USB_TARGET_DIR)/libusb-$(USB_SHORT_VERSION).so.$(USB_LIB_VERSION)
 
 
 $(DL_DIR)/$(USB_SOURCE): | $(DL_DIR)
@@ -47,31 +53,33 @@ $(USB_DIR)/.configured: $(USB_DIR)/.unpacked
 	);
 	touch $@
 
-$(USB_DIR)/.compiled: $(USB_DIR)/.configured
+$(USB_BINARY): $(USB_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(USB_DIR) \
 		$(TARGET_CONFIGURE_OPTS) all
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb.so: $(USB_DIR)/.compiled
+$(USB_STAGING_BINARY): $(USB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(USB_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	touch -c $@
 
-usb: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb.so
+$(USB_TARGET_BINARY): $(USB_STAGING_BINARY)
+	$(TARGET_STRIP) $(USB_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so* $(USB_TARGET_DIR)/
 
-usb-precompiled: uclibc usb
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so* root/usr/lib/
+usb: $(USB_STAGING_BINARY)
+
+usb-precompiled: uclibc usb $(USB_TARGET_BINARY)
 
 usb-source: $(USB_DIR)/.unpacked
 
 usb-clean:
 	-$(MAKE) -C $(USB_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*
-	rm -rf root/usr/lib/libusb*.so*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*
+
+usb-uninstall:
+	rm -f $(USB_TARGET_DIR)/libusb*.so*
 
 usb-dirclean:
 	rm -rf $(USB_DIR)

@@ -1,8 +1,13 @@
 LIBPCAP_VERSION:=0.9.5
+LIBPCAP_LIB_VERSION:=$(LIBPCAP_VERSION)
 LIBPCAP_SOURCE:=libpcap-$(LIBPCAP_VERSION).tar.gz
 LIBPCAP_SITE:=http://www.tcpdump.org/release/
-LIBPCAP_DIR:=$(SOURCE_DIR)/libpcap-$(LIBPCAP_VERSION)
 LIBPCAP_MAKE_DIR:=$(MAKE_DIR)/libs
+LIBPCAP_DIR:=$(SOURCE_DIR)/libpcap-$(LIBPCAP_VERSION)
+LIBPCAP_BINARY:=$(LIBPCAP_DIR)/libpcap.so.$(LIBPCAP_LIB_VERSION)
+LIBPCAP_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so.$(LIBPCAP_LIB_VERSION)
+LIBPCAP_TARGET_DIR:=root/usr/lib
+LIBPCAP_TARGET_BINARY:=$(LIBPCAP_TARGET_DIR)/libpcap.so.$(LIBPCAP_LIB_VERSION)
 
 
 $(DL_DIR)/$(LIBPCAP_SOURCE): | $(DL_DIR)
@@ -62,32 +67,33 @@ $(LIBPCAP_DIR)/.configured: $(LIBPCAP_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBPCAP_DIR)/.compiled: $(LIBPCAP_DIR)/.configured
+$(LIBPCAP_BINARY): $(LIBPCAP_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(LIBPCAP_DIR) \
 		$(TARGET_CONFIGURE_OPTS) all
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so: $(LIBPCAP_DIR)/.compiled
+$(LIBPCAP_STAGING_BINARY): $(LIBPCAP_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(LIBPCAP_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	touch -c $@
 
-libpcap: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so
+$(LIBPCAP_TARGET_BINARY): $(LIBPCAP_STAGING_BINARY)
+	$(TARGET_STRIP) $(LIBPCAP_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so* $(LIBPCAP_TARGET_DIR)/
 
-libpcap-precompiled: uclibc libpcap
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so* root/usr/lib/
+libpcap: $(LIBPCAP_STAGING_BINARY)
+
+libpcap-precompiled: uclibc libpcap $(LIBPCAP_TARGET_BINARY)
 
 libpcap-source: $(LIBPCAP_DIR)/.unpacked
 
 libpcap-clean:
 	-$(MAKE) -C $(LIBPCAP_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.a
-	rm -rf root/usr/lib/libpcap*.so*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*
+
+libpcap-uninstall:
+	rm -f $(LIBPCAP_TARGET_DIR)/libpcap*.so*
 
 libpcap-dirclean:
 	rm -rf $(LIBPCAP_DIR)
-

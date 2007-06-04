@@ -1,8 +1,13 @@
 ZLIB_VERSION:=1.2.3
+ZLIB_LIB_VERSION:=$(ZLIB_VERSION)
 ZLIB_SOURCE:=zlib-$(ZLIB_VERSION).tar.gz
 ZLIB_SITE:=http://mesh.dl.sourceforge.net/sourceforge/libpng
-ZLIB_DIR:=$(SOURCE_DIR)/zlib-$(ZLIB_VERSION)
 ZLIB_MAKE_DIR:=$(MAKE_DIR)/libs
+ZLIB_DIR:=$(SOURCE_DIR)/zlib-$(ZLIB_VERSION)
+ZLIB_BINARY:=$(ZLIB_DIR)/libz.so.$(ZLIB_LIB_VERSION)
+ZLIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so.$(ZLIB_LIB_VERSION)
+ZLIB_TARGET_DIR:=root/usr/lib
+ZLIB_TARGET_BINARY:=$(ZLIB_TARGET_DIR)/libz.so.$(ZLIB_LIB_VERSION)
 
 
 $(DL_DIR)/$(ZLIB_SOURCE): | $(DL_DIR)
@@ -31,34 +36,36 @@ $(ZLIB_DIR)/.configured: $(ZLIB_DIR)/.unpacked
 	);
 	touch $@
 
-$(ZLIB_DIR)/.compiled: $(ZLIB_DIR)/.configured
+$(ZLIB_BINARY): $(ZLIB_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(ZLIB_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
 		libz.a libz.so
-	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so: $(ZLIB_DIR)/.compiled
+$(ZLIB_STAGING_BINARY): $(ZLIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(ZLIB_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	touch -c $@
 
-zlib: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so
+$(ZLIB_TARGET_BINARY): $(ZLIB_STAGING_BINARY)
+	$(TARGET_STRIP) $(ZLIB_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so* $(ZLIB_TARGET_DIR)/
 
-zlib-precompiled: uclibc zlib
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so*
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so* root/usr/lib/
+zlib: $(ZLIB_STAGING_BINARY)
+
+zlib-precompiled: uclibc zlib $(ZLIB_TARGET_BINARY)
 
 zlib-source: $(ZLIB_DIR)/.unpacked
 
 zlib-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/z{lib,conf}.h
-	rm -rf root/usr/lib/libz*.so* 
-	
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/z{lib,conf}.h
+
+zlib-uninstall:
+	rm -f $(ZLIB_TARGET_DIR)/libz*.so*
+
 zlib-dirclean:
 	rm -rf $(ZLIB_DIR)
