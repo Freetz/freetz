@@ -86,8 +86,8 @@ openntpd-clean:
 
 openntpd-dirclean:
 	rm -rf $(OPENNTPD_DIR)
-	rm -rf $(PACKAGES_DIR)/$(OPENNTPD_PKG_NAME)
-	rm -f $(PACKAGES_DIR)/.$(OPENNTPD_PKG_NAME)
+	rm -rf $(PACKAGES_DIR)/openntpd-$(OPENNTPD_VERSION)
+	rm -f $(PACKAGES_DIR)/.openntpd-$(OPENNTPD_VERSION)
 
 openntpd-uninstall: 
 	rm -f $(OPENNTPD_TARGET_BINARY)
