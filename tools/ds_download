@@ -122,7 +122,7 @@ if [ -z $dl_site ]; then
 fi
 
 # Try to download from fallback mirror
-do_download "$DL_DIR" "${sites[$i]}/$DL_FILE"
+do_download "$DL_DIR" "$dl_site/$DL_FILE"
 if [ "$?" != "0" ]; then
   exit 1
 fi
