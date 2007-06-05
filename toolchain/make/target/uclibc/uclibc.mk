@@ -10,6 +10,7 @@ UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DIR)
 $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(UCLIBC_SOURCE_SITE)/$(UCLIBC_SOURCE)
 
+uclibc-unpacked: $(UCLIBC_DIR)/.unpacked
 $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(UCLIBC_SOURCE)
@@ -39,6 +40,7 @@ endif
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
 		HOSTCC="$(HOSTCC)" \
 		oldconfig
+	touch $@
 
 $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 	$(MAKE1) -C $(UCLIBC_DIR) \
@@ -58,8 +60,18 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 	fi;			
 	touch $@
 
+uclibc-menuconfig: $(UCLIBC_DIR)/.config
+	$(MAKE1) -C $(UCLIBC_DIR) \
+		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		DEVEL_PREFIX=/usr/ \
+		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		HOSTCC="$(HOSTCC)" \
+		menuconfig && \
+	cp -f $(UCLIBC_DIR)/.config $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(AVM_VERSION) && \
+	touch $(UCLIBC_DIR)/.config
+
 $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured
-	$(MAKE) -C $(UCLIBC_DIR) \
+	$(MAKE1) -C $(UCLIBC_DIR) \
 		PREFIX= \
 		DEVEL_PREFIX=/ \
 		RUNTIME_PREFIX=/ \
@@ -116,7 +128,18 @@ endif
 
 uclibc-configured: $(UCLIBC_DIR)/.configured
 
-uclibc:	$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
+uclibc:	$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
+
+uclibc-source: $(DL_DIR)/$(UCLIBC_SOURCE)
+
+uclibc-configured-source: uclibc-source
+
+uclibc-clean:
+	-$(MAKE1) -C $(UCLIBC_DIR) clean
+	rm -f $(UCLIBC_DIR)/.config
+
+uclibc-dirclean:
+	rm -rf $(UCLIBC_DIR)
 
 uclibc-target-utils: $(ROOT_DIR)/usr/bin/ldd
 
@@ -129,6 +152,7 @@ $(ROOT_DIR)/usr/bin/ldd:
 	install -c $(ROOT_DIR)/usr/bin/ldd \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils/ldd
 	$(TARGET_STRIP) $(ROOT_DIR)/usr/bin/ldd
-	touch -c $(ROOT_DIR)/usr/bin/ldd	    
+	touch -c $(ROOT_DIR)/usr/bin/ldd
 
-.PHONY: uclibc-configured uclibc
+uclibc-target-utils-clean:
+	rm -f $(ROOT_DIR)/usr/bin/ldd

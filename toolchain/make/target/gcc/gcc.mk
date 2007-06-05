@@ -34,6 +34,7 @@ endif
 
 GCC_STRIP_HOST_BINARIES:=true
 GCC_USE_SJLJ_EXCEPTIONS:=--enable-sjlj-exceptions
+GCC_SHARED_LIBGCC:=--disable-shared
 GCC_EXTRA_CONFIG_OPTIONS:=--with-float=soft --enable-cxx-flags=-msoft-float
 
 $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
@@ -56,7 +57,8 @@ $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE)
 $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked
 	mkdir -p $(GCC_BUILD_DIR1)
 	( cd $(GCC_BUILD_DIR1); PATH=$(TARGET_TOOLCHAIN_PATH) \
-		../gcc-$(GCC_VERSION)/configure \
+		CC=$(HOSTCC)" \
+		$(GCC_DIR)/configure \
 		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
@@ -70,6 +72,7 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked
 		$(DISABLE_NLS) \
 		$(GCC_EXTRA_CONFIG_OPTIONS) \
 	);
+	### not in buildroot, what does this do?
 	mkdir -p $(GCC_BUILD_DIR1)/gcc
 	cp $(GCC_DIR)/gcc/defaults.h $(GCC_BUILD_DIR1)/gcc/defaults.h
 	$(SED) -i -e 's/\.eh_frame/.text/' $(GCC_BUILD_DIR1)/gcc/defaults.h
@@ -88,21 +91,22 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(GCC_BUILD_DIR
 #
 ##############################################################################
 
-$(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
+$(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked
 	mkdir -p $(GCC_BUILD_DIR2)
 	# Important!  Required for limits.h to be fixed.
 	ln -sf ../include $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/sys-include
 	( cd $(GCC_BUILD_DIR2); PATH=$(TARGET_TOOLCHAIN_PATH) \
-		../gcc-$(GCC_VERSION)/configure \
+		CC="$(HOSTCC)" \
+		$(GCC_DIR)/configure \
 		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
 		--enable-languages=$(GCC_TARGET_LANGUAGES) \
-		--enable-shared \
 		--disable-__cxa_atexit \
 		--enable-target-optspace \
 		--with-gnu-ld \
+		$(GCC_SHARED_LIBGCC) \
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
 		$(GCC_USE_SJLJ_EXCEPTIONS) \
@@ -136,5 +140,20 @@ gcc-initial: uclibc-configured binutils $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(RE
 
 gcc:  uclibc-configured binutils gcc-initial uclibc $(GCC_BUILD_DIR2)/.installed
 
-.PHONY: gcc gcc-initial
+gcc_initial-clean:
+	rm -rf $(GCC_BUILD_DIR1)
 
+gcc_initial-dirclean:
+	rm -rf $(GCC_BUILD_DIR1) $(GCC_DIR)
+
+gcc-source: $(DL_DIR)/$(GCC_SOURCE)
+
+gcc-clean:
+	rm -rf $(GCC_BUILD_DIR2)
+	for prog in cpp gcc gcc-[0-9]* protoize unprotoize gcov gccbug cc; do \
+	    rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-$$prog \
+	    rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-$$prog; \
+	done
+
+gcc-dirclean: gcc_initial-dirclean
+	rm -rf $(GCC_BUILD_DIR2)
