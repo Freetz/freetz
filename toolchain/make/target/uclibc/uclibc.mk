@@ -89,11 +89,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		HOSTCC="$(HOSTCC)" \
 		hostutils
 	install -c $(UCLIBC_DIR)/utils/ldd.host $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ldd
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -s ../$(REAL_GNU_TARGET_NAME)/bin/ldd $(GNU_TARGET_NAME)-ldd)
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -s ../$(REAL_GNU_TARGET_NAME)/bin/ldd $(REAL_GNU_TARGET_NAME)-ldd)
+	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldd $(GNU_TARGET_NAME)-ldd)
+	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldd $(REAL_GNU_TARGET_NAME)-ldd)
 	install -c $(UCLIBC_DIR)/utils/ldconfig.host $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ldconfig
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -s ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(GNU_TARGET_NAME)-ldconfig)
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -s ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(REAL_GNU_TARGET_NAME)-ldconfig)
+	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(GNU_TARGET_NAME)-ldconfig)
+	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(REAL_GNU_TARGET_NAME)-ldconfig)
 	touch -c $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
 
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
