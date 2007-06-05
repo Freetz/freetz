@@ -57,7 +57,7 @@ $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE)
 $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked
 	mkdir -p $(GCC_BUILD_DIR1)
 	( cd $(GCC_BUILD_DIR1); PATH=$(TARGET_TOOLCHAIN_PATH) \
-		CC=$(HOSTCC)" \
+		CC="$(HOSTCC)" \
 		$(GCC_DIR)/configure \
 		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		--build=$(GNU_HOST_NAME) \
