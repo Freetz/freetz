@@ -5,8 +5,6 @@ $Id$
 
 - Debootstrap needs 'ar' busybox applet
 - Integrate + test Enrik's working ltrace version
-- Integrate nano package
-- Integrate ntpd package
 - Integrate + test httpd patch from busybox mailing list
 - Integrate kriegaex's boot analysis tool (log all file accesses using
   inotify-tools)
@@ -32,3 +30,7 @@ $Id$
 - Integrate inetd stuff
 - Perhaps integrate build option to replace AVM websrv by Busybox httpd (remove
   websrv from firmware, patch start script for AVM UI so as to use httpd).
+- Fix tools/ds_download, so it will download packages which are not on the main
+  mirrors. The curren *_PKG_SITE does not work
+- fakeroot_1.6.5.tar.gz has been removed from the debian mirrors. Either replace
+  it with newer version or change download site

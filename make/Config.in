@@ -24,7 +24,9 @@ source make/inadyn/Config.in
 source make/knock/Config.in
 source make/mc/Config.in
 source make/mini_fo/Config.in
+source make/nano/Config.in
 source make/netsnmp/Config.in
+source make/openntpd/Config.in
 source make/openvpn/Config.in
 source make/pingtunnel/Config.in
 source make/privoxy/Config.in
@@ -38,25 +40,16 @@ source make/vpnc/Config.in
 endmenu
 
 menu "Web interface"
-source make/spindown-cgi/Config.in
 source make/syslogd-cgi/Config.in
 source make/wol-cgi/Config.in
 source make/orangebox/Config.in
 endmenu
 
-menu "Debug helpers"
-source make/lsof/Config.in
-source make/strace/Config.in
-source make/ltrace/Config.in
-endmenu
-
 menu "Testing"
-# Apache includes PHP by itself, don't include here
-source make/apache/Config.in
-source make/ctorrent/Config.in
+# Included by jamvm for a cleaner menu structure
+# source make/classpath/Config.in
 source make/debootstrap/Config.in
 source make/fuse/Config.in
-source make/inotify-tools/Config.in
 source make/jamvm/Config.in
 source make/lynx/Config.in
 source make/lua/Config.in
