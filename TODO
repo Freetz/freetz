@@ -1,0 +1,29 @@
+To-do list for ds26
+===================
+
+- Debootstrap needs 'ar' busybox applet
+- Integrate + test Enrik's working ltrace version
+- Integrate nano package
+- Integrate ntpd package
+- Integrate + test httpd patch from busybox mailing list
+- Integrate kriegaex's boot analysis tool (log all file accesses using
+  inotify-tools)
+- Make ccache build script aware of gcc version change (needs rebuild in that
+  case)
+- Fix libgcc_s build prerequisites, so it is not copied every time
+  'precompiled' is executed.
+- Fix 'kernel-precompiled' prerequisites so there is no unnecessary copying
+  and no delete-copy cycle for all libs.
+- Fix package contents which are currently different from SVN:
+  $ svn -q status packages
+  M      packages/spindown-cgi-0.1/root/usr/lib/cgi-bin/spindown.cgi
+  M      packages/spindown-cgi-0.1/root/etc/default.spindown/spindown.cfg
+  M      packages/syslogd-cgi-0.2.2/root/etc/init.d/rc.syslogd
+  M      packages/netsnmp-5.1.2/root/etc/init.d/rc.netsnmp
+  M      packages/dropbear-0.49/root/etc/init.d/rc.dropbear
+- Fix uClibc rebuild after 'toolchain-clean' (symbolic links cannot be created
+  because they already exist) by either prepending the actions with '-' or using
+  'ln -s -f' (force). Maybe a third solution is even better: create a
+  'uclibc-clean' target
+- Create clean, dirclean, distclean, uninstall targets for toolchain elements
+- Open question: Why do we have libjpeg if it is not used by any package?
