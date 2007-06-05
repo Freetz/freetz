@@ -19,9 +19,9 @@ $(DL_DIR)/$(SG3UTILS_PKG_SOURCE): | $(DL_DIR)
 
 $(SG3UTILS_DIR)/.unpacked: $(DL_DIR)/$(SG3UTILS_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(SG3UTILS_SOURCE)
-#	for i in $(SG3UTILS_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(SG3UTILS_DIR) -p1 < $$i; \
-#	done
+	for i in $(SG3UTILS_MAKE_DIR)/patches/*.patch; do \
+		patch -d $(SG3UTILS_DIR) -p0 < $$i; \
+	done
 	touch $@
 
 $(SG3UTILS_BINARY): $(SG3UTILS_DIR)/.unpacked
