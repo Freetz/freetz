@@ -14,7 +14,7 @@ fakeroot-source: $(DL_DIR)/$(FAKEROOT_SOURCE)
 $(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE)
 	@rm -rf $(FAKEROOT_DIR) && mkdir -p $(FAKEROOT_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FAKEROOT_SOURCE)
-	$(SED) "s,getopt --version,getopt --version 2>/dev/null," \
+	$(SED) -i "s,getopt --version,getopt --version 2>/dev/null," \
 		$(FAKEROOT_DIR)/scripts/fakeroot.in
 	for i in $(FAKEROOT_MAKE_DIR)/patches/*.fakeroot.patch; do \
 		patch -d $(FAKEROOT_DIR) -p0 < $$i; \
