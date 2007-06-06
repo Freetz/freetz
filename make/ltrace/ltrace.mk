@@ -1,29 +1,42 @@
-LTRACE_VERSION:=0.4
-LTRACE_SOURCE:=ltrace_$(LTRACE_VERSION).orig.tar.gz
-LTRACE_SITE:=http://ftp.debian.org/debian/pool/main/l/ltrace
-LTRACE_DIR:=$(SOURCE_DIR)/ltrace-$(LTRACE_VERSION)
+LTRACE_SVN_REVISION:=77
+LTRACE_VERSION:=0.5_$(LTRACE_SVN_REVISION)
+LTRACE_SOURCE:=ltrace-$(LTRACE_VERSION).tar.bz2
+LTRACE_SITE:=http://dsmod.magenbrot.net
 LTRACE_MAKE_DIR:=$(MAKE_DIR)/ltrace
-LTRACE_TARGET_DIR:=$(PACKAGES_DIR)/ltrace-$(LTRACE_VERSION)/root/usr/sbin
-LTRACE_TARGET_BINARY:=ltrace
-LTRACE_PKG_SOURCE:=ltrace-$(LTRACE_VERSION)-dsmod.tar.bz2
+LTRACE_DIR:=$(SOURCE_DIR)/ltrace-$(LTRACE_VERSION)
+LTRACE_BINARY:=$(LTRACE_DIR)/ltrace
+LTRACE_CONF:=$(LTRACE_DIR)/etc/ltrace.conf
+LTRACE_TARGET_DIR:=$(PACKAGES_DIR)/ltrace-$(LTRACE_VERSION)
+LTRACE_TARGET_BINARY:=$(LTRACE_TARGET_DIR)/root/usr/sbin/ltrace
+LTRACE_TARGET_CONF:=$(LTRACE_TARGET_DIR)/root/etc/ltrace.conf
+LTRACE_PKG_VERSION:=0.1
+LTRACE_PKG_SOURCE:=ltrace-$(LTRACE_VERSION)-dsmod-$(LTRACE_PKG_VERSION).tar.bz2
 LTRACE_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 $(DL_DIR)/$(LTRACE_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(LTRACE_SITE)/$(LTRACE_SOURCE)
+	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(LTRACE_SOURCE) $(LTRACE_PKG_SITE)
 
 $(DL_DIR)/$(LTRACE_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(LTRACE_PKG_SOURCE) $(LTRACE_PKG_SITE)
 
 $(LTRACE_DIR)/.unpacked: $(DL_DIR)/$(LTRACE_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LTRACE_SOURCE)
+	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LTRACE_SOURCE)
 	for i in $(LTRACE_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(LTRACE_DIR) -p1 < $$i; \
+		patch -d $(LTRACE_DIR) -p0 < $$i; \
 	done
-	( cd $(LTRACE_DIR); ./autogen.sh );
 	touch $@
 
-$(LTRACE_DIR)/.configured: $(LTRACE_DIR)/.unpacked
-	( cd $(LTRACE_DIR); rm -f config.{cache,status}; \
+$(LTRACE_DIR)/configure: $(LTRACE_DIR)/.unpacked
+	( cd $(LTRACE_DIR); ./autogen.sh )
+
+$(LTRACE_DIR)/.configured: $(LTRACE_DIR)/configure
+	#$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so
+	( cd $(LTRACE_DIR)/sysdeps/linux-gnu/mipsel; \
+		../mksyscallent $(TARGET_MAKE_PATH)/../include/asm/unistd.h > syscallent.h; \
+		../mksignalent $(TARGET_MAKE_PATH)/../include/asm/signal.h > signalent.h; \
+	)
+	( cd $(LTRACE_DIR); \
+		rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
@@ -53,22 +66,28 @@ $(LTRACE_DIR)/.configured: $(LTRACE_DIR)/.unpacked
 	);
 	touch $@
 
-$(LTRACE_DIR)/$(LTRACE_TARGET_BINARY): $(LTRACE_DIR)/.configured
-	PATH="$(TARGET_PATH)" $(MAKE) -C $(LTRACE_DIR) ARCH=mipsel
-	
 $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION): $(DL_DIR)/$(LTRACE_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LTRACE_PKG_SOURCE)
 	@touch $@
+
+$(LTRACE_CONF): $(LTRACE_DIR)/.unpacked
+
+$(LTRACE_TARGET_CONF): $(LTRACE_CONF)
+	cp $(LTRACE_CONF) $(LTRACE_TARGET_CONF)
+
+$(LTRACE_BINARY): $(LTRACE_DIR)/.configured
+	PATH="$(TARGET_PATH)" $(MAKE) -C $(LTRACE_DIR) ARCH=mipsel
+
+$(LTRACE_TARGET_BINARY): $(LTRACE_BINARY)
+	$(TARGET_STRIP) $(LTRACE_BINARY)
+	cp $(LTRACE_BINARY) $(LTRACE_TARGET_BINARY)
 
 ltrace: $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION)
 
 ltrace-package: $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LTRACE_PKG_SOURCE) ltrace-$(LTRACE_VERSION)
 
-
-ltrace-precompiled: uclibc libelf-precompiled $(LTRACE_DIR)/$(LTRACE_TARGET_BINARY) ltrace
-	$(TARGET_STRIP) $(LTRACE_DIR)/$(LTRACE_TARGET_BINARY)
-	cp $(LTRACE_DIR)/$(LTRACE_TARGET_BINARY) $(LTRACE_TARGET_DIR)/
+ltrace-precompiled: uclibc libelf-precompiled ltrace $(LTRACE_TARGET_BINARY) $(LTRACE_TARGET_CONF)
 
 ltrace-source: $(LTRACE_DIR)/.unpacked $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION)
 
@@ -80,6 +99,10 @@ ltrace-dirclean:
 	rm -rf $(LTRACE_DIR)
 	rm -rf $(PACKAGES_DIR)/ltrace-$(LTRACE_VERSION)
 	rm -f $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION)
+
+ltrace-uninstall:
+	rm -f $(LTRACE_TARGET_BINARY)
+	rm -f $(LTRACE_TARGET_CONF)
 
 ltrace-list:
 ifeq ($(strip $(DS_PACKAGE_LTRACE)),y)
