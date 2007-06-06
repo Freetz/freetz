@@ -29,7 +29,7 @@ ifneq ($(AVM_VERSION),04.33)
 	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
 	done
-	 Correct other symlinks
+	#Correct other symlinks
 	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/drivers/usb/misc/usbauth/Makefile.26 \
 	    $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/drivers/usb/ahci/Makefile.26
 	for i in ar7wdt.h avm_event.h avm_led.h avm_profile.h; do \
