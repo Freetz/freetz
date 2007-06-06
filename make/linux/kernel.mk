@@ -8,10 +8,15 @@ KERNEL_IMAGE:=kernel/linux-2.6.13.1/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_REF).$(AVM_VERSION)
 
+ifeq ($(AVM_VERSION),04.33)
+KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/base/$(KERNEL_BUILD_DIR_N)
+else
+KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
+endif
 
 $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
 	mkdir -p $(KERNEL_DIR)
-	cp -a $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N) $(KERNEL_BUILD_DIR)
+	cp -a $(KERNEL_SOURCE_PATH) $(KERNEL_BUILD_DIR)
 	for i in $(KERNEL_MAKE_DIR)/patches/*.patch; do \
 		patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
 	done
@@ -19,12 +24,12 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
 	#for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
 	#	patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
 	#done
-
+ifneq ($(AVM_VERSION),04.33)
 	# Version 04.29/04.30 source corrections
 	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
 	done
-	# Correct other symlinks
+	 Correct other symlinks
 	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/drivers/usb/misc/usbauth/Makefile.26 \
 	    $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/drivers/usb/ahci/Makefile.26
 	for i in ar7wdt.h avm_event.h avm_led.h avm_profile.h; do \
@@ -45,6 +50,7 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/adm_reg.h	
 	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_cpmac.h	
+endif
 	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-2.6.13.1 $(KERNEL_DIR)/linux 
 	touch $@
 
