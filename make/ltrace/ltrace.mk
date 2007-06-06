@@ -13,6 +13,14 @@ LTRACE_PKG_VERSION:=0.1
 LTRACE_PKG_SOURCE:=ltrace-$(LTRACE_VERSION)-dsmod-$(LTRACE_PKG_VERSION).tar.bz2
 LTRACE_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
+# Remarks:
+#   - LTRACE_SOURCE is created like this:
+#     svn export -r 77 svn://svn.debian.org/ltrace/ltrace/trunk ltrace-0.5_77
+#     tar cvjf ltrace-0.5_77.tar.bz2 ltrace-0.5_77/
+#   - Because we do not want the build process to depend on the availability
+#     of a Subversion client (svn checkout), we provide the ltrace source
+#     package as a download on DS-Mod mirrors and use DL_TOOL to download it.
+
 $(DL_DIR)/$(LTRACE_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(LTRACE_SOURCE) $(LTRACE_PKG_SITE)
 
@@ -71,6 +79,7 @@ $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION): $(DL_DIR)/$(LTRACE_PKG_SOURCE) | $(PA
 	@touch $@
 
 $(LTRACE_CONF): $(LTRACE_DIR)/.unpacked
+	touch $@
 
 $(LTRACE_TARGET_CONF): $(LTRACE_CONF)
 	cp $(LTRACE_CONF) $(LTRACE_TARGET_CONF)
