@@ -61,7 +61,7 @@ choice
 		bool "WLAN 3170"
 	
 	config DS_TYPE_SPEEDPORT_W701V
-		select DS_AVM_VERSION_04_29
+		select DS_AVM_VERSION_04_33
 		select DS_BRANDING_tcom
 		bool "Speedport W701V"
 
@@ -534,8 +534,8 @@ config DS_REMOVE_CDROM_ISO
 	    Removes the file /lib/modules/cdrom.iso.
 	    
 config DS_COPY_MODULES
-	bool "copy modules (EXPERIMENTAL!)"
-	depends on DS_TYPE_SPEEDPORT_W900V
+	bool "Copy modules (EXPERIMENTAL!)"
+	depends on DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
 	select DS_REPLACE_KERNEL
 	default n
 	help
