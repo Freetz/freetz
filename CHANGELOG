@@ -5,14 +5,39 @@ TODO:
 
 Latest changes:
 - Many makefile changes, some big, some small, some cosmetic, to
+    * make default target indirectly dependent on 'precompiled':
+        + simple 'make' now also executed 'precompiled'
+        + old 'firmware' target renamed to 'firmware-nocompile'
+        + new 'firmware' target depends on 'firmware-nocompile' and
+          'precompiled'
+        + The purpose of 'firmware-nocompile' is to enable users to build a
+          firmware manually in special cases (e.g. 'precompiled' failure or
+          the wish to build packages containing binaries).
     * make the hierarchical build more consistent,
     * avoid spurious unnecessary rebuilds,
+    * no longer support "external compiler" option in menuconfig. This means
+      that ds26 does not support external toolchains anymore, because we assume
+      that experts who need this will manage to set it up by themselves using
+      links etc.
+    * include timestamp into firmware name
+    * add makefile prerequisites for target binaries so as to avoid files
+      being stripped and copied unnecessarily. How to:
+        + avoid doing anything in synthetic targets like xy-precompiled
+        + make sure to have targets for source binaries as well as target
+          binaries (e.g. source/xy-1.3/src/xy and
+          packages/xy-1.3/root/usr/bin/xy)
+    * add xy-uninstall to all packages and shared libs,
+    * add config option "all modules", if "replace kernel" is active,
+    * make more packages work with + without LFS (large file support)
+    * compile gcc with "--with-float=soft",
     * not always include toolchain stuff into big makefile,
+    * add libgcc_s to DS_INSTALL_BASE (i.e. it will always be installed)
     * add each single 'tools' package to 'noconfig_targets',
     * make DL_DIR and PACKAGES_DIR order-only prerequisites for many dependent
       targets,
     * rename busybox-tools targets so they do not collide with busybox package
       targets anymore, but adhere to naming conventions instead,
+    * delete firmware images in common-clean, fix delete command
     * get make structure more in sync with Buildroot,
     * create a clearer dependency structure and
     * achieve world domination in general...
@@ -33,11 +58,12 @@ Latest changes:
   versions. Just call fwmod without any parameters to get a proper description.
   BTW: The DOT_CONFIG alternative may be a very small file consisting only of
   about five settings, if fwmod is just used to unpack (-u) an image.
-- New packages + libs:
+- New packages, libs, modules:
     * Added section 'debug helpers' in menuconfig
     * Debug helper package strace (binary only)
     * Binary package inotify-tools (inotifywait, inotifywatch), including
       patches to inotify-enable uClibc
+    * Debug helper package lsof 4.78, binary-only
     * Spindown-CGI and sg3_utils (by IPPF user 'derheimi')
     * Libusb added to menuconfig
     * Apache 1.3.37 + PHP 5.2.1 package group added. Please cf. menuconfig
@@ -45,7 +71,22 @@ Latest changes:
       information and/or check out http://www.ip-phone-forum.de/showthread.php?t=127089
       for tips, tricks, patches and extensions.
     * Ctorrent 1.3.4-dnh3
-- Updates packages + libs:
+    * Bluetooth kernel modules
+    * Nano editor 2.0.6
+    * OpenNTPD 3.9p1
+
+- Updates packages, libs, modules:
+    * (Download) toolchain (target)
+        + add gcc-4.2.0 + binutils 2.17.50.0.16 and make them default
+        + Remove uclibc download package for download toolchain, instead
+          copy libs from toolchain
+    * BusyBox 1.5.1 (target and tools instances)
+        + 'getcons' applet reactivated (broken patch finally repaired)
+        + 'ar' applet now included by default (needed by debootstrap, needs
+           just 600 bytes)
+        + fix stty option parsing, reactivating old 100-profile.patch
+    * Lua 5.1.2
+    * Ntfs-3g 1.516
     * Callmonitor 1.9.5
     * Syslogd-CGI 0.2.2: allow rotating log files with a value of '-b 1'
     * SquashFS 2.2-r
@@ -56,20 +97,41 @@ Latest changes:
     * Dnsmasq 2.39
     * Transmission 0.72
     * Libevent 1.3b
-    * Tor 0.1.2.13
+    * Tor 0.1.2.14
+    * Rudi-Shell: save screen real estate by suppressing HTML H1 element
+      "Rudi-Shell"
     * Cifsmount package 0.2 features a CGI (web config) interface for up to
       three mounts, start/stop scripts and convenience script 'cifsmount' for
       more easier command line (un-)mounting.
+    * Debootstrap build process simplified by removing the "convert Debian
+      package to DS-Mod package" intermediate staging step and providing an
+      extensive description about how to build + update the DS-Mod package in
+      packages/debootstrap-0.3.3.2/README instead. This results in
+        + an updated download package 0.2 with mentioned README and without
+          binary
+        + the removal of 01_trap.patch (patched file is part of DS-Mod package)
+        + a dramatically simplified debootstrap.mk
+    * CRC_CCITT compiled as kernel module (Config.4mb_26)
+    * Fakeroot 1.7.1 (build tools section)
+    * uClibc++ to 0.2.2
 - Firmware updates:
+    * USB-Labor 29.04.34-7422
+    * 7150 firmware 38.04.32
+    * Phone-Labor 29.04.34-7269
     * 7050 firmware 14.04.33
     * Remove 7140 international (kernel 2.4.17_mvl21)
-    * Update ECO-Labor to 29.04.33-7238
+    * ECO-Labor 29.04.33-7238
     * Add AVM web interface for W900V
     * Extension for W701V: /sbin/mailer is copied from tk-firmware
+    * Add ATA Patch for W701V and W900V (Inet over LAN A)
+    * W900V: make web interface available for OEM=avm
+    * W900V: copy modules from tk-firmware
+    * W701V: integrate copy modules: modules are copied from tk-firmware
+      (29.04.33), so self.built kernel can be used
+    * run_mount patch enables all firmwares with USB host to mount all file
+      systems, not just FAT
+- Fix tools/ds_download  (fallback mirror download did not work)
 - Mount sysfs to /sys, symlink /var/sysfs to /sys
-- Set gcc-4.1.2 as default compiler for target toolchain
-- Compile CRC_CCITT as module (Config.4mb_26)
-- Update default busybox configs
 - Sync uclibc.mk with buildroot structure
 - Fix typo in fwmod: libc.so.0 was not copied into firmware, but as it already
   exists nobody noticed this.
