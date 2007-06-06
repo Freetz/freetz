@@ -196,65 +196,65 @@ diff -burN usr.orig/www/all/html/de/menus/menuwatch.html usr/www/all/html/de/men
 diff -burN usr.orig/www/all/html/de/system/syslog.html usr/www/all/html/de/system/syslog.html
 --- usr.orig/www/all/html/de/system/syslog.html	2007-01-24 21:07:40.000000000 +0100
 +++ usr/www/all/html/de/system/syslog.html	2007-01-24 21:51:58.000000000 +0100
-@@ -5,10 +5,9 @@
- <? setvariable var:txt03 "Alle" ?>
- <? setvariable var:txt04 "Telefonie" ?>
- <? setvariable var:txt05 "Internetverbindung" ?>
--<? setvariable var:txt06 "USB-Zubehör" ?>
--<? setvariable var:txt07 "WLAN" ?>
--<? setvariable var:txt08 "System" ?>
--<? setvariable var:txt09 "Um weitere Informationen zu einem Ereignis zu bekommen, klicken Sie auf das Ereignis." ?>
-+<? setvariable var:txt06 "WLAN" ?>
-+<? setvariable var:txt07 "System" ?>
-+<? setvariable var:txt08 "Um weitere Informationen zu einem Ereignis zu bekommen, klicken Sie auf das Ereignis." ?>
- <div id="content">
-  	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
- 		<? echo $var:txt00 ?>
-@@ -21,7 +20,6 @@
- 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
- 	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
- 	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
--	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
- 	 	</ul>
- 	</div>	 	
- 	<div id="uiFon" style="display:none">
-@@ -44,16 +42,6 @@
- 	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
- 	 	</ul>
- 	</div>	 	
--	<div id="uiUsb" style="display:none">
--	 	<ul class="tabs">
--	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
--	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
--	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
--	 		<li class="tabs_on"><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
--	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
--	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
--	 	</ul>
--	</div>	 	
- 	<div id="uiWlan" style="display:none">
- 	 	<ul class="tabs">
- 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
-diff -burN usr.orig/www/all/html/de/system/syslog.js usr/www/all/html/de/system/syslog.js
---- usr.orig/www/all/html/de/system/syslog.js	2007-01-24 21:07:40.000000000 +0100
-+++ usr/www/all/html/de/system/syslog.js	2007-01-24 21:53:17.000000000 +0100
-@@ -22,7 +22,6 @@
- 		case "2": ShowTabs(2); break;
- 		case "3": ShowTabs(1); break;
- 		case "4": ShowTabs(4); break;
--		case "5": ShowTabs(3); break;
- 		default: ShowTabs(0); break;
- 	}
- }
-@@ -67,9 +66,8 @@
- 	jslDisplay( "uiBTNCleanList", n==0);
- 	jslDisplay("uiFon", n==1);
- 	jslDisplay("uiDsl", n==2);
--	jslDisplay("uiUsb", n==3);
--	jslDisplay("uiWlan", n==4);
--	jslDisplay("uiSystem", n==5);
-+	jslDisplay("uiWlan", n==3);
-+	jslDisplay("uiSystem", n==4);
- 	
- }
- function uiShowAll() {
+#@@ -5,10 +5,9 @@
+# <? setvariable var:txt03 "Alle" ?>
+# <? setvariable var:txt04 "Telefonie" ?>
+# <? setvariable var:txt05 "Internetverbindung" ?>
+#-<? setvariable var:txt06 "USB-Zubehör" ?>
+#-<? setvariable var:txt07 "WLAN" ?>
+#-<? setvariable var:txt08 "System" ?>
+#-<? setvariable var:txt09 "Um weitere Informationen zu einem Ereignis zu bekommen, klicken Sie auf das Ereignis." ?>
+#+<? setvariable var:txt06 "WLAN" ?>
+#+<? setvariable var:txt07 "System" ?>
+#+<? setvariable var:txt08 "Um weitere Informationen zu einem Ereignis zu bekommen, klicken Sie auf das Ereignis." ?>
+# <div id="content">
+#  	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+# 		<? echo $var:txt00 ?>
+#@@ -21,7 +20,6 @@
+# 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+# 	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+# 	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+#-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
+# 	 	</ul>
+# 	</div>	 	
+# 	<div id="uiFon" style="display:none">
+#@@ -44,16 +42,6 @@
+# 	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
+# 	 	</ul>
+# 	</div>	 	
+#-	<div id="uiUsb" style="display:none">
+#-	 	<ul class="tabs">
+#-	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+#-	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+#-	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+#-	 		<li class="tabs_on"><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+#-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+#-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
+#-	 	</ul>
+#-	</div>	 	
+# 	<div id="uiWlan" style="display:none">
+# 	 	<ul class="tabs">
+# 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+#diff -burN usr.orig/www/all/html/de/system/syslog.js usr/www/all/html/de/system/syslog.js
+#--- usr.orig/www/all/html/de/system/syslog.js	2007-01-24 21:07:40.000000000 +0100
+#+++ usr/www/all/html/de/system/syslog.js	2007-01-24 21:53:17.000000000 +0100
+#@@ -22,7 +22,6 @@
+# 		case "2": ShowTabs(2); break;
+# 		case "3": ShowTabs(1); break;
+# 		case "4": ShowTabs(4); break;
+#-		case "5": ShowTabs(3); break;
+# 		default: ShowTabs(0); break;
+# 	}
+# }
+#@@ -67,9 +66,8 @@
+# 	jslDisplay( "uiBTNCleanList", n==0);
+# 	jslDisplay("uiFon", n==1);
+#	jslDisplay("uiDsl", n==2);
+#-	jslDisplay("uiUsb", n==3);
+#-	jslDisplay("uiWlan", n==4);
+#-	jslDisplay("uiSystem", n==5);
+#+	jslDisplay("uiWlan", n==3);
+#+	jslDisplay("uiSystem", n==4);
+# 	
+# }
+# function uiShowAll() {
