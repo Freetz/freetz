@@ -33,7 +33,7 @@ choice
 		bool "Fon 5050"
 		
 	config DS_TYPE_FON_WLAN_7050
-		select DS_AVM_VERSION_04_29
+		select DS_AVM_VERSION_04_33
 		bool "Fon WLAN 7050"
 
 	config DS_TYPE_FON_WLAN_7140
@@ -147,10 +147,11 @@ config DS_INSTALL_BASE
 	select DS_LIB_ld_uClibc
 	select DS_LIB_libcrypt
 	select DS_LIB_libdl
+	select DS_LIB_libgcc_s
+	select DS_LIB_libm
+	select DS_LIB_libnsl
 	select DS_LIB_libpthread
 	select DS_LIB_libuClibc
-	select DS_LIB_libm
-	select DS_LIB_libgcc_s
 	default y
 	help
 	    This is mandatory
@@ -163,8 +164,8 @@ config DS_REPLACE_BUSYBOX
 
 config DS_REPLACE_KERNEL
 	bool "Replace kernel"
-	depends on DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR || DS_TYPE_FON
-	select DS_LIB_libnsl
+	depends on (DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR) || DS_TYPE_FON || DS_TYPE_FON_WLAN_7150 \
+			|| DS_TYPE_FON_WLAN_7050 || DS_TYPE_FON_WLAN_7140 || DS_TYPE_FON_WLAN_7141
 	default n
 	help
 	    Replace AVM kernel with self-built kernel.
@@ -535,6 +536,7 @@ config DS_REMOVE_CDROM_ISO
 config DS_COPY_MODULES
 	bool "copy modules (EXPERIMENTAL!)"
 	depends on DS_TYPE_SPEEDPORT_W900V
+	select DS_REPLACE_KERNEL
 	default n
 	help
 	    Copy modules from tk-firmware.
@@ -575,8 +577,6 @@ config DS_PATCH_USBSTORAGE
 	    Change the name of USB storage dir to uStorXY
 
 comment "Mod ------------------------------------"
-
-source make/busybox/Config.in
 
 choice
 
