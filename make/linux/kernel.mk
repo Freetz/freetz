@@ -121,8 +121,8 @@ kernel-menuconfig: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 		ARCH="$(KERNEL_ARCH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		menuconfig
- 	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
- 
+		cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
+
 kernel-oldconfig: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
