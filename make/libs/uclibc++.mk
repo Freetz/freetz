@@ -29,7 +29,6 @@ endif
 $(UCLIBCXX_BINARY): $(UCLIBCXX_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(UCLIBCXX_DIR) \
-		CC="$(TARGET_CC)" \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		all
@@ -57,6 +56,8 @@ uclibcxx-precompiled: uclibc uclibcxx $(UCLIBCXX_TARGET_BINARY)
 uclibcxx-source: $(UCLIBCXX_DIR)/.unpacked
 
 uclibcxx-clean:
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-g++-uc
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
 	-$(MAKE) -C $(UCLIBCXX_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++* 
 
