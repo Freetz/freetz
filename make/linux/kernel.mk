@@ -7,6 +7,7 @@ KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
 KERNEL_IMAGE:=kernel/linux-2.6.13.1/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_REF).$(AVM_VERSION)
+KERNEL_LZMA_LIB:=kernel/linux-2.6.13.1/fs/squashfs/lzma_decode.a
 
 ifeq ($(AVM_VERSION),04.33)
 KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/base/$(KERNEL_BUILD_DIR_N)
@@ -54,24 +55,19 @@ endif
 	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-2.6.13.1 $(KERNEL_DIR)/linux 
 	touch $@
 
-$(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
-	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	$(MAKE1) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
-		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
-		CROSS_COMPILE="$(KERNEL_CROSS)" \
-		ARCH=$(KERNEL_ARCH) \
-		oldconfig prepare
+$(KERNEL_DIR)/.configured: kernel-oldconfig
 	touch $@
 
-$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
+$(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	$(MAKE) -C $(KERNEL_BUILD_DIR) \
-		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
-		CROSS_COMPILE="$(KERNEL_CROSS)" \
-		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
-		ARCH=$(KERNEL_ARCH) \
-		kernel/linux-2.6.13.1/fs/squashfs/lzma_decode.a
+	$(MAKE) -C $(KERNEL_BUILD_DIR)/lzma lzma_decode.a CROSS_COMPILE=$(KERNEL_CROSS) \
+		USE_CFLAGS="-D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing \
+		   -fno-common -ffreestanding -falign-functions=4  -falign-labels=4 -falign-loops=4  -falign-jumps=4 \
+		   -fomit-frame-pointer -g -G 0 -mno-abicalls -fno-pic -finline-limit=100000 -mabi=32 -march=mips32 -Wa,-32 \
+		   -Wa,-march=mips32 -Wa,-mips32 -Wa,--trap"
+	cp $(KERNEL_BUILD_DIR)/lzma/lzma_decode.a $@
+
+$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB) $(TOOLS_DIR)/lzma2eva
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
@@ -126,19 +122,20 @@ kernel-menuconfig: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 kernel-oldconfig: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
+	$(MAKE1) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		ARCH="$(KERNEL_ARCH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
-		oldconfig
+		oldconfig prepare
 	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
 
 kernel-source: $(KERNEL_DIR)/.unpacked
 
 kernel-clean:
+	rm -f $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB)
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	$(MAKE) -C $(KERNEL_BUILD_DIR) \
+	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		BOARD_REF="$(KERNEL_BOARD_REF)" \
