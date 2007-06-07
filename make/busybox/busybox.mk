@@ -28,7 +28,6 @@ ifeq ($(DS_TARGET_LFS),y)
 	$(SED) -i -e "s/^.*CONFIG_LFS.*/CONFIG_LFS=y/;" $(BUSYBOX_DIR)/.config
 else
 	$(SED) -i -e "s/^.*CONFIG_LFS.*/CONFIG_LFS=n/;" $(BUSYBOX_DIR)/.config
-	$(SED) -i -e "s/^.*FDISK_SUPPORT_LARGE_DISKS.*/FDISK_SUPPORT_LARGE_DISKS=n/;" $(BUSYBOX_DIR)/.config
 endif
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
@@ -67,6 +66,14 @@ busybox-menuconfig: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
 		-C $(BUSYBOX_DIR) menuconfig
 	cp $(BUSYBOX_DIR)/.config $(BUSYBOX_CONFIG_FILE)
 
+busybox-oldconfig: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
+	cp $(BUSYBOX_CONFIG_FILE) $(BUSYBOX_DIR)/.config
+	$(MAKE) CC="$(TARGET_CC)" \
+		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
+		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
+		-C $(BUSYBOX_DIR) oldconfig
+	cp $(BUSYBOX_DIR)/.config $(BUSYBOX_CONFIG_FILE)
+	
 busybox-precompiled: uclibc $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
 
 busybox-clean: busybox-uninstall
@@ -79,4 +86,4 @@ busybox-uninstall:
 busybox-dirclean:
 	rm -rf $(BUSYBOX_DIR)
 
-.PHONY: busybox-menuconfig
+.PHONY: busybox-menuconfig busybox-oldconfig

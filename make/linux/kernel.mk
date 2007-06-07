@@ -57,17 +57,11 @@ endif
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
+	$(MAKE1) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		ARCH=$(KERNEL_ARCH) \
-		oldconfig
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
-		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
-		CROSS_COMPILE="$(KERNEL_CROSS)" \
-		ARCH=$(KERNEL_ARCH) \
-		prepare
+		oldconfig prepare
 	touch $@
 
 $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
@@ -120,15 +114,25 @@ kernel-configured: $(KERNEL_DIR)/.configured
 kernel-modules: $(KERNEL_DIR)/.modules
 
 kernel-menuconfig: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
-	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/Config.$(KERNEL_BOARD_REF)
-	$(MAKE) -C $(KERNEL_BUILD_DIR) \
+	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
+	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		ARCH="$(KERNEL_ARCH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		menuconfig
-
-	cp $(KERNEL_BUILD_DIR)/Config.$(KERNEL_BOARD_REF) $(KERNEL_CONFIG_FILE)
+ 	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
+ 
+kernel-oldconfig: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
+	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
+	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
+		CROSS_COMPILE="$(KERNEL_CROSS)" \
+		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
+		ARCH="$(KERNEL_ARCH)" \
+		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
+		oldconfig
+	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
 
 kernel-source: $(KERNEL_DIR)/.unpacked
 
@@ -143,4 +147,4 @@ kernel-clean:
 kernel-dirclean:
 	rm -rf $(KERNEL_DIR)
 
-.PHONY: kernel-configured kernel-modules kernel-menuconfig
+.PHONY: kernel-configured kernel-modules kernel-menuconfig kernel-oldconfig
