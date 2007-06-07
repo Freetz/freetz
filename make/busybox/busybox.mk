@@ -27,7 +27,7 @@ $(BUSYBOX_DIR)/.configured: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
 ifeq ($(DS_TARGET_LFS),y)
 	$(SED) -i -e "s/^.*CONFIG_LFS.*/CONFIG_LFS=y/;" $(BUSYBOX_DIR)/.config
 else
-	$(SED) -i -e "s/^.*CONFIG_LFS.*/CONFIG_LFS=n/;" $(BUSYBOX_DIR)/.config
+	$(SED) -i -e "s/^.*CONFIG_LFS.*/# CONFIG_LFS is not set/;" $(BUSYBOX_DIR)/.config
 endif
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
