@@ -52,10 +52,23 @@ usage()
 	echo "    <tk_fw>    2nd firmware name (e.g. for merging in web UI)" 1>&2
 }
 
+# error exit-code error-message
+error()
+{
+	if [ "$1" -gt 0]; then
+		echo -e "ERROR: $2" 1>&2
+		exit $1
+	fi
+}
+# warn warn-message
+warn()
+{
+	echo -e "WARNING: $1" 1>&2
+}
+
 # Dont run this script as root
 if [ $UID -eq 0 ]; then
-	echo "ERROR: running this script as root is prohibited" 1>&2
-	exit 1
+	error 1 "running this script as root is prohibited"
 fi
 
 L1='  '
@@ -78,8 +91,7 @@ done
 
 # Config file readable?
 if [ ! -r "$DOT_CONFIG" ]; then
-	echo "ERROR: not configured" 1>&2
-	exit 1
+	error 1 "not configured"
 fi
 
 # Load config
@@ -251,34 +263,46 @@ DYNAMIC_PACKAGES_FILE="${BASE_DIR}/.dynamic"
 STATIC_ADDON_FILE="${ADDON_DIR}/static.pkg"
 DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 
+echo0()
+{
+	[ "$DS_VERBOSITY_LEVEL" -ge 0 ] && echo -e "${L0}$1"
+}
+echo1()
+{
+	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo -e "${L1}$1"
+}
+echo2()
+{
+	[ "$DS_VERBOSITY_LEVEL" -ge 2 ] && echo -e "${L2}$1"
+}
+
 modpatch()
 {
-	local PATCH_STATUS
+	local STATUS
 	if [ "$DS_VERBOSITY_LEVEL" -ge 2 ]; then
 		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
-		PATCH_STATUS=${PIPESTATUS[0]}
+		STATUS=${PIPESTATUS[0]}
 	else
 		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
-		PATCH_STATUS=$?
+		STATUS=$?
 	fi
-	if [ $PATCH_STATUS -gt 0 ]; then
-		echo "modpatch: Error in patch-file $2"
-		exit 2
+	if [ $STATUS -gt 0 ]; then
+		error 2 "modpatch: Error in patch-file $2"
 	fi
 }
 
 modunsqfs()
 {
+	local STATUS
 	if [ "$DS_VERBOSITY_LEVEL" -ge 1 ]; then
-		"$FAKEROOT" "$UNSQUASHFS" -dest "$1" "$2" 2>&1 | grep -v "^$" |
-			while read line
-			do
-				echo "${L1}${line}"
-			done
-
-		[ ${PIPESTATUS[0]} -eq 0 ] || exit 1
+		"$FAKEROOT" "$UNSQUASHFS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L1}/g"
+		STATUS=${PIPESTATUS[0]}
 	else
 		"$FAKEROOT" "$UNSQUASHFS" -dest "$1" "$2" > /dev/null
+		STATUS=$?
+	fi
+	if [ $STATUS -gt 0 ]; then
+		error 1 "modunsqfs: Error in $2"
 	fi
 }
 
@@ -334,8 +358,7 @@ modlang()
 	done
 
 	if [ -z "$lang" ]; then
-		echo "ERROR: no language available" 1>&2
-		exit 1
+		error 1 "no language available"
 	fi
 
 	[ "$lang" == "$DS_LANG_STRING" ] || \
@@ -346,27 +369,24 @@ modlang()
 		if [ -e "${2}/${i}" ]; then
 			modlangsubst "$lang" "${2}/${i}"
 		else
-			echo "WARNING: ${2}/${i} not found" 1>&2
+			warn "${2}/${i} not found"
 		fi
 	done
 }
 
 if [ -z "$FIRMWARE" ]; then
-	echo "ERROR: no firmware filename supplied" 1>&2
-	exit 1
+	error 1 "no firmware filename supplied"
 fi
 
 # Does the firmware image exist ?
 if [ -n "$FIRMWARE" -a ! -r "$FIRMWARE" ]; then
-	echo "ERROR: firmware image $(basename "$FIRMWARE") not found" 1>&2
-	exit 1
+	error 1 "firmware image $(basename "$FIRMWARE") not found"
 fi
 if [ -n "$FIRMWARE2" -a ! -r "$FIRMWARE2" ]; then
-	echo "ERROR: firmware image $(basename "$FIRMWARE2") not found" 1>&2
-	exit 1
+	error 1 "firmware image $(basename "$FIRMWARE2") not found"
 fi
 if [ ! -e "$DIR" ]; then
-	mkdir "$DIR"
+	mkdir -p "$DIR"
 fi
 
 
@@ -414,18 +434,15 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	# Do the images exist ?
 	if [ ! -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ]; then
-		echo "ERROR: cannot find filesystem image" 1>&2
-		exit 1
+		error 1 "cannot find filesystem image"
 	fi
 	if [ ! -r "${FIRMWARE_DIR}/${KERNEL_IMAGE}" ]; then
-		echo "ERROR: cannot find kernel.image" 1>&2
-		exit 1
+		error 1 "cannot find kernel.image"
 	fi
 
 	# Do we have the tool ?
 	if [ ! -x "$RMTICHKSUM" ]; then
-		echo "ERROR: cannot find the tool $RMTICHKSUM_TOOL" 1>&2
-		exit 1
+		error 1 "cannot find the tool $RMTICHKSUM_TOOL"
 	fi
 
 	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
@@ -433,8 +450,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	# Do we have the tool ?
 	if [ ! -x "$FINDSQUASHFS" ]; then
-		echo "ERROR: cannot find the very useful tool $FINDSQUASHFS_TOOL" 1>&2
-		exit 1
+		error 1 "cannot find the very useful tool $FINDSQUASHFS_TOOL"
 	fi
 
 	echo "splitting kernel image"
@@ -443,21 +459,18 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	# Hidden squashfs found ?
 	if [ ! -r "$RAW_KERNEL" -o ! -r "$RAW_HIDDEN" ]; then
-		echo "ERROR: kernel splitting failed" 1>&2
-		exit 1
+		error 1 "kernel splitting failed"
 	fi
 
 	# Do we have the tool ?
 	if [ ! -x "$UNSQUASHFS" ]; then
-		echo "ERROR: cannot find the tool $UNSQUASHFS_TOOL" 1>&2
-		exit 1
+		error 1 "cannot find the tool $UNSQUASHFS_TOOL"
 	fi
 
 	if [ "$DS_HIDDEN_ROOT" == "y" ]; then
 		if [ "$DS_CONTIGUOUS_HIDDEN_ROOT" == "y" ]; then
 			if [ ! -r "$FILESYSTEM_CONTINUATION" ]; then
-				echo "ERROR: cannot find filesystem continuation" 1>&2
-				exit 1
+				error 1 "cannot find filesystem continuation"
 			fi
 
 			cat "$FILESYSTEM_CONTINUATION" >> "$FILESYSTEM"
@@ -465,8 +478,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	else
 		# Does hidden squashfs exist ?
 		if [ ! -r "$RAW_HIDDEN" ]; then
-			echo "ERROR: no hidden squashfs found" 1>&2
-			exit 1
+			error 1 "no hidden squashfs found"
 		fi
 
 		echo "unpacking hidden squashfs"
@@ -479,14 +491,12 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	chmod -R +w "$FILESYSTEM_DIR"
 
 	if [ ! -r "$FILESYSTEM_DIR/var" ]; then
-		echo "ERROR: could not unpack the filesystem image" 1>&2
-		exit 1
+		error 1 "could not unpack the filesystem image"
 	fi
 
 	# var.tar already untared ?
 	if [ ! -r "$VARTAR" ]; then
-		echo "ERROR: no var.tar found" 1>&2
-		exit 1
+		error 1 "no var.tar found"
 	fi
 
 	echo "unpacking var.tar"
@@ -549,8 +559,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Check if firmware is unpacked
 	if [ ! -r "${DIR}/.unpacked" ]; then
-		echo "ERROR: firmware image has to be unpacked before modifying" 1>&2
-		exit 1
+		error 1 "firmware image has to be unpacked before modifying"
 	fi
 
 	rm -rf "$MOD_DIR"
@@ -564,7 +573,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	echo "applying patches"
 
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}applying patches (${DS_TYPE_STRING}-${DS_TYPE_LANG_STRING})"
+	echo1 "applying patches (${DS_TYPE_STRING}-${DS_TYPE_LANG_STRING})"
 	
 	if [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ]  || [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
 		#no webinterface no patches...
@@ -593,8 +602,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		else
 			if [ ! -d "${PATCHES_DIR}/${DS_TYPE_STRING}" ]; then
-			echo "ERROR: missing ${PATCHES_DIR}/${DS_TYPE_STRING}" 1>&2
-			exit 1
+				error 1 "missing ${PATCHES_DIR}/${DS_TYPE_STRING}"
 			fi
 
 			for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.patch \
@@ -604,16 +612,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 			done
 		fi
 	
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}creating symlink /tmp and /mod"
-	( cd "$FILESYSTEM_MOD_DIR" && ( ln -s var/tmp tmp ; ln -s var/mod mod ))
+	echo1 "creating symlink /tmp and /mod"
+	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
 	# Set version and options
 	SUBVERSION_FILE="${BASE_DIR}/.version"
 	FIRMWAREVERSION_FILE="${FILESYSTEM_MOD_DIR}/etc/.version"
 	FIRMWAREVERSION="$(cat $FIRMWAREVERSION_FILE)"
 
 	if [ ! -r "$SUBVERSION_FILE" ]; then
-		echo "ERROR: cannot determine version" 1>&2
-		exit 1
+		error 1 "cannot determine version"
 	fi
 
 	SUBVERSION="$(cat $SUBVERSION_FILE)"
@@ -634,8 +641,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}"
 
 		if [ ! -r "$KERNEL_SUBVERSION_FILE" ]; then
-			echo "ERROR: cannot determine kernel version" 1>&2
-			exit 1
+			error 1 "cannot determine kernel version"
 		fi
 
 		KERNEL_SUBVERSION="$(cat $KERNEL_SUBVERSION_FILE)"
@@ -656,7 +662,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 	fi
 
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}setting subversion '${SUBVERSION}'"
+	echo1 "setting subversion '${SUBVERSION}'"
 	echo "$SUBVERSION" > "${FILESYSTEM_MOD_DIR}/etc/.subversion"
 	sed -i -e "s/\export\ FIRMWARE_SUBVERSION=.*\$/export\ FIRMWARE_SUBVERSION=\"${SUBVERSION}\"/g" "${FILESYSTEM_MOD_DIR}/etc/version"
 	sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
@@ -687,10 +693,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	#W701V and W900V have only tcom
 	if [ -z "$oems" ]; then
 		if [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
-		oems="tcom"
+			oems="tcom"
 		else
-		echo "ERROR: no oems found" 1>&2
-		exit 1
+			error 1 "no oems found"
 		fi
 	fi
 
@@ -725,14 +730,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 	sed -i -e 's/for i in  avm.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
 
 	if [ "$oem_kept" -eq 0 ]; then
-		echo "ERROR: at least one oem must be supported" 1>&2
-		exit 1
+		error 1 "at least one oem must be supported"
 	fi
 
 	if [ "$DS_INSTALL_BASE" == "y" ]; then
 		echo "installing mod base"
 
-		[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}copying files"
+		echo1 "copying files"
 		"$TAR" -cf - -C "$ROOT_DIR" --exclude=lib --exclude=usr/lib \
 			$([ -r "${BASE_DIR}/.exclude" ] && echo "--exclude-from=${BASE_DIR}/.exclude") \
 			. | "$TAR" -xf - -C "$FILESYSTEM_MOD_DIR" || exit 1
@@ -769,7 +773,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../var/tmp/exports "${FILESYSTEM_MOD_DIR}/etc/exports"
 		ln -s ../var/tmp/onlinechanged "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 
-		[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}installing libs"
+		echo1 "installing libs"
 		for i in $(cd "${ROOT_DIR}" && find lib usr/lib \
 								-type d -name .svn -prune -false , \
 														-type f -name "*.so*")
@@ -778,7 +782,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			lib="${bn%\.so*}"
 			lib="$(echo "$lib" | sed -e 's/-[0-9][\.0-9a-z]*$//')"
 			if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
-				[ "$DS_VERBOSITY_LEVEL" -ge 2 ] && echo "${L2}${bn}"
+				echo2 "${bn}"
 				dn="$(dirname "$i")"
 				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 				cp -a "${ROOT_DIR}/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
@@ -788,7 +792,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ "$DS_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 
 		if [ "$DS_FAVICON_STRING" != "none" ]; then
-			[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}adding favicons (${DS_FAVICON_STRING})"
+			echo1 "adding favicons (${DS_FAVICON_STRING})"
 			cp "${FAVICON_DIR}/${DS_FAVICON_STRING}/dsmod.ico" "${FILESYSTEM_MOD_DIR}/usr/share/favicon.ico"
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/nww/favicon.ico"
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/mww/favicon.ico"
@@ -810,32 +814,29 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		modlang "${BASE_DIR}/.language" "${FILESYSTEM_MOD_DIR}"
 	else
-		echo "ERROR: installation of base system is mandatory" 1>&2
-		exit 1
+		error 1 "installation of base system is mandatory"
 	fi
 
 	if [ "$DS_REPLACE_BUSYBOX" == "y" ]; then
 		echo "replacing busybox"
 
-		[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}replacing busybox-${DS_TARGET_REF}"
+		echo1 "replacing busybox-${DS_TARGET_REF}"
 
 		if [ ! -r "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}" ]; then
-			echo "ERROR: cannot find busybox replacement" 1>&2
-			exit 1
+			error 1 "cannot find busybox replacement"
 		fi
 
 		# Replace busybox
 		cp -f "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}" "${FILESYSTEM_MOD_DIR}/bin/busybox"
 
-		[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}installing symlinks"
+		echo1 "installing symlinks"
 
 		if [ ! -r "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}.links" ]; then
-			echo "ERROR: cannot find busybox links" 1>&2
-			exit 1
+			error 1 "cannot find busybox links"
 		fi
 
 		# Install busybox links
-		cat "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}.links" | while read link
+		for link in $(cat "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}.links")
 		do
 			LINK_DIR="$(dirname "$link")"
 			LINK_NAME="$(basename "$link")"
@@ -854,39 +855,34 @@ if [ "$DO_MOD" -gt 0 ]; then
 					BUSYBOX_PATH="../../bin/busybox"
 					;;
 				*)
-					echo "ERROR: unknown installation directory: $link" 1>&2
-					exit 1
+					error 1 "unknown installation directory: $link"
 					;;
 			esac
 
-			( cd "${FILESYSTEM_MOD_DIR}${LINK_DIR}" &&
-			( ln -sf "$BUSYBOX_PATH" "$LINK_NAME" || ( echo "ERROR: could not create link for $link" 1>&2; exit 1 ) ) ) || exit 1
+			ln -sf "$BUSYBOX_PATH" "${FILESYSTEM_MOD_DIR}${LINK_DIR}/$LINK_NAME" ||
+			error 1 "could not create link for $link"
 		done || exit 1
 
 		if [ ! -x "${FILESYSTEM_MOD_DIR}/bin/busybox" ]; then
-			echo "ERROR: busybox is not executable" 1>&2
-			echo "Are you trying to compile on a FAT partition?" 1>&2
-			exit 1
+			error 1 "busybox is not executable\nAre you trying to compile on a FAT partition?"
 		fi 
 	else
-		echo "ERROR: installation of busybox replacement is mandatory" 1>&2
-		exit 1
+		error 1 "installation of busybox replacement is mandatory"
 	fi
 
 	if [ "$DS_REPLACE_KERNEL" == "y" ]; then
 		echo "replacing kernel"
 
 		if [ ! -r "${KERNEL_REP_DIR}/kernel-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.bin" ]; then
-			echo "ERROR: can't find kernel for ref ${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}" 1>&2
-			exit 1
+			error 1 "can't find kernel for ref ${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}"
 		fi
 
-		[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}replacing kernel-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING} (${KERNEL_SUBVERSION})"
+		echo1 "replacing kernel-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING} (${KERNEL_SUBVERSION})"
 		cp "${KERNEL_REP_DIR}/kernel-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
 
 	fi	
 
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L0}installing modules"
+	echo1 "installing modules"
 	for i in $( \
 		cd "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}" && \
 		find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
@@ -896,7 +892,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		mod="${bn%\.ko}"
 		
         if [ "$DS_MODULES_ALL" = "y" -o "$(eval "echo \"\$DS_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]; then
-			[ "$DS_VERBOSITY_LEVEL" -ge 2 ] && echo "${L2}${bn}"
+			echo2 "${bn}"
 			dn="$(dirname "$i")"
 			[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 			cp "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
@@ -904,17 +900,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	done
 		
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}generating modules.dep"
+	echo1 "generating modules.dep"
 	${TOOLS_SUBDIR}/depmod.pl -b ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-${DS_KERNEL_LAYOUT} \
 		-F ${KERNEL_REP_DIR}/System-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.map 2> /dev/null
 		
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}copying files"
+	echo1 "copying files"
 	"$TAR" -cf - -C "${KERNEL_REP_DIR}/root" --exclude=lib --exclude=usr/lib \
 		$([ -r "${KERNEL_REP_DIR}/.exclude" ] && echo "--exclude-from=${KERNEL_REP_DIR}/.exclude") \
 		$([ "$DS_PACKAGE_IPTABLES" != "y" ] && echo "--exclude=usr/sbin/iptables") \
 	.	| "$TAR" -xf - -C "$FILESYSTEM_MOD_DIR" || exit 1
 
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}installing libs"
+	echo1 "installing libs"
 	for i in \
 	$( \
 		cd "${KERNEL_REP_DIR}/root" && \
@@ -925,7 +921,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		lib="${bn%\.so*}"
 		lib="$(echo "$lib" | sed -e 's/-[\.0-9]*$//')"
 		if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
-			[ "$DS_VERBOSITY_LEVEL" -ge 2 ] && echo "${L2}${bn}"
+			echo2 "${bn}"
 			dn="$(dirname "$i")"
 			[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 			cp -a "${KERNEL_REP_DIR}/root/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
@@ -938,7 +934,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ -r "$STATIC_PACKAGES_FILE" ]; then
 		for pkg in $(sort "$STATIC_PACKAGES_FILE" | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' | grep -v '^#' | grep -v '^$')
 		do
-			[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}${pkg}"
+			echo1 "${pkg}"
 			pkg_name="$(echo "$pkg" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//')"
 
 			if [ -e "${PACKAGES_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
@@ -959,7 +955,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ -r "$STATIC_ADDON_FILE" ]; then
 		for pkg in $(cat "$STATIC_ADDON_FILE" | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' | grep -v '^#' | grep -v '^$')
 		do
-			[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}${pkg} (addon)"
+			echo1 "${pkg} (addon)"
 			pkg_name="$(echo "$pkg" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//')"
 
 			if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
@@ -984,15 +980,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 		bash -n "${BASE_DIR}/fwmod_custom"
 
 		if [ $? -ne 0 ]; then
-			echo "ERROR: syntax error in custom script" 1>&2
-			exit 1
+			error 1 "syntax error in custom script"
 		fi
 
 		( cd "$MOD_DIR" && ../../fwmod_custom all ) || exit 1
 
 		if [ $? -ne 0 ]; then
-			echo "ERROR: custom script returned error" 1>&2
-			exit 1
+			error 1 "custom script returned error"
 		fi
 	fi
 
@@ -1018,13 +1012,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Check if firmware is unpacked
 	if [ ! -r "${DIR}/.unpacked" ]; then
-		echo "ERROR: firmware image has to be unpacked before packing" 1>&2
-		exit 1
+		error 1 "firmware image has to be unpacked before packing"
 	fi
 
 	# Check if firmware is modified by the script
 	if [ ! -r "${DIR}/.modified" ]; then
-		echo "WARNING: firmware does not seem to be modified by the script" 1>&2
+		warn "firmware does not seem to be modified by the script"
 
 		if [ ! -d "$MOD_DIR" ]; then
 			# Copy the unpacked directory
@@ -1033,12 +1026,11 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	# Remove left over Subversion directories
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "Checking for left over Subversion directories"
+	echo1 "Checking for left over Subversion directories"
 	find "$MOD_DIR" -type d -name .svn | xargs rm -rf
 
 	if [ ! -s "$RAW_HIDDEN" ]; then
-		echo "ERROR: no hidden squashfs found" 1>&2
-		exit 1
+		error 1 "no hidden squashfs found"
 	fi
 
 		# Delete all files that we are going to re-create now
@@ -1072,14 +1064,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 	"$TAR" -cf - --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
 
 	if [ ! -s "$VARTAR_MOD" ]; then
-		echo "ERROR: packing of var.tar failed" 1>&2
-		exit 1
+		error 1 "packing of var.tar failed"
 	fi
 
 	# Do we have the tool ?
 	if [ ! -x "$MKSQUASHFS" ]; then
-		echo "ERROR: cannot find $MKSQUASHFS_TOOL" 1>&2
-		exit 1
+		error 1 "cannot find $MKSQUASHFS_TOOL"
 	fi
 
 	if [ "$DS_REPLACE_KERNEL" == "y" -a "$DS_HIDDEN_ROOT" != "y" ]; then
@@ -1094,8 +1084,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	rm -f fakechroot.save
 
 	if [ ! -s "$FILESYSTEM_MOD" ]; then
-		echo "ERROR: creation of filesystem failed" 1>&2
-		exit 1
+		error 1 "creation of filesystem failed"
 	fi
 
 	echo "merging kernel image"
@@ -1103,15 +1092,14 @@ if [ "$DO_PACK" -gt 0 ]; then
 	cat "$RAW_HIDDEN_MOD" >> "$KERNEL_MOD"
 
 	if [ ! -s "$KERNEL_MOD" ]; then
-		echo "ERROR: kernel merging failed" 1>&2
-		exit 1
+		error 1 "kernel merging failed"
 	fi
 	
 	# Check size of kernel image
 	let KERNEL_LIMIT="$DS_KERNEL_MTD_SIZE*65536"
-	let KERNEL_SIZE="$(cat "$KERNEL_MOD" | wc -c)"
+	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
 
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT)"
+	echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT)"
 	if [ "$DS_VERBOSITY_LEVEL" -ge 1 ]; then
 		if [ "$DS_TYPE_FON_WLAN_7150" = "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
@@ -1121,19 +1109,16 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 	fi
 	if [ "$KERNEL_SIZE" -eq 0 ]; then
-		echo "ERROR: kernel image is empty" 1>&2
-		exit 1
+		error 1 "kernel image is empty"
 	fi
 	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
 		let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
-		echo "ERROR: kernel image is $DIFF bytes too big" 1>&2
-		exit 1
+		error 1 "kernel image is $DIFF bytes too big"
 	fi
 
 	# Do we have the tool ?
 	if [ ! -x "$TICHKSUM" ]; then
-		echo "ERROR: cannot find wonderful tool $TICHKSUM_TOOL" 1>&2
-		exit 1
+		error 1 "cannot find wonderful tool $TICHKSUM_TOOL"
 	fi
 
 	# Write checksum
@@ -1144,16 +1129,14 @@ if [ "$DO_PACK" -gt 0 ]; then
 		let FILESYSTEM_LIMIT="$DS_FILESYSTEM_MTD_SIZE*65536"
 		let FILESYSTEM_SIZE="$(cat "$FILESYSTEM_MOD" | wc -c)"
 
-		[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}filesystem image size: $FILESYSTEM_SIZE (max: $FILESYSTEM_LIMIT)"
+		echo1 "filesystem image size: $FILESYSTEM_SIZE (max: $FILESYSTEM_LIMIT)"
 
 		if [ "$FILESYSTEM_SIZE" -eq 0 ]; then
-			echo "ERROR: filesystem image is empty" 1>&2
-			exit 1
+			error 1 "filesystem image is empty"
 		fi
 		if [ "$FILESYSTEM_SIZE" -gt "$FILESYSTEM_LIMIT" ]; then
 			let DIFF="FILESYSTEM_SIZE-FILESYSTEM_LIMIT"
-			echo "ERROR: filesystem image is $DIFF bytes too big" 1>&2
-			exit 1
+			error 1 "filesystem image is $DIFF bytes too big"
 		fi
 
 		# Write checksum
@@ -1164,14 +1147,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ -s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" -a ! -s "${FIRMWARE_MOD_DIR}/${FILESYSTEM_IMAGE}" ] || \
 		[ ! -s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" -a -s "${FIRMWARE_MOD_DIR}/${FILESYSTEM_IMAGE}" ];
 	then
-		echo "ERROR: inconsistency comparing size of old and new filesystem.image" 1>&2
-		exit 1
+		error 1 "inconsistency comparing size of old and new filesystem.image"
 	fi
 	if [ -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a ! -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ] || \
 		[ ! -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ]
 	then
-		echo "ERROR: inconsistency comparing size of old and new kernel.image" 1>&2
-		exit 1
+		error 1 "inconsistency comparing size of old and new kernel.image"
 	fi
 
 	modimage="${DS_TYPE_STRING}_${FIRMWAREVERSION}-${SUBVERSION}.${DS_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
@@ -1182,8 +1163,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	if [ ! -s "${DIR}/${modimage}" ]; then
 		rm -f "${DIR}/${modimage}"
-		echo "ERROR: packing of firmware image failed" 1>&2
-		exit 1
+		error 1 "packing of firmware image failed"
 	fi
 
 	echo "done."
