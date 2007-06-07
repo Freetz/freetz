@@ -253,16 +253,17 @@ DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 
 modpatch()
 {
+	local PATCH_STATUS
 	if [ "$DS_VERBOSITY_LEVEL" -ge 2 ]; then
-		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 |
-			while read line
-			do
-				echo "${L2}${line}"
-			done
-
-		[ ${PIPESTATUS[0]} -eq 0 ] || exit 2
+		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
+		PATCH_STATUS=${PIPESTATUS[0]}
 	else
-		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null || exit 2
+		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
+		PATCH_STATUS=$?
+	fi
+	if [ $PATCH_STATUS -gt 0 ]; then
+		echo "modpatch: Error in patch-file $2"
+		exit 2
 	fi
 }
 
