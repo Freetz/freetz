@@ -55,7 +55,16 @@ endif
 	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-2.6.13.1 $(KERNEL_DIR)/linux 
 	touch $@
 
-$(KERNEL_DIR)/.configured: kernel-oldconfig
+$(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
+	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
+	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	$(MAKE1) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
+		CROSS_COMPILE="$(KERNEL_CROSS)" \
+		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
+		ARCH="$(KERNEL_ARCH)" \
+		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
+		oldconfig prepare
+	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
 	touch $@
 
 $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma
@@ -119,16 +128,7 @@ kernel-menuconfig: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 		menuconfig
 		cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
 
-kernel-oldconfig: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
-	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
-	$(MAKE1) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
-		CROSS_COMPILE="$(KERNEL_CROSS)" \
-		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
-		ARCH="$(KERNEL_ARCH)" \
-		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
-		oldconfig prepare
-	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
+kernel-oldconfig: kernel-configured
 
 kernel-source: $(KERNEL_DIR)/.unpacked
 
