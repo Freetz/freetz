@@ -7,6 +7,10 @@ KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
 KERNEL_IMAGE:=kernel/linux-2.6.13.1/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_REF).$(AVM_VERSION)
+KERNEL_LZMA_CFLAGS:=-D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing \
+		   				-fno-common -ffreestanding -falign-functions=4  -falign-labels=4 -falign-loops=4  -falign-jumps=4 \
+		   				-fomit-frame-pointer -g -G 0 -mno-abicalls -fno-pic -finline-limit=100000 -mabi=32 -march=mips32 -Wa,-32 \
+		   				-Wa,-march=mips32 -Wa,-mips32 -Wa,--trap
 KERNEL_LZMA_LIB:=kernel/linux-2.6.13.1/fs/squashfs/lzma_decode.a
 
 ifeq ($(AVM_VERSION),04.33)
@@ -70,10 +74,7 @@ $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB): $(KERNEL_DIR)/.configured $(TOOLS_DIR)/lzma
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/lzma lzma_decode.a CROSS_COMPILE=$(KERNEL_CROSS) \
-		USE_CFLAGS="-D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing \
-		   -fno-common -ffreestanding -falign-functions=4  -falign-labels=4 -falign-loops=4  -falign-jumps=4 \
-		   -fomit-frame-pointer -g -G 0 -mno-abicalls -fno-pic -finline-limit=100000 -mabi=32 -march=mips32 -Wa,-32 \
-		   -Wa,-march=mips32 -Wa,-mips32 -Wa,--trap"
+		USE_CFLAGS="$(KERNEL_LZMA_CFLAGS)"
 	cp $(KERNEL_BUILD_DIR)/lzma/lzma_decode.a $@
 
 $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB) $(TOOLS_DIR)/lzma2eva
@@ -126,7 +127,7 @@ kernel-menuconfig: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 		ARCH="$(KERNEL_ARCH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		menuconfig
-		cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
+	cp $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE)
 
 kernel-oldconfig: kernel-configured
 
