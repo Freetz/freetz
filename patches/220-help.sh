@@ -1,7 +1,7 @@
 if [ "$DS_REMOVE_HELP" == "y" ]
 then
 	# from m*.* mod
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}removing help"
+	echo1 "removing help"
 	rm -rf "${HTML_MOD_DIR}/help"
 	find "${HTML_MOD_DIR}/menus" -type f |
 		xargs sed -s -i -e '/var:menuHilfe/d'

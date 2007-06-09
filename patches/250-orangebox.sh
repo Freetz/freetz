@@ -1,6 +1,6 @@
 if [ "$DS_PACKAGE_ORANGEBOX" == "y" ]
 then
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo "${L1}adding orangebox-lines to rc.S"
+	echo1 "adding orangebox-lines to rc.S"
 	if [ "$DS_TYPE_LABOR" == "y" ]
 	then
 	    if [ "$DS_TYPE_LABOR_PHONE" == "y" ]
