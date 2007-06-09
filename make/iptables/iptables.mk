@@ -18,7 +18,7 @@ $(IPTABLES_DIR)/.unpacked $(IPTABLES_DIR_SYMLINK)/.unpacked: $(DL_DIR)/$(IPTABLE
 	for i in $(IPTABLES_MAKE_DIR)/patches/*.patch; do \
 		patch -d $(IPTABLES_DIR) -p1 < $$i; \
 	done
-	chmod +x $(IPTABLES_DIR)/extensions/.*-test
+	chmod +x $(IPTABLES_DIR)/extensions/.*-test*
 	touch $@
 
 $(IPTABLES_BINARY): \
