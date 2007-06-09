@@ -32,7 +32,7 @@ $(STUNNEL_DIR)/.configured:  $(STUNNEL_DIR)/.unpacked
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \

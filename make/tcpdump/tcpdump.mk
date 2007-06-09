@@ -30,7 +30,7 @@ $(TCPDUMP_DIR)/.configured: $(TCPDUMP_DIR)/.unpacked
 		HOSTCC="$(HOSTCC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		ac_cv_linux_vers=2 \
 		td_cv_gubbygetaddrinfo="no" \
 		./configure \

@@ -23,7 +23,7 @@ $(LIBELF_DIR)/.configured: $(LIBELF_DIR)/.unpacked
 	( cd $(LIBELF_DIR); rm -f config.{cache,status} ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
-		CC="$(TARGET_CC) -static-libgcc" \
+		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \

@@ -18,7 +18,7 @@ $(HASERL_DIR)/.configured: $(HASERL_DIR)/.unpacked
 	( cd $(HASERL_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="-static-libgcc" \
+		LDFLAGS="" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \

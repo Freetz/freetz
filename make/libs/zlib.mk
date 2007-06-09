@@ -26,7 +26,7 @@ $(ZLIB_DIR)/.configured: $(ZLIB_DIR)/.unpacked
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
-		LDSHARED="$(TARGET_CC) -static-libgcc -shared -Wl,-soname,libz.so.1" \
+		LDSHARED="$(TARGET_CC) -shared -Wl,-soname,libz.so.1" \
 		./configure \
 		--program-prefix="" \
 		--program-suffix="" \

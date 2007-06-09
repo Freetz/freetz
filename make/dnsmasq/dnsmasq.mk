@@ -27,7 +27,7 @@ $(DNSMASQ_DIR)/.unpacked: $(DL_DIR)/$(DNSMASQ_SOURCE)
 $(DNSMASQ_BINARY): $(DNSMASQ_DIR)/.unpacked
 	$(MAKE) CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="-static-libgcc" \
+		LDFLAGS="" \
 		-C $(DNSMASQ_DIR)
 
 $(DNSMASQ_TARGET_BINARY): $(DNSMASQ_BINARY)

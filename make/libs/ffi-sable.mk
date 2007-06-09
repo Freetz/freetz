@@ -25,7 +25,7 @@ $(FFI_SABLE_DIR)/.configured: $(FFI_SABLE_DIR)/.unpacked
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		LDSHARED="$(TARGET_CC) -static-libgcc" \
+		LDSHARED="$(TARGET_CC)" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \

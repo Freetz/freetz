@@ -20,7 +20,7 @@ $(LZO_DIR)/.configured: $(LZO_DIR)/.unpacked
 	( cd $(LZO_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
-		CC="$(TARGET_CC) -static-libgcc" \
+		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		./configure \
 		--target=mipsel-linux \

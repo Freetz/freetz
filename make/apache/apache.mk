@@ -12,7 +12,7 @@ APACHE_PKG_SITE:=http://dsmod.magenbrot.net
 ifeq ($(strip $(DS_APACHE_STATIC)),y)
 APACHE_LDFLAGS:=-static
 else
-APACHE_LDFLAGS:=-static-libgcc
+APACHE_LDFLAGS:=
 endif
 
 $(DL_DIR)/$(APACHE_SOURCE): | $(DL_DIR)

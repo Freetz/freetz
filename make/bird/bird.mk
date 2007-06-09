@@ -45,7 +45,7 @@ $(BIRD_DIR)/.configured: $(BIRD_DIR)/.unpacked
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -D_XOPEN_SOURCE=600" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include -D_XOPEN_SOURCE=600" \
-		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		bird_cv_c_endian=little-endian \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \

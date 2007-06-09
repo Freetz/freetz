@@ -30,7 +30,7 @@ $(SCREEN_DIR)/.configured: $(SCREEN_DIR)/.unpacked
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		$(foreach flag,rename fchmod fchown strerror lstat _exit utimes vsnprintf getcwd setlocale strftime,ac_cv_func_$(flag)=yes ) \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \

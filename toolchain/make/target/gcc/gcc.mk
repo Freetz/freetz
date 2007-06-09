@@ -34,7 +34,7 @@ endif
 
 GCC_STRIP_HOST_BINARIES:=true
 GCC_USE_SJLJ_EXCEPTIONS:=--enable-sjlj-exceptions
-GCC_SHARED_LIBGCC:=--disable-shared
+GCC_SHARED_LIBGCC:=--enable-shared
 GCC_EXTRA_CONFIG_OPTIONS:=--with-float=soft --enable-cxx-flags=-msoft-float
 
 $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)

@@ -27,7 +27,7 @@ $(CIFSMOUNT_DIR)/.unpacked: $(CIFSMOUNT_MAKE_DIR)/$(CIFSMOUNT_SOURCE)
 $(CIFSMOUNT_BINARY): $(CIFSMOUNT_DIR)/.unpacked
 	(cd $(CIFSMOUNT_DIR); \
 		PATH=$(TARGET_PATH) \
-		$(TARGET_CC) $(TARGET_CFLAGS) -static-libgcc -o mount.cifs mount.cifs.c\
+		$(TARGET_CC) $(TARGET_CFLAGS) -o mount.cifs mount.cifs.c \
 	)
 
 $(CIFSMOUNT_TARGET_BINARY): $(CIFSMOUNT_BINARY)

@@ -26,7 +26,7 @@ $(MAD_DIR)/.configured: $(MAD_DIR)/.unpacked
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		LDSHARED="$(TARGET_CC) -static-libgcc" \
+		LDSHARED="$(TARGET_CC)" \
 		ac_cv_c_bigendian=no \
 		ac_cv_type_pid_t=yes \
 		./configure \

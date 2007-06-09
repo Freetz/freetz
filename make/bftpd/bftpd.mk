@@ -38,7 +38,7 @@ $(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked $(BFTPD_LIBZLIB)
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -66,7 +66,7 @@ $(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked $(BFTPD_LIBZLIB)
 $(BFTPD_BINARY): $(BFTPD_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib" \
 		-C $(BFTPD_DIR)
 
 $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME): $(DL_DIR)/$(BFTPD_PKG_SOURCE) | $(PACKAGES_DIR)

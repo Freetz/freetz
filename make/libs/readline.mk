@@ -26,7 +26,7 @@ $(READLINE_DIR)/.configured: $(READLINE_DIR)/.unpacked
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		bash_cv_func_sigsetjmp=yes \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \

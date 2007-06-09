@@ -25,7 +25,7 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.unpacked
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		ac_cv_linux_vers="2" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \

@@ -26,7 +26,7 @@ $(JPEG_DIR)/.configured: $(JPEG_DIR)/.unpacked
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		CC="$(TARGET_CC)" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \

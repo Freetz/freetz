@@ -52,7 +52,7 @@ $(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.unpacked
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS_FOR_TARGET="$(TARGET_CFLAGS)" \
 		CPPFLAGS_FOR_TARGET="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS_FOR_TARGET="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		LDFLAGS_FOR_TARGET="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		$(GDB_TARGET_CONFIGURE_VARS) \
 		$(GDB_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
@@ -72,8 +72,7 @@ endif
 
 $(GDB_TARGET_DIR)/gdb/gdb: $(GDB_TARGET_DIR)/.configured
 	PATH=$(TARGET_PATH) \
-	    $(MAKE) CC=$(TARGET_CC) LDFLAGS="-static-libgcc \
-	    -L$(TARGET_MAKE_PATH)/../usr/lib" \
+	    $(MAKE) CC=$(TARGET_CC) LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 	    MT_CFLAGS="$(TARGET_CFLAGS)" -C $(GDB_TARGET_DIR)
 	$(TARGET_STRIP) $(GDB_TARGET_DIR)/gdb/gdb
 

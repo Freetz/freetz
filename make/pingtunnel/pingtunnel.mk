@@ -26,8 +26,8 @@ $(PINGTUNNEL_DIR)/.unpacked: $(DL_DIR)/$(PINGTUNNEL_SOURCE)
 $(PINGTUNNEL_BINARY): $(PINGTUNNEL_DIR)/.unpacked
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(GNU_TARGET_NAME)" \
-		CFLAGS="$(TARGET_CFLAGS) -static-libgcc -I$(TARGET_MAKE_PATH)/../usr/include -DVERSION='\"$(PINGTUNNEL_VERSION)\"'" \
-		LDOPTS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib -lpthread -lpcap" \
+		CFLAGS="$(TARGET_CFLAGS)-I$(TARGET_MAKE_PATH)/../usr/include -DVERSION='\"$(PINGTUNNEL_VERSION)\"'" \
+		LDOPTS="-L$(TARGET_MAKE_PATH)/../usr/lib -lpthread -lpcap" \
 		-C $(PINGTUNNEL_DIR)
 		
 $(PINGTUNNEL_TARGET_BINARY): $(PINGTUNNEL_BINARY)

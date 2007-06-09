@@ -27,7 +27,7 @@ $(LIBGCRYPT_DIR)/.configured: $(LIBGCRYPT_DIR)/.unpacked
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib -L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
-		CC="$(TARGET_CC) -static-libgcc" \
+		CC="$(TARGET_CC)" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \

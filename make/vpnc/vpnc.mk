@@ -27,7 +27,7 @@ $(VPNC_BINARY): $(VPNC_DIR)/.unpacked
 	PATH=$(TARGET_PATH) \
 	$(MAKE) CC="$(TARGET_CC)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include" \
-		EXTRA_LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		EXTRA_LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib" \
 		-C $(VPNC_DIR)
 		
 $(VPNC_TARGET_BINARY): $(VPNC_BINARY)

@@ -33,7 +33,7 @@ $(TRANSMISSION_DIR)/.configured: $(TRANSMISSION_DIR)/.unpacked
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
-		LDFLAGS="-static-libgcc" \
+		LDFLAGS="" \
 		./configure \
 		--prefix=/usr \
 		--disable-gtk \

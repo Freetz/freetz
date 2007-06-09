@@ -31,7 +31,7 @@ $(TOR_DIR)/.configured: $(TOR_DIR)/.unpacked
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		CROSS_COMPILE="yes" \
 		ac_cv_libevent_linker_option='(none)' \
 		ac_cv_openssl_linker_option='(none)' \

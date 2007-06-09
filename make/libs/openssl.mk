@@ -35,7 +35,7 @@ $(OPENSSL_DIR)/.configured: $(OPENSSL_DIR)/.unpacked
 		--openssldir=/mod/etc/ssl \
 		-I$(TARGET_TOOLCHAIN_STAGING_DIR)/include \
 		-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include \
-		-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib -L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib -ldl -static-libgcc \
+		-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib -L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib -ldl \
 		-DOPENSSL_SMALL_FOOTPRINT \
 		$(CFLAGS_LARGEFILE) \
 		$(OPENSSL_NO_CIPHERS) \
@@ -44,7 +44,7 @@ $(OPENSSL_DIR)/.configured: $(OPENSSL_DIR)/.unpacked
 	touch $@
 
 $(OPENSSL_SSL_BINARY) $(OPENSSL_CRYPTO_BINARY): $(OPENSSL_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) SHARED_LDFLAGS=-static-libgcc $(MAKE1) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) SHARED_LDFLAGS="" $(MAKE1) \
 		CC="$(TARGET_CC)" \
 		-C $(OPENSSL_DIR) \
 		AR="$(TARGET_CROSS)ar r" \

@@ -26,7 +26,7 @@ $(MATRIXSSL_BINARY): $(MATRIXSSL_DIR)/.unpacked
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -DLINUX" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		AR="$(TARGET_CROSS)ar" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		STRIP="$(TARGET_CROSS)strip" 

@@ -29,8 +29,8 @@ $(KNOCK_DIR)/.unpacked: $(DL_DIR)/$(KNOCK_SOURCE)
 $(KNOCK_DIR)/.configured: $(KNOCK_DIR)/.unpacked
 	( cd $(KNOCK_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/include -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib -static-libgcc" \
+		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \

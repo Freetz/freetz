@@ -29,7 +29,7 @@ $(LUA_BINARY): $(LUA_DIR)/.unpacked
 		MYCFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include $(TARGET_CFLAGS)" \
 		AR="$(TARGET_CROSS)ar rcu" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
-		MYLDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		MYLDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		INSTALL_ROOT=/usr \
 		PKG_VERSION="$(LUA_VERSION)" \
 		linux

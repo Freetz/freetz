@@ -27,7 +27,7 @@ $(INADYN_DIR)/.unpacked: $(DL_DIR)/$(INADYN_SOURCE)
 $(INADYN_BINARY): $(INADYN_DIR)/.unpacked
 	PATH="$(TARGET_PATH)" $(MAKE) CC="mipsel-linux-gcc" \
 		STRIP="mipsel-linux-strip" CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="-static-libgcc" -C $(INADYN_DIR)/inadyn 
+		LDFLAGS="" -C $(INADYN_DIR)/inadyn 
 
 $(INADYN_TARGET_BINARY): $(INADYN_BINARY)
 	$(TARGET_STRIP) $(INADYN_BINARY)

@@ -43,7 +43,7 @@ $(TINYPROXY_DIR)/.configured: $(TINYPROXY_DIR)/.unpacked
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		tinyproxy_cv_regex_broken=no \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
@@ -77,7 +77,7 @@ $(TINYPROXY_BINARY): $(TINYPROXY_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
 		CFLAGS="-DNDEBUG $(TARGET_CFLAGS)" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		-C $(TINYPROXY_DIR) 
 
 $(TINYPROXY_TARGET_BINARY): $(TINYPROXY_BINARY)

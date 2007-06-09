@@ -29,7 +29,7 @@ $(OPENNTPD_DIR)/.configured: $(OPENNTPD_DIR)/.unpacked
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib -static-libgcc" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
                 ./configure \
 		  --target=$(GNU_TARGET_NAME) \
 		  --host=$(GNU_TARGET_NAME) \
@@ -61,7 +61,7 @@ $(OPENNTPD_BINARY): $(OPENNTPD_DIR)/.configured
 	$(MAKE) -C $(OPENNTPD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -DUSE_ADJTIMEX" \
-		LDFLAGS="-static-libgcc"
+		LDFLAGS=""
 
 $(OPENNTPD_TARGET_BINARY): $(OPENNTPD_BINARY)
 	$(TARGET_STRIP) $(OPENNTPD_BINARY)

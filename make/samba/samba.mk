@@ -34,7 +34,7 @@ $(SAMBA_DIR)/.configured: $(SAMBA_DIR)/.unpacked
 		LD="$(TARGET_LD)" \
 		CFLAGS="$(TARGET_CFLAGS) -D_GNU_SOURCE -DNDEBUG -DSHMEM_SIZE=524288" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-static-libgcc -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		ac_cv_lib_cups_httpConnect=no \
 		ac_cv_sizeof_int=4 \
 		ac_cv_sizeof_long=4 \

@@ -27,7 +27,7 @@ $(IPTABLES_BINARY): \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		COPT_FLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="-rdynamic -static-libgcc" \
+		LDFLAGS="-rdynamic" \
 		PREFIX=/usr \
 		DO_IPV6=0 \
 		-C $(IPTABLES_DIR)

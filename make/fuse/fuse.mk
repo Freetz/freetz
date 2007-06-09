@@ -39,7 +39,7 @@ $(FUSE_DIR)/.configured: $(FUSE_DIR)/.unpacked
 		touch configure ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
-		LDFLAGS="-static-libgcc" \
+		LDFLAGS="" \
 		./configure \
 			--target=$(GNU_TARGET_NAME) \
 			--host=$(GNU_TARGET_NAME) \
