@@ -25,7 +25,7 @@ $(ZLIB_DIR)/.configured: $(ZLIB_DIR)/.unpacked
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		LDSHARED="$(TARGET_CC) -shared -Wl,-soname,libz.so.1" \
 		./configure \
 		--program-prefix="" \
@@ -40,7 +40,7 @@ $(ZLIB_BINARY): $(ZLIB_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(ZLIB_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		libz.a libz.so
 
 $(ZLIB_STAGING_BINARY): $(ZLIB_BINARY)

@@ -32,7 +32,7 @@ $(TRANSMISSION_DIR)/.configured: $(TRANSMISSION_DIR)/.unpacked
 	( cd $(TRANSMISSION_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="" \
 		./configure \
 		--prefix=/usr \

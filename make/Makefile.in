@@ -43,7 +43,7 @@ TARGET_CROSS:=$(strip $(subst ",, $(DS_TARGET_CROSS)))
 TARGET_MAKE_PATH:=$(strip $(subst ",, $(DS_TARGET_MAKE_PATH)))
 KERNEL_CROSS:=$(strip $(subst ",, $(DS_KERNEL_CROSS)))
 KERNEL_MAKE_PATH:=$(strip $(subst ",, $(DS_KERNEL_MAKE_PATH)))
-TARGET_CFLAGS:=$(strip $(subst ",, $(DS_TARGET_CFLAGS)))
+TARGET_CFLAGS:=$(strip $(subst ",, $(DS_TARGET_CFLAGS))) $(CFLAGS_LARGEFILE)
 
 ifneq ($(patsubst /%,/,$(TARGET_MAKE_PATH)),/)
 TARGET_MAKE_PATH:=$(shell pwd)/$(TARGET_MAKE_PATH)

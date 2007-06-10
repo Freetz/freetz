@@ -25,7 +25,7 @@ $(SG3UTILS_DIR)/.unpacked: $(DL_DIR)/$(SG3UTILS_SOURCE)
 	touch $@
 
 $(SG3UTILS_BINARY): $(SG3UTILS_DIR)/.unpacked
-	PATH="$(TARGET_PATH)" CFLAGS="$(TARGET_CFLAGS) $(CFLAGS_LARGEFILE)" \
+	PATH="$(TARGET_PATH)" CFLAGS="$(TARGET_CFLAGS)" \
 		CC="$(TARGET_CC)" LD="$(TARGET_LD)" \
 		make -f no_lib/Makefile.linux sg_start -C $(SG3UTILS_DIR)
 	touch $@

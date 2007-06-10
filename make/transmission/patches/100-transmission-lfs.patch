@@ -6,7 +6,7 @@ diff -burN mk.orig/common.mk mk/common.mk
  
 -TMPCFLAGS   = -g -Wall -W -O3 -funroll-loops -D_FILE_OFFSET_BITS=64 \
 -              -D_LARGEFILE_SOURCE -D_GNU_SOURCE \
-+TMPCFLAGS   = -g -Wall -W -O3 -funroll-loops -D_GNU_SOURCE \
++TMPCFLAGS   = -g -Wall -W -Os -funroll-loops -D_GNU_SOURCE \
                -DSYS_$(shell echo $(SYSTEM) | tr a-z A-Z)
  TMPCXXFLAGS = $(TMPCFLAGS)
  TMPLDFLAGS  =
