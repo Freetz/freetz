@@ -28,6 +28,8 @@ $(USB_DIR)/.configured: $(USB_DIR)/.unpacked
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
+		ac_cv_header_regex_h=no \
+		ac_cv_c_bigendian=no \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -75,8 +77,11 @@ usb-precompiled: uclibc usb $(USB_TARGET_BINARY)
 usb-source: $(USB_DIR)/.unpacked
 
 usb-clean:
-	-$(MAKE) -C $(USB_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/includes/usb*.h
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb*
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig
+	-$(MAKE) -C $(LIBUSB_DIR) clean
 
 usb-uninstall:
 	rm -f $(USB_TARGET_DIR)/libusb*.so*
