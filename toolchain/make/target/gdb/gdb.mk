@@ -176,24 +176,6 @@ gdbhost-clean:
 gdbhost-dirclean:
 	rm -rf $(GDB_HOST_DIR)
 
-
-#############################################################
-#
-# Toplevel Makefile options
-#
-#############################################################
-ifeq ($(strip $(DS_PACKAGE_GDB)),y)
-TARGETS+=gdb_target
-endif
-
-ifeq ($(strip $(DS_PACKAGE_GDB_SERVER)),y)
-TARGETS+=gdbserver
-endif
-
-ifeq ($(strip $(DS_PACKAGE_GDB_HOST)),y)
-TARGETS+=gdbhost
-endif
-
 gdb: uclibc $(TARGETS)
 
 gdb-clean:
