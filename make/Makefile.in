@@ -79,9 +79,11 @@ endif
 
 LIBGCC:=libgcc_s.so.1
 
-libgcc-installed:
-	$(TARGET_STRIP) $(TARGET_MAKE_PATH)/../lib/$(LIBGCC)
+libgcc-installed: root/lib/$(LIBGCC)
+
+root/lib/$(LIBGCC):
 	cp $(TARGET_MAKE_PATH)/../lib/$(LIBGCC) root/lib/
+	$(TARGET_STRIP) root/lib/$(LIBGCC)
 	chmod +x root/lib/$(LIBGCC)
 
 .PHONY: libgcc-installed
