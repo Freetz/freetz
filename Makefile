@@ -315,7 +315,7 @@ common-clean:
 	rm -f .static .dynamic
 	rm -f .exclude .exclude-dist kernel/.exclude
 	rm -f *.image
-	rm -rf $(BUILD_DIR) $(PACKAGES_DIR)
+	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean:
@@ -339,6 +339,7 @@ dist: distclean
 		cd ../; \
 		find "$$dir" -type d -name .svn -prune; \
 		echo "$${dir}/.exclude-dist" \
+		echo "$${dir}/packages" \
 	) > .exclude-dist; \
 	( \
 		cd ../; \
