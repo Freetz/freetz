@@ -85,6 +85,12 @@ $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.configured $(KERNEL_BUILD_DI
 		$$(basename $(KERNEL_IMAGE))
 	touch -c $@
 
+$(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
+	cp $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
+	cp  $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/System.map $(KERNEL_TARGET_DIR)/System-$(KERNEL_REF)-$(AVM_VERSION).map
+	echo "$(KERNEL_SUBVERSION)" > $(KERNEL_TARGET_DIR)/.version-$(KERNEL_REF)-$(AVM_VERSION)
+	touch -c $@
+	
 $(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
@@ -104,16 +110,16 @@ $(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 		modules_install
 	touch $@
 
-kernel-precompiled: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_DIR)/.modules
-	cp $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
+$(KERNEL_MODULES_DIR)/.modules: $(KERNEL_DIR)/.modules
 	rm -rf $(KERNEL_MODULES_DIR)/lib
 	mkdir -p $(KERNEL_MODULES_DIR)
 	tar -cf - -C $(KERNEL_BUILD_DIR)/modules \
 		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/build \
 		--exclude=lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/pcmcia \
 		. | tar -xf - -C $(KERNEL_MODULES_DIR)
-	cp  $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/System.map $(KERNEL_TARGET_DIR)/System-$(KERNEL_REF)-$(AVM_VERSION).map
-	echo "$(KERNEL_SUBVERSION)" > $(KERNEL_TARGET_DIR)/.version-$(KERNEL_REF)-$(AVM_VERSION)
+	touch $@
+
+kernel-precompiled: $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules
 
 kernel-configured: $(KERNEL_DIR)/.configured
 
