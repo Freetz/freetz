@@ -54,10 +54,10 @@ choice
 		bool "mod_26 (recommended)"
 
 	config DS_TARGET_UCLIBC_CONFIG_8MB_26
-		bool "8MB_26" if DS_BUILD_TOOLCHAIN || DS_EXTERNAL_TOOLCHAIN
+		bool "8MB_26" if DS_BUILD_TOOLCHAIN
 	
 	config DS_TARGET_UCLIBC_CONFIG_4MB_26
-		bool "4MB_26" if DS_BUILD_TOOLCHAIN || DS_EXTERNAL_TOOLCHAIN
+		bool "4MB_26" if DS_BUILD_TOOLCHAIN
 
 endchoice
 
@@ -69,7 +69,7 @@ config DS_TARGET_UCLIBC_REF
 	default "orig-8mb_26"	if DS_TARGET_UCLIBC_CONFIG_8MB_26
 
 config DS_TARGET_GXX
-	bool "Build g++ for target toolchain" if DS_BUILD_TOOLCHAIN || DS_EXTERNAL_TOOLCHAIN
+	bool "Build g++ for target toolchain" if DS_BUILD_TOOLCHAIN
 	default y if ! DS_DOWNLOAD_TOOLCHAIN
 	default n if DS_DOWNLOAD_TOOLCHAIN
 	help
@@ -78,7 +78,7 @@ config DS_TARGET_GXX
 		currently part of that distribution. 
 
 config DS_TARGET_CCACHE
-	bool "Build ccache for target toolchain" if DS_BUILD_TOOLCHAIN || DS_EXTERNAL_TOOLCHAIN
+	bool "Build ccache for target toolchain"
 	default y if ! DS_DOWNLOAD_TOOLCHAIN
 	default n if DS_DOWNLOAD_TOOLCHAIN
 	help
@@ -92,7 +92,7 @@ config DS_TARGET_CCACHE
 		in C with more features and better performance.
 
 config DS_TARGET_NLS
-	bool "Native language support (NLS) for target toolchain" if DS_BUILD_TOOLCHAIN || DS_EXTERNAL_TOOLCHAIN
+	bool "Native language support (NLS) for target toolchain" if DS_BUILD_TOOLCHAIN
 	default n
 	help
 		Support NLS-enabled programs and Linux tools on target system.
@@ -105,7 +105,7 @@ config DS_TARGET_NLS
 		    ls: /foo/bar: Datei oder Verzeichnis nicht gefunden
 
 config DS_TARGET_LFS
-	bool "Large file support (LFS) for target toolchain" if DS_BUILD_TOOLCHAIN || DS_EXTERNAL_TOOLCHAIN
+	bool "Large file support (LFS) for target toolchain" if DS_BUILD_TOOLCHAIN
 	default n
 	help
 		Support files > 2 GB on target system. This is desirable for Torrent
@@ -116,9 +116,6 @@ choice
 	prompt "Kernel compiler"
 	default DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
 	depends ! DS_DOWNLOAD_TOOLCHAIN
-	
-	config DS_KERNEL_COMPILER_GCC_3_3_2_GLIBC_2_3_2
-		bool "gcc-3.3.2-glibc-2.3.2"
 
 	config DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
 		bool "gcc-3.4.5-glibc-2.3.6"
@@ -127,13 +124,11 @@ endchoice
 
 config DS_KERNEL_GCC_VERSION
 	string
-	default "3.4.5" if DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
-	default "3.4.5" if DS_DOWNLOAD_TOOLCHAIN
+	default "3.4.5"
 
 config DS_KERNEL_GLIBC_VERSION
 	string
-	default "2.3.6" if DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
-	default "2.3.6" if DS_DOWNLOAD_TOOLCHAIN
+	default "2.3.6"
 
 comment "GNU debugger (gdb)"
 
