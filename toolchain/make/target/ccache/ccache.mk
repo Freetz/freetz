@@ -13,17 +13,7 @@ $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CCACHE_SOURCE)
 	touch $@
 
-$(CCACHE_DIR)/.patched: $(CCACHE_DIR)/.unpacked
-	# WARNING - this will break if the toolchain is moved.
-	# Should probably patch things to use a relative path.
-	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache\",g" \
-		$(CCACHE_DIR)/execute.c
-	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
-		$(CCACHE_DIR)/ccache.c
-	mkdir -p $(CCACHE_DIR)/cache	
-	touch $@
-
-$(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.patched
+$(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.unpacked
 	mkdir -p $(CCACHE_DIR)/
 	( cd $(CCACHE_DIR); rm -f config.cache; \
 		CC=$(HOSTCC) \

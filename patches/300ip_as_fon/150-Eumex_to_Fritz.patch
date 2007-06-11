@@ -1,0 +1,414 @@
+diff -Naur usr/www/all/html/de/fon/routing.js usr/www/all/html/de/fon/routing.js
+--- usr/www/all/html/de/fon/routing.js	2007-05-01 20:37:09.000000000 +0200
++++ usr/www/all/html/de/fon/routing.js	2007-05-06 23:37:12.000000000 +0200
+@@ -14,6 +14,7 @@
+ <script type="text/javascript">
+ <? setvariable var:showLCRdata 0 ?>
+ <? if eq $var:OEM avm `<? setvariable var:showLCRdata 1 ?>` ?>
++<? if eq $var:OEM tcom `<? setvariable var:showLCRdata 1 ?>` ?>
+ <? if eq $var:OEM avme `<? setvariable var:showLCRdata 1 ?>` ?>
+ <? if eq $var:OEM freenet `<? setvariable var:showLCRdata 1 ?>` ?>
+ <? include ../html/$var:lang/js/val.js ?>
+diff -Naur usr/www/all/html/de/fon/sip1.html usr/www/all/html/de/fon/sip1.html
+--- usr/www/all/html/de/fon/sip1.html	2007-05-01 20:37:08.000000000 +0200
++++ usr/www/all/html/de/fon/sip1.html	2007-05-06 23:38:38.000000000 +0200
+@@ -62,6 +62,20 @@
+ 						<option value="TOnline">$var:Text12</option>
+ 						<option value="Webde">$var:Text11</option>
+ `?>
++<? if eq $var:OEM tcom `
++						<option value="1u1">$var:Text4</option>
++						<option value="AOL">$var:Text9</option>
++						<option value="Arcor">$var:Text7</option>
++						<option value="Dus">$var:Text13</option>
++						<option value="Freenet">$var:Text8</option>
++						<option value="GMX">$var:Text5</option>
++						<option value="Inode">$var:Text55</option>
++						<option value="SuP">$var:Text6</option>
++						<option value="Sipgate">$var:Text10</option>
++						<option value="Strato">$var:Text44</option>
++						<option value="TOnline">$var:Text12</option>
++						<option value="Webde">$var:Text11</option>
++`?>
+ 						<option value="Sonst">$var:Text14</option>
+ 					</select></td>
+ 				</tr>
+diff -Naur usr/www/all/html/de/fon/sip1.js usr/www/all/html/de/fon/sip1.js
+--- usr/www/all/html/de/fon/sip1.js	2007-05-01 20:37:09.000000000 +0200
++++ usr/www/all/html/de/fon/sip1.js	2007-05-06 23:40:58.000000000 +0200
+@@ -1,5 +1,6 @@
+ <? setvariable var:showtcom 0 ?>
+ <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:showtcom 1 ?>' ?>
+ <? if eq $var:OEM aol '<? setvariable var:showtcom 1 ?>' ?>
+ <!--		../fon/sip.js		-->
+ <style type="text/css">
+@@ -533,6 +534,7 @@
+ 	switch (t) {
+ 		case "aol":
+ 		case "avm":
++		case "tcom":
+ 		case "other":
+ <? if eq $var:OEM avme `
+ 			jslSetValue("uiPostAKN", "0"); break;
+diff -Naur usr/www/all/html/de/fon/sipoptionen.js usr/www/all/html/de/fon/sipoptionen.js
+--- usr/www/all/html/de/fon/sipoptionen.js	2007-05-01 20:37:09.000000000 +0200
++++ usr/www/all/html/de/fon/sipoptionen.js	2007-05-06 23:47:37.000000000 +0200
+@@ -88,11 +88,9 @@
+ 			kompress = jslGetValue("uiPostLowCodecs")=="1" ? 2 : 1;
+ 		}
+ 		OnKompress(kompress);
+-		if (g_Oem == "avm" || g_Oem == "avme") {
+-			if (g_Oem == "avme") {
+-				jslDisplay("uiEnum", true);
+-				jslSetChecked("uiViewEnum", jslGetValue("uiPostEnum") == "1");
+-			}
++		if (g_Oem == "avm" || g_Oem == "tcom") {
++			jslDisplay("uiEnum", true);
++			jslSetChecked("uiViewEnum", jslGetValue("uiPostEnum") == "1");
+ 			jslDisplay("uiVcc", true);
+ 			jslSetChecked("uiViewUseVcc",jslGetValue("uiPostUseSepVcc")=="1");
+ 			var encaps = jslGetValue("uiPostEncaps");
+@@ -167,11 +165,9 @@
+ 		jslSetValue("uiPostLowCodecs", jslGetChecked("uiViewDynLowCodec") ? "1" : "0");
+ 		jslEnable("uiPostDynCodec");
+ 		jslEnable("uiPostLowCodecs");
+-		if (g_Oem == "avm" || g_Oem == "avme") {
+-			if (g_Oem == "avme") {
+-				jslSetValue("uiPostEnum", jslGetChecked("uiViewEnum") ? "1":"0");
+-				jslEnable("uiPostEnum");
+-			}
++		if (g_Oem == "avm" || g_Oem == "tcom") {
++			jslSetValue("uiPostEnum", jslGetChecked("uiViewEnum") ? "1":"0");
++			jslEnable("uiPostEnum");
+ 			jslSetValue("uiPostUseSepVcc", jslGetChecked("uiViewUseVcc") ? "1" : "0");
+ 			jslEnable("uiPostUseSepVcc");
+ 			if (jslGetChecked("uiViewUseVcc")) {
+diff -Naur usr/www/all/html/de/internet/authform.html usr/www/all/html/de/internet/authform.html
+--- usr/www/all/html/de/internet/authform.html	2007-05-01 20:37:09.000000000 +0200
++++ usr/www/all/html/de/internet/authform.html	2007-05-06 23:17:32.000000000 +0200
+@@ -13,6 +13,7 @@
+ <? if eq $var:OEM freenet `<? setvariable var:allprovider 1 ?>` ?>
+ <? if eq $var:OEM aol `<? setvariable var:allprovider 1 ?>` ?>
+ <? if eq $var:OEM avm `<? setvariable var:allprovider 1 ?>` ?>
++<? if eq $var:OEM tcom `<? setvariable var:allprovider 1 ?>` ?>
+ <? if eq $var:allprovider 1 `
+ 		<option value="1u1">$var:afTxt02</option>
+ 		<option value="AOL">$var:afTxt06</option>
+diff -Naur usr/www/all/html/de/internet/pp_user.html usr/www/all/html/de/internet/pp_user.html
+--- usr/www/all/html/de/internet/pp_user.html	2007-05-01 20:37:09.000000000 +0200
++++ usr/www/all/html/de/internet/pp_user.html	2007-05-06 23:08:50.000000000 +0200
+@@ -3,7 +3,7 @@
+ <? include ../html/config.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "FRITZ!Box_Eumex" ?>' ?>
+ <? include ../html/$var:lang/internet/pp_user.inc ?>
+ <head>
+ <title><? echo $var:txt00 ?></title>
+diff -Naur usr/www/all/html/de/internet/pp_wanbridge.html usr/www/all/html/de/internet/pp_wanbridge.html
+--- usr/www/all/html/de/internet/pp_wanbridge.html	2007-05-01 20:37:09.000000000 +0200
++++ usr/www/all/html/de/internet/pp_wanbridge.html	2007-05-06 23:09:08.000000000 +0200
+@@ -3,7 +3,7 @@
+ <? include ../html/config.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "FRITZ!Box_Eumex" ?>' ?>
+ <? include ../html/$var:lang/internet/pp_wanbridge.inc ?>
+ <head>
+ <title><? echo $var:txt00 ?></title>
+diff -Naur usr/www/all/html/de/menus/menuwatch.html usr/www/all/html/de/menus/menuwatch.html
+--- usr/www/all/html/de/menus/menuwatch.html	2007-05-01 20:37:09.000000000 +0200
++++ usr/www/all/html/de/menus/menuwatch.html	2007-05-06 23:08:06.000000000 +0200
+@@ -5,7 +5,7 @@
+ <? include ../html/$var:lang/menus/menu2.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "FRIZT!Box_Eumex" ?>' ?>
+ <head>
+ <title><? echo $var:BoxName ?></title>
+ <meta http-equiv=content-type content="text/html; charset=iso-8859-1">
+diff -Naur usr/www/all/html/de/system/extended.js usr/www/all/html/de/system/extended.js
+--- usr/www/all/html/de/system/extended.js	2007-05-01 20:37:09.000000000 +0200
++++ usr/www/all/html/de/system/extended.js	2007-05-06 23:28:56.000000000 +0200
+@@ -13,6 +13,7 @@
+ 	jslSetChecked("uiViewExpertMode", jslGetValue("uiPostExpertMode") == "1");
+ <? setvariable var:ShowUsePstn 0 ?>
+ <? if eq $var:OEM avm `<? setvariable var:ShowUsePstn 1 ?>` ?>
++<? if eq $var:OEM tcom `<? setvariable var:ShowUsePstn 1 ?>` ?>
+ <? if eq $var:OEM freenet `<? setvariable var:ShowUsePstn 1 ?>` ?>
+ <? if eq $var:OEM 1und1 `<? setvariable var:ShowUsePstn 1 ?>` ?>
+ <? if eq $var:ShowUsePstn 1 `
+diff -Naur usr/www/all/html/de/first/firstA.html usr/www/all/html/de/first/firstA.html
+--- usr/www/all/html/de/first/firstA.html	2007-05-07 00:24:17.000000000 +0200
++++ usr/www/all/html/de/first/firstA.html	2007-05-07 00:30:37.000000000 +0200
+@@ -55,6 +55,17 @@
+ 						<option value="TOnline">$var:Text14</option>
+ 						<option value="Webde">$var:Text17</option>
+ ` ?>
++<? if eq $var:OEM tcom `
++						<option value="1u1">$var:Text9</option>
++						<option value="AOL">$var:Text15</option>
++						<option value="Arcor">$var:Text12</option>
++						<option value="Freenet">$var:Text13</option>
++						<option value="GMX">$var:Text10</option>
++						<option value="SuP">$var:Text11</option>
++						<option value="Sipgate">$var:Text16</option>
++						<option value="TOnline">$var:Text14</option>
++						<option value="Webde">$var:Text17</option>
++` ?>
+ 						<option value="Sonst"><? echo $var:Text18 ?></option>
+ 					</select>
+ 				</td>
+diff -Naur usr/www/all/html/de/first/firstA.js usr/www/all/html/de/first/firstA.js
+--- usr/www/all/html/de/first/firstA.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/firstA.js	2007-05-07 00:33:16.000000000 +0200
+@@ -1,5 +1,6 @@
+ <? setvariable var:showtcom 0 ?>
+ <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:showtcom 1 ?>' ?>
+ <? if eq $var:OEM aol '<? setvariable var:showtcom 1 ?>' ?>
+ <!--		../first/firstA.js		-->
+ <style type="text/css">
+@@ -36,6 +37,10 @@
+ 		} else if (registrar == "reg.aolphone.aol.de") {
+ 			provider = "AOL";
+ ' ?>
++<? if eq $var:OEM tcom '
++		} else if (registrar == "reg.aolphone.aol.de") {
++			provider = "AOL";
++' ?>
+ 		} else if (registrar == "call.arcor.de") {
+ 			provider = "Arcor";
+ 		} else if (registrar == "freenet.de") {
+diff -Naur usr/www/all/html/de/first/firstC1.js usr/www/all/html/de/first/firstC1.js
+--- usr/www/all/html/de/first/firstC1.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/firstC1.js	2007-05-07 00:38:06.000000000 +0200
+@@ -1,5 +1,6 @@
+ <? setvariable var:showtcom 0 ?>
+ <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:showtcom 1 ?>' ?>
+ <? if eq $var:OEM aol '<? setvariable var:showtcom 1 ?>' ?>
+ <!--		../first/firstC1.js		-->
+ <style type="text/css">
+diff -Naur usr/www/all/html/de/first/firstC2.js usr/www/all/html/de/first/firstC2.js
+--- usr/www/all/html/de/first/firstC2.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/firstC2.js	2007-05-07 00:41:22.000000000 +0200
+@@ -23,6 +23,10 @@
+ var g_SipLabelTextRufnr_TOnline		= "Internet-Telefonnummer:";
+ var g_SipLabelTextUsername_TOnline	= "eMail-Adresse:";
+ ' ?>
++<? if eq $var:OEM tcom '
++var g_SipLabelTextRufnr_TOnline		= "Internet-Telefonnummer:";
++var g_SipLabelTextUsername_TOnline	= "eMail-Adresse:";
++' ?>
+ var g_SipLabelTextRufnr_Webde		= "Internetrufnummer:";
+ var g_SipLabelTextUsername_Webde	= "Benutzername:";
+ var g_SipLabelTextRufnr_Sonst		= "Internetrufnummer:";
+@@ -71,6 +75,13 @@
+ 		SetSpanText("LabelUserName", g_SipLabelTextUsername_TOnline);
+ 		jslDisplay("uiOrtvorwahl", true);
+ ' ?>
++<? if eq $var:OEM tcom '
++	} else if (provider == "TOnline") {
++		username = jslGetValue("uiSipUsername");
++		SetSpanText("LabelRufnr", g_SipLabelTextRufnr_TOnline);
++		SetSpanText("LabelUserName", g_SipLabelTextUsername_TOnline);
++		jslDisplay("uiOrtvorwahl", true);
++' ?>
+ 	} else if (provider == "Webde") {
+ 		username = jslGetValue("uiSipUsername");
+ 		SetSpanText("LabelRufnr", g_SipLabelTextRufnr_Webde);
+diff -Naur usr/www/all/html/de/first/firstC3.js usr/www/all/html/de/first/firstC3.js
+--- usr/www/all/html/de/first/firstC3.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/firstC3.js	2007-05-07 00:42:38.000000000 +0200
+@@ -33,6 +33,10 @@
+ var g_SipLabelTextRufnr_TOnline		= "Internet-Telefonnummer:";
+ var g_SipLabelTextUsername_TOnline	= "eMail-Adresse:";
+ ' ?>
++<? if eq $var:OEM tcom '
++var g_SipLabelTextRufnr_TOnline		= "Internet-Telefonnummer:";
++var g_SipLabelTextUsername_TOnline	= "eMail-Adresse:";
++' ?>
+ var g_SipLabelTextRufnr_Webde		= "Internetrufnummer:";
+ var g_SipLabelTextUsername_Webde	= "Benutzername:";
+ var g_SipLabelTextRufnr_Sonst		= "Internetrufnummer:";
+@@ -101,6 +105,15 @@
+ 			jslDisplay("uiOrtvorwahl", true);
+ 			break;
+ ' ?>
++<? if eq $var:OEM tcom '
++		case "TOnline":
++			username = jslGetValue("uiSipUsername");
++			registrar = "tel.t-online.de";
++			SetSpanText("LabelRufnr", g_SipLabelTextRufnr_TOnline);
++			SetSpanText("LabelUserName", g_SipLabelTextUsername_TOnline);
++			jslDisplay("uiOrtvorwahl", true);
++			break;
++' ?>
+ 		case "Webde":
+ 			username = jslGetValue("uiSipUsername");
+ 			registrar = "sip.web.de";
+diff -Naur usr/www/all/html/de/first/firstD.js usr/www/all/html/de/first/firstD.js
+--- usr/www/all/html/de/first/firstD.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/firstD.js	2007-05-07 00:44:13.000000000 +0200
+@@ -41,6 +41,10 @@
+ var g_SipLabelTextRufnr_TOnline		= "Internet-Telefonnummer:";
+ var g_SipLabelTextUsername_TOnline	= "eMail-Adresse:";
+ ' ?>
++<? if eq $var:OEM tcom '
++var g_SipLabelTextRufnr_TOnline		= "Internet-Telefonnummer:";
++var g_SipLabelTextUsername_TOnline	= "eMail-Adresse:";
++' ?>
+ var g_PppLabelUsername_Webde		= "DSL-Benutzername:";
+ var g_SipLabelTextRufnr_Webde		= "Internetrufnummer:";
+ var g_SipLabelTextUsername_Webde	= "Benutzername:";
+@@ -132,6 +136,13 @@
+ 			SetSpanText("LabelSipUserName", g_SipLabelTextUsername_TOnline);
+ 			jslDisplay("uiOrtvorwahl", true);
+ ' ?>
++<? if eq $var:OEM tcom '
++		} else if (provider == "TOnline") {
++			username = jslGetValue("uiSipUsername");
++			SetSpanText("LabelSipVoIPNumber", g_SipLabelTextRufnr_TOnline);
++			SetSpanText("LabelSipUserName", g_SipLabelTextUsername_TOnline);
++			jslDisplay("uiOrtvorwahl", true);
++' ?>
+ 		} else if (provider == "Webde") {
+ 			username = jslGetValue("uiSipUsername");
+ 			SetSpanText("LabelSipVoIPNumber", g_SipLabelTextRufnr_Webde);
+diff -Naur usr/www/all/html/de/first/first_ISP_3.js usr/www/all/html/de/first/first_ISP_3.js
+--- usr/www/all/html/de/first/first_ISP_3.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/first_ISP_3.js	2007-05-07 00:45:29.000000000 +0200
+@@ -1,5 +1,6 @@
+ <? setvariable var:showpustefix 0 ?>
+ <? if eq $var:OEM avm '<? setvariable var:showpustefix 1 ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:showpustefix 1 ?>' ?>
+ <? if eq $var:OEM 1und1 '<? setvariable var:showpustefix 1 ?>' ?>
+ <!-- ../first/first_ISP_3.js -->
+ <style type="text/css">
+diff -Naur usr/www/all/html/de/first/first_Sip_1.html usr/www/all/html/de/first/first_Sip_1.html
+--- usr/www/all/html/de/first/first_Sip_1.html	2007-05-07 00:24:17.000000000 +0200
++++ usr/www/all/html/de/first/first_Sip_1.html	2007-05-07 00:47:25.000000000 +0200
+@@ -58,6 +58,20 @@
+ 					<option value="TOnline">$var:Text12</option>
+ 					<option value="Webde">$var:Text11</option>
+ ` ?>
++<? if eq $var:OEM tcom `
++					<option value="1u1">$var:Text4</option>
++					<option value="AOL">$var:Text9</option>
++					<option value="Arcor">$var:Text7</option>
++					<option value="Dus">$var:Text13</option>
++					<option value="Freenet">$var:Text8</option>
++					<option value="GMX">$var:Text5</option>
++					<option value="Inode">$var:Text30</option>
++					<option value="SuP">$var:Text6</option>
++					<option value="Sipgate">$var:Text10</option>
++					<option value="Strato">$var:Text28</option>
++					<option value="TOnline">$var:Text12</option>
++					<option value="Webde">$var:Text11</option>
++` ?>
+ 					<option value="Sonst"><? echo $var:Text14 ?></option>
+ 				</select>
+ 			</p>
+diff -Naur usr/www/all/html/de/first/first_Sip_1.js usr/www/all/html/de/first/first_Sip_1.js
+--- usr/www/all/html/de/first/first_Sip_1.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/first_Sip_1.js	2007-05-07 00:48:45.000000000 +0200
+@@ -1,5 +1,6 @@
+ <? setvariable var:showtcom 0 ?>
+ <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:showtcom 1 ?>' ?>
+ <? if eq $var:OEM aol '<? setvariable var:showtcom 1 ?>' ?>
+ <!--		../first/first_Sip_1.js		-->
+ <style type="text/css">
+@@ -128,6 +129,10 @@
+ 		provider = jslGetValue("uiPppProvider");
+ 		jslDisplay( "uiShowProvider", true);
+ ` ?>
++<? if eq $var:OEM tcom `
++		provider = jslGetValue("uiPppProvider");
++		jslDisplay( "uiShowProvider", true);
++` ?>
+ 	} else {
+ 		jslCopyValue("uiView1u1Username", "uiSipRufnr");
+ 		jslSetValue("uiViewArcorUsername", ArcorUsername());
+diff -Naur usr/www/all/html/de/first/first_Sip_2.js usr/www/all/html/de/first/first_Sip_2.js
+--- usr/www/all/html/de/first/first_Sip_2.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/first_Sip_2.js	2007-05-07 00:50:22.000000000 +0200
+@@ -25,6 +25,10 @@
+ var g_txtRufnr_TOnline		= "Internet-Telefonnummer:";
+ var g_txtUsername_TOnline	= "eMail-Adresse:";
+ ' ?>
++<? if eq $var:OEM tcom '
++var g_txtRufnr_TOnline		= "Internet-Telefonnummer:";
++var g_txtUsername_TOnline	= "eMail-Adresse:";
++' ?>
+ var g_txtRufnr_Webde		= "Internetrufnummer:";
+ var g_txtUsername_Webde	= "Benutzername:";
+ var g_txtRufnr_Dus		= "DUS.net-Rufnummer:";
+@@ -74,6 +78,12 @@
+ 		SetSpanText("LabelRufnr", g_txtRufnr_TOnline);
+ 		SetSpanText("LabelUserName", g_txtUsername_TOnline);
+ ' ?>
++<? if eq $var:OEM tcom '
++	} else if (provider == "TOnline") {
++		username = jslGetValue("uiSipUsername");
++		SetSpanText("LabelRufnr", g_txtRufnr_TOnline);
++		SetSpanText("LabelUserName", g_txtUsername_TOnline);
++' ?>
+ 	} else if (provider == "Webde") {
+ 		username = jslGetValue("uiSipUsername");
+ 		SetSpanText("LabelRufnr", g_txtRufnr_Webde);
+@@ -137,6 +147,7 @@
+ 	switch (jslGetValue("uiSipRegType")) {
+ 		case "aol":
+ 		case "avm":
++		case "tcom":
+ 		case "other":
+ <? if eq $var:OEM avme `
+ 			jslSetValue("uiPostAKN", "0"); break;
+diff -Naur usr/www/all/html/de/first/first_Sip_3.js usr/www/all/html/de/first/first_Sip_3.js
+--- usr/www/all/html/de/first/first_Sip_3.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/first_Sip_3.js	2007-05-07 00:51:22.000000000 +0200
+@@ -30,6 +30,10 @@
+ var g_txtRufnr_TOnline		= "Internet-Telefonnummer:";
+ var g_txtUsername_TOnline	= "eMail-Adresse:";
+ ' ?>
++<? if eq $var:OEM tcom '
++var g_txtRufnr_TOnline		= "Internet-Telefonnummer:";
++var g_txtUsername_TOnline	= "eMail-Adresse:";
++' ?>
+ var g_txtRufnr_Webde			= "Internetrufnummer:";
+ var g_txtUsername_Webde	= "Benutzername:";
+ var g_txtRufnr_Dus		= "DUS.net-Rufnummer:";
+@@ -89,6 +93,13 @@
+ 		SetSpanText("LabelRufnr", g_txtRufnr_TOnline);
+ 		SetSpanText("LabelUserName", g_txtUsername_TOnline);
+ ' ?>
++<? if eq $var:OEM tcom '
++	} else if (provider == "TOnline") {
++		username = jslGetValue("uiSipUsername");
++		registrar = "tel.t-online.de";
++		SetSpanText("LabelRufnr", g_txtRufnr_TOnline);
++		SetSpanText("LabelUserName", g_txtUsername_TOnline);
++' ?>
+ 	} else if (provider == "Webde") {
+ 		username = jslGetValue("uiSipUsername");
+ 		registrar = "sip.web.de";
+diff -Naur usr/www/all/html/de/first/first_Start_Sip.js usr/www/all/html/de/first/first_Start_Sip.js
+--- usr/www/all/html/de/first/first_Start_Sip.js	2007-05-07 00:24:18.000000000 +0200
++++ usr/www/all/html/de/first/first_Start_Sip.js	2007-05-07 00:52:25.000000000 +0200
+@@ -1,8 +1,10 @@
+ <? setvariable var:showtcom 0 ?>
+ <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:showtcom 1 ?>' ?>
+ <? if eq $var:OEM aol '<? setvariable var:showtcom 1 ?>' ?>
+ <? setvariable var:showpustefix 0 ?>
+ <? if eq $var:OEM avm '<? setvariable var:showpustefix 1 ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:showpustefix 1 ?>' ?>
+ <? if eq $var:OEM 1und1 '<? setvariable var:showpustefix 1 ?>' ?>
+ <!---			../first/first_Start_Sip.js						-->
+ <style type="text/css">

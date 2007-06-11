@@ -1,0 +1,22 @@
+--- var/install.orig	2006-03-04 03:19:06.495011184 +0100
++++ var/install	2006-03-04 03:20:09.632412840 +0100
+@@ -222,8 +222,8 @@
+ # Fritz_Box_FON
+ if [ -z "$DISABLE_Fritz_Box_FON" ] ; then
+    echo testing acceptance for device Fritz_Box_FON ...
+-   if /etc/version --install=ar7_4MB_2eth_2ab_isdn_pots_05804 ; then
+-       echo device has installtype ar7_4MB_2eth_2ab_isdn_pots_05804
++   if /etc/version --install=ar7_4MB_2eth_2ab_isdn_pots_05804 || /etc/version --install=ar7_4MB_1eth_3ab_isdn_pots_63151 ; then
++       echo device has installtype ar7_4MB_2eth_2ab_isdn_pots_05804 or ar7_4MB_1eth_3ab_isdn_pots_63151
+        # passt der ANNEX ?
+        accept_annex=B
+        echo assumed ANNEX ${accept_annex} -- found ANNEX "${ANNEX}"
+@@ -231,7 +231,7 @@
+            # passt der OEM ?
+            if [ ! -z "${OEM}" ] ; then
+                oem_found=0
+-               for i in  avm freenet 1und1 aol ; do
++               for i in  avm freenet 1und1 aol tcom ; do
+                    if [ "$i" = "${OEM}" ] ; then
+                        echo "OK - OEM ${OEM} is supported"
+                        oem_found=1
