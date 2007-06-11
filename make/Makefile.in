@@ -58,11 +58,7 @@ TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section=.comment
 
 TARGET_PATH:=$(TARGET_MAKE_PATH):/bin:/sbin:/usr/bin:/usr/sbin
 TARGET_CONFIGURE_OPTS:= \
-ifeq ($(strip $(DS_TARGET_CCACHE)),y)
-	CCACHE_PATH="$(TARGET_MAKE_PATH)/../bin-ccache" \
-	CCACHE_DIR="$(TARGET_MAKE_PATH)/../var/cache" \
-endif 
-	PATH="$(TARGET_PATH)" 
+	PATH="$(TARGET_PATH)"
 	#AR="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar" \
 	#AS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as" \
 	#LD="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld" \
@@ -71,6 +67,7 @@ endif
 	#GCC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc" \
 	#CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++" \
 	#RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
+
 
 DL_SITE:=$(strip $(subst ",, $(DS_DL_SITE)))
 DL_SOURCE:=$(strip $(subst ",, $(DS_DL_SOURCE)))
