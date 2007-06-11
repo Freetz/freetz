@@ -3,14 +3,45 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
+update_inetd() {
+	if [ -e "/etc/default.inetd/inetd.cfg" ]; then
+		if [ -x "/etc/init.d/rc.$1" ]; then
+			status=$(/etc/init.d/rc.$1 status)
+			if [ "running" = "$2" -a "inetd" = "$status" ]; then
+			echo
+				/etc/init.d/rc.$1 stop
+				/usr/bin/modinetd --nosave $1
+			echo
+			elif [ "inetd" = "$2" -a "inetd" != "$status" ]; then
+				echo
+				/usr/bin/modinetd --nosave $1
+				/etc/init.d/rc.$1 start
+				echo
+			elif [ "inetd" = "$2" -o "inetd" = "$status" ]; then
+        	                echo
+                	        /usr/bin/modinetd --nosave $1
+                        	echo
+			fi
+                fi
+        fi
+}
+
 save_flash() {
 	if modsave flash; then
-		if [ -x "/mod/etc/init.d/rc.$1" ]; then
-			if [ "$(/mod/etc/init.d/rc.$1 status)" = "running" ]; then
+		if [ -x "/etc/init.d/rc.$1" ]; then
+			if [ "running" = "$2" -o "running" = "$status" ]; then
 				echo
-				/mod/etc/init.d/rc.$1 restart
+				/etc/init.d/rc.$1 restart
 			fi
 		fi
+	fi
+}
+
+rc_status() {
+	if [ -x "/etc/init.d/rc.$1" ]; then
+	echo "$(/etc/init.d/rc.$1 status)"
+	else
+		echo ""
 	fi
 }
 
@@ -24,11 +55,13 @@ form="$(echo "$QUERY_STRING" | sed -e 's/^.*form=//' -e 's/&.*$//' -e 's/\.//g')
 script='status.cgi';
 package=''
 file_id=''
+oldstatus1=''
+oldstatus2=''
 
 case "$form" in
 	pkg_*)
 		package="${form#pkg_}"
-		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
+		if [ -r "/etc/default.$package/$package.cfg" ]; then
 			if [ "$package" = "mod" ]; then script='settings.cgi'; else script="pkgconf.cgi"; fi
 			prefix="$(echo "$package" | tr 'a-z\-' 'A-Z_')_"
 
@@ -38,6 +71,13 @@ case "$form" in
 				delim=':'
 			done
 
+			if [ "mod" = "$package" ]; then
+				oldstatus1="$(rc_status telnetd)"
+				oldstatus2="$(rc_status webcfg)"
+			else
+				oldstatus1="$(/etc/init.d/rc.$package status)"
+			fi
+
 			echo -n 'Saving settings...'
 			modcgi $vars $package | modconf set $package -
 			echo 'done.'
@@ -46,19 +86,30 @@ case "$form" in
 			modconf save $package
 			echo 'done.'
 
-			save_flash $package
+			if [ "mod" = "$package" ]; then
+				update_inetd telnetd $oldstatus1
+				update_inetd webcfg $oldstatus2
+				oldstatus1=''
+			else
+				update_inetd $package $oldstatus1
+			fi
+			save_flash $package $oldstatus1
 		fi
 		;;
 	def_*)
 		package="${form#def_}"
-		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
+		if [ -r "/etc/default.$package/$package.cfg" ]; then
 			if [ "$package" = "mod" ]; then script='settings.cgi'; else script="pkgconf.cgi"; fi
+
+			if [ "mod" != "$package" ]; then
+				oldstatus1="$(/etc/init.d/rc.$package status)"
+			fi
 
 			echo -n 'Restoring defaults...'
 			modconf default $package
 			echo 'done.'
 
-			save_flash $package
+			save_flash $package $oldstatus1
 		fi
 		;;
 	file_*)

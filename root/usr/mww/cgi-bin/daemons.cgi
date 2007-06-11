@@ -23,6 +23,24 @@ stat_line() {
 			color="#800000"
 			start=1; stop=0
 			;;
+		inetd)
+			case "$inetd_status" in
+				running)
+					color="#008000"
+					;;
+				stopped)
+					color="#800000"
+					;;
+				none)
+					color="#808080"
+					inetd_status='<i>none</i>'
+					;;
+				*)	color="#000000"
+					;;
+			esac
+			status="$inetd_status ($status)"
+			start=0; stop=0;
+			;;
 		none)
 			status='<i>none</i>'
 			color="#808080"
@@ -91,6 +109,15 @@ stat_dynamic() {
 cgi_begin '$(lang de:"Dienste" en:"Services")' 'daemons'
 
 view="$(echo "$QUERY_STRING" | sed -e 's/^.*view=//' -e 's/&.*$//' -e 's/\.//g')"
+
+if [ -e "/etc/default.inetd/inetd.cfg" ]; then
+	inetd=true
+else
+	inetd=false
+fi
+if [ "true" == "$inetd" ]; then
+	inetd_status="$(/etc/init.d/rc.inetd status 2> /dev/null)"
+fi
 
 case "$view" in
 	"")

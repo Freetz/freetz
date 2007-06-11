@@ -6,7 +6,7 @@ export LD_LIBRARY_PATH=/mod/lib
 DAEMON=httpd
 
 case "$1" in
-	""|load|start|restart)
+	""|load|start|restart|status)
 		if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
@@ -16,11 +16,7 @@ case "$1" in
 		;;
 esac
 
-pidfile() {
-	ps | grep " $DAEMON -p $MOD_HTTPD_PORT" | grep -v grep | sed -r 's/ *([0-9]+).*/\1/' | head -1 > /var/run/$DAEMON.pid
-}
-
-start() {
+config() {
 	if [ -z "$MOD_HTTPD_PASSWD" ]; then
 		homedir=/usr/nww/
 		echo > /mod/etc/$DAEMON.conf
@@ -38,6 +34,14 @@ start() {
 			fi
 		) > /mod/etc/$DAEMON.conf
 	fi
+}
+
+pidfile() {
+	ps | grep " $DAEMON -p $MOD_HTTPD_PORT" | grep -v grep | sed -r 's/ *([0-9]+).*/\1/' | head -1 > /var/run/$DAEMON.pid
+}
+
+start() {
+	config
 
 	echo -n 'Starting webinterface...'
 	$DAEMON -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "DS-MOD (user:admin)"
@@ -76,8 +80,13 @@ stop() {
 
 case "$1" in
         ""|load)
+		config
 		if [ "$MOD_HTTPD" != "yes" ]; then
+			if [ "$MOD_HTTPD" != "inetd" ]; then
 			echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+			fi
 			exit 1
 		fi
 
@@ -98,10 +107,14 @@ case "$1" in
 		start
 		;;
 	status)
+		if [ "$MOD_HTTPD" == "inetd" ]; then
+			echo 'inetd'
+		else
 		if [ -s "/var/run/$DAEMON.pid" ]; then
 			echo 'running'
 		else
 			echo 'stopped'
+		fi
 		fi
 		;;
 	*)

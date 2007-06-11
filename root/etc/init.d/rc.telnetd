@@ -6,7 +6,7 @@ export LD_LIBRARY_PATH=/mod/lib
 DAEMON=telnetd
 
 case "$1" in
-        ""|load|start|restart)
+        ""|load|start|restart|status)
                 if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
                         echo "Error[$DAEMON]: not configured" 1>&2
                         exit 1
@@ -43,7 +43,11 @@ stop() {
 case "$1" in
 	""|load)
 		if [ "$MOD_TELNETD" != "yes" ]; then
+			if [ "$MOD_TELNETD" != "inetd" ]; then
 			echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+			fi
 			exit 1
 		fi
 
@@ -64,10 +68,14 @@ case "$1" in
 		start
 		;;
 	status)
+		if [ "$MOD_TELNETD" == "inetd" ]; then
+			echo 'inetd'
+		else
 		if [ -z "$(pidof "$DAEMON")" ]; then
 			echo 'stopped'
 		else
 			echo 'running'
+		fi
 		fi
 		;;
 	*)

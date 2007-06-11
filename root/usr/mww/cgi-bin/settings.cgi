@@ -6,13 +6,16 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 [ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
 
+inetd=''
+[ -e "/etc/default.inetd/inetd.cfg" ] && inetd='true'
+
 crond_auto_chk=''; crond_man_chk=''
-telnetd_auto_chk=''; telnetd_man_chk=''
-httpd_auto_chk=''; httpd_man_chk=''
+telnetd_auto_chk=''; telnetd_man_chk=''; telnet_inetd_chk='';
+httpd_auto_chk=''; httpd_man_chk=''; httpd_inetd_chk='';
 
 if [ "$MOD_CROND" = "yes" ]; then crond_auto_chk=' checked'; else crond_man_chk=' checked'; fi
-if [ "$MOD_TELNETD" = "yes" ]; then telnetd_auto_chk=' checked'; else telnetd_man_chk=' checked'; fi
-if [ "$MOD_HTTPD" = "yes" ]; then httpd_auto_chk=' checked'; else httpd_man_chk=' checked'; fi
+case "$MOD_TELNETD" in yes) telnetd_auto_chk=' checked';; inetd) telnetd_inetd_chk=' checked';; *) telnetd_man_chk=' checked';; esac
+case "$MOD_HTTPD" in yes) httpd_auto_chk=' checked';; inetd) httpd_inetd_chk=' checked';; *) httpd_man_chk=' checked';; esac
 
 cgi_begin '$(lang de:"Einstellungen" en:"Settings")' 'settings'
 frm_begin 'mod'
@@ -34,6 +37,13 @@ cat << EOF
 <p>
 <input id="t1" type="radio" name="telnetd" value="yes"$telnetd_auto_chk><label for="t1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="t2" type="radio" name="telnetd" value="no"$telnetd_man_chk><label for="t2"> $(lang de:"Manuell" en:"Manual")</label>
+EOF
+if [ "true" == $inetd ]; then
+cat << EOF
+<input id="t3" type="radio" name="telnetd" value="inetd"$telnetd_inetd_chk><label for="t3"> $(lang de:"Inetd" en:"Inetd")</label>
+EOF
+fi
+cat << EOF
 </p>
 EOF
 
@@ -45,6 +55,13 @@ cat << EOF
 <p>
 <input id="w1" type="radio" name="httpd" value="yes"$httpd_auto_chk><label for="w1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="w2" type="radio" name="httpd" value="no"$httpd_man_chk><label for="w2"> $(lang de:"Manuell" en:"Manual")</label>
+EOF
+if [ "true" == $inetd ]; then
+cat << EOF
+<input id="w3" type="radio" name="httpd" value="inetd"$httpd_inetd_chk><label for="w3"> $(lang de:"Inetd" en:"Inetd")</label>
+EOF
+fi
+cat << EOF
 </p>
 <h2>$(lang de:"Port der Weboberfl&auml;che (erfordert Neustart)" en:"Port of webinterface (restart required)")</h2>
 <p>Port: <input type="text" name="httpd_port" size="5" maxlength="5" value="$(httpd -e "$MOD_HTTPD_PORT")"></p>
