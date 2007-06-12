@@ -6,7 +6,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 auto_chk=''; man_chk=''
 pwdauth_yes_chk=''; pwdauth_no_chk=''
 
-if [ "$DROPBEAR_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+case "$DROPBEAR_ENABLED" in yes) auto_chk=' checked';; inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
 if [ "$DROPBEAR_PWDAUTH" = "yes" ]; then pwdauth_yes_chk=' checked'; else pwdauth_no_chk=' checked'; fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
@@ -15,6 +15,13 @@ cat << EOF
 <p>
 <input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
+EOF
+if [ -e "/etc/default.inetd/inetd.cfg" ]; then
+cat << EOF
+<input id="e3" type="radio" name="enabled" value="inetd"$inetd_chk><label for="e3"> $(lang de:"Inetd" en:"Inetd")</label>
+EOF
+fi
+cat << EOF
 </p>
 EOF
 
