@@ -658,8 +658,6 @@ config DS_PATCH_USBSTORAGE
 
 comment "Mod ------------------------------------"
 
-source make/busybox/Config.in
-
 choice
 
 	prompt "Language"
@@ -900,6 +898,13 @@ choice
 		bool "65536"
 
 endchoice
+
+menu "BusyBox options"
+depends on DS_REPLACE_BUSYBOX
+
+source make/busybox/Config.in
+
+endmenu
 
 menu "Kernel modules"
 
