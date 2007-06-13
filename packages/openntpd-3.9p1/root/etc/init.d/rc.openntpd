@@ -25,8 +25,11 @@ start() {
 
 	if [ ! -e "/mod/home/ntp" ]; then
 		mkdir -p /mod/home/ntp
-		chown ntp /mod/home/ntp -R
 	fi
+
+	# Setting permissions
+	chown root /mod/home/ntp  -R
+	chmod 0700 /mod/home/root -R
 
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
