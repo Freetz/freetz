@@ -6,7 +6,7 @@ export LD_LIBRARY_PATH=/mod/lib
 DAEMON=dropbear
 
 case "$1" in
-	""|load|start|restart)
+	""|load|start|restart|status)
 		if [ ! -r "/mod/etc/conf/$DAEMON-sshd.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
@@ -16,7 +16,7 @@ case "$1" in
 		;;
 esac
 
-start() {
+pre_config() {
 	if [ ! -e "/tmp/flash/rsa_host_key" -o ! -e "/tmp/flash/dss_host_key" ]; then
 		echo "Creating RSA and DSS host keys"
 		rm -f /tmp/flash/rsa_host_key
@@ -31,9 +31,12 @@ start() {
 		ln -s /tmp/flash/rsa_host_key /mod/etc/ssh/rsa_host_key
 		ln -s /tmp/flash/dss_host_key /mod/etc/ssh/dss_host_key
 	fi
-
+	
+	[ -d "/tmp/flash/.ssh" ] || mkdir /tmp/flash/.ssh
 	[ -e "/mod/root/.ssh" ] || ln -s /tmp/flash/.ssh /mod/root/.ssh
+}
 
+start() {
 	if [ "$DROPBEAR_SSHD_PWDAUTH" = "yes" ]; then
 		if cat /var/tmp/shadow | grep '^root:\*:' > /dev/null; then
 			echo "Error[$DAEMON]: no root password set - run 'modpasswd root'" 1>&2
@@ -69,8 +72,8 @@ stop() {
 
 case "$1" in
 	""|load)
-		[ -d "/tmp/flash/.ssh" ] || mkdir /tmp/flash/.ssh
-
+		pre_config
+		
 		modreg cgi 'dropbear-sshd' 'Dropbear'
 
 		deffile='/mod/etc/default.dropbear-sshd/authorized_keys.def'
@@ -78,7 +81,11 @@ case "$1" in
 		modreg file 'authorized_keys' 'Authorized keys' 0 "$deffile"
 
 		if [ "$DROPBEAR_SSHD_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
+			if [ "$DROPBEAR_SSHD_ENABLED" != "inetd" ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+			fi
 			exit 1;
 		fi
 
@@ -101,10 +108,14 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -s "/var/run/$DAEMON.pid" ]; then
-		    echo 'running'
-		else
-		    echo 'stopped'
+		if [ "$DROPBEAR_SSHD_ENABLED" == "inetd" ]; then
+			echo 'inetd'
+ 		else
+			if [ -s "/var/run/$DAEMON.pid" ]; then
+		    	echo 'running'
+			else
+		    	echo 'stopped'
+			fi
 		fi
 		;;
 	*)
