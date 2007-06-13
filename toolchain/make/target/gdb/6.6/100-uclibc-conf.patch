@@ -1,7 +1,8 @@
---- gdb-6.3/bfd/configure.orig	Fri Oct  8 16:53:56 2004
-+++ gdb-6.3/bfd/configure	Sun Feb 27 18:32:58 2005
-@@ -3583,6 +3583,11 @@
-   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
+diff -rNdup gdb-6.6.orig/bfd/configure gdb-6.6/bfd/configure
+--- gdb-6.6.orig/bfd/configure	2006-10-25 08:49:20.000000000 +0200
++++ gdb-6.6/bfd/configure	2007-05-14 10:35:50.000000000 +0200
+@@ -3579,6 +3579,11 @@ linux-gnu*)
+   lt_cv_deplibs_check_method=pass_all
    ;;
  
 +linux-uclibc*)
@@ -12,9 +13,10 @@
  netbsd* | knetbsd*-gnu)
    if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
      lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$'
---- gdb-6.3/libtool.m4.orig	Wed Jul 21 21:21:41 2004
-+++ gdb-6.3/libtool.m4	Mon Feb 28 00:08:11 2005
-@@ -653,6 +653,11 @@
+diff -rNdup gdb-6.6.orig/libtool.m4 gdb-6.6/libtool.m4
+--- gdb-6.6.orig/libtool.m4	2005-12-27 17:37:57.000000000 +0100
++++ gdb-6.6/libtool.m4	2007-05-14 10:35:50.000000000 +0200
+@@ -751,6 +751,11 @@ netbsd* | knetbsd*-gnu)
    fi
    ;;
  
@@ -26,9 +28,10 @@
  newsos6)
    [lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [ML]SB (executable|dynamic lib)']
    lt_cv_file_magic_cmd=/usr/bin/file
---- gdb-6.3/ltconfig.orig	Tue Oct  5 15:34:42 2004
-+++ gdb-6.3/ltconfig	Sun Feb 27 18:14:41 2005
-@@ -602,7 +602,7 @@
+diff -rNdup gdb-6.6.orig/ltconfig gdb-6.6/ltconfig
+--- gdb-6.6.orig/ltconfig	2006-07-04 22:31:03.000000000 +0200
++++ gdb-6.6/ltconfig	2007-05-14 10:35:50.000000000 +0200
+@@ -602,7 +602,7 @@ host_os=`echo $host | sed 's/^\([^-]*\)-
  
  # Transform linux* to *-*-linux-gnu*, to support old configure scripts.
  case $host_os in
@@ -37,7 +40,7 @@
  linux*) host=`echo $host | sed 's/^\(.*-.*-linux\)\(.*\)$/\1-gnu\2/'`
  esac
  
-@@ -1270,6 +1270,24 @@
+@@ -1270,6 +1270,24 @@ linux-gnu*)
    dynamic_linker='GNU/Linux ld.so'
    ;;
  
@@ -62,9 +65,10 @@
  netbsd*)
    need_lib_prefix=no
    need_version=no
---- gdb-6.3/opcodes/configure.orig	Fri Sep 17 08:13:38 2004
-+++ gdb-6.3/opcodes/configure	Mon Feb 28 00:09:42 2005
-@@ -3595,6 +3595,11 @@
+diff -rNdup gdb-6.6.orig/opcodes/configure gdb-6.6/opcodes/configure
+--- gdb-6.6.orig/opcodes/configure	2006-10-25 08:49:20.000000000 +0200
++++ gdb-6.6/opcodes/configure	2007-05-14 10:35:50.000000000 +0200
+@@ -3590,6 +3590,11 @@ netbsd* | knetbsd*-gnu)
    fi
    ;;
  

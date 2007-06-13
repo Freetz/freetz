@@ -76,8 +76,9 @@ $(GDB_TARGET_DIR)/gdb/gdb: $(GDB_TARGET_DIR)/.configured
 	    MT_CFLAGS="$(TARGET_CFLAGS)" -C $(GDB_TARGET_DIR)
 	$(TARGET_STRIP) $(GDB_TARGET_DIR)/gdb/gdb
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/bin/gdb: $(GDB_TARGET_DIR)/gdb/gdb
-	PATH=$(TARGET_PATH) $(MAKE) -C $(GDB_TARGET_DIR) install
+$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/gdb: $(GDB_TARGET_DIR)/gdb/gdb
+	install -c -D $(GDB_TARGET_DIR)/gdb/gdb $@
+	
 
 gdb_target: ncurses $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/bin/gdb
 

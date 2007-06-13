@@ -131,14 +131,12 @@ config DS_KERNEL_GLIBC_VERSION
 	default "2.3.6"
 
 comment "GNU debugger (gdb)"
-
-config DS_PACKAGE_GDB
-	bool
     
-config DS_PACKAGE_GDB_FULL
+config DS_PACKAGE_GDB
 	bool "Build gdb for target"
 	default n
 	select DS_LIB_libncurses
+	select DS_LIB_libthread_db
 	help
 	    Build the full gdb debugger to run on the target.
 
