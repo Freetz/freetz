@@ -206,12 +206,12 @@ toolchain: $(DL_DIR) $(SOURCE_DIR) $(TOOLCHAIN)
 	@echo "          $(TOOLCHAIN_DIR)/target/ - uClibc compiler for the userspace"
 	@echo ""
 
-libs: $(DL_DIR) $(SOURCE_DIR) libgcc-installed $(LIBS_PRECOMPILED)
+libs: $(DL_DIR) $(SOURCE_DIR) $(LIBS_PRECOMPILED)
 
 sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
 	$(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(LIBS_SOURCE) $(TOOLCHAIN_SOURCE) $(TOOLS_SOURCE)
 
-precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend libgcc-installed \
+precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend \
 	$(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN) $(LIBS_CLEAN) $(TOOLCHAIN_CLEAN) $(TOOLS_CLEAN) common-clean
