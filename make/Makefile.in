@@ -84,5 +84,10 @@ libgcc-installed: $(ROOT_DIR)/lib/$(LIBGCC)
 $(ROOT_DIR)/lib/$(LIBGCC): $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(LIBGCC)
 	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(LIBGCC) $(ROOT_DIR)/lib
 	$(TARGET_STRIP) $(ROOT_DIR)/lib/$(LIBGCC)
+	
+define INSTALL_BINARY_STRIP
+cp $^ $@
+$(TARGET_STRIP) $@
+endef
 
 .PHONY: libgcc-installed

@@ -56,8 +56,7 @@ $(DECO_BINARY): $(DECO_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(DECO_DIR)
 
 $(DECO_TARGET_BINARY): $(DECO_BINARY)
-	$(TARGET_STRIP) $(DECO_BINARY)
-	cp $(DECO_BINARY) $(DECO_TARGET_BINARY)
+	$(INSTALL_BINARY_STRIP)
 	@# Don't copy these, because they are already part of the package:
 	@#cp $(DECO_DIR)/profile $(DECO_TARGET_DIR)/root/usr/lib/deco/profile
 	@#cp $(DECO_DIR)/menu $(DECO_TARGET_DIR)/root/usr/lib/deco/menu

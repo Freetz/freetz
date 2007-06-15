@@ -1,4 +1,5 @@
 CLASSPATH_VERSION:=0.95
+CLASSPATH_UGLY_VERSION:=0.0.0
 CLASSPATH_SOURCE:=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_SITE:=ftp://ftp.gnu.org/gnu/classpath
 CLASSPATH_MAKE_DIR:=$(MAKE_DIR)/classpath
@@ -10,6 +11,8 @@ CLASSPATH_PKG_VERSION:=0.1
 CLASSPATH_PKG_SOURCE:=CLASSPATH-$(CLASSPATH_VERSION)-dsmod-$(CLASSPATH_PKG_VERSION).tar.bz2
 CLASSPATH_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 CLASSPATH_PKG_SOURCE:=classpath-$(CLASSPATH_VERSION)-dsmod.tar.bz2
+CLASSPATH_LIB_BINARY:=$(CLASSPATH_DIR)/native/jni/java-lang/.libs/libjavalang.so.$(CLASSPATH_UGLY_VERSION)
+CLASSPATH_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
 
 $(DL_DIR)/$(CLASSPATH_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(CLASSPATH_SITE)/$(CLASSPATH_SOURCE)
@@ -46,7 +49,7 @@ $(CLASSPATH_DIR)/.configured: $(CLASSPATH_DIR)/.unpacked
 	);
 	touch $@
 
-$(CLASSPATH_BINARY): $(CLASSPATH_DIR)/.configured
+$(CLASSPATH_BINARY) $(CLASSPATH_LIB_BINARY): $(CLASSPATH_DIR)/.configured
 	$(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(CLASSPATH_DIR)
 	cp $(CLASSPATH_MAKE_DIR)/mini.classlist $(CLASSPATH_DIR)/lib;
 	( cd $(CLASSPATH_DIR)/lib; fastjar -Mcf mini.jar -@ < mini.classlist );
@@ -58,15 +61,15 @@ $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION): $(DL_DIR)/$(CLASSPATH_PKG_SOURC
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CLASSPATH_PKG_SOURCE)
 	@touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so: $(CLASSPATH_BINARY)
+$(CLASSPATH_LIB_STAGING_BINARY): $(CLASSPATH_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(CLASSPATH_DIR)/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
 	touch -c $@
 
-$(CLASSPATH_DIR)/.installed: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
+$(CLASSPATH_DIR)/.installed: $(CLASSPATH_LIB_STAGING_BINARY)
 	mkdir -p root/usr/lib/classpath
-	$(TARGET_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/lib*.so*
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/lib*.so* root/usr/lib/classpath
+	$(TARGET_STRIP) root/usr/lib/classpath/lib*.so*
 	touch $@
 
 classpath: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)

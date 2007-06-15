@@ -75,9 +75,7 @@ $(NANO_TARGET_BINARY): $(NANO_BINARY)
 		$(NANO_TARGET_DIR)/root/usr/share/terminfo/v/
 	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/x/xterm \
 		$(NANO_TARGET_DIR)/root/usr/share/terminfo/x/
-
-	$(TARGET_STRIP) $(NANO_BINARY)
-	cp $(NANO_BINARY) $(NANO_TARGET_BINARY)
+	$(INSTALL_BINARY_STRIP)
 
 $(PACKAGES_DIR)/.nano-$(NANO_VERSION): $(DL_DIR)/$(NANO_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NANO_PKG_SOURCE)

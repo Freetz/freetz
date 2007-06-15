@@ -154,7 +154,7 @@ $(NETSNMP_TARGET_BINARY): $(NETSNMP_BINARY)
 	cp $(NETSNMP_DIR)/agent/mibgroup/util_funcs.h $(TARGET_MAKE_PATH)/../include/net-snmp
 	cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_MAKE_PATH)/../include/net-snmp/library
 	cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
-	$(TARGET_STRIP) $(NETSNMP_TARGET_BINARY) $(NETSNMP_TARGET_LIBS)
+	$(TARGET_STRIP) $@ $(NETSNMP_TARGET_LIBS)
 
 $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME): $(DL_DIR)/$(NETSNMP_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NETSNMP_PKG_SOURCE)

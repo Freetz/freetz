@@ -68,8 +68,7 @@ $(PRIVOXY_BINARY): $(PRIVOXY_DIR)/.configured
 	$(MAKE) -C $(PRIVOXY_DIR)
 
 $(PRIVOXY_TARGET_BINARY): $(PRIVOXY_BINARY)
-	$(TARGET_STRIP) $(PRIVOXY_BINARY)
-	cp $(PRIVOXY_BINARY) $(PRIVOXY_TARGET_BINARY)
+	$(INSTALL_BINARY_STRIP)
 	for s in `find $(PRIVOXY_DIR)/templates/ -type f`; do \
 		d=$$(basename $$s); \
 		egrep -v "^#\ " $$s | egrep -v "^#*$$" >$(PRIVOXY_TARGET_DIR)/root/etc/privoxy/templates/$$d; \
