@@ -6,6 +6,9 @@ UCLIBC_SOURCE:=uClibc-$(UCLIBC_VERSION).tar.bz2
 UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
 UCLIBC_KERNEL_SOURCE_DIR:=$(KERNEL_SOURCE_DIR)
 UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DIR)
+UCLIBC_LDD_BINARY:=$(UCLIBC_DIR)/utils/ldd
+UCLIBC_LDD_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils/ldd
+UCLIBC_TARGET_LDD_BINARY:=$(ROOT_DIR)/usr/bin/ldd
 
 $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(UCLIBC_SOURCE_SITE)/$(UCLIBC_SOURCE)
@@ -67,8 +70,8 @@ uclibc-menuconfig: $(UCLIBC_DIR)/.config
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
 		HOSTCC="$(HOSTCC)" \
 		menuconfig && \
-	cp -f $(UCLIBC_DIR)/.config $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(AVM_VERSION) && \
-	touch $(UCLIBC_DIR)/.config
+	cp -f $^ $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(AVM_VERSION) && \
+	touch $^
 
 $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured
 	$(MAKE1) -C $(UCLIBC_DIR) \
@@ -128,7 +131,7 @@ endif
 
 uclibc-configured: $(UCLIBC_DIR)/.configured
 
-uclibc:	$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
+uclibc:	gcc_initial $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
 
 uclibc-source: $(DL_DIR)/$(UCLIBC_SOURCE)
 
@@ -141,18 +144,17 @@ uclibc-clean:
 uclibc-dirclean:
 	rm -rf $(UCLIBC_DIR)
 
-uclibc-target-utils: $(ROOT_DIR)/usr/bin/ldd
+uclibc-target-utils: $(UCLIBC_TARGET_LDD_BINARY)
 
-$(ROOT_DIR)/usr/bin/ldd:
-	# Build the utils.
-	# TODO: Remove ldd from $(ROOT_DIR) 
-	$(MAKE1) -C $(UCLIBC_DIR) \
-		PREFIX=$(shell pwd)/$(ROOT_DIR) utils install_utils
+$(UCLIBC_LDD_BINARY):
+	$(MAKE1) -C $(UCLIBC_DIR) utils
+
+$(UCLIBC_LDD_STAGING_BINARY): $(UCLIBC_LDD_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils
-	install -c $(ROOT_DIR)/usr/bin/ldd \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils/ldd
-	$(TARGET_STRIP) $(ROOT_DIR)/usr/bin/ldd
-	touch -c $(ROOT_DIR)/usr/bin/ldd
+	cp $^ $@
+
+$(UCLIBC_TARGET_LDD_BINARY): $(UCLIBC_LDD_STAGING_BINARY)
+	$(INSTALL_BINARY_STRIP)
 
 uclibc-target-utils-clean:
-	rm -f $(ROOT_DIR)/usr/bin/ldd
+	rm -f $(UCLIBC_TARGET_LDD_BINARY)

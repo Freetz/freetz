@@ -72,14 +72,12 @@ endif
 
 $(GDB_TARGET_DIR)/gdb/gdb: $(GDB_TARGET_DIR)/.configured
 	PATH=$(TARGET_PATH) \
-	    $(MAKE) CC=$(TARGET_CC) LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
+	    $(MAKE) CC=$(TARGET_CC) LDFLAGS="" \
 	    MT_CFLAGS="$(TARGET_CFLAGS)" -C $(GDB_TARGET_DIR)
-	$(TARGET_STRIP) $(GDB_TARGET_DIR)/gdb/gdb
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/gdb: $(GDB_TARGET_DIR)/gdb/gdb
-	install -c -D $(GDB_TARGET_DIR)/gdb/gdb $@
+	$(INSTALL_BINARY_STRIP)
 	
-
 gdb_target: ncurses $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/bin/gdb
 
 gdb_target-source: $(DL_DIR)/$(GDB_SOURCE)
@@ -118,13 +116,10 @@ $(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.unpacked
 $(GDB_SERVER_DIR)/gdbserver: $(GDB_SERVER_DIR)/.configured
 	$(MAKE) CC=$(TARGET_CC) MT_CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(GDB_SERVER_DIR)
-	$(TARGET_STRIP) $(GDB_SERVER_DIR)/gdbserver
 	
 $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/gdbserver: $(GDB_SERVER_DIR)/gdbserver
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils; \
-	install -c $(GDB_SERVER_DIR)/gdbserver gdbserver; \
-	);
+	$(INSTALL_BINARY_STRIP)
 
 gdbserver: $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/gdbserver
 

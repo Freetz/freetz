@@ -85,6 +85,14 @@ $(GCC_BUILD_DIR1)/.compiled: $(GCC_BUILD_DIR1)/.configured
 $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(GCC_BUILD_DIR1)/.compiled
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR1) install-gcc
 
+gcc_initial: uclibc-configured binutils $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc
+
+gcc_initial-clean:
+	rm -rf $(GCC_BUILD_DIR1)
+
+gcc_initial-dirclean:
+	rm -rf $(GCC_BUILD_DIR1) $(GCC_DIR)
+
 ##############################################################################
 #
 #   final gcc
@@ -136,15 +144,11 @@ endif
 	);
 	touch $(GCC_BUILD_DIR2)/.installed
 
-gcc-initial: uclibc-configured binutils $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc
+$(ROOT_DIR)/lib/libgcc_s.so.1: $(GCC_BUILD_DIR2)/.installed
+	-cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(ROOT_DIR)/lib/
+	$(TARGET_STRIP) $(ROOT_DIR)/lib/libgcc_s.so.1
 
-gcc:  uclibc-configured binutils gcc-initial uclibc $(GCC_BUILD_DIR2)/.installed
-
-gcc_initial-clean:
-	rm -rf $(GCC_BUILD_DIR1)
-
-gcc_initial-dirclean:
-	rm -rf $(GCC_BUILD_DIR1) $(GCC_DIR)
+gcc: uclibc-configured binutils gcc_initial uclibc $(ROOT_DIR)/lib/libgcc_s.so.1 $(GCC_BUILD_DIR2)/.installed
 
 gcc-source: $(DL_DIR)/$(GCC_SOURCE)
 

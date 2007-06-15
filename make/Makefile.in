@@ -76,18 +76,8 @@ ifneq ($(strip $(DS_DL_SOURCE2)),)
 DL_SITE2:=$(strip $(subst ",, $(DS_DL_SITE2)))
 DL_SOURCE2:=$(strip $(subst ",, $(DS_DL_SOURCE2)))
 endif
-
-LIBGCC:=libgcc_s.so.1
-
-libgcc-installed: $(ROOT_DIR)/lib/$(LIBGCC)
-
-$(ROOT_DIR)/lib/$(LIBGCC): $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(LIBGCC)
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(LIBGCC) $(ROOT_DIR)/lib
-	$(TARGET_STRIP) $(ROOT_DIR)/lib/$(LIBGCC)
 	
 define INSTALL_BINARY_STRIP
 cp $^ $@
 $(TARGET_STRIP) $@
 endef
-
-.PHONY: libgcc-installed
