@@ -69,6 +69,10 @@ choice
 	config DS_TYPE_WLAN_3030
 		select DS_AVM_VERSION_04_33
 		bool "WLAN 3030"
+	
+	config DS_TYPE_WLAN_3130
+		select DS_AVM_VERSION_04_33
+		bool "WLAN 3130"
 
 	config DS_TYPE_WLAN_3131
 		select DS_AVM_VERSION_04_33
@@ -146,6 +150,7 @@ config DS_TYPE_STRING
 	default "2170"		if DS_TYPE_2170
 	default "3020"		if DS_TYPE_WLAN_3020
 	default "3030"		if DS_TYPE_WLAN_3030
+	default "3130"		if DS_TYPE_WLAN_3130
 	default "3131"		if DS_TYPE_WLAN_3131
 	default "3170"		if DS_TYPE_WLAN_3170
 	default "fon"		if DS_TYPE_FON
@@ -202,6 +207,7 @@ config DS_TARGET_REF
 	default "4mb_26"		if DS_TYPE_2170 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON || \
@@ -221,6 +227,7 @@ config DS_KERNEL_REF
 	default "4mb_26"		if DS_TYPE_2170 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON || \
@@ -245,6 +252,7 @@ config DS_KERNEL_LAYOUT
 					   DS_TYPE_FON_WLAN_7050 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170
 
@@ -253,6 +261,7 @@ config DS_HIDDEN_ROOT
 	default y			if DS_TYPE_2170 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON || \
@@ -277,6 +286,7 @@ config DS_CONTIGUOUS_HIDDEN_ROOT
 	default n			if DS_TYPE_2170 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON || \
@@ -301,6 +311,7 @@ config DS_SQUASHFS_LZMA
 	default y			if DS_TYPE_2170 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON || \
@@ -323,6 +334,7 @@ config DS_ROOTFS_VARTAR
 	default y			if DS_TYPE_2170 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON || \
@@ -354,6 +366,7 @@ config DS_KERNEL_MTD_SIZE
 	default 59			if DS_TYPE_2170 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON || \
@@ -389,6 +402,7 @@ config DS_HAS_PHONE
 	default n			if DS_TYPE_2170 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170
 	help
@@ -397,6 +411,7 @@ config DS_HAS_PHONE
 config DS_HAS_WLAN
 	bool "Has WLAN"			if DS_TYPE_CUSTOM
 	default y			if DS_TYPE_WLAN_3131 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON_WLAN || \
 					   DS_TYPE_FON_WLAN_7050 || \
@@ -418,6 +433,7 @@ config DS_HAS_USB
 	default y			if DS_TYPE_2170 || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_FON || \
@@ -442,6 +458,7 @@ config DS_HAS_USB_HOST
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
 					   DS_TYPE_FON_WLAN_7170 || \
+					   DS_TYPE_WLAN_3130 || \
 					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_WLAN_3170 || \
 					   DS_TYPE_SPEEDPORT_W900V
@@ -471,6 +488,7 @@ config DS_BRANDING_1und1
 		   DS_TYPE_FON_WLAN_7141 || \
 		   DS_TYPE_FON_WLAN_7170 || \
 		   DS_TYPE_WLAN_3020 || \
+		   DS_TYPE_WLAN_3130 || \
 		   DS_TYPE_WLAN_3131 || \
 		   DS_TYPE_CUSTOM
 	default y
@@ -496,6 +514,7 @@ config DS_BRANDING_avm
 		   DS_TYPE_FON_WLAN_7170 || \
 		   DS_TYPE_WLAN_3020 || \
 		   DS_TYPE_WLAN_3030 || \
+		   DS_TYPE_WLAN_3130 || \
 		   DS_TYPE_WLAN_3131 || \
 		   DS_TYPE_WLAN_3170 || \
 		   DS_TYPE_CUSTOM
@@ -712,6 +731,7 @@ config DS_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"		if DS_TYPE_FON_WLAN_7170
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.sl_wlan/firmware"				if DS_TYPE_WLAN_3020
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3030/firmware"			if DS_TYPE_WLAN_3030
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3130/firmware"		if DS_TYPE_WLAN_3130
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3131/firmware/deutsch"		if DS_TYPE_WLAN_3131
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3170/firmware/deutsch"		if DS_TYPE_WLAN_3170
 	default "http://www.t-com.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V"	if DS_TYPE_SPEEDPORT_W701V
@@ -736,6 +756,7 @@ config DS_DL_SOURCE
 	default "fritz.box_sl_wlan.09.04.33.image"				if DS_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.33.image"				if DS_TYPE_WLAN_3030
 	default "fritz.box_wlan_3131.50.04.34.image"				if DS_TYPE_WLAN_3131
+	default "fritz.box_wlan_3130.44.04.34.image"				if DS_TYPE_WLAN_3130
 	default "fritz.box_wlan_3170.49.04.34.image"				if DS_TYPE_WLAN_3170
 	default "fw_Speedport_W701V_V33.04.26.image"				if DS_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W_900V.34.04.21.image"				if DS_TYPE_SPEEDPORT_W900V
