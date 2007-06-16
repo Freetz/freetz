@@ -26,3 +26,7 @@ $Id$
 - Change *-package targets of packages needing multiple download packages
   (e.g. openvpn, dropbear, bftpd) so the corresponding build options are
   regognised and applied during package build.
+- Determine the best way to include rpath, i.e. something like
+  export LD_RUN_PATH=/mod/lib:/lib:/usr/lib
+  into makefile(s). It should be applied to all binaries for the target
+  system, but not to tools and toolchain binaries.
