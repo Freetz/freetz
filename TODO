@@ -16,9 +16,8 @@ $Id$
 - Experiment with and possibly use dietlibc to create smaller binaries by
   statically compiling in stuff usually dynamically linked to uClibc.
 - Add libthread_db to download toolchain (and UCLIBC_FILES)
-- Change *-package targets of packages needing multiple download packages
-  (e.g. openvpn, dropbear, bftpd) so the corresponding build options are
-  regognised and applied during package build.
+- Either add (and maintain) a second package for openvpn without LZO or remove
+  the option from menuconfig, so LZO is always used.
 - Determine the best way to include rpath, i.e. something like
   export LD_RUN_PATH=/mod/lib:/lib:/usr/lib
   into makefile(s). It should be applied to all binaries for the target
