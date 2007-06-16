@@ -14,9 +14,15 @@ $Id$
   and no delete-copy cycle for all libs. (rev. 474, todo: clean-targets?)
 - Create clean, dirclean, distclean, uninstall targets for toolchain elements
 - Open question: Why do we have libjpeg if it is not used by any package?
+  Answer (by olistudent): SANE seems to need it, but the scanners do not run
+  because AVM have not finished their USB driver yet. We should check new
+  packages to see if they ever provide a working version.
 - Integrate inetd stuff (#487-489)
 - Perhaps integrate build option to replace AVM websrv by Busybox httpd (remove
   websrv from firmware, patch start script for AVM UI so as to use httpd).
 - Experiment with and possibly use dietlibc to create smaller binaries by
   statically compiling in stuff usually dynamically linked to uClibc.
 - Add libthread_db to download toolchain (and UCLIBC_FILES)
+- Change *-package targets of packages needing multiple download packages
+  (e.g. openvpn, dropbear, bftpd) so the corresponding build options are
+  regognised and applied during package build.
