@@ -3,21 +3,14 @@ To-do list for ds26
 
 $Id$
 
-- Integrate + test httpd patch from busybox mailing list (rev. 468, testing is to be done)
 - Integrate kriegaex's boot analysis tool (log all file accesses using
   inotify-tools)
 - Make ccache build script aware of gcc version change (needs rebuild in that
   case)
-- Fix libgcc_s build prerequisites, so it is not copied every time
-  'precompiled' is executed. (rev. 467,481, requisites?)
-- Fix 'kernel-precompiled' prerequisites so there is no unnecessary copying
-  and no delete-copy cycle for all libs. (rev. 474, todo: clean-targets?)
-- Create clean, dirclean, distclean, uninstall targets for toolchain elements
 - Open question: Why do we have libjpeg if it is not used by any package?
   Answer (by olistudent): SANE seems to need it, but the scanners do not run
   because AVM have not finished their USB driver yet. We should check new
   packages to see if they ever provide a working version.
-- Integrate inetd stuff (#487-489)
 - Perhaps integrate build option to replace AVM websrv by Busybox httpd (remove
   websrv from firmware, patch start script for AVM UI so as to use httpd).
 - Experiment with and possibly use dietlibc to create smaller binaries by
