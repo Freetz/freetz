@@ -29,7 +29,7 @@ $(LSOF_DIR)/.unpacked: $(DL_DIR)/$(LSOF_SOURCE)
 	touch $@
 
 $(LSOF_DIR)/.configured: $(LSOF_DIR)/.unpacked
-	(cd $(LSOF_DIR); echo n | $(TARGET_CONFIGURE_OPTS) DEBUG="$(TARGET_CFLAGS) $(LSOF_CFLAGS)" ./Configure linux)
+	(cd $(LSOF_DIR); echo n | $(TARGET_CONFIGURE_OPTS) DEBUG="$(TARGET_CFLAGS) $(LSOF_CFLAGS)" LSOF_INCLUDE=$(TARGET_MAKE_PATH)/../usr/include ./Configure linux)
 	touch $@
 
 $(LSOF_BINARY): $(LSOF_DIR)/.configured

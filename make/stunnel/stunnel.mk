@@ -39,7 +39,7 @@ $(STUNNEL_DIR)/.configured:  $(STUNNEL_DIR)/.unpacked
 		--build=$(GNU_HOST_NAME) \
 		--program-prefix="" \
 		--program-suffix="" \
-		--prefix=/usr \
+		--prefix= \
 		--exec-prefix=/usr \
 		--bindir=/usr/bin \
 		--datadir=/usr/share \

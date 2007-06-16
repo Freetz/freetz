@@ -64,6 +64,13 @@ SNMP_TRANSPORTS_INCLUDED:=UDP
 
 SNMP_TRANSPORTS_EXCLUDED:=Callback TCP TCPv6 UDPv6 Unix
 
+ifneq ($(strip $(DS_LIB_libcrypto)),y)
+WITHOUT_OPENSSL:=--without-openssl
+endif
+ifneq ($(strip $(DS_LIB_libz)),y)
+WITHOUT_ZLIB:=--without-zlib
+endif
+
 PKG_CONFIGURE_OPTIONS:=\
   --enable-shared \
   --disable-static \
@@ -85,10 +92,10 @@ PKG_CONFIGURE_OPTIONS:=\
   --with-out-transports="$(SNMP_TRANSPORTS_EXCLUDED)" \
   --with-transports="$(SNMP_TRANSPORTS_INCLUDED)" \
   --without-opaque-special-types \
-  --without-openssl \
+  $(WITHOUT_OPENSSL) \
   --without-libwrap \
   --without-rpm \
-  --without-zlib \
+  $(WITHOUT_ZLIB) \
 
 $(DL_DIR)/$(NETSNMP_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(NETSNMP_SITE)/$(NETSNMP_SOURCE)
@@ -150,6 +157,8 @@ $(NETSNMP_TARGET_BINARY): $(NETSNMP_BINARY)
 		$(NETSNMP_TARGET_DIR)/root/usr/include
 	rm -rf $(NETSNMP_TARGET_DIR)/root/usr/lib/*.la
 	# Install the "broken" headers
+	mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/agent
+	mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/library
 	cp $(NETSNMP_DIR)/agent/mibgroup/struct.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
 	cp $(NETSNMP_DIR)/agent/mibgroup/util_funcs.h $(TARGET_MAKE_PATH)/../include/net-snmp
 	cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_MAKE_PATH)/../include/net-snmp/library
