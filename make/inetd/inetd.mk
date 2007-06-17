@@ -26,7 +26,7 @@ inetd-dirclean:
 
 inetd-list:
 ifeq ($(strip $(DS_PACKAGE_INETD)),y)
-	@echo "S40inetd-$(INETD_PKG_VERSION)" >> .static
+	@echo "S30inetd-$(INETD_PKG_VERSION)" >> .static
 else
-	@echo "S40inetd-$(INETD_PKG_VERSION)" >> .dynamic
+	@echo "S30inetd-$(INETD_PKG_VERSION)" >> .dynamic
 endif
