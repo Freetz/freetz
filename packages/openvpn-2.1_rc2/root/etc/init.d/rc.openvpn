@@ -1,0 +1,152 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+
+DAEMON=openvpn
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+start() {
+	if [ ! -e "/tmp/flash/static.key" ]; then
+		echo "Creating static.key"
+		openvpn --genkey --secret /tmp/flash/static.key
+		/usr/bin/modsave flash
+	fi
+	
+	{
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	} > /mod/etc/$DAEMON.conf
+
+	echo -n 'Starting OpenVPN ...'
+
+	$DAEMON --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	
+	if [ ! -z "$(pidof $DAEMON)" ];then
+
+		echo -n 'Stopping OpenVPN...'
+		killall $DAEMON > /dev/null 2>&1
+		exitval=$?
+
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+			exit $exitval
+		fi
+
+	fi
+	
+	rm -f /mod/etc/$DAEMON.conf
+	rm -f /var/run/$DAEMON.pid
+
+}
+
+
+case "$1" in
+        ""|load)
+		modreg cgi 'openvpn' 'OpenVPN'
+
+		deffile='/mod/etc/default.openvpn/box_crt.def'
+		[ -r "/tmp/flash/box_crt.def" ] && deffile='/tmp/flash/box_crt.def'
+		modreg file 'box_crt' 'Box Cert' 0 "$deffile"
+
+		deffile='/mod/etc/default.openvpn/box_key.def'
+		[ -r "/tmp/flash/box_key.def" ] && deffile='/tmp/flash/box_key.def'
+		modreg file 'box_key' 'Private Key' 0 "$deffile"
+
+		deffile='/mod/etc/default.openvpn/ca_crt.def'
+		[ -r "/tmp/flash/ca_crt.def" ] && deffile='/tmp/flash/ca_crt.def'
+		modreg file 'ca_crt' 'CA Cert' 0 "$deffile"
+
+		deffile='/mod/etc/default.openvpn/crl_pem.def'
+		[ -r "/tmp/flash/crl_pem.def" ] && deffile='/tmp/flash/crl_pem.def'
+		modreg file 'crl_pem' 'CRL' 0 "$deffile"
+		
+		deffile='/mod/etc/default.openvpn/dh_pem.def'
+		[ -r "/tmp/flash/dh_pem.def" ] && deffile='/tmp/flash/dh_pem.def'
+		modreg file 'dh_pem' 'DH Param' 0 "$deffile"
+
+		deffile='/mod/etc/default.openvpn/static_key.def'
+		[ -r "/tmp/flash/static_key.def" ] && deffile='/tmp/flash/static_key.def'
+		modreg file 'static_key' 'Static Key' 0 "$deffile"
+
+		if [ "$OPENVPN_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ -e "/var/run/$DAEMON.pid" ]; then
+			echo "$DAEMON already started."
+		else
+			start
+		fi
+		;;
+	unload)
+		stop
+		modunreg file 'box_crt'
+		modunreg file 'box_key'
+		modunreg file 'ca_crt'
+		modunreg file 'crl_pem'
+		modunreg file 'dh_pem'
+		modunreg file 'static_key'
+		modunreg cgi 'openvpn'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	reload)
+		if [ -r "/var/run/openvpn.pid" ]; then
+			kill -HUP `cat /var/run/openvpn.pid`
+		fi
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
+		exit 1
+		;;
+
+esac
+
+exit 0
