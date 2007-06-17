@@ -623,7 +623,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "cannot determine version"
 	fi
 
-	SUBVERSION="$(cat $SUBVERSION_FILE)"
+	if [ "$DS_DEVELOPER_VERSION_STRING" == "y" ]; then
+		if SVN_VERSION="$(svnversion)"; then
+			[ "${SVN_VERSION:0:6}" == "export" ] && SVN_VERSION=""
+			[ "$SVN_VERSION" != "" ] && SVN_VERSION="-$SVN_VERSION"
+		fi
+	fi
+
+	SUBVERSION="$(cat $SUBVERSION_FILE)${SVN_VERSION}"
 	OPTIONS="+busybox"
 
 	[ "$DS_REMOVE_ASSISTANT" == "y" ]    && OPTIONS="$OPTIONS -assistant"
