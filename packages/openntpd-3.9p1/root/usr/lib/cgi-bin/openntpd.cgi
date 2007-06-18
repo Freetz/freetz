@@ -9,9 +9,6 @@ anonym_chk=''
 if [ "$OPENNTPD_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$OPENNTPD_MULTID" = "yes" ]; then multid_chk=' checked'; else nomultid_chk=' checked'; fi
 
-echo $nomultid_chk
-echo $multid_chk
-
 sec_begin 'Starttyp'
 
 cat << EOF
