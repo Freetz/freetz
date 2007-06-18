@@ -7,6 +7,11 @@ log=''
 [ "$(/mod/etc/init.d/rc.webcfg status)" = "running" ] || \
 	log="$(/mod/etc/init.d/rc.webcfg start 2>&1)"
 
+# Try several fallbacks for HTTP_HOST (#3 should work for BusyBox httpd)
+[ -z "$HTTP_HOST" ] && HTTP_HOST=$SERVER_NAME
+[ -z "$HTTP_HOST" ] && HTTP_HOST=$SERVER_ADDR
+[ -z "$HTTP_HOST" ] && HTTP_HOST=$(/bin/hostname)
+
 location="http://$HTTP_HOST:$MOD_HTTPD_PORT/"
 
 cat << EOF

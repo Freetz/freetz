@@ -3,6 +3,11 @@
 . /mod/etc/conf/mod.cfg
 . /mod/etc/conf/wol.cfg
 
+# Try several fallbacks for HTTP_HOST (#3 should work for BusyBox httpd)
+[ -z "$HTTP_HOST" ] && HTTP_HOST=$SERVER_NAME
+[ -z "$HTTP_HOST" ] && HTTP_HOST=$SERVER_ADDR
+[ -z "$HTTP_HOST" ] && HTTP_HOST=$(/bin/hostname)
+
 if [ "$(/mod/etc/init.d/rc.wol status)" = "running" ] ; then 
 	location="http://$HTTP_HOST:$WOL_PORT/"
 else
