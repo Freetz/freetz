@@ -27,9 +27,13 @@ start() {
 		mkdir -p /mod/home/ntp
 	fi
 
+	if [ ! -e "/var/db" ]; then
+		mkdir -p /var/db
+	fi
+
 	# Setting permissions
-	chown root /mod/home/ntp  -R
-	chmod 0700 /mod/home/root -R
+	chown root /mod/home/ntp -R
+	chmod 0700 /mod/home/ntp -R
 
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
@@ -43,7 +47,13 @@ start() {
 		fi
 	) > /mod/etc/$DAEMON.conf
 
-	echo -n 'Starting ntp server...'
+	echo 'Starting ntp server...'
+
+	if [ "$OPENNTPD_MULTID" = "no" ]; then
+		echo ' * Stopping multid ntp client...'
+		multid -t > /dev/null 2>&1
+	fi
+
 	ntpd -s -f /mod/etc/ntpd.conf
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
