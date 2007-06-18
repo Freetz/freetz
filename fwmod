@@ -624,7 +624,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	if [ "$DS_DEVELOPER_VERSION_STRING" == "y" ]; then
-		if SVN_VERSION="$(svnversion)"; then
+		if SVN_VERSION="$(svnversion | tr ":" "_")"; then
 			[ "${SVN_VERSION:0:6}" == "export" ] && SVN_VERSION=""
 			[ "$SVN_VERSION" != "" ] && SVN_VERSION="-$SVN_VERSION"
 		fi
