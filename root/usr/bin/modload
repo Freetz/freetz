@@ -14,7 +14,10 @@ if cat /var/flash/ds_mod > $TMPFILE 2> /dev/null; then
 		echo 'done.'
 	else
 		echo 'failed.'
-		exit 1
+		echo -n 'Creating /var/flash/ds_mod...'
+		[ -d "/tmp/flash" ] || mkdir -p /tmp/flash
+		tar -cf - flash -C /tmp/ > /var/flash/ds_mod
+		echo 'done.'
 	fi
 else
 	echo 'does not exist.'
