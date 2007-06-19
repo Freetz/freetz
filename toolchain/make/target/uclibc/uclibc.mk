@@ -22,7 +22,7 @@ $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE)
 	done
 	touch $@
 
-$(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked | kernel-configured
+$(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
 	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(AVM_VERSION) $(UCLIBC_DIR)/.config
 	$(SED) -i -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(shell pwd)/$(UCLIBC_KERNEL_SOURCE_DIR)\",g' $(UCLIBC_DIR)/.config
 	$(SED) -i -e 's,^CROSS=.*,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS),g' $(UCLIBC_DIR)/Rules.mak
@@ -129,7 +129,7 @@ $(ROOT_DIR)/lib/libc.so.0: $(TARGET_MAKE_PATH)/../lib/libc.a
 	touch -c $@
 endif
 
-uclibc-configured: $(UCLIBC_DIR)/.configured
+uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
 uclibc: $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
 
