@@ -71,7 +71,8 @@ $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 	touch $@
 	
 $(KERNEL_DIR)/.depend_done:  $(KERNEL_DIR)/.configured
-		$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
+	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		ARCH="$(KERNEL_ARCH)" \
