@@ -184,4 +184,6 @@ gdb-dirclean:
 	rm -rf $(GDB_HOST_DIR)
 	rm -rf $(GDB_SERVER_DIR)
 	rm -rf $(GDB_DIR)
+
+.PHONY: gdb gdbserver gdbtarget gdbhost gdb-unpacked
 	

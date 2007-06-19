@@ -108,3 +108,5 @@ ccache-clean:
 
 ccache-dirclean:
 	rm -rf $(CCACHE_DIR)
+
+.PHONY: ccache

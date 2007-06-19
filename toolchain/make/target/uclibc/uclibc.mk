@@ -158,3 +158,6 @@ $(UCLIBC_TARGET_LDD_BINARY): $(UCLIBC_LDD_STAGING_BINARY)
 
 uclibc-target-utils-clean:
 	rm -f $(UCLIBC_TARGET_LDD_BINARY)
+
+.PHONY: uclibc-configured uclibc
+	

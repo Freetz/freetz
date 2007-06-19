@@ -161,3 +161,5 @@ gcc-clean:
 
 gcc-dirclean: gcc_initial-dirclean
 	rm -rf $(GCC_BUILD_DIR2)
+
+.PHONY: gcc gcc_initial

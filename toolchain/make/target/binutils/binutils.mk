@@ -66,3 +66,4 @@ binutils-dirclean:
 
 binutils: uclibc-configured binutils-dependancies $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ld
 
+.PHONY: binutils binutils-dependancies
