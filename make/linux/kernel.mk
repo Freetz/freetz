@@ -130,7 +130,7 @@ $(KERNEL_MODULES_DIR)/.modules: $(KERNEL_DIR)/.modules
 
 kernel-precompiled: $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules
 
-kernel-configured: $(KERNEL_DIR)/.configured
+kernel-configured: $(KERNEL_DIR)/.depend_done
 
 kernel-modules: $(KERNEL_DIR)/.modules
 
@@ -146,7 +146,9 @@ kernel-menuconfig: $(KERNEL_DIR)/.unpacked
 	-cp -f $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE) && \
 	touch $(KERNEL_DIR)/.configured
 
-kernel-oldconfig: kernel-configured
+kernel-oldconfig: $(KERNEL_DIR)/.configured
+	-cp -f $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config $(KERNEL_CONFIG_FILE) && \
+	touch $(KERNEL_DIR)/.configured
 
 kernel-source: $(KERNEL_DIR)/.unpacked
 
