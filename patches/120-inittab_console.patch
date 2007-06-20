@@ -1,0 +1,12 @@
+diff -burN etc.orig/inittab etc/inittab
+--- etc.orig/inittab	2007-06-20 16:05:01.000000000 +0200
++++ etc/inittab	2007-06-20 16:04:35.000000000 +0200
+@@ -2,7 +2,7 @@
+ ::sysinit:/etc/init.d/rc.S
+ 
+ # Start an "askfirst" shell on the console (whatever that may be)
+-::askfirst:-/bin/sh
++ttyS0::askfirst:-/bin/sh
+ 
+ # Stuff to do before rebooting
+ ::shutdown:/bin/sh -c /var/post_install
