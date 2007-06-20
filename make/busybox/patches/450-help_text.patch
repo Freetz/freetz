@@ -1,0 +1,42 @@
+diff -burN applets.orig/Kbuild applets/Kbuild
+--- applets.orig/Kbuild	2007-05-20 18:57:48.000000000 +0200
++++ applets/Kbuild	2007-06-20 16:25:31.000000000 +0200
+@@ -8,15 +8,19 @@
+ obj-y	+= applets.o
+ obj-y	+= busybox.o
+ 
+-# Generated file needs additional love
++hostprogs-y:=
++hostprogs-y += usage
+ 
+-applets/applets.o: .config include/usage_compressed.h
++always:= $(hostprogs-y)
+ 
+-hostprogs-y += usage
+-always := $(hostprogs-y)
+-HOSTCFLAGS_usage.o = -I$(srctree)/include
++# Generated files need additional love
+ 
+ quiet_cmd_gen_usage_compressed = GEN     include/usage_compressed.h
+       cmd_gen_usage_compressed = $(srctree)/applets/usage_compressed include/usage_compressed.h applets
+-include/usage_compressed.h: .config $(srctree)/include/usage.h applets/usage
++
++HOSTCFLAGS_usage.o = -I$(srctree)/include
++
++applets/applets.o:	    include/usage_compressed.h
++applets/usage:		    .config
++include/usage_compressed.h: applets/usage
+ 	$(call cmd,gen_usage_compressed)
+diff -burN applets.orig/usage.c applets/usage.c
+--- applets.orig/usage.c	2007-05-20 18:57:48.000000000 +0200
++++ applets/usage.c	2007-06-20 16:14:40.000000000 +0200
+@@ -1,8 +1,7 @@
+ /* vi: set sw=4 ts=4: */
+ #include <unistd.h>
+ 
+-#include "../include/autoconf.h"
+-#include "../include/busybox.h"
++#include "autoconf.h"
+ 
+ static const char usage_messages[] = ""
+ #define MAKE_USAGE
