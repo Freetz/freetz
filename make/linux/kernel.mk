@@ -61,7 +61,7 @@ endif
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
@@ -71,7 +71,7 @@ $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 	touch $@
 	
 $(KERNEL_DIR)/.depend_done:  $(KERNEL_DIR)/.configured
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
@@ -81,13 +81,13 @@ $(KERNEL_DIR)/.depend_done:  $(KERNEL_DIR)/.configured
 	touch $@
 
 $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/lzma lzma_decode.a CROSS_COMPILE=$(KERNEL_CROSS) \
 		USE_CFLAGS="$(KERNEL_LZMA_CFLAGS)"
 	cp $(KERNEL_BUILD_DIR)/lzma/lzma_decode.a $@
 
 $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB) $(TOOLS_DIR)/lzma2eva
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		ARCH=$(KERNEL_ARCH) \
@@ -101,7 +101,7 @@ $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE
 	touch -c $@
 	
 $(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
@@ -109,7 +109,7 @@ $(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 		ARCH=$(KERNEL_ARCH) \
 		INSTALL_MOD_PATH="$(shell pwd)/$(KERNEL_BUILD_DIR)/modules/" \
 		modules
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
@@ -136,6 +136,7 @@ kernel-modules: $(KERNEL_DIR)/.modules
 
 kernel-menuconfig: $(KERNEL_DIR)/.unpacked
 	[ -f $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config ] || cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
+		PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 		$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
@@ -151,7 +152,7 @@ kernel-source: $(KERNEL_DIR)/.unpacked
 
 kernel-clean:
 	rm -f $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB)
-	export PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	PATH=$(KERNEL_MAKE_PATH):$(PATH); \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
