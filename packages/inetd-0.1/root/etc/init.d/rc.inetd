@@ -58,7 +58,9 @@ stop() {
 
 reload() {
         echo -n 'Reloading inetd configuration...'
-        kill -HUP $(cat /var/run/$DAEMON.pid) > /dev/null 2>&1
+        if [ -r "/var/run/$DAEMON.pid" ]; then
+			kill -HUP `cat /var/run/$DAEMON.pid`
+		fi
         exitval=$?
         if [ "$exitval" -eq 0 ]; then
                 echo 'done.'
