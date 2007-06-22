@@ -93,7 +93,7 @@ $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION): $(DL_DIR)/$(NTFS_PKG_SOURCE) | $(PACKAGES
 ntfs-package: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE) ntfs-$(NTFS_VERSION)
 					
-root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION):
+root/usr/lib/libntfs-3g.so root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION):
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so* root/usr/lib/
 	$(TARGET_STRIP) $@
 
