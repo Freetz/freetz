@@ -21,7 +21,7 @@ $(IPTABLES_DIR)/.unpacked $(IPTABLES_DIR_SYMLINK)/.unpacked: $(DL_DIR)/$(IPTABLE
 	touch $@
 
 $(IPTABLES_BINARY): \
-		$(IPTABLES_DIR)/.unpacked $(IPTABLES_KERNEL_DIR)/.unpacked
+		$(IPTABLES_DIR)/.unpacked | $(IPTABLES_KERNEL_DIR)/.unpacked
 	$(MAKE) KERNEL_DIR="$(shell pwd)/$(IPTABLES_KERNEL_DIR)/linux" \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
