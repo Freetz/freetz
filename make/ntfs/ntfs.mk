@@ -10,6 +10,8 @@ NTFS_PKG_SOURCE:=ntfs-$(NTFS_VERSION)-dsmod-$(NTFS_PKG_VERSION).tar.bz2
 NTFS_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 NTFS_TARGET_DIR:=$(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
 NTFS_TARGET_BINARY:=$(NTFS_TARGET_DIR)/root/usr/bin/ntfs-3g
+NTFS_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so.$(NTFS_VERSION)
+NTFS_LIB_TARGET_BINARY:=$(NTFS_TARGET_DIR)/root/usr/lib/libntfs-3g.so.$(NTFS_VERSION)
 
 $(DL_DIR)/$(NTFS_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(NTFS_SITE)/$(NTFS_SOURCE)
@@ -76,7 +78,7 @@ $(NTFS_BINARY): $(NTFS_DIR)/.configured
 		CROSS_COMPILE="$(TARGET_CROSS)" \
 		-C $(NTFS_DIR) all
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so: $(NTFS_BINARY)
+$(NTFS_LIB_STAGING_BINARY): $(NTFS_BINARY)
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(NTFS_DIR)/libntfs-3g \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -93,14 +95,13 @@ $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION): $(DL_DIR)/$(NTFS_PKG_SOURCE) | $(PACKAGES
 ntfs-package: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE) ntfs-$(NTFS_VERSION)
 					
-root/usr/lib/libntfs-3g.so root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION):
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so* root/usr/lib/
+$(NTFS_LIB_TARGET_BINARY): $(NTFS_LIB_STAGING_BINARY)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so* $(NTFS_TARGET_DIR)/root/usr/lib
 	$(TARGET_STRIP) $@
 
-ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so
+ntfs: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 
-ntfs-precompiled: uclibc fuse-precompiled ntfs $(NTFS_TARGET_BINARY) \
-					root/usr/lib/libntfs-3g.so root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION)
+ntfs-precompiled: uclibc fuse-precompiled ntfs $(NTFS_TARGET_BINARY) $(NTFS_LIB_TARGET_BINARY)
 
 ntfs-source: $(NTFS_DIR)/.unpacked $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 
