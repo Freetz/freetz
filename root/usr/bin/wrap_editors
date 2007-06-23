@@ -13,7 +13,7 @@
 # links with the right names pointing to this script. Examples:
 #   - /usr/bin/nvi   -> wrap_editors
 #   - /usr/bin/mnano -> wrap_editors
-#   - /any/path/xfoo  -> /usr/bin/wrap_editors
+#   - /any/path/xfoo -> /usr/bin/wrap_editors
 #
 # It might be a good idea to stick to the old n*/m* naming scheme for the
 # symbolic links you create, but it is not technically necessary, because this
@@ -23,6 +23,39 @@
 # if the link is named "xfoo", the script tries to call an editor named "foo".
 # The target editor must be in the current PATH, so the script can find it
 # via "which foo".
+
+
+# Function for calling the target editor, handling the result and permitting
+# some user interaction. Parameters:
+#   $1 - editor base name (NOT full path, otherwise we get problems with $tmp)
+#   $2 - file to be edited (full or relative path)
+edit_file()
+{
+	local tmp="/var/$1.tmp"
+	cat $2 > $tmp
+	$1 $tmp
+	local exitval=$?
+	if [ $exitval -ne 0 ]; then
+		rm -f $tmp
+		echo "editor session aborted" >&2
+		exit $exitval
+	fi
+	local save
+	echo -n "Are you sure you want to save the changes made? (y/n) "
+	read -n 1 -s save
+	echo
+	if [ "$save" == "y" ]; then
+		cat $tmp > $2
+		echo "done"
+		exitval=0
+	else
+		echo "aborted"
+		exitval=1
+	fi
+	rm -f $tmp
+	return $exitval
+}
+
 
 # Determine editor
 local editor_base=$(basename $0)
@@ -52,35 +85,12 @@ local dir="$(dirname "$1")"
 local base="$(basename "$1")"
 case "$(realpath "$dir")/" in
 	/var/flash/)
-		local tmp="/var/${editor_base}.tmp"
-		cat $1 > $tmp
-		$editor $tmp
-		exitval=$?
-		if [ $exitval -ne 0 ]; then
-			rm -f $tmp
-			echo "editor session aborted" >&2
-			exit $exitval
-		fi
-		local save
-		echo -n "Are you sure you want to save the changes made? (y/n) "
-		read -n 1 -s save
-		echo
-		if [ "$save" == "y" ]; then
-			cat $tmp > $1
-			echo "done"
-		else
-			echo "aborted"
-		fi
-		rm -f $tmp
+		edit_file $editor_base $1
 		;;
 	/var/tmp/flash/*)
-		$editor $1
-		exitval=$?
-		if [ $exitval -ne 0 ]; then
-			echo "editor session aborted" >&2
-			exit $exitval
+		if edit_file $editor_base $1; then
+			/usr/bin/modsave flash
 		fi
-		/usr/bin/modsave flash
 		;;
 	/var/mod/etc/conf/*)
 		local pkg="${base%.cfg}"
@@ -89,14 +99,10 @@ case "$(realpath "$dir")/" in
 			echo "error: file '$cfg' not found or not readable" >&2
 			exit 1
 		fi
-		$editor $1
-		exitval=$?
-		if [ $exitval -ne 0 ]; then
-			echo "editor session aborted" >&2
-			exit $exitval
+		if edit_file $editor_base $1; then
+			/usr/bin/modconf save $pkg
+			/usr/bin/modsave flash
 		fi
-		/usr/bin/modconf save $pkg
-		/usr/bin/modsave flash
 		;;
 	*)
 		echo "error: use only with files in /var/flash, /var/mod/etc/conf or /var/tmp/flash" >&2
