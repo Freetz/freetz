@@ -280,8 +280,10 @@ modpatch()
 {
 	local STATUS
 	if [ "$DS_VERBOSITY_LEVEL" -ge 2 ]; then
+		echo2 "applying patch file $2"
 		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
 		STATUS=${PIPESTATUS[0]}
+		echo2 "----------------------------------------------------------------------"
 	else
 		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
 		STATUS=$?
