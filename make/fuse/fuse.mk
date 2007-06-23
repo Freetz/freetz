@@ -126,7 +126,7 @@ fuse-dirclean:
 fuse-uninstall:
 	rm -f $(FUSE_TARGET_BINARY)
 	rm -f $(FUSE_MOD_TARGET_BINARY)
-	rm -f $(FUSE_LIB_TARGET_DIR)/libfuse*.so*
+	rm -f $(FUSE_TARGET_DIR)/root/usr/lib/libfuse*.so*
 
 fuse-list:
 ifeq ($(strip $(DS_PACKAGE_FUSE)),y)

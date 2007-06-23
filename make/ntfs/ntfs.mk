@@ -10,6 +10,7 @@ NTFS_PKG_SOURCE:=ntfs-$(NTFS_VERSION)-dsmod-$(NTFS_PKG_VERSION).tar.bz2
 NTFS_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 NTFS_TARGET_DIR:=$(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
 NTFS_TARGET_BINARY:=$(NTFS_TARGET_DIR)/root/usr/bin/ntfs-3g
+NTFS_LIB_BINARY:=$(NTFS_DIR)/lib/.libs/libntfs.so.$(NTFS_VERSION)
 NTFS_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION)
 NTFS_LIB_TARGET_BINARY:=$(NTFS_TARGET_DIR)/root/usr/lib/libntfs-3g.so.$(NTFS_LIB_VERSION)
 
@@ -72,13 +73,13 @@ $(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked
 	);
 	touch $@
 
-$(NTFS_BINARY): $(NTFS_DIR)/.configured
+$(NTFS_BINARY) $(NTFS_LIB_BINARY): $(NTFS_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
 		-C $(NTFS_DIR) all
 
-$(NTFS_LIB_STAGING_BINARY): $(NTFS_BINARY)
+$(NTFS_LIB_STAGING_BINARY): $(NTFS_LIB_BINARY)
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(NTFS_DIR)/libntfs-3g \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -108,16 +109,17 @@ ntfs-source: $(NTFS_DIR)/.unpacked $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 ntfs-clean:
 	-$(MAKE) -C $(NTFS_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE)
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*
-	rm -rf root/usr/lib/libntfs*.so*
 
 ntfs-dirclean:
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so.*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.a
 	rm -rf $(NTFS_DIR)
 	rm -rf $(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
 	rm -f $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 
 ntfs-uninstall:
 	rm -f $(NTFS_TARGET_BINARY)
+	rm -f $(NTFS_TARGET_DIR)/root/usr/lib/libntfs-3g*.so*
 
 ntfs-list:
 ifeq ($(strip $(DS_PACKAGE_NTFS)),y)
