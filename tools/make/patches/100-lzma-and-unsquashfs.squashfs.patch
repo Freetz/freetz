@@ -1,4 +1,4 @@
---- squashfs-tools/Makefile.orig	2006-01-14 00:09:03.570191416 +0100
+--- squashfs-tools/Makefile	2006-01-14 00:09:03.570191416 +0100
 +++ squashfs-tools/Makefile	2006-01-14 00:09:47.284545824 +0100
 @@ -1,12 +1,38 @@
  INCLUDEDIR = .
@@ -41,7 +41,7 @@
 +
 +clean:
 +	rm -f *.o mksquashfs mksquashfs-lzma unsquashfs unsquashfs-lzma mksquashfs-lzma.c unsquashfs-lzma.c squashfs_fs-lzma.h
---- squashfs-tools/squashfs_fs.h.orig	2005-04-20 03:46:58.000000000 +0200
+--- squashfs-tools/squashfs_fs.h	2005-04-20 03:46:58.000000000 +0200
 +++ squashfs-tools/squashfs_fs.h	2006-06-21 13:31:46.702704568 +0200
 @@ -50,6 +50,7 @@
  #define SQUASHFS_INVALID		((long long) 0xffffffffffff)

@@ -1,5 +1,5 @@
-diff -ruN source/include/smb.h.orig source/include/smb.h
---- source/include/smb.h.orig	2006-03-06 22:25:08.000000000 +0100
+diff -ruN source/include/smb.h source/include/smb.h
+--- source/include/smb.h	2006-03-06 22:25:08.000000000 +0100
 +++ source/include/smb.h	2006-03-06 22:25:53.000000000 +0100
 @@ -272,6 +272,7 @@
  #define ERRlock 33 /* Lock request conflicts with existing lock */
@@ -17,14 +17,14 @@ diff -ruN source/include/smb.h.orig source/include/smb.h
 +#define SAFE_FREE(x) do { if ((x) != NULL) {free((x)); (x)=NULL;} } while(0)
 +#endif
  #endif /* _SMB_H */
-diff -ruN source/include/version.h.orig source/include/version.h
---- source/include/version.h.orig	2001-06-23 15:23:59.000000000 +0200
+diff -ruN source/include/version.h source/include/version.h
+--- source/include/version.h	2001-06-23 15:23:59.000000000 +0200
 +++ source/include/version.h	2006-03-06 22:25:53.000000000 +0100
 @@ -1 +1 @@
 -#define VERSION "2.0.10"
 +#define VERSION "2.0.10-security-rollup"
-diff -ruN source/smbd/filename.c.orig source/smbd/filename.c
---- source/smbd/filename.c.orig	2000-03-16 23:59:44.000000000 +0100
+diff -ruN source/smbd/filename.c source/smbd/filename.c
+--- source/smbd/filename.c	2000-03-16 23:59:44.000000000 +0100
 +++ source/smbd/filename.c	2006-03-06 22:25:53.000000000 +0100
 @@ -172,7 +172,7 @@
     * StrnCpy always null terminates.
@@ -35,8 +35,8 @@ diff -ruN source/smbd/filename.c.orig source/smbd/filename.c
    if(!case_sensitive)
      strupper( orig_name );
  
-diff -ruN source/smbd/ipc.c.orig source/smbd/ipc.c
---- source/smbd/ipc.c.orig	2006-03-06 22:25:08.000000000 +0100
+diff -ruN source/smbd/ipc.c source/smbd/ipc.c
+--- source/smbd/ipc.c	2006-03-06 22:25:08.000000000 +0100
 +++ source/smbd/ipc.c	2006-03-06 22:25:53.000000000 +0100
 @@ -3556,18 +3556,18 @@
  	uint16 *setup=NULL;
@@ -211,8 +211,8 @@ diff -ruN source/smbd/ipc.c.orig source/smbd/ipc.c
 +	SAFE_FREE(setup);
 +	return(ERROR(ERRSRV,ERRerror));
  }
-diff -ruN source/smbd/nttrans.c.orig source/smbd/nttrans.c
---- source/smbd/nttrans.c.orig	2000-04-24 19:27:30.000000000 +0200
+diff -ruN source/smbd/nttrans.c source/smbd/nttrans.c
+--- source/smbd/nttrans.c	2000-04-24 19:27:30.000000000 +0200
 +++ source/smbd/nttrans.c	2006-03-06 22:25:53.000000000 +0100
 @@ -2575,11 +2575,14 @@
      params = (char *)malloc(total_parameter_count);
@@ -389,8 +389,8 @@ diff -ruN source/smbd/nttrans.c.orig source/smbd/nttrans.c
 +  SAFE_FREE(setup);
 +  return ERROR(ERRDOS,ERRinvalidparam);
  }
-diff -ruN source/smbd/password.c.orig source/smbd/password.c
---- source/smbd/password.c.orig	2006-03-06 22:25:08.000000000 +0100
+diff -ruN source/smbd/password.c source/smbd/password.c
+--- source/smbd/password.c	2006-03-06 22:25:08.000000000 +0100
 +++ source/smbd/password.c	2006-03-06 22:25:53.000000000 +0100
 @@ -770,7 +770,7 @@
        if (!ok && lp_username(snum)) {
@@ -401,8 +401,8 @@ diff -ruN source/smbd/password.c.orig source/smbd/password.c
  
  	pstring_sub(user_list,"%S",lp_servicename(snum));
  	  
-diff -ruN source/smbd/reply.c.orig source/smbd/reply.c
---- source/smbd/reply.c.orig	2006-03-06 22:25:08.000000000 +0100
+diff -ruN source/smbd/reply.c source/smbd/reply.c
+--- source/smbd/reply.c	2006-03-06 22:25:08.000000000 +0100
 +++ source/smbd/reply.c	2006-03-06 22:25:53.000000000 +0100
 @@ -1413,6 +1413,9 @@
  
@@ -424,8 +424,8 @@ diff -ruN source/smbd/reply.c.orig source/smbd/reply.c
  			put_dos_date2(p,0,queue[i].time);
  			CVAL(p,4) = (queue[i].status==LPQ_PRINTING?2:3);
  			SSVAL(p,5,printjob_encode(SNUM(conn), 
-diff -ruN source/smbd/trans2.c.orig source/smbd/trans2.c
---- source/smbd/trans2.c.orig	2000-04-24 19:27:31.000000000 +0200
+diff -ruN source/smbd/trans2.c source/smbd/trans2.c
+--- source/smbd/trans2.c	2000-04-24 19:27:31.000000000 +0200
 +++ source/smbd/trans2.c	2006-03-06 22:25:53.000000000 +0100
 @@ -201,7 +201,6 @@
    int16 open_ofun = SVAL(params,12);

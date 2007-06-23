@@ -1,5 +1,5 @@
-diff -ruN source/include/smb.h.orig source/include/smb.h
---- source/include/smb.h.orig	2006-03-06 22:25:53.000000000 +0100
+diff -ruN source/include/smb.h source/include/smb.h
+--- source/include/smb.h	2006-03-06 22:25:53.000000000 +0100
 +++ source/include/smb.h	2006-03-06 22:27:31.000000000 +0100
 @@ -24,8 +24,14 @@
  #ifndef _SMB_H
@@ -16,8 +16,8 @@ diff -ruN source/include/smb.h.orig source/include/smb.h
  
  #define NMB_PORT 137
  #define DGRAM_PORT 138
-diff -ruN source/lib/util_sock.c.orig source/lib/util_sock.c
---- source/lib/util_sock.c.orig	2000-03-16 23:59:18.000000000 +0100
+diff -ruN source/lib/util_sock.c source/lib/util_sock.c
+--- source/lib/util_sock.c	2000-03-16 23:59:18.000000000 +0100
 +++ source/lib/util_sock.c	2006-03-06 22:27:31.000000000 +0100
 @@ -649,19 +649,21 @@
    memset(buffer,'\0',smb_size + 100);
@@ -46,8 +46,8 @@ diff -ruN source/lib/util_sock.c.orig source/lib/util_sock.c
  
    if(len > 0) {
      ret = read_socket_data(fd,buffer+4,len);
-diff -ruN source/smbd/oplock.c.orig source/smbd/oplock.c
---- source/smbd/oplock.c.orig	2000-04-25 04:32:14.000000000 +0200
+diff -ruN source/smbd/oplock.c source/smbd/oplock.c
+--- source/smbd/oplock.c	2000-04-25 04:32:14.000000000 +0200
 +++ source/smbd/oplock.c	2006-03-06 22:27:31.000000000 +0100
 @@ -887,13 +887,13 @@
       messages crossing on the wire.
@@ -65,8 +65,8 @@ diff -ruN source/smbd/oplock.c.orig source/smbd/oplock.c
    {
      DEBUG(0,("oplock_break: malloc fail for output buffer.\n"));
      free(inbuf);
-diff -ruN source/smbd/process.c.orig source/smbd/process.c
---- source/smbd/process.c.orig	2006-03-06 22:25:28.000000000 +0100
+diff -ruN source/smbd/process.c source/smbd/process.c
+--- source/smbd/process.c	2006-03-06 22:25:28.000000000 +0100
 +++ source/smbd/process.c	2006-03-06 22:27:31.000000000 +0100
 @@ -995,8 +995,8 @@
    time_t last_timeout_processing_time = time(NULL);
@@ -88,8 +88,8 @@ diff -ruN source/smbd/process.c.orig source/smbd/process.c
      {
        if(!timeout_processing( deadtime, &select_timeout, &last_timeout_processing_time))
          return;
-diff -ruN source/smbd/reply.c.orig source/smbd/reply.c
---- source/smbd/reply.c.orig	2006-03-06 22:25:53.000000000 +0100
+diff -ruN source/smbd/reply.c source/smbd/reply.c
+--- source/smbd/reply.c	2006-03-06 22:25:53.000000000 +0100
 +++ source/smbd/reply.c	2006-03-06 22:27:31.000000000 +0100
 @@ -2551,17 +2551,28 @@
    size_t numtowrite = SVAL(inbuf,smb_vwv10);

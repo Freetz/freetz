@@ -1,5 +1,5 @@
-diff -ruN source/include/smb.h.orig source/include/smb.h
---- source/include/smb.h.orig	2001-06-23 10:52:20.000000000 +0200
+diff -ruN source/include/smb.h source/include/smb.h
+--- source/include/smb.h	2001-06-23 10:52:20.000000000 +0200
 +++ source/include/smb.h	2006-03-06 22:21:12.000000000 +0100
 @@ -115,6 +115,22 @@
   *               Usage:
@@ -43,8 +43,8 @@ diff -ruN source/include/smb.h.orig source/include/smb.h
  #define CAP_EXTENDED_SECURITY 0x80000000
  
  /* protocol types. It assumes that higher protocols include lower protocols
-diff -ruN source/Makefile.in.orig source/Makefile.in
---- source/Makefile.in.orig	2000-03-16 23:57:08.000000000 +0100
+diff -ruN source/Makefile.in source/Makefile.in
+--- source/Makefile.in	2000-03-16 23:57:08.000000000 +0100
 +++ source/Makefile.in	2006-03-06 22:21:12.000000000 +0100
 @@ -37,8 +37,8 @@
  # set these to where to find various files
@@ -172,8 +172,8 @@ diff -ruN source/Makefile.in.orig source/Makefile.in
  	-rmdir bin
  
  distclean: realclean
-diff -ruN source/nmbd/nmbd_mynames.c.orig source/nmbd/nmbd_mynames.c
---- source/nmbd/nmbd_mynames.c.orig	2000-03-16 23:59:24.000000000 +0100
+diff -ruN source/nmbd/nmbd_mynames.c source/nmbd/nmbd_mynames.c
+--- source/nmbd/nmbd_mynames.c	2000-03-16 23:59:24.000000000 +0100
 +++ source/nmbd/nmbd_mynames.c	2006-03-06 22:21:12.000000000 +0100
 @@ -215,8 +215,8 @@
           */
@@ -186,8 +186,8 @@ diff -ruN source/nmbd/nmbd_mynames.c.orig source/nmbd/nmbd_mynames.c
        }
      }
    }
-diff -ruN source/smbd/close.c.orig source/smbd/close.c
---- source/smbd/close.c.orig	2000-04-21 19:43:13.000000000 +0200
+diff -ruN source/smbd/close.c source/smbd/close.c
+--- source/smbd/close.c	2000-04-21 19:43:13.000000000 +0200
 +++ source/smbd/close.c	2006-03-06 22:21:12.000000000 +0100
 @@ -122,11 +122,11 @@
  		last_reference = True;
@@ -203,8 +203,8 @@ diff -ruN source/smbd/close.c.orig source/smbd/close.c
  	/* check for magic scripts */
  	if (normal_close) {
  		check_magic(fsp,conn);
-diff -ruN source/smbd/ipc.c.orig source/smbd/ipc.c
---- source/smbd/ipc.c.orig	2000-03-30 00:20:06.000000000 +0200
+diff -ruN source/smbd/ipc.c source/smbd/ipc.c
+--- source/smbd/ipc.c	2000-03-30 00:20:06.000000000 +0200
 +++ source/smbd/ipc.c	2006-03-06 22:21:12.000000000 +0100
 @@ -472,7 +472,7 @@
    PACK(desc,t,v);
@@ -290,8 +290,8 @@ diff -ruN source/smbd/ipc.c.orig source/smbd/ipc.c
    {"SamOEMChangePassword", 214, api_SamOEMChangePassword,0},
    {NULL,		-1,	api_Unsupported,0}};
  
-diff -ruN source/smbd/negprot.c.orig source/smbd/negprot.c
---- source/smbd/negprot.c.orig	2000-03-16 23:59:47.000000000 +0100
+diff -ruN source/smbd/negprot.c source/smbd/negprot.c
+--- source/smbd/negprot.c	2000-03-16 23:59:47.000000000 +0100
 +++ source/smbd/negprot.c	2006-03-06 22:21:12.000000000 +0100
 @@ -160,7 +160,7 @@
    /* dual names + lock_and_read + nt SMBs + remote API calls */
@@ -302,8 +302,8 @@ diff -ruN source/smbd/negprot.c.orig source/smbd/negprot.c
  
  
  /*
-diff -ruN source/smbd/password.c.orig source/smbd/password.c
---- source/smbd/password.c.orig	2000-03-16 23:59:48.000000000 +0100
+diff -ruN source/smbd/password.c source/smbd/password.c
+--- source/smbd/password.c	2000-03-16 23:59:48.000000000 +0100
 +++ source/smbd/password.c	2006-03-06 22:21:12.000000000 +0100
 @@ -1149,7 +1149,7 @@
  
@@ -319,8 +319,8 @@ diff -ruN source/smbd/password.c.orig source/smbd/password.c
    return True;
  }
 +#endif
-diff -ruN source/smbd/process.c.orig source/smbd/process.c
---- source/smbd/process.c.orig	2000-04-15 02:21:27.000000000 +0200
+diff -ruN source/smbd/process.c source/smbd/process.c
+--- source/smbd/process.c	2000-04-15 02:21:27.000000000 +0200
 +++ source/smbd/process.c	2006-03-06 22:21:12.000000000 +0100
 @@ -343,10 +343,12 @@
     {SMBlseek,"SMBlseek",reply_lseek,AS_USER},
@@ -353,8 +353,8 @@ diff -ruN source/smbd/process.c.orig source/smbd/process.c
    /*
     * Check to see if we have any blocking locks
     * outstanding on the queue.
-diff -ruN source/smbd/reply.c.orig source/smbd/reply.c
---- source/smbd/reply.c.orig	2001-06-23 10:51:24.000000000 +0200
+diff -ruN source/smbd/reply.c source/smbd/reply.c
+--- source/smbd/reply.c	2001-06-23 10:51:24.000000000 +0200
 +++ source/smbd/reply.c	2006-03-06 22:21:12.000000000 +0100
 @@ -597,12 +597,12 @@
  
@@ -389,8 +389,8 @@ diff -ruN source/smbd/reply.c.orig source/smbd/reply.c
  
  /****************************************************************************
    reply to a mkdir
-diff -ruN source/smbd/server.c.orig source/smbd/server.c
---- source/smbd/server.c.orig	2000-03-16 23:59:52.000000000 +0100
+diff -ruN source/smbd/server.c source/smbd/server.c
+--- source/smbd/server.c	2000-03-16 23:59:52.000000000 +0100
 +++ source/smbd/server.c	2006-03-06 22:21:12.000000000 +0100
 @@ -300,9 +300,9 @@
  	lp_killunused(conn_snum_used);
@@ -404,8 +404,8 @@ diff -ruN source/smbd/server.c.orig source/smbd/server.c
  	/* perhaps the config filename is now set */
  	if (!test)
  		reload_services(True);
-diff -ruN source/smbd/service.c.orig source/smbd/service.c
---- source/smbd/service.c.orig	2000-03-16 23:59:52.000000000 +0100
+diff -ruN source/smbd/service.c source/smbd/service.c
+--- source/smbd/service.c	2000-03-16 23:59:52.000000000 +0100
 +++ source/smbd/service.c	2006-03-06 22:21:12.000000000 +0100
 @@ -121,7 +121,7 @@
        }
@@ -425,8 +425,8 @@ diff -ruN source/smbd/service.c.orig source/smbd/service.c
     /* just possibly it's a default service? */
     if (iService < 0) 
     {
-diff -ruN source/utils/smbpasswd.c.orig source/utils/smbpasswd.c
---- source/utils/smbpasswd.c.orig	2000-03-16 23:59:57.000000000 +0100
+diff -ruN source/utils/smbpasswd.c source/utils/smbpasswd.c
+--- source/utils/smbpasswd.c	2000-03-16 23:59:57.000000000 +0100
 +++ source/utils/smbpasswd.c	2006-03-06 22:21:12.000000000 +0100
 @@ -71,7 +71,7 @@
  	}
@@ -462,8 +462,8 @@ diff -ruN source/utils/smbpasswd.c.orig source/utils/smbpasswd.c
  	/*
  	 * Deal with root - can add a user, but only locally.
  	 */
-diff -ruN source/web/swat.c.orig source/web/swat.c
---- source/web/swat.c.orig	2000-04-11 19:36:36.000000000 +0200
+diff -ruN source/web/swat.c source/web/swat.c
+--- source/web/swat.c	2000-04-11 19:36:36.000000000 +0200
 +++ source/web/swat.c	2006-03-06 22:21:12.000000000 +0100
 @@ -357,8 +357,9 @@
                  return 0;
