@@ -16,10 +16,10 @@ $Id$
   websrv has yet to be done, though.
 - Experiment with and possibly use dietlibc to create smaller binaries by
   statically compiling in stuff usually dynamically linked to uClibc.
-- Add libthread_db to download toolchain (and UCLIBC_FILES)
 - Determine the best way to include rpath, i.e. something like
   export LD_RUN_PATH=/mod/lib:/lib:/usr/lib
   into makefile(s). It should be applied to all binaries for the target
   system, but not to tools and toolchain binaries.
-- Enhance Virtual-IP-CGI so it supports other (and possibly multiple)
+  comment (olistudent): Perhaps we should leave things as they are (LD_LIBRARY_PATH)
+- Enhance Virtual-IP-CGI and Openntpd so it supports other (and possibly multiple)
   interfaces than lan:1 (http://www.ip-phone-forum.de/showpost.php?p=886345)
