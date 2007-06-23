@@ -6,7 +6,7 @@ NANO_MAKE_DIR:=$(MAKE_DIR)/nano
 NANO_BINARY:=$(NANO_DIR)/src/nano
 NANO_TARGET_DIR:=$(PACKAGES_DIR)/nano-$(NANO_VERSION)
 NANO_TARGET_BINARY:=$(NANO_TARGET_DIR)/root/usr/bin/nano
-NANO_PKG_VERSION:=0.2
+NANO_PKG_VERSION:=0.3
 NANO_PKG_SOURCE:=nano-$(NANO_VERSION)-dsmod-$(NANO_PKG_VERSION).tar.bz2
 NANO_PKG_SITE:=http://mcknight.ath.cx/dsmod/packages
 
