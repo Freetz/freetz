@@ -1,6 +1,6 @@
 MODCGI_VERSION:=0.2
 MODCGI_SOURCE:=modcgi-$(MODCGI_VERSION).tar.bz2
-MODCGI_SITE:=http://dsmod.magenbrot.net/source
+MODCGI_SITE:=http://dsmod.magenbrot.net
 MODCGI_DIR:=$(SOURCE_DIR)/modcgi-$(MODCGI_VERSION)
 MODCGI_BINARY:=$(MODCGI_DIR)/modcgi
 MODCGI_TARGET_DIR:=root/usr/bin
