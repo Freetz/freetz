@@ -1,6 +1,6 @@
 FIREWALL_CGI_VERSION:=0.5.2
 FIREWALL_CGI_PKG_SOURCE:=firewall-cgi-$(FIREWALL_CGI_VERSION)-dsmod.tar.bz2
-FIREWALL_CGI_PKG_SITE:=http://www.eiband.info/dsmod
+FIREWALL_CGI_PKG_SITE:=http://dsmod.magenbrot.net
 
 $(DL_DIR)/$(FIREWALL_CGI_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(FIREWALL_CGI_PKG_SOURCE) $(FIREWALL_CGI_PKG_SITE)

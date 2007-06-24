@@ -11,7 +11,7 @@ SAMBA_TARGET_SMBD_BINARY:=$(SAMBA_TARGET_DIR)/root/usr/sbin/smbd
 SAMBA_TARGET_NMBD_BINARY:=$(SAMBA_TARGET_DIR)/root/usr/sbin/nmbd
 SAMBA_PKG_VERSION:=0.1
 SAMBA_PKG_SOURCE:=samba-$(SAMBA_VERSION)-dsmod-$(SAMBA_PKG_VERSION).tar.bz2
-SAMBA_PKG_SITE:=http://www.eiband.info/dsmod
+SAMBA_PKG_SITE:=http://dsmod.magenbrot.net
 
 
 $(DL_DIR)/$(SAMBA_SOURCE): | $(DL_DIR)

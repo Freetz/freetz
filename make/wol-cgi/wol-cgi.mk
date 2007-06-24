@@ -1,6 +1,6 @@
 WOL_CGI_VERSION:=0.5
 WOL_CGI_PKG_SOURCE:=wol-cgi-$(WOL_CGI_VERSION)-dsmod.tar.bz2
-WOL_CGI_PKG_SITE:=http://www.eiband.info/dsmod
+WOL_CGI_PKG_SITE:=http://dsmod.magenbrot.net
 
 
 $(DL_DIR)/$(WOL_CGI_PKG_SOURCE): | $(DL_DIR)
