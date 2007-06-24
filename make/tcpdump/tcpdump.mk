@@ -1,4 +1,4 @@
-TCPDUMP_VERSION:=3.9.4
+TCPDUMP_VERSION:=3.9.6
 TCPDUMP_SOURCE:=tcpdump-$(TCPDUMP_VERSION).tar.gz
 TCPDUMP_SITE:=http://www.tcpdump.org/release
 TCPDUMP_MAKE_DIR:=$(MAKE_DIR)/tcpdump
