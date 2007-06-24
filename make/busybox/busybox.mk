@@ -30,7 +30,7 @@ $(BUSYBOX_CUSTOM_CONFIG_FILE): $(TOPDIR)/.config $(BUSYBOX_CONFIG_FILE)
 			-e 's/^(# )?(CONFIG_INETD).*/\2=$(if $(DS_BUSYBOX_INETD),y,n)/' \
 			-e 's/^(# )?(CONFIG_FEATURE_INETD_SUPPORT_BUILTIN_TIME).*/\2=$(if $(DS_BUSYBOX_INETD),y,n)/' \
 			-e 's/^(# )?(CONFIG_FEATURE_INETD_SUPPORT_BUILTIN_DAYTIME).*/\2=$(if $(DS_BUSYBOX_INETD),y,n)/' \
-			-e 's/^(# )?(CONFIG_AR).*/\2=$(if $(DS_BUSYBOX_AR),y,n)/' \
+			-e 's/^(# )?(CONFIG_AR)\b.*/\2=$(if $(DS_BUSYBOX_AR),y,n)/' \
 			-e 's/^(# )?(CONFIG_FEATURE_AR_LONG_FILENAMES).*/\2=$(if $(DS_BUSYBOX_AR),y,n)/' \
 			-e 's/^(# )?(CONFIG_DIFF).*/\2=$(if $(DS_BUSYBOX_DIFF),y,n)/' \
 			-e 's/^(# )?(CONFIG_FEATURE_DIFF_BINARY).*/\2=$(if $(DS_BUSYBOX_DIFF),y,n)/' \
