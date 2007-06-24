@@ -1,11 +1,11 @@
 --- etc/init.d/rc.S	2006-03-20 17:33:06.000000000 +0100
 +++ etc/init.d/rc.S	2006-03-20 17:34:33.000000000 +0100
-@@ -349,6 +349,8 @@
+@@ -295,6 +295,8 @@
   mknod /var/flash/calllog c $tffs_major $((0x8D))
   mknod /var/flash/aura-usb c $tffs_major $((0xA0))
   mknod /var/flash/browser-data c $tffs_major $((0xA8))
-+	mknod /var/flash/ds_mod c $tffs_major $((0x3c))
-+	/usr/bin/modload 2>&1 | tee /var/log/mod_load.log
++ mknod /var/flash/ds_mod c $tffs_major $((0x3c))
++ /usr/bin/modload 2>&1 | tee /var/log/mod_load.log
  #file "stdin", 9
  #file "./arch/etc/init.d/rc.cpmac.sh", 0
- ##########################################################################################
+ #file "stdin", 10
