@@ -65,10 +65,14 @@ $(OPENSSL_STAGING_SSL_BINARY) $(OPENSSL_STAGING_CRYPTO_BINARY): \
 		install
 
 $(OPENSSL_TARGET_SSL_BINARY): $(OPENSSL_STAGING_SSL_BINARY) 
+	# FIXME: Strange enough, this chmod is really necessary. Maybe the
+	# previous 'install' can be parametrised differently fo fix this.
+	chmod 755 $(OPENSSL_STAGING_SSL_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*.so* $(OPENSSL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
 $(OPENSSL_TARGET_CRYPTO_BINARY): $(OPENSSL_STAGING_CRYPTO_BINARY)
+	chmod 755 $(OPENSSL_STAGING_CRYPTO_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*.so* $(OPENSSL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 	
