@@ -4,7 +4,7 @@ SCREEN_SITE:=http://ftp.gnu.org/gnu/screen
 SCREEN_MAKE_DIR:=$(MAKE_DIR)/screen
 SCREEN_DIR:=$(SOURCE_DIR)/screen-$(SCREEN_VERSION)
 SCREEN_BINARY:=$(SCREEN_DIR)/screen
-SCREEN_PKG_VERSION:=0.1
+SCREEN_PKG_VERSION:=0.2
 SCREEN_PKG_SOURCE:=screen-$(SCREEN_VERSION)-dsmod-$(SCREEN_PKG_VERSION).tar.bz2
 SCREEN_PKG_SITE:=http://dsmod.magenbrot.net
 SCREEN_TARGET_DIR:=$(PACKAGES_DIR)/screen-$(SCREEN_VERSION)
@@ -104,7 +104,8 @@ screen-dirclean:
 
 screen-uninstall:
 	rm -f $(SCREEN_TARGET_BINARY)
-	
+	rm -rf $(SCREEN_TARGET_DIR)/root/usr/share/terminfo/{a,d,l,r,s,v,x}
+
 screen-list:
 ifeq ($(strip $(DS_PACKAGE_SCREEN)),y)
 	@echo "S99screen-$(SCREEN_VERSION)" >> .static
