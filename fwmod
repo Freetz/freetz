@@ -278,18 +278,40 @@ echo2()
 
 modpatch()
 {
+	local backup
+	local do_fix
+	local files
+	if [ "$AUTO_FIX_PATCHES" == "y" ]; then
+		local output=$(patch --dry-run -d "$1" -p0 < "$2" 2> /dev/null)
+		if [ $? -eq 0 ] && echo "$output" | grep -E '^Hunk ' > /dev/null 2>&1; then
+			do_fix="y"
+			backup="-b "
+			files=$(echo "$output" | sed -n -r 's/^patching file (.*)/\1/p')
+		fi
+	fi
 	local STATUS
 	if [ "$DS_VERBOSITY_LEVEL" -ge 2 ]; then
 		echo2 "applying patch file $2"
-		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
+		patch ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
 		STATUS=${PIPESTATUS[0]}
 		echo2 "----------------------------------------------------------------------"
 	else
-		patch -d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
+		patch ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
 		STATUS=$?
 	fi
 	if [ $STATUS -gt 0 ]; then
 		error 2 "modpatch: Error in patch-file $2"
+	elif [ "$AUTO_FIX_PATCHES" == "y" ] && [ "$do_fix" == "y" ]; then
+		echo2 "auto-fixing fuzzy patch file $2"
+		local patch_file=$(realpath "$2")
+		mv -f "$patch_file" "$patch_file.orig"
+		cd "$1"
+		for file in $files; do
+			diff -Naur "$file.orig" "$file" >> "$patch_file"
+			rm -f "$file.orig"
+		done
+		cd - > /dev/null
+		echo2 "----------------------------------------------------------------------"
 	fi
 }
 
