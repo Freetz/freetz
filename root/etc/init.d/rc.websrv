@@ -1,0 +1,71 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+VERBOSE_RC_CONF=n
+. /etc/init.d/rc.conf
+
+DAEMON=websrv
+DAEMON_LONG_NAME="$DAEMON AVM web UI"
+
+pid() {
+	ps | grep -E 'httpd( -p 80)? -h /usr/www/all' | grep -v grep | awk '{print $1}'
+}
+
+start() {
+	echo -n "Starting $DAEMON_LONG_NAME..."
+	#env -i CONFIG_ROMSIZE="$CONFIG_ROMSIZE" PATH="$PATH" \
+	httpd -p 80 -h /usr/www/all
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo "done."
+	else
+		echo "failed."
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n "Stopping $DAEMON_LONG_NAME..."
+	kill $(pid) 2> /dev/null
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo "done."
+	else
+		echo "failed."
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	kill)
+		kill -kill $(pid) 2> /dev/null
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ "$(pid)" ]; then
+			echo "running"
+		else
+			echo "stopped"
+		fi
+		;;
+	pid)
+		pid
+		;;
+	*)
+		echo "Usage: $0 [start|stop|kill|restart|status|pid]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

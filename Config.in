@@ -158,7 +158,9 @@ config DS_TYPE_STRING
 	default "7141"		if DS_TYPE_FON_WLAN_7141
 	default "7150"		if DS_TYPE_FON_WLAN_7150
 	default "7170"		if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
-	default "7170_labor"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR	
+	default "7170_labor_phone"	if DS_TYPE_LABOR_PHONE
+	default "7170_labor_usb"	if DS_TYPE_LABOR_USB
+	default "7170_labor_vpn"	if DS_TYPE_LABOR_VPN
 	default "W701V"		if DS_TYPE_SPEEDPORT_W701V
 	default "W900V"		if DS_TYPE_SPEEDPORT_W900V
 	default "custom"	if DS_TYPE_CUSTOM
@@ -671,6 +673,36 @@ config DS_PATCH_USBSTORAGE
 	default n
         help
 	    Change the name of USB storage dir to uStorXY
+
+config DS_PATCH_WEBSRV
+	bool "Replace AVM web server by httpd - EXPERIMENTAL"
+	default n
+	help
+		Patch init scripts so BusyBox's httpd is used instead of AVM's websrv.
+		The websrv binary will be removed from the firmware image.
+
+		If "Remove UPnP daemon (igdd)" patch is also selected, 'libwebsrv.so'
+		will also be removed, because only those two binaries use it.
+
+		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
+config DS_PATCH_UPNP
+	bool "Remove UPnP daemon (igdd) - EXPERIMENTAL"
+	default n
+	help
+		Remove Universal Plug'n'Play daemon 'igdd' and some more files used by
+		it from firmware. Patch init scripts so they can cope with the
+		non-existent binary.
+
+		If "Replace AVM web server by httpd" patch is also selected,
+		'libwebsrv.so' will also be removed, because only those two binaries
+		use it.
+
+		ATTENTION: Make sure you deactivate all UPnP features in the web menu
+		before updating the firmware with this option. It may not be harmful
+		not to deactivate it, but there is no guarantee.
+
+		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
 comment "Mod ------------------------------------"
 

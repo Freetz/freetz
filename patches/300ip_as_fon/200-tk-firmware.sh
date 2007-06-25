@@ -1,4 +1,4 @@
-# linking tcom-defaults to box-deaults 
+# linking tcom-defaults to box-defaults 
 ln -sf default.Fritz_Box_FON  "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_Eumex300IP"
 ln -sf default.Fritz_Box_FON/avm  "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_FON/tcom"
 cp ${FILESYSTEM_MOD_DIR}/etc/default.049/fx_lcr.default  ${FILESYSTEM_MOD_DIR}/etc/default.049/fx_lcr.tcom
@@ -7,7 +7,7 @@ ln -sf all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 # to be sure: Add original HWRevision-files from Eumex to rc.init
 echo1  "adding HWRevision 78 to rc.init"
 
-cat <<EOP >> ${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init
+cat << 'EOF' >> ${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init
 #-------------------------Eumex 300IP---------
 HW=78 OEM=all ANNEX=B
 HW=78 OEM=all INSTALL_TYPE=ar7_4MB_1eth_3ab_isdn_pots_63151
@@ -48,9 +48,8 @@ HW=78 OEM=all USB=y USB_HOST_TI=n USB_HOST_AVM=n USB_STORAGE=n USB_WLAN_AUTH=n U
 HW=78 OEM=all BLUETOOTH=n BLUETOOTH_CTP=n
 HW=78 OEM=all AUDIO=n
 HW=78 OEM=all XILINX=n
-EOP
+EOF
 
 # patch install script to accept firmware from FBF or Eumex
 echo1 "applying install patch"
 modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-300ip-as-fon.patch" || exit 2
-

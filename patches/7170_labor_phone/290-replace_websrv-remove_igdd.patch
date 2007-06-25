@@ -1,0 +1,89 @@
+--- bin/prepare_fwupgrade.orig	2007-05-14 15:18:12.000000000 +0200
++++ bin/prepare_fwupgrade	2007-06-25 13:27:04.000000000 +0200
+@@ -38,7 +38,7 @@
+ voipd -s
+ avmike -s
+ killall printserv
+-/sbin/igdd -s
++[ -x /sbin/igdd ] && /sbin/igdd -s
+ usermand -s
+ if [ "$1" = "start_from_internet" ] ; then
+ # we will download the update image from the internet so
+@@ -96,6 +96,7 @@
+ killall avmike
+ killall dsld
+ killall websrv
++[ -x /etc/init.d/rc.websrv ] && /etc/init.d/rc.websrv stop 2> /dev/null
+ killall wpa_authenticator
+ killall wstart
+ /sbin/multid -s
+@@ -109,6 +110,7 @@
+ killall -9 dsld
+ killall -9 thttpd
+ killall -9 websrv
++[ -x /etc/init.d/rc.websrv ] && /etc/init.d/rc.websrv kill 2> /dev/null
+ killall -9 wpa_authenticator
+ killall -9 wstart
+ killall -9 multid
+--- etc/init.d/rc.net.orig	2007-06-25 13:27:03.000000000 +0200
++++ etc/init.d/rc.net	2007-06-25 13:27:04.000000000 +0200
+@@ -51,8 +51,13 @@
+    WLAN_TEST=0
+ fi
+ 
++_websrv=$(basename $(which websrv) 2> /dev/null)
++_igdd=$(basename $(which igdd) 2> /dev/null)
++[ "$_igdd" ] || MULTIDPARAM="-u"
++
+ igddstart()
+ {
++   [ "$_igdd" ] || return;
+    if [ "`pidof igdd`" = "" ] ; then
+       igdd $VERBOSEPARAM
+       sleep 1
+@@ -209,14 +214,15 @@
+ stopall()
+ {
+    if [ "$CONFIG_DSL" ] ; then
+-      AVMDAEMONS="avmike dsld igdd websrv multid"
++      AVMDAEMONS="avmike dsld $_igdd $_websrv multid"
+    else
+-      AVMDAEMONS="igdd websrv multid"
++      AVMDAEMONS="$_igdd $_websrv multid"
+    fi
+    DAEMONS=
+    for i in $AVMDAEMONS ; do
+     eval $i -s
+    done
++   [ "$_websrv" ] || /etc/init.d/rc.websrv stop
+    sleep 3
+    for i in $DAEMONS $AVMDAEMONS ; do
+      killall -15 $i
+@@ -265,9 +271,15 @@
+      ctlmgr $NICEPARAM $VERBOSEPARAM
+    fi
+ 
++   if [ "$_websrv" ]; then
+    if [ "`pidof websrv`" = "" ] ; then
+      websrv $NICEPARAM
+    fi
++   else
++     if [ "$(/etc/init.d/rc.websrv status)" == "stopped" ]; then
++       /etc/init.d/rc.websrv start
++     fi
++   fi
+ 
+    igddstart
+    multidstart
+@@ -313,9 +325,9 @@
+       if [ "$1" ] ; then
+          AVMDAEMONS="$*"
+       elif [ "$CONFIG_DSL" ] ; then
+-         AVMDAEMONS="avmike dsld igdd multid"
++         AVMDAEMONS="avmike dsld $_igdd multid"
+       else
+-         AVMDAEMONS="igdd multid"
++         AVMDAEMONS="$_igdd multid"
+       fi
+ 
+       # stop the daemon with -s
