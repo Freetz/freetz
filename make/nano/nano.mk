@@ -65,13 +65,8 @@ $(NANO_BINARY): $(NANO_DIR)/.configured
 	PATH="$(TARGET_PATH)" make -C $(NANO_DIR)
 
 $(NANO_TARGET_BINARY): $(NANO_BINARY) 
-	mkdir -p $(NANO_TARGET_DIR)/root/usr/share/terminfo/v
-	mkdir -p $(NANO_TARGET_DIR)/root/usr/share/terminfo/x
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/v/vt102 \
-		$(NANO_TARGET_DIR)/root/usr/share/terminfo/v/
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/v/vt102-nsgr \
-		$(NANO_TARGET_DIR)/root/usr/share/terminfo/v/
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/v/vt102-w \
+	mkdir -p $(NANO_TARGET_DIR)/root/usr/share/terminfo/{v,x}
+	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/v/{vt102,vt102-nsgr,vt102-w} \
 		$(NANO_TARGET_DIR)/root/usr/share/terminfo/v/
 	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/x/xterm \
 		$(NANO_TARGET_DIR)/root/usr/share/terminfo/x/

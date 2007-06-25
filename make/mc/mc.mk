@@ -58,6 +58,9 @@ $(MC_BINARY): $(MC_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(MC_DIR)
 	
 $(MC_TARGET_BINARY): $(MC_BINARY) 
+	mkdir -p $(MC_TARGET_DIR)/root/usr/share/terminfo/x
+	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/x/xterm \
+		$(MC_TARGET_DIR)/root/usr/share/terminfo/x/
 	$(INSTALL_BINARY_STRIP)
 
 $(PACKAGES_DIR)/.mc-$(MC_VERSION): $(DL_DIR)/$(MC_PKG_SOURCE) | $(PACKAGES_DIR)
