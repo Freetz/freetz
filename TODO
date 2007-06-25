@@ -9,11 +9,6 @@ $Id$
   Answer (by olistudent): SANE seems to need it, but the scanners do not run
   because AVM have not finished their USB driver yet. We should check new
   packages to see if they ever provide a working version.
-- Perhaps integrate build option to replace AVM websrv by Busybox httpd (remove
-  websrv from firmware, patch start script for AVM UI so as to use httpd).
-  Status: Having checked in a patch, httpd seems to work well instead of websrv,
-  even with LCR Updater by telefonsparbuch.de. A configurable option to replace
-  websrv has yet to be done, though.
 - Experiment with and possibly use dietlibc to create smaller binaries by
   statically compiling in stuff usually dynamically linked to uClibc.
 - Determine the best way to include rpath, i.e. something like
@@ -25,3 +20,6 @@ $Id$
   interfaces than lan:1 (http://www.ip-phone-forum.de/showpost.php?p=886345)
 - Make flash firmware button in dsmod webinterface (especially for W701V and W900 
   users because they can not flash over original webinterface)
+- Three different packages currently add terminfo stuff to the firmware:
+  Nano, Screen, MC -> unify terminfo generation, use common source
+  Status: makefiles updated, but packages not yet.

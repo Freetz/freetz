@@ -1,6 +1,7 @@
 $Id$
 
 Latest changes:
+
 - Many makefile changes, some big, some small, some cosmetic, to
     * make default target indirectly dependent on 'precompiled':
         + simple 'make' now also executed 'precompiled'
@@ -16,7 +17,6 @@ Latest changes:
       that ds26 does not support external toolchains anymore, because we assume
       that experts who need this will manage to set it up by themselves using
       links etc.
-    * include timestamp into firmware name
     * add makefile prerequisites for target binaries so as to avoid files
       being stripped and copied unnecessarily. How to:
         + avoid doing anything in synthetic targets like xy-precompiled
@@ -25,6 +25,7 @@ Latest changes:
           packages/xy-1.3/root/usr/bin/xy)
     * add xy-uninstall to all packages and shared libs,
     * add config option "all modules", if "replace kernel" is active,
+    * add oldconfig targets for kernel and busybox
     * make more packages work with + without LFS (large file support)
     * compile gcc with "--with-float=soft",
     * not always include toolchain stuff into big makefile,
@@ -34,10 +35,18 @@ Latest changes:
       targets,
     * rename busybox-tools targets so they do not collide with busybox package
       targets anymore, but adhere to naming conventions instead,
-    * delete firmware images in common-clean, fix delete command
+    * add menuconfig bub-section for a few BusyBox applets (currently inetd,
+      ar, diff, patch - see below in BB section), so they can be chosen
+      directly from the main configuation dialog (Advanced options -> BusyBox)
+    * 'make %lib%-clean' will now remove files from toolchain and
+      root/(usr/)lib
+    * new make macro INSTALL_BINARY_STRIP for more easily and cleanly
+      stripping and installing binaries
+    * delete firmware images in common-clean, fix delete command,
     * get make structure more in sync with Buildroot,
     * create a clearer dependency structure and
     * achieve world domination in general...
+
 - Multi-job build improvements:
     * Added new config option for multiple jobs. This can now be configured in
       menuconfig.
@@ -49,17 +58,82 @@ Latest changes:
       It now does not do anything anymore, just prints a "deprecated" warning.
     * Target "packages-precompiled" is removed because it is obsolete with these
       changes.
-- Enhance fwmod so it can be used to handle FW images by either specifying an
-  alternative DOT_CONFIG file name or by explicitly providing command line
-  parameters for often-used settings needed to unpack different firmware
-  versions. Just call fwmod without any parameters to get a proper description.
-  BTW: The DOT_CONFIG alternative may be a very small file consisting only of
-  about five settings, if fwmod is just used to unpack (-u) an image.
-- New packages, libs, modules:
+
+- Enhance fwmod,
+    * so it can be used to handle FW images by either specifying an
+      alternative DOT_CONFIG file name or by explicitly providing command line
+      parameters for often-used settings needed to unpack different firmware
+      versions. Just call fwmod without any parameters to get a proper
+      description. BTW: The DOT_CONFIG alternative may be a very small file
+      consisting only of about five settings, if fwmod is just used to unpack
+      (-u) an image.
+    * output name of rejected patch file during build in fwmod,
+    * create functions for echo, beautify symlink creation in fwmod,
+    * include timestamp into firmware name,
+    * add new menuconfig setting DS_DEVELOPER_VERSION_STRING so as to
+      optionally include SVN repository revision numbers into
+        + firmware image name
+        + target file /etc/.subversion
+        + target script /etc/version
+    * make patch output a little more informative + readable in verbosity
+      level 2: print patch file names and separator lines ("---...")
+    * fix typo: libc.so.0 was not copied into firmware, but as it already
+      exists nobody noticed this.
+    * New feature for modpatch: If $AUTO_FIX_PATCHES == "y", then the applied
+      patch is analysed and automatically fixed, if fuzzy. Now what the h...
+      does that mean and how does it work?
+        1. Perform dry run in order to check if the patch will be both
+           successful *and* fuzzy (i.e. containing moved or fuzzy-fitting
+           hunks).
+        2. If so, enter auto-fixing mode and generate a list of all files
+           changed by the patch.
+        3. Apply patch with the option to create a 'foo.orig' backup for each
+           patched file 'foo'.
+        4. Finally, auto-fix the original fuzzy patch by creating a new one,
+           cycling through each pair 'foo.orig' / 'foo', creating a fresh
+           'diff' for them, but preserving the old patch as 'xy.patch.orig'.
+        5. The 'foo.orig' files are cleaned up once they are not needed
+           anymore, but the 'xy.patch.orig' files are being kept so they can
+           be compared to their auto-fixed versions. Nobody is perfect, so a
+           closer look should be taken.
+      The next time 'fwmod' is run with the newly created, polished-up
+      patches, they should all fit perfectly - no moved hunks, no fuzzy
+      matches. As an exception, modpatch does not try to fix patches
+      containing failed hunks but exits 'fwmod' as usual in this case, because
+      the patch needs to be fixed anyway. It should be enough to fix it
+      roughly so it can be applied as a fuzzy patch - modpatch can do the rest
+      in the next run. ;-)
+
+- New packages, libs, modules, tools, hooks:
     * Added section 'debug helpers' in menuconfig
     * Debug helper package strace (binary only)
     * Binary package inotify-tools (inotifywait, inotifywatch), including
       patches to inotify-enable uClibc
+    * Init script for inotify-tools file access logging (via inotifywait)
+    * New shell function API (/usr/bin/kernel_args) to handle variables
+      defined via boot loader environment variable 'kernel_args' (found in
+      /proc/sys/urlader/environment). A limited set of values are allowed for
+      variables: integer values >= 1 or 'y'|'n'. This makes it easy to handle
+      cases like this:
+        + Permanently (de-)activate certain functionalities during the system
+          init process such as logging, mini_fo overlay file system etc.
+        + Temporarily activate those functionalities by assigning a countdown
+          value to them, e.g. 'FooBar=3 -> 2 -> 1 -> n', so after a certain
+          number of reboots the functionality would deactivate itself. This
+          can be helpful if you want to make sure that a box not booting up
+          with an activated feature for any reason does not get a recover
+          case, but heals itself be just booting up a number of times, until
+          the countdown is down to zero, setting the corresponding variable's
+          value to 'n'.
+    * Boot-time hooks for /etc/rc.S to activate both
+        + inotify-tools file access logging and
+        + dmesg (klogd ring-buffer) output so as not to lose its earliest
+          entries because of the small buffer size of 16 KB.
+      Both logging features use the kernel-args API (/usr/bin/kernel_args)
+      in order to dynamically determine if they should be activated during the
+      boot process.
+    * Debug helper package ltrace 0.5-svn-77 (binary only)
+    * Libelf library needed by ltrace
     * Debug helper package lsof 4.78, binary-only
     * Spindown-CGI and sg3_utils (by IPPF user 'derheimi')
     * Libusb added to menuconfig
@@ -67,10 +141,41 @@ Latest changes:
       online help (press 'H' at packages / testing / Apache + PHP) for more
       information and/or check out http://www.ip-phone-forum.de/showthread.php?t=127089
       for tips, tricks, patches and extensions.
-    * Ctorrent 1.3.4-dnh3
+    * Ctorrent 1.3.4-dnh3.1
     * Bluetooth kernel modules
     * Nano editor 2.0.6
     * OpenNTPD 3.9p1
+    * Netcat 0.7.1
+    * Add generic editor wrapper script 'wrap_editors' which can handle files
+      in /var/flash, /var/mod/etc/conf and /var/tmp/flash and call multiple
+      editors via symlinks. Now all n/m-scripts (nvi, mvi, nmcedit, mmcedit,
+      nnano, mnano are just symlinks to 'wrap_editors'.
+    * New helper script 'tools/lib_report.sh' generates a report showing which
+      DS-Mod binaries depend on which shared libraries. Usage:
+        tools/lib_report.sh [<ds-mod base directory> [<fw base directory>]]
+        ds-mod base directory defaults to '.'
+        fw base directory defaults to 'build/original/filesystem'
+      I.e. the easiest way to call the script is from ds-mod base without
+      parameters in order to get a report about the original file system. Call
+      tools/lib_report.sh . build/original/filesystem to generate a report
+      about the modified file system.
+    * New  helper script 'tools/push.sh' to flash a 'kernel.image' directly
+      to mtd1 using FTP via ADAM2. This is a convenience function for people
+      who are tired of typing in these commands every time. Use at own risk!
+    * Two new EXPERIMENTAL patch options for menuconfig directly on the
+      front page:
+        1. Replace AVM websrv by BusyBox httpd and remove web server from
+           firmware image. /etc/init.d/rc.websrv starts + stops httpd on
+           port 80.
+        2. Remove UPnP daemon (igdd) including two libs, several UPnP XML
+           schemes and a GIF image.
+      If both 1 + 2 are chosen, libwebsrv also becomes obsolete and will be
+      removed, because only those two daemons seem to use it. All in all,
+      those two features in combination make kernel.image about 76 KB smaller
+      on my 7170. The figures should be similar for other boxes. Furthermore,
+      not starting igdd + libs and using the smaller httpd instead of websrv
+      should also save a considerable amount of RAM. both effects are
+      especially desireable for smaller boxes like 5050/7050.
 
 - Updates packages, libs, modules:
     * (Download) toolchain (target)
@@ -78,10 +183,16 @@ Latest changes:
         + Remove uclibc download package for download toolchain, instead
           copy libs from toolchain
     * BusyBox 1.5.1 (target and tools instances)
-        + 'getcons' applet reactivated (broken patch finally repaired)
-        + 'ar' applet now included by default (needed by debootstrap, needs
-           just 600 bytes)
+        + a few applets are chosen by mod packages requiring them:
+          Debootstrap -> ar, Inetd-CGI -> inetd
+        + a few applets can be selected from DS-Mod menuconfig, indirectly
+          changing BB configuration: diff, patch
+        + getcons applet reactivated (broken patch finally repaired)
         + fix stty option parsing, reactivating old 100-profile.patch
+        + activate command line editing + tab completion for 4mb_26
+        + patch that fixes shifted usage messages (--help)
+    * Inetd support for several server daemons (Telnetd, DS-Mod Web UI,
+      Dropbear)
     * Lua 5.1.2
     * Ntfs-3g 1.516
     * Callmonitor 1.9.5
@@ -111,45 +222,71 @@ Latest changes:
     * CRC_CCITT compiled as kernel module (Config.4mb_26)
     * Fakeroot 1.7.1 (build tools section)
     * uClibc++ to 0.2.2
+    * Libpcap 0.9.6
+    * Tcpdump 3.9.6
+
 - Firmware updates:
-    * USB-Labor 29.04.34-7422
+    * 7170 Labor USB 29.04.34-7553
+    * 7170 Labor Phone 29.04.34-7269
+    * Remove 7170 Labor Eco support , because it is obsolete. Its features
+      have been included into the current regular firmware releases.
     * 7150 firmware 38.04.32
-    * Phone-Labor 29.04.34-7269
     * 7050 firmware 14.04.33
+    * FB Fon firmware 06.04.33
+    * Add FB Fon WLAN firmware 08.04.33
+    * Add Eumex300ip, uses Fon firmware 06.04.33
+    * Add 3130 WLAN firmware 44.04.34
     * Remove 7140 international (kernel 2.4.17_mvl21)
     * Add AVM web interface for W900V
     * Extension for W701V: /sbin/mailer is copied from tk-firmware
     * Add ATA Patch for W701V and W900V (Inet over LAN A)
     * W900V: make web interface available for OEM=avm
     * W900V: copy modules from tk-firmware
+    * W900V: add patch to copy libgcc_s.so.1 from AVM firmware to modified
+      DS-Mod firmware. This is just a temp solution, as the original T-Com
+      firmware does not have libgcc_s.so.1 - and since a lot of DS-Mod's
+      stuff  needs this lib, you sould install it ;)
     * W701V: integrate copy modules: modules are copied from tk-firmware
       (29.04.33), so self.built kernel can be used
+    * W701V: accept OEM avm
     * run_mount patch enables all firmwares with USB host to mount all file
       systems, not just FAT
-- Fix tools/ds_download  (fallback mirror download did not work)
-- Mount sysfs to /sys, symlink /var/sysfs to /sys
-- Sync uclibc.mk with buildroot structure
-- Fix typo in fwmod: libc.so.0 was not copied into firmware, but as it already
-  exists nobody noticed this.
-- 'make %lib%-clean' will now remove files from toolchain and root/(usr/)lib
-- depmod.pl moved to tools directory and removed from kernel build
-- Fix netsnmp build (fails with multiple jobs) 
-- Fix bird build (fails with multiple jobs)
-- Mention 'make precompiled' in previously outdated README
-- Add uClibc config for 04.30
-- Fix typo in make/libs/Makefile.in concerning libpcap, making it dependent on
-  libncurses config switch accidentally.
-- Fix awk segfault (busybox) when called without any parameters
-- Clean up some obsolete code in Config.in and fwmod
-- Fix small error in netsnmp package (update to 0.3): create /var/lib/snmp
-- Mod version number now says ds26-14.x rather than ds-0.2.9-14
-- Bugfix for tools/busybox: make-include tried to apply all tools patches
-  instead of only busybox-specific ones.
 
-=== in preparation for release ds26-15 ===
+- Other stuff:
+    * Fix about 150 or so patches to apply cleanly without any failures or
+      even fuzzy matches
+    * Fix tools/ds_download  (fallback mirror download did not work)
+    * Mount sysfs to /sys, symlink /var/sysfs to /sys
+    * New BusyBox httpd patch to make it work better with symbolic links in
+      CGIs, effectively enabling it to be used as an AVM  websrv replacement
+    * Sync uclibc.mk with buildroot structure
+    * depmod.pl moved to tools directory and removed from kernel build
+    * Fix netsnmp build (fails with multiple jobs) 
+    * Fix bird build (fails with multiple jobs)
+    * Mention 'make precompiled' in previously outdated README
+    * Add uClibc config for 04.30
+    * Fix typo in make/libs/Makefile.in concerning libpcap, making it
+      dependent on libncurses config switch accidentally.
+    * Fix awk segfault (busybox) when called without any parameters
+    * Clean up some obsolete code in Config.in and fwmod
+    * Fix small error in netsnmp package (update to 0.3): create /var/lib/snmp
+    * Mod version number now says ds26-14.x rather than ds-0.2.9-14
+    * Bugfix for tools/busybox: make-include tried to apply all tools patches
+      instead of only busybox-specific ones.
+    * Remove cygwin howto because it's out of date
+    * Add several fallbacks for CGI variable HTTP_HOST missing in BusyBox
+      httpd into files /usr/bin/dsmod_{status,wol}. Note: This is a
+      workaround, normally httpd should be enhanced. A corresponding request
+      was sent to the BB mailing list.
+    * /usr/bin/modload: don't exit if loading /var/flash/ds_mod fails but
+      create new file
+    * Add patch that opens a controlling tty instead /dev/console; cf.
+      http://www.busybox.net/lists/busybox/2007-May/027448.html
+    * Replace package URLs (eiband.info -> magenbrot.net) because Danisahne
+      will soon discard his domain name. eiband.info ist still mentioned in
+      several package README files, but I do not care, because this is plain
+      cosmetics. (kriegaex: And Daniel deserves credits anyway, anywhere.)
 
-- Added libelf library needed by ltrace - BUILD OK, BUT UNTESTED
-- Added debug helper package ltrace (binary only) - COMPILES, BUT CRASHES
 
 === release ds26-14.4 ===
 
