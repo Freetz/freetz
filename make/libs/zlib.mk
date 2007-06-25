@@ -9,7 +9,6 @@ ZLIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so.$(ZLIB_LIB_
 ZLIB_TARGET_DIR:=root/usr/lib
 ZLIB_TARGET_BINARY:=$(ZLIB_TARGET_DIR)/libz.so.$(ZLIB_LIB_VERSION)
 
-
 $(DL_DIR)/$(ZLIB_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(ZLIB_SITE)/$(ZLIB_SOURCE)
 
@@ -61,8 +60,9 @@ zlib-source: $(ZLIB_DIR)/.unpacked
 
 zlib-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/z{lib,conf}.h
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.* \
+			$(STAGING_DIR)/usr/include/zlib.h \
+			$(STAGING_DIR)/usr/include/zconf.h 	
 
 zlib-uninstall:
 	rm -f $(ZLIB_TARGET_DIR)/libz*.so*
