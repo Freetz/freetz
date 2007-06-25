@@ -1,4 +1,5 @@
 ifneq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
+	include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
 	include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
 	include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 else

@@ -144,10 +144,6 @@ endif
 	);
 	touch $(GCC_BUILD_DIR2)/.installed
 
-$(ROOT_DIR)/lib/libgcc_s.so.1: $(GCC_BUILD_DIR2)/.installed
-	-cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(ROOT_DIR)/lib/
-	$(TARGET_STRIP) $(ROOT_DIR)/lib/libgcc_s.so.1
-
 gcc: uclibc-configured binutils gcc_initial uclibc $(ROOT_DIR)/lib/libgcc_s.so.1 $(GCC_BUILD_DIR2)/.installed
 
 gcc-source: $(DL_DIR)/$(GCC_SOURCE)
