@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 #
 #   Script to modify AVM FRITZ!Box firmware images (DS-Mod_26)
 #
@@ -603,7 +603,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	echo1 "applying patches (${DS_TYPE_STRING}-${DS_TYPE_LANG_STRING})"
 	
-	if [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ]  || [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
+	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
+	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
+	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
 		#no webinterface no patches...
 		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh 
 		do
@@ -704,7 +706,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
 	# execute patch scripts
-	if [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
+	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
+	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
+	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
 		for i in "${PATCHES_DIR}/"*.sh
 		do
 			[ -x "$i" ] && . $i
@@ -727,7 +731,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	
 	#W701V and W900V have only tcom
 	if [ -z "$oems" ]; then
-		if [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
+		if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
+		    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
+		    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
 			oems="tcom"
 		else
 			error 1 "no oems found"
@@ -849,7 +855,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		modlang "${BASE_DIR}/.language" "${FILESYSTEM_MOD_DIR}"
 	else
-		error 1 "installation of base system is mandatory"
+		echo "installation of base system is mandatory"
+		
 	fi
 
 	if [ "$DS_REPLACE_BUSYBOX" == "y" ]; then
@@ -902,7 +909,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			error 1 "busybox is not executable\nAre you trying to compile on a FAT partition?"
 		fi 
 	else
-		error 1 "installation of busybox replacement is mandatory"
+		echo "installation of busybox replacement is mandatory"
 	fi
 
 	if [ "$DS_REPLACE_KERNEL" == "y" ]; then
@@ -933,11 +940,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 			cp "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
 			chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
 		fi
-	done
-		
+	done	
 	echo1 "generating modules.dep"
 	${TOOLS_SUBDIR}/depmod.pl -b ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-${DS_KERNEL_LAYOUT} \
-		-F ${KERNEL_REP_DIR}/System-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.map 2> /dev/null
+		-F ${KERNEL_REP_DIR}/System-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.map
 		
 	echo1 "copying files"
 	"$TAR" -cf - -C "${KERNEL_REP_DIR}/root" --exclude=lib --exclude=usr/lib \

@@ -82,6 +82,11 @@ choice
 		select DS_AVM_VERSION_04_33
 		bool "WLAN 3170"
 	
+	config DS_TYPE_SPEEDPORT_W501V
+		select DS_AVM_VERSION_04_33
+		select DS_BRANDING_tcom
+		bool "Speedport W501V"
+
 	config DS_TYPE_SPEEDPORT_W701V
 		select DS_AVM_VERSION_04_29
 		select DS_BRANDING_tcom
@@ -161,7 +166,8 @@ config DS_TYPE_STRING
 	default "7170_labor_phone"	if DS_TYPE_LABOR_PHONE
 	default "7170_labor_usb"	if DS_TYPE_LABOR_USB
 	default "7170_labor_vpn"	if DS_TYPE_LABOR_VPN
-	default "W701V"		if DS_TYPE_SPEEDPORT_W701V
+	default "W501V"		if DS_TYPE_SPEEDPORT_W501V
+    	default "W701V"		if DS_TYPE_SPEEDPORT_W701V
 	default "W900V"		if DS_TYPE_SPEEDPORT_W900V
 	default "custom"	if DS_TYPE_CUSTOM
 
@@ -204,6 +210,7 @@ config DS_TARGET_REF
 					   DS_TYPE_FON_WLAN_7150 || \
 					   DS_TYPE_FON_WLAN_7170
 	default "4mb_26"		if DS_TYPE_2170 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3130 || \
@@ -224,6 +231,7 @@ config DS_KERNEL_REF
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_FON_WLAN_7170
 	default "4mb_26"		if DS_TYPE_2170 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3130 || \
@@ -241,6 +249,7 @@ config DS_KERNEL_LAYOUT
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
 	    				   DS_TYPE_FON_WLAN_7170 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V
 	default "ar7"			if DS_TYPE_2170 || \
@@ -271,6 +280,7 @@ config DS_HIDDEN_ROOT
 					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_FON_WLAN_7170 || \
@@ -296,6 +306,7 @@ config DS_CONTIGUOUS_HIDDEN_ROOT
 					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_FON_WLAN_7170 || \
@@ -321,6 +332,7 @@ config DS_SQUASHFS_LZMA
 					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_FON_WLAN_7170 || \
@@ -344,6 +356,7 @@ config DS_ROOTFS_VARTAR
 					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_FON_WLAN_7170 || \
@@ -363,6 +376,7 @@ config DS_KERNEL_MTD_SIZE
 					   DS_TYPE_FON_WLAN_7170 || \
 					   DS_TYPE_CUSTOM && DS_HIDDEN_ROOT
 	default 59			if DS_TYPE_2170 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3130 || \
@@ -394,6 +408,7 @@ config DS_HAS_PHONE
 					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_FON_WLAN_7170 || \
@@ -417,6 +432,7 @@ config DS_HAS_WLAN
 					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_FON_WLAN_7170 || \
@@ -430,6 +446,7 @@ config DS_HAS_WLAN
 config DS_HAS_USB
 	bool "Has USB"			if DS_TYPE_CUSTOM
 	default y			if DS_TYPE_2170 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3130 || \
@@ -468,6 +485,7 @@ config DS_HAS_USB_HOST
 					   DS_TYPE_FON_5050 || \
 					   DS_TYPE_FON_WLAN || \
 					   DS_TYPE_FON_WLAN_7050 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V
 	help
 	    Select this if your USB port is a host adapter
@@ -583,8 +601,9 @@ config DS_BRANDING_freenet
 
 config DS_BRANDING_tcom
 	bool "T-Com"
-	depends on DS_TYPE_SPEEDPORT_W701V || \
-		   DS_TYPE_300IP_AS_FON || \
+	depends on DS_TYPE_300IP_AS_FON || \
+		   DS_TYPE_SPEEDPORT_W501V || \
+		   DS_TYPE_SPEEDPORT_W701V || \
 		   DS_TYPE_SPEEDPORT_W900V
 	default y
 	help
@@ -626,7 +645,7 @@ config DS_REMOVE_USB_MODULE
 
 config DS_REMOVE_CDROM_ISO
 	bool "Remove cdrom.iso"
-	depends on DS_HAS_USB && ! (DS_TYPE_FON_WLAN_7050)
+	depends on DS_HAS_USB && ! (DS_TYPE_FON_WLAN_7050 || DS_TYPE_SPEEDPORT_W501V)
 	default n
 	help
 	    Removes the file /lib/modules/cdrom.iso.
@@ -688,6 +707,7 @@ config DS_PATCH_WEBSRV
 
 config DS_PATCH_UPNP
 	bool "Remove UPnP daemon (igdd) - EXPERIMENTAL"
+	depends on !( DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V)
 	default n
 	help
 		Remove Universal Plug'n'Play daemon 'igdd' and some more files used by
@@ -760,9 +780,10 @@ config DS_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"		if DS_TYPE_FON_WLAN_7170
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.sl_wlan/firmware"				if DS_TYPE_WLAN_3020
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3030/firmware"			if DS_TYPE_WLAN_3030
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3130/firmware"		if DS_TYPE_WLAN_3130
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3130/firmware"			if DS_TYPE_WLAN_3130
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3131/firmware/deutsch"		if DS_TYPE_WLAN_3131
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3170/firmware/deutsch"		if DS_TYPE_WLAN_3170
+	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport_W501V" 		if DS_TYPE_SPEEDPORT_W501V
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V"	if DS_TYPE_SPEEDPORT_W701V
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20900V"		if DS_TYPE_SPEEDPORT_W900V
 	default "ftp://ftp.avm.de/fritz.box/..."																					if DS_TYPE_CUSTOM
@@ -786,21 +807,24 @@ config DS_DL_SOURCE
 	default "fritz.box_wlan_3131.50.04.34.image"				if DS_TYPE_WLAN_3131
 	default "fritz.box_wlan_3130.44.04.34.image"				if DS_TYPE_WLAN_3130
 	default "fritz.box_wlan_3170.49.04.34.image"				if DS_TYPE_WLAN_3170
+        default "fw_Speedport_W501V_v_28.04.38.image"				if DS_TYPE_SPEEDPORT_W501V
 	default "fw_Speedport_W701V_V33.04.26.image"				if DS_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W_900V.34.04.21.image"				if DS_TYPE_SPEEDPORT_W900V
 	default "fritz.box..."							if DS_TYPE_CUSTOM
                                                             
 config DS_DL_SITE2                                          
 	string "AVM web interface DL Site"	if DS_DL_OVERRIDE       
-	depends on DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
+	depends on DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
+        default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"	if DS_TYPE_SPEEDPORT_W501V
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch" 	if DS_TYPE_SPEEDPORT_W701V
-	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"						if DS_TYPE_SPEEDPORT_W900V
+	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"			if DS_TYPE_SPEEDPORT_W900V
 	
 config DS_DL_SOURCE2
 	string "AVM web interface firmware source"	if DS_DL_OVERRIDE
-	depends on DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
-	default "fritz.box_fon_wlan_7170.29.04.33.image" if DS_TYPE_SPEEDPORT_W701V
-	default "fritz.fon_7150.annexb.38.04.32.image"   if DS_TYPE_SPEEDPORT_W900V
+	depends on DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
+        default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"	if DS_TYPE_SPEEDPORT_W501V
+	default "fritz.box_fon_wlan_7170.29.04.33.image" 	if DS_TYPE_SPEEDPORT_W701V
+	default "fritz.fon_7150.annexb.38.04.32.image"   	if DS_TYPE_SPEEDPORT_W900V
 
 menu "DS-Mod package download sites"
 
