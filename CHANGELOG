@@ -2,6 +2,8 @@ $Id$
 
 Latest changes:
 
+=== release ds26-15 ===
+
 - Many makefile changes, some big, some small, some cosmetic, to
     * make default target indirectly dependent on 'precompiled':
         + simple 'make' now also executed 'precompiled'
@@ -282,6 +284,8 @@ Latest changes:
       create new file
     * Add patch that opens a controlling tty instead /dev/console; cf.
       http://www.busybox.net/lists/busybox/2007-May/027448.html
+    * Remove terminfo stuff from MC, Nano and Screen packages, because it can
+      be copied from the toolchain staging dir.
     * Replace package URLs (eiband.info -> magenbrot.net) because Danisahne
       will soon discard his domain name. eiband.info ist still mentioned in
       several package README files, but I do not care, because this is plain
