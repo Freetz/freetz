@@ -92,7 +92,7 @@ ncurses-clean:
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo 
 
 ncurses-uninstall:
-	rm -f $(NCURSES_TARGET_DIR)/libncurses*.so*	
+	rm -f $(NCURSES_TARGET_DIR)/libncurses*.so*
 
 ncurses-dirclean:
 	rm -rf $(NCURSES_DIR)
