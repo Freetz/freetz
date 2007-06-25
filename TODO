@@ -12,14 +12,16 @@ $Id$
 - Experiment with and possibly use dietlibc to create smaller binaries by
   statically compiling in stuff usually dynamically linked to uClibc.
 - Determine the best way to include rpath, i.e. something like
-  export LD_RUN_PATH=/mod/lib:/lib:/usr/lib
-  into makefile(s). It should be applied to all binaries for the target
-  system, but not to tools and toolchain binaries.
-  comment (olistudent): Perhaps we should leave things as they are (LD_LIBRARY_PATH)
-- Enhance Virtual-IP-CGI and Openntpd so it supports other (and possibly multiple)
-  interfaces than lan:1 (http://www.ip-phone-forum.de/showpost.php?p=886345)
-- Make flash firmware button in dsmod webinterface (especially for W701V and W900 
-  users because they can not flash over original webinterface)
-- Three different packages currently add terminfo stuff to the firmware:
-  Nano, Screen, MC -> unify terminfo generation, use common source
-  Status: makefiles updated, but packages not yet.
+  "export LD_RUN_PATH=/mod/lib:/lib:/usr/lib", into makefile(s). It should be
+  applied to all binaries for the target system, but not to tools and
+  toolchain binaries.
+  Comment (olistudent): Perhaps we should leave things as they are
+  (LD_LIBRARY_PATH)
+- Enhance Virtual-IP-CGI and Openntpd so it supports other (and possibly
+  multiple) interfaces than lan:1
+  (http://www.ip-phone-forum.de/showpost.php?p=886345)
+- Make flash firmware button in dsmod webinterface (especially for W701V and
+  W900 users because they can not flash over original webinterface)
+- Do the same for source code patches as we have done for the firmware
+  patches: give them a thorough auto-fix treatment similar to the new modpatch
+  feature.
