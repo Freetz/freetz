@@ -167,7 +167,7 @@ config DS_TYPE_STRING
 	default "7170_labor_usb"	if DS_TYPE_LABOR_USB
 	default "7170_labor_vpn"	if DS_TYPE_LABOR_VPN
 	default "W501V"		if DS_TYPE_SPEEDPORT_W501V
-	default "W701V"		if DS_TYPE_SPEEDPORT_W701V
+    	default "W701V"		if DS_TYPE_SPEEDPORT_W701V
 	default "W900V"		if DS_TYPE_SPEEDPORT_W900V
 	default "custom"	if DS_TYPE_CUSTOM
 
@@ -446,7 +446,6 @@ config DS_HAS_WLAN
 config DS_HAS_USB
 	bool "Has USB"			if DS_TYPE_CUSTOM
 	default y			if DS_TYPE_2170 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_WLAN_3020 || \
 					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3130 || \
@@ -461,6 +460,7 @@ config DS_HAS_USB
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
 					   DS_TYPE_FON_WLAN_7170 || \
+					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V || \
 					   DS_TYPE_CUSTOM
@@ -645,7 +645,7 @@ config DS_REMOVE_USB_MODULE
 
 config DS_REMOVE_CDROM_ISO
 	bool "Remove cdrom.iso"
-	depends on DS_HAS_USB && ! (DS_TYPE_FON_WLAN_7050 || DS_TYPE_SPEEDPORT_W501V)
+	depends on DS_HAS_USB && ! (DS_TYPE_FON_WLAN_7050)
 	default n
 	help
 	    Removes the file /lib/modules/cdrom.iso.
@@ -660,7 +660,7 @@ config DS_REMOVE_CDROM_ISO
 
 config DS_PATCH_ATA
 	bool "Patch ata"
-	depends on DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
+	depends on DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
 	default n
 	help
 	    Patches the ATA mode configuration pages into the web menu.
