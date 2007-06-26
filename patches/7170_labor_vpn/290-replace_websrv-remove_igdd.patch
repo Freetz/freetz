@@ -1,5 +1,5 @@
---- bin/prepare_fwupgrade.orig	2007-04-16 12:17:57.000000000 +0200
-+++ bin/prepare_fwupgrade	2007-06-25 13:30:02.000000000 +0200
+--- bin/prepare_fwupgrade.orig	2007-06-08 13:17:04.000000000 +0200
++++ bin/prepare_fwupgrade	2007-06-25 11:56:01.000000000 +0200
 @@ -38,7 +38,7 @@
  voipd -s
  avmike -s
@@ -25,8 +25,8 @@
  killall -9 wpa_authenticator
  killall -9 wstart
  killall -9 multid
---- etc/init.d/rc.net.orig	2007-06-25 13:30:01.000000000 +0200
-+++ etc/init.d/rc.net	2007-06-25 13:30:02.000000000 +0200
+--- etc/init.d/rc.net.orig	2007-06-25 11:56:01.000000000 +0200
++++ etc/init.d/rc.net	2007-06-25 11:56:01.000000000 +0200
 @@ -51,8 +51,13 @@
     WLAN_TEST=0
  fi
@@ -41,7 +41,7 @@
     if [ "`pidof igdd`" = "" ] ; then
        igdd $VERBOSEPARAM
        sleep 1
-@@ -220,14 +225,15 @@
+@@ -209,14 +214,15 @@
  stopall()
  {
     if [ "$CONFIG_DSL" ] ; then
@@ -59,8 +59,8 @@
     sleep 3
     for i in $DAEMONS $AVMDAEMONS ; do
       killall -15 $i
-@@ -261,9 +267,15 @@
-      wlanstart
+@@ -266,9 +272,15 @@
+      ctlmgr $NICEPARAM $VERBOSEPARAM
     fi
  
 +   if [ "$_websrv" ]; then
@@ -72,10 +72,10 @@
 +       /etc/init.d/rc.websrv start
 +     fi
 +   fi
+    fi 
  
     igddstart
-    multidstart
-@@ -309,9 +321,9 @@
+@@ -321,9 +333,9 @@
        if [ "$1" ] ; then
           AVMDAEMONS="$*"
        elif [ "$CONFIG_DSL" ] ; then
