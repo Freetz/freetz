@@ -6,7 +6,7 @@ KERNEL_BUILD_DIR_N:=kernel_8mb_26_build
 KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
 KERNEL_IMAGE:=kernel/linux-2.6.13.1/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
-KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_REF).$(AVM_VERSION)
+KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT)-$(KERNEL_REF).$(AVM_VERSION)
 KERNEL_LZMA_CFLAGS:=-D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing \
 		   				-fno-common -ffreestanding -falign-functions=4  -falign-labels=4 -falign-loops=4  -falign-jumps=4 \
 		   				-fomit-frame-pointer -g -G 0 -mno-abicalls -fno-pic -finline-limit=100000 -mabi=32 -march=mips32 -Wa,-32 \
