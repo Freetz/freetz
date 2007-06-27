@@ -27,13 +27,20 @@
  killall -9 multid
 --- etc/init.d/rc.net.orig	2007-06-25 11:21:18.000000000 +0200
 +++ etc/init.d/rc.net	2007-06-25 11:21:19.000000000 +0200
-@@ -51,8 +51,13 @@
+@@ -51,8 +51,20 @@
     WLAN_TEST=0
  fi
  
++# Do we have a websrv or was ist stripped from the firmware?
 +_websrv=$(basename $(which websrv) 2> /dev/null)
++# Do we have a UPnP server (igdd) or was ist stripped from the firmware?
 +_igdd=$(basename $(which igdd) 2> /dev/null)
-+[ "$_igdd" ] || MULTIDPARAM="-u"
++# Does a multid option to start without UPnP device (-u) exist?
++_multid_upnp=$(multid -? 2>&1 | grep upnp)
++# Set multid "no UPnP" option, if
++#   a) it has the parameter at all AND
++#   b) igdd binary does *not* exist
++[ "$_multid_upnp" ] && [ ! "$_igdd" ] && MULTIDPARAM="-u"
 +
  igddstart()
  {
