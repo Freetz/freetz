@@ -19,5 +19,11 @@ ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW501V/tcom"
 echo1 "copying mailer"
 cp -a "${DIR}/.tk/original/filesystem/sbin/mailer" "${FILESYSTEM_MOD_DIR}/sbin" >/dev/null 2>&1 
 
-echo1 "copying igdd"
-cp -a "${DIR}/.tk/original/filesystem/sbin/igdd" "${FILESYSTEM_MOD_DIR}/sbin" >/dev/null 2>&1 
+echo1 "copying igdd + required libs"
+cp -a "${DIR}/.tk/original/filesystem/lib/libavmupnp.so.2.0.0" "${FILESYSTEM_MOD_DIR}/lib/" > /dev/null 2>&1
+cp -a "${DIR}/.tk/original/filesystem/lib/libavmupnp.so.2"     "${FILESYSTEM_MOD_DIR}/lib/" > /dev/null 2>&1
+cp -a "${DIR}/.tk/original/filesystem/lib/libavmupnp.so"       "${FILESYSTEM_MOD_DIR}/lib/" > /dev/null 2>&1
+cp -a "${DIR}/.tk/original/filesystem/lib/libmxml.so.1.0.0" "${FILESYSTEM_MOD_DIR}/lib/" > /dev/null 2>&1
+cp -a "${DIR}/.tk/original/filesystem/lib/libmxml.so.1"     "${FILESYSTEM_MOD_DIR}/lib/" > /dev/null 2>&1
+cp -a "${DIR}/.tk/original/filesystem/lib/libmxml.so"       "${FILESYSTEM_MOD_DIR}/lib/" > /dev/null 2>&1
+cp -a "${DIR}/.tk/original/filesystem/sbin/igdd" "${FILESYSTEM_MOD_DIR}/sbin" > /dev/null 2>&1
