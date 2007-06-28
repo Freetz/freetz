@@ -17,6 +17,11 @@ OPENVPN_PKG_SOURCE:=openvpn-$(OPENVPN_VERSION)-dsmod-$(OPENVPN_PKG_VERSION).tar.
 DISABLE_LZO:=--disable-lzo
 OPENVPN_LZO:=
 endif
+ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_MGMNT)),y)
+OPENVPN_MGMT:=--enable-management
+else
+OPENVPN_MGMT:=--disable-management
+endif
 OPENVPN_TARGET_DIR:=$(PACKAGES_DIR)/$(OPENVPN_PKG_NAME)
 OPENVPN_TARGET_BINARY:=$(OPENVPN_TARGET_DIR)/root/usr/sbin/openvpn
 
@@ -62,7 +67,7 @@ $(OPENVPN_DIR)/.configured: $(OPENVPN_DIR)/.unpacked
 		--disable-pthread \
 		--disable-debug \
 		--disable-plugins \
-		--disable-management \
+		$(OPENVPN_MGMT) \
 		--disable-socks \
 		--disable-http \
 		--enable-password-save \

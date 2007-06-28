@@ -142,6 +142,9 @@ if [ "$OPENVPN_KEEPALIVE" == "yes" ]; then
 		echo "resolv-retry infinite"
 	fi
 fi
+if [ "$OPENVPN_MGMNT" ]; then
+	echo "management $OPENVPN_MGMNT"
+fi
 if [ "$OPENVPN_LOGFILE" == "yes" ]; then
 	echo "status /var/log/openvpn.log"
 fi
