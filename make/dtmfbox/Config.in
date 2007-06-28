@@ -1,0 +1,6 @@
+config DS_PACKAGE_DTMFBOX
+	depends on DS_LANG_DE || ! DS_SELECTED_LANG_ONLY
+	bool "dtmfbox v0.3.9"
+	select DS_LIB_libcapi20
+	select DS_LIB_libpjsip
+	default n
