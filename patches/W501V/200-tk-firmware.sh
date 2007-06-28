@@ -13,7 +13,7 @@ mkdir "${FILESYSTEM_MOD_DIR}/usr/www/all"
 ln -sf all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 ln -sf all "${FILESYSTEM_MOD_DIR}/usr/www/avm"
 
-"$TAR" -cf - -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7140/avm" . | "$TAR" -xkf - -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW501V/tcom" >/dev/null 2>&1 
+"$TAR" -cf - -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7140/avm" . | "$TAR" -xkf - -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW501V/tcom"
 ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW501V/tcom"
 
 echo1 "copying mailer"
@@ -23,3 +23,6 @@ echo1 "copying igdd + required libs"
 cp -a ${DIR}/.tk/original/filesystem/lib/libavmupnp.so* "${FILESYSTEM_MOD_DIR}/lib/"
 cp -a ${DIR}/.tk/original/filesystem/lib/libmxml.so* "${FILESYSTEM_MOD_DIR}/lib/"
 cp -a ${DIR}/.tk/original/filesystem/sbin/igdd "${FILESYSTEM_MOD_DIR}/sbin/"
+
+echo1 "replacing multid"
+cp -a ${DIR}/.tk/original/filesystem/sbin/multid "${FILESYSTEM_MOD_DIR}/sbin/"
