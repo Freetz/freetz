@@ -23,6 +23,57 @@ $(NANO_DIR)/.unpacked: $(DL_DIR)/$(NANO_SOURCE)
 #	done
 	touch $@
 
+ifeq ($(strip $(DS_NANO_TINY)),y)
+NANO_TINY:=--enable-tiny
+else
+NANO_TINY:=
+endif
+ifeq ($(strip $(DS_NANO_HELP)),y)
+NANO_HELP:=
+else
+NANO_HELP:=--disable-help
+endif
+ifeq ($(strip $(DS_NANO_TABCOMP)),y)
+NANO_TABCOMP:=
+else
+NANO_TABCOMP:=--disable-tabcomp
+endif
+ifeq ($(strip $(DS_NANO_BROWSER)),y)
+NANO_BROWSER:=
+else
+NANO_BROWSER:=--disable-browser
+endif
+ifeq ($(strip $(DS_NANO_OPERATINGDIR)),y)
+NANO_OPERATINGDIR:=
+else
+NANO_OPERATINGDIR:=--disable-operatingdir
+endif
+ifeq ($(strip $(DS_NANO_WRAPPING)),y)
+NANO_WRAPPING:=
+else
+NANO_WRAPPING:=--disable-wrapping
+endif
+ifeq ($(strip $(DS_NANO_JUSTIFY)),y)
+NANO_JUSTIFY:=
+else
+NANO_JUSTIFY:=--disable-justify
+endif
+ifeq ($(strip $(DS_NANO_MULTIBUFFER)),y)
+NANO_MULTIBUFFER:=--enable-multibuffer
+else
+NANO_MULTIBUFFER:=
+endif
+ifeq ($(strip $(DS_NANO_COLOR_SYNTAX)),y)
+NANO_COLOR_SYNTAX:=--enable-color
+else
+NANO_COLOR_SYNTAX:=
+endif
+ifeq ($(strip $(DS_NANO_NANORC)),y)
+NANO_NANORC:=--enable-nanorc
+else
+NANO_NANORC:=
+endif
+
 $(NANO_DIR)/.configured: $(NANO_DIR)/.unpacked $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
 	( cd $(NANO_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -54,10 +105,20 @@ $(NANO_DIR)/.configured: $(NANO_DIR)/.unpacked $(TARGET_TOOLCHAIN_STAGING_DIR)/u
 			--disable-static \
 			--with-gnu-ld \
 			--disable-rpath \
-			--enable-tiny \
-			--disable-glibtest \
-			--disable-utf8 \
 			--without-slang \
+			--disable-utf8 \
+			--disable-mouse \
+			--disable-speller \
+			$(NANO_TINY) \
+			$(NANO_HELP) \
+			$(NANO_TABCOMP) \
+			$(NANO_BROWSER) \
+			$(NANO_OPERATINGDIR) \
+			$(NANO_WRAPPING) \
+			$(NANO_JUSTIFY) \
+			$(NANO_MULTIBUFFER) \
+			$(NANO_COLOR_SYNTAX) \
+			$(NANO_NANORC) \
 	);
 	touch $@
 
