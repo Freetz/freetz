@@ -120,11 +120,23 @@ config DS_NANO_COLOR_SYNTAX
 	select DS_NANO_NANORC
 	help
 		Enable support for syntax coloring of files using the nanorc file.
-		This enables nanorc support as well and automatically copies several
-		predefined syntax files to the target system.
+		This enables nanorc support, but does NOT automatically copy any
+		syntax files to the target system.
 
-		This option adds about 14.5 KB plus a few KB of syntax files to the
-		minimum 86 KB of Nano's binary, including nanorc support.
+		This option adds about 14.5 KB plus possibly a few KB of your syntax
+		files to the minimum 86 KB of Nano's binary, including nanorc support.
+
+		IMPORTANT: If you want to include any syntax definition files (look
+		for *.nanorc in the nano source package or define or download your own
+		files), you are advised to copy them somewhere inside root/usr/share.
+		The Nano package's 'root' subdirectory is a bad place, because if you
+		change any sub-features you will probably make a clean rebuild and
+		could thus lose the files previously copied to the package dir. In
+		addition to the syntax files themselves you want to add a nanorc file
+		including them to your user's (probably root) home, possibly by
+		editing /var/flash/debug.cfg or /tmp/flash/rc.custom on the target
+		system. There, the actual '.nanorc' should be created, so Nano finds
+		it upon start-up.
 
 config DS_NANO_NANORC
 	depends !DS_NANO_TINY
@@ -134,9 +146,13 @@ config DS_NANO_NANORC
 		Enable support for reading the nanorc file at startup. You can store
 		custom settings in the nanorc file rather than having to pass command
 		line options to get desired behavior.
-		See http://www.nano-editor.org/dist/v2.0/nano.html#Nanorc-Files for
-		more info.
 
 		This option adds about 9 KB to the minimum 86 KB of Nano's binary.
+
+		IMPORTANT: Please read the help text of the "Coloured syntax
+		highlighting" feature in order to learn how to add a '.nanorc' to your
+		target system. Please also refer to the nanorc man page at
+		http://www.nano-editor.org/dist/v2.0/nanorc.5.html for further
+		information about available options.
 
 endmenu
