@@ -80,7 +80,7 @@ endif
 # Use $< (first prerequisite) rather than $^ (all prerequisites), because
 # otherwise there will be errors when make tries to copy multiple source files
 # into one target binary.
-define INSTALL_BINARY_STRIP_FIRST
+define INSTALL_BINARY_STRIP
 cp $< $@
 $(TARGET_STRIP) $@
 endef
