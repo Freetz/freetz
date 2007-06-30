@@ -33,7 +33,7 @@ function push_fw() {
 	echo " * Box is back up again. Initiating transfer of '$1' ..."
 	echo
 
-	ftp -n -p <<'EOT'
+	ftp -n -p <<EOT
 open 192.168.178.1
 user adam2 adam2
 debug
