@@ -12,20 +12,14 @@ BIRD_PKG_NAME:=bird-$(BIRD_VERSION)
 BIRD_PKG_SOURCE:=bird-$(BIRD_VERSION)-dsmod-$(BIRD_PKG_VERSION).tar.bz2
 
 ifeq ($(strip $(DS_PACKAGE_BIRDC)),y)
-BIRD_CLIENT:=--enable-client
 BIRD_CLIENT_BINARY:=$(BIRD_DIR)/birdc
 BIRD_CLIENT_TARGET_BINARY:=$(BIRD_TARGET_DIR)/root/usr/sbin/birdc
-else
-BIRD_CLIENT:=--disable-client
 endif
 
-ifeq ($(strip $(DS_PACKAGE_BIRD_DEBUG)),y)
-BIRD_DEBUG:=--enable-debug
-else
-BIRD_DEBUG:=--disable-debug
-endif
+BIRD_DS_CONFIG_FILE:=$(BIRD_MAKE_DIR)/.ds_config
+BIRD_DS_CONFIG_TEMP:=$(BIRD_MAKE_DIR)/.ds_config.temp
 
-BIRD_CONFIGURE_OPTIONS=$(BIRD_DEBUG) --disable-memcheck --disable-warnings $(BIRD_CLIENT) --disable-ipv6
+BIRD_CONFIGURE_OPTIONS=
 
 $(DL_DIR)/$(BIRD_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(BIRD_SITE)/$(BIRD_SOURCE)
@@ -33,7 +27,18 @@ $(DL_DIR)/$(BIRD_SOURCE): | $(DL_DIR)
 $(DL_DIR)/$(BIRD_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(BIRD_PKG_SOURCE) $(BIRD_PKG_SITE)
 
-$(BIRD_DIR)/.unpacked: $(DL_DIR)/$(BIRD_SOURCE)
+$(BIRD_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "DS_PACKAGE_BIRD_DEBUG=$(if $(DS_PACKAGE_BIRD_DEBUG),y,n)" > $(BIRD_DS_CONFIG_TEMP)
+	@echo "DS_PACKAGE_BIRDC=$(if $(DS_PACKAGE_BIRDC),y,n)" >> $(BIRD_DS_CONFIG_TEMP)
+	@diff -q $(BIRD_DS_CONFIG_TEMP) $(BIRD_DS_CONFIG_FILE) || \
+		cp $(BIRD_DS_CONFIG_TEMP) $(BIRD_DS_CONFIG_FILE)
+	@rm -f $(BIRD_DS_CONFIG_TEMP)
+
+# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# options have changed. The safest way to achieve this is by starting over
+# with the source directory.
+$(BIRD_DIR)/.unpacked: $(DL_DIR)/$(BIRD_SOURCE) $(BIRD_DS_CONFIG_FILE)
+	rm -rf $(BIRD_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(BIRD_SOURCE)
 	for i in $(BIRD_MAKE_DIR)/patches/*.patch; do \
 		patch -d $(BIRD_DIR) -p1 < $$i; \
@@ -67,7 +72,11 @@ $(BIRD_DIR)/.configured: $(BIRD_DIR)/.unpacked
 		--mandir=/usr/share/man \
 		$(DISABLE_LARGEFILE) \
 		$(DISABLE_NLS) \
-		$(BIRD_CONFIGURE_OPTIONS) \
+		$(if $(DS_PACKAGE_BIRDC),--enable-client,--disable-client) \
+		$(if $(DS_PACKAGE_BIRD_DEBUG),--enable-debug,--disable-debug) \
+		--disable-memcheck \
+		--disable-warnings \
+		--disable-ipv6 \
 	);
 	touch $@
 
@@ -99,11 +108,13 @@ bird-source: $(BIRD_DIR)/.unpacked $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
 bird-clean:
 	-$(MAKE) -C $(BIRD_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(BIRD_PKG_SOURCE)
+	rm -f $(BIRD_DS_CONFIG_FILE)
 
 bird-dirclean:
 	rm -rf $(BIRD_DIR)
 	rm -rf $(PACKAGES_DIR)/$(BIRD_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(BIRD_PKG_NAME)
+	rm -f $(BIRD_DS_CONFIG_FILE)
 
 bird-uninstall:
 	rm -f $(BIRD_TARGET_BINARY)

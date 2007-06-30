@@ -10,69 +10,40 @@ NANO_PKG_VERSION:=0.4
 NANO_PKG_SOURCE:=nano-$(NANO_VERSION)-dsmod-$(NANO_PKG_VERSION).tar.bz2
 NANO_PKG_SITE:=http://mcknight.ath.cx/dsmod/packages
 
+NANO_DS_CONFIG_FILE:=$(NANO_MAKE_DIR)/.ds_config
+NANO_DS_CONFIG_TEMP:=$(NANO_MAKE_DIR)/.ds_config.temp
+
 $(DL_DIR)/$(NANO_SOURCE):
 	wget -P $(DL_DIR) $(NANO_SITE)/$(NANO_SOURCE)
 
 $(DL_DIR)/$(NANO_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(NANO_PKG_SOURCE) $(NANO_PKG_SITE)
 
-$(NANO_DIR)/.unpacked: $(DL_DIR)/$(NANO_SOURCE)
+$(NANO_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "DS_NANO_TINY=$(if $(DS_NANO_TINY),y,n)" > $(NANO_DS_CONFIG_TEMP)
+	@echo "DS_NANO_HELP=$(if $(DS_NANO_HELP),y,n)" >> $(NANO_DS_CONFIG_TEMP)
+	@echo "DS_NANO_TABCOMP=$(if $(DS_NANO_TABCOMP),y,n)" >> $(NANO_DS_CONFIG_TEMP)
+	@echo "DS_NANO_BROWSER=$(if $(DS_NANO_BROWSER),y,n)" >> $(NANO_DS_CONFIG_TEMP)
+	@echo "DS_NANO_OPERATINGDIR=$(if $(DS_NANO_OPERATINGDIR),y,n)" >> $(NANO_DS_CONFIG_TEMP)
+	@echo "DS_NANO_WRAPPING=$(if $(DS_NANO_WRAPPING),y,n)" >> $(NANO_DS_CONFIG_TEMP)
+	@echo "DS_NANO_JUSTIFY=$(if $(DS_NANO_JUSTIFY),y,n)" >> $(NANO_DS_CONFIG_TEMP)
+	@echo "DS_NANO_MULTIBUFFER=$(if $(DS_NANO_MULTIBUFFER),y,n)" >> $(NANO_DS_CONFIG_TEMP)
+	@echo "DS_NANO_COLOR_SYNTAX=$(if $(DS_NANO_COLOR_SYNTAX),y,n)" >> $(NANO_DS_CONFIG_TEMP)
+	@echo "DS_NANO_NANORC=$(if $(DS_NANO_NANORC),y,n)" >> $(NANO_DS_CONFIG_TEMP)
+	@diff -q $(NANO_DS_CONFIG_TEMP) $(NANO_DS_CONFIG_FILE) || \
+		cp $(NANO_DS_CONFIG_TEMP) $(NANO_DS_CONFIG_FILE)
+	@rm -f $(NANO_DS_CONFIG_TEMP)
+
+# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# options have changed. The safest way to achieve this is by starting over
+# with the source directory.
+$(NANO_DIR)/.unpacked: $(DL_DIR)/$(NANO_SOURCE) $(NANO_DS_CONFIG_FILE)
+	rm -rf $(NANO_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NANO_SOURCE)
 #	for i in $(NANO_MAKE_DIR)/patches/*.patch; do \
 #		patch -d $(NANO_DIR) -p0 < $$i; \
 #	done
 	touch $@
-
-ifeq ($(strip $(DS_NANO_TINY)),y)
-NANO_TINY:=--enable-tiny
-else
-NANO_TINY:=
-endif
-ifeq ($(strip $(DS_NANO_HELP)),y)
-NANO_HELP:=
-else
-NANO_HELP:=--disable-help
-endif
-ifeq ($(strip $(DS_NANO_TABCOMP)),y)
-NANO_TABCOMP:=
-else
-NANO_TABCOMP:=--disable-tabcomp
-endif
-ifeq ($(strip $(DS_NANO_BROWSER)),y)
-NANO_BROWSER:=
-else
-NANO_BROWSER:=--disable-browser
-endif
-ifeq ($(strip $(DS_NANO_OPERATINGDIR)),y)
-NANO_OPERATINGDIR:=
-else
-NANO_OPERATINGDIR:=--disable-operatingdir
-endif
-ifeq ($(strip $(DS_NANO_WRAPPING)),y)
-NANO_WRAPPING:=
-else
-NANO_WRAPPING:=--disable-wrapping
-endif
-ifeq ($(strip $(DS_NANO_JUSTIFY)),y)
-NANO_JUSTIFY:=
-else
-NANO_JUSTIFY:=--disable-justify
-endif
-ifeq ($(strip $(DS_NANO_MULTIBUFFER)),y)
-NANO_MULTIBUFFER:=--enable-multibuffer
-else
-NANO_MULTIBUFFER:=
-endif
-ifeq ($(strip $(DS_NANO_COLOR_SYNTAX)),y)
-NANO_COLOR_SYNTAX:=--enable-color
-else
-NANO_COLOR_SYNTAX:=
-endif
-ifeq ($(strip $(DS_NANO_NANORC)),y)
-NANO_NANORC:=--enable-nanorc
-else
-NANO_NANORC:=
-endif
 
 $(NANO_DIR)/.configured: $(NANO_DIR)/.unpacked $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
 	( cd $(NANO_DIR); rm -f config.{cache,status}; \
@@ -109,16 +80,16 @@ $(NANO_DIR)/.configured: $(NANO_DIR)/.unpacked $(TARGET_TOOLCHAIN_STAGING_DIR)/u
 			--disable-utf8 \
 			--disable-mouse \
 			--disable-speller \
-			$(NANO_TINY) \
-			$(NANO_HELP) \
-			$(NANO_TABCOMP) \
-			$(NANO_BROWSER) \
-			$(NANO_OPERATINGDIR) \
-			$(NANO_WRAPPING) \
-			$(NANO_JUSTIFY) \
-			$(NANO_MULTIBUFFER) \
-			$(NANO_COLOR_SYNTAX) \
-			$(NANO_NANORC) \
+			$(if $(DS_NANO_TINY),--enable-tiny) \
+			$(if $(DS_NANO_HELP),,--disable-help) \
+			$(if $(DS_NANO_TABCOMP),,--disable-tabcomp) \
+			$(if $(DS_NANO_BROWSER),,--disable-browser) \
+			$(if $(DS_NANO_OPERATINGDIR),,--disable-operatingdir) \
+			$(if $(DS_NANO_WRAPPING),,--disable-wrapping) \
+			$(if $(DS_NANO_JUSTIFY),,--disable-justify) \
+			$(if $(DS_NANO_MULTIBUFFER),--enable-multibuffer) \
+			$(if $(DS_NANO_COLOR_SYNTAX),--enable-color) \
+			$(if $(DS_NANO_NANORC),--enable-nanorc) \
 	);
 	touch $@
 
@@ -149,11 +120,13 @@ nano-source: $(NANO_DIR)/.unpacked $(PACKAGES_DIR)/.nano-$(NANO_VERSION)
 nano-clean:
 	-$(MAKE) -C $(NANO_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(NANO_PKG_SOURCE)
+	rm -f $(NANO_DS_CONFIG_FILE)
 
 nano-dirclean:
 	rm -rf $(NANO_DIR)
 	rm -rf $(PACKAGES_DIR)/nano-$(NANO_VERSION)
 	rm -f $(PACKAGES_DIR)/.nano-$(NANO_VERSION)
+	rm -f $(NANO_DS_CONFIG_FILE)
 
 nano-uninstall: 
 	rm -f $(NANO_TARGET_BINARY)

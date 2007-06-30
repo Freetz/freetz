@@ -17,6 +17,8 @@ endif
 DROPBEAR_TARGET_DIR:=$(PACKAGES_DIR)/$(DROPBEAR_PKG_NAME)
 DROPBEAR_TARGET_BINARY:=$(DROPBEAR_TARGET_DIR)/root/usr/sbin/dropbearmulti
 
+DROPBEAR_DS_CONFIG_FILE:=$(DROPBEAR_MAKE_DIR)/.ds_config
+DROPBEAR_DS_CONFIG_TEMP:=$(DROPBEAR_MAKE_DIR)/.ds_config.temp
 
 $(DL_DIR)/$(DROPBEAR_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(DROPBEAR_SITE)/$(DROPBEAR_SOURCE)
@@ -24,7 +26,17 @@ $(DL_DIR)/$(DROPBEAR_SOURCE): | $(DL_DIR)
 $(DL_DIR)/$(DROPBEAR_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(DROPBEAR_PKG_SOURCE) $(DROPBEAR_PKG_SITE)
 
-$(DROPBEAR_DIR)/.unpacked: $(DL_DIR)/$(DROPBEAR_SOURCE)
+$(DROPBEAR_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "DS_PACKAGE_DROPBEAR_SERVER_ONLY=$(if $(DS_PACKAGE_DROPBEAR_SERVER_ONLY),y,n)" > $(DROPBEAR_DS_CONFIG_TEMP)
+	@diff -q $(DROPBEAR_DS_CONFIG_TEMP) $(DROPBEAR_DS_CONFIG_FILE) || \
+		cp $(DROPBEAR_DS_CONFIG_TEMP) $(DROPBEAR_DS_CONFIG_FILE)
+	@rm -f $(DROPBEAR_DS_CONFIG_TEMP)
+
+# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# options have changed. The safest way to achieve this is by starting over
+# with the source directory.
+$(DROPBEAR_DIR)/.unpacked: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_DS_CONFIG_FILE)
+	rm -rf $(DROPBEAR_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(DROPBEAR_SOURCE)
 	for i in $(DROPBEAR_MAKE_DIR)/patches/*.patch; do \
 		patch -d $(DROPBEAR_DIR) -p0 < $$i; \
@@ -100,11 +112,13 @@ dropbear-source: $(DROPBEAR_DIR)/.unpacked $(PACKAGES_DIR)/.$(DROPBEAR_PKG_NAME)
 dropbear-clean:
 	-$(MAKE) -C $(DROPBEAR_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(DROPBEAR_PKG_SOURCE)
+	rm -f $(DROPBEAR_DS_CONFIG_FILE)
 
 dropbear-dirclean:
 	rm -rf $(DROPBEAR_DIR)
 	rm -rf $(PACKAGES_DIR)/$(DROPBEAR_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(DROPBEAR_PKG_NAME)
+	rm -f $(DROPBEAR_DS_CONFIG_FILE)
 
 dropbear-uninstall:
 	rm -f $(DROPBEAR_TARGET_BINARY)

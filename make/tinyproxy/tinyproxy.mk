@@ -11,18 +11,8 @@ TINYPROXY_PKG_SOURCE:=tinyproxy-$(TINYPROXY_VERSION)-dsmod-$(TINYPROXY_PKG_VERSI
 TINYPROXY_TARGET_DIR:=$(PACKAGES_DIR)/$(TINYPROXY_PKG_NAME)
 TINYPROXY_TARGET_BINARY:=$(TINYPROXY_TARGET_DIR)/root/usr/sbin/tinyproxy
 
-ifeq ($(strip $(DS_COMPILE_TINYPROXY_WITH_TRANSPARENT_PROXY)),y) 
-ENABLE_TRANSPARENT:=--enable-transparent-proxy 
-endif 
-ifneq ($(strip $(DS_COMPILE_TINYPROXY_WITH_UPSTREAM)),y) 
-DISABLE_UPSTREAM:=--disable-upstream 
-endif 
-ifneq ($(strip $(DS_COMPILE_TINYPROXY_WITH_FILTER)),y) 
-DISABLE_FILTER:=--disable-filter 
-endif 
-#ifeq ($(strip $(DS_COMPILE_TINYPROXY_WITH_SOCKS)),y)
-#ENABLE_SOCKS:=--enable-socks
-#endif
+TINYPROXY_DS_CONFIG_FILE:=$(TINYPROXY_MAKE_DIR)/.ds_config
+TINYPROXY_DS_CONFIG_TEMP:=$(TINYPROXY_MAKE_DIR)/.ds_config.temp
 
 $(DL_DIR)/$(TINYPROXY_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(TINYPROXY_SITE)/$(TINYPROXY_SOURCE)
@@ -30,15 +20,28 @@ $(DL_DIR)/$(TINYPROXY_SOURCE): | $(DL_DIR)
 $(DL_DIR)/$(TINYPROXY_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TINYPROXY_PKG_SOURCE) $(TINYPROXY_PKG_SITE)
 
-$(TINYPROXY_DIR)/.unpacked: $(DL_DIR)/$(TINYPROXY_SOURCE)
+$(TINYPROXY_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "DS_COMPILE_TINYPROXY_WITH_TRANSPARENT_PROXY=$(if $(DS_COMPILE_TINYPROXY_WITH_TRANSPARENT_PROXY),y,n)" > $(TINYPROXY_DS_CONFIG_TEMP)
+	@echo "DS_COMPILE_TINYPROXY_WITH_UPSTREAM=$(if $(DS_COMPILE_TINYPROXY_WITH_UPSTREAM),y,n)" >> $(TINYPROXY_DS_CONFIG_TEMP)
+	@echo "DS_COMPILE_TINYPROXY_WITH_FILTER=$(if $(DS_COMPILE_TINYPROXY_WITH_FILTER),y,n)" >> $(TINYPROXY_DS_CONFIG_TEMP)
+	@echo "DS_COMPILE_TINYPROXY_WITH_SOCKS=$(if $(DS_COMPILE_TINYPROXY_WITH_SOCKS),y,n)" >> $(TINYPROXY_DS_CONFIG_TEMP)
+	@diff -q $(TINYPROXY_DS_CONFIG_TEMP) $(TINYPROXY_DS_CONFIG_FILE) || \
+		cp $(TINYPROXY_DS_CONFIG_TEMP) $(TINYPROXY_DS_CONFIG_FILE)
+	@rm -f $(TINYPROXY_DS_CONFIG_TEMP)
+
+# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# options have changed. The safest way to achieve this is by starting over
+# with the source directory.
+$(TINYPROXY_DIR)/.unpacked: $(DL_DIR)/$(TINYPROXY_SOURCE) $(TINYPROXY_DS_CONFIG_FILE)
+	rm -rf $(TINYPROXY_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(TINYPROXY_SOURCE)
 #	for i in $(TINYPROXY_MAKE_DIR)/patches/*.patch; do \
 #		patch -d $(TINYPROXY_DIR) -p0 < $$i; \
 #	done
 	touch $@
 
-$(TINYPROXY_DIR)/.configured: $(TINYPROXY_DIR)/.unpacked 
-	(cd $(TINYPROXY_DIR); rm -f config.{cache,status}; \
+$(TINYPROXY_DIR)/.configured: $(TINYPROXY_DIR)/.unpacked
+	( cd $(TINYPROXY_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -66,10 +69,10 @@ $(TINYPROXY_DIR)/.configured: $(TINYPROXY_DIR)/.unpacked
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
 		--disable-static \
-		$(ENABLE_TRANSPARENT) \
-		$(DISABLE_UPSTREAM) \
-		$(DISABLE_FILTER) \
-		$(ENABLE_SOCKS) \
+		$(if $(DS_COMPILE_TINYPROXY_WITH_TRANSPARENT_PROXY),--enable-transparent-proxy) \
+		$(if $(DS_COMPILE_TINYPROXY_WITH_UPSTREAM),,--disable-upstream) \
+		$(if $(DS_COMPILE_TINYPROXY_WITH_FILTER),,--disable-filter) \
+		$(if $(DS_COMPILE_TINYPROXY_WITH_SOCKS),--enable-socks) \
 	);
 	touch $@
 
@@ -100,12 +103,14 @@ tinyproxy-clean:
 	-$(MAKE) -C $(TINYPROXY_DIR) clean
 	rm -f $(TINYPROXY_DIR)/$(TINYPROXY_TARGET_BINARY)
 	rm -f $(PACKAGES_BUILD_DIR)/$(TINYPROXY_PKG_SOURCE)
+	rm -f $(TINYPROXY_DS_CONFIG_FILE)
 
 tinyproxy-dirclean:
 	rm -rf $(TINYPROXY_DIR)
 	rm -rf $(PACKAGES_DIR)/$(TINYPROXY_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(TINYPROXY_PKG_NAME)
-	
+	rm -f $(TINYPROXY_DS_CONFIG_FILE)
+
 tinyproxy-uninstall:
 	rm -f $(TINYPROXY_TARGET_BINARY)
 

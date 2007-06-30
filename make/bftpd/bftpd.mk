@@ -9,7 +9,6 @@ BFTPD_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)
 BFTPD_PKG_NAME:=bftpd-zlib-$(BFTPD_VERSION)
 BFTPD_PKG_SOURCE:=bftpd-$(BFTPD_VERSION)-dsmod-$(BFTPD_PKG_VERSION)-with-zlib.tar.bz2
-BFTPD_ZLIB:=--enable-libz
 BFTPD_LIBS:=zlib-precompiled
 else
 BFTPD_PKG_NAME:=bftpd-$(BFTPD_VERSION)
@@ -18,6 +17,8 @@ endif
 BFTPD_TARGET_DIR:=$(PACKAGES_DIR)/$(BFTPD_PKG_NAME)
 BFTPD_TARGET_BINARY:=$(BFTPD_TARGET_DIR)/root/usr/sbin/bftpd
 
+BFTPD_DS_CONFIG_FILE:=$(BFTPD_MAKE_DIR)/.ds_config
+BFTPD_DS_CONFIG_TEMP:=$(BFTPD_MAKE_DIR)/.ds_config.temp
 
 $(DL_DIR)/$(BFTPD_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(BFTPD_SITE)/$(BFTPD_SOURCE)
@@ -25,7 +26,17 @@ $(DL_DIR)/$(BFTPD_SOURCE): | $(DL_DIR)
 $(DL_DIR)/$(BFTPD_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(BFTPD_PKG_SOURCE) $(BFTPD_PKG_SITE)
 
-$(BFTPD_DIR)/.unpacked: $(DL_DIR)/$(BFTPD_SOURCE)
+$(BFTPD_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "DS_PACKAGE_BFTPD_WITH_ZLIB=$(if $(DS_PACKAGE_BFTPD_WITH_ZLIB),y,n)" > $(BFTPD_DS_CONFIG_TEMP)
+	@diff -q $(BFTPD_DS_CONFIG_TEMP) $(BFTPD_DS_CONFIG_FILE) || \
+		cp $(BFTPD_DS_CONFIG_TEMP) $(BFTPD_DS_CONFIG_FILE)
+	@rm -f $(BFTPD_DS_CONFIG_TEMP)
+
+# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# options have changed. The safest way to achieve this is by starting over
+# with the source directory.
+$(BFTPD_DIR)/.unpacked: $(DL_DIR)/$(BFTPD_SOURCE) $(BFTPD_DS_CONFIG_FILE)
+	rm -rf $(BFTPD_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(BFTPD_SOURCE)
 	for i in $(BFTPD_MAKE_DIR)/patches/*.patch; do \
 		patch -d $(BFTPD_DIR) -p0 < $$i; \
@@ -59,7 +70,7 @@ $(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked
 		--sysconfdir=/etc \
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
-		$(BFTPD_ZLIB) \
+		$(if $(DS_PACKAGE_BFTPD_WITH_ZLIB),--enable-libz) \
 	);
 	touch $@
 
@@ -88,11 +99,13 @@ bftpd-source: $(BFTPD_DIR)/.unpacked $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 bftpd-clean:
 	-$(MAKE) -C $(BFTPD_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(BFTPD_PKG_SOURCE)
+	rm -f $(BFTPD_DS_CONFIG_FILE)
 
 bftpd-dirclean:
 	rm -rf $(BFTPD_DIR)
 	rm -rf $(PACKAGES_DIR)/$(BFTPD_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
+	rm -f $(BFTPD_DS_CONFIG_FILE)
 
 bftpd-uninstall:
 	rm -f $(BFTPD_TARGET_BINARY)
