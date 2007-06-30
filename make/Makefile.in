@@ -76,8 +76,11 @@ ifneq ($(strip $(DS_DL_SOURCE2)),)
 DL_SITE2:=$(strip $(subst ",, $(DS_DL_SITE2)))
 DL_SOURCE2:=$(strip $(subst ",, $(DS_DL_SOURCE2)))
 endif
-	
-define INSTALL_BINARY_STRIP
-cp $^ $@
+
+# Use $< (first prerequisite) rather than $^ (all prerequisites), because
+# otherwise there will be errors when make tries to copy multiple source files
+# into one target binary.
+define INSTALL_BINARY_STRIP_FIRST
+cp $< $@
 $(TARGET_STRIP) $@
 endef
