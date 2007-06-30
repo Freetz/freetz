@@ -22,11 +22,8 @@ config DS_PACKAGE_NANO
 		and 180 KB, depending on the options chosen.
 
 		2.) Please also be aware of the fact that changing any feature options
-		results in the need to rebuild the package. This is currently NOT done
-		automatically, i.e. you should perform the sequence
-		    make nano-dirclean
-		    make nano-precompiled
-		by yourself in order to get the rebuild you want.
+		results in an automatic rebuild of the package - just in case you were
+		wondering.
 
 menu "Nano additional features"
 	depends DS_PACKAGE_NANO
@@ -128,15 +125,12 @@ config DS_NANO_COLOR_SYNTAX
 
 		IMPORTANT: If you want to include any syntax definition files (look
 		for *.nanorc in the nano source package or define or download your own
-		files), you are advised to copy them somewhere inside root/usr/share.
-		The Nano package's 'root' subdirectory is a bad place, because if you
-		change any sub-features you will probably make a clean rebuild and
-		could thus lose the files previously copied to the package dir. In
-		addition to the syntax files themselves you want to add a nanorc file
-		including them to your user's (probably root) home, possibly by
-		editing /var/flash/debug.cfg or /tmp/flash/rc.custom on the target
-		system. There, the actual '.nanorc' should be created, so Nano finds
-		it upon start-up.
+		files), you are advised to copy them somewhere inside root/usr/share
+		or packages/nano-x.y.z/root/usr/share. In addition to the syntax files
+		themselves you want to add a nanorc file including them to your user's
+		(probably root) home, possibly by editing /var/flash/debug.cfg or
+		/tmp/flash/rc.custom on the target system. There, the actual '.nanorc'
+		should be created, so Nano finds it upon start-up.
 
 config DS_NANO_NANORC
 	depends !DS_NANO_TINY

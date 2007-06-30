@@ -26,6 +26,11 @@ Latest changes:
           binaries (e.g. source/xy-1.3/src/xy and
           packages/xy-1.3/root/usr/bin/xy)
     * add xy-uninstall to all packages and shared libs,
+    * update make files of eight (8) packages which have sub-options
+      influencing the build result in menuconfig, so they are automatically
+      rebuilt whenever a relevant option has changed. The packages are: Bftpd,
+      Bird, Dropbear, OpenVPN, Apache, PHP, Tinyproxy, Nano.
+      This was achieved by the following structural changes in *.mk:
     * add config option "all modules", if "replace kernel" is active,
     * add oldconfig targets for kernel and busybox
     * make more packages work with + without LFS (large file support)
@@ -145,9 +150,15 @@ Latest changes:
       for tips, tricks, patches and extensions.
     * Ctorrent 1.3.4-dnh3.1
     * Bluetooth kernel modules
-    * Nano editor 2.0.6
+    * Nano editor 2.0.6 incl. a set of ten (10) different build options for
+      inclusion of more features at the cost of some disk and RAM space;
+      options are extensively documented in menuconfig online help.
     * OpenNTPD 3.9p1
     * Netcat 0.7.1
+    * Libcapid20, Common ISDN API (CAPI) 2.0 library 3.0.4 (needed by rcapid)
+      (by Nicolai Ehemann)
+    * Rcapid, Remote CAPI daemon 0.1 from isdn4linux (by Nicolai Ehemann)
+    * DTMF-Box 0.3.9 (by Bodega) with pjsip, there are still some errors to fix
     * Add generic editor wrapper script 'wrap_editors' which can handle files
       in /var/flash, /var/mod/etc/conf and /var/tmp/flash and call multiple
       editors via symlinks. Now all n/m-scripts (nvi, mvi, nmcedit, mmcedit,
@@ -161,9 +172,10 @@ Latest changes:
       parameters in order to get a report about the original file system. Call
       tools/lib_report.sh . build/original/filesystem to generate a report
       about the modified file system.
-    * New  helper script 'tools/push.sh' to flash a 'kernel.image' directly
-      to mtd1 using FTP via ADAM2. This is a convenience function for people
-      who are tired of typing in these commands every time. Use at own risk!
+    * New helper script 'tools/push_firmware.sh' to flash a 'kernel.image'
+      directly to mtd1 using FTP via ADAM2. This is a convenience function for
+      people who are tired of typing in these commands every time. Use at your
+      own risk!
     * Two new EXPERIMENTAL patch options for menuconfig directly on the
       front page:
         1. Replace AVM websrv by BusyBox httpd and remove web server from
@@ -223,13 +235,16 @@ Latest changes:
         + a dramatically simplified debootstrap.mk
     * CRC_CCITT compiled as kernel module (Config.4mb_26)
     * Fakeroot 1.7.1 (build tools section)
-    * uClibc++ to 0.2.2
+    * uClibc++ 0.2.2
     * Libpcap 0.9.6
     * Tcpdump 3.9.6
+    * OpenVPN 2.1-rc4 (incl. option for management console)
 
 - Firmware updates:
     * 7170 Labor USB 29.04.34-7553
     * 7170 Labor Phone 29.04.34-7269
+    * 7170 Labor VPN 29.04.34-7728
+    * Add 7170 Labor DSL 29.04.34-7584
     * Remove 7170 Labor Eco support , because it is obsolete. Its features
       have been included into the current regular firmware releases.
     * 7150 firmware 38.04.32
@@ -238,6 +253,7 @@ Latest changes:
     * Add FB Fon WLAN firmware 08.04.33
     * Add Eumex300ip, uses Fon firmware 06.04.33
     * Add 3130 WLAN firmware 44.04.34
+    * Add Speedport W501V (original fw 28.04.38 + 7140 fw 30.04.33)
     * Remove 7140 international (kernel 2.4.17_mvl21)
     * Add AVM web interface for W900V
     * Extension for W701V: /sbin/mailer is copied from tk-firmware
@@ -251,6 +267,9 @@ Latest changes:
     * W701V: integrate copy modules: modules are copied from tk-firmware
       (29.04.33), so self.built kernel can be used
     * W701V: accept OEM avm
+    * W501V, W701V, W901V: copy igdd from AVM firmware, so UPnP can be used
+      with the "fritzed" Speedports, too. The patch to remove UPnP can also
+      be applied (no, don't say it!).
     * run_mount patch enables all firmwares with USB host to mount all file
       systems, not just FAT
 
@@ -286,6 +305,11 @@ Latest changes:
       http://www.busybox.net/lists/busybox/2007-May/027448.html
     * Remove terminfo stuff from MC, Nano and Screen packages, because it can
       be copied from the toolchain staging dir.
+    * Activate unionfs module build in kernel configs
+    * Change name of kernel config files to differentiate between ar7 and
+      ohio. Until lately, all 4mb boxes were ar7 and all 8mb boxes were ohio.
+      Since W501V we have a 4mb ohio box, so the old naming scheme has become
+      inappropriate.
     * Replace package URLs (eiband.info -> magenbrot.net) because Danisahne
       will soon discard his domain name. eiband.info ist still mentioned in
       several package README files, but I do not care, because this is plain
