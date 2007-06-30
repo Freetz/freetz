@@ -1,7 +1,7 @@
 if [ "$DS_PACKAGE_ORANGEBOX" == "y" ]
 then
 	echo1 "adding orangebox-lines to rc.S"
-	if [ "$DS_TYPE_LABOR" == "y" ]
+	if [ "$DS_TYPE_LABOR" == "y" ] && ! [ "$DS_TYPE_LABOR_WLAN" == "y" ]
 	then
 	    if [ "$DS_TYPE_LABOR_PHONE" == "y" ]
 	    then
