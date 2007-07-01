@@ -287,21 +287,22 @@
  		if (UpdateDefaultExtension(i) == true) return false;
 --- usr/www/all/html/de/system/nacht.js.orig	2007-06-21 11:44:30.000000000 +0200
 +++ usr/www/all/html/de/system/nacht.js	2007-06-25 11:23:13.000000000 +0200
-@@ -63,14 +63,17 @@
+@@ -61,15 +61,18 @@
+ 			jslSetValue("uiPostNachtFon", "1");
+ 			Klingelsperre("0", starth, startm, endh, endm);
  			Klingelsperre("1", starth, startm, endh, endm);
++			Klingelsperre("2", starth, startm, endh, endm);
  		} else {
  			jslSetValue("uiPostNachtFon", "0");
-+                       Klingelsperre("2", starth, startm, endh, endm);
  			KeineSperre("0");
  			KeineSperre("1");
++			KeineSperre("2");
  		}
-+                       KeineSperre("2");
  	} else {
  		jslSetValue("uiPostUseNacht", "0");
  		KeineSperre("0");
  		KeineSperre("1");
++		KeineSperre("2");
  	}
-+               KeineSperre("2");
  	jslFormSubmitEx("system", "nacht");
  }
- function KeineSperre (n) {
