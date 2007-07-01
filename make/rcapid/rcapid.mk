@@ -1,7 +1,7 @@
 RCAPID_VERSION:=0.1
-RCAPID_SOURCE:=rcapid-$(RCAPID_VERSION).tar.bz2
-RCAPID_SITE:=http://dsmod.magenbrot.net
-RCAPID_DIR:=$(SOURCE_DIR)/rcapid-$(RCAPID_VERSION)
+RCAPID_SOURCE:=rcapid.tgz
+RCAPID_SITE:=http://www.mtg.de/pdf
+RCAPID_DIR:=$(SOURCE_DIR)/rcapid
 RCAPID_MAKE_DIR:=$(MAKE_DIR)/rcapid
 RCAPID_BINARY:=$(RCAPID_DIR)/rcapid
 RCAPID_PKG_VERSION:=0.1
@@ -18,10 +18,10 @@ $(DL_DIR)/$(RCAPID_PKG_SOURCE):
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(RCAPID_PKG_SOURCE) $(RCAPID_PKG_SITE)
 
 $(RCAPID_DIR)/.unpacked: $(DL_DIR)/$(RCAPID_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(RCAPID_SOURCE)
-#	for i in $(RCAPID_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(RCAPID_DIR) -p0 < $$i; \
-#	done
+	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(RCAPID_SOURCE)
+	for i in $(RCAPID_MAKE_DIR)/patches/*.patch; do \
+		patch -d $(RCAPID_DIR) -p1 < $$i; \
+	done
 	touch $@
 
 $(RCAPID_DIR)/.configured: $(RCAPID_DIR)/.unpacked
@@ -49,11 +49,13 @@ $(RCAPID_DIR)/.configured: $(RCAPID_DIR)/.unpacked
 		--mandir=/usr/share/man \
 		$(DISABLE_LARGEFILE) \
 		$(DISABLE_NLS) \
+		--with-kernel="$(shell pwd)/$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1" \
 	);
 	touch $@
 
 $(RCAPID_BINARY): $(RCAPID_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
+	CFLAGS="$(TARGET_CFLAGS)" \
 	$(MAKE) -C $(RCAPID_DIR)
 
 $(RCAPID_TARGET_BINARY): $(RCAPID_BINARY)
