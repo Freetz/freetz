@@ -1,49 +1,3 @@
-diff -burN pjproject-0.7.0.orig/Makefile pjproject-0.7.0/Makefile
---- pjproject-0.7.0.orig/Makefile	2007-04-22 14:48:30.000000000 +0200
-+++ pjproject-0.7.0/Makefile	2007-07-01 02:35:16.000000000 +0200
-@@ -16,16 +16,16 @@
- 		fi; \
- 	done
- 
--LIBS = 	pjlib/lib/libpj-$(TARGET_NAME).a \
--	pjlib-util/lib/libpjlib-util-$(TARGET_NAME).a \
--	pjnath/lib/libpjnath-$(TARGET_NAME).a \
--	pjmedia/lib/libpjmedia-$(TARGET_NAME).a \
--	pjmedia/lib/libpjmedia-codec-$(TARGET_NAME).a \
--       	pjsip/lib/libpjsip-$(TARGET_NAME).a \
--	pjsip/lib/libpjsip-ua-$(TARGET_NAME).a \
--	pjsip/lib/libpjsip-simple-$(TARGET_NAME).a \
--	pjsip/lib/libpjsua-$(TARGET_NAME).a
--BINS = 	pjsip-apps/bin/pjsua-$(TARGET_NAME)$(HOST_EXE) 
-+LIBS = 	pjlib/lib/libpj.a \
-+	pjlib-util/lib/libpjlib-util.a \
-+	pjnath/lib/libpjnath.a \
-+	pjmedia/lib/libpjmedia.a \
-+	pjmedia/lib/libpjmedia-codec.a \
-+       	pjsip/lib/libpjsip.a \
-+	pjsip/lib/libpjsip-ua.a \
-+	pjsip/lib/libpjsip-simple.a \
-+	pjsip/lib/libpjsua.a
-+BINS = 	pjsip-apps/bin/pjsua$(HOST_EXE) 
- 
- size:
- 	@echo -n 'Date: '
-@@ -56,14 +56,11 @@
- 		cp /tmp/id $$f; \
- 	done
- 
--prefix = /usr/local
-+prefix = /usr
- install:
- 	mkdir -p $(DESTDIR)$(prefix)/lib
- 	cp -L $$(find . -name '*.a') $(DESTDIR)$(prefix)/lib
- 	mkdir -p $(DESTDIR)$(prefix)/include
- 	cp -RL $$(find  . -name include) $(DESTDIR)$(prefix)
--	cd $(DESTDIR)$(prefix)/lib && for i in $$(find . -name 'libpj*a'); do\
--		ln -s $$i $$(echo $$i | sed -e "s/-$(TARGET_NAME)//");\
--	done
- 	mkdir -p $(DESTDIR)$(prefix)/lib/pkgconfig
- 	sed -e "s!@PREFIX@!$(DESTDIR)$(prefix)!" libpj.pc.in > $(DESTDIR)/$(prefix)/lib/pkgconfig/libpj.pc
 diff -burN pjproject-0.7.0.orig/build.mak.in pjproject-0.7.0/build.mak.in
 --- pjproject-0.7.0.orig/build.mak.in	2007-04-17 18:16:01.000000000 +0200
 +++ pjproject-0.7.0/build.mak.in	2007-07-01 02:49:28.000000000 +0200
@@ -101,6 +55,52 @@ diff -burN pjproject-0.7.0.orig/build.mak.in pjproject-0.7.0/build.mak.in
  	@LIBS@
  
  export PJ_DIR := $(PJDIR)
+diff -burN pjproject-0.7.0.orig/Makefile pjproject-0.7.0/Makefile
+--- pjproject-0.7.0.orig/Makefile	2007-04-22 14:48:30.000000000 +0200
++++ pjproject-0.7.0/Makefile	2007-07-01 02:35:16.000000000 +0200
+@@ -16,16 +16,16 @@
+ 		fi; \
+ 	done
+ 
+-LIBS = 	pjlib/lib/libpj-$(TARGET_NAME).a \
+-	pjlib-util/lib/libpjlib-util-$(TARGET_NAME).a \
+-	pjnath/lib/libpjnath-$(TARGET_NAME).a \
+-	pjmedia/lib/libpjmedia-$(TARGET_NAME).a \
+-	pjmedia/lib/libpjmedia-codec-$(TARGET_NAME).a \
+-       	pjsip/lib/libpjsip-$(TARGET_NAME).a \
+-	pjsip/lib/libpjsip-ua-$(TARGET_NAME).a \
+-	pjsip/lib/libpjsip-simple-$(TARGET_NAME).a \
+-	pjsip/lib/libpjsua-$(TARGET_NAME).a
+-BINS = 	pjsip-apps/bin/pjsua-$(TARGET_NAME)$(HOST_EXE) 
++LIBS = 	pjlib/lib/libpj.a \
++	pjlib-util/lib/libpjlib-util.a \
++	pjnath/lib/libpjnath.a \
++	pjmedia/lib/libpjmedia.a \
++	pjmedia/lib/libpjmedia-codec.a \
++       	pjsip/lib/libpjsip.a \
++	pjsip/lib/libpjsip-ua.a \
++	pjsip/lib/libpjsip-simple.a \
++	pjsip/lib/libpjsua.a
++BINS = 	pjsip-apps/bin/pjsua$(HOST_EXE) 
+ 
+ size:
+ 	@echo -n 'Date: '
+@@ -56,14 +56,11 @@
+ 		cp /tmp/id $$f; \
+ 	done
+ 
+-prefix = /usr/local
++prefix = /usr
+ install:
+ 	mkdir -p $(DESTDIR)$(prefix)/lib
+ 	cp -L $$(find . -name '*.a') $(DESTDIR)$(prefix)/lib
+ 	mkdir -p $(DESTDIR)$(prefix)/include
+ 	cp -RL $$(find  . -name include) $(DESTDIR)$(prefix)
+-	cd $(DESTDIR)$(prefix)/lib && for i in $$(find . -name 'libpj*a'); do\
+-		ln -s $$i $$(echo $$i | sed -e "s/-$(TARGET_NAME)//");\
+-	done
+ 	mkdir -p $(DESTDIR)$(prefix)/lib/pkgconfig
+ 	sed -e "s!@PREFIX@!$(DESTDIR)$(prefix)!" libpj.pc.in > $(DESTDIR)/$(prefix)/lib/pkgconfig/libpj.pc
 diff -burN pjproject-0.7.0.orig/pjlib/build/Makefile pjproject-0.7.0/pjlib/build/Makefile
 --- pjproject-0.7.0.orig/pjlib/build/Makefile	2007-04-09 23:28:15.000000000 +0200
 +++ pjproject-0.7.0/pjlib/build/Makefile	2007-07-01 02:53:45.000000000 +0200
@@ -552,4 +552,3 @@ diff -burN pjproject-0.7.0.orig/third_party/build/speex/Makefile pjproject-0.7.0
 +	echo '$(SPEEX_LIB): .libspeex.depend' >> .libspeex.depend; \
  
  
- 	
