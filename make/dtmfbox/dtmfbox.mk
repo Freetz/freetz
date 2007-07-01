@@ -31,7 +31,7 @@ $(DTMFBOX_BINARY): $(DTMFBOX_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	    $(TARGET_CONFIGURE_OPTS) \
 	    CFLAGS="$(TARGET_CFLAGS)" \
-	    LDLIBS="-lpjsua -lpjsip-ua -lpjsip-simple -lpjsip -lpjmedia-codec \
+	    LDLIBS="-lpjsip-ua -lpjsip-simple -lpjsip -lpjmedia-codec \
 		-lpjmedia -lpjnath -lpjlib-util -lpj -lresample" \
 	    $(MAKE) -C $(DTMFBOX_DIR) all 
 
