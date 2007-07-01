@@ -61,7 +61,7 @@ dtmfbox-dirclean:
 	rm -f $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
 
 dtmfbox-list:
-ifeq ($(strip $(DS_PACKAGE_dtmfbox)),y)
+ifeq ($(strip $(DS_PACKAGE_DTMFBOX)),y)
 	@echo "S40dtmfbox-$(DTMFBOX_VERSION)" >> .static
 else
 	@echo "S40dtmfbox-$(DTMFBOX_VERSION)" >> .dynamic
