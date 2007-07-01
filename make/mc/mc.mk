@@ -23,7 +23,7 @@ $(MC_DIR)/.unpacked: $(DL_DIR)/$(MC_SOURCE)
 	done
 	touch $@
 
-$(MC_DIR)/.configured: $(MC_DIR)/.unpacked
+$(MC_DIR)/.configured: $(MC_DIR)/.unpacked $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
 	( cd $(MC_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -72,7 +72,7 @@ mc: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
 mc-package: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(MC_PKG_SOURCE) mc-$(MC_VERSION)
 
-mc-precompiled: uclibc mc $(MC_TARGET_BINARY) 
+mc-precompiled: uclibc ncurses mc $(MC_TARGET_BINARY) 
 
 mc-source: $(MC_DIR)/.unpacked $(PACKAGES_DIR)/.mc-$(MC_VERSION)
 
