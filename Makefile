@@ -30,6 +30,7 @@ CONFIG_CONFIG_IN=Config.in
 CONFIG_DEFCONFIG=.defconfig
 CONFIG=tools/config
 
+SHELL:=/bin/bash
 MAKE:=make
 IMAGE:=
 LOCALIP:=
