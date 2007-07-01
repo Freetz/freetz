@@ -9,12 +9,13 @@ PPPD_SOURCE:=ppp-$(PPPD_VERSION).tar.gz
 PPPD_SITE:=ftp://ftp.samba.org/pub/ppp
 PPPD_DIR:=$(SOURCE_DIR)/ppp-$(PPPD_VERSION)
 PPPD_MAKE_DIR:=$(MAKE_DIR)/pppd
-PPPD_TARGET_BINARY:=pppd/pppd
+PPPD_TARGET_BINARY:=$(PPPD_DIR)/pppd/pppd
 PPPD_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 PPPD_PKG_NAME:=pppd-$(PPPD_VERSION)
 PPPD_PKG_VERSION:=0.1
 PPPD_PKG_SOURCE:=pppd-$(PPPD_VERSION)-dsmod-$(PPPD_PKG_VERSION).tar.bz2
-PPPD_TARGET_DIR:=$(PACKAGES_DIR)/$(PPPD_PKG_NAME)/root/usr/sbin
+PPPD_TARGET_DIR:=$(PACKAGES_DIR)/$(PPPD_PKG_NAME)
+PPPD_TARGET_BINARY:=$(PPPD_TARGET_DIR)/root/usr/sbin/pppd
 
 $(DL_DIR)/$(PPPD_SOURCE):
 	wget -P $(DL_DIR) $(PPPD_SITE)/$(PPPD_SOURCE)
@@ -33,7 +34,7 @@ $(PPPD_DIR)/.configured: $(PPPD_DIR)/.unpacked
 	(cd $(PPPD_DIR); rm -rf config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="-static-libgcc" \
+		LDFLAGS="" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -53,12 +54,15 @@ $(PPPD_DIR)/.configured: $(PPPD_DIR)/.unpacked
 	);
 	touch $(PPPD_DIR)/.configured
 
-$(PPPD_DIR)/$(PPPD_TARGET_BINARY): $(PPPD_DIR)/.configured
+$(PPPD_BINARY): $(PPPD_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) \
 	CC="$(TARGET_CC)" \
 	COPTS="$(TARGET-CFLAGS)" \
 	STAGING_DIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	-C $(PPPD_DIR) all
+
+$(PPPD_TARGET_BINARY): $(PPPD_BINARY)
+	$(INSTALL_BINARY_STRIP)
 
 $(PACKAGES_DIR)/.$(PPPD_PKG_NAME): $(DL_DIR)/$(PPPD_PKG_SOURCE)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(PPPD_PKG_SOURCE)
@@ -69,9 +73,7 @@ pppd: $(PACKAGES_DIR)/.$(PPPD_PKG_NAME)
 pppd-package: $(PACKAGES_DIR)/.pppd-$(PPPD_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(PPPD_PKG_SOURCE) pppd-$(PPPD_VERSION)
 
-pppd-precompiled: uclibc $(PPPD_DIR)/$(PPPD_TARGET_BINARY) pppd
-	$(TARGET_STRIP) $(PPPD_DIR)/$(PPPD_TARGET_BINARY)
-	cp $(PPPD_DIR)/$(PPPD_TARGET_BINARY) $(PPPD_TARGET_DIR)/
+pppd-precompiled: uclibc pppd $(PPPD_TARGET_BINARY)
 
 pppd-source: $(PPPD_DIR)/.unpacked $(PACKAGES_DIR)/.$(PPPD_PKG_NAME)
 
@@ -83,6 +85,9 @@ pppd-dirclean:
 	rm -rf $(PPPD_DIR)
 	rm -rf $(PACKAGES_DIR)/pppd-$(PPPD_VERSION)
 	rm -f $(PACKAGES_DIR)/.pppd-$(PPPD_VERSION)
+
+pppd-uninstall:
+	rm -f $(PPPD_TARGET_BINARY)
 
 pppd-list:
 ifeq ($(strip $(DS_PACKAGE_PPPD)),y)
