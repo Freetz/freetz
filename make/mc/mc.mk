@@ -23,7 +23,7 @@ $(MC_DIR)/.unpacked: $(DL_DIR)/$(MC_SOURCE)
 	done
 	touch $@
 
-$(MC_DIR)/.configured: $(MC_DIR)/.unpacked $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so
+$(MC_DIR)/.configured: $(MC_DIR)/.unpacked
 	( cd $(MC_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -51,6 +51,7 @@ $(MC_DIR)/.configured: $(MC_DIR)/.unpacked $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/l
 		$(DISABLE_LARGEFILE) \
 		--without-x \
 		--without-subshell \
+		--with-terminfo
 	);
 	touch $@
 
