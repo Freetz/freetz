@@ -1,7 +1,7 @@
 PJSIP_VERSION:=0.7.0
 PJSIP_LIB_VERSION:=0.7.0
 PJSIP_SOURCE:=pjproject-0.7.0.tar.gz
-PJSIP_SITE:=http://fritz.v3v.de/dtmfbox/dtmfbox-src/libs
+PJSIP_SITE:=http://fritz.v3v.de/dtmfbox/libs
 PJSIP_MAKE_DIR:=$(MAKE_DIR)/libs
 PJSIP_DIR:=$(SOURCE_DIR)/pjproject-0.7.0
 PJSIP_BINARY:=$(PJSIP_DIR)/pjsip/lib/libpjsip.a
