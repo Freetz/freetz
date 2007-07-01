@@ -21,16 +21,25 @@ $(DTMFBOX_DIR)/.unpacked: $(DL_DIR)/$(DTMFBOX_SOURCE)
 	touch $@
 
 $(DTMFBOX_DIR)/.configured: $(DTMFBOX_DIR)/.unpacked
+	for i in $(DTMFBOX_MAKE_DIR)/patches/*.patch; do \
+	    patch -d $(DTMFBOX_DIR) -p0 < $$i; \
+	done
 	cp $(DTMFBOX_DIR)/Makefile.mipsel $(DTMFBOX_DIR)/Makefile
+	touch $@
 
 $(DTMFBOX_BINARY): $(DTMFBOX_DIR)/.configured
-	PATH="$(TARGET_PATH)" $(MAKE) -C $(DTMFBOX_DIR) all 
+	PATH="$(TARGET_PATH)" \
+	    $(TARGET_CONFIGURE_OPTS) \
+	    CFLAGS="$(TARGET_CFLAGS)" \
+	    LDLIBS="-lpjsua -lpjsip-ua -lpjsip-simple -lpjsip -lpjmedia-codec \
+		-lpjmedia -lpjnath -lpjlib-util -lpj -lresample" \
+	    $(MAKE) -C $(DTMFBOX_DIR) all 
 
 $(DTMFBOX_TARGET_BINARY): $(DTMFBOX_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION): $(DL_DIR)/$(DTMFBOX_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(DTMFBOX_PKG_SOURCE)
+	@tar -C $(PACKAGES_DIR) -xzf $(DL_DIR)/$(DTMFBOX_PKG_SOURCE)
 	@touch $@
 
 dtmfbox: $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
@@ -38,8 +47,7 @@ dtmfbox: $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
 dtmfbox-package: $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(DTMFBOX_PKG_SOURCE) dtmfbox-$(DTMFBOX_VERSION)-src
 
-dtmfbox-precompiled: uclibc $(DTMFBOX_TARGET_BINARY)
-#dtmfbox-precompiled: uclibc capi-precompiled pjsip-precompiled dtmfbox $(DTMFBOX_TARGET_BINARY)
+dtmfbox-precompiled: uclibc capi-precompiled pjsip-precompiled dtmfbox $(DTMFBOX_TARGET_BINARY)
 
 dtmfbox-source: $(DTMFBOX_DIR)/.unpacked $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
 
