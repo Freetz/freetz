@@ -36,6 +36,8 @@ $Id$
     Remark (by kriegaex): Yes, maybe. But why bloat box's memory if we can
     just as easy run toolchain/target/mipsel-linux-uclibc/bin/ldd on mipsel
     binaries from the target toolchain as tools/lib_report.sh does?
+    Remark (by olistudent): In uclibc.mk there is a target named 
+    uclibc-target-utils. This copies ldd for target to root/usr/bin.
 
 - Make packages with sub-options requiring recompilation aware of those config
   changes so they rebuild automatically, similar to the way it is implemented
