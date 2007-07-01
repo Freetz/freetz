@@ -73,7 +73,7 @@ pppd: $(PACKAGES_DIR)/.$(PPPD_PKG_NAME)
 pppd-package: $(PACKAGES_DIR)/.pppd-$(PPPD_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(PPPD_PKG_SOURCE) pppd-$(PPPD_VERSION)
 
-pppd-precompiled: uclibc pppd $(PPPD_TARGET_BINARY)
+pppd-precompiled: uclibc libpcap-precompiled pppd $(PPPD_TARGET_BINARY)
 
 pppd-source: $(PPPD_DIR)/.unpacked $(PACKAGES_DIR)/.$(PPPD_PKG_NAME)
 
