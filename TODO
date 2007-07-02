@@ -38,6 +38,11 @@ $Id$
     binaries from the target toolchain as tools/lib_report.sh does?
     Remark (by olistudent): In uclibc.mk there is a target named 
     uclibc-target-utils. This copies ldd for target to root/usr/bin.
+    Remark (by kriegaex): I think we should offer an option under "debug
+    tools" in menuconfig then. The file is really small and it works well,
+    I tested it on the box. I do not know how this is best done, because it is
+    part of the toolchain rather than a regular package, but maybe Oliver has
+    an idea.
 
 - Make packages with sub-options requiring recompilation aware of those config
   changes so they rebuild automatically, similar to the way it is implemented
@@ -58,3 +63,11 @@ $Id$
         relevant sub-options for a package have changed in .config. Changes in
         .config in other places do *not* affect a package with unchanged
         options.
+
+- Create "clean-config-deps" target (task assigned to kriegaex) according to
+  http://www.ip-phone-forum.de/showpost.php?p=896491
+
+- Think about whether we can do something about LCR Auto Updater not working
+  without httpd restart, if httpd replaces websrv.
+
+- Make rc.mini_fo use kernel_args API
