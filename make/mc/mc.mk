@@ -51,7 +51,7 @@ $(MC_DIR)/.configured: $(MC_DIR)/.unpacked
 		$(DISABLE_LARGEFILE) \
 		--without-x \
 		--without-subshell \
-		--with-terminfo
+		--with-terminfo \
 	);
 	touch $@
 
