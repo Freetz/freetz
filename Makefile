@@ -311,6 +311,20 @@ oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 	@$(CONFIG)/conf -d $(CONFIG_CONFIG_IN)
 
+config-clean-deps:
+	@{ \
+	cp .config .config_tmp; \
+	echo -n "Step 1: temporarily deactivate all kernel modules, shared libraries and optional BusyBox applets ... "; \
+	sed -i -r 's/^(DS_(LIB|MODULE|BUSYBOX)_)/# \1/' .config; \
+	echo "DONE"; \
+	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
+	make oldconfig < /dev/null > /dev/null; \
+	echo "DONE"; \
+	echo "The following elements have been deactivated:"; \
+	diff -u0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
+	rm -f .config_tmp; \
+	}
+
 exclude-lists:
 	@for i in root kernel/root; do \
 	( \
