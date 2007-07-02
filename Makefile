@@ -236,6 +236,13 @@ endif
 
 tools: $(DL_DIR) $(SOURCE_DIR) $(TOOLS)
 
+push-firmware:
+	@if [ ! -f "build/modified/firmware/var/tmp/kernel.image" ]; then \
+		echo "Please run 'make' first."; \
+	else \
+		./tools/push_firmware.sh build/modified/firmware/var/tmp/kernel.image ; \
+	fi
+
 recover:
 ifeq ($(strip $(TERM)),cygwin)
 	@echo "Recovery is not supported in cygwin yet." 1>&2
