@@ -26,7 +26,7 @@
  #tLegende {margin:auto}
  #tLegende td {padding: 2px 2px;}
  #tClient a:link, #tClient a:visited { color: black; }
-@@ -150,18 +150,20 @@
+@@ -150,18 +147,18 @@
  }
  function uiNummerDisplay (nr, name) {
  	var buchname = GetBuchName(name);
@@ -37,11 +37,11 @@
 -		if (buchname == "") {
 -			return "<nobr>" +
 -			"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
+-		}
+-		return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
 +		if (nr == "") return g_sym0 + span(buchname);
 +		if (buchname == "") return "<nobr>" + uiRufnummerInfo (nr) +"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
 +		return "<nobr>" +  g_sym0 + "<a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
- 		}
- 		return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
  	} else {
 -		return span(buchname=="" ? nr:buchname);
 +		return (buchname=="" ? uiRufnummerInfo(nr):g_sym0) + span(buchname=="" ? nr:buchname);
@@ -53,3 +53,4 @@
  function uiRouteDisplay (n, t) {
  	var name;
  	if (t == "0") {
+
