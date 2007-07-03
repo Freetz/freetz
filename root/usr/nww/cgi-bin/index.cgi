@@ -28,10 +28,15 @@ $(lang de:"Logge dich auf der Box ein" en:"Login to your device"):
 Trying 192.168.178.1...
 Connected to fritz.box.
 Escape character is '^]'.
-Fritz!Box web password:
+fritz.box login: root
+Password:
+ __  __                 __   __
+|  \(_  __ |\/| _  _|    _) /__
+|__/__)    |  |(_)(_|__ /__ \__)
 
+   The fun has just begun...
 
-BusyBox v1.00 (2005.09.23-21:10+0000) Built-in shell (ash)
+BusyBox v1.5.1 (2007.07.27-21:10+0000) Built-in shell (ash)
 Enter 'help' for a list of built-in commands.
 
 ermittle die aktuelle TTY
