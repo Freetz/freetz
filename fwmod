@@ -596,8 +596,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Copy the unpacked directory
 	#cp -r "$ORG_DIR" "$MOD_DIR"
 	mkdir -p "$MOD_DIR"
-	"$TAR" -cf - -C "$ORG_DIR" --exclude=dev . | 
-	"$TAR" -xf - -C "$MOD_DIR" || exit 1
+	"$TAR" -c -C "$ORG_DIR" --exclude=dev . | 
+	"$TAR" -x -C "$MOD_DIR" || exit 1
 
 	echo "applying patches"
 
@@ -778,12 +778,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "installing mod base"
 
 		echo1 "copying files"
-		"$TAR" -cf - -C "$ROOT_DIR" --exclude=lib --exclude=usr/lib \
+		"$TAR" -c -C "$ROOT_DIR" --exclude=lib --exclude=usr/lib \
 			$([ -r "${BASE_DIR}/.exclude" ] && echo "--exclude-from=${BASE_DIR}/.exclude") \
-			. | "$TAR" -xf - -C "$FILESYSTEM_MOD_DIR" || exit 1
-		"$TAR" -cf - -C "$ROOT_DIR" \
+			. | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		"$TAR" -c -C "$ROOT_DIR" \
 			$([ -r "${BASE_DIR}/.exclude" ] && echo "--exclude-from=${BASE_DIR}/.exclude") \
-			./usr/lib/cgi-bin | "$TAR" -xf - -C "$FILESYSTEM_MOD_DIR" || exit 1
+			./usr/lib/cgi-bin | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 		mkdir -p "${FILESYSTEM_MOD_DIR}/usr/lib"
 		cp "${ROOT_DIR}/usr/lib/lib"*.sh "${FILESYSTEM_MOD_DIR}/usr/lib/"
@@ -946,10 +946,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 		-F ${KERNEL_REP_DIR}/System-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.map 2> /dev/null
 		
 	echo1 "copying files"
-	"$TAR" -cf - -C "${KERNEL_REP_DIR}/root" --exclude=lib --exclude=usr/lib \
+	"$TAR" -c -C "${KERNEL_REP_DIR}/root" --exclude=lib --exclude=usr/lib \
 		$([ -r "${KERNEL_REP_DIR}/.exclude" ] && echo "--exclude-from=${KERNEL_REP_DIR}/.exclude") \
 		$([ "$DS_PACKAGE_IPTABLES" != "y" ] && echo "--exclude=usr/sbin/iptables") \
-	.	| "$TAR" -xf - -C "$FILESYSTEM_MOD_DIR" || exit 1
+	.	| "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 	echo1 "installing libs"
 	for i in \
@@ -980,11 +980,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 			if [ -e "${PACKAGES_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
 				echo "NOTICE: package '$pkg' is in old-style format (no language support)." 1>&2
-				"$TAR" -cf - -C "${PACKAGES_DIR}/${pkg}" . | "$TAR" -xf - -C "$FILESYSTEM_MOD_DIR" || exit 1
+				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 			else
-				"$TAR" -cf - -C "${PACKAGES_DIR}/${pkg}/root" \
+				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
 					$([ -r "${PACKAGES_DIR}/${pkg}/.exclude" ] && echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude") \
-					. | "$TAR" -xf - -C "$FILESYSTEM_MOD_DIR" || exit 1
+					. | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 				[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
 					modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
@@ -1001,11 +1001,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 			if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
 				echo "NOTICE: addon '$pkg' is in old-style format (no language support)." 1>&2
-				"$TAR" -cf - -C "${ADDON_DIR}/${pkg}" . | "$TAR" -xf - -C "$FILESYSTEM_MOD_DIR" || exit 1
+				"$TAR" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 			else
-				"$TAR" -cf - -C "${ADDON_DIR}/${pkg}/root" \
+				"$TAR" -c -C "${ADDON_DIR}/${pkg}/root" \
 					$([ -r "${ADDON_DIR}/${pkg}/.exclude" ] && echo "--exclude-from=${ADDON_DIR}/${pkg}/.exclude") \
-					. | "$TAR" -xf - -C "$FILESYSTEM_MOD_DIR" || exit 1
+					. | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 				[ -r "${ADDON_DIR}/${pkg}/.language" ] && \
 					modlang "${ADDON_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
@@ -1102,7 +1102,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Pack var.tar (use old tar for compatibility)
 	echo "packing var.tar"
-	"$TAR" -cf - --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
+	"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
 
 	if [ ! -s "$VARTAR_MOD" ]; then
 		error 1 "packing of var.tar failed"
@@ -1115,8 +1115,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	if [ "$DS_REPLACE_KERNEL" == "y" -a "$DS_HIDDEN_ROOT" != "y" ]; then
 		echo "copying hidden files"
-		"$TAR" -cf - -C "$HIDDEN_MOD_DIR" . | \
-			"$TAR" -xf - -C "${FILESYSTEM_MOD_DIR}/lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden" || exit 1
+		"$TAR" -c -C "$HIDDEN_MOD_DIR" . | \
+			"$TAR" -x -C "${FILESYSTEM_MOD_DIR}/lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden" || exit 1
 	fi
 
 	echo "creating filesystem image"
@@ -1200,7 +1200,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Pack firmare image (use old tar for compatibility)
 	echo "packing ${modimage}"
-	"$TAR" -cf - --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
+	"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
 
 	if [ ! -s "${DIR}/${modimage}" ]; then
 		rm -f "${DIR}/${modimage}"
