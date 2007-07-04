@@ -57,7 +57,7 @@ $(PPPD_DIR)/.configured: $(PPPD_DIR)/.unpacked
 $(PPPD_BINARY): $(PPPD_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) \
 	CC="$(TARGET_CC)" \
-	COPTS="$(TARGET-CFLAGS)" \
+	COPTS="$(TARGET_CFLAGS)" \
 	STAGING_DIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	-C $(PPPD_DIR) all
 
