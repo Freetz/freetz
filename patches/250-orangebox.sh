@@ -6,12 +6,12 @@ if [ "$DS_PACKAGE_ORANGEBOX" == "y" ]; then
 		else
 			modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor.patch
 		fi
-	elif [ "${DS_TYPE_STRING/[579]0[01]/x0y}" == "Wx0yV" ]; then
+	elif [ "${DS_TYPE_STRING/[79]0[01]/x0y}" == "Wx0yV" ]; then
 		# kriegaex: At the time of writing this the patch would succeed for
-		# W701V and W900V, but fail for W501V. But Orangebox can only can be
-		# selected for W701V anyway. Why this is so, I don't know.
-		# TODO(?): orangebox-enable the other two and then split the patch
-		# again for W501V or make one for each box.
+		# W701V and W900V, but fail for W501V. The normal patch fits with an
+		# offset for W501V, so it is excluded here. But Orangebox can only be
+		# selected for W701V currently. Why this is so, I don't know.
+		# TODO(?): orangebox-enable the other two, if possible
 		modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_speedport.patch
 	else
 		modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox.patch
