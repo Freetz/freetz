@@ -306,3 +306,23 @@
  	}
  	jslFormSubmitEx("system", "nacht");
  }
+--- usr/www/all/html/de/fon_config/fon_config_1.js	2007-06-05 19:07:11.000000000 +0200
++++ usr/www/all/html/de/fon_config/fon_config_1.js	2007-06-16 14:59:37.000000000 +0200
+@@ -58,6 +58,17 @@
+ 		g_NameList[1] = new String(name);
+ 		jslAddOption("uiViewPort", "1", g_txtPort2, false);
+ 	}
++	name = jslGetValue("uiPostPort2Name");
++	g_NameList[2] = "";
++	if ( (UpdateDefaultExtension( "2") == true) || (name.length == 0)){
++		name = _deviceNotation;
++		if ( firstPort == "") {
++			firstPort = "2";
++			firstNotation = 2;
++		}
++		g_NameList[2] = new String(name);
++		jslAddOption("uiViewPort", "2", g_txtPort3, false);
++	}
+ <? if neq $var:DeviceType 'AB' `
+ ` ?>
+ 	if ( jslGetValue( "uiDevicePort").length == 0 ) {
