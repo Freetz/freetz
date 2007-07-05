@@ -12,7 +12,7 @@ DTMFBOX_TARGET_BINARY:=$(DTMFBOX_TARGET_DIR)/root/usr/sbin/dtmfbox
 
 $(DL_DIR)/$(DTMFBOX_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(DTMFBOX_SITE)/$(DTMFBOX_SOURCE)
-    
+
 $(DL_DIR)/$(DTMFBOX_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(DTMFBOX_PKG_SOURCE) $(DTMFBOX_PKG_SITE)
 
@@ -22,18 +22,18 @@ $(DTMFBOX_DIR)/.unpacked: $(DL_DIR)/$(DTMFBOX_SOURCE)
 
 $(DTMFBOX_DIR)/.configured: $(DTMFBOX_DIR)/.unpacked
 	for i in $(DTMFBOX_MAKE_DIR)/patches/*.patch; do \
-	    patch -d $(DTMFBOX_DIR) -p0 < $$i; \
+		patch -d $(DTMFBOX_DIR) -p0 < $$i; \
 	done
 	cp $(DTMFBOX_DIR)/Makefile.mipsel $(DTMFBOX_DIR)/Makefile
 	touch $@
 
 $(DTMFBOX_BINARY): $(DTMFBOX_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-	    $(TARGET_CONFIGURE_OPTS) \
-	    CFLAGS="$(TARGET_CFLAGS)" \
-	    LDLIBS="-lpjsip-ua -lpjsip-simple -lpjsip -lpjmedia-codec \
+		$(TARGET_CONFIGURE_OPTS) \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDLIBS="-lpjsip-ua -lpjsip-simple -lpjsip -lpjmedia-codec \
 		-lpjmedia -lpjnath -lpjlib-util -lpj -lresample" \
-	    $(MAKE) -C $(DTMFBOX_DIR) all 
+		$(MAKE) -C $(DTMFBOX_DIR) all 
 
 $(DTMFBOX_TARGET_BINARY): $(DTMFBOX_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -45,7 +45,7 @@ $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION): $(DL_DIR)/$(DTMFBOX_PKG_SOURCE) | $
 dtmfbox: $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
 
 dtmfbox-package: $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(DTMFBOX_PKG_SOURCE) dtmfbox-$(DTMFBOX_VERSION)-src
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -czf $(PACKAGES_BUILD_DIR)/$(DTMFBOX_PKG_SOURCE) dtmfbox-$(DTMFBOX_VERSION)
 
 dtmfbox-precompiled: uclibc capi-precompiled pjsip-precompiled dtmfbox $(DTMFBOX_TARGET_BINARY)
 
