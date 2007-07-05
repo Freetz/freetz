@@ -29,6 +29,15 @@
 # some user interaction. Parameters:
 #   $1 - editor base name (NOT full path, otherwise we get problems with $tmp)
 #   $2 - file to be edited (full or relative path)
+#
+# If you want to disable the "are you sure do you want to save" question, do
+# the following:
+#   echo 0 > /tmp/flash/ask_save
+#   modsave
+# To re-enable the question, call
+#   rm -f /tmp/flash/ask_save
+#   modsave
+
 edit_file()
 {
 	local tmp="/var/$1.tmp"
@@ -40,16 +49,18 @@ edit_file()
 		echo "editor session aborted" >&2
 		exit $exitval
 	fi
-	local save
-	echo -n "Are you sure you want to save the changes made? (y/n) "
-	read -n 1 -s save
-	echo
+	local save="y"
+	if [ "$(head -n1 /tmp/flash/ask_save 2>/dev/null)" != "0" ]; then
+		echo -n "Are you sure you want to save the changes made? (y/n) "
+		read -n 1 -s save
+		echo
+	fi
 	if [ "$save" == "y" ]; then
 		cat $tmp > $2
-		echo "done"
+		echo "done - file '$2' saved"
 		exitval=0
 	else
-		echo "aborted"
+		echo "aborted - file '$2' not saved"
 		exitval=1
 	fi
 	rm -f $tmp
