@@ -61,8 +61,8 @@ zlib-source: $(ZLIB_DIR)/.unpacked
 zlib-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.* \
-			$(STAGING_DIR)/usr/include/zlib.h \
-			$(STAGING_DIR)/usr/include/zconf.h 	
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zlib.h \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zconf.h 	
 
 zlib-uninstall:
 	rm -f $(ZLIB_TARGET_DIR)/libz*.so*
