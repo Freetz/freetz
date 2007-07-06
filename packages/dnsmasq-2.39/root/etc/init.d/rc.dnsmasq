@@ -5,6 +5,15 @@ export LD_LIBRARY_PATH=/mod/lib
 
 DAEMON=dnsmasq
 
+# Do we have a UPnP server (igdd) or was ist stripped from the firmware?
+_igdd=$(basename $(which igdd) 2> /dev/null)
+# Does a multid option to start without UPnP device (-u) exist?
+_multid_upnp=$(/sbin/multid -? 2>&1 | grep upnp)
+# Set multid "no UPnP" option, if
+#   a) it has the parameter at all AND
+#   b) igdd binary does *not* exist
+[ "$_multid_upnp" ] && [ ! "$_igdd" ] && MULTIDPARAM="-u"
+
 case "$1" in
 	""|load|start|restart)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
@@ -36,7 +45,7 @@ start() {
 	$DAEMON -p "$DNSMASQ_DNS_PORT" $DNSMASQ_OPTIONS
 	exitval=$?
 	if [ "$1" != "nomultid" ]; then
-		multid > /dev/null 2>&1
+		multid $MULTIDPARAM > /dev/null 2>&1
 	fi
 
 	if [ ! -L "/var/flash/multid.leases" -a \
@@ -62,7 +71,7 @@ stop() {
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
 	if [ "$1" != "nomultid" ]; then
-		multid > /dev/null 2>&1
+		multid $MULTIDPARAM > /dev/null 2>&1
 	fi
 
 	rm -f /mod/etc/$DAEMON.conf
@@ -115,7 +124,7 @@ case "$1" in
 		stop nomultid
 		sleep 1
 		start nomultid
-		multid > /dev/null 2>&1
+		multid $MULTIDPARAM > /dev/null 2>&1
 		;;
 	status)
 		if [ -z "$(pidof "$DAEMON")" ]; then
