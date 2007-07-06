@@ -8,7 +8,7 @@ log=''
 	log="$(/mod/etc/init.d/rc.webcfg start 2>&1)"
 
 # Use HTTP_REFERER to determine target host (could be a name or an IP)
-TARGET_HOST=$(env | sed -n -r 's/^HTTP_REFERER=[^:]+:\/\/([^/]+).*/\1/p')
+TARGET_HOST=$(env | sed -n -r 's/^HTTP_REFERER=[^:]+:\/\/([^/:]+).*/\1/p')
 
 location="http://$TARGET_HOST:$MOD_HTTPD_PORT/"
 
