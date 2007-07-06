@@ -26,3 +26,7 @@ cp -a ${DIR}/.tk/original/filesystem/sbin/igdd "${FILESYSTEM_MOD_DIR}/sbin/"
 
 echo1 "replacing multid"
 cp -a ${DIR}/.tk/original/filesystem/sbin/multid "${FILESYSTEM_MOD_DIR}/sbin/"
+
+echo1 "copying ar7login"
+cp -a ${DIR}/.tk/original/filesystem/sbin/ar7login "${FILESYSTEM_MOD_DIR}/sbin/"
+
