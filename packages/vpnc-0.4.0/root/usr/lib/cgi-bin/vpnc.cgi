@@ -39,7 +39,7 @@ cat << EOF
 <h2>VPN Benutzer-Daten</h2>
 <p>IPSec Gruppenname: <input type="text" name="ipsecid" size="15" maxlength="30" value="$(httpd -e "$VPNC_IPSECID")"></p>
 <p>IPSec Gruppenpasswort: <input type="password" name="ipsecsecret" size="15" maxlength="30" value="$(httpd -e "$VPNC_IPSECSECRET")"></p>
-<p>Benutzername: <input type="text" name="xauthusername" size="15" maxlength="30" value="$(httpd -e "$VPNC_XAUTHUSERNAME")"></p>
+<p>Benutzername: <input type="text" name="xauthusername" size="15" maxlength="40" value="$(httpd -e "$VPNC_XAUTHUSERNAME")"></p>
 <p>Benutzerpasswort: <input type="password" name="xauthpassword" size="15" maxlength="30" value="$(httpd -e "$VPNC_XAUTHPASSWORD")"></p>
 <h2>VPN Server-Daten</h2>
 <p>IP/Name des IPSec Gateway<br>
