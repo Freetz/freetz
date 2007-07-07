@@ -3,9 +3,29 @@ config DS_PACKAGE_MC
 	depends on DS_LANG_DE || DS_LANG_EN || ! DS_SELECTED_LANG_ONLY
 	default n
 	help
-	    GNU Midnight Commander (MC) is probably the best known Norton Commander
-	    clone for free operating systems and definitely one of the most
-	    powerful. While the version used here is quite old, it has the advantage
-	    of being small enough for embedded systems. If you are looking for
-	    something even smaller, feel free to give Deco a try, but don't expect
-	    as much comfort and power there as you will get here.
+		GNU Midnight Commander (MC) is probably the best known Norton Commander
+		clone for free operating systems and definitely one of the most
+		powerful. While the version used here is quite old, it has the advantage
+		of being small enough for embedded systems. If you are looking for
+		something even smaller, feel free to give Deco a try, but don't expect
+		as much comfort and power there as you will get here.
+
+config DS_MC_SYNTAX_COLOURING
+	bool "Syntax colouring"
+	depends on DS_PACKAGE_MC
+	default y
+	help
+		MC can do syntax-highlighting for several predefined file types.
+
+		Switching off this feature saves about 70 KB in the main binary.
+
+config DS_MC_ONLINE_HELP
+	bool "Online help"
+	depends on DS_PACKAGE_MC
+	default y
+	help
+		MC comes with an opnline help file which can be viewed via 'F1'.
+
+		Switching off this feature saves about 115 KB in the (unsquashed)
+		file system, probably much less in overall SquashFS size. Yet better
+		than nothing if you do not need the online help file.
