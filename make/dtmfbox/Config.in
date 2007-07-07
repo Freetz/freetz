@@ -16,5 +16,9 @@ config DS_PACKAGE_DTMFBOX
 	    script.
 	    
 	    Image size: + ~266 KB
-	    
-	    
+
+config DS_PACKAGE_DTMFBOX_WITH_ESPEAK
+        bool "eSpeak suppport"
+        depends on DS_PACKAGE_DTMFBOX
+        select DS_PACKAGE_ESPEAK
+        default n

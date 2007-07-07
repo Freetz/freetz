@@ -82,14 +82,13 @@ say_or_beep() {
   fi
 
   # got espeak? say...
-  if [ -f $DTMFBOX_PATH/espeak/speak ] && [ "$IGNORE_ESPEAK" = "0" ];
+  if [ -f /usr/bin/speak ] && [ "$IGNORE_ESPEAK" = "0" ];
   then
     
     if [ ! -f $DTMFBOX_PATH/tmp/$SRC_CON.wav ];
     then
 
-      cd $DTMFBOX_PATH/espeak
-      $DTMFBOX_PATH/espeak/speak -v de -w $DTMFBOX_PATH/tmp/$SRC_CON.wav "$SAY" 2>/dev/null
+      /usr/bin/speak -v de -w $DTMFBOX_PATH/tmp/$SRC_CON.wav "$SAY" 2>/dev/null
 
       if [ -f $DTMFBOX_PATH/tmp/$SRC_CON.wav ]; 
       then
