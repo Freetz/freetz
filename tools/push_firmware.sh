@@ -17,24 +17,25 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 function push_fw() {
+	local ip=192.168.178.1
+	[ -n "$2" ] && ip="$2"
 	echo
 	echo " * You should now reboot your box. Waiting for box to shut down for restart ..."
-	while [ `ping -c1 -w1 192.168.178.1 | grep 'receive' | awk '{ print $4 }'` == "1" ]; do
+	while [ "$(ping -c1 -w1 $ip | grep 'receive' | awk '{ print $4 }')" == "1" ]; do
 		sleep 1
 	done
 
 	echo
 	echo " * No reply from box. Assuming restart ..."
-	while [ `ping -c1 -w1 192.168.178.1 | grep 'receive' | awk '{ print $4 }'` == "0" ]; do
+	while [ "$(ping -c1 -w1 $ip | grep 'receive' | awk '{ print $4 }')" == "0" ]; do
 		sleep 1
 	done
 
 	echo
 	echo " * Box is back up again. Initiating transfer of '$1' ..."
 	echo
-
 	ftp -n -p <<EOT
-open 192.168.178.1
+open $ip
 user adam2 adam2
 debug
 bin
@@ -50,16 +51,17 @@ EOT
 
 if [ -z "$1" ]; then
 	echo
-	echo "Usage: $0 <firmware> [ -f ]"
+	echo "Usage: $0 <firmware> [ -f ] [ <ip> ]"
 	echo ""
 	echo "firmware    firmware file to flash (mostly kernel.image)"
-	echo "-f          disable safty prompt"
+	echo "-f          disable safety prompt"
+	echo "ip          bootloader IP address (default: 192.168.178.1)"
 	echo
 	exit 1
 fi
 
 if [ "$2" = "-f" ]; then
-	push_fw $1
+	push_fw "$1" "$3"
 else
 	echo
 	echo		"!!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!" 
@@ -76,7 +78,7 @@ else
 	echo
 
 	if [ "$PROCEED" = "y" ]; then
-		push_fw $1	
+		push_fw "$1" "$2"
 	else
 		echo
 		echo "aborted"
