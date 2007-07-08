@@ -18,8 +18,8 @@ diff -burN example/Makefile.in example/Makefile.in
  target_vendor = @target_vendor@
 -AM_CPPFLAGS = -I$(top_srcdir)/include -D_FILE_OFFSET_BITS=64 -D_REENTRANT
 +AM_CPPFLAGS = -I$(top_srcdir)/include -D_REENTRANT
- LDADD = ../lib/libfuse.la -lpthread
- fusexmp_fh_LDADD = ../lib/libfuse.la ../lib/libulockmgr.la -lpthread
+ LDADD = ../lib/libfuse.la @libfuse_libs@
+ fusexmp_fh_LDADD = ../lib/libfuse.la ../lib/libulockmgr.la @libfuse_libs@
  all: all-am
 diff -burN fuse.pc.in fuse.pc.in
 --- fuse.pc.in	2006-12-09 19:52:22.000000000 +0100
@@ -72,14 +72,16 @@ diff -burN lib/Makefile.in lib/Makefile.in
 diff -burN util/Makefile.am util/Makefile.am
 --- util/Makefile.am	2006-12-09 19:51:15.000000000 +0100
 +++ util/Makefile.am	2007-05-23 13:34:31.000000000 +0200
-@@ -1,12 +1,12 @@
+@@ -1,6 +1,6 @@
  ## Process this file with automake to produce Makefile.in
  
 -AM_CPPFLAGS = -D_FILE_OFFSET_BITS=64 
 +AM_CPPFLAGS =
  bin_PROGRAMS = fusermount ulockmgr_server
+ noinst_PROGRAMS = mount.fuse
  
- fusermount_SOURCES = fusermount.c
+@@ -10,7 +10,7 @@
+ mount_fuse_SOURCES = mount.fuse.c
  
  ulockmgr_server_SOURCES = ulockmgr_server.c
 -ulockmgr_server_CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_REENTRANT 
@@ -90,16 +92,19 @@ diff -burN util/Makefile.am util/Makefile.am
 diff -burN util/Makefile.in util/Makefile.in
 --- util/Makefile.in	2007-04-29 11:13:28.000000000 +0200
 +++ util/Makefile.in	2007-05-23 13:34:40.000000000 +0200
-@@ -185,10 +185,10 @@
+@@ -195,13 +195,13 @@
  target_cpu = @target_cpu@
  target_os = @target_os@
  target_vendor = @target_vendor@
 -AM_CPPFLAGS = -D_FILE_OFFSET_BITS=64 
 +AM_CPPFLAGS =
  fusermount_SOURCES = fusermount.c
+ fusermount_LDADD = ../lib/mount_util.o
+ fusermount_CPPFLAGS = -I../lib
+ mount_fuse_SOURCES = mount.fuse.c
  ulockmgr_server_SOURCES = ulockmgr_server.c
 -ulockmgr_server_CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_REENTRANT 
 +ulockmgr_server_CPPFLAGS = -D_REENTRANT 
  ulockmgr_server_LDFLAGS = -pthread
- EXTRA_DIST = mount.fuse udev.rules init_script
+ EXTRA_DIST = udev.rules init_script
  all: all-am

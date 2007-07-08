@@ -1,4 +1,4 @@
-FUSE_VERSION:=2.6.5
+FUSE_VERSION:=2.7.0
 FUSE_SOURCE:=fuse-$(FUSE_VERSION).tar.gz
 FUSE_SITE:=http://mesh.dl.sourceforge.net/sourceforge/fuse
 FUSE_MAKE_DIR:=$(MAKE_DIR)/fuse
@@ -88,6 +88,12 @@ $(FUSE_LIB_STAGING_BINARY): $(FUSE_LIB_BINARY)
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
+	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
+		-C $(FUSE_DIR)/include \
+		ARCH="$(KERNEL_ARCH)" \
+		CROSS_COMPILE="$(KERNEL_CROSS)" \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
 
 $(PACKAGES_DIR)/.$(FUSE_PKG_NAME): $(DL_DIR)/$(FUSE_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(FUSE_PKG_SOURCE)
@@ -115,12 +121,14 @@ fuse-source: $(FUSE_DIR)/.unpacked $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
 
 fuse-clean:
 	-$(MAKE) -C $(FUSE_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE)
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse
+	rm -f $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h 
 
 fuse-dirclean:
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so.*
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.a
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse.pc
 	rm -rf $(FUSE_DIR)
 	rm -rf $(PACKAGES_DIR)/$(FUSE_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
