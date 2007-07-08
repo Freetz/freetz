@@ -45,8 +45,10 @@ $(TCPDUMP_DIR)/.configured: $(TCPDUMP_DIR)/.unpacked
 
 $(TCPDUMP_BINARY): $(TCPDUMP_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		CCOPT="$(TARGET_CFLAGS)" INCLS="-I. -I$(TARGET_MAKE_PATH)/../usr/include" \
-		$(MAKE) -C $(TCPDUMP_DIR) all 
+		$(MAKE) -C $(TCPDUMP_DIR) \
+		CCOPT="$(TARGET_CFLAGS)" \
+		INCLS="-I. -I$(TARGET_MAKE_PATH)/../usr/include" \
+		all 
 
 $(TCPDUMP_TARGET_BINARY): $(TCPDUMP_BINARY)
 	$(INSTALL_BINARY_STRIP)

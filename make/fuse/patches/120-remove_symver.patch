@@ -1,11 +1,10 @@
 diff -burN fuse-2.6.3/lib/fuse.c fuse-2.6.3/lib/fuse.c
 --- lib/fuse.c	2007-02-02 12:57:48.000000000 +0100
 +++ lib/fuse.c	2007-03-04 22:27:19.000000000 +0100
-@@ -2993,14 +2993,14 @@
-     return fuse_new_common_compat(fd, opts, (struct fuse_operations *) op,
+@@ -3289,12 +3289,14 @@
                                    sizeof(struct fuse_operations_compat1), 11);
  }
--
+ 
 +/*
  __asm__(".symver fuse_exited,__fuse_exited@");
  __asm__(".symver fuse_process_cmd,__fuse_process_cmd@");
@@ -13,12 +12,11 @@ diff -burN fuse-2.6.3/lib/fuse.c fuse-2.6.3/lib/fuse.c
  __asm__(".symver fuse_set_getcontext_func,__fuse_set_getcontext_func@");
  __asm__(".symver fuse_new_compat2,fuse_new@");
  __asm__(".symver fuse_new_compat22,fuse_new@FUSE_2.2");
--
 +*/
- #else /* __FreeBSD__ */
  
- static int fuse_compat_open(struct fuse *f, fuse_req_t req, char *path,
-@@ -3035,5 +3035,6 @@
+ #endif /* __FreeBSD__ */
+ 
+@@ -3305,5 +3307,6 @@
      return fuse_new_common_compat25(fd, args, (struct fuse_operations *) op,
                                      op_size, 25);
  }

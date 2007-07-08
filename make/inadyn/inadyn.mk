@@ -46,7 +46,7 @@ inadyn-package: $(PACKAGES_DIR)/.$(INADYN_PKG_NAME)
 inadyn-source: $(INADYN_DIR)/.unpacked $(PACKAGES_DIR)/.$(INADYN_PKG_NAME)
 
 inadyn-clean:
-	-$(MAKE) -C $(INADYN_DIR) clean
+	-$(MAKE) -C $(INADYN_DIR)/inadyn clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(INADYN_PKG_SOURCE)
 
 inadyn-dirclean:
