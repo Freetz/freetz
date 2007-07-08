@@ -14,13 +14,6 @@ $Id$
 - Experiment with and possibly use dietlibc to create smaller binaries by
   statically compiling in stuff usually dynamically linked to uClibc.
 
-- Determine the best way to include rpath, i.e. something like
-  "export LD_RUN_PATH=/mod/lib:/lib:/usr/lib", into makefile(s). It should be
-  applied to all binaries for the target system, but not to tools and
-  toolchain binaries.
-    Comment (olistudent): Perhaps we should leave things as they are
-    (LD_LIBRARY_PATH)
-
 - Enhance Virtual-IP-CGI and Openntpd so it supports other (and possibly
   multiple) interfaces than lan:1
   (http://www.ip-phone-forum.de/showpost.php?p=886345)
@@ -44,33 +37,9 @@ $Id$
     part of the toolchain rather than a regular package, but maybe Oliver has
     an idea.
 
-- Make packages with sub-options requiring recompilation aware of those config
-  changes so they rebuild automatically, similar to the way it is implemented
-  for BusyBox. Such packages are Bftpd, Bird, Dropbear, OpenVPN, OrangeBox,
-  Apache, PHP, Tinyproxy, Nano.
-    Status (kriegaex):
-      * OrangeBox did not require any changes because its sub-option is only
-        relevant during fwmod (apply patch)
-      * OpenVPN and Tinyproxy do not rebuild their executables, even if
-        configure is re-issued. So they need a full rebuild to make sure they
-        are updated.
-      * The other six packages (Bftpd, Bird, Dropbear, Apache, PHP, Nano) do
-        rebuild their executables, but not their object files.
-      * Since the consequences of not rebuilding them are unknown to me, I
-        decided to do a complete rebuild (after deleting the source dir) for
-        all eight packages in question, not only for OpenVPN and Tinyproxy.
-      * Having said that I want to make clear that such rebuilds only occur if
-        relevant sub-options for a package have changed in .config. Changes in
-        .config in other places do *not* affect a package with unchanged
-        options.
-
 - Think about whether we can do something about LCR Auto Updater not working
   without httpd restart, if httpd replaces websrv.
 
 - Make rc.mini_fo use kernel_args API
 
 - Get "telnetd vs. getcons" hangups fixed in BusyBox or another way.
-
-- Refactor "remove igdd" patch so it starts dsld with "-g (do not start igd)"
-  option. Beforehand, find out if all multid versions have this parameter or
-  do something similar to the "-u" parameter.
