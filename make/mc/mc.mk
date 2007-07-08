@@ -25,7 +25,8 @@ $(DL_DIR)/$(MC_PKG_SOURCE): | $(DL_DIR)
 # do not want a full rebuild if only one help file must be copied or removed.
 #@echo "DS_MC_ONLINE_HELP=$(if $(DS_MC_ONLINE_HELP),y,n)" >> $(MC_DS_CONFIG_TEMP)
 $(MC_DS_CONFIG_FILE): $(TOPDIR)/.config
-	@echo "DS_MC_SYNTAX_COLOURING=$(if $(DS_MC_SYNTAX_COLOURING),y,n)" > $(MC_DS_CONFIG_TEMP)
+	@echo "DS_MC_INTERNAL_EDITOR=$(if $(DS_MC_INTERNAL_EDITOR),y,n)" > $(MC_DS_CONFIG_TEMP)
+	@echo "DS_MC_SYNTAX_COLOURING=$(if $(DS_MC_SYNTAX_COLOURING),y,n)" >> $(MC_DS_CONFIG_TEMP)
 	@diff -q $(MC_DS_CONFIG_TEMP) $(MC_DS_CONFIG_FILE) || \
 		cp $(MC_DS_CONFIG_TEMP) $(MC_DS_CONFIG_FILE)
 	@rm -f $(MC_DS_CONFIG_TEMP)
@@ -75,6 +76,7 @@ $(MC_DIR)/.configured: $(MC_DIR)/.unpacked
 		--with-terminfo \
 		--without-gpm-mouse \
 		--with-included-slang \
+		$(if $(DS_MC_INTERNAL_EDITOR),,--without-edit) \
 	);
 	touch $@
 
