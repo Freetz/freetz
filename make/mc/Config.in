@@ -10,14 +10,31 @@ config DS_PACKAGE_MC
 		something even smaller, feel free to give Deco a try, but don't expect
 		as much comfort and power there as you will get here.
 
-config DS_MC_SYNTAX_COLOURING
-	bool "Syntax colouring"
+config DS_MC_INTERNAL_EDITOR
+	bool "Internal editor"
 	depends on DS_PACKAGE_MC
 	default y
 	help
-		MC can do syntax-highlighting for several predefined file types.
+		MC features an internal editor which can be started by F4.  If you
+		decativate it because you want to use vi or nano instead, F4 will
+		still work. By default, vi is called on the box, but exporting EDITOR
+		so it points to another editor of your choice will get you the
+		combination of file manager and editor you desire. :-)
 
-		Switching off this feature saves about 70 KB in the main binary.
+		Switching off this feature saves about 86 KB in the main binary.
+
+config DS_MC_SYNTAX_COLOURING
+	bool "Syntax colouring"
+	depends on DS_MC_INTERNAL_EDITOR
+	default y
+	help
+		MC's internal editor can do syntax-highlighting for several predefined
+		file types: unified diff, LSM, shell script, Perl, Python, nroff
+		(man-page source), HTML, Pascal, LaTeX 2.09, C/C++, change-log,
+		makefile.
+
+		The syntax definitions are hard-coded into the main binary. Switching
+		off this feature saves about 70 KB in the binary.
 
 config DS_MC_ONLINE_HELP
 	bool "Online help"
