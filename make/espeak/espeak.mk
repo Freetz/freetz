@@ -18,8 +18,7 @@ $(DL_DIR)/$(ESPEAK_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(ESPEAK_PKG_SOURCE) $(ESPEAK_PKG_SITE)
 
 $(ESPEAK_DIR)/.unpacked: $(DL_DIR)/$(ESPEAK_SOURCE)
-#	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(ESPEAK_SOURCE)
-	unzip -u $(DL_DIR)/$(ESPEAK_SOURCE) -d $(SOURCE_DIR)
+	unzip -o $(DL_DIR)/$(ESPEAK_SOURCE) -d $(SOURCE_DIR)
 	for i in $(ESPEAK_MAKE_DIR)/patches/*.patch; do \
 		patch -d $(ESPEAK_DIR) -p1 < $$i; \
 	done
@@ -30,7 +29,9 @@ $(ESPEAK_DIR)/.configured: $(ESPEAK_DIR)/.unpacked
 
 $(ESPEAK_BINARY): $(ESPEAK_DIR)/.configured
 	PATH="$(TARGET_PATH)" make -C $(ESPEAK_DIR)/src \
-	    LIBS1="-lm" CXX="mipsel-linux-g++-uc"
+		CXX="mipsel-linux-g++-uc" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		LIBS1="-lm"
 
 $(ESPEAK_TARGET_BINARY): $(ESPEAK_BINARY) 
 	cp -ar $(ESPEAK_DIR)/espeak-data $(ESPEAK_TARGET_DIR)/root/usr/share/

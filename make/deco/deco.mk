@@ -27,6 +27,7 @@ $(DECO_DIR)/.configured: $(DECO_DIR)/.unpacked
 	( cd $(DECO_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
 		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		./configure \
