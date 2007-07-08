@@ -29,7 +29,8 @@ $(ESPEAK_DIR)/.configured: $(ESPEAK_DIR)/.unpacked
 	touch $@
 
 $(ESPEAK_BINARY): $(ESPEAK_DIR)/.configured
-	PATH="$(TARGET_PATH)" make -C $(ESPEAK_DIR)/src
+	PATH="$(TARGET_PATH)" make -C $(ESPEAK_DIR)/src \
+	    LIBS1="-lm" CXX="mipsel-linux-g++-uc"
 
 $(ESPEAK_TARGET_BINARY): $(ESPEAK_BINARY) 
 	cp -ar $(ESPEAK_DIR)/espeak-data $(ESPEAK_TARGET_DIR)/root/usr/share/
@@ -46,7 +47,7 @@ espeak-download: $(DL_DIR)/$(ESPEAK_SOURCE) $(DL_DIR)/$(ESPEAK_PKG_SOURCE)
 espeak-package: $(PACKAGES_DIR)/.$(ESPEAK_NAME)-$(ESPEAK_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(ESPEAK_PKG_SOURCE) $(ESPEAK_NAME)-$(ESPEAK_VERSION)
 
-espeak-precompiled: uclibc espeak $(ESPEAK_TARGET_BINARY)
+espeak-precompiled: uclibc uclibcxx-precompiled espeak $(ESPEAK_TARGET_BINARY)
 
 espeak-source: $(ESPEAK_DIR)/.unpacked $(PACKAGES_DIR)/.$(ESPEAK_NAME)-$(ESPEAK_VERSION)
 
