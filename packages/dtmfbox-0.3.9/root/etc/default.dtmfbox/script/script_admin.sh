@@ -162,7 +162,7 @@ if [ "$IN_OUT" = "OUTGOING" ];
 then
 
   # get account id (from dialstring, e.g *#101# = Account 1)
-  ACC_ID=`echo $DST_NO | sed 's/.*10//g' | sed 's/#.*//g'`
+  ACC_ID=`echo $DST_NO | sed 's/.*10//g' | sed 's/#.*//g' | sed 's/@.*//g'`
   let ACC_ID=${ACC_ID}+1
 
   # get account by id 
