@@ -25,8 +25,6 @@ $(LIBEVENT_DIR)/.configured: $(LIBEVENT_DIR)/.unpacked
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS="-XCClinker -L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
-		ac_cv_func_epoll_ctl=no \
-		ac_cv_header_sys_epoll_h=no \
 		./configure \
 		  --target=$(GNU_TARGET_NAME) \
 		  --host=$(GNU_TARGET_NAME) \
