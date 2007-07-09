@@ -4,10 +4,6 @@ cat << EOF
 
 cd /mod/etc
 
-insmod /lib/modules/2.6.13.1-ohio/kernel/fs/fuse/fuse.ko
-mkdir -p /dev/misc
-mknod /dev/misc/fuse c 10 229
-
 if [ "$NTFS_MOUNTPOINT1" != "" ] 
 then
   echo "mount $NTFS_DEVICE1..."

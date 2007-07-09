@@ -38,12 +38,11 @@ start() {
 		  	
 	echo -n 'mount NTFS...'
 	
+	modprobe fuse.ko
 	chmod +x $DAEMON
 	chmod +x $DAEMON_UMOUNT
 	$DAEMON > /dev/null 2>&1
-		
 	exitval=$?
-	
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
@@ -56,14 +55,12 @@ stop() {
 	echo -n 'unmount NTFS...'
 	
 	$DAEMON_UMOUNT > /dev/null 2>&1
- 	
 	sleep 1
-	
 	if [ ! -z "$(pidof "ntfs-3g")" ]; then
 		killall -9 ntfs-3g > /dev/null 2>&1
 		exitval=$?
 	fi
-	
+	rmmod fuse
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
