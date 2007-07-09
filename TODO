@@ -43,3 +43,18 @@ $Id$
 - Make rc.mini_fo use kernel_args API
 
 - Get "telnetd vs. getcons" hangups fixed in BusyBox or another way.
+
+- Refactor Dnsmasq package, particularly rc.dnsmasq (full of logical mistakes!)
+  and recently improved, but still suboptimal multid wrapper. The whole thing
+  only (kind of) works as long as nobody thinks about using the scripts outside
+  the init process. Otherwise they might work, but could also break. For
+  example, the "start" action does not check if the package is activated at
+  all. The "load" action does, but does not take care of starting multid anyway
+  if Dnsmasq is deactivated. A few more strange things are in there, e.g. the
+  misleading variable name "nomultid" which suggests there is an option to run
+  Dnsmasq without multid. This is not true, the variable is just a flag which
+  means something like "don't start/stop multid, I will take care of it
+  myself". This is used in the restart action where the option keeps "stop" and
+  "start" from restarting multid twice. Actually, I (kriegaex) do not feel so
+  inclined to refactor those scripts myself. It took me a while to at least
+  understand what they do and fix a few quoting bugs in the wrapper.
