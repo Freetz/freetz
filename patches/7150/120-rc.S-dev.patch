@@ -1,27 +1,14 @@
 --- etc/init.d/rc.S.orig	2007-06-25 11:52:58.000000000 +0200
 +++ etc/init.d/rc.S	2007-06-25 11:52:58.000000000 +0200
-@@ -69,8 +69,12 @@
+@@ -69,8 +69,9 @@
   fi
   echo "SET error,0 = $((0x40 + (4 * ($1 - 1)) + 1))" >/dev/new_led
  }
 -mount -n /proc
 -mount /var
 +mount -o nosuid -t tmpfs dev /dev
-+mkdir -p /dev/pts
-+mount -o nosuid,noexec -t devpts devpts /dev/pts
-+#mount -o nosuid,nodev,noexec -t sysfs sysfs /sys
-+mount -a
 +/sbin/makedevs -d /etc/device.table /
++mount -a
  #file "./arch/etc/init.d/rc.watchdog.sh", 0
   echo init-start 240 >/dev/watchdog
  #file "stdin", 92
---- etc/fstab.orig	2007-05-22 15:02:59.000000000 +0200
-+++ etc/fstab	2007-06-25 11:52:58.000000000 +0200
-@@ -1,6 +1,6 @@
- # /etc/fstab: static file system information.
- #
- # <file system> <mount point>   <type>  <options>               <dump>  <pass>
--/dev/root        /              auto    defaults,errors=continue  0       0
- proc             /proc          proc    defaults                  0       0
- ramfs		     /var		    ramfs	defaults			      0       0
-+sysfs		 /sys		sysfs	nosuid,nodev,noexec	  0	  0
