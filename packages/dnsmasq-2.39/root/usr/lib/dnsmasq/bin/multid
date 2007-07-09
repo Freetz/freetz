@@ -4,11 +4,9 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 stop=0
 args=$@
 
-set -- "$(getopt s "$@" 2> /dev/null)"
+set -- $(getopt s $@ 2> /dev/null)
 while [ $# -gt 0 ]; do
-	if [ "$1" = "-s" ]; then
-		stop=1
-	fi
+	[ "$1" == "-s" ] && stop=1
 	shift
 done
 
@@ -16,7 +14,7 @@ if [ "$stop" -eq 0 -a -z "$(pidof dnsmasq)" ]; then
 	/mod/etc/init.d/rc.dnsmasq > /var/log/mod_net.log
 fi
 
-multid "$args"
+multid $args
 
 if [ "$stop" -ne 0 -a ! -z "$(pidof dnsmasq)" ]; then
 	/mod/etc/init.d/rc.dnsmasq stop
