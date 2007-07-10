@@ -37,7 +37,7 @@ function push_fw() {
 		done
 	fi
 	echo
-	echo " * No reply from box. Assuming restart - switch box off/on several times, if necessary ..."
+	echo " * No reply from box. Assuming restart ..."
 	if [ $CYGWIN ]; then
 		while [ "$(ping -n 1 -w 500 $ip | grep 'Empfangen' | awk '{ print $7 }')" == "0," ]; do
 			true
@@ -48,7 +48,7 @@ function push_fw() {
 		done
 	fi
 	echo
-	echo " * Box is back up again. Initiating transfer of '$1' ..."
+	echo " * Box is back up again. Initiating transfer of '$1' - switch box off/on several times, if FTP Client cannot log in ..."
 	echo
 	if [ $CYGWIN ]; then
 		ncftpput \
