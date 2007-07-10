@@ -1,6 +1,12 @@
 #!/bin/sh
+
+# push_firmware.sh
 #
-# Copyright (c) 2007 Michael Hampicke <mike@mhampicke.de>
+# Flash kernel image (contiguous hidden root) to Fritz!Box or Speedport.
+# Works on Linux and Cygwin, but the latter needs ncftpput from ncftp package.
+#
+# Copyright (c) 2007 Michael Hampicke    (mike@mhampicke.de)
+#               2007 Alexander Kriegisch (kriegaex, ip-phone-forum.de)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,20 +27,40 @@ function push_fw() {
 	[ -n "$2" ] && ip="$2"
 	echo
 	echo " * You should now reboot your box. Waiting for box to shut down for restart ..."
-	while [ "$(ping -c1 -w1 $ip | grep 'receive' | awk '{ print $4 }')" == "1" ]; do
-		sleep 1
-	done
-
+	if [ $CYGWIN ]; then
+		while [ "$(ping -n 1 -w 500 $ip | grep 'Empfangen' | awk '{ print $7 }')" == "1," ]; do
+			true
+		done
+	else
+		while [ "$(ping -c1 -w1 $ip | grep 'receive' | awk '{ print $4 }')" == "1" ]; do
+			sleep 1
+		done
+	fi
 	echo
-	echo " * No reply from box. Assuming restart ..."
-	while [ "$(ping -c1 -w1 $ip | grep 'receive' | awk '{ print $4 }')" == "0" ]; do
-		sleep 1
-	done
-
+	echo " * No reply from box. Assuming restart - switch box off/on several times, if necessary ..."
+	if [ $CYGWIN ]; then
+		while [ "$(ping -n 1 -w 500 $ip | grep 'Empfangen' | awk '{ print $7 }')" == "0," ]; do
+			true
+		done
+	else
+		while [ "$(ping -c1 -w1 $ip | grep 'receive' | awk '{ print $4 }')" == "0" ]; do
+			sleep 1
+		done
+	fi
 	echo
 	echo " * Box is back up again. Initiating transfer of '$1' ..."
 	echo
-	ftp -n -p <<EOT
+	if [ $CYGWIN ]; then
+		ncftpput \
+			-d stdout \
+			-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+			-W "quote MEDIA FLSH" \
+			-Y "quote REBOOT" \
+			-u adam2 -p adam2 \
+			-C $ip \
+			$1 mtd1
+	else
+		ftp -n -p <<EOT
 open $ip
 user adam2 adam2
 debug
@@ -44,10 +70,9 @@ put $1 mtd1
 quote REBOOT
 quit
 EOT
+	fi
 	return 0
 }
-
-###
 
 if [ -z "$1" ]; then
 	echo
@@ -59,6 +84,8 @@ if [ -z "$1" ]; then
 	echo
 	exit 1
 fi
+
+[ "$(uname -o)" == "Cygwin" ] && CYGWIN=1
 
 if [ "$2" = "-f" ]; then
 	push_fw "$1" "$3"
