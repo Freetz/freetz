@@ -1,4 +1,4 @@
-CPMACCFG_VERSION:=0.3
+CPMACCFG_VERSION:=0.4
 CPMACCFG_SOURCE:=cpmaccfg-$(CPMACCFG_VERSION).tar.gz
 CPMACCFG_SITE:=http://www.heimpold.de/dsmod
 CPMACCFG_MAKE_DIR:=$(MAKE_DIR)/cpmaccfg
