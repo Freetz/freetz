@@ -5,23 +5,51 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 
 DAEMON=snmpd
 SNMPDOPTS='-Lf /dev/null -p /var/run/snmpd.pid'
+CFGFILE="/tmp/flash/snmpd.conf"
+[ -e /etc/snmp/snmpd.conf ] && CFGFILE="/etc/snmp/snmpd.conf"
 
 case "$1" in
         ""|load|start|restart)
             if [ ! -r "/mod/etc/conf/netsnmp.cfg" ]; then
-                echo "Error[netsnmp]: not configured" 1>&2
-                exit 1
+		    echo "Error[netsnmp]: not configured" 1>&2
+		    exit 1
             fi
- 
+
             . /mod/etc/conf/netsnmp.cfg;
+
+	    if [ ! -e "$CFGFILE" ] ; then
+		    echo "Creating $CFGFILE"
+		    {
+		    echo "com2sec readonly  192.168.0.0/16  public"
+		    echo "com2sec readonly  169.254.0.0/16  public"
+		    cat <<"EOF"
+com2sec readonly  127.0.0.0/8     public
+com2sec paranoid  default         public
+
+group MyROSystem v1  paranoid
+group MyROSystem v2c paranoid
+group MyROSystem usm paranoid
+group MyROGroup  v1  readonly
+group MyROGroup  v2c readonly
+group MyROGroup  usm readonly
+
+view all    included .1 80
+view system included .1.3.6.1.2.1.1
+
+access MyROSystem "" any noauth exact system none none
+access MyROGroup  "" any noauth exact all    none none
+EOF
+		    } > $CFGFILE
+		    /usr/bin/modsave flash
+	    fi
         ;;
 esac
 
 start() {
 	echo -n 'Starting snmpd...'
 	
-	mkdir /var/lib/snmp
-	$DAEMON $SNMPDOPTS
+	mkdir -p /var/lib/snmp
+	$DAEMON -c $CFGFILE $SNMPDOPTS
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -48,14 +76,20 @@ stop() {
 case "$1" in
         ""|load)
 		modreg cgi 'netsnmp' 'Net-SNMP'
+		deffile='/mod/etc/default.netsnmp/snmpd_conf.def'
+		[ -r "/tmp/flash/snmpd_conf.def" ] && deffile="/tmp/flash/snmpd_conf.def"
+		[ "$CFGFILE" != "/etc/snmp/snmpd.conf" ] && modreg file 'snmpd_conf' 'snmpd.conf' 0 "$deffile"
 		if [ "$NETSNMP_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1
 		fi
+
 		start
 		;;
 	unload)
 		stop
+
+		[ "$CFGFILE" != "/etc/snmpd/snmpd.conf" ] && modunreg file 'snmpd_conf'
 		;;
 	start)
 		start

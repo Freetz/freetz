@@ -4,8 +4,8 @@ NETSNMP_SITE:=http://mesh.dl.sourceforge.net/sourceforge/net-snmp
 NETSNMP_MAKE_DIR:=$(MAKE_DIR)/netsnmp
 NETSNMP_DIR:=$(SOURCE_DIR)/net-snmp-$(NETSNMP_VERSION)
 NETSNMP_BINARY:=$(NETSNMP_DIR)/agent/snmpd
-NETSNMP_PKG_VERSION:=0.3
-NETSNMP_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
+NETSNMP_PKG_VERSION:=0.4
+NETSNMP_PKG_SITE:=http://www.heimpold.de/dsmod
 NETSNMP_PKG_NAME:=netsnmp-$(NETSNMP_VERSION)
 NETSNMP_PKG_SOURCE:=netsnmp-$(NETSNMP_VERSION)-dsmod-$(NETSNMP_PKG_VERSION).tar.bz2
 NETSNMP_TARGET_DIR:=$(PACKAGES_DIR)/$(NETSNMP_PKG_NAME)
@@ -150,12 +150,15 @@ $(NETSNMP_BINARY): $(NETSNMP_DIR)/.configured
 $(NETSNMP_TARGET_BINARY): $(NETSNMP_BINARY)
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) INSTALL_PREFIX="$(shell pwd)/$(NETSNMP_TARGET_DIR)/root" \
-	    -C $(NETSNMP_DIR) install;
+	    -C $(NETSNMP_DIR) install
 	# Remove unnecessary things 
 	rm -rf $(NETSNMP_TARGET_DIR)/root/share $(NETSNMP_TARGET_DIR)/root/usr/info \
 		$(NETSNMP_TARGET_DIR)/root/usr/man $(NETSNMP_TARGET_DIR)/root/usr/share \
 		$(NETSNMP_TARGET_DIR)/root/usr/include
-	rm -rf $(NETSNMP_TARGET_DIR)/root/usr/lib/*.la
+	rm -f $(NETSNMP_TARGET_DIR)/root/usr/lib/*.la
+	rm -f $(NETSNMP_TARGET_DIR)/root/usr/bin/net-snmp-config
+	# Libraries need not to be executable
+	chmod 0644 $(NETSNMP_TARGET_LIBS)
 	# Install the "broken" headers
 	mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/agent
 	mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/library
