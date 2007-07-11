@@ -2,6 +2,156 @@ $Id$
 
 Latest changes:
 
+=== release ds26-15.1 ===
+
+- Build system:
+    * Add "SHELL:=/bin/bash" to Makefile because of this:
+      http://www.ip-phone-forum.de/showpost.php?p=896043
+      I.e. the build now explicitly requires bash instead of sh, so we can use
+      extended file name expansion functionality.
+    * New target 'push-firmware' runs tools/push_firmware.sh to conveniently
+      flash a recently build firmware
+    * New target 'config-clean-deps' automatically deselects all kernel
+      modules, shared libraries and optional BusyBox applets which are not
+      selected by packages explicitly requiring them.
+    * Add sanity checks to Makefile:
+        + Do not run make as root
+        + Heuristic check for falsely unpacked mod archive
+      kriegaex: Thanks to Ralf Friedl for this idea, even though I implemented
+      the checks in a different way technically. :-)
+
+- New packages, libs, modules, tools, hooks:
+    * Mtr 0.69: mtr combines the functionality of 'traceroute' and 'ping'
+    * Espeak 1.27
+    * Downloader CGI 0.1 by hermann72pb (ip-phone-forum.de)
+      See http://www.ip-phone-forum.de/showthread.php?t=134934
+
+- Updated packages, libs, modules, patches:
+    * Midnight Commander (MC) pimp-up without version bump:
+        + Remove 143 KB of unnecessary syntax highlighting definitions in 22
+          files, because MC 4.5.0 only supports hard-coded syntax highlighting.
+          Thus, the additional files were never used. The fascinating thing is
+          that nobody ever complained about this, so the other language types
+          do not seem to have been missed. Still supported are unified diff,
+          LSM, shell script, Perl, Python, nroff (man-page source), HTML,
+          Pascal, LaTeX 2.09, C/C++, change-log, makefile. Others would have
+          to added inline to the source code.
+        + Update MC default settings, hopefully nobody will complain:
+            # Editor tab width changed from 8 to 4
+            # Learn keys set to values which putty sends with TERM=xterm in
+              telnet and ssh sessions. The assumption here is that most users
+              probably use Putty on WinXP as their preferred terminal client.
+              Other users can still create their own ~/.mc/ini in debug.cfg or
+              otherwise, assuming that if they are Linux users who need this,
+              they probably are more geek-ish than Windows users.
+            # A few other minor changes which I (kriegaex) had in my
+              long-tested private ini-file
+        + Online help is a separate menuconfig option now. If chosen, the file
+          (115 KB) will be copied from the source to the package directory,
+          otherwise the file will be removed.
+        + Syntax highlighting is a separate menuconfig option now. If switched
+          off, this saves  70 KB in the main binary.
+          Known problem: If syntax highlighting is deativated, somehow mcview
+          does not start the internal MC viewer directly anymore, but yields
+          the normal MC user interface. Anyway, viewing files with F3 from
+          within MC still works.
+        + Internal editor mcedit (activated by F4) can be decativated in
+          menuconfig. If you want to use vi or nano instead, F4 will still
+          work. By default, vi is called on the box, but exporting EDITOR so
+          it points to another editor of your choice will get you the
+          combination of file manager and editor you desire. :-) Switching off
+          this feature saves another 86 KB in the main binary.
+        + The defaults for the new menuconfig options generate a binary with
+          the feature set known from the last package version.
+    * DTMFbox:
+        + Fix scriptadmin.sh
+        + Add espeak (see "new packages" above)
+    * Callmonitor 1.9.7 tries to fix performance problems with too many
+      parallel automatic reverse phone number lookup during start-up. This
+      could freeze a box so it had to be recovered.
+    * Libncurses 5.6
+    * Checkmaild 0.4.2: fix segfaults
+    * OpenVPN package fixed (one file in package without LZO was not
+      executable)
+    * Dnsmasq: make dnsmasq aware of possible igdd (UPnP server) absence, so
+      it starts multid without UPnP. Furthermore, fix a few quoting problems
+      possibly leading to errors during start-up. Hopefully, this fixes some
+      of the recently reported problems (untested).
+    * Vpnc: increase username maximum length to 40 characters
+    * FUSE 2.7.0 plus fix: includes were not installed into toolchain
+    * NTFS-3G: remove mknod and replace insmod with modprobe
+    * Cpmaccfg 0.4
+    * Netsnmp: fix package so defaults are applied correctly
+    * Update and fix several firmware patches (also see "other stuff" below)
+
+- Firmware updates:
+    * 5050: firmware 08.04.34
+    * 3020: firmware 09.04.34
+    * 3030: firmware 21.04.34
+    * 7170 Labor WLAN: firmware 29.04.35-7816
+    * 5140 (NEW): firmware 43.04.37 - welcome to the ds26 family ;-)
+    * 7170: firmware 29.04.37
+    * 7141: firmware 40.04.37
+
+- Other stuff:
+    * Wrap /sbin/ar7login with shell script in order to achieve normal
+      user/password logins with telnet, even if telnetd is started with
+      explicit ar7login parameter by 'telefon' (hard-coded). Exception: If no
+      root password has been defined yet, proceed to renamed ar7login.bin for
+      web password login.
+    * Extend editor wrapper script to support diabling of the "do you really
+      want to save" question. How to: echo 0 > /tmp/flash/ask_save; modsave 
+    * AVM web menu: Once more change the way the host part of the target URLs
+      is determined. The host name might not always be a good idea if there
+      are multiple boxes with the same host name in one LAN, e.g. a 7170 and a
+      "fritzed" W701V both named "fritz.box". Where would
+      "http://fritz.box:81" really point to, then? So in this case usually the
+      user will call their respective web UIs using their local IPs, and this
+      is what our scripts see in their environment as part of HTTP_REFERER. We
+      pick out the host/IP part and use it as our target host/IP for the
+      redirection to the DS-Mod or WoL web UI.
+    * Improve script tools/push_firmware.sh so it accepts an optional IP
+      parameter (not all boxes have 192.168.178.1)
+    * Yet another push_firmware.sh improvement: script is now Cygwin-enabled
+      (needs ncftpput command line client from ncftp package), so a firmware
+      can also be easily updated from Windows via command line. This does NOT
+      mean that ds26 could be built on Cygwin, so please do not ask about it.
+    * Bugfix for "Eumex 300IP as phone" 3rd phone patch
+    * Midnight Commander (mc): fix missing terminfo problem
+    * Fix FUSE install (fuse.pc was not copied, thus pkgconfig could not
+      detect it)
+    * Ppppd: fix missing prerequisite (libpcap)
+    * Set eumex.ip as hostname for 300ip_as_fon
+    * Fix OpenSSL compilation with gcc-4.2 (also helps with dependent OpenVPN
+      problems)
+    * Add 'chmod 755' for libreadline/libhistory so they are executable
+    * Allow BusyBox to install applets to /usr, e.g. telnetd is now under
+      /usr/sbin insetead of /sbin, because 'telefon' is looking for it there
+      when a user tries to switch it on via "#96*7*".
+    * Fix typo in PPPD make file: TARGET-CFLAGS -> TARGET_CFLAGS
+    * Fix CFLAGS for several other packages
+    * Orange!Box patch failed for W701V -> create patch variant for Speedport
+    * W701V build: fix copy routine for defaults
+    * Extend "remove UPnP" patches to make rc.S aware of possible dsld
+      parameter '-g' for starting without igd
+    * W501V: Copy ar7login from TK firmware to ds-mod filesystem, because the
+      501 does not contain this binary by default. Background: ar7login is
+      needed if a console login with the web password should be performed,
+      e.g. in telnet sessions.
+    * Speedport boxes: ATA patch did not work as expected on the Speedports
+      (at least W501V and W900V): rc.S needs to be patched, too. This makes
+      ATA avaiable to the Speedports.
+    * Fix Tcpdump CFLAGS
+    * Device tables, mounts etc.:
+        + Add /dev/misc/fuse to device.table
+        + Remove devpts mount in rc.S
+        + Add /dev/pts to device.table
+        + Fix mount of /dev, /var, /proc and /sys
+        + Put fstab patch in own file, should be the same for all boxes
+    * Tor / libevent: disable epoll support in libevent due to unresolved
+      problems. This fixes recently reported Tor segfaults.
+
+
 === release ds26-15 ===
 
 - Many makefile changes, some big, some small, some cosmetic, to
@@ -191,7 +341,7 @@ Latest changes:
       especially desireable for smaller boxes like 5050/7050.
      * pppd 2.4.3
 
-- Updates packages, libs, modules:
+- Updated packages, libs, modules:
     * (Download) toolchain (target)
         + add gcc-4.2.0 + binutils 2.17.50.0.16 and make them default
         + Remove uclibc download package for download toolchain, instead
