@@ -1,0 +1,47 @@
+--- etc/default.Fritz_Box_SpeedportW701V/avm/ar7.cfg	2007-07-10 13:48:27.000000000 +0200
++++ etc/default.Fritz_Box_SpeedportW701V/avm/ar7.cfg	2007-07-11 18:18:39.000000000 +0200
+@@ -199,13 +199,13 @@
+                 name = "internet";
+                 only_crypt_auth = no;
+                 local {
+-                        username = "";
+-                        passwd = "";
++                        username = "5200550445890001@setup.t-online.de";
++                        passwd = "setup";
+                 }
+                 remoteauth = pppcfg_authtype_chap;
+                 remote {
+                 }
+-                inactivity_timeout = 5m;
++                inactivity_timeout = 3m;
+                 bProviderDisconnectPrevention = yes;
+                 ProviderDisconnectPreventionInterval = 1d;
+                 ProviderDisconnectPreventionHour = 3;
+@@ -391,7 +391,7 @@
+                 shaperconnection {
+                         enabled = yes;
+                         targets = "";
+-                        name = "Fritz!Box";
++                        name = "Speedport";
+                         limiters {
+                                 name = "default-out";
+                                 bps_limit {
+@@ -511,6 +511,18 @@
+         }
+ }
+ 
++webui {
++    password = "0000";
++}
++
++ntpclient {
++    server_list = "ntp1.t-online.de", "ptbtime1.ptb.de";
++}
++
++mrouter {
++    igmp_prio = 32;
++}
++
+ qos {
+         always_set_tos = no;
+         rules {
