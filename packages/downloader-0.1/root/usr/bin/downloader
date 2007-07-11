@@ -1,0 +1,89 @@
+#!/bin/sh
+
+LOADFILE="$1"
+FILEPERM="$2"
+LOCALDR="$3"
+
+CONFFILE="downloader.cfg"
+CONFPATH="/mod/etc/conf/"
+
+if [ ! -r "$CONFPATH$CONFFILE" ]; then
+	echo "Error[downloader]: not configured" 1>&2
+	exit 1
+fi
+. $CONFPATH$CONFFILE
+
+echo $DOWNLOADER_SRVPRFX
+echo $DOWNLOADER_SRVUSR
+echo $DOWNLOADER_SRVPWD
+echo $DOWNLOADER_SRVURL
+echo $DOWNLOADER_SRVDIR
+echo $DOWNLOADER_NREP
+echo $DOWNLOADER_TWAIT
+
+
+ISFTP=$(echo $DOWNLOADER_SRVPRFX | grep -c ftp://)
+if [ $ISFTP -eq 1 ] ; then 
+   if [ "$DOWNLOADER_SRVUSR" ] ; then
+      if [ "$DOWNLOADER_SRVPWD" ] ; then
+         SERVERSTR=ftp://$DOWNLOADER_SRVUSR:$DOWNLOADER_SRVPWD@$DOWNLOADER_SRVURL$DOWNLOADER_SRVDIR/
+      else
+         SERVERSTR=ftp://$DOWNLOADER_SRVUSR@$DOWNLOADER_SRVURL$DOWNLOADER_SRVDIR/
+      fi
+   else
+      SERVERSTR=ftp://$DOWNLOADER_SRVURL$DOWNLOADER_SRVDIR/
+   fi
+else
+   ISHTTP=$(echo $DOWNLOADER_SRVPRFX | grep -c http://)
+   if [ $ISHTTP -eq 1 ] ; then 
+      SERVERSTR=http://$DOWNLOADER_SRVURL$DOWNLOADER_SRVDIR/
+   else
+	  echo "$DOWNLOADER_SRVPRFX is wrong server prefix in $CONFPATH$CONFFILE"
+	  exit 1
+   fi    
+fi
+echo $SERVERSTR
+
+LOADERROR=1 # erstmal als erfolglos definieren
+II=1   # II zu 1 setzen
+while test $II -le $DOWNLOADER_NREP    # While-Schleife, emulieren einer for-schleife II<NN
+do
+   echo "ping test $II of $DOWNLOADER_NREP. Waiting $DOWNLOADER_TWAIT sec. for $DOWNLOADER_SRVURL"
+   sleep $DOWNLOADER_TWAIT
+   if (ping -c 1 $DOWNLOADER_SRVURL) ; then
+		echo -n "$LOADFILE.gz is downloading from $DOWNLOADER_SRVURL... "
+        wget -q -O $LOCALDR/$LOADFILE.gz $SERVERSTR$LOADFILE.gz
+        LOADERROR=$?       
+        break   #  alles ok, raus aus der for-schleife
+   fi
+   II=`expr $II + 1`     # Zähler inkrementieren
+done
+if [ $LOADERROR -eq 1 ]; then
+   echo "failed"
+   echo "file $LOADFILE.gz could not be loaded"
+   echo "echo $LOADFILE does not exist" > $LOCALDR/$LOADFILE
+   chmod $FILEPERM $LOCALDR/$LOADFILE
+   exit $LOADERROR
+fi
+echo "done"
+echo -n "$LOADFILE.gz is unpacking... "
+gzip -d $LOCALDR/$LOADFILE.gz
+LOADERROR=$?
+if [ $LOADERROR -eq 1 ]; then
+   echo "failed"
+   echo "file $LOADFILE.gz could not be unpacked"
+   exit $LOADERROR
+fi
+echo "done"
+echo -n "permitions for $LOADFILE are setting... "
+chmod $FILEPERM $LOCALDR/$LOADFILE
+LOADERROR=$?
+if [ $LOADERROR -eq 1 ]; then
+   echo "failed"
+   echo "permissions for file $LOADFILE could not be set"
+   exit $LOADERROR
+fi
+echo "done"
+exit 0
+
+
