@@ -23,32 +23,25 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 function push_fw() {
+	trap 'echo ; echo "aborted" ; exit 1' TERM INT
+
 	local ip=192.168.178.1
 	[ -n "$2" ] && ip="$2"
+
 	echo
-	echo " * You should now reboot your box. Waiting for box to shut down for restart ..."
-	if [ $CYGWIN ]; then
-		while [ "$(ping -n 1 -w 500 $ip | grep 'Empfangen' | awk '{ print $7 }')" == "1," ]; do
-			true
-		done
-	else
-		while [ "$(ping -c1 -w1 $ip | grep 'receive' | awk '{ print $4 }')" == "1" ]; do
-			sleep 1
-		done
-	fi
+	echo    " * You should now reboot your box now."
 	echo
-	echo " * No reply from box. Assuming restart ..."
-	if [ $CYGWIN ]; then
-		while [ "$(ping -n 1 -w 500 $ip | grep 'Empfangen' | awk '{ print $7 }')" == "0," ]; do
-			true
-		done
-	else
-		while [ "$(ping -c1 -w1 $ip | grep 'receive' | awk '{ print $4 }')" == "0" ]; do
-			sleep 1
-		done
-	fi
+	echo -n " * Waiting for box "
+	while ! ping -c1 -w1 $ip > /dev/null ; do
+		echo -n "."
+		true
+	done
 	echo
-	echo " * Box is back up again. Initiating transfer of '$1' - switch box off/on several times, if FTP Client cannot log in ..."
+
+	echo
+	echo " * Box is back up again."
+	echo "   Initiating transfer - switch box off/on several times, if FTP Client cannot log in ..."
+
 	echo
 	if [ $CYGWIN ]; then
 		ncftpput \
