@@ -9,7 +9,7 @@ MTR_TARGET_DIR:=$(PACKAGES_DIR)/$(MTR_NAME)-$(MTR_VERSION)
 MTR_TARGET_BINARY:=$(MTR_TARGET_DIR)/root/usr/sbin/mtr
 MTR_PKG_VERSION:=0.1
 MTR_PKG_SOURCE:=$(MTR_NAME)-$(MTR_VERSION)-dsmod-$(MTR_PKG_VERSION).tar.bz2
-MTR_PKG_SITE:=http://mcknight.ath.cx/dsmod/packages
+MTR_PKG_SITE:=http://www.mhampicke.de/dsmod/packages
 
 $(DL_DIR)/$(MTR_SOURCE):
 	wget -P $(DL_DIR) $(MTR_SITE)/$(MTR_SOURCE)

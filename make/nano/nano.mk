@@ -8,7 +8,7 @@ NANO_TARGET_DIR:=$(PACKAGES_DIR)/nano-$(NANO_VERSION)
 NANO_TARGET_BINARY:=$(NANO_TARGET_DIR)/root/usr/bin/nano
 NANO_PKG_VERSION:=0.4
 NANO_PKG_SOURCE:=nano-$(NANO_VERSION)-dsmod-$(NANO_PKG_VERSION).tar.bz2
-NANO_PKG_SITE:=http://mcknight.ath.cx/dsmod/packages
+NANO_PKG_SITE:=http://www.mhampicke.de/dsmod/packages
 
 NANO_DS_CONFIG_FILE:=$(NANO_MAKE_DIR)/.ds_config
 NANO_DS_CONFIG_TEMP:=$(NANO_MAKE_DIR)/.ds_config.temp
