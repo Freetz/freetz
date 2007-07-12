@@ -1,12 +1,21 @@
-#!/bin/sh
+#!/bin/bash
 
 # push_firmware.sh
 #
 # Flash kernel image (contiguous hidden root) to Fritz!Box or Speedport.
-# Works on Linux and Cygwin, but the latter needs ncftpput from ncftp package.
+# Works on Linux (main platform) and Cygwin (inofficially).
 #
 # Copyright (c) 2007 Michael Hampicke    (mike@mhampicke.de)
 #               2007 Alexander Kriegisch (kriegaex, ip-phone-forum.de)
+#
+# Cygwin users note:
+#   1. There is NO guarantee whatsoever that this will work on Cygwin, even
+#      though it does on my box (kriegaex). Provided as is.
+#   2. For FTP you need 'ncftpput' from the 'ncftp' cygwin package.
+#   3. You need the 'ping' command from Windows (tested on XP), NOT from the
+#      'ping' cygwin package (please uninstall or change path so Windows
+#      version is found first), because the cygwin version has no timeout
+#      parameter as of today (2007-07-11).
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,20 +38,32 @@ function push_fw() {
 	[ -n "$2" ] && ip="$2"
 
 	echo
-	echo    " * You should now reboot your box now."
-	echo
-	echo -n " * Waiting for box "
-	while ! ping -c1 -w1 $ip > /dev/null ; do
+	echo " * You should now reboot your box."
+	echo "   Waiting for box to shut down."
+	echo "   Tip: switch off, if reboot is not detected because it happens too quickly"
+	echo -n "   "
+	while eval "ping $ping_params $ip > /dev/null"; do
 		echo -n "."
-		true
+		sleep 0.2
+	done
+	echo
+
+	echo
+	echo " * No reply from box. Assuming switch-off or restart."
+	echo "   Trying to re-detect box."
+	echo -n "   "
+	while ! eval "ping $ping_params $ip > /dev/null"; do
+		echo -n "."
+		sleep 0.2
 	done
 	echo
 
 	echo
 	echo " * Box is back up again."
-	echo "   Initiating transfer - switch box off/on several times, if FTP Client cannot log in ..."
-
+	echo "   Initiating transfer."
+	echo "   Tip: switch off/on box several times, if FTP client cannot log in ..."
 	echo
+
 	if [ $CYGWIN ]; then
 		ncftpput \
 			-d stdout \
@@ -78,7 +99,11 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
-[ "$(uname -o)" == "Cygwin" ] && CYGWIN=1
+ping_params="-c1 -w1"
+if [ "$(uname -o)" == "Cygwin" ]; then
+	CYGWIN=1
+	ping_params="-n 1 -w 500"
+fi
 
 if [ "$2" = "-f" ]; then
 	push_fw "$1" "$3"
