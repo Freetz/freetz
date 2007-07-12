@@ -92,6 +92,7 @@ Latest changes:
     * 5140 (NEW): firmware 43.04.37 - welcome to the ds26 family ;-)
     * 7170: firmware 29.04.37
     * 7141: firmware 40.04.37
+    * W701V: set 29.04.37 as tk-firmware
 
 - Other stuff:
     * Wrap /sbin/ar7login with shell script in order to achieve normal
@@ -130,17 +131,22 @@ Latest changes:
       when a user tries to switch it on via "#96*7*".
     * Fix typo in PPPD make file: TARGET-CFLAGS -> TARGET_CFLAGS
     * Fix CFLAGS for several other packages
-    * Orange!Box patch failed for W701V -> create patch variant for Speedport
-    * W701V build: fix copy routine for defaults
     * Extend "remove UPnP" patches to make rc.S aware of possible dsld
       parameter '-g' for starting without igd
     * W501V: Copy ar7login from TK firmware to ds-mod filesystem, because the
       501 does not contain this binary by default. Background: ar7login is
       needed if a console login with the web password should be performed,
       e.g. in telnet sessions.
-    * Speedport boxes: ATA patch did not work as expected on the Speedports
-      (at least W501V and W900V): rc.S needs to be patched, too. This makes
-      ATA avaiable to the Speedports.
+    * Orange!Box patch failed for W701V -> create patch variant for Speedport
+    * W701V build: fix copy routine for defaults
+    * Add patch for W900V (diff from 7150 web UI to sp2fritz web UI)
+    * Speedport boxes:
+        + ATA patch did not work as expected on the Speedports (at least W501V
+          and W900V): rc.S needs to be patched, too. This makes ATA avaiable
+          to the Speedports.
+        + Add patch that should fix password problem after reset to factory
+          defaults
+        + Force favicon symlink to avoid warning
     * Fix Tcpdump CFLAGS
     * Device tables, mounts etc.:
         + Add /dev/misc/fuse to device.table
