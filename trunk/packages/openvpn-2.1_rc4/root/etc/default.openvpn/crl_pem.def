@@ -1,0 +1,5 @@
+CAPTION='CRL (OpenVPN)'
+DESCRIPTION='$(lang de:"Liste mit zurückggezogenen Client Zertifikaten (optional). Wird nur für den Betrieb mit Zertifikaten benötigt." en:"List of revoked client certificates (optional).")'
+CONFIG_FILE='/tmp/flash/crl.pem'
+CONFIG_SAVE='modsave flash; if [ ! -z "$(pidof openvpn)" ]; then echo ""; /mod/etc/init.d/rc.openvpn reload; fi'
+CONFIG_TYPE='text'

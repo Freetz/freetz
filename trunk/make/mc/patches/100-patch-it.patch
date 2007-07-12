@@ -1,0 +1,35 @@
+diff -ruN src/cons.handler.c src/cons.handler.c
+--- src/cons.handler.c	1998-09-26 00:47:26.000000000 +0200
++++ src/cons.handler.c	2006-03-12 16:40:52.000000000 +0100
+@@ -188,6 +188,7 @@
+ 	break;
+     default:
+ 	/* Nothing */
++	return;
+     }
+ }
+ 
+diff -ruN src/cons.saver.c src/cons.saver.c
+--- src/cons.saver.c	1998-09-26 00:47:26.000000000 +0200
++++ src/cons.saver.c	2006-03-16 20:55:19.000000000 +0100
+@@ -33,8 +33,9 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <ctype.h>	/* For isdigit() */
+-typedef struct WINDOW WINDOW;
+ #include "cons.saver.h"
++typedef struct WINDOW WINDOW;
++
+ 
+ #define cmd_input 0
+ #define cmd_output 1
+@@ -46,7 +47,8 @@
+    2  == is a console, Linux >= 1.1.67 (color)
+    3  == is a console, Linux >= 1.1.92 (color, use /dev/vcsa$num
+    */
+-static signed char console_flag = -1;
++//static console_flag = -1;
++signed char console_flag;
+ /*
+    Meaning of console_fd:
+    -1  == not opened,

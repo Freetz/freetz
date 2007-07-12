@@ -1,0 +1,74 @@
+--- strace-4.5.15/file.c	2007-01-15 21:25:52.000000000 +0100
++++ file.c	2007-06-09 14:17:52.000000000 +0200
+@@ -175,6 +175,8 @@
+ #  define PRId64 "lld"
+ #  define PRIu64 "llu"
+ # endif
++#else
++# define statfs64 statfs
+ #endif
+ 
+ #if HAVE_LONG_LONG_OFF_T
+@@ -595,7 +597,6 @@
+ }
+ #endif
+ 
+-#if _LFS64_LARGEFILE || HAVE_LONG_LONG_OFF_T
+ int
+ sys_truncate64(tcp)
+ struct tcb *tcp;
+@@ -607,7 +608,6 @@
+ 	}
+ 	return 0;
+ }
+-#endif
+ 
+ #ifndef HAVE_LONG_LONG_OFF_T
+ int
+@@ -621,7 +621,6 @@
+ }
+ #endif
+ 
+-#if _LFS64_LARGEFILE || HAVE_LONG_LONG_OFF_T
+ int
+ sys_ftruncate64(tcp)
+ struct tcb *tcp;
+@@ -633,7 +632,6 @@
+ 	}
+ 	return 0;
+ }
+-#endif
+ 
+ /* several stats */
+ 
+@@ -2353,7 +2351,6 @@
+ }
+ 
+ 
+-#if _LFS64_LARGEFILE
+ int
+ sys_getdents64(tcp)
+ struct tcb *tcp;
+@@ -2380,6 +2377,7 @@
+ 		free(buf);
+ 		return 0;
+ 	}
++#if _LFS64_LARGEFILE
+ 	if (!abbrev(tcp))
+ 		tprintf("{");
+ 	for (i = 0; i < len;) {
+@@ -2415,11 +2413,13 @@
+ 		tprintf("}");
+ 	else
+ 		tprintf("/* %u entries */", dents);
++#else
++	tprintf("%#lx", tcp->u_arg[1]);
++#endif
+ 	tprintf(", %lu", tcp->u_arg[2]);
+ 	free(buf);
+ 	return 0;
+ }
+-#endif
+ 
+ #ifdef FREEBSD
+ int

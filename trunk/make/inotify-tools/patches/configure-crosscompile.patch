@@ -1,0 +1,34 @@
+--- configure	2007-02-16 01:26:57.000000000 +0100
++++ configure	2007-04-24 14:30:20.000000000 +0200
+@@ -19629,13 +19629,6 @@
+ 
+ { echo "$as_me:$LINENO: checking whether sys/inotify.h actually works" >&5
+ echo $ECHO_N "checking whether sys/inotify.h actually works... $ECHO_C" >&6; }
+-if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
+-else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+ _ACEOF
+@@ -19668,8 +19661,7 @@
+   *) ac_try_echo=$ac_try;;
+ esac
+ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_try") 2>&5
+-  ac_status=$?
++  ac_status=0
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; }; then
+   { echo "$as_me:$LINENO: result: yup" >&5
+@@ -19689,7 +19681,6 @@
+ 
+ fi
+ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+-fi
+ 
+ 
+ 

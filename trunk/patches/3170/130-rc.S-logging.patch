@@ -1,0 +1,23 @@
+--- etc/init.d/rc.S.orig	2007-07-10 19:29:02.000000000 +0200
++++ etc/init.d/rc.S	2007-07-10 19:29:02.000000000 +0200
+@@ -74,6 +74,20 @@
+ mount -a
+ #file "./arch/etc/init.d/rc.watchdog.sh", 0
+  echo init-start 120 >/dev/watchdog
++
++# Load boot loader kernel_args API
++. /usr/bin/kernel_args
++# Backup kernel log ring buffer ASAP, so as not to lose its earliest entries
++if ka_isActiveVariable SaveKernelRingBuffer; then
++	ka_decreaseValue SaveKernelRingBuffer
++	dmesg > /var/dmesg-rc.S.log
++fi
++# Initiate inotify-tools file access logging
++if ka_isActiveVariable InotifyBootAnalysis; then
++	ka_decreaseValue InotifyBootAnalysis
++	/etc/init.d/rc.inotify_tools start 
++fi
++
+ #file "stdin", 92
+ avm_event_param=
+ atm_param=

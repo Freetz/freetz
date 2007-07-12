@@ -1,0 +1,65 @@
+--- usr/www/all/html/de/menus/menu2_fon.html.orig	2007-06-25 11:18:32.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_fon.html	2007-06-25 11:18:32.000000000 +0200
+@@ -70,5 +70,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2007-06-25 11:18:32.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2007-06-25 11:18:32.000000000 +0200
+@@ -46,5 +46,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_homekonfig.html.orig	2007-06-25 11:18:32.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homekonfig.html	2007-06-25 11:18:32.000000000 +0200
+@@ -12,5 +12,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2.inc.orig	2007-06-25 11:18:32.000000000 +0200
++++ usr/www/all/html/de/menus/menu2.inc	2007-06-25 11:18:32.000000000 +0200
+@@ -9,7 +9,8 @@
+ <? setvariable var:menuSystem "System" ?>
+ <? setvariable var:menuSoftware "Programme" ?>
+ <? setvariable var:menuHilfe "Hilfe" ?>
+-<? setvariable var:menuDSMOD "DS-MOD" ?>
++<? setvariable var:menuDSMOD "DS-MOD Config" ?>
++<? setvariable var:menuDSWOL "DS-MOD WOL" ?>
+ <? setvariable var:evtxt01 "Anrufliste" ?>
+ <? setvariable var:evtxt02 "Telefonbuch" ?>
+ <? setvariable var:evtxt03 "Kindersicherung" ?>
+--- usr/www/all/html/de/menus/menu2_internet.html.orig	2007-06-25 11:18:32.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_internet.html	2007-06-25 11:18:32.000000000 +0200
+@@ -85,4 +85,5 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_software.html.orig	2007-06-25 11:18:32.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_software.html	2007-06-25 11:18:32.000000000 +0200
+@@ -12,5 +12,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_system.html.orig	2007-06-25 11:18:32.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_system.html	2007-06-25 11:18:32.000000000 +0200
+@@ -90,5 +90,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>

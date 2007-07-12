@@ -1,0 +1,152 @@
+config DS_PACKAGE_NANO
+	bool "Nano 2.0.6 text editor"
+	select DS_LIB_libncurses
+	default n
+	help
+		GNU GPL'd Pico clone with more functionality.
+
+		GNU nano is a small and friendly text editor. Besides basic text
+		editing, nano offers many extra features like an interactive search
+		and replace, go to line and column number, auto-indentation, feature
+		toggles and filename tab completion. 
+
+		The original goal for nano was a complete bug-for-bug compatible
+		emulation of Pico, but nano's current goal is to be as compatible as
+		possible while offering a superset of Pico's functionality.
+
+		IMPORTANT NOTES:
+
+		1.) Selecting any of the additional features (i.e. decativating "tiny
+		binary" and selecting some of the options which then become visible)
+		will make the Nano binary bigger. The range is somewhere between 85
+		and 180 KB, depending on the options chosen.
+
+		2.) Please also be aware of the fact that changing any feature options
+		results in an automatic rebuild of the package - just in case you were
+		wondering.
+
+menu "Nano additional features"
+	depends DS_PACKAGE_NANO
+
+config DS_NANO_TINY
+	bool "Tiny binary"
+	default y
+	help
+		Strip whichever feature possible from the Nano binary and keep
+		everything small and simple, yet powerful and easy to use.
+
+		With this option, Nano's binary has an approximate size of 86 KB.
+
+config DS_NANO_HELP
+	bool "Online help"
+	depends !DS_NANO_TINY
+	default n
+	help
+		Show a list of available keyboard shortcuts via Ctrl-G or F1. As the
+		name suggests, this is quite helpful. ;-)
+
+		This option adds about 39 KB to the minimum 86 KB of Nano's binary.
+		If you are unfamiliar with Nano and Pico and hhhave some space left
+		in the firmware image, we recommend you to choose this option anyway.
+
+config DS_NANO_TABCOMP
+	bool "Tab completion for file names"
+	depends !DS_NANO_TINY
+	default n
+	help
+		When opening or saving files, you get tab completion for directory and
+		file names. Even with the file browser switched off, this is a
+		powerful tool to help you save time when typing in path names.
+
+		This option adds about 7.5 KB to the minimum 86 KB of Nano's binary.
+
+config DS_NANO_BROWSER
+	bool "File browser"
+	depends !DS_NANO_TINY
+	default n
+	help
+		Browse the directory structure in a multi-line area showning
+		directories and files between which you can navigate with the
+		keyboard.
+
+		This option adds about 12.5 KB to the minimum 86 KB of Nano's binary.
+
+config DS_NANO_OPERATINGDIR
+	bool "Set operating directory"
+	depends !DS_NANO_TINY
+	default n
+	help
+		Set operating directory.
+		Makes Nano set up something similar to a chroot.
+
+		This option adds almost nothing to the minimum 86 KB of Nano's binary.
+
+config DS_NANO_WRAPPING
+	depends !DS_NANO_TINY
+	bool "Long line wrapping"
+	default n
+	help
+		Enable long line wrapping. This also creates the -w command line
+		option which enables long line wrapping.
+
+		This option adds almost nothing to the minimum 86 KB of Nano's binary.
+
+config DS_NANO_JUSTIFY
+	bool "Justify/unjustify functions"
+	depends !DS_NANO_TINY
+	default n
+	help
+		Support for (un-)justifying paragraphs of text, e.g. program code.
+
+		This option adds about 12.5 KB to the minimum 86 KB of Nano's binary.
+
+config DS_NANO_MULTIBUFFER
+	depends !DS_NANO_TINY
+	bool "Multiple file buffers"
+	default n
+	help
+		Edit multiple files at once and cycle through the different buffers
+		via simple keyboard commands.
+
+		This option adds about 4 KB to the minimum 86 KB of Nano's binary.
+
+config DS_NANO_COLOR_SYNTAX
+	depends !DS_NANO_TINY
+	bool "Coloured syntax highlighting"
+	default n
+	select DS_NANO_NANORC
+	help
+		Enable support for syntax coloring of files using the nanorc file.
+		This enables nanorc support, but does NOT automatically copy any
+		syntax files to the target system.
+
+		This option adds about 14.5 KB plus possibly a few KB of your syntax
+		files to the minimum 86 KB of Nano's binary, including nanorc support.
+
+		IMPORTANT: If you want to include any syntax definition files (look
+		for *.nanorc in the nano source package or define or download your own
+		files), you are advised to copy them somewhere inside root/usr/share
+		or packages/nano-x.y.z/root/usr/share. In addition to the syntax files
+		themselves you want to add a nanorc file including them to your user's
+		(probably root) home, possibly by editing /var/flash/debug.cfg or
+		/tmp/flash/rc.custom on the target system. There, the actual '.nanorc'
+		should be created, so Nano finds it upon start-up.
+
+config DS_NANO_NANORC
+	depends !DS_NANO_TINY
+	bool "Nanorc startup file support"
+	default n
+	help
+		Enable support for reading the nanorc file at startup. You can store
+		custom settings in the nanorc file rather than having to pass command
+		line options to get desired behavior.
+
+		This option adds about 9 KB to the minimum 86 KB of Nano's binary.
+
+		IMPORTANT: Please read the help text of the "Coloured syntax
+		highlighting" feature in order to learn how to add a '.nanorc' to your
+		target system. Please also refer to the nanorc man page at
+		http://www.nano-editor.org/dist/v2.0/nanorc.5.html for further
+		information about available options.
+
+endmenu

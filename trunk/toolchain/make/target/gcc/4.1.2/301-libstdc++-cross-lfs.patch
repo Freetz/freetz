@@ -1,0 +1,35 @@
+--- gcc-4.1.1/libstdc++-v3/crossconfig.m4	2006-04-15 15:56:01.088366944 +0200
++++ gcc-4.1.1/libstdc++-v3/crossconfig.m4	2006-04-15 15:56:52.155603544 +0200
+@@ -156,13 +156,6 @@
+ 
+     # For LFS.
+     AC_DEFINE(HAVE_INT64_T)
+-    case "$target" in
+-      *-uclinux*)
+-        # Don't enable LFS with uClinux
+-        ;;
+-      *)
+-        AC_DEFINE(_GLIBCXX_USE_LFS)
+-    esac
+ 
+     # For showmanyc_helper().
+     AC_CHECK_HEADERS(sys/ioctl.h sys/filio.h)
+--- gcc-4.1.1/libstdc++-v3/configure	2006-04-15 15:58:52.612291344 +0200
++++ gcc-4.1.1/libstdc++-v3/configure	2006-04-15 16:00:01.308847880 +0200
+@@ -78530,16 +78530,6 @@
+ #define HAVE_INT64_T 1
+ _ACEOF
+ 
+-    case "$target" in
+-      *-uclinux*)
+-        # Don't enable LFS with uClibc
+-        ;;
+-      *)
+-        cat >>confdefs.h <<\_ACEOF
+-#define _GLIBCXX_USE_LFS 1
+-_ACEOF
+-
+-    esac
+ 
+     # For showmanyc_helper().
+ 

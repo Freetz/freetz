@@ -1,0 +1,92 @@
+--- openntpd-3.9p1/ntpd.h	2006-05-14 07:29:21.000000000 +0200
++++ openntpd-3.9p1new/ntpd.h	2007-02-03 23:51:56.000000000 +0100
+@@ -34,6 +34,7 @@
+ #define	NTPD_USER	"_ntp"
+ #endif
+ #define	CONFFILE	SYSCONFDIR "/ntpd.conf"
++#define DRIFTFILE	"/var/db/ntpd.drift"
+
+ #define	READ_BUF_SIZE		4096
+
+--- openntpd-3.9p1/ntpd.c	2006-05-14 07:29:23.000000000 +0200
++++ openntpd-3.9p1new/ntpd.c	2007-02-04 00:00:36.000000000 +0100
+@@ -45,6 +45,7 @@
+ int		dispatch_imsg(struct ntpd_conf *);
+ int		ntpd_adjtime(double);
+ void		ntpd_settime(double);
++void	readfreq(void);
+
+ volatile sig_atomic_t	 quit = 0;
+ volatile sig_atomic_t	 reconfig = 0;
+@@ -153,7 +154,8 @@
+ 	chld_pid = ntp_main(pipe_chld, &conf);
+
+ 	setproctitle("[priv]");
+-
++	readfreq();
++
+ 	signal(SIGTERM, sighdlr);
+ 	signal(SIGINT, sighdlr);
+ 	signal(SIGCHLD, sighdlr);
+
+--- openntpd-3.9p1/openbsd-compat/port-linux.c	2007-02-03 20:52:20.000000000 +0100
++++ openntpd-3.9p1new/openbsd-compat/port-linux.c	2007-02-04 01:02:16.000000000 +0100
+@@ -33,6 +33,49 @@
+ /* maximum change to skew per adjustment, in PPM */
+ #define MAX_SKEW_DELTA 5.0
+
++void
++writefreq(double d)
++{
++	int r;
++	FILE *fp;
++
++	fp = fopen(DRIFTFILE, "w");
++	if (fp == NULL)
++	{
++		log_warn("opening drift file for writing failed");
++		return;
++	}
++
++	fprintf(fp, "%e\n", d);
++	r = ferror(fp);
++	if (fclose(fp) != 0 || r != 0)
++	{
++		unlink(DRIFTFILE);
++		log_warn("saving freq drift failed");
++	}
++}
++
++void
++readfreq(void)
++{
++	FILE *fp;
++	double d;
++	struct timex tmx;
++
++	fp = fopen(DRIFTFILE, "r");
++	if (fp == NULL)
++		return;
++
++	if (fscanf(fp, "%le", &d) == 1)
++	{
++		tmx.freq = (long)(d * ADJTIMEX_FREQ_SCALE);
++		tmx.modes = ADJ_FREQUENCY;
++		if (adjtimex(&tmx) == -1)
++			log_warn("adjtimex set freq failed");
++	}
++	fclose(fp);
++}
++
+ int
+ _compat_adjtime(const struct timeval *delta, struct timeval *olddelta)
+ {
+@@ -93,6 +136,8 @@
+ 		tmx.modes = ADJ_FREQUENCY;
+ 		if (adjtimex(&tmx) == -1)
+ 			log_warn("adjtimex set freq failed");
++
++		writefreq( tskew );
+ 	}
+
+ 	log_debug("interval %0.3lf skew %0.3lf total skew %0.3lf", interval,

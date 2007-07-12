@@ -1,0 +1,31 @@
+--- gcc-4.1.1/gcc/Makefile.in.old	2006-12-03 13:31:50.000000000 +0100
++++ gcc-4.1.1/gcc/Makefile.in	2006-12-03 13:33:43.000000000 +0100
+@@ -388,7 +388,10 @@
+ CROSS_SYSTEM_HEADER_DIR = @CROSS_SYSTEM_HEADER_DIR@
+ 
+ # autoconf sets SYSTEM_HEADER_DIR to one of the above.
+-SYSTEM_HEADER_DIR = @SYSTEM_HEADER_DIR@
++# Purge it of unneccessary internal relative paths
++# to directories that might not exist yet.
++# The sed idiom for this is to repeat the search-and-replace until it doesn't match, using :a ... ta.
++SYSTEM_HEADER_DIR = `echo @SYSTEM_HEADER_DIR@ | sed -e :a -e "s,[^/]*/\.\.\/,," -e ta`
+ 
+ # Control whether to run fixproto and fixincludes.
+ STMP_FIXPROTO = @STMP_FIXPROTO@
+@@ -3167,13 +3170,15 @@
+ ../$(build_subdir)/fixincludes/fixincl: ; @ :
+ 
+ # Build fixed copies of system files.
++# Abort if no system headers available, unless building a crosscompiler.
++# Canonicalize $gcc_tooldir/sys-include in same way as $SYSTEM_HEADER_DIR was canonicalized so test still works
+ stmp-fixinc: gsyslimits.h macro_list \
+   $(build_objdir)/fixincludes/fixincl \
+   $(build_objdir)/fixincludes/fixinc.sh
+ 	@if ! $(inhibit_libc) && test ! -d ${SYSTEM_HEADER_DIR}; then \
+ 	  echo The directory that should contain system headers does not exist: >&2 ; \
+ 	  echo "  ${SYSTEM_HEADER_DIR}" >&2 ; \
+-	  if test "x${SYSTEM_HEADER_DIR}" = "x${gcc_tooldir}/sys-include"; \
++	  if test "x${SYSTEM_HEADER_DIR}" = "x`echo "${gcc_tooldir}/sys-include" | sed -e :a -e "s,[^/]*/\.\.\/,," -e ta`"; \
+ 	  then sleep 1; else exit 1; fi; \
+ 	fi
+ 	rm -rf include; mkdir include

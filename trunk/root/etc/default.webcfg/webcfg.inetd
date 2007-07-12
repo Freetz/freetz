@@ -1,0 +1,15 @@
+. /mod/etc/conf/mod.cfg
+inetdcfg_desc="mod web interface"
+inetdcfg_port=$MOD_HTTPD_PORT
+inetdcfg_sock=stream
+inetdcfg_proto=tcp
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/sbin/httpd
+inetdcfg_arg0=httpd
+if [ -z "$MOD_HTTPD_PASSWD" ]; then
+	__home="/usr/nww"
+else
+	__home="/usr/mww"
+fi
+inetdcfg_args="-i -c /mod/etc/httpd.conf -h $__home -r DS"

@@ -1,0 +1,22 @@
+config DS_PACKAGE_OPENVPN
+	bool "OpenVPN 2.1_rc4"
+	select DS_LIB_libssl
+	default n
+	help
+	    VPN Server
+
+config DS_PACKAGE_OPENVPN_WITH_LZO
+	bool "With lzo Compression"
+	depends on DS_PACKAGE_OPENVPN
+	select DS_LIB_liblzo2
+	default y
+	help
+	    LZO2 Compression for VPN Traffic
+
+config DS_PACKAGE_OPENVPN_WITH_MGMNT
+	bool "Enable Management Console"
+	depends on DS_PACKAGE_OPENVPN
+	default n
+	help
+	    Enables OpenVPN's Management Console for administrative Tasks.
+	    This feature is not configurable via Web-UI.

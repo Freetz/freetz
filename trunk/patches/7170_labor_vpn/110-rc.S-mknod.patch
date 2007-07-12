@@ -1,0 +1,11 @@
+--- etc/init.d/rc.S.orig	2007-04-16 12:17:57.000000000 +0200
++++ etc/init.d/rc.S	2007-06-25 13:29:26.000000000 +0200
+@@ -370,6 +370,8 @@
+  mknod /var/flash/calllog c $tffs_major $((0x8D))
+  mknod /var/flash/aura-usb c $tffs_major $((0xA0))
+  mknod /var/flash/browser-data c $tffs_major $((0xA8))
++ mknod /var/flash/ds_mod c $tffs_major $((0x3c))
++ /usr/bin/modload 2>&1 | tee /var/log/mod_load.log
+ #file "stdin", 9
+ #file "./arch/etc/init.d/rc.cpmac.sh", 0
+ ##########################################################################################

@@ -1,0 +1,84 @@
+# .tgz, .tpz, .tar.gz, .tar.z, .tar.Z
+regex/\.t([gp]?z|ar\.g?[zZ])$
+	Open=%cd %p#utar
+	View=%view{ascii} gzip -dc %f 2>/dev/null | tar tvvf -
+	Extract=gzip -dc %f 2>/dev/null | tar xf -
+regex/\.tar\.bz$
+	# Open=%cd %p#utar
+	View=%view{ascii} bzip -dc %f 2>/dev/null | tar tvvf -
+	Extract=bzip -dc %f 2>/dev/null | tar xf -
+regex/\.tar\.bz2$
+	Open=%cd %p#utar
+	View=%view{ascii} bzip2 -dc %f 2>/dev/null | tar tvvf -
+	Extract=bzip2 -dc %f 2>/dev/null | tar xf -
+
+# tar
+regex/\.(tar|TAR)$
+	Open=%cd %p#utar
+	View=%view{ascii} tar tvvf %f
+	Extract=tar xf %f
+
+# gzip
+#type/^gzip
+regex/\.(gz|GZ)$
+	Edit=I=/tmp/mc-gzedXXXXXX$PPID; export I; gzip -cd %f >$I && %var{EDITOR:mcedit} $I && gzip -9c $I > %f; rm -f $I
+	View=%view{ascii} gzip -dc %f
+	Extract=gzip -dc %f
+	
+# bz2   SPB-Linux addons are bzip2 compressed tar files
+regex/\.(bz2|BZ2)$
+	Open=%cd %p#utar
+
+# zip
+regex/\.(zip|ZIP|jar|JAR)$
+	Open=%cd %p#uzip
+	View=%view{ascii} unzip -v %f
+	Extract=unzip %f
+	Extract (with flags)=I=%{Enter any Unzip flags:}; if test -n ; then unzip  %f; fi
+	Unzip=unzip %f '*'
+ 
+# .jp[e]g
+regex/\.jp[e]?g
+	Open=/usr/bin/dfbsee -f %f
+	View=/usr/bin/dfbsee -f %f
+ 
+# .gif
+regex/\.gif
+	Open=/usr/bin/dfbsee -f %f
+	View=/usr/bin/dfbsee -f %f
+ 
+# .png
+regex/\.png
+	Open=/usr/bin/dfbsee -f %f
+	View=/usr/bin/dfbsee -f %f
+ 
+ 
+# cpio
+shell/.cpio.Z
+ 	Open=%cd %p#ucpio
+ 	View=%view{ascii} compress -dc '%f' | cpio -ictv
+ 	Extract=compress -dc '%f' | cpio -ic
+shell/.cpio.gz
+ 	Open=%cd %p#ucpio
+ 	View=%view{ascii} gzip -dc '%f' | cpio -ictv
+ 	Extract=gzip -dc '%f' | cpio -ic
+shell/.cpio
+ 	Open=%cd %p#ucpio
+ 	View=%view{ascii} cat '%f' | cpio -ictv
+ 	Extract=cat '%f' | cpio -ic
+ 
+# Source RPMs (SuSE uses *.spm, others use *.src.rpm)
+regex/\.(spm|src\.rpm)$
+ 	Open=%cd %p#rpm
+ 	View=%view{ascii} rpm -qvlp %f
+ 	Install this RPM=rpm -i %f
+ 	Rebuild this RPM=rpm --rebuild %f
+ 	Check signature=rpm --checksig %f
+ 
+# Compiled RPMs
+regex/\.rpm$
+ 	Open=%cd %p#rpm
+ 	View=%view{ascii} rpm -qvlp %f
+ 	Install this RPM=rpm -i %f
+ 	Upgrade this RPM=rpm -U %f
+ 	Check signature=rpm --checksig %f

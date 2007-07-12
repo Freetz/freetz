@@ -1,0 +1,25 @@
+diff -burN lsof-4.78/Configure lsof-4.78/Configure
+--- lsof-4.78/Configure	2007-04-24 21:00:22.000000000 +0200
++++ lsof-4.78/Configure	2007-06-17 18:01:19.000000000 +0200
+@@ -2275,7 +2275,6 @@
+ # Configure for Linux.
+ 
+   linux)
+-    LSOF_TSTBIGF="-D_FILE_OFFSET_BITS=64"
+     LSOF_TSTKMEM=0
+     if test "X$LSOF_CC" = "X"	# {
+     then
+@@ -2355,13 +2354,6 @@
+       LSOF_CFGF="$LSOF_CFGF $LINUX_CLIB"
+     fi	# }
+ 
+-    # Test for IPv6 support.
+-
+-    if test -r ${LSOF_INCLUDE}/netinet/ip6.h	# {
+-    then
+-      LSOF_CFGF="$LSOF_CFGF -DHASIPv6"
+-    fi	# }
+-
+     # Test for SELinux support.
+ 
+     if test -r ${LSOF_INCLUDE}/selinux/selinux.h	# {

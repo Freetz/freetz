@@ -1,0 +1,211 @@
+--- coreutils/stty.c	2007/04/10 15:42:06	18381
++++ coreutils/stty.c	2007/04/19 19:55:54	18499
+@@ -21,7 +21,7 @@
+ 
+    */
+ 
+-#include "busybox.h"
++#include "libbb.h"
+ 
+ #ifndef _POSIX_VDISABLE
+ # define _POSIX_VDISABLE ((unsigned char) 0)
+@@ -70,15 +70,15 @@
+ 
+ /* SunOS 5.3 loses (^Z doesn't work) if 'swtch' is the same as 'susp'.
+    So the default is to disable 'swtch.'  */
+-#if defined (__sparc__) && defined (__svr4__)
++#if defined(__sparc__) && defined(__svr4__)
+ # undef CSWTCH
+ # define CSWTCH _POSIX_VDISABLE
+ #endif
+ 
+-#if defined(VWERSE) && !defined (VWERASE)       /* AIX-3.2.5 */
++#if defined(VWERSE) && !defined(VWERASE)       /* AIX-3.2.5 */
+ # define VWERASE VWERSE
+ #endif
+-#if defined(VDSUSP) && !defined (CDSUSP)
++#if defined(VDSUSP) && !defined(CDSUSP)
+ # define CDSUSP Control('y')
+ #endif
+ #if !defined(VREPRINT) && defined(VRPRNT)       /* Irix 4.0.5 */
+@@ -375,17 +375,22 @@
+ };
+ 
+ /* The width of the screen, for output wrapping */
+-static unsigned max_col = 80; /* default */
+-/* Current position, to know when to wrap */
+-static unsigned current_col;
++unsigned max_col = 80; /* default */
++
++struct globals {
++	/* Current position, to know when to wrap */
++	unsigned current_col;
++	char buf[10];
++};
++#define G (*(struct globals*)&bb_common_bufsiz1)
++
+ static const char *device_name = bb_msg_standard_input;
+ 
+ /* Return a string that is the printable representation of character CH */
+ /* Adapted from 'cat' by Torbjorn Granlund */
+-static const char *visible(unsigned int ch)
++static const char *visible(unsigned ch)
+ {
+-	static char buf[10];
+-	char *bpout = buf;
++	char *bpout = G.buf;
+ 
+ 	if (ch == _POSIX_VDISABLE)
+ 		return "<undef>";
+@@ -407,7 +412,7 @@
+ 	}
+ 
+ 	*bpout = '\0';
+-	return buf;
++	return G.buf;
+ }
+ 
+ static tcflag_t *mode_type_flag(unsigned type, const struct termios *mode)
+@@ -466,20 +471,20 @@
+ 	   somebody failed to adhere to this assumption just to be sure.  */
+ 	if (!buflen || buflen >= sizeof(buf)) return;
+ 
+-	if (current_col > 0) {
+-		current_col++;
++	if (G.current_col > 0) {
++		G.current_col++;
+ 		if (buf[0] != '\n') {
+-			if (current_col + buflen >= max_col) {
++			if (G.current_col + buflen >= max_col) {
+ 				putchar('\n');
+-				current_col = 0;
++				G.current_col = 0;
+ 			} else
+ 				putchar(' ');
+ 		}
+ 	}
+ 	fputs(buf, stdout);
+-	current_col += buflen;
++	G.current_col += buflen;
+ 	if (buf[buflen-1] == '\n')
+-		current_col = 0;
++		G.current_col = 0;
+ }
+ 
+ static void set_window_size(const int rows, const int cols)
+@@ -548,38 +553,38 @@
+ 	param_line   = 1 | 0x80,
+ 	param_rows   = 2 | 0x80,
+ 	param_cols   = 3 | 0x80,
+-	param_size   = 4,
+-	param_speed  = 5,
+-	param_ispeed = 6 | 0x80,
+-	param_ospeed = 7 | 0x80,
++	param_columns = 4 | 0x80,
++	param_size    = 5,
++	param_speed   = 6,
++	param_ispeed  = 7 | 0x80,
++	param_ospeed  = 8 | 0x80,
+ };
+ 
+ static int find_param(const char * const name)
+ {
+-	const char * const params[] = {
+-		"line",
+-		"rows",
+-		"cols",
+-		"columns",
+-		"size",
+-		"speed",
++	static const char * const params[] = {
++		"line",     /* 1 */
++		"rows",     /* 2 */
++		"cols",     /* 3 */
++		"columns",  /* 4 */
++		"size",     /* 5 */
++		"ispeed"+1, /* 6 */
+ 		"ispeed",
+ 		"ospeed",
+ 		NULL
+ 	};
+-	int i = index_in_str_array(params, name);
+-	if (i < 0)
++	int i = index_in_str_array(params, name) + 1;
++	if (i == 0)
+ 		return 0;
+-	if (!(i == 4 || i == 5))
++	if (i != 5 && i != 6)
+ 		i |= 0x80;
+-
+ 	return i;
+ }
+ 
+ static int recover_mode(const char *arg, struct termios *mode)
+ {
+ 	int i, n;
+-	unsigned int chr;
++	unsigned chr;
+ 	unsigned long iflag, oflag, cflag, lflag;
+ 
+ 	/* Scan into temporaries since it is too much trouble to figure out
+@@ -607,7 +612,7 @@
+ }
+ 
+ static void display_recoverable(const struct termios *mode,
+-								const int ATTRIBUTE_UNUSED dummy)
++				int ATTRIBUTE_UNUSED dummy)
+ {
+ 	int i;
+ 	printf("%lx:%lx:%lx:%lx",
+@@ -669,14 +674,14 @@
+ 	if ((mode->c_lflag & ICANON) == 0)
+ #endif
+ 		wrapf("min = %d; time = %d;", mode->c_cc[VMIN], mode->c_cc[VTIME]);
+-	if (current_col) wrapf("\n");
++	if (G.current_col) wrapf("\n");
+ 
+ 	for (i = 0; i < NUM_mode_info; ++i) {
+ 		if (mode_info[i].flags & OMIT)
+ 			continue;
+ 		if (mode_info[i].type != prev_type) {
+ 			/* wrapf("\n"); */
+-			if (current_col) wrapf("\n");
++			if (G.current_col) wrapf("\n");
+ 			prev_type = mode_info[i].type;
+ 		}
+ 
+@@ -692,7 +697,7 @@
+ 				wrapf("-%s", mode_info[i].name);
+ 		}
+ 	}
+-	if (current_col) wrapf("\n");
++	if (G.current_col) wrapf("\n");
+ }
+ 
+ static void sane_mode(struct termios *mode)
+@@ -969,7 +975,7 @@
+ 					goto invalid_argument;
+ 				}
+ 			}
+-end_option:
++ end_option:
+ 			continue;
+ 		}
+ 
+@@ -1008,6 +1014,7 @@
+ #ifdef TIOCGWINSZ
+ 		case param_rows:
+ 		case param_cols:
++		case param_columns:
+ 			xatoul_range_sfx(argnext, 1, INT_MAX, stty_suffixes);
+ 			break;
+ 		case param_size:
+@@ -1025,7 +1032,7 @@
+ 		default:
+ 			if (recover_mode(arg, &mode) == 1) break;
+ 			if (tty_value_to_baud(xatou(arg)) != (speed_t) -1) break;
+-invalid_argument:
++ invalid_argument:
+ 			bb_error_msg_and_die("invalid argument '%s'", arg);
+ 		}
+ 		stty_state &= ~STTY_noargs;

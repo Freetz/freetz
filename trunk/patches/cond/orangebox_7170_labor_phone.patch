@@ -1,0 +1,19 @@
+diff -burN etc/init.d/rc.S etc/init.d/rc.S
+--- etc/init.d/rc.S	2007-02-01 17:21:31.000000000 +0100
++++ etc/init.d/rc.S	2007-02-01 17:31:23.000000000 +0100
+@@ -243,6 +243,15 @@
+ echo "<? setvariable var:AbCount ${CONFIG_AB_COUNT} ?>" >>/var/config.def
+ echo "<? setvariable var:FirmwareVersion '${CONFIG_VERSION}${CONFIG_SUBVERSION}' ?>" >>/var/config.def
+  echo "<? setvariable var:Release '2' ?>" >>/var/config.def
++echo "<? setvariable var:isOrange 1 ?>" >>/var/config.def
++echo "<? setvariable var:isWizz 0 ?>" >>/var/config.def
++echo "<? setvariable var:isDSmod 1 ?>" >>/var/config.def
++echo "<? setvariable var:isTSB 0 ?>" >>/var/config.def
++echo "<? setvariable var:isCallPatch 1 ?>" >>/var/config.def
++echo "<? setvariable var:isWOL 0 ?>" >>/var/config.def
++echo "<? setvariable var:menuDSMOD 'ds-mod' ?>" >>/var/config.def
++echo "<? setvariable var:menuTSB 'TSB-LCR' ?>" >>/var/config.def
++echo "<? setvariable var:menuWOL 'WoL' ?>" >>/var/config.def
+ #file "stdin", 8
+ #file "./arch/etc/init.d/rc.tffs.sh", 0
+ major=`grep tffs /proc/devices`

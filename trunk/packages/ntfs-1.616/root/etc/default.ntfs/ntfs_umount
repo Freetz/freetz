@@ -1,0 +1,30 @@
+#!/bin/sh
+
+cat << EOF
+
+if [ "$NTFS_MOUNTPOINT1" != "" ] 
+then
+  echo "unmount $NTFS_DEVICE1..."
+  umount $NTFS_MOUNTPOINT1
+  sleep 2
+  rmdir $NTFS_MOUNTPOINT1
+fi
+
+if [ "$NTFS_MOUNTPOINT2" != "" ]
+then
+  echo "unmount $NTFS_DEVICE2..."
+  umount $NTFS_MOUNTPOINT2
+  sleep 2
+  rmdir $NTFS_MOUNTPOINT2
+fi
+
+if [ "$NTFS_MOUNTPOINT3" != "" ]
+then
+  echo "unmount $NTFS_DEVICE3..."
+  umount $NTFS_MOUNTPOINT3
+  sleep 2
+  rmdir $NTFS_MOUNTPOINT3
+fi
+
+EOF
+

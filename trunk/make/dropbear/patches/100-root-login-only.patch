@@ -1,0 +1,17 @@
+--- svr-auth.c	2005-09-19 11:28:27.218850560 +0200
++++ svr-auth.c	2005-09-19 11:32:27.943254888 +0200
+@@ -236,6 +236,14 @@
+ 		return DROPBEAR_FAILURE;
+ 	}
+ 
++	/* FRITZBOX PATCH: only allow root user */
++	if (ses.authstate.pw->pw_uid != 0) {
++		TRACE(("leave checkusername: non-root login disabled"))
++		dropbear_log(LOG_WARNING, "non-root login rejected");
++		send_msg_userauth_failure(0, 1);
++		return DROPBEAR_FAILURE;
++	}
++
+ 	/* check for an empty password */
+ 	if (ses.authstate.pw->pw_passwd[0] == '\0') {
+ 		TRACE(("leave checkusername: empty pword"))

@@ -1,0 +1,45 @@
+--- libinotifytools/src/inotifytools.c	2007-02-16 01:26:49.000000000 +0100
++++ libinotifytools/src/inotifytools.c	2007-05-23 13:55:59.000000000 +0200
+@@ -1270,14 +1270,14 @@
+ 
+ 	static struct dirent * ent;
+ 	char * next_file;
+-	static struct stat64 my_stat;
++	static struct stat my_stat;
+ 	ent = readdir( dir );
+ 	// Watch each directory within this directory
+ 	while ( ent ) {
+ 		if ( (0 != strcmp( ent->d_name, "." )) &&
+ 		     (0 != strcmp( ent->d_name, ".." )) ) {
+ 			nasprintf(&next_file,"%s%s", my_path, ent->d_name);
+-			if ( -1 == lstat64( next_file, &my_stat ) ) {
++			if ( -1 == lstat( next_file, &my_stat ) ) {
+ 				error = errno;
+ 				free( next_file );
+ 				if ( errno != EACCES ) {
+@@ -1550,9 +1550,9 @@
+  * @internal
+  */
+ int isdir( char const * path ) {
+-	static struct stat64 my_stat;
++	static struct stat my_stat;
+ 
+-	if ( -1 == lstat64( path, &my_stat ) ) {
++	if ( -1 == lstat( path, &my_stat ) ) {
+ 		fprintf(stderr, "Stat failed on %s: %s\n", path, strerror(errno));
+ 		return 0;
+ 	}
+--- src/common.c	2007-02-16 01:26:49.000000000 +0100
++++ src/common.c	2007-05-23 13:56:14.000000000 +0200
+@@ -42,9 +42,9 @@
+ }
+ 
+ int isdir( char const * path ) {
+-	static struct stat64 my_stat;
++	static struct stat my_stat;
+ 
+-	if ( -1 == lstat64( path, &my_stat ) ) {
++	if ( -1 == lstat( path, &my_stat ) ) {
+ 		fprintf(stderr, "Stat failed on %s: %s\n", path, strerror(errno));
+ 		return 0;
+ 	}

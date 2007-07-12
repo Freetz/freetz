@@ -1,0 +1,126 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=httpd
+
+case "$1" in
+	""|load|start|restart|status)
+		if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/mod.cfg;
+		;;
+esac
+
+config() {
+	if [ -z "$MOD_HTTPD_PASSWD" ]; then
+		homedir=/usr/nww/
+		echo > /mod/etc/$DAEMON.conf
+	else
+		homedir=/usr/mww/
+		(
+			if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+				/tmp/flash/${DAEMON}_conf
+			else
+				/mod/etc/default.mod/${DAEMON}_conf
+			fi
+
+			if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+				cat /tmp/flash/${DAEMON}.extra
+			fi
+		) > /mod/etc/$DAEMON.conf
+	fi
+}
+
+pidfile() {
+	ps | grep " $DAEMON -p $MOD_HTTPD_PORT" | grep -v grep | sed -r 's/ *([0-9]+).*/\1/' | head -1 > /var/run/$DAEMON.pid
+}
+
+start() {
+	config
+
+	echo -n 'Starting webinterface...'
+	$DAEMON -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "DS-MOD (user:admin)"
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		pidfile
+		while [ ! -s "/var/run/$DAEMON.pid" ]; do
+			sleep 1
+			pidfile
+		done
+		echo 'done.'
+	else
+		rm -f /var/run/$DAEMON.pid
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping webinterface...'
+	exitval=0
+
+	if [ -e "/var/run/$DAEMON.pid" ]; then
+		kill $(cat /var/run/$DAEMON.pid) > /dev/null 2>&1
+		exitval=$?
+		rm -f /var/run/$DAEMON.pid
+	fi
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+        ""|load)
+		config
+		if [ "$MOD_HTTPD" != "yes" ]; then
+			if [ "$MOD_HTTPD" != "inetd" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+			fi
+			exit 1
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ "$MOD_HTTPD" == "inetd" ]; then
+			echo 'inetd'
+		else
+		if [ -s "/var/run/$DAEMON.pid" ]; then
+			echo 'running'
+		else
+			echo 'stopped'
+		fi
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

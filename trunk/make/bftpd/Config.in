@@ -1,0 +1,11 @@
+config DS_PACKAGE_BFTPD
+	bool "Bftpd 1.8"
+	default n
+	help
+	    Small FTP Server
+
+config DS_PACKAGE_BFTPD_WITH_ZLIB
+	bool "With on-the-fly compression"
+	depends on DS_PACKAGE_BFTPD
+	select DS_LIB_libz
+	default n

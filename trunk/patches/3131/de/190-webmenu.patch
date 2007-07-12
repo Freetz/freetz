@@ -1,0 +1,72 @@
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2007-06-06 12:48:38.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2007-06-25 13:34:15.000000000 +0200
+@@ -43,5 +43,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_homekonfig.html.orig	2007-06-06 12:48:38.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homekonfig.html	2007-06-25 13:34:15.000000000 +0200
+@@ -12,5 +12,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2.inc.orig	2007-06-06 12:48:38.000000000 +0200
++++ usr/www/all/html/de/menus/menu2.inc	2007-06-25 13:34:15.000000000 +0200
+@@ -9,6 +9,7 @@
+ <? setvariable var:menuSystem "System" ?>
+ <? setvariable var:menuSoftware "Programme" ?>
+ <? setvariable var:menuHilfe "Hilfe" ?>
++<? setvariable var:menuDSMOD "DS-MOD" ?>
+ <? setvariable var:evtxt01 "Anrufliste" ?>
+ <? setvariable var:evtxt02 "Telefonbuch" ?>
+ <? setvariable var:evtxt03 "Kindersicherung" ?>
+--- usr/www/all/html/de/menus/menu2_internet.html.orig	2007-06-06 12:48:38.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_internet.html	2007-06-25 13:34:15.000000000 +0200
+@@ -94,4 +94,5 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_software.html.orig	2007-06-06 12:48:38.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_software.html	2007-06-25 13:34:15.000000000 +0200
+@@ -12,5 +12,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_system.html.orig	2007-06-06 12:48:38.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_system.html	2007-06-25 13:34:15.000000000 +0200
+@@ -94,5 +94,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_usb.html.orig	2007-06-06 12:48:38.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_usb.html	2007-06-25 13:34:15.000000000 +0200
+@@ -31,5 +31,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_wlan.html.orig	2007-06-06 12:48:38.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_wlan.html	2007-06-25 13:34:15.000000000 +0200
+@@ -48,5 +48,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>

@@ -1,0 +1,118 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=/mod/etc/ntfs
+DAEMON_UMOUNT=/mod/etc/ntfs_umount
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/ntfs.cfg" ]; then
+			echo "Error[ntfs]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/ntfs.cfg
+		;;
+esac
+
+start() {
+
+	(
+		if [ -x "/tmp/flash/ntfs_mount" ]; then
+			/tmp/flash/ntfs_mount
+		else
+			/mod/etc/default.ntfs/ntfs_mount
+		fi
+
+	) > /mod/etc/ntfs
+
+	(
+		if [ -x "/tmp/flash/ntfs_umount" ]; then
+			/tmp/flash/ntfs_umount
+		else
+			/mod/etc/default.ntfs/ntfs_umount
+		fi
+	) > /mod/etc/ntfs_umount
+		  	
+	echo -n 'mount NTFS...'
+	
+	modprobe fuse.ko
+	chmod +x $DAEMON
+	chmod +x $DAEMON_UMOUNT
+	$DAEMON > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'unmount NTFS...'
+	
+	$DAEMON_UMOUNT > /dev/null 2>&1
+	sleep 1
+	if [ ! -z "$(pidof "ntfs-3g")" ]; then
+		killall -9 ntfs-3g > /dev/null 2>&1
+		exitval=$?
+	fi
+	rmmod fuse
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+
+		if type modreg > /dev/null; then
+			modreg cgi ntfs 'NTFS-3G'
+		fi
+
+		if [ "$NTFS_ENABLED" != "yes" ]; then
+			echo "NTFS is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ ! -z "$(pidof ntfs-3g)" ]; then
+			echo "NTFS already started."
+		else
+			start
+		fi
+		;;
+	unload)
+		stop
+		modunreg cgi ntfs
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof "ntfs-3g")" ]; then
+		    echo 'stopped'
+		else
+		    echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

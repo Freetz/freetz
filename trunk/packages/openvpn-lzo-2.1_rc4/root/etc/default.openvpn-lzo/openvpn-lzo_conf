@@ -1,0 +1,158 @@
+#!/bin/sh
+
+echo "# OpenVPN 2.1 Config"
+
+if [ "$OPENVPN_LZO_LOCAL" ];then
+	echo "local $OPENVPN_LZO_LOCAL"
+fi
+
+if [ "$OPENVPN_LZO_PROTO" == "tcp" ]; then
+	echo "proto tcp-$OPENVPN_LZO_MODE"
+else
+	echo "proto udp"
+fi
+
+echo "port $OPENVPN_LZO_PORT"
+
+if [ "$OPENVPN_LZO_TYPE" == "tap" ]; then
+	echo "dev tap"
+else
+	echo "dev tun"
+	#if [ -r /dev/misc/net/tun ]; then
+	#	echo "dev-node /dev/misc/net/tun"
+	#else
+	#	echo "dev-node /dev/net/tun"
+	#fi
+fi
+
+if [ "$OPENVPN_LZO_AUTH_TYPE" == "certs" ]; then
+
+	cat <<EOF
+ca /tmp/flash/ca.crt
+cert /tmp/flash/box.crt
+key /tmp/flash/box.key
+EOF
+
+	if [ "$OPENVPN_LZO_MODE" == "server" ]; then
+		echo "mode server"
+		echo "tls-server"
+		echo "dh /tmp/flash/dh.pem"
+		if [ -r "/tmp/flash/crl.pem" ]; then
+			echo "crl-verify /tmp/flash/crl.pem"
+		fi
+		if [ "$OPENVPN_LZO_TLS_AUTH" == "yes" ]; then
+			echo "tls-auth /tmp/flash/static.key 0"
+		fi
+		
+		if [ "$OPENVPN_LZO_DHCP_RANGE" ]; then
+			echo "ifconfig-pool $OPENVPN_LZO_DHCP_RANGE"
+		fi
+	else
+			echo "tls-client"
+		echo "ns-cert-type server"
+		if [ "$OPENVPN_LZO_TLS_AUTH" == "yes" ]; then
+			echo "tls-auth /tmp/flash/static.key 1"
+		fi
+
+		if [ "$OPENVPN_LZO_PULL" == "yes" ]; then
+			echo "pull"
+		fi
+	fi
+
+else
+	echo "secret /tmp/flash/static.key"
+fi
+
+if [ "$OPENVPN_LZO_MODE" == "server" ]; then
+
+	if [ "$OPENVPN_LZO_TYPE" == "tap" ]; then
+		cat <<EOF
+ifconfig $OPENVPN_LZO_BOX_IP $OPENVPN_LZO_BOX_MASK
+push "route-gateway $OPENVPN_LZO_BOX_IP"
+EOF
+	else
+		cat <<EOF
+ifconfig $OPENVPN_LZO_BOX_IP $OPENVPN_LZO_REMOTE_IP 
+EOF
+
+		echo "route $OPENVPN_LZO_VPN_NET"
+
+		if [ "$OPENVPN_LZO_CLIENT2CLIENT" == "yes" ]; then
+			echo "push \"route $OPENVPN_LZO_VPN_NET\""
+		else
+			echo "push \"route $OPENVPN_LZO_BOX_IP\""
+		fi
+
+	fi
+	
+	if [ "$OPENVPN_LZO_LOCAL_NET" ]; then
+		echo "push \"route $OPENVPN_LZO_LOCAL_NET\""
+	fi
+
+	if [ "$OPENVPN_LZO_PUSH_DNS" ]; then
+		echo "push \"dhcp-option DNS $OPENVPN_LZO_PUSH_DNS\""
+	fi
+
+	if [ "$OPENVPN_LZO_PUSH_WINS" ]; then
+		echo "push \"dhcp-option DNS $OPENVPN_LZO_PUSH_WINS\""
+	fi
+
+	if [ "$OPENVPN_LZO_PUSH_REDIRECT" ]; then
+		echo "push \"redirect-gateway\""
+	fi
+
+	if [ "$OPENVPN_LZO_MAXCLIENTS" ]; then
+		echo "max-clients $OPENVPN_LZO_MAXCLIENTS"
+	fi
+
+else
+
+	cat <<EOF
+remote $OPENVPN_LZO_REMOTE
+nobind
+EOF
+
+	if [ "$OPENVPN_LZO_TYPE" == "tun" ]; then
+		echo "ifconfig $OPENVPN_LZO_BOX_IP $OPENVPN_LZO_REMOTE_IP"
+	else
+		if [ "$OPENVPN_LZO_DHCP_CLIENT" != "yes" ]; then
+			echo "ifconfig $OPENVPN_LZO_BOX_IP $OPENVPN_LZO_BOX_MASK"
+		fi
+	fi
+	
+fi
+
+cat <<EOF
+tun-mtu $OPENVPN_LZO_MTU
+mssfix
+
+daemon
+verb $OPENVPN_LZO_VERBOSE
+
+cipher $OPENVPN_LZO_CIPHER
+EOF
+
+if [ "$OPENVPN_LZO_REMOTE_NET" ]; then
+	echo "route $OPENVPN_LZO_REMOTE_NET"
+fi
+if [ "$OPENVPN_LZO_SHAPER" ]; then
+	echo "shaper $OPENVPN_LZO_SHAPER"
+fi
+if [ "$OPENVPN_LZO_COMPLZO" == "yes" ]; then
+	echo "comp-lzo"
+fi
+if [ "$OPENVPN_LZO_FLOAT" == "yes" ]; then
+        echo "float"
+fi
+if [ "$OPENVPN_LZO_KEEPALIVE" == "yes" ]; then
+	echo "keepalive $OPENVPN_LZO_KEEPALIVE_PING $OPENVPN_LZO_KEEPALIVE_TIMEOUT"
+	if [ "$OPENVPN_LZO_MODE" == "client" ]; then
+		echo "resolv-retry infinite"
+	fi
+fi
+if [ "$OPENVPN_MGMNT" ]; then
+	echo "management $OPENVPN_MGMNT"
+fi
+if [ "$OPENVPN_LZO_LOGFILE" == "yes" ]; then
+	echo "status /var/log/openvpn.log"
+fi

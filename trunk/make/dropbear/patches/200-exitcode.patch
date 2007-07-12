@@ -1,0 +1,42 @@
+--- svr-main.c	2007-05-24 14:27:22.000000000 +0200
++++ svr-main.c	2007-05-24 14:28:10.000000000 +0200
+@@ -130,6 +130,19 @@
+ 	   hostkeys. */
+ 	commonsetup();
+ 
++	/* sockets to identify pre-authenticated clients */
++	for (i = 0; i < MAX_UNAUTH_CLIENTS; i++) {
++		childpipes[i] = -1;
++	}
++	bzero(preauth_addrs, sizeof(preauth_addrs));
++	
++	/* Set up the listening sockets */
++	listensockcount = listensockets(listensocks, MAX_LISTEN_ADDR, &maxsock);
++	if (listensockcount == 0)
++	{
++		dropbear_exit("No listening ports available.");
++	}
++
+ 	/* fork */
+ 	if (svr_opts.forkbg) {
+ 		int closefds = 0;
+@@ -157,19 +170,6 @@
+ 		fclose(pidfile);
+ 	}
+ 
+-	/* sockets to identify pre-authenticated clients */
+-	for (i = 0; i < MAX_UNAUTH_CLIENTS; i++) {
+-		childpipes[i] = -1;
+-	}
+-	bzero(preauth_addrs, sizeof(preauth_addrs));
+-	
+-	/* Set up the listening sockets */
+-	listensockcount = listensockets(listensocks, MAX_LISTEN_ADDR, &maxsock);
+-	if (listensockcount == 0)
+-	{
+-		dropbear_exit("No listening ports available.");
+-	}
+-
+ 	/* incoming connection select loop */
+ 	for(;;) {
+ 
