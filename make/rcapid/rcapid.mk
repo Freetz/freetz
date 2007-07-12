@@ -83,6 +83,9 @@ rcapid-dirclean:
 	rm -rf $(PACKAGES_DIR)/$(RCAPID_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(RCAPID_PKG_NAME)
 
+rcapid-uninstall:
+	rm -f $(RCAPID_TARGET_BINARY)
+
 rcapid-list:
 ifeq ($(strip $(DS_PACKAGE_RCAPID)),y)
 	@echo "S40rcapid-$(RCAPID_PKG_VERSION)" >> .static
