@@ -1,4 +1,4 @@
-NCURSES_VERSION:=5.5
+NCURSES_VERSION:=5.6
 NCURSES_LIB_VERSION:=$(NCURSES_VERSION)
 NCURSES_SOURCE:=ncurses-$(NCURSES_VERSION).tar.gz
 NCURSES_SITE:=http://ftp.gnu.org/pub/gnu/ncurses
@@ -15,7 +15,7 @@ $(DL_DIR)/$(NCURSES_SOURCE): | $(DL_DIR)
 $(NCURSES_DIR)/.unpacked: $(DL_DIR)/$(NCURSES_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NCURSES_SOURCE)
 	for i in $(NCURSES_MAKE_DIR)/patches/*.ncurses.patch; do \
-		patch -d $(NCURSES_DIR) -p0 < $$i; \
+		patch -d $(NCURSES_DIR) -p1 < $$i; \
 	done
 	touch $@
 

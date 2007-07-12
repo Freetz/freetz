@@ -60,6 +60,9 @@ dtmfbox-dirclean:
 	rm -rf $(PACKAGES_DIR)/dtmfbox-$(DTMFBOX_VERSION)-src
 	rm -f $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
 
+dtmfbox-uninstall:
+	rm -f $(DTMFBOX_TARGET_BINARY)
+
 dtmfbox-list:
 ifeq ($(strip $(DS_PACKAGE_DTMFBOX)),y)
 	@echo "S40dtmfbox-$(DTMFBOX_VERSION)" >> .static
