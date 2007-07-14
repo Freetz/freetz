@@ -3,8 +3,8 @@ NETSNMP_SOURCE:=net-snmp-$(NETSNMP_VERSION).tar.gz
 NETSNMP_SITE:=http://mesh.dl.sourceforge.net/sourceforge/net-snmp
 NETSNMP_MAKE_DIR:=$(MAKE_DIR)/netsnmp
 NETSNMP_DIR:=$(SOURCE_DIR)/net-snmp-$(NETSNMP_VERSION)
-NETSNMP_BINARY:=$(NETSNMP_DIR)/agent/snmpd
-NETSNMP_PKG_VERSION:=0.4
+NETSNMP_BINARY:=$(NETSNMP_DIR)/agent/.libs/snmpd
+NETSNMP_PKG_VERSION:=0.4b
 NETSNMP_PKG_SITE:=http://www.heimpold.de/dsmod
 NETSNMP_PKG_NAME:=netsnmp-$(NETSNMP_VERSION)
 NETSNMP_PKG_SOURCE:=netsnmp-$(NETSNMP_VERSION)-dsmod-$(NETSNMP_PKG_VERSION).tar.bz2
@@ -148,25 +148,18 @@ $(NETSNMP_BINARY): $(NETSNMP_DIR)/.configured
 		$(MAKE1) -C $(NETSNMP_DIR)
 
 $(NETSNMP_TARGET_BINARY): $(NETSNMP_BINARY)
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) INSTALL_PREFIX="$(shell pwd)/$(NETSNMP_TARGET_DIR)/root" \
-	    -C $(NETSNMP_DIR) install
-	# Remove unnecessary things 
-	rm -rf $(NETSNMP_TARGET_DIR)/root/share $(NETSNMP_TARGET_DIR)/root/usr/info \
-		$(NETSNMP_TARGET_DIR)/root/usr/man $(NETSNMP_TARGET_DIR)/root/usr/share \
-		$(NETSNMP_TARGET_DIR)/root/usr/include
-	rm -f $(NETSNMP_TARGET_DIR)/root/usr/lib/*.la
-	rm -f $(NETSNMP_TARGET_DIR)/root/usr/bin/net-snmp-config
-	# Libraries need not to be executable
-	chmod 0644 $(NETSNMP_TARGET_LIBS)
-	# Install the "broken" headers
+	$(INSTALL_BINARY_STRIP)
+	for file in $$(find $(NETSNMP_DIR) -name 'libnetsnmp*.so*'); do \
+		cp -d $$file $(NETSNMP_TARGET_DIR)/root/usr/lib/; \
+	done
+	$(TARGET_STRIP) $(NETSNMP_TARGET_LIBS)
+
 	mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/agent
 	mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/library
 	cp $(NETSNMP_DIR)/agent/mibgroup/struct.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
 	cp $(NETSNMP_DIR)/agent/mibgroup/util_funcs.h $(TARGET_MAKE_PATH)/../include/net-snmp
 	cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_MAKE_PATH)/../include/net-snmp/library
 	cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
-	$(TARGET_STRIP) $@ $(NETSNMP_TARGET_LIBS)
 
 $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME): $(DL_DIR)/$(NETSNMP_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NETSNMP_PKG_SOURCE)
