@@ -94,7 +94,7 @@ $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION): $(DL_DIR)/$(NTFS_PKG_SOURCE) | $(PACKAGES
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NTFS_PKG_SOURCE)
 	@touch $@
 
-ntfs-package: #$(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
+ntfs-package: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE) ntfs-$(NTFS_VERSION)
 					
 $(NTFS_LIB_TARGET_BINARY): $(NTFS_LIB_STAGING_BINARY)
