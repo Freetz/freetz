@@ -81,8 +81,15 @@ $(FUSE_BINARY) $(FUSE_MOD_BINARY) $(FUSE_LIB_BINARY): $(FUSE_DIR)/.configured
 		all
 
 $(FUSE_LIB_STAGING_BINARY): $(FUSE_LIB_BINARY)
+	cp $(FUSE_DIR)/fuse.pc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
-		-C $(FUSE_DIR) \
+		-C $(FUSE_DIR)/lib \
+		ARCH="$(KERNEL_ARCH)" \
+		CROSS_COMPILE="$(KERNEL_CROSS)" \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
+	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
+		-C $(FUSE_DIR)/include \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -114,14 +121,16 @@ fuse-source: $(FUSE_DIR)/.unpacked $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
 
 fuse-clean:
 	-$(MAKE) -C $(FUSE_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse
 	rm -f $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h 
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc 
 
 fuse-dirclean:
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so.*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.a
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h 
 	rm -rf $(FUSE_DIR)
 	rm -rf $(PACKAGES_DIR)/$(FUSE_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)

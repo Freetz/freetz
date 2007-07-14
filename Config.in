@@ -261,7 +261,8 @@ config DS_KERNEL_REF
 
 config DS_KERNEL_LAYOUT
 	string "Kernel ref"		if DS_TYPE_CUSTOM
-	default "ohio"			if DS_TYPE_FON_5140 || \
+	default "ohio"			if DS_TYPE_2170 || \
+					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_FON_WLAN_7140 || \
 					   DS_TYPE_FON_WLAN_7141 || \
 					   DS_TYPE_FON_WLAN_7150 || \
@@ -269,8 +270,7 @@ config DS_KERNEL_LAYOUT
 					   DS_TYPE_SPEEDPORT_W501V || \
 					   DS_TYPE_SPEEDPORT_W701V || \
 					   DS_TYPE_SPEEDPORT_W900V
-	default "ar7"			if DS_TYPE_2170 || \
-					   DS_TYPE_FON || \
+	default "ar7"			if DS_TYPE_FON || \
 					   DS_TYPE_300IP_AS_FON || \
 					   DS_TYPE_FON_5050 || \
 					   DS_TYPE_FON_WLAN || \
