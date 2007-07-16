@@ -36,6 +36,7 @@ $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked
 	touch $@
 
 $(BINUTILS_DIR1)/binutils/objdump: $(BINUTILS_DIR1)/.configured
+	#$(MAKE) -C $(BINUTILS_DIR1) configure-host
 	$(MAKE) -C $(BINUTILS_DIR1) all
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/binutils/objdump
@@ -58,8 +59,12 @@ binutils-dependancies:
 binutils-source: $(DL_DIR)/$(BINUTILS_SOURCE)
 
 binutils-clean:
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)*
+	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
+	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
+	-$(MAKE) -C $(BINUTILS_DIR1) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) \
+		tooldir=/usr build_tooldir=/usr uninstall
 	-$(MAKE) -C $(BINUTILS_DIR1) clean
+			    
 
 binutils-dirclean:
 	rm -rf $(BINUTILS_DIR1)
