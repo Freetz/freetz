@@ -1,6 +1,6 @@
 RCAPID_VERSION:=0.1
 RCAPID_SOURCE:=rcapid.tgz
-RCAPID_SITE:=http://www.mtg.de/pdf
+RCAPID_SITE:=http://dsmod.magenbrot.net
 RCAPID_DIR:=$(SOURCE_DIR)/rcapid
 RCAPID_MAKE_DIR:=$(MAKE_DIR)/rcapid
 RCAPID_BINARY:=$(RCAPID_DIR)/rcapid
