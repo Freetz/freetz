@@ -333,7 +333,7 @@ config-clean-deps:
 	make oldconfig < /dev/null > /dev/null; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
-	diff -u0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
+	diff -U 0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
 	rm -f .config_tmp; \
 	}
 
