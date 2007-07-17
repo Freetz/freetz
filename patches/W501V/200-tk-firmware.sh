@@ -14,19 +14,20 @@ ln -sf all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 ln -sf all "${FILESYSTEM_MOD_DIR}/usr/www/avm"
 
 rm -rf "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW501V/tcom"
-"$TAR" -c -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7140" avm | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW501V"
+"$TAR" -c -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7141" avm | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW501V"
 ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW501V/tcom"
 
 echo1 "copying mailer"
 cp -a ${DIR}/.tk/original/filesystem/sbin/mailer "${FILESYSTEM_MOD_DIR}/sbin/"
 
-echo1 "copying igdd + required libs"
-cp -a ${DIR}/.tk/original/filesystem/lib/libavmupnp.so* "${FILESYSTEM_MOD_DIR}/lib/"
-cp -a ${DIR}/.tk/original/filesystem/lib/libmxml.so* "${FILESYSTEM_MOD_DIR}/lib/"
-cp -a ${DIR}/.tk/original/filesystem/sbin/igdd "${FILESYSTEM_MOD_DIR}/sbin/"
+# not working at the moment
+#echo1 "copying igdd + required libs"
+#cp -a ${DIR}/.tk/original/filesystem/lib/libavmupnp.so* "${FILESYSTEM_MOD_DIR}/lib/"
+#cp -a ${DIR}/.tk/original/filesystem/lib/libmxml.so* "${FILESYSTEM_MOD_DIR}/lib/"
+#cp -a ${DIR}/.tk/original/filesystem/sbin/igdd "${FILESYSTEM_MOD_DIR}/sbin/"
 
-echo1 "replacing multid"
-cp -a ${DIR}/.tk/original/filesystem/sbin/multid "${FILESYSTEM_MOD_DIR}/sbin/"
+#echo1 "replacing multid"
+#cp -a ${DIR}/.tk/original/filesystem/sbin/multid "${FILESYSTEM_MOD_DIR}/sbin/"
 
 echo1 "copying ar7login"
 cp -a ${DIR}/.tk/original/filesystem/sbin/ar7login "${FILESYSTEM_MOD_DIR}/sbin/"
