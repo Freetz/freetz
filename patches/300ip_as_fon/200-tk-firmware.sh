@@ -2,7 +2,7 @@
 ln -sf default.Fritz_Box_FON  "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_Eumex300IP"
 ln -sf default.Fritz_Box_FON/avm  "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_FON/tcom"
 cp ${FILESYSTEM_MOD_DIR}/etc/default.049/fx_lcr.default  ${FILESYSTEM_MOD_DIR}/etc/default.049/fx_lcr.tcom
-ln -sf all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
+ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 
 # to be sure: Add original HWRevision-files from Eumex to rc.init
 echo1  "adding HWRevision 78 to rc.init"
