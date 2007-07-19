@@ -581,7 +581,6 @@ else
 	HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www/all/html/de"
 fi
 
-
 if [ "$DO_MOD" -gt 0 ]; then
 	echo -e "\033[1mSTEP 2: MODIFY\033[0m"
 
@@ -744,7 +743,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 	ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_status"
 	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin" ] && \
 	ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_wol"
-
+	
+	# international version
+	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin" ] && \
+	ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin/dsmod_status"
+	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin" ] && \
+	ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin/dsmod_wol"
+	
 	for i in $oems
 	do
 		if [ "$(eval "echo \"\$DS_BRANDING_${i}\"")" != "y" ]; then
@@ -753,10 +758,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		rm -rf "${FILESYSTEM_MOD_DIR}/etc/default."*"/${i}"
 		oem_removed=1
 		else
-		[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}" ] && \
-		ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_status"
-		[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}" ] && \
-		ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_wol"
+		
+		# it seems that all oem dirs are symlinks, no extra directorys anymore?
+		#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
+		#ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_status"
+		#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
+		#ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_wol"
 
 		oem_list="$oem_list $i"
 		oem_kept=1

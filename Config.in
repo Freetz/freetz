@@ -108,22 +108,6 @@ choice
 
 endchoice
 
-config DS_AVM_VERSION_STRING
-	string
-	default "04.29"			if DS_AVM_VERSION_04_29
-	default "04.30"			if DS_AVM_VERSION_04_30
-	default "04.33"			if DS_AVM_VERSION_04_33
-	
-choice
-
-	prompt "Firmware language"
-	default DS_TYPE_LANG_DE
-
-	config DS_TYPE_LANG_DE
-		bool "de - deutsch"
-
-endchoice
-
 config DS_TYPE_LABOR
 	bool "Labor (EXPERIMENTAL)"
 	depends on DS_TYPE_FON_WLAN_7170
@@ -152,10 +136,49 @@ choice
     bool "WLAN"
     
 endchoice
-    
+
+config DS_AVM_VERSION_STRING
+	string
+	default "04.29"			if DS_AVM_VERSION_04_29
+	default "04.30"			if DS_AVM_VERSION_04_30
+	default "04.33"			if DS_AVM_VERSION_04_33
+	
+choice
+
+	prompt "Firmware language"
+	default DS_TYPE_LANG_DE
+
+	config DS_TYPE_LANG_DE
+		bool "de - deutsch"
+		
+#	config DS_TYPE_LANG_A_CH
+#		bool "a-ch - deutsch"
+	
+	config DS_TYPE_LANG_EN
+		bool "en - international"
+		depends on DS_TYPE_FON_WLAN_7140
+
+endchoice
+
 config DS_TYPE_LANG_STRING
 	string
 	default "de"			if DS_TYPE_LANG_DE
+	default "a-ch"			if DS_TYPE_LANG_A_CH
+	default "en"			if DS_TYPE_LANG_EN
+
+choice
+
+	prompt "Annex"
+	depends on DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN
+	default DS_TYPE_ANNEX_B
+	
+	config DS_TYPE_ANNEX_A
+		bool "A"
+
+	config DS_TYPE_ANNEX_B
+		bool "B"
+
+endchoice
 
 config DS_TYPE_STRING
 	string
@@ -553,7 +576,7 @@ config DS_BRANDING_avm
 		   DS_TYPE_FON_5140 || \
 		   DS_TYPE_FON_WLAN || \
 		   DS_TYPE_FON_WLAN_7050 || \
-		   DS_TYPE_FON_WLAN_7140 || \
+		   DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE || \
 		   DS_TYPE_FON_WLAN_7141 || \
 		   DS_TYPE_FON_WLAN_7150 || \
 		   DS_TYPE_FON_WLAN_7170 || \
@@ -574,7 +597,8 @@ config DS_BRANDING_avm
 
 config DS_BRANDING_avme
 	bool "AVM international"
-	depends on DS_TYPE_CUSTOM
+	depends on DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN || \
+		   DS_TYPE_CUSTOM
 	default y
 	help
 		AVM international branding
@@ -587,7 +611,7 @@ config DS_BRANDING_avme
 config DS_BRANDING_aol
 	bool "AOL"
 	depends on DS_TYPE_FON || \
-		   DS_TYPE_FON_WLAN_7140 || \
+		   DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE || \
 		   DS_TYPE_300IP_AS_FON || \
 		   DS_TYPE_CUSTOM
 	default y
@@ -802,7 +826,9 @@ config DS_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5140/firmware"				if DS_TYPE_FON_5140
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/deutsch"			if DS_TYPE_FON_WLAN
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7050/firmware"			if DS_TYPE_FON_WLAN_7050
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"		if DS_TYPE_FON_WLAN_7140
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"		if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/english/annex_a"	if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/english/annex_b"	if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"		if DS_TYPE_FON_WLAN_7141
 	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"				if DS_TYPE_FON_WLAN_7150
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"		if DS_TYPE_FON_WLAN_7170
@@ -825,7 +851,9 @@ config DS_DL_SOURCE
 	default "fritz.box_fon_wlan.08.04.34.image"				if DS_TYPE_FON_WLAN
 	default "fritz.box_fon_wlan_7050.14.04.33.image"			if DS_TYPE_FON_WLAN_7050
 	default "fritz.box_fon_wlan_7170.29.04.37.image"			if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
-	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"			if DS_TYPE_FON_WLAN_7140
+	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"			if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE
+	default "fritz.box_fon_wlan_7140.annexa.en.39.04.34.image"		if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "fritz.box_fon_wlan_7140.annexb.en.30.04.34.image"		if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "fritz.box_fon_wlan_7141.40.04.37.image"			if DS_TYPE_FON_WLAN_7141
 	default "fritz.fon_7150.annexb.38.04.32.image"				if DS_TYPE_FON_WLAN_7150
 	default "FRITZ.Box_Fon_WLAN_7170_LabDSL.AnnexB.29.04.99-7995.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_DSL
