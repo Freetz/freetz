@@ -28,6 +28,7 @@ $(LIBPNG_DIR)/.configured: $(LIBPNG_DIR)/.unpacked
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
+		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -57,7 +58,7 @@ $(LIBPNG_BINARY): $(LIBPNG_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBPNG_DIR)
 
 $(LIBPNG_STAGING_BINARY): $(LIBPNG_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH)$(MAKE) -C $(LIBPNG_DIR)\
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBPNG_DIR) \
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	    install
 

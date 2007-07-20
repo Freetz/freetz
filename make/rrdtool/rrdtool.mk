@@ -33,7 +33,7 @@ $(RRDTOOL_DIR)/.configured: $(RRDTOOL_DIR)/.unpacked
 			-I$(TARGET_MAKE_PATH)/../usr/include/freetype2 \
 			-I$(TARGET_MAKE_PATH)/../usr/include/libart-2.0" \
 		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		PKG_CONFIG_PATH="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig)" \
+		PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig)" \
 		ac_cv_func_setpgrp_void=yes \
 		rd_cv_ieee_works=yes \
 		./configure \
@@ -80,7 +80,7 @@ rrdtool: $(PACKAGES_DIR)/.$(RRDTOOL_PKG_NAME)
 rrdtool-package: $(PACKAGES_DIR)/.$(RRDTOOL_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(RRDTOOL_PKG_SOURCE) $(RRDTOOL_PKG_NAME)
 
-rrdtool-precompiled: uclibc libpng-precompiled freetype-precompiled \
+rrdtool-precompiled: uclibc libpng-precompiled freetype-precompiled libart-precompiled \
 			rrdtool $(RRDTOOL_TARGET_BINARY)
 
 rrdtool-source: $(RRDTOOL_DIR)/.unpacked $(PACKAGES_DIR)/.$(RRDTOOL_PKG_NAME)
