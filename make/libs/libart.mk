@@ -4,7 +4,7 @@ LIBART_SOURCE:=libart_lgpl-$(LIBART_VERSION).tar.bz2
 LIBART_SITE:=http://ftp.gnome.org/pub/gnome/sources/libart_lgpl/2.3/
 LIBART_MAKE_DIR:=$(MAKE_DIR)/libs
 LIBART_DIR:=$(SOURCE_DIR)/libart_lgpl-$(LIBART_VERSION)
-LIBART_BINARY:=$(LIBART_DIR)/lib/libart.so.$(LIBART_LIB_VERSION)
+LIBART_BINARY:=$(LIBART_DIR)/.libs/libart.so.$(LIBART_LIB_VERSION)
 LIBART_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libart_lgpl_2.so.$(LIBART_LIB_VERSION)
 LIBART_TARGET_DIR:=root/usr/lib
 LIBART_TARGET_BINARY:=$(LIBART_TARGET_DIR)/libart_lgpl_2.so.$(LIBART_LIB_VERSION)
@@ -15,13 +15,12 @@ $(DL_DIR)/$(LIBART_SOURCE): | $(DL_DIR)
 $(LIBART_DIR)/.unpacked: $(DL_DIR)/$(LIBART_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LIBART_SOURCE)
 	for i in $(LIBART_MAKE_DIR)/patches/*.libart.patch; do \
-		patch -d $(LIBART_DIR) -p0 < $$i; \
+		patch -d $(LIBART_DIR) -p1 < $$i; \
 	done
 	touch $@
 
 $(LIBART_DIR)/.configured: $(LIBART_DIR)/.unpacked
 	( cd $(LIBART_DIR); rm -f config.{cache,status}; \
-		automake; \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -51,12 +50,12 @@ $(LIBART_DIR)/.configured: $(LIBART_DIR)/.unpacked
 	touch $@
 
 $(LIBART_BINARY): $(LIBART_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
-		-C $(LIBART_DIR) $(TARGET_CONFIGURE_OPTS)
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBART_DIR) \
+		HOSTCC="$(HOSTCC)" \
+		all
 
 $(LIBART_STAGING_BINARY): $(LIBART_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
-		-C $(LIBART_DIR) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBART_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
