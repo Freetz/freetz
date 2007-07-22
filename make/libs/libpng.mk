@@ -51,6 +51,7 @@ $(LIBPNG_DIR)/.configured: $(LIBPNG_DIR)/.unpacked
 		$(DISABLE_LARGEFILE) \
 		--enable-shared \
 		--enable-static \
+		--with-zlib=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
 	);
 	touch $@
 
@@ -58,9 +59,12 @@ $(LIBPNG_BINARY): $(LIBPNG_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBPNG_DIR)
 
 $(LIBPNG_STAGING_BINARY): $(LIBPNG_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBPNG_DIR) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBPNG_DIR)\
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	    install
+	$(SED) -i -e 's,^[ILR]_opts=".\+",,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libpng12-config
+	$(SED) -i -e 's,-I$${includedir},,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpng12.pc
+	$(SED) -i -e 's,-L$${libdir},,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpng12.pc
 
 $(LIBPNG_TARGET_BINARY): $(LIBPNG_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng*.so* $(LIBPNG_TARGET_DIR)/
@@ -68,7 +72,7 @@ $(LIBPNG_TARGET_BINARY): $(LIBPNG_STAGING_BINARY)
 
 libpng: $(LIBPNG_STAGING_BINARY)
 
-libpng-precompiled: uclibc libpng $(LIBPNG_TARGET_BINARY)
+libpng-precompiled: uclibc zlib-precompiled libpng $(LIBPNG_TARGET_BINARY)
 
 libpng-source: $(LIBPNG_DIR)/.unpacked
 

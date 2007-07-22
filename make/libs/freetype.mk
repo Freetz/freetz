@@ -50,6 +50,7 @@ $(FREETYPE_DIR)/.configured: $(FREETYPE_DIR)/.unpacked
 		$(DISABLE_LARGEFILE) \
 		--enable-shared \
 		--enable-static \
+		--disable-rpath \
 	);
 	touch $@
 
@@ -60,6 +61,8 @@ $(FREETYPE_STAGING_BINARY): $(FREETYPE_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		-C $(FREETYPE_DIR) install
+	$(SED) -i -e 's,-I$${includedir}/freetype2,,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/freetype2.pc
+	$(SED) -i -e 's,-L$${libdir},,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/freetype2.pc
 
 $(FREETYPE_TARGET_BINARY): $(FREETYPE_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype*.so* $(FREETYPE_TARGET_DIR)/
@@ -67,7 +70,7 @@ $(FREETYPE_TARGET_BINARY): $(FREETYPE_STAGING_BINARY)
 
 freetype: $(FREETYPE_STAGING_BINARY)
 
-freetype-precompiled: uclibc freetype $(FREETYPE_TARGET_BINARY)
+freetype-precompiled: uclibc zlib-precompiled freetype $(FREETYPE_TARGET_BINARY)
 
 freetype-source: $(FREETYPE_DIR)/.unpacked
 
