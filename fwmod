@@ -1203,9 +1203,14 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "inconsistency comparing size of old and new kernel.image"
 	fi
 
+	# Last, but not least, include .config and addon/static.pkg into firmware
+	# image for further reference, e.g. user support
+	[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
+	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
+
 	modimage="${DS_TYPE_STRING}_${FIRMWAREVERSION}-${SUBVERSION}.${DS_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
 
-	# Pack firmare image (use old tar for compatibility)
+	# Pack firmware image (use old tar for compatibility)
 	echo "packing ${modimage}"
 	"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
 
