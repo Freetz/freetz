@@ -4,20 +4,23 @@ comment "BIG FAT WARNING: Never build a firmware with current settings!"
 choice
 
 	prompt "Target compiler"
-	default DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
 	depends on ! DS_DOWNLOAD_TOOLCHAIN
 
 	config DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 		bool "gcc-4.1.0-uClibc-0.9.28"
 
 	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-		bool "gcc-4.1.1-uClibc-0.9.28"	
+		bool "gcc-4.1.1-uClibc-0.9.28"
 
 	config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-		bool "gcc-4.1.2-uClibc-0.9.28"	
+		bool "gcc-4.1.2-uClibc-0.9.28"
 
 	config DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
-		bool "gcc-4.2.0-uClibc-0.9.28"			
+		bool "gcc-4.2.0-uClibc-0.9.28"
+
+	config DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+		bool "gcc-4.2.1-uClibc-0.9.28"
 	
 endchoice
 
@@ -27,6 +30,7 @@ config DS_TARGET_GCC_VERSION
 	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
 	default "4.2.0"		if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "4.2.1"		if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
 	default "4.2.0"		if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_TARGET_UCLIBC_VERSION
@@ -35,6 +39,7 @@ config DS_TARGET_UCLIBC_VERSION
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
 	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
 	default "0.9.28"	if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_TARGET_BINUTILS_VERSION
@@ -43,6 +48,7 @@ config DS_TARGET_BINUTILS_VERSION
 	default "2.17"			if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 	default "2.17"			if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
 	default "2.17.50.0.16"	if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "2.17.50.0.17"	if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
 	default "2.17.50.0.16"	if DS_DOWNLOAD_TOOLCHAIN
 
 choice
