@@ -124,7 +124,8 @@ samba-precompiled: uclibc samba $(SAMBA_TARGET_SMBD_BINARY) $(SAMBA_TARGET_NMBD_
 samba-source: $(SAMBA_DIR)/.unpacked $(PACKAGES_DIR)/.samba-$(SAMBA_VERSION)
 
 samba-clean:
-	-$(MAKE) -C $(SAMBA_DIR) clean
+	-$(MAKE) -C $(SAMBA_DIR)/source clean
+	rm -rf $(SAMBA_DIR)/source/bin
 	rm -f $(PACKAGES_BUILD_DIR)/$(SAMBA_PKG_SOURCE)
 
 samba-dirclean:
