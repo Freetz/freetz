@@ -26,10 +26,68 @@
                          limiters {
                                  name = "default-out";
                                  bps_limit {
-@@ -511,6 +511,18 @@
+@@ -470,28 +470,28 @@
+                                 shapeOutgoingOnIncomingCounters = no;
+                         }
+                         out_rules {
+-                                name = "fon-rtp";
+-                                filter = "tc:rtp,sip";
+-                                priority = 3;
+-                                limiters = "default-out";
+-                        } {
+                                 name = "download-tcp-ack";
+-                                filter = "tc:tcp_ack";
++                                filter = "tcp and len <= 64";
+                                 priority = 2;
+                                 limiters = "default-out";
+                         } {
+                                 name = "dns";
+-                                filter = "tc:dns,sipdns,ntpdns,tr069dns";
++                                filter = "udp port 53";
+                                 priority = 1;
+                                 limiters = "default-out";
+                         } {
++                                name = "fon-rtp";
++                                filter = "udp[8] = 0x80 or udp port 5060";
++                                priority = 3;
++                                limiters = "default-out";
++                        } {
+                                 name = "http-requests";
+-                                filter = "tc:http_req,tr069";
++                                filter = "(tcp dst port 80 or dst port 8080 or dst port 3128) and (len <= 800)";
+                                 priority = 1;
+                                 limiters = "default-out";
+                         } {
+                                 name = "pri-out";
+-                                filter = "tc:icmp";
++                                filter = "icmp";
+                                 priority = 1;
+                                 limiters = "default-out";
+                         } {
+@@ -511,26 +511,16 @@
          }
  }
  
+-qos {
+-        always_set_tos = no;
+-        rules {
+-           tcclass = "sip";
+-           rules = "udp.dport 5060";
+-        } {
+-           tcclass = "dns";
+-           rules = "udp.dport 53";
+-        } {
+-           tcclass = "http_req";
+-           rules = "tcp.dport 80 ip.len <= 800", 
+-                   "tcp.dport 8080 ip.len <= 800", 
+-                   "tcp.dport 3128 ip.len <= 800";
+-        } {
+-           tcclass = "tcp_ack";
+-           rules = "ip.proto == tcp ip.len <= 64";
+-        } {
+-           tcclass = "icmp";
+-           rules = "ip.proto == icmp";
+-        }
 +webui {
 +    password = "0000";
 +}
@@ -40,8 +98,6 @@
 +
 +mrouter {
 +    igmp_prio = 32;
-+}
-+
- qos {
-         always_set_tos = no;
-         rules {
+ }
+ 
+ // EOF
