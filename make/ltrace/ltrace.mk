@@ -75,7 +75,7 @@ $(LTRACE_DIR)/.configured: $(LTRACE_DIR)/configure
 	touch $@
 
 $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION): $(DL_DIR)/$(LTRACE_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LTRACE_PKG_SOURCE)
+	@tar -C $(PACKAGES_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LTRACE_PKG_SOURCE)
 	@touch $@
 
 $(LTRACE_CONF): $(LTRACE_DIR)/.unpacked
