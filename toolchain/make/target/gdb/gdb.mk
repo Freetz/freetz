@@ -34,6 +34,10 @@ $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE)
 ######################################################################
 
 GDB_TARGET_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdb-$(GDB_VERSION)-target
+GDB_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils
+
+$(GDB_STAGING_DIR):
+	mkdir -p $(GDB_STAGING_DIR)
 
 GDB_TARGET_CONFIGURE_VARS:= \
 	ac_cv_type_uintptr_t=yes \
@@ -58,7 +62,7 @@ $(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.unpacked
 		--build=$(GNU_HOST_NAME) \
 		--host=$(REAL_GNU_TARGET_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
-		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils \
+		--prefix=$(GDB_STAGING_DIR) \
 		$(DISABLE_NLS) \
 		--without-uiout $(DISABLE_GDBMI) \
 		--disable-tui --disable-gdbtk --without-x \
@@ -75,10 +79,10 @@ $(GDB_TARGET_DIR)/gdb/gdb: $(GDB_TARGET_DIR)/.configured
 	    $(MAKE) CC=$(TARGET_CC) LDFLAGS="" \
 	    MT_CFLAGS="$(TARGET_CFLAGS)" -C $(GDB_TARGET_DIR)
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/gdb: $(GDB_TARGET_DIR)/gdb/gdb
+$(GDB_STAGING_DIR)/gdb: $(GDB_TARGET_DIR)/gdb/gdb | $(GDB_STAGING_DIR)
 	$(INSTALL_BINARY_STRIP)
 	
-gdb_target: ncurses $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/bin/gdb
+gdb_target: ncurses $(GDB_STAGING_DIR)/gdb
 
 gdb_target-source: $(DL_DIR)/$(GDB_SOURCE)
 
@@ -117,11 +121,10 @@ $(GDB_SERVER_DIR)/gdbserver: $(GDB_SERVER_DIR)/.configured
 	$(MAKE) CC=$(TARGET_CC) MT_CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(GDB_SERVER_DIR)
 	
-$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/gdbserver: $(GDB_SERVER_DIR)/gdbserver
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils
+$(GDB_STAGING_DIR)/gdbserver: $(GDB_SERVER_DIR)/gdbserver | $(GDB_STAGING_DIR)
 	$(INSTALL_BINARY_STRIP)
 
-gdbserver: $(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils/gdbserver
+gdbserver: $(GDB_STAGING_DIR)/gdbserver
 
 gdbserver-clean:
 	$(MAKE) -C $(GDB_SERVER_DIR) clean
