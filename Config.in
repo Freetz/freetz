@@ -12,6 +12,10 @@ config DS_AVM_VERSION_04_30
 		bool
 config DS_AVM_VERSION_04_33
 		bool
+config DS_AVM_VERSION_r4884
+		bool
+config DS_AVM_VERSION_r7203
+		bool
 
 choice
 
@@ -88,17 +92,17 @@ choice
 		bool "WLAN 3170"
 
 	config DS_TYPE_SPEEDPORT_W501V
-		select DS_AVM_VERSION_04_33
+		select DS_AVM_VERSION_r7203
 		select DS_BRANDING_tcom
 		bool "Speedport W501V"
 
 	config DS_TYPE_SPEEDPORT_W701V
-		select DS_AVM_VERSION_04_29
+		select DS_AVM_VERSION_r4884
 		select DS_BRANDING_tcom
 		bool "Speedport W701V"
 
 	config DS_TYPE_SPEEDPORT_W900V
-		select DS_AVM_VERSION_04_29
+		select DS_AVM_VERSION_r4884
 		select DS_BRANDING_tcom
 		bool "Speedport W900V"
 
@@ -142,6 +146,8 @@ config DS_AVM_VERSION_STRING
 	default "04.29"			if DS_AVM_VERSION_04_29
 	default "04.30"			if DS_AVM_VERSION_04_30
 	default "04.33"			if DS_AVM_VERSION_04_33
+	default "r4884"			if DS_AVM_VERSION_r4884
+	default "r7203"			if DS_AVM_VERSION_r7203
 	
 choice
 
@@ -233,7 +239,7 @@ config DS_REPLACE_BUSYBOX
 
 config DS_REPLACE_KERNEL
 	bool "Replace kernel"
-	depends on ! (DS_TYPE_LABOR || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V)
+	depends on ! DS_TYPE_LABOR
 	default n
 	help
 	    Replace AVM kernel with self-built kernel.
