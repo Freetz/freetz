@@ -54,13 +54,12 @@ $(JPEG_DIR)/.configured: $(JPEG_DIR)/.unpacked
 	touch $@
 
 $(JPEG_BINARY): $(JPEG_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(JPEG_DIR) \
-		$(TARGET_CONFIGURE_OPTS) all
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	   $(MAKE) -C $(JPEG_DIR)  all
 
 $(JPEG_STAGING_BINARY): $(JPEG_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(JPEG_DIR) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	   $(MAKE) -C $(JPEG_DIR) \
 		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		install-headers install-lib

@@ -124,13 +124,10 @@ fuse-clean:
 	rm -f $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc 
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse* \
+        $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
 
 fuse-dirclean:
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h 
 	rm -rf $(FUSE_DIR)
 	rm -rf $(PACKAGES_DIR)/$(FUSE_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)

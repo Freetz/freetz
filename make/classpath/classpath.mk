@@ -50,7 +50,8 @@ $(CLASSPATH_DIR)/.configured: $(CLASSPATH_DIR)/.unpacked
 	touch $@
 
 $(CLASSPATH_BINARY) $(CLASSPATH_LIB_BINARY): $(CLASSPATH_DIR)/.configured
-	$(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(CLASSPATH_DIR)
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	   $(MAKE) -C $(CLASSPATH_DIR)
 	cp $(CLASSPATH_MAKE_DIR)/mini.classlist $(CLASSPATH_DIR)/lib;
 	( cd $(CLASSPATH_DIR)/lib; fastjar -Mcf mini.jar -@ < mini.classlist );
 
