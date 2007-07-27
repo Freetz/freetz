@@ -14,9 +14,9 @@ $(DL_DIR)/$(LIBPNG_SOURCE): | $(DL_DIR)
 
 $(LIBPNG_DIR)/.unpacked: $(DL_DIR)/$(LIBPNG_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBPNG_SOURCE)
-#	for i in $(LIBPNG_MAKE_DIR)/patches/*.libpng.patch; do \
-#		patch -d $(LIBPNG_DIR) -p0 < $$i; \
-#	done
+	for i in $(LIBPNG_MAKE_DIR)/patches/*.libpng.patch; do \
+		patch -d $(LIBPNG_DIR) -p1 < $$i; \
+	done
 	touch $@
 
 $(LIBPNG_DIR)/.configured: $(LIBPNG_DIR)/.unpacked
@@ -28,7 +28,12 @@ $(LIBPNG_DIR)/.configured: $(LIBPNG_DIR)/.unpacked
 		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
+		ac_cv_func_memcmp_working=yes \
+		ac_cv_have_decl_malloc=yes \
+		gl_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_calloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -62,9 +67,13 @@ $(LIBPNG_STAGING_BINARY): $(LIBPNG_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBPNG_DIR)\
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	    install
-	$(SED) -i -e 's,^[ILR]_opts=".\+",,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libpng12-config
-	$(SED) -i -e 's,-I$${includedir},,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpng12.pc
-	$(SED) -i -e 's,-L$${libdir},,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpng12.pc
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libpng12.la
+	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)\',g" \
+		-e "s,^exec_prefix=.*,exec_prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/usr\',g" \
+		-e "s,^includedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include/libpng12\',g" \
+		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libpng12-config
+
 
 $(LIBPNG_TARGET_BINARY): $(LIBPNG_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng*.so* $(LIBPNG_TARGET_DIR)/

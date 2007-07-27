@@ -14,9 +14,9 @@ $(DL_DIR)/$(FREETYPE_SOURCE): | $(DL_DIR)
 
 $(FREETYPE_DIR)/.unpacked: $(DL_DIR)/$(FREETYPE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(FREETYPE_SOURCE)
-#	for i in $(FREETYPE_MAKE_DIR)/patches/*.freetype.patch; do \
-#		patch -d $(FREETYPE_DIR) -p0 < $$i; \
-#	done
+	for i in $(FREETYPE_MAKE_DIR)/patches/*.freetype.patch; do \
+		patch -d $(FREETYPE_DIR) -p1 < $$i; \
+	done
 	touch $@
 
 $(FREETYPE_DIR)/.configured: $(FREETYPE_DIR)/.unpacked
@@ -61,9 +61,13 @@ $(FREETYPE_STAGING_BINARY): $(FREETYPE_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		-C $(FREETYPE_DIR) install
-	$(SED) -i -e 's,-I$${includedir}/freetype2,,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/freetype2.pc
-	$(SED) -i -e 's,-L$${libdir},,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/freetype2.pc
-
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfreetype.la
+	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)\',g" \
+		-e "s,^exec_prefix=.*,exec_prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/usr\',g" \
+		-e "s,^includedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
+		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/freetype-config
+					
 $(FREETYPE_TARGET_BINARY): $(FREETYPE_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype*.so* $(FREETYPE_TARGET_DIR)/
 	$(TARGET_STRIP) $@
