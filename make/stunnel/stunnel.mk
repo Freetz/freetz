@@ -73,7 +73,7 @@ stunnel: $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME)
 stunnel-package: $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(STUNNEL_PKG_SOURCE) $(STUNNEL_PKG_NAME)
 
-stunnel-precompiled: uclibc openssl-precompiled  stunnel $(STUNNEL_TARGET_BINARY)
+stunnel-precompiled: uclibc openssl-precompiled stunnel $(STUNNEL_TARGET_BINARY)
 
 stunnel-source: $(STUNNEL_DIR)/.unpacked $(PACKAGES_DIR)/.$(STUNNEL_PKG_NAME)
 
