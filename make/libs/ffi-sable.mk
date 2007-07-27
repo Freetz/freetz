@@ -1,7 +1,7 @@
 FFI_SABLE_VERSION:=3325
 FFI_SABLE_LIB_VERSION:=4.0.1
 FFI_SABLE_SOURCE:=libffi-sable-$(FFI_SABLE_VERSION).tar.gz
-FFI_SABLE_SITE:=http://ftp.iasi.roedu.net/mirrors/openwrt.org/sources
+FFI_SABLE_SITE:=http://downloads.openwrt.org/sources
 FFI_SABLE_MAKE_DIR:=$(MAKE_DIR)/libs
 FFI_SABLE_DIR:=$(SOURCE_DIR)/libffi-sable-$(FFI_SABLE_VERSION)
 FFI_SABLE_BINARY:=$(FFI_SABLE_DIR)/.libs/libffi.so.$(FFI_SABLE_LIB_VERSION)
