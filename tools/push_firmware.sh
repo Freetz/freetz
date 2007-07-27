@@ -11,11 +11,13 @@
 # Cygwin users note:
 #   1. There is NO guarantee whatsoever that this will work on Cygwin, even
 #      though it does on my box (kriegaex). Provided as is.
-#   2. For FTP you need 'ncftpput' from the 'ncftp' cygwin package.
+#   2. For FTP you need the 'ncftp' cygwin package (category 'net').
 #   3. You need the 'ping' command from Windows (tested on XP), NOT from the
 #      'ping' cygwin package (please uninstall or change path so Windows
 #      version is found first), because the cygwin version has no timeout
 #      parameter as of today (2007-07-11).
+#   4. For 'hexdump' you need the 'util-linux' cygwin package (category
+#      'utils').
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
