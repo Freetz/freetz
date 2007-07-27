@@ -109,9 +109,9 @@ ntfs-source: $(NTFS_DIR)/.unpacked $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 
 ntfs-clean:
 	-$(MAKE) -C $(NTFS_DIR) clean
-    rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so.*
-    rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.a
-    rm -f $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE)
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so.*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.a
+	rm -f $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE)
 
 ntfs-dirclean:
 	rm -rf $(NTFS_DIR)
