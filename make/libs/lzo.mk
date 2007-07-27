@@ -49,14 +49,14 @@ $(LZO_DIR)/.configured: $(LZO_DIR)/.unpacked
 
 $(LZO_BINARY): $(LZO_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	   $(MAKE) -C $(LZO_DIR) \
+	   $(MAKE) -C $(LZO_DIR)
 
 
 $(LZO_STAGING_BINARY): $(LZO_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(LZO_DIR) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		install
+	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+	    install
 
 $(LZO_TARGET_BINARY): $(LZO_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2*.so* $(LZO_TARGET_DIR)/

@@ -57,13 +57,13 @@ $(USB_DIR)/.configured: $(USB_DIR)/.unpacked
 
 $(USB_BINARY): $(USB_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-        $(MAKE) -C $(USB_DIR) all
+	$(MAKE) -C $(USB_DIR) all
 
 $(USB_STAGING_BINARY): $(USB_BINARY)
-    PATH=$(TARGET_TOOLCHAIN_PATH) \
-        $(MAKE) -C $(USB_DIR) \
-        DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		install
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	    $(MAKE) -C $(USB_DIR) \
+	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+	    install
 
 $(USB_TARGET_BINARY): $(USB_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so* $(USB_TARGET_DIR)/
