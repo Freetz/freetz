@@ -69,6 +69,7 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked
 		--disable-__cxa_atexit \
 		--enable-target-optspace \
 		--with-gnu-ld \
+		--disable-libmudflap \
 		$(DISABLE_NLS) \
 		$(GCC_EXTRA_CONFIG_OPTIONS) \
 	);
@@ -114,6 +115,7 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked
 		--disable-__cxa_atexit \
 		--enable-target-optspace \
 		--with-gnu-ld \
+		--disable-libmudflap \
 		$(GCC_SHARED_LIBGCC) \
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
