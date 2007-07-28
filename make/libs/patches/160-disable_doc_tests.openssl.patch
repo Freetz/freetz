@@ -1,15 +1,16 @@
---- Makefile.orig	2007-02-23 13:44:42.000000000 +0100
-+++ Makefile	2007-07-28 16:58:33.000000000 +0200
-@@ -106,7 +106,7 @@
- ZLIB_INCLUDE=
- LIBZLIB=
+diff -urN Makefile Makefile
+--- Makefile	2005-10-11 12:21:48.000000000 +0200
++++ Makefile	2006-03-29 15:23:28.107586680 +0200
+@@ -102,7 +102,7 @@
+ KRB5_INCLUDES=
+ LIBKRB5=
  
 -DIRS=   crypto ssl engines apps test tools
 +DIRS=   crypto ssl engines apps tools
  SHLIBDIRS= crypto ssl
  
  # dirs in crypto to build
-@@ -123,7 +123,7 @@
+@@ -119,7 +119,7 @@
  
  # tests to perform.  "alltests" is a special word indicating that all tests
  # should be performed.
@@ -18,7 +19,7 @@
  
  MAKEFILE= Makefile
  
-@@ -135,7 +135,7 @@
+@@ -131,7 +131,7 @@
  
  TOP=    .
  ONEDIRS=out tmp
@@ -27,7 +28,7 @@
  WDIRS=  windows
  LIBS=   libcrypto.a libssl.a
  SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
-@@ -225,7 +225,7 @@
+@@ -204,7 +204,7 @@
  	@[ -n "$(THIS)" ] && $(CLEARENV) && $(MAKE) $(THIS) -e $(BUILDENV)
  
  sub_all: build_all
@@ -36,7 +37,7 @@
  
  build_libs: build_crypto build_ssl build_engines
  
-@@ -475,7 +475,7 @@
+@@ -454,7 +454,7 @@
  dist_pem_h:
  	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
  
@@ -45,9 +46,10 @@
  
  install_sw:
  	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
---- Makefile.org.orig	2007-07-28 16:58:33.000000000 +0200
-+++ Makefile.org	2007-07-28 16:58:33.000000000 +0200
-@@ -121,7 +121,7 @@
+diff -urN Makefile.org Makefile.org
+--- Makefile.org	2006-03-29 14:59:41.941396896 +0200
++++ Makefile.org	2006-03-29 15:29:46.126119128 +0200
+@@ -117,7 +117,7 @@
  
  # tests to perform.  "alltests" is a special word indicating that all tests
  # should be performed.
@@ -56,7 +58,7 @@
  
  MAKEFILE= Makefile
  
-@@ -133,7 +133,7 @@
+@@ -129,7 +129,7 @@
  
  TOP=    .
  ONEDIRS=out tmp
@@ -65,7 +67,7 @@
  WDIRS=  windows
  LIBS=   libcrypto.a libssl.a
  SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
-@@ -223,7 +223,7 @@
+@@ -202,7 +202,7 @@
  	@[ -n "$(THIS)" ] && $(CLEARENV) && $(MAKE) $(THIS) -e $(BUILDENV)
  
  sub_all: build_all
@@ -74,16 +76,16 @@
  
  build_libs: build_crypto build_ssl build_engines
  
-@@ -240,7 +240,7 @@
+@@ -219,7 +219,7 @@
  build_tools:
- 	@dir=tools; target=all; $(BUILD_ONE_CMD)
+ 	@dir=tools; target=all; $(BUILD_CMD)
  
 -all_testapps: build_libs build_testapps
 +all_testapps: build_libs
  build_testapps:
- 	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
+ 	@dir=crypto; target=testapps; $(BUILD_CMD)
  
-@@ -473,7 +473,7 @@
+@@ -452,7 +452,7 @@
  dist_pem_h:
  	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
  

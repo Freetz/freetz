@@ -1,7 +1,9 @@
---- libstdc++-v3/src/Makefile.am.orig	2006-07-28 06:57:34.000000000 +0200
-+++ libstdc++-v3/src/Makefile.am	2007-07-28 16:55:01.000000000 +0200
-@@ -257,6 +257,12 @@
- 	  $(OPT_LDFLAGS) $(SECTION_LDFLAGS) $(AM_CXXFLAGS) $(LTLDFLAGS) -o $@
+# DP: Build and install libstdc++_pic.a library.
+
+--- gcc/libstdc++-v3/src/Makefile.am
++++ gcc/libstdc++-v3/src/Makefile.am
+@@ -214,6 +214,12 @@
+ 	  $(OPT_LDFLAGS) $(SECTION_LDFLAGS) $(AM_CXXFLAGS) $(LDFLAGS) -o $@
  
  
 +install-exec-local:
@@ -13,9 +15,9 @@
  # Added bits to build debug library.
  if GLIBCXX_BUILD_DEBUG
  all-local: build_debug
---- libstdc++-v3/src/Makefile.in.orig	2006-10-16 21:08:22.000000000 +0200
-+++ libstdc++-v3/src/Makefile.in	2007-07-28 16:55:01.000000000 +0200
-@@ -657,7 +657,7 @@
+--- gcc/libstdc++-v3/src/Makefile.in
++++ gcc/libstdc++-v3/src/Makefile.in
+@@ -627,7 +627,7 @@
  
  install-data-am: install-data-local
  
@@ -24,7 +26,7 @@
  
  install-info: install-info-am
  
-@@ -690,6 +690,7 @@
+@@ -660,6 +660,7 @@
  	distclean-libtool distclean-tags distdir dvi dvi-am html \
  	html-am info info-am install install-am install-data \
  	install-data-am install-data-local install-exec \
@@ -32,7 +34,7 @@
  	install-exec-am install-info install-info-am install-man \
  	install-strip install-toolexeclibLTLIBRARIES installcheck \
  	installcheck-am installdirs maintainer-clean \
-@@ -799,6 +800,13 @@
+@@ -743,6 +743,13 @@
  install_debug:
  	(cd ${debugdir} && $(MAKE) \
  	toolexeclibdir=$(glibcxx_toolexeclibdir)/debug install)

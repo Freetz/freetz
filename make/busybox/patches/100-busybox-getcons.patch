@@ -1,5 +1,6 @@
---- AUTHORS.orig	2007-05-20 18:58:12.000000000 +0200
-+++ AUTHORS	2007-07-28 16:55:16.000000000 +0200
+diff -burN AUTHORS AUTHORS
+--- AUTHORS	2007-03-18 17:59:38.000000000 +0100
++++ AUTHORS	2007-05-28 15:39:44.000000000 +0200
 @@ -27,7 +27,7 @@
      ftpput, ftpget
  
@@ -9,8 +10,9 @@
  
  Jim Bauer <jfbauer@nfr.com>
      modprobe shell dependency
---- console-tools/Config.in.orig	2007-05-20 18:55:25.000000000 +0200
-+++ console-tools/Config.in	2007-07-28 16:55:16.000000000 +0200
+diff -burN console-tools/Config.in console-tools/Config.in
+--- console-tools/Config.in	2007-03-18 17:59:28.000000000 +0100
++++ console-tools/Config.in	2007-05-28 15:44:28.000000000 +0200
 @@ -31,6 +31,13 @@
  	  This program dumps the kernel's keyboard translation table to
  	  stdout, in binary format. You can then use loadkmap to load it.
@@ -25,8 +27,9 @@
  config LOADFONT
  	bool "loadfont"
  	default n
---- console-tools/getcons.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ console-tools/getcons.c	2007-07-28 16:55:16.000000000 +0200
+diff -burN console-tools/getcons.c console-tools/getcons.c
+--- console-tools/getcons.c	1970-01-01 01:00:00.000000000 +0100
++++ console-tools/getcons.c	2007-05-28 16:21:14.000000000 +0200
 @@ -0,0 +1,57 @@
 +/* vi: set sw=4 ts=4: */
 +/*
@@ -85,8 +88,9 @@
 +	}
 +	return EXIT_SUCCESS;
 +}
---- console-tools/Kbuild.orig	2007-05-20 18:55:25.000000000 +0200
-+++ console-tools/Kbuild	2007-07-28 16:55:16.000000000 +0200
+diff -burN console-tools/Kbuild console-tools/Kbuild
+--- console-tools/Kbuild	2007-03-18 17:59:28.000000000 +0100
++++ console-tools/Kbuild	2007-05-28 15:43:59.000000000 +0200
 @@ -9,6 +9,7 @@
  lib-$(CONFIG_CLEAR)		+= clear.o
  lib-$(CONFIG_DEALLOCVT)		+= deallocvt.o
@@ -95,8 +99,9 @@
  lib-$(CONFIG_SETCONSOLE)	+= setconsole.o
  lib-$(CONFIG_LOADFONT)		+= loadfont.o
  lib-$(CONFIG_LOADKMAP)		+= loadkmap.o
---- include/applets.h.orig	2007-05-20 18:57:20.000000000 +0200
-+++ include/applets.h	2007-07-28 16:55:16.000000000 +0200
+diff -burN include/applets.h include/applets.h
+--- include/applets.h	2007-03-18 17:59:34.000000000 +0100
++++ include/applets.h	2007-05-28 16:02:56.000000000 +0200
 @@ -135,6 +135,7 @@
  USE_FTPGET(APPLET_ODDNAME(ftpget, ftpgetput, _BB_DIR_USR_BIN, _BB_SUID_NEVER,ftpget))
  USE_FTPPUT(APPLET_ODDNAME(ftpput, ftpgetput, _BB_DIR_USR_BIN, _BB_SUID_NEVER,ftpput))
@@ -105,11 +110,12 @@
  USE_GETENFORCE(APPLET(getenforce, _BB_DIR_USR_SBIN, _BB_SUID_NEVER))
  USE_GETOPT(APPLET(getopt, _BB_DIR_BIN, _BB_SUID_NEVER))
  USE_GETSEBOOL(APPLET(getsebool, _BB_DIR_USR_SBIN, _BB_SUID_NEVER))
---- include/usage.h.orig	2007-05-20 18:57:20.000000000 +0200
-+++ include/usage.h	2007-07-28 16:55:16.000000000 +0200
-@@ -3685,4 +3685,11 @@
-        "	-r 169.254.x.x	Request this address first\n" \
-        "	-v		Verbose"
+diff -burN include/usage.h include/usage.h
+--- include/usage.h	2007-03-18 17:59:34.000000000 +0100
++++ include/usage.h	2007-05-28 15:47:00.000000000 +0200
+@@ -3577,4 +3577,11 @@
+        "	-r 169.254.x.x  request this address first\n" \
+        "	-v              verbose"
  
 +#define getcons_trivial_usage \
 +       "[-r|--reset] [DEVICE]"

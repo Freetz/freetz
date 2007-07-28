@@ -1,6 +1,6 @@
---- ltmain.sh.orig	2006-03-31 23:57:53.000000000 +0200
-+++ ltmain.sh	2007-07-28 16:58:56.000000000 +0200
-@@ -321,8 +321,9 @@
+--- libpng-1.2.12/ltmain.sh.orig	2006-06-05 09:12:42.000000000 -0600
++++ libpng-1.2.12/ltmain.sh	2007-01-13 14:39:14.000000000 -0700
+@@ -322,8 +322,9 @@
  	# line option must be used.
  	if test -z "$tagname"; then
  	  $echo "$modename: unable to infer tagged configuration"
@@ -12,7 +12,7 @@
  #        else
  #          $echo "$modename: using $tagname tagged configuration"
  	fi
-@@ -2452,8 +2453,14 @@
+@@ -2453,8 +2454,14 @@
  	    absdir="$abs_ladir"
  	    libdir="$abs_ladir"
  	  else
@@ -29,7 +29,7 @@
  	  fi
  	  test "X$hardcode_automatic" = Xyes && avoidtemprpath=yes
  	else
-@@ -2934,6 +2941,16 @@
+@@ -2935,6 +2942,16 @@
  		esac
  		if grep "^installed=no" $deplib > /dev/null; then
  		  path="$absdir/$objdir"
@@ -46,7 +46,7 @@
  		else
  		  eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
  		  if test -z "$libdir"; then
-@@ -5658,6 +5675,10 @@
+@@ -5659,6 +5676,10 @@
  	    # Replace all uninstalled libtool libraries with the installed ones
  	    newdependency_libs=
  	    for deplib in $dependency_libs; do
@@ -57,7 +57,7 @@
  	      case $deplib in
  	      *.la)
  		name=`$echo "X$deplib" | $Xsed -e 's%^.*/%%'`
-@@ -6027,10 +6048,13 @@
+@@ -6028,10 +6049,13 @@
  	  # At present, this check doesn't affect windows .dll's that
  	  # are installed into $libdir/../bin (currently, that works fine)
  	  # but it's something to keep an eye on.

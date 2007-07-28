@@ -1,5 +1,6 @@
---- Makefile.in.orig	2006-09-25 20:06:00.000000000 +0200
-+++ Makefile.in	2007-07-28 16:58:54.000000000 +0200
+diff -urN libpcap-0.9.4/Makefile.in libpcap-0.9.4/Makefile.in
+--- libpcap-0.9.4/Makefile.in	2003-12-15 02:35:03.000000000 +0100
++++ libpcap-0.9.4/Makefile.in	2006-02-05 16:56:18.000000000 +0100
 @@ -37,6 +37,15 @@
  srcdir = @srcdir@
  VPATH = @srcdir@
@@ -16,7 +17,7 @@
  #
  # You shouldn't need to edit anything below.
  #
-@@ -51,6 +60,7 @@
+@@ -50,6 +59,7 @@
  
  # Standard CFLAGS
  CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
@@ -24,7 +25,7 @@
  
  INSTALL = @INSTALL@
  INSTALL_PROGRAM = @INSTALL_PROGRAM@
-@@ -71,7 +81,12 @@
+@@ -70,7 +80,12 @@
  .c.o:
  	@rm -f $@
  	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
@@ -37,7 +38,7 @@
  PSRC =	pcap-@V_PCAP@.c
  FSRC =  fad-@V_FINDALLDEVS@.c
  SSRC =  @SSRC@
-@@ -85,6 +100,7 @@
+@@ -84,6 +99,7 @@
  # We would like to say "OBJ = $(SRC:.c=.o)" but Ultrix's make cannot
  # hack the extra indirection
  OBJ =	$(PSRC:.c=.o) $(FSRC:.c=.o) $(CSRC:.c=.o) $(SSRC:.c=.o) $(GENSRC:.c=.o) $(LIBOBJS)
@@ -45,7 +46,7 @@
  HDR =	pcap.h pcap-int.h pcap-namedb.h pcap-nit.h pcap-pf.h \
  	ethertype.h gencode.h gnuc.h
  GENHDR = \
-@@ -96,15 +112,23 @@
+@@ -95,15 +111,23 @@
  TAGFILES = \
  	$(SRC) $(HDR) $(TAGHDR)
  
@@ -71,7 +72,7 @@
  shared: libpcap.$(DYEXT)
  
  #
-@@ -130,6 +154,10 @@
+@@ -129,6 +153,10 @@
  scanner.o: scanner.c tokdefs.h
  	$(CC) $(CFLAGS) -c scanner.c
  
@@ -82,7 +83,7 @@
  pcap.o: version.h
  
  tokdefs.h: grammar.c
-@@ -143,9 +171,16 @@
+@@ -142,9 +170,16 @@
  	@rm -f $@
  	$(CC) $(CFLAGS) -Dyylval=pcap_lval -c grammar.c
  
@@ -99,7 +100,7 @@
  snprintf.o: $(srcdir)/missing/snprintf.c
  	$(CC) $(CFLAGS) -o $@ -c $(srcdir)/missing/snprintf.c
  
-@@ -171,10 +206,17 @@
+@@ -170,10 +205,17 @@
  bpf_filter.o: bpf_filter.c
  	$(CC) $(CFLAGS) -c bpf_filter.c
  

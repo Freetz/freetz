@@ -1,6 +1,6 @@
---- options.h.orig	2007-02-22 16:51:35.000000000 +0100
-+++ options.h	2007-07-28 16:59:34.000000000 +0200
-@@ -21,10 +21,10 @@
+--- options.h	2005-12-09 07:10:42.000000000 +0100
++++ options.h	2005-12-18 15:55:06.390099200 +0100
+@@ -16,10 +16,10 @@
  
  /* Default hostkey paths - these can be specified on the command line */
  #ifndef DSS_PRIV_FILENAME
@@ -13,7 +13,7 @@
  #endif
  
  /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
-@@ -51,7 +51,7 @@
+@@ -46,7 +46,7 @@
  #define DROPBEAR_SMALL_CODE
  
  /* Enable X11 Forwarding - server only */
@@ -22,7 +22,7 @@
  
  /* Enable TCP Fowarding */
  /* 'Local' is "-L" style (client listening port forwarded via server)
-@@ -159,7 +159,7 @@
+@@ -154,7 +154,7 @@
   * however significantly reduce the security of your ssh connections
   * if the PRNG state becomes guessable - make sure you know what you are
   * doing if you change this. */
@@ -31,7 +31,7 @@
  
  /* prngd must be manually set up to produce output */
  /*#define DROPBEAR_PRNGD_SOCKET "/var/run/dropbear-rng"*/
-@@ -198,12 +198,12 @@
+@@ -192,12 +192,12 @@
   * OpenSSH), set the path below. If the path isn't defined, sftp will not
   * be enabled */
  #ifndef SFTPSERVER_PATH
@@ -44,5 +44,5 @@
 -#define _PATH_SSH_PROGRAM "/usr/bin/dbclient"
 +#define _PATH_SSH_PROGRAM "/usr/bin/ssh"
  
- /* Whether to log commands executed by a client. This only logs the 
-  * (single) command sent to the server, not what a user did in a 
+ /* Multi-purpose binary configuration has now moved. Look at the top
+  * of the Makefile for instructions, or INSTALL */

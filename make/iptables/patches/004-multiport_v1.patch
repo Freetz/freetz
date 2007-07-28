@@ -1,5 +1,6 @@
---- extensions/libipt_multiport.c.orig	2006-12-04 12:15:19.000000000 +0100
-+++ extensions/libipt_multiport.c	2007-07-28 16:58:15.000000000 +0200
+diff -urN iptables.old/extensions/libipt_multiport.c iptables.dev/extensions/libipt_multiport.c
+--- iptables.old/extensions/libipt_multiport.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables.dev/extensions/libipt_multiport.c	2006-02-04 05:46:12.154127750 +0100
 @@ -8,24 +8,6 @@
  /* To ensure that iptables compiles with an old kernel */
  #include "../include/linux/netfilter_ipv4/ipt_multiport.h"
@@ -25,8 +26,8 @@
  static void
  help_v1(void)
  {
-@@ -68,26 +50,6 @@
- 	}
+@@ -75,26 +57,6 @@
+ 		   "invalid port/service `%s' specified", port);
  }
  
 -static unsigned int
@@ -52,8 +53,8 @@
  static void
  parse_multi_ports_v1(const char *portstring, 
  		     struct ipt_multiport_v1 *multiinfo,
-@@ -153,58 +115,6 @@
- 			   "multiport only works with TCP, UDP, SCTP and DCCP");
+@@ -160,58 +122,6 @@
+ 			   "multiport only works with TCP or UDP");
  }
  
 -/* Function which parses command options; returns true if it
@@ -111,7 +112,7 @@
  static int
  parse_v1(int c, char **argv, int invert, unsigned int *flags,
  	 const struct ipt_entry *entry,
-@@ -281,43 +191,6 @@
+@@ -289,43 +199,6 @@
  		printf("%s", service);
  }
  
@@ -155,7 +156,7 @@
  static void
  print_v1(const struct ipt_ip *ip,
  	 const struct ipt_entry_match *match,
-@@ -361,34 +234,6 @@
+@@ -369,34 +242,6 @@
  	printf(" ");
  }
  
@@ -190,7 +191,7 @@
  static void save_v1(const struct ipt_ip *ip, 
  		    const struct ipt_entry_match *match)
  {
-@@ -424,19 +269,20 @@
+@@ -432,19 +277,20 @@
  	printf(" ");
  }
  
