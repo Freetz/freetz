@@ -87,6 +87,29 @@ modpatch()
 }
 
 
+# Declare unknown function 'echo2', if not dot-included by fwmod
+if ! declare -F | awk '{print $3}' | grep -q echo2; then
+	echo "declaring undefined 'echo2'"
+	echo2()
+	{
+		if [ "$DS_VERBOSITY_LEVEL" ] && [ "$DS_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
+			echo -e "$1"
+		fi
+	}
+fi
+
+# Declare unknown function 'error', if not dot-included by fwmod
+if ! declare -F | awk '{print $3}' | grep -q error; then
+	echo "declaring undefined 'error'"
+	error()
+	{
+		if [ "$1" -gt 0 ]; then
+			echo -e "ERROR: $2" 1>&2
+			exit $1
+		fi
+	}
+fi
+
 # Direct script call? -> delegate parameters to shell function
 if [ "$(basename "$0")" == "ds_patch" ]; then
 	ds_patch_name="ds_patch"
