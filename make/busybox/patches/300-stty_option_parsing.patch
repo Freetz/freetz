@@ -1,5 +1,5 @@
---- coreutils/stty.c.orig	2007-05-20 18:56:02.000000000 +0200
-+++ coreutils/stty.c	2007-07-28 12:42:26.000000000 +0200
+--- coreutils/stty.c	2007/04/10 15:42:06	18381
++++ coreutils/stty.c	2007/04/19 19:55:54	18499
 @@ -21,7 +21,7 @@
  
     */
@@ -183,7 +183,7 @@
  }
  
  static void sane_mode(struct termios *mode)
-@@ -970,7 +975,7 @@
+@@ -969,7 +975,7 @@
  					goto invalid_argument;
  				}
  			}
@@ -192,7 +192,7 @@
  			continue;
  		}
  
-@@ -1009,6 +1014,7 @@
+@@ -1008,6 +1014,7 @@
  #ifdef TIOCGWINSZ
  		case param_rows:
  		case param_cols:
@@ -200,7 +200,7 @@
  			xatoul_range_sfx(argnext, 1, INT_MAX, stty_suffixes);
  			break;
  		case param_size:
-@@ -1026,7 +1032,7 @@
+@@ -1025,7 +1032,7 @@
  		default:
  			if (recover_mode(arg, &mode) == 1) break;
  			if (tty_value_to_baud(xatou(arg)) != (speed_t) -1) break;

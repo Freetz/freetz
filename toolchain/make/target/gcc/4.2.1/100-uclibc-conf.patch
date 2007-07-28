@@ -1,6 +1,6 @@
---- libgomp/configure.orig	2007-07-19 16:33:56.000000000 +0200
-+++ libgomp/configure	2007-07-28 12:42:01.000000000 +0200
-@@ -3893,7 +3893,7 @@
+--- gcc/libgomp/configure
++++ gcc/libgomp/configure
+@@ -3771,7 +3771,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -9,8 +9,8 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- gcc/config/cris/linux.h.orig	2006-02-18 12:12:51.000000000 +0100
-+++ gcc/config/cris/linux.h	2007-07-28 12:42:01.000000000 +0200
+--- gcc/gcc/config/cris/linux.h
++++ gcc/gcc/config/cris/linux.h
 @@ -74,7 +74,11 @@
  #define CRIS_DEFAULT_CPU_VERSION CRIS_CPU_NG
  
@@ -24,9 +24,9 @@
  
  #define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
  
---- libstdc++-v3/configure.orig	2007-06-29 01:02:05.000000000 +0200
-+++ libstdc++-v3/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -4283,7 +4283,7 @@
+--- gcc/libstdc++-v3/configure
++++ gcc/libstdc++-v3/configure
+@@ -4276,7 +4276,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -35,9 +35,9 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- zlib/configure.orig	2007-01-17 19:10:26.000000000 +0100
-+++ zlib/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -3429,7 +3429,7 @@
+--- gcc/zlib/configure
++++ gcc/zlib/configure
+@@ -3422,7 +3422,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -46,9 +46,9 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- libobjc/configure.orig	2006-10-15 09:42:57.000000000 +0200
-+++ libobjc/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -3314,7 +3314,7 @@
+--- gcc/libobjc/configure
++++ gcc/libobjc/configure
+@@ -3309,7 +3309,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -57,9 +57,9 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- libgfortran/configure.orig	2007-07-19 16:33:56.000000000 +0200
-+++ libgfortran/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -3721,7 +3721,7 @@
+--- gcc/libgfortran/configure
++++ gcc/libgfortran/configure
+@@ -3695,7 +3695,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -68,9 +68,9 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- libmudflap/configure.orig	2006-12-04 12:13:07.000000000 +0100
-+++ libmudflap/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -5394,7 +5394,7 @@
+--- gcc/libmudflap/configure
++++ gcc/libmudflap/configure
+@@ -5378,7 +5378,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -79,9 +79,9 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- boehm-gc/configure.orig	2007-07-19 16:33:56.000000000 +0200
-+++ boehm-gc/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -4323,7 +4323,7 @@
+--- gcc/boehm-gc/configure
++++ gcc/boehm-gc/configure
+@@ -4316,7 +4316,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -90,9 +90,9 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- libffi/configure.orig	2007-07-19 16:33:56.000000000 +0200
-+++ libffi/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -3460,7 +3460,7 @@
+--- gcc/libffi/configure
++++ gcc/libffi/configure
+@@ -3453,7 +3453,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -101,9 +101,9 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- libssp/configure.orig	2006-10-15 09:42:57.000000000 +0200
-+++ libssp/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -4480,7 +4480,7 @@
+--- gcc/libssp/configure
++++ gcc/libssp/configure
+@@ -4409,7 +4409,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -112,8 +112,8 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- contrib/regression/objs-gcc.sh.orig	2005-08-15 02:41:31.000000000 +0200
-+++ contrib/regression/objs-gcc.sh	2007-07-28 12:42:02.000000000 +0200
+--- gcc/contrib/regression/objs-gcc.sh
++++ gcc/contrib/regression/objs-gcc.sh
 @@ -105,6 +105,10 @@
   then
    make all-gdb all-dejagnu all-ld || exit 1
@@ -125,8 +125,8 @@
  elif [ $H_REAL_TARGET = $H_REAL_HOST ] ; then
    make bootstrap || exit 1
    make install || exit 1
---- libjava/classpath/ltconfig.orig	2006-08-07 22:37:50.000000000 +0200
-+++ libjava/classpath/ltconfig	2007-07-28 12:42:02.000000000 +0200
+--- gcc/libjava/classpath/ltconfig
++++ gcc/libjava/classpath/ltconfig
 @@ -603,7 +603,7 @@
  
  # Transform linux* to *-*-linux-gnu*, to support old configure scripts.
@@ -145,9 +145,9 @@
    version_type=linux
    need_lib_prefix=no
    need_version=no
---- libjava/classpath/configure.orig	2007-01-17 19:10:26.000000000 +0100
-+++ libjava/classpath/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -5307,7 +5307,7 @@
+--- gcc/libjava/classpath/configure
++++ gcc/libjava/classpath/configure
+@@ -4665,7 +4665,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -156,9 +156,9 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- libjava/configure.orig	2007-07-19 16:33:56.000000000 +0200
-+++ libjava/configure	2007-07-28 12:42:02.000000000 +0200
-@@ -5424,7 +5424,7 @@
+--- gcc/libjava/configure
++++ gcc/libjava/configure
+@@ -5212,7 +5212,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -167,8 +167,8 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- libtool.m4.orig	2005-07-16 04:30:53.000000000 +0200
-+++ libtool.m4	2007-07-28 12:42:02.000000000 +0200
+--- gcc/libtool.m4
++++ gcc/libtool.m4
 @@ -739,7 +739,7 @@
    ;;
  
@@ -178,8 +178,8 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- ltconfig.orig	2007-02-14 18:08:35.000000000 +0100
-+++ ltconfig	2007-07-28 12:42:02.000000000 +0200
+--- gcc/ltconfig
++++ gcc/ltconfig
 @@ -603,7 +603,7 @@
  
  # Transform linux* to *-*-linux-gnu*, to support old configure scripts.

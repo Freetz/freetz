@@ -1,6 +1,6 @@
---- src/dnsmasq.h.orig	2007-04-20 12:53:38.000000000 +0200
-+++ src/dnsmasq.h	2007-07-28 12:43:57.000000000 +0200
-@@ -323,6 +323,7 @@
+--- src/dnsmasq.h	2006-10-18 22:24:50.000000000 +0200
++++ src/dnsmasq.h	2007-01-06 15:09:12.000000000 +0100
+@@ -306,6 +306,7 @@
  #endif
    int hwaddr_len, hwaddr_type;
    unsigned char hwaddr[DHCP_CHADDR_MAX]; 
@@ -8,7 +8,7 @@
    struct in_addr addr;
    unsigned char *vendorclass, *userclass;
    unsigned int vendorclass_len, userclass_len;
-@@ -666,6 +667,7 @@
+@@ -599,6 +600,7 @@
  		      unsigned char *clid, int hw_len, int hw_type, int clid_len);
  void lease_set_hostname(struct dhcp_lease *lease, char *name, 
  			char *suffix, int auth);
@@ -16,8 +16,8 @@
  void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now);
  struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
  					unsigned char *clid, int clid_len);
---- src/lease.c.orig	2007-02-17 17:27:26.000000000 +0100
-+++ src/lease.c	2007-07-28 12:43:57.000000000 +0200
+--- src/lease.c	2006-10-18 22:24:50.000000000 +0200
++++ src/lease.c	2007-01-06 15:18:38.000000000 +0100
 @@ -162,11 +162,16 @@
  
    if (file_dirty != 0 && daemon->lease_stream)
@@ -99,9 +99,9 @@
  void lease_set_hostname(struct dhcp_lease *lease, char *name, char *suffix, int auth)
  {
    struct dhcp_lease *lease_tmp;
---- src/rfc2131.c.orig	2007-03-20 15:10:43.000000000 +0100
-+++ src/rfc2131.c	2007-07-28 12:43:57.000000000 +0200
-@@ -425,6 +425,7 @@
+--- src/rfc2131.c	2006-10-19 08:54:54.000000000 +0200
++++ src/rfc2131.c	2007-01-06 15:20:43.000000000 +0100
+@@ -379,6 +379,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
  	      if (hostname)
  		lease_set_hostname(lease, hostname, daemon->domain_suffix, 1); 
@@ -109,7 +109,7 @@
  	      lease_set_expires(lease, 0xffffffff, now); /* infinite lease */
  	      
  	      clear_packet(mess, end);
-@@ -924,7 +925,7 @@
+@@ -871,7 +872,7 @@
  	    }
  	  if (hostname)
  	    lease_set_hostname(lease, hostname, daemon->domain_suffix, hostname_auth);
