@@ -78,6 +78,12 @@ modpatch()
 		mv -f "$patch_file" "$patch_file.orig"
 		cd "$1"
 		for file in $files; do
+			# If backup exists, but is unreadable and has a size of zero, it
+			# was created as a placeholder by 'patch -b' previously and can be
+			# safely deleted. It even must be deleted in order to avoid a diff
+			# error because it is unreadable.
+			[ -f "$file.orig" ] && [ ! -r "$file.orig" ] && [ ! -s "$file.orig" ] \
+				&& rm -f "$file.orig"
 			diff -Naur "$file.orig" "$file" >> "$patch_file"
 			rm -f "$file.orig"
 		done
