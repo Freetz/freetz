@@ -1,9 +1,8 @@
-diff -urN iptables.old/extensions/Makefile iptables.dev/extensions/Makefile
---- iptables.old/extensions/Makefile	2005-07-20 04:22:56.000000000 +0200
-+++ iptables.dev/extensions/Makefile	2006-03-23 14:42:28.000000000 +0100
-@@ -8,6 +8,10 @@
- PF_EXT_SLIB:=ah addrtype comment connlimit connmark conntrack dscp ecn esp hashlimit helper icmp iprange length limit mac mark multiport owner physdev pkttype realm rpc sctp standard state tcp tcpmss tos ttl udp unclean CLASSIFY CONNMARK DNAT DSCP ECN LOG MARK MASQUERADE MIRROR NETMAP NFQUEUE NOTRACK REDIRECT REJECT SAME SNAT TARPIT TCPMSS TOS TRACE TTL ULOG
- PF6_EXT_SLIB:=eui64 hl icmpv6 length limit mac mark multiport owner physdev standard tcp udp HL LOG NFQUEUE MARK TRACE
+--- extensions/Makefile.orig	2006-12-04 12:15:19.000000000 +0100
++++ extensions/Makefile	2007-07-28 16:58:14.000000000 +0200
+@@ -13,6 +13,10 @@
+ PF6_EXT_SE_SLIB:=SECMARK CONNSECMARK
+ endif
  
 +
 +# ipp2p
@@ -12,9 +11,8 @@ diff -urN iptables.old/extensions/Makefile iptables.dev/extensions/Makefile
  # Optionals
  PF_EXT_SLIB_OPTS:=$(foreach T,$(wildcard extensions/.*-test),$(shell KERNEL_DIR=$(KERNEL_DIR) $(T)))
  PF6_EXT_SLIB_OPTS:=$(foreach T,$(wildcard extensions/.*-test6),$(shell KERNEL_DIR=$(KERNEL_DIR) $(T)))
-diff -urN iptables.old/extensions/libipt_ipp2p.c iptables.dev/extensions/libipt_ipp2p.c
---- iptables.old/extensions/libipt_ipp2p.c	1970-01-01 01:00:00.000000000 +0100
-+++ iptables.dev/extensions/libipt_ipp2p.c	2006-03-23 14:43:26.000000000 +0100
+--- extensions/libipt_ipp2p.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ extensions/libipt_ipp2p.c	2007-07-28 16:58:14.000000000 +0200
 @@ -0,0 +1,401 @@
 +
 +#include <stdio.h>
@@ -417,9 +415,8 @@ diff -urN iptables.old/extensions/libipt_ipp2p.c iptables.dev/extensions/libipt_
 +    register_match(&ipp2p);
 +}
 +
-diff -urN iptables.old/include/linux/netfilter_ipv4/ipt_ipp2p.h iptables.dev/include/linux/netfilter_ipv4/ipt_ipp2p.h
---- iptables.old/include/linux/netfilter_ipv4/ipt_ipp2p.h	1970-01-01 01:00:00.000000000 +0100
-+++ iptables.dev/include/linux/netfilter_ipv4/ipt_ipp2p.h	2006-03-23 14:44:26.000000000 +0100
+--- include/linux/netfilter_ipv4/ipt_ipp2p.h.orig	1970-01-01 01:00:00.000000000 +0100
++++ include/linux/netfilter_ipv4/ipt_ipp2p.h	2007-07-28 16:58:14.000000000 +0200
 @@ -0,0 +1,31 @@
 +#ifndef __IPT_IPP2P_H
 +#define __IPT_IPP2P_H
