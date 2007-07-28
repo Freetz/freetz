@@ -1,11 +1,11 @@
---- util/Makefile.in	2005-10-17 12:29:20.000000000 +0200
-+++ util/Makefile.in	2005-10-19 17:11:13.000000000 +0200
-@@ -445,7 +445,7 @@
+--- util/Makefile.in.orig	2007-07-28 12:42:12.000000000 +0200
++++ util/Makefile.in	2007-07-28 12:42:12.000000000 +0200
+@@ -528,7 +528,7 @@
  install-exec-hook:
  	-chown root $(DESTDIR)$(bindir)/fusermount
  	-chmod u+s $(DESTDIR)$(bindir)/fusermount
 -	@if test ! -e $(DESTDIR)/dev/fuse; then \
 +	-@if test ! -e $(DESTDIR)/dev/fuse; then \
  		$(mkdir_p) $(DESTDIR)/dev; \
- 		echo "mknod $(DESTDIR)/dev/fuse -m 0666 c 10 229"; \
- 		mknod $(DESTDIR)/dev/fuse -m 0666 c 10 229; \
+ 		echo "mknod $(DESTDIR)/dev/fuse -m 0666 c 10 229 || true"; \
+ 		mknod $(DESTDIR)/dev/fuse -m 0666 c 10 229 || true; \
