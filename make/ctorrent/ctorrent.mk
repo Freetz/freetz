@@ -19,7 +19,7 @@ $(DL_DIR)/$(CTORRENT_PKG_SOURCE): | $(DL_DIR)
 $(CTORRENT_DIR)/.unpacked: $(DL_DIR)/$(CTORRENT_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CTORRENT_SOURCE)
 #	for i in $(CTORRENT_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(CTORRENT_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(CTORRENT_DIR) $$i 0; \
 #	done
 	touch $@
 

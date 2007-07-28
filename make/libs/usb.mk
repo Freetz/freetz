@@ -17,7 +17,7 @@ $(DL_DIR)/$(USB_SOURCE): | $(DL_DIR)
 $(USB_DIR)/.unpacked: $(DL_DIR)/$(USB_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(USB_SOURCE)
 	for i in $(USB_MAKE_DIR)/patches/*.usb.patch; do \
-		patch -d $(USB_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(USB_DIR) $$i 0; \
 	done
 	touch $@
 

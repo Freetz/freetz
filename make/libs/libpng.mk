@@ -15,7 +15,7 @@ $(DL_DIR)/$(LIBPNG_SOURCE): | $(DL_DIR)
 $(LIBPNG_DIR)/.unpacked: $(DL_DIR)/$(LIBPNG_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBPNG_SOURCE)
 	for i in $(LIBPNG_MAKE_DIR)/patches/*.libpng.patch; do \
-		patch -d $(LIBPNG_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(LIBPNG_DIR) $$i 1; \
 	done
 	touch $@
 

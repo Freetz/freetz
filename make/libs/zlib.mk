@@ -15,7 +15,7 @@ $(DL_DIR)/$(ZLIB_SOURCE): | $(DL_DIR)
 $(ZLIB_DIR)/.unpacked: $(DL_DIR)/$(ZLIB_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(ZLIB_SOURCE)
 	for i in $(ZLIB_MAKE_DIR)/patches/*.zlib.patch; do \
-		patch -d $(ZLIB_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(ZLIB_DIR) $$i 0; \
 	done
 	touch $@
 

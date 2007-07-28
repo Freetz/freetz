@@ -23,7 +23,7 @@ $(DL_DIR)/$(CLASSPATH_PKG_SOURCE): | $(DL_DIR)
 $(CLASSPATH_DIR)/.unpacked: $(DL_DIR)/$(CLASSPATH_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CLASSPATH_SOURCE)
 #	for i in $(CLASSPATH_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(CLASSPATH_DIR) -p1 < $$i; \
+#		$(PATCH_TOOL) $(CLASSPATH_DIR) $$i 1; \
 #	done
 	touch $@
 

@@ -14,7 +14,7 @@ $(LZMA_DIR)/.unpacked: $(DL_DIR)/$(LZMA_SOURCE)
 	mkdir -p $(LZMA_DIR)
 	tar -C $(LZMA_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LZMA_SOURCE)
 	for i in $(LZMA_MAKE_DIR)/patches/*.lzma.patch; do \
-		patch -d $(LZMA_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(LZMA_DIR) $$i 1; \
 	done
 	touch $@
 

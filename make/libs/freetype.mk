@@ -15,7 +15,7 @@ $(DL_DIR)/$(FREETYPE_SOURCE): | $(DL_DIR)
 $(FREETYPE_DIR)/.unpacked: $(DL_DIR)/$(FREETYPE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(FREETYPE_SOURCE)
 	for i in $(FREETYPE_MAKE_DIR)/patches/*.freetype.patch; do \
-		patch -d $(FREETYPE_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(FREETYPE_DIR) $$i 1; \
 	done
 	touch $@
 

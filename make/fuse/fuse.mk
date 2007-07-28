@@ -26,7 +26,7 @@ $(DL_DIR)/$(FUSE_PKG_SOURCE): | $(DL_DIR)
 $(FUSE_DIR)/.unpacked: $(DL_DIR)/$(FUSE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FUSE_SOURCE)
 	for i in $(FUSE_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(FUSE_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(FUSE_DIR) $$i 0; \
 	done
 	touch $@
 

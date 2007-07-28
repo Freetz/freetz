@@ -24,7 +24,7 @@ $(DL_DIR)/$(INOTIFY_TOOLS_PKG_SOURCE): | $(DL_DIR)
 $(INOTIFY_TOOLS_DIR)/.unpacked: $(DL_DIR)/$(INOTIFY_TOOLS_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(INOTIFY_TOOLS_SOURCE)
 	for i in $(INOTIFY_TOOLS_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(INOTIFY_TOOLS_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(INOTIFY_TOOLS_DIR) $$i 0; \
 	done
 	touch $@
 

@@ -23,7 +23,7 @@ $(DL_DIR)/$(JAMVM_PKG_SOURCE): | $(DL_DIR)
 $(JAMVM_DIR)/.unpacked: $(DL_DIR)/$(JAMVM_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(JAMVM_SOURCE)
 	for i in $(JAMVM_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(JAMVM_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(JAMVM_DIR) $$i 0; \
 	done
 	touch $@
 

@@ -19,7 +19,7 @@ $(DL_DIR)/$(COLLECTD_PKG_SOURCE): | $(DL_DIR)
 $(COLLECTD_DIR)/.unpacked: $(DL_DIR)/$(COLLECTD_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(COLLECTD_SOURCE)
 #	for i in $(COLLECTD_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(COLLECTD_DIR) -p1 < $$i; \
+#		$(PATCH_TOOL) $(COLLECTD_DIR) $$i 1; \
 #	done
 	touch $@
 

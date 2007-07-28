@@ -24,7 +24,7 @@ $(DL_DIR)/$(RRDTOOL_PKG_SOURCE):
 $(RRDTOOL_DIR)/.unpacked: $(DL_DIR)/$(RRDTOOL_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(RRDTOOL_SOURCE)
 #	for i in $(RRDTOOL_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(RRDTOOL_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(RRDTOOL_DIR) $$i 0; \
 #	done
 	touch $@
 

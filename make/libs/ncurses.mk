@@ -15,7 +15,7 @@ $(DL_DIR)/$(NCURSES_SOURCE): | $(DL_DIR)
 $(NCURSES_DIR)/.unpacked: $(DL_DIR)/$(NCURSES_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NCURSES_SOURCE)
 	for i in $(NCURSES_MAKE_DIR)/patches/*.ncurses.patch; do \
-		patch -d $(NCURSES_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(NCURSES_DIR) $$i 1; \
 	done
 	touch $@
 

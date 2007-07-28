@@ -39,7 +39,7 @@ $(BFTPD_DIR)/.unpacked: $(DL_DIR)/$(BFTPD_SOURCE) $(BFTPD_DS_CONFIG_FILE)
 	rm -rf $(BFTPD_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(BFTPD_SOURCE)
 	for i in $(BFTPD_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(BFTPD_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(BFTPD_DIR) $$i 0; \
 	done
 	touch $@
 

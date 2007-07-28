@@ -23,7 +23,7 @@ $(DL_DIR)/$(SAMBA_PKG_SOURCE): | $(DL_DIR)
 $(SAMBA_DIR)/.unpacked: $(DL_DIR)/$(SAMBA_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(SAMBA_SOURCE)
 	for i in $(SAMBA_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(SAMBA_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(SAMBA_DIR) $$i 0; \
 	done
 	touch $@
 

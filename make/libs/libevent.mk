@@ -15,7 +15,7 @@ $(DL_DIR)/$(LIBEVENT_SOURCE): | $(DL_DIR)
 $(LIBEVENT_DIR)/.unpacked: $(DL_DIR)/$(LIBEVENT_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBEVENT_SOURCE)
 	for i in $(LIBEVENT_MAKE_DIR)/patches/*.libevent.patch; do \
-		patch -d $(LIBEVENT_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(LIBEVENT_DIR) $$i 0; \
 	done
 	touch $@
 

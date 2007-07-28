@@ -36,7 +36,7 @@ $(TINYPROXY_DIR)/.unpacked: $(DL_DIR)/$(TINYPROXY_SOURCE) $(TINYPROXY_DS_CONFIG_
 	rm -rf $(TINYPROXY_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(TINYPROXY_SOURCE)
 #	for i in $(TINYPROXY_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(TINYPROXY_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(TINYPROXY_DIR) $$i 0; \
 #	done
 	touch $@
 

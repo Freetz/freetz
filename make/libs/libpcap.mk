@@ -16,7 +16,7 @@ $(DL_DIR)/$(LIBPCAP_SOURCE): | $(DL_DIR)
 $(LIBPCAP_DIR)/.unpacked: $(DL_DIR)/$(LIBPCAP_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBPCAP_SOURCE)
 	for i in $(LIBPCAP_MAKE_DIR)/patches/*.libpcap.patch; do \
-		patch -d $(LIBPCAP_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(LIBPCAP_DIR) $$i 1; \
 	done
 	touch $@
 

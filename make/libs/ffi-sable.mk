@@ -15,7 +15,7 @@ $(DL_DIR)/$(FFI_SABLE_SOURCE): | $(DL_DIR)
 $(FFI_SABLE_DIR)/.unpacked: $(DL_DIR)/$(FFI_SABLE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FFI_SABLE_SOURCE)
 #	for i in $(FFI_SABLE_MAKE_DIR)/patches/*.ffi-sable.patch; do \
-#		patch -d $(FFI_SABLE_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(FFI_SABLE_DIR) $$i 0; \
 #	done
 	touch $@
 

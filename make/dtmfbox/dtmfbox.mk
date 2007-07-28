@@ -22,7 +22,7 @@ $(DTMFBOX_DIR)/.unpacked: $(DL_DIR)/$(DTMFBOX_SOURCE)
 
 $(DTMFBOX_DIR)/.configured: $(DTMFBOX_DIR)/.unpacked
 	for i in $(DTMFBOX_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(DTMFBOX_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(DTMFBOX_DIR) $$i 0; \
 	done
 	cp $(DTMFBOX_DIR)/Makefile.mipsel $(DTMFBOX_DIR)/Makefile
 	touch $@

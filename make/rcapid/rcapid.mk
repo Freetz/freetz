@@ -20,7 +20,7 @@ $(DL_DIR)/$(RCAPID_PKG_SOURCE):
 $(RCAPID_DIR)/.unpacked: $(DL_DIR)/$(RCAPID_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(RCAPID_SOURCE)
 	for i in $(RCAPID_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(RCAPID_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(RCAPID_DIR) $$i 1; \
 	done
 	touch $@
 

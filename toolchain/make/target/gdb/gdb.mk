@@ -20,7 +20,7 @@ $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GDB_SOURCE)
 	for i in $(GDB_MAKE_DIR)/$(GDB_VERSION)/*.patch; do \
-		patch -d $(GDB_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(GDB_DIR) $$i 1; \
 	done
 	# Copy a config.sub from gcc.  This is only necessary until
 	# gdb's config.sub supports <arch>-linux-uclibc tuples.

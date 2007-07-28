@@ -15,7 +15,7 @@ $(DL_DIR)/$(LIBART_SOURCE): | $(DL_DIR)
 $(LIBART_DIR)/.unpacked: $(DL_DIR)/$(LIBART_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LIBART_SOURCE)
 	for i in $(LIBART_MAKE_DIR)/patches/*.libart.patch; do \
-		patch -d $(LIBART_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(LIBART_DIR) $$i 1; \
 	done
 	touch $@
 

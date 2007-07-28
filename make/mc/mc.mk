@@ -38,10 +38,10 @@ $(MC_DIR)/.unpacked: $(DL_DIR)/$(MC_SOURCE) $(MC_DS_CONFIG_FILE)
 	rm -rf $(MC_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MC_SOURCE)
 	for i in $(MC_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(MC_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(MC_DIR) $$i 0; \
 	done
 ifneq ($(strip $(DS_MC_SYNTAX_COLOURING)),y)
-	patch -d $(MC_DIR) -p0 < $(MC_MAKE_DIR)/patches/cond/mc-no-syntax-colouring.patch
+	$(PATCH_TOOL) $(MC_DIR) $(MC_MAKE_DIR)/patches/cond/mc-no-syntax-colouring.patch 0
 endif
 	touch $@
 

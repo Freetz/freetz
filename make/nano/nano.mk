@@ -41,7 +41,7 @@ $(NANO_DIR)/.unpacked: $(DL_DIR)/$(NANO_SOURCE) $(NANO_DS_CONFIG_FILE)
 	rm -rf $(NANO_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NANO_SOURCE)
 #	for i in $(NANO_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(NANO_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(NANO_DIR) $$i 0; \
 #	done
 	touch $@
 
