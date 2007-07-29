@@ -1,10 +1,5 @@
-By Lennert Buytenhek <buytenh@wantstofly.org>
-Adds support for arm*b-linux* big-endian ARM targets
-
-See http://gcc.gnu.org/PR16350
-
---- gcc/config/arm/linux-elf.h
-+++ gcc/config/arm/linux-elf.h
+--- gcc/config/arm/linux-elf.h.orig	2007-07-29 05:31:43.000000000 +0200
++++ gcc/config/arm/linux-elf.h	2007-07-29 05:31:50.000000000 +0200
 @@ -28,19 +28,33 @@
  #undef  TARGET_VERSION
  #define TARGET_VERSION  fputs (" (ARM GNU/Linux with ELF)", stderr);
@@ -42,7 +37,7 @@ See http://gcc.gnu.org/PR16350
  
  /* Now we define the strings used to build the spec file.  */
  #undef  LIB_SPEC
-@@ -61,7 +75,7 @@
+@@ -65,7 +79,7 @@
     %{rdynamic:-export-dynamic} \
     %{!dynamic-linker:-dynamic-linker " LINUX_TARGET_INTERPRETER "} \
     -X \
@@ -51,8 +46,8 @@ See http://gcc.gnu.org/PR16350
     SUBTARGET_EXTRA_LINK_SPEC
  
  #undef  LINK_SPEC
---- gcc/config.gcc
-+++ gcc/config.gcc
+--- gcc/config.gcc.orig	2007-07-29 05:31:45.000000000 +0200
++++ gcc/config.gcc	2007-07-29 05:31:50.000000000 +0200
 @@ -672,6 +672,11 @@
  	;;
  arm*-*-linux*)			# ARM GNU/Linux with ELF
@@ -64,4 +59,4 @@ See http://gcc.gnu.org/PR16350
 +	esac
  	tmake_file="${tmake_file} t-linux arm/t-arm"
  	case ${target} in
- 	arm*-*-linux-gnueabi)
+ 	arm*-*-linux-gnueabi | arm*-*-linux-uclibcgnueabi)

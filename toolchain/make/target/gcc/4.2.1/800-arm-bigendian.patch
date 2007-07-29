@@ -1,10 +1,5 @@
-By Lennert Buytenhek <buytenh@wantstofly.org>
-Adds support for arm*b-linux* big-endian ARM targets
-
-See http://gcc.gnu.org/PR16350
-
---- gcc/config/arm/linux-elf.h
-+++ gcc/config/arm/linux-elf.h
+--- gcc/config/arm/linux-elf.h.orig	2006-02-17 00:29:10.000000000 +0100
++++ gcc/config/arm/linux-elf.h	2007-07-29 03:49:31.000000000 +0200
 @@ -28,19 +28,33 @@
  #undef  TARGET_VERSION
  #define TARGET_VERSION  fputs (" (ARM GNU/Linux with ELF)", stderr);
@@ -51,9 +46,9 @@ See http://gcc.gnu.org/PR16350
     SUBTARGET_EXTRA_LINK_SPEC
  
  #undef  LINK_SPEC
---- gcc/config.gcc	2006-09-22 14:53:41.000000000 +0200
-+++ gcc/config.gcc	2006-09-25 10:45:21.000000000 +0200
-@@ -696,6 +696,11 @@
+--- gcc/config.gcc.orig	2007-07-29 03:49:26.000000000 +0200
++++ gcc/config.gcc	2007-07-29 03:49:31.000000000 +0200
+@@ -705,6 +705,11 @@
  	tm_file="dbxelf.h elfos.h linux.h arm/elf.h arm/linux-gas.h arm/linux-elf.h"
  	tmake_file="${tmake_file} t-linux arm/t-arm"
  	case ${target} in

@@ -1,33 +1,6 @@
-#!/bin/sh -e
-## 012_check_ldrunpath_length.dpatch by Chris Chimelis <chris@debian.org>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Only generate an RPATH entry if LD_RUN_PATH is not empty, for
-## DP: cases where -rpath isn't specified. (#151024)
-
-if [ $# -ne 1 ]; then
-    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
-    exit 1
-fi
-
-[ -f debian/patches/00patch-opts ] && . debian/patches/00patch-opts
-patch_opts="${patch_opts:--f --no-backup-if-mismatch}"
-
-case "$1" in
-       -patch) patch $patch_opts -p1 < $0;;
-       -unpatch) patch $patch_opts -p1 -R < $0;;
-        *)
-                echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
-                exit 1;;
-esac
-
-exit 0
-
-@DPATCH@
-diff -urNad /home/james/debian/packages/binutils/new/binutils-2.15/ld/emultempl/elf32.em binutils-2.15/ld/emultempl/elf32.em
---- /home/james/debian/packages/binutils/new/binutils-2.15/ld/emultempl/elf32.em	2004-05-21 23:12:58.000000000 +0100
-+++ ld/emultempl/elf32.em	2004-05-21 23:12:59.000000000 +0100
-@@ -888,6 +888,8 @@
+--- ld/emultempl/elf32.em.orig	2006-02-14 00:10:17.000000000 +0100
++++ ld/emultempl/elf32.em	2007-07-29 05:45:00.000000000 +0200
+@@ -892,6 +892,8 @@
  	      && command_line.rpath == NULL)
  	    {
  	      lib_path = (const char *) getenv ("LD_RUN_PATH");
@@ -36,7 +9,7 @@ diff -urNad /home/james/debian/packages/binutils/new/binutils-2.15/ld/emultempl/
  	      if (gld${EMULATION_NAME}_search_needed (lib_path, &n,
  						      force))
  		break;
-@@ -1105,6 +1105,8 @@
+@@ -1068,6 +1070,8 @@
    rpath = command_line.rpath;
    if (rpath == NULL)
      rpath = (const char *) getenv ("LD_RUN_PATH");
