@@ -19,7 +19,7 @@ $(DL_DIR)/$(TCPDUMP_PKG_SOURCE): | $(DL_DIR)
 $(TCPDUMP_DIR)/.unpacked: $(DL_DIR)/$(TCPDUMP_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(TCPDUMP_SOURCE)
 	for i in $(TCPDUMP_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(TCPDUMP_DIR) $$i 1; \
+		$(PATCH_TOOL) $(TCPDUMP_DIR) $$i; \
 	done
 	touch $@
 

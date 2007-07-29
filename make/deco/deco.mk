@@ -19,7 +19,7 @@ $(DL_DIR)/$(DECO_PKG_SOURCE): | $(DL_DIR)
 $(DECO_DIR)/.unpacked: $(DL_DIR)/$(DECO_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(DECO_SOURCE)
 	for i in $(DECO_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(DECO_DIR) $$i 1; \
+		$(PATCH_TOOL) $(DECO_DIR) $$i; \
 	done
 	touch $@
 

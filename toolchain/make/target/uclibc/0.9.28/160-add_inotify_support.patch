@@ -1,8 +1,8 @@
 This patch is from http://www.busybox.net/cgi-bin/viewcvs.cgi?rev=15450&view=rev
 and adds inotify support to uClibc.
 
---- uClibc-0.9.28/libc/sysdeps/linux/common/inotify.c	2007-04-25 08:41:30.000000000 +0200
-+++ uClibc-0.9.28/libc/sysdeps/linux/common/inotify.c	2007-04-24 16:02:14.000000000 +0200
+--- libc/sysdeps/linux/common/inotify.c	2007-04-25 08:41:30.000000000 +0200
++++ libc/sysdeps/linux/common/inotify.c	2007-04-24 16:02:14.000000000 +0200
 @@ -0,0 +1,24 @@
 +/* vi: set sw=4 ts=4: */
 +/*
@@ -28,8 +28,8 @@ and adds inotify support to uClibc.
 +#ifdef __NR_inotify_rm_watch
 +_syscall2(int, inotify_rm_watch, int, fd, uint32_t, wd);
 +#endif
---- uClibc-0.9.28/libc/sysdeps/linux/common/sys/inotify.h	2007-04-25 08:41:43.000000000 +0200
-+++ uClibc-0.9.28/libc/sysdeps/linux/common/sys/inotify.h	2007-04-24 16:02:26.000000000 +0200
+--- libc/sysdeps/linux/common/sys/inotify.h	2007-04-25 08:41:43.000000000 +0200
++++ libc/sysdeps/linux/common/sys/inotify.h	2007-04-24 16:02:26.000000000 +0200
 @@ -0,0 +1,92 @@
 +/* Copyright (C) 2005, 2006 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.

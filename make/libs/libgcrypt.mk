@@ -16,7 +16,7 @@ $(DL_DIR)/$(LIBGCRYPT_SOURCE): | $(DL_DIR)
 $(LIBGCRYPT_DIR)/.unpacked: $(DL_DIR)/$(LIBGCRYPT_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBGCRYPT_SOURCE)
 	for i in $(LIBGCRYPT_MAKE_DIR)/patches/*.libgcrypt.patch; do \
-		$(PATCH_TOOL) $(LIBGCRYPT_DIR) $$i 0; \
+		$(PATCH_TOOL) $(LIBGCRYPT_DIR) $$i; \
 	done
 	touch $@
 

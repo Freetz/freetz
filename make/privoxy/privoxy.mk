@@ -22,7 +22,7 @@ $(DL_DIR)/$(PRIVOXY_PKG_SOURCE): | $(DL_DIR)
 $(PRIVOXY_DIR)/.unpacked: $(DL_DIR)/$(PRIVOXY_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(PRIVOXY_SOURCE)
 	for i in $(PRIVOXY_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(PRIVOXY_DIR) $$i 0; \
+		$(PATCH_TOOL) $(PRIVOXY_DIR) $$i; \
 	done
 	touch $@
 

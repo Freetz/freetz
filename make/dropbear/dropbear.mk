@@ -39,7 +39,7 @@ $(DROPBEAR_DIR)/.unpacked: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_DS_CONFIG_FIL
 	rm -rf $(DROPBEAR_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(DROPBEAR_SOURCE)
 	for i in $(DROPBEAR_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(DROPBEAR_DIR) $$i 0; \
+		$(PATCH_TOOL) $(DROPBEAR_DIR) $$i; \
 	done
 	touch $@
 

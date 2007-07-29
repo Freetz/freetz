@@ -32,7 +32,7 @@ $(APACHE_DIR)/.unpacked: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_DS_CONFIG_FILE)
 	rm -rf $(APACHE_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(APACHE_SOURCE)
 	for i in $(APACHE_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(APACHE_DIR) $$i 0; \
+		$(PATCH_TOOL) $(APACHE_DIR) $$i; \
 	done
 	touch $@
 

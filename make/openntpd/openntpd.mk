@@ -19,7 +19,7 @@ $(DL_DIR)/$(OPENNTPD_PKG_SOURCE): | $(DL_DIR)
 $(OPENNTPD_DIR)/.unpacked: $(DL_DIR)/$(OPENNTPD_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(OPENNTPD_SOURCE)
 	for i in $(OPENNTPD_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(OPENNTPD_DIR) $$i 1; \
+		$(PATCH_TOOL) $(OPENNTPD_DIR) $$i; \
 	done
 	touch $@
 

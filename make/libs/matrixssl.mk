@@ -16,7 +16,7 @@ $(DL_DIR)/$(MATRIXSSL_SOURCE): | $(DL_DIR)
 $(MATRIXSSL_DIR)/.unpacked: $(DL_DIR)/$(MATRIXSSL_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MATRIXSSL_SOURCE)
 #	for i in $(MATRIXSSL_MAKE_DIR)/patches/*.matrixssl.patch; do \
-#		$(PATCH_TOOL) $(MATRIXSSL_DIR) $$i 1; \
+#		$(PATCH_TOOL) $(MATRIXSSL_DIR) $$i; \
 #	done
 	touch $@
 

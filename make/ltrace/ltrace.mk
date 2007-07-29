@@ -30,7 +30,7 @@ $(DL_DIR)/$(LTRACE_PKG_SOURCE): | $(DL_DIR)
 $(LTRACE_DIR)/.unpacked: $(DL_DIR)/$(LTRACE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LTRACE_SOURCE)
 	for i in $(LTRACE_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(LTRACE_DIR) $$i 0; \
+		$(PATCH_TOOL) $(LTRACE_DIR) $$i; \
 	done
 	touch $@
 

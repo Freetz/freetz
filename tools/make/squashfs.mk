@@ -19,7 +19,7 @@ $(DL_DIR)/$(SQUASHFS_SOURCE): | $(DL_DIR)
 $(SQUASHFS_DIR)/.unpacked: $(DL_DIR)/$(SQUASHFS_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(SQUASHFS_SOURCE)
 	for i in $(MKSQUASHFS_MAKE_DIR)/patches/*.squashfs.patch; do \
-		$(PATCH_TOOL) $(SQUASHFS_DIR) $$i 0; \
+		$(PATCH_TOOL) $(SQUASHFS_DIR) $$i; \
 	done
 	touch $@
 

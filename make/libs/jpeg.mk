@@ -16,7 +16,7 @@ $(DL_DIR)/$(JPEG_SOURCE): | $(DL_DIR)
 $(JPEG_DIR)/.unpacked: $(DL_DIR)/$(JPEG_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(JPEG_SOURCE)
 	for i in $(JPEG_MAKE_DIR)/patches/*.jpeg.patch; do \
-		$(PATCH_TOOL) $(JPEG_DIR) $$i 1; \
+		$(PATCH_TOOL) $(JPEG_DIR) $$i; \
 	done
 	touch $@
 

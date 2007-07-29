@@ -2,8 +2,8 @@ Update staticthreads.exp to handle debugging info in libpthread.a.
 
 Index: gdb-6.3/gdb/testsuite/gdb.threads/staticthreads.exp
 ===================================================================
---- gdb-6.3/gdb/testsuite/gdb.threads/staticthreads.exp	2004-11-10 10:35:15.000000000 -0500
-+++ gdb-6.3/gdb/testsuite/gdb.threads/staticthreads.exp	2004-11-10 11:22:48.671121466 -0500
+--- gdb/testsuite/gdb.threads/staticthreads.exp	2004-11-10 10:35:15.000000000 -0500
++++ gdb/testsuite/gdb.threads/staticthreads.exp	2004-11-10 11:22:48.671121466 -0500
 @@ -53,6 +53,10 @@ gdb_test_multiple "continue" "$test" {
      -re " sem_post .*$gdb_prompt " {
  	pass "$test"

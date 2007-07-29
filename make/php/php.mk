@@ -34,11 +34,11 @@ $(PHP_DIR)/.unpacked: $(DL_DIR)/$(PHP_SOURCE) $(PHP_DS_CONFIG_FILE)
 	rm -rf $(PHP_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(PHP_SOURCE)
 	for i in $(PHP_MAKE_DIR)/patches/*.all.patch; do \
-		$(PATCH_TOOL) $(PHP_DIR) $$i 0; \
+		$(PATCH_TOOL) $(PHP_DIR) $$i; \
 	done
 ifeq ($(strip $(DS_PHP_STATIC)),y)
 	for i in $(PHP_MAKE_DIR)/patches/*.static.patch; do \
-		$(PATCH_TOOL) $(PHP_DIR) $$i 0; \
+		$(PATCH_TOOL) $(PHP_DIR) $$i; \
 	done
 endif
 	touch $@

@@ -3,8 +3,8 @@ Adds support for arm*b-linux* big-endian ARM targets
 
 See http://gcc.gnu.org/PR16350
 
---- gcc-4.1.0/gcc/config/arm/linux-elf.h
-+++ gcc-4.1.0/gcc/config/arm/linux-elf.h
+--- gcc/config/arm/linux-elf.h
++++ gcc/config/arm/linux-elf.h
 @@ -28,19 +28,33 @@
  #undef  TARGET_VERSION
  #define TARGET_VERSION  fputs (" (ARM GNU/Linux with ELF)", stderr);
@@ -51,8 +51,8 @@ See http://gcc.gnu.org/PR16350
     SUBTARGET_EXTRA_LINK_SPEC
  
  #undef  LINK_SPEC
---- gcc-4.1.0/gcc/config.gcc
-+++ gcc-4.1.0/gcc/config.gcc
+--- gcc/config.gcc
++++ gcc/config.gcc
 @@ -672,6 +672,11 @@
  	;;
  arm*-*-linux*)			# ARM GNU/Linux with ELF

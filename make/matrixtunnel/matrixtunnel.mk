@@ -20,7 +20,7 @@ $(DL_DIR)/$(MATRIXTUNNEL_PKG_SOURCE): | $(DL_DIR)
 $(MATRIXTUNNEL_DIR)/.unpacked: $(DL_DIR)/$(MATRIXTUNNEL_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MATRIXTUNNEL_SOURCE)
 #	for i in $(MATRIXTUNNEL_MAKE_DIR)/patches/*.patch; do \
-#		$(PATCH_TOOL) $(MATRIXTUNNEL_DIR) $$i 1; \
+#		$(PATCH_TOOL) $(MATRIXTUNNEL_DIR) $$i; \
 #	done
 	touch $@
 

@@ -20,7 +20,7 @@ $(DL_DIR)/$(SG3UTILS_PKG_SOURCE): | $(DL_DIR)
 $(SG3UTILS_DIR)/.unpacked: $(DL_DIR)/$(SG3UTILS_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(SG3UTILS_SOURCE)
 	for i in $(SG3UTILS_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(SG3UTILS_DIR) $$i 0; \
+		$(PATCH_TOOL) $(SG3UTILS_DIR) $$i; \
 	done
 	touch $@
 

@@ -1,6 +1,6 @@
 diff -urN bird-1.0.11/client/client.c bird-1.0.11/client/client.c
---- bird-1.0.11/client/client.c	2004-06-05 05:26:48.000000000 -0400
-+++ bird-1.0.11/client/client.c	2006-07-13 09:34:04.000000000 -0400
+--- client/client.c	2004-06-05 05:26:48.000000000 -0400
++++ client/client.c	2006-07-13 09:34:04.000000000 -0400
 @@ -254,7 +254,7 @@
      die("Cannot create socket: %m");
    bzero(&sa, sizeof(sa));
@@ -11,8 +11,8 @@ diff -urN bird-1.0.11/client/client.c bird-1.0.11/client/client.c
      die("Unable to connect to server control socket (%s): %m", server_path);
    if (fcntl(server_fd, F_SETFL, O_NONBLOCK) < 0)
 diff -urN bird-1.0.11/sysdep/unix/io.c bird-1.0.11/sysdep/unix/io.c
---- bird-1.0.11/sysdep/unix/io.c	2005-02-14 18:15:04.000000000 -0500
-+++ bird-1.0.11/sysdep/unix/io.c	2006-07-13 09:34:29.000000000 -0400
+--- sysdep/unix/io.c	2005-02-14 18:15:04.000000000 -0500
++++ sysdep/unix/io.c	2006-07-13 09:34:29.000000000 -0400
 @@ -866,7 +866,7 @@
      goto bad;
    unlink(name);

@@ -20,7 +20,7 @@ $(DL_DIR)/$(DEBOOTSTRAP_PKG_SOURCE): | $(DL_DIR)
 $(DEBOOTSTRAP_DIR)/.unpacked: $(DL_DIR)/$(DEBOOTSTRAP_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(DEBOOTSTRAP_SOURCE)
 	#for i in $(DEBOOTSTRAP_MAKE_DIR)/patches/*.patch; do \
-	#	$(PATCH_TOOL) $(DEBOOTSTRAP_DIR) $$i 1; \
+	#	$(PATCH_TOOL) $(DEBOOTSTRAP_DIR) $$i; \
 	#done
 	touch $@
 

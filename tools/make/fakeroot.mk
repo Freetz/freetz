@@ -17,7 +17,7 @@ $(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE)
 	$(SED) -i "s,getopt --version,getopt --version 2>/dev/null," \
 		$(FAKEROOT_DIR)/scripts/fakeroot.in
 	for i in $(FAKEROOT_MAKE_DIR)/patches/*.fakeroot.patch; do \
-		$(PATCH_TOOL) $(FAKEROOT_DIR) $$i 0; \
+		$(PATCH_TOOL) $(FAKEROOT_DIR) $$i; \
 	done
 	touch $@
 

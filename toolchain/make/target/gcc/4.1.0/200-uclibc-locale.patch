@@ -1,6 +1,6 @@
 diff -urN gcc-4.1.0/libstdc++-v3/acinclude.m4 gcc-4.1.0-patched/libstdc++-v3/acinclude.m4
---- gcc-4.1.0/libstdc++-v3/acinclude.m4	2005-04-11 19:13:06.000000000 -0500
-+++ gcc-4.1.0-patched/libstdc++-v3/acinclude.m4	2005-04-30 19:36:16.917899167 -0500
+--- libstdc++-v3/acinclude.m4	2005-04-11 19:13:06.000000000 -0500
++++ libstdc++-v3/acinclude.m4	2005-04-30 19:36:16.917899167 -0500
 @@ -1047,7 +1047,7 @@
    AC_MSG_CHECKING([for C locale to use])
    GLIBCXX_ENABLE(clocale,auto,[@<:@=MODEL@:>@],
@@ -63,8 +63,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/acinclude.m4 gcc-4.1.0-patched/libstdc++-v3/aci
  
    # This is where the testsuite looks for locale catalogs, using the
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/c++locale_internal.h gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/c++locale_internal.h
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/c++locale_internal.h	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/c++locale_internal.h	2005-04-30 19:36:16.918898999 -0500
+--- libstdc++-v3/config/locale/uclibc/c++locale_internal.h	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/c++locale_internal.h	2005-04-30 19:36:16.918898999 -0500
 @@ -0,0 +1,63 @@
 +// Prototypes for GLIBC thread locale __-prefixed functions -*- C++ -*-
 +
@@ -130,8 +130,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/c++locale_internal.h gcc-4
 +
 +#endif // GLIBC 2.3 and later
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/c_locale.cc gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/c_locale.cc
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/c_locale.cc	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/c_locale.cc	2005-04-30 19:36:16.919898830 -0500
+--- libstdc++-v3/config/locale/uclibc/c_locale.cc	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/c_locale.cc	2005-04-30 19:36:16.919898830 -0500
 @@ -0,0 +1,160 @@
 +// Wrapper for underlying C-language localization -*- C++ -*-
 +
@@ -294,8 +294,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/c_locale.cc gcc-4.1.0-patc
 +  const char* const* const locale::_S_categories = __gnu_cxx::category_names;
 +}  // namespace std
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/c_locale.h gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/c_locale.h
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/c_locale.h	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/c_locale.h	2005-04-30 19:36:16.920898661 -0500
+--- libstdc++-v3/config/locale/uclibc/c_locale.h	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/c_locale.h	2005-04-30 19:36:16.920898661 -0500
 @@ -0,0 +1,117 @@
 +// Wrapper for underlying C-language localization -*- C++ -*-
 +
@@ -415,8 +415,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/c_locale.h gcc-4.1.0-patch
 +
 +#endif
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/codecvt_members.cc gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/codecvt_members.cc
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/codecvt_members.cc	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/codecvt_members.cc	2005-04-30 19:36:16.921898492 -0500
+--- libstdc++-v3/config/locale/uclibc/codecvt_members.cc	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/codecvt_members.cc	2005-04-30 19:36:16.921898492 -0500
 @@ -0,0 +1,306 @@
 +// std::codecvt implementation details, GNU version -*- C++ -*-
 +
@@ -725,8 +725,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/codecvt_members.cc gcc-4.1
 +#endif
 +}
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/collate_members.cc gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/collate_members.cc
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/collate_members.cc	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/collate_members.cc	2005-04-30 19:36:16.922898323 -0500
+--- libstdc++-v3/config/locale/uclibc/collate_members.cc	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/collate_members.cc	2005-04-30 19:36:16.922898323 -0500
 @@ -0,0 +1,80 @@
 +// std::collate implementation details, GNU version -*- C++ -*-
 +
@@ -809,8 +809,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/collate_members.cc gcc-4.1
 +#endif
 +}
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/ctype_members.cc gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/ctype_members.cc
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/ctype_members.cc	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/ctype_members.cc	2005-04-30 19:36:16.923898155 -0500
+--- libstdc++-v3/config/locale/uclibc/ctype_members.cc	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/ctype_members.cc	2005-04-30 19:36:16.923898155 -0500
 @@ -0,0 +1,300 @@
 +// std::ctype implementation details, GNU version -*- C++ -*-
 +
@@ -1113,8 +1113,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/ctype_members.cc gcc-4.1.0
 +#endif //  _GLIBCXX_USE_WCHAR_T
 +}
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/messages_members.cc gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/messages_members.cc
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/messages_members.cc	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/messages_members.cc	2005-04-30 19:36:16.925897817 -0500
+--- libstdc++-v3/config/locale/uclibc/messages_members.cc	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/messages_members.cc	2005-04-30 19:36:16.925897817 -0500
 @@ -0,0 +1,100 @@
 +// std::messages implementation details, GNU version -*- C++ -*-
 +
@@ -1217,8 +1217,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/messages_members.cc gcc-4.
 +#endif
 +}
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/messages_members.h gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/messages_members.h
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/messages_members.h	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/messages_members.h	2005-04-30 19:36:16.925897817 -0500
+--- libstdc++-v3/config/locale/uclibc/messages_members.h	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/messages_members.h	2005-04-30 19:36:16.925897817 -0500
 @@ -0,0 +1,118 @@
 +// std::messages implementation details, GNU version -*- C++ -*-
 +
@@ -1339,8 +1339,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/messages_members.h gcc-4.1
 +	 }
 +     }
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/monetary_members.cc gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/monetary_members.cc
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/monetary_members.cc	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/monetary_members.cc	2005-04-30 19:36:16.927897479 -0500
+--- libstdc++-v3/config/locale/uclibc/monetary_members.cc	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/monetary_members.cc	2005-04-30 19:36:16.927897479 -0500
 @@ -0,0 +1,692 @@
 +// std::moneypunct implementation details, GNU version -*- C++ -*-
 +
@@ -2035,8 +2035,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/monetary_members.cc gcc-4.
 +#endif
 +}
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/numeric_members.cc gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/numeric_members.cc
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/numeric_members.cc	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/numeric_members.cc	2005-04-30 19:36:38.467261324 -0500
+--- libstdc++-v3/config/locale/uclibc/numeric_members.cc	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/numeric_members.cc	2005-04-30 19:36:38.467261324 -0500
 @@ -0,0 +1,160 @@
 +// std::numpunct implementation details, GNU version -*- C++ -*-
 +
@@ -2199,8 +2199,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/numeric_members.cc gcc-4.1
 + #endif
 +}
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/time_members.cc gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/time_members.cc
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/time_members.cc	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/time_members.cc	2005-04-30 19:36:16.929897142 -0500
+--- libstdc++-v3/config/locale/uclibc/time_members.cc	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/time_members.cc	2005-04-30 19:36:16.929897142 -0500
 @@ -0,0 +1,406 @@
 +// std::time_get, std::time_put implementation, GNU version -*- C++ -*-
 +
@@ -2609,8 +2609,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/time_members.cc gcc-4.1.0-
 +#endif
 +}
 diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/time_members.h gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/time_members.h
---- gcc-4.1.0/libstdc++-v3/config/locale/uclibc/time_members.h	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/locale/uclibc/time_members.h	2005-04-30 19:36:16.929897142 -0500
+--- libstdc++-v3/config/locale/uclibc/time_members.h	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/locale/uclibc/time_members.h	2005-04-30 19:36:16.929897142 -0500
 @@ -0,0 +1,68 @@
 +// std::time_get, std::time_put implementation, GNU version -*- C++ -*-
 +
@@ -2681,8 +2681,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/locale/uclibc/time_members.h gcc-4.1.0-p
 +      _S_destroy_c_locale(_M_c_locale_timepunct); 
 +    }
 diff -urN gcc-4.1.0/libstdc++-v3/config/os/uclibc/ctype_base.h gcc-4.1.0-patched/libstdc++-v3/config/os/uclibc/ctype_base.h
---- gcc-4.1.0/libstdc++-v3/config/os/uclibc/ctype_base.h	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/os/uclibc/ctype_base.h	2005-04-30 19:36:16.930896973 -0500
+--- libstdc++-v3/config/os/uclibc/ctype_base.h	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/os/uclibc/ctype_base.h	2005-04-30 19:36:16.930896973 -0500
 @@ -0,0 +1,64 @@
 +// Locale support -*- C++ -*-
 +
@@ -2749,8 +2749,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/os/uclibc/ctype_base.h gcc-4.1.0-patched
 +    static const mask alnum 	= _ISalpha | _ISdigit;
 +  };
 diff -urN gcc-4.1.0/libstdc++-v3/config/os/uclibc/ctype_inline.h gcc-4.1.0-patched/libstdc++-v3/config/os/uclibc/ctype_inline.h
---- gcc-4.1.0/libstdc++-v3/config/os/uclibc/ctype_inline.h	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/os/uclibc/ctype_inline.h	2005-04-30 19:36:16.931896804 -0500
+--- libstdc++-v3/config/os/uclibc/ctype_inline.h	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/os/uclibc/ctype_inline.h	2005-04-30 19:36:16.931896804 -0500
 @@ -0,0 +1,69 @@
 +// Locale support -*- C++ -*-
 +
@@ -2822,8 +2822,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/os/uclibc/ctype_inline.h gcc-4.1.0-patch
 +    return __low;
 +  }
 diff -urN gcc-4.1.0/libstdc++-v3/config/os/uclibc/ctype_noninline.h gcc-4.1.0-patched/libstdc++-v3/config/os/uclibc/ctype_noninline.h
---- gcc-4.1.0/libstdc++-v3/config/os/uclibc/ctype_noninline.h	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/os/uclibc/ctype_noninline.h	2005-04-30 19:36:16.931896804 -0500
+--- libstdc++-v3/config/os/uclibc/ctype_noninline.h	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/os/uclibc/ctype_noninline.h	2005-04-30 19:36:16.931896804 -0500
 @@ -0,0 +1,92 @@
 +// Locale support -*- C++ -*-
 +
@@ -2918,8 +2918,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/os/uclibc/ctype_noninline.h gcc-4.1.0-pa
 +    return __high;
 +  }
 diff -urN gcc-4.1.0/libstdc++-v3/config/os/uclibc/os_defines.h gcc-4.1.0-patched/libstdc++-v3/config/os/uclibc/os_defines.h
---- gcc-4.1.0/libstdc++-v3/config/os/uclibc/os_defines.h	1969-12-31 18:00:00.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/config/os/uclibc/os_defines.h	2005-04-30 19:36:16.932896635 -0500
+--- libstdc++-v3/config/os/uclibc/os_defines.h	1969-12-31 18:00:00.000000000 -0600
++++ libstdc++-v3/config/os/uclibc/os_defines.h	2005-04-30 19:36:16.932896635 -0500
 @@ -0,0 +1,44 @@
 +// Specific definitions for GNU/Linux  -*- C++ -*-
 +
@@ -2966,8 +2966,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/config/os/uclibc/os_defines.h gcc-4.1.0-patched
 +
 +#endif
 diff -urN gcc-4.1.0/libstdc++-v3/configure gcc-4.1.0-patched/libstdc++-v3/configure
---- gcc-4.1.0/libstdc++-v3/configure	2005-04-13 19:31:43.000000000 -0500
-+++ gcc-4.1.0-patched/libstdc++-v3/configure	2005-04-30 19:36:16.993886339 -0500
+--- libstdc++-v3/configure	2005-04-13 19:31:43.000000000 -0500
++++ libstdc++-v3/configure	2005-04-30 19:36:16.993886339 -0500
 @@ -3986,6 +3986,11 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
@@ -3091,8 +3091,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/configure gcc-4.1.0-patched/libstdc++-v3/config
  
  cat >>confdefs.h <<\_ACEOF
 diff -urN gcc-4.1.0/libstdc++-v3/configure.host gcc-4.1.0-patched/libstdc++-v3/configure.host
---- gcc-4.1.0/libstdc++-v3/configure.host	2005-01-13 16:48:14.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/configure.host	2005-04-30 19:36:16.996885833 -0500
+--- libstdc++-v3/configure.host	2005-01-13 16:48:14.000000000 -0600
++++ libstdc++-v3/configure.host	2005-04-30 19:36:16.996885833 -0500
 @@ -249,6 +249,12 @@
      ;;
  esac
@@ -3107,8 +3107,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/configure.host gcc-4.1.0-patched/libstdc++-v3/c
  # Set any OS-dependent and CPU-dependent bits.
  # THIS TABLE IS SORTED.  KEEP IT THAT WAY.
 diff -urN gcc-4.1.0/libstdc++-v3/crossconfig.m4 gcc-4.1.0-patched/libstdc++-v3/crossconfig.m4
---- gcc-4.1.0/libstdc++-v3/crossconfig.m4	2005-04-06 18:31:16.000000000 -0500
-+++ gcc-4.1.0-patched/libstdc++-v3/crossconfig.m4	2005-04-30 19:36:16.997885664 -0500
+--- libstdc++-v3/crossconfig.m4	2005-04-06 18:31:16.000000000 -0500
++++ libstdc++-v3/crossconfig.m4	2005-04-30 19:36:16.997885664 -0500
 @@ -143,6 +143,99 @@
  	;;
      esac
@@ -3219,8 +3219,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/crossconfig.m4 gcc-4.1.0-patched/libstdc++-v3/c
        *)
          AC_DEFINE(_GLIBCXX_USE_LFS)
 diff -urN gcc-4.1.0/libstdc++-v3/include/c_compatibility/wchar.h gcc-4.1.0-patched/libstdc++-v3/include/c_compatibility/wchar.h
---- gcc-4.1.0/libstdc++-v3/include/c_compatibility/wchar.h	2003-12-08 21:51:45.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/include/c_compatibility/wchar.h	2005-04-30 19:36:16.997885664 -0500
+--- libstdc++-v3/include/c_compatibility/wchar.h	2003-12-08 21:51:45.000000000 -0600
++++ libstdc++-v3/include/c_compatibility/wchar.h	2005-04-30 19:36:16.997885664 -0500
 @@ -101,7 +101,9 @@
  using std::wmemcpy;
  using std::wmemmove;
@@ -3232,8 +3232,8 @@ diff -urN gcc-4.1.0/libstdc++-v3/include/c_compatibility/wchar.h gcc-4.1.0-patch
  #if _GLIBCXX_USE_C99
  using std::wcstold;
 diff -urN gcc-4.1.0/libstdc++-v3/include/c_std/std_cwchar.h gcc-4.1.0-patched/libstdc++-v3/include/c_std/std_cwchar.h
---- gcc-4.1.0/libstdc++-v3/include/c_std/std_cwchar.h	2004-07-20 03:47:42.000000000 -0500
-+++ gcc-4.1.0-patched/libstdc++-v3/include/c_std/std_cwchar.h	2005-04-30 19:36:16.998885495 -0500
+--- libstdc++-v3/include/c_std/std_cwchar.h	2004-07-20 03:47:42.000000000 -0500
++++ libstdc++-v3/include/c_std/std_cwchar.h	2005-04-30 19:36:16.998885495 -0500
 @@ -179,7 +179,9 @@
    using ::wcscoll;
    using ::wcscpy;

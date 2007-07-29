@@ -23,7 +23,7 @@ $(DL_DIR)/$(STUNNEL_PKG_SOURCE): | $(DL_DIR)
 $(STUNNEL_DIR)/.unpacked: $(DL_DIR)/$(STUNNEL_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(STUNNEL_SOURCE)
 	for i in $(STUNNEL_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(STUNNEL_DIR) $$i 0; \
+		$(PATCH_TOOL) $(STUNNEL_DIR) $$i; \
 	done
 	touch $@
 

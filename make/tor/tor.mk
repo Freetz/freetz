@@ -22,7 +22,7 @@ $(DL_DIR)/$(TOR_PKG_SOURCE): | $(DL_DIR)
 $(TOR_DIR)/.unpacked: $(DL_DIR)/$(TOR_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(TOR_SOURCE)
 	#for i in $(TOR_MAKE_DIR)/patches/*.patch; do \
-	#	$(PATCH_TOOL) $(TOR_DIR) $$i 1; \
+	#	$(PATCH_TOOL) $(TOR_DIR) $$i; \
 	#done
 	touch $@
 

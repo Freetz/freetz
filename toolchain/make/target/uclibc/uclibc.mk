@@ -18,7 +18,7 @@ $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(UCLIBC_SOURCE)
 	for i in $(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION)/*.patch; do \
-	    $(PATCH_TOOL) $(UCLIBC_DIR) $$i 1; \
+		$(PATCH_TOOL) $(UCLIBC_DIR) $$i; \
 	done
 	touch $@
 

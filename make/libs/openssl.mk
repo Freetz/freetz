@@ -23,7 +23,7 @@ $(DL_DIR)/$(OPENSSL_SOURCE): | $(DL_DIR)
 $(OPENSSL_DIR)/.unpacked: $(DL_DIR)/$(OPENSSL_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(OPENSSL_SOURCE)
 	for i in $(OPENSSL_MAKE_DIR)/patches/*.openssl.patch; do \
-		$(PATCH_TOOL) $(OPENSSL_DIR) $$i 0; \
+		$(PATCH_TOOL) $(OPENSSL_DIR) $$i; \
 	done
 	touch $@
 

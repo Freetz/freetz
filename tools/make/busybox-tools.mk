@@ -20,7 +20,7 @@ $(BUSYBOX_TOOLS_SOURCE_DIR)/.unpacked: $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE)
 	mkdir -p $(BUSYBOX_TOOLS_DIR)
 	tar -C $(BUSYBOX_TOOLS_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE)
 	for i in $(BUSYBOX_TOOLS_MAKE_DIR)/patches/*.busybox.patch; do \
-		$(PATCH_TOOL) $(BUSYBOX_TOOLS_SOURCE_DIR) $$i 0; \
+		$(PATCH_TOOL) $(BUSYBOX_TOOLS_SOURCE_DIR) $$i; \
 	done
 	touch $@
 

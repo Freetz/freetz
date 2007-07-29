@@ -15,8 +15,8 @@ $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(BINUTILS_SOURCE)
 	for i in $(BINUTILS_MAKE_DIR)/$(BINUTILS_VERSION)/*.patch; do \
-                $(PATCH_TOOL) $(BINUTILS_DIR) $$i 1; \
-        done
+		$(PATCH_TOOL) $(BINUTILS_DIR) $$i; \
+	done
 	touch $@
 
 $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked

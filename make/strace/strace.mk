@@ -18,7 +18,7 @@ $(DL_DIR)/$(STRACE_PKG_SOURCE): | $(DL_DIR)
 $(STRACE_DIR)/.unpacked: $(DL_DIR)/$(STRACE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(STRACE_SOURCE)
 	for i in $(STRACE_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(STRACE_DIR) $$i 0; \
+		$(PATCH_TOOL) $(STRACE_DIR) $$i; \
 	done
 	touch $@
 

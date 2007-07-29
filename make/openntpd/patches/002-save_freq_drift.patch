@@ -1,5 +1,5 @@
---- openntpd-3.9p1/ntpd.h	2006-05-14 07:29:21.000000000 +0200
-+++ openntpd-3.9p1new/ntpd.h	2007-02-03 23:51:56.000000000 +0100
+--- ntpd.h	2006-05-14 07:29:21.000000000 +0200
++++ ntpd.h	2007-02-03 23:51:56.000000000 +0100
 @@ -34,6 +34,7 @@
  #define	NTPD_USER	"_ntp"
  #endif
@@ -8,8 +8,8 @@
 
  #define	READ_BUF_SIZE		4096
 
---- openntpd-3.9p1/ntpd.c	2006-05-14 07:29:23.000000000 +0200
-+++ openntpd-3.9p1new/ntpd.c	2007-02-04 00:00:36.000000000 +0100
+--- ntpd.c	2006-05-14 07:29:23.000000000 +0200
++++ ntpd.c	2007-02-04 00:00:36.000000000 +0100
 @@ -45,6 +45,7 @@
  int		dispatch_imsg(struct ntpd_conf *);
  int		ntpd_adjtime(double);
@@ -29,8 +29,8 @@
  	signal(SIGINT, sighdlr);
  	signal(SIGCHLD, sighdlr);
 
---- openntpd-3.9p1/openbsd-compat/port-linux.c	2007-02-03 20:52:20.000000000 +0100
-+++ openntpd-3.9p1new/openbsd-compat/port-linux.c	2007-02-04 01:02:16.000000000 +0100
+--- openbsd-compat/port-linux.c	2007-02-03 20:52:20.000000000 +0100
++++ openbsd-compat/port-linux.c	2007-02-04 01:02:16.000000000 +0100
 @@ -33,6 +33,49 @@
  /* maximum change to skew per adjustment, in PPM */
  #define MAX_SKEW_DELTA 5.0

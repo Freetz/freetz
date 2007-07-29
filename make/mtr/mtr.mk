@@ -20,7 +20,7 @@ $(DL_DIR)/$(MTR_PKG_SOURCE): | $(DL_DIR)
 $(MTR_DIR)/.unpacked: $(DL_DIR)/$(MTR_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MTR_SOURCE)
 	for i in $(MTR_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(MTR_DIR) $$i 1; \
+		$(PATCH_TOOL) $(MTR_DIR) $$i; \
 	done
 	touch $@
 

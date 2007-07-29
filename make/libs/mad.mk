@@ -16,7 +16,7 @@ $(DL_DIR)/$(MAD_SOURCE): | $(DL_DIR)
 $(MAD_DIR)/.unpacked: $(DL_DIR)/$(MAD_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MAD_SOURCE)
 #	for i in $(MAD_MAKE_DIR)/patches/*.mad.patch; do \
-#		$(PATCH_TOOL) $(MAD_DIR) $$i 0; \
+#		$(PATCH_TOOL) $(MAD_DIR) $$i; \
 #	done
 	touch $@
 

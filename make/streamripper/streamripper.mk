@@ -20,7 +20,7 @@ $(DL_DIR)/$(STREAMRIPPER_PKG_SOURCE): | $(DL_DIR)
 $(STREAMRIPPER_DIR)/.unpacked: $(DL_DIR)/$(STREAMRIPPER_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(STREAMRIPPER_SOURCE)
 	for i in $(STREAMRIPPER_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(STREAMRIPPER_DIR) $$i 1; \
+		$(PATCH_TOOL) $(STREAMRIPPER_DIR) $$i; \
 	done
 	touch $@
 

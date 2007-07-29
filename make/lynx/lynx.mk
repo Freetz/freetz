@@ -40,7 +40,7 @@ $(DL_DIR)/$(LYNX_PKG_SOURCE): | $(DL_DIR)
 $(LYNX_DIR)/.unpacked: $(DL_DIR)/$(LYNX_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LYNX_SOURCE)
 	for i in $(LYNX_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(LYNX_DIR) $$i 1; \
+		$(PATCH_TOOL) $(LYNX_DIR) $$i; \
 	done
 	touch $@
 

@@ -1,5 +1,5 @@
---- ppp/pppd/ipcp.c	Wed May 31 17:20:41 2000
-+++ ppp/pppd/ipcp.c	Wed May 31 17:27:19 2000
+--- pppd/ipcp.c	Wed May 31 17:20:41 2000
++++ pppd/ipcp.c	Wed May 31 17:27:19 2000
 @@ -145,7 +145,17 @@
      { "-defaultroute", o_bool, &ipcp_allowoptions[0].default_route,
        "disable defaultroute option", OPT_A2COPY,
@@ -113,8 +113,8 @@
  	cifdefaultroute(unit, ouraddr, hisaddr);
  	default_route_set[unit] = 0;
      }
---- ppp/pppd/ipcp.h	Wed May 31 17:20:41 2000
-+++ ppp/pppd/ipcp.h	Wed May 31 15:56:17 2000
+--- pppd/ipcp.h	Wed May 31 17:20:41 2000
++++ pppd/ipcp.h	Wed May 31 15:56:17 2000
 @@ -47,6 +47,7 @@
      bool old_addrs;		/* Use old (IP-Addresses) option? */
      bool req_addr;		/* Ask peer to send IP address? */
@@ -123,8 +123,8 @@
      bool proxy_arp;		/* Make proxy ARP entry for peer? */
      bool neg_vj;		/* Van Jacobson Compression? */
      bool old_vj;		/* use old (short) form of VJ option? */
---- ppp/pppd/pppd.h	Wed May 31 17:20:41 2000
-+++ ppp/pppd/pppd.h	Wed May 31 15:56:17 2000
+--- pppd/pppd.h	Wed May 31 17:20:41 2000
++++ pppd/pppd.h	Wed May 31 15:56:17 2000
 @@ -416,7 +416,11 @@
  int  cif6addr __P((int, eui64_t, eui64_t));
  				/* Remove an IPv6 address from i/f */
@@ -137,8 +137,8 @@
  				/* Create default route through i/f */
  int  cifdefaultroute __P((int, u_int32_t, u_int32_t));
  				/* Delete default route through i/f */
---- ppp/pppd/sys-linux.c	Wed May 31 17:20:41 2000
-+++ ppp/pppd/sys-linux.c	Wed May 31 17:37:23 2000
+--- pppd/sys-linux.c	Wed May 31 17:20:41 2000
++++ pppd/sys-linux.c	Wed May 31 17:37:23 2000
 @@ -143,6 +143,8 @@
  
  static int	if_is_up;	/* Interface has been marked up */

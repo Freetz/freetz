@@ -1,6 +1,6 @@
 diff -ruN uClibc-0.9.28/libc/inet/resolv.c uClibc-0.9.28/libc/inet/resolv.c
---- uClibc-0.9.28/libc/inet/resolv.c	2005-08-18 00:49:41.000000000 +0200
-+++ uClibc-0.9.28/libc/inet/resolv.c	2006-03-22 16:18:45.000000000 +0100
+--- libc/inet/resolv.c	2005-08-18 00:49:41.000000000 +0200
++++ libc/inet/resolv.c	2006-03-22 16:18:45.000000000 +0100
 @@ -1446,7 +1446,7 @@
  	buf+=sizeof(char **)*(ALIAS_DIM);
  	buflen-=sizeof(char **)*(ALIAS_DIM);
@@ -45,8 +45,8 @@ diff -ruN uClibc-0.9.28/libc/inet/resolv.c uClibc-0.9.28/libc/inet/resolv.c
      __UCLIBC_MUTEX_LOCK(mylock);
      gethostent_r(&h, buf, sizeof(buf), &host, &h_errno);
 diff -ruN uClibc-0.9.28/libc/sysdeps/linux/arm/syscall.c uClibc-0.9.28/libc/sysdeps/linux/arm/syscall.c
---- uClibc-0.9.28/libc/sysdeps/linux/arm/syscall.c	2005-08-18 00:49:41.000000000 +0200
-+++ uClibc-0.9.28/libc/sysdeps/linux/arm/syscall.c	2006-01-13 12:51:12.000000000 +0100
+--- libc/sysdeps/linux/arm/syscall.c	2005-08-18 00:49:41.000000000 +0200
++++ libc/sysdeps/linux/arm/syscall.c	2006-01-13 12:51:12.000000000 +0100
 @@ -23,6 +23,18 @@
  #include <sys/types.h>
  #include <sys/syscall.h>
@@ -67,8 +67,8 @@ diff -ruN uClibc-0.9.28/libc/sysdeps/linux/arm/syscall.c uClibc-0.9.28/libc/sysd
  long syscall(long sysnum, long a, long b, long c, long d, long e, long f)
  {
 diff -ruN uClibc-0.9.28/utils/Makefile uClibc-0.9.28/utils/Makefile
---- uClibc-0.9.28/utils/Makefile	2005-08-18 00:49:41.000000000 +0200
-+++ uClibc-0.9.28/utils/Makefile	2005-10-31 13:47:22.000000000 +0100
+--- utils/Makefile	2005-08-18 00:49:41.000000000 +0200
++++ utils/Makefile	2005-10-31 13:47:22.000000000 +0100
 @@ -43,7 +43,8 @@
  readelf.c ldconfig.c ldd.c:	headers
  

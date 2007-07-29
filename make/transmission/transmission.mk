@@ -24,7 +24,7 @@ $(TRANSMISSION_DIR)/.unpacked: $(DL_DIR)/$(TRANSMISSION_SOURCE)
 		mv "$(TRANSMISSION_UGLY_DIR)" "$(TRANSMISSION_DIR)"; \
 	fi
 	for i in $(TRANSMISSION_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(TRANSMISSION_DIR) $$i 0; \
+		$(PATCH_TOOL) $(TRANSMISSION_DIR) $$i; \
 	done
 	touch $@
 

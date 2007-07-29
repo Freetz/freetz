@@ -20,7 +20,7 @@ $(DL_DIR)/$(INADYN_PKG_SOURCE): | $(DL_DIR)
 $(INADYN_DIR)/.unpacked: $(DL_DIR)/$(INADYN_SOURCE)
 	unzip -u $(DL_DIR)/$(INADYN_SOURCE) -d $(INADYN_DIR)
 	for i in $(INADYN_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(INADYN_DIR) $$i 0; \
+		$(PATCH_TOOL) $(INADYN_DIR) $$i; \
 	done
 	touch $@
 

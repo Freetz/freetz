@@ -27,11 +27,11 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
 	mkdir -p $(KERNEL_DIR)
 	cp -a $(KERNEL_SOURCE_PATH) $(KERNEL_BUILD_DIR)
 	for i in $(KERNEL_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i 0; \
+		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
 	#Version specific patches
 	for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
-		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i 0; \
+		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
 ifneq ($(AVM_VERSION),04.33)
 	# Version 04.29/04.30/r4884 source corrections

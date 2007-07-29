@@ -20,7 +20,7 @@ $(DL_DIR)/$(DNSMASQ_PKG_SOURCE): | $(DL_DIR)
 $(DNSMASQ_DIR)/.unpacked: $(DL_DIR)/$(DNSMASQ_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(DNSMASQ_SOURCE)
 	for i in $(DNSMASQ_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(DNSMASQ_DIR) $$i 0; \
+		$(PATCH_TOOL) $(DNSMASQ_DIR) $$i; \
 	done
 	touch $@
 

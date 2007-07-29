@@ -39,7 +39,7 @@ $(BIRD_DIR)/.unpacked: $(DL_DIR)/$(BIRD_SOURCE) $(BIRD_DS_CONFIG_FILE)
 	rm -rf $(BIRD_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(BIRD_SOURCE)
 	for i in $(BIRD_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(BIRD_DIR) $$i 1; \
+		$(PATCH_TOOL) $(BIRD_DIR) $$i; \
 	done
 	touch $@
 

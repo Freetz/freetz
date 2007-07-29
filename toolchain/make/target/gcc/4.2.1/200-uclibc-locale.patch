@@ -1,5 +1,5 @@
---- gcc/libstdc++-v3/acinclude.m4
-+++ gcc/libstdc++-v3/acinclude.m4
+--- libstdc++-v3/acinclude.m4
++++ libstdc++-v3/acinclude.m4
 @@ -1369,7 +1369,7 @@
    AC_MSG_CHECKING([for C locale to use])
    GLIBCXX_ENABLE(clocale,auto,[@<:@=MODEL@:>@],
@@ -60,8 +60,8 @@
    esac
  
    # This is where the testsuite looks for locale catalogs, using the
---- gcc/libstdc++-v3/config/locale/uclibc/c++locale_internal.h
-+++ gcc/libstdc++-v3/config/locale/uclibc/c++locale_internal.h
+--- libstdc++-v3/config/locale/uclibc/c++locale_internal.h
++++ libstdc++-v3/config/locale/uclibc/c++locale_internal.h
 @@ -0,0 +1,63 @@
 +// Prototypes for GLIBC thread locale __-prefixed functions -*- C++ -*-
 +
@@ -126,8 +126,8 @@
 +#endif 
 +
 +#endif // GLIBC 2.3 and later
---- gcc/libstdc++-v3/config/locale/uclibc/c_locale.cc
-+++ gcc/libstdc++-v3/config/locale/uclibc/c_locale.cc
+--- libstdc++-v3/config/locale/uclibc/c_locale.cc
++++ libstdc++-v3/config/locale/uclibc/c_locale.cc
 @@ -0,0 +1,160 @@
 +// Wrapper for underlying C-language localization -*- C++ -*-
 +
@@ -289,8 +289,8 @@
 +{
 +  const char* const* const locale::_S_categories = __gnu_cxx::category_names;
 +}  // namespace std
---- gcc/libstdc++-v3/config/locale/uclibc/c_locale.h
-+++ gcc/libstdc++-v3/config/locale/uclibc/c_locale.h
+--- libstdc++-v3/config/locale/uclibc/c_locale.h
++++ libstdc++-v3/config/locale/uclibc/c_locale.h
 @@ -0,0 +1,117 @@
 +// Wrapper for underlying C-language localization -*- C++ -*-
 +
@@ -409,8 +409,8 @@
 +}
 +
 +#endif
---- gcc/libstdc++-v3/config/locale/uclibc/codecvt_members.cc
-+++ gcc/libstdc++-v3/config/locale/uclibc/codecvt_members.cc
+--- libstdc++-v3/config/locale/uclibc/codecvt_members.cc
++++ libstdc++-v3/config/locale/uclibc/codecvt_members.cc
 @@ -0,0 +1,306 @@
 +// std::codecvt implementation details, GNU version -*- C++ -*-
 +
@@ -718,8 +718,8 @@
 +  }
 +#endif
 +}
---- gcc/libstdc++-v3/config/locale/uclibc/collate_members.cc
-+++ gcc/libstdc++-v3/config/locale/uclibc/collate_members.cc
+--- libstdc++-v3/config/locale/uclibc/collate_members.cc
++++ libstdc++-v3/config/locale/uclibc/collate_members.cc
 @@ -0,0 +1,80 @@
 +// std::collate implementation details, GNU version -*- C++ -*-
 +
@@ -801,8 +801,8 @@
 +    { return __wcsxfrm_l(__to, __from, __n, _M_c_locale_collate); }
 +#endif
 +}
---- gcc/libstdc++-v3/config/locale/uclibc/ctype_members.cc
-+++ gcc/libstdc++-v3/config/locale/uclibc/ctype_members.cc
+--- libstdc++-v3/config/locale/uclibc/ctype_members.cc
++++ libstdc++-v3/config/locale/uclibc/ctype_members.cc
 @@ -0,0 +1,300 @@
 +// std::ctype implementation details, GNU version -*- C++ -*-
 +
@@ -1104,8 +1104,8 @@
 +  }
 +#endif //  _GLIBCXX_USE_WCHAR_T
 +}
---- gcc/libstdc++-v3/config/locale/uclibc/messages_members.cc
-+++ gcc/libstdc++-v3/config/locale/uclibc/messages_members.cc
+--- libstdc++-v3/config/locale/uclibc/messages_members.cc
++++ libstdc++-v3/config/locale/uclibc/messages_members.cc
 @@ -0,0 +1,100 @@
 +// std::messages implementation details, GNU version -*- C++ -*-
 +
@@ -1207,8 +1207,8 @@
 +    }
 +#endif
 +}
---- gcc/libstdc++-v3/config/locale/uclibc/messages_members.h
-+++ gcc/libstdc++-v3/config/locale/uclibc/messages_members.h
+--- libstdc++-v3/config/locale/uclibc/messages_members.h
++++ libstdc++-v3/config/locale/uclibc/messages_members.h
 @@ -0,0 +1,118 @@
 +// std::messages implementation details, GNU version -*- C++ -*-
 +
@@ -1328,8 +1328,8 @@
 +	   this->_S_create_c_locale(this->_M_c_locale_messages, __s); 
 +	 }
 +     }
---- gcc/libstdc++-v3/config/locale/uclibc/monetary_members.cc
-+++ gcc/libstdc++-v3/config/locale/uclibc/monetary_members.cc
+--- libstdc++-v3/config/locale/uclibc/monetary_members.cc
++++ libstdc++-v3/config/locale/uclibc/monetary_members.cc
 @@ -0,0 +1,692 @@
 +// std::moneypunct implementation details, GNU version -*- C++ -*-
 +
@@ -2023,8 +2023,8 @@
 +    }
 +#endif
 +}
---- gcc/libstdc++-v3/config/locale/uclibc/numeric_members.cc
-+++ gcc/libstdc++-v3/config/locale/uclibc/numeric_members.cc
+--- libstdc++-v3/config/locale/uclibc/numeric_members.cc
++++ libstdc++-v3/config/locale/uclibc/numeric_members.cc
 @@ -0,0 +1,160 @@
 +// std::numpunct implementation details, GNU version -*- C++ -*-
 +
@@ -2186,8 +2186,8 @@
 +    { delete _M_data; }
 + #endif
 +}
---- gcc/libstdc++-v3/config/locale/uclibc/time_members.cc
-+++ gcc/libstdc++-v3/config/locale/uclibc/time_members.cc
+--- libstdc++-v3/config/locale/uclibc/time_members.cc
++++ libstdc++-v3/config/locale/uclibc/time_members.cc
 @@ -0,0 +1,406 @@
 +// std::time_get, std::time_put implementation, GNU version -*- C++ -*-
 +
@@ -2595,8 +2595,8 @@
 +    }
 +#endif
 +}
---- gcc/libstdc++-v3/config/locale/uclibc/time_members.h
-+++ gcc/libstdc++-v3/config/locale/uclibc/time_members.h
+--- libstdc++-v3/config/locale/uclibc/time_members.h
++++ libstdc++-v3/config/locale/uclibc/time_members.h
 @@ -0,0 +1,68 @@
 +// std::time_get, std::time_put implementation, GNU version -*- C++ -*-
 +
@@ -2666,8 +2666,8 @@
 +      delete _M_data; 
 +      _S_destroy_c_locale(_M_c_locale_timepunct); 
 +    }
---- gcc/libstdc++-v3/configure
-+++ gcc/libstdc++-v3/configure
+--- libstdc++-v3/configure
++++ libstdc++-v3/configure
 @@ -5764,7 +5764,7 @@
    enableval="$enable_clocale"
  
@@ -2764,8 +2764,8 @@
    esac
  
    # This is where the testsuite looks for locale catalogs, using the
---- gcc/libstdc++-v3/include/c_compatibility/wchar.h
-+++ gcc/libstdc++-v3/include/c_compatibility/wchar.h
+--- libstdc++-v3/include/c_compatibility/wchar.h
++++ libstdc++-v3/include/c_compatibility/wchar.h
 @@ -101,7 +101,9 @@
  using std::wmemcpy;
  using std::wmemmove;
@@ -2776,8 +2776,8 @@
  
  #if _GLIBCXX_USE_C99
  using std::wcstold;
---- gcc/libstdc++-v3/include/c_std/std_cwchar.h
-+++ gcc/libstdc++-v3/include/c_std/std_cwchar.h
+--- libstdc++-v3/include/c_std/std_cwchar.h
++++ libstdc++-v3/include/c_std/std_cwchar.h
 @@ -182,7 +182,9 @@
    using ::wcscoll;
    using ::wcscpy;

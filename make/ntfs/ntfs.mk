@@ -23,7 +23,7 @@ $(DL_DIR)/$(NTFS_PKG_SOURCE): | $(DL_DIR)
 $(NTFS_DIR)/.unpacked: $(DL_DIR)/$(NTFS_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NTFS_SOURCE)
 #	for i in $(NTFS_MAKE_DIR)/patches/*.patch; do \
-#		$(PATCH_TOOL) $(NTFS_DIR) $$i 0; \
+#		$(PATCH_TOOL) $(NTFS_DIR) $$i; \
 #	done
 	touch $@
 
