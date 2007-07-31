@@ -232,6 +232,14 @@ config DS_INSTALL_BASE
 	help
 		This is mandatory
 
+#overwrite AVM's fat and vfat module with our own because it segfaults
+config DS_INSTALL_MODULE
+	bool
+	select DS_MODULE_vfat	if DS_HAS_USB_HOST
+	default y
+	help
+		This is mandatory
+
 config DS_REPLACE_BUSYBOX
 	bool
 	default y
