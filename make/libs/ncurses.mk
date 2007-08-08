@@ -66,14 +66,14 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.unpacked
 
 $(NCURSES_BINARY): $(NCURSES_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	   $(MAKE1) -C $(NCURSES_DIR) \
+		$(MAKE1) -C $(NCURSES_DIR) $(TARGET_CONFIGURE_OPTS) \
 		libs panel menu form headers
 
 $(NCURSES_STAGING_BINARY): $(NCURSES_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	   $(MAKE1) -C $(NCURSES_DIR) \
-	   DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-	   install.libs install.data
+		$(MAKE1) -C $(NCURSES_DIR) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install.libs install.data
 
 $(NCURSES_TARGET_BINARY): $(NCURSES_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*.so* $(NCURSES_TARGET_DIR)/
