@@ -6,19 +6,23 @@ config DS_HAVE_DOT_CONFIG
 
 comment "General --------------------------------"
 
-config DS_AVM_VERSION_04_29	
-		bool	
+config DS_AVM_VERSION_04_29
+	bool
 config DS_AVM_VERSION_04_30
-		bool
+	bool
 config DS_AVM_VERSION_04_33
-		bool
+	bool
+config DS_AVM_VERSION_r4884
+	bool
+config DS_AVM_VERSION_r7203
+	bool
 
 choice
 
 	prompt "Hardware type"
 	default DS_TYPE_FON_WLAN_7170
 	help
-	    Select your box type here.
+		Select your box type here.
 
 	config DS_TYPE_300IP_AS_FON
 		select DS_AVM_VERSION_04_33
@@ -88,17 +92,17 @@ choice
 		bool "WLAN 3170"
 
 	config DS_TYPE_SPEEDPORT_W501V
-		select DS_AVM_VERSION_04_33
+		select DS_AVM_VERSION_r7203
 		select DS_BRANDING_tcom
 		bool "Speedport W501V"
 
 	config DS_TYPE_SPEEDPORT_W701V
-		select DS_AVM_VERSION_04_29
+		select DS_AVM_VERSION_r4884
 		select DS_BRANDING_tcom
 		bool "Speedport W701V"
 
 	config DS_TYPE_SPEEDPORT_W900V
-		select DS_AVM_VERSION_04_29
+		select DS_AVM_VERSION_r4884
 		select DS_BRANDING_tcom
 		bool "Speedport W900V"
 
@@ -108,54 +112,80 @@ choice
 
 endchoice
 
-config DS_AVM_VERSION_STRING
-	string
-	default "04.29"			if DS_AVM_VERSION_04_29
-	default "04.30"			if DS_AVM_VERSION_04_30
-	default "04.33"			if DS_AVM_VERSION_04_33
-	
-choice
-
-	prompt "Firmware language"
-	default DS_TYPE_LANG_DE
-
-	config DS_TYPE_LANG_DE
-		bool "de - deutsch"
-
-endchoice
-
 config DS_TYPE_LABOR
 	bool "Labor (EXPERIMENTAL)"
 	depends on DS_TYPE_FON_WLAN_7170
 	default n
 	help
-	    Enable this to compile the mod based on an AVM "labor" firmware.
+		Enable this to compile the mod based on an AVM "labor" firmware.
+
 choice
 
-    prompt "Labor version"
-    depends on DS_TYPE_LABOR
-    default DS_TYPE_LABOR_USB
+	prompt "Labor version"
+		depends on DS_TYPE_LABOR
+		default DS_TYPE_LABOR_USB
 
-    config DS_TYPE_LABOR_DSL
-    bool "DSL"
+	config DS_TYPE_LABOR_DSL
+		bool "DSL"
 
-    config DS_TYPE_LABOR_PHONE
-    bool "PHONE"
-    
-    config DS_TYPE_LABOR_USB
-    bool "USB"
-    
-    config DS_TYPE_LABOR_VPN
-    bool "VPN"
-    
-    config DS_TYPE_LABOR_WLAN
-    bool "WLAN"
-    
+	config DS_TYPE_LABOR_PHONE
+		bool "PHONE"
+
+	config DS_TYPE_LABOR_USB
+		bool "USB"
+
+	config DS_TYPE_LABOR_VPN
+		bool "VPN"
+
+	config DS_TYPE_LABOR_WLAN
+		bool "WLAN"
+
 endchoice
-    
+
+config DS_AVM_VERSION_STRING
+	string
+	default "04.29"			if DS_AVM_VERSION_04_29
+	default "04.30"			if DS_AVM_VERSION_04_30
+	default "04.33"			if DS_AVM_VERSION_04_33
+	default "r4884"			if DS_AVM_VERSION_r4884
+	default "r7203"			if DS_AVM_VERSION_r7203
+
+choice
+
+	prompt "Firmware language"
+		default DS_TYPE_LANG_DE
+
+	config DS_TYPE_LANG_DE
+		bool "de - deutsch"
+
+#	config DS_TYPE_LANG_A_CH
+#		bool "a-ch - deutsch"
+
+	config DS_TYPE_LANG_EN
+		bool "en - international"
+		depends on DS_TYPE_FON_WLAN_7140
+
+endchoice
+
 config DS_TYPE_LANG_STRING
 	string
 	default "de"			if DS_TYPE_LANG_DE
+	default "a-ch"			if DS_TYPE_LANG_A_CH
+	default "en"			if DS_TYPE_LANG_EN
+
+choice
+
+	prompt "Annex"
+		depends on DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN
+		default DS_TYPE_ANNEX_B
+
+	config DS_TYPE_ANNEX_A
+		bool "A"
+
+	config DS_TYPE_ANNEX_B
+		bool "B"
+
+endchoice
 
 config DS_TYPE_STRING
 	string
@@ -181,7 +211,7 @@ config DS_TYPE_STRING
 	default "7170_labor_vpn"	if DS_TYPE_LABOR_VPN
 	default "7170_labor_wlan"	if DS_TYPE_LABOR_WLAN
 	default "W501V"		if DS_TYPE_SPEEDPORT_W501V
-    	default "W701V"		if DS_TYPE_SPEEDPORT_W701V
+	default "W701V"		if DS_TYPE_SPEEDPORT_W701V
 	default "W900V"		if DS_TYPE_SPEEDPORT_W900V
 	default "custom"	if DS_TYPE_CUSTOM
 
@@ -200,404 +230,448 @@ config DS_INSTALL_BASE
 	select DS_LIB_libuClibc
 	default y
 	help
-	    This is mandatory
+		This is mandatory
+
+#overwrite AVM's fat and vfat module with our own because it segfaults
+config DS_INSTALL_MODULE
+	bool
+	select DS_MODULE_vfat	if DS_HAS_USB_HOST
+	default y
+	help
+		This is mandatory
 
 config DS_REPLACE_BUSYBOX
 	bool
 	default y
 	help
-	    This is mandatory
+		This is mandatory
 
 config DS_REPLACE_KERNEL
 	bool "Replace kernel"
-	depends on ! (DS_TYPE_LABOR || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V)
+	depends on ! DS_TYPE_LABOR
 	default n
 	help
-	    Replace AVM kernel with self-built kernel.
+		Replace AVM kernel with self-built kernel.
 
 config DS_TARGET_REF
 	string "Target ref"		if DS_TYPE_CUSTOM
-	default "8mb_26"		if DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_FON_WLAN_7170
-	default "4mb_26"		if DS_TYPE_2170 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050
+	default "8mb_26"		if \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_FON_WLAN_7170
+	default "4mb_26"		if \
+		DS_TYPE_2170 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050
 
 config DS_KERNEL_REF
 	string "Kernel ref"		if DS_TYPE_CUSTOM
-	default "8mb_26"		if DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7170
-	default "4mb_26"		if DS_TYPE_2170 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050
+	default "8mb_26"		if \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7170
+	default "4mb_26"		if \
+		DS_TYPE_2170 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050
 
 config DS_KERNEL_LAYOUT
 	string "Kernel ref"		if DS_TYPE_CUSTOM
-	default "ohio"			if DS_TYPE_2170 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V
-	default "ar7"			if DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170
+	default "ohio"			if \
+		DS_TYPE_2170 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V
+	default "ar7"			if \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170
 
 config DS_HIDDEN_ROOT
 	bool "Hidden root"		if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_2170 || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_CUSTOM
+	default y				if \
+		DS_TYPE_2170 || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_CUSTOM
 	help
-	    Some boxes do not have the root filesystem in the
-	    mtd table, it begins just after the kernel.
+		Some boxes do not have the root filesystem in the
+		mtd table, it begins just after the kernel.
 
 config DS_CONTIGUOUS_HIDDEN_ROOT
 	bool "Contiguous"		if DS_TYPE_CUSTOM
 	depends on DS_HIDDEN_ROOT
-	default n			if DS_TYPE_2170 || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_CUSTOM
+	default n				if \
+		DS_TYPE_2170 || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_CUSTOM
 	help
-	    A contiguous hidden squashfs starts where all
-	    hidden root filesystems start (just after the
-	    kernel), but is continued in filesystem mtd.
+		A contiguous hidden squashfs starts where all
+		hidden root filesystems start (just after the
+		kernel), but is continued in filesystem mtd.
 
 config DS_SQUASHFS_LZMA
 	bool "Lzma squashfs"		if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_2170 || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_CUSTOM
+	default y					if \
+		DS_TYPE_2170 || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_CUSTOM
 	help
-	    Is the squashfs compressed with lzma?
+		Is the squashfs compressed with lzma?
 
 config DS_ROOTFS_VARTAR
 	bool "RootFS contains var.tar"	if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_2170 || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   (DS_TYPE_CUSTOM && DS_HIDDEN_ROOT)
+	default y						if \
+		DS_TYPE_2170 || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7170 || \
+		(DS_TYPE_CUSTOM && DS_HIDDEN_ROOT)
 	default n			if (DS_TYPE_CUSTOM && ! DS_HIDDEN_ROOT)
 	help
-	    var.tar can be placed in the hidden squashfs
-	    or in the root filesystem at /var.tar
+		var.tar can be placed in the hidden squashfs
+		or in the root filesystem at /var.tar
 
 config DS_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if DS_TYPE_CUSTOM
-	default 119			if DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_CUSTOM && DS_HIDDEN_ROOT
-	default 59			if DS_TYPE_2170 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050
+	default 119					if \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_CUSTOM && DS_HIDDEN_ROOT
+	default 59				if \
+		DS_TYPE_2170 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050
 	help
-	    Number of 64K blocks in the kernel mtd device.
+		Number of 64K blocks in the kernel mtd device.
 
 config DS_FILESYSTEM_MTD_SIZE
 	int "Filesystem (64K blocks)"	if DS_TYPE_CUSTOM
-	depends on ! DS_HIDDEN_ROOT || \
-	           DS_CONTIGUOUS_HIDDEN_ROOT
+	depends on ! DS_HIDDEN_ROOT || DS_CONTIGUOUS_HIDDEN_ROOT
 	default 48			if DS_TYPE_CUSTOM
 	help
-	    Number of 64K blocks in the filesystem mtd device.
+		Number of 64K blocks in the filesystem mtd device.
 
 config DS_HAS_PHONE
 	bool "Has Phone"		if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_CUSTOM
-	default n			if DS_TYPE_2170 || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170
+	default y				if \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_CUSTOM
+	default n				if \
+		DS_TYPE_2170 || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170
 	help
-	    Select this if you have a box with phone support.
+		Select this if you have a box with phone support.
 
 config DS_HAS_WLAN
 	bool "Has WLAN"			if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_CUSTOM
-	default n			if DS_TYPE_2170 || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_300IP_AS_FON
+	default y				if \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_CUSTOM
+	default n				if \
+		DS_TYPE_2170 || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_300IP_AS_FON
 	help
-	    Select this if you have a box with WLAN.
+		Select this if you have a box with WLAN.
 
 config DS_HAS_USB
 	bool "Has USB"			if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_2170 || \
-					   DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 
-	default n			if DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_SPEEDPORT_W701V || \
-					   DS_TYPE_SPEEDPORT_W900V || \
-					   DS_TYPE_CUSTOM
+	default y				if \
+		DS_TYPE_2170 || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050
+	default n				if \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_CUSTOM
 	help
-	    Select this if you have a box with USB.
+		Select this if you have a box with USB.
 
 config DS_HAS_USB_HOST
 	bool "USB host"			if DS_TYPE_CUSTOM
-	default y			if DS_TYPE_2170 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7141 || \
-					   DS_TYPE_FON_WLAN_7150 || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_WLAN_3130 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_WLAN_3170 || \
-					   DS_TYPE_SPEEDPORT_W900V
-	default n			if DS_TYPE_WLAN_3020 || \
-					   DS_TYPE_WLAN_3030 || \
-					   DS_TYPE_FON || \
-					   DS_TYPE_300IP_AS_FON || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_SPEEDPORT_W501V || \
-					   DS_TYPE_SPEEDPORT_W701V
+	default y				if \
+		DS_TYPE_2170 || \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_SPEEDPORT_W900V
+	default n				if \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_FON || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V
 	help
-	    Select this if your USB port is a host adapter
+		Select this if your USB port is a host adapter
 
 comment "Brandings ------------------------------"
 	depends on ! DS_TYPE_SPEEDPORT_W701V && ! DS_TYPE_SPEEDPORT_W900V && ! DS_TYPE_CUSTOM
-	
+
 comment "Brandings (if exist) -------------------"
 	depends on DS_TYPE_CUSTOM
 
 config DS_BRANDING_1und1
 	bool "1&1"
-	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
-		   DS_TYPE_FON_5050 || \
-		   DS_TYPE_FON_5140 || \
-		   DS_TYPE_FON_WLAN || \
-		   DS_TYPE_FON_WLAN_7050 || \
-		   DS_TYPE_FON_WLAN_7141 || \
-		   DS_TYPE_FON_WLAN_7170 || \
-		   DS_TYPE_WLAN_3020 || \
-		   DS_TYPE_WLAN_3130 || \
-		   DS_TYPE_WLAN_3131 || \
-		   DS_TYPE_CUSTOM
+	depends on \
+		DS_TYPE_FON && DS_TYPE_LANG_DE || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_CUSTOM
 	default y
 	help
 		1&1 branding
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure to choose at least one branding. The firmware
-		will not work without any.
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
 
 config DS_BRANDING_avm
 	bool "AVM"
-	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
-		   DS_TYPE_2170 || \
-		   DS_TYPE_FON || \
-		   DS_TYPE_FON_5050 || \
-		   DS_TYPE_FON_5140 || \
-		   DS_TYPE_FON_WLAN || \
-		   DS_TYPE_FON_WLAN_7050 || \
-		   DS_TYPE_FON_WLAN_7140 || \
-		   DS_TYPE_FON_WLAN_7141 || \
-		   DS_TYPE_FON_WLAN_7150 || \
-		   DS_TYPE_FON_WLAN_7170 || \
-		   DS_TYPE_WLAN_3020 || \
-		   DS_TYPE_WLAN_3030 || \
-		   DS_TYPE_WLAN_3130 || \
-		   DS_TYPE_WLAN_3131 || \
-		   DS_TYPE_WLAN_3170 || \
-		   DS_TYPE_CUSTOM
+	depends on \
+		DS_TYPE_FON && DS_TYPE_LANG_DE || \
+		DS_TYPE_2170 || \
+		DS_TYPE_FON || \
+		DS_TYPE_FON_5050 || \
+		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_WLAN_3020 || \
+		DS_TYPE_WLAN_3030 || \
+		DS_TYPE_WLAN_3130 || \
+		DS_TYPE_WLAN_3131 || \
+		DS_TYPE_WLAN_3170 || \
+		DS_TYPE_CUSTOM
 	default y
 	help
 		AVM branding
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure to choose at least one branding. The firmware
-		will not work without any.
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
 
 config DS_BRANDING_avme
 	bool "AVM international"
-	depends on DS_TYPE_CUSTOM
+	depends on \
+		DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN || \
+		DS_TYPE_CUSTOM
 	default y
 	help
 		AVM international branding
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure to choose at least one branding. The firmware
-		will not work without any.
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
 
 config DS_BRANDING_aol
 	bool "AOL"
-	depends on DS_TYPE_FON || \
-		   DS_TYPE_FON_WLAN_7140 || \
-		   DS_TYPE_300IP_AS_FON || \
-		   DS_TYPE_CUSTOM
+	depends on \
+		DS_TYPE_FON || \
+		DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_CUSTOM
 	default y
 	help
 		AOL branding
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure to choose at least one branding. The firmware
-		will not work without any.
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
 
 config DS_BRANDING_arcor
 	bool "Arcor"
@@ -608,39 +682,50 @@ config DS_BRANDING_arcor
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure to choose at least one branding. The firmware
-		will not work without any.
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
 
 config DS_BRANDING_freenet
 	bool "Freenet"
-	depends on DS_TYPE_FON || \
-		   DS_TYPE_FON_WLAN_7150 || \
-		   DS_TYPE_300IP_AS_FON || \
-		   DS_TYPE_FON_WLAN_7170 || \
-		   DS_TYPE_CUSTOM
+	depends on \
+		DS_TYPE_FON || \
+		DS_TYPE_FON_WLAN_7150 || \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_CUSTOM
 	default y
 	help
 		Freenet branding
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure to choose at least one branding. The firmware
-		will not work without any.
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
 
 config DS_BRANDING_tcom
 	bool "T-Com"
-	depends on DS_TYPE_300IP_AS_FON || \
-		   DS_TYPE_SPEEDPORT_W501V || \
-		   DS_TYPE_SPEEDPORT_W701V || \
-		   DS_TYPE_SPEEDPORT_W900V
+	depends \
+		on DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V
 	default y
 	help
 		T-Com branding
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure to choose at least one branding. The firmware
-		will not work without any.
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
 
 
 comment "Patches --------------------------------"
@@ -649,77 +734,88 @@ config DS_REMOVE_HELP
 	bool "Remove help"
 	default n
 	help
-	    Removes the help pages from the web menu.
+		Removes the help pages from the web menu.
 
 config DS_REMOVE_ASSISTANT
 	bool "Remove assistant"
 	default n
 	help
-	    Removes the network assistant from the web menu.
-	    
+		Removes the network assistant from the web menu.
+
 config DS_REMOVE_LIBTR069
 	bool "Remove libtr069 (EXPERIMENTAL!)"
-	depends on DS_TYPE_300IP_AS_FON || DS_TYPE_FON || DS_TYPE_FON_WLAN || DS_TYPE_FON_WLAN_7050
+	depends on \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050
 	default n
 	help
-	    Removes libtr069 to save space.
+		Removes libtr069 to save space.
 
 config DS_REMOVE_USB_MODULE
 	bool "Remove avalanche_usb.ko (EXPERIMENTAL!)"
-	depends on  DS_TYPE_300IP_AS_FON || DS_TYPE_FON || DS_TYPE_FON_WLAN || DS_TYPE_FON_WLAN_7050
+	depends on \
+		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON || \
+		DS_TYPE_FON_WLAN || \
+		DS_TYPE_FON_WLAN_7050
 	default n
 	help
-	    Removes avalanche_usb.ko to save space.
+		Removes avalanche_usb.ko to save space.
 
 config DS_REMOVE_CDROM_ISO
 	bool "Remove cdrom.iso"
 	depends on DS_HAS_USB && ! (DS_TYPE_FON_WLAN_7050) && ! (DS_TYPE_WLAN_3130)
 	default n
 	help
-	    Removes the file /lib/modules/cdrom.iso.
-	    
+		Removes the file /lib/modules/cdrom.iso.
+
 #config DS_COPY_MODULES
 #	bool "Copy modules (EXPERIMENTAL!)"
 #	depends on DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
 #	select DS_REPLACE_KERNEL
 #	default n
 #	help
-#	    Copy modules from tk-firmware.
+#		Copy modules from tk-firmware.
 
 config DS_PATCH_ATA
 	bool "Patch ata"
-	depends on DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
+	depends on \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V
 	default n
 	help
-	    Patches the ATA mode configuration pages into the web menu.
+		Patches the ATA mode configuration pages into the web menu.
 
 config DS_PATCH_ENUM
 	bool "Patch enum"
 	depends on DS_HAS_PHONE
 	default n
 	help
-	    Patches the enum configuration pages into the web menu.
+		Patches the enum configuration pages into the web menu.
 
 #config DS_PATCH_INTERNATIONAL
 #	bool "Patch international"
 #	depends on DS_HAS_PHONE && DS_TYPE_LANG_DE && ! DS_TYPE_SPEEDPORT_W900V
 #	default y
 #	help
-#	    Reveals some options from the international firmware in the web menu.
+#		Reveals some options from the international firmware in the web menu.
 
 config DS_PATCH_SIGNED
 	bool "Patch web menu signed message"
 	depends on ! DS_TYPE_2170 && ! DS_TYPE_WLAN_3131 && ! DS_TYPE_WLAN_3170
 	default n
-        help
-	    Hides the "unsupported changes" message from the web interface.
+	help
+		Hides the "unsupported changes" message from the web interface.
 
 config DS_PATCH_USBSTORAGE
 	bool "Patch USB storage names"
 	depends on DS_HAS_USB_HOST
 	default n
-        help
-	    Change the name of USB storage dir to uStorXY
+	help
+		Change the name of USB storage dir to uStorXY
 
 config DS_PATCH_WEBSRV
 	bool "Replace AVM web server by httpd - EXPERIMENTAL"
@@ -728,8 +824,9 @@ config DS_PATCH_WEBSRV
 		Patch init scripts so BusyBox's httpd is used instead of AVM's websrv.
 		The websrv binary will be removed from the firmware image.
 
-		If "Remove UPnP daemon (igdd)" patch is also selected, 'libwebsrv.so'
-		will also be removed, because only those two binaries use it.
+		If "Remove UPnP daemon (igdd)" patch is also selected and "Integrate
+		Media Server from USB Labor firmware" is not selected, 'libwebsrv.so'
+		will also be removed, because only those three binaries use it.
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
@@ -741,13 +838,26 @@ config DS_PATCH_UPNP
 		it from firmware. Patch init scripts so they can cope with the
 		non-existent binary.
 
-		If "Replace AVM web server by httpd" patch is also selected,
-		'libwebsrv.so' will also be removed, because only those two binaries
-		use it.
+		If "Replace AVM web server by httpd" patch and "Integrate
+		Media Server from USB Labor firmware" is not selected, 'libwebsrv.so'
+		will also be removed, because only those three binaries use it.
 
 		ATTENTION: Make sure you deactivate all UPnP features in the web menu
 		before updating the firmware with this option. It may not be harmful
 		not to deactivate it, but there is no guarantee.
+
+		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
+config DS_PATCH_MEDIASRV
+	bool "Integrate Media Server from USB Labor firmware - EXPERIMENTAL"
+	depends on DS_HAS_USB_HOST
+	default n
+	help
+		Extract the media server from the USB Labor firmware and integrate
+		it into the new firmware. Patch two init scripts to reflect the
+		presence of the media server binary.
+
+		Don't forget to copy the labor firmware image to the 'dl' folder!
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
@@ -778,8 +888,8 @@ menu "Package selection"
 #	bool "Build dynamic packages (NOT SUPPORTED YET)"
 #	default n
 #	help
-#	    If this is selected, all packages, which are not
-#	    selected, will be build as dynamic packages.
+#		If this is selected, all packages, which are not
+#		selected, will be build as dynamic packages.
 
 source make/Config.in
 
@@ -791,71 +901,78 @@ config DS_DL_OVERRIDE
 	bool "Override firmware source"
 	default n
 	help
-	    Enable this to override automatically generated entries.
+		Enable this to override automatically generated entries.
 
 config DS_DL_SITE
-	string "Firmware site"																if DS_DL_OVERRIDE
+	string "Firmware site"		if DS_DL_OVERRIDE
 	depends on ! DS_TYPE_LABOR
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.2170/firmware/deutsch"			if DS_TYPE_2170
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch"			if DS_TYPE_FON || DS_TYPE_300IP_AS_FON
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5050/firmware"				if DS_TYPE_FON_5050
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5140/firmware"				if DS_TYPE_FON_5140
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/deutsch"			if DS_TYPE_FON_WLAN
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7050/firmware"			if DS_TYPE_FON_WLAN_7050
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"		if DS_TYPE_FON_WLAN_7140
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"		if DS_TYPE_FON_WLAN_7141
-	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"				if DS_TYPE_FON_WLAN_7150
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"		if DS_TYPE_FON_WLAN_7170
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.sl_wlan/firmware"				if DS_TYPE_WLAN_3020
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3030/firmware"			if DS_TYPE_WLAN_3030
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3130/firmware"			if DS_TYPE_WLAN_3130
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3131/firmware/deutsch"		if DS_TYPE_WLAN_3131
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3170/firmware/deutsch"		if DS_TYPE_WLAN_3170
-	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport_W501V" 		if DS_TYPE_SPEEDPORT_W501V
-	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V"	if DS_TYPE_SPEEDPORT_W701V
-	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20900V"		if DS_TYPE_SPEEDPORT_W900V
-	default "ftp://ftp.avm.de/fritz.box/..."																					if DS_TYPE_CUSTOM
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.2170/firmware/deutsch"						if DS_TYPE_2170
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch"						if DS_TYPE_FON || DS_TYPE_300IP_AS_FON
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5050/firmware"							if DS_TYPE_FON_5050
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5140/firmware"							if DS_TYPE_FON_5140
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/deutsch"					if DS_TYPE_FON_WLAN
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7050/firmware"					if DS_TYPE_FON_WLAN_7050
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"			if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/english/annex_a"	if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/english/annex_b"	if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"			if DS_TYPE_FON_WLAN_7141
+	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"								if DS_TYPE_FON_WLAN_7150
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"			if DS_TYPE_FON_WLAN_7170
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.sl_wlan/firmware"							if DS_TYPE_WLAN_3020
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3030/firmware"						if DS_TYPE_WLAN_3030
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3130/firmware"						if DS_TYPE_WLAN_3130
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3131/firmware/deutsch"				if DS_TYPE_WLAN_3131
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3170/firmware/deutsch"				if DS_TYPE_WLAN_3170
+	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport_W501V" 				if DS_TYPE_SPEEDPORT_W501V
+	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V"		if DS_TYPE_SPEEDPORT_W701V
+	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20900V"			if DS_TYPE_SPEEDPORT_W900V
+	default "ftp://ftp.avm.de/fritz.box/..."												if DS_TYPE_CUSTOM
 
 config DS_DL_SOURCE
-	string "Firmware source"						if DS_DL_OVERRIDE
-	default "fritz.box_2170.51.04.34.image"					if DS_TYPE_2170 
-	default "fritz.box_fon.06.04.33.image"					if DS_TYPE_FON || DS_TYPE_300IP_AS_FON
-	default "fritz.box_fon_5050.12.04.31.image"				if DS_TYPE_FON_5050
-	default "fritz.box_fon_5140.43.04.37.image"				if DS_TYPE_FON_5140
-	default "fritz.box_fon_wlan.08.04.34.image"				if DS_TYPE_FON_WLAN
-	default "fritz.box_fon_wlan_7050.14.04.33.image"			if DS_TYPE_FON_WLAN_7050
-	default "fritz.box_fon_wlan_7170.29.04.37.image"			if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
-	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"			if DS_TYPE_FON_WLAN_7140
-	default "fritz.box_fon_wlan_7141.40.04.37.image"			if DS_TYPE_FON_WLAN_7141
-	default "fritz.fon_7150.annexb.38.04.32.image"				if DS_TYPE_FON_WLAN_7150
-	default "FRITZ.Box_Fon_WLAN_7170.29.04.34-7584.image"			if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7170_PHONE.29.04.34-7269.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_PHONE
-	default "FRITZ.Box_Fon_WLAN_7170_AURA.AnnexB.29.04.34-7553.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_USB
-	default "FRITZ.Box_Fon_WLAN_7170_VPN.AnnexB.29.04.34-7728.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_VPN
-	default "FRITZ.Box_Fon_WLAN_7170_CORE.AnnexB.29.04.35-7816.image"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_WLAN
-	default "fritz.box_sl_wlan.09.04.34.image"				if DS_TYPE_WLAN_3020
-	default "fritz.box_wlan_3030.21.04.34.image"				if DS_TYPE_WLAN_3030
-	default "fritz.box_wlan_3131.50.04.34.image"				if DS_TYPE_WLAN_3131
-	default "fritz.box_wlan_3130.44.04.34.image"				if DS_TYPE_WLAN_3130
-	default "fritz.box_wlan_3170.49.04.34.image"				if DS_TYPE_WLAN_3170
-        default "fw_Speedport_W501V_v_28.04.38.image"				if DS_TYPE_SPEEDPORT_W501V
-	default "fw_Speedport_W701V_V33.04.26.image"				if DS_TYPE_SPEEDPORT_W701V
-	default "fw_Speedport_W_900V.34.04.21.image"				if DS_TYPE_SPEEDPORT_W900V
-	default "fritz.box..."							if DS_TYPE_CUSTOM
-                                                            
-config DS_DL_SITE2                                          
-	string "AVM web interface DL Site"	if DS_DL_OVERRIDE       
-	depends on DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
-        default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"	if DS_TYPE_SPEEDPORT_W501V
+	string "Firmware source"	if DS_DL_OVERRIDE
+	default "fritz.box_2170.51.04.34.image"									if DS_TYPE_2170
+	default "fritz.box_fon.06.04.33.image"									if DS_TYPE_FON || DS_TYPE_300IP_AS_FON
+	default "fritz.box_fon_5050.12.04.31.image"								if DS_TYPE_FON_5050
+	default "fritz.box_fon_5140.43.04.37.image"								if DS_TYPE_FON_5140
+	default "fritz.box_fon_wlan.08.04.34.image"								if DS_TYPE_FON_WLAN
+	default "fritz.box_fon_wlan_7050.14.04.33.image"						if DS_TYPE_FON_WLAN_7050
+	default "fritz.box_fon_wlan_7170.29.04.37.image"						if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
+	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"					if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE
+	default "fritz.box_fon_wlan_7140.annexa.en.39.04.34.image"				if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "fritz.box_fon_wlan_7140.annexb.en.30.04.34.image"				if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
+	default "fritz.box_fon_wlan_7141.40.04.37.image"						if DS_TYPE_FON_WLAN_7141
+	default "fritz.fon_7150.annexb.38.04.32.image"							if DS_TYPE_FON_WLAN_7150
+	default "FRITZ.Box_Fon_WLAN_7170_LabDSL.AnnexB.29.04.99-7995.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_DSL
+	default "FRITZ.Box_Fon_WLAN_7170_PHONE.29.04.34-7269.image"				if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_PHONE
+	default "FRITZ.Box_Fon_WLAN_7170_AURA.AnnexB.29.04.34-7553.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_USB
+	default "FRITZ.Box_Fon_WLAN_7170_VPN.AnnexB.29.04.34-7728.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_VPN
+	default "FRITZ.Box_Fon_WLAN_7170_CORE.AnnexB.29.04.98-8020.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR && DS_TYPE_LABOR_WLAN
+	default "fritz.box_sl_wlan.09.04.34.image"								if DS_TYPE_WLAN_3020
+	default "fritz.box_wlan_3030.21.04.34.image"							if DS_TYPE_WLAN_3030
+	default "fritz.box_wlan_3131.50.04.34.image"							if DS_TYPE_WLAN_3131
+	default "fritz.box_wlan_3130.44.04.34.image"							if DS_TYPE_WLAN_3130
+	default "fritz.box_wlan_3170.49.04.34.image"							if DS_TYPE_WLAN_3170
+	default "fw_Speedport_W501V_v_28.04.38.image"							if DS_TYPE_SPEEDPORT_W501V
+	default "fw_Speedport_W701V_V33.04.26.image"							if DS_TYPE_SPEEDPORT_W701V
+	default "fw_Speedport_W_900V.34.04.21.image"							if DS_TYPE_SPEEDPORT_W900V
+	default "fritz.box..."													if DS_TYPE_CUSTOM
+
+config DS_DL_SITE2
+	string "AVM web interface DL Site"		if DS_DL_OVERRIDE
+	depends on \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"	if DS_TYPE_SPEEDPORT_W501V
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch" 	if DS_TYPE_SPEEDPORT_W701V
-	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"			if DS_TYPE_SPEEDPORT_W900V
-	
+	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"						if DS_TYPE_SPEEDPORT_W900V
+
 config DS_DL_SOURCE2
 	string "AVM web interface firmware source"	if DS_DL_OVERRIDE
 	depends on DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
-        default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"	if DS_TYPE_SPEEDPORT_W501V
-	default "fritz.box_fon_wlan_7170.29.04.37.image" 	if DS_TYPE_SPEEDPORT_W701V
-	default "fritz.fon_7150.annexb.38.04.32.image"   	if DS_TYPE_SPEEDPORT_W900V
+	default "fritz.box_fon_wlan_7141.40.04.37.image"	if DS_TYPE_SPEEDPORT_W501V
+	default "fritz.box_fon_wlan_7170.29.04.37.image"	if DS_TYPE_SPEEDPORT_W701V
+	default "fritz.fon_7150.annexb.38.04.32.image"		if DS_TYPE_SPEEDPORT_W900V
 
 menu "DS-Mod package download sites"
 
@@ -875,13 +992,13 @@ config DS_MOD_DL_SITE_1
 		build process, all mirrors defined here are triggered on a random basis,
 		so as not to always use a certain mirror first. This is a cheap kind of
 		load balancing.
-		
+
 		Note: We recommend you to only set #5 to a user-defined value, if
 		necessary. Necessary means that #1 - #4 are currently unavailable or
 		the desired package cannot be found on either of them. In addition to
 		the default servers #1 and #2, many packages have another server name
 		in their make file, so a user-defined mirror should rarely be necessary.
-	    
+
 comment "Download site #2 - default: http://dsmod.wirsind.info"
 
 config DS_MOD_DL_SITE_2
@@ -893,13 +1010,13 @@ config DS_MOD_DL_SITE_2
 		build process, all mirrors defined here are triggered on a random basis,
 		so as not to always use a certain mirror first. This is a cheap kind of
 		load balancing.
-		
+
 		Note: We recommend you to only set #5 to a user-defined value, if
 		necessary. Necessary means that #1 - #4 are currently unavailable or
 		the desired package cannot be found on either of them. In addition to
 		the default servers #1 and #2, many packages have another server name
 		in their make file, so a user-defined mirror should rarely be necessary.
-	    
+
 comment "Download site #3 - default: http://dsmod.magenbrot.net"
 
 config DS_MOD_DL_SITE_3
@@ -911,13 +1028,13 @@ config DS_MOD_DL_SITE_3
 		build process, all mirrors defined here are triggered on a random basis,
 		so as not to always use a certain mirror first. This is a cheap kind of
 		load balancing.
-		
+
 		Note: We recommend you to only set #5 to a user-defined value, if
 		necessary. Necessary means that #1 - #4 are currently unavailable or
 		the desired package cannot be found on either of them. In addition to
 		the default servers #1 and #2, many packages have another server name
 		in their make file, so a user-defined mirror should rarely be necessary.
-	    
+
 comment "Download site #4 - default: empty (reserved for later use)"
 
 config DS_MOD_DL_SITE_4
@@ -928,13 +1045,13 @@ config DS_MOD_DL_SITE_4
 		build process, all mirrors defined here are triggered on a random basis,
 		so as not to always use a certain mirror first. This is a cheap kind of
 		load balancing.
-		
+
 		Note: We recommend you to only set #5 to a user-defined value, if
 		necessary. Necessary means that #1 - #4 are currently unavailable or
 		the desired package cannot be found on either of them. In addition to
 		the default servers #1 and #2, many packages have another server name
 		in their make file, so a user-defined mirror should rarely be necessary.
-	    
+
 comment "Download site #5 - user-defined"
 
 config DS_MOD_DL_SITE_5
@@ -945,30 +1062,30 @@ config DS_MOD_DL_SITE_5
 		build process, all mirrors defined here are triggered on a random basis,
 		so as not to always use a certain mirror first. This is a cheap kind of
 		load balancing.
-		
+
 		Note: We recommend you to only set #5 to a user-defined value, if
 		necessary. Necessary means that #1 - #4 are currently unavailable or
 		the desired package cannot be found on either of them. In addition to
 		the default servers #1 and #2, many packages have another server name
 		in their make file, so a user-defined mirror should rarely be necessary.
-	    
+
 endmenu
 
 config DS_VERBOSITY_LEVEL
 	int "Verbosity level (0-2)"
 	default 0
 	help
-	    Verbosity level of the fwmod script and tar.
-	    0 is the least and 2 the most information.
+		Verbosity level of the fwmod script and tar.
+		0 is the least and 2 the most information.
 
 choice
 
 	prompt "Favicon"
 	default DS_FAVICON_NONE
 	help
-	    Adds small favicons to the document root.
+		Adds small favicons to the document root.
 
-        config DS_FAVICON_NONE
+	config DS_FAVICON_NONE
 		bool "none"
 
 	config DS_FAVICON_DSL123
@@ -985,13 +1102,13 @@ config DS_DEVELOPER_VERSION_STRING
 	help
 		Add SVN (Subversion) repository revision number to firmware image name
 		and to /etc/.subversion, /etc/version within firmware itself.
-		
+
 		The revision number string is generated by the client command line tool
 		svnversion and may include switch/modify flags and/or a range of
 		version numbers, depending on the current state of the working
 		directory at the time of generation. See 'svnversion --help' for
 		details.
-		
+
 		ATTENTION! This option is for developers working on checked-out
 		versions of the DS-Mod source code only and requires svnversion to be
 		installed.
@@ -1007,7 +1124,7 @@ choice
 	prompt "SquashFS block size"
 	default DS_SQUASHFS_BLOCKSIZE_65536
 	help
-	    Block size of the root filesystem (and hidden SquashFS)
+		Block size of the root filesystem (and hidden SquashFS)
 
 	config DS_SQUASHFS_BLOCKSIZE_ORIG
 		bool "original"
@@ -1021,39 +1138,31 @@ choice
 endchoice
 
 menu "BusyBox options"
-depends on DS_REPLACE_BUSYBOX
-
-source make/busybox/Config.in
-
+	depends on DS_REPLACE_BUSYBOX
+	source make/busybox/Config.in
 endmenu
 
 menu "Kernel modules"
-
-source kernel/Config.in
-
+	source kernel/Config.in
 endmenu
 
 menu "Shared libraries"
-
-source make/libs/Config.in
-
+	source make/libs/Config.in
 endmenu
 
 menu "Compiler options"
 
 choice
-
 	prompt "Toolchains"
 	default DS_DOWNLOAD_TOOLCHAIN
 	help
-	    Download Toolchain, build toolchain
-	
+		Download Toolchain, build toolchain
+
 	config DS_DOWNLOAD_TOOLCHAIN
-	    bool "Download and use precompiled toolchain"    
-	
+		bool "Download and use precompiled toolchain"
+
 	config DS_BUILD_TOOLCHAIN
-	    bool "Build toolchain (requires 4GB diskspace)"
-	
+		bool "Build toolchain (requires 4GB diskspace)"
 endchoice
 
 config DS_TARGET_CROSS
@@ -1069,10 +1178,10 @@ config DS_TARGET_CFLAGS
 	default "-Os -W -Wall -pipe -march=mips32 -mips32 -Wa,--trap -msoft-float"
 
 config DS_JLEVEL
-        int "Number of jobs to run simultaneously"
+	int "Number of jobs to run simultaneously"
 	default "1"
 	help
-	    Number of jobs to run simultanesouly
+		Number of jobs to run simultanesouly
 
 config DS_KERNEL_CROSS
 	string

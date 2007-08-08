@@ -22,7 +22,7 @@ $(DL_DIR)/$(KNOCK_PKG_SOURCE): | $(DL_DIR)
 $(KNOCK_DIR)/.unpacked: $(DL_DIR)/$(KNOCK_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(KNOCK_SOURCE)
 	#for i in $(KNOCK_MAKE_DIR)/patches/*.patch; do \
-	#	patch -d $(KNOCK_DIR) -p1 < $$i; \
+	#	$(PATCH_TOOL) $(KNOCK_DIR) $$i; \
 	#done
 	touch $@
 

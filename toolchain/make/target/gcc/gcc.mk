@@ -44,7 +44,7 @@ $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GCC_SOURCE)
 	for i in $(GCC_MAKE_DIR)/$(GCC_VERSION)/*.patch; do \
-		patch -d $(GCC_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(GCC_DIR) $$i; \
 	done
 	touch $@
 
@@ -69,6 +69,7 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked
 		--disable-__cxa_atexit \
 		--enable-target-optspace \
 		--with-gnu-ld \
+		--disable-libmudflap \
 		$(DISABLE_NLS) \
 		$(GCC_EXTRA_CONFIG_OPTIONS) \
 	);
@@ -114,6 +115,7 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked
 		--disable-__cxa_atexit \
 		--enable-target-optspace \
 		--with-gnu-ld \
+		--disable-libmudflap \
 		$(GCC_SHARED_LIBGCC) \
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
@@ -130,7 +132,7 @@ $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR2) install
 	# Strip the host binaries
 ifeq ($(GCC_STRIP_HOST_BINARIES),true)
-	-strip --strip-all -R .note -R .comment $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/*
+	-strip --strip-all -R .note -R .comment $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-*
 endif
 	# Set up the symlinks to enable lying about target name.
 	set -e; \

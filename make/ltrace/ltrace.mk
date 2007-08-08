@@ -30,7 +30,7 @@ $(DL_DIR)/$(LTRACE_PKG_SOURCE): | $(DL_DIR)
 $(LTRACE_DIR)/.unpacked: $(DL_DIR)/$(LTRACE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LTRACE_SOURCE)
 	for i in $(LTRACE_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(LTRACE_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(LTRACE_DIR) $$i; \
 	done
 	touch $@
 
@@ -75,7 +75,7 @@ $(LTRACE_DIR)/.configured: $(LTRACE_DIR)/configure
 	touch $@
 
 $(PACKAGES_DIR)/.ltrace-$(LTRACE_VERSION): $(DL_DIR)/$(LTRACE_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LTRACE_PKG_SOURCE)
+	@tar -C $(PACKAGES_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LTRACE_PKG_SOURCE)
 	@touch $@
 
 $(LTRACE_CONF): $(LTRACE_DIR)/.unpacked

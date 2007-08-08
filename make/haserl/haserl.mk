@@ -1,4 +1,4 @@
-HASERL_VERSION:=0.9.16
+HASERL_VERSION:=0.9.18
 HASERL_SOURCE:=haserl-$(HASERL_VERSION).tar.gz
 HASERL_SITE:=http://mesh.dl.sourceforge.net/sourceforge/haserl
 HASERL_DIR:=$(SOURCE_DIR)/haserl-$(HASERL_VERSION)

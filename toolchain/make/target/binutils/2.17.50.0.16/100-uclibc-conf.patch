@@ -1,6 +1,6 @@
---- binutils-2.16.91.0.7/bfd/configure
-+++ binutils-2.16.91.0.7/bfd/configure
-@@ -3576,7 +3576,7 @@
+--- bfd/configure.orig	2007-05-11 17:23:19.000000000 +0200
++++ bfd/configure	2007-07-29 05:21:45.000000000 +0200
+@@ -4314,7 +4314,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -9,9 +9,9 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- binutils-2.16.91.0.7/binutils/configure
-+++ binutils-2.16.91.0.7/binutils/configure
-@@ -3411,7 +3411,7 @@
+--- binutils/configure.orig	2007-04-19 16:14:24.000000000 +0200
++++ binutils/configure	2007-07-29 05:21:45.000000000 +0200
+@@ -4145,7 +4145,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -20,18 +20,18 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- binutils-2.16.91.0.7/configure
-+++ binutils-2.16.91.0.7/configure
-@@ -1270,7 +1270,7 @@
+--- configure.orig	2007-03-23 16:41:48.000000000 +0100
++++ configure	2007-07-29 05:21:45.000000000 +0200
+@@ -2195,7 +2195,7 @@
    am33_2.0-*-linux*)
      noconfigdirs="$noconfigdirs ${libgcj} target-newlib target-libgloss"
      ;;
 -  sh-*-linux*)
 +  sh*-*-linux*)
      noconfigdirs="$noconfigdirs ${libgcj} target-newlib target-libgloss"
-     ;;    
+     ;;
    sh*-*-pe|mips*-*-pe|*arm-wince-pe)
-@@ -1578,7 +1578,7 @@
+@@ -2490,7 +2490,7 @@
    romp-*-*)
      noconfigdirs="$noconfigdirs bfd binutils ld gas opcodes target-libgloss ${libgcj}"
      ;;
@@ -40,9 +40,9 @@
      case "${host}" in
        i[3456789]86-*-vsta) ;; # don't add gprof back in
        i[3456789]86-*-go32*) ;; # don't add gprof back in
---- binutils-2.16.91.0.7/configure.ac
-+++ binutils-2.16.91.0.7/configure.ac
-@@ -468,7 +468,7 @@
+--- configure.ac.orig	2007-03-23 16:41:48.000000000 +0100
++++ configure.ac	2007-07-29 05:21:45.000000000 +0200
+@@ -484,7 +484,7 @@
    am33_2.0-*-linux*)
      noconfigdirs="$noconfigdirs ${libgcj} target-newlib target-libgloss"
      ;;
@@ -51,7 +51,7 @@
      noconfigdirs="$noconfigdirs ${libgcj} target-newlib target-libgloss"
      ;;    
    sh*-*-pe|mips*-*-pe|*arm-wince-pe)
-@@ -776,7 +776,7 @@
+@@ -779,7 +779,7 @@
    romp-*-*)
      noconfigdirs="$noconfigdirs bfd binutils ld gas opcodes target-libgloss ${libgcj}"
      ;;
@@ -60,8 +60,8 @@
      case "${host}" in
        i[[3456789]]86-*-vsta) ;; # don't add gprof back in
        i[[3456789]]86-*-go32*) ;; # don't add gprof back in
---- binutils-2.16.91.0.7/gas/configure
-+++ binutils-2.16.91.0.7/gas/configure
+--- gas/configure.orig	2007-05-11 17:23:20.000000000 +0200
++++ gas/configure	2007-07-29 05:21:45.000000000 +0200
 @@ -3411,7 +3411,7 @@
    ;;
  
@@ -71,10 +71,10 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- binutils-2.16.91.0.7/gprof/configure
-+++ binutils-2.16.91.0.7/gprof/configure
-@@ -3419,6 +3419,11 @@
-   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
+--- gprof/configure.orig	2007-01-03 20:49:13.000000000 +0100
++++ gprof/configure	2007-07-29 05:21:45.000000000 +0200
+@@ -3413,6 +3413,11 @@
+   lt_cv_deplibs_check_method=pass_all
    ;;
  
 +linux-uclibc*)
@@ -85,9 +85,9 @@
  netbsd* | knetbsd*-gnu)
    if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
      lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$'
---- binutils-2.16.91.0.7/ld/configure
-+++ binutils-2.16.91.0.7/ld/configure
-@@ -3413,7 +3413,7 @@
+--- ld/configure.orig	2007-04-19 16:14:24.000000000 +0200
++++ ld/configure	2007-07-29 05:21:45.000000000 +0200
+@@ -3412,7 +3412,7 @@
    ;;
  
  # This must be Linux ELF.
@@ -96,8 +96,8 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- binutils-2.16.91.0.7/libtool.m4
-+++ binutils-2.16.91.0.7/libtool.m4
+--- libtool.m4.orig	2006-02-14 00:10:15.000000000 +0100
++++ libtool.m4	2007-07-29 05:21:45.000000000 +0200
 @@ -739,7 +739,7 @@
    ;;
  
@@ -107,8 +107,8 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
---- binutils-2.16.91.0.7/ltconfig
-+++ binutils-2.16.91.0.7/ltconfig
+--- ltconfig.orig	2006-07-15 20:23:48.000000000 +0200
++++ ltconfig	2007-07-29 05:21:45.000000000 +0200
 @@ -602,6 +602,7 @@
  
  # Transform linux* to *-*-linux-gnu*, to support old configure scripts.
@@ -126,9 +126,9 @@
    version_type=linux
    need_lib_prefix=no
    need_version=no
---- binutils-2.16.91.0.7/opcodes/configure
-+++ binutils-2.16.91.0.7/opcodes/configure
-@@ -3579,7 +3579,7 @@
+--- opcodes/configure.orig	2007-03-16 16:48:30.000000000 +0100
++++ opcodes/configure	2007-07-29 05:21:45.000000000 +0200
+@@ -3578,7 +3578,7 @@
    ;;
  
  # This must be Linux ELF.

@@ -2,6 +2,165 @@ $Id$
 
 Latest changes:
 
+=== release ds26-15.2 ===
+
+- Build system:
+    * Makefile: be more tolerant towards users of SUSE oder Mandriva
+      distributions using inofficial GNU diffutils-2.8.7 package (official
+      version is 2.8.1) by using '-U 0' instead of '-u0'.
+    * push_firmware.sh: add heuristic check for 'kernel.image' magic bytes and
+      for firmware tar image erroneously specified as parameter. Add required
+      package 'util-linux' for 'hexdump' to cygwin prerequisite notes.
+    * fwmod: include .config and addon/static.pkg into firmware image for
+      further reference, e.g. user support
+    * Menuconfig online help: more precisely describe that each firmware needs
+      not only at least one branding, but that this branding must correspond
+      to the one defined in the boot loader environment. The shell command for
+      determining it is also provided in the help text.
+    * GCC 4.2.1
+    * Binutils 2.17.50.0.17
+    * Add "replace kernel" capability to Speedport configurations by
+      integrating T-Com GPL sources (r4884 for W701V & W900V, r7203 for W501V)
+    * Move definition of VERBOSE variable from make/Makefile.in to Makefile,
+      because it is not only used for packages, but also for tools and
+      toolchain. I had errors during "make tools", because in my local
+      environment, there was VERBOSE=no, and such effects should be avoided.
+      Maybe we should think about a main Makefile.in.
+    * Libmudflap not needed in toolchain (gcc.mk),
+      cf. https://dev.openwrt.org/changeset/7531
+    * uClibc: remove AVM_VERSION form config so there is only one config file
+      for all versions, because there were no differences between versions
+      except LFS.
+    * Move 'modpatch' shell function to tools/ds_patch and dot-include it from
+      there.
+    * ds_patch works as usual and still reacts to DS_VERBOSITY_LEVEL and
+      AUTO_FIX_PATCHES. Some improvements:
+        + script can also be executed directly
+        + check for valid number of paramaters
+        + usage help
+        + new optional 3rd parameter for 'patch -p' path level
+        + react to "$VERBOSE"=="-v" with verbose output so as to be prepared
+          for script calls from *.mk which are planned to replace direct
+          'patch' calls. This should help leverage the auto-fix feature to
+          tools, package and toolchain source code patches in the future.
+        + handle case of empty original file
+        + add unsupported, but practical little function 'strip_patch_level'
+          which was used to unify 200+ patches.
+    * Makefiles *.mk: replace all direct calls to 'patch' from *.mk by calls
+      to newly defined variable 'PATCH_TOOL:=$(TOOLS_DIR)/ds_patch'.
+    * Canonise all source code patches to patch level 0 (-p0). Auto-fix a lot
+      of patches by calling all available *-source targets from tools,
+      packages and toolchain. Statistics: 250+ patches checked, 70+ updated.
+      200+ hunks did not fit perfectly and were auto-fixed, 34 of them with
+      fuzz 1 (18) or fuzz 2 (16).
+
+- New packages, libs, modules, tools, hooks:
+    * Integrate Media Server from USB Labor (by derheimi) for boxes with USB
+      host; needs testing
+    * Rrdtool 1.2.23
+    * Collectd 4.0.5
+    * Libart 2.3.19
+    * Libfreetype 2.1.10
+    * Libpng 1.2.10
+    * GLib 2.12.12 (lib version 0.1200.12)
+    * Libiconv 1.9.1 (lib version 2.2.0)
+    * Gettext (libintl) 0.16.1 (lib version 8.0.1)
+
+- Updated packages, libs, modules, patches:
+    * NetSNMP bugfix provided by derheimi
+      (cf. http://www.ip-phone-forum.de/showpost.php?p=902808)
+      and upgrade DS-Mod package version to 0.4b
+    * NTFS-3G 1.710
+    * Tor 0.1.2.16: critical security bugfix, see
+      http://archives.seul.org/or/announce/Aug-2007/msg00000.html;
+      major bugfixes as described in
+      http://archives.seul.org/or/announce/Jul-2007/msg00000.html.
+    * Ctorrent dnh3.2
+    * Haserl 0.9.18 featuring FIFO (pipe) upload capability, so an uploaded
+      archive ist not stored on the box twice (packed and extracted), but can
+      be uncompressed on the fly. This is used by the new firmware update
+      assistant (see below).
+
+- Firmware updates:
+    * 7170: Labor DSL 29.04.99-7995
+    * 7170: Labor WLAN 29.04.98-8020
+    * 7140: integrate international versions
+        + English, annex A: 39.04.34
+        + English, annex B: 30.04.34
+
+- BusyBox:
+    * wget patch provided by RalfFriedl: URL with user/password does not work.
+      Uuencode needs string length, not buffer length. NOTE: fixed (in a
+      different way) in upstream since rev. #18955, thus patch can be removed
+      in the future.
+
+- Other stuff:
+    * DS-Mod web interface, part 1: layout and language
+        + Change layout a little bit: Both graphical bars now show the
+          percentage on the right hand side of the bar. Both bars show usage
+          information in a common way ("x of y KB used").
+        + Rearrange buttons on the bottom so they are all the same size,
+          resulting in a cleaner layout. Also reorder them so as to make
+          "reboot" the last one.
+        + Update some de/en language strings (only on main screen, not on
+          subscreens)
+    * DS-Mod web interface, part 2: new firmware update button
+        + The new update assistant lets the user select a FW image and choose
+          if he wants to stop AVM services before flashing
+          (prepare_fwupgrade).
+        + After successful upload, the FW is extracted (tar) and /var/install
+          is called.
+        + Subsequently the output of all steps is shown to the user along with
+          the content of /var/post_install, if it exists.
+        + It is then up to the user if he wants to reboot ("real" FW update)
+          by clicking the corresponding button on the main screen or continue
+          working without a reboot (pseudo update for installing/activating
+          some add-on not requiring FW flashing).
+        + Even if /var/install has been executed successfully and
+          /var/post_install has been created, the user may choose to manually
+          delete post_install in order to interrupt the firmware update
+          process, because if a reboot takes place later and post_install is
+          not available, the firmware will not be flashed, even if
+          /var/tmp/kernel.image still exists. This provides the user with
+          maximum flexibility (and self-responsibility).
+        + Talking about self-responsibility: The assistant does NOT stop any
+          DS-Mod services. If and which ones should be stopped is up to the
+          user who should make up his mind and act accordingly BEFORE clicking
+          the update button.
+    * Auto-select vfat.ko in order to overwrite AVM's buggy fat and vfat
+      modules with our own versions, because they segfault. This auto-
+      selection can be reverted as soon as AVM provides fixed firmwares.
+    * NTFS-3G + FUSE: fix problems
+    * Several NetSNMP makefile fixes
+    * 2170: change kernel layout from ar7 to ohio
+    * Bintuils: add patch by spambin + several other patches and enhancements
+    * Mtr: forgotten dependency ncurses
+    * Transmission: fix problem with ar and ranlib
+    * W900V: 5 answering machines are better than one
+    * Kernel patches: add + update several ones
+    * Rcapid: because of ongoing download site access problems, rcapid.tgz was
+      put on our mirrors, which is not a licence problem because of the GPL
+      the package is under. Thus, the source package is now downloaded using
+      tools/ds_download.
+    * Inotify-tools: fix typo in makefile
+    * W501V: fix firmware patches (don't replace multid, don't copy igdd and
+      libs, use 7141 as tk-firmware)
+    * Speedports: symlink '/usr/www/<oem>' should always point to
+      '/usr/www/all', not just 'all', otherwise LCR Auto Updater cannot be
+      initiated properly (mount -o bind failure)
+    * 300IP as Fon: fix symlink (boot failure after factory reset)
+    * Libelf was missing in make/libs/Makefile.in
+    * W701V: fix kernel oops
+    * W701V: update web interface by adapting patch to Speedport2Fritz
+    * Kernel build: disable NTFS module, enable UnionFS module
+    * Gdb for target: fix makefile; add GDB_STAGING_DIR and make it order-only
+      prerequisite for gdb target binaries, so the directory is created on
+      demand
+    * Libffi-sable: fix download URL
+    * OpenSSL: build with zlib-dynamic
+    * tools/depmod.pl: dos2unix line feeds
+
+
 === release ds26-15.1 ===
 
 - Build system:

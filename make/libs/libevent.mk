@@ -15,7 +15,7 @@ $(DL_DIR)/$(LIBEVENT_SOURCE): | $(DL_DIR)
 $(LIBEVENT_DIR)/.unpacked: $(DL_DIR)/$(LIBEVENT_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBEVENT_SOURCE)
 	for i in $(LIBEVENT_MAKE_DIR)/patches/*.libevent.patch; do \
-		patch -d $(LIBEVENT_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(LIBEVENT_DIR) $$i; \
 	done
 	touch $@
 
@@ -53,11 +53,8 @@ $(LIBEVENT_DIR)/.configured: $(LIBEVENT_DIR)/.unpacked
 	touch $@
 
 $(LIBEVENT_BINARY): $(LIBEVENT_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(LIBEVENT_DIR) \
-		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		libevent.la
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	   $(MAKE) -C $(LIBEVENT_DIR)
 
 $(LIBEVENT_STAGING_BINARY): $(LIBEVENT_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \

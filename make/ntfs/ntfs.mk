@@ -1,11 +1,11 @@
-NTFS_VERSION:=1.616
-NTFS_LIB_VERSION:=4.0.0
+NTFS_VERSION:=1.710
+NTFS_LIB_VERSION:=5.0.0
 NTFS_SOURCE:=ntfs-3g-$(NTFS_VERSION).tgz
 NTFS_SITE:=http://www.ntfs-3g.org/
 NTFS_MAKE_DIR:=$(MAKE_DIR)/ntfs
 NTFS_DIR:=$(SOURCE_DIR)/ntfs-3g-$(NTFS_VERSION)
 NTFS_BINARY:=$(NTFS_DIR)/src/.libs/ntfs-3g
-NTFS_PKG_VERSION:=0.1b
+NTFS_PKG_VERSION:=0.1c
 NTFS_PKG_SOURCE:=ntfs-$(NTFS_VERSION)-dsmod-$(NTFS_PKG_VERSION).tar.bz2
 NTFS_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 NTFS_TARGET_DIR:=$(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
@@ -23,7 +23,7 @@ $(DL_DIR)/$(NTFS_PKG_SOURCE): | $(DL_DIR)
 $(NTFS_DIR)/.unpacked: $(DL_DIR)/$(NTFS_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NTFS_SOURCE)
 #	for i in $(NTFS_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(NTFS_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(NTFS_DIR) $$i; \
 #	done
 	touch $@
 
@@ -94,7 +94,7 @@ $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION): $(DL_DIR)/$(NTFS_PKG_SOURCE) | $(PACKAGES
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NTFS_PKG_SOURCE)
 	@touch $@
 
-ntfs-package: #$(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
+ntfs-package: $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE) ntfs-$(NTFS_VERSION)
 					
 $(NTFS_LIB_TARGET_BINARY): $(NTFS_LIB_STAGING_BINARY)
@@ -109,11 +109,11 @@ ntfs-source: $(NTFS_DIR)/.unpacked $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 
 ntfs-clean:
 	-$(MAKE) -C $(NTFS_DIR) clean
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so.*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.a
 	rm -f $(PACKAGES_BUILD_DIR)/$(NTFS_PKG_SOURCE)
 
 ntfs-dirclean:
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.so.*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs*.a
 	rm -rf $(NTFS_DIR)
 	rm -rf $(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
 	rm -f $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)

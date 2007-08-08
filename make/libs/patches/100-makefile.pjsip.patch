@@ -1,6 +1,6 @@
 diff -burN pjproject-0.7.0.orig/build.mak.in pjproject-0.7.0/build.mak.in
---- pjproject-0.7.0.orig/build.mak.in	2007-04-17 18:16:01.000000000 +0200
-+++ pjproject-0.7.0/build.mak.in	2007-07-01 02:49:28.000000000 +0200
+--- build.mak.in	2007-04-17 18:16:01.000000000 +0200
++++ build.mak.in	2007-07-01 02:49:28.000000000 +0200
 @@ -8,22 +8,22 @@
  export LINUX_POLL := @ac_linux_poll@ 
  
@@ -56,8 +56,8 @@ diff -burN pjproject-0.7.0.orig/build.mak.in pjproject-0.7.0/build.mak.in
  
  export PJ_DIR := $(PJDIR)
 diff -burN pjproject-0.7.0.orig/Makefile pjproject-0.7.0/Makefile
---- pjproject-0.7.0.orig/Makefile	2007-04-22 14:48:30.000000000 +0200
-+++ pjproject-0.7.0/Makefile	2007-07-01 02:35:16.000000000 +0200
+--- Makefile	2007-04-22 14:48:30.000000000 +0200
++++ Makefile	2007-07-01 02:35:16.000000000 +0200
 @@ -16,16 +16,16 @@
  		fi; \
  	done
@@ -102,8 +102,8 @@ diff -burN pjproject-0.7.0.orig/Makefile pjproject-0.7.0/Makefile
  	mkdir -p $(DESTDIR)$(prefix)/lib/pkgconfig
  	sed -e "s!@PREFIX@!$(DESTDIR)$(prefix)!" libpj.pc.in > $(DESTDIR)/$(prefix)/lib/pkgconfig/libpj.pc
 diff -burN pjproject-0.7.0.orig/pjlib/build/Makefile pjproject-0.7.0/pjlib/build/Makefile
---- pjproject-0.7.0.orig/pjlib/build/Makefile	2007-04-09 23:28:15.000000000 +0200
-+++ pjproject-0.7.0/pjlib/build/Makefile	2007-07-01 02:53:45.000000000 +0200
+--- pjlib/build/Makefile	2007-04-09 23:28:15.000000000 +0200
++++ pjlib/build/Makefile	2007-07-01 02:53:45.000000000 +0200
 @@ -4,7 +4,7 @@
  RULES_MAK := $(PJDIR)/build/rules.mak
  
@@ -143,8 +143,8 @@ diff -burN pjproject-0.7.0.orig/pjlib/build/Makefile pjproject-0.7.0/pjlib/build
  	$(MAKE) -f $(RULES_MAK) APP=TEST app=pjlib-test realclean
  
 diff -burN pjproject-0.7.0.orig/pjlib-util/build/Makefile pjproject-0.7.0/pjlib-util/build/Makefile
---- pjproject-0.7.0.orig/pjlib-util/build/Makefile	2007-04-09 23:28:15.000000000 +0200
-+++ pjproject-0.7.0/pjlib-util/build/Makefile	2007-07-01 02:53:32.000000000 +0200
+--- pjlib-util/build/Makefile	2007-04-09 23:28:15.000000000 +0200
++++ pjlib-util/build/Makefile	2007-07-01 02:53:32.000000000 +0200
 @@ -7,8 +7,8 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak
@@ -193,8 +193,8 @@ diff -burN pjproject-0.7.0.orig/pjlib-util/build/Makefile pjproject-0.7.0/pjlib-
  
  
 diff -burN pjproject-0.7.0.orig/pjmedia/build/Makefile pjproject-0.7.0/pjmedia/build/Makefile
---- pjproject-0.7.0.orig/pjmedia/build/Makefile	2007-04-18 11:24:31.000000000 +0200
-+++ pjproject-0.7.0/pjmedia/build/Makefile	2007-07-01 02:53:23.000000000 +0200
+--- pjmedia/build/Makefile	2007-04-18 11:24:31.000000000 +0200
++++ pjmedia/build/Makefile	2007-07-01 02:53:23.000000000 +0200
 @@ -7,13 +7,13 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak
@@ -253,8 +253,8 @@ diff -burN pjproject-0.7.0.orig/pjmedia/build/Makefile pjproject-0.7.0/pjmedia/b
  
  
 diff -burN pjproject-0.7.0.orig/pjnath/build/Makefile pjproject-0.7.0/pjnath/build/Makefile
---- pjproject-0.7.0.orig/pjnath/build/Makefile	2007-05-11 21:02:46.000000000 +0200
-+++ pjproject-0.7.0/pjnath/build/Makefile	2007-07-01 02:53:11.000000000 +0200
+--- pjnath/build/Makefile	2007-05-11 21:02:46.000000000 +0200
++++ pjnath/build/Makefile	2007-07-01 02:53:11.000000000 +0200
 @@ -7,9 +7,9 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak
@@ -336,8 +336,8 @@ diff -burN pjproject-0.7.0.orig/pjnath/build/Makefile pjproject-0.7.0/pjnath/bui
  
  
 diff -burN pjproject-0.7.0.orig/pjsip/build/Makefile pjproject-0.7.0/pjsip/build/Makefile
---- pjproject-0.7.0.orig/pjsip/build/Makefile	2007-05-11 17:14:34.000000000 +0200
-+++ pjproject-0.7.0/pjsip/build/Makefile	2007-07-01 02:52:57.000000000 +0200
+--- pjsip/build/Makefile	2007-05-11 17:14:34.000000000 +0200
++++ pjsip/build/Makefile	2007-07-01 02:52:57.000000000 +0200
 @@ -8,15 +8,15 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak
@@ -388,8 +388,8 @@ diff -burN pjproject-0.7.0.orig/pjsip/build/Makefile pjproject-0.7.0/pjsip/build
  	$(MAKE) -f $(RULES_MAK) APP=PJSIP_UA app=pjsip-ua $@
  	$(MAKE) -f $(RULES_MAK) APP=PJSIP_SIMPLE app=pjsip-simple $@
 diff -burN pjproject-0.7.0.orig/pjsip-apps/build/Makefile pjproject-0.7.0/pjsip-apps/build/Makefile
---- pjproject-0.7.0.orig/pjsip-apps/build/Makefile	2007-04-17 18:16:01.000000000 +0200
-+++ pjproject-0.7.0/pjsip-apps/build/Makefile	2007-07-01 02:54:03.000000000 +0200
+--- pjsip-apps/build/Makefile	2007-04-17 18:16:01.000000000 +0200
++++ pjsip-apps/build/Makefile	2007-07-01 02:54:03.000000000 +0200
 @@ -4,15 +4,15 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak
@@ -434,8 +434,8 @@ diff -burN pjproject-0.7.0.orig/pjsip-apps/build/Makefile pjproject-0.7.0/pjsip-
  
  
 diff -burN pjproject-0.7.0.orig/third_party/build/gsm/Makefile pjproject-0.7.0/third_party/build/gsm/Makefile
---- pjproject-0.7.0.orig/third_party/build/gsm/Makefile	2007-04-09 19:13:10.000000000 +0200
-+++ pjproject-0.7.0/third_party/build/gsm/Makefile	2007-07-01 03:00:02.000000000 +0200
+--- third_party/build/gsm/Makefile	2007-04-09 19:13:10.000000000 +0200
++++ third_party/build/gsm/Makefile	2007-07-01 03:00:02.000000000 +0200
 @@ -5,7 +5,7 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak
@@ -461,8 +461,8 @@ diff -burN pjproject-0.7.0.orig/third_party/build/gsm/Makefile pjproject-0.7.0/t
  
  
 diff -burN pjproject-0.7.0.orig/third_party/build/ilbc/Makefile pjproject-0.7.0/third_party/build/ilbc/Makefile
---- pjproject-0.7.0.orig/third_party/build/ilbc/Makefile	2007-04-09 19:13:10.000000000 +0200
-+++ pjproject-0.7.0/third_party/build/ilbc/Makefile	2007-07-01 02:59:52.000000000 +0200
+--- third_party/build/ilbc/Makefile	2007-04-09 19:13:10.000000000 +0200
++++ third_party/build/ilbc/Makefile	2007-07-01 02:59:52.000000000 +0200
 @@ -5,7 +5,7 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak
@@ -473,8 +473,8 @@ diff -burN pjproject-0.7.0.orig/third_party/build/ilbc/Makefile pjproject-0.7.0/
  ###############################################################################
  # Gather all flags.
 diff -burN pjproject-0.7.0.orig/third_party/build/portaudio/Makefile pjproject-0.7.0/third_party/build/portaudio/Makefile
---- pjproject-0.7.0.orig/third_party/build/portaudio/Makefile	2007-04-18 11:24:31.000000000 +0200
-+++ pjproject-0.7.0/third_party/build/portaudio/Makefile	2007-07-01 02:59:47.000000000 +0200
+--- third_party/build/portaudio/Makefile	2007-04-18 11:24:31.000000000 +0200
++++ third_party/build/portaudio/Makefile	2007-07-01 02:59:47.000000000 +0200
 @@ -6,7 +6,7 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak
@@ -499,8 +499,8 @@ diff -burN pjproject-0.7.0.orig/third_party/build/portaudio/Makefile pjproject-0
 +	echo '$(PORTAUDIO_LIB): .libportaudio.depend' >> .libportaudio.depend; \
  
 diff -burN pjproject-0.7.0.orig/third_party/build/resample/Makefile pjproject-0.7.0/third_party/build/resample/Makefile
---- pjproject-0.7.0.orig/third_party/build/resample/Makefile	2007-04-09 19:13:10.000000000 +0200
-+++ pjproject-0.7.0/third_party/build/resample/Makefile	2007-07-01 02:59:38.000000000 +0200
+--- third_party/build/resample/Makefile	2007-04-09 19:13:10.000000000 +0200
++++ third_party/build/resample/Makefile	2007-07-01 02:59:38.000000000 +0200
 @@ -5,7 +5,7 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak
@@ -526,8 +526,8 @@ diff -burN pjproject-0.7.0.orig/third_party/build/resample/Makefile pjproject-0.
  
  
 diff -burN pjproject-0.7.0.orig/third_party/build/speex/Makefile pjproject-0.7.0/third_party/build/speex/Makefile
---- pjproject-0.7.0.orig/third_party/build/speex/Makefile	2007-04-09 19:13:10.000000000 +0200
-+++ pjproject-0.7.0/third_party/build/speex/Makefile	2007-07-01 02:59:31.000000000 +0200
+--- third_party/build/speex/Makefile	2007-04-09 19:13:10.000000000 +0200
++++ third_party/build/speex/Makefile	2007-07-01 02:59:31.000000000 +0200
 @@ -5,7 +5,7 @@
  
  RULES_MAK := $(PJDIR)/build/rules.mak

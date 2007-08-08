@@ -1,6 +1,6 @@
 diff -urN -x'*.swp' ppp.old/pppd/auth.c ppp.dev/pppd/auth.c
---- ppp.old/pppd/auth.c	2004-11-12 11:30:51.000000000 +0100
-+++ ppp.dev/pppd/auth.c	2005-07-13 14:54:23.000000000 +0200
+--- pppd/auth.c	2004-11-12 11:30:51.000000000 +0100
++++ pppd/auth.c	2005-07-13 14:54:23.000000000 +0200
 @@ -532,6 +532,12 @@
  link_required(unit)
      int unit;
@@ -72,8 +72,8 @@ diff -urN -x'*.swp' ppp.old/pppd/auth.c ppp.dev/pppd/auth.c
  }
  
 diff -urN -x'*.swp' ppp.old/pppd/main.c ppp.dev/pppd/main.c
---- ppp.old/pppd/main.c	2005-07-13 11:34:28.000000000 +0200
-+++ ppp.dev/pppd/main.c	2005-07-13 14:49:06.000000000 +0200
+--- pppd/main.c	2005-07-13 11:34:28.000000000 +0200
++++ pppd/main.c	2005-07-13 14:49:06.000000000 +0200
 @@ -537,6 +537,7 @@
  	script_unsetenv("BYTES_RCVD");
  
@@ -83,8 +83,8 @@ diff -urN -x'*.swp' ppp.old/pppd/main.c ppp.dev/pppd/main.c
  	    handle_events();
  	    get_input();
 diff -urN -x'*.swp' ppp.old/pppd/pppd.h ppp.dev/pppd/pppd.h
---- ppp.old/pppd/pppd.h	2005-07-13 11:34:28.000000000 +0200
-+++ ppp.dev/pppd/pppd.h	2005-07-13 14:48:56.000000000 +0200
+--- pppd/pppd.h	2005-07-13 11:34:28.000000000 +0200
++++ pppd/pppd.h	2005-07-13 14:48:56.000000000 +0200
 @@ -526,6 +526,7 @@
  
  /* Procedures exported from auth.c */
@@ -94,8 +94,8 @@ diff -urN -x'*.swp' ppp.old/pppd/pppd.h ppp.dev/pppd/pppd.h
  void link_down __P((int));	  /* the LCP layer has left the Opened state */
  void upper_layers_down __P((int));/* take all NCPs down */
 diff -urN -x'*.swp' ppp.old/pppd/tty.c ppp.dev/pppd/tty.c
---- ppp.old/pppd/tty.c	2004-11-13 13:07:29.000000000 +0100
-+++ ppp.dev/pppd/tty.c	2005-07-13 14:46:57.000000000 +0200
+--- pppd/tty.c	2004-11-13 13:07:29.000000000 +0100
++++ pppd/tty.c	2005-07-13 14:46:57.000000000 +0200
 @@ -755,14 +755,6 @@
  		close(pty_master);
  		pty_master = -1;

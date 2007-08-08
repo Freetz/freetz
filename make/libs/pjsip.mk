@@ -16,7 +16,7 @@ $(DL_DIR)/$(PJSIP_SOURCE): | $(DL_DIR)
 $(PJSIP_DIR)/.unpacked: $(DL_DIR)/$(PJSIP_SOURCE)
 	tar -C $(SOURCE_DIR) -xvzf $(DL_DIR)/$(PJSIP_SOURCE)	
 	for i in $(PJSIP_MAKE_DIR)/patches/*.pjsip.patch; do \
-	    patch -d $(PJSIP_DIR) -p1 < $$i; \
+	    $(PATCH_TOOL) $(PJSIP_DIR) $$i; \
 	done
 	touch $@
 

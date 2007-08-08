@@ -26,7 +26,7 @@ $(DL_DIR)/$(PPPD_PKG_SOURCE):
 $(PPPD_DIR)/.unpacked: $(DL_DIR)/$(PPPD_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(PPPD_SOURCE)
 	for i in $(PPPD_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(PPPD_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(PPPD_DIR) $$i; \
 	done
 	touch $(PPPD_DIR)/.unpacked
 

@@ -1,0 +1,12 @@
+--- lib/mount.c	2007-07-02 13:32:17.000000000 +0200
++++ lib/mount.c	2007-07-25 19:12:19.000000000 +0200
+@@ -544,7 +544,8 @@
+     if (mo.mtab_opts &&  fuse_opt_add_opt(&mnt_opts, mo.mtab_opts) == -1)
+         goto out;
+ 
+-    res = fuse_mount_sys(mountpoint, &mo, mnt_opts);
++    /* res = fuse_mount_sys(mountpoint, &mo, mnt_opts); */
++    res = -2;
+     if (res == -2) {
+         if (mo.fusermount_opts && 
+             fuse_opt_add_opt(&mnt_opts, mo.fusermount_opts) == -1)

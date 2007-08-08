@@ -1,6 +1,6 @@
---- include/libbb.h	2007-01-24 22:34:48.000000000 +0100
-+++ include/libbb.h	2007-05-18 09:55:12.000000000 +0200
-@@ -182,14 +182,23 @@
+--- include/libbb.h.orig	2007-05-20 18:57:20.000000000 +0200
++++ include/libbb.h	2007-07-29 03:49:49.000000000 +0200
+@@ -180,14 +180,23 @@
  #define RESERVE_CONFIG_BUFFER(buffer,len)           char buffer[len]
  #define RESERVE_CONFIG_UBUFFER(buffer,len) unsigned char buffer[len]
  #define RELEASE_CONFIG_BUFFER(buffer)      ((void)0)
@@ -24,10 +24,10 @@
  #define RELEASE_CONFIG_BUFFER(buffer)      free (buffer)
  #endif
  #endif
---- networking/inetd.c	2007-01-24 22:34:34.000000000 +0100
-+++ networking/inetd.c	2007-05-18 08:44:45.000000000 +0200
+--- networking/inetd.c.orig	2007-05-20 18:54:24.000000000 +0200
++++ networking/inetd.c	2007-07-29 03:49:49.000000000 +0200
 @@ -330,7 +330,7 @@
- static char *CONFIG = _PATH_INETDCONF;
+ static const char *CONFIG = _PATH_INETDCONF;
  
  static FILE *fconfig;
 -static char line[1024];

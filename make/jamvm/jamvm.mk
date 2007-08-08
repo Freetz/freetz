@@ -23,7 +23,7 @@ $(DL_DIR)/$(JAMVM_PKG_SOURCE): | $(DL_DIR)
 $(JAMVM_DIR)/.unpacked: $(DL_DIR)/$(JAMVM_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(JAMVM_SOURCE)
 	for i in $(JAMVM_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(JAMVM_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(JAMVM_DIR) $$i; \
 	done
 	touch $@
 
@@ -46,7 +46,8 @@ $(JAMVM_DIR)/.configured: $(JAMVM_DIR)/.unpacked
 	
 
 $(JAMVM_BINARY) $(JAMVM_LIB_BINARY): $(JAMVM_DIR)/.configured
-	$(MAKE) -C $(JAMVM_DIR)/src $(TARGET_CONFIGURE_OPTS) 
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(JAMVM_DIR)/src
 
 $(JAMVM_TARGET_BINARY): $(JAMVM_BINARY)
 	$(INSTALL_BINARY_STRIP)

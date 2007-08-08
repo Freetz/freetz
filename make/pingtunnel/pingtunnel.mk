@@ -19,7 +19,7 @@ $(DL_DIR)/$(PINGTUNNEL_PKG_SOURCE): | $(DL_DIR)
 $(PINGTUNNEL_DIR)/.unpacked: $(DL_DIR)/$(PINGTUNNEL_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(PINGTUNNEL_SOURCE)
 #	for i in $(PINGTUNNEL_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(PINGTUNNEL_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(PINGTUNNEL_DIR) $$i; \
 #	done
 	touch $@
 

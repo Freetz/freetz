@@ -2,7 +2,11 @@ KERNEL_SUBVERSION:=iln6
 KERNEL_BOARD_REF:=$(KERNEL_REF)
 KERNEL_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
+ifeq ($(AVM_VERSION),r7203)
+KERNEL_BUILD_DIR_N:=kernel_4mb_26_build
+else
 KERNEL_BUILD_DIR_N:=kernel_8mb_26_build
+endif
 KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
 KERNEL_IMAGE:=kernel/linux-2.6.13.1/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
@@ -23,14 +27,14 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
 	mkdir -p $(KERNEL_DIR)
 	cp -a $(KERNEL_SOURCE_PATH) $(KERNEL_BUILD_DIR)
 	for i in $(KERNEL_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
+		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
-	# Version specific patches
-	#for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
-	#	patch -d $(KERNEL_BUILD_DIR)/kernel -p0 < $$i; \
-	#done
+	#Version specific patches
+	for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
+		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
+	done
 ifneq ($(AVM_VERSION),04.33)
-	# Version 04.29/04.30 source corrections
+	# Version 04.29/04.30/r4884 source corrections
 	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
 	done
@@ -51,6 +55,8 @@ ifneq ($(AVM_VERSION),04.33)
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/ubik2_ul.h
 	ln -sf ../../drivers/isdn/capi_oslib/linux_capi_oslib.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/capi_oslib.h	
+	ln -sf ../../drivers/isdn/capi_oslib/linux_new_capi.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/new_capi.h	
 	ln -sf ../../drivers/net/avm_cpmac/linux_adm_reg.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/adm_reg.h	
 	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \

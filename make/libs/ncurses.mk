@@ -15,7 +15,7 @@ $(DL_DIR)/$(NCURSES_SOURCE): | $(DL_DIR)
 $(NCURSES_DIR)/.unpacked: $(DL_DIR)/$(NCURSES_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NCURSES_SOURCE)
 	for i in $(NCURSES_MAKE_DIR)/patches/*.ncurses.patch; do \
-		patch -d $(NCURSES_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(NCURSES_DIR) $$i; \
 	done
 	touch $@
 
@@ -65,13 +65,13 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.unpacked
 	touch $@
 
 $(NCURSES_BINARY): $(NCURSES_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
-		-C $(NCURSES_DIR) $(TARGET_CONFIGURE_OPTS) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE1) -C $(NCURSES_DIR) $(TARGET_CONFIGURE_OPTS) \
 		libs panel menu form headers
 
 $(NCURSES_STAGING_BINARY): $(NCURSES_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
-		-C $(NCURSES_DIR) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE1) -C $(NCURSES_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install.libs install.data
 

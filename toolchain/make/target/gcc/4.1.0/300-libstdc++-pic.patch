@@ -1,8 +1,6 @@
-# DP: Build and install libstdc++_pic.a library.
-
---- gcc-4.1.0/libstdc++-v3/src/Makefile.am	2004-11-15 17:33:05.000000000 -0600
-+++ gcc-4.1.0-patched/libstdc++-v3/src/Makefile.am	2005-04-25 20:05:59.186930896 -0500
-@@ -214,6 +214,10 @@
+--- libstdc++-v3/src/Makefile.am.orig	2006-01-10 05:01:00.000000000 +0100
++++ libstdc++-v3/src/Makefile.am	2007-07-29 05:46:25.000000000 +0200
+@@ -234,6 +234,10 @@
  	  $(OPT_LDFLAGS) $(SECTION_LDFLAGS) $(AM_CXXFLAGS) $(LDFLAGS) -o $@
  
  
@@ -13,8 +11,8 @@
  # Added bits to build debug library.
  if GLIBCXX_BUILD_DEBUG
  all-local: build_debug
---- gcc-4.1.0/libstdc++-v3/src/Makefile.in	2005-04-11 19:13:08.000000000 -0500
-+++ gcc-4.1.0-patched/libstdc++-v3/src/Makefile.in	2005-04-25 20:12:33.284316275 -0500
+--- libstdc++-v3/src/Makefile.in.orig	2006-01-10 18:14:00.000000000 +0100
++++ libstdc++-v3/src/Makefile.in	2007-07-29 05:46:25.000000000 +0200
 @@ -627,7 +627,7 @@
  
  install-data-am: install-data-local
@@ -32,7 +30,7 @@
  	install-exec-am install-info install-info-am install-man \
  	install-strip install-toolexeclibLTLIBRARIES installcheck \
  	installcheck-am installdirs maintainer-clean \
-@@ -745,6 +746,11 @@
+@@ -760,6 +761,11 @@
  install_debug:
  	(cd ${debugdir} && $(MAKE) \
  	toolexeclibdir=$(glibcxx_toolexeclibdir)/debug install)

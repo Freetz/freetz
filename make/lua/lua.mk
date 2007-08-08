@@ -18,7 +18,7 @@ $(DL_DIR)/$(LUA_PKG_SOURCE): | $(DL_DIR)
 $(LUA_DIR)/.unpacked: $(DL_DIR)/$(LUA_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LUA_SOURCE)
 	for i in $(LUA_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(LUA_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(LUA_DIR) $$i; \
 	done
 	touch $@
 

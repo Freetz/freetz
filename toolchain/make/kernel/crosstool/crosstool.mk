@@ -38,7 +38,7 @@ $(CROSSTOOL_DIR)/.unpacked2: $(CROSSTOOL_DIR)/.unpacked
 	);
 	for i in $(CROSSTOOL_MAKE_DIR)/patches/*.patch; do \
 		[ -f $$i ] || continue; \
-		patch -d $(CROSSTOOL_DIR)/build/mipsel-unknown-linux-gnu/$(CROSSTOOL_COMPILER) -p0 < $$i; \
+		$(PATCH_TOOL) $(CROSSTOOL_DIR)/build/mipsel-unknown-linux-gnu/$(CROSSTOOL_COMPILER) $$i; \
 	done
 	touch $@
 

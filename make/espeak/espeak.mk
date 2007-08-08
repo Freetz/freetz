@@ -20,7 +20,7 @@ $(DL_DIR)/$(ESPEAK_PKG_SOURCE): | $(DL_DIR)
 $(ESPEAK_DIR)/.unpacked: $(DL_DIR)/$(ESPEAK_SOURCE)
 	unzip -o $(DL_DIR)/$(ESPEAK_SOURCE) -d $(SOURCE_DIR)
 	for i in $(ESPEAK_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(ESPEAK_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(ESPEAK_DIR) $$i; \
 	done
 	touch $@
 

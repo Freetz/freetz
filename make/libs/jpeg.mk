@@ -16,7 +16,7 @@ $(DL_DIR)/$(JPEG_SOURCE): | $(DL_DIR)
 $(JPEG_DIR)/.unpacked: $(DL_DIR)/$(JPEG_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(JPEG_SOURCE)
 	for i in $(JPEG_MAKE_DIR)/patches/*.jpeg.patch; do \
-		patch -d $(JPEG_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(JPEG_DIR) $$i; \
 	done
 	touch $@
 
@@ -54,13 +54,12 @@ $(JPEG_DIR)/.configured: $(JPEG_DIR)/.unpacked
 	touch $@
 
 $(JPEG_BINARY): $(JPEG_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(JPEG_DIR) \
-		$(TARGET_CONFIGURE_OPTS) all
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	   $(MAKE) -C $(JPEG_DIR)  all
 
 $(JPEG_STAGING_BINARY): $(JPEG_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(JPEG_DIR) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	   $(MAKE) -C $(JPEG_DIR) \
 		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		install-headers install-lib

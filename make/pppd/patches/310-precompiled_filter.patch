@@ -1,6 +1,6 @@
 diff -urN ppp.old/pppd/Makefile.linux ppp.dev/pppd/Makefile.linux
---- ppp.old/pppd/Makefile.linux	2006-03-18 15:58:00.000000000 +0100
-+++ ppp.dev/pppd/Makefile.linux	2006-03-18 16:52:01.000000000 +0100
+--- pppd/Makefile.linux	2006-03-18 15:58:00.000000000 +0100
++++ pppd/Makefile.linux	2006-03-18 16:52:01.000000000 +0100
 @@ -50,6 +50,9 @@
  # and that the kernel driver support PPP packet filtering.
  #FILTER=y
@@ -27,8 +27,8 @@ diff -urN ppp.old/pppd/Makefile.linux ppp.dev/pppd/Makefile.linux
       PPPDSRCS += ipv6cp.c eui64.c
       HEADERS  += ipv6cp.h eui64.h
 diff -urN ppp.old/pppd/demand.c ppp.dev/pppd/demand.c
---- ppp.old/pppd/demand.c	2006-03-18 15:58:00.000000000 +0100
-+++ ppp.dev/pppd/demand.c	2006-03-18 18:09:16.000000000 +0100
+--- pppd/demand.c	2006-03-18 15:58:00.000000000 +0100
++++ pppd/demand.c	2006-03-18 18:09:16.000000000 +0100
 @@ -438,12 +438,14 @@
  	return 0;
      proto = PPP_PROTOCOL(p);
@@ -45,8 +45,8 @@ diff -urN ppp.old/pppd/demand.c ppp.dev/pppd/demand.c
      for (i = 0; (protp = protocols[i]) != NULL; ++i) {
  	if (protp->protocol < 0xC000 && (protp->protocol & ~0x8000) == proto) {
 diff -urN ppp.old/pppd/options.c ppp.dev/pppd/options.c
---- ppp.old/pppd/options.c	2006-03-18 15:58:00.000000000 +0100
-+++ ppp.dev/pppd/options.c	2006-03-18 18:05:58.000000000 +0100
+--- pppd/options.c	2006-03-18 15:58:00.000000000 +0100
++++ pppd/options.c	2006-03-18 18:05:58.000000000 +0100
 @@ -57,14 +57,7 @@
  
  #ifdef PPP_FILTER
@@ -141,8 +141,8 @@ diff -urN ppp.old/pppd/options.c ppp.dev/pppd/options.c
  	option_error("error in active-filter expression: %s\n",
  		     pcap_geterr(pc));
 diff -urN ppp.old/pppd/pcap_pcc.c ppp.dev/pppd/pcap_pcc.c
---- ppp.old/pppd/pcap_pcc.c	1970-01-01 01:00:00.000000000 +0100
-+++ ppp.dev/pppd/pcap_pcc.c	2006-03-18 16:51:31.000000000 +0100
+--- pppd/pcap_pcc.c	1970-01-01 01:00:00.000000000 +0100
++++ pppd/pcap_pcc.c	2006-03-18 16:51:31.000000000 +0100
 @@ -0,0 +1,74 @@
 +#include <pcap.h>
 +#include <pcap-bpf.h>
@@ -219,8 +219,8 @@ diff -urN ppp.old/pppd/pcap_pcc.c ppp.dev/pppd/pcap_pcc.c
 +  return 0;
 +}
 diff -urN ppp.old/pppd/pcap_pcc.h ppp.dev/pppd/pcap_pcc.h
---- ppp.old/pppd/pcap_pcc.h	1970-01-01 01:00:00.000000000 +0100
-+++ ppp.dev/pppd/pcap_pcc.h	2006-03-18 15:59:14.000000000 +0100
+--- pppd/pcap_pcc.h	1970-01-01 01:00:00.000000000 +0100
++++ pppd/pcap_pcc.h	2006-03-18 15:59:14.000000000 +0100
 @@ -0,0 +1,7 @@
 +#ifndef PCAP_PCC_H
 +#define PCAP_PCC_H

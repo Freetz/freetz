@@ -24,6 +24,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@/$(REAL_GNU_TARGET_NAME)
 	@ln -snf ../include $@/usr/include
 	@ln -snf ../lib $@/usr/lib
+	@ln -snf ../bin $@/usr/bin
 	@ln -snf ../lib $@/$(REAL_GNU_TARGET_NAME)/lib
 	#moved from target-toolchain because link is needed for uclibc-build
 	#TODO: prehaps the next 2 Steps schould be done somewhere else?

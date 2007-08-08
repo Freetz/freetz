@@ -1,7 +1,6 @@
-diff -burN linux-2.6.13.1/fs/Kconfig linux-2.6.13.1/fs/Kconfig
---- linux-2.6.13.1/fs/Kconfig	2005-10-19 09:40:38.000000000 +0200
-+++ linux-2.6.13.1/fs/Kconfig	2007-01-20 15:48:01.000000000 +0100
-@@ -1359,6 +1359,16 @@
+--- linux-2.6.13.1/fs/Kconfig.orig	2007-07-29 03:52:03.000000000 +0200
++++ linux-2.6.13.1/fs/Kconfig	2007-07-29 03:52:04.000000000 +0200
+@@ -1362,6 +1362,16 @@
  	  Say Y here if you want to try writing to UFS partitions. This is
  	  experimental, so you should back up your UFS partitions beforehand.
  
@@ -18,17 +17,15 @@ diff -burN linux-2.6.13.1/fs/Kconfig linux-2.6.13.1/fs/Kconfig
  endmenu
  
  menu "Network File Systems"
-diff -burN linux-2.6.13.1/fs/Makefile linux-2.6.13.1/fs/Makefile
---- linux-2.6.13.1/fs/Makefile	2005-10-19 09:40:38.000000000 +0200
-+++ linux-2.6.13.1/fs/Makefile	2007-01-20 15:47:02.000000000 +0100
-@@ -100,3 +100,4 @@
+--- linux-2.6.13.1/fs/Makefile.orig	2007-07-29 03:52:03.000000000 +0200
++++ linux-2.6.13.1/fs/Makefile	2007-07-29 03:52:04.000000000 +0200
+@@ -101,3 +101,4 @@
  obj-$(CONFIG_HPPFS)		+= hppfs/
  obj-$(CONFIG_DEBUG_FS)		+= debugfs/
  obj-$(CONFIG_YFFS_FS)		+= yaffs2/
 +obj-$(CONFIG_UNION_FS)          += unionfs/
-diff -burN linux-2.6.13.1/fs/unionfs/branchman.c linux-2.6.13.1/fs/unionfs/branchman.c
---- linux-2.6.13.1/fs/unionfs/branchman.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/branchman.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/branchman.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/branchman.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,563 @@
 +/* 
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -593,9 +590,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/branchman.c linux-2.6.13.1/fs/unionfs/branc
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/commonfops.c linux-2.6.13.1/fs/unionfs/commonfops.c
---- linux-2.6.13.1/fs/unionfs/commonfops.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/commonfops.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/commonfops.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/commonfops.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,716 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -1313,9 +1309,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/commonfops.c linux-2.6.13.1/fs/unionfs/comm
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/copyup.c linux-2.6.13.1/fs/unionfs/copyup.c
---- linux-2.6.13.1/fs/unionfs/copyup.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/copyup.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/copyup.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/copyup.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,749 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -2066,9 +2061,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/copyup.c linux-2.6.13.1/fs/unionfs/copyup.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/dentry.c linux-2.6.13.1/fs/unionfs/dentry.c
---- linux-2.6.13.1/fs/unionfs/dentry.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/dentry.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/dentry.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/dentry.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,274 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -2344,9 +2338,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/dentry.c linux-2.6.13.1/fs/unionfs/dentry.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/dirfops.c linux-2.6.13.1/fs/unionfs/dirfops.c
---- linux-2.6.13.1/fs/unionfs/dirfops.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/dirfops.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/dirfops.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/dirfops.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,331 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -2679,9 +2672,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/dirfops.c linux-2.6.13.1/fs/unionfs/dirfops
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/dirhelper.c linux-2.6.13.1/fs/unionfs/dirhelper.c
---- linux-2.6.13.1/fs/unionfs/dirhelper.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/dirhelper.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/dirhelper.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/dirhelper.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,266 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -2949,9 +2941,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/dirhelper.c linux-2.6.13.1/fs/unionfs/dirhe
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/file.c linux-2.6.13.1/fs/unionfs/file.c
---- linux-2.6.13.1/fs/unionfs/file.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/file.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/file.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/file.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,331 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -3284,9 +3275,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/file.c linux-2.6.13.1/fs/unionfs/file.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/inode.c linux-2.6.13.1/fs/unionfs/inode.c
---- linux-2.6.13.1/fs/unionfs/inode.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/inode.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/inode.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/inode.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,1042 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -4330,9 +4320,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/inode.c linux-2.6.13.1/fs/unionfs/inode.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/lookup.c linux-2.6.13.1/fs/unionfs/lookup.c
---- linux-2.6.13.1/fs/unionfs/lookup.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/lookup.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/lookup.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/lookup.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,505 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -4839,9 +4828,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/lookup.c linux-2.6.13.1/fs/unionfs/lookup.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/main.c linux-2.6.13.1/fs/unionfs/main.c
---- linux-2.6.13.1/fs/unionfs/main.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/main.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/main.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/main.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,820 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -5663,9 +5651,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/main.c linux-2.6.13.1/fs/unionfs/main.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/Makefile linux-2.6.13.1/fs/unionfs/Makefile
---- linux-2.6.13.1/fs/unionfs/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/Makefile	2007-01-20 15:47:02.000000000 +0100
+--- linux-2.6.13.1/fs/unionfs/Makefile.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/Makefile	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,11 @@
 +UNIONFS_VERSION  = 1.1.5
 +EXTRA_CFLAGS+=-DUNIONFS_VERSION=\"${UNIONFS_VERSION}\"
@@ -5678,9 +5665,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/Makefile linux-2.6.13.1/fs/unionfs/Makefile
 +	stale_inode.o branchman.o xattr.o rdstate.o copyup.o  \
 +	dirhelper.o rename.o unlink.o lookup.o persistent_inode.o \
 +	commonfops.o dirfops.o print.o
-diff -burN linux-2.6.13.1/fs/unionfs/malloc_debug.c linux-2.6.13.1/fs/unionfs/malloc_debug.c
---- linux-2.6.13.1/fs/unionfs/malloc_debug.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/malloc_debug.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/malloc_debug.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/malloc_debug.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,199 @@
 +#ifdef FIST_MALLOC_DEBUG
 +
@@ -5881,9 +5867,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/malloc_debug.c linux-2.6.13.1/fs/unionfs/ma
 +}
 +
 +#endif				/* FIST_MALLOC_DEBUG */
-diff -burN linux-2.6.13.1/fs/unionfs/persistent_inode.c linux-2.6.13.1/fs/unionfs/persistent_inode.c
---- linux-2.6.13.1/fs/unionfs/persistent_inode.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/persistent_inode.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/persistent_inode.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/persistent_inode.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,662 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -6547,9 +6532,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/persistent_inode.c linux-2.6.13.1/fs/unionf
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/print.c linux-2.6.13.1/fs/unionfs/print.c
---- linux-2.6.13.1/fs/unionfs/print.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/print.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/print.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/print.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,491 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -7042,9 +7026,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/print.c linux-2.6.13.1/fs/unionfs/print.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/rdstate.c linux-2.6.13.1/fs/unionfs/rdstate.c
---- linux-2.6.13.1/fs/unionfs/rdstate.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/rdstate.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/rdstate.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/rdstate.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,330 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -7376,9 +7359,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/rdstate.c linux-2.6.13.1/fs/unionfs/rdstate
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/rename.c linux-2.6.13.1/fs/unionfs/rename.c
---- linux-2.6.13.1/fs/unionfs/rename.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/rename.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/rename.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/rename.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,919 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -8299,9 +8281,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/rename.c linux-2.6.13.1/fs/unionfs/rename.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/stale_inode.c linux-2.6.13.1/fs/unionfs/stale_inode.c
---- linux-2.6.13.1/fs/unionfs/stale_inode.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/stale_inode.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/stale_inode.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/stale_inode.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,142 @@
 +/*
 + *  Adpated from linux/fs/bad_inode.c
@@ -8445,9 +8426,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/stale_inode.c linux-2.6.13.1/fs/unionfs/sta
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/subr.c linux-2.6.13.1/fs/unionfs/subr.c
---- linux-2.6.13.1/fs/unionfs/subr.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/subr.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/subr.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/subr.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,172 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -8621,9 +8601,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/subr.c linux-2.6.13.1/fs/unionfs/subr.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/super.c linux-2.6.13.1/fs/unionfs/super.c
---- linux-2.6.13.1/fs/unionfs/super.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/super.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/super.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/super.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,526 @@
 +/*
 + * Copyright (c) 2003-2005 Erez Zadok
@@ -9151,9 +9130,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/super.c linux-2.6.13.1/fs/unionfs/super.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/unionctl.c linux-2.6.13.1/fs/unionfs/unionctl.c
---- linux-2.6.13.1/fs/unionfs/unionctl.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/unionctl.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/unionctl.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/unionctl.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,522 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -9677,9 +9655,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/unionctl.c linux-2.6.13.1/fs/unionfs/unionc
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/uniondbg.c linux-2.6.13.1/fs/unionfs/uniondbg.c
---- linux-2.6.13.1/fs/unionfs/uniondbg.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/uniondbg.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/uniondbg.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/uniondbg.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,169 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -9850,9 +9827,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/uniondbg.c linux-2.6.13.1/fs/unionfs/uniond
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/unionfs_debugmacros.h linux-2.6.13.1/fs/unionfs/unionfs_debugmacros.h
---- linux-2.6.13.1/fs/unionfs/unionfs_debugmacros.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/unionfs_debugmacros.h	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/unionfs_debugmacros.h.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/unionfs_debugmacros.h	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,409 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -10263,9 +10239,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/unionfs_debugmacros.h linux-2.6.13.1/fs/uni
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/unionfs.h linux-2.6.13.1/fs/unionfs/unionfs.h
---- linux-2.6.13.1/fs/unionfs/unionfs.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/unionfs.h	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/unionfs.h.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/unionfs.h	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,830 @@
 +#ifndef __UNIONFS_H_
 +#define __UNIONFS_H_
@@ -11097,9 +11072,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/unionfs.h linux-2.6.13.1/fs/unionfs/unionfs
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/unionfs_macros.h linux-2.6.13.1/fs/unionfs/unionfs_macros.h
---- linux-2.6.13.1/fs/unionfs/unionfs_macros.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/unionfs_macros.h	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/unionfs_macros.h.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/unionfs_macros.h	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,213 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -11314,9 +11288,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/unionfs_macros.h linux-2.6.13.1/fs/unionfs/
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/unionfs.mod.c linux-2.6.13.1/fs/unionfs/unionfs.mod.c
---- linux-2.6.13.1/fs/unionfs/unionfs.mod.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/unionfs.mod.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/unionfs.mod.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/unionfs.mod.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,117 @@
 +#include <linux/module.h>
 +#include <linux/vermagic.h>
@@ -11435,9 +11408,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/unionfs.mod.c linux-2.6.13.1/fs/unionfs/uni
 +
 +
 +MODULE_INFO(srcversion, "47B7DB80EF1920648319C46");
-diff -burN linux-2.6.13.1/fs/unionfs/unionimap.c linux-2.6.13.1/fs/unionfs/unionimap.c
---- linux-2.6.13.1/fs/unionfs/unionimap.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/unionimap.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/unionimap.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/unionimap.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,516 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -11955,9 +11927,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/unionimap.c linux-2.6.13.1/fs/unionfs/union
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/unionimap.h linux-2.6.13.1/fs/unionfs/unionimap.h
---- linux-2.6.13.1/fs/unionfs/unionimap.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/unionimap.h	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/unionimap.h.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/unionimap.h	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,89 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -12048,9 +12019,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/unionimap.h linux-2.6.13.1/fs/unionfs/union
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/unlink.c linux-2.6.13.1/fs/unionfs/unlink.c
---- linux-2.6.13.1/fs/unionfs/unlink.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/unlink.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/unlink.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/unlink.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,375 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -12427,9 +12397,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/unlink.c linux-2.6.13.1/fs/unionfs/unlink.c
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/usercommon.c linux-2.6.13.1/fs/unionfs/usercommon.c
---- linux-2.6.13.1/fs/unionfs/usercommon.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/usercommon.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/usercommon.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/usercommon.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,220 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -12651,9 +12620,8 @@ diff -burN linux-2.6.13.1/fs/unionfs/usercommon.c linux-2.6.13.1/fs/unionfs/user
 + * tab-width: 8
 + * End:
 + */
-diff -burN linux-2.6.13.1/fs/unionfs/xattr.c linux-2.6.13.1/fs/unionfs/xattr.c
---- linux-2.6.13.1/fs/unionfs/xattr.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/unionfs/xattr.c	2006-06-12 04:03:36.000000000 +0200
+--- linux-2.6.13.1/fs/unionfs/xattr.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.13.1/fs/unionfs/xattr.c	2007-07-29 03:52:04.000000000 +0200
 @@ -0,0 +1,204 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok

@@ -6,8 +6,8 @@ is an improvement over deprecated_selected_frame.
 
 Index: gdb-6.3/gdb/breakpoint.c
 ===================================================================
---- gdb-6.3/gdb/breakpoint.c	2004-10-08 13:30:46.000000000 -0400
-+++ gdb-6.3/gdb/breakpoint.c	2004-11-09 22:55:11.231620957 -0500
+--- gdb/breakpoint.c	2004-10-08 13:30:46.000000000 -0400
++++ gdb/breakpoint.c	2004-11-09 22:55:11.231620957 -0500
 @@ -922,7 +922,7 @@ insert_bp_location (struct bp_location *
        /* FIXME drow/2003-09-09: It would be nice if evaluate_expression
  	 took a frame parameter, so that we didn't have to change the
@@ -75,8 +75,8 @@ Index: gdb-6.3/gdb/breakpoint.c
    if (!target_can_async_p ())
 Index: gdb-6.3/gdb/cli/cli-cmds.c
 ===================================================================
---- gdb-6.3/gdb/cli/cli-cmds.c	2004-09-11 06:24:53.000000000 -0400
-+++ gdb-6.3/gdb/cli/cli-cmds.c	2004-11-09 22:51:07.323246218 -0500
+--- gdb/cli/cli-cmds.c	2004-09-11 06:24:53.000000000 -0400
++++ gdb/cli/cli-cmds.c	2004-11-09 22:51:07.323246218 -0500
 @@ -845,10 +845,7 @@ disassemble_command (char *arg, int from
    name = NULL;
    if (!arg)
@@ -91,8 +91,8 @@ Index: gdb-6.3/gdb/cli/cli-cmds.c
  #if defined(TUI)
 Index: gdb-6.3/gdb/f-valprint.c
 ===================================================================
---- gdb-6.3/gdb/f-valprint.c	2003-10-14 02:51:14.000000000 -0400
-+++ gdb-6.3/gdb/f-valprint.c	2004-11-09 22:51:07.326245632 -0500
+--- gdb/f-valprint.c	2003-10-14 02:51:14.000000000 -0400
++++ gdb/f-valprint.c	2004-11-09 22:51:07.326245632 -0500
 @@ -76,7 +76,7 @@ f77_get_dynamic_lowerbound (struct type 
    switch (TYPE_ARRAY_LOWER_BOUND_TYPE (type))
      {
@@ -155,8 +155,8 @@ Index: gdb-6.3/gdb/f-valprint.c
       print_frame_info() */
 Index: gdb-6.3/gdb/infcmd.c
 ===================================================================
---- gdb-6.3/gdb/infcmd.c	2004-09-13 14:26:28.000000000 -0400
-+++ gdb-6.3/gdb/infcmd.c	2004-11-09 22:57:37.274099559 -0500
+--- gdb/infcmd.c	2004-09-13 14:26:28.000000000 -0400
++++ gdb/infcmd.c	2004-11-09 22:57:37.274099559 -0500
 @@ -1214,10 +1214,8 @@ finish_command (char *arg, int from_tty)
      error ("The \"finish\" command does not take any arguments.");
    if (!target_has_execution)
@@ -258,8 +258,8 @@ Index: gdb-6.3/gdb/infcmd.c
  static void
 Index: gdb-6.3/gdb/inflow.c
 ===================================================================
---- gdb-6.3/gdb/inflow.c	2004-08-11 05:00:57.000000000 -0400
-+++ gdb-6.3/gdb/inflow.c	2004-11-09 22:58:37.488338883 -0500
+--- gdb/inflow.c	2004-08-11 05:00:57.000000000 -0400
++++ gdb/inflow.c	2004-11-09 22:58:37.488338883 -0500
 @@ -591,10 +591,7 @@ kill_command (char *arg, int from_tty)
    if (target_has_stack)
      {
@@ -274,8 +274,8 @@ Index: gdb-6.3/gdb/inflow.c
  }
 Index: gdb-6.3/gdb/infrun.c
 ===================================================================
---- gdb-6.3/gdb/infrun.c	2004-09-27 13:58:08.000000000 -0400
-+++ gdb-6.3/gdb/infrun.c	2004-11-09 22:51:07.351240752 -0500
+--- gdb/infrun.c	2004-09-27 13:58:08.000000000 -0400
++++ gdb/infrun.c	2004-11-09 22:51:07.351240752 -0500
 @@ -3485,7 +3485,7 @@ save_inferior_status (int restore_stack_
  
    inf_status->registers = regcache_dup (current_regcache);
@@ -287,8 +287,8 @@ Index: gdb-6.3/gdb/infrun.c
  
 Index: gdb-6.3/gdb/mi/mi-main.c
 ===================================================================
---- gdb-6.3/gdb/mi/mi-main.c	2004-09-12 11:00:42.000000000 -0400
-+++ gdb-6.3/gdb/mi/mi-main.c	2004-11-09 22:53:29.998389013 -0500
+--- gdb/mi/mi-main.c	2004-09-12 11:00:42.000000000 -0400
++++ gdb/mi/mi-main.c	2004-11-09 22:53:29.998389013 -0500
 @@ -388,7 +388,7 @@ register_changed_p (int regnum)
  {
    char raw_buffer[MAX_REGISTER_SIZE];
@@ -309,8 +309,8 @@ Index: gdb-6.3/gdb/mi/mi-main.c
    if (optim)
 Index: gdb-6.3/gdb/mn10300-tdep.c
 ===================================================================
---- gdb-6.3/gdb/mn10300-tdep.c	2004-08-02 22:02:22.000000000 -0400
-+++ gdb-6.3/gdb/mn10300-tdep.c	2004-11-09 22:51:07.356239776 -0500
+--- gdb/mn10300-tdep.c	2004-08-02 22:02:22.000000000 -0400
++++ gdb/mn10300-tdep.c	2004-11-09 22:51:07.356239776 -0500
 @@ -1154,7 +1154,7 @@ mn10300_print_register (const char *name
      printf_filtered ("%s: ", name);
  
@@ -322,8 +322,8 @@ Index: gdb-6.3/gdb/mn10300-tdep.c
        return;
 Index: gdb-6.3/gdb/stack.c
 ===================================================================
---- gdb-6.3/gdb/stack.c	2004-08-02 20:57:26.000000000 -0400
-+++ gdb-6.3/gdb/stack.c	2004-11-09 22:51:07.361238800 -0500
+--- gdb/stack.c	2004-08-02 20:57:26.000000000 -0400
++++ gdb/stack.c	2004-11-09 22:51:07.361238800 -0500
 @@ -758,9 +758,7 @@ parse_frame_specification (char *frame_e
    switch (numargs)
      {
@@ -408,8 +408,8 @@ Index: gdb-6.3/gdb/stack.c
        else
 Index: gdb-6.3/gdb/tui/tui-disasm.c
 ===================================================================
---- gdb-6.3/gdb/tui/tui-disasm.c	2004-02-24 20:10:01.000000000 -0500
-+++ gdb-6.3/gdb/tui/tui-disasm.c	2004-11-09 22:51:07.370237044 -0500
+--- gdb/tui/tui-disasm.c	2004-02-24 20:10:01.000000000 -0500
++++ gdb/tui/tui-disasm.c	2004-11-09 22:51:07.370237044 -0500
 @@ -382,7 +382,7 @@ tui_vertical_disassem_scroll (enum tui_s
  
        content = (tui_win_content) TUI_DISASM_WIN->generic.content;
@@ -421,8 +421,8 @@ Index: gdb-6.3/gdb/tui/tui-disasm.c
  
 Index: gdb-6.3/gdb/tui/tui-source.c
 ===================================================================
---- gdb-6.3/gdb/tui/tui-source.c	2004-02-16 16:05:09.000000000 -0500
-+++ gdb-6.3/gdb/tui/tui-source.c	2004-11-09 22:51:07.370237044 -0500
+--- gdb/tui/tui-source.c	2004-02-16 16:05:09.000000000 -0500
++++ gdb/tui/tui-source.c	2004-11-09 22:51:07.370237044 -0500
 @@ -326,7 +326,7 @@ tui_vertical_source_scroll (enum tui_scr
        struct symtab_and_line cursal = get_current_source_symtab_and_line ();
  
@@ -434,8 +434,8 @@ Index: gdb-6.3/gdb/tui/tui-source.c
  
 Index: gdb-6.3/gdb/tui/tui-winsource.c
 ===================================================================
---- gdb-6.3/gdb/tui/tui-winsource.c	2004-02-16 16:05:09.000000000 -0500
-+++ gdb-6.3/gdb/tui/tui-winsource.c	2004-11-09 22:51:07.371236848 -0500
+--- gdb/tui/tui-winsource.c	2004-02-16 16:05:09.000000000 -0500
++++ gdb/tui/tui-winsource.c	2004-11-09 22:51:07.371236848 -0500
 @@ -311,7 +311,7 @@ tui_horizontal_source_scroll (struct tui
        struct symtab_and_line cursal = get_current_source_symtab_and_line ();
  
@@ -447,8 +447,8 @@ Index: gdb-6.3/gdb/tui/tui-winsource.c
  
 Index: gdb-6.3/gdb/valops.c
 ===================================================================
---- gdb-6.3/gdb/valops.c	2004-09-13 23:01:48.000000000 -0400
-+++ gdb-6.3/gdb/valops.c	2004-11-09 22:51:07.374236263 -0500
+--- gdb/valops.c	2004-09-13 23:01:48.000000000 -0400
++++ gdb/valops.c	2004-11-09 22:51:07.374236263 -0500
 @@ -2663,15 +2663,10 @@ value_of_local (const char *name, int co
    struct block *b;
    struct value * ret;
@@ -479,8 +479,8 @@ Index: gdb-6.3/gdb/valops.c
    return ret;
 Index: gdb-6.3/gdb/varobj.c
 ===================================================================
---- gdb-6.3/gdb/varobj.c	2004-07-26 10:53:06.000000000 -0400
-+++ gdb-6.3/gdb/varobj.c	2004-11-09 22:51:07.377235677 -0500
+--- gdb/varobj.c	2004-07-26 10:53:06.000000000 -0400
++++ gdb/varobj.c	2004-11-09 22:51:07.377235677 -0500
 @@ -488,7 +488,7 @@ varobj_create (char *objname,
        if (fi != NULL)
  	{
@@ -492,8 +492,8 @@ Index: gdb-6.3/gdb/varobj.c
  
 Index: gdb-6.3/gdb/testsuite/gdb.base/default.exp
 ===================================================================
---- gdb-6.3/gdb/testsuite/gdb.base/default.exp	2003-03-20 09:45:50.000000000 -0500
-+++ gdb-6.3/gdb/testsuite/gdb.base/default.exp	2004-11-09 22:51:07.379235287 -0500
+--- gdb/testsuite/gdb.base/default.exp	2003-03-20 09:45:50.000000000 -0500
++++ gdb/testsuite/gdb.base/default.exp	2004-11-09 22:51:07.379235287 -0500
 @@ -167,7 +167,7 @@ gdb_test "disable breakpoints" "" "disab
  #test disable display
  gdb_test "disable display" "" "disable display"

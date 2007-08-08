@@ -24,7 +24,7 @@ $(DL_DIR)/$(LSOF_PKG_SOURCE): | $(DL_DIR)
 $(LSOF_DIR)/.unpacked: $(DL_DIR)/$(LSOF_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LSOF_SOURCE)
 	for i in $(LSOF_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(LSOF_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(LSOF_DIR) $$i; \
 	done
 	touch $@
 

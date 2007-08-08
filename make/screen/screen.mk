@@ -20,7 +20,7 @@ $(DL_DIR)/$(SCREEN_PKG_SOURCE): | $(DL_DIR)
 $(SCREEN_DIR)/.unpacked: $(DL_DIR)/$(SCREEN_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(SCREEN_SOURCE)
 	for i in $(SCREEN_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(SCREEN_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(SCREEN_DIR) $$i; \
 	done
 	touch $@
 

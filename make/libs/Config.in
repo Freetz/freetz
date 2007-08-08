@@ -304,6 +304,7 @@ menu "OpenSSL"
 
 config DS_LIB_libcrypto
 	bool "libcrypto.so"
+	select DS_LIB_libz
 	default n
 	help
 		crypto - OpenSSL cryptographic library
@@ -323,6 +324,7 @@ config DS_LIB_libcrypto
 config DS_LIB_libssl
 	bool "libssl.so"
 	select DS_LIB_libcrypto
+	select DS_LIB_libz
 	default n
 	help
 		SSL - OpenSSL SSL/TLS library
@@ -391,3 +393,64 @@ config DS_LIB_libelf
 		http://www.stud.uni-hannover.de/~michael/software/
 
 		In DS-Mod, e.g ltrace depends on libelf.
+
+config DS_LIB_libpng
+	bool "libpng (libpng.so)"
+	select DS_LIB_libz
+	default n
+	help
+		libpng is the official PNG reference library. It supports almost all PNG
+		features, is extensible, and has been extensively tested for over 12 years.
+		The home site for development versions (i.e., may be buggy or subject to 
+		change or include experimental features) is http://libpng.sourceforge.net/,
+		and the place to go for questions about the library is the png-mng-implement
+		mailing list. 
+		
+		In DS-Mod, rrdtool depends on libpng.
+
+config DS_LIB_libart
+	bool "libart (libart.so)"
+	default n
+	help
+		Libart is a library for high-performance 2D graphics. It supports a very
+		powerful imaging model, basically the same as SVG and the Java 2D API.
+		It includes all PostScript imaging operations, and adds antialiasing and
+		alpha-transparency. It is also highly tuned for incremental rendering. It
+		contains data structures and algorithms suited to rapid, precise computation
+		of Region of Interest, and a two-phase rendering pipeline optimized for
+		interactive display. 
+		
+		In DS-Mod, rrdtool depends on libart.
+
+config DS_LIB_libfreetype
+	bool "libfreetype (freetype.so)"
+	select DS_LIB_libz
+	default n
+	help
+		FreeType 2 is a software font engine that is designed to be small, efficient,
+		highly customizable, and portable while capable of producing high-quality
+		output (glyph images). It can be used in graphics libraries, display servers,
+		font conversion tools, text image generation tools, and many other products
+		as well.
+		
+		In DS-Mod, rrdtool depends on freetype.
+
+config DS_LIB_libglib
+	bool "glib (libglib-2.0.so)"
+	default n
+	help
+		GLib is a library containing many useful C routines for things such as trees, 
+		hashes, and lists.
+
+config DS_LIB_libintl
+	bool "libintl (libintl.so)"
+	default n
+	help
+		GNU Internationalization library
+
+config DS_LIB_libiconv
+	bool "libiconv (libiconv.so)"
+	default n
+	help
+		This library provides an iconv() implementation, for use on systems which don't 
+		have one, or whose implementation cannot convert from/to Unicode. 

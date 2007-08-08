@@ -17,7 +17,7 @@ $(DL_DIR)/$(USB_SOURCE): | $(DL_DIR)
 $(USB_DIR)/.unpacked: $(DL_DIR)/$(USB_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(USB_SOURCE)
 	for i in $(USB_MAKE_DIR)/patches/*.usb.patch; do \
-		patch -d $(USB_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(USB_DIR) $$i; \
 	done
 	touch $@
 
@@ -56,15 +56,14 @@ $(USB_DIR)/.configured: $(USB_DIR)/.unpacked
 	touch $@
 
 $(USB_BINARY): $(USB_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(USB_DIR) \
-		$(TARGET_CONFIGURE_OPTS) all
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	$(MAKE) -C $(USB_DIR) all
 
 $(USB_STAGING_BINARY): $(USB_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(USB_DIR) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		install
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	    $(MAKE) -C $(USB_DIR) \
+	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+	    install
 
 $(USB_TARGET_BINARY): $(USB_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so* $(USB_TARGET_DIR)/

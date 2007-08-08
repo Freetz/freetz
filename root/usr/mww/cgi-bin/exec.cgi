@@ -64,6 +64,11 @@ case "$MOD_CGI_CMD" in
 		echo '<form action="/cgi-bin/status.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
 		cgi_end
 		;;
+	firmware_update)
+		cgi_begin 'Firmware-Update'
+		/usr/mww/cgi-bin/firmware_update.cgi
+		cgi_end
+		;;
 	fw_attrib)
 		cgi_begin '$(lang de:"Attribute bereinigen" en:"Cleanup attributes")'
 		echo '<p>$(lang de:"Entfernt Merker f&uuml;r \"nicht unterst&uuml;tzte &Auml;nderungen\"" en:"Cleans up marker for \"unauthorized changes\"")</p>'

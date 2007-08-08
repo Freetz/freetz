@@ -16,7 +16,7 @@ $(DL_DIR)/$(MAD_SOURCE): | $(DL_DIR)
 $(MAD_DIR)/.unpacked: $(DL_DIR)/$(MAD_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MAD_SOURCE)
 #	for i in $(MAD_MAKE_DIR)/patches/*.mad.patch; do \
-#		patch -d $(MAD_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(MAD_DIR) $$i; \
 #	done
 	touch $@
 
@@ -58,15 +58,14 @@ $(MAD_DIR)/.configured: $(MAD_DIR)/.unpacked
 	touch $@
 
 $(MAD_BINARY): $(MAD_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(MAD_DIR) \
-		$(TARGET_CONFIGURE_OPTS) 
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	    $(MAKE) -C $(MAD_DIR) \
 
 $(MAD_STAGING_BINARY): $(MAD_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(MAD_DIR) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		install
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	    $(MAKE) -C $(MAD_DIR) \
+	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+	    install
 
 $(MAD_TARGET_BINARY): $(MAD_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*.so* $(MAD_TARGET_DIR)/

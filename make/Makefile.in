@@ -33,12 +33,6 @@ DISABLE_LARGEFILE:=--disable-largefile
 CFLAGS_LARGEFILE=-D_FILE_OFFSET_BITS=32
 endif
 
-ifeq ($(strip $(DS_VERBOSITY_LEVEL)),0)
-VERBOSE:=
-else
-VERBOSE:=-v
-endif
-
 TARGET_CROSS:=$(strip $(subst ",, $(DS_TARGET_CROSS)))
 TARGET_MAKE_PATH:=$(strip $(subst ",, $(DS_TARGET_MAKE_PATH)))
 KERNEL_CROSS:=$(strip $(subst ",, $(DS_KERNEL_CROSS)))

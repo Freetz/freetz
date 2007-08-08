@@ -3,8 +3,8 @@ already in the GDB testsuite (currently disabled) that it would probably fix.
 
 Index: gdb-6.3/gdb/infcall.c
 ===================================================================
---- gdb-6.3/gdb/infcall.c	2004-10-08 04:15:56.000000000 -0400
-+++ gdb-6.3/gdb/infcall.c	2004-11-10 12:30:07.000000000 -0500
+--- gdb/infcall.c	2004-10-08 04:15:56.000000000 -0400
++++ gdb/infcall.c	2004-11-10 12:30:07.000000000 -0500
 @@ -36,6 +36,7 @@
  #include "gdb_string.h"
  #include "infcall.h"
@@ -169,8 +169,8 @@ Index: gdb-6.3/gdb/infcall.c
  	/* This code only handles "register convention".  */
 Index: gdb-6.3/gdb/cp-abi.h
 ===================================================================
---- gdb-6.3/gdb/cp-abi.h	2003-04-12 13:41:25.000000000 -0400
-+++ gdb-6.3/gdb/cp-abi.h	2004-11-10 12:30:07.000000000 -0500
+--- gdb/cp-abi.h	2003-04-12 13:41:25.000000000 -0400
++++ gdb/cp-abi.h	2004-11-10 12:30:07.000000000 -0500
 @@ -1,7 +1,7 @@
  /* Abstraction of various C++ ABI's we support, and the info we need
     to get from them.
@@ -201,8 +201,8 @@ Index: gdb-6.3/gdb/cp-abi.h
  
 Index: gdb-6.3/gdb/cp-abi.c
 ===================================================================
---- gdb-6.3/gdb/cp-abi.c	2003-11-26 17:04:00.000000000 -0500
-+++ gdb-6.3/gdb/cp-abi.c	2004-11-10 12:30:07.000000000 -0500
+--- gdb/cp-abi.c	2003-11-26 17:04:00.000000000 -0500
++++ gdb/cp-abi.c	2004-11-10 12:30:07.000000000 -0500
 @@ -1,5 +1,5 @@
  /* Generic code for supporting multiple C++ ABI's
 -   Copyright 2001, 2002, 2003 Free Software Foundation, Inc.
@@ -227,8 +227,8 @@ Index: gdb-6.3/gdb/cp-abi.c
  static int
 Index: gdb-6.3/gdb/gnu-v3-abi.c
 ===================================================================
---- gdb-6.3/gdb/gnu-v3-abi.c	2004-03-15 15:38:08.000000000 -0500
-+++ gdb-6.3/gdb/gnu-v3-abi.c	2004-11-10 12:30:07.000000000 -0500
+--- gdb/gnu-v3-abi.c	2004-03-15 15:38:08.000000000 -0500
++++ gdb/gnu-v3-abi.c	2004-11-10 12:30:07.000000000 -0500
 @@ -1,7 +1,7 @@
  /* Abstraction of GNU v3 abi.
     Contributed by Jim Blandy <jimb@redhat.com>
@@ -333,8 +333,8 @@ Index: gdb-6.3/gdb/gnu-v3-abi.c
  extern initialize_file_ftype _initialize_gnu_v3_abi; /* -Wmissing-prototypes */
 Index: gdb-6.3/gdb/hpacc-abi.c
 ===================================================================
---- gdb-6.3/gdb/hpacc-abi.c	2003-06-08 14:27:13.000000000 -0400
-+++ gdb-6.3/gdb/hpacc-abi.c	2004-11-10 12:30:07.000000000 -0500
+--- gdb/hpacc-abi.c	2003-06-08 14:27:13.000000000 -0400
++++ gdb/hpacc-abi.c	2004-11-10 12:30:07.000000000 -0500
 @@ -3,7 +3,7 @@
     Most of the real code is from HP, i've just fiddled it to fit in
     the C++ ABI abstraction framework.
@@ -346,8 +346,8 @@ Index: gdb-6.3/gdb/hpacc-abi.c
  
 Index: gdb-6.3/gdb/Makefile.in
 ===================================================================
---- gdb-6.3/gdb/Makefile.in	2004-11-10 12:30:06.000000000 -0500
-+++ gdb-6.3/gdb/Makefile.in	2004-11-10 12:30:07.000000000 -0500
+--- gdb/Makefile.in	2004-11-10 12:30:06.000000000 -0500
++++ gdb/Makefile.in	2004-11-10 12:30:07.000000000 -0500
 @@ -2073,7 +2073,7 @@ ia64-tdep.o: ia64-tdep.c $(defs_h) $(inf
  infcall.o: infcall.c $(defs_h) $(breakpoint_h) $(target_h) $(regcache_h) \
  	$(inferior_h) $(gdb_assert_h) $(block_h) $(gdbcore_h) $(language_h) \
@@ -360,7 +360,7 @@ Index: gdb-6.3/gdb/Makefile.in
 Index: gdb-6.3/gdb/testsuite/gdb.cp/pass-by-ref.exp
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gdb-6.3/gdb/testsuite/gdb.cp/pass-by-ref.exp	2004-11-11 09:48:00.498518899 -0500
++++ gdb/testsuite/gdb.cp/pass-by-ref.exp	2004-11-11 09:48:00.498518899 -0500
 @@ -0,0 +1,38 @@
 +# This testcase is part of GDB, the GNU debugger.
 +
@@ -403,7 +403,7 @@ Index: gdb-6.3/gdb/testsuite/gdb.cp/pass-by-ref.exp
 Index: gdb-6.3/gdb/testsuite/gdb.cp/pass-by-ref.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gdb-6.3/gdb/testsuite/gdb.cp/pass-by-ref.cc	2004-11-11 09:44:17.815014667 -0500
++++ gdb/testsuite/gdb.cp/pass-by-ref.cc	2004-11-11 09:44:17.815014667 -0500
 @@ -0,0 +1,57 @@
 +/* This testcase is part of GDB, the GNU debugger.
 +

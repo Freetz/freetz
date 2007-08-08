@@ -5,7 +5,7 @@ DROPBEAR_SITE:=http://matt.ucc.asn.au/dropbear/releases
 DROPBEAR_MAKE_DIR:=$(MAKE_DIR)/dropbear
 DROPBEAR_DIR:=$(SOURCE_DIR)/dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_BINARY:=$(DROPBEAR_DIR)/dropbearmulti
-DROPBEAR_PKG_VERSION:=0.7
+DROPBEAR_PKG_VERSION:=0.7b
 DROPBEAR_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 ifeq ($(strip $(DS_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
 DROPBEAR_PKG_NAME:=dropbear-sshd-$(DROPBEAR_VERSION)
@@ -39,7 +39,7 @@ $(DROPBEAR_DIR)/.unpacked: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_DS_CONFIG_FIL
 	rm -rf $(DROPBEAR_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(DROPBEAR_SOURCE)
 	for i in $(DROPBEAR_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(DROPBEAR_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(DROPBEAR_DIR) $$i; \
 	done
 	touch $@
 

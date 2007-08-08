@@ -15,7 +15,7 @@ $(DL_DIR)/$(ZLIB_SOURCE): | $(DL_DIR)
 $(ZLIB_DIR)/.unpacked: $(DL_DIR)/$(ZLIB_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(ZLIB_SOURCE)
 	for i in $(ZLIB_MAKE_DIR)/patches/*.zlib.patch; do \
-		patch -d $(ZLIB_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(ZLIB_DIR) $$i; \
 	done
 	touch $@
 
@@ -36,15 +36,13 @@ $(ZLIB_DIR)/.configured: $(ZLIB_DIR)/.unpacked
 	touch $@
 
 $(ZLIB_BINARY): $(ZLIB_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(ZLIB_DIR) \
-		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		libz.a libz.so
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	   $(MAKE) -C $(ZLIB_DIR) \
+	   libz.a libz.so
 
 $(ZLIB_STAGING_BINARY): $(ZLIB_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(ZLIB_DIR) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	   $(MAKE) -C $(ZLIB_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 

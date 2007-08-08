@@ -26,7 +26,7 @@ $(DL_DIR)/$(FUSE_PKG_SOURCE): | $(DL_DIR)
 $(FUSE_DIR)/.unpacked: $(DL_DIR)/$(FUSE_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FUSE_SOURCE)
 	for i in $(FUSE_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(FUSE_DIR) -p0 < $$i; \
+		$(PATCH_TOOL) $(FUSE_DIR) $$i; \
 	done
 	touch $@
 
@@ -96,7 +96,7 @@ $(FUSE_LIB_STAGING_BINARY): $(FUSE_LIB_BINARY)
 		install
 
 $(PACKAGES_DIR)/.$(FUSE_PKG_NAME): $(DL_DIR)/$(FUSE_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(FUSE_PKG_SOURCE)
+	@tar -C $(PACKAGES_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(FUSE_PKG_SOURCE)
 	@touch $@
 
 $(FUSE_TARGET_BINARY): $(FUSE_BINARY)
@@ -124,13 +124,10 @@ fuse-clean:
 	rm -f $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc 
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse* \
+        $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
 
 fuse-dirclean:
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h 
 	rm -rf $(FUSE_DIR)
 	rm -rf $(PACKAGES_DIR)/$(FUSE_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)

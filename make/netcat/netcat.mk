@@ -20,7 +20,7 @@ $(DL_DIR)/$(NETCAT_PKG_SOURCE): | $(DL_DIR)
 $(NETCAT_DIR)/.unpacked: $(DL_DIR)/$(NETCAT_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NETCAT_SOURCE)
 #	for i in $(NETCAT_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(NETCAT_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(NETCAT_DIR) $$i; \
 #	done
 	touch $@
 

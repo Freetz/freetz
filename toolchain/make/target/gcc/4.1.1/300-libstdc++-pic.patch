@@ -1,7 +1,7 @@
 # DP: Build and install libstdc++_pic.a library.
 
---- gcc-4.1.1/libstdc++-v3/src/Makefile.am
-+++ gcc-4.1.1-patched/libstdc++-v3/src/Makefile.am
+--- libstdc++-v3/src/Makefile.am
++++ libstdc++-v3/src/Makefile.am
 @@ -234,6 +234,12 @@
  	  $(OPT_LDFLAGS) $(SECTION_LDFLAGS) $(AM_CXXFLAGS) $(LDFLAGS) -o $@
  
@@ -15,8 +15,8 @@
  # Added bits to build debug library.
  if GLIBCXX_BUILD_DEBUG
  all-local: build_debug
---- gcc-4.1.1/libstdc++-v3/src/Makefile.in
-+++ gcc-4.1.1-patched/libstdc++-v3/src/Makefile.in
+--- libstdc++-v3/src/Makefile.in
++++ libstdc++-v3/src/Makefile.in
 @@ -627,7 +627,7 @@
  
  install-data-am: install-data-local

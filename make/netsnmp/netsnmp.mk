@@ -106,7 +106,7 @@ $(DL_DIR)/$(NETSNMP_PKG_SOURCE): | $(DL_DIR)
 $(NETSNMP_DIR)/.unpacked: $(DL_DIR)/$(NETSNMP_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NETSNMP_SOURCE)
 	for i in $(NETSNMP_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(NETSNMP_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(NETSNMP_DIR) $$i; \
 	done
 	touch $@
 

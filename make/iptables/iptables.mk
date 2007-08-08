@@ -15,7 +15,7 @@ $(DL_DIR)/$(IPTABLES_SOURCE): | $(DL_DIR)
 $(IPTABLES_DIR)/.unpacked $(IPTABLES_DIR_SYMLINK)/.unpacked: $(DL_DIR)/$(IPTABLES_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(IPTABLES_SOURCE)
 	for i in $(IPTABLES_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(IPTABLES_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(IPTABLES_DIR) $$i; \
 	done
 	chmod +x $(IPTABLES_DIR)/extensions/.*-test*
 	touch $@

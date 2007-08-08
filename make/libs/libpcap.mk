@@ -16,7 +16,7 @@ $(DL_DIR)/$(LIBPCAP_SOURCE): | $(DL_DIR)
 $(LIBPCAP_DIR)/.unpacked: $(DL_DIR)/$(LIBPCAP_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBPCAP_SOURCE)
 	for i in $(LIBPCAP_MAKE_DIR)/patches/*.libpcap.patch; do \
-		patch -d $(LIBPCAP_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(LIBPCAP_DIR) $$i; \
 	done
 	touch $@
 
@@ -71,7 +71,7 @@ $(LIBPCAP_BINARY): $(LIBPCAP_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBPCAP_DIR) \
 		CCOPT="-fPIC $(TARGET_CFLAGS)" \
-		$(TARGET_CONFIGURE_OPTS) all
+		all
 
 $(LIBPCAP_STAGING_BINARY): $(LIBPCAP_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \

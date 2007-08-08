@@ -15,7 +15,7 @@ $(DL_DIR)/$(CAPI_SOURCE): | $(DL_DIR)
 $(CAPI_DIR)/.unpacked: $(DL_DIR)/$(CAPI_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(CAPI_SOURCE)
 #	for i in $(CAPI_MAKE_DIR)/patches/*.capi.patch; do \
-#		patch -d $(CAPI_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(CAPI_DIR) $$i; \
 #	done
 	touch $@
 

@@ -15,7 +15,7 @@ $(DL_DIR)/$(LIBELF_SOURCE): | $(DL_DIR)
 $(LIBELF_DIR)/.unpacked: $(DL_DIR)/$(LIBELF_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBELF_SOURCE)
 #	for i in $(LIBELF_MAKE_DIR)/patches/*.libelf.patch; do \
-#		patch -d $(LIBELF_DIR) -p0 < $$i; \
+#		$(PATCH_TOOL) $(LIBELF_DIR) $$i; \
 #	done
 	touch $@
 

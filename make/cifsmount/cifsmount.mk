@@ -20,7 +20,7 @@ $(CIFSMOUNT_DIR)/.unpacked: $(CIFSMOUNT_MAKE_DIR)/$(CIFSMOUNT_SOURCE)
 	mkdir -p $(SOURCE_DIR)/cifsmount-$(CIFSMOUNT_VERSION)
 	tar -C $(CIFSMOUNT_DIR) $(VERBOSE) -xjf $(CIFSMOUNT_MAKE_DIR)/$(CIFSMOUNT_SOURCE)
 #	for i in $(CIFSMOUNT_MAKE_DIR)/patches/*.patch; do \
-#		patch -d $(CIFSMOUNT_DIR) -p1 < $$i; \
+#		$(PATCH_TOOL) $(CIFSMOUNT_DIR) $$i; \
 #	done
 	touch $@
 

@@ -50,6 +50,7 @@ TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 
 SED:=sed
 DL_TOOL:=$(TOOLS_DIR)/ds_download
+PATCH_TOOL:=$(TOOLS_DIR)/ds_patch
 
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)
@@ -76,6 +77,12 @@ ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
 endif
 
+ifeq ($(strip $(DS_VERBOSITY_LEVEL)),0)
+VERBOSE:=
+else
+VERBOSE:=-v
+endif
+
 TOOLS_CLEAN:=$(patsubst %,%-clean,$(TOOLS))
 TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))
 TOOLS_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLS))
@@ -100,6 +107,7 @@ $(PACKAGES_BUILD_DIR):
 
 $(TOOLCHAIN_BUILD_DIR):
 	@mkdir -p $(TOOLCHAIN_BUILD_DIR)
+
 
 ifeq ($(strip $(DS_HAVE_DOT_CONFIG)),y)
 
@@ -333,7 +341,7 @@ config-clean-deps:
 	make oldconfig < /dev/null > /dev/null; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
-	diff -u0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
+	diff -U 0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
 	rm -f .config_tmp; \
 	}
 

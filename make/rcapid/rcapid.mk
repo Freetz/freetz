@@ -1,6 +1,6 @@
 RCAPID_VERSION:=0.1
 RCAPID_SOURCE:=rcapid.tgz
-RCAPID_SITE:=http://www.mtg.de/pdf
+RCAPID_SITE:=http://dsmod.magenbrot.net
 RCAPID_DIR:=$(SOURCE_DIR)/rcapid
 RCAPID_MAKE_DIR:=$(MAKE_DIR)/rcapid
 RCAPID_BINARY:=$(RCAPID_DIR)/rcapid
@@ -12,7 +12,7 @@ RCAPID_TARGET_DIR:=$(PACKAGES_DIR)/$(RCAPID_PKG_NAME)
 RCAPID_TARGET_BINARY:=$(RCAPID_TARGET_DIR)/root/usr/sbin/rcapid
 
 $(DL_DIR)/$(RCAPID_SOURCE):
-	wget -P $(DL_DIR) $(RCAPID_SITE)/$(RCAPID_SOURCE)
+	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(RCAPID_SOURCE) $(RCAPID_SITE)
 
 $(DL_DIR)/$(RCAPID_PKG_SOURCE):
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(RCAPID_PKG_SOURCE) $(RCAPID_PKG_SITE)
@@ -20,7 +20,7 @@ $(DL_DIR)/$(RCAPID_PKG_SOURCE):
 $(RCAPID_DIR)/.unpacked: $(DL_DIR)/$(RCAPID_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(RCAPID_SOURCE)
 	for i in $(RCAPID_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(RCAPID_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(RCAPID_DIR) $$i; \
 	done
 	touch $@
 

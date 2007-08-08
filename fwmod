@@ -276,48 +276,8 @@ echo2()
 	[ "$DS_VERBOSITY_LEVEL" -ge 2 ] && echo -e "${L2}$1"
 }
 
-modpatch()
-{
-	# The add-on auto-fix feature for self-healing patches was developed by
-	# Alexander Kriegisch (kriegaex), 2007-06-25. I am pretty proud of this
-	# little toy, so here is one ooof my rare copyright notices. Anyway, enjoy
-	# the feature!
-	local backup
-	local do_fix
-	local files
-	if [ "$AUTO_FIX_PATCHES" == "y" ]; then
-		local output=$(patch --dry-run -d "$1" -p0 < "$2" 2> /dev/null)
-		if [ $? -eq 0 ] && echo "$output" | grep -E '^Hunk ' > /dev/null 2>&1; then
-			do_fix="y"
-			backup="-b "
-			files=$(echo "$output" | sed -n -r 's/^patching file (.*)/\1/p')
-		fi
-	fi
-	local STATUS
-	if [ "$DS_VERBOSITY_LEVEL" -ge 2 ]; then
-		echo2 "applying patch file $2"
-		patch ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
-		STATUS=${PIPESTATUS[0]}
-		echo2 "----------------------------------------------------------------------"
-	else
-		patch ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
-		STATUS=$?
-	fi
-	if [ $STATUS -gt 0 ]; then
-		error 2 "modpatch: Error in patch-file $2"
-	elif [ "$AUTO_FIX_PATCHES" == "y" ] && [ "$do_fix" == "y" ]; then
-		echo2 "auto-fixing fuzzy patch file $2"
-		local patch_file=$(realpath "$2")
-		mv -f "$patch_file" "$patch_file.orig"
-		cd "$1"
-		for file in $files; do
-			diff -Naur "$file.orig" "$file" >> "$patch_file"
-			rm -f "$file.orig"
-		done
-		cd - > /dev/null
-		echo2 "----------------------------------------------------------------------"
-	fi
-}
+# Dot-include 'modpatch' shell function
+. "${TOOLS_DIR}/ds_patch"
 
 modunsqfs()
 {
@@ -581,7 +541,6 @@ else
 	HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www/all/html/de"
 fi
 
-
 if [ "$DO_MOD" -gt 0 ]; then
 	echo -e "\033[1mSTEP 2: MODIFY\033[0m"
 
@@ -744,7 +703,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 	ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_status"
 	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin" ] && \
 	ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_wol"
-
+	
+	# international version
+	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin" ] && \
+	ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin/dsmod_status"
+	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin" ] && \
+	ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin/dsmod_wol"
+	
 	for i in $oems
 	do
 		if [ "$(eval "echo \"\$DS_BRANDING_${i}\"")" != "y" ]; then
@@ -753,10 +718,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		rm -rf "${FILESYSTEM_MOD_DIR}/etc/default."*"/${i}"
 		oem_removed=1
 		else
-		[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}" ] && \
-		ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_status"
-		[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}" ] && \
-		ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_wol"
+		
+		# it seems that all oem dirs are symlinks, no extra directorys anymore?
+		#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
+		#ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_status"
+		#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
+		#ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_wol"
 
 		oem_list="$oem_list $i"
 		oem_kept=1
@@ -1196,9 +1163,14 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "inconsistency comparing size of old and new kernel.image"
 	fi
 
+	# Last, but not least, include .config and addon/static.pkg into firmware
+	# image for further reference, e.g. user support
+	[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
+	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
+
 	modimage="${DS_TYPE_STRING}_${FIRMWAREVERSION}-${SUBVERSION}.${DS_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
 
-	# Pack firmare image (use old tar for compatibility)
+	# Pack firmware image (use old tar for compatibility)
 	echo "packing ${modimage}"
 	"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
 

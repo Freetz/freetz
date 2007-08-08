@@ -1,0 +1,33 @@
+--- configure.orig	2007-05-02 21:15:51.000000000 +0200
++++ configure	2007-07-29 04:29:41.000000000 +0200
+@@ -18,6 +18,8 @@
+ CXX="${CXX-c++}"
+ CXXFLAGS="${CXXFLAGS}"
+ LDFLAGS="${LDFLAGS}"
++AR="${CROSS}ar"
++RANLIB="${CROSS}ranlib"
+ VERBOSE=no
+ 
+ #
+@@ -366,6 +368,8 @@
+ LDFLAGS        = $LDFLAGS
+ CFLAGS_GTK     = $CFLAGS_GTK
+ LDFLAGS_GTK    = $LDFLAGS_GTK
++AR	       = $AR
++RANLIB	       = $RANLIB
+ EOF
+ 
+ echo
+--- mk/lib.mk.orig	2007-05-02 21:15:51.000000000 +0200
++++ mk/lib.mk	2007-07-29 04:29:41.000000000 +0200
+@@ -14,8 +14,8 @@
+ 
+ libtransmission.a: $(OBJS)
+ 	@echo "Library $@"
+-	@ar ru $@ $(OBJS)
+-	@ranlib $@
++	@$(AR) ru $@ $(OBJS)
++	@$(RANLIB) $@
+ 
+ %.o: %.c ../mk/config.mk ../mk/common.mk ../mk/cli.mk
+ 	$(CC_RULE)

@@ -19,7 +19,7 @@ $(DL_DIR)/$(VPNC_PKG_SOURCE): | $(DL_DIR)
 $(VPNC_DIR)/.unpacked: $(DL_DIR)/$(VPNC_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(VPNC_SOURCE)
 	for i in $(VPNC_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(VPNC_DIR) -p1 < $$i; \
+		$(PATCH_TOOL) $(VPNC_DIR) $$i; \
 	done
 	touch $@
 
