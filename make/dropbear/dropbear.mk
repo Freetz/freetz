@@ -1,6 +1,6 @@
 # based on OpenWrt SVN
-DROPBEAR_VERSION:=0.49
-DROPBEAR_SOURCE:=dropbear-$(DROPBEAR_VERSION).tar.gz
+DROPBEAR_VERSION:=0.50
+DROPBEAR_SOURCE:=dropbear-$(DROPBEAR_VERSION).tar.bz2
 DROPBEAR_SITE:=http://matt.ucc.asn.au/dropbear/releases
 DROPBEAR_MAKE_DIR:=$(MAKE_DIR)/dropbear
 DROPBEAR_DIR:=$(SOURCE_DIR)/dropbear-$(DROPBEAR_VERSION)
@@ -37,7 +37,7 @@ $(DROPBEAR_DS_CONFIG_FILE): $(TOPDIR)/.config
 # with the source directory.
 $(DROPBEAR_DIR)/.unpacked: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_DS_CONFIG_FILE)
 	rm -rf $(DROPBEAR_DIR)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(DROPBEAR_SOURCE)
+	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(DROPBEAR_SOURCE)
 	for i in $(DROPBEAR_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(DROPBEAR_DIR) $$i; \
 	done
