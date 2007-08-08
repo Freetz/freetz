@@ -74,6 +74,7 @@ stat_button 'restart_dsld' '$(lang de:"DSL-Reconnect" en:"Reconnect DSL")'
 stat_button 'cleanup' '$(lang de:"TFFS aufräumen" en:"Clean up TFFS")'
 stat_button 'fw_attrib' '$(lang de:"Attribute bereinigen" en:"Clean up attributes")'
 stat_button 'downgrade' '$(lang de:"Downgrade-Mod" en:"Downgrade mod")'
+stat_button 'firmware_update' '$(lang de:"Firmware-Update" en:"Update firmware")'
 stat_button 'reboot' '$(lang de:"Reboot" en:"Reboot")'
 
 cgi_end
