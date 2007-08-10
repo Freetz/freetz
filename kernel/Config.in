@@ -162,6 +162,7 @@ config DS_MODULE_ext2
 
 config DS_MODULE_fat
 	bool "fat.ko"
+	depends on DS_REPLACE_KERNEL
 	default n
 
 config DS_MODULE_fuse
@@ -234,6 +235,7 @@ config DS_MODULE_unionfs
 
 config DS_MODULE_vfat
 	bool "vfat.ko"
+	depends on DS_REPLACE_KERNEL
 	select DS_MODULE_fat
 	default n
 	
