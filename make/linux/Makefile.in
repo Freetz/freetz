@@ -1,0 +1,51 @@
+KERNEL_REF:=$(strip $(subst ",, $(DS_KERNEL_REF)))
+
+ifeq ($(AVM_VERSION),04.01)
+KERNEL_DUMMY_MAKE_FILES = \
+	kernel/linux-2.4.17_mvl21/drivers/char/ubik2/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/avm_event/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/avalanche_led/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/avalanche_lcd/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/avalanche_vlynq/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/avm/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/avm_i2c/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/xilinx/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/tffs/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/ticfg/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/bluetooth_hci/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/avm_manu/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/atm/sangam_atm/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/usb/ahci/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/usb/ahcicheck/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/usb/usbauth/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/net/avalanche_cpmac/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/net/avalanche_usb/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon2/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon3/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon4/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon5/Makefile \
+	kernel/linux-2.4.17_mvl21/arch/mips/mips-boards/ti_avalanche/ti_pspboot/Makefile \
+	kernel/linux-2.4.17_mvl21/arch/mips/mips-boards/ti_avalanche/ti_puma-s/Makefile \
+	kernel/linux-2.4.17_mvl21/arch/mips/mips-boards/ti_avalanche/ti_titan/Makefile
+endif
+
+ifeq ($(AVM_VERSION),04.06)
+KERNEL_DUMMY_MAKE_FILES = \
+	kernel/linux-2.4.17_mvl21/drivers/char/ubik2/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/Piglet/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/atm/sangam_atm/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/avm_power/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/char/flash_update/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/usb/ahci_check/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/usb/ahci/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/usb/usbauth/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/net/avm_usb/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon2/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon3/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon4/Makefile \
+	kernel/linux-2.4.17_mvl21/drivers/isdn/isdn_fon5/Makefile
+endif
+
+TARGETS+=kernel

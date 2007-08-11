@@ -1,0 +1,112 @@
+diff -ruN linux-2.4.17_mvl21.orig/arch/mips/mips-boards/ti_avalanche/inflater/Decoder.c linux-2.4.17_mvl21/arch/mips/mips-boards/ti_avalanche/inflater/Decoder.c
+--- linux-2.4.17_mvl21.orig/arch/mips/mips-boards/ti_avalanche/inflater/Decoder.c	2004-07-09 17:05:46.000000000 +0200
++++ linux-2.4.17_mvl21/arch/mips/mips-boards/ti_avalanche/inflater/Decoder.c	2006-04-01 22:10:24.457424248 +0200
+@@ -34,9 +34,9 @@
+ #define RETURN_IF_NOT_S_OK(x) { int __result_ = (x); if(__result_ != 0) return __result_; }
+ 
+ /**********************************	Dictionary Size	***********************************/
+-#define DEF_DICTIONARY_SIZE               0x200000   
+-#define DEF_LITERAL_POS_STATE_BITS        0
+-#define DEF_LITERAL_CONTEXT_BITS          3
++#define DEF_DICTIONARY_SIZE               (1 << 21)   
++#define DEF_LITERAL_POS_STATE_BITS        2		// for 32-bit data
++#define DEF_LITERAL_CONTEXT_BITS          1		// for 32-bit data
+ #define DEF_POS_STATE_BITS                2
+ 
+ 
+@@ -836,7 +836,7 @@
+    /*======================================================
+    Decode
+    =======================================================*/
+-   return CodeReal(&MyDecoder, pbSource + 0x20,pbDest,&uiCompressedLength,&uiDecompressedLength,0);
++   return CodeReal(&MyDecoder,pbSource,pbDest,&uiCompressedLength,&uiDecompressedLength,0);
+ }
+ 
+ 
+diff -ruN linux-2.4.17_mvl21.orig/arch/mips/mips-boards/ti_avalanche/inflater/inflate.c linux-2.4.17_mvl21/arch/mips/mips-boards/ti_avalanche/inflater/inflate.c
+--- linux-2.4.17_mvl21.orig/arch/mips/mips-boards/ti_avalanche/inflater/inflate.c	2004-07-09 17:05:46.000000000 +0200
++++ linux-2.4.17_mvl21/arch/mips/mips-boards/ti_avalanche/inflater/inflate.c	2006-04-01 22:16:56.016898160 +0200
+@@ -1290,6 +1290,7 @@
+     extern uch kernelimage_end[];
+     int i;
+     unsigned int uncompr_size;
++    unsigned int compr_offset;
+ 
+ 
+     /* Setup memory limits */
+@@ -1297,20 +1298,23 @@
+     freememstart = (void *)&inflate_free_memory_start;
+ 
+ #ifdef CONFIG_KERNEL_COMPRESS_7ZIP
+-    uncompr_size = *((unsigned int *)(indata+20));
+     printf("Starting LZMA Uncompression Algorithm.\n");
++    printf("Copyright (C) 2003 Texas Instruments Incorporated; Copyright (C) 1999-2003 Igor Pavlov.\n");
+ 
+     if ((indata[0] == '7') && (indata[1] == 'z'))
+     {
+-      printf("Copyright (C) 2003 Texas Instruments Incorporated; Copyright (C) 1999-2003 Igor Pavlov.\n");
+-      printf("Compressed file is LZMA format.\n");
+-      i = cm_hwDecodeLZMA(outdata,uncompr_size,indata,compr_length,freememstart);
++      printf("Compressed file is 7zip format.\n");
++      uncompr_size = (indata[23]<<24)+(indata[22]<<16)+(indata[21]<<8)+indata[20];
++      compr_offset = 32;
+     }
+     else
+     {
+-      printf("Compressed image not LZMA format.\n");		
+-      return (-1);
++      printf("Compressed file is not 7zip format. Trying LZMA stand-alone...\n");
++      uncompr_size = (indata[8]<<24)+(indata[7]<<16)+(indata[6]<<8)+indata[5];
++      compr_offset = 13;
+     }    
++
++    i = cm_hwDecodeLZMA(outdata,uncompr_size,indata+compr_offset,compr_length,freememstart);
+     return (i);
+ #endif
+ 
+diff -ruN linux-2.4.17_mvl21.orig/arch/mips/mips-boards/ti_avalanche/inflater/Makefile linux-2.4.17_mvl21/arch/mips/mips-boards/ti_avalanche/inflater/Makefile
+--- linux-2.4.17_mvl21.orig/arch/mips/mips-boards/ti_avalanche/inflater/Makefile	2004-11-03 13:39:30.000000000 +0100
++++ linux-2.4.17_mvl21/arch/mips/mips-boards/ti_avalanche/inflater/Makefile	2006-04-01 22:03:57.467255696 +0200
+@@ -17,7 +17,8 @@
+ ifdef CONFIG_KERNEL_COMPRESS_7ZIP
+ OBJ_FILES	= inflate.o Decoder.o
+ INFLATE_DEP	= inflate.c lzma_decoder.h Decoder.o
+-ZIMAGE_XZ	= zimage.7z
++#ZIMAGE_XZ	= zimage.7z
++ZIMAGE_XZ	= zimage.lzma
+ else
+ OBJ_FILES	= inflate.o
+ INFLATE_DEP	= inflate.c gzip.h
+@@ -43,14 +44,18 @@
+ 
+ zimage.7z:	Makefile $(TOPDIR)/vmlinux
+ 	$(CROSS_COMPILE)objcopy -S -O binary $(TOPDIR)/vmlinux zimage
+-	if [ -e ../../../../../../../../gtnsp/tools/bin/7zip ]; then \
+-		../../../../../../../../gtnsp/tools/bin/7zip zimage zimage.7z; \
++	if [ -x ../../../../../../../../../../../tools/7zip ]; then \
++		../../../../../../../../../../../tools/7zip zimage zimage.7z; \
+ 	else	\
+-		if [ -e ../../../../../../../../tools/bin/7zip ]; then \
+-			../../../../../../../../tools/bin/7zip zimage zimage.7z; \
+-		else \
+-			7zip zimage zimage.7z; \
+-		fi; \
++		7zip zimage zimage.7z; \
++	fi
++
++zimage.lzma:	Makefile $(TOPDIR)/vmlinux
++	$(CROSS_COMPILE)objcopy -S -O binary $(TOPDIR)/vmlinux zimage
++	if [ -x ../../../../../../../../../../../tools/lzma ]; then \
++		cat zimage | ../../../../../../../../../../../tools/lzma e -si -so -eos -lc1 -lp2 -pb2 > zimage.lzma; \
++	else	\
++		cat zimage | lzma e -si -so -eos -lc1 -lp2 -pb2 > zimage.lzma; \
+ 	fi
+ 
+ zimage.gz:	Makefile $(TOPDIR)/vmlinux
+@@ -66,5 +71,5 @@
+ 	    -e 's/@@LOADADDR@@/$(LOADADDR)/' <$< >$@
+ 
+ clean:	
+-	rm -f $(OBJ_FILES) ZIMAGE_XZ inflate inflate.sre System.map zimage.o ld.script zimage.script ram_zimage.map
++	rm -f $(OBJ_FILES) $(ZIMAGE_XZ) inflate inflate.sre System.map zimage.o ld.script zimage.script ram_zimage.map
+ #	rm -f $(TOPDIR)/srec2bin

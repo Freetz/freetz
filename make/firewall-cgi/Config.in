@@ -1,0 +1,21 @@
+config DS_PACKAGE_FIREWALL_CGI
+	bool "firewall-cgi 0.5"
+	depends on DS_REPLACE_KERNEL
+	select DS_MODULE_ip_conntrack_ftp
+	select DS_MODULE_iptable_filter
+	select DS_MODULE_ipt_iprange
+	select DS_MODULE_ipt_LOG
+	select DS_MODULE_ipt_mac
+	select DS_MODULE_ipt_multiport
+	select DS_MODULE_ipt_state
+	select DS_LIB_libipt_iprange
+	select DS_LIB_libipt_LOG
+	select DS_LIB_libipt_mac
+	select DS_LIB_libipt_multiport
+	select DS_LIB_libipt_standard
+	select DS_LIB_libipt_state
+	select DS_LIB_libipt_tcp
+	select DS_LIB_libipt_udp
+	default n
+	help
+	    Configuration frontend to iptables

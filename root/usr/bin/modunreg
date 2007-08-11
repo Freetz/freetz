@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# Usage: modunreg cgi <pkg>
+#        modunreg extra <pkg> [<cgi-name>]
+#        modunreg file <id>
+
+TMP=/var/tmp
+TMPFILE=$TMP/.unreg.tmp.$$
+
+trap "rm -f $TMPFILE" 0
+
+case "$1" in
+	cgi)
+		[ -e "/mod/etc/reg/cgi.reg" ] || touch /mod/etc/reg/cgi.reg
+
+		cat /mod/etc/reg/cgi.reg | grep -v "^$2|" > $TMPFILE
+		cat $TMPFILE > /mod/etc/reg/cgi.reg
+		rm -f /mod/var/cache/menu_packages
+		;;
+	extra)
+		[ -e "/mod/etc/reg/extra.reg" ] || touch /mod/etc/reg/extra.reg
+
+		if [ -z "$3" ]; then
+			cat /mod/etc/reg/extra.reg | grep -v "^$2" > $TMPFILE
+		else
+			cat /mod/etc/reg/extra.reg | grep -v "^$2|.*|$3\$" > $TMPFILE
+		fi
+		cat $TMPFILE > /mod/etc/reg/extra.reg
+                rm -f /mod/var/cache/extras
+		;;
+	file)
+		[ -e "/mod/etc/reg/file.reg" ] || touch /mod/etc/reg/file.reg
+
+		cat /mod/etc/reg/file.reg | grep -v "^$2|" > $TMPFILE
+		cat $TMPFILE > /mod/etc/reg/file.reg
+		rm -f /mod/var/cache/menu_settings
+		;;
+	*)
+		echo "Usage: $0 cgi <pkg>" 1>&2
+		echo "       $0 extra <pkg> [<cgi-name>]" 1>&2
+		echo "       $0 file <id>" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

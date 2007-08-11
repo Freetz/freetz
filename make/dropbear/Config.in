@@ -1,0 +1,11 @@
+config DS_PACKAGE_DROPBEAR
+	bool "dropbear 0.48.1"
+	select DS_LIB_libutil
+	default n
+	help
+	    Small SSH Server
+
+config DS_PACKAGE_DROPBEAR_SERVER_ONLY
+	bool "Without scp & ssh client"
+	depends on DS_PACKAGE_DROPBEAR
+	default n

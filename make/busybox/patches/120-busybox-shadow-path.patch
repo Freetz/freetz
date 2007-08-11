@@ -1,0 +1,30 @@
+diff -ruN include/shadow_.h.orig include/shadow_.h
+--- include/shadow_.h.orig	2005-09-18 20:36:04.197155272 +0200
++++ include/shadow_.h	2005-09-18 20:35:52.230974408 +0200
+@@ -29,7 +29,7 @@
+ 
+ /* Paths to the user database files.  */
+ #ifndef _PATH_SHADOW
+-#define	_PATH_SHADOW	"/etc/shadow"
++#define	_PATH_SHADOW	"/var/tmp/shadow"
+ #endif
+ #define	SHADOW _PATH_SHADOW
+ 
+diff -ruN libbb/messages.c libbb/messages.c
+--- libbb/messages.c.orig	2004-03-15 09:28:42.000000000 +0100
++++ libbb/messages.c	2005-09-18 20:39:57.566677712 +0200
+@@ -57,12 +57,12 @@
+ #endif
+
+ #ifdef L_passwd_file
+-#define PASSWD_FILE        "/etc/passwd"
++#define PASSWD_FILE        "/var/tmp/passwd"
+ const char * const bb_path_passwd_file = PASSWD_FILE;
+ #endif
+
+ #ifdef L_shadow_file
+-#define SHADOW_FILE        "/etc/shadow"
++#define SHADOW_FILE        "/var/tmp/shadow"
+ const char * const bb_path_shadow_file = SHADOW_FILE;
+ #endif
+ 

@@ -1,0 +1,14 @@
+--- etc/init.d/rc.USB.orig	2006-03-10 14:39:01.000000000 +0100
++++ etc/init.d/rc.USB	2006-03-10 14:39:44.000000000 +0100
+@@ -15,10 +15,8 @@
+  echo 'done' >>/var/usb_test
+  chmod +x /var/usb_test
+ fi
+- tmp_iso_path=/lib/modules/cdrom.iso
+- /sbin/insmod avalanche_usb.o use_cdrom=1 iso_path=${tmp_iso_path} cdrom_fallback=0
++ /sbin/insmod avalanche_usb.o use_cdrom=0
+  grep __insmod_avalanche_usb /proc/ksyms
+- echo "usb: CDROM Fallback=$CONFIG_CDROM_FALLBACK ISO=${tmp_iso_path}"
+  insmod usbcore
+  grep __insmod_usbcore /proc/ksyms
+  CONFIG_USB_HOST_LINK=$(($CONFIG_VLYNQ1 - 1))

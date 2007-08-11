@@ -1,0 +1,11 @@
+--- etc/init.d/rc.S.orig	2006-01-01 18:57:39.142757504 +0100
++++ etc/init.d/rc.S	2006-01-01 18:59:54.628160592 +0100
+@@ -232,6 +232,8 @@
+ mknod /var/flash/vpn.cfg c $tffs_major $((0x76))
+ mknod /var/flash/stat.cfg c $tffs_major $((0x74))
+  mknod /var/flash/wlan.cfg c $tffs_major $((0x73))
++ mknod /var/flash/ds_mod c $tffs_major $((0x3c))
++ /usr/bin/modload 2>&1 | tee /var/log/mod_load.log
+ if /usr/bin/checkempty /var/flash/ar7.cfg; then
+  echo "checkempty: warning, /var/flash/ar7.cfg not found - nop"
+ fi

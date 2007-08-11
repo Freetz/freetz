@@ -1,0 +1,57 @@
+--- options.h.orig	2005-12-09 07:10:42.000000000 +0100
++++ options.h	2005-12-18 15:55:06.390099200 +0100
+@@ -16,10 +16,10 @@
+ 
+ /* Default hostkey paths - these can be specified on the command line */
+ #ifndef DSS_PRIV_FILENAME
+-#define DSS_PRIV_FILENAME "/etc/dropbear/dropbear_dss_host_key"
++#define DSS_PRIV_FILENAME "/mod/etc/ssh/dss_host_key"
+ #endif
+ #ifndef RSA_PRIV_FILENAME
+-#define RSA_PRIV_FILENAME "/etc/dropbear/dropbear_rsa_host_key"
++#define RSA_PRIV_FILENAME "/mod/etc/ssh/rsa_host_key"
+ #endif
+ 
+ /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
+@@ -33,7 +33,7 @@
+  * Both of these flags can be defined at once, don't compile without at least
+  * one of them. */
+ #define NON_INETD_MODE
+-#define INETD_MODE
++//#define INETD_MODE
+ 
+ /* Setting this disables the fast exptmod bignum code. It saves ~5kB, but is
+  * perhaps 20% slower for pubkey operations (it is probably worth experimenting
+@@ -46,7 +46,7 @@
+ #define DROPBEAR_SMALL_CODE
+ 
+ /* Enable X11 Forwarding - server only */
+-#define ENABLE_X11FWD
++//#define ENABLE_X11FWD
+ 
+ /* Enable TCP Fowarding */
+ /* 'Local' is "-L" style (client listening port forwarded via server)
+@@ -154,7 +154,7 @@
+  * however significantly reduce the security of your ssh connections
+  * if the PRNG state becomes guessable - make sure you know what you are
+  * doing if you change this. */
+-#define DROPBEAR_RANDOM_DEV "/dev/random"
++#define DROPBEAR_RANDOM_DEV "/dev/urandom"
+ 
+ /* prngd must be manually set up to produce output */
+ /*#define DROPBEAR_PRNGD_SOCKET "/var/run/dropbear-rng"*/
+@@ -192,12 +192,12 @@
+  * OpenSSH), set the path below. If the path isn't defined, sftp will not
+  * be enabled */
+ #ifndef SFTPSERVER_PATH
+-#define SFTPSERVER_PATH "/usr/libexec/sftp-server"
++//#define SFTPSERVER_PATH "/usr/libexec/sftp-server"
+ #endif
+ 
+ /* This is used by the scp binary when used as a client binary. If you're
+  * not using the Dropbear client, you'll need to change it */
+-#define _PATH_SSH_PROGRAM "/usr/bin/dbclient"
++#define _PATH_SSH_PROGRAM "/usr/bin/ssh"
+ 
+ /* Multi-purpose binary configuration has now moved. Look at the top
+  * of the Makefile for instructions, or INSTALL */

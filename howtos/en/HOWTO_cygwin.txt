@@ -1,0 +1,32 @@
+Compile firmware with Cygwin
+----------------------------
+
+WARNING: Do not use a FAT partition, use NTFS partitions only!
+
+5 Steps to modify a firmware using Cygwin:
+
+1.) Download Cygwin installer setup.exe from http://www.cygwin.com/ and launch
+    it
+
+2.) Install Cygwin with the following packages:
+    - Archive -> unzip
+    - Devel -> gcc, libncurses-devel, make, patchutils
+    - Interpreters -> perl
+    - Web -> wget
+
+3.) Download ds-mod and save it to your Cygwin home directory (depending on your
+    installation e.g. C:\Cygwin\home\<Windows-user>\). Get a Cygwin shell and
+    type:
+
+    tar -xjf ds-x.y.tar.bz2
+    cd ds-x.y/
+
+4.) make menuconfig
+5.) make
+
+Load the created image firmware_*.image as firmware update via web interface as
+usual.
+
+`make recover' is not supported in Cygwin.
+
+Have fun...

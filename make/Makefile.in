@@ -1,0 +1,87 @@
+HOSTCC:=gcc
+
+HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
+	-e 's/sparc.*/sparc/' \
+	-e 's/arm.*/arm/g' \
+	-e 's/m68k.*/m68k/' \
+	-e 's/ppc/powerpc/g' \
+	-e 's/v850.*/v850/g' \
+	-e 's/sh[234]/sh/' \
+	-e 's/mips-.*/mips/' \
+	-e 's/mipsel-.*/mipsel/' \
+	-e 's/cris.*/cris/' \
+	-e 's/i[3-9]86/i386/' \
+	)
+GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
+
+REAL_GNU_TARGET_NAME:=mipsel-linux-uclibc
+GNU_TARGET_NAME:=mipsel-linux
+
+ifeq ($(strip $(DS_TARGET_NLS)),y)
+DISABLE_NLS:=
+else
+DISABLE_NLS:=--disable-nls
+endif
+
+ifeq ($(strip $(DS_TARGET_LFS)),y)
+DISABLE_LARGEFILE:=
+CFLAGS_LARGEFILE=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+else
+DISABLE_LARGEFILE:=--disable-largefile
+CFLAGS_LARGEFILE=-D_FILE_OFFSET_BITS=32
+endif
+
+ifeq ($(strip $(DS_VERBOSITY_LEVEL)),0)
+VERBOSE:=
+else
+VERBOSE:=-v
+endif
+
+TARGET_CROSS:=$(strip $(subst ",, $(DS_TARGET_CROSS)))
+TARGET_MAKE_PATH:=$(strip $(subst ",, $(DS_TARGET_MAKE_PATH)))
+KERNEL_CROSS:=$(strip $(subst ",, $(DS_KERNEL_CROSS)))
+KERNEL_MAKE_PATH:=$(strip $(subst ",, $(DS_KERNEL_MAKE_PATH)))
+TARGET_CFLAGS:=$(strip $(subst ",, $(DS_TARGET_CFLAGS)))
+
+ifneq ($(patsubst /%,/,$(TARGET_MAKE_PATH)),/)
+TARGET_MAKE_PATH:=$(shell pwd)/$(TARGET_MAKE_PATH)
+endif
+ifneq ($(patsubst /%,/,$(KERNEL_MAKE_PATH)),/)
+KERNEL_MAKE_PATH:=$(shell pwd)/$(KERNEL_MAKE_PATH)
+endif
+
+TARGET_CC:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc
+TARGET_LD:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld
+TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
+
+TARGET_PATH:=$(TARGET_MAKE_PATH):/bin:/sbin:/usr/bin:/usr/sbin
+TARGET_CONFIGURE_OPTS:= \
+	PATH="$(TARGET_PATH)"
+	#AR="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar" \
+	#AS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as" \
+	#LD="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld" \
+	#NM="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm" \
+	#CC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc" \
+	#GCC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc" \
+	#CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++" \
+	#RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
+
+
+DL_SITE:=$(strip $(subst ",, $(DS_DL_SITE)))
+DL_SOURCE:=$(strip $(subst ",, $(DS_DL_SOURCE)))
+
+ifeq ($(strip $(DS_TYPE_300IP_AS_FON)),y)
+
+DL_SITE2:=$(strip $(subst ",, $(DS_DL_SITE2)))
+DL_SOURCE2:=$(strip $(subst ",, $(DS_DL_SOURCE2)))
+
+endif
+
+LIBGCC:=libgcc_s.so.1
+
+
+libgcc-installed:
+	cp $(TARGET_MAKE_PATH)/../lib/$(LIBGCC) root/lib/
+	chmod +x root/lib/$(LIBGCC)
+
+.PHONY: libgcc-installed

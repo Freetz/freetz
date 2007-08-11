@@ -1,0 +1,47 @@
+diff -ruN usr/www/all/html/de/menus/menu2_homehome.html.orig usr/www/all/html/de/menus/menu2_homehome.html
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_homehome.html	2006-03-20 00:32:04.289811152 +0100
+@@ -27,5 +27,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+diff -ruN usr/www/all/html/de/menus/menu2.inc.orig usr/www/all/html/de/menus/menu2.inc
+--- usr/www/all/html/de/menus/menu2.inc.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/all/html/de/menus/menu2.inc	2006-03-20 00:28:52.683939672 +0100
+@@ -7,3 +7,4 @@
+ <? setvariable var:menuWLAN "WLAN" ?>
+ <? setvariable var:menuSystem "System" ?>
+ <? setvariable var:menuHilfe "Hilfe" ?>
++<? setvariable var:menuDSMOD "DS-MOD" ?>
+diff -ruN usr/www/all/html/de/menus/menu2_internet.html.orig usr/www/all/html/de/menus/menu2_internet.html
+--- usr/www/all/html/de/menus/menu2_internet.html.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_internet.html	2006-03-20 00:32:24.442747440 +0100
+@@ -82,4 +82,5 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ </ul>
+diff -ruN usr/www/all/html/de/menus/menu2_system.html.orig usr/www/all/html/de/menus/menu2_system.html
+--- usr/www/all/html/de/menus/menu2_system.html.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_system.html	2006-03-20 00:32:40.019379432 +0100
+@@ -82,5 +82,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+diff -ruN usr/www/all/html/de/menus/menu2_wlan.html.orig usr/www/all/html/de/menus/menu2_wlan.html
+--- usr/www/all/html/de/menus/menu2_wlan.html.orig	2006-03-20 02:32:03.520361752 +0100
++++ usr/www/all/html/de/menus/menu2_wlan.html	2006-03-20 02:32:24.904110928 +0100
+@@ -49,5 +49,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>

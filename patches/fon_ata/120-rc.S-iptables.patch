@@ -1,0 +1,10 @@
+--- etc/init.d/rc.S.orig	2005-10-01 00:02:24.327823272 +0200
++++ etc/init.d/rc.S	2005-10-01 00:07:17.374273440 +0200
+@@ -68,6 +68,7 @@
+ echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
+ echo 1 >/proc/sys/net/ipv4/tcp_syncookies
+ echo 100 > /proc/sys/net/core/netdev_max_backlog
++echo 1 > /proc/net/firewall_start
+ cd /
+ if [ -e /lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden/var.tar ] ; then
+  tar xf /lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden/var.tar

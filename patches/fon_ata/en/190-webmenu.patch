@@ -1,0 +1,57 @@
+diff -ruN usr/www/avme/en/html/en/menus/menu2_fon.html.orig usr/www/avme/en/html/en/menus/menu2_fon.html
+--- usr/www/avme/en/html/en/menus/menu2_fon.html.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/avme/en/html/en/menus/menu2_fon.html	2006-03-20 00:31:34.468344704 +0100
+@@ -60,5 +60,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+diff -ruN usr/www/avme/en/html/en/menus/menu2_help.html.orig usr/www/avme/en/html/en/menus/menu2_help.html
+--- usr/www/avme/en/html/en/menus/menu2_help.html.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/avme/en/html/en/menus/menu2_help.html	2006-03-20 00:31:53.108510968 +0100
+@@ -11,5 +11,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+diff -ruN usr/www/avme/en/html/en/menus/menu2_home.html.orig usr/www/avme/en/html/en/menus/menu2_home.html
+--- usr/www/avme/en/html/en/menus/menu2_home.html.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/avme/en/html/en/menus/menu2_home.html	2006-03-20 00:32:04.289811152 +0100
+@@ -11,5 +11,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+diff -ruN usr/www/avme/en/html/en/menus/menu2.inc.orig usr/www/avme/en/html/en/menus/menu2.inc
+--- usr/www/avme/en/html/en/menus/menu2.inc.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/avme/en/html/en/menus/menu2.inc	2006-03-20 00:28:52.683939672 +0100
+@@ -7,3 +7,4 @@
+ <? setvariable var:menuTelefonie "Telephony" ?>
+ <? setvariable var:menuSystem "System" ?>
+ <? setvariable var:menuHilfe "Help" ?>
++<? setvariable var:menuDSMOD "DS-MOD" ?>
+diff -ruN usr/www/avme/en/html/en/menus/menu2_internet.html.orig usr/www/avme/en/html/en/menus/menu2_internet.html
+--- usr/www/avme/en/html/en/menus/menu2_internet.html.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/avme/en/html/en/menus/menu2_internet.html	2006-03-20 00:32:24.442747440 +0100
+@@ -75,4 +75,5 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ </ul>
+diff -ruN usr/www/avme/en/html/en/menus/menu2_system.html.orig usr/www/avme/en/html/en/menus/menu2_system.html
+--- usr/www/avme/en/html/en/menus/menu2_system.html.orig	2006-02-22 20:13:43.000000000 +0100
++++ usr/www/avme/en/html/en/menus/menu2_system.html	2006-03-20 00:32:40.019379432 +0100
+@@ -58,5 +58,6 @@
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
++	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>

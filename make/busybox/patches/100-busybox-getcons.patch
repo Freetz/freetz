@@ -1,0 +1,147 @@
+diff -ruN AUTHORS.orig AUTHORS
+--- AUTHORS.orig	2004-07-26 20:57:49.000000000 +0200
++++ AUTHORS	2005-02-01 11:14:43.000000000 +0100
+@@ -32,6 +32,9 @@
+ Jim Bauer <jfbauer@nfr.com>
+     modprobe shell dependency
+
++Enrik Berkhan <Enrik.Berkhan@inka.de>
++    getcons
++
+ Edward Betts <edward@debian.org>
+     expr, hostid, logname, whoami
+
+diff -ruN console-tools/Config.in.orig console-tools/Config.in
+--- console-tools/Config.in.orig	2003-12-20 08:07:22.000000000 +0100
++++ console-tools/Config.in	2005-02-01 11:18:53.000000000 +0100
+@@ -31,6 +31,13 @@
+ 	  This program dumps the kernel's keyboard translation table to
+ 	  stdout, in binary format. You can then use loadkmap to load it.
+ 
++config CONFIG_GETCONS
++	bool "getcons"
++	default n
++	help
++	  This program redirects the system console to another device,
++	  like the current tty while logged in via telnet.
++
+ config CONFIG_LOADFONT
+ 	bool "loadfont"
+ 	default n
+diff -ruN console-tools/getcons.c.orig console-tools/getcons.c
+--- console-tools/getcons.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ console-tools/getcons.c	2005-02-01 11:38:04.000000000 +0100
+@@ -0,0 +1,76 @@
++/* vi: set sw=4 ts=4: */
++/*
++ *  getcons.c - redirect system console output
++ *
++ *  Copyright (C) 2004,2005  Enrik Berkhan <Enrik.Berkhan@inka.de>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ */
++
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <getopt.h>
++
++#include "busybox.h"
++
++static const struct option getcons_long_options[] = {
++	{ "reset", 0, NULL, 'r' },
++	{ 0, 0, 0, 0 }
++};
++
++#define OPT_GETCONS_RESET 1
++
++int getcons_main(int argc, char **argv)
++{
++	int con;
++	unsigned long flags;
++	const char *device = "/dev/tty";
++
++	bb_applet_long_options = getcons_long_options;
++	flags = bb_getopt_ulflags(argc, argv, "r");
++
++	if (argc - optind > 1)
++        bb_show_usage();
++
++	if (argc - optind == 1) {
++		if (flags & OPT_GETCONS_RESET)
++			bb_show_usage();
++		device = argv[optind];
++    } else {
++		if (flags & OPT_GETCONS_RESET)
++			device = "/dev/console";
++	}
++
++	if (-1 == (con = open(device, O_RDONLY))) {
++		perror("open");
++		return EXIT_FAILURE;
++	}
++	if (-1 == ioctl(con, TIOCCONS)) {
++		perror("ioctl TIOCCONS");
++		return EXIT_FAILURE;
++	}
++	return EXIT_SUCCESS;
++}
++
++/*
++Local Variables:
++c-file-style: "linux"
++c-basic-offset: 4
++tab-width: 4
++End:
++*/
+diff -ruN console-tools/Makefile.in.orig console-tools/Makefile.in
+--- console-tools/Makefile.in.orig	2004-10-08 09:45:12.000000000 +0200
++++ console-tools/Makefile.in	2005-02-01 11:19:28.000000000 +0100
+@@ -15,6 +15,7 @@
+ CONSOLETOOLS-$(CONFIG_CLEAR)	+= clear.o
+ CONSOLETOOLS-$(CONFIG_DEALLOCVT)	+= deallocvt.o
+ CONSOLETOOLS-$(CONFIG_DUMPKMAP)	+= dumpkmap.o
++CONSOLETOOLS-$(CONFIG_GETCONS)	+= getcons.o
+ CONSOLETOOLS-$(CONFIG_SETCONSOLE)	+= setconsole.o
+ CONSOLETOOLS-$(CONFIG_LOADFONT)	+= loadfont.o
+ CONSOLETOOLS-$(CONFIG_LOADKMAP)	+= loadkmap.o
+diff -ruN include/applets.h.orig include/applets.h
+--- include/applets.h.orig	2004-08-27 01:01:34.000000000 +0200
++++ include/applets.h	2005-02-01 11:24:59.000000000 +0100
+@@ -125,6 +125,7 @@
+ USE_FTPGET(APPLET_ODDNAME(ftpget, ftpgetput, _BB_DIR_USR_BIN, _BB_SUID_NEVER,ftpget))
+ USE_FTPPUT(APPLET_ODDNAME(ftpput, ftpgetput, _BB_DIR_USR_BIN, _BB_SUID_NEVER,ftpput))
+ USE_FUSER(APPLET(fuser, _BB_DIR_USR_BIN, _BB_SUID_NEVER))
++USE_GETCONS(APPLET(getcons, _BB_DIR_BIN, _BB_SUID_NEVER))
+ USE_GETOPT(APPLET(getopt, _BB_DIR_BIN, _BB_SUID_NEVER))
+ USE_GETTY(APPLET(getty, _BB_DIR_SBIN, _BB_SUID_NEVER))
+ USE_GREP(APPLET(grep, _BB_DIR_BIN, _BB_SUID_NEVER))
+diff -ruN include/usage.h.orig include/usage.h
+--- include/usage.h.orig	2004-09-14 18:23:56.000000000 +0200
++++ include/usage.h	2005-02-01 11:13:26.000000000 +0100
+@@ -3457,4 +3457,11 @@
+ 	"\t-r 169.254.x.x  request this address first\n" \
+ 	"\t-v              verbose; show version"
+
++#define getcons_trivial_usage \
++	"[-r|--reset] [DEVICE]"
++#define getcons_full_usage \
++	"Redirects system console output to DEVICE (default: /dev/tty).\n\n" \
++	"Options:\n" \
++	"\t-r\tReset output to /dev/console."
++
+ #endif /* __BB_USAGE_H__ */

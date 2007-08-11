@@ -1,0 +1,411 @@
+#! /usr/bin/perl
+#
+#   simple fbox recovery tool
+#
+#   Copyright (C) 2004,2005 Enrik Berkhan <enrik.berkhan@inka.de>
+#   Copyright (C) 2006 Daniel Eiband <eiband@online.de>
+#   changes based on adam2flash.pl (OpenWRT) from Felix Fietkau
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+use IO::Socket::INET;
+use IO::Select;
+use Socket;
+use Getopt::Std;
+use Errno qw(EEXIST);
+use Net::FTP;
+use Fcntl qw(SEEK_END SEEK_SET);
+
+my $do_crc = 1;
+
+BEGIN {
+  eval { require Compress::Zlib };
+  if ($@) {
+    eval { require String::CRC32 };
+    if ($@) {
+      print STDERR "No crc32() implementation available!\nInstall Compress::Zlib or String::CRC32 if you want CRC support.\n";
+      $do_crc = 0;
+    } else {
+      import String::CRC32 qw(crc32);
+    }
+  } else {
+    import Compress::Zlib qw(crc32);
+  }
+}
+
+use warnings;
+
+$| = 1;
+
+my %opt;
+getopts('hrf:i:l:ud', \%opt);
+
+if ($opt{h}) {
+  print "usage: recover -h\n";
+  print "       recover [-l IPADDR] [-i IPADDR] [-f firmeware.image] [-r] [-d]\n";
+  print "       recover [-l IPADDR] [-i IPADDR] -u [-d]\n";
+  print "       -i IPADDR: set boot time IP to IPADDR within environment\n";
+  print "       -l IPADDR: choose local addr (for multihomed)\n";
+  print "       -f image:  extract fs and kernel from tarfile and flash\n";
+  print "       -d:        disable crc check\n";
+  print "       -r:        reboot fbox\n";
+  print "       -u:        update box with filesystem.image, kernel.image from cwd\n";
+  exit;
+}
+
+my $ipaddr;
+my $setip;
+if ($opt{i}) {
+  $setip = unpack("N", inet_aton($opt{i}));
+} else {
+  $setip = 0;
+}
+
+if ($opt{d}) {
+  $do_crc = 0;
+}
+
+$opt{l} = "0.0.0.0" unless defined $opt{l};
+my $probe = IO::Socket::INET->new(Proto => 'udp',
+                                  Broadcast => 1,
+                                  LocalAddr => $opt{l},
+                                  LocalPort => 5035) or die "socket: $!\n";
+my $sel = IO::Select->new($probe);
+my $packet = pack("vCCVNV", 0, 18, 1, 1, 0, 0);
+my $broadcast = sockaddr_in(5035, INADDR_BROADCAST);
+
+$probe->send($packet, 0, $broadcast);
+
+scan_again:
+print "looking for boxes ";
+@boxes = ();
+$scanning = 20;
+print ".";
+
+while($scanning) {
+  my $reply;
+  my @ready;
+
+  if (@ready = $sel->can_read(0.2)) {
+    $peer = $probe->recv($reply, 16);
+    next if (length($reply) < 16);
+    my ($port, $addr) = sockaddr_in($peer);
+    my ($major, $minor1, $minor2, $code, $addr2) = unpack("vCCVV", $reply);
+    $addr2 = pack("N", $addr2);
+    if ($code == 2) {
+      push @boxes, [$major, $minor1, $minor2, $addr, $addr2];
+      $scanning = 2 if ($scanning > 2);
+    }
+  } else {
+    $scanning--;
+    if (scalar @boxes == 0) {
+      $probe->send($packet, 0, $broadcast);
+      print ".";
+    }
+  }
+}
+
+if (scalar @boxes == 0) {
+  print " none found, giving up.\n";
+  exit 1;
+} else {
+  print " found.\n";
+}
+
+foreach $box (@boxes) {
+  my ($major, $minor1, $minor2, $addr, $addr2) = @$box;
+  printf "ADAM2 version $major.$minor1.$minor2 at %s (%s)\n",
+         inet_ntoa($addr), inet_ntoa($addr2);
+}
+
+if (scalar @boxes > 1) {
+  print "more than one boxes: exiting\n";
+  exit 1;
+}
+
+$ipaddr = (@{$boxes[0]})[4];
+if (!$ipaddr && !$setip) {
+  print "box has no ip, giving up\n";
+  exit 1;
+}
+
+if ($setip) {
+  if ($setip != unpack('N', $ipaddr)) {
+    print "setting ip address\n";
+    my $setpacket = pack("vCCVNV", 0, 18, 1, 1, $setip, 0);
+    $probe->send($setpacket, 0, $broadcast);
+    goto scan_again;
+  }
+}
+
+{
+  package ADAM2FTP;
+  use base qw(Net::FTP);
+
+  # ADAM2 requires upper case commands, some brain dead firewall doesn't ;-)
+  sub _USER { shift->command("USER",@_)->response() }
+  sub _PASV { shift->command("P\@SW")->response() == Net::FTP::CMD_OK }
+
+  sub _GETENV {
+    my $ftp = shift;
+    my ($ok, $name, $value);
+
+    $ftp->command("GETENV",@_);
+    while(length($ok = $ftp->response()) < 1) {
+      my $line = $ftp->getline();
+      unless (defined($value)) {
+        chomp($line);
+        ($name, $value) = split(/\s+/, $line, 2);
+      }
+    }
+    $ftp->debug_print(0, "getenv: $value\n")
+      if $ftp->debug();
+    return $value;
+  }
+  sub getenv {
+    my $ftp = shift;
+    my $name = shift;
+    return $ftp->_GETENV($name);
+  }
+
+  sub _REBOOT { shift->command("REBOOT")->response() == Net::FTP::CMD_OK }
+  sub reboot {
+    my $ftp = shift;
+    $ftp->_REBOOT;
+    $ftp->close;
+  }
+
+  sub check {
+    my $ftp = shift;
+
+    delete ${*$ftp}{'net_ftp_port'};
+    delete ${*$ftp}{'net_ftp_pasv'};
+
+    my $data = $ftp->_data_cmd('CHECK' ,@_) or return undef;
+    my $sum;
+    if (${${*$ftp}{'net_cmd_resp'}}[0] =~ /^Flash check 0x([0-9A-F]{8})/) {
+      $sum = hex($1);
+    }
+    $data->_close();
+    return $sum;
+  }
+}
+
+# passive mode connects too slowly
+$ftp = ADAM2FTP->new(inet_ntoa($ipaddr), Passive => 0, Debug => 0, Timeout => 600) or die "can't open control connection\n";
+$ftp->login("adam2", "adam2") or die "can't login\n";
+
+my $pid   = $ftp->getenv('ProductID');
+my $hwrev = $ftp->getenv('HWRevision');
+my $fwrev = $ftp->getenv('firmware_info');
+my $ulrev = $ftp->getenv('urlader-version');
+
+$mtd0 = "filesystem.image";
+$mtd1 = "kernel.image";
+
+my $mtd0_hex = $ftp->getenv("mtd0");
+my $mtd1_hex = $ftp->getenv("mtd1");
+
+my ($mtd0_size, $mtd1_size);
+$mtd0_hex =~ /^(0x\w+),(0x\w+)$/ and $mtd0_size = hex($2) - hex($1);
+$mtd1_hex =~ /^(0x\w+),(0x\w+)$/ and $mtd1_size = hex($2) - hex($1);
+($mtd0_size >= 0) and ($mtd1_size > 0) or die "can't read partition offsets\n";
+
+print "\n";
+print "Product ID        : $pid\n";
+print "Hardware revision : $hwrev\n";
+print "Urlader revision  : $ulrev\n";
+print "Firmware revision : $fwrev\n";
+print "\n";
+printf "Flash space       : 0x%08x\n", $mtd0_size + $mtd1_size;
+print "\n";
+
+if ($opt{f}) {
+  unless (-f $opt{f}) {
+    die "$opt{f} not found\n";
+  }
+  mkdir ".recover.tmp";
+  if ($! && $! != EEXIST) { die ".recover.tmp: $!\n" };
+  my $tar = "busybox tar";
+  if (system("which busybox > /dev/null")) {
+    $tar = "tar";
+  }
+  system("$tar xf $opt{f} -C .recover.tmp ./var/tmp/kernel.image ./var/tmp/filesystem.image");
+  if ($? >> 8) {
+    die "$tar failed\n";
+  } elsif ($? & 127) {
+    die "$tar killed\n";
+  }
+  chmod 0644, ".recover.tmp/var/tmp/filesystem.image",
+              ".recover.tmp/var/tmp/kernel.image";
+
+  $mtd0 = ".recover.tmp/var/tmp/filesystem.image";
+  $mtd1 = ".recover.tmp/var/tmp/kernel.image";
+}
+
+if ($opt{f} || $opt{u}) {
+
+  $ftp->command("MEDIA FLSH")->response();
+  $ftp->binary();
+
+  # hidden root boxes have mtd0 size == 0
+  if (-f $mtd0 && ($mtd0_size > 0)) {
+    $opt{r} = 1;
+    $sum = remove_cksum($mtd0);
+
+    print "flashing mtd0 ";
+    my $dc = $ftp->stor("fs mtd0");
+    $dc or die "can't open data connection\n";
+    $sum = flash_image($mtd0, $dc, $mtd0_size, $do_crc);
+    $dc->close();
+
+    if ($ftp->status() == $ftp->CMD_OK) {
+      if ($do_crc) {
+        if (defined $sum) {
+          my $flashsum = $ftp->check("fs mtd0");
+          if ((!defined $flashsum) || ($sum ne $flashsum)) {
+            print STDERR "bad checksum!\n";
+          }
+        } else {
+          print STDERR "no checksum!\n";
+        }
+      } else {
+        print STDERR "crc check disabled.\n";
+      }
+    } else {
+      print STDERR "FAILED: ", $ftp->code(), " ", $ftp->message(), "\n";
+      $opt{r} = 0;
+    }
+  }
+
+  if (-f $mtd1) {
+    $opt{r} = 1;
+    $sum = remove_cksum($mtd1);
+
+    print "flashing mtd1 ";
+    my $dc = $ftp->stor("fs mtd1");
+    $dc or die "can't open data connection\n";
+    $sum = flash_image($mtd1, $dc, $mtd1_size, $do_crc);
+    $dc->close();
+
+    if ($ftp->status() == $ftp->CMD_OK) {
+      if ($do_crc) {
+        if (defined $sum) {
+          my $flashsum = $ftp->check("fs mtd1");
+          if ((!defined $flashsum) || ($sum ne $flashsum)) {
+            print STDERR "bad checksum!\n";
+          }
+        } else {
+          print STDERR "no checksum!\n";
+        }
+      } else {
+        print STDERR "crc check disabled.\n";
+      }
+    } else {
+      print STDERR "FAILED: ", $ftp->code(), " ", $ftp->message(), "\n";
+      $opt{r} = 0;
+    }
+  }
+
+}
+
+if ($opt{r}) {
+  print "\n";
+  print "rebooting.\n";
+  $ftp->reboot();
+} else {
+  $ftp->quit();
+}
+
+END {
+  if ($opt{f}) {
+    unlink(".recover.tmp/var/tmp/kernel.image");
+    unlink(".recover.tmp/var/tmp/filesystem.image");
+    rmdir(".recover.tmp/var/tmp");
+    rmdir(".recover.tmp/var");
+    rmdir(".recover.tmp");
+  }
+}
+
+sub remove_cksum {
+  my $name = shift;
+  my $chksum = 0;
+  my $sum;
+  my $magic;
+
+  open F, "+<$name" or die "open: $!\n";
+  my $size = (stat F)[7];
+  die "stat: $!\n" unless defined($size);
+  if ($size >= 8) {
+    seek F, -8, SEEK_END or die "seek: $!\n";
+    read F, $magic, 4;
+    read F, $sum, 4;
+    if (unpack("V", $magic) == 0xC453DE23) {
+      $size -= 8;
+      truncate F, $size or die "truncate: $!\n";
+    }
+  }
+  close F;
+  return $chksum;
+}
+
+sub flash_image {
+  my $name = shift;
+  my $dc = shift;
+  my $mtdsize = shift;
+  my $do_crc = shift;
+
+  my $chksize = $mtdsize;
+  my $chksum = 0;
+  my $rbytes = 1;
+
+  my $written = 0;
+  my $progress = 0;
+
+  open F, "<$name" or die "open: $!\n";
+  my $size = (stat F)[7];
+  die "stat: $!\n" unless defined($size);
+  die "image too big\n" unless ($size <= $mtdsize);
+  while (($mtdsize > 0) and ($rbytes > 0)) {
+    my $buffer;
+    my $len = ($mtdsize > 1024 ? 1024 : $mtdsize);
+    $rbytes = read F, $buffer, $len;
+    if ($rbytes > 0) {
+      my $wbytes = $dc->write($buffer, $rbytes, 600);
+      $written  += $wbytes;
+      $progress += $wbytes;
+      while ($progress >= 64*1024) {
+        $progress -= 64*1024;
+        print ".";
+      }
+      $mtdsize -= $wbytes;
+      if ($do_crc) {
+        $chksize -= $rbytes;
+        $chksum = crc32($buffer, $chksum);
+      }
+    }
+  }
+  close F;
+  if ($written == $size) {
+    print " success.\n";
+  } else {
+    print " failed (image size: $size; written: $written)\n";
+  }
+  if ($do_crc) {
+    $chksize and $chksum = crc32("\xff" x $chksize, $chksum);
+  }
+  return $chksum;
+}

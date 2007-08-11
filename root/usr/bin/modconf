@@ -1,0 +1,142 @@
+#!/bin/sh
+#
+# Usage: modconf [load|save|default|set|vars] <package-name>
+#        modconf {merge|diff} <conf-file>
+#
+# Be aware of concurrent updates!
+
+TMP=/var/tmp
+FLASH=$TMP/flash
+TMPFILE=$TMP/.conf.tmp.$$
+
+trap "rm -f $TMPFILE" 0
+
+case "$1" in
+	set|load|save|default|vars)
+                cfg=/mod/etc/conf/$2.cfg
+                diff=$FLASH/$2.diff
+                default=/mod/etc/default.$2/$2.cfg
+
+		if [ ! -r "$default" ]; then
+			echo 'Package is not configurable.' 1>&2
+			exit 1
+		fi
+		;;
+	diff|merge)
+		cat > $TMPFILE
+
+		# . accepts relative filenames only if they start with .
+		default="$2"
+		case "$default" in
+			[^/]*) default="./$default"
+		esac
+		;;
+esac
+case "$1" in
+        load)
+		if [ -r "$diff" ]; then
+			cat $diff | $0 merge $default > $cfg
+		else
+			cp $default $cfg
+		fi
+		;;
+	save)
+		if [ -r "$cfg" ]; then
+			cat $cfg | $0 diff $default > $diff
+			[ -s "$diff" ] || rm -f $diff
+		else
+			rm -f $diff
+		fi
+		;;
+	default)
+		if [ "$2" = "mod" ]; then
+			alias export=
+			. "$cfg"
+			unalias export
+
+			cp $default $cfg
+			$0 set mod "MOD_HTTPD_PASSWD=$MOD_HTTPD_PASSWD"
+			$0 save mod
+		else
+			cp $default $cfg
+			rm -f $diff
+		fi
+		;;
+	merge)
+		env -i sh -s "$default" "$TMPFILE" <<'EOF'
+		unset PWD
+		# export all variables: perhaps there are some that are 
+		# not yet prefixed with 'export'
+		set -a 
+		. "$1"
+		. "$2"
+		export -p
+EOF
+		;;
+	diff)
+		# remove all exported variables and redefine 'export' as needed
+		env -i sh -s "$default" "$TMPFILE" <<'EOF'
+		unset PWD
+		alias export=
+		. "$1"
+		unalias export
+		diff() {
+			name="${1%%=*}" value="${1#*=}"
+			if eval '[ "${'$name'+set}" != "" -a "$'$name'" != "$value" -o "${'$name'+set}" = "" ]'; then
+				unalias export
+				eval "export $name"
+				alias export=diff
+			fi
+		}
+		alias export=diff
+		. "$2"
+		alias export=
+		. "$2"
+		unalias export
+		export -p
+EOF
+		;;
+	set)
+		cp $cfg $TMPFILE
+		shift 2
+		for assignment; do
+			case "$assignment" in
+				-)
+					cat
+					;;
+				*=*) 
+					name="${assignment%%=*}"
+					value="${assignment#*=}"
+					case "$name" in
+						""|[^A-Za-z_]*|*[^A-Za-z0-9_]*)
+							echo "Invalid name '$name'" 1>&2
+							continue
+						;;
+					esac
+					value="$(echo "${value}_" | sed "s/'/'\"'\"'/g")"
+					value="'${value%_}'"
+					echo "export $name=$value"
+					;;
+				*)
+					echo "Invalid assignment '$assignment'" 1>&2
+					continue
+					;;
+			esac
+		done |
+		$0 merge $TMPFILE > $cfg
+		;;
+	vars)
+		list() {
+			name="${1%=*}"
+			echo "$name"
+		}
+		alias export=list
+		. "$default"
+		;;
+	*)
+		echo "Usage: $0 {load|save|default|set|vars} <package-name>" 1>&2
+		echo "       $0 {merge|diff} <conf-file>" 1>&2
+		exit 1
+esac
+
+exit 0

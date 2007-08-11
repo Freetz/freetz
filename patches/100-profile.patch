@@ -1,0 +1,15 @@
+--- etc/profile.orig	2005-09-23 23:42:39.734242624 +0200
++++ etc/profile	2005-09-23 23:44:30.772362264 +0200
+@@ -1,8 +1,11 @@
+ # /etc/profile
+ #
+-VERBOSE_RC_CONF=y
++VERBOSE_RC_CONF=n
+ . /etc/init.d/rc.conf
+ 
++export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
++export LD_LIBRARY_PATH=/mod/lib
++
+ ####################################################################
+ echo "ermittle die aktuelle TTY"                                                
+ tty=`ls -l /proc/$$/fd/0`                                                       

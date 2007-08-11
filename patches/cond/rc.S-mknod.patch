@@ -1,0 +1,11 @@
+--- etc/init.d/rc.S.orig	2005-10-30 14:24:34.723342072 +0100
++++ etc/init.d/rc.S	2005-10-30 14:28:25.961188576 +0100
+@@ -151,6 +151,8 @@
+  mknod /var/flash/fx_moh c $tffs_major $((0x83))
+  mknod /var/flash/fx_lcr c $tffs_major $((0x82))
+  mknod /var/flash/fx_conf c $tffs_major $((0x81))
++ mknod /var/flash/ds_mod c $tffs_major $((0x3c))
++ /usr/bin/modload 2>&1 | tee /var/log/mod_load.log
+  if /usr/bin/checkempty /var/flash/telefon_misc; then
+  if [ -f /etc/default.${Country}/telefon_misc.${OEM} ] ; then
+  echo "cp /etc/default.${Country}/telefon_misc.${OEM} /var/flash/telefon_misc"

@@ -1,0 +1,25 @@
+--- etc/init.d/rc.S	2005-09-27 17:52:19.000000000 +0200
++++ etc/ini.d/rc.S.patched	2005-09-27 17:55:23.119070152 +0200
+@@ -8,13 +8,15 @@
+ trap ":" INT QUIT TSTP
+ mount -n /proc
+ mount /var
+-if [ -e /dev/mtdblock/7 ] ; then
+- mount -r /dev/mtdblock/7 /lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden
+- umount_hidden=/dev/mtdblock/7
+-else
+- if [ -e /dev/mtdblock/6 ] ; then
+- mount -r /dev/mtdblock/6 /lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden
+- umount_hidden=/dev/mtdblock/6
++if [ -z "$(ls /lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden/)" ] ; then
++ if [ -e /dev/mtdblock/7 ] ; then
++  mount -r /dev/mtdblock/7 /lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden
++  umount_hidden=/dev/mtdblock/7
++ else
++  if [ -e /dev/mtdblock/6 ] ; then
++  mount -r /dev/mtdblock/6 /lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden
++  umount_hidden=/dev/mtdblock/6
++  fi
+  fi
+ fi
+ avm_event_param=

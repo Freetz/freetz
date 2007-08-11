@@ -1,0 +1,11 @@
+--- etc/init.d/rc.USB.orig	2006-03-10 13:47:39.000000000 +0100
++++ etc/init.d/rc.USB	2006-03-10 13:47:59.000000000 +0100
+@@ -2,7 +2,5 @@
+ usb_mount() {
+  mount -t usbdevfs none /proc/bus/usb
+ }
+- tmp_iso_path=/lib/modules/cdrom.iso
+- /sbin/insmod avalanche_usb.o use_cdrom=1 iso_path=${tmp_iso_path} cdrom_fallback=1
++ /sbin/insmod avalanche_usb.o use_cdrom=0
+  grep __insmod_avalanche_usb /proc/ksyms
+- echo "usb: CDROM Fallback=$CONFIG_CDROM_FALLBACK ISO=${tmp_iso_path}"

@@ -1,0 +1,101 @@
+comment "*** only needed for the 'toolchain' target ***"
+	depends on DS_EXTERNAL_COMPILER
+
+comment "BIG FAT WARNING: Never build a firmware with current settings!"
+	depends on ! DS_TARGET_UCLIBC_CONFIG_MOD
+
+choice
+
+	prompt "Target compiler"
+	default DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_26
+
+	config DS_TARGET_COMPILER_GCC_4_0_1_UCLIBC_0_9_26
+		bool "gcc-4.0.1-uClibc-0.9.26"
+
+	config DS_TARGET_COMPILER_GCC_4_0_2_UCLIBC_0_9_26
+		bool "gcc-4.0.2-uClibc-0.9.26"
+
+	config DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_26
+		bool "gcc-4.1.0-uClibc-0.9.26"
+
+endchoice
+
+config DS_TARGET_GCC_VERSION
+	string
+	default "4.0.1"		if DS_TARGET_COMPILER_GCC_4_0_1_UCLIBC_0_9_26
+	default "4.0.2"		if DS_TARGET_COMPILER_GCC_4_0_2_UCLIBC_0_9_26
+	default "4.1.0"		if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_26
+
+config DS_TARGET_UCLIBC_VERSION
+	string
+	default "0.9.26"	if DS_TARGET_COMPILER_GCC_4_0_1_UCLIBC_0_9_26
+	default "0.9.26"	if DS_TARGET_COMPILER_GCC_4_0_2_UCLIBC_0_9_26
+	default "0.9.26"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_26
+
+config DS_TARGET_BINUTILS_VERSION
+	string
+	default "2.16.91.0.2"	if DS_TARGET_COMPILER_GCC_4_0_1_UCLIBC_0_9_26
+	default "2.16.91.0.6"	if DS_TARGET_COMPILER_GCC_4_0_2_UCLIBC_0_9_26
+	default "2.16.91.0.6"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_26
+
+choice
+
+	prompt "  uClibc config"
+	default DS_TARGET_UCLIBC_CONFIG_MOD
+
+	config DS_TARGET_UCLIBC_CONFIG_MOD
+		bool "mod (recommended)"
+
+	config DS_TARGET_UCLIBC_CONFIG_2MB
+		bool "2MB"
+
+	config DS_TARGET_UCLIBC_CONFIG_4MB
+		bool "4MB"
+
+	config DS_TARGET_UCLIBC_CONFIG_8MB
+		bool "8MB"
+
+endchoice
+
+config DS_TARGET_UCLIBC_REF
+	string
+	default "mod"		if DS_TARGET_UCLIBC_CONFIG_MOD
+	default "orig-2mb"	if DS_TARGET_UCLIBC_CONFIG_2MB
+	default "orig-4mb"	if DS_TARGET_UCLIBC_CONFIG_4MB
+	default "orig-8mb"	if DS_TARGET_UCLIBC_CONFIG_8MB
+
+config DS_TARGET_GXX
+	bool "  Build g++"
+	default y
+
+config DS_TARGET_CCACHE
+	bool "  Build ccache"
+	default y
+	help
+	    ccache is optional, but speeds up compilation
+
+config DS_TARGET_NLS
+	bool "  Native language support (NLS)"
+	default n
+
+config DS_TARGET_LFS
+	bool "  Large file support (LFS)"
+	default n
+
+choice
+
+	prompt "Kernel compiler"
+	default DS_KERNEL_COMPILER_GCC_3_3_2_GLIBC_2_3_2
+
+	config DS_KERNEL_COMPILER_GCC_3_3_2_GLIBC_2_3_2
+		bool "gcc-3.3.2-glibc-2.3.2"
+
+endchoice
+
+config DS_KERNEL_GCC_VERSION
+	string
+	default "3.3.2" if DS_KERNEL_COMPILER_GCC_3_3_2_GLIBC_2_3_2
+
+config DS_KERNEL_GLIBC_VERSION
+	string
+	default "2.3.2" if DS_KERNEL_COMPILER_GCC_3_3_2_GLIBC_2_3_2

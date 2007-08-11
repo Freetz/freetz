@@ -1,0 +1,12 @@
+--- usr/www/all/html/de/menus/menu2_fon.html_5010	2005-12-09 17:09:37.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_fon.html	2005-11-04 15:54:04.000000000 +0100
+@@ -54,6 +54,9 @@
+ <? if eq $var:pagename sperre1 `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','sperre')">Rufsperre</a></li>
+ <? setvariable var:classname 'LSubitem' ?>
++<? if eq $var:pagename rul `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
++	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','rul')"><? echo $var:txt05 ?></a></li>
++<? setvariable var:classname 'LSubitem' ?>
+ <? if eq $var:pagename wecker `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','wecker')"><? echo $var:txt09 ?></a></li>
+ <? setvariable var:showlaender 0 ?>

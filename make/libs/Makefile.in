@@ -1,0 +1,30 @@
+ifeq ($(strip $(DS_TARGET_GXX)),y)
+ifeq ($(strip $(DS_LIB_libuClibcxx)),y)
+LIBS+=uclibcxx
+endif
+endif
+
+ifeq ($(strip $(DS_LIB_libgpg_error)),y)
+LIBS+=libgpg-error
+endif
+
+ifeq ($(strip $(DS_LIB_libgcrypt)),y)
+LIBS+=libgcrypt
+endif
+
+ifeq ($(strip $(DS_LIB_liblzo2)),y)
+LIBS+=lzo
+endif
+
+ifeq ($(strip $(DS_LIB_libncurses)),y)
+LIBS+=ncurses
+endif
+
+ifeq ($(strip $(DS_LIB_libcrypto)),y)
+# libssl depends on libcrypto
+LIBS+=openssl
+endif
+
+ifeq ($(strip $(DS_LIB_libz)),y)
+LIBS+=zlib
+endif

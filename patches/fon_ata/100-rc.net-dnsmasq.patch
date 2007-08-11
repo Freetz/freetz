@@ -1,0 +1,15 @@
+--- etc/init.d/rc.net.orig	2005-10-30 13:30:44.970339160 +0100
++++ etc/init.d/rc.net	2005-10-30 13:39:22.022735248 +0100
+@@ -1,6 +1,12 @@
+ #!/bin/sh
+ MULTIDPARAM=
+ PATH=/bin:/usr/bin:/sbin:/usr/sbin
++
++# allow wrapper
++PKG=dnsmasq
++BASE=/mod/pkg/$PKG
++PATH=$BASE/usr/lib/$PKG/bin:$PATH
++
+ if [ "$CONFIG_RAMSIZE" = 8 ] ; then
+  # running on a FRITZ!Box SL (8MB RAM)
+  # we don't use low priority of websrv/ctlmgr
