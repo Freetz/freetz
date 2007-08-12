@@ -20,6 +20,10 @@ DROPBEAR_TARGET_BINARY:=$(DROPBEAR_TARGET_DIR)/root/usr/sbin/dropbearmulti
 DROPBEAR_DS_CONFIG_FILE:=$(DROPBEAR_MAKE_DIR)/.ds_config
 DROPBEAR_DS_CONFIG_TEMP:=$(DROPBEAR_MAKE_DIR)/.ds_config.temp
 
+ifneq ($(strip $(DS_LIB_libz)),y)
+DISABLE_ZLIB:=--disable-zlib
+endif
+
 $(DL_DIR)/$(DROPBEAR_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(DROPBEAR_SITE)/$(DROPBEAR_SOURCE)
 
@@ -80,7 +84,7 @@ $(DROPBEAR_DIR)/.configured: $(DROPBEAR_DIR)/.unpacked
 		--disable-loginfunc \
 		--disable-pututline \
 		--disable-pututxline \
-		--disable-zlib \
+		$(DISABLE_ZLIB) \
 	);
 	touch $@
 
