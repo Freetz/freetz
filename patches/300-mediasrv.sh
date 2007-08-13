@@ -1,7 +1,7 @@
 #!/bin/bash
 
-FN_IMAGE="dl/*-7553.image"
-FN_ZIP="dl/*-7553.zip"
+FN_IMAGE="dl/*-8221.image"
+FN_ZIP="dl/*-8221.zip"
 
 FILES1="
 ./usr/lib/mediasrv/ConnectionManager.xml
@@ -14,21 +14,21 @@ FILES1="
 ./sbin/start_mediasrv
 "
 FILES2="
-./etc/default.Fritz_Box_7170_26/avm/ConnectionManager.xml
-./etc/default.Fritz_Box_7170_26/avm/MediaServerDevDesc-template.xml
-./etc/default.Fritz_Box_7170_26/avm/mediapath
-./etc/default.Fritz_Box_7170_26/avm/MediaServerDevDesc.xml
-./etc/default.Fritz_Box_7170_26/avm/ContentDirectory.xml
-./etc/default.Fritz_Box_7170_26/1und1/ConnectionManager.xml
-./etc/default.Fritz_Box_7170_26/1und1/MediaServerDevDesc-template.xml
-./etc/default.Fritz_Box_7170_26/1und1/mediapath
-./etc/default.Fritz_Box_7170_26/1und1/MediaServerDevDesc.xml
-./etc/default.Fritz_Box_7170_26/1und1/ContentDirectory.xml
-./etc/default.Fritz_Box_7170_26/freenet/ConnectionManager.xml
-./etc/default.Fritz_Box_7170_26/freenet/MediaServerDevDesc-template.xml
-./etc/default.Fritz_Box_7170_26/freenet/mediapath
-./etc/default.Fritz_Box_7170_26/freenet/MediaServerDevDesc.xml
-./etc/default.Fritz_Box_7170_26/freenet/ContentDirectory.xml
+./etc/default.Fritz_Box_7170/avm/ConnectionManager.xml
+./etc/default.Fritz_Box_7170/avm/MediaServerDevDesc-template.xml
+./etc/default.Fritz_Box_7170/avm/mediapath
+./etc/default.Fritz_Box_7170/avm/MediaServerDevDesc.xml
+./etc/default.Fritz_Box_7170/avm/ContentDirectory.xml
+./etc/default.Fritz_Box_7170/1und1/ConnectionManager.xml
+./etc/default.Fritz_Box_7170/1und1/MediaServerDevDesc-template.xml
+./etc/default.Fritz_Box_7170/1und1/mediapath
+./etc/default.Fritz_Box_7170/1und1/MediaServerDevDesc.xml
+./etc/default.Fritz_Box_7170/1und1/ContentDirectory.xml
+./etc/default.Fritz_Box_7170/freenet/ConnectionManager.xml
+./etc/default.Fritz_Box_7170/freenet/MediaServerDevDesc-template.xml
+./etc/default.Fritz_Box_7170/freenet/mediapath
+./etc/default.Fritz_Box_7170/freenet/MediaServerDevDesc.xml
+./etc/default.Fritz_Box_7170/freenet/ContentDirectory.xml
 "
 
 if [ "$DS_PATCH_MEDIASRV" == "y" ]; then
