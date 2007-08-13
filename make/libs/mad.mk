@@ -59,13 +59,15 @@ $(MAD_DIR)/.configured: $(MAD_DIR)/.unpacked
 
 $(MAD_BINARY): $(MAD_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	    $(MAKE) -C $(MAD_DIR) \
+		$(MAKE) -C $(MAD_DIR) \
 
 $(MAD_STAGING_BINARY): $(MAD_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	    $(MAKE) -C $(MAD_DIR) \
-	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-	    install
+		$(MAKE) -C $(MAD_DIR) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libmad.la
 
 $(MAD_TARGET_BINARY): $(MAD_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*.so* $(MAD_TARGET_DIR)/

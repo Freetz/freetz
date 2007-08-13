@@ -66,6 +66,8 @@ $(GLIBL_STAGING_BINARY): $(GLIBL_BINARY)
 		$(MAKE) -C $(GLIBL_DIR)/glib \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libglib-2.0.la
 
 $(GLIBL_TARGET_BINARY): $(GLIBL_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0.so* $(GLIBL_TARGET_DIR)/

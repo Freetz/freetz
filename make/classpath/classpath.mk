@@ -51,7 +51,7 @@ $(CLASSPATH_DIR)/.configured: $(CLASSPATH_DIR)/.unpacked
 
 $(CLASSPATH_BINARY) $(CLASSPATH_LIB_BINARY): $(CLASSPATH_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	   $(MAKE) -C $(CLASSPATH_DIR)
+		$(MAKE) -C $(CLASSPATH_DIR)
 	cp $(CLASSPATH_MAKE_DIR)/mini.classlist $(CLASSPATH_DIR)/lib;
 	( cd $(CLASSPATH_DIR)/lib; fastjar -Mcf mini.jar -@ < mini.classlist );
 
@@ -65,6 +65,20 @@ $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION): $(DL_DIR)/$(CLASSPATH_PKG_SOURC
 $(CLASSPATH_LIB_STAGING_BINARY): $(CLASSPATH_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(CLASSPATH_DIR)/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavaio.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalang.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalangmanagement.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalangreflect.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavanet.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavanio.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavautil.la
 	touch -c $@
 
 $(CLASSPATH_DIR)/.installed: $(CLASSPATH_LIB_STAGING_BINARY)

@@ -56,6 +56,8 @@ $(LIBGCRYPT_STAGING_BINARY): $(LIBGCRYPT_BINARY)
 		bindir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin \
 		datadir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share \
 		install
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgcrypt.la
 
 $(LIBGCRYPT_TARGET_BINARY): $(LIBGCRYPT_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*.so* $(LIBGCRYPT_TARGET_DIR)/

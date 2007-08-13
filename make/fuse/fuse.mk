@@ -88,6 +88,10 @@ $(FUSE_LIB_STAGING_BINARY): $(FUSE_LIB_BINARY)
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfuse.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libulockmgr.la
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
 		-C $(FUSE_DIR)/include \
 		ARCH="$(KERNEL_ARCH)" \
@@ -125,7 +129,7 @@ fuse-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse* \
-        $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
 
 fuse-dirclean:
 	rm -rf $(FUSE_DIR)

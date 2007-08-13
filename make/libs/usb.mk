@@ -61,9 +61,11 @@ $(USB_BINARY): $(USB_DIR)/.configured
 
 $(USB_STAGING_BINARY): $(USB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	    $(MAKE) -C $(USB_DIR) \
-	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-	    install
+		$(MAKE) -C $(USB_DIR) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb.la
 
 $(USB_TARGET_BINARY): $(USB_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so* $(USB_TARGET_DIR)/

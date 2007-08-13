@@ -86,6 +86,8 @@ $(NTFS_LIB_STAGING_BINARY): $(NTFS_LIB_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	touch -c $@
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libntfs-3g.la
 
 $(NTFS_TARGET_BINARY): $(NTFS_BINARY)
 	$(INSTALL_BINARY_STRIP)

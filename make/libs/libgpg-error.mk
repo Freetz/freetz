@@ -50,6 +50,8 @@ $(LIBGPG_ERROR_STAGING_BINARY): $(LIBGPG_ERROR_BINARY)
 		bindir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin \
 		datadir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share \
 		install
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgpg-error.la
 
 $(LIBGPG_ERROR_TARGET_BINARY): $(LIBGPG_ERROR_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*.so* $(LIBGPG_ERROR_TARGET_DIR)/
