@@ -83,6 +83,9 @@ else
 VERBOSE:=-v
 endif
 
+export DS_VERBOSITY_LEVEL
+export VERBOSE
+
 TOOLS_CLEAN:=$(patsubst %,%-clean,$(TOOLS))
 TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))
 TOOLS_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLS))
