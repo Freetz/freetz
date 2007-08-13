@@ -1,0 +1,313 @@
+--- include/usage.h	2007-07-27 00:13:30.000000000 +0200
++++ include/usage.h	2007-08-13 22:58:53.000000000 +0200
+@@ -3139,17 +3139,17 @@
+        "Note that this version of syslogd ignores /etc/syslog.conf." \
+        "\n\nOptions:" \
+        "\n	-n		Run as foreground process" \
+-       "\n	-O FILE		Use an alternate log file (default=/var/log/messages)" \
+-       "\n	-l n		Sets the local log level of messages to n" \
+-       "\n	-S		Make logging output smaller" \
++       "\n	-O FILE		Log to given file (default=/var/log/messages)" \
++       "\n	-l n		Set local log level" \
++       "\n	-S		Smaller logging output" \
+ 	USE_FEATURE_ROTATE_LOGFILE( \
+        "\n	-s SIZE		Max size (KB) before rotate (default=200KB, 0=off)" \
+        "\n	-b NUM		Number of rotated logs to keep (default=1, max=99, 0=purge)") \
+ 	USE_FEATURE_REMOTE_LOG( \
+        "\n	-R HOST[:PORT]	Log to IP or hostname on PORT (default PORT=514/UDP)" \
+-       "\n	-L		Log locally and via network logging (default is network only)") \
++       "\n	-L		Log locally and via network (default is network only if -R)") \
+ 	USE_FEATURE_IPC_SYSLOG( \
+-       "\n	-C[size(KiB)]	Log to a shared mem buffer (read the buffer using logread)")
++       "\n	-C[size(KiB)]	Log to shared mem buffer (read it using logread)")
+ 	/* NB: -Csize shouldn't have space (because size is optional) */
+ /*       "\n	-m MIN		Minutes between MARK lines (default=20, 0=off)" */
+ #define syslogd_example_usage \
+--- sysklogd/syslogd.c	2007/06/21 13:44:53	18883
++++ sysklogd/syslogd.c	2007/08/12 21:33:06	19470
+@@ -46,8 +46,7 @@
+ 
+ /* Semaphore operation structures */
+ struct shbuf_ds {
+-	int32_t size;   /* size of data written */
+-	int32_t head;   /* start of message list */
++	int32_t size;   /* size of data - 1 */
+ 	int32_t tail;   /* end of message list */
+ 	char data[1];   /* data/messages */
+ };
+@@ -212,8 +211,9 @@
+ 		bb_perror_msg_and_die("shmat");
+ 	}
+ 
+-	G.shbuf->size = G.shm_size - offsetof(struct shbuf_ds, data);
+-	G.shbuf->head = G.shbuf->tail = 0;
++	memset(G.shbuf, 0, G.shm_size);
++	G.shbuf->size = G.shm_size - offsetof(struct shbuf_ds, data) - 1;
++	/*G.shbuf->tail = 0;*/
+ 
+ 	// we'll trust the OS to set initial semval to 0 (let's hope)
+ 	G.s_semid = semget(KEY_ID, 2, IPC_CREAT | IPC_EXCL | 1023);
+@@ -231,7 +231,6 @@
+ static void log_to_shmem(const char *msg, int len)
+ {
+ 	int old_tail, new_tail;
+-	char *c;
+ 
+ 	if (semop(G.s_semid, G.SMwdn, 3) == -1) {
+ 		bb_perror_msg_and_die("SMwdn");
+@@ -240,49 +239,20 @@
+ 	/* Circular Buffer Algorithm:
+ 	 * --------------------------
+ 	 * tail == position where to store next syslog message.
+-	 * head == position of next message to retrieve ("print").
+-	 * if head == tail, there is no "unprinted" messages left.
+-	 * head is typically advanced by separate "reader" program,
+-	 * but if there isn't one, we have to do it ourself.
+-	 * messages are NUL-separated.
++	 * tail's max value is (shbuf->size - 1)
++	 * Last byte of buffer is never used and remains NUL.
+ 	 */
+ 	len++; /* length with NUL included */
+  again:
+ 	old_tail = G.shbuf->tail;
+ 	new_tail = old_tail + len;
+ 	if (new_tail < G.shbuf->size) {
+-		/* No need to move head if shbuf->head <= old_tail,
+-		 * else... */
+-		if (old_tail < G.shbuf->head && G.shbuf->head <= new_tail) {
+-			/* ...need to move head forward */
+-			c = memchr(G.shbuf->data + new_tail, '\0',
+-					   G.shbuf->size - new_tail);
+-			if (!c) /* no NUL ahead of us, wrap around */
+-				c = memchr(G.shbuf->data, '\0', old_tail);
+-			if (!c) { /* still nothing? point to this msg... */
+-				G.shbuf->head = old_tail;
+-			} else {
+-				/* convert pointer to offset + skip NUL */
+-				G.shbuf->head = c - G.shbuf->data + 1;
+-			}
+-		}
+ 		/* store message, set new tail */
+ 		memcpy(G.shbuf->data + old_tail, msg, len);
+ 		G.shbuf->tail = new_tail;
+ 	} else {
+-		/* we need to break up the message and wrap it around */
+ 		/* k == available buffer space ahead of old tail */
+-		int k = G.shbuf->size - old_tail - 1;
+-		if (G.shbuf->head > old_tail) {
+-			/* we are going to overwrite head, need to
+-			 * move it out of the way */
+-			c = memchr(G.shbuf->data, '\0', old_tail);
+-			if (!c) { /* nothing? point to this msg... */
+-				G.shbuf->head = old_tail;
+-			} else { /* convert pointer to offset + skip NUL */
+-				G.shbuf->head = c - G.shbuf->data + 1;
+-			}
+-		}
++		int k = G.shbuf->size - old_tail;
+ 		/* copy what fits to the end of buffer, and repeat */
+ 		memcpy(G.shbuf->data + old_tail, msg, k);
+ 		msg += k;
+@@ -294,7 +264,7 @@
+ 		bb_perror_msg_and_die("SMwup");
+ 	}
+ 	if (DEBUG)
+-		printf("head:%d tail:%d\n", G.shbuf->head, G.shbuf->tail);
++		printf("tail:%d\n", G.shbuf->tail);
+ }
+ #else
+ void ipcsyslog_cleanup(void);
+@@ -339,11 +309,10 @@
+ 		}
+ #if ENABLE_FEATURE_ROTATE_LOGFILE
+ 		{
+-		struct stat statf;
+-
+-		G.isRegular = (fstat(G.logFD, &statf) == 0 && (statf.st_mode & S_IFREG));
+-		/* bug (mostly harmless): can wrap around if file > 4gb */
+-		G.curFileSize = statf.st_size;
++			struct stat statf;
++			G.isRegular = (fstat(G.logFD, &statf) == 0 && S_ISREG(statf.st_mode));
++			/* bug (mostly harmless): can wrap around if file > 4gb */
++			G.curFileSize = statf.st_size;
+ 		}
+ #endif
+ 	}
+--- sysklogd/logread.c	2007/05/26 19:00:18	18696
++++ sysklogd/logread.c	2007/08/12 21:33:06	19470
+@@ -19,11 +19,10 @@
+ enum { KEY_ID = 0x414e4547 }; /* "GENA" */
+ 
+ static struct shbuf_ds {
+-	int32_t size;           // size of data written
+-	int32_t head;           // start of message list
++	int32_t size;           // size of data - 1
+ 	int32_t tail;           // end of message list
+-	char data[1];           // data/messages
+-} *buf;                         // shared memory pointer
++	char data[1];           // messages
++} *shbuf;
+ 
+ // Semaphore operation structures
+ static struct sembuf SMrup[1] = {{0, -1, IPC_NOWAIT | SEM_UNDO}}; // set SMrup
+@@ -34,7 +33,7 @@
+ static void error_exit(const char *str)
+ {
+ 	//release all acquired resources
+-	shmdt(buf);
++	shmdt(shbuf);
+ 	bb_perror_msg_and_die(str);
+ }
+ 
+@@ -50,7 +49,7 @@
+ static void interrupted(int sig ATTRIBUTE_UNUSED)
+ {
+ 	signal(SIGINT, SIG_IGN);
+-	shmdt(buf);
++	shmdt(shbuf);
+ 	exit(0);
+ }
+ 
+@@ -66,79 +65,105 @@
+ 	if (log_shmid == -1)
+ 		bb_perror_msg_and_die("can't find syslogd buffer");
+ 
+-	// Attach shared memory to our char*
+-	buf = shmat(log_shmid, NULL, SHM_RDONLY);
+-	if (buf == NULL)
++	/* Attach shared memory to our char* */
++	shbuf = shmat(log_shmid, NULL, SHM_RDONLY);
++	if (shbuf == NULL)
+ 		bb_perror_msg_and_die("can't access syslogd buffer");
+ 
+ 	log_semid = semget(KEY_ID, 0, 0);
+ 	if (log_semid == -1)
+ 		error_exit("can't get access to semaphores for syslogd buffer");
+ 
+-	// attempt to redefine ^C signal
+ 	signal(SIGINT, interrupted);
+ 
+-	// Suppose atomic memory move
+-	cur = follow ? buf->tail : buf->head;
++	/* Suppose atomic memory read */
++	/* Max possible value for tail is shbuf->size - 1 */
++	cur = shbuf->tail;
+ 
++	/* Loop for logread -f, one pass if there was no -f */
+ 	do {
++		unsigned shbuf_size;
++		unsigned shbuf_tail;
++		const char *shbuf_data;
+ #if ENABLE_FEATURE_LOGREAD_REDUCED_LOCKING
+-		char *buf_data;
+-		int log_len, j;
++		int i;
++		int len_first_part;
++		int len_total = len_total; /* for gcc */
++		char *copy = copy; /* for gcc */
+ #endif
+ 		if (semop(log_semid, SMrdn, 2) == -1)
+ 			error_exit("semop[SMrdn]");
+ 
++		/* Copy the info, helps gcc to realize that it doesn't change */
++		shbuf_size = shbuf->size;
++		shbuf_tail = shbuf->tail;
++		shbuf_data = shbuf->data; /* pointer! */
++
+ 		if (DEBUG)
+-			printf("head:%i cur:%d tail:%i size:%i\n",
+-					buf->head, cur, buf->tail, buf->size);
++			printf("cur:%d tail:%i size:%i\n",
++					cur, shbuf_tail, shbuf_size);
+ 
+-		if (buf->head == buf->tail || cur == buf->tail) {
+-			if (follow) {
++		if (!follow) {
++			/* advance to oldest complete message */
++			/* find NUL */
++			cur += strlen(shbuf_data + cur);
++			if (cur >= shbuf_size) { /* last byte in buffer? */
++				cur = strnlen(shbuf_data, shbuf_tail);
++				if (cur == shbuf_tail)
++					goto unlock; /* no complete messages */
++			}
++			/* advance to first byte of the message */
++			cur++;
++			if (cur >= shbuf_size) /* last byte in buffer? */
++				cur = 0;
++		} else { /* logread -f */
++			if (cur == shbuf_tail) {
+ 				sem_up(log_semid);
+ 				fflush(stdout);
+ 				sleep(1); /* TODO: replace me with a sleep_on */
+ 				continue;
+ 			}
+-			puts("<empty syslog>");
+ 		}
+ 
+-		// Read Memory
++		/* Read from cur to tail */
+ #if ENABLE_FEATURE_LOGREAD_REDUCED_LOCKING
+-		log_len = buf->tail - cur;
+-		if (log_len < 0)
+-			log_len += buf->size;
+-		buf_data = xmalloc(log_len);
+-
+-		if (buf->tail >= cur)
+-			j = log_len;
+-		else
+-			j = buf->size - cur;
+-		memcpy(buf_data, buf->data + cur, j);
+-
+-		if (buf->tail < cur)
+-			memcpy(buf_data + buf->size - cur, buf->data, buf->tail);
+-		cur = buf->tail;
++		len_first_part = len_total = shbuf_tail - cur;
++		if (len_total < 0) {
++			/* message wraps: */
++			/* [SECOND PART.........FIRST PART] */
++			/*  ^data      ^tail    ^cur      ^size */
++			len_total += shbuf_size;
++		}
++		copy = xmalloc(len_total + 1);
++		if (len_first_part < 0) {
++			/* message wraps (see above) */
++			len_first_part = shbuf_size - cur;
++			memcpy(copy + len_first_part, shbuf_data, shbuf_tail);
++		}
++		memcpy(copy, shbuf_data + cur, len_first_part);
++		copy[len_total] = '\0';
++		cur = shbuf_tail;
+ #else
+-		while (cur != buf->tail) {
+-			fputs(buf->data + cur, stdout);
+-			cur += strlen(buf->data + cur) + 1;
+-			if (cur >= buf->size)
++		while (cur != shbuf_tail) {
++			fputs(shbuf_data + cur, stdout);
++			cur += strlen(shbuf_data + cur) + 1;
++			if (cur >= shbuf_size)
+ 				cur = 0;
+ 		}
+ #endif
+-		// release the lock on the log chain
++ unlock:
++		/* release the lock on the log chain */
+ 		sem_up(log_semid);
+ 
+ #if ENABLE_FEATURE_LOGREAD_REDUCED_LOCKING
+-		for (j = 0; j < log_len; j += strlen(buf_data+j) + 1) {
+-			fputs(buf_data + j, stdout);
++		for (i = 0; i < len_total; i += strlen(copy + i) + 1) {
++			fputs(copy + i, stdout);
+ 		}
+-		free(buf_data);
++		free(copy);
+ #endif
+ 	} while (follow);
+ 
+-	shmdt(buf);
++	shmdt(shbuf);
+ 
+ 	fflush_stdout_and_exit(EXIT_SUCCESS);
+ }
