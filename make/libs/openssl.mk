@@ -13,9 +13,9 @@ OPENSSL_TARGET_SSL_BINARY:=$(OPENSSL_TARGET_DIR)/libssl.so.$(OPENSSL_LIB_VERSION
 OPENSSL_TARGET_CRYPTO_BINARY:=$(OPENSSL_TARGET_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION)
 
 OPENSSL_NO_CIPHERS:= no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime \
-                    no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5
+	no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5
 OPENSSL_OPTIONS:= shared no-ec no-err no-fips no-hw no-threads zlib-dynamic \
-                    no-engines no-sse2 no-perlasm
+	no-engines no-sse2 no-perlasm
 
 $(DL_DIR)/$(OPENSSL_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(OPENSSL_SITE)/$(OPENSSL_SOURCE)
@@ -35,9 +35,8 @@ $(OPENSSL_DIR)/.configured: $(OPENSSL_DIR)/.unpacked
 		--prefix=/usr \
 		--openssldir=/mod/etc/ssl \
 		-I$(TARGET_TOOLCHAIN_STAGING_DIR)/include \
-		-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include \
 		-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib \
-		-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib -ldl \
+		-ldl \
 		-DOPENSSL_SMALL_FOOTPRINT \
 		$(OPENSSL_NO_CIPHERS) \
 		$(OPENSSL_OPTIONS) \
@@ -77,7 +76,7 @@ $(OPENSSL_TARGET_CRYPTO_BINARY): $(OPENSSL_STAGING_CRYPTO_BINARY)
 	chmod 755 $(OPENSSL_STAGING_CRYPTO_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*.so* $(OPENSSL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
-	
+
 openssl: $(OPENSSL_STAGING_SSL_BINARY) $(OPENSSL_STAGING_CRYPTO_BINARY)
 
 openssl-precompiled: uclibc zlib-precompiled openssl $(OPENSSL_TARGET_SSL_BINARY) $(OPENSSL_TARGET_CRYPTO_BINARY)
