@@ -364,7 +364,7 @@ common-clean:
 	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean:
-	rm -rf $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
+	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	-rm -rf $(ADDON_DIR)/*
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
