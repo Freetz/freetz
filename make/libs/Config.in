@@ -454,3 +454,11 @@ config DS_LIB_libiconv
 	help
 		This library provides an iconv() implementation, for use on systems which don't 
 		have one, or whose implementation cannot convert from/to Unicode. 
+
+config DS_LIB_libftdi
+	bool "libftdi (libftdi.so)"
+	select DS_LIB_libusb
+	default n
+	help
+		A library (using libusb) to talk to FTDI's FT232BM/245BM, FT2232C/D and 
+		FT232/245R type chips including the popular bitbang mode.
