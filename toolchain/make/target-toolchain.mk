@@ -1,9 +1,3 @@
-ifneq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
-	include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
-	include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
-	include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
-else
-
 include $(TOOLCHAIN_DIR)/make/target/*/*.mk
 
 ifeq ($(strip $(DS_TARGET_CCACHE)),y)
@@ -59,5 +53,3 @@ target-toolchain-dirclean:
 target-toolchain-distclean: target-toolchain-dirclean
 	rm -rf $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
 	rm -f $(TOOLCHAIN_DIR)/target
-
-endif

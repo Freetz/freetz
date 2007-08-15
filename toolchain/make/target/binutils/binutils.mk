@@ -6,6 +6,11 @@ BINUTILS_DIR:=$(TARGET_TOOLCHAIN_DIR)/binutils-$(BINUTILS_VERSION)
 BINUTILS_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/binutils
 BINUTILS_DIR1:=$(BINUTILS_DIR)-build
 
+ifeq ($(strip $(DS_STATIC_TOOLCHAIN)),y)
+BINUTILS_EXTRA_MAKE_OPTIONS:="LDFLAGS=-all-static"
+else
+BINUTILS_EXTRA_MAKE_OPTIONS:=
+endif
 
 $(DL_DIR)/$(BINUTILS_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(BINUTILS_STABLE_SITE)/$(BINUTILS_SOURCE) || \
@@ -36,8 +41,8 @@ $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked
 	touch $@
 
 $(BINUTILS_DIR1)/binutils/objdump: $(BINUTILS_DIR1)/.configured
-	#$(MAKE) -C $(BINUTILS_DIR1) configure-host
-	$(MAKE) -C $(BINUTILS_DIR1) all
+	$(MAKE) -C $(BINUTILS_DIR1) configure-host
+	$(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) all
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/binutils/objdump
 	$(MAKE) -C $(BINUTILS_DIR1) install

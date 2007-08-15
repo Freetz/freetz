@@ -1,5 +1,6 @@
-#include this stuff only when DS_DOWNLOAD_TOOLCHAIN is selected
-ifeq ($(strip $(DS_DOWNLOAD_TOOLCHAIN)),y)
+include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
+include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
+include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 
 KERNEL_TOOLCHAIN_VERSION:=0.1
 TARGET_TOOLCHAIN_VERSION:=0.4
@@ -35,5 +36,4 @@ toolchain-distclean:
 	rm -rf $(TOOLCHAIN_DIR)/kernel
 	rm -rf $(TOOLCHAIN_DIR)/target
 
-endif
 

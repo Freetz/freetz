@@ -1,0 +1,277 @@
+diff -urN gcc-3.4.6-glibc-2.3.6.dat gcc-3.4.6-glibc-2.3.6.dat
+--- gcc-3.4.6-glibc-2.3.6.dat	1969-12-31 18:00:00.000000000 -0600
++++ gcc-3.4.6-glibc-2.3.6.dat	2006-08-24 17:23:04.000000000 -0500
+@@ -0,0 +1,6 @@
++BINUTILS_DIR=binutils-2.15
++GCC_DIR=gcc-3.4.6
++GLIBC_DIR=glibc-2.3.6
++LINUX_DIR=linux-2.6.13.1
++LINUX_SANITIZED_HEADER_DIR=linux-libc-headers-2.6.12.0
++GLIBCTHREADS_FILENAME=glibc-linuxthreads-2.3.6
+diff -urN patches/gcc-3.4.6/fix-fixincl.patch patches/gcc-3.4.6/fix-fixincl.patch
+--- patches/gcc-3.4.6/fix-fixincl.patch	1969-12-31 18:00:00.000000000 -0600
++++ patches/gcc-3.4.6/fix-fixincl.patch	2006-08-24 17:23:34.000000000 -0500
+@@ -0,0 +1,70 @@
++See http://gcc.gnu.org/PR22541
++
++From: Dan Kegel
++
++When building gcc-3.4.3 or gcc-4.0.0 as a cross into a clean $PREFIX
++(the only two I've tried like this), the configure script happily copies
++the glibc include files from include to sys-include; here's the line
++from the log file (with $PREFIX instead of the real prefix):
++
++Copying $PREFIX/i686-unknown-linux-gnu/include to $PREFIX/i686-unknown-linux-gnu/sys-include
++
++But later, when running fixincludes, it gives the error message
++ The directory that should contain system headers does not exist:
++  $PREFIX/lib/gcc/i686-unknown-linux-gnu/3.4.3/../../../../i686-unknown-linux-gnu/sys-include
++
++Nevertheless, it continues building; the header files it installs in
++ $PREFIX/lib/gcc/i686-unknown-linux-gnu/3.4.3/include
++do not include the boilerplate that would cause it to #include_next the
++glibc headers in the system header directory.
++Thus the resulting toolchain can't compile the following program:
++#include <limits.h>
++int x = PATH_MAX;
++because its limits.h doesn't include the glibc header.
++
++That's not nice.  I suspect the problem is that gcc/Makefile.in assumes that
++it can refer to $PREFIX/i686-unknown-linux-gnu  with the path 
++                $PREFIX/lib/../i686-unknown-linux-gnu, but
++that fails because the directory $PREFIX/lib doesn't exist during 'make all';
++it is only created later, during 'make install'.  (Which makes this problem
++confusing, since one only notices the breakage well after 'make install',
++at which point the path configure complained about does exist, and has the
++right stuff in it.)
++
++A possible fix is to replace the line in gcc/Makefile.in that says
++    SYSTEM_HEADER_DIR = @SYSTEM_HEADER_DIR@
++with a version that gets rid of extra ..'s, e.g.
++    SYSTEM_HEADER_DIR = `echo @SYSTEM_HEADER_DIR@ | sed -e :a -e "s,[^/]*/\.\.\/,,;ta"`
++(hey, that's the first time I've ever used a label in a sed script; thanks to the sed faq
++for explaining the :a ... ta method of looping to repeat a search-and-replace until it doesn't match.)
++
++
++--- gcc-3.4.3/gcc/Makefile.in.foo	2005-05-20 11:41:39.000000000 -0700
+++++ gcc-3.4.3/gcc/Makefile.in	2005-05-20 12:08:46.000000000 -0700
++@@ -350,7 +350,10 @@
++ CROSS_SYSTEM_HEADER_DIR = @CROSS_SYSTEM_HEADER_DIR@
++ 
++ # autoconf sets SYSTEM_HEADER_DIR to one of the above.
++-SYSTEM_HEADER_DIR = @SYSTEM_HEADER_DIR@
+++# Purge it of unneccessary internal relative paths
+++# to directories that might not exist yet.
+++# The sed idiom for this is to repeat the search-and-replace until it doesn't match, using :a ... ta.
+++SYSTEM_HEADER_DIR = `echo @SYSTEM_HEADER_DIR@ | sed -e :a -e "s,[^/]*/\.\.\/,," -e ta`
++ 
++ # Control whether to run fixproto and fixincludes.
++ STMP_FIXPROTO = @STMP_FIXPROTO@
++@@ -2532,11 +2535,13 @@
++ 	$(SHELL) ${srcdir}/mkinstalldirs $(DESTDIR)$(gcc_tooldir)
++ 
++ # Build fixed copies of system files.
+++# Abort if no system headers available, unless building a crosscompiler.
+++# FIXME: abort unless building --without-headers would be more accurate and less ugly
++ stmp-fixinc: fixinc.sh gsyslimits.h
++ 	@if test ! -d ${SYSTEM_HEADER_DIR}; then \
++ 	  echo The directory that should contain system headers does not exist: >&2 ; \
++ 	  echo "  ${SYSTEM_HEADER_DIR}" >&2 ; \
++-	  if test "x${SYSTEM_HEADER_DIR}" = "x${gcc_tooldir}/sys-include"; \
+++	  if test "x${SYSTEM_HEADER_DIR}" = "x`echo "${gcc_tooldir}/sys-include" | sed -e :a -e "s,[^/]*/\.\.\/,," -e ta`"; \
++ 	  then sleep 1; else exit 1; fi; \
++ 	fi
++ 	rm -rf include; mkdir include
+diff -urN patches/gcc-3.4.6/gcc-3.4.0-arm-bigendian.patch patches/gcc-3.4.6/gcc-3.4.0-arm-bigendian.patch
+--- patches/gcc-3.4.6/gcc-3.4.0-arm-bigendian.patch	1969-12-31 18:00:00.000000000 -0600
++++ patches/gcc-3.4.6/gcc-3.4.0-arm-bigendian.patch	2006-08-24 17:23:34.000000000 -0500
+@@ -0,0 +1,82 @@
++By Lennert Buytenhek <buytenh@wantstofly.org>
++Adds support for arm*b-linux* big-endian ARM targets
++
++Fixes build error
++
++/opt/crosstool/armeb-unknown-linux-gnu/gcc-3.4.2-glibc-2.3.3/armeb-unknown-linux-gnu/bin/ld: unrecognised emulation mode: armelf_linux
++Supported emulations: armelfb_linux armelfb
++collect2: ld returned 1 exit status
++make[2]: *** [/home/dank/wk/crosstool-0.28-rc36/build/armeb-unknown-linux-gnu/gcc-3.4.2-glibc-2.3.3/build-glibc/csu/crt1.o] Error 1
++make[2]: Leaving directory `/home/dank/wk/crosstool-0.28-rc36/build/armeb-unknown-linux-gnu/gcc-3.4.2-glibc-2.3.3/glibc-2.3.3/csu'
++make[1]: *** [csu/subdir_lib] Error 2
++make[1]: Leaving directory `/home/dank/wk/crosstool-0.28-rc36/build/armeb-unknown-linux-gnu/gcc-3.4.2-glibc-2.3.3/glibc-2.3.3'
++make: *** [all] Error 2
++
++
++See http://gcc.gnu.org/PR16350
++
++diff -urN gcc-3.4.0.orig/gcc/config/arm/linux-elf.h gcc-3.4.0/gcc/config/arm/linux-elf.h
++--- gcc-3.4.0.orig/gcc/config/arm/linux-elf.h	2004-01-31 07:18:11.000000000 +0100
+++++ gcc-3.4.0/gcc/config/arm/linux-elf.h	2004-07-02 14:46:29.225443757 +0200
++@@ -30,17 +30,34 @@
++ /* Do not assume anything about header files.  */
++ #define NO_IMPLICIT_EXTERN_C
++ 
+++/*
+++ * 'config.gcc' defines TARGET_BIG_ENDIAN_DEFAULT as 1 for arm*b-*
+++ * (big endian) configurations.
+++ */
+++#if TARGET_BIG_ENDIAN_DEFAULT
+++#define TARGET_ENDIAN_DEFAULT ARM_FLAG_BIG_END
+++#define TARGET_ENDIAN_OPTION "mbig-endian"
+++#define TARGET_LINKER_EMULATION "armelfb_linux"
+++#else
+++#define TARGET_ENDIAN_DEFAULT 0
+++#define TARGET_ENDIAN_OPTION "mlittle-endian"
+++#define TARGET_LINKER_EMULATION "armelf_linux"
+++#endif
+++
++ /* Default is to use APCS-32 mode.  */
++ #undef  TARGET_DEFAULT
++-#define TARGET_DEFAULT (ARM_FLAG_APCS_32 | ARM_FLAG_MMU_TRAPS)
+++#define TARGET_DEFAULT \
+++		( ARM_FLAG_APCS_32 | \
+++		  ARM_FLAG_MMU_TRAPS | \
+++		  TARGET_ENDIAN_DEFAULT )
++ 
++ #define SUBTARGET_CPU_DEFAULT TARGET_CPU_arm6
++ 
++-#define SUBTARGET_EXTRA_LINK_SPEC " -m armelf_linux -p"
+++#define SUBTARGET_EXTRA_LINK_SPEC " -m " TARGET_LINKER_EMULATION " -p"
++ 
++ #undef  MULTILIB_DEFAULTS
++ #define MULTILIB_DEFAULTS \
++-	{ "marm", "mlittle-endian", "mhard-float", "mapcs-32", "mno-thumb-interwork" }
+++	{ "marm", TARGET_ENDIAN_OPTION, "mhard-float", "mapcs-32", "mno-thumb-interwork" }
++ 
++ #define CPP_APCS_PC_DEFAULT_SPEC "-D__APCS_32__"
++ 
++@@ -89,7 +106,7 @@
++    %{rdynamic:-export-dynamic} \
++    %{!dynamic-linker:-dynamic-linker /lib/ld-linux.so.2} \
++    -X \
++-   %{mbig-endian:-EB}" \
+++   %{mbig-endian:-EB} %{mlittle-endian:-EL}" \
++    SUBTARGET_EXTRA_LINK_SPEC
++ 
++ #define TARGET_OS_CPP_BUILTINS() LINUX_TARGET_OS_CPP_BUILTINS()
++diff -urN gcc-3.4.0.orig/gcc/config.gcc gcc-3.4.0/gcc/config.gcc
++--- gcc-3.4.0.orig/gcc/config.gcc	2004-04-17 04:28:24.000000000 +0200
+++++ gcc-3.4.0/gcc/config.gcc	2004-07-02 14:44:40.045822542 +0200
++@@ -666,6 +666,11 @@
++ 	;;
++ arm*-*-linux*)			# ARM GNU/Linux with ELF
++ 	tm_file="dbxelf.h elfos.h linux.h arm/elf.h  arm/linux-gas.h arm/linux-elf.h arm/aout.h arm/arm.h"
+++	case $target in
+++	arm*b-*)
+++		tm_defines="TARGET_BIG_ENDIAN_DEFAULT=1 $tm_defines"
+++		;;
+++	esac
++ 	tmake_file="t-slibgcc-elf-ver t-linux arm/t-linux"
++ 	extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
++ 	gnu_ld=yes
+diff -urN patches/gcc-3.4.6/gcc-3.4.0-arm-lib1asm.patch patches/gcc-3.4.6/gcc-3.4.0-arm-lib1asm.patch
+--- patches/gcc-3.4.6/gcc-3.4.0-arm-lib1asm.patch	1969-12-31 18:00:00.000000000 -0600
++++ patches/gcc-3.4.6/gcc-3.4.0-arm-lib1asm.patch	2006-08-24 17:23:34.000000000 -0500
+@@ -0,0 +1,27 @@
++# Origin: from a patch by Dimitry Andric <dimitry@andric.com>, 2004-05-01
++# See http://gcc.gnu.org/PR14352 and http://gcc.gnu.org/PR16314
++# See also http://gcc.gnu.org/ml/gcc-patches/2004-08/msg02568.html et seq for why this isn't in mainline
++# Fixes errors like the following when building glibc (or any other executable
++# or shared library) when using gcc 3.4.0 for ARM with softfloat:
++#
++# .../libc_pic.os(.text+0x15834): In function `__modf': undefined reference to `__subdf3'
++# .../libc_pic.os(.text+0x158b8): In function `__modf': undefined reference to `__subdf3'
++# .../libc_pic.os(.text+0x1590c): In function `scalbn': undefined reference to `__muldf3'
++# .../libc_pic.os(.text+0x15e94): In function `__ldexpf': undefined reference to `__eqsf2'
++# .../libc_pic.os(.text+0xcee4c): In function `monstartup': undefined reference to `__fixsfsi'
++
++diff -urNd gcc-3.4.0-orig/gcc/config/arm/t-linux gcc-3.4.0/gcc/config/arm/t-linux
++--- gcc-3.4.0-orig/gcc/config/arm/t-linux	2003-09-20 23:09:07.000000000 +0200
+++++ gcc-3.4.0/gcc/config/arm/t-linux	2004-05-01 20:31:59.102846400 +0200
++@@ -4,7 +4,10 @@
++ LIBGCC2_DEBUG_CFLAGS = -g0
++ 
++ LIB1ASMSRC = arm/lib1funcs.asm
++-LIB1ASMFUNCS = _udivsi3 _divsi3 _umodsi3 _modsi3 _dvmd_lnx
+++LIB1ASMFUNCS = _udivsi3 _divsi3 _umodsi3 _modsi3 _dvmd_lnx \
+++	_negdf2 _addsubdf3 _muldivdf3 _cmpdf2 _unorddf2 _fixdfsi _fixunsdfsi \
+++	_truncdfsf2 _negsf2 _addsubsf3 _muldivsf3 _cmpsf2 _unordsf2 \
+++	_fixsfsi _fixunssfsi
++ 
++ # MULTILIB_OPTIONS = mhard-float/msoft-float
++ # MULTILIB_DIRNAMES = hard-float soft-float
+diff -urN patches/gcc-3.4.6/gcc-3.4.0-arm-nolibfloat.patch patches/gcc-3.4.6/gcc-3.4.0-arm-nolibfloat.patch
+--- patches/gcc-3.4.6/gcc-3.4.0-arm-nolibfloat.patch	1969-12-31 18:00:00.000000000 -0600
++++ patches/gcc-3.4.6/gcc-3.4.0-arm-nolibfloat.patch	2006-08-24 17:23:34.000000000 -0500
+@@ -0,0 +1,24 @@
++# Dimitry Andric <dimitry@andric.com>, 2004-05-01
++#
++# * Removed the extra -lfloat option from LIBGCC_SPEC, since it isn't needed
++#   anymore.  (The required functions are now in libgcc.)
++# 
++# Fixes errors like
++# arm-softfloat-linux-gnu/3.4.0/../../../../arm-softfloat-linux-gnu/bin/ld: cannot find -lfloat
++# collect2: ld returned 1 exit status
++# make[2]: *** [arm-softfloat-linux-gnu/gcc-3.4.0-glibc-2.3.2/build-glibc/iconvdata/ISO8859-1.so] Error 1
++# when building glibc-2.3.3 with gcc-3.4.0 for arm-softfloat
++
++diff -urNd gcc-3.4.0-orig/gcc/config/arm/linux-elf.h gcc-3.4.0/gcc/config/arm/linux-elf.h
++--- gcc-3.4.0-orig/gcc/config/arm/linux-elf.h	2004-01-31 07:18:11.000000000 +0100
+++++ gcc-3.4.0/gcc/config/arm/linux-elf.h	2004-05-01 19:19:06.935979200 +0200
++@@ -55,7 +73,7 @@
++    %{shared:-lc} \
++    %{!shared:%{profile:-lc_p}%{!profile:-lc}}"
++ 
++-#define LIBGCC_SPEC "%{msoft-float:-lfloat} -lgcc"
+++#define LIBGCC_SPEC "-lgcc"
++ 
++ /* Provide a STARTFILE_SPEC appropriate for GNU/Linux.  Here we add
++    the GNU/Linux magical crtbegin.o file (see crtstuff.c) which
++
+diff -urN patches/gcc-3.4.6/pr15068-fix.patch patches/gcc-3.4.6/pr15068-fix.patch
+--- patches/gcc-3.4.6/pr15068-fix.patch	1969-12-31 18:00:00.000000000 -0600
++++ patches/gcc-3.4.6/pr15068-fix.patch	2006-08-24 17:23:34.000000000 -0500
+@@ -0,0 +1,44 @@
++See http://gcc.gnu.org/PR15068
++
++Fixes error
++
++../sysdeps/generic/s_fmax.c: In function `__fmax':
++../sysdeps/generic/s_fmax.c:28: internal compiler error: in elim_reg_cond, at flow.c:3257
++Please submit a full bug report,
++with preprocessed source if appropriate.
++See <URL:http://gcc.gnu.org/bugs.html> for instructions.
++make[2]: *** [/home/dank/wk/crosstool-0.28-rc35/build/arm-unknown-linux-gnu/gcc-3.4.1-glibc-20040822/build-glibc/math/s_fmax.o] Error 1
++make[2]: Leaving directory `/home/dank/wk/crosstool-0.28-rc35/build/arm-unknown-linux-gnu/gcc-3.4.1-glibc-20040822/glibc-20040822/math'
++make[1]: *** [math/others] Error 2
++make[1]: Leaving directory `/home/dank/wk/crosstool-0.28-rc35/build/arm-unknown-linux-gnu/gcc-3.4.1-glibc-20040822/glibc-20040822'
++make: *** [all] Error 2
++
++[ rediffed against gcc-3.4.1, with elbow grease, ending up with same thing as
++http://gcc.gnu.org/cgi-bin/cvsweb.cgi/gcc/gcc/flow.c.diff?cvsroot=gcc&only_with_tag=csl-arm-branch&r1=1.563.4.2&r2=1.563.4.3 ]
++
++--- gcc-3.4.1/gcc/flow.c.old	2004-02-27 19:39:19.000000000 -0800
+++++ gcc-3.4.1/gcc/flow.c	2004-08-26 07:29:46.000000000 -0700
++@@ -1878,6 +1878,7 @@
++ 	  rtx set_src = SET_SRC (pc_set (BB_END (bb)));
++ 	  rtx cond_true = XEXP (set_src, 0);
++ 	  rtx reg = XEXP (cond_true, 0);
+++ 	  enum rtx_code inv_cond;
++ 
++ 	  if (GET_CODE (reg) == SUBREG)
++ 	    reg = SUBREG_REG (reg);
++@@ -1886,11 +1887,13 @@
++ 	     in the form of a comparison of a register against zero.  
++ 	     If the condition is more complex than that, then it is safe
++ 	     not to record any information.  */
++-	  if (GET_CODE (reg) == REG
+++ 	  inv_cond = reversed_comparison_code (cond_true, BB_END (bb));
+++ 	  if (inv_cond != UNKNOWN
+++	      && GET_CODE (reg) == REG
++ 	      && XEXP (cond_true, 1) == const0_rtx)
++ 	    {
++ 	      rtx cond_false
++-		= gen_rtx_fmt_ee (reverse_condition (GET_CODE (cond_true)),
+++		= gen_rtx_fmt_ee (inv_cond,
++ 				  GET_MODE (cond_true), XEXP (cond_true, 0),
++ 				  XEXP (cond_true, 1));
++ 	      if (GET_CODE (XEXP (set_src, 1)) == PC)

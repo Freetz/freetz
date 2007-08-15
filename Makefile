@@ -145,7 +145,13 @@ TOOLCHAIN_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLCHAIN))
 TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
 
 include $(MAKE_DIR)/*/*.mk
-include $(TOOLCHAIN_DIR)/make/*.mk
+
+ifeq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
+include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
+include $(TOOLCHAIN_DIR)/make/target-toolchain.mk
+else
+include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
+endif
 
 IMAGE:=$(DL_DIR)/$(DL_SOURCE)
 DL_IMAGE:=$(IMAGE)

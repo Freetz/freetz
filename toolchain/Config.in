@@ -1,11 +1,7 @@
-comment "BIG FAT WARNING: Never build a firmware with current settings!"
-	depends on ! DS_TARGET_UCLIBC_CONFIG_MOD_26
-
 choice
 
-	prompt "Target compiler"
+	prompt "Target compiler" if DS_BUILD_TOOLCHAIN
 	default DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
-	depends on ! DS_DOWNLOAD_TOOLCHAIN
 
 	config DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 		bool "gcc-4.1.0-uClibc-0.9.28"
@@ -35,12 +31,7 @@ config DS_TARGET_GCC_VERSION
 
 config DS_TARGET_UCLIBC_VERSION
 	string
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
-	default "0.9.28"	if DS_DOWNLOAD_TOOLCHAIN
+	default "0.9.28"
 
 config DS_TARGET_BINUTILS_VERSION
 	string
@@ -53,39 +44,44 @@ config DS_TARGET_BINUTILS_VERSION
 
 choice
 
-	prompt "uClibc config" 
+	prompt "uClibc config" if DS_BUILD_TOOLCHAIN
 	default DS_TARGET_UCLIBC_CONFIG_MOD_26
 
 	config DS_TARGET_UCLIBC_CONFIG_MOD_26
 		bool "mod_26 (recommended)"
 
 	config DS_TARGET_UCLIBC_CONFIG_8MB_26
-		bool "8MB_26" if DS_BUILD_TOOLCHAIN
+		bool "8MB_26" 
 	
 	config DS_TARGET_UCLIBC_CONFIG_4MB_26
-		bool "4MB_26" if DS_BUILD_TOOLCHAIN
+		bool "4MB_26"
 
 endchoice
 
 config DS_TARGET_UCLIBC_REF
 	string
-	default "mod"		if DS_TARGET_UCLIBC_CONFIG_MOD
 	default "mod_26"	if DS_TARGET_UCLIBC_CONFIG_MOD_26
 	default "orig-4mb_26"	if DS_TARGET_UCLIBC_CONFIG_4MB_26
 	default "orig-8mb_26"	if DS_TARGET_UCLIBC_CONFIG_8MB_26
+	default "mod_26"	if DS_DOWNLOAD_TOOLCHAIN
+
+config DS_STATIC_TOOLCHAIN
+	bool "Build static toolchains" if DS_BUILD_TOOLCHAIN
+	default n
+	help
+		kernel and target toolchain are build static
 
 config DS_TARGET_GXX
 	bool "Build g++ for target toolchain" if DS_BUILD_TOOLCHAIN
-	default y if ! DS_DOWNLOAD_TOOLCHAIN
-	default n if DS_DOWNLOAD_TOOLCHAIN
+	default y
 	help
 		g++ is the traditional nickname of GNU C++, a freely redistributable
 		C++ compiler. It is part of gcc, the GNU compiler suite, and is
 		currently part of that distribution. 
 
 config DS_TARGET_CCACHE
-	bool "Build ccache for target toolchain"
-	default y if ! DS_DOWNLOAD_TOOLCHAIN
+	bool "Build ccache for target toolchain" if DS_BUILD_TOOLCHAIN
+	default y if DS_BUILD_TOOLCHAIN
 	default n if DS_DOWNLOAD_TOOLCHAIN
 	help
 		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
@@ -119,18 +115,22 @@ config DS_TARGET_LFS
 
 choice
 
-	prompt "Kernel compiler"
+	prompt "Kernel compiler" if DS_BUILD_TOOLCHAIN
 	default DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
-	depends ! DS_DOWNLOAD_TOOLCHAIN
 
 	config DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
 		bool "gcc-3.4.5-glibc-2.3.6"
+	
+	config DS_KERNEL_COMPILER_GCC_3_4_6_GLIBC_2_3_6
+		bool "gcc-3.4.6-glibc-2.3.6"
 
 endchoice
 
 config DS_KERNEL_GCC_VERSION
 	string
-	default "3.4.5"
+	default "3.4.5"		if DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+	default "3.4.6"		if DS_KERNEL_COMPILER_GCC_3_4_6_GLIBC_2_3_6
+	default "3.4.5"		if DS_DOWNLOAD_TOOLCHAIN
 
 config DS_KERNEL_GLIBC_VERSION
 	string

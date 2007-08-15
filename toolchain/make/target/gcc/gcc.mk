@@ -32,6 +32,12 @@ else
 GCC_TARGET_LANGUAGES:=c
 endif
 
+ifeq ($(strip $(DS_STATIC_TOOLCHAIN)),y)
+GCC_EXTRA_MAKE_OPTIONS:="LDFLAGS=-static"
+else
+GCC_EXTRA_MAKE_OPTIONS:=
+endif
+
 GCC_STRIP_HOST_BINARIES:=true
 GCC_USE_SJLJ_EXCEPTIONS:=--enable-sjlj-exceptions
 GCC_SHARED_LIBGCC:=--enable-shared
@@ -80,7 +86,7 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked
 	touch $@
 
 $(GCC_BUILD_DIR1)/.compiled: $(GCC_BUILD_DIR1)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR1) all-gcc
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR1) all-gcc
 	touch $@
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(GCC_BUILD_DIR1)/.compiled
@@ -125,7 +131,7 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked
 	touch $@
 
 $(GCC_BUILD_DIR2)/.compiled: $(GCC_BUILD_DIR2)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR2) all
+	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR2) all
 	touch $(GCC_BUILD_DIR2)/.compiled
 
 $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled

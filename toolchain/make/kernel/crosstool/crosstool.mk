@@ -13,8 +13,16 @@ else
 CROSSTOOL_VERBOSE:=
 endif
 
-CROSSTOOL_CONFIG:= $(CROSSTOOL_VERBOSE) \
-	set -ex; \
+ifeq ($(strip $(DS_STATIC_TOOLCHAIN)),y)
+CROSSTOOL_STATIC:= \
+	BINUTILS_EXTRA_CONFIG="LDFLAGS=-all-static"; \
+	GCC_EXTRA_CONFIG="LDFLAGS=-static"; \
+	export BINUTILS_EXTRA_CONFIG GCC_EXTRA_CONFIG;
+else
+CROSSTOOL_STATIC:=
+endif
+
+CROSSTOOL_CONFIG:= $(CROSSTOOL_VERBOSE) $(CROSSTOOL_STATIC) \
 	PARALLELMFLAGS="-j$(DS_JLEVEL)"; \
 	TARBALLS_DIR="$(shell pwd)/$(DL_DIR)"; \
 	RESULT_TOP="$(shell pwd)/$(TOOLCHAIN_BUILD_DIR)"; \
@@ -22,13 +30,16 @@ CROSSTOOL_CONFIG:= $(CROSSTOOL_VERBOSE) \
 	export PARALLELMFLAGS TARBALLS_DIR RESULT_TOP GCC_LANGUAGES; \
 	eval `cat mipsel.dat $(CROSSTOOL_COMPILER).dat`
 
-
 $(DL_DIR)/$(CROSSTOOL_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(CROSSTOOL_SITE)/$(CROSSTOOL_SOURCE)
 
 $(CROSSTOOL_DIR)/.unpacked: $(DL_DIR)/$(CROSSTOOL_SOURCE)
 	mkdir -p $(SOURCE_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CROSSTOOL_SOURCE)
+	for i in $(CROSSTOOL_MAKE_DIR)/patches/*.patch; do \
+		[ -f $$i ] || continue; \
+		$(PATCH_TOOL) $(CROSSTOOL_DIR) $$i; \
+	done
 	touch $@
 
 $(CROSSTOOL_DIR)/.unpacked2: $(CROSSTOOL_DIR)/.unpacked
@@ -36,10 +47,6 @@ $(CROSSTOOL_DIR)/.unpacked2: $(CROSSTOOL_DIR)/.unpacked
 		$(CROSSTOOL_CONFIG) \
 		sh all.sh --nobuild --notest; \
 	);
-	for i in $(CROSSTOOL_MAKE_DIR)/patches/*.patch; do \
-		[ -f $$i ] || continue; \
-		$(PATCH_TOOL) $(CROSSTOOL_DIR)/build/mipsel-unknown-linux-gnu/$(CROSSTOOL_COMPILER) $$i; \
-	done
 	touch $@
 
 $(CROSSTOOL_DIR)/.installed: $(CROSSTOOL_DIR)/.unpacked2
