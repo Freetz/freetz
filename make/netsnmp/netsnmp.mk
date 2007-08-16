@@ -111,6 +111,13 @@ $(DL_DIR)/$(NETSNMP_SOURCE): | $(DL_DIR)
 $(DL_DIR)/$(NETSNMP_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(NETSNMP_PKG_SOURCE) $(NETSNMP_PKG_SITE)
 
+$(NETSNMP_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "DS_PACKAGE_NETSNMP_WITH_OPENSSL=$(if $(DS_PACKAGE_NETSNMP_WITH_OPENSSL),y,n)" > $(NETSNMP_DS_CONFIG_TEMP)
+	@echo "DS_PACKAGE_NETSNMP_WITH_ZLIB=$(if $(DS_PACKAGE_NETSNMP_WITH_ZLIB),y,n)" > $(NETSNMP_DS_CONFIG_TEMP)
+	@diff -q $(NETSNMP_DS_CONFIG_TEMP) $(NETSNMP_DS_CONFIG_FILE) || \
+		cp $(NETSNMP_DS_CONFIG_TEMP) $(NETSNMP_DS_CONFIG_FILE)
+	@rm -f $(NETSNMP_DS_CONFIG_TEMP)
+
 # Make sure that a perfectly clean build is performed whenever DS-Mod package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
@@ -189,11 +196,13 @@ netsnmp-source: $(NETSNMP_DIR)/.unpacked $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 netsnmp-clean:
 	-$(MAKE) -C $(NETSNMP_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(NETSNMP_PKG_SOURCE)
+	rm -f $(NETSNMP_DS_CONFIG_FILE)
 
 netsnmp-dirclean:
 	rm -rf $(NETSNMP_DIR)
 	rm -rf $(PACKAGES_DIR)/$(NETSNMP_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
+	rm -f $(NETSNMP_DS_CONFIG_FILE)
 
 netsnmp-uninstall:
 	rm -f $(NETSNMP_TARGET_BINARY) 
