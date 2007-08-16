@@ -35,6 +35,7 @@ $(BUSYBOX_TOOLS_BINARY): $(BUSYBOX_TOOLS_SOURCE_DIR)/.configured
 $(BUSYBOX_TOOLS_TARGET_BINARY): $(BUSYBOX_TOOLS_BINARY)
 	cp $(BUSYBOX_TOOLS_BINARY) $(BUSYBOX_TOOLS_TARGET_BINARY)
 	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/makedevs
+	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/md5sum
 
 busybox-tools: $(BUSYBOX_TOOLS_TARGET_BINARY)
 
@@ -42,8 +43,10 @@ busybox-tools-clean:
 	-$(MAKE) -C $(BUSYBOX_TOOLS_SOURCE_DIR) clean
 	rm -f  $(BUSYBOX_TOOLS_TARGET_BINARY)
 	rm -f $(BUSYBOX_TOOLS_TARGET_DIR)/makedevs
+	rm -f $(BUSYBOX_TOOLS_TARGET_DIR)/md5sum
 
 busybox-tools-dirclean:
 	rm -rf $(BUSYBOX_TOOLS_DIR)
 	rm -f  $(BUSYBOX_TOOLS_TARGET_BINARY)
 	rm -f $(BUSYBOX_TOOLS_TARGET_DIR)/makedevs
+	rm -f $(BUSYBOX_TOOLS_TARGET_DIR)/md5sum
