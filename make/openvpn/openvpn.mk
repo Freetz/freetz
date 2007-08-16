@@ -7,14 +7,15 @@ OPENVPN_DIR:=$(SOURCE_DIR)/openvpn-$(OPENVPN_VERSION)
 OPENVPN_BINARY:=$(OPENVPN_DIR)/openvpn
 OPENVPN_PKG_VERSION:=0.6d
 OPENVPN_PKG_SITE:=http://netfreaks.org/ds-mod
+
 ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_LZO)),y)
-OPENVPN_PKG_NAME:=openvpn-lzo-$(OPENVPN_VERSION)
-OPENVPN_PKG_SOURCE:=openvpn-$(OPENVPN_VERSION)-dsmod-$(OPENVPN_PKG_VERSION)-lzo.tar.bz2
 OPENVPN_LZO:=lzo-precompiled 
 else
+OPENVPN_LZO:=
+endif
+
 OPENVPN_PKG_NAME:=openvpn-$(OPENVPN_VERSION)
 OPENVPN_PKG_SOURCE:=openvpn-$(OPENVPN_VERSION)-dsmod-$(OPENVPN_PKG_VERSION).tar.bz2
-endif
 OPENVPN_TARGET_DIR:=$(PACKAGES_DIR)/$(OPENVPN_PKG_NAME)
 OPENVPN_TARGET_BINARY:=$(OPENVPN_TARGET_DIR)/root/usr/sbin/openvpn
 
@@ -84,7 +85,7 @@ $(OPENVPN_DIR)/.configured: $(OPENVPN_DIR)/.unpacked
 
 $(OPENVPN_BINARY): $(OPENVPN_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-	$(MAKE) -C $(OPENVPN_DIR)
+		$(MAKE) -C $(OPENVPN_DIR)
 
 $(OPENVPN_TARGET_BINARY): $(OPENVPN_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -117,16 +118,8 @@ openvpn-uninstall:
 	rm -f $(OPENVPN_TARGET_BINARY)
 
 openvpn-list:
-ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_LZO)),y)
-ifeq ($(strip $(DS_PACKAGE_OPENVPN)),y)
-	@echo "S40openvpn-lzo-$(OPENVPN_VERSION)" >> .static
-else
-	@echo "S40openvpn-lzo-$(OPENVPN_VERSION)" >> .dynamic
-endif
-else
 ifeq ($(strip $(DS_PACKAGE_OPENVPN)),y)
 	@echo "S40openvpn-$(OPENVPN_VERSION)" >> .static
 else
 	@echo "S40openvpn-$(OPENVPN_VERSION)" >> .dynamic
-endif
 endif

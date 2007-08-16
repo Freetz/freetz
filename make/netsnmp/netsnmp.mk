@@ -12,7 +12,7 @@ NETSNMP_TARGET_DIR:=$(PACKAGES_DIR)/$(NETSNMP_PKG_NAME)
 NETSNMP_TARGET_BINARY:=$(NETSNMP_TARGET_DIR)/root/usr/sbin/snmpd
 NETSNMP_TARGET_LIBS:=$(NETSNMP_TARGET_DIR)/root/usr/lib/*.so*
 
-SNMP_MIB_MODULES_INCLUDED:=\
+NETSNMP_MIB_MODULES_INCLUDED:=\
   host/hr_device \
   host/hr_disk \
   host/hr_filesys \
@@ -48,7 +48,7 @@ SNMP_MIB_MODULES_INCLUDED:=\
   util_funcs \
   utilities/execute \
 
-SNMP_MIB_MODULES_EXCLUDED:=\
+NETSNMP_MIB_MODULES_EXCLUDED:=\
   agent_mibs \
   agentx \
   host \
@@ -60,18 +60,26 @@ SNMP_MIB_MODULES_EXCLUDED:=\
   ucd_snmp \
   utilities \
 
-SNMP_TRANSPORTS_INCLUDED:=UDP
+NETSNMP_TRANSPORTS_INCLUDED:=UDP
 
-SNMP_TRANSPORTS_EXCLUDED:=Callback TCP TCPv6 UDPv6 Unix
+NETSNMP_TRANSPORTS_EXCLUDED:=Callback TCP TCPv6 UDPv6 Unix
 
-ifneq ($(strip $(DS_LIB_libcrypto)),y)
-WITHOUT_OPENSSL:=--without-openssl
+ifeq ($(strip $(DS_PACKAGE_NETSNMP_WITH_OPENSSL)),y)
+NETSNMP_OPENSSL:=openssl-precompiled
+else
+NETSNMP_OPENSSL:=
 endif
-ifneq ($(strip $(DS_LIB_libz)),y)
-WITHOUT_ZLIB:=--without-zlib
+
+ifeq ($(strip $(DS_PACKAGE_NETSNMP_WITH_ZLIB)),y)
+NETSNMP_ZLIB:=zlib-precompiled
+else
+NETSNMP_ZLIB:=
 endif
 
-PKG_CONFIGURE_OPTIONS:=\
+NETSNMP_DS_CONFIG_FILE:=$(NETSNMP_MAKE_DIR)/.ds_config
+NETSNMP_DS_CONFIG_TEMP:=$(NETSNMP_MAKE_DIR)/.ds_config.temp
+
+NETSNMP_PKG_CONFIGURE_OPTIONS:=\
   --enable-shared \
   --disable-static \
   --with-endianness=little \
@@ -87,15 +95,15 @@ PKG_CONFIGURE_OPTIONS:=\
   --disable-mib-loading \
   --disable-mibs \
   --disable-scripts \
-  --with-out-mib-modules="$(SNMP_MIB_MODULES_EXCLUDED)" \
-  --with-mib-modules="$(SNMP_MIB_MODULES_INCLUDED)" \
-  --with-out-transports="$(SNMP_TRANSPORTS_EXCLUDED)" \
-  --with-transports="$(SNMP_TRANSPORTS_INCLUDED)" \
+  --with-out-mib-modules="$(NETSNMP_MIB_MODULES_EXCLUDED)" \
+  --with-mib-modules="$(NETSNMP_MIB_MODULES_INCLUDED)" \
+  --with-out-transports="$(NETSNMP_TRANSPORTS_EXCLUDED)" \
+  --with-transports="$(NETSNMP_TRANSPORTS_INCLUDED)" \
   --without-opaque-special-types \
-  $(WITHOUT_OPENSSL) \
+  $(if $(DS_PACKAGE_NETSNMP_WITH_OPENSSL),,----without-openssl) \
   --without-libwrap \
   --without-rpm \
-  $(WITHOUT_ZLIB) \
+  $(if $(DS_PACKAGE_NETSNMP_WITH_ZLIB),,----without-zlib) \
 
 $(DL_DIR)/$(NETSNMP_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(NETSNMP_SITE)/$(NETSNMP_SOURCE)
@@ -103,7 +111,11 @@ $(DL_DIR)/$(NETSNMP_SOURCE): | $(DL_DIR)
 $(DL_DIR)/$(NETSNMP_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(NETSNMP_PKG_SOURCE) $(NETSNMP_PKG_SITE)
 
-$(NETSNMP_DIR)/.unpacked: $(DL_DIR)/$(NETSNMP_SOURCE)
+# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# options have changed. The safest way to achieve this is by starting over
+# with the source directory.
+$(NETSNMP_DIR)/.unpacked: $(DL_DIR)/$(NETSNMP_SOURCE) $(NETSNMP_DS_CONFIG_FILE)
+	rm -rf $(NETSNMP_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NETSNMP_SOURCE)
 	for i in $(NETSNMP_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(NETSNMP_DIR) $$i; \
@@ -139,7 +151,7 @@ $(NETSNMP_DIR)/.configured: $(NETSNMP_DIR)/.unpacked
 		--mandir=/usr/share/man \
 		$(DISABLE_LARGEFILE) \
 		$(DISABLE_NLS) \
-		$(PKG_CONFIGURE_OPTIONS) \
+		$(NETSNMP_PKG_CONFIGURE_OPTIONS) \
 	);
 	touch $@
 	
@@ -170,7 +182,7 @@ netsnmp: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 netsnmp-package: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NETSNMP_PKG_SOURCE) $(NETSNMP_PKG_NAME)
 
-netsnmp-precompiled: uclibc netsnmp $(NETSNMP_TARGET_BINARY) 
+netsnmp-precompiled: uclibc $(NETSNMP_OPENSSL) $(NETSNMP_ZLIB) netsnmp $(NETSNMP_TARGET_BINARY) 
 
 netsnmp-source: $(NETSNMP_DIR)/.unpacked $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
 

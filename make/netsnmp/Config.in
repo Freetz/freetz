@@ -1,6 +1,5 @@
 config DS_PACKAGE_NETSNMP
 	bool "Net-SNMP 5.1.2 snmpd"
-	#select DS_LIB_libgcc_s
 	select DS_LIB_libm
 	default n
 	help
@@ -8,3 +7,21 @@ config DS_PACKAGE_NETSNMP
 	    SNMP is a widely used protocol for monitoring the health and welfare of network
 	    equipment (eg. routers), computer equipment and even devices like UPSs. Net-SNMP
 	    is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3.
+
+config DS_PACKAGE_NETSNMP_WITH_OPENSSL
+	bool "With openssl encryption"
+	depends on DS_PACKAGE_NETSNMP
+	select DS_LIB_libcrypto
+	default n
+	help
+	    Openssl encryption for traffic
+
+config DS_PACKAGE_NETSNMP_WITH_ZLIB
+	bool "With zlib compression"
+	depends on DS_PACKAGE_NETSNMP
+	select DS_LIB_libz
+	default n
+	help
+	    Zlib compression for traffic
+	    
+	    

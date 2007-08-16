@@ -29,3 +29,11 @@ config DS_PACKAGE_DROPBEAR_SERVER_ONLY
 	bool "Without scp & ssh client"
 	depends on DS_PACKAGE_DROPBEAR
 	default n
+
+config DS_PACKAGE_DROPBEAR_WITH_ZLIB
+	bool "With zlib Compression"
+	depends on DS_PACKAGE_DROPBEAR
+	select DS_LIB_libz
+	default n
+	help
+	    ZLIB Compression for SSH Traffic

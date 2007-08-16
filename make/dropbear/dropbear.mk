@@ -7,21 +7,25 @@ DROPBEAR_DIR:=$(SOURCE_DIR)/dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_BINARY:=$(DROPBEAR_DIR)/dropbearmulti
 DROPBEAR_PKG_VERSION:=0.7b
 DROPBEAR_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
+
 ifeq ($(strip $(DS_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
-DROPBEAR_PKG_NAME:=dropbear-sshd-$(DROPBEAR_VERSION)
-DROPBEAR_PKG_SOURCE:=dropbear-$(DROPBEAR_VERSION)-dsmod-$(DROPBEAR_PKG_VERSION)-sshd-only.tar.bz2
+DROPBEAR_MAKE_OPTIONS:="PROGRAMS=\"dropbear dropbearkey\" MULTI=1"
 else
+DROPBEAR_MAKE_OPTIONS:="PROGRAMS=\"dropbear dbclient dropbearkey scp\" MULTI=1 SCPPROGRESS=1"
+endif
+
 DROPBEAR_PKG_NAME:=dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_PKG_SOURCE:=dropbear-$(DROPBEAR_VERSION)-dsmod-$(DROPBEAR_PKG_VERSION).tar.bz2
-endif
 DROPBEAR_TARGET_DIR:=$(PACKAGES_DIR)/$(DROPBEAR_PKG_NAME)
 DROPBEAR_TARGET_BINARY:=$(DROPBEAR_TARGET_DIR)/root/usr/sbin/dropbearmulti
 
 DROPBEAR_DS_CONFIG_FILE:=$(DROPBEAR_MAKE_DIR)/.ds_config
 DROPBEAR_DS_CONFIG_TEMP:=$(DROPBEAR_MAKE_DIR)/.ds_config.temp
 
-ifneq ($(strip $(DS_LIB_libz)),y)
-DISABLE_ZLIB:=--disable-zlib
+ifeq ($(strip $(DS_PACKAGE_DROPBEAR_WITH_ZLIB)),y)
+DROPBEAR_ZLIB:=zlib-precompiled
+else
+DROPBEAR_ZLIB:=
 endif
 
 $(DL_DIR)/$(DROPBEAR_SOURCE): | $(DL_DIR)
@@ -72,6 +76,7 @@ $(DROPBEAR_DIR)/.configured: $(DROPBEAR_DIR)/.unpacked
 		--sysconfdir=/etc \
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
+		$(if $(DS_PACKAGE_DROPBEAR_WITH_ZLIB),,--disable-zlib) \
 		--disable-pam \
 		--enable-openpty \
 		--enable-syslog \
@@ -84,18 +89,13 @@ $(DROPBEAR_DIR)/.configured: $(DROPBEAR_DIR)/.unpacked
 		--disable-loginfunc \
 		--disable-pututline \
 		--disable-pututxline \
-		$(DISABLE_ZLIB) \
 	);
 	touch $@
 
 $(DROPBEAR_BINARY): $(DROPBEAR_DIR)/.configured
-ifeq ($(strip $(DS_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
-	PATH="$(TARGET_PATH)" $(MAKE) PROGRAMS="dropbear dropbearkey" MULTI=1 \
-		-C $(DROPBEAR_DIR)
-else
-	PATH="$(TARGET_PATH)" $(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" MULTI=1 SCPPROGRESS=1 \
-		-C $(DROPBEAR_DIR)
-endif
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) $(DROPBEAR_MAKE_OPTIONS) -C $(DROPBEAR_DIR)
+
 
 $(DROPBEAR_TARGET_BINARY): $(DROPBEAR_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -128,16 +128,8 @@ dropbear-uninstall:
 	rm -f $(DROPBEAR_TARGET_BINARY)
 
 dropbear-list:
-ifeq ($(strip $(DS_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
-ifeq ($(strip $(DS_PACKAGE_DROPBEAR)),y)
-	@echo "S40dropbear-sshd-$(DROPBEAR_VERSION)" >> .static
-else
-	@echo "S40dropbear-sshd-$(DROPBEAR_VERSION)" >> .dynamic
-endif
-else
 ifeq ($(strip $(DS_PACKAGE_DROPBEAR)),y)
 	@echo "S40dropbear-$(DROPBEAR_VERSION)" >> .static
 else
 	@echo "S40dropbear-$(DROPBEAR_VERSION)" >> .dynamic
-endif
 endif

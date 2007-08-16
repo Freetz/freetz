@@ -6,14 +6,15 @@ BFTPD_DIR:=$(SOURCE_DIR)/bftpd-$(BFTPD_VERSION)
 BFTPD_BINARY:=$(BFTPD_DIR)/bftpd
 BFTPD_PKG_VERSION:=0.5
 BFTPD_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
+
 ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)
-BFTPD_PKG_NAME:=bftpd-zlib-$(BFTPD_VERSION)
-BFTPD_PKG_SOURCE:=bftpd-$(BFTPD_VERSION)-dsmod-$(BFTPD_PKG_VERSION)-with-zlib.tar.bz2
-BFTPD_LIBS:=zlib-precompiled
+BFTPD_ZLIB:=zlib-precompiled
 else
+BFTPD_ZLIB:=
+endif
+
 BFTPD_PKG_NAME:=bftpd-$(BFTPD_VERSION)
 BFTPD_PKG_SOURCE:=bftpd-$(BFTPD_VERSION)-dsmod-$(BFTPD_PKG_VERSION).tar.bz2
-endif
 BFTPD_TARGET_DIR:=$(PACKAGES_DIR)/$(BFTPD_PKG_NAME)
 BFTPD_TARGET_BINARY:=$(BFTPD_TARGET_DIR)/root/usr/sbin/bftpd
 
@@ -77,7 +78,7 @@ $(BFTPD_DIR)/.configured: $(BFTPD_DIR)/.unpacked
 $(BFTPD_BINARY): $(BFTPD_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib" \
+		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		-C $(BFTPD_DIR)
 
 $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME): $(DL_DIR)/$(BFTPD_PKG_SOURCE) | $(PACKAGES_DIR)
@@ -92,7 +93,7 @@ bftpd: $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 bftpd-package: $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(BFTPD_PKG_SOURCE) $(BFTPD_PKG_NAME) 
 
-bftpd-precompiled: uclibc $(BFTPD_LIBS) bftpd $(BFTPD_TARGET_BINARY)
+bftpd-precompiled: uclibc $(BFTPD_ZLIB) bftpd $(BFTPD_TARGET_BINARY)
 
 bftpd-source: $(BFTPD_DIR)/.unpacked $(PACKAGES_DIR)/.$(BFTPD_PKG_NAME)
 
@@ -111,16 +112,8 @@ bftpd-uninstall:
 	rm -f $(BFTPD_TARGET_BINARY)
 
 bftpd-list:
-ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)
-ifeq ($(strip $(DS_PACKAGE_BFTPD)),y)
-	@echo "S40bftpd-zlib-$(BFTPD_VERSION)" >> .static
-else
-	@echo "S40bftpd-zlib-$(BFTPD_VERSION)" >> .dynamic
-endif
-else
 ifeq ($(strip $(DS_PACKAGE_BFTPD)),y)
 	@echo "S40bftpd-$(BFTPD_VERSION)" >> .static
 else
 	@echo "S40bftpd-$(BFTPD_VERSION)" >> .dynamic
-endif
 endif
