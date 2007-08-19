@@ -707,6 +707,103 @@ config DS_DL_SOURCE2
 	depends on DS_TYPE_300IP_AS_FON
 	default "a300ip_v150405.image"
 
+menu "DS-Mod package download sites"
+
+# This is a fixed entry, it is invisible and cannot be changed by the user
+config DS_MOD_DL_NUM_SITES
+	string
+	default "5"
+
+comment "Download site #1 - default: http://dsmod.3dfxatwork.de"
+
+config DS_MOD_DL_SITE_1
+	string ""
+	default "http://dsmod.3dfxatwork.de"
+	help
+		Download site #1 for DS-Mod packages like 'mc-4.5.0-dsmod-0.2.tar.bz2',
+		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
+		build process, all mirrors defined here are triggered on a random basis,
+		so as not to always use a certain mirror first. This is a cheap kind of
+		load balancing.
+		
+		Note: We recommend you to only set #5 to a user-defined value, if
+		necessary. Necessary means that #1 - #4 are currently unavailable or
+		the desired package cannot be found on either of them. In addition to
+		the default servers #1 and #2, many packages have another server name
+		in their make file, so a user-defined mirror should rarely be necessary.
+	    
+comment "Download site #2 - default: http://dsmod.wirsind.info"
+
+config DS_MOD_DL_SITE_2
+	string ""
+	default "http://dsmod.wirsind.info"
+	help
+		Download site #2 for DS-Mod packages like 'mc-4.5.0-dsmod-0.2.tar.bz2',
+		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
+		build process, all mirrors defined here are triggered on a random basis,
+		so as not to always use a certain mirror first. This is a cheap kind of
+		load balancing.
+		
+		Note: We recommend you to only set #5 to a user-defined value, if
+		necessary. Necessary means that #1 - #4 are currently unavailable or
+		the desired package cannot be found on either of them. In addition to
+		the default servers #1 and #2, many packages have another server name
+		in their make file, so a user-defined mirror should rarely be necessary.
+	    
+comment "Download site #3 - default: http://dsmod.magenbrot.net"
+
+config DS_MOD_DL_SITE_3
+	string ""
+	default "http://dsmod.magenbrot.net"
+	help
+		Download site #3 for DS-Mod packages like 'mc-4.5.0-dsmod-0.2.tar.bz2',
+		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
+		build process, all mirrors defined here are triggered on a random basis,
+		so as not to always use a certain mirror first. This is a cheap kind of
+		load balancing.
+		
+		Note: We recommend you to only set #5 to a user-defined value, if
+		necessary. Necessary means that #1 - #4 are currently unavailable or
+		the desired package cannot be found on either of them. In addition to
+		the default servers #1 and #2, many packages have another server name
+		in their make file, so a user-defined mirror should rarely be necessary.
+	    
+comment "Download site #4 - default: empty (reserved for later use)"
+
+config DS_MOD_DL_SITE_4
+	string ""
+	help
+		Download site #4 for DS-Mod packages like 'mc-4.5.0-dsmod-0.2.tar.bz2',
+		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
+		build process, all mirrors defined here are triggered on a random basis,
+		so as not to always use a certain mirror first. This is a cheap kind of
+		load balancing.
+		
+		Note: We recommend you to only set #5 to a user-defined value, if
+		necessary. Necessary means that #1 - #4 are currently unavailable or
+		the desired package cannot be found on either of them. In addition to
+		the default servers #1 and #2, many packages have another server name
+		in their make file, so a user-defined mirror should rarely be necessary.
+	    
+comment "Download site #5 - user-defined"
+
+config DS_MOD_DL_SITE_5
+	string ""
+	help
+		Download site #5 for DS-Mod packages like 'mc-4.5.0-dsmod-0.2.tar.bz2',
+		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
+		build process, all mirrors defined here are triggered on a random basis,
+		so as not to always use a certain mirror first. This is a cheap kind of
+		load balancing.
+		
+		Note: We recommend you to only set #5 to a user-defined value, if
+		necessary. Necessary means that #1 - #4 are currently unavailable or
+		the desired package cannot be found on either of them. In addition to
+		the default servers #1 and #2, many packages have another server name
+		in their make file, so a user-defined mirror should rarely be necessary.
+	    
+endmenu
+
 config DS_VERBOSITY_LEVEL
 	int "Verbosity level (0-2)"
 	default 0
