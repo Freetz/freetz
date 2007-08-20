@@ -11,9 +11,6 @@ choice
 	help
 	    AVM's source package version
 
-	#config DS_AVM_VERSION_04_01
-	#	bool "04.01"
-
 	config DS_AVM_VERSION_04_06
 		bool "04.06"
 
@@ -27,15 +24,16 @@ config DS_AVM_VERSION_STRING
 choice
 
 	prompt "Firmware type"
-	default DS_TYPE_FON_WLAN_7050
+	default DS_TYPE_WLAN_3050
 	help
 	    Select your box type here.
 
+	# Could be reactivated if somebody cared to patch the international firmwares
 	config DS_TYPE_300IP_AS_FON
 		depends on DS_AVM_VERSION_04_06
 		bool "300IP as Fon"
 
-	config DS_TYPE_FON
+	config DS_TYPE_FON 
 		depends on DS_AVM_VERSION_04_06
 		bool "Fon"
 
@@ -47,14 +45,6 @@ choice
 		depends on DS_AVM_VERSION_04_06
 		bool "Fon 5012"
 
-	config DS_TYPE_FON_5050
-		depends on DS_AVM_VERSION_04_06
-		bool "Fon 5050"
-
-	config DS_TYPE_FON_5140
-		depends on DS_AVM_VERSION_04_06
-		bool "Fon 5140"
-
 	config DS_TYPE_FON_ATA
 		depends on DS_AVM_VERSION_04_01
 		bool "Fon ATA"
@@ -63,30 +53,9 @@ choice
 		depends on DS_AVM_VERSION_04_06
 		bool "Fon WLAN"
 
-	config DS_TYPE_FON_WLAN_7050
-		depends on DS_AVM_VERSION_04_06
-		bool "Fon WLAN 7050"
-
-#	config DS_TYPE_FON_WLAN_7140
-#		depends on DS_AVM_VERSION_04_06
-#		select DS_LIB_libm
-#		bool "Fon WLAN 7140"
-
-#	config DS_TYPE_FON_WLAN_7170
-#		depends on DS_AVM_VERSION_04_06
-#		select DS_LIB_libm
-#		bool "Fon WLAN 7170"
-
-	#config DS_TYPE_SL
-	#	bool "SL (EXPERIMENTAL)"
-
 	config DS_TYPE_SL_WLAN
 		depends on DS_AVM_VERSION_04_06
 		bool "SL WLAN"
-
-	config DS_TYPE_WLAN_3030
-		depends on DS_AVM_VERSION_04_06
-		bool "WLAN 3030"
 
 	config DS_TYPE_WLAN_3050
 		depends on DS_AVM_VERSION_04_06
@@ -95,10 +64,6 @@ choice
 	config DS_TYPE_WLAN_3070
 		depends on DS_AVM_VERSION_04_06
 		bool "WLAN 3070"
-
-	config DS_TYPE_WLAN_3131
-		depends on DS_AVM_VERSION_04_06
-		bool "WLAN 3131"	
 
 	config DS_TYPE_CUSTOM
 		bool "Custom"
@@ -109,20 +74,22 @@ endchoice
 choice
 
 	prompt "Firmware version"
-	default DS_TYPE_LANG_DE
+	default DS_TYPE_LANG_DE if ! DS_TYPE_FON_WLAN && ! DS_TYPE_FON && ! DS_TYPE_300IP_AS_FON
+	default DS_TYPE_LANG_EN if DS_TYPE_FON_WLAN || DS_TYPE_FON || DS_TYPE_300IP_AS_FON
 
 	config DS_TYPE_LANG_DE
 		bool "de - deutsch"
+		depends on ! DS_TYPE_FON_WLAN && ! DS_TYPE_FON && ! DS_TYPE_300IP_AS_FON
 
 	config DS_TYPE_LANG_A_CH
 		bool "a-ch - deutsch"
-		depends on DS_TYPE_FON || \
+		depends on DS_TYPE_FON || DS_TYPE_300IP_AS_FON || \
 		           DS_TYPE_FON_ATA || \
 		           DS_TYPE_FON_WLAN
 
 	config DS_TYPE_LANG_EN
 		bool "en - international"
-		depends on DS_TYPE_FON || \
+		depends on DS_TYPE_FON || DS_TYPE_300IP_AS_FON || \
 		           DS_TYPE_FON_ATA || \
 		           DS_TYPE_FON_WLAN
 
@@ -137,7 +104,7 @@ config DS_TYPE_LANG_STRING
 choice
 
 	prompt "Annex"
-	depends on DS_TYPE_FON && DS_TYPE_LANG_EN || \
+	depends on (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN || \
 	           DS_TYPE_FON_WLAN && DS_TYPE_LANG_A_CH || \
 	           DS_TYPE_FON_WLAN && DS_TYPE_LANG_EN
 	default DS_TYPE_ANNEX_B
@@ -156,19 +123,12 @@ config DS_TYPE_STRING
 	default "fon"			if DS_TYPE_FON
 	default "fon_5010"		if DS_TYPE_FON_5010
 	default "fon_5012"		if DS_TYPE_FON_5012
-	default "fon_5050"		if DS_TYPE_FON_5050
-	default "fon_5140"		if DS_TYPE_FON_5140
 	default "fon_ata"		if DS_TYPE_FON_ATA
 	default "fon_wlan"		if DS_TYPE_FON_WLAN
-	default "fon_wlan_7050"		if DS_TYPE_FON_WLAN_7050
-	default "fon_wlan_7140"		if DS_TYPE_FON_WLAN_7140
-	default "fon_wlan_7170"		if DS_TYPE_FON_WLAN_7170
 	default "sl"			if DS_TYPE_SL
 	default "sl_wlan"		if DS_TYPE_SL_WLAN
-	default "wlan_3030"		if DS_TYPE_WLAN_3030
 	default "wlan_3050"		if DS_TYPE_WLAN_3050
 	default "wlan_3070"		if DS_TYPE_WLAN_3070
-	default "wlan_3131"		if DS_TYPE_WLAN_3131
 	default "custom"		if DS_TYPE_CUSTOM
 
 comment "Custom options"
@@ -206,19 +166,13 @@ config DS_TARGET_REF
 					   DS_TYPE_FON || \
 					   DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_FON_ATA || \
 					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
 					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_CUSTOM
-	default "8mb"			if DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170
+	default "8mb"			if DS_TYPE_DUMMY
 
 config DS_KERNEL_REF
 	string "Kernel ref"		if DS_TYPE_CUSTOM
@@ -227,38 +181,25 @@ config DS_KERNEL_REF
 					   DS_TYPE_FON || \
 					   DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_FON_ATA || \
 					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
 					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_CUSTOM
-	default "ohio-8mb"		if DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170
+	default "ohio-8mb"		if DS_TYPE_DUMMY
 
 config DS_HIDDEN_ROOT
 	bool "Hidden root"		if DS_TYPE_CUSTOM
 	default y			if DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_SL || \
-					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170
+					   DS_TYPE_WLAN_3070
 	default n			if DS_TYPE_300IP_AS_FON || \
 					   DS_TYPE_FON || \
-					   DS_TYPE_FON_5050 || \
 					   DS_TYPE_FON_ATA || \
 					   DS_TYPE_FON_WLAN || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
 					   DS_TYPE_CUSTOM
 	help
@@ -268,15 +209,10 @@ config DS_HIDDEN_ROOT
 config DS_CONTIGUOUS_HIDDEN_ROOT
 	bool "Contiguous"		if DS_TYPE_CUSTOM
 	depends on DS_HIDDEN_ROOT
-	default y			if DS_TYPE_SL || \
-					   DS_TYPE_FON_WLAN_7050
+	default y			if DS_TYPE_SL
 	default n			if DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5140 || \
-					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170
+					   DS_TYPE_WLAN_3070
 	help
 	    A contiguous hidden squashfs starts where all
 	    hidden root filesystems start (just after the
@@ -288,17 +224,10 @@ config DS_SQUASHFS_LZMA
 					   DS_TYPE_FON || \
 					   DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170 || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
-					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131 
+					   DS_TYPE_WLAN_3070
 	default n			if DS_TYPE_FON_ATA || \
 					   DS_TYPE_SL || \
 					   DS_TYPE_CUSTOM
@@ -309,13 +238,7 @@ config DS_ROOTFS_VARTAR
 	bool "RootFS contains var.tar"	if DS_TYPE_CUSTOM
 	default y			if DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131 || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170 || \
 					   (DS_TYPE_CUSTOM && DS_HIDDEN_ROOT)
 	default n			if DS_TYPE_300IP_AS_FON || \
 					   DS_TYPE_FON || \
@@ -323,7 +246,6 @@ config DS_ROOTFS_VARTAR
 					   DS_TYPE_FON_WLAN || \
 					   DS_TYPE_SL || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
 					   (DS_TYPE_CUSTOM && ! DS_HIDDEN_ROOT)
 	help
@@ -335,22 +257,16 @@ config DS_KERNEL_MTD_SIZE
 	default 10			if DS_TYPE_SL
 	default 11			if DS_TYPE_300IP_AS_FON || \
 					   DS_TYPE_FON || \
-					   DS_TYPE_FON_5050 || \
 					   DS_TYPE_FON_ATA || \
 					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
 					   (DS_TYPE_CUSTOM && (! DS_HIDDEN_ROOT || DS_CONTIGUOUS_HIDDEN_ROOT))
 	default 59			if DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131 || \
 					   (DS_TYPE_CUSTOM && (DS_HIDDEN_ROOT && ! DS_CONTIGUOUS_HIDDEN_ROOT))
-	default 119			if DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170
+	default 119			if DS_TYPE_DUMMY
 	help
 	    Number of 64K blocks in the kernel mtd device.
 
@@ -361,12 +277,9 @@ config DS_FILESYSTEM_MTD_SIZE
 	default 20			if DS_TYPE_SL
 	default 48			if DS_TYPE_300IP_AS_FON || \
 					   DS_TYPE_FON || \
-					   DS_TYPE_FON_5050 || \
 					   DS_TYPE_FON_ATA || \
 					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
 					   DS_TYPE_CUSTOM
 	help
@@ -378,19 +291,12 @@ config DS_HAS_PHONE
 					   DS_TYPE_FON || \
 					   DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_FON_ATA || \
-					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170
+					   DS_TYPE_FON_WLAN
 	default n			if DS_TYPE_SL || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
 					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131 || \
 					   DS_TYPE_CUSTOM
 	help
 	    Select this if you have a box with phone support.
@@ -399,19 +305,12 @@ config DS_HAS_WLAN
 	bool "Has WLAN"			if DS_TYPE_CUSTOM
 	default y			if DS_TYPE_FON_WLAN || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
-					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131
+					   DS_TYPE_WLAN_3070
 	default n			if DS_TYPE_300IP_AS_FON || \
 					   DS_TYPE_FON || \
 					   DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5050 || \
-					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_FON_ATA || \
 					   DS_TYPE_SL || \
 					   DS_TYPE_CUSTOM
@@ -422,21 +321,14 @@ config DS_HAS_USB
 	bool "Has USB"			if DS_TYPE_CUSTOM
 	default y			if DS_TYPE_300IP_AS_FON || \
 					   DS_TYPE_FON || \
-					   DS_TYPE_FON_5050 || \
 					   DS_TYPE_FON_ATA || \
 					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
-					   DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170 || \
 					   DS_TYPE_SL || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050 || \
-					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131
+					   DS_TYPE_WLAN_3070
 	default n			if DS_TYPE_FON_5010 || \
 					   DS_TYPE_FON_5012 || \
-					   DS_TYPE_FON_5140 || \
 					   DS_TYPE_CUSTOM
 	help
 	    Select this if you have a box with USB.
@@ -444,70 +336,49 @@ config DS_HAS_USB
 config DS_HAS_USB_HOST
 	bool "USB host"			if DS_TYPE_CUSTOM
 	depends on DS_HAS_USB
-	default y			if DS_TYPE_FON_WLAN_7140 || \
-					   DS_TYPE_FON_WLAN_7170 || \
-					   DS_TYPE_WLAN_3070 || \
-					   DS_TYPE_WLAN_3131
+	default y			if DS_TYPE_WLAN_3070
 	default n			if DS_TYPE_300IP_AS_FON || \
 					   DS_TYPE_FON || \
-					   DS_TYPE_FON_5050 || \
 					   DS_TYPE_FON_ATA || \
 					   DS_TYPE_FON_WLAN || \
-					   DS_TYPE_FON_WLAN_7050 || \
 					   DS_TYPE_SL || \
 					   DS_TYPE_SL_WLAN || \
-					   DS_TYPE_WLAN_3030 || \
 					   DS_TYPE_WLAN_3050
 	help
 	    Select this if your USB port is a host adapter
 
 comment "Brandings"
-	depends on ! DS_TYPE_300IP_AS_FON && ! DS_TYPE_CUSTOM
+	depends on ! DS_TYPE_CUSTOM
 comment "Brandings (if exist)"
 	depends on DS_TYPE_CUSTOM
 
 config DS_BRANDING_1und1
 	bool "1und1"
-	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
+	depends on \
 		   DS_TYPE_FON_5010 || \
 		   DS_TYPE_FON_5012 || \
-		   DS_TYPE_FON_5050 || \
-		   DS_TYPE_FON_5140 || \
-		   DS_TYPE_FON_WLAN && DS_TYPE_LANG_DE || \
-		   DS_TYPE_FON_WLAN_7050 || \
-		   DS_TYPE_FON_WLAN_7170 || \
 		   DS_TYPE_SL || \
 		   DS_TYPE_SL_WLAN || \
-		   DS_TYPE_WLAN_3030 || \
-		   DS_TYPE_WLAN_3131 || \
 		   DS_TYPE_CUSTOM
 	default y
 
 config DS_BRANDING_avm
 	bool "avm"
-	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
+	depends on \
 		   DS_TYPE_FON_5010 || \
 		   DS_TYPE_FON_5012 || \
-		   DS_TYPE_FON_5050 || \
-		   DS_TYPE_FON_5140 || \
 		   DS_TYPE_FON_ATA && DS_TYPE_LANG_DE || \
-		   DS_TYPE_FON_WLAN && DS_TYPE_LANG_DE || \
-		   DS_TYPE_FON_WLAN_7050 || \
-		   DS_TYPE_FON_WLAN_7140 || \
-		   DS_TYPE_FON_WLAN_7170 || \
 		   DS_TYPE_SL || \
 		   DS_TYPE_SL_WLAN || \
-		   DS_TYPE_WLAN_3030 || \
 		   DS_TYPE_WLAN_3050 || \
 		   DS_TYPE_WLAN_3070 || \
-		   DS_TYPE_WLAN_3131 || \
 		   DS_TYPE_CUSTOM
 	default y
 
 config DS_BRANDING_avme
 	bool "avme"
-	depends on DS_TYPE_FON && DS_TYPE_LANG_A_CH || \
-	           DS_TYPE_FON && DS_TYPE_LANG_EN || \
+	depends on (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_A_CH || \
+	           (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN || \
 	           DS_TYPE_FON_ATA && DS_TYPE_LANG_A_CH || \
 	           DS_TYPE_FON_ATA && DS_TYPE_LANG_EN || \
 	           DS_TYPE_FON_WLAN && DS_TYPE_LANG_A_CH || \
@@ -517,23 +388,19 @@ config DS_BRANDING_avme
 
 config DS_BRANDING_aol
 	bool "aol"
-	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
-		   DS_TYPE_FON_WLAN && DS_TYPE_LANG_DE || \
-		   DS_TYPE_FON_WLAN_7140 || \
+	depends on \
 		   DS_TYPE_WLAN_3050 || \
 		   DS_TYPE_CUSTOM
 	default y
 
 config DS_BRANDING_arcor
 	bool "arcor"
-	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
-	           DS_TYPE_FON_WLAN_7050 || \
-		   DS_TYPE_CUSTOM
+	depends on DS_TYPE_CUSTOM
 	default y
 
 config DS_BRANDING_freenet
 	bool "freenet"
-	depends on DS_TYPE_FON && DS_TYPE_LANG_DE || \
+	depends on \
 		   DS_TYPE_FON_ATA && DS_TYPE_LANG_DE || \
 		   DS_TYPE_CUSTOM
 	default y
@@ -555,15 +422,14 @@ config DS_REMOVE_ASSISTANT
 
 config DS_REMOVE_CDROM_ISO
 	bool "Remove cdrom.iso"
-	depends on DS_HAS_USB &&  ! DS_TYPE_WLAN_3131 && ! DS_TYPE_FON_WLAN_7140 && ! DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_SL
+	depends on DS_HAS_USB && ! DS_TYPE_SL
 	default n
 	help
 	    Removes the file /lib/modules/cdrom.iso.
 
 config DS_PATCH_ATA
 	bool "Patch ata"
-	depends on DS_TYPE_FON_WLAN_7140 || \
-		   DS_TYPE_FON_WLAN_7170
+	depends on DS_TYPE_DUMMY
 	default y
 	help
 	    Patches the ATA mode configuration pages
@@ -639,73 +505,43 @@ config DS_DL_OVERRIDE
 
 config DS_DL_SITE
 	string "Firmware site"								if DS_DL_OVERRIDE
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch"		if DS_TYPE_300IP_AS_FON && DS_TYPE_LANG_DE || \
-											   DS_TYPE_FON && DS_TYPE_LANG_DE
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch_a-ch"		if DS_TYPE_FON && DS_TYPE_LANG_A_CH
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_a"	if DS_TYPE_FON && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_b"	if DS_TYPE_FON && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch_a-ch"		if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_A_CH
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_a"	if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_b"	if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5010/firmware"			if DS_TYPE_FON_5010
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5012/firmware"			if DS_TYPE_FON_5012
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5050/firmware"			if DS_TYPE_FON_5050
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5140/firmware"				if DS_TYPE_FON_5140
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_ata/firmware/deutsch"		if DS_TYPE_FON_ATA && DS_TYPE_LANG_DE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_ata/firmware/deutsch_a-ch"	if DS_TYPE_FON_ATA && DS_TYPE_LANG_A_CH
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_ata/firmware/english"		if DS_TYPE_FON_ATA && DS_TYPE_LANG_EN
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/deutsch"		if DS_TYPE_FON_WLAN && DS_TYPE_LANG_DE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/deutsch_a-ch/annex_a"	if DS_TYPE_FON_WLAN && DS_TYPE_LANG_A_CH && DS_TYPE_ANNEX_A
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/deutsch_a-ch/annex_b"	if DS_TYPE_FON_WLAN && DS_TYPE_LANG_A_CH && DS_TYPE_ANNEX_B
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/english/annex_a"	if DS_TYPE_FON_WLAN && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/english/annex_b"	if DS_TYPE_FON_WLAN && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7050/firmware"		if DS_TYPE_FON_WLAN_7050
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"	if DS_TYPE_FON_WLAN_7140
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"	if DS_TYPE_FON_WLAN_7170
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.sl/firmware/"			if DS_TYPE_SL
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.sl_wlan/firmware"			if DS_TYPE_SL_WLAN
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3030/firmware"		if DS_TYPE_WLAN_3030
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3050/firmware"		if DS_TYPE_WLAN_3050
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3070/firmware"		if DS_TYPE_WLAN_3070
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3131/firmware"			if DS_TYPE_WLAN_3131
 	default "ftp://ftp.avm.de/fritz.box/..."					if DS_TYPE_CUSTOM
 
 config DS_DL_SOURCE
 	string "Firmware source"							if DS_DL_OVERRIDE
-	default "fritz.box_fon.06.04.27.image"						if DS_TYPE_300IP_AS_FON && DS_TYPE_LANG_DE || \
-											   DS_TYPE_FON && DS_TYPE_LANG_DE
-	default "fritz.box_fon.de.06.04.01.image"					if DS_TYPE_FON && DS_TYPE_LANG_A_CH
-	default "fritz.box_fon.annexa.en.06.04.24.image"				if DS_TYPE_FON && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
-	default "fritz.box_fon.en.06.04.24.image"					if DS_TYPE_FON && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
+	default "fritz.box_fon.de.06.04.01.image"					if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_A_CH
+	default "fritz.box_fon.annexa.en.06.04.24.image"				if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "fritz.box_fon.en.06.04.24.image"					if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "fritz.box_fon_5010.23.04.27.image"					if DS_TYPE_FON_5010
 	default "fritz.box_fon_5012.25.04.27.image"					if DS_TYPE_FON_5012
-	default "fritz.box_fon_5050.12.04.26.image"					if DS_TYPE_FON_5050
-	default "fritz.box_fon_5140.43.04.27.image"					if DS_TYPE_FON_5140
 	default "fritz.box_fon_ata.11.04.01.image"					if DS_TYPE_FON_ATA && DS_TYPE_LANG_DE
 	default "fritz.box_fon_ata.de.11.04.01.image"					if DS_TYPE_FON_ATA && DS_TYPE_LANG_A_CH
 	default "fritz.box_fon_ata.en.11.04.01.image"					if DS_TYPE_FON_ATA && DS_TYPE_LANG_EN
-	default "fritz.box_fon_wlan.08.04.27.image"					if DS_TYPE_FON_WLAN && DS_TYPE_LANG_DE
 	default "fritz.box_fon_wlan.annexa.de.08.04.15.image"				if DS_TYPE_FON_WLAN && DS_TYPE_LANG_A_CH && DS_TYPE_ANNEX_A
 	default "fritz.box_fon_wlan.de.08.04.01.image"					if DS_TYPE_FON_WLAN && DS_TYPE_LANG_A_CH && DS_TYPE_ANNEX_B
 	default "fritz.box_fon_wlan.annexa.en.08.04.21.image"				if DS_TYPE_FON_WLAN && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
 	default "fritz.box_fon_wlan.en.08.04.21.image"					if DS_TYPE_FON_WLAN && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
-	default "fritz.box_fon_wlan_7050.14.04.26.image"				if DS_TYPE_FON_WLAN_7050
-	default "fritz.box_fon_wlan_7140.30.04.12.image"				if DS_TYPE_FON_WLAN_7140
-	default "fritz.box_fon_wlan_7170.29.04.25.image"				if DS_TYPE_FON_WLAN_7170
 	default "fritz.box_sl.10.03.93.image"						if DS_TYPE_SL
 	default "fritz.box_sl_wlan.09.04.15.image"					if DS_TYPE_SL_WLAN
-	default "fritz.box_wlan_3030.21.04.15.image"					if DS_TYPE_WLAN_3030
 	default "fritz.box_wlan_3050.16.04.07.image"					if DS_TYPE_WLAN_3050
 	default "fritz.box_wlan_3070.19.04.15.image"					if DS_TYPE_WLAN_3070
-	default "fritz.box_wlan_3131.50.04.21.image"					if DS_TYPE_WLAN_3131
 	default "fritz.box..."								if DS_TYPE_CUSTOM
-
-config DS_DL_SITE2
-	string "Original 300IP firmware site"	if DS_DL_OVERRIDE
-	depends on DS_TYPE_300IP_AS_FON
-	default "http://www.t-com.de/dlp/eki/downloads/a"
-
-config DS_DL_SOURCE2
-	string "Original 300IP firmware source"	if DS_DL_OVERRIDE
-	depends on DS_TYPE_300IP_AS_FON
-	default "a300ip_v150405.image"
 
 menu "DS-Mod package download sites"
 
