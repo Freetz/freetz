@@ -4,7 +4,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 update_inetd() {
-	if [ -e "/etc/default.inetd/inetd.cfg" ]; then
+	if [ -e "/mod/etc/default.inetd/inetd.cfg" ]; then
 		if [ -x "/etc/init.d/rc.$1" ]; then
 			status=$(/etc/init.d/rc.$1 status)
 			if [ "running" = "$2" -a "inetd" = "$status" ]; then
@@ -28,7 +28,7 @@ update_inetd() {
 
 save_flash() {
 	if modsave flash; then
-		if [ -x "/etc/init.d/rc.$1" ]; then
+		if [ -x "/mod/etc/init.d/rc.$1" ]; then
 			if [ "running" = "$2" -o "running" = "$status" ]; then
 				echo
 				/etc/init.d/rc.$1 restart
@@ -38,8 +38,8 @@ save_flash() {
 }
 
 rc_status() {
-	if [ -x "/etc/init.d/rc.$1" ]; then
-	echo "$(/etc/init.d/rc.$1 status)"
+	if [ -x "/mod/etc/init.d/rc.$1" ]; then
+	echo "$(/mod/etc/init.d/rc.$1 status)"
 	else
 		echo ""
 	fi
@@ -61,7 +61,7 @@ oldstatus2=''
 case "$form" in
 	pkg_*)
 		package="${form#pkg_}"
-		if [ -r "/etc/default.$package/$package.cfg" ]; then
+		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 			if [ "$package" = "mod" ]; then script='settings.cgi'; else script="pkgconf.cgi"; fi
 			prefix="$(echo "$package" | tr 'a-z\-' 'A-Z_')_"
 
@@ -75,7 +75,7 @@ case "$form" in
 				oldstatus1="$(rc_status telnetd)"
 				oldstatus2="$(rc_status webcfg)"
 			else
-				oldstatus1="$(/etc/init.d/rc.$package status)"
+				oldstatus1="$(/mod/etc/init.d/rc.$package status)"
 			fi
 
 			echo -n 'Saving settings...'
@@ -98,11 +98,11 @@ case "$form" in
 		;;
 	def_*)
 		package="${form#def_}"
-		if [ -r "/etc/default.$package/$package.cfg" ]; then
+		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 			if [ "$package" = "mod" ]; then script='settings.cgi'; else script="pkgconf.cgi"; fi
 
 			if [ "mod" != "$package" ]; then
-				oldstatus1="$(/etc/init.d/rc.$package status)"
+				oldstatus1="$(/mod/etc/init.d/rc.$package status)"
 			fi
 
 			echo -n 'Restoring defaults...'
