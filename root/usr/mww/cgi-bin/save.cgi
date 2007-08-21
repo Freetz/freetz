@@ -5,17 +5,17 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 update_inetd() {
 	if [ -e "/mod/etc/default.inetd/inetd.cfg" ]; then
-		if [ -x "/etc/init.d/rc.$1" ]; then
-			status=$(/etc/init.d/rc.$1 status)
+		if [ -x "/mod/etc/init.d/rc.$1" ]; then
+			status=$(/mod/etc/init.d/rc.$1 status)
 			if [ "running" = "$2" -a "inetd" = "$status" ]; then
 			echo
-				/etc/init.d/rc.$1 stop
+				/mod/etc/init.d/rc.$1 stop
 				/usr/bin/modinetd --nosave $1
 			echo
 			elif [ "inetd" = "$2" -a "inetd" != "$status" ]; then
 				echo
 				/usr/bin/modinetd --nosave $1
-				/etc/init.d/rc.$1 start
+				/mod/etc/init.d/rc.$1 start
 				echo
 			elif [ "inetd" = "$2" -o "inetd" = "$status" ]; then
         	                echo
@@ -31,7 +31,7 @@ save_flash() {
 		if [ -x "/mod/etc/init.d/rc.$1" ]; then
 			if [ "running" = "$2" -o "running" = "$status" ]; then
 				echo
-				/etc/init.d/rc.$1 restart
+				/mod/etc/init.d/rc.$1 restart
 			fi
 		fi
 	fi
