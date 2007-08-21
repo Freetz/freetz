@@ -2,8 +2,8 @@ include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
 include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 
-KERNEL_TOOLCHAIN_VERSION:=0.1
-TARGET_TOOLCHAIN_VERSION:=0.4
+KERNEL_TOOLCHAIN_VERSION:=0.2
+TARGET_TOOLCHAIN_VERSION:=0.5
 TARGET_TOOLCHAIN_SOURCE:=target-toolchain-dsmod-$(TARGET_TOOLCHAIN_VERSION).tar.lzma
 KERNEL_TOOLCHAIN_SOURCE:=kernel-toolchain-dsmod-$(KERNEL_TOOLCHAIN_VERSION).tar.lzma
 TOOLCHAIN_SITE:=http://dsmod.wirsind.info
