@@ -38,7 +38,7 @@ $(PACKAGES_DIR)/.ldd-$(LDD_VERSION): $(DL_DIR)/$(LDD_PKG_SOURCE) | $(PACKAGES_DI
 ldd: $(PACKAGES_DIR)/.ldd-$(LDD_VERSION)
 
 ldd-package: $(PACKAGES_DIR)/.ldd-$(LDD_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -czf $(PACKAGES_BUILD_DIR)/$(LDD_PKG_SOURCE) ldd-$(LDD_VERSION)
+	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LDD_PKG_SOURCE) ldd-$(LDD_VERSION)
 
 ldd-precompiled: uclibc ldd $(LDD_TARGET_BINARY)
 
