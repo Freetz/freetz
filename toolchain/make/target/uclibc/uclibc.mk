@@ -6,9 +6,7 @@ UCLIBC_SOURCE:=uClibc-$(UCLIBC_VERSION).tar.bz2
 UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
 UCLIBC_KERNEL_SOURCE_DIR:=$(KERNEL_SOURCE_DIR)
 UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DIR)
-UCLIBC_LDD_BINARY:=$(UCLIBC_DIR)/utils/ldd
-UCLIBC_LDD_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils/ldd
-UCLIBC_TARGET_LDD_BINARY:=$(ROOT_DIR)/usr/bin/ldd
+
 
 $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(UCLIBC_SOURCE_SITE)/$(UCLIBC_SOURCE)
@@ -98,7 +96,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		    $(TARGET_TOOLCHAIN_STAGING_DIR)/include/ ; \
 	    fi; \
 	fi;								    
-	# Build the host utils.  Need to add an install target...
+	# Build the host utils. 
 	$(MAKE1) -C $(UCLIBC_DIR)/utils \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		HOSTCC="$(HOSTCC)" \
@@ -109,7 +107,9 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	install -c $(UCLIBC_DIR)/utils/ldconfig.host $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ldconfig
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(GNU_TARGET_NAME)-ldconfig)
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(REAL_GNU_TARGET_NAME)-ldconfig)
-	touch -c $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
+	# Build the target utils. These are not installed at the moment
+	$(MAKE1) -C $(UCLIBC_DIR) utils
+	touch -c $@
 
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
@@ -143,21 +143,6 @@ uclibc-clean:
 
 uclibc-dirclean:
 	rm -rf $(UCLIBC_DIR)
-
-uclibc-target-utils: $(UCLIBC_TARGET_LDD_BINARY)
-
-$(UCLIBC_LDD_BINARY):
-	$(MAKE1) -C $(UCLIBC_DIR) utils
-
-$(UCLIBC_LDD_STAGING_BINARY): $(UCLIBC_LDD_BINARY)
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils
-	cp $^ $@
-
-$(UCLIBC_TARGET_LDD_BINARY): $(UCLIBC_LDD_STAGING_BINARY)
-	$(INSTALL_BINARY_STRIP)
-
-uclibc-target-utils-clean:
-	rm -f $(UCLIBC_TARGET_LDD_BINARY)
 
 .PHONY: uclibc-configured uclibc
 	
