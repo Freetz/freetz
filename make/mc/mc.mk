@@ -7,7 +7,7 @@ MC_TARGET_DIR:=$(PACKAGES_DIR)/mc-$(MC_VERSION)/root/usr/bin
 MC_TARGET_BINARY:=mc
 MC_PKG_VERSION:=0.2
 MC_PKG_SOURCE:=mc-$(MC_VERSION)-dsmod-$(MC_PKG_VERSION).tar.bz2
-MC_PKG_SITE:=http://www.eiband.info/dsmod
+MC_PKG_SITE:=http://dsmod.magenbrot.net
 
 
 $(DL_DIR)/$(MC_SOURCE):

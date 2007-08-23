@@ -7,7 +7,7 @@ SCREEN_TARGET_DIR:=$(PACKAGES_DIR)/screen-$(SCREEN_VERSION)/root/usr/bin
 SCREEN_TARGET_BINARY:=screen
 SCREEN_PKG_VERSION:=0.1
 SCREEN_PKG_SOURCE:=screen-$(SCREEN_VERSION)-dsmod-$(SCREEN_PKG_VERSION).tar.bz2
-SCREEN_PKG_SITE:=http://www.eiband.info/dsmod
+SCREEN_PKG_SITE:=http://dsmod.magenbrot.net
 
 
 $(DL_DIR)/$(SCREEN_SOURCE):

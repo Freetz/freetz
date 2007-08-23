@@ -1,4 +1,4 @@
-# Makefile for DS-Mod (ds-0.2.9)
+# Makefile for DS-Mod_24 (ds24)
 #
 # Taken from buildroot2 with only slight non-functional modifications
 # (strings changed from 'Buildroot' to 'DS-Mod').

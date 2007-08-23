@@ -1,7 +1,10 @@
-# Makefile for danisahne mod
+# Makefile for danisahne mod, Kernel 2.4 series (DS-Mod_24)
+#
+# $Id: Makefile 987 2007-08-15 21:50:33Z oliver $
 #
 # Copyright (C) 1999-2004 by Erik Andersen <andersen@codepoet.org>
 # Copyright (C) 2005-2006 by Daniel Eiband <eiband@online.de>
+# Copyright (C) 2006-2007 by Oliver Metz, Alexander Kriegisch, Mickey & Co.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,13 +30,7 @@ CONFIG_CONFIG_IN=Config.in
 CONFIG_DEFCONFIG=.defconfig
 CONFIG=tools/config
 
-noconfig_targets:=menuconfig config oldconfig defconfig tools
-
-ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
--include $(TOPDIR)/.config
-endif
-
-MAKE:=make
+SHELL:=/bin/bash
 IMAGE:=
 LOCALIP:=
 RECOVER:=
@@ -51,11 +48,43 @@ TOOLS_DIR:=tools
 PACKAGES_BUILD_DIR:=$(PACKAGES_DIR)/$(BUILD_DIR)
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 
+SED:=sed
+DL_TOOL:=$(TOOLS_DIR)/ds_download
+PATCH_TOOL:=$(TOOLS_DIR)/ds_patch
+
+# Current user == root? -> Error
+ifeq ($(shell echo $$UID),0)
+$(error Running makefile as root is prohibited! Please build DS-Mod as normal user)
+endif
+
+# Mod archive unpacked incorrectly (heuristics)? -> Error
+ifeq ($(shell MWW=root/usr/mww; \
+	[ ! -L $$MWW/cgi-bin/index.cgi -o ! -x $$MWW/cgi-bin/status.cgi -o -x $$MWW/index.html ] \
+	&& echo y\
+),y)
+$(error File permissions or links are wrong! Please unpack DS-Mod on a filesystem with Unix-like permissions)
+endif
+
 all: step
 world: $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
-       $(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
+	$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
+
+noconfig_targets:=menuconfig config oldconfig defconfig tools $(TOOLS)
+
+ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
+-include $(TOPDIR)/.config
+endif
+
+ifeq ($(strip $(DS_VERBOSITY_LEVEL)),0)
+VERBOSE:=
+else
+VERBOSE:=-v
+endif
+
+export DS_VERBOSITY_LEVEL
+export VERBOSE
 
 TOOLS_CLEAN:=$(patsubst %,%-clean,$(TOOLS))
 TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))
@@ -81,6 +110,7 @@ $(PACKAGES_BUILD_DIR):
 
 $(TOOLCHAIN_BUILD_DIR):
 	@mkdir -p $(TOOLCHAIN_BUILD_DIR)
+
 
 ifeq ($(strip $(DS_HAVE_DOT_CONFIG)),y)
 
@@ -115,13 +145,19 @@ TOOLCHAIN_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLCHAIN))
 TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
 
 include $(MAKE_DIR)/*/*.mk
-include $(TOOLCHAIN_DIR)/make/*.mk
+
+ifeq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
+include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
+include $(TOOLCHAIN_DIR)/make/target-toolchain.mk
+else
+include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
+endif
 
 IMAGE:=$(DL_DIR)/$(DL_SOURCE)
 DL_IMAGE:=$(IMAGE)
 
 $(DL_DIR)/$(DL_SOURCE):
-ifeq ($(strip $(DS_TYPE_BETA)),y)
+ifeq ($(strip $(DS_TYPE_LABOR)),y)
 	@echo ""
 	@echo "Please copy the following file into the 'dl' sub-directory manually:"
 	@echo "$(DL_SOURCE)"
@@ -136,16 +172,18 @@ else
 				echo -n "Use the latest firmware $$latest? (y/n) "; \
 				read yn; \
 				case "$$yn" in \
-					[yY]*) sed -e 's/# DS_DL_OVERRIDE is not set/DS_DL_OVERRIDE=y/' \
-					           -e 's/DL_SOURCE="$(DL_SOURCE)"/DL_SOURCE="'"$$latest"'"/' \
-					           .config > .config.tmp; \
-					       mv .config.tmp .config; \
-					       echo ""; \
-					       echo "Re-run \`make' for the changes to take effect."; \
-					       echo "WARNING: This configuration is probably untested!"; \
-					       echo ""; \
-					       break ;; \
-					[nN]*) break ;; \
+					[yY]*) \
+						sed -e 's/# DS_DL_OVERRIDE is not set/DS_DL_OVERRIDE=y/' \
+							-e 's/DL_SOURCE="$(DL_SOURCE)"/DL_SOURCE="'"$$latest"'"/' \
+							.config > .config.tmp; \
+						mv .config.tmp .config; \
+						echo ""; \
+						echo "Re-run \`make' for the changes to take effect."; \
+						echo "WARNING: This configuration is probably untested!"; \
+						echo ""; \
+						break ;; \
+					[nN]*) \
+						break ;; \
 				esac; \
 			done; \
 			exit 3; \
@@ -153,16 +191,14 @@ else
 	fi
 endif
 
-ifeq ($(strip $(DS_TYPE_300IP_AS_FON)),y)
-
-IMAGE:=$(DL_DIR)/$(DL_SOURCE2)
-DL_IMAGE+=$(IMAGE)
+ifneq ($(strip $(DL_SOURCE2)),)
+IMAGE2:=$(DL_DIR)/$(DL_SOURCE2)
+DL_IMAGE+=$(IMAGE2)
 
 $(DL_DIR)/$(DL_SOURCE2):
 	@./fwmod_download -C $(DL_DIR) $(DL_SITE2) $(DL_SOURCE2) > /dev/null
 	@echo "done."
 	@echo ""
-
 endif
 
 package-list: package-list-clean $(PACKAGES_LIST)
@@ -177,17 +213,18 @@ package-list-clean:
 	@rm -f .static .dynamic
 
 ifeq ($(strip $(PACKAGES)),)
-firmware: $(DL_IMAGE) package-list exclude-lists
+firmware-nocompile: tools $(DL_IMAGE) package-list exclude-lists
 	@echo ""
 	@echo "WARNING: There are no packages selected. To install packages type"
 	@echo "         \`make menuconfig' and change to the 'Package selection' submenu."
 	@echo ""
 else
-firmware: $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
+firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
 endif
-	@rm -f firmware_*.image
 	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
-	@mv $(BUILD_DIR)/firmware_$(DS_TYPE_STRING).$(DS_TYPE_LANG_STRING).image ./
+	@mv $(BUILD_DIR)/$(DS_TYPE_STRING)*.image ./
+
+firmware: precompiled firmware-nocompile 
 
 test: $(BUILD_DIR)/.modified
 	@echo "no tests defined"
@@ -199,38 +236,27 @@ toolchain: $(DL_DIR) $(SOURCE_DIR) $(TOOLCHAIN)
 	@echo "          $(TOOLCHAIN_DIR)/target/ - uClibc compiler for the userspace"
 	@echo ""
 
-ifeq ($(strip $(DS_EXTERNAL_COMPILER)),y)
+libs: $(DL_DIR) $(SOURCE_DIR) $(LIBS_PRECOMPILED)
 
 sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
-         $(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(TOOLS_SOURCE)
-precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) libgcc-installed \
-             $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
+	$(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(LIBS_SOURCE) $(TOOLCHAIN_SOURCE) $(TOOLS_SOURCE)
 
-else
-
-libs: $(DL_DIR) $(SOURCE_DIR) toolchain-depend libgcc-installed $(LIBS_PRECOMPILED)
-
-sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
-         $(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(LIBS_SOURCE) $(TOOLCHAIN_SOURCE) $(TOOLS_SOURCE)
-precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend libgcc-installed \
-             $(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
-
-endif
+precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend \
+	$(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN) $(LIBS_CLEAN) $(TOOLCHAIN_CLEAN) $(TOOLS_CLEAN) common-clean
 dirclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN_DIRCLEAN) $(TOOLS_DIRCLEAN) common-dirclean
 distclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN_DISTCLEAN) $(TOOLS_DISTCLEAN) common-distclean
 
 .PHONY: firmware package-list package-list-clean sources precompiled toolchain toolchain-depend libs \
-        $(TARGETS) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) $(TARGETS_PRECOMPILED) \
-        $(PACKAGES) $(PACKAGES_BUILD) $(PACKAGES_CLEAN) $(PACKAGES_DIRCLEAN) $(PACKAGES_LIST) $(PACKAGES_SOURCE) $(PACKAGES_PRECOMPILED) \
-        $(LIBS) $(LIBS_CLEAN) $(LIBS_DIRCLEAN) $(LIBS_SOURCE) $(LIBS_PRECOMPILED) \
-        $(TOOLCHAIN) $(TOOLCHAIN_CLEAN) $(TOOLCHAIN_DIRCLEAN) $(TOOLCHAIN_DISTCLEAN) $(TOOLCHAIN_SOURCE)
+	$(TARGETS) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) $(TARGETS_PRECOMPILED) \
+	$(PACKAGES) $(PACKAGES_BUILD) $(PACKAGES_CLEAN) $(PACKAGES_DIRCLEAN) $(PACKAGES_LIST) $(PACKAGES_SOURCE) $(PACKAGES_PRECOMPILED) \
+	$(LIBS) $(LIBS_CLEAN) $(LIBS_DIRCLEAN) $(LIBS_SOURCE) $(LIBS_PRECOMPILED) \
+	$(TOOLCHAIN) $(TOOLCHAIN_CLEAN) $(TOOLCHAIN_DIRCLEAN) $(TOOLCHAIN_DISTCLEAN) $(TOOLCHAIN_SOURCE)
 
 else
 
 step: menuconfig
-
 clean: $(TOOLS_CLEAN) common-clean
 dirclean: $(TOOLS_DIRCLEAN) common-dirclean
 distclean: $(TOOLS_DISTCLEAN) common-distclean
@@ -238,6 +264,13 @@ distclean: $(TOOLS_DISTCLEAN) common-distclean
 endif
 
 tools: $(DL_DIR) $(SOURCE_DIR) $(TOOLS)
+
+push-firmware:
+	@if [ ! -f "build/modified/firmware/var/tmp/kernel.image" ]; then \
+		echo "Please run 'make' first."; \
+	else \
+		./tools/push_firmware.sh build/modified/firmware/var/tmp/kernel.image ; \
+	fi
 
 recover:
 ifeq ($(strip $(TERM)),cygwin)
@@ -265,17 +298,19 @@ else
 			echo -n "from $(IMAGE)? (y/n) "; \
 			read yn; \
 			case "$$yn" in \
-				[yY]*) echo ""; \
-				       if [ -z "$(LOCALIP)" ]; then \
-				           echo "If this fails try to specify a local IP adress. Your"; \
-				           echo "local IP has to be in the 192.168.178.0/24 subnet."; \
-				           echo "e.g. make recover LOCALIP=192.168.178.20"; \
-				           echo ""; \
-				           $$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -f "$$(pwd)/$(IMAGE)"; \
-				       else \
-				           $$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$$(pwd)/$(IMAGE)"; \
-				       fi; break ;; \
-				[nN]*) break ;; \
+				[yY]*) \
+					echo ""; \
+					if [ -z "$(LOCALIP)" ]; then \
+						echo "If this fails try to specify a local IP adress. Your"; \
+						echo "local IP has to be in the 192.168.178.0/24 subnet."; \
+						echo "e.g. make recover LOCALIP=192.168.178.20"; \
+						echo ""; \
+						$$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -f "$$(pwd)/$(IMAGE)"; \
+					else \
+						$$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$$(pwd)/$(IMAGE)"; \
+					fi; break ;; \
+				[nN]*) \
+					break ;; \
 			esac; \
 		done; \
 	fi
@@ -305,23 +340,37 @@ oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 	@$(CONFIG)/conf -d $(CONFIG_CONFIG_IN)
 
+config-clean-deps:
+	@{ \
+	cp .config .config_tmp; \
+	echo -n "Step 1: temporarily deactivate all kernel modules, shared libraries and optional BusyBox applets ... "; \
+	sed -i -r 's/^(DS_(LIB|MODULE|BUSYBOX)_)/# \1/' .config; \
+	echo "DONE"; \
+	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
+	make oldconfig < /dev/null > /dev/null; \
+	echo "DONE"; \
+	echo "The following elements have been deactivated:"; \
+	diff -U 0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
+	rm -f .config_tmp; \
+	}
+
 exclude-lists:
 	@for i in root kernel/root; do \
-		( \
-			cd $$i; find . -type d -name .svn -prune \
-		) > "$$(dirname "$$i")"/.exclude; \
+	( \
+		cd $$i; find . -type d -name .svn -prune \
+	) > "$$(dirname "$$i")"/.exclude; \
 	done
 
 common-clean:
 	./fwmod_custom clean
 	rm -f .static .dynamic
 	rm -f .exclude .exclude-dist kernel/.exclude
-	rm -f firmware_*.image
-	rm -rf $(BUILD_DIR) $(PACKAGES_DIR)
+	rm -f *.image
+	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean:
-	rm -rf $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
+	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	-rm -rf $(ADDON_DIR)/*
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
@@ -337,13 +386,18 @@ common-distclean: common-clean
 dist: distclean
 	version="$$(cat .version)"; \
 	dir="$$(cat .version | sed -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
-	( cd ../; find "$$dir" -type d -name .svn -prune; \
-	  echo "$${dir}/.exclude-dist" ) > .exclude-dist; \
-	( cd ../; tar --exclude-from="$${dir}/.exclude-dist" -cvjf "$${version}.tar.bz2" "$$dir" )
+	( \
+		cd ../; \
+		find "$$dir" -type d -name .svn -prune; \
+		echo "$${dir}/.exclude-dist" \
+		echo "$${dir}/packages" \
+	) > .exclude-dist; \
+	( \
+		cd ../; \
+		tar --exclude-from="$${dir}/.exclude-dist" -cvjf "$${version}.tar.bz2" "$$dir" \
+	)
 	rm -f .exclude-dist
 
 .PHONY: all world step menuconfig config oldconfig defconfig exclude-lists tools recover \
-        clean dirclean distclean common-clean common-dirclean common-distclean dist \
-	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
-        $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
-        $(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
+	clean dirclean distclean common-clean common-dirclean common-distclean dist \
+	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE)

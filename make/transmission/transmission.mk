@@ -7,9 +7,9 @@ TRANSMISSION_TARGET_DIR:=$(PACKAGES_DIR)/transmission-$(TRANSMISSION_VERSION)/ro
 TRANSMISSION_TARGET_BINARY:=transmissioncli
 TRANSMISSION_PKG_VERSION:=0.1
 #TRANSMISSION_PKG_SOURCE:=transmission-$(TRANSMISSION_VERSION)-dsmod-$(TRANSMISSION_PKG_VERSION).tar.bz2
-#TRANSMISSION_PKG_SITE:=http://www.eiband.info/dsmod
+#TRANSMISSION_PKG_SITE:=http://dsmod.magenbrot.net
 TRANSMISSION_PKG_SOURCE:=transmission-$(TRANSMISSION_VERSION)-dsmod-binary-only.tar.bz2
-TRANSMISSION_PKG_SITE:=http://www.eiband.info/dsmod/testing
+TRANSMISSION_PKG_SITE:=http://dsmod.magenbrot.net
 
 
 $(DL_DIR)/$(TRANSMISSION_SOURCE):

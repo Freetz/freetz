@@ -4,7 +4,7 @@ CHECKMAILD_MAKE_DIR:=$(MAKE_DIR)/checkmaild
 CHECKMAILD_TARGET_DIR:=$(PACKAGES_DIR)/checkmaild-$(CHECKMAILD_VERSION)/root/usr/sbin
 CHECKMAILD_TARGET_BINARY:=checkmaild
 CHECKMAILD_PKG_SOURCE:=checkmaild-$(CHECKMAILD_VERSION)-dsmod.tar.bz2
-CHECKMAILD_PKG_SITE:=http://www.eiband.info/dsmod
+CHECKMAILD_PKG_SITE:=http://dsmod.magenbrot.net
 
 
 $(CHECKMAILD_DIR)/.unpacked:

@@ -937,7 +937,7 @@ int main(int ac, char **av)
 	conf_parse(av[1]);
 	conf_read(NULL);
 
-	snprintf(menu_backtitle, 128, "DS-Mod (ds-0.2.9) Configuration");
+	snprintf(menu_backtitle, 128, "DS-Mod_24 (ds24) Configuration");
 
 	mode = getenv("MENUCONFIG_MODE");
 	if (mode) {

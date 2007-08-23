@@ -1,68 +1,53 @@
-mainmenu "DS-Mod for kernel 2.4 (ds24) configuration"
+mainmenu "Danisahne-Mod (DS-Mod_24) Configuration"
 
 config DS_HAVE_DOT_CONFIG
 	bool
 	default y
 
-choice
+comment "General --------------------------------"
 
-	prompt "Source version"
-		default DS_AVM_VERSION_04_06
-		help
-			AVM's source package version
-
-	config DS_AVM_VERSION_04_06
-		bool "04.06"
-
-endchoice
-
-config DS_AVM_VERSION_STRING
-	string
-	default "04.01"		if DS_AVM_VERSION_04_01
-	default "04.06"		if DS_AVM_VERSION_04_06
+config DS_AVM_VERSION_04_01
+	bool
+config DS_AVM_VERSION_04_06
+	bool
 
 choice
 
-	prompt "Firmware type"
+	prompt "Hardware type"
 		default DS_TYPE_WLAN_3050
 		help
 			Select your box type here.
 
-	# Could be reactivated if somebody cared to patch the international firmwares
-	config DS_TYPE_300IP_AS_FON
-		depends on DS_AVM_VERSION_04_06
-		bool "300IP as Fon"
-
 	config DS_TYPE_FON 
-		depends on DS_AVM_VERSION_04_06
+		select DS_AVM_VERSION_04_06
 		bool "Fon"
 
 	config DS_TYPE_FON_5010
-		depends on DS_AVM_VERSION_04_06
+		select DS_AVM_VERSION_04_06
 		bool "Fon 5010"
 
 	config DS_TYPE_FON_5012
-		depends on DS_AVM_VERSION_04_06
+		select DS_AVM_VERSION_04_06
 		bool "Fon 5012"
 
 	config DS_TYPE_FON_ATA
-		depends on DS_AVM_VERSION_04_01
+		select DS_AVM_VERSION_04_01
 		bool "Fon ATA"
 
 	config DS_TYPE_FON_WLAN
-		depends on DS_AVM_VERSION_04_06
+		select DS_AVM_VERSION_04_06
 		bool "Fon WLAN"
 
 	config DS_TYPE_SL_WLAN
-		depends on DS_AVM_VERSION_04_06
+		select DS_AVM_VERSION_04_06
 		bool "SL WLAN"
 
 	config DS_TYPE_WLAN_3050
-		depends on DS_AVM_VERSION_04_06
+		select DS_AVM_VERSION_04_06
 		bool "WLAN 3050"
 
 	config DS_TYPE_WLAN_3070
-		depends on DS_AVM_VERSION_04_06
+		select DS_AVM_VERSION_04_06
 		bool "WLAN 3070"
 
 	config DS_TYPE_CUSTOM
@@ -71,30 +56,31 @@ choice
 
 endchoice
 
+
+config DS_AVM_VERSION_STRING
+	string
+	default "04.01"			if DS_AVM_VERSION_04_01
+	default "04.06"			if DS_AVM_VERSION_04_06
 choice
 
-	prompt "Firmware version"
+	prompt "Firmware language"
 		default DS_TYPE_LANG_DE if \
 			! DS_TYPE_FON_WLAN && \
-			! DS_TYPE_FON && \
-			! DS_TYPE_300IP_AS_FON
+			! DS_TYPE_FON
 		default DS_TYPE_LANG_EN if \
 			DS_TYPE_FON_WLAN || \
-			DS_TYPE_FON || \
-			DS_TYPE_300IP_AS_FON
+			DS_TYPE_FON
 
 	config DS_TYPE_LANG_DE
 		bool "de - deutsch"
 		depends on \
 			! DS_TYPE_FON_WLAN && \
-			! DS_TYPE_FON && \
-			! DS_TYPE_300IP_AS_FON
+			! DS_TYPE_FON
 
 	config DS_TYPE_LANG_A_CH
 		bool "a-ch - deutsch"
 		depends on \
 			DS_TYPE_FON || \
-			DS_TYPE_300IP_AS_FON || \
 			DS_TYPE_FON_ATA || \
 			DS_TYPE_FON_WLAN
 
@@ -102,7 +88,6 @@ choice
 		bool "en - international"
 		depends on \
 			DS_TYPE_FON || \
-			DS_TYPE_300IP_AS_FON || \
 			DS_TYPE_FON_ATA || \
 			DS_TYPE_FON_WLAN
 
@@ -117,11 +102,11 @@ config DS_TYPE_LANG_STRING
 choice
 
 	prompt "Annex"
-	depends on \
-		(DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN || \
-		DS_TYPE_FON_WLAN && DS_TYPE_LANG_A_CH || \
-		DS_TYPE_FON_WLAN && DS_TYPE_LANG_EN
-	default DS_TYPE_ANNEX_B
+		depends on \
+			DS_TYPE_FON && DS_TYPE_LANG_EN || \
+			DS_TYPE_FON_WLAN && DS_TYPE_LANG_A_CH || \
+			DS_TYPE_FON_WLAN && DS_TYPE_LANG_EN
+		default DS_TYPE_ANNEX_B
 
 	config DS_TYPE_ANNEX_A
 		bool "A"
@@ -133,19 +118,18 @@ endchoice
 
 config DS_TYPE_STRING
 	string
-	default "300ip_as_fon"		if DS_TYPE_300IP_AS_FON
-	default "fon"			if DS_TYPE_FON
-	default "fon_5010"		if DS_TYPE_FON_5010
-	default "fon_5012"		if DS_TYPE_FON_5012
-	default "fon_ata"		if DS_TYPE_FON_ATA
-	default "fon_wlan"		if DS_TYPE_FON_WLAN
-	default "sl"			if DS_TYPE_SL
-	default "sl_wlan"		if DS_TYPE_SL_WLAN
-	default "wlan_3050"		if DS_TYPE_WLAN_3050
-	default "wlan_3070"		if DS_TYPE_WLAN_3070
-	default "custom"		if DS_TYPE_CUSTOM
+	default "fon"				if DS_TYPE_FON
+	default "fon_5010"			if DS_TYPE_FON_5010
+	default "fon_5012"			if DS_TYPE_FON_5012
+	default "fon_ata"			if DS_TYPE_FON_ATA
+	default "fon_wlan"			if DS_TYPE_FON_WLAN
+	default "sl"				if DS_TYPE_SL
+	default "sl_wlan"			if DS_TYPE_SL_WLAN
+	default "wlan_3050"			if DS_TYPE_WLAN_3050
+	default "wlan_3070"			if DS_TYPE_WLAN_3070
+	default "custom"			if DS_TYPE_CUSTOM
 
-comment "Custom options"
+comment "Custom options -------------------------"
 	depends on DS_TYPE_CUSTOM
 
 config DS_INSTALL_BASE
@@ -166,18 +150,20 @@ config DS_REPLACE_BUSYBOX
 		This is mandatory
 
 config DS_REPLACE_KERNEL
-	bool "Replace kernel"		if DS_TYPE_CUSTOM
+	bool "Replace kernel"
+	depends on DS_TYPE_CUSTOM
 	select DS_LIB_libnsl
-	default y
+	default n
 	help
-		Saves a lot of space by utilizing unused space at the end of the kernel\
-		image and by using lzma.
+		Replace AVM kernel with self-built kernel.
+
+		Saves a lot of space by utilizing unused space at the end of the kernel
+		image and by using LZMA.
 
 config DS_TARGET_REF
 	string "Target ref"		if DS_TYPE_CUSTOM
 	default "2mb"			if DS_TYPE_SL
 	default "4mb"			if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_5010 || \
 		DS_TYPE_FON_5012 || \
@@ -193,7 +179,6 @@ config DS_KERNEL_REF
 	string "Kernel ref"		if DS_TYPE_CUSTOM
 	default "2mb"			if DS_TYPE_SL
 	default "4mb"			if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_5010 || \
 		DS_TYPE_FON_5012 || \
@@ -213,7 +198,6 @@ config DS_HIDDEN_ROOT
 		DS_TYPE_SL || \
 		DS_TYPE_WLAN_3070
 	default n				if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_ATA || \
 		DS_TYPE_FON_WLAN || \
@@ -239,7 +223,6 @@ config DS_CONTIGUOUS_HIDDEN_ROOT
 config DS_SQUASHFS_LZMA
 	bool "Lzma squashfs"		if DS_TYPE_CUSTOM
 	default y					if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_5010 || \
 		DS_TYPE_FON_5012 || \
@@ -262,7 +245,6 @@ config DS_ROOTFS_VARTAR
 		DS_TYPE_WLAN_3070 || \
 		(DS_TYPE_CUSTOM && DS_HIDDEN_ROOT)
 	default n							if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_ATA || \
 		DS_TYPE_FON_WLAN || \
@@ -278,7 +260,6 @@ config DS_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if DS_TYPE_CUSTOM
 	default 10					if DS_TYPE_SL
 	default 11					if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_ATA || \
 		DS_TYPE_FON_WLAN || \
@@ -290,7 +271,8 @@ config DS_KERNEL_MTD_SIZE
 		DS_TYPE_FON_5012 || \
 		DS_TYPE_WLAN_3070 || \
 		(DS_TYPE_CUSTOM && (DS_HIDDEN_ROOT && ! DS_CONTIGUOUS_HIDDEN_ROOT))
-	default 119					if DS_TYPE_DUMMY
+	default 119					if \
+		DS_TYPE_DUMMY
 	help
 		Number of 64K blocks in the kernel mtd device.
 
@@ -299,7 +281,6 @@ config DS_FILESYSTEM_MTD_SIZE
 	depends on ! DS_HIDDEN_ROOT || DS_CONTIGUOUS_HIDDEN_ROOT
 	default 20			if DS_TYPE_SL
 	default 48			if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_ATA || \
 		DS_TYPE_FON_WLAN || \
@@ -312,7 +293,6 @@ config DS_FILESYSTEM_MTD_SIZE
 config DS_HAS_PHONE
 	bool "Has Phone"		if DS_TYPE_CUSTOM
 	default y				if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_5010 || \
 		DS_TYPE_FON_5012 || \
@@ -335,7 +315,6 @@ config DS_HAS_WLAN
 		DS_TYPE_WLAN_3050 || \
 		DS_TYPE_WLAN_3070
 	default n			if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_5010 || \
 		DS_TYPE_FON_5012 || \
@@ -348,7 +327,6 @@ config DS_HAS_WLAN
 config DS_HAS_USB
 	bool "Has USB"		if DS_TYPE_CUSTOM
 	default y			if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_ATA || \
 		DS_TYPE_FON_WLAN || \
@@ -368,7 +346,6 @@ config DS_HAS_USB_HOST
 	depends on DS_HAS_USB
 	default y			if DS_TYPE_WLAN_3070
 	default n			if \
-		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_ATA || \
 		DS_TYPE_FON_WLAN || \
@@ -378,13 +355,13 @@ config DS_HAS_USB_HOST
 	help
 		Select this if your USB port is a host adapter
 
-comment "Brandings"
+comment "Brandings ------------------------------"
 	depends on ! DS_TYPE_CUSTOM
-comment "Brandings (if exist)"
+comment "Brandings (if exist) -------------------"
 	depends on DS_TYPE_CUSTOM
 
 config DS_BRANDING_1und1
-	bool "1und1"
+	bool "1&1"
 	depends on \
 		DS_TYPE_FON_5010 || \
 		DS_TYPE_FON_5012 || \
@@ -392,9 +369,19 @@ config DS_BRANDING_1und1
 		DS_TYPE_SL_WLAN || \
 		DS_TYPE_CUSTOM
 	default y
+	help
+		1&1 branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/dev/adam2/firmware_version)
 
 config DS_BRANDING_avm
-	bool "avm"
+	bool "AVM"
 	depends on \
 		DS_TYPE_FON_5010 || \
 		DS_TYPE_FON_5012 || \
@@ -405,49 +392,100 @@ config DS_BRANDING_avm
 		DS_TYPE_WLAN_3070 || \
 		DS_TYPE_CUSTOM
 	default y
+	help
+		AVM branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/dev/adam2/firmware_version)
 
 config DS_BRANDING_avme
-	bool "avme"
+	bool "AVM international"
 	depends on \
-		(DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_A_CH || \
-		(DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN || \
+		DS_TYPE_FON && DS_TYPE_LANG_A_CH || \
+		DS_TYPE_FON && DS_TYPE_LANG_EN || \
 		DS_TYPE_FON_ATA && DS_TYPE_LANG_A_CH || \
 		DS_TYPE_FON_ATA && DS_TYPE_LANG_EN || \
 		DS_TYPE_FON_WLAN && DS_TYPE_LANG_A_CH || \
 		DS_TYPE_FON_WLAN && DS_TYPE_LANG_EN || \
 		DS_TYPE_CUSTOM
 	default y
+	help
+		AVM international branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/dev/adam2/firmware_version)
 
 config DS_BRANDING_aol
-	bool "aol"
+	bool "AOL"
 	depends on \
 		DS_TYPE_WLAN_3050 || \
 		DS_TYPE_CUSTOM
 	default y
+	help
+		AOL branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/dev/adam2/firmware_version)
 
 config DS_BRANDING_arcor
-	bool "arcor"
+	bool "Arcor"
 	depends on DS_TYPE_CUSTOM
 	default y
+	help
+		Arcor branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/dev/adam2/firmware_version)
 
 config DS_BRANDING_freenet
-	bool "freenet"
+	bool "Freenet"
 	depends on \
 		DS_TYPE_FON_ATA && DS_TYPE_LANG_DE || \
 		DS_TYPE_CUSTOM
 	default y
+	help
+		Freenet branding
 
-comment "Patches"
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/dev/adam2/firmware_version)
+
+
+comment "Patches --------------------------------"
 
 config DS_REMOVE_HELP
 	bool "Remove help"
-	default y
+	default n
 	help
-		Removes the help pages from the webmenu.
+		Removes the help pages from the web menu.
 
 config DS_REMOVE_ASSISTANT
 	bool "Remove assistant"
-	default y
+	default n
 	help
 		Removes the network assistant from the web menu.
 
@@ -459,16 +497,16 @@ config DS_REMOVE_CDROM_ISO
 		Removes the file /lib/modules/cdrom.iso.
 
 config DS_PATCH_ATA
-	bool "Patch ata"
+	bool "Patch ATA"
 	depends on DS_TYPE_DUMMY
-	default y
+	default n
 	help
 		Patches the ATA mode configuration pages into the web menu.
 
 config DS_PATCH_ENUM
 	bool "Patch enum"
 	depends on DS_HAS_PHONE
-	default y
+	default n
 	help
 		Patches the enum configuration pages into the web menu.
 
@@ -486,7 +524,7 @@ config DS_PATCH_WDS
 	help
 		Patches the wds configuration pages into the web menu.
 
-comment "Mod"
+comment "Mod ------------------------------------"
 
 choice
 
@@ -509,6 +547,13 @@ config DS_LANG_STRING
 
 menu "Package selection"
 
+#config DS_BUILD_DYNAMIC_PACKAGES
+#	bool "Build dynamic packages (NOT SUPPORTED YET)"
+#	default n
+#	help
+#		If this is selected, all packages, which are not
+#		selected, will be build as dynamic packages.
+
 source make/Config.in
 
 endmenu
@@ -522,10 +567,10 @@ config DS_DL_OVERRIDE
 		Enable this to override automatically generated entries.
 
 config DS_DL_SITE
-	string "Firmware site			"														if DS_DL_OVERRIDE
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch_a-ch"					if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_A_CH
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_a"				if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_b"				if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
+	string "Firmware site"		if DS_DL_OVERRIDE
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch_a-ch"					if DS_TYPE_FON && DS_TYPE_LANG_A_CH
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_a"				if DS_TYPE_FON && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_b"				if DS_TYPE_FON && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5010/firmware"							if DS_TYPE_FON_5010
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5012/firmware"							if DS_TYPE_FON_5012
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_ata/firmware/deutsch"					if DS_TYPE_FON_ATA && DS_TYPE_LANG_DE
@@ -543,9 +588,9 @@ config DS_DL_SITE
 
 config DS_DL_SOURCE
 	string "Firmware source"								if DS_DL_OVERRIDE
-	default "fritz.box_fon.de.06.04.01.image"				if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_A_CH
-	default "fritz.box_fon.annexa.en.06.04.24.image"		if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
-	default "fritz.box_fon.en.06.04.24.image"				if (DS_TYPE_FON || DS_TYPE_300IP_AS_FON) && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
+	default "fritz.box_fon.de.06.04.01.image"				if DS_TYPE_FON && DS_TYPE_LANG_A_CH
+	default "fritz.box_fon.annexa.en.06.04.24.image"		if DS_TYPE_FON && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "fritz.box_fon.en.06.04.24.image"				if DS_TYPE_FON && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "fritz.box_fon_5010.23.04.27.image"				if DS_TYPE_FON_5010
 	default "fritz.box_fon_5012.25.04.27.image"				if DS_TYPE_FON_5012
 	default "fritz.box_fon_ata.11.04.01.image"				if DS_TYPE_FON_ATA && DS_TYPE_LANG_DE
@@ -560,6 +605,18 @@ config DS_DL_SOURCE
 	default "fritz.box_wlan_3050.16.04.07.image"			if DS_TYPE_WLAN_3050
 	default "fritz.box_wlan_3070.19.04.15.image"			if DS_TYPE_WLAN_3070
 	default "fritz.box..."									if DS_TYPE_CUSTOM
+
+config DS_DL_SITE2
+	string "AVM web interface DL Site"		if DS_DL_OVERRIDE
+	depends on \
+		DS_TYPE_DUMMY
+	default "ftp://ftp.avm.de/fritz.box/..."	if DS_TYPE_DUMMY
+
+config DS_DL_SOURCE2
+	string "AVM web interface firmware source"	if DS_DL_OVERRIDE
+	depends on \
+		DS_TYPE_DUMMY
+	default "fritz. ... .image"	if DS_TYPE_DUMMY
 
 menu "DS-Mod package download sites"
 
@@ -689,12 +746,29 @@ config DS_FAVICON_STRING
 	default "dsl123"		if DS_FAVICON_DSL123
 	default "hdeller"		if DS_FAVICON_HDELLER
 
+config DS_DEVELOPER_VERSION_STRING
+	bool "Developer version string"
+	default n
+	help
+		Add SVN (Subversion) repository revision number to firmware image name
+		and to /etc/.subversion, /etc/version within firmware itself.
+
+		The revision number string is generated by the client command line tool
+		svnversion and may include switch/modify flags and/or a range of
+		version numbers, depending on the current state of the working
+		directory at the time of generation. See 'svnversion --help' for
+		details.
+
+		ATTENTION! This option is for developers working on checked-out
+		versions of the DS-Mod source code only and requires svnversion to be
+		installed.
+
 choice
 
-	prompt "Squashfs blocksize"
+	prompt "SquashFS block size"
 	default DS_SQUASHFS_BLOCKSIZE_65536
 	help
-		Blocksize of the root filesystem (and hidden squashfs)
+		Block size of the root filesystem (and hidden SquashFS)
 
 	config DS_SQUASHFS_BLOCKSIZE_ORIG
 		bool "original"
@@ -707,48 +781,61 @@ choice
 
 endchoice
 
+menu "BusyBox options ### TODO: dummy - make functional ###"
+	depends on DS_REPLACE_BUSYBOX
+	source make/busybox/Config.in
+endmenu
+
 menu "Kernel modules"
 	depends on DS_REPLACE_KERNEL
 
-source kernel/Config.in
-
+	source kernel/Config.in
 endmenu
 
 menu "Shared libraries"
-
-source make/libs/Config.in
-
+	source make/libs/Config.in
 endmenu
 
 menu "Compiler options"
 
-comment "*** only needed for the 'precompiled' target ***"
+choice
+	prompt "Toolchains"
+	default DS_DOWNLOAD_TOOLCHAIN
+	help
+		Download Toolchain, build toolchain
 
-config DS_EXTERNAL_COMPILER
-	bool "Use external compiler"
-	default n
+	config DS_DOWNLOAD_TOOLCHAIN
+		bool "Download and use precompiled toolchain"
+
+	config DS_BUILD_TOOLCHAIN
+		bool "Build toolchain (requires 4GB diskspace)"
+endchoice
 
 config DS_TARGET_CROSS
-	string "Target cross (appropriate mipsel-linux-uclibc-gcc)" if DS_EXTERNAL_COMPILER
+	string
 	default "mipsel-linux-uclibc-"
 
 config DS_TARGET_MAKE_PATH
-	string "Target make path"			if DS_EXTERNAL_COMPILER
-	default "/path/to/target-cross/bin"	if DS_EXTERNAL_COMPILER
-	default "toolchain/target/bin"		if ! DS_EXTERNAL_COMPILER
+	string
+	default "toolchain/target/bin"
 
 config DS_TARGET_CFLAGS
 	string "Target compiler flags"
-	default "-Os -W -Wall -pipe -march=4kc -Wa,--trap"
+	default "-Os -W -Wall -pipe -march=mips32 -mips32 -Wa,--trap -msoft-float"
+
+config DS_JLEVEL
+	int "Number of jobs to run simultaneously"
+	default "1"
+	help
+		Number of jobs to run simultanesouly
 
 config DS_KERNEL_CROSS
-	string "Kernel cross (mipsel-glibc-linux-gcc 3.3.2)"	if DS_EXTERNAL_COMPILER
+	string
 	default "mipsel-unknown-linux-gnu-"
 
 config DS_KERNEL_MAKE_PATH
-	string "Kernel make path"			if DS_EXTERNAL_COMPILER
-	default "/path/to/kernel-cross/bin"	if DS_EXTERNAL_COMPILER
-	default "toolchain/kernel/bin"		if ! DS_EXTERNAL_COMPILER
+	string
+	default "toolchain/kernel/bin"
 
 source toolchain/Config.in
 

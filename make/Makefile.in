@@ -1,3 +1,5 @@
+MAKE1=make
+MAKE=make -j$(DS_JLEVEL)
 HOSTCC:=gcc
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
@@ -29,12 +31,6 @@ CFLAGS_LARGEFILE=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=6
 else
 DISABLE_LARGEFILE:=--disable-largefile
 CFLAGS_LARGEFILE=-D_FILE_OFFSET_BITS=32
-endif
-
-ifeq ($(strip $(DS_VERBOSITY_LEVEL)),0)
-VERBOSE:=
-else
-VERBOSE:=-v
 endif
 
 TARGET_CROSS:=$(strip $(subst ",, $(DS_TARGET_CROSS)))
@@ -70,12 +66,18 @@ TARGET_CONFIGURE_OPTS:= \
 DL_SITE:=$(strip $(subst ",, $(DS_DL_SITE)))
 DL_SOURCE:=$(strip $(subst ",, $(DS_DL_SOURCE)))
 
-ifeq ($(strip $(DS_TYPE_300IP_AS_FON)),y)
-
+ifneq ($(strip $(DS_DL_SOURCE2)),)
 DL_SITE2:=$(strip $(subst ",, $(DS_DL_SITE2)))
 DL_SOURCE2:=$(strip $(subst ",, $(DS_DL_SOURCE2)))
-
 endif
+
+# Use $< (first prerequisite) rather than $^ (all prerequisites), because
+# otherwise there will be errors when make tries to copy multiple source files
+# into one target binary.
+define INSTALL_BINARY_STRIP
+cp $< $@
+$(TARGET_STRIP) $@
+endef
 
 LIBGCC:=libgcc_s.so.1
 

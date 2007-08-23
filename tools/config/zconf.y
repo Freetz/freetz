@@ -487,7 +487,7 @@ void conf_parse(const char *name)
 	sym_init();
 	menu_init();
 	modules_sym = sym_lookup("MODULES", 0);
-	rootmenu.prompt = menu_add_prop(P_MENU, "DS-Mod (ds-0.2.9) Configuration", NULL, NULL);
+	rootmenu.prompt = menu_add_prop(P_MENU, "DS-Mod_24 (ds24) Configuration", NULL, NULL);
 
 	//zconfdebug = 1;
 	zconfparse();
