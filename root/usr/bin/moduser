@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+#	Usage: moduser {add|del]}	{<username>}
+
+TMP=/var/tmp
+FLASH=$TMP/flash
+PASSWD=/etc/passwd
+
+display_usage()	{
+		echo ''
+		echo 'usage: moduser {add|del} {<username>}'
+		echo ''
+		exit 0
+}
+
+([ -z	"$1" ] ||	[	-z "$2"	 ])	&& display_usage
+
+case "$1"	in
+				add)
+								if cat $PASSWD | grep	"^$2:" > /dev/null;	then
+										echo "$0:	user $2	exists"
+								else
+										/usr/bin/modpasswd save
+										echo "$2:*"	>> $FLASH/shadow.save
+										/usr/bin/modpasswd load
+										echo "user $2	added"
+								fi
+								;;
+				del)
+								TMPPASSWD=$TMP/.passwd.tmp
+								TMPSHADOW=$TMP/.shadow.tmp
+		
+								[	-e "$FLASH/shadow.save"	]	|| exit	0
+		
+								rm -f	$TMPPASSWD
+								rm -f	$TMPSHADOW
+		
+								if cat $PASSWD | grep	"^$2:" > /dev/null;	then
+									for	line in	$(cat	$FLASH/shadow.save); do
+										user="$(echo $line | sed -e	's/:[^:]*$//')"
+										if [ "$user" = "$2"	]; then
+											continue
+										else
+											echo "$line:12332:0:99999:7:::"	>> $TMPSHADOW	
+										fi
+									done
+									modpasswd	load
+									echo "$0:	user $2	deleted"
+								else
+									echo "$0:	user $2	does not exist"
+								fi
+								;;
+			*)
+								display_usage
+								;;
+esac
+
+exit 0

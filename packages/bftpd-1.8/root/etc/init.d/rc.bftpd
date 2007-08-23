@@ -17,18 +17,11 @@ case "$1" in
 esac
 
 start() {
+	echo -n "Looking for user 'ftp'..."
+	/usr/bin/moduser add ftp
+	
 	if [ ! -d "/var/run/bftpd" ]; then
 		mkdir /var/run/bftpd
-	fi
-
-	echo -n "Looking for user 'ftp'..."
-	if cat /var/tmp/passwd | grep '^ftp:' > /dev/null; then
-		echo 'ok.'
-	else
-		/usr/bin/modpasswd save
-		echo 'ftp:*' >> /tmp/flash/shadow.save
-		/usr/bin/modpasswd load
-		echo 'added.'
 	fi
 
 	(

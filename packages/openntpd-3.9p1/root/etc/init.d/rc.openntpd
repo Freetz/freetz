@@ -17,15 +17,8 @@ case "$1" in
 esac
 
 start() {
-	if cat /var/tmp/passwd | grep '^ntp:' > /dev/null; then
-		echo -n ""
-	else
-		echo "ntp:x:123:123::/mod/home/ntp:/bin/false" >> /var/tmp/passwd
-	fi
-
-	if [ ! -e "/mod/home/ntp" ]; then
-		mkdir -p /mod/home/ntp
-	fi
+	echo -n "Looking for user 'ntp'..."
+	/usr/bin/moduser add ntp
 
 	if [ ! -e "/var/db" ]; then
 		mkdir -p /var/db
