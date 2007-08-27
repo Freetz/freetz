@@ -6,7 +6,7 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 DAEMON=bftpd
 
 case "$1" in
-	""|load|start|restart)
+	""|load|start|restart|status)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
@@ -16,8 +16,8 @@ case "$1" in
 		;;
 esac
 
-start() {
-	echo -n "Looking for user 'ftp'..."
+pre_config() {
+echo -n "Looking for user 'ftp'..."
 	/usr/bin/moduser add ftp
 	
 	if [ ! -d "/var/run/bftpd" ]; then
@@ -39,7 +39,9 @@ start() {
 	if [ ! -e "/var/tmp/ftp" ]; then
 		ln -sf /mod/home/ftp /var/tmp/ftp
 	fi
+}
 
+start() {
 	echo -n 'Starting ftp server...'
 	$DAEMON -d $BFTPD_OPTIONS
 	exitval=$?
@@ -68,10 +70,16 @@ stop () {
 
 case "$1" in
 	""|load)
-		modreg cgi 'bftpd' 'Bftpd'
+		pre_config
 
+		modreg cgi 'bftpd' 'Bftpd'
+		
 		if [ "$BFTPD_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
+			if [ "$BFTPD_ENABLED" != "inetd" ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+			fi
 			exit 1;
 		fi
 
@@ -93,11 +101,14 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		if [ "$DROPBEAR_ENABLED" == "inetd" ]; then
+			echo 'inetd'
+ 		else
+			if [ -s "/var/run/$DAEMON.pid" ]; then
+				echo 'running'
+			else
+				echo 'stopped'
+			fi
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
