@@ -5,7 +5,7 @@ OPENVPN_SITE:=http://openvpn.net/release
 OPENVPN_MAKE_DIR:=$(MAKE_DIR)/openvpn
 OPENVPN_DIR:=$(SOURCE_DIR)/openvpn-$(OPENVPN_VERSION)
 OPENVPN_BINARY:=$(OPENVPN_DIR)/openvpn
-OPENVPN_PKG_VERSION:=0.6d
+OPENVPN_PKG_VERSION:=0.6e
 OPENVPN_PKG_SITE:=http://netfreaks.org/ds-mod
 
 ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_LZO)),y)

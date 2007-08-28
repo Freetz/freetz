@@ -12,12 +12,14 @@ certs_chk=''; redir_chk='';
 client2client_chk=''; bf_chk=''; 
 aes128_chk=''; aes256_chk='';
 des3_chk=''; float_chk=''; logfile_chk='';
-dhcpclient_chk=''; pull_chk=''; tlsauth_chk='';
+dhcpclient_chk=''; pull_chk=''; 
+tlsauth_chk=''; comp_chk='';
 
 if [ "$OPENVPN_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$OPENVPN_MODE" = "server" ]; then server_chk=' checked'; else client_chk=' checked'; fi
 if [ "$OPENVPN_PROTO" = "udp" ]; then udp_chk=' checked'; else tcp_chk=' checked'; fi
 if [ "$OPENVPN_KEEPALIVE" = "yes" ]; then keep_chk=' checked'; fi
+if [ "$OPENVPN_COMPLZO" = "yes" ]; then comp_chk=' checked'; fi
 if [ "$OPENVPN_TYPE" = "tap" ]; then tap_chk=' checked'; else tun_chk=' checked'; fi
 if [ "$OPENVPN_AUTH_TYPE" = "certs" ]; then certs_chk=' checked'; else static_chk=' checked'; fi
 if [ "$OPENVPN_PUSH_REDIRECT" = "yes" ]; then redir_chk=' checked'; fi
@@ -119,6 +121,7 @@ sec_begin '$(lang de:"Optionen" en:"Options")'
 
 cat << EOF
 <p><input type="hidden" name="keepalive" value=""><input id="k1" type="checkbox" name="keepalive" value="yes"$keep_chk><label for="k1"> $(lang de:"Verbindung aufrechterhalten" en:"Keep connection")</label></p>
+<p><input type="hidden" name="complzo" value=""><input id="k2" type="checkbox" name="complzo" value="yes"$comp_chk><label for="k2">$(lang de:"LZO Komprimierung aktivieren" en:"Enable LZO Compression")</label><br /><small>$(lang de:"Muss auf Server <b>und</b> Client identisch sein" en:"Must be equal on server <b>and</b> client")</small></p>
 <p><input type="hidden" name="float" value=""><input id="k5" type="checkbox" name="float" value="yes"$float_chk><label for="k5">$(lang de:"Erlaube IP-&Auml;nderungen f&uuml;r entfernte Hosts" en:"Allow ip address changes of remote hosts")</label></p>
 <p>$(lang de:"Bandbreitenbegrenzung" en:"Traffic Shaping") (optional): <input id="shaper" type="text" name="shaper" size="4" maxlength="5" value="$(httpd -e "$OPENVPN_SHAPER")"><br /><small>B/s (Bytes $(lang de:"pro Sekunde" en:"per second"))</small></p>
 <p><input type="hidden" name="logfile" value=""><input id="k8" type="checkbox" name="logfile" value="yes"$logfile_chk><label for="k8">$(lang de:"Verbindungen protokollieren" en:"Log connections")</label></p>
