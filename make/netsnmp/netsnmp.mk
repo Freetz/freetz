@@ -100,10 +100,10 @@ NETSNMP_PKG_CONFIGURE_OPTIONS:=\
   --with-out-transports="$(NETSNMP_TRANSPORTS_EXCLUDED)" \
   --with-transports="$(NETSNMP_TRANSPORTS_INCLUDED)" \
   --without-opaque-special-types \
-  $(if $(DS_PACKAGE_NETSNMP_WITH_OPENSSL),,----without-openssl) \
+  $(if $(DS_PACKAGE_NETSNMP_WITH_OPENSSL),,--without-openssl) \
   --without-libwrap \
   --without-rpm \
-  $(if $(DS_PACKAGE_NETSNMP_WITH_ZLIB),,----without-zlib) \
+  $(if $(DS_PACKAGE_NETSNMP_WITH_ZLIB),,--without-zlib) \
 
 $(DL_DIR)/$(NETSNMP_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(NETSNMP_SITE)/$(NETSNMP_SOURCE)
