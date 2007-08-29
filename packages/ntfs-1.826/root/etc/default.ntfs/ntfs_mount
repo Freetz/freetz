@@ -1,0 +1,32 @@
+#!/bin/sh
+
+cat << EOF
+
+cd /mod/etc
+
+if [ "$NTFS_MOUNTPOINT1" != "" ] 
+then
+  echo "mount $NTFS_DEVICE1..."
+  mkdir $NTFS_MOUNTPOINT1
+
+  ntfs-3g  $NTFS_DEVICE1 $NTFS_MOUNTPOINT1
+fi
+
+if [ "$NTFS_MOUNTPOINT2" != "" ]
+then
+  echo "mount $NTFS_DEVICE2..."
+  mkdir $NTFS_MOUNTPOINT2
+
+  ntfs-3g  $NTFS_DEVICE2 $NTFS_MOUNTPOINT2
+fi
+
+if [ "$NTFS_MOUNTPOINT3" != "" ]
+then
+  echo "mount $NTFS_DEVICE3..."
+  mkdir $NTFS_MOUNTPOINT3
+
+  ntfs-3g  $NTFS_DEVICE3 $NTFS_MOUNTPOINT3
+fi
+
+EOF
+
