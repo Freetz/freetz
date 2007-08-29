@@ -51,6 +51,7 @@ $(MC_DIR)/.configured: $(MC_DIR)/.unpacked
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="" \
+		ac_cv_lib_intl_tolower=no \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
