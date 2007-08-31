@@ -1,0 +1,66 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=rcapid
+
+case "$1" in
+	""|load|start|restart|status)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+start() {
+	echo 'rcapid can only be started via inetd'
+	exit 1
+}
+
+stop() {
+	echo 'rcapid can only be stopped by removing it from inetd'
+	exit 1
+}
+
+case "$1" in
+	""|load)
+		modreg cgi 'rcapid' 'Rcapid'
+
+		if [ "$RCAPID_ENABLED" != "inetd" ]; then
+			echo "$DAEMON is disabled" 1>&2
+		else
+			echo "$DAEMON is started via inetd" 1>&2
+		fi
+		;;
+	unload)
+		modunreg cgi 'rcapid'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ "$RCAPID_ENABLED" == "inetd" ]; then
+			echo 'inetd'
+		else
+			echo 'stopped'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
