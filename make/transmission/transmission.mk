@@ -1,15 +1,13 @@
-TRANSMISSION_VERSION:=0.72
-TRANSMISSION_UGLY_VERSION:=.72
+TRANSMISSION_VERSION:=0.81
 TRANSMISSION_SOURCE:=Transmission-$(TRANSMISSION_VERSION).tar.gz
 TRANSMISSION_SITE:=http://download.m0k.org/transmission/files
-TRANSMISSION_UGLY_DIR:=$(SOURCE_DIR)/Transmission $(TRANSMISSION_UGLY_VERSION)
 TRANSMISSION_MAKE_DIR:=$(MAKE_DIR)/transmission
 TRANSMISSION_DIR:=$(SOURCE_DIR)/transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_BINARY:=$(TRANSMISSION_DIR)/cli/transmissioncli
 TRANSMISSION_PKG_VERSION:=0.1
 TRANSMISSION_PKG_SOURCE:=transmission-$(TRANSMISSION_VERSION)-dsmod-binary-only.tar.bz2
 TRANSMISSION_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
-TRANSMISSION_TARGET_DIR:=$(PACKAGES_DIR)/transmission-$(TRANSMISSION_VERSION)/
+TRANSMISSION_TARGET_DIR:=$(PACKAGES_DIR)/transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_TARGET_BINARY:=$(TRANSMISSION_TARGET_DIR)/root/usr/bin/transmissioncli
 
 $(DL_DIR)/$(TRANSMISSION_SOURCE): | $(DL_DIR)
@@ -19,10 +17,8 @@ $(DL_DIR)/$(TRANSMISSION_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TRANSMISSION_PKG_SOURCE) $(TRANSMISSION_PKG_SITE)
 
 $(TRANSMISSION_DIR)/.unpacked: $(DL_DIR)/$(TRANSMISSION_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(TRANSMISSION_SOURCE)
-	if [ -d "$(TRANSMISSION_UGLY_DIR)" ]; then \
-		mv "$(TRANSMISSION_UGLY_DIR)" "$(TRANSMISSION_DIR)"; \
-	fi
+	mkdir -p $(TRANSMISSION_DIR)
+	tar -C $(TRANSMISSION_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(TRANSMISSION_SOURCE)
 	for i in $(TRANSMISSION_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(TRANSMISSION_DIR) $$i; \
 	done
@@ -38,6 +34,7 @@ $(TRANSMISSION_DIR)/.configured: $(TRANSMISSION_DIR)/.unpacked
 		./configure \
 		--prefix=/usr \
 		--disable-gtk \
+		--disable-openssl \
 	);
 	touch $@
 
@@ -51,12 +48,12 @@ $(PACKAGES_DIR)/.transmission-$(TRANSMISSION_VERSION): $(DL_DIR)/$(TRANSMISSION_
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(TRANSMISSION_PKG_SOURCE)
 	@touch $@
 
-transmission: $(PACKAGES_DIR)/.transmission-$(TRANSMISSION_VERSION)
+transmission: #$(PACKAGES_DIR)/.transmission-$(TRANSMISSION_VERSION)
 
-transmission-package: $(PACKAGES_DIR)/.transmission-$(TRANSMISSION_VERSION)
+transmission-package: #$(PACKAGES_DIR)/.transmission-$(TRANSMISSION_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TRANSMISSION_PKG_SOURCE) transmission-$(TRANSMISSION_VERSION)
 
-transmission-precompiled: uclibc transmission $(TRANSMISSION_TARGET_BINARY)
+transmission-precompiled: uclibc libevent-precompiled transmission $(TRANSMISSION_TARGET_BINARY)
 
 transmission-source: $(TRANSMISSION_DIR)/.unpacked $(PACKAGES_DIR)/.transmission-$(TRANSMISSION_VERSION)
 

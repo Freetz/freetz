@@ -1,25 +1,30 @@
 --- libtransmission/choking.c	2007-04-30 17:55:02.000000000 +0200
 +++ libtransmission/choking.c	2007-05-04 22:35:45.000000000 +0200
-@@ -22,13 +22,8 @@
-  * DEALINGS IN THE SOFTWARE.
-  *****************************************************************************/
+@@ -24,7 +24,6 @@
  
+ #include <stdlib.h>
+ #include <string.h>
 -#include <math.h>
+ 
  #include "transmission.h"
+ #include "choking.h"
+@@ -32,10 +31,6 @@
+ #include "platform.h"
+ #include "utils.h"
  
 -#ifndef HAVE_LRINTF
 -#  define lrintf(a) ((int)(0.5+(a)))
 -#endif
 -
- /* We may try to allocate and free tables of size 0. Quick and dirty
-    way to handle it... */
- void * tr_malloc( size_t size )
-@@ -76,7 +71,7 @@
+ struct tr_choking_s
+ {
+     tr_lock_t   * lock;
+@@ -67,7 +62,7 @@
              20  KB/s -> 6  * 3.33 KB/s
              50  KB/s -> 10 * 5.00 KB/s
              100 KB/s -> 14 * 7.14 KB/s */
 -        c->slots = lrintf( sqrt( 2 * limit ) );
-+        c->slots = (3 + limit/10 );
-     tr_lockUnlock( &c->lock );
++        c->slots = ( 3 + limit/10 );
+     tr_lockUnlock( c->lock );
  }
  
