@@ -12,8 +12,11 @@ stat_bar() {
 	echo '<p><img src="/images/green.png" width="'"$bar"'" height="10" border="0" alt=""><img src="/images/grey.png" width="'"$grey"'" height="10" border="0" alt=""> &nbsp;&nbsp;'$percent' %</p>'
 }
 
+btn_count=0
 stat_button() {
-	echo '<div class="btn"><form class="btn" action="/cgi-bin/exec.cgi" method="post"><input type="hidden" name="cmd" value="'"$1"'"><input type="submit" value="'"$2"'" style="width: 174px"></form></div>'
+	btn_count=$((btn_count + 1))
+	echo '<div class="btn"><form class="btn" action="/cgi-bin/exec.cgi" method="post"><input type="hidden" name="cmd" value="'"$1"'"><input type="submit" value="'"$2"'" style="width: 173px"></form></div>'
+	[ $btn_count -eq 3 ] && ( btn_count=0; echo '<br style="clear:left">' )
 }
 
 cgi_begin '$(lang de:"Status" en:"Status")' 'status'
