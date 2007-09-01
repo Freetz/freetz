@@ -35,11 +35,11 @@ $(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked
 		touch include/config.h.in ; \
 		touch configure ; \
 		$(TARGET_CONFIGURE_OPTS) \
-		PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig" \
-		PKG_CONFIG_LIBDIR="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
 		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
+		FUSE_MODULE_CFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include/fuse" \
+		FUSE_MODULE_LIBS="-pthread -lfuse -ldl" \
 		./configure \
 			--target=$(GNU_TARGET_NAME) \
 			--host=$(GNU_TARGET_NAME) \
@@ -77,7 +77,6 @@ $(NTFS_BINARY) $(NTFS_LIB_BINARY): $(NTFS_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
-		FUSE_MODULE_CFLAGS="" \
 		-C $(NTFS_DIR) all
 
 $(NTFS_LIB_STAGING_BINARY): $(NTFS_LIB_BINARY)
