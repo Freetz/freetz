@@ -65,9 +65,14 @@ ifeq ($(shell MWW=root/usr/mww; \
 $(error File permissions or links are wrong! Please unpack DS-Mod on a filesystem with Unix-like permissions)
 endif
 
+# We don't like cygwin
+ifeq ($(shell uname -o),Cygwin)
+$(error Cygwin is not supported! Please use a real Linux environment.)
+endif
+
 all: step
 world: $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
-	$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
+		$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
@@ -226,7 +231,7 @@ endif
 
 firmware: precompiled firmware-nocompile 
 
-test: $(BUILD_DIR)/.modified
+test: $(BUILD_DIR)/modified
 	@echo "no tests defined"
 
 toolchain-depend: | $(TOOLCHAIN)
@@ -273,9 +278,6 @@ push-firmware:
 	fi
 
 recover:
-ifeq ($(strip $(TERM)),cygwin)
-	@echo "Recovery is not supported in cygwin yet." 1>&2
-else
 	@if [ -z "$(IMAGE)" ]; then \
 		echo "Specify an image to recover." 1>&2; \
 		echo "e.g. make recover IMAGE=some.image" 1>&2; \
@@ -314,7 +316,6 @@ else
 			esac; \
 		done; \
 	fi
-endif
 
 $(CONFIG)/conf:
 	$(MAKE) -C $(CONFIG) conf
