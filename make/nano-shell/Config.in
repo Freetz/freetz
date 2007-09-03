@@ -1,0 +1,44 @@
+config DS_PACKAGE_NANO_SHELL
+	bool "Nano Shell"
+	default n
+	help
+		Remotely execute arbitrary shell commands via URLs
+
+		This tiny package enables both the AVM and DS-Mod web interfaces to
+		execute user-specified commands and display their results and/or errors,
+		if available.
+
+		ATTENTION! Nano shell should only be used for debugging purposes, e.g. if
+		telnetd, sshd (Dropbear) or Rudi shell are unavailable for any reason.
+		This is a last resort for executing commands on a router box if anything
+		else fails, but at least one of the two web interfaces (AVM, DS-Mod) is
+		available. It is a POTENTIAL SECURITY HOLE, though, so never use it if
+		your web interfaces are insecurely open to the outside world!!!
+
+		How to use: Send a URL-encoded command appended to the corresponding CGI,
+		for example
+		  * http://fritz.box/cgi-bin/shell.cgi       (AVM web UI)
+		  * http://speedport.ip/cgi-bin/shell.cgi    (AVM web UI)
+		  * http://192.168.0.1/cgi-bin/shell.cgi     (AVM web UI)
+		  * http://fritz.box:81/cgi-bin/shell.cgi    (DS-Mod web UI)
+		  * http://speedport.ip:81/cgi-bin/shell.cgi (DS-Mod web UI)
+		  * http://192.168.0.1:81/cgi-bin/shell.cgi  (DS-Mod web UI)
+		or in general, whichever name or IP address applies to your environment.
+
+		Example commands and corresponding encoded URLs:
+		  * ls -l /var/tmp
+		    http://fritz.box/cgi-bin/shell.cgi?ls%20-l%20%2Fvar%2Ftmp
+		  * /usr/sbin/telnetd -p 2323 -l /bin/sh
+		    http://fritz.box/cgi-bin/shell.cgi?%2Fusr%2Fsbin%2Ftelnetd%20-p%202323%20-l%20%2Fbin%2Fsh
+		  * echo "Erster Befehl"; cat /etc/motd; echo "Dritter Befehl"
+		    http://fritz.box/cgi-bin/shell.cgi?echo%20%22Erster%20Befehl%22%3B%20cat%20%2Fetc%2Fmotd%3B%20echo%20%22Dritter%20Befehl%22
+
+		There are online URL encoders on the web, e.g.
+		http://netzreport.googlepages.com/online_tool_zur_url_kodierung_de.html#kodieren
+
+		Usability tip (tested in IE7, Opera 9.23 and Firefox 2.0.6):
+		Many browsers accept unencoded (i.e. clear-text) CGI parameters, i.e.
+		you can usually also write
+		  * http://fritz.box/cgi-bin/shell.cgi?ls -l /var/tmp
+		  * http://fritz.box/cgi-bin/shell.cgi?/usr/sbin/telnetd -p 2323 -l /bin/sh
+		  * http://fritz.box/cgi-bin/shell.cgi?echo "Erster Befehl"; cat /etc/motd; echo "Dritter Befehl"
