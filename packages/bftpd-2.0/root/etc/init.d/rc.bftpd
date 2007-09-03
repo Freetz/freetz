@@ -104,7 +104,7 @@ case "$1" in
 		if [ "$BFTPD_ENABLED" == "inetd" ]; then
 			echo 'inetd'
  		else
-			if [ -s "/var/run/$DAEMON.pid" ]; then
+			if [ ! -z "$(pidof "$DAEMON")" ]; then
 				echo 'running'
 			else
 				echo 'stopped'
