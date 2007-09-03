@@ -1,0 +1,26 @@
+#!/bin/sh
+
+if [ $VSFTPD_ENABLED != "inetd" ]; then
+    LISTEN="yes"
+else
+    LISTEN="no"
+fi
+
+cat << EOF
+background=yes
+check_shell=no
+listen=$LISTEN
+anonymous_enable=$VSFTPD_ANONYMOUS
+local_enable=$VSFTPD_USERS_ENABLED
+local_umask=022
+chroot_local_user=$VSFTPD_CHROOT
+passwd_chroot_enable=$VSFTPD_CHROOT
+write_enable=yes
+banner_file=/etc/motd
+nopriv_user=root
+secure_chroot_dir=/var/run/vsftpd
+ftp_data_port=$VSFTPD_PORT
+userlist_enable=yes
+anon_root=/mod/home/ftp
+EOF
+

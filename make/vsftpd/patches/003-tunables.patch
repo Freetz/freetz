@@ -1,0 +1,27 @@
+--- tunables.c.orig	2006-07-02 01:06:56.000000000 +0200
++++ tunables.c	2007-09-03 02:14:24.000000000 +0200
+@@ -95,19 +95,19 @@
+ unsigned int tunable_delay_successful_login = 0;
+ unsigned int tunable_max_login_fails = 3;
+ 
+-const char* tunable_secure_chroot_dir = "/usr/share/empty";
++const char* tunable_secure_chroot_dir = "/var/run/vsftpd";
+ const char* tunable_ftp_username = "ftp";
+ const char* tunable_chown_username = "root";
+ const char* tunable_xferlog_file = "/var/log/xferlog";
+ const char* tunable_vsftpd_log_file = "/var/log/vsftpd.log";
+ const char* tunable_message_file = ".message";
+-const char* tunable_nopriv_user = "nobody";
++const char* tunable_nopriv_user = "root";
+ const char* tunable_ftpd_banner = 0;
+-const char* tunable_banned_email_file = "/etc/vsftpd.banned_emails";
+-const char* tunable_chroot_list_file = "/etc/vsftpd.chroot_list";
++const char* tunable_banned_email_file = "/mod/vsftpd.banned_emails";
++const char* tunable_chroot_list_file = "/mod/etc/vsftpd.chroot_list";
+ const char* tunable_pam_service_name = "ftp";
+ const char* tunable_guest_username = "ftp";
+-const char* tunable_userlist_file = "/etc/vsftpd.user_list";
++const char* tunable_userlist_file = "/mod/etc/vsftpd.user_list";
+ const char* tunable_anon_root = 0;
+ const char* tunable_local_root = 0;
+ const char* tunable_banner_file = 0;

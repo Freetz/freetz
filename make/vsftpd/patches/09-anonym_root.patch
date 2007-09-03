@@ -1,0 +1,16 @@
+--- twoprocess.c.orig	2005-03-18 20:04:13.000000000 +0100
++++ twoprocess.c	2007-09-03 03:21:17.000000000 +0200
+@@ -374,13 +374,6 @@
+     str_free(&chroot_str);
+     str_free(&chdir_str);
+     str_free(&userdir_str);
+-    /* Guard against the config error of having the anonymous ftp tree owned
+-     * by the user we are running as
+-     */
+-    if (was_anon && vsf_sysutil_write_access("/"))
+-    {
+-      die("vsftpd: refusing to run with writable anonymous root");
+-    }
+     p_sess->is_anonymous = anon;
+     process_post_login(p_sess);
+     bug("should not get here: common_do_login");
