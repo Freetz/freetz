@@ -11,7 +11,7 @@ UNSQUASHFS_MAKE_DIR:=$(TOOLS_DIR)/make
 
 SQUASHFS_LZMA_VERSION:=443
 SQUASHFS_LZMA_DIR:=$(SOURCE_DIR)/lzma$(SQUASHFS_LZMA_VERSION)
-LZMA_DIR:=../../lzma$(SQUASHFS_LZMA_VERSION)
+SQUASHFS_EXTERNAL_LZMA_DIR:=../../lzma$(SQUASHFS_LZMA_VERSION)
 
 
 $(DL_DIR)/$(SQUASHFS_SOURCE): | $(DL_DIR)
@@ -30,7 +30,7 @@ $(MKSQUASHFS_DIR)/mksquashfs: $(SQUASHFS_DIR)/.unpacked
 	touch -c $@
 
 $(MKSQUASHFS_DIR)/mksquashfs-lzma: $(SQUASHFS_DIR)/.unpacked $(SQUASHFS_LZMA_DIR)/liblzma.a
-	$(MAKE) CXX="$(TOOLS_CXX)" LZMA_DIR="$(LZMA_DIR)" \
+	$(MAKE) CXX="$(TOOLS_CXX)" LZMA_DIR="$(SQUASHFS_EXTERNAL_LZMA_DIR)" \
 		-C $(MKSQUASHFS_DIR) mksquashfs-lzma
 	touch -c $@
 
@@ -40,7 +40,7 @@ $(UNSQUASHFS_DIR)/unsquashfs: $(SQUASHFS_DIR)/.unpacked
 	touch -c $@
 
 $(UNSQUASHFS_DIR)/unsquashfs-lzma: $(SQUASHFS_DIR)/.unpacked $(SQUASHFS_LZMA_DIR)/liblzma.a
-	$(MAKE) CXX="$(TOOLS_CXX)" LZMA_DIR="$(LZMA_DIR)" \
+	$(MAKE) CXX="$(TOOLS_CXX)" LZMA_DIR="$(SQUASHFS_EXTERNAL_LZMA_DIR)" \
 		-C $(MKSQUASHFS_DIR) unsquashfs-lzma
 	touch -c $@
 
