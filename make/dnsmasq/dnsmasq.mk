@@ -1,4 +1,4 @@
-DNSMASQ_VERSION:=2.39
+DNSMASQ_VERSION:=2.40
 DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_SITE:=http://thekelleys.org.uk/dnsmasq
 DNSMASQ_MAKE_DIR:=$(MAKE_DIR)/dnsmasq
