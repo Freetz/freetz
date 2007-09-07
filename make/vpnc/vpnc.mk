@@ -1,4 +1,4 @@
-VPNC_VERSION:=0.4.0
+VPNC_VERSION:=0.5.0
 VPNC_SOURCE:=vpnc-$(VPNC_VERSION).tar.gz
 VPNC_SITE:=http://www.unix-ag.uni-kl.de/~massar/vpnc
 VPNC_MAKE_DIR:=$(MAKE_DIR)/vpnc
@@ -25,11 +25,11 @@ $(VPNC_DIR)/.unpacked: $(DL_DIR)/$(VPNC_SOURCE)
 
 $(VPNC_BINARY): $(VPNC_DIR)/.unpacked 
 	PATH=$(TARGET_PATH) \
-	$(MAKE) CC="$(TARGET_CC)" \
-		EXTRA_CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include" \
-		EXTRA_LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib -L$(TARGET_MAKE_PATH)/../usr/lib" \
-		-C $(VPNC_DIR)
-		
+	    CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
+	    $(MAKE) CC="$(TARGET_CC)" -C $(VPNC_DIR) \
+	    EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
+	    EXTRA_LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" 
+
 $(VPNC_TARGET_BINARY): $(VPNC_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
@@ -42,7 +42,7 @@ vpnc: $(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION)
 vpnc-package: $(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(VPNC_PKG_SOURCE) vpnc-$(VPNC_VERSION)
 
-vpnc-precompiled: uclibc libgcrypt-precompiled libgpg-error-precompiled \
+vpnc-precompiled: uclibc libgpg-error-precompiled libgcrypt-precompiled \
 		    vpnc $(VPNC_TARGET_BINARY)
 
 vpnc-source: $(VPNC_DIR)/.unpacked $(PACKAGES_DIR)/.vpnc-$(VPNC_VERSION)

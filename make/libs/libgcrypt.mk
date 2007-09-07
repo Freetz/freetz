@@ -65,7 +65,7 @@ $(LIBGCRYPT_TARGET_BINARY): $(LIBGCRYPT_STAGING_BINARY)
 
 libgcrypt: $(LIBGCRYPT_STAGING_BINARY)
 
-libgcrypt-precompiled: uclibc libgcrypt $(LIBGCRYPT_TARGET_BINARY)
+libgcrypt-precompiled: uclibc libgpg-error-precompiled libgcrypt $(LIBGCRYPT_TARGET_BINARY)
 
 libgcrypt-source: $(LIBGCRYPT_DIR)/.unpacked
 
