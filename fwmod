@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 #
 #   Script to modify AVM FRITZ!Box firmware images (DS-Mod_26)
 #
@@ -6,7 +6,7 @@
 #
 #   Copyright (C) 2005-2006 Daniel Eiband <eiband@online.de>
 #   Copyright (C) 2006-2007 Oliver Metz, Alexander Kriegisch, Mikolas Bingemer,
-#   Michael Hampicke and more
+#   Michael Hampicke and others
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 #
 # Special Thanks to Andreas Bühmann, Christian Volkmann, Enrik Berkhan,
 # SpeedyBZ and all members on ip-phone-forum.de who contributed to this mod
-
 
 usage()
 {
@@ -81,8 +80,7 @@ CMDLINE_OPTS="umpad:i:lzh:c:v:"
 
 # Default config override?
 # NOTE: Both 'getopts' must have an identical argument list!
-while getopts "$CMDLINE_OPTS" opt
-do
+while getopts "$CMDLINE_OPTS" opt; do
 	if [ "$opt" == "i" ]; then
 		DOT_CONFIG="$OPTARG"
 		echo $DOT_CCONFIG
@@ -109,8 +107,7 @@ OPTIND=0
 
 # Get other options besides '-i <file>'
 # NOTE: Both 'getopts' must have an identical argument list!
-while getopts "$CMDLINE_OPTS" opt
-do
+while getopts "$CMDLINE_OPTS" opt; do
 	case "$opt" in
 		u)
 			DO_UNPACK=1
@@ -234,7 +231,7 @@ else
 	UNSQUASHFS_TOOL="unsquashfs"
 fi
 
-#2.6.13.1 has lzma-support
+# 2.6.13.1 has lzma-support
 MKSQUASHFS_TOOL="mksquashfs-lzma"
 
 #use own tar to avoid strange problems
@@ -334,10 +331,8 @@ modlang()
 	default="$DS_LANG_STRING $(modlangconf "default" "$1") en de $avail"
 	lang=""
 
-	for i in $default
-	do
-		for j in $avail
-		do
+	for i in $default; do
+		for j in $avail; do
 			if [ "$i" == "$j" ]; then
 				lang="$j"
 				break 2
@@ -352,8 +347,7 @@ modlang()
 	[ "$lang" == "$DS_LANG_STRING" ] || \
 		echo "NOTICE: language $DS_LANG_STRING not available; $lang chosen." 1>&2
 
-	for i in $(modlangconf "files" "$1")
-	do
+	for i in $(modlangconf "files" "$1"); do
 		if [ -e "${2}/${i}" ]; then
 			modlangsubst "$lang" "${2}/${i}"
 		else
@@ -563,44 +557,39 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo1 "applying patches (${DS_TYPE_STRING}-${DS_TYPE_LANG_STRING})"
 	
 	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
+		[ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
+		[ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
+	then
 		#no webinterface no patches...
-		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh 
-		do
-		[ -x "$i" ] && . $i
+		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
+			[ -x "$i" ] && . $i
 		done
 	fi
 	# Apply patches
-		for i in "${PATCHES_DIR}/"*.patch
+	for i in "${PATCHES_DIR}/"*.patch; do
+		modpatch "$FILESYSTEM_MOD_DIR" "$i"
+	done
+
+	if [ "$DS_TYPE_STRING" == "custom" ]; then
+		if [ "$DS_HAS_PHONE" == "y" ]; then
+			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-mknod.patch"
+		else
+			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-mknod-nophone.patch"
+		fi
+		for i in "${PATCHES_DIR}/cond/${DS_TYPE_LANG_STRING}/"*.patch; do
+			modpatch "$FILESYSTEM_MOD_DIR" "$i"
+		done
+	else
+		if [ ! -d "${PATCHES_DIR}/${DS_TYPE_STRING}" ]; then
+			error 1 "missing ${PATCHES_DIR}/${DS_TYPE_STRING}"
+		fi
+		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.patch \
+			"${PATCHES_DIR}/${DS_TYPE_STRING}/${DS_TYPE_LANG_STRING}/"*.patch
 		do
 			modpatch "$FILESYSTEM_MOD_DIR" "$i"
 		done
+	fi
 
-		if [ "$DS_TYPE_STRING" == "custom" ]; then
-			if [ "$DS_HAS_PHONE" == "y" ]; then
-				modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-mknod.patch"
-			else
-				modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-mknod-nophone.patch"
-			fi
-
-			for i in "${PATCHES_DIR}/cond/${DS_TYPE_LANG_STRING}/"*.patch
-			do
-				modpatch "$FILESYSTEM_MOD_DIR" "$i"
-			done
-
-		else
-			if [ ! -d "${PATCHES_DIR}/${DS_TYPE_STRING}" ]; then
-				error 1 "missing ${PATCHES_DIR}/${DS_TYPE_STRING}"
-			fi
-
-			for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.patch \
-				"${PATCHES_DIR}/${DS_TYPE_STRING}/${DS_TYPE_LANG_STRING}/"*.patch
-			do
-				modpatch "$FILESYSTEM_MOD_DIR" "$i"
-			done
-		fi
-	
 	echo1 "creating symlink /tmp and /mod"
 	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
 	# Set version and options
@@ -645,14 +634,24 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	if [ -r "$STATIC_PACKAGES_FILE" ]; then
-		for pkg in $(cat "$STATIC_PACKAGES_FILE" | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' | grep -v '^#' | grep -v '^$')
+		for pkg in \
+		$( \
+			cat "$STATIC_PACKAGES_FILE" \
+				| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
+				| grep -v '^#' | grep -v '^$' \
+		)
 		do
 			OPTIONS="$OPTIONS +$pkg"
 		done
 	fi
 
 	if [ -r "$STATIC_ADDON_FILE" ]; then
-		for pkg in $(cat "$STATIC_ADDON_FILE" | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' | grep -v '^#' | grep -v '^$')
+		for pkg in \
+		$( \
+			cat "$STATIC_ADDON_FILE" \
+				| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
+				| grep -v '^#' | grep -v '^$' \
+		)
 		do
 			OPTIONS="$OPTIONS +$pkg"
 		done
@@ -666,16 +665,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# execute patch scripts
 	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
-		for i in "${PATCHES_DIR}/"*.sh
-		do
+		[ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
+		[ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
+	then
+		for i in "${PATCHES_DIR}/"*.sh; do
 			[ -x "$i" ] && . $i
 		done 
 	else
 		#other DS_TYPES
-		for i in "${PATCHES_DIR}/"*.sh "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh
-		do
+		for i in "${PATCHES_DIR}/"*.sh "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
 			[ -x "$i" ] && . $i
 		done
 	fi
@@ -685,9 +683,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oem_removed=0
 	oem_kept=0
 	oem_list=
-	
+
 	oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
-	
+
 	#W701V and W900V have only tcom
 	if [ -z "$oems" ]; then
 		if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
@@ -700,9 +698,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin" ] && \
-	ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_status"
+		ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_status"
 	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin" ] && \
-	ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_wol"
+		ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_wol"
 	
 	# international version
 	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin" ] && \
@@ -710,23 +708,20 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin" ] && \
 	ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin/dsmod_wol"
 	
-	for i in $oems
-	do
+	for i in $oems; do
 		if [ "$(eval "echo \"\$DS_BRANDING_${i}\"")" != "y" ]; then
-		[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo -n " $i"
-		rm -rf "${FILESYSTEM_MOD_DIR}/usr/www/${i}"
-		rm -rf "${FILESYSTEM_MOD_DIR}/etc/default."*"/${i}"
-		oem_removed=1
+			[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo -n " $i"
+			rm -rf "${FILESYSTEM_MOD_DIR}/usr/www/${i}"
+			rm -rf "${FILESYSTEM_MOD_DIR}/etc/default."*"/${i}"
+			oem_removed=1
 		else
-		
-		# it seems that all oem dirs are symlinks, no extra directorys anymore?
-		#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
-		#ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_status"
-		#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
-		#ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_wol"
-
-		oem_list="$oem_list $i"
-		oem_kept=1
+			# it seems that all oem dirs are symlinks, no extra directorys anymore?
+			#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
+			#	ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_status"
+			#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
+			#	ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_wol"
+			oem_list="$oem_list $i"
+			oem_kept=1
 		fi
 	done
 
@@ -782,9 +777,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../var/tmp/onlinechanged "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 
 		echo1 "installing libs"
-		for i in $(cd "${ROOT_DIR}" && find lib usr/lib \
-								-type d -name .svn -prune -false , \
-														-type f -name "*.so*")
+		for i in \
+		$( \
+			cd "${ROOT_DIR}" && \
+			find lib usr/lib -type d -name .svn -prune -false , -type f -name "*.so*" \
+		)
 		do
 			bn="$(basename "$i")"
 			lib="${bn%\.so*}"
@@ -805,8 +802,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/nww/favicon.ico"
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/mww/favicon.ico"
 
-			for i in $(ls "${FILESYSTEM_MOD_DIR}/usr/www/")
-			do
+			for i in $(ls "${FILESYSTEM_MOD_DIR}/usr/www/"); do
 				case "$i" in
 					cgi-bin|html)
 						;;
@@ -899,8 +895,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	do
 		bn="$(basename "$i")"
 		mod="${bn%\.ko}"
-		
-        if [ "$DS_MODULES_ALL" = "y" -o "$(eval "echo \"\$DS_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]; then
+        if [ "$DS_MODULES_ALL" = "y" -o \
+			"$(eval "echo \"\$DS_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]
+		then
 			echo2 "${bn}"
 			dn="$(dirname "$i")"
 			[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
@@ -916,7 +913,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	"$TAR" -c -C "${KERNEL_REP_DIR}/root" --exclude=lib --exclude=usr/lib \
 		$([ -r "${KERNEL_REP_DIR}/.exclude" ] && echo "--exclude-from=${KERNEL_REP_DIR}/.exclude") \
 		$([ "$DS_PACKAGE_IPTABLES" != "y" ] && echo "--exclude=usr/sbin/iptables") \
-	.	| "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		. | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 	echo1 "installing libs"
 	for i in \
@@ -940,7 +937,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo "installing packages"
 	
 	if [ -r "$STATIC_PACKAGES_FILE" ]; then
-		for pkg in $(sort "$STATIC_PACKAGES_FILE" | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' | grep -v '^#' | grep -v '^$')
+		for pkg in \
+		$( \
+			sort "$STATIC_PACKAGES_FILE" \
+				| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
+				| grep -v '^#' | grep -v '^$' \
+		)
 		do
 			echo1 "${pkg}"
 			pkg_name="$(echo "$pkg" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//')"
@@ -950,8 +952,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 			else
 				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
-					$([ -r "${PACKAGES_DIR}/${pkg}/.exclude" ] && echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude") \
-					. | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+					$( \
+						[ -r "${PACKAGES_DIR}/${pkg}/.exclude" ] \
+							&& echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude" \
+					) . | \
+				"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 				[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
 					modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
@@ -961,7 +966,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 	fi
 	if [ -r "$STATIC_ADDON_FILE" ]; then
-		for pkg in $(cat "$STATIC_ADDON_FILE" | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' | grep -v '^#' | grep -v '^$')
+		for pkg in \
+		$( \
+			cat "$STATIC_ADDON_FILE" \
+				| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
+				| grep -v '^#' | grep -v '^$' \
+		)
 		do
 			echo1 "${pkg} (addon)"
 			pkg_name="$(echo "$pkg" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//')"
@@ -971,8 +981,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 				"$TAR" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 			else
 				"$TAR" -c -C "${ADDON_DIR}/${pkg}/root" \
-					$([ -r "${ADDON_DIR}/${pkg}/.exclude" ] && echo "--exclude-from=${ADDON_DIR}/${pkg}/.exclude") \
-					. | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+					$( \
+						[ -r "${ADDON_DIR}/${pkg}/.exclude" ] \
+							&& echo "--exclude-from=${ADDON_DIR}/${pkg}/.exclude" \
+					) . | \
+				"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 				[ -r "${ADDON_DIR}/${pkg}/.language" ] && \
 					modlang "${ADDON_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
@@ -981,7 +994,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
 		done
 	fi
-	
+
 	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
 		echo "invoking custom script"
 
@@ -1041,7 +1054,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "no hidden squashfs found"
 	fi
 
-		# Delete all files that we are going to re-create now
+	# Delete all files that we are going to re-create now
 	rm -f "$VARTAR_MOD"
 	rm -f "$RAW_HIDDEN_MOD"
 	rm -f "$KERNEL_MOD"
@@ -1102,7 +1115,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ ! -s "$KERNEL_MOD" ]; then
 		error 1 "kernel merging failed"
 	fi
-	
+
 	# Check size of kernel image
 	let KERNEL_LIMIT="$DS_KERNEL_MTD_SIZE*65536"
 	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
