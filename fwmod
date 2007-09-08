@@ -1100,8 +1100,11 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	echo "creating filesystem image"
-	"$FAKEROOT" -s fakechroot.save $MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
-	"$FAKEROOT" -i fakechroot.save $TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD -le -noappend -all-root -b $FILESYSTEM_BLOCKSIZE -info >> $MOD_DIR/filesystem.log 2>&1
+	"$FAKEROOT" -s fakechroot.save -- $MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
+	# Possible race condition: save file must become available in file system.
+	# This can take an instant, so wait if necessary.
+	until [ -r fakechroot.save ]; do sleep 0.1; done
+	"$FAKEROOT" -i fakechroot.save -- $TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD -le -noappend -all-root -b $FILESYSTEM_BLOCKSIZE -info >> $MOD_DIR/filesystem.log 2>&1
 	rm -f fakechroot.save
 
 	if [ ! -s "$FILESYSTEM_MOD" ]; then
