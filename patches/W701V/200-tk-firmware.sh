@@ -17,6 +17,9 @@ rm -rf "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/tcom"
 "$TAR" -c -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7170" avm | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V" 
 ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/tcom"
 
+# Activate backup-/restore menu
+sed -i -e 's,STOREUSRCFG=n,STOREUSRCFG=y,g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
+
 echo1 "copying mailer"
 cp -a "${DIR}/.tk/original/filesystem/sbin/mailer" "${FILESYSTEM_MOD_DIR}/sbin"
 
