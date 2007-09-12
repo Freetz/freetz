@@ -1,4 +1,4 @@
---- libbb/copy_file.c	2007/04/12 00:32:05	18409
+--- libbb/copy_file.c	2007/03/20 11:30:28	18176
 +++ libbb/copy_file.c	2007/09/11 16:28:14	19816
 @@ -19,28 +19,31 @@
  // (or fail, if it points to dir/nonexistent location/etc).
@@ -146,7 +146,7 @@
  		int (*lf)(const char *oldpath, const char *newpath);
   make_links:
  		// Hmm... maybe
-@@ -188,47 +214,52 @@
+@@ -188,48 +214,52 @@
  				return -1;
  			}
  		}
@@ -196,8 +196,10 @@
  			add_to_ino_dev_hashtable(&source_stat, dest);
  		}
  
- 		src_fd = open_or_warn(source, O_RDONLY);
--		if (src_fd < 0) {
+-		src_fd = open(source, O_RDONLY);
+-		if (src_fd == -1) {
+-			bb_perror_msg("cannot open '%s'", source);
++		src_fd = open_or_warn(source, O_RDONLY);
 +		if (src_fd < 0)
  			return -1;
 -		}
@@ -224,7 +226,28 @@
  		if (dst_fd == -1) {
  			ovr = ask_and_unlink(dest, flags);
  			if (ovr <= 0) {
-@@ -264,60 +295,55 @@
+@@ -237,9 +267,8 @@
+ 				return ovr;
+ 			}
+ 			/* It shouldn't exist. If it exists, do not open (symlink attack?) */
+-			dst_fd = open(dest, O_WRONLY|O_CREAT|O_EXCL, source_stat.st_mode);
+-			if (dst_fd == -1) {
+-				bb_perror_msg("cannot open '%s'", dest);
++			dst_fd = open3_or_warn(dest, O_WRONLY|O_CREAT|O_EXCL, source_stat.st_mode);
++			if (dst_fd < 0) {
+ 				close(src_fd);
+ 				return -1;
+ 			}
+@@ -256,7 +285,7 @@
+ 				return -1;
+ 			}
+ 			if (con) {
+-				if(setfilecon(dest, con) == -1) {
++				if (setfilecon(dest, con) == -1) {
+ 					bb_perror_msg("setfilecon:%s,%s", dest, con);
+ 					freecon(con);
+ 					return -1;
+@@ -266,60 +295,55 @@
  		}
  #endif
  		if (bb_copyfd_eof(src_fd, dst_fd) == -1)
@@ -234,17 +257,13 @@
  		if (close(dst_fd) < 0) {
  			bb_perror_msg("cannot close '%s'", dest);
 -			status = -1;
--		}
++			retval = -1;
+ 		}
 -		if (close(src_fd) < 0) {
 -			bb_perror_msg("cannot close '%s'", source);
 -			status = -1;
-+			retval = -1;
- 		}
-+		/* ...but read size is already checked by bb_copyfd_eof */
-+		close(src_fd);
-+		goto preserve_mode_ugid_time;
-+	}
- 
+-		}
+-
 -	} else if (S_ISBLK(source_stat.st_mode) || S_ISCHR(source_stat.st_mode)
 -	 || S_ISSOCK(source_stat.st_mode) || S_ISFIFO(source_stat.st_mode)
 -	 || S_ISLNK(source_stat.st_mode)
@@ -262,7 +281,11 @@
 -			}
 -		} else if (S_ISLNK(source_stat.st_mode)) {
 -			char *lpath;
--
++		/* ...but read size is already checked by bb_copyfd_eof */
++		close(src_fd);
++		goto preserve_mode_ugid_time;
++	}
+ 
 -			lpath = xmalloc_readlink_or_warn(source);
 -			if (lpath && symlink(lpath, dest) < 0) {
 +	/* Source is a symlink or a special file */
@@ -319,7 +342,7 @@
  
  	if (flags & FILEUTILS_PRESERVE_STATUS
  	/* Cannot happen: */
-@@ -327,6 +353,7 @@
+@@ -329,6 +353,7 @@
  
  		times.actime = source_stat.st_atime;
  		times.modtime = source_stat.st_mtime;
@@ -327,7 +350,7 @@
  		if (utime(dest, &times) < 0)
  			bb_perror_msg("cannot preserve %s of '%s'", "times", dest);
  		if (chown(dest, source_stat.st_uid, source_stat.st_gid) < 0) {
-@@ -337,5 +364,5 @@
+@@ -339,5 +364,5 @@
  			bb_perror_msg("cannot preserve %s of '%s'", "permissions", dest);
  	}
  
