@@ -13,9 +13,8 @@ mkdir "${FILESYSTEM_MOD_DIR}/usr/www/all"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/avm"
 
-rm -rf "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/tcom"
-"$TAR" -c -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7170" avm | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V" 
-ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/tcom"
+"$TAR" -c -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7170/avm" --exclude=*.cfg . | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/tcom" 
+ln -sf tcom "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/avm"
 
 # Activate backup-/restore menu
 sed -i -e 's,STOREUSRCFG=n,STOREUSRCFG=y,g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
