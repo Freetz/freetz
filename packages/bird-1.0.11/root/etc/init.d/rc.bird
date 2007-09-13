@@ -4,38 +4,49 @@ export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/
 export LD_LIBRARY_PATH=/mod/lib
 
 DAEMON=bird
-CFGFILE="/tmp/flash/bird.conf"
-[ -e /etc/bird.conf ] && CFGFILE="/etc/bird.conf"
+CFGFILE='/tmp/flash/bird.conf'
+[ -e /etc/bird.conf -a ! -e $CFGFILE ] && CFGFILE='/etc/bird.conf'
+
+case "$1" in
+        ''|load|start|restart)
+		if [ ! -r '/mod/etc/conf/bird.cfg' ]; then
+			echo 'Error[bird]: not configured' 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/bird.cfg
+	;;
+esac
 
 ar7ipaddr () {
-  local SEC=$1
-  local DEV=$2
-  echo $(echo 'ar7cfg.'$SEC'['$DEV'].ipaddr' | ar7cfgctl -s)
+	local SEC=$1
+	local DEV=$2
+	echo $(echo 'ar7cfg.'$SEC'['$DEV'].ipaddr' | ar7cfgctl -s)
 }
 
 getipaddr () {
-  local ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
-  local devname=lan
-  local section=ethinterfaces
-  case "$ethmode" in
-    ethmode_bridge)
-      section=brinterfaces
-      break
-      ;;
-  esac
-  local ipaddr=$(ar7ipaddr $section $devname)
-  if [ -z "$ipaddr" ] ; then
-    devname=eth0
-    ipaddr=$(ar7ipaddr $section $devname)
-  fi
-  if [ -z "$ipaddr" ] ; then
-    ipaddr=192.168.178.254
-  fi
-  echo $ipaddr
+	local ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
+	local devname=lan
+	local section=ethinterfaces
+	case "$ethmode" in
+		ethmode_bridge)
+			section=brinterfaces
+			break
+			;;
+	esac
+	local ipaddr=$(ar7ipaddr $section $devname)
+	if [ -z "$ipaddr" ]; then
+		devname=eth0
+		ipaddr=$(ar7ipaddr $section $devname)
+	fi
+	if [ -z "$ipaddr" ]; then
+		ipaddr=169.254.1.1
+	fi
+	echo $ipaddr
 }
 
 start() {
-	if [ ! -e "$CFGFILE" ] ; then
+	if [ ! -e "$CFGFILE" ]; then
 		echo "Creating $CFGFILE"
 		{
 		  echo "router id $(getipaddr);"
@@ -88,7 +99,7 @@ EOF
 }
 
 stop() {
-	if [ ! -z "$(pidof $DAEMON)" ] ; then
+	if [ ! -z "$(pidof $DAEMON)" ]; then
 		echo -n 'Stopping bird...'
 		killall $DAEMON > /dev/null 2>&1
 		exitval=$?
@@ -103,16 +114,25 @@ stop() {
 }
 
 case "$1" in
-	""|load)
-		deffile='/mod/etc/default.bird/bird_conf.def'
-		[ -r "/tmp/flash/bird_conf.def" ] && deffile="/tmp/flash/bird_conf.def"
-		[ "$CFGFILE" != "/etc/bird.conf" ] && modreg file 'bird_conf' 'bird.conf' 0 "$deffile"
+	''|load)
+		modreg cgi 'bird' 'BIRD'
 
+		deffile='/mod/etc/default.bird/bird_conf.def'
+		[ -r '/tmp/flash/bird_conf.def' ] && deffile='/tmp/flash/bird_conf.def'
+		[ "$CFGFILE" != '/etc/bird.conf' ] && modreg file 'bird_conf' 'BIRD - bird.conf' 0 "$deffile"
+
+		if [ "$BIRD_ENABLED" = 'no' ]; then
+			echo 'BIRD is disabled' 1>&2
+			exit 1
+		fi
+
+		[ "$BIRD_AUTOSTARTDELAY" -gt 0 ] && sleep $BIRD_AUTOSTARTDELAY
 		start
 		;;
 	unload)
 		stop
-		[ "$CFGFILE" != "/etc/bird.conf" ] && modunreg file 'bird_conf'
+		[ "$CFGFILE" != '/etc/bird.conf' ] && modunreg file 'bird_conf'
+		modunreg cgi 'bird'
 		;;
 	start)
 		start
