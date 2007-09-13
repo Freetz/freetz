@@ -30,20 +30,16 @@
 # Special Thanks to Andreas Bühmann, Christian Volkmann, Enrik Berkhan,
 # SpeedyBZ and all members on ip-phone-forum.de who contributed to this mod
 
+
 usage()
 {
-	echo "Usage: fwmod [-u|-m|-p|-a|-h <y/n>|-c <y/n>|-v <y/n>] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]" 1>&2
+	echo "Usage: fwmod [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]" 1>&2
 	echo "  actions" 1>&2
 	echo "    -u         unpack firmware image" 1>&2
 	echo "    -m         modify previously unpacked image" 1>&2
 	echo "    -p         pack firmware image" 1>&2
 	echo "    -a         all: unpack, modify and pack firmware image (-u -m -p)" 1>&2
 	echo "  options" 1>&2
-	echo "    -l         force lzma decompression (default: no)" 1>&2
-	echo "    -z         force zlib decompression (default: yes)" 1>&2
-	echo "    -h <y/n>   hidden root on/off" 1>&2
-	echo "    -c <y/n>   contiguous hidden root on/off" 1>&2
-	echo "    -v <y/n>   var.tar in root-fs on/off" 1>&2
 	echo "  input/output" 1>&2
 	echo "    -i <cfg>   input file for configuration data (default: .config)" 1>&2
 	echo "    -d <dir>   build directory (default: <orig_firmware>.mod)" 1>&2
@@ -76,7 +72,7 @@ L2='    '
 # Default values
 DS_VERBOSITY_LEVEL=0
 DOT_CONFIG="$(dirname "$0")/.config"
-CMDLINE_OPTS="umpad:i:lzh:c:v:"
+CMDLINE_OPTS="umpad:i:lz:"
 
 # Default config override?
 # NOTE: Both 'getopts' must have an identical argument list!
@@ -133,44 +129,6 @@ while getopts "$CMDLINE_OPTS" opt; do
 		i)
 			# Do nothing, DOT_CONFIG has been assigned already
 			;;
-		l)
-			DS_SQUASHFS_LZMA="y"
-			;;
-		z)
-			DS_SQUASHFS_LZMA="n"
-			;;
-		h)
-			if [ "$OPTARG" == "y" ]; then
-				DS_HIDDEN_ROOT="y"
-			elif [ "$OPTARG" == "n" ]; then
-				DS_HIDDEN_ROOT="n"
-				DS_CONTIGUOUS_HIDDEN_ROOT="n"
-			else
-				usage
-				exit 1
-			fi
-			;;
-		c)
-			if [ "$OPTARG" == "y" ]; then
-				DS_HIDDEN_ROOT="y"
-				DS_CONTIGUOUS_HIDDEN_ROOT="y"
-			elif [ "$OPTARG" == "n" ]; then
-				DS_CONTIGUOUS_HIDDEN_ROOT="n"
-			else
-				usage
-				exit 1
-			fi
-			;;
-		v)
-			if [ "$OPTARG" == "y" ]; then
-				DS_ROOTFS_VARTAR="y"
-			elif [ "$OPTARG" == "n" ]; then
-				DS_ROOTFS_VARTAR="n"
-			else
-				usage
-				exit 1
-			fi
-			;;
 		*)
 			usage
 			exit 1
@@ -208,10 +166,8 @@ SOURCE_SUBDIR="source"
 FIRMWARE_SUBDIR="firmware"
 FILESYSTEM_SUBDIR="filesystem"
 KERNEL_SUBDIR="kernel"
-HIDDEN_SUBDIR="hidden"
 VARTAR_SUBDIR="var.tar"
 
-FILESYSTEM_IMAGE="var/tmp/filesystem.image"
 KERNEL_IMAGE="var/tmp/kernel.image"
 
 RAW_KERNEL_FILE="kernel.raw"
@@ -223,18 +179,8 @@ TICHKSUM_TOOL="tichksum"
 RMTICHKSUM_TOOL="rmtichksum"
 MAKEDEVS_TOOL="makedevs"
 FAKEROOT_TOOL="fakeroot"
-
-
-if [ "$DS_SQUASHFS_LZMA" == "y" ]; then
-	UNSQUASHFS_TOOL="unsquashfs-lzma"
-else
-	UNSQUASHFS_TOOL="unsquashfs"
-fi
-
-# 2.6.13.1 has lzma-support
+UNSQUASHFS_TOOL="unsquashfs-lzma"
 MKSQUASHFS_TOOL="mksquashfs-lzma"
-
-#use own tar to avoid strange problems
 TAR_TOOL="tar"
 
 TOOLS_DIR="${ABS_BASE_DIR}/${TOOLS_SUBDIR}"
@@ -381,28 +327,13 @@ ORG_DIR="${DIR}/original"
 FIRMWARE_DIR="${ORG_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_DIR="${ORG_DIR}/${FILESYSTEM_SUBDIR}"
 KERNEL_DIR="${ORG_DIR}/${KERNEL_SUBDIR}"
-HIDDEN_DIR="${KERNEL_DIR}/${HIDDEN_SUBDIR}"
 VARTAR_DIR="${KERNEL_DIR}/${VARTAR_SUBDIR}"
 
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
 
 RAW_KERNEL="${KERNEL_DIR}/${RAW_KERNEL_FILE}"
-RAW_HIDDEN="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
-
-if [ "$DS_HIDDEN_ROOT" == "y" ]; then
-	FILESYSTEM="${RAW_HIDDEN}"
-	[ "$DS_CONTIGUOUS_HIDDEN_ROOT" == "y" ] && \
-		FILESYSTEM_CONTINUATION="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
-else
-	FILESYSTEM="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
-fi
-
-if [ "$DS_ROOTFS_VARTAR" == "y" ]; then
-	VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
-else
-	VARTAR="${HIDDEN_DIR}/${VARTAR_FILE}"
-fi
-
+FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
+VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
 if [ "$DO_UNPACK" -gt 0 ]; then
 	echo -e "\033[1mSTEP 1: UNPACK\033[0m"
@@ -415,9 +346,6 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	"$TAR" -xif "$FIRMWARE" -C "$FIRMWARE_DIR" || exit 1
 
 	# Do the images exist ?
-	if [ ! -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ]; then
-		error 1 "cannot find filesystem image"
-	fi
 	if [ ! -r "${FIRMWARE_DIR}/${KERNEL_IMAGE}" ]; then
 		error 1 "cannot find kernel.image"
 	fi
@@ -426,45 +354,21 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ ! -x "$RMTICHKSUM" ]; then
 		error 1 "cannot find the tool $RMTICHKSUM_TOOL"
 	fi
-
-	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
-	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${KERNEL_IMAGE}" > /dev/null
-
-	# Do we have the tool ?
+	if [ ! -x "$UNSQUASHFS" ]; then
+		error 1 "cannot find the tool $UNSQUASHFS_TOOL"
+	fi
 	if [ ! -x "$FINDSQUASHFS" ]; then
 		error 1 "cannot find the very useful tool $FINDSQUASHFS_TOOL"
 	fi
+	
+	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${KERNEL_IMAGE}" > /dev/null
 
 	echo "splitting kernel image"
 	mkdir "$KERNEL_DIR"
 	( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
 
-	# Hidden squashfs found ?
-	if [ ! -r "$RAW_KERNEL" -o ! -r "$RAW_HIDDEN" ]; then
+	if [ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ]; then
 		error 1 "kernel splitting failed"
-	fi
-
-	# Do we have the tool ?
-	if [ ! -x "$UNSQUASHFS" ]; then
-		error 1 "cannot find the tool $UNSQUASHFS_TOOL"
-	fi
-
-	if [ "$DS_HIDDEN_ROOT" == "y" ]; then
-		if [ "$DS_CONTIGUOUS_HIDDEN_ROOT" == "y" ]; then
-			if [ ! -r "$FILESYSTEM_CONTINUATION" ]; then
-				error 1 "cannot find filesystem continuation"
-			fi
-
-			cat "$FILESYSTEM_CONTINUATION" >> "$FILESYSTEM"
-		fi
-	else
-		# Does hidden squashfs exist ?
-		if [ ! -r "$RAW_HIDDEN" ]; then
-			error 1 "no hidden squashfs found"
-		fi
-
-		echo "unpacking hidden squashfs"
-		modunsqfs "$HIDDEN_DIR" "$RAW_HIDDEN"
 	fi
 
 	echo "unpacking filesystem image"
@@ -476,7 +380,6 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		error 1 "could not unpack the filesystem image"
 	fi
 
-	# var.tar already untared ?
 	if [ ! -r "$VARTAR" ]; then
 		error 1 "no var.tar found"
 	fi
@@ -489,7 +392,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ -n "$FIRMWARE2" ]; then
 		echo "unpacking tk image"
 		rm -rf "${DIR}/.tk"
-		"$0" -u -l -d "${DIR}/.tk" "$FIRMWARE2" > /dev/null
+		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" > /dev/null
 	fi
 
 	touch "${DIR}/.unpacked"
@@ -507,32 +410,21 @@ MOD_DIR="${DIR}/modified"
 FIRMWARE_MOD_DIR="${MOD_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_MOD_DIR="${MOD_DIR}/${FILESYSTEM_SUBDIR}"
 KERNEL_MOD_DIR="${MOD_DIR}/${KERNEL_SUBDIR}"
-HIDDEN_MOD_DIR="${KERNEL_MOD_DIR}/${HIDDEN_SUBDIR}"
 VARTAR_MOD_DIR="${KERNEL_MOD_DIR}/${VARTAR_SUBDIR}"
 
 KERNEL_MOD="${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}"
 
 RAW_KERNEL_MOD="${KERNEL_MOD_DIR}/${RAW_KERNEL_FILE}"
-RAW_HIDDEN_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
+FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
+VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
 
-if [ "$DS_HIDDEN_ROOT" == "y" -a "$DS_CONTIGUOUS_HIDDEN_ROOT" != "y" ]; then
-	FILESYSTEM_MOD="${RAW_HIDDEN_MOD}"
-else
-	FILESYSTEM_MOD="${FIRMWARE_MOD_DIR}/${FILESYSTEM_IMAGE}"
-fi
-
-if [ "$DS_ROOTFS_VARTAR" == "y" ]; then
-	VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
-else
-	VARTAR_MOD="${HIDDEN_MOD_DIR}/${VARTAR_FILE}"
-fi
-
+HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www"
 if [ "$DS_TYPE_LANG_A_CH" == "y" ]; then
-	HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www/avme/de/html/de"
+	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/de/html/de"
 elif [ "$DS_TYPE_LANG_EN" == "y" ]; then
-	HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www/avme/en/html/en"
+	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/en/html/en"
 else
-	HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www/all/html/de"
+	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/all/html/de"
 fi
 
 if [ "$DO_MOD" -gt 0 ]; then
@@ -547,24 +439,23 @@ if [ "$DO_MOD" -gt 0 ]; then
 	rm -f "${DIR}/.modified"
 
 	# Copy the unpacked directory
-	#cp -r "$ORG_DIR" "$MOD_DIR"
 	mkdir -p "$MOD_DIR"
-	"$TAR" -c -C "$ORG_DIR" --exclude=dev . | 
-	"$TAR" -x -C "$MOD_DIR" || exit 1
+	"$TAR" -c -C "$ORG_DIR" --exclude=dev . | "$TAR" -x -C "$MOD_DIR" || exit 1
 
 	echo "applying patches"
 
 	echo1 "applying patches (${DS_TYPE_STRING}-${DS_TYPE_LANG_STRING})"
 	
+	# Webinterface from .tk-firmware must be copied at first
 	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
-		[ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
-		[ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
+	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
+	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
-		#no webinterface no patches...
 		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
-			[ -x "$i" ] && . $i
+		[ -x "$i" ] && . $i
 		done
 	fi
+
 	# Apply patches
 	for i in "${PATCHES_DIR}/"*.patch; do
 		modpatch "$FILESYSTEM_MOD_DIR" "$i"
@@ -576,6 +467,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		else
 			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-mknod-nophone.patch"
 		fi
+
 		for i in "${PATCHES_DIR}/cond/${DS_TYPE_LANG_STRING}/"*.patch; do
 			modpatch "$FILESYSTEM_MOD_DIR" "$i"
 		done
@@ -583,13 +475,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 		if [ ! -d "${PATCHES_DIR}/${DS_TYPE_STRING}" ]; then
 			error 1 "missing ${PATCHES_DIR}/${DS_TYPE_STRING}"
 		fi
+
 		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.patch \
 			"${PATCHES_DIR}/${DS_TYPE_STRING}/${DS_TYPE_LANG_STRING}/"*.patch
 		do
 			modpatch "$FILESYSTEM_MOD_DIR" "$i"
 		done
 	fi
-
+	
 	echo1 "creating symlink /tmp and /mod"
 	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
 	# Set version and options
@@ -637,8 +530,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		for pkg in \
 		$( \
 			cat "$STATIC_PACKAGES_FILE" \
-				| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
-				| grep -v '^#' | grep -v '^$' \
+				 | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
+				 | grep -v '^#' | grep -v '^$' \
 		)
 		do
 			OPTIONS="$OPTIONS +$pkg"
@@ -649,8 +542,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		for pkg in \
 		$( \
 			cat "$STATIC_ADDON_FILE" \
-				| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
-				| grep -v '^#' | grep -v '^$' \
+				  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
+				  | grep -v '^#' | grep -v '^$' \
 		)
 		do
 			OPTIONS="$OPTIONS +$pkg"
@@ -665,15 +558,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# execute patch scripts
 	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
-		[ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
-		[ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
+	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
+	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
 		for i in "${PATCHES_DIR}/"*.sh; do
 			[ -x "$i" ] && . $i
 		done 
 	else
 		#other DS_TYPES
-		for i in "${PATCHES_DIR}/"*.sh "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
+		for i in "${PATCHES_DIR}/"*.sh "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh;	do
 			[ -x "$i" ] && . $i
 		done
 	fi
@@ -683,30 +576,23 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oem_removed=0
 	oem_kept=0
 	oem_list=
-
+	
 	oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
-
-	#W701V and W900V have only tcom
+	
 	if [ -z "$oems" ]; then
-		if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
-		    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
-		    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]; then
-			oems="tcom"
-		else
-			error 1 "no oems found"
-		fi
+		error 1 "no oems found"
 	fi
 
-	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin" ] && \
-		ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_status"
-	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin" ] && \
-		ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/all/cgi-bin/dsmod_wol"
+	[ -d "${HTML_MOD_DIR}/all/cgi-bin" ] && \
+	ln -sf /usr/www/cgi-bin/dsmod_status "${HTML_MOD_DIR}/all/cgi-bin/dsmod_status"
+	[ -d "${HTML_MOD_DIR}/all/cgi-bin" ] && \
+	ln -sf /usr/www/cgi-bin/dsmod_wol "${HTML_MOD_DIR}/all/cgi-bin/dsmod_wol"
 	
 	# international version
-	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin" ] && \
-	ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin/dsmod_status"
-	[ -d "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin" ] && \
-	ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/avme/en/cgi-bin/dsmod_wol"
+	[ -d "${HTML_LANG_MOD_DIR}/cgi-bin" ] && \
+	ln -sf /usr/www/cgi-bin/dsmod_status "${HTML_LANG_MOD_DIR}/cgi-bin/dsmod_status"
+	[ -d "${HTML_LANG_MOD_DIR}/cgi-bin" ] && \
+	ln -sf /usr/www/cgi-bin/dsmod_wol "${HTML_LANG_MOD_DIR}/cgi-bin/dsmod_wol"
 	
 	for i in $oems; do
 		if [ "$(eval "echo \"\$DS_BRANDING_${i}\"")" != "y" ]; then
@@ -715,11 +601,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 			rm -rf "${FILESYSTEM_MOD_DIR}/etc/default."*"/${i}"
 			oem_removed=1
 		else
-			# it seems that all oem dirs are symlinks, no extra directorys anymore?
-			#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
-			#	ln -sf /usr/www/cgi-bin/dsmod_status "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_status"
-			#[ -d "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin" ] && \
-			#	ln -sf /usr/www/cgi-bin/dsmod_wol "${FILESYSTEM_MOD_DIR}/usr/www/${i}/cgi-bin/dsmod_wol"
 			oem_list="$oem_list $i"
 			oem_kept=1
 		fi
@@ -729,8 +610,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ "$oem_removed" -eq 0 ] && echo -n " none"
 		echo ""
 	fi
-
-	sed -i -e 's/for i in  avm.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
+	
+	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
+	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
+	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
+	then
+		oem_list="tcom avm"
+		sed -i -e 's/for i in  tcom.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
+	else	
+		sed -i -e 's/for i in  avm.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
+	fi
 
 	if [ "$oem_kept" -eq 0 ]; then
 		error 1 "at least one oem must be supported"
@@ -756,14 +645,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 		MOD_ROOT="${VARTAR_MOD_DIR}/var/mod"
 
 		mkdir -p "$MOD_CRON"
-		mkdir -p "${MOD_ROOT}/pkg"
-		mkdir -p "${MOD_ROOT}/home"
-		mkdir -p "${MOD_ROOT}/lib"
+		mkdir -p "${MOD_ROOT}/pkg" "${MOD_ROOT}/home" "${MOD_ROOT}/lib"
 		mkdir -p "${MOD_ROOT}/bin" "${MOD_ROOT}/sbin"
 		mkdir -p "${MOD_ROOT}/var/cache"
 		mkdir -p "${MOD_ROOT}/usr/bin" "${MOD_ROOT}/usr/sbin" "${MOD_ROOT}/usr/share" \
 			"${MOD_ROOT}/usr/lib" "${MOD_ROOT}/usr/lib/cgi-bin"
 		mkdir -p "${MOD_ROOT}/etc/conf" "${MOD_ROOT}/etc/init.d" "${MOD_ROOT}/etc/reg"
+		# AVM compatibility symlink
 		ln -s /sys "${VARTAR_MOD_DIR}/var/sysfs"
 
 		echo "users:x:1:" >> "${VARTAR_MOD_DIR}/var/tmp/group"
@@ -779,8 +667,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo1 "installing libs"
 		for i in \
 		$( \
-			cd "${ROOT_DIR}" && \
-			find lib usr/lib -type d -name .svn -prune -false , -type f -name "*.so*" \
+			 cd "${ROOT_DIR}" && \
+			 find lib usr/lib -type d -name .svn -prune -false , -type f -name "*.so*" \
 		)
 		do
 			bn="$(basename "$i")"
@@ -802,24 +690,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/nww/favicon.ico"
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/mww/favicon.ico"
 
-			for i in $(ls "${FILESYSTEM_MOD_DIR}/usr/www/"); do
-				case "$i" in
-					cgi-bin|html)
-						;;
-					*)
-						if [ -d "${FILESYSTEM_MOD_DIR}/usr/www/$i" -a -d "${FILESYSTEM_MOD_DIR}/usr/www/$i/html" ]; then
-							cp "${FAVICON_DIR}/${DS_FAVICON_STRING}/box.ico" "${FILESYSTEM_MOD_DIR}/usr/www/$i/html/favicon.ico"
-							ln -fs "./html/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/www/$i/favicon.ico"
-						fi
-						;;
-				esac
-			done
+			cp "${FAVICON_DIR}/${DS_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/../favicon.ico"
+			ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/../../favicon.ico"
 		fi
 
 		modlang "${BASE_DIR}/.language" "${FILESYSTEM_MOD_DIR}"
 	else
 		error 1 "installation of base system is mandatory"
-		
 	fi
 
 	if [ "$DS_REPLACE_BUSYBOX" == "y" ]; then
@@ -841,8 +718,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		# Install busybox links
-		for link in $(cat "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}.links")
-		do
+		for link in $(cat "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}.links"); do
 			LINK_DIR="$(dirname "$link")"
 			LINK_NAME="$(basename "$link")"
 
@@ -867,10 +743,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 			ln -sf "$BUSYBOX_PATH" "${FILESYSTEM_MOD_DIR}${LINK_DIR}/$LINK_NAME" ||
 			error 1 "could not create link for $link"
 		done || exit 1
-
-		if [ ! -x "${FILESYSTEM_MOD_DIR}/bin/busybox" ]; then
-			error 1 "busybox is not executable\nAre you trying to compile on a FAT partition?"
-		fi 
 	else
 		error 1 "installation of busybox replacement is mandatory"
 	fi
@@ -884,25 +756,26 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		echo1 "replacing kernel-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING} (${KERNEL_SUBVERSION})"
 		cp "${KERNEL_REP_DIR}/kernel-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
-
 	fi	
 
 	echo1 "installing modules"
-	for i in $( \
+	for i in \
+	$( \
 		cd "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}" && \
 		find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
 	)
 	do
 		bn="$(basename "$i")"
 		mod="${bn%\.ko}"
+		
         if [ "$DS_MODULES_ALL" = "y" -o \
-			"$(eval "echo \"\$DS_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]
-		then
-			echo2 "${bn}"
-			dn="$(dirname "$i")"
-			[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-			cp "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
-			chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
+        			"$(eval "echo \"\$DS_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]
+        	   then
+					echo2 "${bn}"
+					dn="$(dirname "$i")"
+					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
+					cp "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
+					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
 		fi
 	done	
 	echo1 "generating modules.dep"
@@ -913,35 +786,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 	"$TAR" -c -C "${KERNEL_REP_DIR}/root" --exclude=lib --exclude=usr/lib \
 		$([ -r "${KERNEL_REP_DIR}/.exclude" ] && echo "--exclude-from=${KERNEL_REP_DIR}/.exclude") \
 		$([ "$DS_PACKAGE_IPTABLES" != "y" ] && echo "--exclude=usr/sbin/iptables") \
-		. | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+	.	| "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
-	echo1 "installing libs"
-	for i in \
-	$( \
-		cd "${KERNEL_REP_DIR}/root" && \
-		find lib usr/lib -type d -name .svn -prune -false , -type f -name "*.so*" \
-	)
-	do
-		bn="$(basename "$i")"
-		lib="${bn%\.so*}"
-		lib="$(echo "$lib" | sed -e 's/-[\.0-9]*$//')"
-		if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
-			echo2 "${bn}"
-			dn="$(dirname "$i")"
-			[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-			cp -a "${KERNEL_REP_DIR}/root/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
-			chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
-		fi
-	done
-	
 	echo "installing packages"
 	
 	if [ -r "$STATIC_PACKAGES_FILE" ]; then
 		for pkg in \
 		$( \
 			sort "$STATIC_PACKAGES_FILE" \
-				| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
-				| grep -v '^#' | grep -v '^$' \
+			| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
+			| grep -v '^#' | grep -v '^$' \
 		)
 		do
 			echo1 "${pkg}"
@@ -954,7 +808,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
 					$( \
 						[ -r "${PACKAGES_DIR}/${pkg}/.exclude" ] \
-							&& echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude" \
+								&& echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude" \
 					) . | \
 				"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
@@ -968,7 +822,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ -r "$STATIC_ADDON_FILE" ]; then
 		for pkg in \
 		$( \
-			cat "$STATIC_ADDON_FILE" \
+				cat "$STATIC_ADDON_FILE" \
 				| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
 				| grep -v '^#' | grep -v '^$' \
 		)
@@ -983,7 +837,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				"$TAR" -c -C "${ADDON_DIR}/${pkg}/root" \
 					$( \
 						[ -r "${ADDON_DIR}/${pkg}/.exclude" ] \
-							&& echo "--exclude-from=${ADDON_DIR}/${pkg}/.exclude" \
+								&& echo "--exclude-from=${ADDON_DIR}/${pkg}/.exclude" \
 					) . | \
 				"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
@@ -994,11 +848,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
 		done
 	fi
-
+	
 	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
 		echo "invoking custom script"
 
-		bash -n "${BASE_DIR}/fwmod_custom"
+		# syntax check
+		$SHELL -n "${BASE_DIR}/fwmod_custom"
 
 		if [ $? -ne 0 ]; then
 			error 1 "syntax error in custom script"
@@ -1050,33 +905,23 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo1 "Checking for left over Subversion directories"
 	find "$MOD_DIR" -type d -name .svn | xargs rm -rf
 
-	if [ ! -s "$RAW_HIDDEN" ]; then
-		error 1 "no hidden squashfs found"
-	fi
-
 	# Delete all files that we are going to re-create now
 	rm -f "$VARTAR_MOD"
-	rm -f "$RAW_HIDDEN_MOD"
 	rm -f "$KERNEL_MOD"
 	rm -f "$FILESYSTEM_MOD"
-	rm -f "${DIR}/firmware_*.image"
+	rm -f "${DIR}/*.image"
 
 	if [ "$DS_SQUASHFS_BLOCKSIZE_16384" == "y" ]; then
-		let KERNEL_BLOCKSIZE="16384"
 		let FILESYSTEM_BLOCKSIZE="16384"
 	elif [ "$DS_SQUASHFS_BLOCKSIZE_65536" == "y" ]; then
-		let KERNEL_BLOCKSIZE="65536"
 		let FILESYSTEM_BLOCKSIZE="65536"
 	else
-		let KERNEL_BLOCKSIZE="$(od -i -N 1 -j 34 "$RAW_HIDDEN" | sed -n -e '1s#.* ##' -e 1p)"
-		let KERNEL_BLOCKSIZE="1<<KERNEL_BLOCKSIZE"
 		let FILESYSTEM_BLOCKSIZE="$(od -i -N 1 -j 34 "$FILESYSTEM" | sed -n -e '1s#.* ##' -e 1p)"
 		let FILESYSTEM_BLOCKSIZE="1<<FILESYSTEM_BLOCKSIZE"
 	fi
 
 	if [ "$DS_VERBOSITY_LEVEL" -ge 1 ]; then
 		echo "squashfs blocksize"
-		echo "${L1}hidden squashfs: $KERNEL_BLOCKSIZE"
 		echo "${L1}root filesystem: $FILESYSTEM_BLOCKSIZE"
 	fi
 
@@ -1093,12 +938,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "cannot find $MKSQUASHFS_TOOL"
 	fi
 
-	if [ "$DS_REPLACE_KERNEL" == "y" -a "$DS_HIDDEN_ROOT" != "y" ]; then
-		echo "copying hidden files"
-		"$TAR" -c -C "$HIDDEN_MOD_DIR" . | \
-			"$TAR" -x -C "${FILESYSTEM_MOD_DIR}/lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden" || exit 1
-	fi
-
 	echo "creating filesystem image"
 	"$FAKEROOT" -s fakechroot.save -- $MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
 	# Possible race condition: save file must become available in file system.
@@ -1113,12 +952,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	echo "merging kernel image"
 	dd if="$RAW_KERNEL_MOD" of="$KERNEL_MOD" bs=256 conv=sync 2> /dev/null
-	cat "$RAW_HIDDEN_MOD" >> "$KERNEL_MOD"
+	cat "$FILESYSTEM_MOD" >> "$KERNEL_MOD"
 
 	if [ ! -s "$KERNEL_MOD" ]; then
 		error 1 "kernel merging failed"
 	fi
-
+	
 	# Check size of kernel image
 	let KERNEL_LIMIT="$DS_KERNEL_MTD_SIZE*65536"
 	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
@@ -1148,31 +987,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Write checksum
 	"$TICHKSUM" "$KERNEL_MOD" > "${MOD_DIR}/kernelchksum.log"
 
-	if [ "$DS_HIDDEN_ROOT" != "y" -o "$DS_CONTIGUOUS_HIDDEN_ROOT" == "y" ]; then
-		# Check size of filesystem image
-		let FILESYSTEM_LIMIT="$DS_FILESYSTEM_MTD_SIZE*65536"
-		let FILESYSTEM_SIZE="$(cat "$FILESYSTEM_MOD" | wc -c)"
-
-		echo1 "filesystem image size: $FILESYSTEM_SIZE (max: $FILESYSTEM_LIMIT)"
-
-		if [ "$FILESYSTEM_SIZE" -eq 0 ]; then
-			error 1 "filesystem image is empty"
-		fi
-		if [ "$FILESYSTEM_SIZE" -gt "$FILESYSTEM_LIMIT" ]; then
-			let DIFF="FILESYSTEM_SIZE-FILESYSTEM_LIMIT"
-			error 1 "filesystem image is $DIFF bytes too big"
-		fi
-
-		# Write checksum
-		"$TICHKSUM" "$FILESYSTEM_MOD" > "${MOD_DIR}/filesystemchksum.log"
-	fi
-
 	# Consistency check
-	if [ -s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" -a ! -s "${FIRMWARE_MOD_DIR}/${FILESYSTEM_IMAGE}" ] || \
-		[ ! -s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" -a -s "${FIRMWARE_MOD_DIR}/${FILESYSTEM_IMAGE}" ];
-	then
-		error 1 "inconsistency comparing size of old and new filesystem.image"
-	fi
 	if [ -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a ! -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ] || \
 		[ ! -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ]
 	then

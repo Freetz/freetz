@@ -325,116 +325,6 @@ config DS_KERNEL_LAYOUT
 		DS_TYPE_WLAN_3131 || \
 		DS_TYPE_WLAN_3170
 
-config DS_HIDDEN_ROOT
-	bool "Hidden root"		if DS_TYPE_CUSTOM
-	default y				if \
-		DS_TYPE_2170 || \
-		DS_TYPE_WLAN_3020 || \
-		DS_TYPE_WLAN_3030 || \
-		DS_TYPE_WLAN_3130 || \
-		DS_TYPE_WLAN_3131 || \
-		DS_TYPE_WLAN_3170 || \
-		DS_TYPE_FON || \
-		DS_TYPE_300IP_AS_FON || \
-		DS_TYPE_FON_5050 || \
-		DS_TYPE_FON_5140 || \
-		DS_TYPE_FON_WLAN || \
-		DS_TYPE_FON_WLAN_7050 || \
-		DS_TYPE_FON_WLAN_7140 || \
-		DS_TYPE_FON_WLAN_7141 || \
-		DS_TYPE_FON_7150 || \
-		DS_TYPE_SPEEDPORT_W501V || \
-		DS_TYPE_SPEEDPORT_W701V || \
-		DS_TYPE_SPEEDPORT_W900V || \
-		DS_TYPE_FON_WLAN_7170 || \
-		DS_TYPE_CUSTOM
-	help
-		Some boxes do not have the root filesystem in the
-		mtd table, it begins just after the kernel.
-
-config DS_CONTIGUOUS_HIDDEN_ROOT
-	bool "Contiguous"		if DS_TYPE_CUSTOM
-	depends on DS_HIDDEN_ROOT
-	default n				if \
-		DS_TYPE_2170 || \
-		DS_TYPE_WLAN_3020 || \
-		DS_TYPE_WLAN_3030 || \
-		DS_TYPE_WLAN_3130 || \
-		DS_TYPE_WLAN_3131 || \
-		DS_TYPE_WLAN_3170 || \
-		DS_TYPE_FON || \
-		DS_TYPE_300IP_AS_FON || \
-		DS_TYPE_FON_5050 || \
-		DS_TYPE_FON_5140 || \
-		DS_TYPE_FON_WLAN || \
-		DS_TYPE_FON_WLAN_7050 || \
-		DS_TYPE_FON_WLAN_7140 || \
-		DS_TYPE_FON_WLAN_7141 || \
-		DS_TYPE_FON_7150 || \
-		DS_TYPE_SPEEDPORT_W501V || \
-		DS_TYPE_SPEEDPORT_W701V || \
-		DS_TYPE_SPEEDPORT_W900V || \
-		DS_TYPE_FON_WLAN_7170 || \
-		DS_TYPE_CUSTOM
-	help
-		A contiguous hidden squashfs starts where all
-		hidden root filesystems start (just after the
-		kernel), but is continued in filesystem mtd.
-
-config DS_SQUASHFS_LZMA
-	bool "Lzma squashfs"		if DS_TYPE_CUSTOM
-	default y					if \
-		DS_TYPE_2170 || \
-		DS_TYPE_WLAN_3020 || \
-		DS_TYPE_WLAN_3030 || \
-		DS_TYPE_WLAN_3130 || \
-		DS_TYPE_WLAN_3131 || \
-		DS_TYPE_WLAN_3170 || \
-		DS_TYPE_FON || \
-		DS_TYPE_300IP_AS_FON || \
-		DS_TYPE_FON_5050 || \
-		DS_TYPE_FON_5140 || \
-		DS_TYPE_FON_WLAN || \
-		DS_TYPE_FON_WLAN_7050 || \
-		DS_TYPE_FON_WLAN_7140 || \
-		DS_TYPE_FON_WLAN_7141 || \
-		DS_TYPE_FON_7150 || \
-		DS_TYPE_SPEEDPORT_W501V || \
-		DS_TYPE_SPEEDPORT_W701V || \
-		DS_TYPE_SPEEDPORT_W900V || \
-		DS_TYPE_FON_WLAN_7170 || \
-		DS_TYPE_CUSTOM
-	help
-		Is the squashfs compressed with lzma?
-
-config DS_ROOTFS_VARTAR
-	bool "RootFS contains var.tar"	if DS_TYPE_CUSTOM
-	default y						if \
-		DS_TYPE_2170 || \
-		DS_TYPE_WLAN_3020 || \
-		DS_TYPE_WLAN_3030 || \
-		DS_TYPE_WLAN_3130 || \
-		DS_TYPE_WLAN_3131 || \
-		DS_TYPE_WLAN_3170 || \
-		DS_TYPE_FON || \
-		DS_TYPE_300IP_AS_FON || \
-		DS_TYPE_FON_5050 || \
-		DS_TYPE_FON_5140 || \
-		DS_TYPE_FON_WLAN || \
-		DS_TYPE_FON_WLAN_7050 || \
-		DS_TYPE_FON_WLAN_7140 || \
-		DS_TYPE_FON_WLAN_7141 || \
-		DS_TYPE_FON_7150 || \
-		DS_TYPE_SPEEDPORT_W501V || \
-		DS_TYPE_SPEEDPORT_W701V || \
-		DS_TYPE_SPEEDPORT_W900V || \
-		DS_TYPE_FON_WLAN_7170 || \
-		(DS_TYPE_CUSTOM && DS_HIDDEN_ROOT)
-	default n			if (DS_TYPE_CUSTOM && ! DS_HIDDEN_ROOT)
-	help
-		var.tar can be placed in the hidden squashfs
-		or in the root filesystem at /var.tar
-
 config DS_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if DS_TYPE_CUSTOM
 	default 119					if \
@@ -520,8 +410,8 @@ config DS_HAS_WLAN
 	help
 		Select this if you have a box with WLAN.
 
-config DS_HAS_USB
-	bool "Has USB"			if DS_TYPE_CUSTOM
+config DS_HAS_USB_CLIENT
+	bool "USB client"			if DS_TYPE_CUSTOM
 	default y				if \
 		DS_TYPE_2170 || \
 		DS_TYPE_WLAN_3020 || \
@@ -766,7 +656,7 @@ config DS_REMOVE_USB_MODULE
 
 config DS_REMOVE_CDROM_ISO
 	bool "Remove cdrom.iso"
-	depends on DS_HAS_USB && ! (DS_TYPE_FON_WLAN_7050) && ! (DS_TYPE_WLAN_3130)
+	depends on DS_HAS_USB_CLIENT && ! (DS_TYPE_FON_WLAN_7050) && ! (DS_TYPE_WLAN_3130)
 	default n
 	help
 		Removes the file /lib/modules/cdrom.iso.
@@ -1124,7 +1014,9 @@ choice
 	prompt "SquashFS block size"
 	default DS_SQUASHFS_BLOCKSIZE_65536
 	help
-		Block size of the root filesystem (and hidden SquashFS)
+		Block size of the root filesystem. SquashFS can use block sizes up to 
+		64Kb, which achieves greater compressionratios than the normal 16K 
+		block size.
 
 	config DS_SQUASHFS_BLOCKSIZE_ORIG
 		bool "original"
@@ -1175,11 +1067,11 @@ config DS_TARGET_MAKE_PATH
 
 config DS_TARGET_CFLAGS
 	string "Target compiler flags"
-	default "-Os -W -Wall -pipe -march=mips32 -mips32 -Wa,--trap -msoft-float"
+	default "-Os -W -Wall -pipe -march=4kc -Wa,--trap"
 
 config DS_JLEVEL
 	int "Number of jobs to run simultaneously"
-	default "1"
+	default "2"
 	help
 		Number of jobs to run simultanesouly
 
