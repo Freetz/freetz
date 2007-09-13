@@ -12,6 +12,7 @@ mkdir "${FILESYSTEM_MOD_DIR}/usr/www/all"
 "$TAR" -c -C "${DIR}/.tk/original/filesystem/usr/www/all" . | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/usr/www/all"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/avm"
+ln -s /usr/bin/system_status "${FILESYSTEM_MOD_DIR}/usr/www/cgi-bin"
 
 "$TAR" -c -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7150/avm" --exclude=*.cfg . | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_DECT_W900V/tcom" 
 ln -sf tcom "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_DECT_W900V/avm"
