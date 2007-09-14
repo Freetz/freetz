@@ -1,9 +1,16 @@
 config DS_PACKAGE_VPNC
-	bool "Vpnc 0.5"
+	bool "Vpnc 0.5.1"
 	depends on DS_LANG_DE || ! DS_SELECTED_LANG_ONLY
 	select DS_LIB_libnsl
 	select DS_LIB_libgpg_error
 	select DS_LIB_libgcrypt
+	select DS_LIB_libdl
 	default n
 	help
 	    Cisco IPSec VPN Client
+
+config DS_PACKAGE_VPNC_WITH_HYBRID_AUTH
+	bool "Hybrid auth"
+	depends on DS_PACKAGE_VPNC
+	select DS_LIB_libcrypto
+	default n

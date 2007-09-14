@@ -1,8 +1,7 @@
-diff -Nur vpnc-0.4.0/Makefile vpnc-0.4.0.patched/Makefile
---- Makefile	2007-02-19 21:51:12.000000000 +0100
-+++ Makefile	2007-02-25 10:40:25.000000000 +0100
+--- Makefile.orig	2007-09-06 22:05:15.000000000 +0200
++++ Makefile	2007-09-14 22:49:28.000000000 +0200
 @@ -20,7 +20,7 @@
- # $Id: Makefile 207 2007-08-15 11:48:30Z Joerg Mayer $
+ # $Id: Makefile 236 2007-09-05 20:40:59Z Joerg Mayer $
  
  DESTDIR=
 -PREFIX=/usr/local
@@ -10,8 +9,8 @@ diff -Nur vpnc-0.4.0/Makefile vpnc-0.4.0.patched/Makefile
  ETCDIR=/etc/vpnc
  BINDIR=$(PREFIX)/bin
  SBINDIR=$(PREFIX)/sbin
-@@ -47,14 +47,11 @@
- #OPENSSLLIBS = -lssl
+@@ -50,14 +50,11 @@
+ #OPENSSLLIBS = -lcrypto
  
  CC=gcc
 -CFLAGS ?= -O3 -g
@@ -28,4 +27,3 @@ diff -Nur vpnc-0.4.0/Makefile vpnc-0.4.0.patched/Makefile
  LDFLAGS += -lnsl -lresolv -lsocket
  endif
  ifneq (,$(findstring Apple,$(shell $(CC) --version)))
- 
