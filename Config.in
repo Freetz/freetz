@@ -20,9 +20,9 @@ config DS_AVM_VERSION_r7203
 choice
 
 	prompt "Hardware type"
-	default DS_TYPE_FON_WLAN_7170
-	help
-		Select your box type here.
+		default DS_TYPE_FON_WLAN_7170
+		help
+			Select your box type here.
 
 	config DS_TYPE_300IP_AS_FON
 		select DS_AVM_VERSION_04_33
@@ -168,9 +168,9 @@ endchoice
 
 config DS_TYPE_LANG_STRING
 	string
-	default "de"			if DS_TYPE_LANG_DE
-	default "a-ch"			if DS_TYPE_LANG_A_CH
-	default "en"			if DS_TYPE_LANG_EN
+	default "de"		if DS_TYPE_LANG_DE
+	default "a-ch"		if DS_TYPE_LANG_A_CH
+	default "en"		if DS_TYPE_LANG_EN
 
 choice
 
@@ -188,31 +188,31 @@ endchoice
 
 config DS_TYPE_STRING
 	string
-	default "300ip_as_fon"  if DS_TYPE_300IP_AS_FON
-	default "2170"		if DS_TYPE_2170
-	default "3020"		if DS_TYPE_WLAN_3020
-	default "3030"		if DS_TYPE_WLAN_3030
-	default "3130"		if DS_TYPE_WLAN_3130
-	default "3131"		if DS_TYPE_WLAN_3131
-	default "3170"		if DS_TYPE_WLAN_3170
-	default "fon"		if DS_TYPE_FON
-	default "5050"		if DS_TYPE_FON_5050
-	default "5140"		if DS_TYPE_FON_5140
-	default "fon_wlan"	if DS_TYPE_FON_WLAN
-	default "7050"		if DS_TYPE_FON_WLAN_7050
-	default "7140"		if DS_TYPE_FON_WLAN_7140
-	default "7141"		if DS_TYPE_FON_WLAN_7141
-	default "7150"		if DS_TYPE_FON_7150
-	default "7170"		if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
+	default "300ip_as_fon"		if DS_TYPE_300IP_AS_FON
+	default "2170"				if DS_TYPE_2170
+	default "3020"				if DS_TYPE_WLAN_3020
+	default "3030"				if DS_TYPE_WLAN_3030
+	default "3130"				if DS_TYPE_WLAN_3130
+	default "3131"				if DS_TYPE_WLAN_3131
+	default "3170"				if DS_TYPE_WLAN_3170
+	default "fon"				if DS_TYPE_FON
+	default "5050"				if DS_TYPE_FON_5050
+	default "5140"				if DS_TYPE_FON_5140
+	default "fon_wlan"			if DS_TYPE_FON_WLAN
+	default "7050"				if DS_TYPE_FON_WLAN_7050
+	default "7140"				if DS_TYPE_FON_WLAN_7140
+	default "7141"				if DS_TYPE_FON_WLAN_7141
+	default "7150"				if DS_TYPE_FON_7150
+	default "7170"				if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
 	default "7170_labor_dsl"	if DS_TYPE_LABOR_DSL
 	default "7170_labor_phone"	if DS_TYPE_LABOR_PHONE
 	default "7170_labor_usb"	if DS_TYPE_LABOR_USB
 	default "7170_labor_vpn"	if DS_TYPE_LABOR_VPN
 	default "7170_labor_wlan"	if DS_TYPE_LABOR_WLAN
-	default "W501V"		if DS_TYPE_SPEEDPORT_W501V
-	default "W701V"		if DS_TYPE_SPEEDPORT_W701V
-	default "W900V"		if DS_TYPE_SPEEDPORT_W900V
-	default "custom"	if DS_TYPE_CUSTOM
+	default "W501V"				if DS_TYPE_SPEEDPORT_W501V
+	default "W701V"				if DS_TYPE_SPEEDPORT_W701V
+	default "W900V"				if DS_TYPE_SPEEDPORT_W900V
+	default "custom"			if DS_TYPE_CUSTOM
 
 comment "Custom options -------------------------"
 	depends on DS_TYPE_CUSTOM
@@ -327,14 +327,6 @@ config DS_KERNEL_LAYOUT
 
 config DS_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if DS_TYPE_CUSTOM
-	default 119					if \
-		DS_TYPE_FON_WLAN_7140 || \
-		DS_TYPE_FON_WLAN_7141 || \
-		DS_TYPE_FON_7150 || \
-		DS_TYPE_SPEEDPORT_W701V || \
-		DS_TYPE_SPEEDPORT_W900V || \
-		DS_TYPE_FON_WLAN_7170 || \
-		DS_TYPE_CUSTOM && DS_HIDDEN_ROOT
 	default 59				if \
 		DS_TYPE_2170 || \
 		DS_TYPE_SPEEDPORT_W501V || \
@@ -349,6 +341,14 @@ config DS_KERNEL_MTD_SIZE
 		DS_TYPE_FON_5140 || \
 		DS_TYPE_FON_WLAN || \
 		DS_TYPE_FON_WLAN_7050
+	default 119					if \
+		DS_TYPE_FON_WLAN_7140 || \
+		DS_TYPE_FON_WLAN_7141 || \
+		DS_TYPE_FON_7150 || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_CUSTOM && DS_HIDDEN_ROOT
 	help
 		Number of 64K blocks in the kernel mtd device.
 
@@ -387,8 +387,8 @@ config DS_HAS_PHONE
 		Select this if you have a box with phone support.
 
 config DS_HAS_WLAN
-	bool "Has WLAN"			if DS_TYPE_CUSTOM
-	default y				if \
+	bool "Has WLAN"		if DS_TYPE_CUSTOM
+	default y			if \
 		DS_TYPE_WLAN_3131 || \
 		DS_TYPE_WLAN_3130 || \
 		DS_TYPE_WLAN_3170 || \
@@ -402,7 +402,7 @@ config DS_HAS_WLAN
 		DS_TYPE_SPEEDPORT_W900V || \
 		DS_TYPE_FON_WLAN_7170 || \
 		DS_TYPE_CUSTOM
-	default n				if \
+	default n			if \
 		DS_TYPE_2170 || \
 		DS_TYPE_FON_5050 || \
 		DS_TYPE_FON_5140 || \
@@ -411,7 +411,7 @@ config DS_HAS_WLAN
 		Select this if you have a box with WLAN.
 
 config DS_HAS_USB_CLIENT
-	bool "USB client"			if DS_TYPE_CUSTOM
+	bool "USB client"		if DS_TYPE_CUSTOM
 	default y				if \
 		DS_TYPE_2170 || \
 		DS_TYPE_WLAN_3020 || \
@@ -438,8 +438,8 @@ config DS_HAS_USB_CLIENT
 		Select this if you have a box with USB.
 
 config DS_HAS_USB_HOST
-	bool "USB host"			if DS_TYPE_CUSTOM
-	default y				if \
+	bool "USB host"		if DS_TYPE_CUSTOM
+	default y			if \
 		DS_TYPE_2170 || \
 		DS_TYPE_FON_WLAN_7140 || \
 		DS_TYPE_FON_WLAN_7141 || \
@@ -449,7 +449,7 @@ config DS_HAS_USB_HOST
 		DS_TYPE_WLAN_3131 || \
 		DS_TYPE_WLAN_3170 || \
 		DS_TYPE_SPEEDPORT_W900V
-	default n				if \
+	default n			if \
 		DS_TYPE_WLAN_3020 || \
 		DS_TYPE_WLAN_3030 || \
 		DS_TYPE_FON || \
@@ -670,7 +670,7 @@ config DS_REMOVE_CDROM_ISO
 #		Copy modules from tk-firmware.
 
 config DS_PATCH_ATA
-	bool "Patch ata"
+	bool "Patch ATA"
 	depends on \
 		DS_TYPE_SPEEDPORT_W501V || \
 		DS_TYPE_SPEEDPORT_W701V || \
@@ -859,7 +859,10 @@ config DS_DL_SITE2
 
 config DS_DL_SOURCE2
 	string "AVM web interface firmware source"	if DS_DL_OVERRIDE
-	depends on DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
+	depends on \
+		DS_TYPE_SPEEDPORT_W501V || \
+		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W900V
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if DS_TYPE_SPEEDPORT_W501V
 	default "fritz.box_fon_wlan_7170.29.04.39.image"	if DS_TYPE_SPEEDPORT_W701V
 	default "fritz.fon_7150.annexb.38.04.32.image"		if DS_TYPE_SPEEDPORT_W900V
@@ -986,6 +989,12 @@ choice
 
 endchoice
 
+config DS_FAVICON_STRING
+	string
+	default "none"			if DS_FAVICON_NONE
+	default "dsl123"		if DS_FAVICON_DSL123
+	default "hdeller"		if DS_FAVICON_HDELLER
+
 config DS_DEVELOPER_VERSION_STRING
 	bool "Developer version string"
 	default n
@@ -1002,12 +1011,6 @@ config DS_DEVELOPER_VERSION_STRING
 		ATTENTION! This option is for developers working on checked-out
 		versions of the DS-Mod source code only and requires svnversion to be
 		installed.
-
-config DS_FAVICON_STRING
-	string
-	default "none"			if DS_FAVICON_NONE
-	default "dsl123"		if DS_FAVICON_DSL123
-	default "hdeller"		if DS_FAVICON_HDELLER
 
 choice
 
