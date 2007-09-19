@@ -1,5 +1,5 @@
-To-do list for ds26
-===================
+To-do list and collection of ideas for ds26
+===========================================
 
 $Id$
 
@@ -13,19 +13,19 @@ $Id$
 
 - Experiment with and possibly use dietlibc to create smaller binaries by
   statically compiling in stuff usually dynamically linked to uClibc.
+    Status (by kriegaex): compiled a few binaries - thanks to olistudent for
+    providing a working dietlibc - which are usually a bit smaller than their
+    BusyBox counterparts, but the differences are not as dramatic as hoped for.
+    I think we should try some more packages in order to see where it helps
+    and where it does not. I think good candidates would be packages using one
+    or more libs pretty exclusively, i.e. the libs are not used by many other
+    packages. In this case we could save some overall space by creating static
+    binaries with dietlibc, especially if only a smaller part of the libs'
+    functionalities are used.
 
 - Enhance Virtual-IP-CGI and Openntpd so it supports other (and possibly
   multiple) interfaces than lan:1
   (http://www.ip-phone-forum.de/showpost.php?p=886345)
-
-- ldd on the box would be nice to have as a debug-thingy
-    Remark (by olistudent): In uclibc.mk there is a target named 
-    uclibc-target-utils. This copies ldd for target to root/usr/bin.
-    Remark (by kriegaex): I think we should offer an option under "debug
-    tools" in menuconfig then. The file is really small and it works well,
-    I tested it on the box. I do not know how this is best done, because it is
-    part of the toolchain rather than a regular package, but maybe Oliver has
-    an idea.
 
 - Think about whether we can do something about LCR Auto Updater not working
   without httpd restart, if httpd replaces websrv.
@@ -52,9 +52,11 @@ $Id$
   inclined to refactor those scripts myself. It took me a while to at least
   understand what they do and fix a few quoting bugs in the wrapper.
   
-- Check bftpd, dropbear, netsnmp and openvpn (try to make suboptions instead of multiple packages)
-	Remark (by olistudent): Done. But it needs testing. Open question: Are there options in cfg files 
-	that conflict with the features compiled in (e.g. OPENVPN_MGMNT)?
+- Check bftpd, dropbear, netsnmp and openvpn (try to make suboptions instead of
+  multiple packages)
+    Remark (by olistudent): Done. But it needs testing. Open question: Are
+    there options in cfg files that conflict with the features compiled in
+    (e.g. OPENVPN_MGMNT)?
 
 - Maybe we can offer including the binary 'urlader.setconfig26' from 06.04.33
   as a debug tool so users can change the read-only status of bootloader
@@ -69,5 +71,58 @@ $Id$
     Modules) infrastructure into ds26. Apart from getting it to compile at all,
     I do not know how big the payload would be. That is why I put it into this
     list, after all.
- 
- - Vpnc package: Make hybrid auth feature configureable over webinterface
+    Update (by kriegaex): I recently read that BusyBox now supports OPIE.
+    Maybe we can have another look at the Dropbear issue after we will have
+    upgraded to BB 1.7.x.
+
+- Vpnc package: Make hybrid auth feature configureable over webinterface
+
+- Include polished version of swap space package, see
+  http://www.ip-phone-forum.de/showthread.php?t=148245.
+  Probably we should pretty much redo the package, because the scripts and
+  DS-Mod UI integration are quite ugly.
+
+- Idea by heini66: optionally remove dsld from image, because it is supposedly
+  not needed in ATA mode.
+
+- Idea by heini66: implement call-back function as an add-on to DTMF-Box, see
+  http://www.ip-phone-forum.de/showpost.php?p=941080&postcount=698 and
+  http://www.blindi.net/callback/index.php.
+
+- Idea by heini66: port Softmac WLAN driver from Openwrt. Goal is ad-hoc
+  networking, e.g. for Freifunk.
+
+- Suggestion by Knox: use awx, an extension to awk, as CGI handler instead of
+  Haserl.
+    Remark (by kriegaex): Maybe it would work beautifully, I do not know. But
+    probably it would mean doing the whole web UI from scratch and completely
+    remove the Haserl stuff. I think three solutioons (plain shell, Haserl and
+    awx) would be too much and overkill for maintenance. We should remember
+    awx, though, if we ever decide to do everything from scratch or start a
+    big refactoring project.
+
+- Idea from somewhere in IPPF: implement some kind of auto-update functionality
+  for ds26, especially for patches in between releases. This would lead to
+  fewer questions in the forum and more flexibility as well as a more
+  consistent code base "in the wild", i.e. pretty much all modders using the
+  same set of patches instead of everybody using a more or less different
+  setup.
+
+- MD5 checksums for DS-Mod packages (or our as well as external ones) incl.
+  necessary make macros or shell scripts
+
+- Optionally stop DS-Mod services before firmware upgrade
+
+- Fix *.pc paths in files for libs in addition to already fixed *.la files in
+  order to avoid cross-compiling problems
+
+- Rudi Shell: add switch to send stderr output to stdout ('2>&1') for lazy
+  users who do not know how to do it otherwise.
+    Remark (by kriegaex): I think we should avoid making Rudi's UI more fancy
+    than necessary. (Keep it simple, stupid!) Rudi stands for rudimentary,
+    after all.
+
+- Rudi Shell: utilise new FIFO uploading feature in order to enable uploads to
+  specific locations instead of to temp-files with unpredictablöe names which
+  need to be moved afterwards. The feature is already used by the firmware
+  upgrade assistant, so it seems like a good idea to use it elsewhere, too.
