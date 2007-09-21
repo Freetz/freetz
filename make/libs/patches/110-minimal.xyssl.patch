@@ -1,0 +1,67 @@
+diff -ur include/xyssl/ssl_conf.h include/xyssl/ssl_conf.h
+--- include/xyssl/ssl_conf.h	2007-07-07 07:07:00.000000000 +0200
++++ include/xyssl/ssl_conf.h	2007-09-01 02:48:30.000000000 +0200
+@@ -50,24 +50,28 @@
+  *
+ #define NO_DHM
+  */
++#define NO_DHM
+ 
+ /*
+  * Don't include the MD2 hash function
+  *
+ #define NO_MD2
+  */
++#define NO_MD2
+ 
+ /*
+  * Don't include the MD4 hash function
+  *
+ #define NO_MD4
+  */
++#define NO_MD4
+ 
+ /*
+  * Don't include the ARC4 cipher
+  *
+ #define NO_ARC4
+  */
++#define NO_ARC4
+ 
+ /*
+  * Don't include the DES/3DES ciphers
+@@ -80,6 +84,7 @@
+  *
+ #define NO_AES
+  */
++#define NO_AES
+ 
+ /*
+  * Don't include SSL client-side code
+diff -ur library/Makefile library/Makefile
+--- library/Makefile	2007-07-07 07:07:00.000000000 +0200
++++ library/Makefile	2007-09-01 02:49:23.000000000 +0200
+@@ -8,7 +8,7 @@
+ #    HAVE_LONGLONG      compiler supports long long
+ #    _BSD_EXTENSION     when compiling on Plan9
+ 
+-DEFINES	= -DSELF_TEST -DHAVE_RDTSC
++DEFINES	= -DHAVE_RDTSC
+ CFLAGS	= $(DEFINES) -I../include -O
+ 
+ # To compile as a shared library:
+@@ -17,10 +17,10 @@
+ # MicroBlaze specific options:
+ # CFLAGS += -mno-xl-soft-mul -mxl-barrel-shift
+ 
+-OBJS=aes.o       arc4.o      base64.o    bignum.o    \
+-     certs.o     des.o       dhm.o       havege.o    \
+-     md2.o       md4.o       md5.o       net.o       \
+-     rsa.o       sha1.o      sha2.o      ssl_cli.o   \
++OBJS=                        base64.o    bignum.o    \
++     certs.o     des.o                   havege.o    \
++                             md5.o       net.o       \
++     rsa.o       sha1.o                  ssl_cli.o   \
+      ssl_srv.o   ssl_tls.o   timing.o    x509read.o
+ 
+ .SILENT:

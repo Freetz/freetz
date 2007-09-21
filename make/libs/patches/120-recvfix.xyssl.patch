@@ -1,0 +1,21 @@
+diff -ur library/net.c library/net.c
+--- library/net.c	2007-07-07 07:07:00.000000000 +0200
++++ library/net.c	2007-09-01 02:14:54.000000000 +0200
+@@ -269,7 +269,7 @@
+     n = *len;
+     *len = 0;
+ 
+-    while( *len < n )
++    do
+     {
+         if( ( ret = read( fd, buf + *len, n - *len ) ) <= 0 )
+         {
+@@ -291,7 +291,7 @@
+         }
+ 
+         *len += ret;
+-    }
++    }while(0);
+ 
+     return( 0 );
+ }

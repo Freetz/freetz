@@ -132,21 +132,36 @@ $Id$
     [2] http://forum.openwrt.org/viewtopic.php?id=5588
   If Xrelayd is better, smaller, whatever... than Matrixtunnel, replace MT
   package by XRD package.
- 
+    Status (by kriegaex): The package is ready and functional. Stripped binary
+    size comparison:
+      matrixssl:     84.4 k  /  xyssl:   121.9 k
+      matrixtunnel:  24.2 k  /  xrelayd:  18.4 k
+      ------------------------------------------
+      matrix*:      108.6 k  /  x*:      140.4 k
+    Question to olistudent: Should we switch, given the fact that x* is a bit
+    bigger than matrix*? There are hints for making the lib smaller [3], but
+    most of the options are already used, we are close to minimum size. What
+    might also make xyssl interesting is the fact that it does not seem to be
+    semi-commercial like matrixssl. Furthermore, it seems to be fairly easy to
+    create an OpenSSL wrapper [4]. If this would work for our other packages
+    depending on OpenSSL, it would be a huge gain, not only for the owners of
+    small boxes.
+      [3] http://www.xyssl.org/forum/?0048
+      [4] http://xyssl.org/forum/?0050
+
 - Find a better place for iptables libs
- 
+
 - bftpd, vsftpd: Configuration file has to be rewritten after change
- 
+
 - Recompile kernel modules after ohio/ar7 change (applies also to fuse),
- 	this should only affect 4mb boxes
- 
+  this should only affect 4mb boxes
+
 - Bump busybox version to 1.7.1
- 
+
 - Samba: Should have problems with big files?
- 
+
 - Chechmaild: fast and slow blinking is mixed up
- 
+
 - Put cpmaccfg to /sbin
- 
+
 - Integrate package brctl
- 

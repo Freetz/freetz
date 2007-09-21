@@ -296,9 +296,22 @@ config DS_LIB_libmatrixssl
 		small footprint applications and devices. There are existing open-source
 		SSL implementations available and there are existing embedded SSL
 		implementations, but there was a notable absence of packages that offer
-		both. 
+		both.
 		
 		In DS-Mod, matrixtunnel depends on MatrixSSL.
+
+config DS_LIB_libxyssl
+	bool "XySSL (libxyssl.so)"
+	default n
+	help
+		The aim of the XySSL project is to provide a quality, open-source
+		cryptographic library written in C and targeted at embedded systems.
+		It can be used for free under the LGPL or BSD license.
+
+		For more information about this project, please contact cd1@xyssl.org.
+		Web site: http://xyssl.org
+
+		In DS-Mod, xrelayd depends on XySSL.
 
 menu "OpenSSL"
 

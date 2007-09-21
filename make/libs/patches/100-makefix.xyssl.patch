@@ -1,0 +1,12 @@
+diff -ur library/Makefile library/Makefile
+--- library/Makefile	2007-07-07 05:07:00.000000000 +0000
++++ library/Makefile	2007-08-10 04:49:01.000000000 +0000
+@@ -35,7 +35,7 @@
+ 
+ libxyssl.so: libxyssl.a
+ 	echo "  LD    $@"
+-	gcc -shared -Wl,-soname,$@ -o $@ $(OBJS)
++	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS)
+ 
+ .c.o:
+ 	echo "  CC    $<"
