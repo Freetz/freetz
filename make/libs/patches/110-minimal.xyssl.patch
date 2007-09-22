@@ -30,14 +30,6 @@ diff -ur include/xyssl/ssl_conf.h include/xyssl/ssl_conf.h
  
  /*
   * Don't include the DES/3DES ciphers
-@@ -80,6 +84,7 @@
-  *
- #define NO_AES
-  */
-+#define NO_AES
- 
- /*
-  * Don't include SSL client-side code
 diff -ur library/Makefile library/Makefile
 --- library/Makefile	2007-07-07 07:07:00.000000000 +0200
 +++ library/Makefile	2007-09-01 02:49:23.000000000 +0200
@@ -58,7 +50,7 @@ diff -ur library/Makefile library/Makefile
 -     certs.o     des.o       dhm.o       havege.o    \
 -     md2.o       md4.o       md5.o       net.o       \
 -     rsa.o       sha1.o      sha2.o      ssl_cli.o   \
-+OBJS=                        base64.o    bignum.o    \
++OBJS=aes.o                   base64.o    bignum.o    \
 +     certs.o     des.o                   havege.o    \
 +                             md5.o       net.o       \
 +     rsa.o       sha1.o                  ssl_cli.o   \
