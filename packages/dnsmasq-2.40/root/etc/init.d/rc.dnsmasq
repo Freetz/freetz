@@ -46,6 +46,7 @@ start() {
 	exitval=$?
 	if [ "$1" != "nomultid" ]; then
 		multid $MULTIDPARAM > /dev/null 2>&1
+		ln -s resolv.conf /var/tmp/avm-resolv.conf
 	fi
 
 	if [ ! -L "/var/flash/multid.leases" -a \
@@ -67,6 +68,7 @@ stop() {
 	echo -n 'Stopping dnsmasq...'
 	if [ "$1" != "nomultid" ]; then
 		multid -s > /dev/null 2>&1
+		rm /var/tmp/avm-resolv.conf
 	fi
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?

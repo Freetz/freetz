@@ -1,4 +1,4 @@
-SPINDOWN_CGI_VERSION:=0.1
+SPINDOWN_CGI_VERSION:=0.2
 SPINDOWN_CGI_PKG_SOURCE:=spindown-cgi-$(SPINDOWN_CGI_VERSION)-dsmod.tar.bz2
 SPINDOWN_CGI_PKG_SITE:=http://www.heimpold.de/dsmod
 

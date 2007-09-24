@@ -35,6 +35,8 @@ SLEEPTIME=0
 echo "$$" > /var/run/spindown.$DEVICE.pid
 trap "rm -f /var/run/spindown.$DEVICE.pid; exit 0" SIGTERM SIGINT
 
+exec 1>&-;exec 2>&-
+
 while true; do
 	if [ -d $SYSFS/block/$DEVICE ]; then
 		CURTIME="$(date +'%s')"
