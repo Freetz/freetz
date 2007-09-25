@@ -1,0 +1,64 @@
+
+By convention, each package has two package names. In this text we
+will refer to them as $PACKAGE_LC and $PACKAGE_UC.  The name
+$PACKAGE_LC usually consists of lower case letters, digits, underlines
+and hyphens. $PACKAGE_UC consists of uppercase letters, digits and
+underlines, but bo hyphens.  Normally $PACKAGE_UC is the name
+$PACKAGE_LC with letters converted to upper case and hyphens
+coneverted to underlines.  Version numbers are not part of a package
+name, so most package names don't contain digits.
+
+Packages may be either libraray packages or binary packages.  Library
+packages are in make/libs/*, while binary packages are in make/*.
+
+Each package must define the following targets:
+
+
+${PACKAGE_LC}-source
+	Download source for the package
+
+${PACKAGE_LC}-precompiled
+	Compile package and prepare for firmware generation or ${PACKAGE_LC}-package
+
+${PACKAGE_LC}-package
+	Create a precompiled binary package
+
+${PACKAGE_LC}-clean
+${PACKAGE_LC}-dirclean
+	Remove all files that can be recreated
+
+${PACKAGE_LC}-list
+	add package to the list of static or dynamic patches
+
+To use the convenience macros, you need some more defines:
+# PACKAGE_LC and PACKAGE_UC
+PACKAGE_LC:=package-name
+PACKAGE_UC:=PACKAGE_NAME
+# replace PACKAGE_NAME with $PACKAGE_UC in the following lines
+# PACKAGE_NAME_VERSION is not strictly necessary, but simplifies version changes
+PACKAGE_NAME_VERSION:=1.2.3
+# The download URL, split in directory part and filename
+PACKAGE_NAME_SITE:=http://www.server.net/download
+PACKAGE_NAME_SOURCE:=package-name-$(PACKAGE_NAME_VERSION).tar.gz
+# directory containing the makefiles
+PACKAGE_NAME_MAKE_DIR:=$(MAKE_DIR)/$(PACKAGE_LC)
+# directory for sourcefile, "$(SOURCE_DIR)/" and the directory created by extracting the tar-file
+PACKAGE_NAME_DIR:=$(SOURCE_DIR)/bridge-utils-$(PACKAGE_NAME_VERSION)
+PACKAGE_NAME_PKG_SOURCE:=$(PACKAGE_LC)-$(PACKAGE_NAME_VERSION)-dsmod.tar.bz2
+PACKAGE_NAME_PKG_SITE:=http://www.server.net/download
+# order for inclusion in list of static or dynamic packages
+BRIDGE_UTILS_STARTLEVEL=40
+
+
+# Now you can use these macros:
+# Download $(PACKAGE_NAME_SITE)/$(PACKAGE_NAME_SOURCE) to dl/$(PACKAGE_NAME_SOURCE)
+# defines $(PACKAGE_LC)-download
+$(PACKAGE_SOURCE_DOWNLOAD)
+
+# Unpack binary package von dl/$(PACKAGE_NAME_SOURCE) and apply patches
+$(PACKAGE_BIN_UNPACKED)
+# Unpack library package von dl/$(PACKAGE_NAME_SOURCE) and apply patches
+$(PACKAGE_LIB_UNPACKED)
+
+# defines ${PACKAGE_LC}-list
+$(PACKAGE_LIST)

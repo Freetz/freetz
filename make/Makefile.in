@@ -51,6 +51,8 @@ TARGET_LD:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld
 TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
 
 TARGET_PATH:=$(TARGET_MAKE_PATH):/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+# A better name for TARGET_CONFIGURE_OPTS would by TARGET_CONFIGURE_ENV, but that would require changes to all makefiles
+# see also TARGET_CONFIGURE_OPTIONS
 TARGET_CONFIGURE_OPTS:= \
 	PATH="$(TARGET_PATH)"
 	#AR="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar" \
@@ -61,7 +63,33 @@ TARGET_CONFIGURE_OPTS:= \
 	#GCC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc" \
 	#CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++" \
 	#RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
+TARGET_CONFIGURE_ENV:=$(TARGET_CONFIGURE_OPTS)
 
+# Common options for configure
+TARGET_CONFIGURE_OPTIONS:=
+TARGET_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
+TARGET_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
+TARGET_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
+TARGET_CONFIGURE_OPTIONS += --program-prefix=""
+TARGET_CONFIGURE_OPTIONS += --program-suffix=""
+TARGET_CONFIGURE_OPTIONS += --prefix=/usr
+TARGET_CONFIGURE_OPTIONS += --exec-prefix=/usr
+TARGET_CONFIGURE_OPTIONS += --bindir=/usr/bin
+TARGET_CONFIGURE_OPTIONS += --datadir=/usr/share
+TARGET_CONFIGURE_OPTIONS += --includedir=/usr/include
+TARGET_CONFIGURE_OPTIONS += --infodir=/usr/share/info
+TARGET_CONFIGURE_OPTIONS += --libdir=/usr/lib
+TARGET_CONFIGURE_OPTIONS += --libexecdir=/usr/lib
+TARGET_CONFIGURE_OPTIONS += --localstatedir=/var
+TARGET_CONFIGURE_OPTIONS += --mandir=/usr/share/man
+TARGET_CONFIGURE_OPTIONS += --sbindir=/usr/sbin
+TARGET_CONFIGURE_OPTIONS += --sysconfdir=/etc
+TARGET_CONFIGURE_OPTIONS += $(DISABLE_NLS)
+TARGET_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
+# configure accepts these as environment or as arguments
+TARGET_CONFIGURE_OPTIONS += CC="$(TARGET_CC)"
+TARGET_CONFIGURE_OPTIONS += CFLAGS="$(TARGET_CFLAGS)"
+TARGET_CONFIGURE_OPTIONS += LDFLAGS=""
 
 DL_SITE:=$(strip $(subst ",, $(DS_DL_SITE)))
 DL_SOURCE:=$(strip $(subst ",, $(DS_DL_SOURCE)))
@@ -71,6 +99,14 @@ DL_SITE2:=$(strip $(subst ",, $(DS_DL_SITE2)))
 DL_SOURCE2:=$(strip $(subst ",, $(DS_DL_SOURCE2)))
 endif
 
+
+### Convenience macros
+# Since the makefiles for the packages contain many similar parts, we define some macros to simplify
+# the creation and maintenance of the makefiles.
+# macro names containing _INT are for internal use only and should not be called outside of this file
+# For details of the required targets, see the documentation in README.Makefiles
+
+
 # Use $< (first prerequisite) rather than $^ (all prerequisites), because
 # otherwise there will be errors when make tries to copy multiple source files
 # into one target binary.
@@ -78,3 +114,97 @@ define INSTALL_BINARY_STRIP
 cp $< $@
 $(TARGET_STRIP) $@
 endef
+
+
+### download the source tar
+define PACKAGE_SOURCE_DOWNLOAD__INT
+$(DL_DIR)/$($(PACKAGE_UC)_SOURCE): | $(DL_DIR)
+	wget -nd --passive-ftp -P $(DL_DIR) $($(PACKAGE_UC)_SITE)/$($(PACKAGE_UC)_SOURCE)
+$(PACKAGE_LC)-download: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE)
+.PHONY: $(PACKAGE_LC)-download
+endef
+PACKAGE_SOURCE_DOWNLOAD=$(eval $(PACKAGE_SOURCE_DOWNLOAD__INT))
+
+
+### unpack the source tar and apply patches
+# the naming convention for patches is different for library packages and for binary packages,
+# therefor two different macros
+
+# tar options for uncompression by file extension
+PACKAGE_UNTAR__INT_.tar:=
+PACKAGE_UNTAR__INT_.gz:=z
+PACKAGE_UNTAR__INT_.tgz:=z
+PACKAGE_UNTAR__INT_.bz2:=j
+PACKAGE_UNTAR__INT_.tbz:=j
+PACKAGE_UNTAR__INT_.lzma:=a
+PACKAGE_UNTAR__INT_.tlz:=a
+# $1: package name
+define PACKAGE_UNTAR__INT
+	$(if $(PACKAGE_UNTAR__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
+	tar -C $(SOURCE_DIR) $(VERBOSE) -x$(PACKAGE_UNTAR__INT_$(suffix $(strip $1)))f $(strip $1)
+endef
+
+# untar, without patch
+define PACKAGE_UNTAR
+	$(call PACKAGE_UNTAR__INT, $(DL_DIR)/$($(PACKAGE_UC)_SOURCE))
+endef
+
+## apply patches
+
+# $1: directory containing the patches
+# $2: directory to apply the patches to
+# $3: optional name for library patches
+define PACKAGE_PATCH__INT
+	shopt -s nullglob; for i in $(strip $1)/*$(strip $3).patch; do \
+		$(PATCH_TOOL) $(strip $2) $$$$i; \
+	done
+endef
+
+# Patch binary package
+define PACKAGE_BIN_PATCH
+	$(call PACKAGE_PATCH__INT, $($(strip $(PACKAGE_UC))_MAKE_DIR)/patches, $($(strip $(PACKAGE_UC))_DIR), )
+endef
+
+# Patch library package
+define PACKAGE_LIB_PATCH
+	$(call PACKAGE_LIB_PATCH__INT, $(PACKAGE_UC), .$(strip $(PACKAGE_LC)))
+	$(call PACKAGE_PATCH__INT, $($(strip $(PACKAGE_UC))_MAKE_DIR)/patches, $($(strip $(PACKAGE_UC))_DIR), .$(strip $(PACKAGE_LC)))
+endef
+
+## unpack and patch binary package
+define PACKAGE_BIN_UNPACKED__INT
+$($(PACKAGE_UC)_DIR)/.unpacked: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE)
+	$(call PACKAGE_UNTAR)
+	$(call PACKAGE_BIN_PATCH)
+	touch $$@
+$(PACKAGE_LC)-source: $($(PACKAGE_UC)_DIR)/.unpacked
+$(PACKAGE_LC)-unpacked: $($(PACKAGE_UC)_DIR)/.unpacked
+.PHONY: $(PACKAGE_LC)-source $(PACKAGE_LC)-unpacked
+endef
+
+## unpack and patch library package
+define PACKAGE_LIB_UNPACKED__INT
+$($(PACKAGE_UC)_DIR)/.unpacked: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE)
+	$(call PACKAGE_UNTAR)
+	$(call PACKAGE_LIB_PATCH)
+	touch $$@
+$(PACKAGE_LC)-source: $($(PACKAGE_UC)_DIR)/.unpacked
+$(PACKAGE_LC)-unpacked: $($(PACKAGE_UC)_DIR)/.unpacked
+.PHONY: $(PACKAGE_LC)-source $(PACKAGE_LC)-unpacked
+endef
+
+PACKAGE_BIN_UNPACKED=$(eval $(PACKAGE_BIN_UNPACKED__INT))
+PACKAGE_LIB_UNPACKED=$(eval $(PACKAGE_LIB_UNPACKED__INT))
+
+
+## 
+define PACKAGE_LIST__INT
+$(PACKAGE_LC)-list:
+ifeq ($(strip $(DS_PACKAGE_$(PACKAGE_UC))),y)
+	@echo "S$(strip $($(PACKAGE_UC)_STARTLEVEL))$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)" >> .static
+else
+	@echo "S$(strip $($(PACKAGE_UC)_STARTLEVEL))$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)" >> .dynamic
+endif
+.PHONY: $(PACKAGE_LC)-list
+endef
+PACKAGE_LIST=$(eval $(PACKAGE_LIST__INT))
