@@ -159,6 +159,14 @@ $Id$
 - Bump busybox version to 1.7.1
 
 - Samba: Should have problems with big files?
+    Status (by kriegaex): I just tested copying a directory containing several
+    2-5 MB files over to my USB hard disk via DS-Mod's Samba version
+    (2.0.10-security-rollup). The partition mounted is an ext3 24 GB partition.
+    No swap space was used during the test. Afterwards I copied a 700 MB ISO
+    image which also worked flawlessly. I double-checked the MD5 sum and also
+    monitored the CPU load via top. Result: On average there was 13% load by
+    smbd and something like 1% for each of ksoftirqd and kjournald, less than
+    1% for usbstorage.
 
 - Checkmaild: fast and slow blinking is mixed up
 
