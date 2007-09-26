@@ -165,11 +165,18 @@ $Id$
     No swap space was used during the test. Afterwards I copied a 700 MB ISO
     image which also worked flawlessly. I double-checked the MD5 sum and also
     monitored the CPU load via top. Result: On average there was 13% load by
-    smbd and something like 1% for each of ksoftirqd and kjournald, less than
-    1% for usbstorage.
+    smbd and something like 1% for each of ksoftirqd (some peaks with up to
+    15%) and kjournald, less than 1% for usbstorage. All copy actions were
+    performed by Total Commander 6.5. By the way: User and group names
+    (root:root) were correct for all files and dirs created on the ext3 share
+    via shell commandline and Windows (TC).
 
 - Checkmaild: fast and slow blinking is mixed up
 
 - Integrate package brctl (assigned to Ralf)
 
 - Check jamvm package
+
+- Test if it is possible to strip userman.ko and usermand from FW image.
+  "Userman" means "user management" and is responsible for the "child safety"
+  option (Kindersicherung).
