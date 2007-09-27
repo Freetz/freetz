@@ -186,3 +186,12 @@ $Id$
 
 - Find out why dsld is not started in ATA mode if DS-Mod is installed, cf.
   http://www.ip-phone-forum.de/showthread.php?t=148885.
+
+- Bump uClibc to 0.9.29
+
+- Possibly add patch to rc.S according or similar to
+  http://www.ip-phone-forum.de/showthread.php?p=949145#post949145
+  so as to make sure that the network is up before starting dsld. Otherwise
+  there might be problems, i.e. dsld does not start during the boot process
+  and must be started manually later. If this only happens in ATA or also in
+  DSL mode, is unknown.
