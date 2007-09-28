@@ -12,6 +12,8 @@ config DS_AVM_VERSION_04_30
 	bool
 config DS_AVM_VERSION_04_33
 	bool
+config DS_AVM_VERSION_04_40
+	bool
 config DS_AVM_VERSION_r4884
 	bool
 config DS_AVM_VERSION_r7203
@@ -67,7 +69,7 @@ choice
 		bool "Fon 7150"
 
 	config DS_TYPE_FON_WLAN_7170
-		select DS_AVM_VERSION_04_33
+		select DS_AVM_VERSION_04_40
 		bool "Fon WLAN 7170"
 
 	config DS_TYPE_WLAN_3020
@@ -143,9 +145,9 @@ endchoice
 
 config DS_AVM_VERSION_STRING
 	string
-	default "04.29"			if DS_AVM_VERSION_04_29
 	default "04.30"			if DS_AVM_VERSION_04_30
 	default "04.33"			if DS_AVM_VERSION_04_33
+	default "04.40"			if DS_AVM_VERSION_04_40
 	default "r4884"			if DS_AVM_VERSION_r4884
 	default "r7203"			if DS_AVM_VERSION_r7203
 
@@ -248,7 +250,7 @@ config DS_REPLACE_BUSYBOX
 
 config DS_REPLACE_KERNEL
 	bool "Replace kernel"
-	depends on ! DS_TYPE_LABOR
+	depends on ! DS_TYPE_LABOR && ! DS_TYPE_SPEEDPORT_W701V
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
@@ -738,6 +740,14 @@ config DS_PATCH_UPNP
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
+config DS_REMOVE_USERMAN
+	bool "Remove usermand and userman.ko - EXPERIMENTAL"
+	default n
+	help
+		Remove userman files (Kindersicherung)
+		
+		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
 config DS_PATCH_MEDIASRV
 	bool "Integrate Media Server from USB Labor firmware - EXPERIMENTAL"
 	depends on DS_HAS_USB_HOST
@@ -843,7 +853,7 @@ config DS_DL_SOURCE
 	default "fritz.box_wlan_3130.44.04.34.image"							if DS_TYPE_WLAN_3130
 	default "fritz.box_wlan_3170.49.04.34.image"							if DS_TYPE_WLAN_3170
 	default "fw_Speedport_W501V_v_28.04.38.image"							if DS_TYPE_SPEEDPORT_W501V
-	default "fw_Speedport_W701V_V33.04.26.image"							if DS_TYPE_SPEEDPORT_W701V
+	default "fw_Speedport_W701V_v33.04.44.image"							if DS_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W_900V.34.04.21.image"							if DS_TYPE_SPEEDPORT_W900V
 	default "fritz.box..."													if DS_TYPE_CUSTOM
 
@@ -864,7 +874,7 @@ config DS_DL_SOURCE2
 		DS_TYPE_SPEEDPORT_W701V || \
 		DS_TYPE_SPEEDPORT_W900V
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if DS_TYPE_SPEEDPORT_W501V
-	default "fritz.box_fon_wlan_7170.29.04.39.image"	if DS_TYPE_SPEEDPORT_W701V
+	default "fritz.box_fon_wlan_7170.29.04.40.image"	if DS_TYPE_SPEEDPORT_W701V
 	default "fritz.fon_7150.annexb.38.04.32.image"		if DS_TYPE_SPEEDPORT_W900V
 
 menu "DS-Mod package download sites"

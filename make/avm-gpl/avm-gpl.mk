@@ -1,9 +1,20 @@
-ifeq ($(AVM_VERSION),04.30)
-AVM_SOURCE_PREFIX:=7141
+AVM_SITE:=ftp://ftp.avm.de/develper/opensrc
+
+ifeq ($(AVM_VERSION),04.29)
+AVM_SOURCE:=fritzbox-source-files-04.29.tar.bz2
 endif
 
-AVM_SOURCE:=fritzbox$(AVM_SOURCE_PREFIX)-source-files-$(AVM_VERSION).tar.bz2
-AVM_SITE:=ftp://ftp.avm.de/develper/opensrc
+ifeq ($(AVM_VERSION),04.30)
+AVM_SOURCE:=fritzbox7141-source-files-04.30.tar.bz2
+endif
+
+ifeq ($(AVM_VERSION),04.33)
+AVM_SOURCE:=fritzbox-source-files-04.33.tar.bz2
+endif
+
+ifeq ($(AVM_VERSION),04.40)
+AVM_SOURCE:=fritzbox-source-files.04.40.tar.bz2
+endif
 
 ifeq ($(AVM_VERSION),r4884)
 AVM_SOURCE:=GPL-r4884-8mb_26-tar.bz2

@@ -2,11 +2,13 @@ KERNEL_SUBVERSION:=iln6
 KERNEL_BOARD_REF:=$(KERNEL_REF)
 KERNEL_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
+
 ifeq ($(AVM_VERSION),r7203)
 KERNEL_BUILD_DIR_N:=kernel_4mb_26_build
 else
 KERNEL_BUILD_DIR_N:=kernel_8mb_26_build
 endif
+
 KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
 KERNEL_IMAGE:=kernel/linux-2.6.13.1/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
@@ -17,10 +19,14 @@ KERNEL_LZMA_CFLAGS:=-D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -fno-s
 		   				-Wa,-march=mips32 -Wa,-mips32 -Wa,--trap
 KERNEL_LZMA_LIB:=kernel/linux-2.6.13.1/fs/squashfs/lzma_decode.a
 
+ifeq ($(AVM_VERSION),04.40)
+KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base/$(KERNEL_BUILD_DIR_N)
+else 
 ifeq ($(AVM_VERSION),04.33)
 KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/base/$(KERNEL_BUILD_DIR_N)
 else
 KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
+endif
 endif
 
 $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
@@ -34,6 +40,7 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
 ifneq ($(AVM_VERSION),04.33)
+ ifneq ($(AVM_VERSION),04.40)
 	# Version 04.29/04.30/r4884 source corrections
 	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
@@ -61,6 +68,7 @@ ifneq ($(AVM_VERSION),04.33)
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/adm_reg.h	
 	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_cpmac.h	
+ endif
 endif
 	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-2.6.13.1 $(KERNEL_DIR)/linux 
 	touch $@
@@ -106,7 +114,7 @@ $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE
 	echo "$(KERNEL_SUBVERSION)" > $(KERNEL_TARGET_DIR)/.version-$(KERNEL_REF)-$(AVM_VERSION)
 	touch -c $@
 	
-$(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
+$(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
@@ -125,7 +133,7 @@ $(KERNEL_DIR)/.modules: $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 		modules_install
 	touch $@
 
-$(KERNEL_MODULES_DIR)/.modules: $(KERNEL_DIR)/.modules
+$(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT)
 	rm -rf $(KERNEL_MODULES_DIR)/lib
 	mkdir -p $(KERNEL_MODULES_DIR)
 	tar -cf - -C $(KERNEL_BUILD_DIR)/modules \
@@ -134,11 +142,11 @@ $(KERNEL_MODULES_DIR)/.modules: $(KERNEL_DIR)/.modules
 		. | tar -xf - -C $(KERNEL_MODULES_DIR)
 	touch $@
 
-kernel-precompiled: $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules
+kernel-precompiled: $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT)
 
 kernel-configured: $(KERNEL_DIR)/.depend_done
 
-kernel-modules: $(KERNEL_DIR)/.modules
+kernel-modules: $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT)
 
 kernel-menuconfig: $(KERNEL_DIR)/.unpacked
 	[ -f $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config ] || cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/.config
