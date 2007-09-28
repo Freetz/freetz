@@ -55,10 +55,10 @@ case $CHECKMAILD_LEDMINOR in
 alw_sel=' selected'
 ;;
 3) 
-slow_sel=' selected'
+fast_sel=' selected'
 ;;
 4) 
-fast_sel=' selected'
+slow_sel=' selected'
 ;;
 *) 
 alw_sel=' selected'
@@ -149,8 +149,8 @@ cat << EOF
 <OPTION VALUE='14'$int_sel>Internet-LED</OPTION></SELECT>
 <SELECT ID='r33' NAME='ledminor'>
 <OPTION VALUE='2'$always_sel>immer an</OPTION>
-<OPTION VALUE='3'$slow_sel>langsames blinken</OPTION>
-<OPTION VALUE='4'$fast_sel>schnelles blinken</OPTION></SELECT>
+<OPTION VALUE='3'$fast_sel>schnelles blinken</OPTION>
+<OPTION VALUE='4'$slow_sel>langsames blinken</OPTION></SELECT>
 </p> 
 EOF
 
