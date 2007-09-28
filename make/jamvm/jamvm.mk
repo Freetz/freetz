@@ -12,7 +12,6 @@ JAMVM_TARGET_LIB_BINARY:=$(JAMVM_TARGET_DIR)/root/usr/lib/libjvm.so.$(JAMVM_UGLY
 JAMVM_PKG_VERSION:=0.1
 JAMVM_PKG_SOURCE:=jamvm-$(JAMVM_VERSION)-dsmod-$(JAMVM_PKG_VERSION).tar.bz2
 JAMVM_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
-JAMVM_PKG_SOURCE:=jamvm-$(JAMVM_VERSION)-dsmod-binary-only.tar.bz2
 
 $(DL_DIR)/$(JAMVM_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(JAMVM_SITE)/$(JAMVM_SOURCE)

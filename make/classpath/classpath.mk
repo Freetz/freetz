@@ -12,7 +12,7 @@ CLASSPATH_PKG_SOURCE:=CLASSPATH-$(CLASSPATH_VERSION)-dsmod-$(CLASSPATH_PKG_VERSI
 CLASSPATH_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 CLASSPATH_PKG_SOURCE:=classpath-$(CLASSPATH_VERSION)-dsmod.tar.bz2
 CLASSPATH_LIB_BINARY:=$(CLASSPATH_DIR)/native/jni/java-lang/.libs/libjavalang.so.$(CLASSPATH_UGLY_VERSION)
-CLASSPATH_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
+CLASSPATH_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjavalang.so
 
 $(DL_DIR)/$(CLASSPATH_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(CLASSPATH_SITE)/$(CLASSPATH_SOURCE)
@@ -65,26 +65,25 @@ $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION): $(DL_DIR)/$(CLASSPATH_PKG_SOURC
 $(CLASSPATH_LIB_STAGING_BINARY): $(CLASSPATH_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(CLASSPATH_DIR)/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavaio.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalang.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalangmanagement.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalangreflect.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavanet.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavanio.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavautil.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libjavaio.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libjavalang.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libjavalangmanagement.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libjavalangreflect.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libjavanet.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libjavanio.la
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libjavautil.la
 	touch -c $@
 
 $(CLASSPATH_DIR)/.installed: $(CLASSPATH_LIB_STAGING_BINARY)
-	mkdir -p root/usr/lib/classpath
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/lib*.so* root/usr/lib/classpath
-	$(TARGET_STRIP) root/usr/lib/classpath/lib*.so*
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjava*.so* root/usr/lib
+	$(TARGET_STRIP) root/usr/lib/libjava*.so*
 	touch $@
 
 classpath: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
@@ -107,7 +106,7 @@ classpath-dirclean:
 
 classpath-uninstall:
 	rm -f $(CLASSPATH_TARGET_BINARY)
-	rm -rf root/usr/lib/classpath
+	rm -rf root/usr/lib/libjava*
 	rm -f $(CLASSPATH_DIR)/.installed
 
 classpath-list:
