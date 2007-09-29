@@ -1,0 +1,66 @@
+--- libc/inet/resolv.c.orig	2007-04-23 19:01:05.000000000 +0200
++++ libc/inet/resolv.c	2007-09-29 11:33:32.000000000 +0200
+@@ -1546,7 +1546,7 @@
+ 	buf+=sizeof(char **)*(ALIAS_DIM);
+ 	buflen-=sizeof(char **)*(ALIAS_DIM);
+ 
+-	if (action!=GETHOSTENT) {
++	{
+ #ifdef __UCLIBC_HAS_IPV6__
+ 		char *p=buf;
+ 		size_t len=buflen;
+@@ -1586,10 +1586,12 @@
+ 		if (buflen < 80)
+ 			return ERANGE;
+ 
+-		__open_etc_hosts(&fp);
+-		if (fp == NULL) {
+-			result=NULL;
+-			return errno;
++		if (action!=GETHOSTENT) {
++			__open_etc_hosts(&fp);
++		    if (fp == NULL) {
++			    result=NULL;
++			    return errno;
++		    }
+ 		}
+ 	}
+ 
+@@ -1618,7 +1620,6 @@
+ 
+ 		if (action==GETHOSTENT) {
+ 			/* Return whatever the next entry happens to be. */
+-			break;
+ 		} else if (action==GET_HOSTS_BYADDR) {
+ 			if (strcmp(name, alias[0]) != 0)
+ 				continue;
+@@ -1734,7 +1735,7 @@
+ #endif /* __UCLIBC_HAS_IPV6__ */
+ 					sizeof(char *)*(ALIAS_DIM) +
+ 					80/*namebuffer*/ + 2/* margin */];
+-    struct hostent *host;
++    struct hostent *host = 0;
+ 
+     __UCLIBC_MUTEX_LOCK(mylock);
+     gethostent_r(&h, buf, sizeof(buf), &host, &h_errno);
+--- libc/sysdeps/linux/arm/syscall.c.orig	2006-08-23 21:19:35.000000000 +0200
++++ libc/sysdeps/linux/arm/syscall.c	2007-09-29 11:33:32.000000000 +0200
+@@ -11,6 +11,18 @@
+ #include <sys/types.h>
+ #include <sys/syscall.h>
+ 
++#ifndef __NR_syscall			
++#ifndef __NR_SYSCALL_BASE	
++
++#if defined(__thumb__)
++#define __NR_SYSCALL_BASE	0
++#else
++#define __NR_SYSCALL_BASE	0x900000
++#endif
++#endif
++
++#define __NR_syscall			(__NR_SYSCALL_BASE+113)
++#endif
+ 
+ long syscall(long sysnum, long a, long b, long c, long d, long e, long f)
+ {

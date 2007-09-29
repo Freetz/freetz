@@ -1,10 +1,10 @@
---- Rules.mak.orig	2007-02-28 22:12:06.000000000 +0100
-+++ Rules.mak	2007-07-29 05:16:13.000000000 +0200
-@@ -168,6 +168,7 @@
+--- Rules.mak.orig	2007-04-17 15:34:11.000000000 +0200
++++ Rules.mak	2007-09-29 11:33:32.000000000 +0200
+@@ -222,6 +222,7 @@
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_3)+=-mips3 -mtune=mips3
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_4)+=-mips4 -mtune=mips4
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32)+=-mips32 -mtune=mips32
 +	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32_4KC)+=-mips32 -march=4kc -mtune=4kc
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS64)+=-mips64 -mtune=mips32
- endif
- 
+ 	ifeq ($(strip $(ARCH_BIG_ENDIAN)),y)
+ 		CPU_LDFLAGS-$(CONFIG_MIPS_N64_ABI)+=-melf64btsmip
