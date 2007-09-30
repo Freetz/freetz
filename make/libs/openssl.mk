@@ -14,8 +14,8 @@ OPENSSL_TARGET_CRYPTO_BINARY:=$(OPENSSL_TARGET_DIR)/libcrypto.so.$(OPENSSL_LIB_V
 
 OPENSSL_NO_CIPHERS:= no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime \
 	no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5
-OPENSSL_OPTIONS:= shared no-ec no-err no-fips no-hw no-threads zlib-dynamic \
-	no-engines no-sse2 no-perlasm
+OPENSSL_OPTIONS:= shared no-ec no-err no-fips no-hw no-threads no-engines \
+	no-sse2 no-perlasm
 
 $(DL_DIR)/$(OPENSSL_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(OPENSSL_SITE)/$(OPENSSL_SOURCE)
@@ -45,15 +45,15 @@ $(OPENSSL_DIR)/.configured: $(OPENSSL_DIR)/.unpacked
 
 $(OPENSSL_SSL_BINARY) $(OPENSSL_CRYPTO_BINARY): $(OPENSSL_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) SHARED_LDFLAGS="" \
-		$(MAKE1) CC="$(TARGET_CC)" \
+		$(MAKE) CC="$(TARGET_CC)" \
 		-C $(OPENSSL_DIR) \
 		AR="$(TARGET_CROSS)ar r" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		all build-shared
 	# Work around openssl build bug to link libssl.so with libcrypto.so.
 	-rm $(OPENSSL_DIR)/libssl.so.*.*.*
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
-		-C $(OPENSSL_DIR) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \
 		CCOPTS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		do_linux-shared

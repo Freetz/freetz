@@ -317,7 +317,6 @@ menu "OpenSSL"
 
 config DS_LIB_libcrypto
 	bool "libcrypto.so"
-	select DS_LIB_libz
 	default n
 	help
 		crypto - OpenSSL cryptographic library
@@ -337,7 +336,6 @@ config DS_LIB_libcrypto
 config DS_LIB_libssl
 	bool "libssl.so"
 	select DS_LIB_libcrypto
-	select DS_LIB_libz
 	default n
 	help
 		SSL - OpenSSL SSL/TLS library
