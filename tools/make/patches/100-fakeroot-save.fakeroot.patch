@@ -8,7 +8,7 @@
 -    int r,fd=0;
 -    struct stat s;
 -    r=stat(save_file,&s);
--    if (r<0) return 0;
+-    if (r<0 && errno != ENOENT) return EOF;
 -    if (!(s.st_mode&S_IFIFO)) break;
 -    fd=open(save_file,O_WRONLY|O_NONBLOCK);
 -    if (fd<0) {
@@ -22,4 +22,4 @@
 -
    f=fopen(save_file, "w");
    if(!f)
-     return 0;
+     return EOF;
