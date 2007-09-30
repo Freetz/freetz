@@ -1,0 +1,30 @@
+--- util-linux/mount.c	2007-09-30 14:26:17.000000000 +0200
++++ util-linux/mount.c	2007-09-30 14:26:18.000000000 +0200
+@@ -1554,7 +1554,7 @@
+ 
+ 	// Parse remaining options
+ 
+-	opt = getopt32(argv, "o:t:rwanfvs", &opt_o, &fstype);
++	opt = getopt32(argv, "o:t:rwanfvsi", &opt_o, &fstype);
+ 	if (opt & 0x1) append_mount_options(&cmdopts, opt_o); // -o
+ 	//if (opt & 0x2) // -t
+ 	if (opt & 0x4) append_mount_options(&cmdopts, "ro"); // -r
+@@ -1564,6 +1564,7 @@
+ 	if (opt & 0x40) USE_FEATURE_MTAB_SUPPORT(fakeIt = 1); // -f
+ 	//if (opt & 0x80) // -v: verbose (ignore)
+ 	//if (opt & 0x100) // -s: sloppy (ignore)
++	//if (opt & 0x200) // -i: don't call mount.<fstype> (ignore)
+ 	argv += optind;
+ 	argc -= optind;
+ 
+--- util-linux/umount.c	2007-09-06 09:20:17.000000000 +0200
++++ util-linux/umount.c	2007-09-06 14:27:15.000000000 +0200
+@@ -12,7 +12,7 @@
+ #include <getopt.h>
+ #include "libbb.h"
+ 
+-#define OPTION_STRING		"flDnravdt:"
++#define OPTION_STRING		"flDnravdit:"
+ #define OPT_FORCE			1
+ #define OPT_LAZY			2
+ #define OPT_DONTFREELOOP	4

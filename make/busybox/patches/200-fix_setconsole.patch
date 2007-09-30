@@ -1,11 +1,10 @@
---- console-tools/setconsole.c.orig	2007-05-20 18:55:25.000000000 +0200
+--- console-tools/setconsole.c	2007-05-20 18:55:25.000000000 +0200
 +++ console-tools/setconsole.c	2007-07-29 03:49:48.000000000 +0200
-@@ -41,7 +41,7 @@
+@@ -41,6 +41,6 @@
  			device = DEV_CONSOLE;
  	}
  
--	if (-1 == ioctl(xopen(device, O_RDONLY), TIOCCONS)) {
-+	if (-1 == ioctl(xopen(device, O_RDWR), TIOCCONS)) {
- 		bb_perror_msg_and_die("TIOCCONS");
- 	}
+-	xioctl(xopen(device, O_RDONLY), TIOCCONS, NULL);
++	xioctl(xopen(device, O_RDWR), TIOCCONS, NULL);
  	return EXIT_SUCCESS;
+ }
