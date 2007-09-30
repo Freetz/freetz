@@ -35,7 +35,7 @@ $Id$
 
 - Make rc.mini_fo use kernel_args API
 
-- Get "telnetd vs. getcons" hangups fixed in BusyBox or another way.
+- Get "telnetd vs. setconsole" hangups fixed in BusyBox or another way.
 
 - Refactor Dnsmasq package, particularly rc.dnsmasq (full of logical mistakes!)
   and recently improved, but still suboptimal multid wrapper. The whole thing
@@ -156,7 +156,11 @@ $Id$
 - Recompile kernel modules after ohio/ar7 change (applies also to fuse),
   this should only affect 4mb boxes
 
-- Bump busybox version to 1.7.1
+- Bump busybox version to 1.7.2
+    Status (by kriegaex): done. Several patches were removed, others fixed and
+    a few renamed to '*.broken' because I was not 100% sure they are not needed
+    anymore or I believe the corresponding applets' should be tested, so we
+    know they now work without the old patches.
 
 - Samba: Should have problems with big files?
     Status (by kriegaex): I just tested copying a directory containing several
@@ -176,13 +180,20 @@ $Id$
 - Test if it is possible to strip userman.ko and usermand from FW image.
   "Userman" means "user management" and is responsible for the "child safety"
   option (Kindersicherung).
-  Status (by Oliver): Done. Perhaps we should we disable option for some boxes.
+    Status (by Oliver): done. Perhaps we should we disable option for some
+    boxes.
+    Remark (by kriegaex): Three current firmwares do not have 'usermand':
+      - 5140  (43.04.37)
+      - W501V (28.04.38)
+      - W900V (34.04.21)
+    Thoose three also do not have 'KIDS=y' in rc.init, so it seems logical to
+    disable the patch for them. I have done just that.
 
 - Find out why user 'ftp' is created multiple times (maybe once at each
   reboot?). My configuration currently has six instances.
 
 - Bump uClibc to 0.9.29
-	Status (by Oliver): Done. But AVM daemons don't like it.
+    Status (by Oliver): Done. But AVM daemons don't like it.
 
 - Possibly add patch to rc.S according or similar to
   http://www.ip-phone-forum.de/showthread.php?p=949145#post949145
@@ -197,4 +208,4 @@ $Id$
 
 - Integrate new firmware for W701 (thanks to heini66 for the hint):
   http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V/fw_Speedport_W701V_v33.04.44.image
-  Status (by Oliver): Done, but Webinterface needs testing.
+  Status (by Oliver): done, but web interface needs testing.

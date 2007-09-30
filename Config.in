@@ -742,10 +742,11 @@ config DS_PATCH_UPNP
 
 config DS_REMOVE_USERMAN
 	bool "Remove usermand and userman.ko - EXPERIMENTAL"
+	depends on ! (DS_TYPE_FON_5140 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
 	default n
 	help
 		Remove userman files (Kindersicherung)
-		
+
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
 config DS_PATCH_MEDIASRV
