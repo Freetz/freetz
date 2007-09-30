@@ -9,15 +9,3 @@
  ifeq ($(COMPAT_ATEXIT),y)
  CSRC += old_atexit.c
  endif
-@@ -80,9 +80,9 @@
- STDLIB_OBJ := $(patsubst %.c,$(STDLIB_OUT)/%.o,$(CSRC))
- 
- libc-y += $(STDLIB_OBJ)
--libc-static-y += $(STDLIB_OUT)/atexit.o
-+# libc-static-y += $(STDLIB_OUT)/atexit.o
- # this should always be the PIC version, because it could be used in shared libs
--libc-nonshared-y += $(STDLIB_OUT)/atexit.os
-+# libc-nonshared-y += $(STDLIB_OUT)/atexit.os
- 
- libc-nomulti-y += $(STDLIB_OUT)/labs.o $(STDLIB_OUT)/atol.o $(STDLIB_OUT)/_stdlib_strto_l.o $(STDLIB_OUT)/_stdlib_strto_ll.o
- libc-nomulti-$(UCLIBC_HAS_XLOCALE) += $(STDLIB_OUT)/_stdlib_strto_l_l.o $(STDLIB_OUT)/_stdlib_strto_ll_l.o
