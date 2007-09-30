@@ -66,10 +66,10 @@ choice
 		bool "mod_26 (recommended)"
 
 	config DS_TARGET_UCLIBC_CONFIG_8MB_26
-		bool "8MB_26" 
+		bool "8MB_26" if ! DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
 	
-	config DS_TARGET_UCLIBC_CONFIG_4MB_26
-		bool "4MB_26"
+	config DS_TARGET_UCLIBC_CONFIG_4MB_26 
+		bool "4MB_26" if ! DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
 
 endchoice
 
