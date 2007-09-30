@@ -1,4 +1,4 @@
-LIBEVENT_VERSION:=1.3b
+LIBEVENT_VERSION:=1.3e
 LIBEVENT_LIB_VERSION:=1.0.3
 LIBEVENT_SOURCE:=libevent-$(LIBEVENT_VERSION).tar.gz
 LIBEVENT_SITE:=http://www.monkey.org/~provos
@@ -14,9 +14,9 @@ $(DL_DIR)/$(LIBEVENT_SOURCE): | $(DL_DIR)
 
 $(LIBEVENT_DIR)/.unpacked: $(DL_DIR)/$(LIBEVENT_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBEVENT_SOURCE)
-	for i in $(LIBEVENT_MAKE_DIR)/patches/*.libevent.patch; do \
-		$(PATCH_TOOL) $(LIBEVENT_DIR) $$i; \
-	done
+	#for i in $(LIBEVENT_MAKE_DIR)/patches/*.libevent.patch; do \
+	#	$(PATCH_TOOL) $(LIBEVENT_DIR) $$i; \
+	#done
 	touch $@
 
 $(LIBEVENT_DIR)/.configured: $(LIBEVENT_DIR)/.unpacked
