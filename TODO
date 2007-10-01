@@ -84,6 +84,12 @@ $Id$
 
 - Idea by heini66: optionally remove dsld from image, because it is supposedly
   not needed in ATA mode.
+    Remark (by kriegaex): According to the discussion under
+    http://www.ip-phone-forum.de/showthread.php?t=148885 dsld *is* needed in
+    ATA mode, at least in PPPoE-passthrough mode (see screenshot at
+    http://www.ip-phone-forum.de/attachment.php?attachmentid=18739&d=1190878250).
+    Maybe it is not needed in IP client mode. Can somebody clarify this with
+    another comment, please?
 
 - Idea by heini66: implement call-back function as an add-on to DTMF-Box, see
   http://www.ip-phone-forum.de/showpost.php?p=941080&postcount=698 and
@@ -159,7 +165,7 @@ $Id$
 - Bump busybox version to 1.7.2
     Status (by kriegaex): done. Several patches were removed, others fixed and
     a few renamed to '*.broken' because I was not 100% sure they are not needed
-    anymore or I believe the corresponding applets' should be tested, so we
+    anymore or I believe the corresponding applets should be tested, so we
     know they now work without the old patches.
 
 - Samba: Should have problems with big files?
@@ -208,4 +214,4 @@ $Id$
 
 - Integrate new firmware for W701 (thanks to heini66 for the hint):
   http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V/fw_Speedport_W701V_v33.04.44.image
-  Status (by Oliver): done, but web interface needs testing.
+    Status (by Oliver): done, but web interface needs testing.
