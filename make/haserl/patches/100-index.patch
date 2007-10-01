@@ -1,0 +1,11 @@
+--- src/haserl.c.orig	2007-09-29 12:25:33.000000000 +0200
++++ src/haserl.c	2007-09-29 12:26:07.000000000 +0200
+@@ -210,7 +210,7 @@
+     }
+   memcpy ((char *) (entry + strlen (prefix)), str, strlen (str));
+ 
+-  keylen = (size_t) (index (entry, '=') - entry);
++  keylen = (size_t) (strchr (entry, '=') - entry);
+ 
+   if (keylen <= 0)
+     {

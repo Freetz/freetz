@@ -2,6 +2,7 @@ HASERL_VERSION:=0.9.20
 HASERL_SOURCE:=haserl-$(HASERL_VERSION).tar.gz
 HASERL_SITE:=http://mesh.dl.sourceforge.net/sourceforge/haserl
 HASERL_DIR:=$(SOURCE_DIR)/haserl-$(HASERL_VERSION)
+HASERL_MAKE_DIR:=$(MAKE_DIR)/haserl
 HASERL_BINARY:=$(HASERL_DIR)/src/haserl
 HASERL_TARGET_DIR:=root/usr/bin
 HASERL_TARGET_BINARY:=$(HASERL_TARGET_DIR)/haserl
@@ -12,6 +13,9 @@ $(DL_DIR)/$(HASERL_SOURCE): | $(DL_DIR)
 
 $(HASERL_DIR)/.unpacked: $(DL_DIR)/$(HASERL_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(HASERL_SOURCE)
+	for i in $(HASERL_MAKE_DIR)/patches/*.patch; do \
+	    $(PATCH_TOOL) $(HASERL_DIR) $$i; \
+	done	
 	touch $@
 
 $(HASERL_DIR)/.configured: $(HASERL_DIR)/.unpacked
