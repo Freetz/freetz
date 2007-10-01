@@ -131,25 +131,20 @@ config DS_TARGET_LFS
 choice
 
 	prompt "Kernel compiler" if DS_BUILD_TOOLCHAIN
-	default DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
+	default DS_KERNEL_COMPILER_GCC_3_4_6
 
-	config DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
-		bool "gcc-3.4.5-glibc-2.3.6"
+	config DS_KERNEL_COMPILER_GCC_3_4_6
+		bool "gcc-3.4.6"
 	
-	config DS_KERNEL_COMPILER_GCC_3_4_6_GLIBC_2_3_6
-		bool "gcc-3.4.6-glibc-2.3.6"
-
 endchoice
 
 config DS_KERNEL_GCC_VERSION
 	string
-	default "3.4.5"		if DS_KERNEL_COMPILER_GCC_3_4_5_GLIBC_2_3_6
-	default "3.4.6"		if DS_KERNEL_COMPILER_GCC_3_4_6_GLIBC_2_3_6
-	default "3.4.6"		if DS_DOWNLOAD_TOOLCHAIN
+	default "3.4.6"
 
-config DS_KERNEL_GLIBC_VERSION
+config DS_KERNEL_BINUTILS_VERSION
 	string
-	default "2.3.6"
+	default "2.15"
 
 comment "GNU debugger (gdb)"
     
