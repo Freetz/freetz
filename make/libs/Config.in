@@ -27,6 +27,22 @@ config DS_LIB_libgcrypt
 
 comment "SSL ------------------------------------"
 
+config DS_LIB_libcyassl
+	bool "CyaSSL (libcyassl.so)"
+	default n
+	help
+		The yaSSL software package is a fast, open source, dual licensed
+		implementation of SSL (SSLv3 and TLSv1). It includes SSL client libraries
+		and an SSL server implementation. yaSSL supports multiple API's, including
+		those defined by SSL and TLS. yaSSL also supports an OpenSSL compatibility
+		interface.
+
+		In DS-Mod, currently no package depends on MatrixSSL, but the OpenSSL
+		compatibility interface might one day enable us to port applications like
+		Stunnel or even OpenVPN (maybe a bit too ambitious, but who knows?) to this
+		lightweight SSL library. The testsuite runs fine on the target system,
+		I (kriegaex) tried it.
+
 config DS_LIB_libmatrixssl
 	bool "MatrixSSL (libmatrixssl.so)"
 	select DS_LIB_libpthread
