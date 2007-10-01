@@ -620,8 +620,28 @@ config DS_BRANDING_tcom
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
+comment "Mod ------------------------------------"
 
-comment "Patches --------------------------------"
+choice
+
+	prompt "Language"
+	default DS_LANG_DE		if DS_TYPE_LANG_DE
+	default DS_LANG_EN		if DS_TYPE_LANG_EN
+
+	config DS_LANG_DE
+		bool "de - deutsch"
+
+	config DS_LANG_EN
+		bool "en - english"
+
+endchoice
+
+config DS_LANG_STRING
+	string
+	default "de"			if DS_LANG_DE
+	default "en"			if DS_LANG_EN
+
+menu "Patches"
 
 config DS_REMOVE_HELP
 	bool "Remove help"
@@ -763,26 +783,7 @@ config DS_PATCH_MEDIASRV
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
-comment "Mod ------------------------------------"
-
-choice
-
-	prompt "Language"
-	default DS_LANG_DE		if DS_TYPE_LANG_DE
-	default DS_LANG_EN		if DS_TYPE_LANG_EN
-
-	config DS_LANG_DE
-		bool "de - deutsch"
-
-	config DS_LANG_EN
-		bool "en - english"
-
-endchoice
-
-config DS_LANG_STRING
-	string
-	default "de"			if DS_LANG_DE
-	default "en"			if DS_LANG_EN
+endmenu
 
 menu "Package selection"
 

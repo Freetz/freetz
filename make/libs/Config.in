@@ -1,205 +1,9 @@
-config DS_LIB_libcapi20
-	bool "capi (libcapi20.so)"
-	default n
-	help
-		COMMON-ISDN-API (CAPI) 2.0 Library
+menu "Crypto & SSL"
 
-config DS_LIB_libgcc_s
-	bool "libgcc_s.so.1"
-	default n
-	help
-		GCC low-level runtime library
-		
-		GCC provides a low-level runtime library, `libgcc.a' or `libgcc_s.so.1'
-		on some platforms. GCC generates calls to routines in this library
-		automatically, whenever it needs to perform some operation that is too
-		complicated to emit inline code for.
-		
-		Most of the routines in libgcc handle arithmetic operations that the
-		target processor cannot perform directly. This includes integer multiply
-		and divide on some machines, and all floating-point operations on other
-		machines. libgcc also includes routines for exception handling, and a
-		handful of miscellaneous operations.
-
-menu "uClibc"
-
-config DS_LIB_ld_uClibc
-	bool "ld-uClibc-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-config DS_LIB_libcrypt
-	bool "libcrypt-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-config DS_LIB_libdl
-	bool "libdl-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-config DS_LIB_libm
-	bool "libm-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-config DS_LIB_libnsl
-	bool "libnsl-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-config DS_LIB_libpthread
-	bool "libpthread-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-config DS_LIB_libresolv
-	bool "libresolv-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-config DS_LIB_libthread_db
-	bool "libthread_db-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-config DS_LIB_libuClibc
-	bool "libuClibc-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-config DS_LIB_libutil
-	bool "libutil-0.9.28.so"
-	default n
-	help
-		uClibc is a small C standard library intended for embedded Linux
-		systems. uClibc was created to support uClinux, a version of Linux not
-		requiring a memory management unit and thus suited for microcontrollers
-		(hence the "uC" in the name - "u" is a replacement for the Greek
-		character "miu" often used as an abbreviation for the prefix "micro").
-		
-		uClibc is much smaller than GNU C Library (glibc), the C library
-		normally used with Linux distributions. While glibc is intended to fully
-		support all relevant C standards across a wide range of platforms,
-		uClibc is specifically focused on embedded Linux. Features can be
-		enabled or disabled according to space requirements.
-
-endmenu
-
-config DS_LIB_libuClibcxx
-	bool "uClibc++ (libuClibc++-0.2.1.so)"
-	default n
-	help
-		The uClibc++ library is my implementation of the C++ standard library.
-		It is designed for use in embedded systems. 
-
-config DS_LIB_libjpeg
-	bool "libjpeg (libjpeg.so)"
-	default n
-	help
-		libjpeg is a library for handling the JPEG (JFIF) image format
+comment "GnuPG ----------------------------------"
 
 config DS_LIB_libgpg_error
-	bool "libgpg-error (libgpg-error.so)"
+	bool "GnuPG error library (libgpg-error.so)"
 	default n
 	help
 		Libgpg-error is a small library that defines common error values for all
@@ -208,7 +12,7 @@ config DS_LIB_libgpg_error
 		more in the future.
 
 config DS_LIB_libgcrypt
-	bool "libgcrypt (libgcrypt.so)"
+	bool "GnuPG crypto library (libgcrypt.so)"
 	select DS_LIB_libgpg_error
 	select DS_LIB_libnsl
 	default n
@@ -221,71 +25,7 @@ config DS_LIB_libgcrypt
 		and DSA), large integer functions, random numbers, and a lot of
 		supporting functions. 
 
-config DS_LIB_liblzo2
-	bool "LZO (liblzo2.so)"
-	default n
-	help
-		LZO is a portable lossless data compression library written in ANSI C.
-		It offers pretty fast compression and *very* fast decompression.
-		Decompression requires no memory. In addition there are slower
-		compression levels achieving a quite competitive compression ratio while
-		still decompressing at this very high speed. 
-
-config DS_LIB_libevent
-	bool "libevent (libevent.so)"
-	default n
-	help
-		libevent is an asynchronous event notification software library.
-		
-		The libevent API provides a mechanism to execute a callback function
-		when a specific event occurs on a file descriptor or after a timeout
-		has been reached. Furthermore, libevent also support callbacks due to
-		signals or regular timeouts.
-		
-		libevent is meant to replace the event loop found in event-driven
-		network servers. An application just needs to call event_dispatch() and
-		then add or remove events dynamically without having to change the event
-		loop.
-
-config DS_LIB_libmad
-	bool "MAD (libmad.so)"
-	default n
-	help
-		MAD is a high-quality MPEG audio decoder. It currently supports MPEG-1
-		and the MPEG-2 extension to Lower Sampling Frequencies, as well as the
-		so-called MPEG 2.5 format. All three audio layers (Layer I, Layer II,
-		and Layer III a.k.a. MP3) are fully implemented.
-
-config DS_LIB_libncurses
-	bool "ncurses (libncurses.so)"
-	default n
-	help
-		ncurses is a programming library providing an API, allowing the
-		programmer to write text user interfaces in a terminal-independent
-		manner. It also optimizes screen changes, in order to reduce the latency
-		experienced when using remote shells.
-		
-		Ncurses stands for "new curses", and is a replacement for the
-		discontinued 4.4 BSD classic curses.
-		
-		In DS-Mod, e.g. Lua, Bird, Lynx and Screen use libncurses.
-
-#config DS_LIB_libpjsip
-#	bool "libpjsip (libpjsip.so)
-#	default n
-#	help
-#		PJSIP is a SIP stack supporting many SIP extensions/features
-
-config DS_LIB_libpcap
-	bool "libpcap (libpcap.so)"
-	default n
-	help
-		libpcap is a system-independent interface for user-level packet capture.
-		libpcap provides a portable framework for low-level network monitoring.
-		Applications include network statistics collection, security monitoring,
-		network debugging, etc.
-		
-		In DS-Mod, e.g. tcpdump, knock and pingtunnel depend on libpcap.
+comment "SSL ------------------------------------"
 
 config DS_LIB_libmatrixssl
 	bool "MatrixSSL (libmatrixssl.so)"
@@ -313,10 +53,8 @@ config DS_LIB_libxyssl
 
 		In DS-Mod, xrelayd depends on XySSL.
 
-menu "OpenSSL"
-
 config DS_LIB_libcrypto
-	bool "libcrypto.so"
+	bool "OpenSSL cryptographic library (libcrypto.so)"
 	default n
 	help
 		crypto - OpenSSL cryptographic library
@@ -334,7 +72,7 @@ config DS_LIB_libcrypto
 		generator. 
 
 config DS_LIB_libssl
-	bool "libssl.so"
+	bool "OpenSSL SSL/TLS library (libssl.so)"
 	select DS_LIB_libcrypto
 	default n
 	help
@@ -346,6 +84,338 @@ config DS_LIB_libssl
 		In DS-Mod, e.g. Tor, sTunnel and OpenVPN depend on libssl.
 
 endmenu
+
+menu "Data compression"
+
+config DS_LIB_liblzo2
+	bool "LZO (liblzo2.so)"
+	default n
+	help
+		LZO is a portable lossless data compression library written in ANSI C.
+		It offers pretty fast compression and *very* fast decompression.
+		Decompression requires no memory. In addition there are slower
+		compression levels achieving a quite competitive compression ratio while
+		still decompressing at this very high speed. 
+
+config DS_LIB_libz
+	bool "Zlib (libz.so)"
+	default n
+	help
+		zlib is a lossless data-compression library for use on virtually any
+		computer hardware and operating system. The zlib data format is itself
+		portable across platforms.
+
+		In DS-Mod, e.g. Tor, Bftpd and Stunnel depend on zlib.
+
+endmenu
+
+menu "Graphics & fonts"
+
+config DS_LIB_libfreetype
+	bool "FreeType 2 font engine (freetype.so)"
+	select DS_LIB_libz
+	default n
+	help
+		FreeType 2 is a software font engine that is designed to be small, efficient,
+		highly customizable, and portable while capable of producing high-quality
+		output (glyph images). It can be used in graphics libraries, display servers,
+		font conversion tools, text image generation tools, and many other products
+		as well.
+
+		In DS-Mod, rrdtool depends on freetype.
+
+config DS_LIB_libart_lgpl_2
+	bool "Libart 2D graphics (libart.so)"
+	default n
+	help
+		Libart is a library for high-performance 2D graphics. It supports a very
+		powerful imaging model, basically the same as SVG and the Java 2D API.
+		It includes all PostScript imaging operations, and adds antialiasing and
+		alpha-transparency. It is also highly tuned for incremental rendering. It
+		contains data structures and algorithms suited to rapid, precise computation
+		of Region of Interest, and a two-phase rendering pipeline optimized for
+		interactive display. 
+
+		In DS-Mod, rrdtool depends on libart.
+
+config DS_LIB_libjpeg
+	bool "JPEG library (libjpeg.so)"
+	default n
+	help
+		libjpeg is a library for handling the JPEG (JFIF) image format
+
+config DS_LIB_libpng12
+	bool "PNG library (libpng.so)"
+	select DS_LIB_libz
+	default n
+	help
+		libpng is the official PNG reference library. It supports almost all PNG
+		features, is extensible, and has been extensively tested for over 12 years.
+		The home site for development versions (i.e., may be buggy or subject to 
+		change or include experimental features) is http://libpng.sourceforge.net/,
+		and the place to go for questions about the library is the png-mng-implement
+		mailing list. 
+
+		In DS-Mod, rrdtool depends on libpng.
+
+endmenu
+
+menu "uClibc"
+
+config DS_LIB_ld_uClibc
+	bool "ld-uClibc-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config DS_LIB_libcrypt
+	bool "libcrypt-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config DS_LIB_libdl
+	bool "libdl-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config DS_LIB_libm
+	bool "libm-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config DS_LIB_libnsl
+	bool "libnsl-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config DS_LIB_libpthread
+	bool "libpthread-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config DS_LIB_libresolv
+	bool "libresolv-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config DS_LIB_libthread_db
+	bool "libthread_db-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config DS_LIB_libuClibc
+	bool "libuClibc-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config DS_LIB_libutil
+	bool "libutil-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+endmenu
+
+config DS_LIB_libuClibcxx
+	bool "uClibc++ (libuClibc++-0.2.1.so)"
+	default n
+	help
+		The uClibc++ library is my implementation of the C++ standard library.
+		It is designed for use in embedded systems. 
+
+config DS_LIB_libgcc_s
+	bool "GCC low-level runtime library (libgcc_s.so)"
+	default n
+	help
+		GCC low-level runtime library
+
+		GCC provides a low-level runtime library, `libgcc.a' or `libgcc_s.so.1'
+		on some platforms. GCC generates calls to routines in this library
+		automatically, whenever it needs to perform some operation that is too
+		complicated to emit inline code for.
+
+		Most of the routines in libgcc handle arithmetic operations that the
+		target processor cannot perform directly. This includes integer multiply
+		and divide on some machines, and all floating-point operations on other
+		machines. libgcc also includes routines for exception handling, and a
+		handful of miscellaneous operations.
+
+config DS_LIB_libglib
+	bool "GLib (libglib-2.0.so)"
+	default n
+	help
+		GLib is a library containing many useful C routines for things such as trees, 
+		hashes, and lists.
+
+config DS_LIB_libncurses
+	bool "ncurses (libncurses.so)"
+	default n
+	help
+		ncurses is a programming library providing an API, allowing the
+		programmer to write text user interfaces in a terminal-independent
+		manner. It also optimizes screen changes, in order to reduce the latency
+		experienced when using remote shells.
+
+		Ncurses stands for "new curses", and is a replacement for the
+		discontinued 4.4 BSD classic curses.
+		
+		In DS-Mod, e.g. Lua, Bird, Lynx and Screen use libncurses.
+
+config DS_LIB_libcapi20
+	bool "CAPI 2.0 (libcapi20.so)"
+	default n
+	help
+		COMMON-ISDN-API (CAPI) 2.0 Library
+
+config DS_LIB_libevent
+	bool "libevent (libevent.so)"
+	default n
+	help
+		libevent is an asynchronous event notification software library.
+		
+		The libevent API provides a mechanism to execute a callback function
+		when a specific event occurs on a file descriptor or after a timeout
+		has been reached. Furthermore, libevent also support callbacks due to
+		signals or regular timeouts.
+
+		libevent is meant to replace the event loop found in event-driven
+		network servers. An application just needs to call event_dispatch() and
+		then add or remove events dynamically without having to change the event
+		loop.
+
+config DS_LIB_libmad
+	bool "MAD (libmad.so)"
+	default n
+	help
+		MAD is a high-quality MPEG audio decoder. It currently supports MPEG-1
+		and the MPEG-2 extension to Lower Sampling Frequencies, as well as the
+		so-called MPEG 2.5 format. All three audio layers (Layer I, Layer II,
+		and Layer III a.k.a. MP3) are fully implemented.
+
+#config DS_LIB_libpjsip
+#	bool "libpjsip (libpjsip.so)
+#	default n
+#	help
+#		PJSIP is a SIP stack supporting many SIP extensions/features
+
+config DS_LIB_libpcap
+	bool "libpcap (libpcap.so)"
+	default n
+	help
+		libpcap is a system-independent interface for user-level packet capture.
+		libpcap provides a portable framework for low-level network monitoring.
+		Applications include network statistics collection, security monitoring,
+		network debugging, etc.
+
+		In DS-Mod, e.g. tcpdump, knock and pingtunnel depend on libpcap.
 
 menu "Readline"
 
@@ -359,7 +429,7 @@ config DS_LIB_libreadline
 		additional functions to maintain a list of previously-entered command
 		lines, to recall and perhaps reedit those lines, and perform csh-like
 		history expansion on previous commands.
-		
+
 		In DS-Mod, e.g. Lua and Bird depend on libreadline.
 
 config DS_LIB_libhistory
@@ -373,7 +443,7 @@ config DS_LIB_libhistory
 		additional functions to maintain a list of previously-entered command
 		lines, to recall and perhaps reedit those lines, and perform csh-like
 		history expansion on previous commands.
-		
+
 		In DS-Mod, e.g. Lua and Bird depend on libhistory.
 
 endmenu
@@ -383,19 +453,9 @@ config DS_LIB_libusb
 	default n
 	help
 		A library for accessing Linux USB devices.
-		
-config DS_LIB_libz
-	bool "zlib (libz.so)"
-	default n
-	help
-		zlib is a lossless data-compression library for use on virtually any
-		computer hardware and operating system. The zlib data format is itself
-		portable across platforms.
-		
-		In DS-Mod, e.g. Tor, Bftpd and Stunnel depend on zlib.
 
 config DS_LIB_libelf
-	bool "libelf - ELF object file access library"
+	bool "ELF object file access library (libelf.so)"
 	default n
 	help
 		libelf - ELF object file access library
@@ -404,54 +464,6 @@ config DS_LIB_libelf
 		http://www.stud.uni-hannover.de/~michael/software/
 
 		In DS-Mod, e.g ltrace depends on libelf.
-
-config DS_LIB_libpng12
-	bool "libpng (libpng.so)"
-	select DS_LIB_libz
-	default n
-	help
-		libpng is the official PNG reference library. It supports almost all PNG
-		features, is extensible, and has been extensively tested for over 12 years.
-		The home site for development versions (i.e., may be buggy or subject to 
-		change or include experimental features) is http://libpng.sourceforge.net/,
-		and the place to go for questions about the library is the png-mng-implement
-		mailing list. 
-		
-		In DS-Mod, rrdtool depends on libpng.
-
-config DS_LIB_libart_lgpl_2
-	bool "libart (libart.so)"
-	default n
-	help
-		Libart is a library for high-performance 2D graphics. It supports a very
-		powerful imaging model, basically the same as SVG and the Java 2D API.
-		It includes all PostScript imaging operations, and adds antialiasing and
-		alpha-transparency. It is also highly tuned for incremental rendering. It
-		contains data structures and algorithms suited to rapid, precise computation
-		of Region of Interest, and a two-phase rendering pipeline optimized for
-		interactive display. 
-		
-		In DS-Mod, rrdtool depends on libart.
-
-config DS_LIB_libfreetype
-	bool "libfreetype (freetype.so)"
-	select DS_LIB_libz
-	default n
-	help
-		FreeType 2 is a software font engine that is designed to be small, efficient,
-		highly customizable, and portable while capable of producing high-quality
-		output (glyph images). It can be used in graphics libraries, display servers,
-		font conversion tools, text image generation tools, and many other products
-		as well.
-		
-		In DS-Mod, rrdtool depends on freetype.
-
-config DS_LIB_libglib
-	bool "glib (libglib-2.0.so)"
-	default n
-	help
-		GLib is a library containing many useful C routines for things such as trees, 
-		hashes, and lists.
 
 config DS_LIB_libintl
 	bool "libintl (libintl.so)"
