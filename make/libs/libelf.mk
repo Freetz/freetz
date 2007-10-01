@@ -69,6 +69,9 @@ $(LIBELF_STAGING_BINARY): $(LIBELF_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE1) \
 		instroot="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		-C $(LIBELF_DIR) install
+	$(SED) -i -e "s,^includedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
+			-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libelf.pc
 
 $(LIBELF_TARGET_BINARY): $(LIBELF_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so* $(LIBELF_TARGET_DIR)/

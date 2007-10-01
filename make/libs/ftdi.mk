@@ -60,6 +60,9 @@ $(FTDI_STAGING_BINARY): $(FTDI_BINARY)
 	    $(MAKE) -C $(FTDI_DIR) \
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	    install
+	$(SED) -i -e "s,^inlcudedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
+		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libftdi.pc
 
 $(FTDI_TARGET_BINARY): $(FTDI_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*.so* $(FTDI_TARGET_DIR)/

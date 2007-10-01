@@ -64,6 +64,12 @@ $(OPENSSL_STAGING_SSL_BINARY) $(OPENSSL_STAGING_CRYPTO_BINARY): \
 		-C $(OPENSSL_DIR) \
 		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
+	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/\',g" \
+	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcrypto.pc
+	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/\',g" \
+	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libssl.pc
+	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/\',g" \
+	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/openssl.pc
 
 $(OPENSSL_TARGET_SSL_BINARY): $(OPENSSL_STAGING_SSL_BINARY) 
 	# FIXME: Strange enough, this chmod is really necessary. Maybe the

@@ -68,6 +68,9 @@ $(LIBPNG_STAGING_BINARY): $(LIBPNG_BINARY)
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	    install
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libpng12.la
+	$(SED) -i -e "s,^inlcudedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include/libpng12\',g" \
+		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+	        $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libpng12.pc
 	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)\',g" \
 		-e "s,^exec_prefix=.*,exec_prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/usr\',g" \
 		-e "s,^includedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include/libpng12\',g" \

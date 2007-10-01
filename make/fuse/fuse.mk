@@ -92,6 +92,10 @@ $(FUSE_LIB_STAGING_BINARY): $(FUSE_LIB_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfuse.la
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libulockmgr.la
+	$(SED) -i -e "s,^includedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
+		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc
+
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
 		-C $(FUSE_DIR)/include \
 		ARCH="$(KERNEL_ARCH)" \

@@ -66,6 +66,9 @@ $(USB_STAGING_BINARY): $(USB_BINARY)
 		install
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb.la
+	$(SED) -i -e "s,^inlcudedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
+		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.mk
 
 $(USB_TARGET_BINARY): $(USB_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so* $(USB_TARGET_DIR)/
