@@ -770,6 +770,18 @@ config DS_REMOVE_USERMAN
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
+config DS_REMOVE_DSLD
+	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"
+	default n
+	help
+		Remove DSL deamon (dsld), if you are planning to use your box as a simple
+		IP client in ATA mode.
+
+		Attention: Do NOT use this option if your ATA mode box uses PPoE passthrough,
+		because in this case dsld is still needed!
+
+		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
 config DS_PATCH_MEDIASRV
 	bool "Integrate Media Server from USB Labor firmware - EXPERIMENTAL"
 	depends on DS_HAS_USB_HOST

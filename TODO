@@ -90,6 +90,17 @@ $Id$
     http://www.ip-phone-forum.de/attachment.php?attachmentid=18739&d=1190878250).
     Maybe it is not needed in IP client mode. Can somebody clarify this with
     another comment, please?
+    Update (by kriegaex): heini66 tested without dsld on W900V, 7050, FON WLAN,
+    W501V in IP client mode, and it works. Olistudent also says dsld is only
+    needed in PPoE-passthrough mode, so I think we can risk offering a patch. I
+    just prepared one, and it deletes
+      * /sbin/dsld                           (131 KB)
+      * /sbin/showdsldstat                   ( 10 KB)
+      * /lib/modules/*/kernel/drivers/dsld/* (772 KB)
+    File sizes are from 29.04.29. Hopefully, userman.ko is not loaded in
+    IP-client mode, because it needs kdsldmod.ko. This is yet to be tested
+    before a release, we may have to keep this huge module in the image if it
+    is needed. The patch also changes rc.init settings DSL=n, VDSL=n.
 
 - Idea by heini66: implement call-back function as an add-on to DTMF-Box, see
   http://www.ip-phone-forum.de/showpost.php?p=941080&postcount=698 and
@@ -140,7 +151,7 @@ $Id$
       matrixssl:     84.4 k  /  xyssl:   137.5 k
       matrixtunnel:  24.2 k  /  xrelayd:  18.4 k
       ------------------------------------------
-      matrix*:      108.6 k  /  x*:      155.9
+      matrix*:      108.6 k  /  x*:      155.9 k
     Question to olistudent: Should we switch, given the fact that x* is 44%
     bigger than matrix*? There are hints for making the lib smaller [3], but
     most of the options are already used, we are close to minimum size. What
@@ -191,6 +202,10 @@ $Id$
       - W900V (34.04.21)
     Thoose three also do not have 'KIDS=y' in rc.init, so it seems logical to
     disable the patch for them. I have done just that.
+    Update (by kriegaex): I have frequent kernel panics since I switched to
+    29.04.40 and stripped userman, so I do not really know if it is userman's
+    absence causing the problems. I am just testing without stripping it from
+    my firmware to find out if it gets any stabler.
 
 - Find out why user 'ftp' is created multiple times (maybe once at each
   reboot?). My configuration currently has six instances.
