@@ -757,11 +757,16 @@ config DS_PATCH_UPNP
 
 		ATTENTION: Make sure you deactivate all UPnP features in the web menu
 		before updating the firmware with this option. It may not be harmful
-		not to deactivate it, but there is no guarantee.
+		not to deactivate it, but there is no guarantee. You can find the
+		settings in the German web UI under
+		  Einstellungen
+		    System
+		      Netzwerkeinstellungen
+		        Statusinformationen über UPnP übertragen (empfohlen)
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
-config DS_REMOVE_USERMAN
+config DS_PATCH_USERMAN
 	bool "Remove usermand and userman.ko - EXPERIMENTAL"
 	depends on ! (DS_TYPE_FON_5140 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
 	default n
@@ -773,12 +778,24 @@ config DS_REMOVE_USERMAN
 config DS_REMOVE_DSLD
 	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"
 	default n
+	select DS_PATCH_UPNP
+	select DS_PATCH_USERMAN
 	help
 		Remove DSL deamon (dsld), if you are planning to use your box as a simple
 		IP client in ATA mode.
 
-		Attention: Do NOT use this option if your ATA mode box uses PPoE passthrough,
-		because in this case dsld is still needed!
+		ATTENTION: Do *not* use this option if your ATA mode box uses PPoE
+		passthrough, because in this case dsld is still needed! Furthermore,
+		selecting this patch also selects the UPnP patch, because UPnP must be
+		deactivated anyway for IP clients, otherwise dsld will be used again.
+		You can find the UPnP settings in the German web UI under
+		  Einstellungen
+		    System
+		      Netzwerkeinstellungen
+		        Statusinformationen über UPnP übertragen (empfohlen)
+		Thirdly, the usermand patch will also be selected if you activate this option,
+		because kernel module userman.ko always depends on kdsldmod.ko which is
+		stripped by this patch.
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
