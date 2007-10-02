@@ -766,7 +766,7 @@ config DS_PATCH_UPNP
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
-config DS_PATCH_USERMAN
+config DS_REMOVE_USERMAN
 	bool "Remove usermand and userman.ko - EXPERIMENTAL"
 	depends on ! (DS_TYPE_FON_5140 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
 	default n
@@ -779,7 +779,7 @@ config DS_REMOVE_DSLD
 	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"
 	default n
 	select DS_PATCH_UPNP
-	select DS_PATCH_USERMAN
+	select DS_REMOVE_USERMAN
 	help
 		Remove DSL deamon (dsld), if you are planning to use your box as a simple
 		IP client in ATA mode.
