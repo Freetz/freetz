@@ -17,16 +17,29 @@ FUSE_LIB_BINARY:=$(FUSE_DIR)/lib/.libs/libfuse.so.$(FUSE_VERSION)
 FUSE_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$(FUSE_VERSION)
 FUSE_LIB_TARGET_BINARY:=$(FUSE_TARGET_DIR)/root/usr/lib/libfuse.so.$(FUSE_VERSION)
 
+FUSE_DS_CONFIG_FILE:=$(FUSE_MAKE_DIR)/.ds_config
+FUSE_DS_CONFIG_TEMP:=$(FUSE_MAKE_DIR)/.ds_config.temp
+
 $(DL_DIR)/$(FUSE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(FUSE_SITE)/$(FUSE_SOURCE)
 
 $(DL_DIR)/$(FUSE_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(FUSE_PKG_SOURCE) $(FUSE_PKG_SITE)
 
-$(FUSE_DIR)/.unpacked: $(DL_DIR)/$(FUSE_SOURCE)
+$(FUSE_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "DS_KERNEL_LAYOUT=$(DS_KERNEL_LAYOUT)" > $(FUSE_DS_CONFIG_TEMP)
+	@diff -q $(FUSE_DS_CONFIG_TEMP) $(FUSE_DS_CONFIG_FILE) || \
+	    cp $(FUSE_DS_CONFIG_TEMP) $(FUSE_DS_CONFIG_FILE)
+	@rm -f $(FUSE_DS_CONFIG_TEMP)
+
+# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# options have changed. The safest way to achieve this is by starting over
+# with the source directory.
+$(FUSE_DIR)/.unpacked: $(DL_DIR)/$(FUSE_SOURCE) $(FUSE_DS_CONFIG_FILE)
+	rm -rf $(FUSE_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FUSE_SOURCE)
 	for i in $(FUSE_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(FUSE_DIR) $$i; \
+	$(PATCH_TOOL) $(FUSE_DIR) $$i; \
 	done
 	touch $@
 
@@ -70,6 +83,7 @@ $(FUSE_DIR)/.configured: $(FUSE_DIR)/.unpacked
 			--disable-auto-modprobe \
 			--with-kernel="$(shell pwd)/$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/" \
 			--disable-mtab \
+			--with-gnu-ld \
 	);
 	touch $@
 
@@ -93,9 +107,10 @@ $(FUSE_LIB_STAGING_BINARY): $(FUSE_LIB_BINARY)
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libulockmgr.la
 	$(SED) -i -e "s,^includedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
-		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc
-
+	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc
+	
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
 		-C $(FUSE_DIR)/include \
 		ARCH="$(KERNEL_ARCH)" \

@@ -29,7 +29,20 @@ KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_
 endif
 endif
 
-$(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked
+KERNEL_DS_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/.ds_config
+KERNEL_DS_CONFIG_TEMP:=$(KERNEL_MAKE_DIR)/.ds_config.temp
+
+$(KERNEL_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "DS_KERNEL_LAYOUT=$(DS_KERNEL_LAYOUT)" > $(KERNEL_DS_CONFIG_TEMP)
+	@diff -q $(KERNEL_DS_CONFIG_TEMP) $(KERNEL_DS_CONFIG_FILE) || \
+	    cp $(KERNEL_DS_CONFIG_TEMP) $(KERNEL_DS_CONFIG_FILE)
+	@rm -f $(KERNEL_DS_CONFIG_TEMP)
+
+# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# options have changed. The safest way to achieve this is by starting over
+# with the source directory.
+$(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL_DS_CONFIG_FILE)
+	rm -rf $(KERNEL_DIR)
 	mkdir -p $(KERNEL_DIR)
 	cp -a $(KERNEL_SOURCE_PATH) $(KERNEL_BUILD_DIR)
 	for i in $(KERNEL_MAKE_DIR)/patches/*.patch; do \
