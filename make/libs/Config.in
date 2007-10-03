@@ -290,6 +290,22 @@ config DS_LIB_libresolv
 		uClibc is specifically focused on embedded Linux. Features can be
 		enabled or disabled according to space requirements.
 
+config DS_LIB_librt
+	bool "librt-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
 config DS_LIB_libthread_db
 	bool "libthread_db-0.9.28.so"
 	default n
