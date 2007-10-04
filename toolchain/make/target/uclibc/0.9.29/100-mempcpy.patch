@@ -1,0 +1,21 @@
+--- libc/string/generic/mempcpy.c~	2006-03-22 16:49:22.000000000 +0100
++++ libc/string/generic/mempcpy.c	2007-10-03 21:37:36.000000000 +0200
+@@ -8,13 +8,14 @@
+ #include <string.h>
+ 
+ #ifdef __USE_GNU
+-libc_hidden_proto(mempcpy)
+-libc_hidden_proto(memcpy)
+ 
+-void *mempcpy (void *dstpp, const void *srcpp, size_t len)
++void *__mempcpy (void *dstpp, const void *srcpp, size_t len)
+ {
+   memcpy(dstpp, srcpp, len);
+   return (void *)(((char *)dstpp) + len);
+ }
+-libc_hidden_def(mempcpy)
++weak_alias(__mempcpy,mempcpy);
++weak_alias(__mempcpy,__GI_mempcpy);
++//libc_hidden_proto(__mempcpy)
++//libc_hidden_def(__mempcpy)
+ #endif
