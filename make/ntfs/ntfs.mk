@@ -1,6 +1,7 @@
 PACKAGE_LC:=ntfs
 PACKAGE_UC:=NTFS
 NTFS_VERSION:=1.1004
+NTFS_LIB_VERSION:=13.0.0
 NTFS_SOURCE:=ntfs-3g-$(NTFS_VERSION).tgz
 NTFS_SITE:=http://www.ntfs-3g.org/
 NTFS_MAKE_DIR:=$(MAKE_DIR)/ntfs
@@ -69,9 +70,14 @@ $(NTFS_TARGET_BINARY): $(NTFS_BINARY)
 	mkdir -p $(dir $(NTFS_TARGET_BINARY))
 	$(INSTALL_BINARY_STRIP)
 
-ntfs: uclibc fuse-precompiled ntfs  $(NTFS_TARGET_BINARY)
+$(PACKAGES_DIR)/.ntfs-$(NTFS_UTILS_VERSION):
+	mkdir -p $(NTFS_TARGET_DIR)/root
+	cp -a $(NTFS_MAKE_DIR)/files/* $(NTFS_TARGET_DIR)/root
 
-ntfs-precompiled: uclibc fuse-precompiled ntfs $(NTFS_TARGET_BINARY)
+ntfs: uclibc fuse $(PACKAGES_DIR)/.ntfs-$(NTFS_UTILS_VERSION) \
+	$(NTFS_TARGET_BINARY)
+
+ntfs-precompiled: fuse-precompiled ntfs $(NTFS_TARGET_BINARY)
 
 ntfs-source: $(NTFS_DIR)/.unpacked
 
