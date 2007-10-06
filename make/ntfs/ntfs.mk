@@ -70,11 +70,12 @@ $(NTFS_TARGET_BINARY): $(NTFS_BINARY)
 	mkdir -p $(dir $(NTFS_TARGET_BINARY))
 	$(INSTALL_BINARY_STRIP)
 
-$(PACKAGES_DIR)/.ntfs-$(NTFS_UTILS_VERSION):
+$(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION):
 	mkdir -p $(NTFS_TARGET_DIR)/root
-	cp -a $(NTFS_MAKE_DIR)/files/* $(NTFS_TARGET_DIR)/root
+	tar -c -C $(NTFS_MAKE_DIR)/files --exclude=.svn . | tar -x -C $(NTFS_TARGET_DIR)/root
+	touch $@
 
-ntfs: uclibc fuse $(PACKAGES_DIR)/.ntfs-$(NTFS_UTILS_VERSION) \
+ntfs: uclibc fuse $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION) \
 	$(NTFS_TARGET_BINARY)
 
 ntfs-precompiled: fuse-precompiled ntfs $(NTFS_TARGET_BINARY)
