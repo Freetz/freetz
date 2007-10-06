@@ -10,12 +10,13 @@ if [ "$SPINDOWN_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' che
 if [ "$SPINDOWN_MODE" = "3" ]; then mode3_chk=' checked'; else mode5_chk=' checked'; fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
+
 cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> Automatisch</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> Manuell</label>
-</p>
+<p><input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label
+for="e1"> $(lang de:"Automatisch" en:"Automatic")</label><input id="e2" type="radio"
+name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label></p>
 EOF
+
 sec_end
 
 sec_begin '$(lang de:"Optionen" en:"Options")'
