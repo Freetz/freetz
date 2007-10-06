@@ -1,0 +1,55 @@
+config DS_PACKAGE_QUAGGA
+	bool "quagga 0.99.6"
+	default n
+	select DS_LIB_libncurses
+	select DS_LIB_libreadline
+	select DS_LIB_libhistory
+	select DS_BUSYBOX_START_STOP_DAEMON
+	help
+	    The Quagga Software Routing Suite
+
+	    A routing software package that provides TCP/IP based routing services
+	    with routing protocols support such as RIPv1, RIPv2, RIPng, OSPFv2,
+	    OSPFv3, BGP-4, and BGP-4+.
+
+	    This package does not provide any configuration help yet, though you
+	    can edit the configuration file(s) via the web interface. You can
+	    find the documentation at http://www.quagga.net/.
+	    YOU SHOULD NOT SELECT THIS PACKAGE (I.E. YOU DO NOT NEED IT)
+	    IF YOU DON'T KNOW HOW TO CONFIGURE THE ROUTING DAEMONS!
+	    (However: a guided/safe config interface is on the todo list ;-)
+
+config DS_PACKAGE_QUAGGA_BGPD
+        bool "bgpd"
+	depends on DS_PACKAGE_QUAGGA
+	default n
+
+config DS_PACKAGE_QUAGGA_RIPD
+        bool "ripd"
+	depends on DS_PACKAGE_QUAGGA
+	default n
+
+config DS_PACKAGE_QUAGGA_RIPNGD
+# This depends on IPv6 support in uclibc.
+# Adapt this lines when we can 'select' something.
+#        bool "ripngd"
+	bool
+	depends on DS_PACKAGE_QUAGGA
+	default n
+
+config DS_PACKAGE_QUAGGA_OSPFD
+        bool "ospfd"
+	depends on DS_PACKAGE_QUAGGA
+	default n
+
+config DS_PACKAGE_QUAGGA_OSPF6D
+# This depends on IPv6. See above.
+#        bool "ospf6d"
+	bool
+	depends on DS_PACKAGE_QUAGGA
+	default n
+
+config DS_PACKAGE_QUAGGA_ISISD
+        bool "isisd"
+	depends on DS_PACKAGE_QUAGGA
+	default n
