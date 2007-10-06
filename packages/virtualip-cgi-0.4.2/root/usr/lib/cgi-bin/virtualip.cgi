@@ -23,7 +23,8 @@ sec_begin '$(lang de:"Netwerkeinstellungen" en:"Network settings")'
 
 cat << EOF
 <p>$(lang de:"Virtuelle IP-Adresse" en:"Virtual IP-Adress"): <input id="ip" type="text" name="ip" value="$(httpd -e "$VIRTUALIP_IP")">
-<br />$(lang de:"Subnetzmaske" en:"Subnet Mask"): <input id="netmask" type="text" name="netmask" value="$(httpd -e "$VIRTUALIP_NETMASK")"></p>
+<br />$(lang de:"Subnetzmaske" en:"Subnet Mask"): <input id="netmask" type="text" name="netmask" value="$(httpd -e "$VIRTUALIP_NETMASK")">
+<br />$(lang de:"Interface" en:"Interface"): <input id="interface" type="text" name="interface" value="$(httpd -e "$VIRTUALIP_INTERFACE")"></p>
 EOF
 
 sec_end
