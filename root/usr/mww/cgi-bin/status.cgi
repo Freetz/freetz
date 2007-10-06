@@ -19,6 +19,11 @@ stat_button() {
 	[ $btn_count -eq 3 ] && ( btn_count=0; echo '<br style="clear:left">' )
 }
 
+has_swap () {
+	[ "$(free | grep "Swap:" | awk '{print $2}')" == "0" ] || return 0
+	return 1
+}
+
 cgi_begin '$(lang de:"Status" en:"Status")' 'status'
 sec_begin '$(lang de:"Box" en:"Box")'
 
@@ -50,14 +55,14 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Hauptspeicher (RAM)" en:"Main memory (RAM)")'
+sec_begin '$(lang de:"Physikalischer-Speicher (RAM)" en:"Main memory (RAM)")'
 
 total="$(cat /proc/meminfo | grep '^MemTotal:' | sed s/[^0-9]//g)"
 free="$(cat /proc/meminfo | grep '^MemFree:' | sed s/[^0-9]//g)"
 cached="$(cat /proc/meminfo | grep '^Cached:' | sed s/[^0-9]//g)"
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
-echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt (ohne Cache)" en:"used (without cache)")</p>"
+echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt (ohne Cache $cached KB)" en:"used (without cache $cached KB)")</p>"
 stat_bar $percent
 
 sec_end
@@ -72,6 +77,19 @@ echo "<p>$tffs_used $(lang de:"von" en:"of") $tffs_size KB $(lang de:"belegt" en
 stat_bar $percent
 
 sec_end
+
+has_swap
+if [ "$?" == "0" ]; then
+sec_begin 'Swap-Speicher (RAM)'
+total="$(cat /proc/meminfo | grep '^SwapTotal:' | sed s/[^0-9]//g)"
+free="$(cat /proc/meminfo | grep '^SwapFree:' | sed s/[^0-9]//g)"
+cached="$(cat /proc/meminfo | grep 'SwapCached:' | sed s/[^0-9]//g)"
+let usedwc="total-cached-free"
+let percent="100*usedwc/total"
+echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt" en:"used") ($lang de:"ohne Cache" en:"without cache") $cached KB)</p>"
+stat_bar $percent
+sec_end
+fi
 
 stat_button 'restart_dsld' '$(lang de:"DSL-Reconnect" en:"Reconnect DSL")'
 stat_button 'cleanup' '$(lang de:"TFFS aufräumen" en:"Clean up TFFS")'

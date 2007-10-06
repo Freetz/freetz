@@ -1,0 +1,94 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=swap
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/mod.cfg
+		;;
+esac
+
+
+has_swap () {
+	[ "$(free | grep "Swap:" | awk '{print $2}')" == "0" ] || return 0
+	return 1
+}
+
+start () {
+	echo -n "Starting $DAEMON..."
+	while [ $i -le 100 ]; do
+	    if [ -e $MOD_SWAP_FILE ]; then
+		swapon $MOD_SWAP_FILE
+		break
+	    fi
+	    i=`expr $i + 1` && sleep 1
+	done
+	    
+	sleep 1
+	has_swap
+	if [ "$?" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit 1
+	fi
+}
+
+stop () {
+	echo -n "Stopping $DAEMON... "
+    	    swapoff $MOD_SWAPFILE
+	sleep 1
+	has_swap
+	if [ "$?" -ne 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit 1
+	fi
+}
+
+case "$1" in
+        ""|load)
+		if [ "$MOD_SWAP" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+		start
+		;;
+	unload)
+		stop
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		has_swap
+		if [ "$?" == "0" ]; then
+			echo 'running'
+		else
+			echo 'stopped'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

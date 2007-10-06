@@ -10,10 +10,12 @@ inetd=''
 [ -e "/etc/default.inetd/inetd.cfg" ] && inetd='true'
 
 crond_auto_chk=''; crond_man_chk=''
+swap_auto_chk=''; swap_man_chk=''
 telnetd_auto_chk=''; telnetd_man_chk=''; telnet_inetd_chk='';
 httpd_auto_chk=''; httpd_man_chk=''; httpd_inetd_chk='';
 
 if [ "$MOD_CROND" = "yes" ]; then crond_auto_chk=' checked'; else crond_man_chk=' checked'; fi
+if [ "$MOD_SWAP" = "yes" ]; then swap_auto_chk=' checked'; else swap_man_chk=' checked'; fi
 case "$MOD_TELNETD" in yes) telnetd_auto_chk=' checked';; inetd) telnetd_inetd_chk=' checked';; *) telnetd_man_chk=' checked';; esac
 case "$MOD_HTTPD" in yes) httpd_auto_chk=' checked';; inetd) httpd_inetd_chk=' checked';; *) httpd_man_chk=' checked';; esac
 
@@ -26,6 +28,18 @@ cat << EOF
 <p>
 <input id="c1" type="radio" name="crond" value="yes"$crond_auto_chk><label for="c1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="c2" type="radio" name="crond" value="no"$crond_man_chk><label for="c2"> $(lang de:"Manuell" en:"Manual")</label>
+</p>
+EOF
+sec_end
+sec_begin 'swap'
+
+cat << EOF
+<h2>$(lang de:"Starttyp von swap" en:"swap start type")</h2>
+<p>
+<input id="s1" type="radio" name="swap" value="yes"$swap_auto_chk><label for="s1"> $(lang de:"Automatisch" en:"Automatic")</label>
+<input id="s2" type="radio" name="swap" value="no"$swap_man_chk><label for="s2"> $(lang de:"Manuell" en:"Manual")</label>
+<h2>Swapfile ($(lang de:"Beispiel:" en:"e.g." /var/media/ftp/uStor01/swapfile</h2>
+<p>Swapfile: <input type="text" name="swap_file" size="50" maxlength="50" value="$(httpd -e "$MOD_SWAP_FILE")"></p>
 </p>
 EOF
 
