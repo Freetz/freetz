@@ -14,7 +14,7 @@ case $# in
 	2)
 		;;
 	*)
-		echo "usage: $0 <kernel_img> <uncomp_file>" >&2
+		echo "usage: $(basename "$0") <kernel_img> <uncomp_file>" >&2
 		echo "    kernel_img  - file starting with compressed kernel image," >&2
 		echo "                  e.g. kernel.image or kernel.raw" >&2
 		echo "    uncomp_file - uncompressed kernel output file name" >&2
@@ -29,4 +29,4 @@ esac
 	dd if=/dev/zero bs=1 count=4
 	# Jump to compressed data, pipe into output stream
 	dd if="$1" bs=36 skip=1
-) | tools/busybox unlzma > "$2"
+) | $(dirname "$0")/busybox unlzma > "$2"
