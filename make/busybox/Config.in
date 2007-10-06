@@ -50,3 +50,17 @@ config DS_BUSYBOX_PATCH
 
 		This feature adds about 2.7 KB to BusyBox.
 		All sub-features in BusyBox are selected.
+
+config DS_BUSYBOX_START_STOP_DAEMON
+        bool "start-stop-daemon"
+	depends on DS_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'start-stop-daemon' tool in busybox
+
+		This feature is required by the Quagga DS-Mod package, otherwise you
+		may deactivate it. ATTENTION, this feature is NOT deactivated
+		automatically if the Quagga DS-Mod package is unselected.
+
+		This feature adds about 1.9 KB to BusyBox.
+		The 'Support additional arguments' sub-feature is automatically selected.
