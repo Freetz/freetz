@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Uncompress LZA-packed firmware kernel. This is a functional, but
+# quick & dirty version of the Perl script by Enrik Berkhan shown and explained
+# at http://www.wehavemorefun.de/fritzbox/index.php/EVA. There is no CRC
+# calculation for the time being and also no other kind of error checking,
+# always assuming the source file is okay. The advantage of this version is
+# that we do not need Perl and especially no exotic LZMA package which is
+# unavailable as a Debian image, for example. The opposite is true for unlzma
+# which is installed on most Linux systems in general and part of busybox-tools
+# as a part of ds26 in particular.
+
+case $# in
+	1)
+		input_file="$1"
+		;;
+	2)
+		mod_base="$1"
+		input_file="$2"
+		;;
+	2)
+		;;
+	*)
+		echo "usage: $0 <kernel_img> <uncomp_file>" >&2
+		echo "    kernel_img  - file starting with compressed kernel image," >&2
+		echo "                  e.g. kernel.image or kernel.raw" >&2
+		echo "    uncomp_file - uncompressed kernel output file name" >&2
+		exit 1
+esac
+
+(
+	# Get LZMA properties + dictionary size
+	dd if="$1" bs=1 count=5 skip=28
+	# Get uncompressed length (32-bit little-endian), pad to 64-bit
+	dd if="$1" bs=1 count=4 skip=20
+	dd if=/dev/zero bs=1 count=4
+	# Jump to compressed data, pipe into output stream
+	dd if="$1" bs=36 skip=1
+) | tools/busybox unlzma > "$2"
