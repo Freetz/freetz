@@ -26,6 +26,9 @@ spindown-cgi-dirclean:
 	rm -rf $(PACKAGES_DIR)/spindown-cgi-$(SPINDOWN_CGI_VERSION)
 	rm -f $(PACKAGES_DIR)/.spindown-cgi-$(SPINDOWN_CGI_VERSION)
 
+# Nothing to do here at the moment
+spindown-cgi-uninstall:
+
 spindown-cgi-list:
 ifeq ($(strip $(DS_PACKAGE_SPINDOWN_CGI)),y)
 	@echo "S20spindown-cgi-$(SPINDOWN_CGI_VERSION)" >> .static

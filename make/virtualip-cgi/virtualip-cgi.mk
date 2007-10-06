@@ -26,6 +26,9 @@ virtualip-cgi-dirclean:
 	rm -rf $(PACKAGES_DIR)/virtualip-cgi-$(VIRTUALIP_CGI_VERSION)
 	rm -f $(PACKAGES_DIR)/.virtualip-cgi-$(VIRTUALIP_CGI_VERSION)
 
+# Nothing to do here at the moment
+virtualip-cgi-uninstall:
+
 virtualip-cgi-list:
 ifeq ($(strip $(DS_PACKAGE_VIRTUALIP_CGI)),y)
 	@echo "S40virtualip-cgi-$(VIRTUALIP_CGI_VERSION)" >> .static
