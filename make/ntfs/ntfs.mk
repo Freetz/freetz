@@ -1,7 +1,6 @@
 PACKAGE_LC:=ntfs
 PACKAGE_UC:=NTFS
 NTFS_VERSION:=1.1004
-NTFS_LIB_VERSION:=13.0.0
 NTFS_SOURCE:=ntfs-3g-$(NTFS_VERSION).tgz
 NTFS_SITE:=http://www.ntfs-3g.org/
 NTFS_MAKE_DIR:=$(MAKE_DIR)/ntfs
@@ -60,7 +59,7 @@ $(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked
 	);
 	touch $@
 
-$(NTFS_BINARY) $(NTFS_LIB_BINARY): $(NTFS_DIR)/.configured
+$(NTFS_BINARY): $(NTFS_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
@@ -87,6 +86,8 @@ ntfs-clean:
 
 ntfs-dirclean:
 	rm -rf $(NTFS_DIR)
+	rm -rf $(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
+	rm -f $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION)
 
 ntfs-uninstall:
 	rm -f $(NTFS_TARGET_BINARY)
