@@ -29,6 +29,7 @@ KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_
 endif
 endif
 
+ifeq ($(KERNEL_REF),4mb_26)
 KERNEL_DS_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/.ds_config
 KERNEL_DS_CONFIG_TEMP:=$(KERNEL_MAKE_DIR)/.ds_config.temp
 
@@ -37,6 +38,7 @@ $(KERNEL_DS_CONFIG_FILE): $(TOPDIR)/.config
 	@diff -q $(KERNEL_DS_CONFIG_TEMP) $(KERNEL_DS_CONFIG_FILE) || \
 	    cp $(KERNEL_DS_CONFIG_TEMP) $(KERNEL_DS_CONFIG_FILE)
 	@rm -f $(KERNEL_DS_CONFIG_TEMP)
+endif
 
 # Make sure that a perfectly clean build is performed whenever DS-Mod package
 # options have changed. The safest way to achieve this is by starting over
