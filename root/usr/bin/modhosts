@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 #
 # Usage: modhosts [load]
 
@@ -8,13 +8,23 @@ ar7ipaddr () {
   echo $(echo 'ar7cfg.'$SEC'['$DEV'].ipaddr' | ar7cfgctl -s)
 }
 
+ar7hostname () {
+  HOSTNAME=`echo servercfg.hostname | ar7cfgctl -s`
+  HOSTNAME=`eval echo $HOSTNAME`
+  if [ "$HOSTNAME" != "(none)" ] ; then
+	echo $HOSTNAME
+  else	
+	echo fritz.box
+  fi
+}
+
 case "$1" in
 	"")
 		mvi /tmp/flash/exhosts
 		$0 load
 		;;
 	load)
-		hostname fritz.box
+		hostname $(ar7hostname)
 
 		rm -f /var/tmp/hosts
 		rm -f /var/tmp/ethers
@@ -69,7 +79,7 @@ case "$1" in
 		if [ -z "$ipaddr" ] ; then
 		  ipaddr=192.168.178.254
 		fi
-		echo -e "$ipaddr\tfritz.box" >> /var/tmp/hosts
+		echo -e "$ipaddr\t$(ar7hostname)" >> /var/tmp/hosts
 		;;
 	*)
 		echo "Usage: $0 [load]" 1>&2
