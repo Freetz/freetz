@@ -31,6 +31,7 @@ cat << EOF
 <p>
 <form class="btn" action="/cgi-bin/exec.cgi" method="post">
 $(lang de:"Firmware" en:"Firmware"): $(get_env 'firmware_info')$(cat /etc/.subversion)<br>
+<table width="100%" border=0 cellpadding=0 cellspacing=0><tr><td>
 $(lang de:"Branding" en:"Branding"):
 <input type="hidden" name="cmd" value="branding">
 <select name="branding" size="1">
@@ -50,7 +51,9 @@ done
 cat << EOF
 </select>
 <input type="submit" value="Ok">
-</form>
+</form></td>
+<td align="right">$(lang de:"Uptime" en:"Uptime"): $(uptime | sed -r 's/.* up (.*), load .*/\1/')</td></tr>
+</table>
 </p>
 EOF
 
