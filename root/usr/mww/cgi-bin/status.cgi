@@ -89,7 +89,7 @@ free="$(cat /proc/meminfo | grep '^SwapFree:' | sed s/[^0-9]//g)"
 cached="$(cat /proc/meminfo | grep 'SwapCached:' | sed s/[^0-9]//g)"
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
-echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt" en:"used") ($lang de:"ohne Cache" en:"without cache") $cached KB)</p>"
+echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt" en:"used") $(lang de:"ohne Cache" en:"without cache") $cached KB)</p>"
 stat_bar $percent
 sec_end
 fi
