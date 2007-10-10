@@ -1,6 +1,6 @@
---- bin/prepare_fwupgrade.orig	2007-05-14 15:18:12.000000000 +0200
-+++ bin/prepare_fwupgrade	2007-07-06 05:20:36.000000000 +0200
-@@ -38,7 +38,7 @@
+--- bin/prepare_fwupgrade.orig	2007-10-04 18:59:03.000000000 +0200
++++ bin/prepare_fwupgrade	2007-10-10 23:40:10.000000000 +0200
+@@ -42,7 +42,7 @@
  voipd -s
  avmike -s
  killall printserv
@@ -9,7 +9,7 @@
  usermand -s
  if [ "$1" = "start_from_internet" ] ; then
  # we will download the update image from the internet so
-@@ -96,6 +96,7 @@
+@@ -107,6 +107,7 @@
  killall avmike
  killall dsld
  killall websrv
@@ -17,7 +17,7 @@
  killall wpa_authenticator
  killall wstart
  /sbin/multid -s
-@@ -109,6 +110,7 @@
+@@ -120,6 +121,7 @@
  killall -9 dsld
  killall -9 thttpd
  killall -9 websrv
@@ -25,8 +25,8 @@
  killall -9 wpa_authenticator
  killall -9 wstart
  killall -9 multid
---- etc/init.d/rc.net.orig	2007-07-06 05:20:35.000000000 +0200
-+++ etc/init.d/rc.net	2007-07-06 05:20:36.000000000 +0200
+--- etc/init.d/rc.net.orig	2007-10-10 23:40:10.000000000 +0200
++++ etc/init.d/rc.net	2007-10-10 23:40:10.000000000 +0200
 @@ -51,8 +51,26 @@
     WLAN_TEST=0
  fi
@@ -54,7 +54,7 @@
     if [ "`pidof igdd`" = "" ] ; then
        igdd $VERBOSEPARAM
        sleep 1
-@@ -209,14 +227,15 @@
+@@ -213,14 +231,15 @@
  stopall()
  {
     if [ "$CONFIG_DSL" ] ; then
@@ -72,7 +72,7 @@
     sleep 3
     for i in $DAEMONS $AVMDAEMONS ; do
       killall -15 $i
-@@ -265,9 +284,15 @@
+@@ -270,9 +289,14 @@
       ctlmgr $NICEPARAM $VERBOSEPARAM
     fi
  
@@ -84,11 +84,10 @@
 +     if [ "$(/etc/init.d/rc.websrv status)" == "stopped" ]; then
 +       /etc/init.d/rc.websrv start
 +     fi
-+   fi
+    fi 
  
     igddstart
-    multidstart
-@@ -275,9 +300,9 @@
+@@ -281,9 +305,9 @@
     if [ "$CONFIG_DSL" ] ; then
       if [ "`pidof dsld`" = "" ] ; then
         if [ "$CONFIG_RAMSIZE" = 8 ] ; then
@@ -100,7 +99,7 @@
         fi
       fi
     fi
-@@ -313,9 +338,9 @@
+@@ -332,9 +356,9 @@
        if [ "$1" ] ; then
           AVMDAEMONS="$*"
        elif [ "$CONFIG_DSL" ] ; then
