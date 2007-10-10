@@ -33,18 +33,19 @@
 
 usage()
 {
-	echo "Usage: fwmod [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]" 1>&2
-	echo "  actions" 1>&2
-	echo "    -u         unpack firmware image" 1>&2
-	echo "    -m         modify previously unpacked image" 1>&2
-	echo "    -p         pack firmware image" 1>&2
-	echo "    -a         all: unpack, modify and pack firmware image (-u -m -p)" 1>&2
-	echo "  options" 1>&2
-	echo "  input/output" 1>&2
-	echo "    -i <cfg>   input file for configuration data (default: .config)" 1>&2
-	echo "    -d <dir>   build directory (default: <orig_firmware>.mod)" 1>&2
-	echo "    <orig_fw>  original firmware name" 1>&2
-	echo "    <tk_fw>    2nd firmware name (e.g. for merging in web UI)" 1>&2
+	cat << 'EOF'
+Usage: fwmod [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
+  actions
+    -u         unpack firmware image
+    -m         modify previously unpacked image
+    -p         pack firmware image
+    -a         all: unpack, modify and pack firmware image (-u -m -p)
+  input/output
+    -i <cfg>   input file for configuration data (default: .config)
+    -d <dir>   build directory (default: <orig_firmware>.mod)
+    <orig_fw>  original firmware name
+    <tk_fw>    2nd firmware name (e.g. for merging in web UI)
+EOF
 }
 
 # error exit-code error-message
@@ -66,13 +67,19 @@ if [ $UID -eq 0 ]; then
 	error 1 "running this script as root is prohibited"
 fi
 
+# Print usage info to stdout (no error, just info)
+if [ $# -eq 0 ]; then
+	usage
+	exit 0
+fi
+
 L1='  '
 L2='    '
 
 # Default values
 DS_VERBOSITY_LEVEL=0
 DOT_CONFIG="$(dirname "$0")/.config"
-CMDLINE_OPTS="umpad:i:lz:"
+CMDLINE_OPTS="umpad:i:"
 
 # Default config override?
 # NOTE: Both 'getopts' must have an identical argument list!
@@ -130,7 +137,7 @@ while getopts "$CMDLINE_OPTS" opt; do
 			# Do nothing, DOT_CONFIG has been assigned already
 			;;
 		*)
-			usage
+			usage >&2
 			exit 1
 			;;
 	esac
@@ -138,7 +145,7 @@ done
 shift $(($OPTIND - 1))
 
 if [ $# -ne 1 -a $# -ne 2 ]; then
-	usage
+	usage >&2
 	exit 1
 fi
 
