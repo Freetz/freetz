@@ -228,3 +228,26 @@ $Id$
 - Integrate new firmware for W701 (thanks to heini66 for the hint):
   http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V/fw_Speedport_W701V_v33.04.44.image
     Status (by Oliver): done, but web interface needs testing.
+    Status (by kriegaex): I have not tested the web UI, but otherwise it seems
+    to work beautifully, even with "replace kernel" based on *.40 GPL package.
+    One strange thing remains, though - see next item.
+
+- Find out why firmware upload on W701V does not return protocol to web UI.
+  Could be Haserl or Busybox, olistudent suspects the latter. Strange enough,
+  the same thing works with identical BB and Haserl on 7170.
+    Update (by kriegaex): Maybe it was pure chance that it worked when I tried
+    once on 7170, because sometimes it also works on W701V. It is a sporadic
+    error happening in >50% of my test cases. It is independent of a specific
+    Haserl version, so the next natural suspect has now become BusyBox 1.7.2.
+    The whole problem looks like a race condition. Nathan Angelacos, Haserl's
+    author, has been notified. Maybe he can pin down the error.
+
+- Where do strange hostnames like "Speedport-W-701V-33.04.44" or
+  "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
+
+- Use new information by Enrik to write a little shell script similar to
+  push_firmware, but this time backup_firmware. Goal: automatically download
+  mtd1-mtd4 via EVA-FTP.
+    Status (by kriegaex): done, but script was not included in ds26, but is
+    part of a new Wiki article:
+    http://wiki.ip-phone-forum.de/software:ds-mod:development:mtd_x_sichern_ftp
