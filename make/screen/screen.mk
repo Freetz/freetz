@@ -1,6 +1,6 @@
-SCREEN_VERSION:=4.0.2
+SCREEN_VERSION:=4.0.3
 SCREEN_SOURCE:=screen-$(SCREEN_VERSION).tar.gz
-SCREEN_SITE:=http://ftp.gnu.org/gnu/screen
+SCREEN_SITE:=http://ftp.uni-erlangen.de/pub/utilities/screen
 SCREEN_MAKE_DIR:=$(MAKE_DIR)/screen
 SCREEN_DIR:=$(SOURCE_DIR)/screen-$(SCREEN_VERSION)
 SCREEN_BINARY:=$(SCREEN_DIR)/screen
