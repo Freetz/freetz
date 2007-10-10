@@ -1,8 +1,11 @@
 #!/bin/sh
-#
+
+# Inside screen, use ASCII line drawing and assume xterm capabilities
+[ -n "$STY" ] && ascii="-a" && export TERM=xterm
 export TERMINFO=/mod/pkg/mc/usr/share/terminfo
-[ -f "$TERMINFO/$TERM" ] || export TERM=xterm
-[ -d "/mod/root/.mc" ] || mkdir /mod/root/.mc
-touch /mod/root/.mc/hotlist
-export HOME=/mod/root
-$0.bin -c $@
+# TERM=foobar yields $TERMINFO/f/foobar
+[ -f "$TERMINFO/${TERM%${TERM#?}}/$TERM" ] || export TERM=xterm
+[ -z "$HOME" ] && export HOME=/mod/root
+mkdir -p $HOME/.mc
+touch $HOME/.mc/hotlist
+$0.bin -c $ascii $@
