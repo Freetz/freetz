@@ -4,8 +4,7 @@ start()
 {
 	if [ -e /proc/mounts ]; then
 		grep -q " / mini_fo " /proc/mounts \
-			&& echo "Mini_fo root already active, done." \
-			|| echo "Mini_fo root must be set up during init, not at runtime."
+			&& echo "Mini_fo root already active, done."
 		exit
 	fi
 
