@@ -1,0 +1,53 @@
+#!/bin/sh
+
+start()
+{
+	if [ -e /proc/mounts ]; then
+		grep -q " / mini_fo " /proc/mounts \
+			&& echo "Mini_fo root already active, done." \
+			|| echo "Mini_fo root must be set up during init, not at runtime."
+		exit
+	fi
+
+	mount proc
+
+	if grep -q " / nfs " /proc/mounts; then
+		echo "*** Nfsroot mounted, do not start mini_fo. ***"
+		exit
+	fi
+
+	if grep -q " / mini_fo " /proc/mounts; then
+		echo "*** Mini_fo root already active, cleaning up old mounts ... ***"
+		umount /rom/proc
+		umount proc
+		mount -o bind /rom/var/sto /sto
+		exit
+	fi
+
+	echo "*** Switching to mini_fo-root ... ***"
+	set -e 
+	modprobe mini_fo
+	mount -t tmpfs none /var
+	mkdir /var/sto
+	mount -t mini_fo -o base=/,sto=/var/sto / /sto
+	cd /sto
+	mkdir rom
+	pivot_root . rom
+	sleep 1
+	kill -1 1
+}
+
+case "$1" in 
+	""|load)
+		start
+		;;
+	status)
+		grep -q " / mini_fo " /proc/mounts \
+			&& echo 'running' \
+			|| echo 'stopped'
+		;;
+	*)
+		echo "Usage: $0 [load|status]" 1>&2
+		exit 1
+		;;
+esac

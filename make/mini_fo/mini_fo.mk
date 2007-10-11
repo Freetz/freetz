@@ -1,4 +1,4 @@
-MINI_FO_VERSION:=0.2
+MINI_FO_VERSION:=0.2b
 MINI_FO_PKG_SOURCE:=mini_fo-dsmod-$(MINI_FO_VERSION).tar.bz2
 MINI_FO_PKG_SITE:=http://dsmod.3dfxatwork.de
 
