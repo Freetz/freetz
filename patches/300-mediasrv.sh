@@ -63,8 +63,11 @@ if [ "$DS_PATCH_MEDIASRV" == "y" ]; then
 	done
 
 	echo1 "patching MEDIASRV in rc.init"
-	sed -i -e "s/MEDIASRV=n/MEDIASRV=y/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init"
-
-	echo1 "patching isMedia in rc.S"
-	sed -i -e "s/isMediaSrv 0/isMediaSrv 1/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"
+	if [ -e "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init" ]; then
+	    sed -i -e "s/MEDIASRV=n/MEDIASRV=y/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init"
+	    echo1 "patching isMedia in rc.S"
+		sed -i -e "s/isMediaSrv 0/isMediaSrv 1/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"
+	else
+		sed -i -e "s/CONFIG_MEDIASRV=n/CONFIG_MEDIASRV=y/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
+	fi
 fi

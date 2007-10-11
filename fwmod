@@ -426,9 +426,7 @@ FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
 VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
 
 HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www"
-if [ "$DS_TYPE_LANG_A_CH" == "y" ]; then
-	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/de/html/de"
-elif [ "$DS_TYPE_LANG_EN" == "y" ]; then
+if [ "$DS_TYPE_LANG_EN" == "y" ]; then
 	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/en/html/en"
 else
 	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/all/html/de"
@@ -458,9 +456,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
 	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
+		set -x
 		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
-		[ -x "$i" ] && . $i
+		    [ -x "$i" ] && . $i
 		done
+		set +x
 	fi
 
 	# Apply patches
@@ -943,7 +943,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ ! -s "$VARTAR_MOD" ]; then
 		error 1 "packing of var.tar failed"
 	fi
-
 	# Do we have the tool ?
 	if [ ! -x "$MKSQUASHFS" ]; then
 		error 1 "cannot find $MKSQUASHFS_TOOL"
