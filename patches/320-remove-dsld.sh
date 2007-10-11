@@ -4,11 +4,7 @@ rm_files()
 {
 	for file in $1; do
 	echo2 "$file"
-	if [ -d "$file" ]; then
-		rm -rf "$file"
-	else
-		rm -f "$file"
-	fi
+	rm -rf "$file"
 	done
 }
 
