@@ -456,11 +456,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
 	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
-		set -x
 		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
-		    [ -x "$i" ] && . $i
+			[ -x "$i" ] && . $i
 		done
-		set +x
 	fi
 
 	# Apply patches
