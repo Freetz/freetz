@@ -1,0 +1,20 @@
+--- linux-2.6.13.1/drivers/mtd/maps/ohio-flash.c	2007-07-09 01:22:13.000000000 +0200
++++ linux-2.6.13.1/drivers/mtd/maps/ohio-flash.c	2007-07-09 01:22:42.000000000 +0200
+@@ -301,13 +301,17 @@
+                     partition_info[i].size   = hidden_size;
+                     partition_info[i].offset = hidden_start;
+                 }
++/*
+                 p = prom_getenv("nfsroot");
+                 if(p) {
+                     root_dev_setup(p);
+                 } else {
++*/
+                     sprintf(buff, "/dev/mtdblock%u", i + 1);
+                     root_dev_setup(buff);
++/*
+                 }
++*/
+             }
+         }
+         if(jffs2_size == 0)
