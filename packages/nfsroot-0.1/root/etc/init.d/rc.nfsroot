@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 usage()
 {
@@ -79,12 +79,13 @@ start()
 	rm -r /var/flash/ar7.cfg
 	umount /var
 
-	echo "*** Mounting kernel modules ... ***"
-	# Explicitly load NFS modules (modprobe will not work)
-	insmod $(find /lib/modules -type f -name sunrpc.ko)
-	insmod $(find /lib/modules -type f -name lockd.ko)
-	insmod $(find /lib/modules -type f -name nfs.ko)
-	lsmod
+	echo "*** Loading kernel modules nfs, lockd, sunrpc... ***"
+	if ! modprobe nfs; then
+		echo "*** Could not load (all) kernel modules, exiting. ***" >&2
+		lsmod >&2
+		rmmod nfs; rmmod lockd; rmmod sunrpc; umount proc
+		return
+	fi
 
 	echo "*** Looking for NFS server in network ... ***"
 	local ping_count=5
@@ -107,7 +108,7 @@ start()
 	echo "*** Pivoting to NFS root ... ***"
 	umount proc
 	cd /var
-	[ -d oldroot] || mkdir -p oldroot
+	[ -d oldroot ] || mkdir -p oldroot
 	if pivot_root . oldroot; then
 		echo "*** NFS root pivoting succeeded, done. ***"
 	else
@@ -118,10 +119,11 @@ start()
 if [ "$PPID" == "0" ]; then
 	echo "*** $0 called as an init process, start setting up NFS root ... ***"
 	start
-	echo "*** Creating devices on NFS root ... ***"
+	echo "*** Creating device /dev/console on NFS root ... ***"
+	# Try to remove existing filesystem object before creating device node
+	[ -e /dev/console ] && rm -f /dev/console 2>/dev/null
 	# We need this to be able to redirect std{in,err,out}
-	mount -o nosuid -t tmpfs dev /dev
-	makedevs -d /etc/device.table /
+	mknod /dev/console c 5 1
 	echo "*** Switching to init ... ***"
 	exec init >/dev/console 2>&1 <&1
 fi
