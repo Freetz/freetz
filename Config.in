@@ -520,10 +520,10 @@ config DS_BRANDING_1und1
 
 config DS_BRANDING_avm
 	bool "AVM"
-	depends on \
-		DS_TYPE_LANG_A_CH || \
+	depends on ! DS_BRANDING_tcom && \
+		( DS_TYPE_LANG_A_CH || \
 		DS_TYPE_LANG_DE || \
-		DS_TYPE_CUSTOM
+		DS_TYPE_CUSTOM )
 	default y
 	help
 		AVM branding
