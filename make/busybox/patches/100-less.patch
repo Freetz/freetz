@@ -1,0 +1,13 @@
+Add 'f' for page forward. Is included in busybox SVN.
+
+--- miscutils/less.c~	2007-05-20 18:57:11.000000000 +0200
++++ miscutils/less.c	2007-09-27 15:07:02.000000000 +0200
+@@ -1135,7 +1135,7 @@
+ 	case KEY_UP: case 'y': case 'k':
+ 		buffer_up(1);
+ 		break;
+-	case PAGE_DOWN: case ' ': case 'z':
++	case PAGE_DOWN: case ' ': case 'z': case 'f':
+ 		buffer_down(max_displayed_line + 1);
+ 		break;
+ 	case PAGE_UP: case 'w': case 'b':
