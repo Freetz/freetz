@@ -10,6 +10,7 @@ HIGH PRIORITY - critical bugs, important features
 
 - bftpd, vsftpd: Configuration file has to be rewritten after change - see
   next item
+  Status (by Oliver): Done, needs testing
 
 - Find out why user 'ftp' is created multiple times (maybe once at each
   reboot?). My configuration currently has six instances.
@@ -23,10 +24,14 @@ HIGH PRIORITY - critical bugs, important features
     Haserl version, so the next natural suspect has now become BusyBox 1.7.2.
     The whole problem looks like a race condition. Nathan Angelacos, Haserl's
     author, has been notified. Maybe he can pin down the error.
+    Status (by Oliver): Problem seems to be solved with patch from Ralf, firmware-
+    update button is working again for me.
 
 - Where do strange hostnames like "Speedport-W-701V-33.04.44" or
   "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
+	Remark (by Oliver): I think from multid. How could we avoid that?
 
+- Check order in which packages are started at boottime (virtualip, ntfs, cifsmount, syslog-cgi)
 
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------
