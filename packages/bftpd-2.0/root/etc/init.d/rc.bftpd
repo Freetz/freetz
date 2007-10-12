@@ -24,6 +24,12 @@ echo -n "Looking for user 'ftp'..."
 		mkdir /var/run/bftpd
 	fi
 
+	if [ ! -e "/var/tmp/ftp" ]; then
+		ln -sf /mod/home/ftp /var/tmp/ftp
+	fi
+}
+
+write_config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -35,14 +41,11 @@ echo -n "Looking for user 'ftp'..."
 			cat /tmp/flash/${DAEMON}.extra
 		fi
 	) > /mod/etc/$DAEMON.conf
-
-	if [ ! -e "/var/tmp/ftp" ]; then
-		ln -sf /mod/home/ftp /var/tmp/ftp
-	fi
 }
 
 start() {
 	echo -n 'Starting ftp server...'
+	write_config
 	$DAEMON -d $BFTPD_OPTIONS
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then

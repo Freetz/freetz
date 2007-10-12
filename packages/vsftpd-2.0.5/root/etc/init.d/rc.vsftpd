@@ -31,6 +31,12 @@ pre_config() {
 			echo root > /mod/etc/vsftpd.user_list
     fi
 
+    if [ ! -e "/var/tmp/ftp" ]; then
+    	ln -sf /mod/home/ftp /var/tmp/ftp
+    fi
+}
+
+write_config() {
     (
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 	    /tmp/flash/${DAEMON}_conf
@@ -42,20 +48,18 @@ pre_config() {
 	    cat /tmp/flash/${DAEMON}.extra
 		fi
     ) > /mod/etc/$DAEMON.conf
-
-    if [ ! -e "/var/tmp/ftp" ]; then
-    	ln -sf /mod/home/ftp /var/tmp/ftp
-    fi
 }
 
 start() {
     echo -n 'Starting ftp server...'
     $DAEMON 
     exitval=$?
+    write_config
     if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
     else
 			echo 'failed.'
+			rm -f /mod/etc/$DAEMON.conf
 			exit $exitval
     fi
 }
