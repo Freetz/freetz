@@ -69,8 +69,8 @@ stat_builtin() {
 	sec_begin '$(lang de:"Basis-Pakete" en:"Built-in packages")'
 	stat_begin
 
-	stat_line 'swap'
 	stat_line 'crond'
+	stat_line 'swap'
 	stat_line 'telnetd'
 	stat_line 'webcfg'
 

@@ -10,7 +10,7 @@ start() {
 
 	# Basic Packages
 	[ -e "/mod/etc/init.d/rc.crond" ] || ln -s /etc/init.d/rc.crond /mod/etc/init.d/rc.crond
-	[ -e "/mod/etc/init.d/rc.swap" ] || ln -s /etc/init.d/rc.crond /mod/etc/init.d/rc.swap
+	[ -e "/mod/etc/init.d/rc.swap" ] || ln -s /etc/init.d/rc.swap /mod/etc/init.d/rc.swap
 	[ -e "/mod/etc/init.d/rc.telnetd" ] || ln -s /etc/init.d/rc.telnetd /mod/etc/init.d/rc.telnetd
 	[ -e "/mod/etc/init.d/rc.webcfg" ] || ln -s /etc/init.d/rc.webcfg /mod/etc/init.d/rc.webcfg
 	[ -e "/mod/etc/init.d/rc.websrv" ] || ln -s /etc/init.d/rc.websrv /mod/etc/init.d/rc.websrv
@@ -28,8 +28,7 @@ start() {
 	fi
 
 	[ -r "/tmp/flash/rc.custom" ] && . /tmp/flash/rc.custom
-	
-	# give swapfile some time
+
 	/etc/init.d/rc.swap
 }
 
