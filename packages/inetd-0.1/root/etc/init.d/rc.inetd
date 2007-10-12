@@ -36,6 +36,7 @@ start() {
 
 	$DAEMON $INETD_OPTIONS
 	exitval=$?
+	echo $(pidof $DAEMON) > /var/run/$DAEMON.pid
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
@@ -48,6 +49,7 @@ stop() {
 	echo -n 'Stopping inetd...'
 	kill $(cat /var/run/$DAEMON.pid) > /dev/null 2>&1
 	exitval=$?
+	rm /var/run/$DAEMON.pid
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
@@ -66,6 +68,7 @@ reload() {
                 echo 'done.'
         else
                 echo 'failed.'
+                rm /var/run/$DAEMON.pid
                 exit $exitval
         fi
 
