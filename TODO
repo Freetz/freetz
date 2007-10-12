@@ -1,33 +1,48 @@
-To-do list and collection of ideas for ds26
-===========================================
+===================================================
+==  To-do list and collection of ideas for ds26  ==
+===================================================
 
 $Id$
+
+
+HIGH PRIORITY - critical bugs, important features
+-------------------------------------------------
+
+- bftpd, vsftpd: Configuration file has to be rewritten after change - see
+  next item
+
+- Find out why user 'ftp' is created multiple times (maybe once at each
+  reboot?). My configuration currently has six instances.
+
+- Find out why firmware upload on W701V does not return protocol to web UI.
+  Could be Haserl or Busybox, olistudent suspects the latter. Strange enough,
+  the same thing works with identical BB and Haserl on 7170.
+    Update (by kriegaex): Maybe it was pure chance that it worked when I tried
+    once on 7170, because sometimes it also works on W701V. It is a sporadic
+    error happening in >50% of my test cases. It is independent of a specific
+    Haserl version, so the next natural suspect has now become BusyBox 1.7.2.
+    The whole problem looks like a race condition. Nathan Angelacos, Haserl's
+    author, has been notified. Maybe he can pin down the error.
+
+- Where do strange hostnames like "Speedport-W-701V-33.04.44" or
+  "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
+
+
+MEDIUM PRIORITY - normal bugs, features, improvements
+-----------------------------------------------------
+
+- MD5 checksums for DS-Mod packages (our own as well as external ones) incl.
+  necessary make macros or shell scripts
 
 - Make ccache build script aware of gcc version change (needs rebuild in that
   case)
 
-- Open question: Why do we have libjpeg if it is not used by any package?
-    Answer (by olistudent): SANE seems to need it, but the scanners do not run
-    because AVM have not finished their USB driver yet. We should check new
-    packages to see if they ever provide a working version.
-
-- Experiment with and possibly use dietlibc to create smaller binaries by
-  statically compiling in stuff usually dynamically linked to uClibc.
-    Status (by kriegaex): compiled a few binaries - thanks to olistudent for
-    providing a working dietlibc - which are usually a bit smaller than their
-    BusyBox counterparts, but the differences are not as dramatic as hoped for.
-    I think we should try some more packages in order to see where it helps
-    and where it does not. I think good candidates would be packages using one
-    or more libs pretty exclusively, i.e. the libs are not used by many other
-    packages. In this case we could save some overall space by creating static
-    binaries with dietlibc, especially if only a smaller part of the libs'
-    functionalities are used.
-
-- Enhance Virtual-IP-CGI and Openntpd so it supports other (and possibly
-  multiple) interfaces than lan:1
-  (http://www.ip-phone-forum.de/showpost.php?p=886345)
-  Remark (by Oliver): Add interface option to webinterface (virtualip).
-  	Openntpd uses eth0 in ethmode_router and lan in ethmode_bridge.
+- Possibly add patch to rc.S according or similar to
+  http://www.ip-phone-forum.de/showthread.php?p=949145#post949145
+  so as to make sure that the network is up before starting dsld. Otherwise
+  there might be problems, i.e. dsld does not start during the boot process
+  and must be started manually later. If this only happens in ATA or also in
+  DSL mode, is unknown.
 
 - Think about whether we can do something about LCR Auto Updater not working
   without httpd restart, if httpd replaces websrv.
@@ -35,9 +50,17 @@ $Id$
     at the end of the LCR installation procedure. This is not a perfect
     solution, but a good workaround.
 
-- Make rc.mini_fo use kernel_args API
+- Find a better place for iptables libs
+
+- Enhance Virtual-IP-CGI and Openntpd so it supports other (and possibly
+  multiple) interfaces than lan:1
+  (http://www.ip-phone-forum.de/showpost.php?p=886345)
+    Remark (by Oliver): Add interface option to webinterface (virtualip).
+    Openntpd uses eth0 in ethmode_router and lan in ethmode_bridge.
 
 - Get "telnetd vs. setconsole" hangups fixed in BusyBox or another way.
+    Status (by kriegaex): reported to BusyBox mailing list, let's wait & hope.
+    http://busybox.net/lists/busybox/2007-October/029008.html
 
 - Refactor Dnsmasq package, particularly rc.dnsmasq (full of logical mistakes!)
   and recently improved, but still suboptimal multid wrapper. The whole thing
@@ -53,16 +76,25 @@ $Id$
   "start" from restarting multid twice. Actually, I (kriegaex) do not feel so
   inclined to refactor those scripts myself. It took me a while to at least
   understand what they do and fix a few quoting bugs in the wrapper.
-  
-- Check bftpd, dropbear, netsnmp and openvpn (try to make suboptions instead of
-  multiple packages)
-    Remark (by olistudent): Done. But it needs testing. Open question: Are
-    there options in cfg files that conflict with the features compiled in
-    (e.g. OPENVPN_MGMNT)?
 
-- Maybe we can offer including the binary 'urlader.setconfig26' from 06.04.33
-  as a debug tool so users can change the read-only status of bootloader
-  variables. Priority: fairly low, nice to have.
+- Vpnc package: Make hybrid auth feature configureable over webinterface
+
+- Include polished version of swap space package, see
+  http://www.ip-phone-forum.de/showthread.php?t=148245.
+  Probably we should pretty much redo the package, because the scripts and
+  DS-Mod UI integration are quite ugly.
+  Remark (by Oliver): Should we provide some button/menu to create a swapfile?
+
+- Optionally stop DS-Mod services before firmware upgrade
+
+- Rudi Shell: utilise new FIFO uploading feature in order to enable uploads to
+  specific locations instead of to temp-files with unpredictablöe names which
+  need to be moved afterwards. The feature is already used by the firmware
+  upgrade assistant, so it seems like a good idea to use it elsewhere, too.
+
+
+LOW PRIORITY - nice to have, cosmetics, ideas
+---------------------------------------------
 
 - Make OPIE (One Time Passwords in Everything) work with telnet, FTP and SSH
   daemons.
@@ -77,13 +109,74 @@ $Id$
     maybe we can have another look at the Dropbear issue now, provided I can
     figure out how to do that.
 
-- Vpnc package: Make hybrid auth feature configureable over webinterface
+- Experiment with and possibly use dietlibc to create smaller binaries by
+  statically compiling in stuff usually dynamically linked to uClibc.
+    Status (by kriegaex): compiled a few binaries - thanks to olistudent for
+    providing a working dietlibc - which are usually a bit smaller than their
+    BusyBox counterparts, but the differences are not as dramatic as hoped for.
+    I think we should try some more packages in order to see where it helps
+    and where it does not. I think good candidates would be packages using one
+    or more libs pretty exclusively, i.e. the libs are not used by many other
+    packages. In this case we could save some overall space by creating static
+    binaries with dietlibc, especially if only a smaller part of the libs'
+    functionalities are used.
 
-- Include polished version of swap space package, see
-  http://www.ip-phone-forum.de/showthread.php?t=148245.
-  Probably we should pretty much redo the package, because the scripts and
-  DS-Mod UI integration are quite ugly.
-  Remark (by Oliver): Should we provide some button/menu to create a swapfile?
+- Check possibilities of inetd-enabling more services, see e.g.
+  http://www.ip-phone-forum.de/showpost.php?p=949387.
+  I think we should ask the guy who created the package to do that for us.
+
+- Rudi Shell: add switch to send stderr output to stdout ('2>&1') for lazy
+  users who do not know how to do it otherwise.
+    Remark (by kriegaex): I think we should avoid making Rudi's UI more fancy
+    than necessary. (Keep it simple, stupid!) Rudi stands for rudimentary,
+    after all.
+
+- Make rc.mini_fo use kernel_args API
+
+- Maybe we can offer including the binary 'urlader.setconfig26' from 06.04.33
+  as a debug tool so users can change the read-only status of bootloader
+  variables. Priority: fairly low, nice to have.
+
+- Suggestion by Knox: use awx, an extension to awk, as CGI handler instead of
+  Haserl.
+    Remark (by kriegaex): Maybe it would work beautifully, I do not know. But
+    probably it would mean doing the whole web UI from scratch and completely
+    remove the Haserl stuff. I think three solutions (plain shell, Haserl and
+    awx) would be too much and overkill for maintenance. We should remember
+    awx, though, if we ever decide to do everything from scratch or start a
+    big refactoring project.
+
+- Idea from somewhere in IPPF: implement some kind of auto-update functionality
+  for ds26, especially for patches in between releases. This would lead to
+  fewer questions in the forum and more flexibility as well as a more
+  consistent code base "in the wild", i.e. pretty much all modders using the
+  same set of patches instead of everybody using a more or less different
+  setup.
+
+- Idea by heini66: implement call-back function as an add-on to DTMF-Box, see
+  http://www.ip-phone-forum.de/showpost.php?p=941080&postcount=698 and
+  http://www.blindi.net/callback/index.php.
+
+- Idea by heini66: port Softmac WLAN driver from Openwrt. Goal is ad-hoc
+  networking, e.g. for Freifunk.
+
+- Open question: Why do we have libjpeg if it is not used by any package?
+    Answer (by olistudent): SANE seems to need it, but the scanners do not run
+    because AVM have not finished their USB driver yet. We should check new
+    packages to see if they ever provide a working version.
+
+
+FINISHED, NEEDS TESTING
+-----------------------
+
+- Bump uClibc to 0.9.29
+    Status (by Oliver): Done. But AVM daemons don't like it.
+
+- Check bftpd, dropbear, netsnmp and openvpn (try to make suboptions instead of
+  multiple packages)
+    Remark (by olistudent): Done. But it needs testing. Open question: Are
+    there options in cfg files that conflict with the features compiled in
+    (e.g. OPENVPN_MGMNT)?
 
 - Idea by heini66: optionally remove dsld from image, because it is supposedly
   not needed in ATA mode.
@@ -104,45 +197,6 @@ $Id$
     IP-client mode, because it needs kdsldmod.ko. This is yet to be tested
     before a release, we may have to keep this huge module in the image if it
     is needed. The patch also changes rc.init settings DSL=n, VDSL=n.
-
-- Idea by heini66: implement call-back function as an add-on to DTMF-Box, see
-  http://www.ip-phone-forum.de/showpost.php?p=941080&postcount=698 and
-  http://www.blindi.net/callback/index.php.
-
-- Idea by heini66: port Softmac WLAN driver from Openwrt. Goal is ad-hoc
-  networking, e.g. for Freifunk.
-
-- Suggestion by Knox: use awx, an extension to awk, as CGI handler instead of
-  Haserl.
-    Remark (by kriegaex): Maybe it would work beautifully, I do not know. But
-    probably it would mean doing the whole web UI from scratch and completely
-    remove the Haserl stuff. I think three solutions (plain shell, Haserl and
-    awx) would be too much and overkill for maintenance. We should remember
-    awx, though, if we ever decide to do everything from scratch or start a
-    big refactoring project.
-
-- Idea from somewhere in IPPF: implement some kind of auto-update functionality
-  for ds26, especially for patches in between releases. This would lead to
-  fewer questions in the forum and more flexibility as well as a more
-  consistent code base "in the wild", i.e. pretty much all modders using the
-  same set of patches instead of everybody using a more or less different
-  setup.
-
-- MD5 checksums for DS-Mod packages (our own as well as external ones) incl.
-  necessary make macros or shell scripts
-
-- Optionally stop DS-Mod services before firmware upgrade
-
-- Rudi Shell: add switch to send stderr output to stdout ('2>&1') for lazy
-  users who do not know how to do it otherwise.
-    Remark (by kriegaex): I think we should avoid making Rudi's UI more fancy
-    than necessary. (Keep it simple, stupid!) Rudi stands for rudimentary,
-    after all.
-
-- Rudi Shell: utilise new FIFO uploading feature in order to enable uploads to
-  specific locations instead of to temp-files with unpredictablöe names which
-  need to be moved afterwards. The feature is already used by the firmware
-  upgrade assistant, so it seems like a good idea to use it elsewhere, too.
 
 - Check out Xrelayd [1], the successor of Matrixtunnel [2]:
     [1] http://forum.openwrt.org/viewtopic.php?id=12338
@@ -165,10 +219,6 @@ $Id$
     small boxes.
       [3] http://www.xyssl.org/forum/?0048
       [4] http://xyssl.org/forum/?0050
-
-- Find a better place for iptables libs
-
-- bftpd, vsftpd: Configuration file has to be rewritten after change
 
 - Bump busybox version to 1.7.2
     Status (by kriegaex): done. Several patches were removed, others fixed and
@@ -203,27 +253,6 @@ $Id$
       - W900V (34.04.21)
     Thoose three also do not have 'KIDS=y' in rc.init, so it seems logical to
     disable the patch for them. I have done just that.
-    Update (by kriegaex): I have frequent kernel panics since I switched to
-    29.04.40 and stripped userman, so I do not really know if it is userman's
-    absence causing the problems. I am just testing without stripping it from
-    my firmware to find out if it gets any stabler.
-
-- Find out why user 'ftp' is created multiple times (maybe once at each
-  reboot?). My configuration currently has six instances.
-
-- Bump uClibc to 0.9.29
-    Status (by Oliver): Done. But AVM daemons don't like it.
-
-- Possibly add patch to rc.S according or similar to
-  http://www.ip-phone-forum.de/showthread.php?p=949145#post949145
-  so as to make sure that the network is up before starting dsld. Otherwise
-  there might be problems, i.e. dsld does not start during the boot process
-  and must be started manually later. If this only happens in ATA or also in
-  DSL mode, is unknown.
-
-- Check possibilities of inetd-enabling more services, see e.g.
-  http://www.ip-phone-forum.de/showpost.php?p=949387.
-  I think we should ask the guy who created the package to do that for us.
 
 - Integrate new firmware for W701 (thanks to heini66 for the hint):
   http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V/fw_Speedport_W701V_v33.04.44.image
@@ -231,23 +260,3 @@ $Id$
     Status (by kriegaex): I have not tested the web UI, but otherwise it seems
     to work beautifully, even with "replace kernel" based on *.40 GPL package.
     One strange thing remains, though - see next item.
-
-- Find out why firmware upload on W701V does not return protocol to web UI.
-  Could be Haserl or Busybox, olistudent suspects the latter. Strange enough,
-  the same thing works with identical BB and Haserl on 7170.
-    Update (by kriegaex): Maybe it was pure chance that it worked when I tried
-    once on 7170, because sometimes it also works on W701V. It is a sporadic
-    error happening in >50% of my test cases. It is independent of a specific
-    Haserl version, so the next natural suspect has now become BusyBox 1.7.2.
-    The whole problem looks like a race condition. Nathan Angelacos, Haserl's
-    author, has been notified. Maybe he can pin down the error.
-
-- Where do strange hostnames like "Speedport-W-701V-33.04.44" or
-  "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
-
-- Use new information by Enrik to write a little shell script similar to
-  push_firmware, but this time backup_firmware. Goal: automatically download
-  mtd1-mtd4 via EVA-FTP.
-    Status (by kriegaex): done, but script was not included in ds26, but is
-    part of a new Wiki article:
-    http://wiki.ip-phone-forum.de/software:ds-mod:development:mtd_x_sichern_ftp
