@@ -9,3 +9,12 @@
  	echo $NICE
  }
  
+@@ -92,7 +92,7 @@
+ 	test -d $MNTPATH || mkdir -p $MNTPATH
+ 	
+ 	passeeren
+-	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
++	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH; then
+ 		OK=0
+ 		eventadd 140 $MNTNAME
+ 		if ! pidof ftpd; then

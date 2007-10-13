@@ -735,10 +735,17 @@ config DS_PATCH_USBSTORAGE
 	depends on DS_HAS_USB_HOST
 	default n
 	help
-		Change the name of USB storage dir to uStorXY
+		1. Change the name of USB storage dir to uStorXY
+
+		2. Auto-mounted USB storage devices will be fully accessible, i.e. it
+		is now possible to put user home directories for (e.g. for FTP) on a
+		FAT32-formatted partition and permit shell and FTP users to actually
+		write to their own home directories.
+
+		It is highly recommended to select this patch.
 
 config DS_PATCH_WEBSRV
-	bool "Replace AVM web server by httpd - EXPERIMENTAL"
+	bool "Replace AVM web server by httpd
 	default n
 	help
 		Patch init scripts so BusyBox's httpd is used instead of AVM's websrv.
@@ -748,10 +755,8 @@ config DS_PATCH_WEBSRV
 		Media Server from USB Labor firmware" is not selected, 'libwebsrv.so'
 		will also be removed, because only those three binaries use it.
 
-		EXPERIMENTAL FEATURE, USE AT OWN RISK!
-
 config DS_PATCH_UPNP
-	bool "Remove UPnP daemon (igdd) - EXPERIMENTAL"
+	bool "Remove UPnP daemon (igdd)
 	default n
 	help
 		Remove Universal Plug'n'Play daemon 'igdd' and some more files used by
@@ -770,8 +775,6 @@ config DS_PATCH_UPNP
 		    System
 		      Netzwerkeinstellungen
 		        Statusinformationen über UPnP übertragen (empfohlen)
-
-		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
 config DS_REMOVE_USERMAN
 	bool "Remove usermand and userman.ko - EXPERIMENTAL"
