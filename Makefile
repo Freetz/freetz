@@ -227,7 +227,9 @@ else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
 endif
 	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
+ifeq ($(FWMOD_PATCH_TEST)),y)
 	@mv $(BUILD_DIR)/$(DS_TYPE_STRING)*.image ./
+endif
 
 firmware: precompiled firmware-nocompile 
 

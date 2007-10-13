@@ -575,7 +575,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 			[ -x "$i" ] && . $i
 		done
 	fi
-	
+
+	# stop execution if in patch test mode
+	if [ "$FWMOD_PATCH_TEST" == "y" ]; then
+		echo -e "\033[1mPatch test mode: exiting without error.\033[0m"
+		exit
+	fi
+
 	# remove oems
 	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo -n "${L1}removing oem:"
 	oem_removed=0
@@ -626,7 +632,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	then
 		oem_list="tcom avm"
 		sed -i -e 's/for i in  tcom.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
-	else	
+	else
 		sed -i -e 's/for i in  avm.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
 	fi
 
