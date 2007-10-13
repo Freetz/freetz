@@ -1,6 +1,6 @@
 --- faked.c	2007-05-10 16:55:56.000000000 +0200
 +++ faked.c	2005-08-22 01:49:52.000000000 +0200
-@@ -464,22 +464,6 @@
+@@ -464,27 +464,6 @@
      roots = "/";
  #endif
  
@@ -8,7 +8,12 @@
 -    int r,fd=0;
 -    struct stat s;
 -    r=stat(save_file,&s);
--    if (r<0 && errno != ENOENT) return EOF;
+-    if (r<0) {
+-       if (errno == ENOENT)
+-	  break;
+-       else
+-	  return EOF;
+-    }
 -    if (!(s.st_mode&S_IFIFO)) break;
 -    fd=open(save_file,O_WRONLY|O_NONBLOCK);
 -    if (fd<0) {
