@@ -127,6 +127,7 @@ $(TARGET_MAKE_PATH)/../lib/libc.a: $(TOOLCHAIN_DIR)/target/.installed
 	touch -c $@
 
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_MAKE_PATH)/../lib/libc.a
+	mkdir -p $(ROOT_DIR)/lib
 	for i in $(UCLIBC_FILES); do \
 		cp -a $(TARGET_MAKE_PATH)/../lib/$$i $(ROOT_DIR)/lib/$$i; \
 	done
