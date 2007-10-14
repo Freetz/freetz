@@ -488,8 +488,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 	fi
 	
-	echo1 "creating symlink /tmp and /mod"
+	echo1 "creating symlinks /tmp, /mod and /home"
 	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
+	ln -s var/mod/home "$FILESYSTEM_MOD_DIR"/
 	# Set version and options
 	SUBVERSION_FILE="${BASE_DIR}/.version"
 	FIRMWAREVERSION_FILE="${FILESYSTEM_MOD_DIR}/etc/.version"
@@ -672,11 +673,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "users:x:1:" >> "${VARTAR_MOD_DIR}/var/tmp/group"
 		touch "${VARTAR_MOD_DIR}/var/tmp/ethers"
 		touch "${VARTAR_MOD_DIR}/var/tmp/exports"
+		touch "${VARTAR_MOD_DIR}/var/tmp/gshadow"
 		touch "${VARTAR_MOD_DIR}/var/tmp/onlinechanged"
 		chmod +x "${VARTAR_MOD_DIR}/var/tmp/onlinechanged"
 
 		ln -s ../var/tmp/ethers "${FILESYSTEM_MOD_DIR}/etc/ethers"
 		ln -s ../var/tmp/exports "${FILESYSTEM_MOD_DIR}/etc/exports"
+		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"
 		ln -s ../var/tmp/onlinechanged "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 
 		echo1 "installing libs"

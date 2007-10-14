@@ -29,9 +29,43 @@ HIGH PRIORITY - critical bugs, important features
 
 - Where do strange hostnames like "Speedport-W-701V-33.04.44" or
   "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
-	Remark (by Oliver): I think from multid. How could we avoid that?
+  Remark (by Oliver): I think from multid. How could we avoid that?
 
-- Check order in which packages are started at boottime (virtualip, ntfs, cifsmount, syslog-cgi)
+- Check order in which packages are started at boottime (virtualip, ntfs,
+  cifsmount, syslog-cgi)
+
+- New UNIX-conform user/group/password management
+  (assigned to kriegaex)
+  Stage 1 (done):
+  * Old user management still in place and default (e.g. used by modload)
+  * New user management already usable
+  * Busybox now includes applets adduser, deluser, addgroup, delgroup, cryptpw.
+    This costs an additional 6,104 bytes, which is pretty good.
+  * fwmod creates symlink /home -> var/mod/home because adduser expects to find
+    /home if no explicit home dir parameter is specified
+  * fwmod creates symlink /etc/gshadow -> /var/tmp/gshadow and also creates an
+    empty /var/tmp/gshadow because BB tools expect file to be writable
+  * New script modusers (not to confuse for moduser without "s") loads/saves
+    /tmp/{passwd,shadow,group,gshadow} from/to save buffer in /tmp/flash/users
+  Stage 2 (yet to do):
+  * Make ds26 + packages like Bftpd and Samba use BB tools instead of
+    proprietary scripts wherever possible
+  * Replace obsolete scripts or parts of them by warning messages telling users
+    that those obsolete parts will vanish soon
+  * Get rid of /tmp/flash/shadow.save
+  * Change modload & modsave to use modusers instead of modpasswd
+  * Provide default passwords for root and ds26 web user + warnings to change
+    them, maybe even via Web (I already found out how to control the
+    interactive passwd tool without user interaction)
+  * Update Wiki (general user management article pointing to Linux standard
+    documentation, package articles for Samba & Bftpd, ds26 installation how-to
+    concerning first-time password entry)
+  * Possible get rid of special case "telnet login with AVM web password if no
+    root pw is set", because root will have a default pw packaged right into
+    var.tar.
+  * Decide whether to include auto-conversion scripts for shadow.save or just
+    mention how to upgrade/downgrade in the IPPF release thread.
+
 
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------

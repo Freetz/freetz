@@ -1,0 +1,51 @@
+#!/bin/sh
+
+APPLET=${0##*/}
+
+usage() {
+	cat << EOF
+
+$0: get/put users, groups & passwords from/to save buffer
+Usage: $APPLET {load|save}
+
+Examples:
+  # Retrieve data from save buffer (*not* from TFFS)
+  $APPLET load
+
+  # Put data to save buffer (*not* to TFFS)
+  $APPLET save
+  # Make save buffer persistent in TFFS
+  modsave flash
+
+EOF
+}
+
+[ $# -eq 0 ] && usage && exit 0
+[ $# -ne 1 ] && usage >&2 && exit 1
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+USER_DIR=/tmp/flash/users
+USER_FILES="/tmp/passwd /tmp/group /tmp/shadow /tmp/gshadow"
+
+case "$1" in
+	save)
+		rm -rf $USER_DIR
+		mkdir -pm 700 $USER_DIR
+		for f in $USER_FILES; do
+			if [ -e $f ]; then
+				cp $f $USER_DIR
+				[ "${f%*shadow}" == "$f" ] && mask=644 || mask=600
+				chmod $mask $USER_DIR/${f##*/}
+			fi
+		done
+		chown -R root:root $USER_DIR
+		;;
+	load)
+		rm -f $USER_FILES
+		cp -a $USER_DIR/* /tmp
+		;;
+	*)
+		usage >&2
+		exit 1
+		;;
+esac
