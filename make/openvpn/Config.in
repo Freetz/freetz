@@ -20,3 +20,12 @@ config DS_PACKAGE_OPENVPN_WITH_MGMNT
 	help
 	    Enables OpenVPN's Management Console for administrative Tasks.
 	    This feature is not configurable via Web-UI.
+
+config DS_PACKAGE_OPENVPN_ENABLE_SMALL
+	bool "Optimize for size"
+	depends on DS_PACKAGE_OPENVPN
+	default y
+	help
+	    Enables binary optimiziation for size.
+            Must be disabled to use the config option "explicit-exit-notify".
+

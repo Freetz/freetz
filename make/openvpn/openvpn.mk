@@ -79,7 +79,7 @@ $(OPENVPN_DIR)/.configured: $(OPENVPN_DIR)/.unpacked
 		--disable-socks \
 		--disable-http \
 		--enable-password-save \
-		--enable-small \
+		$(if $(DS_PACKAGE_OPENVPN_ENABLE_SMALL),--enable-small,--disable-small) \
 	);
 	touch $@
 
