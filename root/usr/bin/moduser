@@ -6,18 +6,17 @@ usage() {
 	cat << EOF
 
 $0: add/delete user
-Usage: $APPLET {add|del} {<username>} [noflash]
+Usage: $APPLET {add|del} <username>
 
-Use the optional parameter 'noflash' if you want to do several changes and
-commit them only at the last call, e.g. like this:
-
+Example:
   # Add two users + passwords, don't save to flash
-  moduser add deanna noflash
+  moduser add deanna
   modpasswd deanna noflash
-  moduser add beverly noflash
+  moduser add beverly
   modpasswd beverly noflash
   # Final action: delete user, save to flash
   moduser del tasha
+  modsave flash
 
 EOF
 }
@@ -36,7 +35,7 @@ case "$1" in
 			echo "$APPLET: user $2 exists" >&2
 			exit 1
 		fi
-		modpasswd save noflash
+		modpasswd save
 		echo "$2:*" >> $FLASH
 		modpasswd load
 		echo "$APPLET: user $2 added"
@@ -46,7 +45,7 @@ case "$1" in
 			echo "$APPLET: user $2 does not exist" >&2
 			exit 1
 		fi
-		modpasswd save noflash
+		modpasswd save
 		grep -v "^$2:" $FLASH > $TMP/.shadow
 		mv $TMP/.shadow $FLASH
 		rm -rf /mod/home/$2
@@ -59,5 +58,5 @@ case "$1" in
 		;;
 esac
 
+chown root:root $FLASH
 chmod 600 $FLASH
-[ "$3" ] || modsave flash
