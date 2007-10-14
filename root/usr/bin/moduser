@@ -10,19 +10,19 @@ Usage: $APPLET {add|del} <username>
 
 Example:
   # Add two users + passwords, don't save to flash
-  moduser add deanna
+  $APPLET add deanna
   modpasswd deanna noflash
-  moduser add beverly
+  $APPLET add beverly
   modpasswd beverly noflash
   # Final action: delete user, save to flash
-  moduser del tasha
+  $APPLET del tasha
   modsave flash
 
 EOF
 }
 
 [ $# -eq 0 ] && usage && exit 0
-[ $# -lt 2 ] || [ $# -eq 3 -a "$3" != "noflash" ] && usage >&2 && exit 1
+[ $# -ne 2 ] && usage >&2 && exit 1
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 TMP=/tmp
