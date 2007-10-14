@@ -77,6 +77,7 @@ case "$1" in
 		else
 			rm -f $FLASH/shadow.save
 		fi
+		[ "$2" = "noflash" ] || /usr/bin/modsave flash
 		;;
 	dsmod)
 		echo 'Changing password for admin (ds-mod webconfig)'
@@ -111,17 +112,18 @@ case "$1" in
 		echo ''
 
 		/usr/bin/modconf save mod
-
-                [ "$2" = "noflash" ] || /usr/bin/modsave flash
+		[ "$2" = "noflash" ] || /usr/bin/modsave flash
 		;;
 	*)
 		passwd "$1"
 		exitval=$?
 		[ $exitval -ne 0 ] && exit $exitval
 
-		$0 save
-
-		[ "$2" = "noflash" ] || /usr/bin/modsave flash
+		if [ "$2" = "noflash" ]; then
+			$0 save noflash
+		else 
+			$0 save
+		fi
 		;;
 esac
 
