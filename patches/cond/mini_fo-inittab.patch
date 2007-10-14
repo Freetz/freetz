@@ -1,9 +1,11 @@
 diff -burN etc.orig/inittab etc/inittab
---- etc.orig/inittab	2007-07-14 23:28:22.000000000 +0200
+--- etc/inittab	2007-07-14 23:28:22.000000000 +0200
 +++ etc/inittab	2007-07-14 23:47:03.000000000 +0200
-@@ -1,5 +1,6 @@
+@@ -1,5 +1,8 @@
  #
  ::restart:/sbin/init
++
++# Start mini_fo before rc.S
 +::sysinit:/etc/init.d/rc.mini_fo
  ::sysinit:/etc/init.d/rc.S
  
