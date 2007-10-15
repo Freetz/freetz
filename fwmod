@@ -521,7 +521,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ "$DS_PATCH_SIGNED" == "y" ]	     && OPTIONS="$OPTIONS +signed"
 	[ "$DS_PATCH_USBSTORAGE" == "y" ]    && OPTIONS="$OPTIONS +usbstorage"
 
-	if [ "$DS_REPLACE_KERNEL" == "y" ]; then
+	if [ "$DS_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
 		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}"
 
 		if [ ! -r "$KERNEL_SUBVERSION_FILE" ]; then
