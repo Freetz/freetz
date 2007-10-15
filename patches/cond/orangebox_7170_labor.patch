@@ -1,7 +1,6 @@
-diff -burN etc/init.d/rc.S etc/init.d/rc.S
 --- etc/init.d/rc.S	2007-03-20 11:16:16.000000000 +0100
 +++ etc/init.d/rc.S	2007-03-20 11:19:22.000000000 +0100
-@@ -302,6 +302,15 @@
+@@ -262,6 +262,15 @@
  echo "<? setvariable var:AbCount ${CONFIG_AB_COUNT} ?>" >>/var/config.def
  echo "<? setvariable var:FirmwareVersion '${CONFIG_VERSION}${CONFIG_SUBVERSION}' ?>" >>/var/config.def
   echo "<? setvariable var:Release '2' ?>" >>/var/config.def
@@ -16,4 +15,4 @@ diff -burN etc/init.d/rc.S etc/init.d/rc.S
 +echo "<? setvariable var:menuWOL 'WoL' ?>" >>/var/config.def
  #file "stdin", 8
  #file "./arch/etc/init.d/rc.tffs.sh", 0
- #########################################################################
+ major=`grep tffs /proc/devices`
