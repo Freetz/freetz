@@ -4,36 +4,26 @@ FN_IMAGE="dl/*-8221.image"
 FN_ZIP="dl/*-8221.zip"
 
 FILES1="
-./usr/lib/mediasrv/ConnectionManager.xml
-./usr/lib/mediasrv/MediaServerDevDesc-template.xml
-./usr/lib/mediasrv/mediapath
-./usr/lib/mediasrv/MediaServerDevDesc.xml
-./usr/lib/mediasrv/ContentDirectory.xml
-./sbin/stop_mediasrv
-./sbin/mediasrv
-./sbin/start_mediasrv
+usr/lib/mediasrv/ConnectionManager.xml
+usr/lib/mediasrv/MediaServerDevDesc-template.xml
+usr/lib/mediasrv/mediapath
+usr/lib/mediasrv/MediaServerDevDesc.xml
+usr/lib/mediasrv/ContentDirectory.xml
+sbin/stop_mediasrv
+sbin/mediasrv
+sbin/start_mediasrv
 "
 FILES2="
-./etc/default.Fritz_Box_7170/avm/ConnectionManager.xml
-./etc/default.Fritz_Box_7170/avm/MediaServerDevDesc-template.xml
-./etc/default.Fritz_Box_7170/avm/mediapath
-./etc/default.Fritz_Box_7170/avm/MediaServerDevDesc.xml
-./etc/default.Fritz_Box_7170/avm/ContentDirectory.xml
-./etc/default.Fritz_Box_7170/1und1/ConnectionManager.xml
-./etc/default.Fritz_Box_7170/1und1/MediaServerDevDesc-template.xml
-./etc/default.Fritz_Box_7170/1und1/mediapath
-./etc/default.Fritz_Box_7170/1und1/MediaServerDevDesc.xml
-./etc/default.Fritz_Box_7170/1und1/ContentDirectory.xml
-./etc/default.Fritz_Box_7170/freenet/ConnectionManager.xml
-./etc/default.Fritz_Box_7170/freenet/MediaServerDevDesc-template.xml
-./etc/default.Fritz_Box_7170/freenet/mediapath
-./etc/default.Fritz_Box_7170/freenet/MediaServerDevDesc.xml
-./etc/default.Fritz_Box_7170/freenet/ContentDirectory.xml
+etc/default.Fritz_Box_7170/avm/ConnectionManager.xml
+etc/default.Fritz_Box_7170/avm/MediaServerDevDesc-template.xml
+etc/default.Fritz_Box_7170/avm/mediapath
+etc/default.Fritz_Box_7170/avm/MediaServerDevDesc.xml
+etc/default.Fritz_Box_7170/avm/ContentDirectory.xml
 "
 
 if [ "$DS_PATCH_MEDIASRV" == "y" ]; then
 
-	TMPDIR="$FILESYSTEM_MOD_DIR/../../mediasrv"
+	TMPDIR="$MOD_DIR/mediasrv"
 
 	if [ ! -d $TMPDIR ] ; then
 		if [ ! -f $FN_IMAGE ] ; then
@@ -58,8 +48,10 @@ if [ "$DS_PATCH_MEDIASRV" == "y" ]; then
 		cp -a $TMPDIR/original/filesystem/$F $FILESYSTEM_MOD_DIR/$F
 	done
 	for F in $FILES2 ; do
-		TARGETDIR=`ls -d $FILESYSTEM_MOD_DIR/etc/default.Fritz_Box*/avm`
-		cp -a $TMPDIR/original/filesystem/$F $TARGETDIR/`basename $F`
+		TARGETDIRS=`ls -d $FILESYSTEM_MOD_DIR/etc/default.Fritz_Box*/*`
+		for D in $TARGETDIRS; do
+			cp -a $TMPDIR/original/filesystem/$F $D/`basename $F`
+		done
 	done
 
 	echo1 "patching MEDIASRV in rc.init"
