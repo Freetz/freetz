@@ -1,0 +1,183 @@
+Change telnetd to terminate session when the child shell exits
+
+--- networking/telnetd.c	2007-09-03 13:48:27.000000000 +0200
++++ networking/telnetd.c	2007-10-15 19:37:10.000000000 +0200
+@@ -317,48 +317,60 @@
+ #if ENABLE_FEATURE_TELNETD_STANDALONE
+ 
+ static void
+-free_session(struct tsession *ts)
++free_session(pid_t pid)
+ {
+-	struct tsession *t = sessions;
+-
+-	/* unlink this telnet session from the session list */
+-	if (t == ts)
+-		sessions = ts->next;
+-	else {
+-		while (t->next != ts)
+-			t = t->next;
+-		t->next = ts->next;
+-	}
+-
+-	kill(ts->shell_pid, SIGKILL);
+-	wait4(ts->shell_pid, NULL, 0, NULL);
+-	close(ts->ptyfd);
+-	close(ts->sockfd_read);
+-	/* error if ts->sockfd_read == ts->sockfd_write. So what? ;) */
+-	close(ts->sockfd_write);
+-	free(ts);
+-
++	struct tsession *ts, **tp;
+ 	/* scan all sessions and find new maxfd */
+-	ts = sessions;
+ 	maxfd = 0;
+-	while (ts) {
+-		if (maxfd < ts->ptyfd)
+-			maxfd = ts->ptyfd;
+-		if (maxfd < ts->sockfd_read)
+-			maxfd = ts->sockfd_read;
+-		if (maxfd < ts->sockfd_write)
+-			maxfd = ts->sockfd_write;
+-		ts = ts->next;
++	/* unlink this telnet session from the session list */
++	for (tp = &sessions; (ts = *tp); ) {
++		if (ts->shell_pid == pid) {
++			*tp = ts->next;
++			close(ts->ptyfd);
++			close(ts->sockfd_read);
++			/* ts->sockfd_read == ts->sockfd_write if not INETD. if INETD, free_session() is not called */
++			/* close(ts->sockfd_write); */
++			free(ts);
++		}
++		else {
++			tp = &ts->next;
++			if (maxfd < ts->ptyfd)
++				maxfd = ts->ptyfd;
++#if 0 /* ts->sockfd_read == ts->sockfd_write (standalone) */
++			if (maxfd < ts->sockfd_read)
++				maxfd = ts->sockfd_read;
++#endif
++			if (maxfd < ts->sockfd_write)
++				maxfd = ts->sockfd_write;
++		}
+ 	}
+ }
+ 
+ #else /* !FEATURE_TELNETD_STANDALONE */
+ 
+ /* Never actually called */
+-void free_session(struct tsession *ts);
+-
++static inline void
++free_session(pid_t pid)
++{
++}
+ #endif
+ 
++static void sigchld(int sig)
++{
++	for (;;) {
++		pid_t pid;
++		pid = wait4(-1, NULL, WNOHANG, NULL);
++		if (pid <= 0)
++			break;
++#if ENABLE_FEATURE_TELNETD_STANDALONE
++		free_session(pid);
++#else
++		close(ts->ptyfd);
++		close(ts->sockfd_read);
++		close(ts->sockfd_write);
++#endif
++	}
++}
+ 
+ int telnetd_main(int argc, char **argv);
+ int telnetd_main(int argc, char **argv)
+@@ -366,7 +378,7 @@
+ 	fd_set rdfdset, wrfdset;
+ 	unsigned opt;
+ 	int selret, maxlen, w, r;
+-	struct tsession *ts;
++	struct tsession *ts, *next;
+ #if ENABLE_FEATURE_TELNETD_STANDALONE
+ #define IS_INETD (opt & OPT_INETD)
+ 	int master_fd = -1; /* be happy, gcc */
+@@ -403,7 +415,7 @@
+ 		//if (opt & 0x10) // -F
+ 		//if (opt & 0x20) // -i
+ 	);
+-
++	signal(SIGCHLD, sigchld);
+ 	/* Used to check access(loginpath, X_OK) here. Pointless.
+ 	 * exec will do this for us for free later. */
+ 
+@@ -453,6 +465,8 @@
+ 	}
+ 
+ 	selret = select(maxfd + 1, &rdfdset, &wrfdset, 0, 0);
++	if (selret < 0)
++		goto again;
+ 	if (!selret)
+ 		return 0;
+ 
+@@ -477,9 +491,8 @@
+ #endif
+ 
+ 	/* Then check for data tunneling. */
+-	ts = sessions;
+-	while (ts) { /* For all sessions... */
+-		struct tsession *next = ts->next; /* in case we free ts. */
++	for (ts = sessions; ts; ts = next) { /* For all sessions... */
++		next = ts->next; /* in case we free ts. */
+ 
+ 		if (ts->size1 && FD_ISSET(ts->ptyfd, &wrfdset)) {
+ 			int num_totty;
+@@ -491,8 +504,7 @@
+ 			if (w < 0) {
+ 				if (IS_INETD)
+ 					return 0;
+-				free_session(ts);
+-				ts = next;
++				free_session(ts->shell_pid);
+ 				continue;
+ 			}
+ 			ts->wridx1 += w;
+@@ -509,8 +521,7 @@
+ 			if (w < 0) {
+ 				if (IS_INETD)
+ 					return 0;
+-				free_session(ts);
+-				ts = next;
++				free_session(ts->shell_pid);
+ 				continue;
+ 			}
+ 			ts->wridx2 += w;
+@@ -527,8 +538,7 @@
+ 			if (r <= 0) {
+ 				if (IS_INETD)
+ 					return 0;
+-				free_session(ts);
+-				ts = next;
++				free_session(ts->shell_pid);
+ 				continue;
+ 			}
+ 			if (!ts->buf1[ts->rdidx1 + r - 1])
+@@ -548,8 +558,7 @@
+ 			if (r <= 0) {
+ 				if (IS_INETD)
+ 					return 0;
+-				free_session(ts);
+-				ts = next;
++				free_session(ts->shell_pid);
+ 				continue;
+ 			}
+ 			ts->rdidx2 += r;
+@@ -566,7 +575,6 @@
+ 			ts->rdidx2 = 0;
+ 			ts->wridx2 = 0;
+ 		}
+-		ts = next;
+ 	}
+ 	goto again;
+ }
