@@ -18,6 +18,8 @@ config DS_AVM_VERSION_r4884
 	bool
 config DS_AVM_VERSION_r7203
 	bool
+config DS_AVM_VERSION_r8508
+	bool
 
 choice
 
@@ -102,7 +104,7 @@ choice
 		bool "Speedport W501V"
 
 	config DS_TYPE_SPEEDPORT_W701V
-		select DS_AVM_VERSION_04_40
+		select DS_AVM_VERSION_r8508
 		select DS_BRANDING_tcom
 		bool "Speedport W701V"
 
@@ -155,6 +157,7 @@ config DS_AVM_VERSION_STRING
 	default "04.40"			if DS_AVM_VERSION_04_40
 	default "r4884"			if DS_AVM_VERSION_r4884
 	default "r7203"			if DS_AVM_VERSION_r7203
+	default "r8508"			if DS_AVM_VERSION_r8508
 
 choice
 

@@ -14,6 +14,9 @@ AVM_SITE:=http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%2
 else ifeq ($(AVM_VERSION),r7203)
 AVM_SOURCE:=GPL-r7203-4mb_26-tar.bz2
 AVM_SITE:=http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport_W501V
+else ifeq ($(AVM_VERSION),r8508)
+AVM_SOURCE:=GPL-r8508-8mb_26.tar.bz2
+AVM_SITE:=http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V
 endif
 
 AVM_DIR:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)

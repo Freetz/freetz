@@ -14,19 +14,17 @@ KERNEL_IMAGE:=kernel/linux-2.6.13.1/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT)-$(KERNEL_REF).$(AVM_VERSION)
 KERNEL_LZMA_CFLAGS:=-D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing \
-		   				-fno-common -ffreestanding -falign-functions=4  -falign-labels=4 -falign-loops=4  -falign-jumps=4 \
-		   				-fomit-frame-pointer -g -G 0 -mno-abicalls -fno-pic -finline-limit=100000 -mabi=32 -march=mips32 -Wa,-32 \
-		   				-Wa,-march=mips32 -Wa,-mips32 -Wa,--trap
+			-fno-common -ffreestanding -falign-functions=4  -falign-labels=4 -falign-loops=4  -falign-jumps=4 \
+		   	-fomit-frame-pointer -g -G 0 -mno-abicalls -fno-pic -finline-limit=100000 -mabi=32 -march=mips32 -Wa,-32 \
+		   	-Wa,-march=mips32 -Wa,-mips32 -Wa,--trap
 KERNEL_LZMA_LIB:=kernel/linux-2.6.13.1/fs/squashfs/lzma_decode.a
 
 ifeq ($(AVM_VERSION),04.40)
 KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base/$(KERNEL_BUILD_DIR_N)
-else 
-ifeq ($(AVM_VERSION),04.33)
+else ifeq ($(AVM_VERSION),04.33)
 KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/base/$(KERNEL_BUILD_DIR_N)
-else
-KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
-endif
+else ifeq ($(AVM_VERSION),r8508)
+KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/open-source-package/kernel/$(KERNEL_BUILD_DIR_N)
 endif
 
 ifeq ($(KERNEL_REF),4mb_26)
