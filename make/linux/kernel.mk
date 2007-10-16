@@ -21,9 +21,11 @@ KERNEL_LZMA_LIB:=kernel/linux-2.6.13.1/fs/squashfs/lzma_decode.a
 
 ifeq ($(AVM_VERSION),04.40)
 KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base/$(KERNEL_BUILD_DIR_N)
-else ifeq ($(AVM_VERSION),04.33)
+endif
+ifeq ($(AVM_VERSION),04.33)
 KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/base/$(KERNEL_BUILD_DIR_N)
-else ifeq ($(AVM_VERSION),r8508)
+endif
+ifeq ($(AVM_VERSION),r8508)
 KERNEL_SOURCE_PATH:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/open-source-package/kernel/$(KERNEL_BUILD_DIR_N)
 endif
 
@@ -68,22 +70,22 @@ ifneq ($(AVM_VERSION),04.33)
 	ln -sf ../../drivers/char/avm_power/linux_avm_power.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_power.h
 	ln -sf ../../drivers/char/ubik2/linux_ubik2_debug.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/ubik2_debug.h	
+		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/ubik2_debug.h
 	ln -sf ../../drivers/char/ubik2/linux_ubik2_interface.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/ubik2_interface.h
 	ln -sf ../../drivers/char/ubik2/linux_ubik2_ul.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/ubik2_ul.h
 	ln -sf ../../drivers/isdn/capi_oslib/linux_capi_oslib.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/capi_oslib.h	
+		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/capi_oslib.h
 	ln -sf ../../drivers/isdn/capi_oslib/linux_new_capi.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/new_capi.h	
+		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/new_capi.h
 	ln -sf ../../drivers/net/avm_cpmac/linux_adm_reg.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/adm_reg.h	
+		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/adm_reg.h
 	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_cpmac.h	
+		$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/include/linux/avm_cpmac.h
  endif
 endif
-	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-2.6.13.1 $(KERNEL_DIR)/linux 
+	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-2.6.13.1 $(KERNEL_DIR)/linux
 	touch $@
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
@@ -94,9 +96,9 @@ $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		ARCH="$(KERNEL_ARCH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
-		oldconfig 
+		oldconfig
 	touch $@
-	
+
 $(KERNEL_DIR)/.depend_done:  $(KERNEL_DIR)/.configured
 	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
@@ -126,7 +128,7 @@ $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE
 	cp  $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/System.map $(KERNEL_TARGET_DIR)/System-$(KERNEL_REF)-$(AVM_VERSION).map
 	echo "$(KERNEL_SUBVERSION)" > $(KERNEL_TARGET_DIR)/.version-$(KERNEL_REF)-$(AVM_VERSION)
 	touch -c $@
-	
+
 $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \

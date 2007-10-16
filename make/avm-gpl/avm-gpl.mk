@@ -1,23 +1,17 @@
-AVM_SITE:=ftp://ftp.avm.de/develper/opensrc
+AVM_SITE__AVM:=ftp://ftp.avm.de/develper/opensrc
+AVM_SITE__TCOM:=http://www.t-home.de/dlp/eki/downloads/Speedport
 
-ifeq ($(AVM_VERSION),04.29)
-AVM_SOURCE:=fritzbox-source-files-04.29.tar.bz2
-else ifeq ($(AVM_VERSION),04.30)
-AVM_SOURCE:=fritzbox7141-source-files-04.30.tar.bz2
-else ifeq ($(AVM_VERSION),04.33)
-AVM_SOURCE:=fritzbox-source-files-04.33.tar.bz2
-else ifeq ($(AVM_VERSION),04.40)
-AVM_SOURCE:=fritzbox-source-files.04.40.tar.bz2
-else ifeq ($(AVM_VERSION),r4884)
-AVM_SOURCE:=GPL-r4884-8mb_26-tar.bz2
-AVM_SITE:=http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V
-else ifeq ($(AVM_VERSION),r7203)
-AVM_SOURCE:=GPL-r7203-4mb_26-tar.bz2
-AVM_SITE:=http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport_W501V
-else ifeq ($(AVM_VERSION),r8508)
-AVM_SOURCE:=GPL-r8508-8mb_26.tar.bz2
-AVM_SITE:=http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V
-endif
+AVM_SOURCE__04.29:=$(AVM_SITE__AVM)/fritzbox-source-files-04.29.tar.bz2
+AVM_SOURCE__04.30:=$(AVM_SITE__AVM)/fritzbox7141-source-files-04.30.tar.bz2
+AVM_SOURCE__04.33:=$(AVM_SITE__AVM)/fritzbox-source-files-04.33.tar.bz2
+AVM_SOURCE__04.40:=$(AVM_SITE__AVM)/fritzbox-source-files.04.40.tar.bz2
+AVM_SOURCE__r4884:=$(AVM_SITE__TCOM)/Speedport%20W%20701%20V/GPL-r4884-8mb_26-tar.bz2
+AVM_SOURCE__r7203:=$(AVM_SITE__TCOM)/Speedport_W501V/GPL-r7203-4mb_26-tar.bz2
+AVM_SOURCE__r8508:=$(AVM_SITE__TCOM)/Speedport%20W%20701%20V/GPL-r8508-8mb_26.tar.bz2
+
+AVM_URL:=$(AVM_SOURCE__$(AVM_VERSION))
+AVM_SOURCE:=$(notdir $(AVM_URL))
+AVM_SITE:=$(dir $(AVM_URL))
 
 AVM_DIR:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
 
@@ -29,7 +23,7 @@ $(AVM_DIR)/.unpacked: $(DL_DIR)/$(AVM_SOURCE)
 	tar -C $(AVM_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(AVM_SOURCE)
 	touch $@
 
-avm-gpl-precompiled: $(AVM_DIR)/.unpacked 
+avm-gpl-precompiled: $(AVM_DIR)/.unpacked
 
 avm-gpl-source: $(AVM_DIR)/.unpacked
 
