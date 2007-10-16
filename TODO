@@ -15,18 +15,6 @@ HIGH PRIORITY - critical bugs, important features
 - Find out why user 'ftp' is created multiple times (maybe once at each
   reboot?). My configuration currently has six instances.
 
-- Find out why firmware upload on W701V does not return protocol to web UI.
-  Could be Haserl or Busybox, olistudent suspects the latter. Strange enough,
-  the same thing works with identical BB and Haserl on 7170.
-    Update (by kriegaex): Maybe it was pure chance that it worked when I tried
-    once on 7170, because sometimes it also works on W701V. It is a sporadic
-    error happening in >50% of my test cases. It is independent of a specific
-    Haserl version, so the next natural suspect has now become BusyBox 1.7.2.
-    The whole problem looks like a race condition. Nathan Angelacos, Haserl's
-    author, has been notified. Maybe he can pin down the error.
-    Status (by Oliver): Problem seems to be solved with patch from Ralf, firmware-
-    update button is working again for me.
-
 - Where do strange hostnames like "Speedport-W-701V-33.04.44" or
   "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
   Remark (by Oliver): I think from multid. How could we avoid that?
@@ -129,7 +117,7 @@ MEDIUM PRIORITY - normal bugs, features, improvements
 - Optionally stop DS-Mod services before firmware upgrade
 
 - Rudi Shell: utilise new FIFO uploading feature in order to enable uploads to
-  specific locations instead of to temp-files with unpredictablöe names which
+  specific locations instead of to temp-files with unpredictable names which
   need to be moved afterwards. The feature is already used by the firmware
   upgrade assistant, so it seems like a good idea to use it elsewhere, too.
 
@@ -149,6 +137,16 @@ LOW PRIORITY - nice to have, cosmetics, ideas
     Update (by kriegaex): Now we have BusyBox 1.7.2 with PAM login support, so
     maybe we can have another look at the Dropbear issue now, provided I can
     figure out how to do that.
+
+- Use kernel_args to optionally deactivate DS-Mod or parts of it in order to
+  save an installation without recovering; idea by MaxMuster
+  (http://www.ip-phone-forum.de/showpost.php?p=960303).
+    Remark (by kriegaex): Would work nicely in connection with a script similar
+    to push_firmware which would toggle the switch from outside via EVA FTP.
+    We might as well have several switches to selectively disable debug.cfg,
+    DS-Mod start-up or rc.custom. Essential about this is that we can offer a
+    way of modifying the the contents of debug.cfg and ds_mod. Very nice idea
+    indeed, and probably not all that hard to implement.
 
 - Experiment with and possibly use dietlibc to create smaller binaries by
   statically compiling in stuff usually dynamically linked to uClibc.
