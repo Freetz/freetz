@@ -4,7 +4,7 @@ VSFTPD_SITE:=ftp://vsftpd.beasts.org/users/cevans/
 VSFTPD_MAKE_DIR:=$(MAKE_DIR)/vsftpd
 VSFTPD_DIR:=$(SOURCE_DIR)/vsftpd-$(VSFTPD_VERSION)
 VSFTPD_BINARY:=$(VSFTPD_DIR)/vsftpd
-VSFTPD_PKG_VERSION:=0.1
+VSFTPD_PKG_VERSION:=0.1b
 VSFTPD_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 VSFTPD_PKG_NAME:=vsftpd-$(VSFTPD_VERSION)

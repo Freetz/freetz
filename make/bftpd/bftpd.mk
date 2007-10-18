@@ -4,7 +4,7 @@ BFTPD_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bftpd
 BFTPD_MAKE_DIR:=$(MAKE_DIR)/bftpd
 BFTPD_DIR:=$(SOURCE_DIR)/bftpd
 BFTPD_BINARY:=$(BFTPD_DIR)/bftpd
-BFTPD_PKG_VERSION:=0.6
+BFTPD_PKG_VERSION:=0.6b
 BFTPD_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)

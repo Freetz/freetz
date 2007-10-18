@@ -5,7 +5,7 @@ DROPBEAR_SITE:=http://matt.ucc.asn.au/dropbear/releases
 DROPBEAR_MAKE_DIR:=$(MAKE_DIR)/dropbear
 DROPBEAR_DIR:=$(SOURCE_DIR)/dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_BINARY:=$(DROPBEAR_DIR)/dropbearmulti
-DROPBEAR_PKG_VERSION:=0.7b
+DROPBEAR_PKG_VERSION:=0.7c
 DROPBEAR_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 
 ifeq ($(strip $(DS_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
