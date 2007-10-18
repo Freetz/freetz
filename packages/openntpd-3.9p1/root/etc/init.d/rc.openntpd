@@ -17,8 +17,15 @@ case "$1" in
 esac
 
 start() {
-	echo -n "Looking for user 'ntp'..."
-	/usr/bin/moduser add ntp
+	echo -n "Looking for user 'ntp' ... "
+	if grep -q '^ntp:' /etc/passwd; then
+		echo "found"
+	elif adduser -G users -D ntp; then
+		echo -n "created - now saving to data buffer ... "
+		modusers save && echo "done" || echo "failed"
+	else
+		echo "not created - error occurred"
+	fi
 
 	if [ ! -e "/var/db" ]; then
 		mkdir -p /var/db

@@ -35,24 +35,35 @@ HIGH PRIORITY - critical bugs, important features
     empty /var/tmp/gshadow because BB tools expect file to be writable
   * New script modusers (not to confuse for moduser without "s") loads/saves
     /tmp/{passwd,shadow,group,gshadow} from/to save buffer in /tmp/flash/users
-  Stage 2 (yet to do):
-  * Make ds26 + packages like Bftpd and Samba use BB tools instead of
-    proprietary scripts wherever possible
+  Stage 2 (done, ***NEEDS TESTING***):
+  * Make ds26 + packages like Bftpd and Samba use BB tools or new script modusers
+    instead of old scripts wherever possible
   * Replace obsolete scripts or parts of them by warning messages telling users
     that those obsolete parts will vanish soon
-  * Get rid of /tmp/flash/shadow.save
-  * Change modload & modsave to use modusers instead of modpasswd
+  * Get rid of /tmp/flash/shadow.save -> auto-converter was built into
+    'modpasswd load'
+  * Change modload & modsave to use modusers instead of modpasswd -> modload
+    calls modpasswd load, if old data need to be converted, function will be
+    removed in one of the next later releases.
+  * Old functions in modpasswd show "obsolete" warnings and hints pointing to
+    successor functions.
+  * Applet 'moduser' removed completely, because it is fully replaced by
+    standard BB applets and 'modusers' for loading/saving.
+  Stage 3 (to do):
   * Provide default passwords for root and ds26 web user + warnings to change
     them, maybe even via Web (I already found out how to control the
-    interactive passwd tool without user interaction)
+    interactive passwd tool without user interaction) -> done partly (default
+    pw "dsmod" introduced for web user "admin")
+  * Decide whether to include auto-conversion scripts for shadow.save or just
+    mention how to upgrade/downgrade in the IPPF release thread. -> upgrade
+    script in 'modpasswd load' (see above), downgrade script must be provided
+    via forum or wiki.
   * Update Wiki (general user management article pointing to Linux standard
     documentation, package articles for Samba & Bftpd, ds26 installation how-to
     concerning first-time password entry)
-  * Possible get rid of special case "telnet login with AVM web password if no
+  * Possibly get rid of special case "telnet login with AVM web password if no
     root pw is set", because root will have a default pw packaged right into
     var.tar.
-  * Decide whether to include auto-conversion scripts for shadow.save or just
-    mention how to upgrade/downgrade in the IPPF release thread.
 
 
 MEDIUM PRIORITY - normal bugs, features, improvements
@@ -70,6 +81,8 @@ MEDIUM PRIORITY - normal bugs, features, improvements
   there might be problems, i.e. dsld does not start during the boot process
   and must be started manually later. If this only happens in ATA or also in
   DSL mode, is unknown.
+    Remark (by kriegaex): Make sure the wait loop does not wait forever (e.g.
+    max. 30 seconds).
 
 - Think about whether we can do something about LCR Auto Updater not working
   without httpd restart, if httpd replaces websrv.

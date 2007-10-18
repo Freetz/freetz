@@ -38,8 +38,8 @@ pre_config() {
 
 start() {
 	if [ "$DROPBEAR_PWDAUTH" = "yes" ]; then
-		if cat /var/tmp/shadow | grep '^root:\*:' > /dev/null; then
-			echo "Error[$DAEMON]: no root password set - run 'modpasswd root'" 1>&2
+		if cat /etc/shadow | grep -q '^root:[*!]:'; then
+			echo "Error[$DAEMON]: no root password set - run 'passwd root'" 1>&2
 			exit 1
 		fi
 	else

@@ -1,37 +1,41 @@
 #!/bin/sh
-#
+
 # Usage: modload [force]
 
 TMPFILE=/tmp/.load.tmp.$$
+MODFILE=/var/flash/ds_mod
 
 trap "rm -f $TMPFILE" EXIT
 
 [ -d "/tmp/flash" -a "$1" != "force" ] && exit 0
 
-echo -n 'Loading /var/flash/ds_mod...'
-if cat /var/flash/ds_mod > $TMPFILE 2> /dev/null; then
+echo -n "Loading $MODFILE..."
+if cat $MODFILE > $TMPFILE 2> /dev/null; then
 	if tar -xf $TMPFILE -C /tmp/ 2> /dev/null; then
 		echo 'done.'
 	else
 		echo 'failed.'
-		echo -n 'Creating /var/flash/ds_mod...'
-		[ -d "/tmp/flash" ] || mkdir -p /tmp/flash
-		tar -cf - flash -C /tmp/ > /var/flash/ds_mod
+		echo -n "Creating $MODFILE..."
+		mkdir -p /tmp/flash
+		tar -cf $MODFILE -C /tmp flash
 		echo 'done.'
 	fi
 else
 	echo 'does not exist.'
-	echo -n 'Creating /var/flash/ds_mod...'
-	[ -d "/tmp/flash" ] || mkdir -p /tmp/flash
-	tar -cf - flash -C /tmp/ > /var/flash/ds_mod
+	echo -n "Creating $MODFILE..."
+	mkdir -p /tmp/flash
+	tar -cf $MODFILE -C /tmp flash
 	echo 'done.'
 fi
 
 [ -e "/mod/etc/default.mod" ] || ln -s /etc/default.mod /mod/etc/default.mod
 [ -e "/mod/usr/lib/cgi-bin/mod" ] || ln -s /usr/lib/cgi-bin/mod /mod/usr/lib/cgi-bin/mod
 
-echo -n 'Loading passwords...'
-/usr/bin/modpasswd load
+echo -n 'Loading users, groups and passwords...'
+# TODO: remove call in one of the next releases, because it is obsolete
+# and only needed for auto-conversion
+[ -e /tmp/flash/shadow.save ] && /usr/bin/modpasswd load
+/usr/bin/modusers load
 echo 'done.'
 
 echo -n 'Loading hosts...'

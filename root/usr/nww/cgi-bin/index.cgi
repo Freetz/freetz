@@ -46,7 +46,7 @@ Console Ausgaben auf dieses Terminal umgelenkt
 </pre>
 </li>
 <li>
-$(lang de:"Mit dem Kommando <pre>modpasswd</pre> l&auml;sst sich nun das 'root' Passwort und das Passwort f&uuml;r die Weboberfl&auml;che setzen. Falls das 'root' Passwort unver&auml;ndert bleiben soll (z.B. dropbear braucht ein 'root' Passwort, gen&uuml;gt: <pre>modpasswd dsmod</pre>" en:"You can change the 'root' password and the password for the webinterface by using the command: <pre>modpasswd</pre> If you don't want to change the 'root' password (e.g. dropbear needs a 'root' password)<pre>modpasswd dsmod</pre> is sufficient.")
+$(lang de:"Mit dem Kommando <pre>passwd</pre> l&auml;sst sich nun bei Bedarf das 'root' Passwort setzen, mit <pre>modpasswd dsmod</pre> das Passwort f&uuml;r die Weboberfl&auml;che. Falls Sie Dropbear nutzen, brauchen Sie in jedem Fall ein root-Passwort." en:"You can change the 'root' password by <pre>passwd</pre> (if needed) and the password for the web interface by <pre>modpasswd dsmod</pre>. If using Dropbear, you do need a root password.")
 $(lang de:"Folgende Passw&ouml;rter sind zu unterscheiden:" en:"It is important to distinguish the following passwords:")
 <ul>
 <li>$(lang de:"FRITZ!Box Kennwort der original Firmware" en:"FRITZ!Box web password of original firmware")</li>

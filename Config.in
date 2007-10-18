@@ -252,7 +252,9 @@ config DS_INSTALL_BASE
 #overwrite AVM's fat and vfat module with our own because it segfaults
 config DS_INSTALL_MODULE
 	bool
-	depends on DS_REPLACE_KERNEL && ! DS_AVM_VERSION_04_40
+	depends on DS_REPLACE_KERNEL \
+		&& ! DS_AVM_VERSION_04_40 \
+		&& ! DS_AVM_VERSION_r8508
 	select DS_MODULE_vfat	if DS_HAS_USB_HOST
 	default y
 	help

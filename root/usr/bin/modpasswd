@@ -1,36 +1,33 @@
 #!/bin/sh
 #
-# Usage: modpasswd [<username>|load|save|dsmod]
+# Usage: modpasswd [load|dsmod]
 
 TMP=/var/tmp
 FLASH=$TMP/flash
 
 case "$1" in
 	"")
-		echo ''
-		echo '## CHANGE ROOT PASSWORD ##'
-		echo ''
-
-		$0 root noflash
-		exitval=$?
-		[ $exitval -ne 0 ] && exit $exitval
-
-		echo ''
-		echo '## CHANGE WEBCONFIG PASSWORD ##'
-		echo ''
-
-		$0 dsmod noflash
-		exitval=$?
-		[ $exitval -ne 0 ] && exit $exitval
-
-		/usr/bin/modsave flash
+		echo >&2
+		echo "## OBSOLETE: modpasswd <no parameters> ##" >&2
+		echo "If you want to set the root password, please use the" >&2
+		echo "'passwd' command." >&2
+		echo >&2
+		exit 1
 		;;
 	load)
+		if ! [ -e "$FLASH/shadow.save" ]; then
+			echo >&2
+			echo "## OBSOLETE: modpasswd load ##" >&2
+			echo "If you want to load users, groups and passwords, please use the" >&2
+			echo "'modusers load' command." >&2
+			echo >&2
+			exit 1
+		fi
+
+		echo "Obsolete user & password file $FLASH/shadow.save detected, converting..."
+
 		TMPPASSWD=$TMP/.passwd.tmp
 		TMPSHADOW=$TMP/.shadow.tmp
-
-		[ -e "$FLASH/shadow.save" ] || exit 0
-
 		rm -f $TMPPASSWD
 		rm -f $TMPSHADOW
 
@@ -69,14 +66,22 @@ case "$1" in
 			echo "ERROR: no user 'root'" 1>&2
 			exit 1
 		fi
+
+		echo "Obsolete users & passwords loaded, saving in new format..."
+		if /usr/bin/modusers save; then
+			echo "Removing obsolete file $FLASH/shadow.save..."
+			rm -f $FLASH/shadow.save
+			echo "Making data conversion persistent by saving to flash memory..."
+			modsave flash
+		fi
 		;;
 	save)
-		if [ -e "/var/tmp/shadow" ]; then
-			cat /var/tmp/shadow | sed -e 's/:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*$//' > $FLASH/shadow.save
-			chmod 600 $FLASH/shadow.save
-		else
-			rm -f $FLASH/shadow.save
-		fi
+		echo >&2
+		echo "## OBSOLETE: modpasswd save ##" >&2
+		echo "If you want to save users, groups and passwords, please use the" >&2
+		echo "'modusers save' command." >&2
+		echo >&2
+		exit 1
 		;;
 	dsmod)
 		echo 'Changing password for admin (ds-mod webconfig)'
@@ -114,15 +119,12 @@ case "$1" in
 		[ "$2" = "noflash" ] || /usr/bin/modsave flash
 		;;
 	*)
-		passwd "$1"
-		exitval=$?
-		[ $exitval -ne 0 ] && exit $exitval
-
-		if [ "$2" = "noflash" ]; then
-			$0 save noflash
-		else 
-			$0 save
-		fi
+		echo >&2
+		echo "## OBSOLETE: modpasswd <username> ##" >&2
+		echo "If you want to set the a user's password, please use the" >&2
+		echo "'passwd' command." >&2
+		echo >&2
+		exit 1
 		;;
 esac
 

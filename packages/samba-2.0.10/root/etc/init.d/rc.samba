@@ -4,9 +4,9 @@ export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/
 export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 
 case "$1" in
-        ""|load|start|restart|config)
+	""|load|start|restart|config)
 		if [ ! -r "/mod/etc/conf/samba.cfg" ]; then
-			echo "Error[samba]: not configured" 1>&2
+			echo "Error [samba]: not configured" >&2
 			exit 1
 		fi
 
@@ -33,14 +33,14 @@ start() {
 		mkdir /var/run/samba
 	fi
 
-	echo -n "Looking for user 'samba'..."
-	if cat /var/tmp/passwd | grep '^samba:' > /dev/null; then
-		echo 'ok.'
+	echo -n "Looking for user 'samba' ... "
+	if grep -q '^samba:' /etc/passwd; then
+		echo "found"
+	elif adduser -G users -D samba; then
+		echo -n "created - now saving to data buffer ... "
+		modusers save && echo "done" || echo "failed"
 	else
-		/usr/bin/modpasswd save
-		echo 'samba:*' >> /tmp/flash/shadow.save
-		/usr/bin/modpasswd load
-		echo 'added.'
+		echo "not created - error occurred"
 	fi
 
 	config

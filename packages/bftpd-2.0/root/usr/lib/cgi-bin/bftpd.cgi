@@ -41,7 +41,7 @@ sec_end
 sec_begin '$(lang de:"Zugriff" en:"Access")'
 
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Das Passwort f&uuml;r den Benutzer 'ftp' kann mit dem Kommando 'modpasswd ftp' festgelegt werden." en:"The password for the user 'ftp' can be set by using the command 'modpasswd ftp'.")</p>
+<p style="font-size:10px;">$(lang de:"Das Passwort f&uuml;r den Benutzer 'ftp' kann mit dem Kommando 'passwd ftp' festgelegt und mit 'modusers save; modsave flash' persistent gespeichert werden." en:"The password for the user 'ftp' can be set by using the command 'passwd ftp' and subsequently saved persistently by 'modusers save; modsave flash'.")</p>
 <p>
 <input type="hidden" name="anonymous" value="no">
 <input id="a1" type="checkbox" name="anonymous" value="yes"$anonym_chk><label for="a1"> $(lang de:"Anonymes FTP" en:"Anonymous FTP")</label>
