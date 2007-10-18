@@ -26,7 +26,7 @@ $(PJSIP_DIR)/.configured: $(PJSIP_DIR)/.unpacked
 		mv build.mak.in.tmp build.mak.in; \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
-		CFLAGS="$(TARGET_CFLAGS) –DPJ_DEBUG=0 –DNDEBUG=0" \
+		CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0" \
 		LDFLAGS="-lm" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
