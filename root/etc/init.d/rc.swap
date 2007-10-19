@@ -24,12 +24,13 @@ has_swap () {
 
 start () {
 	echo -n "Starting $DAEMON..."
-	while [ $i -le 100 ]; do
+	i=0
+	while [ $i -le 20 ]; do
 	    if [ -e $MOD_SWAP_FILE ]; then
 		swapon $MOD_SWAP_FILE
 		break
 	    fi
-	    i=`expr $i + 1` && sleep 1
+	    i=`expr $i + 1` && sleep 2
 	done
 	    
 	sleep 1
