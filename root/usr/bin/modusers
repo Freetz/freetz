@@ -23,6 +23,11 @@ EOF
 [ $# -eq 0 ] && usage && exit 0
 [ $# -ne 1 ] && usage >&2 && exit 1
 
+# set Internal Field Separator to newline
+NEWLINE='
+'
+IFS=$NEWLINE
+
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 USER_DIR=/tmp/flash/users
 USER_FILES="/tmp/passwd /tmp/group /tmp/shadow /tmp/gshadow"
@@ -43,6 +48,17 @@ case "$1" in
 	load)
 		rm -f $USER_FILES
 		cp -a $USER_DIR/* /tmp
+		for line in $(cat /etc/passwd); do
+			user="$(echo $line | cut -d ':' -f1)"
+			user_homedir="$(echo $line | cut -d ':' -f6)"
+			if [ "$user" = "root" ]; then
+            	mkdir -p $user_homedir
+				chown root:root $user_homedir
+			else
+            	mkdir -p $user_homedir
+				chown $user:users $user_homedir
+			fi
+        done
 		;;
 	*)
 		usage >&2
