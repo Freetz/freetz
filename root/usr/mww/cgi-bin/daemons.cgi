@@ -14,6 +14,7 @@ stat_button() {
 
 stat_line() {
 	status="$(/mod/etc/init.d/rc.$1 status 2> /dev/null)"
+	if [ -n "$2" ]; then name="$2"; else name="$1"; fi
 	case "$status" in
 		running)
 			color="#008000"
@@ -52,7 +53,7 @@ stat_line() {
 			;;
 	esac
 	echo '<tr>'
-	echo '<td width="180">'"$1"'</td><td style="color: '"$color"';" width="120">'"$status"'</td>'
+	echo '<td width="180">'"$name"'</td><td style="color: '"$color"';" width="120">'"$status"'</td>'
 
 	stat_button $1 start $start
 	stat_button $1 stop $stop
@@ -85,9 +86,24 @@ stat_static() {
 	empty=1
 	if [ -e "/etc/static.pkg" ]; then
 		for pkg in $(cat /etc/static.pkg); do
-			if [ -x "/mod/etc/init.d/rc.$pkg" ]; then
+			if [ -x "/mod/etc/init.d/rc.$pkg" ] && [ ! -e /mod/etc/${pkg}_multid.pkg ]; then
 				empty=0
 				stat_line "$pkg"
+			else
+				if [ -e /mod/etc/${pkg}_multid.pkg ]; then
+					empty=0
+					echo "<tr><td><b>Deamons <i>${pkg}</i>:</b></td></tr>"
+					for pkgline in $(cat /mod/etc/${pkg}_multid.pkg); do
+						if [ -n "`echo $pkgline | grep \#`" ]; then
+							mpkg=${pkgline%%#*};
+							name=${pkgline#*#};
+						else
+							mpkg=$pkgline
+							name=$pkgline
+						fi
+						stat_line "$mpkg" "&nbsp;&nbsp;&nbsp;&nbsp;$name"
+					done
+				fi
 			fi
 		done
 	fi

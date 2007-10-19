@@ -5,7 +5,7 @@ OPENVPN_SITE:=http://openvpn.net/release
 OPENVPN_MAKE_DIR:=$(MAKE_DIR)/openvpn
 OPENVPN_DIR:=$(SOURCE_DIR)/openvpn-$(OPENVPN_VERSION)
 OPENVPN_BINARY:=$(OPENVPN_DIR)/openvpn
-OPENVPN_PKG_VERSION:=0.6e
+OPENVPN_PKG_VERSION:=0.6f
 OPENVPN_PKG_SITE:=http://netfreaks.org/ds-mod
 
 ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_LZO)),y)
@@ -97,7 +97,7 @@ $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME): $(DL_DIR)/$(OPENVPN_PKG_SOURCE) | $(PACKAG
 
 openvpn: $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME)
 
-openvpn-package: $(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME)
+openvpn-package: #$(PACKAGES_DIR)/.$(OPENVPN_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(OPENVPN_PKG_SOURCE) $(OPENVPN_PKG_NAME)
 
 openvpn-precompiled: uclibc $(OPENVPN_LZO) openssl-precompiled openvpn $(OPENVPN_TARGET_BINARY)

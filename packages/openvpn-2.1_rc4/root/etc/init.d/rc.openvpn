@@ -3,16 +3,68 @@
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 
-DAEMON=openvpn
+scriptname=$0;
+DAEMON=${scriptname##*/rc.}
+unset SAVECGI
+test "$DAEMON" = "openvpn" -a  "`ps | grep save.cgi | grep -v grep`" != ""  && SAVECGI="true" ;
+save_backup() {
+	cat /mod/etc/conf/openvpn.cfg | tr " \'" "%#" | sed 's/=#/=/g'  > /var/tmp/openvpn_tmp_bu
+}
+
+find_changes() {
+	pkg_diff=`cat /mod/etc/conf/openvpn.cfg | tr " \'" "%#" | sed 's/=#/=/g' | grep -vf /var/tmp/openvpn_tmp_bu | grep -vE "CONFIG_COUNT|EXPERT|ENABLED" `
+	diff=""
+	diffnames=""
+        mincount=`cat /var/tmp/openvpn_tmp_bu | grep CONFIG_COUNT | tr -cd [0-9] `
+	newcount=$OPENVPN_CONFIG_COUNT
+        if [ $newcount -lt $mincount ]; then mincount=$newcount ; fi
+	for x in  $pkg_diff
+	do
+	        namen="$OPENVPN_CONFIG_NAMES"		
+        	werteneu="${x##*=}#**%%**"
+	        name=${x%%=*}
+        	name=${name##*%}
+	        wertealt=`cat /var/tmp/openvpn_tmp_bu | tr "|" '\n' | grep "${name}="`
+        	wertealt=${wertealt##*=}
+	        wn=""
+		count=0;
+	        while [ "$werteneu" != "**%%**"  -a $count -le $mincount ]
+       	        do
+	                n=${namen%%#*}
+			if [ $count -eq 1 ]; then n=openvpn ; else n=openvpn_$n ; fi
+        	        wn=${werteneu%%#*}
+        	        wa=${wertealt%%#*}
+                	if [ "$wa" != "$wn" ]; then
+	                        diffnames="$diffnames$n\n"
+				echo "In Config $n: $name changed from \"$wa\" to \"$wn\"" | tr % " "
+        	        fi
+                	werteneu=${werteneu#*#}
+	                wertealt=${wertealt#*#}
+        	        namen=${namen#*#}
+			count=$((count+1))
+                done
+	done
+	diffnames=${diffnames%'\n'}
+	pkg_changed=`echo -e "$diffnames" | sort  -u`
+	rm -f /var/tmp/openvpn_tmp_bu
+}
+
+if [ ! -e /var/tmp/.openvpnfirstrun ]; then
+	touch /var/tmp/.openvpnfirstrun
+	/mod/etc/default.openvpn/openvpn_dynamic_conf
+fi
+if [ ! -x /mod/sbin/$DAEMON ]; then
+	ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
+fi
 
 case "$1" in
 	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+		if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
 		fi
 
-		. /mod/etc/conf/$DAEMON.cfg
+		. /mod/etc/conf/${DAEMON}.cfg
 		;;
 esac
 
@@ -25,17 +77,17 @@ start() {
 	
 	{
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
+			/tmp/flash/${DAEMON}_conf /mod/etc/${DAEMON}.conf
 		else
-			/mod/etc/default.$DAEMON/${DAEMON}_conf
+			/mod/etc/default.${DAEMON}/${DAEMON}_conf /mod/etc/${DAEMON}.conf
 		fi
 
 		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
 			cat /tmp/flash/${DAEMON}.extra
 		fi
-	} > /mod/etc/$DAEMON.conf
+	} # > /mod/etc/$DAEMON.conf
 
-	echo -n 'Starting OpenVPN ...'
+	echo -n "Starting $DAEMON ... "
 
 	$DAEMON --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid
 	exitval=$?
@@ -51,7 +103,7 @@ stop() {
 	
 	if [ ! -z "$(pidof $DAEMON)" ];then
 
-		echo -n 'Stopping OpenVPN...'
+		echo -n "Stopping ${DAEMON} ... "
 		killall $DAEMON > /dev/null 2>&1
 		exitval=$?
 
@@ -64,60 +116,70 @@ stop() {
 
 	fi
 	
-	rm -f /mod/etc/$DAEMON.conf
-	rm -f /var/run/$DAEMON.pid
+	rm -f /mod/etc/${DAEMON}.conf
+	rm -f /var/run/${DAEMON}.pid
 
 }
 
 
 case "$1" in
         ""|load)
-		modreg cgi 'openvpn' 'OpenVPN'
+		if [ "$DAEMON" = "openvpn" ]; then
+			modreg cgi 'openvpn' 'OpenVPN'
+			deffile='/mod/etc/default.openvpn/box_crt.def'
+			[ -r "/tmp/flash/box_crt.def" ] && deffile='/tmp/flash/box_crt.def'
+			modreg file 'box_crt' 'OpenVPN: Box Cert' 0 "$deffile"
 
-		deffile='/mod/etc/default.openvpn/box_crt.def'
-		[ -r "/tmp/flash/box_crt.def" ] && deffile='/tmp/flash/box_crt.def'
-		modreg file 'box_crt' 'Box Cert' 0 "$deffile"
+			deffile='/mod/etc/default.openvpn/box_key.def'
+			[ -r "/tmp/flash/box_key.def" ] && deffile='/tmp/flash/box_key.def'
+			modreg file 'box_key' 'OpenVPN: Private Key' 0 "$deffile"
 
-		deffile='/mod/etc/default.openvpn/box_key.def'
-		[ -r "/tmp/flash/box_key.def" ] && deffile='/tmp/flash/box_key.def'
-		modreg file 'box_key' 'Private Key' 0 "$deffile"
+			deffile='/mod/etc/default.openvpn/ca_crt.def'	
+			[ -r "/tmp/flash/ca_crt.def" ] && deffile='/tmp/flash/ca_crt.def'
+			modreg file 'ca_crt' 'OpenVPN: CA Cert' 0 "$deffile"
 
-		deffile='/mod/etc/default.openvpn/ca_crt.def'
-		[ -r "/tmp/flash/ca_crt.def" ] && deffile='/tmp/flash/ca_crt.def'
-		modreg file 'ca_crt' 'CA Cert' 0 "$deffile"
-
-		deffile='/mod/etc/default.openvpn/crl_pem.def'
-		[ -r "/tmp/flash/crl_pem.def" ] && deffile='/tmp/flash/crl_pem.def'
-		modreg file 'crl_pem' 'CRL' 0 "$deffile"
+			deffile='/mod/etc/default.openvpn/crl_pem.def'
+			[ -r "/tmp/flash/crl_pem.def" ] && deffile='/tmp/flash/crl_pem.def'
+			modreg file 'crl_pem' 'OpenVPN: CRL' 0 "$deffile"
 		
-		deffile='/mod/etc/default.openvpn/dh_pem.def'
-		[ -r "/tmp/flash/dh_pem.def" ] && deffile='/tmp/flash/dh_pem.def'
-		modreg file 'dh_pem' 'DH Param' 0 "$deffile"
+			deffile='/mod/etc/default.openvpn/dh_pem.def'
+			[ -r "/tmp/flash/dh_pem.def" ] && deffile='/tmp/flash/dh_pem.def'
+			modreg file 'dh_pem' 'OpenVPN: DH Param' 0 "$deffile"
 
-		deffile='/mod/etc/default.openvpn/static_key.def'
-		[ -r "/tmp/flash/static_key.def" ] && deffile='/tmp/flash/static_key.def'
-		modreg file 'static_key' 'Static Key' 0 "$deffile"
-
-		if [ "$OPENVPN_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			deffile='/mod/etc/default.openvpn/static_key.def'
+			[ -r "/tmp/flash/static_key.def" ] && deffile='/tmp/flash/static_key.def'
+			modreg file 'static_key' 'OpenVPN: Static Key' 0 "$deffile"
 		fi
-
-		if [ -e "/var/run/$DAEMON.pid" ]; then
-			echo "$DAEMON already started."
-		else
-			start
-		fi
+		d_BU="$DAEMON"
+	        as="${OPENVPN_AUTOSTART#*#}" ;
+		for d in `echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' `
+		do
+		
+    		    if [ "${as%%#*}" != "yes" ]; then
+			echo "$d is disabled" 1>&2
+		    else 
+			if [ -e "/var/run/$d.pid" ]; then
+			    echo "$d already started."
+			else	
+			    DAEMON="$d"
+			    start
+			fi
+		    fi
+		    as=${as#*#};
+		done
+		DAEMON="$d_BU"
 		;;
 	unload)
 		stop
-		modunreg file 'box_crt'
-		modunreg file 'box_key'
-		modunreg file 'ca_crt'
-		modunreg file 'crl_pem'
-		modunreg file 'dh_pem'
-		modunreg file 'static_key'
-		modunreg cgi 'openvpn'
+		if [ "$DAEMON" = "openvpn" ]; then
+			modunreg file 'box_crt'
+			modunreg file 'box_key'
+			modunreg file 'ca_crt'
+			modunreg file 'crl_pem'
+			modunreg file 'dh_pem'
+			modunreg file 'static_key'
+			modunreg cgi 'openvpn'
+		fi
 		;;
 	start)
 		start
@@ -126,9 +188,25 @@ case "$1" in
 		stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		if [ $SAVECGI ]; then
+			/mod/etc/default.openvpn/openvpn_dynamic_conf
+			find_changes;
+			for pack in $pkg_changed 
+			do	
+				DAEMON=$pack;
+				if [ ! -z "$(pidof "$DAEMON")" ]; then 
+					stop
+					sleep 1
+					start
+				fi
+			done
+			DAEMON="openvpn";
+		else
+			
+			stop
+			sleep 1
+			start
+		fi
 		;;
 	reload)
 		if [ -r "/var/run/openvpn.pid" ]; then
@@ -136,10 +214,15 @@ case "$1" in
 		fi
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
+		if [ $SAVECGI ]; then
+			save_backup;
 			echo 'running'
+		else
+			if [ -z "$(pidof "$DAEMON")" ]; then
+				echo 'stopped'
+			else
+				echo 'running'
+			fi
 		fi
 		;;
 	*)
@@ -150,3 +233,4 @@ case "$1" in
 esac
 
 exit 0
+

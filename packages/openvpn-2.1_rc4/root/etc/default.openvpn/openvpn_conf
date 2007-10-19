@@ -1,153 +1,283 @@
 #!/bin/sh
 
-echo "# OpenVPN 2.1 Config"
+scriptname=$0;
+scriptname=${scriptname##*/}
+prefix=${scriptname%%_conf} 
 
-if [ "$OPENVPN_LOCAL" ];then
-	echo "local $OPENVPN_LOCAL"
-fi
+CCD=/var/tmp/clients_$prefix;
 
-if [ "$OPENVPN_PROTO" == "tcp" ]; then
-	echo "proto tcp-$OPENVPN_MODE"
+. /mod/etc/conf/openvpn.cfg
+
+uebergabe="";
+
+wert (){
+IFS=$2;
+local number=$3;
+local c=0;
+uebergabe="";
+for inhalt in $1
+do
+ if [ "$c" -eq "$number" ] ; then uebergabe=$inhalt; fi
+     c=$((c+1));
+done
+unset IFS;
+}
+                
+delimiter="#"
+vars="DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES UDP_FRAGMENT ADDITIONAL OWN_KEYS" ;
+count=1;
+
+while [ $count -le $OPENVPN_CONFIG_COUNT ]
+do
+
+for var in $vars
+do
+	tmp="$var";
+	configvar='OPENVPN_';
+	eval configvar=\$$configvar$var;
+	IFS='';
+	wert "$configvar" "$delimiter" "$count";
+	eval $tmp=\$uebergabe;
+done
+
+if [ "openvpn_$CONFIG_NAMES" == "$prefix" ] || [ "$prefix" == "openvpn" -a  $count -eq 1 ] ; then
+
+if [ $1 ]; then
+	CONFFILE=$1
 else
-	echo "proto udp"
+	CONFFILE=/mod/etc/${prefix}.conf
 fi
 
-echo "port $OPENVPN_PORT"
+echo "#  OpenVPN 2.1 Config, $(date)" > $CONFFILE
 
-if [ "$OPENVPN_TYPE" == "tap" ]; then
-	echo "dev tap"
+if [ "$LOCAL" ];then
+	echo "local $LOCAL"  >> $CONFFILE
+fi
+
+if [ "$PROTO" == "tcp" ]; then
+		echo "proto tcp-$MODE" >> $CONFFILE
+	else
+		echo "proto udp" >> $CONFFILE
+fi
+
+if [ "$TYPE" == "tap" ]; then
+		echo "dev tap" >> $CONFFILE
+	else
+		echo "dev tun" >> $CONFFILE
+fi
+
+if [ "$OWN_KEYS" != "" -a $count -gt 1 ]; then
+	keypath="/tmp/flash/${prefix}/"
 else
-	echo "dev tun"
+	keypath="/tmp/flash/"
 fi
 
-if [ "$OPENVPN_AUTH_TYPE" == "certs" ]; then
-
-	cat <<EOF
-ca /tmp/flash/ca.crt
-cert /tmp/flash/box.crt
-key /tmp/flash/box.key
-EOF
-
-	if [ "$OPENVPN_MODE" == "server" ]; then
-		echo "mode server"
-		echo "tls-server"
-		echo "dh /tmp/flash/dh.pem"
-		if [ -r "/tmp/flash/crl.pem" ]; then
-			echo "crl-verify /tmp/flash/crl.pem"
+if [ "$AUTH_TYPE" == "certs" ]; then
+	echo "ca ${keypath}ca.crt" >> $CONFFILE
+	echo "cert ${keypath}box.crt" >> $CONFFILE
+	echo "key ${keypath}box.key" >> $CONFFILE
+	if [ "$MODE" == "server" ]; then
+		echo "dh ${keypath}dh.pem" >> $CONFFILE
+		if [ -r "${keypath}crl.pem" ]; then
+			echo "crl-verify ${keypath}crl.pem" >> $CONFFILE
 		fi
-		if [ "$OPENVPN_TLS_AUTH" == "yes" ]; then
-			echo "tls-auth /tmp/flash/static.key 0"
-		fi
-		
-		if [ "$OPENVPN_DHCP_RANGE" ]; then
-			echo "ifconfig-pool $OPENVPN_DHCP_RANGE"
+		echo "tls-server" >> $CONFFILE
+		if [ "$TLS_AUTH" == "yes" ]; then
+			echo "tls-auth ${keypath}static.key 0" >> $CONFFILE
 		fi
 	else
-			echo "tls-client"
-		echo "ns-cert-type server"
-		if [ "$OPENVPN_TLS_AUTH" == "yes" ]; then
-			echo "tls-auth /tmp/flash/static.key 1"
+		echo "tls-client" >> $CONFFILE
+		echo "ns-cert-type server" >> $CONFFILE
+		if [ "$TLS_AUTH" == "yes" ]; then
+			echo "tls-auth ${keypath}static.key 1" >> $CONFFILE
 		fi
 
-		if [ "$OPENVPN_PULL" == "yes" ]; then
-			echo "pull"
+	fi 
+else
+	echo "secret ${keypath}static.key" >> $CONFFILE
+fi
+
+if [ "$MODE" == "server" ]; then
+	echo "port $PORT" >> $CONFFILE
+
+	if [ "$PUSH_DNS" ]; then
+		echo "push \"dhcp-option DNS $PUSH_DNS\"" >> $CONFFILE
+	fi
+	if [ "$PUSH_WINS" ]; then
+		echo "push \"dhcp-option DNS $PUSH_WINS\"" >> $CONFFILE
+	fi
+	if [ "$REDIRECT" ]; then
+		echo "push \"redirect-gateway\"" >> $CONFFILE
+	fi
+	if [ "$DHCP_RANGE" ]; then
+    		echo "mode server" >> $CONFFILE
+	   	echo "ifconfig-pool $DHCP_RANGE" >> $CONFFILE
+	fi
+
+	if [ "$CLIENT_INFO" == "yes" ] && [ "$AUTH_TYPE" == "certs" ]; then 
+			if [ ! -d $CCD ]; then
+			    	mkdir $CCD
+			else
+				rm $CCD/*	
+			fi
+			echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
+			if [ ! "$DHCP_RANGE" ]; then 
+			    echo "mode server" >> $CONFFILE
+			fi 
+			echo "client-config-dir $CCD" >> $CONFFILE
+			echo "topology subnet" >> $CONFFILE
+			echo "max-clients  $MAXCLIENTS" >> $CONFFILE
+			if [ "$LOCAL_NET" ]; then
+				echo "push \"route $LOCAL_NET $BOX_IP\"" >> $CONFFILE
+			fi
+			
+			client=1
+			actcip=${CLIENT_IPS%%:*}
+			restip=${CLIENT_IPS#*:}
+			actcname=${CLIENT_NAMES%%:*}
+			restname=${CLIENT_NAMES#*:}
+			actcnet=${CLIENT_NETS%%:*}
+			restnet=${CLIENT_NETS#*:}
+			actcmask=${CLIENT_MASKS%%:*}
+			restmask=${CLIENT_MASKS#*:}
+			
+			while [ $client -le "$CLIENTS_DEFINED" ]
+			do	
+				eval C_IP$client=$actcip;
+				eval C_NAME$client=$actcname;
+				eval C_NET$client=$actcnet;
+				eval C_MASK$client=$actcmask;
+				actcip=${restip%%:*}
+				restip=${restip#*:}
+				actcname=${restname%%:*}
+				restname=${restname#*:}
+				actcnet=${restnet%%:*}
+				restnet=${restnet#*:}
+				actcmask=${restmask%%:*}
+				restmask=${restmask#*:}
+				client=$((client+1))
+			done
+			
+			client=1
+			
+			while [ $client -le "$CLIENTS_DEFINED" ]
+		  	do
+		     		eval net=\$C_NET$client
+		     		eval mask=\$C_MASK$client
+		     		eval name=\$C_NAME$client
+		     		eval ip=\$C_IP$client
+		     		echo "ifconfig-push $ip $BOX_MASK"  > $CCD/$name
+		     		echo "push \"topology subnet\"" >> $CCD/$name
+		     		if [ "$net" != "-" ] && [ "$mask" != "-" ] ; then
+		     			echo "route $net $mask $ip" >> $CONFFILE
+		     			echo "iroute  $net $mask" >> $CCD/$name
+		     		fi
+		     		if [ "$CLIENT2CLIENT" == "yes" ]; then
+		     			i=1
+		     			while [ $i -le $CLIENTS_DEFINED ]; do
+		     				if [ $i -ne $client ]; then
+		     					eval cnet=\$C_NET$i 
+		     					eval cmask=\$C_MASK$i
+		     					eval cip=\$C_IP$i
+		     					if [ "$cnet" != "-"  ] && [ "$cmask" != "-" ] ; then
+		     						echo "push \"route $cnet $cmask $cip \"" >> $CCD/$name
+		     					fi
+		     				fi
+		     			i=$((1+$i))
+		     			done
+		     		fi
+		     		client=$(($client+1))
+		     	done
+	fi
+
+	if [ "$TYPE" == "tap" ]; then  	
+	  	echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
+	    	echo "push \"route-gateway $BOX_IP\"" >> $CONFFILE
+		if [ "$LOCAL_NET" ]; then
+			echo "push \"route $LOCAL_NET\"" >> $CONFFILE
+		fi
+		if [ "$MAXCLIENTS" ]; then
+			echo "max-clients $MAXCLIENTS" >> $CONFFILE
+		fi
+	else 
+	if  [ "$CLIENT_INFO" != "yes" ] || [ "$AUTH_TYPE" == "static" ] ; then 
+			echo "ifconfig $BOX_IP $REMOTE_IP" >> $CONFFILE
+			if [ "$REMOTE_NET" ]; then
+				echo "route $REMOTE_NET" >> $CONFFILE
+			fi
+			if [ "$LOCAL_NET" ]; then
+				echo "push \"route $LOCAL_NET\"" >> $CONFFILE
+			fi
 		fi
 	fi
 
 else
-	echo "secret /tmp/flash/static.key"
-fi
-
-if [ "$OPENVPN_MODE" == "server" ]; then
-
-	if [ "$OPENVPN_TYPE" == "tap" ]; then
-		cat <<EOF
-ifconfig $OPENVPN_BOX_IP $OPENVPN_BOX_MASK
-push "route-gateway $OPENVPN_BOX_IP"
-EOF
+	echo "remote $REMOTE" >> $CONFFILE
+	echo "nobind" >> $CONFFILE
+	if [ "$PULL" == "yes" ]; then
+		echo "pull" >> $CONFFILE
+	fi
+	if [ "$REMOTE_NET" ]; then
+		echo "route $REMOTE_NET" >> $CONFFILE
+	fi
+	if [ "$REDIRECT" ]; then
+		echo "redirect-gateway" >> $CONFFILE
+	fi
+	if [ "$TYPE" == "tun" ]; then
+		echo "ifconfig $BOX_IP $REMOTE_IP" >> $CONFFILE
 	else
-		cat <<EOF
-ifconfig $OPENVPN_BOX_IP $OPENVPN_REMOTE_IP 
-EOF
-
-		echo "route $OPENVPN_VPN_NET"
-
-		if [ "$OPENVPN_CLIENT2CLIENT" == "yes" ]; then
-			echo "push \"route $OPENVPN_VPN_NET\""
-		else
-			echo "push \"route $OPENVPN_BOX_IP\""
+		if [ "$DHCP_CLIENT" != "yes" ]; then
+			echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
 		fi
-
 	fi
 	
-	if [ "$OPENVPN_LOCAL_NET" ]; then
-		echo "push \"route $OPENVPN_LOCAL_NET\""
-	fi
+fi
 
-	if [ "$OPENVPN_PUSH_DNS" ]; then
-		echo "push \"dhcp-option DNS $OPENVPN_PUSH_DNS\""
-	fi
-
-	if [ "$OPENVPN_PUSH_WINS" ]; then
-		echo "push \"dhcp-option DNS $OPENVPN_PUSH_WINS\""
-	fi
-
-	if [ "$OPENVPN_PUSH_REDIRECT" ]; then
-		echo "push \"redirect-gateway\""
-	fi
-
-	if [ "$OPENVPN_MAXCLIENTS" ]; then
-		echo "max-clients $OPENVPN_MAXCLIENTS"
-	fi
-
+echo "tun-mtu $MTU" >> $CONFFILE
+echo "mssfix" >> $CONFFILE
+if [ "$UDP_FRAGMENT" != "" ] && [ "$UDP_FRAGMENT" != "0" ]; then
+	echo "fragment $UDP_FRAGMENT" >> $CONFFILE
+fi
+df=/var/tmp/debug_${prefix}.out
+if [ "$DEBUG" == "yes" ]; then
+    	echo "log $df" >> $CONFFILE
 else
-
-	cat <<EOF
-remote $OPENVPN_REMOTE
-nobind
-EOF
-
-	if [ "$OPENVPN_TYPE" == "tun" ]; then
-		echo "ifconfig $OPENVPN_BOX_IP $OPENVPN_REMOTE_IP"
-	else
-		if [ "$OPENVPN_DHCP_CLIENT" != "yes" ]; then
-			echo "ifconfig $OPENVPN_BOX_IP $OPENVPN_BOX_MASK"
-		fi
-	fi
-	
+	rm -f $df
 fi
+echo "verb $VERBOSE" >> $CONFFILE
+echo "daemon" >> $CONFFILE
 
-cat <<EOF
-tun-mtu $OPENVPN_MTU
-mssfix
+echo "cipher $CIPHER" >> $CONFFILE
 
-daemon
-verb $OPENVPN_VERBOSE
-
-cipher $OPENVPN_CIPHER
-EOF
-
-if [ "$OPENVPN_REMOTE_NET" ]; then
-	echo "route $OPENVPN_REMOTE_NET"
+if [ "$SHAPER" ]; then
+	echo "shaper $SHAPER" >> $CONFFILE
 fi
-if [ "$OPENVPN_SHAPER" ]; then
-	echo "shaper $OPENVPN_SHAPER"
+if [ "$COMPLZO" == "yes" ]; then
+	echo "comp-lzo" >> $CONFFILE
 fi
-if [ "$OPENVPN_COMPLZO" == "yes" ]; then
-	echo "comp-lzo"
+if [ "$FLOAT" == "yes" ]; then
+        echo "float" >> $CONFFILE
 fi
-if [ "$OPENVPN_FLOAT" == "yes" ]; then
-        echo "float"
-fi
-if [ "$OPENVPN_KEEPALIVE" == "yes" ]; then
-	echo "keepalive $OPENVPN_KEEPALIVE_PING $OPENVPN_KEEPALIVE_TIMEOUT"
-	if [ "$OPENVPN_MODE" == "client" ]; then
-		echo "resolv-retry infinite"
+if [ "$KEEPALIVE" == "yes" ]; then
+	echo "keepalive $KEEPALIVE_PING $KEEPALIVE_TIMEOUT" >> $CONFFILE
+	if [ "$MODE" == "client" ]; then
+		echo "resolv-retry infinite" >> $CONFFILE
 	fi
 fi
-if [ "$OPENVPN_MGMNT" ]; then
-	echo "management $OPENVPN_MGMNT"
+if [ "$OPENVPN_MGMNT" == "yes" ]; then
+	echo "management $OPENVPN_MGMNT" >> $CONFFILE
 fi
-if [ "$OPENVPN_LOGFILE" == "yes" ]; then
-	echo "status /var/log/openvpn.log"
+if [ "$LOGFILE" == "yes" ]; then
+	echo "status /var/log/$prefix.log" >> $CONFFILE
 fi
+
+if [ "$ADDITIONAL" != "" ]; then
+	echo  "$ADDITIONAL" | sed 's/[[:space:]]*;[[:space:]]*/\n/g' >> $CONFFILE
+fi
+
+
+fi
+count=$((count+1));
+  
+done
+
