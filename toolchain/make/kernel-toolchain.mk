@@ -11,10 +11,7 @@ $(KERNEL_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@/lib
 	@mkdir -p $@/$(REAL_GNU_KERNEL_NAME)
 	@ln -snf ../lib $@/$(REAL_GNU_KERNEL_NAME)/lib
-	#moved from kernel-toolchain because link is needed for uclibc-build
-	#TODO: prehaps the next 2 Steps schould be done somewhere else?
-	@rm -f $(TOOLCHAIN_DIR)/kernel
-	@ln -s $(BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)/$(REAL_GNU_KERNEL_NAME) $(TOOLCHAIN_DIR)/kernel
+	@ln -fs $(BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)/$(REAL_GNU_KERNEL_NAME) $(TOOLCHAIN_DIR)/kernel
 
 kernel-toolchain: $(KERNEL_TOOLCHAIN_DIR) $(KERNEL_TOOLCHAIN_STAGING_DIR) $(KERNEL_TOOLCHAIN)
 	

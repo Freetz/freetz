@@ -21,10 +21,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@ln -snf ../include $@/usr/include
 	@ln -snf ../lib $@/usr/lib
 	@ln -snf ../lib $@/$(REAL_GNU_TARGET_NAME)/lib
-	#moved from target-toolchain because link is needed for uclibc-build
-	#TODO: prehaps the next 2 Steps schould be done somewhere else?
-	@rm -f $(TOOLCHAIN_DIR)/target
-	@ln -s $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TOOLCHAIN_DIR)/target
+	@ln -fs $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TOOLCHAIN_DIR)/target
 
 target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
                   kernel-configured uclibc-configured \
