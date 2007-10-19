@@ -27,7 +27,7 @@ syslogd-cgi-dirclean:
 
 syslogd-cgi-list:
 ifeq ($(strip $(DS_PACKAGE_SYSLOGD_CGI)),y)
-	@echo "S20syslogd-cgi-$(SYSLOGD_CGI_VERSION)" >> .static
+	@echo "S08syslogd-cgi-$(SYSLOGD_CGI_VERSION)" >> .static
 else
-	@echo "S20syslogd-cgi-$(SYSLOGD_CGI_VERSION)" >> .dynamic
+	@echo "S08syslogd-cgi-$(SYSLOGD_CGI_VERSION)" >> .dynamic
 endif

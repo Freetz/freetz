@@ -31,7 +31,7 @@ virtualip-cgi-uninstall:
 
 virtualip-cgi-list:
 ifeq ($(strip $(DS_PACKAGE_VIRTUALIP_CGI)),y)
-	@echo "S40virtualip-cgi-$(VIRTUALIP_CGI_VERSION)" >> .static
+	@echo "S10virtualip-cgi-$(VIRTUALIP_CGI_VERSION)" >> .static
 else
-	@echo "S40virtualip-cgi-$(VIRTUALIP_CGI_VERSION)" >> .dynamic
+	@echo "S10virtualip-cgi-$(VIRTUALIP_CGI_VERSION)" >> .dynamic
 endif

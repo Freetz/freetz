@@ -60,7 +60,7 @@ cifsmount-uninstall:
 
 cifsmount-list:
 ifeq ($(strip $(DS_PACKAGE_CIFSMOUNT)),y)
-	@echo "S40cifsmount-$(CIFSMOUNT_VERSION)" >> .static
+	@echo "S30cifsmount-$(CIFSMOUNT_VERSION)" >> .static
 else
-	@echo "S40cifsmount-$(CIFSMOUNT_VERSION)" >> .dynamic
+	@echo "S30cifsmount-$(CIFSMOUNT_VERSION)" >> .dynamic
 endif

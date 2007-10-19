@@ -31,7 +31,7 @@ downloader-uninstall:
 
 downloader-list:
 ifeq ($(strip $(DS_PACKAGE_DOWNLOADER)),y)
-	@echo "S30downloader-$(DOWNLOADER_VERSION)" >> .static
+	@echo "S10downloader-$(DOWNLOADER_VERSION)" >> .static
 else
-	@echo "S30downloader-$(DOWNLOADER_VERSION)" >> .dynamic
+	@echo "S10downloader-$(DOWNLOADER_VERSION)" >> .dynamic
 endif
