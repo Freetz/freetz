@@ -2,7 +2,7 @@ include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
 include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 
-KERNEL_TOOLCHAIN_VERSION:=0.2
+KERNEL_TOOLCHAIN_VERSION:=0.3
 TARGET_TOOLCHAIN_VERSION:=0.5
 TARGET_TOOLCHAIN_SOURCE:=target-toolchain-dsmod-$(TARGET_TOOLCHAIN_VERSION).tar.lzma
 KERNEL_TOOLCHAIN_SOURCE:=kernel-toolchain-dsmod-$(KERNEL_TOOLCHAIN_VERSION).tar.lzma
@@ -21,7 +21,7 @@ $(TOOLCHAIN_DIR)/kernel/.installed: $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) $(TOOLS
 	mkdir -p $(TOOLCHAIN_DIR)/build
 	rm -rf $(TOOLCHAIN_DIR)/kernel
 	$(TOOLS_DIR)/busybox tar $(VERBOSE) -xaf $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) -C $(TOOLCHAIN_DIR)/build
-	-@ln -s $(BUILD_DIR)/gcc-$(KERNEL_TOOLCHAIN_GCC_VERSION)-glibc-$(KERNEL_TOOLCHAIN_GLIBC_VERSION)/mipsel-unknown-linux-gnu $(TOOLCHAIN_DIR)/kernel
+	-@ln -s $(BUILD_DIR)/gcc-$(KERNEL_TOOLCHAIN_GCC_VERSION)/mipsel-unknown-linux-gnu $(TOOLCHAIN_DIR)/kernel
 	@touch $@
 
 $(TOOLCHAIN_DIR)/target/.installed: $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) $(TOOLS_DIR)/busybox
