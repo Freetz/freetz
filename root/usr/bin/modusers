@@ -25,6 +25,7 @@ EOF
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 USER_DIR=/tmp/flash/users
+USER_DIR_FILES="$USER_DIR/passwd $USER_DIR/group $USER_DIR/shadow $USER_DIR/gshadow"
 USER_FILES="/tmp/passwd /tmp/group /tmp/shadow /tmp/gshadow"
 
 case "$1" in
@@ -41,6 +42,12 @@ case "$1" in
 		chown -R root:root $USER_DIR
 		;;
 	load)
+		for f in $USER_FILES; do
+    		if [ ! -e $f ]; then
+        		modusers save
+    		fi
+		done
+		
 		rm -f $USER_FILES
 		cp -a $USER_DIR/* /tmp
 		cat /etc/passwd | while read line; do
