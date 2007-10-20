@@ -42,7 +42,7 @@ case "$1" in
 		chown -R root:root $USER_DIR
 		;;
 	load)
-		for f in $USER_FILES; do
+		for f in $USER_DIR_FILES; do
     		if [ ! -e $f ]; then
         		modusers save
     		fi
