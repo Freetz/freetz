@@ -17,23 +17,18 @@ case "$1" in
 esac
 
 config() {
-	if [ -z "$MOD_HTTPD_PASSWD" ]; then
-		homedir=/usr/nww/
-		echo > /mod/etc/$DAEMON.conf
-	else
-		homedir=/usr/mww/
-		(
-			if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-				/tmp/flash/${DAEMON}_conf
-			else
-				/mod/etc/default.mod/${DAEMON}_conf
-			fi
+	homedir=/usr/mww/
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.mod/${DAEMON}_conf
+		fi
 
-			if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-				cat /tmp/flash/${DAEMON}.extra
-			fi
-		) > /mod/etc/$DAEMON.conf
-	fi
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
 }
 
 pidfile() {
