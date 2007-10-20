@@ -8,22 +8,6 @@ $Id$
 HIGH PRIORITY - critical bugs, important features
 -------------------------------------------------
 
-- bftpd, vsftpd: Configuration file has to be rewritten after change - see
-  next item
-  Status (by Oliver): Done, needs testing
-
-- Find out why user 'ftp' is created multiple times (maybe once at each
-  reboot?). My configuration currently has six instances.
-
-- Where do strange hostnames like "Speedport-W-701V-33.04.44" or
-  "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
-  Remark (by Oliver): I think from multid. How could we avoid that?
-
-- Check order in which packages are started at boottime (virtualip, ntfs,
-  cifsmount, syslog-cgi)
-  Remark (by Oliver): Done (quickly), perhaps there are some more packages to
-  	priorize.
-
 - New UNIX-conform user/group/password management
   (assigned to kriegaex)
   Stage 1 (done):
@@ -66,10 +50,22 @@ HIGH PRIORITY - critical bugs, important features
   * Possibly get rid of special case "telnet login with AVM web password if no
     root pw is set", because root will have a default pw packaged right into
     var.tar.
-
+    
+- http://netfreaks.org/viewvc/ds-mod?view=rev&revision=1239
+	I think the redirection was not neccessary before busybox-1.7.2. Perhaps it 
+	is a bug or a feature of bb-httpd 
 
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------
+
+- Check order in which packages are started at boottime (virtualip, ntfs,
+  cifsmount, syslog-cgi)
+  Remark (by Oliver): Done (quickly), perhaps there are some more packages to
+  	priorize.
+
+- Where do strange hostnames like "Speedport-W-701V-33.04.44" or
+  "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
+  Remark (by Oliver): I think from multid. How could we avoid that?
 
 - Delete uClibc-files in root/lib when uClibc_version is changed
 
@@ -77,9 +73,6 @@ MEDIUM PRIORITY - normal bugs, features, improvements
 
 - MD5 checksums for DS-Mod packages (our own as well as external ones) incl.
   necessary make macros or shell scripts
-
-- Make ccache build script aware of gcc version change (needs rebuild in that
-  case)
 
 - Possibly add patch to rc.S according or similar to
   http://www.ip-phone-forum.de/showthread.php?p=949145#post949145
@@ -143,6 +136,9 @@ MEDIUM PRIORITY - normal bugs, features, improvements
 
 LOW PRIORITY - nice to have, cosmetics, ideas
 ---------------------------------------------
+
+- Make ccache build script aware of gcc version change (needs rebuild in that
+  case)
 
 - Make OPIE (One Time Passwords in Everything) work with telnet, FTP and SSH
   daemons.
@@ -228,13 +224,17 @@ FINISHED, NEEDS TESTING
 -----------------------
 
 - Bump uClibc to 0.9.29
-    Status (by Oliver): Done. But AVM daemons don't like it.
+    Status (by Oliver): Done. I'm having problems with igdd.
 
 - Check bftpd, dropbear, netsnmp and openvpn (try to make suboptions instead of
   multiple packages)
     Remark (by olistudent): Done. But it needs testing. Open question: Are
     there options in cfg files that conflict with the features compiled in
     (e.g. OPENVPN_MGMNT)?
+    
+- bftpd, vsftpd: Configuration file has to be rewritten after change - see 
+  next item
+	Status (by Oliver): Done, needs testing
 
 - Idea by heini66: optionally remove dsld from image, because it is supposedly
   not needed in ATA mode.
@@ -278,12 +278,6 @@ FINISHED, NEEDS TESTING
       [3] http://www.xyssl.org/forum/?0048
       [4] http://xyssl.org/forum/?0050
 
-- Bump busybox version to 1.7.2
-    Status (by kriegaex): done. Several patches were removed, others fixed and
-    a few renamed to '*.broken' because I was not 100% sure they are not needed
-    anymore or I believe the corresponding applets should be tested, so we
-    know they now work without the old patches.
-
 - Samba: Should have problems with big files?
     Status (by kriegaex): I just tested copying a directory containing several
     2-5 MB files over to my USB hard disk via DS-Mod's Samba version
@@ -317,4 +311,3 @@ FINISHED, NEEDS TESTING
     Status (by Oliver): done, but web interface needs testing.
     Status (by kriegaex): I have not tested the web UI, but otherwise it seems
     to work beautifully, even with "replace kernel" based on *.40 GPL package.
-    One strange thing remains, though - see next item.
