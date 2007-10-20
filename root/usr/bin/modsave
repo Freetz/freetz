@@ -35,6 +35,9 @@ save() {
 	echo "$size bytes written."
 }
 
+# redirect stderr to stdout so we see ouput in webif
+exec 2>&1
+
 case "$1" in
 	""|all)
 		echo -n 'Saving users, groups and passwords...'
