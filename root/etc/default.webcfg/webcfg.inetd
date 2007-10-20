@@ -7,9 +7,4 @@ inetdcfg_flags=nowait
 inetdcfg_user=root
 inetdcfg_exe=/usr/sbin/httpd
 inetdcfg_arg0=httpd
-if [ -z "$MOD_HTTPD_PASSWD" ]; then
-	__home="/usr/nww"
-else
-	__home="/usr/mww"
-fi
-inetdcfg_args="-i -c /mod/etc/httpd.conf -h $__home -r DS"
+inetdcfg_args="-i -c /mod/etc/httpd.conf -h /usr/mww -r DS"
