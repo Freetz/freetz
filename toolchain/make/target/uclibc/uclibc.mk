@@ -116,8 +116,9 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	touch -c $@
 
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
+	@rm -rf $(ROOT_DIR)/lib
 	$(MAKE1) -C $(UCLIBC_DIR) \
-		PREFIX="$(shell pwd)/$(ROOT_DIR)/" \
+		PREFIX="$(shell pwd)/$(ROOT_DIR)" \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=/ \
 		install_runtime
@@ -127,7 +128,8 @@ $(TARGET_MAKE_PATH)/../lib/libc.a: $(TOOLCHAIN_DIR)/target/.installed
 	touch -c $@
 
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_MAKE_PATH)/../lib/libc.a
-	mkdir -p $(ROOT_DIR)/lib
+	@rm -rf $(ROOT_DIR)/lib
+	@mkdir -p $(ROOT_DIR)/lib
 	for i in $(UCLIBC_FILES); do \
 		cp -a $(TARGET_MAKE_PATH)/../lib/$$i $(ROOT_DIR)/lib/$$i; \
 	done

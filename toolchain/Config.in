@@ -1,7 +1,4 @@
 
-comment "BIG FAT WARNING: Never build a firmware with current settings!"
-    depends on DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
-    
 choice
 
 	prompt "Target compiler" if DS_BUILD_TOOLCHAIN
@@ -23,7 +20,7 @@ choice
 		bool "gcc-4.2.1-uClibc-0.9.28"
 	
 	config DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
-		bool "gcc-4.2.1-uClibc-0.9.29"
+		bool "gcc-4.2.1-uClibc-0.9.29 - EXPERIMENTAL"
 	
 endchoice
 
@@ -123,7 +120,7 @@ config DS_TARGET_NLS
 
 config DS_TARGET_LFS
 	bool "Large file support (LFS) for target toolchain" if DS_BUILD_TOOLCHAIN
-	default n
+	default y
 	help
 		Support files > 2 GB on target system. This is desirable for Torrent
 		clients, for example.
