@@ -8,12 +8,12 @@ auto_chk=''; man_chk=''
 
 if [ "$NTFS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 
-sec_begin 'Starttyp'
+sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
 cat << EOF
 <p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> Automatisch</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> Manuell</label>
+<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
+<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
 </p>
 EOF
 
