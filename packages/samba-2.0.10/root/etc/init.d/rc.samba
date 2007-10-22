@@ -1,18 +1,8 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+DAEMON=samba
 
-case "$1" in
-	""|load|start|restart|config)
-		if [ ! -r "/mod/etc/conf/samba.cfg" ]; then
-			echo "Error [samba]: not configured" >&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/samba.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 config() {
 	(
@@ -29,19 +19,9 @@ config() {
 }
 
 start() {
-	if [ ! -d "/var/run/samba" ]; then
-		mkdir /var/run/samba
-	fi
+	mkdir -p /var/run/samba
 
-	echo -n "Looking for user 'samba' ... "
-	if grep -q '^samba:' /etc/passwd; then
-		echo "found"
-	elif adduser -G users -D samba; then
-		echo -n "created - now saving to data buffer ... "
-		modusers save && echo "done" || echo "failed"
-	else
-		echo "not created - error occurred"
-	fi
+	modlib_adduser samba -G users -D -S -g "SAMBA Account"
 
 	config
 

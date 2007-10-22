@@ -1,0 +1,64 @@
+# Shell functions for the scripts in /etc/init.d
+
+# If $DAEMON is defined before including this file, some additional preparations is performed
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+
+
+# modlib_addgroup:
+#   check for group name, create group if not found.
+#   No check is done for a change in the optional arguments!
+#	$1: group name
+#	$2-n: optional arguments for addgroup
+modlib_addgroup()
+{
+	local group="$1"
+	shift
+	echo -n "Looking for group '$group' ... "
+	if grep -q "^$group:" /etc/group; then
+		echo "found"
+	elif addgroup "$@" $group; then
+		echo -n "created - now saving to data buffer ... "
+		modusers save && echo "done" || echo "failed"
+	else
+		echo "not created - error occurred"
+	fi
+}
+
+# modlib_adduser:
+#   check for user name, create user if not found.
+#   No check is done for a change in the optional arguments!
+#	$1: user name
+#	$2-n: optional arguments for adduser
+modlib_adduser()
+{
+	local user="$1"
+	shift
+	echo -n "Looking for user '$user' ... "
+	if grep -q "^$user:" /etc/passwd; then
+		echo "found"
+		return 0
+	fi
+	local msg=$(adduser "$@" $user 2>&1)
+	if [ "$?" = 0 ]; then
+		echo -n "created - now saving to data buffer ... "
+		modusers save && echo "done" || echo "failed"
+	else
+		echo "not created - error occurred: $msg"
+		exit 1
+	fi
+}
+
+
+[ -n "$DAEMON" ] && case "$1" in
+	""|load|start|restart|config|status)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+

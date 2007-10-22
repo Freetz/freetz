@@ -1,35 +1,13 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
-
 DAEMON=bftpd
 
-case "$1" in
-	""|load|start|restart|status)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/$DAEMON.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 pre_config() {
-	echo -n "Looking for user 'ftp' ... "
-	if grep -q '^ftp:' /etc/passwd; then
-		echo "found"
-	elif adduser -G users -D ftp; then
-		echo -n "created - now saving to data buffer ... "
-		modusers save && echo "done" || echo "failed"
-	else
-		echo "not created - error occurred"
-	fi
+	modlib_adduser ftp -G users -D -S -g "FTP account"
 
-	if [ ! -d "/var/run/bftpd" ]; then
-		mkdir /var/run/bftpd
-	fi
+	mkdir -p /var/run/bftpd
 
 	if [ ! -e "/var/tmp/ftp" ]; then
 		ln -sf /mod/home/ftp /var/tmp/ftp
