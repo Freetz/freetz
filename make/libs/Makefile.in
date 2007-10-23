@@ -4,6 +4,10 @@ LIBS+=uclibcxx
 endif
 endif
 
+ifeq ($(strip $(DS_LIB_libavmhmac)),y)
+LIBS+=avmhmac
+endif
+
 ifeq ($(strip $(DS_LIB_libcapi20)),y)
 LIBS+=capi
 endif

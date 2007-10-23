@@ -71,6 +71,7 @@ config DS_LIB_libxyssl
 
 config DS_LIB_libcrypto
 	bool "OpenSSL cryptographic library (libcrypto.so)"
+	select DS_LIB_libavmhmac
 	default n
 	help
 		crypto - OpenSSL cryptographic library
@@ -98,6 +99,15 @@ config DS_LIB_libssl
 		and Transport Layer Security (TLS v1) protocols. It provides a rich API.
 		
 		In DS-Mod, e.g. Tor, sTunnel and OpenVPN depend on libssl.
+
+config DS_LIB_libavmhmac
+	bool "Replace libavmhmac - EXPERIMENTAL"
+	requires DS_LIB_libcrypto
+	default n
+	help
+		Our libavmhmac only forwards functions to openssl's libcrypto where AVM
+		wrote their own implementations. We have no clue why they did this. 
+		Perhaps speed?
 
 endmenu
 

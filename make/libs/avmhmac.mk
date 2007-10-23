@@ -1,0 +1,37 @@
+PACKAGE_LC:=avmhmac
+PACKAGE_UC:=AVMHMAC
+AVMHMAC_VERSION:=2.0.0
+AVMHMAC_LIB_VERSION:=$(AVMHMAC_VERSION)
+AVMHMAC_SOURCE:=libavmhmac-$(AVMHMAC_VERSION).tar.bz2
+AVMHMAC_SITE:=http://dsmod.magenbrot.net
+AVMHMAC_MAKE_DIR:=$(MAKE_DIR)/libs
+AVMHMAC_DIR:=$(SOURCE_DIR)/libavmhmac-$(AVMHMAC_VERSION)
+AVMHMAC_BINARY:=$(AVMHMAC_DIR)/libavmhmac.so.$(AVMHMAC_LIB_VERSION)
+AVMHMAC_TARGET_DIR:=root/usr/lib
+AVMHMAC_TARGET_BINARY:=$(AVMHMAC_TARGET_DIR)/libavmhmac.so.$(AVMHMAC_LIB_VERSION)
+
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_LIB_UNPACKED)
+
+$(AVMHMAC_BINARY): $(AVMHMAC_DIR)/.unpacked
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	    $(MAKE) -C $(AVMHMAC_DIR) \
+	    CC="$(TARGET_CC)" CFLAGS="$(TARGET_CFLAGS)"
+
+$(AVMHMAC_TARGET_BINARY): $(AVMHMAC_BINARY)
+	$(INSTALL_BINARY_STRIP)
+
+avmhmac: $(AVMHMAC_BINARY)
+
+avmhmac-precompiled: uclibc avmhmac $(AVMHMAC_TARGET_BINARY)
+
+avmhmac-source: $(AVMHMAC_DIR)/.unpacked
+
+avmhmac-clean:
+	-$(MAKE) -C $(AVMHMAC_DIR) clean
+
+avmhmac-uninstall:
+	rm -f $(AVMHMAC_TARGET_DIR)/libavmhmac*.so*
+
+avmhmac-dirclean:
+	rm -rf $(AVMHMAC_DIR)
