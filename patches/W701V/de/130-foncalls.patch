@@ -1,5 +1,5 @@
---- usr/www/all/html/de/fon/foncalls.js	2006-11-18 19:28:26.000000000 +0100
-+++ usr/www/all/html/de/fon/foncalls.js	2006-11-18 19:57:10.000000000 +0100
+--- usr/www/all/html/de/fon/foncalls.js.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/foncalls.js	2007-10-24 00:13:30.000000000 +0200
 @@ -3,17 +3,17 @@
  <style type="text/css">
  <!--
@@ -9,24 +9,24 @@
  #tClient td {padding: 2px; overflow: hidden; height: 24px;}
  #tClient th {padding: 2px; overflow: hidden;}
 -#tClient .c1 {text-align: left; width:20px;}
-+#tClient .c1 {text-align: left; width:14px;}
 -#tClient .c3 {text-align: left; width:<? if lte $var:AbCount 1 `110px` `85px` ?>;}
++#tClient .c1 {text-align: left; width:14px;}
 +#tClient .c3 {text-align: left; width:<? if lte $var:AbCount 1 `102px` `72px` ?>;}
  #tClient .c4 {text-align: left; width:<? if lte $var:AbCount 1 `100px` `70px` ?>;}
 -#tClient .c5 {text-align: left; width:75px; <? if lte $var:AbCount 1 `display:none;` ?>}
-+#tClient .c5 {text-align: center; width:68px; <? if lte $var:AbCount 1 `display:none;` ?>}
 -#tClient .c6 {text-align: right; width:35px;}
-+#tClient .c6 {text-align: center; width:33px;}
 -#tClient .c7 {text-align: left; width:<? if lte $var:AbCount 1 `136px` `122px` ?>;}
-+#tClient .c7 {text-align: left; width:<? if lte $var:AbCount 1 `110px` `103px` ?>;}
 -#tClient .c8 {text-align: left; width:<? if lte $var:AbCount 1 `161px` `115px` ?>;}
-+#tClient .c8 {text-align: left; width:<? if lte $var:AbCount 1 `180px` `165px` ?>;}
 -#tClient .c9 {text-align: center; width: 34px;}
++#tClient .c5 {text-align: center; width:68px; <? if lte $var:AbCount 1 `display:none;` ?>}
++#tClient .c6 {text-align: center; width:33px;}
++#tClient .c7 {text-align: left; width:<? if lte $var:AbCount 1 `110px` `103px` ?>;}
++#tClient .c8 {text-align: left; width:<? if lte $var:AbCount 1 `180px` `165px` ?>;}
 +#tClient .c9 {text-align: center; width: 32px;}
  #tLegende {margin:auto}
  #tLegende td {padding: 2px 2px;}
  #tClient a:link, #tClient a:visited { color: black; }
-@@ -150,18 +150,18 @@
+@@ -143,18 +143,18 @@
  }
  function uiNummerDisplay (nr, name) {
  	var buchname = GetBuchName(name);
@@ -34,13 +34,13 @@
 +	if (nr=="" && buchname=="") return g_sym0 + g_txtUnbekannt;
  	if ("<? query telcfg:settings/UseClickToDial ?>" == "1") {
 -		if (nr == "") return span(buchname);
-+		if (nr == "") return g_sym0 + span(buchname);
 -		if (buchname == "") {
 -			return "<nobr>" +
 -			"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
 -		}
-+		if (buchname == "") return "<nobr>" + uiRufnummerInfo (nr) +"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
 -		return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
++		if (nr == "") return g_sym0 + span(buchname);
++		if (buchname == "") return "<nobr>" + uiRufnummerInfo (nr) +"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
 +		return "<nobr>" +  g_sym0 + "<a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
  	} else {
 -		return span(buchname=="" ? nr:buchname);
