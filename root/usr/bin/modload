@@ -61,11 +61,6 @@ fi
 echo 'done.'
 
 echo -n 'Loading modules...'
-# firewall-cgi workaround
-netfilterdir=/lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/net/ipv4/netfilter
-[ -f "$netfilterdir/ip_tables.o" ] && modprobe ip_tables
-[ -f "$netfilterdir/ip_conntrack.o" ] && modprobe ip_conntrack
-
 if [ -r "/tmp/flash/modules" ]; then
 	cat /tmp/flash/modules | grep -v "^#" | while read -r module; do
 		[ -z "$module" ] || modprobe $module
