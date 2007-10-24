@@ -3,6 +3,9 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
+# redirect stderr to stdout so we see ouput in webif
+exec 2>&1
+
 update_inetd() {
 	if [ -e "/mod/etc/default.inetd/inetd.cfg" ]; then
 		if [ -x "/mod/etc/init.d/rc.$1" ]; then
