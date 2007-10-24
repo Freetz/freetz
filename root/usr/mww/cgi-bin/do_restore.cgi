@@ -18,10 +18,15 @@ cgi_begin 'Konfiguration wiederherstellen (Restore)' 'do_restore'
     echo "Extracting backup files..."
     tar xvzf $FORM_uploadfile
     echo "Restoring configuration..."
-    for file in $(ls $BACKUP_DIR); do
-      echo "cat $BACKUP_DIR/$file > /var/flash/$file"
-      cat $BACKUP_DIR/$file > /var/flash/$file
-    done
+    if [ "$FORM_dsmod_only" = "on" ]; then
+      echo "cat $BACKUP_DIR/ds_mod > /var/flash/ds_mod"
+      cat $BACKUP_DIR/ds_mod > /var/flash/ds_mod
+    else
+      for file in $(ls $BACKUP_DIR); do
+        echo "cat $BACKUP_DIR/$file > /var/flash/$file"
+        cat $BACKUP_DIR/$file > /var/flash/$file
+      done
+    fi
     echo "done"
     echo "Removing backup..."
     rm -rf $BACKUP_DIR
