@@ -24,7 +24,7 @@ Wiederherstellen eines zuvor gesicherten Archivs mit Einstellungen
 Zeitpunkt der entsprechenden Sicherung versetzt.<p>
 
 <b><i>Nach der Wiederherstellung sollte das Gerät neu gestartet werden, um
-alle Einstellungen zu aktivieren.</i></b><p>
+alle Einstellungen zu aktivieren. Bitte danach die Einstellungen überprüfen!</i></b><p>
 
 <form action="/cgi-bin/do_restore.cgi" method=POST enctype="multipart/form-data">
   <input type=file name="uploadfile"><br>
