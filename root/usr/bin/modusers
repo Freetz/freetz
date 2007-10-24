@@ -25,43 +25,25 @@ EOF
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 USER_DIR=/tmp/flash/users
-USER_DIR_FILES="$USER_DIR/passwd $USER_DIR/group $USER_DIR/shadow $USER_DIR/gshadow"
-USER_FILES="/tmp/passwd /tmp/group /tmp/shadow /tmp/gshadow"
+TMP_DIR=/tmp
+FILES="passwd group shadow gshadow"
 
 case "$1" in
 	save)
 		rm -rf $USER_DIR
 		mkdir -pm 700 $USER_DIR
-		for f in $USER_FILES; do
-			if [ -e $f ]; then
-				cp $f $USER_DIR
-				[ "${f%*shadow}" == "$f" ] && mask=644 || mask=600
-				chmod $mask $USER_DIR/${f##*/}
-			fi
-		done
-		chown -R root:root $USER_DIR
+		( cd $TMP_DIR && cp -a $FILES $USER_DIR	)
 		;;
 	load)
-		for f in $USER_DIR_FILES; do
-    		if [ ! -e $f ]; then
-        		modusers save
-    		fi
-		done
-		
-		rm -f $USER_FILES
-		cp -a $USER_DIR/* /tmp
-		cat /etc/passwd | while read line; do
-			user="$(echo $line | cut -d ':' -f1)"
-			gid="$(echo $line | cut -d ':' -f4)"
-			user_homedir="$(echo $line | cut -d ':' -f6)"
-			if [ "$user" = "root" ]; then
-            	mkdir -p $user_homedir
-				chown root:root $user_homedir
-			else
-            	mkdir -p $user_homedir
-				chown $user:$gid $user_homedir
+		for f in $FILES; do
+			if [ -e $USER_DIR/$f ]; then
+				cp -a $USER_DIR/$f $TMP_DIR
 			fi
-        done
+		done
+		cat /etc/passwd | while IFS=: read user pass uid gid gecos user_homedir shell; do
+			mkdir -p "$user_homedir"
+			chown $uid:$gid "$user_homedir"
+		done
 		;;
 	*)
 		usage >&2
