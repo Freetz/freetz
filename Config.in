@@ -62,6 +62,10 @@ choice
 		select DS_AVM_VERSION_04_33
 		bool "Fon WLAN 7050"
 
+	config DS_TYPE_FON_WLAN_7113
+		select DS_AVM_VERSION_04_40
+		bool "Fon WLAN 7113"
+
 	config DS_TYPE_FON_WLAN_7140
 		select DS_AVM_VERSION_04_33
 		bool "Fon WLAN 7140"
@@ -217,6 +221,7 @@ config DS_TYPE_STRING
 	default "5140"				if DS_TYPE_FON_5140
 	default "fon_wlan"			if DS_TYPE_FON_WLAN
 	default "7050"				if DS_TYPE_FON_WLAN_7050
+	default "7113"				if DS_TYPE_FON_WLAN_7113
 	default "7140"				if DS_TYPE_FON_WLAN_7140
 	default "7141"				if DS_TYPE_FON_WLAN_7141
 	default "7150"				if DS_TYPE_FON_7150
@@ -278,6 +283,7 @@ config DS_TARGET_REF
 	default "8mb_26"		if \
 		DS_TYPE_SPEEDPORT_W701V || \
 		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_WLAN_7140 || \
 		DS_TYPE_FON_7150 || \
@@ -301,6 +307,7 @@ config DS_TARGET_REF
 config DS_KERNEL_REF
 	string "Kernel ref"		if DS_TYPE_CUSTOM
 	default "8mb_26"		if \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7140 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_7150 || \
@@ -328,6 +335,7 @@ config DS_KERNEL_LAYOUT
 	default "ohio"			if \
 		DS_TYPE_2170 || \
 		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7140 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_7150 || \
@@ -366,6 +374,7 @@ config DS_KERNEL_MTD_SIZE
 		DS_TYPE_FON_WLAN || \
 		DS_TYPE_FON_WLAN_7050
 	default 119					if \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7140 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_7150 || \
@@ -393,6 +402,7 @@ config DS_HAS_PHONE
 		DS_TYPE_FON_5140 || \
 		DS_TYPE_FON_WLAN || \
 		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7140 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_7150 || \
@@ -419,6 +429,7 @@ config DS_HAS_WLAN
 		DS_TYPE_WLAN_3170 || \
 		DS_TYPE_FON_WLAN || \
 		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7140 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_7150 || \
@@ -453,6 +464,7 @@ config DS_HAS_USB_CLIENT
 	default n				if \
 		DS_TYPE_FON_5010 || \
 		DS_TYPE_FON_5140 || \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7140 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_7150 || \
@@ -486,6 +498,7 @@ config DS_HAS_USB_HOST
 		DS_TYPE_FON_5140 || \
 		DS_TYPE_FON_WLAN || \
 		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_SPEEDPORT_W501V || \
 		DS_TYPE_SPEEDPORT_W701V
 	help
@@ -505,6 +518,7 @@ config DS_BRANDING_1und1
 		DS_TYPE_FON_5140 || \
 		DS_TYPE_FON_WLAN || \
 		DS_TYPE_FON_WLAN_7050 || \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_WLAN_7170 || \
 		DS_TYPE_WLAN_3020 || \
@@ -599,6 +613,7 @@ config DS_BRANDING_freenet
 		DS_TYPE_FON || \
 		DS_TYPE_FON_7150 || \
 		DS_TYPE_300IP_AS_FON || \
+		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7170 || \
 		DS_TYPE_CUSTOM
 	default y
@@ -800,7 +815,7 @@ config DS_PATCH_UPNP
 
 config DS_REMOVE_USERMAN
 	bool "Remove usermand and userman.ko - EXPERIMENTAL"
-	depends on ! (DS_TYPE_FON_5140 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
+	depends on ! (DS_TYPE_FON_5140 || DS_TYPE_FON_WLAN_7113 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
 	default n
 	help
 		Remove userman files (Kindersicherung)
@@ -811,7 +826,7 @@ config DS_REMOVE_DSLD
 	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"
 	default n
 	select DS_PATCH_UPNP
-	select DS_REMOVE_USERMAN if ! (DS_TYPE_FON_5140 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
+	select DS_REMOVE_USERMAN if ! (DS_TYPE_FON_5140 || DS_TYPE_FON_WLAN_7113 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
 	help
 		Remove DSL deamon (dsld), if you are planning to use your box as a simple
 		IP client in ATA mode.
@@ -877,6 +892,7 @@ config DS_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_5140/firmware"							if DS_TYPE_FON_5140
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/deutsch"					if DS_TYPE_FON_WLAN
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7050/firmware"					if DS_TYPE_FON_WLAN_7050
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7113/firmware/deutsch"			if DS_TYPE_FON_WLAN_7113
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"			if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch_a-ch"			if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/english/annex_a"	if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
@@ -904,6 +920,7 @@ config DS_DL_SOURCE
 	default "fritz.box_fon_5140.43.04.37.image"								if DS_TYPE_FON_5140
 	default "fritz.box_fon_wlan.08.04.34.image"								if DS_TYPE_FON_WLAN
 	default "fritz.box_fon_wlan_7050.14.04.33.image"						if DS_TYPE_FON_WLAN_7050
+	default "fritz.box_fon_wlan_7113.60.04.40.image"					if DS_TYPE_FON_WLAN_7113
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"					if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE
 	default "fritz.box_fon_wlan_7140.annexa.en.39.04.34.image"				if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
 	default "fritz.box_fon_wlan_7140.annexb.en.30.04.34.image"				if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
