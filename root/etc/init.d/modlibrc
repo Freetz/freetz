@@ -50,7 +50,94 @@ modlib_adduser()
 	fi
 }
 
+# modlib_check_running
+#   check whether daemon is running. return status
+#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+modlib_check_running()
+{
+	local fn="$1"
+	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
+	[ ! -s "$fn" ] && return 1
+	kill -0 $(cat "$fn") 2> /dev/null
+	local status="$?"
+	[ "$status" != "0" ] && rm -f "$fn"
+	return "$status"
+}
 
+# modlib_stop
+#   stop daemon
+#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+modlib_stop()
+{
+	local fn="$1"
+	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
+
+	echo -n "Stopping $DAEMON..."
+	if ! modlib_check_running "$fn"; then
+		echo 'not running.'
+		return 0
+	fi
+	kill $(cat "$fn") 2> /dev/null
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+		return 0
+	else
+		rm -f "$fn"
+		echo 'failed.'
+		return 1
+	fi
+}
+
+# modlib_reload
+#   reload daemon
+#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+modlib_reload()
+{
+	local fn="$1"
+	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
+
+	echo -n "Reloading $DAEMON..."
+	if ! modlib_check_running "$fn"; then
+		echo 'not running.'
+		return 0
+	fi
+	kill -HUP $(cat "$fn") 2> /dev/null
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+		return 0
+	else
+		rm -f "$fn"
+		echo 'failed.'
+		return 1
+	fi
+}
+
+# modlib_restart
+#   restart daemon
+#   function "start" must be defined in the calling script
+#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+modlib_restart()
+{
+	modlib_stop "$1"
+	sleep 1
+	start
+}
+
+# modlib_status
+#   check whether daemon is running
+#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+modlib_status()
+{
+	if modlib_check_running "$1"; then
+		echo 'running'
+	else
+		echo 'stopped'
+	fi
+}
+
+# load config
 [ -n "$DAEMON" ] && case "$1" in
 	""|load|start|restart|config|status)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
