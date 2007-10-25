@@ -1,3 +1,5 @@
+PACKAGE_LC:=curl
+PACKAGE_UC:=CURL
 CURL_VERSION:=7.16.4
 CURL_SOURCE:=curl-$(CURL_VERSION).tar.bz2
 CURL_SITE:=http://curl.haxx.se/download
@@ -5,23 +7,13 @@ CURL_MAKE_DIR:=$(MAKE_DIR)/curl
 CURL_DIR:=$(SOURCE_DIR)/curl-$(CURL_VERSION)
 CURL_BINARY:=$(CURL_DIR)/src/curl
 CURL_PKG_VERSION:=0.1
-CURL_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
-
 CURL_PKG_NAME:=curl-$(CURL_VERSION)
-CURL_PKG_SOURCE:=curl-$(CURL_VERSION)-dsmod-$(CURL_PKG_VERSION).tar.bz2
 CURL_TARGET_DIR:=$(PACKAGES_DIR)/$(CURL_PKG_NAME)
 CURL_TARGET_BINARY:=$(CURL_TARGET_DIR)/root/usr/bin/curl
+CURL_STARTLEVEL=40
 
-$(DL_DIR)/$(CURL_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(CURL_SITE)/$(CURL_SOURCE)
-
-$(DL_DIR)/$(CURL_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(CURL_PKG_SOURCE) $(CURL_PKG_SITE)
-
-$(CURL_DIR)/.unpacked: $(DL_DIR)/$(CURL_SOURCE)
-	rm -rf $(CURL_DIR)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(CURL_SOURCE)
-	touch $@
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_BIN_UNPACKED)
 
 $(CURL_DIR)/.configured: $(CURL_DIR)/.unpacked
 	( cd $(CURL_DIR); rm -f config.cache; \
@@ -84,25 +76,18 @@ $(CURL_BINARY): $(CURL_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(CURL_DIR)
 
-$(PACKAGES_DIR)/.$(CURL_PKG_NAME): $(DL_DIR)/$(CURL_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CURL_PKG_SOURCE)
-	@touch $@
-
 $(CURL_TARGET_BINARY): $(CURL_BINARY)
+	mkdir -p $(dir $(CURL_TARGET_BINARY))
 	$(INSTALL_BINARY_STRIP)
 
-curl: $(PACKAGES_DIR)/.$(CURL_PKG_NAME)
-
-curl-package: $(PACKAGES_DIR)/.$(CURL_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CURL_PKG_SOURCE) $(CURL_PKG_NAME) 
+curl:
 
 curl-precompiled: uclibc openssl-precompiled curl $(CURL_TARGET_BINARY)
 
-curl-source: $(CURL_DIR)/.unpacked $(PACKAGES_DIR)/.$(CURL_PKG_NAME)
+curl-source: $(CURL_DIR)/.unpacked
 
 curl-clean:
 	-$(MAKE) -C $(CURL_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(CURL_PKG_SOURCE)
 
 curl-dirclean:
 	rm -rf $(CURL_DIR)
@@ -112,9 +97,4 @@ curl-dirclean:
 curl-uninstall:
 	rm -f $(CURL_TARGET_BINARY)
 
-curl-list:
-ifeq ($(strip $(DS_PACKAGE_CURL)),y)
-	@echo "S40curl-$(CURL_VERSION)" >> .static
-else
-	@echo "S40curl-$(CURL_VERSION)" >> .dynamic
-endif
+$(PACKAGE_LIST)

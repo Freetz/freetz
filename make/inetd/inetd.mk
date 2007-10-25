@@ -1,21 +1,20 @@
-INETD_PKG_VERSION:=0.1
-INETD_PKG_SITE:=http://fbox.enlightened.de/ds/inetd/
+PACKAGE_LC:=inetd
+PACKAGE_UC:=INETD
+INETD_VERSION:=0.1
+INETD_PKG_VERSION:=$(INETD_VERSION)
 INETD_PKG_NAME:=inetd-$(INETD_PKG_VERSION)
-INETD_PKG_SOURCE:=inetd-dsmod-$(INETD_PKG_VERSION).tar.bz2
+INETD_MAKE_DIR:=$(MAKE_DIR)/inetd
+INETD_TARGET_DIR:=$(PACKAGES_DIR)/inetd-$(INETD_PKG_VERSION)
+INETD_STARTLEVEL=20
 
-$(DL_DIR)/$(INETD_PKG_SOURCE):
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(INETD_PKG_SOURCE) $(INETD_PKG_SITE)
-
-$(PACKAGES_DIR)/.$(INETD_PKG_NAME): $(DL_DIR)/$(INETD_PKG_SOURCE)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(INETD_PKG_SOURCE)
+$(PACKAGES_DIR)/.$(INETD_PKG_NAME):
+	mkdir -p $(INETD_TARGET_DIR)/root
+	tar -c -C $(INETD_MAKE_DIR)/files --exclude=.svn . | tar -x -C $(INETD_TARGET_DIR)/root
 	@touch $@
 
 inetd: $(PACKAGES_DIR)/.$(INETD_PKG_NAME)
 
 inetd-precompiled: inetd
-
-inetd-package: $(PACKAGES_DIR)/.$(INETD_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(INETD_PKG_SOURCE) $(INETD_PKG_NAME) 
 
 inetd-clean:
 	rm -f $(PACKAGES_BUILD_DIR)/$(INETD_PKG_SOURCE)
@@ -24,9 +23,6 @@ inetd-dirclean:
 	rm -rf $(PACKAGES_DIR)/$(INETD_PKG_NAME)
 	rm -f $(PACKAGES_DIR)/.$(INETD_PKG_NAME)
 
-inetd-list:
-ifeq ($(strip $(DS_PACKAGE_INETD)),y)
-	@echo "S30inetd-$(INETD_PKG_VERSION)" >> .static
-else
-	@echo "S30inetd-$(INETD_PKG_VERSION)" >> .dynamic
-endif
+inetd-uninstall:
+
+$(PACKAGE_LIST)

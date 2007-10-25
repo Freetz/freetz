@@ -71,7 +71,7 @@ $(NTFS_TARGET_BINARY): $(NTFS_BINARY)
 
 $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION):
 	mkdir -p $(NTFS_TARGET_DIR)/root
-	tar -c -C $(NTFS_MAKE_DIR)/files --exclude=.svn . | tar -x -C $(NTFS_TARGET_DIR)/root
+	tar -c -C $(NTFS_MAKE_DIR)/files --exclude=.svn . | tar -x -C $(NTFS_TARGET_DIR)
 	touch $@
 
 ntfs: uclibc fuse $(PACKAGES_DIR)/.ntfs-$(NTFS_VERSION) \

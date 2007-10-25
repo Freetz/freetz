@@ -1,3 +1,5 @@
+PACKAGE_LC:=classpath
+PACKAGE_UC:=CLASSPATH
 CLASSPATH_VERSION:=0.95
 CLASSPATH_UGLY_VERSION:=0.0.0
 CLASSPATH_SOURCE:=classpath-$(CLASSPATH_VERSION).tar.gz
@@ -8,24 +10,12 @@ CLASSPATH_BINARY:=$(CLASSPATH_DIR)/lib/mini.jar
 CLASSPATH_TARGET_DIR:=$(PACKAGES_DIR)/classpath-$(CLASSPATH_VERSION)
 CLASSPATH_TARGET_BINARY:=$(CLASSPATH_TARGET_DIR)/root/usr/share/classpath/mini.jar
 CLASSPATH_PKG_VERSION:=0.1
-CLASSPATH_PKG_SOURCE:=CLASSPATH-$(CLASSPATH_VERSION)-dsmod-$(CLASSPATH_PKG_VERSION).tar.bz2
-CLASSPATH_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
-CLASSPATH_PKG_SOURCE:=classpath-$(CLASSPATH_VERSION)-dsmod.tar.bz2
 CLASSPATH_LIB_BINARY:=$(CLASSPATH_DIR)/native/jni/java-lang/.libs/libjavalang.so.$(CLASSPATH_UGLY_VERSION)
 CLASSPATH_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
+CLASSPATH_STARTLEVEL=40
 
-$(DL_DIR)/$(CLASSPATH_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(CLASSPATH_SITE)/$(CLASSPATH_SOURCE)
-
-$(DL_DIR)/$(CLASSPATH_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(CLASSPATH_PKG_SOURCE) $(CLASSPATH_PKG_SITE)
-
-$(CLASSPATH_DIR)/.unpacked: $(DL_DIR)/$(CLASSPATH_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CLASSPATH_SOURCE)
-#	for i in $(CLASSPATH_MAKE_DIR)/patches/*.patch; do \
-#		$(PATCH_TOOL) $(CLASSPATH_DIR) $$i; \
-#	done
-	touch $@
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_BIN_UNPACKED)
 
 $(CLASSPATH_DIR)/.configured: $(CLASSPATH_DIR)/.unpacked
 	( cd $(CLASSPATH_DIR); rm -f config.status; \
@@ -56,11 +46,8 @@ $(CLASSPATH_BINARY) $(CLASSPATH_LIB_BINARY): $(CLASSPATH_DIR)/.configured
 	( cd $(CLASSPATH_DIR)/lib; fastjar -Mcf mini.jar -@ < mini.classlist );
 
 $(CLASSPATH_TARGET_BINARY): $(CLASSPATH_BINARY)
+	mkdir -p $(dir $(CLASSPATH_TARGET_BINARY))
 	cp $(CLASSPATH_BINARY) $(CLASSPATH_TARGET_BINARY)
-
-$(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION): $(DL_DIR)/$(CLASSPATH_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CLASSPATH_PKG_SOURCE)
-	@touch $@
 
 $(CLASSPATH_LIB_STAGING_BINARY): $(CLASSPATH_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(CLASSPATH_DIR)/native/jni \
@@ -86,18 +73,14 @@ $(CLASSPATH_DIR)/.installed: $(CLASSPATH_LIB_STAGING_BINARY)
 	$(TARGET_STRIP) root/usr/lib/libjava*.so*
 	touch $@
 
-classpath: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
-
-classpath-package: $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CLASSPATH_PKG_SOURCE) classpath-$(CLASSPATH_VERSION)
+classpath:
 
 classpath-precompiled: uclibc $(CLASSPATH_DIR)/.installed classpath $(CLASSPATH_TARGET_BINARY)
 
-classpath-source: $(CLASSPATH_DIR)/.unpacked $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
+classpath-source: $(CLASSPATH_DIR)/.unpacked
 
 classpath-clean:
 	-$(MAKE) -C $(CLASSPATH_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(CLASSPATH_PKG_SOURCE)
 
 classpath-dirclean:
 	rm -rf $(CLASSPATH_DIR)
@@ -106,12 +89,7 @@ classpath-dirclean:
 
 classpath-uninstall:
 	rm -f $(CLASSPATH_TARGET_BINARY)
-	rm -rf root/usr/lib/classpath
+	rm -rf root/usr/lib/libjava*.so*
 	rm -f $(CLASSPATH_DIR)/.installed
 
-classpath-list:
-ifeq ($(strip $(DS_PACKAGE_CLASSPATH)),y)
-	@echo "S40classpath-$(CLASSPATH_VERSION)" >> .static
-else
-	@echo "S40classpath-$(CLASSPATH_VERSION)" >> .dynamic
-endif
+$(PACKAGE_LIST)

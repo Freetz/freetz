@@ -1,3 +1,5 @@
+PACKAGE_LC:=tcpdump
+PACKAGE_UC:=TCPDUMP
 TCPDUMP_VERSION:=3.9.6
 TCPDUMP_SOURCE:=tcpdump-$(TCPDUMP_VERSION).tar.gz
 TCPDUMP_SITE:=http://www.tcpdump.org/release
@@ -5,23 +7,12 @@ TCPDUMP_MAKE_DIR:=$(MAKE_DIR)/tcpdump
 TCPDUMP_DIR:=$(SOURCE_DIR)/tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_BINARY:=$(TCPDUMP_DIR)/tcpdump
 TCPDUMP_PKG_VERSION:=0.1
-TCPDUMP_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
-TCPDUMP_PKG_SOURCE:=tcpdump-$(TCPDUMP_VERSION)-dsmod-binary-only.tar.bz2
 TCPDUMP_TARGET_DIR:=$(PACKAGES_DIR)/tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_TARGET_BINARY:=$(TCPDUMP_TARGET_DIR)/root/usr/bin/tcpdump
+TCPDUMP_STARTLEVEL=40
 
-$(DL_DIR)/$(TCPDUMP_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(TCPDUMP_SITE)/$(TCPDUMP_SOURCE)
-
-$(DL_DIR)/$(TCPDUMP_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TCPDUMP_PKG_SOURCE) $(TCPDUMP_PKG_SITE)
-
-$(TCPDUMP_DIR)/.unpacked: $(DL_DIR)/$(TCPDUMP_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(TCPDUMP_SOURCE)
-	for i in $(TCPDUMP_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(TCPDUMP_DIR) $$i; \
-	done
-	touch $@
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_BIN_UNPACKED)
 
 $(TCPDUMP_DIR)/.configured: $(TCPDUMP_DIR)/.unpacked 
 	( cd $(TCPDUMP_DIR); \
@@ -51,24 +42,17 @@ $(TCPDUMP_BINARY): $(TCPDUMP_DIR)/.configured
 		all 
 
 $(TCPDUMP_TARGET_BINARY): $(TCPDUMP_BINARY)
+	mkdir -p $(dir $(NTFS_TARGET_BINARY))
 	$(INSTALL_BINARY_STRIP)
 
-$(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION): $(DL_DIR)/$(TCPDUMP_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(TCPDUMP_PKG_SOURCE)
-	@touch $@
-
-tcpdump: $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
-
-tcpdump-package: $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(TCPDUMP_PKG_SOURCE) tcpdump-$(TCPDUMP_VERSION)
+tcpdump: 
 
 tcpdump-precompiled: uclibc libpcap-precompiled tcpdump $(TCPDUMP_TARGET_BINARY)
 
-tcpdump-source: $(TCPDUMP_DIR)/.unpacked $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
+tcpdump-source: $(TCPDUMP_DIR)/.unpacked
 
 tcpdump-clean:
 	-$(MAKE) -C $(TCPDUMP_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(TCPDUMP_PKG_SOURCE)
 
 tcpdump-dirclean:
 	rm -rf $(TCPDUMP_DIR)
@@ -78,9 +62,4 @@ tcpdump-dirclean:
 tcpdump-uninstall:
 	rm -f $(TCPDUMP_TARGET_BINARY)
 
-tcpdump-list:
-ifeq ($(strip $(DS_PACKAGE_TCPDUMP)),y)
-	@echo "S40tcpdump-$(TCPDUMP_VERSION)" >> .static
-else
-	@echo "S40tcpdump-$(TCPDUMP_VERSION)" >> .dynamic
-endif
+$(PACKAGE_LIST)

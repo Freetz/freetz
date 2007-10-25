@@ -46,19 +46,11 @@ $(STREAMRIPPER_TARGET_BINARY): $(STREAMRIPPER_BINARY)
 	mkdir -p $(dir $(STREAMRIPPER_TARGET_BINARY))
 	$(INSTALL_BINARY_STRIP)
 
-#$(PACKAGES_DIR)/.streamripper-$(STREAMRIPPER_VERSION): $(DL_DIR)/$(STREAMRIPPER_PKG_SOURCE) | $(PACKAGES_DIR)
-#	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(STREAMRIPPER_PKG_SOURCE)
-#	@touch $@
-
-#streamripper: $(PACKAGES_DIR)/.streamripper-$(STREAMRIPPER_VERSION)
-streamripper: uclibc mad-precompiled $(STREAMRIPPER_TARGET_BINARY)
-
-#streamripper-package: $(PACKAGES_DIR)/.streamripper-$(STREAMRIPPER_VERSION)
-#	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(STREAMRIPPER_PKG_SOURCE) streamripper-$(STREAMRIPPER_VERSION)
+streamripper: 
 
 streamripper-precompiled: uclibc mad-precompiled streamripper $(STREAMRIPPER_TARGET_BINARY)
 
-streamripper-source: $(STREAMRIPPER_DIR)/.unpacked $(PACKAGES_DIR)/.streamripper-$(STREAMRIPPER_VERSION)
+streamripper-source: $(STREAMRIPPER_DIR)/.unpacked
 
 streamripper-clean:
 	-$(MAKE) -C $(STREAMRIPPER_DIR) clean
@@ -66,8 +58,6 @@ streamripper-clean:
 
 streamripper-dirclean:
 	rm -rf $(STREAMRIPPER_DIR)
-#	rm -rf $(PACKAGES_DIR)/streamripper-$(STREAMRIPPER_VERSION)
-#	rm -f $(PACKAGES_DIR)/.streamripper-$(STREAMRIPPER_VERSION)
 
 streamripper-uninstall:
 	rm -f $(STREAMRIPPER_TARGET_BINARY)

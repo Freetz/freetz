@@ -1,3 +1,5 @@
+PACKAGE_LC:=ctorrent
+PACKAGE_UC:=CTORRENT
 CTORRENT_VERSION:=dnh3.2
 CTORRENT_SOURCE:=ctorrent-$(CTORRENT_VERSION).tar.gz
 CTORRENT_SITE:=http://www.rahul.net/dholmes/ctorrent/
@@ -7,21 +9,10 @@ CTORRENT_BINARY:=$(CTORRENT_DIR)/ctorrent
 CTORRENT_TARGET_DIR:=$(PACKAGES_DIR)/ctorrent-$(CTORRENT_VERSION)
 CTORRENT_TARGET_BINARY:=$(CTORRENT_TARGET_DIR)/root/usr/bin/ctorrent
 CTORRENT_PKG_VERSION:=0.1
-CTORRENT_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
-CTORRENT_PKG_SOURCE:=ctorrent-$(CTORRENT_VERSION)-dsmod-$(CTORRENT_PKG_VERSION).tar.bz2
+CTORRENT_STARTLEVEL=40
 
-$(DL_DIR)/$(CTORRENT_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(CTORRENT_SITE)/$(CTORRENT_SOURCE)
-
-$(DL_DIR)/$(CTORRENT_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(CTORRENT_PKG_SOURCE) $(CTORRENT_PKG_SITE)
-
-$(CTORRENT_DIR)/.unpacked: $(DL_DIR)/$(CTORRENT_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CTORRENT_SOURCE)
-#	for i in $(CTORRENT_MAKE_DIR)/patches/*.patch; do \
-#		$(PATCH_TOOL) $(CTORRENT_DIR) $$i; \
-#	done
-	touch $@
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_BIN_UNPACKED)
 
 $(CTORRENT_DIR)/.configured: $(CTORRENT_DIR)/.unpacked 
 	( cd $(CTORRENT_DIR); \
@@ -45,24 +36,17 @@ $(CTORRENT_BINARY): $(CTORRENT_DIR)/.configured
 		$(MAKE) -C $(CTORRENT_DIR) all
 
 $(CTORRENT_TARGET_BINARY): $(CTORRENT_BINARY)
+	mkdir -p $(dir $(CTORRENT_TARGET_BINARY))
 	$(INSTALL_BINARY_STRIP)
 
-$(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION): $(DL_DIR)/$(CTORRENT_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CTORRENT_PKG_SOURCE)
-	@touch $@
-
-ctorrent: $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
-
-ctorrent-package: $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CTORRENT_PKG_SOURCE) ctorrent-$(CTORRENT_VERSION)
+ctorrent: 
 
 ctorrent-precompiled: uclibc uclibcxx-precompiled ctorrent $(CTORRENT_TARGET_BINARY)
 
-ctorrent-source: $(CTORRENT_DIR)/.unpacked $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
+ctorrent-source: $(CTORRENT_DIR)/.unpacked
 
 ctorrent-clean:
 	-$(MAKE) -C $(CTORRENT_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(CTORRENT_PKG_SOURCE)
 
 ctorrent-dirclean:
 	rm -rf $(CTORRENT_DIR)
@@ -72,9 +56,4 @@ ctorrent-dirclean:
 ctorrent-uninstall:
 	rm -f $(CTORRENT_TARGET_BINARY)
 
-ctorrent-list:
-ifeq ($(strip $(DS_PACKAGE_CTORRENT)),y)
-	@echo "S40ctorrent-$(CTORRENT_VERSION)" >> .static
-else
-	@echo "S40ctorrent-$(CTORRENT_VERSION)" >> .dynamic
-endif
+$(PACKAGE_LIST)

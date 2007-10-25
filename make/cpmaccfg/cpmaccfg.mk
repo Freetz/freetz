@@ -1,3 +1,5 @@
+PACKAGE_LC:=cpmaccfg
+PACKAGE_UC:=CPMACCFG
 CPMACCFG_VERSION:=0.4
 CPMACCFG_SOURCE:=cpmaccfg-$(CPMACCFG_VERSION).tar.gz
 CPMACCFG_SITE:=http://www.heimpold.de/dsmod
@@ -5,30 +7,22 @@ CPMACCFG_MAKE_DIR:=$(MAKE_DIR)/cpmaccfg
 CPMACCFG_DIR:=$(SOURCE_DIR)/cpmaccfg-$(CPMACCFG_VERSION)
 CPMACCFG_BINARY:=$(CPMACCFG_DIR)/cpmaccfg
 CPMACCFG_PKG_VERSION:=0.2a
-CPMACCFG_PKG_SITE:=http://www.heimpold.de/dsmod
 CPMACCFG_PKG_NAME:=cpmaccfg-$(CPMACCFG_VERSION)
-CPMACCFG_PKG_SOURCE:=cpmaccfg-$(CPMACCFG_VERSION)-dsmod-$(CPMACCFG_PKG_VERSION).tar.bz2
 CPMACCFG_TARGET_DIR:=$(PACKAGES_DIR)/$(CPMACCFG_PKG_NAME)
 CPMACCFG_TARGET_BINARY:=$(CPMACCFG_TARGET_DIR)/root/sbin/cpmaccfg
+CPMACCFG_STARTLEVEL=40
 
 CPMACCFG_CONFIGURE_OPTIONS=
 
-$(DL_DIR)/$(CPMACCFG_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(CPMACCFG_SITE)/$(CPMACCFG_SOURCE)
-
-$(DL_DIR)/$(CPMACCFG_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(CPMACCFG_PKG_SOURCE) $(CPMACCFG_PKG_SITE)
-
-$(CPMACCFG_DIR)/.unpacked: $(DL_DIR)/$(CPMACCFG_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CPMACCFG_SOURCE)
-	touch $@
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_BIN_UNPACKED)
 
 $(CPMACCFG_DIR)/.configured: $(CPMACCFG_DIR)/.unpacked
 	( cd $(CPMACCFG_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/include -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib -L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
+		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
+		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -54,28 +48,24 @@ $(CPMACCFG_DIR)/.configured: $(CPMACCFG_DIR)/.unpacked
 	touch $@
 
 $(CPMACCFG_BINARY): $(CPMACCFG_DIR)/.configured
-	PATH="$(TARGET_PATH)" LD="$(TARGET_LD)" $(MAKE) -C $(CPMACCFG_DIR)
+	PATH="$(TARGET_PATH)" \
+		LD="$(TARGET_LD)" \
+		$(MAKE) -C $(CPMACCFG_DIR)
 
 $(CPMACCFG_TARGET_BINARY): $(CPMACCFG_BINARY)
+	mkdir -p $(dir $(CPMACCFG_TARGET_BINARY))
 	$(INSTALL_BINARY_STRIP)
 
-$(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME): $(DL_DIR)/$(CPMACCFG_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CPMACCFG_PKG_SOURCE)
-	@touch $@
 
-cpmaccfg: $(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME)
-
-cpmaccfg-package: $(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CPMACCFG_PKG_SOURCE) $(CPMACCFG_PKG_NAME)
+cpmaccfg:
 
 cpmaccfg-precompiled: uclibc cpmaccfg $(CPMACCFG_TARGET_BINARY)
 
-cpmaccfg-source: $(CPMACCFG_DIR)/.unpacked $(PACKAGES_DIR)/.$(CPMACCFG_PKG_NAME)
+cpmaccfg-source: $(CPMACCFG_DIR)/.unpacked
 
 cpmaccfg-clean:
 	-$(MAKE) -C $(CPMACCFG_DIR) clean
 	rm -f $(CPMACCFG_DIR)/.configured
-	rm -f $(PACKAGES_BUILD_DIR)/$(CPMACCFG_PKG_SOURCE)
 
 cpmaccfg-dirclean:
 	rm -rf $(CPMACCFG_DIR)
@@ -85,9 +75,4 @@ cpmaccfg-dirclean:
 cpmaccfg-uninstall:
 	rm -f $(CPMACCFG_TARGET_BINARY)
 
-cpmaccfg-list:
-ifeq ($(strip $(DS_PACKAGE_CPMACCFG)),y)
-	@echo "S60cpmaccfg-$(CPMACCFG_VERSION)" >> .static
-else
-	@echo "S60cpmaccfg-$(CPMACCFG_VERSION)" >> .dynamic
-endif
+$(PACKAGE_LIST)
