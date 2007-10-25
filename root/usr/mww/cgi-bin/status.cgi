@@ -25,7 +25,7 @@ has_swap() {
 }
 
 default_password_set() {
-        [ $MOD_HTTPD_PASSWD == '$1$$zla3yqbLURbyMO/5ZvHBR0' ] || return 0
+        [ "$MOD_HTTPD_PASSWD" == '$1$$zla3yqbLURbyMO/5ZvHBR0' ] || return 0
         return 1
 }
 
@@ -33,7 +33,7 @@ cgi_begin '$(lang de:"Status" en:"Status")' 'status'
 
 default_password_set
 if [ "$?" == "1" ]; then
-echo '<div style="color: #800000;"><p>$(lang de:"Standard-Passwort gesetzt. Bitte <a href=\"/cgi-bin/passwd.cgi\"><u>hier</u></a> ändern." en:"Default password set. Please change <a href=\"/cgi-bin/passwd.cgi\"><u>here.</u></a>."</p>
+echo '<div style="color: #800000;"><p>$(lang de:"Standard-Passwort gesetzt. Bitte <a href=\"/cgi-bin/passwd.cgi\"><u>hier</u></a> ändern." en:"Default password set. Please change <a href=\"/cgi-bin/passwd.cgi\"><u>here.</u></a>."</p>'
 fi
 
 sec_begin '$(lang de:"Box" en:"Box")'
