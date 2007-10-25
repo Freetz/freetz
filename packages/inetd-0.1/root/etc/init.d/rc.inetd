@@ -1,20 +1,8 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
-
 DAEMON=inetd
 
-case "$1" in
-        ""|load|start|restart|reload)
-                if [ ! -r "/mod/etc/conf/inetd.cfg" ]; then
-                        echo "Error[$DAEMON]: not configured" 1>&2
-                        exit 1
-                fi
-
-		. /mod/etc/conf/inetd.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 config() {
 	[ -e "/tmp/flash/inetd.conf" ] ||
@@ -46,32 +34,11 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping inetd...'
-	kill $(cat /var/run/$DAEMON.pid) > /dev/null 2>&1
-	exitval=$?
-	rm /var/run/$DAEMON.pid
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_stop || exit 1
 }
 
 reload() {
-        echo -n 'Reloading inetd configuration...'
-        if [ -r "/var/run/$DAEMON.pid" ]; then
-			kill -HUP `cat /var/run/$DAEMON.pid`
-		fi
-        exitval=$?
-        if [ "$exitval" -eq 0 ]; then
-                echo 'done.'
-        else
-                echo 'failed.'
-                rm /var/run/$DAEMON.pid
-                exit $exitval
-        fi
-
+	modlib_reload || exit 1
 }
 
 case "$1" in
@@ -107,21 +74,13 @@ case "$1" in
 		reload
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -s "/var/run/$DAEMON.pid" ]; then
-			echo 'running'
-		else
-			echo 'stopped'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac
-
-exit 0
