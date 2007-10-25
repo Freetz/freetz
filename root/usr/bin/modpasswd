@@ -15,59 +15,12 @@ case "$1" in
 		exit 1
 		;;
 	load)
-		if ! [ -e "$FLASH/shadow.save" ]; then
-			echo >&2
-			echo "## OBSOLETE: modpasswd load ##" >&2
-			echo "If you want to load users, groups and passwords, please use the" >&2
-			echo "'modusers load' command." >&2
-			echo >&2
-			exit 1
-		fi
-
-		echo "Obsolete user & password file $FLASH/shadow.save detected, converting..."
-
-		TMPPASSWD=$TMP/.passwd.tmp
-		TMPSHADOW=$TMP/.shadow.tmp
-		rm -f $TMPPASSWD $TMPSHADOW
-
-		userid=0
-		cat $FLASH/shadow.save | while IFS=: read user pass; do
-			if [ "$user" = "root" ]; then
-				uid=0
-				gid=0
-				user_homedir=/mod/root
-			else
-				let userid="userid+1"
-				uid=$userid
-				gid=1
-				user_homedir="/mod/home/$user"
-			fi
-			echo "$user:x:$uid:$gid:$user:$user_homedir:/bin/sh" >> $TMPPASSWD
-			echo "$user:$pass:12332:0:99999:7:::" >> $TMPSHADOW
-
-			mkdir -p "$user_homedir"
-			chown $uid:$gid "$user_homedir"
-		done
-
-		if grep "^root:" $TMPPASSWD > /dev/null; then
-			mv $TMPPASSWD /var/tmp/passwd
-			mv $TMPSHADOW /var/tmp/shadow
-		else
-			rm -f $TMPPASSWD
-			rm -f $TMPSHADOW
-			echo "ERROR: no user 'root'" 1>&2
-			exit 1
-		fi
-		chmod 644 /tmp/passwd /tmp/group
-		chmod 600 /tmp/shadow /tmp/gshadow
-
-		echo "Obsolete users & passwords loaded, saving in new format..."
-		if /usr/bin/modusers save; then
-			echo "Removing obsolete file $FLASH/shadow.save..."
-			rm -f $FLASH/shadow.save
-			echo "Making data conversion persistent by saving to flash memory..."
-			modsave flash
-		fi
+		echo >&2
+		echo "## OBSOLETE: modpasswd load ##" >&2
+		echo "If you want to load users, groups and passwords, please use the" >&2
+		echo "'modusers load' command." >&2
+		echo >&2
+		exit 1
 		;;
 	save)
 		echo >&2
@@ -86,16 +39,10 @@ case "$1" in
 		echo 'arbitrary code. USE AT YOUR OWN RISK!'
 		echo ''
 
-		stty -echo
-
-		echo -n 'Enter new password: '
-		read -r passwd1
-		echo ''
-		echo -n 'Re-enter new password: '
-		read -r passwd2
-		echo ''
-
-		stty echo
+		read -p 'Enter new password: ' -r -s passwd1
+		echo
+		read -p 'Re-enter new password: ' -r -s passwd2
+		echo
 
 		if [ "$passwd1" != "$passwd2" -o -z "$passwd1" ]; then
 			echo 'Passwords do not match or empty password.' 1>&2

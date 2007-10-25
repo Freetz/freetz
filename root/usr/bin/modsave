@@ -19,7 +19,7 @@ save() {
 
 	tar -cf $TMPFILE flash -C /tmp/
 
-	let size="$(cat $TMPFILE | wc -c)"
+	let size="$(wc -c < $TMPFILE)"
 
 	if [ "$size" -gt "$MOD_LIMIT" ]; then
 		rm -f $TMPFILE

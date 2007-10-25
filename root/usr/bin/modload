@@ -32,9 +32,6 @@ fi
 [ -e "/mod/usr/lib/cgi-bin/mod" ] || ln -s /usr/lib/cgi-bin/mod /mod/usr/lib/cgi-bin/mod
 
 echo -n 'Loading users, groups and passwords...'
-# TODO: remove call in one of the next releases, because it is obsolete
-# and only needed for auto-conversion
-[ -e /tmp/flash/shadow.save ] && /usr/bin/modpasswd load
 /usr/bin/modusers load
 echo 'done.'
 
