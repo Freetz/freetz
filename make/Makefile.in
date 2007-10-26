@@ -48,7 +48,7 @@ endif
 
 TARGET_CC:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc
 TARGET_LD:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld
-TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
+TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.comment,.note,.pdr}
 
 TARGET_PATH:=$(TARGET_MAKE_PATH):/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 # A better name for TARGET_CONFIGURE_OPTS would by TARGET_CONFIGURE_ENV, but that would require changes to all makefiles
