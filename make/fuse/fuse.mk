@@ -1,11 +1,11 @@
+PACKAGE_LC:=fuse
+PACKAGE_UC:=FUSE
 FUSE_VERSION:=2.7.0
 FUSE_SOURCE:=fuse-$(FUSE_VERSION).tar.gz
 FUSE_SITE:=http://mesh.dl.sourceforge.net/sourceforge/fuse
 FUSE_MAKE_DIR:=$(MAKE_DIR)/fuse
 FUSE_PKG_NAME:=fuse-$(FUSE_VERSION)
 FUSE_PKG_VERSION:=0.1
-FUSE_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
-FUSE_PKG_SOURCE:=fuse-$(FUSE_VERSION)-dsmod-$(FUSE_PKG_VERSION).tar.bz2
 FUSE_DIR:=$(SOURCE_DIR)/fuse-$(FUSE_VERSION)
 FUSE_BINARY:=$(FUSE_DIR)/util/fusermount
 FUSE_TARGET_DIR:=$(PACKAGES_DIR)/$(FUSE_PKG_NAME)
@@ -16,15 +16,26 @@ FUSE_MOD_TARGET_BINARY:=$(FUSE_MOD_TARGET_DIR)/fuse.ko
 FUSE_LIB_BINARY:=$(FUSE_DIR)/lib/.libs/libfuse.so.$(FUSE_VERSION)
 FUSE_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$(FUSE_VERSION)
 FUSE_LIB_TARGET_BINARY:=$(FUSE_TARGET_DIR)/root/usr/lib/libfuse.so.$(FUSE_VERSION)
+FUSE_STARTLEVEL=40
 
 FUSE_DS_CONFIG_FILE:=$(FUSE_MAKE_DIR)/.ds_config
 FUSE_DS_CONFIG_TEMP:=$(FUSE_MAKE_DIR)/.ds_config.temp
 
-$(DL_DIR)/$(FUSE_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(FUSE_SITE)/$(FUSE_SOURCE)
+$(PACKAGE_UC)_CONFIGURE_PRE_CMDS +=	touch configure.in aclocal.m4 Makefile.in include/config.h.in configure ;
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-kernel-module
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-lib
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-util
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-example
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-auto-modprobe
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-kernel="$(shell pwd)/$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-mtab
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-gnu-ld
 
-$(DL_DIR)/$(FUSE_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(FUSE_PKG_SOURCE) $(FUSE_PKG_SITE)
+
+$(PACKAGE_SOURCE_DOWNLOAD)
 
 $(FUSE_DS_CONFIG_FILE): $(TOPDIR)/.config
 	@echo "DS_KERNEL_LAYOUT=$(DS_KERNEL_LAYOUT)" > $(FUSE_DS_CONFIG_TEMP)
@@ -43,49 +54,7 @@ $(FUSE_DIR)/.unpacked: $(DL_DIR)/$(FUSE_SOURCE) $(FUSE_DS_CONFIG_FILE)
 	done
 	touch $@
 
-$(FUSE_DIR)/.configured: $(FUSE_DIR)/.unpacked
-	( cd $(FUSE_DIR); rm -f config.cache; \
-		touch configure.in ; \
-		touch aclocal.m4 ; \
-		touch Makefile.in ; \
-		touch include/config.h.in ; \
-		touch configure ; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="" \
-		./configure \
-			--target=$(GNU_TARGET_NAME) \
-			--host=$(GNU_TARGET_NAME) \
-			--build=$(GNU_HOST_NAME) \
-			--program-prefix="" \
-			--program-suffix="" \
-			--prefix=/usr \
-			--exec-prefix=/usr \
-			--bindir=/usr/bin \
-			--datadir=/usr/share \
-			--includedir=/usr/include \
-			--infodir=/usr/share/info \
-			--libdir=/usr/lib \
-			--libexecdir=/usr/lib \
-			--localstatedir=/var \
-			--mandir=/usr/share/man \
-			--sbindir=/usr/sbin \
-			--sysconfdir=/etc \
-			$(DISABLE_LARGEFILE) \
-			$(DISABLE_NLS) \
-			--enable-shared \
-			--enable-static \
-			--disable-rpath \
-			--enable-kernel-module \
-			--enable-lib \
-			--enable-util \
-			--disable-example \
-			--disable-auto-modprobe \
-			--with-kernel="$(shell pwd)/$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/" \
-			--disable-mtab \
-			--with-gnu-ld \
-	);
-	touch $@
+$(PACKAGE_CONFIGURED_CONFIGURE)
 
 $(FUSE_BINARY) $(FUSE_MOD_BINARY) $(FUSE_LIB_BINARY): $(FUSE_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) \
@@ -118,11 +87,8 @@ $(FUSE_LIB_STAGING_BINARY): $(FUSE_LIB_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
-$(PACKAGES_DIR)/.$(FUSE_PKG_NAME): $(DL_DIR)/$(FUSE_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(FUSE_PKG_SOURCE)
-	@touch $@
-
 $(FUSE_TARGET_BINARY): $(FUSE_BINARY)
+	mkdir -p $(dir $(DECO_TARGET_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $(FUSE_MOD_TARGET_BINARY): $(FUSE_MOD_BINARY)
@@ -133,19 +99,15 @@ $(FUSE_LIB_TARGET_BINARY): $(FUSE_LIB_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_TARGET_DIR)/root/usr/lib
 	$(TARGET_STRIP) $@
 
-fuse: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
+fuse:
 
 fuse-precompiled: uclibc fuse $(FUSE_TARGET_BINARY) $(FUSE_MOD_TARGET_BINARY) $(FUSE_LIB_TARGET_BINARY)
 
-fuse-package: $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE) $(FUSE_PKG_NAME)
-
-fuse-source: $(FUSE_DIR)/.unpacked $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
+fuse-source: $(FUSE_DIR)/.unpacked
 
 fuse-clean:
 	-$(MAKE) -C $(FUSE_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(FUSE_PKG_SOURCE) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
@@ -153,16 +115,10 @@ fuse-clean:
 fuse-dirclean:
 	rm -rf $(FUSE_DIR)
 	rm -rf $(PACKAGES_DIR)/$(FUSE_PKG_NAME)
-	rm -f $(PACKAGES_DIR)/.$(FUSE_PKG_NAME)
 
 fuse-uninstall:
 	rm -f $(FUSE_TARGET_BINARY)
 	rm -f $(FUSE_MOD_TARGET_BINARY)
 	rm -f $(FUSE_TARGET_DIR)/root/usr/lib/libfuse*.so*
-
-fuse-list:
-ifeq ($(strip $(DS_PACKAGE_FUSE)),y)
-	@echo "S40fuse-$(FUSE_VERSION)" >> .static
-else
-	@echo "S40fuse-$(FUSE_VERSION)" >> .dynamic
-endif
+	
+$(PACKAGE_LIST)

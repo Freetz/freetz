@@ -12,65 +12,38 @@ CURL_TARGET_DIR:=$(PACKAGES_DIR)/$(CURL_PKG_NAME)
 CURL_TARGET_BINARY:=$(CURL_TARGET_DIR)/root/usr/bin/curl
 CURL_STARTLEVEL=40
 
+$(PACKAGE_UC)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-shared
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-gnu-ld
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-thread
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-cookies
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-crypto-auth
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-nonblocking
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-file
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-ftp
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-http
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-ipv6
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-ares
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-debug
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-dict
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-gopher
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-ldap
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-manual
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-sspi
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-telnet
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-verbose
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-random="/dev/urandom"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_MAKE_PATH)/../usr"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-ca-bundle
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-gnutls
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-libidn
+
+
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_BIN_UNPACKED)
-
-$(CURL_DIR)/.configured: $(CURL_DIR)/.unpacked
-	( cd $(CURL_DIR); rm -f config.cache; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig" \
-		./configure \
-		--target=$(GNU_TARGET_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--build=$(GNU_HOST_NAME) \
-		--program-prefix="" \
-		--program-suffix="" \
-		--prefix=/usr \
-		--exec-prefix=/usr \
-		--bindir=/usr/bin \
-		--datadir=/usr/share \
-		--includedir=/usr/include \
-		--infodir=/usr/share/info \
-		--libdir=/usr/lib \
-		--libexecdir=/usr/lib \
-		--localstatedir=/var \
-		--mandir=/usr/share/man \
-		--sbindir=/usr/sbin \
-		--sysconfdir=/etc \
-		$(DISABLE_NLS) \
-		$(DISABLE_LARGEFILE) \
-		--disable-shared \
-		--enable-static \
-		--disable-rpath \
-		--with-gnu-ld \
-		--disable-thread \
-		--enable-cookies \
-		--enable-crypto-auth \
-		--enable-nonblocking \
-		--enable-file \
-		--enable-ftp \
-		--enable-http \
-		--enable-ipv6 \
-		--disable-ares \
-		--disable-debug \
-		--disable-dict \
-		--disable-gopher \
-		--disable-ldap \
-		--disable-manual \
-		--disable-sspi \
-		--disable-telnet \
-		--disable-verbose \
-		--with-random="/dev/urandom" \
-		--with-ssl="$(TARGET_MAKE_PATH)/../usr" \
-		--without-ca-bundle \
-		--without-gnutls \
-		--without-libidn \
-	);
-	touch $@
+$(PACKAGE_CONFIGURED_CONFIGURE)
 
 $(CURL_BINARY): $(CURL_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
@@ -92,7 +65,6 @@ curl-clean:
 curl-dirclean:
 	rm -rf $(CURL_DIR)
 	rm -rf $(PACKAGES_DIR)/$(CURL_PKG_NAME)
-	rm -f $(PACKAGES_DIR)/.$(CURL_PKG_NAME)
 
 curl-uninstall:
 	rm -f $(CURL_TARGET_BINARY)

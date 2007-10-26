@@ -11,28 +11,17 @@ TCPDUMP_TARGET_DIR:=$(PACKAGES_DIR)/tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_TARGET_BINARY:=$(TCPDUMP_TARGET_DIR)/root/usr/bin/tcpdump
 TCPDUMP_STARTLEVEL=40
 
+$(PACKAGE_UC)_CONFIGURE_ENV += BUILD_CC="$(TARGET_CC)"
+$(PACKAGE_UC)_CONFIGURE_ENV += HOSTCC="$(HOSTCC)"
+$(PACKAGE_UC)_CONFIGURE_ENV += ac_cv_linux_vers=2
+$(PACKAGE_UC)_CONFIGURE_ENV += td_cv_gubbygetaddrinfo="no"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-ipv6
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-crypto
+
+
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_BIN_UNPACKED)
-
-$(TCPDUMP_DIR)/.configured: $(TCPDUMP_DIR)/.unpacked 
-	( cd $(TCPDUMP_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
-		BUILD_CC="$(TARGET_CC)" \
-		HOSTCC="$(HOSTCC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		ac_cv_linux_vers=2 \
-		td_cv_gubbygetaddrinfo="no" \
-		./configure \
-		--target="$(GNU_TARGET_NAME)" \
-		--host="$(GNU_TARGET_NAME)" \
-		--build="$(GNU_HOST_NAME)" \
-		--prefix=/usr \
-		--disable-ipv6 \
-		--without-crypto \
-	);
-	touch $@
+$(PACKAGE_CONFIGURED_CONFIGURE)
 
 $(TCPDUMP_BINARY): $(TCPDUMP_DIR)/.configured
 	PATH="$(TARGET_PATH)" \

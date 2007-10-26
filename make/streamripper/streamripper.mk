@@ -7,36 +7,23 @@ STREAMRIPPER_MAKE_DIR:=$(MAKE_DIR)/streamripper
 STREAMRIPPER_DIR:=$(SOURCE_DIR)/streamripper-$(STREAMRIPPER_VERSION)
 STREAMRIPPER_BINARY:=$(STREAMRIPPER_DIR)/streamripper
 #STREAMRIPPER_PKG_VERSION:=0.1
-#STREAMRIPPER_PKG_SOURCE:=streamripper-$(STREAMRIPPER_VERSION)-dsmod-$(STREAMRIPPER_PKG_VERSION).tar.bz2
-#STREAMRIPPER_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
 STREAMRIPPER_TARGET_DIR:=$(PACKAGES_DIR)/streamripper-$(STREAMRIPPER_VERSION)
 STREAMRIPPER_TARGET_BINARY:=$(STREAMRIPPER_TARGET_DIR)/root/usr/bin/streamripper
 STREAMRIPPER_STARTLEVEL=40
 
+$(PACKAGE_UC)_CONFIGURE_ENV += CFLAGS +="-DANSI_PROTOTYPES" \
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-included-argv
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-included-tre
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-ogg
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-vorbis
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-shared
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-gnu-ld
+
+
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_BIN_UNPACKED)
-
-$(STREAMRIPPER_DIR)/.configured: $(STREAMRIPPER_DIR)/.unpacked
-	( cd $(STREAMRIPPER_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) -DANSI_PROTOTYPES" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../lib" \
-		./configure \
-		--target="$(GNU_TARGET_NAME)" \
-		--host="$(GNU_TARGET_NAME)" \
-		--build="$(GNU_HOST_NAME)" \
-		--prefix=/usr \
-		--with-included-argv \
-		--without-libiconv-prefix \
-		--with-included-tre \
-		--without-ogg \
-		--without-vorbis \
-		--disable-shared \
-		--with-gnu-ld \
-	);
-	touch $@
+$(PACKAGE_CONFIGURED_CONFIGURE)
 
 $(STREAMRIPPER_BINARY): $(STREAMRIPPER_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
@@ -54,7 +41,6 @@ streamripper-source: $(STREAMRIPPER_DIR)/.unpacked
 
 streamripper-clean:
 	-$(MAKE) -C $(STREAMRIPPER_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(STREAMRIPPER_PKG_SOURCE)
 
 streamripper-dirclean:
 	rm -rf $(STREAMRIPPER_DIR)

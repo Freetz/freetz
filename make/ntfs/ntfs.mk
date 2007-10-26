@@ -10,54 +10,24 @@ NTFS_TARGET_DIR:=$(PACKAGES_DIR)/ntfs-$(NTFS_VERSION)
 NTFS_TARGET_BINARY:=$(NTFS_TARGET_DIR)/root/usr/bin/ntfs-3g
 NTFS_STARTLEVEL=30
 
+$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += touch configure.in aclocal.m4 Makefile.in include/config.h.in configure ;
+$(PACKAGE_UC)_CONFIGURE_ENV += FUSE_MODULE_CFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include/fuse"
+$(PACKAGE_UC)_CONFIGURE_ENV += FUSE_MODULE_LIBS="-pthread -lfuse -ldl"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-shared
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-kernel-module
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-lib
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-util
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-example
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-auto-modprobe
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-kernel="$(shell pwd)/../$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-mtab
+
+
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_BIN_UNPACKED)
-
-$(NTFS_DIR)/.configured: $(NTFS_DIR)/.unpacked
-	(cd $(NTFS_DIR); rm -f config.cache; \
-		touch configure.in ; \
-		touch aclocal.m4 ; \
-		touch Makefile.in ; \
-		touch include/config.h.in ; \
-		touch configure ; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		FUSE_MODULE_CFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include/fuse" \
-		FUSE_MODULE_LIBS="-pthread -lfuse -ldl" \
-		./configure \
-			--target=$(GNU_TARGET_NAME) \
-			--host=$(GNU_TARGET_NAME) \
-			--build=$(GNU_HOST_NAME) \
-			--program-prefix="" \
-			--program-suffix="" \
-			--prefix=/usr \
-			--exec-prefix=/usr \
-			--bindir=/usr/bin \
-			--datadir=/usr/share \
-			--includedir=/usr/include \
-			--infodir=/usr/share/info \
-			--libdir=/usr/lib \
-			--libexecdir=/usr/lib \
-			--localstatedir=/var \
-			--mandir=/usr/share/man \
-			--sbindir=/usr/sbin \
-			--sysconfdir=/etc \
-			$(DISABLE_LARGEFILE) \
-			$(DISABLE_NLS) \
-			--disable-shared \
-			--enable-static \
-			--disable-rpath \
-			--enable-kernel-module \
-			--enable-lib \
-			--enable-util \
-			--disable-example \
-			--disable-auto-modprobe \
-			--with-kernel="$(shell pwd)/../$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/" \
-			--disable-mtab \
-	);
-	touch $@
+$(PACKAGE_CONFIGURED_CONFIGURE)
 
 $(NTFS_BINARY): $(NTFS_DIR)/.configured
 	PATH="$(TARGET_PATH)" \

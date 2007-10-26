@@ -11,26 +11,15 @@ CTORRENT_TARGET_BINARY:=$(CTORRENT_TARGET_DIR)/root/usr/bin/ctorrent
 CTORRENT_PKG_VERSION:=0.1
 CTORRENT_STARTLEVEL=40
 
+$(PACKAGE_UC)_CONFIGURE_ENV += CXXFLAGS="-Os"
+$(PACKAGE_UC)_CONFIGURE_ENV += CXX="mipsel-linux-g++-uc"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-ssl=no
+
+
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_BIN_UNPACKED)
-
-$(CTORRENT_DIR)/.configured: $(CTORRENT_DIR)/.unpacked 
-	( cd $(CTORRENT_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include " \
-		CXXFLAGS="-Os" \
-		LIBS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		CXX="mipsel-linux-g++-uc" \
-		./configure \
-		--target="$(GNU_TARGET_NAME)" \
-		--host="$(GNU_TARGET_NAME)" \
-		--build="$(GNU_HOST_NAME)" \
-		--prefix=/usr \
-		--with-ssl=no \
-	);
-	touch $@
-
+$(PACKAGE_CONFIGURED_CONFIGURE)
+		
 $(CTORRENT_BINARY): $(CTORRENT_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(CTORRENT_DIR) all
@@ -51,7 +40,6 @@ ctorrent-clean:
 ctorrent-dirclean:
 	rm -rf $(CTORRENT_DIR)
 	rm -rf $(PACKAGES_DIR)/ctorrent-$(CTORRENT_VERSION)
-	rm -f $(PACKAGES_DIR)/.ctorrent-$(CTORRENT_VERSION)
 
 ctorrent-uninstall:
 	rm -f $(CTORRENT_TARGET_BINARY)

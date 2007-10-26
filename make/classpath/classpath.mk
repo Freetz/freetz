@@ -14,30 +14,18 @@ CLASSPATH_LIB_BINARY:=$(CLASSPATH_DIR)/native/jni/java-lang/.libs/libjavalang.so
 CLASSPATH_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
 CLASSPATH_STARTLEVEL=40
 
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-gtk-peer
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-qt-peer
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-gconf-peer
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-plugin       
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-ecj               
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-Werror
+
+
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_BIN_UNPACKED)
-
-$(CLASSPATH_DIR)/.configured: $(CLASSPATH_DIR)/.unpacked
-	( cd $(CLASSPATH_DIR); rm -f config.status; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		./configure \
-		--target="$(GNU_TARGET_NAME)" \
-		--host="$(GNU_TARGET_NAME)" \
-		--build="$(GNU_HOST_NAME)" \
-		--prefix="/usr" \
-		--disable-gtk-peer \
-		--disable-qt-peer \
-		--disable-gconf-peer \
-		--without-libiconv-prefix \
-		--disable-plugin \
-		--with-ecj \
-		--disable-Werror \
-	);
-	touch $@
+$(PACKAGE_CONFIGURED_CONFIGURE)
 
 $(CLASSPATH_BINARY) $(CLASSPATH_LIB_BINARY): $(CLASSPATH_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
@@ -85,7 +73,6 @@ classpath-clean:
 classpath-dirclean:
 	rm -rf $(CLASSPATH_DIR)
 	rm -rf $(PACKAGES_DIR)/classpath-$(CLASSPATH_VERSION)
-	rm -f $(PACKAGES_DIR)/.classpath-$(CLASSPATH_VERSION)
 
 classpath-uninstall:
 	rm -f $(CLASSPATH_TARGET_BINARY)
