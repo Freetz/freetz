@@ -63,6 +63,13 @@ TARGET_CONFIGURE_OPTS:= \
 	#GCC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc" \
 	#CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++" \
 	#RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
+
+# commands to run before calling configure
+# each command has to be terminated by ';'
+TARGET_CONFIGURE_PRE_CMDS:=
+TARGET_CONFIGURE_PRE_CMDS += $(RM) config.{cache,status} ;
+
+# setup environment for configure
 TARGET_CONFIGURE_ENV:=$(TARGET_CONFIGURE_OPTS)
 
 # Common options for configure
@@ -196,8 +203,35 @@ endef
 PACKAGE_BIN_UNPACKED=$(eval $(PACKAGE_BIN_UNPACKED__INT))
 PACKAGE_LIB_UNPACKED=$(eval $(PACKAGE_LIB_UNPACKED__INT))
 
+## configure package, using ./configure
+define PACKAGE_CONFIGURED_CONFIGURE__INT
+$($(PACKAGE_UC)_DIR)/.configured: $($(PACKAGE_UC)_DIR)/.unpacked
+	( cd $($(PACKAGE_UC)_DIR); \
+		$(TARGET_CONFIGURE_PRE_CMDS) \
+		$($(PACKAGE_UC)_CONFIGURE_PRE_CMDS) \
+		$(TARGET_CONFIGURE_ENV) \
+		$($(PACKAGE_UC)_CONFIGURE_ENV) \
+		./configure \
+		$(TARGET_CONFIGURE_OPTIONS) \
+		$($(PACKAGE_UC)_CONFIGURE_OPTIONS) \
+	)
+	touch $$@
+$(PACKAGE_LC)-configured: $($(PACKAGE_UC)_DIR)/.configured
+.PHONY: $(PACKAGE_LC)-configured
+endef
+PACKAGE_CONFIGURED_CONFIGURE=$(eval $(PACKAGE_CONFIGURED_CONFIGURE__INT))
 
-## 
+## package needs no configuration
+define PACKAGE_CONFIGURED_NOP__INT
+$($(PACKAGE_UC)_DIR)/.configured: $($(PACKAGE_UC)_DIR)/.unpacked
+	touch $@
+$(PACKAGE_LC)-configured: $($(PACKAGE_UC)_DIR)/.configured
+.PHONY: $(PACKAGE_LC)-configured
+endef
+PACKAGE_CONFIGURED_NOP=$(eval $(PACKAGE_CONFIGURED_NOP__INT))
+
+
+## Add package to static or dynamic list
 define PACKAGE_LIST__INT
 $(PACKAGE_LC)-list:
 ifeq ($(strip $(DS_PACKAGE_$(PACKAGE_UC))),y)
