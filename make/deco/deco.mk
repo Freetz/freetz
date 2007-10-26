@@ -1,5 +1,5 @@
-PACKAGE_LC:=curl
-PACKAGE_UC:=CURL
+PACKAGE_LC:=deco
+PACKAGE_UC:=DECO
 DECO_VERSION:=39
 DECO_SOURCE:=deco$(DECO_VERSION).tgz
 DECO_SITE:=http://mesh.dl.sourceforge.net/sourceforge/deco
