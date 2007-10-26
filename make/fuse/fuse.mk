@@ -21,7 +21,7 @@ FUSE_STARTLEVEL=40
 FUSE_DS_CONFIG_FILE:=$(FUSE_MAKE_DIR)/.ds_config
 FUSE_DS_CONFIG_TEMP:=$(FUSE_MAKE_DIR)/.ds_config.temp
 
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS +=	touch configure.in aclocal.m4 Makefile.in include/config.h.in configure ;
+$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += touch configure.in aclocal.m4 Makefile.in include/config.h.in configure ;
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
@@ -30,7 +30,7 @@ $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-lib
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-util
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-example
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-auto-modprobe
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-kernel="$(shell pwd)/$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-kernel="$(shell pwd)/$(KERNEL_SOURCE_DIR)"
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-mtab
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-gnu-ld
 
@@ -88,7 +88,7 @@ $(FUSE_LIB_STAGING_BINARY): $(FUSE_LIB_BINARY)
 		install
 
 $(FUSE_TARGET_BINARY): $(FUSE_BINARY)
-	mkdir -p $(dir $(DECO_TARGET_BINARY)
+	mkdir -p $(dir $(FUSE_TARGET_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $(FUSE_MOD_TARGET_BINARY): $(FUSE_MOD_BINARY)
@@ -96,6 +96,7 @@ $(FUSE_MOD_TARGET_BINARY): $(FUSE_MOD_BINARY)
 	cp $^ $@
 
 $(FUSE_LIB_TARGET_BINARY): $(FUSE_LIB_STAGING_BINARY)
+	mkdir -p $(FUSE_TARGET_DIR)/root/usr/lib
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_TARGET_DIR)/root/usr/lib
 	$(TARGET_STRIP) $@
 

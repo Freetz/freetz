@@ -224,7 +224,7 @@ PACKAGE_CONFIGURED_CONFIGURE=$(eval $(PACKAGE_CONFIGURED_CONFIGURE__INT))
 ## package needs no configuration
 define PACKAGE_CONFIGURED_NOP__INT
 $($(PACKAGE_UC)_DIR)/.configured: $($(PACKAGE_UC)_DIR)/.unpacked
-	touch $@
+	touch $$@
 $(PACKAGE_LC)-configured: $($(PACKAGE_UC)_DIR)/.configured
 .PHONY: $(PACKAGE_LC)-configured
 endef

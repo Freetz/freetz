@@ -24,7 +24,7 @@ $(LSOF_DIR)/.configured: $(LSOF_DIR)/.unpacked
 	touch $@
 
 $(LSOF_BINARY): $(LSOF_DIR)/.configured
-	PATH="$(TARGET_PATH)" \ 
+	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(LSOF_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC=$(TARGET_CC) \

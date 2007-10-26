@@ -15,14 +15,6 @@ $(PACKAGE_UC)_CONFIGURE_ENV += FUSE_MODULE_CFLAGS="-I$(TARGET_MAKE_PATH)/../usr/
 $(PACKAGE_UC)_CONFIGURE_ENV += FUSE_MODULE_LIBS="-pthread -lfuse -ldl"
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-shared
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-kernel-module
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-lib
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-util
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-example
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-auto-modprobe
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-kernel="$(shell pwd)/../$(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1/"
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-mtab
 
 
 $(PACKAGE_SOURCE_DOWNLOAD)

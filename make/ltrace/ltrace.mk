@@ -22,10 +22,10 @@ LTRACE_STARTLEVEL=40
 #     of a Subversion client (svn checkout), we provide the ltrace source
 #     package as a download on DS-Mod mirrors and use DL_TOOL to download it.
 	
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS +=	cd $(LTRACE_DIR); ./autogen.sh 
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS +=	( cd $(LTRACE_DIR)/sysdeps/linux-gnu/mipsel; \
-										../mksyscallent $(TARGET_MAKE_PATH)/../include/asm/unistd.h > syscallent.h; \
-										../mksignalent $(TARGET_MAKE_PATH)/../include/asm/signal.h > signalent.h; );
+$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += ./autogen.sh ;
+$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += ( cd /sysdeps/linux-gnu/mipsel; \
+					../mksyscallent $(TARGET_MAKE_PATH)/../include/asm/unistd.h > syscallent.h; \
+					../mksignalent $(TARGET_MAKE_PATH)/../include/asm/signal.h > signalent.h; );
 $(PACKAGE_UC)_CONFIGURE_ENV += LD="$(TARGET_LD)"
 
 

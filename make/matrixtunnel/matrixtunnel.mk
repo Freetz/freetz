@@ -15,6 +15,7 @@ MATRIXTUNNEL_STARTLEVEL=40
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-matrixssl-src="$(shell pwd)/$(MATRIXSSL_DIR)"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += LDFLAGS="-lpthread"
 
 
 $(PACKAGE_SOURCE_DOWNLOAD)
