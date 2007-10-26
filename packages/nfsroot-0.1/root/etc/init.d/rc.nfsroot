@@ -35,6 +35,8 @@ Examples:
 EOF
 }
 
+NFSROOT_ENV_VAR=nfs
+
 start()
 {
 	[ -e /proc/mounts ] || mount proc
@@ -46,7 +48,7 @@ start()
 	# Remove leading and trailing spaces from nfsroot. Trailing invisible
 	# garbage can be part of the value if the user defines the variable via
 	# Putty directly at the Eva console prompt via copy & paste.
-	nfsroot=$(cat /proc/sys/urlader/environment | sed -rn 's/^nfsroot[[:space:]]+([^[:space:]]+).*/\1/p')
+	nfsroot=$(sed -rn "s/^$NFSROOT_ENV_VAR[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
 	server="${nfsroot%:*}"
 
 	if [ -z "$nfsroot" ]; then
@@ -70,7 +72,7 @@ start()
 
 	echo "*** Initialising network interfaces ... ***"
 	# Start multid temporarily (not needed anymore after setup)
-	multid -tiu
+	multid -tiu || multid -ti
 	sleep 2
 	multid -s
 
@@ -150,17 +152,17 @@ case "$1" in
 		;;
 	share)
 		if [ "$2" ]; then
-			echo "nfsroot $2" > /proc/sys/urlader/environment
+			echo "$NFSROOT_ENV_VAR $2" > /proc/sys/urlader/environment
 			echo "NFS share name added to bootloader environment"
 		else
-			nfs_share=$(cat /proc/sys/urlader/environment | sed -nr 's/^nfsroot[[:space:]]+(.*)/\1/p')
+			nfs_share=$(sed -nr "s/^$NFSROOT_ENV_VAR[[:space:]]+(.*)/\1/p" /proc/sys/urlader/environment)
 			[ -n "$nfs_share" ] \
 				&& echo "$nfs_share" \
 				|| echo "NFS share name is currently empty"
 		fi
 		;;
 	noshare)
-		echo "nfsroot" > /proc/sys/urlader/environment
+		echo "$NFSROOT_ENV_VAR" > /proc/sys/urlader/environment
 		echo "NFS share name removed from bootloader environment"
 		;;
 	*)
