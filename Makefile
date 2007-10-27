@@ -35,6 +35,7 @@ IMAGE:=
 LOCALIP:=
 RECOVER:=
 
+DSMOD_BASE_DIR:=$(shell pwd)
 ADDON_DIR:=addon
 BUILD_DIR:=build
 DL_DIR:=dl
