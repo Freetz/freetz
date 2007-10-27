@@ -52,17 +52,10 @@ TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.commen
 
 TARGET_PATH:=$(TARGET_MAKE_PATH):/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 # A better name for TARGET_CONFIGURE_OPTS would by TARGET_CONFIGURE_ENV, but that would require changes to all makefiles
+# usage is depricated
 # see also TARGET_CONFIGURE_OPTIONS
-TARGET_CONFIGURE_OPTS:= \
-	PATH="$(TARGET_PATH)"
-	#AR="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar" \
-	#AS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as" \
-	#LD="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld" \
-	#NM="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm" \
-	#CC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc" \
-	#GCC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc" \
-	#CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++" \
-	#RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
+# NOTE: defined with "=", not with ":="
+TARGET_CONFIGURE_OPTS = $(TARGET_CONFIGURE_ENV)
 
 # commands to run before calling configure
 # each command has to be terminated by ';'
@@ -70,7 +63,22 @@ TARGET_CONFIGURE_PRE_CMDS:=
 TARGET_CONFIGURE_PRE_CMDS += $(RM) config.{cache,status} ;
 
 # setup environment for configure
-TARGET_CONFIGURE_ENV:=$(TARGET_CONFIGURE_OPTS)
+TARGET_CONFIGURE_ENV:=
+TARGET_CONFIGURE_ENV += PATH="$(TARGET_PATH)"
+#TARGET_CONFIGURE_ENV += AR="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar"
+#TARGET_CONFIGURE_ENV += AS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as"
+#TARGET_CONFIGURE_ENV += LD="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld"
+#TARGET_CONFIGURE_ENV += NM="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm"
+#TARGET_CONFIGURE_ENV += CC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc"
+#TARGET_CONFIGURE_ENV += GCC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc"
+#TARGET_CONFIGURE_ENV += CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++"
+#TARGET_CONFIGURE_ENV += RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
+
+# more environment for configure, predefine values that can't be determined because we are cross-compiling
+# Todo: maybe create an extra file for these and source that file instead of passing all on the command line
+TARGET_CONFIGURE_ENV += ac_cv_c_bigendian=no
+TARGET_CONFIGURE_ENV += ac_cv_type_pid_t=yes
+
 
 # Common options for configure
 TARGET_CONFIGURE_OPTIONS:=
@@ -91,6 +99,7 @@ TARGET_CONFIGURE_OPTIONS += --localstatedir=/var
 TARGET_CONFIGURE_OPTIONS += --mandir=/usr/share/man
 TARGET_CONFIGURE_OPTIONS += --sbindir=/usr/sbin
 TARGET_CONFIGURE_OPTIONS += --sysconfdir=/etc
+TARGET_CONFIGURE_OPTIONS += --with-gnu-ld
 TARGET_CONFIGURE_OPTIONS += $(DISABLE_NLS)
 TARGET_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
 # configure accepts these as environment or as arguments
