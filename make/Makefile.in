@@ -40,10 +40,10 @@ KERNEL_MAKE_PATH:=$(strip $(subst ",, $(DS_KERNEL_MAKE_PATH)))
 TARGET_CFLAGS:=$(strip $(subst ",, $(DS_TARGET_CFLAGS))) $(CFLAGS_LARGEFILE)
 
 ifneq ($(patsubst /%,/,$(TARGET_MAKE_PATH)),/)
-TARGET_MAKE_PATH:=$(shell pwd)/$(TARGET_MAKE_PATH)
+TARGET_MAKE_PATH:=$(DSMOD_BASE_DIR)/$(TARGET_MAKE_PATH)
 endif
 ifneq ($(patsubst /%,/,$(KERNEL_MAKE_PATH)),/)
-KERNEL_MAKE_PATH:=$(shell pwd)/$(KERNEL_MAKE_PATH)
+KERNEL_MAKE_PATH:=$(DSMOD_BASE_DIR)/$(KERNEL_MAKE_PATH)
 endif
 
 TARGET_CC:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc
@@ -73,12 +73,6 @@ TARGET_CONFIGURE_ENV += PATH="$(TARGET_PATH)"
 #TARGET_CONFIGURE_ENV += GCC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc"
 #TARGET_CONFIGURE_ENV += CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++"
 #TARGET_CONFIGURE_ENV += RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
-
-# more environment for configure, predefine values that can't be determined because we are cross-compiling
-# Todo: maybe create an extra file for these and source that file instead of passing all on the command line
-TARGET_CONFIGURE_ENV += ac_cv_c_bigendian=no
-TARGET_CONFIGURE_ENV += ac_cv_type_pid_t=yes
-
 
 # Common options for configure
 TARGET_CONFIGURE_OPTIONS:=
@@ -218,6 +212,7 @@ $($(PACKAGE_UC)_DIR)/.configured: $($(PACKAGE_UC)_DIR)/.unpacked
 	( cd $($(PACKAGE_UC)_DIR); \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
 		$($(PACKAGE_UC)_CONFIGURE_PRE_CMDS) \
+		source $(DSMOD_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
 		$(TARGET_CONFIGURE_ENV) \
 		$($(PACKAGE_UC)_CONFIGURE_ENV) \
 		./configure \
