@@ -12,11 +12,9 @@ MTR_TARGET_BINARY:=$(MTR_TARGET_DIR)/root/usr/sbin/mtr
 MTR_PKG_VERSION:=0.1
 MTR_STARTLEVEL=99
 
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += touch configure.in aclocal.m4 Makefile.in img/Makefile.in stamp-h.in config.h.in configure ;
-$(PACKAGE_UC)_CONFIGURE_ENV += ac_cv_lib_resolv_res_mkquery=yes
+#$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += touch configure.in aclocal.m4 Makefile.in img/Makefile.in stamp-h.in config.h.in configure ;
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-static
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-gnu-ld
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-gtk
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-ipv6
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-gtktest
