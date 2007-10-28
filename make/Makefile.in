@@ -51,7 +51,7 @@ TARGET_LD:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld
 TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.comment,.note,.pdr}
 
 TARGET_PATH:=$(TARGET_MAKE_PATH):/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
-# A better name for TARGET_CONFIGURE_OPTS would by TARGET_CONFIGURE_ENV, but that would require changes to all makefiles
+# A better name for TARGET_CONFIGURE_OPTS would be TARGET_CONFIGURE_ENV, but that would require changes to all makefiles
 # usage is depricated
 # see also TARGET_CONFIGURE_OPTIONS
 # NOTE: defined with "=", not with ":="
@@ -76,6 +76,7 @@ TARGET_CONFIGURE_ENV += PATH="$(TARGET_PATH)"
 
 # Common options for configure
 TARGET_CONFIGURE_OPTIONS:=
+TARGET_CONFIGURE_OPTIONS += --cache-file=$(DSMOD_BASE_DIR)/$(MAKE_DIR)/config.cache
 TARGET_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
 TARGET_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
 TARGET_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
@@ -124,6 +125,49 @@ define INSTALL_BINARY_STRIP
 cp $< $@
 $(TARGET_STRIP) $@
 endef
+
+### PACKAGE_INIT
+# init package. Must be called after PACKAGE_LC and PACKAGE_UC are defined
+# see also PACKAGE_FINI
+define PACKAGE_INIT__INT
+$(if $(PACKAGE_UC),,$(error PACKAGE_UC not defined))
+$(if $(PACKAGE_LC),,$(error PACKAGE_LC not defined))
+$(if $($(PACKAGE_UC)_VERSION),,$(error $(PACKAGE_UC)_VERSION not defined))
+# provide default values. The package may override these value
+$(PACKAGE_UC)_MAKE_DIR:=$(MAKE_DIR)/$(PACKAGE_LC)
+$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)
+$(PACKAGE_UC)_TARGET_DIR:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)
+endef
+PACKAGE_INIT=$(eval $(PACKAGE_INIT__INT))
+
+# init binary package
+define PACKAGE_INIT_BIN__INT
+PACKAGE_TYP:=BIN
+# level 90 for packages that are not actually started
+$(PACKAGE_UC)_STARTLEVEL=90
+endef
+PACKAGE_INIT_BIN=$(eval $(PACKAGE_INIT__INT))$(eval $(PACKAGE_INIT_BIN__INT))
+
+# init library package
+define PACKAGE_INIT_LIB__INT
+PACKAGE_TYP:=LIB
+endef
+PACKAGE_INIT_LIB=$(eval $(PACKAGE_INIT__INT))$(eval $(PACKAGE_INIT_LIB__INT))
+
+define PACKAGE_FINI_LIB__INT
+endef
+
+define PACKAGE_FINI_BIN__INT
+$(PACKAGE_LIST)
+endef
+
+### fini
+define PACKAGE_FINI__INT
+PACKAGE_UC:=
+PACKAGE_LC:=
+PACKAGE_TYP:=
+endef
+PACKAGE_FINI=$(eval $(PACKAGE_FINI_$(PACKAGE_TYP)_INT))$(eval $(PACKAGE_FINI__INT))
 
 
 ### download the source tar
@@ -205,6 +249,7 @@ endef
 
 PACKAGE_BIN_UNPACKED=$(eval $(PACKAGE_BIN_UNPACKED__INT))
 PACKAGE_LIB_UNPACKED=$(eval $(PACKAGE_LIB_UNPACKED__INT))
+PACKAGE_UNPACKED=$(eval $(PACKAGE_$(PACKAGE_TYP)_UNPACKED__INT))
 
 ## configure package, using ./configure
 define PACKAGE_CONFIGURED_CONFIGURE__INT

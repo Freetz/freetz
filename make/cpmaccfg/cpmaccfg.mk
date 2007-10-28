@@ -1,46 +1,38 @@
 PACKAGE_LC:=cpmaccfg
 PACKAGE_UC:=CPMACCFG
-CPMACCFG_VERSION:=0.4
-CPMACCFG_SOURCE:=cpmaccfg-$(CPMACCFG_VERSION).tar.gz
-CPMACCFG_SITE:=http://www.heimpold.de/dsmod
-CPMACCFG_MAKE_DIR:=$(MAKE_DIR)/cpmaccfg
-CPMACCFG_DIR:=$(SOURCE_DIR)/cpmaccfg-$(CPMACCFG_VERSION)
-CPMACCFG_BINARY:=$(CPMACCFG_DIR)/cpmaccfg
-CPMACCFG_PKG_VERSION:=0.2a
-CPMACCFG_PKG_NAME:=cpmaccfg-$(CPMACCFG_VERSION)
-CPMACCFG_TARGET_DIR:=$(PACKAGES_DIR)/$(CPMACCFG_PKG_NAME)
-CPMACCFG_TARGET_BINARY:=$(CPMACCFG_TARGET_DIR)/root/sbin/cpmaccfg
-CPMACCFG_STARTLEVEL=40
+$(PACKAGE_UC)_VERSION:=0.4
+$(PACKAGE_INIT_BIN)
+$(PACKAGE_UC)_SOURCE:=cpmaccfg-$($(PACKAGE_UC)_VERSION).tar.gz
+$(PACKAGE_UC)_SITE:=http://www.heimpold.de/dsmod
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/cpmaccfg
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/root/sbin/cpmaccfg
 
 
 $(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_BIN_UNPACKED)
+$(PACKAGE_UNPACKED)
 $(PACKAGE_CONFIGURED_CONFIGURE)
 
-$(CPMACCFG_BINARY): $(CPMACCFG_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		LD="$(TARGET_LD)" \
 		$(MAKE) -C $(CPMACCFG_DIR)
 
-$(CPMACCFG_TARGET_BINARY): $(CPMACCFG_BINARY)
-	mkdir -p $(dir $(CPMACCFG_TARGET_BINARY))
+$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+	mkdir -p $(dir $@)
 	$(INSTALL_BINARY_STRIP)
 
 cpmaccfg:
 
-cpmaccfg-precompiled: uclibc cpmaccfg $(CPMACCFG_TARGET_BINARY)
-
-cpmaccfg-source: $(CPMACCFG_DIR)/.unpacked
+cpmaccfg-precompiled: uclibc cpmaccfg $($(PACKAGE_UC)_TARGET_BINARY)
 
 cpmaccfg-clean:
 	-$(MAKE) -C $(CPMACCFG_DIR) clean
-	rm -f $(CPMACCFG_DIR)/.configured
+	$(RM) $(CPMACCFG_DIR)/.configured
 
 cpmaccfg-dirclean:
-	rm -rf $(CPMACCFG_DIR)
-	rm -rf $(PACKAGES_DIR)/$(CPMACCFG_PKG_NAME)
+	$(RM) -r $(CPMACCFG_DIR)
+	$(RM) -r $(CPMACCFG_TARGET_DIR)
 
 cpmaccfg-uninstall:
-	rm -f $(CPMACCFG_TARGET_BINARY)
+	$(RM) $(CPMACCFG_TARGET_BINARY)
 
-$(PACKAGE_LIST)
+$(PACKAGE_FINI)
