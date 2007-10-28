@@ -39,7 +39,6 @@ lua-source: $(LUA_DIR)/.unpacked
 
 lua-clean:
 	-$(MAKE) -C $(LUA_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(LUA_PKG_SOURCE)
 
 lua-dirclean:
 	rm -rf $(LUA_DIR)

@@ -1,0 +1,36 @@
+config DS_PACKAGE_RUBY
+	bool "Ruby 1.8.6"
+	default n
+	help
+		Ruby is a dynamic, open source programming language with a focus on
+		simplicity and productivity. It has an elegant syntax that is natural
+		to read and easy to write.
+
+		Ruby is a language of careful balance. Its creator, Yukihiro "matz"
+		Matsumoto, blended parts of his favorite languages (Perl, Smalltalk,
+		Eiffel, Ada, and Lisp) to form a new language that balanced functional
+		programming with imperative programming. He has often said that he is
+		"trying to make Ruby natural, not simple". Ruby is simple in appearance,
+		but is very complex inside.
+
+		http://www.ruby-lang.org/
+
+		This package contains
+		  - the Ruby interpreter (ca. 800 KB stripped size),
+		  - the interactive Ruby console (irb),
+		  - the full Ruby API, i.e. all *.rb modules (ca. 4.7 MB),
+		  - all *.so extension libraries (ca. 1.0 MB stripped size). These may
+		    also be linked in statically or not built at all, but there is no
+		    menuconfig option for it. Do this yourself according to Ruby's
+		    README if you like.
+		I.e. in total we have about 5.5 MB of installed files of which you may
+		strip away unneeded ones from packages/ruby-1.8.6 manually as you see
+		fit. Do this after "make precompiled", but before "make".
+
+		By the way: Ruby modules are well compressible, so the full monty just
+		needs about 1.3 MB inside the firmware image. So even if you are not
+		working with Downloader CGI or NFS root, Ruby may well fit into your
+		image along with several other packages, if you have an 8 MB box.
+
+		ATTENTION: You should have installed the same Ruby version on your host
+		in order to be able to successfully build the target version!
