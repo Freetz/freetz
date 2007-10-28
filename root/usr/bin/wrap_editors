@@ -50,6 +50,11 @@ edit_file()
 		exit $exitval
 	fi
 	local save="y"
+	if cmp -s "$tmp" "$2" 2> /dev/null; then
+		echo "aborted - file '$2' not changed"
+		rm -f $tmp
+		return 1
+	fi
 	if [ "$(head -n1 /tmp/flash/ask_save 2>/dev/null)" != "0" ]; then
 		echo -n "Are you sure you want to save the changes made? (y/n) "
 		read -n 1 -s save
