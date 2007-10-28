@@ -1,6 +1,7 @@
 PACKAGE_LC:=bridge-utils
 PACKAGE_UC:=BRIDGE_UTILS
-BRIDGE_UTILS_VERSION:=1.2
+$(PACKAGE_UC)_VERSION:=1.2
+$(PACKAGE_INIT_BIN)
 BRIDGE_UTILS_SOURCE:=bridge-utils-$(BRIDGE_UTILS_VERSION).tar.gz
 BRIDGE_UTILS_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bridge
 BRIDGE_UTILS_MAKE_DIR:=$(MAKE_DIR)/bridge-utils
@@ -22,33 +23,30 @@ $(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-linux-headers=$(KERNEL_DIR)/linux/incl
 
 
 $(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_BIN_UNPACKED)
+$(PACKAGE_UNPACKED)
 $(PACKAGE_CONFIGURED_CONFIGURE)
 
 $(BRIDGE_UTILS_BINARY): $(BRIDGE_UTILS_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(BRIDGE_UTILS_DIR)
 
 $(BRIDGE_UTILS_TARGET_BINARY): $(BRIDGE_UTILS_BINARY)
-	mkdir -p $(dir $(BRIDGE_UTILS_TARGET_BINARY))
+	mkdir -p $(dir $@)
 	$(INSTALL_BINARY_STRIP)
 
 bridge-utils: uclibc $(BRIDGE_UTILS_TARGET_BINARY)
 
 bridge-utils-precompiled: bridge-utils $(BRIDGE_UTILS_TARGET_BINARY)
 
-#bridge-utils-source: $(BRIDGE_UTILS_DIR)/.unpacked $(PACKAGES_DIR)/.bridge-utils-$(BRIDGE_UTILS_VERSION)
-
 bridge-utils-clean:
 	-$(MAKE) -C $(BRIDGE_UTILS_DIR) clean
-#	rm -f $(PACKAGES_BUILD_DIR)/$(BRIDGE_UTILS_PKG_SOURCE)
 
 bridge-utils-dirclean:
-	rm -rf $(BRIDGE_UTILS_DIR)
-	rm -rf $(PACKAGES_DIR)/bridge-utils-$(BRIDGE_UTILS_VERSION)
-	rm -f $(PACKAGES_DIR)/.bridge-utils-$(BRIDGE_UTILS_VERSION)
+	$(RM) -r $(BRIDGE_UTILS_DIR)
+	$(RM) -r $(PACKAGES_DIR)/bridge-utils-$(BRIDGE_UTILS_VERSION)
+	$(RM) $(PACKAGES_DIR)/.bridge-utils-$(BRIDGE_UTILS_VERSION)
 
 bridge-utils-uninstall:
-	rm -f $(BRIDGE_UTILS_TARGET_BINARY)
+	$(RM) $(BRIDGE_UTILS_TARGET_BINARY)
 
 
-$(PACKAGE_LIST)
+$(PACKAGE_FINI)

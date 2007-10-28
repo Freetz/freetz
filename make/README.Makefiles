@@ -30,35 +30,60 @@ ${PACKAGE_LC}-dirclean
 ${PACKAGE_LC}-list
 	add package to the list of static or dynamic patches
 
+
 To use the convenience macros, you need some more defines:
-# PACKAGE_LC and PACKAGE_UC
+# PACKAGE_LC, PACKAGE_UC and VERSION
 PACKAGE_LC:=package-name
 PACKAGE_UC:=PACKAGE_NAME
-# replace PACKAGE_NAME with $PACKAGE_UC in the following lines
-# PACKAGE_NAME_VERSION is not strictly necessary, but simplifies version changes
-PACKAGE_NAME_VERSION:=1.2.3
+$(PACKAGE_UC)_VERSION:=1.2.3
+
+# initialize package macros, ether BINary or LIBrary.
+$(PACKAGE_INIT_BIN) or $(PACKAGE_INIT_LIB)
+
 # The download URL, split in directory part and filename
-PACKAGE_NAME_SITE:=http://www.server.net/download
-PACKAGE_NAME_SOURCE:=package-name-$(PACKAGE_NAME_VERSION).tar.gz
-# directory containing the makefiles
-PACKAGE_NAME_MAKE_DIR:=$(MAKE_DIR)/$(PACKAGE_LC)
+$(PACKAGE_UC)_SITE:=http://www.server.net/download
+$(PACKAGE_UC)_SOURCE:=package-name-$($(PACKAGE_UC)_VERSION).tar.gz
+
+# directory containing the makefiles. This value is the default from PACKAGE_INIT.
+# It should not be necessary to override this value.
+$(PACKAGE_UC)_MAKE_DIR:=$(MAKE_DIR)/$(PACKAGE_LC)
+
 # directory for sourcefile, "$(SOURCE_DIR)/" and the directory created by extracting the tar-file
-PACKAGE_NAME_DIR:=$(SOURCE_DIR)/bridge-utils-$(PACKAGE_NAME_VERSION)
-PACKAGE_NAME_PKG_SOURCE:=$(PACKAGE_LC)-$(PACKAGE_NAME_VERSION)-dsmod.tar.bz2
-PACKAGE_NAME_PKG_SITE:=http://www.server.net/download
-# order for inclusion in list of static or dynamic packages
-BRIDGE_UTILS_STARTLEVEL=40
+# This value is the default from PACKAGE_INIT.
+$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/package-name-$($(PACKAGE_UC)_VERSION)
+
+# target directory for the package. This value is the default from PACKAGE_INIT.
+# It should not be necessary to override this value.
+$(PACKAGE_UC)_TARGET_DIR:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)
+
+# order for inclusion in list of static or dynamic packages. Only for binary packages.
+# only necessary if the  package contains a run-script
+$(PACKAGE_UC)_STARTLEVEL=40
 
 
 # Now you can use these macros:
-# Download $(PACKAGE_NAME_SITE)/$(PACKAGE_NAME_SOURCE) to dl/$(PACKAGE_NAME_SOURCE)
+# Download $($(PACKAGE_UC)_SITE)/$($(PACKAGE_UC)_SOURCE) to dl/$($(PACKAGE_UC)_SOURCE)
 # defines $(PACKAGE_LC)-download
 $(PACKAGE_SOURCE_DOWNLOAD)
 
-# Unpack binary package von dl/$(PACKAGE_NAME_SOURCE) and apply patches
-$(PACKAGE_BIN_UNPACKED)
-# Unpack library package von dl/$(PACKAGE_NAME_SOURCE) and apply patches
-$(PACKAGE_LIB_UNPACKED)
+# Unpack binary or library package von dl/$($(PACKAGE_UC)_SOURCE) and apply patches
+$(PACKAGE_UNPACKED)
 
-# defines ${PACKAGE_LC}-list
-$(PACKAGE_LIST)
+# configure package with ./configure with standard options
+# common settings are read from config.mipsel, a common config.cache is enabled.
+# for special needs, use these macros:
+#  - $(PACKAGE_UC)_CONFIGURE_PRE_CMDS
+#    commands to execute before ./configure
+#    terminate each command with ';'
+#    example: $(PACKAGE_UC)_CONFIGURE_PRE_CMDS += autoconf --force ;
+#  - $(PACKAGE_UC)_CONFIGURE_ENV
+#    environment assignments before ./configure
+#    example: $(PACKAGE_UC)_CONFIGURE_ENV += ac_cv_special_value=yes
+#  - $(PACKAGE_UC)_CONFIGURE_OPTIONS
+#    options for ./configure
+#    example: $(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-foo --enable-bar
+$(PACKAGE_CONFIGURED_CONFIGURE)
+
+# Finalize package
+# defines ${PACKAGE_LC}-list for binary packages
+$(PACKAGE_FINI)

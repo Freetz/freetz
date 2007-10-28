@@ -143,8 +143,8 @@ PACKAGE_INIT=$(eval $(PACKAGE_INIT__INT))
 # init binary package
 define PACKAGE_INIT_BIN__INT
 PACKAGE_TYP:=BIN
-# level 90 for packages that are not actually started
-$(PACKAGE_UC)_STARTLEVEL=90
+# level 99 for packages that are not actually started
+$(PACKAGE_UC)_STARTLEVEL=99
 endef
 PACKAGE_INIT_BIN=$(eval $(PACKAGE_INIT__INT))$(eval $(PACKAGE_INIT_BIN__INT))
 
