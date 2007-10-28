@@ -12,16 +12,13 @@ RUBY_STARTLEVEL=99
 
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_BIN_UNPACKED)
+$(PACKAGE_UC)_CONFIGURE_PRE_CMDS:=autoreconf;
 $(PACKAGE_CONFIGURED_CONFIGURE)
 
-$(RUBY_DIR)/.reconfigured: $(RUBY_DIR)/.unpacked
-	(cd $(RUBY_DIR); autoreconf)
-	touch @
-
-$(RUBY_BINARY): $(RUBY_DIR)/.reconfigured $(RUBY_DIR)/.configured
+$(RUBY_BINARY): $(RUBY_DIR)/.configured
 	PATH="$(TARGET_PATH)" make -C $(RUBY_DIR)
 
-$(RUBY_TARGET_BINARY): $(RUBY_BINARY) 
+$(RUBY_TARGET_BINARY): $(RUBY_BINARY)
 	mkdir -p $(dir $(RUBY_TARGET_BINARY))
 	$(MAKE) DESTDIR=$(abspath $(RUBY_TARGET_DIR))/root -C $(RUBY_DIR) install
 	rm -rf $(RUBY_TARGET_DIR)/root/usr/{share,lib/*.a,lib/ruby/site_ruby,lib/ruby/1.8/mipsel-linux/*.{h,rb}}
