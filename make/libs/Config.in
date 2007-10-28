@@ -395,6 +395,8 @@ config DS_LIB_libglib
 		GLib is a library containing many useful C routines for things such as trees, 
 		hashes, and lists.
 
+menu "ncurses"
+
 config DS_LIB_libncurses
 	bool "ncurses (libncurses.so)"
 	default n
@@ -407,7 +409,44 @@ config DS_LIB_libncurses
 		Ncurses stands for "new curses", and is a replacement for the
 		discontinued 4.4 BSD classic curses.
 		
-		In DS-Mod, e.g. Lua, Bird, Lynx and Screen use libncurses.
+		In DS-Mod, e.g. Lua, Bird, Mc, Lynx and Screen use libncurses.
+
+source make/libs/ncurses-Config.in
+
+config DS_LIB_libform
+	bool "libform (libform.so)"
+	default n
+	select DS_LIB_libncurses
+	help
+		The form library is a curses extension that supports easy programming
+		of on-screen forms for data entry and program control.
+
+		In DS-Mod, there is currently no package which depends on this library.
+
+config DS_LIB_libmenu
+	bool "libmenu (libmenu.so)"
+	default n
+	select DS_LIB_libncurses
+	help
+		The menu library is a curses extension that supports easy programming of
+		menu hierarchies with a uniform but flexible interface.
+
+		In DS-Mod, there is currently no package which depends on this library.
+
+config DS_LIB_libpanel
+	bool "libpanel (libpanel.so)"
+	default n
+	select DS_LIB_libncurses
+	help
+		The ncurses library by itself provides good support for screen displays in
+		which the windows are tiled (non-overlapping).
+		When your interface design is such that windows may dive deeper into the
+		visibility stack or pop to the top at runtime, the resulting book-keeping
+		can be tedious and difficult to get right. Hence the panels library.
+
+		In DS-Mod, there is currently no package which depends on this library.
+
+endmenu
 
 config DS_LIB_libcapi20
 	bool "CAPI 2.0 (libcapi20.so)"
