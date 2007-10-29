@@ -1,23 +1,18 @@
-GLIBL_VERSION:=2.12.12
+PACKAGE_LC:=glibl
+PACKAGE_UC:=GLIBL
+$(PACKAGE_UC)_VERSION:=2.12.12
+$(PACKAGE_INIT_LIB)
 GLIBL_LIB_VERSION:=0.1200.12
 GLIBL_SOURCE:=glib-$(GLIBL_VERSION).tar.gz
 GLIBL_SITE:=ftp://ftp.gtk.org/pub/glib/2.12
-GLIBL_MAKE_DIR:=$(MAKE_DIR)/libs
 GLIBL_DIR:=$(SOURCE_DIR)/glib-$(GLIBL_VERSION)
 GLIBL_BINARY:=$(GLIBL_DIR)/glib/.libs/libglib-2.0.so.$(GLIBL_LIB_VERSION)
 GLIBL_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0.so.$(GLIBL_LIB_VERSION)
-GLIBL_TARGET_DIR:=root/usr/lib
 GLIBL_TARGET_BINARY:=$(GLIBL_TARGET_DIR)/libglib-2.0.so.$(GLIBL_LIB_VERSION)
 
-$(DL_DIR)/$(GLIBL_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(GLIBL_SITE)/$(GLIBL_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(GLIBL_DIR)/.unpacked: $(DL_DIR)/$(GLIBL_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(GLIBL_SOURCE)
-	for i in $(GLIBL_MAKE_DIR)/patches/*.glibl.patch; do \
-		$(PATCH_TOOL) $(GLIBL_DIR) $$i; \
-	done
-	touch $@
 
 $(GLIBL_DIR)/.configured: $(GLIBL_DIR)/.unpacked
 	( cd $(GLIBL_DIR); rm -f config.cache; \
@@ -56,7 +51,7 @@ $(GLIBL_DIR)/.configured: $(GLIBL_DIR)/.unpacked
 	);
 	touch $@
 
-$(GLIBL_BINARY): $(GLIBL_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(GLIBL_DIR)/glib \
 		all
@@ -77,8 +72,6 @@ glibl: $(GLIBL_STAGING_BINARY)
 
 glibl-precompiled: uclibc gettext-precompiled libiconv-precompiled glibl $(GLIBL_TARGET_BINARY)
 
-glibl-source: $(GLIBL_DIR)/.unpacked
-
 glibl-clean:
 	-$(MAKE) -C $(GLIBL_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0*
@@ -86,5 +79,4 @@ glibl-clean:
 glibl-uninstall:
 	rm -f $(GLIBL_TARGET_DIR)/libglib-2.0.so*
 
-glibl-dirclean:
-	rm -rf $(GLIBL_DIR)
+$(PACKAGE_FINI)

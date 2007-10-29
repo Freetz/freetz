@@ -1,24 +1,18 @@
-LIBPCAP_VERSION:=0.9.6
+PACKAGE_LC:=libpcap
+PACKAGE_UC:=LIBPCAP
+$(PACKAGE_UC)_VERSION:=0.9.6
+$(PACKAGE_INIT_LIB)
 LIBPCAP_LIB_VERSION:=$(LIBPCAP_VERSION)
 LIBPCAP_SOURCE:=libpcap-$(LIBPCAP_VERSION).tar.gz
 LIBPCAP_SITE:=http://www.tcpdump.org/release/
-LIBPCAP_MAKE_DIR:=$(MAKE_DIR)/libs
-LIBPCAP_DIR:=$(SOURCE_DIR)/libpcap-$(LIBPCAP_VERSION)
 LIBPCAP_BINARY:=$(LIBPCAP_DIR)/libpcap.so.$(LIBPCAP_LIB_VERSION)
 LIBPCAP_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so.$(LIBPCAP_LIB_VERSION)
-LIBPCAP_TARGET_DIR:=root/usr/lib
 LIBPCAP_TARGET_BINARY:=$(LIBPCAP_TARGET_DIR)/libpcap.so.$(LIBPCAP_LIB_VERSION)
 
 
-$(DL_DIR)/$(LIBPCAP_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(LIBPCAP_SITE)/$(LIBPCAP_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(LIBPCAP_DIR)/.unpacked: $(DL_DIR)/$(LIBPCAP_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBPCAP_SOURCE)
-	for i in $(LIBPCAP_MAKE_DIR)/patches/*.libpcap.patch; do \
-		$(PATCH_TOOL) $(LIBPCAP_DIR) $$i; \
-	done
-	touch $@
 
 $(LIBPCAP_DIR)/.configured: $(LIBPCAP_DIR)/.unpacked
 	( cd $(LIBPCAP_DIR); rm -f config.cache; \
@@ -67,11 +61,10 @@ $(LIBPCAP_DIR)/.configured: $(LIBPCAP_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBPCAP_BINARY): $(LIBPCAP_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(LIBPCAP_DIR) \
-		CCOPT="-fPIC $(TARGET_CFLAGS)" \
-		all
+		$(MAKE) -C $(LIBPCAP_DIR) all \
+		CCOPT="-fPIC $(TARGET_CFLAGS)"
 
 $(LIBPCAP_STAGING_BINARY): $(LIBPCAP_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
@@ -87,8 +80,6 @@ libpcap: $(LIBPCAP_STAGING_BINARY)
 
 libpcap-precompiled: uclibc libpcap $(LIBPCAP_TARGET_BINARY)
 
-libpcap-source: $(LIBPCAP_DIR)/.unpacked
-
 libpcap-clean:
 	-$(MAKE) -C $(LIBPCAP_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*
@@ -96,5 +87,4 @@ libpcap-clean:
 libpcap-uninstall:
 	rm -f $(LIBPCAP_TARGET_DIR)/libpcap*.so*
 
-libpcap-dirclean:
-	rm -rf $(LIBPCAP_DIR)
+$(PACKAGE_FINI)

@@ -1,23 +1,18 @@
-FTDI_VERSION:=0.7
+PACKAGE_LC:=ftdi
+PACKAGE_UC:=FTDI
+$(PACKAGE_UC)_VERSION:=0.7
+$(PACKAGE_INIT_LIB)
 FTDI_LIB_VERSION:=0.7.0
 FTDI_SOURCE:=libftdi-$(FTDI_VERSION).tar.gz
 FTDI_SITE:=http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ
-FTDI_MAKE_DIR:=$(MAKE_DIR)/libs
 FTDI_DIR:=$(SOURCE_DIR)/libftdi-$(FTDI_VERSION)
 FTDI_BINARY:=$(FTDI_DIR)/src/.libs/libftdi.so.$(FTDI_LIB_VERSION)
 FTDI_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi.so.$(FTDI_LIB_VERSION)
-FTDI_TARGET_DIR:=root/usr/lib
 FTDI_TARGET_BINARY:=$(FTDI_TARGET_DIR)/libftdi.so.$(FTDI_LIB_VERSION)
 
-$(DL_DIR)/$(FTDI_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(FTDI_SITE)/$(FTDI_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(FTDI_DIR)/.unpacked: $(DL_DIR)/$(FTDI_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FTDI_SOURCE)
-	#for i in $(FTDI_MAKE_DIR)/patches/*.ftdi.patch; do \
-	#	$(PATCH_TOOL) $(FTDI_DIR) $$i; \
-	#done
-	touch $@
 
 $(FTDI_DIR)/.configured: $(FTDI_DIR)/.unpacked
 	( cd $(FTDI_DIR); rm -f config.cache; \
@@ -51,9 +46,9 @@ $(FTDI_DIR)/.configured: $(FTDI_DIR)/.unpacked
 	);
 	touch $@
 
-$(FTDI_BINARY): $(FTDI_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	   $(MAKE) -C $(FTDI_DIR)  all
+	   $(MAKE) -C $(FTDI_DIR) all
 
 $(FTDI_STAGING_BINARY): $(FTDI_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
@@ -72,8 +67,6 @@ ftdi: $(FTDI_STAGING_BINARY)
 
 ftdi-precompiled: uclibc usb-precompiled ftdi $(FTDI_TARGET_BINARY)
 
-ftdi-source: $(FTDI_DIR)/.unpacked
-
 ftdi-clean:
 	-$(MAKE) -C $(FTDI_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*
@@ -81,5 +74,4 @@ ftdi-clean:
 ftdi-uninstall:
 	rm -f $(FTDI_TARGET_DIR)/libftdi*.so*
 
-ftdi-dirclean:
-	rm -rf $(FTDI_DIR)
+$(PACKAGE_FINI)

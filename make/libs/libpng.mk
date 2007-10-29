@@ -1,23 +1,17 @@
-LIBPNG_VERSION:=1.2.10
+PACKAGE_LC:=libpng
+PACKAGE_UC:=LIBPNG
+$(PACKAGE_UC)_VERSION:=1.2.10
+$(PACKAGE_INIT_LIB)
 LIBPNG_LIB_VERSION:=0.10.0
 LIBPNG_SOURCE:=libpng-$(LIBPNG_VERSION).tar.gz
 LIBPNG_SITE:=http://oss.oetiker.ch/rrdtool/pub/libs/
-LIBPNG_MAKE_DIR:=$(MAKE_DIR)/libs
-LIBPNG_DIR:=$(SOURCE_DIR)/libpng-$(LIBPNG_VERSION)
 LIBPNG_BINARY:=$(LIBPNG_DIR)/.libs/libpng12.so.$(LIBPNG_LIB_VERSION)
 LIBPNG_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.so.$(LIBPNG_LIB_VERSION)
-LIBPNG_TARGET_DIR:=root/usr/lib
 LIBPNG_TARGET_BINARY:=$(LIBPNG_TARGET_DIR)/libpng12.so.$(LIBPNG_LIB_VERSION)
 
-$(DL_DIR)/$(LIBPNG_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(LIBPNG_SITE)/$(LIBPNG_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(LIBPNG_DIR)/.unpacked: $(DL_DIR)/$(LIBPNG_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBPNG_SOURCE)
-	for i in $(LIBPNG_MAKE_DIR)/patches/*.libpng.patch; do \
-		$(PATCH_TOOL) $(LIBPNG_DIR) $$i; \
-	done
-	touch $@
 
 $(LIBPNG_DIR)/.configured: $(LIBPNG_DIR)/.unpacked
 	( cd $(LIBPNG_DIR); rm -f config.{cache,status} ; \
@@ -60,11 +54,13 @@ $(LIBPNG_DIR)/.configured: $(LIBPNG_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBPNG_BINARY): $(LIBPNG_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBPNG_DIR)
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(LIBPNG_DIR)
 
 $(LIBPNG_STAGING_BINARY): $(LIBPNG_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBPNG_DIR)\
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(LIBPNG_DIR)\
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	    install
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libpng12.la
@@ -86,8 +82,6 @@ libpng: $(LIBPNG_STAGING_BINARY)
 
 libpng-precompiled: uclibc zlib-precompiled libpng $(LIBPNG_TARGET_BINARY)
 
-libpng-source: $(LIBPNG_DIR)/.unpacked
-
 libpng-clean:
 	-$(MAKE) -C $(LIBPNG_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng*
@@ -95,5 +89,4 @@ libpng-clean:
 libpng-uninstall:
 	rm -f $(LIBPNG_TARGET_DIR)/libpng*.so*
 
-libpng-dirclean:
-	rm -rf $(LIBPNG_DIR)
+$(PACKAGE_FINI)

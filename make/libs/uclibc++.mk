@@ -1,8 +1,10 @@
-UCLIBCXX_VERSION:=0.2.2
+PACKAGE_LC:=uclibcxx
+PACKAGE_UC:=UCLIBCXX
+$(PACKAGE_UC)_VERSION:=0.2.2
+$(PACKAGE_INIT_LIB)
 UCLIBCXX_LIB_VERSION:=$(UCLIBCXX_VERSION)
 UCLIBCXX_SOURCE:=uClibc++-$(UCLIBCXX_VERSION).tar.bz2
 UCLIBCXX_SITE:=http://cxx.uclibc.org/src/
-UCLIBCXX_MAKE_DIR:=$(MAKE_DIR)/libs
 UCLIBCXX_DIR:=$(SOURCE_DIR)/uClibc++-$(UCLIBCXX_VERSION)
 UCLIBCXX_BINARY:=$(UCLIBCXX_DIR)/src/libuClibc++-$(UCLIBCXX_LIB_VERSION).so
 UCLIBCXX_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++-$(UCLIBCXX_LIB_VERSION).so
@@ -10,12 +12,9 @@ UCLIBCXX_TARGET_DIR:=root/lib
 UCLIBCXX_TARGET_BINARY:=$(UCLIBCXX_TARGET_DIR)/libuClibc++-$(UCLIBCXX_LIB_VERSION).so
 
 
-$(DL_DIR)/$(UCLIBCXX_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(UCLIBCXX_SITE)/$(UCLIBCXX_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(UCLIBCXX_DIR)/.unpacked: $(DL_DIR)/$(UCLIBCXX_SOURCE)
-	tar -C $(SOURCE_DIR) -xvjf $(DL_DIR)/$(UCLIBCXX_SOURCE)
-	touch $@
 
 $(UCLIBCXX_DIR)/.configured: $(UCLIBCXX_DIR)/.unpacked
 	cp $(UCLIBCXX_MAKE_DIR)/Config.uclibc++ $(UCLIBCXX_DIR)/.config
@@ -26,9 +25,9 @@ else
 endif
 	touch $@
 
-$(UCLIBCXX_BINARY): $(UCLIBCXX_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(UCLIBCXX_DIR) \
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		all
@@ -52,8 +51,6 @@ uclibcxx: $(UCLIBCXX_STAGING_BINARY)
 
 uclibcxx-precompiled: uclibc uclibcxx $(UCLIBCXX_TARGET_BINARY)
 
-uclibcxx-source: $(UCLIBCXX_DIR)/.unpacked
-
 uclibcxx-clean:
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-g++-uc
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
@@ -63,5 +60,4 @@ uclibcxx-clean:
 uclibcxx-uninstall:
 	rm -f $(UCLIBCXX_TARGET_DIR)/libuClibc++*.so*
 
-uclibcxx-dirclean:
-	rm -rf $(UCLIBCXX_DIR)
+$(PACKAGE_FINI)

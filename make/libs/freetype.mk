@@ -1,23 +1,17 @@
-FREETYPE_VERSION:=2.3.1
+PACKAGE_LC:=freetype
+PACKAGE_UC:=FREETYPE
+$(PACKAGE_UC)_VERSION:=2.3.1
+$(PACKAGE_INIT_LIB)
 FREETYPE_LIB_VERSION:=6.3.12
 FREETYPE_SOURCE:=freetype-$(FREETYPE_VERSION).tar.bz2
 FREETYPE_SITE:=http://download.savannah.gnu.org/releases/freetype
-FREETYPE_MAKE_DIR:=$(MAKE_DIR)/libs
-FREETYPE_DIR:=$(SOURCE_DIR)/freetype-$(FREETYPE_VERSION)
 FREETYPE_BINARY:=$(FREETYPE_DIR)/objs/.libs/libfreetype.so.$(FREETYPE_LIB_VERSION)
 FREETYPE_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype.so.$(FREETYPE_LIB_VERSION)
-FREETYPE_TARGET_DIR:=root/usr/lib
 FREETYPE_TARGET_BINARY:=$(FREETYPE_TARGET_DIR)/libfreetype.so.$(FREETYPE_LIB_VERSION)
 
-$(DL_DIR)/$(FREETYPE_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(FREETYPE_SITE)/$(FREETYPE_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(FREETYPE_DIR)/.unpacked: $(DL_DIR)/$(FREETYPE_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(FREETYPE_SOURCE)
-	for i in $(FREETYPE_MAKE_DIR)/patches/*.freetype.patch; do \
-		$(PATCH_TOOL) $(FREETYPE_DIR) $$i; \
-	done
-	touch $@
 
 $(FREETYPE_DIR)/.configured: $(FREETYPE_DIR)/.unpacked
 	( cd $(FREETYPE_DIR); rm -f config.{cache,status} ; \
@@ -54,8 +48,9 @@ $(FREETYPE_DIR)/.configured: $(FREETYPE_DIR)/.unpacked
 	);
 	touch $@
 
-$(FREETYPE_BINARY): $(FREETYPE_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(FREETYPE_DIR)
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(FREETYPE_DIR)
 
 $(FREETYPE_STAGING_BINARY): $(FREETYPE_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
@@ -79,8 +74,6 @@ freetype: $(FREETYPE_STAGING_BINARY)
 
 freetype-precompiled: uclibc zlib-precompiled freetype $(FREETYPE_TARGET_BINARY)
 
-freetype-source: $(FREETYPE_DIR)/.unpacked
-
 freetype-clean:
 	-$(MAKE) -C $(FREETYPE_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/freetype*
@@ -88,5 +81,4 @@ freetype-clean:
 freetype-uninstall:
 	rm -f $(FREETYPE_TARGET_DIR)/freetype*.so*
 
-freetype-dirclean:
-	rm -rf $(FREETYPE_DIR)
+$(PACKAGE_FINI)

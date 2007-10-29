@@ -1,24 +1,19 @@
-PJSIP_VERSION:=0.7.0
+PACKAGE_LC:=pjsip
+PACKAGE_UC:=PJSIP
+$(PACKAGE_UC)_VERSION:=0.7.0
+$(PACKAGE_INIT_LIB)
 PJSIP_LIB_VERSION:=0.7.0
 PJSIP_SOURCE:=pjproject-0.7.0.tar.gz
 PJSIP_SITE:=http://fritz.v3v.de/dtmfbox/libs
-PJSIP_MAKE_DIR:=$(MAKE_DIR)/libs
 PJSIP_DIR:=$(SOURCE_DIR)/pjproject-0.7.0
 PJSIP_BINARY:=$(PJSIP_DIR)/pjsip/lib/libpjsip.a
 PJSIP_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpjsip.a
 # only static lib
-#PJSIP_TARGET_DIR:=root/usr/lib
 #PJSIP_TARGET_BINARY:=$(PJSIP_TARGET_DIR)/libpjsip.so.$(PJSIP_LIB_VERSION)
 
-$(DL_DIR)/$(PJSIP_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(PJSIP_SITE)/$(PJSIP_SOURCE)
-    
-$(PJSIP_DIR)/.unpacked: $(DL_DIR)/$(PJSIP_SOURCE)
-	tar -C $(SOURCE_DIR) -xvzf $(DL_DIR)/$(PJSIP_SOURCE)	
-	for i in $(PJSIP_MAKE_DIR)/patches/*.pjsip.patch; do \
-	    $(PATCH_TOOL) $(PJSIP_DIR) $$i; \
-	done
-	touch $@
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
+
 
 $(PJSIP_DIR)/.configured: $(PJSIP_DIR)/.unpacked
 	( cd $(PJSIP_DIR); rm -f config.{cache,status}; \
@@ -88,8 +83,6 @@ pjsip: $(PJSIP_STAGING_BINARY)
 
 pjsip-precompiled: uclibc pjsip #$(PJSIP_TARGET_BINARY)
 
-pjsip-source: $(PJSIP_DIR)/.unpacked
-
 pjsip-clean:
 	-$(MAKE) -C $(PJSIP_DIR) \
 	    TARGET_NAME="$(REAL_GNU_TARGET_NAME)" \
@@ -101,5 +94,4 @@ pjsip-clean:
 #pjsip-uninstall:
 #	rm -f $(PJSIP_TARGET_DIR)/libpjsip*.so*
     
-pjsip-dirclean:
-	rm -rf $(PJSIP_DIR)
+$(PACKAGE_FINI)

@@ -1,23 +1,17 @@
-LIBEVENT_VERSION:=1.3e
+PACKAGE_LC:=libevent
+PACKAGE_UC:=LIBEVENT
+$(PACKAGE_UC)_VERSION:=1.3e
+$(PACKAGE_INIT_LIB)
 LIBEVENT_LIB_VERSION:=1.0.3
 LIBEVENT_SOURCE:=libevent-$(LIBEVENT_VERSION).tar.gz
 LIBEVENT_SITE:=http://www.monkey.org/~provos
-LIBEVENT_MAKE_DIR:=$(MAKE_DIR)/libs
-LIBEVENT_DIR:=$(SOURCE_DIR)/libevent-$(LIBEVENT_VERSION)
 LIBEVENT_BINARY:=$(LIBEVENT_DIR)/.libs/libevent-$(LIBEVENT_VERSION).so.$(LIBEVENT_LIB_VERSION)
 LIBEVENT_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent-$(LIBEVENT_VERSION).so.$(LIBEVENT_LIB_VERSION)
-LIBEVENT_TARGET_DIR:=root/usr/lib
 LIBEVENT_TARGET_BINARY:=$(LIBEVENT_TARGET_DIR)/libevent-$(LIBEVENT_VERSION).so.$(LIBEVENT_LIB_VERSION)
 
-$(DL_DIR)/$(LIBEVENT_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(LIBEVENT_SITE)/$(LIBEVENT_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(LIBEVENT_DIR)/.unpacked: $(DL_DIR)/$(LIBEVENT_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBEVENT_SOURCE)
-	#for i in $(LIBEVENT_MAKE_DIR)/patches/*.libevent.patch; do \
-	#	$(PATCH_TOOL) $(LIBEVENT_DIR) $$i; \
-	#done
-	touch $@
 
 $(LIBEVENT_DIR)/.configured: $(LIBEVENT_DIR)/.unpacked
 	( cd $(LIBEVENT_DIR); rm -f config.status; \
@@ -52,7 +46,7 @@ $(LIBEVENT_DIR)/.configured: $(LIBEVENT_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBEVENT_BINARY): $(LIBEVENT_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(LIBEVENT_DIR)
 
@@ -72,8 +66,6 @@ libevent: $(LIBEVENT_STAGING_BINARY)
 
 libevent-precompiled: uclibc libevent $(LIBEVENT_TARGET_BINARY)
 
-libevent-source: $(LIBEVENT_DIR)/.unpacked
-
 libevent-clean:
 	-$(MAKE) -C $(LIBEVENT_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*
@@ -81,5 +73,4 @@ libevent-clean:
 libevent-uninstall:
 	rm -f $(LIBEVENT_TARGET_DIR)/libevent*.so*
 
-libevent-dirclean:
-	rm -rf $(LIBEVENT_DIR)
+$(PACKAGE_FINI)

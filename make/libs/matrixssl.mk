@@ -1,27 +1,22 @@
+PACKAGE_LC:=matrixssl
+PACKAGE_UC:=MATRIXSSL
+$(PACKAGE_UC)_VERSION:=1.7.3
+$(PACKAGE_INIT_LIB)
 #MATRIXSSL_VERSION:=1-8-3
-MATRIXSSL_VERSION:=1.7.3
 #MATRIXSSL_SOURCE:=matrixssl-$(MATRIXSSL_VERSION)-open.tar.gz
 MATRIXSSL_SOURCE:=matrixssl-$(MATRIXSSL_VERSION).tar.gz
 MATRIXSSL_SITE:=http://downloads.openwrt.org/sources
-MATRIXSSL_MAKE_DIR:=$(MAKE_DIR)/libs
 MATRIXSSL_DIR:=$(SOURCE_DIR)/matrixssl
 MATRIXSSL_BINARY:=$(MATRIXSSL_DIR)/src/libmatrixssl.so
 MATRIXSSL_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
-MATRIXSSL_TARGET_DIR:=root/usr/lib
 MATRIXSSL_TARGET_BINARY:=$(MATRIXSSL_TARGET_DIR)/libmatrixssl.so
 
-$(DL_DIR)/$(MATRIXSSL_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(MATRIXSSL_SITE)/$(MATRIXSSL_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
+$(PACKAGE_CONFIGURED_NOP)
 
-$(MATRIXSSL_DIR)/.unpacked: $(DL_DIR)/$(MATRIXSSL_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MATRIXSSL_SOURCE)
-#	for i in $(MATRIXSSL_MAKE_DIR)/patches/*.matrixssl.patch; do \
-#		$(PATCH_TOOL) $(MATRIXSSL_DIR) $$i; \
-#	done
-	touch $@
-
-$(MATRIXSSL_BINARY): $(MATRIXSSL_DIR)/.unpacked
-	$(TARGET_CONFIGURE_OPTS) \
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(MATRIXSSL_DIR)/src \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -DLINUX" \
@@ -47,8 +42,6 @@ matrixssl: $(MATRIXSSL_STAGING_BINARY)
 
 matrixssl-precompiled: uclibc uclibc matrixssl $(MATRIXSSL_TARGET_BINARY)
 
-matrixssl-source: $(MATRIXSSL_DIR)/.unpacked
-
 matrixssl-clean:
 	-$(MAKE) -C $(MATRIXSSL_DIR)/src clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl*
@@ -57,5 +50,4 @@ matrixssl-clean:
 matrixssl-uninstall:
 	rm -f $(MATRIXSSL_TARGET_DIR)/libmatrixssl*.so*
 
-matrixssl-dirclean: 
-	rm -rf $(MATRIXSSL_DIR)
+$(PACKAGE_FINI)

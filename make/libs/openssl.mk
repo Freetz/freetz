@@ -1,14 +1,14 @@
-OPENSSL_VERSION:=0.9.8e
+PACKAGE_LC:=openssl
+PACKAGE_UC:=OPENSSL
+$(PACKAGE_UC)_VERSION:=0.9.8e
+$(PACKAGE_INIT_LIB)
 OPENSSL_LIB_VERSION:=0.9.8
 OPENSSL_SOURCE:=openssl-$(OPENSSL_VERSION).tar.gz
 OPENSSL_SITE:=http://www.openssl.org/source/
-OPENSSL_MAKE_DIR:=$(MAKE_DIR)/libs
-OPENSSL_DIR:=$(SOURCE_DIR)/openssl-$(OPENSSL_VERSION)
 OPENSSL_SSL_BINARY:=$(OPENSSL_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
 OPENSSL_CRYPTO_BINARY:=$(OPENSSL_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION)
 OPENSSL_STAGING_SSL_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so.$(OPENSSL_LIB_VERSION)
 OPENSSL_STAGING_CRYPTO_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto.so.$(OPENSSL_LIB_VERSION)
-OPENSSL_TARGET_DIR:=root/usr/lib
 OPENSSL_TARGET_SSL_BINARY:=$(OPENSSL_TARGET_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
 OPENSSL_TARGET_CRYPTO_BINARY:=$(OPENSSL_TARGET_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION)
 
@@ -17,15 +17,9 @@ OPENSSL_NO_CIPHERS:= no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime \
 OPENSSL_OPTIONS:= shared no-ec no-err no-fips no-hw no-threads no-engines \
 	no-sse2 no-perlasm
 
-$(DL_DIR)/$(OPENSSL_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(OPENSSL_SITE)/$(OPENSSL_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(OPENSSL_DIR)/.unpacked: $(DL_DIR)/$(OPENSSL_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(OPENSSL_SOURCE)
-	for i in $(OPENSSL_MAKE_DIR)/patches/*.openssl.patch; do \
-		$(PATCH_TOOL) $(OPENSSL_DIR) $$i; \
-	done
-	touch $@
 
 $(OPENSSL_DIR)/.configured: $(OPENSSL_DIR)/.unpacked
 	$(SED) -i -e 's/DS_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
@@ -43,10 +37,11 @@ $(OPENSSL_DIR)/.configured: $(OPENSSL_DIR)/.unpacked
 	);
 	touch $@
 
-$(OPENSSL_SSL_BINARY) $(OPENSSL_CRYPTO_BINARY): $(OPENSSL_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) SHARED_LDFLAGS="" \
-		$(MAKE) CC="$(TARGET_CC)" \
-		-C $(OPENSSL_DIR) \
+$($(PACKAGE_UC)_SSL_BINARY) $($(PACKAGE_UC)_CRYPTO_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		SHARED_LDFLAGS="" \
+		$(MAKE) -C $(OPENSSL_DIR) \
+		CC="$(TARGET_CC)" \
 		AR="$(TARGET_CROSS)ar r" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		all build-shared
@@ -87,8 +82,6 @@ openssl: $(OPENSSL_STAGING_SSL_BINARY) $(OPENSSL_STAGING_CRYPTO_BINARY)
 
 openssl-precompiled: uclibc zlib-precompiled openssl $(OPENSSL_TARGET_SSL_BINARY) $(OPENSSL_TARGET_CRYPTO_BINARY)
 
-openssl-source: $(OPENSSL_DIR)/.unpacked
-
 openssl-clean:
 	-$(MAKE) -C $(OPENSSL_DIR) clean
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/openssl
@@ -100,5 +93,4 @@ openssl-uninstall:
 	rm -f $(OPENSSL_TARGET_DIR)/libssl*.so*
 	rm -f $(OPENSSL_TARGET_DIR)/libcrypto*.so*
 
-openssl-dirclean:
-	rm -rf $(OPENSSL_DIR)
+$(PACKAGE_FINI)

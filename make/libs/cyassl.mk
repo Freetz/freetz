@@ -1,22 +1,16 @@
-CYASSL_VERSION:=0.8.5
+PACKAGE_LC:=cyassl
+PACKAGE_UC:=CYASSL
+$(PACKAGE_UC)_VERSION:=0.8.5
+$(PACKAGE_INIT_LIB)
 CYASSL_SOURCE:=cyassl-$(CYASSL_VERSION).zip
 CYASSL_SITE:=http://yassl.com
-CYASSL_MAKE_DIR:=$(MAKE_DIR)/libs
-CYASSL_DIR:=$(SOURCE_DIR)/cyassl-$(CYASSL_VERSION)
 CYASSL_BINARY:=$(CYASSL_DIR)/src/.libs/libcyassl.so
 CYASSL_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl.so
-CYASSL_TARGET_DIR:=root/usr/lib
 CYASSL_TARGET_BINARY:=$(CYASSL_TARGET_DIR)/libcyassl.so
 
-$(DL_DIR)/$(CYASSL_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(CYASSL_SITE)/$(CYASSL_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(CYASSL_DIR)/.unpacked: $(DL_DIR)/$(CYASSL_SOURCE)
-	unzip -d $(SOURCE_DIR) $(DL_DIR)/$(CYASSL_SOURCE)
-	#for i in $(CYASSL_MAKE_DIR)/patches/*.cyassl.patch; do \
-	#	$(PATCH_TOOL) $(CYASSL_DIR) $$i; \
-	#done
-	touch $@
 
 $(CYASSL_DIR)/.configured: $(CYASSL_DIR)/.unpacked
 	( cd $(CYASSL_DIR); rm -f config.{cache,status} ; \
@@ -51,12 +45,11 @@ $(CYASSL_DIR)/.configured: $(CYASSL_DIR)/.unpacked
 	);
 	touch $@
 
-$(CYASSL_BINARY): $(CYASSL_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(CYASSL_DIR)
 
 $(CYASSL_STAGING_BINARY): $(CYASSL_BINARY)
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
 	cp -a $(CYASSL_DIR)/src/.libs/libcyassl.so* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
 
 $(CYASSL_TARGET_BINARY): $(CYASSL_STAGING_BINARY)
@@ -67,8 +60,6 @@ cyassl: $(CYASSL_STAGING_BINARY)
 
 cyassl-precompiled: uclibc cyassl $(CYASSL_TARGET_BINARY)
 
-cyassl-source: $(CYASSL_DIR)/.unpacked
-
 cyassl-clean:
 	-$(MAKE) -C $(CYASSL_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl*
@@ -77,5 +68,4 @@ cyassl-clean:
 cyassl-uninstall:
 	rm -f $(CYASSL_TARGET_DIR)/libcyassl*.so*
 
-cyassl-dirclean: 
-	rm -rf $(CYASSL_DIR)
+$(PACKAGE_FINI)

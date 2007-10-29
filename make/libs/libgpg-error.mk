@@ -1,20 +1,17 @@
-LIBGPG_ERROR_VERSION:=1.1
+PACKAGE_LC:=libgpg-error
+PACKAGE_UC:=LIBGPG_ERROR
+$(PACKAGE_UC)_VERSION:=1.1
+$(PACKAGE_INIT_LIB)
 LIBGPG_ERROR_LIB_VERSION:=0.1.4
 LIBGPG_ERROR_SOURCE:=libgpg-error-$(LIBGPG_ERROR_VERSION).tar.gz
 LIBGPG_ERROR_SITE:=http://ftp.gnupg.org/gcrypt/libgpg-error
-LIBGPG_ERROR_DIR:=$(SOURCE_DIR)/libgpg-error-$(LIBGPG_ERROR_VERSION)
 LIBGPG_ERROR_BINARY:=$(LIBGPG_ERROR_DIR)/src/.libs/libgpg-error.so.$(LIBGPG_ERROR_LIB_VERSION)
 LIBGPG_ERROR_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so.$(LIBGPG_ERROR_LIB_VERSION)
-LIBGPG_ERROR_TARGET_DIR:=root/usr/lib
 LIBGPG_ERROR_TARGET_BINARY:=$(LIBGPG_ERROR_TARGET_DIR)/libgpg-error.so.$(LIBGPG_ERROR_LIB_VERSION)
 
 
-$(DL_DIR)/$(LIBGPG_ERROR_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(LIBGPG_ERROR_SITE)/$(LIBGPG_ERROR_SOURCE)
-
-$(LIBGPG_ERROR_DIR)/.unpacked: $(DL_DIR)/$(LIBGPG_ERROR_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBGPG_ERROR_SOURCE)
-	touch $@
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
 $(LIBGPG_ERROR_DIR)/.configured: $(LIBGPG_ERROR_DIR)/.unpacked
 	( cd $(LIBGPG_ERROR_DIR); rm -f config.{cache,status}; \
@@ -39,12 +36,13 @@ $(LIBGPG_ERROR_DIR)/.configured: $(LIBGPG_ERROR_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBGPG_ERROR_BINARY): $(LIBGPG_ERROR_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBGPG_ERROR_DIR)
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(LIBGPG_ERROR_DIR)
 
 $(LIBGPG_ERROR_STAGING_BINARY): $(LIBGPG_ERROR_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		-C $(LIBGPG_ERROR_DIR) \
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(LIBGPG_ERROR_DIR) \
 		prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
 		exec_prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
 		bindir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin \
@@ -61,8 +59,6 @@ libgpg-error: $(LIBGPG_ERROR_STAGING_BINARY)
 
 libgpg-error-precompiled: uclibc libgpg-error $(LIBGPG_ERROR_TARGET_BINARY)
 
-libgpg-error-source: $(LIBGPG_ERROR_DIR)/.unpacked
-
 libgpg-error-clean:
 	-$(MAKE) -C $(LIBGPG_ERROR_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*
@@ -70,5 +66,4 @@ libgpg-error-clean:
 libgpg-error-uninstall:
 	rm -f $(LIBGPG_ERROR_TARGET_DIR)/libgpg-error*.so*
 
-libgpg-error-dirclean:
-	rm -rf $(LIBGPG_ERROR_DIR)
+$(PACKAGE_FINI)

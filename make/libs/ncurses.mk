@@ -1,10 +1,10 @@
-NCURSES_VERSION:=5.6
+PACKAGE_LC:=ncurses
+PACKAGE_UC:=NCURSES
+$(PACKAGE_UC)_VERSION:=5.6
+$(PACKAGE_INIT_LIB)
 NCURSES_LIB_VERSION:=$(NCURSES_VERSION)
 NCURSES_SOURCE:=ncurses-$(NCURSES_VERSION).tar.gz
 NCURSES_SITE:=http://ftp.gnu.org/pub/gnu/ncurses
-NCURSES_MAKE_DIR:=$(MAKE_DIR)/libs
-NCURSES_DIR:=$(SOURCE_DIR)/ncurses-$(NCURSES_VERSION)
-NCURSES_TARGET_DIR:=root/usr/lib
 NCURSES_NCURSES_BINARY:=$(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_LIB_VERSION)
 NCURSES_NCURSES_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so.$(NCURSES_LIB_VERSION)
 NCURSES_NCURSES_TARGET_BINARY:=$(NCURSES_TARGET_DIR)/libncurses.so.$(NCURSES_LIB_VERSION)
@@ -27,15 +27,9 @@ $(NCURSES_DS_CONFIG_FILE): $(TOPDIR)/.config
 		cp $(NCURSES_DS_CONFIG_TEMP) $(NCURSES_DS_CONFIG_FILE)
 	rm -f $(NCURSES_DS_CONFIG_TEMP)
 
-$(DL_DIR)/$(NCURSES_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(NCURSES_SITE)/$(NCURSES_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(NCURSES_DIR)/.unpacked: $(DL_DIR)/$(NCURSES_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NCURSES_SOURCE)
-	for i in $(NCURSES_MAKE_DIR)/patches/*.ncurses.patch; do \
-		$(PATCH_TOOL) $(NCURSES_DIR) $$i; \
-	done
-	touch $@
 
 $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.unpacked
 	( cd $(NCURSES_DIR); rm -f config.{cache,status}; \
@@ -82,12 +76,12 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.unpacked
 	);
 	touch $@
 
-$(NCURSES_NCURSES_BINARY) \
-$(NCURSES_FORM_BINARY) \
-$(NCURSES_MENU_BINARY) \
-$(NCURSES_PANEL_BINARY): $(NCURSES_DIR)/.configured
+$($(PACKAGE_UC)_NCURSES_BINARY) \
+$($(PACKAGE_UC)_FORM_BINARY) \
+$($(PACKAGE_UC)_MENU_BINARY) \
+$($(PACKAGE_UC)_PANEL_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE1) -C $(NCURSES_DIR) $(TARGET_CONFIGURE_OPTS) \
+		$(MAKE1) -C $(NCURSES_DIR) \
 		libs panel menu form headers
 
 $(NCURSES_NCURSES_STAGING_BINARY) \
@@ -173,8 +167,6 @@ ncurses: ncurses-ncurses ncurses-form ncurses-menu ncurses-panel
 
 ncurses-precompiled: uclibc ncurses ncurses-ncurses-precompiled ncurses-form-precompiled ncurses-menu-precompiled ncurses-panel-precompiled
 
-ncurses-source: $(NCURSES_DIR)/.unpacked
-
 ncurses-clean:
 	-$(MAKE) -C $(NCURSES_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
@@ -192,5 +184,4 @@ ncurses-uninstall:
 	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset
 	rm -rf $(NCURSES_TARGET_DIR)/../share/terminfo
 
-ncurses-dirclean:
-	rm -rf $(NCURSES_DIR)
+$(PACKAGE_FINI)

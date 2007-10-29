@@ -1,24 +1,18 @@
-JPEG_VERSION:=6b
+PACKAGE_LC:=jpeg
+PACKAGE_UC:=JPEG
+$(PACKAGE_UC)_VERSION:=6b
+$(PACKAGE_INIT_LIB)
 JPEG_LIB_VERSION:=62.0.0
 JPEG_SOURCE:=jpegsrc.v$(JPEG_VERSION).tar.gz
 JPEG_SITE:=http://ijg.org/files
-JPEG_MAKE_DIR:=$(MAKE_DIR)/libs
-JPEG_DIR:=$(SOURCE_DIR)/jpeg-$(JPEG_VERSION)
 JPEG_BINARY:=$(JPEG_DIR)/.libs/libjpeg.so.$(JPEG_LIB_VERSION)
 JPEG_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so.$(JPEG_LIB_VERSION)
-JPEG_TARGET_DIR:=root/usr/lib
 JPEG_TARGET_BINARY:=$(JPEG_TARGET_DIR)/libjpeg.so.$(JPEG_LIB_VERSION)
 
 
-$(DL_DIR)/$(JPEG_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(JPEG_SITE)/$(JPEG_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(JPEG_DIR)/.unpacked: $(DL_DIR)/$(JPEG_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(JPEG_SOURCE)
-	for i in $(JPEG_MAKE_DIR)/patches/*.jpeg.patch; do \
-		$(PATCH_TOOL) $(JPEG_DIR) $$i; \
-	done
-	touch $@
 
 $(JPEG_DIR)/.configured: $(JPEG_DIR)/.unpacked
 	( cd $(JPEG_DIR); rm -f config.cache; \
@@ -53,7 +47,7 @@ $(JPEG_DIR)/.configured: $(JPEG_DIR)/.unpacked
 	);
 	touch $@
 
-$(JPEG_BINARY): $(JPEG_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(JPEG_DIR)  all
 
@@ -72,8 +66,6 @@ jpeg: $(JPEG_STAGING_BINARY)
 
 jpeg-precompiled: uclibc jpeg $(JPEG_TARGET_BINARY)
 
-jpeg-source: $(JPEG_DIR)/.unpacked
-
 jpeg-clean:
 	-$(MAKE) -C $(JPEG_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*
@@ -81,5 +73,4 @@ jpeg-clean:
 jpeg-uninstall:
 	rm -f $(JPEG_TARGET_DIR)/libjpeg*.so*
 
-jpeg-dirclean:
-	rm -rf $(JPEG_DIR)
+$(PACKAGE_FINI)

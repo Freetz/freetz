@@ -1,23 +1,18 @@
-LIBART_VERSION:=2.3.19
+PACKAGE_LC:=libart
+PACKAGE_UC:=LIBART
+$(PACKAGE_UC)_VERSION:=2.3.19
+$(PACKAGE_INIT_LIB)
 LIBART_LIB_VERSION:=$(LIBART_VERSION)
 LIBART_SOURCE:=libart_lgpl-$(LIBART_VERSION).tar.bz2
 LIBART_SITE:=http://ftp.gnome.org/pub/gnome/sources/libart_lgpl/2.3/
-LIBART_MAKE_DIR:=$(MAKE_DIR)/libs
 LIBART_DIR:=$(SOURCE_DIR)/libart_lgpl-$(LIBART_VERSION)
 LIBART_BINARY:=$(LIBART_DIR)/.libs/libart_lgpl_2.so.$(LIBART_LIB_VERSION)
 LIBART_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libart_lgpl_2.so.$(LIBART_LIB_VERSION)
-LIBART_TARGET_DIR:=root/usr/lib
 LIBART_TARGET_BINARY:=$(LIBART_TARGET_DIR)/libart_lgpl_2.so.$(LIBART_LIB_VERSION)
 
-$(DL_DIR)/$(LIBART_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(LIBART_SITE)/$(LIBART_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(LIBART_DIR)/.unpacked: $(DL_DIR)/$(LIBART_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LIBART_SOURCE)
-	for i in $(LIBART_MAKE_DIR)/patches/*.libart.patch; do \
-		$(PATCH_TOOL) $(LIBART_DIR) $$i; \
-	done
-	touch $@
 
 $(LIBART_DIR)/.configured: $(LIBART_DIR)/.unpacked
 	( cd $(LIBART_DIR); rm -f config.{cache,status}; \
@@ -49,10 +44,10 @@ $(LIBART_DIR)/.configured: $(LIBART_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBART_BINARY): $(LIBART_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBART_DIR) \
-		HOSTCC="$(HOSTCC)" \
-		all
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(LIBART_DIR) all \
+		HOSTCC="$(HOSTCC)"
 
 $(LIBART_STAGING_BINARY): $(LIBART_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBART_DIR) \
@@ -71,8 +66,6 @@ libart: $(LIBART_STAGING_BINARY)
 
 libart-precompiled: uclibc libart $(LIBART_TARGET_BINARY)
 
-libart-source: $(LIBART_DIR)/.unpacked
-
 libart-clean:
 	-$(MAKE) -C $(LIBART_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libart*
@@ -80,5 +73,4 @@ libart-clean:
 libart-uninstall:
 	rm -f $(LIBART_TARGET_DIR)/libart*.so*
 
-libart-dirclean:
-	rm -rf $(LIBART_DIR)
+$(PACKAGE_FINI)

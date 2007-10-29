@@ -1,20 +1,17 @@
-LZO_VERSION:=2.02
+PACKAGE_LC:=lzo
+PACKAGE_UC:=LZO
+$(PACKAGE_UC)_VERSION:=2.02
+$(PACKAGE_INIT_LIB)
 LZO_LIB_VERSION:=2.0.0
 LZO_SOURCE:=lzo-$(LZO_VERSION).tar.gz
 LZO_SITE:=http://www.oberhumer.com/opensource/lzo/download/
-LZO_MAKE_DIR:=$(MAKE_DIR)/libs
-LZO_DIR:=$(SOURCE_DIR)/lzo-$(LZO_VERSION)
 LZO_BINARY:=$(LZO_DIR)/src/.libs/liblzo2.so.$(LZO_LIB_VERSION)
 LZO_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so.$(LZO_LIB_VERSION)
-LZO_TARGET_DIR:=root/usr/lib
 LZO_TARGET_BINARY:=$(LZO_TARGET_DIR)/liblzo2.so.$(LZO_LIB_VERSION)
 
-$(DL_DIR)/$(LZO_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(LZO_SITE)/$(LZO_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(LZO_DIR)/.unpacked: $(DL_DIR)/$(LZO_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LZO_SOURCE)
-	touch $@
 
 $(LZO_DIR)/.configured: $(LZO_DIR)/.unpacked
 	( cd $(LZO_DIR); \
@@ -47,7 +44,7 @@ $(LZO_DIR)/.configured: $(LZO_DIR)/.unpacked
 	);
 	touch $@
 
-$(LZO_BINARY): $(LZO_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LZO_DIR)
 
@@ -67,9 +64,6 @@ $(LZO_TARGET_BINARY): $(LZO_STAGING_BINARY)
 lzo: $(LZO_STAGING_BINARY)
 
 lzo-precompiled: uclibc lzo $(LZO_TARGET_BINARY)
-
-lzo-source: $(LZO_DIR)/.unpacked
-
 lzo-clean:
 	-$(MAKE) -C $(LZO_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2*
@@ -77,5 +71,4 @@ lzo-clean:
 lzo-uninstall:
 	rm -f $(LZO_TARGET_DIR)/liblzo2*.so*
 
-lzo-dirclean:
-	rm -rf $(LZO_DIR)
+$(PACKAGE_FINI)

@@ -1,24 +1,18 @@
-LIBICONV_VERSION:=1.9.1
+PACKAGE_LC:=libiconv
+PACKAGE_UC:=LIBICONV
+$(PACKAGE_UC)_VERSION:=1.9.1
+$(PACKAGE_INIT_LIB)
 LIBICONV_LIB_VERSION:=2.2.0
 LIBICONV_SOURCE:=libiconv-$(LIBICONV_VERSION).tar.gz
 LIBICONV_SITE:=http://ftp.gnu.org/pub/gnu/libiconv
-LIBICONV_MAKE_DIR:=$(MAKE_DIR)/libs
-LIBICONV_DIR:=$(SOURCE_DIR)/libiconv-$(LIBICONV_VERSION)
 LIBICONV_BINARY:=$(LIBICONV_DIR)/lib/.libs/libiconv.so.$(LIBICONV_LIB_VERSION)
 LIBICONV_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiconv.so.$(LIBICONV_LIB_VERSION)
-LIBICONV_TARGET_DIR:=root/usr/lib
 LIBICONV_TARGET_BINARY:=$(LIBICONV_TARGET_DIR)/libiconv.so.$(LIBICONV_LIB_VERSION)
 
 
-$(DL_DIR)/$(LIBICONV_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(LIBICONV_SITE)/$(LIBICONV_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(LIBICONV_DIR)/.unpacked: $(DL_DIR)/$(LIBICONV_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBICONV_SOURCE)
-	for i in $(LIBICONV_MAKE_DIR)/patches/*.libiconv.patch; do \
-		$(PATCH_TOOL) $(LIBICONV_DIR) $$i; \
-	done
-	touch $@
 
 $(LIBICONV_DIR)/.configured: $(LIBICONV_DIR)/.unpacked
 	( cd $(LIBICONV_DIR); rm -f config.cache; \
@@ -55,7 +49,7 @@ $(LIBICONV_DIR)/.configured: $(LIBICONV_DIR)/.unpacked
 	);
 	touch $@
 
-$(LIBICONV_BINARY): $(LIBICONV_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBICONV_DIR) \
 		CC="$(TARGET_CROSS)gcc"
@@ -76,8 +70,6 @@ libiconv: $(LIBICONV_STAGING_BINARY)
 
 libiconv-precompiled: uclibc libiconv $(LIBICONV_TARGET_BINARY)
 
-libiconv-source: $(LIBICONV_DIR)/.unpacked
-
 libiconv-clean:
 	-$(MAKE) -C $(LIBICONV_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiconv*
@@ -85,5 +77,4 @@ libiconv-clean:
 libiconv-uninstall:
 	rm -f $(LIBICONV_TARGET_DIR)/libiconv*.so*
 
-libiconv-dirclean:
-	rm -rf $(LIBICONV_DIR)
+$(PACKAGE_FINI)

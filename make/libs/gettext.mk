@@ -1,23 +1,17 @@
-GETTEXT_VERSION:=0.16.1
+PACKAGE_LC:=gettext
+PACKAGE_UC:=GETTEXT
+$(PACKAGE_UC)_VERSION:=0.16.1
+$(PACKAGE_INIT_LIB)
 GETTEXT_LIB_VERSION:=8.0.1
 GETTEXT_SOURCE:=gettext-$(GETTEXT_VERSION).tar.gz
 GETTEXT_SITE:=ftp://ftp.gnu.org/gnu/gettext/
-GETTEXT_MAKE_DIR:=$(MAKE_DIR)/libs
-GETTEXT_DIR:=$(SOURCE_DIR)/gettext-$(GETTEXT_VERSION)
 GETTEXT_BINARY:=$(GETTEXT_DIR)/gettext-runtime/intl/.libs/libintl.so.$(GETTEXT_LIB_VERSION)
 GETTEXT_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl.so.$(GETTEXT_LIB_VERSION)
-GETTEXT_TARGET_DIR:=root/usr/lib
 GETTEXT_TARGET_BINARY:=$(GETTEXT_TARGET_DIR)/libintl.so.$(GETTEXT_LIB_VERSION)
 
-$(DL_DIR)/$(GETTEXT_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(GETTEXT_SITE)/$(GETTEXT_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(GETTEXT_DIR)/.unpacked: $(DL_DIR)/$(GETTEXT_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(GETTEXT_SOURCE)
-#	for i in $(GETTEXT_MAKE_DIR)/patches/*.gettext.patch; do \
-#		$(PATCH_TOOL) $(GETTEXT_DIR) $$i; \
-#	done
-	touch $@
 
 $(GETTEXT_DIR)/.configured: $(GETTEXT_DIR)/.unpacked
 	( cd $(GETTEXT_DIR); rm -f config.cache; \
@@ -62,7 +56,7 @@ $(GETTEXT_DIR)/.configured: $(GETTEXT_DIR)/.unpacked
 	touch $@
 
 # We only want libintl
-$(GETTEXT_BINARY): $(GETTEXT_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
 		all
@@ -82,8 +76,6 @@ gettext: $(GETTEXT_STAGING_BINARY)
 
 gettext-precompiled: uclibc gettext $(GETTEXT_TARGET_BINARY)
 
-gettext-source: $(GETTEXT_DIR)/.unpacked
-
 gettext-clean:
 	-$(MAKE) -C $(GETTEXT_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgettext*
@@ -92,5 +84,4 @@ gettext-clean:
 gettext-uninstall:
 	rm -f $(GETTEXT_TARGET_DIR)/libintl*.so*
 
-gettext-dirclean:
-	rm -rf $(GETTEXT_DIR)
+$(PACKAGE_FINI)

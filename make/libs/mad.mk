@@ -1,24 +1,19 @@
-MAD_VERSION:=0.15.1b
+PACKAGE_LC:=mad
+PACKAGE_UC:=MAD
+$(PACKAGE_UC)_VERSION:=0.15.1b
+$(PACKAGE_INIT_LIB)
 MAD_LIB_VERSION:=0.2.1
 MAD_SOURCE:=libmad-$(MAD_VERSION).tar.gz
 MAD_SITE:=http://mesh.dl.sourceforge.net/sourceforge/mad
-MAD_MAKE_DIR:=$(MAKE_DIR)/libs
-MAD_DIR:=$(SOURCE_DIR)/libmad-$(MAD_VERSION)
+MAD_DIR:=$(SOURCE_DIR)/libmad-$($(PACKAGE_UC)_VERSION)
 MAD_BINARY:=$(MAD_DIR)/.libs/libmad.so.$(MAD_LIB_VERSION)
 MAD_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so.$(MAD_LIB_VERSION)
-MAD_TARGET_DIR:=root/usr/lib
 MAD_TARGET_BINARY:=$(MAD_TARGET_DIR)/libmad.so.$(MAD_LIB_VERSION)
 
 
-$(DL_DIR)/$(MAD_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(MAD_SITE)/$(MAD_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(MAD_DIR)/.unpacked: $(DL_DIR)/$(MAD_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MAD_SOURCE)
-#	for i in $(MAD_MAKE_DIR)/patches/*.mad.patch; do \
-#		$(PATCH_TOOL) $(MAD_DIR) $$i; \
-#	done
-	touch $@
 
 $(MAD_DIR)/.configured: $(MAD_DIR)/.unpacked
 	( cd $(MAD_DIR); rm -f config.cache; \
@@ -57,9 +52,9 @@ $(MAD_DIR)/.configured: $(MAD_DIR)/.unpacked
 	);
 	touch $@
 
-$(MAD_BINARY): $(MAD_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(MAD_DIR) \
+		$(MAKE) -C $(MAD_DIR)
 
 $(MAD_STAGING_BINARY): $(MAD_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
@@ -77,8 +72,6 @@ mad: $(MAD_STAGING_BINARY)
 
 mad-precompiled: uclibc mad $(MAD_TARGET_BINARY)
 
-mad-source: $(MAD_DIR)/.unpacked
-
 mad-clean:
 	-$(MAKE) -C $(MAD_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*
@@ -86,5 +79,4 @@ mad-clean:
 mad-uninstall:
 	rm -f $(MAD_TARGET_DIR)/libmad*.so*
 
-mad-dirclean:
-	rm -rf $(MAD_DIR)
+$(PACKAGE_FINI)

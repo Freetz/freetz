@@ -1,23 +1,17 @@
-ZLIB_VERSION:=1.2.3
+PACKAGE_LC:=zlib
+PACKAGE_UC:=ZLIB
+$(PACKAGE_UC)_VERSION:=1.2.3
+$(PACKAGE_INIT_LIB)
 ZLIB_LIB_VERSION:=$(ZLIB_VERSION)
 ZLIB_SOURCE:=zlib-$(ZLIB_VERSION).tar.gz
 ZLIB_SITE:=http://mesh.dl.sourceforge.net/sourceforge/libpng
-ZLIB_MAKE_DIR:=$(MAKE_DIR)/libs
-ZLIB_DIR:=$(SOURCE_DIR)/zlib-$(ZLIB_VERSION)
 ZLIB_BINARY:=$(ZLIB_DIR)/libz.so.$(ZLIB_LIB_VERSION)
 ZLIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so.$(ZLIB_LIB_VERSION)
-ZLIB_TARGET_DIR:=root/usr/lib
 ZLIB_TARGET_BINARY:=$(ZLIB_TARGET_DIR)/libz.so.$(ZLIB_LIB_VERSION)
 
-$(DL_DIR)/$(ZLIB_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(ZLIB_SITE)/$(ZLIB_SOURCE)
+$(PACKAGE_SOURCE_DOWNLOAD)
+$(PACKAGE_UNPACKED)
 
-$(ZLIB_DIR)/.unpacked: $(DL_DIR)/$(ZLIB_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(ZLIB_SOURCE)
-	for i in $(ZLIB_MAKE_DIR)/patches/*.zlib.patch; do \
-		$(PATCH_TOOL) $(ZLIB_DIR) $$i; \
-	done
-	touch $@
 
 $(ZLIB_DIR)/.configured: $(ZLIB_DIR)/.unpacked
 	( cd $(ZLIB_DIR); rm -f config.cache; \
@@ -35,7 +29,7 @@ $(ZLIB_DIR)/.configured: $(ZLIB_DIR)/.unpacked
 	);
 	touch $@
 
-$(ZLIB_BINARY): $(ZLIB_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(ZLIB_DIR) \
 	   libz.a libz.so
@@ -54,8 +48,6 @@ zlib: $(ZLIB_STAGING_BINARY)
 
 zlib-precompiled: uclibc zlib $(ZLIB_TARGET_BINARY)
 
-zlib-source: $(ZLIB_DIR)/.unpacked
-
 zlib-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.* \
@@ -65,5 +57,4 @@ zlib-clean:
 zlib-uninstall:
 	rm -f $(ZLIB_TARGET_DIR)/libz*.so*
 
-zlib-dirclean:
-	rm -rf $(ZLIB_DIR)
+$(PACKAGE_FINI)
