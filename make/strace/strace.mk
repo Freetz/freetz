@@ -1,44 +1,32 @@
 PACKAGE_LC:=strace
 PACKAGE_UC:=STRACE
-STRACE_VERSION:=4.5.15
+$(PACKAGE_UC)_VERSION:=4.5.15
+$(PACKAGE_INIT_BIN)
 STRACE_SOURCE:=strace-$(STRACE_VERSION).tar.bz2
 STRACE_SITE:=http://mesh.dl.sourceforge.net/sourceforge/strace
-STRACE_MAKE_DIR:=$(MAKE_DIR)/strace
-STRACE_DIR:=$(SOURCE_DIR)/strace-$(STRACE_VERSION)
 STRACE_BINARY:=$(STRACE_DIR)/strace
-STRACE_PKG_SOURCE:=strace-$(STRACE_VERSION)-dsmod.tar.bz2
-STRACE_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
-STRACE_TARGET_DIR:=$(PACKAGES_DIR)/strace-$(STRACE_VERSION)
-STRACE_TARGET_BINARY:=$(STRACE_TARGET_DIR)/root/usr/sbin/strace
-STRACE_STARTLEVEL=40
+STRACE_TARGET_BINARY:=$(STRACE_DEST_DIR)/usr/sbin/strace
 
 $(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_BIN_UNPACKED)
+$(PACKAGE_UNPACKED)
 $(PACKAGE_CONFIGURED_CONFIGURE)
 
-$(STRACE_BINARY): $(STRACE_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(STRACE_DIR)
 
-$(STRACE_TARGET_BINARY): $(STRACE_BINARY)
-	mkdir -p $(dir $(STRACE_TARGET_BINARY))
+$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 strace:
 
-strace-precompiled: uclibc strace $(STRACE_TARGET_BINARY)
-
-strace-source: $(STRACE_DIR)/.unpacked
+strace-precompiled: uclibc strace $($(PACKAGE_UC)_TARGET_BINARY)
 
 strace-clean:
 	-$(MAKE) -C $(STRACE_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(STRACE_PKG_SOURCE)
 
-strace-dirclean:
-	rm -rf $(STRACE_DIR)
-	rm -rf $(PACKAGES_DIR)/strace-$(STRACE_VERSION)
-
 strace-uninstall:
 	rm -f $(STRACE_TARGET_BINARY)
 	
-$(PACKAGE_LIST)
+$(PACKAGE_FINI)

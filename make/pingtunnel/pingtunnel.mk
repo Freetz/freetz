@@ -1,45 +1,37 @@
 PACKAGE_LC:=pingtunnel
 PACKAGE_UC:=PINGTUNNEL
-PINGTUNNEL_VERSION:=0.61
+$(PACKAGE_UC)_VERSION:=0.61
+$(PACKAGE_INIT_BIN)
 PINGTUNNEL_SOURCE:=PingTunnel-$(PINGTUNNEL_VERSION).tar.gz
 PINGTUNNEL_SITE:=http://www.cs.uit.no/~daniels/PingTunnel/
-PINGTUNNEL_MAKE_DIR:=$(MAKE_DIR)/PingTunnel
 PINGTUNNEL_DIR:=$(SOURCE_DIR)/PingTunnel
 PINGTUNNEL_BINARY:=$(PINGTUNNEL_DIR)/ptunnel
 PINGTUNNEL_PKG_VERSION:=
-PINGTUNNEL_TARGET_DIR:=$(PACKAGES_DIR)/pingtunnel-$(PINGTUNNEL_VERSION)
-PINGTUNNEL_TARGET_BINARY:=$(PINGTUNNEL_TARGET_DIR)/root/usr/sbin/ptunnel
-PINGTUNNEL_STARTLEVEL=40
+PINGTUNNEL_TARGET_BINARY:=$(PINGTUNNEL_DEST_DIR)/usr/sbin/ptunnel
 
 $(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_BIN_UNPACKED)
+$(PACKAGE_UNPACKED)
 $(PACKAGE_CONFIGURED_NOP)
 
-$(PINGTUNNEL_BINARY): $(PINGTUNNEL_DIR)/.configured
-	$(MAKE) CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_MAKE_PATH)/../usr/include -DVERSION='\"$(PINGTUNNEL_VERSION)\"'" \
-		LDOPTS="-L$(TARGET_MAKE_PATH)/../usr/lib -lpthread -lpcap" \
-		-C $(PINGTUNNEL_DIR)
-		
-$(PINGTUNNEL_TARGET_BINARY): $(PINGTUNNEL_BINARY)
-	mkdir -p $(dir $(PINGTUNNEL_TARGET_BINARY))
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(PINGTUNNEL_DIR) \
+		CC="$(TARGET_CC)" \
+		CFLAGS="$(TARGET_CFLAGS) -DVERSION='\"$(PINGTUNNEL_VERSION)\"'" \
+		LDOPTS="-lpthread -lpcap"
+
+$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 pingtunnel:
 
-pingtunnel-precompiled: uclibc libpcap-precompiled pingtunnel $(PINGTUNNEL_TARGET_BINARY) 
-
-pingtunnel-source: $(PINGTUNNEL_DIR)/.unpacked
+pingtunnel-precompiled: uclibc libpcap-precompiled pingtunnel $($(PACKAGE_UC)_TARGET_BINARY) 
 
 pingtunnel-clean:
 	-$(MAKE) -C $(PINGTUNNEL_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(PINGTUNNEL_PKG_SOURCE)
 
-pingtunnel-dirclean:
-	rm -rf $(PINGTUNNEL_DIR)
-	rm -rf $(PACKAGES_DIR)/pingtunnel-$(PINGTUNNEL_VERSION)
-
 pingtunnel-uninstall:
 	rm -f $(PINGTUNNEL_TARGET_BINARY)
 	
-$(PACKAGE_LIST)
+$(PACKAGE_FINI)

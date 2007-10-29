@@ -1,48 +1,34 @@
 PACKAGE_LC:=xrelayd
 PACKAGE_UC:=XRELAYD
-XRELAYD_VERSION:=0.1
+$(PACKAGE_UC)_VERSION:=0.1
+$(PACKAGE_INIT_BIN)
 XRELAYD_SOURCE:=xrelayd-$(XRELAYD_VERSION).tar.gz
 XRELAYD_SITE:=http://znerol.ch/files
-XRELAYD_MAKE_DIR:=$(MAKE_DIR)/xrelayd
-XRELAYD_DIR:=$(SOURCE_DIR)/xrelayd-$(XRELAYD_VERSION)
 XRELAYD_BINARY:=$(XRELAYD_DIR)/xrelayd
-XRELAYD_PKG_VERSION:=0.1
-XRELAYD_TARGET_DIR:=$(PACKAGES_DIR)/xrelayd-$(XRELAYD_VERSION)
-XRELAYD_TARGET_BINARY:=$(XRELAYD_TARGET_DIR)/root/usr/sbin/xrelayd
-XRELAYD_STARTLEVEL=40
+XRELAYD_TARGET_BINARY:=$(XRELAYD_DEST_DIR)/usr/sbin/xrelayd
 
 $(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_BIN_UNPACKED)
+$(PACKAGE_UNPACKED)
 $(PACKAGE_CONFIGURED_NOP)
 
-$(XRELAYD_BINARY): $(XRELAYD_DIR)/.configured
-	$(TARGET_CONFIGURE_OPTS) \
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+	$(TARGET_CONFIGURE_ENV) \
 		$(MAKE) -C $(XRELAYD_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
 		LD="$(TARGET_CC)" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib"
 
-$(XRELAYD_TARGET_BINARY): $(XRELAYD_BINARY)
-	mkdir -p $(dir $(XRELAYD_TARGET_BINARY))
+$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 xrelayd:
 
-xrelayd-precompiled: uclibc xyssl-precompiled xrelayd $(XRELAYD_TARGET_BINARY) 
-
-xrelayd-source: $(XRELAYD_DIR)/.unpacked
+xrelayd-precompiled: uclibc xyssl-precompiled xrelayd $($(PACKAGE_UC)_TARGET_BINARY) 
 
 xrelayd-clean:
 	-$(MAKE) -C $(XRELAYD_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(XRELAYD_PKG_SOURCE)
-
-xrelayd-dirclean:
-	rm -rf $(XRELAYD_DIR)
-	rm -rf $(PACKAGES_DIR)/xrelayd-$(XRELAYD_VERSION)
 
 xrelayd-uninstall: 
 	rm -f $(XRELAYD_TARGET_BINARY)
 
-$(PACKAGE_LIST)
+$(PACKAGE_FINI)

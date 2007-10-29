@@ -1,15 +1,11 @@
 PACKAGE_LC:=tcpdump
 PACKAGE_UC:=TCPDUMP
-TCPDUMP_VERSION:=3.9.6
+$(PACKAGE_UC)_VERSION:=3.9.6
+$(PACKAGE_INIT_BIN)
 TCPDUMP_SOURCE:=tcpdump-$(TCPDUMP_VERSION).tar.gz
 TCPDUMP_SITE:=http://www.tcpdump.org/release
-TCPDUMP_MAKE_DIR:=$(MAKE_DIR)/tcpdump
-TCPDUMP_DIR:=$(SOURCE_DIR)/tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_BINARY:=$(TCPDUMP_DIR)/tcpdump
-TCPDUMP_PKG_VERSION:=0.1
-TCPDUMP_TARGET_DIR:=$(PACKAGES_DIR)/tcpdump-$(TCPDUMP_VERSION)
-TCPDUMP_TARGET_BINARY:=$(TCPDUMP_TARGET_DIR)/root/usr/bin/tcpdump
-TCPDUMP_STARTLEVEL=40
+TCPDUMP_TARGET_BINARY:=$(TCPDUMP_DEST_DIR)/usr/bin/tcpdump
 
 $(PACKAGE_UC)_CONFIGURE_ENV += BUILD_CC="$(TARGET_CC)"
 $(PACKAGE_UC)_CONFIGURE_ENV += HOSTCC="$(HOSTCC)"
@@ -20,35 +16,26 @@ $(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-crypto
 
 
 $(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_BIN_UNPACKED)
+$(PACKAGE_UNPACKED)
 $(PACKAGE_CONFIGURED_CONFIGURE)
 
-$(TCPDUMP_BINARY): $(TCPDUMP_DIR)/.configured
+$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(TCPDUMP_DIR) \
+		$(MAKE) -C $(TCPDUMP_DIR) all \
 		CCOPT="$(TARGET_CFLAGS)" \
-		INCLS="-I. -I$(TARGET_MAKE_PATH)/../usr/include" \
-		all 
+		INCLS="-I." 
 
-$(TCPDUMP_TARGET_BINARY): $(TCPDUMP_BINARY)
-	mkdir -p $(dir $(NTFS_TARGET_BINARY))
+$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 tcpdump: 
 
-tcpdump-precompiled: uclibc libpcap-precompiled tcpdump $(TCPDUMP_TARGET_BINARY)
-
-tcpdump-source: $(TCPDUMP_DIR)/.unpacked
+tcpdump-precompiled: uclibc libpcap-precompiled tcpdump $($(PACKAGE_UC)_TARGET_BINARY)
 
 tcpdump-clean:
 	-$(MAKE) -C $(TCPDUMP_DIR) clean
 
-tcpdump-dirclean:
-	rm -rf $(TCPDUMP_DIR)
-	rm -rf $(PACKAGES_DIR)/tcpdump-$(TCPDUMP_VERSION)
-	rm -f $(PACKAGES_DIR)/.tcpdump-$(TCPDUMP_VERSION)
-
 tcpdump-uninstall:
 	rm -f $(TCPDUMP_TARGET_BINARY)
 
-$(PACKAGE_LIST)
+$(PACKAGE_FINI)
