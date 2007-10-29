@@ -2,10 +2,10 @@ PACKAGE_LC:=curl
 PACKAGE_UC:=CURL
 $(PACKAGE_UC)_VERSION:=7.16.4
 $(PACKAGE_INIT_BIN)
-CURL_SOURCE:=curl-$(CURL_VERSION).tar.bz2
-CURL_SITE:=http://curl.haxx.se/download
-CURL_BINARY:=$(CURL_DIR)/src/curl
-CURL_TARGET_BINARY:=$(CURL_DEST_DIR)/usr/bin/curl
+$(PACKAGE_UC)_SOURCE:=curl-$($(PACKAGE_UC)_VERSION).tar.bz2
+$(PACKAGE_UC)_SITE:=http://curl.haxx.se/download
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/curl
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/curl
 
 $(PACKAGE_UC)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-shared

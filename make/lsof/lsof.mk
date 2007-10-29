@@ -3,11 +3,11 @@ PACKAGE_LC:=lsof
 PACKAGE_UC:=LSOF
 $(PACKAGE_UC)_VERSION:=4.78
 $(PACKAGE_INIT_BIN)
-LSOF_SOURCE:=lsof_$(LSOF_VERSION).dfsg.1.orig.tar.gz
-LSOF_SITE:=http://ftp2.de.debian.org/debian/pool/main/l/lsof
-LSOF_DIR:=$(SOURCE_DIR)/lsof-$(LSOF_VERSION).dfsg.1
-LSOF_BINARY:=$(LSOF_DIR)/lsof
-LSOF_TARGET_BINARY:=$(LSOF_DEST_DIR)/usr/bin/lsof
+$(PACKAGE_UC)_SOURCE:=lsof_$($(PACKAGE_UC)_VERSION).dfsg.1.orig.tar.gz
+$(PACKAGE_UC)_SITE:=http://ftp2.de.debian.org/debian/pool/main/l/lsof
+$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/lsof-$($(PACKAGE_UC)_VERSION).dfsg.1
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/lsof
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/lsof
 
 LSOF_CFLAGS:=
 ifeq ($(DS_TARGET_LFS),y)

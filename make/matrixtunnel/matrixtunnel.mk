@@ -2,11 +2,11 @@ PACKAGE_LC:=matrixtunnel
 PACKAGE_UC:=MATRIXTUNNEL
 $(PACKAGE_UC)_VERSION:=0.2
 $(PACKAGE_INIT_BIN)
-MATRIXTUNNEL_SOURCE:=matrixtunnel-$(MATRIXTUNNEL_VERSION).tar.gz
-MATRIXTUNNEL_SITE:=http://znerol.ch/files
-MATRIXTUNNEL_DIR:=$(SOURCE_DIR)/matrixtunnel
-MATRIXTUNNEL_BINARY:=$(MATRIXTUNNEL_DIR)/src/matrixtunnel
-MATRIXTUNNEL_TARGET_BINARY:=$(MATRIXTUNNEL_DEST_DIR)/usr/sbin/matrixtunnel
+$(PACKAGE_UC)_SOURCE:=matrixtunnel-$($(PACKAGE_UC)_VERSION).tar.gz
+$(PACKAGE_UC)_SITE:=http://znerol.ch/files
+$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/matrixtunnel
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/matrixtunnel
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/sbin/matrixtunnel
 
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-libintl-prefix

@@ -2,11 +2,11 @@ PACKAGE_LC:=transmission
 PACKAGE_UC:=TRANSMISSION
 $(PACKAGE_UC)_VERSION:=0.82
 $(PACKAGE_INIT_BIN)
-TRANSMISSION_SOURCE:=transmission-$(TRANSMISSION_VERSION).tar.bz2
-#TRANSMISSION_SITE:=http://download.m0k.org/transmission/files
-TRANSMISSION_SITE:=http://dsmod.magenbrot.net
-TRANSMISSION_BINARY:=$(TRANSMISSION_DIR)/cli/transmissioncli
-TRANSMISSION_TARGET_BINARY:=$(TRANSMISSION_DEST_DIR)/usr/bin/transmissioncli
+$(PACKAGE_UC)_SOURCE:=transmission-$($(PACKAGE_UC)_VERSION).tar.bz2
+#$(PACKAGE_UC)_SITE:=http://download.m0k.org/transmission/files
+$(PACKAGE_UC)_SITE:=http://dsmod.magenbrot.net
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/cli/transmissioncli
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/transmissioncli
 
 $(PACKAGE_UC)_CONFIGURE_ENV += CROSS="$(TARGET_CROSS)"
 $(PACKAGE_UC)_CONFIGURE_ENV += CC="$(TARGET_CC)"

@@ -3,13 +3,12 @@ PACKAGE_UC:=LTRACE
 LTRACE_SVN_REVISION:=77
 $(PACKAGE_UC)_VERSION:=0.5_$(LTRACE_SVN_REVISION)
 $(PACKAGE_INIT_BIN)
-LTRACE_SOURCE:=ltrace-$(LTRACE_VERSION).tar.bz2
-LTRACE_SITE:=http://dsmod.magenbrot.net
-LTRACE_BINARY:=$(LTRACE_DIR)/ltrace
-LTRACE_CONF:=$(LTRACE_DIR)/etc/ltrace.conf
-LTRACE_TARGET_BINARY:=$(LTRACE_DEST_DIR)/usr/sbin/ltrace
-LTRACE_TARGET_CONF:=$(LTRACE_DEST_DIR)/etc/ltrace.conf
-LTRACE_PKG_VERSION:=0.1
+$(PACKAGE_UC)_SOURCE:=ltrace-$($(PACKAGE_UC)_VERSION).tar.bz2
+$(PACKAGE_UC)_SITE:=http://dsmod.magenbrot.net
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/ltrace
+$(PACKAGE_UC)_CONF:=$($(PACKAGE_UC)_DIR)/etc/ltrace.conf
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/sbin/ltrace
+$(PACKAGE_UC)_TARGET_CONF:=$($(PACKAGE_UC)_DEST_DIR)/etc/ltrace.conf
 
 # Remarks:
 #   - LTRACE_SOURCE is created like this:
@@ -47,11 +46,9 @@ ltrace-precompiled: uclibc libelf-precompiled ltrace $($(PACKAGE_UC)_TARGET_BINA
 
 ltrace-clean:
 	-$(MAKE) -C $(LTRACE_DIR) clean ARCH=mipsel
-	rm -f $(PACKAGES_BUILD_DIR)/$(LTRACE_PKG_SOURCE)
 
 ltrace-uninstall:
 	rm -f $(LTRACE_TARGET_BINARY)
 	rm -f $(LTRACE_TARGET_CONF)
 
 $(PACKAGE_FINI)
-

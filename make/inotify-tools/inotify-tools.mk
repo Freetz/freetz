@@ -2,15 +2,15 @@ PACKAGE_LC:=inotify-tools
 PACKAGE_UC:=INOTIFY_TOOLS
 $(PACKAGE_UC)_VERSION:=3.10
 $(PACKAGE_INIT_BIN)
-INOTIFY_TOOLS_LIB_VERSION:=0.3.3
-INOTIFY_TOOLS_SOURCE:=inotify-tools-$(INOTIFY_TOOLS_VERSION).tar.gz
-INOTIFY_TOOLS_SITE:=http://mesh.dl.sourceforge.net/sourceforge/inotify-tools
-INOTIFY_TOOLS_INWAIT_BINARY:=$(INOTIFY_TOOLS_DIR)/src/.libs/inotifywait
-INOTIFY_TOOLS_INWATCH_BINARY:=$(INOTIFY_TOOLS_DIR)/src/.libs/inotifywatch
-INOTIFY_TOOLS_LIB_BINARY:=$(INOTIFY_TOOLS_DIR)/libinotifytools/src/.libs/libinotifytools.so.$(INOTIFY_TOOLS_LIB_VERSION)
-INOTIFY_TOOLS_INWAIT_TARGET_BINARY:=$(INOTIFY_TOOLS_DEST_DIR)/usr/bin/inotifywait
-INOTIFY_TOOLS_INWATCH_TARGET_BINARY:=$(INOTIFY_TOOLS_DEST_DIR)/usr/bin/inotifywatch
-INOTIFY_TOOLS_LIB_TARGET_BINARY:=$(INOTIFY_TOOLS_DEST_DIR)/usr/lib/libinotifytools.so.$(INOTIFY_TOOLS_LIB_VERSION)
+$(PACKAGE_UC)_LIB_VERSION:=0.3.3
+$(PACKAGE_UC)_SOURCE:=inotify-tools-$($(PACKAGE_UC)_VERSION).tar.gz
+$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/inotify-tools
+$(PACKAGE_UC)_INWAIT_BINARY:=$($(PACKAGE_UC)_DIR)/src/.libs/inotifywait
+$(PACKAGE_UC)_INWATCH_BINARY:=$($(PACKAGE_UC)_DIR)/src/.libs/inotifywatch
+$(PACKAGE_UC)_LIB_BINARY:=$($(PACKAGE_UC)_DIR)/libinotifytools/src/.libs/libinotifytools.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(PACKAGE_UC)_INWAIT_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/inotifywait
+$(PACKAGE_UC)_INWATCH_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/inotifywatch
+$(PACKAGE_UC)_LIB_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/lib/libinotifytools.so.$($(PACKAGE_UC)_LIB_VERSION)
 
 $(PACKAGE_UC)_CONFIGURE_ENV += LD="$(TARGET_LD)"
 

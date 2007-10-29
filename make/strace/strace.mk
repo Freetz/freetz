@@ -2,10 +2,10 @@ PACKAGE_LC:=strace
 PACKAGE_UC:=STRACE
 $(PACKAGE_UC)_VERSION:=4.5.15
 $(PACKAGE_INIT_BIN)
-STRACE_SOURCE:=strace-$(STRACE_VERSION).tar.bz2
-STRACE_SITE:=http://mesh.dl.sourceforge.net/sourceforge/strace
-STRACE_BINARY:=$(STRACE_DIR)/strace
-STRACE_TARGET_BINARY:=$(STRACE_DEST_DIR)/usr/sbin/strace
+$(PACKAGE_UC)_SOURCE:=strace-$($(PACKAGE_UC)_VERSION).tar.bz2
+$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/strace
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/strace
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/sbin/strace
 
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_UNPACKED)

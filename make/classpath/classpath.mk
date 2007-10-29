@@ -2,13 +2,13 @@ PACKAGE_LC:=classpath
 PACKAGE_UC:=CLASSPATH
 $(PACKAGE_UC)_VERSION:=0.95
 $(PACKAGE_INIT_BIN)
-CLASSPATH_UGLY_VERSION:=0.0.0
-CLASSPATH_SOURCE:=classpath-$(CLASSPATH_VERSION).tar.gz
-CLASSPATH_SITE:=ftp://ftp.gnu.org/gnu/classpath
-CLASSPATH_BINARY:=$(CLASSPATH_DIR)/lib/mini.jar
-CLASSPATH_TARGET_BINARY:=$(CLASSPATH_DEST_DIR)/usr/share/classpath/mini.jar
-CLASSPATH_LIB_BINARY:=$(CLASSPATH_DIR)/native/jni/java-lang/.libs/libjavalang.so.$(CLASSPATH_UGLY_VERSION)
-CLASSPATH_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
+$(PACKAGE_UC)_UGLY_VERSION:=0.0.0
+$(PACKAGE_UC)_SOURCE:=classpath-$($(PACKAGE_UC)_VERSION).tar.gz
+$(PACKAGE_UC)_SITE:=ftp://ftp.gnu.org/gnu/classpath
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/lib/mini.jar
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/share/classpath/mini.jar
+$(PACKAGE_UC)_LIB_BINARY:=$($(PACKAGE_UC)_DIR)/native/jni/java-lang/.libs/libjavalang.so.$($(PACKAGE_UC)_UGLY_VERSION)
+$(PACKAGE_UC)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
 
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-gtk-peer
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-qt-peer

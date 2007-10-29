@@ -2,21 +2,20 @@ PACKAGE_LC:=fuse
 PACKAGE_UC:=FUSE
 $(PACKAGE_UC)_VERSION:=2.7.0
 $(PACKAGE_INIT_BIN)
-FUSE_SOURCE:=fuse-$(FUSE_VERSION).tar.gz
-FUSE_SITE:=http://mesh.dl.sourceforge.net/sourceforge/fuse
-FUSE_BINARY:=$(FUSE_DIR)/util/fusermount
-FUSE_TARGET_BINARY:=$(FUSE_DEST_DIR)/usr/sbin/fusermount
-FUSE_MOD_BINARY:=$(FUSE_DIR)/kernel/fuse.ko
-FUSE_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
-FUSE_MOD_TARGET_BINARY:=$(FUSE_MOD_TARGET_DIR)/fuse.ko
-FUSE_LIB_BINARY:=$(FUSE_DIR)/lib/.libs/libfuse.so.$(FUSE_VERSION)
-FUSE_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$(FUSE_VERSION)
-FUSE_LIB_TARGET_BINARY:=$(FUSE_DEST_DIR)/usr/lib/libfuse.so.$(FUSE_VERSION)
+$(PACKAGE_UC)_SOURCE:=fuse-$($(PACKAGE_UC)_VERSION).tar.gz
+$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/fuse
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/util/fusermount
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/sbin/fusermount
+$(PACKAGE_UC)_MOD_BINARY:=$($(PACKAGE_UC)_DIR)/kernel/fuse.ko
+$(PACKAGE_UC)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
+$(PACKAGE_UC)_MOD_TARGET_BINARY:=$($(PACKAGE_UC)_MOD_TARGET_DIR)/fuse.ko
+$(PACKAGE_UC)_LIB_BINARY:=$($(PACKAGE_UC)_DIR)/lib/.libs/libfuse.so.$($(PACKAGE_UC)_VERSION)
+$(PACKAGE_UC)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$($(PACKAGE_UC)_VERSION)
+$(PACKAGE_UC)_LIB_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/lib/libfuse.so.$($(PACKAGE_UC)_VERSION)
 
-FUSE_DS_CONFIG_FILE:=$(FUSE_MAKE_DIR)/.ds_config
-FUSE_DS_CONFIG_TEMP:=$(FUSE_MAKE_DIR)/.ds_config.temp
+$(PACKAGE_UC)_DS_CONFIG_FILE:=$($(PACKAGE_UC)_MAKE_DIR)/.ds_config
+$(PACKAGE_UC)_DS_CONFIG_TEMP:=$($(PACKAGE_UC)_MAKE_DIR)/.ds_config.temp
 
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += touch configure.in aclocal.m4 Makefile.in include/config.h.in configure ;
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
@@ -25,14 +24,14 @@ $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-lib
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-util
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-example
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-auto-modprobe
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-kernel="$(shell pwd)/$(KERNEL_SOURCE_DIR)"
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-kernel="$(DSMOD_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-mtab
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-gnu-ld
 
 
 $(PACKAGE_SOURCE_DOWNLOAD)
 
-$(FUSE_DS_CONFIG_FILE): $(TOPDIR)/.config
+$($(PACKAGE_UC)_DS_CONFIG_FILE): $(TOPDIR)/.config
 	@echo "DS_KERNEL_LAYOUT=$(DS_KERNEL_LAYOUT)" > $(FUSE_DS_CONFIG_TEMP)
 	@diff -q $(FUSE_DS_CONFIG_TEMP) $(FUSE_DS_CONFIG_FILE) || \
 	    cp $(FUSE_DS_CONFIG_TEMP) $(FUSE_DS_CONFIG_FILE)
@@ -41,7 +40,7 @@ $(FUSE_DS_CONFIG_FILE): $(TOPDIR)/.config
 # Make sure that a perfectly clean build is performed whenever DS-Mod package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(FUSE_DIR)/.unpacked: $(DL_DIR)/$(FUSE_SOURCE) $(FUSE_DS_CONFIG_FILE)
+$($(PACKAGE_UC)_DIR)/.unpacked: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE) $($(PACKAGE_UC)_DS_CONFIG_FILE)
 	rm -rf $(FUSE_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FUSE_SOURCE)
 	for i in $(FUSE_MAKE_DIR)/patches/*.patch; do \

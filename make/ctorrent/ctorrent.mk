@@ -2,10 +2,10 @@ PACKAGE_LC:=ctorrent
 PACKAGE_UC:=CTORRENT
 $(PACKAGE_UC)_VERSION:=dnh3.2
 $(PACKAGE_INIT_BIN)
-CTORRENT_SOURCE:=ctorrent-$(CTORRENT_VERSION).tar.gz
-CTORRENT_SITE:=http://www.rahul.net/dholmes/ctorrent/
-CTORRENT_BINARY:=$(CTORRENT_DIR)/ctorrent
-CTORRENT_TARGET_BINARY:=$(CTORRENT_DEST_DIR)/usr/bin/ctorrent
+$(PACKAGE_UC)_SOURCE:=ctorrent-$($(PACKAGE_UC)_VERSION).tar.gz
+$(PACKAGE_UC)_SITE:=http://www.rahul.net/dholmes/ctorrent/
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/ctorrent
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/ctorrent
 
 $(PACKAGE_UC)_CONFIGURE_ENV += CXXFLAGS="-Os"
 $(PACKAGE_UC)_CONFIGURE_ENV += CXX="mipsel-linux-g++-uc"

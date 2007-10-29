@@ -2,11 +2,11 @@ PACKAGE_LC:=deco
 PACKAGE_UC:=DECO
 $(PACKAGE_UC)_VERSION:=39
 $(PACKAGE_INIT_BIN)
-DECO_SOURCE:=deco$(DECO_VERSION).tgz
-DECO_SITE:=http://mesh.dl.sourceforge.net/sourceforge/deco
-DECO_DIR:=$(SOURCE_DIR)/deco$(DECO_VERSION)
-DECO_BINARY:=$(DECO_DIR)/deco
-DECO_TARGET_BINARY:=$(DECO_DEST_DIR)/usr/bin/deco
+$(PACKAGE_UC)_SOURCE:=deco$($(PACKAGE_UC)_VERSION).tgz
+$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/deco
+$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/deco$($(PACKAGE_UC)_VERSION)
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/deco
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/deco
 
 $(PACKAGE_UC)_CONFIGURE_PRE_CMDS += autoconf --force ;
 
