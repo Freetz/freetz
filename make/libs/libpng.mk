@@ -2,63 +2,27 @@ PACKAGE_LC:=libpng
 PACKAGE_UC:=LIBPNG
 $(PACKAGE_UC)_VERSION:=1.2.10
 $(PACKAGE_INIT_LIB)
-LIBPNG_LIB_VERSION:=0.10.0
-LIBPNG_SOURCE:=libpng-$(LIBPNG_VERSION).tar.gz
-LIBPNG_SITE:=http://oss.oetiker.ch/rrdtool/pub/libs/
-LIBPNG_BINARY:=$(LIBPNG_DIR)/.libs/libpng12.so.$(LIBPNG_LIB_VERSION)
-LIBPNG_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.so.$(LIBPNG_LIB_VERSION)
-LIBPNG_TARGET_BINARY:=$(LIBPNG_TARGET_DIR)/libpng12.so.$(LIBPNG_LIB_VERSION)
+$(PACKAGE_UC)_LIB_VERSION:=0.10.0
+$(PACKAGE_UC)_SOURCE:=libpng-$($(PACKAGE_UC)_VERSION).tar.gz
+$(PACKAGE_UC)_SITE:=http://oss.oetiker.ch/rrdtool/pub/libs/
+$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/.libs/libpng12.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libpng12.so.$($(PACKAGE_UC)_LIB_VERSION)
 
+$(PACKAGE_UC)_CONFIGURE_ENV += gl_cv_func_malloc_0_nonnull=yes
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
+$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+		
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_UNPACKED)
-
-
-$(LIBPNG_DIR)/.configured: $(LIBPNG_DIR)/.unpacked
-	( cd $(LIBPNG_DIR); rm -f config.{cache,status} ; \
-		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(TARGET_TOOLCHAIN_PATH)" \
-		CC="$(TARGET_CC)" \
-		LD="$(TARGET_LD)" \
-		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
-		ac_cv_func_memcmp_working=yes \
-		ac_cv_have_decl_malloc=yes \
-		gl_cv_func_malloc_0_nonnull=yes \
-		ac_cv_func_malloc_0_nonnull=yes \
-		ac_cv_func_calloc_0_nonnull=yes \
-		ac_cv_func_realloc_0_nonnull=yes \
-		./configure \
-		--target=$(GNU_TARGET_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--build=$(GNU_HOST_NAME) \
-		--program-prefix="" \
-		--program-suffix="" \
-		--prefix=/usr \
-		--exec-prefix=/usr \
-		--bindir=/usr/bin \
-		--datadir=/usr/share \
-		--includedir=/usr/include \
-		--infodir=/usr/share/info \
-		--libdir=/usr/lib \
-		--libexecdir=/usr/lib \
-		--localstatedir=/var \
-		--mandir=/usr/share/man \
-		--sbindir=/usr/sbin \
-		--sysconfdir=/etc \
-		$(DISABLE_NLS) \
-		$(DISABLE_LARGEFILE) \
-		--enable-shared \
-		--enable-static \
-		--with-zlib=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
-	);
-	touch $@
+$(PACKAGE_CONFIGURED_CONFIGURE)
 
 $($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBPNG_DIR)
 
-$(LIBPNG_STAGING_BINARY): $(LIBPNG_BINARY)
+$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBPNG_DIR)\
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -74,13 +38,13 @@ $(LIBPNG_STAGING_BINARY): $(LIBPNG_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libpng12-config
 
 
-$(LIBPNG_TARGET_BINARY): $(LIBPNG_STAGING_BINARY)
+$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng*.so* $(LIBPNG_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-libpng: $(LIBPNG_STAGING_BINARY)
+libpng: $($(PACKAGE_UC)_STAGING_BINARY)
 
-libpng-precompiled: uclibc zlib-precompiled libpng $(LIBPNG_TARGET_BINARY)
+libpng-precompiled: uclibc zlib-precompiled libpng $($(PACKAGE_UC)_TARGET_BINARY)
 
 libpng-clean:
 	-$(MAKE) -C $(LIBPNG_DIR) clean
