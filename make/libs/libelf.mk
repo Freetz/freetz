@@ -9,12 +9,12 @@ $(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/lib/libelf.so.$($(PACKAGE_UC)_LIB_VER
 $(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so.$($(PACKAGE_UC)_LIB_VERSION)
 $(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libelf.so.$($(PACKAGE_UC)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_ENV +=	mr_cv_working_memmove=yes
-$(PACKAGE_UC)_CONFIGURE_ENV +=	mr_cv_target_elf=yes
-$(PACKAGE_UC)_CONFIGURE_ENV +=	libelf_64bit=yes
-$(PACKAGE_UC)_CONFIGURE_ENV +=	libelf_cv_struct_elf64_ehdr=yes
-$(PACKAGE_UC)_CONFIGURE_ENV +=	libelf_cv_type_elf64_addr=no
-$(PACKAGE_UC)_CONFIGURE_ENV +=	libelf_cv_struct_elf64_rel=yes
+$(PACKAGE_UC)_CONFIGURE_ENV += mr_cv_working_memmove=yes
+$(PACKAGE_UC)_CONFIGURE_ENV += mr_cv_target_elf=yes
+$(PACKAGE_UC)_CONFIGURE_ENV += libelf_64bit=yes
+$(PACKAGE_UC)_CONFIGURE_ENV += libelf_cv_struct_elf64_ehdr=yes
+$(PACKAGE_UC)_CONFIGURE_ENV += libelf_cv_type_elf64_addr=no
+$(PACKAGE_UC)_CONFIGURE_ENV += libelf_cv_struct_elf64_rel=yes
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-elf64=yes

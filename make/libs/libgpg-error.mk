@@ -24,10 +24,7 @@ $($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBGPG_ERROR_DIR) \
-		prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
-		exec_prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
-		bindir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin \
-		datadir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgpg-error.la
