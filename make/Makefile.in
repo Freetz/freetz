@@ -131,8 +131,8 @@ endef
 # init package. Must be called after PACKAGE_LC and PACKAGE_UC are defined
 # see also PACKAGE_FINI
 define PACKAGE_INIT__INT
-$(if $(PACKAGE_UC),,$(error PACKAGE_UC not defined))
-$(if $(PACKAGE_LC),,$(error PACKAGE_LC not defined))
+$(if $(PACKAGE_LC),,$(eval PACKAGE_LC:=$(basename $(notdir $(lastword $(MAKEFILE_LIST))))))
+$(if $(PACKAGE_UC),,$(eval PACKAGE_UC:=$(shell echo "$(PACKAGE_LC)" | tr '[a-z\-]' '[A-Z_]')))
 $(if $($(PACKAGE_UC)_VERSION),,$(error $(PACKAGE_UC)_VERSION not defined))
 # provide default values. The package may override these value
 $(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)

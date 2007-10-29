@@ -1,6 +1,4 @@
-PACKAGE_LC:=ruby
-PACKAGE_UC:=RUBY
-$(PACKAGE_UC)_VERSION:=1.8.6
+RUBY_VERSION:=1.8.6
 $(PACKAGE_INIT_BIN)
 $(PACKAGE_UC)_SOURCE:=ruby-$($(PACKAGE_UC)_VERSION).tar.bz2
 $(PACKAGE_UC)_SITE:=ftp://ftp.ruby-lang.org/pub/ruby/1.8
