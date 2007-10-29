@@ -1,6 +1,7 @@
 PACKAGE_LC:=haserl
 PACKAGE_UC:=HASERL
 HASERL_VERSION:=0.9.20
+$(PACKAGE_INIT_BIN)
 HASERL_SOURCE:=haserl-$(HASERL_VERSION).tar.gz
 HASERL_SITE:=http://mesh.dl.sourceforge.net/sourceforge/haserl
 HASERL_DIR:=$(SOURCE_DIR)/haserl-$(HASERL_VERSION)
