@@ -89,7 +89,7 @@ case "$MOD_CGI_CMD" in
 		dsld -s
 		sleep 3
 		echo -n 'Restarting dsld...<br>'
-		dsld
+		dsld -n
 		echo -n 'done.</pre>'
 		echo '<form action="/cgi-bin/status.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
 		cgi_end
