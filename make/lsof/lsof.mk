@@ -17,7 +17,7 @@ endif
 $(PACKAGE_SOURCE_DOWNLOAD)
 $(PACKAGE_UNPACKED)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PACKAGE_UC)_DIR)/.configured: $($(PACKAGE_UC)_DIR)/.unpacked
 	(cd $(LSOF_DIR); echo n | $(TARGET_CONFIGURE_OPTS) DEBUG="$(TARGET_CFLAGS) $(LSOF_CFLAGS)" LSOF_INCLUDE=$(TARGET_MAKE_PATH)/../usr/include ./Configure linux)
 	touch $@
 
