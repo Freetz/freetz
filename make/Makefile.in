@@ -213,22 +213,26 @@ PACKAGE_SOURCE_DOWNLOAD=$(eval $(PACKAGE_SOURCE_DOWNLOAD__INT))
 # therefor two different macros
 
 # tar options for uncompression by file extension
-PACKAGE_UNTAR__INT_.tar:=
-PACKAGE_UNTAR__INT_.gz:=z
-PACKAGE_UNTAR__INT_.tgz:=z
-PACKAGE_UNTAR__INT_.bz2:=j
-PACKAGE_UNTAR__INT_.tbz:=j
-PACKAGE_UNTAR__INT_.lzma:=a
-PACKAGE_UNTAR__INT_.tlz:=a
+PACKAGE_UNPACK__INT_.tar:=
+PACKAGE_UNPACK__INT_.gz:=z
+PACKAGE_UNPACK__INT_.tgz:=z
+PACKAGE_UNPACK__INT_.bz2:=j
+PACKAGE_UNPACK__INT_.tbz:=j
+PACKAGE_UNPACK__INT_.lzma:=a
+PACKAGE_UNPACK__INT_.tlz:=a
+PACKAGE_UNPACK__INT_.zip:=dummy
 # $1: package name
-define PACKAGE_UNTAR__INT
-	$(if $(PACKAGE_UNTAR__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
-	tar -C $(SOURCE_DIR) $(VERBOSE) -x$(PACKAGE_UNTAR__INT_$(suffix $(strip $1)))f $(strip $1)
+define PACKAGE_UNPACK__INT
+	$(if $(PACKAGE_UNPACK__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
+	$(if $(patsubst %.zip,%,$(suffix $(strip $1))),
+		tar -C $(SOURCE_DIR) $(VERBOSE) -x$(PACKAGE_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
+		unzip -u $(strip $1) -d $(SOURCE_DIR)
+	)
 endef
 
 # untar, without patch
-define PACKAGE_UNTAR
-	$(call PACKAGE_UNTAR__INT, $(DL_DIR)/$($(PACKAGE_UC)_SOURCE))
+define PACKAGE_UNPACK
+	$(call PACKAGE_UNPACK__INT, $(DL_DIR)/$($(PACKAGE_UC)_SOURCE))
 endef
 
 ## apply patches
@@ -256,7 +260,7 @@ endef
 ## unpack and patch binary package
 define PACKAGE_BIN_UNPACKED__INT
 $($(PACKAGE_UC)_DIR)/.unpacked: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE)
-	$(call PACKAGE_UNTAR)
+	$(call PACKAGE_UNPACK)
 	$(call PACKAGE_BIN_PATCH)
 	touch $$@
 $(PACKAGE_LC)-source: $($(PACKAGE_UC)_DIR)/.unpacked
@@ -267,7 +271,7 @@ endef
 ## unpack and patch library package
 define PACKAGE_LIB_UNPACKED__INT
 $($(PACKAGE_UC)_DIR)/.unpacked: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE)
-	$(call PACKAGE_UNTAR)
+	$(call PACKAGE_UNPACK)
 	$(call PACKAGE_LIB_PATCH)
 	touch $$@
 $(PACKAGE_LC)-source: $($(PACKAGE_UC)_DIR)/.unpacked
