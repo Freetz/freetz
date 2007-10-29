@@ -1,6 +1,6 @@
 PACKAGE_LC:=cpmaccfg
 PACKAGE_UC:=CPMACCFG
-$(PACKAGE_UC)_VERSION:=0.4
+$(PACKAGE_UC)_VERSION:=0.5
 $(PACKAGE_INIT_BIN)
 $(PACKAGE_UC)_SOURCE:=cpmaccfg-$($(PACKAGE_UC)_VERSION).tar.gz
 $(PACKAGE_UC)_SITE:=http://www.heimpold.de/dsmod
