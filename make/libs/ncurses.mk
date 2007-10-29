@@ -37,11 +37,10 @@ $(PACKAGE_UC)_DS_CONFIG_FILE:=$($(PACKAGE_UC)_MAKE_DIR)/.ds_config_ncurses
 $(PACKAGE_UC)_DS_CONFIG_TEMP:=$($(PACKAGE_UC)_MAKE_DIR)/.ds_config_ncurses.temp
 
 $($(PACKAGE_UC)_DS_CONFIG_FILE): $(TOPDIR)/.config
-	grep 'DS_LIB_libterminfo_.*=y' $(TOPDIR)/.config | grep -v showall > $(NCURSES_DS_CONFIG_TEMP)
-	diff -q $(NCURSES_DS_CONFIG_TEMP) $(NCURSES_DS_CONFIG_FILE) || \
+	@grep 'DS_LIB_libterminfo_.*=y' $(TOPDIR)/.config | grep -v showall > $(NCURSES_DS_CONFIG_TEMP)
+	@diff -q $(NCURSES_DS_CONFIG_TEMP) $(NCURSES_DS_CONFIG_FILE) || \
 		cp $(NCURSES_DS_CONFIG_TEMP) $(NCURSES_DS_CONFIG_FILE)
-	rm -f $(NCURSES_DS_CONFIG_TEMP)
-	touch $@
+	@rm -f $(NCURSES_DS_CONFIG_TEMP)
 
 
 $(PACKAGE_SOURCE_DOWNLOAD)
