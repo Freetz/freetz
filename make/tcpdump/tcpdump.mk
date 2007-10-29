@@ -9,7 +9,6 @@ $(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/tcpdump
 
 $(PACKAGE_UC)_CONFIGURE_ENV += BUILD_CC="$(TARGET_CC)"
 $(PACKAGE_UC)_CONFIGURE_ENV += HOSTCC="$(HOSTCC)"
-$(PACKAGE_UC)_CONFIGURE_ENV += ac_cv_linux_vers=2
 $(PACKAGE_UC)_CONFIGURE_ENV += td_cv_gubbygetaddrinfo="no"
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-ipv6
 $(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-crypto
