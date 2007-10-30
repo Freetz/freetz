@@ -64,6 +64,10 @@ MEDIUM PRIORITY - normal bugs, features, improvements
   Remark (by Oliver): I think from multid. How could we avoid that?
 
 - Delete uClibc-files in root/lib when uClibc_version is changed
+	Remark (by Oliver): Done. All files in root/lib are deleted when new
+		uclibc version is installed (uclibc.mk). This should not be a 
+		problem because most libs are in root/usr/lib and others are
+		copied automatically on next make.
 
 - Check toolchain symlinks because they are not adapted.
 
