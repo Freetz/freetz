@@ -1,10 +1,10 @@
 
 By convention, each package has two package names. In this text we
-will refer to them as $PACKAGE_LC and $PACKAGE_UC.  The name
-$PACKAGE_LC usually consists of lower case letters, digits, underlines
-and hyphens. $PACKAGE_UC consists of uppercase letters, digits and
-underlines, but bo hyphens.  Normally $PACKAGE_UC is the name
-$PACKAGE_LC with letters converted to upper case and hyphens
+will refer to them as $pkg and $PKG.  The name
+$pkg usually consists of lower case letters, digits, underlines
+and hyphens. $PKG consists of uppercase letters, digits and
+underlines, but bo hyphens.  Normally $PKG is the name
+$pkg with letters converted to upper case and hyphens
 coneverted to underlines.  Version numbers are not part of a package
 name, so most package names don't contain digits.
 
@@ -14,91 +14,98 @@ packages are in make/libs/*, while binary packages are in make/*.
 Each package must define the following targets:
 
 
-${PACKAGE_LC}-source
+${pkg}-source
 	Download source for the package
 
-${PACKAGE_LC}-precompiled
-	Compile package and prepare for firmware generation or ${PACKAGE_LC}-package
+${pkg}-precompiled
+	Compile package and prepare for firmware generation or ${pkg}-package
 
-${PACKAGE_LC}-package
+${pkg}-package
 	Create a precompiled binary package
 
-${PACKAGE_LC}-clean
-${PACKAGE_LC}-dirclean
+${pkg}-clean
+${pkg}-dirclean
 	Remove all files that can be recreated
 
-${PACKAGE_LC}-list
+${pkg}-list
 	add package to the list of static or dynamic patches
 
 
 To use the convenience macros, you need some more defines:
-# PACKAGE_LC, PACKAGE_UC and VERSION
-PACKAGE_LC:=package-name
-PACKAGE_UC:=PACKAGE_NAME
-$(PACKAGE_UC)_VERSION:=1.2.3
+# pkg, PKG and VERSION
+pkg:=package-name
+PKG:=PACKAGE_NAME
+$(PKG)_VERSION:=1.2.3
 
 # initialize package macros, ether BINary or LIBrary.
+#   $(1) = version (mandatory)
+#   $(2) = lower-case package name (optional, default name of makefile)
+#   $(3) = upper-case package name (optional, default $2 converted to uppercase/underline)
 # default values for
-#  - $(PACKAGE_UC)_DIR : directory for sources
-#  - $(PACKAGE_UC)_MAKE_DIR : directory for ds-mod makefile, patches and files
-#  - $(PACKAGE_UC)_TARGET_DIR : directory for installation
-$(PACKAGE_INIT_BIN) or $(PACKAGE_INIT_LIB)
+#  - $(PKG)_DIR : directory for sources
+#  - $(PKG)_MAKE_DIR : directory for ds-mod makefile, patches and files
+#  - $(PKG)_TARGET_DIR : directory for installation
+$(eval $(call PKG_INIT_BIN, VERSION, [pkg], [PKG]))
+$(eval $(call PKG_INIT_LIB, VERSION, [pkg], [PKG]))
 
 # The download URL, split in directory part and filename
-$(PACKAGE_UC)_SITE:=http://www.server.net/download
-$(PACKAGE_UC)_SOURCE:=package-name-$($(PACKAGE_UC)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.server.net/download
+$(PKG)_SOURCE:=package-name-$($(PKG)_VERSION).tar.gz
 
-# directory containing the makefiles. This value is the default from PACKAGE_INIT.
+# directory containing the makefiles. This value is the default from PKG_INIT.
 # It should not be necessary to override this value.
-$(PACKAGE_UC)_MAKE_DIR:=$(MAKE_DIR)/$(PACKAGE_LC)
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
 
 # directory for sourcefile, "$(SOURCE_DIR)/" and the directory created by extracting the tar-file
-# This value is the default from PACKAGE_INIT.
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/package-name-$($(PACKAGE_UC)_VERSION)
+# This value is the default from PKG_INIT.
+$(PKG)_DIR:=$(SOURCE_DIR)/package-name-$($(PKG)_VERSION)
 
 # target directory for the package. The default value depends on BIN/LIB,
 # It should not be necessary to override this value.
 BIN:
-$(PACKAGE_UC)_TARGET_DIR:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)
+$(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
 LIB:
-$(PACKAGE_UC)_TARGET_DIR:=root/usr/lib
+$(PKG)_TARGET_DIR:=root/usr/lib
 
 # root directory for installation. The default value depends on BIN/LIB,
 # It should not be necessary to override this value.
 BIN:
-$(PACKAGE_UC)_TARGET_DIR:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)/root
+$(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root
 LIB:
-$(PACKAGE_UC)_TARGET_DIR:=root
+$(PKG)_TARGET_DIR:=root
 
 # order for inclusion in list of static or dynamic packages. Only for binary packages.
-# only necessary if the  package contains a run-script
-$(PACKAGE_UC)_STARTLEVEL=40
+# only necessary if the package contains a run-script
+$(PKG)_STARTLEVEL=40
 
 
 # Now you can use these macros:
-# Download $($(PACKAGE_UC)_SITE)/$($(PACKAGE_UC)_SOURCE) to dl/$($(PACKAGE_UC)_SOURCE)
-# defines $(PACKAGE_LC)-download
-$(PACKAGE_SOURCE_DOWNLOAD)
+# Download $($(PKG)_SITE)/$($(PKG)_SOURCE) to dl/$($(PKG)_SOURCE)
+# defines $(pkg)-download
+$(PKG_SOURCE_DOWNLOAD)
 
-# Unpack binary or library package von dl/$($(PACKAGE_UC)_SOURCE) and apply patches
-$(PACKAGE_UNPACKED)
+# Unpack binary or library package von dl/$($(PKG)_SOURCE) and apply patches
+$(PKG_UNPACKED)
 
 # configure package with ./configure with standard options
 # common settings are read from config.mipsel, a common config.cache is enabled.
 # for special needs, use these macros:
-#  - $(PACKAGE_UC)_CONFIGURE_PRE_CMDS
+#  - $(PKG)_CONFIGURE_PRE_CMDS
 #    commands to execute before ./configure
 #    terminate each command with ';'
-#    example: $(PACKAGE_UC)_CONFIGURE_PRE_CMDS += autoconf --force ;
-#  - $(PACKAGE_UC)_CONFIGURE_ENV
+#    example: $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
+#  - $(PKG)_CONFIGURE_ENV
 #    environment assignments before ./configure
-#    example: $(PACKAGE_UC)_CONFIGURE_ENV += ac_cv_special_value=yes
-#  - $(PACKAGE_UC)_CONFIGURE_OPTIONS
+#    example: $(PKG)_CONFIGURE_ENV += ac_cv_special_value=yes
+#  - $(PKG)_CONFIGURE_OPTIONS
 #    options for ./configure
-#    example: $(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-foo --enable-bar
-$(PACKAGE_CONFIGURED_CONFIGURE)
+#    example: $(PKG)_CONFIGURE_OPTIONS += --with-foo --enable-bar
+$(PKG_CONFIGURED_CONFIGURE)
+
+# If the package has no configuration, use this
+$(PKG_CONFIGURED_NOP)
 
 # Finalize package
-# defines ${PACKAGE_LC}-list for binary packages
-# defines $(PACKAGE_LC)-dirclean
-$(PACKAGE_FINI)
+# defines ${pkg}-list for binary packages
+# defines $(pkg)-dirclean
+$(PKG_FINISH)

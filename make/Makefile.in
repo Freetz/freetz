@@ -118,6 +118,17 @@ endif
 # For details of the required targets, see the documentation in README.Makefiles
 
 
+# PKG_SED_EDIT_CONFIG
+# create a sed-expression to update a config file
+#   $(1) = list of assignments CONFIG_VAR=value
+PKG_SED_EDIT_CONFIG__INT0 = -e 's/^(\# )?$1[ =].*/$(if $(patsubst n,,$2),$1=$2,\# $1 is not set)/g'
+PKG_SED_EDIT_CONFIG__INT1 = $(call PKG_SED_EDIT_CONFIG__INT0,$(word 1,$(subst =, ,$1)),$(word 2,$(subst =, ,$1)))
+PKG_SED_EDIT_CONFIG = $(SED) -r $(foreach asg,$1,$(call PKG_SED_EDIT_CONFIG__INT1,$(asg)))
+
+test-test:
+	$(call PKG_SED_EDIT_CONFIG,DS_PACKAGE_TOR=y DS_PACKAGE_TCPDUMP=n DS_PACKAGE_VSFTPD=) < .config
+
+
 # Use $< (first prerequisite) rather than $^ (all prerequisites), because
 # otherwise there will be errors when make tries to copy multiple source files
 # into one target binary.
@@ -129,14 +140,19 @@ endef
 
 ### PKG_INIT - initialise package. See also PKG_FINISH.
 
+define PKG_INIT__INT0
+#PKG_BASENAME:=$(lastword $(MAKEFILE_LIST))
+PKG_BASENAME:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+endef
+
 # Stage 1: initialise package names
 #   $(1) = version (mandatory)
 #   $(2) = lower-case package name (optional)
 #   $(3) = upper-case package name (optional)
-define PKG_INIT__INT
-$(if $(1),,$(error Undefined version for PKG_INIT in $(lastword $(MAKEFILE_LIST))))
-pkg:=$(if $(2),$(2),$(basename $(notdir $(lastword $(MAKEFILE_LIST)))))
-PKG:=$(if $(3),$(3),$(if $(2),$(shell echo "$(2)" | tr '[a-z\-]' '[A-Z_]'),$(shell echo "$(basename $(notdir $(lastword $(MAKEFILE_LIST))))" | tr '[a-z\-]' '[A-Z_]')))
+define PKG_INIT__INT1
+$(if $(1),,$(error Undefined version for PKG_INIT in $(PKG_BASENAME)))
+pkg:=$(if $(2),$(2),$(basename $(notdir $(PKG_BASENAME))))
+PKG:=$(if $(3),$(3),$(if $(2),$(shell echo "$(2)" | tr '[a-z\-]' '[A-Z_]'),$(shell echo "$(basename $(notdir $(PKG_BASENAME)))" | tr '[a-z\-]' '[A-Z_]')))
 endef
 
 # Stage 2: initialise package version
@@ -164,7 +180,8 @@ endef
 
 # Call & evaluate stages 1-3a for binary packages
 define PKG_INIT_BIN
-$(eval $(call PKG_INIT__INT,$(1),$(2),$(3)))
+$(eval $(call PKG_INIT__INT0))
+$(eval $(call PKG_INIT__INT1,$(1),$(2),$(3)))
 $(eval $(call PKG_INIT__INT2,$(1)))
 $(eval $(call PKG_INIT_BIN__INT))
 endef
@@ -186,7 +203,8 @@ endef
 
 # Call & evaluate stages 1-3b for library packages
 define PKG_INIT_LIB
-$(eval $(call PKG_INIT__INT,$(1),$(2),$(3)))
+$(eval $(call PKG_INIT__INT0))
+$(eval $(call PKG_INIT__INT1,$(1),$(2),$(3)))
 $(eval $(call PKG_INIT__INT2,$(1)))
 $(eval $(call PKG_INIT_LIB__INT))
 endef
