@@ -1,55 +1,52 @@
-PACKAGE_LC:=curl
-PACKAGE_UC:=CURL
-$(PACKAGE_UC)_VERSION:=7.16.4
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_SOURCE:=curl-$($(PACKAGE_UC)_VERSION).tar.bz2
-$(PACKAGE_UC)_SITE:=http://curl.haxx.se/download
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/curl
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/curl
+$(eval $(call PKG_INIT_BIN, 7.16.4))
+$(PKG)_SOURCE:=curl-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SITE:=http://curl.haxx.se/download
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/curl
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
 
-$(PACKAGE_UC)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-gnu-ld
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-thread
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-cookies
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-crypto-auth
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-nonblocking
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-file
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-ftp
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-http
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-ipv6
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-ares
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-debug
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-dict
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-gopher
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-ldap
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-manual
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-sspi
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-telnet
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-verbose
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-random="/dev/urandom"
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_MAKE_PATH)/../usr"
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-ca-bundle
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-gnutls
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-libidn
+$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
+$(PKG)_CONFIGURE_OPTIONS += --disable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
+$(PKG)_CONFIGURE_OPTIONS += --disable-thread
+$(PKG)_CONFIGURE_OPTIONS += --enable-cookies
+$(PKG)_CONFIGURE_OPTIONS += --enable-crypto-auth
+$(PKG)_CONFIGURE_OPTIONS += --enable-nonblocking
+$(PKG)_CONFIGURE_OPTIONS += --enable-file
+$(PKG)_CONFIGURE_OPTIONS += --enable-ftp
+$(PKG)_CONFIGURE_OPTIONS += --enable-http
+$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
+$(PKG)_CONFIGURE_OPTIONS += --disable-ares
+$(PKG)_CONFIGURE_OPTIONS += --disable-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-dict
+$(PKG)_CONFIGURE_OPTIONS += --disable-gopher
+$(PKG)_CONFIGURE_OPTIONS += --disable-ldap
+$(PKG)_CONFIGURE_OPTIONS += --disable-manual
+$(PKG)_CONFIGURE_OPTIONS += --disable-sspi
+$(PKG)_CONFIGURE_OPTIONS += --disable-telnet
+$(PKG)_CONFIGURE_OPTIONS += --disable-verbose
+$(PKG)_CONFIGURE_OPTIONS += --with-random="/dev/urandom"
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_MAKE_PATH)/../usr"
+$(PKG)_CONFIGURE_OPTIONS += --without-ca-bundle
+$(PKG)_CONFIGURE_OPTIONS += --without-gnutls
+$(PKG)_CONFIGURE_OPTIONS += --without-libidn
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(CURL_DIR)
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 curl:
 
-curl-precompiled: uclibc openssl-precompiled curl $($(PACKAGE_UC)_TARGET_BINARY)
+curl-precompiled: uclibc openssl-precompiled curl $($(PKG)_TARGET_BINARY)
 
 curl-clean:
 	-$(MAKE) -C $(CURL_DIR) clean
@@ -57,4 +54,4 @@ curl-clean:
 curl-uninstall:
 	rm -f $(CURL_TARGET_BINARY)
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

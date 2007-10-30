@@ -1,69 +1,66 @@
-PACKAGE_LC:=ncurses
-PACKAGE_UC:=NCURSES
-$(PACKAGE_UC)_VERSION:=5.6
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_SOURCE:=ncurses-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://ftp.gnu.org/pub/gnu/ncurses
-$(PACKAGE_UC)_$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/lib/libncurses.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libncurses.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_FORM_BINARY:=$($(PACKAGE_UC)_DIR)/lib/libform.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_FORM_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_FORM_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libform.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_MENU_BINARY:=$($(PACKAGE_UC)_DIR)/lib/libmenu.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_MENU_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmenu.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_MENU_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libmenu.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_PANEL_BINARY:=$($(PACKAGE_UC)_DIR)/lib/libpanel.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_PANEL_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_PANEL_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libpanel.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 5.6))
+$(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
+$(PKG)_SOURCE:=ncurses-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/ncurses
+$(PKG)_$(PKG)_BINARY:=$($(PKG)_DIR)/lib/libncurses.so.$($(PKG)_LIB_VERSION)
+$(PKG)_$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so.$($(PKG)_LIB_VERSION)
+$(PKG)_$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libncurses.so.$($(PKG)_LIB_VERSION)
+$(PKG)_FORM_BINARY:=$($(PKG)_DIR)/lib/libform.so.$($(PKG)_LIB_VERSION)
+$(PKG)_FORM_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform.so.$($(PKG)_LIB_VERSION)
+$(PKG)_FORM_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libform.so.$($(PKG)_LIB_VERSION)
+$(PKG)_MENU_BINARY:=$($(PKG)_DIR)/lib/libmenu.so.$($(PKG)_LIB_VERSION)
+$(PKG)_MENU_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmenu.so.$($(PKG)_LIB_VERSION)
+$(PKG)_MENU_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmenu.so.$($(PKG)_LIB_VERSION)
+$(PKG)_PANEL_BINARY:=$($(PKG)_DIR)/lib/libpanel.so.$($(PKG)_LIB_VERSION)
+$(PKG)_PANEL_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel.so.$($(PKG)_LIB_VERSION)
+$(PKG)_PANEL_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpanel.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-echo
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-const
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-overwrite
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-ada
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-cxx
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-cxx-binding
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-debug
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-profile
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-progs
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-normal
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-terminfo-dirs="/usr/share/terminfo"
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-default-terminfo-dir="/usr/share/terminfo"
+$(PKG)_CONFIGURE_OPTIONS += --enable-echo
+$(PKG)_CONFIGURE_OPTIONS += --enable-const
+$(PKG)_CONFIGURE_OPTIONS += --enable-overwrite
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --without-ada
+$(PKG)_CONFIGURE_OPTIONS += --without-cxx
+$(PKG)_CONFIGURE_OPTIONS += --without-cxx-binding
+$(PKG)_CONFIGURE_OPTIONS += --without-debug
+$(PKG)_CONFIGURE_OPTIONS += --without-profile
+$(PKG)_CONFIGURE_OPTIONS += --without-progs
+$(PKG)_CONFIGURE_OPTIONS += --with-normal
+$(PKG)_CONFIGURE_OPTIONS += --with-shared
+$(PKG)_CONFIGURE_OPTIONS += --with-terminfo-dirs="/usr/share/terminfo"
+$(PKG)_CONFIGURE_OPTIONS += --with-default-terminfo-dir="/usr/share/terminfo"
 
-$(PACKAGE_UC)_DS_CONFIG_FILE:=$($(PACKAGE_UC)_MAKE_DIR)/.ds_config_ncurses
-$(PACKAGE_UC)_DS_CONFIG_TEMP:=$($(PACKAGE_UC)_MAKE_DIR)/.ds_config_ncurses.temp
+$(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config_ncurses
+$(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config_ncurses.temp
 
-$($(PACKAGE_UC)_DS_CONFIG_FILE): $(TOPDIR)/.config
+$($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
 	@grep 'DS_LIB_libterminfo_.*=y' $(TOPDIR)/.config | grep -v showall > $(NCURSES_DS_CONFIG_TEMP)
 	@diff -q $(NCURSES_DS_CONFIG_TEMP) $(NCURSES_DS_CONFIG_FILE) || \
 		cp $(NCURSES_DS_CONFIG_TEMP) $(NCURSES_DS_CONFIG_FILE)
 	@rm -f $(NCURSES_DS_CONFIG_TEMP)
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_NCURSES_BINARY) \
-$($(PACKAGE_UC)_FORM_BINARY) \
-$($(PACKAGE_UC)_MENU_BINARY) \
-$($(PACKAGE_UC)_PANEL_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_NCURSES_BINARY) \
+$($(PKG)_FORM_BINARY) \
+$($(PKG)_MENU_BINARY) \
+$($(PKG)_PANEL_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(NCURSES_DIR) \
 		AR="$(TARGET_CROSS)ar rv" \
 		libs panel menu form headers
 
-$($(PACKAGE_UC)_NCURSES_STAGING_BINARY) \
-$($(PACKAGE_UC)_FORM_STAGING_BINARY) \
-$($(PACKAGE_UC)_MENU_STAGING_BINARY) \
-$($(PACKAGE_UC)_PANEL_STAGING_BINARY): \
-		$($(PACKAGE_UC)_NCURSES_BINARY) \
-		$($(PACKAGE_UC)_FORM_BINARY) \
-		$($(PACKAGE_UC)_MENU_BINARY) \
-		$($(PACKAGE_UC)_PANEL_BINARY)
+$($(PKG)_NCURSES_STAGING_BINARY) \
+$($(PKG)_FORM_STAGING_BINARY) \
+$($(PKG)_MENU_STAGING_BINARY) \
+$($(PKG)_PANEL_STAGING_BINARY): \
+		$($(PKG)_NCURSES_BINARY) \
+		$($(PKG)_FORM_BINARY) \
+		$($(PKG)_MENU_BINARY) \
+		$($(PKG)_PANEL_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(NCURSES_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -72,7 +69,7 @@ $($(PACKAGE_UC)_PANEL_STAGING_BINARY): \
 
 # Make sure that a changed DS-mod option forces the target terminfo directory
 # to be build from scratch.
-$($(PACKAGE_UC)_DIR)/.targetdata: $($(PACKAGE_UC)_DS_CONFIG_FILE)
+$($(PKG)_DIR)/.targetdata: $($(PKG)_DS_CONFIG_FILE)
 	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset $(NCURSES_TARGET_DIR)/../share/terminfo
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset \
 		$(NCURSES_TARGET_DIR)/../share/
@@ -89,48 +86,48 @@ $($(PACKAGE_UC)_DIR)/.targetdata: $($(PACKAGE_UC)_DS_CONFIG_FILE)
 		done )
 	touch $@
 
-$($(PACKAGE_UC)_NCURSES_TARGET_BINARY): $($(PACKAGE_UC)_NCURSES_STAGING_BINARY)
+$($(PKG)_NCURSES_TARGET_BINARY): $($(PKG)_NCURSES_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset \
 		$(NCURSES_TARGET_DIR)/../share/
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*.so* $(NCURSES_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-$($(PACKAGE_UC)_FORM_TARGET_BINARY): $($(PACKAGE_UC)_FORM_STAGING_BINARY)
+$($(PKG)_FORM_TARGET_BINARY): $($(PKG)_FORM_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform*.so* $(NCURSES_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-$($(PACKAGE_UC)_MENU_TARGET_BINARY): $($(PACKAGE_UC)_MENU_STAGING_BINARY)
+$($(PKG)_MENU_TARGET_BINARY): $($(PKG)_MENU_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmenu*.so* $(NCURSES_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-$($(PACKAGE_UC)_PANEL_TARGET_BINARY): $($(PACKAGE_UC)_PANEL_STAGING_BINARY)
+$($(PKG)_PANEL_TARGET_BINARY): $($(PKG)_PANEL_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel*.so* $(NCURSES_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
 ifeq ($(strip $(DS_LIB_libncurses)),y)
-ncurses-ncurses: $($(PACKAGE_UC)_NCURSES_STAGING_BINARY)
-ncurses-ncurses-precompiled: $($(PACKAGE_UC)_DIR)/.targetdata $($(PACKAGE_UC)_NCURSES_TARGET_BINARY)
+ncurses-ncurses: $($(PKG)_NCURSES_STAGING_BINARY)
+ncurses-ncurses-precompiled: $($(PKG)_DIR)/.targetdata $($(PKG)_NCURSES_TARGET_BINARY)
 else
 ncurses-ncurses ncurses-ncurses-precompiled:
 endif
 
 ifeq ($(strip $(DS_LIB_libform)),y)
-ncurses-form: $($(PACKAGE_UC)_FORM_STAGING_BINARY)
-ncurses-form-precompiled: $($(PACKAGE_UC)_FORM_TARGET_BINARY)
+ncurses-form: $($(PKG)_FORM_STAGING_BINARY)
+ncurses-form-precompiled: $($(PKG)_FORM_TARGET_BINARY)
 else
 ncurses-form ncurses-form-precompiled:
 endif
 
 ifeq ($(strip $(DS_LIB_libmenu)),y)
-ncurses-menu: $($(PACKAGE_UC)_MENU_STAGING_BINARY)
-ncurses-menu-precompiled: $($(PACKAGE_UC)_MENU_TARGET_BINARY)
+ncurses-menu: $($(PKG)_MENU_STAGING_BINARY)
+ncurses-menu-precompiled: $($(PKG)_MENU_TARGET_BINARY)
 else
 ncurses-menu ncurses-menu-precompiled:
 endif
 
 ifeq ($(strip $(DS_LIB_libpanel)),y)
-ncurses-panel: $($(PACKAGE_UC)_PANEL_STAGING_BINARY)
-ncurses-panel-precompiled: $($(PACKAGE_UC)_PANEL_TARGET_BINARY)
+ncurses-panel: $($(PKG)_PANEL_STAGING_BINARY)
+ncurses-panel-precompiled: $($(PKG)_PANEL_TARGET_BINARY)
 else
 ncurses-panel ncurses-panel-precompiled:
 endif
@@ -156,4 +153,4 @@ ncurses-uninstall:
 	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset
 	rm -rf $(NCURSES_TARGET_DIR)/../share/terminfo
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

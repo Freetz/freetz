@@ -1,51 +1,48 @@
-PACKAGE_LC:=libpcap
-PACKAGE_UC:=LIBPCAP
-$(PACKAGE_UC)_VERSION:=0.9.6
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_SOURCE:=libpcap-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://www.tcpdump.org/release/
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/libpcap.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libpcap.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 0.9.6))
+$(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
+$(PKG)_SOURCE:=libpcap-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.tcpdump.org/release/
+$(PKG)_BINARY:=$($(PKG)_DIR)/libpcap.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpcap.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-pcap=linux
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-pthread
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-debug
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-plugins
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-management
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-socks
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-http
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-password-save
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-small
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-yydebug
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-build-cc="$(HOSTCC)"
+$(PKG)_CONFIGURE_OPTIONS += --with-pcap=linux
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-pthread
+$(PKG)_CONFIGURE_OPTIONS += --enable-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-plugins
+$(PKG)_CONFIGURE_OPTIONS += --disable-management
+$(PKG)_CONFIGURE_OPTIONS += --disable-socks
+$(PKG)_CONFIGURE_OPTIONS += --disable-http
+$(PKG)_CONFIGURE_OPTIONS += --enable-password-save
+$(PKG)_CONFIGURE_OPTIONS += --enable-small
+$(PKG)_CONFIGURE_OPTIONS += --disable-yydebug
+$(PKG)_CONFIGURE_OPTIONS += --with-build-cc="$(HOSTCC)"
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBPCAP_DIR) all \
 		CCOPT="-fPIC $(TARGET_CFLAGS)"
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBPCAP_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so* $(LIBPCAP_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-libpcap: $($(PACKAGE_UC)_STAGING_BINARY)
+libpcap: $($(PKG)_STAGING_BINARY)
 
-libpcap-precompiled: uclibc libpcap $($(PACKAGE_UC)_TARGET_BINARY)
+libpcap-precompiled: uclibc libpcap $($(PKG)_TARGET_BINARY)
 
 libpcap-clean:
 	-$(MAKE) -C $(LIBPCAP_DIR) clean
@@ -54,4 +51,4 @@ libpcap-clean:
 libpcap-uninstall:
 	rm -f $(LIBPCAP_TARGET_DIR)/libpcap*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

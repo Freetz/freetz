@@ -1,17 +1,14 @@
-PACKAGE_LC:=inetd
-PACKAGE_UC:=INETD
-$(PACKAGE_UC)_VERSION:=0.1
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_PKG_VERSION:=$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_PKG_NAME:=inetd-$($(PACKAGE_UC)_PKG_VERSION)
-$(PACKAGE_UC)_STARTLEVEL=20
+$(eval $(call PKG_INIT_BIN, 0.1))
+$(PKG)_PKG_VERSION:=$($(PKG)_VERSION)
+$(PKG)_PKG_NAME:=inetd-$($(PKG)_PKG_VERSION)
+$(PKG)_STARTLEVEL=20
 
-$(PACKAGES_DIR)/.$($(PACKAGE_UC)_PKG_NAME):
+$(PACKAGES_DIR)/.$($(PKG)_PKG_NAME):
 	mkdir -p $(INETD_DEST_DIR)
 	tar -c -C $(INETD_MAKE_DIR)/files --exclude=.svn . | tar -x -C $(INETD_DEST_DIR)
 	@touch $@
 
-inetd: $(PACKAGES_DIR)/.$($(PACKAGE_UC)_PKG_NAME)
+inetd: $(PACKAGES_DIR)/.$($(PKG)_PKG_NAME)
 
 inetd-precompiled: inetd
 
@@ -20,4 +17,4 @@ inetd-clean:
 
 inetd-uninstall:
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

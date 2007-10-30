@@ -1,31 +1,28 @@
-PACKAGE_LC:=ldd
-PACKAGE_UC:=LDD
-$(PACKAGE_UC)_VERSION:=0.1
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_SOURCE:=ldd-$($(PACKAGE_UC)_VERSION).tar.bz2
-$(PACKAGE_UC)_SITE:=http://dsmod.magenbrot.net
-$(PACKAGE_UC)_SOURCE_FILE:=$($(PACKAGE_UC)_DIR)/ldd.c
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/ldd
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/ldd
+$(eval $(call PKG_INIT_BIN, 0.1))
+$(PKG)_SOURCE:=ldd-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SITE:=http://dsmod.magenbrot.net
+$(PKG)_SOURCE_FILE:=$($(PKG)_DIR)/ldd.c
+$(PKG)_BINARY:=$($(PKG)_DIR)/ldd
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ldd
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_NOP)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_NOP)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	    $(TARGET_CC) \
 	    $(TARGET_CFLAGS) \
 	    -DUCLIBC_RUNTIME_PREFIX=\ \
 	    $(LDD_SOURCE_FILE) -o $@ 
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(dir $(LDD_TARGET_BINARY))
 	$(INSTALL_BINARY_STRIP)
 
 ldd:
 
-ldd-precompiled: uclibc ldd $($(PACKAGE_UC)_TARGET_BINARY)
+ldd-precompiled: uclibc ldd $($(PKG)_TARGET_BINARY)
 
 ldd-clean:
 	-$(MAKE) -C $(LDD_DIR) clean
@@ -34,4 +31,4 @@ ldd-clean:
 ldd-uninstall:
 	$(RM) $(LDD_TARGET_BINARY)
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

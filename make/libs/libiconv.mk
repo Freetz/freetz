@@ -1,28 +1,25 @@
-PACKAGE_LC:=libiconv
-PACKAGE_UC:=LIBICONV
-$(PACKAGE_UC)_VERSION:=1.9.1
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=2.2.0
-$(PACKAGE_UC)_SOURCE:=libiconv-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://ftp.gnu.org/pub/gnu/libiconv
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/lib/.libs/libiconv.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiconv.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libiconv.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 1.9.1))
+$(PKG)_LIB_VERSION:=2.2.0
+$(PKG)_SOURCE:=libiconv-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/libiconv
+$(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libiconv.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiconv.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libiconv.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBICONV_DIR) \
 		CC="$(TARGET_CROSS)gcc"
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBICONV_DIR) \
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
@@ -30,13 +27,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 		all install-lib
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libiconv.la
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiconv*.so* $(LIBICONV_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-libiconv: $($(PACKAGE_UC)_STAGING_BINARY)
+libiconv: $($(PKG)_STAGING_BINARY)
 
-libiconv-precompiled: uclibc libiconv $($(PACKAGE_UC)_TARGET_BINARY)
+libiconv-precompiled: uclibc libiconv $($(PKG)_TARGET_BINARY)
 
 libiconv-clean:
 	-$(MAKE) -C $(LIBICONV_DIR) clean
@@ -45,4 +42,4 @@ libiconv-clean:
 libiconv-uninstall:
 	rm -f $(LIBICONV_TARGET_DIR)/libiconv*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

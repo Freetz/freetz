@@ -1,17 +1,14 @@
-PACKAGE_LC:=lua
-PACKAGE_UC:=LUA
-$(PACKAGE_UC)_VERSION:=5.1.2
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_SOURCE:=lua-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://www.lua.org/ftp
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/lua
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/lua
+$(eval $(call PKG_INIT_BIN, 5.1.2))
+$(PKG)_SOURCE:=lua-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.lua.org/ftp
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/lua
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lua
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_NOP)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_NOP)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(LUA_DIR) \
 		CC="$(TARGET_CC)" \
@@ -24,12 +21,12 @@ $($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 		PKG_VERSION="$(LUA_VERSION)" \
 		linux
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY) 
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) 
 	$(INSTALL_BINARY_STRIP)
 
 lua:
 
-lua-precompiled: uclibc ncurses-precompiled readline-precompiled lua $($(PACKAGE_UC)_TARGET_BINARY)
+lua-precompiled: uclibc ncurses-precompiled readline-precompiled lua $($(PKG)_TARGET_BINARY)
 
 lua-clean:
 	-$(MAKE) -C $(LUA_DIR) clean
@@ -37,4 +34,4 @@ lua-clean:
 lua-uninstall: 
 	rm -f $(LUA_TARGET_BINARY)
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

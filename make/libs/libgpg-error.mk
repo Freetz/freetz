@@ -1,27 +1,24 @@
-PACKAGE_LC:=libgpg-error
-PACKAGE_UC:=LIBGPG_ERROR
-$(PACKAGE_UC)_VERSION:=1.1
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=0.1.4
-$(PACKAGE_UC)_SOURCE:=libgpg-error-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://ftp.gnupg.org/gcrypt/libgpg-error
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/.libs/libgpg-error.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libgpg-error.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 1.1))
+$(PKG)_LIB_VERSION:=0.1.4
+$(PKG)_SOURCE:=libgpg-error-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://ftp.gnupg.org/gcrypt/libgpg-error
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libgpg-error.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgpg-error.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBGPG_ERROR_DIR)
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBGPG_ERROR_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -29,13 +26,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgpg-error.la
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*.so* $(LIBGPG_ERROR_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-libgpg-error: $($(PACKAGE_UC)_STAGING_BINARY)
+libgpg-error: $($(PKG)_STAGING_BINARY)
 
-libgpg-error-precompiled: uclibc libgpg-error $($(PACKAGE_UC)_TARGET_BINARY)
+libgpg-error-precompiled: uclibc libgpg-error $($(PKG)_TARGET_BINARY)
 
 libgpg-error-clean:
 	-$(MAKE) -C $(LIBGPG_ERROR_DIR) clean
@@ -44,4 +41,4 @@ libgpg-error-clean:
 libgpg-error-uninstall:
 	rm -f $(LIBGPG_ERROR_TARGET_DIR)/libgpg-error*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

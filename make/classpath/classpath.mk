@@ -1,39 +1,36 @@
-PACKAGE_LC:=classpath
-PACKAGE_UC:=CLASSPATH
-$(PACKAGE_UC)_VERSION:=0.95
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_UGLY_VERSION:=0.0.0
-$(PACKAGE_UC)_SOURCE:=classpath-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=ftp://ftp.gnu.org/gnu/classpath
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/lib/mini.jar
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/share/classpath/mini.jar
-$(PACKAGE_UC)_LIB_BINARY:=$($(PACKAGE_UC)_DIR)/native/jni/java-lang/.libs/libjavalang.so.$($(PACKAGE_UC)_UGLY_VERSION)
-$(PACKAGE_UC)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
+$(eval $(call PKG_INIT_BIN, 0.95))
+$(PKG)_UGLY_VERSION:=0.0.0
+$(PKG)_SOURCE:=classpath-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=ftp://ftp.gnu.org/gnu/classpath
+$(PKG)_BINARY:=$($(PKG)_DIR)/lib/mini.jar
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/share/classpath/mini.jar
+$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/native/jni/java-lang/.libs/libjavalang.so.$($(PKG)_UGLY_VERSION)
+$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-gtk-peer
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-qt-peer
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-gconf-peer
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --without-libiconv-prefix
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-plugin       
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-ecj               
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-Werror
+$(PKG)_CONFIGURE_OPTIONS += --disable-gtk-peer
+$(PKG)_CONFIGURE_OPTIONS += --disable-qt-peer
+$(PKG)_CONFIGURE_OPTIONS += --disable-gconf-peer
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PKG)_CONFIGURE_OPTIONS += --disable-plugin       
+$(PKG)_CONFIGURE_OPTIONS += --with-ecj               
+$(PKG)_CONFIGURE_OPTIONS += --disable-Werror
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY) $($(PACKAGE_UC)_LIB_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(CLASSPATH_DIR)
 	cp $(CLASSPATH_MAKE_DIR)/mini.classlist $(CLASSPATH_DIR)/lib;
 	( cd $(CLASSPATH_DIR)/lib; fastjar -Mcf mini.jar -@ < mini.classlist );
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(dir $@)
 	cp $(CLASSPATH_BINARY) $(CLASSPATH_TARGET_BINARY)
 
-$($(PACKAGE_UC)_LIB_STAGING_BINARY): $($(PACKAGE_UC)_LIB_BINARY)
+$($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(CLASSPATH_DIR)/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
@@ -52,14 +49,14 @@ $($(PACKAGE_UC)_LIB_STAGING_BINARY): $($(PACKAGE_UC)_LIB_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavautil.la
 	touch -c $@
 
-$($(PACKAGE_UC)_DIR)/.installed: $($(PACKAGE_UC)_LIB_STAGING_BINARY)
+$($(PKG)_DIR)/.installed: $($(PKG)_LIB_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjava*.so* $(ROOT_DIR)/usr/lib
 	$(TARGET_STRIP) $(ROOT_DIR)/usr/lib/libjava*.so*
 	touch $@
 
 classpath:
 
-classpath-precompiled: uclibc $($(PACKAGE_UC)_DIR)/.installed classpath $($(PACKAGE_UC)_TARGET_BINARY)
+classpath-precompiled: uclibc $($(PKG)_DIR)/.installed classpath $($(PKG)_TARGET_BINARY)
 
 classpath-clean:
 	-$(MAKE) -C $(CLASSPATH_DIR) clean
@@ -69,4 +66,4 @@ classpath-uninstall:
 	rm -rf root/usr/lib/libjava*.so*
 	rm -f $(CLASSPATH_DIR)/.installed
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

@@ -1,30 +1,27 @@
-PACKAGE_LC:=lzo
-PACKAGE_UC:=LZO
-$(PACKAGE_UC)_VERSION:=2.02
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=2.0.0
-$(PACKAGE_UC)_SOURCE:=lzo-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://www.oberhumer.com/opensource/lzo/download/
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/.libs/liblzo2.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/liblzo2.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 2.02))
+$(PKG)_LIB_VERSION:=2.0.0
+$(PKG)_SOURCE:=lzo-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.oberhumer.com/opensource/lzo/download/
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/liblzo2.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/liblzo2.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-libtool-lock
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-asm
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --disable-libtool-lock
+$(PKG)_CONFIGURE_OPTIONS += --disable-asm
+$(PKG)_CONFIGURE_OPTIONS += --disable-static
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LZO_DIR)
 
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LZO_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -32,13 +29,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/liblzo2.la
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2*.so* $(LZO_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-lzo: $($(PACKAGE_UC)_STAGING_BINARY)
+lzo: $($(PKG)_STAGING_BINARY)
 
-lzo-precompiled: uclibc lzo $($(PACKAGE_UC)_TARGET_BINARY)
+lzo-precompiled: uclibc lzo $($(PKG)_TARGET_BINARY)
 
 lzo-clean:
 	-$(MAKE) -C $(LZO_DIR) clean
@@ -47,4 +44,4 @@ lzo-clean:
 lzo-uninstall:
 	rm -f $(LZO_TARGET_DIR)/liblzo2*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

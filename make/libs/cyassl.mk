@@ -1,34 +1,31 @@
-PACKAGE_LC:=cyassl
-PACKAGE_UC:=CYASSL
-$(PACKAGE_UC)_VERSION:=0.8.5
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_SOURCE:=cyassl-$($(PACKAGE_UC)_VERSION).zip
-$(PACKAGE_UC)_SITE:=http://yassl.com
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/.libs/libcyassl.so
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl.so
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libcyassl.so
+$(eval $(call PKG_INIT_LIB, 0.8.5))
+$(PKG)_SOURCE:=cyassl-$($(PKG)_VERSION).zip
+$(PKG)_SITE:=http://yassl.com
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libcyassl.so
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl.so
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libcyassl.so
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-opensslExtra
+$(PKG)_CONFIGURE_OPTIONS += --enable-opensslExtra
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(CYASSL_DIR)
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	cp -a $(CYASSL_DIR)/src/.libs/libcyassl.so* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl*.so* $(CYASSL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-cyassl: $($(PACKAGE_UC)_STAGING_BINARY)
+cyassl: $($(PKG)_STAGING_BINARY)
 
-cyassl-precompiled: uclibc cyassl $($(PACKAGE_UC)_TARGET_BINARY)
+cyassl-precompiled: uclibc cyassl $($(PKG)_TARGET_BINARY)
 
 cyassl-clean:
 	-$(MAKE) -C $(CYASSL_DIR) clean
@@ -38,4 +35,4 @@ cyassl-clean:
 cyassl-uninstall:
 	rm -f $(CYASSL_TARGET_DIR)/libcyassl*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

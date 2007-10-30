@@ -1,39 +1,36 @@
-PACKAGE_LC:=zlib
-PACKAGE_UC:=ZLIB
-$(PACKAGE_UC)_VERSION:=1.2.3
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_SOURCE:=zlib-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/libpng
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/libz.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libz.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 1.2.3))
+$(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
+$(PKG)_SOURCE:=zlib-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/libpng
+$(PKG)_BINARY:=$($(PKG)_DIR)/libz.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libz.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --shared
+$(PKG)_CONFIGURE_OPTIONS += --shared
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(ZLIB_DIR) \
 	   libz.a libz.so
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(ZLIB_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so* $(ZLIB_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-zlib: $($(PACKAGE_UC)_STAGING_BINARY)
+zlib: $($(PKG)_STAGING_BINARY)
 
-zlib-precompiled: uclibc zlib $($(PACKAGE_UC)_TARGET_BINARY)
+zlib-precompiled: uclibc zlib $($(PKG)_TARGET_BINARY)
 
 zlib-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
@@ -44,4 +41,4 @@ zlib-clean:
 zlib-uninstall:
 	rm -f $(ZLIB_TARGET_DIR)/libz*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

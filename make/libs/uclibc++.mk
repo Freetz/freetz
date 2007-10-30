@@ -1,21 +1,18 @@
-PACKAGE_LC:=uclibcxx
-PACKAGE_UC:=UCLIBCXX
-$(PACKAGE_UC)_VERSION:=0.2.2
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_SOURCE:=uClibc++-$($(PACKAGE_UC)_VERSION).tar.bz2
-$(PACKAGE_UC)_SITE:=http://cxx.uclibc.org/src/
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/uClibc++-$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/libuClibc++-$($(PACKAGE_UC)_LIB_VERSION).so
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++-$($(PACKAGE_UC)_LIB_VERSION).so
-$(PACKAGE_UC)_TARGET_DIR:=root/lib
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libuClibc++-$($(PACKAGE_UC)_LIB_VERSION).so
+$(eval $(call PKG_INIT_LIB, 0.2.2, uclibcxx))
+$(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
+$(PKG)_SOURCE:=uClibc++-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SITE:=http://cxx.uclibc.org/src/
+$(PKG)_DIR:=$(SOURCE_DIR)/uClibc++-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/libuClibc++-$($(PKG)_LIB_VERSION).so
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++-$($(PKG)_LIB_VERSION).so
+$(PKG)_TARGET_DIR:=root/lib
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libuClibc++-$($(PKG)_LIB_VERSION).so
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
 
 
-$($(PACKAGE_UC)_DIR)/.configured: $($(PACKAGE_UC)_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	cp $(UCLIBCXX_MAKE_DIR)/Config.uclibc++ $(UCLIBCXX_DIR)/.config
 ifeq ($(DS_TARGET_LFS),y)
 	$(SED) -i -e 's,^.*UCLIBCXX_HAS_LFS.*,UCLIBCXX_HAS_LFS=y,g' $(UCLIBCXX_DIR)/.config
@@ -24,14 +21,14 @@ else
 endif
 	touch $@
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		all
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
@@ -42,13 +39,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 	   $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
 	ln -sf $(REAL_GNU_TARGET_NAME)-g++-uc $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-g++-uc
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++*.so* $(UCLIBCXX_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-uclibcxx: $($(PACKAGE_UC)_STAGING_BINARY)
+uclibcxx: $($(PKG)_STAGING_BINARY)
 
-uclibcxx-precompiled: uclibc uclibcxx $($(PACKAGE_UC)_TARGET_BINARY)
+uclibcxx-precompiled: uclibc uclibcxx $($(PKG)_TARGET_BINARY)
 
 uclibcxx-clean:
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-g++-uc
@@ -59,4 +56,4 @@ uclibcxx-clean:
 uclibcxx-uninstall:
 	rm -f $(UCLIBCXX_TARGET_DIR)/libuClibc++*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

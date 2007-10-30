@@ -1,35 +1,32 @@
-PACKAGE_LC:=inotify-tools
-PACKAGE_UC:=INOTIFY_TOOLS
-$(PACKAGE_UC)_VERSION:=3.10
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_LIB_VERSION:=0.3.3
-$(PACKAGE_UC)_SOURCE:=inotify-tools-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/inotify-tools
-$(PACKAGE_UC)_INWAIT_BINARY:=$($(PACKAGE_UC)_DIR)/src/.libs/inotifywait
-$(PACKAGE_UC)_INWATCH_BINARY:=$($(PACKAGE_UC)_DIR)/src/.libs/inotifywatch
-$(PACKAGE_UC)_LIB_BINARY:=$($(PACKAGE_UC)_DIR)/libinotifytools/src/.libs/libinotifytools.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_INWAIT_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/inotifywait
-$(PACKAGE_UC)_INWATCH_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/inotifywatch
-$(PACKAGE_UC)_LIB_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/lib/libinotifytools.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_BIN, 3.10))
+$(PKG)_LIB_VERSION:=0.3.3
+$(PKG)_SOURCE:=inotify-tools-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/inotify-tools
+$(PKG)_INWAIT_BINARY:=$($(PKG)_DIR)/src/.libs/inotifywait
+$(PKG)_INWATCH_BINARY:=$($(PKG)_DIR)/src/.libs/inotifywatch
+$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/libinotifytools/src/.libs/libinotifytools.so.$($(PKG)_LIB_VERSION)
+$(PKG)_INWAIT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/inotifywait
+$(PKG)_INWATCH_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/inotifywatch
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libinotifytools.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_ENV += LD="$(TARGET_LD)"
+$(PKG)_CONFIGURE_ENV += LD="$(TARGET_LD)"
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_INWAIT_BINARY) $($(PACKAGE_UC)_TOOLS_INWATCH_BINARY) $($(PACKAGE_UC)_TOOLS_LIB_BINARY): $($(PACKAGE_UC)_TOOLS_DIR)/.configured
+$($(PKG)_INWAIT_BINARY) $($(PKG)_TOOLS_INWATCH_BINARY) $($(PKG)_TOOLS_LIB_BINARY): $($(PKG)_TOOLS_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(INOTIFY_TOOLS_DIR)
 	touch $@
 
-$($(PACKAGE_UC)_TOOLS_INWAIT_TARGET_BINARY): $($(PACKAGE_UC)_TOOLS_INWAIT_BINARY)
+$($(PKG)_TOOLS_INWAIT_TARGET_BINARY): $($(PKG)_TOOLS_INWAIT_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$($(PACKAGE_UC)_TOOLS_INWATCH_TARGET_BINARY): $($(PACKAGE_UC)_TOOLS_INWATCH_BINARY)
+$($(PKG)_TOOLS_INWATCH_TARGET_BINARY): $($(PKG)_TOOLS_INWATCH_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$($(PACKAGE_UC)_TOOLS_LIB_TARGET_BINARY): $($(PACKAGE_UC)_TOOLS_LIB_BINARY)
+$($(PKG)_TOOLS_LIB_TARGET_BINARY): $($(PKG)_TOOLS_LIB_BINARY)
 	mkdir -p $(dir $@)
 	cp -a $(INOTIFY_TOOLS_DIR)/libinotifytools/src/.libs/libinotifytools.so* $(INOTIFY_TOOLS_TARGET_DIR)/root/usr/lib/
 	$(TARGET_STRIP) $@
@@ -37,9 +34,9 @@ $($(PACKAGE_UC)_TOOLS_LIB_TARGET_BINARY): $($(PACKAGE_UC)_TOOLS_LIB_BINARY)
 inotify-tools:
 
 inotify-tools-precompiled: uclibc inotify-tools \
-		$($(PACKAGE_UC)_TOOLS_INWAIT_TARGET_BINARY) \
-		$($(PACKAGE_UC)_TOOLS_INWATCH_TARGET_BINARY) \
-		$($(PACKAGE_UC)_TOOLS_LIB_TARGET_BINARY)
+		$($(PKG)_TOOLS_INWAIT_TARGET_BINARY) \
+		$($(PKG)_TOOLS_INWATCH_TARGET_BINARY) \
+		$($(PKG)_TOOLS_LIB_TARGET_BINARY)
 
 inotify-tools-clean:
 	-$(MAKE) -C $(INOTIFY_TOOLS_DIR) clean
@@ -50,4 +47,4 @@ inotify-tools-uninstall:
 	rm -f $(INOTIFY_TOOLS_INWATCH_TARGET_BINARY)
 	rm -f $(INOTIFY_TOOLS_TARGET_DIR)/root/usr/lib/libinotifytools.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

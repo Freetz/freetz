@@ -1,21 +1,18 @@
-PACKAGE_LC:=matrixssl
-PACKAGE_UC:=MATRIXSSL
-$(PACKAGE_UC)_VERSION:=1.7.3
-$(PACKAGE_INIT_LIB)
-#$(PACKAGE_UC)_VERSION:=1-8-3
-#$(PACKAGE_UC)_SOURCE:=matrixssl-$($(PACKAGE_UC)_VERSION)-open.tar.gz
-$(PACKAGE_UC)_SOURCE:=matrixssl-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://downloads.openwrt.org/sources
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/matrixssl
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/libmatrixssl.so
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libmatrixssl.so
+$(eval $(call PKG_INIT_LIB, 1.7.3))
+#$(PKG)_VERSION:=1-8-3
+#$(PKG)_SOURCE:=matrixssl-$($(PKG)_VERSION)-open.tar.gz
+$(PKG)_SOURCE:=matrixssl-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://downloads.openwrt.org/sources
+$(PKG)_DIR:=$(SOURCE_DIR)/matrixssl
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/libmatrixssl.so
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmatrixssl.so
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_NOP)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_NOP)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(MATRIXSSL_DIR)/src \
 		CC="$(TARGET_CC)" \
@@ -26,7 +23,7 @@ $($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		STRIP="$(TARGET_CROSS)strip" 
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
 	cp -a $(MATRIXSSL_DIR)/src/libmatrixssl.so* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
 	cp $(MATRIXSSL_DIR)/src/libmatrixsslstatic.a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
@@ -34,13 +31,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 	cp $(MATRIXSSL_DIR)/matrixSsl.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl
 	ln -sf matrixSsl/matrixSsl.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl.h
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl*.so* $(MATRIXSSL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-matrixssl: $($(PACKAGE_UC)_STAGING_BINARY)
+matrixssl: $($(PKG)_STAGING_BINARY)
 
-matrixssl-precompiled: uclibc uclibc matrixssl $($(PACKAGE_UC)_TARGET_BINARY)
+matrixssl-precompiled: uclibc uclibc matrixssl $($(PKG)_TARGET_BINARY)
 
 matrixssl-clean:
 	-$(MAKE) -C $(MATRIXSSL_DIR)/src clean
@@ -50,4 +47,4 @@ matrixssl-clean:
 matrixssl-uninstall:
 	rm -f $(MATRIXSSL_TARGET_DIR)/libmatrixssl*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

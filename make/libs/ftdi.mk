@@ -1,28 +1,25 @@
-PACKAGE_LC:=ftdi
-PACKAGE_UC:=FTDI
-$(PACKAGE_UC)_VERSION:=0.7
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=0.7.0
-$(PACKAGE_UC)_SOURCE:=libftdi-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/libftdi-$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/.libs/libftdi.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libftdi.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 0.7))
+$(PKG)_LIB_VERSION:=0.7.0
+$(PKG)_SOURCE:=libftdi-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ
+$(PKG)_DIR:=$(SOURCE_DIR)/libftdi-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libftdi.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libftdi.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(FTDI_DIR) all
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	    $(MAKE) -C $(FTDI_DIR) \
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -31,13 +28,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libftdi.pc
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*.so* $(FTDI_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-ftdi: $($(PACKAGE_UC)_STAGING_BINARY)
+ftdi: $($(PKG)_STAGING_BINARY)
 
-ftdi-precompiled: uclibc usb-precompiled ftdi $($(PACKAGE_UC)_TARGET_BINARY)
+ftdi-precompiled: uclibc usb-precompiled ftdi $($(PKG)_TARGET_BINARY)
 
 ftdi-clean:
 	-$(MAKE) -C $(FTDI_DIR) clean
@@ -46,4 +43,4 @@ ftdi-clean:
 ftdi-uninstall:
 	rm -f $(FTDI_TARGET_DIR)/libftdi*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

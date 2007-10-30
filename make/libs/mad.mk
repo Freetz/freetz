@@ -1,31 +1,28 @@
-PACKAGE_LC:=mad
-PACKAGE_UC:=MAD
-$(PACKAGE_UC)_VERSION:=0.15.1b
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=0.2.1
-$(PACKAGE_UC)_SOURCE:=libmad-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/mad
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/libmad-$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/.libs/libmad.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libmad.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 0.15.1b))
+$(PKG)_LIB_VERSION:=0.2.1
+$(PKG)_SOURCE:=libmad-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/mad
+$(PKG)_DIR:=$(SOURCE_DIR)/libmad-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libmad.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmad.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-debugging
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-speed
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-fpm="mips"
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-debugging
+$(PKG)_CONFIGURE_OPTIONS += --enable-speed
+$(PKG)_CONFIGURE_OPTIONS += --enable-fpm="mips"
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(MAD_DIR)
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(MAD_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -33,13 +30,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libmad.la
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*.so* $(MAD_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-mad: $($(PACKAGE_UC)_STAGING_BINARY)
+mad: $($(PKG)_STAGING_BINARY)
 
-mad-precompiled: uclibc mad $($(PACKAGE_UC)_TARGET_BINARY)
+mad-precompiled: uclibc mad $($(PKG)_TARGET_BINARY)
 
 mad-clean:
 	-$(MAKE) -C $(MAD_DIR) clean
@@ -48,4 +45,4 @@ mad-clean:
 mad-uninstall:
 	rm -f $(MAD_TARGET_DIR)/libmad*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

@@ -1,36 +1,33 @@
-PACKAGE_LC:=ntfs
-PACKAGE_UC:=NTFS
-$(PACKAGE_UC)_VERSION:=1.1004
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_SOURCE:=ntfs-3g-$($(PACKAGE_UC)_VERSION).tgz
-$(PACKAGE_UC)_SITE:=http://www.ntfs-3g.org/
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/ntfs-3g-$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/ntfs-3g
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/ntfs-3g
-$(PACKAGE_UC)_STARTLEVEL=30
+$(eval $(call PKG_INIT_BIN, 1.1004))
+$(PKG)_SOURCE:=ntfs-3g-$($(PKG)_VERSION).tgz
+$(PKG)_SITE:=http://www.ntfs-3g.org/
+$(PKG)_DIR:=$(SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/ntfs-3g
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ntfs-3g
+$(PKG)_STARTLEVEL=30
 
-$(PACKAGE_UC)_CONFIGURE_ENV += FUSE_MODULE_CFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include/fuse"
-$(PACKAGE_UC)_CONFIGURE_ENV += FUSE_MODULE_LIBS="-pthread -lfuse -ldl"
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_ENV += FUSE_MODULE_CFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include/fuse"
+$(PKG)_CONFIGURE_ENV += FUSE_MODULE_LIBS="-pthread -lfuse -ldl"
+$(PKG)_CONFIGURE_OPTIONS += --disable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(NTFS_DIR) all \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" 
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-ntfs: uclibc fuse $($(PACKAGE_UC)_TARGET_BINARY)
+ntfs: uclibc fuse $($(PKG)_TARGET_BINARY)
 
-ntfs-precompiled: fuse-precompiled ntfs $($(PACKAGE_UC)_TARGET_BINARY)
+ntfs-precompiled: fuse-precompiled ntfs $($(PKG)_TARGET_BINARY)
 
 ntfs-clean:
 	-$(MAKE) -C $(NTFS_DIR) clean
@@ -38,4 +35,4 @@ ntfs-clean:
 ntfs-uninstall:
 	rm -f $(NTFS_TARGET_BINARY)
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

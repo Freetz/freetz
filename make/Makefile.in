@@ -127,210 +127,233 @@ cp $< $@
 $(TARGET_STRIP) $@
 endef
 
-### PACKAGE_INIT
-# init package. Must be called after PACKAGE_LC and PACKAGE_UC are defined
-# see also PACKAGE_FINI
-define PACKAGE_INIT__INT
-$(if $(PACKAGE_LC),,$(eval PACKAGE_LC:=$(basename $(notdir $(lastword $(MAKEFILE_LIST))))))
-$(if $(PACKAGE_UC),,$(eval PACKAGE_UC:=$(shell echo "$(PACKAGE_LC)" | tr '[a-z\-]' '[A-Z_]')))
-$(if $($(PACKAGE_UC)_VERSION),,$(error $(PACKAGE_UC)_VERSION not defined))
-# provide default values. The package may override these value
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)
-endef
-PACKAGE_INIT=$(eval $(PACKAGE_INIT__INT))
+### PKG_INIT - initialise package. See also PKG_FINISH.
 
-# init binary package
-define PACKAGE_INIT_BIN__INT
-PACKAGE_TYP:=BIN
+# Stage 1: initialise package names
+#   $(1) = version (mandatory)
+#   $(2) = lower-case package name (optional)
+#   $(3) = upper-case package name (optional)
+define PKG_INIT__INT
+$(if $(1),,$(error Undefined version for PKG_INIT in $(lastword $(MAKEFILE_LIST))))
+pkg:=$(if $(2),$(2),$(basename $(notdir $(lastword $(MAKEFILE_LIST)))))
+PKG:=$(if $(3),$(3),$(if $(2),$(shell echo "$(2)" | tr '[a-z\-]' '[A-Z_]'),$(shell echo "$(basename $(notdir $(lastword $(MAKEFILE_LIST))))" | tr '[a-z\-]' '[A-Z_]')))
+endef
+
+# Stage 2: initialise package version
+#   $(1) = version (mandatory)
+define PKG_INIT__INT2
+$(PKG)_VERSION:=$(1)
+endef
+
+# Stage 3a: initialise other package-specific variables for binary packages
+define PKG_INIT_BIN__INT
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+PKG_TYP:=BIN
 # level 99 for packages that are not actually started
-$(PACKAGE_UC)_STARTLEVEL=99
-#
-$(PACKAGE_UC)_MAKE_DIR:=$(MAKE_DIR)/$(PACKAGE_LC)
-$(PACKAGE_UC)_TARGET_DIR:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_DEST_DIR:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)/root
-$(PACKAGE_UC)_DEST_BIN:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)/root/bin
-$(PACKAGE_UC)_DEST_SBIN:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)/root/sbin
-$(PACKAGE_UC)_DEST_LIB:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)/root/lib
-$(PACKAGE_UC)_DEST_USR_BIN:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)/root/usr/bin
-$(PACKAGE_UC)_DEST_USR_SBIN:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)/root/usr/sbin
-$(PACKAGE_UC)_DEST_USR_LIB:=$(PACKAGES_DIR)/$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)/root/usr/lib
-endef
-PACKAGE_INIT_BIN=$(eval $(PACKAGE_INIT__INT))$(eval $(PACKAGE_INIT_BIN__INT))
-
-# init library package
-define PACKAGE_INIT_LIB__INT
-PACKAGE_TYP:=LIB
-#
-$(PACKAGE_UC)_MAKE_DIR:=$(MAKE_DIR)/libs
-$(PACKAGE_UC)_TARGET_DIR:=root/usr/lib
-$(PACKAGE_UC)_DEST_DIR:=root
-$(PACKAGE_UC)_DEST_BIN:=root/bin
-$(PACKAGE_UC)_DEST_SBIN:=root/sbin
-$(PACKAGE_UC)_DEST_LIB:=root/lib
-$(PACKAGE_UC)_DEST_USR_BIN:=root/usr/bin
-$(PACKAGE_UC)_DEST_USR_SBIN:=root/usr/sbin
-$(PACKAGE_UC)_DEST_USR_LIB:=root/usr/lib
-endef
-PACKAGE_INIT_LIB=$(eval $(PACKAGE_INIT__INT))$(eval $(PACKAGE_INIT_LIB__INT))
-
-# finalize library package
-# currently empty
-define PACKAGE_FINI_LIB__INT
+$(PKG)_STARTLEVEL=99
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
+$(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_DEST_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root
+$(PKG)_DEST_BIN:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/bin
+$(PKG)_DEST_SBIN:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/sbin
+$(PKG)_DEST_LIB:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/lib
+$(PKG)_DEST_USR_BIN:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/usr/bin
+$(PKG)_DEST_USR_SBIN:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/usr/sbin
+$(PKG)_DEST_USR_LIB:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/usr/lib
 endef
 
-define PACKAGE_FINI_BIN__INT
-$(PACKAGE_LIST)
+# Call & evaluate stages 1-3a for binary packages
+define PKG_INIT_BIN
+$(eval $(call PKG_INIT__INT,$(1),$(2),$(3)))
+$(eval $(call PKG_INIT__INT2,$(1)))
+$(eval $(call PKG_INIT_BIN__INT))
 endef
 
-### fini
-define PACKAGE_FINI__INT
-# common dirclean
-$(PACKAGE_LC)-dirclean--int:
-	$(RM) -r $($(PACKAGE_UC)_DIR)
-	$(RM) -r $($(PACKAGE_UC)_TARGET_DIR)
-	$(RM) $(PACKAGES_DIR)/.$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_LC)-dirclean: $(PACKAGE_LC)-dirclean--int
-.PHONY: $(PACKAGE_LC)-dirclean $(PACKAGE_LC)-dirclean--int
-PACKAGE_UC:=
-PACKAGE_LC:=
-PACKAGE_TYP:=
+# Stage 3b: initialise other package-specific variables for library packages
+define PKG_INIT_LIB__INT
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+PKG_TYP:=LIB
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
+$(PKG)_TARGET_DIR:=root/usr/lib
+$(PKG)_DEST_DIR:=root
+$(PKG)_DEST_BIN:=root/bin
+$(PKG)_DEST_SBIN:=root/sbin
+$(PKG)_DEST_LIB:=root/lib
+$(PKG)_DEST_USR_BIN:=root/usr/bin
+$(PKG)_DEST_USR_SBIN:=root/usr/sbin
+$(PKG)_DEST_USR_LIB:=root/usr/lib
 endef
-PACKAGE_FINI=$(eval $(PACKAGE_FINI_$(PACKAGE_TYP)_INT))$(eval $(PACKAGE_FINI__INT))
 
-
-### download the source tar
-define PACKAGE_SOURCE_DOWNLOAD__INT
-$(DL_DIR)/$($(PACKAGE_UC)_SOURCE): | $(DL_DIR)
-	wget -nd --passive-ftp -P $(DL_DIR) $($(PACKAGE_UC)_SITE)/$($(PACKAGE_UC)_SOURCE)
-$(PACKAGE_LC)-download: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE)
-.PHONY: $(PACKAGE_LC)-download
+# Call & evaluate stages 1-3b for library packages
+define PKG_INIT_LIB
+$(eval $(call PKG_INIT__INT,$(1),$(2),$(3)))
+$(eval $(call PKG_INIT__INT2,$(1)))
+$(eval $(call PKG_INIT_LIB__INT))
 endef
-PACKAGE_SOURCE_DOWNLOAD=$(eval $(PACKAGE_SOURCE_DOWNLOAD__INT))
 
 
-### unpack the source tar and apply patches
-# the naming convention for patches is different for library packages and for binary packages,
-# therefor two different macros
+
+### PKG_FINISH - package finalisation
+
+# Finalise binary packages
+define PKG_FINISH_BIN__INT
+$(PKG_LIST)
+endef
+
+# Finalise library packages (currently empty)
+define PKG_FINISH_LIB__INT
+endef
+
+# Finalise packages (general functionality + call to type specifics)
+define PKG_FINISH__INT
+# Common dirclean
+$(pkg)-dirclean--int:
+	$(RM) -r $($(PKG)_DIR)
+	$(RM) -r $($(PKG)_TARGET_DIR)
+	$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+$(pkg)-dirclean: $(pkg)-dirclean--int
+.PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
+PKG:=
+pkg:=
+PKG_TYP:=
+endef
+PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYP)_INT))$(eval $(PKG_FINISH__INT))
+
+
+### PKG_SOURCE_DOWNLOAD - download source packages
+
+define PKG_SOURCE_DOWNLOAD__INT
+$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
+	wget -nd --passive-ftp -P $(DL_DIR) $($(PKG)_SITE)/$($(PKG)_SOURCE)
+$(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
+.PHONY: $(pkg)-download
+endef
+PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
+
+
+### PKG_UNPACK - unpack source archive & apply patches
+# Naming conventions for patches are different for library vs. binary packages,
+# therefore we have two different macros.
 
 # tar options for uncompression by file extension
-PACKAGE_UNPACK__INT_.tar:=
-PACKAGE_UNPACK__INT_.gz:=z
-PACKAGE_UNPACK__INT_.tgz:=z
-PACKAGE_UNPACK__INT_.bz2:=j
-PACKAGE_UNPACK__INT_.tbz:=j
-PACKAGE_UNPACK__INT_.lzma:=a
-PACKAGE_UNPACK__INT_.tlz:=a
-PACKAGE_UNPACK__INT_.zip:=dummy
+PKG_UNPACK__INT_.tar:=
+PKG_UNPACK__INT_.gz:=z
+PKG_UNPACK__INT_.tgz:=z
+PKG_UNPACK__INT_.bz2:=j
+PKG_UNPACK__INT_.tbz:=j
+PKG_UNPACK__INT_.lzma:=a
+PKG_UNPACK__INT_.tlz:=a
+PKG_UNPACK__INT_.zip:=dummy
 # $1: package name
-define PACKAGE_UNPACK__INT
-	$(if $(PACKAGE_UNPACK__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
+define PKG_UNPACK__INT
+	$(if $(PKG_UNPACK__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
 	$(if $(patsubst %.zip,%,$(suffix $(strip $1))),
-		tar -C $(SOURCE_DIR) $(VERBOSE) -x$(PACKAGE_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
+		tar -C $(SOURCE_DIR) $(VERBOSE) -x$(PKG_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
 		unzip -u $(strip $1) -d $(SOURCE_DIR)
 	)
 endef
 
-# untar, without patch
-define PACKAGE_UNPACK
-	$(call PACKAGE_UNPACK__INT, $(DL_DIR)/$($(PACKAGE_UC)_SOURCE))
+# Unpack, without patch
+define PKG_UNPACK
+	$(call PKG_UNPACK__INT, $(DL_DIR)/$($(PKG)_SOURCE))
 endef
 
-## apply patches
+### PKG_PATCH - apply patches
 
 # $1: directory containing the patches
 # $2: directory to apply the patches to
 # $3: optional name for library patches
-define PACKAGE_PATCH__INT
+define PKG_PATCH__INT
 	shopt -s nullglob; for i in $(strip $1)/*$(strip $3).patch; do \
 		$(PATCH_TOOL) $(strip $2) $$$$i; \
 	done
 endef
 
 # Patch binary package
-define PACKAGE_BIN_PATCH
-	$(call PACKAGE_PATCH__INT, $($(strip $(PACKAGE_UC))_MAKE_DIR)/patches, $($(strip $(PACKAGE_UC))_DIR), )
+define PKG_BIN_PATCH
+	$(call PKG_PATCH__INT, $($(strip $(PKG))_MAKE_DIR)/patches, $($(strip $(PKG))_DIR), )
 endef
 
 # Patch library package
-define PACKAGE_LIB_PATCH
-	$(call PACKAGE_LIB_PATCH__INT, $(PACKAGE_UC), .$(strip $(PACKAGE_LC)))
-	$(call PACKAGE_PATCH__INT, $($(strip $(PACKAGE_UC))_MAKE_DIR)/patches, $($(strip $(PACKAGE_UC))_DIR), .$(strip $(PACKAGE_LC)))
+define PKG_LIB_PATCH
+	$(call PKG_LIB_PATCH__INT, $(PKG), .$(strip $(pkg)))
+	$(call PKG_PATCH__INT, $($(strip $(PKG))_MAKE_DIR)/patches, $($(strip $(PKG))_DIR), .$(strip $(pkg)))
 endef
 
-## unpack and patch binary package
-define PACKAGE_BIN_UNPACKED__INT
-$($(PACKAGE_UC)_DIR)/.unpacked: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE)
-	$(call PACKAGE_UNPACK)
-	$(call PACKAGE_BIN_PATCH)
+## Unpack and patch binary package
+define PKG_BIN_UNPACKED__INT
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE)
+	$(call PKG_UNPACK)
+	$(call PKG_BIN_PATCH)
 	touch $$@
-$(PACKAGE_LC)-source: $($(PACKAGE_UC)_DIR)/.unpacked
-$(PACKAGE_LC)-unpacked: $($(PACKAGE_UC)_DIR)/.unpacked
-.PHONY: $(PACKAGE_LC)-source $(PACKAGE_LC)-unpacked
+$(pkg)-source: $($(PKG)_DIR)/.unpacked
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+.PHONY: $(pkg)-source $(pkg)-unpacked
 endef
 
-## unpack and patch library package
-define PACKAGE_LIB_UNPACKED__INT
-$($(PACKAGE_UC)_DIR)/.unpacked: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE)
-	$(call PACKAGE_UNPACK)
-	$(call PACKAGE_LIB_PATCH)
+## Unpack and patch library package
+define PKG_LIB_UNPACKED__INT
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE)
+	$(call PKG_UNPACK)
+	$(call PKG_LIB_PATCH)
 	touch $$@
-$(PACKAGE_LC)-source: $($(PACKAGE_UC)_DIR)/.unpacked
-$(PACKAGE_LC)-unpacked: $($(PACKAGE_UC)_DIR)/.unpacked
-.PHONY: $(PACKAGE_LC)-source $(PACKAGE_LC)-unpacked
+$(pkg)-source: $($(PKG)_DIR)/.unpacked
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+.PHONY: $(pkg)-source $(pkg)-unpacked
 endef
 
-define PACKAGE_UNPACKED__INT
-$(PACKAGES_DIR)/.$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION):
-	mkdir -p $($(PACKAGE_UC)_TARGET_DIR)/root
-	if test -d $($(PACKAGE_UC)_MAKE_DIR)/files; then \
-		tar -c -C $($(PACKAGE_UC)_MAKE_DIR)/files --exclude=.svn . | tar -x -C $($(PACKAGE_UC)_TARGET_DIR) ; \
+define PKG_UNPACKED__INT
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION):
+	mkdir -p $($(PKG)_TARGET_DIR)/root
+	if test -d $($(PKG)_MAKE_DIR)/files; then \
+		tar -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | tar -x -C $($(PKG)_TARGET_DIR) ; \
 	fi
 	@touch $$@
-$(PACKAGE_LC) $(PACKAGE_LC)-precompiled: $(PACKAGES_DIR)/.$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)
-.PHONY: $(PACKAGE_LC) $(PACKAGE_LC)-precompiled
+$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+.PHONY: $(pkg) $(pkg)-precompiled
 endef
 
-PACKAGE_BIN_UNPACKED=$(eval $(PACKAGE_BIN_UNPACKED__INT))
-PACKAGE_LIB_UNPACKED=$(eval $(PACKAGE_LIB_UNPACKED__INT))
-PACKAGE_UNPACKED=$(eval $(PACKAGE_UNPACKED__INT)) $(eval $(PACKAGE_$(PACKAGE_TYP)_UNPACKED__INT))
+PKG_BIN_UNPACKED=$(eval $(PKG_BIN_UNPACKED__INT))
+PKG_LIB_UNPACKED=$(eval $(PKG_LIB_UNPACKED__INT))
+PKG_UNPACKED=$(eval $(PKG_UNPACKED__INT)) $(eval $(PKG_$(PKG_TYP)_UNPACKED__INT))
 
-## configure package, using ./configure
-define PACKAGE_CONFIGURED_CONFIGURE__INT
-$($(PACKAGE_UC)_DIR)/.configured: $($(PACKAGE_UC)_DIR)/.unpacked
-	( cd $($(PACKAGE_UC)_DIR); \
+## Configure package, using ./configure
+define PKG_CONFIGURED_CONFIGURE__INT
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
+	( cd $($(PKG)_DIR); \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
-		$($(PACKAGE_UC)_CONFIGURE_PRE_CMDS) \
+		$($(PKG)_CONFIGURE_PRE_CMDS) \
 		source $(DSMOD_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
 		$(TARGET_CONFIGURE_ENV) \
-		$($(PACKAGE_UC)_CONFIGURE_ENV) \
+		$($(PKG)_CONFIGURE_ENV) \
 		./configure \
 		$(TARGET_CONFIGURE_OPTIONS) \
-		$($(PACKAGE_UC)_CONFIGURE_OPTIONS) \
+		$($(PKG)_CONFIGURE_OPTIONS) \
 	)
 	touch $$@
-$(PACKAGE_LC)-configured: $($(PACKAGE_UC)_DIR)/.configured
-.PHONY: $(PACKAGE_LC)-configured
+$(pkg)-configured: $($(PKG)_DIR)/.configured
+.PHONY: $(pkg)-configured
 endef
-PACKAGE_CONFIGURED_CONFIGURE=$(eval $(PACKAGE_CONFIGURED_CONFIGURE__INT))
+PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
 
-## package needs no configuration
-define PACKAGE_CONFIGURED_NOP__INT
-$($(PACKAGE_UC)_DIR)/.configured: $($(PACKAGE_UC)_DIR)/.unpacked
+## Package needs no configuration
+define PKG_CONFIGURED_NOP__INT
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $$@
-$(PACKAGE_LC)-configured: $($(PACKAGE_UC)_DIR)/.configured
-.PHONY: $(PACKAGE_LC)-configured
+$(pkg)-configured: $($(PKG)_DIR)/.configured
+.PHONY: $(pkg)-configured
 endef
-PACKAGE_CONFIGURED_NOP=$(eval $(PACKAGE_CONFIGURED_NOP__INT))
+PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
 
 
 ## Add package to static or dynamic list
-define PACKAGE_LIST__INT
-$(PACKAGE_LC)-list:
-ifeq ($(strip $(DS_PACKAGE_$(PACKAGE_UC))),y)
-	@echo "S$(strip $($(PACKAGE_UC)_STARTLEVEL))$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)" >> .static
+define PKG_LIST__INT
+$(pkg)-list:
+ifeq ($(strip $(DS_PACKAGE_$(PKG))),y)
+	@echo "S$(strip $($(PKG)_STARTLEVEL))$(pkg)-$($(PKG)_VERSION)" >> .static
 else
-	@echo "S$(strip $($(PACKAGE_UC)_STARTLEVEL))$(PACKAGE_LC)-$($(PACKAGE_UC)_VERSION)" >> .dynamic
+	@echo "S$(strip $($(PKG)_STARTLEVEL))$(pkg)-$($(PKG)_VERSION)" >> .dynamic
 endif
-.PHONY: $(PACKAGE_LC)-list
+.PHONY: $(pkg)-list
 endef
-PACKAGE_LIST=$(eval $(PACKAGE_LIST__INT))
+PKG_LIST=$(eval $(PKG_LIST__INT))

@@ -1,30 +1,27 @@
-PACKAGE_LC:=haserl
-PACKAGE_UC:=HASERL
-$(PACKAGE_UC)_VERSION:=0.9.20
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_SOURCE:=haserl-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/haserl
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/haserl-$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_MAKE_DIR:=$(MAKE_DIR)/haserl
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/src/haserl
-$(PACKAGE_UC)_TARGET_DIR:=root/usr/bin
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/haserl
+$(eval $(call PKG_INIT_BIN, 0.9.20))
+$(PKG)_SOURCE:=haserl-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/haserl
+$(PKG)_DIR:=$(SOURCE_DIR)/haserl-$($(PKG)_VERSION)
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/haserl
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/haserl
+$(PKG)_TARGET_DIR:=root/usr/bin
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/haserl
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(HASERL_DIR) \
 		CROSS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" 
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-haserl-precompiled: uclibc $($(PACKAGE_UC)_TARGET_BINARY)
+haserl-precompiled: uclibc $($(PKG)_TARGET_BINARY)
 
 haserl-clean:
 	-$(MAKE) -C $(HASERL_DIR) clean
@@ -32,4 +29,4 @@ haserl-clean:
 haserl-uninstall:
 	rm -f $(HASERL_TARGET_BINARY)
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

@@ -1,29 +1,26 @@
-PACKAGE_LC:=deco
-PACKAGE_UC:=DECO
-$(PACKAGE_UC)_VERSION:=39
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_SOURCE:=deco$($(PACKAGE_UC)_VERSION).tgz
-$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/deco
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/deco$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/deco
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/bin/deco
+$(eval $(call PKG_INIT_BIN, 39))
+$(PKG)_SOURCE:=deco$($(PKG)_VERSION).tgz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/deco
+$(PKG)_DIR:=$(SOURCE_DIR)/deco$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/deco
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/deco
 
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += autoconf --force ;
+$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(DECO_DIR)
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 deco:
 
-deco-precompiled: uclibc ncurses-precompiled deco $($(PACKAGE_UC)_TARGET_BINARY)
+deco-precompiled: uclibc ncurses-precompiled deco $($(PKG)_TARGET_BINARY)
 
 deco-clean:
 	-$(MAKE) -C $(DECO_DIR) clean
@@ -31,4 +28,4 @@ deco-clean:
 deco-uninstall:
 	rm -f $(DECO_TARGET_BINARY)
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

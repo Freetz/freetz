@@ -1,31 +1,28 @@
-PACKAGE_LC:=glibl
-PACKAGE_UC:=GLIBL
-$(PACKAGE_UC)_VERSION:=2.12.12
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=0.1200.12
-$(PACKAGE_UC)_SOURCE:=glib-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=ftp://ftp.gtk.org/pub/glib/2.12
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/glib-$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/glib/.libs/libglib-2.0.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libglib-2.0.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 2.12.12))
+$(PKG)_LIB_VERSION:=0.1200.12
+$(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=ftp://ftp.gtk.org/pub/glib/2.12
+$(PKG)_DIR:=$(SOURCE_DIR)/glib-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/glib/.libs/libglib-2.0.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libglib-2.0.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_ENV += glib_cv_stack_grows=no
-$(PACKAGE_UC)_CONFIGURE_ENV += glib_cv_uscore=no
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_ENV += glib_cv_stack_grows=no
+$(PKG)_CONFIGURE_ENV += glib_cv_uscore=no
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(GLIBL_DIR)/glib \
 		all
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(GLIBL_DIR)/glib \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -33,13 +30,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libglib-2.0.la
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0.so* $(GLIBL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-glibl: $($(PACKAGE_UC)_STAGING_BINARY)
+glibl: $($(PKG)_STAGING_BINARY)
 
-glibl-precompiled: uclibc gettext-precompiled libiconv-precompiled glibl $($(PACKAGE_UC)_TARGET_BINARY)
+glibl-precompiled: uclibc gettext-precompiled libiconv-precompiled glibl $($(PKG)_TARGET_BINARY)
 
 glibl-clean:
 	-$(MAKE) -C $(GLIBL_DIR) clean
@@ -48,4 +45,4 @@ glibl-clean:
 glibl-uninstall:
 	rm -f $(GLIBL_TARGET_DIR)/libglib-2.0.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

@@ -1,35 +1,32 @@
-PACKAGE_LC:=bridge-utils
-PACKAGE_UC:=BRIDGE_UTILS
-$(PACKAGE_UC)_VERSION:=1.2
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_SOURCE:=bridge-utils-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bridge
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/brctl/brctl
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/root/sbin/brctl
+$(eval $(call PKG_INIT_BIN,1.2))
+$(PKG)_SOURCE:=bridge-utils-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bridge
+$(PKG)_BINARY:=$($(PKG)_DIR)/brctl/brctl
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/root/sbin/brctl
 
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += aclocal --force ;
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += libtoolize --force ;
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += autoconf --force ;
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += autoheader --force ;
+$(PKG)_CONFIGURE_PRE_CMDS += aclocal --force ;
+$(PKG)_CONFIGURE_PRE_CMDS += libtoolize --force ;
+$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
+$(PKG)_CONFIGURE_PRE_CMDS += autoheader --force ;
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-randomdev=/dev/random
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-linux-headers=$(KERNEL_HEADERS_DIR)
+$(PKG)_CONFIGURE_OPTIONS += --with-randomdev=/dev/random
+$(PKG)_CONFIGURE_OPTIONS += --with-linux-headers=$(KERNEL_HEADERS_DIR)
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(BRIDGE_UTILS_DIR)
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-bridge-utils: uclibc $($(PACKAGE_UC)_TARGET_BINARY)
+bridge-utils: uclibc $($(PKG)_TARGET_BINARY)
 
-bridge-utils-precompiled: bridge-utils $($(PACKAGE_UC)_TARGET_BINARY)
+bridge-utils-precompiled: bridge-utils $($(PKG)_TARGET_BINARY)
 
 bridge-utils-clean:
 	-$(MAKE) -C $(BRIDGE_UTILS_DIR) clean
@@ -37,4 +34,4 @@ bridge-utils-clean:
 bridge-utils-uninstall:
 	$(RM) $(BRIDGE_UTILS_TARGET_BINARY)
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

@@ -1,37 +1,34 @@
-PACKAGE_LC:=fuse
-PACKAGE_UC:=FUSE
-$(PACKAGE_UC)_VERSION:=2.7.0
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_SOURCE:=fuse-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/fuse
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/util/fusermount
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/sbin/fusermount
-$(PACKAGE_UC)_MOD_BINARY:=$($(PACKAGE_UC)_DIR)/kernel/fuse.ko
-$(PACKAGE_UC)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
-$(PACKAGE_UC)_MOD_TARGET_BINARY:=$($(PACKAGE_UC)_MOD_TARGET_DIR)/fuse.ko
-$(PACKAGE_UC)_LIB_BINARY:=$($(PACKAGE_UC)_DIR)/lib/.libs/libfuse.so.$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$($(PACKAGE_UC)_VERSION)
-$(PACKAGE_UC)_LIB_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/usr/lib/libfuse.so.$($(PACKAGE_UC)_VERSION)
+$(eval $(call PKG_INIT_BIN, 2.7.0))
+$(PKG)_SOURCE:=fuse-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/fuse
+$(PKG)_BINARY:=$($(PKG)_DIR)/util/fusermount
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/fusermount
+$(PKG)_MOD_BINARY:=$($(PKG)_DIR)/kernel/fuse.ko
+$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/2.6.13.1-$(KERNEL_LAYOUT)/kernel/fs/fuse
+$(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/fuse.ko
+$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libfuse.so.$($(PKG)_VERSION)
+$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
 
-$(PACKAGE_UC)_DS_CONFIG_FILE:=$($(PACKAGE_UC)_MAKE_DIR)/.ds_config
-$(PACKAGE_UC)_DS_CONFIG_TEMP:=$($(PACKAGE_UC)_MAKE_DIR)/.ds_config.temp
+$(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config
+$(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config.temp
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-kernel-module
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-lib
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-util
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-example
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-auto-modprobe
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-kernel="$(DSMOD_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-mtab
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --with-gnu-ld
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --enable-kernel-module
+$(PKG)_CONFIGURE_OPTIONS += --enable-lib
+$(PKG)_CONFIGURE_OPTIONS += --enable-util
+$(PKG)_CONFIGURE_OPTIONS += --disable-example
+$(PKG)_CONFIGURE_OPTIONS += --disable-auto-modprobe
+$(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(DSMOD_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
+$(PKG)_CONFIGURE_OPTIONS += --disable-mtab
+$(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
+$(PKG_SOURCE_DOWNLOAD)
 
-$($(PACKAGE_UC)_DS_CONFIG_FILE): $(TOPDIR)/.config
+$($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
 	@echo "DS_KERNEL_LAYOUT=$(DS_KERNEL_LAYOUT)" > $(FUSE_DS_CONFIG_TEMP)
 	@diff -q $(FUSE_DS_CONFIG_TEMP) $(FUSE_DS_CONFIG_FILE) || \
 	    cp $(FUSE_DS_CONFIG_TEMP) $(FUSE_DS_CONFIG_FILE)
@@ -40,7 +37,7 @@ $($(PACKAGE_UC)_DS_CONFIG_FILE): $(TOPDIR)/.config
 # Make sure that a perfectly clean build is performed whenever DS-Mod package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$($(PACKAGE_UC)_DIR)/.unpacked: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE) $($(PACKAGE_UC)_DS_CONFIG_FILE)
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $($(PKG)_DS_CONFIG_FILE)
 	rm -rf $(FUSE_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FUSE_SOURCE)
 	for i in $(FUSE_MAKE_DIR)/patches/*.patch; do \
@@ -48,16 +45,16 @@ $($(PACKAGE_UC)_DIR)/.unpacked: $(DL_DIR)/$($(PACKAGE_UC)_SOURCE) $($(PACKAGE_UC
 	done
 	touch $@
 
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY) $($(PACKAGE_UC)_MOD_BINARY) $($(PACKAGE_UC)_LIB_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY) $($(PKG)_MOD_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) \
 		$(MAKE) -C $(FUSE_DIR) \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		all
 
-$($(PACKAGE_UC)_LIB_STAGING_BINARY): $($(PACKAGE_UC)_LIB_BINARY)
+$($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	cp $(FUSE_DIR)/fuse.pc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
 		-C $(FUSE_DIR)/lib \
@@ -81,21 +78,21 @@ $($(PACKAGE_UC)_LIB_STAGING_BINARY): $($(PACKAGE_UC)_LIB_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$($(PACKAGE_UC)_MOD_TARGET_BINARY): $($(PACKAGE_UC)_MOD_BINARY)
+$($(PKG)_MOD_TARGET_BINARY): $($(PKG)_MOD_BINARY)
 	mkdir -p $(dir $@)
 	cp $^ $@
 
-$($(PACKAGE_UC)_LIB_TARGET_BINARY): $($(PACKAGE_UC)_LIB_STAGING_BINARY)
+$($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 	mkdir -p $(dir $@)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_TARGET_DIR)/root/usr/lib
 	$(TARGET_STRIP) $@
 
 fuse:
 
-fuse-precompiled: uclibc fuse $($(PACKAGE_UC)_TARGET_BINARY) $($(PACKAGE_UC)_MOD_TARGET_BINARY) $($(PACKAGE_UC)_LIB_TARGET_BINARY)
+fuse-precompiled: uclibc fuse $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 fuse-clean:
 	-$(MAKE) -C $(FUSE_DIR) clean
@@ -109,4 +106,4 @@ fuse-uninstall:
 	rm -f $(FUSE_MOD_TARGET_BINARY)
 	rm -f $(FUSE_TARGET_DIR)/root/usr/lib/libfuse*.so*
 	
-$(PACKAGE_FINI)
+$(PKG_FINISH)

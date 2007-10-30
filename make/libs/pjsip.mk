@@ -1,48 +1,45 @@
-PACKAGE_LC:=pjsip
-PACKAGE_UC:=PJSIP
-$(PACKAGE_UC)_VERSION:=0.7.0
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=0.7.0
-$(PACKAGE_UC)_SOURCE:=pjproject-0.7.0.tar.gz
-$(PACKAGE_UC)_SITE:=http://fritz.v3v.de/dtmfbox/libs
-$(PACKAGE_UC)_DIR:=$(SOURCE_DIR)/pjproject-0.7.0
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/pjsip/lib/libpjsip.a
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpjsip.a
+$(eval $(call PKG_INIT_LIB, 0.7.0))
+$(PKG)_LIB_VERSION:=0.7.0
+$(PKG)_SOURCE:=pjproject-0.7.0.tar.gz
+$(PKG)_SITE:=http://fritz.v3v.de/dtmfbox/libs
+$(PKG)_DIR:=$(SOURCE_DIR)/pjproject-0.7.0
+$(PKG)_BINARY:=$($(PKG)_DIR)/pjsip/lib/libpjsip.a
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpjsip.a
 # only static lib
-#$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libpjsip.so.$($(PACKAGE_UC)_LIB_VERSION)
+#$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpjsip.so.$($(PKG)_LIB_VERSION)
 		
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += cat build.mak.in | sed 's/@LIBS@/-Wl,-Bdynamic @LIBS@/g' > build.mak.in.tmp;
-$(PACKAGE_UC)_CONFIGURE_PRE_CMDS += mv build.mak.in.tmp build.mak.in;
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-sound
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-large-filter
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-small-filter
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-speex-aec
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-l16-codec
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-gsm-codec
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-speex-codec
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-ilbc-codec
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-ssl
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-floating-point
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0"
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += LDFLAGS="-lm"
+$(PKG)_CONFIGURE_PRE_CMDS += cat build.mak.in | sed 's/@LIBS@/-Wl,-Bdynamic @LIBS@/g' > build.mak.in.tmp;
+$(PKG)_CONFIGURE_PRE_CMDS += mv build.mak.in.tmp build.mak.in;
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --disable-sound
+$(PKG)_CONFIGURE_OPTIONS += --disable-large-filter
+$(PKG)_CONFIGURE_OPTIONS += --disable-small-filter
+$(PKG)_CONFIGURE_OPTIONS += --disable-speex-aec
+$(PKG)_CONFIGURE_OPTIONS += --disable-l16-codec
+$(PKG)_CONFIGURE_OPTIONS += --disable-gsm-codec
+$(PKG)_CONFIGURE_OPTIONS += --disable-speex-codec
+$(PKG)_CONFIGURE_OPTIONS += --disable-ilbc-codec
+$(PKG)_CONFIGURE_OPTIONS += --disable-ssl
+$(PKG)_CONFIGURE_OPTIONS += --disable-floating-point
+$(PKG)_CONFIGURE_OPTIONS += CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0"
+$(PKG)_CONFIGURE_OPTIONS += LDFLAGS="-lm"
 		
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_DIR)/.depend: $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	    $(MAKE) -C $(PJSIP_DIR) dep \
 	    TARGET_NAME="$(REAL_GNU_TARGET_NAME)"
 	touch $@
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.depend
+$($(PKG)_BINARY): $($(PKG)_DIR)/.depend
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	    $(MAKE) -C $(PJSIP_DIR) all \
 	    TARGET_NAME="$(REAL_GNU_TARGET_NAME)"
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	    $(MAKE) -C $(PJSIP_DIR) \
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -53,9 +50,9 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 #	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpjsip*.so* $(PJSIP_TARGET_DIR)
 #	$(TARGET_STRIP) $@
 
-pjsip: $($(PACKAGE_UC)_STAGING_BINARY)
+pjsip: $($(PKG)_STAGING_BINARY)
 
-pjsip-precompiled: uclibc pjsip #$($(PACKAGE_UC)_TARGET_BINARY)
+pjsip-precompiled: uclibc pjsip #$($(PKG)_TARGET_BINARY)
 
 pjsip-clean:
 	-$(MAKE) -C $(PJSIP_DIR) \
@@ -68,4 +65,4 @@ pjsip-clean:
 #pjsip-uninstall:
 #	rm -f $(PJSIP_TARGET_DIR)/libpjsip*.so*
     
-$(PACKAGE_FINI)
+$(PKG_FINISH)

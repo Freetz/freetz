@@ -1,40 +1,37 @@
-PACKAGE_LC:=jpeg
-PACKAGE_UC:=JPEG
-$(PACKAGE_UC)_VERSION:=6b
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=62.0.0
-$(PACKAGE_UC)_SOURCE:=jpegsrc.v$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://ijg.org/files
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/.libs/libjpeg.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libjpeg.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 6b))
+$(PKG)_LIB_VERSION:=62.0.0
+$(PKG)_SOURCE:=jpegsrc.v$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://ijg.org/files
+$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libjpeg.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libjpeg.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(JPEG_DIR)  all
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(JPEG_DIR) \
 		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		install-headers install-lib
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so* $(JPEG_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-jpeg: $($(PACKAGE_UC)_STAGING_BINARY)
+jpeg: $($(PKG)_STAGING_BINARY)
 
-jpeg-precompiled: uclibc jpeg $($(PACKAGE_UC)_TARGET_BINARY)
+jpeg-precompiled: uclibc jpeg $($(PKG)_TARGET_BINARY)
 
 jpeg-clean:
 	-$(MAKE) -C $(JPEG_DIR) clean
@@ -43,4 +40,4 @@ jpeg-clean:
 jpeg-uninstall:
 	rm -f $(JPEG_TARGET_DIR)/libjpeg*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

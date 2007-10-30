@@ -1,27 +1,24 @@
-PACKAGE_LC:=freetype
-PACKAGE_UC:=FREETYPE
-$(PACKAGE_UC)_VERSION:=2.3.1
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=6.3.12
-$(PACKAGE_UC)_SOURCE:=freetype-$($(PACKAGE_UC)_VERSION).tar.bz2
-$(PACKAGE_UC)_SITE:=http://download.savannah.gnu.org/releases/freetype
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/objs/.libs/libfreetype.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype.so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libfreetype.so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 2.3.1))
+$(PKG)_LIB_VERSION:=6.3.12
+$(PKG)_SOURCE:=freetype-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SITE:=http://download.savannah.gnu.org/releases/freetype
+$(PKG)_BINARY:=$($(PKG)_DIR)/objs/.libs/libfreetype.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libfreetype.so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-static
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(FREETYPE_DIR)
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		-C $(FREETYPE_DIR) install
@@ -35,13 +32,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/freetype2.pc
 					
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype*.so* $(FREETYPE_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-freetype: $($(PACKAGE_UC)_STAGING_BINARY)
+freetype: $($(PKG)_STAGING_BINARY)
 
-freetype-precompiled: uclibc zlib-precompiled freetype $($(PACKAGE_UC)_TARGET_BINARY)
+freetype-precompiled: uclibc zlib-precompiled freetype $($(PKG)_TARGET_BINARY)
 
 freetype-clean:
 	-$(MAKE) -C $(FREETYPE_DIR) clean
@@ -50,4 +47,4 @@ freetype-clean:
 freetype-uninstall:
 	rm -f $(FREETYPE_TARGET_DIR)/freetype*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

@@ -1,26 +1,23 @@
-PACKAGE_LC:=libevent
-PACKAGE_UC:=LIBEVENT
-$(PACKAGE_UC)_VERSION:=1.3e
-$(PACKAGE_INIT_LIB)
-$(PACKAGE_UC)_LIB_VERSION:=1.0.3
-$(PACKAGE_UC)_SOURCE:=libevent-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://www.monkey.org/~provos
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/.libs/libevent-$($(PACKAGE_UC)_VERSION).so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent-$($(PACKAGE_UC)_VERSION).so.$($(PACKAGE_UC)_LIB_VERSION)
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_TARGET_DIR)/libevent-$($(PACKAGE_UC)_VERSION).so.$($(PACKAGE_UC)_LIB_VERSION)
+$(eval $(call PKG_INIT_LIB, 1.3e))
+$(PKG)_LIB_VERSION:=1.0.3
+$(PKG)_SOURCE:=libevent-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.monkey.org/~provos
+$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libevent-$($(PKG)_VERSION).so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent-$($(PKG)_VERSION).so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libevent-$($(PKG)_VERSION).so.$($(PKG)_LIB_VERSION)
 
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --enable-shared
-$(PACKAGE_UC)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --disable-static
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	   $(MAKE) -C $(LIBEVENT_DIR)
 
-$($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBEVENT_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -28,13 +25,13 @@ $($(PACKAGE_UC)_STAGING_BINARY): $($(PACKAGE_UC)_BINARY)
 	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libevent.la
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_STAGING_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*.so* $(LIBEVENT_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-libevent: $($(PACKAGE_UC)_STAGING_BINARY)
+libevent: $($(PKG)_STAGING_BINARY)
 
-libevent-precompiled: uclibc libevent $($(PACKAGE_UC)_TARGET_BINARY)
+libevent-precompiled: uclibc libevent $($(PKG)_TARGET_BINARY)
 
 libevent-clean:
 	-$(MAKE) -C $(LIBEVENT_DIR) clean
@@ -43,4 +40,4 @@ libevent-clean:
 libevent-uninstall:
 	rm -f $(LIBEVENT_TARGET_DIR)/libevent*.so*
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)

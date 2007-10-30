@@ -1,27 +1,24 @@
-PACKAGE_LC:=cpmaccfg
-PACKAGE_UC:=CPMACCFG
-$(PACKAGE_UC)_VERSION:=0.5
-$(PACKAGE_INIT_BIN)
-$(PACKAGE_UC)_SOURCE:=cpmaccfg-$($(PACKAGE_UC)_VERSION).tar.gz
-$(PACKAGE_UC)_SITE:=http://www.heimpold.de/dsmod
-$(PACKAGE_UC)_BINARY:=$($(PACKAGE_UC)_DIR)/cpmaccfg
-$(PACKAGE_UC)_TARGET_BINARY:=$($(PACKAGE_UC)_DEST_DIR)/sbin/cpmaccfg
+$(eval $(call PKG_INIT_BIN, 0.5))
+$(PKG)_SOURCE:=cpmaccfg-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.heimpold.de/dsmod
+$(PKG)_BINARY:=$($(PKG)_DIR)/cpmaccfg
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/cpmaccfg
 
 
-$(PACKAGE_SOURCE_DOWNLOAD)
-$(PACKAGE_UNPACKED)
-$(PACKAGE_CONFIGURED_CONFIGURE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$($(PACKAGE_UC)_BINARY): $($(PACKAGE_UC)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(CPMACCFG_DIR)
 
-$($(PACKAGE_UC)_TARGET_BINARY): $($(PACKAGE_UC)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 cpmaccfg:
 
-cpmaccfg-precompiled: uclibc cpmaccfg $($(PACKAGE_UC)_TARGET_BINARY)
+cpmaccfg-precompiled: uclibc cpmaccfg $($(PKG)_TARGET_BINARY)
 
 cpmaccfg-clean:
 	-$(MAKE) -C $(CPMACCFG_DIR) clean
@@ -30,4 +27,4 @@ cpmaccfg-clean:
 cpmaccfg-uninstall:
 	$(RM) $(CPMACCFG_TARGET_BINARY)
 
-$(PACKAGE_FINI)
+$(PKG_FINISH)
