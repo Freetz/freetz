@@ -52,7 +52,7 @@ TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.commen
 
 TARGET_PATH:=$(TARGET_MAKE_PATH):/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 # A better name for TARGET_CONFIGURE_OPTS would be TARGET_CONFIGURE_ENV, but that would require changes to all makefiles
-# usage is depricated
+# usage is deprecated
 # see also TARGET_CONFIGURE_OPTIONS
 # NOTE: defined with "=", not with ":="
 TARGET_CONFIGURE_OPTS = $(TARGET_CONFIGURE_ENV)
@@ -148,7 +148,7 @@ endef
 # Stage 3a: initialise other package-specific variables for binary packages
 define PKG_INIT_BIN__INT
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
-PKG_TYP:=BIN
+PKG_TYPE:=BIN
 # level 99 for packages that are not actually started
 $(PKG)_STARTLEVEL=99
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
@@ -172,7 +172,7 @@ endef
 # Stage 3b: initialise other package-specific variables for library packages
 define PKG_INIT_LIB__INT
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
-PKG_TYP:=LIB
+PKG_TYPE:=LIB
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
 $(PKG)_TARGET_DIR:=root/usr/lib
 $(PKG)_DEST_DIR:=root
@@ -215,9 +215,9 @@ $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
 PKG:=
 pkg:=
-PKG_TYP:=
+PKG_TYPE:=
 endef
-PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYP)_INT))$(eval $(PKG_FINISH__INT))
+PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)_INT))$(eval $(PKG_FINISH__INT))
 
 
 ### PKG_SOURCE_DOWNLOAD - download source packages
@@ -253,9 +253,9 @@ define PKG_UNPACK__INT
 	)
 endef
 
-# Unpack, without patch
+# Unpack, without patch, but only if source package is defined
 define PKG_UNPACK
-	$(call PKG_UNPACK__INT, $(DL_DIR)/$($(PKG)_SOURCE))
+	$(if $($(PKG)_SOURCE),$(call PKG_UNPACK__INT, $(DL_DIR)/$($(PKG)_SOURCE)))
 endef
 
 ### PKG_PATCH - apply patches
@@ -315,7 +315,7 @@ endef
 
 PKG_BIN_UNPACKED=$(eval $(PKG_BIN_UNPACKED__INT))
 PKG_LIB_UNPACKED=$(eval $(PKG_LIB_UNPACKED__INT))
-PKG_UNPACKED=$(eval $(PKG_UNPACKED__INT)) $(eval $(PKG_$(PKG_TYP)_UNPACKED__INT))
+PKG_UNPACKED=$(eval $(PKG_UNPACKED__INT)) $(eval $(PKG_$(PKG_TYPE)_UNPACKED__INT))
 
 ## Configure package, using ./configure
 define PKG_CONFIGURED_CONFIGURE__INT
