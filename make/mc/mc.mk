@@ -16,7 +16,7 @@ $(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config.temp
 $(PKG_SOURCE_DOWNLOAD)
 
 # These two are not flexible enough yet for packages with sub-options, because
-# we have more prerequisites for targets on opne hand and special conditions
+# we have more prerequisites for targets on one hand and special conditions
 # within actions on the other hand.
 #$(PKG_UNPACKED)
 #$(PKG_CONFIGURED_CONFIGURE)
