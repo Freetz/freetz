@@ -1,30 +1,33 @@
-MC_VERSION:=4.5.0
-MC_SOURCE:=mc-$(MC_VERSION).tar.gz
-MC_SITE:=http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/old
-MC_MAKE_DIR:=$(MAKE_DIR)/mc
-MC_DIR:=$(SOURCE_DIR)/mc-$(MC_VERSION)
-MC_BINARY:=$(MC_DIR)/src/mc
-MC_HELP:=$(MC_DIR)/src/mc.hlp
-MC_PKG_VERSION:=0.5b
-MC_PKG_SOURCE:=mc-$(MC_VERSION)-dsmod-$(MC_PKG_VERSION).tar.bz2
-MC_PKG_SITE:=http://dsmod.magenbrot.net
-MC_TARGET_DIR:=$(PACKAGES_DIR)/mc-$(MC_VERSION)
-MC_TARGET_BINARY:=$(MC_TARGET_DIR)/root/usr/bin/mc.bin
-MC_TARGET_HELP:=$(MC_TARGET_DIR)/root/usr/lib/mc/mc.hlp
+$(eval $(call PKG_INIT_BIN, 4.5.0))
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/old
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
+$(PKG)_HELP:=$($(PKG)_DIR)/src/$(pkg).hlp
+$(PKG)_PKG_VERSION:=0.5b
+$(PKG)_PKG_SOURCE:=$(pkg)-$($(PKG)_VERSION)-dsmod-$($(PKG)_PKG_VERSION).tar.bz2
+$(PKG)_PKG_SITE:=http://dsmod.magenbrot.net
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg).bin
+$(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/lib/mc/$(pkg).hlp
 
-MC_DS_CONFIG_FILE:=$(MC_MAKE_DIR)/.ds_config
-MC_DS_CONFIG_TEMP:=$(MC_MAKE_DIR)/.ds_config.temp
+$(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config
+$(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config.temp
 
-$(DL_DIR)/$(MC_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(MC_SITE)/$(MC_SOURCE)
+$(PKG_SOURCE_DOWNLOAD)
 
-$(DL_DIR)/$(MC_PKG_SOURCE): | $(DL_DIR)
+# These two are not flexible enough yet for packages with sub-options, because
+# we have more prerequisites for targets on opne hand and special conditions
+# within actions on the other hand.
+#$(PKG_UNPACKED)
+#$(PKG_CONFIGURED_CONFIGURE)
+
+$(DL_DIR)/$($(PKG)_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(MC_PKG_SOURCE) $(MC_PKG_SITE)
 
 # Exclude online help setting (DS_MC_ONLINE_HELP) from config file, because we
 # do not want a full rebuild if only one help file must be copied or removed.
 #@echo "DS_MC_ONLINE_HELP=$(if $(DS_MC_ONLINE_HELP),y,n)" >> $(MC_DS_CONFIG_TEMP)
-$(MC_DS_CONFIG_FILE): $(TOPDIR)/.config
+$($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
 	@echo "DS_MC_INTERNAL_EDITOR=$(if $(DS_MC_INTERNAL_EDITOR),y,n)" > $(MC_DS_CONFIG_TEMP)
 	@echo "DS_MC_SYNTAX_COLOURING=$(if $(DS_MC_SYNTAX_COLOURING),y,n)" >> $(MC_DS_CONFIG_TEMP)
 	@diff -q $(MC_DS_CONFIG_TEMP) $(MC_DS_CONFIG_FILE) || \
@@ -34,18 +37,18 @@ $(MC_DS_CONFIG_FILE): $(TOPDIR)/.config
 # Make sure that a perfectly clean build is performed whenever DS-Mod package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(MC_DIR)/.unpacked: $(DL_DIR)/$(MC_SOURCE) $(MC_DS_CONFIG_FILE)
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $($(PKG)_DS_CONFIG_FILE)
 	rm -rf $(MC_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MC_SOURCE)
 	for i in $(MC_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(MC_DIR) $$i; \
 	done
-ifneq ($(strip $(DS_MC_SYNTAX_COLOURING)),y)
+ifneq ($(strip $(DS_$(PKG)_SYNTAX_COLOURING)),y)
 	$(PATCH_TOOL) $(MC_DIR) $(MC_MAKE_DIR)/patches/cond/mc-no-syntax-colouring.patch
 endif
 	touch $@
 
-$(MC_DIR)/.configured: $(MC_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	( cd $(MC_DIR); rm -f config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC="$(TARGET_CC)" \
@@ -81,57 +84,47 @@ $(MC_DIR)/.configured: $(MC_DIR)/.unpacked
 	);
 	touch $@
 
-$(MC_BINARY): $(MC_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(MC_DIR)
 
-$(MC_HELP): $(MC_DIR)/.unpacked
+$($(PKG)_HELP): $(MC_DIR)/.unpacked
 
-$(MC_TARGET_BINARY): $(MC_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(MC_TARGET_DIR)/root/usr/share/terminfo/x
 	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/x/xterm \
 		$(MC_TARGET_DIR)/root/usr/share/terminfo/x/
 	$(INSTALL_BINARY_STRIP)
 
-$(MC_TARGET_HELP): $(MC_HELP)
+$($(PKG)_TARGET_HELP): $($(PKG)_HELP)
 	cp $(MC_HELP) $(MC_TARGET_HELP)
 
-$(PACKAGES_DIR)/.mc-$(MC_VERSION): $(DL_DIR)/$(MC_PKG_SOURCE) | $(PACKAGES_DIR)
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(DL_DIR)/$($(PKG)_PKG_SOURCE) | $(PACKAGES_DIR)
 	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(MC_PKG_SOURCE)
 	@touch $@
 
-mc: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
+$(pkg): $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 
-mc-package: $(PACKAGES_DIR)/.mc-$(MC_VERSION)
+$(pkg)-package: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(MC_PKG_SOURCE) mc-$(MC_VERSION)
 
-ifeq ($(strip $(DS_MC_ONLINE_HELP)),y)
-mc-precompiled: uclibc ncurses mc $(MC_TARGET_BINARY) $(MC_TARGET_HELP)
+ifeq ($(strip $(DS_$(PKG)_ONLINE_HELP)),y)
+$(pkg)-precompiled: uclibc ncurses $(pkg) $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_HELP)
 else
-mc-precompiled: uclibc ncurses mc $(MC_TARGET_BINARY) mc-clean-help
+$(pkg)-precompiled: uclibc ncurses $(pkg) $($(PKG)_TARGET_BINARY) $(pkg)-clean-help
 endif
 
-mc-source: $(MC_DIR)/.unpacked $(PACKAGES_DIR)/.mc-$(MC_VERSION)
+$(pkg)-source: $($(PKG)_DIR)/.unpacked $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 
-mc-clean-help: 
+$(pkg)-clean-help: 
 	@rm -f $(MC_TARGET_HELP)
 
-mc-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(MC_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(MC_PKG_SOURCE)
 
-mc-dirclean:
-	rm -rf $(MC_DIR)
-	rm -rf $(PACKAGES_DIR)/mc-$(MC_VERSION)
-	rm -f $(PACKAGES_DIR)/.mc-$(MC_VERSION)
-
-mc-uninstall: 
+$(pkg)-uninstall: 
 	rm -f $(MC_TARGET_BINARY)
 	rm -f $(MC_TARGET_HELP)
 	rm -rf $(MC_TARGET_DIR)/root/usr/share/terminfo/x
 
-mc-list:
-ifeq ($(strip $(DS_PACKAGE_MC)),y)
-	@echo "S99mc-$(MC_VERSION)" >> .static
-else
-	@echo "S99mc-$(MC_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)
