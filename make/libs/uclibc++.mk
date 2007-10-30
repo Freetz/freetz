@@ -14,11 +14,7 @@ $(PKG_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	cp $(UCLIBCXX_MAKE_DIR)/Config.uclibc++ $(UCLIBCXX_DIR)/.config
-ifeq ($(DS_TARGET_LFS),y)
-	$(SED) -i -e 's,^.*UCLIBCXX_HAS_LFS.*,UCLIBCXX_HAS_LFS=y,g' $(UCLIBCXX_DIR)/.config
-else
-	$(SED) -i -e 's,^.*UCLIBCXX_HAS_LFS.*,UCLIBCXX_HAS_LFS=n,g' $(UCLIBCXX_DIR)/.config
-endif
+	$(call PKG_SED_EDIT_CONFIG, UCLIBCXX_HAS_LFS=$(DS_TARGET_LFS)) -i $(UCLIBCXX_DIR)/.config
 	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured

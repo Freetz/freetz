@@ -62,15 +62,10 @@ $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfuse.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libulockmgr.la
-	$(SED) -i -e "s,^includedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
+	$(PKG_SED_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfuse.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libulockmgr.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc
-	
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) $(MAKE) \
 		-C $(FUSE_DIR)/include \
 		ARCH="$(KERNEL_ARCH)" \
@@ -105,5 +100,5 @@ fuse-uninstall:
 	rm -f $(FUSE_TARGET_BINARY)
 	rm -f $(FUSE_MOD_TARGET_BINARY)
 	rm -f $(FUSE_TARGET_DIR)/root/usr/lib/libfuse*.so*
-	
+
 $(PKG_FINISH)

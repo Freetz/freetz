@@ -125,8 +125,10 @@ PKG_SED_EDIT_CONFIG__INT0 = -e 's/^(\# )?$1[ =].*/$(if $(patsubst n,,$2),$1=$2,\
 PKG_SED_EDIT_CONFIG__INT1 = $(call PKG_SED_EDIT_CONFIG__INT0,$(word 1,$(subst =, ,$1)),$(word 2,$(subst =, ,$1)))
 PKG_SED_EDIT_CONFIG = $(SED) -r $(foreach asg,$1,$(call PKG_SED_EDIT_CONFIG__INT1,$(asg)))
 
-test-test:
-	$(call PKG_SED_EDIT_CONFIG,DS_PACKAGE_TOR=y DS_PACKAGE_TCPDUMP=n DS_PACKAGE_VSFTPD=) < .config
+# PKG_SED_FIX_LIBTOOL_LA
+#   fix directories is libtool .la files and .pc files
+PKG_SED_FIX_LIBTOOL_LA__INT = -e "s,^$1=('?)(.*)('?)$$,$1=\1$(TARGET_TOOLCHAIN_STAGING_DIR)\2\3,g"
+PKG_SED_FIX_LIBTOOL_LA = sed -i -r $(foreach key,libdir includedir prefix,$(call PKG_SED_FIX_LIBTOOL_LA__INT,$(key)))
 
 
 # Use $< (first prerequisite) rather than $^ (all prerequisites), because
