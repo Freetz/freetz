@@ -34,7 +34,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(MAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libintl.la
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libintl.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl*.so* $(GETTEXT_TARGET_DIR)/

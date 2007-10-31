@@ -22,16 +22,11 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		-C $(FREETYPE_DIR) install
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfreetype.la
-	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)\',g" \
-		-e "s,^exec_prefix=.*,exec_prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/usr\',g" \
-		-e "s,^includedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
-		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/freetype-config
-	$(SED) -i -e "s,^includedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
-		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfreetype.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/freetype-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/freetype2.pc
-					
+
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype*.so* $(FREETYPE_TARGET_DIR)/
 	$(TARGET_STRIP) $@

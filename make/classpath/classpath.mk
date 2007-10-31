@@ -33,19 +33,13 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(CLASSPATH_DIR)/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavaio.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalang.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalangmanagement.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalangreflect.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavanet.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavanio.la
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath\',g" \
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavaio.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalang.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalangmanagement.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavalangreflect.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavanet.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavanio.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/classpath/libjavautil.la
 	touch -c $@
 

@@ -21,10 +21,9 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(LIBART_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	$(SED) 's,-I$${includedir}/libart-2.0,,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libart-2.0.pc 
-	$(SED) 's,-L$${libdir},,g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libart-2.0.pc 
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libart_lgpl_2.la
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libart_lgpl_2.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libart-2.0.pc 
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libart*.so* $(LIBART_TARGET_DIR)

@@ -25,7 +25,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		all install-lib
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libiconv.la
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libiconv.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiconv*.so* $(LIBICONV_TARGET_DIR)/

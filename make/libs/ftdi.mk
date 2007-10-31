@@ -24,8 +24,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	    $(MAKE) -C $(FTDI_DIR) \
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	    install
-	$(SED) -i -e "s,^inlcudedir=.*,includedir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/include\',g" \
-		-e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libftdi.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)

@@ -56,11 +56,9 @@ $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): \
 		-C $(OPENSSL_DIR) \
 		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/\',g" \
-	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcrypto.pc
-	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/\',g" \
-	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libssl.pc
-	$(SED) -i -e "s,^prefix=.*,prefix=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/\',g" \
+	$(PKG_FIX_LIBTOOL_LA) \
+	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcrypto.pc \
+	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libssl.pc \
 	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/openssl.pc
 
 $($(PKG)_TARGET_SSL_BINARY): $($(PKG)_STAGING_SSL_BINARY) 

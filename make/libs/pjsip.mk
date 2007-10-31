@@ -7,9 +7,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/pjsip/lib/libpjsip.a
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpjsip.a
 # only static lib
 #$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpjsip.so.$($(PKG)_LIB_VERSION)
-		
-$(PKG)_CONFIGURE_PRE_CMDS += cat build.mak.in | sed 's/@LIBS@/-Wl,-Bdynamic @LIBS@/g' > build.mak.in.tmp;
-$(PKG)_CONFIGURE_PRE_CMDS += mv build.mak.in.tmp build.mak.in;
+
+$(PKG)_CONFIGURE_PRE_CMDS += sed -i 's/@LIBS@/-Wl,-Bdynamic @LIBS@/g' build.mak.in;
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-sound
 $(PKG)_CONFIGURE_OPTIONS += --disable-large-filter
@@ -23,7 +22,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-ssl
 $(PKG)_CONFIGURE_OPTIONS += --disable-floating-point
 $(PKG)_CONFIGURE_OPTIONS += CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0"
 $(PKG)_CONFIGURE_OPTIONS += LDFLAGS="-lm"
-		
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

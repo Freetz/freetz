@@ -22,7 +22,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(MAKE) -C $(LIBEVENT_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install-strip
-	$(SED) -i -e "s,^libdir=.*,libdir=\'$(TARGET_TOOLCHAIN_STAGING_DIR)/lib\',g" \
+	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libevent.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
