@@ -118,17 +118,17 @@ endif
 # For details of the required targets, see the documentation in README.Makefiles
 
 
-# PKG_SED_EDIT_CONFIG
+# PKG_EDIT_CONFIG
 # create a sed-expression to update a config file
 #   $(1) = list of assignments CONFIG_VAR=value
-PKG_SED_EDIT_CONFIG__INT0 = -e 's/^(\# )?$1[ =].*/$(if $(patsubst n,,$2),$1=$2,\# $1 is not set)/g'
-PKG_SED_EDIT_CONFIG__INT1 = $(call PKG_SED_EDIT_CONFIG__INT0,$(word 1,$(subst =, ,$1)),$(word 2,$(subst =, ,$1)))
-PKG_SED_EDIT_CONFIG = $(SED) -r $(foreach asg,$1,$(call PKG_SED_EDIT_CONFIG__INT1,$(asg)))
+PKG_EDIT_CONFIG__INT0 = -e 's/^(\# )?$1[ =].*/$(if $(patsubst n,,$2),$1=$2,\# $1 is not set)/g'
+PKG_EDIT_CONFIG__INT1 = $(call PKG_EDIT_CONFIG__INT0,$(word 1,$(subst =, ,$1)),$(word 2,$(subst =, ,$1)))
+PKG_EDIT_CONFIG = $(SED) -r $(foreach asg,$1,$(call PKG_EDIT_CONFIG__INT1,$(asg)))
 
-# PKG_SED_FIX_LIBTOOL_LA
+# PKG_FIX_LIBTOOL_LA
 #   fix directories is libtool .la files and .pc files
-PKG_SED_FIX_LIBTOOL_LA__INT = -e "s,^$1=('?)(.*)('?)$$,$1=\1$(TARGET_TOOLCHAIN_STAGING_DIR)\2\3,g"
-PKG_SED_FIX_LIBTOOL_LA = sed -i -r $(foreach key,libdir includedir prefix,$(call PKG_SED_FIX_LIBTOOL_LA__INT,$(key)))
+PKG_FIX_LIBTOOL_LA__INT = -e "s,^$1=('?)(.*)('?)$$,$1=\1$(TARGET_TOOLCHAIN_STAGING_DIR)\2\3,g"
+PKG_FIX_LIBTOOL_LA = sed -i -r $(foreach key,libdir includedir prefix,$(call PKG_FIX_LIBTOOL_LA__INT,$(key)))
 
 
 # Use $< (first prerequisite) rather than $^ (all prerequisites), because
