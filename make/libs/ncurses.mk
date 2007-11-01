@@ -50,7 +50,6 @@ $($(PKG)_MENU_BINARY) \
 $($(PKG)_PANEL_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(NCURSES_DIR) \
-		AR="$(TARGET_CROSS)ar rv" \
 		libs panel menu form headers
 
 $($(PKG)_NCURSES_STAGING_BINARY) \

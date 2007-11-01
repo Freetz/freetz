@@ -38,7 +38,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 
 avmhmac: $($(PKG)_STAGING_BINARY)
 
-avmhmac-precompiled: uclibc avmhmac $($(PKG)_TARGET_BINARY)
+avmhmac-precompiled: uclibc openssl-precompiled avmhmac $($(PKG)_TARGET_BINARY)
 
 avmhmac-configured: $($(PKG)_DIR)/.configured
 

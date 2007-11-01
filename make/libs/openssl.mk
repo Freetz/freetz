@@ -75,7 +75,7 @@ $($(PKG)_TARGET_CRYPTO_BINARY): $($(PKG)_STAGING_CRYPTO_BINARY)
 
 openssl: $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY)
 
-openssl-precompiled: uclibc zlib-precompiled openssl $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
+openssl-precompiled: uclibc openssl $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
 
 openssl-clean:
 	-$(MAKE) -C $(OPENSSL_DIR) clean
