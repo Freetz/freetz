@@ -163,6 +163,7 @@ endef
 #   $(1) = version (mandatory)
 define PKG_INIT__INT2
 $(PKG)_VERSION:=$(1)
+$(PKG)_CONFIGURE_DEFOPTS:=y
 endef
 
 # Stage 3a: initialise other package-specific variables for binary packages
@@ -352,7 +353,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 		$(TARGET_CONFIGURE_ENV) \
 		$($(PKG)_CONFIGURE_ENV) \
 		./configure \
-		$(TARGET_CONFIGURE_OPTIONS) \
+		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
 		$($(PKG)_CONFIGURE_OPTIONS) \
 	)
 	touch $$@
