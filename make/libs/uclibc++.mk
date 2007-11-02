@@ -14,7 +14,7 @@ $(PKG_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	cp $(UCLIBCXX_MAKE_DIR)/Config.uclibc++ $(UCLIBCXX_DIR)/.config
-	$(call PKG_EDIT_CONFIG, UCLIBCXX_HAS_LFS=$(DS_TARGET_LFS)) -i $(UCLIBCXX_DIR)/.config
+	$(call PKG_EDIT_CONFIG, UCLIBCXX_HAS_LFS=$(DS_TARGET_LFS)) $(UCLIBCXX_DIR)/.config
 	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
