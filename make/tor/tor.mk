@@ -14,7 +14,7 @@ TOR_TARGET_DIR:=$(PACKAGES_DIR)/$(TOR_PKG_NAME)
 TOR_TARGET_BINARY:=$(TOR_TARGET_DIR)/root/usr/sbin/tor
 
 $(DL_DIR)/$(TOR_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(TOR_SITE)/$(TOR_SOURCE)
+	wget --no-check-certificate -P $(DL_DIR) $(TOR_SITE)/$(TOR_SOURCE)
 
 $(DL_DIR)/$(TOR_PKG_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TOR_PKG_SOURCE) $(TOR_PKG_SITE)
