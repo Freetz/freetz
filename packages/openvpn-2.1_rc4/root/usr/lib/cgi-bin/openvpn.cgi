@@ -69,11 +69,11 @@ cat << EOF
 <p><b>$(lang de:"Starttyp" en:"Start type"): &nbsp; &nbsp;</b><input id="id_act_start_auto" type="radio" name="my_enabled"  onclick='(local_autostart[act_conf]="yes"); changeval()'><label for="start_auto"> $(lang de:"Automatisch" en:"Automatic")</label> 
 <input id="id_act_start_man" type="radio" name="my_enabled" onclick='(local_autostart[act_conf]=""); changeval()'><label for="start_man"> $(lang de:"Manuell" en:"Manual")</label>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input  id="id_act_debug" type="checkbox" onclick='if (this.checked) (local_debug[act_conf]="yes"); else (local_debug[act_conf]=""); changeval()' ><label for="debug"> Debug-Mode</label> <br />
-<small>Debug-Mode: $(lang de:"Alle Ausgaben protokollieren nach " en:"Save messages to ") "/var/tmp/debug_openvpn.out" </small> <br /> 
+<small style="font-size:0.8em">Debug-Mode: $(lang de:"Alle Ausgaben protokollieren nach " en:"Save messages to ") "/var/tmp/debug_openvpn.out" </small> <br /> 
 <div id="div_debug">
  $(lang de:"\"Ausf&uuml;rlichkeit\" des Logs" en:"Verbosity") (Verb-Level) <input id="id_act_verbose" type="text" title=$(lang de:"\'\"Geschw&auml;tzigkeit\": Normal=3,  \"R\"/\"W\" pro Paket=5,  Ausf&uuml;hrlich=6,  \"alles\"=11\'" en:"\'Verbosity: normal=3,  \"R\"/\"W\ per paket=5, detailed=6, \"everything\"=11\'") size="1" maxlength="1"  onblur='(local_verbose[act_conf]=this.value); Consolidate_Vars();' >
  <br />
- <small>$(lang de:"<b>!Stoppen des Dienstes nach einiger Zeit nicht vergessen!</b>, sonst l&auml;uft das Filesystem voll!" en:"<b>!Don\'t forget to stop deamon after some time to prevent filesystem overflow!</b>") <br />
+ <small style="font-size:0.8em">$(lang de:"<b>!Stoppen des Dienstes nach einiger Zeit nicht vergessen!</b>, sonst l&auml;uft das Filesystem voll!" en:"<b>!Don\'t forget to stop deamon after some time to prevent filesystem overflow!</b>") <br />
 $(lang de:"Die Log-Datei wird beim n&auml;chsten Start ohne Debug-Mode gel&ouml;scht." en:"Log file will be deleted next start w/o debug mode")  </small> <br /> 
 </div>
 EOF
@@ -93,9 +93,9 @@ cat << EOF
  onblur='(local_port[act_conf]=this.value); Consolidate_Vars() ' > </div> 
   </p>
 <div id="div_config_server_off_ip">
-<p>Server $(lang de:"und ggf. Port" en:"(and port if needed)"): <input id="id_act_remote" type="text" size="30" value="" onblur='(local_remote[act_conf]=this.value); Consolidate_Vars() '>
+<p>Server $(lang de:"und ggf. Port" en:"(and port if needed)"): <input id="id_act_remote" type="text" size="40" value="" onblur='(local_remote[act_conf]=this.value); Consolidate_Vars() '>
 <br />
-<small> $(lang de:"Server (und  Port, falls Port &ne; 1194) z.B. \"10.1.2.3\" oder \"ich.dyndns.org 4711\"" en:"Server (and port if port &ne; 1194) e.g. \"10.1.2.3\" or \"me.dyndns.org 123\"") </small>
+<small style="font-size:0.8em"> $(lang de:"Server (und  Port, falls Port &ne; 1194) z.B. \"10.1.2.3\" oder \"ich.dyndns.org 4711\"" en:"Server (and port if port &ne; 1194) e.g. \"10.1.2.3\" or \"me.dyndns.org 123\"") </small>
 </p>
 </div>
 EOF
@@ -113,7 +113,7 @@ Cipher: <select id="id_act_cipher" name="my_cipher" onchange="changeval()"><opti
 <label for="id_act_tls_auth">TLS-$(lang de:"Authentifizierung" en:"Authentication") </label>
 </div>
 <br />
-<small>$(lang de:"Muss auf Server <b>und</b> Client identisch sein" en:"Must be equal on server <b>and</b> client")</small>
+<small style="font-size:0.8em">$(lang de:"Muss auf Server <b>und</b> Client identisch sein" en:"Must be equal on server <b>and</b> client")</small>
 <p>
 <div id="div_own_keys"  style="display:inline"> 
 <input id="id_act_own_keys" type="checkbox" name="my_own_keys"
@@ -132,9 +132,9 @@ sec_end
 sec_begin '$(lang de:"VPN IP-Adressen und Routing im VPN" en:"VPN IP-Addresses and VPN Routing")'
 
 cat << EOF
-<small> <i>$(lang de:"Hier werden die IP-Adressen und das Routing vom VPN konfiguriert." en:"You configure VPN IP addresses and routing inside the VPN here")</i></small>
+<small style="font-size:0.8em"> <i>$(lang de:"Hier werden die IP-Adressen und das Routing vom VPN konfiguriert." en:"You configure VPN IP addresses and routing inside the VPN here")</i></small>
 <p><div id="div_configure_ip">
-$(lang de:"Lokale IP" en:"local IP"): <input id="id_act_box_ip" size="14" title=$(lang de:"\'IP des lokelen VPN Interfaces ( tun / tun ). Z.B. \"192.168.1.1\" \'" en:"\'IP of local VPN interface (tap / tun ) e.g.\"192.168.1.1\" \'")
+$(lang de:"Lokale IP" en:"local IP"): <input id="id_act_box_ip" size="16" title=$(lang de:"\'IP des lokelen VPN Interfaces ( tun / tun ). Z.B. \"192.168.1.1\" \'" en:"\'IP of local VPN interface (tap / tun ) e.g.\"192.168.1.1\" \'")
 maxlength="16" type="text"  onblur='(local_box_ip[act_conf]=this.value); Consolidate_Vars();' >
 <div id="div_ip_and_net"> &nbsp; &nbsp; $(lang de:"Netzmaske" en:"netmask"): <input id="id_act_box_mask"  
 title=$(lang de:"\'Netzmaske f&uuml;r das lokele VPN Interface ( tun / tun ). Z.B. \"255.255.255.0\" \'" en:"\'netmask for local VPN interface (tap / tun ) e.g. \"255.255.255.0\" \'") size="14" maxlength="16" type="text" 
@@ -142,23 +142,22 @@ value="" onblur='(local_box_mask[act_conf]=this.value); Consolidate_Vars();'>
 </div>
 
 <div id="div_ip_loc_rem">
-&nbsp; &nbsp; Remote IP: <input id="id_act_remote_ip"  title=$(lang de:"\'IP des entfernten VPN Interfaces ( tun / tun ). Z.B. \"192.168.1.2\" \'" en:"\'IP of remote VPN interface e.g. \"192.168.1.2\"\' ") size="12" 
+&nbsp; &nbsp; Remote IP: <input id="id_act_remote_ip"  title=$(lang de:"\'IP des entfernten VPN Interfaces ( tun / tun ). Z.B. \"192.168.1.2\" \'" en:"\'IP of remote VPN interface e.g. \"192.168.1.2\"\' ") size="16" 
 maxlength="16" type="text" value="" onblur='(local_remote_ip[act_conf]=this.value); Consolidate_Vars();'>
 </div>
 </div>
 <div id="div_dhcp">
-<p>DHCP-Range $(lang de:"f&uuml;r" en:"for") Clients <small>( &lt;start-ip&gt; &lt;end-ip&gt; )</small>  &nbsp;   <input id="id_act_dhcp_range" 
+<p>DHCP-Range $(lang de:"f&uuml;r" en:"for") Clients <small style="font-size:0.8em">( &lt;start-ip&gt; &lt;end-ip&gt; )</small>  &nbsp;   <input id="id_act_dhcp_range" 
 title=$(lang de:"\' Bereich f&uuml;r Client-IPs. Syntax: &lt;start-ip&gt; &lt;end-ip&gt;, z.B. \"192.168.1.10 192.168.1.20\"\'" en:"\' Range for Client-IPs. Syntax: &lt;start-ip&gt; &lt;end-ip&gt;, e.g. \"192.168.1.10 192.168.1.20\"\'") 
 type="text" size="30" maxlength="33" value="" onblur='(local_dhcp_range[act_conf]=this.value); Consolidate_Vars();'></p>
 </div>
 
 <p> <b> Optional: Routing $(lang de:"von IP-Netzen" en:"of IP networks")</b></p>
 <div id="div_set_remote_net">
-<p>$(lang de:"Entferntes Netz" en:"remote net"): <input id="id_act_remote_net" title=$(lang de:"\'entferntes Netz, Syntax: &lt;ip&gt; &lt;subnetmask&gt; z.B. \"192.168.178.0 255.255.255.0\"\'" en:"\'remote net, syntax: &lt;ip&gt; &lt;subnetmask&gt; z.B. \"192.168.178.0 255.255.255.0\"\'")  
-size="30" maxlength="33" type="text"onblur='(local_remote_net[act_conf]=this.value); Consolidate_Vars();' >
+<p>$(lang de:"Entferntes Netz" en:"remote net"): <input id="id_act_remote_net" size="50" type="text"onblur='(local_remote_net[act_conf]=this.value); Consolidate_Vars();' >
 
 <br />
-<small>$(lang de:"Dieses Netz wird &uuml;ber das VPN geroutet. Syntax: &lt;ip&gt; &lt;subnetmask&gt;" en:"This net will be routed through the VPN. Syntax: &lt;ip&gt; &lt;subnetmask&gt;")</small></p>
+<small style="font-size:0.8em">$(lang de:"Netz wird &uuml;ber VPN geroutet." en:"Net routed through VPN.")  &nbsp;  &nbsp; Syntax: <i>TUN:</i> &lt;ip&gt; &lt;mask&gt;  &nbsp;  <i>TAP:</i> &lt;ip&gt; &lt;mask&gt; &lt;gateway&gt;</small></p>
 
 </div>
 <div id="div_redirect">
@@ -171,11 +170,11 @@ size="30" maxlength="33" type="text"onblur='(local_remote_net[act_conf]=this.val
 <div id="div_push_local_net">
 <p>$(lang de:"Lokales Netz" en:"Local network"): <input id="id_act_local_net" title=$(lang de:"\'lokales Netz, Syntax: &lt;ip&gt; &lt;subnetmask&gt; z.B. \"192.168.178.0 255.255.255.0\"\'"
 en:"\'local net, syntax: &lt;ip&gt; &lt;subnetmask&gt; z.B. \"192.168.178.0 255.255.255.0\"\'")
-size="30" maxlength="33" type="text" onblur='(local_local_net[act_conf]=this.value); Consolidate_Vars();' ><br />
-<small>$(lang de:"Der Client erh&auml;lt eine Route zu diesem Netz per" en:"Client will receive a network route via") "push".  Syntax: &lt;ip&gt; &lt;subnetmask&gt;</small></p>
+size="40" type="text" onblur='(local_local_net[act_conf]=this.value); Consolidate_Vars();' ><br />
+<small style="font-size:0.8em">$(lang de:"Der Client erh&auml;lt eine Route zu diesem Netz per" en:"Client will receive a network route via") "push".  Syntax: &lt;ip&gt; &lt;mask&gt;</small></p>
 <div id="div_allow_clientinfos">
 <p><input id="id_act_client_info" type="checkbox" name="my_client_info" value="yes" onclick='if (this.checked) (local_client_info[act_conf]="yes"); else (local_client_info[act_conf]=""); changeval()'>
-<label for="id_client_info">$(lang de:"Erweiterte Clientkonfiguration" en:"Extended client configuration") <br /><small>$(lang de:"Clients feste VPN-IPs zuordnen und Netze zu bestimmten Clients routen" en:"Static VPN-IPs for client and routing nets to clients")</small></label> </p>
+<label for="id_client_info">$(lang de:"Erweiterte Clientkonfiguration" en:"Extended client configuration") <br /><small style="font-size:0.8em">$(lang de:"Clients feste VPN-IPs zuordnen und Netze zu bestimmten Clients routen" en:"Static VPN-IPs for client and routing nets to clients")</small></label> </p>
 <div id="div_client_table">
 <table id="tunclients_table">
 
@@ -184,8 +183,8 @@ size="30" maxlength="33" type="text" onblur='(local_local_net[act_conf]=this.val
 <br />
 
 <tr id="tunclients">
-&nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;  <td>$(lang de:"Clientname" en:"Client name") <small> ($(lang de:"Zertifikat" en:"from cert"))</small></td> <td>Client-VPN-IP </td>&nbsp;    
-&nbsp;   <td>$(lang de:"Netz b. Client" en:"Client net")</td>  &nbsp; <td>$(lang de:"Subnetzmaske" en:"subnetmask")</td>
+&nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;  <td>$(lang de:"Clientname" en:"Client name") <small style="font-size:0.8em"> ($(lang de:"Zertifikat" en:"from cert"))</small></td> <td>Client-VPN-IP </td>&nbsp;    
+&nbsp;   <td>$(lang de:"Netz b. Client" en:"Client net")<small style="font-size:0.8em">&nbsp; &nbsp; (Syntax: &lt;ip&gt; &lt;subnetmask&gt;)</small></td>
 </tr>
 
 </table>
@@ -198,7 +197,7 @@ size="30" maxlength="33" type="text" onblur='(local_local_net[act_conf]=this.val
     onclick='if (this.checked) (local_pull[act_conf]="yes"); else (local_pull[act_conf]=""); changeval()' ><label for="pull">$(lang de:"Optionen vom Server empfangen (nur mit Zertifikaten)" en:"Receive options from server (only whith certs)")</label></p>
 <div id="div_dhcp_client">
  &nbsp;    &nbsp; <input id="id_act_dhcp_client" type="checkbox" title=$(lang de:"\'Die \"push\"-Otionen des Servers enthalten auch die IP f&uuml;r diesen Client\'" en:"\'Server also \"push\"es the IP for this Client\'") onclick='if (this.checked) (local_dhcp_client[act_conf]="yes"); else (local_dhcp_client[act_conf]=""); changeval()'>
-<label for="id_dhcp_client">$(lang de:"auch IP-Adresse vom Server empfangen" en:"receive client IP from server") <br /> <small>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $(lang de:"(TAP oder vom TUN-Server mit \"erweiterter Clientkonfiguration\")" en:"(from TAP or TUN server with \"Extended client configuration\")")</small></label>
+<label for="id_dhcp_client">$(lang de:"auch IP-Adresse vom Server empfangen" en:"receive client IP from server") <br /> <small style="font-size:0.8em">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $(lang de:"(TAP oder vom TUN-Server mit \"erweiterter Clientkonfiguration\")" en:"(from TAP or TUN server with \"Extended client configuration\")")</small></label>
 </div>
 </div>
 
@@ -207,7 +206,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Server-Einstellungen" en:"Server Configuration")'
+sec_begin '$(lang de:"Server-Einstellungen (bei Zertifikaten)" en:"Server Configuration (only with certs)")'
 
 cat << EOF
 Max. Clients: <input id="id_act_maxclients" type="text" size="4" maxlength="3" 
@@ -223,7 +222,7 @@ Max. Clients: <input id="id_act_maxclients" type="text" size="4" maxlength="3"
     onclick='if (this.checked) (local_client2client[act_conf]="yes"); else (local_client2client[act_conf]=""); changeval()'>
     <label for="id_c2c">Client $(lang de:"zu" en:"to") Client</label>
     
-<small> <br /> </small>
+<small style="font-size:0.8em"> <br /> </small>
 
 <table id="Push_Options">
 <tr> <td><i>Push $(lang de:"Optionen" en:"Options")</i> &nbsp; &nbsp;   &nbsp; &nbsp; </td> <td>DNS Server</td> <td>WINS Server</td>&nbsp;</tr>
@@ -250,7 +249,7 @@ cat << EOF
     <label for="id_logfile">$(lang de:"Statusprotokoll" en:"Log status")</label></p>
 <p><input id="id_is_expert" type="checkbox" title=$(lang de:"\"Selten ben&ouml;tigte Parameter und Multi-Config-F&auml;higkeit\"" en:"\"Change rarely used settings and enable multiple configs\"")  onclick='if (this.checked)  (local_expert="yes"); else (local_expert=""); changeval()' >
 <label for="id_is_expert"> $(lang de:"Experteneinstellungen / Standardwerte &auml;ndern" en:"Expert settings / change standard settings") </label> <br />
-<small>$(lang de:"Ich versichere, Parameter erst nach Lesen der Anleitung auf \"OpenVPN.net\" zu &auml;ndern ;-)" en:"I herby swear, I will not change anything without prior reading on \"OpenVPN.net\" ;-)")</small>
+<small style="font-size:0.8em">$(lang de:"Ich versichere, Parameter erst nach Lesen der Anleitung auf \"OpenVPN.net\" zu &auml;ndern ;-)" en:"I herby swear, I will not change anything without prior reading on \"OpenVPN.net\" ;-)")</small>
 <div id="div_expert">
 <p>$(lang de:"Bandbreitenbegrenzung [Bytes/Sek]" en:"Use shaper [bytes/sec]") (optional): <input id="id_act_shaper" type="text" 
 title=$(lang de:"\"Begrenzen der Bandbreite. Erlaubte Werte zwischen 100 und 100.000.000 Bytes/Sek\"" en:"\"Bandwidth shaping. Possible values from 100 to 100.000.000 bytes/Sec\"") name="my_shaper" size="4" maxlength="5" 
@@ -260,11 +259,11 @@ maxlength="16"  onblur='(local_local[act_conf]=this.value); Consolidate_Vars()'>
 <p>$(lang de:"Ping Abstand f&uuml;r Keepalive" en:"Seconds between keepalives"): <input id="id_act_keepalive_ping" type="text" size="3" title=$(lang de:"\"Abstand mit dem Pings gesendet werden. Standard=10 Sek.\"" en:"\"Interval for keepalive pings. Default=10 sec.\"" )  onblur='(local_keepalive_ping[act_conf]=this.value); Consolidate_Vars();'> 
  &nbsp; &nbsp; Keepalive Timeout: <input id="id_act_keepalive_timeout" type="text" size="4" title=$(lang de:"\"Nach dieser Zeit wird die Verbindung als abgebrochen betrachtet. Standard=120\"" en:"\"After this period a connection will be treated broken. Default=120\"")  onblur='(local_keepalive_timeout[act_conf]=this.value); Consolidate_Vars();'></p>
 <p>MTU (optional): <input id="id_act_mtu" type="text" size="5" title=$(lang de:"\"Maximale Paketgr&ouml;&szlig;e. Normalerweise nicht zu &auml;ndern. Standard=1500\"" en:"\"Maximum paket size. Usually no need to change. Default=1500\"") onblur='(local_mtu[act_conf]=this.value); Consolidate_Vars();'>
-&nbsp; &nbsp; &nbsp; &nbsp;  $(lang de:"UDP fragmentieren <small>nur bei Problemen</small>" en:"Fragment UDP <small>to solve UDP problems</small>"): <input id="id_act_udp_fragment" type="text" size="5" 
+&nbsp; &nbsp; &nbsp; &nbsp;  $(lang de:"UDP fragmentieren <small style='font-size:0.8em'>nur bei Problemen</small>" en:"Fragment UDP <small style='font-size:0.8em'>to solve UDP problems</small>"): <input id="id_act_udp_fragment" type="text" size="5" 
 title=$(lang de:"\'Gr&ouml;&szlig;ere UDP-Pakete immer \"teilen\" (fragmentieren). Vorschlag=1300 (bei MTU=1500)\'" en:"\'Allways fragment UDP packets exceeding this length. Proposal=1300 (for MTU=1500)\'")  
 onblur='(local_udp_fragment[act_conf]=this.value); Consolidate_Vars();'></p>
 <p>$(lang de:"Zusatzparameter (ggf mit \";\" getrennt), z.B. \"par1 xy ; par2 ab ; par3\"" en:"Additional params (separated by \";\") e.g. \"par1 xy ; par2 ab ; par3\""): <input id="id_act_additional" 
-type="text"size="50" onblur='(local_additional[act_conf]=this.value); Consolidate_Vars();'></p>
+type="text"size="70" onblur='(local_additional[act_conf]=this.value); Consolidate_Vars();'></p>
 </div>
  
 <script>
@@ -441,7 +440,6 @@ function Update_Client_Values()
 	var myip="";
 	var myname="";
 	var mynet="";
-	var mymask="";
 	var tmp="";
 	var number=Number(local_clients_defined[act_conf]);
 	for (j=0;j<number;j++){
@@ -451,13 +449,10 @@ function Update_Client_Values()
 		myname=myname+document.getElementById( tmp ).value+":";
 		tmp='cl_net[' + j + ']';		
 		mynet=mynet+document.getElementById( tmp ).value+":";
-		tmp='cl_mask[' + j + ']';	
-		mymask=mymask+document.getElementById( tmp ).value+":";
 	}
 	local_client_ips[act_conf]=myip;
 	local_client_names[act_conf]=myname;
 	local_client_nets[act_conf]=mynet;
-	local_client_masks[act_conf]=mymask;
 
 Consolidate_Vars();
 }
@@ -482,7 +477,7 @@ function addRowToTable(name)
 	if (!myname[(j-1)]) {myname[(j-1)]="client_" + (j-1) };
 	input.value = myname[(j-1)] ;
 	input.onblur = Update_Client_Values;
-	input.size = 20;
+	input.size = 17;
 	input.title=$(lang de:"\"Name des Clients wie im Zertifikat\"" en:"\"Client name used in cert\"");
 	cell.appendChild( input );
 	
@@ -502,22 +497,11 @@ function addRowToTable(name)
 	input = document.createElement( 'input' );
 	input.type = 'text';
 	input.id = 'cl_net[' +(j-1)+ ']';
-	input.size = 12;
+	input.size = 40;
 	if (!mynet[(j-1)]) {mynet[(j-1)]="-"};
 	input.value = mynet[(j-1)];
 	input.onblur = Update_Client_Values;
-	input.title=$(lang de:"\"Diese IP-Netz wird zum Client geroutet.\"" en:"\'This net will be routed to the client\'");
-	cell.appendChild( input );
-
-	cell = row.insertCell( 3 );
-	input = document.createElement( 'input' );
-	input.type = 'text';
-	input.id = 'cl_mask[' +(j-1)+ ']';
-	if (!mymask[(j-1)]) {mymask[(j-1)]="-"};
-	input.value = mymask[(j-1)];
-	input.size = 12;
-	input.onblur = Update_Client_Values;
-	input.title=$(lang de:"\"Netzmaske des Netzes beim Client.\"" en:"\'Netmask for client network\'");
+	input.title=$(lang de:"\"Dieses IP-Netz wird zum Client geroutet.\"" en:"\'This net will be routed to the client\'");
 	cell.appendChild( input );
 }
 
@@ -577,12 +561,6 @@ var fieldsets = document.getElementsByTagName("fieldset");
   	document.getElementById("div_debug").style.display = "none";
 	local_verbose[act_conf]=3; 
   }
-  if ( document.getElementById("id_act_client_info").checked ){
-  	document.getElementById("div_client_table").style.display = "block";
-	}
-  else {
-  	document.getElementById("div_client_table").style.display = "none";
-  }
 	
   if ( document.getElementById("id_act_server").checked ){
   	var fieldsets = document.getElementsByTagName("fieldset");
@@ -590,26 +568,33 @@ var fieldsets = document.getElementsByTagName("fieldset");
 	document.getElementById("div_redirect").style.display = "none";
   	document.getElementById("div_dhcp").style.display = "block";
   	document.getElementById("div_port").style.display = "inline";
-  	document.getElementById("div_push_local_net").style.display = "block";
   	document.getElementById("div_config_server_off_ip").style.display = "none"; 
   	document.getElementById("div_client_pull").style.display = "none";
+	if ( document.getElementById("id_act_client_info").checked ){
+  	    document.getElementById("div_client_table").style.display = "block";
+	    document.getElementById("div_set_remote_net").style.display = "none";
+	    local_remote_net[act_conf]="";
+	    }
+	else {
+  	    document.getElementById("div_client_table").style.display = "none";
+	    document.getElementById("div_set_remote_net").style.display = "block";
+	}
 	if ( document.getElementById("id_act_static").checked){
+		fieldsets[FIELDSET_SERVER].style.display = "none";
 		document.getElementById("div_allow_clientinfos").style.display = "none";
+		document.getElementById("div_push_local_net").style.display = "none";
 		document.getElementById("div_dhcp").style.display = "none";
 		local_dhcp_range[act_conf]=""; document.getElementById("id_act_dhcp_range").value ="";
 	} 
     	else{
+		fieldsets[FIELDSET_SERVER].style.display = "block";
 		document.getElementById("div_allow_clientinfos").style.display = "block";
 		document.getElementById("div_dhcp").style.display = "block";
+		document.getElementById("div_push_local_net").style.display = "block";
 	}	
 	if ( document.getElementById("id_act_tap").checked ){
 		document.getElementById("div_ip_and_net").style.display = "inline";
 		document.getElementById("div_ip_loc_rem").style.display = "none";
-			if (document.getElementById("id_act_maxclients").value == 1){
-				 document.getElementById("div_set_remote_net").style.display = "block";}
-			else{
-				document.getElementById("div_set_remote_net").style.display = "none";
-			}
 	}	
 	else {
 		if ( document.getElementById("id_act_static").checked){
@@ -626,6 +611,7 @@ var fieldsets = document.getElementsByTagName("fieldset");
 				document.getElementById("div_ip_and_net").style.display = "inline";
 				document.getElementById("div_ip_loc_rem").style.display = "none";
 				document.getElementById("div_set_remote_net").style.display = "none";
+				local_remote_net[act_conf]="";
 			}
 		}	
 	}
