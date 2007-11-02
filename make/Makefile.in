@@ -128,7 +128,7 @@ PKG_EDIT_CONFIG = $(SED) -r $(foreach asg,$1,$(call PKG_EDIT_CONFIG__INT1,$(asg)
 # PKG_FIX_LIBTOOL_LA
 #   fix directories is libtool .la files and .pc files
 PKG_FIX_LIBTOOL_LA__INT = -e "s,^$1=('?)(.*)('?)$$,$1=\1$(TARGET_TOOLCHAIN_STAGING_DIR)\2\3,g"
-PKG_FIX_LIBTOOL_LA = sed -i -r $(foreach key,libdir includedir prefix,$(call PKG_FIX_LIBTOOL_LA__INT,$(key)))
+PKG_FIX_LIBTOOL_LA = sed -i -r $(foreach key,libdir includedir prefix exec_prefix,$(call PKG_FIX_LIBTOOL_LA__INT,$(key)))
 
 
 # Use $< (first prerequisite) rather than $^ (all prerequisites), because
@@ -143,8 +143,10 @@ endef
 ### PKG_INIT - initialise package. See also PKG_FINISH.
 
 define PKG_INIT__INT0
-#PKG_BASENAME:=$(lastword $(MAKEFILE_LIST))
-PKG_BASENAME:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+#PKG_MAKEFILE:=$(lastword $(MAKEFILE_LIST))
+#PKG_BASENAME:=$(basename $(notdir $(lastword $(MAKEFILE_LIST))))
+PKG_MAKEFILE:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+PKG_BASENAME:=$(basename $(notdir $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))))
 endef
 
 # Stage 1: initialise package names
@@ -152,9 +154,9 @@ endef
 #   $(2) = lower-case package name (optional)
 #   $(3) = upper-case package name (optional)
 define PKG_INIT__INT1
-$(if $(1),,$(error Undefined version for PKG_INIT in $(PKG_BASENAME)))
-pkg:=$(if $(2),$(2),$(basename $(notdir $(PKG_BASENAME))))
-PKG:=$(if $(3),$(3),$(if $(2),$(shell echo "$(2)" | tr '[a-z\-]' '[A-Z_]'),$(shell echo "$(basename $(notdir $(PKG_BASENAME)))" | tr '[a-z\-]' '[A-Z_]')))
+$(if $(1),,$(error Undefined version for PKG_INIT in $(PKG_MAKEFILE)))
+pkg:=$(if $(2),$(2),$(PKG_BASENAME))
+PKG:=$(if $(3),$(3),$(if $(2),$(shell echo "$(2)" | tr '[a-z\-]' '[A-Z_]'),$(shell echo "$(PKG_BASENAME)" | tr '[a-z\-]' '[A-Z_]')))
 endef
 
 # Stage 2: initialise package version
@@ -217,27 +219,30 @@ endef
 
 # Finalise binary packages
 define PKG_FINISH_BIN__INT
+# Binary dirclean
+$(pkg)-dirclean--int:
+	$(RM) -r $($(PKG)_DIR)
+	$(RM) -r $($(PKG)_TARGET_DIR)
+	$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 $(PKG_LIST)
 endef
 
 # Finalise library packages (currently empty)
 define PKG_FINISH_LIB__INT
+# Library dirclean
+$(pkg)-dirclean--int:
+	$(RM) -r $($(PKG)_DIR)
 endef
 
 # Finalise packages (general functionality + call to type specifics)
 define PKG_FINISH__INT
-# Common dirclean
-$(pkg)-dirclean--int:
-	$(RM) -r $($(PKG)_DIR)
-	$(RM) -r $($(PKG)_TARGET_DIR)
-	$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
 PKG:=
 pkg:=
 PKG_TYPE:=
 endef
-PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)_INT))$(eval $(PKG_FINISH__INT))
+PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))$(eval $(PKG_FINISH__INT))
 
 
 ### PKG_SOURCE_DOWNLOAD - download source packages
