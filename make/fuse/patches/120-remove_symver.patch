@@ -1,6 +1,6 @@
---- lib/fuse.c.orig	2007-07-02 13:33:08.000000000 +0200
-+++ lib/fuse.c	2007-07-29 03:49:35.000000000 +0200
-@@ -3289,12 +3289,14 @@
+--- lib/fuse.c.orig	2007-10-16 18:35:23.000000000 +0200
++++ lib/fuse.c	2007-11-02 00:37:00.000000000 +0100
+@@ -3290,12 +3290,14 @@
                                    sizeof(struct fuse_operations_compat1), 11);
  }
  
@@ -15,7 +15,7 @@
  
  #endif /* __FreeBSD__ */
  
-@@ -3305,5 +3307,6 @@
+@@ -3306,5 +3308,6 @@
      return fuse_new_common_compat25(fd, args, (struct fuse_operations *) op,
                                      op_size, 25);
  }
@@ -23,9 +23,9 @@
 +/*
  __asm__(".symver fuse_new_compat25,fuse_new@FUSE_2.5");
 +*/
---- lib/fuse_lowlevel.c.orig	2007-07-02 13:32:17.000000000 +0200
-+++ lib/fuse_lowlevel.c	2007-07-29 03:49:35.000000000 +0200
-@@ -1406,11 +1406,11 @@
+--- lib/fuse_lowlevel.c.orig	2007-10-16 18:35:23.000000000 +0200
++++ lib/fuse_lowlevel.c	2007-11-02 00:37:00.000000000 +0100
+@@ -1408,11 +1408,11 @@
      }
      return 0;
  }
@@ -39,7 +39,7 @@
  #else /* __FreeBSD__ */
  
  int fuse_sync_compat_args(struct fuse_args *args)
-@@ -1432,5 +1432,6 @@
+@@ -1434,5 +1434,6 @@
                                      (const struct fuse_lowlevel_ops *) op,
                                      op_size, userdata);
  }
@@ -47,8 +47,8 @@
 +/*
  __asm__(".symver fuse_lowlevel_new_compat25,fuse_lowlevel_new@FUSE_2.5");
 +*/
---- lib/fuse_mt.c.orig	2007-04-25 18:14:26.000000000 +0200
-+++ lib/fuse_mt.c	2007-07-29 03:49:35.000000000 +0200
+--- lib/fuse_mt.c.orig	2007-10-16 18:35:23.000000000 +0200
++++ lib/fuse_mt.c	2007-11-02 00:37:00.000000000 +0100
 @@ -111,5 +111,6 @@
  
      return fuse_session_loop_mt(fuse_get_session(f));
@@ -57,9 +57,9 @@
 +/*
  __asm__(".symver fuse_loop_mt_proc,__fuse_loop_mt@");
 +*/
---- lib/helper.c.orig	2007-07-02 13:32:17.000000000 +0200
-+++ lib/helper.c	2007-07-29 03:49:35.000000000 +0200
-@@ -389,13 +389,13 @@
+--- lib/helper.c.orig	2007-10-16 18:35:23.000000000 +0200
++++ lib/helper.c	2007-11-02 00:37:00.000000000 +0100
+@@ -401,13 +401,13 @@
      (void) args;
      return fuse_mount_compat22(mountpoint, NULL);
  }
@@ -75,7 +75,7 @@
  #endif /* __FreeBSD__ */
  
  
-@@ -426,8 +426,9 @@
+@@ -438,8 +438,9 @@
  {
      return fuse_kern_mount(mountpoint, args);
  }
@@ -86,8 +86,8 @@
  __asm__(".symver fuse_main_real_compat25,fuse_main_real@FUSE_2.5");
  __asm__(".symver fuse_mount_compat25,fuse_mount@FUSE_2.5");
 +*/
---- lib/mount_bsd.c.orig	2006-05-03 16:46:04.000000000 +0200
-+++ lib/mount_bsd.c	2007-07-29 03:49:35.000000000 +0200
+--- lib/mount_bsd.c.orig	2007-10-16 18:35:23.000000000 +0200
++++ lib/mount_bsd.c	2007-11-02 00:37:00.000000000 +0100
 @@ -359,5 +359,6 @@
      free(mo.kernel_opts);
      return res;
@@ -96,8 +96,8 @@
 +/*
  __asm__(".symver fuse_unmount_compat22,fuse_unmount@FUSE_2.2");
 +*/
---- lib/mount.c.orig	2007-07-02 13:32:17.000000000 +0200
-+++ lib/mount.c	2007-07-29 03:49:35.000000000 +0200
+--- lib/mount.c.orig	2007-10-16 18:35:23.000000000 +0200
++++ lib/mount.c	2007-11-02 00:37:00.000000000 +0100
 @@ -578,6 +578,7 @@
      free(mo.mtab_opts);
      return res;
