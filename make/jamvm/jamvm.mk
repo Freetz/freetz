@@ -64,7 +64,7 @@ jamvm: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
 jamvm-package: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(JAMVM_PKG_SOURCE) jamvm-$(JAMVM_VERSION)
 
-jamvm-precompiled: uclibc ffi-sable-precompiled classpath-precompiled jamvm \
+jamvm-precompiled: uclibc libffi-sable-precompiled classpath-precompiled jamvm \
 		$(JAMVM_TARGET_BINARY) $(JAMVM_TARGET_LIB_BINARY)
 
 jamvm-source: $(JAMVM_DIR)/.unpacked $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)

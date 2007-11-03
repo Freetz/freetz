@@ -47,7 +47,7 @@ dtmfbox: $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
 dtmfbox-package: $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -czf $(PACKAGES_BUILD_DIR)/$(DTMFBOX_PKG_SOURCE) dtmfbox-$(DTMFBOX_VERSION)
 
-dtmfbox-precompiled: uclibc capi-precompiled pjsip-precompiled dtmfbox $(DTMFBOX_TARGET_BINARY)
+dtmfbox-precompiled: uclibc capi-precompiled pjproject-precompiled dtmfbox $(DTMFBOX_TARGET_BINARY)
 
 dtmfbox-source: $(DTMFBOX_DIR)/.unpacked $(PACKAGES_DIR)/.dtmfbox-$(DTMFBOX_VERSION)
 

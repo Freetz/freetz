@@ -97,7 +97,7 @@ rrdtool-package: $(PACKAGES_DIR)/.$(RRDTOOL_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(RRDTOOL_PKG_SOURCE) $(RRDTOOL_PKG_NAME)
 
 rrdtool-precompiled: uclibc libpng-precompiled freetype-precompiled \
-			libart-precompiled zlib-precompiled rrdtool \
+			libart_lgpl-precompiled zlib-precompiled rrdtool \
 			$(RRDTOOL_TARGET_BINARY) $(RRDTOOL_LIB_TARGET_BINARY)
 
 rrdtool-source: $(RRDTOOL_DIR)/.unpacked $(PACKAGES_DIR)/.$(RRDTOOL_PKG_NAME)

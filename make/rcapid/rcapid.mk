@@ -67,7 +67,7 @@ $(PACKAGES_DIR)/.$(RCAPID_PKG_NAME): $(DL_DIR)/$(RCAPID_PKG_SOURCE)
 
 rcapid: $(PACKAGES_DIR)/.$(RCAPID_PKG_NAME)
 
-rcapid-precompiled: uclibc capi-precompiled rcapid $(RCAPID_TARGET_BINARY)
+rcapid-precompiled: uclibc libcapi-precompiled rcapid $(RCAPID_TARGET_BINARY)
 
 rcapid-package: $(PACKAGES_DIR)/.$(RCAPID_PKG_NAME)
 	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(RCAPID_PKG_SOURCE) $(RCAPID_PKG_NAME) 

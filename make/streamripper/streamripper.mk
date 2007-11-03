@@ -25,7 +25,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 streamripper: 
 
-streamripper-precompiled: uclibc mad-precompiled streamripper $($(PKG)_TARGET_BINARY)
+streamripper-precompiled: uclibc libmad-precompiled streamripper $($(PKG)_TARGET_BINARY)
 
 streamripper-clean:
 	-$(MAKE) -C $(STREAMRIPPER_DIR) clean
