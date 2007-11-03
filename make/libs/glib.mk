@@ -6,6 +6,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/glib/.libs/libglib-2.0.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libglib-2.0.so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_DEPENDS_ON := gettext libiconv
+
 $(PKG)_CONFIGURE_ENV += glib_cv_stack_grows=no
 $(PKG)_CONFIGURE_ENV += glib_cv_uscore=no
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
@@ -35,7 +37,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 
-$(pkg)-precompiled: uclibc gettext-precompiled libiconv-precompiled $(pkg) $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(GLIB_DIR) clean
