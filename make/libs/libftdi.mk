@@ -1,11 +1,10 @@
 $(eval $(call PKG_INIT_LIB, 0.7))
 $(PKG)_LIB_VERSION:=0.7.0
-$(PKG)_SOURCE:=libftdi-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ
-$(PKG)_DIR:=$(SOURCE_DIR)/libftdi-$($(PKG)_VERSION)
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libftdi.so.$($(PKG)_LIB_VERSION)
-$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi.so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libftdi.so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -17,29 +16,29 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	   $(MAKE) -C $(FTDI_DIR) all
+	   $(MAKE) -C $(LIBFTDI_DIR) all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	    $(MAKE) -C $(FTDI_DIR) \
+	    $(MAKE) -C $(LIBFTDI_DIR) \
 	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 	    install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libftdi.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*.so* $(FTDI_TARGET_DIR)/
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*.so* $(LIBFTDI_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-ftdi: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-ftdi-precompiled: uclibc usb-precompiled ftdi $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc libusb-precompiled $(pkg) $($(PKG)_TARGET_BINARY)
 
-ftdi-clean:
-	-$(MAKE) -C $(FTDI_DIR) clean
+$(pkg)-clean:
+	-$(MAKE) -C $(LIBFTDI_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*
 
-ftdi-uninstall:
-	rm -f $(FTDI_TARGET_DIR)/libftdi*.so*
+$(pkg)-uninstall:
+	rm -f $(LIBFTDI_TARGET_DIR)/libftdi*.so*
 
 $(PKG_FINISH)

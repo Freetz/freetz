@@ -1,8 +1,7 @@
 $(eval $(call PKG_INIT_LIB, 3325))
 $(PKG)_LIB_VERSION:=4.0.1
-$(PKG)_SOURCE:=libffi-sable-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://downloads.openwrt.org/sources
-$(PKG)_DIR:=$(SOURCE_DIR)/libffi-sable-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libffi.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libffi.so.$($(PKG)_LIB_VERSION)
@@ -18,29 +17,29 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(FFI_SABLE_DIR)
+		$(MAKE) -C $(LIBFFI_SABLE_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(FFI_SABLE_DIR) \
+		$(MAKE) -C $(LIBFFI_SABLE_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libffi.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so* $(FFI_SABLE_TARGET_DIR)/
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*.so* $(LIBFFI_SABLE_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-ffi-sable: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-ffi-sable-precompiled: uclibc ffi-sable $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
-ffi-sable-clean:
-	-$(MAKE) -C $(FFI_SABLE_DIR) clean
+$(pkg)-clean:
+	-$(MAKE) -C $(LIBFFI_SABLE_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*
 
-ffi-sable-uninstall:
-	rm -f $(FFI_SABLE_TARGET_DIR)/libffi*.so*
+$(pkg)-uninstall:
+	rm -f $(LIBFFI_SABLE_TARGET_DIR)/libffi*.so*
 
 $(PKG_FINISH)
