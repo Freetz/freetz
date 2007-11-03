@@ -1,6 +1,6 @@
 $(eval $(call PKG_INIT_LIB, 2.3.1))
 $(PKG)_LIB_VERSION:=6.3.12
-$(PKG)_SOURCE:=freetype-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://download.savannah.gnu.org/releases/freetype
 $(PKG)_BINARY:=$($(PKG)_DIR)/objs/.libs/libfreetype.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype.so.$($(PKG)_LIB_VERSION)
@@ -31,15 +31,15 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype*.so* $(FREETYPE_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-freetype: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-freetype-precompiled: uclibc zlib-precompiled freetype $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc zlib-precompiled $(pkg) $($(PKG)_TARGET_BINARY)
 
-freetype-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(FREETYPE_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/freetype*
 
-freetype-uninstall:
+$(pkg)-uninstall:
 	rm -f $(FREETYPE_TARGET_DIR)/freetype*.so*
 
 $(PKG_FINISH)

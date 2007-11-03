@@ -1,7 +1,7 @@
 $(eval $(call PKG_INIT_LIB, 1.7.3))
 #$(PKG)_VERSION:=1-8-3
 #$(PKG)_SOURCE:=matrixssl-$($(PKG)_VERSION)-open.tar.gz
-$(PKG)_SOURCE:=matrixssl-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://downloads.openwrt.org/sources
 $(PKG)_DIR:=$(SOURCE_DIR)/matrixssl
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libmatrixssl.so
@@ -35,16 +35,16 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl*.so* $(MATRIXSSL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-matrixssl: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-matrixssl-precompiled: uclibc uclibc matrixssl $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
-matrixssl-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(MATRIXSSL_DIR)/src clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl*
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl*
 
-matrixssl-uninstall:
+$(pkg)-uninstall:
 	rm -f $(MATRIXSSL_TARGET_DIR)/libmatrixssl*.so*
 
 $(PKG_FINISH)

@@ -1,6 +1,6 @@
 $(eval $(call PKG_INIT_LIB, 0.9.8e))
 $(PKG)_LIB_VERSION:=0.9.8
-$(PKG)_SOURCE:=openssl-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.openssl.org/source/
 $(PKG)_SSL_BINARY:=$($(PKG)_DIR)/libssl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_CRYPTO_BINARY:=$($(PKG)_DIR)/libcrypto.so.$($(PKG)_LIB_VERSION)
@@ -73,18 +73,18 @@ $($(PKG)_TARGET_CRYPTO_BINARY): $($(PKG)_STAGING_CRYPTO_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*.so* $(OPENSSL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-openssl: $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY)
+$(pkg): $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY)
 
-openssl-precompiled: uclibc openssl $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
 
-openssl-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(OPENSSL_DIR) clean
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/openssl
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/openssl
 
-openssl-uninstall:
+$(pkg)-uninstall:
 	rm -f $(OPENSSL_TARGET_DIR)/libssl*.so*
 	rm -f $(OPENSSL_TARGET_DIR)/libcrypto*.so*
 

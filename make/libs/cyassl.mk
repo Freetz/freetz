@@ -1,5 +1,5 @@
 $(eval $(call PKG_INIT_LIB, 0.8.5))
-$(PKG)_SOURCE:=cyassl-$($(PKG)_VERSION).zip
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).zip
 $(PKG)_SITE:=http://yassl.com
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libcyassl.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl.so
@@ -23,16 +23,16 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl*.so* $(CYASSL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-cyassl: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-cyassl-precompiled: uclibc cyassl $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
-cyassl-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(CYASSL_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl*
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl*
 
-cyassl-uninstall:
+$(pkg)-uninstall:
 	rm -f $(CYASSL_TARGET_DIR)/libcyassl*.so*
 
 $(PKG_FINISH)

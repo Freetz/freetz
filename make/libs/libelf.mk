@@ -1,10 +1,10 @@
 $(eval $(call PKG_INIT_LIB, 0.8.10))
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
-$(PKG)_SOURCE:=libelf-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.mr511.de/software
-$(PKG)_BINARY:=$($(PKG)_DIR)/lib/libelf.so.$($(PKG)_LIB_VERSION)
-$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf.so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libelf.so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 $(PKG)_CONFIGURE_ENV += mr_cv_working_memmove=yes
@@ -36,15 +36,15 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so* $(LIBELF_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-libelf: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-libelf-precompiled: uclibc libelf $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
-libelf-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(LIBELF_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*
 
-libelf-uninstall:
+$(pkg)-uninstall:
 	rm -f $(LIBELF_TARGET_DIR)/libelf*.so*
 
 $(PKG_FINISH)

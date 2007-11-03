@@ -1,6 +1,6 @@
 $(eval $(call PKG_INIT_LIB, 0.16.1))
 $(PKG)_LIB_VERSION:=8.0.1
-$(PKG)_SOURCE:=gettext-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/gettext/
 $(PKG)_BINARY:=$($(PKG)_DIR)/gettext-runtime/intl/.libs/libintl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl.so.$($(PKG)_LIB_VERSION)
@@ -41,16 +41,16 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl*.so* $(GETTEXT_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-gettext: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-gettext-precompiled: uclibc gettext $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
-gettext-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(GETTEXT_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgettext*
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl*
 
-gettext-uninstall:
+$(pkg)-uninstall:
 	rm -f $(GETTEXT_TARGET_DIR)/libintl*.so*
 
 $(PKG_FINISH)

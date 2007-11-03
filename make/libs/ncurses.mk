@@ -1,6 +1,6 @@
 $(eval $(call PKG_INIT_LIB, 5.6))
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
-$(PKG)_SOURCE:=ncurses-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/ncurses
 $(PKG)_$(PKG)_BINARY:=$($(PKG)_DIR)/lib/libncurses.so.$($(PKG)_LIB_VERSION)
 $(PKG)_$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so.$($(PKG)_LIB_VERSION)
@@ -104,38 +104,38 @@ $($(PKG)_PANEL_TARGET_BINARY): $($(PKG)_PANEL_STAGING_BINARY)
 	$(TARGET_STRIP) $@
 
 ifeq ($(strip $(DS_LIB_libncurses)),y)
-ncurses-ncurses: $($(PKG)_NCURSES_STAGING_BINARY)
-ncurses-ncurses-precompiled: $($(PKG)_DIR)/.targetdata $($(PKG)_NCURSES_TARGET_BINARY)
+$(pkg)-ncurses: $($(PKG)_NCURSES_STAGING_BINARY)
+$(pkg)-ncurses-precompiled: $($(PKG)_DIR)/.targetdata $($(PKG)_NCURSES_TARGET_BINARY)
 else
-ncurses-ncurses ncurses-ncurses-precompiled:
+$(pkg)-ncurses $(pkg)-ncurses-precompiled:
 endif
 
 ifeq ($(strip $(DS_LIB_libform)),y)
-ncurses-form: $($(PKG)_FORM_STAGING_BINARY)
-ncurses-form-precompiled: $($(PKG)_FORM_TARGET_BINARY)
+$(pkg)-form: $($(PKG)_FORM_STAGING_BINARY)
+$(pkg)-form-precompiled: $($(PKG)_FORM_TARGET_BINARY)
 else
-ncurses-form ncurses-form-precompiled:
+$(pkg)-form $(pkg)-form-precompiled:
 endif
 
 ifeq ($(strip $(DS_LIB_libmenu)),y)
-ncurses-menu: $($(PKG)_MENU_STAGING_BINARY)
-ncurses-menu-precompiled: $($(PKG)_MENU_TARGET_BINARY)
+$(pkg)-menu: $($(PKG)_MENU_STAGING_BINARY)
+$(pkg)-menu-precompiled: $($(PKG)_MENU_TARGET_BINARY)
 else
-ncurses-menu ncurses-menu-precompiled:
+$(pkg)-menu $(pkg)-menu-precompiled:
 endif
 
 ifeq ($(strip $(DS_LIB_libpanel)),y)
-ncurses-panel: $($(PKG)_PANEL_STAGING_BINARY)
-ncurses-panel-precompiled: $($(PKG)_PANEL_TARGET_BINARY)
+$(pkg)-panel: $($(PKG)_PANEL_STAGING_BINARY)
+$(pkg)-panel-precompiled: $($(PKG)_PANEL_TARGET_BINARY)
 else
-ncurses-panel ncurses-panel-precompiled:
+$(pkg)-panel $(pkg)-panel-precompiled:
 endif
 
-ncurses: ncurses-ncurses ncurses-form ncurses-menu ncurses-panel
+$(pkg): $(pkg)-ncurses $(pkg)-form $(pkg)-menu $(pkg)-panel
 
-ncurses-precompiled: uclibc ncurses ncurses-ncurses-precompiled ncurses-form-precompiled ncurses-menu-precompiled ncurses-panel-precompiled
+$(pkg)-precompiled: uclibc $(pkg) $(pkg)-ncurses-precompiled $(pkg)-form-precompiled $(pkg)-menu-precompiled $(pkg)-panel-precompiled
 
-ncurses-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(NCURSES_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform*
@@ -144,7 +144,7 @@ ncurses-clean:
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo
 
-ncurses-uninstall:
+$(pkg)-uninstall:
 	rm -f $(NCURSES_TARGET_DIR)/libncurses*.so*
 	rm -f $(NCURSES_TARGET_DIR)/libform*.so*
 	rm -f $(NCURSES_TARGET_DIR)/libmenu*.so*

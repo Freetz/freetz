@@ -1,5 +1,5 @@
 $(eval $(call PKG_INIT_LIB, 0.7))
-$(PKG)_SOURCE:=xyssl-$($(PKG)_VERSION).tgz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=http://www.xyssl.org/code/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/library/libxyssl.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxyssl.so
@@ -31,16 +31,16 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxyssl*.so* $(XYSSL_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-xyssl: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-xyssl-precompiled: uclibc uclibc xyssl $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
-xyssl-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(XYSSL_DIR)/library clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxyssl*
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/xyssl*
 
-xyssl-uninstall:
+$(pkg)-uninstall:
 	rm -f $(XYSSL_TARGET_DIR)/libxyssl*.so*
 
 $(PKG_FINISH)

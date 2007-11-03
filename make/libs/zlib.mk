@@ -1,6 +1,6 @@
 $(eval $(call PKG_INIT_LIB, 1.2.3))
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
-$(PKG)_SOURCE:=zlib-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/libpng
 $(PKG)_BINARY:=$($(PKG)_DIR)/libz.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so.$($(PKG)_LIB_VERSION)
@@ -33,17 +33,17 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so* $(ZLIB_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-zlib: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-zlib-precompiled: uclibc zlib $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
-zlib-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.* \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zlib.h \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zconf.h 	
 
-zlib-uninstall:
+$(pkg)-uninstall:
 	rm -f $(ZLIB_TARGET_DIR)/libz*.so*
 
 $(PKG_FINISH)

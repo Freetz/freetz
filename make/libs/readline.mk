@@ -1,6 +1,6 @@
 $(eval $(call PKG_INIT_LIB, 5.2))
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
-$(PKG)_SOURCE:=readline-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.cwru.edu/pub/bash
 $(PKG)_$(PKG)_BINARY:=$($(PKG)_DIR)/shlib/libreadline.so.$($(PKG)_LIB_VERSION)
 $(PKG)_HISTORY_BINARY:=$($(PKG)_DIR)/shlib/libhistory.so.$($(PKG)_LIB_VERSION)
@@ -37,16 +37,16 @@ $($(PKG)_TARGET_HISTORY_BINARY):  $($(PKG)_STAGING_HISTORY_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory*.so* $(READLINE_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-readline: $($(PKG)_STAGING_READLINE_BINARY) $($(PKG)_STAGING_HISTORY_BINARY)
+$(pkg): $($(PKG)_STAGING_READLINE_BINARY) $($(PKG)_STAGING_HISTORY_BINARY)
 
-readline-precompiled: uclibc ncurses-precompiled readline \
+$(pkg)-precompiled: uclibc ncurses-precompiled $(pkg) \
 		$($(PKG)_TARGET_READLINE_BINARY) $($(PKG)_TARGET_HISTORY_BINARY)
 
-readline-clean:
+$(pkg)-clean:
 	$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" -C $(READLINE_DIR) uninstall
 	-$(MAKE) -C $(READLINE_DIR) clean
 
-readline-uninstall:
+$(pkg)-uninstall:
 	rm -f $(READLINE_TARGET_DIR)/libreadline*.so*
 	rm -f $(READLINE_TARGET_DIR)/libhistory*.so*
 

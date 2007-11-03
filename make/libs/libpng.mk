@@ -1,6 +1,6 @@
 $(eval $(call PKG_INIT_LIB, 1.2.10))
 $(PKG)_LIB_VERSION:=0.10.0
-$(PKG)_SOURCE:=libpng-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://oss.oetiker.ch/rrdtool/pub/libs/
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libpng12.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.so.$($(PKG)_LIB_VERSION)
@@ -33,15 +33,15 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng*.so* $(LIBPNG_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-libpng: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-libpng-precompiled: uclibc zlib-precompiled libpng $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc zlib-precompiled $(pkg) $($(PKG)_TARGET_BINARY)
 
-libpng-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(LIBPNG_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng*
 
-libpng-uninstall:
+$(pkg)-uninstall:
 	rm -f $(LIBPNG_TARGET_DIR)/libpng*.so*
 
 $(PKG_FINISH)

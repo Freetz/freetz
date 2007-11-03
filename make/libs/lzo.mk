@@ -1,6 +1,6 @@
 $(eval $(call PKG_INIT_LIB, 2.02))
 $(PKG)_LIB_VERSION:=2.0.0
-$(PKG)_SOURCE:=lzo-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.oberhumer.com/opensource/lzo/download/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/liblzo2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so.$($(PKG)_LIB_VERSION)
@@ -33,15 +33,15 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2*.so* $(LZO_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-lzo: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-lzo-precompiled: uclibc lzo $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
-lzo-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(LZO_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2*
 
-lzo-uninstall:
+$(pkg)-uninstall:
 	rm -f $(LZO_TARGET_DIR)/liblzo2*.so*
 
 $(PKG_FINISH)

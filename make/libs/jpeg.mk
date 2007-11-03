@@ -29,15 +29,15 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so* $(JPEG_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-jpeg: $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_STAGING_BINARY)
 
-jpeg-precompiled: uclibc jpeg $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
-jpeg-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(JPEG_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*
 
-jpeg-uninstall:
+$(pkg)-uninstall:
 	rm -f $(JPEG_TARGET_DIR)/libjpeg*.so*
 
 $(PKG_FINISH)
