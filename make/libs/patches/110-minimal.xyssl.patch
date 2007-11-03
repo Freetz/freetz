@@ -1,59 +1,58 @@
-diff -ur include/xyssl/ssl_conf.h include/xyssl/ssl_conf.h
---- include/xyssl/ssl_conf.h	2007-07-07 07:07:00.000000000 +0200
-+++ include/xyssl/ssl_conf.h	2007-09-01 02:48:30.000000000 +0200
-@@ -50,24 +50,28 @@
-  *
- #define NO_DHM
+--- include/xyssl/config.h	2007-07-07 07:07:00.000000000 +0200
++++ include/xyssl/config.h	2007-09-01 02:48:30.000000000 +0200
+@@ -75,7 +75,7 @@
+  *      SSL_RSA_RC4_128_MD5
+  *      SSL_RSA_RC4_128_SHA
   */
-+#define NO_DHM
+-#define XYSSL_ARC4_C
++/*#define XYSSL_ARC4_C*/
  
  /*
-  * Don't include the MD2 hash function
-  *
- #define NO_MD2
+  * Module:  library/base64.c
+@@ -133,7 +133,7 @@
+  *      SSL_EDH_RSA_DES_168_SHA
+  *      SSL_EDH_RSA_AES_256_SHA
   */
-+#define NO_MD2
+-#define XYSSL_DHM_C
++/*#define XYSSL_DHM_C*/
  
  /*
-  * Don't include the MD4 hash function
+  * Module:  library/havege.c
+@@ -149,7 +149,7 @@
   *
- #define NO_MD4
+  * This module enables support for MD2-signed X.509 certificates.
   */
-+#define NO_MD4
+-#define XYSSL_MD2_C
++/*#define XYSSL_MD2_C*/
  
  /*
-  * Don't include the ARC4 cipher
+  * Module:  library/md4.c
+@@ -157,7 +157,7 @@
   *
- #define NO_ARC4
+  * This module enables support for MD4-signed X.509 certificates.
   */
-+#define NO_ARC4
+-#define XYSSL_MD4_C
++/*#define XYSSL_MD4_C*/
  
  /*
-  * Don't include the DES/3DES ciphers
-diff -ur library/Makefile library/Makefile
+  * Module:  library/md5.c
 --- library/Makefile	2007-07-07 07:07:00.000000000 +0200
 +++ library/Makefile	2007-09-01 02:49:23.000000000 +0200
-@@ -8,7 +8,7 @@
- #    HAVE_LONGLONG      compiler supports long long
- #    _BSD_EXTENSION     when compiling on Plan9
+@@ -17,12 +17,12 @@
+ # OSX shared library extension:
+ # DLEXT=dylib
  
--DEFINES	= -DSELF_TEST -DHAVE_RDTSC
-+DEFINES	= -DHAVE_RDTSC
- CFLAGS	= $(DEFINES) -I../include -O
+-OBJS=	aes.o		arc4.o		base64.o	\
+-	bignum.o	certs.o		debug.o		\
+-	des.o		dhm.o		havege.o	\
+-	md2.o		md4.o		md5.o		\
++OBJS=	aes.o				base64.o	\
++	bignum.o	certs.o				\
++	des.o				havege.o	\
++					md5.o		\
+ 	net.o		padlock.o	rsa.o		\
+-	sha1.o		sha2.o		sha4.o		\
++	sha1.o				sha4.o		\
+ 	ssl_cli.o	ssl_srv.o	ssl_tls.o	\
+ 	timing.o	x509parse.o
  
- # To compile as a shared library:
-@@ -17,10 +17,10 @@
- # MicroBlaze specific options:
- # CFLAGS += -mno-xl-soft-mul -mxl-barrel-shift
- 
--OBJS=aes.o       arc4.o      base64.o    bignum.o    \
--     certs.o     des.o       dhm.o       havege.o    \
--     md2.o       md4.o       md5.o       net.o       \
--     rsa.o       sha1.o      sha2.o      ssl_cli.o   \
-+OBJS=aes.o                   base64.o    bignum.o    \
-+     certs.o     des.o                   havege.o    \
-+                             md5.o       net.o       \
-+     rsa.o       sha1.o                  ssl_cli.o   \
-      ssl_srv.o   ssl_tls.o   timing.o    x509read.o
- 
- .SILENT:
