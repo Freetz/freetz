@@ -6,6 +6,10 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/ntfs-3g
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ntfs-3g
 $(PKG)_STARTLEVEL=30
 
+# actually doesn't depend on gettext, but tests for libintl.h anyway
+$(PKG)_DEPENDS_ON += gettext
+$(PKG)_DEPENDS_ON += fuse
+
 $(PKG)_CONFIGURE_ENV += FUSE_MODULE_CFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include/fuse"
 $(PKG)_CONFIGURE_ENV += FUSE_MODULE_LIBS="-pthread -lfuse -ldl"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
@@ -25,9 +29,9 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-ntfs: uclibc fuse $($(PKG)_TARGET_BINARY)
+ntfs: uclibc $($(PKG)_TARGET_BINARY)
 
-ntfs-precompiled: fuse-precompiled ntfs $($(PKG)_TARGET_BINARY)
+ntfs-precompiled: $($(PKG)_TARGET_BINARY)
 
 ntfs-clean:
 	-$(MAKE) -C $(NTFS_DIR) clean

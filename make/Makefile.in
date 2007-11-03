@@ -239,6 +239,10 @@ endef
 define PKG_FINISH__INT
 $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
+$(pkg)-precompiled : $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON)) 
+# This must be after DEPENDS_ON
+$(pkg)-precompiled : $(pkg)
+.PHONY: $(pkg)-precompiled $(pkg)
 PKG:=
 pkg:=
 PKG_TYPE:=
@@ -343,8 +347,16 @@ PKG_BIN_UNPACKED=$(eval $(PKG_BIN_UNPACKED__INT))
 PKG_LIB_UNPACKED=$(eval $(PKG_LIB_UNPACKED__INT))
 PKG_UNPACKED=$(eval $(PKG_UNPACKED__INT)) $(eval $(PKG_$(PKG_TYPE)_UNPACKED__INT))
 
+### Configure package
+define PKG_CONFIGURED_COMMON__INT
+#$($(PKG)_DIR)/.configured : $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+$(pkg)-configured : $($(PKG)_DIR)/.configured
+.PHONY: $(pkg)-configured
+endef
 ## Configure package, using ./configure
 define PKG_CONFIGURED_CONFIGURE__INT
+# Must be first
+$(PKG_CONFIGURED_COMMON__INT)
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	( cd $($(PKG)_DIR); \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
@@ -357,17 +369,15 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 		$($(PKG)_CONFIGURE_OPTIONS) \
 	)
 	touch $$@
-$(pkg)-configured: $($(PKG)_DIR)/.configured
-.PHONY: $(pkg)-configured
 endef
 PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
 
 ## Package needs no configuration
 define PKG_CONFIGURED_NOP__INT
+# Must be first
+$(PKG_CONFIGURED_COMMON__INT)
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $$@
-$(pkg)-configured: $($(PKG)_DIR)/.configured
-.PHONY: $(pkg)-configured
 endef
 PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
 
