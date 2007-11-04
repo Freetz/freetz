@@ -6,6 +6,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_DEPENDS_ON := openssl
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -37,7 +39,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 
-$(pkg)-precompiled: uclibc openssl-precompiled $(pkg) $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBAVMHMAC_DIR) clean

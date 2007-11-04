@@ -4,7 +4,10 @@ $(PKG)_SITE:=http://curl.haxx.se/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/curl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
 
+$(PKG)_DEPENDS_ON := openssl
+
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
@@ -46,7 +49,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 curl:
 
-curl-precompiled: uclibc openssl-precompiled curl $($(PKG)_TARGET_BINARY)
+curl-precompiled: uclibc curl $($(PKG)_TARGET_BINARY)
 
 curl-clean:
 	-$(MAKE) -C $(CURL_DIR) clean

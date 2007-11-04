@@ -4,6 +4,9 @@ $(PKG)_SITE:=http://www.lua.org/ftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lua
 
+$(PKG)_DEPENDS_ON := ncurses readline
+
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -26,7 +29,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 lua:
 
-lua-precompiled: uclibc ncurses-precompiled readline-precompiled lua $($(PKG)_TARGET_BINARY)
+lua-precompiled: uclibc lua $($(PKG)_TARGET_BINARY)
 
 lua-clean:
 	-$(MAKE) -C $(LUA_DIR) clean

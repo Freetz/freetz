@@ -14,11 +14,14 @@ $(PKG)_TARGET_CONF:=$($(PKG)_DEST_DIR)/etc/ltrace.conf
 #   - Because we do not want the build process to depend on the availability
 #     of a Subversion client (svn checkout), we provide the ltrace source
 #     package as a download on DS-Mod mirrors and use DL_TOOL to download it.
-	
+
+$(PKG)_DEPENDS_ON := libelf	
+
 $(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh ;
-$(PKG)_CONFIGURE_PRE_CMDS += ( cd /sysdeps/linux-gnu/mipsel; \
+$(PKG)_CONFIGURE_PRE_CMDS += ( cd sysdeps/linux-gnu/mipsel; \
 					../mksyscallent $(TARGET_MAKE_PATH)/../include/asm/unistd.h > syscallent.h; \
 					../mksignalent $(TARGET_MAKE_PATH)/../include/asm/signal.h > signalent.h; );
+
 $(PKG)_CONFIGURE_ENV += LD="$(TARGET_LD)"
 
 
@@ -26,9 +29,11 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_TARGET_CONF): $($(PKG)_DIR)/.unpacked
+$($(PKG)_CONF): $($(PKG)_DIR)/.unpacked
+
+$($(PKG)_TARGET_CONF): $($(PKG)_CONF)
 	mkdir -p $(dir $@)
-	cp $(LTRACE_CONF) $(LTRACE_TARGET_CONF)
+	cp $< $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
@@ -39,7 +44,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 ltrace:
 
-ltrace-precompiled: uclibc libelf-precompiled ltrace $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CONF)
+ltrace-precompiled: uclibc ltrace $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CONF)
 
 ltrace-clean:
 	-$(MAKE) -C $(LTRACE_DIR) clean ARCH=mipsel

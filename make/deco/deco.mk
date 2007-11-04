@@ -5,6 +5,8 @@ $(PKG)_DIR:=$(SOURCE_DIR)/deco$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/deco
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/deco
 
+$(PKG)_DEPENDS_ON := ncurses
+
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 
 
@@ -20,7 +22,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 deco:
 
-deco-precompiled: uclibc ncurses-precompiled deco $($(PKG)_TARGET_BINARY)
+deco-precompiled: uclibc deco $($(PKG)_TARGET_BINARY)
 
 deco-clean:
 	-$(MAKE) -C $(DECO_DIR) clean

@@ -5,6 +5,8 @@ $(PKG)_DIR:=$(SOURCE_DIR)/matrixtunnel
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/matrixtunnel
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/matrixtunnel
 
+$(PKG)_DEPENDS_ON := matrixssl
+
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PKG)_CONFIGURE_OPTIONS += --with-matrixssl-src="$(DSMOD_BASE_DIR)/$(MATRIXSSL_DIR)"
@@ -24,7 +26,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 matrixtunnel:
 
-matrixtunnel-precompiled: uclibc matrixssl-precompiled matrixtunnel $($(PKG)_TARGET_BINARY) 
+matrixtunnel-precompiled: uclibc matrixtunnel $($(PKG)_TARGET_BINARY) 
 
 matrixtunnel-clean:
 	-$(MAKE) -C $(MATRIXTUNNEL_DIR)/src clean

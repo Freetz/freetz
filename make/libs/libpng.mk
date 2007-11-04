@@ -6,10 +6,13 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libpng12.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpng12.so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_DEPENDS_ON := zlib
+
 $(PKG)_CONFIGURE_ENV += gl_cv_func_malloc_0_nonnull=yes
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -35,7 +38,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 
-$(pkg)-precompiled: uclibc zlib-precompiled $(pkg) $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBPNG_DIR) clean

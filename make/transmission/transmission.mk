@@ -5,8 +5,11 @@ $(PKG)_SITE:=http://dsmod.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/cli/transmissioncli
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/transmissioncli
 
+$(PKG)_DEPENDS_ON := libevent
+
 $(PKG)_CONFIGURE_ENV += CROSS="$(TARGET_CROSS)"
 $(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk
 $(PKG)_CONFIGURE_OPTIONS += --disable-openssl
 
@@ -24,7 +27,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 transmission: 
 
-transmission-precompiled: libevent-precompiled transmission $($(PKG)_TARGET_BINARY)
+transmission-precompiled: uclibc transmission $($(PKG)_TARGET_BINARY)
 
 transmission-clean:
 	-$(MAKE) -C $(TRANSMISSION_DIR) clean

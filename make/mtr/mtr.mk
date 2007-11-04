@@ -4,6 +4,7 @@ $(PKG)_SITE:=ftp://ftp.bitwizard.nl/mtr
 $(PKG)_BINARY:=$($(PKG)_DIR)/mtr
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mtr
 
+$(PKG)_DEPENDS_ON := ncurses
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-static
@@ -28,7 +29,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 mtr:
 
-mtr-precompiled: uclibc ncurses-precompiled mtr $($(PKG)_TARGET_BINARY)
+mtr-precompiled: uclibc mtr $($(PKG)_TARGET_BINARY)
 
 mtr-clean:
 	-$(MAKE) -C $(MTR_DIR) clean

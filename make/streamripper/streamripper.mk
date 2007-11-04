@@ -4,6 +4,8 @@ $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/streamripper
 $(PKG)_BINARY:=$($(PKG)_DIR)/streamripper
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/streamripper
 
+$(PKG)_DEPENDS_ON := libmad
+
 $(PKG)_CONFIGURE_OPTIONS += --with-included-argv
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --with-included-tre
@@ -25,7 +27,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 streamripper: 
 
-streamripper-precompiled: uclibc libmad-precompiled streamripper $($(PKG)_TARGET_BINARY)
+streamripper-precompiled: uclibc streamripper $($(PKG)_TARGET_BINARY)
 
 streamripper-clean:
 	-$(MAKE) -C $(STREAMRIPPER_DIR) clean

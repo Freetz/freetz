@@ -9,6 +9,8 @@ $(PKG)_STAGING_HISTORY_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistor
 $(PKG)_TARGET_$(PKG)_BINARY:=$($(PKG)_TARGET_DIR)/libreadline.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_HISTORY_BINARY:=$($(PKG)_TARGET_DIR)/libhistory.so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_DEPENDS_ON := ncurses
+
 $(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=yes
 
 
@@ -39,8 +41,8 @@ $($(PKG)_TARGET_HISTORY_BINARY):  $($(PKG)_STAGING_HISTORY_BINARY)
 
 $(pkg): $($(PKG)_STAGING_READLINE_BINARY) $($(PKG)_STAGING_HISTORY_BINARY)
 
-$(pkg)-precompiled: uclibc ncurses-precompiled $(pkg) \
-		$($(PKG)_TARGET_READLINE_BINARY) $($(PKG)_TARGET_HISTORY_BINARY)
+$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_READLINE_BINARY) \
+					$($(PKG)_TARGET_HISTORY_BINARY)
 
 $(pkg)-clean:
 	$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" -C $(READLINE_DIR) uninstall
