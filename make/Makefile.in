@@ -239,6 +239,7 @@ endef
 define PKG_FINISH__INT
 $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
+$(pkg)-precompiled : uclibc
 $(pkg)-precompiled : $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON)) 
 # This must be after DEPENDS_ON
 $(pkg)-precompiled : $(pkg)
