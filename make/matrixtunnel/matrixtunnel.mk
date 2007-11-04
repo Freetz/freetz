@@ -10,7 +10,7 @@ $(PKG)_DEPENDS_ON := matrixssl
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PKG)_CONFIGURE_OPTIONS += --with-matrixssl-src="$(DSMOD_BASE_DIR)/$(MATRIXSSL_DIR)"
-$(PKG)_CONFIGURE_OPTIONS += LDFLAGS="-lpthread"
+$(PKG)_CONFIGURE_OPTIONS += LIBS="-lpthread"
 
 
 $(PKG_SOURCE_DOWNLOAD)
