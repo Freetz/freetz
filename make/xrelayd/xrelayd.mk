@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 0.1))
+$(eval $(call PKG_INIT_BIN, 0.2))
 $(PKG)_SOURCE:=xrelayd-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://znerol.ch/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/xrelayd
