@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 0.82))
+$(call PKG_INIT_BIN, 0.82)
 $(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
 #$(PKG)_SITE:=http://download.m0k.org/transmission/files
 $(PKG)_SITE:=http://dsmod.magenbrot.net

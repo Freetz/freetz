@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 1.24, sg3_utils, SG3UTILS))
+$(call PKG_INIT_BIN, 1.24, sg3_utils, SG3UTILS)
 $(PKG)_SOURCE:=sg3_utils-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=http://sg.torque.net/sg/p/
 $(PKG)_BINARY:=$($(PKG)_DIR)/sg_start

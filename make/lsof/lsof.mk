@@ -1,5 +1,5 @@
 # based on buildroot SVN
-$(eval $(call PKG_INIT_BIN, 4.78))
+$(call PKG_INIT_BIN, 4.78)
 $(PKG)_SOURCE:=lsof_$($(PKG)_VERSION).dfsg.1.orig.tar.gz
 $(PKG)_SITE:=http://ftp2.de.debian.org/debian/pool/main/l/lsof
 $(PKG)_DIR:=$(SOURCE_DIR)/lsof-$($(PKG)_VERSION).dfsg.1

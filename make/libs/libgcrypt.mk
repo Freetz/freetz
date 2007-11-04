@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 1.2.2))
+$(call PKG_INIT_LIB, 1.2.2)
 $(PKG)_LIB_VERSION:=11.2.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.gnupg.org/gcrypt/libgcrypt

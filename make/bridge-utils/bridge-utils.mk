@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN,1.2))
+$(call PKG_INIT_BIN,1.2)
 $(PKG)_SOURCE:=bridge-utils-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bridge
 $(PKG)_BINARY:=$($(PKG)_DIR)/brctl/brctl

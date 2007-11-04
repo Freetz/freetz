@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 0.1))
+$(call PKG_INIT_BIN, 0.1)
 
 $(PKG_UNPACKED)
 

@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 1.3e))
+$(call PKG_INIT_LIB, 1.3e)
 $(PKG)_LIB_VERSION:=1.0.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.monkey.org/~provos

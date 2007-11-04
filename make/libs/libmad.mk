@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 0.15.1b))
+$(call PKG_INIT_LIB, 0.15.1b)
 $(PKG)_LIB_VERSION:=0.2.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/mad

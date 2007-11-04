@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 5.6))
+$(call PKG_INIT_LIB, 5.6)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/ncurses

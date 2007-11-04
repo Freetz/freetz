@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 1.62.3))
+$(call PKG_INIT_BIN, 1.62.3)
 $(PKG)_SOURCE:=streamripper-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/streamripper
 $(PKG)_BINARY:=$($(PKG)_DIR)/streamripper

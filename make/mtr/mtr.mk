@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 0.72))
+$(call PKG_INIT_BIN, 0.72)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.bitwizard.nl/mtr
 $(PKG)_BINARY:=$($(PKG)_DIR)/mtr

@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 3.10))
+$(call PKG_INIT_BIN, 3.10)
 $(PKG)_LIB_VERSION:=0.3.3
 $(PKG)_SOURCE:=inotify-tools-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/inotify-tools

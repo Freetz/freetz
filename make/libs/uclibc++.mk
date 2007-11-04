@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 0.2.2, uclibcxx))
+$(call PKG_INIT_LIB, 0.2.2, uclibcxx)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=uClibc++-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://cxx.uclibc.org/src/

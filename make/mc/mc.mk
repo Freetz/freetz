@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 4.5.0))
+$(call PKG_INIT_BIN, 4.5.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/old
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)

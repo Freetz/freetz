@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 1.7.3))
+$(call PKG_INIT_LIB, 1.7.3)
 #$(PKG)_VERSION:=1-8-3
 #$(PKG)_SOURCE:=matrixssl-$($(PKG)_VERSION)-open.tar.gz
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz

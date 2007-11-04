@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 0.7))
+$(call PKG_INIT_LIB, 0.7)
 $(PKG)_LIB_VERSION:=0.7.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ

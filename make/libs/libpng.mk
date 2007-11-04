@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 1.2.10))
+$(call PKG_INIT_LIB, 1.2.10)
 $(PKG)_LIB_VERSION:=0.10.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://oss.oetiker.ch/rrdtool/pub/libs/

@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 0.16.1))
+$(call PKG_INIT_LIB, 0.16.1)
 $(PKG)_LIB_VERSION:=8.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/gettext/

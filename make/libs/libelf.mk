@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 0.8.10))
+$(call PKG_INIT_LIB, 0.8.10)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.mr511.de/software

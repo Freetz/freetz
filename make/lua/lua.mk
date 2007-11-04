@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 5.1.2))
+$(call PKG_INIT_BIN, 5.1.2)
 $(PKG)_SOURCE:=lua-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.lua.org/ftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua

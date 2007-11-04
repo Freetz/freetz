@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 0.1))
+$(call PKG_INIT_BIN, 0.1)
 $(PKG)_PKG_VERSION:=$($(PKG)_VERSION)
 $(PKG)_PKG_NAME:=inetd-$($(PKG)_PKG_VERSION)
 $(PKG)_STARTLEVEL=20

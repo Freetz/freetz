@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 0.95))
+$(call PKG_INIT_BIN, 0.95)
 $(PKG)_UGLY_VERSION:=0.0.0
 $(PKG)_SOURCE:=classpath-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/classpath

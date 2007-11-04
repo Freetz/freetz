@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 7.16.4))
+$(call PKG_INIT_BIN, 7.16.4)
 $(PKG)_SOURCE:=curl-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://curl.haxx.se/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/curl

@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 39))
+$(call PKG_INIT_BIN, 39)
 $(PKG)_SOURCE:=deco$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/deco
 $(PKG)_DIR:=$(SOURCE_DIR)/deco$($(PKG)_VERSION)

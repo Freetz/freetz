@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 2.3.1))
+$(call PKG_INIT_LIB, 2.3.1)
 $(PKG)_LIB_VERSION:=6.3.12
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://download.savannah.gnu.org/releases/freetype

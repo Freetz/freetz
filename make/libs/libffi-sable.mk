@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 3325))
+$(call PKG_INIT_LIB, 3325)
 $(PKG)_LIB_VERSION:=4.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://downloads.openwrt.org/sources

@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 0.8))
+$(call PKG_INIT_LIB, 0.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=http://www.xyssl.org/code/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/library/libxyssl.so

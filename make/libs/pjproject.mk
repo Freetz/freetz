@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 0.7.0))
+$(call PKG_INIT_LIB, 0.7.0)
 $(PKG)_LIB_VERSION:=0.7.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://fritz.v3v.de/dtmfbox/libs
@@ -21,8 +21,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-speex-codec
 $(PKG)_CONFIGURE_OPTIONS += --disable-ilbc-codec
 $(PKG)_CONFIGURE_OPTIONS += --disable-ssl
 $(PKG)_CONFIGURE_OPTIONS += --disable-floating-point
-$(PKG)_CONFIGURE_OPTIONS += CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0"
-$(PKG)_CONFIGURE_OPTIONS += LDFLAGS="-lm"
+#$(PKG)_CONFIGURE_OPTIONS += CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0"
+#$(PKG)_CONFIGURE_OPTIONS += LDFLAGS="-lm"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -38,7 +38,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.depend
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	    $(MAKE) -C $(PJPROJECT_DIR) all \
 	    TARGET_NAME="$(REAL_GNU_TARGET_NAME)" \
-		CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0" \
+		CFLAGS="-DPJ_DEBUG=0 -DNDEBUG=0" \
 		LDFLAGS="-lm"
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)

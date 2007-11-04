@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 2.0))
+$(call PKG_INIT_LIB, 2.0)
 $(PKG)_LIB_VERSION:=3.0.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://dsmod.magenbrot.net

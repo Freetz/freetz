@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 6b))
+$(call PKG_INIT_LIB, 6b)
 $(PKG)_LIB_VERSION:=62.0.0
 $(PKG)_SOURCE:=jpegsrc.v$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ijg.org/files

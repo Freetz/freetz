@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 0.1.12))
+$(call PKG_INIT_LIB, 0.1.12)
 $(PKG)_SHORT_VERSION:=0.1
 $(PKG)_LIB_VERSION:=4.4.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz

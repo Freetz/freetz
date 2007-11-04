@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 1.2.3))
+$(call PKG_INIT_LIB, 1.2.3)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/libpng

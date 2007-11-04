@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 0.1))
+$(call PKG_INIT_BIN, 0.1)
 $(PKG)_SOURCE:=ldd-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://dsmod.magenbrot.net
 $(PKG)_SOURCE_FILE:=$($(PKG)_DIR)/ldd.c

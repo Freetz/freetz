@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 1.9.1))
+$(call PKG_INIT_LIB, 1.9.1)
 $(PKG)_LIB_VERSION:=2.2.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/libiconv

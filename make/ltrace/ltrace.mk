@@ -1,5 +1,5 @@
 LTRACE_SVN_REVISION:=77
-$(eval $(call PKG_INIT_BIN, 0.5_$(LTRACE_SVN_REVISION)))
+$(call PKG_INIT_BIN, 0.5_$(LTRACE_SVN_REVISION))
 $(PKG)_SOURCE:=ltrace-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://dsmod.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/ltrace

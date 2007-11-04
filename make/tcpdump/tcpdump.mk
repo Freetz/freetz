@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_BIN, 3.9.6))
+$(call PKG_INIT_BIN, 3.9.6)
 $(PKG)_SOURCE:=tcpdump-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.tcpdump.org/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpdump

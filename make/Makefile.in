@@ -142,76 +142,70 @@ endef
 
 ### PKG_INIT - initialise package. See also PKG_FINISH.
 
-define PKG_INIT__INT0
-#PKG_MAKEFILE:=$(lastword $(MAKEFILE_LIST))
-#PKG_BASENAME:=$(basename $(notdir $(lastword $(MAKEFILE_LIST))))
-PKG_MAKEFILE:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
-PKG_BASENAME:=$(basename $(notdir $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))))
-endef
-
 # Stage 1: initialise package names
 #   $(1) = version (mandatory)
 #   $(2) = lower-case package name (optional)
 #   $(3) = upper-case package name (optional)
-define PKG_INIT__INT1
-$(if $(1),,$(error Undefined version for PKG_INIT in $(PKG_MAKEFILE)))
-pkg:=$(if $(2),$(2),$(PKG_BASENAME))
-PKG:=$(if $(3),$(3),$(if $(2),$(shell echo "$(2)" | tr '[a-z\-]' '[A-Z_]'),$(shell echo "$(PKG_BASENAME)" | tr '[a-z\-]' '[A-Z_]')))
-endef
-
-# Stage 2: initialise package version
-#   $(1) = version (mandatory)
-define PKG_INIT__INT2
-$(PKG)_VERSION:=$(1)
+define PKG_INIT__INT
+#PKG_MAKEFILE:=$(lastword $(MAKEFILE_LIST))
+PKG_MAKEFILE:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+PKG_BASENAME:=$(basename $(notdir $(PKG_MAKEFILE)))
+$(if $(strip $1),,$(error Undefined version for PKG_INIT in $(PKG_MAKEFILE)))
+pkg:=$(if $(strip $2),$(strip $2),$(PKG_BASENAME))
+PKG:=$(if $(strip $3),$(strip $3),$(shell echo "$(pkg)" | tr '[a-z\-]' '[A-Z_]'))
+#
+$(PKG)_VERSION:=$(strip $1)
 $(PKG)_CONFIGURE_DEFOPTS:=y
 endef
 
-# Stage 3a: initialise other package-specific variables for binary packages
+# Stage 2a: initialise other package-specific variables for binary packages
 define PKG_INIT_BIN__INT
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 PKG_TYPE:=BIN
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 # level 99 for packages that are not actually started
 $(PKG)_STARTLEVEL=99
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
 $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_DEST_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root
-$(PKG)_DEST_BIN:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/bin
-$(PKG)_DEST_SBIN:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/sbin
-$(PKG)_DEST_LIB:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/lib
-$(PKG)_DEST_USR_BIN:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/usr/bin
-$(PKG)_DEST_USR_SBIN:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/usr/sbin
-$(PKG)_DEST_USR_LIB:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root/usr/lib
+$(PKG)_DEST_BIN:=$($(PKG)_DEST_DIR)/bin
+$(PKG)_DEST_SBIN:=$($(PKG)_DEST_DIR)/sbin
+$(PKG)_DEST_LIB:=$($(PKG)_DEST_DIR)/lib
+$(PKG)_DEST_USR_BIN:=$($(PKG)_DEST_DIR)/usr/bin
+$(PKG)_DEST_USR_SBIN:=$($(PKG)_DEST_DIR)/usr/sbin
+$(PKG)_DEST_USR_LIB:=$($(PKG)_DEST_DIR)/usr/lib
 endef
 
-# Call & evaluate stages 1-3a for binary packages
+define PKG_INIT_BIN__INTV
+$(value PKG_INIT__INT)
+$(value PKG_INIT_BIN__INT)
+endef
+# Call & evaluate stages 1-2a for binary packages
 define PKG_INIT_BIN
-$(eval $(call PKG_INIT__INT0))
-$(eval $(call PKG_INIT__INT1,$(1),$(2),$(3)))
-$(eval $(call PKG_INIT__INT2,$(1)))
-$(eval $(call PKG_INIT_BIN__INT))
+$(eval $(call PKG_INIT_BIN__INTV,$1,$2,$3))
 endef
 
-# Stage 3b: initialise other package-specific variables for library packages
+# Stage 2b: initialise other package-specific variables for library packages
 define PKG_INIT_LIB__INT
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 PKG_TYPE:=LIB
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
 $(PKG)_TARGET_DIR:=root/usr/lib
 $(PKG)_DEST_DIR:=root
-$(PKG)_DEST_BIN:=root/bin
-$(PKG)_DEST_SBIN:=root/sbin
-$(PKG)_DEST_LIB:=root/lib
-$(PKG)_DEST_USR_BIN:=root/usr/bin
-$(PKG)_DEST_USR_SBIN:=root/usr/sbin
-$(PKG)_DEST_USR_LIB:=root/usr/lib
+$(PKG)_DEST_BIN:=$($(PKG)_DEST_DIR)/bin
+$(PKG)_DEST_SBIN:=$($(PKG)_DEST_DIR)/sbin
+$(PKG)_DEST_LIB:=$($(PKG)_DEST_DIR)/lib
+$(PKG)_DEST_USR_BIN:=$($(PKG)_DEST_DIR)/usr/bin
+$(PKG)_DEST_USR_SBIN:=$($(PKG)_DEST_DIR)/usr/sbin
+$(PKG)_DEST_USR_LIB:=$($(PKG)_DEST_DIR)/usr/lib
 endef
 
-# Call & evaluate stages 1-3b for library packages
+define PKG_INIT_LIB__INTV
+$(value PKG_INIT__INT)
+$(value PKG_INIT_LIB__INT)
+endef
+# Call & evaluate stages 1-2b for library packages
 define PKG_INIT_LIB
-$(eval $(call PKG_INIT__INT0))
-$(eval $(call PKG_INIT__INT1,$(1),$(2),$(3)))
-$(eval $(call PKG_INIT__INT2,$(1)))
-$(eval $(call PKG_INIT_LIB__INT))
+$(eval $(call PKG_INIT_LIB__INTV,$1,$2,$3))
 endef
 
 

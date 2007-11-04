@@ -1,4 +1,4 @@
-$(eval $(call PKG_INIT_LIB, 1.1))
+$(call PKG_INIT_LIB, 1.1)
 $(PKG)_LIB_VERSION:=0.1.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.gnupg.org/gcrypt/libgpg-error
