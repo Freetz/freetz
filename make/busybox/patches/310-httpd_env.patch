@@ -1,8 +1,6 @@
-# This patch avoids clearing the environment, so it is exported to the CGIs
-
---- networking/httpd.c	2007-06-16 15:35:15.000000000 +0200
-+++ networking/httpd.c	2007-06-16 15:37:34.000000000 +0200
-@@ -2100,7 +2100,7 @@
+--- networking/httpd.c.orig	2007-11-04 00:06:35.000000000 +0100
++++ networking/httpd.c	2007-11-04 02:14:01.000000000 +0100
+@@ -2103,7 +2103,7 @@
  	{
  		char *p = getenv("PATH");
  		/* env strings themself are not freed, no need to strdup(p): */
