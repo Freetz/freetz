@@ -7,7 +7,9 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpjsip.a
 # only static lib
 #$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpjsip.so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force aconfigure.ac > configure;
 $(PKG)_CONFIGURE_PRE_CMDS += sed -i 's/@LIBS@/-Wl,-Bdynamic @LIBS@/g' build.mak.in;
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-sound
 $(PKG)_CONFIGURE_OPTIONS += --disable-large-filter
@@ -35,7 +37,9 @@ $($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
 $($(PKG)_BINARY): $($(PKG)_DIR)/.depend
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	    $(MAKE) -C $(PJPROJECT_DIR) all \
-	    TARGET_NAME="$(REAL_GNU_TARGET_NAME)"
+	    TARGET_NAME="$(REAL_GNU_TARGET_NAME)" \
+		CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0" \
+		LDFLAGS="-lm"
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
