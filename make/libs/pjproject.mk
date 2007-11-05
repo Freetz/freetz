@@ -7,9 +7,30 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpjsip.a
 # only static lib
 #$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpjsip.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force aconfigure.ac > configure;
-$(PKG)_CONFIGURE_PRE_CMDS += sed -i 's/@LIBS@/-Wl,-Bdynamic @LIBS@/g' build.mak.in;
+$(PKG)_CONFIGURE_DEFOPTS := n
 
+$(PKG)_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0"
+$(PKG)_CONFIGURE_ENV += LDFLAGS="-lm"
+
+$(PKG)_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --program-prefix=""
+$(PKG)_CONFIGURE_OPTIONS += --program-suffix=""
+$(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
+$(PKG)_CONFIGURE_OPTIONS += --exec-prefix=/usr
+$(PKG)_CONFIGURE_OPTIONS += --bindir=/usr/bin
+$(PKG)_CONFIGURE_OPTIONS += --datadir=/usr/share
+$(PKG)_CONFIGURE_OPTIONS += --includedir=/usr/include
+$(PKG)_CONFIGURE_OPTIONS += --infodir=/usr/share/info
+$(PKG)_CONFIGURE_OPTIONS += --libdir=/usr/lib
+$(PKG)_CONFIGURE_OPTIONS += --libexecdir=/usr/lib
+$(PKG)_CONFIGURE_OPTIONS += --localstatedir=/var
+$(PKG)_CONFIGURE_OPTIONS += --mandir=/usr/share/man
+$(PKG)_CONFIGURE_OPTIONS += --sbindir=/usr/sbin
+$(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/etc
+$(PKG)_CONFIGURE_OPTIONS += $(DISABLE_NLS)
+$(PKG)_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-sound
 $(PKG)_CONFIGURE_OPTIONS += --disable-large-filter
@@ -21,8 +42,6 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-speex-codec
 $(PKG)_CONFIGURE_OPTIONS += --disable-ilbc-codec
 $(PKG)_CONFIGURE_OPTIONS += --disable-ssl
 $(PKG)_CONFIGURE_OPTIONS += --disable-floating-point
-#$(PKG)_CONFIGURE_OPTIONS += CFLAGS="$(TARGET_CFLAGS) -DPJ_DEBUG=0 -DNDEBUG=0"
-#$(PKG)_CONFIGURE_OPTIONS += LDFLAGS="-lm"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -37,9 +56,7 @@ $($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
 $($(PKG)_BINARY): $($(PKG)_DIR)/.depend
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	    $(MAKE) -C $(PJPROJECT_DIR) all \
-	    TARGET_NAME="$(REAL_GNU_TARGET_NAME)" \
-		CFLAGS="-DPJ_DEBUG=0 -DNDEBUG=0" \
-		LDFLAGS="-lm"
+	    TARGET_NAME="$(REAL_GNU_TARGET_NAME)"
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
