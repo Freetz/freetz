@@ -97,12 +97,6 @@ MEDIUM PRIORITY - normal bugs, features, improvements
     Remark (by Oliver): Add interface option to webinterface (virtualip).
     Openntpd uses eth0 in ethmode_router and lan in ethmode_bridge.
 
-- Get "telnetd vs. setconsole" hangups fixed in BusyBox or another way.
-    Status (by kriegaex): reported to BusyBox mailing list, let's wait & hope.
-    http://busybox.net/lists/busybox/2007-October/029008.html
-    Status (by Ralf): patch make/busybox/patches/210-telnetd.patch seems to
-    work, needs testing.
-
 - Refactor Dnsmasq package, particularly rc.dnsmasq (full of logical mistakes!)
   and recently improved, but still suboptimal multid wrapper. The whole thing
   only (kind of) works as long as nobody thinks about using the scripts outside
@@ -311,3 +305,9 @@ FINISHED, NEEDS TESTING
     Status (by Oliver): done, but web interface needs testing.
     Status (by kriegaex): I have not tested the web UI, but otherwise it seems
     to work beautifully, even with "replace kernel" based on *.40 GPL package.
+
+- Get "telnetd vs. setconsole" hangups fixed in BusyBox or another way.
+    Status (by kriegaex): reported to BusyBox mailing list.
+    http://busybox.net/lists/busybox/2007-October/029008.html
+    Status (by Ralf): Changed in busybox-1.8.0, but not default behaviour.
+    patches for small bug and to change default still necessary.
