@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN,1.2)
 $(PKG)_SOURCE:=bridge-utils-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bridge
 $(PKG)_BINARY:=$($(PKG)_DIR)/brctl/brctl
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/root/sbin/brctl
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/brctl
 
 $(PKG)_CONFIGURE_PRE_CMDS += aclocal --force ;
 $(PKG)_CONFIGURE_PRE_CMDS += libtoolize --force ;
