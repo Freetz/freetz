@@ -49,7 +49,7 @@ case "$1" in
 			cat /tmp/flash/exhosts | grep -v "^#" | while read -r ip mac interface host desc; do
 				if [ -z "$host" -o "$host" = "*" ]; then
 					let hnr="$hnr+1"
-					host="pc${hnr}.fritz.box"
+					host="pc${hnr}"
 				fi
 
 				[ -n "$ip" -a "$ip" != "*" ] && echo -e "$ip\t$host" >> /var/tmp/hosts
@@ -77,7 +77,7 @@ case "$1" in
 		  ipaddr=$(ar7ipaddr $section $devname)
 		fi
 		if [ -z "$ipaddr" ] ; then
-		  ipaddr=192.168.178.254
+		  ipaddr=169.254.1.1
 		fi
 		echo -e "$ipaddr\t$(ar7hostname)" >> /var/tmp/hosts
 		;;
