@@ -1,0 +1,29 @@
+--- usr.orig/www/avm/html/de/menus/menu2_homehome.html	2007-11-01 17:30:56.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_homehome.html	2007-11-06 01:15:19.000000000 +0100
+@@ -43,5 +43,6 @@
+ <? if eq $var:pagename energy `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <? if eq $var:pagename ecosettings `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','energy')"><? echo `$var:TextEnergyMonitor` ?></a><span class="PTextOnly"><? echo `$var:TextEnergyMonitor` ?></span></li>
++<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>
+diff -burN usr.orig/www/avm/html/de/menus/menu2.inc usr/www/avm/html/de/menus/menu2.inc
+--- usr.orig/www/avm/html/de/menus/menu2.inc	2007-11-01 17:30:37.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2.inc	2007-11-06 01:13:16.000000000 +0100
+@@ -16,6 +16,7 @@
+ <? setvariable var:TextMenuSystem "System" ?>
+ <? setvariable var:TextMenuSoftware "Programme" ?>
+ <? setvariable var:TextMenuHilfe "Hilfe" ?>
++<? setvariable var:menuDSMOD "DS-MOD" ?>
+ <? setvariable var:TextMenuAnrufliste "Anrufliste" ?>
+ <? setvariable var:TextMenuTelefonbuch "Telefonbuch" ?>
+ <? setvariable var:TextMenuKS "Kindersicherung" ?>
+--- usr.orig/www/avm/html/de/menus/menu2_konfig.html	2007-11-01 17:30:58.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_konfig.html	2007-11-06 01:31:13.000000000 +0100
+@@ -74,5 +74,6 @@
+ <li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','enhsettings')">Erweiterte Einstellungen</a><span class="PTextOnly">Erweiterte Einstellungen</span></li>
+ <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('software','extern')"><? echo '$var:TextMenuSoftware' ?></a><span class="PTextOnly"><? echo '$var:TextMenuSoftware' ?></span></li>
+ ` ?>
++<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>

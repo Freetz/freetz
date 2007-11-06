@@ -29,27 +29,27 @@
 @@ -150,18 +150,18 @@
  }
  function uiNummerDisplay (nr, name) {
- 	var buchname = GetBuchName(name);
--	if (nr=="" && buchname=="") return g_txtUnbekannt;
-+	if (nr=="" && buchname=="") return g_sym0 + g_txtUnbekannt;
- 	if ("<? query telcfg:settings/UseClickToDial ?>" == "1") {
--		if (nr == "") return span(buchname);
-+		if (nr == "") return g_sym0 + span(buchname);
--		if (buchname == "") {
--			return "<nobr>" +
--			"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
--		}
-+		if (buchname == "") return "<nobr>" + uiRufnummerInfo (nr) +"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
--		return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
-+		return "<nobr>" +  g_sym0 + "<a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
- 	} else {
--		return span(buchname=="" ? nr:buchname);
-+		return (buchname=="" ? uiRufnummerInfo(nr):g_sym0) + span(buchname=="" ? nr:buchname);
- 	}
+ var buchname = GetBuchName(name);
+-if (nr=="" && buchname=="") return g_txtUnbekannt;
++if (nr=="" && buchname=="") return g_sym0 + g_txtUnbekannt;
+ if ("<? query telcfg:settings/UseClickToDial ?>" == "1") {
+-if (nr == "") return span(buchname);
++if (nr == "") return g_sym0 + span(buchname);
+-if (buchname == "") {
+-return "<nobr>" +
+-"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
+-}
++if (buchname == "") return "<nobr>" + uiRufnummerInfo (nr) +"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
+-return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
++return "<nobr>" +  g_sym0 + "<a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
+ } else {
+-return span(buchname=="" ? nr:buchname);
++return (buchname=="" ? uiRufnummerInfo(nr):g_sym0) + span(buchname=="" ? nr:buchname);
+ }
  }
 +function uiRufnummerInfo (nr) {
-+	return "<a href=\"http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "+nr+")\" target=\"_blank\" title=\"Rückwärtssuche bei dasoertliche.de nach "+nr+"\"><img src=\"../html/<? echo $var:lang ?>/images/bearbeiten.gif\"></a>";
++return "<a href=\"http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "+nr+")\" target=\"_blank\" title=\"Rückwärtssuche bei dasoertliche.de nach "+nr+"\"><img src=\"../html/<? echo $var:lang ?>/images/bearbeiten.gif\"></a>";
 +}
  function uiRouteDisplay (n, t) {
- 	var name;
- 	if (t == "0") {
+ var name;
+ if (t == "0") {

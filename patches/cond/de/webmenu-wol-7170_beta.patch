@@ -1,0 +1,30 @@
+--- usr.orig/www/avm/html/de/menus/menu2_homehome.html	2007-11-06 01:39:05.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_homehome.html	2007-11-06 01:39:42.000000000 +0100
+@@ -44,5 +44,6 @@
+ <? if eq $var:pagename ecosettings `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','energy')"><? echo `$var:TextEnergyMonitor` ?></a><span class="PTextOnly"><? echo `$var:TextEnergyMonitor` ?></span></li>
+ <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
++<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>
+--- usr.orig/www/avm/html/de/menus/menu2.inc	2007-11-06 01:38:38.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2.inc	2007-11-06 01:38:05.000000000 +0100
+@@ -16,7 +16,8 @@
+ <? setvariable var:TextMenuSystem "System" ?>
+ <? setvariable var:TextMenuSoftware "Programme" ?>
+ <? setvariable var:TextMenuHilfe "Hilfe" ?>
+-<? setvariable var:menuDSMOD "DS-MOD" ?>
++<? setvariable var:menuDSMOD "DS-MOD Config" ?>
++<? setvariable var:menuDSWOL "DS-MOD WOL" ?>
+ <? setvariable var:TextMenuAnrufliste "Anrufliste" ?>
+ <? setvariable var:TextMenuTelefonbuch "Telefonbuch" ?>
+ <? setvariable var:TextMenuKS "Kindersicherung" ?>
+--- usr.orig/www/avm/html/de/menus/menu2_konfig.html	2007-11-06 01:39:12.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_konfig.html	2007-11-06 01:39:48.000000000 +0100
+@@ -75,5 +75,6 @@
+ <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('software','extern')"><? echo '$var:TextMenuSoftware' ?></a><span class="PTextOnly"><? echo '$var:TextMenuSoftware' ?></span></li>
+ ` ?>
+ <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
++<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>

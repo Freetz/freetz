@@ -1,0 +1,28 @@
+--- usr/www/avm/html/de/menus/menu2_homehome.html.orig	2007-10-19 16:40:23.000000000 +0200
++++ usr/www/avm/html/de/menus/menu2_homehome.html	2007-11-06 02:13:36.000000000 +0100
+@@ -56,5 +56,6 @@
+ <? setvariable var:classname 'LMenuitemTop' ?>
+ <? if eq $var:pagename clients `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','clients')"><? echo `$var:TextMenuClients` ?></a><span class="PTextOnly"><? echo $var:TextMenuClients ?></span></li>
++<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>
+--- usr/www/avm/html/de/menus/menu2.inc.orig	2007-10-19 16:39:46.000000000 +0200
++++ usr/www/avm/html/de/menus/menu2.inc	2007-11-06 02:13:36.000000000 +0100
+@@ -16,6 +16,7 @@
+ <? setvariable var:TextMenuSystem "System" ?>
+ <? setvariable var:TextMenuSoftware "Programme" ?>
+ <? setvariable var:TextMenuHilfe "Hilfe" ?>
++<? setvariable var:menuDSMOD "DS-MOD" ?>
+ <? setvariable var:TextMenuAnrufliste "Anrufliste" ?>
+ <? setvariable var:TextMenuTelefonbuch "Telefonbuch" ?>
+ <? setvariable var:TextMenuKS "Kindersicherung" ?>
+--- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2007-10-19 16:40:06.000000000 +0200
++++ usr/www/avm/html/de/menus/menu2_konfig.html	2007-11-06 02:13:36.000000000 +0100
+@@ -55,5 +55,6 @@
+ <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('software','extern')"><? echo $var:TextMenuSoftware ?></a><span class="PTextOnly"><? echo $var:TextMenuSoftware ?></span></li>
+ ` ?>
+ ` ?>
++<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>

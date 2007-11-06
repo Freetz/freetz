@@ -452,14 +452,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo1 "applying patches (${DS_TYPE_STRING}-${DS_TYPE_LANG_STRING})"
 	
 	# Webinterface from .tk-firmware must be copied at first
-	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
-	then
-		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
+	for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
 			[ -x "$i" ] && . $i
-		done
-	fi
+	done
 
 	# Apply patches
 	for i in "${PATCHES_DIR}/"*.patch; do
@@ -563,19 +558,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
 	# execute patch scripts
-	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
-	then
-		for i in "${PATCHES_DIR}/"*.sh; do
-			[ -x "$i" ] && . $i
-		done 
-	else
-		#other DS_TYPES
-		for i in "${PATCHES_DIR}/"*.sh "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh;	do
-			[ -x "$i" ] && . $i
-		done
-	fi
+	for i in "${PATCHES_DIR}/"*.sh; do
+		[ -x "$i" ] && . $i
+	done 
 
 	# stop execution if in patch test mode
 	if [ "$FWMOD_PATCH_TEST" == "y" ]; then
