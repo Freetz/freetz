@@ -1,0 +1,71 @@
+--- squashfs-tools/Makefile	2007-10-25 02:47:07.000000000 +0200
++++ squashfs-tools/Makefile	2007-11-07 01:19:02.000000000 +0100
+@@ -2,10 +2,10 @@
+ 
+ CFLAGS := -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -O2
+ 
+-all: mksquashfs unsquashfs
++all: mksquashfs3-lzma unsquashfs3-lzma
+ 
+-mksquashfs: mksquashfs.o read_fs.o sort.o
+-	$(CC) mksquashfs.o read_fs.o sort.o -lz -lpthread -lm -o $@
++mksquashfs3-lzma: mksquashfs.o read_fs.o sort.o
++	$(CXX) mksquashfs.o read_fs.o sort.o -L$(LZMA_DIR) -llzma -lpthread -lm -o $@
+ 
+ mksquashfs.o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h
+ 
+@@ -13,7 +13,7 @@
+ 
+ sort.o: sort.c squashfs_fs.h global.h sort.h
+ 
+-unsquashfs: unsquashfs.o
+-	$(CC) unsquashfs.o -lz -o $@
++unsquashfs3-lzma: unsquashfs.o
++	$(CXX) unsquashfs.o -L$(LZMA_DIR) -llzma -o $@
+ 
+ unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
+--- squashfs-tools/squashfs_fs.h	2007-08-19 05:31:15.000000000 +0200
++++ squashfs-tools/squashfs_fs.h	2007-11-07 01:07:02.000000000 +0100
+@@ -37,7 +37,7 @@
+ #endif
+ #define SQUASHFS_CACHED_FRAGMENTS	CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE	
+ #define SQUASHFS_MAJOR			3
+-#define SQUASHFS_MINOR			1
++#define SQUASHFS_MINOR			76
+ #define SQUASHFS_MAGIC			0x73717368
+ #define SQUASHFS_MAGIC_SWAP		0x68737173
+ #define SQUASHFS_START			0
+--- squashfs-tools/unsquashfs.c	2007-11-01 07:53:46.000000000 +0100
++++ squashfs-tools/unsquashfs.c	2007-11-07 01:06:00.000000000 +0100
+@@ -1812,7 +1812,7 @@
+ 			s_ops.read_block_list = read_block_list;
+ 			s_ops.read_inode = read_inode_2;
+ 		}
+-	} else if(sBlk.s_major == 3 && sBlk.s_minor <= 1) {
++	} else if(sBlk.s_major == 3 && sBlk.s_minor == SQUASHFS_MINOR) {
+ 		s_ops.squashfs_opendir = squashfs_opendir;
+ 		s_ops.read_fragment = read_fragment;
+ 		s_ops.read_fragment_table = read_fragment_table;
+--- squashfs-tools.orig/mksquashfs.c	2007-11-07 20:08:18.000000000 +0100
++++ squashfs-tools/mksquashfs.c	2007-11-07 20:13:43.000000000 +0100
+@@ -601,6 +601,12 @@
+ 	if(uncompressed)
+ 		goto notcompressed;
+ 
++#if 1
++	c_byte = block_size;
++	res = compress2 (d, &c_byte, s, size, 9);
++	if (res == 0)
++		res = Z_STREAM_END;
++#else
+ 	if(stream == NULL) {
+ 		if((stream = *strm = malloc(sizeof(z_stream))) == NULL)
+ 			BAD_ERROR("mangle::compress failed, not enough memory\n");
+@@ -642,6 +647,7 @@
+ 	}
+ 
+ 	c_byte = stream->total_out;
++#endif
+ 
+ 	if(res != Z_STREAM_END || c_byte >= size) {
+ notcompressed:
