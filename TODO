@@ -8,51 +8,13 @@ $Id$
 HIGH PRIORITY - critical bugs, important features
 -------------------------------------------------
 
-- New UNIX-conform user/group/password management
-  (assigned to kriegaex)
-  Stage 1 (done):
-  * Old user management still in place and default (e.g. used by modload)
-  * New user management already usable
-  * Busybox now includes applets adduser, deluser, addgroup, delgroup, cryptpw.
-    This costs an additional 6,104 bytes, which is pretty good.
-  * fwmod creates symlink /home -> var/mod/home because adduser expects to find
-    /home if no explicit home dir parameter is specified
-  * fwmod creates symlink /etc/gshadow -> /var/tmp/gshadow and also creates an
-    empty /var/tmp/gshadow because BB tools expect file to be writable
-  * New script modusers (not to confuse for moduser without "s") loads/saves
-    /tmp/{passwd,shadow,group,gshadow} from/to save buffer in /tmp/flash/users
-  Stage 2 (done, ***NEEDS TESTING***):
-  * Make ds26 + packages like Bftpd and Samba use BB tools or new script modusers
-    instead of old scripts wherever possible
-  * Replace obsolete scripts or parts of them by warning messages telling users
-    that those obsolete parts will vanish soon
-  * Get rid of /tmp/flash/shadow.save -> auto-converter was built into
-    'modpasswd load'
-  * Change modload & modsave to use modusers instead of modpasswd -> modload
-    calls modpasswd load, if old data need to be converted, function will be
-    removed in one of the next later releases.
-  * Old functions in modpasswd show "obsolete" warnings and hints pointing to
-    successor functions.
-  * Applet 'moduser' removed completely, because it is fully replaced by
-    standard BB applets and 'modusers' for loading/saving.
-  Stage 3 (to do):
-  * Provide default passwords for root and ds26 web user + warnings to change
-    them, maybe even via Web (I already found out how to control the
-    interactive passwd tool without user interaction) -> done partly (default
-    pw "dsmod" introduced for web user "admin")
-  * Decide whether to include auto-conversion scripts for shadow.save or just
-    mention how to upgrade/downgrade in the IPPF release thread. -> upgrade
-    script in 'modpasswd load' (see above), downgrade script must be provided
-    via forum or wiki.
-  * Update Wiki (general user management article pointing to Linux standard
-    documentation, package articles for Samba & Bftpd, ds26 installation how-to
-    concerning first-time password entry)
-  * Possibly get rid of special case "telnet login with AVM web password if no
-    root pw is set", because root will have a default pw packaged right into
-    var.tar.
 
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------
+
+- 7270 seems to be ur8 (not ohio), as if we have a opensource package
+  we should check this and change Config.in accordingly. There will be
+  some work to do because kernel version differs (2.6.19)
 
 - Check order in which packages are started at boottime (virtualip, ntfs,
   cifsmount, syslog-cgi)
@@ -62,12 +24,6 @@ MEDIUM PRIORITY - normal bugs, features, improvements
 - Where do strange hostnames like "Speedport-W-701V-33.04.44" or
   "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
   Remark (by Oliver): I think from multid. How could we avoid that?
-
-- Delete uClibc-files in root/lib when uClibc_version is changed
-	Remark (by Oliver): Done. All files in root/lib are deleted when new
-		uclibc version is installed (uclibc.mk). This should not be a 
-		problem because most libs are in root/usr/lib and others are
-		copied automatically on next make.
 
 - Check toolchain symlinks because they are not adapted.
 
@@ -113,12 +69,6 @@ MEDIUM PRIORITY - normal bugs, features, improvements
   understand what they do and fix a few quoting bugs in the wrapper.
 
 - Vpnc package: Make hybrid auth feature configureable over webinterface
-
-- Include polished version of swap space package, see
-  http://www.ip-phone-forum.de/showthread.php?t=148245.
-  Probably we should pretty much redo the package, because the scripts and
-  DS-Mod UI integration are quite ugly.
-  Remark (by Oliver): Should we provide some button/menu to create a swapfile?
 
 - Optionally stop DS-Mod services before firmware upgrade
 
@@ -216,6 +166,61 @@ LOW PRIORITY - nice to have, cosmetics, ideas
 
 FINISHED, NEEDS TESTING
 -----------------------
+
+- New UNIX-conform user/group/password management
+  (assigned to kriegaex)
+  Stage 1 (done):
+  * Old user management still in place and default (e.g. used by modload)
+  * New user management already usable
+  * Busybox now includes applets adduser, deluser, addgroup, delgroup, cryptpw.
+    This costs an additional 6,104 bytes, which is pretty good.
+  * fwmod creates symlink /home -> var/mod/home because adduser expects to find
+    /home if no explicit home dir parameter is specified
+  * fwmod creates symlink /etc/gshadow -> /var/tmp/gshadow and also creates an
+    empty /var/tmp/gshadow because BB tools expect file to be writable
+  * New script modusers (not to confuse for moduser without "s") loads/saves
+    /tmp/{passwd,shadow,group,gshadow} from/to save buffer in /tmp/flash/users
+  Stage 2 (done, ***NEEDS TESTING***):
+  * Make ds26 + packages like Bftpd and Samba use BB tools or new script modusers
+    instead of old scripts wherever possible
+  * Replace obsolete scripts or parts of them by warning messages telling users
+    that those obsolete parts will vanish soon
+  * Get rid of /tmp/flash/shadow.save -> auto-converter was built into
+    'modpasswd load'
+  * Change modload & modsave to use modusers instead of modpasswd -> modload
+    calls modpasswd load, if old data need to be converted, function will be
+    removed in one of the next later releases.
+  * Old functions in modpasswd show "obsolete" warnings and hints pointing to
+    successor functions.
+  * Applet 'moduser' removed completely, because it is fully replaced by
+    standard BB applets and 'modusers' for loading/saving.
+  Stage 3 (to do):
+  * Provide default passwords for root and ds26 web user + warnings to change
+    them, maybe even via Web (I already found out how to control the
+    interactive passwd tool without user interaction) -> done partly (default
+    pw "dsmod" introduced for web user "admin")
+  * Decide whether to include auto-conversion scripts for shadow.save or just
+    mention how to upgrade/downgrade in the IPPF release thread. -> upgrade
+    script in 'modpasswd load' (see above), downgrade script must be provided
+    via forum or wiki.
+  * Update Wiki (general user management article pointing to Linux standard
+    documentation, package articles for Samba & Bftpd, ds26 installation how-to
+    concerning first-time password entry)
+  * Possibly get rid of special case "telnet login with AVM web password if no
+    root pw is set", because root will have a default pw packaged right into
+    var.tar.
+
+- Delete uClibc-files in root/lib when uClibc_version is changed
+	Remark (by Oliver): Done. All files in root/lib are deleted when new
+		uclibc version is installed (uclibc.mk). This should not be a 
+		problem because most libs are in root/usr/lib and others are
+		copied automatically on next make.
+
+- Include polished version of swap space package, see
+  http://www.ip-phone-forum.de/showthread.php?t=148245.
+  Probably we should pretty much redo the package, because the scripts and
+  DS-Mod UI integration are quite ugly.
+  Remark (by Oliver): Should we provide some button/menu to create a swapfile?
 
 - Bump uClibc to 0.9.29
     Status (by Oliver): Done. I'm having problems with igdd.

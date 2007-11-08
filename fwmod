@@ -186,8 +186,14 @@ TICHKSUM_TOOL="tichksum"
 RMTICHKSUM_TOOL="rmtichksum"
 MAKEDEVS_TOOL="makedevs"
 FAKEROOT_TOOL="fakeroot"
-UNSQUASHFS_TOOL="unsquashfs-lzma"
-MKSQUASHFS_TOOL="mksquashfs-lzma"
+UNSQUASHFS_TOOL="unsquashfs3-lzma"
+
+if [ "$DS_REPLACE_KERNEL" == "y" ]; then
+	MKSQUASHFS_TOOL="mksquashfs3-lzma"
+else
+	MKSQUASHFS_TOOL="mksquashfs-lzma"
+fi
+
 TAR_TOOL="tar"
 
 TOOLS_DIR="${ABS_BASE_DIR}/${TOOLS_SUBDIR}"
@@ -450,38 +456,24 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo "applying patches"
 
 	echo1 "applying patches (${DS_TYPE_STRING}-${DS_TYPE_LANG_STRING})"
-	
-	# Webinterface from .tk-firmware must be copied at first
-	for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
-			[ -x "$i" ] && . $i
-	done
 
 	# Apply patches
-	for i in "${PATCHES_DIR}/"*.patch; do
-		modpatch "$FILESYSTEM_MOD_DIR" "$i"
+	if [ ! -d "${PATCHES_DIR}/${DS_TYPE_STRING}" ]; then
+	    error 1 "missing ${PATCHES_DIR}/${DS_TYPE_STRING}"
+	fi
+	
+	# Execute version specific patch scripts 
+	for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
+		[ -x "$i" ] && . $i
 	done
 
-	if [ "$DS_TYPE_STRING" == "custom" ]; then
-		if [ "$DS_HAS_PHONE" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-mknod.patch"
-		else
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-mknod-nophone.patch"
-		fi
-
-		for i in "${PATCHES_DIR}/cond/${DS_TYPE_LANG_STRING}/"*.patch; do
-			modpatch "$FILESYSTEM_MOD_DIR" "$i"
-		done
-	else
-		if [ ! -d "${PATCHES_DIR}/${DS_TYPE_STRING}" ]; then
-			error 1 "missing ${PATCHES_DIR}/${DS_TYPE_STRING}"
-		fi
-
-		for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.patch \
-			"${PATCHES_DIR}/${DS_TYPE_STRING}/${DS_TYPE_LANG_STRING}/"*.patch
-		do
-			modpatch "$FILESYSTEM_MOD_DIR" "$i"
-		done
-	fi
+	# Apply (general, version specific, language specific) patches
+	for i in "${PATCHES_DIR}/"*.patch \
+	    "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.patch \
+	    "${PATCHES_DIR}/${DS_TYPE_STRING}/${DS_TYPE_LANG_STRING}/"*.patch
+	do
+	    modpatch "$FILESYSTEM_MOD_DIR" "$i"
+	done
 	
 	echo1 "creating symlinks /tmp, /mod and /home"
 	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
@@ -557,7 +549,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 	sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
-	# execute patch scripts
+	# Execute general patch scripts 
 	for i in "${PATCHES_DIR}/"*.sh; do
 		[ -x "$i" ] && . $i
 	done 
@@ -922,6 +914,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 		let FILESYSTEM_BLOCKSIZE="16384"
 	elif [ "$DS_SQUASHFS_BLOCKSIZE_65536" == "y" ]; then
 		let FILESYSTEM_BLOCKSIZE="65536"
+	elif [ "$DS_SQUASHFS_BLOCKSIZE_131072" == "y" ]; then
+		let FILESYSTEM_BLOCKSIZE="131072"
 	else
 		let FILESYSTEM_BLOCKSIZE="$(od -i -N 1 -j 34 "$FILESYSTEM" | sed -n -e '1s#.* ##' -e 1p)"
 		let FILESYSTEM_BLOCKSIZE="1<<FILESYSTEM_BLOCKSIZE"

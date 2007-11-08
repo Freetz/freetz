@@ -81,7 +81,11 @@ choice
 	config DS_TYPE_FON_WLAN_7170
 		select DS_AVM_VERSION_04_40
 		bool "Fon WLAN 7170"
-
+	
+	config DS_TYPE_FON_WLAN_7270
+		select DS_AVM_VERSION_04_40
+		bool "Fon WLAN 7270"
+	
 	config DS_TYPE_WLAN_3020
 		select DS_AVM_VERSION_04_33
 		bool "WLAN 3020"
@@ -239,6 +243,7 @@ config DS_TYPE_STRING
 	default "7170_labor_usb"	if DS_TYPE_LABOR_USB
 	default "7170_labor_vpn"	if DS_TYPE_LABOR_VPN
 	default "7170_labor_wlan"	if DS_TYPE_LABOR_WLAN
+	default "7270"				if DS_TYPE_FON_WLAN_7270
 	default "W501V"				if DS_TYPE_SPEEDPORT_W501V
 	default "W701V"				if DS_TYPE_SPEEDPORT_W701V
 	default "W900V"				if DS_TYPE_SPEEDPORT_W900V
@@ -295,7 +300,8 @@ config DS_TARGET_REF
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_WLAN_7140 || \
 		DS_TYPE_FON_7150 || \
-		DS_TYPE_FON_WLAN_7170
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_FON_WLAN_7270
 	default "4mb_26"		if \
 		DS_TYPE_2170 || \
 		DS_TYPE_SPEEDPORT_W501V || \
@@ -321,7 +327,8 @@ config DS_KERNEL_REF
 		DS_TYPE_FON_7150 || \
 		DS_TYPE_SPEEDPORT_W701V || \
 		DS_TYPE_SPEEDPORT_W900V || \
-		DS_TYPE_FON_WLAN_7170
+		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_FON_WLAN_7270
 	default "4mb_26"		if \
 		DS_TYPE_2170 || \
 		DS_TYPE_SPEEDPORT_W501V || \
@@ -353,7 +360,8 @@ config DS_KERNEL_LAYOUT
 		DS_TYPE_WLAN_3170 || \
 		DS_TYPE_SPEEDPORT_W501V || \
 		DS_TYPE_SPEEDPORT_W701V || \
-		DS_TYPE_SPEEDPORT_W900V
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_FON_WLAN_7270
 	default "ar7"			if \
 		DS_TYPE_FON || \
 		DS_TYPE_300IP_AS_FON || \
@@ -363,7 +371,9 @@ config DS_KERNEL_LAYOUT
 		DS_TYPE_FON_WLAN_7050 || \
 		DS_TYPE_WLAN_3020 || \
 		DS_TYPE_WLAN_3030
-
+#	default "ur8"			if \
+#		DS_TYPE_FON_WLAN_7270
+	
 config DS_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if DS_TYPE_CUSTOM
 	default 59				if \
@@ -389,6 +399,7 @@ config DS_KERNEL_MTD_SIZE
 		DS_TYPE_SPEEDPORT_W701V || \
 		DS_TYPE_SPEEDPORT_W900V || \
 		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_FON_WLAN_7270 || \
 		DS_TYPE_CUSTOM && DS_HIDDEN_ROOT
 	help
 		Number of 64K blocks in the kernel mtd device.
@@ -418,6 +429,7 @@ config DS_HAS_PHONE
 		DS_TYPE_SPEEDPORT_W701V || \
 		DS_TYPE_SPEEDPORT_W900V || \
 		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_FON_WLAN_7270 || \
 		DS_TYPE_CUSTOM
 	default n				if \
 		DS_TYPE_2170 || \
@@ -445,6 +457,7 @@ config DS_HAS_WLAN
 		DS_TYPE_SPEEDPORT_W701V || \
 		DS_TYPE_SPEEDPORT_W900V || \
 		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_FON_WLAN_7270 || \
 		DS_TYPE_CUSTOM
 	default n			if \
 		DS_TYPE_2170 || \
@@ -477,6 +490,7 @@ config DS_HAS_USB_CLIENT
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_7150 || \
 		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_FON_WLAN_7270 || \
 		DS_TYPE_SPEEDPORT_W501V || \
 		DS_TYPE_SPEEDPORT_W701V || \
 		DS_TYPE_SPEEDPORT_W900V || \
@@ -492,6 +506,7 @@ config DS_HAS_USB_HOST
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_7150 || \
 		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_FON_WLAN_7270 || \
 		DS_TYPE_WLAN_3130 || \
 		DS_TYPE_WLAN_3131 || \
 		DS_TYPE_WLAN_3170 || \
@@ -529,6 +544,7 @@ config DS_BRANDING_1und1
 		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_FON_WLAN_7270 || \
 		DS_TYPE_WLAN_3020 || \
 		DS_TYPE_WLAN_3030 || \
 		DS_TYPE_WLAN_3130 || \
@@ -624,6 +640,7 @@ config DS_BRANDING_freenet
 		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON_WLAN_7113 || \
 		DS_TYPE_FON_WLAN_7170 || \
+		DS_TYPE_FON_WLAN_7270 || \
 		DS_TYPE_CUSTOM
 	default y
 	help
@@ -910,6 +927,7 @@ config DS_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"								if DS_TYPE_FON_7150
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"			if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_DE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch_a-ch"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_A_CH
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch"			if DS_TYPE_FON_WLAN_7270
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.sl_wlan/firmware"							if DS_TYPE_WLAN_3020
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3030/firmware"						if DS_TYPE_WLAN_3030
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3130/firmware"						if DS_TYPE_WLAN_3130
@@ -945,6 +963,7 @@ config DS_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170_AURA.AnnexB.29.04.95-8221.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_USB
 	default "FRITZBox_Fon_WLAN_7170_VPN_AnnexB_29_04_34.image"				if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_VPN
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.44-9163.image"					if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_WLAN
+	default "fritz.box_fon_wlan_7270.54.04.44.image"					if DS_TYPE_FON_WLAN_7270
 	default "fritz.box_sl_wlan.09.04.34.image"								if DS_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"							if DS_TYPE_WLAN_3030
 	default "fritz.box_wlan_3131.50.04.34.image"							if DS_TYPE_WLAN_3131
@@ -1137,6 +1156,9 @@ choice
 
 	config DS_SQUASHFS_BLOCKSIZE_65536
 		bool "65536"
+
+	config DS_SQUASHFS_BLOCKSIZE_131072
+		bool "131072"
 
 endchoice
 
