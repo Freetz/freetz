@@ -1,5 +1,5 @@
 SQUASHFS3_VERSION:=3.3
-SQUASHFS3_SOURCE:=squashfs$(SQUASHFS3_VERSION).tar.gz
+SQUASHFS3_SOURCE:=squashfs$(SQUASHFS3_VERSION).tgz
 SQUASHFS3_SITE:=http://mesh.dl.sourceforge.net/sourceforge/squashfs
 SQUASHFS3_DIR:=$(SOURCE_DIR)/squashfs$(SQUASHFS3_VERSION)
 
