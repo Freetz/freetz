@@ -1143,22 +1143,89 @@ choice
 
 	prompt "SquashFS block size"
 	default DS_SQUASHFS_BLOCKSIZE_65536
-	help
-		Block size of the root filesystem. SquashFS can use block sizes up to 
-		64Kb, which achieves greater compressionratios than the normal 16K 
-		block size.
 
 	config DS_SQUASHFS_BLOCKSIZE_ORIG
-		bool "original"
+		bool "original (usually 64 KB)"
+		help
+			Block size of the root filesystem. SquashFS 2.x can use block sizes
+			up to 64 KB, SquashFS 3.x (only available for 7270 firmware or with
+			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
+			compression ratios than smaller ones.
+
+			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
+			anything smaller because your firmware image will grow unnecessarily.
+
+			Note: Currently anything above 128 KB will result in a kernel panic, thus
+			we do not allow it.
 
 	config DS_SQUASHFS_BLOCKSIZE_16384
-		bool "16384"
+		bool "16 KB"
+		help
+			Block size of the root filesystem. SquashFS 2.x can use block sizes
+			up to 64 KB, SquashFS 3.x (only available for 7270 firmware or with
+			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
+			compression ratios than smaller ones.
+
+			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
+			anything smaller because your firmware image will grow unnecessarily.
+
+			Note: Currently anything above 128 KB will result in a kernel panic, thus
+			we do not allow it.
+
+	config DS_SQUASHFS_BLOCKSIZE_32768
+		bool "32 KB"
+		help
+			Block size of the root filesystem. SquashFS 2.x can use block sizes
+			up to 64 KB, SquashFS 3.x (only available for 7270 firmware or with
+			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
+			compression ratios than smaller ones.
+
+			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
+			anything smaller because your firmware image will grow unnecessarily.
+
+			Note: Currently anything above 128 KB will result in a kernel panic, thus
+			we do not allow it.
 
 	config DS_SQUASHFS_BLOCKSIZE_65536
-		bool "65536"
+		bool "64 KB"
+		help
+			Block size of the root filesystem. SquashFS 2.x can use block sizes
+			up to 64 KB, SquashFS 3.x (only available for 7270 firmware or with
+			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
+			compression ratios than smaller ones.
+
+			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
+			anything smaller because your firmware image will grow unnecessarily.
+
+			Note: Currently anything above 128 KB will result in a kernel panic, thus
+			we do not allow it.
 
 	config DS_SQUASHFS_BLOCKSIZE_131072
-		bool "131072"
+		bool "128 KB (EXPERIMENTAL)"
+		depends on DS_REPLACE_KERNEL || DS_TYPE_FON_WLAN_7270
+		help
+			Block size of the root filesystem. SquashFS 2.x can use block sizes
+			up to 64 KB, SquashFS 3.x (only available for 7270 firmware or with
+			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
+			compression ratios than smaller ones.
+
+			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
+			anything smaller because your firmware image will grow unnecessarily.
+
+			Note: Currently anything above 128 KB will result in a kernel panic, thus
+			we do not allow it.
+
+#	config DS_SQUASHFS_BLOCKSIZE_262144
+#		bool "256 KB"
+#		depends on DS_REPLACE_KERNEL || DS_TYPE_FON_WLAN_7270
+
+#	config DS_SQUASHFS_BLOCKSIZE_524288
+#		bool "512 KB"
+#		depends on DS_REPLACE_KERNEL || DS_TYPE_FON_WLAN_7270
+
+#	config DS_SQUASHFS_BLOCKSIZE_1048576
+#		bool "1024 KB"
+#		depends on DS_REPLACE_KERNEL || DS_TYPE_FON_WLAN_7270
 
 endchoice
 

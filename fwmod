@@ -910,15 +910,10 @@ if [ "$DO_PACK" -gt 0 ]; then
 	rm -f "$FILESYSTEM_MOD"
 	rm -f "${DIR}/*.image"
 
-	if [ "$DS_SQUASHFS_BLOCKSIZE_16384" == "y" ]; then
-		let FILESYSTEM_BLOCKSIZE="16384"
-	elif [ "$DS_SQUASHFS_BLOCKSIZE_65536" == "y" ]; then
-		let FILESYSTEM_BLOCKSIZE="65536"
-	elif [ "$DS_SQUASHFS_BLOCKSIZE_131072" == "y" ]; then
-		let FILESYSTEM_BLOCKSIZE="131072"
+	if [ "$DS_SQUASHFS_BLOCKSIZE_ORIG" == "y" ]; then
+		FILESYSTEM_BLOCKSIZE="$((1<<$(od -i -N 1 -j 34 "$FILESYSTEM" | sed -n -e '1s#.* ##' -e 1p)))"
 	else
-		let FILESYSTEM_BLOCKSIZE="$(od -i -N 1 -j 34 "$FILESYSTEM" | sed -n -e '1s#.* ##' -e 1p)"
-		let FILESYSTEM_BLOCKSIZE="1<<FILESYSTEM_BLOCKSIZE"
+		FILESYSTEM_BLOCKSIZE=$(set | sed -rn 's/DS_SQUASHFS_BLOCKSIZE_([^=]+)=y/\1/p')
 	fi
 
 	if [ "$DS_VERBOSITY_LEVEL" -ge 1 ]; then
