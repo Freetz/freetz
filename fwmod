@@ -800,21 +800,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo1 "${pkg}"
 			pkg_name="$(echo "$pkg" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//')"
 
-			if [ -e "${PACKAGES_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
-				echo "NOTICE: package '$pkg' is in old-style format (no language support)." 1>&2
-				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-			else
-				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
-					$( \
-						[ -r "${PACKAGES_DIR}/${pkg}/.exclude" ] \
-								&& echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude" \
-					) . | \
-				"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+			"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
+				$( \
+					[ -r "${PACKAGES_DIR}/${pkg}/.exclude" ] \
+							&& echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude" \
+				) . | \
+			"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
-				[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
-					modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
-			fi
-
+			[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
+				modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
+			
 			echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
 		done
 	fi
