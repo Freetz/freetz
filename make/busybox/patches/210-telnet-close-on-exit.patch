@@ -1,0 +1,26 @@
+Invert busybox telnetd -K switch, so "close connection on login exit" is
+default in order to avoid "telnet hangs upon exit" problem.
+--- networking/telnetd.c	2007-11-10 02:54:22.000000000 +0100
++++ networking/telnetd.c	2007-11-10 19:20:11.000000000 +0100
+@@ -474,7 +474,7 @@
+ 	/* We don't want to die if just one session is broken */
+ 	signal(SIGPIPE, SIG_IGN);
+ 
+-	if (opt & OPT_WATCHCHILD)
++	if (!(opt & OPT_WATCHCHILD))
+ 		signal(SIGCHLD, handle_sigchld);
+ 	else /* prevent dead children from becoming zombies */
+ 		signal(SIGCHLD, SIG_IGN);
+--- include/usage.h	2007-11-10 02:40:53.000000000 +0100
++++ include/usage.h	2007-11-10 19:20:37.000000000 +0100
+@@ -3638,8 +3638,8 @@
+        "\n\nOptions:" \
+        "\n	-l LOGIN	Exec LOGIN on connect" \
+        "\n	-f issue_file	Display issue_file instead of /etc/issue" \
+-       "\n	-K		Close connection as soon as login exits" \
+-       "\n			(normally wait until all programs close slave pty)" \
++       "\n	-K		Do not close connection as soon as login exits," \
++       "\n			but wait until all programs close slave pty" \
+ 	USE_FEATURE_TELNETD_STANDALONE( \
+        "\n	-p PORT		Port to listen to" \
+        "\n	-b ADDR		Address to bind to" \
