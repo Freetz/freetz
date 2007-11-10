@@ -26,6 +26,7 @@ sec_begin '$(lang de:"DNS Server" en:"DNS server")'
 cat << EOF
 <h2>$(lang de:"Der DNS Server ist gebunden an" en:"The DNS server is listening on"):</h2>
 <p>Port: <input type="text" name="dns_port" size="5" maxlength="5" value="$(httpd -e "$DNSMASQ_DNS_PORT")"></p>
+<p>$(lang de:"Domain" en:"Domain"): <input type="text" name="domain" size="20" maxlength="255" value="$(httpd -e "$DNSMASQ_DOMAIN")"></p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
 <p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$DNSMASQ_OPTIONS")"></p>
 EOF

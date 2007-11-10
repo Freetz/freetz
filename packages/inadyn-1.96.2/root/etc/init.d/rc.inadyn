@@ -42,7 +42,8 @@ start() {
 			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
-		$DAEMON $OPTIONS > /dev/null 2>&1
+		echo "$OPTIONS" > /mod/etc/inadyn0.conf
+		$DAEMON --input_file /mod/etc/inadyn0.conf > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -75,7 +76,8 @@ start() {
 			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
-		$DAEMON $OPTIONS > /dev/null 2>&1
+		echo "$OPTIONS" > /mod/etc/inadyn1.conf
+		$DAEMON --input_file /mod/etc/inadyn1.conf > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -108,7 +110,8 @@ start() {
 			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
-		$DAEMON $OPTIONS > /dev/null 2>&1
+		echo "$OPTIONS" > /mod/etc/inadyn2.conf
+		$DAEMON --input_file /mod/etc/inadyn2.conf > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -141,7 +144,8 @@ start() {
 			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
-		$DAEMON $OPTIONS > /dev/null 2>&1
+		echo "$OPTIONS" > /mod/etc/inadyn3.conf
+		$DAEMON --input_file /mod/etc/inadyn3.conf > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -174,7 +178,8 @@ start() {
 			no-ip.com) OPTIONS="$OPTIONS default@no-ip.com" ;;
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
-		$DAEMON $OPTIONS > /dev/null 2>&1
+		echo "$OPTIONS" > /mod/etc/inadyn4.conf
+		$DAEMON --input_file /mod/etc/inadyn4.conf > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'

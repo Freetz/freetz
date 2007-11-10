@@ -42,7 +42,11 @@ start() {
 	if [ "$1" != "nomultid" ]; then
 		multid -s > /dev/null 2>&1
 	fi
-	$DAEMON -p "$DNSMASQ_DNS_PORT" $DNSMASQ_OPTIONS
+	if [ -z $DNSMASQ_DOMAIN ]; then
+		$DAEMON -p "$DNSMASQ_DNS_PORT" $DNSMASQ_OPTIONS
+	else
+		$DAEMON -p "$DNSMASQ_DNS_PORT" -E -s "$DNSMASQ_DOMAIN" $DNSMASQ_OPTIONS
+	fi
 	exitval=$?
 	if [ "$1" != "nomultid" ]; then
 		multid $MULTIDPARAM > /dev/null 2>&1

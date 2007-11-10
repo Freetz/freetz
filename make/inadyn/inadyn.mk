@@ -1,4 +1,4 @@
-INADYN_VERSION:=1.96
+INADYN_VERSION:=1.96.2
 INADYN_SOURCE:=inadyn.v$(INADYN_VERSION).zip
 INADYN_SITE:=http://inadyn.ina-tech.net
 INADYN_MAKE_DIR:=$(MAKE_DIR)/inadyn
