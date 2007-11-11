@@ -90,9 +90,6 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_HELP): $(MC_DIR)/.unpacked
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	mkdir -p $(MC_TARGET_DIR)/root/usr/share/terminfo/x
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/x/xterm \
-		$(MC_TARGET_DIR)/root/usr/share/terminfo/x/
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_HELP): $($(PKG)_HELP)
@@ -125,6 +122,5 @@ $(pkg)-clean:
 $(pkg)-uninstall: 
 	rm -f $(MC_TARGET_BINARY)
 	rm -f $(MC_TARGET_HELP)
-	rm -rf $(MC_TARGET_DIR)/root/usr/share/terminfo/x
 
 $(PKG_FINISH)
