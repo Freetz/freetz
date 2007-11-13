@@ -1,0 +1,31 @@
+$FreeWRT$
+$MirOS: ports/misc/mc/patches/patch-vfs_extfs_iso9660_in,v 1.1 2006/09/28 20:39:05 tg Exp $
+
+	This does limit names to the C locale, but skips error messages.
+
+--- vfs/extfs/iso9660.in	2004-10-29 09:14:38.000000000 +0000
++++ vfs/extfs/iso9660.in	2007-03-20 13:32:10.000000000 +0000
+@@ -9,15 +9,7 @@
+ # tested to comply with isoinfo 2.0's output
+ 
+ test_iso () {
+-    CHARSET=`echo "$save_ctype" | sed -n -e 's/.*\.\(.*\)"$/\1/p' | tr '[A-Z]' '[a-z]'`
+-    if test -n "$CHARSET"; then
+-	isoinfo -j $CHARSET 2>&1 | grep "Unknown charset" >/dev/null && CHARSET=
+-    fi
+-    if test -n "$CHARSET"; then
+-	JOLIET_OPT="-j $CHARSET -J"
+-    else
+ 	JOLIET_OPT="-J"
+-    fi
+     ISOINFO="isoinfo -R"
+     isoinfo -d -i "$1" | grep "NO Joliet" > /dev/null || ISOINFO="$ISOINFO $JOLIET_OPT"
+ }
+@@ -65,7 +57,6 @@ mcisofs_copyout () {
+ 	$ISOINFO -i "$1" -x "/$2" > "$3" 
+ }
+ 
+-save_ctype=`locale | grep LC_CTYPE`
+ LC_ALL=C
+ 
+ cmd="$1"

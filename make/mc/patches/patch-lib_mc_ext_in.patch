@@ -1,0 +1,92 @@
+$FreeWRT$
+$MirOS: ports/misc/mc/patches/patch-lib_mc_ext_in,v 1.7 2006/09/28 20:31:52 tg Exp $
+--- lib/mc.ext.in	2005-07-23 16:51:15.000000000 +0000
++++ lib/mc.ext.in	2007-03-20 13:32:10.000000000 +0000
+@@ -106,6 +106,42 @@
+ 
+ ### Archives ###
+ 
++## CPIO
++
++# .cgz
++shell/.cgz
++	Open=%cd %p#ucpio
++	View=%view{ascii} gzip -dc %f 2>/dev/null | cpio -itv 2>/dev/null
++
++# .cbz
++shell/.cbz
++	Open=%cd %p#ucpio
++	View=%view{ascii} bzip2 -dc %f 2>/dev/null | cpio -itv 2>/dev/null
++
++## CPIO (newc) - MirOS extension
++
++# .ngz
++shell/.ngz
++	Open=%cd %p#ucpio
++	View=%view{ascii} gzip -dc %f 2>/dev/null | cpio -itv 2>/dev/null
++
++# .nbz
++shell/.nbz
++	Open=%cd %p#ucpio
++	View=%view{ascii} bzip2 -dc %f 2>/dev/null | cpio -itv 2>/dev/null
++
++# .mcz
++shell/.mcz
++	Open=%cd %p#ucpio
++	View=%view{ascii} gzip -dc %f 2>/dev/null | cpio -itv 2>/dev/null
++
++## USTAR
++
++# .tbz
++shell/.tbz
++	Open=%cd %p#utar
++	View=%view{ascii} bzip2 -dc %f 2>/dev/null | tar tvvf -
++
+ # .tgz, .tpz, .tar.gz, .tar.z, .tar.Z
+ regex/\.t([gp]?z|ar\.g?[zZ])$
+ 	Open=%cd %p#utar
+@@ -135,6 +171,10 @@ regex/\.(tar|TAR)$
+ 	View=%view{ascii} tar tvvf %f
+ 
+ # lha
++regex/\.[Ll]([Zz][Hh]|[Hh][Aa])$
++	Open=%cd %p#ulha
++	View=%view{ascii} lha l %f
++
+ type/^LHa\ .*archive
+ 	Open=%cd %p#ulha
+ 	View=%view{ascii} lha l %f
+@@ -191,13 +231,20 @@ regex/\.(rpm|spm)$
+ 	Open=%cd %p#rpm
+ 	View=%view{ascii} if rpm --nosignature --version >/dev/null 2>&1; then RPM="rpm --nosignature" ; else RPM="rpm" ; fi ; $RPM -qivlp --scripts %f
+ 
+-# deb
++# deb - Debian packages
+ regex/\.u?deb$
+-	Open=%cd %p#deb
+-	View=%view{ascii} dpkg-deb -c %f
++#	Open=%cd %p#deb
++#	View=%view{ascii} dpkg-deb -c %f
++	Open=%cd %p#uar
++	View=%view{ascii} ar p %f control.tar.gz | gzip -d | tar xOf - ./control; echo; ar p %f data.tar.gz | gzip -d | tar tvvf -
++
++# ipk - like deb, but tgz instead of ar
++shell/.ipk
++	Open=%cd %p#utar
++	View=%view{ascii} gzip -dc %f 2>&- | tar xOf - ./control.tar.gz | gzip -d | tar xOf - ./control; echo; gzip -dc %f 2>&- | tar xOf - ./data.tar.gz | gzip -d | tar tvvf -
+ 
+ # ISO9660
+-regex/\.iso$
++regex/\.[Ii][Ss][Oo]$
+ 	Open=%cd %p#iso9660
+ 	View=%view{ascii} isoinfo -l -i %f
+ 
+@@ -417,7 +464,7 @@ type/^PDF
+ 
+ # html
+ regex/\.([hH][tT][mM][lL]?)$
+-	Open=(if test -n "@X11_WWW@" && test -n "$DISPLAY"; then (@X11_WWW@ file://%d/%p &) 1>&2; else links %f || lynx -force_html %f || ${PAGER:-more} %f; fi) 2>/dev/null
++	Open=lynx -force_html %f
+ 	View=%view{ascii} lynx -dump -force_html %f
+ 
+ # StarOffice 5.2
