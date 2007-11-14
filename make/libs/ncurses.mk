@@ -14,6 +14,8 @@ $(PKG)_MENU_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmenu.so.$($(PKG)_LIB_VERSION)
 $(PKG)_PANEL_BINARY:=$($(PKG)_DIR)/lib/libpanel.so.$($(PKG)_LIB_VERSION)
 $(PKG)_PANEL_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel.so.$($(PKG)_LIB_VERSION)
 $(PKG)_PANEL_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpanel.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TERMINFO_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo
+$(PKG)_TERMINFO_TARGET_DIR:=$(ROOT_DIR)/usr/share/terminfo
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-echo
 $(PKG)_CONFIGURE_OPTIONS += --enable-const
@@ -29,15 +31,6 @@ $(PKG)_CONFIGURE_OPTIONS += --with-normal
 $(PKG)_CONFIGURE_OPTIONS += --with-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-terminfo-dirs="/usr/share/terminfo"
 $(PKG)_CONFIGURE_OPTIONS += --with-default-terminfo-dir="/usr/share/terminfo"
-
-$(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config_ncurses
-$(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config_ncurses.temp
-
-$($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
-	@grep 'DS_LIB_libterminfo_.*=y' $(TOPDIR)/.config | grep -v showall > $(NCURSES_DS_CONFIG_TEMP)
-	@diff -q $(NCURSES_DS_CONFIG_TEMP) $(NCURSES_DS_CONFIG_FILE) || \
-		cp $(NCURSES_DS_CONFIG_TEMP) $(NCURSES_DS_CONFIG_FILE)
-	@rm -f $(NCURSES_DS_CONFIG_TEMP)
 
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -65,24 +58,18 @@ $($(PKG)_PANEL_STAGING_BINARY): \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install.libs install.data
 
+$($(PKG)_TERMINFO_STAGING_DIR)/.installed: $($(PKG)_DIR)/.configured
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(NCURSES_DIR)/misc \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		all install
+	touch $@
 
-# Make sure that a changed DS-mod option forces the target terminfo directory
-# to be build from scratch.
-$($(PKG)_DIR)/.targetdata: $($(PKG)_DS_CONFIG_FILE)
-	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset $(NCURSES_TARGET_DIR)/../share/terminfo
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset \
-		$(NCURSES_TARGET_DIR)/../share/
-	( . $(NCURSES_DS_CONFIG_FILE); \
-		for O in `cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo; find . -type f -o -type l`; do \
-			ID="`basename "$$O" | sed -e 's/\./dot/g' -e 's/-/minus/g' -e 's/\+/plus/g'`"; \
-			EV="`echo -n '$${'; echo -n DS_LIB_libterminfo_$$ID; echo ':-n}'`"; \
-			RS="`eval echo $$EV`"; \
-			if [ "$$RS" = "y" ]; then \
-				DIRNAME=`dirname $$O`; \
-				mkdir -p $(NCURSES_TARGET_DIR)/../share/terminfo/$$DIRNAME; \
-				cp -va $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/$$O $(NCURSES_TARGET_DIR)/../share/terminfo/$$DIRNAME/; \
-			fi; \
-		done )
+$($(PKG)_TERMINFO_TARGET_DIR)/.installed: $($(PKG)_TERMINFO_STAGING_DIR)/.installed
+	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
+	mkdir -p $(NCURSES_TERMINFO_TARGET_DIR) $(NCURSES_TARGET_DIR)/../share
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/* $(NCURSES_TERMINFO_TARGET_DIR)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset $(NCURSES_TARGET_DIR)/../share
 	touch $@
 
 $($(PKG)_NCURSES_TARGET_BINARY): $($(PKG)_NCURSES_STAGING_BINARY)
@@ -104,8 +91,8 @@ $($(PKG)_PANEL_TARGET_BINARY): $($(PKG)_PANEL_STAGING_BINARY)
 	$(TARGET_STRIP) $@
 
 ifeq ($(strip $(DS_LIB_libncurses)),y)
-$(pkg)-ncurses: $($(PKG)_NCURSES_STAGING_BINARY)
-$(pkg)-ncurses-precompiled: $($(PKG)_DIR)/.targetdata $($(PKG)_NCURSES_TARGET_BINARY)
+$(pkg)-ncurses: $($(PKG)_NCURSES_STAGING_BINARY) 
+$(pkg)-ncurses-precompiled: $($(PKG)_NCURSES_TARGET_BINARY) $(pkg)-terminfo
 else
 $(pkg)-ncurses $(pkg)-ncurses-precompiled:
 endif
@@ -135,7 +122,12 @@ $(pkg): $(pkg)-ncurses $(pkg)-form $(pkg)-menu $(pkg)-panel
 
 $(pkg)-precompiled: uclibc $(pkg) $(pkg)-ncurses-precompiled $(pkg)-form-precompiled $(pkg)-menu-precompiled $(pkg)-panel-precompiled
 
-$(pkg)-clean:
+$(pkg)-terminfo: $($(PKG)_TERMINFO_TARGET_DIR)/.installed
+
+$(pkg)-terminfo-clean:
+	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
+
+$(pkg)-clean: $(pkg)-terminfo-clean
 	-$(MAKE) -C $(NCURSES_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform*

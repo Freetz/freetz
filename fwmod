@@ -622,7 +622,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "installing mod base"
 
 		echo1 "copying files"
-		"$TAR" -c -C "$ROOT_DIR" --exclude=lib --exclude=usr/lib \
+		"$TAR" -c -C "$ROOT_DIR" --exclude=lib --exclude=usr/lib --exclude=usr/share/terminfo \
 			$([ -r "${BASE_DIR}/.exclude" ] && echo "--exclude-from=${BASE_DIR}/.exclude") \
 			. | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 		"$TAR" -c -C "$ROOT_DIR" \
@@ -683,6 +683,25 @@ if [ "$DO_MOD" -gt 0 ]; then
 			fi
 		done
 		[ "$DS_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
+		
+		if [ "$DS_LIB_libterminfo" == "y" ]; then
+		    echo1 "installing terminfos"
+		    for i in \
+		    $( \
+			     cd "${ROOT_DIR}" && \
+			     find usr/share/terminfo -type d -name .svn -prune -false , -type f \
+		    )
+		    do
+		    	    bn="$(basename "$i")"
+			    terminfo="${bn}"
+			    if [ "$(eval "echo \"\$DS_LIB_libterminfo_$(echo "$terminfo")\"")" == "y" ]; then
+				echo2 "${bn}"
+				dn="$(dirname "$i")"
+				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
+				cp -a "${ROOT_DIR}/${dn}/${terminfo}" "${FILESYSTEM_MOD_DIR}/${dn}/"
+			    fi
+		    done
+		fi
 
 		if [ "$DS_FAVICON_STRING" != "none" ]; then
 			echo1 "adding favicons (${DS_FAVICON_STRING})"

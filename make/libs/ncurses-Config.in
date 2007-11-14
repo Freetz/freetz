@@ -2,16 +2,11 @@
 
 menu "terminfo database"
 
-comment "terminfo database requires libncurses"
-	depends on ! DS_LIB_libncurses
-
 comment "Select terminfo database entries to install (see help of 'Show all items')"
-	depends on DS_LIB_libncurses
 
 config DS_LIB_libterminfo
-	bool
-	depends on DS_LIB_libncurses
-	default y
+	bool "terminfo database"
+	default n
 
 config DS_LIB_libterminfo_showall
 	bool "Show all items"

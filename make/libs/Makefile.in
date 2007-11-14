@@ -44,6 +44,10 @@ ifeq ($(strip $(DS_LIB_libncurses)),y)
 LIBS+=ncurses
 endif
 
+ifeq ($(strip $(DS_LIB_libterminfo)),y)
+LIBS+=ncurses-terminfo
+endif
+
 ifeq ($(strip $(DS_LIB_libpcap)),y)
 LIBS+=libpcap
 endif
