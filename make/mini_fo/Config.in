@@ -1,5 +1,5 @@
 config DS_PACKAGE_MINI_FO
-	bool "mini_fo 0.2b"
+	bool "mini_fo 0.3"
 	select DS_MODULE_mini_fo
 	default n
 	help
@@ -14,3 +14,13 @@ config DS_PACKAGE_MINI_FO
 		mounted first (see NFS-root package). Still, both packages can be
 		installed at the same time, because mini_fo is still useful if NFS-root
 		is decativated.
+
+config DS_PACKAGE_MINI_FO_JFFS2
+	bool "Use jffs2 for data storage (persistent) "
+	depends on DS_REPLACE_KERNEL
+	depends on DS_PACKAGE_MINI_FO
+	select DS_MODULE_jffs2
+	default n
+	help
+		Enables possibility to store filesystem changes persisten to jffs2.
+		When a new image is flashed the data will be lost!

@@ -1,0 +1,190 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+usage()
+{
+	cat << EOF
+Usage: rc.mini_fo [on|off|status|store [ram|jffs2]|nostore]
+mini_fo root mount script - can only be called as an 'init' replacement.
+Parameters:
+  status  - check status of mini_fo root; returns 'running' if mini_fo mount on
+	    '/' is active, 'stopped' otherwise.
+  on      - activate replacing 'init' by 'rc.mini_fo' -> boot with mini_fo root,
+            Adds something like 'init=/etc/init.d/rc.mini_fo' to bootloader 
+	    environment variable 'kernel_args'.
+  store   - store changed data storage location in bootloader environment for
+            later use with 'mount'. Adds variable 'mini_fo' to bootloader 
+ 	    environment, setting its value. If called without parameter, this 
+	    option prints the current 'mini_fo' values.
+  nostore - remove mini_fo variable from bootloader environment. Even though it
+            does no harm to have the variable around in the environment all the
+	    time, you may optionally remove it again using this option.
+  off     - deactivate replacing 'init' by 'rc.mini_fo' -> boot without mini_fo
+	    root. Removes 'init' from bootloader environment variable 
+	    'kernel_args'.
+Examples:
+  - rc.mini_fo on
+  - rc.mini_fo store jffs2
+  - rc.mini_fo store
+  - rc.mini_fo status
+  - rc.mini_fo off
+  - rc.mini_fo nostore
+EOF
+}
+
+MINI_FO_ENV_VAR=kernel_args1
+
+jffs2_mount() {
+    xx=`cat /proc/mtd | grep \"jffs2\"`
+    jffs2_pat=""
+    jffs2_size=0
+    jffs2_found=0
+    echo "[jffs2] xx=$xx"
+    for i in $xx ; do
+	echo "[jffs2] i=$i"
+	case $i in
+	    *:)
+		jffs2_pat=${i##mtd}
+		jffs2_pat=${jffs2_pat%%:}
+		echo "[jffs2] jffs2_pat=$jffs2_pat"
+		;;
+	    00*)
+		if [ $jffs2_found -eq 0 ] ; then
+		    jffs2_size=$((0x$i / (2**16)))
+		    echo "[jffs2] jffs2_size=$jffs2_size"
+		fi
+		jffs2_found=1
+		;;
+	esac
+    done
+    if [ $jffs2_size -gt 0 ]; then
+	echo "[jffs2] load jffs2 module" ; 
+	if modprobe jffs2; then
+	    echo "[jffs2] mount jffs "; 
+	    mount -t jffs2 /dev/mtdblock${jffs2_pat} /data
+	    jffs2_ok=$?
+	    if [ $jffs2_ok -ne 0 ]; then
+		/bin/reinit_jffs2 -c /dev/mtdblock${jffs2_pat} -a -o /var/jffs2.image ;
+		cp /var/jffs2.image /dev/mtdblock${jffs2_pat}
+		echo "copying image..."
+	        rm /var/jffs2.image
+		echo "done."
+		mount -t jffs2 /dev/mtdblock${jffs2_pat} /data
+		jffs2_ok=$?
+	    fi
+	    if [ $jffs2_ok -eq 0 ]; then
+		echo "[jffs2] write env variable jffs2_size to $jffs2_size" ;
+		echo "jffs2_size $jffs2_size" >/proc/sys/urlader/environment
+	    fi
+	fi
+    fi
+if ! grep -q " /data jffs2 " /proc/mounts; then
+    return 1
+fi
+}
+
+start() {
+	[ -e /proc/mounts ] || mount proc
+
+        if grep -q " / mini_fo " /proc/mounts; then
+	    echo "*** mini_fo already started, done. ***"
+	    return
+	fi
+	
+	# Remove leading and trailing spaces from nfsroot. Trailing invisible
+	# garbage can be part of the value if the user defines the variable via
+	# Putty directly at the Eva console prompt via copy & paste.
+	mini_fo=$(sed -rn "s/^$MINI_FO_ENV_VAR[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
+	mini_fo=${mini_fo##mini_fo\=}
+	mini_fo=${mini_fo%% *}
+						
+	if [ -z $mini_fo ]; then
+	    echo "*** No mini_fo configured, done. ***"
+	    umount proc
+	    return
+	fi
+	
+	echo "*** Switching to mini_fo-root ... ***"
+	modprobe mini_fo
+	mount -t tmpfs none /var
+	mkdir -p /data
+	if [ $mini_fo = "jffs2" ];  then
+	    echo "*** Mounting jffs2 to /data ... ***"
+	    if ! jffs2_mount; then
+		echo "*** Mounting jffs2 failed. Mounting tmpfs instead ... ***"
+		mount -t tmpfs none /data
+	    fi
+	else
+	    mount -t tmpfs none /data
+	fi
+	mkdir -p /data/mini_fo  
+	if ! mount -t mini_fo -o base=/,sto=/data/mini_fo / /var; then
+	    echo "*** mini_fo mount failed, exiting. ***" >&2
+	    rmmod mini_fo
+	    return
+	fi
+	
+	echo "*** Pivoting to mini_fo root ... ***"
+	umount proc
+	cd /var
+	mkdir -p rom
+	if pivot_root . rom; then
+	    # clean up
+	    mount -o move /rom/data /data
+	    umount /rom/var    
+	    echo "*** mini_fo root pivoting succeeded, done. ***"
+	else
+	    echo "*** mini_fo root pivoting failed, exiting. ***" >&2
+	fi
+}
+
+if [ "$PPID" == "0" ]; then
+    echo "*** $0 called as an init process, start setting up mini_fo root ... ***"
+    start
+    echo "*** Switching to init ... ***"
+    exec init >/dev/console 2>&1 <&1
+fi
+
+case "$1" in 
+	""|load|start|stop)
+		;;
+	status)
+		grep -q " / mini_fo " /proc/mounts \
+			&& echo 'running' \
+			|| echo 'stopped'
+		;;
+	on)
+
+                . kernel_args
+                newval=$(ka_getArgs | sed -r 's/(.*[^ ])?( *init=[^ ]*)(.*)/\1\3/ ; s/^ +(.*)/\1/')
+                echo "kernel_args init=/etc/init.d/rc.mini_fo $newval" > /proc/sys/urlader/environment
+                echo "mini_fo root switched on (reboot to apply)"
+                ;;
+        off)
+                . kernel_args
+                newval=$(ka_getArgs | sed -r 's/(.*[^ ])?( *init=[^ ]*)(.*)/\1\3/ ; s/^ +(.*)/\1/')
+                echo "kernel_args $newval" > /proc/sys/urlader/environment
+                echo "mini_fo root switched off (reboot to apply)"
+                ;;
+        store)
+	        if [ "$2" ]; then
+                        echo "$MINI_FO_ENV_VAR mini_fo=$2" > /proc/sys/urlader/environment
+                        echo "mini_fo variable added to bootloader environment"
+                else
+                        mini_fo=$(sed -nr "s/^$MINI_FO_ENV_VAR[[:space:]]+(.*)/\1/p" /proc/sys/urlader/environment)
+                        [ -n "$mini_fo" ] \
+                                && echo "$mini_fo" \
+                                || echo "mini_fo variable is currently empty"
+                fi
+                ;;
+        nostore)
+                echo "$MINIFO_ENV_VAR" > /proc/sys/urlader/environment
+                echo "mini_fo variable removed from bootloader environment"
+                ;;
+
+        *)
+		usage >&2
+		exit 1
+		;;
+esac
