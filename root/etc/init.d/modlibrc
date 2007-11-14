@@ -79,11 +79,11 @@ modlib_stop()
 	fi
 	kill $(cat "$fn") 2> /dev/null
 	exitval=$?
+	rm -f "$fn"
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 		return 0
 	else
-		rm -f "$fn"
 		echo 'failed.'
 		return 1
 	fi
