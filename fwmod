@@ -673,7 +673,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		do
 			bn="$(basename "$i")"
 			lib="${bn%\.so*}"
-			lib="$(echo "$lib" | sed -e 's/-[0-9][\.0-9a-z]*$//')"
+			lib="$(echo "$lib" | sed 's/^libglib-2/libglib2-2/;s/-[0-9][\.0-9a-z]*$//')"
 			if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
 				echo2 "${bn}"
 				dn="$(dirname "$i")"
