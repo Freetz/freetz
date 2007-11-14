@@ -27,9 +27,9 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-tcpdump: 
+tcpdump: $($(PKG)_BINARY)
 
-tcpdump-precompiled: uclibc tcpdump $($(PKG)_TARGET_BINARY)
+tcpdump-precompiled: $($(PKG)_TARGET_BINARY)
 
 tcpdump-clean:
 	-$(MAKE) -C $(TCPDUMP_DIR) clean

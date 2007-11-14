@@ -119,7 +119,7 @@ endif
 
 
 # PKG_EDIT_CONFIG
-# create a sed-expression to update a config file
+# update a config file
 #   $(1) = list of assignments CONFIG_VAR=value
 PKG_EDIT_CONFIG__INT0 = -e 's/^(\# )?($1)[ =].*/$(if $(patsubst n,,$2),\2=$2,\# \2 is not set)/g'
 PKG_EDIT_CONFIG__INT1 = $(call PKG_EDIT_CONFIG__INT0,$(word 1,$(subst =, ,$1)),$(word 2,$(subst =, ,$1)))
@@ -156,6 +156,10 @@ PKG:=$(if $(strip $3),$(strip $3),$(shell echo "$(pkg)" | tr '[a-z\-]' '[A-Z_]')
 #
 $(PKG)_VERSION:=$(strip $1)
 $(PKG)_CONFIGURE_DEFOPTS:=y
+# $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
+$(pkg)-precompiled : $(pkg)-precompiled--int $(pkg)
+.PHONY: $(pkg)-precompiled $(pkg)-precompiled--int $(pkg)
+
 endef
 
 # Stage 2a: initialise other package-specific variables for binary packages
@@ -167,6 +171,19 @@ $(PKG)_STARTLEVEL=99
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
 $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_DEST_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root
+endef
+
+# Stage 2b: initialise other package-specific variables for library packages
+define PKG_INIT_LIB__INT
+PKG_TYPE:=LIB
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
+$(PKG)_TARGET_DIR:=root/usr/lib
+$(PKG)_DEST_DIR:=root
+endef
+
+# Stage 3: Common definitions after BIN/LIB specific definitions
+define PKG_INIT__INT3
 $(PKG)_DEST_BIN:=$($(PKG)_DEST_DIR)/bin
 $(PKG)_DEST_SBIN:=$($(PKG)_DEST_DIR)/sbin
 $(PKG)_DEST_LIB:=$($(PKG)_DEST_DIR)/lib
@@ -178,32 +195,19 @@ endef
 define PKG_INIT_BIN__INTV
 $(value PKG_INIT__INT)
 $(value PKG_INIT_BIN__INT)
+$(value PKG_INIT__INT3)
 endef
-# Call & evaluate stages 1-2a for binary packages
+# Call & evaluate stages 1,2a,3 for binary packages
 define PKG_INIT_BIN
 $(eval $(call PKG_INIT_BIN__INTV,$1,$2,$3))
-endef
-
-# Stage 2b: initialise other package-specific variables for library packages
-define PKG_INIT_LIB__INT
-PKG_TYPE:=LIB
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
-$(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
-$(PKG)_TARGET_DIR:=root/usr/lib
-$(PKG)_DEST_DIR:=root
-$(PKG)_DEST_BIN:=$($(PKG)_DEST_DIR)/bin
-$(PKG)_DEST_SBIN:=$($(PKG)_DEST_DIR)/sbin
-$(PKG)_DEST_LIB:=$($(PKG)_DEST_DIR)/lib
-$(PKG)_DEST_USR_BIN:=$($(PKG)_DEST_DIR)/usr/bin
-$(PKG)_DEST_USR_SBIN:=$($(PKG)_DEST_DIR)/usr/sbin
-$(PKG)_DEST_USR_LIB:=$($(PKG)_DEST_DIR)/usr/lib
 endef
 
 define PKG_INIT_LIB__INTV
 $(value PKG_INIT__INT)
 $(value PKG_INIT_LIB__INT)
+$(value PKG_INIT__INT3)
 endef
-# Call & evaluate stages 1-2b for library packages
+# Call & evaluate stages 1,2b,3 for library packages
 define PKG_INIT_LIB
 $(eval $(call PKG_INIT_LIB__INTV,$1,$2,$3))
 endef
@@ -233,11 +237,7 @@ endef
 define PKG_FINISH__INT
 $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
-$(pkg)-precompiled : uclibc
-$(pkg)-precompiled : $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON)) 
-# This must be after DEPENDS_ON
-$(pkg)-precompiled : $(pkg)
-.PHONY: $(pkg)-precompiled $(pkg)
+$(pkg)-precompiled--int : uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON)) 
 PKG:=
 pkg:=
 PKG_TYPE:=

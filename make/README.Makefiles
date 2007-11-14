@@ -32,11 +32,6 @@ ${pkg}-list
 
 
 To use the convenience macros, you need some more defines:
-# pkg, PKG and VERSION
-pkg:=package-name
-PKG:=PACKAGE_NAME
-$(PKG)_VERSION:=1.2.3
-
 # initialize package macros, ether BINary or LIBrary.
 #   $(1) = version (mandatory)
 #   $(2) = lower-case package name (optional, default name of makefile)
@@ -45,8 +40,10 @@ $(PKG)_VERSION:=1.2.3
 #  - $(PKG)_DIR : directory for sources
 #  - $(PKG)_MAKE_DIR : directory for ds-mod makefile, patches and files
 #  - $(PKG)_TARGET_DIR : directory for installation
-$(eval $(call PKG_INIT_BIN, VERSION, [pkg], [PKG]))
-$(eval $(call PKG_INIT_LIB, VERSION, [pkg], [PKG]))
+BIN:
+$(call PKG_INIT_BIN, VERSION, [pkg], [PKG])
+LIB:
+$(call PKG_INIT_LIB, VERSION, [pkg], [PKG])
 
 # The download URL, split in directory part and filename
 $(PKG)_SITE:=http://www.server.net/download
