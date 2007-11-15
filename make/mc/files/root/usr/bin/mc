@@ -1,11 +1,14 @@
 #!/bin/sh
 
-# Inside screen, use ASCII line drawing and assume xterm capabilities
-[ -n "$STY" ] && ascii="-a" && export TERM=xterm
+# Serial console -> stick chars (-a), no colour (-b), slow terminal (-s)
+[ "$serial_term" == "y" ] && mc_params="-abs"
+
+# TERM=foo -> look for $TERMINFO/f/foo. If not found, assume vt102.
 export TERMINFO=/mod/pkg/mc/usr/share/terminfo
-# TERM=foobar yields $TERMINFO/f/foobar
-[ -f "$TERMINFO/${TERM%${TERM#?}}/$TERM" ] || export TERM=xterm
-[ -z "$HOME" ] && export HOME=/mod/root
-mkdir -p $HOME/.mc
-touch $HOME/.mc/hotlist
-$0.bin -c $ascii $@
+[ -f "$TERMINFO/${TERM%${TERM#?}}/$TERM" ] || export TERM=vt102
+
+# Create defaults
+mkdir -p $HOME/.mc/cedit
+touch $HOME/.mc/hotlist $HOME/.mc/cedit/Syntax
+
+$0.bin $mc_params $@
