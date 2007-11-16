@@ -12,6 +12,11 @@ HIGH PRIORITY - critical bugs, important features
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------
 
+- Adapt JPascher's way of utilising current 7170 firmwares, betas and labs
+  for Speedports by replacing some AVM binaries by T-Com versions. I (kriegaex)
+  have not looked into it, but others, e.g. heini66, report it works
+  beautifully.
+
 - 7270 seems to be ur8 (not ohio), as if we have a opensource package
   we should check this and change Config.in accordingly. There will be
   some work to do because kernel version differs (2.6.19)
@@ -168,8 +173,8 @@ FINISHED, NEEDS TESTING
 -----------------------
 
 - New UNIX-conform user/group/password management
-  (assigned to kriegaex)
-  Stage 1 (done):
+  (kriegaex, olistudent)
+  Stage 1:
   * Old user management still in place and default (e.g. used by modload)
   * New user management already usable
   * Busybox now includes applets adduser, deluser, addgroup, delgroup, cryptpw.
@@ -180,7 +185,7 @@ FINISHED, NEEDS TESTING
     empty /var/tmp/gshadow because BB tools expect file to be writable
   * New script modusers (not to confuse for moduser without "s") loads/saves
     /tmp/{passwd,shadow,group,gshadow} from/to save buffer in /tmp/flash/users
-  Stage 2 (done, ***NEEDS TESTING***):
+  Stage 2:
   * Make ds26 + packages like Bftpd and Samba use BB tools or new script modusers
     instead of old scripts wherever possible
   * Replace obsolete scripts or parts of them by warning messages telling users
@@ -194,7 +199,7 @@ FINISHED, NEEDS TESTING
     successor functions.
   * Applet 'moduser' removed completely, because it is fully replaced by
     standard BB applets and 'modusers' for loading/saving.
-  Stage 3 (to do):
+  Stage 3:
   * Provide default passwords for root and ds26 web user + warnings to change
     them, maybe even via Web (I already found out how to control the
     interactive passwd tool without user interaction) -> done partly (default
@@ -211,10 +216,10 @@ FINISHED, NEEDS TESTING
     var.tar.
 
 - Delete uClibc-files in root/lib when uClibc_version is changed
-	Remark (by Oliver): Done. All files in root/lib are deleted when new
-		uclibc version is installed (uclibc.mk). This should not be a 
-		problem because most libs are in root/usr/lib and others are
-		copied automatically on next make.
+    Remark (by Oliver): Done. All files in root/lib are deleted when new
+    uclibc version is installed (uclibc.mk). This should not be a 
+    problem because most libs are in root/usr/lib and others are
+    copied automatically on next make.
 
 - Include polished version of swap space package, see
   http://www.ip-phone-forum.de/showthread.php?t=148245.
@@ -233,7 +238,7 @@ FINISHED, NEEDS TESTING
     
 - bftpd, vsftpd: Configuration file has to be rewritten after change - see 
   next item
-	Status (by Oliver): Done, needs testing
+    Status (by Oliver): Done, needs testing
 
 - Idea by heini66: optionally remove dsld from image, because it is supposedly
   not needed in ATA mode.
@@ -277,19 +282,6 @@ FINISHED, NEEDS TESTING
       [3] http://www.xyssl.org/forum/?0048
       [4] http://xyssl.org/forum/?0050
 
-- Samba: Should have problems with big files?
-    Status (by kriegaex): I just tested copying a directory containing several
-    2-5 MB files over to my USB hard disk via DS-Mod's Samba version
-    (2.0.10-security-rollup). The partition mounted is an ext3 24 GB partition.
-    No swap space was used during the test. Afterwards I copied a 700 MB ISO
-    image which also worked flawlessly. I double-checked the MD5 sum and also
-    monitored the CPU load via top. Result: On average there was 13% load by
-    smbd and something like 1% for each of ksoftirqd (some peaks with up to
-    15%) and kjournald, less than 1% for usbstorage. All copy actions were
-    performed by Total Commander 6.5. By the way: User and group names
-    (root:root) were correct for all files and dirs created on the ext3 share
-    via shell commandline and Windows (TC).
-
 - Integrate package brctl (assigned to Ralf)
     Done. Maybe integrate brctl into busybox?
 
@@ -302,7 +294,7 @@ FINISHED, NEEDS TESTING
       - 5140  (43.04.37)
       - W501V (28.04.38)
       - W900V (34.04.21)
-    Thoose three also do not have 'KIDS=y' in rc.init, so it seems logical to
+    Those three also do not have 'KIDS=y' in rc.init, so it seems logical to
     disable the patch for them. I have done just that.
 
 - Integrate new firmware for W701 (thanks to heini66 for the hint):
@@ -310,9 +302,3 @@ FINISHED, NEEDS TESTING
     Status (by Oliver): done, but web interface needs testing.
     Status (by kriegaex): I have not tested the web UI, but otherwise it seems
     to work beautifully, even with "replace kernel" based on *.40 GPL package.
-
-- Get "telnetd vs. setconsole" hangups fixed in BusyBox or another way.
-    Status (by kriegaex): reported to BusyBox mailing list.
-    http://busybox.net/lists/busybox/2007-October/029008.html
-    Status (by Ralf): Changed in busybox-1.8.0, but not default behaviour.
-    patches for small bug and to change default still necessary.
