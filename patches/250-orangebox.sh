@@ -15,6 +15,8 @@ if [ "$DS_PACKAGE_ORANGEBOX" == "y" ]; then
 		# cannot be selected for any Speedport except W701V.
 		# TODO(?): orangebox-enable the other two, if possible
 		modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_speedport.patch
+	elif [ "$DS_TYPE_STRING" == "7170" ] && [ "$DS_TYPE_LANG_A_CH" == "y" ]; then
+		modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_a_ch.patch
 	else
 		modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox.patch
 	fi
