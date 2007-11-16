@@ -3,7 +3,7 @@ if [ "$DS_PACKAGE_ORANGEBOX" == "y" ]; then
 	if [ "$DS_TYPE_LABOR" == "y" ]; then
 		if [ "$DS_TYPE_LABOR_PHONE" == "y" ]; then
 			modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor_phone.patch
-		elif [ "$DS_TYPE_LABOR_DSL" == "y" ]; then
+		elif [ "$DS_TYPE_LABOR_DSL" == "y" ] || [ "$DS_TYPE_LABOR_MINI" == "y" ]; then
 			modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor_dsl.patch
 		else
 			modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor.patch
