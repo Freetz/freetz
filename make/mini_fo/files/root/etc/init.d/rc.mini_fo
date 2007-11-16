@@ -108,7 +108,6 @@ start() {
 	echo "*** Switching to mini_fo-root ... ***"
 	modprobe mini_fo
 	mount -t tmpfs none /var
-	mkdir -p /data
 	if [ $mini_fo = "jffs2" ];  then
 	    echo "*** Mounting jffs2 to /data ... ***"
 	    if ! jffs2_mount; then
