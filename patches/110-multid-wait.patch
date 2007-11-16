@@ -1,0 +1,13 @@
+--- etc/init.d/rc.net	2007-11-16 03:40:05.000000000 +0100
++++ etc/init.d/rc.net	2007-11-16 03:40:05.000000000 +0100
+@@ -77,6 +77,10 @@
+    if [ "`pidof multid`" = "" ] ; then
+       eval multid $MULTIDPARAM $VERBOSEPARAM
+    fi
++	local countdown=10
++	while [ $((countdown--)) -gt 0 ] && ! ifconfig eth0 > /dev/null 2>&1; do
++		sleep 2
++	done
+ }
+ 
+ checkwlan()
