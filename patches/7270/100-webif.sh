@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 echo1 "Applying symlinks, deleting additional webinterfaces"
 rm -rf ${FILESYSTEM_MOD_DIR}/usr/www/1und1 ${FILESYSTEM_MOD_DIR}/usr/www/freenet
