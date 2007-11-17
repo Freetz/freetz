@@ -11,6 +11,14 @@ if [ "$DS_TYPE_SPEEDPORT_W707V" == "y" ]; then
 	    "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet"
     cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit"* "${FILESYSTEM_MOD_DIR}/lib/modules"
 
+    echo2 "deleting obsolete files"
+    for i in fs/ext2 fs/fat fs/isofs fs/nls fs/vfat fs/mbcache.ko drivers/usb drivers/scsi; do
+	rm -rf ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i
+    done
+    for i in bin/reinit_jffs2 etc/hotplug sbin/lsusb sbin/printserv; do
+	rm -rf ${FILESYSTEM_MOD_DIR}/$i
+    done
+
     echo2 "moving default config dir, creatinh tcom and congstar symlinks"
     ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
     ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/congstar"
