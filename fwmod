@@ -603,12 +603,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ "$oem_removed" -eq 0 ] && echo -n " none"
 		echo ""
 	fi
+
+	if [ "$DS_TYPE_SPEEDPORT_W707V" == "y" ];then
+	oem_list="$oem_list tcom congstar"
+	fi
 	
 	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
 	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
 	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
-		oem_list="tcom avm"
+		oem_list="tcom congstar avm"
 		sed -i -e 's/for i in  tcom.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
 	else
 		sed -i -e 's/for i in  avm.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"

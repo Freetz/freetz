@@ -138,7 +138,7 @@ choice
 
 	prompt "Labor version"
 		depends on DS_TYPE_LABOR
-		default DS_TYPE_LABOR_USB
+		default DS_TYPE_LABOR_BETA
 
 	config DS_TYPE_LABOR_BETA
 		bool "BETA"
@@ -162,6 +162,14 @@ choice
 #		bool "WLAN"
 
 endchoice
+
+config DS_TYPE_SPEEDPORT_W707V
+	bool "Compile image for W701V"
+	depends on DS_TYPE_FON_WLAN_7170
+	default n
+	help
+		Enable this to compile a mod image for TCOM's Speedport W701V
+		based on an 7170 Image.
 
 config DS_AVM_VERSION_STRING
 	string
@@ -979,19 +987,23 @@ config DS_DL_SITE2
 	depends on \
 		DS_TYPE_SPEEDPORT_W501V || \
 		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W707V || \
 		DS_TYPE_SPEEDPORT_W900V
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"	if DS_TYPE_SPEEDPORT_W501V
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch" 	if DS_TYPE_SPEEDPORT_W701V
-	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"						if DS_TYPE_SPEEDPORT_W900V
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"		if DS_TYPE_SPEEDPORT_W501V
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch" 		if DS_TYPE_SPEEDPORT_W701V
+	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V"	if DS_TYPE_SPEEDPORT_W707V
+	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"				if DS_TYPE_SPEEDPORT_W900V
 
 config DS_DL_SOURCE2
 	string "AVM web interface firmware source"	if DS_DL_OVERRIDE
 	depends on \
 		DS_TYPE_SPEEDPORT_W501V || \
 		DS_TYPE_SPEEDPORT_W701V || \
+		DS_TYPE_SPEEDPORT_W707V || \
 		DS_TYPE_SPEEDPORT_W900V
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if DS_TYPE_SPEEDPORT_W501V
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if DS_TYPE_SPEEDPORT_W701V
+	default "fw_Speedport_W701V_v33.04.44.image"		if DS_TYPE_SPEEDPORT_W707V
 	default "fritz.fon_7150.annexb.38.04.32.image"		if DS_TYPE_SPEEDPORT_W900V
 
 menu "DS-Mod package download sites"
