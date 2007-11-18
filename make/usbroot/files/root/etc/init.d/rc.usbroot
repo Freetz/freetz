@@ -1,0 +1,277 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+usage()
+{
+cat << EOF
+Usage: rc.usbroot [on|off|status|store [usb_device]|nostore]
+USB root mount script - can only be called as an 'init' replacement.
+Parameters:
+  status  - check status of USB root; returns 'running' if USB root mount on '/'
+            is active, 'stopped' otherwise.
+  on      - activate replacing 'init' by 'rc.usbroot' -> boot with USB root,
+            but only if 'share' has also been set up. Adds something like
+            'init=/etc/init.d/rc.usbroot' to bootloader environment variable
+            'kernel_args'.
+  store   - persistently store USB device name in bootloader environment for
+            later use with 'mount'. This setting must be configured at least
+            once before USB root can be used. If called without parameter, 
+	    this option prints the current values.
+  nostore - remove USB storage name from bootloader environment. Even though it
+            does no harm to have the USB variable around int the environment all
+            the time, you may optionally remove it again using this option.
+  off     - deactivate replacing 'init' by 'rc.usbroot' -> boot without
+            USB root. Removes 'init' from bootloader environment variable
+            'kernel_args'.
+Examples:
+  - rc.usbroot on
+  - rc.usbroot store /dev/sda1:/usbroot
+  - rc.usbroot store
+  - rc.usbroot status
+  - rc.usbroot off
+  - rc.usbroot nostore
+EOF
+}
+
+### TODO ###
+# Find out HWRevision for 7270 and add special case for piglet module
+
+USBROOT_ENV_VAR=kernel_args1
+DEVICE=
+USBPATH=
+HOST=
+HWREVISION=
+HWREVISION_BitFileCount=
+SYSFS=/sys
+DEVPATH=${3##/proc/bus/usb/}
+MNTPOINT=/data
+OLDROOT=oldroot
+
+mount_usbroot() {
+    # disable hotplug
+    echo "" > /proc/sys/kernel/hotplug
+
+    load_piglet_module
+    modprobe usbcore
+    if modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1; then
+	mount -t usbfs usbfs /proc/bus/usb
+    fi
+
+    for i in ext2 usb-storage sd_mod; do
+        modprobe $i
+    done
+
+    echo 'waiting 15 seconds for usb to come up'
+    sleep 15
+
+    for US in /proc/scsi/usb-storage/*; do
+	if grep "Path: $DEVPATH" $US > /dev/null 2>&1; then
+	    HOST=`cat $US|sed -n "s/.* scsi\([0-9]*\): usb.*/\1/p"`
+	fi
+    done
+
+    # Some devices are veeery slow (e.g. Transcend StoreJet 40GB), let's
+    # try to find it up to 10 times before giving up:
+    LOOP=0
+    while [ $LOOP -lt 10 ] ; do
+	ls $SYSFS/block/sd* 2> /dev/null && for SD in $SYSFS/block/sd*; do
+	    if ls -la $SD/device | grep "host$HOST/target" > /dev/null 2>&1; then
+		mkdir -p $MNTPOINT
+		sleep 2
+		mount $DEVICE $MNTPOINT
+		LOOP=99
+		break
+	    fi
+	done
+	[ $LOOP -lt 99 ] && echo "storage: SCSI device not responding!" && sleep 2
+	let LOOP=LOOP+1
+    done
+    # reenable hotplug
+    echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
+}
+
+# Load piglet module (hardware specific)
+load_piglet_module() {
+    piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
+    piglet_load_params=" \
+	piglet_width_running=1 \
+	piglet_usb_power_bit=-1 \
+	piglet_disable_test=1 \
+	piglet_cs=5 \
+	piglet_reset_bit=-2 \
+	piglet_bitfile_write=-1 \
+	piglet_bitfile_revbytes=1 \
+	piglet_irq_gpio=18 \
+	piglet_irq=9 \
+	"
+    
+    case $HWRevision in
+	    94) # 7170
+		    piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x0"
+	    ;;	    
+	    95) # 7140
+		    piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x4d"
+	    ;;
+	    102) # W900V
+		[ "$HWRevision_BitFileCount" = "1" ] && \
+    		    piglet_load_params="$piglet_load_params piglet_enable_switch=1"
+	    ;;
+	    106) # 7150
+		    piglet_bitfile=/lib/modules/microvoip_top.bit${HWRevision_BitFileCount}
+		    piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x0"
+	    ;;
+	    108|112|117|118|119) # 7141,3130,3170,3131,2171
+		    piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x4b"
+	    ;;	    
+    esac
+
+    modprobe Piglet piglet_bitfile=$piglet_bitfile $piglet_load_params
+}
+
+load_piglet_module_7270() {
+    piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
+    dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
+    dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
+    piglet_load_params=""
+    modprobe Piglet_noemif \
+	piglet_bitfile=$piglet_bitfile \
+	piglet_enable_button2=1 \
+	dect_firstlevelfile=$dect_firstlevelfile \
+	dect_secondlevelfile=$dect_secondlevelfile \
+	$piglet_load_params
+}
+
+# Unmount stuff befor pivot_root
+unmount() {
+    for i in /proc/bus/usb /proc $SYSFS; do
+	umount $i
+    done
+}
+
+rmmodules() {
+    for i in sd_mod scsi_mod usb-storage usbahcicore usbcore Piglet; do
+	rmmod $i
+    done
+}
+
+get_env_var() {
+	# Remove leading and trailing spaces from usbroot. Trailing invisible
+	# garbage can be part of the value if the user defines the variable via
+	# Putty directly at the Eva console prompt via copy & paste.
+	usbroot=$(sed -rn "s/^$USBROOT_ENV_VAR[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
+	DEVICE="${usbroot#usbroot=}"
+	DEVICE="${DEVICE%:*}"
+	USBPATH="${usbroot#*:}"
+	
+	# Get HWRevision and HWRevision_BitFileCount from environment
+	item_count=0
+	for i in `grep HWRevision /proc/sys/urlader/environment | tr '.' ' '` ; do
+	    case $item_count in
+		1)
+		    HWRevision=$i
+		;;
+		3)
+		    HWRevision_BitFileCount=$i
+		    if [ $HWRevision_BitFileCount -eq 0 ]; then
+			HWRevision_BitFileCount=""
+		    fi
+		;;
+	    esac
+	    item_count=$((item_count + 1))
+	done
+}
+
+start()
+{
+	# Mount proc and sysfs
+	[ -e /proc/mounts ] || mount proc
+	mount $SYSFS
+		
+	get_env_var
+
+	if grep -q " / $DEVICE " /proc/mounts; then
+	    echo "*** USB root already mounted, done. ***"
+	    return
+	fi	
+
+	if [ -z "$usbroot" ]; then
+		echo "*** No 'usbroot' configured in bootloader environment, exiting. ***" >&2
+		umount proc
+		return
+	fi
+
+	echo "*** Mounting to USB root ... ***"
+	if ! mount_usbroot; then
+		rmmodules
+	fi
+	
+	echo "*** Pivoting to USB root ... ***"
+	[ -e $MNTPOINT$USBPATH ] && \
+	    mount -o bind $MNTPOINT$USBPATH $MNTPOINT && \
+	    	cd $MNTPOINT
+	[ -d $OLDROOT ] || mkdir -p $OLDROOT
+	unmount
+	if pivot_root . $OLDROOT; then
+		umount /$OLDROOT$MNTPOINT
+		echo "*** USB root pivoting succeeded, done. ***"
+	else
+		rmmodules
+		echo "*** USB root pivoting failed, exiting. ***" >&2
+	fi
+}
+
+if [ "$PPID" == "0" ]; then
+	echo "*** $0 called as an init process, start setting up USB root ... ***"
+	start
+        echo "*** Creating device /dev/console on USB root ... ***"
+	# Try to remove existing filesystem object before creating device node
+	[ -e /dev/console ] && rm -f /dev/console 2>/dev/null
+	# We need this to be able to redirect std{in,err,out}
+	mknod /dev/console c 5 1
+	echo "*** Switching to init ... ***"
+	exec init >/dev/console 2>&1 <&1
+fi
+
+case "$1" in
+	""|load|start|stop)
+		;;
+	status)
+		get_env_var
+		grep -q " / $DEVICE " /proc/mounts \
+			&& echo 'running' \
+			|| echo 'stopped'
+		;;
+	on)
+		. kernel_args
+		newval=$(ka_getArgs | sed -r 's/(.*[^ ])?( *init=[^ ]*)(.*)/\1\3/ ; s/^ +(.*)/\1/')
+		echo "kernel_args init=/etc/init.d/rc.usbroot $newval" > /proc/sys/urlader/environment
+		echo "USB root switched on (reboot to apply)"
+		;;
+	off)
+		. kernel_args
+		newval=$(ka_getArgs | sed -r 's/(.*[^ ])?( *init=[^ ]*)(.*)/\1\3/ ; s/^ +(.*)/\1/')
+		echo "kernel_args $newval" > /proc/sys/urlader/environment
+		echo "USB root switched off (reboot to apply)"
+		;;
+	store)
+		if [ "$2" ]; then
+			echo "$USBROOT_ENV_VAR usbroot=$2" > /proc/sys/urlader/environment
+			echo "USB device name added to bootloader environment"
+		else
+			usbroot=$(sed -nr "s/^$USBROOT_ENV_VAR[[:space:]]+(.*)/\1/p" /proc/sys/urlader/environment)
+			usbroot=${usbroot#*=}
+			[ -n "$usbroot" ] \
+				&& echo "$usbroot" \
+				|| echo "USB root variable is currently empty"
+		fi
+		;;
+	nostore)
+		echo "$USBROOT_ENV_VAR" > /proc/sys/urlader/environment
+		echo "USB variable removed from bootloader environment"
+		;;
+	*)
+		usage >&2
+		exit 1
+		;;
+esac
