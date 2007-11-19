@@ -1,4 +1,4 @@
-[ "$DS_TYPE_SPEEDPORT_W701V_7170" == "y" ] || exit
+[ "$DS_TYPE_SPEEDPORT_W701V_7170" == "y" ] || return 0
 
 if [ -z "$FIRMWARE2" ]; then
 	echo "ERROR: no tk firmware" 1>&2
