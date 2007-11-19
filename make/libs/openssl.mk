@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 0.9.8e)
+$(call PKG_INIT_LIB, 0.9.8g)
 $(PKG)_LIB_VERSION:=0.9.8
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.openssl.org/source/
