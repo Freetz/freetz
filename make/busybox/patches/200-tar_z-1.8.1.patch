@@ -1,0 +1,42 @@
+Patch from busybox list, will be included in next version.
+diff -urN archival/libunarchive/decompress_unzip.c archival/libunarchive/decompress_unzip.c
+--- archival/libunarchive/decompress_unzip.c	2007-11-09 17:40:48.000000000 -0800
++++ archival/libunarchive/decompress_unzip.c	2007-11-11 17:35:13.000000000 -0800
+@@ -1178,6 +1178,7 @@
+ 	ALLOC_STATE;
+ 	bytebuffer_max = 0x8000;
+ 	bytebuffer = xmalloc(bytebuffer_max);
++	gunzip_src_fd = in;
+ 
+  again:
+ 	if (!check_header_gzip(PASS_STATE_ONLY)) {
+diff -urN archival/libunarchive/get_header_tar.c archival/libunarchive/get_header_tar.c
+--- archival/libunarchive/get_header_tar.c	2007-11-09 17:40:48.000000000 -0800
++++ archival/libunarchive/get_header_tar.c	2007-11-16 12:28:08.000000000 -0800
+@@ -59,8 +59,9 @@
+ 		char chksum[8];     /* 148-155 */
+ 		char typeflag;      /* 156-156 */
+ 		char linkname[100]; /* 157-256 */
+-		char magic[6];      /* 257-262 */
+-		char version[2];    /* 263-264 */
++		/* POSIX:   "ustar" NUL "00" */
++		/* GNU tar: "ustar  " NUL */
++		char magic[8];      /* 257-264 */
+ 		char uname[32];     /* 265-296 */
+ 		char gname[32];     /* 297-328 */
+ 		char devmajor[8];   /* 329-336 */
+diff -urN archival/tar.c archival/tar.c
+--- archival/tar.c	2007-11-09 17:40:49.000000000 -0800
++++ archival/tar.c	2007-11-16 12:28:08.000000000 -0800
+@@ -50,8 +50,9 @@
+ 	char chksum[8];           /* 148-155 */
+ 	char typeflag;            /* 156-156 */
+ 	char linkname[NAME_SIZE]; /* 157-256 */
+-	char magic[6];            /* 257-262 */
+-	char version[2];          /* 263-264 */
++	/* POSIX:   "ustar" NUL "00" */
++	/* GNU tar: "ustar  " NUL */
++	char magic[8];            /* 257-264 */
+ 	char uname[32];           /* 265-296 */
+ 	char gname[32];           /* 297-328 */
+ 	char devmajor[8];         /* 329-336 */
