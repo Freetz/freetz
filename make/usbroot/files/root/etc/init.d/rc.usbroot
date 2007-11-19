@@ -16,8 +16,8 @@ Parameters:
             'kernel_args'.
   store   - persistently store USB device name in bootloader environment for
             later use with 'mount'. This setting must be configured at least
-            once before USB root can be used. If called without parameter, 
-	    this option prints the current values.
+            once before USB root can be used. If called without parameter,
+            this option prints the current values.
   nostore - remove USB storage name from bootloader environment. Even though it
             does no harm to have the USB variable around int the environment all
             the time, you may optionally remove it again using this option.
@@ -35,7 +35,7 @@ EOF
 }
 
 ### TODO ###
-# Find out HWRevision for 7270 and add special case for piglet module
+# Find out HWRevision for 7270 (kriegaex: 122) and add special case for piglet module
 
 USBROOT_ENV_VAR=kernel_args1
 DEVICE=
@@ -49,52 +49,52 @@ MNTPOINT=/data
 OLDROOT=oldroot
 
 mount_usbroot() {
-    # disable hotplug
-    echo "" > /proc/sys/kernel/hotplug
+	# disable hotplug
+	echo "" > /proc/sys/kernel/hotplug
 
-    load_piglet_module
-    modprobe usbcore
-    if modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1; then
+	load_piglet_module
+	modprobe usbcore
+	if modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1; then
 	mount -t usbfs usbfs /proc/bus/usb
-    fi
-
-    for i in ext2 usb-storage sd_mod; do
-        modprobe $i
-    done
-
-    echo 'waiting 15 seconds for usb to come up'
-    sleep 15
-
-    for US in /proc/scsi/usb-storage/*; do
-	if grep "Path: $DEVPATH" $US > /dev/null 2>&1; then
-	    HOST=`cat $US|sed -n "s/.* scsi\([0-9]*\): usb.*/\1/p"`
 	fi
-    done
 
-    # Some devices are veeery slow (e.g. Transcend StoreJet 40GB), let's
-    # try to find it up to 10 times before giving up:
-    LOOP=0
-    while [ $LOOP -lt 10 ] ; do
+	for i in ext2 usb-storage sd_mod; do
+		modprobe $i
+	done
+
+	echo 'waiting 15 seconds for usb to come up'
+	sleep 15
+
+	for US in /proc/scsi/usb-storage/*; do
+	if grep "Path: $DEVPATH" $US > /dev/null 2>&1; then
+		HOST=`cat $US|sed -n "s/.* scsi\([0-9]*\): usb.*/\1/p"`
+	fi
+	done
+
+	# Some devices are veeery slow (e.g. Transcend StoreJet 40GB), let's
+	# try to find it up to 10 times before giving up:
+	LOOP=0
+	while [ $LOOP -lt 10 ] ; do
 	ls $SYSFS/block/sd* 2> /dev/null && for SD in $SYSFS/block/sd*; do
-	    if ls -la $SD/device | grep "host$HOST/target" > /dev/null 2>&1; then
+		if ls -la $SD/device | grep "host$HOST/target" > /dev/null 2>&1; then
 		mkdir -p $MNTPOINT
 		sleep 2
 		mount $DEVICE $MNTPOINT
 		LOOP=99
 		break
-	    fi
+		fi
 	done
 	[ $LOOP -lt 99 ] && echo "storage: SCSI device not responding!" && sleep 2
 	let LOOP=LOOP+1
-    done
-    # reenable hotplug
-    echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
+	done
+	# reenable hotplug
+	echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
 }
 
 # Load piglet module (hardware specific)
 load_piglet_module() {
-    piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
-    piglet_load_params=" \
+	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
+	piglet_load_params=" \
 	piglet_width_running=1 \
 	piglet_usb_power_bit=-1 \
 	piglet_disable_test=1 \
@@ -105,36 +105,36 @@ load_piglet_module() {
 	piglet_irq_gpio=18 \
 	piglet_irq=9 \
 	"
-    
-    case $HWRevision in
-	    94) # 7170
-		    piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x0"
-	    ;;	    
-	    95) # 7140
-		    piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x4d"
-	    ;;
-	    102) # W900V
-		[ "$HWRevision_BitFileCount" = "1" ] && \
-    		    piglet_load_params="$piglet_load_params piglet_enable_switch=1"
-	    ;;
-	    106) # 7150
-		    piglet_bitfile=/lib/modules/microvoip_top.bit${HWRevision_BitFileCount}
-		    piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x0"
-	    ;;
-	    108|112|117|118|119) # 7141,3130,3170,3131,2171
-		    piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x4b"
-	    ;;	    
-    esac
 
-    modprobe Piglet piglet_bitfile=$piglet_bitfile $piglet_load_params
+	case $HWRevision in
+		94) # 7170
+			piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x0"
+		;;
+		95) # 7140
+			piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x4d"
+		;;
+		102) # W900V
+		[ "$HWRevision_BitFileCount" = "1" ] && \
+				piglet_load_params="$piglet_load_params piglet_enable_switch=1"
+		;;
+		106) # 7150
+			piglet_bitfile=/lib/modules/microvoip_top.bit${HWRevision_BitFileCount}
+			piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x0"
+		;;
+		108|112|117|118|119) # 7141,3130,3170,3131,2171
+			piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x4b"
+		;;
+	esac
+
+	modprobe Piglet piglet_bitfile=$piglet_bitfile $piglet_load_params
 }
 
 load_piglet_module_7270() {
-    piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
-    dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
-    dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
-    piglet_load_params=""
-    modprobe Piglet_noemif \
+	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
+	dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
+	dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
+	piglet_load_params=""
+	modprobe Piglet_noemif \
 	piglet_bitfile=$piglet_bitfile \
 	piglet_enable_button2=1 \
 	dect_firstlevelfile=$dect_firstlevelfile \
@@ -144,15 +144,15 @@ load_piglet_module_7270() {
 
 # Unmount stuff befor pivot_root
 unmount() {
-    for i in /proc/bus/usb /proc $SYSFS; do
+	for i in /proc/bus/usb /proc $SYSFS; do
 	umount $i
-    done
+	done
 }
 
 rmmodules() {
-    for i in sd_mod scsi_mod usb-storage usbahcicore usbcore Piglet; do
+	for i in sd_mod scsi_mod usb-storage usbahcicore usbcore Piglet; do
 	rmmod $i
-    done
+	done
 }
 
 get_env_var() {
@@ -163,22 +163,22 @@ get_env_var() {
 	DEVICE="${usbroot#usbroot=}"
 	DEVICE="${DEVICE%:*}"
 	USBPATH="${usbroot#*:}"
-	
+
 	# Get HWRevision and HWRevision_BitFileCount from environment
 	item_count=0
 	for i in `grep HWRevision /proc/sys/urlader/environment | tr '.' ' '` ; do
-	    case $item_count in
+		case $item_count in
 		1)
-		    HWRevision=$i
+			HWRevision=$i
 		;;
 		3)
-		    HWRevision_BitFileCount=$i
-		    if [ $HWRevision_BitFileCount -eq 0 ]; then
+			HWRevision_BitFileCount=$i
+			if [ $HWRevision_BitFileCount -eq 0 ]; then
 			HWRevision_BitFileCount=""
-		    fi
+			fi
 		;;
-	    esac
-	    item_count=$((item_count + 1))
+		esac
+		item_count=$((item_count + 1))
 	done
 }
 
@@ -187,13 +187,13 @@ start()
 	# Mount proc and sysfs
 	[ -e /proc/mounts ] || mount proc
 	mount $SYSFS
-		
+
 	get_env_var
 
 	if grep -q " / $DEVICE " /proc/mounts; then
-	    echo "*** USB root already mounted, done. ***"
-	    return
-	fi	
+		echo "*** USB root already mounted, done. ***"
+		return
+	fi
 
 	if [ -z "$usbroot" ]; then
 		echo "*** No 'usbroot' configured in bootloader environment, exiting. ***" >&2
@@ -205,11 +205,11 @@ start()
 	if ! mount_usbroot; then
 		rmmodules
 	fi
-	
+
 	echo "*** Pivoting to USB root ... ***"
 	[ -e $MNTPOINT$USBPATH ] && \
-	    mount -o bind $MNTPOINT$USBPATH $MNTPOINT && \
-	    	cd $MNTPOINT
+		mount -o bind $MNTPOINT$USBPATH $MNTPOINT && \
+			cd $MNTPOINT
 	[ -d $OLDROOT ] || mkdir -p $OLDROOT
 	unmount
 	if pivot_root . $OLDROOT; then
@@ -224,7 +224,7 @@ start()
 if [ "$PPID" == "0" ]; then
 	echo "*** $0 called as an init process, start setting up USB root ... ***"
 	start
-        echo "*** Creating device /dev/console on USB root ... ***"
+		echo "*** Creating device /dev/console on USB root ... ***"
 	# Try to remove existing filesystem object before creating device node
 	[ -e /dev/console ] && rm -f /dev/console 2>/dev/null
 	# We need this to be able to redirect std{in,err,out}
