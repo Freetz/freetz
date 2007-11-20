@@ -91,15 +91,20 @@ start() {
 		return
 	fi
 
-	# Remove leading and trailing spaces from nfsroot. Trailing invisible
+	# Remove leading and trailing spaces from mini_fo. Trailing invisible
 	# garbage can be part of the value if the user defines the variable via
 	# Putty directly at the Eva console prompt via copy & paste.
 	mini_fo=$(sed -rn "s/^$MINI_FO_ENV_VAR[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
 	mini_fo=${mini_fo##mini_fo\=}
 	mini_fo=${mini_fo%% *}
 
-	if [ -z $mini_fo ]; then
+	if [ -z "$mini_fo" ]; then
 		echo "*** No mini_fo configured, done. ***"
+		umount proc
+		return
+	fi
+	if [ "$mini_fo" != "jffs2" -a "$mini_fo" != "ram" ]; then
+		echo "*** Invalid mini_fo type '$mini_fo', must be 'ram' or 'jffs2', exiting. ***"
 		umount proc
 		return
 	fi
@@ -107,7 +112,7 @@ start() {
 	echo "*** Switching to mini_fo-root ... ***"
 	modprobe mini_fo
 	mount -t tmpfs none /var
-	if [ $mini_fo = "jffs2" ];  then
+	if [ "$mini_fo" == "jffs2" ]; then
 		echo "*** Mounting jffs2 to /data ... ***"
 		if ! jffs2_mount; then
 			echo "*** Mounting jffs2 failed. Mounting tmpfs instead ... ***"
@@ -166,6 +171,10 @@ case "$1" in
 		;;
 	store)
 		if [ "$2" ]; then
+			if [ "$2" != "jffs2" -a "$2" != "ram" ]; then
+				echo "Invalid mini_fo type '$2', must be 'ram' or 'jffs2'" >&2
+				exit 1
+			fi
 			echo "$MINI_FO_ENV_VAR mini_fo=$2" > /proc/sys/urlader/environment
 			echo "mini_fo variable added to bootloader environment"
 		else
@@ -176,11 +185,11 @@ case "$1" in
 		fi
 		;;
 	nostore)
-		echo "$MINIFO_ENV_VAR" > /proc/sys/urlader/environment
+		echo "$MINI_FO_ENV_VAR" > /proc/sys/urlader/environment
 		echo "mini_fo variable removed from bootloader environment"
 		;;
-		*)
-			usage >&2
-			exit 1
-			;;
+	*)
+		usage >&2
+		exit 1
+		;;
 esac
