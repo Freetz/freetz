@@ -4,9 +4,6 @@ $(PKG_UNPACKED)
 
 $(pkg): $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 
-# If a compile should ever be necessary, don't forget to add 'uclibc' to prerequisites
-$(pkg)-precompiled: $(pkg)
-
 $(pkg)-source: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 
 $(pkg)-clean:
