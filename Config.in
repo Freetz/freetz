@@ -889,6 +889,24 @@ config DS_REMOVE_DSLD
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
+config DS_REMOVE_VOIP_ISDN
+	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL"
+	default n
+	help
+		Radically remove a lot of telephony-related files. This patch saves about
+		2.370 KB or 2.3 MB of uncompressed data size in the firmware image. This
+		means savings of about 700 KB of compressed firmware size.
+
+		ATTENTION: Currently there have not been a whole lot of tests concerning
+		side effects. The patch was successfully tested on a W701V IP client with
+		removed UPnP/dsld/userman. If it still works for boxes including those
+		functionalities, is unknown. Feel free to test it.
+
+		NOTE: Corresponding web UI files will also be removed, so you will
+		encounter several empty web pages or submenus.
+
+		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
 config DS_PATCH_MEDIASRV
 	bool "Integrate Media Server from USB Labor firmware - EXPERIMENTAL"
 	depends on DS_HAS_USB_HOST
