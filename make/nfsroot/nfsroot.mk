@@ -1,33 +1,18 @@
-NFSROOT_VERSION:=0.1
-NFSROOT_PKG_SOURCE:=nfsroot-dsmod-$(NFSROOT_VERSION).tar.bz2
-NFSROOT_PKG_SITE:=http://dsmod.3dfxatwork.de
+$(call PKG_INIT_BIN, 0.1)
 
-$(DL_DIR)/$(NFSROOT_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(NFSROOT_PKG_SOURCE) $(NFSROOT_PKG_SITE)
+$(PKG_UNPACKED)
 
-$(PACKAGES_DIR)/.nfsroot-$(NFSROOT_VERSION): $(DL_DIR)/$(NFSROOT_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NFSROOT_PKG_SOURCE)
-	@touch $@
+$(pkg): $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 
-nfsroot: $(PACKAGES_DIR)/.nfsroot-$(NFSROOT_VERSION)
+# If a compile should ever be necessary, don't forget to add 'uclibc' to prerequisites
+$(pkg)-precompiled: $(pkg)
 
-nfsroot-package: $(PACKAGES_DIR)/.nfsroot-$(NFSROOT_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NFSROOT_PKG_SOURCE) nfsroot-$(NFSROOT_VERSION)
+$(pkg)-source: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 
-nfsroot-precompiled: nfsroot
-
-nfsroot-source: $(PACKAGES_DIR)/.nfsroot-$(NFSROOT_VERSION)
-
-nfsroot-clean:
+$(pkg)-clean:
 	rm -f $(PACKAGES_BUILD_DIR)/$(NFSROOT_PKG_SOURCE)
 
-nfsroot-dirclean:
-	rm -rf $(PACKAGES_DIR)/nfsroot-$(NFSROOT_VERSION)
-	rm -f $(PACKAGES_DIR)/.nfsroot-$(NFSROOT_VERSION)
+# Nothing to do here at the moment
+$(pkg)-uninstall:
 
-nfsroot-list:
-ifeq ($(strip $(DS_PACKAGE_NFSROOT)),y)
-	@echo "S40nfsroot-$(NFSROOT_VERSION)" >> .static
-else
-	@echo "S40nfsroot-$(NFSROOT_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)

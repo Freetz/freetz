@@ -86,7 +86,7 @@ jffs2_mount() {
 
 start() {
 	[ -e /proc/mounts ] || mount proc
-		if grep -q " / mini_fo " /proc/mounts; then
+	if grep -q " / mini_fo " /proc/mounts; then
 		echo "*** mini_fo already started, done. ***"
 		return
 	fi
