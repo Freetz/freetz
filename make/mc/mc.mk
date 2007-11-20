@@ -6,7 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_PKG_SITE:=http://dsmod.magenbrot.net
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg).bin
 
-$(PKG)_DEPENDS_ON += ncurses glib 
+$(PKG)_DEPENDS_ON += ncurses glib
 
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -62,7 +62,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-	    $(MAKE) -C $(MC_DIR)
+		$(MAKE) -C $(MC_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

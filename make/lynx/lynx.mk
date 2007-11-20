@@ -1,50 +1,36 @@
-LYNX_VERSION:=2.8.5
-LYNX_SOURCE:=lynx$(LYNX_VERSION).tar.bz2
-LYNX_SITE:=http://lynx.isc.org/lynx$(LYNX_VERSION)
-LYNX_MAKE_DIR:=$(MAKE_DIR)/lynx
-LYNX_DIR:=$(SOURCE_DIR)/lynx2-8-5
-LYNX_BINARY:=$(LYNX_DIR)/lynx
-LYNX_PKG_VERSION:=0.1
-LYNX_PKG_SITE:=http://www.heimpold.de/dsmod
-LYNX_PKG_NAME:=lynx-$(LYNX_VERSION)
-LYNX_PKG_SOURCE:=lynx-$(LYNX_VERSION)-dsmod-$(LYNX_PKG_VERSION).tar.bz2
-LYNX_CFG:=$(LYNX_DIR)/lynx.cfg
-LYNX_TARGET_CFGDIR:=$(PACKAGES_DIR)/$(LYNX_PKG_NAME)
-LYNX_TARGET_CFG:=$(LYNX_TARGET_CFGDIR)/root/etc/lynx.cfg
-LYNX_TARGET_DIR:=$(PACKAGES_DIR)/$(LYNX_PKG_NAME)
-LYNX_TARGET_BINARY:=$(LYNX_TARGET_DIR)/root/usr/bin/lynx
+$(call PKG_INIT_BIN, 2.8.5)
+$(PKG)_SOURCE:=$(pkg)$($(PKG)_VERSION).tar.bz2
+$(PKG)_SITE:=http://lynx.isc.org/lynx$($(PKG)_VERSION)
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)2-8-5
+$(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
+$(PKG)_CFG:=$($(PKG)_DIR)/lynx.cfg
+$(PKG)_TARGET_CFG:=$($(PKG)_TARGET_DIR)/root/etc/lynx.cfg
+$(PKG)_TARGET_BINARY:=$(LYNX_TARGET_DIR)/root/usr/bin/lynx
 
-LYNX_CONFIGURE_OPTIONS=\
-  --enable-warnings \
-  --with-screen=ncurses \
-  --enable-nested-tables --enable-read-eta \
-  --enable-charset-choice \
-  --disable-alt-bindings \
-  --disable-bibp-urls \
-  --disable-config-info \
-  --disable-dired \
-  --disable-finger \
-  --disable-gopher \
-  --disable-news \
-  --disable-nls \
-  --disable-prettysrc \
-  --disable-source-cache \
-  --disable-trace \
+$(PKG)_CONFIGURE_OPTIONS=\
+	--enable-warnings \
+	--with-screen=ncurses \
+	--enable-nested-tables --enable-read-eta \
+	--enable-charset-choice \
+	--disable-alt-bindings \
+	--disable-bibp-urls \
+	--disable-config-info \
+	--disable-dired \
+	--disable-finger \
+	--disable-gopher \
+	--disable-news \
+	--disable-nls \
+	--disable-prettysrc \
+	--disable-source-cache \
+	--disable-trace \
 
-$(DL_DIR)/$(LYNX_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(LYNX_SITE)/$(LYNX_SOURCE)
+$(PKG)_DEPENDS_ON += ncurses
 
-$(DL_DIR)/$(LYNX_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(LYNX_PKG_SOURCE) $(LYNX_PKG_SITE)
 
-$(LYNX_DIR)/.unpacked: $(DL_DIR)/$(LYNX_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LYNX_SOURCE)
-	for i in $(LYNX_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(LYNX_DIR) $$i; \
-	done
-	touch $@
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
 
-$(LYNX_DIR)/.configured: $(LYNX_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	( cd $(LYNX_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -75,45 +61,30 @@ $(LYNX_DIR)/.configured: $(LYNX_DIR)/.unpacked
 	);
 	touch $@
 
-$(LYNX_BINARY) $(LYNX_CFG): $(LYNX_DIR)/.configured
-	PATH="$(TARGET_PATH)" LD="$(TARGET_LD)" $(MAKE) -C $(LYNX_DIR)
+$($(PKG)_BINARY) $($(PKG)_CFG): $($(PKG)_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(LYNX_DIR) \
+		LD="$(TARGET_LD)"
 	touch $@
 
-$(LYNX_TARGET_BINARY): $(LYNX_BINARY) 
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$(LYNX_TARGET_CFG): $(LYNX_CFG)
-		cp $(LYNX_CFG) $(LYNX_TARGET_CFG)
+$($(PKG)_TARGET_CFG): $($(PKG)_CFG)
+	mkdir -p $(dir $@) 
+	cp $(LYNX_CFG) $(LYNX_TARGET_CFG)
 
-$(PACKAGES_DIR)/.$(LYNX_PKG_NAME): $(DL_DIR)/$(LYNX_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(LYNX_PKG_SOURCE)
-	@touch $@
+$(pkg):
 
-lynx: $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CFG)
 
-lynx-package: $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(LYNX_PKG_SOURCE) $(LYNX_PKG_NAME)
-
-lynx-precompiled: uclibc ncurses-precompiled lynx $(LYNX_TARGET_BINARY) $(LYNX_TARGET_CFG)
-
-lynx-source: $(LYNX_DIR)/.unpacked $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
-
-lynx-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(LYNX_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(LYNX_PKG_SOURCE)
 
-lynx-dirclean:
-	rm -rf $(LYNX_DIR)
-	rm -rf $(PACKAGES_DIR)/$(LYNX_PKG_NAME)
-	rm -f $(PACKAGES_DIR)/.$(LYNX_PKG_NAME)
-
-lynx-uninstall: 
+$(pkg)-uninstall: 
 	rm -f $(LYNX_TARGET_BINARY)
 	rm -f $(LYNX_TARGET_CFG)
 
-lynx-list:
-ifeq ($(strip $(DS_PACKAGE_LYNX)),y)
-	@echo "S99lynx-$(LYNX_VERSION)" >> .static
-else
-	@echo "S99lynx-$(LYNX_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)
+

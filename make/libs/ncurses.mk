@@ -124,6 +124,8 @@ $(pkg)-precompiled: uclibc $(pkg) $(pkg)-ncurses-precompiled $(pkg)-form-precomp
 
 $(pkg)-terminfo: $($(PKG)_TERMINFO_TARGET_DIR)/.installed
 
+$(pkg)-terminfo-precompiled: $(pkg)-terminfo
+
 $(pkg)-terminfo-clean:
 	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
 
