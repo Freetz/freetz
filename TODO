@@ -12,10 +12,16 @@ HIGH PRIORITY - critical bugs, important features
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------
 
-- Adapt JPascher's way of utilising current 7170 firmwares, betas and labs
-  for Speedports by replacing some AVM binaries by T-Com versions. I (kriegaex)
-  have not looked into it, but others, e.g. heini66, report it works
-  beautifully.
+- Create wrapper for starting external root mount rc.* files (USB, NFS,
+  Mini_fo) and add option to define an order in which they are tried. Default
+  order (editable) should be
+    1. USB root
+    2. NFS root
+    3. Mini_fo root (with or without JFFS2)
+  always the successor being a fallback for a non-functional or undefined
+  predecessor in the ordered list. This way we could regain the lost feature
+  of mini_fo being a fallback for NFS, but in a more general way. Maybe we can
+  even externalise common parts of code, but the latter is just nice to have.
 
 - 7270 seems to be ur8 (not ohio), as if we have a opensource package
   we should check this and change Config.in accordingly. There will be
@@ -302,3 +308,10 @@ FINISHED, NEEDS TESTING
   DSL mode, is unknown. Make sure the wait loop does not wait forever (e.g.
   max. 30 seconds).
     Status (by kriegaex): patches/110-multid-wait.patch was added in #1415.
+
+- Adapt JPascher's way of utilising current 7170 firmwares, betas and labs
+  for Speedports by replacing some AVM binaries by T-Com versions. I (kriegaex)
+  have not looked into it, but others, e.g. heini66, report it works
+  beautifully.
+    Status (by kriegaex): done by Oliver, tested successfully on my W701V with
+    29.04.40 (no beta or lab tested yet, because I do not use those).
