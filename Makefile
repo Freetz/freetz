@@ -229,7 +229,11 @@ firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
 endif
 	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
 ifneq ($(FWMOD_PATCH_TEST),y)
+ifeq ($(DS_TYPE_SPEEDPORT_W701V_7170),y)
+	@mv $(BUILD_DIR)/W701V_$(DS_TYPE_STRING)*.image ./
+else
 	@mv $(BUILD_DIR)/$(DS_TYPE_STRING)*.image ./
+endif
 endif
 
 firmware: precompiled firmware-nocompile 
