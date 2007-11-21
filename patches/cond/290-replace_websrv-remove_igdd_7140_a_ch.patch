@@ -72,7 +72,7 @@
     sleep 3
     for i in $DAEMONS $AVMDAEMONS ; do
       killall -15 $i
-@@ -265,9 +284,14 @@
+@@ -265,9 +284,15 @@
       ctlmgr $NICEPARAM $VERBOSEPARAM
     fi
  
@@ -84,6 +84,7 @@
 +     if [ "$(/etc/init.d/rc.websrv status)" == "stopped" ]; then
 +       /etc/init.d/rc.websrv start
 +     fi
++   fi
     fi 
  
     igddstart
