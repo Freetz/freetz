@@ -5,6 +5,8 @@ if [ "$DS_PACKAGE_ORANGEBOX" == "y" ]; then
 			modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor_phone.patch
 		elif [ "$DS_TYPE_LABOR_DSL" == "y" ] || [ "$DS_TYPE_LABOR_MINI" == "y" ]; then
 			modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor_dsl.patch
+		elif [ "$DS_TYPE_LABOR_BETA" == "y" ]; then
+			modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor_beta.patch
 		else
 			modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor.patch
 		fi
