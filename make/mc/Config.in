@@ -10,3 +10,13 @@ config DS_PACKAGE_MC
 		powerful. If you are looking for something smaller, feel free to give
 		Deco a try, but don't expect as much comfort and power there as you 
 		will get here.
+
+config DS_MC_ONLINE_HELP
+	bool "Online help"
+	depends on DS_PACKAGE_MC
+	default y
+	help
+		MC comes with an online help file which can be viewed via 'F1'.
+
+		Switching off this feature saves about 115 KB in the (unsquashed)
+		file system.

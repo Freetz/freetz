@@ -2,9 +2,11 @@ $(call PKG_INIT_BIN, 4.6.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_HELP:=$($(PKG)_MAKE_DIR)/files/root/usr/share/mc/mc.hlp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_PKG_SITE:=http://dsmod.magenbrot.net
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg).bin
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc.bin
+$(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
 
 $(PKG)_DEPENDS_ON += ncurses glib
 
@@ -67,9 +69,19 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_TARGET_HELP): $($(PKG)_HELP)
+	cp $(MC_HELP) $(MC_TARGET_HELP)
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+ifeq ($(strip $(DS_$(PKG)_ONLINE_HELP)),y)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_HELP)
+else
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(pkg)-clean-help
+endif
+
+$(pkg)-clean-help: 
+	@rm -f $(MC_TARGET_HELP)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(MC_DIR) clean
