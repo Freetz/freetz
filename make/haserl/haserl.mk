@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.9.20)
+$(call PKG_INIT_BIN, 0.9.21)
 $(PKG)_SOURCE:=haserl-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/haserl
 $(PKG)_DIR:=$(SOURCE_DIR)/haserl-$($(PKG)_VERSION)
