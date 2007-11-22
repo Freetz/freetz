@@ -9,14 +9,14 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libintl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
-$(PKG)_CONFIGURE_OPTIONS += --enable-nls                   
-$(PKG)_CONFIGURE_OPTIONS += --disable-java                 
-$(PKG)_CONFIGURE_OPTIONS += --disable-native-java          
-$(PKG)_CONFIGURE_OPTIONS += --disable-openmp         
-$(PKG)_CONFIGURE_OPTIONS += --with-included-gettext  
-$(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix 
+$(PKG)_CONFIGURE_OPTIONS += --enable-nls
+$(PKG)_CONFIGURE_OPTIONS += --disable-java
+$(PKG)_CONFIGURE_OPTIONS += --disable-native-java
+$(PKG)_CONFIGURE_OPTIONS += --disable-openmp
+$(PKG)_CONFIGURE_OPTIONS += --with-included-gettext
+$(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libexpat-prefix
-$(PKG)_CONFIGURE_OPTIONS += --without-emacs          
+$(PKG)_CONFIGURE_OPTIONS += --without-emacs
 
 
 $(PKG_SOURCE_DOWNLOAD)

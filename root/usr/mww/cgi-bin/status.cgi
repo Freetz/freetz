@@ -25,8 +25,8 @@ has_swap() {
 }
 
 default_password_set() {
-        [ "$MOD_HTTPD_PASSWD" == '$1$$zla3yqbLURbyMO/5ZvHBR0' ] || return 0
-        return 1
+	[ "$MOD_HTTPD_PASSWD" == '$1$$zla3yqbLURbyMO/5ZvHBR0' ] || return 0
+	return 1
 }
 
 cgi_begin '$(lang de:"Status" en:"Status")' 'status'
