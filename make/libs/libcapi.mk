@@ -14,12 +14,13 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBCAPI_DIR) \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-	 	all
+		CAPI20OPTS="$(TARGET_CFLAGS)" \
+		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBCAPI_DIR) \
+		CAPI20OPTS="$(TARGET_CFLAGS)" \
 		FILESYSTEM="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
@@ -34,9 +35,9 @@ $(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBCAPI_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcapi20.* \
-			$(STAGING_DIR)/include/capi20.h \
-			$(STAGING_DIR)/include/capiutils.h \
-			$(STAGING_DIR)/include/capicmd.h
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/include/capi20.h \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/include/capiutils.h \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/include/capicmd.h
 
 $(pkg)-uninstall:
 	rm -f $(LIBCAPI_DEST_LIB_DIR)/libcapi*.so*
