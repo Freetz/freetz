@@ -30,9 +30,9 @@ extract_bootloader()
 
 # Extracts kernel.image  candidates from input file, based on kernel and
 # SquashFS magic strings. Applies heuristic check if kernel end offset
-# calculated from assumed header field is close enough to subsequent SquashFS
-# start offset. Detects hidden root images used in ds26-enabled firmwares, but
-# currently no other image types.
+# calculated from assumed length header field is close enough to subsequent
+# SquashFS start offset. Detects hidden root images used in ds26-enabled
+# firmwares, but currently no other image types.
 extract_kernel_filesystem()
 {
 	echo -e "\nExtracting hidden root kernel + filesystem (kernel.image) ..."
