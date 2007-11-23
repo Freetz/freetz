@@ -1,6 +1,9 @@
 config DS_PACKAGE_TRANSMISSION
-	bool "Transmission 0.82 (binary only)"
+	bool "Transmission 0.93 (binary only)"
 	default n
-	select DS_LIB_libevent
+	select DS_LIB_libz
+	select DS_LIB_libssl
+	select DS_LIB_libresolv
+	select DS_LIB_librt
 	help
-	    Torrent client
+		Torrent client
