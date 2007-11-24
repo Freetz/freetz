@@ -6,14 +6,14 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 DAEMON=spindown
 
 case "$1" in
-        ""|load|start|restart|status)
-            if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-                echo "Error[$DAEMON]: not configured" 1>&2
-                exit 1
-            fi
- 
-            . /mod/etc/conf/$DAEMON.cfg;
-        ;;
+		""|load|start|restart|status)
+			if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+				echo "Error[$DAEMON]: not configured" 1>&2
+				exit 1
+			fi
+
+			. /mod/etc/conf/$DAEMON.cfg;
+		;;
 esac
 
 checksysfs() {
@@ -70,7 +70,7 @@ stop() {
 
 
 case "$1" in
-        ""|load)
+	""|load)
 		modreg cgi 'spindown' 'Disk Spindown'
 		if [ "$SPINDOWN_ENABLED" != "yes" ]; then
 			echo "Disk spindown is disabled" 1>&2
