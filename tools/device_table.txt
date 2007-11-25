@@ -58,7 +58,7 @@
 /dev/tty	c	666	0	0	5	0	-	-	-
 /dev/tty	c	666	0	0	4	0	0	1	8
 /dev/ttyp	c	666	0	0	3	0	0	1	10
-/dev/ptyp	c       666     0       0       2       0       0       1       10
+/dev/ptyp	c	666	0	0	2	0	0	1	10
 /dev/ptmx	c	666	0	0	5	2	-	-	-
 /dev/ttyP	c	666	0	0	57	0	0	1	4
 /dev/ttyS	c	666	0	0	4	64	0	1	4
@@ -68,14 +68,7 @@
 /dev/ppp	c	666	0	0	108	0	-	-	-
 /dev/pts/	c	640	0	0	136	0	0	1	8
 /dev/log	p	666	0	0	1	0	-	-	-
-
-# Input stuff
-#/dev/input		d	755	0	0	-	-	-	-	-
-#/dev/input/mice		c	640	0	0	13	63	0	0	-
-#/dev/input/mouse	c	660	0	0	13	32	0	1	4
-#/dev/input/event	c	660	0	0	13	64	0	1	4
-#/dev/input/js		c	660	0	0	13	0	0	1	4
-
+/dev/initrd	b	400	0	0	1	250	-	-
 
 # MTD stuff
 /dev/mtd	c	640	0	0	90	0	0	1	11
@@ -94,17 +87,6 @@
 /dev/vhci	c	644	0	0	10 250 -	-	-
 /dev/rfcomm	c	666	0	0	216 0	0	1	32
 
-# Audio stuff
-#/dev/audio	c	666	0	29	14	4	-	-	-
-#/dev/audio1	c	666	0	29	14	20	-	-	-
-#/dev/dsp	c	666	0	29	14	3	-	-	-
-#/dev/dsp1	c	666	0	29	14	19	-	-	-
-#/dev/sndstat	c	666	0	29	14	6	-	-	-
-
-# User-mode Linux stuff
-#/dev/ubda	b	640	0	0	98	0	0	0	-
-#/dev/ubda	b	640	0	0	98	1	1	1	15
-
 # SCSI Devices
 /dev/sda	b	640	0	0	8	0	0	0	-
 /dev/sda	b	640	0	0	8	1	1	1	16
@@ -116,12 +98,18 @@
 /dev/sdd	b	640	0	0	8	49	1	1	16
 
 # All the proprietary devices in the world
-/dev/Piglet	c	666	0	0	250	0	0	0	-
+
 /dev/acxHwDrv	c	666	0	0	254	0	0	0	-
 /dev/avm_event	c	666	0	0	241	0	0	0	-
+/dev/avm_net_trace	c	666	0	0	255	0	0	1	20
 /dev/avm_power	c	666	0	0	252	0	0	0	-
+/dev/c55xavm	c	666	0	0	245	0	0	0	-
 /dev/capi20	c	666	0	0	68	0	0	0	-
 /dev/debug	c	666	0	0	246	0	0	0	-
+/dev/dect_io	c	666	0	0	227	0	0	0	-
+/dev/dk	c	666	0	0	63	0	0	2
+/dev/eeprom	c	666	0	0	239	0	0	0	-
+/dev/ethsrctab	c	666	0	0	244	255	0	0	-
 /dev/kdsld	c	666	0	0	243	0	0	0	-
 /dev/kdsld_user	c	666	0	0	229	0	0	0	-
 /dev/kdsldptrace	c	666	0	0	244	0	0	1	5
@@ -129,6 +117,7 @@
 /dev/kdsld_traffic	c	666	0	0	226	0	0	-	-
 /dev/led	c	666	0	0	247	0	0	0	-
 /dev/new_led	c	666	0	0	251	0	0	0	-
+/dev/Piglet	c	666	0	0	250	0	0	0	-
 /dev/tffs	c	666	0	0	240	0	0	0	-
 /dev/tiatm	c	644	0	0	230	0	0	0	-
 /dev/ubik_boot_0	c	666	0	0	245	0	0	0	-
