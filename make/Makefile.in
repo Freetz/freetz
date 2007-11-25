@@ -314,6 +314,15 @@ $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE)
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked
+
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION):
+	mkdir -p $($(PKG)_TARGET_DIR)/root
+	if test -d $($(PKG)_MAKE_DIR)/files; then \
+		tar -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | tar -x -C $($(PKG)_TARGET_DIR) ; \
+	fi
+	@touch $$@
+$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+.PHONY: $(pkg) $(pkg)-precompiled
 endef
 
 ## Unpack and patch library package
@@ -328,14 +337,6 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 endef
 
 define PKG_UNPACKED__INT
-$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION):
-	mkdir -p $($(PKG)_TARGET_DIR)/root
-	if test -d $($(PKG)_MAKE_DIR)/files; then \
-		tar -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | tar -x -C $($(PKG)_TARGET_DIR) ; \
-	fi
-	@touch $$@
-$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
-.PHONY: $(pkg) $(pkg)-precompiled
 endef
 
 PKG_BIN_UNPACKED=$(eval $(PKG_BIN_UNPACKED__INT))
