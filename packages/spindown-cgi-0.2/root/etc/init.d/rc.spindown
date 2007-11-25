@@ -60,9 +60,9 @@ stop() {
 		kill $(cat $I) > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
-			echo 'v'
+			echo -n 'v'
 		else
-			echo 'x'
+			echo -n 'x'
 		fi
 	done
 	echo ") done."
