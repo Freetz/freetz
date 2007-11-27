@@ -19,6 +19,7 @@ KERNEL_LZMA_CFLAGS:=-D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -fno-s
 		   	-Wa,-march=mips32 -Wa,-mips32 -Wa,--trap
 KERNEL_LZMA_LIB:=kernel/linux-2.6.13.1/fs/squashfs/lzma_decode.a
 
+KERNEL_SOURCE_PATH__04.29:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__04.33:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/base/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__04.40:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__r4884:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
