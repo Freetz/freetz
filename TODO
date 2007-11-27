@@ -12,6 +12,10 @@ HIGH PRIORITY - critical bugs, important features
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------
 
+- Mini_fo packages uses same mountpoint for jffs2/ramfs as AVM (/data). Perhaps this
+  has to be changed because it is possible that rc.S overmounts mini_fo's
+  storage directory
+
 - Dsmod version is no more displayed on AVM's webinterface. Instead the 
   following query is done by webcm/ctlmgr <? query logic:status/nspver ?>.
   How can we cheat this? (related to firmwares with new webinterface, beta
@@ -88,9 +92,11 @@ MEDIUM PRIORITY - normal bugs, features, improvements
 LOW PRIORITY - nice to have, cosmetics, ideas
 ---------------------------------------------
 
+- An automatic mount helper for filesystems would be nice feature (e.g. ntfs)
+
 - Copy actual fakeroot version to mirrors and get it from there (before new 
   release)
-  
+
 - Make ccache build script aware of gcc version change (needs rebuild in that
   case)
 
