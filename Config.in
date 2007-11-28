@@ -818,6 +818,7 @@ config DS_PATCH_USBSTORAGE
 
 config DS_PATCH_WEBSRV
 	bool "Replace AVM web server by httpd"
+	depends on ! DS_TYPE_FON_WLAN_7270
 	default n
 	help
 		Patch init scripts so BusyBox's httpd is used instead of AVM's websrv.
@@ -829,6 +830,7 @@ config DS_PATCH_WEBSRV
 
 config DS_PATCH_UPNP
 	bool "Remove UPnP daemon (igdd)"
+	depends on ! DS_TYPE_FON_WLAN_7270 && ! DS_TYPE_LABOR_BETA
 	default n
 	help
 		Remove Universal Plug'n'Play daemon 'igdd' and some more files used by
@@ -912,7 +914,7 @@ config DS_REMOVE_VOIP_ISDN
 
 config DS_PATCH_MEDIASRV
 	bool "Integrate Media Server from USB Labor firmware - EXPERIMENTAL"
-	depends on DS_HAS_USB_HOST
+	depends on DS_HAS_USB_HOST && ! DS_TYPE_FON_WLAN_7270
 	default n
 	help
 		Extract the media server from the USB Labor firmware and integrate
