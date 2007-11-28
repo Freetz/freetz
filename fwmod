@@ -499,16 +499,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 	SUBVERSION="$(cat $SUBVERSION_FILE)${SVN_VERSION}"
 	OPTIONS="+busybox"
 
-	[ "$DS_REMOVE_ASSISTANT" == "y" ]    && OPTIONS="$OPTIONS -assistant"
-	[ "$DS_REMOVE_HELP" == "y" ]         && OPTIONS="$OPTIONS -help"
-	[ "$DS_REMOVE_CDROM_ISO" == "y" ]    && OPTIONS="$OPTIONS -cdrom.iso"
-	[ "$DS_PATCH_ATA" == "y" ]           && OPTIONS="$OPTIONS +ata"
-	[ "$DS_PATCH_ENUM" == "y" ]          && OPTIONS="$OPTIONS +enum"
-	[ "$DS_PATCH_INTERNATIONAL" == "y" ] && OPTIONS="$OPTIONS +international"
-	[ "$DS_PATCH_PUSH" == "y" ]          && OPTIONS="$OPTIONS +push"
-	[ "$DS_PATCH_WDS" == "y" ]           && OPTIONS="$OPTIONS +wds"
-	[ "$DS_PATCH_SIGNED" == "y" ]	     && OPTIONS="$OPTIONS +signed"
-	[ "$DS_PATCH_USBSTORAGE" == "y" ]    && OPTIONS="$OPTIONS +usbstorage"
+	[ "$DS_REMOVE_ASSISTANT" == "y" ]		&& OPTIONS="$OPTIONS -assistant"
+	[ "$DS_REMOVE_HELP" == "y" ]			&& OPTIONS="$OPTIONS -help"
+	[ "$DS_REMOVE_CDROM_ISO" == "y" ]		&& OPTIONS="$OPTIONS -cdrom.iso"
+	[ "$DS_PATCH_ATA" == "y" ]				&& OPTIONS="$OPTIONS +ata"
+	[ "$DS_PATCH_ENUM" == "y" ]				&& OPTIONS="$OPTIONS +enum"
+	[ "$DS_PATCH_INTERNATIONAL" == "y" ]	&& OPTIONS="$OPTIONS +international"
+	[ "$DS_PATCH_PUSH" == "y" ]				&& OPTIONS="$OPTIONS +push"
+	[ "$DS_PATCH_WDS" == "y" ]				&& OPTIONS="$OPTIONS +wds"
+	[ "$DS_PATCH_SIGNED" == "y" ]			&& OPTIONS="$OPTIONS +signed"
+	[ "$DS_PATCH_USBSTORAGE" == "y" ]		&& OPTIONS="$OPTIONS +usbstorage"
 
 	if [ "$DS_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
 		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}"
@@ -553,8 +553,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Execute general patch scripts 
 	for i in "${PATCHES_DIR}/"*.sh; do
-		[ -x "$i" ] && . $i
-	done 
+		[ -r "$i" ] || continue
+		echo2 "applying patch file $i"
+		. $i
+	done
 
 	# stop execution if in patch test mode
 	if [ "$FWMOD_PATCH_TEST" == "y" ]; then
@@ -571,7 +573,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
 	
 	if [ -z "$oems" ]; then
-	    oems="$(grep 'for i in  tcom' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
+		oems="$(grep 'for i in  tcom' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
 	fi
 	
 	if [ -z "$oems" ]; then
@@ -611,8 +613,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 	
 	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
-	    [ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
+		[ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
+		[ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
 		oem_list="tcom congstar avm"
 		sed -i -e 's/for i in  tcom.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
@@ -691,22 +693,22 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ "$DS_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 		
 		if [ "$DS_LIB_libterminfo" == "y" ]; then
-		    echo1 "installing terminfos"
-		    for i in \
-		    $( \
-			     cd "${ROOT_DIR}" && \
-			     find usr/share/terminfo -type d -name .svn -prune -false , -type f \
-		    )
-		    do
-		    	    bn="$(basename "$i")"
-			    terminfo="${bn}"
-			    if [ "$(eval "echo \"\$DS_LIB_libterminfo_$(echo "$terminfo")\"")" == "y" ]; then
+			echo1 "installing terminfos"
+			for i in \
+			$( \
+				cd "${ROOT_DIR}" && \
+				find usr/share/terminfo -type d -name .svn -prune -false , -type f \
+			)
+			do
+					bn="$(basename "$i")"
+				terminfo="${bn}"
+				if [ "$(eval "echo \"\$DS_LIB_libterminfo_$(echo "$terminfo")\"")" == "y" ]; then
 				echo2 "${bn}"
 				dn="$(dirname "$i")"
 				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 				cp -a "${ROOT_DIR}/${dn}/${terminfo}" "${FILESYSTEM_MOD_DIR}/${dn}/"
-			    fi
-		    done
+				fi
+			done
 		fi
 
 		if [ "$DS_FAVICON_STRING" != "none" ]; then
@@ -792,9 +794,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 		bn="$(basename "$i")"
 		mod="${bn%\.ko}"
 		
-        if [ "$DS_MODULES_ALL" = "y" -o \
-        			"$(eval "echo \"\$DS_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]
-        	   then
+		if [ "$DS_MODULES_ALL" = "y" -o \
+					"$(eval "echo \"\$DS_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]
+			then
 					echo2 "${bn}"
 					dn="$(dirname "$i")"
 					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
@@ -808,9 +810,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 		
 	echo1 "copying files"
 	"$TAR" -c -C "${KERNEL_REP_DIR}/root" --exclude=lib --exclude=usr/lib \
-		$([ -r "${KERNEL_REP_DIR}/.exclude" ] && echo "--exclude-from=${KERNEL_REP_DIR}/.exclude") \
-		$([ "$DS_PACKAGE_IPTABLES" != "y" ] && echo "--exclude=usr/sbin/iptables") \
-	.	| "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		$( \
+			[ -r "${KERNEL_REP_DIR}/.exclude" ] \
+				&& echo "--exclude-from=${KERNEL_REP_DIR}/.exclude" \
+		) \
+		$( \
+			[ "$DS_PACKAGE_IPTABLES" != "y" ] \
+				&& echo "--exclude=usr/sbin/iptables" \
+		) . | \
+	"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 	echo "installing packages"
 	
