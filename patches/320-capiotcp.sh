@@ -1,5 +1,3 @@
-#!/bin/bash
-
 rm_files()
 {
 	for file in $1; do
@@ -8,7 +6,7 @@ rm_files()
 	done
 }
 
-if [ "$DS_REMOVE_CAPIOVERTCP" == "y" ]; then
-	echo1 "removing capiotcp_server"
-	rm_files /usr/bin/capiotcp_server
-fi
+[ "$DS_REMOVE_CAPIOVERTCP" == "y" ] || return 0
+echo1 "removing capiotcp_server"
+rm_files /usr/bin/capiotcp_server
+

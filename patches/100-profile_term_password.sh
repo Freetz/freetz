@@ -1,5 +1,3 @@
-#!/bin/bash
-
 cat << 'EOF' >> ${FILESYSTEM_MOD_DIR}/etc/profile
 case $tty in
 	/dev/pts/*)

@@ -1,5 +1,3 @@
-#!/bin/bash
-
 rm_files()
 {
 	for file in $1; do
