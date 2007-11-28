@@ -13,11 +13,6 @@ KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
 KERNEL_IMAGE:=kernel/linux-2.6.13.1/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT)-$(KERNEL_REF).$(AVM_VERSION)
-KERNEL_LZMA_CFLAGS:=-D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing \
-			-fno-common -ffreestanding -falign-functions=4  -falign-labels=4 -falign-loops=4  -falign-jumps=4 \
-		   	-fomit-frame-pointer -g -G 0 -mno-abicalls -fno-pic -finline-limit=100000 -mabi=32 -march=mips32 -Wa,-32 \
-		   	-Wa,-march=mips32 -Wa,-mips32 -Wa,--trap
-KERNEL_LZMA_LIB:=kernel/linux-2.6.13.1/fs/squashfs/lzma_decode.a
 
 KERNEL_SOURCE_PATH__04.29:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__04.33:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/base/$(KERNEL_BUILD_DIR_N)
@@ -35,7 +30,7 @@ KERNEL_DS_CONFIG_TEMP:=$(KERNEL_MAKE_DIR)/.ds_config.temp
 $(KERNEL_DS_CONFIG_FILE): $(TOPDIR)/.config
 	@echo "DS_KERNEL_LAYOUT=$(DS_KERNEL_LAYOUT)" > $(KERNEL_DS_CONFIG_TEMP)
 	@diff -q $(KERNEL_DS_CONFIG_TEMP) $(KERNEL_DS_CONFIG_FILE) || \
-	    cp $(KERNEL_DS_CONFIG_TEMP) $(KERNEL_DS_CONFIG_FILE)
+		cp $(KERNEL_DS_CONFIG_TEMP) $(KERNEL_DS_CONFIG_FILE)
 	@rm -f $(KERNEL_DS_CONFIG_TEMP)
 endif
 
@@ -50,7 +45,7 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
 	#Version specific patches
-	for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
+	shopt -s nullglob; for i in $(KERNEL_MAKE_DIR)/patches/$(AVM_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
 ifneq ($(AVM_VERSION),04.33)
@@ -108,13 +103,7 @@ $(KERNEL_DIR)/.depend_done:  $(KERNEL_DIR)/.configured
 		prepare
 	touch $@
 
-$(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma
-	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
-	$(MAKE) -C $(KERNEL_BUILD_DIR)/lzma lzma_decode.a CROSS_COMPILE=$(KERNEL_CROSS) \
-		USE_CFLAGS="$(KERNEL_LZMA_CFLAGS)"
-	cp $(KERNEL_BUILD_DIR)/lzma/lzma_decode.a $@
-
-$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB) $(TOOLS_DIR)/lzma2eva
+$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma2eva
 	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
