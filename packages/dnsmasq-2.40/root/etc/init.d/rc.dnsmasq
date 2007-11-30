@@ -42,12 +42,22 @@ start() {
 	if [ "$1" != "nomultid" ]; then
 		multid -s > /dev/null 2>&1
 	fi
-	if [ -z $DNSMASQ_DOMAIN ]; then
-		$DAEMON -p "$DNSMASQ_DNS_PORT" $DNSMASQ_OPTIONS
-	else
-		$DAEMON -p "$DNSMASQ_DNS_PORT" -E -s "$DNSMASQ_DOMAIN" $DNSMASQ_OPTIONS
+	OPTIONS=""
+	if [ "$DNSMASQ_DNS_PORT" ]; then
+		OPTIONS="$OPTIONS -p \"$DNSMASQ_DNS_PORT\""
 	fi
+	if [ "$DNSMASQ_DOMAIN" ]; then
+		OPTIONS="$OPTIONS -E -s \"$DNSMASQ_DOMAIN\""
+	fi
+	if [ "$DNSMASQ_TFTP" = 'yes' -a -n "$DNSMASQ_TFTP_TFTPROOT" ]; then
+		OPTIONS="$OPTIONS --enable-tftp --tftp-root=\"$DNSMASQ_TFTP_TFTPROOT\""
+	fi
+	if [ "$DNSMASQ_DHCP" = "yes" -a "$DNSMASQ_DHCP_BOOTFILE" ]; then
+		OPTIONS="$OPTIONS --dhcp-boot=\"$DNSMASQ_DHCP_BOOTFILE\""
+	fi
+	eval "$DAEMON $OPTIONS"
 	exitval=$?
+
 	if [ "$1" != "nomultid" ]; then
 		multid $MULTIDPARAM > /dev/null 2>&1
 		ln -s resolv.conf /var/tmp/avm-resolv.conf
