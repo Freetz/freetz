@@ -1,3 +1,5 @@
+# Partially copied from sp-to-fritz by spirou & jpascher
+
 [ "$DS_TYPE_SPEEDPORT_W701V_7170" == "y" ] || return 0
 
 if [ -z "$FIRMWARE2" ]; then
@@ -13,10 +15,11 @@ cp "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char
 cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit"* "${FILESYSTEM_MOD_DIR}/lib/modules"
 
 echo2 "deleting obsolete files"
-for i in fs/ext2 fs/fat fs/isofs fs/nls fs/vfat fs/mbcache.ko drivers/usb drivers/scsi; do
+for i in fs drivers/usb drivers/scsi; do
 	rm -rf ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i
 done
-for i in bin/reinit_jffs2 etc/hotplug sbin/lsusb sbin/printserv; do
+for i in bin/pause bin/reinit_jffs2 bin/pause bin/usbhostchanged etc/hotplug \
+		sbin/lsusb sbin/printserv etc/hotplug sbin/ftpd; do
 	rm -rf ${FILESYSTEM_MOD_DIR}/$i
 done
 
@@ -35,12 +38,15 @@ piglet_load_params=\"\$piglet_load_params piglet_enable_switch=1\"" "${FILESYSTE
 sed -i -e "/piglet_irq=9.*$/d" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
 if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
+	sed -i -e "s/setvariable var:isIsdnNT 1/setvariable var:isIsdnNT 0/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	sed -i -e "s/setvariable var:isUsb\([^ ]*\) 1/setvariable var:isUsb\1 0/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 	sed -i -e "s/^HW=94/HW=101/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
 	sed -i -e "s/PRODUKT_NAME=.*$/PRODUKT_NAME=\"FRITZ!Box#Fon#Speedport#W#701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
 	sed -i -e "s/PRODUKT=.*$/PRODUKT=\"Fritz_Box_SpeedportW701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
 else
 	sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 	sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+	sed -i -e "s/CONFIG_CAPI_NT=\"y\"/CONFIG_CAPI_NT=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 fi
 
 echo2 "patching webinterface"
