@@ -171,6 +171,14 @@ config DS_TYPE_SPEEDPORT_W701V_7170
 		Enable this to compile a mod image for TCOM's Speedport W701V
 		based on an 7170 Image.
 
+config DS_TYPE_SPEEDPORT_W900V_7150
+	bool "Compile image for W900V"
+	depends on DS_TYPE_FON_7150
+	default n
+	help
+		Enable this to complie a mod image for TCOM's Speedport W900V
+		based on a 7150 Image.
+
 config DS_AVM_VERSION_STRING
 	string
 	default "04.29"			if DS_AVM_VERSION_04_29
@@ -1025,6 +1033,7 @@ config DS_DL_SITE2
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch" 		if DS_TYPE_SPEEDPORT_W701V
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V"	if DS_TYPE_SPEEDPORT_W701V_7170
 	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"							if DS_TYPE_SPEEDPORT_W900V
+	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20900V"		if DS_TYPE_SPEEDPORT_W900V_7150
 
 config DS_DL_SOURCE2
 	string "AVM web interface firmware source"	if DS_DL_OVERRIDE
@@ -1032,11 +1041,13 @@ config DS_DL_SOURCE2
 		DS_TYPE_SPEEDPORT_W501V || \
 		DS_TYPE_SPEEDPORT_W701V || \
 		DS_TYPE_SPEEDPORT_W701V_7170 || \
-		DS_TYPE_SPEEDPORT_W900V
+		DS_TYPE_SPEEDPORT_W900V || \
+		DS_TYPE_SPEEDPORT_W900V_7150
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if DS_TYPE_SPEEDPORT_W501V
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if DS_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W701V_v33.04.44.image"		if DS_TYPE_SPEEDPORT_W701V_7170
 	default "fritz.fon_7150.annexb.38.04.32.image"		if DS_TYPE_SPEEDPORT_W900V
+	default "fw_Speedport_W_900V.34.04.21.image"		if DS_TYPE_SPEEDPORT_W900V_7150
 
 menu "DS-Mod package download sites"
 
