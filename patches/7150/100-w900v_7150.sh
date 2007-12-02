@@ -28,13 +28,13 @@ mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7150" "${FILESYSTEM_MOD_DIR}/etc
 ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW900V/tcom"
 
 echo2 "patching rc.S and rc.init"
+sed -i -e "s/ATA=n/ATA=y/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
+sed -i -e "s/microvoip_top.bit/microvoip_isdn_top.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 sed -i -e "s/piglet_bitfile_offset=0 /piglet_bitfile_offset=0x51 /" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-sed -i -e "s/piglet_irq_gpio=18 /piglet_enable_button2=1 /" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 sed -i -e '/modprobe Piglet piglet_bitfile.*$/i \
  if [ "$HWRevision_BitFileCount" = "1" ] ; then \
  piglet_load_params="\$piglet_load_params piglet_enable_switch=1" \
  fi' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-sed -i -e "/piglet_irq=9.*$/d" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
 sed -i -e 's|dect_hw=3|dect_hw=2|' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
