@@ -1027,11 +1027,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
 	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
 
-	modimage="${DS_TYPE_STRING}_${FIRMWAREVERSION}-${SUBVERSION}.${DS_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
-	[ "$DS_TYPE_SPEEDPORT_W701V_7170" == "y" ] && \
-		modimage="W701V_$modimage"
-	[ "$DS_TYPE_SPEEDPORT_W900V_7150" == "y" ] && \
-		modimage="W900V_$modimage"
+	modimage="${DS_TYPE_STRING2}_${DS_TYPE_STRING}_${FIRMWAREVERSION}-${SUBVERSION}.${DS_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
 
 	# Pack firmware image (use old tar for compatibility)
 	echo "packing ${modimage}"
