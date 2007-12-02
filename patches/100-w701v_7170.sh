@@ -41,8 +41,8 @@ if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
 	sed -i -e "s/setvariable var:isIsdnNT 1/setvariable var:isIsdnNT 0/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 	sed -i -e "s/setvariable var:isUsb\([^ ]*\) 1/setvariable var:isUsb\1 0/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 	sed -i -e "s/^HW=94/HW=101/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-	sed -i -e "s/PRODUKT_NAME=.*$/PRODUKT_NAME=\"FRITZ!Box#Fon#Speedport#W#701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-	sed -i -e "s/PRODUKT=.*$/PRODUKT=\"Fritz_Box_SpeedportW701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
+	sed -i -e "s/PRODUKT_NAME=.*$/PRODUKT_NAME=FRITZ!Box#Fon#Speedport#W#701V/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
+	sed -i -e "s/PRODUKT=.*$/PRODUKT=Fritz_Box_SpeedportW701V/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
 else
 	sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 	sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
