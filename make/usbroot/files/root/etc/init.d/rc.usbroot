@@ -52,7 +52,12 @@ mount_usbroot() {
 	# disable hotplug
 	echo "" > /proc/sys/kernel/hotplug
 
-	load_piglet_module
+	if [ $HWRevision -eq 122 ]; then
+		load_piglet_module_7270
+	else
+		load_piglet_module
+	fi
+	
 	modprobe usbcore
 	if modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1; then
 	mount -t usbfs usbfs /proc/bus/usb
@@ -113,7 +118,12 @@ load_piglet_module() {
 		95) # 7140
 			piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x4d"
 		;;
+		101) # W701V
+			piglet_load_params="$piglet_load_params piglet_enable_button2=1 \
+				piglet_enable_switch=1 piglet_bitfile_offset=0x51"
+		;;
 		102) # W900V
+		piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x51"
 		[ "$HWRevision_BitFileCount" = "1" ] && \
 				piglet_load_params="$piglet_load_params piglet_enable_switch=1"
 		;;
@@ -186,7 +196,7 @@ start()
 {
 	# Mount proc and sysfs
 	[ -e /proc/mounts ] || mount proc
-	mount $SYSFS
+	mount sysfs
 
 	get_env_var
 
