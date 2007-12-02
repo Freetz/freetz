@@ -11,10 +11,11 @@ result=$?
 cgi_begin 'Passwort' 'password'
 
 if [ "$result" -neq 0 ]; then
-    echo '<h1>$(lang de:"Passwort konnte nicht ge&auml;ndert." en:"Password unchanged.")</h1>'
+	echo '<h1>$(lang de:"Passwort konnte nicht ge&auml;ndert." en:"Password unchanged.")</h1>'
 else
-    echo '<h1>$(lang de:"Passwort erfolgreich ge&auml;ndert." en:"New password set.")</h1>'
-    echo '<p>$(lang de:"Bitte Weboberfl&auml;che neustarten." en:"Please restart webcfg.")</p>'
+	echo '<h1>$(lang de:"Passwort erfolgreich ge&auml;ndert." en:"New password set.")</h1>'
+	echo '<p>$(lang de:"Starte Weboberfläche neu..." en:"Restarting webcfg...")</p>'
+	/etc/init.d/rc.webcfg restart > /dev/null 2>&1
 fi
 
 cat << EOF
