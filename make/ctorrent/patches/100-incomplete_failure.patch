@@ -1,0 +1,48 @@
+--- btfiles.cpp	2007/08/02 01:18:09	28
++++ btfiles.cpp	2007/11/26 07:31:23	47
+@@ -60,6 +60,7 @@
+   pnew->bf_filename = (char*) 0;
+   pnew->bf_fp = (FILE*) 0;
+   pnew->bf_length = 0;
++  pnew->bf_buffer = (char *) 0;
+ 
+   pnew->bf_last_timestamp = (time_t) 0;
+   pnew->bf_next = (BTFILE*) 0;
+@@ -94,6 +95,8 @@
+       pbf->bf_filename, strerror(errno));
+   pbf->bf_flag_opened = 0;
+   pbf->bf_fp = (FILE *)0;
++  delete []pbf->bf_buffer;
++  pbf->bf_buffer = (char *)0;
+   m_total_opened--;
+   return 0;
+ }
+@@ -126,7 +129,9 @@
+         return -1;  // caller prints error
+     }else return -1;  // caller prints error
+   }
+-  setvbuf(pbf->bf_fp, m_buffer, _IOFBF, DEFAULT_SLICE_SIZE);
++  pbf->bf_buffer = new char[DEFAULT_SLICE_SIZE];
++  if(pbf->bf_buffer)
++    setvbuf(pbf->bf_fp, pbf->bf_buffer, _IOFBF, DEFAULT_SLICE_SIZE);
+ 
+   pbf->bf_flag_opened = 1;
+   pbf->bf_flag_readonly = iotype ? 0 : 1;
+--- btfiles.h	2007/10/29 01:45:13	30
++++ btfiles.h	2007/11/25 21:40:54	31
+@@ -14,6 +14,7 @@
+   char *bf_filename;	// full path of file.
+   uint64_t bf_length;
+   FILE *bf_fp;
++  char *bf_buffer;
+ 
+   time_t bf_last_timestamp;	// last io timestamp.
+ 
+@@ -37,7 +38,6 @@
+   size_t m_total_opened;	// already opened
+   size_t m_nfiles;
+   BTFILE **m_file;
+-  char m_buffer[DEFAULT_SLICE_SIZE];
+ 
+   uint8_t m_flag_automanage:1;
+   uint8_t m_flag_reserved:7;	// current version not implement
