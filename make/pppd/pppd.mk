@@ -22,7 +22,7 @@ $(DL_DIR)/$(PPPD_SOURCE):
 
 $(DL_DIR)/$(PPPD_PKG_SOURCE):
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(PPPD_PKG_SOURCE) $(PPPD_PKG_SITE)
-    
+
 $(PPPD_DIR)/.unpacked: $(DL_DIR)/$(PPPD_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(PPPD_SOURCE)
 	for i in $(PPPD_MAKE_DIR)/patches/*.patch; do \
