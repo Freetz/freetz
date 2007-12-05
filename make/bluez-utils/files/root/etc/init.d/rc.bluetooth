@@ -1,0 +1,46 @@
+#!/bin/sh
+
+start() {
+	echo "Start bluetooth..."
+
+	VHCI_MAJOR=10
+	VHCI_MINOR=250
+	RFCOMM_MAJOR=216
+
+	# Insert hci_usb and rfcomm module
+	modprobe -q hci_usb
+	modprobe -q rfcomm
+
+	# start daemons
+	hcid
+	sdpd
+}
+
+stop() {
+	echo "Stop bluetooth..."  
+	killall -9 hcid
+	killall -9 sdpd
+	rmmod hci_usb 
+	rmmod rfcomm
+	rmmod l2cap
+	rmmod bluetooth 
+}
+
+case "$1" in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	restart) 
+		stop
+		sleep 1
+		start
+	;;
+	*)
+		echo "rc.bluetooth [start|stop|restart]"
+	;;
+esac
+
+exit 0
