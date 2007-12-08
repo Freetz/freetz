@@ -177,7 +177,6 @@ kernel-oldconfig: $(KERNEL_DIR)/.configured
 kernel-source: $(KERNEL_DIR)/.unpacked
 
 kernel-clean:
-	rm -f $(KERNEL_BUILD_DIR)/$(KERNEL_LZMA_LIB)
 	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-2.6.13.1 \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
