@@ -1,57 +1,31 @@
-config DS_PACKAGE_IRSSI
-	bool "irssi 0.8.12"
-	select DS_LIB_libglib
-	select DS_LIB_libgmodule
+config DS_PACKAGE_OPENVPN
+	bool "OpenVPN 2.1_rc4"
+	select DS_LIB_libssl
 	default n
 	help
-		Irssi - client of the future - is a terminal based IRC client for UNIX
-		systems. It also supports SILC and ICB protocols via plugins.
+		VPN Server
 
-		* Autologging: Irssi will automatically log any channels, queries or
-		special	windows that you want.
-		* Formats and Themes: irssi has an easy yet powerful way to customize your
-		client's look and feel.
-		* Configurable keybindings: Irssi allows you to modify the default
-		keybindings and create your own so you can customize your client.
-		* Paste detection: Irssi tries to detect when you are pasting large amounts
-		of text, by looking at the speed that characters are entered; if such
-		pasting is detected [TAB]-characters are sent as-is instead of being
-		tab-completed and eventually ending up in a wrong destination window.
-		
-config DS_PACKAGE_IRSSI_WITH_PROXY
-	bool "Build irssi-proxy"
-	depends on DS_PACKAGE_IRSSI
+config DS_PACKAGE_OPENVPN_WITH_LZO
+	bool "With lzo Compression"
+	depends on DS_PACKAGE_OPENVPN
+	select DS_LIB_liblzo2
+	default y
+	help
+		LZO2 Compression for VPN Traffic
+
+config DS_PACKAGE_OPENVPN_WITH_MGMNT
+	bool "Enable Management Console"
+	depends on DS_PACKAGE_OPENVPN
 	default n
 	help
-		Irssi-proxy is a plugin which allows to bind a port to each IRC server you are
-		connected to. The copy of Irssi running the proxy works just as a normal
-		client which you can use, but you can also connect one or more clients to it
-		to share the connections.
-		Using Irssi as a proxy has the major advantage of Irssi's power as an IRC
-		client. You never have to worry about losing your connection to IRC.
+		Enables OpenVPN's Management Console for administrative Tasks.
+		This feature is not configurable via Web-UI.
 
-config DS_PACKAGE_IRSSI_WITH_BOT
-	bool "Build irssi-bot"
-	depends on DS_PACKAGE_IRSSI
-	default n
-
-config DS_PACKAGE_IRSSI_WITH_TERMINFO
-	bool "Use terminfo directly instead of curses"
-	depends on DS_PACKAGE_IRSSI
-	default n
-
-config DS_PACKAGE_IRSSI_WITH_NCURSES
-	bool "Compile with ncurses"
-	depends on DS_PACKAGE_IRSSI
-	select DS_LIB_libncurses
-	default n
-
-config DS_PACKAGE_IRSSI_WITH_OPENSSL
-	bool "With openssl encryption"
-	depends on DS_PACKAGE_IRSSI
-	select DS_LIB_libcrypto
-	default n
+config DS_PACKAGE_OPENVPN_ENABLE_SMALL
+	bool "Optimize for size"
+	depends on DS_PACKAGE_OPENVPN
+	default y
 	help
-	    Openssl encryption
-
+		Enables binary optimiziation for size.
+		Must be disabled to use the config option "explicit-exit-notify".
 
