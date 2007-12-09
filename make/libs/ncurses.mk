@@ -90,36 +90,19 @@ $($(PKG)_PANEL_TARGET_BINARY): $($(PKG)_PANEL_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel*.so* $(NCURSES_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
-ifeq ($(strip $(DS_LIB_libncurses)),y)
 $(pkg)-ncurses: $($(PKG)_NCURSES_STAGING_BINARY) 
 $(pkg)-ncurses-precompiled: $($(PKG)_NCURSES_TARGET_BINARY) $(pkg)-terminfo
-else
-$(pkg)-ncurses $(pkg)-ncurses-precompiled:
-endif
 
-ifeq ($(strip $(DS_LIB_libform)),y)
 $(pkg)-form: $($(PKG)_FORM_STAGING_BINARY)
 $(pkg)-form-precompiled: $($(PKG)_FORM_TARGET_BINARY)
-else
-$(pkg)-form $(pkg)-form-precompiled:
-endif
 
-ifeq ($(strip $(DS_LIB_libmenu)),y)
 $(pkg)-menu: $($(PKG)_MENU_STAGING_BINARY)
 $(pkg)-menu-precompiled: $($(PKG)_MENU_TARGET_BINARY)
-else
-$(pkg)-menu $(pkg)-menu-precompiled:
-endif
 
-ifeq ($(strip $(DS_LIB_libpanel)),y)
 $(pkg)-panel: $($(PKG)_PANEL_STAGING_BINARY)
 $(pkg)-panel-precompiled: $($(PKG)_PANEL_TARGET_BINARY)
-else
-$(pkg)-panel $(pkg)-panel-precompiled:
-endif
 
 $(pkg): $(pkg)-ncurses $(pkg)-form $(pkg)-menu $(pkg)-panel
-
 $(pkg)-precompiled: uclibc $(pkg) $(pkg)-ncurses-precompiled $(pkg)-form-precompiled $(pkg)-menu-precompiled $(pkg)-panel-precompiled
 
 $(pkg)-terminfo: $($(PKG)_TERMINFO_TARGET_DIR)/.installed
