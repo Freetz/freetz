@@ -12,10 +12,6 @@ HIGH PRIORITY - critical bugs, important features
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------
 
-- Mini_fo packages uses same mountpoint for jffs2/ramfs as AVM (/data). Perhaps this
-  has to be changed because it is possible that rc.S overmounts mini_fo's
-  storage directory
-
 - Create wrapper for starting external root mount rc.* files (USB, NFS,
   Mini_fo) and add option to define an order in which they are tried. Default
   order (editable) should be
@@ -30,11 +26,6 @@ MEDIUM PRIORITY - normal bugs, features, improvements
 - 7270 seems to be ur8 (not ohio), as if we have a opensource package
   we should check this and change Config.in accordingly. There will be
   some work to do because kernel version differs (2.6.19)
-
-- Check order in which packages are started at boot time (virtualip, ntfs,
-  cifsmount, syslog-cgi)
-    Remark (by Oliver): Done (quickly), perhaps there are some more packages to
-    prioritise.
 
 - Where do strange hostnames like "Speedport-W-701V-33.04.44" or
   "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
@@ -89,9 +80,6 @@ MEDIUM PRIORITY - normal bugs, features, improvements
 LOW PRIORITY - nice to have, cosmetics, ideas
 ---------------------------------------------
 
-- We should use different parameters for mksquashfs2 and mksquashfs3 
-  (e.g no-progress,no-exports).
-
 - An automatic mount helper for filesystems would be nice feature (e.g. ntfs)
 
 - Copy actual fakeroot version to mirrors and get it from there (before new 
@@ -145,8 +133,6 @@ LOW PRIORITY - nice to have, cosmetics, ideas
     than necessary. (Keep it simple, stupid!) Rudi stands for rudimentary,
     after all.
 
-- Make rc.mini_fo use kernel_args API
-
 - Maybe we can offer including the binary 'urlader.setconfig26' from firmwares
   voip-gateway-5188.36.04.30.image or fritz.box_fon.06.04.33.image as a debug
   tool so users can change the read-only status of bootloader variables.
@@ -180,15 +166,15 @@ LOW PRIORITY - nice to have, cosmetics, ideas
 - Idea by heini66: port Softmac WLAN driver from Openwrt. Goal is ad-hoc
   networking, e.g. for Freifunk.
 
-- Try to fix rcapid code (improved version from mtg). Unfortunately it does
-  not work. Until it is fixed I switched back to a working version. 
-  Equipment can be found at ftp://ftp.melware.de/capi-utils/.
-  
-
 
 FINISHED, NEEDS TESTING
 -----------------------
 
+- Check order in which packages are started at boot time (virtualip, ntfs,
+  cifsmount, syslog-cgi)
+    Remark (by Oliver): Done (quickly), perhaps there are some more packages to
+    prioritise.
+    
 - Dsmod version is no more displayed on AVM's webinterface. Instead the 
   following query is done by webcm/ctlmgr <? query logic:status/nspver ?>.
   How can we cheat this? (related to firmwares with new webinterface, beta
@@ -251,16 +237,15 @@ FINISHED, NEEDS TESTING
   Remark (by Oliver): Should we provide some button/menu to create a swapfile?
 
 - Bump uClibc to 0.9.29
-    Status (by Oliver): Done. I'm having problems with igdd.
+    Status (by Oliver): Done.
 
 - Check bftpd, dropbear, netsnmp and openvpn (try to make suboptions instead of
   multiple packages)
-    Remark (by olistudent): Done. But it needs testing. Open question: Are
+    Status (by olistudent): Done. But it needs testing. Open question: Are
     there options in cfg files that conflict with the features compiled in
     (e.g. OPENVPN_MGMNT)?
     
-- bftpd, vsftpd: Configuration file has to be rewritten after change - see 
-  next item
+- bftpd, vsftpd: Configuration file has to be rewritten after change
     Status (by Oliver): Done, needs testing
 
 - Idea by heini66: optionally remove dsld from image, because it is supposedly
@@ -342,5 +327,3 @@ FINISHED, NEEDS TESTING
     Status (by kriegaex): done by Oliver, tested successfully on my W701V with
     29.04.40 (no beta or lab tested yet, because I do not use those).
 
-- Option to remove capiotcp_server
-    Status (by Ralf): done.

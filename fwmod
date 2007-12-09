@@ -188,8 +188,11 @@ MAKEDEVS_TOOL="makedevs"
 FAKEROOT_TOOL="fakeroot"
 UNSQUASHFS_TOOL="unsquashfs3-lzma"
 
+MKSQUASHFS_OPTIONS="-le -noappend -all-root -info"
+
 if [ "$DS_REPLACE_KERNEL" == "y" ] || [ "$DS_TYPE_FON_WLAN_7270" ]; then
 	MKSQUASHFS_TOOL="mksquashfs3-lzma"
+	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 else
 	MKSQUASHFS_TOOL="mksquashfs-lzma"
 fi
@@ -979,7 +982,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Possible race condition: save file must become available in file system.
 	# This can take an instant, so wait if necessary.
 	until [ -r fakechroot.save ]; do sleep 0.1; done
-	"$FAKEROOT" -i fakechroot.save -- $TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD -le -noappend -all-root -b $FILESYSTEM_BLOCKSIZE -info >> $MOD_DIR/filesystem.log 2>&1
+	"$FAKEROOT" -i fakechroot.save -- $TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 	rm -f fakechroot.save
 
 	if [ ! -s "$FILESYSTEM_MOD" ]; then
