@@ -1,5 +1,5 @@
-$(call PKG_INIT_LIB, 2.12.12)
-$(PKG)_LIB_VERSION:=0.1200.12
+$(call PKG_INIT_LIB, 2.12.13)
+$(PKG)_LIB_VERSION:=0.1200.13
 $(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.gtk.org/pub/glib/2.12
 $(PKG)_DIR:=$(SOURCE_DIR)/glib-$($(PKG)_VERSION)
