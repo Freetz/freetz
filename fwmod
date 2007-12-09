@@ -691,7 +691,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 			lib="$(echo "$lib" | sed 's/^libgmodule-2/libgmodule2-2/')"
 			lib="$(echo "$lib" | sed 's/^libgthread-2/libgthread2-2/')"
 			lib="$(echo "$lib" | sed 's/-[0-9][\.0-9a-z]*$//')"
-			echo $lib
 			if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
 				echo2 "${bn}"
 				dn="$(dirname "$i")"
@@ -699,7 +698,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 				lib="$(echo "$lib" | sed 's/^libgobject2/libgobject-2/')"
 				lib="$(echo "$lib" | sed 's/^libgmodule2/libgmodule-2/')"
 				lib="$(echo "$lib" | sed 's/^libgthread2/libgthread-2/')"
-				echo $lib
 				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 				cp -a "${ROOT_DIR}/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
 				chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
