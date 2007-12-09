@@ -1,6 +1,7 @@
 INADYN_VERSION:=1.96.2
 INADYN_SOURCE:=inadyn.v$(INADYN_VERSION).zip
-INADYN_SITE:=http://inadyn.ina-tech.net
+#INADYN_SITE:=http://inadyn.ina-tech.net
+INADYN_SITE:=http://www.mirrorservice.org/sites/ftp.freebsd.org/pub/FreeBSD/distfiles
 INADYN_MAKE_DIR:=$(MAKE_DIR)/inadyn
 INADYN_DIR:=$(SOURCE_DIR)/inadyn-$(INADYN_VERSION)
 INADYN_BINARY:=$(INADYN_DIR)/inadyn/bin/linux/inadyn
