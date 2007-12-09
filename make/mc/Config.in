@@ -11,6 +11,19 @@ config DS_PACKAGE_MC
 		Deco a try, but don't expect as much comfort and power there as you 
 		will get here.
 
+config DS_MC_INTERNAL_EDITOR
+	bool "Internal editor"
+	depends on DS_PACKAGE_MC
+	default y
+	help
+		MC features an internal editor which can be started by F4.  If you
+		decativate it because you want to use vi or nano instead, F4 will
+		still work. By default, vi is called on the box, but exporting EDITOR
+		so it points to another editor of your choice will get you the
+		combination of file manager and editor you desire. :-)
+
+		Switching off this feature saves about 86 KB in the main binary.
+
 config DS_MC_ONLINE_HELP
 	bool "Online help"
 	depends on DS_PACKAGE_MC
@@ -20,3 +33,12 @@ config DS_MC_ONLINE_HELP
 
 		Switching off this feature saves about 115 KB in the (unsquashed)
 		file system.
+
+config DS_MC_WITH_NCURSES
+	bool "Use ncurses library instead of internal mcslang"
+	depends on DS_PACKAGE_MC
+	select DS_LIB_libncurses
+	default n
+	help
+		If mc is linked against libncurses (200 KB) the size of the mc binary is reduced about 50 KB.
+

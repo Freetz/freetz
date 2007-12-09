@@ -1,48 +1,25 @@
 $(call PKG_INIT_BIN, 4.6.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_HELP:=$($(PKG)_MAKE_DIR)/files/root/usr/share/mc/mc.hlp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
-$(PKG)_PKG_SITE:=http://dsmod.magenbrot.net
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc.bin
 $(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
 
-$(PKG)_DEPENDS_ON += ncurses glib
+$(PKG)_DEPENDS_ON += glib
 
+ifeq ($(strip $(DS_MC_WITH_NCURSES)),y) 
+$(PKG)_DEPENDS_ON += ncurses 
+endif
 
-$(PKG_SOURCE_DOWNLOAD)
-$(PKG_UNPACKED)
+$(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config
+$(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config.temp
 
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	( cd $(MC_DIR); rm -f config.cache; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-1.2" \
-		LDFLAGS="" \
-		ac_cv_lib_intl_tolower=no \
-		mc_cv_have_zipinfo=yes \
-		am_cv_func_iconv=no \
-		./configure \
-		--target=$(GNU_TARGET_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--build=$(GNU_HOST_NAME) \
-		--program-prefix="" \
-		--program-suffix="" \
-		--prefix=/usr \
-		--exec-prefix=/usr \
-		--bindir=/usr/bin \
-		--datadir=/usr/share \
-		--includedir=/usr/include \
-		--infodir=/usr/share/info \
-		--libdir=/usr/lib \
-		--libexecdir=/usr/lib \
-		--localstatedir=/var \
-		--mandir=/usr/share/man \
-		--sbindir=/usr/sbin \
-		--sysconfdir=/etc \
-		$(DISABLE_NLS) \
-		$(DISABLE_LARGEFILE) \
+$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
+$(PKG)_CONFIGURE_ENV += am_cv_func_iconv=no
+$(PKG)_CONFIGURE_ENV += mc_cv_have_zipinfo=yes
+
+$(PKG)_CONFIGURE_OPTIONS:=\
 		--disable-charset \
 		--disable-background \
 		--disable-gcc-warnings \
@@ -53,24 +30,44 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 		--with-vfs \
 		--without-mcfs \
 		--without-samba \
-		--without-gpm-mouse \
 		--with-configdir=/etc \
 		--without-ext2undel \
 		--with-subshell \
-		--with-screen=ncurses \
-		--with-edit \
-	);
+		$(if $(DS_MC_WITH_NCURSES),--with-screen=ncurses,--with-screen=mcslang) \
+		$(if $(DS_MC_INTERNAL_EDITOR),--with-edit,)
+
+
+
+$(PKG_SOURCE_DOWNLOAD)
+
+$($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "DS_MC_INTERNAL_EDITOR=$(if $(DS_MC_INTERNAL_EDITOR),y,n)" > $(MC_DS_CONFIG_TEMP)
+	@echo "DS_MC_WITH_NCURSES=$(if $(DS_MC_WITH_NCURSES),y,n)" >> $(MC_DS_CONFIG_TEMP)
+	@diff -q $(MC_DS_CONFIG_TEMP) $(MC_DS_CONFIG_FILE) || \
+		cp $(MC_DS_CONFIG_TEMP) $(MC_DS_CONFIG_FILE)
+	@rm -f $(MC_DS_CONFIG_TEMP)
+
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $($(PKG)_DS_CONFIG_FILE)
+	rm -rf $(MC_DIR)
+	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MC_SOURCE)
+	for i in $(MC_MAKE_DIR)/patches/*.patch; do \
+		$(PATCH_TOOL) $(MC_DIR) $$i; \
+	done
 	touch $@
+
+$(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(MC_DIR)
+		$(MAKE) -C $(MC_DIR) \
+		GLIB_CFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-1.2"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_HELP): $($(PKG)_HELP)
-	cp $(MC_HELP) $(MC_TARGET_HELP)
+	mkdir -p $(dir $@)
+	cp $^ $@
 
 $(pkg):
 
