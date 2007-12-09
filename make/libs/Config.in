@@ -394,9 +394,17 @@ config DS_LIB_libgcc_s
 		machines. libgcc also includes routines for exception handling, and a
 		handful of miscellaneous operations.
 
+config DS_LIB_libglib
+	bool "GLib (libglib-1.2.so)"
+	select DS_LIB_libpthread
+	default n
+	help
+		GLib is a library containing many useful C routines for things such as trees, 
+		hashes, and lists.
+
 menu "GLIB2"
 
-config DS_LIB_libglib
+config DS_LIB_libglib2
 	bool "GLib2 (libglib-2.0.so)"
 	select DS_LIB_libiconv
 	select DS_LIB_libintl
@@ -405,19 +413,19 @@ config DS_LIB_libglib
 		GLib is a library containing many useful C routines for things such as trees, 
 		hashes, and lists.
 
-config DS_LIB_libgobject
+config DS_LIB_libgobject2
 	bool "libgobject-2.0.so"
-	select DS_LIB_libglib
+	select DS_LIB_libglib2
 	default n
 
-config DS_LIB_libgmodule
+config DS_LIB_libgmodule2
 	bool "libgmodule-2.0.so"
-	select DS_LIB_libglib
+	select DS_LIB_libglib2
 	default n
 
-config DS_LIB_libgthread
+config DS_LIB_libgthread2
 	bool "libgthread-2.0.so"
-	select DS_LIB_libglib
+	select DS_LIB_libglib2
 	default n
 
 endmenu
