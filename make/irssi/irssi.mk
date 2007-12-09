@@ -15,14 +15,12 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config
 $(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config.temp
 
-#$(PKG)_CONFIGURE_PRE_CMDS +=
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 
 $(PKG)_CONFIGURE_OPTIONS:=\
 	--with-textui \
 	--with-perl=no \
 	--disable-ipv6 \
-	$(DISABLE_LARGEFILE) \
 	$(if $(DS_PACKAGE_IRSSI_WITH_BOT),--with-bot,) \
 	$(if $(DS_PACKAGE_IRSSI_WITH_PROXY),--with-proxy,) \
 	$(if $(DS_PACKAGE_IRSSI_WITH_OPENSSL),,--disable-ssl) \

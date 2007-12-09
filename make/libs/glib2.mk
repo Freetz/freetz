@@ -22,7 +22,6 @@ $(PKG)_CONFIGURE_ENV += glib_cv_stack_grows=no
 $(PKG)_CONFIGURE_ENV += glib_cv_uscore=no
 $(PKG)_CONFIGURE_ENV += glib_cv_long_long_format=11
 $(PKG)_CONFIGURE_ENV += glib_cv_have_strlcpy=yes
-$(PKG)_CONFIGURE_ENV += ac_cv_func_posix_getpwuid_r=yes
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-debug=no
