@@ -40,5 +40,7 @@ config DS_MC_WITH_NCURSES
 	select DS_LIB_libncurses
 	default n
 	help
-		If mc is linked against libncurses (200 KB) the size of the mc binary is reduced about 50 KB.
-
+		If mc is linked against libncurses (200 KB) the size of the mc binary
+		is reduced by about 50 KB, but if you do not need libncurses for any
+		other package, those 50 KB are a good investment in order to remove
+		libncurses from the firmware image and save (200 - 50) KB = 150 KB.
