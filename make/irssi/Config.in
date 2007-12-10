@@ -1,26 +1,25 @@
 config DS_PACKAGE_IRSSI
-	bool "irssi 0.8.12"
+	bool "Irssi 0.8.12"
 	select DS_LIB_libglib2
 	select DS_LIB_libgmodule2
 	select DS_LIB_libncurses
 	default n
 	help
-		Irssi - client of the future - is a terminal based IRC client for UNIX
-		systems. It also supports SILC and ICB protocols via plugins.
+		Irssi - the client of the future - is a terminal based IRC client for UNIX
+		systems. It also supports SILC and ICB protocols via plugins. Features:
+		  * Autologging: Irssi will automatically log any channels, queries or
+		    special windows that you want.
+		  * Formats and Themes: irssi has an easy yet powerful way to customize your
+		    client's look and feel.
+		  * Configurable keybindings: Irssi allows you to modify the default
+		    keybindings and create your own so you can customize your client.
+		  * Paste detection: Irssi tries to detect when you are pasting large amounts
+		    of text, by looking at the speed that characters are entered; if such
+		    pasting is detected [TAB]-characters are sent as-is instead of being
+		    tab-completed and eventually ending up in a wrong destination window.
 
-		* Autologging: Irssi will automatically log any channels, queries or
-		special	windows that you want.
-		* Formats and Themes: irssi has an easy yet powerful way to customize your
-		client's look and feel.
-		* Configurable keybindings: Irssi allows you to modify the default
-		keybindings and create your own so you can customize your client.
-		* Paste detection: Irssi tries to detect when you are pasting large amounts
-		of text, by looking at the speed that characters are entered; if such
-		pasting is detected [TAB]-characters are sent as-is instead of being
-		tab-completed and eventually ending up in a wrong destination window.
-		
 config DS_PACKAGE_IRSSI_WITH_PROXY
-	bool "Build irssi-proxy"
+	bool "Irssi proxy"
 	depends on DS_PACKAGE_IRSSI
 	default n
 	help
@@ -28,19 +27,19 @@ config DS_PACKAGE_IRSSI_WITH_PROXY
 		connected to. The copy of Irssi running the proxy works just as a normal
 		client which you can use, but you can also connect one or more clients to it
 		to share the connections.
+
 		Using Irssi as a proxy has the major advantage of Irssi's power as an IRC
 		client. You never have to worry about losing your connection to IRC.
 
 config DS_PACKAGE_IRSSI_WITH_BOT
-	bool "Build irssi-bot"
+	bool "Irssi bot"
 	depends on DS_PACKAGE_IRSSI
 	default n
 
 config DS_PACKAGE_IRSSI_WITH_OPENSSL
-	bool "With openssl encryption"
+	bool "Irssi OpenSSL encryption"
 	depends on DS_PACKAGE_IRSSI
 	select DS_LIB_libcrypto
 	default n
 	help
-		Openssl encryption
-
+		OpenSSL encryption for Irssi
