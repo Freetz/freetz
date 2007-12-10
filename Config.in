@@ -14,6 +14,8 @@ config DS_AVM_VERSION_04_33
 	bool
 config DS_AVM_VERSION_04_40
 	bool
+config DS_AVM_VERSION_55_04
+	bool
 config DS_AVM_VERSION_r4884
 	bool
 config DS_AVM_VERSION_r7203
@@ -83,7 +85,7 @@ choice
 		bool "Fon WLAN 7170"
 	
 	config DS_TYPE_FON_WLAN_7270
-		select DS_AVM_VERSION_04_40
+		select DS_AVM_VERSION_55_04
 		bool "Fon WLAN 7270"
 	
 	config DS_TYPE_WLAN_3020
@@ -185,6 +187,7 @@ config DS_AVM_VERSION_STRING
 	default "04.30"			if DS_AVM_VERSION_04_30
 	default "04.33"			if DS_AVM_VERSION_04_33
 	default "04.40"			if DS_AVM_VERSION_04_40
+	default "55.04"			if DS_AVM_VERSION_55_04
 	default "r4884"			if DS_AVM_VERSION_r4884
 	default "r7203"			if DS_AVM_VERSION_r7203
 	default "r8508"			if DS_AVM_VERSION_r8508
@@ -197,14 +200,14 @@ choice
 	config DS_TYPE_LANG_DE
 		bool "de - deutsch"
 		depends on \
-		    ! DS_TYPE_FON_5010
+			! DS_TYPE_FON_5010
 
 	config DS_TYPE_LANG_A_CH
 		bool "a-ch - deutsch"
 		depends on \
-		    DS_TYPE_FON_5010 || \
-		    DS_TYPE_FON_WLAN_7140 || \
-		    DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
+			DS_TYPE_FON_5010 || \
+			DS_TYPE_FON_WLAN_7140 || \
+			DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
 
 	config DS_TYPE_LANG_EN
 		bool "en - international"
@@ -381,8 +384,7 @@ config DS_KERNEL_LAYOUT
 		DS_TYPE_WLAN_3170 || \
 		DS_TYPE_SPEEDPORT_W501V || \
 		DS_TYPE_SPEEDPORT_W701V || \
-		DS_TYPE_SPEEDPORT_W900V || \
-		DS_TYPE_FON_WLAN_7270
+		DS_TYPE_SPEEDPORT_W900V
 	default "ar7"			if \
 		DS_TYPE_FON || \
 		DS_TYPE_300IP_AS_FON || \
@@ -392,8 +394,13 @@ config DS_KERNEL_LAYOUT
 		DS_TYPE_FON_WLAN_7050 || \
 		DS_TYPE_WLAN_3020 || \
 		DS_TYPE_WLAN_3030
-#	default "ur8"			if \
-#		DS_TYPE_FON_WLAN_7270
+	default "ur8"			if \
+		DS_TYPE_FON_WLAN_7270
+
+config DS_KERNEL_VERSION
+	string
+	default "2.6.13.1" if ! DS_TYPE_FON_WLAN_7270
+	default "2.6.19.2" if DS_TYPE_FON_WLAN_7270
 	
 config DS_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if DS_TYPE_CUSTOM

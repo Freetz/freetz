@@ -5,6 +5,7 @@ AVM_SOURCE__04.29:=$(AVM_SITE__AVM)/fritzbox-source-files-04.29.tar.bz2
 AVM_SOURCE__04.30:=$(AVM_SITE__AVM)/fritzbox7141-source-files-04.30.tar.bz2
 AVM_SOURCE__04.33:=$(AVM_SITE__AVM)/fritzbox-source-files-04.33.tar.bz2
 AVM_SOURCE__04.40:=$(AVM_SITE__AVM)/fritzbox-source-files.04.40.tar.bz2
+AVM_SOURCE__55.04:=$(AVM_SITE__AVM)/fritz_media-source-files-55.04.tar.bz2
 AVM_SOURCE__r4884:=$(AVM_SITE__TCOM)/Speedport%20W%20900V/GPL-r4884-8mb_26-tar.bz2
 AVM_SOURCE__r7203:=$(AVM_SITE__TCOM)/Speedport_W501V/GPL-r7203-4mb_26-tar.bz2
 AVM_SOURCE__r8508:=$(AVM_SITE__TCOM)/Speedport%20W%20701%20V/GPL-r8508-8mb_26.tar.bz2
