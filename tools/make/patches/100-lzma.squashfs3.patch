@@ -69,3 +69,15 @@
  
  	if(res != Z_STREAM_END || c_byte >= size) {
  notcompressed:
+@@ -3503,9 +3503,9 @@
+ 	reader_buffer_size = readb_mbytes << (20 - block_log);
+ 	writer_buffer_size = writeb_mbytes << (20 - block_log);
+ 
+-	if(block_size <= 65536 && sparse_files == FALSE)
++/*	if(block_size <= 65536 && sparse_files == FALSE)
+ 		s_minor = 0;
+-	else
++	else */
+ 		s_minor = SQUASHFS_MINOR;
+ 
+ 	destination_file = argv[source + 1];
