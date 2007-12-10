@@ -46,7 +46,7 @@
  		s_ops.squashfs_opendir = squashfs_opendir;
  		s_ops.read_fragment = read_fragment;
  		s_ops.read_fragment_table = read_fragment_table;
---- squashfs-tools.orig/mksquashfs.c	2007-11-07 20:08:18.000000000 +0100
+--- squashfs-tools/mksquashfs.c	2007-11-07 20:08:18.000000000 +0100
 +++ squashfs-tools/mksquashfs.c	2007-11-07 20:13:43.000000000 +0100
 @@ -601,6 +601,12 @@
  	if(uncompressed)
@@ -61,7 +61,7 @@
  	if(stream == NULL) {
  		if((stream = *strm = malloc(sizeof(z_stream))) == NULL)
  			BAD_ERROR("mangle::compress failed, not enough memory\n");
-@@ -642,6 +647,7 @@
+@@ -642,6 +648,7 @@
  	}
  
  	c_byte = stream->total_out;
@@ -69,7 +69,7 @@
  
  	if(res != Z_STREAM_END || c_byte >= size) {
  notcompressed:
-@@ -3503,9 +3503,9 @@
+@@ -3496,9 +3503,9 @@
  	reader_buffer_size = readb_mbytes << (20 - block_log);
  	writer_buffer_size = writeb_mbytes << (20 - block_log);
  
@@ -80,4 +80,4 @@
 +	else */
  		s_minor = SQUASHFS_MINOR;
  
- 	destination_file = argv[source + 1];
+         for(i = 0; i < source; i++)
