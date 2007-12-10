@@ -29,7 +29,7 @@ $(PKG)_CONFIGURE_OPTIONS:=\
 		--without-samba \
 		--with-configdir=/etc \
 		--without-ext2undel \
-		--with-subshell \
+		--without-subshell \
 		$(if $(DS_MC_WITH_NCURSES),--with-screen=ncurses,--with-screen=mcslang) \
 		$(if $(DS_MC_INTERNAL_EDITOR),--with-edit,--without-edit)
 
