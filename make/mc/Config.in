@@ -16,13 +16,13 @@ config DS_MC_INTERNAL_EDITOR
 	depends on DS_PACKAGE_MC
 	default y
 	help
-		MC features an internal editor which can be started by F4.  If you
+		MC features an internal editor which can be started by F4. If you
 		decativate it because you want to use vi or nano instead, F4 will
 		still work. By default, vi is called on the box, but exporting EDITOR
 		so it points to another editor of your choice will get you the
 		combination of file manager and editor you desire. :-)
 
-		Switching off this feature saves about 86 KB in the main binary.
+		Switching off this feature saves about 95 KB in the main binary.
 
 config DS_MC_ONLINE_HELP
 	bool "Online help"
@@ -31,8 +31,7 @@ config DS_MC_ONLINE_HELP
 	help
 		MC comes with an online help file which can be viewed via 'F1'.
 
-		Switching off this feature saves about 115 KB in the (unsquashed)
-		file system.
+		Switching off this feature saves about 115 KB in the file system.
 
 config DS_MC_WITH_NCURSES
 	bool "Use ncurses library instead of internal mcslang"
@@ -44,3 +43,4 @@ config DS_MC_WITH_NCURSES
 		is reduced by about 50 KB, but if you do not need libncurses for any
 		other package, those 50 KB are a good investment in order to remove
 		libncurses from the firmware image and save (200 - 50) KB = 150 KB.
+

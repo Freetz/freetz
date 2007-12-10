@@ -34,8 +34,7 @@ $(PKG)_CONFIGURE_OPTIONS:=\
 		--without-ext2undel \
 		--with-subshell \
 		$(if $(DS_MC_WITH_NCURSES),--with-screen=ncurses,--with-screen=mcslang) \
-		$(if $(DS_MC_INTERNAL_EDITOR),--with-edit,)
-
+		$(if $(DS_MC_INTERNAL_EDITOR),--with-edit,--without-edit)
 
 
 $(PKG_SOURCE_DOWNLOAD)
