@@ -12,9 +12,6 @@ ifeq ($(strip $(DS_MC_WITH_NCURSES)),y)
 $(PKG)_DEPENDS_ON += ncurses 
 endif
 
-$(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config
-$(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config.temp
-
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_ENV += am_cv_func_iconv=no
 $(PKG)_CONFIGURE_ENV += mc_cv_have_zipinfo=yes
@@ -37,23 +34,11 @@ $(PKG)_CONFIGURE_OPTIONS:=\
 		$(if $(DS_MC_INTERNAL_EDITOR),--with-edit,--without-edit)
 
 
+$(PKG)_CONFIG_SUBOPTS += DS_MC_INTERNAL_EDITOR
+$(PKG)_CONFIG_SUBOPTS += DS_MC_WITH_NCURSES
+
 $(PKG_SOURCE_DOWNLOAD)
-
-$($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
-	@echo "DS_MC_INTERNAL_EDITOR=$(if $(DS_MC_INTERNAL_EDITOR),y,n)" > $(MC_DS_CONFIG_TEMP)
-	@echo "DS_MC_WITH_NCURSES=$(if $(DS_MC_WITH_NCURSES),y,n)" >> $(MC_DS_CONFIG_TEMP)
-	@diff -q $(MC_DS_CONFIG_TEMP) $(MC_DS_CONFIG_FILE) || \
-		cp $(MC_DS_CONFIG_TEMP) $(MC_DS_CONFIG_FILE)
-	@rm -f $(MC_DS_CONFIG_TEMP)
-
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $($(PKG)_DS_CONFIG_FILE)
-	rm -rf $(MC_DIR)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MC_SOURCE)
-	for i in $(MC_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(MC_DIR) $$i; \
-	done
-	touch $@
-
+$(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured

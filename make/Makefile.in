@@ -306,8 +306,9 @@ define PKG_LIB_PATCH
 endef
 
 ## Unpack and patch binary package
-define PKG_BIN_UNPACKED__INT
+define PKG_UNPACKED_BIN__INT
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE)
+	$(RM) -r $($(PKG)_DIR)
 	$(call PKG_UNPACK)
 	$(call PKG_BIN_PATCH)
 	touch $$@
@@ -326,7 +327,7 @@ $(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 endef
 
 ## Unpack and patch library package
-define PKG_LIB_UNPACKED__INT
+define PKG_UNPACKED_LIB__INT
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE)
 	$(call PKG_UNPACK)
 	$(call PKG_LIB_PATCH)
@@ -336,12 +337,28 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked
 endef
 
+## only used for BIN packages.
 define PKG_UNPACKED__INT
+$(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config
+$(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config.temp
 endef
 
-PKG_BIN_UNPACKED=$(eval $(PKG_BIN_UNPACKED__INT))
-PKG_LIB_UNPACKED=$(eval $(PKG_LIB_UNPACKED__INT))
-PKG_UNPACKED=$(eval $(PKG_UNPACKED__INT)) $(eval $(PKG_$(PKG_TYPE)_UNPACKED__INT))
+## check for changed suboptions
+# should only be called if $(PKG)_CONFIG_SUBOPTS is defined
+define PKG_UNPACKED_CHECK_SUBOPTS__INT
+$($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
+	@($(foreach OPT,$($(PKG)_CONFIG_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_DS_CONFIG_TEMP)
+	@diff -q $($(PKG)_DS_CONFIG_TEMP) $($(PKG)_DS_CONFIG_FILE) || \
+		cp $($(PKG)_DS_CONFIG_TEMP) $($(PKG)_DS_CONFIG_FILE)
+	@$(RM) $($(PKG)_DS_CONFIG_TEMP)
+$($(PKG)_DIR)/.unpacked: $($(PKG)_DS_CONFIG_FILE)
+
+endef
+
+PKG_BIN_UNPACKED=$(eval $(PKG_UNPACKED_BIN__INT))
+PKG_LIB_UNPACKED=$(eval $(PKG_UNPACKED_LIB__INT))
+PKG_UNPACKED=$(eval $(PKG_UNPACKED__INT))$(eval $(PKG_UNPACKED_$(PKG_TYPE)__INT)) \
+	$(if $($(PKG)_CONFIG_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT)))
 
 ### Configure package
 define PKG_CONFIGURED_COMMON__INT
