@@ -53,7 +53,7 @@ $(RCAPID_DIR)/.configured: $(RCAPID_DIR)/.unpacked
 		--mandir=/usr/share/man \
 		$(DISABLE_LARGEFILE) \
 		$(DISABLE_NLS) \
-		--with-kernel="$(DS_BASE_DIR)/$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)" \
+		--with-kernel="$(DSMOD_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
 	);
 	touch $@
 
