@@ -58,11 +58,10 @@ if ($opt{i}) {
 }
 
 $opt{l} = "0.0.0.0" unless defined $opt{l};
-my $probe = IO::Socket::INET->new(
-	Proto => 'udp',
-	Broadcast => 1,
-	LocalAddr => $opt{l},
-	LocalPort => 5035
+my $probe = IO::Socket::INET->new(Proto => 'udp',
+									Broadcast => 1,
+									LocalAddr => $opt{l},
+									LocalPort => 5035
 ) or die "socket: $!";
 #my $packet = pack("vCCVNV", 0, 18, 1, 1, $setip, 0);
 our $packet = pack("vCCVNV", 0, 18, 1, 1, 0, 0);
@@ -285,13 +284,7 @@ if ($opt{f}) {
 	if ($! && $! != EEXIST) {
 		die "recover.tmp: $!"
 	};
-	unless(substr($opt{f}, 0, 1) eq '/') {
-		$opt{f} = "../$opt{f}";
-	}
-	my $tar = "busybox tar";
-	if (system("which busybox > /dev/null")) {
-		$tar = "tar";
-	}
+	my $tar = "tools/tar";
 	system("$tar xvf $opt{f} -C recover.tmp ./var/tmp/kernel.image ./var/tmp/filesystem.image");
 	if ($? >> 8) {
 		die "$tar failed";

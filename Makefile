@@ -287,8 +287,8 @@ recover:
 	elif [ -z "$(RECOVER)" ]; then \
 		echo "Specify recover script." 1>&2; \
 		echo "make recover RECOVER=[adam|eva|ds]" 1>&2; \
-		echo "  adam - most boxes like ATA, 7050" 1>&2; \
-		echo "  eva  - newer boxes like 7170" 1>&2; \
+		echo "  adam - old boxes like ATA (kernel 2.4)" 1>&2; \
+		echo "  eva  - all boxes with kernel 2.6" 1>&2; \
 		echo "  ds   - modified adam script from ds-mod" 1>&2; \
 	elif [ ! -r "$(IMAGE)" ]; then \
 		echo "Cannot read $(IMAGE)." 1>&2; \
@@ -310,9 +310,9 @@ recover:
 						echo "local IP has to be in the 192.168.178.0/24 subnet."; \
 						echo "e.g. make recover LOCALIP=192.168.178.20"; \
 						echo ""; \
-						$$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -f "$$(pwd)/$(IMAGE)"; \
+						$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -f "$(IMAGE)"; \
 					else \
-						$$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$$(pwd)/$(IMAGE)"; \
+						$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$(IMAGE)"; \
 					fi; break ;; \
 				[nN]*) \
 					break ;; \
