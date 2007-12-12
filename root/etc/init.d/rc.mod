@@ -38,6 +38,10 @@ case "$1" in
 		[ -r "/tmp/flash/exhosts.def" ] && deffile='/tmp/flash/exhosts.def'
 		modreg file 'exhosts' 'Hosts' 1 "$deffile"
 
+		deffile='/etc/default.mod/rc_custom.def'
+		[ -r "/tmp/flash/rc_custom.def" ] && deffile='/tmp/flash/rc_custom.def'
+		modreg file 'rc_custom' 'rc.custom' 1 "$deffile"
+
 		start
 		;;
 	start)
