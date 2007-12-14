@@ -22,18 +22,41 @@ has_swap () {
 	return 1
 }
 
-start () {
-	echo -n "Starting $DAEMON..."
-	i=0
-	while [ $i -le 20 ]; do
-	    if [ -e $MOD_SWAP_FILE ]; then
+swapon_file () {
+i=0
+while [ $i -le 20 ]; do
+	if [ -e $MOD_SWAP_FILE ]; then
 		swapon $MOD_SWAP_FILE
 		break
-	    fi
-	    i=`expr $i + 1` && sleep 2
-	done
-	    
+	fi
+	i=`expr $i + 1` && sleep 2
+done
+}
+
+swapon_device () {
+i=0
+while [ $i -le 20 ]; do
+	if grep -q "$MOD_SWAPFILE" /proc/partitions; then
+		swapon $MOD_SWAP_FILE
+		break
+	fi
+	i=`expr $i + 1` && sleep 2
+done
+}
+
+start () {
+	echo -n "Starting $DAEMON..."
+	
+	[ "${MOD_SWAP_FILE##/dev/*}" ]
+	
+	if [ "$?" -eq 0 ]; then
+		swapon_file
+	else
+		swapon_device
+	fi
+
 	sleep 1
+
 	has_swap
 	if [ "$?" -eq 0 ]; then
 		echo 'done.'
@@ -45,7 +68,7 @@ start () {
 
 stop () {
 	echo -n "Stopping $DAEMON... "
-    	    swapoff $MOD_SWAPFILE
+	swapoff $MOD_SWAPFILE
 	sleep 1
 	has_swap
 	if [ "$?" -ne 0 ]; then
@@ -57,7 +80,7 @@ stop () {
 }
 
 case "$1" in
-        ""|load)
+	""|load)
 		if [ "$MOD_SWAP" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1;
