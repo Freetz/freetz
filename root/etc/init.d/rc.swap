@@ -46,10 +46,8 @@ done
 
 start () {
 	echo -n "Starting $DAEMON..."
-	
-	[ "${MOD_SWAP_FILE##/dev/*}" ]
-	
-	if [ "$?" -eq 0 ]; then
+
+	if [ "${MOD_SWAP_FILE##/dev/*}" ]; then
 		swapon_file
 	else
 		swapon_device
