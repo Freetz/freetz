@@ -6,8 +6,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ctorrent
 
 $(PKG)_DEPENDS_ON := uclibcxx
 
-$(PKG)_CONFIGURE_ENV += CXXFLAGS="-Os"
-$(PKG)_CONFIGURE_ENV += CXX="mipsel-linux-g++-uc"
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=no
 
 
@@ -24,7 +22,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 ctorrent: 
 
-ctorrent-precompiled: uclibc ctorrent $($(PKG)_TARGET_BINARY)
+ctorrent-precompiled: $($(PKG)_TARGET_BINARY)
 
 ctorrent-clean:
 	-$(MAKE) -C $(CTORRENT_DIR) clean
