@@ -17,10 +17,6 @@ case "$1" in
 esac
 
 start() {
-	if [ ! -e "/dev/net/tun" ]; then
-	    mkdir /dev/net 
-	    mknod /dev/net/tun c 10 200
-	fi
 
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
@@ -39,7 +35,7 @@ start() {
 		exit 1
 	fi
 
-  echo -n 'Starting vpnc...'
+	echo -n 'Starting vpnc...'
 	$DAEMON --script /mod/etc/default.$DAEMON/vpnc-script  /mod/etc/$DAEMON.conf
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then

@@ -76,7 +76,9 @@ Disable NAT Traversal:
 <input id="dnt2" type="radio" name="disablenattraversal" value="no"$dis_nat_trav_off_chk><label for="dnt2"> aus</label>
 </p>
 <p>(NT-) Domainname f&uuml;r Authentisierung (optional) <br>
-Domain:  <input type="text" name="domain" size="15" maxlength="15" value="$(httpd -e "$VPNC_DOMAIN")"> </p>
+Domain: <input type="text" name="domain" size="15" maxlength="15" value="$(httpd -e "$VPNC_DOMAIN")"> </p>
+<p>Hersteller deines IPSec Gateways (optional) <br>
+Vendor: <input type="text" name="vendor" size="15" maxlength="15" value="$(httpd -e "$VPNC_VENDOR")"> </p>
 EOF
 
 sec_end
