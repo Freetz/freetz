@@ -57,7 +57,7 @@ mount_usbroot() {
 	else
 		load_piglet_module
 	fi
-	
+
 	modprobe usbcore
 	if modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1; then
 	mount -t usbfs usbfs /proc/bus/usb
@@ -82,11 +82,11 @@ mount_usbroot() {
 	while [ $LOOP -lt 10 ] ; do
 	ls $SYSFS/block/sd* 2> /dev/null && for SD in $SYSFS/block/sd*; do
 		if ls -la $SD/device | grep "host$HOST/target" > /dev/null 2>&1; then
-		mkdir -p $MNTPOINT
-		sleep 2
-		mount $DEVICE $MNTPOINT
-		LOOP=99
-		break
+			mkdir -p $MNTPOINT
+			sleep 2
+			mount $DEVICE $MNTPOINT
+			LOOP=99
+			break
 		fi
 	done
 	[ $LOOP -lt 99 ] && echo "storage: SCSI device not responding!" && sleep 2
@@ -152,7 +152,7 @@ load_piglet_module_7270() {
 	$piglet_load_params
 }
 
-# Unmount stuff befor pivot_root
+# Unmount stuff before pivot_root
 unmount() {
 	for i in /proc/bus/usb /proc $SYSFS; do
 	umount $i
@@ -173,6 +173,18 @@ get_env_var() {
 	DEVICE="${usbroot#usbroot=}"
 	DEVICE="${DEVICE%:*}"
 	USBPATH="${usbroot#*:}"
+
+	# Check variables for plausibility
+	if [ "$1" == "check" ]; then
+		# Device and USB path must be defined
+		[ "$DEVICE" -a "$USBPATH" ] || return 1
+		# Missing colon in $usbroot -> wrong variable expansion
+		[ "$USBPATH" == "$usbroot" ] && return 1
+		# Device must be "/dev/..."
+		[ "${DEVICE##/dev/*}" ] && return 1
+		# Defined partition must be visible
+		#cat /proc/partitions | grep -q "${DEVICE#/dev/}$" || return 1
+	fi
 
 	# Get HWRevision and HWRevision_BitFileCount from environment
 	item_count=0
@@ -198,16 +210,14 @@ start()
 	[ -e /proc/mounts ] || mount proc
 	mount sysfs
 
-	get_env_var
-
-	if grep -q " / $DEVICE " /proc/mounts; then
-		echo "*** USB root already mounted, done. ***"
+	if ! get_env_var check; then
+		echo "*** Missing or invalid 'usbroot' configuration in bootloader environment, exiting. ***" >&2
+		umount proc
 		return
 	fi
 
-	if [ -z "$usbroot" ]; then
-		echo "*** No 'usbroot' configured in bootloader environment, exiting. ***" >&2
-		umount proc
+	if grep -q " / $DEVICE " /proc/mounts; then
+		echo "*** USB root already mounted, done. ***"
 		return
 	fi
 
