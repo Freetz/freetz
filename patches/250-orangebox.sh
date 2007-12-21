@@ -19,6 +19,8 @@ elif [ "$DS_TYPE_STRING" == "W900V" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_speedport.patch
 elif [ "$DS_TYPE_STRING" == "7170" -o "$DS_TYPE_STRING" == "7140" ] && [ "$DS_TYPE_LANG_A_CH" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_a_ch.patch
+elif [ "$DS_TYPE_STRING" == "7170" ]; then
+	modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7270.patch
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox.patch
 fi
