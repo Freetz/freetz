@@ -17,7 +17,7 @@ KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT)-$(KERNEL_REF).$(A
 KERNEL_SOURCE_PATH__04.29:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__04.33:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/base/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__04.40:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base/$(KERNEL_BUILD_DIR_N)
-KERNEL_SOURCE_PATH__55.04:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/kernel_arm926_debug_build
+KERNEL_SOURCE_PATH__04.49:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base
 KERNEL_SOURCE_PATH__r4884:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__r7203:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__r8508:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/open-source-package/kernel/$(KERNEL_BUILD_DIR_N)
@@ -49,28 +49,46 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL
 	shopt -s nullglob; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/$(AVM_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
+ifeq ($(AVM_VERSION),04.49)
+	for i in ar7wdt.h avm_debug.h avm_event.h avm_led.h avm_profile.h; do \
+		ln -sf ../../drivers/char/avm_new/linux_$$i \
+			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
+	done
+	for i in capi_oslib.h new_capi.h new_capi_debug.h; do \
+		ln -sf ../../drivers/isdn/capi_oslib/linux_$$i \
+			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
+	done
+	for i in ubik2_debug.h ubik2_interface.h linux_ubik2_ul.h; do \
+		ln -sf ../../drivers/char/ubik2/linux_$$i \
+			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
+	done
+	ln -sf ../../drivers/char/avm_power/linux_avm_power.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_power.h
+	ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_net_trace.h
+	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
+		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
+	done
+else
 ifneq ($(AVM_VERSION),04.33)
  ifneq ($(AVM_VERSION),04.40)
-  ifneq ($(AVM_VERSION),55.04)
 	# Version 04.29/04.30/r4884 source corrections
 	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
 	done
 	#Correct other symlinks
 	cp $(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/drivers/usb/misc/usbauth/Makefile.26 \
-	    $(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/drivers/usb/ahci/Makefile.26
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/drivers/usb/ahci/Makefile.26
 	for i in ar7wdt.h avm_event.h avm_led.h avm_profile.h; do \
 		ln -sf ../../drivers/char/avm_new/linux_$$i \
 			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
 	done
 	ln -sf ../../drivers/char/avm_power/linux_avm_power.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_power.h
-	ln -sf ../../drivers/char/ubik2/linux_ubik2_debug.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/ubik2_debug.h
-	ln -sf ../../drivers/char/ubik2/linux_ubik2_interface.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/ubik2_interface.h
-	ln -sf ../../drivers/char/ubik2/linux_ubik2_ul.h \
-		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/ubik2_ul.h
+	for i in ubik2_debug.h ubik2_interface.h linux_ubik2_ul.h; do \
+		ln -sf ../../drivers/char/ubik2/linux_$$i \
+			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
+	done
 	ln -sf ../../drivers/isdn/capi_oslib/linux_capi_oslib.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/capi_oslib.h
 	ln -sf ../../drivers/isdn/capi_oslib/linux_new_capi.h \

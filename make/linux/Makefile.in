@@ -7,6 +7,21 @@ KERNEL_MODULES_DIR:=$(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)
 KERNEL_SOURCE_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel/linux
 KERNEL_HEADERS_DIR:=$(KERNEL_SOURCE_DIR)/include
 
+ifeq ($(KERNEL_VERSION),2.6.19.2)
+KERNEL_DUMMY_MAKE_FILES = \
+	kernel/linux-2.6.19.2/drivers/char/Piglet_noemif/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/audio/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/avm_new/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/avm_power/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/dect_io/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/flash_update/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/ubik2/Makefile \
+	kernel/linux-2.6.19.2/drivers/isdn/avm_dect/Makefile \
+	kernel/linux-2.6.19.2/drivers/isdn/capi_codec/Makefile \
+	kernel/linux-2.6.19.2/drivers/isdn/capi_oslib/Makefile \
+	kernel/linux-2.6.19.2/drivers/isdn/isdn_fon5/Makefile \
+	kernel/linux-2.6.19.2/drivers/usb/musb/Makefile
+else
 KERNEL_DUMMY_MAKE_FILES = \
 	kernel/linux-2.6.13.1/drivers/char/ubik2/Makefile \
 	kernel/linux-2.6.13.1/drivers/char/dect_io/Makefile \
@@ -30,5 +45,6 @@ KERNEL_DUMMY_MAKE_FILES = \
 	kernel/linux-2.6.13.1/drivers/net/wireless/avm_wlan/Makefile \
 	kernel/linux-2.6.13.1/drivers/video/davinci/Makefile \
 	kernel/linux-2.6.13.1/sound/oss/davinci/Makefile
+endif
 
 TARGETS+=kernel
