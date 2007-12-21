@@ -648,7 +648,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 		mkdir -p "${FILESYSTEM_MOD_DIR}/usr/lib"
 		cp "${ROOT_DIR}/usr/lib/lib"*.sh "${FILESYSTEM_MOD_DIR}/usr/lib/"
 
-		echo ". /etc/init.d/rc.mod 2>&1 | tee /var/log/mod.log" >> "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+		# Emergency stop switch for execution of debug.cfg
+		sed -i -r 's#(\. /var/flash/debug\.cfg)#[ "$dbg_off" == "y" ] || \1#g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+		# Emergency stop switch for execution of DS-Mod as a whole
+		echo '[ "$ds_off" == "y" ] || . /etc/init.d/rc.mod 2>&1 | tee /var/log/mod.log' >> "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
 		MOD_CRON="${VARTAR_MOD_DIR}/var/spool/cron/crontabs"
 		MOD_ROOT="${VARTAR_MOD_DIR}/var/mod"
