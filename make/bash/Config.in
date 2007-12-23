@@ -1,0 +1,26 @@
+config DS_PACKAGE_BASH
+	bool "bash 3.2 (binary only)"
+	default n
+	help
+		Bash is an sh-compatible command language interpreter that 
+		executes commands read from the standard input or from a file.
+		Bash also incorporates useful features from the Korn and C 
+		shells (ksh and csh).
+
+config DS_PACKAGE_BASH_MINIMAL
+	bool "minimal config"
+	depends on DS_PACKAGE_BASH
+	default n
+	help
+		This produces a shell with minimal features, close to the
+		historical Bourne shell (saves ~300KB).
+
+config DS_PACKAGE_BASH_READLINE
+	bool "enable command line editing"
+	depends on DS_PACKAGE_BASH
+	select DS_LIB_libncurses
+	select DS_LIB_libreadline
+	select DS_LIB_libhistory
+	default n
+	help
+		Enable command line editing. This feature needs ncurses and readline.

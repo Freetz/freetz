@@ -6,9 +6,9 @@ config DS_SELECTED_LANG_ONLY
 	depends on ! DS_LANG_DE
 	default n
 	help
-	    Show only packages supporting the selected language. Packages not
-	    supporting your selected language can be installed, but they will be in
-	    default language (usually German).
+		Show only packages supporting the selected language. Packages not
+		supporting your selected language can be installed, but they will be in
+		default language (usually German).
 
 menu "Standard packages"
 source make/bftpd/Config.in
@@ -68,6 +68,7 @@ endmenu
 menu "Testing"
 # Apache includes PHP by itself, don't include here
 source make/apache/Config.in
+source make/bash/Config.in
 source make/bluez-utils/Config.in
 source make/ctorrent/Config.in
 source make/curl/Config.in
