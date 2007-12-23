@@ -26,13 +26,13 @@ $(PKG)_CONFIGURE_ENV += bash_cv_unusable_rtsigs=no
 $(PKG)_CONFIGURE_ENV += bash_cv_sys_siglist=yes
 $(PKG)_CONFIGURE_ENV += bash_cv_under_sys_siglist=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_rl_version=5.2
+$(PKG)_CONFIGURE_ENV += LOCAL_LIBS="-lm"
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-restricted
 $(PKG)_CONFIGURE_OPTIONS += --without-bash-malloc
 $(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_BASH_MINIMAL),--enable-minimal-config,)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_BASH_READLINE),,--disable-readline)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_BASH_READLINE),--with-installed-readline,)
-$(PKG)_CONFIGURE_OPTIONS += LIBS="-lm"
 
 
 $(PKG_SOURCE_DOWNLOAD)
