@@ -4,21 +4,21 @@ config DS_PACKAGE_DTMFBOX
 	select DS_LIB_libcapi20
 	default n
 	help
-	    dtmfbox is a tool, which can be used to control different tasks
-	    over telephone keyboard (via DTMF). The DTMF signals are 
-	    handed over to a scriptfile.
-	    
-	    While scriptfile running, you can answer an incoming call, record
-	    or play a wave file, make another call (connect it with another), etc.
-	    
-	    The scriptfiles that are included in this package, contain an 
-	    answering machine, administration menu and a callback/callthrough 
-	    script.
-	    
-	    Image size: + ~266 KB
+		dtmfbox is a tool, which can be used to control different tasks
+		over telephone keyboard (via DTMF). The DTMF signals are 
+		handed over to a scriptfile.
+
+		While scriptfile running, you can answer an incoming call, record
+		or play a wave file, make another call (connect it with another), etc.
+
+		The scriptfiles that are included in this package, contain an 
+		answering machine, administration menu and a callback/callthrough 
+		script.
+		Image size: + ~266 KB
 
 config DS_PACKAGE_DTMFBOX_WITH_ESPEAK
-        bool "eSpeak suppport"
-        depends on DS_PACKAGE_DTMFBOX
-        select DS_PACKAGE_ESPEAK
-        default n
+	bool "eSpeak suppport"
+	depends on DS_PACKAGE_DTMFBOX
+	select DS_PACKAGE_ESPEAK
+	default n
+
