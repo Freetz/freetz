@@ -201,4 +201,7 @@ mkdir -p $HOME/.mc/cedit
 touch $HOME/.mc/hotlist $HOME/.mc/cedit/Syntax
 [ -e $HOME/.mc/ini ] || create_mc_ini
 
+# Set /bin/bash as subshell if it exists
+[ -e /bin/bash ] && export SHELL=/bin/bash
+
 $0.bin $mc_params $@

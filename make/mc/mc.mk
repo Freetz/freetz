@@ -14,6 +14,7 @@ endif
 
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_ENV += am_cv_func_iconv=no
+$(PKG)_CONFIGURE_ENV += am_cv_lib_iconv=no
 $(PKG)_CONFIGURE_ENV += mc_cv_have_zipinfo=yes
 
 $(PKG)_CONFIGURE_OPTIONS:=\
@@ -29,13 +30,15 @@ $(PKG)_CONFIGURE_OPTIONS:=\
 		--without-samba \
 		--with-configdir=/etc \
 		--without-ext2undel \
-		--without-subshell \
+		$(if $(DS_MC_SUBSHELL),--with-subshell,--without-subshell) \
 		$(if $(DS_MC_WITH_NCURSES),--with-screen=ncurses,--with-screen=mcslang) \
 		$(if $(DS_MC_INTERNAL_EDITOR),--with-edit,--without-edit)
 
 
 $(PKG)_CONFIG_SUBOPTS += DS_MC_INTERNAL_EDITOR
+$(PKG)_CONFIG_SUBOPTS += DS_MC_SUBSHELL
 $(PKG)_CONFIG_SUBOPTS += DS_MC_WITH_NCURSES
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

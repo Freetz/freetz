@@ -24,6 +24,14 @@ config DS_MC_INTERNAL_EDITOR
 
 		Switching off this feature saves about 95 KB in the main binary.
 
+config DS_MC_SUBSHELL
+	bool "Subshell support"
+	depends on DS_PACKAGE_MC
+	select DS_PACKAGE_BASH
+	default n
+	help
+		MC subshell support (~15 KB + bash).
+
 config DS_MC_ONLINE_HELP
 	bool "Online help"
 	depends on DS_PACKAGE_MC
