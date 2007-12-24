@@ -345,8 +345,8 @@ if ($opt{f} || $opt{u}) {
 
 } elsif ($opt{s}) {
 	print "Sending and booting $opt{s}...";
-	$ftp->quot("MEDIA", "SDRM");
-	$ftp->put("$opt{s}", "x");
+	$ftp->quot("MEDIA", "SDRAM");
+	$ftp->put("$opt{s}", "mtd4");
 	if ($ftp->status() == $ftp->CMD_OK) {
 		print "success!\n";
 		$ftp->close();
