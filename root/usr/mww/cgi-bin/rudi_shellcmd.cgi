@@ -9,7 +9,11 @@
 	echo "$FORM_script" | sed "s/$(echo -ne '\r')//g" | sh
 else
 	echo -e 'Content-Type: text/html; charset=ISO-8859-1\n'
-	echo '<html><body>'
+	echo -n '<html> <body'
+	if [ -n "$FORM_onload" ]; then
+	 	echo -n " onLoad=\"$FORM_onload\""
+	fi
+	echo '>'
 	echo -n '<pre id="cmd_output">'
 	echo "$FORM_script" | sed "s/$(echo -ne '\r')//g" | sh | sed -e 's/&/\&amp;/g ; s/</\&lt;/g ; s/>/\&gt;/g' | head -c 64000
 	echo '</pre>'

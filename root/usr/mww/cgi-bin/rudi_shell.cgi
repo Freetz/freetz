@@ -20,10 +20,25 @@ Content-Type: text/html; charset=ISO-8859-1
 			parent.replaceChild(document.createTextNode(hist[hist.length - 1 - index][1]), parent.firstChild)
 		}
 		function cleanHistory() {
-			hist=Array()
+			hist = Array()
 			var list = document.getElementById("history")
 			while (list.length > 0)
 				list.remove(0)
+		}
+		function copyOut2Cmd(){
+			document.getElementById("script_code").value = document.getElementById("shell_output").firstChild.nodeValue;
+		}
+		function RudiEdit() {
+			file = document.getElementById("file2edit").value;
+			LF="%0A"
+			tcmd = 'script=' +
+				'echo "%23%23 Rudi-Editor"' + LF +
+				'echo "%23%23 Bitte umgebende Zeilen NICHT löschen (\\"cat > ...\\", \\"RUDI_EOF\\")"' + LF +
+				'echo "cat > '+ file + ' << \'RUDI_EOF\'"' + LF +
+				'echo -e "`cat ' + file + '`"' + LF +
+				'echo "RUDI_EOF"';
+			tmp = '/cgi-bin/rudi_shellcmd.cgi?onload=parent.copyOut2Cmd()&' + tcmd;
+			parent.frames["shellcmd"].location.href = tmp;
 		}
 	</script>
 </head>
@@ -38,12 +53,13 @@ Content-Type: text/html; charset=ISO-8859-1
 		(<input type="checkbox" name="tar" value="true">.tar
 		<input type="checkbox" name="gz" value="true">.gz )
 	</form>
-	<form action="/cgi-bin/rudi_upload.cgi" target="shellcmd" method=POST enctype="multipart/form-data">
-		<table>
+	<table>
+		<form action="/cgi-bin/rudi_upload.cgi" target="shellcmd" method=POST enctype="multipart/form-data">
 			<tr><td>Quelldatei</td><td><input type=file name="source" size=50></td></tr>
 			<tr><td>Zieldatei</td><td><input name="target" value="/var/tmp/rudi_upload" size=50> <input type=submit value="Hochladen"></td></tr>
-		</table>
-	</form>
+		</form>
+		<tr><td>RudiEdit</td><td> <input id="file2edit" value="/var/tmp/tmp.txt" size=50> <input type=button value="Datei editieren" onClick="RudiEdit()"></td></tr>
+	</table>
 	<iframe name="shellcmd" style="width: 0; height: 0; border: 0"></iframe>
 	<pre id="shell_output">---</pre>
 </body>
