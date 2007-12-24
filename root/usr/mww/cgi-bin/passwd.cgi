@@ -8,8 +8,8 @@ cgi_begin 'Passwort' 'password'
 cat << EOF
 <script type=text/javascript>
 function CheckInput(form) {
-	password=form.elements[1];
-	replay=form.elements[2];
+	password=form.elements[0];
+	replay=form.elements[1];
 if (password.value=="") {
 	alert("$(lang de:"Passwort leer!" en:"Empty password!")");
 	return false;
