@@ -42,7 +42,7 @@ start() {
 	if [ "$1" != "nomultid" ]; then
 		multid -s > /dev/null 2>&1
 	fi
-	OPTIONS=""
+	OPTIONS="$DNSMASQ_OPTIONS"
 	if [ "$DNSMASQ_DNS_PORT" ]; then
 		OPTIONS="$OPTIONS -p \"$DNSMASQ_DNS_PORT\""
 	fi

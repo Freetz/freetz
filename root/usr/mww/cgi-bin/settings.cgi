@@ -39,7 +39,7 @@ cat << EOF
 <input id="s1" type="radio" name="swap" value="yes"$swap_auto_chk><label for="s1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="s2" type="radio" name="swap" value="no"$swap_man_chk><label for="s2"> $(lang de:"Manuell" en:"Manual")</label>
 </p>
-<h2>Swap ($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or")) /dev/sda1</h2>
+<h2>Swap ($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1</h2>
 <p>Swap: <input type="text" name="swap_file" size="50" maxlength="50" value="$(httpd -e "$MOD_SWAP_FILE")"></p>
 EOF
 
