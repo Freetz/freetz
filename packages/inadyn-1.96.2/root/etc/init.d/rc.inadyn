@@ -43,7 +43,7 @@ start() {
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
 		echo "$OPTIONS" > /mod/etc/inadyn0.conf
-		$DAEMON --input_file /mod/etc/inadyn0.conf > /dev/null 2>&1
+		$DAEMON --input_file /mod/etc/inadyn0.conf --pid_file /var/run/$DAEMON.pid > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -77,7 +77,7 @@ start() {
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
 		echo "$OPTIONS" > /mod/etc/inadyn1.conf
-		$DAEMON --input_file /mod/etc/inadyn1.conf > /dev/null 2>&1
+		$DAEMON --input_file /mod/etc/inadyn1.conf --pid_file /var/run/$DAEMON.pid > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -111,7 +111,7 @@ start() {
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
 		echo "$OPTIONS" > /mod/etc/inadyn2.conf
-		$DAEMON --input_file /mod/etc/inadyn2.conf > /dev/null 2>&1
+		$DAEMON --input_file /mod/etc/inadyn2.conf --pid_file /var/run/$DAEMON.pid > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -145,7 +145,7 @@ start() {
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
 		echo "$OPTIONS" > /mod/etc/inadyn3.conf
-		$DAEMON --input_file /mod/etc/inadyn3.conf > /dev/null 2>&1
+		$DAEMON --input_file /mod/etc/inadyn3.conf --pid_file /var/run/$DAEMON.pid > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -179,7 +179,7 @@ start() {
 			benutzerdefiniert) OPTIONS="$OPTIONS custom@http_svr_basic_auth" ;;
 		esac
 		echo "$OPTIONS" > /mod/etc/inadyn4.conf
-		$DAEMON --input_file /mod/etc/inadyn4.conf > /dev/null 2>&1
+		$DAEMON --input_file /mod/etc/inadyn4.conf --pid_file /var/run/$DAEMON.pid > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -197,17 +197,7 @@ start() {
 stop() {
 	echo -n 'Stopping Inadyn...'
 
-	if [ ! -z "$(pidof "$DAEMON")" ]; then
-		killall -15 $DAEMON > /dev/null 2>&1
-		exitval=$?
-	fi
-	
-	sleep 1
-	
-	if [ ! -z "$(pidof "$DAEMON")" ]; then
-		killall -9 $DAEMON > /dev/null 2>&1
-		exitval=$?
-	fi
+	kill $(cat /var/run/$DAEMON.pid) > /dev/null 2>&1
 	
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -229,7 +219,7 @@ case "$1" in
 			exit 1;
 		fi
 
-		if [ ! -z "$(pidof $DAEMON)" ]; then
+		if [ -s "/var/run/$DAEMON.pid" ]; then
 			echo "$DAEMON already started."
 		else
 			start
@@ -251,7 +241,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
+		if [ -s "/var/run/$DAEMON.pid" ]; then
 			echo 'stopped'
 		else
 			echo 'running'
