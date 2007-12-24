@@ -14,6 +14,8 @@ if [ "$VPNC_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked
 if [ "$VPNC_IKEDHGROUP" = "dh1" ]; then ike1_chk=' checked'; fi
 if [ "$VPNC_IKEDHGROUP" = "dh2" ]; then ike2_chk=' checked'; fi
 if [ "$VPNC_IKEDHGROUP" = "dh5" ]; then ike5_chk=' checked'; fi
+if [ "$VPNC_NETWORK" = "" ]; then VPNC_NETWORK='0.0.0.0'; fi
+if [ "$VPNC_MASK" = "" ]; then VPNC_MASK='0.0.0.0'; fi
 if [ "$VPNC_PERFECTFORWARDSECRECY" = "nopfs" ]; then pfs_nopfs=' checked'; fi
 if [ "$VPNC_PERFECTFORWARDSECRECY" = "dh1" ]; then pfs_dh1=' checked'; fi
 if [ "$VPNC_PERFECTFORWARDSECRECY" = "dh2" ]; then pfs_dh2=' checked'; fi
@@ -79,6 +81,9 @@ Disable NAT Traversal:
 Domain: <input type="text" name="domain" size="15" maxlength="15" value="$(httpd -e "$VPNC_DOMAIN")"> </p>
 <p>Hersteller deines IPSec Gateways (optional) <br>
 Vendor: <input type="text" name="vendor" size="15" maxlength="15" value="$(httpd -e "$VPNC_VENDOR")"> </p>
+<p>Remote Network f&uuml;r vpnc-script (Tunnel-Route)<br>
+Network: <input type="text" name="network" size="15" maxlength="15" value="$(httpd -e "$VPNC_NETWORK")"><br>
+Mask: <input type="text" name="mask" size="15" maxlength="15" value="$(httpd -e "$VPNC_MASK")"> </p>
 EOF
 
 sec_end

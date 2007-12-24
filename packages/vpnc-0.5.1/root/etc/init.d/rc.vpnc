@@ -36,7 +36,19 @@ start() {
 	fi
 
 	echo -n 'Starting vpnc...'
-	$DAEMON --script /mod/etc/default.$DAEMON/vpnc-script  /mod/etc/$DAEMON.conf
+	
+	# find remote network for tunneling
+	NETWORK="$(cat /var/mod/etc/vpnc.conf|grep network | sed -e 's/#network //g')"
+	MASK="$(cat /var/mod/etc/vpnc.conf|grep mask | sed -e 's/#mask //g')"
+	
+	if [ $NETWORK != "0.0.0.0" ]; then
+		sed -e 's/#set -x/INTERNAL_IP4_DNS=\nCISCO_SPLIT_INC=1\nCISCO_SPLIT_INC_0_ADDR='$NETWORK'\nCISCO_SPLIT_INC_0_MASK='$MASK'\nCISCO_SPLIT_INC_0_MASKLEN=22\nCISCO_SPLIT_INC_0_PROTOCOL=0\nCISCO_SPLIT_INC_0_SPORT=0\nCISCO_SPLIT_INC_0_DPORT=0\n\n#set -x\n/g' /etc/default.vpnc/vpnc-script > /var/tmp/vpnc-script
+		chmod +x /var/tmp/vpnc-script
+		$DAEMON --script /var/tmp/vpnc-script /mod/etc/$DAEMON.conf
+	else
+		$DAEMON --script /etc/default.vpnc/vpnc-script /mod/etc/$DAEMON.conf
+	fi
+
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'

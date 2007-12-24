@@ -4,9 +4,9 @@ VPNC_SITE:=http://www.unix-ag.uni-kl.de/~massar/vpnc
 VPNC_MAKE_DIR:=$(MAKE_DIR)/vpnc
 VPNC_DIR:=$(SOURCE_DIR)/vpnc-$(VPNC_VERSION)
 VPNC_BINARY:=$(VPNC_DIR)/vpnc
-VPNC_PKG_VERSION:=0.3b
+VPNC_PKG_VERSION:=0.3c
 VPNC_PKG_SOURCE:=vpnc-$(VPNC_VERSION)-dsmod-$(VPNC_PKG_VERSION).tar.bz2
-VPNC_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
+VPNC_PKG_SITE:=http://www.xobztirf.de/upload
 VPNC_TARGET_DIR:=$(PACKAGES_DIR)/vpnc-$(VPNC_VERSION)
 VPNC_TARGET_BINARY:=$(VPNC_TARGET_DIR)/root/sbin/vpnc
 
