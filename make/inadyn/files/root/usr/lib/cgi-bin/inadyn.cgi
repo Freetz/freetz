@@ -100,8 +100,7 @@ sec_end
 sec_begin 'Inadyn-Daemon'
 
 cat << EOF
-<p>Optionen : <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$INADYN_OPTIONS")"></p>
-<p>Verbose Level (0-5) : 
+<p>Verbose Level : 
 <select name='verbose'>
 <OPTION value="0"$verbose_sel0>0</OPTION>
 <OPTION value="1"$verbose_sel1>1</OPTION>
@@ -110,6 +109,7 @@ cat << EOF
 <OPTION value="4"$verbose_sel4>4</OPTION>
 <OPTION value="5"$verbose_sel5>5</OPTION>
 </SELECT></p>
+<p>Optionen : <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$INADYN_OPTIONS")"></p>
 
 <script>
 function changeaccount(value) {
