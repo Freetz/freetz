@@ -15,7 +15,7 @@ $(lang de:"(z.B. LCR-Updater)." en:"")
 <p>
 
 <form action="/cgi-bin/do_backup.cgi" method=GET>
-  <input type=submit value="$(lang de:"Sichern" en:"Save")">
+	<input type=submit value="$(lang de:"Sichern" en:"Save")">
 </form><p>
 
 <h1>$(lang de:"Wiederherstellung (Restore)" en:"Restore")</h1>
@@ -30,10 +30,13 @@ $(lang de:"alle Einstellungen zu aktivieren. Bitte danach die Einstellungen über
 <p>
 
 <form action="/cgi-bin/do_restore.cgi" method=POST enctype="multipart/form-data">
-  <input type=file name="uploadfile"><br>
-  <input type=checkbox name="dsmod_only">$(lang de:"Nur DS-Mod-Einstellungen wiederherstellen" en:"Restore DS-Mod settings only")<p>
-  <input type=checkbox name="restart" checked>$(lang de:"Neustart nach Wiederherstellung" en:"Reboot after restore")<p>
-  <input type=submit value="$(lang de:"Wiederherstellen" en:"Restore")">
+	<input type=file name="uploadfile"><br>
+	<input type=checkbox name="dsmod_only">$(lang de:"Nur DS-Mod-Einstellungen wiederherstellen" en:"Restore DS-Mod settings only")<p>
+	<input type=checkbox name="restart" checked>$(lang de:"Neustart nach Wiederherstellung" en:"Reboot after restore")<p>
+	<input type=submit value="$(lang de:"Wiederherstellen" en:"Restore")" style="width:150px">
+</form>
+<form action="/cgi-bin/status.cgi" method=GET>
+	<input type="submit" value="$(lang de:"Abbrechen" en:"Cancel")" style="width:150px">
 </form>
 EOF
 
