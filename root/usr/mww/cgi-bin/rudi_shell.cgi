@@ -3,7 +3,7 @@ Content-Type: text/html; charset=ISO-8859-1
 
 <html>
 <head>
-	<title>Rudi(mentär)-Shell</title>
+	<title>$(lang de:"Rudi(mentär)-Shell" en:"Rudi(mentary) Shell")</title>
 	<script type=text/javascript>
 		hist = Array()
 		function setShellOutput(txt) {
@@ -32,8 +32,8 @@ Content-Type: text/html; charset=ISO-8859-1
 			file = document.getElementById("file2edit").value;
 			LF="%0A"
 			tcmd = 'script=' +
-				'echo "%23%23 Rudi-Editor"' + LF +
-				'echo "%23%23 Bitte umgebende Zeilen NICHT löschen (\\"cat > ...\\", \\"RUDI_EOF\\")"' + LF +
+				'echo "%23%23 $(lang de:"Rudi-Editor" en:"Rudi Editor")"' + LF +
+				'echo "%23%23 $(lang de:"Bitte umgebende Zeilen NICHT löschen" en:"Please DO NOT delete surrounding lines") (\\"cat > ...\\", \\"RUDI_EOF\\")"' + LF +
 				'echo "cat > '+ file + ' << \'RUDI_EOF\'"' + LF +
 				'echo -e "`cat ' + file + '`"' + LF +
 				'echo "RUDI_EOF"';
@@ -43,22 +43,22 @@ Content-Type: text/html; charset=ISO-8859-1
 	</script>
 </head>
 <body>
-	<!--h1>Rudi(mentär)-Shell</h1-->
+	<!--h1>$(lang de:"Rudi(mentär)-Shell" en:"Rudi(mentary) Shell")</h1-->
 	<form action="/cgi-bin/rudi_shellcmd.cgi" target="shellcmd" method=POST enctype="multipart/form-data">
 		<textarea id="script_code" name="script" rows="10" cols="80"></textarea><p>
-		<input type=submit value="Skript ausführen">&nbsp;&nbsp;
-		Historie <select id="history" onChange="historySelected(this.selectedIndex)"></select>
-		<input type=button value="Hist. löschen" onClick="cleanHistory()">&nbsp;&nbsp;
+		<input type=submit value="$(lang de:"Skript ausführen" en:"Run script")">&nbsp;&nbsp;
+		$(lang de:"Historie" en:"History") <select id="history" onChange="historySelected(this.selectedIndex)"></select>
+		<input type=button value="$(lang de:"Hist. löschen" en:"Delete hist.")" onClick="cleanHistory()">&nbsp;&nbsp;
 		<input type="checkbox" name="display_mode" value="binary">Download
 		(<input type="checkbox" name="tar" value="true">.tar
 		<input type="checkbox" name="gz" value="true">.gz )
 	</form>
 	<table>
 		<form action="/cgi-bin/rudi_upload.cgi" target="shellcmd" method=POST enctype="multipart/form-data">
-			<tr><td>Quelldatei</td><td><input type=file name="source" size=50></td></tr>
-			<tr><td>Zieldatei</td><td><input name="target" value="/var/tmp/rudi_upload" size=50> <input type=submit value="Hochladen"></td></tr>
+			<tr><td>$(lang de:"Quelldatei" en:"Source file")</td><td><input type=file name="source" size=50></td></tr>
+			<tr><td>$(lang de:"Zieldatei" en:"Target file")</td><td><input name="target" value="/var/tmp/rudi_upload" size=50> <input type=submit value="$(lang de:"Hochladen" en:"Upload")"></td></tr>
 		</form>
-		<tr><td>RudiEdit</td><td> <input id="file2edit" value="/var/tmp/tmp.txt" size=50> <input type=button value="Datei editieren" onClick="RudiEdit()"></td></tr>
+		<tr><td>$(lang de:"Rudi-Edit" en:"Rudi edit")</td><td> <input id="file2edit" value="/var/tmp/tmp.txt" size=50> <input type=button value="$(lang de:"Datei editieren" en:"Edit file")" onClick="RudiEdit()"></td></tr>
 	</table>
 	<iframe name="shellcmd" style="width: 0; height: 0; border: 0"></iframe>
 	<pre id="shell_output">---</pre>

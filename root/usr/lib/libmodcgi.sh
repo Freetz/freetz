@@ -7,8 +7,8 @@ cat << EOF
 <div class="menu">
 <div id="status"><a href="/cgi-bin/status.cgi">Status</a></div>
 <div id="logs" class="su"><a href="/cgi-bin/logs.cgi">Logs</a></div>
-<div id="daemons"><a href="/cgi-bin/daemons.cgi">Dienste</a></div>
-<div id="settings"><a href="/cgi-bin/settings.cgi">Einstellungen</a></div>
+<div id="daemons"><a href="/cgi-bin/daemons.cgi">$(lang de:"Dienste" en:"Services")</a></div>
+<div id="settings"><a href="/cgi-bin/settings.cgi">$(lang de:"Einstellungen" en:"Settings")</a></div>
 EOF
 
 if [ "$1" = "settings" -a -r "/mod/etc/reg/file.reg" ]; then
@@ -18,7 +18,7 @@ if [ "$1" = "settings" -a -r "/mod/etc/reg/file.reg" ]; then
 fi
 
 cat << EOF
-<div id="packages"><a href="/cgi-bin/packages.cgi">Pakete</a></div>
+<div id="packages"><a href="/cgi-bin/packages.cgi">$(lang de:"Pakete" en:"Packages")</a></div>
 EOF
 
 if [ "$1" != "settings" -a -r "/mod/etc/reg/cgi.reg" ]; then
@@ -29,8 +29,8 @@ fi
 
 cat << EOF
 <div id="extras"><a href="/cgi-bin/extras.cgi">Extras</a></div>
-<div id="backup_restore"><a href="/cgi-bin/backup_restore.cgi">Sichern/Wiederherstellen</a></div>
-<div id="rudi_shell"><a href="/cgi-bin/rudi_shell.cgi" target="_blank">Rudi-Shell</a></div>
+<div id="backup_restore"><a href="/cgi-bin/backup_restore.cgi">$(lang de:"Sichern/Wiederherstellen" en:"Backup/restore")</a></div>
+<div id="rudi_shell"><a href="/cgi-bin/rudi_shell.cgi" target="_blank">$(lang de:"Rudi-Shell" en:"Rudi shell")</a></div>
 </div>
 EOF
 }
@@ -93,7 +93,7 @@ cat << EOF
 </tr>
 <tr>
 <td width="20"><img src="/images/edge_lb.png" width="20" height="20" border="0" alt=""></td>
-<td width="$_cgi_width" id="edgebottom"><div class="opt">optimiert f&uuml;r Mozilla Firefox</div></td>
+<td width="$_cgi_width" id="edgebottom"><div class="opt">$(lang de:"optimiert f&uuml;r" en:"optimised for") Mozilla Firefox</div></td>
 <td width="20"><img src="/images/edge_rb.png" width="20" height="20" border="0" alt=""></td>
 </tr>
 </table>

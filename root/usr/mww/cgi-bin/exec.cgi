@@ -42,7 +42,7 @@ case "$MOD_CGI_CMD" in
 		cgi_end
 		;;
 	cleanup)
-		cgi_begin '$(lang de:"Defragmentiere" en:"Cleanup tffs")...'
+		cgi_begin '$(lang de:"Defragmentiere" en:"Clean up TFFS")...'
 		echo -n '<pre>tffs cleanup...'
 		echo 'cleanup' > /proc/tffs
 		echo 'done.</pre>'
@@ -65,12 +65,12 @@ case "$MOD_CGI_CMD" in
 		cgi_end
 		;;
 	firmware_update)
-		cgi_begin 'Firmware-Update'
+		cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
 		/usr/mww/cgi-bin/firmware_update.cgi
 		cgi_end
 		;;
 	fw_attrib)
-		cgi_begin '$(lang de:"Attribute bereinigen" en:"Cleanup attributes")'
+		cgi_begin '$(lang de:"Attribute bereinigen" en:"Clean up attributes")'
 		echo '<p>$(lang de:"Entfernt Merker f&uuml;r \"nicht unterst&uuml;tzte &Auml;nderungen\"" en:"Cleans up marker for \"unauthorized changes\"")</p>'
 		echo -n '<pre>$(lang de:"bereinige Attribute" en:"cleaning up attributes")...'
 		major=$(grep tffs /proc/devices)
