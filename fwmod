@@ -263,7 +263,7 @@ modlangsubst()
 	val='\(\([^"\\]*\(\\.\)*\)*\)'
 	entry="\w\+:\"${val}\""
 
-	LC_CTYPE=C sed -i -e "
+	LC_ALL="" LC_CTYPE=C sed -i -e "
 		:a
 		s/\$(lang\(${s}\+${entry}\)*${s}\+${1}:\"${val}\"\(${s}\+${entry}\)*${s}*)/\$(lang:\"\5\")/g
 		s/\$(lang\(${s}\+${entry}\)*${s}*)/*** error: language[${1}] not available ***/g
