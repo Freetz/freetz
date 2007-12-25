@@ -80,6 +80,17 @@ MEDIUM PRIORITY - normal bugs, features, improvements
   specific locations instead of to temp-files with unpredictable names which
   need to be moved afterwards. The feature is already used by the firmware
   upgrade assistant, so it seems like a good idea to use it elsewhere, too.
+    Comment (by kriegaex): Thinking about it again, I believe that it is not
+    possible to directly write the output to a target location, but still a
+    good idea to have a handler do the work of reading the data from a FIFO,
+    transparently writing them to the target location. This way we could
+    theoretically handle uploads bigger than RAM size to USB media, for
+    example. If such big uploads would really work or time out prematurely, is
+    another story.
+    Comment (by kriegaex): Having a FIFO handler would also help us to
+    transparently write an uploaded file to /var/flash which does not work
+    presently, because we use 'mv' instead of 'cat' for relocating a completely
+    uploaded temp-file.
 
 
 LOW PRIORITY - nice to have, cosmetics, ideas
@@ -165,6 +176,10 @@ LOW PRIORITY - nice to have, cosmetics, ideas
   consistent code base "in the wild", i.e. pretty much all modders using the
   same set of patches instead of everybody using a more or less different
   setup.
+    Comment (by kriegaex): I believe that the planned public read access to our
+    SVN repository should suffice, combined with us maintaining the 'stable-15'
+    or a similar SVN branch again. A simple "svn update" would upgrade DS-Mod
+    with the latest bugfixes.
 
 - Idea by heini66: implement call-back function as an add-on to DTMF-Box, see
   http://www.ip-phone-forum.de/showpost.php?p=941080&postcount=698 and
