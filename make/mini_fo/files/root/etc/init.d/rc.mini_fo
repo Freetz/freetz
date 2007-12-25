@@ -62,7 +62,7 @@ jffs2_mount() {
 		echo "[jffs2] load jffs2 module" ; 
 		if modprobe jffs2; then
 			echo "[jffs2] mount jffs "; 
-			mount -t jffs2 /dev/mtdblock${jffs2_pat} /data
+			mount -t jffs2 /dev/mtdblock${jffs2_pat} /sto
 			jffs2_ok=$?
 			if [ $jffs2_ok -ne 0 ]; then
 				/bin/reinit_jffs2 -c /dev/mtdblock${jffs2_pat} -a -o /var/jffs2.image ;
@@ -70,7 +70,7 @@ jffs2_mount() {
 				echo "copying image..."
 				rm /var/jffs2.image
 				echo "done."
-				mount -t jffs2 /dev/mtdblock${jffs2_pat} /data
+				mount -t jffs2 /dev/mtdblock${jffs2_pat} /sto
 				jffs2_ok=$?
 			fi
 			if [ $jffs2_ok -eq 0 ]; then
@@ -79,7 +79,7 @@ jffs2_mount() {
 			fi
 		fi
 	fi
-	if ! grep -q " /data jffs2 " /proc/mounts; then
+	if ! grep -q " /sto jffs2 " /proc/mounts; then
 		return 1
 	fi
 }
@@ -113,16 +113,16 @@ start() {
 	modprobe mini_fo
 	mount -t tmpfs none /var
 	if [ "$mini_fo" == "jffs2" ]; then
-		echo "*** Mounting jffs2 to /data ... ***"
+		echo "*** Mounting jffs2 to /sto ... ***"
 		if ! jffs2_mount; then
 			echo "*** Mounting jffs2 failed. Mounting tmpfs instead ... ***"
-			mount -t tmpfs none /data
+			mount -t tmpfs none /sto
 		fi
 	else
-		mount -t tmpfs none /data
+		mount -t tmpfs none /sto
 	fi
-	mkdir -p /data/mini_fo
-	if ! mount -t mini_fo -o base=/,sto=/data/mini_fo / /var; then
+	mkdir -p /sto/mini_fo
+	if ! mount -t mini_fo -o base=/,sto=/sto/mini_fo / /var; then
 		echo "*** mini_fo mount failed, exiting. ***" >&2
 		rmmod mini_fo
 		return
@@ -134,7 +134,7 @@ start() {
 	mkdir -p rom
 	if pivot_root . rom; then
 		# clean up
-		mount -o move /rom/data /data
+		mount -o move /rom/sto /sto
 		umount /rom/var
 		echo "*** mini_fo root pivoting succeeded, done. ***"
 	else
