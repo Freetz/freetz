@@ -11,7 +11,7 @@ echo1 "adapt firmware for W500V"
 echo2 "copying W500V files"
 cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_top.bit" "${FILESYSTEM_MOD_DIR}/lib/modules"
 cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip-dsl.bin" "${FILESYSTEM_MOD_DIR}/lib/modules"
-cp "${DIR}/.tk/original/filesystem/etc/init.d/rc.init" "${FILESYSTEM_MOD_DIR}/etc/init.d"
+#cp "${DIR}/.tk/original/filesystem/etc/init.d/rc.init" "${FILESYSTEM_MOD_DIR}/etc/init.d"
 cp "${DIR}/.tk/original/filesystem/etc/led.conf" "${FILESYSTEM_MOD_DIR}/etc/led.conf"
 
 echo2 "deleting obsolete files"
@@ -32,28 +32,25 @@ ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_DECT_W500V/tcom"
 
 echo2 "patching rc.S and rc.init"
 sed -i -e "s/piglet_bitfile_offset=0 /piglet_bitfile_offset=0x4c /" \
--e "/ piglet_irq_gpio.*$/d" \
--e "/ piglet_irq.*$/d" \
--e "s/isIsdnTE 1 /isIsdnTE 0 /" \
--e "s/isUsbHost 1 /isUsbHost 0 /" \
--e "s/isUsbStorage 1 /isUsbStorage 0 /" \
--e "s/isUsbWlan 1 /isUsbWlan 0 /" \
--e "s/isUsbPrint 1 /isUsbPrint 0 /" \
--e "s/dect_hw=3/dect_hw=1/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-sed -i -e "s/BUTTON=y/BUTTON=n/g" \
--e "s/ATA=n/ATA=y/g" \
--e "s/MAILER=.*$/MAILER=y/g" \
--e "s/HOSTNAME=.*$/HOSTNAME=fritz.box/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-sed -i -e '/HW=91 OEM=all XILINX=y/i \
-HW=91 OEM=all LED_NO_INFO_LED_KONFIG=y \
-HW=91 OEM=all AUDIO=n \
-HW=91 OEM=all MEDIASRV=n \
-HW=91 OEM=all MEDIACLI=n \
-HW=91 OEM=all AURA=n \
-HW=91 OEM=all VPN=n \
-HW=91 OEM=all KIDS=y \
-HW=91 OEM=all SWAP=n \
-HW=91 OEM=all ECO=y' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
+	-e "/ piglet_irq_gpio.*$/d" \
+	-e "/ piglet_irq.*$/d" \
+	-e "s/isIsdnTE 1 /isIsdnTE 0 /" \
+	-e "s/isUsbHost 1 /isUsbHost 0 /" \
+	-e "s/isUsbStorage 1 /isUsbStorage 0 /" \
+	-e "s/isUsbWlan 1 /isUsbWlan 0 /" \
+	-e "s/isUsbPrint 1 /isUsbPrint 0 /" \
+	-e "s/dect_hw=3/dect_hw=1/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+
+sed -i -e "s/^HW=106/HW=91/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
+
+sed -i -e "s/VERSION_MAJOR=27/VERSION_MAJOR=38/g" \
+	-e "s/CAPI_TE=y/CAPI_TE=n/g" \
+	-e "s/PRODUKT=.*$/PRODUKT=Fritz_Box_DECT_W500V/g" \
+	-e "s/PRODUKT_NAME=.*$/PRODUKT_NAME=Sinus#W#500V/g" \
+	-e "s/USB_HOST_AVM=y.*$/USB_HOST_AVM=n USB_STORAGE=n USB_WLAN_AUTH=n USB_PRINT_SERV=n/g" \
+	-e "s/SERVICEPORTAL_URL=/SERVICEPORTAL_URL=http:\/\/www.ip-phone-forum.de/g" \
+	-e "s/ATA=.*$/ATA=y/g" \
+	-e "s/MAILER=.*$/MAILER=y/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
 
 echo2 "patching webinterface"
 sed -i -e "s/g_txtmld_/g_txtMld_/g" "${HTML_LANG_MOD_DIR}/fon/foncalls.js"
