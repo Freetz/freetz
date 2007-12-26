@@ -1,0 +1,43 @@
+--- etc/init.d/rc.S.orig	2007-12-26 01:02:18.000000000 +0100
++++ etc/init.d/rc.S	2007-12-26 01:02:18.000000000 +0100
+@@ -669,6 +669,7 @@
+ #########################################################################
+ ## DECT
+ #########################################################################
++mknod /var/flash/dect_misc c $tffs_major $((0xB0))
+ mknod /var/flash/aura-usb c $tffs_major $((0xA0))
+ mknod /var/flash/browser-data c $tffs_major $((0xA8))
+ ##########################################################################################
+@@ -955,6 +956,16 @@
+ isdn_fbox=${isdn_fbox%.ko}
+ ## VAG2 + VAG3
+ isdn_params=""
++ isdn_params="${isdn_params} dect_hw=2"
++ if /usr/bin/checkempty /var/flash/dect_misc; then
++ isdn_params="${isdn_params} dect_on=1"
++ else
++ if /bin/testvalue /var/flash/dect_misc 1 0 0; then
++ isdn_params="${isdn_params} dect_on=0"
++ else
++ isdn_params="${isdn_params} dect_on=1"
++ fi
++ fi
+ ## ########### Annex A DTMF/EC settings ###########
+ ## ########### done ###########
+ modprobe $isdn_fbox $isdn_params
+@@ -1013,6 +1024,15 @@
+ ## LED - Deamon
+ ##########################################################################################
+ ln -s /dev/new_led /var/led
++case $OEM in
++ tcom|avm)
++ echo "STATES isdn,0 = 0 -> 2, 1 -> 4" >/dev/new_led
++ echo "MAP isdn,0 TO ab,1" >/dev/new_led
++ echo "STATES ab,1 = 1 -> 18, 0 -> 2, 4 -> 1" >/dev/new_led
++ ;;
++ avme)
++ ;;
++esac
+ ##########################################################################################
+ ## Box Spezifische Einstellungen
+ ##########################################################################################

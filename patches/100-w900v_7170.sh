@@ -34,6 +34,7 @@ sed -i -e '/modprobe Piglet piglet_bitfile.*$/i \
  if [ "$HWRevision_BitFileCount" = "1" ] ; then \
  piglet_load_params="\$piglet_load_params piglet_enable_switch=1" \
  fi' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-W900V_7170.patch"
 
 sed -i -e "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"34\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
