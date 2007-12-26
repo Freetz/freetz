@@ -15,7 +15,7 @@ cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip-dsl.bin" "${FILESYSTEM_
 cp "${DIR}/.tk/original/filesystem/etc/led.conf" "${FILESYSTEM_MOD_DIR}/etc/led.conf"
 
 echo2 "deleting obsolete files"
-for i in fs drivers/usb drivers/scsi; do
+for i in fs/ext2 fs/fat fs/isofs fs/nls fs/vfat fs/mbcache.ko drivers/usb drivers/scsi; do
 	rm -rf ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i
 done
 for i in bin/pause bin/reinit_jffs2 bin/pause bin/usbhostchanged etc/hotplug \
