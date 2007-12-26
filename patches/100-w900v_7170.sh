@@ -35,18 +35,12 @@ sed -i -e '/modprobe Piglet piglet_bitfile.*$/i \
  piglet_load_params="\$piglet_load_params piglet_enable_switch=1" \
  fi' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
-if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
-	sed -i -e "s/^HW=94/HW=102/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-	sed -i -e "s/PRODUKT_NAME=.*$/PRODUKT_NAME=FRITZ!Box#Fon#Speedport#W#900V/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-	sed -i -e "s/PRODUKT=.*$/PRODUKT=Fritz_Box_SpeedportW900V/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-	sed -i -e "s/DECT=n$/DECT=y/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-	sed -i -e "s/DECT_ONOFF=n$/DECT_ONOFF=y/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-else
-	sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-	sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-	sed -i -e "s/CONFIG_DECT=.*$/CONFIG_DECT=\"y\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-	sed -i -e "s/CONFIG_DECT_ONOFF=.*$/CONFIG_DECT_ONOFF=\"y\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-fi
+sed -i -e "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"34\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_DECT=.*$/CONFIG_DECT=\"y\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_DECT_ONOFF=.*$/CONFIG_DECT_ONOFF=\"y\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
 
 echo2 "patching pm_info.in"
 sed -i -e 's|PMINFO_MODE=2.*$|PMINFO_MODE=2,100,0,1,974|' "${FILESYSTEM_MOD_DIR}/lib/modules/pm_info.in"

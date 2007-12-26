@@ -29,6 +29,3 @@ echo1 "copying igdd"
 cp -a ${DIR}/.tk/original/filesystem/lib/libmxml.so* "${FILESYSTEM_MOD_DIR}/lib/"
 cp -a "${DIR}/.tk/original/filesystem/sbin/igdd" "${FILESYSTEM_MOD_DIR}/sbin"
 
-echo1 "copying DSL driver"
-cp -a "${DIR}/.tk/original/filesystem/lib/modules/microvoip-dsl.bin" "${FILESYSTEM_MOD_DIR}/lib/modules"
-
