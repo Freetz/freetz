@@ -1,0 +1,1849 @@
+--- usr/www/all/html/de/first/first_Sip_1.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/first/first_Sip_1.html	2007-12-26 03:36:12.000000000 +0100
+@@ -16,6 +16,23 @@
+ <? if eq $var:OEM arcor `
+ 					<option value="Arcor">$var:Text7</option>
+ ` ?>
++<? if eq $var:OEM tcom 	`
++					<option value="1u1">$var:Text4</option>
++					<option value="AOL">$var:Text9</option>
++					<option value="Arcor">$var:Text7</option>
++					<option value="Dus">$var:Text13</option>
++					<option value="Freenet">$var:Text8</option>
++					<option value="GMX">$var:Text5</option>
++					<option value="Inode">$var:Text30</option>
++<? if eq $var:Annex A `
++					<option value="InodeIsdn">$var:Text37</option>
++` ?>
++					<option value="SuP">$var:Text6</option>
++					<option value="Sipgate">$var:Text10</option>
++					<option value="Strato">$var:Text28</option>
++					<option value="TOnline">$var:Text12</option>
++					<option value="Webde">$var:Text11</option>
++` ?>
+ <? if eq $var:OEM freenet 	`
+ 					<option value="1u1">$var:Text4</option>
+ 					<option value="AOL">$var:Text9</option>
+--- usr/www/all/html/de/first/first_Sip_1.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/first/first_Sip_1.js	2007-12-26 03:36:12.000000000 +0100
+@@ -130,6 +131,10 @@
+ <? if eq $var:OEM avme `
+ 		provider = "Sonst";
+ ` ?>
++<? if eq $var:OEM tcom 	`
++		provider = jslGetValue("uiPppProvider");
++		jslDisplay( "uiShowProvider", true);
++` ?>
+ <? if eq $var:OEM freenet 	`
+ 		provider = jslGetValue("uiPppProvider");
+ 		jslDisplay( "uiShowProvider", true);
+--- usr/www/all/html/de/fon/dect.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/dect.html	2007-12-26 03:36:10.000000000 +0100
+@@ -12,6 +12,10 @@
+ <? if eq '<? query box:settings/expertmode/activated ?>' '1' `
+  		<li><a href="javascript:uiDoListDect()"><? echo '$var:Text23' ?></a></li>
+ ` ?>
++ 		<li><a href="javascript:uiDoEditDect()"><? echo '$var:Text29' ?></a></li>
++<? if eq `<? query dect:settings/enabled ?>` 1 `
++ 		<li><a href="javascript:uiDoSetupDect()"><? echo '$var:Text28' ?></a></li>
++` ?>
+  	</ul>
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="mb10"><? echo $var:Text3 ?></p>
+--- usr/www/all/html/de/fon/dect.inc	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/dect.inc	2007-12-26 03:36:10.000000000 +0100
+@@ -11,5 +11,7 @@
+ <? setvariable var:Text19 'Telefonbuch senden' ?>
+ <? setvariable var:Text20 'Geben Sie hier Ihre Festnetzrufnummern ein:' ?>
+ <? setvariable var:Text21 'Übersicht' ?>
+-<? setvariable var:Text22 'Festnetzrufnummern' ?>
++<? setvariable var:Text22 'Festnetz' ?>
+ <? setvariable var:Text23 'Interne Nummern' ?>
++<? setvariable var:Text28 'Zuordnung' ?>
++<? setvariable var:Text29 'Basisstation' ?>
+--- usr/www/all/html/de/fon/dect.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/dect.js	2007-12-26 03:36:10.000000000 +0100
+@@ -81,6 +81,18 @@
+ function uiDoDectMsn() {
+ 	jslGoTo("", "dectmsn");
+ }
++function uiDoSetupDect() {
++	jslGoTo("fon", "fonsetupdect");
++}
++function uiDoEditDect() {
++	jslGoTo("fon", "foneditdect");
++}
++function uiDoSetupIsdn() {
++	jslGoTo("fon", "fonsetupisdn");
++}
++function uiDoEditIsdn() {
++	jslGoTo("fon", "foneditisdn");
++}
+ function uiDoHelp() {
+ 	jslPopHelp("hilfe_fon_dect");
+ }
+--- usr/www/all/html/de/fon/fon1dect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fon1dect.frm	2007-12-18 10:15:22.000000000 +0100
+@@ -0,0 +1,19 @@
++<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/MSN" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/MSN ?>" id="uiPostThisMSN">
++<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/Name" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/Name ?>" id="uiPostThisUser">
++<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/CLIR" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/CLIR ?>" id="uiPostCLIR">
++<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/CallWaiting" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/CallWaiting ?>" id="uiPostCallWaiting">
++<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/BusyOnBusy" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/BusyOnBusy ?>" id="uiPostBusyOnBusy">
++<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/Handsets" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/Handsets ?>" id="uiPostHandsets">
++<? repeat [ 1 8 ] `
++<input type="hidden" name="telcfg:settings/NTHotDialList/Number$0" value="<? query telcfg:settings/NTHotDialList/Number$0 ?>" id="uiInt$0" disabled>` ?>
++<? multiquery sip:settings/sip/list(displayname) '
++<input type="hidden" name="sip:settings/$1/displayname" value="$2" id="ui$1" disabled>
++' ?>
++<? repeat [ 0 9 ] `
++<input type="hidden" name="telcfg:settings/MSN/MSN$0" value="<? query telcfg:settings/MSN/MSN$0 ?>" id="uiMsn$0" disabled>
++` ?>
++<input type="hidden" name="telcfg:settings/MSN/POTS" value="<? query telcfg:settings/MSN/POTS ?>" id="uiPots" disabled>
++<? repeat [ 0 4 ] `
++<input type="hidden" name="dect:settings/MSN$0/MSN" value="<? query dect:settings/MSN$0/MSN ?>" id="uiPostMSN$0" disabled>
++<input type="hidden" name="dect:settings/MSN$0/Name" value="<? query dect:settings/MSN$0/Name ?>" id="uiPostUser$0" disabled>
++` ?>
+--- usr/www/all/html/de/fon/fon1dect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fon1dect.html	2007-12-18 10:22:48.000000000 +0100
+@@ -0,0 +1,41 @@
++<? include ../html/$var:lang/fon/fon1dect.inc ?>
++<div id="content">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
++		<? echo $var:Text1 ?>
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++	<!--	<p><? echo $var:Text2 ?><script type="text/javascript">document.write(uiIndexMSN("<? echo $var:MsnNr ?>"));</script></p> -->	 
++		<table>
++			<tr>
++				<td class="c1"><label for="uiViewMSN"><? echo $var:Text2 ?><script type="text/javascript">document.write(uiIndexMSN("<? echo $var:MsnNr ?>"));</script></label></td>
++				<td><select size="1" id="uiViewMSN" class="Eingabefeld" style="width:200px"></select></td>
++			</tr>
++			<tr>
++				<td class="c1"><label for="uiViewUser"><? echo $var:Text5 ?></label></td>
++				<td><input type="text" size="33" maxlength="32" class="Eingabefeld" id="uiViewUser"></td>
++			</tr>
++		</table>
++		<p><? echo $var:Text3 ?></p>
++		<table>
++			<tr>
++				<td style="{text-align: left; width: 150px;"><input type="checkbox" name="uiViewCLIR" id="uiViewCLIR0">&nbsp;<label for="uiViewCLIR"><? echo $var:Text11 ?></label></td>
++				<td style="{text-align: left; width: 150px;"><input type="checkbox" name="uiViewCallWaiting" id="uiViewCallWaiting">&nbsp;<label for="uiViewCallWaiting"><? echo $var:Text12 ?></label></td>
++				<td style="{text-align: left; width: 150px;"><input type="checkbox" name="uiViewBusyOnBusy" id="uiViewBusyOnBusy">&nbsp;<label for="uiViewBusyOnBusy"><? echo $var:Text13 ?></label></td>
++			</tr>
++		</table>
++		<p><? echo $var:Text4 ?></p>
++		<table>
++			<tr>
++				<td style="{text-align: left; width: 150px;"><input type="checkbox" name="uiViewHandset0" id="uiViewHandset0" disabled>&nbsp;<label for="uiViewHandset0"><? echo $var:Text15 ?></label></td>
++				<td style="{text-align: left; width: 150px;"><input type="checkbox" name="uiViewHandset2" id="uiViewHandset2" disabled>&nbsp;<label for="uiViewHandset2"><? echo $var:Text17 ?></label></td>
++				<td style="{text-align: left; width: 150px;"><input type="checkbox" name="uiViewHandset4" id="uiViewHandset4" disabled>&nbsp;<label for="uiViewHandset4"><? echo $var:Text19 ?></label></td>
++			</tr>
++			<tr>
++				<td style="{text-align: left; width: 150px;"><input type="checkbox" name="uiViewHandset1" id="uiViewHandset1" disabled>&nbsp;<label for="uiViewHandset1"><? echo $var:Text16 ?></label></td>
++				<td style="{text-align: left; width: 150px;"><input type="checkbox" name="uiViewHandset3" id="uiViewHandset3" disabled>&nbsp;<label for="uiViewHandset3"><? echo $var:Text18 ?></label></td>
++				<td style="{text-align: left; width: 150px;"><input type="checkbox" name="uiViewHandset5" id="uiViewHandset5" disabled>&nbsp;<label for="uiViewHandset5"><? echo $var:Text20 ?></label></td>
++			</tr>
++		</table>
++	</div></div></div></div></div></div>
++	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
++</div>
+--- usr/www/all/html/de/fon/fon1dect.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fon1dect.inc	2007-12-18 09:38:38.000000000 +0100
+@@ -0,0 +1,15 @@
++<? include ../html/$var:lang/global.inc ?>
++<? setvariable var:Text1 'MSN zuordnen' ?>
++<? setvariable var:Text2 'MSN ' ?>
++<? setvariable var:Text3 'Leistungsmerkmale' ?>
++<? setvariable var:Text4 'Zuordnung' ?>
++<? setvariable var:Text5 'Nutzername' ?>
++<? setvariable var:Text11 'Anonym anrufen' ?>
++<? setvariable var:Text12 'Anklopfen' ?>
++<? setvariable var:Text13 'MSN besetzt' ?>
++<? setvariable var:Text15 'Mobilteil 1' ?>
++<? setvariable var:Text16 'Mobilteil 2' ?>
++<? setvariable var:Text17 'Mobilteil 3' ?>
++<? setvariable var:Text18 'Mobilteil 4' ?>
++<? setvariable var:Text19 'Mobilteil 5' ?>
++<? setvariable var:Text20 'Mobilteil 6' ?>
+--- usr/www/all/html/de/fon/fon1dect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fon1dect.js	2007-12-18 10:21:36.000000000 +0100
+@@ -0,0 +1,177 @@
++<!--		../fon/fon1dect.js		-->
++<style type="text/css">
++<!--
++#content {width: 540px; margin: auto;}
++td {padding: 5px 5px;}
++th {padding: 5px 5px;}
++-->
++</style>
++<script type="text/javascript">
++<? include ../html/$var:lang/js/val.js ?>
++<? include ../html/$var:lang/js/jsl.js ?>
++var g_txt_Festnetz	= "Festnetz: ";
++var g_txt_Internet	= "Internet: ";
++var g_txt_Intern		= "Intern: ";
++<? multiquery sip:settings/sip/list '
++var g_$1;
++' ?>
++var g_msn0;
++var g_msn1;
++var g_msn2;
++var g_msn3;
++var g_msn4;
++var g_msn5;
++var g_msn6;
++var g_msn7;
++var g_msn8;
++var g_msn9;
++var g_pots;
++var g_int1;
++var g_int2;
++var g_int3;
++var g_int4;
++var g_int5;
++var g_int6;
++var g_int7;
++var g_int8;
++var g_MsnGesperrt = new Array(0, 0, 0, 0, 0);
++var g_Index = new Array("A", "B", "C", "D", "E");
++var g_Handsets;
++var g_MsnNr;
++var g_OptsCount = 0;
++var g_mldNoNummer = "Geben Sie bitte eine Rufnummer an.";
++var g_mldNoHandset = "Wählen Sie bitte mind. ein Mobilteil aus.";
++var g_mldNoOpts = "Es sind bereits alle verfügbaren Rufnummern zugeordnet.";
++function uiDoOnLoad() {
++	g_Handsets = 0;
++
++<? multiquery dect:settings/Handset/list(Subscribed) `
++<? if eq $2 1 `
++	 g_Handsets |= (1<<$0);
++` ?>
++` ?>
++
++<? multiquery sip:settings/sip/list '
++	g_$1 = jslGetValue("ui$1");
++' ?>
++	g_msn0 = jslGetValue("uiMsn0");
++	g_msn1 = jslGetValue("uiMsn1");
++	g_msn2 = jslGetValue("uiMsn2");
++	g_msn3 = jslGetValue("uiMsn3");
++	g_msn4 = jslGetValue("uiMsn4");
++	g_msn5 = jslGetValue("uiMsn5");
++	g_msn6 = jslGetValue("uiMsn6");
++	g_msn7 = jslGetValue("uiMsn7");
++	g_msn8 = jslGetValue("uiMsn8");
++	g_msn9 = jslGetValue("uiMsn9");
++	g_pots = jslGetValue("uiPots");
++	g_int1 = jslGetValue("uiInt1");
++	g_int2 = jslGetValue("uiInt2");
++	g_int3 = jslGetValue("uiInt3");
++	g_int4 = jslGetValue("uiInt4");
++	g_int5 = jslGetValue("uiInt5");
++	g_int6 = jslGetValue("uiInt6");
++	g_int7 = jslGetValue("uiInt7");
++	g_int8 = jslGetValue("uiInt8");
++
++	fillId("uiViewMSN", jslGetValue("uiPostThisMSN"));
++	if (g_OptsCount == 1) {alert(g_mldNoOpts); return;}
++
++	jslCopyValue("uiViewUser", jslGetValue("uiPostThisUser"));
++
++	jslSetChecked("uiViewCLIR", jslGetValue("uiPostCLIR") == "1");
++	jslSetChecked("uiViewCallWaiting", jslGetValue("uiPostCallWaiting") == "1");
++	jslSetChecked("uiViewBusyOnBusy", jslGetValue("uiPostBusyOnBusy") == "1");
++
++	var bits = jslGetValue("uiPostHandsets");
++	var bits = (bits.charCodeAt(0) - 48);
++	for (var j=0; j<6; j++) {
++		if ((g_Handsets & (1<<j)) != 0)	{
++			jslEnable("uiViewHandset"+j);
++		} 
++		jslSetChecked("uiViewHandset"+j, (bits & g_Handsets & (1<<j)) != 0);
++	}
++}
++function uiDoSave() {
++	if (jslGetValue("uiViewMSN") == "Leer") {alert(g_mldNoNummer); return;}
++
++	var bits=0
++	for (var j=0; j<6; j++) {
++		if (jslGetChecked("uiViewHandset"+j)) bits |= 1<<j;
++	}
++	if (bits == 0) {alert(g_mldNoHandset); return;}
++
++	jslCopyValue("uiPostThisMSN", "uiViewMSN");
++	jslCopyValue("uiPostThisUser", "uiViewUser");
++	jslSetValue("uiPostHandsets", bits);
++
++	jslSetValue("uiPostCLIR", jslGetChecked("uiViewCLIR") ? "1":"0");
++	jslSetValue("uiPostCallWaiting", jslGetChecked("uiViewCallWaiting") ? "1":"0");
++	jslSetValue("uiPostBusyOnBusy", jslGetChecked("uiViewBusyOnBusy") ? "1":"0");
++
++	jslSubmitFormEx("fon", jslGetValue("uiPostPageMaster"));
++}
++function uiDoCancel() {
++	jslGoTo("fon", jslGetValue("uiPostPageMaster"));
++}
++function uiDoHelp() {
++	jslPopHelp("hilfe_fon_fon1dect");
++}
++function isFrei(msn) {
++	for (var i=0; i<5; i++) {
++		if (i != g_MsnNr && msn == jslGetValue("uiPostMSN"+i)) return false;
++	}
++	return true;
++} 
++function fillId(id, nr) {
++<? if eq '$var:usePSTN' 1 `
++	// Auswahl mit den vorgegebenen MSN füllen und Eintrag msn selektieren
++	addMsn(id, g_msn0, g_txt_Festnetz);
++	addMsn(id, g_msn1, g_txt_Festnetz);
++	addMsn(id, g_msn2, g_txt_Festnetz);
++	addMsn(id, g_msn3, g_txt_Festnetz);
++	addMsn(id, g_msn4, g_txt_Festnetz);
++	addMsn(id, g_msn5, g_txt_Festnetz);
++	addMsn(id, g_msn6, g_txt_Festnetz);
++	addMsn(id, g_msn7, g_txt_Festnetz);
++	addMsn(id, g_msn8, g_txt_Festnetz);
++	addMsn(id, g_msn9, g_txt_Festnetz);
++	addMsn(id, g_pots, g_txt_Festnetz);
++` ?> 
++	// Sip Zugänge anfügen
++<? multiquery sip:settings/sip/list(ID,displayname) '
++	if ("$3" != "" && isFrei("$3")) addOption(id, "$3", g_txt_Internet+g_$1);
++' ?>
++	// Interne Nummern anfügen
++	addMsn(id, g_int1, g_txt_Intern);
++	addMsn(id, g_int2, g_txt_Intern);
++	addMsn(id, g_int3, g_txt_Intern);
++	addMsn(id, g_int4, g_txt_Intern);
++	addMsn(id, g_int5, g_txt_Intern);
++	addMsn(id, g_int6, g_txt_Intern);
++	addMsn(id, g_int7, g_txt_Intern);
++	addMsn(id, g_int8, g_txt_Intern);
++
++	addOption(id, "Leer", "");
++	jslSetSelection(id, nr=="" ? "Leer":nr);
++}
++function addMsn (id, msn, prefix) {
++	if (msn != "" && isFrei(msn)) addOption(id, msn, prefix+msn);
++}
++function addOption (id, val, text) {
++	var element;
++	element = document.getElementById(id);
++	if (element == null) return;
++//	var i=0;
++//	for (i=0; i<element.length; i++) {
++//		if (element.options[i].value == val) return; // Wert schon vorhanden
++//	}
++	g_OptsCount++;
++	var eintrag = new Option(text, val, false, false);
++	element.options[element.length]=eintrag;
++}
++function uiIndexMSN(nr) {
++	g_MsnNr = nr;
++	return g_Index[Number(nr)];
++}
++</script>
+--- usr/www/all/html/de/fon/fondevices.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/fondevices.html	2007-12-26 03:36:10.000000000 +0100
+@@ -14,6 +14,10 @@
+ 		<li><a href="javascript:uiDoListIsdn()"><? echo '$var:Text22' ?></a></li>
+ ` ?>
+ 		<li><a href="javascript:uiDoOptionen()"><? echo $var:Text23 ?></a></li>	-->
++ 		<li><a href="javascript:uiDoEditIsdn()"><? echo '$var:Text29' ?></a></li>
++<? if eq `<? query dect:settings/enabled ?>` 1 `
++ 		<li><a href="javascript:uiDoSetupIsdn()"><? echo '$var:Text28' ?></a></li>
++` ?>
+ 	</ul>
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="mb10"><? echo $var:Text3 ?></p>
+--- usr/www/all/html/de/fon/fondevices.inc	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/fondevices.inc	2007-12-26 03:36:10.000000000 +0100
+@@ -15,7 +15,9 @@
+ <? setvariable var:Text19 'Bearbeiten' ?>
+ <? setvariable var:Text18 'Löschen' ?>
+ <? setvariable var:Text20 'Übersicht' ?>
+-<? setvariable var:Text21 'Festnetzrufnummern' ?>
++<? setvariable var:Text21 'Festnetz' ?>
+ <? setvariable var:Text22 'Interne Nummern' ?>
+-<? setvariable var:Text23 'Leistungsmerkmale' ?>
++<? setvariable var:Text23 'Optionen' ?>
++<? setvariable var:Text28 'Zuordnung' ?>
++<? setvariable var:Text29 'Basisstation' ?>
+ <? setvariable var:Text24 'Hinweis: Es können keine weiteren Telefoniegeräte eingerichtet werden, da alle Anschlüsse belegt sind.' ?>
+--- usr/www/all/html/de/fon/fondevices.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/fondevices.js	2007-12-26 03:36:10.000000000 +0100
+@@ -65,6 +65,22 @@
+ 	}
+ 	jslSubmitFormEx( "fon_config", "fon_config_Start", "fondevices");
+ }
++function uiDoSetupDect() {
++	jslSetValue("uiPostPageMaster", "fondevices");
++	jslGoTo("fon", "fonsetupdect");
++}
++function uiDoEditDect() {
++	jslSetValue("uiPostPageMaster", "fondevices");
++	jslGoTo("fon", "foneditdect");
++}
++function uiDoSetupIsdn() {
++	jslSetValue("uiPostPageMaster", "fondevices");
++	jslGoTo("fon", "fonsetupisdn");
++}
++function uiDoEditIsdn() {
++	jslSetValue("uiPostPageMaster", "fondevices");
++	jslGoTo("fon", "foneditisdn");
++}
+ function uiDoHelp() {
+ 	jslPopHelp("hilfe_fon_fondevices");
+ }
+iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
+--- usr/www/all/html/de/fon/foneditdect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditdect.frm	2007-12-18 22:18:20.000000000 +0100
+@@ -0,0 +1,11 @@
++<input type="hidden" name="dect:command/StartSubscription" id="uiPostStartSubscription" disabled>
++<input type="hidden" name="dect:command/Unsubscribe" id="uiPostUnsubscribe" disabled>
++<input type="hidden" name="dect:command/PageHandsets" id="uiPostPageHandsets" disabled>
++<input type="hidden" name="dect:command/DateTime" id="uiPostDateTime" disabled>
++<input type="hidden" name="dect:settings/enabled" value="<? query dect:settings/enabled ?>" id="uiPostDectActivated" disabled>
++<input type="hidden" name="logic:command/reboot" id="uiPostReboot" disabled>
++<input type="hidden" name="" id="uiPostVarName">
++<? repeat [ 0 5 ] `
++<input type="hidden" name="dect:settings/Handset$0/Subscribed" value="<? query dect:settings/Handset$0/Subscribed ?>" id="uiPostSubscribed$0" disabled>
++<input type="hidden" name="dect:settings/Handset$0/Type" value="<? query dect:settings/Handset$0/Type ?>" id="uiPostType$0" disabled>
++` ?>
+--- usr/www/all/html/de/fon/foneditdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditdect.html	2007-12-26 03:36:10.000000000 +0100
+@@ -0,0 +1,80 @@
++<? include ../html/$var:lang/fon/foneditdect.inc ?> 
++<div id="content">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
++		<? echo '$var:Text23' ?>
++	</div></div></div></div></div></div>
++	<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
++ 	<ul class="tabs">
++<? if eq $var:pagename 'foneditdect' `
++ 		<li><a href="javascript:uiDoDect()"><? echo '$var:Text24' ?></a></li>
++<? if eq '$var:usePSTN' 1 `
++ 		<li><a href="javascript:uiDoDectMsn()"><? echo '$var:Text25' ?></a></li>
++` ?>
++<? if eq '<? query box:settings/expertmode/activated ?>' '1' `
++ 		<li><a href="javascript:uiDoListDect()"><? echo '$var:Text26' ?></a></li>
++` ?>
++ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text29' ?></a></li>
++<? if eq `<? query dect:settings/enabled ?>` 1 `
++ 		<li><a href="javascript:uiDoSetupDect()"><? echo '$var:Text28' ?></a></li>
++` ?>
++` `
++ 		<li><a href="javascript:uiDoIsdn()"><? echo '$var:Text24' ?></a></li>
++<? if eq '$var:usePSTN' 1 `
++ 		<li><a href="javascript:uiDoMsn()"><? echo '$var:Text25' ?></a></li>
++` ?>
++<? if eq '<? query box:settings/expertmode/activated ?>' '1' `
++ 		<li><a href="javascript:uiDoListIsdn()"><? echo '$var:Text26' ?></a></li>
++` ?>
++ 		<li><a href="javascript:uiDoOptionen()"><? echo '$var:Text27' ?></a></li>
++ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text29' ?></a></li>
++<? if eq `<? query dect:settings/enabled ?>` 1 `
++ 		<li><a href="javascript:uiDoSetupIsdn()"><? echo '$var:Text28' ?></a></li>
++` ?>
++` ?>
++ 	</ul>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p class="mb10"><? echo $var:Text1 ?></p>
++		<p class="mb5">
++			<input type="checkbox" onclick="uiOnChangeDectActivated()" id="uiViewDectActivated">&nbsp;<label for="uiViewDectActivated"><? echo $var:Text2 ?></label>
++		</p>
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p class="mb10"><? echo $var:Text17 ?></p>
++		<table id="tHandsets" class="tborder">
++			<tr>
++				<th class="c1"><? echo $var:Text3 ?></th>
++				<th class="c2"><? echo $var:Text4 ?></th>
++				<th class="c3"><? echo $var:Text20 ?></th>
++				<th class="c4"></th>
++				<th class="c5"></th>
++			</tr>	
++<? repeat [ 0 5 ] '
++			<tr id="uiViewHandset$0" style="display:none">
++				<td class="c1"><option value="$0"><script type="text/javascript">document.write($0+1);</script></option></td>
++				<td class="c2"><input type="checkbox" id="uiViewSubscribed$0" disabled></td>
++				<td class="c3"><input type="checkbox" id="uiViewType$0" disabled></td>
++				<td class="c4"></td>
++				<td class="c5"><button type="button" id="uiViewDelete$0" onclick="uiDoDelete($0)" title="$var:Text31" style="width: 30px">
++					<img src="../html/<? echo $var:lang ?>/images/loeschen.gif" align="bottom" width="16" height="16" hspace="4">
++				</button></td>
++			</tr>
++' ?>
++			<tr id="uiNichts" style="display:none"><td colspan=5 class="ac"><? echo '$var:Text32' ?></td></tr>
++		</table>
++		<p class="mt10 ar"><input type="button" value="<? echo $var:Text21 ?>" id="uiViewNew" onclick="uiDoNew()" class="Pushbutton" style="width:180px;"></p>		
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p class="mb5"><? echo $var:Text35 ?></p>
++		<div style="text-align: right;">
++		  <input type="button" value="<? echo $var:Text33 ?>" id="uiViewPage" onclick="uiDoPage()" class="Pushbutton" style="width:180px;">
++		  <input type="button" value="<? echo $var:Text34 ?>" id="uiViewDateTime" onclick="uiDoDateTime()" class="Pushbutton" style="width:180px;">
++		</div>
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
++		<input type="button" onclick="uiDoSave()" value="<? echo $var:txtApply ?>"  class=Pushbutton id="buttonSave">
++		<input type="button" onclick="uiDoCancel()" value="<? echo $var:txtCancel ?>" class="Pushbutton" id="buttonCancel"> 
++		<input type="button" onclick="uiDoRefresh()" value="<? echo $var:txtRefresh ?>" class=Pushbutton id="buttonRefresh">
++		<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
++	</div></div></div></div></div></div>
++	</div></div></div></div></div></div></div>
++</div>
+--- usr/www/all/html/de/fon/foneditdect.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditdect.inc	2007-12-26 03:36:10.000000000 +0100
+@@ -0,0 +1,27 @@
++<? include ../html/$var:lang/global.inc ?>
++<? setvariable var:Text1 'Hier können Sie Einstellungen für Ihre DECT-Basisstation vornehmen. ' ?>
++<? setvariable var:Text2 'DECT-Basisstation aktivieren' ?>
++<? setvariable var:Text3 'Nummer' ?>
++<? setvariable var:Text4 'Angemeldet' ?>
++<? setvariable var:Text7 'Einstellung ändern' ?>
++<? setvariable var:Text16 'Mobilteile an- und abmelden' ?>
++<? setvariable var:Text17 'Sie können DECT-Telefone an der FRITZ!Box an- und abmelden. Zum Anmelden eines DECT-Telefons müssen Sie die System-PIN (im Lieferzustand: 0000) am Mobilteil eingeben.' ?>
++<? setvariable var:Text20 'Swissvoice/GAP' ?>
++<? setvariable var:Text21 'Mobilteil anmelden' ?>
++<? setvariable var:Text22 'Zurück' ?>
++<? if eq $var:pagename 'foneditdect' `
++<? setvariable var:Text23 'DECT-Endgeräte' ?>
++` `
++<? setvariable var:Text23 'ISDN-Endgeräte' ?>
++` ?>
++<? setvariable var:Text24 'Übersicht' ?>
++<? setvariable var:Text25 'Festnetz' ?>
++<? setvariable var:Text26 'Interne Nummern' ?>
++<? setvariable var:Text27 'Optionen' ?>
++<? setvariable var:Text28 'Zuordnung' ?>
++<? setvariable var:Text29 'Basisstation' ?>
++<? setvariable var:Text31 'Abmelden' ?>
++<? setvariable var:Text32 'Es sind keine Mobilteile angemeldet' ?>
++<? setvariable var:Text33 'Mobilteile pagen' ?>
++<? setvariable var:Text34 'Datum und Uhrzeit setzen' ?>
++<? setvariable var:Text35 'Mit Hilfe der Paging-Funktion können Sie Mobilteile lokalisieren. Per Knopfdruck können auch Datum und Uhrzeit der DECT-Telefone gesetzt werden.' ?>
+--- usr/www/all/html/de/fon/foneditdect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditdect.js	2007-12-19 21:36:50.000000000 +0100
+@@ -0,0 +1,157 @@
++<!--		../fon/foneditdect.js		-->
++<style type="text/css">
++<!--
++#content {width: 560px; margin: auto;}
++#tHandsets {width: 100%;}
++#tHandsets td {padding: 2px 3px;}
++#tHandsets th {padding: 2px 3px;}
++#tHandsets .c1 {text-align: center}
++#tHandsets .c2 {text-align: center}
++#tHandsets .c3 {text-align: center}
++#tHandsets .c4 {width: 0px;}
++#tHandsets .c5 {width: 30px;}
++.mt10 {margin-top: 10px;}
++.ar {text-align: right;}
++.ac {text-align: center;}
++-->
++</style>
++<script type="text/javascript">
++<? include ../html/$var:lang/js/jsl.js ?>
++var g_mldUnsubscribe	= "Wollen Sie das Mobilteil abmelden?";
++var g_mldDectActivate	= "Eine Veränderung dieser Einstellung macht einen Neustart des Geräts erforderlich!";
++var g_mldReboot     	= "Das Gerät wird jetzt neu gestartet!";
++var g_New = -1;
++function uiDoOnLoad() {
++	var bFound = false;
++
++	for (var i=0; i<=5; i++) {
++		if (jslGetValue("uiPostSubscribed"+i) == "1") {
++			jslSetChecked("uiViewSubscribed"+i, jslGetValue("uiPostSubscribed"+i) == "1");
++			jslSetChecked("uiViewType"+i, jslGetValue("uiPostType"+i) == "1");
++			jslDisplay("uiViewHandset"+i, true); bFound=true;
++		} else {
++			jslDisable("uiViewDelete"+i)
++			if (g_New == -1) g_New = i;
++		}
++	}
++	jslDisplay("uiNichts", !bFound);
++	jslSetEnabled("uiViewPage", bFound);
++
++//	jslSetChecked("uiViewDectActivated", jslGetValue("uiPostDectActivated") == "1");
++	if (jslGetValue("uiPostDectActivated") == "1") {
++		jslSetChecked("uiViewDectActivated", true);
++		uiDectElementsEnable(1);
++	} else {
++		jslSetChecked("uiViewDectActivated", false);
++		uiDectElementsEnable(0);
++	}
++
++	if (g_New == -1) jslDisable("uiViewNew");
++	jslZebrastreifen("tHandsets");
++}
++function uiOnChangeActivated(idui, idpost) {
++	if (jslGetChecked(idui)) {
++		jslSetValue(idpost, "1");
++		return 1;
++	} else {
++		jslSetValue(idpost, "0");
++		return 0;
++	}
++}
++function uiOnChangeDectActivated() {
++	if (!confirm(g_mldDectActivate)) return;
++	uiDectElementsEnable(uiOnChangeActivated("uiViewDectActivated", "uiViewDectActivated"));
++}
++function uiDectElementsEnable(iActive) {
++	jslSetEnabled("uiViewNew", iActive == 1);
++	jslSetEnabled("uiViewPage", iActive == 1);
++	jslSetEnabled("uiViewDateTime", iActive == 1);
++
++	for (var i=0; i<=5; i++) {
++		jslSetEnabled("uiViewDelete"+i, iActive == 1);
++	}
++}
++function uiDoSave() {
++	if (jslGetValue("uiPostDectActivated") != (jslGetChecked("uiViewDectActivated") ? "1":"0")) { 
++		jslSetValue("uiPostDectActivated", jslGetChecked("uiViewDectActivated") ? "1":"0");
++		jslEnable("uiPostDectActivated");
++
++		document.getElementById("uiPostVarName").name = "logic:command/reboot";
++		jslSetValue("uiPostVarName", "../gateway/commands/saveconfig.html");
++		jslSetValue("uiPostGetPage", "../html/reboot.html");
++		document.getElementById("uiPostForm").submit();
++
++		}
++// in foneditdect.frm: <input type="hidden" name="logic:command/reboot" id="uiPostReboot">
++//		jslSetValue("uiPostReboot", "1");
++//		jslEnable("uiPostReboot");
++//	}
++//<? if eq '$var:pagename' 'foneditdect' `
++//	jslFormSubmitEx("fon", "foneditdect");
++//` `	
++//	jslFormSubmitEx("fon", "foneditisdn");
++//` ?>
++}
++function uiDoHelp() {
++	jslPopHelp("hilfe_fon_editdect");
++}
++function uiDoCancel() {
++	jslGoTo("", "");
++}
++function uiDoRefresh() {
++<? if eq '$var:pagename' 'foneditdect' `
++	jslGoTo("fon", "foneditdect");
++` `	
++	jslGoTo("fon", "foneditisdn");
++` ?>
++}
++function uiDoIsdn() {
++	jslGoTo("fon", "isdn");
++}
++function uiDoListIsdn() {
++	jslGoTo("fon", "fonlistisdn");
++}
++function uiDoMsn() {
++	jslSetValue("uiPostPageMaster", "isdn");
++	jslGoTo("fon", "isdnmsn");
++}
++function uiDoOptionen() {
++	jslGoTo("fon", "isdnoptionen");
++}
++function uiDoSetupIsdn() {
++	jslGoTo("fon", "fonsetupisdn");
++}
++function uiDoDect() {
++	jslGoTo("fon", "dect");
++}
++function uiDoListDect() {
++	jslGoTo("fon", "fonlistdect");
++}
++function uiDoDectMsn() {
++	jslGoTo("fon", "dectmsn");
++}
++function uiDoSetupDect() {
++	jslGoTo("fon", "fonsetupdect");
++}
++function uiDoDelete(nr) {
++	if (!confirm(g_mldUnsubscribe)) return;
++	jslSetValue("uiPostUnsubscribe", nr);
++	jslEnable("uiPostUnsubscribe");
++	jslSubmitFormEx("fon", "", "");
++}
++function uiDoNew() {
++	jslSetValue("uiPostStartSubscription", "0");
++	jslEnable("uiPostStartSubscription");
++	jslSubmitFormEx("fon", "", "");
++}
++function uiDoPage () {
++	jslSetValue("uiPostPageHandsets", "0");
++	jslEnable("uiPostPageHandsets");
++	jslSubmitFormEx("fon", "", "");
++}
++function uiDoDateTime () {
++	jslSetValue("uiPostDateTime", "0");
++	jslEnable("uiPostDateTime");
++	jslSubmitFormEx("fon", "", "");
++}
++</script>
+--- usr/www/all/html/de/fon/foneditisdn.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditisdn.frm	2007-04-03 10:42:14.000000000 +0200
+@@ -0,0 +1 @@
++<? include ../html/$var:lang/fon/foneditdect.frm ?>
+--- usr/www/all/html/de/fon/foneditisdn.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditisdn.html	2007-04-03 10:42:50.000000000 +0200
+@@ -0,0 +1 @@
++<? include ../html/$var:lang/fon/foneditdect.html ?>
+--- usr/www/all/html/de/fon/foneditisdn.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditisdn.js	2007-04-03 10:43:36.000000000 +0200
+@@ -0,0 +1 @@
++<? include ../html/$var:lang/fon/foneditdect.js ?>
+--- usr/www/all/html/de/fon/fonlistisdn.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/fonlistisdn.html	2007-12-26 03:36:10.000000000 +0100
+@@ -9,6 +9,10 @@
+ 		<li><a href="javascript:uiDoDect()"><? echo '$var:Text24' ?></a></li>
+ 		<li><a href="javascript:uiDoDectMsn()"><? echo '$var:Text25' ?></a></li>
+ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text26' ?></a></li>
++ 		<li><a href="javascript:uiDoEditDect()"><? echo '$var:Text29' ?></a></li>
++<? if eq `<? query dect:settings/enabled ?>` 1 `
++ 		<li><a href="javascript:uiDoSetupDect()"><? echo '$var:Text28' ?></a></li>
++` ?>
+ ` `
+ 		<li><a href="javascript:uiDoIsdn()"><? echo '$var:Text24' ?></a></li>
+ <? if eq '$var:usePSTN' 1 `
+@@ -17,8 +21,10 @@
+ <? if eq '<? query box:settings/expertmode/activated ?>' '1' `
+ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text26' ?></a></li>
+ ` ?>
+-<? if eq '$var:pagemaster' 'isdn' `
+ 		<li><a href="javascript:uiDoOptionen()"><? echo '$var:Text27' ?></a></li>
++ 		<li><a href="javascript:uiDoEditIsdn()"><? echo '$var:Text29' ?></a></li>
++<? if eq `<? query dect:settings/enabled ?>` 1 `
++ 		<li><a href="javascript:uiDoSetupIsdn()"><? echo '$var:Text28' ?></a></li>
+ ` ?>
+ ` ?>
+ 	</ul>
+--- usr/www/all/html/de/fon/fonlistisdn.inc	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/fonlistisdn.inc	2007-12-26 03:36:10.000000000 +0100
+@@ -19,6 +19,8 @@
+ <? setvariable var:Text23 'ISDN-Endgeräte' ?>
+ ` ?>
+ <? setvariable var:Text24 'Übersicht' ?>
+-<? setvariable var:Text25 'Festnetzrufnummern' ?>
++<? setvariable var:Text25 'Festnetz' ?>
+ <? setvariable var:Text26 'Interne Nummern' ?>
+-<? setvariable var:Text27 'Leistungsmerkmale' ?>
++<? setvariable var:Text27 'Optionen' ?>
++<? setvariable var:Text28 'Zuordnung' ?>
++<? setvariable var:Text29 'Basisstation' ?>
+--- usr/www/all/html/de/fon/fonlistisdn.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/fonlistisdn.js	2007-12-26 03:36:10.000000000 +0100
+@@ -29,6 +29,18 @@
+ 	if (g_New == 0) jslDisable("uiViewNew");
+ 	jslZebrastreifen("tISDN");
+ }
++function uiDoSetupDect() {
++	jslGoTo("fon", "fonsetupdect");
++}
++function uiDoEditDect() {
++	jslGoTo("fon", "foneditdect");
++}
++function uiDoSetupIsdn() {
++	jslGoTo("fon", "fonsetupisdn");
++}
++function uiDoEditIsdn() {
++	jslGoTo("fon", "foneditisdn");
++}
+ function uiDoHelp() {
+ <? if eq '$var:pagename' 'fonlistdect' `
+ 	jslPopHelp("hilfe_fon_listdect");
+--- usr/www/all/html/de/fon/fonsetupdect1.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupdect1.html	2007-04-25 23:41:46.000000000 +0200
+@@ -0,0 +1,72 @@
++<? include ../html/$var:lang/fon/fonsetupdect.inc ?> 
++<div id="content">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
++		<? echo '$var:Text23' ?>
++	</div></div></div></div></div></div>
++	<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
++ 	<ul class="tabs">
++<? if eq $var:pagename 'fonsetupdect' `
++ 		<li><a href="javascript:uiDoDect()"><? echo '$var:Text24' ?></a></li>
++<? if eq '$var:usePSTN' 1 `
++ 		<li><a href="javascript:uiDoDectMsn()"><? echo '$var:Text25' ?></a></li>
++` ?>
++<? if eq '<? query box:settings/expertmode/activated ?>' '1' `
++ 		<li><a href="javascript:uiDoListDect()"><? echo '$var:Text26' ?></a></li>
++` ?>
++ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text28' ?></a></li>
++ 		<li><a href="javascript:uiDoEditDect()"><? echo '$var:Text29' ?></a></li>
++` `
++ 		<li><a href="javascript:uiDoIsdn()"><? echo '$var:Text24' ?></a></li>
++<? if eq '$var:usePSTN' 1 `
++ 		<li><a href="javascript:uiDoMsn()"><? echo '$var:Text25' ?></a></li>
++` ?>
++<? if eq '<? query box:settings/expertmode/activated ?>' '1' `
++ 		<li><a href="javascript:uiDoListIsdn()"><? echo '$var:Text26' ?></a></li>
++` ?>
++ 		<li><a href="javascript:uiDoOptionen()"><? echo '$var:Text27' ?></a></li>
++ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text28' ?></a></li>
++ 		<li><a href="javascript:uiDoEditIsdn()"><? echo '$var:Text29' ?></a></li>
++` ?>
++ 	</ul>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p class="mb10"><? echo $var:Text1 ?></p>
++		<p class="mb10"><input type="checkbox" id="uiViewRingOnAllMSNs" onclick="uiRingOnAllMSNs()">&nbsp;<label for="uiViewRingOnAllMSNs"><? echo $var:Text2 ?></label></p>
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p class="mb10"><? echo $var:Text17 ?></p>
++		<table id="tMSN" class="tborder">
++			<tr>
++				<th class="c1"><? echo $var:Text3 ?></th>
++				<th class="c2"><? echo $var:Text4 ?></th>
++				<th class="c3"><? echo $var:Text5 ?></th>
++				<th class="c4"><? echo $var:Text6 ?></th>
++				<th class="c5"><? echo $var:Text7 ?></th>
++				<th class="c6"><? echo $var:Text8 ?></th>
++				<th class="c7"></th>
++				<th class="c8"></th>
++			</tr>	
++<? repeat [ 0 4 ] '
++			<tr id="uiViewMSN$0" style="display:none">
++				<td class="c1"><option value="$0"><script type="text/javascript">document.write(uiIndexMSN("$0"));</script></option></td>
++				<td class="c2"><? query dect:settings/MSN$0/MSN ?></td>
++				<td class="c3"><? if eq '<? query dect:settings/MSN$0/CLIR ?>' '0' '$var:Text40' '$var:Text41' ?></td> 
++				<td class="c4"><? if eq '<? query dect:settings/MSN$0/CallWaiting ?>' '0' '$var:Text40' '$var:Text41' ?></td>
++				<td class="c5"><? if eq '<? query dect:settings/MSN$0/BusyOnBusy ?>' '0' '$var:Text40' '$var:Text41' ?></td>
++				<td class="c6"><script type="text/javascript">document.write(uiListHandsets("<? query dect:settings/MSN$0/Handsets ?>"));</script></td>
++				<td class="c7"><button type="button" id="uiViewEdit$0" onclick="uiEditMSN($0)" title="$var:Text30" style="width: 30px">
++					<img src="../html/<? echo $var:lang ?>/images/bearbeiten.gif" align="bottom" width="16" height="16" hspace="4">
++				</button></td>
++				<td class="c8"><button type="button" id="uiViewDelete$0" onclick="uiDeleteMSN($0)" title="$var:Text31" style="width: 30px">
++					<img src="../html/<? echo $var:lang ?>/images/loeschen.gif" align="bottom" width="16" height="16" hspace="4">
++				</button></td>
++			</tr>
++' ?>
++			<tr id="uiNichts" style="display:none"><td colspan=5 class="ac">Es sind keine MSNs eingerichtet</td></tr>
++		</table>
++		<p class="mt10 ar"><input type="button" value="<? echo $var:Text21 ?>" id="uiViewNew" onclick="uiNewMSN()" class="Pushbutton" style="width:180px;"></p>
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
++		<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
++	</div></div></div></div></div></div>
++	</div></div></div></div></div></div></div>
++</div>
+--- usr/www/all/html/de/fon/fonsetupdect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupdect.frm	2007-04-07 12:17:26.000000000 +0200
+@@ -0,0 +1,9 @@
++<input type="hidden" name="var:MsnNr" value="<? echo $var:MsnNr ?>" id="uiPostMsnNr">
++<input type="hidden" name="dect:settings/RingOnAllMSNs" value="<? query dect:settings/RingOnAllMSNs ?>" id="uiPostRingOnAllMSNs" disabled>
++<? repeat [ 0 4 ] `
++<input type="hidden" name="dect:settings/MSN$0/MSN" value="<? query dect:settings/MSN$0/MSN ?>" id="uiPostMSN$0" disabled>
++<input type="hidden" name="dect:settings/MSN$0/CLIR" value="<? query dect:settings/MSN$0/CLIR ?>" id="uiPostCLIR$0" disabled>
++<input type="hidden" name="dect:settings/MSN$0/CallWaiting" value="<? query dect:settings/MSN$0/CallWaiting ?>" id="uiPostCallWaiting$0" disabled>
++<input type="hidden" name="dect:settings/MSN$0/BusyOnBusy" value="<? query dect:settings/MSN$0/BusyOnBusy ?>" id="uiPostBusyOnBusy$0" disabled>
++<input type="hidden" name="dect:settings/MSN$0/Handsets" value="<? query dect:settings/MSN$0/Handsets ?>" id="uiPostHandsets$0" disabled>
++` ?>
+--- usr/www/all/html/de/fon/fonsetupdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupdect.html	2007-12-19 21:26:56.000000000 +0100
+@@ -0,0 +1,72 @@
++<? include ../html/$var:lang/fon/fonsetupdect.inc ?> 
++<div id="content">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
++		<? echo '$var:Text23' ?>
++	</div></div></div></div></div></div>
++	<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
++ 	<ul class="tabs">
++<? if eq $var:pagename 'fonsetupdect' `
++ 		<li><a href="javascript:uiDoDect()"><? echo '$var:Text24' ?></a></li>
++<? if eq '$var:usePSTN' 1 `
++ 		<li><a href="javascript:uiDoDectMsn()"><? echo '$var:Text25' ?></a></li>
++` ?>
++<? if eq '<? query box:settings/expertmode/activated ?>' '1' `
++ 		<li><a href="javascript:uiDoListDect()"><? echo '$var:Text26' ?></a></li>
++` ?>
++ 		<li><a href="javascript:uiDoEditDect()"><? echo '$var:Text29' ?></a></li>
++ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text28' ?></a></li>
++` `
++ 		<li><a href="javascript:uiDoIsdn()"><? echo '$var:Text24' ?></a></li>
++<? if eq '$var:usePSTN' 1 `
++ 		<li><a href="javascript:uiDoMsn()"><? echo '$var:Text25' ?></a></li>
++` ?>
++<? if eq '<? query box:settings/expertmode/activated ?>' '1' `
++ 		<li><a href="javascript:uiDoListIsdn()"><? echo '$var:Text26' ?></a></li>
++` ?>
++ 		<li><a href="javascript:uiDoOptionen()"><? echo '$var:Text27' ?></a></li>
++ 		<li><a href="javascript:uiDoEditIsdn()"><? echo '$var:Text29' ?></a></li>
++ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text28' ?></a></li>
++` ?>
++ 	</ul>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p class="mb10"><? echo $var:Text1 ?></p>
++		<p class="mb10"><input type="checkbox" id="uiViewRingOnAllMSNs" onclick="uiRingOnAllMSNs()">&nbsp;<label for="uiViewRingOnAllMSNs"><? echo $var:Text2 ?></label></p>
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p class="mb10"><? echo $var:Text17 ?></p>
++		<table id="tMSN" class="tborder">
++			<tr>
++				<th class="c1"><? echo $var:Text3 ?></th>
++				<th class="c2"><? echo $var:Text4 ?></th>
++				<th class="c3"><? echo $var:Text5 ?></th>
++				<th class="c4"><? echo $var:Text6 ?></th>
++				<th class="c5"><? echo $var:Text7 ?></th>
++				<th class="c6"><? echo $var:Text8 ?></th>
++				<th class="c7"></th>
++				<th class="c8"></th>
++			</tr>	
++<? repeat [ 0 4 ] '
++			<tr id="uiViewMSN$0" style="display:none">
++				<td class="c1"><option value="$0"><script type="text/javascript">document.write(uiIndexMSN("$0"));</script></option></td>
++				<td class="c2"><? query dect:settings/MSN$0/MSN ?></td>
++				<td class="c3"><input type="checkbox" id="uiViewCLIR$0" disabled></td>
++				<td class="c4"><input type="checkbox" id="uiViewCallWaiting$0" disabled></td>
++				<td class="c5"><input type="checkbox" id="uiViewBusyOnBusy$0" disabled></td>
++				<td class="c6"><script type="text/javascript">document.write(uiListHandsets("<? query dect:settings/MSN$0/Handsets ?>"));</script></td>
++				<td class="c7"><button type="button" id="uiViewEdit$0" onclick="uiEditMSN($0)" title="$var:Text30" style="width: 30px">
++					<img src="../html/<? echo $var:lang ?>/images/bearbeiten.gif" align="bottom" width="16" height="16" hspace="4">
++				</button></td>
++				<td class="c8"><button type="button" id="uiViewDelete$0" onclick="uiDeleteMSN($0)" title="$var:Text31" style="width: 30px">
++					<img src="../html/<? echo $var:lang ?>/images/loeschen.gif" align="bottom" width="16" height="16" hspace="4">
++				</button></td>
++			</tr>
++' ?>
++			<tr id="uiNichts" style="display:none"><td colspan=5 class="ac">Es sind keine MSNs eingerichtet</td></tr>
++		</table>
++		<p class="mt10 ar"><input type="button" value="<? echo $var:Text21 ?>" id="uiViewNew" onclick="uiNewMSN()" class="Pushbutton" style="width:180px;"></p>
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
++		<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
++	</div></div></div></div></div></div>
++	</div></div></div></div></div></div></div>
++</div>
+--- usr/www/all/html/de/fon/fonsetupdect.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupdect.inc	2007-12-26 03:36:10.000000000 +0100
+@@ -0,0 +1,31 @@
++<? include ../html/$var:lang/global.inc ?>
++<? setvariable var:Text1 'Die Mobilteile können so eingerichtet werden, dass sie auf alle eingehenden Anrufe reagieren. Durch das Setzen dieser Option gehen alle Rufnummernzuordnungen verloren.' ?>
++<? setvariable var:Text2 'Auf alle Rufnummern reagieren' ?>
++<? setvariable var:Text3 'MSN' ?>
++<? setvariable var:Text4 'Rufnummer' ?>
++<? setvariable var:Text5 'Anonym' ?>
++<? setvariable var:Text6 'Anklopfen' ?>
++<? setvariable var:Text7 'MSN besetzt' ?>
++<? setvariable var:Text8 'Mobilteile' ?>
++<? setvariable var:Text17 'Richten Sie bis zu fünf MSNs (MSN A bis MSN E) ein, die Sie den Mobilteilen zuweisen. Die gewählten MSNs können an den zugewiesenen Mobilteilen für ein- und abgehende Anrufe verwendet werden.' ?>
++<? setvariable var:Text21 'Neue Zuordnung' ?>
++<? if eq $var:pagename 'fonsetupdect' `
++<? setvariable var:Text23 'DECT-Endgeräte' ?>
++` `
++<? setvariable var:Text23 'ISDN-Endgeräte' ?>
++` ?>
++<? setvariable var:Text24 'Übersicht' ?>
++<? setvariable var:Text25 'Festnetz' ?>
++<? setvariable var:Text26 'Interne Nummern' ?>
++<? setvariable var:Text27 'Optionen' ?>
++<? setvariable var:Text28 'Zuordnung' ?>
++<? setvariable var:Text29 'Basisstation' ?>
++<? setvariable var:Text30 'Zuordnung ändern' ?>
++<? setvariable var:Text31 'Zuordnung löschen' ?>
++<? setvariable var:Text40 'aus' ?>
++<? setvariable var:Text41 'ein' ?>
++<? setvariable var:Text50 'A' ?>
++<? setvariable var:Text51 'B' ?>
++<? setvariable var:Text52 'C' ?>
++<? setvariable var:Text53 'D' ?>
++<? setvariable var:Text54 'E' ?>
+--- usr/www/all/html/de/fon/fonsetupdect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupdect.js	2007-10-07 21:19:50.000000000 +0200
+@@ -0,0 +1,141 @@
++<!--		../fon/fonsetupdect.js		-->
++<style type="text/css">
++<!--
++#content {width: 560px; margin: auto;}
++#tMSN {width: 100%;}
++#tMSN td {padding: 2px 3px;}
++#tMSN th {padding: 2px 3px;}
++#tMSN .c1 {text-align: center}
++#tMSN .c2 {text-align: left}
++#tMSN .c3 {text-align: center}
++#tMSN .c4 {text-align: center}
++#tMSN .c5 {text-align: center}
++#tMSN .c6 {text-align: left}
++#tMSN .c7, #tMSN .c8 {width: 30px;}
++.mt10 {margin-top: 10px;}
++.ar {text-align: right;}
++.ac {text-align: center;}
++-->
++</style>
++<script type="text/javascript">
++<? include ../html/$var:lang/js/jsl.js ?>
++var g_mldDelete	= "Wollen Sie diese Zuordnung löschen ?";
++var g_mldAllOn	= "Wollen Sie alle bestehenden Zuordnungen löschen ?";
++var g_New = -1;
++var g_Sequence = new Array("1 ", "2 ", "3 ", "4 ", "5 ", "6 ");
++var g_Index = new Array("A", "B", "C", "D", "E");
++var g_Handsets;
++function uiDoOnLoad() {
++	g_Handsets = 0;
++
++<? multiquery dect:settings/Handset/list(Subscribed) `
++<? if eq $2 1 `
++	 g_Handsets |= (1<<$0);
++` ?>
++` ?>
++
++	jslSetChecked("uiViewRingOnAllMSNs", jslGetValue("uiPostRingOnAllMSNs") == "1");
++	jslSetEnabled("uiViewNew", jslGetValue("uiPostRingOnAllMSNs") != "1");
++
++	var bFound = false;
++	for (var i=0; i<5; i++) {
++		if (jslGetValue("uiPostMSN"+i) != "") {
++			jslSetChecked("uiViewCLIR"+i, jslGetValue("uiPostCLIR"+i) == "1");
++			jslSetChecked("uiViewCallWaiting"+i, jslGetValue("uiPostCallWaiting"+i) == "1");
++			jslSetChecked("uiViewBusyOnBusy"+i, jslGetValue("uiPostBusyOnBusy"+i) == "1");
++			jslDisplay("uiViewMSN"+i, true); bFound=true;
++		} else {
++			jslDisable("uiViewEdit"+i)
++			jslDisable("uiViewDelete"+i)
++			if (g_New == -1) g_New = i;
++		}
++	}
++	jslDisplay("uiNichts", !bFound);
++	if (g_New == -1) jslDisable("uiViewNew");
++	jslZebrastreifen("tMSN");
++}
++function uiDoHelp() {
++	jslPopHelp("hilfe_fon_setupdect");
++}
++function uiDoCancel() {
++	jslGoTo("", "");
++}
++function uiDoIsdn() {
++	jslGoTo("fon", "isdn");
++}
++function uiDoMsn() {
++	jslSetValue("uiPostPageMaster", "isdn");
++	jslGoTo("fon", "isdnmsn");
++}
++function uiDoOptionen() {
++	jslGoTo("fon", "isdnoptionen");
++}
++function uiDoListIsdn() {
++	jslGoTo("fon", "fonlistisdn");
++}
++function uiDoEditIsdn() {
++	jslGoTo("fon", "foneditisdn");
++}
++function uiDoDect() {
++	jslGoTo("fon", "dect");
++}
++function uiDoListDect() {
++	jslGoTo("fon", "fonlistdect");
++}
++function uiDoEditDect() {
++	jslGoTo("fon", "foneditdect");
++}
++function uiDoDectMsn() {
++	jslGoTo("fon", "dectmsn");
++}
++function uiEditMSN(nr) {
++	jslCopyValue("uiPostPageMaster", "uiPostPageName");
++	jslSetValue("uiPostMsnNr", nr);
++	jslSubmitFormEx("fon", "fon1dect", jslGetValue("uiPostPageName"));
++}
++function uiDeleteMSN(nr) {
++	if (!confirm(g_mldDelete)) return;
++	jslSetValue("uiPostMSN"+nr, "");
++	jslEnable("uiPostMSN"+nr);
++	jslSubmitFormEx("fon", "", "");
++}
++function uiNewMSN() {
++	jslCopyValue("uiPostPageMaster", "uiPostPageName");
++	jslSetValue("uiPostMsnNr", g_New);
++	jslSubmitFormEx("fon", "fon1dect", jslGetValue("uiPostPageName"));
++}
++function uiRingOnAllMSNs() {
++	var bFound = false;
++	if (jslGetChecked("uiViewRingOnAllMSNs")) {
++		for (var j=0; j<5; j++) {
++			if (jslGetValue("uiPostMSN"+j) != "") bFound=true;
++		}
++		if (bFound) {
++			if (!confirm(g_mldAllOn)) {
++				jslSetChecked("uiViewRingOnAllMSNs", false);
++				return;
++			} 
++			for (var i=0; i<5; i++) {
++				jslSetValue("uiPostMSN"+i, "");
++				jslEnable("uiPostMSN"+i);
++			}
++		}
++	}
++	jslSetValue("uiPostRingOnAllMSNs", jslGetChecked("uiViewRingOnAllMSNs") ? "1":"0");
++	jslEnable("uiPostRingOnAllMSNs");
++	jslSubmitFormEx("fon", "", "");
++}
++function uiIndexMSN(nr) {
++	return g_Index[Number(nr)];
++}
++function uiListHandsets(bitset) {
++	var bitset = (bitset.charCodeAt(0) - 48);
++	var bits = Number(bitset);
++	var list = "";
++	for (var j=0; j<6; j++) {
++//		if (bits & g_Handsets & (1<<j) != 0)	list += g_Sequence[j];
++		if ((bits & (1<<j)) != 0)	list += g_Sequence[j];
++	}
++	return list;
++}
++</script>
+--- usr/www/all/html/de/fon/fonsetupisdn.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupisdn.frm	2007-04-03 10:28:14.000000000 +0200
+@@ -0,0 +1 @@
++<? include ../html/$var:lang/fon/fonsetupdect.frm ?>
+--- usr/www/all/html/de/fon/fonsetupisdn.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupisdn.html	2007-04-03 10:29:30.000000000 +0200
+@@ -0,0 +1 @@
++<? include ../html/$var:lang/fon/fonsetupdect.html ?>
+--- usr/www/all/html/de/fon/fonsetupisdn.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupisdn.js	2007-04-03 10:28:58.000000000 +0200
+@@ -0,0 +1 @@
++<? include ../html/$var:lang/fon/fonsetupdect.js ?>
+--- usr/www/all/html/de/fon/isdn.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/isdn.html	2007-12-26 03:36:10.000000000 +0100
+@@ -20,6 +20,10 @@
+ ` ?>
+ ` ?>
+ 		<li><a href="javascript:uiDoOptionen()"><? echo $var:Text21 ?></a></li>
++ 		<li><a href="javascript:uiDoEditIsdn()"><? echo '$var:Text29' ?></a></li>
++<? if eq `<? query dect:settings/enabled ?>` 1 `
++ 		<li><a href="javascript:uiDoSetupIsdn()"><? echo '$var:Text28' ?></a></li>
++` ?>
+ 	</ul>
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="mb10"><? echo $var:Text3 ?></p>
+--- usr/www/all/html/de/fon/isdn.inc	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/isdn.inc	2007-12-26 03:36:10.000000000 +0100
+@@ -14,16 +14,18 @@
+ <? setvariable var:Text18 'Übersicht' ?>
+ <? setvariable var:Text24 'Interne Nummer' ?>
+ ` ?>
+-<? setvariable var:Text19 'Festnetzrufnummern' ?>
++<? setvariable var:Text19 'Festnetz' ?>
+ <? setvariable var:Text20 'Interne Nummern' ?>
+-<? setvariable var:Text21 'Leistungsmerkmale' ?>
++<? setvariable var:Text21 'Optionen' ?>
+ <? setvariable var:Text22 'Sie können die Telefonbucheinträge an ein Mobilteil senden.' ?>
+ <? setvariable var:Text23 'Telefonbuch senden' ?>
++<? setvariable var:Text28 'Zuordnung' ?>
++<? setvariable var:Text29 'Basisstation' ?>
+ <? setvariable var:Text24 'Rufnummer des Endgerätes' ?>
+ <? setvariable var:Text25 'Rufnummer' ?>
+ <? setvariable var:Text26 'Verbindung via' ?>
+-<? setvariable var:Text30 'Weitere Leistungsmerkmale für ISDN-Endgeräte' ?>
+-<? setvariable var:Text31 'Aktivieren Sie die gewünschten Komfort- und Leistungsmerkmale' ?>
++<? setvariable var:Text30 'Weitere Optionen für ISDN-Endgeräte' ?>
++<? setvariable var:Text31 'Aktivieren Sie die gewünschten Komfort- und Optionen' ?>
+ <? setvariable var:Text32 'Ruf abweisen bei besetzt (Busy on busy).' ?>
+ <? setvariable var:Text33 'Einkommende Rufe werden abgelehnt, wenn mit der angerufenen MSN bereits ein Gespräch geführt wird.' ?>
+ <? setvariable var:Text34 'Eigene Rufnummer unterdrücken (COLR).' ?>
+--- usr/www/all/html/de/fon/isdn.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/isdn.js	2007-12-26 03:36:10.000000000 +0100
+@@ -93,6 +93,18 @@
+ 	jslGoTo("fon", "isdn");
+ ` ?>
+ }
++function uiDoSetupDect() {
++	jslGoTo("fon", "fonsetupdect");
++}
++function uiDoEditDect() {
++	jslGoTo("fon", "foneditdect");
++}
++function uiDoSetupIsdn() {
++	jslGoTo("fon", "fonsetupisdn");
++}
++function uiDoEditIsdn() {
++	jslGoTo("fon", "foneditisdn");
++}
+ function uiDoHelp() {
+ 	jslPopHelp("hilfe_fon_isdn");
+ }
+--- usr/www/all/html/de/fon/isdnoptionen.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/isdnoptionen.html	2007-12-26 03:36:10.000000000 +0100
+@@ -20,6 +20,10 @@
+ ` ?>
+ ` ?>
+ 		<li class="tabs_on"><a href="javascript:uiDoRefresh()"><? echo '$var:Text52' ?></a></li>
++ 		<li><a href="javascript:uiDoEditIsdn()"><? echo '$var:Text29' ?></a></li>
++<? if eq `<? query dect:settings/enabled ?>` 1 `
++ 		<li><a href="javascript:uiDoSetupIsdn()"><? echo '$var:Text28' ?></a></li>
++` ?>
+ 	</ul>
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="mb5"><? echo $var:Text2 ?></p>
+--- usr/www/all/html/de/fon/isdnoptionen.inc	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/isdnoptionen.inc	2007-12-26 03:36:10.000000000 +0100
+@@ -1,6 +1,6 @@
+ <? include ../html/$var:lang/global.inc ?>
+-<? setvariable var:Text1 'Weitere Leistungsmerkmale für ISDN-Telefone' ?>
+-<? setvariable var:Text2 'Aktivieren Sie die gewünschten Komfort- und Leistungsmerkmale' ?>
++<? setvariable var:Text1 'Weitere Optionen für ISDN-Telefone' ?>
++<? setvariable var:Text2 'Aktivieren Sie die gewünschten Komfort- und Optionen' ?>
+ <? setvariable var:Text3 'Ruf abweisen bei besetzt (Busy on busy).' ?>
+ <? setvariable var:Text4 'Einkommende Rufe werden abgelehnt, wenn mit der angerufenen MSN bereits ein Gespräch geführt wird.' ?>
+ <? setvariable var:Text5 'Eigene Rufnummer unterdrücken (COLR).' ?>
+@@ -18,6 +18,8 @@
+ <? setvariable var:Text18 'von' ?>
+ <? setvariable var:Text19 ':' ?>
+ <? setvariable var:Text20 'bis' ?>
++<? setvariable var:Text28 'Zuordnung' ?>
++<? setvariable var:Text29 'Basisstation' ?>
+ <? setvariable var:Text38 'Neue Nachrichten am Telefon signalisieren (MWI)' ?>
+ <? setvariable var:Text39 'Die FRITZ!Box informiert Sie über das Telefon, ob sich neue Nachrichten in der Mailbox Ihres Telefonie-Anbieters befinden. Bei neuen Nachrichten finden Sie einen Eintrag in der Anrufliste Ihres Telefons.' ?>
+ <? setvariable var:Text40 'Die Benachrichtigung erfolgt durch ein kurzes Klingeln des Telefons an dieser Nebenstelle. Welche Nachrichten sollen berücksichtigt werden?' ?>
+@@ -36,6 +38,6 @@
+ <? setvariable var:Text49 'Übersicht' ?>
+ <? setvariable var:Text53 'Interne Nummer' ?>
+ ` ?>
+-<? setvariable var:Text50 'Festnetzrufnummern' ?>
++<? setvariable var:Text50 'Festnetz' ?>
+ <? setvariable var:Text51 'Interne Nummern' ?>
+-<? setvariable var:Text52 'Leistungsmerkmale' ?>
++<? setvariable var:Text52 'Optionen' ?>
+--- usr/www/all/html/de/fon/isdnoptionen.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/isdnoptionen.js	2007-12-26 03:36:10.000000000 +0100
+@@ -245,6 +245,18 @@
+ function uiDoListIsdn() {
+ 	jslGoTo("fon", "fonlistisdn");
+ }
++function uiDoSetupDect() {
++	jslGoTo("fon", "fonsetupdect");
++}
++function uiDoEditDect() {
++	jslGoTo("fon", "foneditdect");
++}
++function uiDoSetupIsdn() {
++	jslGoTo("fon", "fonsetupisdn");
++}
++function uiDoEditIsdn() {
++	jslGoTo("fon", "foneditisdn");
++}
+ function uiDoHelp() {
+ 	jslPopHelp("hilfe_fon_isdnoptionen");
+ }
+--- usr/www/all/html/de/fon/msn.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/msn.html	2007-12-26 03:36:10.000000000 +0100
+@@ -4,7 +4,7 @@
+ <? if eq '$var:pagename' 'dectmsn' `
+ 		<? echo '$var:Text25' ?>
+ ` `
+-		<? if eq '$var:pagemaster' 'isdn' `<? echo '$var:Text23' ?>` `<? echo '$var:Text24' ?>` ?> 	
++		<? echo $var:Text24 ?> 	
+ ` ?>
+ 	</div></div></div></div></div></div>
+ 	<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
+@@ -15,17 +15,9 @@
+ <? if eq '<? query box:settings/expertmode/activated ?>' '1' `
+ 		<li><a href="javascript:uiDoListDect()"><? echo '$var:Text21' ?></a></li>
+ ` ?>
+-	</ul>
+-` `
+-<? if eq '$var:pagemaster' 'isdn' `
+-	<ul class="tabs">
+-		<li><a href="javascript:uiDoIsdn()"><? echo '$var:Text20' ?></a></li>
+-		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text1' ?></a></li>
+-<? if eq '<? query box:settings/expertmode/activated ?>' '1' `
+-		<li><a href="javascript:uiDoListIsdn()"><? echo '$var:Text21' ?></a></li>
+-` ?>
+-<? if eq '$var:pagemaster' 'isdn' `
+-		<li><a href="javascript:uiDoOptionen()"><? echo '$var:Text22' ?></a></li>
++ 		<li><a href="javascript:uiDoEditDect()"><? echo '$var:Text29' ?></a></li>
++<? if eq `<? query dect:settings/enabled ?>` 1 `
++ 		<li><a href="javascript:uiDoSetupDect()"><? echo '$var:Text28' ?></a></li>
+ ` ?>
+ 	</ul>
+ ` `
+@@ -34,39 +26,7 @@
+ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text1' ?></a></li>
+ 	</ul>
+ ` ?> 	
+-` ?> 	
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-		<p class="mb10" style="font-weight: bold"><? echo $var:Text14 ?></p>
+-		<p class="mb5"><? echo $var:Text15 ?></p>
+-		<p class="ml25"><input type=radio name="Art" onclick="uiOnArt(0)" id="uiViewIsdn">&nbsp;<label for="uiViewIsdn"><? echo $var:Text16 ?></label></p>
+-		<p class="ml25"><input type=radio name="Art" onclick="uiOnArt(1)" id="uiViewAnalog">&nbsp;<label for="uiViewAnalog"><? echo $var:Text17 ?></label></p>
+-	</div></div></div></div></div></div>
+-	<div class="backdialog" id="uiIsdn" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-		<p class="mb5"><? echo $var:Text2 ?></p>
+-		<table style="margin: auto;">
+-			<tr>
+-				<td style="width: 240px;">
+-				<table style="margin: auto;">
+-					<tr><td class="ar" nowrap><? echo $var:Text4 ?><input type="text" id="uiViewMsn0" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-					<tr><td class="ar" nowrap><? echo $var:Text5 ?><input type="text" id="uiViewMsn1" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-					<tr><td class="ar" nowrap><? echo $var:Text6 ?><input type="text" id="uiViewMsn2" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-					<tr><td class="ar" nowrap><? echo $var:Text7 ?><input type="text" id="uiViewMsn3" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-					<tr><td class="ar" nowrap><? echo $var:Text8 ?><input type="text" id="uiViewMsn4" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-				</table>
+-				</td>
+-				<td style="width: 240px;">
+-				<table style="margin: auto;">
+-					<tr><td class="ar" nowrap><? echo $var:Text9 ?><input type="text" id="uiViewMsn5" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-					<tr><td class="ar" nowrap><? echo $var:Text10 ?><input type="text" id="uiViewMsn6" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-					<tr><td class="ar" nowrap><? echo $var:Text11 ?><input type="text" id="uiViewMsn7" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-					<tr><td class="ar" nowrap><? echo $var:Text12 ?><input type="text" id="uiViewMsn8" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-					<tr><td class="ar" nowrap><? echo $var:Text13 ?><input type="text" id="uiViewMsn9" size="21" maxlength=20 class="Eingabefeld"></td></tr>
+-				</table>
+-				</td>
+-			</tr>
+-		</table>
+-	</div></div></div></div></div></div>
+-	<div class="backdialog" id="uiAnalog" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="mb10"><? echo $var:Text18 ?></p>
+ 		<p class="ml25"><label for="uiViewPots"><? echo $var:Text19 ?></label>&nbsp;<input type="text" id="uiViewPots" size="21" maxlength="20" class="Eingabefeld"></p>
+ 	</div></div></div></div></div></div>
+--- usr/www/all/html/de/fon/msn.inc	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/msn.inc	2007-12-26 03:36:10.000000000 +0100
+@@ -1,5 +1,5 @@
+ <? include ../html/$var:lang/global.inc ?>
+-<? setvariable var:Text1 'Festnetzrufnummern' ?>
++<? setvariable var:Text1 'Festnetz' ?>
+ <? setvariable var:Text2 'Geben Sie hier Ihre ISDN-Rufnummern ein:' ?>
+ <? setvariable var:Text4 '1. ' ?>
+ <? setvariable var:Text5 '2. ' ?>
+@@ -19,7 +19,7 @@
+ <? setvariable var:Text19 'Rufnummer' ?>
+ <? setvariable var:Text20 'Übersicht' ?>
+ <? setvariable var:Text21 'Interne Nummern' ?>
+-<? setvariable var:Text22 'Leistungsmerkmale' ?>
++<? setvariable var:Text22 'Optionen' ?>
+ <? setvariable var:Text23 'ISDN-Endgeräte' ?>
+ <? setvariable var:Text24 'Nebenstellen' ?>
+ <? setvariable var:Text25 'DECT-Endgeräte' ?>
+--- usr/www/all/html/de/fon/msn.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/msn.js	2007-12-26 03:36:12.000000000 +0100
+@@ -52,6 +52,18 @@
+ function uiDoDect() {
+ 	jslGoTo("", "dect");
+ }
++function uiDoSetupDect() {
++	jslGoTo("fon", "fonsetupdect");
++}
++function uiDoEditDect() {
++	jslGoTo("fon", "foneditdect");
++}
++function uiDoSetupIsdn() {
++	jslGoTo("fon", "fonsetupisdn");
++}
++function uiDoEditIsdn() {
++	jslGoTo("fon", "foneditisdn");
++}
+ function uiDoHelp() {
+ <? if eq '$var:pagename' 'dectmsn' `
+ 	jslPopHelp("hilfe_fon_dect_festnetzrufnummer");
+--- usr/www/all/html/de/fon/routing.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/routing.js	2007-12-26 03:36:12.000000000 +0100
+@@ -14,6 +14,7 @@
+ <script type="text/javascript">
+ <? setvariable var:showLCRdata 0 ?>
+ <? if eq $var:OEM avm `<? setvariable var:showLCRdata 1 ?>` ?>
++<? if eq $var:OEM tcom `<? setvariable var:showLCRdata 1 ?>` ?>
+ <? if eq $var:OEM avme `<? setvariable var:showLCRdata 1 ?>` ?>
+ <? if eq $var:OEM freenet `<? setvariable var:showLCRdata 1 ?>` ?>
+ <? include ../html/$var:lang/js/val.js ?>
+--- usr/www/all/html/de/fon/sip1.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/sip1.html	2007-12-26 03:36:12.000000000 +0100
+@@ -20,6 +20,23 @@
+ <? if eq $var:OEM arcor `
+ 						<option value="Arcor">$var:Text7</option>
+ ` ?>
++<? if eq $var:OEM tcom 	`
++						<option value="1u1">$var:Text4</option>
++						<option value="AOL">$var:Text9</option>
++						<option value="Arcor">$var:Text7</option>
++						<option value="Dus">$var:Text13</option>
++						<option value="Freenet">$var:Text8</option>
++						<option value="GMX">$var:Text5</option>
++						<option value="Inode">$var:Text55</option>
++<? if eq $var:Annex A `
++						<option value="InodeIsdn">$var:Text101</option>
++` ?>
++						<option value="SuP">$var:Text6</option>
++						<option value="Sipgate">$var:Text10</option>
++						<option value="Strato">$var:Text44</option>
++						<option value="TOnline">$var:Text12</option>
++						<option value="Webde">$var:Text11</option>
++` ?>
+ <? if eq $var:OEM freenet 	`
+ 						<option value="1u1">$var:Text4</option>
+ 						<option value="AOL">$var:Text9</option>
+--- usr/www/all/html/de/help/hilfe_fon_editdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_editdect.html	2007-04-06 01:19:50.000000000 +0200
+@@ -0,0 +1,19 @@
++<div class="Hilfe">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p>Bis zu sechs DECT-Telefone, können mit der FRITZ!Box verbunden werden. </p>
++		<p>In der Tabelle werden Ihnen die DECT-Telefone angezeigt, die bereits mit der FRITZ!Box verbunden sind. Über 
++		die Schaltflächen am rechten Tabellenrand können Sie registrierte DECT-Telefone abmelden.</p>
++		<p>Nur bei DECT-Telefonen mit dem Zusatzmerkmal &quot;Swissvoice/GAP&quot; können die erweiterten Einstellungen, u.a. für den Anrufbeantworter und die 
++		Rufnummernzuordnung, vom Mobilteil aus vorgenommen werden.</p>
++		<h4>Schaltfläche &quot;Mobilteil anmelden&quot;</h4>
++		<p>Um ein neues DECT-Telefon an der FRITZ!Box anzumelden, klicken Sie auf die Schaltfläche &quot;Mobilteil anmelden&quot;. Am DECT-Telefon müssen Sie
++		zur Registrierung die System-PIN (in der Werkseinstellung &quot;0000&quot;) eingeben.</p>
++		<h4>Schaltfläche &quot;Mobilteile pagen&quot;</h4>
++		<p>Über diese Schaltfläche können Sie alle mit der FRITZ!Box verbundene DECT-Telefonen durch einen internen Anruf lokalisieren.</p>
++		<h4>Schaltfläche &quot;Datum und Uhrzeit setzen&quot;</h4>
++		<p>Über diese Schaltfläche können Sie auf den angemeldeten DECT-Telefonen das aktuelle Datum und die Uhrzeit der FRITZ!Box setzen (z.B. nach einem 
++		Akkuwechsel am Mobilteil).</p>
++	</div></div></div></div></div></div>
++	<? include ../html/$var:lang/help/rback.html ?>
++</div>
+--- usr/www/all/html/de/help/hilfe_fon_fon1dect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_fon1dect.html	2007-04-24 22:52:52.000000000 +0200
+@@ -0,0 +1,25 @@
++<div class="Hilfe">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">MSN zuordnen</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p>Für die mit der FRITZ!Box verbunden DECT-Telefone, können Sie hier einer der bis zu fünf internen MSN (A bis E) eine Rufnummern zuweisen. MSNs mit einer 
++		zugeordneten Internt- oder Festnetzrufnummer können individuell an jedem Mobilteil als abgehende Rufnummer eingerichtet werden (Benutzerwechsel).</p>
++		<p>Rufnummern, die einem Mobilteil zugeordnet werden können, sind </p>
++		<ul>
++			<li>Internetrufnummern, die im Menü &quot;Internettelefonie&quot; eingerichtet wurden.</li>
++			<li>Festnetzrufnummer(n) eines vorhandenen Analog- oder ISDN-Telefonanschlusses.</li>
++			<li>Unter &quot;Interne Nummern&quot; eingerichtete interne Rufnummern der DECT-Telefone.</li>
++		</ul>
++		<p></p>
++		<h4>Leistungsmerkmale</h4>
++		<p>Sie können für jede MSN folgende Leistungsmerkmale festlegen: </p>
++		<ul>
++			<li><b>Anonym anrufen (CLIR):</b> Haben Sie dieses Merkmal aktiviert, wird Ihre Rufnummer beim gerufenen Teilnehmer nicht angezeigt (Rufnummernunterdrückung).</li>
++			<li><b>Anklopfen (CallWaiting):</b> Wenn das Merkmal &quot;Anklopfen&quot; aktiviert ist, hört ein Anrufer auf dieser MSN auch während eines laufenden Telefonates ein Freizeichen. Während des laufenden Gesprächs wird der eingehende Anruf über einen Anklopfton signalisiert.</li>
++			<li><b>MSN besetzt:</b> Bei der Einstellung &quot;MSN besetzt&quot; hört der Anrufer sofort den Besetztton, wenn bereits ein externes Gespräch über diese MSN geführt wird und das unabhängig von der Einstellung &quot;Anklopfen&quot;. Ein Anklopfer wird dann nicht mehr signalisiert.</li>
++		</ul>
++		<p></p>
++		<h4>Zuordnung</h4>
++		<p>Die Rufnummer kann einem oder mehreren mit der FRITZ!Box verbundenen DECT-Telefon zugeordnet werden.</p>
++		</div></div></div></div></div></div>
++	<? include ../html/$var:lang/help/rback.html ?>
++</div>
+--- usr/www/all/html/de/help/hilfe_fon_setupdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_setupdect.html	2007-04-06 00:56:26.000000000 +0200
+@@ -0,0 +1,21 @@
++<div class="Hilfe">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Rufnummernzuordnung</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p>DECT-Telefonen, die mit der FRITZ!Box verbunden sind, können Sie bis zu fünf Rufnummern (MSN A bis E) zuweisen. </p>
++		<p>Rufnummern, die einem Mobilteil zugeordnet werden können, sind </p>
++		<ul>
++			<li>Internetrufnummern, die im Menü &quot;Internettelefonie&quot; eingerichtet wurden.</li>
++			<li>Festnetzrufnummer(n) eines vorhandenen Analog- oder ISDN-Telefonanschlusses.</li>
++			<li>Unter &quot;Interne Nummern&quot; eingerichtete interne Rufnummern der DECT-Telefone.</li>
++		</ul>
++		<p></p>
++		<h4>Schaltfläche &quot;Neue Zuordnung&quot</h4>
++		<p>Um eine Rufnummer einem DECT-Telefon zuzuweisen, klicken Sie auf die Schaltfläche &quot;Neue Zuordnung&quot;.</p>
++		<p>In der Tabelle werden Ihnen die Rufnummern (MSN A bis E) angezeigt, die schon einem DECT-Telefon zugeordnet sind. Die Tabelleneinträge können Sie über 
++		die Schaltflächen am rechten Tabellenrand verändern oder löschen.</p>
++		<h4>Option &quot;Auf alle Rufnummern reagieren&quot;</h4>
++		<p>Über diese Option weisen Sie die DECT-Telefone an, auf eingehende Anrufe an allen Rufnummern zu reagiern. Durch das Setzen dieser Option 
++		werden bereits eingerichtete Rufnummernzuordnungen gelöscht.</p>
++	</div></div></div></div></div></div>
++	<? include ../html/$var:lang/help/rback.html ?>
++</div>
+--- usr/www/all/html/de/help/hilfe_mod_info.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_mod_info.html	2007-12-26 03:36:12.000000000 +0100
+@@ -0,0 +1,34 @@
++<div class="Hilfe">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Informationen</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p>Die Oberfläche des <b>Sinus W 500V</b> wurde durch den <b>Speedport2Fritz-Mod</b> von <b>Spirou</b> verändert. Im folgenden erhalten Sie Informationen über die verwendeten Skript- und Firmware-Versionen.</p>
++		<h2>Verwendete Skript-Version</h2>
++		<p>Verwendet wurde das Skript <b>'sp-to-fritz'</b> in der Version vom <b>20.12.07</b>. Folgende Optionen wurden verwendet:</p>
++		<ul>
++			<li><b>Branding:</b> Das Branding der Box wurde vom Skript auf den Wert <b>'avm'</b> gesetzt.</li>
++			<li><b>Hostname:</b> Der Hostname der Box ist festgelegt als <b>'fritz.box'</b>.</li>
++			<li><b>Auto Konfiguration:</b> Das automatische Einrichten durch den Dienstanbieter ist <b>ausgeschaltet</b>.</li>
++			<li><b>Kompatibilität:</b> Der Produktname wurde <b>nicht</b> erweitert.</li>
++		</ul>
++		<p></p>
++		<h2>Verwendete Firmware-Versionen</h2>
++		<p>Zur Erstellung der Weboberfläche und zur Vervollständigung von Systemfunktionen, wurden folgende Firmware-Images von TCOM und AVM verwendet:</p>
++		<ul>
++			<li><b>TCOM Basisimage:</b> Das Image der Telekom liefert die Basisfunktionen der Box und ist genau auf die Telekom-Hardware 
++			abgestimmt.	Verwendet wurde das Image-File <b>'Sinus_W_500V.27.04.27.image'</b>.</li>
++			<li><b>AVM Systemimage:</b> Dieses Image wird verwendet, um fehlende Systemfunktionen und ggf. auch die AVM-Weboberfläche 
++			zu ergänzen. Das Image stammt von einer AVM-Hardware, die in der Funktion der Telekom-Hardware ähnlich ist und die 
++			dieselbe Kernel-Version verwendet. Verwendet wurde das Image-File <b>'fritz.fon_7150.annexb.38.04.32.image'</b>.</li>
++			<li><b>Kernel-Update:</b> Die Option zur Aktualisierung des Firmware Kernels wurde <b>verwendet</b>.</li>
++		</ul>
++		<p></p>
++		<h2>Allgemeine Hinweise und Disclaimer</h2>
++		<p>Die aktuelle Skriptversion finden Sie <a href="http://www.ip-phone-forum.de/showpost.php?p=752064&postcount=1" target="_blank">im IP-Phone-Forum</a>.
++		Die Doku dazu finden Sie ebenfalls <a href="http://wiki.ip-phone-forum.de/skript:speedport2fritz" target="_blank">dort</a>, wie auch eine aktuelle <a href="http://wiki.ip-phone-forum.de/skript:speed2fritzfaq" target="_blank">FAQ-Liste</a>.</p>
++		<p>Die Anwendung dieser Modifikation erfolgt auf eigene Gefahr. Sie verlieren dadurch Ihren Supportanspruch gegenüber dem Hersteller. 
++		Der Autor von 'Speedport2Fritz' lehnt jegliche Haftung für Schäden ab, die durch die Installation des Skripts oder der modifizierten Firmware entstehen.</p>
++		<p></p>
++		<p>2006/2007, Spirou</p>
++	</div></div></div></div></div></div>
++	<? include ../html/$var:lang/help/rback.html ?>
++</div>
+--- usr/www/all/html/de/help/home.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/help/home.html	2007-12-26 03:36:11.000000000 +0100
+@@ -52,14 +52,6 @@
+ 				</td>
+ 			</tr>
+ 			<tr>
+-				<td valign="top"><b>&#8226;</b>&nbsp;<? echo $var:Text39 ?></td>
+-				<td>
+-					<a href="javascript:jslGoTo('help','hilfe_usb_status')"><? echo $var:Text58 ?></a><br>
+-					<a href="javascript:jslGoTo('help','hilfe_usb_print')"><? echo $var:Text40 ?></a><br>
+-					<a href="javascript:jslGoTo('help','hilfe_usb_disk')"><? echo $var:Text41 ?></a><br>
+-				</td>
+-			</tr>
+-			<tr>
+ 				<td valign="top"><b>&#8226;</b>&nbsp;<? echo $var:Text25 ?></td>
+ 				<td>
+ 					<a href="javascript:jslGoTo('help','hilfe_wlan_monitor')"><? echo $var:Text30 ?></a><br>
+@@ -78,7 +70,6 @@
+ 					<a href="javascript:jslGoTo('help','hilfe_system_energiemonitor')"><? echo $var:Text72 ?></a><br>
+ 					<a href="javascript:jslGoTo('help','hilfe_system_energieeinstellungen')"><? echo $var:Text73 ?></a><br>
+ 					<a href="javascript:jslGoTo('help','hilfe_system_pushservice')"><? echo $var:Text50 ?></a><br>
+-					<a href="javascript:jslGoTo('help','hilfe_system_infoanzeige')"><? echo $var:Text54 ?></a><br>
+ <? setvariable var:shownacht 0 ?>
+ <? setvariable var:shownacht 1 ?>
+ <? setvariable var:shownacht 1 ?>
+--- usr/www/all/html/de/help/popup.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/help/popup.html	2007-12-26 03:36:12.000000000 +0100
+@@ -61,7 +61,6 @@
+ function OnPortal() {
+ 	var url = jslGetValue("uiPostPortal");
+ 	if (url.length != 0) {
+-		url += "&help="+jslGetValue("uiPostPageName");
+ 		var pp = window.open(url, "_blank");
+ 	}
+ }
+--- usr/www/all/html/de/home/home.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/home/home.html	2007-12-26 03:36:12.000000000 +0100
+@@ -32,11 +32,6 @@
+ 							<td><? echo $var:txt008 ?></td>
+ 							<td><script type="text/javascript">document.write(WlanStateDisplay());</script></td>
+ 						</tr>
+-						<tr>
+-							<td><script type="text/javascript">document.write(UsbHostLed());</script></td>
+-							<td><? echo $var:txt036 ?></td>
+-							<td><script type="text/javascript">document.write(uiUsbDisplay());</script></td>
+-						</tr>
+ 					</table>
+ 				</td>
+ 				<td>
+--- usr/www/all/html/de/internet/authform.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/internet/authform.html	2007-12-26 03:36:12.000000000 +0100
+@@ -13,6 +13,7 @@
+ <? if eq $var:OEM freenet `<? setvariable var:allprovider 1 ?>` ?>
+ <? if eq $var:OEM aol `<? setvariable var:allprovider 1 ?>` ?>
+ <? if eq $var:OEM avm `<? setvariable var:allprovider 1 ?>` ?>
++<? if eq $var:OEM tcom `<? setvariable var:allprovider 1 ?>` ?>
+ <? if eq $var:allprovider 1 `
+ 		<option value="1u1">$var:afTxt02</option>
+ 		<option value="AOL">$var:afTxt06</option>
+--- usr/www/all/html/de/internet/pp_wanbridge.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/internet/pp_wanbridge.html	2007-12-26 03:36:12.000000000 +0100
+@@ -3,7 +3,7 @@
+ <? include ../html/config.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "Sinus" ?>' ?>
+ <? include ../html/$var:lang/internet/pp_wanbridge.inc ?>
+ <head>
+ <title><? echo $var:txt00 ?></title>
+--- usr/www/all/html/de/menus/menu2_fon.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_fon.html	2007-12-26 03:36:11.000000000 +0100
+@@ -18,6 +18,9 @@
+ <? setvariable var:classname 'LSubitem' ?>
+ <? if eq $var:pagename dect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename dectmsn `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
++<? if eq $var:pagename fonsetupdect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
++<? if eq $var:pagename foneditdect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
++<? if eq $var:pagename fon1dect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename fonlistdect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename fon1isdn `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','dect')"><? echo '$var:txt14' ?></a></li>
+@@ -71,10 +74,8 @@
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','laender')">$var:txt06</a></li>
+ ` ?>
+ 	<li class="LMenutrenner"></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslPopHelp('home')"><? echo $var:menuHilfe ?></a></li>
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+--- usr/www/all/html/de/menus/menu2_homehome.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2007-12-26 03:36:11.000000000 +0100
+@@ -32,8 +32,6 @@
+ <? if eq $var:pagename syslog `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('home','syslog')"><? echo $var:evtxt04 ?></a></li>
+ <? setvariable var:classname 'LSubitem' ?>
+-<? if eq $var:pagename status `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('home','status')"><? echo $var:evtxt05 ?></a></li>
+ <? setvariable var:show 1 ?>
+ <? if eq <? query box:settings/ata_mode ?> 1 `
+ <? if eq '<? query connection0:settings/type ?>' 'bridge' '<? setvariable var:show 0 ?>' ?>
+--- usr/www/all/html/de/menus/menu2_homekonfig.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homekonfig.html	2007-12-26 03:36:11.000000000 +0100
+@@ -5,10 +5,8 @@
+ <? setvariable var:title $var:menuInternet ?>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:menuTelefonie ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslPopHelp('home')"><? echo $var:menuHilfe ?></a></li>
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+--- usr/www/all/html/de/menus/menu2_internet.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_internet.html	2007-12-26 03:36:12.000000000 +0100
+@@ -19,9 +19,6 @@
+ <? if neq <? query connection0:settings/type ?> pppoe `
+ <? if eq $var:pagename internet `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+ ` ?>
+-<? if eq $var:OEM tcom '
+-<? if eq $var:pagename internet `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-' ?>
+ <? if eq $var:pagename pppoe `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename bridge `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename pppoe_national `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+@@ -87,10 +84,8 @@
+ 	` ?>
+ `?>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:menuTelefonie ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslPopHelp('home')"><? echo $var:menuHilfe ?></a></li>
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+--- usr/www/all/html/de/menus/menu2_system.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_system.html	2007-12-26 03:36:11.000000000 +0100
+@@ -5,7 +5,6 @@
+ <? setvariable var:title $var:menuInternet ?>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:menuTelefonie ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:aktivpfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+ <? setvariable var:classname 'LSubitem' ?>
+@@ -88,7 +87,6 @@
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('system','timeZone')"><? echo '$var:txt12' ?></a></li>
+ ` ?>
+ 	<li class="LMenutrenner"></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslPopHelp('home')"><? echo $var:menuHilfe ?></a></li>
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+-</ul>
+--- usr/www/all/html/de/menus/menu2_wlan.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_wlan.html	2007-12-26 03:36:11.000000000 +0100
+@@ -5,7 +5,6 @@
+ <? setvariable var:title $var:menuInternet ?>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:menuTelefonie ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ <li class="LMenuitem"><img src="<? echo $var:aktivpfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ <!-- wlan:settings/ap_enabled = '<? query wlan:settings/ap_enabled ?>' -->
+ <? setvariable var:showWlan 0 ?>
+@@ -44,7 +43,6 @@
+ ` ?>
+ 	<li class="LMenutrenner"></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslPopHelp('home')"><? echo $var:menuHilfe ?></a></li>
+ <? if eq $var:isWizz 1 `
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+--- usr/www/all/html/de/menus/menuwatch.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/menus/menuwatch.html	2007-12-26 03:36:12.000000000 +0100
+@@ -5,7 +5,7 @@
+ <? include ../html/$var:lang/menus/menu2.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "Sinus" ?>' ?>
+ <head>
+ <title><? echo $var:BoxName ?></title>
+ <meta http-equiv=content-type content="text/html; charset=iso-8859-1">
+--- usr/www/all/html/de/system/energy.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/system/energy.html	2007-12-26 03:36:11.000000000 +0100
+@@ -56,15 +56,6 @@
+ 		</tr></table>
+ 	</div></div></div></div></div></div>
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-		<p class="mb5"><b><? echo $var:Text23 ?></b></p>
+-		<p class="mb5"><? echo $var:Text24 ?></p>
+-		<p class="mb5"><? echo $var:Text11 ?> <span id="usbstate">&nbsp;</span></p>
+-		<table><tr>
+-			<td><table class="bar"><tr><td id="usbleft"></td><td id="usbright"></td><td id="usbspace"></td></tr></table></td>
+-			<td><span id="usbleft_val">&nbsp;</span> / <span id="usbright_val">&nbsp;</span></td>
+-		</tr></table>
+-	</div></div></div></div></div></div>
+-	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="mb10"><b><? echo $var:Text48 ?></b></p>
+ 		<p>
+ 			<img src="../html/de/images/led_<? if eq `<? query eth0:status/carrier ?>` 1 `green` `gray` ?>.gif" /> <? echo `$var:Text33` ?>
+--- usr/www/all/html/de/system/energy.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/system/energy.js	2007-12-26 03:36:11.000000000 +0100
+@@ -110,15 +110,6 @@
+ 		}
+ 	}
+ 	jslSetSpanText('dectstate', dectstate);
+-	SetPowerDisplay('usb', Number('<? query power:status/rate_usbhostact ?>'), Number('<? query power:status/rate_usbhostcum ?>'), 100, '%');
+-	var pr = Number('<? query ctlusb:settings/printer-avail ?>');
+-	var di = Number('<? query ctlusb:settings/storage-part/count ?>');
+-	if (isNaN(pr)) pr = 0;
+-	if (isNaN(di)) di = 0;
+-	if (pr>0 || di>0)
+-		jslSetSpanText('usbstate', g_txtUsbFound);
+-	else
+-		jslSetSpanText('usbstate', g_txtUsbNotFound);
+ }
+ function SetPowerDisplay(id, act, cum, max, unit)
+ {
+--- usr/www/all/html/de/system/extended.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/system/extended.js	2007-12-26 03:36:12.000000000 +0100
+@@ -13,6 +13,7 @@
+ 	jslSetChecked("uiViewExpertMode", jslGetValue("uiPostExpertMode") == "1");
+ <? setvariable var:ShowUsePstn 0 ?>
+ <? if eq $var:OEM avm `<? setvariable var:ShowUsePstn 1 ?>` ?>
++<? if eq $var:OEM tcom `<? setvariable var:ShowUsePstn 1 ?>` ?>
+ <? if eq $var:OEM freenet `<? setvariable var:ShowUsePstn 1 ?>` ?>
+ <? if eq $var:OEM 1und1 `<? setvariable var:ShowUsePstn 1 ?>` ?>
+ <? if eq $var:ShowUsePstn 1 `
+--- usr/www/all/html/de/system/syslog.html	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/system/syslog.html	2007-12-26 03:36:11.000000000 +0100
+@@ -9,9 +9,8 @@
+ 	 		<li class="tabs_on"><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div id="uiFon" style="display:none">
+@@ -19,9 +18,8 @@
+ 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li class="tabs_on"><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div id="uiDsl" style="display:none">
+@@ -29,19 +27,8 @@
+ 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li class="tabs_on"><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
+-	 	</ul>
+-	</div>	 	
+-	<div id="uiUsb" style="display:none">
+-	 	<ul class="tabs">
+-	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+-	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+-	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li class="tabs_on"><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div id="uiWlan" style="display:none">
+@@ -49,9 +36,8 @@
+ 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li class="tabs_on"><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li class="tabs_on"><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div id="uiSystem" style="display:none">
+@@ -59,9 +45,8 @@
+ 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li class="tabs_on"><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li class="tabs_on"><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+--- usr/www/all/html/de/system/syslog.js	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/system/syslog.js	2007-12-26 03:36:11.000000000 +0100
+@@ -18,11 +18,10 @@
+ function uiDoOnLoad() {
+ 	var filter = jslGetValue("uiPostFilter");
+ 	switch (filter) {
+-		case "1": ShowTabs(5); break;
++		case "1": ShowTabs(4); break;
+ 		case "2": ShowTabs(2); break;
+ 		case "3": ShowTabs(1); break;
+-		case "4": ShowTabs(4); break;
+-		case "5": ShowTabs(3); break;
++		case "4": ShowTabs(3); break;
+ 		default: ShowTabs(0); break;
+ 	}
+ }
+@@ -48,9 +47,8 @@
+ 		case 0: jslSetValue("uiPostFilter", "0"); break;
+ 		case 1: jslSetValue("uiPostFilter", "3"); break;
+ 		case 2: jslSetValue("uiPostFilter", "2"); break;
+-		case 3: jslSetValue("uiPostFilter", "5"); break;
+-		case 4: jslSetValue("uiPostFilter", "4"); break;
+-		case 5: jslSetValue("uiPostFilter", "1"); break;
++		case 3: jslSetValue("uiPostFilter", "4"); break;
++		case 4: jslSetValue("uiPostFilter", "1"); break;
+ 	}
+ 	jslFormSubmitEx(jslGetValue("uiPostMenu"),"syslog");
+ }
+@@ -59,9 +57,8 @@
+ 		case 0: jslSetValue("uiPostFilter", "0"); break;
+ 		case 1: jslSetValue("uiPostFilter", "3"); break;
+ 		case 2: jslSetValue("uiPostFilter", "2"); break;
+-		case 3: jslSetValue("uiPostFilter", "5"); break;
+-		case 4: jslSetValue("uiPostFilter", "4"); break;
+-		case 5: jslSetValue("uiPostFilter", "1"); break;
++		case 3: jslSetValue("uiPostFilter", "4"); break;
++		case 4: jslSetValue("uiPostFilter", "1"); break;
+ 	}
+ 	jslFormSubmitEx(jslGetValue("uiPostMenu"),"syslog");
+ }
+@@ -70,9 +67,8 @@
+ 	jslDisplay( "uiBTNCleanList", n==0);
+ 	jslDisplay("uiFon", n==1);
+ 	jslDisplay("uiDsl", n==2);
+-	jslDisplay("uiUsb", n==3);
+-	jslDisplay("uiWlan", n==4);
+-	jslDisplay("uiSystem", n==5);
++	jslDisplay("uiWlan", n==3);
++	jslDisplay("uiSystem", n==4);
+ 	
+ }
+ function uiShowAll() {

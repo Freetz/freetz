@@ -22,6 +22,8 @@ for i in bin/pause bin/reinit_jffs2 bin/pause bin/usbhostchanged etc/hotplug \
 		sbin/lsusb sbin/printserv etc/hotplug sbin/ftpd; do
 	rm -rf ${FILESYSTEM_MOD_DIR}/$i
 done
+echo2 "Add dect sites to webmenu" 
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz_W500V_7150.patch" 
 
 echo2 "moving default config dir, creating tcom symlinks"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"

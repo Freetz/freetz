@@ -150,21 +150,21 @@ choice
 
 	config DS_TYPE_LABOR_DSL
 		bool "DSL"
-		depends on DS_TYPE_FON_WLAN_7170
+		depends on DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_SPEEDPORT_W900V_7170
 
 	config DS_TYPE_LABOR_MINI
 		bool "MINI"
 
 	config DS_TYPE_LABOR_PHONE
 		bool "PHONE"
-		depends on DS_TYPE_FON_WLAN_7170
+		depends on DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_SPEEDPORT_W900V_7170
 
 #	config DS_TYPE_LABOR_USB
 #		bool "USB"
 
 	config DS_TYPE_LABOR_VPN
 		bool "VPN - Final"
-		depends on DS_TYPE_FON_WLAN_7170
+		depends on DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_SPEEDPORT_W900V_7170
 
 #	config DS_TYPE_LABOR_WLAN
 #		bool "WLAN"
@@ -202,7 +202,7 @@ choice
 
 	config DS_TYPE_SPEEDPORT_W900V_7170
 		bool "W900V"
-		depends on DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
+		depends on DS_TYPE_FON_WLAN_7170
 		help
 			Enable this to compile a mod image for T-Com Speedport W900V based
 			on a 7170 image.

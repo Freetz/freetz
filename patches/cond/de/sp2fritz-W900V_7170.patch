@@ -1539,14 +1539,6 @@
  <div id="uiShowFaxTable" style="display:none">
 --- usr/www/all/html/de/menus/menu2_fon.html	2007-12-14 13:02:52.000000000 +0100
 +++ usr/www/all/html/de/menus/menu2_fon.html	2007-12-03 19:55:25.000000000 +0100
-@@ -18,7 +18,6 @@
- <? if eq $var:pagename merkmale `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
- <? if eq $var:pagename fonlistdect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
- <? if eq $var:pagename fon1Mini `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
--<? if eq $var:pagename fon1tam `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
- <? if eq $var:pagename fon1NewDect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
- <? if eq $var:pagename klingelsperre_mini `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
- <? if eq $var:pagename klingelsperre_newdect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
 @@ -27,6 +26,15 @@
  <? if eq $var:pagename klingelsperre `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:jslGoTo('fon','fondevices')"><? echo $var:TextMenuTelefonieGeraete ?></a><span class="PTextOnly"><? echo $var:TextMenuTelefonieGeraete ?></span></li>
@@ -1563,77 +1555,3 @@
  <? if eq $var:pagename routing `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  <? if eq $var:pagename route `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  <? if eq $var:pagename vorwahl `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
---- usr/www/all/html/de/system/net.frm	2007-12-14 13:03:04.000000000 +0100
-+++ usr/www/all/html/de/system/net.frm	2007-12-07 14:26:45.000000000 +0100
-@@ -6,3 +6,5 @@
- <input type="hidden" name="tr069:settings/enabled" value="<? query tr069:settings/enabled ?>" id="uiPostSetTr069" disabled>
- <input type="hidden" name="tr069:settings/FWdownload_enable" value="<? query tr069:settings/FWdownload_enable ?>" id="uiPostUpdateTr069" disabled>
- ' ?>
-+<input type="hidden" name="tr064:settings/enabled" value="<? query tr064:settings/enabled ?>" id="uiPostSetTr064" disabled>
-+<input type="hidden" name="logic:command/reboot" value="1" id="uiPostReboot" disabled>
---- usr/www/all/html/de/system/net.html	2007-12-14 13:02:57.000000000 +0100
-+++ usr/www/all/html/de/system/net.html	2007-12-07 14:27:39.000000000 +0100
-@@ -27,6 +27,10 @@
- </div></div></div></div></div></div>
- ` ?>
- ' ?>
-+<div class="backdialog" id="uiSetTr064" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
-+<p class="pCheck25"><input type="checkbox" id="uiViewSetTr064">&nbsp;<label for="uiViewSetTr064"><? echo `$var:TextAutoEinrZulassen` ?></label></p>
-+<p class="ml25"><? echo `$var:TextChangeConfig` ?></p>
-+</div></div></div></div></div></div>
- <div class="backdialog" id="uiAdressen" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
- <p class="mb5"><? echo $var:TextChangeIP ?></p>
- <p><? echo $var:TextWarning ?></p>
---- usr/www/all/html/de/system/net.inc	2007-12-14 13:02:44.000000000 +0100
-+++ usr/www/all/html/de/system/net.inc	2007-12-07 14:26:52.000000000 +0100
-@@ -19,3 +19,5 @@
- <? setvariable var:TextFWChange 'Ist diese Einstellung ausgewählt, kann der Dienstanbieter die Firmware dieses Gerätes bei Bedarf automatisch aktualisieren, um das Dienstangebot zu verbessern.' ?>
- ` ?>
- ' ?>
-+<? setvariable var:TextAutoEinrZulassen 'Automatische Einrichtung aus dem lokalen Netzwerk zulassen (TR-064)' ?>
-+<? setvariable var:TextChangeConfig 'Diese Einstellung ermöglicht es vom PC aus, mit kompatiblen Programmen in der FRITZ!Box eine Verbindung zum Konfigurationssystem für die automatische Einrichtung durch den Dienstanbieter einzurichten.' ?>
---- usr/www/all/html/de/system/net.js	2007-12-14 13:03:07.000000000 +0100
-+++ usr/www/all/html/de/system/net.js	2007-12-07 14:26:26.000000000 +0100
-@@ -12,7 +12,10 @@
- <? include ../html/$var:lang/js/val.js ?>
- <? include ../html/$var:lang/js/jsl.js ?>
- var g_confirmMsgText = "Sie haben die Einstellung für automatische Einrichtung geändert.\x0d\x0a\x0d\x0aWenn Sie auf 'OK' klicken, startet die <? echo $var:BoxName ?> neu.";
-+var g_confirmTr064Off = "Um die Einstellungen zu übernehmen, muss die <? echo $var:BoxName ?> neu gestartet werden.\x0d\x0a\x0d\x0aMöchten Sie die Einstellungen jetzt übernehmen?";
-+var g_confirmTr064On = "Die TR064-Funktion ermöglicht Programmen über das lokale Netzwerk (LAN/WLAN) Einstellungen in der <? echo $var:BoxName ?> zu ändern und sollte deshalb nicht dauerhaft aktiviert bleiben.";
- var g_ExpertMode = "<? query box:settings/expertmode/activated ?>";
-+var g_oldTr064Val = "<? query tr064:settings/enabled ?>";
- function uiDoOnLoad() {
- document.title = "<? print `$var:BoxName` ?>" + " " + "<? print `$var:TextNetzwerkeinstellung` ?>";
- jslSetChecked("uiViewUpnpAktiv", jslGetValue("uiPostUpnpAktiv") == "1");
-@@ -29,6 +32,8 @@
- jslDisplay("uiUpdateTr069", true);
- ` ?>
- ' ?>
-+jslSetChecked("uiViewSetTr064", jslGetValue("uiPostSetTr064") == "1");
-+jslDisplay("uiSetTr064", true);
- jslDisplay("uiExpert", true);
- jslDisplay("uiAdressen", !isIpClient());
- }
-@@ -40,6 +45,22 @@
- jslSetEnabled("uiViewUpdateTr069", jslGetChecked("uiViewSetTr069"));
- }
- function uiDoSave() {
-+var newTr064Val = jslGetChecked("uiViewSetTr064") ? "1":"0";
-+if (newTr064Val != g_oldTr064Val)
-+{
-+if (newTr064Val == "1")
-+{
-+alert(g_confirmTr064On);
-+}
-+else
-+{
-+if (!confirm(g_confirmTr064Off)) return;
-+}
-+jslSetValue("uiPostSetTr064", newTr064Val);
-+jslEnable("uiPostSetTr064");
-+jslEnable("uiPostReboot");
-+jslSetValue("uiPostGetPage", "../html/reboot.html");
-+}
- jslSetValue("uiPostUpnpAktiv", jslGetChecked("uiViewUpnpAktiv") ? "1":"0");
- if (!isIpClient()) {
- jslSetValue("uiPostUpnpControl", jslGetChecked("uiViewUpnpControl") ? "1":"0");
