@@ -133,7 +133,7 @@ config DS_TYPE_LABOR
 	bool "Beta/Labor/VPN"
 	depends on \
 		DS_TYPE_FON_WLAN_7141 || \
-		DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_SPEEDPORT_W900V_7170 || \
+		DS_TYPE_FON_WLAN_7170 || \
 		DS_TYPE_FON_WLAN_7270
 	default n
 	help
@@ -171,30 +171,43 @@ choice
 
 endchoice
 
-config DS_TYPE_SINUS_W500V_7150
-	bool "Compile image for W500V"
-	depends on DS_TYPE_FON_7150
-	default n
-	help
-		Enable this to complie a mod image for TCOM's Sinus W501V based
-		on a 7150 Image.
-
-config DS_TYPE_SPEEDPORT_W701V_7170
-	bool "Compile image for W701V"
-	depends on DS_TYPE_FON_WLAN_7170
-	default n
-	help
-		Enable this to compile a mod image for TCOM's Speedport W701V
-		based on an 7170 Image.
-
-config DS_TYPE_SPEEDPORT_W900V_7170
-	bool "Compile image for W900V"
+config DS_TYPE_ALIEN_HARDWARE
+	bool "Compile image for \"alien\" hardware"
 	depends on \
-		DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
+		DS_TYPE_FON_7150 || \
+		DS_TYPE_FON_WLAN_7170
 	default n
 	help
-		Enable this to compile a mod image for TCOM's Speedport W900V
-		based on a 7170 Image.
+		Enable this to compile the mod image for another hardware type
+
+choice
+	prompt "Alien hardware type"
+	depends on DS_TYPE_ALIEN_HARDWARE
+	default DS_TYPE_SINUS_W500V_7150 if DS_TYPE_FON_7150
+	default DS_TYPE_SPEEDPORT_W701V_7170 if DS_TYPE_FON_WLAN_7170
+
+	config DS_TYPE_SINUS_W500V_7150
+		bool "W500V"
+		depends on DS_TYPE_FON_7150
+		help
+			Enable this to compile a mod image for T-Com Sinus W501V based
+			on a 7150 image.
+
+	config DS_TYPE_SPEEDPORT_W701V_7170
+		bool "W701V"
+		depends on DS_TYPE_FON_WLAN_7170
+		help
+			Enable this to compile a mod image for T-Com Speedport W701V based
+			on a 7170 image.
+
+	config DS_TYPE_SPEEDPORT_W900V_7170
+		bool "W900V"
+		depends on DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
+		help
+			Enable this to compile a mod image for T-Com Speedport W900V based
+			on a 7170 image.
+
+endchoice
 
 config DS_AVM_VERSION_STRING
 	string
