@@ -164,10 +164,10 @@ DL_IMAGE:=$(IMAGE)
 
 $(DL_DIR)/$(DL_SOURCE):
 ifeq ($(strip $(DS_TYPE_LABOR)),y)
-	@echo ""
+	@echo
 	@echo "Please copy the following file into the 'dl' sub-directory manually:"
 	@echo "$(DL_SOURCE)"
-	@echo ""
+	@echo
 	@exit 3
 else
 	@if ! ./fwmod_download -C $(DL_DIR) $(DL_SITE) $(DL_SOURCE); then \
@@ -183,10 +183,10 @@ else
 							-e 's/DL_SOURCE="$(DL_SOURCE)"/DL_SOURCE="'"$$latest"'"/' \
 							.config > .config.tmp; \
 						mv .config.tmp .config; \
-						echo ""; \
+						echo; \
 						echo "Re-run \`make' for the changes to take effect."; \
 						echo "WARNING: This configuration is probably untested!"; \
-						echo ""; \
+						echo; \
 						break ;; \
 					[nN]*) \
 						break ;; \
@@ -204,7 +204,7 @@ DL_IMAGE+=$(IMAGE2)
 $(DL_DIR)/$(DL_SOURCE2):
 	@./fwmod_download -C $(DL_DIR) $(DL_SITE2) $(DL_SOURCE2) > /dev/null
 	@echo "done."
-	@echo ""
+	@echo
 endif
 
 package-list: package-list-clean $(PACKAGES_LIST)
@@ -220,10 +220,10 @@ package-list-clean:
 
 ifeq ($(strip $(PACKAGES)),)
 firmware-nocompile: tools $(DL_IMAGE) package-list exclude-lists
-	@echo ""
+	@echo
 	@echo "WARNING: There are no packages selected. To install packages type"
-	@echo "         \`make menuconfig' and change to the 'Package selection' submenu."
-	@echo ""
+	@echo "         'make menuconfig' and change to the 'Package selection' submenu."
+	@echo
 else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
 endif
@@ -239,10 +239,10 @@ test: $(BUILD_DIR)/modified
 
 toolchain-depend: | $(TOOLCHAIN)
 toolchain: $(DL_DIR) $(SOURCE_DIR) $(TOOLCHAIN)
-	@echo ""
+	@echo
 	@echo "FINISHED: $(TOOLCHAIN_DIR)/kernel/ - glibc compiler for the kernel"
 	@echo "          $(TOOLCHAIN_DIR)/target/ - uClibc compiler for the userspace"
-	@echo ""
+	@echo
 
 libs: $(DL_DIR) $(SOURCE_DIR) $(LIBS_PRECOMPILED)
 
@@ -295,21 +295,21 @@ recover:
 	else \
 		echo "This can help if your box is not booting any more"; \
 		echo "(Power LED on and flashing of all LEDs every 5 secs)."; \
-		echo ""; \
+		echo; \
 		echo "Make sure that there is only one box in your subnet."; \
-		echo ""; \
+		echo; \
 		while true; do \
 			echo "Are you sure you want to recover filesystem and kernel"; \
 			echo -n "from $(IMAGE)? (y/n) "; \
 			read yn; \
 			case "$$yn" in \
 				[yY]*) \
-					echo ""; \
+					echo; \
 					if [ -z "$(LOCALIP)" ]; then \
 						echo "If this fails try to specify a local IP adress. Your"; \
 						echo "local IP has to be in the 192.168.178.0/24 subnet."; \
 						echo "e.g. make recover LOCALIP=192.168.178.20"; \
-						echo ""; \
+						echo; \
 						$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -f "$(IMAGE)"; \
 					else \
 						$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$(IMAGE)"; \
