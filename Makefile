@@ -218,6 +218,10 @@ package-list: package-list-clean $(PACKAGES_LIST)
 package-list-clean:
 	@rm -f .static .dynamic
 
+ifeq ($(FWMOD_NOPACK),y)
+FWMOD_OPTS:=-u -m
+endif
+
 ifeq ($(strip $(PACKAGES)),)
 firmware-nocompile: tools $(DL_IMAGE) package-list exclude-lists
 	@echo
@@ -227,9 +231,11 @@ firmware-nocompile: tools $(DL_IMAGE) package-list exclude-lists
 else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
 endif
-	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
+	@./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
 ifneq ($(FWMOD_PATCH_TEST),y)
+ifneq ($(FWMOD_NOPACK),y)
 	@mv $(BUILD_DIR)/$(DS_TYPE_STRING2)$(DS_TYPE_STRING)*.image ./
+endif
 endif
 
 firmware: precompiled firmware-nocompile 
