@@ -1,6 +1,6 @@
---- Makefile.mipsel.orig	2007-04-17 15:41:20.000000000 +0200
-+++ Makefile.mipsel	2007-07-01 03:12:46.000000000 +0200
-@@ -1,19 +1,15 @@
+--- Makefile.mipsel.orig	2007-12-26 15:03:30.000000000 +0100
++++ Makefile.mipsel	2007-12-26 15:03:12.000000000 +0100
+@@ -1,21 +1,17 @@
 -CROSS=mipsel-linux-
 -PJPATH=./pjproject
 +CROSS:=mipsel-linux-
@@ -10,22 +10,23 @@
 +CC:=$(CROSS)gcc
 +STRIP:=$(CROSS)strip
  
+ CAPI_LIB=-lcapi20
+ CAPI_CFLAG=-DDTMFBOX_USE_CAPI=1
+ 
 -include $(PJPATH)/build.mak
-+CFLAGS:=$(CFLAGS)
-+CPPFLAGS:=${CFLAGS} -w 
 +LDFLAGS:=$(LDFLAGS)
 +LDLIBS:=-Wl,-Bstatic $(LDLIBS) \
-+	    -Wl,-Bdynamic -lpthread -lcapi20
++	-Wl,-Bdynamic -lpthread $(CAPI_LIB)
  
 -CC = $(APP_CC)
 -LDFLAGS = $(APP_LDFLAGS)
 -LDLIBS = -Wl,-Bstatic $(APP_LDLIBS) \
--	-static-libgcc -Wl,-Bdynamic -lpthread -lcapi20
+-	-static-libgcc -Wl,-Bdynamic -lpthread $(CAPI_LIB)
 -
 -CFLAGS = $(APP_CFLAGS)
--CPPFLAGS = ${CFLAGS} -w 
--DESTDIR=
-+DESTDIR:=
+-CPPFLAGS = -w $(CAPI_CFLAG) ${CFLAGS}
++CFLAGS:=$(CFLAGS)
++CPPFLAGS:=-w $(CAPI_CFLAG) $(CFLAGS)
+ DESTDIR=
  
- HEADERS=dtmfbox.h \
- 	config.h \
+ PCH=global_headers.h
