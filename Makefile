@@ -316,9 +316,9 @@ recover:
 						echo "local IP has to be in the 192.168.178.0/24 subnet."; \
 						echo "e.g. make recover LOCALIP=192.168.178.20"; \
 						echo; \
-						$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -f "$(IMAGE)"; \
+						./tools/recover-$(RECOVER) -f "$(IMAGE)"; \
 					else \
-						$(pwd)/$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$(IMAGE)"; \
+						./tools/recover-$(RECOVER) -l $(LOCALIP) -f "$(IMAGE)"; \
 					fi; break ;; \
 				[nN]*) \
 					break ;; \

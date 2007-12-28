@@ -38,9 +38,10 @@ $(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBUSB_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/includes/usb*.h
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/includes/usb*.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.pc
 
 $(pkg)-uninstall:
 	rm -f $(LIBUSB_TARGET_DIR)/libusb*.so*
