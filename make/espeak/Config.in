@@ -1,8 +1,15 @@
 config DS_PACKAGE_ESPEAK
-	bool "espeak 1.27"
+	bool "eSpeak 1.29"
 	select DS_LIB_libm
 	select DS_LIB_libuClibcxx
 	default n
 	help
 		eSpeak is a compact open source software speech
 		synthesizer for English and other languages.
+
+config DS_PACKAGE_ESPEAK_ALL_LANGUAGES
+	bool "all languages"
+	depends on DS_PACKAGE_ESPEAK
+	default n
+	help
+		By default only german language is available.

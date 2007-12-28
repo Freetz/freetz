@@ -4,21 +4,69 @@ config DS_PACKAGE_DTMFBOX
 	select DS_LIB_libcapi20
 	default n
 	help
-		dtmfbox is a tool, which can be used to control different tasks
-		over telephone keyboard (via DTMF). The DTMF signals are 
-		handed over to a scriptfile.
+		dtmfbox is a small softswitch application, that can be used to 
+		control different tasks over telephone keyboard (via DTMF).
+		The DTMF signals are handed over to a scriptfile.
 
 		While scriptfile running, you can answer an incoming call, record
-		or play a wave file, make another call (connect it with another), etc.
+		or play a wave file, make another call, bridge calls, etc.
 
 		The scriptfiles that are included in this package, contain an 
 		answering machine, administration menu and a callback/callthrough 
 		script.
-		Image size: + ~266 KB
+
+		The application can also be configured as registrar, to allow 
+		SIP client connects.
+
+config DS_PACKAGE_DTMFBOX_WITH_CAPI
+	bool "With CAPI support"
+	depends on DS_PACKAGE_DTMFBOX
+	default y
+	help
+		Compile dtmfbox with CAPI support (ISDN/Analog)
+	
+config DS_PACKAGE_DTMFBOX_WITH_VOIP
+	bool "With SIP support"
+	depends on DS_PACKAGE_DTMFBOX
+	default y
+	help
+		Compile dtmfbox with VoIP support (SIP)
+		
+config DS_PACKAGE_DTMFBOX_WITH_ICE
+	bool "With ICE support"
+	depends on DS_PACKAGE_DTMFBOX
+	depends on DS_PACKAGE_DTMFBOX_WITH_VOIP
+	default y
+	help
+		Compile dtmfbox with (I)nteractive (C)onnectivity (E)stablishment
+		
+config DS_PACKAGE_DTMFBOX_WITH_HELPUSAGE
+	bool "With help usage"
+	depends on DS_PACKAGE_DTMFBOX
+	default y
+	help
+		Compile dtmfbox with extended help usage
+
+config DS_PACKAGE_DTMFBOX_LOGLEVEL
+	int "Loglevel (0-5)"
+	depends on DS_PACKAGE_DTMFBOX
+	default 4
+	help
+		Max. loglevel (0-5)
+
+config DS_PACKAGE_DTMFBOX_RESAMPLE_QUALITY
+	int "Resample quality (0 high - 2 low)"
+	depends on DS_PACKAGE_DTMFBOX
+	default 1
+	help
+		Resample Quality
+		0=high, 1=middle (default), 2=low
 
 config DS_PACKAGE_DTMFBOX_WITH_ESPEAK
-	bool "eSpeak suppport"
+	bool "eSpeak support"
 	depends on DS_PACKAGE_DTMFBOX
 	select DS_PACKAGE_ESPEAK
 	default n
-
+	help
+		Add package "eSpeak" to support Text2Speech.		
+		Attention: eSpeak is also supported over webstream!

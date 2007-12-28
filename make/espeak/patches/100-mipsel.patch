@@ -1,6 +1,5 @@
-diff -urN espeak-1.27-source.orig/src/Makefile espeak-1.27-source/src/Makefile
---- src/Makefile	2007-06-30 06:37:29.000000000 -0400
-+++ src/Makefile	2007-07-07 07:25:58.000000000 -0400
+--- src/Makefile.orig	2007-08-27 13:21:20.000000000 +0200
++++ src/Makefile	2007-12-28 23:11:58.000000000 +0100
 @@ -1,3 +1,4 @@
 +CXX=mipsel-linux-g++
  BINDIR=/usr/bin
@@ -8,7 +7,7 @@ diff -urN espeak-1.27-source.orig/src/Makefile espeak-1.27-source/src/Makefile
  LIBDIR=/usr/lib
 @@ -5,9 +6,9 @@
  
- RELEASE = 1.27
+ RELEASE = 1.29
  BIN_NAME = speak
 -BIN2_NAME = espeak
 -LIB_NAME = libespeak.so
@@ -94,10 +93,9 @@ diff -urN espeak-1.27-source.orig/src/Makefile espeak-1.27-source/src/Makefile
  
  clean:
  	rm -f *.o *.a *~
-diff -urN espeak-1.27-source.orig/src/speak.cpp espeak-1.27-source/src/speak.cpp
---- src/speak.cpp	2007-06-30 06:42:39.000000000 -0400
-+++ src/speak.cpp	2007-07-07 05:50:51.000000000 -0400
-@@ -277,7 +277,9 @@
+--- src/speak.cpp.orig	2007-08-27 13:19:00.000000000 +0200
++++ src/speak.cpp	2007-12-28 23:11:58.000000000 +0100
+@@ -287,7 +287,9 @@
  #endif
  
  
@@ -108,7 +106,7 @@ diff -urN espeak-1.27-source.orig/src/speak.cpp espeak-1.27-source/src/speak.cpp
  	if((result = LoadPhData()) != 1)
  	{
  		if(result == -1)
-@@ -476,7 +478,7 @@
+@@ -487,7 +489,7 @@
  			break;
  
  		case 'f':
@@ -117,7 +115,7 @@ diff -urN espeak-1.27-source.orig/src/speak.cpp espeak-1.27-source/src/speak.cpp
  			break;
  
  		case 'l':
-@@ -494,12 +496,12 @@
+@@ -505,12 +507,12 @@
  			break;
  
  		case 'v':
@@ -132,7 +130,7 @@ diff -urN espeak-1.27-source.orig/src/speak.cpp espeak-1.27-source/src/speak.cpp
  			break;
  
  		case 0x100:		// --stdin
-@@ -513,7 +515,7 @@
+@@ -524,7 +526,7 @@
  
  		case 0x102:		// --compile
  			if(optarg2 != NULL)
@@ -141,9 +139,8 @@ diff -urN espeak-1.27-source.orig/src/speak.cpp espeak-1.27-source/src/speak.cpp
  			flag_compile = 1;
  			break;
  
-diff -urN espeak-1.27-source.orig/src/speech.h espeak-1.27-source/src/speech.h
---- src/speech.h	2007-06-30 06:42:39.000000000 -0400
-+++ src/speech.h	2007-07-07 05:51:39.000000000 -0400
+--- src/speech.h.orig	2007-08-27 13:19:00.000000000 +0200
++++ src/speech.h	2007-12-28 23:11:58.000000000 +0100
 @@ -28,13 +28,13 @@
  
  #define PLATFORM_POSIX
@@ -160,10 +157,9 @@ diff -urN espeak-1.27-source.orig/src/speech.h espeak-1.27-source/src/speech.h
  //#define USE_MBROLA_LIB
  #endif
  
-diff -urN espeak-1.27-source.orig/src/wave.h espeak-1.27-source/src/wave.h
---- src/wave.h	2007-06-30 06:42:40.000000000 -0400
-+++ src/wave.h	2007-07-07 05:52:18.000000000 -0400
-@@ -36,6 +36,6 @@
+--- src/wave.h.orig	2007-08-27 13:19:01.000000000 +0200
++++ src/wave.h	2007-12-28 23:11:58.000000000 +0100
+@@ -38,6 +38,6 @@
  extern void add_time_in_ms(struct timespec *ts, int time_in_ms);
  
  // for tests
