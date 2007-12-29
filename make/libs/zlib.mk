@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/libpng
 $(PKG)_BINARY:=$($(PKG)_DIR)/libz.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libz.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/lib/libz.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_DEFOPTS := n
 $(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"
@@ -25,17 +25,17 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	   $(MAKE) -C $(ZLIB_DIR) \
+		$(MAKE) -C $(ZLIB_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so* $(ZLIB_TARGET_DIR)/
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so* $(ZLIB_DEST_DIR)/lib/
 	$(TARGET_STRIP) $@
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 
-$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
