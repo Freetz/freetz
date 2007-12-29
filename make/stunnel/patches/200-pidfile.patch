@@ -1,0 +1,22 @@
+--- src/Makefile.am.orig	2007-12-28 19:47:06.000000000 +0100
++++ src/Makefile.am	2007-12-28 19:47:42.000000000 +0100
+@@ -27,7 +27,7 @@
+ 
+ # Additional compiler flags
+ 
+-AM_CPPFLAGS = -DLIBDIR='"$(libdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"' -DPIDFILE='"$(prefix)/var/run/stunnel/stunnel.pid"'
++AM_CPPFLAGS = -DLIBDIR='"$(libdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"' -DPIDFILE='"$(localstatedir)/run/stunnel.pid"'
+ 
+ # Win32 executable
+ 
+--- src/Makefile.in.orig	2007-12-28 19:58:54.000000000 +0100
++++ src/Makefile.in	2007-12-28 19:59:32.000000000 +0100
+@@ -221,7 +221,7 @@
+ INCLUDES = -I/usr/kerberos/include
+ 
+ # Additional compiler flags
+-AM_CPPFLAGS = -DLIBDIR='"$(libdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"' -DPIDFILE='"$(prefix)/var/run/stunnel/stunnel.pid"'
++AM_CPPFLAGS = -DLIBDIR='"$(libdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"' -DPIDFILE='"$(localstatedir)/run/stunnel.pid"'
+ 
+ # Win32 executable
+ EXTRA_DIST = stunnel.exe make.bat mingw.mak makece.bat evc.mak vc.mak nogui.c os2.mak
