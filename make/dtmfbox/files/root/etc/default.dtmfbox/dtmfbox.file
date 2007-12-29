@@ -1,0 +1,31 @@
+CAPTION='dtmfbox benutzerdefiniertes Skript:'
+DESCRIPTION='<font size="1">
+<b>$SCRIPT</b> = Scriptfile (GLOBAL, MAIN, ADMIN, AM_ADMIN, DTMF, CBCT, CBCT_CALL, MISC, MISC_FRITZBOX, MISC_WEATHER) | 
+<b>$EVENT</b> = Event (CONNECT, DDI, CONFIRMED, DTMF, DISCONNECT) | 
+<b>$TYPE</b> = Type (VOIP, ISDN) | 
+<b>$IN_OUT</b> = Direction (INCOMING, OUTGOING) | 
+<b>$SRC_CON</b> = Source-Connection ID | 
+<b>$DST_CON</b> = Target-Connection ID | 
+<b>$SRC_NO</b> = Source-Number | 
+<b>$DST_NO</b> = Target-Number | 
+<b>$ACC_NO</b> = Account No.
+<b>$DTMF</b> = DTMF<br><br>
+return 0 = Skript fortfahren | 
+return 1 = Skript abbrechen<br>
+</font>
+'
+
+TEXT_ROWS=25
+CONFIG_TYPE="text"
+CONFIG_FILE="/var/tmp/flash/dtmfbox_userscript.sh"
+
+# addtional compression (-z)
+#
+CONFIG_SAVE="
+touch $CONFIG_FILE; 
+chmod +x $CONFIG_FILE; 
+tar cvz -f $CONFIG_FILE.tar.gz -C / $CONFIG_FILE; 
+rm $CONFIG_FILE;
+modsave flash; 
+tar xvz -f $CONFIG_FILE.tar.gz -C /;
+rm $CONFIG_FILE.tar.gz"
