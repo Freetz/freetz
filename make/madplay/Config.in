@@ -1,0 +1,12 @@
+config DS_PACKAGE_MADPLAY
+	bool "madplay 0.15.2b (binary only)"
+	select DS_LIB_libz
+	select DS_LIB_libid3tag
+	select DS_LIB_libmad
+	select DS_LIB_libm
+	default n
+	help
+		MAD is a high-quality fixed-point MPEG audio decoder with
+		24-bit output. The implementation is entirely new, based on
+		the ISO/IEC standards, and performs especially well on
+		systems without native floating-point support.
