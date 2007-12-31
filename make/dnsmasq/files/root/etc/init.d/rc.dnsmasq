@@ -52,7 +52,7 @@ start() {
 	if [ "$DNSMASQ_TFTP" = 'yes' -a -n "$DNSMASQ_TFTP_TFTPROOT" ]; then
 		OPTIONS="$OPTIONS --enable-tftp --tftp-root=\"$DNSMASQ_TFTP_TFTPROOT\""
 	fi
-	if [ "$DNSMASQ_DHCP" = "yes" -a "$DNSMASQ_DHCP_BOOTFILE" ]; then
+	if [ "$DNSMASQ_DHCP" = "yes" -a "$DNSMASQ_DHCP_BOOT" = "yes" -a "$DNSMASQ_DHCP_BOOTFILE" ]; then
 		OPTIONS="$OPTIONS --dhcp-boot=\"$DNSMASQ_DHCP_BOOTFILE\""
 	fi
 	eval "$DAEMON $OPTIONS"
