@@ -7,6 +7,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc.bin
 $(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
 
 $(PKG)_DEPENDS_ON += glib
+$(PKG)_DEPENDS_ON += ncurses-terminfo
 
 ifeq ($(strip $(DS_MC_WITH_NCURSES)),y) 
 $(PKG)_DEPENDS_ON += ncurses 
