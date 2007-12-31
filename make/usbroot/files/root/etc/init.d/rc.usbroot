@@ -258,7 +258,7 @@ case "$1" in
 		;;
 	status)
 		get_env_var
-		grep -q " / $DEVICE " /proc/mounts \
+		grep -q "^$DEVICE / " /proc/mounts \
 			&& echo 'running' \
 			|| echo 'stopped'
 		;;
