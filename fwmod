@@ -715,10 +715,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 				bn="$(basename "$i")"
 				terminfo="${bn}"
 				if [ "$(eval "echo \"\$DS_LIB_libterminfo_$(echo "$terminfo" | sed 's/-/minus/g;s/+/plus/g;s/\./dot/g')\"")" == "y" ]; then
-				echo2 "${bn}"
-				dn="$(dirname "$i")"
-				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-				cp -a "${ROOT_DIR}/${dn}/${terminfo}" "${FILESYSTEM_MOD_DIR}/${dn}/"
+					echo2 "${bn}"
+					dn="$(dirname "$i")"
+					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
+					cp -a "${ROOT_DIR}/${dn}/${terminfo}" "${FILESYSTEM_MOD_DIR}/${dn}/"
 				fi
 			done
 		fi
