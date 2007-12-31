@@ -712,9 +712,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 				find usr/share/terminfo -type d -name .svn -prune -false , -type f \
 			)
 			do
-					bn="$(basename "$i")"
+				bn="$(basename "$i")"
 				terminfo="${bn}"
-				if [ "$(eval "echo \"\$DS_LIB_libterminfo_$(echo "$terminfo")\"")" == "y" ]; then
+				if [ "$(eval "echo \"\$DS_LIB_libterminfo_$(echo "$terminfo" | sed 's/-/minus/g;s/+/plus/g;s/\./dot/g')\"")" == "y" ]; then
 				echo2 "${bn}"
 				dn="$(dirname "$i")"
 				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
