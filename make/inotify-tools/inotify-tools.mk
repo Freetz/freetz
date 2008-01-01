@@ -1,5 +1,5 @@
-$(call PKG_INIT_BIN, 3.12)
-$(PKG)_LIB_VERSION:=0.4.0
+$(call PKG_INIT_BIN, 3.13)
+$(PKG)_LIB_VERSION:=0.4.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/inotify-tools
 $(PKG)_INWAIT_BINARY:=$($(PKG)_DIR)/src/.libs/inotifywait
