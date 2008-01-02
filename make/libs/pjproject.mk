@@ -51,7 +51,7 @@ $($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.depend
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(PJPROJECT_DIR) all \
+		$(MAKE1) -C $(PJPROJECT_DIR) all \
 		CC_CFLAGS="$(PJPROJECT_CFLAGS)" \
 		TARGET_NAME="$(REAL_GNU_TARGET_NAME)"
 
