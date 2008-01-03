@@ -2,10 +2,8 @@ $(call PKG_INIT_BIN, 0.9.21)
 $(PKG)_SOURCE:=haserl-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/haserl
 $(PKG)_DIR:=$(SOURCE_DIR)/haserl-$($(PKG)_VERSION)
-$(PKG)_MAKE_DIR:=$(MAKE_DIR)/haserl
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/haserl
-$(PKG)_TARGET_DIR:=root/usr/bin
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/haserl
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/haserl
 
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -21,7 +19,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-haserl-precompiled: uclibc $($(PKG)_TARGET_BINARY)
+haserl-precompiled: $($(PKG)_TARGET_BINARY)
 
 haserl-clean:
 	-$(MAKE) -C $(HASERL_DIR) clean
