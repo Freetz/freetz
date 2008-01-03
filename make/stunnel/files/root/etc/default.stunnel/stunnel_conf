@@ -1,17 +1,6 @@
 #!/bin/sh
 
-echo "# stunnel Server Config"
-
-cat <<EOF
-pid = /var/run/stunnel-server.pid
-foreground = no
-
-EOF
-
-cat <<EOF
-client = no
-
-EOF
+echo "# stunnel config"
 
 if [ ! -z "$STUNNEL_SSLOPTIONS" ]; then
 	echo "options = $STUNNEL_SSLOPTIONS"
@@ -19,7 +8,7 @@ fi
 
 cat <<EOF
 RNDbytes = 1024
-RNDfile = /var/tmp/.stunnel_server_rnd
+RNDfile = /var/tmp/.stunnel_rnd
 RNDoverwrite = yes
 
 socket = a:TCP_NODELAY=1

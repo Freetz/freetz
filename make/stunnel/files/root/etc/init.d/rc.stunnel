@@ -4,7 +4,7 @@ export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/
 export LD_LIBRARY_PATH=/mod/lib
 
 DAEMON=stunnel
-PIDFILE="/var/run/$DAEMON-client.pid"
+PIDFILE="/var/run/$DAEMON.pid"
 
 case "$1" in
 	""|load|start|restart)
@@ -25,24 +25,25 @@ is_running() {
 
 start() {
 	{
-		if [ -x "/tmp/flash/${DAEMON}-client_conf" ]; then
-			/tmp/flash/${DAEMON}-client_conf
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
 		else
-			/mod/etc/default.$DAEMON/client_conf
+			/mod/etc/default.$DAEMON/stunnel_conf
 		fi
 
-		if [ -r "/tmp/flash/${DAEMON}-client.extra" ]; then
-			cat /tmp/flash/${DAEMON}-client.extra
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
 		fi
 
-		if [ -r "/tmp/flash/stunnel_clsvcs" ]; then
-			cat /tmp/flash/stunnel_clsvcs
+		if [ -r "/tmp/flash/stunnel_svcs" ]; then
+			cat /tmp/flash/stunnel_svcs
 		fi
-	} > /mod/etc/${DAEMON}-client.conf
+	} > /mod/etc/${DAEMON}.conf
 
-	echo -n 'Starting stunnel client...'
+	echo -n 'Starting stunnel...'
 
-	$DAEMON /mod/etc/${DAEMON}-client.conf
+	$DAEMON
+
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -53,9 +54,18 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping stunnel client...'
+	echo -n 'Stopping stunnel...'
 	read pid < "$PIDFILE" &&
 	kill -USR1 "$pid" > /dev/null 2>&1
+
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		rm -f $PIDFILE > /dev/null 2>&1
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
 }
 
 case "$1" in
@@ -63,12 +73,16 @@ case "$1" in
 		export STUNNEL_CONFIGURED="1"
 		modreg cgi 'stunnel' 'Stunnel'
 
-		deffile="/mod/etc/default.$DAEMON/stunnel_clsvcs.def"
-		[ -r "/tmp/flash/stunnel_clsvcs.def" ] && deffile='/tmp/flash/stunnel_clsvcs.def'
-		modreg file 'stunnel_clsvcs' 'Stunnel services (cl)' 0 "$deffile"
+		deffile="/mod/etc/default.$DAEMON/stunnel_pem.def"
+		[ -r "/tmp/flash/stunnel_pem.def" ] && deffile='/tmp/flash/stunnel_pem.def'
+		modreg file 'stunnel_pem' 'Stunnel: Cert + Private Key' 0 "$deffile"
 
-		if [ "$STUNNEL_CLIENTENABLED" != "yes" ]; then
-			echo "$DEAMON client is disabled" 1>&2
+		deffile="/mod/etc/default.$DAEMON/stunnel_svcs.def"
+		[ -r "/tmp/flash/stunnel_svcs.def" ] && deffile='/tmp/flash/stunnel_svcs.def'
+		modreg file 'stunnel_svcs' 'Stunnel: services' 0 "$deffile"
+
+		if [ "$STUNNEL_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
 			exit 1;
 		fi
 
@@ -76,7 +90,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'stunnel_clsvcs'
+		modunreg file 'stunnel_pem'
+		modunreg file 'stunnel_svcs'
 		modunreg cgi 'stunnel'
 		;;
 	start)
@@ -108,4 +123,3 @@ case "$1" in
 esac
 
 exit 0
-

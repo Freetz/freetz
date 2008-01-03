@@ -6,25 +6,15 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 auto_c_chk=''; man_c_chk=''
 auto_s_chk=''; man_s_chk=''
 
-if [ "$STUNNEL_CLIENTENABLED" = "yes" ]; then auto_c_chk=' checked'; else man_c_chk=' checked'; fi
-if [ "$STUNNEL_SERVERENABLED" = "yes" ]; then auto_s_chk=' checked'; else man_s_chk=' checked'; fi
+if [ "$STUNNEL_ENABLED" = "yes" ]; then auto_c_chk=' checked'; else man_c_chk=' checked'; fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
 cat << EOF
-<h2>$(lang de:"Client" en:"Client"):</h2>
 <p>
-<input id="e1" type="radio" name="clientenabled" value="yes"$auto_c_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="clientenabled" value="no"$man_c_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
+<input id="e1" type="radio" name="enabled" value="yes"$auto_c_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
+<input id="e2" type="radio" name="enabled" value="no"$man_c_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
 </p>
-<!--
-<h2>$(lang de:"Server" en:"Server"):</h2>
-<p>
-<input id="e1" type="radio" name="serverenabled" value="yes"$auto_s_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="serverenabled" value="no"$man_s_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
--->
-
 EOF
 
 sec_end
@@ -40,10 +30,8 @@ sec_begin '$(lang de:"Dienste" en:"Services")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=stunnel_clsvcs">$(lang de:"Client Dienste bearbeiten" en:"Edit client services file")</a></li>
-<!--
-<li><a href="/cgi-bin/file.cgi?id=stunnel_srvsvcs">$(lang de:"Server Dienste bearbeiten" en:"Edit server services file")</a></li>
--->
+<li><a href="/cgi-bin/file.cgi?id=stunnel_svcs">$(lang de:"Dienste bearbeiten" en:"Edit services file")</a></li>
+<li><a href="/cgi-bin/file.cgi?id=stunnel_pem">$(lang de:"Zertifikat und privaten Schlüssel für Server-Modus bearbeiten" en:"Edit certificate and private key for server mode")</a></li>
 </ul>
 EOF
 sec_end
