@@ -525,6 +525,13 @@ config DS_LIB_libevent
 		then add or remove events dynamically without having to change the event
 		loop.
 
+config DS_LIB_libid3tag
+	bool "ID3 Tag (libid3tag.so)"
+	select DS_LIB_libz
+	default n
+	help
+		ID3 tag manipulation library
+
 config DS_LIB_libmad
 	bool "MAD (libmad.so)"
 	default n
