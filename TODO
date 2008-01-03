@@ -12,6 +12,18 @@ HIGH PRIORITY - critical bugs, important features
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------
 
+- Bump uClibc to 0.9.29
+    Status (by Oliver): Done.
+    Remark (by kriegaex): Oliver says that it still does not run smoothly, so
+    0.9.28 should stay default for the time being. One problem reported by
+    Oliver ist the following concerning UPnP (igdd):
+        Jan  1 01:01:05 igdd[533]: get_file_content: mmap(/etc/default/avm/igddesc.xml) failed - Invalid argument (22)
+        Jan  1 01:01:05 igdd[533]: parse_xml_files: get_text_filecontent failed
+        Jan  1 01:01:05 igdd[533]: parse_xml_files failed
+        Jan  1 01:01:05 igdd[533]: upnp_server_start: failed
+        Jan  1 01:01:05 igdd[533]: upnp_server_stop: wrong parameter
+        Jan  1 01:01:05 igdd[533]: msg_receive_handler: Error:ADDDEV_RESP:igd:igdcb:3::::::
+
 -User reports that box crashes if nfsd works in sync mode 
   (http://www.ip-phone-forum.de/showpost.php?p=994414&postcount=154)
 
@@ -257,9 +269,6 @@ FINISHED, NEEDS TESTING
   Probably we should pretty much redo the package, because the scripts and
   DS-Mod UI integration are quite ugly.
   Remark (by Oliver): Should we provide some button/menu to create a swapfile?
-
-- Bump uClibc to 0.9.29
-    Status (by Oliver): Done.
 
 - Check bftpd, dropbear, netsnmp and openvpn (try to make suboptions instead of
   multiple packages)
