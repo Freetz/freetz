@@ -2,8 +2,7 @@ $(call PKG_INIT_BIN, 1.29)
 $(PKG)_SOURCE:=espeak-$(ESPEAK_VERSION)-source.zip
 $(PKG)_SITE:=http://kent.dl.sourceforge.net/sourceforge/espeak
 $(PKG)_DIR:=$(SOURCE_DIR)/espeak-$(ESPEAK_VERSION)-source
-$(PKG)_LANGUAGE:=$(ESPEAK_DIR)/espeak-data/de_dict
-$(PKG)_TARGET_LANGUAGE:=$(ESPEAK_DEST_DIR)/usr/share/espeak-data/de_dict
+$(PKG)_TARGET_LANGUAGE:=$(ESPEAK_DIR)/.language
 $(PKG)_BINARY:=$(ESPEAK_DIR)/src/speak
 $(PKG)_TARGET_BINARY:=$(ESPEAK_DEST_DIR)/usr/bin/speak
 
@@ -23,8 +22,6 @@ $($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
-$($(PKG)_LANGUAGE): $(ESPEAK_DIR)/.unpacked
-
 $($(PKG)_BINARY): $(ESPEAK_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(ESPEAK_DIR)/src \
@@ -35,12 +32,13 @@ $($(PKG)_BINARY): $(ESPEAK_DIR)/.configured
 $(ESPEAK_TARGET_BINARY): $(ESPEAK_BINARY) 
 	$(INSTALL_BINARY_STRIP)
 
-$($(PKG)_TARGET_LANGUAGE): $($(PKG)_LANGUAGE) $($(PKG)_DS_CONFIG_FILE)
-	rm -r $(ESPEAK_TARGET_DIR)
-	rm $(PACKAGES_DIR)/.espeak-$(ESPEAK_VERSION)
+$($(PKG)_TARGET_LANGUAGE): $(ESPEAK_DIR)/.unpacked $($(PKG)_DS_CONFIG_FILE)
+	rm -r $(ESPEAK_DEST_DIR)/usr/share
 	mkdir -p $(ESPEAK_DEST_DIR)/usr/share
-	$(if $(DS_PACKAGE_$(PKG)_ALL_LANGUAGE),\
+	tar -c -C $(ESPEAK_MAKE_DIR)/files --exclude=.svn . | tar -x -C $(ESPEAK_TARGET_DIR)
+	$(if $(DS_PACKAGE_ESPEAK_ALL_LANGUAGES),\
 		cp -ar $(ESPEAK_DIR)/espeak-data $(ESPEAK_DEST_DIR)/usr/share/,)
+	touch $@
 
 $(pkg):
 
@@ -49,6 +47,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_LANGUAGE) $(ESPEAK_TARGET_BINARY)
 $(pkg)-clean:
 	-$(MAKE) -C $(ESPEAK_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(ESPEAK_PKG_SOURCE)
+	rm -f $(ESPEAK_DIR)/.language
 
 $(pkg)-uninstall: 
 	rm -f $(ESPEAK_TARGET_BINARY)
