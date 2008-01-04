@@ -1,6 +1,5 @@
 config DS_PACKAGE_BIP
 	bool "Bip 0.6.1 (binary only)"
-	select DS_LIB_libssl
 	default n
 	help
 		Bip is an IRC proxy, which means it keeps connected to your
@@ -10,4 +9,12 @@ config DS_PACKAGE_BIP
 		computer) whatever your client is, when you connect from multiple
 		workstations, or when you simply want to have a playback of what
 		was said while you were away.
+
+config DS_BIP_WITH_SSL
+	bool "build with SSL support"
+	depends on DS_PACKAGE_BIP
+	select DS_LIB_libssl
+	default n
+	help
+		This option enables SSL support for bip.
 

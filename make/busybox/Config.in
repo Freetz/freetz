@@ -64,3 +64,14 @@ config DS_BUSYBOX_START_STOP_DAEMON
 
 		This feature adds about 1.9 KB to BusyBox.
 		The 'Support additional arguments' sub-feature is automatically selected.
+
+config DS_BUSYBOX_WGET
+	bool "wget"
+	depends on DS_REPLACE_BUSYBOX
+	depends on ! DS_PACKAGE_WGET
+	default y
+	help
+		Include the 'wget' tool in busybox
+
+		This feature is required by any DS-Mod package.
+		But it is deselected when the wget package is selected.

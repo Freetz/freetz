@@ -1,0 +1,19 @@
+config DS_PACKAGE_WGET
+	bool "Wget 1.10.2 (binary only)"
+	default n
+	help
+		GNU Wget is a free software package for retrieving files using
+		HTTP, HTTPS and FTP, the most widely-used Internet protocols. It
+		is a non-interactive commandline tool, so it may easily be 
+		called from scripts, cron jobs, terminals, etc.
+		
+		This package replaces busybox's wget applet. But this one adds
+		about 240 KB.
+
+config DS_WGET_WITH_SSL
+	bool "build with SSL support"
+	depends on DS_PACKAGE_WGET
+	select DS_LIB_libssl
+	default n
+	help
+		This option enables SSL support for Wget.

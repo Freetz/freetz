@@ -23,6 +23,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(MODULE_INIT_TOOLS_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(DNS2TCP_TARGET_BINARY)
+	$(RM) $(MODULE_INIT_TOOLS_TARGET_BINARY)
 
 $(PKG_FINISH)

@@ -4,7 +4,13 @@ $(PKG)_SITE:=http://bip.t1r.net/downloads
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/bip
 
+ifeq ($(strip $(DS_BIP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON := openssl
+endif
+
+$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_BIP_WITH_SSL),,--disable-ssl)
+
+$(PKG)_CONFIG_SUBOPTS += DS_BIP_WITH_SSL
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
