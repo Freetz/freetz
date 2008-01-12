@@ -67,8 +67,13 @@ start() {
 	$DAEMON $SYSLOGD_OPTIONS $SYSLOGD_EXPERT_OPTIONS > /dev/null 2>&1
 	exitval1=$?
 	
+	KLOGDOPTIONS=""
+	if [ ! -z "$SYSLOGD_KLOGD_LEVEL" ]; then
+		KLOGDOPTIONS = "-c $SYSLOGD_KLOGD_LEVEL"
+	fi
+
 	if [ "$SYSLOGD_KLOGD" = "yes" ]; then
-		/sbin/klogd > /dev/null 2>&1
+		/sbin/klogd $KLOGDOPTIONS > /dev/null 2>&1
 	fi
 	exitval2=$?
 	

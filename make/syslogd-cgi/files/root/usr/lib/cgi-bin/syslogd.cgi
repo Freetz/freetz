@@ -103,6 +103,12 @@ cat << EOF
 <input id="r12" type="checkbox" name="klogd" value="yes"$klogd_chk>
 <label for="r12">Kernel-Log D&auml;mon aktivieren</label>
 </h2>
+<ul>
+<li style="list-style-type: none">
+<label for="r13">Loglevel klogd: </label>
+<input id="r13" type="text" name="klogd_level" size="2" maxlength="1" value="$(httpd -e "$SYSLOGD_KLOGD_LEVEL")">
+</li>
+</ul>
 <h2>Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten):</h2>
 <label for="r8">Optionen:</label>
 <input id="r8" type="text" name="expert_options" size="20" maxlength="255" value="$(httpd -e "$SYSLOGD_EXPERT_OPTIONS")">
