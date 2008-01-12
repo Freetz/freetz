@@ -1,7 +1,3 @@
-let _cgi_width=730
-if [ "$cgi_width" -gt 0 ]; then let _cgi_width="$cgi_width"; fi
-let _cgi_total_width="$_cgi_width+40"
-
 _cgi_menu() {
 cat << EOF
 <div class="menu">
@@ -51,6 +47,15 @@ Content-type: text/html; charset=iso-8859-1
 <link rel="stylesheet" type="text/css" href="/style.css">
 EOF
 
+# custom style for fieldset and div.body
+if [ $_cgi_width ]; then
+	let _usr_style=$_cgi_width-230
+	echo "<style>"
+	echo "fieldset { margin: 0px; margin-top: 10px; margin-bottom: 10px; padding: 10px; width: "$_usr_style"px;}"
+	echo "div.body { width: "$_usr_style"px; }"
+	echo "</style>"
+fi
+
 if [ -n "$2" ]; then
 cat << EOF
 <style type="text/css">
@@ -60,6 +65,10 @@ cat << EOF
 </style>
 EOF
 fi
+
+# set width of table
+if [ ! $_cgi_width ]; then let _cgi_width="730"; fi
+let _cgi_total_width="$_cgi_width+40"
 
 cat << EOF
 </head>
