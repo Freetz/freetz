@@ -1,0 +1,252 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/var/mod/sbin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=iptables
+SAVEFILE=/var/tmp/flash/iptables_rules
+
+case "$1" in
+        ""|start|restart)
+                if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+                        echo "Error[$DAEMON]: not configured" 1>&2
+                        exit 1
+                fi
+
+                . /mod/etc/conf/$DAEMON.cfg
+                ;;
+esac
+
+start() {
+
+	if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+	        echo "Error[$DAEMON]: not configured" 1>&2
+	        exit 1
+	fi
+
+        lsmod | grep iptable_filter > /dev/nul
+        if [ $? -eq 1 ]; then
+        	echo 'Loading modules...'
+        	modprobe ip_tables.ko
+	        modprobe ip_conntrack.ko
+        	modprobe ipt_LOG.ko
+	        modprobe iptable_filter.ko
+        	modprobe ipt_state.ko
+	        modprobe ip_conntrack_ftp.ko
+       		modprobe ipt_mac.ko
+	        modprobe ipt_multiport.ko
+        	modprobe ipt_iprange.ko
+	        modprobe iptable_nat.ko
+	        modprobe ipt_MASQUERADE.ko
+	        modprobe ipt_REDIRECT.ko
+	        echo 'Loading table list...'
+	        while read ZEILE
+	        do
+	           iptables $ZEILE
+	        done < $SAVEFILE
+	        
+        else
+        
+		if ` grep "*gui*" /mod/etc/conf/iptables.cfg `; then
+		sed -e "s/\*gui\*//g" /mod/etc/conf/iptables.cfg > /var/tmp/iptables_tmp
+		cat /var/tmp/iptables_tmp > /mod/etc/conf/iptables.cfg
+		rm /var/tmp/iptables_tmp
+		echo -n 'Modules are already loaded. Starting rule script...'
+		CONFFILE="iptables.cfg"
+		CONFPATH="/mod/etc/conf/"
+	
+		. $CONFPATH$CONFFILE
+	
+		# Source Address
+		if [ $IPTABLES_SOURCE = "anywhere" ]; then
+		        IPTABLES_SOURCE=''
+		else
+		        IPTABLES_SOURCE='-s '$IPTABLES_SOURCE
+		fi
+	
+		if [ $IPTABLES_SPORT = "" ] || [ $IPTABLES_SPORT = "ANY" ]; then
+	        	IPTABLES_SPORT=''
+		else
+		        IPTABLES_SPORT="--sport "$IPTABLES_SPORT
+		fi
+	
+		# Destination Address
+		if [ $IPTABLES_DESTINATION = "anywhere" ]; then
+	        	IPTABLES_DESTINATION=''
+		else
+		        IPTABLES_DESTINATION='-d '$IPTABLES_DESTINATION
+		fi
+	
+		if [ $IPTABLES_DPORT = "ANY" ]; then
+	        	IPTABLES_DPORT=''
+		else
+		        IPTABLES_DPORT="$(cat /tmp/flash/iptables_services | grep $IPTABLES_DPORT: | sed -e "s/.*://g")"
+		        IPTABLES_DPORT='--dport '$IPTABLES_DPORT
+		fi
+	
+		# Interface
+		if [ $IPTABLES_INTERFACE = "ANY" ]; then
+		        IPTABLES_INTERFACE=''
+		else
+		        if [ $IPTABLES_CHAIN != "OUTPUT" ]; then
+	        	        IPTABLES_INTERFACE='-i '$IPTABLES_INTERFACE
+		        else
+		                IPTABLES_INTERFACE=''
+		        fi
+		fi
+		
+		# Regel anwenden
+		if [ $IPTABLES_RULE != "-D" ]; then
+		        echo "<br>"
+	        	echo "rule $IPTABLES_RULE"
+		        echo "chain $IPTABLES_CHAIN"
+		        echo "source $IPTABLES_SOURCE"
+	        	echo "destination $IPTABLES_DESTINATION"
+		        echo "proto $IPTABLES_PROTOKOLL"
+		        echo "sport $IPTABLES_SPORT"
+	        	echo "dport $IPTABLES_DPORT"
+		        echo "interface $IPTABLES_INTERFACE"
+		        echo "action $IPTABLES_ACTION"
+	        
+	    		iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INTERFACE -j $IPTABLES_ACTION > /dev/nul 2>&1
+		else
+	        	iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION > /dev/nul 2>&1
+		fi
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'Rule setting done.'
+			if [ -r $SAVEFILE ]; then
+				rm $SAVEFILE
+			fi
+			touch $SAVEFILE
+			iptables -vnL --line-numbers >/tmp/test
+			sed -e "s/\*/x/g" /var/tmp/test > /var/tmp/iptables_tmp
+			rm /var/tmp/test
+			i=0
+			while read ZEILE
+			do
+			  if [[ $(echo $ZEILE |grep -c "Chain") = 1 ]]; then
+			         CHAIN=$(echo $ZEILE|sed -e "s/Chain //g" | sed -e "s/ (policy.*//g")
+			         i=i+1
+			  else
+			         echo ${ZEILE}|grep "^[1-9]" > /dev/null
+			         if [ $? = 0 ]; then
+			            SPORT='';DPORT='';
+			            A=$(echo $ZEILE|awk '{print $4}')
+			            P="-p $(echo $ZEILE|awk '{print $5}')"
+			            PORT1="$(echo $ZEILE|awk '{print $12}')"
+			            echo $PORT1|grep "spt:" > /dev/nul
+			            if [ $? -eq 0 ]; then
+			            	SPORT="--sport $(echo $PORT1|sed -e 's/spt://g')"
+			            fi
+			            echo $PORT1|grep "dpt:" > /dev/nul
+			            if [ $? -eq 0 ]; then
+			                DPORT="--dport $(echo $PORT1|sed -e 's/dpt://g')"
+			            fi
+			            
+			            PORT2="$(echo $ZEILE|awk '{print $13}')"
+			            echo $PORT2|grep "spt:" > /dev/nul
+			            if [ $? -eq 0 ]; then
+			            	SPORT="--sport $(echo $PORT2|sed -e 's/spt://g')"
+			            fi
+			            echo $PORT2|grep "dpt:" > /dev/nul
+			            if [ $? -eq 0 ]; then
+			            	DPORT="--dport $(echo $PORT2|sed -e 's/dpt://g')"
+			            fi
+			            
+			            S="-s $(echo $ZEILE|awk '{print $9}')"
+			            D="-d $(echo $ZEILE|awk '{print $10}')"
+			            I="-i $(echo $ZEILE|awk '{print $7}')"
+			            
+			            # Pruefen ob Interface vorhanden
+			            echo $I|grep x > /dev/nul
+			            if [ $? -eq 0 ]; then
+			               I=""
+			            fi
+			            
+			            echo "-A $CHAIN $S $D $P $SPORT $DPORT $I -j $A" >> $SAVEFILE
+			          fi
+			  fi
+			  done </var/tmp/iptables_tmp
+			  rm /var/tmp/iptables_tmp
+			  echo 'Saving list done.'
+		else
+        		echo 'Rule setting failed.'
+        		exit $exitval
+ 	       fi
+ 	       
+ 	       else
+ 	       		echo 'Modules are already loaded'
+ 	       fi
+	fi
+}
+
+stop () {
+        
+        cat /mod/etc/conf/iptables.cfg|grep "*gui*" > /dev/nul
+        if [ $? -eq 1 ]; then
+      		lsmod | grep ip_tables > /dev/nul
+	        if [ $? -eq 0 ]; then
+       	 		echo 'Unloading modules ...'
+       	 		iptables -F
+       	 		rmmod ipt_REDIRECT
+       	 		rmmod ipt_MASQUERADE
+		        rmmod iptable_nat
+        		rmmod ipt_iprange
+	        	rmmod ipt_multiport
+	        	rmmod ipt_mac
+		        rmmod ip_conntrack_ftp
+        		rmmod ipt_state
+		        rmmod iptable_filter
+        		rmmod ipt_LOG
+	        	rmmod ip_conntrack
+		        rmmod ip_tables
+        	else
+        		echo 'Modules not loaded.'
+	        fi
+	fi
+        exitval=0
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                start
+                ;;
+        status)
+                lsmod | grep ip_tables > /dev/nul
+                if [ $? -eq 0 ]; then
+                	echo 'running'
+                else
+                	echo 'stopped'
+                fi
+                ;;
+        load)
+		modreg cgi $DAEMON
+        	modreg file 'iptables_rules' 'Iptables: Rules' 0 "/mod/etc/default.iptables/iptables.def"
+        	modreg file 'iptables_services' 'Iptables: Services' 0 "/mod/etc/default.iptables/services.def"
+        	
+        	if [ "$IPTABLES_ENABLED" != "yes" ]; then
+        		echo "$DAEMON is disabled" 1>&2
+        		exit 1
+        	else
+        		start
+        	fi
+                ;;
+        unload)
+                stop
+                modunreg cgi 'iptables'
+                ;;
+        *)
+                echo "Usage: $0 [start|stop|restart|status]" 1>&2
+                exit 1
+                ;;
+esac
+
+exit 0

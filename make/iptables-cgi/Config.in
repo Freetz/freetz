@@ -1,5 +1,5 @@
-config DS_PACKAGE_FIREWALL_CGI
-	bool "Firewall-CGI 0.5.2"
+config DS_PACKAGE_IPTABLES_CGI
+	bool "Iptables-CGI 1.0.3"
 	default n
 
 	# Be visible only if iptables is selected
@@ -9,7 +9,7 @@ config DS_PACKAGE_FIREWALL_CGI
 	select DS_PACKAGE_IPTABLES_KERNEL_MODULES
 	select DS_PACKAGE_IPTABLES_SHARED_LIBS
 
-	# Kernel modules	
+	# Kernel modules
 	select DS_MODULE_ip_tables
 	select DS_MODULE_ip_conntrack
 	select DS_MODULE_ip_conntrack_ftp
@@ -19,6 +19,9 @@ config DS_PACKAGE_FIREWALL_CGI
 	select DS_MODULE_ipt_mac
 	select DS_MODULE_ipt_multiport
 	select DS_MODULE_ipt_state
+	select DS_MODULE_iptable_nat
+	select DS_MODULE_ipt_MASQUERADE
+	select DS_MODULE_ipt_REDIRECT
 
 	# Shared libs
 	select DS_LIB_libipt_iprange
@@ -29,9 +32,21 @@ config DS_PACKAGE_FIREWALL_CGI
 	select DS_LIB_libipt_state
 	select DS_LIB_libipt_tcp
 	select DS_LIB_libipt_udp
+	select DS_LIB_libipt_DNAT
+	select DS_LIB_libipt_SNAT
+	select DS_LIB_libipt_MASQUERADE
+	select DS_LIB_libipt_REDIRECT
 
 	help
-		Configuration front-end to iptables
+		New Configuration front-end to iptables.
+		
+		This front-end is used for setting and deleting iptable rules.
+		In the front-end table list, you can see current rules for the default chains.
+		All iptables command rules, will be stored in the flash-rom.
+
+		All necessary modules will be loaded from the daemon.
+		Stopping the daemon unloads all these modules.
 
 		Note: This package is only selectable if iptables has been activated,
 		otherwise it would not make sense to have a web configuration for it.
+
