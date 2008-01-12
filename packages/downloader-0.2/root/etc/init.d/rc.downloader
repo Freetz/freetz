@@ -7,7 +7,7 @@ DAEMON=downloader
 ERRFILE=/var/tmp/downerr
 
 case "$1" in
-	""|load|start|restart)
+	""|load|start|restart|remove)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
@@ -16,16 +16,27 @@ case "$1" in
 		. /mod/etc/conf/$DAEMON.cfg
 		;;
 esac
+
+if [ "$DOWNLOADER_DEBUG" = "yes" ]; then
+	LOGFILE=/var/log/downloader.log
+	if test -e $LOGFILE ; then
+		rm -f $LOGFILE > /dev/null 2>&1 
+	fi
+else
+	LOGFILE=/dev/null
+fi
+
+
 start() {
 	if test -e $ERRFILE ; then
-		rm $ERRFILE > /dev/null 2>&1 
+		rm -f $ERRFILE > /dev/null 2>&1 
 	fi
 	if [ "$DOWNLOADER_ENABLED" = "yes" ]; then
 		echo "Starting $DAEMON..."
 		echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
 			[ -n "$downfile" ]
 			echo -n "Download: $downfile..."
-			downloader $downfile > /dev/null 2>&1
+			downloader $downfile >> $LOGFILE 2>&1
  			errors=$?
 			if [ "$errors" -eq 0 ]; then
 				echo 'done.'
@@ -59,9 +70,37 @@ stop() {
 	fi
 }
 
+remove() {
+	if test -e $ERRFILE ; then
+		rm -f $ERRFILE > /dev/null 2>&1 
+	fi
+	echo "$DAEMON: Remove all downloaded files..."
+	echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
+		[ -n "$downfile" ]
+		echo -n "Delete $downfile..."
+		downremover $downfile >> $LOGFILE 2>&1
+		errors=$?
+		if [ "$errors" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+			echo $ERRORVAL > $ERRFILE
+		fi
+	done 
+	if test -e $ERRFILE ; then
+		rm $ERRFILE > /dev/null 2>&1 
+		echo "Remove failed."
+		exit $ERRORVAL
+	else
+		echo "Removing all downloaded files completed."
+	fi
+}
+
 case "$1" in
         ""|load)
-		modreg cgi 'downloader' 'Downloader'
+		modreg cgi $DAEMON 'Downloader'
+		modreg extra $DAEMON '$(lang de:"Heruntergeladene Dateien löschen" en:"Remove downloaded files")' 1 'downremover'
+		modreg extra $DAEMON '$(lang de:"Protokoll ansehen" en:"View log file")' 1 'downlog'
 
 		if [ "$DOWNLOADER_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -77,6 +116,8 @@ case "$1" in
 	unload)
 		stop
 		modunreg cgi 'downloader'
+		modunreg extra $DAEMON 'downremover'
+		modunreg extra $DAEMON 'downlog'
 		;;
 	start)
 		start
@@ -89,6 +130,9 @@ case "$1" in
 		sleep 1
 		start
 		;;
+	remove)
+		remove
+		;;
 	status)
 		if [ -z "$(pidof "$DAEMON")" ]; then
 			echo 'stopped'
@@ -97,7 +141,7 @@ case "$1" in
 		fi
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|remove|status]" 1>&2
 		exit 1
 		;;
 esac

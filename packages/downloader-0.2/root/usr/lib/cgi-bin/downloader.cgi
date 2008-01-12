@@ -3,17 +3,24 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; ftp_chk='' ; http_chk=''
+auto_chk=''; man_chk=''; ftp_chk='' ; http_chk=''; debug_chk=''
 
 if [ "$DOWNLOADER_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$DOWNLOADER_SRVPRFX" = "ftp://" ]; then ftp_chk=' selected'; else http_chk=' selected'; fi
+if [ "$DOWNLOADER_DEBUG" = "yes" ]; then debug_chk=' checked'; fi
 
 sec_begin '$(lang de:"Aktivierung" en:"Activation")'
 
 cat << EOF
+<div style="float: right;">Version 0.2</div>
 <p>
 <input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Aktiv" en:"Active")</label>
 <input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Inaktiv" en:"Inactive")</label>
+</p>
+<p>
+<input type="hidden" name="debug" value="no">
+<input id="s1" type="checkbox" name="debug" value="yes"$debug_chk><label for="s1"> $(lang de:"mit Debug-Ausgaben" en:"with debug output")</label>
+&nbsp;&nbsp; ( in <a href="/cgi-bin/extras.cgi/downloader/downlog">/var/log/downloader.log</a> )
 </p>
 EOF
 
@@ -49,7 +56,7 @@ value="http://"$http_chk>http://</option>
 <p>$(lang de:"Benutzer" en:"User"):
 <input type="text" name="srvusr" size="20" maxlength="30" value="$(httpd -e "$DOWNLOADER_SRVUSR")">
 &nbsp;&nbsp;&nbsp;&nbsp;Passwor$(lang de:"t" en:"d"):
-<input type="text" name="srvpwd" size="20" maxlength="30" value="$(httpd -e "$DOWNLOADER_SRVPWD")">
+<input type="password" name="srvpwd" size="20" maxlength="30" value="$(httpd -e "$DOWNLOADER_SRVPWD")">
 </p>
 EOF
 sec_end
@@ -78,4 +85,17 @@ cat << EOF
 <p><textarea name="files" rows="4" cols="50" maxlength="255">$(httpd -e "$DOWNLOADER_FILES")</textarea></p>
 EOF
 
+sec_end
+
+sec_begin 'Extras'
+cat << EOF
+<ul>
+<li>
+<a href="/cgi-bin/extras.cgi/downloader/downremover">$(lang de:"Heruntergeladene Dateien löschen" en:"Remove downloaded files")</a>
+</li>
+<li>
+<a href="/cgi-bin/extras.cgi/downloader/downlog">$(lang de:"Protokoll ansehen" en:"View log file")</a>
+</li>
+</ul>
+EOF
 sec_end
