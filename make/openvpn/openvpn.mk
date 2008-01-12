@@ -120,7 +120,7 @@ openvpn-uninstall:
 
 openvpn-list:
 ifeq ($(strip $(DS_PACKAGE_OPENVPN)),y)
-	@echo "S40openvpn-$(OPENVPN_VERSION)" >> .static
+	@echo "S50openvpn-$(OPENVPN_VERSION)" >> .static
 else
-	@echo "S40openvpn-$(OPENVPN_VERSION)" >> .dynamic
+	@echo "S50openvpn-$(OPENVPN_VERSION)" >> .dynamic
 endif
