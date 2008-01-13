@@ -18,6 +18,7 @@ KERNEL_SOURCE_PATH__04.29:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUI
 KERNEL_SOURCE_PATH__04.33:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/base/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__04.40:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__04.49:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base
+KERNEL_SOURCE_PATH__7270:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base
 KERNEL_SOURCE_PATH__r4884:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__r7203:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__r8508:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/open-source-package/kernel/$(KERNEL_BUILD_DIR_N)
@@ -49,7 +50,7 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL
 	shopt -s nullglob; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/$(AVM_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
-ifeq ($(AVM_VERSION),04.49)
+ifeq ($(AVM_VERSION),7270)
 	for i in ar7wdt.h avm_debug.h avm_event.h avm_led.h avm_profile.h; do \
 		ln -sf ../../drivers/char/avm_new/linux_$$i \
 			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
@@ -97,10 +98,11 @@ ifneq ($(AVM_VERSION),04.33)
 		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/adm_reg.h
 	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_cpmac.h
+	ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_net_trace.h
   endif
  endif
 endif
-
 	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-$(KERNEL_VERSION) $(KERNEL_DIR)/linux
 	touch $@
 
