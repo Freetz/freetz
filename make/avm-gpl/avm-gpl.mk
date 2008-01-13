@@ -21,7 +21,7 @@ AVM_UNPACK__INT_.gz:=z
 AVM_UNPACK__INT_.bz2:=j
 
 $(DL_DIR)/$(AVM_SOURCE): | $(DL_DIR)
-	wget --passive-ftp -P $(DL_DIR) $(AVM_SITE)/$(AVM_SOURCE)
+	wget --passive-ftp -P $(DL_DIR) $(AVM_SITE)$(AVM_SOURCE)
 
 $(AVM_DIR)/.unpacked: $(DL_DIR)/$(AVM_SOURCE)
 	mkdir -p $(AVM_DIR)
