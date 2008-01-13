@@ -345,7 +345,6 @@ config DS_REPLACE_BUSYBOX
 config DS_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on ! DS_TYPE_LABOR \
-		&& ( ! DS_TYPE_FON_WLAN_7170 || DS_TYPE_LANG_A_CH ) \
 		&& ! DS_TYPE_FON_WLAN_7270 
 	default n
 	help
@@ -785,8 +784,7 @@ menu "Patches"
 
 config DS_REMOVE_HELP
 	bool "Remove help"
-	depends on ! DS_TYPE_FON_WLAN_7170 \
-		&& ! DS_TYPE_FON_WLAN_7270 
+	depends on ! DS_TYPE_FON_WLAN_7270
 	default n
 	help
 		Removes the help pages from the web menu.
@@ -1062,7 +1060,7 @@ config DS_DL_SOURCE
 	default "fritz.box_fon_wlan_7140.annexb.en.30.04.34.image"				if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "fritz.box_fon_wlan_7140.annexa.39.04.43.image"					if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH
 	default "fritz.box_fon_wlan_7141.40.04.37.image"						if DS_TYPE_FON_WLAN_7141 && ! DS_TYPE_LABOR
-	default "fritz_box_labor-9710.image"								if DS_TYPE_FON_WLAN_7141 && DS_TYPE_LABOR_MINI
+	default "fritz_box_labor-9710.image"									if DS_TYPE_FON_WLAN_7141 && DS_TYPE_LABOR_MINI
 	default "fritz.fon_7150.annexb.38.04.32.image"							if DS_TYPE_FON_7150
 	default "fritz.box_fon_wlan_7170.29.04.49.image"						if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR && DS_TYPE_LANG_DE
 	default "fritz.box_fon_wlan_7170.annexa.58.04.43.image"					if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR && DS_TYPE_LANG_A_CH
@@ -1074,7 +1072,7 @@ config DS_DL_SOURCE
 	default "FRITZBox_Fon_WLAN_7170_VPN_AnnexB_29_04_34.image"				if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_VPN
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.44-9163.image"					if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_WLAN
 	default "fritz.box_fon_wlan_7270.54.04.49.image"						if DS_TYPE_FON_WLAN_7270 && ! DS_TYPE_LABOR
-	default "fritz_box_labor-9640.image"									if DS_TYPE_FON_WLAN_7270 && DS_TYPE_LABOR_MINI	
+	default "fritz_box_labor-9640.image"									if DS_TYPE_FON_WLAN_7270 && DS_TYPE_LABOR_MINI
 	default "fritz.box_sl_wlan.09.04.34.image"								if DS_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"							if DS_TYPE_WLAN_3030
 	default "fritz.box_wlan_3131.50.04.34.image"							if DS_TYPE_WLAN_3131
