@@ -19,18 +19,18 @@ esac
 start() {
 
 	if [ "$SYSLOGD_NETWORK" = "no" -a "$SYSLOGD_LOCAL" = "no" ] || [ "$SYSLOGD_NETWORK" = "yes" -a -z "$SYSLOGD_HOST" ]; then  
-  	echo -n 'Syslogd misconfigured. Please correct your settings!'
-  	echo -n 'Starting with default options.'
-  	$DAEMON -C > /dev/null 2>&1
-  	exit 1
+		echo -n 'Syslogd misconfigured. Please correct your settings!'
+		echo -n 'Starting with default options.'
+		$DAEMON -C > /dev/null 2>&1
+		exit 1
 	fi
 	
 	echo -n 'Starting syslogd...'
 
 	if [ "$SYSLOGD_LOCAL" = "yes" ]; then
-	
-	  SYSLOGD_OPTIONS="-L"
-	  
+
+		SYSLOGD_OPTIONS="-L"
+
 		case "$SYSLOGD_LOGGING" in
 		circular_buffer) 
 			if [ ! -z "$SYSLOGD_BUFFER_MAXSIZE" ]; then
@@ -63,13 +63,13 @@ start() {
 	if [ -z "$SYSLOGD_OPTIONS" ] && [ -z "$SYSLOGD_EXPERT_OPTIONS" ]; then
 		SYSLOGD_OPTIONS="-b 1 -s 16"
 	fi
-    
+
 	$DAEMON $SYSLOGD_OPTIONS $SYSLOGD_EXPERT_OPTIONS > /dev/null 2>&1
 	exitval1=$?
 	
 	KLOGDOPTIONS=""
 	if [ ! -z "$SYSLOGD_KLOGD_LEVEL" ]; then
-		KLOGDOPTIONS = "-c $SYSLOGD_KLOGD_LEVEL"
+		KLOGDOPTIONS="-c $SYSLOGD_KLOGD_LEVEL"
 	fi
 
 	if [ "$SYSLOGD_KLOGD" = "yes" ]; then
