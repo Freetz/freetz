@@ -11,7 +11,7 @@ result=$?
 cgi_begin 'Passwort' 'password'
 
 if [ "$result" -neq 0 ]; then
-	echo '<h1>$(lang de:"Passwort konnte nicht ge&auml;ndert." en:"Password unchanged.")</h1>'
+	echo '<h1>$(lang de:"Passwort wurde nicht ge&auml;ndert." en:"Password unchanged.")</h1>'
 else
 	echo '<h1>$(lang de:"Passwort erfolgreich ge&auml;ndert." en:"New password set.")</h1>'
 	echo '<p>$(lang de:"Starte Weboberfläche neu..." en:"Restarting webcfg...")</p>'

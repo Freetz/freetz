@@ -5,6 +5,9 @@ export LD_LIBRARY_PATH=/mod/lib
 
 DAEMON=iptables
 SAVEFILE=/var/tmp/flash/iptables_rules
+MODULES="ip_tables ip_conntrack ipt_LOG iptable_filter ipt_state \
+			ip_conntrack_ftp ipt_mac ipt_multiport ipt_iprange iptable_nat \
+			ipt_MASQUERADE ipt_REDIRECT"
 
 case "$1" in
 		""|start|restart)
@@ -27,18 +30,9 @@ start() {
 	lsmod | grep iptable_filter > /dev/null
 	if [ $? -eq 1 ]; then
 		echo 'Loading modules...'
-		modprobe ip_tables.ko
-		modprobe ip_conntrack.ko
-		modprobe ipt_LOG.ko
-		modprobe iptable_filter.ko
-		modprobe ipt_state.ko
-		modprobe ip_conntrack_ftp.ko
-		modprobe ipt_mac.ko
-		modprobe ipt_multiport.ko
-		modprobe ipt_iprange.ko
-		modprobe iptable_nat.ko
-		modprobe ipt_MASQUERADE.ko
-		modprobe ipt_REDIRECT.ko
+		for i in $MODULES; do
+			modprobe $i
+		done
 		echo 'Loading table list...'
 		while read LINE; do
 			iptables $LINE
@@ -183,18 +177,14 @@ stop () {
 		if [ $? -eq 0 ]; then
 			echo 'Unloading modules ...'
 			iptables -F
-			rmmod ipt_REDIRECT
-			rmmod ipt_MASQUERADE
-			rmmod iptable_nat
-			rmmod ipt_iprange
-			rmmod ipt_multiport
-			rmmod ipt_mac
-			rmmod ip_conntrack_ftp
-			rmmod ipt_state
-			rmmod iptable_filter
-			rmmod ipt_LOG
-			rmmod ip_conntrack
-			rmmod ip_tables
+			# remove modules in reverse order
+			reverse_list=
+			for i in $list; do
+				reverse_list="$i $reverse_list"
+			done
+			for i in $reverse_list; do
+				rmmod $i
+			done
 		else
 			echo 'Modules not loaded.'
 		fi
@@ -204,7 +194,7 @@ stop () {
 
 case "$1" in
 	""|load)
-		modreg cgi $DAEMON
+		modreg cgi 'iptables' 'Iptables'
 		modreg file 'iptables_rules' 'Iptables: Rules' 0 "/mod/etc/default.iptables/iptables.def"
 		modreg file 'iptables_services' 'Iptables: Services' 0 "/mod/etc/default.iptables/services.def"
 

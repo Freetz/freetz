@@ -87,7 +87,7 @@ rm /var/tmp/test
 i=0
 
 while read IPTABLES_LINE; do
-	if [[ $(echo ${IPTABLES_LINE} |grep -c "Chain") = 1 ]]; hen
+	if [[ $(echo ${IPTABLES_LINE} |grep -c "Chain") = 1 ]]; then
 		# not first dataset, so close table
 		if (( i > 0 )); then
 			echo "</table>"

@@ -3,10 +3,6 @@
 start() {
 	echo "Start bluetooth..."
 
-	VHCI_MAJOR=10
-	VHCI_MINOR=250
-	RFCOMM_MAJOR=216
-
 	# Insert hci_usb and rfcomm module
 	modprobe -q hci_usb
 	modprobe -q rfcomm
@@ -20,10 +16,10 @@ stop() {
 	echo "Stop bluetooth..."
 	killall -9 hcid
 	killall -9 sdpd
-	rmmod hci_usb 
-	rmmod rfcomm
-	rmmod l2cap
-	rmmod bluetooth 
+	rmmod hci_usb > /dev/null 2>&1 
+	rmmod rfcomm > /dev/null 2>&1
+	rmmod l2cap > /dev/null 2>&1
+	rmmod bluetooth > /dev/null 2>&1
 }
 
 case "$1" in
