@@ -242,7 +242,9 @@ choice
 
 	config DS_TYPE_LANG_EN
 		bool "en - international"
-		depends on DS_TYPE_FON_WLAN_7140
+		depends on \
+			DS_TYPE_FON_WLAN_7140 || \
+			DS_TYPE_FON_WLAN_7170
 
 endchoice
 
@@ -1034,6 +1036,8 @@ config DS_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"								if DS_TYPE_FON_7150
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch"			if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_DE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/deutsch_a-ch"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_A_CH
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/english/annex_a"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/english/annex_b"	if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch"			if DS_TYPE_FON_WLAN_7270
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.sl_wlan/firmware"							if DS_TYPE_WLAN_3020
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3030/firmware"						if DS_TYPE_WLAN_3030
@@ -1064,6 +1068,8 @@ config DS_DL_SOURCE
 	default "fritz.fon_7150.annexb.38.04.32.image"							if DS_TYPE_FON_7150
 	default "fritz.box_fon_wlan_7170.29.04.49.image"						if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR && DS_TYPE_LANG_DE
 	default "fritz.box_fon_wlan_7170.annexa.58.04.43.image"					if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR && DS_TYPE_LANG_A_CH
+	default "fritz.box_fon_wlan_7170.annexa.en.58.04.47.image"				if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "fritz.box_fon_wlan_7170.annexb.en.29.04.47.image"				if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.48-9655.image"					if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_BETA
 	default "FRITZ.Box_Fon_WLAN_7170_LabDSL.AnnexB.29.04.99-9167.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_DSL
 	default "fritz_box_labor-9710.image"									if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_MINI
