@@ -1,6 +1,6 @@
 # released under the GNU public license v2
 #
-TOR_VERSION:=0.1.2.18
+TOR_VERSION:=0.1.2.19
 TOR_SOURCE:=tor-$(TOR_VERSION).tar.gz
 TOR_SITE:=https://www.torproject.org/dist
 TOR_MAKE_DIR:=$(MAKE_DIR)/tor
