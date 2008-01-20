@@ -347,6 +347,7 @@ config DS_REPLACE_BUSYBOX
 config DS_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on ! DS_TYPE_LABOR \
+		&& ! ( DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_EN ) \
 		&& ! DS_TYPE_FON_WLAN_7270 
 	default n
 	help
@@ -1060,8 +1061,8 @@ config DS_DL_SOURCE
 	default "fritz.box_fon_wlan_7050.14.04.33.image"						if DS_TYPE_FON_WLAN_7050
 	default "fritz.box_fon_wlan_7113.60.04.40.image"						if DS_TYPE_FON_WLAN_7113
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"					if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE
-	default "fritz.box_fon_wlan_7140.annexa.en.39.04.34.image"				if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
-	default "fritz.box_fon_wlan_7140.annexb.en.30.04.34.image"				if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
+	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.en.39.04.47.image"				if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_A
+	default "FRITZ.Box_Fon_WLAN_7140.AnnexB.en.30.04.47.image"				if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "fritz.box_fon_wlan_7140.annexa.39.04.43.image"					if DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH
 	default "fritz.box_fon_wlan_7141.40.04.37.image"						if DS_TYPE_FON_WLAN_7141 && ! DS_TYPE_LABOR
 	default "fritz_box_labor-9710.image"									if DS_TYPE_FON_WLAN_7141 && DS_TYPE_LABOR_MINI
