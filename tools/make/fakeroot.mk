@@ -1,4 +1,4 @@
-FAKEROOT_VERSION:=1.8.10
+FAKEROOT_VERSION:=1.9.1
 FAKEROOT_SOURCE:=fakeroot_$(FAKEROOT_VERSION).tar.gz
 FAKEROOT_SITE:=http://ftp.debian.org/debian/pool/main/f/fakeroot
 FAKEROOT_DIR:=$(SOURCE_DIR)/fakeroot-$(FAKEROOT_VERSION)
