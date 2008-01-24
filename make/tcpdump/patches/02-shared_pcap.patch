@@ -1,0 +1,43 @@
+--- aclocal.m4.orig	2008-01-23 12:03:50.000000000 +0100
++++ aclocal.m4	2008-01-23 12:04:24.000000000 +0100
+@@ -237,21 +237,6 @@
+     AC_MSG_CHECKING(for local pcap library)
+     libpcap=FAIL
+     lastdir=FAIL
+-    places=`ls $srcdir/.. | sed -e 's,/$,,' -e "s,^,$srcdir/../," | \
+-	egrep '/libpcap-[[0-9]]*.[[0-9]]*(.[[0-9]]*)?([[ab]][[0-9]]*)?$'`
+-    for dir in $places $srcdir/../libpcap $srcdir/libpcap ; do
+-	    basedir=`echo $dir | sed -e 's/[[ab]][[0-9]]*$//'`
+-	    if test $lastdir = $basedir ; then
+-		    dnl skip alphas when an actual release is present
+-		    continue;
+-	    fi
+-	    lastdir=$dir
+-	    if test -r $dir/libpcap.a ; then
+-		    libpcap=$dir/libpcap.a
+-		    d=$dir
+-		    dnl continue and select the last one that exists
+-	    fi
+-    done
+     if test $libpcap = FAIL ; then
+ 	    AC_MSG_RESULT(not found)
+ 	    AC_CHECK_LIB(pcap, main, libpcap="-lpcap")
+@@ -288,18 +273,6 @@
+ 		$2="-I$d $$2"
+ 		AC_MSG_RESULT(found -- -I$d added)
+ 	    fi
+-    else
+-	    $1=$libpcap
+-	    places=`ls $srcdir/.. | sed -e 's,/$,,' -e "s,^,$srcdir/../," | \
+-    	 		egrep '/libpcap-[[0-9]]*.[[0-9]]*(.[[0-9]]*)?([[ab]][[0-9]]*)?$'`
+-	    if test -r $d/pcap.h; then
+-		    $2="-I$d $$2"
+-	    elif test -r $places/pcap.h; then
+-		    $2="-I$places $$2"
+-	    else
+-                    AC_MSG_ERROR(cannot find pcap.h, see INSTALL)
+- 	    fi
+-	    AC_MSG_RESULT($libpcap)
+     fi
+     LIBS="$libpcap $LIBS"
+     case "$host_os" in
