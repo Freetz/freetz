@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 0.9.6)
+$(call PKG_INIT_LIB, 0.9.8)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.tcpdump.org/release/
@@ -46,7 +46,9 @@ $(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBPCAP_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*
+	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/pcap* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man3/pcap.3
 
 $(pkg)-uninstall:
 	rm -f $(LIBPCAP_TARGET_DIR)/libpcap*.so*

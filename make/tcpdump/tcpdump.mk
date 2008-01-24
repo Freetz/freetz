@@ -1,10 +1,12 @@
-$(call PKG_INIT_BIN, 3.9.6)
+$(call PKG_INIT_BIN, 3.9.8)
 $(PKG)_SOURCE:=tcpdump-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.tcpdump.org/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpdump
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tcpdump
 
 $(PKG)_DEPENDS_ON := libpcap
+
+$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 
 $(PKG)_CONFIGURE_ENV += BUILD_CC="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += HOSTCC="$(HOSTCC)"
