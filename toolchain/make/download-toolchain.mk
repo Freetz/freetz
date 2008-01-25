@@ -14,8 +14,9 @@ $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE): | $(DL_DIR)
 $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TARGET_TOOLCHAIN_SOURCE) $(TOOLCHAIN_SITE)
 
-download-toolchain: $(TOOLCHAIN_DIR)/kernel/.installed $(TOOLCHAIN_DIR)/target/.installed \
-						$(ROOT_DIR)/lib/libc.so.0 $(ROOT_DIR)/lib/libgcc_s.so.1
+download-toolchain: $(TOOLCHAIN_DIR)/kernel/.installed kernel-configured \
+					$(TOOLCHAIN_DIR)/target/.installed \
+					$(ROOT_DIR)/lib/libc.so.0 $(ROOT_DIR)/lib/libgcc_s.so.1
 
 $(TOOLCHAIN_DIR)/kernel/.installed: $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
@@ -35,5 +36,4 @@ toolchain-distclean:
 	rm -rf $(TOOLCHAIN_DIR)/build
 	rm -rf $(TOOLCHAIN_DIR)/kernel
 	rm -rf $(TOOLCHAIN_DIR)/target
-
 
