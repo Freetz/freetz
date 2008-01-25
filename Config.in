@@ -962,6 +962,18 @@ config DS_REMOVE_CAPIOVERTCP
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
+config DS_REMOVE_DECT_UPDATE
+	bool"Remove dect_update - EXPERIMENTAL"
+	depends on \
+		DS_TYPE_FON_7150
+	default n
+	help
+		Remove /usr/bin/dect_update. This utility is only needed to 
+		update the dect firmware.
+		This will save about 46kB uncompressed size.
+
+		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
 config DS_REMOVE_VOIP_ISDN
 	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL"
 	default n
