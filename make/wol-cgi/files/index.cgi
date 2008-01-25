@@ -44,7 +44,17 @@ cat << EOF
 <table border="0" cellspacing="1" cellpadding="0">
 <tr>
 <td width="230">MAC: <input type="text" name="mac" size="17" maxlength="17" value=""></td>
-<td width="210">Interface: <input type="text" name="interf" size="10" maxlength="10" value=""></td>
+<td width="210">Interface: <select name="interf">
+EOF
+echo '<option title="tcp" value="tcp">'$interface'</option>'
+
+for INTERFACE in $(ifconfig |grep ^[a-z]|cut -f1 -d ' '); do
+	echo '<option title="'$INTERFACE'" value="'$INTERFACE'">'$INTERFACE'</option>'
+done
+
+cat << EOF
+
+</select></td>
 <td width="100"><input type="submit" value="WakeUp"></td>
 </tr>
 </table>
