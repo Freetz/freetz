@@ -71,7 +71,7 @@ choice
 		bool "Fon WLAN 7113"
 
 	config DS_TYPE_FON_WLAN_7140
-		select DS_AVM_VERSION_04_33
+		select DS_AVM_VERSION_04_49
 		bool "Fon WLAN 7140"
 
 	config DS_TYPE_FON_WLAN_7141
@@ -346,9 +346,8 @@ config DS_REPLACE_BUSYBOX
 
 config DS_REPLACE_KERNEL
 	bool "Replace kernel"
-	depends on ! DS_TYPE_LABOR \
-		&& ! ( DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_EN ) \
-		&& ! DS_TYPE_FON_WLAN_7270 
+	depends on \
+			! DS_TYPE_LABOR
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
