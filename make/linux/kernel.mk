@@ -65,11 +65,16 @@ ifeq ($(AVM_VERSION),7270)
 	done
 	ln -sf ../../drivers/char/avm_power/linux_avm_power.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_power.h
+	ln -sf ../../drivers/net/avm_cpmac/linux_adm_reg.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/adm_reg.h
+	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_cpmac.h
 	ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_net_trace.h
 	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
 	done
+	touch $(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/drivers/dsl/Kconfig
 else
 ifneq ($(AVM_VERSION),04.33)
  ifneq ($(AVM_VERSION),04.40)
