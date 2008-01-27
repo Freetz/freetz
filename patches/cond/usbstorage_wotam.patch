@@ -1,6 +1,6 @@
 --- etc/hotplug/run_mount.orig	2007-11-22 21:45:15.000000000 +0100
 +++ etc/hotplug/run_mount	2007-11-27 23:20:06.000000000 +0100
-@@ -52,7 +52,7 @@
+@@ -51,7 +51,7 @@
  	fi
  	
  	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
@@ -9,7 +9,7 @@
  	echo $NICE
  }
  
-@@ -73,25 +73,42 @@
+@@ -74,25 +74,42 @@
  	done
  }
  
@@ -58,7 +58,7 @@
 +	fi
 +	;;
 +
-+*) # fstyp unknown
++*) # fstyp not known
 +	;;
 +
 +esac
@@ -68,10 +68,10 @@
  		OK=0
  		eventadd 140 $MNTNAME
  		if ! pidof ftpd; then
-@@ -116,9 +133,28 @@
- 	if [ -p "/var/tam/mount" ]; then
- 		echo "m$MNTPATH" > /var/tam/mount
- 	fi
+@@ -115,9 +132,28 @@
+ 		if test -x /etc/samba_control ; then 
+ 			/etc/samba_control reconfig
+ 		fi
 -	else
 -		rm -rf $MNTPATH
 -	fi

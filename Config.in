@@ -868,9 +868,9 @@ config DS_PATCH_SIGNED
 		Hides the "unsupported changes" message from the web interface.
 
 config DS_PATCH_USBSTORAGE
-	bool "Patch USB storage names & make FAT filesystems world-writable"
+	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
 	depends on DS_HAS_USB_HOST
-	default n
+	default y
 	help
 		1. Change the name of USB storage dir to uStorXY
 
@@ -880,6 +880,16 @@ config DS_PATCH_USBSTORAGE
 		write to their own home directories.
 
 		It is highly recommended to select this patch.
+
+config DS_USBSTORAGE_AUTOMOUNT
+	bool "Automount ext2, ext3 and ntfs"
+	depends on DS_PATCH_USBSTORAGE
+	select DS_PACKAGE_FSTYP
+	default y
+	help
+		ext2, ext3 and ntfs filesystems are mounted automatically. Detection
+		is done by fstyp utility (adds about 8KB uncompressed size). For ntfs
+		filesystem support you have to select ntfs-3g package.
 
 config DS_PATCH_WEBSRV
 	bool "Replace AVM web server by httpd"
