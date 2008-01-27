@@ -13,3 +13,7 @@ else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage.patch"
 fi
 
+sed -i -e '/modprobe vfat/a \
+\t\tmodprobe ext2 \
+\t\tmodprobe ext3' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
+
