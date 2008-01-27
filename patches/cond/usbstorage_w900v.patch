@@ -17,36 +17,40 @@
  SYSFS=/var/sysfs
  
  # Ask the system's configuration for the status of the readonly flag:
-@@ -35,22 +36,22 @@
- 	# Find device's strings, remove/translate evil chars...
- 	for VAR in `/sbin/lsusb -s -h $1|tr -d ' '`; do
- 		if echo $VAR | grep "='" > /dev/null 2>&1; then
+@@ -26,31 +27,9 @@
+ # Generate a frontend'able 'nice name' to be used as mount point:
+ #
+ nicename () {
+-	local PROD
+-	local SNUM
+-	local MANU
+-	local NAME="USB"
+ 	local NICE=""
+ 
+-	# Find device's strings, remove/translate evil chars...
+-	for VAR in `/sbin/lsusb -s -h $1|tr -d ' '`; do
+-		if echo $VAR | grep "='" > /dev/null 2>&1; then
 -			eval "${VAR%%=*}=`echo ${VAR##*=}|tr $EVILSET '-'`"
-+			eval "${VAR%%=*}=`echo ${VAR##*=}|tr $EVILSET '-'|tr -d \'`"
- 		fi
- 	done
- 	
+-		fi
+-	done
+-	
 -	# Find a string for out new nice name...
 -	if test -n "$PROD"; then
-+	# Find a string for our new nice name...
-+	if ! test -z "$PROD"; then
- 		NAME="$PROD"
+-		NAME="$PROD"
 -	elif test -n "$MANU"; then
-+	elif ! test -z "$MANU"; then
- 		NAME="$MANU"
- 	fi
+-		NAME="$MANU"
+-	fi
 -	if test -n "$NAME"; then
-+	if ! test -z "$NAME"; then
- 		NAME=`echo $NAME|tr ':' ' '`
- 	fi
- 	
- 	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
+-		NAME=`echo $NAME|tr ':' ' '`
+-	fi
+-	
+-	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
 -	NICE="$NAME-Partition-$2-$3"
 +	NICE="uStor$2$3"
  	echo $NICE
  }
  
-@@ -73,6 +74,66 @@
+@@ -73,6 +52,66 @@
  	done
  }
  
@@ -113,7 +117,7 @@
  # Actually perform the mount operation...
  # (TODO Checking the partition for known filesystem types)
  #
-@@ -83,7 +144,7 @@
+@@ -83,7 +122,7 @@
  	local PARTNUM=$3
  	local BLKDEV=${DEVNODE##/dev/}
  	local TEMP=${BLKDEV##sd}
@@ -122,7 +126,7 @@
  	local MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
  	local MNTPATH=$FTPDIR/$MNTNAME
  	
-@@ -91,13 +152,8 @@
+@@ -91,13 +130,8 @@
  	test -d $MNTPATH || mkdir -p $MNTPATH
  	
  	passeeren

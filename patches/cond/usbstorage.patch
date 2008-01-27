@@ -1,15 +1,39 @@
 --- etc/hotplug/run_mount.orig	2007-11-22 21:45:15.000000000 +0100
 +++ etc/hotplug/run_mount	2007-11-27 23:20:06.000000000 +0100
-@@ -52,7 +52,7 @@
- 	fi
- 	
- 	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
+@@ -28,31 +28,9 @@
+ # Generate a frontend'able 'nice name' to be used as mount point:
+ #
+ nicename () {
+-	local PROD
+-	local SNUM
+-	local MANU
+-	local NAME="USB"
+ 	local NICE=""
+ 
+-	# Find device's strings, remove/translate evil chars...
+-	for VAR in `/sbin/lsusb -s -h $1|tr -d ' '`; do
+-		if echo $VAR | grep "='" > /dev/null 2>&1; then
+-			eval "${VAR%%=*}=`echo ${VAR##*=}|tr $EVILSET '-'|tr -d \'`"
+-		fi
+-	done
+-	
+-	# Find a string for our new nice name...
+-	if ! test -z "$PROD"; then
+-		NAME="$PROD"
+-	elif ! test -z "$MANU"; then
+-		NAME="$MANU"
+-	fi
+-	if ! test -z "$NAME"; then
+-		NAME=`echo $NAME|tr ':' ' '`
+-	fi
+-	
+-	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
 -	NICE="$NAME-Partition-$2-$3"
 +	NICE="uStor$2$3"
  	echo $NICE
  }
  
-@@ -73,25 +73,42 @@
+@@ -73,25 +51,42 @@
  	done
  }
  
@@ -68,7 +92,7 @@
  		OK=0
  		eventadd 140 $MNTNAME
  		if ! pidof ftpd; then
-@@ -116,9 +133,28 @@
+@@ -116,9 +111,28 @@
  	if [ -p "/var/tam/mount" ]; then
  		echo "m$MNTPATH" > /var/tam/mount
  	fi

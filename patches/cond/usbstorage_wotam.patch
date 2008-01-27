@@ -1,15 +1,39 @@
 --- etc/hotplug/run_mount.orig	2007-11-22 21:45:15.000000000 +0100
 +++ etc/hotplug/run_mount	2007-11-27 23:20:06.000000000 +0100
-@@ -51,7 +51,7 @@
- 	fi
- 	
- 	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
+@@ -27,31 +27,9 @@
+ # Generate a frontend'able 'nice name' to be used as mount point:
+ #
+ nicename () {
+-	local PROD
+-	local SNUM
+-	local MANU
+-	local NAME="USB"
+ 	local NICE=""
+ 
+-	# Find device's strings, remove/translate evil chars...
+-	for VAR in `/sbin/lsusb -s -h $1|tr -d ' '`; do
+-		if echo $VAR | grep "='" > /dev/null 2>&1; then
+-			eval "${VAR%%=*}=`echo ${VAR##*=}|tr $EVILSET '-'|tr -d \'`"
+-		fi
+-	done
+-	
+-	# Find a string for our new nice name...
+-	if ! test -z "$PROD"; then
+-		NAME="$PROD"
+-	elif ! test -z "$MANU"; then
+-		NAME="$MANU"
+-	fi
+-	if ! test -z "$NAME"; then
+-		NAME=`echo $NAME|tr ':' ' '`
+-	fi
+-	
+-	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
 -	NICE="$NAME-Partition-$2-$3"
 +	NICE="uStor$2$3"
  	echo $NICE
  }
  
-@@ -74,25 +74,42 @@
+@@ -74,25 +52,42 @@
  	done
  }
  
@@ -68,7 +92,7 @@
  		OK=0
  		eventadd 140 $MNTNAME
  		if ! pidof ftpd; then
-@@ -115,9 +132,28 @@
+@@ -115,9 +110,28 @@
  		if test -x /etc/samba_control ; then 
  			/etc/samba_control reconfig
  		fi
@@ -88,7 +112,7 @@
 +	local BLKDEV=${DEVNODE##/dev/}
 +	local TEMP=${BLKDEV##sd}
 +	local HOSTNUM=`echo ${TEMP%%[0-9]*}|tr 'abcd' '0123'`
-+	local MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
++	MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
 +	local MNTPATH=$FTPDIR/$MNTNAME
 +	
 +	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
