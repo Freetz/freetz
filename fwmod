@@ -436,9 +436,9 @@ VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
 
 HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www"
 if [ "$DS_TYPE_LANG_EN" == "y" ]; then
-	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/en/html/en"
+	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/en"
 else
-	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/all/html/de"
+	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/all"
 fi
 
 if [ "$DO_MOD" -gt 0 ]; then
@@ -462,7 +462,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Apply patches
 	if [ ! -d "${PATCHES_DIR}/${DS_TYPE_STRING}" ]; then
-	    error 1 "missing ${PATCHES_DIR}/${DS_TYPE_STRING}"
+		error 1 "missing ${PATCHES_DIR}/${DS_TYPE_STRING}"
 	fi
 	
 	# Execute version specific patch scripts 
@@ -474,10 +474,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Apply (general, version specific, language specific) patches
 	for i in "${PATCHES_DIR}/"*.patch \
-	    "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.patch \
-	    "${PATCHES_DIR}/${DS_TYPE_STRING}/${DS_TYPE_LANG_STRING}/"*.patch
+		"${PATCHES_DIR}/${DS_TYPE_STRING}/"*.patch \
+		"${PATCHES_DIR}/${DS_TYPE_STRING}/${DS_TYPE_LANG_STRING}/"*.patch
 	do
-	    modpatch "$FILESYSTEM_MOD_DIR" "$i"
+		modpatch "$FILESYSTEM_MOD_DIR" "$i"
 	done
 	
 	echo1 "creating symlinks /tmp, /mod and /home"
@@ -588,15 +588,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "no oems found"
 	fi
 
-	[ -d "${HTML_MOD_DIR}/all/cgi-bin" ] && \
-	ln -sf /usr/www/cgi-bin/dsmod_status "${HTML_MOD_DIR}/all/cgi-bin/dsmod_status"
-	[ -d "${HTML_MOD_DIR}/all/cgi-bin" ] && \
-	ln -sf /usr/www/cgi-bin/dsmod_wol "${HTML_MOD_DIR}/all/cgi-bin/dsmod_wol"
-	
-	# international version
-	[ -d "${HTML_LANG_MOD_DIR}/cgi-bin" ] && \
 	ln -sf /usr/www/cgi-bin/dsmod_status "${HTML_LANG_MOD_DIR}/cgi-bin/dsmod_status"
-	[ -d "${HTML_LANG_MOD_DIR}/cgi-bin" ] && \
 	ln -sf /usr/www/cgi-bin/dsmod_wol "${HTML_LANG_MOD_DIR}/cgi-bin/dsmod_wol"
 	
 	for i in $oems; do
@@ -728,8 +720,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 			cp "${FAVICON_DIR}/${DS_FAVICON_STRING}/dsmod.ico" "${FILESYSTEM_MOD_DIR}/usr/share/favicon.ico"
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/mww/favicon.ico"
 
-			cp "${FAVICON_DIR}/${DS_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/../favicon.ico"
-			ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/../../favicon.ico"
+			cp "${FAVICON_DIR}/${DS_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
+			ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
 		fi
 
 		modlang "${BASE_DIR}/.language" "${FILESYSTEM_MOD_DIR}"

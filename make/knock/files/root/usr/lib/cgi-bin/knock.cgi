@@ -22,7 +22,7 @@ sec_begin '$(lang de:"Anzeigen" en:"Show")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=knockd_conf">$(lang de: "Knockd config bearbeiten" en:"Edit knockd config")</a></li>
+<li><a href="/cgi-bin/file.cgi?id=knockd_conf">$(lang de:"Knockd config bearbeiten" en:"Edit knockd config")</a></li>
 </ul>
 EOF
 
