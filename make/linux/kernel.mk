@@ -50,6 +50,10 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL
 	shopt -s nullglob; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/$(AVM_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
+	for i in $(KERNEL_DUMMY_DIRS); do \
+		mkdir -p $(KERNEL_BUILD_DIR)/$$i; \
+		touch $(KERNEL_BUILD_DIR)/$$i/Makefile; \
+	done
 ifeq ($(AVM_VERSION),7270)
 	for i in ar7wdt.h avm_debug.h avm_event.h avm_led.h avm_profile.h; do \
 		ln -sf ../../drivers/char/avm_new/linux_$$i \
