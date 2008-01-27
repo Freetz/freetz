@@ -675,25 +675,27 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"
 		ln -s ../var/tmp/onlinechanged "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 
+		if [ "$DS_STRIP_LIBRARIES" != "y" ]; then
 		echo1 "installing libs"
-		for i in \
-		$( \
-			 cd "${ROOT_DIR}" && \
-			 find lib usr/lib -type d -name .svn -prune -false , -type f -name "*.so*" \
-		)
-		do
-			bn="$(basename "$i")"
-			lib="${bn%\.so*}"
-			lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)-2/libg\12-2/;s/-[0-9][\.0-9a-z]*$//')"
-			if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
-				echo2 "${bn}"
-				dn="$(dirname "$i")"
-				lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)2/libg\1-2/')"
-				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-				cp -a "${ROOT_DIR}/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
-				chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
-			fi
-		done
+			for i in \
+			$( \
+				 cd "${ROOT_DIR}" && \
+				 find lib usr/lib -type d -name .svn -prune -false , -type f -name "*.so*" \
+			)
+			do
+				bn="$(basename "$i")"
+				lib="${bn%\.so*}"
+				lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)-2/libg\12-2/;s/-[0-9][\.0-9a-z]*$//')"
+				if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
+					echo2 "${bn}"
+					dn="$(dirname "$i")"
+					lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)2/libg\1-2/')"
+					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
+					cp -a "${ROOT_DIR}/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
+					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
+				fi
+			done
+		fi
 		[ "$DS_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 		
 		if [ "$DS_LIB_libterminfo" == "y" ]; then
@@ -897,6 +899,86 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	fi
 
+	if [ "$DS_STRIP_LIBRARIES" == "y" ]; then
+		echo "shrink shared libs"
+		TARGET_TOOLCHAIN_STAGING_DIR="${ABS_BASE_DIR}/toolchain/target"
+
+		# TODO: replace the next 3 lines with code that replaces all
+		# absolute sym links... to make mklibs.py happy
+		ln -sf libcapi20.so.3.0.4 "${FILESYSTEM_MOD_DIR}/lib/libcapi20.so"
+		ln -sf libcapi20.so.3.0.4 "${FILESYSTEM_MOD_DIR}/lib/libcapi20.so.3"
+		ln -sf libfwsign.so "${FILESYSTEM_MOD_DIR}/lib/libfwsign.so.0"
+
+		# move shared libs from /lib and /usr/lib to libs_to_reduce folder
+		# this is fundamental for mklibs.py !!
+		# all needed lib are copied by mklibs.py to dest path (mklibs.py -d param)
+		CUR=`pwd`
+		rm -rf libs_to_reduce
+		mkdir libs_to_reduce
+		for SODIR in ${FILESYSTEM_MOD_DIR}/lib ${FILESYSTEM_MOD_DIR}/usr/lib; do
+			cd $CUR/$SODIR
+			for i in `find -maxdepth 1 -name "*.so*"`; do
+				mv $i $CUR/libs_to_reduce/$i;
+			done
+		done
+		cd $CUR
+
+		# when mklibs.py breaks with errors like "X unresolved non weak symbols: ...."
+		# you should search with grep, mc, readelf -s which binary needs this symbols 
+		# and which lib provides this symbol ... you get some debug output when you "
+		# add some -v -v -v to mklibs.py call
+
+		# get_UserAgentTransport is referenced by libfon.so but not provided by
+		# any shared lib or binary
+		# __cxa_pure_virtual is referenced at some places..
+		UNNEEDED_SYMBOLS="-u get_UserAgentTransport -u __cxa_pure_virtual"
+
+		if [ "$DS_REMOVE_LIBTR069" == "y" ]; then
+			# ignore some symbols provided by libtr069.so and referenced at
+			# some places e.g. in libfon.so libwlan.so 
+			# is this really a good idea to remove this lib ?!? ;-)
+			# here it works...
+			UNNEEDED_SYMBOLS+=" -u get_ctlmgr_value -u _ZN14ModuleRegistry12ApplyChangesEv \
+				-u add_node -u 'get_ctlmgr_value -u get_UIModule -u getNode \
+				-u _Z23TR069_SOAPEnvelope_FreeP18TR069_SOAPEnvelope -u findRefNodeOfName \
+				-u TR069_Helper_Parse_SOAP -u add_object -u _ZN14ModuleRegistry19TransactionRollbackEv \
+				-u Unregister_VOIP_1und1_Assi -u _ZN14ModuleRegistry17TransactionCommitEv -u GetContext \
+				-u Register_VOIP_1und1_Assi -u get_NumberOfEntries -u _fLog -u remove_node \
+				-u _Z20Get_g_pParamRegistryv -u _ZN14ModuleRegistry17SetParameterValueEPcS0_ \
+				-u get_ExternalIPAddress -u _ZN14ModuleRegistry16TransactionBeginEv -u set_ctlmgr_value \
+				-u cm_create_node"
+		else
+			# set_PPPoEServiceName is referenced by libtr069.so but not 
+			# provided by and shared lib or binary
+			UNNEEDED_SYMBOLS+=" -u set_PPPoEServiceName"
+		fi
+
+		#find all executables which uses parts of shared objects
+		find "${FILESYSTEM_MOD_DIR}" -type f -perm +100 -exec \
+			file -r -N -F '' {} + | \
+			awk ' /executable.*dynamically/ { print $1 }' > "${FILESYSTEM_MOD_DIR}/mklibs-progs"
+
+		#we need the rest of shared objects in mod dir too
+		#iptables shared libs... ctlrmg shared libs
+		for i in `find "${FILESYSTEM_MOD_DIR}" -type f -name "*.so"`; do
+			echo $i >> "${FILESYSTEM_MOD_DIR}/mklibs-progs"
+		done
+
+		PATH=${TARGET_TOOLCHAIN_STAGING_DIR}/bin:$PATH tools/mklibs.py -v \
+			--target mipsel-linux-uclibc \
+			--ldlib ld-uClibc.so.0 \
+			--root ${FILESYSTEM_MOD_DIR} \
+			-d ${FILESYSTEM_MOD_DIR}/lib \
+			-D \
+			-L ${TARGET_TOOLCHAIN_STAGING_DIR}/lib \
+			-L ${CUR}/libs_to_reduce \
+			${UNNEEDED_SYMBOLS} \
+			`cat "${FILESYSTEM_MOD_DIR}/mklibs-progs"` > "${DIR}/modified/mklibs.log" 2>&1
+
+		rm -rf libs_to_reduce
+		rm -f ${FILESYSTEM_MOD_DIR}/mklibs-progs
+	fi
+	
 	touch "${DIR}/.modified"
 	echo "done."
 	echo

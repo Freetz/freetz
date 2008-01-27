@@ -9,7 +9,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/liblzo2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-libtool-lock
 $(PKG)_CONFIGURE_OPTIONS += --disable-asm
-$(PKG)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
 
 
 $(PKG_SOURCE_DOWNLOAD)
