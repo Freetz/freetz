@@ -53,7 +53,8 @@ sed -i -e "s/VERSION_MAJOR=27/VERSION_MAJOR=38/g" \
 	-e "s/MAILER=.*$/MAILER=y/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
 
 echo2 "patching webinterface"
-sed -i -e "s/g_txtmld_/g_txtMld_/g" "${HTML_LANG_MOD_DIR}/fon/foncalls.js"
-sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_LANG_MOD_DIR}/fon/sip1.js"
-sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_LANG_MOD_DIR}/fon/siplist.js"
-sed -i -e "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?>/g" "${HTML_LANG_MOD_DIR}/internet/authform.html"
+HTML_DIR="${HTML_LANG_MOD_DIR}/html/${DS_TYPE_LANG_STRING}"
+sed -i -e "s/g_txtmld_/g_txtMld_/g" "${HTML_DIR}/fon/foncalls.js"
+sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_DIR}/fon/sip1.js"
+sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_DIR}/fon/siplist.js"
+sed -i -e "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?>/g" "${HTML_DIR}/internet/authform.html"
