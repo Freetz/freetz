@@ -8,3 +8,5 @@ rm -f "${HTML_LANG_MOD_DIR}/html/assistent.html"
 find "${HTML_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuAssistent/d'
 
+[ -e "$HTML_DIR/home/sitemap.html" ] && \
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant.patch"

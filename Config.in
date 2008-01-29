@@ -786,15 +786,12 @@ menu "Patches"
 
 config DS_REMOVE_HELP
 	bool "Remove help"
-	depends on ! DS_TYPE_FON_WLAN_7270
 	default n
 	help
 		Removes the help pages from the web menu.
 
 config DS_REMOVE_ASSISTANT
 	bool "Remove assistant"
-	depends on ! DS_TYPE_FON_WLAN_7170 \
-		&& ! DS_TYPE_FON_WLAN_7270
 	default n
 	help
 		Removes the network assistant from the web menu.
@@ -827,14 +824,6 @@ config DS_REMOVE_CDROM_ISO
 	default n
 	help
 		Removes the file /lib/modules/cdrom.iso.
-
-#config DS_COPY_MODULES
-#	bool "Copy modules (EXPERIMENTAL!)"
-#	depends on DS_TYPE_SPEEDPORT_W701V || DS_TYPE_SPEEDPORT_W900V
-#	select DS_REPLACE_KERNEL
-#	default n
-#	help
-#		Copy modules from tk-firmware.
 
 config DS_PATCH_ATA
 	bool "Patch ATA"
