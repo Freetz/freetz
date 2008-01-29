@@ -94,7 +94,7 @@ sec_end
 
 has_swap
 if [ "$?" == "0" ]; then
-sec_begin 'Swap-Speicher (RAM)'
+sec_begin '$(lang de:"Swap-Speicher" en:"Swap") (RAM)'
 total="$(cat /proc/meminfo | grep '^SwapTotal:' | sed s/[^0-9]//g)"
 free="$(cat /proc/meminfo | grep '^SwapFree:' | sed s/[^0-9]//g)"
 cached="$(cat /proc/meminfo | grep 'SwapCached:' | sed s/[^0-9]//g)"
