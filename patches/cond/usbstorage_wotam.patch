@@ -55,7 +55,7 @@
 -	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
 -	test -d $MNTPATH || mkdir -p $MNTPATH
 +mount_fs () {
-+	if [ -e /usr/bin/fstyp]; then
++	if [ -e /usr/bin/fstyp ]; then
 +		FSTYPE=`/usr/bin/fstyp $DEVNODE`
 +	else 
 +		FSTYPE="vfat"
