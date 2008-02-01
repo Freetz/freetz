@@ -154,6 +154,10 @@ choice
 		bool "DSL"
 		depends on DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_SPEEDPORT_W900V_7170
 
+	config DS_TYPE_LABOR_GAMING
+		bool "GAMING"
+		depends on DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_SPEEDPORT_W900V_7170
+
 	config DS_TYPE_LABOR_MINI
 		bool "MINI"
 
@@ -291,6 +295,7 @@ config DS_TYPE_STRING
 	default "7170"						if DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR
 	default "7170_beta"					if DS_TYPE_LABOR_BETA
 	default "7170_labor_dsl"			if DS_TYPE_LABOR_DSL
+	default "7170_labor_gaming"			if DS_TYPE_LABOR_GAMING
 	default "7170_labor_mini"			if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_MINI
 	default "7170_labor_phone"			if DS_TYPE_LABOR_PHONE
 	default "7170_labor_usb"			if DS_TYPE_LABOR_USB
@@ -1103,6 +1108,7 @@ config DS_DL_SOURCE
 	default "fritz.box_fon_wlan_7170.annexb.en.29.04.47.image"				if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LANG_EN && DS_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.48-9655.image"					if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_BETA
 	default "FRITZ.Box_Fon_WLAN_7170_LabDSL.AnnexB.29.04.99-9167.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_DSL
+	default "FRITZ.Box_Fon_WLAN_7170_LabGAMING.AnnexB.29.04.93-9881.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_GAMING
 	default "fritz_box_labor-9710.image"									if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_MINI
 	default "FRITZ.Box_Fon_WLAN_7170_PHONE.29.04.97-9170.image"				if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7170_AURA.AnnexB.29.04.95-8221.image"		if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_USB
