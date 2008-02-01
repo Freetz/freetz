@@ -856,6 +856,16 @@ config DS_PATCH_SIGNED
 	help
 		Hides the "unsupported changes" message from the web interface.
 
+config DS_PATCH_LABOR_DSL
+	bool "Patch Labor DSL page"
+	depends on \
+		DS_TYPE_FON_WLAN_7141 || \
+		( DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR_DSL && ! DS_TYPE_LABOR_PHONE ) || \
+		DS_TYPE_FON_WLAN_7270
+	default n
+	help
+		Show Labor DSL page in webinterface.
+
 config DS_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
 	depends on DS_HAS_USB_HOST
