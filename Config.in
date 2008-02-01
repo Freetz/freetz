@@ -890,6 +890,13 @@ config DS_USBSTORAGE_AUTOMOUNT
 		is done by fstyp utility (adds about 8KB uncompressed size). For ntfs
 		filesystem support you have to select ntfs-3g package.
 
+config DS_PATCH_GETCONS
+	bool "Don't redirect console messages"
+	default n
+	help
+		Patch /etc/profile so that console messages are not redirected to
+		/dev/pts/0. These can sometimes be very anoying.
+
 config DS_PATCH_WEBSRV
 	bool "Replace AVM web server by httpd"
 	depends on \
