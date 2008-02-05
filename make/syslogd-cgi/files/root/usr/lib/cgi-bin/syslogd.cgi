@@ -17,32 +17,32 @@ case "$SYSLOGD_LOGGING" in
 	circular_buffer) circular_buffer_chk=' checked' ;;
 esac
 
-sec_begin 'Starttyp'
+sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
 cat << EOF
 <p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk> <label for="e1">Automatisch</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk> <label for="e2">Manuell</label>
+<input id="e1" type="radio" name="enabled" value="yes"$auto_chk> <label for="e1">$(lang de:"Automatisch" en:"Automatic")</label>
+<input id="e2" type="radio" name="enabled" value="no"$man_chk> <label for="e2">$(lang de:"Manuell" en:"Manual")</label>
 </p>
 EOF
 
 sec_end
-sec_begin 'Anzeigen'
+sec_begin '$(lang de:"Anzeigen" en:"Extra")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/extras.cgi/syslogd/log">Logdatei/Ringpuffer</a></li>
-<li><a href="/cgi-bin/extras.cgi/syslogd/help">Hilfe</a></li>
+<li><a href="/cgi-bin/extras.cgi/syslogd/log">$(lang de:"Logdatei/Ringpuffer" en:"Log viewer")</a></li>
+<li><a href="/cgi-bin/extras.cgi/syslogd/help">$(lang de:"Hilfe" en:"Help")</a></li>
 </ul>
 EOF
 sec_end
-sec_begin 'Optionen'
+sec_begin '$(lang de:"Optionen" en:"Options")'
 
 cat << EOF
 <input type="hidden" name="network" value="no">
 <h2>
 <input id="r1" type="checkbox" name="network" value="yes"$network_chk>
-<label for="r1">&Uuml;ber Netzwerk loggen</label>
+<label for="r1">$(lang de:"&Uuml;ber Netzwerk loggen" en:"Network logger")</label>
 </h2>
 <ul>
 <li style="list-style-type: none">
@@ -57,27 +57,27 @@ cat << EOF
 <input type="hidden" name="local" value="no">
 <h2>
 <input id="r9" type="checkbox" name="local" value="yes"$local_chk>
-<label for="r9">Lokal loggen</label>
+<label for="r9">$(lang de:"Lokal loggen" en:"Local logger")</label>
 </h2>
 <ul>
 <li style="list-style-type: none">
 <h2>
 <input id="r3" type="radio" name="logging" value="log_to_file"$log_to_file_chk>
-<label for="r3">in Logfile</label>
+<label for="r3">$(lang de:"in Logfile" en:"in logfile")</label>
 </h2>
 <ul>
 <li style="list-style-type: none">
-<label for="r4">alternatives Logfile:</label>
+<label for="r4">$(lang de:"alternatives Logfile" en:"Log file location"):</label>
 <input id="r4" type="text" name="alternative_logfile" size="30" maxlength="255" value="$(httpd -e "$SYSLOGD_ALTERNATIVE_LOGFILE")">
 </li>
 <li style="list-style-type: none">
-<p>Logfiles rotieren:</p>
+<p>$(lang de:"Logfiles rotieren" en:"Log file rotation"):</p>
 <ul>
 <li style="list-style-type: none">
-<label for="r5">maximale Logfilegr&ouml;&szlig;e (in KB):</label>
+<label for="r5">$(lang de:"maximale Logfilegr&ouml;&szlig;e" en:"Max log file size") (in KB):</label>
 <input id="r5" type="text" name="maxsize" size="6" maxlength="6" value="$(httpd -e "$SYSLOGD_MAXSIZE")"> 
 <br>
-<label for="r10">Anzahl Logdateien:</label>
+<label for="r10">$(lang de:"Anzahl Logdateien" en:"Max number of logs to keep"):</label>
 <input id="r10" type="text" name="maxfiles" size="2" maxlength="2" value="$(httpd -e "$SYSLOGD_MAXFILES")">
 </li>
 </ul>
@@ -87,11 +87,11 @@ cat << EOF
 <li style="list-style-type: none">
 <h2>
 <input id="r6" type="radio" name="logging" value="circular_buffer"$circular_buffer_chk>
-<label for="r6">in Ringpuffer</label>
+<label for="r6">$(lang de:"in Ringpuffer" en:"In memory buffer")</label>
 </h2>
 <ul>
 <li style="list-style-type: none">
-<label for="r7">Puffer-Gr&ouml;&szlig;e (in KB):</label>
+<label for="r7">$(lang de:"Puffer-Gr&ouml;&szlig;e" en:"") (in KB):</label>
 <input id="r7" type="text" name="buffer_maxsize" size="5" maxlength="255" value="$(httpd -e "$SYSLOGD_BUFFER_MAXSIZE")">
 </li>
 </ul>
@@ -101,16 +101,16 @@ cat << EOF
 <input type="hidden" name="klogd" value="no">
 <h2>
 <input id="r12" type="checkbox" name="klogd" value="yes"$klogd_chk>
-<label for="r12">Kernel-Log D&auml;mon aktivieren</label>
+<label for="r12">$(lang de:"Kernel-Log D&auml;mon aktivieren" en:"Activate Kernel-Log daemon")</label>
 </h2>
 <ul>
 <li style="list-style-type: none">
-<label for="r13">Loglevel klogd: </label>
+<label for="r13">$(lang de:"Loglevel klogd" en:"Kernel Daemon (klogd) loglevel"): </label>
 <input id="r13" type="text" name="klogd_level" size="2" maxlength="1" value="$(httpd -e "$SYSLOGD_KLOGD_LEVEL")">
 </li>
 </ul>
-<h2>Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten):</h2>
-<label for="r8">Optionen:</label>
+<h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten):" en:"Additional command line options (for experts)")</h2>
+<label for="r8">$(lang de:"Optionen" en:"Options"):</label>
 <input id="r8" type="text" name="expert_options" size="20" maxlength="255" value="$(httpd -e "$SYSLOGD_EXPERT_OPTIONS")">
 
 EOF

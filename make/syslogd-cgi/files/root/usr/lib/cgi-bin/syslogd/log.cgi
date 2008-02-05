@@ -9,7 +9,7 @@ cgi_begin 'Syslog' 'syslog'
 
 if [ "$SYSLOGD_LOCAL" = "yes" ]; then
 if [ "$SYSLOGD_LOGGING" = "circular_buffer" ]; then
-	echo '<h1>Ringpuffer</h1>'
+	echo '<h1>$(lang de:"Ringpuffer" en:"Memory buffer")</h1>'
 	echo -n '<textarea style="width: 500px;" name="content" rows="20" cols="10" wrap="off" readonly>'
 	httpd -e "$(logread)"
 	echo -n '</textarea>'
@@ -30,13 +30,13 @@ else if [ "$SYSLOGD_LOGGING" = "log_to_file" ]; then
     fi
 fi
 else
-    echo '<h1>Kein lokales Loggen aktiviert!</h1>'
+    echo '<h1>$(lang de:"Kein lokales Loggen aktiviert" en:"No local logging enabled")!</h1>'
 fi
 
 cat <<EOF
 <form class="btn" action="/cgi-bin/pkgconf.cgi" method="get">
 <input type="hidden" name="pkg" value="syslogd">
-<div class="btn"><input type="submit" value="Zur&uuml;ck"></div>
+<div class="btn"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></div>
 </form>
 EOF
 
