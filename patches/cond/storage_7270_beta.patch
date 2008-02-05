@@ -1,0 +1,27 @@
+--- etc/hotplug/storage.orig	2008-02-06 00:06:52.000000000 +0100
++++ etc/hotplug/storage	2008-02-06 00:06:52.000000000 +0100
+@@ -99,7 +99,7 @@
+ 		## still mounted
+ 		eventadd 135 "$MP"
+ 	else
+-		rm -rf $MPOINT
++		rmdir $MPOINT
+ 		eventadd 141 $MPNAME
+ 	fi
+ 
+@@ -286,13 +286,13 @@
+ 		rmmod usb-storage
+ 		rmmod scsi_mod
+ 		
+-		rm -f /var/REMOVING
++		rm -rf /var/REMOVING
+ 	fi
+ 	
+ 	if ! test -f /var/STARTING; then
+ 		for MP in /var/media/ftp/*; do
+ 			test -d $MP || continue
+-			grep " $MP " /proc/mounts > /dev/null 2>&1 || rm -rf $MP
++			grep " $MP " /proc/mounts > /dev/null 2>&1 || rmdir $MP
+ 		done
+ 
+ 		# restart media_serv if still MPs available
