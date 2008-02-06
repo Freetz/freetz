@@ -201,9 +201,13 @@ def find_lib(lib):
 def find_pic(lib):
     base_name = so_pattern.match(lib).group(1)
     for path in lib_path:
-        for file in glob.glob(path + "/" + base_name + ".a"):
-            if os.access(file, os.F_OK):
-                return resolve_link(file)
+	for file in glob.glob(path + "/" + base_name + "_pic.a"):
+	    if os.access(file, os.F_OK):
+		return resolve_link(file)
+	if base_name not in ('libdl', 'libstdc++'):
+    	    for file in glob.glob(path + "/" + base_name + ".a"):
+        	if os.access(file, os.F_OK):
+    		    return resolve_link(file)
     debug(DEBUG_NORMAL, "no pic for ", base_name)
     return ""
 
