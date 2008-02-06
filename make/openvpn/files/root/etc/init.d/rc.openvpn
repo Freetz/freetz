@@ -15,34 +15,32 @@ find_changes() {
 	pkg_diff=`cat /mod/etc/conf/openvpn.cfg | tr " \'" "%#" | sed 's/=#/=/g' | grep -vf /var/tmp/openvpn_tmp_bu | grep -vE "CONFIG_COUNT|EXPERT|ENABLED" `
 	diff=""
 	diffnames=""
-        mincount=`cat /var/tmp/openvpn_tmp_bu | grep CONFIG_COUNT | tr -cd [0-9] `
+	mincount=`cat /var/tmp/openvpn_tmp_bu | grep CONFIG_COUNT | tr -cd [0-9] `
 	newcount=$OPENVPN_CONFIG_COUNT
-        if [ $newcount -lt $mincount ]; then mincount=$newcount ; fi
-	for x in  $pkg_diff
-	do
-	        namen="$OPENVPN_CONFIG_NAMES"		
-        	werteneu="${x##*=}#**%%**"
-	        name=${x%%=*}
-        	name=${name##*%}
-	        wertealt=`cat /var/tmp/openvpn_tmp_bu | tr "|" '\n' | grep "${name}="`
-        	wertealt=${wertealt##*=}
-	        wn=""
+	if [ $newcount -lt $mincount ]; then mincount=$newcount ; fi
+	for x in  $pkg_diff; do
+		namen="$OPENVPN_CONFIG_NAMES"		
+		werteneu="${x##*=}#**%%**"
+		name=${x%%=*}
+		name=${name##*%}
+		wertealt=`cat /var/tmp/openvpn_tmp_bu | tr "|" '\n' | grep "${name}="`
+		wertealt=${wertealt##*=}
+		wn=""
 		count=0;
-	        while [ "$werteneu" != "**%%**"  -a $count -le $mincount ]
-       	        do
-	                n=${namen%%#*}
+		while [ "$werteneu" != "**%%**"  -a $count -le $mincount ]; do
+			n=${namen%%#*}
 			if [ $count -eq 1 ]; then n=openvpn ; else n=openvpn_$n ; fi
-        	        wn=${werteneu%%#*}
-        	        wa=${wertealt%%#*}
-                	if [ "$wa" != "$wn" ]; then
-	                        diffnames="$diffnames$n\n"
+			wn=${werteneu%%#*}
+			wa=${wertealt%%#*}
+			if [ "$wa" != "$wn" ]; then
+				diffnames="$diffnames$n\n"
 				echo "In Config $n: $name changed from \"$wa\" to \"$wn\"" | tr % " "
-        	        fi
-                	werteneu=${werteneu#*#}
-	                wertealt=${wertealt#*#}
-        	        namen=${namen#*#}
+			fi
+			werteneu=${werteneu#*#}
+			wertealt=${wertealt#*#}
+			namen=${namen#*#}
 			count=$((count+1))
-                done
+		done
 	done
 	diffnames=${diffnames%'\n'}
 	pkg_changed=`echo -e "$diffnames" | sort  -u`
@@ -75,17 +73,15 @@ start() {
 		/usr/bin/modsave flash
 	fi
 	
-	{
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf /mod/etc/${DAEMON}.conf
-		else
-			/mod/etc/default.${DAEMON}/${DAEMON}_conf /mod/etc/${DAEMON}.conf
-		fi
+	if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+		/tmp/flash/${DAEMON}_conf /mod/etc/${DAEMON}.conf
+	else
+		/mod/etc/default.${DAEMON}/${DAEMON}_conf /mod/etc/${DAEMON}.conf
+	fi
 
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
-	} # > /mod/etc/$DAEMON.conf
+	if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+		cat /tmp/flash/${DAEMON}.extra >> /mod/etc/${DAEMON}.conf
+	fi
 
 	echo -n "Starting $DAEMON ... "
 
@@ -123,7 +119,7 @@ stop() {
 
 
 case "$1" in
-        ""|load)
+	""|load)
 		if [ "$DAEMON" = "openvpn" ]; then
 			modreg cgi 'openvpn' 'OpenVPN'
 			deffile='/mod/etc/default.openvpn/box_crt.def'
@@ -151,21 +147,19 @@ case "$1" in
 			modreg file 'static_key' 'OpenVPN: Static Key' 0 "$deffile"
 		fi
 		d_BU="$DAEMON"
-	        as="${OPENVPN_AUTOSTART#*#}" ;
-		for d in `echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' `
-		do
-		
-    		    if [ "${as%%#*}" != "yes" ]; then
-			echo "$d is disabled" 1>&2
-		    else 
-			if [ -e "/var/run/$d.pid" ]; then
-			    echo "$d already started."
-			else	
-			    DAEMON="$d"
-			    start
+		as="${OPENVPN_AUTOSTART#*#}" ;
+		for d in `echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' `; do
+			if [ "${as%%#*}" != "yes" ]; then
+				echo "$d is disabled" 1>&2
+			else 
+				if [ -e "/var/run/$d.pid" ]; then
+					echo "$d already started."
+				else	
+					DAEMON="$d"
+					start
+				fi
 			fi
-		    fi
-		    as=${as#*#};
+			as=${as#*#};
 		done
 		DAEMON="$d_BU"
 		;;
@@ -191,8 +185,7 @@ case "$1" in
 		if [ $SAVECGI ]; then
 			/mod/etc/default.openvpn/openvpn_dynamic_conf
 			find_changes;
-			for pack in $pkg_changed 
-			do	
+			for pack in $pkg_changed ; do
 				DAEMON=$pack;
 				if [ ! -z "$(pidof "$DAEMON")" ]; then 
 					stop
