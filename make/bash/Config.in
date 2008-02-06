@@ -16,11 +16,11 @@ config DS_PACKAGE_BASH_MINIMAL
 		historical Bourne shell (saves ~300KB).
 
 config DS_PACKAGE_BASH_READLINE
-	bool "enable command line editing"
+	bool "enable command line editing and history"
 	depends on DS_PACKAGE_BASH
 	select DS_LIB_libncurses
 	select DS_LIB_libreadline
 	select DS_LIB_libhistory
 	default n
 	help
-		Enable command line editing. This feature needs ncurses and readline.
+		Enable command line editing and history. This feature needs ncurses and readline.
