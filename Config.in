@@ -674,7 +674,6 @@ config DS_BRANDING_aol
 	depends on \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE || \
-		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_CUSTOM
 	default y
@@ -918,7 +917,9 @@ config DS_PATCH_WEBSRV
 
 config DS_PATCH_UPNP
 	bool "Remove UPnP daemon (igdd)"
-	depends on ! DS_TYPE_FON_WLAN_7170 \
+	depends on \
+		! DS_TYPE_FON_WLAN_7141 \
+		&& ! DS_TYPE_FON_WLAN_7170 \
 		&& ! DS_TYPE_FON_WLAN_7270 
 	default n
 	help
@@ -951,7 +952,7 @@ config DS_REMOVE_USERMAN
 config DS_REMOVE_DSLD
 	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"
 	default n
-	select DS_PATCH_UPNP if ! (DS_TYPE_FON_WLAN_7170 || DS_TYPE_FON_WLAN_7270)
+	select DS_PATCH_UPNP if ! (DS_TYPE_FON_WLAN_7141 || DS_TYPE_FON_WLAN_7170 || DS_TYPE_FON_WLAN_7270)
 	select DS_REMOVE_USERMAN if ! (DS_TYPE_FON_5140 || DS_TYPE_FON_WLAN_7113 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
 	help
 		Remove DSL deamon (dsld), if you are planning to use your box as a simple
