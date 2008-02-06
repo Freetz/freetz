@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 2.1_rc7)
 $(PKG)_SOURCE:=openvpn-$(OPENVPN_VERSION).tar.gz
 $(PKG)_SITE:=http://openvpn.net/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/openvpn
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/root/usr/sbin/openvpn
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
 $(PKG)_STARTLEVEL=50
 
 ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_LZO)),y)
