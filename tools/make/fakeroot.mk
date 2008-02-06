@@ -1,6 +1,6 @@
-FAKEROOT_VERSION:=1.9.1
+FAKEROOT_VERSION:=1.9.2
 FAKEROOT_SOURCE:=fakeroot_$(FAKEROOT_VERSION).tar.gz
-FAKEROOT_SITE:=http://ftp.debian.org/debian/pool/main/f/fakeroot
+FAKEROOT_SITE:=http://dsmod.magenbrot.net
 FAKEROOT_DIR:=$(SOURCE_DIR)/fakeroot-$(FAKEROOT_VERSION)
 FAKEROOT_MAKE_DIR:=$(TOOLS_DIR)/make
 FAKEROOT_DESTDIR:=$(shell pwd)/$(TOOLS_DIR)
