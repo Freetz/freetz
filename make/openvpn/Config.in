@@ -1,6 +1,6 @@
 config DS_PACKAGE_OPENVPN
 	bool "OpenVPN 2.1_rc7"
-	select DS_LIB_libssl
+	select DS_LIB_libssl if ! DS_PACKAGE_OPENVPN_STATIC
 	default n
 	help
 		VPN Server
@@ -24,7 +24,7 @@ config DS_PACKAGE_OPENVPN_STATIC
 config DS_PACKAGE_OPENVPN_WITH_LZO
 	bool "With lzo Compression"
 	depends on DS_PACKAGE_OPENVPN
-	select DS_LIB_liblzo2
+	select DS_LIB_liblzo2 if ! DS_PACKAGE_OPENVPN_STATIC
 	default y
 	help
 		LZO2 Compression for VPN Traffic
