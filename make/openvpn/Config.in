@@ -5,6 +5,22 @@ config DS_PACKAGE_OPENVPN
 	help
 		VPN Server
 
+config DS_PACKAGE_OPENVPN_STATIC
+	bool "Statically link libraries"
+	depends on DS_PACKAGE_OPENVPN
+	default n
+	help
+		OpenVPN needs the following shared libraries which can be linked in statically
+		by activating this switch:
+		- libcrypto.so
+		- libssl.so
+		- libc.so
+		- libgcc_s.so
+		- libdl.so
+		- libz.so
+		- ld-linux.so.2
+		(- liblzo2.so)
+
 config DS_PACKAGE_OPENVPN_WITH_LZO
 	bool "With lzo Compression"
 	depends on DS_PACKAGE_OPENVPN
