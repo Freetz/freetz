@@ -37,9 +37,9 @@ write_config() {
 
 start() {
 	echo -n 'Starting ftp server...'
+	write_config
 	$DAEMON 
 	exitval=$?
-	write_config
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
