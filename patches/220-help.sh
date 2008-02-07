@@ -1,7 +1,11 @@
 [ "$DS_REMOVE_HELP" == "y" ] || return 0
 # from m*.* mod
 echo1 "removing help"
-HTML_DIR="${HTML_LANG_MOD_DIR}/html/${DS_TYPE_LANG_STRING}"
+if [ -e "${HTML_LANG_MOD_DIR}/html/de" ];then 
+	HTML_DIR="${HTML_LANG_MOD_DIR}/html/de"
+else
+	HTML_DIR="${HTML_LANG_MOD_DIR}/html/en"
+fi
 echo1 "${HTML_DIR}"
 rm -rf "${HTML_DIR}/help"
 find "${HTML_DIR}/menus" -type f |
