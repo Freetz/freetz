@@ -1,5 +1,5 @@
---- coreutils/stty.c	2007-12-21 23:00:29.000000000 +0100
-+++ coreutils/stty.c	2008-01-15 15:41:50.000000000 +0100
+--- coreutils/stty.c	Fri Dec 21 22:00:29 2007
++++ coreutils/stty.c	Sat Feb  2 18:55:40 2008
 @@ -780,30 +780,14 @@
  
  static const struct mode_info *find_mode(const char *name)
@@ -14,8 +14,8 @@
 -		i++;
 -	}
 -	return NULL;
-+        int i = index_in_strings(mode_name, name);
-+        return i >= 0 ? &mode_info[i] : NULL;
++	int i = index_in_strings(mode_name, name);
++	return i >= 0 ? &mode_info[i] : NULL;
  }
  
  static const struct control_info *find_control(const char *name)
@@ -30,8 +30,8 @@
 -		i++;
 -	}
 -	return NULL;
-+        int i = index_in_strings(control_name, name);
-+        return i >= 0 ? &control_info[i] : NULL;
++	int i = index_in_strings(control_name, name);
++	return i >= 0 ? &control_info[i] : NULL;
  }
  
  enum {
