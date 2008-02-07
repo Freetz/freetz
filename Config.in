@@ -103,11 +103,11 @@ choice
 		bool "WLAN 3130"
 
 	config DS_TYPE_WLAN_3131
-		select DS_AVM_VERSION_04_33
+		select DS_AVM_VERSION_04_49
 		bool "WLAN 3131"
 
 	config DS_TYPE_WLAN_3170
-		select DS_AVM_VERSION_04_33
+		select DS_AVM_VERSION_04_49
 		bool "WLAN 3170"
 
 	config DS_TYPE_SPEEDPORT_W501V
@@ -620,7 +620,6 @@ config DS_BRANDING_1und1
 		DS_TYPE_WLAN_3020 || \
 		DS_TYPE_WLAN_3030 || \
 		DS_TYPE_WLAN_3130 || \
-		DS_TYPE_WLAN_3131 || \
 		DS_TYPE_CUSTOM
 	default y
 	help
@@ -703,6 +702,22 @@ config DS_BRANDING_arcor
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
+config DS_BRANDING_congstar
+	bool "Congstar"
+	depends \
+		on DS_TYPE_SPEEDPORT_W701V
+	default y
+	help
+		Congstar branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure to choose at least one branding corresponding to the one
+		defined in your box's boot loader environment. It can be determined by calling
+		the following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
 config DS_BRANDING_freenet
 	bool "Freenet"
 	depends on \
@@ -745,13 +760,13 @@ config DS_BRANDING_tcom
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config DS_BRANDING_congstar
-	bool "Congstar"
-	depends \
-		on DS_TYPE_SPEEDPORT_W701V
+config DS_BRANDING_versatel
+	bool "Versatel"
+	depends on \
+		DS_TYPE_WLAN_3131
 	default y
 	help
-		Congstar branding
+		Versatel branding
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
@@ -906,7 +921,10 @@ config DS_PATCH_WEBSRV
 		&& ! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH ) \
 		&& ! DS_TYPE_FON_WLAN_7141 \
 		&& ! DS_TYPE_FON_WLAN_7170 \
-		&& ! DS_TYPE_FON_WLAN_7270
+		&& ! DS_TYPE_FON_WLAN_7270 \
+		&& ! DS_TYPE_WLAN_3131 \
+		&& ! DS_TYPE_WLAN_3170
+
 	default n
 	help
 		Patch init scripts so BusyBox's httpd is used instead of AVM's websrv.
@@ -923,7 +941,9 @@ config DS_PATCH_UPNP
 		&& ! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH ) \
 		&& ! DS_TYPE_FON_WLAN_7141 \
 		&& ! DS_TYPE_FON_WLAN_7170 \
-		&& ! DS_TYPE_FON_WLAN_7270 
+		&& ! DS_TYPE_FON_WLAN_7270 \
+		&& ! DS_TYPE_WLAN_3131 \
+		&& ! DS_TYPE_WLAN_3170
 	default n
 	help
 		Remove Universal Plug'n'Play daemon 'igdd' and some more files used by
@@ -964,7 +984,9 @@ config DS_REMOVE_DSLD
 		&& ! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH ) \
 		&& ! DS_TYPE_FON_WLAN_7141 \
 		&& ! DS_TYPE_FON_WLAN_7170 \
-		&& ! DS_TYPE_FON_WLAN_7270
+		&& ! DS_TYPE_FON_WLAN_7270 \
+		&& ! DS_TYPE_WLAN_3131 \
+		&& ! DS_TYPE_WLAN_3170
 	select DS_REMOVE_USERMAN if ! (DS_TYPE_FON_5140 || DS_TYPE_FON_WLAN_7113 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
 	help
 		Remove DSL deamon (dsld), if you are planning to use your box as a simple
@@ -1128,9 +1150,9 @@ config DS_DL_SOURCE
 	default "fritz_box_labor-9640.image"									if DS_TYPE_FON_WLAN_7270 && DS_TYPE_LABOR_MINI
 	default "fritz.box_sl_wlan.09.04.34.image"								if DS_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"							if DS_TYPE_WLAN_3030
-	default "fritz.box_wlan_3131.50.04.34.image"							if DS_TYPE_WLAN_3131
+	default "fritz.box_wlan_3131.50.04.50.image"							if DS_TYPE_WLAN_3131
 	default "fritz.box_wlan_3130.44.04.34.image"							if DS_TYPE_WLAN_3130
-	default "fritz.box_wlan_3170.49.04.34.image"							if DS_TYPE_WLAN_3170
+	default "fritz.box_wlan_3170.49.04.50.image"							if DS_TYPE_WLAN_3170
 	default "fw_Speedport_W501V_v_28.04.38.image"							if DS_TYPE_SPEEDPORT_W501V
 	default "fw_Speedport_W701V_v33.04.45.image"							if DS_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W_900V.34.04.21.image"							if DS_TYPE_SPEEDPORT_W900V
