@@ -3,8 +3,8 @@
 @@ -65,5 +65,6 @@
  <li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  <li class="LMenubottom"></li>
  </ul>
 --- usr/www/avme/en/html/en/menus/menu2_homehome.html.orig	2008-01-20 19:23:41.000000000 +0100
@@ -12,8 +12,8 @@
 @@ -47,5 +47,6 @@
  <li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  <li class="LMenubottom"></li>
  </ul>
 --- usr/www/avme/en/html/en/menus/menu2_homekonfig.html.orig	2008-01-20 19:23:41.000000000 +0100
@@ -21,8 +21,8 @@
 @@ -14,5 +14,6 @@
  <li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  <li class="LMenubottom"></li>
  </ul>
 --- usr/www/avme/en/html/en/menus/menu2.inc.orig	2008-01-20 19:23:41.000000000 +0100
@@ -31,9 +31,9 @@
  <? setvariable var:menuSystem "System" ?>
  <? setvariable var:menuSoftware "Programs" ?>
  <? setvariable var:menuHilfe "Help" ?>
--<? setvariable var:menuDSMOD "DS-MOD" ?>
-+<? setvariable var:menuDSMOD "DS-MOD Config" ?>
-+<? setvariable var:menuDSWOL "DS-MOD WOL" ?>
+-<? setvariable var:menuFreetz "Freetz" ?>
++<? setvariable var:menuFreetz "Freetz Config" ?>
++<? setvariable var:menuFreetzWOL "Freetz WOL" ?>
  <? setvariable var:evtxt01 "Call List" ?>
  <? setvariable var:evtxt02 "Telephone Book" ?>
  <? setvariable var:evtxt03 "Child Protection" ?>
@@ -42,16 +42,16 @@
 @@ -89,4 +89,5 @@
  <li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  </ul>
 --- usr/www/avme/en/html/en/menus/menu2_software.html.orig	2008-01-20 19:23:41.000000000 +0100
 +++ usr/www/avme/en/html/en/menus/menu2_software.html	2008-01-20 19:23:41.000000000 +0100
 @@ -14,5 +14,6 @@
  <li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  <li class="LMenubottom"></li>
  </ul>
 --- usr/www/avme/en/html/en/menus/menu2_system.html.orig	2008-01-20 19:23:41.000000000 +0100
@@ -59,8 +59,8 @@
 @@ -96,5 +96,6 @@
  <li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  <li class="LMenubottom"></li>
  </ul>
 --- usr/www/avme/en/html/en/menus/menu2_usb.html.orig	2008-01-20 19:23:41.000000000 +0100
@@ -68,8 +68,8 @@
 @@ -32,5 +32,6 @@
  <li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  <li class="LMenubottom"></li>
  </ul>
 --- usr/www/avme/en/html/en/menus/menu2_wlan.html.orig	2008-01-20 19:23:41.000000000 +0100
@@ -77,7 +77,7 @@
 @@ -50,5 +50,6 @@
  <li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ <li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  <li class="LMenubottom"></li>
  </ul>

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#   Script to modify AVM FRITZ!Box firmware images (DS-Mod_26)
+#   Script to modify AVM FRITZ!Box firmware images (Freetz)
 #
 #   $Id$
 #
@@ -588,8 +588,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "no oems found"
 	fi
 
-	ln -sf /usr/www/cgi-bin/dsmod_status "${HTML_LANG_MOD_DIR}/cgi-bin/dsmod_status"
-	ln -sf /usr/www/cgi-bin/dsmod_wol "${HTML_LANG_MOD_DIR}/cgi-bin/dsmod_wol"
+	ln -sf /usr/www/cgi-bin/freetz_status "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_status"
+	ln -sf /usr/www/cgi-bin/freetz_wol "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_wol"
 	
 	for i in $oems; do
 		if [ "$(eval "echo \"\$DS_BRANDING_${i}\"")" != "y" ]; then
@@ -642,7 +642,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		# Emergency stop switch for execution of debug.cfg
 		sed -i -r 's#(\. /var/flash/debug\.cfg)#[ "$dbg_off" == "y" ] || \1#g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-		# Emergency stop switch for execution of DS-Mod as a whole
+		# Emergency stop switch for execution of Freetz as a whole
 		echo '[ "$ds_off" == "y" ] || . /etc/init.d/rc.mod 2>&1 | tee /var/log/mod.log' >> "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
 		MOD_CRON="${VARTAR_MOD_DIR}/var/spool/cron/crontabs"

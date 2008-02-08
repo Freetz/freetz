@@ -4,8 +4,8 @@ diff -bruN usr/www/all/html/de/menus/menu2_fon.html usr/www/all/html/de/menus/me
 @@ -71,5 +71,6 @@
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  	<li class="LMenubottom"></li>
  </ul>
 diff -bruN usr/www/all/html/de/menus/menu2_homehome.html usr/www/all/html/de/menus/menu2_homehome.html
@@ -14,8 +14,8 @@ diff -bruN usr/www/all/html/de/menus/menu2_homehome.html usr/www/all/html/de/men
 @@ -46,5 +46,6 @@
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  	<li class="LMenubottom"></li>
  </ul>
 diff -bruN usr/www/all/html/de/menus/menu2_homekonfig.html usr/www/all/html/de/menus/menu2_homekonfig.html
@@ -24,8 +24,8 @@ diff -bruN usr/www/all/html/de/menus/menu2_homekonfig.html usr/www/all/html/de/m
 @@ -13,5 +13,6 @@
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  	<li class="LMenubottom"></li>
  </ul>
 diff -bruN usr/www/all/html/de/menus/menu2.inc usr/www/all/html/de/menus/menu2.inc
@@ -35,9 +35,9 @@ diff -bruN usr/www/all/html/de/menus/menu2.inc usr/www/all/html/de/menus/menu2.i
  <? setvariable var:menuSystem "System" ?>
  <? setvariable var:menuSoftware "Programme" ?>
  <? setvariable var:menuHilfe "Hilfe" ?>
--<? setvariable var:menuDSMOD "DS-MOD" ?>
-+<? setvariable var:menuDSMOD "DS-MOD Config" ?>
-+<? setvariable var:menuDSWOL "DS-MOD WOL" ?>
+-<? setvariable var:menuFreetz "Freetz" ?>
++<? setvariable var:menuFreetz "Freetz Config" ?>
++<? setvariable var:menuFreetzWOL "Freetz WOL" ?>
  <? setvariable var:evtxt01 "Anrufliste" ?>
  <? setvariable var:evtxt02 "Telefonbuch" ?>
  <? setvariable var:evtxt03 "Kindersicherung" ?>
@@ -47,8 +47,8 @@ diff -bruN usr/www/all/html/de/menus/menu2_internet.html usr/www/all/html/de/men
 @@ -95,4 +95,5 @@
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  </ul>
 diff -bruN usr/www/all/html/de/menus/menu2_software.html usr/www/all/html/de/menus/menu2_software.html
 --- usr/www/all/html/de/menus/menu2_software.html	2007-06-10 20:42:50.000000000 +0200
@@ -56,8 +56,8 @@ diff -bruN usr/www/all/html/de/menus/menu2_software.html usr/www/all/html/de/men
 @@ -13,5 +13,6 @@
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  	<li class="LMenubottom"></li>
  </ul>
 diff -bruN usr/www/all/html/de/menus/menu2_system.html usr/www/all/html/de/menus/menu2_system.html
@@ -66,8 +66,8 @@ diff -bruN usr/www/all/html/de/menus/menu2_system.html usr/www/all/html/de/menus
 @@ -92,5 +92,6 @@
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  	<li class="LMenubottom"></li>
  </ul>
 diff -bruN usr/www/all/html/de/menus/menu2_wlan.html usr/www/all/html/de/menus/menu2_wlan.html
@@ -76,7 +76,7 @@ diff -bruN usr/www/all/html/de/menus/menu2_wlan.html usr/www/all/html/de/menus/m
 @@ -49,5 +49,6 @@
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_status" target="_blank"><? echo $var:menuDSMOD ?></a></li>
-+	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/dsmod_wol" target="_blank"><? echo $var:menuDSWOL ?></a></li>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
  	<li class="LMenubottom"></li>
  </ul>
