@@ -1,6 +1,6 @@
---- usr/www/all/html/de/home/sitemap.html.orig	2007-12-20 12:48:35.000000000 +0100
-+++ usr/www/all/html/de/home/sitemap.html	2008-02-06 00:09:23.000000000 +0100
-@@ -20,15 +20,6 @@
+--- usr/www/all/html/de/home/sitemap.html.orig	2008-02-01 17:06:49.000000000 +0100
++++ usr/www/all/html/de/home/sitemap.html	2008-02-09 00:24:59.000000000 +0100
+@@ -17,15 +17,6 @@
  <p class="ml10"><a href="javascript:jslGoTo('home', 'syslog');"><? echo $var:TextMenuEvent ?></a></p>
  <p class="ml10"><a href="javascript:jslGoTo('home', 'energy');"><? echo `$var:Systemtxt13` ?></a></p>
  </div>
@@ -16,8 +16,8 @@
  <? setvariable var:title $var:TextMenuInternet ?>
  <? setvariable var:showsubmenu 1 ?>
  <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `
---- usr/www/all/html/de/menus/menu2_konfig.html.orig	2008-02-06 00:09:23.000000000 +0100
-+++ usr/www/all/html/de/menus/menu2_konfig.html	2008-02-06 00:09:23.000000000 +0100
+--- usr/www/all/html/de/menus/menu2_konfig.html.orig	2008-02-09 00:24:59.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_konfig.html	2008-02-09 00:24:59.000000000 +0100
 @@ -11,19 +11,9 @@
  <? setvariable var:showmoremenu 0 ?>
  <? if neq $var:menu 'software' `<? setvariable var:showmoremenu 1 ?>` ?>
@@ -38,3 +38,11 @@
  <? if eq `$var:menu` 'enhsettings' `
  <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')"><? echo '$var:TextErweiterteEinstellung' ?></a><span class="PTextOnly"><? echo '$var:TextErweiterteEinstellung' ?></span></li>
  ` `
+@@ -53,7 +43,6 @@
+ ` ?>
+ <? if eq '$var:menu' 'software' `
+ <script type="text/javascript">javascript:jslSetMenuPage("software","extern",100);</script>
+-<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','home')"><? echo '$var:TextMenuAssi' ?></a><span class="PTextOnly"><? echo '$var:TextMenuAssi' ?></span></li>
+ <li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">Erweiterte Einstellungen</a><span class="PTextOnly">Erweiterte Einstellungen</span></li>
+ <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('software','extern')"><? echo '$var:TextMenuSoftware' ?></a><span class="PTextOnly"><? echo '$var:TextMenuSoftware' ?></span></li>
+ ` ?>
