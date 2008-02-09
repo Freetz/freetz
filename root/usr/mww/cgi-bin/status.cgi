@@ -25,7 +25,7 @@ has_swap() {
 }
 
 default_password_set() {
-	[ "$MOD_HTTPD_PASSWD" == '$1$$zla3yqbLURbyMO/5ZvHBR0' ] || return 0
+	[ "$MOD_HTTPD_PASSWD" == '$1$$zO6d3zi9DefdWLMB.OHaO.' ] || return 0
 	return 1
 }
 
