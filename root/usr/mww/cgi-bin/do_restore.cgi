@@ -19,7 +19,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
     echo "$(lang de:"Sicherungsdateien extrahieren" en:"Extracting backup files")..."
     tar xvzf $FORM_uploadfile
     echo "$(lang de:"Konfiguration wiederherstellen" en:"Restoring configuration")..."
-    if [ "$FORM_dsmod_only" = "on" ]; then
+    if [ "$FORM_freetz_only" = "on" ]; then
       echo "cat $BACKUP_DIR/ds_mod > /var/flash/ds_mod"
       cat $BACKUP_DIR/ds_mod > /var/flash/ds_mod
     else
