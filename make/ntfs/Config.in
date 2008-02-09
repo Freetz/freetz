@@ -1,6 +1,6 @@
 config DS_PACKAGE_NTFS
-	bool "NTFS-3G  1.1120"
-	select DS_PACKAGE_FUSE
+	bool "NTFS-3G  1.2129 (Binary only)"
+	select DS_MODULE_fuse
 	default n
 	help
 		The NTFS-3G driver is an open source, freely available read/write NTFS
@@ -8,4 +8,6 @@ config DS_PACKAGE_NTFS
 		handling of the Windows XP, Windows Server 2003, Windows 2000 and 
 		Windows Vista file systems. Most POSIX file system operations are
 		supported, with the exception of full file ownership and access right
-		support. 
+		support.
+		This binary is needed for ntfs automount feature thus there is no
+		webinterface.

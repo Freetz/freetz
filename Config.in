@@ -898,14 +898,32 @@ config DS_PATCH_USBSTORAGE
 		It is highly recommended to select this patch.
 
 config DS_USBSTORAGE_AUTOMOUNT
-	bool "Automount ext2, ext3 and ntfs"
+	bool "Automount filesystems"
 	depends on DS_PATCH_USBSTORAGE
 	select DS_PACKAGE_FSTYP
 	default y
 	help
-		ext2, ext3 and ntfs filesystems are mounted automatically. Detection
-		is done by fstyp utility (adds about 8KB uncompressed size). For ntfs
-		filesystem support you have to select ntfs-3g package.
+		ext2 and fat filesystems are mounted automatically. Detection is done
+		by fstyp utility (adds about 8KB uncompressed size). For ext3 or ntfs
+		you have to select one of the following points.
+		
+config DS_AUTOMOUNT_NTFS
+	bool "Automount NTFS"
+	depends on DS_USBSTORAGE_AUTOMOUNT
+	select DS_PACKAGE_NTFS
+	default n
+	help
+		Automatically mount NTFS filesystems. This adds ntfs-3g binary to your
+		firmware.
+
+config DS_AUTOMOUNT_EXT3
+	bool "Automount ext3"
+	depends on DS_USBSTORAGE_AUTOMOUNT
+	select DS_MODULE_ext3
+	default n
+	help
+		Automatically mount ext3 filesystems. This adds ext3 module to your
+		firmware.
 
 config DS_PATCH_GETCONS
 	bool "Don't redirect console messages"
