@@ -12,7 +12,7 @@ case $tty in
 		;;
 esac
 
-if [ $USER == "root" ] && grep -q '^root:$1$$zla3yqbLURbyMO/5ZvHBR0' /etc/shadow; then
+if [ $USER == "root" ] && grep -q '^root:$1$$zO6d3zi9DefdWLMB.OHaO.' /etc/shadow; then
 	echo "Default password detected. Please enter a new password for 'root'."
 	passwd
 	modusers save
