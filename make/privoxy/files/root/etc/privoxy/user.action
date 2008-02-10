@@ -1,0 +1,23 @@
+{{alias}}
++crunch-all-cookies = +crunch-incoming-cookies +crunch-outgoing-cookies
+-crunch-all-cookies = -crunch-incoming-cookies -crunch-outgoing-cookies
+ allow-all-cookies  = -crunch-all-cookies -session-cookies-only -filter{content-cookies}
+ allow-popups       = -filter{all-popups} -kill-popups -filter{unsolicited-popups}
++block-as-image     = +block +handle-as-image
+-block-as-image     = -block
+fragile     = -block -crunch-all-cookies -filter -fast-redirects -hide-referer -kill-popups -prevent-compression
+shop        = -crunch-all-cookies allow-popups
+myfilters   = +filter{html-annoyances} +filter{js-annoyances} +filter{all-popups}\
+              +filter{webbugs} +filter{banners-by-size} +filter{fun}
+allow-ads   = -block -filter{banners-by-size} -filter{banners-by-link}
+{ allow-all-cookies }
+{ -filter{all-popups} -kill-popups }
+.banking.example.com
+{ -filter }
+stupid-server.example.com/
+{ +block }
+www.example.com/nasty-ads/sponsor.gif
+{ +block-as-image }
+{ fragile }
+{ allow-ads }
+{ +set-image-blocker{blank} }
