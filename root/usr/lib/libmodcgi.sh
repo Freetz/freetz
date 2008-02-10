@@ -43,7 +43,7 @@ Content-type: text/html; charset=iso-8859-1
 <meta http-equiv="Content-Language" content="de">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
-<title>DS-MOD - $1</title>
+<title>Freetz - $1</title>
 <link rel="stylesheet" type="text/css" href="/style.css">
 EOF
 
@@ -76,7 +76,7 @@ cat << EOF
 <table border="0" cellspacing="0" cellpadding="0" align="center" width="$_cgi_total_width">
 <tr>
 <td width="20"><img src="/images/edge_lt.png" width="20" height="40" border="0" alt=""></td>
-<td width="$_cgi_width" id="edgetop"><div class="version">$(cat /etc/.subversion)</div><div class="title">DS-MOD <a href="/cgi-bin/about.cgi" target="_blank" style="color: white;">-</a> <span style="font-style: italic;">$1</span></div></td>
+<td width="$_cgi_width" id="edgetop"><div class="version">$(cat /etc/.subversion)</div><div class="title">Freetz <a href="/cgi-bin/about.cgi" target="_blank" style="color: white;">-</a> <span style="font-style: italic;">$1</span></div></td>
 <td width="20"><img src="/images/edge_rt.png" width="20" height="40" border="0" alt=""></td>
 </tr>
 <tr>
