@@ -9,7 +9,7 @@ $(PKG)_STARTLEVEL=30
 $(PKG)_DEPENDS_ON += fuse
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
-$(PKG)_CONFIGURE_OPTIONS += --disable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-library
 
