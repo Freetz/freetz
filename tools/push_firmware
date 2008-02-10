@@ -66,7 +66,7 @@ function push_fw() {
 	echo "   Tip: switch off/on box several times, if FTP client cannot log in ..."
 	echo
 
-	if [ $CYGWIN ]; then
+	if [ $FOUND_NCFTP ]; then
 		ncftpput \
 			-d stdout \
 			-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
@@ -75,7 +75,7 @@ function push_fw() {
 			-u adam2 -p adam2 \
 			-C $ip \
 			$1 mtd1
-	else
+  elif [ $FOUND_FTP ]; then
 		ftp -n -p <<EOT
 open $ip
 user adam2 adam2
@@ -122,6 +122,16 @@ ping_params="-c1 -w1"
 if [ "$(uname -o)" == "Cygwin" ]; then
 	CYGWIN=1
 	ping_params="-n 1 -w 500"
+fi
+
+if [ -n "`which ftp`" -a -x "`which ftp`" ] ; then
+  FOUND_FTP=1
+  echo "ftp command found"
+elif [ -n "`which ncftp`" -a -x "`which ncftp`" ] ; then
+  FOUND_NCFTP=1
+  echo "ncftp command found"
+else
+  echo "you have to install 'ftp' or 'ncftp' in order to use this script."
 fi
 
 if [ "$2" = "-f" ]; then
