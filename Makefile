@@ -365,7 +365,7 @@ config-clean-deps:
 	}
 
 exclude-lists:
-	@for i in root kernel/root; do \
+	@for i in root; do \
 	( \
 		cd $$i; find . -type d -name .svn -prune \
 	) > "$$(dirname "$$i")"/.exclude; \
@@ -374,7 +374,7 @@ exclude-lists:
 common-clean:
 	./fwmod_custom clean
 	rm -f .static .dynamic
-	rm -f .exclude .exclude-dist kernel/.exclude
+	rm -f .exclude .exclude-dist
 	rm -f *.image
 	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
