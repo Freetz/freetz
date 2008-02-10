@@ -3,11 +3,10 @@ $(PKG)_STARTLEVEL=40
 
 $(PKG_UNPACKED)
 
-$(pkg)-cgi:
+$(pkg):
 
-$(pkg)-cgi-precompiled:
+$(pkg)-precompiled:
 
-$(pkg)-cgi-clean:
-	rm -f $(PACKAGES_BUILD_DIR)/$(WOL_CGI_PKG_SOURCE)
+$(pkg)-clean:
 
 $(PKG_FINISH)

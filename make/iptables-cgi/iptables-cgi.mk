@@ -3,11 +3,10 @@ $(PKG)_STARTLEVEL=20
 
 $(PKG_UNPACKED)
 
-$(pkg)-cgi:
+$(pkg):
 
-$(pkg)-cgi-precompiled:
+$(pkg)-precompiled:
 
-$(pkg)-cgi-clean:
-	$(RM) $(PACKAGES_BUILD_DIR)/$(IPTABLES_CGI_PKG_SOURCE)
+$(pkg)-clean:
 
 $(PKG_FINISH)

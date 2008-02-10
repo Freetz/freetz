@@ -42,6 +42,10 @@ case "$1" in
 		[ -r "/tmp/flash/rc_custom.def" ] && deffile='/tmp/flash/rc_custom.def'
 		modreg file 'rc_custom' 'rc.custom' 1 "$deffile"
 
+		deffile='/etc/default.mod/modules.def'
+		[ -r "/tmp/flash/modules.def" ] && deffile='/tmp/flash/modules.def'
+		modreg file 'modules' 'modules' 1 "$deffile"
+
 		start
 		;;
 	start)
