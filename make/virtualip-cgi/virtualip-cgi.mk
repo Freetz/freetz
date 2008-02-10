@@ -8,6 +8,6 @@ $(pkg)-cgi:
 $(pkg)-cgi-precompiled:
 
 $(pkg)-cgi-clean:
-	$(RM) $(PACKAGES_BUILD_DIR)/$(WOL_CGI_PKG_SOURCE)
+	$(RM) $(PACKAGES_BUILD_DIR)/$(VIRTUALIP_CGI_PKG_SOURCE)
 
 $(PKG_FINISH)
