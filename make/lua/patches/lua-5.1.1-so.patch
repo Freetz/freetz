@@ -1,6 +1,6 @@
---- Makefile.orig	2007-03-25 16:44:39.000000000 +0200
-+++ Makefile	2007-07-29 03:52:10.000000000 +0200
-@@ -43,7 +43,7 @@
+--- Makefile.orig	2008-01-17 18:53:37.000000000 +0100
++++ Makefile	2008-02-10 13:08:21.000000000 +0100
+@@ -38,7 +38,7 @@
  # What to install.
  TO_BIN= lua luac
  TO_INC= lua.h luaconf.h lualib.h lauxlib.h ../etc/lua.hpp
@@ -9,8 +9,8 @@
  TO_MAN= lua.1 luac.1
  
  # Lua version and release.
---- src/Makefile.orig	2007-03-25 16:49:23.000000000 +0200
-+++ src/Makefile	2007-07-29 03:52:10.000000000 +0200
+--- src/Makefile.orig	2008-01-19 20:37:58.000000000 +0100
++++ src/Makefile	2008-02-10 13:08:21.000000000 +0100
 @@ -23,6 +23,7 @@
  PLATS= aix ansi bsd freebsd generic linux macosx mingw posix solaris
  
@@ -58,4 +58,4 @@
 +	$(MAKE) all MYCFLAGS+=-DLUA_USE_LINUX MYLIBS="-Wl,-E -ldl -lreadline -lhistory -lncurses"
  
  macosx:
- 	$(MAKE) all MYCFLAGS=-DLUA_USE_MACOSX
+ 	$(MAKE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-lreadline"

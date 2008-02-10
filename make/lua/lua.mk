@@ -1,11 +1,18 @@
-$(call PKG_INIT_BIN, 5.1.2)
+$(call PKG_INIT_BIN, 5.1.3)
 $(PKG)_SOURCE:=lua-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.lua.org/ftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lua
 
+ifeq ($(strip $(DS_PACKAGE_LUA_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline
+LUA_MAKE_TARGET := linux
+else
+$(PKG)_DEPENDS_ON := 
+LUA_MAKE_TARGET := linux_wo_readline
+endif
 
+$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_LUA_READLINE
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -22,14 +29,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		MYLDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
 		INSTALL_ROOT=/usr \
 		PKG_VERSION="$(LUA_VERSION)" \
-		linux
+		$(LUA_MAKE_TARGET)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) 
 	$(INSTALL_BINARY_STRIP)
 
 lua:
 
-lua-precompiled: uclibc lua $($(PKG)_TARGET_BINARY)
+lua-precompiled: $($(PKG)_TARGET_BINARY)
 
 lua-clean:
 	-$(MAKE) -C $(LUA_DIR) clean

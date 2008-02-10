@@ -1,8 +1,5 @@
 config DS_PACKAGE_LUA
-	bool "Lua 5.1.2 (binary only)"
-	select DS_LIB_libncurses
-	select DS_LIB_libreadline
-	select DS_LIB_libhistory
+	bool "Lua 5.1.3 (binary only)"
 	default n
 	help
 	    Lua Scripting Language.
@@ -38,3 +35,11 @@ config DS_PACKAGE_LUA
 	    are simplicity, efficiency, portability, and low embedding cost. The
 	    result is a fast language engine with small footprint, making it ideal
 	    in embedded systems too. 
+
+config DS_PACKAGE_LUA_READLINE
+	bool "Build with readline support"
+	depends on DS_PACKAGE_LUA
+	default y
+	select DS_LIB_libreadline
+	select DS_LIB_libhistory
+	select DS_LIB_libncurses
