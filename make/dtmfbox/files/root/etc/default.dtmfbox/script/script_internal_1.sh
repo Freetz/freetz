@@ -1,13 +1,37 @@
-#!/bin/sh
-# ------------------------------------------------------------------------
-# dtmfbox - anwering machine administration
-# ------------------------------------------------------------------------
+#!/var/tmp/sh
+##################################################################################
+## dtmfbox - anwering machine administration
+##################################################################################
 . ./script/script_funcs.sh
 if [ "$?" = "1" ]; then exit 1; fi
 
-# ------------------------------------------------------------------------
-# Play a wave file at position (1# - xxx#)
-# ------------------------------------------------------------------------
+menue_ansage() {
+
+  let msg=0
+  for file in `find $DTMFBOX_PATH/record/$ACC_NO/*`
+  do
+	let msg=msg+1
+  done
+
+  # create text
+  if [ "$msg" = "0" ]; then 
+     PAR1="keine neuen Nachrichten"
+  else
+	if [ "$msg" = "1" ]; then 
+       PAR1="eine neue Nachricht"
+	else
+	   PAR1="$msg neue Nachrichten"
+	fi
+  fi
+
+  # say no. of messages (or beep)
+  display_text "AB ($msg)" &
+  (say_or_beep "`SPEECH_INTERNAL_1 \"$PAR1\".`")&
+}
+
+##################################################################################
+## Play a message (1# - xxx#)
+##################################################################################
 play_message() {
 
   let i=1;
@@ -37,7 +61,7 @@ play_message() {
     M=`echo $F | sed -e 's/.............\(..\).*/\1/g' -e 's/0\(.\)/\1/g'`
     if [ "$M" = "0" ]; then M=""; fi
 
-    . "$SEDSCRIPT"
+    . "$SCRIPT_SED"
     sed_no2word
 
 	DD=`echo "$DD." | sed -n -f "$SED_NO2WORD"`
@@ -47,6 +71,7 @@ play_message() {
     is_ftp=`echo $file | sed -e "s/.*raw/OK/g"`
     
     # say ...
+    display_text "#$DTMF" &
     say_or_beep "$MSG_NO Nachricht, am $DD'n $MM'n - um $H Uhr $M ."
 
     # .. and play!
@@ -56,16 +81,18 @@ play_message() {
       file=`echo $file | sed "s/.*\///g`
 
       $MKFIFO "$PLAYFIFO" 2>/dev/null
-      $WGET -q -O - "ftp://$FTP_USER:$FTP_PASS@$FTP_SERVER:$FTP_PORT/$FTP_PATH/$file" > "$PLAYFIFO" &
+      wget -q -O - "ftp://$FTP_USER:$FTP_PASS@$FTP_SERVER:$FTP_PORT/$FTP_PATH/$file" > "$PLAYFIFO" &
       $DTMFBOX $SRC_CON -play "$PLAYFIFO" hz=8000 mode=stream,thread >/dev/null
     else
       $DTMFBOX $SRC_CON -play $file mode=thread >/dev/null
     fi
-    exit 1;
+
   fi
 }
 
-
+##################################################################################
+## Record announcements
+##################################################################################
 record_announcement() {
    
   say_or_beep "1 Ansage aufnehmen. 2 Endansage aufnehmen. * abbrechen." &
@@ -73,9 +100,8 @@ record_announcement() {
   DTMF=""
   while [ "$DTMF" != "1" ] && [ "$DTMF" != "2" ] && [ "$DTMF" != "3" ] && [ "$DTMF" != "*" ];
   do
-   sleep 1
-   get_next_dtmf
-   if [ "$DTMF" != "" ]; then break; fi
+   . "$SCRIPT_WAITEVENT" "GET"
+   if [ "$EVENT" = "DISCONNECT" ] || [ "$EVENT" = "" ]; then disconnect; exit; fi
   done
 
   if [ "$DTMF" = "1" ] || [ "$DTMF" = "2" ];
@@ -115,7 +141,6 @@ record_announcement() {
 	  fi
 
 	  save_settings "DTMFBOX_SCRIPT_ACC${ACC_NO}_ANNOUNCEMENT" "$NEW_ANNOUNCEMENT_ESC"
-
     fi
 
     say_or_beep "Die Aufnahme wird nun gestartet."
@@ -143,32 +168,40 @@ record_announcement() {
       $DTMFBOX $SRC_CON -stop record 
     fi
 
-    say_or_beep "Aufnahme beendet."
+    say_or_beep "Aufnahme beendet." &
 
   else
-    say_or_beep "abgebrochen!"
+    say_or_beep "abgebrochen!" &
   fi
 
   DTMF=""
 }
 
 
+##################################################################################
+## Activate/deactivate answering machine
+##################################################################################
 activate_deactivate() {
   
   OLD_STATUS="$AM"
   if [ "$AM" = "1" ];
   then 
     save_settings "DTMFBOX_SCRIPT_ACC${ACC_NO}_AM" "0"
+    display_text "AB deaktiviert" &
     say_or_beep "Der Anrufbeantworter ist deaktiviert." "1" &
     AM="0"
   else 
     save_settings "DTMFBOX_SCRIPT_ACC${ACC_NO}_AM" "1"
+    display_text "AB aktiviert" &
     say_or_beep "Der Anrufbeantworter ist aktiviert." &
     AM="1"
   fi
 
 }
 
+##################################################################################
+## Delete recordings
+##################################################################################
 delete_recordings() {
 
   say_or_beep "Alle Aufnahmen loeschen mit 1 . * um abzubrechen." &
@@ -176,9 +209,8 @@ delete_recordings() {
   DTMF=""
   while [ "$DTMF" != "1" ] && [ "$DTMF" != "2" ] && [ "$DTMF" != "*" ];
   do
-   sleep 1
-   get_next_dtmf
-   if [ "$DTMF" != "" ]; then break; fi
+     . "$SCRIPT_WAITEVENT" "GET"
+   if [ "$EVENT" = "DISCONNECT" ] || [ "$EVENT" = "" ]; then disconnect; exit; fi
   done
 
   if [ "$DTMF" = "1" ];
@@ -216,16 +248,17 @@ delete_recordings() {
     say_or_beep "Alle Aufnahmen wurden geloescht!" &
 
   else
-    say_or_beep "abgebrochen!"
+    say_or_beep "abgebrochen!" &
   fi
   DTMF=""
 
 }
 
+##################################################################################
+## Settings (0)
+##################################################################################
 am_settings() {
-
-  script_lock
-
+  
   DTMF="0"
   BACK=""
 
@@ -234,22 +267,19 @@ am_settings() {
 
     if [ "$DTMF" != "" ]; 
     then
+      display_text "Einstellungen" &
       say_or_beep "Einstellungen. 1 aktivieren, deaktivieren. 2 Ansagen aufnehmen. 3 Aufnahmen loeschen." &
     fi
     DTMF=""
 
-    while [ "$DTMF" != "1" ] && [ "$DTMF" != "2" ] && [ "$DTMF" != "3" ] && [ "$DTMF" != "*" ];
-    do
-     sleep 1
-     get_next_dtmf
-     if [ "$DTMF" != "" ]; then break; fi
-    done
+    . "$SCRIPT_WAITEVENT" "GET"
 
     # back to anwering machine menue
     if [ "$DTMF" = "*" ];
     then
       BACK="1"
       DTMF=""
+      break;
     fi
 
     # Activate / deactivate answering machine (1#)
@@ -270,85 +300,76 @@ am_settings() {
       DTMF=""
     fi
 
+    if [ "$EVENT" = "DISCONNECT" ] || [ "$EVENT" = "" ];
+    then
+      disconnect
+      exit
+    fi
   done
 
-  script_unlock
-  say_or_beep "zurueck zum Anrufbeantworter." &
-  exit 1;
+  menue_ansage &
 
 }
 
-# --------------------------------------------------------------------------------
-# STARTUP-EVENT (called by script_admin.sh when scriptfile changes, not by dtmfbox)
-# --------------------------------------------------------------------------------
+##################################################################################
+## STARTUP
+##################################################################################
 if [ "$EVENT" = "STARTUP" ];
 then 
+   menue_ansage &
+fi
 
-  search4msn
+##################################################################################
+## LOOP
+##################################################################################
+while [ "1" = "1" ];
+do    
+  . "$SCRIPT_WAITEVENT" "GETMORE" "*" "#" "0"
 
-  let msg=0
-  for file in `find $DTMFBOX_PATH/record/$ACC_NO/*`
-  do
-	let msg=msg+1
-  done
+  ##############################################################################
+  ## DTMF
+  ##############################################################################
+  if [ "$EVENT" = "DTMF" ]; 
+  then 
 
-  # create text
-  if [ "$msg" = "0" ]; then 
-	 msg="Sie haben keine neuen Nachrichten."; 
-  else
-	if [ "$msg" = "1" ]; then 
-	   msg="Sie haben eine neue Nachricht."; 
-	else
-	   msg="Sie haben $msg neue Nachrichten.";
-	fi
+    # back to script_internal.sh (*)?
+    if [ "$DTMF" = "*" ];
+    then        
+       dtmfbox_change_script "$SRC_CON" "$SCRIPT_INTERNAL" "none"
+       break;
+    fi
+
+
+    # anwering maching settings
+    #
+    if [ "$DTMF" = "0" ]; then
+
+      am_settings
+
+    else
+
+      # Play recorded messages (1# - xxx#)
+      #
+      DTMF=`echo "$DTMF" | sed 's/\([[:alnum:]]\{0,\}\).*/\1/g'`
+      if [ "$DTMF" != "" ]; then
+        play_message &
+      else
+        menue_ansage &
+      fi
+
+    fi
+
   fi
 
-  # say no. of messages (or beep)
-  (say_or_beep "$msg")&
+  ##############################################################################
+  ## DISCONNECT
+  ##############################################################################
+  if [ "$EVENT" = "DISCONNECT" ] || [ "$EVENT" = "" ];
+  then
+    disconnect
+    exit
+  fi
 
-fi
-
-# --------------------------------------------------------------------------------
-# execute user-script, if exist 
-# --------------------------------------------------------------------------------
-if [ -f "$USERSCRIPT" ]; 
-then
-  SCRIPT="AM_ADMIN"
-  . $USERSCRIPT
-  if [ "$?" = "1" ]; then exit 1; fi
-fi
-
-# --------------------------------------------------------------------------------
-# DTMF-EVENT
-# --------------------------------------------------------------------------------
-if [ "$EVENT" = "DTMF" ]; 
-then 
-
-   # nothing entered?
-   if [ "$DTMF" = "" ]; then
-     $0 STARTUP $TYPE $IN_OUT $SRC_CON $DST_CON "$SRC_NO" "$DST_NO" "$ACC_NO" "$DTMF" 
-   fi
-
-   # back to script_admin.sh (*#)?
-   if [ "$DTMF" = "*" ];
-   then
-     redirect "$ADMINSCRIPT" "zurueck"
-   fi
-
-   search4msn
-
-   # anwering maching settings
-   #
-   if [ "$DTMF" = "0" ]; then
-     am_settings
-
-   # Play recorded messages (1# - xxx#)
-   #
-   else
-     play_message_before
-     if [ "$?" = "0" ]; then play_message; fi
-     play_message_after
-   fi
-fi
+done;
 
 

@@ -1,4 +1,4 @@
-DTMFBOX_VERSION="v0.4.0-beta7"
+DTMFBOX_VERSION="v0.4.0 (1)"
 www_script="http://fritz.v3v.de/dtmfbox/dtmfbox-0.4.0-standalone/rc.dtmfbox"
 DSMOD="1"
 package=dtmfbox

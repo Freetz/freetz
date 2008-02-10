@@ -1,3 +1,4 @@
+#!/usr/bin
 # dsmod or usb version?
 if [ "$DSMOD" = "0" ]; then  
   DSMOD_LINK=""
@@ -211,6 +212,13 @@ Bei Analog: unknown<br>
 Bei VoIP: Die Internetrufnummer<br>
 </li>
 
+<li><b>DDI</b><p>
+Mittels dieser Nummer/Zeichenfolge gelangt man in das Menü.<br>
+Nicht alle Zeichenfolgen funktionieren!<br>
+Bei ISDN muss diese mit <b>**##</b> beginnen.<br>
+Für VoIP (Registrar-Mode) kann eine nicht vorhandene Nummer verwendet werden. z.B. 900.
+</li>
+
 <li><b>Type</b><p>
 ISDN/Analog oder VoIP.<br>
 Bei VoIP müssen folgende Providerdaten hinterlegt werden:
@@ -237,54 +245,68 @@ Verbindung (One-Way-Audio), so sollte ein <a href='?help=voip_capi'>STUN-Server<
 
 <p></p><br>
 <b><i>Menü:</i></b><br>
-Über die Kurzwahlen *#001# (Acc. 1) bis *#010# (Acc. 10) gelangt man in das Hauptmenü (intern, nur ISDN!).<br>
-Von Außerhalb kommt man nach Eingabe des AB-PINs in das Hauptmenü.<br><br>
-
-Hier werden alle Befehle mit # (Raute) abgeschlossen. In vorherige Menüs, gelangt man mit *#.<br>
+Wird die DDI-Zeichenfolge gewählt, gelangt man in das Menü.<br>
+Von Außerhalb kommt man durch die Eingabe des Anrufbeantworter-Pincodes in das Menü.<br><br>
 
 <ul>
 <ul>
-<li><b><a href='?help=am'>1# = AB-Menü</a></b><br>
+<li><b><a href='?help=am'>1 = Anrufbeantworter-Menü</a></b><br>
 <ul>
-  <li>X # = Nachricht abhören</li>
-  <li>0 # = Einstellungen</li>
+  <li>X # = Nachricht X abhören</li>
+  <li>0 = Einstellungen</li>
   <ul>
-    <li>1 # = AB aktivieren/deaktivieren</li>
-    <li>2 # = Ansagen aufnehmen</li>
+    <li>1 = AB aktivieren/deaktivieren</li>
+    <li>2 = Ansagen aufnehmen</li>
 	<ul>
-	    <li>1 # = Ansage aufnehmen</li>	
-	    <li>2 # = Endansage aufnehmen</li>	
+	    <li>1 = Ansage aufnehmen</li>	
+	    <li>2 = Endansage aufnehmen</li>	
 	</ul>
-    <li>3 # = Alle Aufnahmen löschen</li>
+    <li>3 = Alle Aufnahmen löschen</li>
   </ul>
+  <li>* = zurück</li>
 </ul>
 
-<li><b><a href='?help=dtmf'>2# = DTMF-Commands</a>:</b><br>
+<li><b><a href='?help=dtmf'>2 = DTMF-Befehle</a>:</b><br>
 <ul>
   <li><i>Pin # eingeben, falls hinterlegt!</i></li>
-  <li>1 - 50 # = Befehl X ausführen.</li>
+  <li>X # = Befehl X ausführen.</li>
+  <li>* = zurück</li>
 </ul>
 
-<li><b><a href='?help=cbct'>3# = Callthrough (Callback)</a></b><br>
+<li><b><a href='?help=cbct'>3 = Callthrough/Callback</a></b><br>
 <ul>
   <li><i>Pin # eingeben, falls hinterlegt!</i></li>
-  <li><i>Account wählen (1-10 #). 0 = interner S0!</i></li>
-  <li><i>Nummer # wählen. Wenn man sich verschreibt, ein * in der Nummer mitangeben.</i></li>
-  <li><i>*# = Auflegen und zurück zur Accountwahl.</i></li>
+  <li><i>X # = Account wählen (1-10). 0 = interner S0!</i></li>
+  <li><i>Nummer + # wählen. Wenn man sich verschreibt, ein * in der Nummer mitangeben.</i></li>
+  <li><i># = Auflegen</i></li>
+  <li><i>* = zurück</i></li>
 </ul>
 
-<li><b><a href='?help=misc'>4# = Sonstiges</a></b><br>
+<li><b><a href='?help=misc'>4 = Sonstiges</a></b><br>
 <ul>
-  <li>1 # = Fritz!Box</li>
+  <li>1 = Fritz!Box</li>
   <ul>
-    <li>1 # = IP-Adresse</li>
-    <li>2 # = Uptime</li>
-    <li>3 # = Uhrzeit</li>
+    <li>1 = IP-Adresse</li>
+    <li>2 = Uptime</li>
+    <li>3 = Uhrzeit</li>
+    <li>* = zurück</li>
   </ul>
-  <li>2 # = Wetter</li>
+  <li>2 = Wetter</li>
   <ul>
-    <li>1 # = Wettervorhersage</li>
-    <li>2 # = Biowetter</li>
+    <li>1 = Wettervorhersage</li>
+    <li>2 = Biowetter</li>
+    <li>2 = Wetter Podcast</li>
+    <li>* = zurück</li>
+  </ul>
+  <li>3 = CheckMailD</li>
+  <ul>
+    <li>1 - 3 = Account 1 bis 3 abfragen</li>
+    <li>* = zurück</li>
+  </ul>
+  <li>4 = Radio</li>
+  <ul>
+    <li>1 - 5 = Radio-Stream 1 bis 5</li>
+    <li>* = zurück</li>
   </ul>
 </ul>
 </ul>
@@ -292,9 +314,12 @@ Hier werden alle Befehle mit # (Raute) abgeschlossen. In vorherige Menüs, gelang
 <p>
 <b><i>Hinweis:</i></b><br>
 Die Menüs können auch direkt erreicht werden.<br>
-Die einzelnen Menüs werden mit * getrennt und am Ende ein # zur Bestätigung angegeben.<br><br>
+Die einzelnen Menüs werden mit * getrennt.<br><br>
 
-Beispiel Wettervorhersage: *#001*4*2*1#
+Beispiel:<br>
+- Wettervorhersage: **##1*4*2*1<br>
+- DTMF-Befehl 30 (mit PIN): **##1*2*1234#*30#<br>
+
 EOF
  fi
 
@@ -366,15 +391,9 @@ Das Format der Aufnahmen ist: 8000hz, 16Bit Mono (RAW).
 <br>
 <b><i>Hinweis:</i></b><p>
 <ul>
-<li>Den AB kann man auch über die Kurzwahlen *#001*1# (Acc. 1) bis *#010*1# (Acc. 10) erreichen.<br>
-Um die erste Ansage, von Account 1, direkt abzuspielen: *#001*1*1#</li><br>
-
-<li>Die Einstellungen kann man mit 0# im AB-Menü erreichen.</li><br>
-
+<li>Den AB kann man im Menü 1 erreichen.</li>
+<li>Die Einstellungen des AB kann man mit 0 ändern (AB aktivieren/deaktivieren, Ansage/Endansage aufnehmen, Aufnahmen löschen).</li>
 <li>Werden die Aufnahmen eines FTP-Streams gelöscht, werden diese auch vom Server entfernt!</li><br>
-
-<li>Wenn keine Ansage hinterlegt wurde, werden drei Beeps abgespielt.</li><br>
-
 </ul>
 <p>
 EOF
@@ -402,8 +421,8 @@ Um einen Text in Sprache wiederzugeben, kann die Funktion say_or_beep "Text" ver
 
 <br>
 <b><i>Hinweis:</i></b><p>
-Um ein DTMF Kommando direkt auszuführen:<br>
-Beispiel: Account 1, Pincode 1234, Befehl 12 = *#001*2*1234*12
+Um ein DTMF Kommando direkt auszuführen (DDI = **##1):<br>
+Beispiel: Account 1, Pincode 1234, Befehl 12 = **##1*2*1234#*12#
 <p>
 
 EOF
@@ -418,13 +437,25 @@ cat << EOF
 <font size=4><b>Sonstiges</b></font><hr><p>
 
 <ul>
-<li><b>Wetter</b><p>
-PLZ und Richtung für die Wettervorhersage.
+<li><b>(1) Fritz!Box</b><p>
+z.Zt. keine Einstellungen<br>
 </li>
 
-<p></p>
-<b><i>Hinweis:</i></b><br>
-Momentan befinden sich nur die Menüs "Fritz!Box" und "Wetter" unter Sonstiges.<br>
+<li><b>(2) Wetter</b><p>
+PLZ und Richtung für die Wettervorhersage.
+Wenn madplay hinterlegt wurde, kann zusätzlich ein Wetter-Podcast abgespielt werden.
+</li>
+
+<li><b>(3) CheckMailD</b><p>
+Falls checkmaild vorhanden ist, kann man den Pfad zur Datendatei (checkmaild.0) hier angeben.<br>
+Es kann Absender und Betreff als Display-Message ausgegeben werden.
+</li>
+
+<li><b>(4) Radio</b><p>
+Um MP3-Radiostreams abspielen zu können, muss madplay installiert sein.<br>
+Hier kann der Pfad und die Datei zu madplay angegeben werden.
+</li>
+
 EOF
  fi
 
@@ -589,13 +620,6 @@ Geschwindigkeit in der gesprochen werden soll.
 <li><b>Pitch</b><p>
 Hohe/Tiefe Stimme.
 </ul>
-
-<br>
-<font size=3><b>Sonstiges</b></font>
-<ul>
-<li><b>DDI Präfix</b><p>
-DDI Präfix, welches bei interner Wahl vorangestellt werden soll.<br>
-Beispiel (Account 2): *# = *#002#, *0 = *0002# <br>
 
 </ul>
  

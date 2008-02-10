@@ -1,60 +1,8 @@
-#!/bin/sh
-# --------------------------------------------------------------------------------
-# dtmfbox - script funcs 
-# --------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------
-# Load configuration
-# --------------------------------------------------------------------------------
-# dsmod ..
-if [ -f /mod/etc/conf/dtmfbox.cfg ]; 
-then
-  . /mod/etc/conf/dtmfbox.cfg
-
-  if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
-  DTMFBOX="dtmfbox"
-  DTMFBOX_CFG="/mod/etc/conf/dtmfbox.cfg"
-  USERSCRIPT="/var/tmp/flash/dtmfbox_userscript.sh"
-  if [-f "$DTMFBOX_PATH/script/dtmfbox_userscript.sh" ]; then 
-    USERSCRIPT="$DTMFBOX_PATH/script/dtmfbox_userscript.sh"
-  fi
-  DSMOD="1"
-fi
-
-# .. standalone
-if [ -f /var/dtmfbox/dtmfbox.save ]; 
-then
-  . /var/dtmfbox/dtmfbox.save
-
-  if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
-  DTMFBOX="$DTMFBOX_PATH/dtmfbox"
-  DTMFBOX_CFG="/var/dtmfbox/dtmfbox.save"
-  USERSCRIPT="$DTMFBOX_PATH/script/dtmfbox_userscript.sh"
-  if [ -f "/var/dtmfbox/boot.cfg" ]; 
-  then
-    DTMFBOX_BOOT="/var/dtmfbox/boot.cfg"
-  else
-    DTMFBOX_BOOT="/var/flash/debug.cfg"
-  fi
-
-  DSMOD="0"
-fi
-
-# got USB?
-if [ "$DTMFBOX_PATH" = "/var/dtmfbox" ]; then GOT_USB="0"; else GOT_USB="1"; fi
-
-# no configuration? abort!
-if [ ! -f /mod/etc/conf/dtmfbox.cfg ] && [ ! -f /var/dtmfbox/dtmfbox.save ]; then
-  echo "script_funcs.sh : configuration not found!"
-  echo "                  dsmod: /mod/etc/conf/dtmfbox.cfg"
-  echo "                  usb:   /var/dtmfbox/dtmfbox.save"
-  return 1;
-fi
-
-# --------------------------------------------------------------------------------
-# Parameter
-# --------------------------------------------------------------------------------
-EVENT="$1"                    # CONNECT, CONFIRMED, DDI, DTMF, DISCONNECT
+#!/var/tmp/sh
+##################################################################################
+## dtmfbox - global script functions
+##################################################################################
+EVENT="$1"                    # CONNECT, CONFIRMED, EARLY, DDI, DTMF, DISCONNECT
 TYPE="$2"                     # VOIP, CAPI
 IN_OUT="$3"                   # INCOMING, OUTGOING
 SRC_CON="$4"                  # Source-Connection ID (own ID)
@@ -64,179 +12,234 @@ DST_NO="$7"                   # Target-No.
 ACC_NO="$8"                   # Account No. (1-10)
 DTMF="$9"                     # DTMF
 
-# global status files
-CURSCRIPT="$DTMFBOX_PATH/tmp/current_script_$SRC_CON.tmp"
-CURACCOUNT="$DTMFBOX_PATH/tmp/current_account_$SRC_CON.tmp"
-CURCALLBACK="$DTMFBOX_PATH/tmp/current_cb_account_$SRC_CON.tmp"
-PINFILE_DTMF="$DTMFBOX_PATH/tmp/script_dtmf_pin_$SRC_CON.tmp"
-TALKING="/var/tmp/$SRC_CON-espeak.talking"
+##################################################################################
+## scriptfiles
+##################################################################################
+SCRIPT_MAIN="./script/script_main.sh"
+SCRIPT_AM="./script/script_am.sh"
+SCRIPT_CBCT="./script/script_cbct_call.sh"
+SCRIPT_INTERNAL="./script/script_internal.sh"
+SCRIPT_INTERNAL_SUB="./script/script_internal"
 
-# scripts
-ADMINSCRIPT="$DTMFBOX_PATH/script/script_admin.sh"
-AMSCRIPT="$DTMFBOX_PATH/script/script_am_admin.sh"
-DTMFSCRIPT="$DTMFBOX_PATH/script/script_dtmf.sh"
-CBCTSCRIPT="$DTMFBOX_PATH/script/script_cbct.sh"
-CBCTCALLSCRIPT="$DTMFBOX_PATH/script/script_cbct_call.sh"
-MISCSCRIPT="$DTMFBOX_PATH/script/script_misc.sh"
-TIMERSCRIPT="$DTMFBOX_PATH/script/script_timer.sh"
-SEDSCRIPT="$DTMFBOX_PATH/script/script_sed.sh"
+SCRIPT_SPEAK="./script/script_speak.sh"
+SCRIPT_WAITEVENT="./script/script_waitevent.sh"
+SCRIPT_CFG_TEMPLATE="./script/script_cfg_template.sh"
+SCRIPT_SED="./script/script_sed.sh"
 
-# additional binaries for streaming
-if [ -f /bin/mkfifo ]; then MKFIFO="/bin/mkfifo"; fi
-if [ -f /sbin/mkfifo ]; then MKFIFO="/sbin/mkfifo"; fi
-if [ -f /bin/wget ]; then WGET="/bin/wget"; fi
-if [ -f /sbin/wget ]; then WGET="/sbin/wget"; fi
-if [ -f /bin/ftpput ]; then FTPPUT="/bin/ftpput"; fi
-if [ -f /sbin/ftpput ]; then FTPPUT="/sbin/ftpput"; fi
-if [ -f /bin/nc ]; then NC="/bin/nc"; fi
-if [ -f /sbin/nc ]; then NC="/sbin/nc"; fi
-if [ "$MKFIFO" = "" ]; then MKFIFO="$DTMFBOX_PATH/busybox-tools mkfifo"; fi
-if [ "$WGET" = "" ]; then WGET="$DTMFBOX_PATH/busybox-tools wget"; fi
-if [ "$FTPPUT" = "" ]; then FTPPUT="$DTMFBOX_PATH/busybox-tools ftpput"; fi
-if [ "$NC" = "" ]; then NC="$DTMFBOX_PATH/busybox-tools nc"; fi
-if [ "$TAR" = "" ] && [ "$DSMOD" = "0" ]; then
-  TAR="$DTMFBOX_PATH/busybox-tools tar";
-else
-  TAR="tar";
-fi
+##################################################################################
+## speech text - menue_ansage()
+##################################################################################
+alias SPEECH_INTERNAL="echo 1 Anrufbeantworter. 2 DTMF Befehle. 3 Koolfruh. 4 Sonstiges."
+alias SPEECH_INTERNAL_1="echo Sie haben "
+alias SPEECH_INTERNAL_2="echo DTMF Befehle. 1 bis 50."
+alias SPEECH_INTERNAL_3="echo Koolfruh."
+alias SPEECH_INTERNAL_4="echo 1 Fritz Box. 2 Wetter. 3 scheck maeil. 4 Radio."
+alias SPEECH_INTERNAL_4_1="echo 1 Ei,Pi Adresse. 2 letzter Ribuht. 3 Uhrzeit."
+alias SPEECH_INTERNAL_4_2="echo 1 Wetter vorher sage. 2 Bieoo wetter. 3 Pod kahst."
+alias SPEECH_INTERNAL_4_3="echo Maeilaekaunt 1 bis 3 waehlen."
+alias SPEECH_INTERNAL_4_4="echo Radio sztriem 1 bis 5 waehlen."
 
-# lock script (stop dtmf-event)
-script_lock() {
-  rm "$DTMFBOX_PATH/tmp/$SRC_CON.dtmf" 2>/dev/null
-  echo "1" > "$DTMFBOX_PATH/tmp/$SRC_CON.lock"
-}
+##################################################################################
+## global temporary files
+##################################################################################
+TEMP_CFG="./tmp/$SRC_CON.cfg"
+TEMP_CURSCRIPT="./tmp/$SRC_CON.curscript"
 
-# unlock script (start dtmf-event)
-script_unlock() {  
-  rm "$DTMFBOX_PATH/tmp/$SRC_CON.lock" 2>/dev/null
-  rm "$DTMFBOX_PATH/tmp/$SRC_CON.getlock" 2>/dev/null
-  rm "$DTMFBOX_PATH/tmp/$SRC_CON.dtmf" 2>/dev/null
-}
+##################################################################################
+## Read whole configuration (only on CONNECT)
+##################################################################################
+read_main_cfg() {
 
-# get a dtmf signal from file (while locked)
-get_next_dtmf() {
-
-  if [ ! -f "$DTMFBOX_PATH/tmp/$SRC_CON.lock" ]; then exit 1; fi
-
-  while [ -f "$DTMFBOX_PATH/tmp/$SRC_CON.getlock" ]; do sleep 1; done;
-  echo "1" > "$DTMFBOX_PATH/tmp/$SRC_CON.getlock"
-  
-  if [ -f "$DTMFBOX_PATH/tmp/$SRC_CON.dtmf" ]; then
-    DTMF_QUEUE="`cat $DTMFBOX_PATH/tmp/$SRC_CON.dtmf`"
-    rm "$DTMFBOX_PATH/tmp/$SRC_CON.dtmf" 2>/dev/null    
-  else
-    DTMF_QUEUE=""
-  fi
- 
-  let i=0;
-  for dtmf in $DTMF_QUEUE
-  do
-    if [ "$i" = "0" ];
-    then      
-      DTMF=`echo $dtmf | sed -e "s/\-/\*/g"`
-    else
-      if [ "$dtmf" != "" ];
-      then
-        echo "$dtmf" >> "$DTMFBOX_PATH/tmp/$SRC_CON.dtmf"
-      fi
-    fi
-
-    let i=i+1
-
-  done
-
-  # write rest of dtmfs into file or erase file when no left
-  if [ "$i" = "0" ];
-  then    
-    rm "$DTMFBOX_PATH/tmp/$SRC_CON.getlock"
-    return 0
-  else
-    rm "$DTMFBOX_PATH/tmp/$SRC_CON.getlock"
-    return 1
-  fi
-}
-
-# wait until a dtmf character is received
-wait_for_dtmf() {
-
-  DTMF=""
-  while [ "$DTMF" = "" ] && [ -f "$DTMFBOX_PATH/tmp/$SRC_CON.lock" ];
-  do
-   sleep 1
-   get_next_dtmf
-   if [ "$DTMF" != "" ]; then break; fi
-  done
-
-}
-
-# kill dead scripts (outgoing/internal only, $1 = seconds to wait before kill)
-kill_dead_scripts() {
-
-  PROCS=`ps -w | grep -e "/bin/sh .*script_.*OUTGOING $SRC_CON" | grep -v "grep" | sed -e "s/ \(.*\) root.*/\1/g"`
-
-  if [ "$1" != "0" ]; then sleep $1; fi
-
-  for proc in $PROCS; do 
-    if [ "$proc" != "$$" ]; then kill -9 $proc; fi; 
-  done
-}
-
-# remove status files
-remove_status_files() {
-  if [ -f "$PINFILE_DTMF" ]; then rm "$PINFILE_DTMF"; fi
-  if [ -f "$CURSCRIPT" ]; then rm "$CURSCRIPT"; fi
-  if [ -f "$CURACCOUNT" ]; then rm "$CURACCOUNT"; fi
-  if [ -f "$CURCALLBACK" ]; then rm "$CURCALLBACK"; fi
-  if [ -f "$TALKING" ]; then rm "$TALKING" 2>/dev/null; fi
-}
-
-# --------------------------------------------------
-# GLOBAL EVENTS:
-# --------------------------------------------------
-
-# save dtmf, when script is locked
-if [ "$EVENT" = "DTMF" ] && [ -f "$DTMFBOX_PATH/tmp/$SRC_CON.lock" ];
-then  
-  while [ -f "$DTMFBOX_PATH/tmp/$SRC_CON.getlock" ]; do sleep 1; done;
-  echo "$DTMF" | sed -e "s/\*/\-/g" >> "$DTMFBOX_PATH/tmp/$SRC_CON.dtmf"
-  return 1;
-fi
-
-# global disconnect event
-if [ "$EVENT" = "DISCONNECT" ];
-then
-
-   $DTMFBOX $SRC_CON -stop timer
-   script_unlock
-   remove_status_files
-
-   (kill_dead_scripts "3")&
-fi
-
-# --------------------------------------------------------------------------------
-# function play_tone
-# $1 = 
-# "" (stop), "ok", "notok", "beep", "freeline", "busy"
-# --------------------------------------------------------------------------------
-play_tone() {
-  
-  if [ "$BATCHMODE" != "1" ];
+  # dsmod ..
+  if [ -f /mod/etc/conf/dtmfbox.cfg ]; 
   then
+    . /mod/etc/conf/dtmfbox.cfg
 
-    case "$1" in
+    if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
+    DTMFBOX="dtmfbox"
+    DTMFBOX_CFG="/mod/etc/conf/dtmfbox.cfg"
+    USERSCRIPT="/var/tmp/flash/dtmfbox_userscript.sh"
+    if [ -f "$DTMFBOX_PATH/script/dtmfbox_userscript.sh" ]; then 
+      USERSCRIPT="$DTMFBOX_PATH/script/dtmfbox_userscript.sh"
+    fi
+    DSMOD="1"
+  fi
+
+  # .. standalone
+  if [ -f /var/dtmfbox/dtmfbox.save ]; 
+  then
+    . /var/dtmfbox/dtmfbox.save
+  
+    if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
+    DTMFBOX="$DTMFBOX_PATH/dtmfbox"
+    DTMFBOX_CFG="/var/dtmfbox/dtmfbox.save"
+    USERSCRIPT="$DTMFBOX_PATH/script/dtmfbox_userscript.sh"
+    if [ -f "/var/dtmfbox/boot.cfg" ]; 
+    then
+      DTMFBOX_BOOT="/var/dtmfbox/boot.cfg"
+    else
+      DTMFBOX_BOOT="/var/flash/debug.cfg"
+    fi
+    DSMOD="0"
+  fi
+}
+
+##################################################################################
+## Read account data and save it to ./tmp/$SRC_CON.cfg
+##################################################################################
+read_data() {
+
+  let cnt="$ACC_NO"
+
+  SEMI=";"
+  LIST=""
+  LIST="$LIST ACC_MSN=\"\$DTMFBOX_ACC${cnt}_NUMBER\"$SEMI" 
+  LIST="$LIST ACC_DDI=\"\$DTMFBOX_SCRIPT_ACC${cnt}_DDI\"$SEMI"
+  LIST="$LIST AM=\"\$DTMFBOX_SCRIPT_ACC${cnt}_AM\"$SEMI"
+  eval $LIST
+ 
+  # Answering machine settings
+  LIST=""
+  if [ "$AM" = "1" ];
+  then    
+    LIST="$LIST AM_PIN=\"\$DTMFBOX_SCRIPT_ACC${cnt}_AM_PIN\"$SEMI"        
+    LIST="$LIST RECORD=\"\$DTMFBOX_SCRIPT_ACC${cnt}_RECORD\"$SEMI"        
+    LIST="$LIST TIMEOUT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_TIMEOUT\"$SEMI"        
+    LIST="$LIST RINGTIME=\"\$DTMFBOX_SCRIPT_ACC${cnt}_RINGTIME\"$SEMI"        
+    LIST="$LIST UNKNOWN_ONLY=\"\$DTMFBOX_SCRIPT_ACC${cnt}_UNKNOWN_ONLY\"$SEMI"        
+    LIST="$LIST BEEP=\"\$DTMFBOX_SCRIPT_ACC${cnt}_BEEP\"$SEMI"        
+    LIST="$LIST ANNOUNCEMENT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_ANNOUNCEMENT\"$SEMI"        
+    LIST="$LIST ANNOUNCEMENT_END=\"\$DTMFBOX_SCRIPT_ACC${cnt}_ANNOUNCEMENT_END\"$SEMI"        
+    LIST="$LIST ON_AT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_ON_AT\"$SEMI"        
+    LIST="$LIST OFF_AT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_OFF_AT\"$SEMI"        
+ 
+    # mailer settings
+    LIST="$LIST MAIL_ACTIVE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_ACTIVE\"$SEMI"        
+    LIST="$LIST MAIL_FROM=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_FROM\"$SEMI"        
+    LIST="$LIST MAIL_TO=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_TO\"$SEMI"        
+    LIST="$LIST MAIL_SERVER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_SERVER\"$SEMI"
+    LIST="$LIST MAIL_USER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_USER\"$SEMI"
+    LIST="$LIST MAIL_PASS=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_PASS\"$SEMI"
+    LIST="$LIST MAIL_DELETE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_DELETE\"$SEMI"
+ 
+    # ftp streamer settings
+    LIST="$LIST FTP_ACTIVE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_ACTIVE\"$SEMI"
+    LIST="$LIST FTP_USER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_USER\"$SEMI"
+    LIST="$LIST FTP_PASS=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_PASS\"$SEMI"
+    LIST="$LIST FTP_SERVER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_SERVER\"$SEMI"
+    LIST="$LIST FTP_PORT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_PORT\"$SEMI"
+    LIST="$LIST FTP_PATH=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_PATH\"$SEMI"
+  fi
+  eval $LIST
+  if [ "$ON_AT" = "" ]; then ON_AT="00:00"; fi
+  if [ "$OFF_AT" = "" ]; then OFF_AT="00:00"; fi
+ 
+  # cb/ct settings
+  LIST=""
+  CBCT_ACTIVE=`eval echo \\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_ACTIVE` 
+  if [ "$CBCT_ACTIVE" = "1" ];
+  then
+    LIST="$LIST CBCT_TRIGGERNO=\"\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_TRIGGERNO\"$SEMI"        
+    LIST="$LIST CBCT_PINCODE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_PINCODE\"$SEMI"        
+    LIST="$LIST CBCT_TYPE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_TYPE\"$SEMI"        
+    eval $LIST
+   else            
+ 	CBCT_TRIGGERNO=""
+ 	CBCT_TYPE=""
+   fi
+ 
+   # should not happen...
+   if [ "$ACC_MSN" = "" ]; then 
+      echo "script_funcs.sh : $SRC_NO not found in settings!"
+      return 1; 
+   fi
+
+   # create extra config file, for faster reading (only account specific information!)
+   (
+    . "$SCRIPT_CFG_TEMPLATE"
+   ) > "$TEMP_CFG"
+
+   # save name of current scriptfile (should be script_main.sh)
+   echo "$DTMFBOX_SCRIPTFILE" > "$TEMP_CURSCRIPT"
+}
+
+##################################################################################
+## Load account data
+##################################################################################
+load_data() {
+
+  let cnt=0;
+
+  while [ ! -f "$TEMP_CFG" ];
+  do    
+    sleep 1    
+    let cnt=cnt+1
+    if [ "$cnt" = "10" ]; then break; fi
+  done
+
+  if [ -f "$TEMP_CFG" ];
+  then
+    . "$TEMP_CFG"
+  fi
+}
+
+##################################################################################
+## Remove temporary data
+##################################################################################
+remove_data() {
+   rm "$TEMP_CFG"          2>/dev/null
+   rm "$TEMP_CURSCRIPT"    2>/dev/null
+   rm "$TEMP_PLAYPIPE"     2>/dev/null
+}
+
+##################################################################################
+## Run a dtmfbox command ($1 = con_id, $2 = cmd)
+##################################################################################
+dtmfbox_cmd() {
+  $DTMFBOX $1 $2
+}
+
+##################################################################################
+## Change scriptfile ($1 = con_id, $2 = scriptfile, $3 = delimiter, $4 = misc)
+##################################################################################
+dtmfbox_change_script() {
+
+  # change script
+  dtmfbox_cmd "$1" "-scriptfile $2 -delimiter $3"
+  if [ "$4" != "" ]; then dtmfbox_cmd "$1" "$4"; fi
+
+  # save scriptfile name
+  echo "$2" > "$TEMP_CURSCRIPT"
+
+  # call "STARTUP" event in script (when available)
+  . "$2" "STARTUP" "$TYPE" "$IN_OUT" "$SRC_CON" "$DST_CON" "$SRC_NO" "$DST_NO" "$ACC_NO" "$DTMF"
+}
+
+##################################################################################
+## Play a tone ($1 = "" (stop), "ok", "notok", "beep", "freeline", "busy")
+##################################################################################
+play_tone() {
+
+  case "$1" in
       "")
         $DTMFBOX $SRC_CON -stop tone
       ;;
 	  "ok")
-        $DTMFBOX $SRC_CON -stop timer
-        $DTMFBOX $SRC_CON -timer 250 "TONE_TIMER ok 0 \"$DTMFBOX\" \"$TIMERSCRIPT\"" mode=msec -scriptfile "$TIMERSCRIPT"
+        $DTMFBOX $SRC_CON -tone 400 400 250 2000 32767; 
+        $DTMFBOX $SRC_CON -tone 800 800 250 2000 32767; 
+        sleep 1;
+        $DTMFBOX $SRC_CON -stop tone
       ;;
 	  "notok")
-        $DTMFBOX $SRC_CON -stop timer
-        $DTMFBOX $SRC_CON -timer 250 "TONE_TIMER notok 0 \"$DTMFBOX\" \"$TIMERSCRIPT\"" mode=msec -scriptfile "$TIMERSCRIPT"
+        $DTMFBOX $SRC_CON -tone 800 800 250 2000 32767; 
+        $DTMFBOX $SRC_CON -tone 400 400 250 2000 32767; 
+        sleep 1;
+        $DTMFBOX $SRC_CON -stop tone
       ;;
 	  "beep")
-        $DTMFBOX $SRC_CON -tone 800 800 1000 1000 32767; sleep 1; $DTMFBOX $SRC_CON -stop tone
+        $DTMFBOX $SRC_CON -tone 800 800 1000 1000 32767; 
+        sleep 1; 
+        $DTMFBOX $SRC_CON -stop tone
       ;;
 	  "freeline")
 	    $DTMFBOX $SRC_CON -tone 425 425 1000 0 32767
@@ -245,140 +248,71 @@ play_tone() {
         $DTMFBOX $SRC_CON -tone 425 425 480 480 32767
       ;;
 	  "short-busy")
-        $DTMFBOX $SRC_CON -tone 425 425 480 480 32767; sleep 2; $DTMFBOX $SRC_CON -stop tone
+        $DTMFBOX $SRC_CON -tone 425 425 480 480 32767; 
+        sleep 2; 
+        $DTMFBOX $SRC_CON -stop tone
       ;;
       esac
-
-   fi
-
 }
 
-# --------------------------------------------------------------------------------
-# function say_or_beep (espeak/beep.wav) 
-# parameter $1="string": words2say
-# parameter $2="1": play beep_end.wav
-# parameter $3="1": ignore espeak (just play beep/beep.wav)
-# 
-# when $BATCHMODE is 1, there is no playback.
-# --------------------------------------------------------------------------------
+##################################################################################
+## text2speech or beep. $1=Text, $2=[1|0] (1=beep notok), $3=1 (ignore eSpeak)
+##################################################################################
 say_or_beep() {
+   . "$SCRIPT_SPEAK" "$1" "$2" "$3"
+}
 
-  if [ "$BATCHMODE" != "1" ];
+##################################################################################
+## Function to display a text (CAPI). $1=Text, $2="" or "SCROLL", $3=timeout
+##################################################################################
+display_text() {
+
+  # display-text active?
+  if [ "$DTMFBOX_CAPI_DISPLAY_TEXT" = "0" ]; then return 1; fi
+
+  # no display-text, when there are more DTMF characters in queue (fast typing)
+  WAITING_EVENTS=`$HEAD -n 1 "./tmp/$SRC_CON.waitevent-file"`
+  if [ "$WAITING_EVENTS" != "" ]; then return 1; fi
+
+  TEXT="$1"
+  SUB_CMD="$2"
+  SLEEP_TIME="$3"
+  if [ "$SLEEP_TIME" = "" ]; then SLEEP_TIME="2"; fi
+
+  # with scrolling
+  if [ "$SUB_CMD" = "SCROLL" ];
   then
+    let cnt=0
+    for WORD in $TEXT
+    do
+      if [ "$cnt" = "0" ]; then W1="$WORD"; fi
+      if [ "$cnt" = "1" ]; then W2="$WORD"; fi
+      if [ "$cnt" = "2" ]; then W3="$WORD"; fi
 
-    SAY="$1"
-    BEEP="$2"
-    if [ "$3" = "1" ]; then IGNORE_ESPEAK="1"; else IGNORE_ESPEAK="0"; fi
-
-    ESPEAK_APP=""
-    ESPEAK_BUFFSIZE="6400"
-
-    # espeak installed? 
-    if [ "$DTMFBOX_ESPEAK" = "2" ];
-    then     
-      if [ -f $DTMFBOX_PATH/espeak/speak ]; then cd $DTMFBOX_PATH/espeak; ESPEAK_APP="$DTMFBOX_PATH/espeak/speak"; fi
-      if [ -f /usr/bin/speak ]; then ESPEAK_APP="/usr/bin/speak"; fi
-      SAY=`echo "$SAY" | tr "\n" " "`
-      ESPEAK_HZ="16000"
-    fi
-
-    # espeak from webstream?
-    if [ "$DTMFBOX_ESPEAK" = "1" ]; then 
-      SAY=`echo "$SAY" | tr "\n" " " | sed "s/ /%20/g"` 
-      ESPEAK_APP="http://www.v3v.de/speak.php";
-      ESPEAK_HZ="8000" 
-    fi
-
-    # espeak off, just beep?
-    if [ "$DTMFBOX_ESPEAK" = "0" ] || [ "$DTMFBOX_ESPEAK" = "" ]; 
-    then 
-      IGNORE_ESPEAK="1"; 
-    fi
-   
-    # ... say ...
-    if [ "$ESPEAK_APP" != "" ] && [ "$IGNORE_ESPEAK" = "0" ];
-    then
-
-      # Already speaking? Shut up!
-      if [ -f "$TALKING" ];
+      let cnt=cnt+1
+      if [ "$cnt" = "3" ];
       then
-        $DTMFBOX $SRC_CON -stop play all
-        sleep 1        
+        $DTMFBOX $SRC_CON -text "$W1 $W2 $W3"
+        sleep $SLEEP_TIME
+
+        W1=""; W2=""; W3="";
+        let cnt=0;
       fi
+    done
+    $DTMFBOX $SRC_CON -text "$W1 $W2 $W3"
+    sleep $SLEEP_TIME
 
-      # Not speaking? Then talk!
-      if [ ! -f "$TALKING" ];
-      then
-
-          $DTMFBOX $SRC_CON -stop play all
-
-          # eSpeak webstream...
-          if [ "$DTMFBOX_ESPEAK" = "1" ];
-          then
-            echo $$ > "$TALKING"
-            $MKFIFO "/var/tmp/$SRC_CON-espeak.$$" 2>/dev/null
-            $WGET "$ESPEAK_APP?speech=$SAY&speed=$DTMFBOX_ESPEAK_SPEED&pitch=$DTMFBOX_ESPEAK_PITCH&volume=100&lang=de%2B$DTMFBOX_ESPEAK_VOICE$DTMFBOX_ESPEAK_VOICE_TYPE&quality=polyphase&tar=1" -q -O - | $TAR xz -f - -O - > "/var/tmp/$SRC_CON-espeak.$$" &
-            $DTMFBOX $SRC_CON -play "/var/tmp/$SRC_CON-espeak.$$" mode=stream hz=$ESPEAK_HZ bufsize=$ESPEAK_BUFFSIZE wait_start=200 wait_end=20 #>/dev/null
-            rm "/var/tmp/$SRC_CON-espeak.$$" 2>/dev/null
-            rm "$TALKING" 2>/dev/null
-          fi
-
-          # eSpeak installed...
-          if [ "$DTMFBOX_ESPEAK" = "2" ];
-          then
-            echo $$ > "$TALKING"
-            $MKFIFO "/var/tmp/$SRC_CON-espeak.$$" 2>/dev/null
-            $ESPEAK_APP -v de+$DTMFBOX_ESPEAK_VOICE$DTMFBOX_ESPEAK_VOICE_TYPE -s $DTMFBOX_ESPEAK_SPEED -p $DTMFBOX_ESPEAK_PITCH --stdout "$SAY" > "/var/tmp/$SRC_CON-espeak.$$" &
-            $DTMFBOX $SRC_CON -play "/var/tmp/$SRC_CON-espeak.$$" mode=stream hz=$ESPEAK_HZ bufsize=$ESPEAK_BUFFSIZE wait_start=25 wait_end=10 >/dev/null
-            rm "/var/tmp/$SRC_CON-espeak.$$" #2>/dev/null
-            rm "$TALKING" 2>/dev/null
-          fi
-
-        cd $DTMFBOX_PATH
-      fi
-
-    # no? just beep...
-    else
-
-      if [ "$BEEP" = "1" ]; 
-      then
-        # not-ok
-        play_tone "notok"
-      else
-        # ok
-		play_tone "ok"
-      fi
-    fi
-
+  # without scrolling
+  else
+    $DTMFBOX $SRC_CON -text "$TEXT"
+    sleep $SLEEP_TIME
   fi
+
 }
 
-# --------------------------------------------------------------------------------
-# change scriptfile and say something
-# "$1" = scriptfile
-# "$2" = say (when given)
-# --------------------------------------------------------------------------------
-redirect() {
-
-   # change scriptfile   
-   $DTMFBOX $SRC_CON -scriptfile "$1"
-
-   # save scriptfile
-   echo "$1" > "$CURSCRIPT"
-
-   # say?
-   if [ "$2" != "" ];
-   then
-     say_or_beep "$2" "0"
-   fi
-}
-
-
-# --------------------------------------------------------------------------------
-# save settings (dsmod or usb)
-# "$1" = key
-# "$2" = value
-# --------------------------------------------------------------------------------
+##################################################################################
+## save settings (dsmod or usb), "$1" = key, "$2" = value
+##################################################################################
 save_settings() {
 
    DTMFBOX_SETTINGS_KEY="$1"
@@ -387,8 +321,6 @@ save_settings() {
    # save usb/standalone
    if [ "$DSMOD" = "0" ];
    then
-     rm $DTMFBOX_PATH/tmp/cfg1.tmp 2>/dev/null
-     rm $DTMFBOX_PATH/tmp/cfg2.tmp 2>/dev/null
      cat "$DTMFBOX_CFG"  | sed "s/export $DTMFBOX_SETTINGS_KEY='\(.*\)'/export $DTMFBOX_SETTINGS_KEY='$DTMFBOX_SETTINGS_VAL'/g" > $DTMFBOX_PATH/tmp/cfg1.tmp
      cat "$DTMFBOX_BOOT" | sed "s/export $DTMFBOX_SETTINGS_KEY='\(.*\)'/export $DTMFBOX_SETTINGS_KEY='$DTMFBOX_SETTINGS_VAL'/g" > $DTMFBOX_PATH/tmp/cfg2.tmp
      if [ -f $DTMFBOX_PATH/tmp/cfg1.tmp ] && [ -f $DTMFBOX_PATH/tmp/cfg2.tmp ]; then 
@@ -396,6 +328,8 @@ save_settings() {
        cat $DTMFBOX_PATH/tmp/cfg2.tmp > $DTMFBOX_BOOT
        chmod +x $DTMFBOX_CFG
        chmod +x $DTMFBOX_BOOT
+       rm $DTMFBOX_PATH/tmp/cfg1.tmp 2>/dev/null
+       rm $DTMFBOX_PATH/tmp/cfg2.tmp 2>/dev/null
      fi
 
    # save dsmod
@@ -408,213 +342,58 @@ save_settings() {
    fi
 }
 
-# --------------------------------------------------------------------------------
-# search for MSN, set variables
-# --------------------------------------------------------------------------------
-search4msn() {
-
- # account no from file or parameter?
- if [ -f "$CURACCOUNT" ]; then export ACC_NO=`cat "$CURACCOUNT"`; fi
- let cnt="$ACC_NO"
-
- SEMI=";"
-
- LIST=""
- LIST="$LIST ACC_MSN=\"\$DTMFBOX_ACC${cnt}_NUMBER\"$SEMI" 
- LIST="$LIST AM=\"\$DTMFBOX_SCRIPT_ACC${cnt}_AM\"$SEMI"
- eval $LIST
- 
- # Answering machine settings
- LIST=""
- if [ "$AM" = "1" ];
- then    
-   LIST="$LIST AM_PIN=\"\$DTMFBOX_SCRIPT_ACC${cnt}_AM_PIN\"$SEMI"        
-   LIST="$LIST RECORD=\"\$DTMFBOX_SCRIPT_ACC${cnt}_RECORD\"$SEMI"        
-   LIST="$LIST TIMEOUT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_TIMEOUT\"$SEMI"        
-   LIST="$LIST RINGTIME=\"\$DTMFBOX_SCRIPT_ACC${cnt}_RINGTIME\"$SEMI"        
-   LIST="$LIST UNKNOWN_ONLY=\"\$DTMFBOX_SCRIPT_ACC${cnt}_UNKNOWN_ONLY\"$SEMI"        
-   LIST="$LIST BEEP=\"\$DTMFBOX_SCRIPT_ACC${cnt}_BEEP\"$SEMI"        
-   LIST="$LIST ANNOUNCEMENT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_ANNOUNCEMENT\"$SEMI"        
-   LIST="$LIST ANNOUNCEMENT_END=\"\$DTMFBOX_SCRIPT_ACC${cnt}_ANNOUNCEMENT_END\"$SEMI"        
-   LIST="$LIST ON_AT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_ON_AT\"$SEMI"        
-   LIST="$LIST OFF_AT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_OFF_AT\"$SEMI"        
-
-   # mailer settings
-   LIST="$LIST MAIL_ACTIVE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_ACTIVE\"$SEMI"        
-   LIST="$LIST MAIL_FROM=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_FROM\"$SEMI"        
-   LIST="$LIST MAIL_TO=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_TO\"$SEMI"        
-   LIST="$LIST MAIL_SERVER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_SERVER\"$SEMI"
-   LIST="$LIST MAIL_USER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_USER\"$SEMI"
-   LIST="$LIST MAIL_PASS=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_PASS\"$SEMI"
-   LIST="$LIST MAIL_DELETE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_DELETE\"$SEMI"
-
-   # ftp streamer settings
-   LIST="$LIST FTP_ACTIVE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_ACTIVE\"$SEMI"
-   LIST="$LIST FTP_USER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_USER\"$SEMI"
-   LIST="$LIST FTP_PASS=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_PASS\"$SEMI"
-   LIST="$LIST FTP_SERVER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_SERVER\"$SEMI"
-   LIST="$LIST FTP_PORT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_PORT\"$SEMI"
-   LIST="$LIST FTP_PATH=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_PATH\"$SEMI"
- fi
- eval $LIST
- if [ "$ON_AT" = "" ]; then ON_AT="00:00"; fi
- if [ "$OFF_AT" = "" ]; then OFF_AT="00:00"; fi
-
- # cb/ct settings
- LIST=""
- CBCT_ACTIVE=`eval echo \\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_ACTIVE` 
- if [ "$CBCT_ACTIVE" = "1" ];
- then
-   LIST="$LIST CBCT_TRIGGERNO=\"\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_TRIGGERNO\"$SEMI"        
-   LIST="$LIST CBCT_PINCODE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_PINCODE\"$SEMI"        
-   LIST="$LIST CBCT_TYPE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_TYPE\"$SEMI"        
-   eval $LIST
-  else            
-	CBCT_TRIGGERNO=""
-	CBCT_TYPE=""
-  fi
-
-  # should not happen...
-  if [ "$ACC_MSN" = "" ]; then 
-     echo "script_funcs.sh : $SRC_NO not found in settings!"
-     return 1; 
-  fi
+##################################################################################
+## Function to call at disconnect ($1="1": remove global data)
+##################################################################################
+disconnect() {
+  . "$SCRIPT_WAITEVENT" "STOP"
+  remove_data
 }
 
-# --------------------------------------------------------------------------------
-# Dummy functions. Can be overridden by userdefined script. Before & After Events.
-# When you return 1 in a *_before function, the real function won't be called!
-# --------------------------------------------------------------------------------
+##################################################################################
+## Global events (read/load/remove data)
+##################################################################################
+if [ "$EVENT" = "CONNECT" ] && [ "$IN_OUT" = "INCOMING" ];
+then
+  read_main_cfg
+  read_data
+fi
 
-#
-# script_main.sh
-#
+if [ "$EVENT" != "CONNECT" ] && [ "$IN_OUT" = "INCOMING" ];
+then  
+  load_data
+  cd $DTMFBOX_PATH
+fi
 
-internal_dial_before() {
-  return 0;
-}
+if [ "$EVENT" = "DISCONNECT" ];
+then
+  disconnect
+fi
 
-internal_dial_after() {
-  return 0;
-}
+##################################################################################
+## required shell commands
+##################################################################################
+if [ -f /usr/bin/mkfifo ]; then MKFIFO="/usr/bin/mkfifo"; fi
+if [ "$MKFIFO" = "" ]; then MKFIFO="./busybox-tools mkfifo"; fi
+if [ -f /usr/bin/tee ]; then TEE="/usr/bin/tee"; fi
+if [ "$TEE" = "" ]; then TEE="./busybox-tools tee"; fi
+if [ -f /usr/bin/head ]; then HEAD="/usr/bin/head"; fi
+if [ "$HEAD" = "" ]; then HEAD="./busybox-tools head"; fi
+if [ -f /usr/bin/tail ]; then TAIL="/usr/bin/tail"; fi
+if [ "$TAIL" = "" ]; then TAIL="./busybox-tools tail"; fi
+if [ -f /usr/bin/du ]; then DU="/usr/bin/du"; fi
+if [ "$DU" = "" ]; then DU="./busybox-tools du"; fi
+if [ -f /usr/bin/nc ]; then NC="/usr/bin/nc"; fi
+if [ "$NC" = "" ]; then NC="./busybox-tools nc"; fi
+if [ -f /usr/bin/ftpput ]; then FTPPUT="/usr/bin/ftpput"; fi
+if [ "$FTPPUT" = "" ]; then FTPPUT="./busybox-tools ftpput"; fi
 
-callback_callthrough_before() {
-  return 0;
-}
-
-callback_callthrough_after() {
-  return 0;
-}
-
-answering_machine_before() {
-  return 0;
-}
-
-answering_machine_after() {
-  return 0;
-}
-
-administration_before() {
-  return 0;
-}
-
-administration_after() {
-  return 0;
-}
-
-mailer_before() {
-  return 0;
-}
-
-mailer_after() {
-  return 0;
-}
-
-
-#
-# script_am_admin.sh
-#
-
-play_message_before() {
-  return 0;
-}
-
-play_message_after() {
-  return 0;
-}
-
-
-#
-# script_dtmf.sh
-#
-
-dtmf_commands_pincheck_before() {
-  return 0;
-}
-
-dtmf_commands_pincheck_after() {
-  return 0;
-}
-
-dtmf_commands_before() {
-  return 0;
-}
-
-dtmf_commands_after() {
-  return 0;
-}
-
-
-#
-# script_cbct.sh
-#
-
-cbct_askpin_before() {
-  return 0;
-}
-
-cbct_askpin_after() {
-  return 0;
-}
-
-cbct_choose_account_before() {
-  return 0;
-}
-
-cbct_choose_account_after() {
-  return 0;
-}
-
-cbct_call_internal_before() {
-  return 0;
-}
-
-cbct_call_internal_after() {
-  return 0;
-}
-
-cbct_call_external_before() {
-  return 0;
-}
-
-cbct_call_external_after() {
-  return 0;
-}
-
-cbct_do_call_before() {
-  return 0;
-}
-
-cbct_do_call_after() {
-  return 0;
-}
-
-# --------------------------------------------------------------------------------
-# execute user-script (global), if exist 
-# --------------------------------------------------------------------------------
+##################################################################################
+## execute user-script, if exist 
+##################################################################################
 if [ -f "$USERSCRIPT" ]; 
 then
-  SCRIPT="GLOBAL"
-  . $USERSCRIPT
+  SCRIPT="FUNCS"
+  . "$USERSCRIPT"
   if [ "$?" = "1" ]; then exit 1; fi
 fi

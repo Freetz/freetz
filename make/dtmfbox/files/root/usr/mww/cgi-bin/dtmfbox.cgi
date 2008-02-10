@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/usr/bin
 # --------------------------------------------------------------------------------------------------------------------
-# dtmfbox v0.4.0 - fritz!box webif (c) 2007 Marco Zissen
+# dtmfbox v0.4.0 - fritz!box webif (c) 2008 Marco Zissen
 #
 # This program is free ! Use it at your own risk ! The author does not give any warranty !
 # --------------------------------------------------------------------------------------------------------------------
@@ -287,10 +287,11 @@ function change_active(value, id)
 		   document.forms[i]["acc" + id + "_voip_id"].disabled = disable;
 		   document.forms[i]["acc" + id + "_voip_contact"].disabled = disable;
 		   document.forms[i]["acc" + id + "_registrar_active"].disabled = disable;
+		   document.forms[i]["script_acc" + id + "_ddi"].disabled = disable;
         } catch(e) {}
 
 	   try
-	   {		
+	   {
 		   document.forms[i]["script_acc" + id + "_am_pin"].disabled = disable;
 		   document.forms[i]["script_acc" + id + "_record"].disabled = disable;
 		   document.forms[i]["script_acc" + id + "_timeout"].disabled = disable;
@@ -502,13 +503,7 @@ cat << EOF
    <script>
    for(i=1; i<=10; i++)
    {
-     if(i==1)      
-       document.write("<OPTION SELECTED VALUE='" + i + "'>" + "$DTMFBOX_CAPI_DDI_PREFIX 00" + (i) + "# - Account Nr. " + (i) + "</OPTION>");     
-     else
-	   if(i==10)
-	       document.write("<OPTION VALUE='" + i + "'>" + "$DTMFBOX_CAPI_DDI_PREFIX 0" + (i) + "# - Account Nr. " + (i) + "</OPTION>");
-	   else
-	       document.write("<OPTION VALUE='" + i + "'>" + "$DTMFBOX_CAPI_DDI_PREFIX 00" + (i) + "# - Account Nr. " + (i) + "</OPTION>");
+     document.write("<OPTION VALUE='" + i + "'>" + "Account Nr. " + (i) + "</OPTION>");     
    }
    </script>
  </SELECT>
@@ -537,6 +532,8 @@ DTMFBOX_ACC_VOIP_ID=`eval echo \"\\$DTMFBOX_ACC${i}_VOIP_ID\"`
 DTMFBOX_ACC_REGISTRAR_ACTIVE=`eval echo \"\\$DTMFBOX_ACC${i}_REGISTRAR_ACTIVE\"`
 DTMFBOX_ACC_REGISTRAR_USER=`eval echo \"\\$DTMFBOX_ACC${i}_REGISTRAR_USER\"`
 DTMFBOX_ACC_REGISTRAR_PASS=`eval echo \"\\$DTMFBOX_ACC${i}_REGISTRAR_PASS\"`
+DTMFBOX_ACC_DDI=`eval echo \"\\$DTMFBOX_SCRIPT_ACC${i}_DDI\"`
+if [ "$DTMFBOX_ACC_DDI" = "" ]; then DTMFBOX_ACC_DDI="**##${i}"; fi
 if [ "$DTMFBOX_ACC_ACTIVE" = "1" ]; then voip_acc_active='selected'; else voip_acc_active=''; fi
 if [ "$DTMFBOX_ACC_TYPE" = "voip" ]; then voip_acc_type='selected'; else voip_acc_type=''; fi
 if [ "$DTMFBOX_ACC_REGISTRAR_ACTIVE" = "1" ]; then voip_reg_active='selected'; else voip_reg_active=''; fi
@@ -550,10 +547,11 @@ cat << EOF
 	  <tr><td style="background-color:#dddddd"><b>Allgemein</b></td></tr><tr><td height='5'</td></tr>
 	</table>
 	<table border='0' cellpadding='0' cellspacing='0' width='100%'>
-	  <tr><td width="200">Aktiv: </td><td><select id='acc${i}_active' name='acc${i}_active' onchange='javascript:change_active(this.value, ${i})' value='$DTMFBOX_ACC_ACTIVE'><option value='0'>Nein</option><option value='1' $voip_acc_active>Ja</option></select></td></tr>
-	  <tr><td width="200">Name: </td><td><input id='acc${i}_name' type='text' name='acc${i}_name' size='50' maxlength='255' value='$DTMFBOX_ACC_NAME'></td></tr>
-	  <tr><td width="200">MSN, Nr.: </td><td><input id='acc${i}_number' type='text' name='acc${i}_number' size='50' maxlength='255' value='$DTMFBOX_ACC_NUMBER'></td></tr>
-	  <tr><td width="200">Type: </td><td><select id='acc${i}_type' name='acc${i}_type' value='$DTMFBOX_ACC_TYPE' onchange="javascript:change_type(this.value, ${i})"><OPTION value='isdn'>ISDN/Analog</OPTION><OPTION value='voip' $voip_acc_type>VoIP</OPTION></SELECT></td></tr>
+	  <tr><td width="175">Aktiv: </td><td><select id='acc${i}_active' name='acc${i}_active' onchange='javascript:change_active(this.value, ${i})' value='$DTMFBOX_ACC_ACTIVE'><option value='0'>Nein</option><option value='1' $voip_acc_active>Ja</option></select></td></tr>
+	  <tr><td width="175">Name: </td><td><input id='acc${i}_name' type='text' name='acc${i}_name' size='50' maxlength='255' value='$DTMFBOX_ACC_NAME'></td></tr>
+	  <tr><td width="175">MSN, Nr.: </td><td><input id='acc${i}_number' type='text' name='acc${i}_number' size='50' maxlength='255' value='$DTMFBOX_ACC_NUMBER'></td></tr>
+	  <tr><td width="175">DDI: </td><td><input id='script_acc${i}_ddi' type='text' name='script_acc${i}_ddi' size='50' maxlength='255' value='$DTMFBOX_ACC_DDI'></td></tr>
+	  <tr><td width="175">Type: </td><td><select id='acc${i}_type' name='acc${i}_type' value='$DTMFBOX_ACC_TYPE' onchange="javascript:change_type(this.value, ${i})"><OPTION value='isdn'>ISDN/Analog</OPTION><OPTION value='voip' $voip_acc_type>VoIP</OPTION></SELECT></td></tr>
 	</table><br>
 
 	<!-- VoIP settings -->	
@@ -561,13 +559,13 @@ cat << EOF
 	  <tr><td style="background-color:#dddddd"><b>VoIP</b></td></tr><tr><td height='5'</td></tr>
 	</table>
 	<table border='0' cellpadding='0' cellspacing='0' width='100%'>
-	  <tr><td width="200">Registrar: </td><td><input id='acc${i}_voip_registrar' type='text' name='acc${i}_voip_registrar' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_REGISTRAR'></td></tr>
-	  <tr><td width="200">Realm: </td><td><input id='acc${i}_voip_realm' type='text' name='acc${i}_voip_realm' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_REALM'></td></tr>
-	  <tr><td width="200">Username: </td><td><input id='acc${i}_voip_user' type='text' name='acc${i}_voip_user' size='25' maxlength='255' value='$DTMFBOX_ACC_VOIP_USER'></td></tr>
-	  <tr><td width="200">Passwort: </td><td><input id='acc${i}_voip_pass' type='password' name='acc${i}_voip_pass' size='25' maxlength='255' value='$DTMFBOX_ACC_VOIP_PASS'></td></tr>
-	  <tr><td width="200">Proxy: </td><td><input id='acc${i}_voip_proxy' type='text' name='acc${i}_voip_proxy' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_PROXY'> <font size='1'>(optional)</font></td></tr>
-	  <tr><td width="200">Contact: </td><td><input id='acc${i}_voip_contact' type='text' name='acc${i}_voip_contact' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_CONTACT'> <font size='1'>(optional)</font></td></tr>
-	  <tr><td width="200">ID: </td><td><input id='acc${i}_voip_id' type='text' name='acc${i}_voip_id' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_ID'> <font size='1'>(optional)</font></td></tr>
+	  <tr><td width="175">Registrar: </td><td><input id='acc${i}_voip_registrar' type='text' name='acc${i}_voip_registrar' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_REGISTRAR'></td></tr>
+	  <tr><td width="175">Realm: </td><td><input id='acc${i}_voip_realm' type='text' name='acc${i}_voip_realm' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_REALM'></td></tr>
+	  <tr><td width="175">Username: </td><td><input id='acc${i}_voip_user' type='text' name='acc${i}_voip_user' size='25' maxlength='255' value='$DTMFBOX_ACC_VOIP_USER'></td></tr>
+	  <tr><td width="175">Passwort: </td><td><input id='acc${i}_voip_pass' type='password' name='acc${i}_voip_pass' size='25' maxlength='255' value='$DTMFBOX_ACC_VOIP_PASS'></td></tr>
+	  <tr><td width="175">Proxy: </td><td><input id='acc${i}_voip_proxy' type='text' name='acc${i}_voip_proxy' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_PROXY'> <font size='1'>(optional)</font></td></tr>
+	  <tr><td width="175">Contact: </td><td><input id='acc${i}_voip_contact' type='text' name='acc${i}_voip_contact' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_CONTACT'> <font size='1'>(optional)</font></td></tr>
+	  <tr><td width="175">ID: </td><td><input id='acc${i}_voip_id' type='text' name='acc${i}_voip_id' size='50' maxlength='255' value='$DTMFBOX_ACC_VOIP_ID'> <font size='1'>(optional)</font></td></tr>
 	</table><br>
 
 	<!-- Registrar settings -->
@@ -575,10 +573,10 @@ cat << EOF
 	  <tr><td style="background-color:#dddddd"><b>Registrar-Login</b></td></tr><tr><td height='5'</td></tr>
 	</table>
 	<table border='0' cellpadding='0' cellspacing='0' width='100%'>
-	  <tr><td width="200">Aktiv: </td><td><select id='acc${i}_registrar_active' name='acc${i}_registrar_active' onchange='javascript:change_registrar(this.value, ${i})' value='$DTMFBOX_ACC_REGISTRAR_ACTIVE'><option value='0'>Nein</option><option value='1' $voip_reg_active>Ja</option></select></td></tr>
-	  <tr><td width="200">Username: </td><td><input id='acc${i}_registrar_user' type='text' name='acc${i}_registrar_user' size='25' maxlength='255' value='$DTMFBOX_ACC_REGISTRAR_USER'></td></tr>
-	  <tr><td width="200">Passwort: </td><td><input id='acc${i}_registrar_pass' type='password' name='acc${i}_registrar_pass' size='25' maxlength='255' value='$DTMFBOX_ACC_REGISTRAR_PASS'></td></tr>      
-      <tr><td colspan='2'><a href="$package.cgi?current_page=voip_capi">$DTMFBOX_REGISTRAR_INFO</a></td></tr>
+	  <tr><td width="175">Aktiv: </td><td><select id='acc${i}_registrar_active' name='acc${i}_registrar_active' onchange='javascript:change_registrar(this.value, ${i})' value='$DTMFBOX_ACC_REGISTRAR_ACTIVE'><option value='0'>Nein</option><option value='1' $voip_reg_active>Ja</option></select></td></tr>
+	  <tr><td width="175">Username: </td><td><input id='acc${i}_registrar_user' type='text' name='acc${i}_registrar_user' size='25' maxlength='255' value='$DTMFBOX_ACC_REGISTRAR_USER'></td></tr>
+	  <tr><td width="175">Passwort: </td><td><input id='acc${i}_registrar_pass' type='password' name='acc${i}_registrar_pass' size='25' maxlength='255' value='$DTMFBOX_ACC_REGISTRAR_PASS'></td></tr>      
+      <tr><td colspan='2'>$DTMFBOX_REGISTRAR_INFO</td></tr>
 	</table><br>
 	</div>
 
@@ -616,13 +614,7 @@ cat << EOF
    <script>
    for(i=1; i<=10; i++)
    {
-     if(i==1)
-       document.write("<OPTION SELECTED VALUE='" + i + "'>" + "$DTMFBOX_CAPI_DDI_PREFIX 00" + (i) + "*1# - Account Nr. " + (i) + "</OPTION>");
-     else
-  	   if(i != 10)
-	       document.write("<OPTION VALUE='" + i + "'>" + "$DTMFBOX_CAPI_DDI_PREFIX 00" + (i) + "*1# - Account Nr. " + (i) + "</OPTION>");
-	   else
-	       document.write("<OPTION VALUE='" + i + "'>" + "$DTMFBOX_CAPI_DDI_PREFIX 0" + (i) + "*1# - Account Nr. " + (i) + "</OPTION>");
+       document.write("<OPTION VALUE='" + i + "'>" + "Account Nr. " + (i) + "</OPTION>");
    }
    </script>
  </SELECT>
@@ -680,7 +672,7 @@ cat << EOF
 	
 	<!-- AB settings -->
 	<table border="0" cellpadding="3" cellspacing="0" width="100%" bordercolor="darkgray">
-	  <tr><td style="background-color:#dddddd"><b>$DTMFBOX_CAPI_DDI_PREFIX 00${i}*1# - $DTMFBOX_ACC_NUMBER</b></td> <td style="background-color:#dddddd"><div align='right'><b><input type='button' value='Aufnahmen' onclick="javascript:location.href='dtmfbox.cgi?pgk=dtmfbox&current_page=am_recordings&acc=${i}'" style='border: 1px solid gray; font-size:11px; font-family:trebuchet ms, helvetica, sans-serif; width:75px; height:20px'></b></div></td></tr>
+	  <tr><td style="background-color:#dddddd"><b>$DTMFBOX_ACC_NUMBER</b></td> <td style="background-color:#dddddd"><div align='right'><b><input type='button' value='Aufnahmen' onclick="javascript:location.href='${SCRIPT_NAME}?pkg=dtmfbox&current_page=am_recordings&show=am_recordings&acc=${i}'" style='border: 1px solid gray; font-size:11px; font-family:trebuchet ms, helvetica, sans-serif; width:75px; height:20px'></b></div></td></tr>
       <tr><td height='5'></td></tr>
 	</table>
 	<table border="0" cellpadding="0" cellspacing="0" width="100%" bordercolor="darkgray">
@@ -784,14 +776,7 @@ function change_cbct_active(value, id)
    <script>
    for(i=1; i<=10; i++)
    {
-     if(i==1)
-       document.write("<OPTION SELECTED VALUE='" + i + "'>" + "$DTMFBOX_CAPI_DDI_PREFIX 00" + (i) + "*3# - Account Nr. " + (i) + "</OPTION>");
-     else
-	   if(i != 10)
-	       document.write("<OPTION VALUE='" + i + "'>" + "$DTMFBOX_CAPI_DDI_PREFIX 00" + (i) + "*3# - Account Nr. " + (i) + "</OPTION>");
-	   else
-	       document.write("<OPTION VALUE='" + i + "'>" + "$DTMFBOX_CAPI_DDI_PREFIX 0" + (i) + "*3# - Account Nr. " + (i) + "</OPTION>");
-	
+     document.write("<OPTION VALUE='" + i + "'>" + "Account Nr. " + (i) + "</OPTION>");
    }
    </script>
  </SELECT>
@@ -823,7 +808,7 @@ cat << EOF
 	<div id='Acc_${i}' style='display:none'>
 	
 	<table border="0" cellpadding="3" cellspacing="0" width="100%" bordercolor="darkgray">
-	   <tr><td style="background-color:#dddddd"><b>$DTMFBOX_CAPI_DDI_PREFIX 00${i}*3# - $DTMFBOX_ACC_NUMBER</b></td></tr><tr><td height='5'</td></tr>
+	   <tr><td style="background-color:#dddddd"><b>$DTMFBOX_ACC_NUMBER</b></td></tr><tr><td height='5'</td></tr>
 	</table>
 	<table border="0">
 	<tr>
@@ -881,13 +866,26 @@ sec_begin 'DTMF-Commands'
 cat << EOF
 <p>
 <table border="0" cellpadding="3" cellspacing="0" width="100%" bordercolor="darkgray">
-   <tr><td style="background-color:#dddddd"><b>Account 1 bis 10 ($DTMFBOX_CAPI_DDI_PREFIX 001*2# - $DTMFBOX_CAPI_DDI_PREFIX 010*2#)</b></td></tr><tr><td height='5'</td></tr>
+   <tr><td style="background-color:#dddddd"><b>Account 1 bis 10</b></td></tr><tr><td height='5'</td></tr>
 </table>
 <br>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr><td><b>Pincode: </b> <input id="script_pincode" style="text-align:right;" type="password" name="script_pincode" size=5 value='$DTMFBOX_SCRIPT_PINCODE'>#</td></tr>
 </table>
 <p>
+
+<script language="javascript">
+function dtmf_change(obj)
+{
+
+  var input = obj;
+  var cmd = input.value;
+
+  cmd = cmd.replace(/\'\\\'\'/gi, "'");
+  cmd = cmd.replace(/'/gi, "\'\\\'\'");
+  input.value = cmd;
+}
+</script>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 EOF
@@ -899,15 +897,26 @@ do
   USERCMD=`eval echo \"\\$DTMFBOX_SCRIPT_CMD_${i}\"`
 
 cat << EOF
-  <tr><td><b><label>$i # </label></b></td><td><input id="script_cmd_$i" type="text" name="script_cmd_$i" value='$USERCMD' size=70></td></tr>
+  <tr><td><b><label>$i # </label></b></td><td><textarea style="height:20px;" rows=1 cols=50 id="script_cmd_$i" type="text" name="script_cmd_$i" onchange='javascript:dtmf_change(this);'>$USERCMD</textarea></td></tr>
 EOF
 
   let i=i+1
 
 done
-
 cat << EOF
 </table>
+
+<!-- escape "'" ! -->
+<script>
+for(j=1; j<=$MAX_DTMFS; j++) {
+ for(i=0; i<document.forms.length; i++) { 
+  try { 
+    dtmf_change(document.forms[i]['script_cmd_' + j]); 
+  } catch(e) {} 
+ }
+}
+</script>
+
 </p>
 EOF
 
@@ -931,6 +940,7 @@ voip_registrar_chk='';
 voip_use_vad='';
 voip_ice='';
 capi_use_earlyb3='';
+capi_display_text='';
 espeak_online='';
 espeak_installed='';
 espeak_found='0';
@@ -942,6 +952,7 @@ if [ "$DTMFBOX_VOIP_REGISTRAR" = "1" ]; then voip_registrar_chk='selected'; fi
 if [ "$DTMFBOX_VOIP_USE_VAD" = "1" ]; then voip_use_vad='selected'; fi
 if [ "$DTMFBOX_VOIP_ICE" = "1" ]; then voip_ice='selected'; else voip_ice=''; fi
 if [ "$DTMFBOX_CAPI_FAKED_EARLYB3" = "1" ]; then capi_use_earlyb3='selected'; else capi_use_earlyb3=''; fi
+if [ "$DTMFBOX_CAPI_DISPLAY_TEXT" = "1" ]; then capi_display_text='selected'; else capi_display_text=''; fi
 
 if [ "$DTMFBOX_ESPEAK" = "1" ]; then espeak_online='selected'; else espeak_online=''; fi
 if [ "$DTMFBOX_ESPEAK" = "2" ]; then espeak_installed='selected'; else espeak_installed=''; fi
@@ -992,7 +1003,7 @@ cat << EOF
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td width="250">
+<td width="175">
   VoIP verwenden:
 </td>
 <td>
@@ -1001,7 +1012,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">  
+<td width="175">  
   Registrar-Modus:
 </td>
 <td>
@@ -1012,7 +1023,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   UDP Server Port:
 </td>
 <td>
@@ -1021,7 +1032,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   RTP/RTCP Start Port:
 </td>
 <td>
@@ -1031,7 +1042,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Re-Register Intervall:
 </td>
 <td>
@@ -1040,7 +1051,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Keep-Alive Intervall:
 </td>
 <td>
@@ -1049,7 +1060,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   VAD (silence detector):
 </td>
 <td>
@@ -1058,7 +1069,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Interface:
 </td>
 <td>
@@ -1067,7 +1078,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   STUN-Server:
 </td>
 <td>
@@ -1077,7 +1088,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Nameserver:
 </td>
 <td>
@@ -1094,34 +1105,34 @@ cat << EOF
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 
 <tr>
-<td width="250">
+<td width="175">
   Controller (eingehend):
 </td>
 <td>
-  <input id="a20" type="text" style="text-align:right" name="capi_incoming" value='$DTMFBOX_CAPI_INCOMING' size="2" maxlength="1"> <font size="1">(0=NOT USED, 1=ISDN, 2=ISDN, 3=Interner S0, 4=Analog)</font>
+  <input id="a20" type="text" style="text-align:right" name="capi_incoming" value='$DTMFBOX_CAPI_INCOMING' size="2" maxlength="1"> <font size="1">(0=OFF, 1=ISDN, 3=Intern, 4=Analog)</font>
 </td>
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Controller (ausgehend):
 </td>
 <td>
-  <input id="a21" type="text" style="text-align:right"  name="capi_outgoing" value='$DTMFBOX_CAPI_OUTGOING' size="2" maxlength="1"> <font size="1">(0=NOT USED, 1=ISDN, 2=ISDN, 3=Interner S0, 4=Analog)</font>
+  <input id="a21" type="text" style="text-align:right"  name="capi_outgoing" value='$DTMFBOX_CAPI_OUTGOING' size="2" maxlength="1"> <font size="1">(0=OFF, 1=ISDN, 3=Intern, 4=Analog)</font>
 </td>
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Controller (intern):
 </td>
 <td>
-  <input id="a23" type="text" style="text-align:right"  name="capi_internal" value='$DTMFBOX_CAPI_INTERNAL' size="2" maxlength="1"> <font size="1">(0=NOT USED, 1=ISDN, 2=ISDN, 3=Interner S0, 4=Analog)</font>
+  <input id="a23" type="text" style="text-align:right"  name="capi_internal" value='$DTMFBOX_CAPI_INTERNAL' size="2" maxlength="1"> <font size="1">(0=OFF, 1=ISDN, 3=Intern, 4=Analog)</font>
 </td>
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Präfix International:
 </td>
 <td>
@@ -1130,11 +1141,20 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Präfix National:
 </td>
 <td>
   <input id="a26" type="text" style="text-align:right"  name="capi_nat_prefix" value='$DTMFBOX_CAPI_NAT_PREFIX' size="2" maxlength="5"> <font size="1">(Ortsvorwahl ohne führende Null)</font>
+</td>
+</tr>
+
+<tr>
+<td width="175">
+  Display-Text:
+</td>
+<td>
+  <select id="a27" name="capi_display_text" value='$DTMFBOX_CAPI_DISPLAY_TEXT'><option value='0'>Nein</option><option value='1' $capi_display_text>Ja</option></select>
 </td>
 </tr>
 </table>
@@ -1145,7 +1165,7 @@ cat << EOF
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td width="250">
+<td width="175">
   Wählton:
 </td>
 <td>
@@ -1154,7 +1174,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   RX-Volume:
 </td>
 <td>
@@ -1163,7 +1183,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   TX-Volume:
 </td>
 <td>
@@ -1172,8 +1192,8 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
-  Echo Canceller Tail Length:
+<td width="175">
+  EC-Tail Length:
 </td>
 <td>
   <input id="a30" type="text" name="echo_con_tail" value='$DTMFBOX_ECHO_CON_TAIL' size="4" style="text-align:right" maxlength="4"> ms <font size='1'>(0 = off)</font>
@@ -1187,7 +1207,7 @@ cat << EOF
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td width="250">
+<td width="175">
   eSpeak:
 </td>
 <td>
@@ -1196,7 +1216,7 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Stimme:
 </td>
 <td>
@@ -1206,35 +1226,20 @@ cat << EOF
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Geschwindigkeit:
 </td>
 <td>
-  <input id="a33" type="text" name="espeak_speed" value='$DTMFBOX_ESPEAK_SPEED' size="3" maxlength="3"> <font size="1">(150-300)</font>
+  <input id="a33" type="text" name="espeak_speed" value='$DTMFBOX_ESPEAK_SPEED' size="3" maxlength="3" style='text-align:right'> <font size="1">(150-300)</font>
 </td>
 </tr>
 
 <tr>
-<td width="250">
+<td width="175">
   Pitch:
 </td>
 <td>
-  <input id="a34" type="text" name="espeak_pitch" value='$DTMFBOX_ESPEAK_PITCH' size="3" maxlength="2"> <font size="1">(0-99)</font>
-</td>
-</tr>
-</table>
-
-<p>
-<table border="0" cellpadding="3" cellspacing="0" width="100%" bordercolor="darkgray">
-  <tr><td style="background-color:#dddddd"><b>Sonstiges</b></td></tr><tr><td height='5'</td></tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-<tr>
-<td width="250">
-  DDI Präfix:
-</td>
-<td>
-  <input id="a27" type="text" name="capi_ddi_prefix" value='$DTMFBOX_CAPI_DDI_PREFIX' size="5"> <font size="1">(Präfix, welches bei interner Wahl vorangestellt wird)</font>
+  <input id="a34" type="text" name="espeak_pitch" value='$DTMFBOX_ESPEAK_PITCH' size="3" maxlength="2" style='text-align:right'> <font size="1">(0-99)</font>
 </td>
 </tr>
 </table>
@@ -1262,24 +1267,81 @@ fi
 if [ "$CURRENT_PAGE" = "misc" ];
 then
 
+if [ "$DTMFBOX_INFO_CHECKMAILD_FROM" = "1" ]; then checkmaild_from="selected"; fi
+if [ "$DTMFBOX_INFO_CHECKMAILD_SUBJECT" = "1" ]; then checkmaild_subject="selected"; fi
+if [ -f "$DTMFBOX_INFO_MADPLAY" ]; then madplay_found="<font color='green'>Vorhanden!</font>"; else madplay_found="<font color='red'>madplay nicht vorhanden!</font>"; fi
+if [ -f "$DTMFBOX_INFO_MADPLAY" ]; then madplay_found2="<font color='green'>gefunden!</font>"; else madplay_found2="<font color='red'>nicht gefunden!</font>"; fi
+if [ -f "$DTMFBOX_INFO_CHECKMAILD/checkmaild.0" ]; then checkmaild_found="<font color='green'>gefunden!</font>"; else checkmaild_found="<font color='red'>nicht gefunden!</font>"; fi
+
 echo '<a name="status" href="#misc"></a>'
 echo '<div id="form_misc" style="display:block">'
 
 sec_begin 'Sonstiges'
 
 cat << EOF
+
 <p>
 <table border="0" cellpadding="3" cellspacing="0" width="100%" bordercolor="darkgray">
-  <tr><td style="background-color:#dddddd"><b>Wetter</b></td></tr><tr><td height='5'</td></tr>
+  <tr><td style="background-color:#dddddd"><b>(1) Fritz!Box</b></td></tr><tr><td height='5'</td></tr>
+</table>
+<table border="0" cellpadding="1" cellspacing="0" width="100%">
+<tr>
+<td>-</td>
+</tr>
+</table>
+</p>
+
+<p>
+<table border="0" cellpadding="3" cellspacing="0" width="100%" bordercolor="darkgray">
+  <tr><td style="background-color:#dddddd"><b>(2) Wetter</b></td></tr><tr><td height='5'</td></tr>
 </table>
 <table border="0" cellpadding="1" cellspacing="0" width="100%">
 <tr>
 <td width="150">PLZ:</td><td><input id="weather1" type="text" name="info_weather_plz" value='$DTMFBOX_INFO_WEATHER_PLZ' size="5" maxlength="5"></td>
 </tr><tr>
 <td width="150">Richtung:</td><td><input id="weather2" type="text" name="info_weather_pos" value='$DTMFBOX_INFO_WEATHER_POS' size="5" maxlength="1" onchange='this.value=this.value.toLowerCase();this.value=this.value.replace(/[^nosw]/g, "")'> <font size='1'>(N)orden, (O)sten, (S)üden, (W)esten</font></td>
+</tr><tr>
+<td width="150">Podcast:</td><td>$madplay_found</td>
 </tr>
 </table>
 <p></p>
+
+<p>
+<table border="0" cellpadding="3" cellspacing="0" width="100%" bordercolor="darkgray">
+  <tr><td style="background-color:#dddddd"><b>(3) CheckmailD</b></td></tr><tr><td height='5'</td></tr>
+</table>
+<table border="0" cellpadding="1" cellspacing="0" width="100%">
+<tr>
+<td width="150">Pfad zu checkmaild.x:</td><td><input id="checkmaild" type="text" name="info_checkmaild" value='$DTMFBOX_INFO_CHECKMAILD' size="50"> <font size='1'>$checkmaild_found</font></td>
+</tr><tr>
+<td width="150">Absender anzeigen:</td><td><select name="info_checkmaild_from" value='$DTMFBOX_INFO_CHECKMAILD_FROM'><option value="0">Nein</option><option value="1" $checkmaild_from>Ja</option></select></td>
+</tr><tr>
+<td width="150">Betreff anzeigen:</td><td><select name="info_checkmaild_subject" value='$DTMFBOX_INFO_CHECKMAILD_SUBJECT'><option value="0">Nein</option><option value="1" $checkmaild_subject>Ja</option></select></td>
+</tr>
+</table>
+<p></p>
+
+<p>
+<table border="0" cellpadding="3" cellspacing="0" width="100%" bordercolor="darkgray">
+  <tr><td style="background-color:#dddddd"><b>(4) Radio</b></td></tr><tr><td height='5'</td></tr>
+</table>
+<table border="0" cellpadding="1" cellspacing="0" width="100%">
+<tr>
+<td width="150">madplay (Pfad/Datei):</td><td><input id="madplay" type="text" name="info_madplay" value='$DTMFBOX_INFO_MADPLAY' size="50"> <font size='1'>$madplay_found2</font></td>
+</tr><tr>
+<td width="150">Stream 1:</td><td><input type="text" name="info_madplay_stream1" value='$DTMFBOX_INFO_MADPLAY_STREAM1' size="50"></td>
+</tr><tr>
+<td width="150">Stream 2:</td><td><input type="text" name="info_madplay_stream2" value='$DTMFBOX_INFO_MADPLAY_STREAM2' size="50"></td>
+</tr><tr>
+<td width="150">Stream 3:</td><td><input type="text" name="info_madplay_stream3" value='$DTMFBOX_INFO_MADPLAY_STREAM3' size="50"></td>
+</tr><tr>
+<td width="150">Stream 4:</td><td><input type="text" name="info_madplay_stream4" value='$DTMFBOX_INFO_MADPLAY_STREAM4' size="50"></td>
+</tr><tr>
+<td width="150">Stream 5:</td><td><input type="text" name="info_madplay_stream5" value='$DTMFBOX_INFO_MADPLAY_STREAM5' size="50"></td>
+</tr>
+</table>
+<p></p>
+
 EOF
 
 sec_end
@@ -1329,9 +1391,9 @@ do
    if [ "$DTMFBOX_ACC_ACTIVE" = "1" ];
    then
      if [ "$acc_no" = "1" ]; then
-       status_recordings="<a href='dtmfbox.cgi?pgk=dtmfbox&current_page=am_recordings&acc=${acc_no}'>Account #${acc_no} ($DTMFBOX_ACC_NUMBER) - $msg_cnt Nachricht(en)"
+       status_recordings="<a href='${SCRIPT_NAME}?pkg=dtmfbox&current_page=am_recordings&show=am_recordings&acc=${acc_no}'>Account #${acc_no} ($DTMFBOX_ACC_NUMBER) - $msg_cnt Nachricht(en)"
      else
-       status_recordings="$status_recordings<br><a href='dtmfbox.cgi?pgk=dtmfbox&current_page=am_recordings&acc=${acc_no}'>Account #${acc_no} ($DTMFBOX_ACC_NUMBER) - $msg_cnt Nachricht(en)"
+       status_recordings="$status_recordings<br><a href='${SCRIPT_NAME}?pkg=dtmfbox&current_page=am_recordings&show=am_recordings&acc=${acc_no}'>Account #${acc_no} ($DTMFBOX_ACC_NUMBER) - $msg_cnt Nachricht(en)"
      fi
      status_recordings="$status_recordings</a>"     
    fi
@@ -1384,9 +1446,9 @@ EOF
 	  if [ "$status_daemon" = "running" ];
       then
 	  
-		status_accounts="`dtmfbox -list accounts`"
-		status_connections="`dtmfbox -list all`"
-		status_clients="`dtmfbox -list clients`"
+		status_accounts="`dtmfbox -list accounts | sed -e 's/ */ /g'`"
+		status_connections="`dtmfbox -list all | sed -e 's/ */ /g'`"
+		status_clients="`dtmfbox -list clients | sed -e 's/ */ /g'`"
 
 		if [ "$status_accounts" = "" ]; then status_accounts="-"; fi
 		if [ "$status_connections" = "" ]; then status_connections="-"; fi
@@ -1514,7 +1576,7 @@ function delete_recordings(rec_cnt)
   {
     cmd_local=escape(cmd_local);
     cmd_remote=escape(cmd_remote);
-    this.document.location.href="${SCRIPT_NAME}?pkg=dtmfbox&current_page=am_recordings&acc=$acc_no&delete=true&cmd_local=" + cmd_local + "&cmd_remote=" + cmd_remote
+    this.document.location.href="${SCRIPT_NAME}?pkg=dtmfbox&current_page=am_recordings&show=am_recordings&acc=$acc_no&delete=true&cmd_local=" + cmd_local + "&cmd_remote=" + cmd_remote
   }
 }
 </script>
@@ -1534,7 +1596,7 @@ let position=0;
 let start_position="$page"
 let start_position=start_position*$ITEMS_PER_PAGE;
 let end_position=$start_position+$ITEMS_PER_PAGE-1;
-for file in `find $DTMFBOX_PATH/record/$acc_no/*`
+for file in `ls -r $DTMFBOX_PATH/record/$acc_no/*`
 do
 
   if [ -f $file ]; then
@@ -1547,7 +1609,7 @@ do
       CALLER_NO=`echo $filename | sed 's/^.*---.*-\(.*\)[\.]...$/\1/g'`
       IS_FTP=`echo $filename | sed 's/^.*\.raw$/FTP/g'`
       let FILE_DURATION=`$DU "$file" | sed -e "s/\([0-9]*\).*/\1/g"`
-      let FILE_DURATION=$FILE_DURATION*1024/16000
+      let FILE_DURATION=$FILE_DURATION*1024/17500
 
       if [ "$IS_FTP" != "FTP" ]; 
       then 
@@ -1574,7 +1636,7 @@ do
 
       echo "<td width='25'><div align='center'><input type='hidden' value=\"$filename\" name=\"recfilename${rec_no}\" id=\"recfilename${rec_no}\"><input type='hidden' value=\"$file\" name=\"recfile${rec_no}\" id=\"recfile${rec_no}\"><input type='hidden' value=\"$IS_FTP\" name=\"is_ftp${rec_no}\" id=\"is_ftp${rec_no}\"><input type='checkbox' name=\"recording${rec_no}\" id=\"recording${rec_no}\"></div></td>"
       echo "<td width='40'><div align='center'>$IS_FTP</div></td>"
-      echo "<td width='160'><div align='center'>$FILE_DATE</div></td>"
+      echo "<td width='175'><div align='center'>$FILE_DATE</div></td>"
       echo "<td width='55'><div align='right'>$FILE_DURATION sec</div></td>"
       echo "<td width='10'></td>"
       echo "<td>$CALLER_NO</td>"
@@ -1595,7 +1657,7 @@ echo "</table>"
 echo "<hr color='gray'>"
 
 echo "<table border='0' width='100%' cellpadding='0' cellspacing='0'><tr>"
-echo "<td align='left' width='160px'><input type='button' value='Auswahl umkehren' onclick=\"javascript:for(j=0; j<document.forms.length;j++) { for(i=0; i<${rec_no}; i++) { try { document.forms[j]['recording' + i].checked = !document.forms[j]['recording' + i].checked; } catch(e) {} } }\" style='border: 1px solid gray; font-family:trebuchet ms,helvetica,sans-serif;width:150px'></td>"
+echo "<td align='left' width='175px'><input type='button' value='Auswahl umkehren' onclick=\"javascript:for(j=0; j<document.forms.length;j++) { for(i=0; i<${rec_no}; i++) { try { document.forms[j]['recording' + i].checked = !document.forms[j]['recording' + i].checked; } catch(e) {} } }\" style='border: 1px solid gray; font-family:trebuchet ms,helvetica,sans-serif;width:150px'></td>"
 
 let pages=$position/$ITEMS_PER_PAGE;
 let pages2=$pages*$ITEMS_PER_PAGE;

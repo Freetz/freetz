@@ -17,17 +17,19 @@ if [ "$DSMOD" = "1" ]; then
   DTMFBOX_DEFAULT="/etc/default.dtmfbox/"
   DTMFBOX_CFG="/mod/etc/conf/$DAEMON.cfg"
   DESIGN="MOD"
+  ln -s /bin/busybox /var/tmp/sh 2>/dev/null
 else
   if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
   export PATH=$DTMFBOX_PATH:$PATH
   DTMFBOX_DEFAULT="$DTMFBOX_PATH/default.dtmfbox/"
   DTMFBOX_CFG="/var/dtmfbox/$DAEMON.save"
   DESIGN="FULLSCREEN"
+  ln -s /var/dtmfbox/busybox-tools /var/tmp/sh 2>/dev/null
 fi
 
 case "$1" in
 
-	""|load|start|restart|stop|log|install|start_httpd|stop_httpd)
+	""|load|start|restart|stop|log|foreground|install|start_httpd|stop_httpd)
     if [ "$DSMOD" = "1" ]; then
       if [ ! -r "$DTMFBOX_CFG" ]; then
          echo "Error [$DAEMON]: not configured" 1>&2
@@ -68,7 +70,7 @@ install() {
       while [ "$answer" != "u" ] && [ "$answer" != "d" ];
       do
         echo -n "dtmfbox auf USB oder per Download installieren [u/d]? "
-        read -n 1 answer
+        read answer
         echo ""
       done
       if [ "$answer" = "u" ];
@@ -90,7 +92,7 @@ install() {
       while [ "$ok" != "j" ] && [ "$ok" != "n" ];
       do
         echo -n "dtmfbox nach \"$answer\" installieren [j/n]? "
-        read -n 1 ok
+        read ok
         if [ "$ok" = "j" ]; then
           export DTMFBOX_PATH="$answer";
         fi
@@ -111,68 +113,6 @@ install() {
   if [ ! -d /var/dtmfbox ]; then
     ln -s $DTMFBOX_PATH /var/dtmfbox
   fi
-
-  # WGET: /
-  #if [ ! -f "$DTMFBOX_PATH/rc.dtmfbox" ]; then
-  #  wget $WWW_PREFIX/rc.dtmfbox
-  #fi
-
-  ##if [ ! -f "/sbin/httpd" ]; then
-  #  if [ ! -f "$DTMFBOX_PATH/busybox-tools" ]; then
-  #    wget $WWW_PREFIX/busybox-tools
-  #  fi
-  ##else
-  ##  ln -s /bin/busybox $DTMFBOX_PATH/busybox-tools
-  ##fi
-
-  #if [ ! -f "$DTMFBOX_PATH/dtmfbox" ]; then
-  #  wget $WWW_PREFIX/dtmfbox
-  #fi
-
-  #chmod +x *
-
-  # WGET: /default.dtmfbox
-  #if [ ! -d "$DTMFBOX_PATH/default.dtmfbox" ]; 
-  #then
-  #   mkdir $DTMFBOX_PATH/default.dtmfbox 2>/dev/null
-  #   mkdir $DTMFBOX_PATH/default.dtmfbox/play 2>/dev/null
-  #   mkdir $DTMFBOX_PATH/default.dtmfbox/record 2>/dev/null
-  #   mkdir $DTMFBOX_PATH/default.dtmfbox/script 2>/dev/null
-  #   mkdir $DTMFBOX_PATH/default.dtmfbox/tmp 2>/dev/null
-  #   cd $DTMFBOX_PATH/default.dtmfbox
-  #   wget $WWW_PREFIX/default.dtmfbox/dtmfbox.cfg
-  #   wget $WWW_PREFIX/default.dtmfbox/dtmfbox.file
-  #   cd $DTMFBOX_PATH/default.dtmfbox/play
-  #   cd $DTMFBOX_PATH/default.dtmfbox/script
-  #   wget $WWW_PREFIX/default.dtmfbox/script/script_main.sh
-  #   wget $WWW_PREFIX/default.dtmfbox/script/script_idle.sh
-  #   wget $WWW_PREFIX/default.dtmfbox/script/script_admin.sh
-  #   wget $WWW_PREFIX/default.dtmfbox/script/script_admin_am.sh
-  #   wget $WWW_PREFIX/default.dtmfbox/script/script_funcs.sh
-  #   wget $WWW_PREFIX/default.dtmfbox/script/script_dtmf.sh
-  #   wget $WWW_PREFIX/default.dtmfbox/script/script_cbct.sh
-  #   wget $WWW_PREFIX/default.dtmfbox/script/script_cbct_call.sh
-  #   cd $DTMFBOX_PATH/default.dtmfbox/tmp
-  #   wget $WWW_PREFIX/default.dtmfbox/tmp/dtmfbox.config
-  #   cd $DTMFBOX_PATH/default.dtmfbox
-  #   chmod -R +x *
-  # fi
-
-   # WGET: /httpd
-  # if [ ! -d "$DTMFBOX_PATH/httpd" ]; then
-  #   mkdir $DTMFBOX_PATH/httpd 2>/dev/null
-  #   mkdir $DTMFBOX_PATH/httpd/cgi-bin 2>/dev/null
-  #   cd $DTMFBOX_PATH/httpd
-  #   wget $WWW_PREFIX/httpd/index.html
-  #   wget $WWW_PREFIX/httpd/style.css
-  #   cd $DTMFBOX_PATH/httpd/cgi-bin
-  #   wget $WWW_PREFIX/httpd/cgi-bin/dtmfbox.cgi
-  #   wget $WWW_PREFIX/httpd/cgi-bin/dtmfbox_cmd.cgi
-  #   wget $WWW_PREFIX/httpd/cgi-bin/dtmfbox_lib.cgi
-  #   wget $WWW_PREFIX/httpd/cgi-bin/dtmfbox_save.cgi
-  #   cd $DTMFBOX_PATH/httpd
-  #   chmod -R +x *
-  # fi
 
    # create dtmfbox.cfg 
    if [ -f $DTMFBOX_CFG ]; then
@@ -210,6 +150,7 @@ stop_httpd() {
    fi
 }
 
+
 start() {
 
     echo -n "Start $DAEMON... "
@@ -228,12 +169,17 @@ start() {
         rm /var/tmp/flash/dtmfbox_userscript.sh.tar.gz
       fi
     fi
-    
-    mkdir -p $DTMFBOX_PATH 2>/dev/null
-    mkdir -p $DTMFBOX_PATH/play 2>/dev/null
-    mkdir -p $DTMFBOX_PATH/record 2>/dev/null
-    mkdir -p $DTMFBOX_PATH/script 2>/dev/null
-    mkdir -p $DTMFBOX_PATH/tmp 2>/dev/null
+        
+    # dtmfbox directory does not exist? create from default template
+    if [ ! -d "$DTMFBOX_PATH" ];
+    then
+      mkdir -p $DTMFBOX_PATH 2>/dev/null
+      cp -Rf $DTMFBOX_DEFAULT/* $DTMFBOX_PATH 2>/dev/null
+    fi
+    if [ ! -d "$DTMFBOX_PATH/script" ]; then cp -R $DTMFBOX_DEFAULT/script $DTMFBOX_PATH; fi
+    mkdir -p $DTMFBOX_PATH/play
+    mkdir -p $DTMFBOX_PATH/record
+    mkdir -p $DTMFBOX_PATH/tmp
 
     #
     # write dtmfbox.cfg
@@ -241,7 +187,6 @@ start() {
     (
 	$DTMFBOX_DEFAULT/tmp/dtmfbox.config
     ) > $DTMFBOX_PATH/dtmfbox.cfg
-
 
     chmod +x $DTMFBOX_PATH/dtmfbox.cfg
     cd $DTMFBOX_PATH
@@ -251,10 +196,19 @@ start() {
       DAEMON="./$DAEMON"    
     fi
 
+    if [ "$1" = "foreground" ]; then
+      echo ""
+
+      # Run foreground
+      $DAEMON -cfg $DTMFBOX_PATH/dtmfbox.cfg
+    fi
+
     if [ "$1" = "log" ]; then
       # Run daemon (logging)...
       $DAEMON -daemon -cfg $DTMFBOX_PATH/dtmfbox.cfg -log $DTMFBOX_PATH/dtmfbox.log
-    else
+    fi
+
+    if [ "$1" = "" ]; then
       # Run daemon...
       $DAEMON -daemon -cfg $DTMFBOX_PATH/dtmfbox.cfg
     fi
@@ -271,6 +225,9 @@ start() {
 
 stop() {
     echo -n "Stop $DAEMON... "
+	
+	# FIX: dead script_main.sh script???
+    killall -9 script_main.sh 2>/dev/null >/dev/null
 	
     # Stop daemon
     if [ ! -z "$(pidof "$DAEMON")" ]; then
@@ -289,12 +246,6 @@ stop() {
         # kill dtmfbox
         killall -9 $DAEMON > /dev/null 2>&1
         exitval=$?
-
-        # kill dead scripts (??)
-        # PROCS1=`ps -w | grep -e "/bin/sh .*script_.*INCOMING.*" | grep -v "grep" | sed -e "s/ \(.*\) root.*/\1/g"`
-        # PROCS1=`ps -w | grep -e "/bin/sh .*script_.*OUTGOING.*" | grep -v "grep" | sed -e "s/ \(.*\) root.*/\1/g"`
-		# for proc in $PROCS1; do if [ "$proc" != "$$" ]; then kill -9 $proc; fi; done
-		# for proc in $PROCS2; do if [ "$proc" != "$$" ]; then kill -9 $proc; fi; done
     fi
 
 	
@@ -410,6 +361,11 @@ case "$1" in
 	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
         start "log"
 		;;
+    foreground)
+        if [ "$DSMOD" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
+	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
+        start "foreground"
+		;;
 	restart)
         if [ "$DSMOD" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
 	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
@@ -425,9 +381,9 @@ case "$1" in
 		;;
 	*)
     if [ "$DSMOD" = "0" ]; then 
-      echo "usage: $0 [load|unload|start|stop|restart|status|log|install|start_httpd|stop_httpd]" 1>&2		 
+      echo "usage: $0 [load|unload|start|stop|restart|status|log|foreground|install|start_httpd|stop_httpd]" 1>&2		 
     else
-      echo "usage: $0 [load|unload|start|stop|restart|status|log]" 1>&2		 
+      echo "usage: $0 [load|unload|start|stop|restart|status|log|foreground]" 1>&2		 
     fi
 	exit 1
 	;;

@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 0.4.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-src.tar.gz
 $(PKG)_SITE:=http://fritz.v3v.de/$(pkg)/$(pkg)-src
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-src
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/$(pkg)
 $(PKG)_STARTLEVEL=40
@@ -19,6 +19,7 @@ $(PKG)_CFLAGS+=-DPJMEDIA_HAS_G711_CODEC=1
 $(PKG)_CFLAGS+=-DPJMEDIA_HAS_ILBC_CODEC=0 
 $(PKG)_CFLAGS+=-DPJMEDIA_HAS_GSM_CODEC=0
 $(PKG)_CFLAGS+=-DPJMEDIA_HAS_L16_CODEC=0
+$(PKG)_CFLAGS+=-DPJMEDIA_HAS_SPEEX_CODEC=0
 $(PKG)_CFLAGS+=-DPJ_LOG_MAX_LEVEL=5
 $(PKG)_LDLIBS:=-lpjsip-ua -lpjsip-simple -lpjsip -lpjmedia-codec -lpjmedia -lpjnath -lpjlib-util -lpj -lresample
 
