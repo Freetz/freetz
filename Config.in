@@ -147,9 +147,9 @@ choice
 		depends on DS_TYPE_LABOR
 		default DS_TYPE_LABOR_MINI
 
-	config DS_TYPE_LABOR_BETA
-		bool "BETA"
-		depends on DS_TYPE_FON_WLAN_7270
+#	config DS_TYPE_LABOR_BETA
+#		bool "BETA"
+#		depends on DS_TYPE_FON_WLAN_7270
 
 	config DS_TYPE_LABOR_DSL
 		bool "DSL"
@@ -1165,7 +1165,7 @@ config DS_DL_SOURCE
 	default "FRITZBox_Fon_WLAN_7170_VPN_AnnexB_29_04_51.image"				if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_VPN
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.52.image"						if DS_TYPE_FON_WLAN_7270 && ! DS_TYPE_LABOR
 	default "fritz_box-labor-10028.image"									if DS_TYPE_FON_WLAN_7270 && DS_TYPE_LABOR_BETA
-	default "fritz_box_labor-9640.image"									if DS_TYPE_FON_WLAN_7270 && DS_TYPE_LABOR_MINI
+	default "FRITZ.Box_Fon_WLAN_7270.AnnexB.54.04.52-10105.image"									if DS_TYPE_FON_WLAN_7270 && DS_TYPE_LABOR_MINI
 	default "fritz.box_sl_wlan.09.04.34.image"								if DS_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"							if DS_TYPE_WLAN_3030
 	default "fritz.box_wlan_3131.50.04.50.image"							if DS_TYPE_WLAN_3131
