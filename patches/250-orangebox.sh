@@ -1,12 +1,14 @@
 [ "$DS_PACKAGE_ORANGEBOX" == "y" ] || return 0
 echo1 "adding orangebox-lines to rc.S"
-if [ "$DS_TYPE_LABOR" == "y" ] && [ "$DS_TYPE_LABOR_VPN" != "y" ]; then
+if [ "$DS_TYPE_LABOR" == "y" ]; then
 	if [ "$DS_TYPE_LABOR_PHONE" == "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor_phone.patch
 	elif [ "$DS_TYPE_LABOR_DSL" == "y" ] || [ "$DS_TYPE_LABOR_MINI" == "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor_dsl.patch
 	elif [ "$DS_TYPE_LABOR_BETA" == "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor_beta.patch
+	elif  [ "$DS_TYPE_LABOR_VPN" == "y" ]; then
+	                modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor_vpn.patch
 	else
 		modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR"/cond/orangebox_7170_labor.patch
 	fi
