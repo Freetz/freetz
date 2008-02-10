@@ -662,8 +662,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo 'root:$1$$zO6d3zi9DefdWLMB.OHaO.:12332:0:99999:7:::' > "${VARTAR_MOD_DIR}/var/tmp/shadow"
 		echo "root:x:0:" > "${VARTAR_MOD_DIR}/var/tmp/group"
 		echo "users:x:1:" >> "${VARTAR_MOD_DIR}/var/tmp/group"
-		echo "nameserver 192.168.180.1" > "${VARTAR_MOD_DIR}/var/tmp/avm-resolv.conf"
-		echo "nameserver 192.168.180.2" >> "${VARTAR_MOD_DIR}/var/tmp/avm-resolv.conf"
 		touch "${VARTAR_MOD_DIR}/var/tmp/ethers"
 		touch "${VARTAR_MOD_DIR}/var/tmp/exports"
 		touch "${VARTAR_MOD_DIR}/var/tmp/gshadow"
@@ -676,7 +674,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../var/tmp/exports "${FILESYSTEM_MOD_DIR}/etc/exports"
 		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"
 		ln -s ../var/tmp/onlinechanged "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
-		ln -sf ../var/tmp/avm-resolv.conf "${FILESYSTEM_MOD_DIR}/etc/resolv.conf"
 
 		if [ "$DS_STRIP_LIBRARIES" != "y" ]; then
 		echo1 "installing libs"
