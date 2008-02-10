@@ -29,14 +29,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-tcpdump: $($(PKG)_BINARY)
+$(pkg):
 
-tcpdump-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-tcpdump-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(TCPDUMP_DIR) clean
 
-tcpdump-uninstall:
+$(pkg)-uninstall:
 	rm -f $(TCPDUMP_TARGET_BINARY)
 
 $(PKG_FINISH)
