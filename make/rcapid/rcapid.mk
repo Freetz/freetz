@@ -1,98 +1,33 @@
-RCAPID_VERSION:=0.1
-RCAPID_SOURCE:=rcapid-cm.tar.gz
-RCAPID_SITE:=ftp://ftp.melware.de/capi-utils
-RCAPID_DIR:=$(SOURCE_DIR)/rcapid-cm
-#RCAPID_SOURCE:=rcapid.tgz
-#RCAPID_SITE:=http://dsmod.magenbrot.net
-#RCAPID_DIR:=$(SOURCE_DIR)/rcapid
-RCAPID_MAKE_DIR:=$(MAKE_DIR)/rcapid
-RCAPID_BINARY:=$(RCAPID_DIR)/rcapid
-RCAPID_PKG_VERSION:=0.1
-RCAPID_PKG_SITE:=http://fbox.enlightened.de/ds/rcapid/
-RCAPID_PKG_NAME:=rcapid-$(RCAPID_PKG_VERSION)
-RCAPID_PKG_SOURCE:=rcapid-dsmod-$(RCAPID_PKG_VERSION).tar.bz2
-RCAPID_TARGET_DIR:=$(PACKAGES_DIR)/$(RCAPID_PKG_NAME)
-RCAPID_TARGET_BINARY:=$(RCAPID_TARGET_DIR)/root/usr/sbin/rcapid
+$(call PKG_INIT_BIN, 0.1)
+$(PKG)_SOURCE:=rcapid-cm.tar.gz
+$(PKG)_SITE:=ftp://ftp.melware.de/capi-utils
+$(PKG)_DIR:=$(SOURCE_DIR)/rcapid-cm
+$(PKG)_BINARY:=$($(PKG)_DIR)/rcapid
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/rcapid
+$(PKG)_STARTLEVEL=40
 
-$(DL_DIR)/$(RCAPID_SOURCE):
-	#@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(RCAPID_SOURCE) $(RCAPID_SITE)
-	wget -P $(DL_DIR) $(RCAPID_SITE)/$(RCAPID_SOURCE)
+$(PKG)_DEPENDS_ON := libcapi
 
-$(DL_DIR)/$(RCAPID_PKG_SOURCE):
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(RCAPID_PKG_SOURCE) $(RCAPID_PKG_SITE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$(RCAPID_DIR)/.unpacked: $(DL_DIR)/$(RCAPID_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(RCAPID_SOURCE)
-	#for i in $(RCAPID_MAKE_DIR)/patches/*.patch; do \
-	#	$(PATCH_TOOL) $(RCAPID_DIR) $$i; \
-	#done
-	touch $@
-
-$(RCAPID_DIR)/.configured: $(RCAPID_DIR)/.unpacked
-	( cd $(RCAPID_DIR); rm -f config.{cache,status}; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CC="$(TARGET_CC)" \
-		./configure \
-		--target=$(GNU_TARGET_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--build=$(GNU_HOST_NAME) \
-		--program-prefix="" \
-		--program-suffix="" \
-		--prefix=/usr \
-		--exec-prefix=/usr \
-		--bindir=/usr/bin \
-		--sbindir=/usr/sbin \
-		--libexecdir=/usr/lib \
-		--datadir=/usr/share \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib \
-		--includedir=/usr/include \
-		--infodir=/usr/share/info \
-		--mandir=/usr/share/man \
-		$(DISABLE_LARGEFILE) \
-		$(DISABLE_NLS) \
-		--with-kernel="$(DSMOD_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
-	);
-	touch $@
-
-$(RCAPID_BINARY): $(RCAPID_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	CFLAGS="$(TARGET_CFLAGS)" \
 	$(MAKE) -C $(RCAPID_DIR)
 
-$(RCAPID_TARGET_BINARY): $(RCAPID_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$(PACKAGES_DIR)/.$(RCAPID_PKG_NAME): $(DL_DIR)/$(RCAPID_PKG_SOURCE)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(RCAPID_PKG_SOURCE)
-	@touch $@
+$(pkg):
 
-rcapid: $(PACKAGES_DIR)/.$(RCAPID_PKG_NAME)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-rcapid-precompiled: uclibc libcapi-precompiled rcapid $(RCAPID_TARGET_BINARY)
-
-rcapid-package: $(PACKAGES_DIR)/.$(RCAPID_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(RCAPID_PKG_SOURCE) $(RCAPID_PKG_NAME) 
-
-rcapid-source: $(RCAPID_DIR)/.unpacked $(PACKAGES_DIR)/.$(RCAPID_PKG_NAME)
-
-rcapid-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(RCAPID_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(RCAPID_PKG_SOURCE)
 
-rcapid-dirclean:
-	rm -rf $(RCAPID_DIR)
-	rm -rf $(PACKAGES_DIR)/$(RCAPID_PKG_NAME)
-	rm -f $(PACKAGES_DIR)/.$(RCAPID_PKG_NAME)
+$(pkg)-uninstall:
+	$(RM) $(RCAPID_TARGET_BINARY)
 
-rcapid-uninstall:
-	rm -f $(RCAPID_TARGET_BINARY)
-
-rcapid-list:
-ifeq ($(strip $(DS_PACKAGE_RCAPID)),y)
-	@echo "S40rcapid-$(RCAPID_PKG_VERSION)" >> .static
-else
-	@echo "S40rcapid-$(RCAPID_PKG_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)
