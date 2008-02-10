@@ -1,64 +1,28 @@
-DEBOOTSTRAP_VERSION:=0.3.3.2
-DEBOOTSTRAP_SOURCE:=debootstrap_$(DEBOOTSTRAP_VERSION).tar.gz
-DEBOOTSTRAP_SITE:=http://ftp.de.debian.org/debian/pool/main/d/debootstrap
-DEBOOTSTRAP_MAKE_DIR:=$(MAKE_DIR)/debootstrap
-DEBOOTSTRAP_DIR:=$(SOURCE_DIR)/debootstrap-$(DEBOOTSTRAP_VERSION)
-DEBOOTSTRAP_BINARY:=$(DEBOOTSTRAP_DIR)/pkgdetails
-DEBOOTSTRAP_TARGET_DIR:=$(PACKAGES_DIR)/debootstrap-$(DEBOOTSTRAP_VERSION)
-DEBOOTSTRAP_TARGET_BINARY:=$(DEBOOTSTRAP_TARGET_DIR)/root/usr/lib/debootstrap/pkgdetails
-DEBOOTSTRAP_PKG_VERSION:=0.2
-DEBOOTSTRAP_PKG_SITE:=http://www.heimpold.de/dsmod
-DEBOOTSTRAP_PKG_NAME:=debootstrap-$(DEBOOTSTRAP_VERSION)
-DEBOOTSTRAP_PKG_SOURCE:=debootstrap-$(DEBOOTSTRAP_VERSION)-dsmod-$(DEBOOTSTRAP_PKG_VERSION).tar.bz2
+$(call PKG_INIT_BIN, 0.3.3.2)
+$(PKG)_SOURCE:=debootstrap_$(DEBOOTSTRAP_VERSION).tar.gz
+$(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/d/debootstrap
+$(PKG)_BINARY:=$($(PKG)_DIR)/pkgdetails
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/debootstrap/pkgdetails
 
-$(DL_DIR)/$(DEBOOTSTRAP_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(DEBOOTSTRAP_SITE)/$(DEBOOTSTRAP_SOURCE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_NOP)
 
-$(DL_DIR)/$(DEBOOTSTRAP_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(DEBOOTSTRAP_PKG_SOURCE) $(DEBOOTSTRAP_PKG_SITE)
-
-$(DEBOOTSTRAP_DIR)/.unpacked: $(DL_DIR)/$(DEBOOTSTRAP_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(DEBOOTSTRAP_SOURCE)
-	#for i in $(DEBOOTSTRAP_MAKE_DIR)/patches/*.patch; do \
-	#	$(PATCH_TOOL) $(DEBOOTSTRAP_DIR) $$i; \
-	#done
-	touch $@
-
-$(PACKAGES_DIR)/.$(DEBOOTSTRAP_PKG_NAME): $(DL_DIR)/$(DEBOOTSTRAP_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(DEBOOTSTRAP_PKG_SOURCE)
-	@touch $@
-
-$(DEBOOTSTRAP_BINARY): $(DEBOOTSTRAP_DIR)/.unpacked
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	cd $(DEBOOTSTRAP_DIR) && $(TARGET_CONFIGURE_OPTS) \
 		$(TARGET_CC) $(TARGET_CFLAGS) -o pkgdetails pkgdetails.c
 
-$(DEBOOTSTRAP_TARGET_BINARY): $(DEBOOTSTRAP_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-debootstrap: $(PACKAGES_DIR)/.$(DEBOOTSTRAP_PKG_NAME)
+$(pkg):
 
-debootstrap-package: $(PACKAGES_DIR)/.$(DEBOOTSTRAP_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(DEBOOTSTRAP_PKG_SOURCE) $(DEBOOTSTRAP_PKG_NAME)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-debootstrap-precompiled: uclibc debootstrap $(DEBOOTSTRAP_TARGET_BINARY)
-
-debootstrap-source: $(DEBOOTSTRAP_DIR)/.unpacked $(PACKAGES_DIR)/.$(DEBOOTSTRAP_PKG_NAME)
-
-debootstrap-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(DEBOOTSTRAP_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(DEBOOTSTRAP_PKG_SOURCE)
 
-debootstrap-dirclean:
-	rm -rf $(DEBOOTSTRAP_DIR)
-	rm -rf $(PACKAGES_DIR)/$(DEBOOTSTRAP_PKG_NAME)
-	rm -f $(PACKAGES_DIR)/.$(DEBOOTSTRAP_PKG_NAME)
+$(pkg)-uninstall:
+	$(RM) $(DEBOOTSTRAP_TARGET_BINARY)
 
-debootstrap-uninstall:
-	rm -f $(DEBOOTSTRAP_TARGET_BINARY)
-
-debootstrap-list:
-ifeq ($(strip $(DS_PACKAGE_DEBOOTSTRAP)),y)
-	@echo "S99debootstrap-$(DEBOOTSTRAP_VERSION)" >> .static
-else
-	@echo "S99debootstrap-$(DEBOOTSTRAP_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)
