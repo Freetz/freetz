@@ -1,16 +1,11 @@
-NETSNMP_VERSION:=5.1.2
-NETSNMP_SOURCE:=net-snmp-$(NETSNMP_VERSION).tar.gz
-NETSNMP_SITE:=http://mesh.dl.sourceforge.net/sourceforge/net-snmp
-NETSNMP_MAKE_DIR:=$(MAKE_DIR)/netsnmp
-NETSNMP_DIR:=$(SOURCE_DIR)/net-snmp-$(NETSNMP_VERSION)
-NETSNMP_BINARY:=$(NETSNMP_DIR)/agent/.libs/snmpd
-NETSNMP_PKG_VERSION:=0.4b
-NETSNMP_PKG_SITE:=http://www.heimpold.de/dsmod
-NETSNMP_PKG_NAME:=netsnmp-$(NETSNMP_VERSION)
-NETSNMP_PKG_SOURCE:=netsnmp-$(NETSNMP_VERSION)-dsmod-$(NETSNMP_PKG_VERSION).tar.bz2
-NETSNMP_TARGET_DIR:=$(PACKAGES_DIR)/$(NETSNMP_PKG_NAME)
-NETSNMP_TARGET_BINARY:=$(NETSNMP_TARGET_DIR)/root/usr/sbin/snmpd
-NETSNMP_TARGET_LIBS:=$(NETSNMP_TARGET_DIR)/root/usr/lib/*.so*
+$(call PKG_INIT_BIN, 5.1.2)
+$(PKG)_SOURCE:=net-snmp-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/net-snmp
+$(PKG)_DIR:=$(SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/snmpd
+$(PKG)_TARGET_LIBS:=$($(PKG)_DEST_DIR)/usr/lib/*.so*
+$(PKG)_STARTLEVEL=40
 
 NETSNMP_MIB_MODULES_INCLUDED:=\
   host/hr_device \
@@ -46,7 +41,7 @@ NETSNMP_MIB_MODULES_INCLUDED:=\
   ucd-snmp/proc \
   ucd-snmp/vmstat \
   util_funcs \
-  utilities/execute \
+  utilities/execute
 
 NETSNMP_MIB_MODULES_EXCLUDED:=\
   agent_mibs \
@@ -58,159 +53,82 @@ NETSNMP_MIB_MODULES_EXCLUDED:=\
   snmpv3mibs \
   target \
   ucd_snmp \
-  utilities \
+  utilities
 
 NETSNMP_TRANSPORTS_INCLUDED:=UDP
 
 NETSNMP_TRANSPORTS_EXCLUDED:=Callback TCP TCPv6 UDPv6 Unix
 
 ifeq ($(strip $(DS_PACKAGE_NETSNMP_WITH_OPENSSL)),y)
-NETSNMP_OPENSSL:=openssl-precompiled
-else
-NETSNMP_OPENSSL:=
+$(PKG)_DEPENDS_ON := openssl
 endif
 
 ifeq ($(strip $(DS_PACKAGE_NETSNMP_WITH_ZLIB)),y)
-NETSNMP_ZLIB:=zlib-precompiled
-else
-NETSNMP_ZLIB:=
+$(PKG)_DEPENDS_ON += zlib
 endif
 
-NETSNMP_DS_CONFIG_FILE:=$(NETSNMP_MAKE_DIR)/.ds_config
-NETSNMP_DS_CONFIG_TEMP:=$(NETSNMP_MAKE_DIR)/.ds_config.temp
+$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_NETSNMP_WITH_OPENSSL
+$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_NETSNMP_WITH_ZLIB
 
-NETSNMP_PKG_CONFIGURE_OPTIONS:=\
-  --enable-shared \
-  --disable-static \
-  --with-endianness=little \
-  --with-logfile=/var/log/snmpd.log \
-  --with-persistent-directory=/var/lib/snmp \
-  --with-default-snmp-version=1 \
-  --with-sys-contact=root@localhost \
-  --with-sys-location=Unknown \
-  --disable-applications \
-  --disable-debugging \
-  --disable-ipv6 \
-  --disable-manuals \
-  --disable-mib-loading \
-  --disable-mibs \
-  --disable-scripts \
-  --with-out-mib-modules="$(NETSNMP_MIB_MODULES_EXCLUDED)" \
-  --with-mib-modules="$(NETSNMP_MIB_MODULES_INCLUDED)" \
-  --with-out-transports="$(NETSNMP_TRANSPORTS_EXCLUDED)" \
-  --with-transports="$(NETSNMP_TRANSPORTS_INCLUDED)" \
-  --without-opaque-special-types \
-  $(if $(DS_PACKAGE_NETSNMP_WITH_OPENSSL),,--without-openssl) \
-  --without-libwrap \
-  --without-rpm \
-  $(if $(DS_PACKAGE_NETSNMP_WITH_ZLIB),,--without-zlib) \
+$(PKG)_CONFIGURE_ENV += ac_cv_CAN_USE_SYSCTL=no
 
-$(DL_DIR)/$(NETSNMP_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(NETSNMP_SITE)/$(NETSNMP_SOURCE)
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIGURE_OPTIONS += --with-endianness=little
+$(PKG)_CONFIGURE_OPTIONS += --with-logfile=/var/log/snmpd.log
+$(PKG)_CONFIGURE_OPTIONS += --with-persistent-directory=/var/lib/snmp
+$(PKG)_CONFIGURE_OPTIONS += --with-default-snmp-version=1
+$(PKG)_CONFIGURE_OPTIONS += --with-sys-contact=root@localhost
+$(PKG)_CONFIGURE_OPTIONS += --with-sys-location=Unknown
+$(PKG)_CONFIGURE_OPTIONS += --disable-applications
+$(PKG)_CONFIGURE_OPTIONS += --disable-debugging
+$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
+$(PKG)_CONFIGURE_OPTIONS += --disable-manuals
+$(PKG)_CONFIGURE_OPTIONS += --disable-mib-loading
+$(PKG)_CONFIGURE_OPTIONS += --disable-mibs
+$(PKG)_CONFIGURE_OPTIONS += --disable-scripts
+$(PKG)_CONFIGURE_OPTIONS += --with-out-mib-modules="$(NETSNMP_MIB_MODULES_EXCLUDED)"
+$(PKG)_CONFIGURE_OPTIONS += --with-mib-modules="$(NETSNMP_MIB_MODULES_INCLUDED)"
+$(PKG)_CONFIGURE_OPTIONS += --with-out-transports="$(NETSNMP_TRANSPORTS_EXCLUDED)"
+$(PKG)_CONFIGURE_OPTIONS += --with-transports="$(NETSNMP_TRANSPORTS_INCLUDED)"
+$(PKG)_CONFIGURE_OPTIONS += --without-opaque-special-types
+$(PKG)_CONFIGURE_OPTIONS += --without-libwrap
+$(PKG)_CONFIGURE_OPTIONS += --without-rpm
+$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_NETSNMP_WITH_OPENSSL),,--without-openssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_NETSNMP_WITH_ZLIB),,--without-zlib)
 
-$(DL_DIR)/$(NETSNMP_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(NETSNMP_PKG_SOURCE) $(NETSNMP_PKG_SITE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$(NETSNMP_DS_CONFIG_FILE): $(TOPDIR)/.config
-	@echo "DS_PACKAGE_NETSNMP_WITH_OPENSSL=$(if $(DS_PACKAGE_NETSNMP_WITH_OPENSSL),y,n)" > $(NETSNMP_DS_CONFIG_TEMP)
-	@echo "DS_PACKAGE_NETSNMP_WITH_ZLIB=$(if $(DS_PACKAGE_NETSNMP_WITH_ZLIB),y,n)" >> $(NETSNMP_DS_CONFIG_TEMP)
-	@diff -q $(NETSNMP_DS_CONFIG_TEMP) $(NETSNMP_DS_CONFIG_FILE) || \
-		cp $(NETSNMP_DS_CONFIG_TEMP) $(NETSNMP_DS_CONFIG_FILE)
-	@rm -f $(NETSNMP_DS_CONFIG_TEMP)
-
-# Make sure that a perfectly clean build is performed whenever DS-Mod package
-# options have changed. The safest way to achieve this is by starting over
-# with the source directory.
-$(NETSNMP_DIR)/.unpacked: $(DL_DIR)/$(NETSNMP_SOURCE) $(NETSNMP_DS_CONFIG_FILE)
-	rm -rf $(NETSNMP_DIR)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(NETSNMP_SOURCE)
-	for i in $(NETSNMP_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(NETSNMP_DIR) $$i; \
-	done
-	touch $@
-
-$(NETSNMP_DIR)/.configured: $(NETSNMP_DIR)/.unpacked
-	( cd $(NETSNMP_DIR); rm -f config.{cache,status}; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CC="$(TARGET_CC)" \
-		LD="$(TARGET_LD)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		ac_cv_CAN_USE_SYSCTL=no \
-		./configure \
-		--target=$(GNU_TARGET_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--build=$(GNU_HOST_NAME) \
-		--program-prefix="" \
-		--program-suffix="" \
-		--prefix=/usr \
-		--exec-prefix=/usr \
-		--bindir=/usr/bin \
-		--sbindir=/usr/sbin \
-		--libexecdir=/usr/lib \
-		--datadir=/usr/share \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib \
-		--includedir=/usr/include \
-		--infodir=/usr/share/info \
-		--mandir=/usr/share/man \
-		$(DISABLE_LARGEFILE) \
-		$(DISABLE_NLS) \
-		$(NETSNMP_PKG_CONFIGURE_OPTIONS) \
-	);
-	touch $@
-	
-$(NETSNMP_BINARY): $(NETSNMP_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE1) -C $(NETSNMP_DIR)
 
-$(NETSNMP_TARGET_BINARY): $(NETSNMP_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 	for file in $$(find $(NETSNMP_DIR) -name 'libnetsnmp*.so*'); do \
-		cp -d $$file $(NETSNMP_TARGET_DIR)/root/usr/lib/; \
+		cp -d $$file $(NETSNMP_DEST_DIR)/usr/lib/; \
 	done
 	$(TARGET_STRIP) $(NETSNMP_TARGET_LIBS)
 
-	mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/agent
-	mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/library
-	cp $(NETSNMP_DIR)/agent/mibgroup/struct.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
-	cp $(NETSNMP_DIR)/agent/mibgroup/util_funcs.h $(TARGET_MAKE_PATH)/../include/net-snmp
-	cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_MAKE_PATH)/../include/net-snmp/library
-	cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
+	#mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/agent
+	#mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/library
+	#cp $(NETSNMP_DIR)/agent/mibgroup/struct.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
+	#cp $(NETSNMP_DIR)/agent/mibgroup/util_funcs.h $(TARGET_MAKE_PATH)/../include/net-snmp
+	#cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_MAKE_PATH)/../include/net-snmp/library
+	#cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
 
-$(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME): $(DL_DIR)/$(NETSNMP_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(NETSNMP_PKG_SOURCE)
-	@touch $@
+$(pkg):
 
-netsnmp: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-netsnmp-package: $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(NETSNMP_PKG_SOURCE) $(NETSNMP_PKG_NAME)
-
-netsnmp-precompiled: uclibc $(NETSNMP_OPENSSL) $(NETSNMP_ZLIB) netsnmp $(NETSNMP_TARGET_BINARY) 
-
-netsnmp-source: $(NETSNMP_DIR)/.unpacked $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
-
-netsnmp-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(NETSNMP_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(NETSNMP_PKG_SOURCE)
-	rm -f $(NETSNMP_DS_CONFIG_FILE)
+	$(RM) $(NETSNMP_DS_CONFIG_FILE)
 
-netsnmp-dirclean:
-	rm -rf $(NETSNMP_DIR)
-	rm -rf $(PACKAGES_DIR)/$(NETSNMP_PKG_NAME)
-	rm -f $(PACKAGES_DIR)/.$(NETSNMP_PKG_NAME)
-	rm -f $(NETSNMP_DS_CONFIG_FILE)
+$(pkg)-uninstall:
+	$(RM) $(NETSNMP_TARGET_BINARY) 
+	$(RM) $(NETSNMP_TARGET_LIBS)
 
-netsnmp-uninstall:
-	rm -f $(NETSNMP_TARGET_BINARY) 
-	rm -f $(NETSNMP_TARGET_LIBS)
-
-netsnmp-list:
-ifeq ($(strip $(DS_PACKAGE_NETSNMP)),y)
-	@echo "S40netsnmp-$(NETSNMP_VERSION)" >> .static
-else
-	@echo "S40netsnmp-$(NETSNMP_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)
