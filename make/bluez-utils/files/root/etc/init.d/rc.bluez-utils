@@ -23,7 +23,7 @@ stop() {
 }
 
 case "$1" in
-	start)
+	""|start)
 		start
 	;;
 	stop)
@@ -35,7 +35,7 @@ case "$1" in
 		start
 	;;
 	*)
-		echo "rc.bluetooth [start|stop|restart]"
+		echo "rc.bluez-utils [start|stop|restart]"
 	;;
 esac
 
