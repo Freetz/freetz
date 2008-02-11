@@ -1,3 +1,7 @@
+# Helper script for shell script visualise_make
+#
+# Author: Alexander Kriegisch (http://scrum-master.de), 2008-02-10
+
 use Makefile::GraphViz;
 
 # Parse makefile
