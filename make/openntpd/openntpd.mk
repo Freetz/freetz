@@ -1,99 +1,36 @@
-OPENNTPD_VERSION:=3.9p1
-OPENNTPD_SOURCE:=openntpd-$(OPENNTPD_VERSION).tar.gz
-OPENNTPD_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenNTPD/
-OPENNTPD_MAKE_DIR:=$(MAKE_DIR)/openntpd
-OPENNTPD_DIR:=$(SOURCE_DIR)/openntpd-$(OPENNTPD_VERSION)
-OPENNTPD_BINARY:=$(OPENNTPD_DIR)/ntpd
-OPENNTPD_PKG_VERSION:=0.3b
-OPENNTPD_PKG_SOURCE:=openntpd-$(OPENNTPD_VERSION)-dsmod-$(OPENNTPD_PKG_VERSION).tar.bz2
-OPENNTPD_PKG_SITE:=http://www.mhampicke.de/dsmod/packages
-OPENNTPD_TARGET_DIR:=$(PACKAGES_DIR)/openntpd-$(OPENNTPD_VERSION)
-OPENNTPD_TARGET_BINARY:=$(OPENNTPD_TARGET_DIR)/root/usr/sbin/ntpd
+$(call PKG_INIT_BIN, 3.9p1)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenNTPD/
+$(PKG)_BINARY:=$($(PKG)_DIR)/ntpd
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ntpd
+$(PKG)_STARTLEVEL=40
 
-$(DL_DIR)/$(OPENNTPD_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(OPENNTPD_SITE)/$(OPENNTPD_SOURCE)
+$(PKG)_CONFIGURE_OPTIONS += --with-builtin-arc4random
+$(PKG)_CONFIGURE_OPTIONS += --with-privsep-user=ntp
+$(PKG)_CONFIGURE_OPTIONS += --with-adjtimex
 
-$(DL_DIR)/$(OPENNTPD_PKG_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(OPENNTPD_PKG_SOURCE) $(OPENNTPD_PKG_SITE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$(OPENNTPD_DIR)/.unpacked: $(DL_DIR)/$(OPENNTPD_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(OPENNTPD_SOURCE)
-	for i in $(OPENNTPD_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(OPENNTPD_DIR) $$i; \
-	done
-	touch $@
-
-$(OPENNTPD_DIR)/.configured: $(OPENNTPD_DIR)/.unpacked
-	( cd $(OPENNTPD_DIR); rm -f config.{cache,status}; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-                ./configure \
-		  --target=$(GNU_TARGET_NAME) \
-		  --host=$(GNU_TARGET_NAME) \
-                  --build=$(GNU_HOST_NAME) \
-                  --program-prefix="" \
-                  --program-suffix="" \
-                  --prefix=/usr \
-                  --exec-prefix=/usr \
-                  --bindir=/usr/bin \
-                  --datadir=/usr/share \
-                  --includedir=/usr/include \
-                  --infodir=/usr/share/info \
-                  --libdir=/usr/lib \
-                  --libexecdir=/usr/lib \
-                  --localstatedir=/var \
-                  --mandir=/usr/share/man \
-                  --sbindir=/usr/sbin \
-                  --sysconfdir=/etc \
-                  $(DISABLE_LARGEFILE) \
-                  $(DISABLE_NLS) \
-                  --with-builtin-arc4random \
-                  --with-privsep-user=ntp \
-                  --with-adjtimex \
-	);
-	touch $@
-
-$(OPENNTPD_BINARY): $(OPENNTPD_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) -C $(OPENNTPD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -DUSE_ADJTIMEX" \
 		LDFLAGS=""
 
-$(OPENNTPD_TARGET_BINARY): $(OPENNTPD_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$(PACKAGES_DIR)/.openntpd-$(OPENNTPD_VERSION): $(DL_DIR)/$(OPENNTPD_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(OPENNTPD_PKG_SOURCE)
-	@touch $@
+$(pkg):
 
-openntpd: $(PACKAGES_DIR)/.openntpd-$(OPENNTPD_VERSION)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-openntpd-package: $(PACKAGES_DIR)/.openntpd-$(OPENNTPD_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(OPENNTPD_PKG_SOURCE) openntpd-$(OPENNTPD_VERSION)
-
-openntpd-precompiled: uclibc openntpd $(OPENNTPD_TARGET_BINARY) 
-
-openntpd-source: $(OPENNTPD_DIR)/.unpacked $(PACKAGES_DIR)/.openntpd-$(OPENNTPD_VERSION)
-
-openntpd-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(OPENNTPD_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(OPENNTPD_PKG_SOURCE)
 
-openntpd-dirclean:
-	rm -rf $(OPENNTPD_DIR)
-	rm -rf $(PACKAGES_DIR)/openntpd-$(OPENNTPD_VERSION)
-	rm -f $(PACKAGES_DIR)/.openntpd-$(OPENNTPD_VERSION)
+$(pkg)-uninstall: 
+	$(RM) $(OPENNTPD_TARGET_BINARY)
 
-openntpd-uninstall: 
-	rm -f $(OPENNTPD_TARGET_BINARY)
-
-openntpd-list:
-ifeq ($(strip $(DS_PACKAGE_OPENNTPD)),y)
-	@echo "S40openntpd-$(OPENNTPD_VERSION)" >> .static
-else
-	@echo "S40openntpd-$(OPENNTPD_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)
