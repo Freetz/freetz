@@ -1,90 +1,43 @@
-JAMVM_VERSION:=1.4.5
-JAMVM_UGLY_VERSION:=0.0.0
-JAMVM_SOURCE:=jamvm-$(JAMVM_VERSION).tar.gz
-JAMVM_SITE:=http://mesh.dl.sourceforge.net/sourceforge/jamvm
-JAMVM_MAKE_DIR:=$(MAKE_DIR)/jamvm
-JAMVM_DIR:=$(SOURCE_DIR)/jamvm-$(JAMVM_VERSION)
-JAMVM_BINARY:=$(JAMVM_DIR)/src/jamvm
-JAMVM_LIB_BINARY:=$(JAMVM_DIR)/src/.libs/libjvm.so.$(JAMVM_UGLY_VERSION)
-JAMVM_TARGET_DIR:=$(PACKAGES_DIR)/jamvm-$(JAMVM_VERSION)
-JAMVM_TARGET_BINARY:=$(JAMVM_TARGET_DIR)/root/usr/bin/jamvm
-JAMVM_TARGET_LIB_BINARY:=$(JAMVM_TARGET_DIR)/root/usr/lib/libjvm.so.$(JAMVM_UGLY_VERSION)
-JAMVM_PKG_VERSION:=0.1
-JAMVM_PKG_SOURCE:=jamvm-$(JAMVM_VERSION)-dsmod-$(JAMVM_PKG_VERSION).tar.bz2
-JAMVM_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
+$(call PKG_INIT_BIN, 1.4.5)
+$(PKG)_UGLY_VERSION:=0.0.0
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/jamvm
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/jamvm
+$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/src/.libs/libjvm.so.$($(PKG)_UGLY_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/jamvm
+$(PKG)_TARGET_LIB_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libjvm.so.$($(PKG)_UGLY_VERSION)
+$(PKG)_STARTLEVEL=40
 
-$(DL_DIR)/$(JAMVM_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(JAMVM_SITE)/$(JAMVM_SOURCE)
+$(PKG)_DEPENDS_ON := libffi-sable classpath
 
-$(DL_DIR)/$(JAMVM_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(JAMVM_PKG_SOURCE) $(JAMVM_PKG_SITE)
+$(PKG)_CONFIGURE_OPTIONS += --enable-ffi
+$(PKG)_CONFIGURE_OPTIONS += --disable-int-threading
+$(PKG)_CONFIGURE_OPTIONS += --with-classpath-install-dir="/usr/share/classpath"
 
-$(JAMVM_DIR)/.unpacked: $(DL_DIR)/$(JAMVM_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(JAMVM_SOURCE)
-	for i in $(JAMVM_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(JAMVM_DIR) $$i; \
-	done
-	touch $@
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$(JAMVM_DIR)/.configured: $(JAMVM_DIR)/.unpacked
-	( cd $(JAMVM_DIR); rm -f config.status; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		./configure \
-		--target="$(GNU_TARGET_NAME)" \
-		--host="$(GNU_TARGET_NAME)" \
-		--build="$(GNU_HOST_NAME)" \
-		--enable-ffi \
-		--disable-int-threading \
-		--with-classpath-install-dir="/usr/share/classpath" \
-	);
-	touch $@
-	
-
-$(JAMVM_BINARY) $(JAMVM_LIB_BINARY): $(JAMVM_DIR)/.configured
+$($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(JAMVM_DIR)/src
 
-$(JAMVM_TARGET_BINARY): $(JAMVM_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$(JAMVM_TARGET_LIB_BINARY): $(JAMVM_LIB_BINARY)
-	cp -a $(JAMVM_DIR)/src/.libs/libjvm*.so* $(JAMVM_TARGET_DIR)/root/usr/lib
+$($(PKG)_TARGET_LIB_BINARY): $($(PKG)_LIB_BINARY)
+	cp -a $(JAMVM_DIR)/src/.libs/libjvm*.so* $(JAMVM_DEST_DIR)/usr/lib
 	$(TARGET_STRIP) $@
 
-$(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION): $(DL_DIR)/$(JAMVM_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(JAMVM_PKG_SOURCE)
-	@touch $@
+$(pkg):
 
-jamvm: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_LIB_BINARY)
 
-jamvm-package: $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(JAMVM_PKG_SOURCE) jamvm-$(JAMVM_VERSION)
-
-jamvm-precompiled: uclibc libffi-sable-precompiled classpath-precompiled jamvm \
-		$(JAMVM_TARGET_BINARY) $(JAMVM_TARGET_LIB_BINARY)
-
-jamvm-source: $(JAMVM_DIR)/.unpacked $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
-
-jamvm-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(JAMVM_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(JAMVM_PKG_SOURCE)
 
-jamvm-dirclean:
-	rm -rf $(JAMVM_DIR)
-	rm -rf $(PACKAGES_DIR)/jamvm-$(JAMVM_VERSION)
-	rm -f $(PACKAGES_DIR)/.jamvm-$(JAMVM_VERSION)
+$(pkg)-uninstall:
+	$(RM) $(JAMVM_TARGET_BINARY)
+	$(RM) $(JAMVM_DEST_DIR)/usr/lib/libjvm*.so*
 
-jamvm-uninstall:
-	rm -f $(JAMVM_TARGET_BINARY)
-	rm -f $(JAMVM_TARGET_DIR)/root/usr/lib/libjvm*.so*
-
-jamvm-list:
-ifeq ($(strip $(DS_PACKAGE_JAMVM)),y)
-	@echo "S40jamvm-$(JAMVM_VERSION)" >> .static
-else
-	@echo "S40jamvm-$(JAMVM_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)
