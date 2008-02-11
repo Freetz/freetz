@@ -1,7 +1,8 @@
-# Makefile for DS-Mod_26 (ds26)
+# Makefile for Freetz
 #
 # Taken from buildroot2 with only slight non-functional modifications
 # (strings changed from 'Buildroot' to 'DS-Mod').
+# (strings changed from 'DS-Mod' to 'Freetz').
 #
 # Original version can be obtained this way:
 # svn://uclibc.org/trunk/buildroot/package/config

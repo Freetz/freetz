@@ -23,7 +23,7 @@ config DS_LIB_libterminfo_showall
 		to be able to have character-based display output, independent of the
 		type of terminal.
 
-		The default selection for the DS-mod should be sufficient for most
+		The default selection for the Freetz should be sufficient for most
 		cases. However, you can extend the selection to fit your own requirements.
 
 EOF
