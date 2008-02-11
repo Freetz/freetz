@@ -30,13 +30,16 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 
-$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBART_LGPL_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libart*
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libart* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libart2-config \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libart-2.0.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libart-2.0
 
 $(pkg)-uninstall:
-	rm -f $(LIBART_LGPL_TARGET_DIR)/libart*.so*
+	$(RM) $(LIBART_LGPL_TARGET_DIR)/libart*.so*
 
 $(PKG_FINISH)
