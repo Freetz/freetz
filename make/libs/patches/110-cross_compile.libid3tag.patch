@@ -1,0 +1,48 @@
+--- Makefile.am.orig	2004-02-17 03:11:28.000000000 +0100
++++ Makefile.am	2008-02-11 17:52:03.000000000 +0100
+@@ -114,7 +114,6 @@
+ 	sed -e '/\$$''Id: /s/\$$//g' >genre.dat
+ 
+ libtool: $(LIBTOOL_DEPS)
+-	$(SHELL) ./config.status --recheck
+ 
+ again:
+ 	$(MAKE) clean
+--- Makefile.in.orig	2008-02-11 17:44:30.000000000 +0100
++++ Makefile.in	2008-02-11 17:52:12.000000000 +0100
+@@ -245,18 +245,7 @@
+ am--refresh:
+ 	@:
+ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
+-	@for dep in $?; do \
+-	  case '$(am__configure_deps)' in \
+-	    *$$dep*) \
+-	      echo ' cd $(srcdir) && $(AUTOMAKE) --foreign '; \
+-	      cd $(srcdir) && $(AUTOMAKE) --foreign  \
+-		&& exit 0; \
+-	      exit 1;; \
+-	  esac; \
+-	done; \
+-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  Makefile'; \
+-	cd $(top_srcdir) && \
+-	  $(AUTOMAKE) --foreign  Makefile
++
+ .PRECIOUS: Makefile
+ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ 	@case '$?' in \
+@@ -275,7 +275,6 @@
+ 	esac;
+ 
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+-	$(SHELL) ./config.status --recheck
+ 
+ $(top_srcdir)/configure:  $(am__configure_deps)
+ 	cd $(srcdir) && $(AUTOCONF)
+@@ -797,7 +796,6 @@
+ 	sed -e '/\$$''Id: /s/\$$//g' >genre.dat
+ 
+ libtool: $(LIBTOOL_DEPS)
+-	$(SHELL) ./config.status --recheck
+ 
+ again:
+ 	$(MAKE) clean
