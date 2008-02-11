@@ -5,7 +5,7 @@ if [ "$DSMOD" = "0" ]; then
   USERSCRIPT_LINK="<li><a href=\"dtmfbox_userscript.cgi\" target=\"_new\" >Benutzerdefiniertes Skript</a></li><br>"
   SCRIPT=dtmfbox.cgi
 else
-  DSMOD_LINK="<hr color=\"black\"></p><li><a href='../'>DS-MOD</a></li>"
+  DSMOD_LINK="<hr color=\"black\"></p><li><a href='../'>Freetz</a></li>"
   USERSCRIPT_LINK="<li><a href=\"$SCRIPT?current_page=userscript\" >Benutzerdefiniertes Skript</a></li><br>"
   SCRIPT=""
 fi
