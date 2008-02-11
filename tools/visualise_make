@@ -1,0 +1,207 @@
+#!/bin/bash
+
+# Visualise makefile dependencies using Perl module Makefile::GraphViz, see
+# http://search.cpan.org/~agent/Makefile-GraphViz/lib/Makefile/GraphViz.pm
+
+CMD=$(basename $0)
+
+usage()
+{
+	cat << EOF
+
+Usage:     $CMD [options] target [log-target]
+More help: $CMD -?
+
+EOF
+}
+
+help()
+{
+	cat << EOF
+
+$CMD - create PNG image visualising a Make target's dependency graph
+
+Usage: $CMD [options] target [log-target]
+  -?          print this usage help
+  -a [lfica]  perform specified actions (default: lfi)
+     l        create log via "make -p"
+     f        filter log as a preparation for visualisation
+     i        create dependency graph image for specified target
+     c        clean up: delete log and filtered file before exiting
+     a        all: equal to "lfic"
+  -l <file>   log file name (default: $CMD.log); contains complete
+              output of: LC_ALL=C make -j1 -pns log-target
+  -f <file>   filtered log file name (default: $CMD.flt); contains only the
+              main makefile's targets (no sub-makefile contents in case of 
+              recursive make calls) without variables, implicit rules,
+              actions, comments etc., i.e. just the data needed for the
+              dependency graph
+  -i <file>   alternative image file name (default: <target>.png, but dots,
+              spaces and slashes in target names will be replaced by
+              underscores, condensing consecutive underscores to one, i.e.
+              target "../src/foo_/bar/zot.h" becomes image file name
+              "_src_foo_bar_zot_h.png")
+  target      target to be visualised, resulting in <target>.png (mandatory)
+  log-target  target for log file creation (optional); default: none, i.e.
+              makefile's default target (usually "all"); specify only if you
+              wish to create the log-file from a target other than the
+              default one.
+
+Examples:
+  $CMD my_target
+      create + filter log file, possibly overwriting existing *.log, *.flt
+      files; then create my_target.png containing visual representation of
+      my_target's dependency graph; do not delete *.log, *.flt so they can be
+      re-used with another target
+  $CMD -a i my_other_target
+      create my_other_target.png, re-using existing $CMD.flt
+  $CMD -a fi -l my_dir/saved_make.log -i graph-03.png my_3rd_target
+      filter existing make log into $CMD.flt, then create
+      graph-03.png for specified target
+  $CMD -a a -l make.log -f make.flt my_target big_target
+      create + filter log file, using custom file names make.log, make.flt,
+      but do not use default make target for log file creation, but big_target;
+      then create visual representation of my_target's dependency graph;
+      finally, clean up make.log, make.flt
+  $CMD -a c
+      delete $CMD.log and $CMD.flt, do nothing else
+  $CMD -?
+      print usage help
+
+Hints for creating custom log files:
+  - You may create your own make logs via "make -p".
+  - If so, take care to use "-j1" so as to get a clean log file with
+    sequential entries. Multi-threaded make may create garbled output.
+    If your makefile contains -j2 or greater, change it there temporarily,
+    because the command line switch might not override the makefile setting.
+  - If you just want to simulate a make run in order to create a log file,
+    but do not want to actually build files, use "make -n" (dry-run).
+    Combined with log output generation this would be "make -pn".
+  - This tool can only filter English make logs, so please use
+    "LC_ALL=C make ..." so as to avoid locale-specific output.
+  - This tool only works well for top-level makefiles, so if you have a
+    build system using recursive make calls, just modify the desired
+    sub-build's "make" call so as to create a log file of its own,
+    subsequently filtering it by
+        $CMD -a fi -l custom_make.log my_target
+    The reason it does not work for recursive make is that target names can
+    repeat themselves (e.g. often-used standard targets like all, install,
+    clean, menuconfig, distclean). To avoid problems, the filter action
+    always eliminates sub-make output when creating *.flt from *.log.
+
+EOF
+}
+
+clean_up()
+{
+	rm -rf "$LOG_FILE"
+	rm -rf "$FILTER_FILE"
+}
+
+# No args -> short usage help
+if [ $# -eq 0 ]; then
+	usage >&2
+	exit 1
+fi
+
+# First arg "-?" -> verbose help
+if [ "$1" == "-?" ]; then
+	help
+	exit 0
+fi
+
+# Set defaults
+DO_LOG=y
+DO_FILTER=y
+DO_IMAGE=y
+unset DO_CLEAN
+LOG_FILE=$CMD.log
+FILTER_FILE=$CMD.flt
+
+while getopts "a:l:f:i:" opt; do
+	case "$opt" in
+		a)
+			ACTIONS="$OPTARG"
+			# Actions explicitly specified -> only use these, reset others
+			unset DO_LOG DO_FILTER DO_IMAGE DO_CLEAN
+			[ "${ACTIONS##*l*}" ] || DO_LOG=y
+			[ "${ACTIONS##*f*}" ] || DO_FILTER=y
+			[ "${ACTIONS##*i*}" ] || DO_IMAGE=y
+			[ "${ACTIONS##*c*}" ] || DO_CLEAN=y
+			[ "${ACTIONS##*a*}" ] || { DO_LOG=y; DO_FILTER=y; DO_IMAGE=y; DO_CLEAN=y; }
+			;;
+		l)
+			LOG_FILE="$OPTARG"
+			;;
+		f)
+			FILTER_FILE="$OPTARG"
+			;;
+		i)
+			IMAGE_FILE=$(echo "$OPTARG"  | sed -r 's#[_/. \t]+#_#g').png
+			;;
+		*)
+			usage >&2
+			exit 1
+			;;
+	esac
+done
+shift $(($OPTIND - 1))
+
+# Special case: clean up is the only action, no target specified
+if [ $# -eq 0 -a "$DO_CLEAN" -a ! "$DO_LOG" -a ! "$DO_FILTER" -a ! "$DO_IMAGE" ]; then
+	clean_up
+	exit 0
+fi
+
+# Now there should be 1 or 2 positional parameters left (target, log-target)
+if [ $# -ne 1 -a $# -ne 2 ]; then
+	usage >&2
+	exit 1
+fi
+
+TARGET="$1"
+LOG_TARGET="$2"
+IMAGE_FILE=$(echo "$TARGET"  | sed -r 's#[_/. \t]+#_#g').png
+
+# Step 1: generate log file
+if [ "$DO_LOG" ]; then
+	echo -n "Creating make log '$LOG_FILE' from log target '$LOG_TARGET' ... "
+	LC_ALL=C make -j1 -pns $LOG_TARGET > "$LOG_FILE" 2> /dev/null
+	echo "done."
+fi
+
+# Step 2: filter log file
+if [ "$DO_FILTER" ]; then
+	echo -n "Filtering make log '$LOG_FILE' into '$FILTER_FILE'... "
+	# Number of lines in make.log
+	LOG_LINES=$(cat "$LOG_FILE" | wc -l)
+	# Line no. of top-level (i.e. last) make database in log file
+	MAKE_DB_LINE=$(grep -nE '^# Make data base' "$LOG_FILE" | tail -1 | cut -d: -f1)
+	# Number of lines at end of log file to use for visualisation
+	TAIL_LINES=$(( $LOG_LINES - $MAKE_DB_LINE + 1 ))
+	# Extract top-level make database, then remove everything but
+	# dependency declarations
+	tail "$LOG_FILE" -n $TAIL_LINES |
+		sed -r '/^# GNU Make/,/^# Make data base/d' |
+		sed -r '/^# Variables$/,/^# Files$/d' |
+		sed -r '/^#.*/d;/^[[:space:]]+.*/d' |
+		sed -r '/^[^:]*$/d' \
+		> "$FILTER_FILE"
+	echo "done."
+fi
+
+# Step 3: visualise dependency graph as PNG image
+if [ "$DO_IMAGE" ]; then
+	echo -n "Creating dependency graph image '$IMAGE_FILE' for target '$TARGET' ... "
+	perl $(dirname $0)/$CMD.pl "$FILTER_FILE" $TARGET "$IMAGE_FILE" > /dev/null 2>&1
+	echo "done."
+fi
+
+# Step 4: clean up log + filter files
+if [ "$DO_CLEAN" ]; then
+	echo -n "Cleaning up log/filter files ... "
+	clean_up > /dev/null 2>&1
+	echo "done."
+fi
+
+exit 0
