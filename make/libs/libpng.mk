@@ -42,9 +42,15 @@ $(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBPNG_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng*
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpng*.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libpng*-config \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/png*.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libpng12 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man3/libpng*.3 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man5/png.5
 
 $(pkg)-uninstall:
-	rm -f $(LIBPNG_TARGET_DIR)/libpng*.so*
+	$(RM) $(LIBPNG_TARGET_DIR)/libpng*.so*
 
 $(PKG_FINISH)

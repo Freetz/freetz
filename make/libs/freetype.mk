@@ -38,9 +38,13 @@ $(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(FREETYPE_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/freetype*
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/freetype-config \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/freetype2 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/freetype2.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/freetype2.m4
 
 $(pkg)-uninstall:
-	rm -f $(FREETYPE_TARGET_DIR)/freetype*.so*
+	$(RM) $(FREETYPE_TARGET_DIR)/libfreetype*.so*
 
 $(PKG_FINISH)
