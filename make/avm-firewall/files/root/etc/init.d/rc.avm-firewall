@@ -1,0 +1,132 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/var/mod/sbin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=avm-firewall
+# Variablen fuer Pfade
+REAL=/var/flash/ar7.cfg
+REALCOPY=/var/tmp/firewall.ar7.copy
+CONFIG=/mod/etc/conf/avm-firewall.cfg
+TEMP1=/var/tmp/firewall.temp1
+
+case "$1" in
+        ""|load)
+                BOXID=`sed -n 's/ProductID[ ]*//gp' /proc/sys/urlader/environment | tr -d '\t'`
+                BOXOEM=`cat /proc/sys/urlader/firmware_version`
+                # Original Regeln Kennzeichnen, falls noch nicht geschehen
+                if [  `sed "/targets/q" $REAL | grep -c '/\*AVM\*/'` -eq 0 ]; then
+                    echo "in if"
+                    DEFar7=`cat "/etc/default.$BOXID/$BOXOEM/ar7.cfg" | sed -n '/dslifaces/,/} {/p'`
+                    DEFli=`echo "$DEFar7" | sed -n '/lowinput/,/}/p' | sed  -n "s/^[ ]*\"//g ; /^permit\|deny\|reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\'`
+                    DEFho=`echo "$DEFar7" | sed -n '/highoutput/,/}/p' | sed  -n "s/^[ ]*\"//g ; /^permit\|deny\|reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\'`
+                    tmp='cat $REAL | sed "/dslifaces/,/lowoutput/ {/'$DEFli'/ s/^[ ]*\".*\"[,;][ ]*$/&\/*AVM*\/ /g}" | sed "/dslifaces/,/} {/  {/highoutput/,/}/ {/'$DEFho'/ s/^[ ]*\".*\"[,;][ ]*$/&\/*AVM*\/ /g}}" > $REALCOPY'
+                    eval $tmp
+                    cat $REALCOPY > $REAL
+                fi
+                ;;
+esac
+
+# Suche nach Bereich von "dslifaces" bis "} {"
+DSLIFACES="`cat $REAL | sed   -n '/dslifaces/,/} {/p' `";
+# In diesem Bereich der von "lowinput" bis zu schliessenden Klammer
+LOWINPUT=`echo "$DSLIFACES" | sed -n '/lowinput/,/}/p' `
+# Die anzahl Leerzeichen davorbestimmen:
+# Nimm die letzte Zeile dafuer: In der Zeile, die mit Leerzeichen anfaengt
+# (und merke dir diese Leerzeichen in "\1" [mittels dem ersten  \( und \) ] )
+# und danach mit "deny , "permit oder "reject weitergeht und mit einem ; endet
+# ersetze die ganze Zeile nur mit den Leerzeichen, so dass die "Ausgabe" nur diese
+# Leerzeichen sind
+SPACES="`echo "$LOWINPUT" | sed -n 's/\(^[ ]*\)"\(permit\|deny\|reject\).*;.*/\1/p'`";
+
+# Der "accesslit" String (leere Rulestabelle ist ohne accesslist-Eintrag!)
+ACCL=`echo "$DSLIFACES" | grep -m1 accesslist`
+RET='
+'
+
+# Die eigentlichen Rules rauslesen (Am Anfang Leereichen und " loeschen, am Ende die ", oder "; Kombination)
+LIRULES=`echo "$LOWINPUT"| sed  -n "s/^[ ]*\"//g ; /^permit\|deny\|reject/ {s/\"[,;]//g;s/[ ]*$//gp}"`
+
+HIGHOUTPUT="`echo "$DSLIFACES" | sed -n '/highoutput/,/}/p'`"
+HORULES=`echo "$HIGHOUTPUT"| sed  -n "s/^[ ]*\"//g ; /^permit\|deny\|reject/ {s/\"[,;]//g;s/[ ]*$//gp}"`
+
+case "$1" in
+        ""|load)
+               echo "export AVM_FIREWALL_RULESTABLE_LI='""$LIRULES""'" > $CONFIG
+               echo "export AVM_FIREWALL_RULESTABLE_HO='""$HORULES""'" >> $CONFIG
+               echo "export AVM_FIREWALL_GUI=''" >> $CONFIG
+               echo "export _cgi_width='1004'" >> $CONFIG
+               echo "export AVM_FIREWALL_DO_ACTIVATE=''" >> $CONFIG
+           ;;
+esac
+
+
+case "$1" in
+        ""|load|start|restart)
+                . /mod/etc/conf/$DAEMON.cfg
+                ;;
+esac
+
+start() {
+
+        if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+                echo "Error[$DAEMON]: not configured" 1>&2
+                exit 1
+        fi
+
+         if ` grep "*gui*" /mod/etc/conf/avm-firewall.cfg `; then
+                echo "`sed -e "s/\*gui\*//g" $CONFIG`" > $CONFIG
+                echo "Saving new firewall rules..."
+
+
+                # Die LI-Accesslist (vorne "Spaces", dann die "Rules" ans Ende ", letzte Zeile "; )
+                LI="$ACCL$RET"`echo "$AVM_FIREWALL_RULESTABLE_LI" | sed "s/^/$SPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2% ; $ s/,/;/"`
+                # Die HO-Liste...
+                HO="$ACCL$RET"`echo "$AVM_FIREWALL_RULESTABLE_HO" | sed "s/^/$SPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2% ; $ s/,/;/"`
+                # ... und alles Einsetzen ...
+                cat  $REAL | awk -v v1="$LI" -v v2="$HO" '/dslifaces/ {ifstart=1} ;/targets/ {ifstart=0}; /lowinput/{if (ifstart && !liend) {listart=1}};/highoutput/{if (ifstart && !hoend) {hostart=1}}; /policy/{{if (listart) {lirules=1;printli=1}}; {if (hostart) {horules=1;printho=1}}};/\}/{{if (lirules) {lirules=0; listart=0}}; {if(horules){horules=0; hostart=0}}} ; {if (lirules) {{if (printli) {print $0;print v1; liend=1; printli=0}}; {next}}} ;{if(horules){{if (printho){print $0; print v2; hoend=1; printho=0}}; {next}}}; {print}' > $REALCOPY
+
+                # echte ar7.cfg schreiben
+                cat $REALCOPY > $REAL
+                if [ "$AVM_FIREWALL_DO_ACTIVATE" == "yes" ]; then
+                	echo "Requested activation of rule set. Calling \"rc.net reload\" ..."
+                	exec /etc/init.d/rc.net reload
+                	echo "done";
+                fi
+        else
+                echo "ERROR: Can only used by GUI."
+        fi
+}
+
+stop () {
+        echo "Stoping firewall is not possible. Firewall is running by AVM per default."
+        exit 1
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                start
+                ;;
+        status)
+                echo 'running'
+                ;;
+        ""|load)
+                modreg cgi $DAEMON AVM-Firewall
+                ;;
+        unload)
+                stop
+                modunreg cgi $DAEMON
+                ;;
+        *)
+                echo "Usage: $0 [start|stop|restart|status]" 1>&2
+                exit 1
+                ;;
+esac
+
+exit 0
