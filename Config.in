@@ -932,7 +932,7 @@ config DS_PATCH_GETCONS
 		Patch /etc/profile so that console messages are not redirected to
 		/dev/pts/0. These can sometimes be very anoying.
 
-config DS_PATCH_WEBSRV
+config DS_REMOVE_WEBSRV
 	bool "Replace AVM web server by httpd"
 	depends on \
 		! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN ) \
@@ -952,25 +952,21 @@ config DS_PATCH_WEBSRV
 		Media Server from USB Labor firmware" is not selected, 'libwebsrv.so'
 		will also be removed, because only those three binaries use it.
 
-config DS_PATCH_UPNP
+config DS_REMOVE_UPNP
 	bool "Remove UPnP daemon (igdd)"
-	depends on \
-		! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN ) \
-		&& ! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH ) \
-		&& ! DS_TYPE_FON_WLAN_7141 \
-		&& ! DS_TYPE_FON_WLAN_7170 \
-		&& ! DS_TYPE_FON_WLAN_7270 \
-		&& ! DS_TYPE_WLAN_3131 \
-		&& ! DS_TYPE_WLAN_3170
+	select DS_REMOVE_UPNP_LIBS if \
+			! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN ) \
+			&& ! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH ) \
+			&& ! DS_TYPE_FON_WLAN_7141 \
+			&& ! DS_TYPE_FON_WLAN_7170 \
+			&& ! DS_TYPE_FON_WLAN_7270 \
+			&& ! DS_TYPE_WLAN_3131 \
+			&& ! DS_TYPE_WLAN_3170
 	default n
 	help
 		Remove Universal Plug'n'Play daemon 'igdd' and some more files used by
 		it from firmware. Patch init scripts so they can cope with the
 		non-existent binary.
-
-		If "Replace AVM web server by httpd" patch and "Integrate
-		Media Server from USB Labor firmware" is not selected, 'libwebsrv.so'
-		will also be removed, because only those three binaries use it.
 
 		ATTENTION: Make sure you deactivate all UPnP features in the web menu
 		before updating the firmware with this option. It may not be harmful
@@ -980,6 +976,11 @@ config DS_PATCH_UPNP
 		    System
 		      Netzwerkeinstellungen
 		        Statusinformationen über UPnP übertragen (empfohlen)
+
+config DS_REMOVE_UPNP_LIBS
+	bool 
+	depends on DS_REMOVE_UPNP
+	default n
 
 config DS_REMOVE_USERMAN
 	bool "Remove usermand and userman.ko - EXPERIMENTAL"
@@ -995,16 +996,9 @@ config DS_REMOVE_USERMAN
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
 config DS_REMOVE_DSLD
-	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"
+	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"	
 	default n
-	select DS_PATCH_UPNP \
-		if ! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN ) \
-		&& ! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH ) \
-		&& ! DS_TYPE_FON_WLAN_7141 \
-		&& ! DS_TYPE_FON_WLAN_7170 \
-		&& ! DS_TYPE_FON_WLAN_7270 \
-		&& ! DS_TYPE_WLAN_3131 \
-		&& ! DS_TYPE_WLAN_3170
+	select DS_REMOVE_UPNP
 	select DS_REMOVE_USERMAN if ! (DS_TYPE_FON_5140 || DS_TYPE_FON_WLAN_7113 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
 	help
 		Remove DSL deamon (dsld), if you are planning to use your box as a simple
@@ -1063,21 +1057,6 @@ config DS_REMOVE_VOIP_ISDN
 
 		NOTE: Corresponding web UI files will also be removed, so you will
 		encounter several empty web pages or submenus.
-
-		EXPERIMENTAL FEATURE, USE AT OWN RISK!
-
-config DS_PATCH_MEDIASRV
-	bool "Integrate Media Server from USB Labor firmware - EXPERIMENTAL"
-	depends on DS_HAS_USB_HOST \
-		&& ! DS_TYPE_FON_WLAN_7170 \
-		&& ! DS_TYPE_FON_WLAN_7270
-	default n
-	help
-		Extract the media server from the USB Labor firmware and integrate
-		it into the new firmware. Patch two init scripts to reflect the
-		presence of the media server binary.
-
-		Don't forget to copy the labor firmware image to the 'dl' folder!
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
