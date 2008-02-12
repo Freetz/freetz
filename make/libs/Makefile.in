@@ -16,6 +16,10 @@ ifeq ($(strip $(DS_LIB_libopenobex)),y)
 LIBS+=openobex
 endif
 
+ifeq ($(strip $(DS_LIB_libsysfs)),y)
+LIBS+=sysfsutils
+endif
+
 ifeq ($(strip $(DS_LIB_libcapi20)),y)
 LIBS+=libcapi
 endif

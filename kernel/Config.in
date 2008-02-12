@@ -109,6 +109,16 @@ config DS_MODULE_usbcore
 	bool "usbcore.ko"
 	default n
 
+config DS_MODULE_usbip
+	bool "usbip.ko"
+	select DS_MODULE_usbip_common_mod
+	select DS_MODULE_usbcore
+	default n
+
+config DS_MODULE_usbip_common_mod
+	bool "usbip_common_mod.ko"
+	default n
+
 config DS_MODULE_usbserial
 	bool "usbserial.ko"
 	default n

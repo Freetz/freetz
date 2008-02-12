@@ -1,0 +1,28 @@
+Index: drivers/2.6.21/Makefile
+===================================================================
+--- drivers/2.6.21/Makefile	(Revision 49)
++++ drivers/2.6.21/Makefile	(Arbeitskopie)
+@@ -38,11 +38,11 @@
+ 
+ usbip_common_mod-objs := usbip_common.o usbip_event.o
+ usbip-objs 	  := stub_dev.o stub_main.o stub_rx.o stub_tx.o
+-vhci-hcd-objs	  := vhci_sysfs.o vhci_tx.o vhci_rx.o vhci_hcd.o 
++#vhci-hcd-objs	  := vhci_sysfs.o vhci_tx.o vhci_rx.o vhci_hcd.o 
+ 
+ obj-m += usbip_common_mod.o
+ obj-m += usbip.o
+-obj-m += vhci-hcd.o
++#obj-m += vhci-hcd.o
+ 
+ EXTRA_CFLAGS += -DHCD_HEADER=\"$(HCD_HEADER)\"
+ 
+@@ -52,7 +52,8 @@
+ 
+ 
+ default:
+-	make -C $(KSOURCE) LANG=C KBUILD_VERBOSE=${KBUILD_VERBOSE}  M=`pwd` modules
++	#make -C $(KSOURCE) LANG=C KBUILD_VERBOSE=${KBUILD_VERBOSE}  M=`pwd` modules
++	make -C "$(KSOURCE)" SUBDIRS="$(PWD)" ARCH="$(ARCH)" CROSS_COMPILE="$(CROSS_COMPILE)" modules
+ 
+ check:
+ 	#make -C $(KSOURCE) LANG=C KBUILD_VERBOSE=${KBUILD_VERBOSE} C=1 M=`pwd` modules checkstack namespacecheck headers_check
