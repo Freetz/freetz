@@ -44,10 +44,10 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $($(PKG)_DIR)/builtins \
+		$(MAKE) -C $(BASH_DIR)/builtins \
 		LDFLAGS_FOR_BUILD= mkbuiltins
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $($(PKG)_DIR) \
+		$(MAKE) -C $(BASH_DIR) \
 		READLINE_LDFLAGS="" \
 		HISTORY_LDFLAGS="" \
 		all
@@ -57,12 +57,12 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg): $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $($(PKG)_DIR) clean
+	-$(MAKE) -C $(BASH_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $($(PKG)_TARGET_BINARY)
+	rm -f $(BASH_TARGET_BINARY)
 
 $(PKG_FINISH)
