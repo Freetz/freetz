@@ -1,8 +1,8 @@
 [ "$DS_HAS_USB_HOST" == "y" ] || return 0
 echo1 "patching run_mount"
 if [ "$DS_TYPE_FON_WLAN_7270" == "y" ]; then
-	if [ "$DS_TYPE_LABOR_MINI" == "y" ]; then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7270_labor_mini.patch"
+	if [ "$DS_TYPE_LABOR" == "y" ]; then
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7270_labor.patch"
 	else
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7270.patch"
 	fi
