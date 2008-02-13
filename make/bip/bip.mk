@@ -1,6 +1,7 @@
-$(call PKG_INIT_BIN,0.6.1)
-$(PKG)_SOURCE:=bip-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://bip.t1r.net/downloads
+$(call PKG_INIT_BIN,0.7.0-RC1)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+#$(PKG)_SITE:=http://bip.t1r.net/downloads
+$(PKG)_SITE:=http://bip.t1r.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/bip
 
@@ -9,8 +10,10 @@ $(PKG)_DEPENDS_ON := openssl
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(DS_BIP_WITH_SSL),,--disable-ssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_BIP_WITH_OIDENTD),--enable-oidentd)
 
 $(PKG)_CONFIG_SUBOPTS += DS_BIP_WITH_SSL
+$(PKG)_CONFIG_SUBOPTS += DS_BIP_WITH_OIDENTD
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
