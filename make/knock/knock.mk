@@ -24,15 +24,15 @@ $(KNOCK_TARGET_KNOCK_BINARY): $(KNOCK_KNOCK_BINARY)
 $(KNOCK_TARGET_KNOCKD_BINARY): $(KNOCK_KNOCKD_BINARY) 
 	$(INSTALL_BINARY_STRIP)
 
-knock:
+$(pkg):
 
-knock-precompiled: $(KNOCK_TARGET_KNOCK_BINARY) $(KNOCK_TARGET_KNOCKD_BINARY)
+$(pkg)-precompiled: $(KNOCK_TARGET_KNOCK_BINARY) $(KNOCK_TARGET_KNOCKD_BINARY)
 
-knock-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(KNOCK_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(KNOCK_PKG_SOURCE)
 
-knock-uninstall: 
+$(pkg)-uninstall: 
 	rm -f $(KNOCK_TARGET_KNOCK_BINARY)
 	rm -f $(KNOCK_TARGET_KNOCKD_BINARY)
 
