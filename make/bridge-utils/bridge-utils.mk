@@ -19,19 +19,19 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(BRIDGE_UTILS_DIR)
+		$(MAKE) -C $($(PKG)_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-bridge-utils: uclibc $($(PKG)_TARGET_BINARY)
+$(pkg): $($(PKG)_TARGET_BINARY)
 
-bridge-utils-precompiled: bridge-utils $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-bridge-utils-clean:
-	-$(MAKE) -C $(BRIDGE_UTILS_DIR) clean
+$pkg)-clean:
+	-$(MAKE) -C $($(PKG)_UTILS_DIR) clean
 
-bridge-utils-uninstall:
-	$(RM) $(BRIDGE_UTILS_TARGET_BINARY)
+$(pkg)-uninstall:
+	$(RM) $($(PKG)_TARGET_BINARY)
 
 $(PKG_FINISH)
