@@ -32,7 +32,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY) $($(PKG)_CLIENT_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		LD="$(TARGET_LD)" \
-		$(MAKE1) -C $($(PKG)_DIR)
+		$(MAKE1) -C $(BIRD_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -47,11 +47,11 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_CLIENT_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $($(PKG)_DIR) clean
-	$(RM) $($PKG)_DS_CONFIG_FILE)
+	-$(MAKE) -C $(BIRD_DIR) clean
+	$(RM) $(BIRD_DS_CONFIG_FILE)
 
 $(pkg)-uninstall:
-	$(RM) $($PKG)_TARGET_BINARY)
-	$(RM) $($(PKG)_CLIENT_TARGET_BINARY)
+	$(RM) $(BIRD_TARGET_BINARY)
+	$(RM) $(BIRD_CLIENT_TARGET_BINARY)
 
 $(PKG_FINISH)
