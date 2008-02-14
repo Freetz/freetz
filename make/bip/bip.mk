@@ -32,6 +32,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(BIP_DIR) clean
+	$(RM) $(BIP_DS_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(BIP_TARGET_BINARY)
