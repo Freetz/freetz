@@ -1,5 +1,10 @@
 #!/bin/sh
 
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=hcid
+
 start() {
 	echo "Start bluetooth..."
 
@@ -14,8 +19,8 @@ start() {
 
 stop() {
 	echo "Stop bluetooth..."
-	killall -9 hcid
-	killall -9 sdpd
+	killall -9 hcid > /dev/null 2>&1
+	killall -9 sdpd > /dev/null 2>&1
 	rmmod hci_usb > /dev/null 2>&1 
 	rmmod rfcomm > /dev/null 2>&1
 	rmmod l2cap > /dev/null 2>&1
@@ -23,20 +28,34 @@ stop() {
 }
 
 case "$1" in
-	""|start)
+	""|load)
 		start
-	;;
+		;;
+	unload)
+		stop
+		;;
+	start)
+		start
+		;;
 	stop)
 		stop
-	;;
+		;;
 	restart) 
 		stop
 		sleep 1
 		start
-	;;
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
 	*)
-		echo "rc.bluez-utils [start|stop|restart]"
-	;;
+		echo "rc.bluez-utils [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
 esac
 
 exit 0
