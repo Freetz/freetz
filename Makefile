@@ -381,7 +381,7 @@ common-clean:
 
 common-dirclean:
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
-	-rm -rf $(ADDON_DIR)/*
+	#-rm -rf $(ADDON_DIR)/*
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
