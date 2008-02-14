@@ -6,25 +6,46 @@ export LD_LIBRARY_PATH=/mod/lib
 DAEMON=hcid
 
 start() {
-	echo "Start bluetooth..."
+	echo -n "Starting bluetooth ..."
 
 	# Insert hci_usb and rfcomm module
 	modprobe -q hci_usb
 	modprobe -q rfcomm
 
 	# start daemons
-	hcid
+	$DAEMON
+	exitval1=$?
+
 	sdpd
+	exitval2=$?
+
+	if [ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit 1
+	fi
 }
 
 stop() {
-	echo "Stop bluetooth..."
-	killall -9 hcid > /dev/null 2>&1
+	echo -n "Stopping bluetooth ..."
+	killall -9 $DAEMON > /dev/null 2>&1
+	exitval1=$?
+
 	killall -9 sdpd > /dev/null 2>&1
+	exitval2=$?
+
 	rmmod hci_usb > /dev/null 2>&1 
 	rmmod rfcomm > /dev/null 2>&1
 	rmmod l2cap > /dev/null 2>&1
 	rmmod bluetooth > /dev/null 2>&1
+
+	if [ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit 1
+	fi
 }
 
 case "$1" in
