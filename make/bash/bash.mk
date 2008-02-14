@@ -1,7 +1,6 @@
 $(call PKG_INIT_BIN, 3.2)
-$(PKG)_SOURCE:=bash-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/bash
-$(PKG)_DIR:=$(SOURCE_DIR)/bash-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$(BASH_DIR)/bash
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/bash
 
@@ -57,12 +56,12 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $(pkg):
 
-$(pkg): $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(BASH_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(BASH_TARGET_BINARY)
+	$(RM) $(BASH_TARGET_BINARY)
 
 $(PKG_FINISH)
