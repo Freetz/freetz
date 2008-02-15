@@ -1,0 +1,35 @@
+--- configure.in.orig	2008-02-14 17:01:49.000000000 +0100
++++ configure.in	2008-02-14 17:04:56.000000000 +0100
+@@ -104,7 +104,6 @@
+ AC_CHECK_HEADERS(pty.h)
+ AC_CHECK_HEADERS(string.h)
+ AC_CHECK_HEADERS(syslog.h)
+-AC_CHECK_HEADERS(libintl.h)
+ AC_CHECK_HEADERS(libutil.h)
+ AC_CHECK_HEADERS(sys/uio.h)
+ 
+@@ -167,7 +166,6 @@
+ AC_CHECK_LIB(socket, accept)
+ AC_CHECK_LIB(nsl, gethostbyname)
+ AC_CHECK_LIB(util, openpty)
+-AC_CHECK_LIB(intl, gettext)
+ LIBS="$XYZZY_LIBS"
+ if test "$ac_cv_lib_c_accept" = no; then
+   if test "$ac_cv_lib_socket_accept" = yes; then
+@@ -196,16 +194,6 @@
+     XTRALIBS_CTRL="-lutil"
+   fi
+ fi
+-if test "$ac_cv_header_libintl_h" = yes; then
+-  if test "$ac_cv_lib_c_gettext" = no; then
+-    if test "$ac_cv_lib_intl_gettext" = yes; then
+-      XTRALIBS_MGR = "$XTRALIBS_MGR -lintl"
+-    else
+-      echo "Have libintl.h but no usable gettext!" 1>&2
+-      exit 1
+-    fi
+-  fi
+-fi
+ 
+ AC_SUBST(XTRALIBS_CTRL)
+ AC_SUBST(XTRALIBS_MGR)

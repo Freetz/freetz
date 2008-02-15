@@ -20,10 +20,11 @@ start() {
 	[ ! -e "/mod/etc/ppp/chap-secrets" ] && /etc/default.${DAEMON}/chap_secrets > /mod/etc/ppp/chap-secrets
 	[ ! -e "/mod/etc/ppp/options" ] && /etc/default.${DAEMON}/pppd_options > /mod/etc/ppp/options
 	[ ! -e "/mod/etc/ppp/pap-secrets" ] && /etc/default.${DAEMON}/pap_secrets > /mod/etc/ppp/pap-secrets
-	[ ! -e "/mod/etc/ppp/options.pptp" ] && /etc/default.${DAEMON}/pptp_options > /mod/etc/ppp/pptp_options
+	[ ! -e "/mod/etc/ppp/options.pptp" ] && /etc/default.${DAEMON}/pptp_options > /mod/etc/ppp/options.pptp
+	[ ! -e "/mod/etc/ppp/options.pptp" ] && /etc/default.${DAEMON}/pptpd_options > /mod/etc/ppp/options.pptpd
 	[ ! -e "/mod/etc/ppp/peers/pptp" ] && /etc/default.${DAEMON}/pptp_peer > /mod/etc/ppp/peers/pptp
 	
-	echo -n 'Starting pppd...'
+	echo -n 'Starting pppd ...'
 	set -o noglob
 	modprobe ppp_async
 	$DAEMON -p $PPPD_OPTIONS
@@ -37,7 +38,7 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping pppd...'
+	echo -n 'Stopping pppd ...'
 	rmmod ppp_async
 	rmmod ppp_generic
 	rmmod slhc
@@ -59,24 +60,35 @@ case "$1" in
 		[ -e "/tmp/flash/ppp/chap-secrets" ] && ln -s /tmp/flash/ppp/chap-secrets /mod/etc/ppp/chap-secrets
 		[ -e "/tmp/flash/ppp/options" ] && ln -s /tmp/flash/ppp/pppd_options /mod/etc/ppp/options
 		[ -e "/tmp/flash/ppp/pap-secrets" ] && ln -s /tmp/flash/ppp/pap_secrets /mod/etc/ppp/pap-secrets
-		[ -e "/tmp/flash/ppp/options.pptp" ] && ln -s /tmp/flash/ppp/pptp_options /mod/etc/ppp/pptp_options
+		[ -e "/tmp/flash/ppp/options.pptp" ] && ln -s /tmp/flash/ppp/options.pptp /mod/etc/ppp/options.pptp
+		[ -e "/tmp/flash/ppp/options.pptpd" ] && ln -s /tmp/flash/ppp/options.pptpd /mod/etc/ppp/options.pptpd
 		[ -e "/tmp/flash/ppp/peers/pptp" ] && ln -s /tmp/flash/ppp/peers/pptp_peer /mod/etc/ppp/peers/pptp
-		modreg cgi 'pppd' 'Pppd'
-#		deffile='/mod/etc/default.pppd/chap_secrets.def'
-#		[ -r "/tmp/flash/chap_secrets.def" ] && deffile='/tmp/flash/chap_secrets.def'
-#		modreg file 'chap_secrets' 'chap_secrets' 0 "$deffile"
-#		deffile='/mod/etc/default.pppd/pppd_options.def'
-#		[ -r "/tmp/flash/pppd_options.def" ] && deffile='/tmp/flash/pppd_options.def'
-#		modreg file 'pppd_options' 'Options (PPPD)' 0 "$deffile"
-#		deffile='/mod/etc/default.pppd/pap_secrets.def'
-#		[ -r "/tmp/flash/pap_secrets.def" ] && deffile='/tmp/flash/pap_secrets.def'
-#		modreg file 'pap_secrets' 'pap_secrets' 0 "$deffile"
-#		deffile='/mod/etc/default.pppd/pptp_options.def'
-#		[ -r "/tmp/flash/pptp_options.def" ] && deffile='/tmp/flash/pptp_options.def'
-#		modreg file 'pptp_options' 'options.pptp' 0 "$deffile"
-#		deffile='/mod/etc/default.pppd/pptp_peer.def'
-#		[ -r "/tmp/flash/pptp_peer.def" ] && deffile='/tmp/flash/pptp_peer.def'
-#		modreg file 'pptp_peer' 'PPTP Config' 0 "$deffile"
+
+		modreg cgi 'pppd' 'PPPD'
+
+		deffile='/mod/etc/default.pppd/chap_secrets.def'
+		[ -r "/tmp/flash/chap_secrets.def" ] && deffile='/tmp/flash/chap_secrets.def'
+		modreg file 'chap_secrets' 'chap_secrets' 0 "$deffile"
+
+		deffile='/mod/etc/default.pppd/pppd_options.def'
+		[ -r "/tmp/flash/pppd_options.def" ] && deffile='/tmp/flash/pppd_options.def'
+		modreg file 'pppd_options' 'Options (PPPD)' 0 "$deffile"
+
+		deffile='/mod/etc/default.pppd/pap_secrets.def'
+		[ -r "/tmp/flash/pap_secrets.def" ] && deffile='/tmp/flash/pap_secrets.def'
+		modreg file 'pap_secrets' 'pap_secrets' 0 "$deffile"
+
+		deffile='/mod/etc/default.pppd/pptp_options.def'
+		[ -r "/tmp/flash/pptp_options.def" ] && deffile='/tmp/flash/pptp_options.def'
+		modreg file 'pptp_options' 'options.pptp' 0 "$deffile"
+
+		deffile='/mod/etc/default.pppd/pptpd_options.def'
+		[ -r "/tmp/flash/pptpd_options.def" ] && deffile='/tmp/flash/pptpd_options.def'
+		modreg file 'pptpd_options' 'options.pptpd' 0 "$deffile"
+
+		deffile='/mod/etc/default.pppd/pptp_peer.def'
+		[ -r "/tmp/flash/pptp_peer.def" ] && deffile='/tmp/flash/pptp_peer.def'
+		modreg file 'pptp_peer' 'PPTP Config' 0 "$deffile"
 		
 		if [ "$PPPD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -88,11 +100,12 @@ case "$1" in
 	unload)
 		stop
 		modunreg cgi 'pppd'
-#		modunreg file 'chap_secrets'
-#		modunreg file 'pppd_options'
-#		modunreg file 'pap_secrets'
-#		modunreg file 'pptp_options'
-#		modunreg file 'pptp_peer'
+		modunreg file 'chap_secrets'
+		modunreg file 'pppd_options'
+		modunreg file 'pap_secrets'
+		modunreg file 'pptp_options'
+		modunreg file 'pptpd_options'
+		modunreg file 'pptp_peer'
 		;;
 	start)
 		start
