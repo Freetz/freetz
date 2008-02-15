@@ -17,19 +17,20 @@ cat << EOF
 EOF
 
 sec_end
-#sec_begin 'Konfigurationsdateien'
-#
-#cat << EOF
-#<ul>
-#<li><a href="/cgi-bin/file.cgi?id=chap_secrets">chap_secrets bearbeiten</a></li>
-#<li><a href="/cgi-bin/file.cgi?id=options">options bearbeiten</a></li>
-#<li><a href="/cgi-bin/file.cgi?id=pap_secrets">pap_secrets bearbeiten</a></li>
-#<li><a href="/cgi-bin/file.cgi?id=pptp_options">options.pptp bearbeiten</a></li>
-#<li><a href="/cgi-bin/file.cgi?id=pptp_example">pptp_example bearbeiten</a></li>
-#</ul>
-#EOF
-#
-#sec_end
+sec_begin 'Konfigurationsdateien'
+
+cat << EOF
+<ul>
+<li><a href="/cgi-bin/file.cgi?id=chap_secrets">chap-secrets bearbeiten</a></li>
+<li><a href="/cgi-bin/file.cgi?id=options">options bearbeiten</a></li>
+<li><a href="/cgi-bin/file.cgi?id=pap_secrets">pap-secrets bearbeiten</a></li>
+<li><a href="/cgi-bin/file.cgi?id=pptp_options">options.pptp bearbeiten</a></li>
+<li><a href="/cgi-bin/file.cgi?id=pptpd_options">options.pptpd bearbeiten</a></li>
+<li><a href="/cgi-bin/file.cgi?id=pptp_peer">pptp Peerfile bearbeiten</a></li>
+</ul>
+EOF
+
+sec_end
 sec_begin 'pptp'
 
 cat << EOF
