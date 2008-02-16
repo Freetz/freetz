@@ -1,7 +1,6 @@
-$(call PKG_INIT_BIN,0.7.0-RC1)
+$(call PKG_INIT_BIN,0.7.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-#$(PKG)_SITE:=http://bip.t1r.net/downloads
-$(PKG)_SITE:=http://bip.t1r.net
+$(PKG)_SITE:=http://bip.t1r.net/downloads
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/bip
 

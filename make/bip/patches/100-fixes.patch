@@ -1,0 +1,21 @@
+--- src/irc.c	2008-02-15 23:59:30.000000000 +0100
++++ src/irc.c	2008-02-16 14:56:22.000000000 +0100
+@@ -2030,8 +2030,8 @@
+ 			hash_it_next(&hi)) {
+ 		struct channel *chan = hash_it_item(&hi);
+ 		channel_free(chan);
+-
+ 	}
++	hash_clean(&s->channels);
+ 
+ 	free(s);
+ }
+@@ -2055,7 +2055,7 @@
+ 				link->user->ssl_check_store,
+ 				link->user->ssl_client_certfile,
+ #else
+-				0, 0, NULL,
++				0, 0, NULL, NULL,
+ #endif
+ 				CONNECT_TIMEOUT);
+ 	if (!conn)
