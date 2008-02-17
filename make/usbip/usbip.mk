@@ -23,12 +23,12 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(USBIP_DIR)/src
+		$(MAKE) -C $(USBIP_DIR)/src \
+		CPPFLAGS="-std=gnu99 -fgnu89-inline"
 
 $($(PKG)_MOD_BINARY): $($(PKG)_DIR)/.configured
-	cd $(USBIP_DIR)/drivers/2.6.21; \
-	PATH="$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH)" \
-        	$(MAKE) \
+	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) \
+		$(MAKE) -C $(USBIP_DIR)/drivers/2.6.21 \
 		KSOURCE="$(DSMOD_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)"
