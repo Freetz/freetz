@@ -40,11 +40,11 @@ case "$1" in
 
 		deffile='/etc/default.mod/rc_custom.def'
 		[ -r "/tmp/flash/rc_custom.def" ] && deffile='/tmp/flash/rc_custom.def'
-		modreg file 'rc_custom' 'rc.custom' 1 "$deffile"
+		modreg file 'rc_custom' 'rc.custom' 0 "$deffile"
 
 		deffile='/etc/default.mod/modules.def'
 		[ -r "/tmp/flash/modules.def" ] && deffile='/tmp/flash/modules.def'
-		modreg file 'modules' 'modules' 1 "$deffile"
+		modreg file 'modules' 'modules' 0 "$deffile"
 
 		start
 		;;
