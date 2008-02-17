@@ -8,7 +8,7 @@ $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/drivers/2.6.21/usbip.ko
 $(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/kernel/drivers/usb/usbip
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/usbip.ko
 
-$(PKG)_DEPENDS_ON := sysfsutils glib2
+$(PKG)_DEPENDS_ON := kernel sysfsutils glib2
 
 $(PKG)_CONFIGURE_PRE_CMDS += cd src ;
 $(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh ;
