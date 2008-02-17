@@ -127,6 +127,7 @@ choice
 
 	config DS_TYPE_CUSTOM
 		bool "Custom"
+		depends on DS_SHOW_ADVANCED
 		select DS_DL_OVERRIDE
 
 endchoice
@@ -347,11 +348,19 @@ config DS_REPLACE_BUSYBOX
 config DS_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on \
+			DS_SHOW_ADVANCED && \
 			! DS_TYPE_LABOR && \
 			! DS_TYPE_FON_WLAN_7270
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
+
+config DS_SHOW_ADVANCED
+        bool "Show advanced options"
+        default n
+        help
+                Show advanced Options for patching the firmware. This is only useful
+                for experienced users who really know what they are doing
 
 config DS_TARGET_REF
 	string "Target ref"		if DS_TYPE_CUSTOM
@@ -595,20 +604,30 @@ config DS_HAS_USB_HOST
 	help
 		Select this if your USB port is a host adapter
 
-comment "Brandings ------------------------------"
+menu "Branding"
 	depends on \
 		! DS_TYPE_SPEEDPORT_W501V && \
 		! DS_TYPE_SPEEDPORT_W701V && \
-		! DS_TYPE_SPEEDPORT_W900V && \
-		! DS_TYPE_CUSTOM
+		! DS_TYPE_SPEEDPORT_W900V
 
-comment "Brandings (if exist) -------------------"
-	depends on DS_TYPE_CUSTOM
+#comment "Brandings ------------------------------"
+#	depends on \
+#		( \
+#		! DS_TYPE_SPEEDPORT_W501V && \
+#		! DS_TYPE_SPEEDPORT_W701V && \
+#		! DS_TYPE_SPEEDPORT_W900V && \
+#		! DS_TYPE_CUSTOM \
+#		)
+
+#comment "Brandings (if exist) -------------------"
+#	depends on DS_TYPE_CUSTOM && DS_SHOW_ADVANCED
 
 config DS_BRANDING_1und1
 	bool "1&1"
 	depends on \
-		DS_TYPE_FON && DS_TYPE_LANG_DE || \
+		( \
+		DS_TYPE_FON && \
+		DS_TYPE_LANG_DE || \
 		DS_TYPE_FON_5050 || \
 		DS_TYPE_FON_5140 || \
 		DS_TYPE_FON_WLAN || \
@@ -620,7 +639,8 @@ config DS_BRANDING_1und1
 		DS_TYPE_WLAN_3020 || \
 		DS_TYPE_WLAN_3030 || \
 		DS_TYPE_WLAN_3130 || \
-		DS_TYPE_CUSTOM
+		DS_TYPE_CUSTOM \
+		)
 	default y
 	help
 		1&1 branding
@@ -635,10 +655,13 @@ config DS_BRANDING_1und1
 
 config DS_BRANDING_avm
 	bool "AVM"
-	depends on ! DS_BRANDING_tcom && \
-		( DS_TYPE_LANG_A_CH || \
+	depends on \
+		( \
+		! DS_BRANDING_tcom && \
+		DS_TYPE_LANG_A_CH || \
 		DS_TYPE_LANG_DE || \
-		DS_TYPE_CUSTOM )
+		DS_TYPE_CUSTOM \
+		)
 	default y
 	help
 		AVM branding
@@ -654,8 +677,10 @@ config DS_BRANDING_avm
 config DS_BRANDING_avme
 	bool "AVM international"
 	depends on \
+		( \
 		DS_TYPE_LANG_EN || \
-		DS_TYPE_CUSTOM
+		DS_TYPE_CUSTOM \
+		)
 	default y
 	help
 		AVM international branding
@@ -671,10 +696,12 @@ config DS_BRANDING_avme
 config DS_BRANDING_aol
 	bool "AOL"
 	depends on \
+		( \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_DE || \
 		DS_TYPE_300IP_AS_FON || \
-		DS_TYPE_CUSTOM
+		DS_TYPE_CUSTOM \
+		)
 	default y
 	help
 		AOL branding
@@ -704,8 +731,8 @@ config DS_BRANDING_arcor
 
 config DS_BRANDING_congstar
 	bool "Congstar"
-	depends \
-		on DS_TYPE_SPEEDPORT_W701V
+	depends on \
+		DS_TYPE_SPEEDPORT_W701V 
 	default y
 	help
 		Congstar branding
@@ -721,6 +748,7 @@ config DS_BRANDING_congstar
 config DS_BRANDING_freenet
 	bool "Freenet"
 	depends on \
+		( \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_7150 || \
 		DS_TYPE_300IP_AS_FON || \
@@ -728,7 +756,8 @@ config DS_BRANDING_freenet
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_WLAN_7170 || \
 		DS_TYPE_FON_WLAN_7270 || \
-		DS_TYPE_CUSTOM
+		DS_TYPE_CUSTOM \
+		)
 	default y
 	help
 		Freenet branding
@@ -743,11 +772,13 @@ config DS_BRANDING_freenet
 
 config DS_BRANDING_tcom
 	bool "T-Com"
-	depends \
-		on DS_TYPE_300IP_AS_FON || \
+	depends on \
+		( \
+		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_SPEEDPORT_W501V || \
 		DS_TYPE_SPEEDPORT_W701V || \
-		DS_TYPE_SPEEDPORT_W900V
+		DS_TYPE_SPEEDPORT_W900V \
+		)
 	default y
 	help
 		T-Com branding
@@ -775,6 +806,8 @@ config DS_BRANDING_versatel
 		the following command from the box's shell prompt:
 
 		echo $(cat /proc/sys/urlader/firmware_version)
+
+endmenu
 
 comment "Mod ------------------------------------"
 
@@ -827,10 +860,13 @@ config DS_REMOVE_TR069
 config DS_REMOVE_USB_MODULE
 	bool "Remove avalanche_usb.ko"
 	depends on \
+		DS_SHOW_ADVANCED && \
+		( \
 		DS_TYPE_300IP_AS_FON || \
 		DS_TYPE_FON || \
 		DS_TYPE_FON_WLAN || \
-		DS_TYPE_FON_WLAN_7050
+		DS_TYPE_FON_WLAN_7050 \
+		)
 	default n
 	help
 		Removes avalanche_usb.ko to save space.
@@ -876,9 +912,12 @@ config DS_PATCH_SIGNED
 config DS_PATCH_AVM_HIDDEN_PAGES
 	bool "Patch hidden pages"
 	depends on \
+		DS_SHOW_ADVANCED && \
+		( \
 		DS_TYPE_FON_WLAN_7141 || \
 		( DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR_DSL && ! DS_TYPE_LABOR_PHONE && !DS_TYPE_LABOR_VPN) || \
-		DS_TYPE_FON_WLAN_7270
+		DS_TYPE_FON_WLAN_7270 \
+		) 
 	default n
 	help
 		Show Labor DSL, VPN and HTTPS pages in AVM webinterface.
@@ -955,13 +994,16 @@ config DS_REMOVE_WEBSRV
 config DS_REMOVE_UPNP
 	bool "Remove UPnP daemon (igdd)"
 	select DS_REMOVE_UPNP_LIBS if \
+			DS_SHOW_ADVANCED && \
+			( \
 			! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN ) \
 			&& ! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH ) \
 			&& ! DS_TYPE_FON_WLAN_7141 \
 			&& ! DS_TYPE_FON_WLAN_7170 \
 			&& ! DS_TYPE_FON_WLAN_7270 \
 			&& ! DS_TYPE_WLAN_3131 \
-			&& ! DS_TYPE_WLAN_3170
+			&& ! DS_TYPE_WLAN_3170 \
+			)
 	default n
 	help
 		Remove Universal Plug'n'Play daemon 'igdd' and some more files used by
@@ -995,9 +1037,44 @@ config DS_REMOVE_USERMAN
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
+config DS_REMOVE_FTPD
+	bool "Remove ftpd"
+	depends on \
+		DS_SHOW_ADVANCED && \
+		DS_HAS_USB_HOST 
+	default n
+	help
+		Remove FTP deamon (ftpd)
+		This patch removes only the daemon. The regular options in AVM's Webinterface
+		are still present.
+
+config DS_REMOVE_MEDIASRV
+	bool "Remove mediasrv"
+  depends on \
+  	DS_SHOW_ADVANCED && \
+	! DS_PATCH_MEDIASRV && \
+	DS_HAS_USB_HOST
+	default n
+	help
+		Remove MediaServer daemon (mediasrv)
+		This patch removes only the deamon. The regular options in AVM's webinterface 
+		are still present.
+
+config DS_REMOVE_SMBD
+	bool "Remove smbd"
+  depends on \
+  		DS_SHOW_ADVANCED && \
+		DS_HAS_USB_HOST 
+	default n
+	help
+		Remove Samba daemon (smbd)
+		This patch removes only the daemon. The regular options in AVM's webinterface 
+		are still present.
+
 config DS_REMOVE_DSLD
 	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"	
 	default n
+	depends on DS_SHOW_ADVANCED
 	select DS_REMOVE_UPNP
 	select DS_REMOVE_USERMAN if ! (DS_TYPE_FON_5140 || DS_TYPE_FON_WLAN_7113 || DS_TYPE_SPEEDPORT_W501V || DS_TYPE_SPEEDPORT_W900V)
 	help
@@ -1044,6 +1121,7 @@ config DS_REMOVE_DECT_UPDATE
 
 config DS_REMOVE_VOIP_ISDN
 	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL"
+	depends on DS_SHOW_ADVANCED
 	default n
 	help
 		Radically remove a lot of telephony-related files. This patch saves about
