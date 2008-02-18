@@ -1070,6 +1070,15 @@ cat << EOF
 
 <tr>
 <td width="175">
+  Codec order:
+</td>
+<td>
+  <input id="a16b" type="text" name="voip_codecs" value='$DTMFBOX_VOIP_CODECS' size="25">
+</td>
+</tr>
+
+<tr>
+<td width="175">
   Interface:
 </td>
 <td>

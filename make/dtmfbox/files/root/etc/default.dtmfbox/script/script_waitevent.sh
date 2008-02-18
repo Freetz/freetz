@@ -96,7 +96,7 @@ then
       let LINES_CNT=`cat "$TEMP_EVENTFILE" | grep -c ".*"`
       LINES=`$HEAD -n 9 "$TEMP_EVENTFILE"`  
       let LINES_LEFT=LINES_CNT-9
-      cat "$TEMP_EVENTFILE" | tail -n $LINES_LEFT > "$TEMP_EVENTFILE.2"
+      cat "$TEMP_EVENTFILE" | $TAIL -n $LINES_LEFT > "$TEMP_EVENTFILE.2"
       cp "$TEMP_EVENTFILE.2" "$TEMP_EVENTFILE"
       rm "$TEMP_EVENTFILE.2"
 

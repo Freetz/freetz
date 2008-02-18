@@ -7,7 +7,7 @@ if [ "$?" = "1" ]; then exit 1; fi
 
 menue_ansage() {
   display_text "Callthrough" &
-  say_or_beep "`SPEECH_INTERNAL_3`" &
+  say_or_beep "`SPEECH_INTERNAL_3`" 
 }
 
 ##################################################################################

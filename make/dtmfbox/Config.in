@@ -1,36 +1,91 @@
 config DS_PACKAGE_DTMFBOX
 	depends on DS_LANG_DE || ! DS_SELECTED_LANG_ONLY
-	bool "dtmfbox v0.4.0"
+	bool "dtmfbox v0.4.0 (3)"
 	select DS_LIB_libcapi20
+	select DS_PACKAGE_DTMFBOX_WITH_G711_CODEC
 	default n
-	help
+	help		
 		dtmfbox is a small softswitch application, that can be used to 
 		control different tasks over telephone keyboard (via DTMF).
 		The DTMF signals are handed over to a scriptfile.
-
+		
 		While scriptfile running, you can answer an incoming call, record
 		or play a wave file, make another call, bridge calls, etc.
-
+		
 		The scriptfiles that are included in this package, contain an 
 		answering machine, administration menu and a callback/callthrough 
 		script.
 
 		The application can also be configured as registrar, to allow 
 		SIP client connects.
+		
+		http://dtmfbox.v3v.de
+
+menu "CAPI/SIP"
+	depends on DS_PACKAGE_DTMFBOX
 
 config DS_PACKAGE_DTMFBOX_WITH_CAPI
-	bool "With CAPI support"
+	bool "CAPI support"
 	depends on DS_PACKAGE_DTMFBOX
 	default y
 	help
 		Compile dtmfbox with CAPI support (ISDN/Analog)
 	
 config DS_PACKAGE_DTMFBOX_WITH_VOIP
-	bool "With SIP support"
+	bool "SIP support"
 	depends on DS_PACKAGE_DTMFBOX
 	default y
 	help
 		Compile dtmfbox with VoIP support (SIP)
+endmenu
+
+
+menu "Codecs"
+	depends on DS_PACKAGE_DTMFBOX
+
+config DS_PACKAGE_DTMFBOX_WITH_G711_CODEC
+	bool "G711"
+	depends on DS_PACKAGE_DTMFBOX
+	default y
+	help
+		Include G711 codec (default)
+
+#config DS_PACKAGE_DTMFBOX_WITH_SPEEX_CODEC
+#	bool "SPEEX (not tested)"
+#	depends on DS_PACKAGE_DTMFBOX
+#	default n
+#	help
+#		Include SPEEX codec
+
+config DS_PACKAGE_DTMFBOX_WITH_GSM_CODEC
+	bool "GSM (not tested)"
+	depends on DS_PACKAGE_DTMFBOX
+	default n
+	help
+		Include GSM codec
+
+#config DS_PACKAGE_DTMFBOX_WITH_ILBC_CODEC
+#	bool "iLBC (not tested)"
+#	depends on DS_PACKAGE_DTMFBOX
+#	default n
+#	help
+#		Include iLBC codec
+
+config DS_PACKAGE_DTMFBOX_PREFER_REMOTE_CODEC_ORDER
+	bool "Prefer remote codec order"
+	depends on DS_PACKAGE_DTMFBOX
+	default y
+	help
+		This specifies the behavior of the SDP negotiator when
+		responding to an offer, whether it should rather use
+		the codec preference as set by remote, or should it
+		rather use the codec preference as specified by local
+		endpoint.
+
+endmenu
+
+menu "Misc"
+	depends on DS_PACKAGE_DTMFBOX
 
 config DS_PACKAGE_DTMFBOX_RESAMPLE_QUALITY
 	int "Resample quality (0 high - 2 low)"
@@ -40,6 +95,15 @@ config DS_PACKAGE_DTMFBOX_RESAMPLE_QUALITY
 		Resample Quality
 		0=high, 1=middle (default), 2=low
 
+config DS_PACKAGE_DTMFBOX_SOUND_BUFFER_COUNT
+	int "Sound buffer count"
+	default 6
+	help
+		Specify number of sound buffers.
+		Larger number is better for sound stability, but
+		would cause more audio delay (and definitely will take
+		more memory). Default is 6.
+
 config DS_PACKAGE_DTMFBOX_WITH_ESPEAK
 	bool "eSpeak support"
 	depends on DS_PACKAGE_DTMFBOX
@@ -48,3 +112,13 @@ config DS_PACKAGE_DTMFBOX_WITH_ESPEAK
 	help
 		Add package "eSpeak" to support Text2Speech.		
 		Attention: eSpeak is also supported over webstream!
+
+config DS_PACKAGE_DTMFBOX_WITH_MADPLAY
+	bool "madplay support"
+	depends on DS_PACKAGE_DTMFBOX
+	select DS_PACKAGE_MADPLAY
+	default n
+	help
+		Add package "madplay" to support webradio and podcasts
+
+endmenu

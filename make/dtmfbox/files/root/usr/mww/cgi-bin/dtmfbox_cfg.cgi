@@ -1,5 +1,5 @@
-DTMFBOX_VERSION="v0.4.0 (1)"
-www_script="http://fritz.v3v.de/dtmfbox/dtmfbox-0.4.0-standalone/rc.dtmfbox"
+DTMFBOX_VERSION="v0.4.0 (3)"
+www_script="http://fritz.v3v.de/dtmfbox/dtmfbox-0.4.0_1-dl/rc.dtmfbox"
 DSMOD="1"
 package=dtmfbox
 

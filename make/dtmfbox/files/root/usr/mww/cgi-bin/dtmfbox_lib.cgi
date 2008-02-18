@@ -1,4 +1,5 @@
 #!/bin/sh
+
 # dsmod or usb version?
 if [ "$DSMOD" = "0" ]; then  
   DSMOD_LINK=""
