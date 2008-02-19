@@ -1476,7 +1476,7 @@ choice
 
 	config DS_SQUASHFS_BLOCKSIZE_131072
 		bool "128 KB (EXPERIMENTAL)"
-		depends on DS_REPLACE_KERNEL || DS_TYPE_FON_WLAN_7270
+		depends on DS_REPLACE_KERNEL
 		help
 			Block size of the root filesystem. SquashFS 2.x can use block sizes
 			up to 64 KB, SquashFS 3.x (only available for 7270 firmware or with
@@ -1491,15 +1491,15 @@ choice
 
 #	config DS_SQUASHFS_BLOCKSIZE_262144
 #		bool "256 KB"
-#		depends on DS_REPLACE_KERNEL || DS_TYPE_FON_WLAN_7270
+#		depends on DS_REPLACE_KERNEL
 
 #	config DS_SQUASHFS_BLOCKSIZE_524288
 #		bool "512 KB"
-#		depends on DS_REPLACE_KERNEL || DS_TYPE_FON_WLAN_7270
+#		depends on DS_REPLACE_KERNEL
 
 #	config DS_SQUASHFS_BLOCKSIZE_1048576
 #		bool "1024 KB"
-#		depends on DS_REPLACE_KERNEL || DS_TYPE_FON_WLAN_7270
+#		depends on DS_REPLACE_KERNEL
 
 endchoice
 
