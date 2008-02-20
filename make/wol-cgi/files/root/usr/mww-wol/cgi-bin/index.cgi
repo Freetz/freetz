@@ -11,7 +11,7 @@ cat << EOF
 <p>
 $(lang de:"Bekannte Hosts" en:"Known hosts"):
 <select onChange="var s = this.options[this.options.selectedIndex].value; document.wake.mac.value = s.substr(0,s.search(/\*/)); document.wake.interf.value = s.substr(s.search(/\*/)+1); return false;">
-<option value="*" selected>(w&auml;hlen)</option>
+<option value="*" selected>$(lang de:"(w&auml;hlen)" en:"(choose)")</option>
 EOF
 
 if [ -r "/tmp/flash/exhosts" ]; then
