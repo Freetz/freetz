@@ -116,6 +116,7 @@ config DS_LIB_libssl
 
 config DS_LIB_libavmhmac
 	bool "Replace libavmhmac - EXPERIMENTAL"
+	depends on ! DS_TYPE_LABOR_VPN
 	requires DS_LIB_libcrypto
 	default n
 	help
