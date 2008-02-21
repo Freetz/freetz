@@ -23,7 +23,8 @@ start() {
 	
 	echo -n 'Starting pptp ...'
 	set -o noglob
-	modprobe ppp_async
+	#modprobe ppp_async
+
 	$PPPD call pptp $PPTP_OPTIONS
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
@@ -36,10 +37,11 @@ start() {
 
 stop() {
 	echo -n 'Stopping pptp ...'
-	rmmod ppp_async
-	rmmod ppp_generic
-	rmmod slhc
-	rmmod crc_ccitt
+	#rmmod ppp_async
+	#rmmod ppp_generic
+	#rmmod slhc
+	#rmmod crc_ccitt
+
 	killall $PPPD > /dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
