@@ -1,6 +1,6 @@
 config DS_PACKAGE_PPPD
 	bool "pppd 2.4.3"
-	depends on DS_REPLACE_KERNEL
+	depends on DS_REPLACE_KERNEL && (DS_PACKAGE_PPTP || DS_PACKAGE_PPTPD)
 	select DS_LIB_libcrypt
 	select DS_LIB_libdl
 	select DS_MODULE_ppp_async
