@@ -19,7 +19,8 @@ esac
 
 start() {
 	[ ! -e "/mod/etc/ppp/options.pptpd" ] && /etc/default.${DAEMON}/pptpd_options > /mod/etc/ppp/options.pptpd
-	
+	[ ! -e "/mod/etc/ppp/pptpd.conf" ] && /etc/default.${DAEMON}/pptpd_conf > /mod/etc/ppp/pptpd.conf
+
 	echo -n 'Starting pptpd ...'
 	set -o noglob
 	modprobe arc4
@@ -60,12 +61,17 @@ case "$1" in
 		[ ! -d "/tmp/flash/ppp" ] && mkdir -p /tmp/flash/ppp
 		[ ! -d "/mod/etc/ppp" ] && mkdir -p /mod/etc/ppp
 		[ -e "/tmp/flash/ppp/options.pptpd" ] && ln -s /tmp/flash/ppp/options.pptpd /mod/etc/ppp/options.pptpd
+		[ -e "/tmp/flash/ppp/pptpd.conf" ] && ln -s /tmp/flash/ppp/pptpd.conf /mod/etc/ppp/pptpd.conf
 
 		modreg cgi 'pptpd' 'PPTPD'
 
-		deffile='/mod/etc/default.pppd/pptpd_options.def'
+		deffile='/mod/etc/default.pptpd/pptpd_options.def'
 		[ -r "/tmp/flash/pptpd_options.def" ] && deffile='/tmp/flash/pptpd_options.def'
 		modreg file 'pptpd_options' 'PPTPD: options.pptpd' 0 "$deffile"
+
+		deffile='/mod/etc/default.pptpd/pptpd_conf.def'
+		[ -r "/tmp/flash/pptpd_conf.def" ] && deffile='/tmp/flash/pptpd_conf.def'
+		modreg file 'pptpd_conf' 'PPTPD: pptpd.conf' 0 "$deffile"
 
 		if [ "$PPTPD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -78,6 +84,7 @@ case "$1" in
 		stop
 		modunreg cgi 'pptpd'
 		modunreg file 'pptpd_options'
+		modunreg file 'pptpd_conf'
 		;;
 	start)
 		start

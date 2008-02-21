@@ -18,8 +18,8 @@ case "$1" in
 esac
 
 start() {
-	[ ! -e "/mod/etc/ppp/options.pptp" ] && /etc/default.${PPPD}/pptp_options > /mod/etc/ppp/options.pptp
-	[ ! -e "/mod/etc/ppp/peers/pptp" ] && /etc/default.${PPPD}/pptp_peer > /mod/etc/ppp/peers/pptp
+	[ ! -e "/mod/etc/ppp/options.pptp" ] && /etc/default.${DAEMON}/pptp_options > /mod/etc/ppp/options.pptp
+	[ ! -e "/mod/etc/ppp/peers/pptp" ] && /etc/default.${DAEMON}/pptp_peer > /mod/etc/ppp/peers/pptp
 	
 	echo -n 'Starting pptp ...'
 	set -o noglob
