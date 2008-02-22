@@ -21,11 +21,11 @@ sec_begin 'Konfigurationsdateien'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=chap_secrets">chap-secrets bearbeiten</a></li>
-<li><a href="/cgi-bin/file.cgi?id=options">options bearbeiten</a></li>
-<li><a href="/cgi-bin/file.cgi?id=pap_secrets">pap-secrets bearbeiten</a></li>
-<li><a href="/cgi-bin/file.cgi?id=pptp_options">options.pptp bearbeiten</a></li>
-<li><a href="/cgi-bin/file.cgi?id=pptp_peer">PPTP Peer-Konfiguration bearbeiten</a></li>
+<li><a href="/cgi-bin/file.cgi?id=chap_secrets">PPP: chap-secrets bearbeiten</a></li>
+#<li><a href="/cgi-bin/file.cgi?id=pap_secrets">PPP: pap-secrets bearbeiten</a></li>
+#<li><a href="/cgi-bin/file.cgi?id=options">PPP: options bearbeiten</a></li>
+<li><a href="/cgi-bin/file.cgi?id=pptp_options">PPTP: options.pptp bearbeiten</a></li>
+<li><a href="/cgi-bin/file.cgi?id=pptp_peer">PPTP: Peer-Konfiguration bearbeiten</a></li>
 </ul>
 EOF
 

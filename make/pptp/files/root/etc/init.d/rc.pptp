@@ -23,7 +23,7 @@ start() {
 	
 	echo -n 'Starting pptp ...'
 	set -o noglob
-	#modprobe ppp_async
+	modprobe ppp_async
 
 	$PPPD call pptp $PPTP_OPTIONS
 	exitval=$?
@@ -54,8 +54,12 @@ stop() {
 
 case "$1" in
 	""|load)
-		[ ! -d "/tmp/flash/ppp" ] && mkdir -p /tmp/flash/ppp/peers
+		[ ! -d "/tmp/flash/ppp/peers" ] && mkdir -p /tmp/flash/ppp/peers
 		[ ! -d "/mod/etc/ppp/peers" ] && mkdir -p /mod/etc/ppp/peers
+
+		[ ! -e "/tmp/flash/ppp/options.pptp" ] && /etc/default.${DAEMON}/pptp_options > /tmp/flash/ppp/options.pptp
+		[ ! -e "/tmp/flash/ppp/peers/pptp" ] && /etc/default.${DAEMON}/pptp_peer > /tmp/flash/ppp/peers/pptp
+
 		[ -e "/tmp/flash/ppp/options.pptp" ] && ln -s /tmp/flash/ppp/options.pptp /mod/etc/ppp/options.pptp
 		[ -e "/tmp/flash/ppp/peers/pptp" ] && ln -s /tmp/flash/ppp/peers/pptp /mod/etc/ppp/peers/pptp
 

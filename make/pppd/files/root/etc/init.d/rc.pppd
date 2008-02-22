@@ -6,38 +6,46 @@ export LD_LIBRARY_PATH=/mod/lib
 DAEMON=pppd
 
 case "$1" in
-	""|load|start)
+	""|load)
 		[ ! -d "/tmp/flash/ppp" ] && mkdir -p /tmp/flash/ppp
 		[ ! -d "/mod/etc/ppp" ] && mkdir -p /mod/etc/ppp
+
+		[ ! -e "/tmp/flash/ppp/chap-secrets" ] && /etc/default.${DAEMON}/chap_secrets > /tmp/flash/ppp/chap-secrets
+		#[ ! -e "/tmp/flash/ppp/pap-secrets" ] && /etc/default.${DAEMON}/pap_secrets > /tmp/flash/ppp/pap-secrets
+		#[ ! -e "/tmp/flash/ppp/options" ] && /etc/default.${DAEMON}/pppd_options > /tmp/flash/ppp/options
+
 		[ -e "/tmp/flash/ppp/chap-secrets" ] && ln -s /tmp/flash/ppp/chap-secrets /mod/etc/ppp/chap-secrets
 		#[ -e "/tmp/flash/ppp/pap-secrets" ] && ln -s /tmp/flash/ppp/pap_secrets /mod/etc/ppp/pap-secrets
 		#[ -e "/tmp/flash/ppp/options" ] && ln -s /tmp/flash/ppp/options /mod/etc/ppp/options
 
-		[ ! -e "/mod/etc/ppp/chap-secrets" ] && /etc/default.${DAEMON}/chap_secrets > /mod/etc/ppp/chap-secrets
-		#[ ! -e "/mod/etc/ppp/pap-secrets" ] && /etc/default.${DAEMON}/pap_secrets > /mod/etc/ppp/pap-secrets
-		#[ ! -e "/mod/etc/ppp/options" ] && /etc/default.${DAEMON}/pppd_options > /mod/etc/ppp/options
-
 		deffile='/mod/etc/default.pppd/chap_secrets.def'
 		[ -r "/tmp/flash/chap_secrets.def" ] && deffile='/tmp/flash/chap_secrets.def'
-		modreg file 'chap_secrets' 'PPTP/PPTPD: chap-secrets' 0 "$deffile"
+		modreg file 'chap_secrets' 'PPP: chap-secrets' 0 "$deffile"
 
 		#deffile='/mod/etc/default.pppd/pap_secrets.def'
 		#[ -r "/tmp/flash/pap_secrets.def" ] && deffile='/tmp/flash/pap_secrets.def'
-		#modreg file 'pap_secrets' 'PPPD: pap-secrets' 0 "$deffile"
+		#modreg file 'pap_secrets' 'PPP: pap-secrets' 0 "$deffile"
 
 		#deffile='/mod/etc/default.pppd/pppd_options.def'
 		#[ -r "/tmp/flash/pppd_options.def" ] && deffile='/tmp/flash/pppd_options.def'
-		#modreg file 'pppd_options' 'PPPD: options' 0 "$deffile"
+		#modreg file 'pppd_options' 'PPP: options' 0 "$deffile"
 		;;
-	unload|stop)
+	unload)
 		modunreg file 'chap_secrets'
 		#modunreg file 'pap_secrets'
 		#modunreg file 'pppd_options'
 		;;
+	start)
+		echo "pppd is only used by pptp and pptpd."
+		exit 1
+		;;
+	stop)
+		echo "pppd is only used by pptp and pptpd."
+		exit 1
+		;;
 	restart)
-		stop
-		sleep 1
-		start
+		echo "pppd is only used by pptp and pptpd."
+		exit 1
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart]" 1>&2

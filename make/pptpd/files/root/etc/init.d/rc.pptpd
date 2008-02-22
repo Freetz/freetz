@@ -18,9 +18,6 @@ case "$1" in
 esac
 
 start() {
-	[ ! -e "/mod/etc/ppp/options.pptpd" ] && /etc/default.${DAEMON}/pptpd_options > /mod/etc/ppp/options.pptpd
-	[ ! -e "/mod/etc/ppp/pptpd.conf" ] && /etc/default.${DAEMON}/pptpd_conf > /mod/etc/ppp/pptpd.conf
-
 	echo -n 'Starting pptpd ...'
 	set -o noglob
 	modprobe arc4
@@ -61,6 +58,10 @@ case "$1" in
 	""|load)
 		[ ! -d "/tmp/flash/ppp" ] && mkdir -p /tmp/flash/ppp
 		[ ! -d "/mod/etc/ppp" ] && mkdir -p /mod/etc/ppp
+
+		[ ! -e "/tmp/flash/ppp/options.pptpd" ] && /etc/default.${DAEMON}/pptpd_options > /tmp/flash/ppp/options.pptpd
+		[ ! -e "/tmp/flash/ppp/pptpd.conf" ] && /etc/default.${DAEMON}/pptpd_conf > /tmp/flash/ppp/pptpd.conf
+
 		[ -e "/tmp/flash/ppp/options.pptpd" ] && ln -s /tmp/flash/ppp/options.pptpd /mod/etc/ppp/options.pptpd
 		[ -e "/tmp/flash/ppp/pptpd.conf" ] && ln -s /tmp/flash/ppp/pptpd.conf /mod/etc/ppp/pptpd.conf
 
