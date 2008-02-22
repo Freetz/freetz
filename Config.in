@@ -915,12 +915,32 @@ config DS_PATCH_AVM_HIDDEN_PAGES
 		DS_SHOW_ADVANCED && \
 		( \
 		DS_TYPE_FON_WLAN_7141 || \
-		( DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_LABOR_DSL && ! DS_TYPE_LABOR_PHONE && ! DS_TYPE_LABOR_VPN) || \
+		DS_TYPE_FON_WLAN_7170 || \
 		DS_TYPE_FON_WLAN_7270 \
-		) 
+		)
+	select DS_PATCH_HIDDEN_DSL_PAGES if \
+		( \
+		! (DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_DSL) \
+		)
+	select DS_PATCH_HIDDEN_REMOTE_PAGES if \
+		( \
+		! (DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_VPN) && \
+		! (DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_PHONE) && \
+		! DS_TYPE_FON_WLAN_7270 \
+		)
 	default n
 	help
 		Show Labor DSL, VPN and HTTPS pages in AVM webinterface.
+
+config DS_PATCH_HIDDEN_DSL_PAGES
+	bool
+	depends on DS_PATCH_AVM_HIDDEN_PAGES
+	default n
+
+config DS_PATCH_HIDDEN_REMOTE_PAGES
+	bool
+	depends on DS_PATCH_AVM_HIDDEN_PAGES
+	default n
 
 config DS_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
@@ -994,7 +1014,6 @@ config DS_REMOVE_WEBSRV
 config DS_REMOVE_UPNP
 	bool "Remove UPnP daemon (igdd)"
 	select DS_REMOVE_UPNP_LIBS if \
-			DS_SHOW_ADVANCED && \
 			( \
 			! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_EN ) \
 			&& ! ( DS_TYPE_FON_WLAN_7140 && DS_TYPE_LANG_A_CH ) \
