@@ -1,5 +1,5 @@
 --- usr/www/all/html/de/fon/dect.frm	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/dect.frm	2007-05-22 09:02:58.000000000 +0200
++++ usr/www/all/html/de/fon/dect.frm	2008-02-22 19:47:41.000000000 +0100
 @@ -1,3 +1,7 @@
 +<input type="hidden" name="var:FonNr" value="<? echo $var:FonNr ?>" id="uiPostFonNr">
 +<input type="hidden" name="var:IsdnNr" value="<? echo $var:IsdnNr ?>" id="uiPostIsdnNr">
@@ -23,7 +23,7 @@
 +<input type="hidden" name="telcfg:settings/MSN/Port3/MWI_Mail" value="<? query telcfg:settings/MSN/Port3/MWI_Mail?>" id="uiPostMwiMail">
 +<input type="hidden" name="telcfg:settings/MSN/Port3/MWI_Once" value="<? query telcfg:settings/MSN/Port3/MWI_Once ?>" id="uiPostMwiOnce">
 --- usr/www/all/html/de/fon/dect.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/dect.html	2007-11-24 21:28:37.000000000 +0100
++++ usr/www/all/html/de/fon/dect.html	2008-02-22 19:47:41.000000000 +0100
 @@ -1,17 +1,14 @@
  <? include ../html/$var:lang/fon/dect.inc ?>
  <div id="content">
@@ -81,7 +81,7 @@
  </div>
 +
 --- usr/www/all/html/de/fon/dect.inc	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/dect.inc	2007-09-01 15:35:14.000000000 +0200
++++ usr/www/all/html/de/fon/dect.inc	2008-02-22 19:47:41.000000000 +0100
 @@ -8,8 +8,39 @@
  <? setvariable var:Text16 'Internet:' ?>
  <? setvariable var:Text17 'Keine Rufnummern eingerichtet' ?>
@@ -127,7 +127,7 @@
 +<? setvariable var:Text46 'nur bei der ersten neuen Nachricht' ?>
 +<? setvariable var:Text47 'bei jeder neuen Nachricht' ?>
 --- usr/www/all/html/de/fon/dect.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/dect.js	2007-09-01 11:51:36.000000000 +0200
++++ usr/www/all/html/de/fon/dect.js	2008-02-22 19:47:41.000000000 +0100
 @@ -2,12 +2,16 @@
  <style type="text/css">
  <!--
@@ -271,7 +271,7 @@
  }
  </script>
 --- usr/www/all/html/de/fon/fon1dect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fon1dect.frm	2007-04-07 10:17:16.000000000 +0200
++++ usr/www/all/html/de/fon/fon1dect.frm	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,14 @@
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/MSN" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/MSN ?>" id="uiPostThisMSN">
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/CLIR" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/CLIR ?>" id="uiPostCLIR">
@@ -288,7 +288,7 @@
 +<? repeat [ 0 4 ] `
 +<input type="hidden" name="dect:settings/MSN$0/MSN" value="<? query dect:settings/MSN$0/MSN ?>" id="uiPostMSN$0" disabled>` ?>
 --- usr/www/all/html/de/fon/fon1dect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fon1dect.html	2007-09-11 13:52:56.000000000 +0200
++++ usr/www/all/html/de/fon/fon1dect.html	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,36 @@
 +<? include ../html/$var:lang/fon/fon1dect.inc ?>
 +<div id="content">
@@ -327,7 +327,7 @@
 +	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 +</div>
 --- usr/www/all/html/de/fon/fon1dect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fon1dect.inc	2007-09-08 19:24:02.000000000 +0200
++++ usr/www/all/html/de/fon/fon1dect.inc	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,16 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'MSN zuordnen' ?>
@@ -346,7 +346,7 @@
 +<? setvariable var:Text28 'Zuordnung' ?>
 +<? setvariable var:Text29 'Mobilteile' ?>
 --- usr/www/all/html/de/fon/fon1dect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fon1dect.js	2007-09-11 18:46:14.000000000 +0200
++++ usr/www/all/html/de/fon/fon1dect.js	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,175 @@
 +<!--		../fon/fon1dect.js		-->
 +<style type="text/css">
@@ -524,7 +524,7 @@
 +}
 +</script>
 --- usr/www/all/html/de/fon/fondevices.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fondevices.html	2007-09-10 20:24:04.000000000 +0200
++++ usr/www/all/html/de/fon/fondevices.html	2008-02-22 19:47:41.000000000 +0100
 @@ -6,10 +6,11 @@
  	<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
  	<ul class="tabs">
@@ -589,7 +589,7 @@
  	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
  		<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
 --- usr/www/all/html/de/fon/foneditdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditdect.frm	2007-04-04 11:49:58.000000000 +0200
++++ usr/www/all/html/de/fon/foneditdect.frm	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,8 @@
 +<input type="hidden" name="dect:command/StartSubscription" id="uiPostStartSubscription" disabled>
 +<input type="hidden" name="dect:command/Unsubscribe" id="uiPostUnsubscribe" disabled>
@@ -600,7 +600,7 @@
 +<input type="hidden" name="dect:settings/Handset$0/Type" value="<? query dect:settings/Handset$0/Type ?>" id="uiPostType$0" disabled>
 +` ?>
 --- usr/www/all/html/de/fon/foneditdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditdect.html	2007-09-09 16:02:12.000000000 +0200
++++ usr/www/all/html/de/fon/foneditdect.html	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,50 @@
 +<? include ../html/$var:lang/fon/foneditdect.inc ?> 
 +<div id="content">
@@ -653,7 +653,7 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/all/html/de/fon/foneditdect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditdect.inc	2007-09-01 12:17:34.000000000 +0200
++++ usr/www/all/html/de/fon/foneditdect.inc	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,22 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text3 'Nummer' ?>
@@ -678,7 +678,7 @@
 +<? setvariable var:Text34 'Datum und Uhrzeit setzen' ?>
 +<? setvariable var:Text35 'Mit Hilfe der Paging-Funktion können Sie Mobilteile lokalisieren. Per Knopfdruck können auch Datum und Uhrzeit der DECT-Telefone gesetzt werden.' ?>
 --- usr/www/all/html/de/fon/foneditdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditdect.js	2007-09-09 15:12:18.000000000 +0200
++++ usr/www/all/html/de/fon/foneditdect.js	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,106 @@
 +<!--		../fon/foneditdect.js		-->
 +<style type="text/css">
@@ -787,7 +787,7 @@
 +}
 +</script>
 --- usr/www/all/html/de/fon/fonlistdect.frm	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fonlistdect.frm	2007-08-27 16:32:20.000000000 +0200
++++ usr/www/all/html/de/fon/fonlistdect.frm	2008-02-22 19:47:41.000000000 +0100
 @@ -1 +1,6 @@
 -<? include ../html/$var:lang/fon/fonlistisdn.frm ?>
 +<input type="hidden" name="var:IsdnNr" value="<? echo $var:IsdnNr ?>" id="uiPostIsdnNr">
@@ -797,7 +797,7 @@
 +<input type="hidden" name="telcfg:settings/NTHotDialList/Number$0" value="<? query telcfg:settings/NTHotDialList/Number$0 ?>" id="uiPostNummer$0" disabled>
 +` ?>
 --- usr/www/all/html/de/fon/fonlistdect.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fonlistdect.html	2007-09-09 16:02:14.000000000 +0200
++++ usr/www/all/html/de/fon/fonlistdect.html	2008-02-22 19:47:41.000000000 +0100
 @@ -1 +1,44 @@
 -<? include ../html/$var:lang/fon/fonlistisdn.html ?>
 +<? include ../html/$var:lang/fon/fonlistisdn.inc ?>
@@ -845,7 +845,7 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/all/html/de/fon/fonlistdect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonlistdect.inc	2007-09-01 12:18:26.000000000 +0200
++++ usr/www/all/html/de/fon/fonlistdect.inc	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,19 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text3 'Nummer' ?>
@@ -867,7 +867,7 @@
 +<? setvariable var:Text30 'Nebenstelle' ?>
 +
 --- usr/www/all/html/de/fon/fonlistdect.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fonlistdect.js	2007-09-08 16:37:40.000000000 +0200
++++ usr/www/all/html/de/fon/fonlistdect.js	2008-02-22 19:47:41.000000000 +0100
 @@ -1 +1,77 @@
 -<? include ../html/$var:lang/fon/fonlistisdn.js ?>
 +<!--		../fon/fonlistdect.js		-->
@@ -948,7 +948,7 @@
 +}
 +</script>
 --- usr/www/all/html/de/fon/fonlist.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fonlist.html	2007-11-28 22:14:58.000000000 +0100
++++ usr/www/all/html/de/fon/fonlist.html	2008-02-22 19:47:41.000000000 +0100
 @@ -27,6 +27,14 @@
  					<img src="../html/<? echo $var:lang ?>/images/bearbeiten.gif" align="bottom" width="16" height="16" hspace="4">
  				</button></td>
@@ -965,7 +965,7 @@
  	</div></div></div></div></div></div>
  	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
 --- usr/www/all/html/de/fon/fonsetupdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupdect.frm	2007-04-07 10:17:26.000000000 +0200
++++ usr/www/all/html/de/fon/fonsetupdect.frm	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,9 @@
 +<input type="hidden" name="var:MsnNr" value="<? echo $var:MsnNr ?>" id="uiPostMsnNr">
 +<input type="hidden" name="dect:settings/RingOnAllMSNs" value="<? query dect:settings/RingOnAllMSNs ?>" id="uiPostRingOnAllMSNs" disabled>
@@ -977,7 +977,7 @@
 +<input type="hidden" name="dect:settings/MSN$0/Handsets" value="<? query dect:settings/MSN$0/Handsets ?>" id="uiPostHandsets$0" disabled>
 +` ?>
 --- usr/www/all/html/de/fon/fonsetupdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupdect.html	2007-09-09 16:02:16.000000000 +0200
++++ usr/www/all/html/de/fon/fonsetupdect.html	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,54 @@
 +<? include ../html/$var:lang/fon/fonsetupdect.inc ?> 
 +<div id="content">
@@ -1034,7 +1034,7 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/all/html/de/fon/fonsetupdect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupdect.inc	2007-09-01 12:18:14.000000000 +0200
++++ usr/www/all/html/de/fon/fonsetupdect.inc	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,27 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'Die Mobilteile können so eingerichtet werden, dass sie auf alle eingehenden Anrufe reagieren. Durch das Setzen dieser Option gehen alle Rufnummernzuordnungen verloren.' ?>
@@ -1064,7 +1064,7 @@
 +<? setvariable var:Text54 'E' ?>
 +
 --- usr/www/all/html/de/fon/fonsetupdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupdect.js	2007-09-11 18:41:34.000000000 +0200
++++ usr/www/all/html/de/fon/fonsetupdect.js	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,144 @@
 +<!--		../fon/fonsetupdect.js		-->
 +<style type="text/css">
@@ -1211,7 +1211,7 @@
 +}
 +</script>
 --- usr/www/all/html/de/help/hilfe_fon_editdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/help/hilfe_fon_editdect.html	2007-04-05 18:19:50.000000000 +0200
++++ usr/www/all/html/de/help/hilfe_fon_editdect.html	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,19 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
@@ -1233,7 +1233,7 @@
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/all/html/de/help/hilfe_fon_fon1dect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/help/hilfe_fon_fon1dect.html	2007-04-05 18:19:50.000000000 +0200
++++ usr/www/all/html/de/help/hilfe_fon_fon1dect.html	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,19 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
@@ -1255,7 +1255,7 @@
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/all/html/de/help/hilfe_fon_setupdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/help/hilfe_fon_setupdect.html	2007-04-05 17:56:26.000000000 +0200
++++ usr/www/all/html/de/help/hilfe_fon_setupdect.html	2008-02-22 19:47:41.000000000 +0100
 @@ -0,0 +1,21 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Rufnummernzuordnung</div></div></div></div></div></div>
@@ -1279,7 +1279,7 @@
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/all/html/de/help/home.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/help/home.html	2007-12-16 22:56:33.000000000 +0100
++++ usr/www/all/html/de/help/home.html	2008-02-22 19:47:41.000000000 +0100
 @@ -40,6 +40,9 @@
  					<a href="javascript:jslGoTo('help','hilfe_fon_dect')"><? echo $var:Text69 ?></a><br>
  					<a href="javascript:jslGoTo('help','hilfe_fon_dect_fon1isdn')"><? echo $var:Text48 ?></a><br>
@@ -1291,7 +1291,7 @@
  					<a href="javascript:jslGoTo('help','hilfe_fon_telefonbuch')"><? echo $var:Text23 ?></a><br>
  					<a href="javascript:jslGoTo('help','hilfe_fon_waehlhilfe')"><? echo $var:Text59 ?></a><br>
 --- usr/www/all/html/de/home/home.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/home/home.html	2007-12-16 22:56:32.000000000 +0100
++++ usr/www/all/html/de/home/home.html	2008-02-22 19:47:41.000000000 +0100
 @@ -43,7 +43,19 @@
  					<table id="tLan">
  						<tr>
@@ -1314,7 +1314,7 @@
  					</table>
  				</td>
 --- usr/www/all/html/de/internet/internet_expert.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/internet/internet_expert.js	2007-12-16 22:56:32.000000000 +0100
++++ usr/www/all/html/de/internet/internet_expert.js	2008-02-22 19:47:41.000000000 +0100
 @@ -44,7 +44,7 @@
  var g_mldWanRouter3 = " erreichbar.";
  var g_txtAlert_1 = "Die VLAN-ID muss einen Wert zwischen 6 und 4095 haben.";
@@ -1324,3 +1324,45 @@
  var g_mldWLAN		= "WLAN";
  var g_mldUSB			= "USB";
  var g_AlleImNetz = "<? query box:settings/lanbridge/activated ?>";
+--- usr/www/all/html/de/fon/sipoptionen.frm.orig	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/sipoptionen.frm	2008-02-22 19:47:41.000000000 +0100
+@@ -26,7 +26,7 @@
+ <input type="hidden" name="connection_voip:settings/dns_first" value="<? query connection_voip:settings/dns_first ?>" id="uiPostDns0" disabled />
+ <input type="hidden" name="connection_voip:settings/dns_second" value="<? query connection_voip:settings/dns_second ?>" id="uiPostDns1" disabled />
+ <input type="hidden" name="sar:settings/autodetect" value="<? query sar:settings/autodetect ?>" id="uiPostSarAuto" disabled />
+-<input type="hidden" name="telcfg:settings/Location/OKZ" value="<? query telcfg:settings/Location/OKZ ?>" id="uiPostOKZ">
+-<input type="hidden" name="telcfg:settings/Location/LKZ" value="<? query telcfg:settings/Location/LKZ ?>" id="uiPostLKZ">
+-<input type="hidden" name="telcfg:settings/Location/OKZPrefix" value="<? query telcfg:settings/Location/OKZPrefix ?>" id="uiPostOKZPrefix">
+-<input type="hidden" name="telcfg:settings/Location/LKZPrefix" value="<? query telcfg:settings/Location/LKZPrefix ?>" id="uiPostLKZPrefix">
++<input type="hidden" name="telcfg:settings/SIP0/OKZ" value="<? query telcfg:settings/SIP0/OKZ ?>" id="uiPostOKZ">
++<input type="hidden" name="telcfg:settings/SIP0/LKZ" value="<? query telcfg:settings/SIP0/LKZ ?>" id="uiPostLKZ">
++<input type="hidden" name="telcfg:settings/SIP0/OKZPrefix" value="<? query telcfg:settings/SIP0/OKZPrefix ?>" id="uiPostOKZPrefix">
++<input type="hidden" name="telcfg:settings/SIP0/LKZPrefix" value="<? query telcfg:settings/SIP0/LKZPrefix ?>" id="uiPostLKZPrefix">
+--- usr/www/all/html/de/fon/sip1.frm.orig	2007-05-22 15:02:59.000000000 +0200
++++ usr/www/all/html/de/fon/sip1.frm	2008-02-22 19:47:41.000000000 +0100
+@@ -55,7 +55,7 @@
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/Suffix" value="<? query telcfg:settings/$var:telnr/Suffix ?>" id="uiPostSuffix">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/AlternatePrefix" value="<? query telcfg:settings/$var:telnr/AlternatePrefix ?>" id="uiPostAlternatePrefix">
+ ` ?>
+-<input type="hidden" name="telcfg:settings/Location/OKZ" value="<? query telcfg:settings/Location/OKZ ?>" id="uiPostOKZ" disabled>
++<input type="hidden" name="telcfg:settings/SIP0/OKZ" value="<? query telcfg:settings/SIP0/OKZ ?>" id="uiPostOKZ" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/NTDefault" value="<? query telcfg:settings/MSN/NTDefault ?>" id="uiPostNTDefault" disabled>
+ <input type="hidden" name="connection0:pppoe:settings/username" value="<? query connection0:pppoe:settings/username ?>" id="uiPostPppUsername" disabled>
+ <? multiquery telcfg:settings/SIP/list '
+--- usr/www/all/html/de/fon/sip1.html.orig	2008-02-22 19:47:41.000000000 +0100
++++ usr/www/all/html/de/fon/sip1.html	2008-02-22 19:47:41.000000000 +0100
+@@ -226,10 +226,10 @@
+ 					</tr>
+ 					<tr>
+ 						<td class="c1">&nbsp;</td>
+-						<td class="c3"><? query telcfg:settings/Location/LKZPrefix ?></td>
+-						<td class="c3"><? query telcfg:settings/Location/LKZ ?></td>
+-						<td class="c3"><? query telcfg:settings/Location/OKZPrefix ?></td>
+-						<td class="c3"><? query telcfg:settings/Location/OKZ ?></td>
++						<td class="c3"><? query telcfg:settings/SIP0/LKZPrefix ?></td>
++						<td class="c3"><? query telcfg:settings/SIP0/LKZ ?></td>
++						<td class="c3"><? query telcfg:settings/SIP0/OKZPrefix ?></td>
++						<td class="c3"><? query telcfg:settings/SIP0/OKZ ?></td>
+ 					</tr>
+ 				</table>
+ 				<p class="pCheck25 mb10" id="uiShowAlternatePrefix_USA" style="display:none">
