@@ -7,7 +7,7 @@ if [ "$DS_TYPE_FON_WLAN_7270" == "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7270.patch"
 	fi
 elif [ "$DS_TYPE_FON_WLAN_7170" == "y" -a "$DS_TYPE_LABOR_PHONE" == "y" ]; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7270_labor.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7170_labor_phone.patch"
 elif [ "$DS_TYPE_SPEEDPORT_W900V" != "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage.patch"
 fi
