@@ -359,8 +359,8 @@ config DS_SHOW_ADVANCED
 	bool "Show advanced options"
 	default n
 	help
-	Show advanced Options for patching the firmware. This is only useful
-	for experienced users who really know what they are doing
+		Show advanced Options for patching the firmware. This is only useful
+		for experienced users who really know what they are doing
 
 config DS_TARGET_REF
 	string "Target ref"		if DS_TYPE_CUSTOM
@@ -1137,6 +1137,25 @@ config DS_REMOVE_VOIP_ISDN
 		encounter several empty web pages or submenus.
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
+config DS_REMOVE_ANNEX_A_FIRMWARE
+	bool "Remove Annex A firmware file"
+	depends on DS_TYPE_FON_WLAN_7270
+	default n
+	help
+		Remove lib/modules/dsp_ur8/ur8-A-dsl.bin. This saves about 400 KB of
+		uncompressed data size.
+
+config DS_REMOVE_ANNEX_B_FIRMWARE
+	bool "Remove Annex B firmware file"
+	depends on DS_TYPE_FON_WLAN_7270
+	default n
+	help
+		Remove lib/modules/dsp_ur8/ur8-B-dsl.bin. This saves about 400 KB of
+		uncompressed data size.
+
+comment "WARNING: Both Annex firmware files will be removed."
+	depends on DS_REMOVE_ANNEX_A_FIRMWARE && DS_REMOVE_ANNEX_B_FIRMWARE
 
 endmenu
 
