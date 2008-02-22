@@ -15,7 +15,7 @@ stat_bar() {
 btn_count=0
 stat_button() {
 	btn_count=$((btn_count + 1))
-	echo '<div class="btn"><form class="btn" action="/cgi-bin/exec.cgi" method="post"><input type="hidden" name="cmd" value="'"$1"'"><input type="submit" value="'"$2"'" style="width: 173px"></form></div>'
+	echo '<div class="btn"><form class="btn" action="/cgi-bin/exec.cgi" method="post"><input type="hidden" name="cmd" value="'"$1"'"><input type="submit" value="'"$2"'" style="width: 172px"></form></div>'
 	[ $btn_count -eq 3 ] && ( btn_count=0; echo '<br style="clear:left">' )
 }
 
@@ -46,34 +46,34 @@ EOF
 
 for i in $(ls /usr/www/); do
 	case "$i" in
-                       all|cgi-bin|html|kids)
-                               ;;
-                       *)
-                               BRANDS="$BRANDS $i" 
-                               ;; 
+		all|cgi-bin|html|kids)
+			;;
+		*)
+			BRANDS="$BRANDS $i" 
+			;; 
 	esac
 done
 
 if [ $(echo $BRANDS|wc -w) -gt 1 ]; then 
-        echo "<form class=\"btn\" action=\"/cgi-bin/exec.cgi\" method=\"post\">" 
+	echo "<form class=\"btn\" action=\"/cgi-bin/exec.cgi\" method=\"post\">" 
 	echo "$(lang de:"Branding" en:"Branding"):"
-        echo "<input type=\"hidden\" name=\"cmd\" value=\"branding\">" 
-        echo "<select name=\"branding\" size=\"1\">" 
-        branding="$(get_env 'firmware_version')" 
-        for i in $BRANDS; do 
-                echo "<option value=\"$i\"$([ "$i" = "$branding" ] && echo ' selected')>$i</option>" 
-        done 
-        echo "</select>" 
-        echo "<input type=\"submit\" value=\"Ok\">" 
-        echo "</form>" 
+	echo "<input type=\"hidden\" name=\"cmd\" value=\"branding\">" 
+	echo "<select name=\"branding\" size=\"1\">" 
+	branding="$(get_env 'firmware_version')" 
+	for i in $BRANDS; do 
+		echo "<option value=\"$i\"$([ "$i" = "$branding" ] && echo ' selected')>$i</option>" 
+	done 
+	echo "</select>" 
+	echo "<input type=\"submit\" value=\"Ok\">" 
+	echo "</form>" 
 else
-        DUMMY=$(get_env 'firmware_version') 
-        BRANDS=$(echo $BRANDS|cut -d " " -f 0)
+	DUMMY=$(get_env 'firmware_version') 
+	BRANDS=$(echo $BRANDS|cut -d " " -f 0)
 	echo "$(lang de:"Branding" en:"Branding"):"
-        echo "$DUMMY" 
-        if [ "$DUMMY" != "$BRANDS" ]; then 
-                echo "('$(lang de:"nicht installiert" en:"not installed")')" 
-        fi 
+	echo "$DUMMY" 
+	if [ "$DUMMY" != "$BRANDS" ]; then 
+		echo "('$(lang de:"nicht installiert" en:"not installed")')" 
+	fi 
 fi
 
 cat << EOF
