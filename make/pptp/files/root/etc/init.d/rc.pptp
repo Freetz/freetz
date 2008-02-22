@@ -18,11 +18,11 @@ case "$1" in
 esac
 
 start() {
-	[ ! -e "/mod/etc/ppp/options.pptp" ] && /etc/default.${DAEMON}/pptp_options > /mod/etc/ppp/options.pptp
-	[ ! -e "/mod/etc/ppp/peers/pptp" ] && /etc/default.${DAEMON}/pptp_peer > /mod/etc/ppp/peers/pptp
-	
 	echo -n 'Starting pptp ...'
 	set -o noglob
+
+	[ ! -e "/mod/etc/ppp/peers/pptp" ] && /etc/default.${DAEMON}/pptp_peer > /mod/etc/ppp/peers/pptp
+
 	modprobe ppp_async
 
 	$PPPD call pptp $PPTP_OPTIONS
@@ -44,6 +44,9 @@ stop() {
 
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
+
+	rm -f /mod/etc/ppp/peers/pptp
+
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
@@ -54,14 +57,10 @@ stop() {
 
 case "$1" in
 	""|load)
-		[ ! -d "/tmp/flash/ppp/peers" ] && mkdir -p /tmp/flash/ppp/peers
 		[ ! -d "/mod/etc/ppp/peers" ] && mkdir -p /mod/etc/ppp/peers
 
 		[ ! -e "/tmp/flash/ppp/options.pptp" ] && /etc/default.${DAEMON}/pptp_options > /tmp/flash/ppp/options.pptp
-		[ ! -e "/tmp/flash/ppp/peers/pptp" ] && /etc/default.${DAEMON}/pptp_peer > /tmp/flash/ppp/peers/pptp
-
 		[ -e "/tmp/flash/ppp/options.pptp" ] && ln -s /tmp/flash/ppp/options.pptp /mod/etc/ppp/options.pptp
-		[ -e "/tmp/flash/ppp/peers/pptp" ] && ln -s /tmp/flash/ppp/peers/pptp /mod/etc/ppp/peers/pptp
 
 		modreg cgi 'pptp' 'PPTP'
 
@@ -69,10 +68,6 @@ case "$1" in
 		[ -r "/tmp/flash/pptp_options.def" ] && deffile='/tmp/flash/pptp_options.def'
 		modreg file 'pptp_options' 'PPTP: options.pptp' 0 "$deffile"
 
-		deffile='/mod/etc/default.pptp/pptp_peer.def'
-		[ -r "/tmp/flash/pptp_peer.def" ] && deffile='/tmp/flash/pptp_peer.def'
-		modreg file 'pptp_peer' 'PPTP: peer config' 0 "$deffile"
-		
 		if [ "$PPTP_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1;
@@ -84,7 +79,6 @@ case "$1" in
 		stop
 		modunreg cgi 'pptp'
 		modunreg file 'pptp_options'
-		modunreg file 'pptp_peer'
 		;;
 	start)
 		start

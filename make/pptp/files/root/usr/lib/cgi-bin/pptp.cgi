@@ -25,7 +25,6 @@ cat << EOF
 #<li><a href="/cgi-bin/file.cgi?id=pap_secrets">PPP: pap-secrets bearbeiten</a></li>
 #<li><a href="/cgi-bin/file.cgi?id=options">PPP: options bearbeiten</a></li>
 <li><a href="/cgi-bin/file.cgi?id=pptp_options">PPTP: options.pptp bearbeiten</a></li>
-<li><a href="/cgi-bin/file.cgi?id=pptp_peer">PPTP: Peer-Konfiguration bearbeiten</a></li>
 </ul>
 EOF
 
