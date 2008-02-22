@@ -24,12 +24,12 @@ save() {
 	if [ "$size" -gt "$MOD_LIMIT" ]; then
 		rm -f $TMPFILE
 		echo "size: $size limit: $MOD_LIMIT" 1>&2
-		echo "ERROR: /var/flash/ds_mod too big" 1>&2
+		echo "ERROR: /var/flash/freetz too big" 1>&2
 		exit 1
 	fi
 
-	echo -n 'Writing /var/flash/ds_mod...'
-	cat $TMPFILE > /var/flash/ds_mod
+	echo -n 'Writing /var/flash/freetz...'
+	cat $TMPFILE > /var/flash/freetz
 	rm -f $TMPFILE
 	echo 'done.'
 	echo "$size bytes written."
