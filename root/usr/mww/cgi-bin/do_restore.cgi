@@ -23,8 +23,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
     echo "$(lang de:"Konfiguration wiederherstellen" en:"Restoring configuration")..."
     if [ -e $BACKUP_DIR/$DS_BCK_FILE ]
     	echo "$(lang de:"Alte Sicherungsdatei gefunden" en:"Found old backup file")"
-	cat $BACKUP_DIR/$DS_BCK_FILE > $BACKUP_DIR/$FREETZ_BCK_FILE
-	rm -f $BACKUP_DIR/$DS_BCK_FILE
+	mv $BACKUP_DIR/$DS_BCK_FILE $BACKUP_DIR/$FREETZ_BCK_FILE
     fi
     if [ "$FORM_freetz_only" = "on" ]; then
 	echo "cat $BACKUP_DIR/$FREETZ_BCK_FILE > /var/flash/freetz"
