@@ -1,7 +1,9 @@
 $(call PKG_INIT_LIB, 1.1)
 $(PKG)_LIB_VERSION:=0.1.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://ftp.gnupg.org/gcrypt/libgpg-error
+$(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgpg-error
+# If gnupg site does not work...
+#$(PKG)_SITE:=http://www.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/libgpg-error
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
