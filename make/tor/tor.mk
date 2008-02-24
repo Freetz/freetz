@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.1.2.19)
 $(PKG)_SOURCE:=tor-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=https://www.torproject.org/dist
+$(PKG)_SITE:=http://www.torproject.org/dist
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tor
 $(PKG)_STARTLEVEL=40
