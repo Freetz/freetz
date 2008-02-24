@@ -17,6 +17,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-included-gettext
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libexpat-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-emacs
+$(PKG)_CONFIGURE_OPTIONS += --disable-csharp
 
 
 $(PKG_SOURCE_DOWNLOAD)
