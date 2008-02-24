@@ -22,20 +22,22 @@ sec_begin 'Konfigurationsdateien'
 cat << EOF
 <ul>
 <li><a href="/cgi-bin/file.cgi?id=chap_secrets">PPP: chap-secrets bearbeiten</a></li>
-#<li><a href="/cgi-bin/file.cgi?id=pap_secrets">PPP: pap-secrets bearbeiten</a></li>
-#<li><a href="/cgi-bin/file.cgi?id=options">PPP: options bearbeiten</a></li>
 <li><a href="/cgi-bin/file.cgi?id=pptp_options">PPTP: options.pptp bearbeiten</a></li>
 </ul>
 EOF
+#<li><a href="/cgi-bin/file.cgi?id=pap_secrets">PPP: pap-secrets bearbeiten</a></li>
+#<li><a href="/cgi-bin/file.cgi?id=options">PPP: options bearbeiten</a></li>
 
 sec_end
 sec_begin 'pptp'
 
 cat << EOF
 <h2>Adresse des PPTP-Servers:</h2>
-<p>IP: <input type="text" name="pptp_ip" size="16" maxlength="15" value="$(httpd -e "$PPTP_IP")"></p>
+<p>IP: <input type="text" name="pptp_ip" size="16" maxlength="15" value="$(httpd -e "$PPTP_ADDRESS")"></p>
 <h2>Benutzername fuer den PPTP-Server:</h2>
 <p>Benutzer: <input type="text" name="pptp_user" size="20" maxlength="20" value="$(httpd -e "$PPTP_USER")"></p>
+<h2>Server-Name fuer den PPTP-Server:</h2>
+<p>Server-Name: <input type="text" name="pptp_servername" size="20" maxlength="20" value="$(httpd -e "$PPTP_SERVERNAME")"></p>
 <h2>Kommandozeilen-Optionen: </h2>
 <p>Optionen: <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$PPTP_OPTIONS")"></p>
 EOF
