@@ -1,6 +1,6 @@
 APACHE_VERSION:=1.3.37
 APACHE_SOURCE:=apache_$(APACHE_VERSION).tar.gz
-APACHE_SITE:=http://ftp.uni-erlangen.de/pub/mirrors/apache/httpd
+APACHE_SITE:=http://archive.apache.org/dist/httpd
 APACHE_MAKE_DIR:=$(MAKE_DIR)/apache
 APACHE_DIR:=$(SOURCE_DIR)/apache_$(APACHE_VERSION)
 APACHE_BINARY:=$(APACHE_DIR)/src/apache
