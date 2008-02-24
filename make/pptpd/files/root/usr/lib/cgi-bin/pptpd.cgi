@@ -22,11 +22,11 @@ sec_begin 'Konfigurationsdateien'
 cat << EOF
 <ul>
 <li><a href="/cgi-bin/file.cgi?id=chap_secrets">PPP: chap-secrets bearbeiten</a></li>
-#<li><a href="/cgi-bin/file.cgi?id=pap_secrets">PPP: pap-secrets bearbeiten</a></li>
-#<li><a href="/cgi-bin/file.cgi?id=options">PPP: options bearbeiten</a></li>
 <li><a href="/cgi-bin/file.cgi?id=pptpd_options">PPTPD: options.pptpd bearbeiten</a></li>
 <li><a href="/cgi-bin/file.cgi?id=pptpd_conf">PPTPD: Konfiguration bearbeiten</a></li>
 </ul>
 EOF
+#<li><a href="/cgi-bin/file.cgi?id=pap_secrets">PPP: pap-secrets bearbeiten</a></li>
+#<li><a href="/cgi-bin/file.cgi?id=options">PPP: options bearbeiten</a></li>
 
 sec_end
