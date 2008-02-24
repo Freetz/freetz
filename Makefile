@@ -50,8 +50,8 @@ PACKAGES_BUILD_DIR:=$(PACKAGES_DIR)/$(BUILD_DIR)
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 
 SED:=sed
-DL_TOOL:=$(TOOLS_DIR)/ds_download
-PATCH_TOOL:=$(TOOLS_DIR)/ds_patch
+DL_TOOL:=$(TOOLS_DIR)/freetz_download
+PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)

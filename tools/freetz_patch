@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# DS-Mod patch tool with optional auto-fix feature
+# Freetz patch tool with optional auto-fix feature
 #
-# This script can either be dot-included via '. tools/ds_patch' to get an
+# This script can either be dot-included via '. tools/freetz_patch' to get an
 # in-process definition of the 'modpatch' shell function or executed directly.
 # The execution mode will be determined by checking if $0 has the base name
-# 'ds_patch'.
+# 'freetz_patch'.
 #
 # The functionality has evolved from the original "modpatch" function in
-# DS-Mod's 'fwmod' script (cf. copyright information there).
+# Freetz's 'fwmod' script (cf. copyright information there).
 # The additional auto-fix feature for self-healing patches was developed by
 # Alexander Kriegisch (kriegaex), 2007-06-25.
 
@@ -17,18 +17,18 @@ helpmsg()
 {
 cat >&2 << EOF
 
-$ds_patch_name - DS-Mod patch tool with optional auto-fix feature
+$freetz_patch_name - Freetz patch tool with optional auto-fix feature
 
-Usage: $ds_patch_name <target-dir> <patch-file>
+Usage: $freetz_patch_name <target-dir> <patch-file>
     target-dir   - target directory to apply patch to
     patch-file   - patch file name (unified context diff, patch level -p0)
 
 Examples:
-    $ds_patch_name source/my-package patches/my.patch
-    $ds_patch_name another/package another.patch 2
+    $freetz_patch_name source/my-package patches/my.patch
+    $freetz_patch_name another/package another.patch 2
 
 Environment variables changing behaviour:
-    DS_VERBOSITY_LEVEL  - verbose output, if >= 2
+    FREETZ_VERBOSITY_LEVEL  - verbose output, if >= 2
     VERBOSE             - verbose output, if == '-v'
     AUTO_FIX_PATCHES    - try to auto-fix fuzzy patches, if == 'y'
 
@@ -43,7 +43,7 @@ modpatch()
 		return 1
 	fi
 	local is_verbose=""
-	if [ "$DS_VERBOSITY_LEVEL" ] && [ "$DS_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
+	if [ "$FREETZ_VERBOSITY_LEVEL" ] && [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
 		is_verbose="y"
 	fi
 	local backup
@@ -94,7 +94,7 @@ modpatch()
 if ! declare -F | awk '{print $3}' | grep -q echo2; then
 	echo2()
 	{
-		if [ "$DS_VERBOSITY_LEVEL" ] && [ "$DS_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
+		if [ "$FREETZ_VERBOSITY_LEVEL" ] && [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
 			echo -e "$1"
 		fi
 	}
@@ -112,11 +112,11 @@ if ! declare -F | awk '{print $3}' | grep -q error; then
 fi
 
 # Direct script call? -> delegate parameters to shell function
-if [ "$(basename "$0")" == "ds_patch" ]; then
-	ds_patch_name="ds_patch"
+if [ "$(basename "$0")" == "freetz_patch" ]; then
+	freetz_patch_name="freetz_patch"
 	modpatch "$@"
 else
-	ds_patch_name="modpatch"
+	freetz_patch_name="modpatch"
 fi
 
 
@@ -127,7 +127,7 @@ fi
 # tabs or slashes within path names.
 #
 # Note: This is just an inofficial little add-on and not part of the official
-# DS-Mod patch procedure, use at own risk. The function might come in handy if
+# Freetz patch procedure, use at own risk. The function might come in handy if
 # you wish to canonise a set of patch files so they can be applied with patch
 # level zero (-p0).
 strip_patch_level()

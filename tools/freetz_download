@@ -17,22 +17,22 @@
 helpmsg()
 {
 cat << 'EOF'
-ds_download - download DS-Mod packages
+freetz_download - download Freetz packages
 
-Usage: ds_download (-?|--help) | (<download-dir> <dot-config> <filename> [<mirror>])
+Usage: freetz_download (-?|--help) | (<download-dir> <dot-config> <filename> [<mirror>])
     download-dir  - target directory for download file
-    dot-config    - path to .config for DS-Mod
+    dot-config    - path to .config for Freetz
     filename      - download file name
     mirror        - fallback mirror to download file from if preconfigured
                     mirrors fail
     -?, --help    - print this help text
 
 Examples:
-    ds_download dl .config package.tar.bz2
-    ds_download dl .config package.tar.bz2 http://myserver.com/dsmod
+    freetz_download dl .config package.tar.bz2
+    freetz_download dl .config package.tar.bz2 http://myserver.com/freetz
 
 Debugging: just set DEBUG=1, like this:
-    DEBUG=1 ds_download dl .config package.tar.bz2
+    DEBUG=1 freetz_download dl .config package.tar.bz2
 EOF
 }
 
@@ -77,11 +77,11 @@ DOT_CONFIG="$2"
 DL_FILE="$3"
 FALLBACK_MIRROR="$4"
 
-# Import DS-Mod config variables
+# Import Freetz config variables
 . $DOT_CONFIG
 
 if [ "$DEBUG" == "1" ]; then
-  echo "ds_download parameters:"
+  echo "freetz_download parameters:"
   echo "  DL_DIR=$1"
   echo "  DOT_CONFIG=$2"
   echo "  DL_FILE=$3"
