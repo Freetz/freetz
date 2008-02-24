@@ -1,9 +1,9 @@
 #!/bin/sh
 
 cat <<EOF
-pty "pptp $PPTP_IP --nolaunchpppd"
+pty "pptp $PPTP_ADDRESS --nolaunchpppd"
 name $PPTP_USER
-remotename PPTP
+remotename $PPTP_SERVERNAME
 refuse-eap
 refuse-pap
 refuse-chap
