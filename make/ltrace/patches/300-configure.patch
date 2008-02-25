@@ -1,0 +1,30 @@
+--- configure.ac.orig	2008-02-25 22:39:40.000000000 +0100
++++ configure.ac	2008-02-25 22:39:50.000000000 +0100
+@@ -41,15 +41,18 @@
+ dnl   AC_CHECK_FUNCS(gettimeofday strdup strerror strspn)
+ AC_CHECK_FUNCS(getopt getopt_long)
+ 
+-for path in /usr/include/elfutils /usr/local/include/elfutils \
+-	    /usr/include/libelf /usr/local/include/libelf; do
+-	if test -f ${path}/gelf.h; then
+-		CPPFLAGS="$CPPFLAGS -I ${path}"
+-	fi
+-done
+-
+-AC_CHECK_HEADER(gelf.h,,AC_MSG_ERROR([***** gelf.h not found *****]))
+-		 
++AC_CHECK_HEADER(gelf.h,,[
++  if test -f /usr/include/elfutils/gelf.h; then
++    CPPFLAGS="$CPPFLAGS -I /usr/include/elfutils"
++  elif test -f /usr/local/include/elfutils/gelf.h; then
++    CPPFLAGS="$CPPFLAGS -I /usr/local/include/elfutils"
++  elif test -f /usr/include/libelf/gelf.h; then
++    CPPFLAGS="$CPPFLAGS -I /usr/include/libelf"
++  elif test -f /usr/local/include/libelf/gelf.h; then
++    CPPFLAGS="$CPPFLAGS -I /usr/local/include/libelf"
++  else
++    AC_MSG_ERROR(gelf.h not found)
++  fi])
+ AC_CHECK_LIB(elf,gelf_getdyn)
+ 
+ ac_cv_have_iquote=no
