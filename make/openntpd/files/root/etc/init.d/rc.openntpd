@@ -30,6 +30,10 @@ start() {
 		multid -t > /dev/null 2>&1
 	fi
 
+	if [ ! -e "/var/db" ]; then
+		mkdir -p /var/db
+	fi
+	
 	ntpd -s -f /mod/etc/ntpd.conf
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
