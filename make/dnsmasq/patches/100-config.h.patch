@@ -1,8 +1,8 @@
---- src/config.h.orig	2007-08-28 16:01:17.000000000 +0200
-+++ src/config.h	2007-09-07 16:03:58.000000000 +0200
-@@ -36,12 +36,12 @@
- #if defined(__FreeBSD__) || defined (__OpenBSD__) || defined(__DragonFly__)
- #   define LEASEFILE "/var/db/dnsmasq.leases"
+--- src/config.h.orig	2008-02-12 12:03:28.000000000 +0100
++++ src/config.h	2008-02-25 22:04:27.000000000 +0100
+@@ -42,12 +42,12 @@
+ #elif defined(__sun__)
+ #   define LEASEFILE "/var/cache/dnsmasq.leases"
  #else
 -#   define LEASEFILE "/var/lib/misc/dnsmasq.leases"
 +#   define LEASEFILE "/var/tmp/dnsmasq.leases"
@@ -15,7 +15,7 @@
  #endif
  #define DEFLEASE 3600 /* default lease time, 1 hour */
  #define CHUSER "nobody"
-@@ -216,9 +216,9 @@
+@@ -223,9 +223,9 @@
  #define HAVE_DEV_URANDOM
  #define HAVE_DEV_RANDOM
  #undef HAVE_SOCKADDR_SA_LEN
@@ -28,7 +28,7 @@
  #if defined(__UCLIBC_HAS_IPV6__)
  #  ifndef IPV6_V6ONLY
  #    define IPV6_V6ONLY 26
-@@ -282,19 +282,19 @@
+@@ -318,19 +318,19 @@
  /* We assume that systems which don't have IPv6
     headers don't have ntop and pton either */
  
