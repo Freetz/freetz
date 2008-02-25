@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.8.6)
+$(call PKG_INIT_BIN, 1.8.6-p111)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=ftp://ftp.ruby-lang.org/pub/ruby/1.8
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
