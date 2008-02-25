@@ -11,6 +11,8 @@ elif [ "$DS_TYPE_FON_WLAN_7270" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
 elif [ "$DS_TYPE_FON_WLAN_7170" == "y" -a "$DS_TYPE_LABOR_PHONE" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
+elif [ "$DS_TYPE_FON_WLAN_7170" == "y" -a "$DS_TYPE_LABOR_MINI" == "y" ]; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage.patch"
 fi
