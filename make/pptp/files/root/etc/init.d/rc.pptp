@@ -21,9 +21,15 @@ start() {
 	echo -n 'Starting pptp ...'
 	set -o noglob
 
+	rm -f /mod/etc/ppp/peers/pptp
 	[ ! -e "/mod/etc/ppp/peers/pptp" ] && /etc/default.${DAEMON}/pptp_peer > /mod/etc/ppp/peers/pptp
 
+	modprobe arc4
+	modprobe sha1
+	modprobe ppp_generic
 	modprobe ppp_async
+	modprobe ppp_deflate
+	modprobe ppp_mppe_mppc
 
 	$PPPD call pptp $PPTP_OPTIONS
 	exitval=$?

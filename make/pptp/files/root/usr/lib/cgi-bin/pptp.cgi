@@ -33,11 +33,11 @@ sec_begin 'pptp'
 
 cat << EOF
 <h2>Adresse des PPTP-Servers:</h2>
-<p>IP: <input type="text" name="pptp_ip" size="16" maxlength="15" value="$(httpd -e "$PPTP_ADDRESS")"></p>
+<p>IP/FQDN: <input type="text" name="address" size="40" maxlength="40" value="$(httpd -e "$PPTP_ADDRESS")"></p>
 <h2>Benutzername fuer den PPTP-Server:</h2>
-<p>Benutzer: <input type="text" name="pptp_user" size="20" maxlength="20" value="$(httpd -e "$PPTP_USER")"></p>
+<p>Benutzer: <input type="text" name="user" size="20" maxlength="20" value="$(httpd -e "$PPTP_USER")"></p>
 <h2>Server-Name fuer den PPTP-Server:</h2>
-<p>Server-Name: <input type="text" name="pptp_servername" size="20" maxlength="20" value="$(httpd -e "$PPTP_SERVERNAME")"></p>
+<p>Server-Name: <input type="text" name="servername" size="20" maxlength="20" value="$(httpd -e "$PPTP_SERVERNAME")"></p>
 <h2>Kommandozeilen-Optionen: </h2>
 <p>Optionen: <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$PPTP_OPTIONS")"></p>
 EOF
