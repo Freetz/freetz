@@ -20,7 +20,7 @@ start() {
 	configured=''
 
 	echo -n 'Starting Inadyn Client ...'
-	OPTIONS="--background --verbose $INADYN_VERBOSE $INADYN_OPTIONS"
+	OPTIONS="--background --verbose $INADYN_VERBOSE"
 
 	if [ "$INADYN_ACTIVE0" = 'yes' ]; then
 		configured=$configured+'.'
@@ -42,6 +42,9 @@ start() {
 		fi
 		if [ ! -z "$INADYN_ALIAS0" ]; then
 			OPTIONS="$OPTIONS --alias $INADYN_ALIAS0"
+		fi
+		if [ ! -z "$INADYN_OPTIONS0" ]; then
+			OPTIONS="$OPTIONS $INADYN_OPTIONS0"
 		fi
 		echo "$OPTIONS" > /mod/etc/inadyn.conf
 	fi
@@ -67,6 +70,9 @@ start() {
 		if [ ! -z "$INADYN_ALIAS1" ]; then
 			OPTIONS="$OPTIONS --alias $INADYN_ALIAS1"
 		fi
+		if [ ! -z "$INADYN_OPTIONS1" ]; then
+			OPTIONS="$OPTIONS $INADYN_OPTIONS1"
+		fi
 		echo "$OPTIONS" > /mod/etc/inadyn.conf
 	fi
 
@@ -90,6 +96,9 @@ start() {
 		fi
 		if [ ! -z "$INADYN_ALIAS2" ]; then
 			OPTIONS="$OPTIONS --alias $INADYN_ALIAS2"
+		fi
+		if [ ! -z "$INADYN_OPTIONS2" ]; then
+			OPTIONS="$OPTIONS $INADYN_OPTIONS2"
 		fi
 		echo "$OPTIONS" > /mod/etc/inadyn.conf
 	fi
@@ -115,6 +124,9 @@ start() {
 		if [ ! -z "$INADYN_ALIAS3" ]; then
 			OPTIONS="$OPTIONS --alias $INADYN_ALIAS3"
 		fi
+		if [ ! -z "$INADYN_OPTIONS3" ]; then
+			OPTIONS="$OPTIONS $INADYN_OPTIONS3"
+		fi
 		echo "$OPTIONS" > /mod/etc/inadyn.conf
 	fi
 
@@ -138,6 +150,9 @@ start() {
 		fi
 		if [ ! -z "$INADYN_ALIAS4" ]; then
 			OPTIONS="$OPTIONS --alias $INADYN_ALIAS4"
+		fi
+		if [ ! -z "$INADYN_OPTIONS4" ]; then
+			OPTIONS="$OPTIONS $INADYN_OPTIONS4"
 		fi
 		echo "$OPTIONS" > /mod/etc/inadyn.conf
 	fi

@@ -109,7 +109,6 @@ cat << EOF
 <OPTION value="4"$verbose_sel4>4</OPTION>
 <OPTION value="5"$verbose_sel5>5</OPTION>
 </SELECT></p>
-<p>Optionen : <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$INADYN_OPTIONS")"></p>
 
 <script>
 function changeaccount(value) {
@@ -205,6 +204,9 @@ document.write("<div id='Acount0' style='display:block'>" +
     "<td><label for='r03'>Alias : </label></td>" +
     "<td><input id='r03' type='text' name='alias0' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS0")'></td>" +
   "</tr><tr>" +
+    "<td><label for='r04'>Optionen : </label></td>" + 
+    "<td><input id='r04' type='text' name='options0' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS0")'></td>" + 
+  "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active0' value='no'><input id='a0' type='checkbox' name='active0' value='yes'$active_chk0><label for='a0'> Account aktiv</label></p>" +
 "</div>");
@@ -231,7 +233,10 @@ document.write("<div id='Acount1' style='display:none'>" +
   "</tr><tr>" +
     "<td><label for='r13'>Alias : </label></td>" +
     "<td><input id='r13' type='text' name='alias1' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS1")'></td>" +
-  "</tr>" +
+  "</tr><tr>" +
+    "<td><label for='r14'>Optionen : </label></td>" + 
+    "<td><input id='r14' type='text' name='options1' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS1")'></td>" + 
+  "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active1' value='no'><input id='a1' type='checkbox' name='active1' value='yes'$active_chk1><label for='a1'> Account aktiv</label></p>" +
 "</div>");
@@ -258,7 +263,10 @@ document.write("<div id='Acount2' style='display:none'>" +
   "</tr><tr>" +
     "<td><label for='r23'>Alias : </label></td>" +
     "<td><input id='r23' type='text' name='alias2' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS2")'></td>" +
-  "</tr>" +
+  "</tr><tr>" +
+    "<td><label for='r24'>Optionen : </label></td>" + 
+    "<td><input id='r24' type='text' name='options2' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS2")'></td>" + 
+  "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active2' value='no'><input id='a2' type='checkbox' name='active2' value='yes'$active_chk2><label for='a2'> Account aktiv</label></p>" +
 "</div>");
@@ -286,7 +294,10 @@ document.write("<div id='Acount3' style='display:none'>" +
   "</tr><tr>" +
     "<td><label for='r33'>Alias : </label></td>" +
     "<td><input id='r33' type='text' name='alias3' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS3")'></td>" +
-  "</tr>" +
+  "</tr><tr>" +
+    "<td><label for='r34'>Optionen : </label></td>" + 
+    "<td><input id='r34' type='text' name='options3' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS3")'></td>" + 
+  "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active3' value='no'><input id='a3' type='checkbox' name='active3' value='yes'$active_chk3><label for='a3'> Account aktiv</label></p>" +
 "</div>");
@@ -314,7 +325,10 @@ document.write("<div id='Acount4' style='display:none'>" +
   "</tr><tr>" +
     "<td><label for='r43'>Alias : </label></td>" +
     "<td><input id='r43' type='text' name='alias4' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS4")'></td>" +
-  "</tr>" +
+  "</tr><tr>" +
+    "<td><label for='r44'>Optionen : </label></td>" + 
+    "<td><input id='r44' type='text' name='options4' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS4")'></td>" + 
+  "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active4' value='no'><input id='a4' type='checkbox' name='active4' value='yes'$active_chk4><label for='a4'> Account aktiv</label></p>" +
 "</div>");
