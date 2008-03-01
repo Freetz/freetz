@@ -5,6 +5,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/openvpn
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
 $(PKG)_STARTLEVEL=50
 
+$(PKG)_DEPENDS_ON := openssl
+
 ifeq ($(strip $(DS_PACKAGE_OPENVPN_WITH_LZO)),y)
 $(PKG)_DEPENDS_ON := lzo
 endif
