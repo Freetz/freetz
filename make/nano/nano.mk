@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 2.0.6)
+$(call PKG_INIT_BIN, 2.0.7)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.nano-editor.org/dist/v2.0
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
