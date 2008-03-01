@@ -1,6 +1,6 @@
 [ "$DS_PATCH_USBSTORAGE" == "y" ] || return 0
 echo1 "applying USB storage patch"
-if [ "$DS_TYPE_2170" == "y" ] || \
+if [ "$DS_TYPE_2170" == "y" -a "$DS_TYPE_LABOR" != "y" ] || \
 	[ "$DS_TYPE_FON_WLAN_7140" == "y" -a "$DS_TYPE_LANG_DE" == "y" ] || \
 	[ "$DS_TYPE_FON_7150" == "y" ] || \
 	[ "$DS_TYPE_WLAN_3130" == "y" ]; then
