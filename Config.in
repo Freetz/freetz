@@ -39,7 +39,7 @@ choice
 		select DS_BRANDING_avm
 
 	config DS_TYPE_2170
-		select DS_AVM_VERSION_04_33
+		select DS_AVM_VERSION_04_49
 		bool "2170"
 
 	config DS_TYPE_FON
@@ -135,6 +135,8 @@ endchoice
 config DS_TYPE_LABOR
 	bool "Beta/Labor/VPN"
 	depends on \
+		DS_TYPE_2170 || \
+		DS_TYPE_WLAN_3170 || \
 		DS_TYPE_FON_WLAN_7141 || \
 		DS_TYPE_FON_WLAN_7170 || \
 		DS_TYPE_FON_WLAN_7270
@@ -164,14 +166,21 @@ choice
 
 	config DS_TYPE_LABOR_MINI
 		bool "MINI"
-
+		depends on \
+			DS_TYPE_FON_WLAN_7141 || \
+			DS_TYPE_FON_WLAN_7170 || \
+			DS_TYPE_FON_WLAN_7270
+	
 	config DS_TYPE_LABOR_PHONE
 		bool "PHONE"
 		depends on DS_TYPE_FON_WLAN_7170 && ! DS_TYPE_SPEEDPORT_W900V_7170
 
 	config DS_TYPE_LABOR_VPN
 		bool "VPN - Final"
-		depends on DS_TYPE_FON_WLAN_7170 #&& ! DS_TYPE_SPEEDPORT_W900V_7170
+		depends on \
+			DS_TYPE_2170 || \
+			DS_TYPE_WLAN_3170 || \
+			DS_TYPE_FON_WLAN_7170
 
 endchoice
 
@@ -274,12 +283,14 @@ endchoice
 config DS_TYPE_STRING
 	string
 	default "300ip_as_fon"				if DS_TYPE_300IP_AS_FON
-	default "2170"						if DS_TYPE_2170
+	default "2170"						if DS_TYPE_2170 && ! DS_TYPE_LABOR
+	default "2170_vpn"					if DS_TYPE_2170 && DS_TYPE_LABOR_VPN
 	default "3020"						if DS_TYPE_WLAN_3020
 	default "3030"						if DS_TYPE_WLAN_3030
 	default "3130"						if DS_TYPE_WLAN_3130
 	default "3131"						if DS_TYPE_WLAN_3131
-	default "3170"						if DS_TYPE_WLAN_3170
+	default "3170"						if DS_TYPE_WLAN_3170 && ! DS_TYPE_LABOR
+	default "3170_vpn"					if DS_TYPE_WLAN_3170 && DS_TYPE_LABOR_VPN
 	default "fon"						if DS_TYPE_FON
 	default "5010"						if DS_TYPE_FON_5010
 	default "5050"						if DS_TYPE_FON_5050
@@ -297,7 +308,7 @@ config DS_TYPE_STRING
 	default "7170_labor_gaming"			if DS_TYPE_LABOR_GAMING
 	default "7170_labor_mini"			if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_MINI
 	default "7170_labor_phone"			if DS_TYPE_LABOR_PHONE
-	default "7170_labor_vpn"			if DS_TYPE_LABOR_VPN
+	default "7170_vpn"					if DS_TYPE_FON_WLAN_7170 && DS_TYPE_LABOR_VPN
 	default "7270"						if DS_TYPE_FON_WLAN_7270 && ! DS_TYPE_LABOR
 	default "7270_beta"					if DS_TYPE_FON_WLAN_7270 && DS_TYPE_LABOR_BETA
 	default "7270_labor_mini"			if DS_TYPE_FON_WLAN_7270 && DS_TYPE_LABOR_MINI
@@ -1240,7 +1251,8 @@ config DS_DL_SITE
 
 config DS_DL_SOURCE
 	string "Firmware source"	if DS_DL_OVERRIDE
-	default "fritz.box_2170.51.04.34.image"									if DS_TYPE_2170
+	default "fritz.box_2170.51.04.34.image"									if DS_TYPE_2170 && ! DS_TYPE_LABOR
+	default "FRITZBox_2170_AnnexB_51_04_52-10366.image"						if DS_TYPE_2170 && DS_TYPE_LABOR_VPN
 	default "fritz.box_fon.06.04.33.image"									if DS_TYPE_FON || DS_TYPE_300IP_AS_FON
 	default "fritz.box_fon_5010.annexa.48.04.43.image"						if DS_TYPE_FON_5010 && DS_TYPE_LANG_A_CH
 	default "fritz.box_fon_5050.12.04.31.image"								if DS_TYPE_FON_5050
@@ -1272,7 +1284,8 @@ config DS_DL_SOURCE
 	default "fritz.box_wlan_3030.21.04.34.image"							if DS_TYPE_WLAN_3030
 	default "fritz.box_wlan_3131.50.04.52.image"							if DS_TYPE_WLAN_3131
 	default "fritz.box_wlan_3130.44.04.34.image"							if DS_TYPE_WLAN_3130
-	default "fritz.box_wlan_3170.49.04.52.image"							if DS_TYPE_WLAN_3170
+	default "fritz.box_wlan_3170.49.04.52.image"							if DS_TYPE_WLAN_3170 && ! DS_TYPE_LABOR
+	default "FRITZBox_WLAN_3170_AnnexB_49_04_52-10366.image"				if DS_TYPE_WLAN_3170 && DS_TYPE_LABOR_VPN
 	default "fw_Speedport_W501V_v_28.04.38.image"							if DS_TYPE_SPEEDPORT_W501V
 	default "fw_Speedport_W701V_v33.04.45.image"							if DS_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W_900V.34.04.21.image"							if DS_TYPE_SPEEDPORT_W900V
