@@ -1,0 +1,52 @@
+#!/bin/sh
+#ip-up <interface> <device> <speed> <local-ip> <remote-ip> <ipparam>
+
+file_pptp=0
+file_pptpd=0
+
+if [ -f "/mod/etc/conf/pptp.cfg"  ]; then 
+	file_pptp=1    
+	. /mod/etc/conf/pptp.cfg
+fi
+if [ -f "/mod/etc/conf/pptpd.cfg"  ]; then
+	file_pptpd=1
+	. /mod/etc/conf/pptpd.cfg
+fi
+
+
+cat << EOF
+#!/bin/sh
+if [ "\$6" = "pptp" ]; then
+	#Client
+EOF
+
+if [ $file_pptp -eq 1 -a -n "$PPTP_REMOTE_NET" -a -n "$PPTP_REMOTE_MASK" -a "$PPTP_ROUTING" == "yes" ]; then
+
+cat << EOF
+	#Routing
+	route add -net $PPTP_REMOTE_NET netmask $PPTP_REMOTE_MASK gw "\$5" dev "\$1"
+EOF
+
+else
+	echo "#kein Routing konfiguriert oder aktiviert"
+fi
+
+cat << EOF
+else 
+	#Server
+EOF
+
+if [ $file_pptpd -eq 1 -a -n "$PPTPD_REMOTE_NET" -a -n "$PPTPD_REMOTE_MASK" -a "$PPTPD_ROUTING" == "yes" ]; then
+
+cat << EOF
+	#Routing
+	route add -net $PPTPD_REMOTE_NET netmask $PPTPD_REMOTE_MASK gw "\$5" dev "\$1"
+EOF
+    
+else
+	echo "#kein Routing konfiguriert oder aktiviert"
+fi
+    
+cat << EOF
+fi
+EOF

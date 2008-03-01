@@ -4,8 +4,10 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 auto_chk=''; man_chk=''
+routing_yes_chk=''; routing_no_chk=''
 
 if [ "$PPTP_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+if [ "$PPTP_ROUTING" = "yes" ]; then routing_yes_chk=' checked'; else routing_no_chk=' checked'; fi
 
 sec_begin 'Starttyp'
 
@@ -40,6 +42,20 @@ cat << EOF
 <p>Server-Name: <input type="text" name="servername" size="20" maxlength="20" value="$(httpd -e "$PPTP_SERVERNAME")"></p>
 <h2>Kommandozeilen-Optionen: </h2>
 <p>Optionen: <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$PPTP_OPTIONS")"></p>
+EOF
+
+sec_end
+sec_begin 'Routing von IP-Netzen'
+
+cat << EOF
+<small style="font-size:0.8em"> <i>Hier wird das Routing zum Server-Netz konfiguriert.</i></small>
+<p>
+<input id="p1" type="radio" name="routing" value="yes"$routing_yes_chk><label for="p1"> Aktiviert</label>
+<input id="p2" type="radio" name="routing" value="no"$routing_no_chk><label for="p2"> Deaktiviert</label>
+</p>
+<h2>Servernetz:</h2>
+<p>Netz-IP: <input type="text" name="remote_net" size="16" maxlength="15" value="$(httpd -e "$PPTP_REMOTE_NET")">
+Subnetz-Maske: <input type="text" name="remote_mask" size="16" maxlength="15" value="$(httpd -e "$PPTP_REMOTE_MASK")"></p>
 EOF
 
 sec_end
