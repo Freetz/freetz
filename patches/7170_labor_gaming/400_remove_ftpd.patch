@@ -1,6 +1,6 @@
---- etc/hotplug/storage.orig	2008-02-17 13:36:00.000000000 +0100
-+++ etc/hotplug/storage	2008-02-17 13:34:20.000000000 +0100
-@@ -14,6 +14,9 @@
+--- etc/hotplug/storage.orig	2008-02-29 11:45:34.000000000 +0100
++++ etc/hotplug/storage	2008-03-01 02:25:58.000000000 +0100
+@@ -15,6 +15,9 @@
  MSTART=/sbin/start_mediasrv
  MSTOP=/sbin/stop_mediasrv
  
@@ -10,16 +10,22 @@
  # Ask the system's configuration for the status of the readonly flag:
  # (Translates flag's yes/no to ro/rw)
  #
-@@ -215,8 +218,10 @@
- 	# ftp server control
- 	ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
+@@ -205,11 +208,13 @@
  	if [ "$ENABLED" != "no" ] ; then
--		if [ "`pidof ftpd`" = "" ] ; then
--			ftpd -D -q -t 120 -m 15 -h "$CONFIG_PRODUKT_NAME" &
-+		if [ "$_ftpd" ] ; then
-+			if [ "`pidof ftpd`" = "" ] ; then
-+				ftpd -D -q -t 120 -m 15 -h "$CONFIG_PRODUKT_NAME" &
-+			fi
+ 		if [ "`pidof ftpd`" = "" ] ; then
+ 			USERS_ENABLED=`echo usbhost.users_enabled|ar7cfgctl -s`
+-			if [ "$USERS_ENABLED" = "yes" ] ; then
+-				ftpd -D -q -t 120 -m 15 -U -h "$CONFIG_PRODUKT_NAME" &
+-			else
+-				ftpd -D -q -t 120 -m 15 -h "$CONFIG_PRODUKT_NAME" &
+-			fi
++      if [ "$_ftpd" ] ; then
++        if [ "$USERS_ENABLED" = "yes" ] ; then
++          ftpd -D -q -t 120 -m 15 -U -h "$CONFIG_PRODUKT_NAME" &
++        else
++          ftpd -D -q -t 120 -m 15 -h "$CONFIG_PRODUKT_NAME" &
++        fi
++      fi
  		fi
  	else
  		killall ftpd
