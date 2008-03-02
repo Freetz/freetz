@@ -153,8 +153,11 @@ choice
 	config DS_TYPE_LABOR_BETA
 		bool "BETA"
 		depends on \
+			( \
 			DS_TYPE_FON_WLAN_7170 || \
-			DS_TYPE_FON_WLAN_7270
+			DS_TYPE_FON_WLAN_7270 \
+			) \
+			&& ! DS_TYPE_SPEEDPORT_W900V_7170
 
 	config DS_TYPE_LABOR_DSL
 		bool "DSL"
