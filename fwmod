@@ -1063,8 +1063,9 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Check size of kernel image
 	let KERNEL_LIMIT="$DS_KERNEL_MTD_SIZE*65536"
 	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
+	let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 
-	echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT)"
+	echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
 	if [ "$DS_VERBOSITY_LEVEL" -ge 1 ]; then
 		if [ "$DS_TYPE_FON_7150" = "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
@@ -1077,7 +1078,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "kernel image is empty"
 	fi
 	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
-		let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 		error 1 "kernel image is $DIFF bytes too big"
 	fi
 
