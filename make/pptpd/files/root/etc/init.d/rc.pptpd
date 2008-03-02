@@ -39,12 +39,8 @@ start() {
 
 stop() {
 	echo -n 'Stopping pptpd ...'
-	#rmmod ppp_async
-	#rmmod ppp_generic
-	#rmmod slhc
-	#rmmod crc_ccitt
 
-	killall $DAEMON > /dev/null 2>&1
+	kill $(ps|grep pptpd|grep -v grep|grep -v "rc.pp"|grep -v "pppd"|sed 's/^ //g'|cut -f1 -d" ")
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
