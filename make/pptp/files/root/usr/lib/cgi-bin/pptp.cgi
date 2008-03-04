@@ -35,13 +35,12 @@ sec_begin 'pptp'
 
 cat << EOF
 <h2>Adresse des PPTP-Servers:</h2>
-<p>IP/FQDN: <input type="text" name="address" size="40" maxlength="40" value="$(httpd -e "$PPTP_ADDRESS")"></p>
-<h2>Benutzername fuer den PPTP-Server:</h2>
-<p>Benutzer: <input type="text" name="user" size="20" maxlength="20" value="$(httpd -e "$PPTP_USER")"></p>
-<h2>Server-Name fuer den PPTP-Server:</h2>
-<p>Server-Name: <input type="text" name="servername" size="20" maxlength="20" value="$(httpd -e "$PPTP_SERVERNAME")"></p>
+IP/DDNS: <input type="text" name="address" size="43" maxlength="40" value="$(httpd -e "$PPTP_ADDRESS")"><br>
+<h2>Benutzer und Servername f&uuml;r den PPTP-Server:</h2>
+Benutzer: <input type="text" name="user" size="15" maxlength="20" value="$(httpd -e "$PPTP_USER")">
+Server: <input type="text" name="servername" size="15" maxlength="20" value="$(httpd -e "$PPTP_SERVERNAME")"><br>
 <h2>Kommandozeilen-Optionen: </h2>
-<p>Optionen: <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$PPTP_OPTIONS")"></p>
+Optionen: <input type="text" name="options" size="24" maxlength="255" value="$(httpd -e "$PPTP_OPTIONS")"><br>
 EOF
 
 sec_end
@@ -53,9 +52,10 @@ cat << EOF
 <input id="p1" type="radio" name="routing" value="yes"$routing_yes_chk><label for="p1"> Aktiviert</label>
 <input id="p2" type="radio" name="routing" value="no"$routing_no_chk><label for="p2"> Deaktiviert</label>
 </p>
-<h2>Servernetz:</h2>
-<p>Netz-IP: <input type="text" name="remote_net" size="16" maxlength="15" value="$(httpd -e "$PPTP_REMOTE_NET")">
-Subnetz-Maske: <input type="text" name="remote_mask" size="16" maxlength="15" value="$(httpd -e "$PPTP_REMOTE_MASK")"></p>
+<h2>Netz-Routing: (eine pro Zeile)</h2>
+<small style="font-size:0.8em">Syntax: &lt;Netz-IP&gt; &lt;Netz-Mask&gt; [&lt;Kommentar&gt;]<br>
+(z.B.: 192.168.178.0 255.255.255.0 Server-Netz)</small>
+<p><textarea name="net_routing" rows="3" cols="50" maxlength="255">$(httpd -e "$PPTP_NET_ROUTING")</textarea></p>
 EOF
 
 sec_end

@@ -13,40 +13,51 @@ if [ -f "/mod/etc/conf/pptpd.cfg"  ]; then
 	. /mod/etc/conf/pptpd.cfg
 fi
 
-
 cat << EOF
 #!/bin/sh
 if [ "\$6" = "pptp" ]; then
 	#Client
 EOF
-
-if [ $file_pptp -eq 1 -a -n "$PPTP_REMOTE_NET" -a -n "$PPTP_REMOTE_MASK" -a "$PPTP_ROUTING" == "yes" ]; then
-
+if [ $file_pptp -eq 1 -a -n "$PPTP_NET_ROUTING" -a "$PPTP_ROUTING" == "yes" ]; then
 cat << EOF
-	#Routing
-	route add -net $PPTP_REMOTE_NET netmask $PPTP_REMOTE_MASK gw "\$5" dev "\$1"
+		#Routing
 EOF
-
+	echo "$PPTP_NET_ROUTING" | grep -v "^#" | while read netz mask comment; do
+   	if [ -n "$netz" -a -n "$mask" ]; then
+cat << EOF
+		route add -net $netz netmask $mask gw "\$5" dev "\$1" #$comment
+EOF
+		fi
+  done
 else
-	echo "#kein Routing konfiguriert oder aktiviert"
+cat << EOF
+		echo "#kein Routing konfiguriert oder aktiviert"
+EOF
 fi
 
 cat << EOF
 else 
 	#Server
 EOF
-
-if [ $file_pptpd -eq 1 -a -n "$PPTPD_REMOTE_NET" -a -n "$PPTPD_REMOTE_MASK" -a "$PPTPD_ROUTING" == "yes" ]; then
-
+if [ $file_pptpd -eq 1 -a -n "$PPTPD_NET_ROUTING" -a "$PPTPD_ROUTING" == "yes" ]; then
 cat << EOF
-	#Routing
-	route add -net $PPTPD_REMOTE_NET netmask $PPTPD_REMOTE_MASK gw "\$5" dev "\$1"
+		#Routing
 EOF
-    
+	echo "$PPTPD_NET_ROUTING" | grep -v "^#" | while read netz mask client comment; do
+   	if [ -n "$netz" -a -n "$mask" -a -n "$client" ]; then
+cat << EOF
+		if [ "\$5" = "$client" ]; then
+			route add -net $netz netmask $mask gw "\$5" dev "\$1" #$comment
+		fi
+EOF
+		fi
+  done
 else
-	echo "#kein Routing konfiguriert oder aktiviert"
+cat << EOF
+		echo "#kein Routing konfiguriert oder aktiviert"
+EOF
 fi
-    
+
 cat << EOF
 fi
 EOF
