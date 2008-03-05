@@ -8,3 +8,11 @@ config DS_PACKAGE_SISPMCTL
 		Note that the device is also sold under different names, i.e. as
 		"IntelliPlug" in Germany.
 
+config DS_SISPMCTL_WEB
+	bool "enable internal web server"
+	depends DS_PACKAGE_SISPMCTL
+	default n
+	help
+		This option enables sispmctl's internal web server and
+		installs the standard skin.
+

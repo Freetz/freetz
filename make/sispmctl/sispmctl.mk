@@ -6,6 +6,10 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sispmctl
 
 $(PKG)_DEPENDS_ON += libusb
 
+$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_SISPMCTL_WEB),--with-webdir=/usr/share/sispmctl,--enable-webless)
+
+$(PKG)_CONFIG_SUBOPTS += DS_SISPMCTL_WEB
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -16,6 +20,10 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
+ifeq ($(strip $(DS_SISPMCTL_WEB)),y)
+	mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl
+	cp $(SISPMCTL_DIR)/src/web1/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl
+endif
 
 $(pkg):
 
