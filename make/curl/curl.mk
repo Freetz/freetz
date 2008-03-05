@@ -1,14 +1,18 @@
 $(call PKG_INIT_BIN, 7.17.1)
+$(PKG)_LIB_VERSION:=4.0.1
 $(PKG)_SOURCE:=curl-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://curl.haxx.se/download
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/curl
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/curl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
+$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libcurl.so.$($(PKG)_LIB_VERSION)
+$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.so.$($(PKG)_LIB_VERSION)
+$(PKG)_LIB_TARGET_BINARY:=root/usr/lib/libcurl.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_DEPENDS_ON := openssl
 
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
@@ -40,21 +44,35 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(CURL_DIR)
+
+$($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
+	cp $(CURL_DIR)/libcurl.pc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcurl.pc
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) -C $(CURL_DIR)/lib \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libcurl.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-curl:
+$($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
+	mkdir -p $(dir $@)
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl*.so* root/usr/lib
+	$(TARGET_STRIP) $@
 
-curl-precompiled: uclibc curl $($(PKG)_TARGET_BINARY)
+$(pkg):
 
-curl-clean:
+curl-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
+
+$(pkg)-clean:
 	-$(MAKE) -C $(CURL_DIR) clean
 
-curl-uninstall:
+$(pkg)-uninstall:
 	rm -f $(CURL_TARGET_BINARY)
 
 $(PKG_FINISH)
