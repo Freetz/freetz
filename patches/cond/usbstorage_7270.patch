@@ -33,7 +33,7 @@
  	echo $NICE
  }
  
-@@ -74,45 +51,56 @@
+@@ -74,29 +51,39 @@
  # Actually perform the mount operation...
  # (TODO Checking the partition for known filesystem types)
  #
@@ -89,25 +89,10 @@
 -        local OLD_UMASK=`umask`
 -	umask 0
 -	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
--		umask $OLD_UMASK
+ 		umask $OLD_UMASK
  		OK=0
  		eventadd 140 $MNTNAME
- 		if ! pidof ftpd; then
-+			if ! test -d /var/ftphint; then
-+				mkdir /var/ftphint
-+				echo "<html><head><title>ftphint</title></head><body>GO TO " > /var/ftphint/index.html
-+				echo "<a href="ftp://ftpuser@192.168.178.1/">the FTP root " >> /var/ftphint/index.html
-+				echo "directory</a> to access your files...<br>NOTE: The "  >> /var/ftphint/index.html
-+				echo "files are password-protected!<br><hr></body></html>"  >> /var/ftphint/index.html
-+			fi
- 			if test -x /sbin/ftpd; then
- 				ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
- 				if [ "$ENABLED" != "no" ] ; then
--                                        USERS_ENABLED=`echo usbhost.users_enabled|ar7cfgctl -s`
--                                        if [ "$USERS_ENABLED" = "yes" ] ; then
--                                                ftpd -D -q -t 120 -m 15 -U -h "$CONFIG_PRODUKT_NAME" &
--                                        else
-                                                 ftpd -D -q -t 120 -m 15 -h "$CONFIG_PRODUKT_NAME" &
+@@ -112,7 +99,6 @@
                                          fi
  				fi
  			fi
@@ -115,7 +100,7 @@
  		test -x $TR069START && $TR069START $MNTNAME
  		if test -x /etc/samba_control ; then 
  			/etc/samba_control reconfig
-@@ -120,10 +108,28 @@
+@@ -120,10 +106,34 @@
  	if [ -p "/var/tam/mount" ]; then
  		echo "m$MNTPATH" > /var/tam/mount
  	fi
@@ -141,9 +126,15 @@
 +	
 +	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
 +	test -d $MNTPATH || mkdir -p $MNTPATH
-+	
++	# be sure only root is allowed to write to /var/media/ftp
++	chmod 755 $FTPDIR
++
 +	passeeren
-+	
++
++	# run mount with umask 0 so everyone is allowed to rwx everywhere
++	local OLD_UMASK=`umask`
++	umask 0
++
 +	mount_fs
  
  	if grep $MNTPATH /proc/mounts > /dev/null; then
