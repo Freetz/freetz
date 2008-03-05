@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 2.6)
 $(PKG)_SOURCE:=sispmctl-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/sispmctl
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/sispmctl
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/sispmctl
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sispmctl
 
 $(PKG)_DEPENDS_ON += libusb
 
@@ -25,6 +25,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(SISPMCTL_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(SISPMCTL_TARGET_BINARY)
+	$(RM) $(SISPMCTL_TARGET_BINARY)
 
 $(PKG_FINISH)
