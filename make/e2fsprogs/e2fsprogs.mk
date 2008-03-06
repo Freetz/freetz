@@ -1,25 +1,21 @@
-$(call PKG_INIT_BIN, 1.40.7)
+$(call PKG_INIT_BIN, 1.40.3)
 $(PKG)_SOURCE:=e2fsprogs-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/e2fsprogs
 $(PKG)_DIR:=$(SOURCE_DIR)/e2fsprogs-$($(PKG)_VERSION)
-$(PKG)_E2FSCK_BINARY:=$(E2FSPROGS_DIR)/e2fsck/e2fsck
+$(PKG)_E2FSCK_BINARY:=$(E2FSPROGS_DIR)/e2fsck/e2fsck.shared
 $(PKG)_E2FSCK_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/e2fsck
 $(PKG)_MKE2FS_BINARY:=$(E2FSPROGS_DIR)/misc/mke2fs
 $(PKG)_MKE2FS_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mke2fs
 $(PKG)_TUNE2FS_BINARY:=$(E2FSPROGS_DIR)/misc/tune2fs
 $(PKG)_TUNE2FS_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tune2fs
-$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/uuid/libuuid.a
-$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuuid.a
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 
-$($(PKG)_E2FSCK_BINARY) \
-	$(PKG)_TUNE2FS_BINARY \
-	$(PKG)_MKE2FS_BINARY \
-	$($(PKG)_LIB_BINARY) : $($(PKG)_DIR)/.configured
+$($(PKG)_E2FSCK_BINARY) $(PKG)_TUNE2FS_BINARY $(PKG)_MKE2FS_BINARY: $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(E2FSPROGS_DIR) \
 		all
@@ -33,20 +29,9 @@ $($(PKG)_MKE2FS_TARGET_BINARY): $($(PKG)_MKE2FS_BINARY)
 $($(PKG)_TUNE2FS_TARGET_BINARY): $($(PKG)_TUNE2FS_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(E2FSPROGS_DIR)/lib/uuid \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		install
-	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/uuid.pc
-
 e2fsprogs:
 
-e2fsprogs-precompiled: $($(PKG)_E2FSCK_TARGET_BINARY) \
-			$($(PKG)_MKE2FS_TARGET_BINARY) \
-			$($(PKG)_TUNE2FS_TARGET_BINARY) \
-			$($(PKG)_LIB_STAGING_BINARY)
+e2fsprogs-precompiled: $($(PKG)_E2FSCK_TARGET_BINARY) $($(PKG)_MKE2FS_TARGET_BINARY) $($(PKG)_TUNE2FS_TARGET_BINARY)
 
 e2fsprogs-clean:
 	-$(MAKE) -C $(E2FSPROGS_DIR) clean
