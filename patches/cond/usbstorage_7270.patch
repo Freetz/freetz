@@ -92,14 +92,6 @@
  		umask $OLD_UMASK
  		OK=0
  		eventadd 140 $MNTNAME
-@@ -112,7 +99,6 @@
-                                         fi
- 				fi
- 			fi
--		fi
- 		test -x $TR069START && $TR069START $MNTNAME
- 		if test -x /etc/samba_control ; then 
- 			/etc/samba_control reconfig
 @@ -120,10 +106,34 @@
  	if [ -p "/var/tam/mount" ]; then
  		echo "m$MNTPATH" > /var/tam/mount
