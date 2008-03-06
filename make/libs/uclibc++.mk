@@ -41,7 +41,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 
 uclibcxx: $($(PKG)_STAGING_BINARY)
 
-uclibcxx-precompiled: uclibc uclibcxx $($(PKG)_TARGET_BINARY)
+uclibcxx-precompiled: $($(PKG)_TARGET_BINARY)
 
 uclibcxx-clean:
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-g++-uc

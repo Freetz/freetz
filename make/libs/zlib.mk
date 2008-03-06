@@ -20,8 +20,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	   $(MAKE) -C $(ZLIB_DIR) \
-	   libz.a libz.so
+		$(MAKE) -C $(ZLIB_DIR) \
+		libz.a libz.so
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \

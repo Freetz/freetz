@@ -41,7 +41,7 @@ $($(PKG)_TARGET_HISTORY_BINARY):  $($(PKG)_STAGING_HISTORY_BINARY)
 
 $(pkg): $($(PKG)_STAGING_READLINE_BINARY) $($(PKG)_STAGING_HISTORY_BINARY)
 
-$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_READLINE_BINARY) \
+$(pkg)-precompiled: $($(PKG)_TARGET_READLINE_BINARY) \
 					$($(PKG)_TARGET_HISTORY_BINARY)
 
 $(pkg)-clean:

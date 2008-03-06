@@ -103,7 +103,7 @@ $(pkg)-panel: $($(PKG)_PANEL_STAGING_BINARY)
 $(pkg)-panel-precompiled: $($(PKG)_PANEL_TARGET_BINARY)
 
 $(pkg): $(pkg)-ncurses $(pkg)-form $(pkg)-menu $(pkg)-panel
-$(pkg)-precompiled: uclibc $(pkg) $(pkg)-ncurses-precompiled $(pkg)-form-precompiled $(pkg)-menu-precompiled $(pkg)-panel-precompiled
+$(pkg)-precompiled: $(pkg)-ncurses-precompiled $(pkg)-form-precompiled $(pkg)-menu-precompiled $(pkg)-panel-precompiled
 
 $(pkg)-terminfo: $($(PKG)_TERMINFO_TARGET_DIR)/.installed
 

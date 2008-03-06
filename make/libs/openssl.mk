@@ -57,9 +57,9 @@ $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): \
 		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcrypto.pc \
-	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libssl.pc \
-	                 $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/openssl.pc
+						$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcrypto.pc \
+						$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libssl.pc \
+						$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/openssl.pc
 
 $($(PKG)_TARGET_SSL_BINARY): $($(PKG)_STAGING_SSL_BINARY) 
 	# FIXME: Strange enough, this chmod is really necessary. Maybe the
@@ -75,7 +75,7 @@ $($(PKG)_TARGET_CRYPTO_BINARY): $($(PKG)_STAGING_CRYPTO_BINARY)
 
 $(pkg): $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY)
 
-$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(OPENSSL_DIR) clean
