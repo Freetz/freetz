@@ -42,14 +42,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-ltrace:
+$(pkg):
 
-ltrace-precompiled: uclibc ltrace $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CONF)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CONF)
 
-ltrace-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(LTRACE_DIR) clean ARCH=mipsel
 
-ltrace-uninstall:
+$(pkg)-uninstall:
 	rm -f $(LTRACE_TARGET_BINARY)
 	rm -f $(LTRACE_TARGET_CONF)
 

@@ -46,7 +46,6 @@ $(pkg)-precompiled: $($(PKG)_TARGET_LANGUAGE) $(ESPEAK_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(ESPEAK_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(ESPEAK_PKG_SOURCE)
 	rm -f $(ESPEAK_DIR)/.language
 
 $(pkg)-uninstall: 

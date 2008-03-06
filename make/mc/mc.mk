@@ -70,7 +70,6 @@ $(pkg)-clean-help:
 
 $(pkg)-clean:
 	-$(MAKE) -C $(MC_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(MC_PKG_SOURCE)
 
 $(pkg)-uninstall: 
 	rm -f $(MC_TARGET_BINARY)

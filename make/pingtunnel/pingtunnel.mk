@@ -6,6 +6,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/ptunnel
 $(PKG)_PKG_VERSION:=
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ptunnel
 
+$(PKG)_DEPENDS_ON := libpcap
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -20,15 +22,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-pingtunnel:
+$(pkg):
 
-pingtunnel-precompiled: uclibc libpcap-precompiled pingtunnel $($(PKG)_TARGET_BINARY) 
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) 
 
-pingtunnel-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(PINGTUNNEL_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(PINGTUNNEL_PKG_SOURCE)
 
-pingtunnel-uninstall:
+$(pkg)-uninstall:
 	rm -f $(PINGTUNNEL_TARGET_BINARY)
 	
 $(PKG_FINISH)

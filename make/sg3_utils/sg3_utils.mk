@@ -19,18 +19,17 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-sg3_utils:
+$(pkg):
 
-sg3_utils-precompiled: uclibc sg3_utils $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-sg3_utils-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(SG3UTILS_DIR) clean
 	rm -f $(SG3UTILS_DIR)/.installed
 	rm -f $(SG3UTILS_DIR)/.built
 	rm -f $(SG3UTILS_DIR)/.configured
-	rm -f $(PACKAGES_BUILD_DIR)/$(SG3UTILS_PKG_SOURCE)
 
-sg3_utils-uninstall:
+$(pkg)-uninstall:
 	rm -f $(SG3UTILS_TARGET_BINARY)
 
 $(PKG_FINISH)

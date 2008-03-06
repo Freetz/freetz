@@ -24,15 +24,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) 
 	$(INSTALL_BINARY_STRIP)
 
-matrixtunnel:
+$(pkg):
 
-matrixtunnel-precompiled: uclibc matrixtunnel $($(PKG)_TARGET_BINARY) 
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) 
 
-matrixtunnel-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(MATRIXTUNNEL_DIR)/src clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(MATRIXTUNNEL_PKG_SOURCE)
 
-matrixtunnel-uninstall: 
+$(pkg)-uninstall: 
 	rm -f $(MATRIXTUNNEL_TARGET_BINARY)
-  
+
 $(PKG_FINISH)

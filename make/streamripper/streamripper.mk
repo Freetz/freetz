@@ -25,14 +25,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-streamripper: 
+$(pkg): 
 
-streamripper-precompiled: uclibc streamripper $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-streamripper-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(STREAMRIPPER_DIR) clean
 
-streamripper-uninstall:
+$(pkg)-uninstall:
 	rm -f $(STREAMRIPPER_TARGET_BINARY)
 
 $(PKG_FINISH)

@@ -80,7 +80,6 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CFG)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LYNX_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(LYNX_PKG_SOURCE)
 
 $(pkg)-uninstall: 
 	rm -f $(LYNX_TARGET_BINARY)

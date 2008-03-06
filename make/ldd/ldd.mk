@@ -11,24 +11,22 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-	    $(TARGET_CC) \
-	    $(TARGET_CFLAGS) \
-	    -DUCLIBC_RUNTIME_PREFIX=\ \
-	    $(LDD_SOURCE_FILE) -o $@ 
+		$(TARGET_CC) \
+		$(TARGET_CFLAGS) \
+		-DUCLIBC_RUNTIME_PREFIX=\ \
+		$(LDD_SOURCE_FILE) -o $@ 
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	mkdir -p $(dir $(LDD_TARGET_BINARY))
 	$(INSTALL_BINARY_STRIP)
 
-ldd:
+$(pkg):
 
-ldd-precompiled: uclibc ldd $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-ldd-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(LDD_DIR) clean
-	$(RM) $(PACKAGES_BUILD_DIR)/$(LDD_PKG_SOURCE)
 
-ldd-uninstall:
+$(pkg)-uninstall:
 	$(RM) $(LDD_TARGET_BINARY)
 
 $(PKG_FINISH)
