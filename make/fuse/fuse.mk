@@ -87,18 +87,18 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_TARGET_DIR)/root/usr/lib
 	$(TARGET_STRIP) $@
 
-fuse:
+$(pkg):
 
-fuse-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
-fuse-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(FUSE_DIR) clean
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
 
-fuse-uninstall:
+$(pkg)-uninstall:
 	rm -f $(FUSE_TARGET_BINARY)
 	rm -f $(FUSE_MOD_TARGET_BINARY)
 	rm -f $(FUSE_TARGET_DIR)/root/usr/lib/libfuse*.so*

@@ -15,19 +15,20 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" $(MAKE) -C $(DECO_DIR)
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(DECO_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-deco:
+$(pkg):
 
-deco-precompiled: uclibc deco $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-deco-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(DECO_DIR) clean
 
-deco-uninstall:
+$(pkg)-uninstall:
 	rm -f $(DECO_TARGET_BINARY)
 
 $(PKG_FINISH)

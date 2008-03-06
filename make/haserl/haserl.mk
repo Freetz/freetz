@@ -19,12 +19,12 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-haserl-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-haserl-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(HASERL_DIR) clean
 
-haserl-uninstall:
+$(pkg)-uninstall:
 	rm -f $(HASERL_TARGET_BINARY)
 
 $(PKG_FINISH)

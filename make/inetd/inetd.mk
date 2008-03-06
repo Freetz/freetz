@@ -5,7 +5,7 @@ $(PKG)_STARTLEVEL=20
 
 $(PKG_UNPACKED)
 
-inetd-clean:
+$(pkg)-clean:
 	rm -f $(PACKAGES_BUILD_DIR)/$(INETD_PKG_SOURCE)
 
 # Nothing to do here at the moment

@@ -20,14 +20,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-ctorrent: 
+$(pkg): 
 
-ctorrent-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-ctorrent-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(CTORRENT_DIR) clean
 
-ctorrent-uninstall:
+$(pkg)-uninstall:
 	rm -f $(CTORRENT_TARGET_BINARY)
 
 $(PKG_FINISH)

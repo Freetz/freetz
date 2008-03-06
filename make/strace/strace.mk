@@ -16,15 +16,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-strace:
+$(pkg):
 
-strace-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-strace-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(STRACE_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(STRACE_PKG_SOURCE)
 
-strace-uninstall:
+$(pkg)-uninstall:
 	rm -f $(STRACE_TARGET_BINARY)
 
 $(PKG_FINISH)

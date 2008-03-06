@@ -22,14 +22,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-fstyp:
+$(pkg):
 
-fstyp-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-fstyp-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(FSTYP_DIR) clean
 
-fstyp-uninstall:
+$(pkg)-uninstall:
 	rm -f $(FSTYP_TARGET_BINARY)
 
 $(PKG_FINISH)

@@ -6,8 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc.bin
 $(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
 
-$(PKG)_DEPENDS_ON += glib
-$(PKG)_DEPENDS_ON += ncurses-terminfo
+$(PKG)_DEPENDS_ON += glib ncurses-terminfo
 
 ifeq ($(strip $(DS_MC_WITH_NCURSES)),y) 
 $(PKG)_DEPENDS_ON += ncurses 
@@ -48,7 +47,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(MC_DIR) \
-		GLIB_CFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-1.2"
+		GLIB_CFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-1.2" \
+		GLIB_LIBS="-lglib"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

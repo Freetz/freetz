@@ -16,15 +16,15 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-cpmaccfg:
+$(pkg):
 
-cpmaccfg-precompiled: uclibc cpmaccfg $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-cpmaccfg-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(CPMACCFG_DIR) clean
 	$(RM) $(CPMACCFG_DIR)/.configured
 
-cpmaccfg-uninstall:
+$(pkg)-uninstall:
 	$(RM) $(CPMACCFG_TARGET_BINARY)
 
 $(PKG_FINISH)

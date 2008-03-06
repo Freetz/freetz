@@ -48,14 +48,14 @@ $($(PKG)_DIR)/.installed: $($(PKG)_LIB_STAGING_BINARY)
 	$(TARGET_STRIP) $(ROOT_DIR)/usr/lib/libjava*.so*
 	touch $@
 
-classpath:
+$(pkg):
 
-classpath-precompiled: uclibc $($(PKG)_DIR)/.installed classpath $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_DIR)/.installed $($(PKG)_TARGET_BINARY)
 
-classpath-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(CLASSPATH_DIR) clean
 
-classpath-uninstall:
+$(pkg)-uninstall:
 	rm -f $(CLASSPATH_TARGET_BINARY)
 	rm -rf root/usr/lib/libjava*.so*
 	rm -f $(CLASSPATH_DIR)/.installed

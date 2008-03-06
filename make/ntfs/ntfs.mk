@@ -26,14 +26,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-ntfs:
+$(pkg):
 
-ntfs-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-ntfs-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(NTFS_DIR) clean
 
-ntfs-uninstall:
+$(pkg)-uninstall:
 	rm -f $(NTFS_TARGET_BINARY)
 
 $(PKG_FINISH)

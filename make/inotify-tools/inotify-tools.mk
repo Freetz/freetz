@@ -33,8 +33,7 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_BINARY)
 
 $(pkg):
 
-$(pkg)-precompiled: uclibc $(pkg) \
-		$($(PKG)_INWAIT_TARGET_BINARY) \
+$(pkg)-precompiled: $($(PKG)_INWAIT_TARGET_BINARY) \
 		$($(PKG)_INWATCH_TARGET_BINARY) \
 		$($(PKG)_LIB_TARGET_BINARY)
 

@@ -24,14 +24,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-transmission: 
+$(pkg): 
 
-transmission-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-transmission-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(TRANSMISSION_DIR) clean
 
-transmission-uninstall:
+$(pkg)-uninstall:
 	rm -f $(TRANSMISSION_TARGET_BINARY)
 
 $(PKG_FINISH)

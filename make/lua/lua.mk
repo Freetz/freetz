@@ -34,14 +34,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) 
 	$(INSTALL_BINARY_STRIP)
 
-lua:
+$(pkg):
 
-lua-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-lua-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(LUA_DIR) clean
 
-lua-uninstall: 
+$(pkg)-uninstall: 
 	rm -f $(LUA_TARGET_BINARY)
 
 $(PKG_FINISH)

@@ -18,12 +18,12 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-modcgi-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-modcgi-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(MODCGI_DIR) clean
 
-modcgi-uninstall:
+$(pkg)-uninstall:
 	rm -f $(MODCGI_TARGET_BINARY)
 
 $(PKG_FINISH)

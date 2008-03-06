@@ -20,12 +20,12 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $(pkg):
 
-$(pkg)-precompiled: uclibc $(pkg) $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(RUBY_DIR) clean
 
 $(pkg)-uninstall: 
-	rm -rf $(RUBY_TARGET_DIR)/root/*
+	$(RM) $(RUBY_TARGET_BINARY)
 
 $(PKG_FINISH)
