@@ -389,5 +389,5 @@ cat << EOF
 <font size="1">$(lang en:"\"Defaults\" will load AVM default firewall rules (only load into this GUI, use \"Apply\" to save them)" de:"\"Standard\" l&auml;dt AVM Default-Regeln in die GUI. Zum Speichern \"&Uuml;bernehmen\"-Knopf dr&uuml;cken").</font><br />
 <input type="hidden" name="do_activate" value="">
 $(lang en:"Saving will <b>not</b> activate new rules by default! Check to activate rules when saving" de:"Regeln werden beim Speichern standardm&auml;&szlig;ig <b>nicht aktiviert</b>! Zum Aktivieren hier klicken: ")<input type="checkbox" value="yes"  name="do_activate" >
-<img src="../images/blink!.gif" title="Attention!" valign="center">&nbsp;<font size="1">$(lang en:"(Sometimes Box will reboot)" de:"(Kann zum Rebbot f&uuml;hren!)")</font>
+<img src="../images/blink!.gif" title="Attention!" valign="center">&nbsp;<font size="1">$(lang en:"(Sometimes Box will reboot)" de:"(Kann zum Reboot f&uuml;hren!)")</font>
 EOF
