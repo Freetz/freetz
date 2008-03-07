@@ -380,7 +380,8 @@ common-clean:
 	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean:
-	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
+	rm -rf $(BUILD_DIR) $(PACKAGES_DIR)/{*,!.svn} $(SOURCE_DIR)
+#	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	#-rm -rf $(ADDON_DIR)/*
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
@@ -388,7 +389,8 @@ common-dirclean:
 common-distclean: common-clean
 	rm -f .config .config.old .config.cmd .tmpconfig.h
 	rm -rf $(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
-	rm -rf $(DL_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
+	rm -rf $(DL_DIR) $(PACKAGES_DIR)/{*,!.svn} $(SOURCE_DIR)
+#	rm -rf $(DL_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	-rm -rf $(ADDON_DIR)/*
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
