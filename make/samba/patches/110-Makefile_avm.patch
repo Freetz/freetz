@@ -87,7 +87,7 @@
 +BINDIR = ${exec_prefix}/bin
 +# sbindir is mapped to bindir when compiling SAMBA in 2.0.x compatibility mode.
 +SBINDIR = ${exec_prefix}/sbin
-+LIBDIR = ${prefix}/lib
++LIBDIR = /mod/etc
 +VFSLIBDIR = $(LIBDIR)/vfs
 +PDBLIBDIR = $(LIBDIR)/pdb
 +RPCLIBDIR = $(LIBDIR)/rpc
@@ -95,7 +95,7 @@
 +CHARSETLIBDIR = $(LIBDIR)/charset
 +AUTHLIBDIR = $(LIBDIR)/auth
 +CONFIGDIR = ${LIBDIR}
-+VARDIR = ${prefix}/var
++VARDIR = /var/samba
 +MANDIR = ${prefix}/man
 +DATADIR = ${prefix}/share
 +
@@ -110,7 +110,8 @@
 +LMHOSTSFILE = $(CONFIGDIR)/lmhosts
 +
 +# This is where smbpasswd et al go
-+PRIVATEDIR = ${prefix}/private
++# not for freetz: PRIVATEDIR = ${prefix}/private
++PRIVATEDIR = /mod/etc
 +
 +SMB_PASSWD_FILE = $(PRIVATEDIR)/smbpasswd
 +PRIVATE_DIR = $(PRIVATEDIR)
@@ -119,7 +120,7 @@
 +SWATDIR = ${prefix}/swat
 +
 +# the directory where lock files go
-+LOCKDIR = /var/run/samba
++LOCKDIR = /var/locks
 +
 +# the directory where pid files go
 +PIDDIR = /var/run

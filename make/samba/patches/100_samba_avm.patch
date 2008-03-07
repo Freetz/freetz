@@ -273,11 +273,7 @@ diff -burN source/lib/iconv.c source/lib/iconv.c
 diff -burN source/lib/pidfile.c source/lib/pidfile.c
 --- source/lib/pidfile.c	2007-02-04 19:59:17.000000000 +0100
 +++ source/lib/pidfile.c	2007-07-17 13:19:05.000000000 +0200
-@@ -82,19 +82,20 @@
- {
- 	int     fd;
- 	char    buf[20];
--	char    *short_configfile;
+@@ -82,15 +82,19 @@
  	pstring name;
  	pstring pidFile;
  	pid_t pid;
@@ -292,6 +288,8 @@ diff -burN source/lib/pidfile.c source/lib/pidfile.c
 +		char    *short_configfile = strrchr( dyn_CONFIGFILE, '/');
  		slprintf( name, sizeof( name)-1, "%s-%s", program_name, short_configfile+1);
  	}
++#else
++		strncpy( name, program_name, sizeof( name)-1);
 +#endif
  
  	slprintf(pidFile, sizeof(pidFile)-1, "%s/%s.pid", lp_piddir(), name);
@@ -3025,7 +3023,8 @@ diff -burN source/utils/avm_smbpasswd.c source/utils/avm_smbpasswd.c
 +**********************************************************/
 +int main(int argc, char **argv)
 +{	
-+	char *passwd_filename = "/var/samba/private/smbpasswd";
++// not for freetz: char *passwd_filename = "/var/samba/private/smbpasswd";
++	char *passwd_filename = "/mod/etc/smbpasswd";
 +	char *cleartext_filename = "/var/tmp/smbpasswd.cleartext";
 +
 +	if (argc != 1) {

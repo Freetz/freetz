@@ -1,10 +1,21 @@
 config DS_PACKAGE_SAMBA
-	bool "Samba 3.0.24"
+	bool "Samba 3.0.24 smbd (Filesharing)"
+	select DS_MODULE_nls_cp437
+	select DS_MODULE_nls_iso8859_1
 	depends on ! DS_REMOVE_SMBD
 	default n
 	help
-		Samba provides an NMB and SMB Server. This is what you need if you would
+		Provides a SMBd Server. This is what you need if you would
 		like your router's file system to be accessible from Windows or from
 		other UNIX/Linux machines via smbmount, smbclient, cifsmount or similar.
-		Adds ~1,1 MB to the firmware (uncompressed).
+		Adds ~1.1 MB to the firmware (uncompressed).
+
+config DS_PACKAGE_NMBD
+	bool "Samba 3.0.24 nmbd (Nameservices)"
+	depends on DS_PACKAGE_SAMBA
+	default n
+	help
+		Provides a NMBd Server. This is what you need if you would like to see
+		your Fritzbox in the network neighbourhood or act as a masterbrowser.
+		Adds ~0.8 MB to the firmware (uncompressed).
 

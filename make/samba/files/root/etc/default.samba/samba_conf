@@ -1,0 +1,88 @@
+#!/bin/sh
+
+echo "### global"
+
+cat << EOF
+[global]
+netbios name = $SAMBA_NETBIOS_NAME
+workgroup = $SAMBA_WORKGROUP
+server string = $SAMBA_SERVER_STRING
+syslog = 0
+encrypt passwords = true
+passdb backend = smbpasswd
+obey pam restrictions = yes
+socket options = TCP_NODELAY
+unix charset = ISO-8859-1
+preferred master = $SAMBA_MASTER
+os level = $SAMBA_OS_LEVEL
+security = SHARE
+guest account = ftpuser
+EOF
+
+if [ -n "$SAMBA_INTERFACES" ]; then
+cat << EOF
+interfaces = $SAMBA_INTERFACES
+bind interfaces only = yes
+EOF
+fi
+
+echo "### expert"
+
+if [ -r "/tmp/flash/samba/sharesx" ]; then
+	cat /tmp/flash/samba/sharesx
+fi
+
+echo "### default"
+
+if [ `echo usbhost.samba_server_enabled | ar7cfgctl -s` = "yes" ]; then
+#if [ "$SAMBA_DEFAULT_SHARE" = "yes" ]; then
+	for SHARE in /var/media/ftp/* ; do
+	  if test -d $SHARE ; then
+		SHORTNAME=`basename $SHARE | sed s/-Partition-/-/`
+      		echo "[$SHORTNAME]"
+		echo " path = $SHARE"
+		echo " user = ftpuser"
+
+		if [ $(echo usbhost.readonly | ar7cfgctl -s) != "yes" ] ; then  
+			echo " read only = no"
+		else
+			echo " read only = yes"
+		fi
+
+		if [ $(echo usbhost.password | ar7cfgctl -s) = "\"\"" ] ; then
+			echo " guest ok = yes"
+		fi
+
+		echo " write cache size = 65536"
+	fi
+	done
+fi
+
+echo "### shares"
+
+if [ -r "/tmp/flash/samba/shares" ]; then
+	cat /tmp/flash/samba/shares | grep -v "^#" | while read -r path name gk ro comment; do
+		if [ -n "$path" -a -n "$name" -a -d "$path" ]; then
+			case "$gk" in
+				1|y|yes|Y|YES)  gk="yes" ;;
+				0|n|no|N|NO|"") gk="no"  ;;
+			esac
+			case "$ro" in
+				1|y|yes|Y|YES)  ro="yes" ;;
+				0|n|no|N|NO|"") ro="no"  ;;
+			esac
+cat << EOF
+[$name]
+ comment = $comment
+ path = $path
+ guest ok = $gk
+ read only = $ro
+ user = ftpuser
+ write cache size = 65536
+EOF
+		fi
+	done
+fi
+
+echo "### fin"
+
