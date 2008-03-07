@@ -6,8 +6,10 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 BDIR=/sbin
 SMBD=smbd
 NMBD=nmbd
-PATH=/mod/etc
-CONF=$PATH/smb.conf
+MODPATH=/mod/etc
+CONF=$MODPATH/smb.conf
+
+. /etc/init.d/modlibrc
 
 
 case "$1" in
