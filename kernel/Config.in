@@ -13,6 +13,14 @@ config DS_MODULE_sha1
 	bool "sha1.ko"
 	default n
 
+config DS_MODULE_sha256
+		bool "sha256.ko"
+		default n
+
+config DS_MODULE_aes
+		bool "aes.ko"
+		default n
+
 endmenu
 
 menu "drivers"
@@ -137,6 +145,15 @@ config DS_MODULE_hci_usb
 	bool "hci_usb.ko"
 	select DS_MODULE_usbcore
 	select DS_MODULE_bluetooth
+	default n
+
+config DS_MODULE_dm_mod
+		bool "dm-mod.ko"
+		default n
+
+config DS_MODULE_dm_crypt
+	bool "dm-crypt.ko"
+	select DS_MODULE_dm_mod
 	default n
 
 endmenu

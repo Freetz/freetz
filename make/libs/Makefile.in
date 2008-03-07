@@ -136,3 +136,11 @@ endif
 ifeq ($(strip $(DS_LIB_libcurl)),y)
 LIBS+=curl
 endif
+
+ifeq ($(strip $(DS_LIB_libpopt)),y)
+LIBS+=popt
+endif
+
+ifeq ($(strip $(DS_LIB_libdevmapper)),y)
+LIBS+=devmapper
+endif

@@ -1,0 +1,12 @@
+config DS_PACKAGE_CRYPTSETUP
+	bool "cryptsetup 1.0.5 (binary only)"
+	default n
+	select DS_LIB_libdevmapper
+	select DS_LIB_libpopt
+	select DS_MODULE_dm_crypt
+	select DS_MODULE_sha256
+	select DS_MODULE_aes
+	help
+		cryptsetup is used to conveniently setup up dm-crypt managed
+		device-mapper mappings.
+
