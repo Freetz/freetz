@@ -77,7 +77,7 @@ start() {
 
 stop () {
 	echo -n 'Stopping samba...'
-	killall -9 $SMBD > /dev/null 2>&1
+	killall -TERM $SMBD > /dev/null 2>&1
 	exitvals=$?
 
 	NSP=1
@@ -88,7 +88,7 @@ stop () {
 	fi
 	exitvaln=0
 	if [ -x $BDIR/$NMBD -a $NSP -eq 1 ]; then
-		killall -9 $NMBD > /dev/null 2>&1
+		killall -TERM $NMBD > /dev/null 2>&1
 		exitvaln=$?
 	fi
 
