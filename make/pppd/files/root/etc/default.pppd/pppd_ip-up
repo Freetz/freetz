@@ -20,7 +20,7 @@ if [ "\$6" = "pptp" ]; then
 EOF
 if [ $file_pptp -eq 1 -a -n "$PPTP_NET_ROUTING" -a "$PPTP_ROUTING" == "yes" ]; then
 cat << EOF
-		#Routing
+		echo "ip-up Client"
 EOF
 	echo "$PPTP_NET_ROUTING" | grep -v "^#" | while read netz mask comment; do
    	if [ -n "$netz" -a -n "$mask" ]; then
@@ -37,7 +37,7 @@ fi
 
 cat << EOF
 else 
-	#Server
+	echo "ip-up Server"
 EOF
 if [ $file_pptpd -eq 1 -a -n "$PPTPD_NET_ROUTING" -a "$PPTPD_ROUTING" == "yes" ]; then
 cat << EOF

@@ -1,0 +1,18 @@
+#!/bin/sh
+
+anzahl=0;
+
+while [ -z "$(pidof "pptp")" ]
+do
+	case $anzahl in
+		[0-1]) wait=15; let anzahl=$anzahl+1;;
+		[2-5]) wait=30; let anzahl=$anzahl+1;;
+		[6-9]) wait=60; let anzahl=$anzahl+1;;
+		*) wait=120;;
+	esac
+	sleep $wait
+	if [ -z "$(pidof "pptp")" ]; then
+	  /etc/init.d/rc.pptp start 1>&2
+	  sleep 3
+	fi
+done	

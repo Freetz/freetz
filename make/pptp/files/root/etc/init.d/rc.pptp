@@ -18,6 +18,10 @@ case "$1" in
 esac
 
 start() {
+	if [ -n "$(pidof "pptp")" ]; then
+		echo 'pptp is already running'
+		exit 1
+	fi
 	echo -n 'Starting pptp ...'
 	set -o noglob
 
@@ -41,12 +45,26 @@ start() {
 	modprobe ppp_mppe_mppc
 
 	$PPPD call pptp $PPTP_OPTIONS
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
+	sleep 3
+	if [ -n "$(pidof "pptp")" ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
-		exit $exitval
+		if [ "$PPTP_RESTART" == "yes" -a -z "$(pidof "pptp_restart")" ]; then
+			echo -n 'Starting restart script ...'
+			if [ -x "/var/tmp/flash/ppp/pptp_restart" ]; then
+				/var/tmp/flash/ppp/pptp_restart &
+			else
+				/etc/default.pptp/pptp_restart &
+			fi
+			exitval=$?
+			if [ "$exitval" -eq 0 ]; then
+				echo 'done.'
+			else
+				echo 'failed.'
+				exit $exitval
+			fi
+		fi;
 	fi
 }
 
@@ -55,15 +73,23 @@ stop() {
 
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
-
-	rm -f /mod/etc/ppp/peers/pptp
-
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
-		exit $exitval
 	fi
+	sleep 3
+	if [ -n "$(pidof "pptp_restart")" ]; then
+		echo -n 'Stopping restart script ...'
+		killall pptp_restart > /dev/null 2>&1
+		exitrest=$?
+		if [ "$exitrest" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+		fi
+	fi
+	rm -f /mod/etc/ppp/peers/pptp
 }
 
 case "$1" in
@@ -104,7 +130,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
+		if [ -z "$(pidof "$DAEMON")" -a -z "$(pidof "pptp_restart")" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

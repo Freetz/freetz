@@ -1,11 +1,36 @@
 #!/bin/sh
 #ip-down <interface> <device> <speed> <local-ip> <remote-ip> <ipparam>
 
+file_pptp=0
+file_pptpd=0
+
+if [ -f "/mod/etc/conf/pptp.cfg"  ]; then 
+	file_pptp=1    
+	. /mod/etc/conf/pptp.cfg
+fi
+if [ -f "/mod/etc/conf/pptpd.cfg"  ]; then
+	file_pptpd=1
+	. /mod/etc/conf/pptpd.cfg
+fi
+
 cat << EOF
 #!/bin/sh
 if [ "\$6" = "pptp" ];then
-	#Client
+	echo "ip-down Client"
+EOF
+	if [ $file_pptp -eq 1 -a "$PPTP_RESTART" == "yes" ]; then
+cat << EOF
+	if [ -z "\$(pidof "pptp_restart")" ]; then
+		if [ -x "/var/tmp/flash/ppp/pptp_restart" ]; then
+			/var/tmp/flash/ppp/pptp_restart &
+		else
+			/etc/default.pptp/pptp_restart &
+		fi
+	fi
+EOF
+	fi
+cat << EOF
 else 
-	#Server
+	echo "ip-down Server"
 fi
 EOF
