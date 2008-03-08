@@ -1,5 +1,5 @@
---- etc/hotplug/run_mount.orig	2007-11-22 21:45:15.000000000 +0100
-+++ etc/hotplug/run_mount	2007-11-27 23:20:06.000000000 +0100
+--- etc/hotplug/run_mount.orig	2007-12-18 11:00:28.000000000 +0100
++++ etc/hotplug/run_mount	2008-03-08 14:42:28.000000000 +0100
 @@ -28,31 +28,9 @@
  # Generate a frontend'able 'nice name' to be used as mount point:
  #
@@ -33,94 +33,49 @@
  	echo $NICE
  }
  
-@@ -73,25 +51,42 @@
+@@ -73,6 +51,36 @@
  	done
  }
  
--# Actually perform the mount operation...
--# (TODO Checking the partition for known filesystem types)
 +# Check filesystem type and mount it
- #
--do_mount () {
--	local OK=1
--	local READMODE=`readflag`
--	local DEVNODE=$2
--	local PARTNUM=$3
--	local BLKDEV=${DEVNODE##/dev/}
--	local TEMP=${BLKDEV##sd}
--	local HOSTNUM=`echo ${TEMP%%[0-9]*}|tr 'abcd' '0123'`
--	local MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
--	local MNTPATH=$FTPDIR/$MNTNAME
- 	
--	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
--	test -d $MNTPATH || mkdir -p $MNTPATH
 +mount_fs () {
 +	if [ -e /usr/bin/fstyp ]; then
 +		FSTYPE=`/usr/bin/fstyp $DEVNODE`
-+	else 
++	else
 +		FSTYPE="vfat"
 +	fi
 +
 +	case $FSTYPE in
-+vfat)
-+	mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH
-+	;;
++	vfat)
++		mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH
++		;;
++	ext2)
++		mount -t ext2 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ext3)
++		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ntfs)
++		if [ -e /usr/bin/ntfs-3g ]; then
++			/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		else
++			echo "ntfs-3g not installed"
++		fi
++		;;
++	*) # fs type unknown
++		;;
++	esac
++}
 +
-+ext2)
-+	mount -t ext2 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
-+	;;
-+
-+ext3)
-+	mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
-+	;;
-+
-+ntfs)
-+	if [ -e /usr/bin/ntfs-3g ]; then
-+		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
-+	else
-+		echo "ntfs-3g not installed"
-+	fi
-+	;;
-+
-+*) # fstyp unknown
-+	;;
-+
-+esac
+ # Actually perform the mount operation...
+ # (TODO Checking the partition for known filesystem types)
+ #
+@@ -91,7 +99,7 @@
+ 	test -d $MNTPATH || mkdir -p $MNTPATH
  	
--	passeeren
+ 	passeeren
 -	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
++	if mount_fs; then
  		OK=0
  		eventadd 140 $MNTNAME
  		if ! pidof ftpd; then
-@@ -116,9 +111,28 @@
- 	if [ -p "/var/tam/mount" ]; then
- 		echo "m$MNTPATH" > /var/tam/mount
- 	fi
--	else
--		rm -rf $MNTPATH
--	fi
-+}
-+
-+# Actually perform the mount operation...
-+# (TODO Checking the partition for known filesystem types)
-+#
-+do_mount () {
-+	local OK=1
-+	local READMODE=`readflag`
-+	local DEVNODE=$2
-+	local PARTNUM=$3
-+	local BLKDEV=${DEVNODE##/dev/}
-+	local TEMP=${BLKDEV##sd}
-+	local HOSTNUM=`echo ${TEMP%%[0-9]*}|tr 'abcd' '0123'`
-+	local MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
-+	local MNTPATH=$FTPDIR/$MNTNAME
-+	
-+	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
-+	test -d $MNTPATH || mkdir -p $MNTPATH
-+	
-+	passeeren
-+	
-+	mount_fs
- 
- 	if grep $MNTPATH /proc/mounts > /dev/null; then
- 		if test -f $1; then
