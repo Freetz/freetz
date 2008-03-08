@@ -21,21 +21,6 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) -C $(SCREEN_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	mkdir -p $(SCREEN_TARGET_DIR)/root/usr/share/terminfo/{a,d,l,r,s,v,x}
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/a/ansi \
-		$(SCREEN_TARGET_DIR)/root/usr/share/terminfo/a/
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/d/dumb \
-		$(SCREEN_TARGET_DIR)/root/usr/share/terminfo/d/
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/l/linux \
-		$(SCREEN_TARGET_DIR)/root/usr/share/terminfo/l/
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/r/rxvt \
-		$(SCREEN_TARGET_DIR)/root/usr/share/terminfo/r/
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/s/{sun,screen-w,screen} \
-		$(SCREEN_TARGET_DIR)/root/usr/share/terminfo/s/
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/v/{vt52,vt100,vt102,vt200,vt220} \
-		$(SCREEN_TARGET_DIR)/root/usr/share/terminfo/v/
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/x/{xterm,xterm-color,xterm-xfree86} \
-		$(SCREEN_TARGET_DIR)/root/usr/share/terminfo/x/
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
@@ -47,6 +32,5 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(SCREEN_TARGET_BINARY)
-	$(RM) $(SCREEN_TARGET_DIR)/root/usr/share/terminfo/{a,d,l,r,s,v,x}
 
 $(PKG_FINISH)

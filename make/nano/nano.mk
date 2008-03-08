@@ -44,11 +44,6 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(NANO_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	mkdir -p $(NANO_DEST_DIR)/usr/share/terminfo/{v,x}
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/v/{vt102,vt102-nsgr,vt102-w} \
-		$(NANO_DEST_DIR)/usr/share/terminfo/v/
-	cp $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/x/xterm \
-		$(NANO_DEST_DIR)/usr/share/terminfo/x/
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
@@ -61,6 +56,5 @@ $(pkg)-clean:
 
 $(pkg)-uninstall: 
 	$(RM) $(NANO_TARGET_BINARY)
-	$(RM) $(NANO_DEST_DIR)/usr/share/terminfo/{v,x}
 
 $(PKG_FINISH)
