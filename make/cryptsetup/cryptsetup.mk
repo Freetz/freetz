@@ -34,6 +34,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(CRYPTSETUP_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(CRYPTSETUP_TARGET_BINARY)
+	$(RM) $(CRYPTSETUP_TARGET_BINARY)
 
 $(PKG_FINISH)

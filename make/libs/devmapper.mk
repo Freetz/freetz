@@ -40,9 +40,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(DEVMAPPER_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdevmapper.*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdevmapper.*
 
 $(pkg)-uninstall:
-	rm -f $(DEVMAPPER_TARGET_DIR)/libdevmapper*.so*
+	$(RM) $(DEVMAPPER_TARGET_DIR)/libdevmapper*.so*
 
 $(PKG_FINISH)

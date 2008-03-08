@@ -31,6 +31,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(SISPMCTL_DIR) clean
+	$(RM) $(SISPMCTL_DS_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(SISPMCTL_TARGET_BINARY)
