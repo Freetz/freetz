@@ -965,7 +965,9 @@ config DS_PATCH_HIDDEN_REMOTE_PAGES
 
 config DS_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
-	depends on DS_HAS_USB_HOST
+	depends on \
+		DS_HAS_USB_HOST && \
+		! DS_TYPE_SPEEDPORT_W701V_7170
 	default y
 	help
 		1. Change the name of USB storage dir to uStorXY
@@ -1081,7 +1083,10 @@ config DS_REMOVE_FTPD
 	bool "Remove ftpd"
 	depends on \
 		DS_SHOW_ADVANCED && \
-		DS_HAS_USB_HOST 
+                ( \
+                DS_HAS_USB_HOST || \
+                DS_TYPE_SPEEDPORT_W701V_7170 \\
+                )
 	default n
 	help
 		Remove FTP deamon (ftpd)
@@ -1093,7 +1098,10 @@ config DS_REMOVE_MEDIASRV
   depends on \
   	DS_SHOW_ADVANCED && \
 	! DS_PATCH_MEDIASRV && \
-	DS_HAS_USB_HOST
+        ( \
+        DS_HAS_USB_HOST || \
+        DS_TYPE_SPEEDPORT_W701V_7170 \\
+        )
 	default n
 	help
 		Remove MediaServer daemon (mediasrv)
@@ -1104,7 +1112,10 @@ config DS_REMOVE_SMBD
 	bool "Remove smbd"
   depends on \
   		DS_SHOW_ADVANCED && \
-		DS_HAS_USB_HOST 
+		( \
+		DS_HAS_USB_HOST || \
+		DS_TYPE_SPEEDPORT_W701V_7170 \\
+		)
 	default n
 	help
 		Remove Samba daemon (smbd)
