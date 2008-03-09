@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.19.2
-# Wed Mar  5 19:34:02 2008
+# Sun Mar  9 23:36:55 2008
 #
 CONFIG_MIPS=y
 
@@ -440,9 +440,6 @@ CONFIG_LLC=y
 # QoS and/or fair queueing
 #
 # CONFIG_NET_SCHED is not set
-# CONFIG_NET_SCH_CLK_JIFFIES is not set
-# CONFIG_NET_SCH_CLK_GETTIMEOFDAY is not set
-# CONFIG_NET_SCH_CLK_CPU is not set
 CONFIG_NET_CLS_ROUTE=y
 
 #
@@ -697,6 +694,7 @@ CONFIG_SCSI_MULTI_LUN=y
 CONFIG_MD=y
 # CONFIG_BLK_DEV_MD is not set
 CONFIG_BLK_DEV_DM=m
+# CONFIG_DM_DEBUG is not set
 CONFIG_DM_CRYPT=m
 # CONFIG_DM_SNAPSHOT is not set
 # CONFIG_DM_MIRROR is not set
@@ -1545,8 +1543,9 @@ CONFIG_CMDLINE=""
 # Cryptographic options
 #
 CONFIG_CRYPTO=y
-CONFIG_CRYPTO_ALGAPI=y
-# CONFIG_CRYPTO_MANAGER is not set
+CONFIG_CRYPTO_ALGAPI=m
+CONFIG_CRYPTO_BLKCIPHER=m
+CONFIG_CRYPTO_MANAGER=m
 # CONFIG_CRYPTO_HMAC is not set
 # CONFIG_CRYPTO_NULL is not set
 # CONFIG_CRYPTO_MD4 is not set
@@ -1557,7 +1556,7 @@ CONFIG_CRYPTO_SHA256=m
 # CONFIG_CRYPTO_WP512 is not set
 # CONFIG_CRYPTO_TGR192 is not set
 # CONFIG_CRYPTO_ECB is not set
-# CONFIG_CRYPTO_CBC is not set
+CONFIG_CRYPTO_CBC=m
 # CONFIG_CRYPTO_DES is not set
 # CONFIG_CRYPTO_BLOWFISH is not set
 # CONFIG_CRYPTO_TWOFISH is not set
