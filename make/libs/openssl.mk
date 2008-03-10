@@ -19,10 +19,10 @@ $(PKG_UNPACKED)
 
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	$(SED) -i -e 's/DS_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
+	$(SED) -i -e 's/FREETZ_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
 	( cd $(OPENSSL_DIR); \
 		PATH="$(TARGET_TOOLCHAIN_PATH)" \
-		./Configure linux-ds-mod \
+		./Configure linux-freetz \
 		--prefix=/usr \
 		--openssldir=/mod/etc/ssl \
 		-I$(TARGET_TOOLCHAIN_STAGING_DIR)/include \

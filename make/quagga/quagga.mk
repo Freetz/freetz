@@ -8,12 +8,12 @@ $(PKG)_STARTLEVEL=80
 
 $(PKG)_DEPENDS_ON := ncurses readline
 
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_QUAGGA_BGPD
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_QUAGGA_RIPD
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_QUAGGA_RIPNGD
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_QUAGGA_OSPFD
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_QUAGGA_OSPF6D
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_QUAGGA_ISISD
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_QUAGGA_BGPD
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_QUAGGA_RIPD
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_QUAGGA_RIPNGD
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_QUAGGA_OSPFD
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_QUAGGA_OSPF6D
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_QUAGGA_ISISD
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/etc/quagga
 $(PKG)_CONFIGURE_OPTIONS += --localstatedir=/var/run/quagga
@@ -24,20 +24,20 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-multipath=8
 $(PKG)_CONFIGURE_OPTIONS += --enable-vtysh
 $(PKG)_CONFIGURE_OPTIONS += --disable-capabilities
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_QUAGGA_BGPD),--enable-bgpd,--disable-bgpd)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_QUAGGA_RIPD),--enable-ripd,--disable-ripd)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_QUAGGA_RIPNGD),--enable-ripngd,--disable-ripngd)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_QUAGGA_OSPFD),--enable-ospfd,--disable-ospfd)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_QUAGGA_OSPF6D),--enable-ospf6d,--disable-ospf6d)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_QUAGGA_ISISD),--enable-isisd,--disable-isisd)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_QUAGGA_BGPD),--enable-bgpd,--disable-bgpd)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_QUAGGA_RIPD),--enable-ripd,--disable-ripd)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_QUAGGA_RIPNGD),--enable-ripngd,--disable-ripngd)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_QUAGGA_OSPFD),--enable-ospfd,--disable-ospfd)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_QUAGGA_OSPF6D),--enable-ospf6d,--disable-ospf6d)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_QUAGGA_ISISD),--enable-isisd,--disable-isisd)
 
 $(PKG)_DAEMONS:=zebra \
-		$(if $(DS_PACKAGE_QUAGGA_BGPD),bgpd,) \
-		$(if $(DS_PACKAGE_QUAGGA_RIPD),ripd,) \
-		$(if $(DS_PACKAGE_QUAGGA_RIPNGD),ripngd,) \
-		$(if $(DS_PACKAGE_QUAGGA_OSPFD),ospfd,) \
-	        $(if $(DS_PACKAGE_QUAGGA_OSPF6D),ospf6d,) \
-		$(if $(DS_PACKAGE_QUAGGA_ISISD),isisd,)
+		$(if $(FREETZ_PACKAGE_QUAGGA_BGPD),bgpd,) \
+		$(if $(FREETZ_PACKAGE_QUAGGA_RIPD),ripd,) \
+		$(if $(FREETZ_PACKAGE_QUAGGA_RIPNGD),ripngd,) \
+		$(if $(FREETZ_PACKAGE_QUAGGA_OSPFD),ospfd,) \
+	        $(if $(FREETZ_PACKAGE_QUAGGA_OSPF6D),ospf6d,) \
+		$(if $(FREETZ_PACKAGE_QUAGGA_ISISD),isisd,)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -75,7 +75,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(QUAGGA_DIR) clean
-	$(RM) $(QUAGGA_DS_CONFIG_FILE)
+	$(RM) $(QUAGGA_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(QUAGGA_TARGET_LIBDIR)/lib*.so*	

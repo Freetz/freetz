@@ -1,4 +1,4 @@
-[ "$DS_PACKAGE_IPTABLES" == "y" ] || return 0
+[ "$FREETZ_PACKAGE_IPTABLES" == "y" ] || return 0
 echo1 "Copying iptables"
 IPTABLES_DIR=${PACKAGES_DIR}/iptables-1.3.7
 IPTABLES_BINARY=$IPTABLES_DIR/root/usr/sbin/iptables
@@ -18,7 +18,7 @@ do
 	bn="$(basename "$i")"
 	lib="${bn%\.so*}"
 	lib="$(echo "$lib" | sed -e 's/-[\.0-9]*$//')"
-	if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
+	if [ "$(eval "echo \"\$FREETZ_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
 		echo2 "${bn}"
 		dn="$(dirname "$i")"
 		[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"

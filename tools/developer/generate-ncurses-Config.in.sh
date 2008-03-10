@@ -9,13 +9,13 @@ menu "terminfo database"
 
 comment "Select terminfo database entries to install (see help of 'Show all items')"
 
-config DS_LIB_libterminfo
+config FREETZ_LIB_libterminfo
 	bool "terminfo database"
 	default n
 
-config DS_LIB_libterminfo_showall
+config FREETZ_LIB_libterminfo_showall
 	bool "Show all items"
-	depends on DS_LIB_libterminfo
+	depends on FREETZ_LIB_libterminfo
 	default n
 	help
 		Terminfo is a library and database that enables programs to use display
@@ -51,17 +51,17 @@ for O in `find . -type f -o -type l | sort`; do
 	DEFAULT="$(for I in $DEFAULTSET; do [ "$I" = "$FILE" ] && echo "y"; done)"
 	[ -z "$DEFAULT" ] && DEFAULT="n"
 
-	echo "config DS_LIB_libterminfo_$ID"
+	echo "config FREETZ_LIB_libterminfo_$ID"
 	echo "	bool \"$FILE ($SIZE Bytes)\""
 	
 	if [ "$DEFAULT" = "y" ]; then
-		echo "	depends on DS_LIB_libterminfo"
+		echo "	depends on FREETZ_LIB_libterminfo"
 	else
-		echo "	depends on DS_LIB_libterminfo_showall"
+		echo "	depends on FREETZ_LIB_libterminfo_showall"
 	fi
 
 	if [ -n "$TARGET_ID" ]; then
-		echo "	select DS_LIB_libterminfo_${TARGET_ID}"
+		echo "	select FREETZ_LIB_libterminfo_${TARGET_ID}"
 	fi
 
 	echo "	default $DEFAULT"

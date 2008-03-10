@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# dsmod or usb version?
-if [ "$DSMOD" = "0" ]; then  
-  DSMOD_LINK=""
+# freetz or usb version?
+if [ "$FREETZ" = "0" ]; then  
+  FREETZ_LINK=""
   USERSCRIPT_LINK="<li><a href=\"dtmfbox_userscript.cgi\" target=\"_new\" >Benutzerdefiniertes Skript</a></li><br>"
   SCRIPT=dtmfbox.cgi
 else
-  DSMOD_LINK="<hr color=\"black\"></p><li><a href='../'>Freetz</a></li>"
+  FREETZ_LINK="<hr color=\"black\"></p><li><a href='../'>Freetz</a></li>"
   USERSCRIPT_LINK="<li><a href=\"$SCRIPT?current_page=userscript\" >Benutzerdefiniertes Skript</a></li><br>"
   SCRIPT=""
 fi
@@ -76,7 +76,7 @@ cat << EOF
 		<p></p>
 		$USERSCRIPT_LINK
 		<p></p>
-		$DSMOD_LINK
+		$FREETZ_LINK
 	</ul>
 	</div>
 	</td></tr></table>
@@ -106,14 +106,14 @@ EOF
 
 # libmodfrm.sh
 frm_begin() {
-if [ "$SCRIPT_NAME" = "$1_save.cgi" ] && [ "$DSMOD" = "0" ];
+if [ "$SCRIPT_NAME" = "$1_save.cgi" ] && [ "$FREETZ" = "0" ];
 then
 cat << EOF
 <form action="$1.cgi" method="post">
 EOF
 else
 
-if [ "$DSMOD" = "0" ]; 
+if [ "$FREETZ" = "0" ]; 
 then
 cat << EOF
 	<form action="$1_save.cgi?form=pkg_$1" method="post">
@@ -132,7 +132,7 @@ fi
 }
 
 frm_end() {
-if [ "$DSMOD" = "0" ]; then
+if [ "$FREETZ" = "0" ]; then
 cat << EOF
   <input type="hidden" name="form" value="pkg_$1">
   <input type="hidden" name="dummy" value="0">

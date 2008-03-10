@@ -129,7 +129,7 @@ collectd-uninstall:
 	rm -f $(COLLECTD_TARGET_BINARY)
 
 collectd-list:
-ifeq ($(strip $(DS_PACKAGE_COLLECTD)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_COLLECTD)),y)
 	@echo "S99collectd-$(COLLECTD_VERSION)" >> .static
 else
 	@echo "S99collectd-$(COLLECTD_VERSION)" >> .dynamic

@@ -1,100 +1,100 @@
 
 choice
 
-	prompt "Target compiler" if DS_BUILD_TOOLCHAIN
-	default DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+	prompt "Target compiler" if FREETZ_BUILD_TOOLCHAIN
+	default FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
 
-	config DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	config FREETZ_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
 		bool "gcc-4.1.0-uClibc-0.9.28"
 
-	config DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	config FREETZ_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
 		bool "gcc-4.1.1-uClibc-0.9.28"
 
-	config DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	config FREETZ_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
 		bool "gcc-4.1.2-uClibc-0.9.28"
 
-	config DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	config FREETZ_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
 		bool "gcc-4.2.0-uClibc-0.9.28"
 
-	config DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+	config FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
 		bool "gcc-4.2.1-uClibc-0.9.28"
 	
-	config DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	config FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
 		bool "gcc-4.2.1-uClibc-0.9.29 - EXPERIMENTAL"
 	
 endchoice
 
-config DS_TARGET_GCC_VERSION
+config FREETZ_TARGET_GCC_VERSION
 	string
-	default "4.1.0"		if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
-	default "4.1.1"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "4.1.2"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-	default "4.2.0"		if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
-	default "4.2.1"		if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
-	default "4.2.1"		if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
-	default "4.2.1"		if DS_DOWNLOAD_TOOLCHAIN
+	default "4.1.0"		if FREETZ_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default "4.1.1"		if FREETZ_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "4.1.2"		if FREETZ_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "4.2.0"		if FREETZ_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "4.2.1"		if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+	default "4.2.1"		if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	default "4.2.1"		if FREETZ_DOWNLOAD_TOOLCHAIN
 
-config DS_TARGET_UCLIBC_VERSION
+config FREETZ_TARGET_UCLIBC_VERSION
 	string
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
-	default "0.9.28"	if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
-	default "0.9.29"	if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
-	default "0.9.28"	if DS_DOWNLOAD_TOOLCHAIN
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+	default "0.9.29"	if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	default "0.9.28"	if FREETZ_DOWNLOAD_TOOLCHAIN
 
-config DS_TARGET_BINUTILS_VERSION
+config FREETZ_TARGET_BINUTILS_VERSION
 	string
-	default "2.16.91.0.6"	if DS_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
-	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
-	default "2.17"		if DS_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
-	default "2.17.50.0.16"	if DS_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
-	default "2.17.50.0.17"	if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
-	default "2.17.50.0.17"	if DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
-	default "2.17.50.0.17"	if DS_DOWNLOAD_TOOLCHAIN
+	default "2.16.91.0.6"	if FREETZ_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default "2.17"		if FREETZ_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "2.17"		if FREETZ_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "2.17.50.0.16"	if FREETZ_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "2.17.50.0.17"	if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+	default "2.17.50.0.17"	if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	default "2.17.50.0.17"	if FREETZ_DOWNLOAD_TOOLCHAIN
 
 choice
 
-	prompt "uClibc config" if DS_BUILD_TOOLCHAIN
-	default DS_TARGET_UCLIBC_CONFIG_MOD_26
+	prompt "uClibc config" if FREETZ_BUILD_TOOLCHAIN
+	default FREETZ_TARGET_UCLIBC_CONFIG_MOD_26
 
-	config DS_TARGET_UCLIBC_CONFIG_MOD_26
+	config FREETZ_TARGET_UCLIBC_CONFIG_MOD_26
 		bool "mod_26 (recommended)"
 
-	config DS_TARGET_UCLIBC_CONFIG_8MB_26
-		bool "8MB_26" if ! DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	config FREETZ_TARGET_UCLIBC_CONFIG_8MB_26
+		bool "8MB_26" if ! FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
 	
-	config DS_TARGET_UCLIBC_CONFIG_4MB_26 
-		bool "4MB_26" if ! DS_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	config FREETZ_TARGET_UCLIBC_CONFIG_4MB_26 
+		bool "4MB_26" if ! FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
 
 endchoice
 
-config DS_TARGET_UCLIBC_REF
+config FREETZ_TARGET_UCLIBC_REF
 	string
-	default "mod_26"	if DS_TARGET_UCLIBC_CONFIG_MOD_26
-	default "orig-4mb_26"	if DS_TARGET_UCLIBC_CONFIG_4MB_26
-	default "orig-8mb_26"	if DS_TARGET_UCLIBC_CONFIG_8MB_26
-	default "mod_26"	if DS_DOWNLOAD_TOOLCHAIN
+	default "mod_26"	if FREETZ_TARGET_UCLIBC_CONFIG_MOD_26
+	default "orig-4mb_26"	if FREETZ_TARGET_UCLIBC_CONFIG_4MB_26
+	default "orig-8mb_26"	if FREETZ_TARGET_UCLIBC_CONFIG_8MB_26
+	default "mod_26"	if FREETZ_DOWNLOAD_TOOLCHAIN
 
-config DS_STATIC_TOOLCHAIN
-	bool "Build static toolchains" if DS_BUILD_TOOLCHAIN
+config FREETZ_STATIC_TOOLCHAIN
+	bool "Build static toolchains" if FREETZ_BUILD_TOOLCHAIN
 	default n
 	help
 		kernel and target toolchain are build static
 
-config DS_TARGET_GXX
-	bool "Build g++ for target toolchain" if DS_BUILD_TOOLCHAIN
+config FREETZ_TARGET_GXX
+	bool "Build g++ for target toolchain" if FREETZ_BUILD_TOOLCHAIN
 	default y
 	help
 		g++ is the traditional nickname of GNU C++, a freely redistributable
 		C++ compiler. It is part of gcc, the GNU compiler suite, and is
 		currently part of that distribution. 
 
-config DS_TARGET_CCACHE
-	bool "Build ccache for target toolchain" if DS_BUILD_TOOLCHAIN
-	default y if DS_BUILD_TOOLCHAIN
-	default n if DS_DOWNLOAD_TOOLCHAIN
+config FREETZ_TARGET_CCACHE
+	bool "Build ccache for target toolchain" if FREETZ_BUILD_TOOLCHAIN
+	default y if FREETZ_BUILD_TOOLCHAIN
+	default n if FREETZ_DOWNLOAD_TOOLCHAIN
 	help
 		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
 		compilers, using the -E compiler switch and a hash to detect when a
@@ -105,8 +105,8 @@ config DS_TARGET_CCACHE
 		as a bourne shell script. ccache is a re-implementation of Erik's idea
 		in C with more features and better performance.
 
-config DS_TARGET_NLS
-	bool "Native language support (NLS) for target toolchain" if DS_BUILD_TOOLCHAIN
+config FREETZ_TARGET_NLS
+	bool "Native language support (NLS) for target toolchain" if FREETZ_BUILD_TOOLCHAIN
 	default n
 	help
 		Support NLS-enabled programs and Linux tools on target system.
@@ -118,8 +118,8 @@ config DS_TARGET_NLS
 		    $ ls /foo/bar
 		    ls: /foo/bar: Datei oder Verzeichnis nicht gefunden
 
-config DS_TARGET_LFS
-	bool "Large file support (LFS) for target toolchain" if DS_BUILD_TOOLCHAIN
+config FREETZ_TARGET_LFS
+	bool "Large file support (LFS) for target toolchain" if FREETZ_BUILD_TOOLCHAIN
 	default y
 	help
 		Support files > 2 GB on target system. This is desirable for Torrent
@@ -127,64 +127,64 @@ config DS_TARGET_LFS
 
 choice
 
-	prompt "Kernel compiler" if DS_BUILD_TOOLCHAIN
-	default DS_KERNEL_COMPILER_GCC_3_4_6
+	prompt "Kernel compiler" if FREETZ_BUILD_TOOLCHAIN
+	default FREETZ_KERNEL_COMPILER_GCC_3_4_6
 
-	config DS_KERNEL_COMPILER_GCC_3_4_6
+	config FREETZ_KERNEL_COMPILER_GCC_3_4_6
 		bool "gcc-3.4.6"
 	
 endchoice
 
-config DS_KERNEL_GCC_VERSION
+config FREETZ_KERNEL_GCC_VERSION
 	string
 	default "3.4.6"
 
-config DS_KERNEL_BINUTILS_VERSION
+config FREETZ_KERNEL_BINUTILS_VERSION
 	string
 	default "2.17.50.0.17"
 
 comment "GNU debugger (gdb)"
     
-config DS_PACKAGE_GDB
+config FREETZ_PACKAGE_GDB
 	bool "Build gdb for target"
 	default n
-	select DS_LIB_libncurses
-	select DS_LIB_libthread_db
+	select FREETZ_LIB_libncurses
+	select FREETZ_LIB_libthread_db
 	help
 	    Build the full gdb debugger to run on the target.
 
-config DS_PACKAGE_GDB_SERVER
+config FREETZ_PACKAGE_GDB_SERVER
 	bool "Build gdb server for target"
 	default n
 	help
 	    Build the gdbserver stub to run on the target.
 	    A full gdb is needed to debug the progam.
 
-config DS_PACKAGE_GDB_HOST
+config FREETZ_PACKAGE_GDB_HOST
 	bool "Build gdb for host"
 	default n
 	help
 	    Build gdb to run on the host to debug programs run on the target.
 choice
 	prompt "gdb version"
-	default DS_GDB_VERSION_6_6
-	depends on DS_PACKAGE_GDB || DS_PACKAGE_GDB_SERVER || DS_PACKAGE_GDB_HOST
+	default FREETZ_GDB_VERSION_6_6
+	depends on FREETZ_PACKAGE_GDB || FREETZ_PACKAGE_GDB_SERVER || FREETZ_PACKAGE_GDB_HOST
 	help
 	  Select the version of gdb you wish to use.
 
-	config DS_GDB_VERSION_6_3
+	config FREETZ_GDB_VERSION_6_3
 		bool "gdb 6.3"
 
-	config DS_GDB_VERSION_6_4
+	config FREETZ_GDB_VERSION_6_4
 		bool "gdb 6.4"
 
-	config DS_GDB_VERSION_6_6
+	config FREETZ_GDB_VERSION_6_6
 		bool "gdb 6.6"
 
 endchoice
 
-config DS_GDB_VERSION
+config FREETZ_GDB_VERSION
 	string
-	default "6.3"      if DS_GDB_VERSION_6_3
-	default "6.4"      if DS_GDB_VERSION_6_4
-	default "6.6"      if DS_GDB_VERSION_6_6
+	default "6.3"      if FREETZ_GDB_VERSION_6_3
+	default "6.4"      if FREETZ_GDB_VERSION_6_4
+	default "6.6"      if FREETZ_GDB_VERSION_6_6

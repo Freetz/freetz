@@ -1,7 +1,7 @@
-config DS_PACKAGE_JAMVM
+config FREETZ_PACKAGE_JAMVM
 	bool "JamVM 1.4.4 (binary only)"
-	select DS_PACKAGE_CLASSPATH
-	select DS_LIB_libffi
+	select FREETZ_PACKAGE_CLASSPATH
+	select FREETZ_LIB_libffi
 	default n
 	help
 	    JamVM - extremely small Java VM
@@ -30,9 +30,9 @@ config DS_PACKAGE_JAMVM
 # Include here a cleaner menu structure
 source make/classpath/Config.in
 
-config DS_LIB_libffi
+config FREETZ_LIB_libffi
 	bool "ffi-sable (libffi.so)"
-	requires DS_PACKAGE_JAMVM
+	requires FREETZ_PACKAGE_JAMVM
 	help
 		libffi is a library that really only provides the lowest, machine
 		dependent layer of a fully featured foreign function interface. A layer

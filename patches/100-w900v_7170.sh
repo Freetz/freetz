@@ -1,6 +1,6 @@
 # Partially copied from sp-to-fritz by spirou & jpascher
 
-[ "$DS_TYPE_SPEEDPORT_W900V_7170" == "y" ] || return 0
+[ "$FREETZ_TYPE_SPEEDPORT_W900V_7170" == "y" ] || return 0
 
 if [ -z "$FIRMWARE2" ]; then
 	echo "ERROR: no tk firmware" 1>&2

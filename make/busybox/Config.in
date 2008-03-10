@@ -1,6 +1,6 @@
-config DS_BUSYBOX_AR
+config FREETZ_BUSYBOX_AR
 	bool "ar"
-	depends on DS_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Include the 'ar' archiving tool in busybox
@@ -12,9 +12,9 @@ config DS_BUSYBOX_AR
 		This feature adds about 1.9 KB to BusyBox.
 		All sub-features in BusyBox are selected.
 
-config DS_BUSYBOX_DIFF
+config FREETZ_BUSYBOX_DIFF
 	bool "diff"
-	depends on DS_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Include the 'diff' tool in busybox
@@ -25,9 +25,9 @@ config DS_BUSYBOX_DIFF
 		This feature adds about 14.2 KB to BusyBox.
 		All sub-features in BusyBox are selected.
 
-config DS_BUSYBOX_INETD
+config FREETZ_BUSYBOX_INETD
 	bool "inetd"
-	depends on DS_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Include 'inetd' support in busybox
@@ -38,9 +38,9 @@ config DS_BUSYBOX_INETD
 
 		This feature adds about 11.4 KB to BusyBox.
 
-config DS_BUSYBOX_PATCH
+config FREETZ_BUSYBOX_PATCH
 	bool "patch"
-	depends on DS_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Include the 'patch' tool in busybox
@@ -51,9 +51,9 @@ config DS_BUSYBOX_PATCH
 		This feature adds about 2.7 KB to BusyBox.
 		All sub-features in BusyBox are selected.
 
-config DS_BUSYBOX_START_STOP_DAEMON
+config FREETZ_BUSYBOX_START_STOP_DAEMON
 	bool "start-stop-daemon"
-	depends on DS_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Include the 'start-stop-daemon' tool in busybox
@@ -65,10 +65,10 @@ config DS_BUSYBOX_START_STOP_DAEMON
 		This feature adds about 1.9 KB to BusyBox.
 		The 'Support additional arguments' sub-feature is automatically selected.
 
-config DS_BUSYBOX_WGET
+config FREETZ_BUSYBOX_WGET
 	bool "wget"
-	depends on DS_REPLACE_BUSYBOX
-	depends on ! DS_PACKAGE_WGET
+	depends on FREETZ_REPLACE_BUSYBOX
+	depends on ! FREETZ_PACKAGE_WGET
 	default y
 	help
 		Include the 'wget' tool in busybox
@@ -76,9 +76,9 @@ config DS_BUSYBOX_WGET
 		This feature is required by any Freetz package.
 		But it is deselected when the wget package is selected.
 
-config DS_BUSYBOX_LESS
+config FREETZ_BUSYBOX_LESS
         bool "less"
-        depends on DS_REPLACE_BUSYBOX
+        depends on FREETZ_REPLACE_BUSYBOX
         default n
         help
 		Include the 'less' tools in busybox
@@ -88,9 +88,9 @@ config DS_BUSYBOX_LESS
 		(The features CONFIG_FEATURE_LESS_BRACKETS and 
 		CONFIG_FEATURE_LESS_REGEXP are set automatically)
 
-config DS_BUSYBOX_NICE
+config FREETZ_BUSYBOX_NICE
 	bool "nice"
-	depends on DS_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Includes the 'nice' tool in busybox
@@ -99,9 +99,9 @@ config DS_BUSYBOX_NICE
 		can handle the system-ressources more porperly if you want
 		(note: no freetz-service uses this yet)
 
-config DS_BUSYBOX_LS_COLOR
+config FREETZ_BUSYBOX_LS_COLOR
 	bool "color"
-	depends on DS_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Adds the colorful output to the ls-command. 
@@ -110,9 +110,9 @@ config DS_BUSYBOX_LS_COLOR
 		only colors you dirictory-listings.
 		(this feature sets "ls --color" by default, too)
 
-config DS_BUSYBOX_FASTPROC
+config FREETZ_BUSYBOX_FASTPROC
 	bool "fastproc"
-	depends on DS_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Changes the behavior of scanning the proc-filesystem
@@ -120,9 +120,9 @@ config DS_BUSYBOX_FASTPROC
 		With this patch commands like ps or top (even mount or other stuff that
 		uses the /proc/ filesystem) should run a bit faster
 
-config DS_BUSYBOX_KEYS
+config FREETZ_BUSYBOX_KEYS
 	bool "fancykeys"
-	depends on DS_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Adds some useful keyboard-features to the shell

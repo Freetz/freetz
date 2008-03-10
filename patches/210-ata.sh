@@ -1,4 +1,4 @@
-[ "$DS_PATCH_ATA" == "y" ] || return 0
+[ "$FREETZ_PATCH_ATA" == "y" ] || return 0
 echo1 "applying ata patch"
 if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
 	sed -i -e "s/ATA=n/ATA=y/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"

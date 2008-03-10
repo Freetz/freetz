@@ -1,4 +1,4 @@
-[ "$DS_PATCH_INTERNATIONAL" == "y" ] || return 0
+[ "$FREETZ_PATCH_INTERNATIONAL" == "y" ] || return 0
 # from http://www.the-construct.com/
 echo1 "applying international patch"
 if [ -e "${HTML_LANG_MOD_DIR}/html/de" ];then 

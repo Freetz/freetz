@@ -4,15 +4,15 @@ $(PKG)_SITE:=http://bip.t1r.net/downloads
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/bip
 
-ifeq ($(strip $(DS_BIP_WITH_SSL)),y)
+ifeq ($(strip $(FREETZ_BIP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON := openssl
 endif
 
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_BIP_WITH_SSL),,--disable-ssl)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_BIP_WITH_OIDENTD),--enable-oidentd)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_BIP_WITH_SSL),,--disable-ssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_BIP_WITH_OIDENTD),--enable-oidentd)
 
-$(PKG)_CONFIG_SUBOPTS += DS_BIP_WITH_SSL
-$(PKG)_CONFIG_SUBOPTS += DS_BIP_WITH_OIDENTD
+$(PKG)_CONFIG_SUBOPTS += FREETZ_BIP_WITH_SSL
+$(PKG)_CONFIG_SUBOPTS += FREETZ_BIP_WITH_OIDENTD
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -31,7 +31,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(BIP_DIR) clean
-	$(RM) $(BIP_DS_CONFIG_FILE)
+	$(RM) $(BIP_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(BIP_TARGET_BINARY)

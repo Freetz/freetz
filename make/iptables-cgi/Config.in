@@ -1,41 +1,41 @@
-config DS_PACKAGE_IPTABLES_CGI
+config FREETZ_PACKAGE_IPTABLES_CGI
 	bool "Iptables-CGI 1.0.4"
 	default n
 
 	# Be visible only if iptables is selected
-	requires DS_PACKAGE_IPTABLES
+	requires FREETZ_PACKAGE_IPTABLES
 
 	# Activate group menus for modules and libs before selecting sub-entries
-	select DS_PACKAGE_IPTABLES_KERNEL_MODULES
-	select DS_PACKAGE_IPTABLES_SHARED_LIBS
+	select FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+	select FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 
 	# Kernel modules
-	select DS_MODULE_ip_tables
-	select DS_MODULE_ip_conntrack
-	select DS_MODULE_ip_conntrack_ftp
-	select DS_MODULE_iptable_filter
-	select DS_MODULE_ipt_iprange
-	select DS_MODULE_ipt_LOG
-	select DS_MODULE_ipt_mac
-	select DS_MODULE_ipt_multiport
-	select DS_MODULE_ipt_state
-	select DS_MODULE_iptable_nat
-	select DS_MODULE_ipt_MASQUERADE
-	select DS_MODULE_ipt_REDIRECT
+	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_ip_conntrack
+	select FREETZ_MODULE_ip_conntrack_ftp
+	select FREETZ_MODULE_iptable_filter
+	select FREETZ_MODULE_ipt_iprange
+	select FREETZ_MODULE_ipt_LOG
+	select FREETZ_MODULE_ipt_mac
+	select FREETZ_MODULE_ipt_multiport
+	select FREETZ_MODULE_ipt_state
+	select FREETZ_MODULE_iptable_nat
+	select FREETZ_MODULE_ipt_MASQUERADE
+	select FREETZ_MODULE_ipt_REDIRECT
 
 	# Shared libs
-	select DS_LIB_libipt_iprange
-	select DS_LIB_libipt_LOG
-	select DS_LIB_libipt_mac
-	select DS_LIB_libipt_multiport
-	select DS_LIB_libipt_standard
-	select DS_LIB_libipt_state
-	select DS_LIB_libipt_tcp
-	select DS_LIB_libipt_udp
-	select DS_LIB_libipt_DNAT
-	select DS_LIB_libipt_SNAT
-	select DS_LIB_libipt_MASQUERADE
-	select DS_LIB_libipt_REDIRECT
+	select FREETZ_LIB_libipt_iprange
+	select FREETZ_LIB_libipt_LOG
+	select FREETZ_LIB_libipt_mac
+	select FREETZ_LIB_libipt_multiport
+	select FREETZ_LIB_libipt_standard
+	select FREETZ_LIB_libipt_state
+	select FREETZ_LIB_libipt_tcp
+	select FREETZ_LIB_libipt_udp
+	select FREETZ_LIB_libipt_DNAT
+	select FREETZ_LIB_libipt_SNAT
+	select FREETZ_LIB_libipt_MASQUERADE
+	select FREETZ_LIB_libipt_REDIRECT
 
 	help
 		New Configuration front-end to iptables.

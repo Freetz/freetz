@@ -5,14 +5,14 @@ $(PKG)_BINARY:=$(BASH_DIR)/bash
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/bash
 
 
-ifeq ($(strip $(DS_PACKAGE_BASH_READLINE)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_BASH_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline 
 else
 $(PKG)_DEPENDS_ON :=
 endif
 
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_BASH_MINIMAL
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_BASH_READLINE
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_BASH_MINIMAL
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_BASH_READLINE
 
 $(PKG)_CONFIGURE_ENV += ac_cv_func_setvbuf_reversed=no
 $(PKG)_CONFIGURE_ENV += bash_cv_have_mbstate_t=yes
@@ -29,11 +29,11 @@ $(PKG)_CONFIGURE_ENV += LOCAL_LIBS="-lm"
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-restricted
 $(PKG)_CONFIGURE_OPTIONS += --without-bash-malloc
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_BASH_MINIMAL),--enable-minimal-config,)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_BASH_READLINE),,--disable-readline)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_BASH_READLINE),,--disable-history)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_BASH_READLINE),,--disable-bang-history)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_BASH_READLINE),--with-installed-readline,)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_MINIMAL),--enable-minimal-config,)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-readline)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-history)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-bang-history)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),--with-installed-readline,)
 
 
 $(PKG_SOURCE_DOWNLOAD)

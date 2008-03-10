@@ -1,4 +1,4 @@
-[ "$DS_REMOVE_ASSISTANT" == "y" ] || return 0
+[ "$FREETZ_REMOVE_ASSISTANT" == "y" ] || return 0
 # from m*.* mod
 echo1 "removing assistant"
 if [ -e "${HTML_LANG_MOD_DIR}/html/de" ];then 
@@ -14,7 +14,7 @@ find "${HTML_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuAssistent/d'
 
 if [ -e "$HTML_DIR/home/sitemap.html" ]; then
-	if [ "$DS_HAS_PHONE" == "y" ]; then
+	if [ "$FREETZ_HAS_PHONE" == "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant.patch"
 	else	
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_wop.patch"

@@ -1,8 +1,8 @@
-config DS_PACKAGE_SAMBA
+config FREETZ_PACKAGE_SAMBA
 	bool "Samba 3.0.24 smbd (Filesharing)"
-	select DS_MODULE_nls_cp437
-	select DS_MODULE_nls_iso8859_1
-	depends on ! DS_REMOVE_SMBD
+	select FREETZ_MODULE_nls_cp437
+	select FREETZ_MODULE_nls_iso8859_1
+	depends on ! FREETZ_REMOVE_SMBD
 	default n
 	help
 		Provides the Samba SMB Server (smbd). This is what you need if you would
@@ -10,9 +10,9 @@ config DS_PACKAGE_SAMBA
 		other UNIX/Linux machines via smbmount, smbclient, cifsmount or similar.
 		Adds ~1.1 MB to the firmware (uncompressed).
 
-config DS_PACKAGE_NMBD
+config FREETZ_PACKAGE_NMBD
 	bool "Samba 3.0.24 nmbd (Nameservices)"
-	depends on DS_PACKAGE_SAMBA
+	depends on FREETZ_PACKAGE_SAMBA
 	default n
 	help
 		Provides the Samba NetBIOS name server (nmbd). This is what you need if you

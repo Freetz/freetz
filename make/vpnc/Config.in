@@ -1,16 +1,16 @@
-config DS_PACKAGE_VPNC
+config FREETZ_PACKAGE_VPNC
 	bool "Vpnc 0.5.1"
-	depends on DS_LANG_DE || ! DS_SELECTED_LANG_ONLY
-	select DS_LIB_libnsl
-	select DS_LIB_libgpg_error
-	select DS_LIB_libgcrypt
-	select DS_LIB_libdl
+	depends on FREETZ_LANG_DE || ! FREETZ_SELECTED_LANG_ONLY
+	select FREETZ_LIB_libnsl
+	select FREETZ_LIB_libgpg_error
+	select FREETZ_LIB_libgcrypt
+	select FREETZ_LIB_libdl
 	default n
 	help
 	    Cisco IPSec VPN Client
 
-config DS_PACKAGE_VPNC_WITH_HYBRID_AUTH
+config FREETZ_PACKAGE_VPNC_WITH_HYBRID_AUTH
 	bool "Hybrid auth"
-	depends on DS_PACKAGE_VPNC
-	select DS_LIB_libcrypto
+	depends on FREETZ_PACKAGE_VPNC
+	select FREETZ_LIB_libcrypto
 	default n

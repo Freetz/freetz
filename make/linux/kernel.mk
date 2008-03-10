@@ -26,20 +26,20 @@ KERNEL_SOURCE_PATH__r8508:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/open-source-pack
 KERNEL_SOURCE_PATH:=$(KERNEL_SOURCE_PATH__$(AVM_VERSION))
 
 ifeq ($(KERNEL_REF),4mb_26)
-KERNEL_DS_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/.ds_config
-KERNEL_DS_CONFIG_TEMP:=$(KERNEL_MAKE_DIR)/.ds_config.temp
+KERNEL_FREETZ_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/.freetz_config
+KERNEL_FREETZ_CONFIG_TEMP:=$(KERNEL_MAKE_DIR)/.freetz_config.temp
 
-$(KERNEL_DS_CONFIG_FILE): $(TOPDIR)/.config
-	@echo "DS_KERNEL_LAYOUT=$(KERNEL_LAYOUT)" > $(KERNEL_DS_CONFIG_TEMP)
-	@diff -q $(KERNEL_DS_CONFIG_TEMP) $(KERNEL_DS_CONFIG_FILE) || \
-		cp $(KERNEL_DS_CONFIG_TEMP) $(KERNEL_DS_CONFIG_FILE)
-	@rm -f $(KERNEL_DS_CONFIG_TEMP)
+$(KERNEL_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "FREETZ_KERNEL_LAYOUT=$(KERNEL_LAYOUT)" > $(KERNEL_FREETZ_CONFIG_TEMP)
+	@diff -q $(KERNEL_FREETZ_CONFIG_TEMP) $(KERNEL_FREETZ_CONFIG_FILE) || \
+		cp $(KERNEL_FREETZ_CONFIG_TEMP) $(KERNEL_FREETZ_CONFIG_FILE)
+	@rm -f $(KERNEL_FREETZ_CONFIG_TEMP)
 endif
 
-# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL_DS_CONFIG_FILE)
+$(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL_FREETZ_CONFIG_FILE)
 	rm -rf $(KERNEL_DIR)
 	mkdir -p $(KERNEL_DIR)
 	cp -a $(KERNEL_SOURCE_PATH) $(KERNEL_BUILD_DIR)

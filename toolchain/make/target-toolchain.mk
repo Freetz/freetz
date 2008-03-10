@@ -1,6 +1,6 @@
 include $(TOOLCHAIN_DIR)/make/target/*/*.mk
 
-ifeq ($(strip $(DS_TARGET_CCACHE)),y)
+ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
 	CCACHE:=ccache
 endif
 
@@ -40,7 +40,7 @@ target-toolchain-clean:
 	-$(MAKE) -C $(BINUTILS_DIR) clean
 	rm -rf $(GCC_BUILD_DIR1)
 	rm -rf $(GCC_BUILD_DIR2)
-ifeq ($(strip $(DS_TARGET_CCACHE)),y)
+ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_TARGET_NAME)*
 	-$(MAKE) -C $(CCACHE_DIR) clean
 endif

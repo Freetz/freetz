@@ -1,14 +1,14 @@
-config DS_PACKAGE_PPPD
+config FREETZ_PACKAGE_PPPD
 	bool "pppd 2.4.3"
-	depends on DS_REPLACE_KERNEL && (DS_PACKAGE_PPTP || DS_PACKAGE_PPTPD)
-	select DS_LIB_libcrypt
-	select DS_LIB_libdl
-	select DS_MODULE_ppp_async
-	select DS_MODULE_ppp_deflate
-	select DS_MODULE_ppp_generic
-	select DS_MODULE_ppp_mppe_mppc
-	select DS_MODULE_arc4
-	select DS_MODULE_sha1
+	depends on FREETZ_REPLACE_KERNEL && (FREETZ_PACKAGE_PPTP || FREETZ_PACKAGE_PPTPD)
+	select FREETZ_LIB_libcrypt
+	select FREETZ_LIB_libdl
+	select FREETZ_MODULE_ppp_async
+	select FREETZ_MODULE_ppp_deflate
+	select FREETZ_MODULE_ppp_generic
+	select FREETZ_MODULE_ppp_mppe_mppc
+	select FREETZ_MODULE_arc4
+	select FREETZ_MODULE_sha1
 	default n
 	help
 		An implementation of the Point-to-point protocol.

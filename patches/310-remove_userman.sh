@@ -6,7 +6,7 @@ rm_files()
 	done
 }
 
-[ "$DS_REMOVE_USERMAN" == "y" ] || return 0
+[ "$FREETZ_REMOVE_USERMAN" == "y" ] || return 0
 echo1 "removing userman files"
 rm -f "${FILESYSTEM_MOD_DIR}/bin/usermand"
 rm_files "$(find ${FILESYSTEM_MOD_DIR}/lib/modules -name userman)"

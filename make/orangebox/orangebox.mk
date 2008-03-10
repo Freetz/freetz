@@ -30,7 +30,7 @@ orangebox-dirclean:
 	rm -f $(PACKAGES_DIR)/.orangebox-$(ORANGEBOX_VERSION)
 
 orangebox-list:
-ifeq ($(strip $(DS_PACKAGE_ORANGEBOX)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_ORANGEBOX)),y)
 	@echo "S30orangebox-$(ORANGEBOX_VERSION)" >> .static
 else
 	@echo "S30orangebox-$(ORANGEBOX_VERSION)" >> .dynamic

@@ -7,9 +7,9 @@ $(PKG)_STARTLEVEL=40
 
 $(PKG)_DEPENDS_ON := libgpg-error libgcrypt
 
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_VPNC_WITH_HYBRID_AUTH
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_VPNC_WITH_HYBRID_AUTH
 
-ifeq ($(strip $(DS_PACKAGE_VPNC_WITH_HYBRID_AUTH)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_VPNC_WITH_HYBRID_AUTH)),y)
 VPNC_CPPFLAGS := -DOPENSSL_GPL_VIOLATION
 VPNC_LDFLAGS := -lcrypto
 $(PKG)_DEPENDS_ON += openssl
@@ -39,7 +39,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(VPNC_DIR) clean
-	$(RM) $(VPNC_DS_CONFIG_FILE)
+	$(RM) $(VPNC_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(VPNC_TARGET_BINARY)

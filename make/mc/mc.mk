@@ -8,7 +8,7 @@ $(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
 
 $(PKG)_DEPENDS_ON += glib ncurses-terminfo
 
-ifeq ($(strip $(DS_MC_WITH_NCURSES)),y) 
+ifeq ($(strip $(FREETZ_MC_WITH_NCURSES)),y) 
 $(PKG)_DEPENDS_ON += ncurses 
 endif
 
@@ -30,14 +30,14 @@ $(PKG)_CONFIGURE_OPTIONS:=\
 		--without-samba \
 		--with-configdir=/etc \
 		--without-ext2undel \
-		$(if $(DS_MC_SUBSHELL),--with-subshell,--without-subshell) \
-		$(if $(DS_MC_WITH_NCURSES),--with-screen=ncurses,--with-screen=mcslang) \
-		$(if $(DS_MC_INTERNAL_EDITOR),--with-edit,--without-edit)
+		$(if $(FREETZ_MC_SUBSHELL),--with-subshell,--without-subshell) \
+		$(if $(FREETZ_MC_WITH_NCURSES),--with-screen=ncurses,--with-screen=mcslang) \
+		$(if $(FREETZ_MC_INTERNAL_EDITOR),--with-edit,--without-edit)
 
 
-$(PKG)_CONFIG_SUBOPTS += DS_MC_INTERNAL_EDITOR
-$(PKG)_CONFIG_SUBOPTS += DS_MC_SUBSHELL
-$(PKG)_CONFIG_SUBOPTS += DS_MC_WITH_NCURSES
+$(PKG)_CONFIG_SUBOPTS += FREETZ_MC_INTERNAL_EDITOR
+$(PKG)_CONFIG_SUBOPTS += FREETZ_MC_SUBSHELL
+$(PKG)_CONFIG_SUBOPTS += FREETZ_MC_WITH_NCURSES
 
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -59,7 +59,7 @@ $($(PKG)_TARGET_HELP): $($(PKG)_HELP)
 
 $(pkg):
 
-ifeq ($(strip $(DS_$(PKG)_ONLINE_HELP)),y)
+ifeq ($(strip $(FREETZ_$(PKG)_ONLINE_HELP)),y)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_HELP)
 else
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(pkg)-clean-help

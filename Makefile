@@ -35,7 +35,7 @@ IMAGE:=
 LOCALIP:=
 RECOVER:=
 
-DSMOD_BASE_DIR:=$(shell pwd)
+FREETZ_BASE_DIR:=$(shell pwd)
 ADDON_DIR:=addon
 BUILD_DIR:=build
 DL_DIR:=dl
@@ -83,13 +83,13 @@ ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
 endif
 
-ifeq ($(strip $(DS_VERBOSITY_LEVEL)),0)
+ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),0)
 VERBOSE:=
 else
 VERBOSE:=-v
 endif
 
-export DS_VERBOSITY_LEVEL
+export FREETZ_VERBOSITY_LEVEL
 export VERBOSE
 
 TOOLS_CLEAN:=$(patsubst %,%-clean,$(TOOLS))
@@ -118,7 +118,7 @@ $(TOOLCHAIN_BUILD_DIR):
 	@mkdir -p $(TOOLCHAIN_BUILD_DIR)
 
 
-ifeq ($(strip $(DS_HAVE_DOT_CONFIG)),y)
+ifeq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
 
 step: world tools firmware
 
@@ -152,7 +152,7 @@ TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
 
 include $(MAKE_DIR)/*/*.mk
 
-ifeq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
+ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
 include $(TOOLCHAIN_DIR)/make/target-toolchain.mk
 else
@@ -163,7 +163,7 @@ IMAGE:=$(DL_DIR)/$(DL_SOURCE)
 DL_IMAGE:=$(IMAGE)
 
 $(DL_DIR)/$(DL_SOURCE):
-ifeq ($(strip $(DS_TYPE_LABOR)),y)
+ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
 	@echo
 	@echo "Please copy the following file into the 'dl' sub-directory manually:"
 	@echo "$(DL_SOURCE)"
@@ -179,7 +179,7 @@ else
 				read yn; \
 				case "$$yn" in \
 					[yY]*) \
-						sed -e 's/# DS_DL_OVERRIDE is not set/DS_DL_OVERRIDE=y/' \
+						sed -e 's/# FREETZ_DL_OVERRIDE is not set/FREETZ_DL_OVERRIDE=y/' \
 							-e 's/DL_SOURCE="$(DL_SOURCE)"/DL_SOURCE="'"$$latest"'"/' \
 							.config > .config.tmp; \
 						mv .config.tmp .config; \
@@ -234,7 +234,7 @@ endif
 	@./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
 ifneq ($(FWMOD_PATCH_TEST),y)
 ifneq ($(FWMOD_NOPACK),y)
-	@mv $(BUILD_DIR)/$(DS_TYPE_STRING2)$(DS_TYPE_STRING)*.image ./
+	@mv $(BUILD_DIR)/$(FREETZ_TYPE_STRING2)$(FREETZ_TYPE_STRING)*.image ./
 endif
 endif
 
@@ -295,7 +295,7 @@ recover:
 		echo "make recover RECOVER=[adam|eva|ds]" 1>&2; \
 		echo "  adam - old boxes like ATA (kernel 2.4)" 1>&2; \
 		echo "  eva  - all boxes with kernel 2.6" 1>&2; \
-		echo "  ds   - modified adam script from ds-mod" 1>&2; \
+		echo "  ds   - modified adam script from freetz" 1>&2; \
 	elif [ ! -r "$(IMAGE)" ]; then \
 		echo "Cannot read $(IMAGE)." 1>&2; \
 	else \
@@ -354,7 +354,7 @@ config-clean-deps:
 	@{ \
 	cp .config .config_tmp; \
 	echo -n "Step 1: temporarily deactivate all kernel modules, shared libraries and optional BusyBox applets ... "; \
-	sed -i -r 's/^(DS_(LIB|MODULE|BUSYBOX)_)/# \1/' .config; \
+	sed -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX)_)/# \1/' .config; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
 	make oldconfig < /dev/null > /dev/null; \

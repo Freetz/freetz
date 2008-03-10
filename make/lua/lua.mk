@@ -4,7 +4,7 @@ $(PKG)_SITE:=http://www.lua.org/ftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lua
 
-ifeq ($(strip $(DS_PACKAGE_LUA_READLINE)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_LUA_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline
 LUA_MAKE_TARGET := linux
 else
@@ -12,7 +12,7 @@ $(PKG)_DEPENDS_ON :=
 LUA_MAKE_TARGET := linux_wo_readline
 endif
 
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_LUA_READLINE
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_LUA_READLINE
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -1,10 +1,10 @@
-config DS_PACKAGE_QUAGGA
+config FREETZ_PACKAGE_QUAGGA
 	bool "quagga 0.99.6"
 	default n
-	select DS_LIB_libncurses
-	select DS_LIB_libreadline
-	select DS_LIB_libhistory
-	select DS_BUSYBOX_START_STOP_DAEMON
+	select FREETZ_LIB_libncurses
+	select FREETZ_LIB_libreadline
+	select FREETZ_LIB_libhistory
+	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	help
 	    The Quagga Software Routing Suite
 
@@ -19,37 +19,37 @@ config DS_PACKAGE_QUAGGA
 	    IF YOU DON'T KNOW HOW TO CONFIGURE THE ROUTING DAEMONS!
 	    (However: a guided/safe config interface is on the todo list ;-)
 
-config DS_PACKAGE_QUAGGA_BGPD
+config FREETZ_PACKAGE_QUAGGA_BGPD
         bool "bgpd"
-	depends on DS_PACKAGE_QUAGGA
+	depends on FREETZ_PACKAGE_QUAGGA
 	default n
 
-config DS_PACKAGE_QUAGGA_RIPD
+config FREETZ_PACKAGE_QUAGGA_RIPD
         bool "ripd"
-	depends on DS_PACKAGE_QUAGGA
+	depends on FREETZ_PACKAGE_QUAGGA
 	default n
 
-config DS_PACKAGE_QUAGGA_RIPNGD
+config FREETZ_PACKAGE_QUAGGA_RIPNGD
 # This depends on IPv6 support in uclibc.
 # Adapt this lines when we can 'select' something.
 #        bool "ripngd"
 	bool
-	depends on DS_PACKAGE_QUAGGA
+	depends on FREETZ_PACKAGE_QUAGGA
 	default n
 
-config DS_PACKAGE_QUAGGA_OSPFD
+config FREETZ_PACKAGE_QUAGGA_OSPFD
         bool "ospfd"
-	depends on DS_PACKAGE_QUAGGA
+	depends on FREETZ_PACKAGE_QUAGGA
 	default n
 
-config DS_PACKAGE_QUAGGA_OSPF6D
+config FREETZ_PACKAGE_QUAGGA_OSPF6D
 # This depends on IPv6. See above.
 #        bool "ospf6d"
 	bool
-	depends on DS_PACKAGE_QUAGGA
+	depends on FREETZ_PACKAGE_QUAGGA
 	default n
 
-config DS_PACKAGE_QUAGGA_ISISD
+config FREETZ_PACKAGE_QUAGGA_ISISD
         bool "isisd"
-	depends on DS_PACKAGE_QUAGGA
+	depends on FREETZ_PACKAGE_QUAGGA
 	default n

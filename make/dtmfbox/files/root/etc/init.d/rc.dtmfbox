@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DSMOD="1"
+FREETZ="1"
 DAEMON="dtmfbox"
 WWW_PREFIX="http://fritz.v3v.de/dtmfbox/dtmfbox-0.4.0_1-dl/"
 WEBSERVER_PORT=6767
@@ -11,7 +11,7 @@ else
   NO_DTMFBOX_PATH="0"
 fi
 
-if [ "$DSMOD" = "1" ]; then
+if [ "$FREETZ" = "1" ]; then
   export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
   export LD_LIBRARY_PATH=/mod/lib
   DTMFBOX_DEFAULT="/etc/default.dtmfbox/"
@@ -30,7 +30,7 @@ fi
 case "$1" in
 
 	""|load|start|restart|stop|log|foreground|install|start_httpd|stop_httpd)
-    if [ "$DSMOD" = "1" ]; then
+    if [ "$FREETZ" = "1" ]; then
       if [ ! -r "$DTMFBOX_CFG" ]; then
          echo "Error [$DAEMON]: not configured" 1>&2
          exit 1
@@ -191,7 +191,7 @@ start() {
     chmod +x $DTMFBOX_PATH/dtmfbox.cfg
     cd $DTMFBOX_PATH
     
-	if [ "$DSMOD" = "0" ];
+	if [ "$FREETZ" = "0" ];
     then
       DAEMON="./$DAEMON"    
     fi
@@ -272,7 +272,7 @@ idle() {
 
 case "$1" in
 	""|load)
-        if [ "$DSMOD" = "1" ]; 
+        if [ "$FREETZ" = "1" ]; 
         then  
   		  if type modreg > /dev/null; 
           then		
@@ -310,7 +310,7 @@ case "$1" in
 		;;
   	  unload)
           stop
-          if [ "$DSMOD" = "1" ]; 
+          if [ "$FREETZ" = "1" ]; 
           then 
  	 	   if [ "$DESIGN" = "MOD" ]; 
 		   then
@@ -329,45 +329,45 @@ case "$1" in
 		  fi
 		;;
  	install)
-        if [ "$DSMOD" = "0" ]; then 
+        if [ "$FREETZ" = "0" ]; then 
           install
         fi
         ;;
     start_httpd)
-        if [ "$DSMOD" = "0" ]; then 
+        if [ "$FREETZ" = "0" ]; then 
   	      if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
           start_httpd
         fi
         ;;
     stop_httpd)
-        if [ "$DSMOD" = "0" ]; then 
+        if [ "$FREETZ" = "0" ]; then 
 	      if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
           stop_httpd
         fi
         ;;
 	start)
-        if [ "$DSMOD" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
+        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
 	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
         idle
 		start
 		;;
 	stop)
-        if [ "$DSMOD" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
+        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
 	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
 		stop
         ;;
     log)
-        if [ "$DSMOD" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
+        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
 	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
         start "log"
 		;;
     foreground)
-        if [ "$DSMOD" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
+        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
 	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
         start "foreground"
 		;;
 	restart)
-        if [ "$DSMOD" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
+        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
 	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
 		stop
 		start
@@ -380,7 +380,7 @@ case "$1" in
 		fi
 		;;
 	*)
-    if [ "$DSMOD" = "0" ]; then 
+    if [ "$FREETZ" = "0" ]; then 
       echo "usage: $0 [load|unload|start|stop|restart|status|log|foreground|install|start_httpd|stop_httpd]" 1>&2		 
     else
       echo "usage: $0 [load|unload|start|stop|restart|status|log|foreground]" 1>&2		 

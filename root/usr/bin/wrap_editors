@@ -6,7 +6,7 @@
 #
 # Generic editor wrapper script for "special" files in
 #   - /var/flash (Fritz!Box config files in character devices)
-#   - /var/tmp/flash and /var/mod/etc/conf (DS-Mod config files)
+#   - /var/tmp/flash and /var/mod/etc/conf (Freetz config files)
 #
 # This script replaces good old nvi/mvi as well as nmcedit and should work as
 # a replacement for any other n*/m* script as long as you create symbolic
@@ -18,7 +18,7 @@
 # It might be a good idea to stick to the old n*/m* naming scheme for the
 # symbolic links you create, but it is not technically necessary, because this
 # script uses the path of the file to be edited to decide whether is should
-# work in "/var/flash mode" or in "DS-Mod mode". The only important thing is
+# work in "/var/flash mode" or in "Freetz mode". The only important thing is
 # that the script discards the first character of the symbolic link name, i.e.
 # if the link is named "xfoo", the script tries to call an editor named "foo".
 # The target editor must be in the current PATH, so the script can find it
@@ -96,7 +96,7 @@ if [ ! -w "$1" ] ; then
 	exit 1
 fi
 
-# Determine editing mode (TFFS file or DS-Mod config)
+# Determine editing mode (TFFS file or Freetz config)
 local dir="$(dirname "$1")"
 local base="$(basename "$1")"
 case "$(realpath "$dir")/" in

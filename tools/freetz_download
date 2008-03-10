@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Download DS-Mod packages from a randomly chosen mirror server. There are
+# Download Freetz packages from a randomly chosen mirror server. There are
 # predefined servers in 'make menuconfig' which can be edited, but there is
 # also an empty input field for a user-defined server. Additionally, another
 # download source maybe specified on the command line as $2. $1 is the name
@@ -9,10 +9,10 @@
 # This script is designed to be called by makefile includes (*.mk), but can
 # also be called directly. It expects to find a file with necessary variables
 # at a relative location '../.config' to this script. The variables are:
-#   - DS_MOD_DL_NUM_SITES  (numeric value, e.g. 3)
-#   - DS_MOD_DL_SITE_1     (URL, e.g. http://dsmod.3dfxatwork.de)
+#   - FREETZ_MOD_DL_NUM_SITES  (numeric value, e.g. 3)
+#   - FREETZ_MOD_DL_SITE_1     (URL, e.g. http://dsmod.3dfxatwork.de)
 #   - ...
-#   - DS_MOD_DL_SITE_n     (n = DS_MOD_DL_NUM_SITES)
+#   - FREETZ_MOD_DL_SITE_n     (n = FREETZ_MOD_DL_NUM_SITES)
 
 helpmsg()
 {
@@ -89,9 +89,9 @@ if [ "$DEBUG" == "1" ]; then
 fi
 
 # Fill array 'sites' with download server URLs (exclude empty strings)
-for (( i=1 ; $i<=$DS_MOD_DL_NUM_SITES ; i++ )); do
+for (( i=1 ; $i<=$FREETZ_MOD_DL_NUM_SITES ; i++ )); do
   # Trim whitespace from download site name
-  eval "dl_site=\$DS_MOD_DL_SITE_$i"
+  eval "dl_site=\$FREETZ_MOD_DL_SITE_$i"
   read dl_site <<< "$dl_site";
   if [ "$dl_site" != "" ]; then
     (( num_sites++ ))

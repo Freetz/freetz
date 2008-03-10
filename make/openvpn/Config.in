@@ -1,13 +1,13 @@
-config DS_PACKAGE_OPENVPN
+config FREETZ_PACKAGE_OPENVPN
 	bool "OpenVPN 2.1_rc7"
-	select DS_LIB_libssl if ! DS_PACKAGE_OPENVPN_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_OPENVPN_STATIC
 	default n
 	help
 		VPN Server
 
-config DS_PACKAGE_OPENVPN_STATIC
+config FREETZ_PACKAGE_OPENVPN_STATIC
 	bool "Statically link libraries"
-	depends on DS_PACKAGE_OPENVPN
+	depends on FREETZ_PACKAGE_OPENVPN
 	default n
 	help
 		OpenVPN needs the following shared libraries which can be linked in statically
@@ -21,25 +21,25 @@ config DS_PACKAGE_OPENVPN_STATIC
 		- ld-linux.so.2
 		(- liblzo2.so)
 
-config DS_PACKAGE_OPENVPN_WITH_LZO
+config FREETZ_PACKAGE_OPENVPN_WITH_LZO
 	bool "With lzo Compression"
-	depends on DS_PACKAGE_OPENVPN
-	select DS_LIB_liblzo2 if ! DS_PACKAGE_OPENVPN_STATIC
+	depends on FREETZ_PACKAGE_OPENVPN
+	select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_OPENVPN_STATIC
 	default y
 	help
 		LZO2 Compression for VPN Traffic
 
-config DS_PACKAGE_OPENVPN_WITH_MGMNT
+config FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
 	bool "Enable Management Console"
-	depends on DS_PACKAGE_OPENVPN
+	depends on FREETZ_PACKAGE_OPENVPN
 	default n
 	help
 		Enables OpenVPN's Management Console for administrative Tasks.
 		This feature is not configurable via Web-UI.
 
-config DS_PACKAGE_OPENVPN_ENABLE_SMALL
+config FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
 	bool "Optimize for size"
-	depends on DS_PACKAGE_OPENVPN
+	depends on FREETZ_PACKAGE_OPENVPN
 	default y
 	help
 		Enables binary optimiziation for size.

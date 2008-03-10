@@ -26,13 +26,13 @@ GCC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gcc
 GCC_BUILD_DIR1:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-initial
 GCC_BUILD_DIR2:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-final
 
-ifeq ($(strip $(DS_TARGET_GXX)),y)
+ifeq ($(strip $(FREETZ_TARGET_GXX)),y)
 GCC_TARGET_LANGUAGES:=c,c++
 else
 GCC_TARGET_LANGUAGES:=c
 endif
 
-ifeq ($(strip $(DS_STATIC_TOOLCHAIN)),y)
+ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 GCC_EXTRA_MAKE_OPTIONS:="LDFLAGS=-static"
 else
 GCC_EXTRA_MAKE_OPTIONS:=

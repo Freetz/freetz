@@ -50,7 +50,7 @@ TEMP_CURSCRIPT="./tmp/$SRC_CON.curscript"
 ##################################################################################
 read_main_cfg() {
 
-  # dsmod ..
+  # freetz ..
   if [ -f /mod/etc/conf/dtmfbox.cfg ]; 
   then
     . /mod/etc/conf/dtmfbox.cfg
@@ -62,7 +62,7 @@ read_main_cfg() {
     if [ -f "$DTMFBOX_PATH/script/dtmfbox_userscript.sh" ]; then 
       USERSCRIPT="$DTMFBOX_PATH/script/dtmfbox_userscript.sh"
     fi
-    DSMOD="1"
+    FREETZ="1"
   fi
 
   # .. standalone
@@ -80,7 +80,7 @@ read_main_cfg() {
     else
       DTMFBOX_BOOT="/var/flash/debug.cfg"
     fi
-    DSMOD="0"
+    FREETZ="0"
   fi
 }
 
@@ -311,7 +311,7 @@ display_text() {
 }
 
 ##################################################################################
-## save settings (dsmod or usb), "$1" = key, "$2" = value
+## save settings (freetz or usb), "$1" = key, "$2" = value
 ##################################################################################
 save_settings() {
 
@@ -319,7 +319,7 @@ save_settings() {
    DTMFBOX_SETTINGS_VAL="$2"
 
    # save usb/standalone
-   if [ "$DSMOD" = "0" ];
+   if [ "$FREETZ" = "0" ];
    then
      cat "$DTMFBOX_CFG"  | sed "s/export $DTMFBOX_SETTINGS_KEY='\(.*\)'/export $DTMFBOX_SETTINGS_KEY='$DTMFBOX_SETTINGS_VAL'/g" > $DTMFBOX_PATH/tmp/cfg1.tmp
      cat "$DTMFBOX_BOOT" | sed "s/export $DTMFBOX_SETTINGS_KEY='\(.*\)'/export $DTMFBOX_SETTINGS_KEY='$DTMFBOX_SETTINGS_VAL'/g" > $DTMFBOX_PATH/tmp/cfg2.tmp
@@ -332,7 +332,7 @@ save_settings() {
        rm $DTMFBOX_PATH/tmp/cfg2.tmp 2>/dev/null
      fi
 
-   # save dsmod
+   # save freetz 
    else
 
      modconf set dtmfbox "$DTMFBOX_SETTINGS_KEY=$DTMFBOX_SETTINGS_VAL"

@@ -1,6 +1,6 @@
 # This has to be done in an extra file because gcc.mk is not included
 # when download-toolchain is active
-ifneq ($(strip $(DS_BUILD_TOOLCHAIN)),y)
+ifneq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 	DEPEND:=$(TOOLCHAIN_DIR)/target/.installed
 else
 	DEPEND:=$(GCC_BUILD_DIR2)/.installed

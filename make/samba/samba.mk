@@ -9,7 +9,7 @@ $(PKG)_NMBD_BINARY:=$($(PKG)_DIR)/source/bin/nmbd
 $(PKG)_NMBD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/nmbd
 $(PKG)_STARTLEVEL=40
 
-#$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_NMBD
+#$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NMBD
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -35,7 +35,7 @@ $($(PKG)_NMBD_TARGET_BINARY): $($(PKG)_NMBD_BINARY)
 
 $(pkg):
 
-ifeq ($(strip $(DS_PACKAGE_NMBD)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_NMBD)),y)
 $(pkg)-precompiled: $($(PKG)_SMBP_TARGET_BINARY) $($(PKG)_SMBD_TARGET_BINARY) $($(PKG)_NMBD_TARGET_BINARY)
 else
 $(pkg)-precompiled: $($(PKG)_SMBP_TARGET_BINARY) $($(PKG)_SMBD_TARGET_BINARY) $(pkg)-clean-nmbd

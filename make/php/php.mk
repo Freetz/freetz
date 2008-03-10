@@ -12,8 +12,8 @@ PHP_PKG_VERSION:=$(APACHE_PKG_VERSION)
 PHP_PKG_SOURCE:=$(APACHE_PKG_SOURCE)
 PHP_PKG_SITE:=$(APACHE_PKG_SITE)
 
-PHP_DS_CONFIG_FILE:=$(PHP_MAKE_DIR)/.ds_config
-PHP_DS_CONFIG_TEMP:=$(PHP_MAKE_DIR)/.ds_config.temp
+PHP_FREETZ_CONFIG_FILE:=$(PHP_MAKE_DIR)/.freetz_config
+PHP_FREETZ_CONFIG_TEMP:=$(PHP_MAKE_DIR)/.freetz_config.temp
 
 $(DL_DIR)/$(PHP_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(PHP_SITE)
@@ -21,22 +21,22 @@ $(DL_DIR)/$(PHP_SOURCE): | $(DL_DIR)
 #$(DL_DIR)/$(PHP_PKG_SOURCE):
 #	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(PHP_PKG_SOURCE) $(PHP_PKG_SITE)
 
-$(PHP_DS_CONFIG_FILE): $(TOPDIR)/.config
-	@echo "DS_PHP_STATIC=$(if $(DS_PHP_STATIC),y,n)" > $(PHP_DS_CONFIG_TEMP)
-	@diff -q $(PHP_DS_CONFIG_TEMP) $(PHP_DS_CONFIG_FILE) || \
-		cp $(PHP_DS_CONFIG_TEMP) $(PHP_DS_CONFIG_FILE)
-	@rm -f $(PHP_DS_CONFIG_TEMP)
+$(PHP_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "FREETZ_PHP_STATIC=$(if $(FREETZ_PHP_STATIC),y,n)" > $(PHP_FREETZ_CONFIG_TEMP)
+	@diff -q $(PHP_FREETZ_CONFIG_TEMP) $(PHP_FREETZ_CONFIG_FILE) || \
+		cp $(PHP_FREETZ_CONFIG_TEMP) $(PHP_FREETZ_CONFIG_FILE)
+	@rm -f $(PHP_FREETZ_CONFIG_TEMP)
 
-# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(PHP_DIR)/.unpacked: $(DL_DIR)/$(PHP_SOURCE) $(PHP_DS_CONFIG_FILE)
+$(PHP_DIR)/.unpacked: $(DL_DIR)/$(PHP_SOURCE) $(PHP_FREETZ_CONFIG_FILE)
 	rm -rf $(PHP_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(PHP_SOURCE)
 	for i in $(PHP_MAKE_DIR)/patches/*.all.patch; do \
 		$(PATCH_TOOL) $(PHP_DIR) $$i; \
 	done
-ifeq ($(strip $(DS_PHP_STATIC)),y)
+ifeq ($(strip $(FREETZ_PHP_STATIC)),y)
 	for i in $(PHP_MAKE_DIR)/patches/*.static.patch; do \
 		$(PATCH_TOOL) $(PHP_DIR) $$i; \
 	done
@@ -109,7 +109,7 @@ php-source: $(PHP_DIR)/.unpacked $(PACKAGES_DIR)/.php-$(PHP_VERSION)
 php-clean:
 	-$(MAKE) -C $(PHP_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(PHP_PKG_SOURCE)
-	rm -f $(PHP_DS_CONFIG_FILE)
+	rm -f $(PHP_FREETZ_CONFIG_FILE)
 
 php-dirclean:
 	rm -rf $(PHP_DIR)
@@ -117,13 +117,13 @@ php-dirclean:
 	rm -rf $(PACKAGES_DIR)/apache-$(APACHE_VERSION)
 	rm -f $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
 	rm -f $(PACKAGES_DIR)/.php-$(PHP_VERSION)
-	rm -f $(PHP_DS_CONFIG_FILE)
+	rm -f $(PHP_FREETZ_CONFIG_FILE)
 
 php-uninstall:
 	rm -f $(PHP_TARGET_BINARY)
 
 php-list:
-#ifeq ($(strip $(DS_PACKAGE_PHP)),y)
+#ifeq ($(strip $(FREETZ_PACKAGE_PHP)),y)
 #	@echo "S99php-$(PHP_VERSION)" >> .static
 #else
 #	@echo "S99php-$(PHP_VERSION)" >> .dynamic

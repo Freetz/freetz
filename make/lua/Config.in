@@ -1,4 +1,4 @@
-config DS_PACKAGE_LUA
+config FREETZ_PACKAGE_LUA
 	bool "Lua 5.1.3 (binary only)"
 	default n
 	help
@@ -36,10 +36,10 @@ config DS_PACKAGE_LUA
 	    result is a fast language engine with small footprint, making it ideal
 	    in embedded systems too. 
 
-config DS_PACKAGE_LUA_READLINE
+config FREETZ_PACKAGE_LUA_READLINE
 	bool "Build with readline support"
-	depends on DS_PACKAGE_LUA
+	depends on FREETZ_PACKAGE_LUA
 	default y
-	select DS_LIB_libreadline
-	select DS_LIB_libhistory
-	select DS_LIB_libncurses
+	select FREETZ_LIB_libreadline
+	select FREETZ_LIB_libhistory
+	select FREETZ_LIB_libncurses

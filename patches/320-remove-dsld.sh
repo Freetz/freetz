@@ -6,7 +6,7 @@ rm_files()
 	done
 }
 
-[ "$DS_REMOVE_DSLD" == "y" ] || return 0
+[ "$FREETZ_REMOVE_DSLD" == "y" ] || return 0
 
 echo1 "removing dsld files"
 rm_files "$(find ${FILESYSTEM_MOD_DIR}/sbin -name '*dsld*')"

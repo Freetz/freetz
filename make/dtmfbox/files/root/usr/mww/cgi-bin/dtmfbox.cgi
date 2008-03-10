@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------------------------------------------------
 . ./dtmfbox_cfg.cgi
 
-# dsmod or mini_httpd ?
-if [ "$DSMOD" = "0" ];
+# freetz or mini_httpd ?
+if [ "$FREETZ" = "0" ];
 then
 
     # FULLSCREEN
@@ -41,7 +41,7 @@ fi
 
 # first install? set default path
 if [ "$DTMFBOX_PATH" = "" ]; then
-  if [ "$DSMOD" = "0" ];
+  if [ "$FREETZ" = "0" ];
   then
     export DTMFBOX_PATH="`pwd | sed 's/\/httpd\/cgi-bin//g'`"
   else
@@ -138,7 +138,7 @@ if [ "${QUERY_STRING}" != "" ]; then
       # Daemon starten
 	  if [ "$START" = "daemon" ]; 
 	  then
-        if [ "$DSMOD" = "1" ];
+        if [ "$FREETZ" = "1" ];
         then
 	      /etc/init.d/rc.dtmfbox restart > /dev/null
         else
@@ -152,7 +152,7 @@ if [ "${QUERY_STRING}" != "" ]; then
 	    if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
 	    rm $DTMFBOX_PATH/dtmfbox.log 2>/dev/null
 
-        if [ "$DSMOD" = "1" ];
+        if [ "$FREETZ" = "1" ];
         then
 		  /etc/init.d/rc.dtmfbox stop
  	      /etc/init.d/rc.dtmfbox log > /dev/null
@@ -165,7 +165,7 @@ if [ "${QUERY_STRING}" != "" ]; then
       # Daemon stoppen
 	  if [ "$START" = "stop" ]; 
 	  then
-        if [ "$DSMOD" = "1" ]; 
+        if [ "$FREETZ" = "1" ]; 
         then
    	      /etc/init.d/rc.dtmfbox stop > /dev/null
         else
@@ -1414,7 +1414,7 @@ done
 # view log?
 if [ -f "$DTMFBOX_PATH/dtmfbox.log" ]; then
 
-  if [ "$DSMOD" = "0" ]; then
+  if [ "$FREETZ" = "0" ]; then
     VIEWLOG_CMD="dtmfbox_cmd.cgi?script=cat%20$DTMFBOX_PATH/dtmfbox.log"
   else
     VIEWLOG_CMD="dtmfbox.cgi?pkg=dtmfbox&command=true&script=cat%20$DTMFBOX_PATH/dtmfbox.log&close=0"
@@ -1628,7 +1628,7 @@ do
       fi    
 
       if [ "$IS_FTP" != "FTP" ]; then
-        if [ "$DSMOD" = "0" ]; then
+        if [ "$FREETZ" = "0" ]; then
           DOWNLOAD_CMD="dtmfbox_cmd.cgi?script=cat%20$file&binary=true&download_name=$filename"
         else
           DOWNLOAD_CMD="rudi_shellcmd.cgi?display_mode=binary&script=cat%20$file&binary=true&download_name=$filename"

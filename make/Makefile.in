@@ -1,5 +1,5 @@
 MAKE1=make
-MAKE=make -j$(DS_JLEVEL)
+MAKE=make -j$(FREETZ_JLEVEL)
 HOSTCC:=gcc
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
@@ -19,13 +19,13 @@ GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
 REAL_GNU_TARGET_NAME:=mipsel-linux-uclibc
 GNU_TARGET_NAME:=mipsel-linux
 
-ifeq ($(strip $(DS_TARGET_NLS)),y)
+ifeq ($(strip $(FREETZ_TARGET_NLS)),y)
 DISABLE_NLS:=
 else
 DISABLE_NLS:=--disable-nls
 endif
 
-ifeq ($(strip $(DS_TARGET_LFS)),y)
+ifeq ($(strip $(FREETZ_TARGET_LFS)),y)
 DISABLE_LARGEFILE:=
 CFLAGS_LARGEFILE=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 else
@@ -33,17 +33,17 @@ DISABLE_LARGEFILE:=--disable-largefile
 CFLAGS_LARGEFILE=-D_FILE_OFFSET_BITS=32
 endif
 
-TARGET_CROSS:=$(strip $(subst ",, $(DS_TARGET_CROSS)))
-TARGET_MAKE_PATH:=$(strip $(subst ",, $(DS_TARGET_MAKE_PATH)))
-KERNEL_CROSS:=$(strip $(subst ",, $(DS_KERNEL_CROSS)))
-KERNEL_MAKE_PATH:=$(strip $(subst ",, $(DS_KERNEL_MAKE_PATH)))
-TARGET_CFLAGS:=$(strip $(subst ",, $(DS_TARGET_CFLAGS))) $(CFLAGS_LARGEFILE)
+TARGET_CROSS:=$(strip $(subst ",, $(FREETZ_TARGET_CROSS)))
+TARGET_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_TARGET_MAKE_PATH)))
+KERNEL_CROSS:=$(strip $(subst ",, $(FREETZ_KERNEL_CROSS)))
+KERNEL_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_KERNEL_MAKE_PATH)))
+TARGET_CFLAGS:=$(strip $(subst ",, $(FREETZ_TARGET_CFLAGS))) $(CFLAGS_LARGEFILE)
 
 ifneq ($(patsubst /%,/,$(TARGET_MAKE_PATH)),/)
-TARGET_MAKE_PATH:=$(DSMOD_BASE_DIR)/$(TARGET_MAKE_PATH)
+TARGET_MAKE_PATH:=$(FREETZ_BASE_DIR)/$(TARGET_MAKE_PATH)
 endif
 ifneq ($(patsubst /%,/,$(KERNEL_MAKE_PATH)),/)
-KERNEL_MAKE_PATH:=$(DSMOD_BASE_DIR)/$(KERNEL_MAKE_PATH)
+KERNEL_MAKE_PATH:=$(FREETZ_BASE_DIR)/$(KERNEL_MAKE_PATH)
 endif
 
 TARGET_CC:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc
@@ -87,7 +87,7 @@ TARGET_CONFIGURE_ENV += LDFLAGS=""
 
 # Common options for configure
 TARGET_CONFIGURE_OPTIONS:=
-TARGET_CONFIGURE_OPTIONS += --cache-file=$(DSMOD_BASE_DIR)/$(MAKE_DIR)/config.cache
+TARGET_CONFIGURE_OPTIONS += --cache-file=$(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache
 TARGET_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
 TARGET_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
 TARGET_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
@@ -109,12 +109,12 @@ TARGET_CONFIGURE_OPTIONS += --with-gnu-ld
 TARGET_CONFIGURE_OPTIONS += $(DISABLE_NLS)
 TARGET_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
 
-DL_SITE:=$(strip $(subst ",, $(DS_DL_SITE)))
-DL_SOURCE:=$(strip $(subst ",, $(DS_DL_SOURCE)))
+DL_SITE:=$(strip $(subst ",, $(FREETZ_DL_SITE)))
+DL_SOURCE:=$(strip $(subst ",, $(FREETZ_DL_SOURCE)))
 
-ifneq ($(strip $(DS_DL_SOURCE2)),)
-DL_SITE2:=$(strip $(subst ",, $(DS_DL_SITE2)))
-DL_SOURCE2:=$(strip $(subst ",, $(DS_DL_SOURCE2)))
+ifneq ($(strip $(FREETZ_DL_SOURCE2)),)
+DL_SITE2:=$(strip $(subst ",, $(FREETZ_DL_SITE2)))
+DL_SOURCE2:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2)))
 endif
 
 
@@ -346,19 +346,19 @@ endef
 
 ## only used for BIN packages.
 define PKG_UNPACKED__INT
-$(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config
-$(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config.temp
+$(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.freetz_config
+$(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.freetz_config.temp
 endef
 
 ## check for changed suboptions
 # should only be called if $(PKG)_CONFIG_SUBOPTS is defined
 define PKG_UNPACKED_CHECK_SUBOPTS__INT
-$($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
-	@($(foreach OPT,$($(PKG)_CONFIG_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_DS_CONFIG_TEMP)
-	@diff -q $($(PKG)_DS_CONFIG_TEMP) $($(PKG)_DS_CONFIG_FILE) || \
-		cp $($(PKG)_DS_CONFIG_TEMP) $($(PKG)_DS_CONFIG_FILE)
-	@$(RM) $($(PKG)_DS_CONFIG_TEMP)
-$($(PKG)_DIR)/.unpacked: $($(PKG)_DS_CONFIG_FILE)
+$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
+	@($(foreach OPT,$($(PKG)_CONFIG_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_TEMP)
+	@diff -q $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE) || \
+		cp $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE)
+	@$(RM) $($(PKG)_FREETZ_CONFIG_TEMP)
+$($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
 
 endef
 
@@ -381,7 +381,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	( cd $($(PKG)_DIR); \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
 		$($(PKG)_CONFIGURE_PRE_CMDS) \
-		source $(DSMOD_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
+		source $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
 		$(TARGET_CONFIGURE_ENV) \
 		$($(PKG)_CONFIGURE_ENV) \
 		./configure \
@@ -405,7 +405,7 @@ PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
 ## Add package to static or dynamic list
 define PKG_LIST__INT
 $(pkg)-list:
-ifeq ($(strip $(DS_PACKAGE_$(PKG))),y)
+ifeq ($(strip $(FREETZ_PACKAGE_$(PKG))),y)
 	@echo "S$(strip $($(PKG)_STARTLEVEL))$(pkg)-$($(PKG)_VERSION)" >> .static
 else
 	@echo "S$(strip $($(PKG)_STARTLEVEL))$(pkg)-$($(PKG)_VERSION)" >> .dynamic

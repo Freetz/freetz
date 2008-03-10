@@ -10,8 +10,8 @@ $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
 
-$(PKG)_DS_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.ds_config
-$(PKG)_DS_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.ds_config.temp
+$(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.freetz_config
+$(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.freetz_config.temp
 
 $(PKG)_DEPENDS_ON := kernel
 
@@ -23,23 +23,23 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-lib
 $(PKG)_CONFIGURE_OPTIONS += --enable-util
 $(PKG)_CONFIGURE_OPTIONS += --disable-example
 $(PKG)_CONFIGURE_OPTIONS += --disable-auto-modprobe
-$(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(DSMOD_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
+$(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-mtab
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
 
 
 $(PKG_SOURCE_DOWNLOAD)
 
-$($(PKG)_DS_CONFIG_FILE): $(TOPDIR)/.config
-	@echo "DS_KERNEL_LAYOUT=$(DS_KERNEL_LAYOUT)" > $(FUSE_DS_CONFIG_TEMP)
-	@diff -q $(FUSE_DS_CONFIG_TEMP) $(FUSE_DS_CONFIG_FILE) || \
-		cp $(FUSE_DS_CONFIG_TEMP) $(FUSE_DS_CONFIG_FILE)
-	@rm -f $(FUSE_DS_CONFIG_TEMP)
+$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
+	@echo "FREETZ_KERNEL_LAYOUT=$(FREETZ_KERNEL_LAYOUT)" > $(FUSE_FREETZ_CONFIG_TEMP)
+	@diff -q $(FUSE_FREETZ_CONFIG_TEMP) $(FUSE_FREETZ_CONFIG_FILE) || \
+		cp $(FUSE_FREETZ_CONFIG_TEMP) $(FUSE_FREETZ_CONFIG_FILE)
+	@rm -f $(FUSE_FREETZ_CONFIG_TEMP)
 
-# Make sure that a perfectly clean build is performed whenever DS-Mod package
+# Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $($(PKG)_DS_CONFIG_FILE)
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $($(PKG)_FREETZ_CONFIG_FILE)
 	rm -rf $(FUSE_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FUSE_SOURCE)
 	for i in $(FUSE_MAKE_DIR)/patches/*.patch; do \

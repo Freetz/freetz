@@ -13,7 +13,7 @@ $(PKG)_TARGET_CONF:=$($(PKG)_DEST_DIR)/etc/ltrace.conf
 #     tar cvjf ltrace-0.5_77.tar.bz2 ltrace-0.5_77/
 #   - Because we do not want the build process to depend on the availability
 #     of a Subversion client (svn checkout), we provide the ltrace source
-#     package as a download on DS-Mod mirrors and use DL_TOOL to download it.
+#     package as a download on Freetz mirrors and use DL_TOOL to download it.
 
 $(PKG)_DEPENDS_ON := libelf	
 

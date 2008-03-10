@@ -26,7 +26,7 @@ callmonitor-dirclean:
 	rm -f $(PACKAGES_DIR)/.callmonitor-$(CALLMONITOR_VERSION)
 
 callmonitor-list:
-ifeq ($(strip $(DS_PACKAGE_CALLMONITOR)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_CALLMONITOR)),y)
 	@echo "S30callmonitor-$(CALLMONITOR_VERSION)" >> .static
 else
 	@echo "S30callmonitor-$(CALLMONITOR_VERSION)" >> .dynamic

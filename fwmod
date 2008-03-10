@@ -77,7 +77,7 @@ L1='  '
 L2='    '
 
 # Default values
-DS_VERBOSITY_LEVEL=0
+FREETZ_VERBOSITY_LEVEL=0
 DOT_CONFIG="$(dirname "$0")/.config"
 CMDLINE_OPTS="umpad:i:"
 
@@ -190,7 +190,7 @@ UNSQUASHFS_TOOL="unsquashfs3-lzma"
 
 MKSQUASHFS_OPTIONS="-le -noappend -all-root -info"
 
-if [ "$DS_REPLACE_KERNEL" == "y" ] || [ "$DS_TYPE_FON_WLAN_7270" ]; then
+if [ "$FREETZ_REPLACE_KERNEL" == "y" ] || [ "$FREETZ_TYPE_FON_WLAN_7270" ]; then
 	MKSQUASHFS_TOOL="mksquashfs3-lzma"
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 else
@@ -224,15 +224,15 @@ DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 
 echo0()
 {
-	[ "$DS_VERBOSITY_LEVEL" -ge 0 ] && echo -e "${L0}$1"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echo -e "${L0}$1"
 }
 echo1()
 {
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo -e "${L1}$1"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo -e "${L1}$1"
 }
 echo2()
 {
-	[ "$DS_VERBOSITY_LEVEL" -ge 2 ] && echo -e "${L2}$1"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echo -e "${L2}$1"
 }
 
 # Dot-include 'modpatch' shell function
@@ -241,7 +241,7 @@ echo2()
 modunsqfs()
 {
 	local STATUS
-	if [ "$DS_VERBOSITY_LEVEL" -ge 1 ]; then
+	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
 		"$FAKEROOT" "$UNSQUASHFS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L1}/g"
 		STATUS=${PIPESTATUS[0]}
 	else
@@ -290,7 +290,7 @@ modlang()
 	# modlang <conffile> <dir>
 
 	avail="$(modlangconf "languages" "$1")"
-	default="$DS_LANG_STRING $(modlangconf "default" "$1") en de $avail"
+	default="$FREETZ_LANG_STRING $(modlangconf "default" "$1") en de $avail"
 	lang=""
 
 	for i in $default; do
@@ -306,8 +306,8 @@ modlang()
 		error 1 "no language available"
 	fi
 
-	[ "$lang" == "$DS_LANG_STRING" ] || \
-		echo "NOTICE: language $DS_LANG_STRING not available; $lang chosen." 1>&2
+	[ "$lang" == "$FREETZ_LANG_STRING" ] || \
+		echo "NOTICE: language $FREETZ_LANG_STRING not available; $lang chosen." 1>&2
 
 	for i in $(modlangconf "files" "$1"); do
 		if [ -e "${2}/${i}" ]; then
@@ -435,13 +435,13 @@ FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
 VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
 
 HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www"
-if [ "$DS_TYPE_LANG_EN" == "y" ]; then
+if [ "$FREETZ_TYPE_LANG_EN" == "y" ]; then
 	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/en"
 else
 	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/all"
 fi
 
-MODULES_DIR="${FILESYSTEM_MOD_DIR}/lib/modules/${DS_KERNEL_VERSION}"
+MODULES_DIR="${FILESYSTEM_MOD_DIR}/lib/modules/${FREETZ_KERNEL_VERSION}"
 
 if [ "$DO_MOD" -gt 0 ]; then
 	echo -e "\033[1mSTEP 2: MODIFY\033[0m"
@@ -460,15 +460,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	echo "applying patches"
 
-	echo1 "applying patches (${DS_TYPE_STRING}-${DS_TYPE_LANG_STRING})"
+	echo1 "applying patches (${FREETZ_TYPE_STRING}-${FREETZ_TYPE_LANG_STRING})"
 
 	# Apply patches
-	if [ ! -d "${PATCHES_DIR}/${DS_TYPE_STRING}" ]; then
-		error 1 "missing ${PATCHES_DIR}/${DS_TYPE_STRING}"
+	if [ ! -d "${PATCHES_DIR}/${FREETZ_TYPE_STRING}" ]; then
+		error 1 "missing ${PATCHES_DIR}/${FREETZ_TYPE_STRING}"
 	fi
 	
 	# Execute version specific patch scripts 
-	for i in "${PATCHES_DIR}/${DS_TYPE_STRING}/"*.sh; do
+	for i in "${PATCHES_DIR}/${FREETZ_TYPE_STRING}/"*.sh; do
 		[ -r "$i" ] || continue
 		echo2 "applying patch file $i"
 		. $i
@@ -476,8 +476,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Apply (general, version specific, language specific) patches
 	for i in "${PATCHES_DIR}/"*.patch \
-		"${PATCHES_DIR}/${DS_TYPE_STRING}/"*.patch \
-		"${PATCHES_DIR}/${DS_TYPE_STRING}/${DS_TYPE_LANG_STRING}/"*.patch
+		"${PATCHES_DIR}/${FREETZ_TYPE_STRING}/"*.patch \
+		"${PATCHES_DIR}/${FREETZ_TYPE_STRING}/${FREETZ_TYPE_LANG_STRING}/"*.patch
 	do
 		modpatch "$FILESYSTEM_MOD_DIR" "$i"
 	done
@@ -494,7 +494,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "cannot determine version"
 	fi
 
-	if [ "$DS_DEVELOPER_VERSION_STRING" == "y" ]; then
+	if [ "$FREETZ_DEVELOPER_VERSION_STRING" == "y" ]; then
 		if SVN_VERSION="$(svnversion | tr ":" "_")"; then
 			[ "${SVN_VERSION:0:6}" == "export" ] && SVN_VERSION=""
 			[ "$SVN_VERSION" != "" ] && SVN_VERSION="-$SVN_VERSION"
@@ -504,19 +504,19 @@ if [ "$DO_MOD" -gt 0 ]; then
 	SUBVERSION="$(cat $SUBVERSION_FILE)${SVN_VERSION}"
 	OPTIONS="+busybox"
 
-	[ "$DS_REMOVE_ASSISTANT" == "y" ]		&& OPTIONS="$OPTIONS -assistant"
-	[ "$DS_REMOVE_HELP" == "y" ]			&& OPTIONS="$OPTIONS -help"
-	[ "$DS_REMOVE_CDROM_ISO" == "y" ]		&& OPTIONS="$OPTIONS -cdrom.iso"
-	[ "$DS_PATCH_ATA" == "y" ]				&& OPTIONS="$OPTIONS +ata"
-	[ "$DS_PATCH_ENUM" == "y" ]				&& OPTIONS="$OPTIONS +enum"
-	[ "$DS_PATCH_INTERNATIONAL" == "y" ]	&& OPTIONS="$OPTIONS +international"
-	[ "$DS_PATCH_PUSH" == "y" ]				&& OPTIONS="$OPTIONS +push"
-	[ "$DS_PATCH_WDS" == "y" ]				&& OPTIONS="$OPTIONS +wds"
-	[ "$DS_PATCH_SIGNED" == "y" ]			&& OPTIONS="$OPTIONS +signed"
-	[ "$DS_PATCH_USBSTORAGE" == "y" ]		&& OPTIONS="$OPTIONS +usbstorage"
+	[ "$FREETZ_REMOVE_ASSISTANT" == "y" ]		&& OPTIONS="$OPTIONS -assistant"
+	[ "$FREETZ_REMOVE_HELP" == "y" ]			&& OPTIONS="$OPTIONS -help"
+	[ "$FREETZ_REMOVE_CDROM_ISO" == "y" ]		&& OPTIONS="$OPTIONS -cdrom.iso"
+	[ "$FREETZ_PATCH_ATA" == "y" ]				&& OPTIONS="$OPTIONS +ata"
+	[ "$FREETZ_PATCH_ENUM" == "y" ]				&& OPTIONS="$OPTIONS +enum"
+	[ "$FREETZ_PATCH_INTERNATIONAL" == "y" ]	&& OPTIONS="$OPTIONS +international"
+	[ "$FREETZ_PATCH_PUSH" == "y" ]				&& OPTIONS="$OPTIONS +push"
+	[ "$FREETZ_PATCH_WDS" == "y" ]				&& OPTIONS="$OPTIONS +wds"
+	[ "$FREETZ_PATCH_SIGNED" == "y" ]			&& OPTIONS="$OPTIONS +signed"
+	[ "$FREETZ_PATCH_USBSTORAGE" == "y" ]		&& OPTIONS="$OPTIONS +usbstorage"
 
-	if [ "$DS_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
-		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}"
+	if [ "$FREETZ_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
+		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
 
 		if [ ! -r "$KERNEL_SUBVERSION_FILE" ]; then
 			error 1 "cannot determine kernel version"
@@ -575,7 +575,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	# remove oems
-	[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo -n "${L1}removing oem:"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo -n "${L1}removing oem:"
 	oem_removed=0
 	oem_kept=0
 	oem_list=
@@ -594,8 +594,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	ln -sf /usr/www/cgi-bin/freetz_wol "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_wol"
 	
 	for i in $oems; do
-		if [ "$(eval "echo \"\$DS_BRANDING_${i}\"")" != "y" ]; then
-			[ "$DS_VERBOSITY_LEVEL" -ge 1 ] && echo -n " $i"
+		if [ "$(eval "echo \"\$FREETZ_BRANDING_${i}\"")" != "y" ]; then
+			[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo -n " $i"
 			rm -rf "${FILESYSTEM_MOD_DIR}/usr/www/${i}"
 			rm -rf "${FILESYSTEM_MOD_DIR}/etc/default."*"/${i}"
 			oem_removed=1
@@ -605,18 +605,18 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	done
 
-	if [ "$DS_VERBOSITY_LEVEL" -ge 1 ]; then
+	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
 		[ "$oem_removed" -eq 0 ] && echo -n " none"
 		echo
 	fi
 
-	if [ "$DS_TYPE_SPEEDPORT_W701V_7170" == "y" ] || [ "$DS_TYPE_SPEEDPORT_W900V_7150" == "y" ];then
+	if [ "$FREETZ_TYPE_SPEEDPORT_W701V_7170" == "y" ] || [ "$FREETZ_TYPE_SPEEDPORT_W900V_7150" == "y" ];then
 		oem_list="$oem_list tcom congstar"
 	fi
 	
-	if [ "$DS_TYPE_SPEEDPORT_W501V" == "y" ] || \
-		[ "$DS_TYPE_SPEEDPORT_W701V" == "y" ] || \
-		[ "$DS_TYPE_SPEEDPORT_W900V" == "y" ]
+	if [ "$FREETZ_TYPE_SPEEDPORT_W501V" == "y" ] || \
+		[ "$FREETZ_TYPE_SPEEDPORT_W701V" == "y" ] || \
+		[ "$FREETZ_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
 		oem_list="tcom congstar avm"
 		sed -i -e 's/for i in  tcom.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
@@ -628,7 +628,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "please choose at least one OEM (branding) in menuconfig: AVM, 1&1, Freenet etc."
 	fi
 
-	if [ "$DS_INSTALL_BASE" == "y" ]; then
+	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
 		echo "installing mod base"
 
 		echo1 "copying files"
@@ -677,7 +677,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"
 		ln -s ../var/tmp/onlinechanged "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 
-		if [ "$DS_STRIP_LIBRARIES" != "y" ]; then
+		if [ "$FREETZ_STRIP_LIBRARIES" != "y" ]; then
 		echo1 "installing libs"
 			for i in \
 			$( \
@@ -688,7 +688,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				bn="$(basename "$i")"
 				lib="${bn%\.so*}"
 				lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)-2/libg\12-2/;s/-[0-9][\.0-9a-z]*$//')"
-				if [ "$(eval "echo \"\$DS_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
+				if [ "$(eval "echo \"\$FREETZ_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
 					echo2 "${bn}"
 					dn="$(dirname "$i")"
 					lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)2/libg\1-2/')"
@@ -698,9 +698,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 				fi
 			done
 		fi
-		[ "$DS_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
+		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 		
-		if [ "$DS_LIB_libterminfo" == "y" ]; then
+		if [ "$FREETZ_LIB_libterminfo" == "y" ]; then
 			echo1 "installing terminfos"
 			for i in \
 			$( \
@@ -710,7 +710,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			do
 				bn="$(basename "$i")"
 				terminfo="${bn}"
-				if [ "$(eval "echo \"\$DS_LIB_libterminfo_$(echo "$terminfo" | sed 's/-/minus/g;s/+/plus/g;s/\./dot/g')\"")" == "y" ]; then
+				if [ "$(eval "echo \"\$FREETZ_LIB_libterminfo_$(echo "$terminfo" | sed 's/-/minus/g;s/+/plus/g;s/\./dot/g')\"")" == "y" ]; then
 					echo2 "${bn}"
 					dn="$(dirname "$i")"
 					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
@@ -719,12 +719,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 			done
 		fi
 
-		if [ "$DS_FAVICON_STRING" != "none" ]; then
-			echo1 "adding favicons (${DS_FAVICON_STRING})"
-			cp "${FAVICON_DIR}/${DS_FAVICON_STRING}/freetz.ico" "${FILESYSTEM_MOD_DIR}/usr/share/favicon.ico"
+		if [ "$FREETZ_FAVICON_STRING" != "none" ]; then
+			echo1 "adding favicons (${FREETZ_FAVICON_STRING})"
+			cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/freetz.ico" "${FILESYSTEM_MOD_DIR}/usr/share/favicon.ico"
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/mww/favicon.ico"
 
-			cp "${FAVICON_DIR}/${DS_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
+			cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
 			ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
 		fi
 
@@ -733,26 +733,26 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "installation of base system is mandatory"
 	fi
 
-	if [ "$DS_REPLACE_BUSYBOX" == "y" ]; then
+	if [ "$FREETZ_REPLACE_BUSYBOX" == "y" ]; then
 		echo "replacing busybox"
 
-		echo1 "replacing busybox-${DS_TARGET_REF}"
+		echo1 "replacing busybox-${FREETZ_TARGET_REF}"
 
-		if [ ! -r "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}" ]; then
+		if [ ! -r "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" ]; then
 			error 1 "cannot find busybox replacement"
 		fi
 
 		# Replace busybox
-		cp -f "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}" "${FILESYSTEM_MOD_DIR}/bin/busybox"
+		cp -f "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" "${FILESYSTEM_MOD_DIR}/bin/busybox"
 
 		echo1 "installing symlinks"
 
-		if [ ! -r "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}.links" ]; then
+		if [ ! -r "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links" ]; then
 			error 1 "cannot find busybox links"
 		fi
 
 		# Install busybox links
-		for link in $(cat "${BASE_DIR}/busybox/busybox-${DS_TARGET_REF}.links"); do
+		for link in $(cat "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links"); do
 			LINK_DIR="$(dirname "$link")"
 			LINK_NAME="$(basename "$link")"
 
@@ -781,43 +781,43 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "installation of busybox replacement is mandatory"
 	fi
 
-	if [ "$DS_REPLACE_KERNEL" == "y" ]; then
+	if [ "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 		echo "replacing kernel"
 
-		if [ ! -r "${KERNEL_REP_DIR}/kernel-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.bin" ]; then
-			error 1 "can't find kernel for ref ${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}"
+		if [ ! -r "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" ]; then
+			error 1 "can't find kernel for ref ${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
 		fi
 
-		echo1 "replacing kernel-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING} (${KERNEL_SUBVERSION})"
-		cp "${KERNEL_REP_DIR}/kernel-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
+		echo1 "replacing kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING} (${KERNEL_SUBVERSION})"
+		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
 	fi	
 
 	echo1 "installing modules"
 	for i in \
 	$( \
-		cd "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}" && \
+		cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}" && \
 		find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
 	)
 	do
 		bn="$(basename "$i")"
 		mod="${bn%\.ko}"
 		
-		if [ "$DS_MODULES_ALL" = "y" -o \
-					"$(eval "echo \"\$DS_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]
+		if [ "$FREETZ_MODULES_ALL" = "y" -o \
+					"$(eval "echo \"\$FREETZ_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]
 			then
 					echo2 "${bn}"
 					dn="$(dirname "$i")"
 					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp "${KERNEL_REP_DIR}/modules-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
+					cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
 					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
 		fi
 	done
 
 	echo1 "generating modules.dep"
 	# 7270 modules dir is 2.6.19.2 not 2.6.19.2-ur8
-	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${DS_KERNEL_LAYOUT}"
+	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
 	${TOOLS_SUBDIR}/depmod.pl -b "$MODULES_DIR" \
-		-F ${KERNEL_REP_DIR}/System-${DS_KERNEL_REF}-${DS_AVM_VERSION_STRING}.map 2> /dev/null
+		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map 2> /dev/null
 
 	echo "installing packages"
 	
@@ -892,7 +892,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	fi
 
-	if [ "$DS_STRIP_LIBRARIES" == "y" ]; then
+	if [ "$FREETZ_STRIP_LIBRARIES" == "y" ]; then
 		echo "shrink shared libs"
 		TARGET_TOOLCHAIN_STAGING_DIR="${ABS_BASE_DIR}/toolchain/target"
 
@@ -926,7 +926,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		# __cxa_pure_virtual is referenced at some places..
 		UNNEEDED_SYMBOLS="-u get_UserAgentTransport -u __cxa_pure_virtual"
 
-		if [ "$DS_REMOVE_TR069" == "y" ]; then
+		if [ "$FREETZ_REMOVE_TR069" == "y" ]; then
 			# ignore some symbols provided by libtr069.so and referenced at
 			# some places e.g. in libfon.so libwlan.so 
 			# is this really a good idea to remove this lib ?!? ;-)
@@ -1017,13 +1017,13 @@ if [ "$DO_PACK" -gt 0 ]; then
 	rm -f "$FILESYSTEM_MOD"
 	rm -f "${DIR}/*.image"
 
-	if [ "$DS_SQUASHFS_BLOCKSIZE_ORIG" == "y" ]; then
+	if [ "$FREETZ_SQUASHFS_BLOCKSIZE_ORIG" == "y" ]; then
 		FILESYSTEM_BLOCKSIZE="$((1<<$(od -i -N 1 -j 34 "$FILESYSTEM" | sed -n -e '1s#.* ##' -e 1p)))"
 	else
-		FILESYSTEM_BLOCKSIZE=$(set | sed -rn 's/DS_SQUASHFS_BLOCKSIZE_([^=]+)=y/\1/p')
+		FILESYSTEM_BLOCKSIZE=$(set | sed -rn 's/FREETZ_SQUASHFS_BLOCKSIZE_([^=]+)=y/\1/p')
 	fi
 
-	if [ "$DS_VERBOSITY_LEVEL" -ge 1 ]; then
+	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
 		echo "squashfs blocksize"
 		echo "${L1}root filesystem: $FILESYSTEM_BLOCKSIZE"
 	fi
@@ -1061,13 +1061,13 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 	
 	# Check size of kernel image
-	let KERNEL_LIMIT="$DS_KERNEL_MTD_SIZE*65536"
+	let KERNEL_LIMIT="$FREETZ_KERNEL_MTD_SIZE*65536"
 	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
 	let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 
 	echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
-	if [ "$DS_VERBOSITY_LEVEL" -ge 1 ]; then
-		if [ "$DS_TYPE_FON_7150" = "y" ]; then
+	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
+		if [ "$FREETZ_TYPE_FON_7150" = "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
 			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 233472)))
 			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
@@ -1101,7 +1101,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
 	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
 
-	modimage="${DS_TYPE_STRING2}${DS_TYPE_STRING}_${FIRMWAREVERSION}-${SUBVERSION}.${DS_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
+	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}-${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
 
 	# Pack firmware image (use old tar for compatibility)
 	echo "packing ${modimage}"

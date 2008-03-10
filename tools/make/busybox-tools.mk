@@ -11,7 +11,7 @@ BUSYBOX_TOOLS_TARGET_BINARY:=$(TOOLS_DIR)/busybox
 
 # Activate on demand to avoid collision with identical target for regular
 # busybox package
-ifneq ($(strip $(DS_HAVE_DOT_CONFIG)),y)
+ifneq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
 $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(BUSYBOX_TOOLS_SITE)/$(BUSYBOX_TOOLS_SOURCE)
 endif

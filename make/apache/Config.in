@@ -1,4 +1,4 @@
-config DS_GROUP_APACHE_PHP
+config FREETZ_GROUP_APACHE_PHP
 	bool "Apache + PHP (build & package only -> press 'H' for online help)"
 	default n
 	help
@@ -32,9 +32,9 @@ config DS_GROUP_APACHE_PHP
 		PHP etc., please adapt the make files to your needs and look for tips, tricks
 		and patches under http://www.ip-phone-forum.de/showthread.php?t=127089.
 
-config DS_PACKAGE_APACHE
+config FREETZ_PACKAGE_APACHE
 	bool "Apache HTTP Server 1.3.37"
-	depends on DS_GROUP_APACHE_PHP
+	depends on FREETZ_GROUP_APACHE_PHP
 	default n
 	help
 		The Apache httpd server
@@ -47,9 +47,9 @@ config DS_PACKAGE_APACHE
 		    several other operating systems 
 		  - is actively being developed 
 
-config DS_APACHE_STATIC
+config FREETZ_APACHE_STATIC
 	bool "Statically linked libraries"
-	depends on DS_PACKAGE_APACHE
+	depends on FREETZ_PACKAGE_APACHE
 	default n
 	help
 		Apache needs the following shared libraries which can be linked in statically

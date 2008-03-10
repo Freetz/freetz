@@ -1,4 +1,4 @@
-[ "$DS_REMOVE_HELP" == "y" ] || return 0
+[ "$FREETZ_REMOVE_HELP" == "y" ] || return 0
 # from m*.* mod
 echo1 "removing help"
 if [ -e "${HTML_LANG_MOD_DIR}/html/de" ];then 

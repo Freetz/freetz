@@ -61,7 +61,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY): $(CCACHE_DIR)/$(CCACHE_
 			ln -fs ../usr/bin/ccache $(GNU_TARGET_NAME)-gcc; \
 			ln -fs ../usr/bin/ccache $(REAL_GNU_TARGET_NAME)-cc; \
 			ln -fs ../usr/bin/ccache $(REAL_GNU_TARGET_NAME)-gcc);
-ifeq ($(DS_TARGET_GXX),y)
+ifeq ($(FREETZ_TARGET_GXX),y)
 	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-c++ ] && \
 		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-c++ $(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache/
 	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-g++ ] && \

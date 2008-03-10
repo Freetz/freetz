@@ -6,13 +6,13 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/bftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/bftpd
 $(PKG)_STARTLEVEL=40
 
-ifeq ($(strip $(DS_PACKAGE_BFTPD_WITH_ZLIB)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_BFTPD_WITH_ZLIB)),y)
 $(PKG)_DEPENDS_ON := zlib
 endif
 
-$(PKG)_CONFIG_SUBOPTS += DS_PACKAGE_BFTPD_WITH_ZLIB
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_BFTPD_WITH_ZLIB
 
-$(PKG)_CONFIGURE_OPTIONS += $(if $(DS_PACKAGE_BFTPD_WITH_ZLIB),--enable-libz)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BFTPD_WITH_ZLIB),--enable-libz)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -33,7 +33,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(BFTPD_DIR) clean
-	rm -f $(BFTPD_DS_CONFIG_FILE)
+	rm -f $(BFTPD_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(BFTPD_TARGET_BINARY)

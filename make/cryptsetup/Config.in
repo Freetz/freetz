@@ -1,12 +1,12 @@
-config DS_PACKAGE_CRYPTSETUP
+config FREETZ_PACKAGE_CRYPTSETUP
 	bool "cryptsetup 1.0.5 (binary only)"
-	depends on DS_REPLACE_KERNEL
-	select DS_LIB_libdevmapper
-	select DS_LIB_libpopt
-	select DS_LIB_libgcrypt
-	select DS_MODULE_dm_crypt
-	select DS_MODULE_sha256
-	select DS_MODULE_aes
+	depends on FREETZ_REPLACE_KERNEL
+	select FREETZ_LIB_libdevmapper
+	select FREETZ_LIB_libpopt
+	select FREETZ_LIB_libgcrypt
+	select FREETZ_MODULE_dm_crypt
+	select FREETZ_MODULE_sha256
+	select FREETZ_MODULE_aes
 	default n
 	help
 		cryptsetup is used to conveniently setup dm-crypt managed
