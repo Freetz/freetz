@@ -75,3 +75,55 @@ config DS_BUSYBOX_WGET
 
 		This feature is required by any Freetz package.
 		But it is deselected when the wget package is selected.
+
+config DS_BUSYBOX_LESS
+        bool "less"
+        depends on DS_REPLACE_BUSYBOX
+        default n
+        help
+		Include the 'less' tools in busybox
+		
+		This feature isn't really used by Freetz, but it is more 
+		comfortable than 'more'
+		(The features CONFIG_FEATURE_LESS_BRACKETS and 
+		CONFIG_FEATURE_LESS_REGEXP are set automatically)
+
+config DS_BUSYBOX_NICE
+	bool "nice"
+	depends on DS_REPLACE_BUSYBOX
+	default n
+	help
+		Includes the 'nice' tool in busybox
+
+		This command helps to use the niceness-levels on the box so you
+		can handle the system-ressources more porperly if you want
+		(note: no freetz-service uses this yet)
+
+config DS_BUSYBOX_LS_COLOR
+	bool "color"
+	depends on DS_REPLACE_BUSYBOX
+	default n
+	help
+		Adds the colorful output to the ls-command. 
+
+		This is a nice but nearly useless feature for your busybox, it 
+		only colors you dirictory-listings.
+		(this feature sets "ls --color" by default, too)
+
+config DS_BUSYBOX_FASTPROC
+	bool "fastproc"
+	depends on DS_REPLACE_BUSYBOX
+	default n
+	help
+		Changes the behavior of scanning the proc-filesystem
+
+		With this patch commands like ps or top (even mount or other stuff that
+		uses the /proc/ filesystem) should run a bit faster
+
+config DS_BUSYBOX_KEYS
+	bool "fancykeys"
+	depends on DS_REPLACE_BUSYBOX
+	default n
+	help
+		Adds some useful keyboard-features to the shell
+
