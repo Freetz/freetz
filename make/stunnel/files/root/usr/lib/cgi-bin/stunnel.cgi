@@ -32,7 +32,7 @@ cat << EOF
 <ul>
 <li><a href="/cgi-bin/file.cgi?id=stunnel_svcs">$(lang de:"Dienste bearbeiten" en:"Edit services file")</a></li>
 <li><a href="/cgi-bin/file.cgi?id=stunnel_certchain">$(lang de:"Zertifikats-Kette bearbeiten" en:"Edit certificate chain")</a></li>
-<li><a href="/cgi-bin/file.cgi?id=stunnel_key">$(lang de:"Privater Schlüssel bearbeiten" en:"Edit private key")</a></li>
+<li><a href="/cgi-bin/file.cgi?id=stunnel_key">$(lang de:"Privaten Schlüssel bearbeiten" en:"Edit private key")</a></li>
 </ul>
 EOF
 sec_end
