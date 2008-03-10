@@ -2,11 +2,24 @@
 
 echo "# stunnel config"
 
+cat <<EOF
+foreground = no
+
+EOF
+
+cat <<EOF
+client = yes
+
+EOF
+
+
 if [ ! -z "$STUNNEL_SSLOPTIONS" ]; then
 	echo "options = $STUNNEL_SSLOPTIONS"
 fi
 
+
 cat <<EOF
+
 RNDbytes = 1024
 RNDfile = /var/tmp/.stunnel_rnd
 RNDoverwrite = yes

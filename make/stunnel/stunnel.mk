@@ -7,7 +7,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 $(PKG)_DEPENDS_ON := openssl zlib
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-libwrap
-$(PKG)_CONFIGURE_OPTIONS += --with-threads=fork
+#$(PKG)_CONFIGURE_OPTIONS += --with-threads=fork
+$(PKG)_CONFIGURE_OPTIONS += --with-threads=pthread
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_MAKE_PATH)/../usr"
 
 $(PKG_SOURCE_DOWNLOAD)

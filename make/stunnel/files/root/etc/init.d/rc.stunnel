@@ -23,6 +23,10 @@ is_running() {
 	kill -EXIT "$pid" 2> /dev/null
 }
 
+pre_config() {
+	[ -d "/tmp/flash/.stunnel" ] || mkdir /tmp/flash/.stunnel
+}
+
 start() {
 	{
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
@@ -42,7 +46,7 @@ start() {
 
 	echo -n 'Starting stunnel...'
 
-	$DAEMON
+	$DAEMON /mod/etc/${DAEMON}.conf
 
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
@@ -70,16 +74,22 @@ stop() {
 
 case "$1" in
 	""|load)
+		pre_config
+
 		export STUNNEL_CONFIGURED="1"
 		modreg cgi 'stunnel' 'Stunnel'
-
-		deffile="/mod/etc/default.$DAEMON/stunnel_pem.def"
-		[ -r "/tmp/flash/stunnel_pem.def" ] && deffile='/tmp/flash/stunnel_pem.def'
-		modreg file 'stunnel_pem' 'Stunnel: Cert + Private Key' 0 "$deffile"
 
 		deffile="/mod/etc/default.$DAEMON/stunnel_svcs.def"
 		[ -r "/tmp/flash/stunnel_svcs.def" ] && deffile='/tmp/flash/stunnel_svcs.def'
 		modreg file 'stunnel_svcs' 'Stunnel: services' 0 "$deffile"
+
+		deffile="/mod/etc/default.$DAEMON/stunnel_key.def"
+		[ -r "/tmp/flash/stunnel_key.def" ] && deffile='/tmp/flash/stunnel_key.def'
+		modreg file 'stunnel_key' 'Stunnel: Private Key' 0 "$deffile"
+
+		deffile="/mod/etc/default.$DAEMON/stunnel_certchain.def"
+		[ -r "/tmp/flash/stunnel_certchain.def" ] && deffile='/tmp/flash/stunnel_certchain.def'
+		modreg file 'stunnel_certchain' 'Stunnel: Certificate Chain' 0 "$deffile"
 
 		if [ "$STUNNEL_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -90,7 +100,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'stunnel_pem'
+		modunreg file 'stunnel_key'
+		modunreg file 'stunnel_certchain'
 		modunreg file 'stunnel_svcs'
 		modunreg cgi 'stunnel'
 		;;
