@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.0)
 $(PKG)_LIB_VERSION:=3.0.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://dsmod.magenbrot.net
+$(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/libcapi20.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libcapi20.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/libcapi20.so.$($(PKG)_LIB_VERSION)

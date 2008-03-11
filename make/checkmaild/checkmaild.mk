@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.4.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://dsmod.magenbrot.net
+$(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/checkmaild
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/checkmaild
 $(PKG)_STARTLEVEL=40

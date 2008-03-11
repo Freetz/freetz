@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.2)
 $(PKG)_SOURCE:=modcgi-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://dsmod.magenbrot.net
+$(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/modcgi
 
