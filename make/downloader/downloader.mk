@@ -8,6 +8,5 @@ $(pkg):
 $(pkg)-precompiled:
 
 $(pkg)-clean:
-	rm -f $(PACKAGES_BUILD_DIR)/$(DOWNLOADER_PKG_SOURCE)
 
 $(PKG_FINISH)

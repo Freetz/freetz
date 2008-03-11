@@ -37,7 +37,9 @@ $($(PKG)_TARGET_EXTENSIONS): $($(PKG)_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_EXTENSIONS)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(IPTABLES_DIR) clean
+	-$(MAKE) KERNEL_DIR="$(IPTABLES_KERNEL_DIR)" \
+		CC="$(TARGET_CC)" \
+		-C $(IPTABLES_DIR) clean
 
 $(pkg)-uninstall:
 	rm -f $(IPTABLES_TARGET_BINARY)

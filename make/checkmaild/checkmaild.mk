@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.4.3)
+$(call PKG_INIT_BIN, 0.4.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://dsmod.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/checkmaild
