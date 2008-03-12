@@ -84,18 +84,20 @@ callback_callthrough() {
     for CBCT_NO in $CBCT_TRIGGERNO
     do
 
-      # Strip numbers (Trigger-No/Callback-No/Callback-MSN)
+      # Strip numbers (Trigger-No/Callback-No/Callback-MSN/Controller)
       #
       TRIGGER_NUMBERS=`echo $CBCT_NO | sed 's/\// /g'`
       let i=0;
       TRIGGER_NO=""
       CALLBACK_NO=""
       CALLBACK_MSN=""
+      CALLBACK_CTRL=""
       for TRIGGER_NUMBER in $TRIGGER_NUMBERS; 
       do
         if [ "$i" = "0" ]; then TRIGGER_NO="$TRIGGER_NUMBER"; fi
         if [ "$i" = "1" ]; then CALLBACK_NO="$TRIGGER_NUMBER"; fi
-        if [ "$i" = "2" ]; then CALLBACK_MSN="$TRIGGER_NUMBER"; fi            
+        if [ "$i" = "2" ]; then CALLBACK_MSN="$TRIGGER_NUMBER"; fi
+        if [ "$i" = "3" ]; then CALLBACK_CTRL="$TRIGGER_NUMBER"; fi
         let i=i+1;
       done           
       if [ "$CALLBACK_NO" = "" ]; then CALLBACK_NO="$DST_NO"; fi
@@ -109,10 +111,19 @@ callback_callthrough() {
       if [ "$VALID_CBCT" = "OK" ]; 
       then
 
+        ################################################################################
         # callthrough: change scriptfile and hook up...
-        # ------------------------------------------------------------------------------
+        ################################################################################
         if [ "$CBCT_TYPE" = "ct" ]; 
         then
+
+			# userscript (CT)
+			if [ -f "$USERSCRIPT" ]; 
+			then
+			  SCRIPT="CT"
+			  . "$USERSCRIPT"
+			  if [ "$?" = "1" ]; then exit 1; fi
+			fi
 
            . "$SCRIPT_WAITEVENT" "START"
            (dtmfbox_change_script "$SRC_CON" "$SCRIPT_INTERNAL" "none" "-hook up")&
@@ -121,42 +132,58 @@ callback_callthrough() {
            exit 1;
          fi
 
+         ################################################################################
          # callback: call on disconnect
-         # ------------------------------------------------------------------------------
+         ################################################################################
          if [ "$CBCT_TYPE" = "cb" ]; 
          then
 
-         # replace callback no?
-         CALLBACK_NO=`echo $DST_NO | sed s/$TRIGGER_NO/$CALLBACK_NO/g`
-         if [ "$CALLBACK_NO" != "" ]; then 
+	         # replace callback no?
+	         CALLBACK_NO=`echo $DST_NO | sed s/$TRIGGER_NO/$CALLBACK_NO/g`
+	         if [ "$CALLBACK_NO" != "" ]; then 
 
+##########################################################################################
 # create callback script
+##########################################################################################
 cat << EOF > $DTMFBOX_PATH/tmp/callback_$SRC_CON.sh
 #!/var/tmp/sh
 . $DTMFBOX_PATH/script/script_funcs.sh
 if [ "$?" = "1" ]; then exit 1; fi
 
+# userscript (CB)
+if [ -f "$USERSCRIPT" ]; 
+then
+  SCRIPT="CB"
+  . "$USERSCRIPT"
+  if [ "\$?" = "1" ]; then exit 1; fi
+fi
+
+# callback on disconnect
 if [ "\$1" = "DISCONNECT" ]; then
   (
-    sleep 5  
-    NEW_CON=\`$DTMFBOX -call $CALLBACK_MSN $CALLBACK_NO -scriptfile "$SCRIPT_INTERNAL" -delimiter none\`
-    SRC_CON="\$NEW_CON"
-    . "$SCRIPT_WAITEVENT" "START"
-    . "$SCRIPT_INTERNAL" "STARTUP" "$TYPE" "OUTGOING" "\$NEW_CON" "$DST_CON" "$CALLBACK_MSN" "$CALLBACK_NO" "$ACC_NO" "$DTMF"
+    sleep 5
+    NEW_CON=\`$DTMFBOX -call "$CALLBACK_MSN" "$CALLBACK_NO" $CALLBACK_CTRL -scriptfile "none" -delimiter none\`
+
+    if [ "\$NEW_CON" != "" ];
+    then
+      SRC_CON="\$NEW_CON"
+      . "$SCRIPT_WAITEVENT" "START"        
+      . "$SCRIPT_INTERNAL" "STARTUP" "$TYPE" "OUTGOING" "\$NEW_CON" "$DST_CON" "$CALLBACK_MSN" "$CALLBACK_NO" "$ACC_NO" ""
+    fi
     rm $DTMFBOX_PATH/tmp/callback_$SRC_CON.sh
   ) &
 fi
 EOF
-             # change scriptfile
-             chmod +x $DTMFBOX_PATH/tmp/callback_$SRC_CON.sh             
+##########################################################################################
 
-             dtmfbox_change_script "$SRC_CON" "$DTMFBOX_PATH/tmp/callback_$SRC_CON.sh" "none" ""
-             exit 1;
-
-          fi
+	             # change scriptfile
+	             chmod +x $DTMFBOX_PATH/tmp/callback_$SRC_CON.sh             			 
+	             dtmfbox_change_script "$SRC_CON" "$DTMFBOX_PATH/tmp/callback_$SRC_CON.sh" "none" ""
+	             exit 1;
+	         fi
          fi
 
-         break;
+         exit 1;
        fi
 
       done
@@ -190,7 +217,7 @@ answering_machine() {
 if [ "$IN_OUT" = "OUTGOING" ];
 then
   if [ "$EVENT" = "EARLY" ]; then
-    internal
+    internal &
   fi
 fi
 
@@ -202,10 +229,10 @@ then
   if [ "$EVENT" = "CONNECT" ]; 
   then
     callback_callthrough
-    if [ "$?" = "1" ]; then return 1; fi
+    if [ "$?" = "1" ]; then exit 1; fi
 
     answering_machine
-    if [ "$?" = "1" ]; then return 1; fi
+    if [ "$?" = "1" ]; then exit 1; fi
   fi
 fi
 

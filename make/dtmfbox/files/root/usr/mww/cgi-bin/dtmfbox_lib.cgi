@@ -1,7 +1,6 @@
-#!/bin/sh
+#!/var/tmp/sh
 
-# freetz or usb version?
-if [ "$FREETZ" = "0" ]; then  
+if [ "$FREETZ" = "0" ]; then
   FREETZ_LINK=""
   USERSCRIPT_LINK="<li><a href=\"dtmfbox_userscript.cgi\" target=\"_new\" >Benutzerdefiniertes Skript</a></li><br>"
   SCRIPT=dtmfbox.cgi
@@ -11,6 +10,7 @@ else
   SCRIPT=""
 fi
 
+if [ "$FREETZ" = "0" ]; then
 # libmodcgi.sh
 let _cgi_width=730
 if [ "$cgi_width" -gt 0 ]; then let _cgi_width="$cgi_width"; fi
@@ -23,7 +23,7 @@ cat << EOF
 
 
   <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-     "http://www.w3.org/TR/html4/loose.dtd">
+	 "http://www.w3.org/TR/html4/loose.dtd">
   <html>
   <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -42,10 +42,10 @@ cat << EOF
   <table border="0" cellspacing="0" cellpadding="0" align="center" width="95%">
   <tr>
   <td width="500" bgcolor="blue" width="70%">
-    <div class="title" align="left"><span style="font-style: italic;">$1</span></div>
+	<div class="title" align="left"><span style="font-style: italic;">$1</span></div>
   </td>
   <td bgcolor="blue" width="30%">
-    <div class="version" align="right">$DTMFBOX_VERSION</div>
+	<div class="version" align="right">$DTMFBOX_VERSION</div>
   </td>
   </tr>
   <tr>
@@ -59,7 +59,7 @@ cgi_end() {
 cat << EOF
 </td>
 <td valign="top">
-	<table border="0" cellpadding="3" cellspacing="0"> 
+	<table border="0" cellpadding="3" cellspacing="0">
 	<tr><td width="20" height="20"></td><td>
 	<tr><td width="20"></td><td>
 	<div align="left">
@@ -74,6 +74,7 @@ cat << EOF
 		<li><a href="$SCRIPT?current_page=cbct">Callback & Callthrough</a></li>
 		<li><a href="$SCRIPT?current_page=misc">Sonstiges</a></li>
 		<p></p>
+		<li><a href="$SCRIPT?current_page=webphone">Webphone</a></li>
 		$USERSCRIPT_LINK
 		<p></p>
 		$FREETZ_LINK
@@ -113,7 +114,7 @@ cat << EOF
 EOF
 else
 
-if [ "$FREETZ" = "0" ]; 
+if [ "$FREETZ" = "0" ];
 then
 cat << EOF
 	<form action="$1_save.cgi?form=pkg_$1" method="post">
@@ -138,11 +139,11 @@ cat << EOF
   <input type="hidden" name="dummy" value="0">
   <div class="btn"><input type="submit" value="&Uuml;bernehmen" style="width:150px"></div>
   </form>
-  
+
   <form class="btn" action="$1_save.cgi?form=pkg_$1&uninstall=1" method="post">
   <div class="btn"><input type="button" onclick="javascript:ans=confirm('Uninstall dtmfbox?'); if(ans == true) { location.href='dtmfbox_save.cgi?form=pkg_$1&uninstall=1'; }" value="Uninstall" style="width:150px"></div>
   <input type="hidden" value="1" name="uninstall" id="uninstall">
-  </form>   
+  </form>
 EOF
 
 else
@@ -159,6 +160,7 @@ cat << EOF
 EOF
 fi
 }
+fi
 
 # ------------------------------------------------
 # Help
@@ -184,12 +186,11 @@ Der manuelle Start erfolgt über das Webinterface, bzw. über die Konsole:<br>
 </pre>
 
 <li><b>USB-Pfad</b><p></li>
-Wird ein USB-Speicher verwendet, so kann hier der Pfad angegeben werden. 
+Wird ein USB-Speicher verwendet, so kann hier der Pfad angegeben werden.
 Falls kein USB vorhanden ist, leer lassen!
-
-
 EOF
  fi
+
 
  if [ "$HELP" = "accounts" ];
  then
@@ -208,21 +209,37 @@ Beliebiger Name. Bei VoIP wird dieser an die SIP Uri vorangestellt.<br>
 </li>
 
 <li><b>MSN</b><p>
-Bei ISDN: MSN ohne Vorwahl<br>
-Bei Analog: unknown<br>
-Bei VoIP: Die Internetrufnummer<br>
+<ul>
+<li><i>Für ISDN:</i> MSN ohne Vorwahl<br>
+<li><i>Für Analog:</i> unknown<br>
+<li><i>Für VoIP (Type: CAPI):</i> Internettelefonie Account (0-8) + \# + Internetrufnummer (z.B. 0\#12345)<br>
+<li><i>Für VoIP (Type: SIP):</i> Die Internetrufnummer<br>
+</ul>
 </li>
 
 <li><b>DDI</b><p>
-Mittels dieser Nummer/Zeichenfolge gelangt man in das Menü.<br>
-Nicht alle Zeichenfolgen funktionieren!<br>
-Bei ISDN muss diese mit <b>**##</b> beginnen.<br>
-Für VoIP (Registrar-Mode) kann eine nicht vorhandene Nummer verwendet werden. z.B. 900.
+Mittels dieser Nummer/Zeichenfolge gelangt man in das Menü.<br><br>
+
+<b><i>Hinweise ISDN:</i></b><br>
+<ul>
+Bei ISDN Accounts muss im AVM-Webif unter Telefoniegeräte\Festnetz<br>
+eine zusätzliche Nummer angelegt werden (z.B. 52). Danach kann man das <br>
+interne Menü über **##52 erreichen.
+</ul>
+
+<b><i>Hinweise Analog/VoIP:</i></b><br>
+<ul>
+Für Analog und VoIP Accounts muss der Registrar-Modus verwendet werden.<br>
+Dafür wird eine beliebige unbekannte Nummer als DDI verwendet (z.B. 900) und<br>
+ein Registrar-Login hinterlegt. Über die Internettelefonie-Einstellungen,<br>
+wird sich dann an die dtmfbox angemeldet. Danach kann man, z.B. über *121#900, das<br>
+interne Menü erreichen.<br>
+</ul>
 </li>
 
 <li><b>Type</b><p>
-ISDN/Analog oder VoIP.<br>
-Bei VoIP müssen folgende Providerdaten hinterlegt werden:
+CAPI oder SIP.<br>
+Bei SIP müssen folgende Providerdaten hinterlegt werden:
 </li>
 <ul>
  <li><b>SIP-Registrar</b></li>
@@ -231,18 +248,41 @@ Bei VoIP müssen folgende Providerdaten hinterlegt werden:
 </ul>
 
 <li><b>Registrar-Login</b><p>
-Ist der <a href='?help=voip_capi'>Registrar-Modus</a> aktiviert, kann man sich mit einem SIP-Client an die dtmfbox
-anmelden. Es werden dafür die hier hinterlegten Anmeldedaten verwendet. 
+Ist der <a href='?help=voip_capi'>Registrar-Modus</a> aktiviert, kann man sich mit einem SIP-Client an die dtmfbox anmelden.<br>
+Der CAPI-Controller wird nur bei CAPI-Accounts benötigt und wird für ausgehende Gespräche verwendet.
 </li>
 </ul>
 
-<p></p><br>
-<b><i>Hinweis:</i></b><br>
-Falls die Registrierung beim Provider nicht funktioniert, kann optional eine ID hinterlegt werden.<br>
-z.B. <i>username@sip.registrar.de</i> oder nur <i>username</i> (der Hostteil wird automatisch angehangen)<br><br>
+<p><br>
+<b>VoIP Account Beispiele:</b><br>
+<ul>
+	<li><b>1&1</b><br>
+	Name: 49123456789<br>
+	MSN, Nr.: 49123456789<br>
+	Registrar: 212.227.15.197 <i>(oder sip.1und1.de)</i><br>
+	Realm: 1und1.de <i>(oder *)</i><br>
+	Username: 49123456789<br>
+	Passwort: *******<br>
+	ID: 49123456789@1und1.de<br><br>
 
-Ist die Registrierung erfolgreich, aber es werden keine Anrufe signalisiert oder es besteht nur eine einseitige
-Verbindung (One-Way-Audio), so sollte ein <a href='?help=voip_capi'>STUN-Server</a> hinterlegt werden.
+	<i>Verbindungseinstellungen:</i><br>
+	<ul>
+	STUN: stun.1und1.de<br>
+	STUN-Port: 3478<br>
+	ICE: Ja<br>	
+	</ul>
+	</li><p></p>
+
+	<li><b>Sipgate</b><br>
+	Name: 49123456789<br>
+	MSN, Nr.: 49123456789<br>
+	Registrar: sipgate.de<br>
+	Realm: sipgate.de <i>(oder *)</i><br>
+	Username: 55112233<br>
+	Passwort: *******<br>
+	ID: 55112233@sipgate.de
+	</li><p></p>
+</ul>
 
 <p></p><br>
 <b><i>Menü:</i></b><br>
@@ -256,13 +296,13 @@ Von Außerhalb kommt man durch die Eingabe des Anrufbeantworter-Pincodes in das M
   <li>X # = Nachricht X abhören</li>
   <li>0 = Einstellungen</li>
   <ul>
-    <li>1 = AB aktivieren/deaktivieren</li>
-    <li>2 = Ansagen aufnehmen</li>
+	<li>1 = AB aktivieren/deaktivieren</li>
+	<li>2 = Ansagen aufnehmen</li>
 	<ul>
 	    <li>1 = Ansage aufnehmen</li>	
 	    <li>2 = Endansage aufnehmen</li>	
 	</ul>
-    <li>3 = Alle Aufnahmen löschen</li>
+	<li>3 = Alle Aufnahmen löschen</li>
   </ul>
   <li>* = zurück</li>
 </ul>
@@ -287,27 +327,27 @@ Von Außerhalb kommt man durch die Eingabe des Anrufbeantworter-Pincodes in das M
 <ul>
   <li>1 = Fritz!Box</li>
   <ul>
-    <li>1 = IP-Adresse</li>
-    <li>2 = Uptime</li>
-    <li>3 = Uhrzeit</li>
-    <li>* = zurück</li>
+	<li>1 = IP-Adresse</li>
+	<li>2 = Uptime</li>
+	<li>3 = Uhrzeit</li>
+	<li>* = zurück</li>
   </ul>
   <li>2 = Wetter</li>
   <ul>
-    <li>1 = Wettervorhersage</li>
-    <li>2 = Biowetter</li>
-    <li>2 = Wetter Podcast</li>
-    <li>* = zurück</li>
+	<li>1 = Wettervorhersage</li>
+	<li>2 = Biowetter</li>
+	<li>2 = Wetter Podcast</li>
+	<li>* = zurück</li>
   </ul>
   <li>3 = CheckMailD</li>
   <ul>
-    <li>1 - 3 = Account 1 bis 3 abfragen</li>
-    <li>* = zurück</li>
+	<li>1 - 3 = Account 1 bis 3 abfragen</li>
+	<li>* = zurück</li>
   </ul>
   <li>4 = Radio</li>
   <ul>
-    <li>1 - 5 = Radio-Stream 1 bis 5</li>
-    <li>* = zurück</li>
+	<li>1 - 5 = Radio-Stream 1 bis 5</li>
+	<li>* = zurück</li>
   </ul>
 </ul>
 </ul>
@@ -320,7 +360,6 @@ Die einzelnen Menüs werden mit * getrennt.<br><br>
 Beispiel:<br>
 - Wettervorhersage: **##1*4*2*1<br>
 - DTMF-Befehl 30 (mit PIN): **##1*2*1234#*30#<br>
-
 EOF
  fi
 
@@ -367,10 +406,14 @@ Die Endansage wird nach der Aufnahmezeit abgespielt.<br>
 Soll ein Piepton nach der Ansage abgespielt werden?
 </li>
 
-<li><b>Nur unbekannte Anrufer</b><p>
-Es werden nur anonyme Anrufer auf den AB geleitet.
+<li><b>Abhebemodus</b><p>
+Bestimmt die Art, wie der Anrufbeantworter abheben soll:
+<ul>
+<li>Alle Anrufer auf AB leiten (Unbekannt und Bekannt)<br>
+<li>Nur unbekannte Anrufer auf den AB leiten<br>
+<li>Unbekannte Anrufer sofort auf AB leiten, alle bekannten Anrufer erst nach der eingestellten Abhebezeit<br>
+</ul>
 </li>
-
 
 <li><b>Schedule</b><p>
 AB soll nur zu bestimmten Zeiten aktiv sein.
@@ -385,7 +428,8 @@ Das Format der Aufnahmen ist: 8000hz, 16Bit Mono (WAVE)
 
 <li><b>Aufnahmen auf FTP-Server ablegen</b><p>
 Die Aufnahmen werden auf einen FTP-Server abgelegt.<br>
-Das Format der Aufnahmen ist: 8000hz, 16Bit Mono (RAW). 
+Beim FTP-Server wird <i>kein</i> "ftp://" vorangestellt!<br>
+Das Format der Aufnahmen ist: 8000hz, 16Bit Mono (RAW).
 </li>
 </ul>
 
@@ -410,7 +454,7 @@ cat << EOF
 
 <ul>
 <li><b>Pincode:</b><p>
-Der Pincode um DTMF Kommandos auszuführen. 
+Der Pincode um DTMF Kommandos auszuführen.
 </li>
 
 <li><b>DTMF-Commands</b><p>
@@ -478,24 +522,27 @@ Anrufen
 <li><b>Trigger-Nr.</b><p>
 Es können mehrere Trigger-Nr., bzw. Callback-Wahlregeln definiert werden (durch Leerzeichen getrennt).<br><br>
 
-Eine Callback-Wahlregel besteht aus ein bis drei Teilen:<br>
+Eine Callback-Wahlregel besteht aus drei bis vier Teilen:<br>
 <pre>
-Trigger-Nr/Callback-Nr/MSN
+Trigger-Nr. / Callback-Nr. / MSN oder Account ID / Controller
 </pre>
-Callback-Nr und MSN können auch weggelassen werden.<p>
+
+<b>Wichtig: Bei SIP Accounts, die nicht über CAPI registriert sind, wird kein Controller angegeben!</b><br><br>
 
 <i>Beispiel:</i><br>
-Der Callback soll auf die Rufnummer 004922112345 reagieren. Die Nummer, auf die zurückgerufen werden soll, ist die 0160555555555. Als MSN (Account) soll 3322211 verwendet werden.<br>
-<br>
-Die Wahlregel könnte dann so aussehen:<br>
+Der Callback soll auf die Rufnummer 004922112345 reagieren. Die Nummer, auf die zurückgerufen werden soll, ist die 0160555555555. Als MSN soll 3322211 verwendet werden (Account 1).<br>
+Es wird über Controller 1 raustelefoniert (ISDN):<br>
 <pre>
-004922112345/0160555555555/3322211
+004922112345/0160555555555/3322211/1  # Es wird hier die MSN direkt angegeben
+004922112345/0160555555555/1/1        # Es wird hier die MSN als ID (Account 1) übergeben
 </pre>
 <p>
-Bei der Trigger-Nr. kann man auch Regular Expressions verwenden:
+Man kann auch Regular Expressions verwenden:
 <pre>
-.*12345/0160555555555/3322211       # Rückruf auf bestimmte Nummer mit MSN
-\(.*\)/\1                           # Rückruf auf beliebige Nummer
+.*12345/0160555555555/3322211/1       # Rückruf auf bestimmte Nummer (CAPI, mit Controller)
+.*12345/0160555555555/3322211         # Rückruf auf bestimmte Nummer (VOIP, ohne Controller)
+\(.*\)/\1/1/1                         # Rückruf auf jede Anrufernummer
+\(.*\)12345/\112345/1/1               # Rückruf auf Anrufernummer (mit Prüfung des Suffix)
 </pre>
 </li>
 
@@ -508,7 +555,7 @@ Der Pincode, welcher vorher abgefragt werden soll. Falls kein Pin hinterlegt, wi
 
 <br>
 <b><i>Hinweis:</i></b><p>
-Bei CAPI Rückruf vorher Präfix International/National unter den <a href='?help=voip_capi'>Verbindungseinstellungen</a> hinterlegen!<br>
+Bei CAPI Rückruf vorher das Präfix für Landes- und Ortsvorwahl hinterlegen! Siehe <a href='?help=voip_capi'>Verbindungseinstellungen</a>.<br>
 <p>
 
 EOF
@@ -538,8 +585,9 @@ Der Port, welcher dem SIP Server zugewiesen werden soll (SIP-Messages).
 </li>
 
 <li><b>RTP/RTCP Start Port</b><p>
-Start-Port und Anzahl der RTP/RTCP Verbindungen für Media.<br>
-Für jede Verbindung werden jeweils zwei Ports benötigt.
+Start-Port der RTP/RTCP Ports.<br>
+Für jede Verbindung werden jeweils zwei Ports benötigt.<br>
+Es können max. 20 Verbindungen hergestellt werden, also sind 40 Ports nötig.
 </li>
 
 <li><b>Re-Register Intervall</b><p>
@@ -569,10 +617,10 @@ Es muss ein STUN Server hinterlegt sein, um ICE zu verwenden!
 </ul>
 
 <br>
-<font size=3><b>CAPI (ISDN/Analog)</b></font>
+<font size=3><b>CAPI (ISDN/Analog/VoIP)</b></font>
 <ul>
-<li><b>CAPI-Controller</b><p>
-Der eingehende, ausgehende und interne Controller der CAPI-Schnittstelle (ISDN/Analog).
+<li><b>CAPI-Controller 1-5</b><p>
+Hier können die CAPI-Controller hinterlegt werden.<br>
 </li>
 
 <li><b>Präfix International / National</b><p>
@@ -623,9 +671,29 @@ Hohe/Tiefe Stimme.
 </ul>
 
 </ul>
- 
+
 EOF
  fi
+
+
+ if [ "$HELP" = "webphone" ];
+ then
+cat << EOF
+<br>
+<font size=4><b>Webphone</b></font><hr><p>
+Ein webbasiertes Softphone in der Testphase.<br>
+Einfach einen Account auswählen und die Zielrufnummer eingeben.<br>
+Es wird das Standard Sounddevice verwendet.<br><br>
+
+Für das Webphone wird die Java Runtime Engine benötigt.<br>
+Download hier: <a href="http://www.java.com/de/download/">http://www.java.com/de/download/</a>
+EOF
+ fi
+
+
+cat << EOF
+</div><div style='display:none'>
+EOF
 }
 
 # ------------------------------------------------

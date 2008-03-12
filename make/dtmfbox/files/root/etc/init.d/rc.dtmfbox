@@ -1,133 +1,186 @@
 #!/bin/sh
 
-FREETZ="1"
 DAEMON="dtmfbox"
-WWW_PREFIX="http://fritz.v3v.de/dtmfbox/dtmfbox-0.4.0_1-dl/"
-WEBSERVER_PORT=6767
+WEBSERVER_PORT="6767"
 
-if [ "$DTMFBOX_PATH" = "" ]; then 
-  NO_DTMFBOX_PATH="1"
+# freetz or standalone/usb?
+if [ -f "/mod/etc/conf/dtmfbox.cfg" ]; then export FREETZ="1"; else export FREETZ="0"; fi
+
+# dtmfbox already installed?
+if [ -d /var/dtmfbox ];
+then
+  DTMFBOX_INSTALLED="1"
 else
-  NO_DTMFBOX_PATH="0"
+  if [ "$DTMFBOX_PATH" = "" ];
+  then
+    DTMFBOX_INSTALLED="0"
+  else
+    DTMFBOX_INSTALLED="1"
+  fi
 fi
 
 if [ "$FREETZ" = "1" ]; then
-  export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-  export LD_LIBRARY_PATH=/mod/lib
-  DTMFBOX_DEFAULT="/etc/default.dtmfbox/"
-  DTMFBOX_CFG="/mod/etc/conf/$DAEMON.cfg"
-  DESIGN="MOD"
-  ln -s /bin/busybox /var/tmp/sh 2>/dev/null
+    export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+    export LD_LIBRARY_PATH=/mod/lib
+    DTMFBOX_DEFAULT="/etc/default.dtmfbox"
+    DTMFBOX_CFG="/mod/etc/conf/$DAEMON.cfg"
+    DESIGN="MOD"
+    ln -s /bin/busybox /var/tmp/sh 2>/dev/null
 else
-  if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
-  export PATH=$DTMFBOX_PATH:$PATH
-  DTMFBOX_DEFAULT="$DTMFBOX_PATH/default.dtmfbox/"
-  DTMFBOX_CFG="/var/dtmfbox/$DAEMON.save"
-  DESIGN="FULLSCREEN"
-  ln -s /var/dtmfbox/busybox-tools /var/tmp/sh 2>/dev/null
+    if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
+    export PATH=$DTMFBOX_PATH:$PATH
+    DTMFBOX_DEFAULT="$DTMFBOX_PATH/default.dtmfbox"
+    DTMFBOX_CFG="/var/dtmfbox/$DAEMON.save"
+    DESIGN="FULLSCREEN"
+    ln -s /var/dtmfbox/busybox-tools /var/tmp/sh 2>/dev/null
 fi
 
 case "$1" in
 
-	""|load|start|restart|stop|log|foreground|install|start_httpd|stop_httpd)
-    if [ "$FREETZ" = "1" ]; then
-      if [ ! -r "$DTMFBOX_CFG" ]; then
-         echo "Error [$DAEMON]: not configured" 1>&2
-         exit 1
-      fi
+    ""|load|start|restart|stop|log|foreground|install|start_httpd|stop_httpd)
+	if [ "$FREETZ" = "1" ]; then
+		if [ ! -r "$DTMFBOX_CFG" ]; then
+			echo "Error [$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+	else	
+		if [ ! -f "./default.dtmfbox/dtmfbox.cfg" ] && [ ! -f "$DTMFBOX_CFG" ];
+		then
+			echo "Error [$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+	fi
+
+	# Get variables
+	if [ -f $DTMFBOX_CFG ]; then
+		. $DTMFBOX_CFG							# current config
+	else
+		if [ -f ./default.dtmfbox/dtmfbox.cfg ];
+		then
+			. ./default.dtmfbox/dtmfbox.cfg		# first install config (defaults)
+		fi
     fi
 
-    # Get variables
-    if [ -f $DTMFBOX_CFG ]; then
-      . $DTMFBOX_CFG
-    fi
+	# download url from configuration
+	WWW_PREFIX="$DTMFBOX_WWW"
+	WWW_SUFFIX="$DTMFBOX_WWW_DL_FILE"
 
-    # Change Path/Scriptpath 
-    if [ "$DTMFBOX_PATH" = "" ]; then
-      # /var/dtmfbox
-      DTMFBOX_PATH="/var/dtmfbox"
-      DTMFBOX_SCRIPTFILE="/var/dtmfbox/script/script_main.sh"
-      USE_USB="0"
+    # Change Path/Scriptpath
+    if [ "$DTMFBOX_PATH" = "" ]; 
+    then
+		# /var/dtmfbox
+		DTMFBOX_PATH="/var/dtmfbox"
+		DTMFBOX_SCRIPTFILE="/var/dtmfbox/script/script_main.sh"
+		USE_USB="0"
     else
-      # usb-path
-      DTMFBOX_SCRIPTFILE="$DTMFBOX_PATH/script/script_main.sh"
-      USE_USB="1"
+		# usb-path
+		DTMFBOX_SCRIPTFILE="$DTMFBOX_PATH/script/script_main.sh"
+		USE_USB="1"
     fi
-
-    ;;
+;;
 esac
 
-export PATH=$DTMFBOX_PATH:$PATH
+PATH=$DTMFBOX_PATH:$PATH
 
 # Install from web (if files do not exist)
 install() {
 
-  if [ "$NO_DTMFBOX_PATH" = "1" ]; then
-    ok=""
-    while [ "$ok" != "j" ];
-    do
-      answer=""
-      while [ "$answer" != "u" ] && [ "$answer" != "d" ];
-      do
-        echo -n "dtmfbox auf USB oder per Download installieren [u/d]? "
-        read answer
-        echo ""
-      done
-      if [ "$answer" = "u" ];
-      then
-        answer=""
-        while [ "$answer" = "" ];
-        do
-          echo -n "USB-Pfad [`pwd`]: "
-          read answer
-          if [ "$answer" = "" ]; then answer=`pwd`; fi
-        done
-      else
-        answer="/var/dtmfbox";
-        echo "Download-Version currently not available!"
-        exit;
-      fi
+    if [ "$FREETZ" = "0" ];
+    then
+	if [ "$DTMFBOX_INSTALLED" = "0" ];
+	then
+	    ok=""
+	    while [ "$ok" != "j" ];
+	    do
+		answer=""
+		while [ "$answer" != "u" ] && [ "$answer" != "d" ];
+		do
+		    echo -n "dtmfbox auf USB oder per Download installieren [u/d]? "
+		    read answer
+		done
+		if [ "$answer" = "u" ];
+		then
+		    answer=`pwd`
+		else
+		    answer="/var/dtmfbox";
+		fi
+				
+		ok=""
+		while [ "$ok" != "j" ] && [ "$ok" != "n" ];
+		do
+		    echo -n "dtmfbox nach \"$answer\" installieren [j/n]? "
+		    read ok
+		    if [ "$ok" = "j" ]; then
+			export DTMFBOX_PATH="$answer";
+		    else
+			echo "Abbruch!"
+			exit 1
+		    fi
+		done
+	    done
 
-      ok=""
-      while [ "$ok" != "j" ] && [ "$ok" != "n" ];
-      do
-        echo -n "dtmfbox nach \"$answer\" installieren [j/n]? "
-        read ok
-        if [ "$ok" = "j" ]; then
-          export DTMFBOX_PATH="$answer";
+	    echo "dtmfbox wird installiert..."
         fi
-        echo ""
-      done
-    done
-  fi
-  if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
+	if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
+	
+	rm /var/dtmfbox 2>/dev/null
+	mkdir $DTMFBOX_PATH 2>/dev/null
+	cd $DTMFBOX_PATH
+	
+	# get download package, when there are necessary files missing...
+	if [ ! -f "$DTMFBOX_PATH/dtmfbox" ] || [ ! -f "$DTMFBOX_PATH/busybox-tools" ];
+	then
+	    IS_DOWNLOAD="1"
+	
+	    echo "Download busybox-tools..."
+	    wget $WWW_PREFIX/busybox-tools
+	    chmod +x busybox-tools
+	
+	    echo "Download dtmfbox..."
+	    ./busybox-tools mkfifo /var/tmp/dtmfbox_dl.tar
+	    wget $WWW_PREFIX/$WWW_SUFFIX -O - > /var/tmp/dtmfbox_dl.tar &
+	    cat /var/tmp/dtmfbox_dl.tar | ./busybox-tools tar xv -f - -C $DTMFBOX_PATH
+	    rm /var/tmp/dtmfbox_dl.tar		
+	else
+	    IS_DOWNLOAD="0"
+	fi
+	
+	# does /var/dtmfbox exist? no? then link (usb)!
+	if [ ! -d /var/dtmfbox ]; then
+	    ln -s $DTMFBOX_PATH /var/dtmfbox
+	fi
+	
+	# create dtmfbox.cfg
+	if [ -f $DTMFBOX_CFG ]; then
+	    chmod +x $DTMFBOX_CFG
+	    . $DTMFBOX_CFG
+	else
+	    # first install? set default config...
+	    cp $DTMFBOX_PATH/default.dtmfbox/dtmfbox.cfg $DTMFBOX_CFG
+	fi
+	
+	if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH=/var/dtmfbox; fi
+	
+	# create dtmfbox.cfg
+	$DTMFBOX_PATH/default.dtmfbox/tmp/dtmfbox.config > $DTMFBOX_PATH/dtmfbox.cfg
+        chmod +x $DTMFBOX_PATH/dtmfbox.cfg	
+    fi
 
-  echo ""
-  echo "dtmfbox wird installiert..."
+    #
+    # create some other directories (freetz/standalone/usb)
+    #
+    mkdir -p "$DTMFBOX_PATH"
+	mkdir -p "$DTMFBOX_PATH/script"
+	mkdir -p "$DTMFBOX_PATH/script/addons"
+    mkdir -p "$DTMFBOX_PATH/play"
+    mkdir -p "$DTMFBOX_PATH/record"
+    mkdir -p "$DTMFBOX_PATH/tmp"
 
-  rm /var/dtmfbox 2>/dev/null
-  mkdir $DTMFBOX_PATH 2>/dev/null
-  cd $DTMFBOX_PATH
-
-  # does /var/dtmfbox exist? no? then link!
-  if [ ! -d /var/dtmfbox ]; then
-    ln -s $DTMFBOX_PATH /var/dtmfbox
-  fi
-
-   # create dtmfbox.cfg 
-   if [ -f $DTMFBOX_CFG ]; then
-     chmod +x $DTMFBOX_CFG
-     . $DTMFBOX_CFG
-   else
-     # first install? set default config...
-     cp $DTMFBOX_PATH/default.dtmfbox/dtmfbox.cfg $DTMFBOX_CFG
-   fi
-
-   if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH=/var/dtmfbox; fi
-
-   # create dtmfbox.cfg
-   $DTMFBOX_PATH/default.dtmfbox/tmp/dtmfbox.config > $DTMFBOX_PATH/dtmfbox.cfg
-   chmod +x $DTMFBOX_PATH/dtmfbox.cfg
+    # link or copy some directory/files.
+	if [ ! -d "$DTMFBOX_PATH/default.dtmfbox" ]; then ln -s $DTMFBOX_DEFAULT $DTMFBOX_PATH/default.dtmfbox 2>/dev/null; fi
+	if [ ! -d "$DTMFBOX_PATH/default.dtmfbox" ]; then cp -R $DTMFBOX_DEFAULT $DTMFBOX_PATH/default.dtmfbox; fi
+    if [ ! -f "$DTMFBOX_PATH/script/script_main.sh" ]; then cp -Rs $DTMFBOX_DEFAULT/script/* $DTMFBOX_PATH/script/ 2>/dev/null; fi
+    if [ ! -f "$DTMFBOX_PATH/script/script_main.sh" ]; then cp -R $DTMFBOX_DEFAULT/script/* $DTMFBOX_PATH/script/; fi
 }
 
 
@@ -136,18 +189,18 @@ start_httpd() {
     # Start webserver
     echo "Start Webserver..."
     if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
-    $DTMFBOX_PATH/busybox-tools httpd -p $WEBSERVER_PORT -h $DTMFBOX_PATH/httpd 
-    echo "done! Listening on port $WEBSERVER_PORT!"	  
+    $DTMFBOX_PATH/busybox-tools httpd -p $WEBSERVER_PORT -h $DTMFBOX_PATH/httpd
+    echo "done! Listening on port $WEBSERVER_PORT!"	
 }
 
 
 stop_httpd() {
 
-   if [ ! -z "$(pidof "busybox-tools")" ]; then
-       echo "Stop Webserver..."
-       killall -9 busybox-tools
-       echo "done!"
-   fi
+    if [ ! -z "$(pidof "busybox-tools")" ]; then
+	echo "Stop Webserver..."
+	killall -9 busybox-tools
+	echo "done!"
+    fi
 }
 
 
@@ -159,27 +212,16 @@ start() {
 
     # Refresh voipd register (if started)
     if [ ! -z "$(pidof "voipd")" ]; then
-       voipd -R 2>/dev/null
+	voipd -R 2>/dev/null
     fi
 
     # check if userscript is available and unpacked
     if [ ! -f /var/tmp/flash/dtmfbox_userscript.sh ]; then
-      if [ -f /var/tmp/flash/dtmfbox_userscript.sh.tar.gz ]; then
-        tar xvz -f /var/tmp/flash/dtmfbox_userscript.sh.tar.gz -C /
-        rm /var/tmp/flash/dtmfbox_userscript.sh.tar.gz
-      fi
+	if [ -f /var/tmp/flash/dtmfbox_userscript.sh.tar.gz ]; then
+	    tar xvz -f /var/tmp/flash/dtmfbox_userscript.sh.tar.gz -C /
+	    rm /var/tmp/flash/dtmfbox_userscript.sh.tar.gz
+	fi
     fi
-        
-    # dtmfbox directory does not exist? create from default template
-    if [ ! -d "$DTMFBOX_PATH" ];
-    then
-      mkdir -p $DTMFBOX_PATH 2>/dev/null
-      cp -Rf $DTMFBOX_DEFAULT/* $DTMFBOX_PATH 2>/dev/null
-    fi
-    if [ ! -d "$DTMFBOX_PATH/script" ]; then cp -R $DTMFBOX_DEFAULT/script $DTMFBOX_PATH; fi
-    mkdir -p $DTMFBOX_PATH/play
-    mkdir -p $DTMFBOX_PATH/record
-    mkdir -p $DTMFBOX_PATH/tmp
 
     #
     # write dtmfbox.cfg
@@ -190,68 +232,71 @@ start() {
 
     chmod +x $DTMFBOX_PATH/dtmfbox.cfg
     cd $DTMFBOX_PATH
-    
-	if [ "$FREETZ" = "0" ];
+
+    if [ "$FREETZ" = "0" ];
     then
-      DAEMON="./$DAEMON"    
+	DAEMON="./$DAEMON"
     fi
 
-    if [ "$1" = "foreground" ]; then
-      echo ""
-
-      # Run foreground
-      $DAEMON -cfg $DTMFBOX_PATH/dtmfbox.cfg
+    if [ "$1" = "foreground" ]; 
+    then
+	# Run foreground
+	echo ""
+	$DAEMON -cfg $DTMFBOX_PATH/dtmfbox.cfg
     fi
 
-    if [ "$1" = "log" ]; then
-      # Run daemon (logging)...
-      $DAEMON -daemon -cfg $DTMFBOX_PATH/dtmfbox.cfg -log $DTMFBOX_PATH/dtmfbox.log
+    if [ "$1" = "log" ]; 
+    then
+	# Run daemon (logging)...
+	$DAEMON -daemon -cfg $DTMFBOX_PATH/dtmfbox.cfg -log $DTMFBOX_PATH/dtmfbox.log
     fi
 
-    if [ "$1" = "" ]; then
-      # Run daemon...
-      $DAEMON -daemon -cfg $DTMFBOX_PATH/dtmfbox.cfg
+    if [ "$1" = "" ]; 
+    then
+	# Run daemon...
+	$DAEMON -daemon -cfg $DTMFBOX_PATH/dtmfbox.cfg
     fi
-    
+
     exitval=$?
 	
-    if [ "$exitval" -eq 0 ]; then
-       echo 'done!'
+    if [ "$exitval" -eq 0 ]; 
+    then
+	echo 'done!'
     else
-       echo 'failed!'
-       exit $exitval
+	echo 'failed!'
+	exit $exitval
     fi
 }
 
 stop() {
     echo -n "Stop $DAEMON... "
 	
-	# FIX: dead script_main.sh script???
+    # FIX: dead script_main.sh script???
     killall -9 script_main.sh 2>/dev/null >/dev/null
-	
+
     # Stop daemon
     if [ ! -z "$(pidof "$DAEMON")" ]; then
-        cd $DTMFBOX_PATH
-        $DAEMON -stop daemon >/dev/null & 
+	cd $DTMFBOX_PATH
+	$DAEMON -stop daemon >/dev/null &
 
-        # max. wait 5 sec for stop
-        let wait=5;
-        while [ ! -z "$(pidof "$DAEMON")" ] && [ $wait -ge 1 ];
-        do
-          echo -n "$wait,"
-          let wait=wait-1
-          sleep 1
-        done
+	# max. wait 5 sec for stop
+	let wait=5;
+	while [ ! -z "$(pidof "$DAEMON")" ] && [ $wait -ge 1 ];
+	do
+	    echo -n "$wait,"
+	    let wait=wait-1
+	    sleep 1
+	done
 
-        # kill dtmfbox
-        killall -9 $DAEMON > /dev/null 2>&1
-        exitval=$?
+	# kill dtmfbox
+	killall -9 $DAEMON > /dev/null 2>&1
+	exitval=$?
     fi
 
 	
     # Refresh voipd register (if started)
     if [ ! -z "$(pidof "voipd")" ]; then
-       voipd -R 2>/dev/null
+	voipd -R 2>/dev/null
     fi
 
     echo 'done!'
@@ -259,132 +304,138 @@ stop() {
 
 
 idle() {
+
     let wait=15
     echo -n "$DAEMON starting (15 sec)... "
-    while [ $wait -ge 1 ]; do
-      sleep 1
-      echo -n "$wait,"
-      let wait=wait-1		   
+    while [ $wait -ge 1 ]; 
+    do
+	sleep 1
+	echo -n "$wait,"
+	let wait=wait-1		
     done
-	echo "ready!"
+    echo "ready!"
 }
 
 
 case "$1" in
+
 	""|load)
-        if [ "$FREETZ" = "1" ]; 
-        then  
-  		  if type modreg > /dev/null; 
-          then		
-      	      if [ "$DESIGN" = "MOD" ]; 
-			  then
-			    # Mod-Design
-			    modreg cgi "dtmfbox&sort=0&show=status" "($DAEMON) Status"
-			    modreg cgi "dtmfbox&sort=1&show=accounts" "($DAEMON) Accounts"
-			    modreg cgi "dtmfbox&sort=2&show=voip_capi" "($DAEMON) Settings"
-			    modreg cgi "dtmfbox&sort=3&show=am" "($DAEMON) AB"
-			    modreg cgi "dtmfbox&sort=4&show=dtmf" "($DAEMON) DTMF"
-			    modreg cgi "dtmfbox&sort=5&show=cbct" "($DAEMON) CB/CT"
-			    modreg cgi "dtmfbox&sort=6&show=misc" "($DAEMON) Misc"
-			  else
-			    # Fullscreen-Design
-			    modreg cgi $DAEMON $DAEMON			    
-			  fi
+		if [ "$FREETZ" = "1" ];
+		then
+			if type modreg > /dev/null;
+		then		
+			if [ "$DESIGN" = "MOD" ];
+			then
+				# Mod-Design
+				modreg cgi "dtmfbox&sort=0&show=status" "$DAEMON Status"
+				modreg cgi "dtmfbox&sort=1&show=accounts" "$DAEMON Accounts"
+				modreg cgi "dtmfbox&sort=2&show=voip_capi" "$DAEMON Settings"
+				modreg cgi "dtmfbox&sort=3&show=am" "$DAEMON AB"
+				modreg cgi "dtmfbox&sort=4&show=dtmf" "$DAEMON DTMF"
+				modreg cgi "dtmfbox&sort=5&show=cbct" "$DAEMON CB/CT"
+				modreg cgi "dtmfbox&sort=6&show=misc" "$DAEMON Misc"
+				modreg cgi "dtmfbox&sort=7&show=webphone" "$DAEMON Webphone"
+			else
+				# Fullscreen-Design
+				modreg cgi $DAEMON $DAEMON			
+			fi
 		
-		   	  # Userdefined script
-			  modreg file dtmfbox_userscript dtmfbox-userscript 1 /etc/default.dtmfbox/dtmfbox.file
-		  fi
-       	fi
-
-		if [ "$DTMFBOX_ENABLED" != "yes" ]; then
-		  echo "$DAEMON is disabled" 1>&2
-		  exit 1;
+			# Userdefined script
+			modreg file dtmfbox_userscript dtmfbox-userscript 1 /etc/default.dtmfbox/dtmfbox.file
+		fi
 		fi
 
-		if [ ! -z "$(pidof $DAEMON)" ]; then
-		  echo "$DAEMON already started."
+		if [ "$DTMFBOX_ENABLED" != "yes" ]; 
+		then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ ! -z "$(pidof $DAEMON)" ]; 
+		then
+			echo "$DAEMON already started."
 		else
-          idle
-          start
+			idle
+			start
 		fi
 		;;
-  	  unload)
-          stop
-          if [ "$FREETZ" = "1" ]; 
-          then 
- 	 	   if [ "$DESIGN" = "MOD" ]; 
-		   then
-		    # Mod-Design unregister
-		    modunreg cgi "dtmfbox&show=status"
-		    modunreg cgi "dtmfbox&show=accounts"
-		    modunreg cgi "dtmfbox&show=am"
-		    modunreg cgi "dtmfbox&show=dtmf"
-		    modunreg cgi "dtmfbox&show=cbct"
-		    modunreg cgi "dtmfbox&show=voip_capi"
-		    modunreg cgi "dtmfbox&show=misc"
-	       else
-	        modunreg cgi $DAEMON; 
-	       fi
-	       modunreg file dtmfbox_userscript
-		  fi
+	unload)
+		stop
+		if [ "$FREETZ" = "1" ];
+		then
+			if [ "$DESIGN" = "MOD" ];
+			then
+				# Mod-Design unregister
+				modunreg cgi "dtmfbox&sort=0&show=status"
+				modunreg cgi "dtmfbox&sort=1&show=accounts"
+				modunreg cgi "dtmfbox&sort=2&show=voip_capi"
+				modunreg cgi "dtmfbox&sort=3&show=am"
+				modunreg cgi "dtmfbox&sort=4&show=dtmf"
+				modunreg cgi "dtmfbox&sort=5&show=cbct"
+				modunreg cgi "dtmfbox&sort=6&show=misc"
+				modunreg cgi "dtmfbox&sort=7&show=webphone"
+			else
+				modunreg cgi $DAEMON;
+			fi
+			modunreg file dtmfbox_userscript
+		fi
 		;;
- 	install)
-        if [ "$FREETZ" = "0" ]; then 
-          install
-        fi
-        ;;
-    start_httpd)
-        if [ "$FREETZ" = "0" ]; then 
-  	      if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
-          start_httpd
-        fi
-        ;;
-    stop_httpd)
-        if [ "$FREETZ" = "0" ]; then 
-	      if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
-          stop_httpd
-        fi
-        ;;
+	install)
+		if [ "$FREETZ" = "0" ]; then
+			install
+		fi
+		;;
+	start_httpd)
+		if [ "$FREETZ" = "0" ]; then
+			if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
+			start_httpd
+		fi
+		;;
+	stop_httpd)
+		if [ "$FREETZ" = "0" ]; then
+			if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
+			stop_httpd
+		fi
+		;;
 	start)
-        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
-	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
-        idle
+		if [ "$DTMFBOX_PATH" = "" ]; then echo "dtmfbox is not installed!"; exit; fi
+		idle
+		install
 		start
 		;;
 	stop)
-        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
-	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
+		if [ "$DTMFBOX_PATH" = "" ]; then echo "dtmfbox is not installed!"; exit; fi
 		stop
-        ;;
-    log)
-        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
-	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
-        start "log"
 		;;
-    foreground)
-        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
-	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
-        start "foreground"
+	log)
+		if [ "$DTMFBOX_PATH" = "" ]; then echo "dtmfbox is not installed!"; exit; fi
+		install
+		start "log"
+		;;
+	foreground)
+		if [ "$DTMFBOX_PATH" = "" ]; then echo "dtmfbox is not installed!"; exit; fi
+		install
+		start "foreground"
 		;;
 	restart)
-        if [ "$FREETZ" = "1" ]; then mkdir -p "$DTMFBOX_PATH" 2>/dev/null; fi
-	    if [ ! -d "$DTMFBOX_PATH" ]; then echo "dtmfbox is not installed!"; exit; fi
+		if [ "$DTMFBOX_PATH" = "" ]; then echo "dtmfbox is not installed!"; exit; fi
+		install
 		stop
 		start
 		;;
 	status)
 		if [ -z "$(pidof "$DAEMON")" ]; then
-		    echo "stopped"
+			echo "stopped"
 		else
-		    echo "running"
+			echo "running"
 		fi
 		;;
 	*)
-    if [ "$FREETZ" = "0" ]; then 
-      echo "usage: $0 [load|unload|start|stop|restart|status|log|foreground|install|start_httpd|stop_httpd]" 1>&2		 
-    else
-      echo "usage: $0 [load|unload|start|stop|restart|status|log|foreground]" 1>&2		 
-    fi
+	if [ "$FREETZ" = "0" ]; then
+		echo "usage: $0 [load|unload|start|stop|restart|status|log|foreground|install|start_httpd|stop_httpd]" 1>&2		
+	else
+		echo "usage: $0 [load|unload|start|stop|restart|status|log|foreground]" 1>&2		
+	fi
 	exit 1
 	;;
 esac

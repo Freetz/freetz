@@ -50,7 +50,7 @@ TEMP_CURSCRIPT="./tmp/$SRC_CON.curscript"
 ##################################################################################
 read_main_cfg() {
 
-  # freetz ..
+  # dsmod ..
   if [ -f /mod/etc/conf/dtmfbox.cfg ]; 
   then
     . /mod/etc/conf/dtmfbox.cfg
@@ -62,7 +62,7 @@ read_main_cfg() {
     if [ -f "$DTMFBOX_PATH/script/dtmfbox_userscript.sh" ]; then 
       USERSCRIPT="$DTMFBOX_PATH/script/dtmfbox_userscript.sh"
     fi
-    FREETZ="1"
+    DSMOD="1"
   fi
 
   # .. standalone
@@ -80,7 +80,7 @@ read_main_cfg() {
     else
       DTMFBOX_BOOT="/var/flash/debug.cfg"
     fi
-    FREETZ="0"
+    DSMOD="0"
   fi
 }
 
@@ -94,10 +94,11 @@ read_data() {
   SEMI=";"
   LIST=""
   LIST="$LIST ACC_MSN=\"\$DTMFBOX_ACC${cnt}_NUMBER\"$SEMI" 
+  LIST="$LIST ACC_CTRL_OUT=\"\$DTMFBOX_ACC${cnt}_CTRL_OUT\"$SEMI"
   LIST="$LIST ACC_DDI=\"\$DTMFBOX_SCRIPT_ACC${cnt}_DDI\"$SEMI"
   LIST="$LIST AM=\"\$DTMFBOX_SCRIPT_ACC${cnt}_AM\"$SEMI"
   eval $LIST
- 
+    
   # Answering machine settings
   LIST=""
   if [ "$AM" = "1" ];
@@ -154,6 +155,9 @@ read_data() {
       return 1; 
    fi
 
+   # normalize MSN (when # is escaped)
+   ACC_MSN=`echo "$ACC_MSN" | sed 's/\\#/#/g'`
+
    # create extra config file, for faster reading (only account specific information!)
    (
     . "$SCRIPT_CFG_TEMPLATE"
@@ -172,7 +176,7 @@ load_data() {
 
   while [ ! -f "$TEMP_CFG" ];
   do    
-    sleep 1    
+    sleep 1
     let cnt=cnt+1
     if [ "$cnt" = "10" ]; then break; fi
   done
@@ -311,7 +315,7 @@ display_text() {
 }
 
 ##################################################################################
-## save settings (freetz or usb), "$1" = key, "$2" = value
+## save settings (dsmod or usb), "$1" = key, "$2" = value
 ##################################################################################
 save_settings() {
 
@@ -319,7 +323,7 @@ save_settings() {
    DTMFBOX_SETTINGS_VAL="$2"
 
    # save usb/standalone
-   if [ "$FREETZ" = "0" ];
+   if [ "$DSMOD" = "0" ];
    then
      cat "$DTMFBOX_CFG"  | sed "s/export $DTMFBOX_SETTINGS_KEY='\(.*\)'/export $DTMFBOX_SETTINGS_KEY='$DTMFBOX_SETTINGS_VAL'/g" > $DTMFBOX_PATH/tmp/cfg1.tmp
      cat "$DTMFBOX_BOOT" | sed "s/export $DTMFBOX_SETTINGS_KEY='\(.*\)'/export $DTMFBOX_SETTINGS_KEY='$DTMFBOX_SETTINGS_VAL'/g" > $DTMFBOX_PATH/tmp/cfg2.tmp
@@ -332,7 +336,7 @@ save_settings() {
        rm $DTMFBOX_PATH/tmp/cfg2.tmp 2>/dev/null
      fi
 
-   # save freetz 
+   # save dsmod
    else
 
      modconf set dtmfbox "$DTMFBOX_SETTINGS_KEY=$DTMFBOX_SETTINGS_VAL"

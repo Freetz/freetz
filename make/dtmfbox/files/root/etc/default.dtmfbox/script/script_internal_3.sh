@@ -47,7 +47,7 @@ cbct_ask_account() {
 
   DTMF=""
   while [ "$DTMF" = "" ];
-  do
+  do	
     . "$SCRIPT_WAITEVENT" "GETMORE" "#" "*"
     if [ "$EVENT" = "DISCONNECT" ] || [ "$EVENT" = "" ]; then disconnect; exit; fi
 
@@ -60,23 +60,64 @@ cbct_ask_account() {
       fi
     fi
 
-    if [ "$DTMF" = "0#" ]; then
-      export ACC_MSN="-1"
-      (say_or_beep "Interne Verbindung.")
-      return 0; 
-    else
-      let DTMF_ID=`echo "$DTMF" | sed 's/#//g'`
-      export ACC_MSN=`eval echo \\$DTMFBOX_ACC${DTMF_ID}_NUMBER`
+	if [ "$DTMF" != "#" ];
+	then
 
-      if [ "$ACC_MSN" = "" ]; 
-      then
-         (say_or_beep "Eingabe fehlerhaft. Aekaunt 1 bis 10 waehlen oder 0 ." "1")&
-         DTMF=""        
-      else
-         (say_or_beep "Aekaunt $DTMF_ID .")
-         return 0;
-      fi
-    fi
+	    if [ "$DTMF" = "0#" ]; then
+	      export ACC_MSN="-1"
+		  export ACC_CTRL="3"
+	      (say_or_beep "Interne Verbindung, - Capi Kontroller $ACC_CTRL.")
+	      return 0; 
+	    else
+	      let DTMF_ID=`echo "$DTMF" | sed 's/#//g'`
+
+	      export ACC_ACTIVE=`eval echo \\$DTMFBOX_ACC${DTMF_ID}_ACTIVE`
+	      export ACC_MSN=`eval echo \\$DTMFBOX_ACC${DTMF_ID}_NUMBER`
+	      export ACC_TYPE=`eval echo \\$DTMFBOX_ACC${DTMF_ID}_TYPE`
+	      export ACC_CTRL_OUT=`eval echo \\$DTMFBOX_ACC${DTMF_ID}_CTRL_OUT`
+	
+	      if [ "$ACC_MSN" = "" ] || [ "$ACC_ACTIVE" = "0" ]; 
+	      then
+	         (say_or_beep "Eingabe fehlerhaft. Ekaunt 1 bis 10 waehlen oder 0 ." "1")&
+	         DTMF=""        
+	      else
+	
+			 if [ "$ACC_TYPE" = "capi" ];
+			 then
+				 ACC_CTRL="$ACC_CTRL_OUT"
+
+				 # autom. search for controller when not defined
+				 if [ "$ACC_CTRL" = "" ];
+				 then
+   				   # SIP over CAPI (controller 5)?
+				   ACC_MSN=`echo "$ACC_MSN" | sed -e 's/\\\//g'`
+				   SIP_OVER_CAPI=`echo "$ACC_MSN" | sed -e 's/.#.*/OK/g'`
+				   if [ "$SIP_OVER_CAPI" = "OK" ]; then ACC_CTRL="5"; fi
+	
+				   # Analog over CAPI (controller 4)?			
+				   ANALOG_OVER_CAPI=`echo "$ACC_MSN" | sed -e 's/unknown/OK/g'`
+				   if [ "$ANALOG_OVER_CAPI" = "OK" ]; then ACC_CTRL="4"; fi
+	
+				   # Internal over CAPI (controller 3)?
+				   if [ "$ACC_MSN" = "-1" ]; then ACC_CTRL="3"; fi
+	
+				   # ISDN over CAPI (controller 1)?
+				   if [ "$ACC_CTRL" = "" ]; then ACC_CTRL="1"; fi
+				 fi
+				
+		         (say_or_beep "Ekaunt $DTMF_ID, - Capi Kontroller $ACC_CTRL.")
+			 else
+				ACC_CTRL=""
+		         (say_or_beep "Ekaunt $DTMF_ID, Wois ower ei pi.")
+			 fi
+	
+	         return 0;
+	      fi
+	  fi
+    else
+		DTMF=""
+    	(say_or_beep "Bitte Ekaunt waehlen.")&
+	fi
 
   done
 
@@ -103,7 +144,7 @@ cbct_ask_number() {
 
     if [ "$DTMF" = "*" ]; then 
       play_tone ""
-      (say_or_beep "Bitte Aekaunt waehlen.")&
+      (say_or_beep "Bitte Ekaunt waehlen.")&
       return 1; 
     fi
 
@@ -123,10 +164,10 @@ cbct_ask_number() {
         if [ "$ACC_MSN" = "-1" ];
         then
           # make internal call (and change scriptfile)       
-          TRG_CON=`$DTMFBOX $SRC_CON -call $SRC_NO $TRG_NO $DTMFBOX_CAPI_INTERNAL`
+          TRG_CON=`$DTMFBOX $SRC_CON -call $SRC_NO $TRG_NO $ACC_CTRL`
         else
-          # make external call (and change scriptfile)
-          TRG_CON=`$DTMFBOX $SRC_CON -call $ACC_MSN $TRG_NO`
+          # make external call (and change scriptfile)		
+          TRG_CON=`$DTMFBOX $SRC_CON -call "$ACC_MSN" "$TRG_NO" $ACC_CTRL`
         fi
       else
         # no number entered...
@@ -162,7 +203,7 @@ then
     # no pincode for callthrough?
     if [ "$CBCT_PINCODE" = "" ];
     then
-      (say_or_beep "Aekaunt 1 bis 10 waehlen oder 0 fuer interne Verbindung.")&
+      (say_or_beep "Ekaunt 1 bis 10 waehlen oder 0 fuer interne Verbindung.")&
     else
       (say_or_beep "Bitte Pin eingeben.")&
     fi

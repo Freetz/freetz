@@ -131,7 +131,11 @@ check_time() {
 ##################################################################################
 kill_process() {
   if [ -f "$TEMP_AM_PID" ]; then
-    kill -9 `cat "$TEMP_AM_PID"`
+    PID=`cat "$TEMP_AM_PID"`
+    if [ "$PID" != "" ] && [ "$PID" != "-1" ] && [ "$PID" != "0" ];
+    then
+      kill -9 $PID
+    fi
     rm "$TEMP_AM_PID" 2>/dev/null
   fi
 }
@@ -141,17 +145,27 @@ kill_process() {
 ##################################################################################
 answering_machine() {
 
-  # redirect unknown callers only?
-  if [ "$UNKNOWN_ONLY" = "1" ];
+  # redirect anonymous callers only?
+  if [ "$UNKNOWN_ONLY" != "0" ];
   then
     . "$SCRIPT_SED"
     sed_tolower
 
-    TMP_DST=`echo "$DST_NO" | sed -e 's/@.*//g' | sed -n -f "$SED_TOLOWER" | sed -e 's/anonymous/unknown/g' -e 's/anonym/unknown/g'`      
-    if [ "$TMP_DST" = "" ]; then TMP_DST="unknown"; fi
+    TMP_DST=`echo "$DST_NO" | sed -e 's/@.*//g' | sed -n -f "$SED_TOLOWER" | sed -e 's/unknown/anonymous/g' -e 's/^anonym$/anonymous/g'`      
+    if [ "$TMP_DST" = "" ]; then TMP_DST="anonymous"; fi
 
-    # not unknown? then exit!
-    if [ "$TMP_DST" != "unknown" ]; then return 1; fi
+    # not anonymous? then exit!
+	if [ "$UNKNOWN_ONLY" = "1" ];
+	then
+	    if [ "$TMP_DST" != "anonymous" ]; then return 1; fi
+	fi
+
+	# when anonymous = answer suddenly
+	# when not anonymous = answer after timeout
+	if [ "$UNKNOWN_ONLY" = "2" ];
+	then
+	    if [ "$TMP_DST" = "anonymous" ]; then RINGTIME="0"; fi
+	fi
   fi
 
   # timespan valid...?
@@ -217,8 +231,10 @@ answering_machine() {
     fi
 
   else
-    # no announcement! Play beep and wait ~10 sec...
-    play_tone "notok"
+    # no announcement
+	if [ "$BEEP" = "1" ]; then
+	 play_tone "beep"
+	fi
   fi
 
   # record now !

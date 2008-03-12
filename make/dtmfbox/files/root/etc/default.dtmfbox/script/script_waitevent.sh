@@ -32,7 +32,10 @@ process_control() {
 
    if [ -f "$TEMP_EVENTPID" ]; then
      export PID=`cat "$TEMP_EVENTPID"`
-     kill -$1 $PID 2>/dev/null
+     if [ "$PID" != "" ] && [ "$PID" != "-1" ] && [ "$PID" != "0" ]
+     then
+       kill -$1 $PID 2>/dev/null
+     fi
    fi
 }
 
@@ -58,7 +61,6 @@ then
 
   echo "$!" > "$TEMP_EVENTPID"  
   export PIDS=""
-
  
   # PAUSE PIPE PROCESSES!
   process_control "STOP"
@@ -100,11 +102,11 @@ then
       cp "$TEMP_EVENTFILE.2" "$TEMP_EVENTFILE"
       rm "$TEMP_EVENTFILE.2"
 
-      # Parse event to variables
-      parse `echo "$LINES" | sed "s/^\*$/+/g"`
-
       # RESUME PIPE PROCESSES!
       process_control "CONT"
+
+      # Parse event to variables
+      parse `echo "$LINES" | sed "s/^\*$/+/g"`
 
   else
     EVENT=""
@@ -120,6 +122,7 @@ then
   #########################################
   # Wait for delimiter $2, $3 and $4
   #########################################
+  DTMF=""
   DTMF_JOINED=""
   DELIMITER_FOUND="0"
   while [ "$DELIMITER_FOUND" = "0" ];
@@ -145,9 +148,11 @@ then
 
     if [ "$DELIMITER_FOUND" = "0" ]; then
       DTMF_JOINED="$DTMF_JOINED$DTMF"
+	else
+      DTMF="$DTMF_JOINED"
+	  break;
     fi
   done
-  DTMF="$DTMF_JOINED"
 
 fi
 

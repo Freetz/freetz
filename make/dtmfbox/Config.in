@@ -1,8 +1,8 @@
-config FREETZ_PACKAGE_DTMFBOX
-	depends on FREETZ_LANG_DE || ! FREETZ_SELECTED_LANG_ONLY
-	bool "dtmfbox v0.4.0 (3)"
-	select FREETZ_LIB_libcapi20
-	select FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
+config DS_PACKAGE_DTMFBOX
+	depends on DS_LANG_DE || ! DS_SELECTED_LANG_ONLY
+	bool "dtmfbox v0.4.1_rc3 (5)"
+	select DS_LIB_libcapi20
+	select DS_PACKAGE_DTMFBOX_WITH_G711_CODEC
 	default n
 	help		
 		dtmfbox is a small softswitch application, that can be used to 
@@ -22,18 +22,18 @@ config FREETZ_PACKAGE_DTMFBOX
 		http://dtmfbox.v3v.de
 
 menu "CAPI/SIP"
-	depends on FREETZ_PACKAGE_DTMFBOX
+	depends on DS_PACKAGE_DTMFBOX
 
-config FREETZ_PACKAGE_DTMFBOX_WITH_CAPI
+config DS_PACKAGE_DTMFBOX_WITH_CAPI
 	bool "CAPI support"
-	depends on FREETZ_PACKAGE_DTMFBOX
+	depends on DS_PACKAGE_DTMFBOX
 	default y
 	help
 		Compile dtmfbox with CAPI support (ISDN/Analog)
 	
-config FREETZ_PACKAGE_DTMFBOX_WITH_VOIP
+config DS_PACKAGE_DTMFBOX_WITH_VOIP
 	bool "SIP support"
-	depends on FREETZ_PACKAGE_DTMFBOX
+	depends on DS_PACKAGE_DTMFBOX
 	default y
 	help
 		Compile dtmfbox with VoIP support (SIP)
@@ -41,40 +41,40 @@ endmenu
 
 
 menu "Codecs"
-	depends on FREETZ_PACKAGE_DTMFBOX
+	depends on DS_PACKAGE_DTMFBOX
 
-config FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
+config DS_PACKAGE_DTMFBOX_WITH_G711_CODEC
 	bool "G711"
-	depends on FREETZ_PACKAGE_DTMFBOX
+	depends on DS_PACKAGE_DTMFBOX
 	default y
 	help
 		Include G711 codec (default)
 
-#config FREETZ_PACKAGE_DTMFBOX_WITH_SPEEX_CODEC
+#config DS_PACKAGE_DTMFBOX_WITH_SPEEX_CODEC
 #	bool "SPEEX (not tested)"
-#	depends on FREETZ_PACKAGE_DTMFBOX
+#	depends on DS_PACKAGE_DTMFBOX
 #	default n
 #	help
 #		Include SPEEX codec
 
-config FREETZ_PACKAGE_DTMFBOX_WITH_GSM_CODEC
+config DS_PACKAGE_DTMFBOX_WITH_GSM_CODEC
 	bool "GSM (not tested)"
-	depends on FREETZ_PACKAGE_DTMFBOX
+	depends on DS_PACKAGE_DTMFBOX
 	default n
 	help
 		Include GSM codec
 
-#config FREETZ_PACKAGE_DTMFBOX_WITH_ILBC_CODEC
+#config DS_PACKAGE_DTMFBOX_WITH_ILBC_CODEC
 #	bool "iLBC (not tested)"
-#	depends on FREETZ_PACKAGE_DTMFBOX
+#	depends on DS_PACKAGE_DTMFBOX
 #	default n
 #	help
 #		Include iLBC codec
 
-config FREETZ_PACKAGE_DTMFBOX_PREFER_REMOTE_CODEC_ORDER
+config DS_PACKAGE_DTMFBOX_PREFER_REMOTE_CODEC_ORDER
 	bool "Prefer remote codec order"
-	depends on FREETZ_PACKAGE_DTMFBOX
-	default y
+	depends on DS_PACKAGE_DTMFBOX
+	default n
 	help
 		This specifies the behavior of the SDP negotiator when
 		responding to an offer, whether it should rather use
@@ -85,17 +85,17 @@ config FREETZ_PACKAGE_DTMFBOX_PREFER_REMOTE_CODEC_ORDER
 endmenu
 
 menu "Misc"
-	depends on FREETZ_PACKAGE_DTMFBOX
+	depends on DS_PACKAGE_DTMFBOX
 
-config FREETZ_PACKAGE_DTMFBOX_RESAMPLE_QUALITY
+config DS_PACKAGE_DTMFBOX_RESAMPLE_QUALITY
 	int "Resample quality (0 high - 2 low)"
-	depends on FREETZ_PACKAGE_DTMFBOX
+	depends on DS_PACKAGE_DTMFBOX
 	default 1
 	help
 		Resample Quality
 		0=high, 1=middle (default), 2=low
 
-config FREETZ_PACKAGE_DTMFBOX_SOUND_BUFFER_COUNT
+config DS_PACKAGE_DTMFBOX_SOUND_BUFFER_COUNT
 	int "Sound buffer count"
 	default 6
 	help
@@ -104,19 +104,29 @@ config FREETZ_PACKAGE_DTMFBOX_SOUND_BUFFER_COUNT
 		would cause more audio delay (and definitely will take
 		more memory). Default is 6.
 
-config FREETZ_PACKAGE_DTMFBOX_WITH_ESPEAK
+config DS_PACKAGE_DTMFBOX_WITH_WEBPHONE
+	bool "Webphone Applet (beta)"
+	depends on DS_PACKAGE_DTMFBOX
+	default y
+	help
+		Java Applet to make phone calls over webinterface. 
+		Beta!!
+		
+		+ 64 kb (Binary only)
+
+config DS_PACKAGE_DTMFBOX_WITH_ESPEAK
 	bool "eSpeak support"
-	depends on FREETZ_PACKAGE_DTMFBOX
-	select FREETZ_PACKAGE_ESPEAK
+	depends on DS_PACKAGE_DTMFBOX
+	select DS_PACKAGE_ESPEAK
 	default n
 	help
 		Add package "eSpeak" to support Text2Speech.		
 		Attention: eSpeak is also supported over webstream!
 
-config FREETZ_PACKAGE_DTMFBOX_WITH_MADPLAY
+config DS_PACKAGE_DTMFBOX_WITH_MADPLAY
 	bool "madplay support"
-	depends on FREETZ_PACKAGE_DTMFBOX
-	select FREETZ_PACKAGE_MADPLAY
+	depends on DS_PACKAGE_DTMFBOX
+	select DS_PACKAGE_MADPLAY
 	default n
 	help
 		Add package "madplay" to support webradio and podcasts
