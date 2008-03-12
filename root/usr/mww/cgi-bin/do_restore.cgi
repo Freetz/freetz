@@ -15,15 +15,15 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
   <pre><?
     cd /var/tmp
     export BACKUP_DIR='var_flash'
-    export FREETZ_BCK_FILE='ds_mod'
+    export DS_BCK_FILE='ds_mod'
     export FREETZ_BCK_FILE='freetz'
     rm -rf $BACKUP_DIR
     echo "$(lang de:"Sicherungsdateien extrahieren" en:"Extracting backup files")..."
     tar xvzf $FORM_uploadfile
     echo "$(lang de:"Konfiguration wiederherstellen" en:"Restoring configuration")..."
-    if [ -e $BACKUP_DIR/$FREETZ_BCK_FILE ]; then
+    if [ -e $BACKUP_DIR/$DS_BCK_FILE ]; then
     	echo "$(lang de:"Alte Sicherungsdatei gefunden" en:"Found old backup file")"
-	mv $BACKUP_DIR/$FREETZ_BCK_FILE $BACKUP_DIR/$FREETZ_BCK_FILE
+	mv $BACKUP_DIR/$DS_BCK_FILE $BACKUP_DIR/$FREETZ_BCK_FILE
     fi
     if [ "$FORM_freetz_only" = "on" ]; then
 	echo "cat $BACKUP_DIR/$FREETZ_BCK_FILE > /var/flash/freetz"
