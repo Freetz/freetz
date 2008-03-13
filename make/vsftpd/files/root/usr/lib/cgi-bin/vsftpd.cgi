@@ -5,6 +5,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 auto_chk=''; man_chk=''; inetd_chk=''
 anonym_chk='';users_enabled_chk='';chroot_chk='';root_chk=''
+log_enable_chk='';log_protoc_chk='';log_syslog_yes='';log_syslog_no=''
 
 case "$VSFTPD_ENABLED" in yes) auto_chk=' checked';; inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
 if [ "$VSFTPD_ANONYMOUS" = "yes" ]; then anonym_chk=' checked'; fi
@@ -12,6 +13,9 @@ if [ "$VSFTPD_USERS_ENABLED" = "yes" ]; then users_enabled_chk=' checked'; fi
 if [ "$VSFTPD_CHROOT" = "yes" ]; then chroot_chk=' checked'; fi
 if [ "$VSFTPD_ALLOW_ROOT" = "yes" ]; then root_chk=' checked'; fi
 
+if [ "$VSFTPD_LOG_ENABLE" = "yes" ]; then log_enable_chk=' checked'; fi
+if [ "$VSFTPD_LOG_PROTOC" = "yes" ]; then log_protoc_chk=' checked'; fi
+if [ "$VSFTPD_LOG_SYSLOG" = "yes" ]; then log_syslog_yes=' checked'; else log_syslog_no=' checked'; fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -54,5 +58,28 @@ cat << EOF
 <input id="a1" type="checkbox" name="allow_root" value="yes"$root_chk><label for="a1"> $(lang de:"Erlaube root login" en:"Allow root login")</label>
 </p>
 EOF
+
+sec_end
+sec_begin 'Logging'
+
+cat << EOF
+
+<p>
+<input type="hidden" name="log_enable" value="no">
+<input id="a1" type="checkbox" name="log_enable" value="yes"$log_enable_chk><label for="a1"> Logging aktivieren</label>
+<br>
+<input type="hidden" name="log_protoc" value="no">
+<input id="a2" type="checkbox" name="log_protoc" value="yes"$log_protoc_chk><label for="a2"> zus&auml;tzlich Protokoll-Log</label>
+</p>
+
+<p>
+<input id="p1" type="radio" name="log_syslog" value="yes"$log_syslog_yes><label for="x1">Syslog</label><br>
+<input id="p2" type="radio" name="log_syslog" value="no"$log_syslog_no><label for="x2">Datei:&nbsp;
+<input type="text" name="log_file" size="45" maxlength="255" value="$(httpd -e "$VSFTPD_LOG_FILE")"></label>
+</p>
+
+
+EOF
+
 
 sec_end

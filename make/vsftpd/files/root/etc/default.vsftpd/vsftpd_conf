@@ -1,9 +1,9 @@
 #!/bin/sh
 
 if [ $VSFTPD_ENABLED != "inetd" ]; then
-    LISTEN="yes"
+	LISTEN="yes"
 else
-    LISTEN="no"
+	LISTEN="no"
 fi
 
 cat << EOF
@@ -22,5 +22,10 @@ secure_chroot_dir=/var/run/vsftpd
 ftp_data_port=$VSFTPD_PORT
 userlist_enable=yes
 anon_root=/mod/home/ftp
+xferlog_std_format=no
+xferlog_enable=$VSFTPD_LOG_ENABLE
+vsftpd_log_file=$VSFTPD_LOG_FILE
+log_ftp_protocol=$VSFTPD_LOG_PROTOC
+syslog_enable=$VSFTPD_LOG_SYSLOG
 EOF
 
