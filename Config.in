@@ -1468,6 +1468,14 @@ config FREETZ_FAVICON_STRING
 	default "cuma"			if FREETZ_FAVICON_CUMA
 	default "hansolo"		if FREETZ_FAVICON_HANSOLO
 
+config FREETZ_AUTORUN_AUTOEND
+	bool "Execute autorun.sh/autoend.sh script on (un)mount"
+	depends on FREETZ_HAS_USB_HOST
+	default n
+	help
+		Useful to start/terminate applications located on USB devices, eg apache,
+		samba or even swapfiles.
+
 config FREETZ_DEVELOPER_VERSION_STRING
 	bool "Developer version string"
 	default y 

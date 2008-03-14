@@ -1,0 +1,14 @@
+--- etc/hotplug/storage_orig	Sat Mar  8 18:47:10 2008
++++ etc/hotplug/storage	Mon Mar 10 17:46:27 2008
+@@ -63,6 +63,11 @@
+ 	local	MPOINT=$2
+ 	local	MPNAME=$3
+ 
++	AUTOEND=$MPOINT/autoend.sh
++	if [ -x $AUTOEND ]; then
++		 $AUTOEND
++	fi
++	
+ 	passeeren
+ 
+ 	if [ -p "/var/tam/mount" ]; then
