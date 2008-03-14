@@ -13,7 +13,7 @@ CONF=$MODPATH/smb.conf
 
 
 case "$1" in
-        ""|load|start|restart|config)
+		""|load|start|restart|config)
 		if [ ! -r "/mod/etc/conf/samba.cfg" ]; then
 			echo "Error[samba]: not configured" 1>&2
 			exit 1
@@ -44,7 +44,7 @@ start() {
 
 	config
 	
-	if [ -s "/var/run/smbd.pid" ]; then
+	if [ $(pidof smbd|wc -w) -gt 0 ]; then
 		echo "already running"
 		exit 0
 	fi
@@ -141,14 +141,27 @@ case "$1" in
 			PARA2=$2
 		fi
 		stop $PARA2
-		sleep 1
+		sleep 2
 		start $PARA2
 		;;
 	status)
-		if [ -s "/var/run/smbd.pid" ] && [ -s "/var/run/nmbd.pid" ]; then
-			echo 'running'
-		else
+		PID_NMBD=1
+		if [ -x $BDIR/$NMBD ]; then
+			PID_NMBD=$(pidof $NMBD)
+		fi
+		if [ -r /var/run/$SMBD.pid ]; then
+			for PIDS in $(pidof $SMBD) ; do
+				if [ $PIDS == $(cat /var/run/$SMBD.pid) ]; then
+					PID_SMBD=$PIDS
+				fi
+			done
+		fi
+		if [ -z "$PID_SMBD" -o -z "$PID_NMBD" ]; then
+			killall $NMBD >/dev/null 2>&1
+			killall $SMBD >/dev/null 2>&1
 			echo 'stopped'
+		else
+			echo 'running'
 		fi
 		;;
 	*)

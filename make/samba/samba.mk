@@ -7,7 +7,7 @@ $(PKG)_SMBD_BINARY:=$($(PKG)_DIR)/source/bin/smbd
 $(PKG)_SMBD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/smbd
 $(PKG)_NMBD_BINARY:=$($(PKG)_DIR)/source/bin/nmbd
 $(PKG)_NMBD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/nmbd
-$(PKG)_STARTLEVEL=40
+$(PKG)_STARTLEVEL=80
 
 #$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NMBD
 
@@ -16,13 +16,20 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_SMBP_BINARY) $($(PKG)_SMBD_BINARY) $($(PKG)_NMBD_BINARY): $($(PKG)_DIR)/.configured
+		PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(SAMBA_DIR)/source \
+		CC=$(TARGET_CC) \
+		LD=$(TARGET_LD) \
+		SAMBA_CFLAGS="$(TARGET_CFLAGS)" \
+		CODEPAGEDIR="/mod/usr/share/samba" \
+		proto
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(SAMBA_DIR)/source \
 		CC=$(TARGET_CC) \
 		LD=$(TARGET_LD) \
 		SAMBA_CFLAGS="$(TARGET_CFLAGS)" \
 		CODEPAGEDIR="/mod/usr/share/samba" \
-		proto all
+		all
 
 $($(PKG)_SMBP_TARGET_BINARY): $($(PKG)_SMBP_BINARY)
 	$(INSTALL_BINARY_STRIP)
