@@ -90,7 +90,7 @@ sec_begin 'Firewall $(lang en:"rules" de:"Regeln")'
 cat << EOF
  
 <p><table width="100%"> <tr> <td><font color="red">$(lang en:"Incoming" de:"Eingehende Regeln")</font> (lowinput)<input type="radio" name="selectrules" id="id_li_rules" checked onclick='if (selrules=="ho"){allrules_ho=allrules}; selrules="li" ; allrules=allrules_li; Init_FW_Table()'>  
- &nbsp;  &nbsp;   <font color="blue">$(lang en:"Outgoing" de:"Ausgehede Regeln")</font> (highoutput)<input type="radio" name="selectrules" id="id_ho_rules" 
+ &nbsp;  &nbsp;   <font color="blue">$(lang en:"Outgoing" de:"Ausgehende Regeln")</font> (highoutput)<input type="radio" name="selectrules" id="id_ho_rules" 
  	onclick='if (selrules=="li") {allrules_li=allrules}; selrules="ho" ; allrules=allrules_ho; Init_FW_Table()'></td> 
  	<td align=right> $(lang en:"Enable " de:"")logging $(lang en:"feature" de:"einschalten") (<i>dsld -D</i>)  <input type="hidden" name="log" value=""><input type="checkbox" name="log" value="yes"> </td> </tr></table> 
 <br /> $(lang en:"For Debugging : show Rules-Window" de:"nur zum debuggen: Regelwerk anzeigen")  &nbsp;  &nbsp; LowInput: <input type="checkbox" onclick='document.getElementById("id_rules_li").style.display=(this.checked)? "block" : "none"' >
