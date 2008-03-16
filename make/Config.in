@@ -49,12 +49,13 @@ source make/vsftpd/Config.in
 endmenu
 
 menu "Web interface"
+source make/avm-firewall/Config.in
 source make/downloader/Config.in
 source make/spindown-cgi/Config.in
 source make/syslogd-cgi/Config.in
 source make/virtualip-cgi/Config.in
 source make/wol-cgi/Config.in
-source make/orangebox/Config.in
+#source make/orangebox/Config.in
 endmenu
 
 menu "Debug helpers"
@@ -68,7 +69,6 @@ endmenu
 menu "Testing"
 # Apache includes PHP by itself, don't include here
 source make/apache/Config.in
-source make/avm-firewall/Config.in
 source make/bash/Config.in
 source make/bip/Config.in
 source make/bluez-utils/Config.in
