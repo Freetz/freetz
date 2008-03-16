@@ -937,7 +937,7 @@ int main(int ac, char **av)
 	conf_parse(av[1]);
 	conf_read(NULL);
 
-	snprintf(menu_backtitle, 128, "Freetz-1.0 Configuration");
+	snprintf(menu_backtitle, 128, "Freetz Configuration");
 
 	mode = getenv("MENUCONFIG_MODE");
 	if (mode) {
