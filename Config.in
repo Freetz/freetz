@@ -656,7 +656,8 @@ config FREETZ_BRANDING_1und1
 		FREETZ_TYPE_WLAN_3030 || \
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_CUSTOM \
-		)
+		) \
+		&& ! FREETZ_TYPE_ALIEN_HARDWARE
 	default y
 	help
 		1&1 branding
@@ -772,8 +773,8 @@ config FREETZ_BRANDING_freenet
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_CUSTOM \
-		)
-
+		) \
+		&& ! FREETZ_TYPE_ALIEN_HARDWARE
 	default y
 	help
 		Freenet branding
