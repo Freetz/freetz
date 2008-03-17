@@ -53,7 +53,8 @@ config FREETZ_MODULE_ip_conntrack
 	default n
 config FREETZ_MODULE_ip_conntrack_pptp
 	bool "ip_conntrack_pptp.ko"
-	select FREETZ_MODULE_ip_conntrack_proto_gre
+	select FREETZ_MODULE_ip_conntrack_proto_gre if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_conntrack if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ip_conntrack_proto_esp
 	bool "ip_conntrack_proto_esp.ko"
@@ -75,22 +76,35 @@ config FREETZ_MODULE_ip_conntrack_tftp
 	bool "ip_conntrack_tftp.ko"
 	select FREETZ_MODULE_ip_conntrack
 	default n
+config FREETZ_MODULE_ip_nat
+	bool "ip_nat.ko"
+	depends on FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_conntrack
+	default n
 config FREETZ_MODULE_ip_nat_ftp
 	bool "ip_nat_ftp.ko"
-	select FREETZ_MODULE_iptable_nat
+	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_conntrack_ftp
 	default n
 config FREETZ_MODULE_ip_nat_h323
 	bool "ip_nat_h323.ko"
-	select FREETZ_MODULE_iptable_nat
+	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_conntrack_h323
 	default n
 config FREETZ_MODULE_ip_nat_irc
 	bool "ip_nat_irc.ko"
-	select FREETZ_MODULE_iptable_nat
+	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_conntrack_irc if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ip_nat_pptp
 	bool "ip_nat_pptp.ko"
-	select FREETZ_MODULE_ip_conntrack_proto_gre
-	select FREETZ_MODULE_iptable_nat
+	select FREETZ_MODULE_ip_conntrack_proto_gre if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_conntrack_pptp if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ip_nat_proto_esp
 	bool "ip_nat_proto_esp.ko"
@@ -102,7 +116,9 @@ config FREETZ_MODULE_ip_nat_proto_gre
 	default n
 config FREETZ_MODULE_ip_nat_tftp
 	bool "ip_nat_tftp.ko"
-	select FREETZ_MODULE_iptable_nat
+	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_conntrack_tftp if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_iptable_filter
 	bool "iptable_filter.ko"
@@ -116,9 +132,17 @@ config FREETZ_MODULE_iptable_nat
 	bool "iptable_nat.ko"
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	default n
+config FREETZ_MODULE_iptable_raw
+	bool "iptable_raw.ko"
+	depends on FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ip_tables
 	bool "ip_tables.ko"
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_CFG
 	bool "ipt_CFG.ko"
@@ -150,7 +174,8 @@ config FREETZ_MODULE_ipt_ipp2p
 	default n
 config FREETZ_MODULE_ipt_iprange
 	bool "ipt_iprange.ko"
-	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_length
 	bool "ipt_length.ko"
@@ -162,7 +187,8 @@ config FREETZ_MODULE_ipt_limit
 	default n
 config FREETZ_MODULE_ipt_LOG
 	bool "ipt_LOG.ko"
-	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_mac
 	bool "ipt_mac.ko"
@@ -178,7 +204,9 @@ config FREETZ_MODULE_ipt_MARK
 	default n
 config FREETZ_MODULE_ipt_MASQUERADE
 	bool "ipt_MASQUERADE.ko"
-	select FREETZ_MODULE_iptable_nat
+	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_mip
 	bool "ipt_mip.ko"
@@ -200,11 +228,14 @@ config FREETZ_MODULE_ipt_record_rpc
 	default n
 config FREETZ_MODULE_ipt_REDIRECT
 	bool "ipt_REDIRECT.ko"
-	select FREETZ_MODULE_iptable_nat
+	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_REJECT
 	bool "ipt_REJECT.ko"
-	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_ROUTE
 	bool "ipt_ROUTE.ko"
@@ -221,20 +252,122 @@ config FREETZ_MODULE_ipt_tcpmss
 	default n
 config FREETZ_MODULE_ipt_TCPMSS
 	bool "ipt_TCPMSS.ko"
-	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_tos
 	bool "ipt_tos.ko"
-	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_TOS
 	bool "ipt_TOS.ko"
-	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_ttl
 	bool "ipt_ttl.ko"
-	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
+menu "x_tables"
+	depends on FREETZ_TYPE_FON_WLAN_7270
+config FREETZ_MODULE_x_tables
+	bool "x_tables.ko"
+	default n
+config FREETZ_MODULE_xt_helper
+	bool "xt_helper.ko"
+	select FREETZ_MODULE_x_tables
+	select FREETZ_MODULE_ip_conntrack
+	default n
+config FREETZ_MODULE_xt_CLASSIFY
+	bool "xt_CLASSIFY.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_comment
+	bool "xt_comment.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_conntrack
+	bool "xt_conntrack.ko"
+	select FREETZ_MODULE_x_tables
+	select FREETZ_MODULE_ip_conntrack
+	default n
+config FREETZ_MODULE_xt_esp
+	bool "xt_esp.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_length
+	bool "xt_length.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_limit
+	bool "xt_limit.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_mac
+	bool "xt_mac.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_multiport
+	bool "xt_multiport.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_MARK
+	bool "xt_MARK.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_mark
+	bool "xt_mark.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_NFQUEUE
+	bool "xt_NFQUEUE.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_NOTRACK
+	bool "xt_NOTRACK.ko"
+	select FREETZ_MODULE_x_tables
+	select FREETZ_MODULE_ip_conntrack
+	default n
+config FREETZ_MODULE_xt_pkttype
+	bool "xt_pkttype.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_physdev
+	bool "xt_physdev.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_quota
+	bool "xt_quota.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_realm
+	bool "xt_realm.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_state
+	bool "xt_state.ko"
+	select FREETZ_MODULE_x_tables
+	select FREETZ_MODULE_ip_conntrack
+	default n
+config FREETZ_MODULE_xt_statistic
+	bool "xt_statistic.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_string
+	bool "xt_string.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_tcpudp
+	bool "xt_tcpudp.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+config FREETZ_MODULE_xt_tcpmss
+	bool "xt_tcpmss.ko"
+	select FREETZ_MODULE_x_tables
+	default n
+endmenu
 endmenu
 
 config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
