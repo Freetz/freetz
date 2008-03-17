@@ -34,9 +34,6 @@ Examples:
 EOF
 }
 
-### TODO ###
-# Find out HWRevision for 7270 (kriegaex: 122) and add special case for piglet module
-
 USBROOT_ENV_VAR=kernel_args1
 DEVICE=
 USBPATH=
@@ -53,14 +50,9 @@ mount_usbroot() {
 	echo "" > /proc/sys/kernel/hotplug
 
 	if [ $HWRevision -eq 122 ]; then
-		load_piglet_module_7270
+		load_usb_modules_7270
 	else
-		load_piglet_module
-	fi
-
-	modprobe usbcore
-	if modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1; then
-	mount -t usbfs usbfs /proc/bus/usb
+		load_usb_modules
 	fi
 
 	for i in ext2 usb-storage sd_mod; do
@@ -97,7 +89,7 @@ mount_usbroot() {
 }
 
 # Load piglet module (hardware specific)
-load_piglet_module() {
+load_usb_modules() {
 	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
 	piglet_load_params=" \
 	piglet_width_running=1 \
@@ -137,19 +129,27 @@ load_piglet_module() {
 	esac
 
 	modprobe Piglet piglet_bitfile=$piglet_bitfile $piglet_load_params
+	modprobe usbcore
+	if modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1; then
+	mount -t usbfs usbfs /proc/bus/usb
+	fi
 }
 
-load_piglet_module_7270() {
+load_usb_modules_7270() {
 	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
 	dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
 	dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
 	piglet_load_params=""
 	modprobe Piglet_noemif \
 	piglet_bitfile=$piglet_bitfile \
-	piglet_enable_button2=1 \
+	piglet_enable_button=2 \
 	dect_firstlevelfile=$dect_firstlevelfile \
 	dect_secondlevelfile=$dect_secondlevelfile \
 	$piglet_load_params
+	modprobe usbcore
+	if modprobe musb_hdrc; then
+	mount -t usbfs usbfs /proc/bus/usb
+	fi
 }
 
 # Unmount stuff before pivot_root
@@ -160,7 +160,7 @@ unmount() {
 }
 
 rmmodules() {
-	for i in sd_mod scsi_mod usb-storage usbahcicore usbcore Piglet; do
+	for i in sd_mod scsi_mod usb-storage usbahcicore musb_hdrc usbcore Piglet; do
 	rmmod $i
 	done
 }
