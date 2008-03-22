@@ -35,22 +35,10 @@ case "$1" in
 		cat $TMPFILE > /mod/etc/reg/file.reg
 		rm -f /mod/var/cache/menu_settings
 		;;
-        status)
-                [ -e "/mod/etc/reg/status.reg" ] || touch /mod/etc/reg/status.reg
-
-                if [ -z "$3" ]; then
-                        cat /mod/etc/reg/status.reg | grep -v "^$2" > $TMPFILE
-                else
-                        cat /mod/etc/reg/status.reg | grep -v "^$2|.*|$3\$" > $TMPFILE
-                fi
-                cat $TMPFILE > /mod/etc/reg/status.reg
-                rm -f /mod/var/cache/menu_status
-                ;;
 	*)
 		echo "Usage: $0 cgi <pkg>" 1>&2
 		echo "       $0 extra <pkg> [<cgi-name>]" 1>&2
 		echo "       $0 file <id>" 1>&2
-		echo "       $0 status <pkg> [<cgi-name>]" 1>&2
 		exit 1
 		;;
 esac

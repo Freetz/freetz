@@ -2,18 +2,7 @@ _cgi_menu() {
 cat << EOF
 <div class="menu">
 <div id="status"><a href="/cgi-bin/status.cgi">Status</a></div>
-EOF
-
-if [ "$1" = "status" ]; then
-	if [ -r "/mod/etc/reg/status.reg" ]; then
-	        cat /mod/etc/reg/status.reg | while IFS='|' read -r pkg title cgi; do
-        	        echo "<div id=\"status_$cgi\" class=\"su\"><a href=\"/cgi-bin/pkgstatus.cgi?pkg=$pkg&cgi=$cgi\">$title</a></div>"
-	        done
-	fi
-	echo "<div id=\"logs\" class=\"su\"><a href=\"/cgi-bin/logs.cgi\">Logs</a></div>"
-fi
-
-cat << EOF
+<div id="logs" class="su"><a href="/cgi-bin/logs.cgi">Logs</a></div>
 <div id="daemons"><a href="/cgi-bin/daemons.cgi">$(lang de:"Dienste" en:"Services")</a></div>
 <div id="settings"><a href="/cgi-bin/settings.cgi">$(lang de:"Einstellungen" en:"Settings")</a></div>
 EOF
@@ -28,7 +17,7 @@ cat << EOF
 <div id="packages"><a href="/cgi-bin/packages.cgi">$(lang de:"Pakete" en:"Packages")</a></div>
 EOF
 
-if [ "$1" != "settings" -a "$1" != "status" -a -r "/mod/etc/reg/cgi.reg" ]; then
+if [ "$1" != "settings" -a -r "/mod/etc/reg/cgi.reg" ]; then
 	cat /mod/etc/reg/cgi.reg | while IFS='|' read -r pkg title; do
 		echo "<div id=\"pkg_$pkg\" class=\"su\"><a href=\"/cgi-bin/pkgconf.cgi?pkg=$pkg\">$title</a></div>"
 	done
@@ -98,7 +87,6 @@ EOF
 if [ -n "$2" ]; then
 	case "$2" in
 		settings|file_*) sub='settings' ;;
-		status*) sub='status' ;;
 		*) sub='packages' ;;
 	esac
 
