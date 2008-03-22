@@ -1,0 +1,345 @@
+diff -Nur usr/www/avm/html/de/home/sitemap.html.orig usr/www/avm/html/de/home/sitemap.html
+--- usr/www/avm/html/de/home/sitemap.html.orig	2008-03-17 14:14:09.000000000 +0100
++++ usr/www/avm/html/de/home/sitemap.html	2008-03-17 14:23:03.000000000 +0100
+@@ -90,23 +90,6 @@
+ </div>
+ </td>
+ <td class="gelb">
+-<div class="gelb">
+-<p class="mb5 fett"><a href="javascript:jslGoTo('usb', 'status');"><? echo $var:TextMenuUSB ?></a></p>
+-<p class="ml10"><a href="javascript:jslGoTo('usb', 'status');"><? echo '$var:TextGeraeteuebersicht' ?></a></p>
+-<? setvariable var:showdisk 1 ?>
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? if eq '<? query aura:settings/aura4storage ?>' '1' `
+-<? setvariable var:showdisk 1 ?>` ?>
+-` ?>
+-<? if eq $var:showdisk 1 `
+-<p class="ml10"><a href="javascript:jslGoTo('usb', 'usbdisk');"><? echo '$var:TextUSBSpeicher' ?></a></p>
+-` ?>
+-<? if eq `<? query box:settings/expertmode/activated ?>` '1' `
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<p class="ml10"><a href="javascript:jslGoTo('usb', 'aura');"><? echo '$var:TextUSBFernanschluss' ?></a></p>
+-` ?>
+-` ?>
+-</div>
+ <!-- wlan:settings/ap_enabled = '<? query wlan:settings/ap_enabled ?>' -->
+ <? setvariable var:showWlan 0 ?>
+ <? if eq <? query wlan:settings/ap_enabled ?> 1 '<? setvariable var:showWlan 1 ?>' ?>
+diff -Nur usr/www/avm/html/de/home/sitemap.inc html/de/home/sitemap.inc
+--- usr/www/avm/html/de/home/sitemap.inc	2007-12-18 11:00:57.000000000 +0100
++++ html/de/home/sitemap.inc	2008-03-17 14:24:01.000000000 +0100
+@@ -4,9 +4,7 @@
+ <? include ../html/$var:lang/menus/menu2_vpn.inc ?>
+ <? include ../html/$var:lang/menus/menu2_internet.inc ?>
+ <? include ../html/$var:lang/menus/menu2_system.inc ?>
+-<? include ../html/$var:lang/menus/menu2_usb.inc ?>
+ <? include ../html/$var:lang/menus/menu2_wlan.inc ?>
+-<? include ../html/$var:lang/menus/menu2_dect.inc ?>
+ <? setvariable var:SitemapText1 'Inhalt' ?>
+ <? setvariable var:SitemapText2 'Nachtschaltung' ?>
+ <? setvariable var:SitemapText3 'Wecker' ?>
+diff -Nur usr/www/avm/html/de/home/tamedit.inc.orig html/de/home/tamedit.inc
+--- usr/www/avm/html/de/home/tamedit.inc.orig	2007-12-18 11:00:31.000000000 +0100
++++ usr/www/avm/html/de/home/tamedit.inc	2008-03-17 14:34:05.000000000 +0100
+@@ -16,6 +16,4 @@
+ <? setvariable var:Text16a 'Um diese Funktion zu nutzen, richten Sie bitte zuerst den ' ?>
+ <? setvariable var:Text16b 'Push-Service' ?>
+ <? setvariable var:Text16c ' der FRITZ!Box ein.' ?>
+-<? setvariable var:TextUseStick 'Aufgezeichnete Anrufe werden auf dem USB-Speicher abgelegt' ?>
+ <? setvariable var:TextInternAbfrage 'Zur internen Abfrage des Anrufbeantworters wählen Sie bitte **600.' ?>
+-<? setvariable var:TextAura4storageActive ' Diese Funktion kann nur aktiviert werden, wenn der USB-Fernanschluss für USB-Speicher deaktiviert wurde.' ?>
+diff -Nur usr/www/avm/html/de/home/usbdisk_cut.frm.orig usr/www/avm/html/de/home/usbdisk_cut.frm
+--- usr/www/avm/html/de/home/usbdisk_cut.frm.orig	2007-12-18 11:00:31.000000000 +0100
++++ usr/www/avm/html/de/home/usbdisk_cut.frm	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<? include ../html/$var:lang/usb/usbdisk_cut.frm ?>
+diff -Nur usr/www/avm/html/de/home/usbdisk_cut.html.orig usr/www/avm/html/de/home/usbdisk_cut.html
+--- usr/www/avm/html/de/home/usbdisk_cut.html	2008-03-17 14:14:09.000000000 +0100
++++ usr/www/avm/html/de/home/usbdisk_cut.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<? include ../html/$var:lang/usb/usbdisk_cut.html ?>
+diff -Nur usr/www/avm/html/de/home/usbdisk_cut.inc.orig usr/www/avm/html/de/home/usbdisk_cut.inc
+--- usr/www/avm/html/de/home/usbdisk_cut.inc.orig	2007-12-18 11:01:04.000000000 +0100
++++ usr/www/avm/html/de/home/usbdisk_cut.inc	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<? include ../html/$var:lang/usb/usbdisk_cut.inc ?>
+diff -Nur usr/www/avm/html/de/home/usbdisk_cut.js.orig usr/www/avm/html/de/home/usbdisk_cut.js
+--- usr/www/avm/html/de/home/usbdisk_cut.js.orig	2008-03-17 14:14:14.000000000 +0100
++++ usr/www/avm/html/de/home/usbdisk_cut.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<? include ../html/$var:lang/usb/usbdisk_cut.js ?>
+diff -Nur usr/www/avm/html/de/js/basis.js.orig usr/www/avm/html/de/js/basis.js
+--- usr/www/avm/html/de/js/basis.js.orig	2008-03-17 14:14:21.000000000 +0100
++++ usr/www/avm/html/de/js/basis.js	2008-03-17 15:19:18.000000000 +0100
+@@ -111,7 +111,6 @@
+ else if(m=="enhsettings") { jslGoTo('enhsettings', 'sitemap');}
+ else if(m=="software") {jslGoTo('software', 'sitemap');}
+ else if(m=="wlan") {jslGoTo('wlan', 'sitemap');}
+-else if(m=="usb") {jslGoTo('usb', 'sitemap');}
+ else{ jslGoTo('home', 'sitemap');}
+ }
+ function AddFavoritesLink(breite, titel) {
+diff -Nur usr/www/avm/html/de/menus/menu2_homehome.html.orig usr/www/avm/html/de/menus/menu2_homehome.html
+--- usr/www/avm/html/de/menus/menu2_homehome.html.orig	2008-03-17 14:14:09.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_homehome.html	2008-03-17 15:17:57.000000000 +0100
+@@ -2,7 +2,6 @@
+ <li class="LMenutop">&nbsp;</li>
+ <? setvariable var:classname 'LMenuitemTop' ?>
+ <? if eq $var:pagename home `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+-<? if eq $var:pagename usbdisk_cut `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','home')"><? echo '$var:TextMenuUebersicht' ?></a><span class="PTextOnly"><? echo '$var:TextMenuUebersicht' ?></span></li>
+ <? setvariable var:classname 'LMenuitemTop' ?>
+ <? if eq $var:pagename foncalls `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+diff -Nur usr/www/avm/html/de/menus/menu2.inc.orig usr/www/avm/html/de/menus/menu2.inc
+--- usr/www/avm/html/de/menus/menu2.inc.orig	2008-03-17 14:14:09.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2.inc	2008-03-17 15:14:37.000000000 +0100
+@@ -11,10 +11,7 @@
+ <? setvariable var:TextMenuTelefonie "Telefonie" ?>
+ <? setvariable var:TextMenuTelefonieConfig "Telefoniegeräte einrichten" ?>
+ <? setvariable var:TextMenuWLAN "WLAN" ?>
+-<? setvariable var:TextMenuUSB "USB-Geräte" ?>
+-<? setvariable var:TextMenuUSBDevices "USB-Geräte" ?>
+ <? setvariable var:TextMenuSystem "System" ?>
+-<? setvariable var:TextMenuSoftware "Programme" ?>
+ <? setvariable var:TextMenuHilfe "Hilfe" ?>
+ <? setvariable var:menuFreetz "Freetz Config" ?>
+ <? setvariable var:menuFreetzWOL "Freetz WOL" ?>
+diff -Nur usr/www/avm/html/de/menus/menu2_usb.html.orig usr/www/avm/html/de/menus/menu2_usb.html
+--- usr/www/avm/html/de/menus/menu2_usb.html.orig	2008-03-17 14:14:09.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_usb.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,18 +0,0 @@
+-<? include ../html/$var:lang/menus/menu2_$var:menu.inc ?>
+-<? setvariable var:expmode '<? query box:settings/expertmode/activated ?>' ?>
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('usb','status')"><? echo '$var:TextMenuUSB' ?></a><span class="PTextOnly"><? echo '$var:TextMenuUSB' ?></span></li>
+-<? setvariable var:class1 'LSubitem' ?>
+-<? if eq $var:pagename status `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename auraactiv `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<li class="<? echo $var:class1 ?>"><img class="LMenuPfeil" src="<? echo '$var:subpfeil' ?>"><a href="javascript:jslGoTo('usb','status')"><? echo $var:TextGeraeteuebersicht ?></a><span class="PTextOnly"><? echo $var:TextGeraeteuebersicht ?></span></li>
+-<? setvariable var:class1 'LSubitem' ?>
+-<? if eq $var:pagename usbdisk `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<li id="miUsbdisk" class="<? echo '$var:class1' ?>"><img class="LMenuPfeil" src="<? echo '$var:subpfeil' ?>"><a href="javascript:jslGoTo('usb','usbdisk')"><? echo '$var:TextUSBSpeicher' ?></a><span class="PTextOnly"><? echo '$var:TextUSBSpeicher' ?></span></li>
+-<? setvariable var:class1 'LSubitem' ?>
+-<? if eq $var:pagename aura `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename aurachange `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? if eq $var:expmode 1 `
+-<li id="miUsbaura" class="<? echo '$var:class1' ?>"><img class="LMenuPfeil" src="<? echo '$var:subpfeil' ?>"><a href="javascript:jslGoTo('usb','aura')"><? echo '$var:TextUSBFernanschluss' ?></a><span class="PTextOnly"><? echo '$var:TextUSBFernanschluss' ?></span></li>
+-` ?>
+-` ?>
+diff -Nur usr/www/avm/html/de/menus/menu2_usb.inc.orig usr/www/avm/html/de/menus/menu2_usb.inc
+--- usr/www/avm/html/de/menus/menu2_usb.inc.orig	2008-03-17 14:14:09.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_usb.inc	1970-01-01 01:00:00.000000000 +0100
+@@ -1,4 +0,0 @@
+-<? setvariable var:Usbtxt00 "USB-Drucker" ?>
+-<? setvariable var:TextUSBSpeicher "USB-Speicher" ?>
+-<? setvariable var:TextGeraeteuebersicht "Geräteübersicht" ?>
+-<? setvariable var:TextUSBFernanschluss "USB-Fernanschluss" ?>
+diff -Nur usr/www/avm/html/de/system/energy.html.orig usr/www/avm/html/de/system/energy.html
+--- usr/www/avm/html/de/system/energy.html.orig	2008-03-17 14:14:09.000000000 +0100
++++ usr/www/avm/html/de/system/energy.html	2008-03-17 14:26:13.000000000 +0100
+@@ -73,15 +73,6 @@
+ </tr></table>
+ </div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb5"><b><? echo $var:TextUSBZubehoer ?></b></p>
+-<p class="mb5"><? echo $var:TextEnergieVerbraucht ?></p>
+-<p class="mb5"><? echo $var:TextStatus ?> <span id="usbstate">&nbsp;</span></p>
+-<table><tr>
+-<td><table class="bar"><tr><td id="usbleft"></td><td id="usbright"></td><td id="usbspace"></td></tr></table></td>
+-<td><span id="usbleft_val">&nbsp;</span> / <span id="usbright_val">&nbsp;</span></td>
+-</tr></table>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p class="mb10"><b><? echo $var:TextLANInterface ?></b></p>
+ <p>
+ <img src="../html/de/images/led_<? if eq `<? query eth0:status/carrier ?>` 1 `green` `gray` ?>.gif" /> <? echo `$var:TextLAN1` ?>
+diff -Nur usr/www/avm/html/de/system/energy.inc.orig usr/www/avm/html/de/system/energy.inc
+--- usr/www/avm/html/de/system/energy.inc.orig	2007-12-18 11:00:48.000000000 +0100
++++ usr/www/avm/html/de/system/energy.inc	2008-03-17 14:34:25.000000000 +0100
+@@ -16,9 +16,7 @@
+ <? setvariable var:TextDSLEnergiespar 'Wenn Ihr DSL-Anbieter DSL-Energiesparmaßnahmen unterstützt, verringert die FRITZ!Box den Energieverbrauch, sobald keine Daten mit dem Internet ausgetauscht werden.' ?>
+ <? setvariable var:TextAnalog 'Analoge Nebenstellen' ?>
+ <? setvariable var:TextAnalogVerbrauchtEnergie 'Die analogen Nebenstellen verbrauchen die folgende Energie:' ?>
+-<? setvariable var:TextUSBZubehoer 'USB-Geräte' ?>
+-<? setvariable var:TextEnergieVerbraucht 'Über den USB-Anschluss wird die folgende Energie verbraucht:' ?>
+-<? setvariable var:TextLANUSBInterface 'LAN- und USB-Schnittstellen' ?>
++<? setvariable var:TextLANUSBInterface 'LAN-Schnittstellen' ?>
+ <? setvariable var:TextLAN1 'LAN 1' ?>
+ <? setvariable var:TextLAN2 'LAN 2' ?>
+ <? setvariable var:TextLAN3 'LAN 3' ?>
+@@ -26,7 +24,6 @@
+ <? setvariable var:TextLANA 'LAN A' ?>
+ <? setvariable var:TextLANB 'LAN B' ?>
+ <? setvariable var:TextLAN 'LAN' ?>
+-<? setvariable var:TextUSBComputer 'USB-Computer' ?>
+ <? setvariable var:TextMonitor 'Monitor' ?>
+ <? setvariable var:TextEnergieEinstellung 'Energie-Einstellungen' ?>
+ <? setvariable var:TextDECTLadespannung 'DECT Ladespannung' ?>
+@@ -37,15 +34,7 @@
+ <? setvariable var:TextKeineWlanAngemeldet `keine WLAN-Station angemeldet` ?>
+ <? setvariable var:TextOneWlanAngemeldet `1 WLAN-Station angemeldet` ?>
+ <? setvariable var:TextWlanAngemeldet ` WLAN-Stationen angemeldet` ?>
+-<? setvariable var:TextUSBZubehoehr `USB-Geräte angeschlossen` ?>
+-<? setvariable var:TextKeinUSBZubehoer `kein USB-Gerät angeschlossen` ?>
+ <? setvariable var:TextWlanDeaktiviert `WLAN ist deaktiviert` ?>
+-<? setvariable var:TextKeinMobileAngemeldet `kein Mobilteil angemeldet` ?>
+-<? setvariable var:TextOneMobileAngemeldet `1 Mobilteil angemeldet` ?>
+-<? setvariable var:TextMobileAngemeldet ` Mobilteile angemeldet` ?>
+-<? setvariable var:TextTelgefuehrt `Telefonat wird über Mobilteil geführt` ?>
+-<? setvariable var:TextMobileInLadeschale `Mobilteil in Ladeschale` ?>
+-<? setvariable var:TextEcoAktiv `Mobilteil in Ladeschale, Eco-Modus aktiv` ?>
+ <? setvariable var:TextSendeleistungVerringernAktiviert `Sendeleistung automatisch verringern ist aktiviert` ?>
+ <? setvariable var:TextSendeleistungVerringernDeaktiviert `Sendeleistung automatisch verringern ist deaktiviert` ?>
+ <? setvariable var:TextVerbZumDSLUnterbrochen `Die Verbindung zum DSL ist unterbrochen.` ?>
+diff -Nur usr/www/avm/html/de/system/infoled.html.orig html/de/system/infoled.html
+--- usr/www/avm/html/de/system/infoled.html.orig	2008-03-17 14:14:09.000000000 +0100
++++ usr/www/avm/html/de/system/infoled.html	2008-03-17 14:28:42.000000000 +0100
+@@ -12,13 +12,11 @@
+ <option value="3"><? echo $var:TextLeuchtetWlan ?></option>
+ <option value="4"><? echo $var:TextLeuchtetInternet ?></option>
+ <option value="5"><? echo $var:TextLeuchtetLAN ?></option>
+-<option value="7"><? echo $var:TextLeuchtetUSBZubehoer ?></option>
+ <option value="8"><? echo $var:TextLeuchtetKlingelsperre ?></option>
+ <option value="9"><? echo $var:TextBlinkAbwesenheit ?></option>
+ <option value="11"><? echo $var:TextShowNews ?></option>
+ </select>
+ </p>
+-<p class="mt10"><? if eq $var:showstick 1 `$var:TextBlinkFWUpdateUSB` `$var:TextBlinkFWUpdate` ?></p>
+ </div></div></div></div></div></div>
+ <? include ../html/$var:lang/home/rbb_applycancel.html ?>
+ </div>
+diff -Nur usr/www/avm/html/de/system/netipadr.inc.orig usr/www/avm/html/de/system/netipadr.inc
+--- usr/www/avm/html/de/system/netipadr.inc.inc	2007-12-18 11:00:59.000000000 +0100
++++ usr/www/avm/html/de/system/netipadr.inc	2008-03-17 14:34:53.000000000 +0100
+@@ -11,8 +11,6 @@
+ <? setvariable var:TextDHCPAnLanAktive "DHCP-Server an der Schnittstelle LAN aktivieren" ?>
+ <? setvariable var:TextLanB "LAN B:" ?>
+ <? setvariable var:TextDHCPAnLanBAktiv "DHCP-Server an der Schnittstelle LAN B aktivieren" ?>
+-<? setvariable var:TextUSB "USB:" ?>
+-<? setvariable var:TextDHCPAnUSBAktiv "DHCP-Server an der USB-Schnittstelle aktivieren" ?>
+ <? setvariable var:TextWlan "WLAN:" ?>
+ <? setvariable var:TextDHCPAnWlanAktiv "DHCP-Server an der WLAN-Schnittstelle aktivieren" ?>
+ <? setvariable var:TextDHCPVergibtIP "DHCP-Server vergibt IP-Adressen" ?>
+diff -Nur usr/www/avm/html/de/system/netipadr.js.orig usr/www/avm/html/de/system/netipadr.js
+--- usr/www/avm/html/de/system/netipadr.js.orig	2008-03-17 14:14:16.000000000 +0100
++++ usr/www/avm/html/de/system/netipadr.js	2008-03-17 14:36:31.000000000 +0100
+@@ -58,10 +58,6 @@
+ var g_mldNetMask_Lan = "Netzmaske (LAN)";
+ var g_mldVon_Lan = "Von (LAN)";
+ var g_mldBis_Lan = "Bis (LAN)";
+-var g_mldIpAdr_Usb = "IP-Adresse (USB)";
+-var g_mldNetMask_Usb = "Netzmaske (USB)";
+-var g_mldVon_Usb = "Von (USB)";
+-var g_mldBis_Usb = "Bis (USB)";
+ var g_mldIpAdr_Wlan = "IP-Adresse (WLAN)";
+ var g_mldNetMask_Wlan = "Netzmaske (WLAN)";
+ var g_mldVon_Wlan = "Von (WLAN)";
+diff -Nur usr/www/avm/html/de/system/pp_netipadr.inc.orig usr/www/avm/html/de/system/pp_netipadr.inc
+--- usr/www/avm/html/de/system/pp_netipadr.inc.orig	2007-12-18 11:00:30.000000000 +0100
++++ usr/www/avm/html/de/system/pp_netipadr.inc	2008-03-17 14:35:12.000000000 +0100
+@@ -7,7 +7,6 @@
+ <? setvariable var:TextIPEinstellungChanged "Sie haben die IP-Einstellungen der FRITZ!Box geändert. FRITZ!Box arbeitet jetzt mit den folgenden IP-Adressen:" ?>
+ <? setvariable var:TextLan "LAN" ?>
+ <? setvariable var:TextLanB "LAN B" ?>
+-<? setvariable var:TextUSB "USB" ?>
+ <? setvariable var:TextWlan "WLAN" ?>
+ <? setvariable var:TextEinstellungDrucken "Es wird empfohlen, diese Einstellungen auszudrucken." ?>
+ <? setvariable var:TextDrucken "Diese Seite drucken" ?>
+diff -Nur usr/www/avm/html/de/system/syslog.html.orig usr/www/avm/html/de/system/syslog.html
+--- usr/www/avm/html/de/system/syslog.html.orig	2008-03-17 14:14:09.000000000 +0100
++++ usr/www/avm/html/de/system/syslog.html	2008-03-17 14:29:56.000000000 +0100
+@@ -12,7 +12,6 @@
+ <li class="tabs_on"><div class="activtab"><? echo $var:TextAlle ?></div></li>
+ <li><a href="javascript:Tabs(1)"><? echo $var:TextTelefonie ?></a></li>
+ <li><a href="javascript:Tabs(2)"><? echo $var:TextInternet ?></a></li>
+-<li><a href="javascript:Tabs(3)"><? echo $var:TextUSB ?></a></li>
+ <li><a href="javascript:Tabs(4)"><? echo $var:TextWlan ?></a></li>
+ <li><a href="javascript:Tabs(5)"><? echo $var:TextSystem ?></a></li>
+ </ul>
+@@ -22,7 +21,6 @@
+ <li><a href="javascript:Tabs(0)"><? echo $var:TextAlle ?></a></li>
+ <li class="tabs_on"><div class="activtab"><? echo $var:TextTelefonie ?></div></li>
+ <li><a href="javascript:Tabs(2)"><? echo $var:TextInternet ?></a></li>
+-<li><a href="javascript:Tabs(3)"><? echo $var:TextUSB ?></a></li>
+ <li><a href="javascript:Tabs(4)"><? echo $var:TextWlan ?></a></li>
+ <li><a href="javascript:Tabs(5)"><? echo $var:TextSystem ?></a></li>
+ </ul>
+@@ -32,17 +30,6 @@
+ <li><a href="javascript:Tabs(0)"><? echo $var:TextAlle ?></a></li>
+ <li><a href="javascript:Tabs(1)"><? echo $var:TextTelefonie ?></a></li>
+ <li class="tabs_on"><div class="activtab"><? echo $var:TextInternet ?></div></li>
+-<li><a href="javascript:Tabs(3)"><? echo $var:TextUSB ?></a></li>
+-<li><a href="javascript:Tabs(4)"><? echo $var:TextWlan ?></a></li>
+-<li><a href="javascript:Tabs(5)"><? echo $var:TextSystem ?></a></li>
+-</ul>
+-</div>
+-<div id="uiUsb" style="display:none">
+-<ul class="tabs">
+-<li><a href="javascript:Tabs(0)"><? echo $var:TextAlle ?></a></li>
+-<li><a href="javascript:Tabs(1)"><? echo $var:TextTelefonie ?></a></li>
+-<li><a href="javascript:Tabs(2)"><? echo $var:TextInternet ?></a></li>
+-<li class="tabs_on"><div class="activtab"><? echo $var:TextUSB ?></div></li>
+ <li><a href="javascript:Tabs(4)"><? echo $var:TextWlan ?></a></li>
+ <li><a href="javascript:Tabs(5)"><? echo $var:TextSystem ?></a></li>
+ </ul>
+@@ -52,7 +39,6 @@
+ <li><a href="javascript:Tabs(0)"><? echo $var:TextAlle ?></a></li>
+ <li><a href="javascript:Tabs(1)"><? echo $var:TextTelefonie ?></a></li>
+ <li><a href="javascript:Tabs(2)"><? echo $var:TextInternet ?></a></li>
+-<li><a href="javascript:Tabs(3)"><? echo $var:TextUSB ?></a></li>
+ <li class="tabs_on"><div class="activtab"><? echo $var:TextWlan ?></div></li>
+ <li><a href="javascript:Tabs(5)"><? echo $var:TextSystem ?></a></li>
+ </ul>
+@@ -62,7 +48,6 @@
+ <li><a href="javascript:Tabs(0)"><? echo $var:TextAlle ?></a></li>
+ <li><a href="javascript:Tabs(1)"><? echo $var:TextTelefonie ?></a></li>
+ <li><a href="javascript:Tabs(2)"><? echo $var:TextInternet ?></a></li>
+-<li><a href="javascript:Tabs(3)"><? echo $var:TextUSB ?></a></li>
+ <li><a href="javascript:Tabs(4)"><? echo $var:TextWlan ?></a></li>
+ <li class="tabs_on"><div class="activtab"><? echo $var:TextSystem ?></div></li>
+ </ul>
+--- usr/www/avm/html/capture.html.orig	2008-03-17 14:19:31.000000000 +0100
++++ usr/www/avm/html/capture.html	2008-03-17 14:19:50.000000000 +0100
+@@ -111,7 +111,7 @@
+ <form name="Capture3start" method="GET" action="../cgi-bin/capture_notimeout" >
+ <table>
+ <tr>
+-interface name:&nbsp;&nbsp;<input type="text" size=14 value="lan" name="iface" > (lan, eth0, eth1, usbrndis, tiwlan0)
++interface name:&nbsp;&nbsp;<input type="text" size=14 value="lan" name="iface" > (lan, eth0, eth1, tiwlan0)
+ </tr>
+ <tr>
+ <br>mit Länge/with length:&nbsp;<input type="text" size=4 value="1600" name="snaplen" > bytes
+diff -Naur usr/www/avm/html/de/menus/menu2_konfig.html.orig usr/www/avm/html/de/menus/menu2_konfig.html
+--- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2008-03-18 02:54:04.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_konfig.html	2008-03-18 02:56:15.000000000 +0100
+@@ -43,11 +43,6 @@
+ ` `
+ <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:TextMenuTelefonie ?></a><span class="PTextOnly"><? echo $var:TextMenuTelefonie ?></span></li>
+ ` ?>
+-<? if eq `$var:menu` 'usb' `
+-<? include ../html/$var:lang/menus/menu2_usb.html ?>
+-` `
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('usb','status')"><? echo $var:TextMenuUSB ?></a><span class="PTextOnly"><? echo $var:TextMenuUSB ?></span></li>
+-` ?>
+ <? if eq `$var:menu` 'wlan' `
+ <? include ../html/$var:lang/menus/menu2_wlan.html ?>
+ ` `
+diff -Naur usr/www/avm/html/de/menus/menu2_konfig.html.orig usr/www/avm/html/de/menus/menu2_konfig.html
+--- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2008-03-18 04:53:20.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_konfig.html	2008-03-18 04:54:07.000000000 +0100
+@@ -53,15 +53,6 @@
+ ` `
+ <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('system','syslog')"><? echo $var:TextMenuSystem ?></a><span class="PTextOnly"><? echo $var:TextMenuSystem ?></span></li>
+ ` ?>
+-<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('software','extern')"><? echo '$var:TextMenuSoftware' ?></a><span class="PTextOnly"><? echo '$var:TextMenuSoftware' ?></span></li>
+-` ?>
+-<? if eq '$var:menu' 'software' `
+-<script type="text/javascript">javascript:jslSetMenuPage("software","extern",100);</script>
+-<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','home')"><? echo '$var:TextMenuAssi' ?></a><span class="PTextOnly"><? echo '$var:TextMenuAssi' ?></span></li>
+-<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">Erweiterte Einstellungen</a><span class="PTextOnly">Erweiterte Einstellungen</span></li>
+-<li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('software','extern')"><? echo '$var:TextMenuSoftware' ?></a><span class="PTextOnly"><? echo '$var:TextMenuSoftware' ?></span></li>
+-` ?>
+-` ?>
+ <li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>

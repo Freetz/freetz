@@ -31,10 +31,20 @@ case "$1" in
 		( cat $TMPFILE; echo "$2|$3|$4|$5" ) | sort > /mod/etc/reg/file.reg
 		rm -f /mod/var/cache/menu_settings
 		;;
+	status)
+                [ -e "/mod/etc/reg/status.reg" ] || touch /mod/etc/reg/status.reg
+		[ "$4" ] || 4="$2-status.cgi"
+
+                cat /mod/etc/reg/status.reg | grep -v "^$2|.*|$4\$" > $TMPFILE
+                ( cat $TMPFILE; echo "$2|$3|$4" ) | sort > /mod/etc/reg/status.reg
+                rm -f /mod/var/cache/menu_status
+                ;;
+		
 	*)
 		echo "Usage: $0 cgi <pkg> <title>" 1>&2
 		echo "       $0 extra <pkg> <title> <sec-level> <cgi-name>" 1>&2
 		echo "       $0 file <id> <title> <sec-level> <desc-file>" 1>&2
+		echo "       $0 status <pkg> <title> [<cgi-name>]" 1>&2
 		exit 1
 		;;
 esac

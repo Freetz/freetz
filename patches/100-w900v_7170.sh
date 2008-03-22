@@ -19,7 +19,21 @@ ln -sf  microvoip_isdn_top.bit "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn
 #cp "${DIR}/.tk/original/filesystem/etc/init.d/rc.init" "${FILESYSTEM_MOD_DIR}/etc/init.d"
 
 echo2 "Add dect sites to webmenu"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch"
+#Test if a beta-image or a labor-image is used and use another patchfile for them
+if [ "$FREETZ_TYPE_LABOR_BETA" == "y" ];then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_beta.patch"
+elif [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_dsl.patch"
+elif [ "$FREETZ_TYPE_LABOR_PHONE" == "y" ];then
+        modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_phone.patch"
+elif [ "$FREETZ_TYPE_LABOR_GAMING" == "y" ];then
+        modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_gaming.patch"
+elif [ "$FREETZ_TYPE_LABOR_MINI" == "y" ];then
+        modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_mini.patch"
+else
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch"
+fi
+
 cp "${DIR}/.tk/original/filesystem/usr/share/ctlmgr/libdect.so" "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr"
 
 echo2 "moving default config dir, creating tcom symlinks"
@@ -52,6 +66,7 @@ echo2 "patching webinterface"
 sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/fon/sip1.js"
 sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/fon/siplist.js"
 sed -i -e "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/internet/authform.html"
+sed -i -e "s/<? setvariable var:TextMenuSoftware \"Programme\" ?>\\n//g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/menus/menu2.inc"
 
 echo2 "swapping info led"
 #swap info led 0,1 with tr69 led

@@ -3,7 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-cgi_begin 'Logs' 'logs'
+cgi_begin 'Logs' 'status_logs'
 
 if [ -r "/var/log/mod_load.log" ]; then
 	echo '<h1>/var/log/mod_load.log</h1>'
