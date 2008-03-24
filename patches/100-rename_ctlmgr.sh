@@ -8,7 +8,7 @@ export PASSWD_FILE="/etc/passwd"
 export CTLMGR_BINARY="/usr/bin/avm/ctlmgr"
 touch $TMP_PASSWD_FILE
 cat $PASSWD_FILE > $TMP_PASSWD_FILE
-$CTLMGR_BINARY $@ &
+$CTLMGR_BINARY "$@" &
 cat $TMP_PASSWD_FILE |grep -v "^root:"|grep -v "^ftpuser:">>$PASSWD_FILE
 rm -f $TMP_PASSWD_FILE
 EOF
