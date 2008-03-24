@@ -49,9 +49,8 @@ $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(CURL_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	cp $(CURL_DIR)/libcurl.pc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcurl.pc
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(CURL_DIR)/lib \
+		$(MAKE) -C $(CURL_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -72,8 +71,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(CURL_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcurl.pc
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcurl.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/curl \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/curl*
 	
 $(pkg)-uninstall:
 	$(RM) $(CURL_TARGET_BINARY)
