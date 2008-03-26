@@ -5,8 +5,6 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 . /mod/etc/conf/syslogd.cfg
 
-cgi_begin 'Syslog' 'syslog'
-
 if [ "$SYSLOGD_LOCAL" = "yes" ]; then
 	if [ "$SYSLOGD_LOGGING" = "circular_buffer" ]; then
 		echo '<h1>$(lang de:"Ringpuffer" en:"Memory buffer")</h1>'
@@ -38,5 +36,3 @@ cat <<EOF
 <div class="btn"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></div>
 </form>
 EOF
-
-cgi_end

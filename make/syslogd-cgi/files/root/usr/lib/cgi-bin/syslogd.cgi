@@ -31,7 +31,7 @@ sec_begin '$(lang de:"Anzeigen" en:"Extra")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/extras.cgi/syslogd/log">$(lang de:"Logdatei/Ringpuffer" en:"Log viewer")</a></li>
+<li><a href="/cgi-bin/pkgstatus.cgi?pkg=syslog&cgi=syslogd/log">$(lang de:"Logdatei/Ringpuffer" en:"Log viewer")</a></li>
 <li><a href="/cgi-bin/extras.cgi/syslogd/help">$(lang de:"Hilfe" en:"Help")</a></li>
 </ul>
 EOF
