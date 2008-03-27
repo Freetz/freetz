@@ -48,6 +48,12 @@ rc_status() {
 	fi
 }
 
+# default functions for $package.save
+pkg_pre_save() { :; }
+pkg_post_save() { :; }
+pkg_pre_def() { :; }
+pkg_post_def() { :; }
+
 cgi_begin "$(lang de:"Speichern" en:"Saving")..."
 
 echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings"):</p>"
@@ -64,6 +70,8 @@ oldstatus2=''
 case "$form" in
 	pkg_*)
 		package="${form#pkg_}"
+		[ -r "/mod/etc/default.$package/$package.save" ] && . /mod/etc/default.$package/$package.save
+		pkg_pre_save
 		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 			if [ "$package" = "mod" ]; then script='settings.cgi'; else script="pkgconf.cgi"; fi
 			prefix="$(echo "$package" | tr 'a-z\-' 'A-Z_')_"
@@ -98,9 +106,13 @@ case "$form" in
 			fi
 			save_flash $package $oldstatus1
 		fi
+		pkg_post_save
 		;;
 	def_*)
 		package="${form#def_}"
+		[ -r "/mod/etc/default.$package/$package.save" ] && . /mod/etc/default.$package/$package.save
+		pkg_pre_def
+
 		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 			if [ "$package" = "mod" ]; then script='settings.cgi'; else script="pkgconf.cgi"; fi
 
@@ -114,6 +126,7 @@ case "$form" in
 
 			save_flash $package $oldstatus1
 		fi
+		pkg_post_def
 		;;
 	file_*)
 		file_id="${form#file_}"

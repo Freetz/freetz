@@ -6,8 +6,10 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 package="$(echo "$QUERY_STRING" | sed -e 's/^.*pkg=//' -e 's/&.*$//' -e 's/\.//g')"
 
-if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
-	. /mod/etc/conf/$package.cfg
+if [ -r "/mod/etc/default.$package/$package.cfg" -o -r "/mod/etc/default.$package/$package.save" ]; then
+	if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
+		. /mod/etc/conf/$package.cfg
+	fi
 
 	cgi_begin "$package" "pkg_$package"
 	
