@@ -8,26 +8,30 @@ usage()
 Usage: rc.mini_fo [on|off|status|store [ram|jffs2]|nostore]
 mini_fo root mount script - can only be called as an 'init' replacement.
 Parameters:
-  status  - check status of mini_fo root; returns 'running' if mini_fo mount on
-           '/' is active, 'stopped' otherwise.
-  on      - activate replacing 'init' by 'rc.mini_fo' -> boot with mini_fo root,
-            Adds something like 'init=/etc/init.d/rc.mini_fo' to bootloader 
-            environment variable 'kernel_args'.
-  store   - store changed data storage location in bootloader environment for
-            later use with 'mount'. Adds variable 'mini_fo' to bootloader 
-            environment, setting its value. If called without parameter, this 
-            option prints the current 'mini_fo' values.
-  nostore - remove mini_fo variable from bootloader environment. Even though it
-            does no harm to have the variable around in the environment all the
-            time, you may optionally remove it again using this option.
-  off     - deactivate replacing 'init' by 'rc.mini_fo' -> boot without mini_fo
-            root. Removes 'init' from bootloader environment variable 
-           'kernel_args'.
+  status     - check status of mini_fo root; returns 'running' if mini_fo mount 
+               on '/' is active, 'stopped' otherwise.
+  bootstatus - check boot status of mini_fo, returns 'enabled' if mini_fo is 
+               configured as init process
+  on         - activate replacing 'init' by 'rc.mini_fo' -> boot with mini_fo
+               root. Adds something like 'init=/etc/init.d/rc.mini_fo' to 
+	       bootloader environment variable 'kernel_args'.
+  store      - store changed data storage location in bootloader environment for
+               later use with 'mount'. Adds variable 'mini_fo' to bootloader
+               environment, setting its value. If called without parameter, this
+               option prints the current 'mini_fo' values.
+  nostore    - remove mini_fo variable from bootloader environment. Even though
+               it does no harm to have the variable around in the environment 
+	       all the time, you may optionally remove it again using this 
+	       option.
+  off        - deactivate replacing 'init' by 'rc.mini_fo' -> boot without 
+               mini_fo root. Removes 'init' from bootloader environment variable
+               'kernel_args'.
 Examples:
   - rc.mini_fo on
   - rc.mini_fo store jffs2
   - rc.mini_fo store
   - rc.mini_fo status
+  - rc.mini_fo bootstatus
   - rc.mini_fo off
   - rc.mini_fo nostore
 EOF
@@ -142,6 +146,13 @@ start() {
 	fi
 }
 
+bootstatus()
+{
+	grep "kernel_args" /proc/sys/urlader/environment | grep -q "init\=/etc/init\.d/rc\.mini_fo" \
+                        && echo 'enabled' \
+                        || echo 'disabled'
+}
+
 if [ "$PPID" == "0" ]; then
 	echo "*** $0 called as an init process, start setting up mini_fo root ... ***"
 	start
@@ -150,13 +161,23 @@ if [ "$PPID" == "0" ]; then
 fi
 
 case "$1" in
-	""|load|start|stop)
+	start|stop)
+		;;
+	""|load)
+		echo "mini_fo is $(bootstatus)"
+		modreg cgi 'mini_fo' 'Mini_fo'
+		;;
+	unload)
+		modunreg cgi 'mini_fo'
 		;;
 	status)
 		grep -q " / mini_fo " /proc/mounts \
 			&& echo 'running' \
 			|| echo 'stopped'
 		;;
+	bootstatus)
+		bootstatus
+                ;;
 	on)
 		. kernel_args
 		newval=$(ka_getArgs | sed -r 's/(.*[^ ])?( *init=[^ ]*)(.*)/\1\3/ ; s/^ +(.*)/\1/')
