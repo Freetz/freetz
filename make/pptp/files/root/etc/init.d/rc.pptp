@@ -44,6 +44,13 @@ start() {
 	modprobe ppp_deflate
 	modprobe ppp_mppe_mppc
 
+	if [ ! -z "$PPTP_PRECONN" ]; then
+		echo "$PPTP_PRECONN" > /tmp/pptp_preconn
+		chmod +x /tmp/pptp_preconn
+		/tmp/pptp_preconn
+		rm /tmp/pptp_preconn
+	fi
+
 	$PPPD call pptp $PPTP_OPTIONS
 	sleep 3
 	if [ -n "$(pidof "pptp")" ]; then

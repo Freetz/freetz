@@ -227,13 +227,11 @@ start()
 	fi
 
 	echo "*** Pivoting to USB root ... ***"
-	[ -e $MNTPOINT$USBPATH ] && \
-		mount -o bind $MNTPOINT$USBPATH $MNTPOINT && \
-			cd $MNTPOINT
+	cd $MNTPOINT$USBPATH
 	[ -d $OLDROOT ] || mkdir -p $OLDROOT
 	unmount
 	if pivot_root . $OLDROOT; then
-		umount /$OLDROOT$MNTPOINT
+		cd /
 		echo "*** USB root pivoting succeeded, done. ***"
 	else
 		rmmodules
@@ -244,7 +242,7 @@ start()
 if [ "$PPID" == "0" ]; then
 	echo "*** $0 called as an init process, start setting up USB root ... ***"
 	start
-		echo "*** Creating device /dev/console on USB root ... ***"
+	echo "*** Creating device /dev/console on USB root ... ***"
 	# Try to remove existing filesystem object before creating device node
 	[ -e /dev/console ] && rm -f /dev/console 2>/dev/null
 	# We need this to be able to redirect std{in,err,out}
@@ -254,8 +252,11 @@ if [ "$PPID" == "0" ]; then
 fi
 
 case "$1" in
-	""|load|start|stop)
+	""|load|stop)
 		;;
+	start)
+		# unmount old root when started in boot sequence
+		cd / && [ -d $OLDROOT ] && umount $OLDROOT && rmdir $OLDROOT
 	status)
 		get_env_var
 		grep -q "^$DEVICE / " /proc/mounts \
