@@ -27,15 +27,16 @@ cat << EOF
 EOF
 
 sec_end
+if [ "$SYSLOGD_LOCAL" = "yes" ]; then
 sec_begin '$(lang de:"Anzeigen" en:"Extra")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/pkgstatus.cgi?pkg=syslog&cgi=syslogd/log">$(lang de:"Logdatei/Ringpuffer" en:"Log viewer")</a></li>
-<li><a href="/cgi-bin/extras.cgi/syslogd/help">$(lang de:"Hilfe" en:"Help")</a></li>
+<li><a href="/cgi-bin/pkgstatus.cgi?pkg=syslogd&cgi=syslogd/log">$(lang de:"Logdatei/Ringpuffer" en:"Log viewer")</a></li>
 </ul>
 EOF
 sec_end
+fi
 sec_begin '$(lang de:"Optionen" en:"Options")'
 
 cat << EOF

@@ -19,13 +19,18 @@ write_enable=yes
 banner_file=/etc/motd
 nopriv_user=root
 secure_chroot_dir=/var/run/vsftpd
-ftp_data_port=$VSFTPD_PORT
+listen_port=$VSFTPD_PORT
 userlist_enable=yes
-anon_root=/mod/home/ftp
+anon_root=$VSFTPD_ANON_ROOT
 xferlog_std_format=no
 xferlog_enable=$VSFTPD_LOG_ENABLE
 vsftpd_log_file=$VSFTPD_LOG_FILE
 log_ftp_protocol=$VSFTPD_LOG_PROTOC
 syslog_enable=$VSFTPD_LOG_SYSLOG
+max_clients=$VSFTPD_MAX_CLIENTS
+max_per_ip=$VSFTPD_MAX_PER_IP
+pasv_min_port=$VSFTPD_PASV_MIN
+pasv_max_port=$VSFTPD_PASV_MAX
+pasv_promiscuous=$VSFTPD_PROMISCUOUS
 EOF
 

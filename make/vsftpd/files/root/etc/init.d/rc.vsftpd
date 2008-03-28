@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=vsftpd
+LOGLINK=/var/log/mod_vsftpd.log
 
 . /etc/init.d/modlibrc
 
@@ -17,7 +18,7 @@ pre_config() {
 	fi
 
 	if [ ! -e "/var/tmp/ftp" ]; then
-		ln -sf /mod/home/ftp /var/tmp/ftp
+		ln -s /mod/home/ftp /var/tmp/ftp
 	fi
 }
 
@@ -38,6 +39,14 @@ write_config() {
 start() {
 	echo -n 'Starting ftp server...'
 	write_config
+
+	modunreg status vsftpd vsftpd/vsftpd_log
+	if [ "$VSFTPD_LOG_SYSLOG" != "yes" ]; then
+		ln -sf $VSFTPD_LOG_FILE $LOGLINK
+		modreg status vsftpd Vsftpd vsftpd/vsftpd_log
+	fi
+	rm -f /var/mod/var/cache/menu_*
+
 	$DAEMON 
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
@@ -54,6 +63,9 @@ stop () {
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
 
+	modunreg status vsftpd vsftpd/vsftpd_log
+	rm -f /var/mod/var/cache/menu_*
+	rm -f $LOGLINK
 	rm -f /mod/etc/$DAEMON.conf
 
 	if [ "$exitval" -eq 0 ]; then

@@ -30,9 +30,3 @@ else
 	echo '<h1>$(lang de:"Kein lokales Loggen aktiviert" en:"No local logging enabled")!</h1>'
 fi
 
-cat <<EOF
-<form class="btn" action="/cgi-bin/pkgconf.cgi" method="get">
-<input type="hidden" name="pkg" value="syslogd">
-<div class="btn"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></div>
-</form>
-EOF
