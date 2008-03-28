@@ -4,10 +4,11 @@ $(PKG)_SITE:=http://luks.endorphin.org/source
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cryptsetup
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/cryptsetup
 
-$(PKG)_DEPENDS_ON := devmapper e2fsprogs libgcrypt popt
+$(PKG)_DEPENDS_ON := devmapper e2fsprogs popt
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 
+$(PKG)_CONFIGURE_OPTIONS += --disable-libgcrypt
 $(PKG)_CONFIGURE_OPTIONS += --enable-libdevmapper
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-static

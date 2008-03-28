@@ -5,10 +5,10 @@ $(PKG)_STARTLEVEL=20
 
 $(PKG_UNPACKED)
 
-$(pkg)-clean:
-	rm -f $(PACKAGES_BUILD_DIR)/$(INETD_PKG_SOURCE)
+$(pkg):
 
-# Nothing to do here at the moment
-$(pkg)-uninstall:
+$(pkg)-precompiled:
+
+$(pkg)-clean:
 
 $(PKG_FINISH)
