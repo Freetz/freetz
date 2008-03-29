@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.0.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=ftp://vsftpd.beasts.org/users/cevans/
+$(PKG)_SITE:=ftp://vsftpd.beasts.org/users/cevans
 $(PKG)_BINARY:=$($(PKG)_DIR)/vsftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/vsftpd
 $(PKG)_STARTLEVEL=40
