@@ -1,0 +1,42 @@
+--- cli/Makefile.am.orig	2008-03-29 12:22:24.000000000 +0100
++++ cli/Makefile.am	2008-03-29 12:22:50.000000000 +0100
+@@ -12,5 +12,5 @@
+     $(top_builddir)/third-party/libevent/libevent.la \
+     $(top_builddir)/third-party/libnatpmp/libnatpmp.a \
+     $(top_builddir)/third-party/miniupnp/libminiupnp.a \
+-    $(OPENSSL_LIBS) $(PTHREAD_LIBS) -lm
++    $(OPENSSL_LIBS) $(PTHREAD_LIBS) $(INTLLIBS) -lm
+ 
+--- libtransmission/Makefile.am.orig	2008-03-29 12:23:38.000000000 +0100
++++ libtransmission/Makefile.am	2008-03-29 12:24:14.000000000 +0100
+@@ -85,7 +85,7 @@
+     $(top_builddir)/third-party/miniupnp/libminiupnp.a \
+     $(top_builddir)/third-party/libnatpmp/libnatpmp.a \
+     $(top_builddir)/third-party/libevent/libevent.la \
+-    $(OPENSSL_LIBS) $(PTHREAD_LIBS) -lm
++    $(OPENSSL_LIBS) $(PTHREAD_LIBS) $(INTLLIBS) -lm
+ 
+ benc2php_SOURCES = benc2php.c
+ benc2php_LDADD = $(APPS_LDADD)
+--- cli/Makefile.in.orig	2008-03-29 12:34:25.000000000 +0100
++++ cli/Makefile.in	2008-03-29 12:35:10.000000000 +0100
+@@ -269,7 +269,7 @@
+     $(top_builddir)/third-party/libevent/libevent.la \
+     $(top_builddir)/third-party/libnatpmp/libnatpmp.a \
+     $(top_builddir)/third-party/miniupnp/libminiupnp.a \
+-    $(OPENSSL_LIBS) $(PTHREAD_LIBS) -lm
++    $(OPENSSL_LIBS) $(PTHREAD_LIBS) $(INTLLIBS) -lm
+ 
+ all: all-am
+ 
+--- libtransmission/Makefile.in.orig	2008-03-29 12:36:00.000000000 +0100
++++ libtransmission/Makefile.in	2008-03-29 12:36:20.000000000 +0100
+@@ -372,7 +372,7 @@
+     $(top_builddir)/third-party/miniupnp/libminiupnp.a \
+     $(top_builddir)/third-party/libnatpmp/libnatpmp.a \
+     $(top_builddir)/third-party/libevent/libevent.la \
+-    $(OPENSSL_LIBS) $(PTHREAD_LIBS) -lm
++    $(OPENSSL_LIBS) $(PTHREAD_LIBS) $(INTLLIBS) -lm
+ 
+ benc2php_SOURCES = benc2php.c
+ benc2php_LDADD = $(APPS_LDADD)

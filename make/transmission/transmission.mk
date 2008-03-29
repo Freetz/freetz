@@ -1,17 +1,18 @@
-$(call PKG_INIT_BIN, 1.06)
+$(call PKG_INIT_BIN, 1.10)
 $(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/cli/transmissioncli
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/transmissioncli
 
-$(PKG)_DEPENDS_ON := zlib openssl
+$(PKG)_DEPENDS_ON := zlib openssl gettext
 
-$(PKG)_CONFIGURE_ENV += CROSS="$(TARGET_CROSS)"
-$(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 
-$(PKG)_CONFIGURE_OPTIONS += --without-gtk
-$(PKG)_CONFIGURE_OPTIONS += --without-wx
+$(PKG)_CONFIGURE_OPTIONS += --disable-beos
+$(PKG)_CONFIGURE_OPTIONS += --disable-darwin
+$(PKG)_CONFIGURE_OPTIONS += --disable-daemon
+$(PKG)_CONFIGURE_OPTIONS += --disable-gtk
+$(PKG)_CONFIGURE_OPTIONS += --disable-wx
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
