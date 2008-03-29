@@ -64,3 +64,4 @@ cat << EOF
 <textarea name="net_routing" rows="3" cols="50" maxlength="255">$(httpd -e "$PPTP_NET_ROUTING")</textarea>
 EOF
 
+sec_end

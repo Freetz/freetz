@@ -5,7 +5,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 echo "<h1>/var/log/mod_vsftpd.log ($(ls -al /var/log/mod_vsftpd.log|sed 's/.* -> //g'))</h1>"
 if [ -r "/var/log/mod_vsftpd.log" ]; then
-	echo -n '<pre style="height: 480px; width: 500px; overflow: auto;">'
+	let _width=$_cgi_width-230
+	echo -n '<pre style="height: 480px; width: '$_width'px; overflow: auto;">'
 	httpd -e "$(cat /var/log/mod_vsftpd.log)"
 	echo '</pre>'
 else

@@ -234,7 +234,7 @@ config FREETZ_MODULE_ipt_REDIRECT
 	default n
 config FREETZ_MODULE_ipt_REJECT
 	bool "ipt_REJECT.ko"
-	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
 	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
 	default n
 config FREETZ_MODULE_ipt_ROUTE
