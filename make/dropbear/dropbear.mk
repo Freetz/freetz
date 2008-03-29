@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.50)
+$(call PKG_INIT_BIN, 0.51)
 $(PKG)_SOURCE:=dropbear-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://matt.ucc.asn.au/dropbear/releases
 $(PKG)_BINARY:=$($(PKG)_DIR)/dropbearmulti
