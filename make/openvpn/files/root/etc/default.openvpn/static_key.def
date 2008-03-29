@@ -1,5 +1,5 @@
 CAPTION='Static Key (OpenVPN)'
 DESCRIPTION='$(lang de:"Automatisch erzeugter Schlüssel. Wird als statischer Schlüssel oder als TLS-Schlüssel auf der/den Gegenseite(n) benötigt." en:"Automaticly generated. Required as static key or as TLS-key on the remote site(s).")'
 CONFIG_FILE='/tmp/flash/static.key'
-CONFIG_SAVE='modsave flash; if [ ! -z "$(pidof openvpn)" ]; then echo ""; /mod/etc/init.d/rc.openvpn reload; fi'
+CONFIG_SAVE='modsave flash; if [ ! -z `pidof openvpn` ]; then echo ""; /mod/etc/init.d/rc.openvpn reload; fi'
 CONFIG_TYPE='text'

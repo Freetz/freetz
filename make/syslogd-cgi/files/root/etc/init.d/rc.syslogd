@@ -95,7 +95,7 @@ stop () {
 	rm -f /mod/etc/$DAEMON.conf
 	
 	#stop klogd
-	if [ ! -z "$(pidof klogd)" ]; then
+	if [ ! -z `pidof klogd` ]; then
 		killall klogd > /dev/null 2>&1
 	fi
 	
@@ -126,7 +126,7 @@ case "$1" in
 			exit 1;
 		fi
 
-		if [ ! -z "$(pidof $DAEMON)" ]; then
+		if [ ! -z `pidof $DAEMON` ]; then
 			echo "$DAEMON already started."
 		else
 			start
@@ -139,7 +139,7 @@ case "$1" in
 		fi
 		;;
 	start)
-		if [ -z "$(pidof $DAEMON)" ]; then
+		if [ -z `pidof "$DAEMON"` ]; then
 			start
 		else
 			exit 0
@@ -154,7 +154,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
+		if [ -z `pidof "$DAEMON"` ]; then
 			echo 'stopped'
 		else
 			echo 'running'

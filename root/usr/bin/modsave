@@ -5,7 +5,7 @@
 save() {
 	TMPFILE=/tmp/.save.tmp
 
-	if [ -r "/mod/etc/conf/mod.cfg" ]; then
+	if [ -r /mod/etc/conf/mod.cfg ]; then
 		. /mod/etc/conf/mod.cfg
 	else
 		MOD_LIMIT=61440
@@ -19,7 +19,7 @@ save() {
 
 	tar -cf $TMPFILE flash -C /tmp/
 
-	let size="$(wc -c < $TMPFILE)"
+	let size={ wc -c < $TMPFILE; }
 
 	if [ "$size" -gt "$MOD_LIMIT" ]; then
 		rm -f $TMPFILE
@@ -43,10 +43,10 @@ case "$1" in
 
 		echo -n 'Saving config...'
 		/usr/bin/modconf save mod
-		if [ -e "/etc/static.pkg" ]; then
-			for pkg in $(cat /etc/static.pkg); do
+		if [ -e /etc/static.pkg ]; then
+			for pkg in `cat /etc/static.pkg`; do
 				if [ -r "/etc/default.$pkg/$pkg.cfg" ]; then
-					/usr/bin/modconf save $pkg
+					/usr/bin/modconf save "$pkg"
 				fi
 			done
 		fi

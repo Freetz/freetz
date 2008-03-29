@@ -84,13 +84,13 @@ stat_static() {
 	stat_begin
 
 	empty=1
-	if [ -e "/etc/static.pkg" ]; then
+	if [ -e /etc/static.pkg ]; then
 		for pkg in $(cat /etc/static.pkg); do
-			if [ -x "/mod/etc/init.d/rc.$pkg" ] && [ ! -e /mod/etc/${pkg}_multid.pkg ]; then
+			if [ -x "/mod/etc/init.d/rc.$pkg" ] && [ ! -e "/mod/etc/${pkg}_multid.pkg" ]; then
 				empty=0
 				stat_line "$pkg"
 			else
-				if [ -e /mod/etc/${pkg}_multid.pkg ]; then
+				if [ -e "/mod/etc/${pkg}_multid.pkg" ]; then
 					empty=0
 					echo "<tr><td><b>Deamons <i>${pkg}</i>:</b></td></tr>"
 					for pkgline in $(cat /mod/etc/${pkg}_multid.pkg); do
@@ -127,7 +127,7 @@ cgi_begin '$(lang de:"Dienste" en:"Services")' 'daemons'
 
 view="$(echo "$QUERY_STRING" | sed -e 's/^.*view=//' -e 's/&.*$//' -e 's/\.//g')"
 
-if [ -e "/etc/default.inetd/inetd.cfg" ]; then
+if [ -e /etc/default.inetd/inetd.cfg ]; then
 	inetd=true
 else
 	inetd=false

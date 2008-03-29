@@ -118,7 +118,7 @@ case "$1" in
 		if [ -e "/var/run/dnsmasq.pid" ]; then
 			echo "$DAEMON already started."
 		else
-			if [ -z "$(pidof multid)" ]; then
+			if [ -z `pidof multid` ]; then
 				start nomultid
 			else
 				start
@@ -143,7 +143,7 @@ case "$1" in
 		multid $MULTIDPARAM > /dev/null 2>&1
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
+		if [ -z `pidof "$DAEMON"` ]; then
 			echo 'stopped'
 		else
 			echo 'running'

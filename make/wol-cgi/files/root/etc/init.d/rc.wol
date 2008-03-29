@@ -8,7 +8,7 @@ _DAEMON=httpd
 
 case "$1" in
 	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/wol.cfg" ]; then
+		if [ ! -r /mod/etc/conf/wol.cfg ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
 		fi
@@ -56,7 +56,7 @@ stop() {
 	exitval=0
 
 	if [ -e "/var/run/$DAEMON.pid" ]; then
-		kill $(cat /var/run/$DAEMON.pid) > /dev/null 2>&1
+		kill `cat "/var/run/$DAEMON.pid"` > /dev/null 2>&1
 		exitval=$?
 		rm -f /var/run/$DAEMON.pid
 	fi
@@ -70,7 +70,7 @@ stop() {
 }
 
 case "$1" in
-        ""|load)
+	""|load)
 		modreg cgi 'wol' 'Wake on LAN'
 
 		if [ "$WOL_ENABLED" != "yes" ]; then

@@ -28,8 +28,8 @@ else
 	echo 'done.'
 fi
 
-[ -e "/mod/etc/default.mod" ] || ln -s /etc/default.mod /mod/etc/default.mod
-[ -e "/mod/usr/lib/cgi-bin/mod" ] || ln -s /usr/lib/cgi-bin/mod /mod/usr/lib/cgi-bin/mod
+[ -e /mod/etc/default.mod ] || ln -s /etc/default.mod /mod/etc/default.mod
+[ -e /mod/usr/lib/cgi-bin/mod ] || ln -s /usr/lib/cgi-bin/mod /mod/usr/lib/cgi-bin/mod
 
 echo -n 'Loading users, groups and passwords...'
 /usr/bin/modusers load
@@ -41,25 +41,25 @@ echo 'done.'
 
 echo -n 'Loading config...'
 /usr/bin/modconf load mod
-if [ -e "/etc/static.pkg" ]; then
+if [ -e /etc/static.pkg ]; then
 	for pkg in $(cat /etc/static.pkg); do
-		[ -e "/mod/pkg/$pkg" ] || ln -s / /mod/pkg/$pkg
+		[ -e "/mod/pkg/$pkg" ] || ln -s / "/mod/pkg/$pkg"
 		[ -d "/etc/default.$pkg" -a ! -e "/mod/etc/default.$pkg" ] && \
-			ln -s /etc/default.$pkg /mod/etc/default.$pkg
+			ln -s "/etc/default.$pkg" "/mod/etc/default.$pkg"
 		[ -d "/usr/lib/cgi-bin/$pkg" -a ! -e "/mod/usr/lib/cgi-bin/$pkg" ] && \
-			ln -s /usr/lib/cgi-bin/$pkg /mod/usr/lib/cgi-bin/$pkg
+			ln -s "/usr/lib/cgi-bin/$pkg" "/mod/usr/lib/cgi-bin/$pkg"
 		[ -x "/usr/lib/cgi-bin/$pkg.cgi" -a ! -e "/mod/usr/lib/cgi-bin/$pkg.cgi" ] && \
-			ln -s /usr/lib/cgi-bin/$pkg.cgi /mod/usr/lib/cgi-bin/$pkg.cgi
+			ln -s "/usr/lib/cgi-bin/$pkg.cgi" "/mod/usr/lib/cgi-bin/$pkg.cgi"
 		[ -x "/etc/init.d/rc.$pkg" -a ! -e "/mod/etc/init.d/rc.$pkg" ] && \
-			ln -s /etc/init.d/rc.$pkg /mod/etc/init.d/rc.$pkg
-		[ -r "/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load $pkg
+			ln -s "/etc/init.d/rc.$pkg" "/mod/etc/init.d/rc.$pkg"
+		[ -r "/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load "$pkg"
 	done
 fi
 echo 'done.'
 
 echo -n 'Loading modules...'
 if [ -r "/tmp/flash/modules" ]; then
-	cat /tmp/flash/modules | grep -v "^#" | while read -r module; do
+	grep -v "^#" /tmp/flash/modules | while read -r module; do
 		[ -z "$module" ] || modprobe $module
 	done
 fi

@@ -86,10 +86,9 @@ count=$((count+1));
 done
 unset IFS;
 
-for config in `ls /mod/etc/init.d/rc.openvpn*`
-do
-confname=${config##*rc.}
-    tmp=`echo $cc | grep $confname`;
+for config in `ls /mod/etc/init.d/rc.openvpn*`; do
+	confname=${config##*rc.}
+	tmp=`echo $cc | grep $confname`;
 	if [ "$tmp" == "" ] ; then
 		rm $config
 		if [ -d /mod/etc/default.$confname ]; then
@@ -97,14 +96,13 @@ confname=${config##*rc.}
 			rm -rf /tmp/flash/$confname;
 		fi
 		if [ -e /mod/etc/static.pkg ]; then
-		    grep -v $confname /mod/etc/static.pkg > /mod/etc/static.pkg.tmp
-		    mv /mod/etc/static.pkg.tmp /mod/etc/static.pkg
+			grep -v $confname /mod/etc/static.pkg > /mod/etc/static.pkg.tmp
+			mv /mod/etc/static.pkg.tmp /mod/etc/static.pkg
 		fi
-                if [ -e /mod/etc/reg/file.reg ]; then
-		    for fn in `grep  "/mod/etc/default.$confname" /mod/etc/reg/file.reg | cut -d "|" -f 1`
-		    do
-		        modunreg file $fn
-		    done
+		if [ -e /mod/etc/reg/file.reg ]; then
+			for fn in `grep  "/mod/etc/default.$confname" /mod/etc/reg/file.reg | cut -d "|" -f 1`; do
+				modunreg file $fn
+			done
 		fi
 	fi		
 done

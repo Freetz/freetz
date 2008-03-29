@@ -40,7 +40,7 @@ exec 1>&-;exec 2>&-
 while true; do
 	if [ -d $SYSFS/block/$DEVICE ]; then
 		CURTIME="$(date +'%s')"
-		CURIOCNT="$(cat $IOCNTFILE)"
+		CURIOCNT=`cat "$IOCNTFILE"`
 
 		if [ "$LASTIOCNT" != "$CURIOCNT" ]; then
 			LASTATIME=$CURTIME
@@ -50,7 +50,7 @@ while true; do
 			-a "$SLEEPTIME" -lt "$LASTATIME" ]; then
 			SLEEPTIME=$CURTIME
 			sg_start --stop --pc=$PC /dev/$DEVICE
-			CURIOCNT="$(cat $IOCNTFILE)"
+			CURIOCNT=`cat "$IOCNTFILE"`
 		fi
 
 		LASTIOCNT=$CURIOCNT

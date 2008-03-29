@@ -60,7 +60,7 @@ stop() {
 	exitval=0
 
 	if [ -e "/var/run/$DAEMON.pid" ]; then
-		kill $(cat /var/run/$DAEMON.pid) > /dev/null 2>&1
+		kill `cat /var/run/$DAEMON.pid` > /dev/null 2>&1
 		exitval=$?
 		rm -f /var/run/$DAEMON.pid
 	fi

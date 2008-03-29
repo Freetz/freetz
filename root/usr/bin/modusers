@@ -116,8 +116,8 @@ load()
 	fi
 
 	for f in $FILES; do
-		if [ -e $USER_DIR/$f ]; then
-			cp -a $USER_DIR/$f $TMP_DIR
+		if [ -e "$USER_DIR/$f" ]; then
+			cp -a "$USER_DIR/$f" "$TMP_DIR"
 		fi
 	done
 	cat /etc/passwd | while IFS=: read user pass uid gid gecos user_homedir shell; do

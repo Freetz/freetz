@@ -1358,7 +1358,7 @@ let REM_RTCP_START=$LOC_RTP_START+3
 
 
 echo "$RTP_START"
-if [ ! -z "$(pidof 'dtmfbox')" ];
+if [ ! -z `pidof dtmfbox` ];
 then
 	dtmfbox_running="1"
 else
@@ -1573,7 +1573,7 @@ fi
 
 sec_begin 'Status'
 
-if [ ! -z "$(pidof 'dtmfbox')" ];
+if [ ! -z `pidof dtmfbox` ];
 then
 status_daemon="running"
 else
@@ -1848,7 +1848,7 @@ CONFIG_FILE="/var/tmp/flash/dtmfbox_userscript.sh"
 echo "<p>$DESCRIPTION</p>"
 echo "<form action=\"/cgi-bin/save.cgi?form=file_$id\" method=\"post\" target='_blank'>"
 echo -n '<textarea style="width: $TABLE_WIDTH;" name="content" rows='"$TEXT_ROWS"' cols="60" wrap="off">'
-[ -r "$CONFIG_FILE" ] && $HTTPD -e "$(cat $CONFIG_FILE)"
+[ -r "$CONFIG_FILE" ] && $HTTPD -e `cat "$CONFIG_FILE"`
 echo '</textarea>'
 echo '<div class="btn"><input type="submit" value="&Uuml;bernehmen"></div>'
 echo '</form>'

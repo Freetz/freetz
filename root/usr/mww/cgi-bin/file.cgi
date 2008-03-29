@@ -3,7 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-[ -e "/mod/etc/reg/file.reg" ] || touch /mod/etc/reg/file.reg
+[ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
 
 id="$(echo "$QUERY_STRING" | sed -e 's/^.*id=//' -e 's/&.*$//' -e 's/\.//g')"
 

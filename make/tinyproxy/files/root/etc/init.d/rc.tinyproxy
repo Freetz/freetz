@@ -19,16 +19,16 @@ esac
 
 
 start() {
-    if [ ! -r "/tmp/flash/tinyproxy.conf" ]; then
-        echo "Copying /etc/default.tinyproxy/default.conf to flash"
-        cp /mod/etc/default.tinyproxy/default.conf /tmp/flash/tinyproxy.conf
-    fi
-    if [ ! -r "/tmp/flash/tinyproxy.filter" ]; then
-        echo "Copying /etc/default.tinyproxy/default.filter to flash"
-        cp /mod/etc/default.tinyproxy/default.filter /tmp/flash/tinyproxy.filter
-    fi
+	if [ ! -r /tmp/flash/tinyproxy.conf ]; then
+		echo "Copying /etc/default.tinyproxy/default.conf to flash"
+		cp /mod/etc/default.tinyproxy/default.conf /tmp/flash/tinyproxy.conf
+	fi
+	if [ ! -r /tmp/flash/tinyproxy.filter ]; then
+		echo "Copying /etc/default.tinyproxy/default.filter to flash"
+		cp /mod/etc/default.tinyproxy/default.filter /tmp/flash/tinyproxy.filter
+	fi
 
-    {
+	{
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
 		else
@@ -41,27 +41,27 @@ start() {
 	} > /mod/etc/$DAEMON.conf
 
 
-    echo -n "Starting $DAEMON server ... "
-    $DAEMON -c /mod/etc/$DAEMON.conf
-    exitval=$?
-    if [ "$exitval" -eq 0 ]; then
-        echo 'done.'
-    else
-        echo 'failed.'
-        exit $exitval
-    fi
+	echo -n "Starting $DAEMON server ... "
+	$DAEMON -c /mod/etc/$DAEMON.conf
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
 
-    if [ "$TINYPROXY_CATCHALL" == "yes" ]; then
-        echo -n "Configuring IPTABLES to make all web traffic go through tinyproxy ... "
-        /usr/sbin/iptables -t nat -A PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-port $TINYPROXY_PORT
-        echo "done."
-    fi
+	if [ "$TINYPROXY_CATCHALL" == "yes" ]; then
+		echo -n "Configuring IPTABLES to make all web traffic go through tinyproxy ... "
+		/usr/sbin/iptables -t nat -A PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-port $TINYPROXY_PORT
+		echo "done."
+	fi
 
-    if [ "$TINYPROXY_CONFSERVER" == "yes" ]; then
-        echo -n "Starting the webserver for the proxy config file ... "
-        httpd -p $TINYPROXY_CONFSERVERPORT -h /mod/usr/mww_tinyproxy
-        echo "done."
-    fi
+	if [ "$TINYPROXY_CONFSERVER" == "yes" ]; then
+		echo -n "Starting the webserver for the proxy config file ... "
+		httpd -p $TINYPROXY_CONFSERVERPORT -h /mod/usr/mww_tinyproxy
+		echo "done."
+	fi
 }
 
 stop() {
@@ -74,23 +74,23 @@ stop() {
 		echo 'failed.'
 	fi
 
-    if [ "$TINYPROXY_CATCHALL" == "yes" ]; then
-        echo -n "Removing tinyproxy IPTABLES rules if any ... "
-        /usr/sbin/iptables -t nat -D PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-port $TINYPROXY_PORT
-        echo "done."
-    fi
-
-    if [ "$TINYPROXY_CONFSERVER" == "yes" ]; then
-        echo -n "Stopping the webserver for the proxy config file ... "
-        pid=$(ps aux | egrep "httpd\ -p.*tinyproxy" | cut -d ' ' -f 2)
-        kill -9 $pid > /dev/null 2>&1
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
+	if [ "$TINYPROXY_CATCHALL" == "yes" ]; then
+		echo -n "Removing tinyproxy IPTABLES rules if any ... "
+		/usr/sbin/iptables -t nat -D PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-port $TINYPROXY_PORT
+		echo "done."
 	fi
-    fi
+
+	if [ "$TINYPROXY_CONFSERVER" == "yes" ]; then
+		echo -n "Stopping the webserver for the proxy config file ... "
+		pid=`ps aux | egrep "httpd\ -p.*tinyproxy" | cut -d ' ' -f 2`
+		kill -9 $pid > /dev/null 2>&1
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+		fi
+	fi
 }
 
 case "$1" in
@@ -98,11 +98,11 @@ case "$1" in
 		modreg cgi 'tinyproxy' 'tinyproxy'
 
 		deffile='/mod/etc/default.tinyproxy/tinyproxy_conf.def'
-		[ -r "/tmp/flash/tinyproxy_conf.def" ] && deffile='/tmp/flash/tinyproxy_conf.def'
+		[ -r /tmp/flash/tinyproxy_conf.def ] && deffile='/tmp/flash/tinyproxy_conf.def'
 		modreg file 'tinyproxy_conf' 'tinyproxy conf' 0 "$deffile"
 
 		deffile='/mod/etc/default.tinyproxy/tinyproxy_filter.def'
-		[ -r "/tmp/flash/tinyproxy_filter.def" ] && deffile='/tmp/flash/tinyproxy_filter.def'
+		[ -r /tmp/flash/tinyproxy_filter.def ] && deffile='/tmp/flash/tinyproxy_filter.def'
 		modreg file 'tinyproxy_filter' 'tinyproxy filter' 0 "$deffile"
 		
 		if [ "$TINYPROXY_ENABLED" != "yes" ]; then
@@ -112,16 +112,16 @@ case "$1" in
 
 		start
 		;;
-    unload)
-        stop
-        modunreg file 'tinyproxy_conf'
-        modunreg file 'tinyproxy_filter'
+	unload)
+		stop
+		modunreg file 'tinyproxy_conf'
+		modunreg file 'tinyproxy_filter'
 		modunreg cgi 'tinyproxy'
-        ;;
-    start)
-        start
-        ;;
-    stop)
+		;;
+	start)
+		start
+		;;
+	stop)
 		stop
 		;;
 	restart)
@@ -130,7 +130,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
+		if [ -z `pidof "$DAEMON"` ]; then
 			echo 'stopped'
 		else
 			echo 'running'

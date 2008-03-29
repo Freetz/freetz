@@ -7,7 +7,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 exec 2>&1
 
 update_inetd() {
-	if [ -e "/mod/etc/default.inetd/inetd.cfg" ]; then
+	if [ -e /mod/etc/default.inetd/inetd.cfg ]; then
 		if [ -x "/mod/etc/init.d/rc.$1" ]; then
 			status=$(/mod/etc/init.d/rc.$1 status)
 			if [ "running" = "$2" -a "inetd" = "$status" ]; then
@@ -21,12 +21,12 @@ update_inetd() {
 				/mod/etc/init.d/rc.$1 start
 				echo
 			elif [ "inetd" = "$2" -o "inetd" = "$status" ]; then
-        	                echo
-                	        /usr/bin/modinetd --nosave $1
-                        	echo
+				echo
+				/usr/bin/modinetd --nosave $1
+				echo
 			fi
-                fi
-        fi
+		fi
+	fi
 }
 
 save_flash() {
@@ -132,10 +132,10 @@ case "$form" in
 		file_id="${form#file_}"
 		script='file.cgi'
 
-		[ -e "/mod/etc/reg/file.reg" ] || touch /mod/etc/reg/file.reg
+		[ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
 
 		sec_level=1
-		[ -r "/tmp/flash/security" ] && let sec_level="$(cat /tmp/flash/security)"
+		[ -r /tmp/flash/security ] && let sec_level="$(cat /tmp/flash/security)"
 
 		OIFS="$IFS"
 		IFS='|'

@@ -53,7 +53,7 @@ case "$MOD_CGI_CMD" in
 		cgi_begin 'Downgrade mod...'
 		echo '<p>$(lang de:"Downgrade mod von supamicha" en:"Downgrade mod by supamicha"):<br>$(lang de:"&Auml;ndert die Firmware Version bis zum n&auml;chsten Neustart auf xx.01.01" en:"Changes the firmware version to xx.01.01 until next reboot")</p>'
 		echo -n '<pre>Downgrading...'
-		if [ -e "/var/tmp/version" ]; then
+		if [ -e /var/tmp/version ]; then
 			echo 'already done.</pre>'
 		else
 			sed 's/{CONFIG_VERSION_MAJOR}.*/{CONFIG_VERSION_MAJOR}.01.01/1' /etc/version > /var/tmp/version

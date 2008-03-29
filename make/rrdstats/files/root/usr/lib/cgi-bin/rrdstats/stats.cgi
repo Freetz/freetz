@@ -77,7 +77,7 @@ generate_graph() {
 			;;
 		memory)
 			NAMEPREFIX=memory 
-			let RAM=$(cat /proc/meminfo |grep MemTotal| tr -s [:blank:] " " |cut -d " " -f 2)*1024
+			let RAM=`grep MemTotal /proc/meminfo | tr -s [:blank:] " " |cut -d " " -f 2`*1024
 			FILE=$RRDSTATS_RRDDATA/$NAMEPREFIX.rrd
 			if [ -e $FILE ]; then
 				rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png	\

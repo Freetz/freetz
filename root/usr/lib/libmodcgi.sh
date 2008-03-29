@@ -5,10 +5,10 @@ cat << EOF
 EOF
 
 if [ "$1" = "status" ]; then
-	if [ -r "/mod/etc/reg/status.reg" ]; then
-	        cat /mod/etc/reg/status.reg | while IFS='|' read -r pkg title cgi; do
-        	        echo "<div id=\"status_$(echo $cgi | sed -e "s/\//__/")\" class=\"su\"><a href=\"/cgi-bin/pkgstatus.cgi?pkg=$pkg&cgi=$cgi\">$title</a></div>"
-	        done
+	if [ -r /mod/etc/reg/status.reg ]; then
+		cat /mod/etc/reg/status.reg | while IFS='|' read -r pkg title cgi; do
+			echo "<div id=\"status_$(echo $cgi | sed -e "s/\//__/")\" class=\"su\"><a href=\"/cgi-bin/pkgstatus.cgi?pkg=$pkg&cgi=$cgi\">$title</a></div>"
+		done
 	fi
 	echo "<div id=\"status_logs\" class=\"su\"><a href=\"/cgi-bin/logs.cgi\">Logs</a></div>"
 fi
@@ -18,7 +18,7 @@ cat << EOF
 <div id="settings"><a href="/cgi-bin/settings.cgi">$(lang de:"Einstellungen" en:"Settings")</a></div>
 EOF
 
-if [ "$1" = "settings" -a -r "/mod/etc/reg/file.reg" ]; then
+if [ "$1" = "settings" -a -r /mod/etc/reg/file.reg ]; then
 	cat /mod/etc/reg/file.reg | while IFS='|' read -r id title sec def; do
 		echo "<div id=\"file_$id\" class=\"su\"><a href=\"/cgi-bin/file.cgi?id=$id\">$title</a></div>"
 	done
@@ -28,7 +28,7 @@ cat << EOF
 <div id="packages"><a href="/cgi-bin/packages.cgi">$(lang de:"Pakete" en:"Packages")</a></div>
 EOF
 
-if [ "$1" != "settings" -a "$1" != "status" -a -r "/mod/etc/reg/cgi.reg" ]; then
+if [ "$1" != "settings" -a "$1" != "status" -a -r /mod/etc/reg/cgi.reg ]; then
 	cat /mod/etc/reg/cgi.reg | while IFS='|' read -r pkg title; do
 		echo "<div id=\"pkg_$pkg\" class=\"su\"><a href=\"/cgi-bin/pkgconf.cgi?pkg=$pkg\">$title</a></div>"
 	done
@@ -59,8 +59,8 @@ Content-type: text/html; charset=iso-8859-1
 EOF
 
 # custom style for fieldset and div.body
-if [ $_cgi_width ]; then
-	let _usr_style=$_cgi_width-230
+if [ "$_cgi_width" ]; then
+	let _usr_style="$_cgi_width-230"
 	echo "<style>"
 	echo "fieldset { margin: 0px; margin-top: 10px; margin-bottom: 10px; padding: 10px; width: "$_usr_style"px;}"
 	echo "div.body { width: "$_usr_style"px; }"
@@ -78,7 +78,7 @@ EOF
 fi
 
 # set width of table
-if [ ! $_cgi_width ]; then let _cgi_width="730"; fi
+if [ ! "$_cgi_width" ]; then let _cgi_width="730"; fi
 let _cgi_total_width="$_cgi_width+40"
 
 cat << EOF
@@ -102,8 +102,8 @@ if [ -n "$2" ]; then
 		*) sub='packages' ;;
 	esac
 
-	[ -e "/mod/var/cache/menu_$sub" ] || _cgi_menu $sub > /mod/var/cache/menu_$sub
-	cat /mod/var/cache/menu_$sub
+	[ -e "/mod/var/cache/menu_$sub" ] || _cgi_menu "$sub" > "/mod/var/cache/menu_$sub"
+	cat "/mod/var/cache/menu_$sub"
 fi
 }
 

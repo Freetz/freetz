@@ -196,7 +196,7 @@ start_httpd() {
 
 stop_httpd() {
 
-    if [ ! -z "$(pidof "busybox-tools")" ]; then
+    if [ ! -z `pidof "busybox-tools"` ]; then
 	echo "Stop Webserver..."
 	killall -9 busybox-tools
 	echo "done!"
@@ -211,7 +211,7 @@ start() {
     cd /
 
     # Refresh voipd register (if started)
-    if [ ! -z "$(pidof "voipd")" ]; then
+    if [ ! -z `pidof "voipd"` ]; then
 	voipd -R 2>/dev/null
     fi
 
@@ -275,13 +275,13 @@ stop() {
     killall -9 script_main.sh 2>/dev/null >/dev/null
 
     # Stop daemon
-    if [ ! -z "$(pidof "$DAEMON")" ]; then
+    if [ ! -z`pidof "$DAEMON"` ]; then
 	cd $DTMFBOX_PATH
 	$DAEMON -stop daemon >/dev/null &
 
 	# max. wait 5 sec for stop
 	let wait=5;
-	while [ ! -z "$(pidof "$DAEMON")" ] && [ $wait -ge 1 ];
+	while [ ! -z `pidof "$DAEMON"` ] && [ $wait -ge 1 ];
 	do
 	    echo -n "$wait,"
 	    let wait=wait-1
@@ -295,7 +295,7 @@ stop() {
 
 	
     # Refresh voipd register (if started)
-    if [ ! -z "$(pidof "voipd")" ]; then
+    if [ ! -z `pidof "voipd"` ]; then
 	voipd -R 2>/dev/null
     fi
 
@@ -351,7 +351,7 @@ case "$1" in
 			exit 1;
 		fi
 
-		if [ ! -z "$(pidof $DAEMON)" ]; 
+		if [ ! -z `pidof $DAEMON` ]; 
 		then
 			echo "$DAEMON already started."
 		else
@@ -424,7 +424,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
+		if [ -z `pidof "$DAEMON`" ]; then
 			echo "stopped"
 		else
 			echo "running"

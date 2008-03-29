@@ -108,7 +108,7 @@ case "$1" in
 	status)
 		if [ "$VSFTPD_ENABLED" == "inetd" ]; then
 			echo 'inetd'
-		elif [ ! -z "$(pidof "$DAEMON")" ]; then
+		elif [ ! -z `pidof "$DAEMON"` ]; then
 			echo 'running'
 		else
 			echo 'stopped'

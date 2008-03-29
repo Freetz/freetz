@@ -86,7 +86,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "$(pidof ntpd)" ]; then
+		if [ -z `pidof ntpd` ]; then
 			echo 'stopped'
 		else
 			echo 'running'

@@ -10,35 +10,35 @@ TMPFILE=$TMP/.reg.tmp.$$
 trap "rm -f $TMPFILE" EXIT
 
 case "$1" in
-        cgi)
-		[ -e "/mod/etc/reg/cgi.reg" ] || touch /mod/etc/reg/cgi.reg
+	cgi)
+		[ -e /mod/etc/reg/cgi.reg ] || touch /mod/etc/reg/cgi.reg
 
-		cat /mod/etc/reg/cgi.reg | grep -v "^$2|" > $TMPFILE
+		grep -v "^$2|" /mod/etc/reg/cgi.reg > $TMPFILE
 		( cat $TMPFILE; echo "$2|$3" ) | sort > /mod/etc/reg/cgi.reg
 		rm -f /mod/var/cache/menu_packages
 		;;
 	extra)
-		[ -e "/mod/etc/reg/extra.reg" ] || touch /mod/etc/reg/extra.reg
+		[ -e /mod/etc/reg/extra.reg ] || touch /mod/etc/reg/extra.reg
 
 		cat /mod/etc/reg/extra.reg | grep -v "^$2|.*|$5\$" > $TMPFILE
 		( cat $TMPFILE; echo "$2|$3|$4|$5" ) | sort > /mod/etc/reg/extra.reg
 		rm -f /mod/var/cache/extras
 		;;
 	file)
-		[ -e "/mod/etc/reg/file.reg" ] || touch /mod/etc/reg/file.reg
+		[ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
 
-		cat /mod/etc/reg/file.reg | grep -v "^$2|" > $TMPFILE
+		grep -v "^$2|" /mod/etc/reg/file.reg > $TMPFILE
 		( cat $TMPFILE; echo "$2|$3|$4|$5" ) | sort > /mod/etc/reg/file.reg
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
-                [ -e "/mod/etc/reg/status.reg" ] || touch /mod/etc/reg/status.reg
+		[ -e /mod/etc/reg/status.reg ] || touch /mod/etc/reg/status.reg
 		[ "$4" ] || 4="$2-status.cgi"
 
-                cat /mod/etc/reg/status.reg | grep -v "^$2|.*|$4\$" > $TMPFILE
-                ( cat $TMPFILE; echo "$2|$3|$4" ) | sort > /mod/etc/reg/status.reg
-                rm -f /mod/var/cache/menu_status
-                ;;
+		grep -v "^$2|.*|$4\$" /mod/etc/reg/status.reg > $TMPFILE
+		( cat $TMPFILE; echo "$2|$3|$4" ) | sort > /mod/etc/reg/status.reg
+		rm -f /mod/var/cache/menu_status
+		;;
 		
 	*)
 		echo "Usage: $0 cgi <pkg> <title>" 1>&2

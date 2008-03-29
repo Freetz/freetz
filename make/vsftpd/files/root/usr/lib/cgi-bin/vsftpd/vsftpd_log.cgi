@@ -7,7 +7,7 @@ echo "<h1>/var/log/mod_vsftpd.log ($(ls -al /var/log/mod_vsftpd.log|sed 's/.* ->
 if [ -r "/var/log/mod_vsftpd.log" ]; then
 	let _width=$_cgi_width-230
 	echo -n '<pre style="height: 480px; width: '$_width'px; overflow: auto;">'
-	httpd -e "$(cat /var/log/mod_vsftpd.log)"
+	httpd -e `cat /var/log/mod_vsftpd.log`
 	echo '</pre>'
 else
 	httpd -e "$(lang de:"Die Logdatei ist leer." en:"Logfile is empty.")"

@@ -44,7 +44,7 @@ start() {
 
 	config
 	
-	if [ $(pidof smbd|wc -w) -gt 0 ]; then
+	if [ `pidof smbd|wc -w` -gt 0 ]; then
 		echo "already running"
 		exit 0
 	fi
@@ -146,13 +146,13 @@ case "$1" in
 		;;
 	status)
 		PID_NMBD=1
-		if [ -x $BDIR/$NMBD ]; then
-			PID_NMBD=$(pidof $NMBD)
+		if [ -x "$BDIR/$NMBD" ]; then
+			PID_NMBD=`pidof "$NMBD"`
 		fi
-		if [ -r /var/run/$SMBD.pid ]; then
-			for PIDS in $(pidof $SMBD) ; do
-				if [ $PIDS == $(cat /var/run/$SMBD.pid) ]; then
-					PID_SMBD=$PIDS
+		if [ -r "/var/run/$SMBD.pid" ]; then
+			for PIDS in `pidof "$SMBD"` ; do
+				if [ $PIDS == `cat /var/run/$SMBD.pid` ]; then
+					PID_SMBD="$PIDS"
 				fi
 			done
 		fi

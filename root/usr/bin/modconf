@@ -13,9 +13,9 @@ trap "rm -f $TMPFILE" EXIT
 
 case "$1" in
 	set|load|save|default|vars)
-                cfg=/mod/etc/conf/$2.cfg
-                diff=$FLASH/$2.diff
-                default=/mod/etc/default.$2/$2.cfg
+		cfg=/mod/etc/conf/$2.cfg
+		diff=$FLASH/$2.diff
+		default=/mod/etc/default.$2/$2.cfg
 
 		if [ ! -r "$default" ]; then
 			echo 'Package is not configurable.' 1>&2
@@ -33,7 +33,7 @@ case "$1" in
 		;;
 esac
 case "$1" in
-        load)
+	load)
 		if [ -r "$diff" ]; then
 			cat $diff | $0 merge $default > $cfg
 		else

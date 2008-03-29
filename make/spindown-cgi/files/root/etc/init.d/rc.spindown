@@ -56,8 +56,8 @@ start() {
 
 stop() {
 	echo -n "Stopping $DAEMON...("
-	for I in $(ls /var/run/$DAEMON.*.pid); do
-		kill $(cat $I) > /dev/null 2>&1
+	for I in `ls /var/run/$DAEMON.*.pid`; do
+		kill `cat $I?  > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo -n 'v'

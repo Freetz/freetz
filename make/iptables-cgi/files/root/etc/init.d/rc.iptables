@@ -71,7 +71,7 @@ start() {
 			if [ $IPTABLES_DPORT = "ANY" ]; then
 				IPTABLES_DPORT=''
 			else
-				IPTABLES_DPORT="$(cat /tmp/flash/iptables_services | grep "^"$IPTABLES_DPORT: | sed -e "s/.*://g")"
+				IPTABLES_DPORT=`grep "^"$IPTABLES_DPORT: /tmp/flash/iptables_services | sed -e "s/.*://g"`
 				IPTABLES_DPORT='--dport '$IPTABLES_DPORT
 			fi
 

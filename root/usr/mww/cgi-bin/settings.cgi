@@ -4,10 +4,10 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 . /usr/lib/libmodfrm.sh
 
-[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
+[ -r /mod/etc/conf/mod.cfg ] && . /mod/etc/conf/mod.cfg
 
 inetd=''
-[ -e "/etc/default.inetd/inetd.cfg" ] && inetd='true'
+[ -e /etc/default.inetd/inetd.cfg ] && inetd='true'
 
 crond_auto_chk=''; crond_man_chk=''
 swap_auto_chk=''; swap_man_chk=''

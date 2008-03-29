@@ -7,7 +7,7 @@ DAEMON=swap
 
 case "$1" in
 	""|load|unload|start|stop|restart)
-		if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
+		if [ ! -r /mod/etc/conf/mod.cfg ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
 		fi

@@ -175,7 +175,7 @@ start() {
 stop() {
 	echo -n 'Stopping Inadyn ...'
 
-	kill $(cat /var/run/$DAEMON.pid) > /dev/null 2>&1
+	kill `cat /var/run/$DAEMON.pid` > /dev/null 2>&1
 	
 	if [ "$exitval" -eq 0 ]; then
 		rm -f /var/run/$DAEMON.pid > /dev/null 2>&1

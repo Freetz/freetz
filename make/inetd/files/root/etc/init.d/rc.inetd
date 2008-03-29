@@ -5,7 +5,7 @@ DAEMON=inetd
 . /etc/init.d/modlibrc
 
 config() {
-	[ -e "/tmp/flash/inetd.conf" ] ||
+	[ -e /tmp/flash/inetd.conf ] ||
 	{
 		echo -n "Creating inetd.conf "
 		cp /mod/etc/default.inetd/inetd.conf /tmp/flash/inetd.conf
@@ -24,7 +24,7 @@ start() {
 
 	$DAEMON $INETD_OPTIONS
 	exitval=$?
-	echo $(pidof $DAEMON) > /var/run/$DAEMON.pid
+	echo `pidof "$DAEMON"` > /var/run/$DAEMON.pid
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else

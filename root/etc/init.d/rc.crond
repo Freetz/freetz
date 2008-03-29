@@ -7,7 +7,7 @@ DAEMON=crond
 
 case "$1" in
 	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
+		if [ ! -r /mod/etc/conf/mod.cfg ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
 		fi
@@ -17,7 +17,7 @@ case "$1" in
 esac
 
 start() {
-	if [ -r "/tmp/flash/crontab.save" ]; then
+	if [ -r /tmp/flash/crontab.save ]; then
 		cp /tmp/flash/crontab.save /var/spool/cron/crontabs/root
 	else
 		touch /var/spool/cron/crontabs/root

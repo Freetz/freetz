@@ -54,14 +54,14 @@ start() {
 stop() {
 	echo -n 'Stopping Checkmaild...'
 
-	if [ ! -z "$(pidof "$DAEMON")" ]; then
+	if [ ! -z `pidof "$DAEMON"` ]; then
 		killall -15 $DAEMON > /dev/null 2>&1
 		exitval=$?
 	fi
 	
 	sleep 1
 	
-	if [ ! -z "$(pidof "$DAEMON")" ]; then
+	if [ ! -z `pidof "$DAEMON"` ]; then
 		killall -9 $DAEMON > /dev/null 2>&1
 		exitval=$?
 	fi

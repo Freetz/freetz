@@ -7,8 +7,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 if [ -z "$PATH_INFO" ]; then
 	_cgi_extras() {
-		if [ -s "/mod/etc/reg/extra.reg" ]; then
-			[ -e "/mod/etc/reg/cgi.reg" ] || touch /mod/etc/reg/cgi.reg
+		if [ -s /mod/etc/reg/extra.reg ]; then
+			[ -e /mod/etc/reg/cgi.reg ] || touch /mod/etc/reg/cgi.reg
 
 			cat /mod/etc/reg/extra.reg | while IFS='|' read -r pkg title sec cgi; do
 				if [ ! -z "$title" ]; then
@@ -36,7 +36,7 @@ if [ -z "$PATH_INFO" ]; then
 
 	cgi_begin 'Extras' 'extras'
 
-	[ -e "/mod/var/cache/extras" ] || _cgi_extras > /mod/var/cache/extras
+	[ -e /mod/var/cache/extras ] || _cgi_extras > /mod/var/cache/extras
 	cat /mod/var/cache/extras
 
 	cgi_end

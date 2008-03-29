@@ -2,7 +2,7 @@
 
 anzahl=0;
 
-while [ -z "$(pidof "pptp")" ]
+while [ -z `pidof pptp` ]
 do
 	case $anzahl in
 		[0-1]) wait=15; let anzahl=$anzahl+1;;
@@ -11,8 +11,8 @@ do
 		*) wait=120;;
 	esac
 	sleep $wait
-	if [ -z "$(pidof "pptp")" ]; then
-	  /etc/init.d/rc.pptp start 1>&2
-	  sleep 3
+	if [ -z `pidof pptp` ]; then
+		/etc/init.d/rc.pptp start 1>&2
+		sleep 3
 	fi
 done	

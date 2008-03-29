@@ -3,9 +3,9 @@ DAEMON=bftpd
 write_config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
+			"/tmp/flash/${DAEMON}_conf"
 		else
-			/mod/etc/default.$DAEMON/${DAEMON}_conf
+			"/mod/etc/default.$DAEMON/${DAEMON}_conf"
 		fi
 
 		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
