@@ -10,3 +10,13 @@ if [ "$DNSMASQ_DHCP" = "yes" ]; then
 	done
 fi
 [ "$DNSMASQ_ETHERS" = "yes" ] && echo "read-ethers"
+
+isdhcphost () {
+	echo $1 | grep '^dhcp-host$' >/dev/null
+}
+if [ -r /tmp/flash/exhosts ]; then
+	egrep -v '^(#|[[:space:]]*$)' /tmp/flash/exhosts |
+		while read -r ip mac interface host desc; do
+			isdhcphost $mac && echo "dhcp-host=${host}"
+		done
+fi

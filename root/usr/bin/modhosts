@@ -18,6 +18,13 @@ ar7hostname () {
   fi
 }
 
+isip () {
+	echo $1 | egrep '^[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}$' >/dev/null
+}
+ismac () {
+	echo $1 | egrep '^[[:xdigit:]]{2}(:[[:xdigit:]]{2}){5}$' >/dev/null
+}
+
 case "$1" in
 	"")
 		mvi /tmp/flash/exhosts
@@ -45,16 +52,17 @@ case "$1" in
 			fi
 		fi
 
-		if [ -r "/tmp/flash/exhosts" ]; then
-			cat /tmp/flash/exhosts | grep -v "^#" | while read -r ip mac interface host desc; do
-				if [ -z "$host" -o "$host" = "*" ]; then
-					let hnr="$hnr+1"
-					host="pc${hnr}"
-				fi
+		if [ -r /tmp/flash/exhosts ]; then
+			egrep -v '^(#|[[:space:]]*$)' /tmp/flash/exhosts |
+				while read -r ip mac interface host desc; do
+					if [ -z "$host" -o "$host" = "*" ]; then
+						let hnr="$hnr+1"
+						host="pc${hnr}"
+					fi
 
-				[ -n "$ip" -a "$ip" != "*" ] && echo -e "$ip\t$host" >> /var/tmp/hosts
-				[ -n "$mac" -a "$mac" != "*" ] && echo -e "$mac\t$host" >> /var/tmp/ethers
-			done
+					isip $ip && echo -e "${ip}\t${host} $desc" >> /var/tmp/hosts
+					ismac $mac && echo -e "${mac}\t${host}" >> /var/tmp/ethers
+				done
 		fi
 
 		ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)

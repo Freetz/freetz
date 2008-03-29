@@ -14,26 +14,35 @@ $(lang de:"Bekannte Hosts" en:"Known hosts"):
 <option value="*" selected>$(lang de:"(w&auml;hlen)" en:"(choose)")</option>
 EOF
 
-if [ -r "/tmp/flash/exhosts" ]; then
-	cat /tmp/flash/exhosts | grep -v "^#" | while read -r ip mac interface host desc; do
-		if [ -n "$mac" -a "$mac" != "*" ]; then
-			if [ -n "$interface" -a "$interface" != "*" ]; then
-				value="$mac*$interface"
-			else
-				value="$mac*"
+if [ -r /tmp/flash/exhosts ]; then
+	egrep -v '^(#|[[:space:]]*$)' /tmp/flash/exhosts |
+		while read -r ip mac interface host desc; do
+			if [ dhcp-host = "$mac" ]; then
+				if [ -n "$host" -a -r /var/tmp/multid.leases ]; then
+					mac=`sed "/${host}/!d;s/^lease //;s/ .*//" /var/tmp/multid.leases`
+				else
+					continue
+				fi
 			fi
+			if [ -n "$mac" -a "$mac" != "*" ]; then
+				if [ -n "$interface" -a "$interface" != "*" ]; then
+					value="$mac*$interface"
+				else
+					value="$mac*"
+				fi
 
-			echo -n '<option value="'"$value"'">'
-			if [ -n "$desc" ]; then
-				echo -n "$desc"
-			elif [ -n "$host" -a "$host" != "*" ]; then 
-				echo -n "$host"
-			else
-				echo -n "$mac"
+				echo -n '<option value="'"$value"'">'
+				if [ -n "$desc" ]; then
+					[ '*' != "$host" ] && echo -n "$host "
+					echo -n "$desc"
+				elif [ -n "$host" -a "$host" != "*" ]; then 
+					echo -n "$host"
+				else
+					echo -n "$mac"
+				fi
+				echo '</option>'
 			fi
-			echo '</option>'
-		fi
-	done
+		done
 fi
 
 cat << EOF
