@@ -195,6 +195,9 @@ document.write("<div id='Acount0' style='display:block'>" +
       "<OPTION VALUE1$userdef_sel0='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
+    "<td><label for='r05'>Custom URL : </label></td>" +
+    "<td><input id='r05' type='text' name='url0' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL0")'></td>" +
+  "</tr><tr>" +
     "<td><label for='r01'>Username : </label></td>" +
     "<td><input id='r01' type='text' name='user0' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER0")'></td>" +
   "</tr><tr>" +
@@ -225,6 +228,9 @@ document.write("<div id='Acount1' style='display:none'>" +
       "<OPTION VALUE1$userdef_sel1='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
+    "<td><label for='r15'>Custom URL : </label></td>" +
+    "<td><input id='r15' type='text' name='url1' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL1")'></td>" +
+  "</tr><tr>" +
     "<td><label for='r11'>Username : </label></td>" +
     "<td><input id='r11' type='text' name='user1' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER1")'></td>" +
   "</tr><tr>" +
@@ -254,6 +260,9 @@ document.write("<div id='Acount2' style='display:none'>" +
       "<OPTION VALUE1$noip_sel2='5'>no-ip.com</OPTION>" +
       "<OPTION VALUE1$userdef_sel2='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
+  "</tr><tr>" +
+    "<td><label for='r25'>Custom URL : </label></td>" +
+    "<td><input id='r25' type='text' name='url2' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL2")'></td>" +
   "</tr><tr>" +
     "<td><label for='r21'>Username : </label></td>" +
     "<td><input id='r21' type='text' name='user2' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER2")'></td>" +
@@ -286,6 +295,9 @@ document.write("<div id='Acount3' style='display:none'>" +
       "<OPTION VALUE1$userdef_sel3='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
+    "<td><label for='r35'>Custom URL : </label></td>" +
+    "<td><input id='r35' type='text' name='url3' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL3")'></td>" +
+  "</tr><tr>" +
     "<td><label for='r31'>Username : </label></td>" +
     "<td><input id='r31' type='text' name='user3' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER3")'></td>" +
   "</tr><tr>" +
@@ -316,6 +328,9 @@ document.write("<div id='Acount4' style='display:none'>" +
       "<OPTION VALUE1$noip_sel4='5'>no-ip.com</OPTION>" +
       "<OPTION VALUE1$userdef_sel4='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
+  "</tr><tr>" +
+    "<td><label for='r45'>Custom URL : </label></td>" +
+    "<td><input id='r45' type='text' name='url4' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL4")'></td>" +
   "</tr><tr>" +
     "<td><label for='r41'>Username : </label></td>" +
     "<td><input id='r41' type='text' name='user4' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER4")'></td>" +
