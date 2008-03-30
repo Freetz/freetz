@@ -10,7 +10,8 @@ if [ "$?" = "1" ]; then exit 1; fi
 ##################################################################################
 internal() {
 
-  read_main_cfg
+  # not needed. environment variables already in process memory
+  #  read_main_cfg
 
   let i=1
   while [ $i -le 10 ];
@@ -27,7 +28,6 @@ internal() {
 
          dtmfbox_cmd "$SRC_CON" "-hook up"
          export ACC_NO="$i"
-         read_data
 
          # walkthrough submenues and simulate typing
          INT_NO=`echo "$DST_NO" | sed -e "s/\(.*\)@.*/\1/g" -e "s/$TMP_DDI\(.*\)/\1/g" -e "s/[\*]/ /g" -e "s/\([[:alnum:]]\)/ \1 /g"`
@@ -53,7 +53,7 @@ internal() {
          # hook up and change to script_internal.sh     
          (dtmfbox_change_script "$SRC_CON" "$SCRIPT_INTERNAL" "none" "")&
 
-         exit 1
+         return 1
        fi
      fi
 
@@ -122,14 +122,14 @@ callback_callthrough() {
 			then
 			  SCRIPT="CT"
 			  . "$USERSCRIPT"
-			  if [ "$?" = "1" ]; then exit 1; fi
+			  if [ "$?" = "1" ]; then return 1; fi
 			fi
 
            . "$SCRIPT_WAITEVENT" "START"
            (dtmfbox_change_script "$SRC_CON" "$SCRIPT_INTERNAL" "none" "-hook up")&
 
            # exit this script...
-           exit 1;
+           return 1;
          fi
 
          ################################################################################
@@ -155,7 +155,7 @@ if [ -f "$USERSCRIPT" ];
 then
   SCRIPT="CB"
   . "$USERSCRIPT"
-  if [ "\$?" = "1" ]; then exit 1; fi
+  if [ "\$?" = "1" ]; then return 1; fi
 fi
 
 # callback on disconnect
@@ -179,11 +179,11 @@ EOF
 	             # change scriptfile
 	             chmod +x $DTMFBOX_PATH/tmp/callback_$SRC_CON.sh             			 
 	             dtmfbox_change_script "$SRC_CON" "$DTMFBOX_PATH/tmp/callback_$SRC_CON.sh" "none" ""
-	             exit 1;
+	             return 1;
 	         fi
          fi
 
-         exit 1;
+         return 1;
        fi
 
       done
@@ -217,7 +217,7 @@ answering_machine() {
 if [ "$IN_OUT" = "OUTGOING" ];
 then
   if [ "$EVENT" = "EARLY" ]; then
-    internal &
+    internal 
   fi
 fi
 
@@ -229,10 +229,10 @@ then
   if [ "$EVENT" = "CONNECT" ]; 
   then
     callback_callthrough
-    if [ "$?" = "1" ]; then exit 1; fi
-
-    answering_machine
-    if [ "$?" = "1" ]; then exit 1; fi
+    if [ "$?" != "1" ]; 
+	then 
+    	answering_machine
+	fi
   fi
 fi
 

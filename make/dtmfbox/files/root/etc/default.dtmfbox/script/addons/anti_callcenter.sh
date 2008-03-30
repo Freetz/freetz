@@ -11,20 +11,21 @@
 ## Parameters:
 ## $1 = Wave file to play when dtmfbox confirmed the call
 ## $2 = Wave file to play when caller confirmed (background music)
-## $3 = Say something when dtmfbox confirmed the call (Text)
+## $3 = Target number for the internal call
 ## $4 = Controller for the internal call (3 for ISDN)
 ##
 ## Examples:
-## ./script/addons/anti_callcenter.sh "$DTMFBOX_PATH/play/confirm.wav" "$DTMFBOX_PATH/play/music.wav" "" "3"
-## ./script/addons/anti_callcenter.sh "" "" "Bitte geben Sie ihre Telefonnummer ein und druecken Sie die Raute taste." "3"
+## . ./script/addons/anti_callcenter.sh "$DTMFBOX_PATH/play/confirm.wav" "$DTMFBOX_PATH/play/music.wav" "12345" "3"
 ###############################################################################
-if [ "$SCRIPT" = "AM" ];
+if [ "$SCRIPT" = "BEFORE_LOAD" ];
 then
 	
 	PLAY_MSG="$1"
     PLAY_MUSIC="$2"
-	SAY_MSG="$3"
+	TARGET_NO="$3"
 	CONTROLLER="$4"
+	if [ "$TARGET_NO" = "" ]; then TARGET_NO="$SRC_NO"; fi
+	if [ "$CONTROLLER" = "" ]; then CONTROLLER="3"; fi
 
 	NEWCON_FILE="$DTMFBOX_PATH/tmp/anonymous_mod_con.$SRC_CON"
 	NEWCON_SCRIPT_FILE="$DTMFBOX_PATH/tmp/anonymous_mod_script.$SRC_CON"
@@ -51,9 +52,10 @@ then
 	  return 0;
 	fi
 	
-	if [ "$IN_OUT" = "INCOMING" ] && [ "$EVENT" = "STARTUP" ] && [ "$DST_NO" = "anonymous" ];
+	if [ "$IN_OUT" = "INCOMING" ] && [ "$EVENT" = "CONNECT" ] && [ "$DST_NO" = "anonymous" ];
 	then
-	  RINGTIME="0"
+	  $DTMFBOX $SRC_CON -hook up
+	  return 1;
 	fi
 	
 	if [ "$IN_OUT" = "INCOMING" ] && [ "$EVENT" = "CONFIRMED" ] && [ "$DST_NO" = "anonymous" ];
@@ -62,12 +64,7 @@ then
 
 	  if [ "$PLAY_MSG" != "" ];
 	  then
-		  PLAY_ID=`$DTMFBOX $SRC_CON -play "$PLAY_MSG"`
-	  fi
-
-	  if [ "$SAY_MSG" != "" ];
-	  then
-		(say_or_beep "$SAY_MSG")&
+		  PLAY_ID=`$DTMFBOX $SRC_CON -playthread "$PLAY_MSG"`
 	  fi
 	
 cat << EOF > "$NEWCON_SCRIPT_FILE"
@@ -101,11 +98,12 @@ EOF
 	
 	     DTMF=`echo "$DTMF" | sed 's/*//g' | sed 's/#//g'`
 	
-	     NEW_CON=`$DTMFBOX $SRC_CON -call "#$DTMF" "$SRC_NO" $CONTROLLER`
+	     NEW_CON=`$DTMFBOX $SRC_CON -call "#$DTMF" "$TARGET_NO" $CONTROLLER`
 	     if [ "$NEW_CON" != "" ];
 	     then   
 	       echo "$NEW_CON" > "$NEWCON_FILE"
 	       $DTMFBOX $NEW_CON -scriptfile "$NEWCON_SCRIPT_FILE" -stop play all
+		   $DTMFBOX $NEW_CON -stop tone
 
 		   if [ "$PLAY_MUSIC" != "" ];
 		   then

@@ -27,6 +27,24 @@ SCRIPT_CFG_TEMPLATE="./script/script_cfg_template.sh"
 SCRIPT_SED="./script/script_sed.sh"
 
 ##################################################################################
+## required shell commands
+##################################################################################
+if [ -f /usr/bin/mkfifo ]; then MKFIFO="/usr/bin/mkfifo"; fi
+if [ "$MKFIFO" = "" ]; then MKFIFO="./busybox-tools mkfifo"; fi
+if [ -f /usr/bin/tee ]; then TEE="/usr/bin/tee"; fi
+if [ "$TEE" = "" ]; then TEE="./busybox-tools tee"; fi
+if [ -f /usr/bin/head ]; then HEAD="/usr/bin/head"; fi
+if [ "$HEAD" = "" ]; then HEAD="./busybox-tools head"; fi
+if [ -f /usr/bin/tail ]; then TAIL="/usr/bin/tail"; fi
+if [ "$TAIL" = "" ]; then TAIL="./busybox-tools tail"; fi
+if [ -f /usr/bin/du ]; then DU="/usr/bin/du"; fi
+if [ "$DU" = "" ]; then DU="./busybox-tools du"; fi
+if [ -f /usr/bin/nc ]; then NC="/usr/bin/nc"; fi
+if [ "$NC" = "" ]; then NC="./busybox-tools nc"; fi
+if [ -f /usr/bin/ftpput ]; then FTPPUT="/usr/bin/ftpput"; fi
+if [ "$FTPPUT" = "" ]; then FTPPUT="./busybox-tools ftpput"; fi
+
+##################################################################################
 ## speech text - menue_ansage()
 ##################################################################################
 alias SPEECH_INTERNAL="echo 1 Anrufbeantworter. 2 DTMF Befehle. 3 Koolfruh. 4 Sonstiges."
@@ -40,160 +58,68 @@ alias SPEECH_INTERNAL_4_3="echo Maeilaekaunt 1 bis 3 waehlen."
 alias SPEECH_INTERNAL_4_4="echo Radio sztriem 1 bis 5 waehlen."
 
 ##################################################################################
-## global temporary files
+## global files
 ##################################################################################
-TEMP_CFG="./tmp/$SRC_CON.cfg"
+ACC_CFG="./tmp/dtmfbox_acc${ACC_NO}.cfg"
 TEMP_CURSCRIPT="./tmp/$SRC_CON.curscript"
 
 ##################################################################################
-## Read whole configuration (only on CONNECT)
+## Set required variables
+##################################################################################
+# freetz...
+if [ -f /mod/etc/conf/dtmfbox.cfg ]; 
+then
+  if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
+  PATH=$PATH:$DTMFBOX_PATH
+  DTMFBOX="dtmfbox"
+  DTMFBOX_CFG="/mod/etc/conf/dtmfbox.cfg"
+  USERSCRIPT="/var/tmp/flash/dtmfbox_userscript.sh"
+  FREETZ="1"
+fi
+
+# .. standalone / usb
+if [ -f /var/dtmfbox/dtmfbox.save ]; 
+then
+  if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
+  PATH=$PATH:$DTMFBOX_PATH
+  DTMFBOX="dtmfbox"
+  DTMFBOX_CFG="$DTMFBOX_PATH/dtmfbox.save"
+  USERSCRIPT="$DTMFBOX_PATH/script/dtmfbox_userscript.sh"
+  FREETZ="0"
+fi	
+
+##################################################################################
+## execute user-script, if exist ($SCRIPT: BEFORE_LOAD)
+##################################################################################
+if [ -f "$USERSCRIPT" ]; 
+then
+	SCRIPT="BEFORE_LOAD"
+	. "$USERSCRIPT"
+	if [ "$?" = "1" ]; then exit 1; fi
+fi
+
+##################################################################################
+## Load complete data (!)
 ##################################################################################
 read_main_cfg() {
-
-  # dsmod ..
-  if [ -f /mod/etc/conf/dtmfbox.cfg ]; 
-  then
-    . /mod/etc/conf/dtmfbox.cfg
-
-    if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
-    DTMFBOX="dtmfbox"
-    DTMFBOX_CFG="/mod/etc/conf/dtmfbox.cfg"
-    USERSCRIPT="/var/tmp/flash/dtmfbox_userscript.sh"
-    if [ -f "$DTMFBOX_PATH/script/dtmfbox_userscript.sh" ]; then 
-      USERSCRIPT="$DTMFBOX_PATH/script/dtmfbox_userscript.sh"
-    fi
-    DSMOD="1"
-  fi
-
-  # .. standalone
-  if [ -f /var/dtmfbox/dtmfbox.save ]; 
-  then
-    . /var/dtmfbox/dtmfbox.save
-  
-    if [ "$DTMFBOX_PATH" = "" ]; then DTMFBOX_PATH="/var/dtmfbox"; fi
-    DTMFBOX="$DTMFBOX_PATH/dtmfbox"
-    DTMFBOX_CFG="/var/dtmfbox/dtmfbox.save"
-    USERSCRIPT="$DTMFBOX_PATH/script/dtmfbox_userscript.sh"
-    if [ -f "/var/dtmfbox/boot.cfg" ]; 
-    then
-      DTMFBOX_BOOT="/var/dtmfbox/boot.cfg"
-    else
-      DTMFBOX_BOOT="/var/flash/debug.cfg"
-    fi
-    DSMOD="0"
-  fi
+	. "$DTMFBOX_CFG"
 }
 
 ##################################################################################
-## Read account data and save it to ./tmp/$SRC_CON.cfg
-##################################################################################
-read_data() {
-
-  let cnt="$ACC_NO"
-
-  SEMI=";"
-  LIST=""
-  LIST="$LIST ACC_MSN=\"\$DTMFBOX_ACC${cnt}_NUMBER\"$SEMI" 
-  LIST="$LIST ACC_CTRL_OUT=\"\$DTMFBOX_ACC${cnt}_CTRL_OUT\"$SEMI"
-  LIST="$LIST ACC_DDI=\"\$DTMFBOX_SCRIPT_ACC${cnt}_DDI\"$SEMI"
-  LIST="$LIST AM=\"\$DTMFBOX_SCRIPT_ACC${cnt}_AM\"$SEMI"
-  eval $LIST
-    
-  # Answering machine settings
-  LIST=""
-  if [ "$AM" = "1" ];
-  then    
-    LIST="$LIST AM_PIN=\"\$DTMFBOX_SCRIPT_ACC${cnt}_AM_PIN\"$SEMI"        
-    LIST="$LIST RECORD=\"\$DTMFBOX_SCRIPT_ACC${cnt}_RECORD\"$SEMI"        
-    LIST="$LIST TIMEOUT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_TIMEOUT\"$SEMI"        
-    LIST="$LIST RINGTIME=\"\$DTMFBOX_SCRIPT_ACC${cnt}_RINGTIME\"$SEMI"        
-    LIST="$LIST UNKNOWN_ONLY=\"\$DTMFBOX_SCRIPT_ACC${cnt}_UNKNOWN_ONLY\"$SEMI"        
-    LIST="$LIST BEEP=\"\$DTMFBOX_SCRIPT_ACC${cnt}_BEEP\"$SEMI"        
-    LIST="$LIST ANNOUNCEMENT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_ANNOUNCEMENT\"$SEMI"        
-    LIST="$LIST ANNOUNCEMENT_END=\"\$DTMFBOX_SCRIPT_ACC${cnt}_ANNOUNCEMENT_END\"$SEMI"        
-    LIST="$LIST ON_AT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_ON_AT\"$SEMI"        
-    LIST="$LIST OFF_AT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_OFF_AT\"$SEMI"        
- 
-    # mailer settings
-    LIST="$LIST MAIL_ACTIVE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_ACTIVE\"$SEMI"        
-    LIST="$LIST MAIL_FROM=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_FROM\"$SEMI"        
-    LIST="$LIST MAIL_TO=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_TO\"$SEMI"        
-    LIST="$LIST MAIL_SERVER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_SERVER\"$SEMI"
-    LIST="$LIST MAIL_USER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_USER\"$SEMI"
-    LIST="$LIST MAIL_PASS=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_PASS\"$SEMI"
-    LIST="$LIST MAIL_DELETE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_MAIL_DELETE\"$SEMI"
- 
-    # ftp streamer settings
-    LIST="$LIST FTP_ACTIVE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_ACTIVE\"$SEMI"
-    LIST="$LIST FTP_USER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_USER\"$SEMI"
-    LIST="$LIST FTP_PASS=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_PASS\"$SEMI"
-    LIST="$LIST FTP_SERVER=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_SERVER\"$SEMI"
-    LIST="$LIST FTP_PORT=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_PORT\"$SEMI"
-    LIST="$LIST FTP_PATH=\"\$DTMFBOX_SCRIPT_ACC${cnt}_FTP_PATH\"$SEMI"
-  fi
-  eval $LIST
-  if [ "$ON_AT" = "" ]; then ON_AT="00:00"; fi
-  if [ "$OFF_AT" = "" ]; then OFF_AT="00:00"; fi
- 
-  # cb/ct settings
-  LIST=""
-  CBCT_ACTIVE=`eval echo \\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_ACTIVE` 
-  if [ "$CBCT_ACTIVE" = "1" ];
-  then
-    LIST="$LIST CBCT_TRIGGERNO=\"\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_TRIGGERNO\"$SEMI"        
-    LIST="$LIST CBCT_PINCODE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_PINCODE\"$SEMI"        
-    LIST="$LIST CBCT_TYPE=\"\$DTMFBOX_SCRIPT_ACC${cnt}_CBCT_TYPE\"$SEMI"        
-    eval $LIST
-   else            
- 	CBCT_TRIGGERNO=""
- 	CBCT_TYPE=""
-   fi
- 
-   # should not happen...
-   if [ "$ACC_MSN" = "" ]; then 
-      echo "script_funcs.sh : $SRC_NO not found in settings!"
-      return 1; 
-   fi
-
-   # normalize MSN (when # is escaped)
-   ACC_MSN=`echo "$ACC_MSN" | sed 's/\\#/#/g'`
-
-   # create extra config file, for faster reading (only account specific information!)
-   (
-    . "$SCRIPT_CFG_TEMPLATE"
-   ) > "$TEMP_CFG"
-
-   # save name of current scriptfile (should be script_main.sh)
-   echo "$DTMFBOX_SCRIPTFILE" > "$TEMP_CURSCRIPT"
-}
-
-##################################################################################
-## Load account data
+## Load only account specific data
 ##################################################################################
 load_data() {
-
-  let cnt=0;
-
-  while [ ! -f "$TEMP_CFG" ];
-  do    
-    sleep 1
-    let cnt=cnt+1
-    if [ "$cnt" = "10" ]; then break; fi
-  done
-
-  if [ -f "$TEMP_CFG" ];
-  then
-    . "$TEMP_CFG"
-  fi
+	if [ -f "$ACC_CFG" ];
+	then
+		. "$ACC_CFG"
+	fi
 }
 
 ##################################################################################
 ## Remove temporary data
 ##################################################################################
 remove_data() {
-   rm "$TEMP_CFG"          2>/dev/null
    rm "$TEMP_CURSCRIPT"    2>/dev/null
-   rm "$TEMP_PLAYPIPE"     2>/dev/null
 }
 
 ##################################################################################
@@ -315,7 +241,7 @@ display_text() {
 }
 
 ##################################################################################
-## save settings (dsmod or usb), "$1" = key, "$2" = value
+## save settings (freetz or usb), "$1" = key, "$2" = value
 ##################################################################################
 save_settings() {
 
@@ -323,7 +249,7 @@ save_settings() {
    DTMFBOX_SETTINGS_VAL="$2"
 
    # save usb/standalone
-   if [ "$DSMOD" = "0" ];
+   if [ "$FREETZ" = "0" ];
    then
      cat "$DTMFBOX_CFG"  | sed "s/export $DTMFBOX_SETTINGS_KEY='\(.*\)'/export $DTMFBOX_SETTINGS_KEY='$DTMFBOX_SETTINGS_VAL'/g" > $DTMFBOX_PATH/tmp/cfg1.tmp
      cat "$DTMFBOX_BOOT" | sed "s/export $DTMFBOX_SETTINGS_KEY='\(.*\)'/export $DTMFBOX_SETTINGS_KEY='$DTMFBOX_SETTINGS_VAL'/g" > $DTMFBOX_PATH/tmp/cfg2.tmp
@@ -336,7 +262,7 @@ save_settings() {
        rm $DTMFBOX_PATH/tmp/cfg2.tmp 2>/dev/null
      fi
 
-   # save dsmod
+   # save freetz
    else
 
      modconf set dtmfbox "$DTMFBOX_SETTINGS_KEY=$DTMFBOX_SETTINGS_VAL"
@@ -357,16 +283,9 @@ disconnect() {
 ##################################################################################
 ## Global events (read/load/remove data)
 ##################################################################################
-if [ "$EVENT" = "CONNECT" ] && [ "$IN_OUT" = "INCOMING" ];
+if [ "$EVENT" != "DDI" ];
 then
-  read_main_cfg
-  read_data
-fi
-
-if [ "$EVENT" != "CONNECT" ] && [ "$IN_OUT" = "INCOMING" ];
-then  
   load_data
-  cd $DTMFBOX_PATH
 fi
 
 if [ "$EVENT" = "DISCONNECT" ];
@@ -375,25 +294,17 @@ then
 fi
 
 ##################################################################################
-## required shell commands
+## Important! When listening on CAPI Controller 5, reject first connect!!!!
+## Otherwise there will be a fallback to ISDN/Analog.
 ##################################################################################
-if [ -f /usr/bin/mkfifo ]; then MKFIFO="/usr/bin/mkfifo"; fi
-if [ "$MKFIFO" = "" ]; then MKFIFO="./busybox-tools mkfifo"; fi
-if [ -f /usr/bin/tee ]; then TEE="/usr/bin/tee"; fi
-if [ "$TEE" = "" ]; then TEE="./busybox-tools tee"; fi
-if [ -f /usr/bin/head ]; then HEAD="/usr/bin/head"; fi
-if [ "$HEAD" = "" ]; then HEAD="./busybox-tools head"; fi
-if [ -f /usr/bin/tail ]; then TAIL="/usr/bin/tail"; fi
-if [ "$TAIL" = "" ]; then TAIL="./busybox-tools tail"; fi
-if [ -f /usr/bin/du ]; then DU="/usr/bin/du"; fi
-if [ "$DU" = "" ]; then DU="./busybox-tools du"; fi
-if [ -f /usr/bin/nc ]; then NC="/usr/bin/nc"; fi
-if [ "$NC" = "" ]; then NC="./busybox-tools nc"; fi
-if [ -f /usr/bin/ftpput ]; then FTPPUT="/usr/bin/ftpput"; fi
-if [ "$FTPPUT" = "" ]; then FTPPUT="./busybox-tools ftpput"; fi
+if [ "$EVENT" = "CONNECT" ] && [ "$TYPE" = "CAPI" ] && [ "$IN_OUT" = "OUTGOING" ] && [ "$DST_NO" = "unknown" ] && [ "$ACC_CTRL_OUT" = "5" ];
+then
+  $DTMFBOX $SRC_CON -hook reject  
+  exit 1
+fi
 
 ##################################################################################
-## execute user-script, if exist 
+## execute user-script, if exist ($SCRIPT: FUNCS)
 ##################################################################################
 if [ -f "$USERSCRIPT" ]; 
 then

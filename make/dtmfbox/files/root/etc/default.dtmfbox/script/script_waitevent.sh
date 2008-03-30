@@ -30,11 +30,17 @@ parse() {
 ##################################################################################
 process_control() {  
 
-   if [ -f "$TEMP_EVENTPID" ]; then
-     export PID=`cat "$TEMP_EVENTPID"`
-     if [ "$PID" != "" ] && [ "$PID" != "-1" ] && [ "$PID" != "0" ]
+   if [ -f "$TEMP_EVENTPID" ]; 
+   then
+
+	 if [ "$WAITEVENT_PID" = "" ];
+	 then
+	    WAITEVENT_PID=`cat "$TEMP_EVENTPID"`
+	 fi
+
+     if [ "$WAITEVENT_PID" != "" ] && [ "$WAITEVENT_PID" != "-1" ] && [ "$WAITEVENT_PID" != "0" ]
      then
-       kill -$1 $PID 2>/dev/null
+       kill -$1 $WAITEVENT_PID 2>/dev/null
      fi
    fi
 }
@@ -59,8 +65,8 @@ then
     $TEE -a "$TEMP_EVENTFILE" < "$TEMP_EVENTFIFO1" > "$TEMP_EVENTFIFO2"
   )&
 
-  echo "$!" > "$TEMP_EVENTPID"  
-  export PIDS=""
+  WAITEVENT_PID="$!"
+  echo "$WAITEVENT_PID" > "$TEMP_EVENTPID"  
  
   # PAUSE PIPE PROCESSES!
   process_control "STOP"
@@ -188,6 +194,7 @@ then
     rm "$TEMP_EVENTFILE"   2>/dev/null
     rm "$TEMP_EVENTFILE.2" 2>/dev/null
     rm "$TEMP_EVENTPID"    2>/dev/null
+	WAITEVENT_PID=""
   fi
 
 fi

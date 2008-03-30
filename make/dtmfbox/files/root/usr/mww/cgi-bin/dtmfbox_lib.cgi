@@ -690,6 +690,288 @@ Download hier: <a href="http://www.java.com/de/download/">http://www.java.com/de
 EOF
  fi
 
+ if [ "$HELP" = "userscript" ];
+ then
+cat << EOF
+<br>
+<font size=4><b>Benutzerdefinierte Skripte / Addons</b></font><hr><p>
+Über das benutzerdefinierte Skript hat man die Möglichkeit, bestimmte Aktionen zu ändern, bzw.<br>
+ganz neue Steuerungen zu implementieren.<br><br>
+
+Die dtmfbox ruft das Skript bei Telefonie-Ereignissen auf und übergibt bestimmte Werte als Parameter:
+<ul>
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<tr><td colspan="2" bgcolor="silver"><b>\$EVENT</b></td></tr>
+<tr>
+	<td width="120px"><b>CONNECT</b></td>
+	<td>Das erste Ereigniss, welches ausgelöst wird.<br>
+	Bei eingehenden Gesprächen signalisiert dieses Ereigniss einen ankommenden Anruf. Die Anrufernummer
+	steht in \$DST_NO. Bei ausgehenden Gesprächen steht die Zielrufnummer erst mit dem "EARLY"-Event fest.
+	<br>
+	</td>
+</tr>
+<tr>
+	<td width="120px"><b>DDI</b></td>
+	<td>Eine Wählzeichenfolge wurde empfangen (Blockwahl/Einzelwahl).<br>
+	Wurde kein Trenner festgelegt, wird jede Ziffernfolge einzeln an das Skript übergeben.
+	</td>
+</tr>
+<tr>
+	<td width="120px"><b>EARLY</b></td>
+	<td>
+	Dieses Ereigniss wird nur bei ausgehenden Gesprächen ausgelöst.<br>
+	Es wurde gewählt und die Zielrufnummer steht fest (\$DST_NO).<br>
+	</td>
+</tr>
+<tr>
+	<td width="120px"><b>CONFIRMED</b></td>
+	<td>Das Gespräch wurde angenommen.
+	</td>
+</tr>
+<tr>
+	<td width="120px"><b>DTMF</b></td>
+	<td>Es wurde eine DTMF-Zeichenfolge empfangen.<br>
+	Wurde kein Trenner festgelegt, wirde jedes DTMF-Zeichen einzeln an das Skript übergeben (\$DTMFBOX \$SRC_CON -delimiter none)
+	</td>
+</tr>
+<tr>
+	<td width="120px"><b>UNCONFIRMED</b></td>
+	<td>Das Gespräch wird gehalten / getrennt.
+	</td>
+</tr>
+<tr>
+	<td width="120px"><b>DISCONNECT</b></td>
+	<td>Das Gespräch wurde getrennt.
+	</td>
+</tr>
+</table>
+<p></p>
+
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<tr><td colspan="2" bgcolor="silver"><b>\$TYPE</b></td></tr>
+<tr>
+	<td width="120px"><b>VOIP</b></td>
+	<td>VoIP Verbindung</td>
+</tr>
+<tr>
+	<td width="120px"><b>CAPI</b></td>
+	<td>ISDN/Analog Verbindung</td>
+</tr>
+<tr>
+	<td width="120px"><b>USER</b></td>
+	<td>Client Verbindung (Registrar-Mode)</td>
+</tr>
+</table>
+<p></p>
+
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<tr><td colspan="2" bgcolor="silver"><b>\$IN_OUT</b></td></tr>
+<tr>
+	<td width="120px"><b>INCOMING</b></td>
+	<td>Eingehende Verbindung</td>
+</tr>
+<tr>
+	<td width="120px"><b>OUTGOING</b></td>
+	<td>Ausgehende Verbindung</td>
+</tr>
+</table>
+<p></p>
+
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<tr><td colspan="2" bgcolor="silver"><b>\$SRC_CON</b></td></tr>
+<tr>
+	<td colspan="2">Die ID der aktuellen Verbindung.</td>
+</tr>
+</table>
+<p></p>
+
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<tr><td colspan="2" bgcolor="silver"><b>\$DST_CON</b></td></tr>
+<tr>
+	<td colspan="2">Die ID des Gesprächspartners (wenn zwei Anrufe miteinander verbunden wurden, ansonsten "-1").</td>
+</tr>
+</table>
+<p></p>
+
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<tr><td colspan="2" bgcolor="silver"><b>\$SRC_NO</b></td></tr>
+<tr>
+	<td colspan="2">Eigene Nummer (Account-Nummer)</td>
+</tr>
+</table>
+<p></p>
+
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<tr><td colspan="2" bgcolor="silver"><b>\$DST_NO</b></td></tr>
+<tr>
+	<td colspan="2">Die Nummer des Anrufers (INCOMING), bzw. Zielrufnummer (OUTGOING)</td>
+</tr>
+</table>
+<p></p>
+
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<tr><td colspan="2" bgcolor="silver"><b>\$ACC_NO</b></td></tr>
+<tr>
+	<td colspan="2">Account-ID (1-10)</td>
+</tr>
+</table>
+<p></p>
+
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<tr><td colspan="2" bgcolor="silver"><b>\$DTMF</b></td></tr>
+<tr>
+	<td colspan="2">DTMF/DDI-Zeichenfolge</td>
+</tr>
+</table>
+<p></p>
+</ul>
+
+Das benutzerdefinierte Skript wird an verschiedenen Stellen im Programm aufgerufen. Deswegen kann es vorkommen,
+dass der selbe Event zwei bis drei Mal ausgelöst wird. Dies sollte man im eigenen Skript berücksichtigen und ggf. einschränken:<br>
+<ul>
+<li><b>if [ "\$SCRIPT" = "BEFORE_LOAD" ]; then ...</b><br>
+Skript wird am Anfang der script_funcs.sh aufgerufen (Global)</li><br>
+<li><b>if [ "\$SCRIPT" = "FUNCS" ]; then ...</b><br>
+Skript wird am Ende der script_funcs.sh aufgerufen (Global)</li><br>
+<li><b>if [ "\$SCRIPT" = "AM" ]; then ...</b><br>
+Skript wird vor dem Anrufbeantworter Vorgang aufgerufen (script_am.sh)</li><br>
+<li><b>if [ "\$SCRIPT" = "CT" ]; then ...</b><br>
+Skript wird vor dem Callthrough Vorgang aufgerufen (script_main.sh)</li><br>
+<li><b>if [ "\$SCRIPT" = "CB" ]; then ...</b><br>
+Skript wird vor dem Callback Vorgang aufgerufen (script_main.sh)</li><br>
+</ul>
+
+<b>1. Beispiel:</b><br><br>
+Bei einem Anruf auf die Account-Nr. "12345" soll das Gespräch sofort angenommen werden.
+Es wird eine Wave-Datei abgespielt und danach wieder aufgelegt.<br>
+<pre>
+if [ "\$SCRIPT" = "BEFORE_LOAD" ];
+then
+  if [ "\$SRC_NO" = "12345" ] && [ "\$EVENT" = "CONNECT" ] && [ "\$IN_OUT" = "INCOMING" ];
+  then
+	\$DTMFBOX \$SRC_CON -hook up
+	\$DTMFBOX \$SRC_CON -play /var/meine_wave.wav
+	\$DTMFBOX \$SRC_CON -hook down
+	return 1
+  fi
+fi
+</pre>
+Möchte man das Skript für bestimmte Anrufer eingrenzen, muss zusätzlich \$DST_NO abgefragt werden.
+<p></p>
+
+<b>2. Beispiel:</b><br><br>
+Man möchte den eMail-Text des Anrufbeantworters ändern. Man kann dafür die vorhandene Funktion
+create_mail() in script_am.sh überladen:
+
+<pre>
+if [ "\$SCRIPT" = "AM" ];
+then
+create_mail() {
+
+cat &lt;&lt; SUBEND &gt; &quot;\$DTMFBOX_PATH/tmp/\$SRC_CON.mail_subject.txt&quot;
+  Mein eigener Betreff (von Nr. \$DST_NO an Nr. \$SRC_NO)
+SUBEND
+
+cat &lt;&lt; MAILEND &gt; &quot;\$DTMFBOX_PATH/tmp/\$SRC_CON.mail_body.html&quot;
+  &lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Ein Titel&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+  &lt;h3&gt;&lt;b&gt;Anrufbeantworter&lt;/b&gt;&lt;br&gt;&lt;/h3&gt;
+  Anruf (\$TYPE)&lt;br&gt;
+  von \$DST_NO für \$SRC_NO&lt;br&gt;
+  &lt;/body&gt;&lt;/html&gt;
+MAILEND
+
+MAIL_SUBJECT=\`cat &quot;\$DTMFBOX_PATH/tmp/\$SRC_CON.mail_subject.txt&quot;\`
+}
+fi
+</pre>
+<p></p><br>
+
+<b>Weitere Beispiele / Addons:</b><br><br>
+Unter $DTMFBOX_PATH/script/addons befinden sich Addons, welche optional
+eingebunden werden können.<p>
+
+<ul>
+<li><b>script/addons/zdf_podcast.sh</b><p>
+Nach Einbindung des Skriptes befindet sich im internen Menü unter Sonstiges (4) ein neuer Untermenüpunkt (5).
+<pre>
+. ./script/addons/zdf_podcast.sh
+</pre>
+</li>
+
+<li><b>script/addons/anti_callcenter.sh</b><p>
+Nach Einbindung des Skriptes werden alle unbekannten Anrufe sofort entgegengenommen und der Anrufer veranlasst, 
+seine Telefonnummer + # einzugeben. Danach wird er mit der Zielrufnummer weiterverbunden (ggf. über CAPI-Controller X).</li><br>
+<pre>
+. ./script/addons/anti_callcenter.sh &lt;ANSAGE-WAVE&gt; &lt;MUSIK-WAVE&gt; &lt;ZIELRUFNUMMER&gt; &lt;CAPI-CONTROLLER&gt;
+if [ "\$?" = "1" ]; then return 1; fi
+
+. ./script/addons/anti_callcenter.sh "\$DTMFBOX_PATH/play/bitte_nummer_eingeben.wav" "\$DTMFBOX_PATH/play/musik.wav" "12345" "3"
+if [ "\$?" = "1" ]; then return 1; fi
+</pre>
+
+<li><b>script/addons/isdn_mod.sh</b><p>
+Mithilfe dieses Skriptes wird eine externe MSN mit einer internen MSN verbunden.<br>
+Damit hat man die Möglichkeit eine Rückwärtssuche durchzuführen und das Ergebnis als Display-Message am Telefon anzuzeigen.
+Am Telefon muss man dafür als Empfangs-MSN eine Pseudo-MSN angeben (z.B. 602). Die Sende-MSN kann weiterhin bestehen bleiben.<br>
+Soll auch die Sende-MSN über die dtmfbox durchgereicht werden, muss im AVM-WebIf ein VoIP Account ohne Registrierungsdaten hinterlegt werden (Inetrufnummer: 602).
+Dieser Account wird ebenfalls in der dtmfbox eingerichtet (z.B. MSN: 0#602, CAPI-Ctrl. 5). 
+
+<pre>
+# . ./script/addons/isdn_mod.sh &lt;ACCOUNT-ID&gt; &lt;REAL-MSN&gt; &lt;EMPFANGS-MSN&gt; &lt;SENDE-MSN&gt; &lt;AVM-WEBIF PASSWORT&gt; 
+# if [ "\$?" = "1" ]; then return 1; fi
+
+##############################################################################
+# nur Empfangs-MSN durchreichen (über S0):
+##############################################################################
+. ./script/addons/isdn_mod.sh "1" "12345" "602"
+if [ "\$?" = "1" ]; then return 1; fi
+
+##############################################################################
+# Empfangs- und Sende-MSN durchreichen (über S0 und VoIP Account 0#602):
+# Hinweis: 0#... = erster VoIP-Account, 1#... = zweiter VoIP-Account, usw.
+##############################################################################
+. ./script/addons/isdn_mod.sh "1" "12345" "602" "0#602"
+if [ "\$?" = "1" ]; then return 1; fi
+
+##############################################################################
+# Empfangs-MSN durchreichen (über SIP an voipd):
+##############################################################################
+. ./script/addons/isdn_mod.sh "1" "12345" "602@localhost" "" "passwort"
+if [ "\$?" = "1" ]; then return 1; fi
+</pre>
+Als Empfangs-MSN kann man auch eine SIP-Uri angegeben. Bei einer SIP-Uri muss man ebenfalls einen leeren VoIP-Account im AVM-WebIf hinterlegen. Der Anruf wird dann per SIP weitergereicht, anstatt über den internen S0. 
+Hierbei muss das WebIf-Passwort mitangegeben werden, damit ein Telefonbucheintrag für die Rückwärtssuche erstellt werden kann (es wird der erster TB-Eintrag überschrieben!).
+<p></p>
+
+<i>Rückwärtssuche</i>:<br>
+Zunächst wird geschaut, ob ein Eintrag in $DTMFBOX_PATH/phonebook.txt gefunden werden kann. Wurde kein Eintrag gefunden,
+wird ein Userskript-Event ausgelöst (\$SCRIPT="INVERS"). Hier kann man seine eigene Rückwärtssuche
+durchführen und das Ergebnis mit "echo" ausgeben. Wird kein Eintrag ausgeben, wird eine Rückwärtssuche
+über dasoertliche.de durchgeführt.<br>
+Die Datei phonebook.txt hat folgendes Format:<br>
+<pre>
+nummer|display-text
+03012345|Ein Eintrag
+021133412|Weiterer Eintrag
+...
+</pre>
+
+Das Userskript zur Rückwärtssuche könnte folgendermaßen aussehen:<br>
+<pre>
+if [ "\$SCRIPT" = "INVERS" ];
+then
+  if [ "\$DST_NO" = "03012345" ]; then echo "Ein Eintrag"; fi
+  if [ "\$DST_NO" = "021133412" ]; then echo "Weiterer Eintrag"; fi
+  return 1;
+fi
+</pre>
+</ul>
+
+
+EOF
+ fi
 
 cat << EOF
 </div><div style='display:none'>

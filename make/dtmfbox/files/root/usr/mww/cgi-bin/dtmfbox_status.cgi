@@ -1,6 +1,6 @@
 #!/var/tmp/sh
 
-if [ ! -z `pidof dtmfbox` ]; 
+if [ ! -z "$(pidof 'dtmfbox')" ]; 
 then
   status_daemon="running" 
 else

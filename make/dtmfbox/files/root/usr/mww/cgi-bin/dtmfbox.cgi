@@ -12,7 +12,7 @@ if [ "$DTMFBOX_PATH" = "" ]; then
 	then
 		export DTMFBOX_PATH="`pwd | sed 's/\/httpd\/cgi-bin//g'`"
 	else
-		export DTMFBOX_PATH="/var/dtmfbox"
+		export DTMFBOX_PATH="/var/dtmfbox-bin"
 	fi
 
 	FIRST_INSTALL="1"
@@ -178,7 +178,7 @@ CURRENT_PAGE="status"
 fi
 
 # On every page, we need a status-field for usb (only needed by standalone & usb-version)
-if [ "$DTMFBOX_PATH" = "" ] || [ "$DTMFBOX_PATH" = "/var/dtmfbox" ];
+if [ "$DTMFBOX_PATH" = "" ] || [ "$DTMFBOX_PATH" = "/var/dtmfbox" ] || [ "$DTMFBOX_PATH" = "/var/dtmfbox-bin" ];
 then
 echo "<input type='hidden' name='got_usb_path' id='got_usb_path' value=\"$DTMFBOX_PATH\">"
 echo "<input type='hidden' name='last_page' value='$CURRENT_PAGE'>"
@@ -1358,7 +1358,7 @@ let REM_RTCP_START=$LOC_RTP_START+3
 
 
 echo "$RTP_START"
-if [ ! -z `pidof dtmfbox` ];
+if [ ! -z "$(pidof 'dtmfbox')" ];
 then
 	dtmfbox_running="1"
 else
@@ -1573,7 +1573,7 @@ fi
 
 sec_begin 'Status'
 
-if [ ! -z `pidof dtmfbox` ];
+if [ ! -z "$(pidof 'dtmfbox')" ];
 then
 status_daemon="running"
 else
@@ -1638,7 +1638,7 @@ sec_begin 'USB-Pfad'
 
 cat << EOF
 <p>
-<input id="e1" type="text" name="path" value="$DTMFBOX_PATH" size="50" onblur="javascript:got_usb_path.value=path.value; if(path.value != '/var/dtmfbox' && path.value != '') { got_usb.value='1'; } else { got_usb.value='0'; path.value='/var/dtmfbox'; got_usb_path.value='/var/dtmfbox' }"><br>
+<input id="e1" type="text" name="path" value="$DTMFBOX_PATH" size="50" onblur="javascript:got_usb_path.value=path.value; if(path.value != '/var/dtmfbox' && path.value != '/var/dtmfbox-bin' && path.value != '') { got_usb.value='1'; } else { got_usb.value='0'; path.value='/var/dtmfbox-bin'; got_usb_path.value='/var/dtmfbox-bin' }"><br>
 <font size="1">Leer lassen, falls kein USB!</font><br>
 <font size="1">Hier werden die Aufnahmen, Ansagen und Skripte abgelegt.<br>Komplette Pfadangabe!</font><br>
 </p>
@@ -1848,7 +1848,7 @@ CONFIG_FILE="/var/tmp/flash/dtmfbox_userscript.sh"
 echo "<p>$DESCRIPTION</p>"
 echo "<form action=\"/cgi-bin/save.cgi?form=file_$id\" method=\"post\" target='_blank'>"
 echo -n '<textarea style="width: $TABLE_WIDTH;" name="content" rows='"$TEXT_ROWS"' cols="60" wrap="off">'
-[ -r "$CONFIG_FILE" ] && $HTTPD -e `cat "$CONFIG_FILE"`
+[ -r "$CONFIG_FILE" ] && $HTTPD -e "$(cat $CONFIG_FILE)"
 echo '</textarea>'
 echo '<div class="btn"><input type="submit" value="&Uuml;bernehmen"></div>'
 echo '</form>'
