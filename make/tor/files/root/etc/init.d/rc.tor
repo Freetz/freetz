@@ -57,7 +57,7 @@ stop() {
 }
 
 case "$1" in
-        ""|load)
+	""|load)
 		modreg cgi 'tor' 'Tor Proxy'
 
 		if [ "$TOR_ENABLED" != "yes" ]; then
@@ -87,7 +87,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z `pidof "$DAEMON"` ]; then
+		if [ -z "$(pidof "$DAEMON")" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

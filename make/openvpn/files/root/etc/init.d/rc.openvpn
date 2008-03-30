@@ -6,16 +6,16 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 scriptname=$0;
 DAEMON=${scriptname##*/rc.}
 unset SAVECGI
-test "$DAEMON" = "openvpn" -a  "`ps | grep save.cgi | grep -v grep`" != ""  && SAVECGI="true" ;
+test "$DAEMON" = "openvpn" -a  "$(ps | grep save.cgi | grep -v grep)" != ""  && SAVECGI="true" ;
 save_backup() {
 	cat /mod/etc/conf/openvpn.cfg | tr " \'" "%#" | sed 's/=#/=/g'  > /var/tmp/openvpn_tmp_bu
 }
 
 find_changes() {
-	pkg_diff=`cat /mod/etc/conf/openvpn.cfg | tr " \'" "%#" | sed 's/=#/=/g' | grep -vf /var/tmp/openvpn_tmp_bu | grep -vE "CONFIG_COUNT|EXPERT|ENABLED" `
+	pkg_diff="$(cat /mod/etc/conf/openvpn.cfg | tr " \'" "%#" | sed 's/=#/=/g' | grep -vf /var/tmp/openvpn_tmp_bu | grep -vE "CONFIG_COUNT|EXPERT|ENABLED" )"
 	diff=""
 	diffnames=""
-	mincount=`cat /var/tmp/openvpn_tmp_bu | grep CONFIG_COUNT | tr -cd [0-9] `
+	mincount="$(cat /var/tmp/openvpn_tmp_bu | grep CONFIG_COUNT | tr -cd [0-9] )"
 	newcount=$OPENVPN_CONFIG_COUNT
 	if [ $newcount -lt $mincount ]; then mincount=$newcount ; fi
 	for x in  $pkg_diff; do
@@ -23,7 +23,7 @@ find_changes() {
 		werteneu="${x##*=}#**%%**"
 		name=${x%%=*}
 		name=${name##*%}
-		wertealt=`cat /var/tmp/openvpn_tmp_bu | tr "|" '\n' | grep "${name}="`
+		wertealt="$(cat /var/tmp/openvpn_tmp_bu | tr "|" '\n' | grep "${name}=")"
 		wertealt=${wertealt##*=}
 		wn=""
 		count=0;
@@ -43,7 +43,7 @@ find_changes() {
 		done
 	done
 	diffnames=${diffnames%'\n'}
-	pkg_changed=`echo -e "$diffnames" | sort  -u`
+	pkg_changed="$(echo -e "$diffnames" | sort  -u)"
 	rm -f /var/tmp/openvpn_tmp_bu
 }
 
@@ -97,7 +97,7 @@ start() {
 
 stop() {
 	
-	if [ ! -z `pidof $DAEMON` ];then
+	if [ ! -z "$(pidof $DAEMON)" ];then
 
 		echo -n "Stopping ${DAEMON} ... "
 		killall $DAEMON > /dev/null 2>&1

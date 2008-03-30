@@ -18,7 +18,7 @@ case "$1" in
 esac
 
 start() {
-	if [ -n `pidof pptp` ]; then
+	if [ -n "$(pidof pptp)" ]; then
 		echo 'pptp is already running'
 		exit 1
 	fi
@@ -53,11 +53,11 @@ start() {
 
 	$PPPD call pptp $PPTP_OPTIONS
 	sleep 3
-	if [ -n `pidof pptp` ]; then
+	if [ -n "$(pidof pptp)" ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
-		if [ "$PPTP_RESTART" == "yes" -a -z `pidof pptp_restart` ]; then
+		if [ "$PPTP_RESTART" == "yes" -a -z "$(pidof pptp_restart)" ]; then
 			echo -n 'Starting restart script ...'
 			if [ -x /var/tmp/flash/ppp/pptp_restart ]; then
 				/var/tmp/flash/ppp/pptp_restart &
@@ -86,7 +86,7 @@ stop() {
 		echo 'failed.'
 	fi
 	sleep 3
-	if [ -n `pidof pptp_restart` ]; then
+	if [ -n "$(pidof pptp_restart)" ]; then
 		echo -n 'Stopping restart script ...'
 		killall pptp_restart > /dev/null 2>&1
 		exitrest=$?
@@ -137,7 +137,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z `pidof "$DAEMON"` -a -z `pidof pptp_restart` ]; then
+		if [ -z "$(pidof "$DAEMON")" -a -z "$(pidof pptp_restart)" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

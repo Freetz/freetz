@@ -44,7 +44,7 @@ start() {
 
 stop() {
 	echo -n 'Stopping Privoxy...'
-	kill -9 `cat /var/run/$DAEMON.pid` > /dev/null 2>&1
+	kill -9 "$(cat /var/run/$DAEMON.pid)" > /dev/null 2>&1
 	exitval=$?
 
 	rm -rf /mod/etc/$DAEMON/config
@@ -59,7 +59,7 @@ stop() {
 }
 
 case "$1" in
-        ""|load)
+	""|load)
 		if [ ! -r "/tmp/flash/user.filter" ]; then
 			cp -f /etc/privoxy/user.filter /tmp/flash/user.filter
 		fi
@@ -108,7 +108,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z `pidof "$DAEMON"` ]; then
+		if [ -z "$(pidof "$DAEMON")" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

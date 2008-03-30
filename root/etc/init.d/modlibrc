@@ -58,7 +58,7 @@ modlib_check_running()
 	local fn="$1"
 	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
 	[ ! -s "$fn" ] && return 1
-	kill -0 `cat "$fn"` 2> /dev/null
+	kill -0 $(cat "$fn")" 2> /dev/null
 	local status="$?"
 	[ "$status" != "0" ] && rm -f "$fn"
 	return "$status"
@@ -77,7 +77,7 @@ modlib_stop()
 		echo 'not running.'
 		return 0
 	fi
-	kill `cat "$fn"` 2> /dev/null
+	kill $(cat "$fn") 2> /dev/null
 	exitval=$?
 	rm -f "$fn"
 	if [ "$exitval" -eq 0 ]; then
@@ -102,7 +102,7 @@ modlib_reload()
 		echo 'not running.'
 		return 0
 	fi
-	kill -HUP `cat "$fn"` 2> /dev/null
+	kill -HUP $(cat "$fn")" 2> /dev/null
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'

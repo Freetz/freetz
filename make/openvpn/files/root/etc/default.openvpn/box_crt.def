@@ -1,5 +1,5 @@
 CAPTION='Box Cert (OpenVPN)'
 DESCRIPTION='$(lang de:"Zertifikat für diese Instanz. Wird nur für den Betrieb mit Zertifikaten benötigt." en:"Certificate for this instance. Only needed if run with certficiates.")'
 CONFIG_FILE='/tmp/flash/box.crt'
-CONFIG_SAVE='modsave flash; if [ ! -z `pidof openvpn` ]; then echo ""; /mod/etc/init.d/rc.openvpn reload; fi'
+CONFIG_SAVE='modsave flash; if [ ! -z "$(pidof openvpn)" ]; then echo ""; /mod/etc/init.d/rc.openvpn reload; fi'
 CONFIG_TYPE='text'

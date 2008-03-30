@@ -1,5 +1,5 @@
 CAPTION='CA Cert (OpenVPN)'
 DESCRIPTION='$(lang de:"Das öffentliche Zertifikat der Wurzel-Zertifizierungsstelle. Wird nur für den Betrieb mit Zertifikaten benötigt." en:"The public Certificate of the Certificate Authority. Only needed if run with certficiates.")'
 CONFIG_FILE='/tmp/flash/ca.crt'
-CONFIG_SAVE='modsave flash; if [ ! -z `pidof openvpn` ]; then echo ""; /mod/etc/init.d/rc.openvpn reload; fi'
+CONFIG_SAVE='modsave flash; if [ ! -z "$(pidof openvpn)" ]; then echo ""; /mod/etc/init.d/rc.openvpn reload; fi'
 CONFIG_TYPE='text'

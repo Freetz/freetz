@@ -25,7 +25,7 @@ start() {
 
 	config
 	
-	if [ `pidof rrdstats|wc -w` -gt 0 ]; then
+	if [ "$(pidof rrdstats|wc -w)" -gt 0 ]; then
 		echo "already running"
 		exit 0
 	fi
@@ -86,7 +86,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z `pidof rrdstats` ]; then
+		if [ -z "$(pidof rrdstats)" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

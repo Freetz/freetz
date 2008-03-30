@@ -10,12 +10,12 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
-if [ "$stop" -eq 0 -a -z `pidof dnsmasq` ]; then
+if [ "$stop" -eq 0 -a -z "$(pidof dnsmasq)" ]; then
 	/mod/etc/init.d/rc.dnsmasq >> /var/log/mod_net.log
 fi
 
 multid $args
 
-if [ "$stop" -ne 0 -a ! -z `pidof dnsmasq` ]; then
+if [ "$stop" -ne 0 -a ! -z "$(pidof dnsmasq)" ]; then
 	/mod/etc/init.d/rc.dnsmasq stop >> /var/log/mod_net.log
 fi

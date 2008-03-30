@@ -12,7 +12,7 @@ if [ ! -r $PIDF ]; then
 	echo $$ > $PIDF
 fi
 sleep 1
-if [ `ps |grep -v $ICKE|sed 's/^ \+//g'|cut -f1 -d" "|grep $(cat $PIDF)|wc -w` -eq 0 ]; then
+if [ $(ps |grep -v $ICKE|sed 's/^ \+//g'|cut -f1 -d" "|grep $(cat $PIDF)|wc -w) -eq 0 ]; then
 	echo $$ > $PIDF
 else
 	exit
@@ -26,7 +26,7 @@ if [ $# -ge 2 ]; then
 	done
 fi
 
-if [ "`pidof smbd`" != "" ]; then
+if [ "$(pidof smbd)" != "" ]; then
 	/etc/init.d/rc.samba restart smbd
 else
 	/etc/init.d/rc.samba config

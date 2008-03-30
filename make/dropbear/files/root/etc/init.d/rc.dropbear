@@ -60,7 +60,7 @@ start() {
 
 stop() {
 	echo -n 'Stopping ssh server...'
-	kill `cat /var/run/$DAEMON.pid` > /dev/null 2>&1
+	kill "$(cat /var/run/$DAEMON.pid)" > /dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -77,7 +77,7 @@ case "$1" in
 		modreg cgi 'dropbear' 'Dropbear'
 
 		deffile='/mod/etc/default.dropbear/authorized_keys.def'
-		[ -r "/tmp/flash/authorized_keys.def" ] && deffile='/tmp/flash/authorized_keys.def'
+		[ -r /tmp/flash/authorized_keys.def ] && deffile='/tmp/flash/authorized_keys.def'
 		modreg file 'authorized_keys' 'Authorized keys' 0 "$deffile"
 
 		if [ "$DROPBEAR_ENABLED" != "yes" ]; then

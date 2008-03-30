@@ -57,7 +57,7 @@ stop() {
 
 	sleep 1
 
-	if [ -z `pidof cifsoplockd` -a -z `pidof cifsdnotifyd` ]; then
+	if [ -z "$(pidof cifsoplockd)" -a -z "$(pidof cifsdnotifyd)" ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
@@ -78,7 +78,7 @@ case "$1" in
 			exit 1;
 		fi
 
-		if [ ! -z `pidof "cifsoplockd"` -a ! -z `pidof "cifsdnotifyd"` ]; then
+		if [ ! -z "$(pidof "cifsoplockd")" -a ! -z "$(pidof "cifsdnotifyd")" ]; then
 			echo "cifsmount already started."
 		else
 			start
@@ -100,7 +100,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z `pidof "cifsoplockd"` -a -z `pidof "cifsdnotifyd"` ]; then
+		if [ -z "$(pidof "cifsoplockd")" -a -z "$(pidof "cifsdnotifyd")" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

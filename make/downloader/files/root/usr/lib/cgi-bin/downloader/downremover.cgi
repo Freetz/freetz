@@ -33,32 +33,31 @@ EOF
 
 cgi_begin "$TITLE" extras
 sec_begin "$NM_REMOVE"
-if [ $QUERY_STRING ]
-then
-   eval $QUERY_STRING
-   case $cmd in
-   remove)
-echo -n "<pre>"
-/etc/init.d/rc.downloader remove
-echo "</pre>"
-cmd_button "pkg" "$PKGCGI" "$DOWNCGI" "$BACK_BTN"
-   ;;
-   *)
-      cat << EOF
+if [ "$QUERY_STRING" ]; then
+	eval "$QUERY_STRING"
+	case $cmd in
+		remove)
+			echo -n "<pre>"
+			/etc/init.d/rc.downloader remove
+			echo "</pre>"
+			cmd_button "pkg" "$PKGCGI" "$DOWNCGI" "$BACK_BTN"
+			;;
+		*)
+			cat << EOF
 <p>
 $(lang de:"Falscher Parameter" en:"Wrong parameter") $cmd
 </p>
 EOF
-   ;;
-   esac
+			;;
+		esac
 else
 cat << EOF
 <p>
 $(lang de:"Alle vom Downloader heruntergeladenen Dateien vom Zielort löschen.<br>Bitte nicht vergessen vorher die dazugehörigen Dienste zu stoppen!" en:"Removing of all by Downloader downloaded files.<br>Please do not forget to stop before all appropriate services!")
 </p>
 EOF
-cmd_button "" $SELF "remove" "$NM_REMOVE"
-cmd_button "pkg" "$PKGCGI" "$DOWNCGI" "$BACK_BTN"
+	cmd_button "" $SELF "remove" "$NM_REMOVE"
+	cmd_button "pkg" "$PKGCGI" "$DOWNCGI" "$BACK_BTN"
 fi
 sec_end
 

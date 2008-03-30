@@ -24,7 +24,7 @@ start() {
 
 	$DAEMON $INETD_OPTIONS
 	exitval=$?
-	echo `pidof "$DAEMON"` > /var/run/$DAEMON.pid
+	echo "$(pidof "$DAEMON")" > /var/run/$DAEMON.pid
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else

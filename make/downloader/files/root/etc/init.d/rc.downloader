@@ -134,7 +134,7 @@ case "$1" in
 		remove
 		;;
 	status)
-		if [ -z `pidof "$DAEMON"` ]; then
+		if [ -z "$(pidof "$DAEMON")" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

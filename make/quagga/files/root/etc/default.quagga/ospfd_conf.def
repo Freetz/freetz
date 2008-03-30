@@ -1,5 +1,5 @@
 CAPTION='Quagga - ospfd.conf'
 DESCRIPTION='$(lang de:"Konfigurationsdatei f&uuml;r den OSPF Daemon." en:"Config file for the OSPF Daemon.")'
 CONFIG_FILE='/tmp/flash/ospfd.conf'
-CONFIG_SAVE='modsave flash; if [ ! -z `pidof ospfd` ]; then echo ""; /mod/etc/init.d/rc.quagga restart; fi'
+CONFIG_SAVE='modsave flash; if [ ! -z "$(pidof ospfd)" ]; then echo ""; /mod/etc/init.d/rc.quagga restart; fi'
 CONFIG_TYPE='text'

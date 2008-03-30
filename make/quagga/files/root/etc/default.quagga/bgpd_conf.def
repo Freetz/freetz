@@ -1,5 +1,5 @@
 CAPTION='Quagga - bgpd.conf'
 DESCRIPTION='$(lang de:"Konfigurationsdatei f&uuml;r den BGP Daemon." en:"Config file for the BGP Daemon.")'
 CONFIG_FILE='/tmp/flash/bgpd.conf'
-CONFIG_SAVE='modsave flash; if [ ! -z `pidof bgpd` ]; then echo ""; /mod/etc/init.d/rc.quagga restart; fi'
+CONFIG_SAVE='modsave flash; if [ ! -z "$(pidof bgpd)" ]; then echo ""; /mod/etc/init.d/rc.quagga restart; fi'
 CONFIG_TYPE='text'
