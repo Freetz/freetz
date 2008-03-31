@@ -87,9 +87,9 @@ EOF
 sec_end
 sec_begin '$(lang de:"Physikalischer-Speicher (RAM)" en:"Main memory (RAM)")'
 
-total=$(grep '^MemTotal:' /proc/meminfo | sed s/[^0-9]//g)"
-free=$(grep '^MemFree:' /proc/meminfo | sed s/[^0-9]//g)"
-cached=$(grep '^Cached:' /proc/meminfo | sed s/[^0-9]//g)"
+total="$(grep '^MemTotal:' /proc/meminfo | sed s/[^0-9]//g)"
+free="$(grep '^MemFree:' /proc/meminfo | sed s/[^0-9]//g)"
+cached="$(grep '^Cached:' /proc/meminfo | sed s/[^0-9]//g)"
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
 echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt (ohne Cache $cached KB)" en:"used (without cache $cached KB)")</p>"
@@ -99,9 +99,9 @@ sec_end
 sec_begin '$(lang de:"Flash-Speicher (TFFS) für Konfigurationsdaten" en:"Flash memory (TFFS) for configuration data")'
 
 echo 'info' > /proc/tffs
-percent=$(grep '^fill=' /proc/tffs)"
+percent="$(grep '^fill=' /proc/tffs)"
 percent="${percent#fill=}"
-let tffs_size=$(printf "%d" "0x$(grep tffs /proc/mtd | head -n1 | awk '{print $2}'))"/1024
+let tffs_size=$(printf "%d" "0x$(grep tffs /proc/mtd | head -n1 | awk '{print $2}')")/1024
 let tffs_used="tffs_size*percent/100"
 echo "<p>$tffs_used $(lang de:"von" en:"of") $tffs_size KB $(lang de:"belegt" en:"used")</p>"
 stat_bar $percent
@@ -111,9 +111,9 @@ sec_end
 has_swap
 if [ "$?" == "0" ]; then
 sec_begin '$(lang de:"Swap-Speicher" en:"Swap") (RAM)'
-total=$(grep '^SwapTotal:' /proc/meminfo | sed s/[^0-9]//g)"
-free=$(grep '^SwapFree:' /proc/meminfo | sed s/[^0-9]//g)"
-cached=$(grep 'SwapCached:' /proc/meminfo | sed s/[^0-9]//g)"
+total="$(grep '^SwapTotal:' /proc/meminfo | sed s/[^0-9]//g)"
+free="$(grep '^SwapFree:' /proc/meminfo | sed s/[^0-9]//g)"
+cached="$(grep 'SwapCached:' /proc/meminfo | sed s/[^0-9]//g)"
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
 echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt" en:"used") ($(lang de:"ohne Cache" en:"without cache") $cached KB)</p>"
