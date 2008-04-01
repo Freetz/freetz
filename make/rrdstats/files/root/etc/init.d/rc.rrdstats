@@ -17,7 +17,7 @@ config() {
 		mkdir $RRDSTATS_RRDDATA 2>/dev/null
 		mkdir $RRDSTATS_RRDTEMP 2>/dev/null
 		rm /var/mod/etc/statpix 2>/dev/null
-		ln -s $RRDSTATS_RRDTEMP /var/mod/etc/statpix 2>/dev/null
+		ln -s $(echo "$RRDSTATS_RRDTEMP"|sed 's/\/*$//g') /var/mod/etc/statpix 2>/dev/null
 }
 
 start() {

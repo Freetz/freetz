@@ -2,9 +2,10 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
+auto_chk=''; man_chk=''; log_protoc_chk=''
 
 if [ "$RRDSTATS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then xchgupdown_chk=' checked'; fi
 
 sec_begin 'Starttyp'
 
@@ -33,6 +34,10 @@ cat << EOF
 <p>Intervall in Sekunden:&nbsp;<input type="text" name="interval" size="3" maxlength="9" value="$(httpd -e "$RRDSTATS_INTERVAL")"></p>
 <p>Optionen f&uuml;r Netzwerk:&nbsp;<input type="text" name="net_advance" size="40" maxlength="255" value="$(httpd -e "$RRDSTATS_NET_ADVANCE")">
 <br><FONT SIZE=-2>Beispiele:&nbsp;-l 0 (default), -o (logarithmisch)</FONT></p>
+<p>
+<input type="hidden" name="xchgupdown" value="no">
+<input id="a1" type="checkbox" name="xchgupdown" value="yes"$xchgupdown_chk><label for="a1">Up- und Download vertauschen</label>
+</p>
 EOF
 
 sec_end

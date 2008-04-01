@@ -11,6 +11,13 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 . /mod/etc/conf/rrdstats.cfg
 
+if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then
+	WAN_RX="out"
+	WAN_TX="in"
+else
+	WAN_RX="in"
+	WAN_TX="out"
+fi
 URL_STATUS="?pkg=rrdstats&cgi=rrdstats/stats"
 URL_EXTENDED="$SCRIPT_NAME$URL_STATUS"
 DATESTRING=`date +'%d/%m/%y %X'`
@@ -25,6 +32,7 @@ RED_D=#CC3118
 ORANGE_D=#CC7016
 BLACK=#000000
 LOGARITHMIC="$RRDSTATS_NET_ADVANCE"
+_NICE=$(which nice)
 
 has_swap() {
 	[ "$(free | grep "Swap:" | awk '{print $2}')" == "0" ] || return 0
@@ -44,7 +52,7 @@ generate_graph() {
 			NAMEPREFIX=cpu
 			FILE=$RRDSTATS_RRDDATA/$NAMEPREFIX.rrd
 			if [ -e $FILE ]; then
-				rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png	\
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png	\
 				--title "CPU Usage"			\
 				--start now-$PERIODE			\
 				--width $WIDTH --height $HEIGHT		\
@@ -80,7 +88,7 @@ generate_graph() {
 			let RAM=`grep MemTotal /proc/meminfo | tr -s [:blank:] " " |cut -d " " -f 2`*1024
 			FILE=$RRDSTATS_RRDDATA/$NAMEPREFIX.rrd
 			if [ -e $FILE ]; then
-				rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png	\
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png	\
 				--title "Memory Usage"			\
 				--start now-$PERIODE -u $RAM -r -l 0 -z	\
 				--width $WIDTH --height $HEIGHT		\
@@ -125,7 +133,7 @@ generate_graph() {
 			FILE=$RRDSTATS_RRDDATA/memory.rrd
 
 			if [ -e $FILE ]; then
-				rrdtool graph  $RRDSTATS_RRDTEMP/$NAMEPREFIX.png	\
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$NAMEPREFIX.png	\
 				--title "Swap stats"			\
 				--start -1-$PERIODE -l 0 -u 100 -r	\
 				--width $WIDTH --height $HEIGHT	-z	\
@@ -157,7 +165,7 @@ generate_graph() {
 			NAMEPREFIX=net
 			FILE=$RRDSTATS_RRDDATA/${NAMEPREFIX}_${RRDSTATS_WANINTERFACE}.rrd
 			if [ -e $FILE ]; then
-				rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png	\
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png	\
 				--title "Interface Traffic"			\
 				--start -1-$PERIODE $LOGARITHMIC -z		\
 				--width $WIDTH --height $HEIGHT		\
@@ -169,8 +177,8 @@ generate_graph() {
 				--units=si			\
 				-W "Generated on: $DATESTRING"		\
 									\
-				DEF:in=$FILE:in:AVERAGE                 \
-				DEF:out=$FILE:out:AVERAGE		\
+				DEF:in=$FILE:$WAN_RX:AVERAGE                 \
+				DEF:out=$FILE:$WAN_TX:AVERAGE		\
 									\
 				AREA:in$GREEN:"Incoming    (max/avg/cur)[bytes/s]\:" \
 				GPRINT:in:MAX:"%3.0lf%s /"		\
