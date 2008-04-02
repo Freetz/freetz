@@ -1,7 +1,3 @@
-#!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-. /usr/lib/libmodcgi.sh
 
 let _width=$_cgi_width-230
 

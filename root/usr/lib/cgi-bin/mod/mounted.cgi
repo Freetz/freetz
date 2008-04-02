@@ -1,7 +1,3 @@
-#!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/bin
-. /usr/lib/libmodcgi.sh
 
 stat_bar() {
 	let multip="($_cgi_width-230-50)/100";
@@ -10,19 +6,15 @@ stat_bar() {
 }
 
 sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'
-if [ "$(mount|grep "/dev/sd")" -o "$(mount|grep "/dev/mapper")" ]; then
-	for dummy in `mount|grep "/dev/mapper"|cut -d " " -f 3`; do
-		PARTITIONS="$PARTITIONS $dummy"
-	done
-	for dummy in `mount|grep "/dev/sd"|cut -d " " -f 3`;do
-		PARTITIONS="$PARTITIONS $dummy"
-	done
-	for dummy in $PARTITIONS;do
-		dfrow=$(df -h| grep $dummy)
+MPOINTS=$(mount|grep -E "^/dev/sd|^/dev/mapper/|^.* on .* type cifs"|cut -d" " -f3)
+if [ "$MPOINTS" ]; then
+	for dummy in $MPOINTS; do
+		dfrow=$(df -h|grep " $dummy$")
 		total="$(  echo $dfrow | awk '{print $2}' |sed s/k/" K"/g |sed s/M/" M"/g |sed s/G/" G"/g )"
 		used="$(   echo $dfrow | awk '{print $3}' |sed s/k/" K"/g |sed s/M/" M"/g |sed s/G/" G"/g )"
 		percent="$(echo $dfrow | awk '{print $5}' |sed s/[^0-9]//g )"
-		echo "<p><b>$dummy</b> ($(mount|grep $dummy|cut -d " " -f 1)):<br>"$used"B $(lang de:"von" en:"of") "$total"B $(lang de:"belegt" en:"used")</p>"
+		thename="$(echo $dfrow | awk '{print $1}' )"
+		echo "<p><b>$dummy</b> ($thename):<br>"$used"B $(lang de:"von" en:"of") "$total"B $(lang de:"belegt" en:"used")</p>"
 		stat_bar $percent
 	done
 else

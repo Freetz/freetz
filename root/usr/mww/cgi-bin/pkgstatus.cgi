@@ -6,9 +6,6 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 package="$(echo "$QUERY_STRING" | sed -e 's/^.*pkg=//' -e 's/&.*$//' -e 's/\.//g')"
 cgi="$(echo "$QUERY_STRING" | sed -e 's/^.*cgi=//' -e 's/&.*$//' -e 's/\.//g')"
 
-#if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
-#	. /mod/etc/conf/$package.cfg
-#fi
 
 cgi_begin "$package" "status_$(echo $cgi | sed -e "s/\//__/")"
 
