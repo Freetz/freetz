@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, 0.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-lgpl.tgz
-$(PKG)_SITE:=http://xyssl.org/code/download
+$(PKG)_SITE:=http://dsmod.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/library/libxyssl.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxyssl.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libxyssl.so
