@@ -1,7 +1,8 @@
 PHP_VERSION:=5.2.1
 PHP_SOURCE:=php-$(PHP_VERSION).tar.bz2
 # A really strange URL
-PHP_SITE:=http://www.php.net/get/$(PHP_SOURCE)/from/de.php.net/mirror
+#PHP_SITE:=http://www.php.net/get/$(PHP_SOURCE)/from/de.php.net/mirror
+PHP_SITE:=http://museum.php.net/php5
 PHP_MAKE_DIR:=$(MAKE_DIR)/php
 PHP_DIR:=$(SOURCE_DIR)/php-$(PHP_VERSION)
 PHP_BINARY:=$(PHP_DIR)/sapi/cgi/php
