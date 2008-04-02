@@ -35,6 +35,17 @@ cat << EOF
 EOF
 
 sec_end
+if [ "$VSFTPD_LOG_SYSLOG" != "yes" ]; then 
+sec_begin '$(lang de:"Anzeigen" en:"Show")'
+
+cat << EOF
+<ul>
+<li><a href="/cgi-bin/pkgstatus.cgi?pkg=vsftpd&cgi=vsftpd/vsftpd_log">$(lang de:"Logdatei anzeigen" en:"Show logfile")</a></li>
+</ul>
+EOF
+
+sec_end
+fi
 sec_begin '$(lang de:"FTP Server" en:"FTP server")'
 
 cat << EOF
