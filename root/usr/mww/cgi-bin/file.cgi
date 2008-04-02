@@ -23,6 +23,9 @@ TEXT_ROWS=18
 # Load config
 [ -r "$4" ] && . $4
 
+# Set width
+let _width=$_cgi_width-230
+
 echo "<h1>$CAPTION</h1>"
 [ -n "$DESCRIPTION" ] && echo "<p>$DESCRIPTION</p>"
 
@@ -31,7 +34,7 @@ if [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$3" ]; then
 
 	case "$CONFIG_TYPE" in
 		text)
-			echo -n '<p><textarea style="width: 500px;" name="content" rows="'"$TEXT_ROWS"'" cols="60" wrap="off" readonly>'
+			echo -n '<p><textarea style="width: '$_width'px;" name="content" rows="'"$TEXT_ROWS"'" cols="60" wrap="off" readonly>'
 			[ -r "$CONFIG_FILE" ] && httpd -e "$(cat $CONFIG_FILE)"
 			echo '</textarea></p>'
 			;;
@@ -45,7 +48,7 @@ else
 	case "$CONFIG_TYPE" in
 		text)
 			echo "<form action=\"/cgi-bin/save.cgi?form=file_$id\" method=\"post\">"
-			echo -n '<textarea style="width: 500px;" name="content" rows="'"$TEXT_ROWS"'" cols="60" wrap="off">'
+			echo -n '<textarea style="width: '$_width'px;" name="content" rows="'"$TEXT_ROWS"'" cols="60" wrap="off">'
 			[ -r "$CONFIG_FILE" ] && httpd -e "$(cat $CONFIG_FILE)"
 			echo '</textarea>'
 			echo '<div class="btn"><input type="submit" value="$(lang de:"&Uuml;bernehmen" en:"Apply")"></div>'
