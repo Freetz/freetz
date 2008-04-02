@@ -14,8 +14,8 @@ case "$1" in
 esac
 
 config() {
-		mkdir $RRDSTATS_RRDDATA 2>/dev/null
-		mkdir $RRDSTATS_RRDTEMP 2>/dev/null
+		mkdir -p $RRDSTATS_RRDDATA 2>/dev/null
+		mkdir -p $RRDSTATS_RRDTEMP 2>/dev/null
 		rm /var/mod/etc/statpix 2>/dev/null
 		ln -s $(echo "$RRDSTATS_RRDTEMP"|sed 's/\/*$//g') /var/mod/etc/statpix 2>/dev/null
 }
@@ -23,8 +23,6 @@ config() {
 start() {
 	echo -n 'Starting rrdstats...'
 
-	config
-	
 	if [ "$(pidof rrdstats|wc -w)" -gt 0 ]; then
 		echo "already running"
 		exit 0
@@ -63,6 +61,7 @@ case "$1" in
 	""|load)
 		modreg cgi 'rrdstats' 'RRDstats'
 		modreg status rrdstats RRDstats rrdstats/stats
+		config
 		if [ "$RRDSTATS_ENABLED" != "yes" ]; then
 			echo "rrdstats is disabled" 1>&2
 			exit 1;
@@ -75,6 +74,7 @@ case "$1" in
 		modunreg cgi 'rrdstats'
 		;;
 	start)
+		config
 		start
 		;;
 	stop)
