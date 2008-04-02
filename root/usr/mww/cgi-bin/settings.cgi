@@ -13,7 +13,10 @@ crond_auto_chk=''; crond_man_chk=''
 swap_auto_chk=''; swap_man_chk=''
 telnetd_auto_chk=''; telnetd_man_chk=''; telnet_inetd_chk='';
 httpd_auto_chk=''; httpd_man_chk=''; httpd_inetd_chk='';
+mounted_main_chk='';mounted_sub_chk='';
 
+if [ "$MOD_MOUNTED_MAIN" = "yes" ]; then mounted_main_chk=' checked'; fi
+if [ "$MOD_MOUNTED_SUB" = "yes" ]; then mounted_sub_chk=' checked'; fi
 if [ "$MOD_CROND" = "yes" ]; then crond_auto_chk=' checked'; else crond_man_chk=' checked'; fi
 if [ "$MOD_SWAP" = "yes" ]; then swap_auto_chk=' checked'; else swap_man_chk=' checked'; fi
 case "$MOD_TELNETD" in yes) telnetd_auto_chk=' checked';; inetd) telnetd_inetd_chk=' checked';; *) telnetd_man_chk=' checked';; esac
@@ -77,8 +80,16 @@ EOF
 fi
 cat << EOF
 </p>
-<h2>$(lang de:"Port der Weboberfl&auml;che (erfordert Neustart)" en:"Port of webinterface (restart required)")</h2>
-<p>Port: <input type="text" name="httpd_port" size="5" maxlength="5" value="$(httpd -e "$MOD_HTTPD_PORT")"></p>
+<p>$(lang de:"Port der Weboberfl&auml;che" en:"Port of webinterface"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(httpd -e "$MOD_HTTPD_PORT")">&nbsp;$(lang de:"(erfordert Neustart)" en:"(restart required)")</p>
+<h1>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h1>
+<p>
+$(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
+<input type="hidden" name="mounted_sub" value="no">
+<input id="a2" type="checkbox" name="mounted_sub" value="yes"$mounted_sub_chk><label for="a2">$(lang de:"Untermen&uuml; (erfordert Neustart)" en:"Submenu (requires reboot)")</label>
+<input type="hidden" name="mounted_main" value="no">
+<input id="a1" type="checkbox" name="mounted_main" value="yes"$mounted_main_chk><label for="a1">$(lang de:"Hauptseite" en:"Mainpage")</label>
+</p>
+<p>$(lang de:"Breite des Freetz-Webinterfaces" en:"Width of the Freetz webinterface"): <input type="text" name="cgi_width" size="4" maxlength="4" value="$(httpd -e "$MOD_CGI_WIDTH")"></p>
 EOF
 
 sec_end

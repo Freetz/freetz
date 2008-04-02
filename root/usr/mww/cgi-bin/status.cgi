@@ -7,8 +7,10 @@ get_env() {
 	cat /proc/sys/urlader/environment | grep "^$1" | sed -e 's/'"$1"'	//'
 }
 
+
 stat_bar() {
-	percent=$1; let bar="percent*4"; let grey="(100-percent)*4"
+	let multip="($_cgi_width-230-50)/100";
+	percent=$1; let bar="percent*multip"; let grey="(100-percent)*multip"
 	echo '<p><img src="/images/green.png" width="'"$bar"'" height="10" border="0" alt=""><img src="/images/grey.png" width="'"$grey"'" height="10" border="0" alt=""> &nbsp;&nbsp;'$percent' %</p>'
 }
 
@@ -121,6 +123,14 @@ stat_bar $percent
 sec_end
 fi
 
+if [ "$(grep MOD_MOUNTED_MAIN /mod/etc/conf/mod.cfg |cut -d"'" -f2)" = yes ];then
+	/usr/lib/cgi-bin/mod/mounted.cgi
+fi
+
+#ODER BESSER:
+#[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
+#[ "$MOD_MOUNTED_MAIN" = yes ] && /usr/lib/cgi-bin/mod/mounted.cgi
+# ??
 stat_button 'restart_dsld' '$(lang de:"DSL-Reconnect" en:"Reconnect DSL")'
 stat_button 'cleanup' '$(lang de:"TFFS aufräumen" en:"Clean up TFFS")'
 stat_button 'fw_attrib' '$(lang de:"Attribute bereinigen" en:"Clean up attributes")'

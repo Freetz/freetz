@@ -46,6 +46,10 @@ case "$1" in
 		[ -r /tmp/flash/modules.def ] && deffile='/tmp/flash/modules.def'
 		modreg file 'modules' 'modules' 0 "$deffile"
 
+		[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
+		modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' mod/logs
+		[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
+
 		start
 		;;
 	start)

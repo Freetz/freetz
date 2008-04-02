@@ -10,7 +10,6 @@ if [ "$1" = "status" ]; then
 			echo "<div id=\"status_$(echo $cgi | sed -e "s/\//__/")\" class=\"su\"><a href=\"/cgi-bin/pkgstatus.cgi?pkg=$pkg&cgi=$cgi\">$title</a></div>"
 		done
 	fi
-	echo "<div id=\"status_logs\" class=\"su\"><a href=\"/cgi-bin/logs.cgi\">Logs</a></div>"
 fi
 
 cat << EOF
@@ -78,7 +77,9 @@ EOF
 fi
 
 # set width of table
-if [ ! "$_cgi_width" ]; then let _cgi_width="730"; fi
+if [ ! "$_cgi_width" ]; then 
+	let _cgi_width="$(grep MOD_CGI_WIDTH /mod/etc/conf/mod.cfg |cut -d"'" -f2)"; 
+fi
 let _cgi_total_width="$_cgi_width+40"
 
 cat << EOF
