@@ -14,8 +14,8 @@ case "$1" in
 esac
 
 config() {
-		mkdir -p $RRDSTATS_RRDDATA 2>/dev/null
-		mkdir -p $RRDSTATS_RRDTEMP 2>/dev/null
+		mkdir $RRDSTATS_RRDDATA 2>/dev/null
+		mkdir $RRDSTATS_RRDTEMP 2>/dev/null
 		rm /var/mod/etc/statpix 2>/dev/null
 		ln -s $(echo "$RRDSTATS_RRDTEMP"|sed 's/\/*$//g') /var/mod/etc/statpix 2>/dev/null
 }
@@ -83,6 +83,7 @@ case "$1" in
 	restart)
 		stop
 		sleep 1
+		config
 		start
 		;;
 	status)
