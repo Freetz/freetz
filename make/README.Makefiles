@@ -71,8 +71,9 @@ $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root
 LIB:
 $(PKG)_TARGET_DIR:=root
 
-# order for inclusion in list of static or dynamic packages. Only for binary packages.
-# only necessary if the package contains a run-script
+# Order for inclusion in list of static or dynamic packages. Only for binary packages.
+# Only necessary if the package contains a run-script
+# The default is 99, which means that the run-script is not run at all.
 $(PKG)_STARTLEVEL=40
 
 
