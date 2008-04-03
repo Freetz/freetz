@@ -1,3 +1,5 @@
+. /mod/etc/conf/mod.cfg
+
 _cgi_menu() {
 cat << EOF
 <div class="menu">
@@ -58,13 +60,16 @@ Content-type: text/html; charset=iso-8859-1
 EOF
 
 # custom style for fieldset and div.body
-if [ "$_cgi_width" ]; then
-	let _usr_style="$_cgi_width-230"
-	echo "<style>"
-	echo "fieldset { margin: 0px; margin-top: 10px; margin-bottom: 10px; padding: 10px; width: "$_usr_style"px;}"
-	echo "div.body { width: "$_usr_style"px; }"
-	echo "</style>"
+if [ ! "$_cgi_width" ]; then
+	let _cgi_width=$MOD_CGI_WIDTH
 fi
+export _cgi_width
+let _cgi_total_width="$_cgi_width+40"
+let _usr_style="$_cgi_width-230"
+echo "<style>"
+echo "fieldset { margin: 0px; margin-top: 10px; margin-bottom: 10px; padding: 10px; width: "$_usr_style"px;}"
+echo "div.body { width: "$_usr_style"px; }"
+echo "</style>"
 
 if [ -n "$2" ]; then
 cat << EOF
@@ -75,12 +80,6 @@ cat << EOF
 </style>
 EOF
 fi
-
-# set width of table
-if [ ! "$_cgi_width" ]; then 
-	let _cgi_width="$(grep MOD_CGI_WIDTH /mod/etc/conf/mod.cfg |cut -d"'" -f2)"; 
-fi
-let _cgi_total_width="$_cgi_width+40"
 
 cat << EOF
 </head>

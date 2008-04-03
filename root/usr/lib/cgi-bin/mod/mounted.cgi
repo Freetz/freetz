@@ -8,13 +8,13 @@ stat_bar() {
 sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'
 MPOINTS=$(mount|grep -E "^/dev/sd|^/dev/mapper/|^.* on .* type cifs"|cut -d" " -f3)
 if [ "$MPOINTS" ]; then
-	for dummy in $MPOINTS; do
-		dfrow=$(df -h|grep " $dummy$")
-		total="$(  echo $dfrow | awk '{print $2}' |sed s/k/" K"/g |sed s/M/" M"/g |sed s/G/" G"/g )"
-		used="$(   echo $dfrow | awk '{print $3}' |sed s/k/" K"/g |sed s/M/" M"/g |sed s/G/" G"/g )"
-		percent="$(echo $dfrow | awk '{print $5}' |sed s/[^0-9]//g )"
-		thename="$(echo $dfrow | awk '{print $1}' )"
-		echo "<p><b>$dummy</b> ($thename):<br>"$used"B $(lang de:"von" en:"of") "$total"B $(lang de:"belegt" en:"used")</p>"
+	for path in $MPOINTS; do
+		dfrow=$(df -h|grep " $path$")
+		total="$(  echo $dfrow | awk '{print $2}' | sed 's/k/ K/;s/M/ M/;s/G/ G/')"
+		used="$(   echo $dfrow | awk '{print $3}' | sed 's/k/ K/;s/M/ M/;s/G/ G/')"
+		percent="$(echo $dfrow | awk '{print $5}' | sed 's/[^0-9]//')"
+		device="$(echo $dfrow | awk '{print $1}')"
+		echo "<p><b>$path</b> ($device):<br>"$used"B $(lang de:"von" en:"of") "$total"B $(lang de:"belegt" en:"used")</p>"
 		stat_bar $percent
 	done
 else

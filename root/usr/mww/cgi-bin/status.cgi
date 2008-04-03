@@ -124,9 +124,7 @@ stat_bar $percent
 sec_end
 fi
 
-if [ "$(grep MOD_MOUNTED_MAIN /mod/etc/conf/mod.cfg |cut -d"'" -f2)" = yes ]; then
-	. /usr/lib/cgi-bin/mod/mounted.cgi
-fi
+[ "$MOD_MOUNTED_MAIN" = yes ] && . /usr/lib/cgi-bin/mod/mounted.cgi
 
 stat_button 'restart_dsld' '$(lang de:"DSL-Reconnect" en:"Reconnect DSL")'
 stat_button 'cleanup' '$(lang de:"TFFS aufräumen" en:"Clean up TFFS")'
