@@ -100,6 +100,9 @@ case "$form" in
 			if [ "mod" = "$package" ]; then
 				update_inetd telnetd $oldstatus1
 				update_inetd webcfg $oldstatus2
+				. /mod/etc/conf/mod.cfg
+				modunreg status mod mod/mounted
+				[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod 'Partitionen' mod/mounted
 				oldstatus1=''
 			else
 				update_inetd $package $oldstatus1

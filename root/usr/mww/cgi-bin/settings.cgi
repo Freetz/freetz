@@ -85,7 +85,7 @@ cat << EOF
 <p>
 $(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
 <input type="hidden" name="mounted_sub" value="no">
-<input id="a2" type="checkbox" name="mounted_sub" value="yes"$mounted_sub_chk><label for="a2">$(lang de:"Untermen&uuml; (erfordert Neustart)" en:"Submenu (requires reboot)")</label>
+<input id="a2" type="checkbox" name="mounted_sub" value="yes"$mounted_sub_chk><label for="a2">$(lang de:"Untermen&uuml;" en:"Submenu")</label>
 <input type="hidden" name="mounted_main" value="no">
 <input id="a1" type="checkbox" name="mounted_main" value="yes"$mounted_main_chk><label for="a1">$(lang de:"Hauptseite" en:"Mainpage")</label>
 </p>
