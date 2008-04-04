@@ -8,19 +8,19 @@ exec 2>&1
 
 update_inetd() {
 	if [ -e /mod/etc/default.inetd/inetd.cfg ]; then
-		if [ -x "/mod/etc/init.d/rc.$1" ]; then
+		if [ -x /mod/etc/init.d/rc.$1 ]; then
 			status=$(/mod/etc/init.d/rc.$1 status)
-			if [ "running" = "$2" -a "inetd" = "$status" ]; then
+			if [ running = $2 -a inetd = $status ]; then
 			echo
 				/mod/etc/init.d/rc.$1 stop
 				/usr/bin/modinetd --nosave $1
 			echo
-			elif [ "inetd" = "$2" -a "inetd" != "$status" ]; then
+			elif [ inetd = $2 -a inetd != $status ]; then
 				echo
 				/usr/bin/modinetd --nosave $1
 				/mod/etc/init.d/rc.$1 start
 				echo
-			elif [ "inetd" = "$2" -o "inetd" = "$status" ]; then
+			elif [ inetd = $2 -o inetd = $status ]; then
 				echo
 				/usr/bin/modinetd --nosave $1
 				echo
@@ -31,8 +31,8 @@ update_inetd() {
 
 save_flash() {
 	if modsave flash; then
-		if [ -x "/mod/etc/init.d/rc.$1" ]; then
-			if [ "running" = "$2" -o "running" = "$status" ]; then
+		if [ -x /mod/etc/init.d/rc.$1 ]; then
+			if [ running = $2 -o running = $status ]; then
 				echo
 				/mod/etc/init.d/rc.$1 restart
 			fi
@@ -41,8 +41,8 @@ save_flash() {
 }
 
 rc_status() {
-	if [ -x "/mod/etc/init.d/rc.$1" ]; then
-	echo "$(/mod/etc/init.d/rc.$1 status)"
+	if [ -x /mod/etc/init.d/rc.$1 ]; then
+		/mod/etc/init.d/rc.$1 status
 	else
 		echo ""
 	fi
@@ -59,9 +59,9 @@ cgi_begin "$(lang de:"Speichern" en:"Saving")..."
 echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings"):</p>"
 echo -n "<pre>"
 
-form="$(echo "$QUERY_STRING" | sed -e 's/^.*form=//' -e 's/&.*$//' -e 's/\.//g')"
+form=$(echo "$QUERY_STRING" | sed -e 's/^.*form=//' -e 's/&.*$//' -e 's/\.//g')
 
-script='status.cgi';
+script=status.cgi;
 package=''
 file_id=''
 oldstatus1=''
@@ -69,12 +69,12 @@ oldstatus2=''
 
 case "$form" in
 	pkg_*)
-		package="${form#pkg_}"
-		[ -r "/mod/etc/default.$package/$package.save" ] && . /mod/etc/default.$package/$package.save
+		package=${form#pkg_}
+		[ -r /mod/etc/default.$package/$package.save ] && . /mod/etc/default.$package/$package.save
 		pkg_pre_save
-		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
-			if [ "$package" = "mod" ]; then script='settings.cgi'; else script="pkgconf.cgi"; fi
-			prefix="$(echo "$package" | tr 'a-z\-' 'A-Z_')_"
+		if [ -r /mod/etc/default.$package/$package.cfg ]; then
+			if [ $package = mod ]; then script=settings.cgi; else script=pkgconf.cgi; fi
+			prefix="$(echo $package | tr 'a-z\-' 'A-Z_')_"
 
 			vars=''; delim=''
 			for var in $(modconf vars $package); do
@@ -82,11 +82,11 @@ case "$form" in
 				delim=':'
 			done
 
-			if [ "mod" = "$package" ]; then
-				oldstatus1="$(rc_status telnetd)"
-				oldstatus2="$(rc_status webcfg)"
+			if [ $package = mod ]; then
+				oldstatus1=$(rc_status telnetd)
+				oldstatus2=$(rc_status webcfg)
 			else
-				oldstatus1="$(/mod/etc/init.d/rc.$package status)"
+				oldstatus1=$(/mod/etc/init.d/rc.$package status)
 			fi
 
 			echo -n 'Saving settings...'
@@ -96,33 +96,34 @@ case "$form" in
 			echo -n "Saving $package.cfg..."
 			modconf save $package
 			echo 'done.'
+			
+		        if [ $package = mod ]; then
+		                update_inetd telnetd $oldstatus1
+                		update_inetd webcfg $oldstatus2
+		                . /mod/etc/conf/mod.cfg
+                		modunreg status mod mod/mounted
+		                [ $MOD_MOUNTED_SUB = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
+                		oldstatus1=''
+		        else
+                		update_inetd $package $oldstatus1
+		        fi
 
-			if [ "mod" = "$package" ]; then
-				update_inetd telnetd $oldstatus1
-				update_inetd webcfg $oldstatus2
-				. /mod/etc/conf/mod.cfg
-				modunreg status mod mod/mounted
-				[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted 
-				oldstatus1=''
-			else
-				update_inetd $package $oldstatus1
-			fi
 			save_flash $package $oldstatus1
 		fi
 		pkg_post_save
 		;;
 	def_*)
-		package="${form#def_}"
-		[ -r "/mod/etc/default.$package/$package.save" ] && . /mod/etc/default.$package/$package.save
+		package=${form#def_}
+		[ -r /mod/etc/default.$package/$package.save ] && . /mod/etc/default.$package/$package.save
 		pkg_pre_def
 
-		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
-			if [ "$package" = "mod" ]; then script='settings.cgi'; else script="pkgconf.cgi"; fi
+		if [ -r /mod/etc/default.$package/$package.cfg ]; then
+			if [ $package = mod ]; then script=settings.cgi; else script=pkgconf.cgi; fi
 
-			if [ "mod" != "$package" ]; then
-				oldstatus1="$(/mod/etc/init.d/rc.$package status)"
-			fi
-
+			if [ mod != $package ]; then
+                                oldstatus1=$(/mod/etc/init.d/rc.$package status)
+                        fi
+			
 			echo -n 'Restoring defaults...'
 			modconf default $package
 			echo 'done.'
@@ -132,15 +133,15 @@ case "$form" in
 		pkg_post_def
 		;;
 	file_*)
-		file_id="${form#file_}"
-		script='file.cgi'
+		file_id=${form#file_}
+		script=file.cgi
 
 		[ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
 
 		sec_level=1
-		[ -r /tmp/flash/security ] && let sec_level="$(cat /tmp/flash/security)"
+		[ -r /tmp/flash/security ] && let sec_level=$(cat /tmp/flash/security)
 
-		OIFS="$IFS"
+		OIFS=$IFS
 		IFS='|'
 		set -- $(cat /mod/etc/reg/file.reg | grep "^$file_id|")
 		IFS="$OIFS"
