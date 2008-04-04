@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.40.7)
+$(call PKG_INIT_BIN, 1.40.8)
 $(PKG)_SOURCE:=e2fsprogs-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/e2fsprogs
 $(PKG)_DIR:=$(SOURCE_DIR)/e2fsprogs-$($(PKG)_VERSION)
