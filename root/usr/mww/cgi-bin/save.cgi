@@ -29,6 +29,20 @@ update_inetd() {
 	fi
 }
 
+apply_changes() {
+	if [ $1 = mod ]; then
+		update_inetd telnetd $2
+		update_inetd webcfg $3
+		. /mod/etc/conf/mod.cfg
+		modunreg status mod mod/mounted
+		[ $MOD_MOUNTED_SUB = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
+		return 1
+	else
+		update_inetd $1 $2
+		return 0
+	fi
+}
+
 save_flash() {
 	if modsave flash; then
 		if [ -x /mod/etc/init.d/rc.$1 ]; then
@@ -73,7 +87,14 @@ case "$form" in
 		[ -r /mod/etc/default.$package/$package.save ] && . /mod/etc/default.$package/$package.save
 		pkg_pre_save
 		if [ -r /mod/etc/default.$package/$package.cfg ]; then
-			if [ $package = mod ]; then script=settings.cgi; else script=pkgconf.cgi; fi
+			if [ $package = mod ]; then
+				script=settings.cgi
+				oldstatus1=$(rc_status telnetd)
+				oldstatus2=$(rc_status webcfg)
+			else
+				script=pkgconf.cgi
+				oldstatus1=$(/mod/etc/init.d/rc.$package status)
+			fi
 			prefix="$(echo $package | tr 'a-z\-' 'A-Z_')_"
 
 			vars=''; delim=''
@@ -81,13 +102,6 @@ case "$form" in
 				vars="${vars}${delim}${var#$prefix}"
 				delim=':'
 			done
-
-			if [ $package = mod ]; then
-				oldstatus1=$(rc_status telnetd)
-				oldstatus2=$(rc_status webcfg)
-			else
-				oldstatus1=$(/mod/etc/init.d/rc.$package status)
-			fi
 
 			echo -n 'Saving settings...'
 			modcgi $vars $package | modconf set $package -
@@ -97,16 +111,7 @@ case "$form" in
 			modconf save $package
 			echo 'done.'
 			
-		        if [ $package = mod ]; then
-		                update_inetd telnetd $oldstatus1
-                		update_inetd webcfg $oldstatus2
-		                . /mod/etc/conf/mod.cfg
-                		modunreg status mod mod/mounted
-		                [ $MOD_MOUNTED_SUB = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
-                		oldstatus1=''
-		        else
-                		update_inetd $package $oldstatus1
-		        fi
+			apply_changes $package $oldstatus1 $oldstatus2 || oldstatus1=''
 
 			save_flash $package $oldstatus1
 		fi
@@ -118,15 +123,20 @@ case "$form" in
 		pkg_pre_def
 
 		if [ -r /mod/etc/default.$package/$package.cfg ]; then
-			if [ $package = mod ]; then script=settings.cgi; else script=pkgconf.cgi; fi
-
-			if [ mod != $package ]; then
+			if [ $package = mod ]; then 
+				script=settings.cgi
+				oldstatus1=$(rc_status telnetd)
+                                oldstatus2=$(rc_status webcfg)
+			else 
+				script=pkgconf.cgi
                                 oldstatus1=$(/mod/etc/init.d/rc.$package status)
                         fi
 			
 			echo -n 'Restoring defaults...'
 			modconf default $package
 			echo 'done.'
+
+			apply_changes $package $oldstatus1 $oldstatus2 || oldstatus1=''
 
 			save_flash $package $oldstatus1
 		fi
