@@ -102,7 +102,7 @@ case "$form" in
 				update_inetd webcfg $oldstatus2
 				. /mod/etc/conf/mod.cfg
 				modunreg status mod mod/mounted
-				[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod 'Partitionen' mod/mounted
+				[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted 
 				oldstatus1=''
 			else
 				update_inetd $package $oldstatus1
