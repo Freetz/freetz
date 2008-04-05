@@ -119,7 +119,7 @@ case "$1" in
 
 		deffile='/mod/etc/default.bird/bird_conf.def'
 		[ -r '/tmp/flash/bird_conf.def' ] && deffile='/tmp/flash/bird_conf.def'
-		[ "$CFGFILE" != '/etc/bird.conf' ] && modreg file 'bird_conf' 'BIRD - bird.conf' 0 "$deffile"
+		[ "$CFGFILE" != '/etc/bird.conf' ] && modreg file 'bird_conf' 'BIRD: bird.conf' 0 "$deffile"
 
 		if [ "$BIRD_ENABLED" = 'no' ]; then
 			echo 'BIRD is disabled' 1>&2
