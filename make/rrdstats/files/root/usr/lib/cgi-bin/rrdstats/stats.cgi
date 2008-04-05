@@ -21,7 +21,7 @@ fi
 URL_STATUS="?pkg=rrdstats&cgi=rrdstats/stats"
 URL_EXTENDED="$SCRIPT_NAME$URL_STATUS"
 DATESTRING=`date +'%d/%m/%y %X'`
-let WIDTH="$_cgi_width-298"
+let WIDTH="$_cgi_width-230-100"
 let HEIGHT=$WIDTH/3
 PERIODE='24h'
 RED=#EA644A
