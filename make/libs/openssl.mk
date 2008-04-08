@@ -11,7 +11,7 @@ $(PKG)_TARGET_CRYPTO_BINARY:=$($(PKG)_TARGET_DIR)/libcrypto.so.$($(PKG)_LIB_VERS
 
 OPENSSL_NO_CIPHERS:= no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime \
 	no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5
-OPENSSL_OPTIONS:= shared no-ec no-err no-fips no-hw no-threads no-engines \
+OPENSSL_OPTIONS:= shared no-ec no-err no-fips no-hw no-engines \
 	no-sse2 no-perlasm
 
 $(PKG_SOURCE_DOWNLOAD)
