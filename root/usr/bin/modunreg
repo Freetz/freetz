@@ -3,47 +3,43 @@
 # Usage: modunreg cgi <pkg>
 #        modunreg extra <pkg> [<cgi-name>]
 #        modunreg file <id>
-
-TMP=/var/tmp
-TMPFILE=$TMP/.unreg.tmp.$$
-
-trap "rm -f $TMPFILE" EXIT
+#        modunreg status <pkg> [<cgi-name>]
 
 case "$1" in
 	cgi)
 		[ -e /mod/etc/reg/cgi.reg ] || touch /mod/etc/reg/cgi.reg
 
-		cat /mod/etc/reg/cgi.reg | grep -v "^$2|" > $TMPFILE
-		cat $TMPFILE > /mod/etc/reg/cgi.reg
+		content=$(grep -v "^$2|" /mod/etc/reg/cgi.reg)
+		echo "$content" > /mod/etc/reg/cgi.reg
 		rm -f /mod/var/cache/menu_packages
 		;;
 	extra)
 		[ -e /mod/etc/reg/extra.reg ] || touch /mod/etc/reg/extra.reg
 
 		if [ -z "$3" ]; then
-			grep -v "^$2" /mod/etc/reg/extra.reg > $TMPFILE
+			content=$(grep -v "^$2" /mod/etc/reg/extra.reg)
 		else
-			grep -v "^$2|.*|$3\$" /mod/etc/reg/extra.reg > $TMPFILE
+			content=$(grep -v "^$2|.*|$3\$" /mod/etc/reg/extra.reg)
 		fi
-		cat $TMPFILE > /mod/etc/reg/extra.reg
+		echo "$content" > /mod/etc/reg/extra.reg
 		rm -f /mod/var/cache/extras
 		;;
 	file)
 		[ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
 
-		grep -v "^$2|" /mod/etc/reg/file.reg > $TMPFILE
-		cat $TMPFILE > /mod/etc/reg/file.reg
+		content=$(grep -v "^$2|" /mod/etc/reg/file.reg)
+		echo "$content" > /mod/etc/reg/file.reg
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
 		[ -e /mod/etc/reg/status.reg ] || touch /mod/etc/reg/status.reg
 
 		if [ -z "$3" ]; then
-			grep -v "^$2" /mod/etc/reg/status.reg > $TMPFILE
+			content=$(grep -v "^$2" /mod/etc/reg/status.reg)
 		else
-			grep -v "^$2|.*|$3\$" /mod/etc/reg/status.reg > $TMPFILE
+			content=$(grep -v "^$2|.*|$3\$" /mod/etc/reg/status.reg)
 		fi
-		cat $TMPFILE > /mod/etc/reg/status.reg
+		echo "$content" > /mod/etc/reg/status.reg
 		rm -f /mod/var/cache/menu_status
 		;;
 	*)
