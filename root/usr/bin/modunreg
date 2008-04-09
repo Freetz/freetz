@@ -5,41 +5,39 @@
 #        modunreg file <id>
 #        modunreg status <pkg> [<cgi-name>]
 
+char=$(echo -ne '\01')
+
 case "$1" in
 	cgi)
 		[ -e /mod/etc/reg/cgi.reg ] || touch /mod/etc/reg/cgi.reg
 
-		content=$(grep -v "^$2|" /mod/etc/reg/cgi.reg)
-		echo "$content" > /mod/etc/reg/cgi.reg
+		sed -i "\\${char}^$2|${char}d" /mod/etc/reg/cgi.reg
 		rm -f /mod/var/cache/menu_packages
 		;;
 	extra)
 		[ -e /mod/etc/reg/extra.reg ] || touch /mod/etc/reg/extra.reg
 
 		if [ -z "$3" ]; then
-			content=$(grep -v "^$2" /mod/etc/reg/extra.reg)
+			sed -i "\\${char}^$2${char}d" /mod/etc/reg/extra.reg
 		else
-			content=$(grep -v "^$2|.*|$3\$" /mod/etc/reg/extra.reg)
+			sed -i "\\${char}^$2|.*|$3\$${char}d" /mod/etc/reg/extra.reg
 		fi
-		echo "$content" > /mod/etc/reg/extra.reg
 		rm -f /mod/var/cache/extras
 		;;
 	file)
 		[ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
 
-		content=$(grep -v "^$2|" /mod/etc/reg/file.reg)
-		echo "$content" > /mod/etc/reg/file.reg
+		sed -i "\\${char}^$2|${char}d" /mod/etc/reg/file.reg
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
 		[ -e /mod/etc/reg/status.reg ] || touch /mod/etc/reg/status.reg
 
 		if [ -z "$3" ]; then
-			content=$(grep -v "^$2" /mod/etc/reg/status.reg)
+			sed -i "\\${char}^$2${char}d" /mod/etc/reg/status.reg
 		else
-			content=$(grep -v "^$2|.*|$3\$" /mod/etc/reg/status.reg)
+			sed -i "\\${char}^$2|.*|$3\$${char}d" /mod/etc/reg/status.reg
 		fi
-		echo "$content" > /mod/etc/reg/status.reg
 		rm -f /mod/var/cache/menu_status
 		;;
 	*)
