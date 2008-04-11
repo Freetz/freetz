@@ -1,5 +1,5 @@
---- Makefile.am.orig	2008-03-21 16:09:08.000000000 +0100
-+++ Makefile.am	2008-03-21 16:10:57.000000000 +0100
+--- Makefile.am.orig	2008-04-11 16:37:03.000000000 +0200
++++ Makefile.am	2008-04-11 16:44:14.000000000 +0200
 @@ -29,7 +29,7 @@
  bin_SCRIPTS = curl-config
  
@@ -31,7 +31,7 @@
  
  #
  # Build source and binary rpms. For rpm-3.0 and above, the ~/.rpmmacros
-@@ -125,9 +125,9 @@
+@@ -125,12 +125,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
@@ -43,9 +43,12 @@
  	cd include && $(MAKE) uninstall
 -	cd docs && $(MAKE) uninstall
 +	#cd docs && $(MAKE) uninstall
---- Makefile.in.orig	2008-03-21 16:09:58.000000000 +0100
-+++ Makefile.in	2008-03-21 16:10:44.000000000 +0100
-@@ -260,7 +260,7 @@
+ 
+ ca-bundle: lib/mk-ca-bundle.pl
+ 	@echo "generate a fresh ca-bundle.crt"
+--- Makefile.in.orig	2008-03-30 11:10:10.000000000 +0200
++++ Makefile.in	2008-04-11 16:45:25.000000000 +0200
+@@ -255,7 +255,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src
@@ -54,7 +57,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  all: all-recursive
-@@ -741,10 +741,10 @@
+@@ -747,10 +747,10 @@
  	done)
  
  html:
@@ -67,7 +70,7 @@
  
  check: test examples
  
-@@ -764,7 +764,7 @@
+@@ -770,7 +770,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all torture-test)
  
  examples:
@@ -76,7 +79,7 @@
  
  #
  # Build source and binary rpms. For rpm-3.0 and above, the ~/.rpmmacros
-@@ -817,12 +817,12 @@
+@@ -823,12 +823,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
@@ -88,6 +91,6 @@
  	cd include && $(MAKE) uninstall
 -	cd docs && $(MAKE) uninstall
 +	#cd docs && $(MAKE) uninstall
- # Tell versions [3.59,3.63) of GNU make to not export all variables.
- # Otherwise a system limit (for SysV at least) may be exceeded.
- .NOEXPORT:
+ 
+ ca-bundle: lib/mk-ca-bundle.pl
+ 	@echo "generate a fresh ca-bundle.crt"

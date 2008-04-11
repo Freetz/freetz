@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 7.17.1)
+$(call PKG_INIT_BIN, 7.18.1)
 $(PKG)_LIB_VERSION:=4.0.1
 $(PKG)_SOURCE:=curl-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://curl.haxx.se/download
