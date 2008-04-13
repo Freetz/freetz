@@ -1125,6 +1125,44 @@ config FREETZ_REMOVE_SMBD
 		This patch removes only the daemon. The regular options in AVM's webinterface 
 		are still present.
 
+config FREETZ_REMOVE_MINID
+	bool "Remove minid - EXPERIMENTAL"
+	default n
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		( \
+			FREETZ_TYPE_FON_WLAN_7170 \
+		)
+
+	help
+		Remove the mini-daemon (minid) and some other related files
+		This patch only removes the files, not the settings in AVM's webinterface
+
+config FREETZ_REMOVE_AURA_USB
+	bool "Remove aura usb - EXPERIMENTAL"
+	default n
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		( \
+			FREETZ_TYPE_FON_WLAN_7170  \
+		)
+	help
+		Remove the aura-usb-deamon and some related files. 
+		This patch only removes the files, not the settings in AVM's webinterface
+
+config FREETZ_REMOVE_AVM_VPN
+        bool "Remove AVM vpn - EXPERIMENTAL"
+        default n
+        depends on \
+                FREETZ_SHOW_ADVANCED && \
+                ( \
+                        FREETZ_TYPE_FON_WLAN_7170  \
+                )
+
+        help
+                Remove avm's vpn and some other related files
+                This patch only removes the files, not the settings in AVM's webinterface
+
 config FREETZ_REMOVE_DSLD
 	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"	
 	default n
