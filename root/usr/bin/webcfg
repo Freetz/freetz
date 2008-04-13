@@ -1,0 +1,17 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=httpd
+
+if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
+	echo "Error[$DAEMON]: not configured" 1>&2
+	exit 1
+fi
+
+. /mod/etc/conf/mod.cfg
+
+homedir=/usr/mww/
+
+exec $DAEMON -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "Freetz (user:admin)" "$@"

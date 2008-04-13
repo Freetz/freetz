@@ -17,7 +17,6 @@ case "$1" in
 esac
 
 config() {
-	homedir=/usr/mww/
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -39,7 +38,7 @@ start() {
 	config
 
 	echo -n 'Starting webinterface...'
-	$DAEMON -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "Freetz (user:admin)"
+	webcfg
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		pidfile
@@ -74,11 +73,11 @@ stop() {
 }
 
 case "$1" in
-		""|load)
+	""|load)
 		config
 		if [ "$MOD_HTTPD" != "yes" ]; then
 			if [ "$MOD_HTTPD" != "inetd" ]; then
-			echo "$DAEMON is disabled" 1>&2
+				echo "$DAEMON is disabled" 1>&2
 			else
 				echo "$DAEMON is started via inetd" 1>&2
 			fi
@@ -104,12 +103,10 @@ case "$1" in
 	status)
 		if [ "$MOD_HTTPD" == "inetd" ]; then
 			echo 'inetd'
-		else
-		if [ -s "/var/run/$DAEMON.pid" ]; then
+		elif [ -s "/var/run/$DAEMON.pid" ]; then
 			echo 'running'
 		else
 			echo 'stopped'
-		fi
 		fi
 		;;
 	*)
