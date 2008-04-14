@@ -164,7 +164,10 @@ choice
 
 	config FREETZ_TYPE_LABOR_GAMING
 		bool "GAMING"
-		depends on FREETZ_TYPE_FON_WLAN_7170
+		depends on ( \
+			FREETZ_TYPE_FON_WLAN_7170 || \
+			FREETZ_TYPE_FON_WLAN_7270 \
+		)
 
 	config FREETZ_TYPE_LABOR_MINI
 		bool "MINI"
@@ -285,7 +288,7 @@ endchoice
 
 config FREETZ_TYPE_STRING
 	string
-	default "300ip_as_fon"				if FREETZ_TYPE_300IP_AS_FON
+	default "300ip_as_fon"					if FREETZ_TYPE_300IP_AS_FON
 	default "2170"						if FREETZ_TYPE_2170 && ! FREETZ_TYPE_LABOR
 	default "2170_vpn"					if FREETZ_TYPE_2170 && FREETZ_TYPE_LABOR_VPN
 	default "3020"						if FREETZ_TYPE_WLAN_3020
@@ -303,19 +306,20 @@ config FREETZ_TYPE_STRING
 	default "7113"						if FREETZ_TYPE_FON_WLAN_7113
 	default "7140"						if FREETZ_TYPE_FON_WLAN_7140
 	default "7141"						if FREETZ_TYPE_FON_WLAN_7141 && ! FREETZ_TYPE_LABOR
-	default "7141_labor_mini"			if FREETZ_TYPE_FON_WLAN_7141 && FREETZ_TYPE_LABOR_MINI
+	default "7141_labor_mini"				if FREETZ_TYPE_FON_WLAN_7141 && FREETZ_TYPE_LABOR_MINI
 	default "7150"						if FREETZ_TYPE_FON_7150
 	default "7170"						if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR
 	default "7170_beta"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_BETA
-	default "7170_labor_dsl"			if FREETZ_TYPE_LABOR_DSL
-	default "7170_labor_gaming"			if FREETZ_TYPE_LABOR_GAMING
-	default "7170_labor_mini"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_MINI
-	default "7170_labor_phone"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PHONE
+	default "7170_labor_dsl"				if FREETZ_TYPE_LABOR_DSL
+	default "7170_labor_gaming"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_GAMING
+	default "7170_labor_mini"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_MINI
+	default "7170_labor_phone"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PHONE
 	default "7170_vpn"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_VPN
 	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "7270_beta"					if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
-	default "7270_labor_mini"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_MINI
-	default "7270_labor_phone"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
+	default "7270_labor_mini"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_MINI
+	default "7270_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
+        default "7270_labor_gaming"                      	if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING
 	default "W501V"						if FREETZ_TYPE_SPEEDPORT_W501V
 	default "W701V"						if FREETZ_TYPE_SPEEDPORT_W701V
 	default "W900V"						if FREETZ_TYPE_SPEEDPORT_W900V
@@ -942,7 +946,8 @@ config FREETZ_PATCH_AVM_HIDDEN_PAGES
 		! (FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL)  && \
 		! (FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_GAMING) && \
 		! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA) && \
-		! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE) \
+		! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE) && \
+		! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING) \
 		)
 	select FREETZ_PATCH_HIDDEN_REMOTE_PAGES if \
 		( \
@@ -1337,6 +1342,7 @@ config FREETZ_DL_SOURCE
 	default "FRITZ_Box_Fon_WLAN_7270-beta-10576.image"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
 	default "fritz_box_labor-10423.image"						if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Box_Fon_WLAN_7270_LabPHONE.AnnexB.54.04.97-10754.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
+        default "fritz_box-labor-10770.image"                                           if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING
 	default "fritz.box_sl_wlan.09.04.34.image"					if FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
 	default "fritz.box_wlan_3131.50.04.52.image"					if FREETZ_TYPE_WLAN_3131
