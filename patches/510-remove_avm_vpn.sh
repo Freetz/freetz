@@ -2,6 +2,7 @@
 echo1 "removing AVM-VPN files"
 for files in \
  	bin/avmike \
+	usr/share/ctlmgr/libvpnstat.so \
 	; do
 	rm -rf ${FILESYSTEM_MOD_DIR}/$files
 done
