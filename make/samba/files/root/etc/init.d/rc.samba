@@ -30,7 +30,7 @@ config() {
 
 		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftp user"
 		
-		/etc/default.samba/samba_conf $2 > $CONF
+		/mod/etc/default.samba/samba_conf $2 > $CONF
 
 		if [ -r /var/tmp/smbpasswd.cleartext ]; then
 			smbpasswd 2>/dev/null
