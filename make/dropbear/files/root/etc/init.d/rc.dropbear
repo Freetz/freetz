@@ -60,8 +60,10 @@ start() {
 
 stop() {
 	echo -n 'Stopping ssh server...'
-	kill "$(cat /var/run/$DAEMON.pid)" > /dev/null 2>&1
-	exitval=$?
+	if [ -e /var/run/$DAEMON.pid ]; then
+		kill "$(cat /var/run/$DAEMON.pid)" > /dev/null 2>&1		
+		exitval=$?
+	fi
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
