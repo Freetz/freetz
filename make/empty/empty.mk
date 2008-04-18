@@ -23,7 +23,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(CPMACCFG_DIR) clean
+	-$(MAKE) -C $(EMPTY_DIR) clean
 	$(RM) $(EMPTY_DIR)/.configured
 
 $(pkg)-uninstall:
