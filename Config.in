@@ -1228,7 +1228,9 @@ config FREETZ_REMOVE_DECT_UPDATE
 
 config FREETZ_REMOVE_VOIP_ISDN
 	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		FREETZ_HAS_PHONE
 	default n
 	help
 		Radically remove a lot of telephony-related files. This patch saves about
