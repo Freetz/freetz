@@ -1097,10 +1097,10 @@ config FREETZ_REMOVE_FTPD
 	bool "Remove ftpd"
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
-                ( \
-                FREETZ_HAS_USB_HOST || \
-                FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
-                )
+		( \
+			FREETZ_HAS_USB_HOST || \
+			FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
+		)
 	default n
 	help
 		Remove FTP deamon (ftpd)
@@ -1109,13 +1109,13 @@ config FREETZ_REMOVE_FTPD
 
 config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv"
-  depends on \
-  	FREETZ_SHOW_ADVANCED && \
+	depends on \
+	FREETZ_SHOW_ADVANCED && \
 	! FREETZ_PATCH_MEDIASRV && \
-        ( \
-        FREETZ_HAS_USB_HOST || \
-        FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
-        )
+	( \
+		FREETZ_HAS_USB_HOST || \
+		FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
+	)
 	default n
 	help
 		Remove MediaServer daemon (mediasrv)
@@ -1124,8 +1124,8 @@ config FREETZ_REMOVE_MEDIASRV
 
 config FREETZ_REMOVE_SMBD
 	bool "Remove smbd"
-  depends on \
-  		FREETZ_SHOW_ADVANCED && \
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
 		( \
 		FREETZ_HAS_USB_HOST || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
@@ -1142,7 +1142,8 @@ config FREETZ_REMOVE_MINID
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		( \
-			FREETZ_TYPE_FON_WLAN_7170 \
+			FREETZ_TYPE_FON_WLAN_7170 || \
+			FREETZ_TYPE_WLAN_3170 \
 		)
 
 	help
@@ -1155,25 +1156,27 @@ config FREETZ_REMOVE_AURA_USB
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		( \
-			FREETZ_TYPE_FON_WLAN_7170  \
+			FREETZ_TYPE_FON_WLAN_7170 || \
+			FREETZ_TYPE_WLAN_3170 \
 		)
 	help
 		Remove the aura-usb-deamon and some related files. 
 		This patch only removes the files, not the settings in AVM's webinterface
 
 config FREETZ_REMOVE_AVM_VPN
-        bool "Remove AVM vpn - EXPERIMENTAL"
-        default n
-        depends on \
-                FREETZ_SHOW_ADVANCED && \
-                ( \
-                        (FREETZ_TYPE_FON_WLAN_7170  && FREETZ_TYPE_LABOR_BETA) || \
-			FREETZ_TYPE_FON_WLAN_7270 \
-                )
+	bool "Remove AVM vpn - EXPERIMENTAL"
+	default n
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		( \
+			(FREETZ_TYPE_FON_WLAN_7170  && FREETZ_TYPE_LABOR_BETA) || \
+			FREETZ_TYPE_FON_WLAN_7270 || \
+			FREETZ_TYPE_WLAN_3170 \
+		)
 
-        help
-                Remove avm's vpn and some other related files
-                This patch only removes the files, not the settings in AVM's webinterface
+	help
+		Remove avm's vpn and some other related files
+		This patch only removes the files, not the settings in AVM's webinterface
 
 config FREETZ_REMOVE_DSLD
 	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"	
@@ -1348,13 +1351,13 @@ config FREETZ_DL_SOURCE
 	default "FRITZ_Box_Fon_WLAN_7270-beta-10576.image"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
 	default "fritz_box_labor-10423.image"						if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Box_Fon_WLAN_7270_LabPHONE.AnnexB.54.04.97-10754.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
-        default "fritz_box-labor-10770.image"                                           if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING
-	default "fritz_box-labor-10771.image"                                           if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
+	default "fritz_box-labor-10770.image"						if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING
+	default "fritz_box-labor-10771.image"						if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "fritz.box_sl_wlan.09.04.34.image"					if FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
 	default "fritz.box_wlan_3131.50.04.52.image"					if FREETZ_TYPE_WLAN_3131
 	default "fritz.box_wlan_3130.44.04.34.image"					if FREETZ_TYPE_WLAN_3130
-	default "fritz.box_wlan_3170.49.04.52.image"					if FREETZ_TYPE_WLAN_3170 && ! FREETZ_TYPE_LABOR
+	default "fritz.box_wlan_3170.49.04.53.image"					if FREETZ_TYPE_WLAN_3170 && ! FREETZ_TYPE_LABOR
 	default "FRITZBox_WLAN_3170_AnnexB_49_04_52-10366.image"			if FREETZ_TYPE_WLAN_3170 && FREETZ_TYPE_LABOR_VPN
 	default "fw_Speedport_W501V_v_28.04.38.image"					if FREETZ_TYPE_SPEEDPORT_W501V
 	default "fw_Speedport_W701V_v33.04.45.image"					if FREETZ_TYPE_SPEEDPORT_W701V
