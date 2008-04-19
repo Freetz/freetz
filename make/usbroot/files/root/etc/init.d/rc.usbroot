@@ -227,9 +227,8 @@ start()
 	fi
 
 	echo "*** Pivoting to USB root ... ***"
-	[ -e $MNTPOINT$USBPATH ] && \
-		mount -o bind $MNTPOINT$USBPATH $MNTPOINT && \
-			cd $MNTPOINT
+	[ -d $MNTPOINT$USBPATH ] && mount -o bind $MNTPOINT$USBPATH $MNTPOINT
+	cd $MNTPOINT
 	[ -d $OLDROOT ] || mkdir -p $OLDROOT
 	unmount
 	if pivot_root . $OLDROOT; then
@@ -254,11 +253,14 @@ if [ "$PPID" == "0" ]; then
 fi
 
 case "$1" in
-	""|load|stop)
+	"")
+		cd /
+		# unmount usb filesystem in old root
+		[ -d "$OLDROOT$MNTPOINT" ] && umount "$OLDROOT$MNTPOINT"
+		# unmount old squashfs root
+		[ -d "$OLDROOT" ] && umount "$OLDROOT" && rmdir "$OLDROOT"
 		;;
-	start)
-		# unmount old root when started in boot sequence
-		cd / && [ -d $OLDROOT ] && umount $OLDROOT && rmdir $OLDROOT
+	load|start|stop)
 		;;
 	status)
 		get_env_var
@@ -279,7 +281,7 @@ case "$1" in
 		echo "USB root switched off (reboot to apply)"
 		;;
 	store)
-		if [ "$2" ]; then
+		if [ -n "$2" ]; then
 			echo "$USBROOT_ENV_VAR usbroot=$2" > /proc/sys/urlader/environment
 			echo "USB device name added to bootloader environment"
 		else
