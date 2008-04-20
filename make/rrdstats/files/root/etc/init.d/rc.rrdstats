@@ -14,40 +14,38 @@ case "$1" in
 esac
 
 config() {
-		mkdir $RRDSTATS_RRDDATA 2>/dev/null
-		mkdir $RRDSTATS_RRDTEMP 2>/dev/null
-		rm /var/mod/etc/statpix 2>/dev/null
-		ln -s $(echo "$RRDSTATS_RRDTEMP"|sed 's/\/*$//g') /var/mod/etc/statpix 2>/dev/null
+	# kein "-p" wg externer Pfade!
+	mkdir $RRDSTATS_RRDDATA 2>/dev/null
+	mkdir $RRDSTATS_RRDTEMP 2>/dev/null
+	rm /var/mod/etc/statpix 2>/dev/null
+	ln -s $(echo "$RRDSTATS_RRDTEMP" | sed 's/\/*$//g') /var/mod/etc/statpix 2>/dev/null
 }
 
 start() {
 	echo -n 'Starting rrdstats...'
 
-	if [ "$(pidof rrdstats|wc -w)" -gt 0 ]; then
+	if [ ! -z "$(pidof rrdstats)" ]; then
 		echo "already running"
 		exit 0
 	fi
-	killall cpu.sh memory.sh wan.sh 2>/dev/null
 
-	nohup /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL &
+	start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
 	exitval=$?
 
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
-		exit 0
 	else
 		echo 'failed.'
-		exit 1
+		exit $exitval
 	fi
 }
 
-stop () {
+stop() {
 	echo -n 'Stopping rrdstats...'
-	killall cpu.sh memory.sh wan.sh 2>/dev/null
 	killall rrdstats 2>/dev/null
 	exitval=$?
 
-	if [ "$exitval" -eq 0 ]; then
+	if [ $exitval -eq 0 ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
@@ -59,19 +57,19 @@ case "$1" in
 		config
 		;;
 	""|load)
-		modreg cgi 'rrdstats' 'RRDstats'
+		modreg cgi rrdstats RRDstats
 		modreg status rrdstats RRDstats rrdstats/stats
 		config
-		if [ "$RRDSTATS_ENABLED" != "yes" ]; then
+		if [ "$RRDSTATS_ENABLED" != yes ]; then
 			echo "rrdstats is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 		start
 		;;
 	unload)
 		stop
 		modunreg status rrdstats rrdstats/stats
-		modunreg cgi 'rrdstats'
+		modunreg cgi rrdstats
 		;;
 	start)
 		config
