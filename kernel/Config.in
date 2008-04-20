@@ -45,7 +45,6 @@ config FREETZ_MODULE_nbd
 config FREETZ_MODULE_cdrom
 	bool "cdrom.ko"
 	default n
-	
 
 config FREETZ_MODULE_capiconn
 	bool "capiconn.ko"
@@ -101,6 +100,7 @@ config FREETZ_MODULE_sg
 config FREETZ_MODULE_sr_mod
 	bool "sr_mod.ko"
 	select FREETZ_MODULE_scsi_mod
+	select FREETZ_MODULE_cdrom
 	default n
 	
 config FREETZ_MODULE_slhc
@@ -186,6 +186,7 @@ config FREETZ_MODULE_ext3
 
 config FREETZ_MODULE_ext2
 	bool "ext2.ko"
+	select FREETZ_MODULE_mbcache
 	default n
 
 config FREETZ_MODULE_fat
@@ -245,6 +246,10 @@ config FREETZ_MODULE_nls_iso8859_1
 	bool "nls_iso8859-1.ko"
 	default n
 
+config FREETZ_MODULE_nls_utf8
+	bool "nls_utf8.ko"
+	default n
+
 config FREETZ_MODULE_ntfs
 	bool "ntfs.ko"
 	default n
@@ -255,6 +260,10 @@ config FREETZ_MODULE_reiserfs
 
 config FREETZ_MODULE_smbfs
 	bool "smbfs.ko"
+	default n
+
+config FREETZ_MODULE_udf
+	bool "udf.ko"
 	default n
 
 config FREETZ_MODULE_unionfs
