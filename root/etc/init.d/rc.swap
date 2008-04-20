@@ -18,45 +18,25 @@ esac
 
 
 has_swap () {
-	[ "$(free | grep "Swap:" | awk '{print $2}')" == "0" ] || return 0
-	return 1
-}
-
-swapon_file () {
-i=0
-while [ $i -le 20 ]; do
-	if [ -e $MOD_SWAP_FILE ]; then
-		swapon $MOD_SWAP_FILE
-		break
-	fi
-	i=`expr $i + 1` && sleep 2
-done
-}
-
-swapon_device () {
-i=0
-while [ $i -le 20 ]; do
-	if grep -q "$MOD_SWAPFILE" /proc/partitions; then
-		swapon $MOD_SWAP_FILE
-		break
-	fi
-	i=`expr $i + 1` && sleep 2
-done
+	sed '1d' /proc/swaps | grep -q ''
 }
 
 start () {
 	echo -n "Starting $DAEMON..."
 
-	if [ "${MOD_SWAP_FILE##/dev/*}" ]; then
-		swapon_file
-	else
-		swapon_device
+	ii=0
+	# wait for
+	# - usb device to settle
+	# - filesysem to mount (swapfile)
+	if ! grep -q "^$MOD_SWAP_FILE " /proc/swaps; then
+		while [ 40 -gt $ii ]; do
+			swapon "$MOD_SWAP_FILE" 2>/dev/null && break
+			let ii=$ii+1
+			sleep 1
+		done
 	fi
 
-	sleep 1
-
-	has_swap
-	if [ "$?" -eq 0 ]; then
+	if has_swap; then
 		echo 'done.'
 	else
 		echo 'failed.'
@@ -66,22 +46,25 @@ start () {
 
 stop () {
 	echo -n "Stopping $DAEMON... "
-	swapoff $MOD_SWAP_FILE
-	sleep 1
-	has_swap
-	if [ "$?" -ne 0 ]; then
-		echo 'done.'
-	else
+
+	sed '1d' /proc/swaps |
+		while read swap _; do
+			swapoff $swap
+		done
+
+	if has_swap; then
 		echo 'failed.'
 		exit 1
+	else
+		echo 'done.'
 	fi
 }
 
 case "$1" in
 	""|load)
-		if [ "$MOD_SWAP" != "yes" ]; then
+		if [ "$MOD_SWAP" != yes ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 		start
 		;;
@@ -100,8 +83,7 @@ case "$1" in
 		start
 		;;
 	status)
-		has_swap
-		if [ "$?" == "0" ]; then
+		if has_swap; then
 			echo 'running'
 		else
 			echo 'stopped'
