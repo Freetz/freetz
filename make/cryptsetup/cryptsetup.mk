@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.0.5)
+$(call PKG_INIT_BIN, 1.0.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://luks.endorphin.org/source
+$(PKG)_SITE:=http://cryptsetup.googlecode.com/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cryptsetup
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/cryptsetup
 
