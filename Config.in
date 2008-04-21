@@ -132,6 +132,21 @@ choice
 
 endchoice
 
+config FREETZ_KERNEL_VERSION_2_6_13_1 
+	bool 
+	default y if ! FREETZ_AVM_VERSION_7270
+	default n if FREETZ_AVM_VERSION_7270
+
+config FREETZ_KERNEL_VERSION_2_6_19_2 
+	bool
+	default y if FREETZ_AVM_VERSION_7270
+	default n if ! FREETZ_AVM_VERSION_7270
+	
+config FREETZ_KERNEL_VERSION
+	string
+	default "2.6.13.1" if FREETZ_KERNEL_VERSION_2_6_13_1
+	default "2.6.19.2" if FREETZ_KERNEL_VERSION_2_6_19_2
+
 config FREETZ_TYPE_LABOR
 	bool "Beta/Labor/VPN"
 	depends on \
@@ -470,10 +485,7 @@ config FREETZ_KERNEL_LAYOUT
 	default "ur8"			if \
 		FREETZ_TYPE_FON_WLAN_7270
 
-config FREETZ_KERNEL_VERSION
-	string
-	default "2.6.13.1" if ! FREETZ_TYPE_FON_WLAN_7270
-	default "2.6.19.2" if FREETZ_TYPE_FON_WLAN_7270
+
 	
 config FREETZ_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if FREETZ_TYPE_CUSTOM

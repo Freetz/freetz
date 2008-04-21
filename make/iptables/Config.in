@@ -53,8 +53,8 @@ config FREETZ_MODULE_ip_conntrack
 	default n
 config FREETZ_MODULE_ip_conntrack_pptp
 	bool "ip_conntrack_pptp.ko"
-	select FREETZ_MODULE_ip_conntrack_proto_gre if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_conntrack if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_conntrack_proto_gre if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ip_conntrack_proto_esp
 	bool "ip_conntrack_proto_esp.ko"
@@ -78,33 +78,33 @@ config FREETZ_MODULE_ip_conntrack_tftp
 	default n
 config FREETZ_MODULE_ip_nat
 	bool "ip_nat.ko"
-	depends on FREETZ_TYPE_FON_WLAN_7270
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack
 	default n
 config FREETZ_MODULE_ip_nat_ftp
 	bool "ip_nat_ftp.ko"
-	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack_ftp
 	default n
 config FREETZ_MODULE_ip_nat_h323
 	bool "ip_nat_h323.ko"
-	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack_h323
 	default n
 config FREETZ_MODULE_ip_nat_irc
 	bool "ip_nat_irc.ko"
-	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_conntrack_irc if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_conntrack_irc if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ip_nat_pptp
 	bool "ip_nat_pptp.ko"
-	select FREETZ_MODULE_ip_conntrack_proto_gre if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_conntrack_pptp if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_conntrack_proto_gre if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_conntrack_pptp if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ip_nat_proto_esp
 	bool "ip_nat_proto_esp.ko"
@@ -116,9 +116,9 @@ config FREETZ_MODULE_ip_nat_proto_gre
 	default n
 config FREETZ_MODULE_ip_nat_tftp
 	bool "ip_nat_tftp.ko"
-	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_conntrack_tftp if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_conntrack_tftp if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_iptable_filter
 	bool "iptable_filter.ko"
@@ -132,17 +132,17 @@ config FREETZ_MODULE_iptable_nat
 	bool "iptable_nat.ko"
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
-	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_iptable_raw
 	bool "iptable_raw.ko"
-	depends on FREETZ_TYPE_FON_WLAN_7270
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ip_tables
 	bool "ip_tables.ko"
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ipt_CFG
 	bool "ipt_CFG.ko"
@@ -174,8 +174,8 @@ config FREETZ_MODULE_ipt_ipp2p
 	default n
 config FREETZ_MODULE_ipt_iprange
 	bool "ipt_iprange.ko"
-	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ipt_length
 	bool "ipt_length.ko"
@@ -187,8 +187,8 @@ config FREETZ_MODULE_ipt_limit
 	default n
 config FREETZ_MODULE_ipt_LOG
 	bool "ipt_LOG.ko"
-	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ipt_mac
 	bool "ipt_mac.ko"
@@ -204,9 +204,9 @@ config FREETZ_MODULE_ipt_MARK
 	default n
 config FREETZ_MODULE_ipt_MASQUERADE
 	bool "ipt_MASQUERADE.ko"
-	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ipt_mip
 	bool "ipt_mip.ko"
@@ -228,14 +228,14 @@ config FREETZ_MODULE_ipt_record_rpc
 	default n
 config FREETZ_MODULE_ipt_REDIRECT
 	bool "ipt_REDIRECT.ko"
-	select FREETZ_MODULE_iptable_nat if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_ip_nat if FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ipt_REJECT
 	bool "ipt_REJECT.ko"
-	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ipt_ROUTE
 	bool "ipt_ROUTE.ko"
@@ -252,26 +252,26 @@ config FREETZ_MODULE_ipt_tcpmss
 	default n
 config FREETZ_MODULE_ipt_TCPMSS
 	bool "ipt_TCPMSS.ko"
-	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ipt_tos
 	bool "ipt_tos.ko"
-	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ipt_TOS
 	bool "ipt_TOS.ko"
-	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_2
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_MODULE_ipt_ttl
 	bool "ipt_ttl.ko"
-	select FREETZ_MODULE_ip_tables if ! FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_MODULE_x_tables if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_2
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 menu "x_tables"
-	depends on FREETZ_TYPE_FON_WLAN_7270
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 config FREETZ_MODULE_x_tables
 	bool "x_tables.ko"
 	default n
@@ -394,7 +394,7 @@ config FREETZ_LIB_libipt_CLASSIFY
 	default n
 config FREETZ_LIB_libipt_comment
 	bool "libipt_comment.so"
-	select FREETZ_MODULE_xt_comment if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_comment if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_connlimit
 	bool "libipt_connlimit.so"
@@ -407,7 +407,7 @@ config FREETZ_LIB_libipt_CONNMARK
 	default n
 config FREETZ_LIB_libipt_conntrack
 	bool "libipt_conntrack.so"
-	select FREETZ_MODULE_xt_conntrack if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_conntrack if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_DNAT
 	bool "libipt_DNAT.so"
@@ -432,7 +432,7 @@ config FREETZ_LIB_libipt_hashlimit
 	default n
 config FREETZ_LIB_libipt_helper
 	bool "libipt_helper.so"
-	select FREETZ_MODULE_xt_helper if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_helper if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_icmp
 	bool "libipt_icmp.so"
@@ -445,26 +445,26 @@ config FREETZ_LIB_libipt_iprange
 	default n
 config FREETZ_LIB_libipt_length
 	bool "libipt_length.so"
-	select FREETZ_MODULE_xt_length if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_length if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_limit
 	bool "libipt_limit.so"
-	select FREETZ_MODULE_xt_limit if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_limit if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_LOG
 	bool "libipt_LOG.so"
 	default n
 config FREETZ_LIB_libipt_mac
 	bool "libipt_mac.so"
-	select FREETZ_MODULE_xt_mac if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_mac if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_mark
 	bool "libipt_mark.so"
-	select FREETZ_MODULE_xt_mark if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_mark if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_MARK
 	bool "libipt_MARK.so"
-	select FREETZ_MODULE_xt_MARK if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_MARK if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_MASQUERADE
 	bool "libipt_MASQUERADE.so"
@@ -474,7 +474,7 @@ config FREETZ_LIB_libipt_MIRROR
 	default n
 config FREETZ_LIB_libipt_multiport
 	bool "libipt_multiport.so"
-	select FREETZ_MODULE_xt_multiport if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_multiport if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_NETMAP
 	bool "libipt_NETMAP.so"
@@ -490,18 +490,18 @@ config FREETZ_LIB_libipt_owner
 	default n
 config FREETZ_LIB_libipt_physdev
 	bool "libipt_physdev.so"
-	select FREETZ_MODULE_xt_physdev if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_physdev if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_pkttype
 	bool "libipt_pkttype.so"
-	select FREETZ_MODULE_xt_pkttype if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_pkttype if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_policy
 	bool "libipt_policy.so"
 	default n
 config FREETZ_LIB_libipt_realm
 	bool "libipt_realm.so"
-		select FREETZ_MODULE_xt_realm if FREETZ_TYPE_FON_WLAN_7270
+		select FREETZ_MODULE_xt_realm if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_REDIRECT
 	bool "libipt_REDIRECT.so"
@@ -526,21 +526,21 @@ config FREETZ_LIB_libipt_standard
 	default n
 config FREETZ_LIB_libipt_state
 	bool "libipt_state.so"
-	select FREETZ_MODULE_xt_state if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_state if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_TARPIT
 	bool "libipt_TARPIT.so"
 	default n
 config FREETZ_LIB_libipt_tcpmss
 	bool "libipt_tcpmss.so"
-	select FREETZ_MODULE_xt_tcpmss if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_tcpmss if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_TCPMSS
 	bool "libipt_TCPMSS.so"
 	default n
 config FREETZ_LIB_libipt_tcp
 	bool "libipt_tcp.so"
-	select FREETZ_MODULE_xt_tcpudp if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_tos
 	bool "libipt_tos.so"
@@ -559,7 +559,7 @@ config FREETZ_LIB_libipt_TTL
 	default n
 config FREETZ_LIB_libipt_udp
 	bool "libipt_udp.so"
-	select FREETZ_MODULE_xt_tcpudp if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 config FREETZ_LIB_libipt_ULOG
 	bool "libipt_ULOG.so"
