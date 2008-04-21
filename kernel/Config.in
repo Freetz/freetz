@@ -10,8 +10,28 @@ config FREETZ_MODULE_crypto_algapi
 	depends on FREETZ_TYPE_FON_WLAN_7270
 	default n
 
+config FREETZ_MODULE_aes
+	bool "aes.ko"
+	select FREETZ_MODULE_crypto_algapi if FREETZ_TYPE_FON_WLAN_7270 
+	default n
+
 config FREETZ_MODULE_arc4
 	bool "arc4.ko"
+	select FREETZ_MODULE_crypto_algapi if FREETZ_TYPE_FON_WLAN_7270 
+	default n
+
+config FREETZ_MODULE_blkcipher
+	bool "blkcipher.ko"
+	default n
+
+config FREETZ_MODULE_cbc
+	bool "cbc.ko"
+	select FREETZ_MODULE_crypto_algapi if FREETZ_TYPE_FON_WLAN_7270 
+	select FREETZ_MODULE_blkcipher if FREETZ_TYPE_FON_WLAN_7270 
+	default n
+
+config FREETZ_MODULE_cryptomgr
+	bool "cryptomgr.ko"
 	select FREETZ_MODULE_crypto_algapi if FREETZ_TYPE_FON_WLAN_7270 
 	default n
 
@@ -22,11 +42,6 @@ config FREETZ_MODULE_sha1
 
 config FREETZ_MODULE_sha256
 	bool "sha256.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_TYPE_FON_WLAN_7270 
-	default n
-
-config FREETZ_MODULE_aes
-	bool "aes.ko"
 	select FREETZ_MODULE_crypto_algapi if FREETZ_TYPE_FON_WLAN_7270 
 	default n
 
