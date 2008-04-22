@@ -26,7 +26,7 @@ cgi_begin '$(lang de:"Einstellungen" en:"Settings")' 'settings'
 frm_begin 'mod'
 sec_begin 'crond'
 
-cat << EOF
+html_cat << EOF
 <h2>$(lang de:"Starttyp von crond" en:"crond start type")</h2>
 <p>
 <input id="c1" type="radio" name="crond" value="yes"$crond_auto_chk><label for="c1"> $(lang de:"Automatisch" en:"Automatic")</label>
@@ -36,7 +36,7 @@ EOF
 sec_end
 sec_begin 'swap'
 
-cat << EOF
+html_cat << EOF
 <h2>$(lang de:"Starttyp von swap" en:"swap start type")</h2>
 <p>
 <input id="s1" type="radio" name="swap" value="yes"$swap_auto_chk><label for="s1"> $(lang de:"Automatisch" en:"Automatic")</label>
@@ -49,36 +49,36 @@ EOF
 sec_end
 sec_begin 'telnetd'
 
-cat << EOF
+html_cat << EOF
 <h2>$(lang de:"Starttyp von telnetd" en:"telnetd start type")</h2>
 <p>
 <input id="t1" type="radio" name="telnetd" value="yes"$telnetd_auto_chk><label for="t1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="t2" type="radio" name="telnetd" value="no"$telnetd_man_chk><label for="t2"> $(lang de:"Manuell" en:"Manual")</label>
 EOF
 if [ "true" == $inetd ]; then
-cat << EOF
+html_cat << EOF
 <input id="t3" type="radio" name="telnetd" value="inetd"$telnetd_inetd_chk><label for="t3"> $(lang de:"Inetd" en:"Inetd")</label>
 EOF
 fi
-cat << EOF
+html_cat << EOF
 </p>
 EOF
 
 sec_end
 sec_begin 'webcfg'
 
-cat << EOF
+html_cat << EOF
 <h2>$(lang de:"Starttyp der Weboberfl&auml;che" en:"webinterface start type")</h2>
 <p>
 <input id="w1" type="radio" name="httpd" value="yes"$httpd_auto_chk><label for="w1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="w2" type="radio" name="httpd" value="no"$httpd_man_chk><label for="w2"> $(lang de:"Manuell" en:"Manual")</label>
 EOF
 if [ "true" == $inetd ]; then
-cat << EOF
+html_cat << EOF
 <input id="w3" type="radio" name="httpd" value="inetd"$httpd_inetd_chk><label for="w3"> $(lang de:"Inetd" en:"Inetd")</label>
 EOF
 fi
-cat << EOF
+html_cat << EOF
 </p>
 <p>$(lang de:"Port der Weboberfl&auml;che" en:"Port of webinterface"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(httpd -e "$MOD_HTTPD_PORT")">&nbsp;$(lang de:"(erfordert Neustart)" en:"(restart required)")</p>
 <h1>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h1>

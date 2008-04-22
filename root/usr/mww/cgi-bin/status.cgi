@@ -42,7 +42,7 @@ fi
 
 sec_begin '$(lang de:"Box" en:"Box")'
 
-cat << EOF
+html_cat << EOF
 <p>
 $(lang de:"Firmware" en:"Firmware"): $(get_env firmware_info)$(cat /etc/.subversion)<br>
 <table width="100%" border=0 cellpadding=0 cellspacing=0><tr><td>
@@ -82,7 +82,7 @@ else
 	fi 
 fi
 
-cat << EOF
+html_cat << EOF
 
 </td>
 <td align="right">$(lang de:"Uptime" en:"Uptime"): $(uptime | sed -r 's/.* up (.*), load .*/\1/')</td></tr>
