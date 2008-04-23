@@ -1,11 +1,14 @@
---- etc/init.d/rc.S.orig	2007-09-07 18:09:12.000000000 +0200
-+++ etc/init.d/rc.S	2007-09-28 16:20:05.000000000 +0200
-@@ -239,6 +239,8 @@
-  mknod /var/flash/calllog c $tffs_major $((0x8D))
-  mknod /var/flash/aura-usb c $tffs_major $((0xA0))
-  mknod /var/flash/browser-data c $tffs_major $((0xA8))
-+	mknod /var/flash/freetz c $tffs_major $((0x3c))
-+	/usr/bin/modload 2>&1 | tee /var/log/mod_load.log
- #file "stdin", 9
- #file "./arch/etc/init.d/rc.default.sh", 0
- echo 1 > /proc/sys/net/ipv4/ip_forward
+--- etc/init.d/rc.S.orig	2008-04-11 15:34:04.000000000 +0200
++++ etc/init.d/rc.S	2008-04-24 00:46:39.000000000 +0200
+@@ -805,6 +805,11 @@
+ #########################################################################
+ mknod /var/flash/voip.cfg c $tffs_major $((0x72))
+ mknod /var/flash/voipd_call_stat c $tffs_major $((0x7A))
++#########################################################################
++## freetz
++#########################################################################
++mknod /var/flash/freetz c $tffs_major $((0x3c))
++/usr/bin/modload 2>&1 | tee /var/log/mod_load.log
+ ## mknod /var/flash/telefon_msns c $tffs_major $((0x80)) entfaellt mit tecfg v54
+ #########################################################################
+ ## FLASH_FS_ID_MSNLISTE = 0x0080, /*--- /var/flash/telefon_msns ---*/

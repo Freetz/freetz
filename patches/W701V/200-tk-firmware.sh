@@ -20,12 +20,9 @@ ln -sf tcom "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/avm"
 ln -sf tcom "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/congstar"
 
 # Activate backup-/restore menu
-sed -i -e 's,STOREUSRCFG=n,STOREUSRCFG=y,g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
+sed -i -e 's,CONFIG_STOREUSRCFG="n",CONFIG_STOREUSRCFG="y",g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
 echo1 "copying mailer"
 cp -a "${DIR}/.tk/original/filesystem/sbin/mailer" "${FILESYSTEM_MOD_DIR}/sbin"
 
-echo1 "copying igdd"
-cp -a ${DIR}/.tk/original/filesystem/lib/libmxml.so* "${FILESYSTEM_MOD_DIR}/lib/"
-cp -a "${DIR}/.tk/original/filesystem/sbin/igdd" "${FILESYSTEM_MOD_DIR}/sbin"
 
