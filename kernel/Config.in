@@ -22,17 +22,20 @@ config FREETZ_MODULE_arc4
 
 config FREETZ_MODULE_blkcipher
 	bool "blkcipher.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 
 config FREETZ_MODULE_cbc
 	bool "cbc.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2 
-	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19_2 
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_crypto_algapi
+	select FREETZ_MODULE_blkcipher
 	default n
 
 config FREETZ_MODULE_cryptomgr
 	bool "cryptomgr.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2 
+	select FREETZ_MODULE_crypto_algapi
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 
 config FREETZ_MODULE_sha1
