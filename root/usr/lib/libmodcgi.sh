@@ -1,7 +1,7 @@
 . /mod/etc/conf/mod.cfg
 
 html_cat() {
-	local IFS=
+	local IFS= line
 	while read -r line; do
 		echo "$line"
 	done
