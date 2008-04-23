@@ -1,13 +1,13 @@
 config FREETZ_PACKAGE_CRYPTSETUP
-	bool "cryptsetup 1.0.6 (binary only)"
-	depends on FREETZ_REPLACE_KERNEL 
+	bool "cryptsetup 1.0.5 (binary only)"
+	depends on FREETZ_REPLACE_KERNEL if FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_LIB_libdevmapper
 	select FREETZ_LIB_libpopt
 	select FREETZ_MODULE_dm_crypt
 	select FREETZ_MODULE_aes
 	select FREETZ_MODULE_sha256
-	select FREETZ_MODULE_cbc
-	select FREETZ_MODULE_cryptomgr
+	select FREETZ_MODULE_cbc if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_cryptomgr if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 	help
 		cryptsetup is used to conveniently setup dm-crypt managed
