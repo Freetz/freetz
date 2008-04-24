@@ -7,50 +7,43 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 exec 2>&1
 
 update_inetd() {
-	if [ -e /mod/etc/default.inetd/inetd.cfg ]; then
-		if [ -x "/mod/etc/init.d/rc.$1" ]; then
-			status=$("/mod/etc/init.d/rc.$1" status)
-			if [ running = "$2" -a inetd = "$status" ]; then
+	if [ -x /usr/bin/modinetd ]; then
+		/usr/bin/modinetd --nosave "$1"
+	fi
+}
+
+start_stop() {
+	oldstatus=$2
+	if [ -x "/mod/etc/init.d/rc.$1" ]; then
+		status=$("/mod/etc/init.d/rc.$1" status)
+		if [ running = "$oldstatus" -a inetd = "$status" ]; then
+			"/mod/etc/init.d/rc.$1" stop
+			update_inetd "$1"
 			echo
-				"/mod/etc/init.d/rc.$1" stop
-				/usr/bin/modinetd --nosave "$1"
+		elif [ inetd = "$oldstatus" -a inetd != "$status" ]; then
+			update_inetd "$1"
+			"/mod/etc/init.d/rc.$1" start
 			echo
-			elif [ inetd = "$2" -a inetd != "$status" ]; then
-				echo
-				/usr/bin/modinetd --nosave "$1"
-				"/mod/etc/init.d/rc.$1" start
-				echo
-			elif [ inetd = "$2" -o inetd = "$status" ]; then
-				echo
-				/usr/bin/modinetd --nosave "$1"
-				echo
-			fi
+		elif [ inetd = "$oldstatus" -o inetd = "$status" ]; then
+			update_inetd "$1"
+			echo
+		elif [ running = "$oldstatus" ]; then
+			"/mod/etc/init.d/rc.$1" restart
+			echo
 		fi
 	fi
 }
 
 apply_changes() {
+	echo
 	if [ "$1" = mod ]; then
-		update_inetd telnetd "$2"
-		update_inetd webcfg "$3"
+		start_stop telnetd "$2"
+		start_stop webcfg "$3"
 		. /mod/etc/conf/mod.cfg
 		modunreg status mod mod/mounted
 		[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
-		return 1
 	else
-		update_inetd "$1" "$2"
-		return 0
-	fi
-}
-
-save_flash() {
-	if modsave flash; then
-		if [ -x "/mod/etc/init.d/rc.$1" ]; then
-			if [ running = "$2" -o running = "$status" ]; then
-				echo
-				"/mod/etc/init.d/rc.$1" restart
-			fi
-		fi
+		start_stop "$1" "$2"
 	fi
 }
 
@@ -64,8 +57,10 @@ rc_status() {
 
 # default functions for $package.save
 pkg_pre_save() { :; }
+pkg_apply_save() { :; }
 pkg_post_save() { :; }
 pkg_pre_def() { :; }
+pkg_apply_def() { :; }
 pkg_post_def() { :; }
 
 cgi_begin "$(lang de:"Speichern" en:"Saving")..."
@@ -96,7 +91,7 @@ case "$form" in
 				oldstatus1=$("/mod/etc/init.d/rc.$package" status)
 			fi
 			prefix="$(echo "$package" | tr 'a-z\-' 'A-Z_')_"
-
+			
 			vars=''; delim=''
 			for var in $(modconf vars "$package"); do
 				vars="${vars}${delim}${var#$prefix}"
@@ -111,9 +106,10 @@ case "$form" in
 			modconf save "$package"
 			echo 'done.'
 			
-			apply_changes "$package" "$oldstatus1" "$oldstatus2" || oldstatus1=''
+			apply_changes "$package" "$oldstatus1" "$oldstatus2"
+			pkg_apply_save
 
-			save_flash "$package" "$oldstatus1"
+			modsave flash
 		fi
 		pkg_post_save
 		;;
@@ -136,9 +132,10 @@ case "$form" in
 			modconf default "$package"
 			echo 'done.'
 
-			apply_changes "$package" "$oldstatus1" "$oldstatus2" || oldstatus1=''
+			apply_changes "$package" "$oldstatus1" "$oldstatus2"
+			pkg_apply_def
 
-			save_flash "$package" "$oldstatus1"
+			modsave flash
 		fi
 		pkg_post_def
 		;;
