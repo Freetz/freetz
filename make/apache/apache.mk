@@ -1,94 +1,43 @@
-APACHE_VERSION:=1.3.37
-APACHE_SOURCE:=apache_$(APACHE_VERSION).tar.gz
-APACHE_SITE:=http://archive.apache.org/dist/httpd
-APACHE_MAKE_DIR:=$(MAKE_DIR)/apache
-APACHE_DIR:=$(SOURCE_DIR)/apache_$(APACHE_VERSION)
-APACHE_BINARY:=$(APACHE_DIR)/src/apache
-APACHE_TARGET_DIR:=$(PACKAGES_DIR)/apache-$(APACHE_VERSION)
-APACHE_TARGET_BINARY:=$(APACHE_TARGET_DIR)/apache
-APACHE_PKG_VERSION:=0.1
-APACHE_PKG_SOURCE:=apache-$(APACHE_VERSION)-dsmod-$(APACHE_PKG_VERSION).tar.bz2
-APACHE_PKG_SITE:=http://freetz.magenbrot.net
+$(call PKG_INIT_BIN, 1.3.37)
+$(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://archive.apache.org/dist/httpd
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/apache
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/apache
 
-APACHE_FREETZ_CONFIG_FILE:=$(APACHE_MAKE_DIR)/.freetz_config
-APACHE_FREETZ_CONFIG_TEMP:=$(APACHE_MAKE_DIR)/.freetz_config.temp
+$(PKG)_CONFIG_SUBOPTS += FREETZ_APACHE_STATIC
 
-$(DL_DIR)/$(APACHE_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(APACHE_SITE)/$(APACHE_SOURCE)
+$(PKG)_CONFIGURE_DEFOPTS := n
+$(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"
+$(PKG)_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
+$(PKG)_CONFIGURE_ENV += LDFLAGS="$(if $(FREETZ_APACHE_STATIC),-static)"
+$(PKG)_CONFIGURE_OPTIONS += --target=apache
+$(PKG)_CONFIGURE_OPTIONS += --prefix=./apache-1.3.37/
+$(PKG)_CONFIGURE_OPTIONS += --enable-module=rewrite=yes
+$(PKG)_CONFIGURE_OPTIONS += --enable-module=speling=yes
 
-$(DL_DIR)/$(APACHE_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(APACHE_PKG_SOURCE) $(APACHE_PKG_SITE)
 
-$(APACHE_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
-	@echo "FREETZ_APACHE_STATIC=$(if $(FREETZ_APACHE_STATIC),y,n)" > $(APACHE_FREETZ_CONFIG_TEMP)
-	@diff -q $(APACHE_FREETZ_CONFIG_TEMP) $(APACHE_FREETZ_CONFIG_FILE) || \
-		cp $(APACHE_FREETZ_CONFIG_TEMP) $(APACHE_FREETZ_CONFIG_FILE)
-	@rm -f $(APACHE_FREETZ_CONFIG_TEMP)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-# Make sure that a perfectly clean build is performed whenever Freetz package
-# options have changed. The safest way to achieve this is by starting over
-# with the source directory.
-$(APACHE_DIR)/.unpacked: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_FREETZ_CONFIG_FILE)
-	rm -rf $(APACHE_DIR)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(APACHE_SOURCE)
-	for i in $(APACHE_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(APACHE_DIR) $$i; \
-	done
-	touch $@
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(APACHE_DIR)
 
-$(APACHE_DIR)/.configured: $(APACHE_DIR)/.unpacked
-	( cd $(APACHE_DIR); rm -f config.{cache,status}; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CC="$(TARGET_CC)" \
-		LD="$(TARGET_LD)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(if $(FREETZ_APACHE_STATIC),-static)" \
-		./configure \
-		--target=apache \
-		--prefix=./apache-1.3.37/ \
-		--enable-module=rewrite=yes \
-		--enable-module=speling=yes \
-	);
-	touch $@
-
-$(APACHE_BINARY): $(APACHE_DIR)/.configured
-	PATH="$(TARGET_PATH)" $(MAKE) -C $(APACHE_DIR)
-
-$(PACKAGES_DIR)/.apache-$(APACHE_VERSION): $(DL_DIR)/$(APACHE_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(APACHE_PKG_SOURCE)
-	@touch $@
-
-$(APACHE_TARGET_BINARY): $(APACHE_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-apache: $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
+$(pkg): 
 
-apache-package: $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(APACHE_PKG_SOURCE) apache-$(APACHE_VERSION)
+$(pkg)-precompiled: $(APACHE_TARGET_BINARY)
 
-apache-precompiled: uclibc apache $(APACHE_TARGET_BINARY)
-
-apache-source: $(APACHE_DIR)/.unpacked $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
-
-apache-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(APACHE_DIR) clean
 	rm -f $(PACKAGES_BUILD_DIR)/$(APACHE_PKG_SOURCE)
 	rm -f $(APACHE_FREETZ_CONFIG_FILE)
 
-apache-dirclean:
-	rm -rf $(APACHE_DIR)
-	rm -f $(PACKAGES_BUILD_DIR)/$(APACHE_PKG_SOURCE)
-	rm -rf $(PACKAGES_DIR)/apache-$(APACHE_VERSION)
-	rm -f $(PACKAGES_DIR)/.apache-$(APACHE_VERSION)
-	rm -f $(PACKAGES_DIR)/.php-$(PHP_VERSION)
-	rm -f $(APACHE_FREETZ_CONFIG_FILE)
-
-apache-uninstall:
+$(pkg)-uninstall:
 	rm -f $(APACHE_TARGET_BINARY)
 
-apache-list:
-#ifeq ($(strip $(FREETZ_PACKAGE_APACHE)),y)
-#	@echo "S99apache-$(APACHE_VERSION)" >> .static
-#else
-#	@echo "S99apache-$(APACHE_VERSION)" >> .dynamic
-#endif
+$(PKG_FINISH)
