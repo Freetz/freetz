@@ -7,37 +7,28 @@
 
 char=$(echo -ne '\01')
 
+delete() {
+	local regexp=$1 file=$2
+	[ -e "$file" ] || touch "$file"
+
+	sed -i "\\${char}$regexp${char}d" "$file"
+}
+
 case "$1" in
 	cgi)
-		[ -e /mod/etc/reg/cgi.reg ] || touch /mod/etc/reg/cgi.reg
-
-		sed -i "\\${char}^$2|${char}d" /mod/etc/reg/cgi.reg
+		delete "^$2|" /mod/etc/reg/cgi.reg
 		rm -f /mod/var/cache/menu_packages
 		;;
 	extra)
-		[ -e /mod/etc/reg/extra.reg ] || touch /mod/etc/reg/extra.reg
-
-		if [ -z "$3" ]; then
-			sed -i "\\${char}^$2${char}d" /mod/etc/reg/extra.reg
-		else
-			sed -i "\\${char}^$2|.*|$3\$${char}d" /mod/etc/reg/extra.reg
-		fi
+		delete "^$2|.*|${3:-.*}\$" /mod/etc/reg/extra.reg
 		rm -f /mod/var/cache/extras
 		;;
 	file)
-		[ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
-
-		sed -i "\\${char}^$2|${char}d" /mod/etc/reg/file.reg
+		delete "^$2|" /mod/etc/reg/file.reg
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
-		[ -e /mod/etc/reg/status.reg ] || touch /mod/etc/reg/status.reg
-
-		if [ -z "$3" ]; then
-			sed -i "\\${char}^$2${char}d" /mod/etc/reg/status.reg
-		else
-			sed -i "\\${char}^$2|.*|$3\$${char}d" /mod/etc/reg/status.reg
-		fi
+		delete "^$2|.*|${3:-.*}\$" /mod/etc/reg/status.reg
 		rm -f /mod/var/cache/menu_status
 		;;
 	*)

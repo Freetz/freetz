@@ -4,34 +4,30 @@
 #        modreg extra <pkg> <title> <sec-level> <cgi-name>
 #        modreg file <id> <title> <sec-level> <desc-file>
 
+replace() {
+	local regexp=$1 file=$2 data=$3
+	[ -e "$file" ] || touch "$file"
+
+	local content=$(grep -v "$regexp" "$file")
+	( echo "$data"; echo -n "$content" ) | sort > "$file"
+}
+
 case "$1" in
 	cgi)
-		[ -e /mod/etc/reg/cgi.reg ] || touch /mod/etc/reg/cgi.reg
-
-		content=$(grep -v "^$2|" /mod/etc/reg/cgi.reg)
-		( echo "$2|$3"; echo -n "$content" ) | sort > /mod/etc/reg/cgi.reg
+		replace "^$2|" /mod/etc/reg/cgi.reg "$2|$3"
 		rm -f /mod/var/cache/menu_packages
 		;;
 	extra)
-		[ -e /mod/etc/reg/extra.reg ] || touch /mod/etc/reg/extra.reg
-
-		content=$(grep -v "^$2|.*|$5\$" /mod/etc/reg/extra.reg)
-		( echo "$2|$3|$4|$5"; echo -n "$content" ) | sort > /mod/etc/reg/extra.reg
+		replace "^$2|.*|$5\$" /mod/etc/reg/extra.reg "$2|$3|$4|$5"
 		rm -f /mod/var/cache/extras
 		;;
 	file)
-		[ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
-
-		content=$(grep -v "^$2|" /mod/etc/reg/file.reg)
-		( echo "$2|$3|$4|$5"; echo -n "$content" ) | sort > /mod/etc/reg/file.reg
+		replace "^$2|" /mod/etc/reg/file.reg "$2|$3|$4|$5"
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
-		[ -e /mod/etc/reg/status.reg ] || touch /mod/etc/reg/status.reg
 		cgi=${4:-$2-status.cgi}
-
-		content=$(grep -v "^$2|.*|$cgi\$" /mod/etc/reg/status.reg)
-		( echo "$2|$3|$cgi"; echo -n "$content" ) | sort > /mod/etc/reg/status.reg
+		replace "^$2|.*|$cgi\$" /mod/etc/reg/status.reg "$2|$3|$cgi"
 		rm -f /mod/var/cache/menu_status
 		;;
 		
