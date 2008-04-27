@@ -1,136 +1,72 @@
-COLLECTD_VERSION:=4.0.7
-COLLECTD_SOURCE:=collectd-$(COLLECTD_VERSION).tar.gz
-COLLECTD_SITE:=http://collectd.org/files
-COLLECTD_MAKE_DIR:=$(MAKE_DIR)/collectd
-COLLECTD_DIR:=$(SOURCE_DIR)/collectd-$(COLLECTD_VERSION)
-COLLECTD_BINARY:=$(COLLECTD_DIR)/src/collectd
-COLLECTD_TARGET_DIR:=$(PACKAGES_DIR)/collectd-$(COLLECTD_VERSION)
-COLLECTD_TARGET_BINARY:=$(COLLECTD_TARGET_DIR)/root/usr/bin/collectd
-COLLECTD_PKG_VERSION:=0.1
-COLLECTD_PKG_SOURCE:=collectd-$(COLLECTD_VERSION)-dsmod-$(COLLECTD_PKG_VERSION).tar.bz2
-COLLECTD_PKG_SITE:=http://131.246.137.121/~metz/dsmod/packages
+$(call PKG_INIT_BIN, 4.0.7)
+$(PKG)_VERSION:=4.0.7
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://collectd.org/files
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/collectd
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/collectd
 
-$(DL_DIR)/$(COLLECTD_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(COLLECTD_SITE)/$(COLLECTD_SOURCE)
+$(PKG)_CONFIGURE_OPTIONS += --disable-apache
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-apcups
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-apple_sensors
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-battery
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-cpu
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-cpufreq
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-disk
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-csv
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-df
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-dns
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-email
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-entropy
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-exec
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-hddtemp
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-interface
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-iptables
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-irq
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-load
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-mbmon
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-memory
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-multimeter
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-mysql
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-network
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-nfs
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-ntpd
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-nut
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-perl
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-ping
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-processes
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-sensors
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-serial
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-logfile
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-swap
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-syslog
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-tape
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-unixsock
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-users
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-vserver
+$(PKG)_CONFIGURE_OPTIONS +=	--disable-wireless
+$(PKG)_CONFIGURE_OPTIONS +=	--with-nan-emulation
 
-$(DL_DIR)/$(COLLECTD_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(COLLECTD_PKG_SOURCE) $(COLLECTD_PKG_SITE)
 
-$(COLLECTD_DIR)/.unpacked: $(DL_DIR)/$(COLLECTD_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(COLLECTD_SOURCE)
-#	for i in $(COLLECTD_MAKE_DIR)/patches/*.patch; do \
-#		$(PATCH_TOOL) $(COLLECTD_DIR) $$i; \
-#	done
-	touch $@
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
 
-$(COLLECTD_DIR)/.configured: $(COLLECTD_DIR)/.unpacked
-	( cd $(COLLECTD_DIR); rm -f config.cache; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		./configure \
-		--target=$(GNU_TARGET_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--build=$(GNU_HOST_NAME) \
-		--program-prefix="" \
-		--program-suffix="" \
-		--prefix=/usr \
-		--exec-prefix=/usr \
-		--bindir=/usr/bin \
-		--datadir=/usr/share \
-		--includedir=/usr/include \
-		--infodir=/usr/share/info \
-		--libdir=/usr/lib \
-		--libexecdir=/usr/lib \
-		--localstatedir=/var \
-		--mandir=/usr/share/man \
-		--sbindir=/usr/sbin \
-		--sysconfdir=/etc \
-		$(DISABLE_NLS) \
-		$(DISABLE_LARGEFILE) \
-		--disable-apache \
-		--disable-apcups \
-		--disable-apple_sensors \
-		--disable-battery \
-		--disable-cpu \
-		--disable-cpufreq \
-		--disable-disk \
-		--disable-csv \
-		--disable-df \
-		--disable-dns \
-		--disable-email \
-		--disable-entropy \
-		--disable-exec \
-		--disable-hddtemp \
-		--disable-interface \
-		--disable-iptables \
-		--disable-irq \
-		--disable-load \
-		--disable-mbmon \
-		--disable-memory \
-		--disable-multimeter \
-		--disable-mysql \
-		--disable-network \
-		--disable-nfs \
-		--disable-ntpd \
-		--disable-nut \
-		--disable-perl \
-		--disable-ping \
-		--disable-processes \
-		--disable-sensors \
-		--disable-serial \
-		--disable-logfile \
-		--disable-swap \
-		--disable-syslog \
-		--disable-tape \
-		--disable-unixsock \
-		--disable-users \
-		--disable-vserver \
-		--disable-wireless \
-		--with-nan-emulation \
-	);
-	touch $@
-
-$(COLLECTD_BINARY): $(COLLECTD_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-	$(MAKE) AM_CFLAGS="" -C $(COLLECTD_DIR)
+		$(MAKE) -C $(COLLECTD_DIR)
 
-$(COLLECTD_TARGET_BINARY): $(COLLECTD_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
-	@# Don't copy these, because they are already part of the package:
-	@#cp $(COLLECTD_DIR)/profile $(COLLECTD_TARGET_DIR)/root/usr/lib/collectd/profile
-	@#cp $(COLLECTD_DIR)/menu $(COLLECTD_TARGET_DIR)/root/usr/lib/collectd/menu
 
-$(PACKAGES_DIR)/.collectd-$(COLLECTD_VERSION): $(DL_DIR)/$(COLLECTD_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(COLLECTD_PKG_SOURCE)
-	@touch $@
+$(pkg):
 
-collectd: $(PACKAGES_DIR)/.collectd-$(COLLECTD_VERSION)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-collectd-package: $(PACKAGES_DIR)/.collectd-$(COLLECTD_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(COLLECTD_PKG_SOURCE) collectd-$(COLLECTD_VERSION)
-
-collectd-precompiled: uclibc ncurses-precompiled collectd $(COLLECTD_TARGET_BINARY)
-
-collectd-source: $(COLLECTD_DIR)/.unpacked $(PACKAGES_DIR)/.collectd-$(COLLECTD_VERSION)
-
-collectd-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(COLLECTD_DIR) clean
-	rm -f $(PACKAGES_BUILD_DIR)/$(COLLECTD_PKG_SOURCE)
+	$(RM) $(COLLECTD_DIR)/.configured
 
-collectd-dirclean:
-	rm -rf $(COLLECTD_DIR)
-	rm -rf $(PACKAGES_DIR)/collectd-$(COLLECTD_VERSION)
-	rm -f $(PACKAGES_DIR)/.collectd-$(COLLECTD_VERSION)
-
-collectd-uninstall:
+$(pkg)-uninstall:
 	rm -f $(COLLECTD_TARGET_BINARY)
 
-collectd-list:
-ifeq ($(strip $(FREETZ_PACKAGE_COLLECTD)),y)
-	@echo "S99collectd-$(COLLECTD_VERSION)" >> .static
-else
-	@echo "S99collectd-$(COLLECTD_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)
