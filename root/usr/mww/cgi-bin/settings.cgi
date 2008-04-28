@@ -80,7 +80,7 @@ EOF
 fi
 html_cat << EOF
 </p>
-<p>$(lang de:"Port der Weboberfl&auml;che" en:"Port of webinterface"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(httpd -e "$MOD_HTTPD_PORT")">&nbsp;$(lang de:"(erfordert Neustart)" en:"(restart required)")</p>
+<p>$(lang de:"Port der Weboberfl&auml;che" en:"Port of webinterface"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(httpd -e "$MOD_HTTPD_PORT")"></p>
 <h1>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h1>
 <p>
 $(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
