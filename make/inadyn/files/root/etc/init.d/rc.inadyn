@@ -29,7 +29,7 @@ configure () {
 
 	echo background
 	echo verbose $INADYN_VERBOSE
-	if [ -x /etc/init.d/rc.syslogd -a running = "`/etc/init.d/rc.syslogd status`" ]; then
+	if [ -x /etc/init.d/rc.syslogd -a running = "$(/etc/init.d/rc.syslogd status)" ]; then
 		echo syslog
 	else
 		echo log_file /var/log/inadyn.log
@@ -39,9 +39,10 @@ configure () {
 	ii=0
 	# inadyn -> dyndns.h can maintain maximal 5 servers
 	while [ 5 -gt $ii ]; do
-		if [ yes = "`ivalueof INADYN_ACTIVE $ii`" ]; then
+		if [ yes = "$(ivalueof INADYN_ACTIVE $ii)" ]; then
 
-			case "`ivalueof INADYN_SERVICE $ii`" in
+			value=$(ivalueof INADYN_URL $ii | sed 's,\([^/]*\)\(.*\),\1 \2,')
+			case "$(ivalueof INADYN_SERVICE $ii)" in
 				dyndns.org)
 					echo -e '\ndyndns_system dyndns@dyndns.org'
 					;;
@@ -61,25 +62,27 @@ configure () {
 					echo -e '\ndyndns_system default@no-ip.com'
 					;;
 				custom|benutzerdefiniert)
-					value=`ivalueof INADYN_URL $ii | sed 's,\([^/]*\)\(.*\),\1 \2,'`
 					[ -z "$value" ] && continue
 					echo -e '\ndyndns_system custom@http_svr_basic_auth'
-					echo dyndns_server_name `echo $value | cut -d\  -f1`
-					echo dyndns_server_url `echo $value | cut -d\  -f2`
 					;;
 			esac
 
-			value=`ivalueof INADYN_USER $ii`
+			if [ -n "$value" ]; then
+				echo dyndns_server_name $(echo $value | cut -d\  -f1)
+				echo dyndns_server_url $(echo $value | cut -d\  -f2)
+			fi
+
+			value=$(ivalueof INADYN_USER $ii)
 			[ -n "$value" ] && echo "username $value"
-			value="`ivalueof INADYN_PASS $ii`"
-			[ -n "$value" ] && echo "password `escvalue $value`"
-			for value in `ivalueof INADYN_ALIAS $ii`; do
+			value="$(ivalueof INADYN_PASS $ii)"
+			[ -n "$value" ] && echo "password $(escvalue $value)"
+			for value in $(ivalueof INADYN_ALIAS $ii); do
 				echo "alias $value"
 			done
-			value=`ivalueof INADYN_OPTIONS $ii`
+			value=$(ivalueof INADYN_OPTIONS $ii)
 			[ -n "$value" ] && echo "$value"
 		fi
-		let ii=${ii}+1
+		let ii++
 	done
 }
 
