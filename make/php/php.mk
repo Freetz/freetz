@@ -1,8 +1,9 @@
-$(call PKG_INIT_BIN, 5.2.3)
+$(call PKG_INIT_BIN, 5.2.5)
 $(PKG)_SOURCE:=php-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://museum.php.net/php5
+$(PKG)_SITE:=http://freetz.magenbrot.net
+#$(PKG)_SITE:=http://museum.php.net/php5
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/cgi-bin/php
+$(PKG)_TARGET_BINARY:=$(APACHE_TARGET_DIR)/cgi-bin/php
 
 ifeq ($(strip $(FREETZ_PHP_STATIC)),y)
 PHP_STATIC:= -all-static

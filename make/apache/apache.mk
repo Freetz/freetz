@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://archive.apache.org/dist/httpd
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/apache
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/apache
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/apache
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_APACHE_STATIC
 
