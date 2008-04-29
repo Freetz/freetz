@@ -1,5 +1,5 @@
 --- src/options.c.orig	2008-03-27 10:51:45.000000000 +0100
-+++ src/options.c	2008-04-08 22:56:32.000000000 +0200
++++ src/options.c	2008-04-27 19:46:10.000000000 +0200
 @@ -281,7 +281,7 @@
  #ifndef USE_WIN32
      switch(cmd) {
@@ -27,6 +27,15 @@
  #else
          section->cert="stunnel.pem";
  #endif
+@@ -827,7 +827,7 @@
+     /* key */
+     switch(cmd) {
+     case CMD_INIT:
+-        section->key=NULL;
++        section->key="/tmp/flash/.stunnel/key.pem";
+         break;
+     case CMD_EXEC:
+         if(strcasecmp(opt, "key"))
 @@ -1334,7 +1334,7 @@
  
  void parse_config(char *name, char *parameter) {
