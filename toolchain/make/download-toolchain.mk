@@ -4,9 +4,9 @@ include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 
 KERNEL_TOOLCHAIN_VERSION:=0.3
 TARGET_TOOLCHAIN_VERSION:=0.6
-KERNEL_TOOLCHAIN_SOURCE:=kernel-toolchain-dsmod-$(KERNEL_TOOLCHAIN_VERSION).tar.lzma
-TARGET_TOOLCHAIN_SOURCE:=target-toolchain-dsmod-$(TARGET_TOOLCHAIN_VERSION).tar.lzma
-TOOLCHAIN_SITE:=http://dsmod.wirsind.info
+KERNEL_TOOLCHAIN_SOURCE:=kernel-toolchain-freetz-$(KERNEL_TOOLCHAIN_VERSION).tar.lzma
+TARGET_TOOLCHAIN_SOURCE:=target-toolchain-freetz-$(TARGET_TOOLCHAIN_VERSION).tar.lzma
+TOOLCHAIN_SITE:=http://freetz.wirsind.info
 
 $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(KERNEL_TOOLCHAIN_SOURCE) $(TOOLCHAIN_SITE)

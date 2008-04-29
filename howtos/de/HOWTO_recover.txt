@@ -1,12 +1,12 @@
 Original Firmware wiederherstellen
 ----------------------------------
 
-Wenn die Box nicht mehr ansprechbar ist, die Power LED leuchtet und die Ã¼brigen
-LEDs in regelmÃ¤ÃŸigen AbstÃ¤nden aufblinken, dann kann folgende Vorgehensweise die
-Box wieder zum Leben erwecken. In diesen FÃ¤llen ist meist mtd0 (Filesystem) und
-mtd1 (Kernel) betroffen, nicht mtd3 / mtd4 (mtd2 auf KEINEN Fall anrÃ¼hren).
+Wenn die Box nicht mehr ansprechbar ist, die Power LED leuchtet und die übrigen
+LEDs in regelmäßigen Abständen aufblinken, dann kann folgende Vorgehensweise die
+Box wieder zum Leben erwecken. In diesen Fällen ist meist mtd0 (Filesystem) und
+mtd1 (Kernel) betroffen, nicht mtd3 / mtd4 (mtd2 auf KEINEN Fall anrühren).
 
-1.) Der Computer muss sich im gleichen Subnetz (und auch Broadcast-DomÃ¤ne) wie
+1.) Der Computer muss sich im gleichen Subnetz (und auch Broadcast-Domäne) wie
     die Box befinden: 192.168.178.0/24
 
 2.) make recover
@@ -15,8 +15,8 @@ mtd1 (Kernel) betroffen, nicht mtd3 / mtd4 (mtd2 auf KEINEN Fall anrÃ¼hren).
 
 Am bequemsten funktioniert es, wenn nach einem `make' der Mod noch nicht mit
 `make clean', `make dirclean' oder `make distclean' bereinigt wurde und noch
-eine fÃ¼r die Box passende Konfiguartion des Mods vorhanden ist. In diesem Fall
-lÃ¤dt `make recover' die unmodifizierte original Firmware auf die Box.
+eine für die Box passende Konfiguartion des Mods vorhanden ist. In diesem Fall
+lädt `make recover' die unmodifizierte original Firmware auf die Box.
 
-`make recover' benutzt eine Ã¼berarbeitete Version des recover-Perlscript von
+`make recover' benutzt eine überarbeitete Version des recover-Perlscript von
 Enrik, welches mtd0 und mtd1 flasht (http://www.akk.org/~enrik/fbox/util/).

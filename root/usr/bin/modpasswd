@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Usage: modpasswd [load|dsmod]
+# Usage: modpasswd [load|freetz]
 
 TMP=/var/tmp
 FLASH=$TMP/flash
@@ -30,7 +30,7 @@ case "$1" in
 		echo >&2
 		exit 1
 		;;
-	dsmod)
+	freetz)
 		echo 'Changing password for admin (freetz webconfig)'
 		echo 'This password should be different from root'"'"'s password.'
 		echo 'No "weak password" warnings are generated.'

@@ -5,7 +5,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 eval "$(modcgi password mod_cgi)"
 
-(echo $MOD_CGI_PASSWORD;sleep1;echo $MOD_CGI_PASSWORD) | modpasswd dsmod > /dev/null
+(echo $MOD_CGI_PASSWORD;sleep1;echo $MOD_CGI_PASSWORD) | modpasswd freetz > /dev/null
 result=$?
 
 cgi_begin 'Passwort' 'password'
