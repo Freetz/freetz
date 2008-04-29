@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.3.37)
+$(call PKG_INIT_BIN, 1.3.41)
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://archive.apache.org/dist/httpd
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
