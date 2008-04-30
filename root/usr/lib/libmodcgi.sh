@@ -15,7 +15,7 @@ html() {
 		    s/&/\&amp;/g
 		    s/</\&lt;/g
 		    s/>/\&gt;/g
-		    s/'\''/\&apos;/g
+		    s/'\''/\&#39;/g
 		    s/"/\&quot;/g
 		'
 	else
