@@ -52,6 +52,7 @@ TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 SED:=sed
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
+CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)
@@ -69,6 +70,15 @@ endif
 # We don't like cygwin
 ifeq ($(shell uname -o),Cygwin)
 $(error Cygwin is not supported! Please use a real Linux environment.)
+endif
+
+# Simple checking of build prerequisites
+ifneq ($(shell $(CHECK_PREREQ_TOOL) \
+	$$(cat .build-prerequisites) \
+	>&2 \
+	&& echo OK\
+),OK)
+$(error Some build prerequisites are missing! Please install the missing packages before trying again)
 endif
 
 all: step
