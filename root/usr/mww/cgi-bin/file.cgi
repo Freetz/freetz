@@ -35,7 +35,7 @@ if [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$3" ]; then
 	case "$CONFIG_TYPE" in
 		text)
 			echo -n '<p><textarea style="width: '$_width'px;" name="content" rows="'"$TEXT_ROWS"'" cols="60" wrap="off" readonly>'
-			[ -r "$CONFIG_FILE" ] && httpd -e "$(cat $CONFIG_FILE)"
+			[ -r "$CONFIG_FILE" ] && html < "$CONFIG_FILE"
 			echo '</textarea></p>'
 			;;
 		list)
@@ -49,7 +49,7 @@ else
 		text)
 			echo "<form action=\"/cgi-bin/save.cgi?form=file_$id\" method=\"post\">"
 			echo -n '<textarea style="width: '$_width'px;" name="content" rows="'"$TEXT_ROWS"'" cols="60" wrap="off">'
-			[ -r "$CONFIG_FILE" ] && httpd -e "$(cat $CONFIG_FILE)"
+			[ -r "$CONFIG_FILE" ] && html < "$CONFIG_FILE"
 			echo '</textarea>'
 			echo '<div class="btn"><input type="submit" value="$(lang de:"&Uuml;bernehmen" en:"Apply")"></div>'
 			echo '</form>'

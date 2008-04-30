@@ -43,7 +43,7 @@ cat << EOF
 <h2>$(lang de:"Netz-Routing: (eines pro Zeile)" en:"Subnet routing (one per row)")</h2>
 <small style="font-size:0.8em">$(lang de:"Syntax: &lt;Netz-IP&gt; &lt;Netz-Mask&gt; &lt;Client-IP&gt; [&lt;Kommentar&gt;]" en:"Syntax: &lt;Subnet-IP&gt; &lt;Subnetmask&gt; &lt;Client-IP&gt; [&lt;Comment&gt;]")<br>
 ($(lang de:"z.B." en:"example"): 192.168.1.0 255.255.255.0 192.168.178.100 $(lang de:"Client-Netz" en:"client_subnet"))</small>
-<p><textarea name="net_routing" rows="5" cols="59" maxlength="255">$(httpd -e "$PPTPD_NET_ROUTING")</textarea></p>
+<p><textarea name="net_routing" rows="5" cols="59" maxlength="255">$(html "$PPTPD_NET_ROUTING")</textarea></p>
 EOF
 
 sec_end

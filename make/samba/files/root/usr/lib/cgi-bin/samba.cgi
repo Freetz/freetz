@@ -40,12 +40,12 @@ sec_begin 'Samba'
 
 cat << EOF
 <br><P>Netzwerkschnittstelle:<br>
-<input type="text" name="interfaces" size="40" maxlength="255" value="$(httpd -e "$SAMBA_INTERFACES")"><br>
+<input type="text" name="interfaces" size="40" maxlength="255" value="$(html "$SAMBA_INTERFACES")"><br>
 <FONT SIZE=-2>z.B.: 192.168.178.1/255.255.255.0 oder leer lassen f&uuml;r alle</FONT></P>
-<p>Netbios Name: <input type="text" name="netbios_name" size="20" maxlength="255" value="$(httpd -e "$SAMBA_NETBIOS_NAME")"></p>
-<p>Arbeitsgruppe: <input type="text" name="workgroup" size="20" maxlength="255" value="$(httpd -e "$SAMBA_WORKGROUP")"></p>
-<p>Beschreibung:<br><input type="text" name="server_string" size="40" maxlength="255" value="$(httpd -e "$SAMBA_SERVER_STRING")"></p>
-<p>OS Level f&uuml;r Election: <input type="text" name="os_level" size="5" maxlength="5" value="$(httpd -e "$SAMBA_OS_LEVEL")"></p>
+<p>Netbios Name: <input type="text" name="netbios_name" size="20" maxlength="255" value="$(html "$SAMBA_NETBIOS_NAME")"></p>
+<p>Arbeitsgruppe: <input type="text" name="workgroup" size="20" maxlength="255" value="$(html "$SAMBA_WORKGROUP")"></p>
+<p>Beschreibung:<br><input type="text" name="server_string" size="40" maxlength="255" value="$(html "$SAMBA_SERVER_STRING")"></p>
+<p>OS Level f&uuml;r Election: <input type="text" name="os_level" size="5" maxlength="5" value="$(html "$SAMBA_OS_LEVEL")"></p>
 <p>
 <input type="hidden" name="master" value="no">
 <input id="m1" type="checkbox" name="master" value="yes"$master_chk><label for="m1">Bevorzugter Master</label>

@@ -21,8 +21,8 @@ sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
 
 cat << EOF
 <h2>$(lang de:"Der Privoxy Server ist gebunden an" en:"The Privoxy server is listening on")</h2>
-<p>$(lang de:"IP Adresse" en:"IP Address"):&nbsp;<input id="address" type="text" size="16" maxlength="16" name="listen_address" value="$(httpd -e "$PRIVOXY_LISTEN_ADDRESS")">   
-$(lang de:"Port" en:"Port"):&nbsp;<input id="port" type="text" size="5" maxlength="5" name="listen_port" value="$(httpd -e "$PRIVOXY_LISTEN_PORT")"></p>
+<p>$(lang de:"IP Adresse" en:"IP Address"):&nbsp;<input id="address" type="text" size="16" maxlength="16" name="listen_address" value="$(html "$PRIVOXY_LISTEN_ADDRESS")">   
+$(lang de:"Port" en:"Port"):&nbsp;<input id="port" type="text" size="5" maxlength="5" name="listen_port" value="$(html "$PRIVOXY_LISTEN_PORT")"></p>
 EOF
 
 sec_end
@@ -42,7 +42,7 @@ sec_begin '$(lang de:"Weiterleitung" en:"Forwarding") (optional)'
 
 cat << EOF
 <h2>$(lang de:"Privoxy soll Anfragen weiterleiten an" en:"Privoxy shall forward requests to")</h2>
-<p><input id="socks" type="text" size="21" maxlength="21" name="forward_socks" value="$(httpd -e "$PRIVOXY_FORWARD_SOCKS")">
+<p><input id="socks" type="text" size="21" maxlength="21" name="forward_socks" value="$(html "$PRIVOXY_FORWARD_SOCKS")">
 <br />Syntax: &lt;ip&gt;:&lt;port&gt;</p>
 EOF
 
@@ -52,10 +52,10 @@ sec_begin '$(lang de:"Zugriffskontrolle" en:"Access Control") (optional)'
 cat << EOF
 <p>$(lang de:"Lies das Privoxy Benutzerhandbuch zum Thema <a href='http://www.privoxy.org/user-manual/config.html#ACCESS-CONTROL' target='_blank'>Zugriffskontrolle</a> f&uuml;r eine detailierte Beschreibung." en:"See the Privoxy User Manual about <a href='http://www.privoxy.org/user-manual/config.html#ACCESS-CONTROL' target='_blank'>Access Control</a> for a brief description.")</p>
 <h2>$(lang de:"Liste erlaubter Clients und Ziele" en:"List of allowed clients and destinations")</h2>
-<p><textarea id="permit" name="permit_access" rows="4" cols="50" maxlength="255">$(httpd -e "$PRIVOXY_PERMIT_ACCESS")</textarea><br />
+<p><textarea id="permit" name="permit_access" rows="4" cols="50" maxlength="255">$(html "$PRIVOXY_PERMIT_ACCESS")</textarea><br />
 Syntax: &lt;src_addr&gt;[/&lt;mask&gt;] [&lt;dest_addr&gt;[/&lt;mask&gt;]]</p>
 <h2>$(lang de:"Liste verbotener Clients und Ziele" en:"List of denied clients and destinations")</h2>
-<p><textarea id="deny" name="deny_access" rows="4" cols="50" maxlength="255">$(httpd -e "$PRIVOXY_DENY_ACCESS")</textarea><br />
+<p><textarea id="deny" name="deny_access" rows="4" cols="50" maxlength="255">$(html "$PRIVOXY_DENY_ACCESS")</textarea><br />
 Syntax: &lt;src_addr&gt;[/&lt;mask&gt;] [&lt;dest_addr&gt;[/&lt;mask&gt;]]</p>
 EOF
 

@@ -39,13 +39,13 @@ sec_begin 'VPNC - VPN Client'
 
 cat << EOF
 <h2>VPN Benutzer-Daten</h2>
-<p>IPSec Gruppenname: <input type="text" name="ipsecid" size="15" maxlength="30" value="$(httpd -e "$VPNC_IPSECID")"></p>
-<p>IPSec Gruppenpasswort: <input type="password" name="ipsecsecret" size="15" maxlength="30" value="$(httpd -e "$VPNC_IPSECSECRET")"></p>
-<p>Benutzername: <input type="text" name="xauthusername" size="15" maxlength="40" value="$(httpd -e "$VPNC_XAUTHUSERNAME")"></p>
-<p>Benutzerpasswort: <input type="password" name="xauthpassword" size="15" maxlength="30" value="$(httpd -e "$VPNC_XAUTHPASSWORD")"></p>
+<p>IPSec Gruppenname: <input type="text" name="ipsecid" size="15" maxlength="30" value="$(html "$VPNC_IPSECID")"></p>
+<p>IPSec Gruppenpasswort: <input type="password" name="ipsecsecret" size="15" maxlength="30" value="$(html "$VPNC_IPSECSECRET")"></p>
+<p>Benutzername: <input type="text" name="xauthusername" size="15" maxlength="40" value="$(html "$VPNC_XAUTHUSERNAME")"></p>
+<p>Benutzerpasswort: <input type="password" name="xauthpassword" size="15" maxlength="30" value="$(html "$VPNC_XAUTHPASSWORD")"></p>
 <h2>VPN Server-Daten</h2>
 <p>IP/Name des IPSec Gateway<br>
-IPSec gateway: <input type="text" name="ipsecgateway" size="15" maxlength="30" value="$(httpd -e "$VPNC_IPSECGATEWAY")"> &lt;IP/Name&gt;</p>
+IPSec gateway: <input type="text" name="ipsecgateway" size="15" maxlength="30" value="$(html "$VPNC_IPSECGATEWAY")"> &lt;IP/Name&gt;</p>
 <p>Name der IKE DH Group<br>
 IKE DH Group: 
 <input id="ike1" type="radio" name="ikedhgroup" value="dh1"$ike1_chk><label for="ike1"> dh1</label>
@@ -61,7 +61,7 @@ Perfect Forward Secrecy:
 <input id="pfs5" type="radio" name="perfectforwardsecrecy" value="server"$pfs_server><label for="pfs5"> server</label>
 </p>
 <p>Lokale ISAKMP Portnummer (0 == zuf&auml;llig)<br>
-Local Port: <input type="text" name="localport" size="15" maxlength="15" value="$(httpd -e "$VPNC_LOCALPORT")"> &lt;0-65535&gt;</p>
+Local Port: <input type="text" name="localport" size="15" maxlength="15" value="$(html "$VPNC_LOCALPORT")"> &lt;0-65535&gt;</p>
 <p>IPSEC mit Cisco-UDP Encapsulation nutzen<br>
 UDP Encapsulate:  
 <input id="udpe1" type="radio" name="udpencapsulate" value="yes"$udpenc_on_chk><label for="udpe1"> an</label>
@@ -78,12 +78,12 @@ Disable NAT Traversal:
 <input id="dnt2" type="radio" name="disablenattraversal" value="no"$dis_nat_trav_off_chk><label for="dnt2"> aus</label>
 </p>
 <p>(NT-) Domainname f&uuml;r Authentisierung (optional) <br>
-Domain: <input type="text" name="domain" size="15" maxlength="15" value="$(httpd -e "$VPNC_DOMAIN")"> </p>
+Domain: <input type="text" name="domain" size="15" maxlength="15" value="$(html "$VPNC_DOMAIN")"> </p>
 <p>Hersteller deines IPSec Gateways (optional) <br>
-Vendor: <input type="text" name="vendor" size="15" maxlength="15" value="$(httpd -e "$VPNC_VENDOR")"> </p>
+Vendor: <input type="text" name="vendor" size="15" maxlength="15" value="$(html "$VPNC_VENDOR")"> </p>
 <p>Remote Network f&uuml;r vpnc-script (Tunnel-Route)<br>
-Network: <input type="text" name="network" size="15" maxlength="15" value="$(httpd -e "$VPNC_NETWORK")"><br>
-Mask: <input type="text" name="mask" size="15" maxlength="15" value="$(httpd -e "$VPNC_MASK")"> </p>
+Network: <input type="text" name="network" size="15" maxlength="15" value="$(html "$VPNC_NETWORK")"><br>
+Mask: <input type="text" name="mask" size="15" maxlength="15" value="$(html "$VPNC_MASK")"> </p>
 EOF
 
 sec_end

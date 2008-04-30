@@ -49,9 +49,9 @@ cat << EOF
 <li style="list-style-type: none">
 <p>
 <label for="r2">Host:</label>
-<input id="r2" type="text" name="host" size="20" maxlength="20" value="$(httpd -e "$SYSLOGD_HOST")">
+<input id="r2" type="text" name="host" size="20" maxlength="20" value="$(html "$SYSLOGD_HOST")">
 <label for="r11">Port:</label>
-<input id="r11" type="text" name="port" size="5" maxlength="6" value="$(httpd -e "$SYSLOGD_PORT")"> 
+<input id="r11" type="text" name="port" size="5" maxlength="6" value="$(html "$SYSLOGD_PORT")"> 
 </p>
 </li>
 </ul>
@@ -69,17 +69,17 @@ cat << EOF
 <ul>
 <li style="list-style-type: none">
 <label for="r4">$(lang de:"alternatives Logfile" en:"Log file location"):</label>
-<input id="r4" type="text" name="alternative_logfile" size="30" maxlength="255" value="$(httpd -e "$SYSLOGD_ALTERNATIVE_LOGFILE")">
+<input id="r4" type="text" name="alternative_logfile" size="30" maxlength="255" value="$(html "$SYSLOGD_ALTERNATIVE_LOGFILE")">
 </li>
 <li style="list-style-type: none">
 <p>$(lang de:"Logfiles rotieren" en:"Log file rotation"):</p>
 <ul>
 <li style="list-style-type: none">
 <label for="r5">$(lang de:"maximale Logfilegr&ouml;&szlig;e" en:"Max log file size") (in KB):</label>
-<input id="r5" type="text" name="maxsize" size="6" maxlength="6" value="$(httpd -e "$SYSLOGD_MAXSIZE")"> 
+<input id="r5" type="text" name="maxsize" size="6" maxlength="6" value="$(html "$SYSLOGD_MAXSIZE")"> 
 <br>
 <label for="r10">$(lang de:"Anzahl Logdateien" en:"Max number of logs to keep"):</label>
-<input id="r10" type="text" name="maxfiles" size="2" maxlength="2" value="$(httpd -e "$SYSLOGD_MAXFILES")">
+<input id="r10" type="text" name="maxfiles" size="2" maxlength="2" value="$(html "$SYSLOGD_MAXFILES")">
 </li>
 </ul>
 </li>
@@ -93,7 +93,7 @@ cat << EOF
 <ul>
 <li style="list-style-type: none">
 <label for="r7">$(lang de:"Puffer-Gr&ouml;&szlig;e" en:"") (in KB):</label>
-<input id="r7" type="text" name="buffer_maxsize" size="5" maxlength="255" value="$(httpd -e "$SYSLOGD_BUFFER_MAXSIZE")">
+<input id="r7" type="text" name="buffer_maxsize" size="5" maxlength="255" value="$(html "$SYSLOGD_BUFFER_MAXSIZE")">
 </li>
 </ul>
 </li>
@@ -107,12 +107,12 @@ cat << EOF
 <ul>
 <li style="list-style-type: none">
 <label for="r13">$(lang de:"Loglevel klogd" en:"Kernel Daemon (klogd) loglevel"): </label>
-<input id="r13" type="text" name="klogd_level" size="2" maxlength="1" value="$(httpd -e "$SYSLOGD_KLOGD_LEVEL")">
+<input id="r13" type="text" name="klogd_level" size="2" maxlength="1" value="$(html "$SYSLOGD_KLOGD_LEVEL")">
 </li>
 </ul>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten):" en:"Additional command line options (for experts)")</h2>
 <label for="r8">$(lang de:"Optionen" en:"Options"):</label>
-<input id="r8" type="text" name="expert_options" size="20" maxlength="255" value="$(httpd -e "$SYSLOGD_EXPERT_OPTIONS")">
+<input id="r8" type="text" name="expert_options" size="20" maxlength="255" value="$(html "$SYSLOGD_EXPERT_OPTIONS")">
 
 EOF
 

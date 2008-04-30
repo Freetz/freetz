@@ -45,18 +45,18 @@ value="http://"$http_chk>http://</option>
 </select>
 </td>
 <td>
-<input type="text" name="srvurl" size="30" maxlength="30" value="$(httpd -e "$DOWNLOADER_SRVURL")">
+<input type="text" name="srvurl" size="30" maxlength="30" value="$(html "$DOWNLOADER_SRVURL")">
 </td>
 <td>
-<input type="text" name="srvdir" size="30" maxlength="30" value="$(httpd -e "$DOWNLOADER_SRVDIR")">
+<input type="text" name="srvdir" size="30" maxlength="30" value="$(html "$DOWNLOADER_SRVDIR")">
 </td>
 </tr>
 </table>
 <h2>$(lang de:"Nur für FTP-Server" en:"Only for ftp server"):</h2>
 <p>$(lang de:"Benutzer" en:"User"):
-<input type="text" name="srvusr" size="20" maxlength="30" value="$(httpd -e "$DOWNLOADER_SRVUSR")">
+<input type="text" name="srvusr" size="20" maxlength="30" value="$(html "$DOWNLOADER_SRVUSR")">
 &nbsp;&nbsp;&nbsp;&nbsp;Passwor$(lang de:"t" en:"d"):
-<input type="password" name="srvpwd" size="20" maxlength="30" value="$(httpd -e "$DOWNLOADER_SRVPWD")">
+<input type="password" name="srvpwd" size="20" maxlength="30" value="$(html "$DOWNLOADER_SRVPWD")">
 </p>
 EOF
 sec_end
@@ -64,9 +64,9 @@ sec_begin '$(lang de:"Downloadparameter" en:"Download parameters")'
 
 cat << EOF
 <p>$(lang de:"Wartezeit" en:"Duration"):
-<input type="text" name="twait" size="5" maxlength="5" value="$(httpd -e "$DOWNLOADER_TWAIT")">
+<input type="text" name="twait" size="5" maxlength="5" value="$(html "$DOWNLOADER_TWAIT")">
 &nbsp;Sek. &nbsp;&nbsp;&nbsp;$(lang de:"Wiederholversuche" en:"Number of repeats"):
-<input type="text" name="nrep" size="5" maxlength="5" value="$(httpd -e "$DOWNLOADER_NREP")">
+<input type="text" name="nrep" size="5" maxlength="5" value="$(html "$DOWNLOADER_NREP")">
 </p>
 EOF
 
@@ -82,7 +82,7 @@ cat << EOF
 <td style="font-size:10pt;"><b>$(lang de:"Beispiel" en:"Example"):</b></td><td style="font-size:10pt;">dropbear</td><td style="font-size:10pt;">755</td><td style="font-size:10pt;">/mod/bin</td>
 </tr>
 </table>
-<p><textarea name="files" rows="4" cols="50" maxlength="255">$(httpd -e "$DOWNLOADER_FILES")</textarea></p>
+<p><textarea name="files" rows="4" cols="50" maxlength="255">$(html "$DOWNLOADER_FILES")</textarea></p>
 EOF
 
 sec_end

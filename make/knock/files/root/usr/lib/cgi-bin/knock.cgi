@@ -31,7 +31,7 @@ sec_begin 'Port-Knock Server'
 
 cat << EOF
 <h2>$(lang de:"Der Port-Knock Server hört an:" en:"Knockd server listens on:")</h2>
-<p>Interface: <input type="text" name="interface" size="6" maxlength="8" value="$(httpd -e "$KNOCK_INTERFACE")"></p>
+<p>Interface: <input type="text" name="interface" size="6" maxlength="8" value="$(html "$KNOCK_INTERFACE")"></p>
 EOF
 
 sec_end

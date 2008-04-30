@@ -21,7 +21,7 @@ sec_begin '$(lang de:"Internet 'Superserver' (inetd)" en:"Internet 'super-server
 
 cat << EOF
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
-<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$INETD_OPTIONS")"></p>
+<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(html "$INETD_OPTIONS")"></p>
 EOF
 
 sec_end

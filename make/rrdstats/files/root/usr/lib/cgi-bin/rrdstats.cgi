@@ -41,18 +41,18 @@ sec_end
 sec_begin 'Einstellungen'
 
 cat << EOF
-<p>Tempor&auml;res Verzeichnis:&nbsp;<input type="text" name="rrdtemp" size="45" maxlength="255" value="$(httpd -e "$RRDSTATS_RRDTEMP")"></p>
-<p>Persistentes Verzeichnis:&nbsp;<input type="text" name="rrddata" size="45" maxlength="255" value="$(httpd -e "$RRDSTATS_RRDDATA")"></p>
-<p>Aufzeichnungsintervall in Sekunden:&nbsp;<input type="text" name="interval" size="3" maxlength="9" value="$(httpd -e "$RRDSTATS_INTERVAL")"></p>
+<p>Tempor&auml;res Verzeichnis:&nbsp;<input type="text" name="rrdtemp" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDTEMP")"></p>
+<p>Persistentes Verzeichnis:&nbsp;<input type="text" name="rrddata" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDDATA")"></p>
+<p>Aufzeichnungsintervall in Sekunden:&nbsp;<input type="text" name="interval" size="3" maxlength="9" value="$(html "$RRDSTATS_INTERVAL")"></p>
 <p>
 Dimensionsverh&auml;ltnis der Graphen: 
-<input type="text" name="dimensionx" size="3" maxlength="9" value="$(httpd -e "$RRDSTATS_DIMENSIONX")">
+<input type="text" name="dimensionx" size="3" maxlength="9" value="$(html "$RRDSTATS_DIMENSIONX")">
 :
-<input type="text" name="dimensiony" size="3" maxlength="9" value="$(httpd -e "$RRDSTATS_DIMENSIONY")">
+<input type="text" name="dimensiony" size="3" maxlength="9" value="$(html "$RRDSTATS_DIMENSIONY")">
 </p>
 <p>
-Periode der Hauptseite:&nbsp;<input type="text" name="periodmain" size="2" maxlength="4" value="$(httpd -e "$RRDSTATS_PERIODMAIN")">
-der Unterseiten:&nbsp;<input type="text" name="periodssub" size="22" maxlength="99" value="$(httpd -e "$RRDSTATS_PERIODSSUB")">
+Periode der Hauptseite:&nbsp;<input type="text" name="periodmain" size="2" maxlength="4" value="$(html "$RRDSTATS_PERIODMAIN")">
+der Unterseiten:&nbsp;<input type="text" name="periodssub" size="22" maxlength="99" value="$(html "$RRDSTATS_PERIODSSUB")">
 </p>
 <p>
 Graphen immer neu generieren (not lazy):
@@ -81,9 +81,9 @@ cat << EOF
 
 <p>
 Interface 1:
-&nbsp;<input type="text" name="nice_name1" size="15" maxlength="99" value="$(httpd -e "$RRDSTATS_NICE_NAME1")">
-&nbsp;<input type="text" name="interface1" size="8" maxlength="99" value="$(httpd -e "$RRDSTATS_INTERFACE1")">
-&nbsp;<input type="text" name="max_graph1" size="4" maxlength="99" value="$(httpd -e "$RRDSTATS_MAX_GRAPH1")">
+&nbsp;<input type="text" name="nice_name1" size="15" maxlength="99" value="$(html "$RRDSTATS_NICE_NAME1")">
+&nbsp;<input type="text" name="interface1" size="8" maxlength="99" value="$(html "$RRDSTATS_INTERFACE1")">
+&nbsp;<input type="text" name="max_graph1" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_GRAPH1")">
 <input type="hidden" name="logarithm1" value="no">
 <input id="s1" type="checkbox" name="logarithm1" value="yes"$logarithm1_chk><label for="s1">aktiviert</label>
 <input type="hidden" name="xchg_rxtx1" value="no">
@@ -92,9 +92,9 @@ Interface 1:
 
 <p>
 Interface 2: 
-&nbsp;<input type="text" name="nice_name2" size="15" maxlength="99" value="$(httpd -e "$RRDSTATS_NICE_NAME2")">
-&nbsp;<input type="text" name="interface2" size="8" maxlength="99" value="$(httpd -e "$RRDSTATS_INTERFACE2")">
-&nbsp;<input type="text" name="max_graph2" size="4" maxlength="99" value="$(httpd -e "$RRDSTATS_MAX_GRAPH2")">
+&nbsp;<input type="text" name="nice_name2" size="15" maxlength="99" value="$(html "$RRDSTATS_NICE_NAME2")">
+&nbsp;<input type="text" name="interface2" size="8" maxlength="99" value="$(html "$RRDSTATS_INTERFACE2")">
+&nbsp;<input type="text" name="max_graph2" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_GRAPH2")">
 <input type="hidden" name="logarithm2" value="no">
 <input id="s2" type="checkbox" name="logarithm2" value="yes"$logarithm2_chk><label for="s2">aktiviert</label>
 <input type="hidden" name="xchg_rxtx2" value="no">
@@ -103,9 +103,9 @@ Interface 2:
 
 <p>
 Interface 3:
-&nbsp;<input type="text" name="nice_name3" size="15" maxlength="99" value="$(httpd -e "$RRDSTATS_NICE_NAME3")">
-&nbsp;<input type="text" name="interface3" size="8" maxlength="99" value="$(httpd -e "$RRDSTATS_INTERFACE3")">
-&nbsp;<input type="text" name="max_graph3" size="4" maxlength="99" value="$(httpd -e "$RRDSTATS_MAX_GRAPH3")">
+&nbsp;<input type="text" name="nice_name3" size="15" maxlength="99" value="$(html "$RRDSTATS_NICE_NAME3")">
+&nbsp;<input type="text" name="interface3" size="8" maxlength="99" value="$(html "$RRDSTATS_INTERFACE3")">
+&nbsp;<input type="text" name="max_graph3" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_GRAPH3")">
 <input type="hidden" name="logarithm3" value="no">
 <input id="s3" type="checkbox" name="logarithm3" value="yes"$logarithm3_chk><label for="s3">aktiviert</label>
 <input type="hidden" name="xchg_rxtx3" value="no">
@@ -114,9 +114,9 @@ Interface 3:
 
 <p>
 Interface 4:
-&nbsp;<input type="text" name="nice_name4" size="15" maxlength="99" value="$(httpd -e "$RRDSTATS_NICE_NAME4")">
-&nbsp;<input type="text" name="interface4" size="8" maxlength="99" value="$(httpd -e "$RRDSTATS_INTERFACE4")">
-&nbsp;<input type="text" name="max_graph4" size="4" maxlength="99" value="$(httpd -e "$RRDSTATS_MAX_GRAPH4")">
+&nbsp;<input type="text" name="nice_name4" size="15" maxlength="99" value="$(html "$RRDSTATS_NICE_NAME4")">
+&nbsp;<input type="text" name="interface4" size="8" maxlength="99" value="$(html "$RRDSTATS_INTERFACE4")">
+&nbsp;<input type="text" name="max_graph4" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_GRAPH4")">
 <input type="hidden" name="logarithm4" value="no">
 <input id="s4" type="checkbox" name="logarithm4" value="yes"$logarithm4_chk><label for="s4">aktiviert</label>
 <input type="hidden" name="xchg_rxtx4" value="no">

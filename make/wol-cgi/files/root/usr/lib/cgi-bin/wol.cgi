@@ -31,15 +31,15 @@ sec_begin '$(lang de:"WOL Interface" en:"WOL interface")'
 
 cat << EOF
 <h2>$(lang de:"Port des WOL Webservers" en:"Port of WOL webserver"):</h2>
-<p>Port: <input type="text" name="port" size="5" maxlength="5" value="$(httpd -e "$WOL_PORT")"></p>
+<p>Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$WOL_PORT")"></p>
 EOF
 
 sec_end
 sec_begin '$(lang de:"Zugriff" en:"Access")'
 
 cat << EOF
-<p>$(lang de:"Benutzer" en:"User"): <input type="text" name="user" size="20" maxlength="255" value="$(httpd -e "$WOL_USER")"></p>
-<p>$(lang de:"Passwort" en:"Password"): <input type="password" name="plain_passwd" size="20" maxlength="255" value="$(httpd -e "$WOL_PLAIN_PASSWD")"></p>
+<p>$(lang de:"Benutzer" en:"User"): <input type="text" name="user" size="20" maxlength="255" value="$(html "$WOL_USER")"></p>
+<p>$(lang de:"Passwort" en:"Password"): <input type="password" name="plain_passwd" size="20" maxlength="255" value="$(html "$WOL_PLAIN_PASSWD")"></p>
 EOF
 
 sec_end

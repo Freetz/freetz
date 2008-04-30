@@ -30,11 +30,11 @@ sec_begin '$(lang de:"FTP Server" en:"FTP server")'
 
 cat << EOF
 <h2>$(lang de:"Der FTP Server ist gebunden an" en:"The FTP server is listening on"):</h2>
-<p>Port: <input type="text" name="port" size="5" maxlength="5" value="$(httpd -e "$BFTPD_PORT")"></p>
+<p>Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$BFTPD_PORT")"></p>
 <h2>$(lang de:"Ports f&uuml;r passives FTP, z.B.: 5000,6000-6100" en:"Port range for passive FTP, e.g. 5000,6000-6100"):</h2>
-<p>$(lang de:"Ports" en:"Port range"): <input type="text" name="passive_ports" size="30" maxlength="255" value="$(httpd -e "$BFTPD_PASSIVE_PORTS")"></p>
+<p>$(lang de:"Ports" en:"Port range"): <input type="text" name="passive_ports" size="30" maxlength="255" value="$(html "$BFTPD_PASSIVE_PORTS")"></p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
-<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$BFTPD_OPTIONS")"></p>
+<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(html "$BFTPD_OPTIONS")"></p>
 EOF
 
 sec_end

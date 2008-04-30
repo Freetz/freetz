@@ -27,10 +27,10 @@ sec_end
 sec_begin '$(lang de:"DNS Server" en:"DNS server")'
 cat << EOF
 <h2>$(lang de:"Der DNS Server ist gebunden an" en:"The DNS server is listening on"):</h2>
-<p>Port: <input type="text" name="dns_port" size="5" maxlength="5" value="$(httpd -e "$DNSMASQ_DNS_PORT")"></p>
-<p>$(lang de:"Domain" en:"Domain"): <input type="text" name="domain" size="20" maxlength="255" value="$(httpd -e "$DNSMASQ_DOMAIN")"></p>
+<p>Port: <input type="text" name="dns_port" size="5" maxlength="5" value="$(html "$DNSMASQ_DNS_PORT")"></p>
+<p>$(lang de:"Domain" en:"Domain"): <input type="text" name="domain" size="20" maxlength="255" value="$(html "$DNSMASQ_DOMAIN")"></p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
-<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$DNSMASQ_OPTIONS")"></p>
+<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(html "$DNSMASQ_OPTIONS")"></p>
 EOF
 sec_end
 
@@ -41,7 +41,7 @@ cat << EOF
 <input id="d2" type="radio" name="dhcp" value="no"$dhcp_no_chk><label for="d2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
 </p>
 <h2>$(lang de:"DHCP Range (eine pro Zeile)" en:"DHCP range (one per line)")</h2>
-<p><textarea name="dhcp_range" rows="3" cols="50" maxlength="255">$(httpd -e "$DNSMASQ_DHCP_RANGE")</textarea></p>
+<p><textarea name="dhcp_range" rows="3" cols="50" maxlength="255">$(html "$DNSMASQ_DHCP_RANGE")</textarea></p>
 <p>
 <input type="hidden" name="ethers" value="no">
 <input id="s1" type="checkbox" name="ethers" value="yes"$ethers_chk><label for="s1"> $(lang de:"Statische DHCP Leases aus" en:"Static DHCP leases from") <a href="/cgi-bin/file.cgi?id=exhosts">Hosts</a> (MAC &lt;-&gt; IP)</label><br>
@@ -56,7 +56,7 @@ cat <<EOF
 <input id="p1" type="radio" name="dhcp_boot" value="yes"$dhcp_boot_yes_chk><label for="p1"> $(lang de:"Aktiviert" en:"Enabled")</label>
 <input id="p2" type="radio" name="dhcp_boot" value="no"$dhcp_boot_no_chk><label for="p2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
 </p>
-<p>$(lang de:"boot file" en:"boot file"): <input type="text" name="dhcp_bootfile" size="20" maxlength="255" value="$(httpd -e "$DNSMASQ_DHCP_BOOTFILE")"></p>
+<p>$(lang de:"boot file" en:"boot file"): <input type="text" name="dhcp_bootfile" size="20" maxlength="255" value="$(html "$DNSMASQ_DHCP_BOOTFILE")"></p>
 EOF
 sec_end
 
@@ -66,6 +66,6 @@ cat <<EOF
 <input id="p1" type="radio" name="tftp" value="yes"$tftp_yes_chk><label for="p1"> $(lang de:"Aktiviert" en:"Enabled")</label>
 <input id="p2" type="radio" name="tftp" value="no"$tftp_no_chk><label for="p2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
 </p>
-<p>$(lang de:"tftp root" en:"tftp root"): <input type="text" name="tftp_tftproot" size="40" maxlength="255" value="$(httpd -e "$DNSMASQ_TFTP_TFTPROOT")"></p>
+<p>$(lang de:"tftp root" en:"tftp root"): <input type="text" name="tftp_tftproot" size="40" maxlength="255" value="$(html "$DNSMASQ_TFTP_TFTPROOT")"></p>
 EOF
 sec_end

@@ -7,6 +7,22 @@ html_cat() {
 	done
 } 
 
+# HTML-escape pieces of texts, large ones in a streaming manner
+# (large_text | html; html "$small_value")
+html() {
+	if [ $# -eq 0 ]; then
+		sed -e '
+		    s/&/\&amp;/g
+		    s/</\&lt;/g
+		    s/>/\&gt;/g
+		    s/'\''/\&apos;/g
+		    s/"/\&quot;/g
+		'
+	else
+		httpd -e "$*"
+	fi
+}
+
 _cgi_menu() {
 html_cat << EOF
 <div class="menu">

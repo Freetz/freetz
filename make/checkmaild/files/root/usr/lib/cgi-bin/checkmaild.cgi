@@ -105,28 +105,28 @@ document.write("<p><SELECT NAME='acount' onChange='change(value)'>" +
 "<OPTION VALUE='2'>Account 2</OPTION>" +
 "</SELECT></p>");
 
-document.write("<div id='Account0' style='display:block'><p><label id='Kontoname0' for='r06'>$(lang de:"Kontoname" en:"Name"): </label><input id='r06' type='text' name='user0' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_USER0")'></p>" +
+document.write("<div id='Account0' style='display:block'><p><label id='Kontoname0' for='r06'>$(lang de:"Kontoname" en:"Name"): </label><input id='r06' type='text' name='user0' size='20' maxlength='255' value='$(html "$CHECKMAILD_USER0")'></p>" +
 "<p>$(lang de:"Posteingangsserver" en:"Incoming mail server"): </p>" +
-"<p><label for='r01'>$(lang de:"POP3-Server" en:"POP3 Server"): </label><input id='r01' type='text' name='popserver0' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_POPSERVER0")'>" +
-"<label for='r02'> $(lang de:"IMAP-Server" en:"IMAP Server"): </label><input id='r02' type='text' name='imapserver0' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_IMAPSERVER0")'></p>" +
-"<p><label for='r03'>$(lang de:"Benutzername" en:"Username"): </label><input id='r03' type='text' name='username0' size='30' maxlength='255' value='$(httpd -e "$CHECKMAILD_USERNAME0")'></p>" +
-"<p><label for='r04'>$(lang de:"Kennwort" en:"Password"): </label><input id='r04' type='password' name='password0' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_PASSWORD0")'></p>" + 
+"<p><label for='r01'>$(lang de:"POP3-Server" en:"POP3 Server"): </label><input id='r01' type='text' name='popserver0' size='20' maxlength='255' value='$(html "$CHECKMAILD_POPSERVER0")'>" +
+"<label for='r02'> $(lang de:"IMAP-Server" en:"IMAP Server"): </label><input id='r02' type='text' name='imapserver0' size='20' maxlength='255' value='$(html "$CHECKMAILD_IMAPSERVER0")'></p>" +
+"<p><label for='r03'>$(lang de:"Benutzername" en:"Username"): </label><input id='r03' type='text' name='username0' size='30' maxlength='255' value='$(html "$CHECKMAILD_USERNAME0")'></p>" +
+"<p><label for='r04'>$(lang de:"Kennwort" en:"Password"): </label><input id='r04' type='password' name='password0' size='20' maxlength='255' value='$(html "$CHECKMAILD_PASSWORD0")'></p>" + 
 "</div>");
 
-document.write("<div id='Account1' style='display:none'><p><label id='Kontoname1' for='r16'>$(lang de:"Kontoname" en:"Name"): </label><input id='r16' type='text' name='user1' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_USER1")'></p>" +
+document.write("<div id='Account1' style='display:none'><p><label id='Kontoname1' for='r16'>$(lang de:"Kontoname" en:"Name"): </label><input id='r16' type='text' name='user1' size='20' maxlength='255' value='$(html "$CHECKMAILD_USER1")'></p>" +
 "<p>$(lang de:"Posteingangsserver" en:"Incoming mail server"): </p>" +
-"<p><label for='r11'>$(lang de:"POP3-Server" en:"POP3 Server"): </label><input id='r11' type='text' name='popserver1' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_POPSERVER1")'>" +
-"<label for='r12'> $(lang de:"IMAP-Server" en:"IMAP Server"): </label><input id='r12' type='text' name='imapserver1' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_IMAPSERVER1")'></p>" +
-"<p><label for='r13'>$(lang de:"Benutzername" en:"Username"): </label><input id='r13' type='text' name='username1' size='30' maxlength='255' value='$(httpd -e "$CHECKMAILD_USERNAME1")'></p>" +
-"<p><label for='r14'>$(lang de:"Kennwort" en:"Password"): </label><input id='r14' type='password' name='password1' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_PASSWORD1")'></p>" + 
+"<p><label for='r11'>$(lang de:"POP3-Server" en:"POP3 Server"): </label><input id='r11' type='text' name='popserver1' size='20' maxlength='255' value='$(html "$CHECKMAILD_POPSERVER1")'>" +
+"<label for='r12'> $(lang de:"IMAP-Server" en:"IMAP Server"): </label><input id='r12' type='text' name='imapserver1' size='20' maxlength='255' value='$(html "$CHECKMAILD_IMAPSERVER1")'></p>" +
+"<p><label for='r13'>$(lang de:"Benutzername" en:"Username"): </label><input id='r13' type='text' name='username1' size='30' maxlength='255' value='$(html "$CHECKMAILD_USERNAME1")'></p>" +
+"<p><label for='r14'>$(lang de:"Kennwort" en:"Password"): </label><input id='r14' type='password' name='password1' size='20' maxlength='255' value='$(html "$CHECKMAILD_PASSWORD1")'></p>" + 
 "</div>");
 
-document.write("<div id='Account2' style='display:none'><p><label id='Kontoname2' for='r16'>$(lang de:"Kontoname" en:"Name"): </label><input id='r16' type='text' name='user2' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_USER2")'></p>" +
+document.write("<div id='Account2' style='display:none'><p><label id='Kontoname2' for='r16'>$(lang de:"Kontoname" en:"Name"): </label><input id='r16' type='text' name='user2' size='20' maxlength='255' value='$(html "$CHECKMAILD_USER2")'></p>" +
 "<p>$(lang de:"Posteingangsserver" en:"Incoming mail server"): </p>" +
-"<p><label for='r21'>$(lang de:"POP3-Server" en:"POP3 Server"): </label><input id='r21' type='text' name='popserver2' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_POPSERVER2")'>" +
-"<label for='r22'> $(lang de:"IMAP-Server" en:"IMAP Server"): </label><input id='r22' type='text' name='imapserver2' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_IMAPSERVER2")'></p>" +
-"<p><label for='r23'>$(lang de:"Benutzername" en:"Username"): </label><input id='r23' type='text' name='username2' size='30' maxlength='255' value='$(httpd -e "$CHECKMAILD_USERNAME2")'></p>" +
-"<p><label for='r24'>$(lang de:"Kennwort" en:"Password"): </label><input id='r24' type='password' name='password2' size='20' maxlength='255' value='$(httpd -e "$CHECKMAILD_PASSWORD2")'></p>" +
+"<p><label for='r21'>$(lang de:"POP3-Server" en:"POP3 Server"): </label><input id='r21' type='text' name='popserver2' size='20' maxlength='255' value='$(html "$CHECKMAILD_POPSERVER2")'>" +
+"<label for='r22'> $(lang de:"IMAP-Server" en:"IMAP Server"): </label><input id='r22' type='text' name='imapserver2' size='20' maxlength='255' value='$(html "$CHECKMAILD_IMAPSERVER2")'></p>" +
+"<p><label for='r23'>$(lang de:"Benutzername" en:"Username"): </label><input id='r23' type='text' name='username2' size='30' maxlength='255' value='$(html "$CHECKMAILD_USERNAME2")'></p>" +
+"<p><label for='r24'>$(lang de:"Kennwort" en:"Password"): </label><input id='r24' type='password' name='password2' size='20' maxlength='255' value='$(html "$CHECKMAILD_PASSWORD2")'></p>" +
 "</div>");
 </script>
 EOF
@@ -137,7 +137,7 @@ sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
 
 cat << EOF
 <input type='hidden' name='lednotify' value='N'>
-<p><label for='r31'>$(lang de:"Postfach alle" en:"Check mailbox every")  </label><input id='r31' type='text' name='intervall' size='3' maxlength='255' value='$(httpd -e "$CHECKMAILD_INTERVALL")'> $(lang de:"Minuten auf neue Mails &uuml;berpr&uuml;fen" en:"minutes")</p>
+<p><label for='r31'>$(lang de:"Postfach alle" en:"Check mailbox every")  </label><input id='r31' type='text' name='intervall' size='3' maxlength='255' value='$(html "$CHECKMAILD_INTERVALL")'> $(lang de:"Minuten auf neue Mails &uuml;berpr&uuml;fen" en:"minutes")</p>
 <p><label for='r32'>$(lang de:"Signalisierung" en:"Notification by"): </label> <input id='r32' type='checkbox' name='lednotify' value='Y'$led_not>
 <SELECT ID='r32' NAME='ledmajor'>
 <OPTION VALUE='1'$pow_sel>Power-LED</OPTION>
@@ -161,9 +161,9 @@ sec_begin '$(lang de:"Telefonbenachrichtigung" en:"Telephone notification")'
 cat << EOF
 <input type='hidden' name='telnot' value='N'>
 <p><label for='r7'>$(lang de:"Telefonbenachrichtigung einschalten" en:"Enable telephone notification")  </label><input id='r7' type='checkbox' name='telnot' value='Y'$tel_not></p>
-<p><label for='r8'>$(lang de:"Sip-Account" en:"Sip account"):  </label><input id='r8' type='text' name='sipaccount' size='3' maxlength='3' value='$(httpd -e "$CHECKMAILD_SIPACCOUNT")'></p>
-<p><label for='r9'>$(lang de:"Telefonnummer" en:"Telephone number"): </label><input id='r9' type='text' name='phonenumber' size='15' maxlength='15' value='$(httpd -e "$CHECKMAILD_PHONENUMBER")'></p>
-<p><label for='r9'>$(lang de:"Nebenstellen-Nummer" en:"Substation"): </label><input id='r9' type='text' name='substation' size='1' maxlength='2' value='$(httpd -e "$CHECKMAILD_SUBSTATION")'></p>
+<p><label for='r8'>$(lang de:"Sip-Account" en:"Sip account"):  </label><input id='r8' type='text' name='sipaccount' size='3' maxlength='3' value='$(html "$CHECKMAILD_SIPACCOUNT")'></p>
+<p><label for='r9'>$(lang de:"Telefonnummer" en:"Telephone number"): </label><input id='r9' type='text' name='phonenumber' size='15' maxlength='15' value='$(html "$CHECKMAILD_PHONENUMBER")'></p>
+<p><label for='r9'>$(lang de:"Nebenstellen-Nummer" en:"Substation"): </label><input id='r9' type='text' name='substation' size='1' maxlength='2' value='$(html "$CHECKMAILD_SUBSTATION")'></p>
 
 EOF
 

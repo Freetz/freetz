@@ -196,19 +196,19 @@ document.write("<div id='Acount0' style='display:block'>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r05'>Custom URL : </label></td>" +
-    "<td><input id='r05' type='text' name='url0' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL0")'></td>" +
+    "<td><input id='r05' type='text' name='url0' size='45' maxlength='255' value='$(html "$INADYN_URL0")'></td>" +
   "</tr><tr>" +
     "<td><label for='r01'>Username : </label></td>" +
-    "<td><input id='r01' type='text' name='user0' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER0")'></td>" +
+    "<td><input id='r01' type='text' name='user0' size='45' maxlength='255' value='$(html "$INADYN_USER0")'></td>" +
   "</tr><tr>" +
     "<td><label for='r02'>Passwort : </label></td>" +
-    "<td><input id='r02' type='password' name='pass0' size='45' maxlength='255' value='$(httpd -e "$INADYN_PASS0")'></td>" +
+    "<td><input id='r02' type='password' name='pass0' size='45' maxlength='255' value='$(html "$INADYN_PASS0")'></td>" +
   "</tr><tr>" +
     "<td><label for='r03'>Alias : </label></td>" +
-    "<td><input id='r03' type='text' name='alias0' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS0")'></td>" +
+    "<td><input id='r03' type='text' name='alias0' size='45' maxlength='255' value='$(html "$INADYN_ALIAS0")'></td>" +
   "</tr><tr>" +
     "<td><label for='r04'>Optionen : </label></td>" + 
-    "<td><input id='r04' type='text' name='options0' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS0")'></td>" + 
+    "<td><input id='r04' type='text' name='options0' size='45' maxlength='255' value='$(html "$INADYN_OPTIONS0")'></td>" + 
   "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active0' value='no'><input id='a0' type='checkbox' name='active0' value='yes'$active_chk0><label for='a0'> Account aktiv</label></p>" +
@@ -229,19 +229,19 @@ document.write("<div id='Acount1' style='display:none'>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r15'>Custom URL : </label></td>" +
-    "<td><input id='r15' type='text' name='url1' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL1")'></td>" +
+    "<td><input id='r15' type='text' name='url1' size='45' maxlength='255' value='$(html "$INADYN_URL1")'></td>" +
   "</tr><tr>" +
     "<td><label for='r11'>Username : </label></td>" +
-    "<td><input id='r11' type='text' name='user1' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER1")'></td>" +
+    "<td><input id='r11' type='text' name='user1' size='45' maxlength='255' value='$(html "$INADYN_USER1")'></td>" +
   "</tr><tr>" +
     "<td><label for='r12'>Passwort : </label></td>" +
-    "<td><input id='r12' type='password' name='pass1' size='45' maxlength='255' value='$(httpd -e "$INADYN_PASS1")'></td>" +
+    "<td><input id='r12' type='password' name='pass1' size='45' maxlength='255' value='$(html "$INADYN_PASS1")'></td>" +
   "</tr><tr>" +
     "<td><label for='r13'>Alias : </label></td>" +
-    "<td><input id='r13' type='text' name='alias1' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS1")'></td>" +
+    "<td><input id='r13' type='text' name='alias1' size='45' maxlength='255' value='$(html "$INADYN_ALIAS1")'></td>" +
   "</tr><tr>" +
     "<td><label for='r14'>Optionen : </label></td>" + 
-    "<td><input id='r14' type='text' name='options1' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS1")'></td>" + 
+    "<td><input id='r14' type='text' name='options1' size='45' maxlength='255' value='$(html "$INADYN_OPTIONS1")'></td>" + 
   "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active1' value='no'><input id='a1' type='checkbox' name='active1' value='yes'$active_chk1><label for='a1'> Account aktiv</label></p>" +
@@ -262,19 +262,19 @@ document.write("<div id='Acount2' style='display:none'>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r25'>Custom URL : </label></td>" +
-    "<td><input id='r25' type='text' name='url2' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL2")'></td>" +
+    "<td><input id='r25' type='text' name='url2' size='45' maxlength='255' value='$(html "$INADYN_URL2")'></td>" +
   "</tr><tr>" +
     "<td><label for='r21'>Username : </label></td>" +
-    "<td><input id='r21' type='text' name='user2' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER2")'></td>" +
+    "<td><input id='r21' type='text' name='user2' size='45' maxlength='255' value='$(html "$INADYN_USER2")'></td>" +
   "</tr><tr>" +
     "<td><label for='r22'>Passwort : </label></td>" +
-    "<td><input id='r22' type='password' name='pass2' size='45' maxlength='255' value='$(httpd -e "$INADYN_PASS2")'></td>" +
+    "<td><input id='r22' type='password' name='pass2' size='45' maxlength='255' value='$(html "$INADYN_PASS2")'></td>" +
   "</tr><tr>" +
     "<td><label for='r23'>Alias : </label></td>" +
-    "<td><input id='r23' type='text' name='alias2' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS2")'></td>" +
+    "<td><input id='r23' type='text' name='alias2' size='45' maxlength='255' value='$(html "$INADYN_ALIAS2")'></td>" +
   "</tr><tr>" +
     "<td><label for='r24'>Optionen : </label></td>" + 
-    "<td><input id='r24' type='text' name='options2' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS2")'></td>" + 
+    "<td><input id='r24' type='text' name='options2' size='45' maxlength='255' value='$(html "$INADYN_OPTIONS2")'></td>" + 
   "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active2' value='no'><input id='a2' type='checkbox' name='active2' value='yes'$active_chk2><label for='a2'> Account aktiv</label></p>" +
@@ -296,19 +296,19 @@ document.write("<div id='Acount3' style='display:none'>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r35'>Custom URL : </label></td>" +
-    "<td><input id='r35' type='text' name='url3' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL3")'></td>" +
+    "<td><input id='r35' type='text' name='url3' size='45' maxlength='255' value='$(html "$INADYN_URL3")'></td>" +
   "</tr><tr>" +
     "<td><label for='r31'>Username : </label></td>" +
-    "<td><input id='r31' type='text' name='user3' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER3")'></td>" +
+    "<td><input id='r31' type='text' name='user3' size='45' maxlength='255' value='$(html "$INADYN_USER3")'></td>" +
   "</tr><tr>" +
     "<td><label for='r32'>Passwort : </label></td>" +
-    "<td><input id='r32' type='password' name='pass3' size='45' maxlength='255' value='$(httpd -e "$INADYN_PASS3")'></td>" +
+    "<td><input id='r32' type='password' name='pass3' size='45' maxlength='255' value='$(html "$INADYN_PASS3")'></td>" +
   "</tr><tr>" +
     "<td><label for='r33'>Alias : </label></td>" +
-    "<td><input id='r33' type='text' name='alias3' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS3")'></td>" +
+    "<td><input id='r33' type='text' name='alias3' size='45' maxlength='255' value='$(html "$INADYN_ALIAS3")'></td>" +
   "</tr><tr>" +
     "<td><label for='r34'>Optionen : </label></td>" + 
-    "<td><input id='r34' type='text' name='options3' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS3")'></td>" + 
+    "<td><input id='r34' type='text' name='options3' size='45' maxlength='255' value='$(html "$INADYN_OPTIONS3")'></td>" + 
   "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active3' value='no'><input id='a3' type='checkbox' name='active3' value='yes'$active_chk3><label for='a3'> Account aktiv</label></p>" +
@@ -330,19 +330,19 @@ document.write("<div id='Acount4' style='display:none'>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r45'>Custom URL : </label></td>" +
-    "<td><input id='r45' type='text' name='url4' size='45' maxlength='255' value='$(httpd -e "$INADYN_URL4")'></td>" +
+    "<td><input id='r45' type='text' name='url4' size='45' maxlength='255' value='$(html "$INADYN_URL4")'></td>" +
   "</tr><tr>" +
     "<td><label for='r41'>Username : </label></td>" +
-    "<td><input id='r41' type='text' name='user4' size='45' maxlength='255' value='$(httpd -e "$INADYN_USER4")'></td>" +
+    "<td><input id='r41' type='text' name='user4' size='45' maxlength='255' value='$(html "$INADYN_USER4")'></td>" +
   "</tr><tr>" +
     "<td><label for='r42'>Passwort : </label></td>" +
-    "<td><input id='r42' type='password' name='pass4' size='45' maxlength='255' value='$(httpd -e "$INADYN_PASS4")'></td>" +
+    "<td><input id='r42' type='password' name='pass4' size='45' maxlength='255' value='$(html "$INADYN_PASS4")'></td>" +
   "</tr><tr>" +
     "<td><label for='r43'>Alias : </label></td>" +
-    "<td><input id='r43' type='text' name='alias4' size='45' maxlength='255' value='$(httpd -e "$INADYN_ALIAS4")'></td>" +
+    "<td><input id='r43' type='text' name='alias4' size='45' maxlength='255' value='$(html "$INADYN_ALIAS4")'></td>" +
   "</tr><tr>" +
     "<td><label for='r44'>Optionen : </label></td>" + 
-    "<td><input id='r44' type='text' name='options4' size='45' maxlength='255' value='$(httpd -e "$INADYN_OPTIONS4")'></td>" + 
+    "<td><input id='r44' type='text' name='options4' size='45' maxlength='255' value='$(html "$INADYN_OPTIONS4")'></td>" + 
   "</tr>" + 
 "</table>" + 
 "<p><input type='hidden' name='active4' value='no'><input id='a4' type='checkbox' name='active4' value='yes'$active_chk4><label for='a4'> Account aktiv</label></p>" +

@@ -6,8 +6,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 VERSION="1.0.4"
 
 # HTML QUERY STRING for remove option
-IPTABLES_DELETE_CHAIN="$(echo httpd -e "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*chain=//g' | sed -e 's/&.*//g')"
-IPTABLES_DELETE_RULE="$(echo httpd -e "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*remove=//g')"
+IPTABLES_DELETE_CHAIN="$(echo "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*chain=//g' | sed -e 's/&.*//g')"
+IPTABLES_DELETE_RULE="$(echo "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*remove=//g')"
 
 # Deleting Rule
 if [ $IPTABLES_DELETE_CHAIN ] && [ $IPTABLES_DELETE_RULE ]; then
@@ -52,8 +52,8 @@ done
 cat << EOF
 </select></td/</tr>
 <tr><td>Position (ID)</td><td colspan="2"><input type="text" name="position" size="4" maxlength="6"> (only for Insert!)</tr>
-<tr><td>Source Address</td><td><input type="text" name="source" size="20" maxlength="18" value="$(httpd -e "$IPTABLES_SOURCE")"></td><td>Port <input type="text" name="sport" size="5" maxlength="6" value="ANY"></td></tr>
-<tr><td>Destination Address</td><td><input type="text" name="destination" size="20" maxlength="18" value="$(httpd -e "$IPTABLES_DESTINATION")"></td>
+<tr><td>Source Address</td><td><input type="text" name="source" size="20" maxlength="18" value="$(html "$IPTABLES_SOURCE")"></td><td>Port <input type="text" name="sport" size="5" maxlength="6" value="ANY"></td></tr>
+<tr><td>Destination Address</td><td><input type="text" name="destination" size="20" maxlength="18" value="$(html "$IPTABLES_DESTINATION")"></td>
 <td>Port <select name="dport">
 <option title="dport" value="ANY">ANY</option>
 EOF

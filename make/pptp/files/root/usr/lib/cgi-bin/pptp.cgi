@@ -34,19 +34,19 @@ sec_end
 sec_begin '$(lang de:"PPTP Konfiguration" en:"PPTP configuration")'
 
 cat << EOF
-<p>$(lang de:"Hostname/IP-Adresse" en:"Hostname/IP address"): <input type="text" name="address" size="35" maxlength="255" value="$(httpd -e "$PPTP_ADDRESS")"></p>
-<p>$(lang de:"Benutzername" en:"Username"): <input type="text" name="user" size="15" maxlength="20" value="$(httpd -e "$PPTP_USER")"></p>
-<p>$(lang de:"Servername" en:"Servername"): <input type="text" name="servername" size="15" maxlength="20" value="$(httpd -e "$PPTP_SERVERNAME")"></p>
+<p>$(lang de:"Hostname/IP-Adresse" en:"Hostname/IP address"): <input type="text" name="address" size="35" maxlength="255" value="$(html "$PPTP_ADDRESS")"></p>
+<p>$(lang de:"Benutzername" en:"Username"): <input type="text" name="user" size="15" maxlength="20" value="$(html "$PPTP_USER")"></p>
+<p>$(lang de:"Servername" en:"Servername"): <input type="text" name="servername" size="15" maxlength="20" value="$(html "$PPTP_SERVERNAME")"></p>
 EOF
 
 sec_end
 sec_begin '$(lang de:"Zus&auml;tzliche Einstellungen" en:"Additional configuration")'
 
 cat << EOF
-<p>$(lang de:"Kommandozeilen-Optionen" en:"Commandline options"): <input type="text" name="options" size="24" maxlength="255" value="$(httpd -e "$PPTP_OPTIONS")"></p>
+<p>$(lang de:"Kommandozeilen-Optionen" en:"Commandline options"): <input type="text" name="options" size="24" maxlength="255" value="$(html "$PPTP_OPTIONS")"></p>
 <p><input type="hidden" name="restart" value="no">
 <input id="s1" type="checkbox" name="restart" value="yes"$restart_chk><label for="s1">$(lang de:"Reconnect bei Verbindungsabbruch" en:"Reconnect on disconnect")</label></p>
-<p>$(lang de:"Befehl vor Verbindungsaufbau" en:"Preconnecting command"): <input type="text" name="preconn" size="35" maxlength="255" value="$(httpd -e "$PPTP_PRECONN")"><p>
+<p>$(lang de:"Befehl vor Verbindungsaufbau" en:"Preconnecting command"): <input type="text" name="preconn" size="35" maxlength="255" value="$(html "$PPTP_PRECONN")"><p>
 EOF
 
 sec_end
@@ -61,7 +61,7 @@ cat << EOF
 <h2>$(lang de:"Netz-Routing: (eines pro Zeile)" en:"Subnet routing (one per row)")</h2>
 <small style="font-size:0.8em">$(lang de:"Syntax: &lt;Netz-IP&gt; &lt;Netz-Mask&gt; [&lt;Kommentar&gt;]" en:"Syntax: &lt;Subnet-IP&gt; &lt;Subnetmask&gt; [&lt;Comment&gt;]")<br>
 ($(lang de:"z.B." en:"example"): 192.168.178.0 255.255.255.0 $(lang de:"Server-Netz" en:"server_subnet"))</small><br>
-<textarea name="net_routing" rows="3" cols="50" maxlength="255">$(httpd -e "$PPTP_NET_ROUTING")</textarea>
+<textarea name="net_routing" rows="3" cols="50" maxlength="255">$(html "$PPTP_NET_ROUTING")</textarea>
 EOF
 
 sec_end

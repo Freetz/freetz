@@ -39,14 +39,14 @@ sec_begin '$(lang de:"SSH Server" en:"SSH server")'
 
 cat << EOF
 <h2>$(lang de:"Der SSH Server ist gebunden an" en:"The SSH server is listening on"):</h2>
-<p>Port: <input type="text" name="port" size="5" maxlength="5" value="$(httpd -e "$DROPBEAR_PORT")"></p>
+<p>Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$DROPBEAR_PORT")"></p>
 <h2>$(lang de:"Passwort Login" en:"Passwort login"):</h2>
 <p>
 <input id="p1" type="radio" name="pwdauth" value="yes"$pwdauth_yes_chk><label for="p1"> $(lang de:"Aktiviert" en:"Enabled")</label>
 <input id="p2" type="radio" name="pwdauth" value="no"$pwdauth_no_chk><label for="p2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
 </p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
-<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(httpd -e "$DROPBEAR_OPTIONS")"></p>
+<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(html "$DROPBEAR_OPTIONS")"></p>
 EOF
 
 sec_end

@@ -13,7 +13,7 @@ cat << EOF
 for="e1"> $(lang de:"Automatisch" en:"Automatic")</label><input id="e2" type="radio"
 name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label></p>
 <p>$(lang de:"Startverz&ouml;gerung (Sekunden)" en:"Start delay (seconds)"): <input id="autostartdelay"
-size="4" maxlength="3" type="text" name="autostartdelay" value="$(httpd -e "$BIRD_AUTOSTARTDELAY")"><br />
+size="4" maxlength="3" type="text" name="autostartdelay" value="$(html "$BIRD_AUTOSTARTDELAY")"><br />
 <small>$(lang de:"Bezieht sich nur auf den Starttyp 'Automatisch'. Gibt z.B. OpenVPN die
 Chance, den/die VPN-Tunnel aufzubauen." en:"Only applies for start type 'automatic'. Gives e.g. OpenVPN a chance to
 establish VPN tunnels")</small></p>

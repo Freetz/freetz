@@ -22,8 +22,8 @@ sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
 cat << EOF
 <h2>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings"):</h2>
-<p>$(lang de:"OpenSSL Optionen" en:"OpenSSL options"): <input id="ssloptions" type="text" name="ssloptions" size="20" maxlength="255" value="$(httpd -e "$STUNNEL_SSLOPTIONS")"></p>
-<p>$(lang de:"Log-Level" en:"Verbosity level"): <input id="verbose" type="text" name="verbose" size="20" maxlength="50" value="$(httpd -e "$STUNNEL_VERBOSE")"></p>
+<p>$(lang de:"OpenSSL Optionen" en:"OpenSSL options"): <input id="ssloptions" type="text" name="ssloptions" size="20" maxlength="255" value="$(html "$STUNNEL_SSLOPTIONS")"></p>
+<p>$(lang de:"Log-Level" en:"Verbosity level"): <input id="verbose" type="text" name="verbose" size="20" maxlength="50" value="$(html "$STUNNEL_VERBOSE")"></p>
 EOF
 sec_end
 sec_begin '$(lang de:"Dienste" en:"Services")'

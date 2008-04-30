@@ -25,7 +25,7 @@ sec_end
 sec_begin 'Proxy-Konfiguration'
 
 cat << EOF
-<p>Port des Proxyservers: <input id="port" type="text" name="port" value="$(httpd -e "$TINYPROXY_PORT")"></p>
+<p>Port des Proxyservers: <input id="port" type="text" name="port" value="$(html "$TINYPROXY_PORT")"></p>
 <p><input id="catchall1" type="hidden" name="catchall" value="no" />
 <input id="catchall2" type="checkbox" name="catchall" value="yes"$catchall_chk><label for="catchall2">Proxy erzwingen</label></p>
 EOF
@@ -34,7 +34,7 @@ sec_end
 sec_begin 'Konfigurationsserver Einstellungen'
 
 cat << EOF
-<p>Port des Konfigurationsservers: <input id="confserverport" type="text" name="confserverport" value="$(httpd -e "$TINYPROXY_CONFSERVERPORT")"></p>
+<p>Port des Konfigurationsservers: <input id="confserverport" type="text" name="confserverport" value="$(html "$TINYPROXY_CONFSERVERPORT")"></p>
 <p><input id="confserver1" type="hidden" name="confserver" value="no" />
 <input id="confserver2" type="checkbox" name="confserver" value="yes"$confserver_chk><label for="confserver2">Konfigurationsserver aktivieren</label></p>
 EOF

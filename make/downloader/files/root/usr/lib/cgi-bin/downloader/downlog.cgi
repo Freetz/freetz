@@ -33,7 +33,7 @@ EOF
 else
 	if [ -r "$DOWNLOGFILE" ]; then
 		echo -n '<pre style="width: 500px; overflow: auto;">'
-		httpd -e "$(cat "$DOWNLOGFILE")"
+		html < "$DOWNLOGFILE"
 		echo '</pre>'
 		echo -n "<div class="btn"><form class="btn" action="$SELF"><input type="hidden" name="cmd" value="remove"><input type="submit" value='$(lang de:"Protokolldatei löschen" en:"Delete log file")'></form></div>"
 	else

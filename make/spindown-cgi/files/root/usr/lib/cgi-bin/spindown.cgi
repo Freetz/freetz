@@ -23,10 +23,10 @@ sec_begin '$(lang de:"Optionen" en:"Options")'
 cat << EOF
 <p><label for="device">$(lang de:"Ger&auml;tename" en:"Device name"):</label> <input
 id="device" size="10" maxlength="15" type="text" name="device"
-value="$(httpd -e "$SPINDOWN_DEVICE")"></p>
+value="$(html "$SPINDOWN_DEVICE")"></p>
 <p><label for="idletime">$(lang de:"Leerlaufzeit" en:"Idle time"):</label> <input
 id="idletime" size="5" maxlength="8" type="text" name="idletime"
-value="$(httpd -e "$SPINDOWN_IDLETIME")"> $(lang de:"Sekunden" en:"seconds")</p>
+value="$(html "$SPINDOWN_IDLETIME")"> $(lang de:"Sekunden" en:"seconds")</p>
 <p>$(lang de:"Modus" en:"Mode"): <input id="p1" type="radio" name="mode" value="3"$mode3_chk> <label
 for="p1">Standby</label></input>
 <input id="p2" type="radio" name="mode" value="5"$mode5_chk> <label

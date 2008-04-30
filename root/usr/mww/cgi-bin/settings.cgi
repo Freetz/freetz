@@ -43,7 +43,7 @@ html_cat << EOF
 <input id="s2" type="radio" name="swap" value="no"$swap_man_chk><label for="s2"> $(lang de:"Manuell" en:"Manual")</label>
 </p>
 <h2>Swap ($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)</h2>
-<p>Swap: <input type="text" name="swap_file" size="50" maxlength="50" value="$(httpd -e "$MOD_SWAP_FILE")"></p>
+<p>Swap: <input type="text" name="swap_file" size="50" maxlength="50" value="$(html "$MOD_SWAP_FILE")"></p>
 EOF
 
 sec_end
@@ -80,7 +80,7 @@ EOF
 fi
 html_cat << EOF
 </p>
-<p>$(lang de:"Port der Weboberfl&auml;che" en:"Port of webinterface"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(httpd -e "$MOD_HTTPD_PORT")"></p>
+<p>$(lang de:"Port der Weboberfl&auml;che" en:"Port of webinterface"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(html "$MOD_HTTPD_PORT")"></p>
 <h1>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h1>
 <p>
 $(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
@@ -89,7 +89,7 @@ $(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
 <input type="hidden" name="mounted_main" value="no">
 <input id="a1" type="checkbox" name="mounted_main" value="yes"$mounted_main_chk><label for="a1">$(lang de:"Hauptseite" en:"Mainpage")</label>
 </p>
-<p>$(lang de:"Breite des Freetz-Webinterfaces" en:"Width of the Freetz webinterface"): <input type="text" name="cgi_width" size="4" maxlength="4" value="$(httpd -e "$MOD_CGI_WIDTH")"></p>
+<p>$(lang de:"Breite des Freetz-Webinterfaces" en:"Width of the Freetz webinterface"): <input type="text" name="cgi_width" size="4" maxlength="4" value="$(html "$MOD_CGI_WIDTH")"></p>
 EOF
 
 sec_end
