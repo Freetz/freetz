@@ -399,7 +399,7 @@ config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on \
 			FREETZ_SHOW_ADVANCED && \
-			! FREETZ_TYPE_LABOR && \
+			! (FREETZ_TYPE_LABOR && ! FREETZ_TYPE_LABOR_VPN) && \
 			! FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
