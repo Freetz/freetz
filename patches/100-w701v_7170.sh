@@ -32,24 +32,18 @@ mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc
 ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/tcom"
 ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/congstar"
 
-echo2 "patching rc.S and rc.init"
+echo2 "patching rc.S and rc.conf"
 sed -i -e "s/piglet_bitfile_offset=0 /piglet_bitfile_offset=0x51 /" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 sed -i -e "s/piglet_irq_gpio=18 /piglet_enable_button2=1 /" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 sed -i -e "/modprobe Piglet piglet_bitfile.*$/i \
 piglet_load_params=\"\$piglet_load_params piglet_enable_switch=1\"" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 sed -i -e "/piglet_irq=9.*$/d" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
-if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
-	sed -i -e "s/setvariable var:isIsdnNT 1/setvariable var:isIsdnNT 0/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-	sed -i -e "s/setvariable var:isUsb\([^ ]*\) 1/setvariable var:isUsb\1 0/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-	sed -i -e "s/^HW=94/HW=101/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-	sed -i -e "s/PRODUKT_NAME=.*$/PRODUKT_NAME=FRITZ!Box#Fon#Speedport#W#701V/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-	sed -i -e "s/PRODUKT=.*$/PRODUKT=Fritz_Box_SpeedportW701V/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
-else
-	sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-	sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-	sed -i -e "s/CONFIG_CAPI_NT=\"y\"/CONFIG_CAPI_NT=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-fi
+sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_CAPI_NT=\"y\"/CONFIG_CAPI_NT=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ar7_8MB_xilinx_4eth_3ab_isdn_nt_te_pots_wlan_usb_host_25762\"/g" "${FILESYSTEM_MOD_DIR}/etc/in
+
 
 echo2 "patching webinterface"
 sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/fon/sip1.js"
@@ -85,3 +79,7 @@ case $OEM in\
  ;;\
 esac|' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
+
+# patch install script to accept firmware from FBF or Speedport
+echo1 "applying install patch"
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W701V_7170.patch" || exit 2

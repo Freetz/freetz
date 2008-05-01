@@ -41,7 +41,7 @@ ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW900V"
 ln -sf avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW900V/tcom"
 
-echo2 "patching rc.S and rc.init"
+echo2 "patching rc.S and rc.conf"
 sed -i -e "s/microvoip_top.bit/microvoip_isdn_top.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 sed -i -e "s/piglet_bitfile_offset=0 /piglet_bitfile_offset=0x51 /" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 sed -i -e '/modprobe Piglet piglet_bitfile.*$/i \
@@ -55,6 +55,8 @@ sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedpo
 sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_DECT=.*$/CONFIG_DECT=\"y\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_DECT_ONOFF=.*$/CONFIG_DECT_ONOFF=\"y\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ar7_8MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_37264\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
 
 
 echo2 "patching pm_info.in"
@@ -97,3 +99,7 @@ case $OEM in\
  ;;\
 esac|' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
+
+# patch install script to accept firmware from FBF on Speedport
+echo1 "applying install patch"
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W900V_7170.patch" || exit 2

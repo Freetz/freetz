@@ -232,6 +232,7 @@ choice
 	config FREETZ_TYPE_SINUS_W500V_7150
 		bool "Sinus W500V"
 		depends on FREETZ_TYPE_FON_7150
+		select FREETZ_BRANDING_tcom
 		select FREETZ_MODULE_jffs2
 		help
 			Enable this to compile a mod image for T-Com Sinus W500V based
@@ -240,6 +241,7 @@ choice
 	config FREETZ_TYPE_SPEEDPORT_W701V_7170
 		bool "W701V"
 		depends on FREETZ_TYPE_FON_WLAN_7170
+		select FREETZ_BRANDING_tcom
 		help
 			Enable this to compile a mod image for T-Com Speedport W701V based
 			on a 7170 image.
@@ -247,6 +249,7 @@ choice
 	config FREETZ_TYPE_SPEEDPORT_W900V_7170
 		bool "W900V"
 		depends on FREETZ_TYPE_FON_WLAN_7170
+		select FREETZ_BRANDING_tcom
 		help
 			Enable this to compile a mod image for T-Com Speedport W900V based
 			on a 7170 image.
@@ -822,7 +825,8 @@ config FREETZ_BRANDING_tcom
 		FREETZ_TYPE_300IP_AS_FON || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
 		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V \
+		FREETZ_TYPE_SPEEDPORT_W900V || \
+		FREETZ_TYPE_ALIEN_HARDWARE \
 		)
 	default y
 	help
