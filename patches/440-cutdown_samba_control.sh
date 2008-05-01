@@ -2,6 +2,7 @@
 echo1 "remove AVM samba config"
 rm -f "${FILESYSTEM_MOD_DIR}/etc/samba_config.tar"
 
+[ "$FREETZ_HAS_USB_HOST" == "y" ] && \
 sed -i -e "/killall smbd*$/d" \
 	-e "s/pidof smbd/pidof/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 
