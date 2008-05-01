@@ -11,11 +11,8 @@ else
 PHP_STATIC:=
 endif
 
-$(PKG)_DEPENDS_ON := uclibcxx
-
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PHP_STATIC
 
-$(PKG)_CONFIGURE_ENV += ac_cv_prog_gxx="no"
 $(PKG)_CONFIGURE_OPTIONS += --disable-libxml
 $(PKG)_CONFIGURE_OPTIONS += --disable-dom
 $(PKG)_CONFIGURE_OPTIONS += --without-iconv
@@ -40,7 +37,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(PHP_DIR)
+		$(MAKE) -C $(PHP_DIR) \
+		PHP_STATIC="$(PHP_STATIC)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
