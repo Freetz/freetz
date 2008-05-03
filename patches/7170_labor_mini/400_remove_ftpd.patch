@@ -1,5 +1,5 @@
---- etc/hotplug/storage.orig	2008-02-22 14:04:33.000000000 +0100
-+++ etc/hotplug/storage	2008-02-25 21:44:49.000000000 +0100
+--- etc/hotplug/storage.orig	2008-04-29 11:17:59.000000000 +0200
++++ etc/hotplug/storage	2008-05-03 14:52:06.000000000 +0200
 @@ -15,6 +15,9 @@
  MSTART=/sbin/start_mediasrv
  MSTOP=/sbin/stop_mediasrv
@@ -10,7 +10,7 @@
  # Ask the system's configuration for the status of the readonly flag:
  # (Translates flag's yes/no to ro/rw)
  #
-@@ -223,11 +226,13 @@
+@@ -205,11 +208,13 @@
  	if [ "$ENABLED" != "no" ] ; then
  		if [ "`pidof ftpd`" = "" ] ; then
  			USERS_ENABLED=`echo usbhost.users_enabled|ar7cfgctl -s`
