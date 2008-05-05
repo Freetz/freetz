@@ -11,6 +11,6 @@ $(pkg):
 
 $(pkg)-precompiled:
 
-$(pkg)-clean
+$(pkg)-clean:
 
 $(PKG_FINISH)
