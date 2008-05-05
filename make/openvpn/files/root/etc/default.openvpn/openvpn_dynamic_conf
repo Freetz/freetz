@@ -90,6 +90,10 @@ for config in `ls /mod/etc/init.d/rc.openvpn*`; do
 	confname=${config##*rc.}
 	tmp=`echo $cc | grep $confname`;
 	if [ "$tmp" == "" ] ; then
+		if [ running = `"$config" status` ]; then
+			echo -n "Stop deamon of deleted config: "
+			"$config" stop;
+		fi
 		rm $config
 		if [ -d /mod/etc/default.$confname ]; then
 			rm -rf /mod/etc/default.$confname;

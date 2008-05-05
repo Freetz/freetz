@@ -62,6 +62,7 @@ cat << EOF
 <input type="hidden" id="id_client_masks"   name="client_masks" value="$OPENVPN_CLIENT_MASKS">
 <input type="hidden" id="id_config_names"   name="config_names" value="$OPENVPN_CONFIG_NAMES">
 <input type="hidden" id="id_config_count"   name="config_count" value="$OPENVPN_CONFIG_COUNT">
+<input type="hidden" id="id_config_changed"   name="config_changed" value="$OPENVPN_CONFIG_CHANGED">
 <input type="hidden" id="id_additional"   name="additional" value="$OPENVPN_ADDITIONAL">
 <input type="hidden" id="id_own_keys"   name="own_keys" value="$OPENVPN_OWN_KEYS">
 <input type="hidden" id="id_expert"   name="expert" value="$OPENVPN_EXPERT">
@@ -275,9 +276,14 @@ variablen=[ "AUTOSTART", "DEBUG", "DEBUG_TIME", "LOCAL", "MODE", "REMOTE", "PORT
 
 function Init_Vars(){
 local_config_count=$OPENVPN_CONFIG_COUNT;
+backup_config_count=$OPENVPN_CONFIG_COUNT;
 local_expert="$OPENVPN_EXPERT";
+local_config_changed=new Array();
+local_config_changed[0]="new";
 for (v=0; v<variablen.length; v++) {
 	tmp="local_"+variablen[v].toLowerCase()+'=document.getElementById("id_'+variablen[v].toLowerCase()+'").value.split("#")'
+	eval (tmp);
+	tmp="backup_"+variablen[v].toLowerCase()+'=document.getElementById("id_'+variablen[v].toLowerCase()+'").value.split("#")'
 	eval (tmp);
         }
 }
@@ -286,9 +292,23 @@ function Consolidate_Vars(){
 document.getElementById("id_config_count").value=local_config_count;
 document.getElementById("id_expert").value=local_expert;
 document.getElementById("id_enabled").value=local_autostart[1] ;
+Find_changes();
+document.getElementById("id_config_changed").value=local_config_changed.join("#"); 
 for (v=0; v<variablen.length; v++) {
 	tmp='document.getElementById("id_'+variablen[v].toLowerCase()+'").value=local_'+variablen[v].toLowerCase()+'.join("#")'
 	eval (tmp);
+        }
+}
+
+function Find_changes(){
+	for (c=1; c<=local_config_count; c++) {local_config_changed[c]= (c <= backup_config_count)? "" : "new"; }
+	for (v=0; v<variablen.length; v++) {
+	    for (c=1; c<=backup_config_count; c++) {
+		tmp="equal=(local_"+variablen[v].toLowerCase()+"["+c+"] == backup_"+variablen[v].toLowerCase()+"["+c+"] )"
+		eval (tmp);
+		if (!equal) {local_config_changed[c]="yes"}
+		
+	     }
         }
 }
 
@@ -414,25 +434,27 @@ function add_config(){
 
 
 function del_config(){
-if (local_config_count >1){
-selindex=document.getElementById("id_act_config").selectedIndex;
- if ( selindex > 0) {
-
- for (v=0; v<variablen.length; v++) {
-        tmp='local_'+variablen[v].toLowerCase()+'.splice(selindex+1 , 1)'
-        eval (tmp);
-        }
-
- document.getElementById("id_act_config").options[selindex] = null;
- local_config_count = local_config_count - 1;
- document.getElementById("id_act_config").selectedIndex=0;
- changeconf();
-
- }
- else{
- alert($(lang de:"\"Default-Config kann nicht gel&ouml;scht werden\"" en:"\"default config can not be removed.\""));
- }
-}
+  if (local_config_count >1){
+	selindex=document.getElementById("id_act_config").selectedIndex;
+	if ( selindex > 0) {
+	    for (v=0; v<variablen.length; v++) {
+	        tmp='local_'+variablen[v].toLowerCase()+'.splice(selindex+1 , 1)'
+		eval (tmp);
+		if (selindex < backup_config_count ) {
+	            tmp='backup_'+variablen[v].toLowerCase()+'.splice(selindex+1 , 1)'
+	            eval (tmp);                                                                                                               
+	         }                                  
+	    }
+	 document.getElementById("id_act_config").options[selindex] = null;
+	 local_config_count = local_config_count - 1;
+	 if (selindex < backup_config_count ) { backup_config_count-- };
+	 document.getElementById("id_act_config").selectedIndex=0;
+	 changeconf();
+	 }
+	else{
+		alert($(lang de:"\"Default-Config kann nicht gel&ouml;scht werden\"" en:"\"default config can not be removed.\""));
+	 }
+  }
 }
 
 function Update_Client_Values()

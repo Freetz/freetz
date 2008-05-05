@@ -109,7 +109,7 @@ if [ "$MODE" == "server" ]; then
 	if [ "$REDIRECT" ]; then
 		echo "push \"redirect-gateway\"" >> $CONFFILE
 	fi
-	if [ "$DHCP_RANGE" ]; then
+	if [ "$DHCP_RANGE" -a "$AUTH_TYPE" == "certs" ]; then
     		echo "mode server" >> $CONFFILE
 	   	echo "ifconfig-pool $DHCP_RANGE" >> $CONFFILE
 	fi
@@ -232,12 +232,8 @@ else
 	if [ "$REDIRECT" ]; then
 		echo "redirect-gateway" >> $CONFFILE
 	fi
-	if [ "$TYPE" == "tun" ]; then
-		echo "ifconfig $BOX_IP $REMOTE_IP" >> $CONFFILE
-	else
-		if [ "$DHCP_CLIENT" != "yes" ]; then
-			echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
-		fi
+	if [ "$DHCP_CLIENT" != "yes" ]; then
+		echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
 	fi
 	
 fi

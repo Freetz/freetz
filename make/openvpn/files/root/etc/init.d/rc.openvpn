@@ -5,47 +5,6 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 
 scriptname=$0;
 DAEMON=${scriptname##*/rc.}
-unset SAVECGI
-test "$DAEMON" = "openvpn" -a  "$(ps | grep save.cgi | grep -v grep)" != ""  && SAVECGI="true" ;
-save_backup() {
-	cat /mod/etc/conf/openvpn.cfg | tr " \'" "%#" | sed 's/=#/=/g'  > /var/tmp/openvpn_tmp_bu
-}
-
-find_changes() {
-	pkg_diff="$(cat /mod/etc/conf/openvpn.cfg | tr " \'" "%#" | sed 's/=#/=/g' | grep -vf /var/tmp/openvpn_tmp_bu | grep -vE "CONFIG_COUNT|EXPERT|ENABLED" )"
-	diff=""
-	diffnames=""
-	mincount="$(cat /var/tmp/openvpn_tmp_bu | grep CONFIG_COUNT | tr -cd [0-9] )"
-	newcount=$OPENVPN_CONFIG_COUNT
-	if [ $newcount -lt $mincount ]; then mincount=$newcount ; fi
-	for x in  $pkg_diff; do
-		namen="$OPENVPN_CONFIG_NAMES"		
-		werteneu="${x##*=}#**%%**"
-		name=${x%%=*}
-		name=${name##*%}
-		wertealt="$(cat /var/tmp/openvpn_tmp_bu | tr "|" '\n' | grep "${name}=")"
-		wertealt=${wertealt##*=}
-		wn=""
-		count=0;
-		while [ "$werteneu" != "**%%**"  -a $count -le $mincount ]; do
-			n=${namen%%#*}
-			if [ $count -eq 1 ]; then n=openvpn ; else n=openvpn_$n ; fi
-			wn=${werteneu%%#*}
-			wa=${wertealt%%#*}
-			if [ "$wa" != "$wn" ]; then
-				diffnames="$diffnames$n\n"
-				echo "In Config $n: $name changed from \"$wa\" to \"$wn\"" | tr % " "
-			fi
-			werteneu=${werteneu#*#}
-			wertealt=${wertealt#*#}
-			namen=${namen#*#}
-			count=$((count+1))
-		done
-	done
-	diffnames=${diffnames%'\n'}
-	pkg_changed="$(echo -e "$diffnames" | sort  -u)"
-	rm -f /var/tmp/openvpn_tmp_bu
-}
 
 if [ ! -e /var/tmp/.openvpnfirstrun ]; then
 	touch /var/tmp/.openvpnfirstrun
@@ -182,24 +141,9 @@ case "$1" in
 		stop
 		;;
 	restart)
-		if [ $SAVECGI ]; then
-			/mod/etc/default.openvpn/openvpn_dynamic_conf
-			find_changes;
-			for pack in $pkg_changed ; do
-				DAEMON=$pack;
-				if [ ! -z "$(pidof "$DAEMON")" ]; then 
-					stop
-					sleep 1
-					start
-				fi
-			done
-			DAEMON="openvpn";
-		else
-			
-			stop
-			sleep 1
-			start
-		fi
+		stop
+		sleep 1
+		start
 		;;
 	reload)
 		if [ -r "/var/run/openvpn.pid" ]; then
@@ -207,15 +151,10 @@ case "$1" in
 		fi
 		;;
 	status)
-		if [ $SAVECGI ]; then
-			save_backup;
-			echo 'running'
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
 		else
-			if [ -z "$(pidof "$DAEMON")" ]; then
-				echo 'stopped'
-			else
-				echo 'running'
-			fi
+			echo 'running'
 		fi
 		;;
 	*)
