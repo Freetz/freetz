@@ -12,7 +12,7 @@ $(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
 $(PKG)_CONFIGURE_ENV += LDFLAGS="$(if $(FREETZ_APACHE_STATIC),-static)"
 $(PKG)_CONFIGURE_OPTIONS += --target=apache
-$(PKG)_CONFIGURE_OPTIONS += --prefix=./apache-1.3.37/
+$(PKG)_CONFIGURE_OPTIONS += --prefix=./apache-1.3.41/
 $(PKG)_CONFIGURE_OPTIONS += --enable-module=rewrite=yes
 $(PKG)_CONFIGURE_OPTIONS += --enable-module=speling=yes
 
