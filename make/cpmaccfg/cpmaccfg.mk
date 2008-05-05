@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.5)
 $(PKG)_SOURCE:=cpmaccfg-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www.heimpold.de/dsmod
+$(PKG)_SITE:=http://www.heimpold.de/freetz
 $(PKG)_BINARY:=$($(PKG)_DIR)/cpmaccfg
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/cpmaccfg
 

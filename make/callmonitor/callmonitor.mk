@@ -1,33 +1,16 @@
-CALLMONITOR_VERSION:=1.11
-CALLMONITOR_PKG_SOURCE:=callmonitor-$(CALLMONITOR_VERSION)-freetz.tar.bz2
-CALLMONITOR_PKG_SITE:=http://download.berlios.de/callmonitor
+$(call PKG_INIT_BIN, 1.11)
+$(PKG)_PKG_SOURCE:=callmonitor-$(CALLMONITOR_VERSION)-freetz.tar.bz2
+$(PKG)_PKG_SITE:=http://download.berlios.de/callmonitor
+$(PKG)_STARTLEVEL=30
 
-$(DL_DIR)/$(CALLMONITOR_PKG_SOURCE): | $(DL_DIR)
-	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(CALLMONITOR_PKG_SOURCE) $(CALLMONITOR_PKG_SITE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_NOP)
 
-$(PACKAGES_DIR)/.callmonitor-$(CALLMONITOR_VERSION): $(DL_DIR)/$(CALLMONITOR_PKG_SOURCE) | $(PACKAGES_DIR)
-	@tar -C $(PACKAGES_DIR) -xjf $(DL_DIR)/$(CALLMONITOR_PKG_SOURCE)
-	@touch $@
+$(pkg):
 
-callmonitor: $(PACKAGES_DIR)/.callmonitor-$(CALLMONITOR_VERSION)
+$(pkg)-precompiled:
 
-callmonitor-package: $(PACKAGES_DIR)/.callmonitor-$(CALLMONITOR_VERSION)
-	tar -C $(PACKAGES_DIR) $(VERBOSE) --exclude .svn -cjf $(PACKAGES_BUILD_DIR)/$(CALLMONITOR_PKG_SOURCE) callmonitor-$(CALLMONITOR_VERSION)
+$(pkg)-clean
 
-callmonitor-precompiled:
-
-callmonitor-source: $(PACKAGES_DIR)/.callmonitor-$(CALLMONITOR_VERSION)
-
-callmonitor-clean:
-	rm -f $(PACKAGES_BUILD_DIR)/$(CALLMONITOR_PKG_SOURCE)
-
-callmonitor-dirclean:
-	rm -rf $(PACKAGES_DIR)/callmonitor-$(CALLMONITOR_VERSION)
-	rm -f $(PACKAGES_DIR)/.callmonitor-$(CALLMONITOR_VERSION)
-
-callmonitor-list:
-ifeq ($(strip $(FREETZ_PACKAGE_CALLMONITOR)),y)
-	@echo "S30callmonitor-$(CALLMONITOR_VERSION)" >> .static
-else
-	@echo "S30callmonitor-$(CALLMONITOR_VERSION)" >> .dynamic
-endif
+$(PKG_FINISH)
