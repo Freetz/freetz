@@ -36,14 +36,23 @@ write_config() {
 	) > /mod/etc/$DAEMON.conf
 }
 
+status_log() {
+        modunreg status vsftpd vsftpd/vsftpd_log
+	if [ -e $LOGLINK ]; then
+	        rm -f $LOGLINK
+	fi
+
+        if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
+                ln -sf $VSFTPD_LOG_FILE $LOGLINK
+                modreg status vsftpd Vsftpd vsftpd/vsftpd_log
+        fi
+}
+
 start() {
 	echo -n 'Starting ftp server...'
 	write_config
 
-	if [ "$VSFTPD_LOG_SYSLOG" != "yes" ]; then
-		ln -sf $VSFTPD_LOG_FILE $LOGLINK
-		modreg status vsftpd Vsftpd vsftpd/vsftpd_log
-	fi
+	status_log
 
 	$DAEMON 
 	exitval=$?
@@ -84,6 +93,7 @@ case "$1" in
 				echo "$DAEMON is disabled" 1>&2
 			else
 				echo "$DAEMON is started via inetd" 1>&2
+				status_log
 			fi
 			exit 1;
 		fi

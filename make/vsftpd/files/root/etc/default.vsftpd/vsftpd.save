@@ -1,0 +1,42 @@
+DAEMON=vsftpd
+LOGLINK=/var/log/mod_vsftpd.log
+
+write_config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+}
+
+status_log() {
+        modunreg status vsftpd vsftpd/vsftpd_log
+        rm -f $LOGLINK
+
+        if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
+                ln -sf $VSFTPD_LOG_FILE $LOGLINK
+                modreg status vsftpd Vsftpd vsftpd/vsftpd_log
+        fi
+}
+
+pkg_apply() {
+	. /mod/etc/conf/$DAEMON.cfg
+
+	write_config
+	status_log
+}
+
+pkg_apply_save() {
+	pkg_apply
+}
+
+pkg_apply_def() {
+	pkg_apply
+}
+

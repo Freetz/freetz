@@ -1,22 +1,4 @@
-DAEMON=vsftpd
-
-write_config() {
-	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.$DAEMON/${DAEMON}_conf
-		fi
-
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
-	) > /mod/etc/$DAEMON.conf
-}
-
 . /mod/etc/conf/vsftpd.cfg
-
-write_config
 
 inetdcfg_desc="vsftpd ftp server"
 inetdcfg_port=$VSFTPD_PORT
