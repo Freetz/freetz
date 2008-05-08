@@ -25,6 +25,9 @@ for i in bin/pause bin/reinit_jffs2 bin/pause bin/usbhostchanged etc/hotplug \
 	rm -rf ${FILESYSTEM_MOD_DIR}/$i
 done
 
+echo2 "patching webmenu"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
+
 echo2 "moving default config dir, creating tcom and congstar symlinks"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/congstar"
