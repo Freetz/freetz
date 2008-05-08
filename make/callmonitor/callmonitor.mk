@@ -1,16 +1,16 @@
 $(call PKG_INIT_BIN, 1.11)
-$(PKG)_PKG_SOURCE:=callmonitor-$(CALLMONITOR_VERSION)-freetz.tar.bz2
-$(PKG)_PKG_SITE:=http://download.berlios.de/callmonitor
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-freetz.tar.bz2
+$(PKG)_SITE:=http://download.berlios.de/callmonitor
 $(PKG)_STARTLEVEL=30
 
 $(PKG_SOURCE_DOWNLOAD)
-$(PKG_UNPACKED)
-$(PKG_CONFIGURED_NOP)
+$(pkg)-source: $(pkg)-download
+.PHONY: $(pkg)-source
 
-$(pkg):
+$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+.PHONY: $(pkg) $(pkg)-precompiled
 
-$(pkg)-precompiled:
-
-$(pkg)-clean:
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(DL_DIR)/$($(PKG)_SOURCE) | $(PACKAGES_DIR)
+	tar -C $(PACKAGES_DIR) -xjf $< && touch $@
 
 $(PKG_FINISH)
