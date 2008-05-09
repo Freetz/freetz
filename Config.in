@@ -400,7 +400,9 @@ config FREETZ_REPLACE_KERNEL
 	depends on \
 			FREETZ_SHOW_ADVANCED && \
 			! (FREETZ_TYPE_LABOR && ! FREETZ_TYPE_LABOR_VPN) && \
-			! FREETZ_TYPE_FON_WLAN_7270
+			! FREETZ_TYPE_FON_WLAN_7270 && \
+			! (FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR_VPN)  
+
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
