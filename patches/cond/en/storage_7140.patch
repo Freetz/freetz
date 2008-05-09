@@ -1,0 +1,29 @@
+--- etc/hotplug/storage.orig	2008-05-09 12:41:22.000000000 +0200
++++ etc/hotplug/storage	2008-05-09 12:41:22.000000000 +0200
+@@ -96,7 +96,7 @@
+ 		grep -v ":$MPNAME$" $DEVMAP > /var/dev-$$.map
+ 		mv -f /var/dev-$$.map $DEVMAP
+ 
+-		rm -rf $MPOINT
++		rmdir $MPOINT
+ 		eventadd 141 $MPNAME
+ 	fi
+ 
+@@ -276,7 +276,7 @@
+ 	if ! test -f /var/STARTING; then
+ 		for MP in /var/media/ftp/*; do
+ 			test -d $MP || continue
+-			grep " $MP " /proc/mounts > /dev/null 2>&1 || rm -rf $MP
++			grep " $MP " /proc/mounts > /dev/null 2>&1 || rmdir $MP
+ 		done
+ 
+ 		# restart media_serv if still MPs available
+@@ -319,7 +319,7 @@
+ 			## still mounted
+ 			eventadd 135 "$MP"
+ 		else
+-			rm -rf $MP
++			rmdir $MP
+ 		fi
+ 	done
+ 

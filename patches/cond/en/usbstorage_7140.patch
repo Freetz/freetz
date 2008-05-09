@@ -1,0 +1,80 @@
+--- etc/hotplug/run_mount.orig	2008-05-09 12:14:10.000000000 +0200
++++ etc/hotplug/run_mount	2008-05-09 12:19:43.000000000 +0200
+@@ -33,31 +33,6 @@
+ # Generate a frontend'able 'nice name' to be used as mount point:
+ #
+ nicename () {
+-	local PROD
+-	local SNUM
+-	local MANU
+-	local NAME="USB"
+-	local NICE=""
+-
+-	# Find device's strings, remove/translate evil chars...
+-	for VAR in `/sbin/lsusb -s -h $1|tr -d ' '`; do
+-		if echo $VAR | grep "='" > /dev/null 2>&1; then
+-			eval "${VAR%%=*}=`echo ${VAR##*=}|tr -c "\n\'a-zA-Z0-9" '-' | tr -d \' `"
+-		fi
+-	done
+-	
+-	# Find a string for our new nice name...
+-	if ! test -z "$PROD"; then
+-		NAME="$PROD"
+-	elif ! test -z "$MANU"; then
+-		NAME="$MANU"
+-	fi
+-	if ! test -z "$NAME"; then
+-		NAME=`echo $NAME|tr ':' ' '`
+-	fi
+-	
+-	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
+-	NICE="$NAME-Partition-$2-$3"
+ 	echo $NICE
+ }
+ 
+@@ -96,7 +71,7 @@
+ 	# run mount with umask 0 so everyone is allowed to rwx everywhere
+         local OLD_UMASK=`umask`
+ 	umask 0
+-	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
++	if mount_fs; then
+ 		umask $OLD_UMASK
+ 		OK=0
+ 		eventadd 140 $MNTNAME
+@@ -136,6 +111,36 @@
+ 	return $OK
+ }
+ 
++# Check filesystem type and mount it
++mount_fs () {
++       if [ -e /usr/bin/fstyp ]; then
++               FSTYPE=`/usr/bin/fstyp $DEVNODE`
++       else
++               FSTYPE="vfat"
++       fi
++
++       case $FSTYPE in
++       vfat)
++               mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH
++               ;;
++       ext2)
++               mount -t ext2 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++               ;;
++       ext3)
++               mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++               ;;
++       ntfs)
++               if [ -e /usr/bin/ntfs-3g ]; then
++                       /usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++               else
++                       echo "ntfs-3g not installed"
++               fi
++               ;;
++       *) # fs type unknown
++               ;;
++       esac
++}
++
+ # Find partitions to mount...
+ #
+ USBDEV=`echo $1|sed s/^0*//`
