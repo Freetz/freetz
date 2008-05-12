@@ -175,10 +175,10 @@ case "$form" in
 	*)
 		echo "$(lang de:"Fehler: Unbekanntes Formular" en:"Error: unknown form") '$form'"
 		;;
-esac
+esac | html
 
 echo '</pre>'
-echo -n "</p><form action=\"/cgi-bin/$script\">"
+echo -n "<p><form action=\"/cgi-bin/$script\">"
 [ -z "$package" ] || echo -n "<input type=\"hidden\" name=\"pkg\" value=\"$package\">"
 [ -z "$file_id" ] || echo -n "<input type=\"hidden\" name=\"id\" value=\"$file_id\">"
 echo '<input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form></p>'

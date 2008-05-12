@@ -105,7 +105,7 @@ case "$MOD_CGI_CMD" in
 		cgi_begin "$(lang de:"Starte" en:"Starting") $MOD_CGI_PKG..."
 		echo "<p>$(lang de:"Starte" en:"Starting") $MOD_CGI_PKG:</p>"
 		echo -n '<pre>'
-		/mod/etc/init.d/rc.$MOD_CGI_PKG start
+		/mod/etc/init.d/rc.$MOD_CGI_PKG start | html
 		echo '</pre>'
 		echo '<form action="/cgi-bin/daemons.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
 		cgi_end
@@ -114,7 +114,7 @@ case "$MOD_CGI_CMD" in
 		cgi_begin "$(lang de:"Stoppe" en:"Stopping") $MOD_CGI_PKG..."
 		echo "<p>$(lang de:"Stoppe" en:"Stopping") $MOD_CGI_PKG:</p>"
 		echo -n '<pre>'
-		/mod/etc/init.d/rc.$MOD_CGI_PKG stop
+		/mod/etc/init.d/rc.$MOD_CGI_PKG stop | html
 		echo '</pre>'
 		echo '<form action="/cgi-bin/daemons.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
 		cgi_end
@@ -123,7 +123,7 @@ case "$MOD_CGI_CMD" in
 		cgi_begin "$(lang de:"Starte $MOD_CGI_PKG neu" en:"Restarting $MOD_CGI_PKG")..."
 		echo "<p>$(lang de:"Starte $MOD_CGI_PKG neu" en:"Restarting $MOD_CGI_PKG"):</p>"
 		echo -n '<pre>'
-		/mod/etc/init.d/rc.$MOD_CGI_PKG restart
+		/mod/etc/init.d/rc.$MOD_CGI_PKG restart | html
 		echo '</pre>'
 		echo '<form action="/cgi-bin/daemons.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
 		cgi_end

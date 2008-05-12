@@ -13,6 +13,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
   </p>
   <b>$(lang de:"Installationsverlauf:" en:"Installation log:")</b>
   <pre><?
+  {
     cd /var/tmp
     export BACKUP_DIR='var_flash'
     export DS_BCK_FILE='ds_mod'
@@ -43,6 +44,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
       echo "$(lang de:"Neustart in 5 Sekunden" en:"Restarting in 5 seconds")..."
       (sleep 5; reboot)&
      fi
+  } | html
   ?></pre>
 <? else ?>
   $(lang de:"Sie haben keine Sicherungs-Datei zum Hochladen ausgewählt. Der Zustand" en:"You have not selected any backup file to upload. The Fritz!Box's")

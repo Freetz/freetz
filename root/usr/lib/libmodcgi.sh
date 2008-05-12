@@ -32,7 +32,7 @@ EOF
 if [ "$1" = "status" ]; then
 	if [ -r /mod/etc/reg/status.reg ]; then
 		cat /mod/etc/reg/status.reg | while IFS='|' read -r pkg title cgi; do
-			echo "<div id=\"status_$(echo $cgi | sed -e "s/\//__/")\" class=\"su\"><a href=\"/cgi-bin/pkgstatus.cgi?pkg=$pkg&cgi=$cgi\">$title</a></div>"
+			echo "<div id=\"status_$(echo $cgi | sed -e "s/\//__/")\" class=\"su\"><a href=\"/cgi-bin/pkgstatus.cgi?pkg=$pkg&amp;cgi=$cgi\">$title</a></div>"
 		done
 	fi
 fi
@@ -89,7 +89,7 @@ fi
 export _cgi_width
 let _cgi_total_width="$_cgi_width+40"
 let _usr_style="$_cgi_width-230"
-echo "<style>"
+echo '<style type="text/css">'
 echo "fieldset { margin: 0px; margin-top: 10px; margin-bottom: 10px; padding: 10px; width: "$_usr_style"px;}"
 echo "div.body { width: "$_usr_style"px; }"
 echo "</style>"

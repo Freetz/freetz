@@ -1,9 +1,12 @@
 #!/bin/sh
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+. /usr/lib/libmodcgi.sh
 
 exec 1> /tmp/fw_update.log 2>&1
-alias indent="sed 's/^/  /'"
+indent() {
+    sed 's/^/  /' | html
+}
 
 if [ "$NAME" = "stop_avm" ]; then
 	echo "$(lang de:"AVM-Dienste anhalten, Teil 1" en:"Stopping AVM services, part 1") (prepare_fwupgrade start) ..."
