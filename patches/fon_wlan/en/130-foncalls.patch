@@ -1,24 +1,24 @@
---- usr/www/all/html/de/home/foncalls.js.orig	2008-05-08 10:17:52.000000000 -0400
-+++ usr/www/all/html/de/home/foncalls.js	2008-05-12 16:46:51.000000000 -0400
-@@ -176,17 +176,17 @@
+--- usr/www/avme/en/html/en/fon/foncalls.js.orig	2008-04-17 11:49:38.000000000 -0400
++++ usr/www/avme/en/html/en/fon/foncalls.js	2008-05-12 18:06:07.000000000 -0400
+@@ -143,17 +143,17 @@
+ }
+ function uiNummerDisplay (nr, name) {
  var buchname = GetBuchName(name);
- var buchnrtype = GetBuchNumberType(telbooknumbertyp);
- var buchentryinfo = GetBuchEntryInfo(buchname,buchnrtype);
 -if (nr=="" && buchname=="") return g_txtUnbekannt;
 +if (nr=="" && buchname=="") return g_sym0 + g_txtUnbekannt;
  if ("<? query telcfg:settings/UseClickToDial ?>" == "1") {
--if (nr == "") return span(buchentryinfo);
+-if (nr == "") return span(buchname);
 -if (buchname == "") {
 -return "<nobr>" +
 -"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
 -}
--return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchentryinfo+"\">"+buchentryinfo+"</a></nobr>";
-+if (nr == "") return g_sym0 + span(buchentryinof);
+-return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
++if (nr == "") return g_sym0 + span(buchname);
 +if (buchname == "") return "<nobr>" + uiRufnummerInfo (nr) +"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
-+return "<nobr>" +  g_sym0 + "<a href=\"javascript:Dial('"+nr+"')\" title=\""+buchentryinfo+"\">"+buchentryinfo+"</a></nobr>";
++return "<nobr>" +  g_sym0 + "<a href=\"javascript:Dial('"+nr+"')\" title=\""+buchname+"\">"+buchname+"</a></nobr>";
  } else {
--return span(buchname=="" ? nr:buchentryinfo);
-+return (buchname=="" ? uiRufnummerInfo(nr):g_sym0) + span(buchname=="" ? nr:buchentryinfo);
+-return span(buchname=="" ? nr:buchname);
++return (buchname=="" ? uiRufnummerInfo(nr):g_sym0) + span(buchname=="" ? nr:buchname);
 +}
  }
 +function uiRufnummerInfo (nr) {

@@ -1,90 +1,28 @@
-diff -burN usr/www/all/html/de/menus/menu2_fon.html usr/www/all/html/de/menus/menu2_fon.html
---- usr/www/all/html/de/menus/menu2_fon.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_fon.html	2007-06-10 20:01:27.000000000 +0200
-@@ -79,5 +79,6 @@
- <? if eq $var:isWizz 1 `
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
- ` ?>
-+	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
- 	<li class="LMenubottom"></li>
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2008-05-05 13:49:12.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2008-05-08 22:48:29.000000000 +0200
+@@ -52,5 +52,6 @@
+ <? if eq $var:pagename energy `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <? if eq $var:pagename ecosettings `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','energy')"><? echo `$var:TextEnergyMonitor` ?></a><span class="PTextOnly"><? echo `$var:TextEnergyMonitor` ?></span></li>
++<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
  </ul>
-diff -burN usr/www/all/html/de/menus/menu2_homehome.html usr/www/all/html/de/menus/menu2_homehome.html
---- usr/www/all/html/de/menus/menu2_homehome.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homehome.html	2007-06-10 20:01:27.000000000 +0200
-@@ -48,5 +48,6 @@
- <? if eq $var:isWizz 1 `
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
- ` ?>
-+	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
- 	<li class="LMenubottom"></li>
- </ul>
-diff -burN usr/www/all/html/de/menus/menu2_homekonfig.html usr/www/all/html/de/menus/menu2_homekonfig.html
---- usr/www/all/html/de/menus/menu2_homekonfig.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homekonfig.html	2007-06-10 20:01:27.000000000 +0200
-@@ -13,5 +13,6 @@
- <? if eq $var:isWizz 1 `
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
- ` ?>
-+	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
- 	<li class="LMenubottom"></li>
- </ul>
-diff -burN usr/www/all/html/de/menus/menu2.inc usr/www/all/html/de/menus/menu2.inc
---- usr/www/all/html/de/menus/menu2.inc	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2.inc	2007-06-10 20:01:27.000000000 +0200
-@@ -11,6 +11,7 @@
- <? setvariable var:menuSystem "System" ?>
- <? setvariable var:menuSoftware "Programme" ?>
- <? setvariable var:menuHilfe "Hilfe" ?>
+--- usr/www/all/html/de/menus/menu2.inc.orig	2008-05-05 13:49:25.000000000 +0200
++++ usr/www/all/html/de/menus/menu2.inc	2008-05-08 22:48:29.000000000 +0200
+@@ -16,6 +16,7 @@
+ <? setvariable var:TextMenuSystem "System" ?>
+ <? setvariable var:TextMenuSoftware "Programme" ?>
+ <? setvariable var:TextMenuHilfe "Hilfe" ?>
 +<? setvariable var:menuFreetz "Freetz" ?>
- <? setvariable var:evtxt01 "Anrufliste" ?>
- <? setvariable var:evtxt02 "Telefonbuch" ?>
- <? setvariable var:evtxt03 "Kindersicherung" ?>
-diff -burN usr/www/all/html/de/menus/menu2_internet.html usr/www/all/html/de/menus/menu2_internet.html
---- usr/www/all/html/de/menus/menu2_internet.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_internet.html	2007-06-10 20:01:27.000000000 +0200
-@@ -95,4 +95,5 @@
- <? if eq $var:isWizz 1 `
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ <? setvariable var:TextMenuAnrufliste "Anrufe" ?>
+ <? setvariable var:TextMenuTelefonbuch "Telefonbuch" ?>
+ <? setvariable var:TextMenuKS "Kindersicherung" ?>
+--- usr/www/all/html/de/menus/menu2_konfig.html.orig	2008-05-05 13:49:03.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_konfig.html	2008-05-08 22:48:29.000000000 +0200
+@@ -67,5 +67,6 @@
+ <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('software','extern')"><? echo '$var:TextMenuSoftware' ?></a><span class="PTextOnly"><? echo '$var:TextMenuSoftware' ?></span></li>
  ` ?>
-+	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
- </ul>
-diff -burN usr/www/all/html/de/menus/menu2_software.html usr/www/all/html/de/menus/menu2_software.html
---- usr/www/all/html/de/menus/menu2_software.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_software.html	2007-06-10 20:02:37.000000000 +0200
-@@ -13,5 +13,6 @@
- <? if eq $var:isWizz 1 `
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
  ` ?>
-+	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
- 	<li class="LMenubottom"></li>
- </ul>
-diff -burN usr/www/all/html/de/menus/menu2_system.html usr/www/all/html/de/menus/menu2_system.html
---- usr/www/all/html/de/menus/menu2_system.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_system.html	2007-06-10 20:01:27.000000000 +0200
-@@ -93,5 +93,6 @@
- <? if eq $var:isWizz 1 `
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
- ` ?>
-+	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
- 	<li class="LMenubottom"></li>
- </ul>
-diff -burN usr/www/all/html/de/menus/menu2_usb.html usr/www/all/html/de/menus/menu2_usb.html
---- usr/www/all/html/de/menus/menu2_usb.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_usb.html	2007-06-10 20:01:27.000000000 +0200
-@@ -32,5 +32,6 @@
- <? if eq $var:isWizz 1 `
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
- ` ?>
-+	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
- 	<li class="LMenubottom"></li>
- </ul>
-diff -burN usr/www/all/html/de/menus/menu2_wlan.html usr/www/all/html/de/menus/menu2_wlan.html
---- usr/www/all/html/de/menus/menu2_wlan.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_wlan.html	2007-06-10 20:01:27.000000000 +0200
-@@ -49,5 +49,6 @@
- <? if eq $var:isWizz 1 `
- 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
- ` ?>
-+	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
- 	<li class="LMenubottom"></li>
++<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
  </ul>

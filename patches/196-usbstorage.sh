@@ -2,7 +2,6 @@
 echo1 "applying USB storage patch"
 if [ "$FREETZ_TYPE_2170" == "y" -a "$FREETZ_TYPE_LABOR" != "y" ] || \
 	[ "$FREETZ_TYPE_FON_WLAN_7140" == "y" -a "$FREETZ_TYPE_LANG_DE" == "y" ] || \
-	[ "$FREETZ_TYPE_FON_7150" == "y" ] || \
 	[ "$FREETZ_TYPE_WLAN_3130" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_wotam.patch"
 elif [ "$FREETZ_TYPE_FON_WLAN_7140" == "y" -a "$FREETZ_TYPE_LANG_EN" == "y" ]; then
@@ -10,6 +9,8 @@ elif [ "$FREETZ_TYPE_FON_WLAN_7140" == "y" -a "$FREETZ_TYPE_LANG_EN" == "y" ]; t
 elif [ "$FREETZ_TYPE_SPEEDPORT_W900V" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_w900v.patch"
 elif [ "$FREETZ_TYPE_FON_WLAN_7170" == "y" ]; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
+elif [ "$FREETZ_TYPE_FON_7150" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
 elif [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
