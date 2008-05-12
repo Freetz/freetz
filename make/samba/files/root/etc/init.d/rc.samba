@@ -14,7 +14,7 @@ CONF=$MODPATH/smb.conf
 
 case "$1" in
 		""|load|start|restart|config)
-		if [ ! -r "/mod/etc/conf/samba.cfg" ]; then
+		if [ ! -r /mod/etc/conf/samba.cfg ]; then
 			echo "Error[samba]: not configured" 1>&2
 			exit 1
 		fi
@@ -40,11 +40,11 @@ config() {
 }
 
 start() {
-	echo -n 'Starting samba...'
+	echo -n "Starting samba..."
 
 	config
 	
-	if [ "$(pidof smbd|wc -w)" -gt 0 ]; then
+	if pidof smbd > /dev/null; then
 		echo "already running"
 		exit 0
 	fi
@@ -54,7 +54,7 @@ start() {
 
 	NST=1
 	if [ $# -ge 1 ]; then
-		if [ $1 == "smbd" ]; then
+		if [ $1 == smbd ]; then
 			NST=0
 		fi
 	fi
@@ -64,25 +64,25 @@ start() {
 		exitvaln=$?
 	fi
 
-	if [ "$exitvals" -eq 0 -a "$exitvaln" -eq 0 ]; then
-		echo 'done.'
+	if [ $exitvals -eq 0 -a $exitvaln -eq 0 ]; then
+		echo "done."
 		exit 0
 	else
 		killall $NMBD >/dev/null 2>&1
 		killall $SMBD >/dev/null 2>&1
-		echo 'failed.'
+		echo "failed."
 		exit 1
 	fi
 }
 
 stop () {
-	echo -n 'Stopping samba...'
+	echo -n "Stopping samba..."
 	killall -TERM $SMBD > /dev/null 2>&1
 	exitvals=$?
 
 	NSP=1
 	if [ $# -ge 1 ]; then
-		if [ $1 == "smbd" ]; then
+		if [ $1 == smbd ]; then
 			NSP=0
 		fi
 	fi
@@ -92,10 +92,10 @@ stop () {
 		exitvaln=$?
 	fi
 
-	if [ "$exitvals" -eq 0 -a "$exitvaln" -eq 0 ]; then
-		echo 'done.'
+	if [ $exitvals -eq 0 -a $exitvaln -eq 0 ]; then
+		echo "done."
 	else
-		echo 'failed.'
+		echo "failed."
 	fi
 }
 
@@ -104,19 +104,19 @@ case "$1" in
 		config $2
 		;;
 	""|load)
-		[ -d "/tmp/flash/samba" ] || mkdir /tmp/flash/samba
+		[ -d /tmp/flash/samba ] || mkdir /tmp/flash/samba
 
-		modreg cgi 'samba' 'Samba'
+		modreg cgi "samba" "Samba"
 
-		deffile='/mod/etc/default.samba/shares.def'
-		[ -r "/tmp/flash/samba/shares.def" ] && deffile='/tmp/flash/samba/shares.def'
-		modreg file 'shares' 'Samba Freigaben' 1 "$deffile"
+		deffile=/mod/etc/default.samba/shares.def
+		[ -r /tmp/flash/samba/shares.def ] && deffile=/tmp/flash/samba/shares.def
+		modreg file "shares" "Samba Freigaben" 1 $deffile
 
-		deffile='/mod/etc/default.samba/sharesx.def'
-		[ -r "/tmp/flash/samba/sharesx.def" ] && deffile='/tmp/flash/samba/sharesx.def'
-		modreg file 'sharesx' 'Samba Erweitert' 1 "$deffile"
+		deffile=/mod/etc/default.samba/sharesx.def
+		[ -r /tmp/flash/samba/sharesx.def ] && deffile=/tmp/flash/samba/sharesx.def
+		modreg file "sharesx" "Samba Erweitert" 1 $deffile
 
-		if [ "$SAMBA_ENABLED" != "yes" ]; then
+		if [ "$SAMBA_ENABLED" != yes ]; then
 			echo "samba is disabled" 1>&2
 			exit 1;
 		fi
@@ -125,9 +125,9 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'sharesx'
-		modunreg file 'shares'
-		modunreg cgi 'samba'
+		modunreg file "sharesx"
+		modunreg file "shares"
+		modunreg cgi "samba"
 		;;
 	start)
 		start
@@ -147,21 +147,21 @@ case "$1" in
 	status)
 		PID_NMBD=1
 		if [ -x "$BDIR/$NMBD" ]; then
-			PID_NMBD="$(pidof "$NMBD")"
+			PID_NMBD=$(pidof "$NMBD")
 		fi
-		if [ -r "/var/run/$SMBD.pid" ]; then
-			for PIDS in "$(pidof "$SMBD")" ; do
+		if [ -r /var/run/$SMBD.pid ]; then
+			for PIDS in $(pidof "$SMBD") ; do
 				if [ $PIDS == "$(cat /var/run/$SMBD.pid)" ]; then
-					PID_SMBD="$PIDS"
+					PID_SMBD=$PIDS
 				fi
 			done
 		fi
 		if [ -z "$PID_SMBD" -o -z "$PID_NMBD" ]; then
 			killall $NMBD >/dev/null 2>&1
 			killall $SMBD >/dev/null 2>&1
-			echo 'stopped'
+			echo "stopped"
 		else
-			echo 'running'
+			echo "running"
 		fi
 		;;
 	*)
