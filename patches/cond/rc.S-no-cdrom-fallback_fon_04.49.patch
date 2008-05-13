@@ -1,0 +1,12 @@
+--- etc/init.d/rc.S	2007-04-25 16:53:58.000000000 +0200
++++ etc/init.d/rc.S	2007-04-27 23:18:27.000000000 +0200
+@@ -858,8 +858,7 @@
+ ###########################
+ tmp_iso_path=/lib/modules/cdrom.iso
+ ## Fallback: Wenn nach 200 Sekunden das CDROM nicht aktiviert wird, wird stellt der USB-Treiber auf Netzwerk um.
+-modprobe avalanche_usb use_cdrom=1 iso_path=${tmp_iso_path} cdrom_fallback=1
+-echo "usb client: CDROM Fallback=$CONFIG_CDROM_FALLBACK ISO=${tmp_iso_path}"
++modprobe avalanche_usb use_cdrom=0
+ #########################################################################
+ ## Set hostname
+ #########################################################################
