@@ -217,7 +217,6 @@ endchoice
 config FREETZ_TYPE_ALIEN_HARDWARE
 	bool "Compile image for \"alien\" hardware"
 	depends on \
-		FREETZ_TYPE_FON_7150 || \
 		FREETZ_TYPE_FON_WLAN_7170
 	default n
 	help
@@ -226,17 +225,17 @@ config FREETZ_TYPE_ALIEN_HARDWARE
 choice
 	prompt "Alien hardware type"
 	depends on FREETZ_TYPE_ALIEN_HARDWARE
-	default FREETZ_TYPE_SINUS_W500V_7150 if FREETZ_TYPE_FON_7150
+	#default FREETZ_TYPE_SINUS_W500V_7150 if FREETZ_TYPE_FON_7150
 	default FREETZ_TYPE_SPEEDPORT_W701V_7170 if FREETZ_TYPE_FON_WLAN_7170
 
-	config FREETZ_TYPE_SINUS_W500V_7150
-		bool "Sinus W500V"
-		depends on FREETZ_TYPE_FON_7150
-		select FREETZ_BRANDING_tcom
-		select FREETZ_MODULE_jffs2
-		help
-			Enable this to compile a mod image for T-Com Sinus W500V based
-			on a 7150 image.
+	#config FREETZ_TYPE_SINUS_W500V_7150
+	#	bool "Sinus W500V"
+	#	depends on FREETZ_TYPE_FON_7150
+	#	select FREETZ_BRANDING_tcom
+	#	select FREETZ_MODULE_jffs2
+	#	help
+	#		Enable this to compile a mod image for T-Com Sinus W500V based
+	#		on a 7150 image.
 
 	config FREETZ_TYPE_SPEEDPORT_W701V_7170
 		bool "W701V"
@@ -410,6 +409,7 @@ config FREETZ_REPLACE_KERNEL
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		! (FREETZ_TYPE_LABOR && ! FREETZ_TYPE_LABOR_VPN) && \
+		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
 		! FREETZ_TYPE_FON_7150 && \
 		! (FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN) && \
 		! (FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR_VPN) && \
