@@ -117,6 +117,10 @@ DL_SITE2:=$(strip $(subst ",, $(FREETZ_DL_SITE2)))
 DL_SOURCE2:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2)))
 endif
 
+ifneq ($(strip $(FREETZ_DL_SOURCE2_CONTAINER)),)
+DL_SOURCE2_CONTAINER:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2_CONTAINER)))
+DL_SOURCE2_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE2_CONTAINER))
+endif
 
 ### Convenience macros
 # Since the makefiles for the packages contain many similar parts, we define some macros to simplify
