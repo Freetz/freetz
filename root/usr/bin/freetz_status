@@ -4,7 +4,8 @@
 
 log=''
 
-[ "$(/mod/etc/init.d/rc.webcfg status)" = "running" ] || \
+status=$(/mod/etc/init.d/rc.webcfg status)
+[ "$status" = "running" -o "$status" = "inetd" ] || \
 	log="$(/mod/etc/init.d/rc.webcfg start 2>&1)"
 
 # Use HTTP_REFERER to determine target host (could be a name or an IP)
