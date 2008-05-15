@@ -747,7 +747,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 			error 1 "cannot find busybox links"
 		fi
 
-		# Install busybox links
+		# Remove old busybox links
+		find "$FILESYSTEM_MOD_DIR" \( -lname "busybox" -or -lname "*/busybox" \) -delete
+
+		# Install new busybox links
 		for link in $(cat "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links"); do
 			LINK_DIR="$(dirname "$link")"
 			LINK_NAME="$(basename "$link")"
