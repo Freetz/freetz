@@ -4,6 +4,8 @@ if [ "$FREETZ_TYPE_FON_WLAN_7170" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7170.patch"
 elif [ "$FREETZ_TYPE_FON_7150" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7170.patch"
+elif [ "$FREETZ_TYPE_FON_WLAN_7141" == "y" ]; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7170.patch"
 elif [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/storage_7270.patch"
 elif [ "$FREETZ_TYPE_FON_WLAN_7140" == "y" -a "$FREETZ_TYPE_LANG_EN" == "y" ]; then
