@@ -975,28 +975,6 @@ config FREETZ_PATCH_SIGNED
 	help
 		Hides the "unsupported changes" message from the web interface.
 
-config FREETZ_PATCH_AVM_HIDDEN_PAGES
-	bool "Patch hidden pages"
-	depends on \
-		FREETZ_SHOW_ADVANCED && \
-		FREETZ_TYPE_FON_WLAN_7141
-		
-	select FREETZ_PATCH_HIDDEN_DSL_PAGES
-	select FREETZ_PATCH_HIDDEN_REMOTE_PAGES
-	default n
-	help
-		Show Labor DSL, VPN and HTTPS pages in AVM webinterface.
-
-config FREETZ_PATCH_HIDDEN_DSL_PAGES
-	bool
-	depends on FREETZ_PATCH_AVM_HIDDEN_PAGES
-	default n
-
-config FREETZ_PATCH_HIDDEN_REMOTE_PAGES
-	bool
-	depends on FREETZ_PATCH_AVM_HIDDEN_PAGES
-	default n
-
 config FREETZ_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
 	depends on \
