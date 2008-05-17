@@ -19,7 +19,10 @@ html() {
 		    s/"/\&quot;/g
 		'
 	else
-		httpd -e "$*"
+		case $* in
+			*[\&\<\>\'\"]*) httpd -e "$*" ;;
+			*) echo "$*" ;;
+		esac
 	fi
 }
 
@@ -32,7 +35,7 @@ EOF
 if [ "$1" = "status" ]; then
 	if [ -r /mod/etc/reg/status.reg ]; then
 		cat /mod/etc/reg/status.reg | while IFS='|' read -r pkg title cgi; do
-			echo "<div id=\"status_$(echo $cgi | sed -e "s/\//__/")\" class=\"su\"><a href=\"/cgi-bin/pkgstatus.cgi?pkg=$pkg&amp;cgi=$cgi\">$title</a></div>"
+			echo "<div id=\"status_$(echo $cgi | sed -e "s/\//__/")\" class=\"su\"><a href=\"/cgi-bin/pkgstatus.cgi?pkg=$pkg&amp;cgi=$cgi\">$(html "$title")</a></div>"
 		done
 	fi
 fi
@@ -44,7 +47,7 @@ EOF
 
 if [ "$1" = "settings" -a -r /mod/etc/reg/file.reg ]; then
 	cat /mod/etc/reg/file.reg | while IFS='|' read -r id title sec def; do
-		echo "<div id=\"file_$id\" class=\"su\"><a href=\"/cgi-bin/file.cgi?id=$id\">$title</a></div>"
+		echo "<div id=\"file_$id\" class=\"su\"><a href=\"/cgi-bin/file.cgi?id=$id\">$(html "$title")</a></div>"
 	done
 fi
 
@@ -54,7 +57,7 @@ EOF
 
 if [ "$1" != "settings" -a "$1" != "status" -a -r /mod/etc/reg/cgi.reg ]; then
 	cat /mod/etc/reg/cgi.reg | while IFS='|' read -r pkg title; do
-		echo "<div id=\"pkg_$pkg\" class=\"su\"><a href=\"/cgi-bin/pkgconf.cgi?pkg=$pkg\">$title</a></div>"
+		echo "<div id=\"pkg_$pkg\" class=\"su\"><a href=\"/cgi-bin/pkgconf.cgi?pkg=$pkg\">$(html "$title")</a></div>"
 	done
 fi
 
@@ -75,7 +78,7 @@ Content-type: text/html; charset=iso-8859-1
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<meta http-equiv="Content-Language" content="de">
+<meta http-equiv="Content-Language" content="$(lang de:"de" en:"en")">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
 <title>Freetz - $1</title>
