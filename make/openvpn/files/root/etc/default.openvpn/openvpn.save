@@ -1,21 +1,21 @@
 pkg_apply_save() {
 . /mod/etc/conf/openvpn.cfg ;
 if [ "$OPENVPN_CONFIG_COUNT" -gt 1 ]; then
-        /mod/etc/default.openvpn/openvpn_dynamic_conf ;
-        changed="${OPENVPN_CONFIG_CHANGED#*#}" ;
-        for d in `echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' `; do
-                if [ "${changed%%#*}" == "yes" -a ! -z "$(pidof "$d")"  ]; then
-                echo "Change in config of running daemon $d. Restarting ..."
-                "/mod/etc/init.d/rc.$d" restart ; fi ;
-                changed=${changed#*#};
-        done;
+	/mod/etc/default.openvpn/openvpn_dynamic_conf ;
+	changed="${OPENVPN_CONFIG_CHANGED#*#}" ;
+	for d in `echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' `; do
+		if [ "${changed%%#*}" == "yes" -a ! -z "$(pidof "$d")"  ]; then
+			echo "Change in config of running daemon $d. Restarting ..."
+			"/mod/etc/init.d/rc.$d" restart ; fi ;
+		changed=${changed#*#};
+	done;
 else
-       start_stop openvpn "$oldstatus1" ;
+	start_stop openvpn "$oldstatus1" ;
 fi ;
 }
 
 pkg_apply_def() {
-	/mod/etc/default.openvpn/openvpn_dynamic_conf ;
+	if [ ` ls /mod/etc/init.d/rc.openvpn | wc -l` -gt 1 ]; then /mod/etc/default.openvpn/openvpn_dynamic_conf ; fi;
 	start_stop openvpn "$oldstatus1" ;
 }
 

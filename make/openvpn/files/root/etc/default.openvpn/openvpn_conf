@@ -15,23 +15,20 @@ IFS=$2;
 local number=$3;
 local c=0;
 uebergabe="";
-for inhalt in $1
-do
- if [ "$c" -eq "$number" ] ; then uebergabe=$inhalt; fi
-     c=$((c+1));
+for inhalt in $1; do
+	if [ "$c" -eq "$number" ] ; then uebergabe=$inhalt; fi
+	c=$((c+1));
 done
 unset IFS;
 }
-                
+
 delimiter="#"
 vars="DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES UDP_FRAGMENT ADDITIONAL OWN_KEYS" ;
 count=1;
 
-while [ $count -le $OPENVPN_CONFIG_COUNT ]
-do
+while [ $count -le $OPENVPN_CONFIG_COUNT ]; do
 
-for var in $vars
-do
+for var in $vars; do
 	tmp="$var";
 	configvar='OPENVPN_';
 	eval configvar=\$$configvar$var;
@@ -110,31 +107,30 @@ if [ "$MODE" == "server" ]; then
 		echo "push \"redirect-gateway\"" >> $CONFFILE
 	fi
 	if [ "$DHCP_RANGE" -a "$AUTH_TYPE" == "certs" ]; then
-    		echo "mode server" >> $CONFFILE
-	   	echo "ifconfig-pool $DHCP_RANGE" >> $CONFFILE
+		echo "mode server" >> $CONFFILE
+		echo "ifconfig-pool $DHCP_RANGE" >> $CONFFILE
 	fi
 
 	if [ "$CLIENT_INFO" == "yes" ] && [ "$AUTH_TYPE" == "certs" ]; then 
 			if [ ! -d $CCD ]; then
-			    	mkdir $CCD
+				mkdir $CCD
 			else
 				rm $CCD/*	
 			fi
 			echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
 			if [ ! "$DHCP_RANGE" ]; then 
-			    echo "mode server" >> $CONFFILE
+				echo "mode server" >> $CONFFILE
 			fi 
 			echo "client-config-dir $CCD" >> $CONFFILE
 			echo "topology subnet" >> $CONFFILE
 			echo "max-clients  $MAXCLIENTS" >> $CONFFILE
 			if [ "$LOCAL_NET" ]; then
 				tmp="`echo $LOCAL_NET | sed 's/[[:space:]]*;[[:space:]]*/;/g'`"
-				IFS=";"                                                        
-	                        for i in $tmp                                                  
-	                        do                                                             
-			            echo "push \"route $i $BOX_IP\"" >> $CONFFILE              
-			        done                                                           
-			        unset IFS                                                     
+				IFS=";"
+				for i in $tmp; do
+					echo "push \"route $i $BOX_IP\"" >> $CONFFILE
+				done
+				unset IFS
 			fi			
 			client=1
 			actcip=${CLIENT_IPS%%:*}
@@ -161,39 +157,39 @@ if [ "$MODE" == "server" ]; then
 			client=1
 			
 			while [ $client -le "$CLIENTS_DEFINED" ]
-		  	do
-		     		eval net=\$C_NET$client
-		     		eval name=\$C_NAME$client
-		     		eval ip=\$C_IP$client
-		     		echo "ifconfig-push $ip $BOX_MASK"  > $CCD/$name
-		     		echo "push \"topology subnet\"" >> $CCD/$name
-		     		if [ "$net" != "-" ] ; then
-		     			#echo "route $net $mask $ip" >> $CONFFILE
+			do
+				eval net=\$C_NET$client
+				eval name=\$C_NAME$client
+				eval ip=\$C_IP$client
+				echo "ifconfig-push $ip $BOX_MASK"  > $CCD/$name
+				echo "push \"topology subnet\"" >> $CCD/$name
+				if [ "$net" != "-" ] ; then
+					#echo "route $net $mask $ip" >> $CONFFILE
 					echo -e "route $net $ip" | sed "s/[[:space:]]*;[[:space:]]*/ ${ip}\nroute /g" >> $CONFFILE
-		     			#echo "iroute  $net $mask" >> $CCD/$name
+					#echo "iroute  $net $mask" >> $CCD/$name
 					echo -e "iroute $net" | sed "s/[[:space:]]*;[[:space:]]*/\niroute /g" >> $CCD/$name
-		     		fi
-		     		if [ "$CLIENT2CLIENT" == "yes" ]; then
-		     			i=1
-		     			while [ $i -le $CLIENTS_DEFINED ]; do
-		     				if [ $i -ne $client ]; then
-		     					eval cnet=\$C_NET$i 
-		     					eval cip=\$C_IP$i
-		     					if [ "$cnet" != "-"  ]  ; then
-		     						#echo "push \"route $cnet $cip \"" >> $CCD/$name
+				fi
+				if [ "$CLIENT2CLIENT" == "yes" ]; then
+					i=1
+					while [ $i -le $CLIENTS_DEFINED ]; do
+						if [ $i -ne $client ]; then
+							eval cnet=\$C_NET$i 
+							eval cip=\$C_IP$i
+							if [ "$cnet" != "-"  ]  ; then
+								#echo "push \"route $cnet $cip \"" >> $CCD/$name
 								echo -e "push \"route $cnet $cip\"" | sed "s/[[:space:]]*;[[:space:]]*/ ${cip}\"\npush \"route /g" >> $CCD/$name
-		     					fi
-		     				fi
-		     			i=$((1+$i))
-		     			done
-		     		fi
-		     		client=$(($client+1))
-		     	done
+							fi
+						fi
+					i=$((1+$i))
+					done
+				fi
+				client=$(($client+1))
+			done
 	fi
 
-	if [ "$TYPE" == "tap" ]; then  	
-	  	echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
-	    	echo "push \"route-gateway $BOX_IP\"" >> $CONFFILE
+	if [ "$TYPE" == "tap" ]; then
+		echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
+		echo "push \"route-gateway $BOX_IP\"" >> $CONFFILE
 		if [ "$LOCAL_NET" ]; then
 			#echo "push \"route $LOCAL_NET\"" >> $CONFFILE
 			echo "push \"route $LOCAL_NET\"" | sed 's/[[:space:]]*;[[:space:]]*/\"\npush \"route /g' >> $CONFFILE
@@ -206,7 +202,7 @@ if [ "$MODE" == "server" ]; then
 			echo "max-clients $MAXCLIENTS" >> $CONFFILE
 		fi
 	else 
-	if  [ "$CLIENT_INFO" != "yes" ] || [ "$AUTH_TYPE" == "static" ] ; then 
+	if [ "$CLIENT_INFO" != "yes" ] || [ "$AUTH_TYPE" == "static" ] ; then 
 			echo "ifconfig $BOX_IP $REMOTE_IP" >> $CONFFILE
 			if [ "$REMOTE_NET" ]; then
 				#echo "route $REMOTE_NET" >> $CONFFILE
@@ -233,7 +229,11 @@ else
 		echo "redirect-gateway" >> $CONFFILE
 	fi
 	if [ "$DHCP_CLIENT" != "yes" ]; then
-		echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
+		if [ "$TYPE" == "tun" ]; then 
+			echo "ifconfig $BOX_IP $REMOTE_IP" >> $CONFFILE
+		else
+			echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
+		fi
 	fi
 	
 fi
@@ -245,7 +245,7 @@ if [ "$UDP_FRAGMENT" != "" ] && [ "$UDP_FRAGMENT" != "0" ]; then
 fi
 df=/var/tmp/debug_${prefix}.out
 if [ "$DEBUG" == "yes" ]; then
-    	echo "log $df" >> $CONFFILE
+	echo "log $df" >> $CONFFILE
 else
 	rm -f $df
 fi
@@ -261,7 +261,7 @@ if [ "$COMPLZO" == "yes" ]; then
 	echo "comp-lzo" >> $CONFFILE
 fi
 if [ "$FLOAT" == "yes" ]; then
-        echo "float" >> $CONFFILE
+	echo "float" >> $CONFFILE
 fi
 if [ "$KEEPALIVE" == "yes" ]; then
 	echo "keepalive $KEEPALIVE_PING $KEEPALIVE_TIMEOUT" >> $CONFFILE
@@ -283,6 +283,6 @@ fi
 
 fi
 count=$((count+1));
-  
+
 done
 
