@@ -326,6 +326,11 @@ config FREETZ_MODULE_l2cap
 	select FREETZ_MODULE_bluetooth
 	default n
 
+config FREETZ_MODULE_bnep
+	bool "bnep.ko"
+	select FREETZ_MODULE_l2cap
+	default n
+	
 config FREETZ_MODULE_rfcomm
 	bool "rfcomm.ko"
 	select FREETZ_MODULE_l2cap
