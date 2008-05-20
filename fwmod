@@ -495,7 +495,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	if [ "$FREETZ_DEVELOPER_VERSION_STRING" == "y" ]; then
-		if SVN_VERSION="$(svnversion | tr ":" "_")"; then
+		# be compatible: older versions of svnversion need WC_PATH
+		if SVN_VERSION="$(svnversion . | tr ":" "_")"; then
 			[ "${SVN_VERSION:0:6}" == "export" ] && SVN_VERSION=""
 			[ "$SVN_VERSION" != "" ] && SVN_VERSION="-$SVN_VERSION"
 		fi
@@ -748,7 +749,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		# Remove old busybox links
-		find "$FILESYSTEM_MOD_DIR" \( -lname "busybox" -or -lname "*/busybox" \) -delete
+		# be compatible: do not use -delete (not found in older versions of find)
+		find "$FILESYSTEM_MOD_DIR" \( -lname "busybox" -or -lname "*/busybox" \) -print0 | xargs -0 rm
 
 		# Install new busybox links
 		for link in $(cat "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links"); do
