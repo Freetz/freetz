@@ -24,6 +24,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		install-headers install-lib
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libjpeg.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*.so* $(JPEG_TARGET_DIR)/
