@@ -1,9 +1,9 @@
---- etc/init.d/rc.S.orig	2007-10-24 18:06:19.000000000 +0200
-+++ etc/init.d/rc.S	2007-10-24 18:06:19.000000000 +0200
-@@ -72,6 +72,20 @@
- mount -o nosuid -t tmpfs dev /dev
- /sbin/makedevs -d /etc/device.table /
- mount -a
+--- etc/init.d/rc.S.orig	2008-05-08 22:47:51.000000000 +0200
++++ etc/init.d/rc.S	2008-05-08 22:47:51.000000000 +0200
+@@ -82,6 +82,20 @@
+ ##########################################################################################
+ ##########################################################################################
+ echo init-start 120 >/dev/watchdog
 +
 +# Load boot loader kernel_args API
 +. /usr/bin/kernel_args
@@ -18,6 +18,6 @@
 +	/etc/init.d/rc.inotify_tools start 
 +fi
 +
- #file "./arch/etc/init.d/rc.watchdog.sh", 0
-  echo init-start 120 >/dev/watchdog
- #file "stdin", 117
+ ##########################################################################################
+ ## aus den kernel parameters die für die module ermitteln
+ ##########################################################################################

@@ -55,7 +55,7 @@ choice
 		bool "Fon 5050"
 
 	config FREETZ_TYPE_FON_5140
-		select FREETZ_AVM_VERSION_04_33
+		select FREETZ_AVM_VERSION_04_49
 		bool "Fon 5140"
 
 	config FREETZ_TYPE_FON_WLAN
@@ -67,7 +67,7 @@ choice
 		bool "Fon WLAN 7050"
 
 	config FREETZ_TYPE_FON_WLAN_7113
-		select FREETZ_AVM_VERSION_04_40
+		select FREETZ_AVM_VERSION_04_49
 		bool "Fon WLAN 7113"
 
 	config FREETZ_TYPE_FON_WLAN_7140
@@ -410,7 +410,9 @@ config FREETZ_REPLACE_KERNEL
 		FREETZ_SHOW_ADVANCED && \
 		! (FREETZ_TYPE_LABOR && ! FREETZ_TYPE_LABOR_VPN) && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
+		! FREETZ_TYPE_FON_5140 && \
 		! FREETZ_TYPE_FON_7150 && \
+		! FREETZ_TYPE_FON_WLAN_7113 && \
 		! (FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN) && \
 		! FREETZ_TYPE_FON_WLAN_7141 && \
 		! (FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR_VPN) && \
@@ -1342,12 +1344,12 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_fon.en.06.04.49.image"					if FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz.box_fon_5010.annexa.48.04.43.image"				if FREETZ_TYPE_FON_5010 && FREETZ_TYPE_LANG_A_CH
 	default "fritz.box_fon_5050.12.04.31.image"					if FREETZ_TYPE_FON_5050
-	default "fritz.box_fon_5140.43.04.37.image"					if FREETZ_TYPE_FON_5140
+	default "FRITZ.Box_Fon_5140.43.04.57.image"					if FREETZ_TYPE_FON_5140
 	default "fritz.box_fon_wlan.08.04.34.image"					if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN.AnnexA.en.08.04.49.image"				if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN.AnnexB.en.08.04.49.image"				if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz.box_fon_wlan_7050.14.04.33.image"				if FREETZ_TYPE_FON_WLAN_7050
-	default "fritz.box_fon_wlan_7113.60.04.40.image"				if FREETZ_TYPE_FON_WLAN_7113
+	default "FRITZ.Box_Fon_WLAN_7113.60.04.57.image"				if FREETZ_TYPE_FON_WLAN_7113
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.en.39.04.56.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexB.en.30.04.56.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
