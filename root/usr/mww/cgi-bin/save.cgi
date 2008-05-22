@@ -80,7 +80,7 @@ case "$form" in
 	pkg_*)
 		package=${form#pkg_}
 		[ -r "/mod/etc/default.$package/$package.save" ] && . "/mod/etc/default.$package/$package.save"
-		pkg_pre_save
+		pkg_pre_save | html
 		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 			if [ "$package" = mod ]; then
 				script=settings.cgi
@@ -106,17 +106,19 @@ case "$form" in
 			modconf save "$package"
 			echo 'done.'
 			
+			{
 			apply_changes "$package" "$oldstatus1" "$oldstatus2"
 			pkg_apply_save
 
 			modsave flash
+			} | html
 		fi
-		pkg_post_save
+		pkg_post_save | html
 		;;
 	def_*)
 		package=${form#def_}
 		[ -r "/mod/etc/default.$package/$package.save" ] && . "/mod/etc/default.$package/$package.save"
-		pkg_pre_def
+		pkg_pre_def | html
 
 		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 			if [ "$package" = mod ]; then 
@@ -132,12 +134,14 @@ case "$form" in
 			modconf default "$package"
 			echo 'done.'
 
+			{
 			apply_changes "$package" "$oldstatus1" "$oldstatus2"
 			pkg_apply_def
 
 			modsave flash
+			} | html
 		fi
-		pkg_post_def
+		pkg_post_def | html
 		;;
 	file_*)
 		file_id=${form#file_}
@@ -175,7 +179,7 @@ case "$form" in
 	*)
 		echo "$(lang de:"Fehler: Unbekanntes Formular" en:"Error: unknown form") '$form'"
 		;;
-esac | html
+esac
 
 echo '</pre>'
 echo -n "<p><form action=\"/cgi-bin/$script\">"
