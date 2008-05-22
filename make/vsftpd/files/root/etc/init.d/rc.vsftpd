@@ -10,13 +10,6 @@ pre_config() {
 
 	mkdir -p /var/run/vsftpd
 
-	# TODO: find a better way for this
-	if [ $VSFTPD_ALLOW_ROOT == "yes" ]; then
-		echo -n > /mod/etc/vsftpd.user_list
-	else
-		echo root > /mod/etc/vsftpd.user_list
-	fi
-
 	if [ ! -e "/var/tmp/ftp" ]; then
 		ln -s /mod/home/ftp /var/tmp/ftp
 	fi
@@ -34,25 +27,36 @@ write_config() {
 			cat /tmp/flash/${DAEMON}.extra
 		fi
 	) > /mod/etc/$DAEMON.conf
+
+	# TODO: find a better way for this
+	if [ $VSFTPD_ALLOW_ROOT == "yes" ]; then
+		echo -n > /mod/etc/vsftpd.user_list
+	else
+		echo root > /mod/etc/vsftpd.user_list
+	fi
 }
 
 status_log() {
-        modunreg status vsftpd vsftpd/vsftpd_log
-	if [ -e $LOGLINK ]; then
-	        rm -f $LOGLINK
-	fi
-
+	remove_status_log
         if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
                 ln -sf $VSFTPD_LOG_FILE $LOGLINK
                 modreg status vsftpd Vsftpd vsftpd/vsftpd_log
         fi
 }
 
+remove_status_log() {
+        modunreg status vsftpd vsftpd/vsftpd_log
+	rm -f $LOGLINK
+}
+
+config() {
+	write_config
+	status_log
+}
+
 start() {
 	echo -n 'Starting ftp server...'
-	write_config
-
-	status_log
+	config
 
 	$DAEMON 
 	exitval=$?
@@ -70,8 +74,7 @@ stop () {
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
 
-	modunreg status vsftpd vsftpd/vsftpd_log
-	rm -f $LOGLINK
+	remove_status_log
 	rm -f /mod/etc/$DAEMON.conf
 
 	if [ "$exitval" -eq 0 ]; then
@@ -82,7 +85,7 @@ stop () {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		pre_config
 
@@ -93,7 +96,7 @@ case "$1" in
 				echo "$DAEMON is disabled" 1>&2
 			else
 				echo "$DAEMON is started via inetd" 1>&2
-				status_log
+				config
 			fi
 			exit 1;
 		fi
@@ -124,8 +127,11 @@ case "$1" in
 			echo 'stopped'
 		fi
 		;;
+	config)
+		config	
+		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
 		exit 1
 		;;
 esac
