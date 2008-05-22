@@ -78,7 +78,7 @@ $SIG{"ALRM"} =
 			print ".";
 		}
 	};
-$scanning = 10;
+$scanning = 50;
 $probe->send($packet, 0, $broadcast);
 print "o";
 while($scanning) {
@@ -284,7 +284,7 @@ if ($opt{f}) {
 	if ($! && $! != EEXIST) {
 		die "recover.tmp: $!"
 	};
-	my $tar = "tools/tar";
+	my $tar = "./tools/tar";
 	system("$tar xvf $opt{f} -C recover.tmp ./var/tmp/kernel.image ./var/tmp/filesystem.image");
 	if ($? >> 8) {
 		die "$tar failed";
