@@ -1,0 +1,26 @@
+--- var/install.orig   2007-06-21 11:44:53.000000000 +0200
++++ var/install        2007-06-25 11:45:03.000000000 +0200
+@@ -218,6 +218,8 @@
+ else
+     export CONFIG_ENVIRONMENT_PATH=/proc/sys/urlader
+ fi
++#### Eumex with English FW: Force oem to "avme"
++echo "firmware_version avme" > ${CONFIG_ENVIRONMENT_PATH}/environment
+ export ANNEX=`cat ${CONFIG_ENVIRONMENT_PATH}/annex`
+ # check, if we have to recover missing annex in env
+ echo testing acceptance for device Fritz_Box_FON ...
+@@ -256,3 +258,3 @@
+-   if /etc/version --install=ar7_4MB_2eth_2ab_isdn_pots_05804 ; then
+-       echo device has installtype ar7_4MB_2eth_2ab_isdn_pots_05804
++   if /etc/version --install=ar7_4MB_2eth_2ab_isdn_pots_05804 || /etc/version --install=ar7_4MB_1eth_3ab_isdn_pots_63151 ; then
++       echo device has installtype ar7_4MB_2eth_2ab_isdn_pots_05804 or ar7_4MB_1eth_3ab_isdn_pots_63151
+        # passt der ANNEX ?
+@@ -263,7 +265,7 @@
+            # passt der OEM ?
+            if [ ! -z "${OEM}" ] ; then
+                oem_found=0
+-               for i in  avme ; do
++               for i in  avme avm tcom ; do
+                    if [ "$i" = "${OEM}" ] ; then
+                        echo "OK - OEM ${OEM} is supported"
+                        oem_found=1

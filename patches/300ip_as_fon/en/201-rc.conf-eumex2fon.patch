@@ -1,0 +1,25 @@
+--- etc/init.d/rc.conf.orig    2007-07-10 19:05:52.000000000 +0200
++++ etc/init.d/rc.conf 2007-07-10 19:05:52.000000000 +0200
+@@ -168,15 +168,18 @@
+ export CONFIG_ANNEX="B"
+ export CONFIG_VERSION="04.49"
+ export CONFIG_SUBVERSION=""
+-export CONFIG_INSTALL_TYPE="ar7_4MB_2eth_2ab_isdn_pots_05804"
+-export CONFIG_VERSION_MAJOR="06"
++export CONFIG_INSTALL_TYPE="ar7_4MB_1eth_3ab_isdn_pots_63151"
++export CONFIG_VERSION_MAJOR="15"
+ export CONFIG_ROMSIZE="4"
+ export CONFIG_RAMSIZE="16"
+ export CONFIG_RELEASE="1"
++export CONFIG_PRODUKT_NAME="FRITZ!Box Fon Eumex300IP"
++export CONFIG_OEM_DEFAULT="avme"
++export CONFIG_HOSTNAME="eumex.ip"
+ ##########################################################################################
+-## OEM Ermitteln
++## OEM Ermitteln. Eumex Englisch: Wir koennen nur AVME ;-)
+ ##########################################################################################
+-OEM_tmp=`cat $CONFIG_ENVIRONMENT_PATH/firmware_version`
++OEM_tmp="avme"
+ if [ -z "${OEM_tmp}" ] ; then
+ OEM_tmp=$CONFIG_OEM_DEFAULT
+ fi

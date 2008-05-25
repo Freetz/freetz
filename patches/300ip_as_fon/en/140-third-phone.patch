@@ -1,0 +1,221 @@
+--- usr/www/avme/en/html/en/first/first_Sip_3.frm.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/first/first_Sip_3.frm	2007-06-25 11:23:13.000000000 +0200
+@@ -3,6 +3,7 @@
+ <input type="hidden" name="var:telnr" value="<? echo $var:telnr ?>" id="uiPostTelnr">
+ <input type="hidden" name="telcfg:settings/MSN/Port0/MSN0" value="<? query telcfg:settings/MSN/Port0/MSN0 ?>" id="uiPostNr00" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/MSN0" value="<? query telcfg:settings/MSN/Port1/MSN0 ?>" id="uiPostNr10" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/MSN0" value="<? query telcfg:settings/MSN/Port2/MSN0 ?>" id="uiPostNr20" disabled>
+ <? multiquery telcfg:settings/SIP/list '
+ <input type="hidden" name="telcfg:settings/$1/Fallback" value="<? query telcfg:settings/$1/Fallback ?>" id="uiPostFallback$0" disabled>
+ ' ?>
+--- usr/www/avme/en/html/en/first/first_Sip_3.js.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/first/first_Sip_3.js	2007-06-25 11:23:13.000000000 +0200
+@@ -227,5 +227,6 @@
+ function SetNst (nummer) {
+ if (jslGetValue("uiPostNr00") == "") {jslSetValue("uiPostNr00", nummer); jslEnable("uiPostNr00");}
+ if (jslGetValue("uiPostNr10") == "") {jslSetValue("uiPostNr10", nummer); jslEnable("uiPostNr10");}
++if (jslGetValue("uiPostNr20") == "") {jslSetValue("uiPostNr20", nummer); jslEnable("uiPostNr20");}
+ }
+ </script>
+--- usr/www/avme/en/html/en/first/first_Sip_free.frm.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/first/first_Sip_free.frm	2007-06-25 11:23:13.000000000 +0200
+@@ -26,6 +26,7 @@
+ <input type="hidden" name="connection_voip:settings/password" value="<? query connection_voip:settings/password ?>" id="uiPostVoIPPassword" disabled />
+ <input type="hidden" name="telcfg:settings/MSN/Port0/MSN0" value="<? query telcfg:settings/MSN/Port0/MSN0 ?>" id="uiPostNr00" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/MSN0" value="<? query telcfg:settings/MSN/Port1/MSN0 ?>" id="uiPostNr10" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/MSN0" value="<? query telcfg:settings/MSN/Port2/MSN0 ?>" id="uiPostNr20" disabled>
+ <input type="hidden" name="telcfg:settings/UsePSTN" value="<? query telcfg:settings/UsePSTN ?>" id="uiPostPstn">
+ <? multiquery telcfg:settings/Routing/Group/list `
+ <input type="hidden" name="telcfg:command/Routing/Group" value="delete" id="uiPostDelete$0" disabled>
+--- usr/www/avme/en/html/en/first/first_Sip_free.js.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/first/first_Sip_free.js	2007-06-25 11:23:13.000000000 +0200
+@@ -87,6 +87,7 @@
+ function SetNst (nummer) {
+ if (jslGetValue("uiPostNr00") == "") {jslSetValue("uiPostNr00", nummer); jslEnable("uiPostNr00");}
+ if (jslGetValue("uiPostNr10") == "") {jslSetValue("uiPostNr10", nummer); jslEnable("uiPostNr10");}
++if (jslGetValue("uiPostNr20") == "") {jslSetValue("uiPostNr20", nummer); jslEnable("uiPostNr20");}
+ }
+ function OnType(wert) {
+ jslSetValue( "uiPostSwitchType", wert);
+--- usr/www/avme/en/html/en/fon/dial.js.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/dial.js	2007-06-25 11:23:13.000000000 +0200
+@@ -21,6 +21,9 @@
+ name = jslGetValue("uiPostFon1");
+ if (name.length == 0) name = g_Fon2;
+ jslAddOption("uiViewPort", "2", name, false);
++name = jslGetValue("uiPostFon2");
++if (name.length == 0) name = g_Fon3;
++jslAddOption("uiViewPort", "3", name, false);
+ jslSetSelection("uiViewPort", "1");
+ if (jslGetValue("uiTestPort") != "") {
+ jslSetSelection("uiViewPort", jslGetValue("uiTestPort"));
+--- usr/www/avme/en/html/en/fon/fonbuch.js.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/fonbuch.js	2007-06-25 11:23:13.000000000 +0200
+@@ -152,6 +152,10 @@
+ name = jslGetValue("uiPostFon1");
+ if (name.length == 0) name = g_Fon2;
+ break;
++case "3":
++name = jslGetValue("uiPostFon2");
++if (name.length == 0) name = g_Fon3;
++break;
+ }
+ return name;
+ }
+--- usr/www/avme/en/html/en/fon/foncalls.js.orig	2007-06-25 11:23:13.000000000 +0200
++++ usr/www/avme/en/html/en/fon/foncalls.js	2007-06-25 11:23:13.000000000 +0200
+@@ -113,6 +113,10 @@
+ name = jslGetValue("uiPostFon1");
+ if (name.length == 0) name = g_Fon2;
+ break;
++case "3":
++name = jslGetValue("uiPostFon2");
++if (name.length == 0) name = g_Fon3;
++break;
+ }
+ return name;
+ }
+--- usr/www/avme/en/html/en/fon/fonlist.html.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/fonlist.html	2007-06-25 11:23:13.000000000 +0200
+@@ -35,6 +35,14 @@
+ <img src="../html/<? echo $var:lang ?>/images/bearbeiten.gif" align="bottom" width="16" height="16" hspace="4">
+ </button></td>
+ </tr>
++<tr>
++<td class="c1"><? echo $var:Text10 ?></td>
++<td class="c2"><? query telcfg:settings/MSN/Port2/Name ?></td>
++<td class="c3"><script type="text/javascript">document.write(uiNummerDisplay("<? query telcfg:settings/MSN/Port2/MSN0 ?>"));</script></td>
++<td class="c4" style="text-align: right;"><button type="button" id="uiViewEdit1" onclick="uiEditFon(2)" title="<? echo $var:txtIconBtnEdit ?>" style="width: 30px">
++<img src="../html/<? echo $var:lang ?>/images/bearbeiten.gif" align="bottom" width="16" height="16" hspace="4">
++</button></td>
++</tr>
+ </table>
+ </div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
+--- usr/www/avme/en/html/en/fon/rulall1.frm.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/rulall1.frm	2007-06-25 11:23:13.000000000 +0200
+@@ -33,6 +33,8 @@
+ <input type="hidden" name="telcfg:settings/MSN/Port0/DiversionNumber" value="<? query telcfg:settings/MSN/Port0/DiversionNumber ?>" id="uiPostNsNr1" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/Diversion" value="<? query telcfg:settings/MSN/Port1/Diversion ?>" id="uiPostNsArt2" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/DiversionNumber" value="<? query telcfg:settings/MSN/Port1/DiversionNumber ?>" id="uiPostNsNr2" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/Diversion" value="<? query telcfg:settings/MSN/Port2/Diversion ?>" id="uiPostNsArt3" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/DiversionNumber" value="<? query telcfg:settings/MSN/Port2/DiversionNumber ?>" id="uiPostNsNr3" disabled>
+ <? multiquery telcfg:settings/CallerIDActions/list `
+ <input type="hidden" name="telcfg:settings/$1/CallerID" value="<? query telcfg:settings/$1/CallerID ?>" id="uiPostRubRufnr$1" disabled>
+ <input type="hidden" name="telcfg:settings/$1/Action" value="<? query telcfg:settings/$1/Action ?>" id="uiPostRubAction$1" disabled>
+--- usr/www/avme/en/html/en/fon/rulall1.js.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/rulall1.js	2007-06-25 11:23:13.000000000 +0200
+@@ -214,6 +214,7 @@
+ if (Fon) {
+ addOption(id, "FON1", "FON 1");
+ addOption(id, "FON2", "FON 2");
++addOption(id, "FON3", "FON 3");
+ }
+ fillId(id, false);
+ }
+--- usr/www/avme/en/html/en/fon/rulall.frm.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/rulall.frm	2007-06-25 11:23:13.000000000 +0200
+@@ -2,6 +2,8 @@
+ <input type="hidden" name="telcfg:settings/MSN/Port0/DiversionNumber" value="<? query telcfg:settings/MSN/Port0/DiversionNumber ?>" id="uiPostRulNr1" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/Diversion" value="<? query telcfg:settings/MSN/Port1/Diversion ?>" id="uiPostRulArt2" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/DiversionNumber" value="<? query telcfg:settings/MSN/Port1/DiversionNumber ?>" id="uiPostRulNr2" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/Diversion" value="<? query telcfg:settings/MSN/Port2/Diversion ?>" id="uiPostRulArt3" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/DiversionNumber" value="<? query telcfg:settings/MSN/Port2/DiversionNumber ?>" id="uiPostRulNr3" disabled>
+ <? multiquery sip:settings/sip/list(displayname) '<input type="hidden" name="sip:settings/$1/displayname" value="$2" id="ui$1" disabled>
+ ' ?>
+ <? multiquery telcfg:settings/Diversity/list '<input type="hidden" name="telcfg:settings/$1/Active" value="<? query telcfg:settings/$1/Active ?>" id="uiPostActiv$1">
+--- usr/www/avme/en/html/en/fon/rulall.html.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/rulall.html	2007-06-25 11:23:13.000000000 +0200
+@@ -24,6 +24,7 @@
+ </tr>
+ <script type="text/javascript">document.write(TrNs("1", "<? query telcfg:settings/MSN/Port0/DiversionNumber ?>", "<? query telcfg:settings/MSN/Port0/Diversion ?>"));</script>
+ <script type="text/javascript">document.write(TrNs("2", "<? query telcfg:settings/MSN/Port1/DiversionNumber ?>", "<? query telcfg:settings/MSN/Port1/Diversion ?>"));</script>
++<script type="text/javascript">document.write(TrNs("3", "<? query telcfg:settings/MSN/Port2/DiversionNumber ?>", "<? query telcfg:settings/MSN/Port2/Diversion ?>"));</script>
+ <? multiquery telcfg:settings/Diversity/list(MSN,Outgoing,Destination,Action) `
+ <script type="text/javascript">document.write(TrRul("$1", "$2", "$3", "$4", "$5"));</script><!-- "$0" / "$1" -->
+ ` ?>
+--- usr/www/avme/en/html/en/fon/rulall.js.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/rulall.js	2007-06-25 11:23:13.000000000 +0200
+@@ -102,6 +102,7 @@
+ function uiDoSave() {
+ SetFonActiv("1");
+ SetFonActiv("2");
++SetFonActiv("3");
+ jslFormSubmitEx("fon", "rulall", "rulall");
+ }
+ function SetFonActiv (n) {
+--- usr/www/avme/en/html/en/fon/sip1.frm.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/sip1.frm	2007-06-25 11:23:13.000000000 +0200
+@@ -58,6 +58,7 @@
+ <input type="hidden" name="telcfg:settings/Location/OKZ" value="<? query telcfg:settings/Location/OKZ ?>" id="uiPostOKZ" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port0/MSN0" value="<? query telcfg:settings/MSN/Port0/MSN0 ?>" id="uiPostNr00" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/MSN0" value="<? query telcfg:settings/MSN/Port1/MSN0 ?>" id="uiPostNr10" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/MSN0" value="<? query telcfg:settings/MSN/Port2/MSN0 ?>" id="uiPostNr20" disabled>
+ <input type="hidden" name="connection0:pppoe:settings/username" value="<? query connection0:pppoe:settings/username ?>" id="uiPostPppUsername" disabled>
+ <? multiquery telcfg:settings/SIP/list '
+ <input type="hidden" name="telcfg:settings/$1/Fallback" value="<? query telcfg:settings/$1/Fallback ?>" id="uiPostFallback$0" disabled>
+--- usr/www/avme/en/html/en/fon/sip1.js.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/sip1.js	2007-06-25 11:23:13.000000000 +0200
+@@ -879,6 +879,7 @@
+ function SetNst (nummer) {
+ if (jslGetValue("uiPostNr00") == "") {jslSetValue("uiPostNr00", nummer); jslEnable("uiPostNr00");}
+ if (jslGetValue("uiPostNr10") == "") {jslSetValue("uiPostNr10", nummer); jslEnable("uiPostNr10");}
++if (jslGetValue("uiPostNr20") == "") {jslSetValue("uiPostNr20", nummer); jslEnable("uiPostNr20");}
+ }
+ // führende Null bei Ortsvorwahl abschneiden
+ function GetOKZohneNull (id) {
+--- usr/www/avme/en/html/en/fon/wecker.js.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/fon/wecker.js	2007-06-25 11:23:13.000000000 +0200
+@@ -110,6 +110,9 @@
+ name = jslGetValue("uiPostFon1");
+ if (name.length == 0) name = g_Fon2;
+ jslAddOption(id, "2", name, false);
++name = jslGetValue("uiPostFon2");
++if (name.length == 0) name = g_Fon3;
++jslAddOption(id, "3", name, false);
+ jslAddOption(id, "9", g_alleTelefone, false);
+ jslSetSelection(id, "9");
+ jslSetSelection(id, wert);
+--- usr/www/avme/en/html/en/system/nacht.frm.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/system/nacht.frm	2007-06-25 11:23:13.000000000 +0200
+@@ -10,3 +10,6 @@
+ <input type="hidden" name="telcfg:settings/MSN/Port1/RingAllowed" value="<? query telcfg:settings/MSN/Port1/RingAllowed ?>" id="uiPostRingAllowed1" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/NoRingTime" value="<? query telcfg:settings/MSN/Port1/NoRingTime?>" id="uiPostNoRingTime1" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/NoRingWithNightSetting" value="<? query telcfg:settings/MSN/Port1/NoRingWithNightSetting?>" id="uiPostNoRingNS1" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/RingAllowed" value="<? query telcfg:settings/MSN/Port2/RingAllowed ?>" id="uiPostRingAllowed2" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/NoRingTime" value="<? query telcfg:settings/MSN/Port2/NoRingTime?>" id="uiPostNoRingTime2" disabled>
++<input type="hidden" name="telcfg:settings/MSN/Port2/NoRingWithNightSetting" value="<? query telcfg:settings/MSN/Port2/NoRingWithNightSetting?>" id="uiPostNoRingNS2" disabled>
+--- usr/www/avme/en/html/en/system/nacht.js.orig	2007-06-21 11:44:30.000000000 +0200
++++ usr/www/avme/en/html/en/system/nacht.js	2007-06-25 11:23:13.000000000 +0200
+@@ -61,15 +61,18 @@
+ jslSetValue("uiPostNachtFon", "1");
+ Klingelsperre("0", starth, startm, endh, endm);
+ Klingelsperre("1", starth, startm, endh, endm);
++Klingelsperre("2", starth, startm, endh, endm);
+ } else {
+ jslSetValue("uiPostNachtFon", "0");
+ KeineSperre("0");
+ KeineSperre("1");
++KeineSperre("2");
+ }
+ } else {
+ jslSetValue("uiPostUseNacht", "0");
+ KeineSperre("0");
+ KeineSperre("1");
++KeineSperre("2");
+ }
+ jslFormSubmitEx("system", "nacht");
+ }
+--- usr/www/avme/en/html/en/fon_config/fon_config_1.js	2007-06-05 19:07:11.000000000 +0200
++++ usr/www/avme/en/html/en/fon_config/fon_config_1.js	2007-06-16 14:59:37.000000000 +0200
+@@ -37,6 +37,10 @@
+ if (name.length == 0) name = _deviceNotation;
+ g_NameList[1] = new String(name);
+ jslAddOption("uiViewPort", "1", g_txtPort2, false);
++name = jslGetValue("uiPostFon2");
++if (name.length == 0) name = _deviceNotation;
++g_NameList[2] = new String(name);
++jslAddOption("uiViewPort", "2", g_txtPort3, false);
+ <? if neq $var:DeviceType 'AB' `
+ ` ?>
+ if ( jslGetValue( "uiDevicePort").length == 0 ) {

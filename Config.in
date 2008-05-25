@@ -33,7 +33,7 @@ choice
 			Select your box type here.
 
 	config FREETZ_TYPE_300IP_AS_FON
-		select FREETZ_AVM_VERSION_04_33
+		select FREETZ_AVM_VERSION_04_49
 		bool "300IP as Fon"
 		select FREETZ_BRANDING_tcom
 		select FREETZ_BRANDING_avm
@@ -291,6 +291,7 @@ choice
 			! FREETZ_TYPE_ALIEN_HARDWARE && \
 			( \
 			FREETZ_TYPE_FON || \
+			FREETZ_TYPE_300IP_AS_FON || \
 			FREETZ_TYPE_FON_WLAN || \
 			FREETZ_TYPE_FON_WLAN_7140 || \
 			FREETZ_TYPE_FON_WLAN_7170 \
@@ -1028,6 +1029,7 @@ config FREETZ_REMOVE_WEBSRV
 		! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN ) \
 		&& ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH ) \
 		&& ! ( FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN ) \
+		&& ! ( FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_EN ) \
 		&& ! ( FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN ) \
 		&& ! FREETZ_TYPE_FON_WLAN_7141 \
 		&& ! FREETZ_TYPE_FON_WLAN_7170 \
@@ -1295,7 +1297,9 @@ config FREETZ_DL_SITE
 	string "Firmware site"		if FREETZ_DL_OVERRIDE
 	depends on ! FREETZ_TYPE_LABOR
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.2170/firmware/deutsch"						if FREETZ_TYPE_2170
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch"						if FREETZ_TYPE_300IP_AS_FON
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch"						if FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_DE
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_a"				if FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_b"				if FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/deutsch"						if FREETZ_TYPE_FON && FREETZ_TYPE_LANG_DE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_a"				if FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon/firmware/english/annex_b"				if FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
@@ -1332,7 +1336,9 @@ config FREETZ_DL_SOURCE
 	string "Firmware source"	if FREETZ_DL_OVERRIDE
 	default "fritz.box_2170.51.04.34.image"						if FREETZ_TYPE_2170 && ! FREETZ_TYPE_LABOR
 	default "FRITZBox_2170_AnnexB_51_04_52-10366.image"				if FREETZ_TYPE_2170 && FREETZ_TYPE_LABOR_VPN
-	default "fritz.box_fon.06.04.33.image"						if FREETZ_TYPE_300IP_AS_FON
+	default "fritz.box_fon.06.04.33.image"						if FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_DE
+	default "fritz.box_fon.annexa.en.06.04.49.image"				if FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
+	default "fritz.box_fon.en.06.04.49.image"					if FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz.box_fon.06.04.33.image"						if FREETZ_TYPE_FON && FREETZ_TYPE_LANG_DE
 	default "fritz.box_fon.annexa.en.06.04.49.image"				if FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "fritz.box_fon.en.06.04.49.image"					if FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
