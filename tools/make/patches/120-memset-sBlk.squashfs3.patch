@@ -1,0 +1,13 @@
+diff -burN squashfs-tools.orig/mksquashfs.c squashfs-tools/mksquashfs.c
+--- squashfs-tools.orig/mksquashfs.c	2008-05-16 17:13:24.000000000 +0200
++++ squashfs-tools/mksquashfs.c	2008-05-26 00:48:58.000000000 +0200
+@@ -3262,6 +3262,9 @@
+ 	int readb_mbytes = READER_BUFFER_DEFAULT, writeb_mbytes = WRITER_BUFFER_DEFAULT;
+ 	int s_minor;
+ 
++	/* set struct sBlk to zero */
++	memset(&sBlk, 0, sizeof (sBlk));
++
+ #if __BYTE_ORDER == __BIG_ENDIAN
+ 	be = TRUE;
+ #else
