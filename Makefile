@@ -212,9 +212,9 @@ IMAGE2:=$(DL_DIR)/$(DL_SOURCE2)
 DL_IMAGE+=$(IMAGE2)
 
 $(DL_DIR)/$(DL_SOURCE2):
-	@if [ -n $(DL_SOURCE2_CONTAINER) ]; then \
+	@if [ -n "$(DL_SOURCE2_CONTAINER)" ]; then \
 		[ -r $(DL_DIR)/$(DL_SOURCE2_CONTAINER) ] || ./fwmod_download -C $(DL_DIR) $(DL_SITE2) $(DL_SOURCE2_CONTAINER) > /dev/null; \
-		case $(DL_SOURCE2_CONTAINER_SUFFIX) in \
+		case "$(DL_SOURCE2_CONTAINER_SUFFIX)" in \
 			.zip) \
 				unzip $(DL_DIR)/$(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_DIR); \
 				;; \
