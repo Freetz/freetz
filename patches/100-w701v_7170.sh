@@ -37,7 +37,7 @@ elif [ "$FREETZ_TYPE_LABOR_GAMING" == "y" ];then
 elif [ "$FREETZ_TYPE_LABOR_MINI" == "y" ];then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
 else
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701v_7170.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
 fi
 
 echo2 "moving default config dir, creating tcom and congstar symlinks"
