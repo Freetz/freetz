@@ -393,7 +393,7 @@ exclude-lists:
 common-clean:
 	./fwmod_custom clean
 	rm -f .static .dynamic
-	rm -f .exclude .exclude-dist
+	rm -f .exclude .exclude-dist-tmp
 	rm -f *.image
 	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
@@ -415,18 +415,22 @@ common-distclean: common-clean
 
 dist: distclean
 	version="$$(cat .version)"; \
+	curdir="$$(basename $$(pwd))"; \
 	dir="$$(cat .version | sed -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
 	( \
 		cd ../; \
-		find "$$dir" -type d -name .svn -prune; \
-		echo "$${dir}/.exclude-dist" \
-		echo "$${dir}/packages" \
-	) > .exclude-dist; \
-	( \
-		cd ../; \
-		tar --exclude-from="$${dir}/.exclude-dist" -cvjf "$${version}.tar.bz2" "$$dir" \
+		[ "$$curdir" == "$$dir" ] || mv "$$curdir" "$$dir"; \
+		( \
+			find "$$dir" -type d -name .svn -prune; \
+			sed -e "s/\(.*\)/$$dir\/\1/" "$$dir/.exclude-dist"; \
+			echo "$${dir}/.exclude-dist"; \
+			echo "$${dir}/.exclude-dist-tmp"; \
+		) > "$$dir/.exclude-dist-tmp"; \
+		tar --exclude-from="$${dir}/.exclude-dist-tmp" -cvjf "$${version}.tar.bz2" "$$dir"; \
+		[ "$$curdir" == "$$dir" ] || mv "$$dir" "$$curdir"; \
+		cd "$$curdir"; \
 	)
-	rm -f .exclude-dist
+	rm -f .exclude-dist-tmp
 
 .PHONY: all world step menuconfig config oldconfig defconfig exclude-lists tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
