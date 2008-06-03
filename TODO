@@ -12,17 +12,6 @@ HIGH PRIORITY - critical bugs, important features
 MEDIUM PRIORITY - normal bugs, features, improvements
 -----------------------------------------------------
 
-- Bump uClibc to 0.9.29
-    Status (by Oliver): Done.
-    Remark (by kriegaex): Oliver says that it still does not run smoothly, so
-    0.9.28 should stay default for the time being. One problem reported by
-    Oliver is the following concerning UPnP (igdd):
-        Jan  1 01:01:05 igdd[533]: get_file_content: mmap(/etc/default/avm/igddesc.xml) failed - Invalid argument (22)
-        Jan  1 01:01:05 igdd[533]: parse_xml_files: get_text_filecontent failed
-        Jan  1 01:01:05 igdd[533]: parse_xml_files failed
-        Jan  1 01:01:05 igdd[533]: upnp_server_start: failed
-        Jan  1 01:01:05 igdd[533]: upnp_server_stop: wrong parameter
-        Jan  1 01:01:05 igdd[533]: msg_receive_handler: Error:ADDDEV_RESP:igd:igdcb:3::::::
 
 -User reports that box crashes if nfsd works in sync mode 
   (http://www.ip-phone-forum.de/showpost.php?p=994414&postcount=154)
@@ -38,12 +27,6 @@ MEDIUM PRIORITY - normal bugs, features, improvements
   of mini_fo being a fallback for NFS, but in a more general way. Maybe we can
   even externalise common parts of code, but the latter is just nice to have.
 
-- 7270 seems to be ur8 (not ohio), as if we have a opensource package
-  we should check this and change Config.in accordingly. There will be
-  some work to do because kernel version differs (2.6.19)
-    Status (by Oliver): 55.04 media source is integrated until we have a
-    full open source package. Modules work, but don't try the kernel!
-
 - Where do strange hostnames like "Speedport-W-701V-33.04.44" or
   "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
   Remark (by Oliver): I think from multid. How could we avoid that?
@@ -53,19 +36,12 @@ MEDIUM PRIORITY - normal bugs, features, improvements
 - MD5 checksums for DS-Mod packages (our own as well as external ones) incl.
   necessary make macros or shell scripts
 
-- Think about whether we can do something about LCR Auto Updater not working
-  without httpd restart, if httpd replaces websrv.
-    Remark (by kriegaex): FAQ item in IPPF tells users to add a restart call
-    at the end of the LCR installation procedure. This is not a perfect
-    solution, but a good workaround.
-
-- Find a better place for iptables libs
-
 - Enhance Virtual-IP-CGI and Openntpd so it supports other (and possibly
   multiple) interfaces than lan:1
   (http://www.ip-phone-forum.de/showpost.php?p=886345)
     Remark (by Oliver): Add interface option to webinterface (virtualip).
     Openntpd uses eth0 in ethmode_router and lan in ethmode_bridge.
+    Virtual-IP-CGI doesn't work with actual firmwares anymore.
 
 - Refactor Dnsmasq package, particularly rc.dnsmasq (full of logical mistakes!)
   and recently improved, but still suboptimal multid wrapper. The whole thing
@@ -110,15 +86,10 @@ MEDIUM PRIORITY - normal bugs, features, improvements
 LOW PRIORITY - nice to have, cosmetics, ideas
 ---------------------------------------------
 
-- An automatic mount helper for filesystems would be nice feature (e.g. ntfs)
-  Status (by oliver): I have added fstyp which is able to detect the filesystem
-  type of an device.
-
-- Copy actual fakeroot version to mirrors and get it from there (before new 
-  release)
 
 - Make ccache build script aware of gcc version change (needs rebuild in that
   case)
+    Comment (by Oliver): This would need a config suboption like some packages?
 
 - Make OPIE (One Time Passwords in Everything) work with telnet, FTP and SSH
   daemons.
@@ -132,16 +103,6 @@ LOW PRIORITY - nice to have, cosmetics, ideas
     Update (by kriegaex): Now we have BusyBox 1.7.2 with PAM login support, so
     maybe we can have another look at the Dropbear issue now, provided I can
     figure out how to do that.
-
-- Use kernel_args to optionally deactivate DS-Mod or parts of it in order to
-  save an installation without recovering; idea by MaxMuster
-  (http://www.ip-phone-forum.de/showpost.php?p=960303).
-    Remark (by kriegaex): Would work nicely in connection with a script similar
-    to push_firmware which would toggle the switch from outside via EVA FTP.
-    We might as well have several switches to selectively disable debug.cfg,
-    DS-Mod start-up or rc.custom. Essential about this is that we can offer a
-    way of modifying the the contents of debug.cfg and ds_mod. Very nice idea
-    indeed, and probably not all that hard to implement.
 
 - Experiment with and possibly use dietlibc to create smaller binaries by
   statically compiling in stuff usually dynamically linked to uClibc.
@@ -184,6 +145,29 @@ LOW PRIORITY - nice to have, cosmetics, ideas
     awx, though, if we ever decide to do everything from scratch or start a
     big refactoring project.
 
+- Idea by heini66: implement call-back function as an add-on to DTMF-Box, see
+  http://www.ip-phone-forum.de/showpost.php?p=941080&postcount=698 and
+  http://www.blindi.net/callback/index.php.
+
+- Idea by heini66: port Softmac WLAN driver from Openwrt. Goal is ad-hoc
+  networking, e.g. for Freifunk.
+
+
+FINISHED, NEEDS TESTING
+-----------------------
+
+- Use kernel_args to optionally deactivate DS-Mod or parts of it in order to
+  save an installation without recovering; idea by MaxMuster
+  (http://www.ip-phone-forum.de/showpost.php?p=960303).
+    Remark (by kriegaex): Would work nicely in connection with a script similar
+    to push_firmware which would toggle the switch from outside via EVA FTP.
+    We might as well have several switches to selectively disable debug.cfg,
+    DS-Mod start-up or rc.custom. Essential about this is that we can offer a
+    way of modifying the the contents of debug.cfg and ds_mod. Very nice idea
+    indeed, and probably not all that hard to implement.
+    Status (by Oliver): Done. http://www.ip-phone-forum.de/showthread.php?t=155770
+    Perhaps we should rename ds_off?
+
 - Idea from somewhere in IPPF: implement some kind of auto-update functionality
   for ds26, especially for patches in between releases. This would lead to
   fewer questions in the forum and more flexibility as well as a more
@@ -195,16 +179,28 @@ LOW PRIORITY - nice to have, cosmetics, ideas
     or a similar SVN branch again. A simple "svn update" would upgrade DS-Mod
     with the latest bugfixes.
 
-- Idea by heini66: implement call-back function as an add-on to DTMF-Box, see
-  http://www.ip-phone-forum.de/showpost.php?p=941080&postcount=698 and
-  http://www.blindi.net/callback/index.php.
+- An automatic mount helper for filesystems would be nice feature (e.g. ntfs)
+    Status (by Oliver): Done.
 
-- Idea by heini66: port Softmac WLAN driver from Openwrt. Goal is ad-hoc
-  networking, e.g. for Freifunk.
+- Copy actual fakeroot version to mirrors and get it from there.
+    Status (by Oliver): Done.
 
+- 7270 seems to be ur8 (not ohio), as if we have a opensource package
+  we should check this and change Config.in accordingly. There will be
+  some work to do because kernel version differs (2.6.19)
+    Status (by Oliver): Done.
 
-FINISHED, NEEDS TESTING
------------------------
+- Bump uClibc to 0.9.29
+    Remark (by kriegaex): Oliver says that it still does not run smoothly, so
+    0.9.28 should stay default for the time being. One problem reported by
+    Oliver is the following concerning UPnP (igdd):
+        Jan  1 01:01:05 igdd[533]: get_file_content: mmap(/etc/default/avm/igddesc.xml) failed - Invalid argument (22)
+        Jan  1 01:01:05 igdd[533]: parse_xml_files: get_text_filecontent failed
+        Jan  1 01:01:05 igdd[533]: parse_xml_files failed
+        Jan  1 01:01:05 igdd[533]: upnp_server_start: failed
+        Jan  1 01:01:05 igdd[533]: upnp_server_stop: wrong parameter
+        Jan  1 01:01:05 igdd[533]: msg_receive_handler: Error:ADDDEV_RESP:igd:igdcb:3::::::
+    Remark (by Oliver): Don't change uClibc version used by AVM. This will avoid above error.
 
 - Check order in which packages are started at boot time (virtualip, ntfs,
   cifsmount, syslog-cgi)
@@ -359,4 +355,14 @@ FINISHED, NEEDS TESTING
   beautifully.
     Status (by kriegaex): done by Oliver, tested successfully on my W701V with
     29.04.40 (no beta or lab tested yet, because I do not use those).
+
+- Think about whether we can do something about LCR Auto Updater not working
+  without httpd restart, if httpd replaces websrv.
+    Remark (by kriegaex): FAQ item in IPPF tells users to add a restart call
+    at the end of the LCR installation procedure. This is not a perfect
+    solution, but a good workaround.
+    Remark (by Oliver): Most firmwares don't have websrv anymore...
+
+- Find a better place for iptables libs
+    Remark (by Oliver): Done. Added patch 150-iptables.sh. A bit odd but it works.
 
