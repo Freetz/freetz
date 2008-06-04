@@ -9,7 +9,16 @@ Latest changes:
     * fakeroot: bump version to 1.9.2, put archive on dsmod.magenbrot.net to
       avoid being forced to version bumps if version becomes unavailable
 
-- New packages, libs, modules, tools, hooks:
+- New tools and hooks:
+
+- New patches:
+    * multid wait
+    * remove annex firmware files
+    * remove dsld
+    * remove mediasrv
+    * remove telephony
+
+- New packages, libs, modules:
     * avm-firewall 2.0.3c
     * bash 3.2
     * bip 0.7.2
@@ -43,8 +52,26 @@ Latest changes:
     * wget 1.11.1
     * xrelayd 0.2
     * xyssl 0.8
+    * new kernel modules: blk_dev_md, bnep, crypt_aes, crypto_algapi,
+      crypto_blkcipher, crypto_cbc, crypto_manager, crypto_sha256, dm_crypt,
+      nls_utf8, pl2303, udf, x_tables
+      Some of these are not available for all boxes and/or firmwares. See
+      menuconfig to check this.
 
-- Updated packages, libs, modules, patches:
+- Updated tools and hooks:
+
+- Updated patches:
+    * remove assistant
+    * remove cdrom
+    * remove ftpd
+    * remove help
+    * remove samba
+    * remove vpn files
+    * samba
+    * webmenu signed
+    * webmenu wol
+
+- Updated packages and libs:
     * apache 1.3.41
     * bftpd 2.1
     * busybox 1.9.2
@@ -83,7 +110,6 @@ Latest changes:
     * php 5.2.5
     * pjproject 0.8.0
     * rrdtool 1.2.27
-    * ruby 1.8.6-p111
     * screen 4.0.3
     * sispmctl 2.6
     * strace 4.5.16
@@ -95,25 +121,46 @@ Latest changes:
     * vpnc 0.5.1
     * zlib 1.2.3
 
-- Remove packages, libs, modules, patches:
-    * removed samba 2.0.10
+- Remove packages, libs, modules, tools:
+    * removed firewall-cgi
     * removed orange box
-    * firewall-cgi
+    * removed samba 2.0.10
+
+- Removed patches
+    * AVM hidden pages patch
 
 - Firmware updates:
+    * Nearly all firmware version were updated since the last release. Please
+      see FIRMWARES for the list of currently supported boxes and firmwares.
 
 - BusyBox:
     * updated to version 1.9.2
+    * removed symlinks to non-existing applets
+    * make some additional busybox features configurable in menuconfig
 
 - Web interface:
-    * orange box was removed because it is outdated
-    * implemented avm-firewall web interface
-    * implemented webinterface for samba package
-    * added favicons by cuma and han-solo
+		* Freetz
+	    + generally, the Freetz-webinterface was updated to be more standards-
+	      compliant, load faster, allows for larger amounts of input data, and
+	      looks better with different screen resolutions and settings
+	    + the width of the webinterface display is now configurable
+	    + status of mass storage devices can be displayed in webinterface
+	    + more pages are localized
+	    + some actions like saving package options are more verbose
+	    + implemented avm-firewall web interface
+	    + implemented webinterface for samba package
+	    + added simple web interface for mini_fo
+	    + added favicons by cuma and han-solo
+    * AVM
+    	+ orange box was removed because it is outdated
 
 - Other stuff:
     * DSMod was completly renamed to Freetz
-    * New unix-conform user management
+    * new unix-conform user management
+    * help texts in menuconfig extended and clarified
+    * autorun/autoend functionality for mass storage devices
+    * use tmpfs instead of ramfs for /var
+    * enabled more packages for inetd
 
 === release ds26-15.2 ===
 
@@ -373,7 +420,7 @@ Latest changes:
       root password has been defined yet, proceed to renamed ar7login.bin for
       web password login.
     * Extend editor wrapper script to support disabling of the "do you really
-      want to save" question. How to: echo 0 > /tmp/flash/ask_save; modsave 
+      want to save" question. How to: echo 0 > /tmp/flash/ask_save; modsave
     * AVM web menu: Once more change the way the host part of the target URLs
       is determined. The host name might not always be a good idea if there
       are multiple boxes with the same host name in one LAN, e.g. a 7170 and a
@@ -711,7 +758,7 @@ Latest changes:
       CGIs, effectively enabling it to be used as an AVM  websrv replacement
     * Sync uclibc.mk with buildroot structure
     * depmod.pl moved to tools directory and removed from kernel build
-    * Fix netsnmp build (fails with multiple jobs) 
+    * Fix netsnmp build (fails with multiple jobs)
     * Fix bird build (fails with multiple jobs)
     * Mention 'make precompiled' in previously outdated README
     * Add uClibc config for 04.30
@@ -757,7 +804,7 @@ Latest changes:
   is and explaining that at least one of them should be selected for the
   firmware to work.
 - Bump callmonitor version to 1.9.2
-- Fix busybox rebuild when config changes (copied from openwrt) 
+- Fix busybox rebuild when config changes (copied from openwrt)
 - Add FritzBox Fon (06.04.30) to ds26
 - Disable CONFIG_KMOD kernel option (module auto-loader) because of missing
   symbol in original kernel. This is needed to make iptables run smoothly, but
@@ -865,9 +912,9 @@ Latest changes:
 - Checking for and cleaning up Subversion directories in build/modified
   before packing firmware image
 - Updated copyright notices and acknowledgements
-- Updated MOTD to reflect DS-Mod_26 series (different ASCII art) 
+- Updated MOTD to reflect DS-Mod_26 series (different ASCII art)
 - Fix menuconfig warning concerning download toolchain
-- Remove kernel-toolchain from target-toolchain prerequisites 
+- Remove kernel-toolchain from target-toolchain prerequisites
 - Add gcc-4.1.2 to target toolchain menu after it has been fixed
 - FUSE module got lost when removed KERNEL_MODULES_DIR
 - Add mirror for download toolchain
@@ -1009,7 +1056,7 @@ Latest changes:
 - minor changes in file.cgi, modhosts
 - added bird-1.0.11 (thanks to derheimi)
 - added streamripper-1.61.17
-- added libmad-0.15.1b 
+- added libmad-0.15.1b
 - added Lua scripting language
 - updated dnsmasq to version 2.38
 - updated busybox-patches
@@ -1039,6 +1086,6 @@ Latest changes:
 - fixed W701V patch
 - added avm-ftpd-remove patch
 - fixed modules_install with parallel make
-- added unionfs 
+- added unionfs
 - added libreadline
 - initial checkin
