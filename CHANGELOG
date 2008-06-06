@@ -6,17 +6,38 @@ Latest changes:
 
 - Build system:
     * adapted all packages to new macro style
+        + please read make/README.Makefile for further instructions
+        + look at make/Makefile.in for implementation
+        + use global config.cache (make/config.cache) for all configure scripts
+        + use macro for replacing 'libdir=/usr/lib' in *.la files
+    * toolchains: Add menuconfig option to build static toolchains
+    * kernel toolchain:
+        + don't use crosstool to build kernel toolchain
+        + update kernel toolchain to version 3.4.6 (same version as AVM)
+        + use Binutils 2.17.50.0.17 for kernel toolchain
+    * target toolchain:
+        + uclibc: disable UCLIBC_HAS_FOPEN_LARGEFILE_MODE even if LFS is enabled
+        + add uClibc-0.9.29 (doesn't work realy good and will be revised for
+          next release) 
+    * download toolchain:
+        + update because of above changes
+    * Add squashfs3 utils
+        + use squashfs3 for 7270 squashfs and if "replace kernel" is selected
+          We have a kernel patch that makes 2.6.13.1 squashfs3 aware. Main
+          benefit of squashfs3 are blocksize larger than 64kb. But these
+          doesn't work with AVM 7270 stock kernel.
     * fakeroot: bump version to 1.9.2, put archive on dsmod.magenbrot.net to
       avoid being forced to version bumps if version becomes unavailable
 
 - New tools and hooks:
 
-- New patches:
+- New patches (read online help for more info):
     * multid wait
-    * remove annex firmware files
+    * remove annex firmware files (only 7270)
     * remove dsld
     * remove mediasrv
     * remove telephony
+    * remove getcons (don't redirect serial console output)
 
 - New packages, libs, modules:
     * avm-firewall 2.0.3c
@@ -70,6 +91,9 @@ Latest changes:
     * samba
     * webmenu signed
     * webmenu wol
+    * usbstorage patch 
+        + enabled by default
+        + use fstyp to automount ext2, ext3, vfat and ntfs filesystems
 
 - Updated packages and libs:
     * apache 1.3.41
@@ -126,9 +150,6 @@ Latest changes:
     * removed orange box
     * removed samba 2.0.10
 
-- Removed patches
-    * AVM hidden pages patch
-
 - Firmware updates:
     * Nearly all firmware version were updated since the last release. Please
       see FIRMWARES for the list of currently supported boxes and firmwares.
@@ -161,6 +182,36 @@ Latest changes:
     * autorun/autoend functionality for mass storage devices
     * use tmpfs instead of ramfs for /var
     * enabled more packages for inetd
+    * recover-eva: 
+        + fix error that tools/tar wasn't found on some systems
+        + fix booting kernel image directly from RAM
+    * fwmod: 
+        + add FWMOD_PATCH_TEST and FWMOD_NOPACK environment variable
+          By setting these to y the build process can be interrupted after
+          patching the firmware respectively before packing the firmware.
+        + use "-no-exports, -no-progress and -no-sparse" as additional
+          parameters for squashfs3
+        + optimise the way FILESYSTEM_BLOCKSIZE is determined
+    * kernel: 
+        + activate EPOLL support (needed by AVM phone book daemon (pbd))
+        + reactivate "replace kernel" for firmwares with up to date sources
+        + add kernel patch for squashfs3
+        + add kernel patch for ip_conntrack:
+            + don't calculate hashsize, use 256 buckets
+            + ip_conntrack_tcp_be_liberal=1
+    * add extract-images, a little heuristic (and not very fast) tool which can
+      extract bootloaders (urlader.image) as well as hidden root kernel + 
+      SquashFS images (kernel.image) from any type of compound file, 
+      e.g. recover-EXEs.
+    * add hexgrep, an awk-driven tool for matching hex sequences in input files
+      It shows decimal file offsets as well as the matched sequences, because
+      the latter are regex-matched and can thus vary.
+    * add shell script for unpacking LZMA-compressed Linux kernel to tools
+    * Rename tools/push_firmware.sh to tools/push_firmware and 
+      tools/lib_report.sh to tools/lib_report in order to unify naming of shell
+      scripts tools/*. For instance, tools/ds_* do not have '.sh' extensions
+      either.
+    * add 64-bit fix for TI-chksum
 
 === release ds26-15.2 ===
 
