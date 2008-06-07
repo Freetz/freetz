@@ -1,0 +1,15 @@
+config FREETZ_PACKAGE_MICROPERL
+	bool "microperl 5.8.8"
+	default n
+	help
+		Perl without operating-specific functions such as readdir.
+
+config FREETZ_PACKAGE_MICROPERL_MODULES
+	string "microperl modules"
+	default ""
+	depends on FREETZ_PACKAGE_MICROPERL
+	help
+		List of microperl modules to copy to the rootfs.
+		E.g.
+		warnings.pm warnings/register.pm strict.pm constant.pm vars.pm 
+		Exporter.pm Exporter/Heavy.pm Carp.pm Getopt/Long.pm
