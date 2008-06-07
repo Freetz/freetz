@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 0.8.5)
+$(call PKG_INIT_LIB, 0.9.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).zip
 $(PKG)_SITE:=http://yassl.com
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libcyassl.so
