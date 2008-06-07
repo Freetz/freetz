@@ -1,0 +1,178 @@
+diff -r -u ../xpdf-3.02/fofi/Makefile.in ./fofi/Makefile.in
+--- ../xpdf-3.02/fofi/Makefile.in	2007-02-27 23:05:51.000000000 +0100
++++ ./fofi/Makefile.in	2008-05-20 16:41:00.000000000 +0200
+@@ -14,7 +14,7 @@
+ GOOSRCDIR = $(srcdir)/../goo
+ GOOLIBDIR = ../goo
+ 
+-CXXFLAGS = @CXXFLAGS@ @DEFS@ -I.. -I$(GOOSRCDIR) -I$(srcdir)
++CXXFLAGS = -fpic @CXXFLAGS@ @DEFS@ -I.. -I$(GOOSRCDIR) -I$(srcdir)
+ 
+ CXX = @CXX@
+ AR = @AR@
+diff -r -u ../xpdf-3.02/goo/Makefile.in ./goo/Makefile.in
+--- ../xpdf-3.02/goo/Makefile.in	2007-02-27 23:05:51.000000000 +0100
++++ ./goo/Makefile.in	2008-05-20 16:41:47.000000000 +0200
+@@ -11,8 +11,8 @@
+ srcdir = @srcdir@
+ VPATH = @srcdir@
+ 
+-CFLAGS = @CFLAGS@ @DEFS@ -I.. -I$(srcdir)
+-CXXFLAGS = @CXXFLAGS@ @DEFS@ -I.. -I$(srcdir)
++CFLAGS = -fpic @CFLAGS@ @DEFS@ -I.. -I$(srcdir)
++CXXFLAGS = -fpic @CXXFLAGS@ @DEFS@ -I.. -I$(srcdir)
+ 
+ CC = @CC@
+ CXX = @CXX@
+diff -r -u ../xpdf-3.02/splash/Makefile.in ./splash/Makefile.in
+--- ../xpdf-3.02/splash/Makefile.in	2007-02-27 23:05:52.000000000 +0100
++++ ./splash/Makefile.in	2008-05-20 16:42:11.000000000 +0200
+@@ -16,7 +16,7 @@
+ FOFISRCDIR = $(srcdir)/../fofi
+ FOFILIBDIR = ../fofi
+ 
+-CXXFLAGS = @CXXFLAGS@ @DEFS@ -I.. -I$(GOOSRCDIR) -I$(FOFISRCDIR) -I$(srcdir) @t1_CFLAGS@ @freetype2_CFLAGS@
++CXXFLAGS = -fpic @CXXFLAGS@ @DEFS@ -I.. -I$(GOOSRCDIR) -I$(FOFISRCDIR) -I$(srcdir) @t1_CFLAGS@ @freetype2_CFLAGS@
+ 
+ CXX = @CXX@
+ AR = @AR@
+diff -r -u ../xpdf-3.02/xpdf/Makefile.in ./xpdf/Makefile.in
+--- ../xpdf-3.02/xpdf/Makefile.in	2007-02-27 23:05:52.000000000 +0100
++++ ./xpdf/Makefile.in	2008-05-21 13:56:13.000000000 +0200
+@@ -44,6 +44,9 @@
+ .SUFFIXES: .cc
+ 
+ .cc.o:
++	$(CXX) -fpic $(CXXFLAGS) -c $<
++
++pdftops.o pdftotext.o pdfimages.o pdffonts.o pdfinfo.o: %.o: %.cc
+ 	$(CXX) $(CXXFLAGS) -c $<
+ 
+ #------------------------------------------------------------------------
+@@ -132,33 +135,33 @@
+ 
+ #------------------------------------------------------------------------
+ 
+-PDFTOPS_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
++PDFTOPS_LIB_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
+ 	Catalog.o CharCodeToUnicode.o CMap.o Decrypt.o Dict.o Error.o \
+ 	FontEncodingTables.o Function.o Gfx.o GfxFont.o \
+ 	GfxState.o GlobalParams.o JArithmeticDecoder.o JBIG2Stream.o \
+ 	JPXStream.o Lexer.o Link.o NameToCharCode.o Outline.o Object.o \
+ 	OutputDev.o Page.o Parser.o PDFDoc.o PDFDocEncoding.o \
+ 	PreScanOutputDev.o PSOutputDev.o PSTokenizer.o SecurityHandler.o \
+-	SplashOutputDev.o Stream.o UnicodeMap.o XpdfPluginAPI.o XRef.o \
+-	pdftops.o
+-PDFTOPS_LIBS = -L$(GOOLIBDIR) -lGoo $(SPLASHLIBS) $(T1LIBS) $(FTLIBS) \
+-	$(OTHERLIBS) -lm
++	SplashOutputDev.o Stream.o UnicodeMap.o XpdfPluginAPI.o XRef.o
++PDFTOPS_OBJS = pdftops.o libxpdf.so.1
++PDFTOPS_LIBS = -lm 
+ 
+-pdftops$(EXE): $(PDFTOPS_OBJS) $(GOOLIBDIR)/$(LIBPREFIX)Goo.a
++pdftops$(EXE): $(PDFTOPS_OBJS)
+ 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o pdftops$(EXE) $(PDFTOPS_OBJS) \
+ 		$(PDFTOPS_LIBS)
+ 
+ #------------------------------------------------------------------------
+ 
+-PDFTOTEXT_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
++PDFTOTEXT_LIB_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
+ 	Catalog.o CharCodeToUnicode.o CMap.o Decrypt.o Dict.o Error.o \
+ 	FontEncodingTables.o Function.o Gfx.o GfxFont.o \
+ 	GfxState.o GlobalParams.o JArithmeticDecoder.o JBIG2Stream.o \
+ 	JPXStream.o Lexer.o Link.o NameToCharCode.o Object.o Outline.o \
+ 	OutputDev.o Page.o Parser.o PDFDoc.o PDFDocEncoding.o PSTokenizer.o \
+ 	SecurityHandler.o Stream.o TextOutputDev.o UnicodeMap.o \
+-	UnicodeTypeTable.o XpdfPluginAPI.o XRef.o pdftotext.o
+-PDFTOTEXT_LIBS = -L$(GOOLIBDIR) -lGoo $(OTHERLIBS) -lm
++	UnicodeTypeTable.o XpdfPluginAPI.o XRef.o
++PDFTOTEXT_OBJS = pdftotext.o libxpdf.so.1
++PDFTOTEXT_LIBS = -lm
+ 
+ pdftotext$(EXE): $(PDFTOTEXT_OBJS) $(GOOLIBDIR)/$(LIBPREFIX)Goo.a
+ 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o pdftotext$(EXE) $(PDFTOTEXT_OBJS) \
+@@ -166,15 +169,15 @@
+ 
+ #------------------------------------------------------------------------
+ 
+-PDFINFO_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
++PDFINFO_LIB_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
+ 	Catalog.o CharCodeToUnicode.o CMap.o Decrypt.o Dict.o Error.o \
+ 	FontEncodingTables.o Function.o Gfx.o GfxFont.o \
+ 	GfxState.o GlobalParams.o JArithmeticDecoder.o JBIG2Stream.o \
+ 	JPXStream.o Lexer.o Link.o NameToCharCode.o Object.o Outline.o \
+ 	OutputDev.o Page.o Parser.o PDFDoc.o PDFDocEncoding.o PSTokenizer.o \
+-	SecurityHandler.o Stream.o UnicodeMap.o XpdfPluginAPI.o XRef.o \
+-	pdfinfo.o
+-PDFINFO_LIBS = -L$(GOOLIBDIR) -lGoo $(OTHERLIBS) -lm
++	SecurityHandler.o Stream.o UnicodeMap.o XpdfPluginAPI.o XRef.o
++PDFINFO_OBJS = pdfinfo.o libxpdf.so.1
++PDFINFO_LIBS = -lm
+ 
+ pdfinfo$(EXE): $(PDFINFO_OBJS) $(GOOLIBDIR)/$(LIBPREFIX)Goo.a
+ 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o pdfinfo$(EXE) $(PDFINFO_OBJS) \
+@@ -182,15 +185,15 @@
+ 
+ #------------------------------------------------------------------------
+ 
+-PDFFONTS_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
++PDFFONTS_LIB_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
+ 	Catalog.o CharCodeToUnicode.o CMap.o Decrypt.o Dict.o Error.o \
+ 	FontEncodingTables.o Function.o Gfx.o GfxFont.o \
+ 	GfxState.o GlobalParams.o JArithmeticDecoder.o JBIG2Stream.o \
+ 	JPXStream.o Lexer.o Link.o NameToCharCode.o Object.o Outline.o \
+ 	OutputDev.o Page.o Parser.o PDFDoc.o PDFDocEncoding.o PSTokenizer.o \
+-	SecurityHandler.o Stream.o UnicodeMap.o XpdfPluginAPI.o XRef.o \
+-	pdffonts.o
+-PDFFONTS_LIBS = -L$(GOOLIBDIR) -lGoo $(OTHERLIBS) -lm
++	SecurityHandler.o Stream.o UnicodeMap.o XpdfPluginAPI.o XRef.o
++PDFFONTS_OBJS = pdffonts.o libxpdf.so.1
++PDFFONTS_LIBS = -lm
+ 
+ pdffonts$(EXE): $(PDFFONTS_OBJS) $(GOOLIBDIR)/$(LIBPREFIX)Goo.a
+ 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o pdffonts$(EXE) $(PDFFONTS_OBJS) \
+@@ -215,15 +218,16 @@
+ 
+ #------------------------------------------------------------------------
+ 
+-PDFIMAGES_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
++PDFIMAGES_LIB_OBJS = Annot.o Array.o BuiltinFont.o BuiltinFontTables.o \
+ 	Catalog.o CharCodeToUnicode.o CMap.o Decrypt.o Dict.o Error.o \
+ 	FontEncodingTables.o Function.o Gfx.o GfxFont.o GfxState.o \
+ 	GlobalParams.o ImageOutputDev.o JArithmeticDecoder.o \
+ 	JBIG2Stream.o JPXStream.o Lexer.o Link.o NameToCharCode.o Object.o \
+ 	Outline.o OutputDev.o Page.o Parser.o PDFDoc.o PDFDocEncoding.o \
+ 	PSTokenizer.o SecurityHandler.o Stream.o UnicodeMap.o \
+-	XpdfPluginAPI.o XRef.o pdfimages.o
+-PDFIMAGES_LIBS = -L$(GOOLIBDIR) -lGoo $(OTHERLIBS) -lm
++	XpdfPluginAPI.o XRef.o
++PDFIMAGES_OBJS = pdfimages.o libxpdf.so.1
++PDFIMAGES_LIBS = -lm
+ 
+ pdfimages$(EXE): $(PDFIMAGES_OBJS) $(GOOLIBDIR)/$(LIBPREFIX)Goo.a
+ 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o pdfimages$(EXE) $(PDFIMAGES_OBJS) \
+@@ -245,10 +249,23 @@
+ 	rm -f $(PDFFONTS_OBJS) pdffonts$(EXE)
+ 	rm -f $(PDFTOPPM_OBJS) pdftoppm$(EXE)
+ 	rm -f $(PDFIMAGES_OBJS) pdfimages$(EXE)
++	rm -f libxpdf.so.1
+ 
+ #------------------------------------------------------------------------
+ 
+ depend:
+ 	$(CXX) $(CXXFLAGS) -MM $(CXX_SRC) >Makefile.dep
+ 
++#------------------------------------------------------------------------
++
++# remove object files not needed for pdf{tops,totext,images,fonts,info}
++NOT_NEEDED = SplashOutputDev.o PreScanOutputDev.o XpdfPluginAPI.o \
++	../goo/FixedPoint.o ../goo/gmempp.o
++LIB_OBJS = $(filter-out $(NOT_NEEDED),$(sort \
++	$(PDFTOPS_LIB_OBJS) $(PDFTOTEXT_LIB_OBJS) \
++	$(PDFIMAGES_LIB_OBJS) $(PDFINFO_LIB_OBJS) $(PDFFONTS_LIB_OBJS) \
++	$(wildcard $(GOOLIBDIR)/*.o) $(wildcard $(FOFILIBDIR)/*.o)))
++libxpdf.so.1: $(LIB_OBJS)
++	$(CXX) -shared $(CXXFLAGS) -Wl,-soname,libxpdf.so.1 -o $@ $(LIB_OBJS)
++
+ include Makefile.dep
