@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 5.2.5)
+$(call PKG_INIT_BIN, 5.2.6)
 $(PKG)_SOURCE:=php-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://freetz.magenbrot.net
 #$(PKG)_SITE:=http://museum.php.net/php5
