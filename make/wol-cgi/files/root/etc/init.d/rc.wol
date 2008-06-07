@@ -7,7 +7,7 @@ DAEMON=httpd-wol
 _DAEMON=httpd
 
 case "$1" in
-	""|load|start|restart)
+	""|load|start|restart|status)
 		if [ ! -r /mod/etc/conf/wol.cfg ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
@@ -21,7 +21,7 @@ pidfile() {
 	ps | grep " $_DAEMON -p $WOL_PORT" | grep -v grep | awk '{print $1}' | head -1 > /var/run/$DAEMON.pid
 }
 
-start() {
+config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -33,9 +33,13 @@ start() {
 			cat /tmp/flash/${DAEMON}.extra
 		fi
 	) > /mod/etc/$DAEMON.conf
+}
+
+start() {
+	config
 
 	echo -n 'Starting wol webinterface...'
-	$_DAEMON -p "$WOL_PORT" -c /mod/etc/$DAEMON.conf -h /mod/pkg/wol/usr/mww-wol/ -r "Wake-On-LAN"
+	webcfg-wol
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		pidfile
@@ -73,8 +77,13 @@ case "$1" in
 	""|load)
 		modreg cgi 'wol' 'Wake on LAN'
 
+		config
 		if [ "$WOL_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
+			if [ "$WOL_ENABLED" != "inetd" ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON ist started via inetd" 1>&2
+			fi
 			exit 1
 		fi
 
@@ -95,7 +104,9 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -s "/var/run/$DAEMON.pid" ]; then
+		if [ "$WOL_ENABLED" = "inetd" ]; then
+			echo 'inetd'
+		elif [ -s "/var/run/$DAEMON.pid" ]; then
 			echo 'running'
 		else
 			echo 'stopped'
