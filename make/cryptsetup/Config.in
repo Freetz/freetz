@@ -15,3 +15,10 @@ config FREETZ_PACKAGE_CRYPTSETUP
 		cryptsetup is used to conveniently setup dm-crypt managed
 		block devices under Linux.
 
+config FREETZ_CRYPTSETUP_LOOP
+	bool "select loop module"
+	depends on FREETZ_PACKAGE_CRYPTSETUP
+	select FREETZ_MODULE_loop
+	help
+		Under some circumstances loop.ko is needed for cryptsetup to
+		run.
