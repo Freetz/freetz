@@ -16,6 +16,8 @@ config FREETZ_AVM_VERSION_04_40
 	bool
 config FREETZ_AVM_VERSION_04_49
 	bool
+config FREETZ_AVM_VERSION_04_57
+	bool
 config FREETZ_AVM_VERSION_7270
 	bool
 config FREETZ_AVM_VERSION_r4884
@@ -55,7 +57,7 @@ choice
 		bool "Fon 5050"
 
 	config FREETZ_TYPE_FON_5140
-		select FREETZ_AVM_VERSION_04_49
+		select FREETZ_AVM_VERSION_04_57
 		bool "Fon 5140"
 
 	config FREETZ_TYPE_FON_WLAN
@@ -67,7 +69,7 @@ choice
 		bool "Fon WLAN 7050"
 
 	config FREETZ_TYPE_FON_WLAN_7113
-		select FREETZ_AVM_VERSION_04_49
+		select FREETZ_AVM_VERSION_04_57
 		bool "Fon WLAN 7113"
 
 	config FREETZ_TYPE_FON_WLAN_7140
@@ -75,15 +77,15 @@ choice
 		bool "Fon WLAN 7140"
 
 	config FREETZ_TYPE_FON_WLAN_7141
-		select FREETZ_AVM_VERSION_04_49
+		select FREETZ_AVM_VERSION_04_57
 		bool "Fon WLAN 7141"
 
 	config FREETZ_TYPE_FON_7150
-		select FREETZ_AVM_VERSION_04_49
+		select FREETZ_AVM_VERSION_04_57
 		bool "Fon 7150"
 
 	config FREETZ_TYPE_FON_WLAN_7170
-		select FREETZ_AVM_VERSION_04_49
+		select FREETZ_AVM_VERSION_04_57
 		bool "Fon WLAN 7170"
 	
 	config FREETZ_TYPE_FON_WLAN_7270
@@ -132,21 +134,6 @@ choice
 
 endchoice
 
-config FREETZ_KERNEL_VERSION_2_6_13_1 
-	bool 
-	default y if ! FREETZ_AVM_VERSION_7270
-	default n if FREETZ_AVM_VERSION_7270
-
-config FREETZ_KERNEL_VERSION_2_6_19_2 
-	bool
-	default y if FREETZ_AVM_VERSION_7270
-	default n if ! FREETZ_AVM_VERSION_7270
-	
-config FREETZ_KERNEL_VERSION
-	string
-	default "2.6.13.1" if FREETZ_KERNEL_VERSION_2_6_13_1
-	default "2.6.19.2" if FREETZ_KERNEL_VERSION_2_6_19_2
-
 config FREETZ_TYPE_LABOR
 	bool "Beta/Labor/VPN"
 	depends on \
@@ -180,12 +167,12 @@ choice
 			FREETZ_TYPE_FON_WLAN_7270 \
 			)
 
-#	config FREETZ_TYPE_LABOR_GAMING
-#		bool "GAMING"
-#		depends on ( \
-#			FREETZ_TYPE_FON_WLAN_7170 || \
-#			FREETZ_TYPE_FON_WLAN_7270 \
-#		)
+	config FREETZ_TYPE_LABOR_GAMING
+		bool "GAMING"
+		depends on ( \
+			FREETZ_TYPE_FON_WLAN_7170 || \
+			FREETZ_TYPE_FON_WLAN_7270 \
+		)
 
 	config FREETZ_TYPE_LABOR_MINI
 		bool "MINI"
@@ -258,8 +245,9 @@ config FREETZ_AVM_VERSION_STRING
 	default "04.30"			if FREETZ_AVM_VERSION_04_30
 	default "04.33"			if FREETZ_AVM_VERSION_04_33
 	default "04.40"			if FREETZ_AVM_VERSION_04_40
-	default "7270"			if FREETZ_AVM_VERSION_7270
 	default "04.49"			if FREETZ_AVM_VERSION_04_49
+	default "04.57"			if FREETZ_AVM_VERSION_04_57
+	default "7270"			if FREETZ_AVM_VERSION_7270
 	default "r4884"			if FREETZ_AVM_VERSION_r4884
 	default "r7203"			if FREETZ_AVM_VERSION_r7203
 	default "r8508"			if FREETZ_AVM_VERSION_r8508
@@ -406,12 +394,7 @@ config FREETZ_REPLACE_KERNEL
 		FREETZ_SHOW_ADVANCED && \
 		! (FREETZ_TYPE_LABOR && ! FREETZ_TYPE_LABOR_VPN) && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
-		! FREETZ_TYPE_FON_5140 && \
-		! FREETZ_TYPE_FON_7150 && \
-		! FREETZ_TYPE_FON_WLAN_7113 && \
 		! (FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN) && \
-		! FREETZ_TYPE_FON_WLAN_7141 && \
-		! FREETZ_TYPE_FON_WLAN_7170 && \
 		! FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
