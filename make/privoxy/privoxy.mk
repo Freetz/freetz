@@ -6,7 +6,12 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/privoxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/privoxy
 $(PKG)_STARTLEVEL=40
 
-#$(PKG)_DEPENDS := zlib
+$(PKG)_CONFIGURE_PRE_CMDS += autoheader;
+$(PKG)_CONFIGURE_PRE_CMDS += autoconf;
+
+ifeq ($(strip $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB)),y)
+$(PKG)_DEPENDS_ON := zlib
+endif
 
 $(PKG)_CONFIGURE_ENV += ac_cv_func_setpgrp_void=yes
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
@@ -16,7 +21,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
 $(PKG)_CONFIGURE_OPTIONS += --disable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-stats
 $(PKG)_CONFIGURE_OPTIONS += --disable-dynamic-pcre
-#$(PKG)_CONFIGURE_OPTIONS += --enable-zlib
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),y,--enable-zlib)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
