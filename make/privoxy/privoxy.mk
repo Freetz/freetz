@@ -21,7 +21,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
 $(PKG)_CONFIGURE_OPTIONS += --disable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-stats
 $(PKG)_CONFIGURE_OPTIONS += --disable-dynamic-pcre
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),y,--enable-zlib)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),--enable-zlib,)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
