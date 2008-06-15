@@ -31,5 +31,5 @@ xdelta-dirclean:
 	rm -rf $(XDELTA_DIR)
 
 xdelta-distclean:
-	rm -rf $(TOOLS_DIR)/xdelta
+	rm -rf $(TOOLS_DIR)/xdelta3
 
