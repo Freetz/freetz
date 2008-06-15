@@ -6,7 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc.bin
 $(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
 
-$(PKG)_DEPENDS_ON += glib ncurses-terminfo
+$(PKG)_DEPENDS_ON := glib ncurses-terminfo
 
 ifeq ($(strip $(FREETZ_MC_WITH_NCURSES)),y) 
 $(PKG)_DEPENDS_ON += ncurses 

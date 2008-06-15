@@ -16,7 +16,7 @@ $(PKG)_GOBJECT_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgobject-2.0.so.$($(PKG)_LI
 $(PKG)_GMODULE_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgmodule-2.0.so.$($(PKG)_LIB_VERSION)
 $(PKG)_GTHREAD_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgthread-2.0.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DEPENDS_ON += gettext libiconv
+$(PKG)_DEPENDS_ON := gettext libiconv
 
 $(PKG)_CONFIGURE_ENV += glib_cv_stack_grows=no
 $(PKG)_CONFIGURE_ENV += glib_cv_uscore=no

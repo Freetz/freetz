@@ -5,7 +5,8 @@ $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)71
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 #$(PKG)_STARTLEVEL=99
-$(PKG)_DEPENDS_ON=ncurses
+
+$(PKG)_DEPENDS_ON := ncurses
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-gui
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtktest

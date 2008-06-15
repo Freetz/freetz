@@ -4,7 +4,7 @@ $(PKG)_SITE:=http://irssi.org/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/fe-text/irssi
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/irssi
 
-$(PKG)_DEPENDS_ON += glib2 ncurses
+$(PKG)_DEPENDS_ON := glib2 ncurses
 
 ifeq ($(strip $(FREETZ_PACKAGE_IRSSI_WITH_OPENSSL)),y)
 $(PKG)_DEPENDS_ON += openssl
