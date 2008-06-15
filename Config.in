@@ -1000,6 +1000,14 @@ config FREETZ_AUTOMOUNT_EXT3
 		Automatically mount ext3 filesystems. This adds ext3 module to your
 		firmware.
 
+config FREETZ_AUTORUN_AUTOEND
+	bool "Execute autorun.sh/autoend.sh script on (un)mount"
+	depends on FREETZ_HAS_USB_HOST
+	default n
+	help
+		Useful to start/terminate applications located on USB devices, eg apache,
+		samba or even swapfiles.
+
 config FREETZ_PATCH_GETCONS
 	bool "Don't redirect console messages"
 	default n
@@ -1347,7 +1355,7 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.56.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz_box_7170-beta-10954.image"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_BETA
 	default "fritz_box-labor-10842.image"						if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7170_LabGAMING.29.04.93-11223.image"						if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_GAMING
+	default "Labor_FRITZ.Box_Fon_WLAN_7170_LabGAMING.AnnexB.29.04.93-11435.image"	if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_GAMING
 	default "fritz_box_29_04_57-11063.image"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Box_Fon_WLAN_7170_LabPHONE.AnnexB.29.04.97-10173.image"		if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.57.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
@@ -1355,7 +1363,7 @@ config FREETZ_DL_SOURCE
 	default "fritz_box_54_04_57-11063.image"					if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Box_Fon_WLAN_7270_LabPHONE.AnnexB.54.04.97-11197.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7270_LabCORE.AnnexB.54.04.98-11324.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN
-	default "FRITZ.Box_Fon_WLAN_7270_LabGAMING.54.04.93-11223.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING
+	default "Labor_FRITZ.Box_Fon_WLAN_7270_LabGAMING.AnnexB.54.04.93-11435.image"	if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING
 	default "fritz_box-labor-10771.image"						if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "fritz.box_sl_wlan.09.04.34.image"					if FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
@@ -1537,14 +1545,6 @@ config FREETZ_FAVICON_STRING
 	default "dsl123"		if FREETZ_FAVICON_DSL123
 	default "cuma"			if FREETZ_FAVICON_CUMA
 	default "hansolo"		if FREETZ_FAVICON_HANSOLO
-
-config FREETZ_AUTORUN_AUTOEND
-	bool "Execute autorun.sh/autoend.sh script on (un)mount"
-	depends on FREETZ_HAS_USB_HOST
-	default n
-	help
-		Useful to start/terminate applications located on USB devices, eg apache,
-		samba or even swapfiles.
 
 config FREETZ_DEVELOPER_VERSION_STRING
 	bool "Developer version string"
