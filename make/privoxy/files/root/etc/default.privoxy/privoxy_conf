@@ -2,8 +2,8 @@
 
 cat <<EOF
 confdir /mod/etc/privoxy
-actionsfile standard
-actionsfile default
+actionsfile standard.action
+actionsfile default.action
 filterfile default.filter
 enable-edit-actions 0
 logdir /var/log
@@ -12,7 +12,7 @@ logfile privoxy.log
 debug   8192
 EOF
 
-[ -r "/tmp/flash/user.action" ] && echo "actionsfile /tmp/flash/user"
+[ -r "/tmp/flash/user.action" ] && echo "actionsfile /tmp/flash/user.action"
 
 [ -r "/tmp/flash/user.filter" ] && echo "filterfile /tmp/flash/user.filter"
 
