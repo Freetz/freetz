@@ -10,6 +10,8 @@ elif [ "$FREETZ_TYPE_FON_7150" == "y" ] || \
 	[ "$FREETZ_TYPE_FON_WLAN_7141" == "y" ] || \
 	[ "$FREETZ_TYPE_FON_WLAN_7170" == "y" ] || \
 	[ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ] || \
+	[ "$FREETZ_TYPE_WLAN_3131" == "y" ] || \
+	[ "$FREETZ_TYPE_WLAN_3170" == "y" ] || \
 	[ "$FREETZ_TYPE_SPEEDPORT_W900V" == "y" ]; then
 		if [ "$FREETZ_TYPE_LABOR_GAMING" ]; then
 			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270_labor_gaming.patch"
