@@ -1,3 +1,9 @@
+config FREETZ_LIB_libatm
+	bool "linux-atm (libatm.so)"
+	default n
+	help
+		Libatm is a library for accessing the Linux ATM subsystem.
+
 config FREETZ_LIB_libbluetooth
 	bool "bluez-libs (libbluetooth.so)"
 	default n
@@ -656,3 +662,9 @@ config FREETZ_LIB_libdevmapper
 	default n
 	help
 		Device-mapper library.
+
+config FREETZ_LIB_libfreetz
+	bool "libfreetz (libfreetz.so)"
+	default y
+	help
+		This is Freetz compatibility library. It overwrites functions of AVM's libraries, e.g. write_etc_passwd.

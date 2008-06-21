@@ -2,6 +2,10 @@ ifeq ($(strip $(FREETZ_TARGET_GXX)),y)
 LIBS+=uclibcxx
 endif
 
+ifeq ($(strip $(FREETZ_LIB_libatm)),y)
+LIBS+=linux-atm
+endif
+
 ifeq ($(strip $(FREETZ_LIB_libavmhmac)),y)
 LIBS+=libavmhmac
 endif
