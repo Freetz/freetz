@@ -55,8 +55,7 @@ config FREETZ_MODULE_ip_conntrack_irc
 config FREETZ_MODULE_ip_conntrack_pptp
 	bool "ip_conntrack_pptp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_ip_conntrack_proto_gre if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_conntrack
 	default n
 config FREETZ_MODULE_ip_conntrack_tftp
 	bool "ip_conntrack_tftp.ko"
@@ -93,10 +92,8 @@ config FREETZ_MODULE_ip_nat_irc
 config FREETZ_MODULE_ip_nat_pptp
 	bool "ip_nat_pptp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_ip_conntrack_proto_gre if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_ip_conntrack_pptp if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_nat
+	select FREETZ_MODULE_ip_conntrack_pptp
 	default n
 config FREETZ_MODULE_ip_nat_tftp
 	bool "ip_nat_tftp.ko"
