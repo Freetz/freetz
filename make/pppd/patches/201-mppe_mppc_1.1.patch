@@ -1,4 +1,3 @@
-diff -ruN ppp-2.4.3.orig/include/linux/ppp-comp.h ppp-2.4.3/include/linux/ppp-comp.h
 --- include/linux/ppp-comp.h	2002-12-06 10:49:15.000000000 +0100
 +++ include/linux/ppp-comp.h	2004-11-21 13:54:09.000000000 +0100
 @@ -36,7 +36,7 @@
@@ -62,7 +61,6 @@ diff -ruN ppp-2.4.3.orig/include/linux/ppp-comp.h ppp-2.4.3/include/linux/ppp-co
  /*
   * Definitions for other, as yet unsupported, compression methods.
   */
-diff -ruN ppp-2.4.3.orig/include/net/ppp-comp.h ppp-2.4.3/include/net/ppp-comp.h
 --- include/net/ppp-comp.h	2002-12-06 10:49:15.000000000 +0100
 +++ include/net/ppp-comp.h	2004-11-21 13:54:09.000000000 +0100
 @@ -255,6 +255,33 @@
@@ -99,9 +97,8 @@ diff -ruN ppp-2.4.3.orig/include/net/ppp-comp.h ppp-2.4.3/include/net/ppp-comp.h
  /*
   * Definitions for other, as yet unsupported, compression methods.
   */
-diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
---- pppd/ccp.c	2004-11-13 03:28:15.000000000 +0100
-+++ pppd/ccp.c	2004-11-21 13:54:09.000000000 +0100
+--- pppd/ccp.c.orig	2005-07-09 02:23:05.000000000 +0200
++++ pppd/ccp.c	2006-07-21 23:34:12.121546000 +0200
 @@ -62,12 +62,10 @@
  static char bsd_value[8];
  static char deflate_value[8];
@@ -717,8 +714,8 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
   */
  static int
  ccp_nakci(f, p, len, treat_as_reject)
-@@ -900,6 +1079,8 @@
-     int len;
+@@ -901,6 +1080,8 @@
+     int treat_as_reject;
  {
      ccp_options *go = &ccp_gotoptions[f->unit];
 +    ccp_options *ao = &ccp_allowoptions[f->unit];
@@ -726,7 +723,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
      ccp_options no;		/* options we've seen already */
      ccp_options try;		/* options to ask for next time */
  
-@@ -907,28 +1088,100 @@
+@@ -908,28 +1089,100 @@
      try = *go;
  
  #ifdef MPPE
@@ -845,7 +842,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
      if (go->deflate && len >= CILEN_DEFLATE
  	&& p[0] == (go->deflate_correct? CI_DEFLATE: CI_DEFLATE_DRAFT)
  	&& p[1] == CILEN_DEFLATE) {
-@@ -1001,14 +1254,50 @@
+@@ -1002,14 +1255,50 @@
  	return -1;
  
  #ifdef MPPE
@@ -900,7 +897,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
      if (go->deflate_correct && len >= CILEN_DEFLATE
  	&& p[0] == CI_DEFLATE && p[1] == CILEN_DEFLATE) {
  	if (p[2] != DEFLATE_MAKE_OPT(go->deflate_size)
-@@ -1072,14 +1361,15 @@
+@@ -1073,14 +1362,15 @@
      int dont_nak;
  {
      int ret, newret, res;
@@ -920,7 +917,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
  
      ret = CONFACK;
      retp = p0 = p;
-@@ -1102,103 +1392,305 @@
+@@ -1103,106 +1393,307 @@
  	    switch (type) {
  #ifdef MPPE
  	    case CI_MPPE:
@@ -1182,6 +1179,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
  		    }
  		} else {
 -		    /* Neither are set. */
+-		    /* We cannot accept this.  */
 +		    /* MPPE is not compatible with other compression types */
 +		    if (wo->mppe) {
 +			ao->bsd_compress = 0;
@@ -1194,8 +1192,10 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
 +		if ((!ho->mppc || !ao->mppc) && !ho->mppe) {
 +		    p[2] = p2;
 +		    p[5] = p5;
- 		    newret = CONFREJ;
- 		    break;
+ 		    newret = CONFNAK;
+ 		    /* Give the peer our idea of what can be used,
+ 		       so it can choose and confirm */
+ 		    ho->mppe = ao->mppe;
  		}
  
 -		/* rebuild the opts */
@@ -1298,7 +1298,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
  	    case CI_DEFLATE:
  	    case CI_DEFLATE_DRAFT:
  		if (!ao->deflate || clen != CILEN_DEFLATE
-@@ -1340,12 +1832,6 @@
+@@ -1344,12 +1835,6 @@
  	else
  	    *lenp = retp - p0;
      }
@@ -1311,7 +1311,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
      return ret;
  }
  
-@@ -1367,24 +1853,35 @@
+@@ -1371,24 +1856,35 @@
  	char *p = result;
  	char *q = result + sizeof(result); /* 1 past result */
  
@@ -1363,7 +1363,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
      case CI_DEFLATE:
      case CI_DEFLATE_DRAFT:
  	if (opt2 != NULL && opt2->deflate_size != opt->deflate_size)
-@@ -1440,12 +1937,12 @@
+@@ -1444,12 +1940,12 @@
      } else if (ANY_COMPRESS(*ho))
  	notice("%s transmit compression enabled", method_name(ho, NULL));
  #ifdef MPPE
@@ -1378,7 +1378,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
  }
  
  /*
-@@ -1468,7 +1965,7 @@
+@@ -1472,7 +1968,7 @@
  	    lcp_close(f->unit, "MPPE disabled");
  	}
      }
@@ -1387,7 +1387,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
  }
  
  /*
-@@ -1528,24 +2025,28 @@
+@@ -1532,24 +2028,28 @@
  #ifdef MPPE
  	    case CI_MPPE:
  		if (optlen >= CILEN_MPPE) {
@@ -1428,7 +1428,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
  	    case CI_DEFLATE:
  	    case CI_DEFLATE_DRAFT:
  		if (optlen >= CILEN_DEFLATE) {
-@@ -1631,6 +2132,7 @@
+@@ -1635,6 +2135,7 @@
  	    error("Lost compression sync: disabling compression");
  	    ccp_close(unit, "Lost compression sync");
  #ifdef MPPE
@@ -1436,7 +1436,7 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
  	    /*
  	     * If we were doing MPPE, we must also take the link down.
  	     */
-@@ -1638,9 +2140,18 @@
+@@ -1642,9 +2143,18 @@
  		error("Too many MPPE errors, closing LCP");
  		lcp_close(unit, "Too many MPPE errors");
  	    }
@@ -1456,12 +1456,11 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.c ppp-2.4.3/pppd/ccp.c
  	     * Send a reset-request to reset the peer's compressor.
  	     * We don't do that if we are still waiting for an
  	     * acknowledgement to a previous reset-request.
-@@ -1671,4 +2182,3 @@
+@@ -1675,4 +2185,3 @@
      } else
  	ccp_localstate[f->unit] &= ~RACK_PENDING;
  }
 -
-diff -ruN ppp-2.4.3.orig/pppd/ccp.h ppp-2.4.3/pppd/ccp.h
 --- pppd/ccp.h	2004-11-04 11:02:26.000000000 +0100
 +++ pppd/ccp.h	2004-11-21 13:54:09.000000000 +0100
 @@ -37,9 +37,17 @@
@@ -1482,7 +1481,6 @@ diff -ruN ppp-2.4.3.orig/pppd/ccp.h ppp-2.4.3/pppd/ccp.h
      short method;		/* code for chosen compression method */
  } ccp_options;
  
-diff -ruN ppp-2.4.3.orig/pppd/chap_ms.c ppp-2.4.3/pppd/chap_ms.c
 --- pppd/chap_ms.c	2004-11-12 10:57:43.000000000 +0100
 +++ pppd/chap_ms.c	2004-11-21 13:54:09.000000000 +0100
 @@ -895,13 +895,17 @@
@@ -1505,7 +1503,6 @@ diff -ruN ppp-2.4.3.orig/pppd/chap_ms.c ppp-2.4.3/pppd/chap_ms.c
  	    break;
  	default:
  	    break;
-diff -ruN ppp-2.4.3.orig/pppd/pppd.8 ppp-2.4.3/pppd/pppd.8
 --- pppd/pppd.8	2004-11-13 13:22:49.000000000 +0100
 +++ pppd/pppd.8	2004-11-21 14:24:47.000000000 +0100
 @@ -622,9 +622,29 @@

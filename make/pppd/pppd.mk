@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 2.4.3)
+$(call PKG_INIT_BIN, 2.4.4)
 $(PKG)_SOURCE:=ppp-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.samba.org/pub/ppp
 $(PKG)_DIR:=$(SOURCE_DIR)/ppp-$($(PKG)_VERSION)

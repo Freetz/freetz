@@ -1,0 +1,19 @@
+--- pppd/main.c	2004-11-13 07:05:48.000000000 -0500
++++ pppd/main.c	2005-06-19 05:13:27.000000000 -0500
+@@ -1497,6 +1497,8 @@
+ 	if (errfd == 0 || errfd == 1)
+ 		errfd = dup(errfd);
+ 
++	closelog();
++
+ 	/* dup the in, out, err fds to 0, 1, 2 */
+ 	if (infd != 0)
+ 		dup2(infd, 0);
+@@ -1505,7 +1507,6 @@
+ 	if (errfd != 2)
+ 		dup2(errfd, 2);
+ 
+-	closelog();
+ 	if (log_to_fd > 2)
+ 		close(log_to_fd);
+ 	if (the_channel->close)

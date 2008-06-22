@@ -1,0 +1,17 @@
+--- pppd/main.c	2005-11-13 17:59:44.000000000 +0100
++++ pppd/main.c	2005-11-13 17:59:35.000000000 +0100
+@@ -1929,9 +1929,11 @@ script_setenv(var, value, iskey)
+ 		free(p-1);
+ 		script_env[i] = newstring;
+ #ifdef USE_TDB
+-		if (iskey && pppdb != NULL)
+-		    add_db_key(newstring);
+-		update_db_entry();
++		if (pppdb != NULL) {
++		    if (iskey)
++			add_db_key(newstring);
++		    update_db_entry();
++		}
+ #endif
+ 		return;
+ 	    }
