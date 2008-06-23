@@ -1,5 +1,5 @@
---- etc/hotplug/storage.orig	2008-02-21 14:02:12.000000000 +0100
-+++ etc/hotplug/storage	2008-02-22 20:05:11.000000000 +0100
+--- etc/hotplug/storage.orig	2008-05-23 15:26:36.000000000 +0200
++++ etc/hotplug/storage	2008-06-15 13:02:02.000000000 +0200
 @@ -15,6 +15,9 @@
  MSTART=/sbin/start_mediasrv
  MSTOP=/sbin/stop_mediasrv
@@ -10,22 +10,47 @@
  # Ask the system's configuration for the status of the readonly flag:
  # (Translates flag's yes/no to ro/rw)
  #
-@@ -205,11 +208,13 @@
+@@ -203,6 +206,7 @@
+ 	# ftp server control
+ 	ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
  	if [ "$ENABLED" != "no" ] ; then
- 		if [ "`pidof ftpd`" = "" ] ; then
- 			USERS_ENABLED=`echo usbhost.users_enabled|ar7cfgctl -s`
--			if [ "$USERS_ENABLED" = "yes" ] ; then
--				ftpd -D -q -t 120 -m 15 -U -h "$CONFIG_PRODUKT_NAME" &
--			else
--				ftpd -D -q -t 120 -m 15 -h "$CONFIG_PRODUKT_NAME" &
--			fi
-+      if [ "$_ftpd" ] ; then
-+        if [ "$USERS_ENABLED" = "yes" ] ; then
-+          ftpd -D -q -t 120 -m 15 -U -h "$CONFIG_PRODUKT_NAME" &
-+        else
-+          ftpd -D -q -t 120 -m 15 -h "$CONFIG_PRODUKT_NAME" &
-+        fi
-+      fi
++	    if [ "$_ftpd" ] ; then
+ 		if test -x /bin/inetdctl ; then
+                       inetdctl enable ftpd
+ 		else
+@@ -215,6 +219,7 @@
+ 				fi
+ 			fi
  		fi
++	    fi
  	else
- 		killall ftpd
+ 		if test -x /bin/inetdctl ; then
+ 			inetdctl disable ftpd
+--- etc/hotplug/run_mount.orig	2008-05-23 15:26:35.000000000 +0200
++++ etc/hotplug/run_mount	2008-06-15 13:02:02.000000000 +0200
+@@ -13,6 +13,9 @@
+ TR069START=/bin/tr069starter
+ SYSFS=/var/sysfs
+ 
++# Do we have a Ftp server (ftpd) or was ist stripped from the firmware?
++_ftpd=$(basename $(which ftpd) 2> /dev/null)
++
+ # Ask the system's configuration for the status of the readonly flag:
+ # (Translates flag's yes/no to ro/rw)
+ #
+@@ -131,6 +134,7 @@
+ 		eventadd 140 $MNTNAME
+ 		ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
+ 		if [ "$ENABLED" != "no" ] ; then
++		    if [ "$_ftpd" ] ; then
+ 			if test -x /bin/inetdctl; then
+ 				inetdctl enable ftpd
+ 			else
+@@ -144,6 +148,7 @@
+ 						fi
+ 					fi
+ 				fi
++			 fi
+ 			fi
+ 		fi
+ 		test -x $TR069START && $TR069START $MNTNAME
