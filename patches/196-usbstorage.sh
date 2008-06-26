@@ -30,4 +30,5 @@ sed -i -e '/modprobe vfat/a \
 \t\tmodprobe ext3' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 
 # replace rm -rf $dir with rmdir $dir
-sed -i 's/rm -rf /rmdir /g' storage run_mount
+sed -i 's/rm -rf /rmdir /g' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage" \
+	"${FILESYSTEM_MOD_DIR}/etc/hotplug/run_mount"
