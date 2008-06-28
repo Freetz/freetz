@@ -6,6 +6,7 @@ auto_chk=''; man_chk=''; log_protoc_chk=''
 notlazym_chk=''; notlazys_chk=''; cpu100perc_chk=''
 logarithm1_chk=''; logarithm2_chk=''; logarithm3_chk=''; logarithm4_chk='';
 xchg_rxtx1_chk=''; xchg_rxtx2_chk=''; xchg_rxtx3_chk=''; xchg_rxtx4_chk='';
+uptime_enb_chk=''
 
 if [ "$RRDSTATS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then xchgupdown_chk=' checked'; fi
@@ -20,6 +21,7 @@ if [ "$RRDSTATS_XCHG_RXTX2" = "yes" ]; then xchg_rxtx2_chk=' checked'; fi
 if [ "$RRDSTATS_XCHG_RXTX3" = "yes" ]; then xchg_rxtx3_chk=' checked'; fi
 if [ "$RRDSTATS_XCHG_RXTX4" = "yes" ]; then xchg_rxtx4_chk=' checked'; fi
 if [ "$RRDSTATS_CPU100PERC" = "yes" ]; then cpu100perc_chk=' checked'; fi
+if [ "$RRDSTATS_UPTIME_ENB" = "yes" ]; then uptime_enb_chk=' checked'; fi
 
 sec_begin 'Starttyp'
 
@@ -65,6 +67,11 @@ Graphen immer neu generieren (not lazy):
 Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen:
 <input type="hidden" name="cpu100perc" value="no">
 <input id="c1" type="checkbox" name="cpu100perc" value="yes"$cpu100perc_chk><label for="c1"></label>
+</p>
+<p>
+Uptime aufzeichnen und anzeigen:
+<input type="hidden" name="uptime_enb" value="no">
+<input id="u1" type="checkbox" name="uptime_enb" value="yes"$uptime_enb_chk><label for="u1"></label>
 </p>
 EOF
 
