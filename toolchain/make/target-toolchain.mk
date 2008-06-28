@@ -24,8 +24,8 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@ln -fs $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TOOLCHAIN_DIR)/target
 
 target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
-                  kernel-configured uclibc-configured \
-                  $(TARGET_TOOLCHAIN)
+					kernel-configured uclibc-configured \
+					$(TARGET_TOOLCHAIN)
 	
 target-toolchain-source: $(TARGET_TOOLCHAIN_DIR) \
 	$(UCLIBC_DIR)/.unpacked \
@@ -47,7 +47,8 @@ endif
 
 target-toolchain-dirclean:
 	rm -rf $(TARGET_TOOLCHAIN_DIR)
-
-target-toolchain-distclean: target-toolchain-dirclean
 	rm -rf $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
 	rm -f $(TOOLCHAIN_DIR)/target
+
+target-toolchain-distclean: target-toolchain-dirclean
+

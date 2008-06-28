@@ -137,7 +137,11 @@ endif
 
 uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
+ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 uclibc: $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
+else
+uclibc: $(TARGET_TOOLCHAIN_STAGING_DIR)/.installed $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
+endif
 
 uclibc-source: $(DL_DIR)/$(UCLIBC_SOURCE)
 
