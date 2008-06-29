@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, dnh3.3)
+$(call PKG_INIT_BIN, dnh3.3.2)
 $(PKG)_SOURCE:=ctorrent-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.rahul.net/dholmes/ctorrent/
 $(PKG)_BINARY:=$($(PKG)_DIR)/ctorrent
