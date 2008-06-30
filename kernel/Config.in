@@ -185,9 +185,20 @@ config FREETZ_MODULE_hci_usb
 	select FREETZ_MODULE_bluetooth
 	default n
 
+config FREETZ_MODULE_bfusb
+	bool "bfusb.ko"
+	select FREETZ_MODULE_usbcore
+	select FREETZ_MODULE_bluetooth
+	select FREETZ_MODULE_firmware_class
+	default n
+
+config FREETZ_MODULE_firmware_class
+	bool "firmware_class.ko"
+	default n
+
 config FREETZ_MODULE_dm_mod
-		bool "dm-mod.ko"
-		default n
+	bool "dm-mod.ko"
+	default n
 
 config FREETZ_MODULE_dm_crypt
 	bool "dm-crypt.ko"
