@@ -76,6 +76,7 @@ endif
 #Simple test if wrong uclibc is used
 UCLIBC:=$(shell $(CHECK_UCLIBC_VERSION) && echo OK || echo NOK)
 ifeq ($(UCLIBC),NOK)
+$(warning WARNING: uClibc-version changed. Packages, toolchain and some other stuff must be rebuilt. This will take a while)
 SWITCH_UCLIBC:=toolchain-switch
 endif
 export SWITCH_UCLIBC
