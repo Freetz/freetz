@@ -62,7 +62,7 @@ collect_upt() {
 	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
 		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
 			--step $RRDSTATS_INTERVAL \
-			DS:uptime:GAUGE:600:0:100 \
+			DS:uptime:GAUGE:600:0:99999 \
 			RRA:MAX:0.1:1:576 \
 			RRA:MAX:0.1:6:672 \
 			RRA:MAX:0.1:24:732 \
