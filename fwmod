@@ -75,6 +75,8 @@ fi
 
 L1='  '
 L2='    '
+BOLD=$(echo -e '\033[1m')
+NORM=$(echo -e '\033[0m')
 
 # Default values
 FREETZ_VERBOSITY_LEVEL=0
@@ -164,7 +166,7 @@ if [ -z "$DIR" ]; then
 fi
 
 ABS_BASE_DIR="$BASE_DIR"
-if [ "$(expr index "$ABS_BASE_DIR" "/")" -ne 1 ]; then
+if [[ "$ABS_BASE_DIR" != /* ]]; then
 	ABS_BASE_DIR="$(pwd)/$ABS_BASE_DIR"
 fi
 
@@ -318,6 +320,31 @@ modlang()
 	done
 }
 
+# list of static packages, sorted by start level
+static_packages()
+{
+	if [ -r "$STATIC_PACKAGES_FILE" ]; then
+		sort "$STATIC_PACKAGES_FILE" \
+		  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
+		  | grep -v '^#' | grep -v '^$'
+	fi
+}
+
+static_addons()
+{
+	if [ -r "$STATIC_ADDON_FILE" ]; then
+		cat "$STATIC_ADDON_FILE" \
+		  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
+		  | grep -v '^#' | grep -v '^$'
+	fi
+}
+
+pkg_name() 
+{
+	local name=$1
+	echo "$name" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//'
+}
+
 if [ -z "$FIRMWARE" ]; then
 	error 1 "no firmware filename supplied"
 fi
@@ -352,7 +379,7 @@ FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
 if [ "$DO_UNPACK" -gt 0 ]; then
-	echo -e "\033[1mSTEP 1: UNPACK\033[0m"
+	echo "${BOLD}STEP 1: UNPACK${NORM}"
 
 	rm -rf "$ORG_DIR"
 	mkdir "$ORG_DIR"
@@ -444,7 +471,7 @@ fi
 MODULES_DIR="${FILESYSTEM_MOD_DIR}/lib/modules/${FREETZ_KERNEL_VERSION}"
 
 if [ "$DO_MOD" -gt 0 ]; then
-	echo -e "\033[1mSTEP 2: MODIFY\033[0m"
+	echo "${BOLD}STEP 2: MODIFY${NORM}"
 
 	# Check if firmware is unpacked
 	if [ ! -r "${DIR}/.unpacked" ]; then
@@ -508,16 +535,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 	#delete .packages file
 	rm -f "${PACKAGES_LIST_FILE}"
 	
-	[ "$FREETZ_REMOVE_ASSISTANT" == "y" ]		&& OPTIONS="$OPTIONS -assistant"
-	[ "$FREETZ_REMOVE_HELP" == "y" ]			&& OPTIONS="$OPTIONS -help"
-	[ "$FREETZ_REMOVE_CDROM_ISO" == "y" ]		&& OPTIONS="$OPTIONS -cdrom.iso"
-	[ "$FREETZ_PATCH_ATA" == "y" ]				&& OPTIONS="$OPTIONS +ata"
-	[ "$FREETZ_PATCH_ENUM" == "y" ]				&& OPTIONS="$OPTIONS +enum"
-	[ "$FREETZ_PATCH_INTERNATIONAL" == "y" ]	&& OPTIONS="$OPTIONS +international"
-	[ "$FREETZ_PATCH_PUSH" == "y" ]				&& OPTIONS="$OPTIONS +push"
-	[ "$FREETZ_PATCH_WDS" == "y" ]				&& OPTIONS="$OPTIONS +wds"
-	[ "$FREETZ_PATCH_SIGNED" == "y" ]			&& OPTIONS="$OPTIONS +signed"
-	[ "$FREETZ_PATCH_USBSTORAGE" == "y" ]		&& OPTIONS="$OPTIONS +usbstorage"
+	[ "$FREETZ_REMOVE_ASSISTANT" == "y" ]		&& OPTIONS+=" -assistant"
+	[ "$FREETZ_REMOVE_HELP" == "y" ]			&& OPTIONS+=" -help"
+	[ "$FREETZ_REMOVE_CDROM_ISO" == "y" ]		&& OPTIONS+=" -cdrom.iso"
+	[ "$FREETZ_PATCH_ATA" == "y" ]				&& OPTIONS+=" +ata"
+	[ "$FREETZ_PATCH_ENUM" == "y" ]				&& OPTIONS+=" +enum"
+	[ "$FREETZ_PATCH_INTERNATIONAL" == "y" ]	&& OPTIONS+=" +international"
+	[ "$FREETZ_PATCH_PUSH" == "y" ]				&& OPTIONS+=" +push"
+	[ "$FREETZ_PATCH_WDS" == "y" ]				&& OPTIONS+=" +wds"
+	[ "$FREETZ_PATCH_SIGNED" == "y" ]			&& OPTIONS+=" +signed"
+	[ "$FREETZ_PATCH_USBSTORAGE" == "y" ]		&& OPTIONS+=" +usbstorage"
 
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
 		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
@@ -527,34 +554,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		KERNEL_SUBVERSION="$(cat $KERNEL_SUBVERSION_FILE)"
-		OPTIONS="$OPTIONS +kernel ($KERNEL_SUBVERSION)"
+		OPTIONS+=" +kernel ($KERNEL_SUBVERSION)"
 	fi
 
-	if [ -r "$STATIC_PACKAGES_FILE" ]; then
-		for pkg in \
-		$( \
-			cat "$STATIC_PACKAGES_FILE" \
-				 | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
-				 | grep -v '^#' | grep -v '^$' \
-		)
-		do
-			OPTIONS="$OPTIONS +$pkg"
-			echo "$pkg" >> "${PACKAGES_LIST_FILE}"
-		done
-	fi
-
-	if [ -r "$STATIC_ADDON_FILE" ]; then
-		for pkg in \
-		$( \
-			cat "$STATIC_ADDON_FILE" \
-				  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
-				  | grep -v '^#' | grep -v '^$' \
-		)
-		do
-			OPTIONS="$OPTIONS +$pkg"
-                        echo "$pkg" >> "${PACKAGES_LIST_FILE}"
-		done
-	fi
+	for pkg in $(static_packages) $(static_addons); do
+		OPTIONS+=" +$pkg"
+		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
+	done
 
 	echo1 "setting subversion '${SUBVERSION}'"
 	echo "$SUBVERSION" > "${FILESYSTEM_MOD_DIR}/etc/.subversion"
@@ -576,7 +582,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# stop execution if in patch test mode
 	if [ "$FWMOD_PATCH_TEST" == "y" ]; then
-		echo -e "\033[1mPatch test mode: exiting without error.\033[0m"
+		echo "${BOLD}Patch test mode: exiting without error.${NORM}"
 		exit
 	fi
 
@@ -586,11 +592,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oem_kept=0
 	oem_list=
 	
-	oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
-	
-	if [ -z "$oems" ]; then
-		oems="$(grep 'for i in  tcom' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
-	fi
+	oems=$(grep -E 'for i in  (avm|tcom)' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')
 	
 	if [ -z "$oems" ]; then
 		error 1 "no oems found"
@@ -606,7 +608,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			rm -rf "${FILESYSTEM_MOD_DIR}/etc/default."*"/${i}"
 			oem_removed=1
 		else
-			oem_list="$oem_list $i"
+			oem_list+=" $i"
 			oem_kept=1
 		fi
 	done
@@ -621,10 +623,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ "$FREETZ_TYPE_SPEEDPORT_W900V" == "y" ]
 	then
 		oem_list="tcom congstar avm"
-		sed -i -e 's/for i in  tcom.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
-	else
-		sed -i -e 's/for i in  avm.*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
 	fi
+	sed -i -r -e 's/for i in  (avm|tcom).*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
 
 	if [ "$oem_kept" -eq 0 ]; then
 		error 1 "please choose at least one OEM (branding) in menuconfig: AVM, 1&1, Freenet etc."
@@ -827,59 +827,43 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	echo "installing packages"
 	
-	if [ -r "$STATIC_PACKAGES_FILE" ]; then
-		for pkg in \
-		$( \
-			sort "$STATIC_PACKAGES_FILE" \
-			| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
-			| grep -v '^#' | grep -v '^$' \
-		)
-		do
-			echo1 "${pkg}"
-			pkg_name="$(echo "$pkg" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//')"
+	for pkg in $(static_packages); do
+		echo1 "${pkg}"
+		pkg_name=$(pkg_name "$pkg")
 
-			"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
-				$( \
-					[ -r "${PACKAGES_DIR}/${pkg}/.exclude" ] \
-							&& echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude" \
+		"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
+			$(
+				[ -r "${PACKAGES_DIR}/${pkg}/.exclude" ] \
+						&& echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude"
+			) . | \
+		"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+
+		[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
+			modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
+		
+		echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
+	done
+	for pkg in $(static_addons); do
+		echo1 "${pkg} (addon)"
+		pkg_name=$(pkg_name "$pkg")
+
+		if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
+			echo "NOTICE: addon '$pkg' is in old-style format (no language support)." 1>&2
+			"$TAR" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		else
+			"$TAR" -c -C "${ADDON_DIR}/${pkg}/root" \
+				$(
+					[ -r "${ADDON_DIR}/${pkg}/.exclude" ] \
+							&& echo "--exclude-from=${ADDON_DIR}/${pkg}/.exclude" \
 				) . | \
 			"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
-			[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
-				modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
-			
-			echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
-		done
-	fi
-	if [ -r "$STATIC_ADDON_FILE" ]; then
-		for pkg in \
-		$( \
-				cat "$STATIC_ADDON_FILE" \
-				| sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
-				| grep -v '^#' | grep -v '^$' \
-		)
-		do
-			echo1 "${pkg} (addon)"
-			pkg_name="$(echo "$pkg" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//')"
+			[ -r "${ADDON_DIR}/${pkg}/.language" ] && \
+				modlang "${ADDON_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
+		fi
 
-			if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
-				echo "NOTICE: addon '$pkg' is in old-style format (no language support)." 1>&2
-				"$TAR" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-			else
-				"$TAR" -c -C "${ADDON_DIR}/${pkg}/root" \
-					$( \
-						[ -r "${ADDON_DIR}/${pkg}/.exclude" ] \
-								&& echo "--exclude-from=${ADDON_DIR}/${pkg}/.exclude" \
-					) . | \
-				"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-
-				[ -r "${ADDON_DIR}/${pkg}/.language" ] && \
-					modlang "${ADDON_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
-			fi
-
-			echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
-		done
-	fi
+		echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
+	done
 	
 	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
 		echo "invoking custom script"
@@ -990,7 +974,7 @@ fi
 
 
 if [ "$DO_PACK" -gt 0 ]; then
-	echo -e "\033[1mSTEP 3: PACK\033[0m"
+	echo "${BOLD}STEP 3: PACK${NORM}"
 
 	if [ ! "$DO_MOD" -gt 0 ]; then
 		echo "WARNING: Modifications (STEP 2) and this step should never" 1>&2
@@ -1122,7 +1106,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo "done."
 	echo
 
-	echo -e "\033[1mFINISHED\033[0m"
+	echo "${BOLD}FINISHED${NORM}"
 fi
 
 exit 0
