@@ -20,9 +20,9 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SCREEN_DIR) clean
+	-$(MAKE) -C $(WPUT_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(SCREEN_TARGET_BINARY)
+	$(RM) $(WPUT_TARGET_BINARY)
 
 $(PKG_FINISH)
