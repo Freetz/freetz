@@ -1,7 +1,7 @@
---- src/config.h.orig	2008-02-12 12:03:28.000000000 +0100
-+++ src/config.h	2008-02-25 22:04:27.000000000 +0100
-@@ -42,12 +42,12 @@
- #elif defined(__sun__)
+--- src/config.h.orig	2008-07-20 20:26:32.000000000 +0200
++++ src/config.h	2008-07-21 18:05:45.000000000 +0200
+@@ -43,12 +43,12 @@
+ #elif defined(__sun__) || defined (__sun)
  #   define LEASEFILE "/var/cache/dnsmasq.leases"
  #else
 -#   define LEASEFILE "/var/lib/misc/dnsmasq.leases"
@@ -15,9 +15,9 @@
  #endif
  #define DEFLEASE 3600 /* default lease time, 1 hour */
  #define CHUSER "nobody"
-@@ -223,9 +223,9 @@
- #define HAVE_DEV_URANDOM
- #define HAVE_DEV_RANDOM
+@@ -200,9 +200,9 @@
+ #endif
+ #undef HAVE_ARC4RANDOM
  #undef HAVE_SOCKADDR_SA_LEN
 -#if !defined(__ARCH_HAS_MMU__) && !defined(__UCLIBC_HAS_MMU__)
 -#  define NO_FORK
@@ -28,7 +28,7 @@
  #if defined(__UCLIBC_HAS_IPV6__)
  #  ifndef IPV6_V6ONLY
  #    define IPV6_V6ONLY 26
-@@ -318,19 +318,19 @@
+@@ -286,19 +286,19 @@
  /* We assume that systems which don't have IPv6
     headers don't have ntop and pton either */
  

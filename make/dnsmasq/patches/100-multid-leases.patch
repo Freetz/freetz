@@ -101,17 +101,15 @@
    struct dhcp_lease *lease_tmp;
 --- src/rfc2131.c.orig	2008-01-24 12:23:19.000000000 +0100
 +++ src/rfc2131.c	2008-02-25 22:04:27.000000000 +0100
-@@ -439,7 +439,8 @@
- 	      
+@@ -440,6 +440,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
  	      if (hostname)
--		lease_set_hostname(lease, hostname, daemon->domain_suffix, 1); 
-+		lease_set_hostname(lease, hostname, daemon->domain_suffix, 1);
-+		lease_set_ifrname(lease, iface_name); 
+ 		lease_set_hostname(lease, hostname, daemon->domain_suffix, 1); 
++		lease_set_ifrname(lease, iface_name);
  	      /* infinite lease unless nailed in dhcp-host line. */
  	      lease_set_expires(lease,  
  				have_config(config, CONFIG_TIME) ? config->lease_time : 0xffffffff, 
-@@ -964,7 +965,7 @@
+@@ -985,7 +986,7 @@
  	    }
  	  if (hostname)
  	    lease_set_hostname(lease, hostname, daemon->domain_suffix, hostname_auth);
@@ -119,4 +117,4 @@
 +	    lease_set_ifrname(lease, iface_name);
  	  lease_set_expires(lease, time, now);
  	  lease_set_interface(lease, int_index);
- 	
+ 
