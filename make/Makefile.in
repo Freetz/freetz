@@ -132,7 +132,7 @@ endif
 # PKG_EDIT_CONFIG
 # update a config file
 #   $(1) = list of assignments CONFIG_VAR=value
-PKG_EDIT_CONFIG__INT0 = -e 's/^(\# )?($1)[ =].*/$(if $(patsubst n,,$2),\2=$2,\# \2 is not set)/g'
+PKG_EDIT_CONFIG__INT0 = -e 's%^(\# )?($1)[ =].*%$(if $(patsubst n,,$2),\2=$2,\# \2 is not set)%g'
 PKG_EDIT_CONFIG__INT1 = $(call PKG_EDIT_CONFIG__INT0,$(word 1,$(subst =, ,$1)),$(word 2,$(subst =, ,$1)))
 PKG_EDIT_CONFIG = $(SED) -i -r $(foreach asg,$1,$(call PKG_EDIT_CONFIG__INT1,$(asg)))
 

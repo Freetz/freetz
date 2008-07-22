@@ -127,3 +127,33 @@ config FREETZ_BUSYBOX_KEYS
 	help
 		Adds some useful keyboard-features to the shell
 
+config FREETZ_BUSYBOX_BRCTL
+	bool "brctl"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Adds bridge utilities from busybox
+
+config FREETZ_BUSYBOX_BRCTL_FANCY
+	bool "add brctl fancy options"
+	depends on FREETZ_BUSYBOX_BRCTL
+	default n
+	help
+		Add support for extended brctl option like:  
+		setageing, setfd, sethello, setmaxage, 
+		setpathcost, setportprio, setbridgeprio, stp
+		This adds about 600 bytes.
+
+config FREETZ_BUSYBOX_UDHCPD
+	bool "udhcpd"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Add udhcpd, a simple DHCP deamon
+
+config FREETZ_BUSYBOX_UDHCPD_LEASES_FILE
+	string "Default path to leases file from udhcpd"
+	depends on FREETZ_BUSYBOX_UDHCPD
+	default "/var/tmp/udhcpd.leases"
+	help
+		Set default path to udhcpd leases file
