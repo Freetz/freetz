@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_DTMFBOX
 	depends on FREETZ_LANG_DE || ! FREETZ_SELECTED_LANG_ONLY
-	bool "dtmfbox v0.4.1_rc4 (6)"
+	bool "dtmfbox v0.5.0 (beta1)"
 	select FREETZ_LIB_libcapi20
 	select FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
 	default n
@@ -37,6 +37,14 @@ config FREETZ_PACKAGE_DTMFBOX_WITH_VOIP
 	default y
 	help
 		Compile dtmfbox with VoIP support (SIP)
+
+config FREETZ_PACKAGE_DTMFBOX_WITH_ICE
+	bool "ICE support"
+	depends on FREETZ_PACKAGE_DTMFBOX_WITH_VOIP
+	default y
+	help
+		Compile dtmfbox with ICE support (~90 kb)
+
 endmenu
 
 
@@ -50,12 +58,12 @@ config FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
 	help
 		Include G711 codec (default)
 
-#config FREETZ_PACKAGE_DTMFBOX_WITH_SPEEX_CODEC
-#	bool "SPEEX (not tested)"
-#	depends on FREETZ_PACKAGE_DTMFBOX
-#	default n
-#	help
-#		Include SPEEX codec
+config FREETZ_PACKAGE_DTMFBOX_WITH_SPEEX_CODEC
+	bool "SPEEX (not tested)"
+	depends on FREETZ_PACKAGE_DTMFBOX
+	default n
+	help
+		Include SPEEX codec
 
 config FREETZ_PACKAGE_DTMFBOX_WITH_GSM_CODEC
 	bool "GSM (not tested)"
@@ -71,38 +79,10 @@ config FREETZ_PACKAGE_DTMFBOX_WITH_GSM_CODEC
 #	help
 #		Include iLBC codec
 
-config FREETZ_PACKAGE_DTMFBOX_PREFER_REMOTE_CODEC_ORDER
-	bool "Prefer remote codec order"
-	depends on FREETZ_PACKAGE_DTMFBOX
-	default n
-	help
-		This specifies the behavior of the SDP negotiator when
-		responding to an offer, whether it should rather use
-		the codec preference as set by remote, or should it
-		rather use the codec preference as specified by local
-		endpoint.
-
 endmenu
 
 menu "Misc"
 	depends on FREETZ_PACKAGE_DTMFBOX
-
-config FREETZ_PACKAGE_DTMFBOX_RESAMPLE_QUALITY
-	int "Resample quality (0 high - 2 low)"
-	depends on FREETZ_PACKAGE_DTMFBOX
-	default 1
-	help
-		Resample Quality
-		0=high, 1=middle (default), 2=low
-
-config FREETZ_PACKAGE_DTMFBOX_SOUND_BUFFER_COUNT
-	int "Sound buffer count"
-	default 6
-	help
-		Specify number of sound buffers.
-		Larger number is better for sound stability, but
-		would cause more audio delay (and definitely will take
-		more memory). Default is 6.
 
 config FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE
 	bool "Webphone Applet (beta)"
@@ -113,6 +93,13 @@ config FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE
 		Beta!!
 		
 		+ 64 kb (Binary only)
+
+config FREETZ_PACKAGE_DTMFBOX_WITH_HELP
+	bool "Help"
+	depends on FREETZ_PACKAGE_DTMFBOX
+	default y
+	help
+		Include online help
 
 config FREETZ_PACKAGE_DTMFBOX_WITH_ESPEAK
 	bool "eSpeak support"
