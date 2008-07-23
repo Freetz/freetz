@@ -8,7 +8,8 @@ DAEMON=hcid
 start() {
 	echo -n "Starting bluetooth ..."
 
-	# Insert hci_usb and rfcomm module
+	# Insert bfusb, hci_usb and rfcomm module
+	modprobe -q bfusb
 	modprobe -q hci_usb
 	modprobe -q rfcomm
 
