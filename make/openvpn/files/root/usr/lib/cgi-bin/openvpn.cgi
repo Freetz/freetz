@@ -525,16 +525,19 @@ function addRowToTable(name)
 	input.onblur = Update_Client_Values;
 	input.title=$(lang de:"\"Dieses IP-Netz wird zum Client geroutet.\"" en:"\'This net will be routed to the client\'");
 	cell.appendChild( input );
+	
+	if (local_clients_defined[act_conf] == 1) {changeval();}
 }
 
 function removeRowFromTable(name)
 {
   var tbl = document.getElementById(name);
   var lastRow = tbl.rows.length;
-  if (lastRow > 2) {
+  if (lastRow >= 2) {
   	tbl.deleteRow(lastRow - 1);
   	local_clients_defined[act_conf] = Number(local_clients_defined[act_conf]) -1;
   }
+  if (local_clients_defined[act_conf] == 0) {changeval();}
 }
 
 function changeval(value) {
@@ -624,7 +627,8 @@ var fieldsets = document.getElementsByTagName("fieldset");
 			document.getElementById("div_ip_loc_rem").style.display = "inline";
 		}
 		else {
-			if (document.getElementById("id_act_maxclients").value == 1){
+			var maxcli = document.getElementById("id_act_maxclients").value ;
+			if (maxcli == 1 || maxcli >1 && local_clients_defined[act_conf] == 0 ){
 				document.getElementById("div_ip_and_net").style.display = "none";
 				document.getElementById("div_ip_loc_rem").style.display = "inline";
 				document.getElementById("div_set_remote_net").style.display = "block";
