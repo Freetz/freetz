@@ -28,6 +28,8 @@ case "$1" in
 esac
 
 start() {
+	local lease
+
 	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
@@ -67,8 +69,12 @@ start() {
 	fi
 
 	# this could pose problems when a client comes too fast
-	chown root:nobody /var/tmp/multid.leases /var/tmp/dnsmasq.leases
-	chmod 0664 /var/tmp/multid.leases /var/tmp/dnsmasq.leases
+	for lease in /var/tmp/multid.leases /var/tmp/dnsmasq.leases; do
+		if [ -f $lease ]; then
+			chmod 0664 $lease
+			chown root:nobody $lease
+		fi
+	done
 
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
