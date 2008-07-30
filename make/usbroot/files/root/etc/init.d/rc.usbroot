@@ -53,9 +53,24 @@ SYSFS=/sys
 DEVPATH=${3##/proc/bus/usb/}
 MNTPOINT=/data
 OLDROOT=oldroot
+HOTPLUG=
 
 USBROOT_UNMOUNTOLDROOT='yes'
 [ -f /mod/etc/conf/usbroot.cfg ] && . /mod/etc/conf/usbroot.cfg
+
+hotplugging() {
+	case "$1" in
+		enable)
+			echo "$HOTPLUG" > /proc/sys/kernel/hotplug
+			;;
+		disable)
+			HOTPLUG=$(cat /proc/sys/kernel/hotplug)
+			echo "" > /proc/sys/kernel/hotplug
+			;;
+		*)
+			;;
+	esac
+}
 
 mount_usbroot() {
 	if [ ! -d "$MNTPOINT" ]; then
@@ -64,7 +79,7 @@ mount_usbroot() {
 	fi
 
 	# disable hotplug
-	echo "" > /proc/sys/kernel/hotplug
+	hotplugging disable
 
 	if [ $HWRevision -eq 122 ]; then
 		load_usb_modules_7270
@@ -101,12 +116,12 @@ mount_usbroot() {
 					if [ "$FSCKCODE" -gt 3 ]; then
 						echo "*** USB root rejected: filesystem contains errors. ***"
 						# reenable hotplug
-						echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
+						hotplugging enable
 						return 1
 					elif [ "$FSCKCODE" -gt 1 ]; then
 						echo "*** Filesystem errors corrected, rebooting... ***"
 						# reenable hotplug
-						echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
+						hotplugging enable
 						# reboot without init
 						reboot -f
 					fi
@@ -115,7 +130,7 @@ mount_usbroot() {
 				mount $DEVICE $MNTPOINT \
 				    ${FSTYPE:+-t} $FSTYPE ${MNTOPTIONS:+-o} $MNTOPTIONS
 				# reenable hotplug
-				echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
+				hotplugging enable
 				# return with success
 				return 0
 			fi
@@ -124,7 +139,7 @@ mount_usbroot() {
 		let LOOP=LOOP+1
 	done
 	# reenable hotplug
-	echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
+	hotplugging enable
 	# return with failure code
 	return 1
 }
@@ -202,14 +217,14 @@ unmount_virtualfs() {
 
 rmmodules() {
 	# disable hotplug
-	echo "" > /proc/sys/kernel/hotplug
+	hotplugging disable
 
 	for i in sd_mod scsi_mod usb-storage usbahcicore musb_hdrc usbcore Piglet; do
 		rmmod $i
 	done
 
 	# reenable hotplug
-	echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
+	hotplugging enable
 }
 
 cleanup_on_failure() {
