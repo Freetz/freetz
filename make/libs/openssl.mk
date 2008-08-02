@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 0.9.8g)
+$(call PKG_INIT_LIB, 0.9.8h)
 $(PKG)_LIB_VERSION:=0.9.8
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www.openssl.org/source/
+$(PKG)_SITE:=http://www.openssl.org/source
 $(PKG)_SSL_BINARY:=$($(PKG)_DIR)/libssl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_CRYPTO_BINARY:=$($(PKG)_DIR)/libcrypto.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_SSL_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so.$($(PKG)_LIB_VERSION)
