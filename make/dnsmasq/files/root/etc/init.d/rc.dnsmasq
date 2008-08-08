@@ -30,7 +30,9 @@ esac
 start() {
 	local lease
 
+	modlib_addgroup nobody
 	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
