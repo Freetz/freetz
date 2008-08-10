@@ -138,6 +138,14 @@ choice
 
 endchoice
 
+config FREETZ_TYPE_FON_WLAN_7270_16MB
+	bool "16 MB flash"
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7270
+	default n
+	help
+		Enable this to build an image for boxes with 16 MB flash.
+
 config FREETZ_TYPE_LABOR
 	bool "Beta/Labor/VPN"
 	depends on \
@@ -524,10 +532,11 @@ config FREETZ_KERNEL_MTD_SIZE
 		FREETZ_TYPE_SPEEDPORT_W701V || \
 		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
+		(FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_FON_WLAN_7270_16MB) || \
 		FREETZ_TYPE_CUSTOM && FREETZ_HIDDEN_ROOT
 	default 246					if \
-		FREETZ_TYPE_WLAN_3270
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_FON_WLAN_7270_16MB
 	help
 		Number of 64K blocks in the kernel mtd device.
 
