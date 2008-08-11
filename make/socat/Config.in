@@ -1,5 +1,8 @@
 config FREETZ_PACKAGE_SOCAT
 	bool "socat 1.6.0.1"
+	select FREETZ_LIB_libssl
+	select FREETZ_LIB_libutil
+	select FREETZ_LIB_libz
 	default n
 	help
 		socat is an extended netcat-like utility

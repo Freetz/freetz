@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.6.0.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www.dest-unreach.org/socat/download/
+$(PKG)_SITE:=http://www.dest-unreach.org/socat/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/socat
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/socat
 
