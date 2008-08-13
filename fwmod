@@ -514,6 +514,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	ln -s var/mod/home "$FILESYSTEM_MOD_DIR"/
 	# Set version and options
 	SUBVERSION_FILE="${BASE_DIR}/.version"
+	FIRMWARESUBVERSION_FILE="${FILESYSTEM_MOD_DIR}/etc/.subversion"
+	FIRMWARESUBVERSION="$(cat $FIRMWARESUBVERSION_FILE)"
 	FIRMWAREVERSION_FILE="${FILESYSTEM_MOD_DIR}/etc/.version"
 	FIRMWAREVERSION="$(cat $FIRMWAREVERSION_FILE)"
 	PACKAGES_LIST_FILE="${BASE_DIR}/.packages"
@@ -530,7 +532,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	fi
 
-	SUBVERSION="$(cat $SUBVERSION_FILE)${SVN_VERSION}"
+	SUBVERSION="$FIRMWARESUBVERSION-$(cat $SUBVERSION_FILE)${SVN_VERSION}"
 	OPTIONS="+busybox"
 	#delete .packages file
 	rm -f "${PACKAGES_LIST_FILE}"
@@ -562,15 +564,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
 	done
 
-	echo1 "setting subversion '${SUBVERSION}'"
-	echo "$SUBVERSION" > "${FILESYSTEM_MOD_DIR}/etc/.subversion"
-	sed -i -e "s/\export\ FIRMWARE_SUBVERSION=.*\$/export\ FIRMWARE_SUBVERSION=\"${SUBVERSION}\"/g" "${FILESYSTEM_MOD_DIR}/etc/version"
-	sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
-	sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
+	if [ "$FREETZ_SUBVERSION_STRING" == "y" ]; then
+		echo1 "setting subversion '${SUBVERSION}'"
+		echo "$SUBVERSION" > "${FILESYSTEM_MOD_DIR}/etc/.subversion"
+		sed -i -e "s/\export\ FIRMWARE_SUBVERSION=.*\$/export\ FIRMWARE_SUBVERSION=\"${SUBVERSION}\"/g" "${FILESYSTEM_MOD_DIR}/etc/version"
+		sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
+		sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
-	if [ ! -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
-	AVM_SUBVERSION=`grep "SUBVERSION=" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" | sed -e "s/[^-0-9]//g"`
-	sed -i -e "s/SUBVERSION=\"$AVM_SUBVERSION\"/SUBVERSION=\"$AVM_SUBVERSION-$SUBVERSION\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+		if [ ! -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
+			AVM_SUBVERSION=`grep "SUBVERSION=" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" | sed -e "s/[^-0-9]//g"`
+			sed -i -e "s/SUBVERSION=\"$AVM_SUBVERSION\"/SUBVERSION=\"$AVM_SUBVERSION-$SUBVERSION\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+		fi
 	fi
 
 	# Execute general patch scripts 
@@ -1092,7 +1096,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
 	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
-	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}-${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
+	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
 	
 	# Pack firmware image (use old tar for compatibility)
 	echo "packing ${modimage}"

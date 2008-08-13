@@ -1599,8 +1599,19 @@ config FREETZ_FAVICON_STRING
 	default "cuma"			if FREETZ_FAVICON_CUMA
 	default "hansolo"		if FREETZ_FAVICON_HANSOLO
 
+config FREETZ_SUBVERSION_STRING
+	bool "Add Freetz version to subversion string"
+	default y
+	help
+		Add Freetz version to subversion string, e.g. -11945-freetz-devel-2417.
+		Disable this if you have trouble with your isp or plugin downloads from
+		AVM don't work. 
+		
+		Please only disable this option if you really need to!
+
 config FREETZ_DEVELOPER_VERSION_STRING
 	bool "Developer version string"
+	depends on FREETZ_SUBVERSION_STRING
 	default y 
 	help
 		Add SVN (Subversion) repository revision number to firmware image name
