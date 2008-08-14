@@ -39,11 +39,11 @@ $(pkg)-precompiled: $($(PKG)_INWAIT_TARGET_BINARY) \
 
 $(pkg)-clean:
 	-$(MAKE) -C $(INOTIFY_TOOLS_DIR) clean
-	rm -f $(INOTIFY_TOOLS_DIR)/.compiled
+	$(RM) $(INOTIFY_TOOLS_DIR)/.compiled
 
 $(pkg)-uninstall:
-	rm -f $(INOTIFY_TOOLS_INWAIT_TARGET_BINARY)
-	rm -f $(INOTIFY_TOOLS_INWATCH_TARGET_BINARY)
-	rm -f $(INOTIFY_TOOLS_TARGET_DIR)/root/usr/lib/libinotifytools.so*
+	$(RM) $(INOTIFY_TOOLS_INWAIT_TARGET_BINARY)
+	$(RM) $(INOTIFY_TOOLS_INWATCH_TARGET_BINARY)
+	$(RM) $(INOTIFY_TOOLS_TARGET_DIR)/root/usr/lib/libinotifytools.so*
 
 $(PKG_FINISH)
