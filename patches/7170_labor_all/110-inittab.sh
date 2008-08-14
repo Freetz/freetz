@@ -1,3 +1,5 @@
+rm "${FILESYSTEM_MOD_DIR}/etc/inittab"
+
 cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/etc/inittab"
 #
 ::sysinit:/etc/init.d/rc.S
