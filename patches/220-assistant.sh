@@ -15,7 +15,11 @@ find "${HTML_DIR}/menus" -type f |
 
 if [ -e "$HTML_DIR/home/sitemap.html" ]; then
 	if [ "$FREETZ_HAS_PHONE" == "y" ]; then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant.patch"
+		if [ "$FREETZ_TYPE_FON_WLAN_7170" == "y" -a "$FREETZ_TYPE_LABOR_ALL" == "y" ]; then
+			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_7170_labor_all.patch"
+		else
+			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant.patch"
+		fi
 	else	
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_wop.patch"
 	fi

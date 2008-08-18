@@ -1,9 +1,9 @@
---- etc/init.d/rc.S.orig	2007-07-10 19:28:00.000000000 +0200
-+++ etc/init.d/rc.S	2007-07-10 19:28:00.000000000 +0200
-@@ -86,6 +86,20 @@
+--- etc/init.d/rc.S.orig	2008-02-22 20:05:11.000000000 +0100
++++ etc/init.d/rc.S	2008-02-22 20:05:11.000000000 +0100
+@@ -102,6 +102,20 @@
  ##########################################################################################
  ##########################################################################################
- echo init-start 120 >/dev/watchdog
+ echo init-start 240 >/dev/watchdog
 +
 +# Load boot loader kernel_args API
 +. /usr/bin/kernel_args
@@ -15,7 +15,7 @@
 +# Initiate inotify-tools file access logging
 +if ka_isActiveVariable InotifyBootAnalysis; then
 +	ka_decreaseValue InotifyBootAnalysis
-+	/etc/init.d/rc.inotify_tools start
++	/etc/init.d/rc.inotify_tools start 
 +fi
 +
  ##########################################################################################

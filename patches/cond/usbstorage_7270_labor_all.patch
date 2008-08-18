@@ -1,0 +1,71 @@
+--- etc/hotplug/run_mount.orig	2008-02-29 13:58:24.000000000 +0100
++++ etc/hotplug/run_mount	2008-03-07 02:06:39.000000000 +0100
+@@ -20,19 +20,9 @@
+ 
+ ## Generate a frontend'able 'nice name' to be used as mount point:
+ nicename () {
+-## Find device's strings, remove/translate evil chars...
+-local MANU=`cat $SYSFS/block/$1/device/vendor|tr -d ' '|tr -c "\na-zA-Z0-9" '-'`
+-local NAME=`cat $SYSFS/block/$1/device/model|tr -d ' '|tr -c "\na-zA-Z0-9" '-'`
+-local PARTHEX=$3
+-if [ $PARTHEX -gt 9 ]; then
+-PARTHEX=`echo $((PARTHEX-10)) | tr "0-5" "A-F"`
+-fi
+-test -z "$NAME" && NAME="Storage"
+-test -n "$MANU" && NAME="$MANU-$NAME"
+-## limit NAME to 30 characters+3 extra characters (-00)
+-NAME=`echo -n "$NAME" | sed -e 's#\(.\{0,30\}\).*#\1#g'`
+-## Build nice name: [Vendor-Product]-<x><y>
+-echo "$NAME-$2$PARTHEX"
++local NICE=""
++NICE="uStor$2$3"
++echo $NICE
+ }
+ ## Simple semaphore stuff:
+ ## includes /etc/hotplug/rc.usbsema
+@@ -43,6 +33,36 @@
+ ## atomic_touch (Filename)
+ USBLOCKFILE=/var/USBLOCK_storage
+ test -f /etc/hotplug/rc.usbsema && . /etc/hotplug/rc.usbsema
++
++mount_fs () {
++	if [ -e /usr/bin/fstyp ]; then
++		FSTYPE=`/usr/bin/fstyp $DEVNODE`
++	else 
++		FSTYPE="vfat"
++	fi
++	
++	case $FSTYPE in
++	vfat)
++		mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH
++		;;
++	ext2)
++		mount -t ext2 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ext3)
++		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ntfs)
++		if [ -e /usr/bin/ntfs-3g ]; then
++			/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		else
++			echo "ntfs-3g not installed"
++		fi
++		;;
++	*) # fs type unknown
++		;;
++	esac
++}
++
+ ## Actually perform the mount operation...
+ ## (TODO Checking the partition for known filesystem types)
+ do_mount () {
+@@ -74,7 +94,7 @@
+ local OLD_UMASK=`umask`
+ umask 0
+ local new_filesystem=false
+-if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
++if mount_fs; then
+ new_filesystem=true
+ fi
+ if [ $new_filesystem = true ] ; then

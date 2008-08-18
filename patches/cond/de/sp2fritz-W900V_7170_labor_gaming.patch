@@ -1700,7 +1700,7 @@
 +if (asLink) str += "<a href=\"javascript:jslGoTo('dect', 'setting');\">";
 +str += "<? echo $var:TextDECT ?>";
 +if (asLink) str += "</a>";
-+case "12": str += "<? echo $var:TextBlinkDECT ?>"; break;+return str;
++return str;
 +}
 +function DectLed() {
 +var str = "<img src=\"../html/<? echo $var:lang ?>/images/led_gray.gif\">";
@@ -1724,7 +1724,7 @@
 +{
 +case 0: return "an, kein" + str.join("");
 +case 1: return "an, ein" + str.join("");
-+default: return "an, "+g_CountDect2+str.join("e");
++default: return "an, "+g_countDect2+str.join("e");
 +}
 +}
  function RufumleitungDisplay() {
