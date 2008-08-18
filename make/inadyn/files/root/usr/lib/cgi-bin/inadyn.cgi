@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh

@@ -1,24 +1,13 @@
-$(call PKG_INIT_BIN, 1.29)
-$(PKG)_SOURCE:=espeak-$(ESPEAK_VERSION)-source.zip
+$(call PKG_INIT_BIN, 1.37)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-source.zip
 $(PKG)_SITE:=http://kent.dl.sourceforge.net/sourceforge/espeak
-$(PKG)_DIR:=$(SOURCE_DIR)/espeak-$(ESPEAK_VERSION)-source
-$(PKG)_TARGET_LANGUAGE:=$(ESPEAK_DIR)/.language
-$(PKG)_BINARY:=$(ESPEAK_DIR)/src/speak
-$(PKG)_TARGET_BINARY:=$(ESPEAK_DEST_DIR)/usr/bin/speak
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/speak
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/speak
 
 $(PKG)_DEPENDS_ON := uclibcxx
 
-$(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.freetz_config
-$(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.freetz_config.temp
-
 $(PKG_SOURCE_DOWNLOAD)
-
-$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
-	@echo "FREETZ_PACKAGE_ESPEAK_ALL_LANGUAGES=$(if $(FREETZ_PACKAGE_ESPEAK_ALL_LANGUAGES),y,n)" > $(ESPEAK_FREETZ_CONFIG_TEMP)
-	@diff -q $(ESPEAK_FREETZ_CONFIG_TEMP) $(ESPEAK_FREETZ_CONFIG_FILE) || \
-		cp $(ESPEAK_FREETZ_CONFIG_TEMP) $(ESPEAK_FREETZ_CONFIG_FILE)
-	@rm -f $(ESPEAK_FREETZ_CONFIG_TEMP)
-
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
@@ -31,24 +20,17 @@ $($(PKG)_BINARY): $(ESPEAK_DIR)/.configured
 
 $(ESPEAK_TARGET_BINARY): $(ESPEAK_BINARY) 
 	$(INSTALL_BINARY_STRIP)
-
-$($(PKG)_TARGET_LANGUAGE): $(ESPEAK_DIR)/.unpacked $($(PKG)_FREETZ_CONFIG_FILE)
-	rm -r $(ESPEAK_DEST_DIR)/usr/share
-	mkdir -p $(ESPEAK_DEST_DIR)/usr/share
-	tar -c -C $(ESPEAK_MAKE_DIR)/files --exclude=.svn . | tar -x -C $(ESPEAK_TARGET_DIR)
 	$(if $(FREETZ_PACKAGE_ESPEAK_ALL_LANGUAGES),\
 		cp -ar $(ESPEAK_DIR)/espeak-data $(ESPEAK_DEST_DIR)/usr/share/,)
-	touch $@
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_LANGUAGE) $(ESPEAK_TARGET_BINARY) 
+$(pkg)-precompiled: $(ESPEAK_TARGET_BINARY) 
 
 $(pkg)-clean:
 	-$(MAKE) -C $(ESPEAK_DIR) clean
-	rm -f $(ESPEAK_DIR)/.language
 
 $(pkg)-uninstall: 
-	rm -f $(ESPEAK_TARGET_BINARY)
+	$(RM) $(ESPEAK_TARGET_BINARY)
 
 $(PKG_FINISH)
