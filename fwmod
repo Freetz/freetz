@@ -490,6 +490,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	SUBVERSION_FILE="${BASE_DIR}/.version"
 	FIRMWAREVERSION_FILE="${FILESYSTEM_MOD_DIR}/etc/.version"
 	FIRMWAREVERSION="$(cat $FIRMWAREVERSION_FILE)"
+	PACKAGES_LIST_FILE="${BASE_DIR}/.packages"
 
 	if [ ! -r "$SUBVERSION_FILE" ]; then
 		error 1 "cannot determine version"
@@ -505,7 +506,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	SUBVERSION="$(cat $SUBVERSION_FILE)${SVN_VERSION}"
 	OPTIONS="+busybox"
-
+	#delete .packages file
+	rm -f "${PACKAGES_LIST_FILE}"
+	
 	[ "$FREETZ_REMOVE_ASSISTANT" == "y" ]		&& OPTIONS="$OPTIONS -assistant"
 	[ "$FREETZ_REMOVE_HELP" == "y" ]			&& OPTIONS="$OPTIONS -help"
 	[ "$FREETZ_REMOVE_CDROM_ISO" == "y" ]		&& OPTIONS="$OPTIONS -cdrom.iso"
@@ -537,6 +540,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		)
 		do
 			OPTIONS="$OPTIONS +$pkg"
+			echo "$pkg" >> "${PACKAGES_LIST_FILE}"
 		done
 	fi
 
@@ -549,6 +553,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		)
 		do
 			OPTIONS="$OPTIONS +$pkg"
+                        echo "$pkg" >> "${PACKAGES_LIST_FILE}"
 		done
 	fi
 
@@ -557,7 +562,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	sed -i -e "s/\export\ FIRMWARE_SUBVERSION=.*\$/export\ FIRMWARE_SUBVERSION=\"${SUBVERSION}\"/g" "${FILESYSTEM_MOD_DIR}/etc/version"
 	sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 	sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
-	
+
 	if [ ! -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
 	AVM_SUBVERSION=`grep "SUBVERSION=" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" | sed -e "s/[^-0-9]//g"`
 	sed -i -e "s/SUBVERSION=\"$AVM_SUBVERSION\"/SUBVERSION=\"$AVM_SUBVERSION-$SUBVERSION\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
@@ -1102,9 +1107,10 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# image for further reference, e.g. user support
 	[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
 	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
+	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
 	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}-${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
-
+	
 	# Pack firmware image (use old tar for compatibility)
 	echo "packing ${modimage}"
 	"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
