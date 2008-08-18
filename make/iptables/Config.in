@@ -36,44 +36,34 @@ config FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 
 menu "Select kernel modules"
 	requires FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+config FREETZ_MODULE_ip_conntrack
+	bool "ip_conntrack.ko"
+	default n
 config FREETZ_MODULE_ip_conntrack_ftp
 	bool "ip_conntrack_ftp.ko"
 	select FREETZ_MODULE_ip_conntrack
 	default n
 config FREETZ_MODULE_ip_conntrack_h323
 	bool "ip_conntrack_h323.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack
 	default n
 config FREETZ_MODULE_ip_conntrack_irc
 	bool "ip_conntrack_irc.ko"
 	select FREETZ_MODULE_ip_conntrack
 	default n
-config FREETZ_MODULE_ip_conntrack
-	bool "ip_conntrack.ko"
-	default n
 config FREETZ_MODULE_ip_conntrack_pptp
 	bool "ip_conntrack_pptp.ko"
-	select FREETZ_MODULE_ip_conntrack_proto_gre if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_19_2
-	default n
-config FREETZ_MODULE_ip_conntrack_proto_esp
-	bool "ip_conntrack_proto_esp.ko"
-	select FREETZ_MODULE_ip_conntrack
-	default n
-config FREETZ_MODULE_ip_conntrack_proto_gre
-	bool "ip_conntrack_proto_gre.ko"
-	select FREETZ_MODULE_ip_conntrack
-	default n
-config FREETZ_MODULE_ip_conntrack_rpc_tcp
-	bool "ip_conntrack_rpc_tcp.ko"
-	select FREETZ_MODULE_ip_conntrack
-	default n
-config FREETZ_MODULE_ip_conntrack_rpc_udp
-	bool "ip_conntrack_rpc_udp.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack
 	default n
 config FREETZ_MODULE_ip_conntrack_tftp
 	bool "ip_conntrack_tftp.ko"
+	select FREETZ_MODULE_ip_conntrack
+	default n
+config FREETZ_MODULE_ip_conntrack_proto_sctp
+	bool "ip_conntrack_proto_sctp.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_conntrack
 	default n
 config FREETZ_MODULE_ip_nat
@@ -89,7 +79,7 @@ config FREETZ_MODULE_ip_nat_ftp
 	default n
 config FREETZ_MODULE_ip_nat_h323
 	bool "ip_nat_h323.ko"
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack_h323
 	default n
@@ -101,18 +91,9 @@ config FREETZ_MODULE_ip_nat_irc
 	default n
 config FREETZ_MODULE_ip_nat_pptp
 	bool "ip_nat_pptp.ko"
-	select FREETZ_MODULE_ip_conntrack_proto_gre if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_ip_conntrack_pptp if FREETZ_KERNEL_VERSION_2_6_19_2
-	default n
-config FREETZ_MODULE_ip_nat_proto_esp
-	bool "ip_nat_proto_esp.ko"
-	select FREETZ_MODULE_iptable_nat
-	default n
-config FREETZ_MODULE_ip_nat_proto_gre
-	bool "ip_nat_proto_gre.ko"
-	select FREETZ_MODULE_iptable_nat
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_nat
+	select FREETZ_MODULE_ip_conntrack_pptp
 	default n
 config FREETZ_MODULE_ip_nat_tftp
 	bool "ip_nat_tftp.ko"
@@ -144,32 +125,22 @@ config FREETZ_MODULE_ip_tables
 	bool "ip_tables.ko"
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-config FREETZ_MODULE_ipt_CFG
-	bool "ipt_CFG.ko"
-	select FREETZ_MODULE_ip_tables
-	default n
 config FREETZ_MODULE_ipt_connmark
 	bool "ipt_connmark.ko"
-	select FREETZ_MODULE_ip_conntrack
-	select FREETZ_MODULE_ip_tables
-	default n
-config FREETZ_MODULE_ipt_CONNMARK
-	bool "ipt_CONNMARK.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_conntrack
 	bool "ipt_conntrack.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_helper
 	bool "ipt_helper.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_conntrack
-	select FREETZ_MODULE_ip_tables
-	default n
-config FREETZ_MODULE_ipt_ipp2p
-	bool "ipt_ipp2p.ko"
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_iprange
@@ -179,10 +150,12 @@ config FREETZ_MODULE_ipt_iprange
 	default n
 config FREETZ_MODULE_ipt_length
 	bool "ipt_length.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_limit
 	bool "ipt_limit.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_LOG
@@ -192,14 +165,17 @@ config FREETZ_MODULE_ipt_LOG
 	default n
 config FREETZ_MODULE_ipt_mac
 	bool "ipt_mac.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_mark
 	bool "ipt_mark.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_MARK
 	bool "ipt_MARK.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_MASQUERADE
@@ -208,22 +184,9 @@ config FREETZ_MODULE_ipt_MASQUERADE
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-config FREETZ_MODULE_ipt_mip
-	bool "ipt_mip.ko"
-	select FREETZ_MODULE_ip_tables
-	default n
 config FREETZ_MODULE_ipt_multiport
 	bool "ipt_multiport.ko"
-	select FREETZ_MODULE_ip_tables
-	default n
-config FREETZ_MODULE_ipt_psd
-	bool "ipt_psd.ko"
-	select FREETZ_MODULE_ip_tables
-	default n
-config FREETZ_MODULE_ipt_record_rpc
-	bool "ipt_record_rpc.ko"
-	select FREETZ_MODULE_ip_conntrack_rpc_tcp
-	select FREETZ_MODULE_ip_conntrack_rpc_udp
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_REDIRECT
@@ -237,17 +200,15 @@ config FREETZ_MODULE_ipt_REJECT
 	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-config FREETZ_MODULE_ipt_ROUTE
-	bool "ipt_ROUTE.ko"
-	select FREETZ_MODULE_ip_tables
-	default n
 config FREETZ_MODULE_ipt_state
 	bool "ipt_state.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_tcpmss
 	bool "ipt_tcpmss.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_TCPMSS
