@@ -4,11 +4,8 @@ $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/bash
 $(PKG)_BINARY:=$(BASH_DIR)/bash
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/bash
 
-
 ifeq ($(strip $(FREETZ_PACKAGE_BASH_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline 
-else
-$(PKG)_DEPENDS_ON :=
 endif
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_BASH_MINIMAL

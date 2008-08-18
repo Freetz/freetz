@@ -6,7 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/pppd/pppd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/pppd
 $(PKG)_STARTLEVEL=40
 
-$(PKG)_DEPENDS_ON += libpcap
+$(PKG)_DEPENDS_ON := libpcap
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

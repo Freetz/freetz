@@ -8,7 +8,7 @@ $(PKG)_STARTLEVEL=50
 $(PKG)_DEPENDS_ON := openssl
 
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_LZO)),y)
-$(PKG)_DEPENDS_ON := lzo
+$(PKG)_DEPENDS_ON += lzo
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_STATIC)),y)

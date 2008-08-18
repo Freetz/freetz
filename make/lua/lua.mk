@@ -8,7 +8,6 @@ ifeq ($(strip $(FREETZ_PACKAGE_LUA_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline
 LUA_MAKE_TARGET := linux
 else
-$(PKG)_DEPENDS_ON := 
 LUA_MAKE_TARGET := linux_wo_readline
 endif
 

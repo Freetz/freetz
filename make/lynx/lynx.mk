@@ -24,7 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS=\
 	--disable-source-cache \
 	--disable-trace \
 
-$(PKG)_DEPENDS_ON += ncurses
+$(PKG)_DEPENDS_ON := ncurses
 
 
 $(PKG_SOURCE_DOWNLOAD)

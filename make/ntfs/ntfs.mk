@@ -5,7 +5,7 @@ $(PKG)_DIR:=$(SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ntfs-3g
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ntfs-3g
 
-$(PKG)_DEPENDS_ON += fuse
+$(PKG)_DEPENDS_ON := fuse
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared

@@ -4,7 +4,7 @@ $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/mad
 $(PKG)_BINARY:=$($(PKG)_DIR)/madplay
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/madplay
 
-$(PKG)_DEPENDS_ON += zlib libid3tag libmad
+$(PKG)_DEPENDS_ON := zlib libid3tag libmad
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 
