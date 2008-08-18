@@ -103,13 +103,33 @@ generate_graph() {
 				AREA:free$GREEN:"Free memory   (max/avg/cur)[bytes]\:":STACK	\
 				GPRINT:free:MAX:"%3.0lf%s /"					\
 				GPRINT:free:AVERAGE:"%3.0lf%s /"				\
-				GPRINT:free:LAST:"%3.0lf%s\n"		> /dev/null
+				GPRINT:free:LAST:"%3.0lf%s\n"				> /dev/null
 
+			fi
+			;;
+		upt)
+			FILE=$RRDSTATS_RRDDATA/upt_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png		\
+				--title "$TITLE"						\
+				--start -1-$PERIODE -l 0 -r					\
+				--width $WIDTH --height $HEIGHT $LAZY				\
+				--vertical-label "Uptime [h]" -X 1				\
+				--color SHADEA#ffffff						\
+				--color SHADEB#ffffff						\
+				--color BACK#ffffff						\
+				--color CANVAS#eeeeee80						\
+				-W "Generated on: $DATESTRING"					\
+												\
+				DEF:uptime=$FILE:uptime:MAX					\
+												\
+				AREA:uptime$YELLOW:"Uptime (maximal/current)[hours]\:   ":STACK	\
+				GPRINT:uptime:MAX:"%3.2lf /"					\
+				GPRINT:uptime:LAST:"%3.2lf\n"				> /dev/null
 			fi
 			;;
 		swap)
 			FILE=$RRDSTATS_RRDDATA/mem_$RRDSTATS_INTERVAL.rrd
-
 			if [ -e $FILE ]; then
 				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png		\
 				--title "$TITLE"						\
@@ -137,7 +157,6 @@ generate_graph() {
 				GPRINT:freepct:AVERAGE:"%3.2lf%% average free swap"		\
 				GPRINT:freepct:LAST:"%3.2lf%% current free swap\j"	> /dev/null
 			fi
-
 			;;
 		if1|if2|if3|if4)
 			case $1 in
@@ -252,9 +271,9 @@ gen_main() {
 
 graph="$(echo "$QUERY_STRING" | sed -e 's/^.*graph=//' -e 's/&.*$//' -e 's/\.//g')"
 case "$graph" in
-	cpu|mem|swap|if1|if2|if3|if4)
+	cpu|mem|swap|upt|if1|if2|if3|if4)
 		set_lazy "$RRDSTATS_NOTLAZYS"
-		heading=$(echo $graph|sed "s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g")
+		heading=$(echo $graph|sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g")
 		echo "<center><font size=+1><b>$heading stats</b></font></center>"
 		for period in $RRDSTATS_PERIODSSUB; do
 			set_period $period
@@ -272,6 +291,7 @@ case "$graph" in
 		gen_main "cpu" "Processor" "$periodnn"
 		gen_main "mem" "Memory" "$periodnn"
 		[ "$(free | grep "Swap:" | awk '{print $2}')" != "0" ] && gen_main "swap" "Swapspace" "$periodnn"
+		[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
 		[ ! -z "$RRDSTATS_INTERFACE1" ] && gen_main "if1" "$RRDSTATS_NICE_NAME1" "$periodnn"
 		[ ! -z "$RRDSTATS_INTERFACE2" ] && gen_main "if2" "$RRDSTATS_NICE_NAME2" "$periodnn"
 		[ ! -z "$RRDSTATS_INTERFACE3" ] && gen_main "if3" "$RRDSTATS_NICE_NAME3" "$periodnn"

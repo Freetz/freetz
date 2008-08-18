@@ -925,7 +925,9 @@ config FREETZ_REMOVE_TR069
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
-		FREETZ_TYPE_FON_7150
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
 		Removes libtr069 to save space.
@@ -1243,6 +1245,15 @@ config FREETZ_REMOVE_CAPIOVERTCP
 		This will save about 15kB uncompressed size.
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
+config FREETZ_REMOVE_DECT 
+	bool "Remove DECT files - EXPERIMENTAL"
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7270 
+	default n
+	help
+		Remove dect files (modules, firmware and dect_manager).
+
 
 config FREETZ_REMOVE_DECT_UPDATE
 	bool"Remove dect_update - EXPERIMENTAL"

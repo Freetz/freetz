@@ -57,6 +57,25 @@ collect_mem() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $memdata --template used:free:buff:cached:swap:swaptotal:swapfree
 }
 
+collect_upt() {
+	NAMEPREFIX=upt_$RRDSTATS_INTERVAL
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:uptime:GAUGE:600:0:100 \
+			RRA:MAX:0.1:1:576 \
+			RRA:MAX:0.1:6:672 \
+			RRA:MAX:0.1:24:732 \
+			RRA:MAX:0.1:144:1460
+	fi
+	uX=$(( `cat /proc/uptime |sed 's/ .*$//;s/\..*//'`/60 ))
+	uH=$(( $uX/60 ))
+	uM=$(( ($uX-$uH*60)*100/60 ))
+	[ -z "$(echo $uM|sed 's/^.//')" ] && uM=0$uM
+	uptdata=N:$uH.$uM
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdata --template uptime
+}
+
 collect_net() {
 	[ $# -eq 0 ] && return
 	case $1 in 
@@ -95,6 +114,7 @@ collect_net() {
 while true; do
 	collect_cpu
 	collect_mem
+	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
 	[ ! -z "$RRDSTATS_INTERFACE1" ] && collect_net 1
 	[ ! -z "$RRDSTATS_INTERFACE2" ] && collect_net 2
 	[ ! -z "$RRDSTATS_INTERFACE3" ] && collect_net 3
