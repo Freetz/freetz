@@ -1,7 +1,6 @@
-diff -ruN ppp-2.4.3-orig/pppd/Makefile.linux ppp-2.4.3-3/pppd/Makefile.linux
---- pppd/Makefile.linux	2004-11-13 13:02:22.000000000 +0100
-+++ pppd/Makefile.linux	2004-12-16 04:43:41.000000000 +0100
-@@ -48,19 +48,19 @@
+--- pppd/Makefile.linux	2006-06-04 07:07:46.000000000 +0200
++++ pppd/Makefile.linux	2007-10-04 08:53:26.000000000 +0200
+@@ -48,7 +48,7 @@
  # Uncomment the next line to include support for PPP packet filtering.
  # This requires that the libpcap library and headers be installed
  # and that the kernel driver support PPP packet filtering.
@@ -10,10 +9,7 @@ diff -ruN ppp-2.4.3-orig/pppd/Makefile.linux ppp-2.4.3-3/pppd/Makefile.linux
  
  # Uncomment the next line to enable multilink PPP (enabled by default)
  # Linux distributions: Please leave multilink ENABLED in your builds
- # of pppd!
--HAVE_MULTILINK=y
-+#HAVE_MULTILINK=y
- 
+@@ -58,9 +58,9 @@
  # Uncomment the next line to enable the TDB database (enabled by default.)
  # If you enable multilink, then TDB is automatically enabled also.
  # Linux distributions: Please leave TDB ENABLED in your builds.
@@ -32,22 +28,16 @@ diff -ruN ppp-2.4.3-orig/pppd/Makefile.linux ppp-2.4.3-3/pppd/Makefile.linux
 -COMPILE_FLAGS= -DHAVE_PATHS_H -DIPX_CHANGE -DHAVE_MMAP
 +COMPILE_FLAGS= -DHAVE_PATHS_H -DHAVE_MMAP
  
- CFLAGS= $(COPTS) $(COMPILE_FLAGS) $(INCLUDE_DIRS)
+ CFLAGS= $(COPTS) $(COMPILE_FLAGS) $(INCLUDE_DIRS) '-DDESTDIR="@DESTDIR@"'
  
-@@ -117,12 +117,12 @@
+@@ -117,10 +117,8 @@
  #LIBS     += -lshadow $(LIBS)
  endif
  
 -ifneq ($(wildcard /usr/include/crypt.h),)
-+#ifneq ($(wildcard /usr/include/crypt.h),)
- CFLAGS   += -DHAVE_CRYPT_H=1
--endif
--ifneq ($(wildcard /usr/lib/libcrypt.*),)
-+#endif
-+#ifneq ($(wildcard /usr/lib/libcrypt.*),)
+ CFLAGS  += -DHAVE_CRYPT_H=1
  LIBS	+= -lcrypt
 -endif
-+#endif
  
  ifdef NEEDDES
  ifndef USE_CRYPT
