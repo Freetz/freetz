@@ -1,7 +1,7 @@
 diff -burN linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h
 --- linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h	2005-09-14 12:22:35.000000000 +0200
 +++ linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h	2006-11-28 21:21:46.000000000 +0100
-@@ -44,6 +44,11 @@
+@@ -44,6 +44,15 @@
  #define FTDI_XF_635_PID 0xFC0D	/* 635: 20x4 Character Display */
  #define FTDI_XF_640_PID 0xFC0E	/* 640: Two line Display */
  #define FTDI_XF_642_PID 0xFC0F	/* 642: Two line Display */
@@ -10,6 +10,10 @@ diff -burN linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h linux-2.6.13.1/drivers/u
 +#define WBE_SMARTMOUSE_PID2   0x0002  /* Smartmouse USB */
 +#define WBE_SMARTMOUSE_PID3   0x0003  /* Smartmouse USB */
 +#define WBE_SMARTMOUSE_PID4   0x0004  /* Smartmouse USB */
++//#define FTDI_8U232AM_PID 0x6002 /* FTDI USB2Serial */
++#define FTDI_8U232AM_PID2 0x6002 /* FTDI USB2Serial */
++#define FTDI_8U232AM_PID3 0x6003 /* FTDI USB2Serial */
++#define FTDI_8U232AM_PID4 0x6004 /* FTDI USB2Serial */
  
  /* Video Networks Limited / Homechoice in the UK use an ftdi-based device for their 1Mb */
  /* broadband internet service.  The following PID is exhibited by the usb device supplied */
@@ -25,7 +29,7 @@ diff -burN linux-2.6.13.1/drivers/usb/serial/ftdi_sio.c linux-2.6.13.1/drivers/u
  #include "usb-serial.h"
  #include "ftdi_sio.h"
  
-@@ -432,6 +433,10 @@
+@@ -432,6 +433,14 @@
  	{ USB_DEVICE(FTDI_VID, FTDI_MHAM_Y6_PID) },
  	{ USB_DEVICE(FTDI_VID, FTDI_MHAM_Y8_PID) },
  	{ USB_DEVICE(EVOLUTION_VID, EVOLUTION_ER1_PID) },
@@ -33,6 +37,10 @@ diff -burN linux-2.6.13.1/drivers/usb/serial/ftdi_sio.c linux-2.6.13.1/drivers/u
 +	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID2) },
 +	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID3) },
 +	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID4) },
++// { USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID) },
++ { USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID2) },
++ { USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID3) },
++ { USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID4) },
  	{ }						/* Terminating entry */
  };
  
