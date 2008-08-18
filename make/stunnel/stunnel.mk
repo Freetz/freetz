@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,4.24)
+$(call PKG_INIT_BIN,4.25)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.stunnel.org/download/stunnel/src
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
