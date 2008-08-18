@@ -1,10 +1,12 @@
-$(call PKG_INIT_BIN, 1.62.3)
+$(call PKG_INIT_BIN, 1.63.4)
 $(PKG)_SOURCE:=streamripper-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/streamripper
 $(PKG)_BINARY:=$($(PKG)_DIR)/streamripper
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/streamripper
 
-$(PKG)_DEPENDS_ON := libmad
+$(PKG)_DEPENDS_ON := glib2 libmad
+
+$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 
 $(PKG)_CONFIGURE_OPTIONS += --with-included-argv
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix

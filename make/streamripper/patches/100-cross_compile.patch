@@ -1,6 +1,6 @@
 --- configure.orig	2007-10-02 22:35:11.000000000 +0200
 +++ configure	2007-10-02 22:35:28.000000000 +0200
-@@ -4878,7 +4878,7 @@
+@@ -5116,7 +5116,7 @@
  fi
  
  
@@ -9,9 +9,27 @@
  
  
  THREADLIBS=no
+@@ -8641,7 +8641,7 @@
+ 
+   { echo "$as_me:$LINENO: checking for Ogg" >&5
+ echo $ECHO_N "checking for Ogg... $ECHO_C" >&6; }
+-  no_ogg=""
++  no_ogg="yes"
+ 
+ 
+   if test "x$enable_oggtest" = "xyes" ; then
+@@ -8769,7 +8769,7 @@
+ 
+   { echo "$as_me:$LINENO: checking for Vorbis" >&5
+ echo $ECHO_N "checking for Vorbis... $ECHO_C" >&6; }
+-  no_vorbis=""
++  no_vorbis="yes"
+ 
+ 
+   if test "x$enable_vorbistest" = "xyes" ; then
 --- Makefile.in.orig	2007-09-01 19:19:15.000000000 +0200
 +++ Makefile.in	2007-10-02 22:33:24.000000000 +0200
-@@ -591,7 +591,7 @@
+@@ -627,7 +627,7 @@
  	esac;
  
  $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)

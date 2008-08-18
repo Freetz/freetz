@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,1.11.1)
+$(call PKG_INIT_BIN,1.11.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.gnu.org/gnu/wget
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget

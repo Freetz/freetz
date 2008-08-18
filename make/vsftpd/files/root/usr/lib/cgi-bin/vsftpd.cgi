@@ -96,6 +96,9 @@ $(lang de:"Passive Ports" en:"Passive ports"):
 <input type="hidden" name="promiscuous" value="no">
 <input id="a1" type="checkbox" name="promiscuous" value="yes"$promiscuous_chk><label for="a1"> $(lang de:"FXP aktivieren" en:"Enable FXP")</label>
 </p>
+<p>
+$(lang de:"Pause nach fehlerhaftem Login in Sekunden:" en:"Delay after failed login in sec:"): <input type="text" name="delay_failed_login" size="5" maxlength="5" value="$(httpd -e "$VSFTPD_DELAY_FAILED_LOGIN")">
+</p>
 EOF
 
 sec_end
