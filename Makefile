@@ -34,7 +34,6 @@ SHELL:=/bin/bash
 IMAGE:=
 LOCALIP:=
 RECOVER:=
-
 FREETZ_BASE_DIR:=$(shell pwd)
 ADDON_DIR:=addon
 BUILD_DIR:=build
@@ -53,6 +52,8 @@ SED:=sed
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
+CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
+SWITCH_UCLIBC:=
 
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)
@@ -72,6 +73,14 @@ ifeq ($(shell uname -o),Cygwin)
 $(error Cygwin is not supported! Please use a real Linux environment.)
 endif
 
+#Simple test if wrong uclibc is used
+UCLIBC:=$(shell $(CHECK_UCLIBC_VERSION) && echo OK || echo NOK)
+ifeq ($(UCLIBC),NOK)
+$(warning WARNING: uClibc-version changed. Packages, toolchain and some other stuff must be rebuilt. This will take a while)
+SWITCH_UCLIBC:=toolchain-switch
+endif
+export SWITCH_UCLIBC
+
 # Simple checking of build prerequisites
 ifneq ($(shell $(CHECK_PREREQ_TOOL) \
 	$$(cat .build-prerequisites) \
@@ -82,7 +91,7 @@ $(error Some build prerequisites are missing! Please install the missing package
 endif
 
 all: step
-world: $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
+world: $(SWITCH_UCLIBC) $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
 		$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
@@ -431,6 +440,12 @@ dist: distclean
 		cd "$$curdir"; \
 	)
 	rm -f .exclude-dist-tmp
+
+toolchain-switch:
+	@rm -f $(TOOLCHAIN_DIR)/target
+	@rm -rf $(SOURCE_DIR) 
+	@rm -rf $(PACKAGES_DIR)
+	@rm -f make/config.cache
 
 .PHONY: all world step menuconfig config oldconfig defconfig exclude-lists tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
