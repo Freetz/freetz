@@ -5,7 +5,7 @@ export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 usage()
 {
 cat << EOF
-Usage: rc.usbroot [on|off|status|store [usb_device]|nostore]
+Usage: rc.usbroot [on|off|status|store [usb_device] (mount_options)|nostore]
 USB root mount script - can only be called as an 'init' replacement.
 Parameters:
   status  - check status of USB root; returns 'running' if USB root mount on '/'
@@ -27,6 +27,7 @@ Parameters:
 Examples:
   - rc.usbroot on
   - rc.usbroot store /dev/sda1:/usbroot
+  - rc.usbroot store /dev/sda1:/usbroot ro,noatime
   - rc.usbroot store
   - rc.usbroot status
   - rc.usbroot off
@@ -37,6 +38,7 @@ EOF
 USBROOT_ENV_VAR=kernel_args1
 DEVICE=
 USBPATH=
+MNTOPTIONS=
 HOST=
 HWREVISION=
 HWREVISION_BitFileCount=
@@ -76,7 +78,11 @@ mount_usbroot() {
 		if ls -la $SD/device | grep "host$HOST/target" > /dev/null 2>&1; then
 			mkdir -p $MNTPOINT
 			sleep 2
-			mount $DEVICE $MNTPOINT
+			if [ -n "$MNTOPTIONS" ]; then
+				mount $DEVICE $MNTPOINT -o $MNTOPTIONS
+			else
+				mount $DEVICE $MNTPOINT
+			fi
 			LOOP=99
 			break
 		fi
@@ -173,6 +179,7 @@ get_env_var() {
 	DEVICE="${usbroot#usbroot=}"
 	DEVICE="${DEVICE%:*}"
 	USBPATH="${usbroot#*:}"
+	MNTOPTIONS=$(sed -rn "s/^$USBROOT_ENV_VAR[[:space:]]+[^[:space:]]+[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
 
 	# Check variables for plausibility
 	if [ "$1" == "check" ]; then
@@ -282,7 +289,7 @@ case "$1" in
 		;;
 	store)
 		if [ -n "$2" ]; then
-			echo "$USBROOT_ENV_VAR usbroot=$2" > /proc/sys/urlader/environment
+			echo "$USBROOT_ENV_VAR usbroot=$2 $3" > /proc/sys/urlader/environment
 			echo "USB device name added to bootloader environment"
 		else
 			usbroot=$(sed -nr "s/^$USBROOT_ENV_VAR[[:space:]]+(.*)/\1/p" /proc/sys/urlader/environment)

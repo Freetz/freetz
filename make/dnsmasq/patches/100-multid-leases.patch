@@ -1,14 +1,14 @@
 --- src/dnsmasq.h.orig	2008-02-01 22:42:35.000000000 +0100
 +++ src/dnsmasq.h	2008-02-25 22:04:27.000000000 +0100
-@@ -367,6 +367,7 @@
+@@ -408,6 +408,7 @@
  #endif
    int hwaddr_len, hwaddr_type;
    unsigned char hwaddr[DHCP_CHADDR_MAX]; 
 +  char *ifrname;         /* name of interface */
-   struct in_addr addr;
+   struct in_addr addr, override;
    unsigned char *vendorclass, *userclass;
    unsigned int vendorclass_len, userclass_len;
-@@ -729,6 +730,7 @@
+@@ -781,6 +782,7 @@
  		      unsigned char *clid, int hw_len, int hw_type, int clid_len);
  void lease_set_hostname(struct dhcp_lease *lease, char *name, 
  			char *suffix, int auth);
@@ -101,15 +101,15 @@
    struct dhcp_lease *lease_tmp;
 --- src/rfc2131.c.orig	2008-01-24 12:23:19.000000000 +0100
 +++ src/rfc2131.c	2008-02-25 22:04:27.000000000 +0100
-@@ -433,6 +433,7 @@
+@@ -440,6 +440,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
  	      if (hostname)
  		lease_set_hostname(lease, hostname, daemon->domain_suffix, 1); 
-+ 		lease_set_ifrname(lease, iface_name);
- 	      lease_set_expires(lease, 0xffffffff, now); /* infinite lease */
- 	      lease_set_interface(lease, int_index);
- 	      
-@@ -964,7 +965,7 @@
++		lease_set_ifrname(lease, iface_name);
+ 	      /* infinite lease unless nailed in dhcp-host line. */
+ 	      lease_set_expires(lease,  
+ 				have_config(config, CONFIG_TIME) ? config->lease_time : 0xffffffff, 
+@@ -985,7 +986,7 @@
  	    }
  	  if (hostname)
  	    lease_set_hostname(lease, hostname, daemon->domain_suffix, hostname_auth);
@@ -117,4 +117,4 @@
 +	    lease_set_ifrname(lease, iface_name);
  	  lease_set_expires(lease, time, now);
  	  lease_set_interface(lease, int_index);
- 	
+ 
