@@ -11,17 +11,6 @@ CONF=$MODPATH/smb.conf
 
 . /etc/init.d/modlibrc
 
-
-case "$1" in
-		""|load|start|restart|config)
-		if [ ! -r /mod/etc/conf/samba.cfg ]; then
-			echo "Error[samba]: not configured" 1>&2
-			exit 1
-		fi
-		. /mod/etc/conf/samba.cfg
-		;;
-esac
-
 config() {
 
 		mkdir -p /var/locks
