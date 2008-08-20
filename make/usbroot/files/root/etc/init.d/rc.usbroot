@@ -5,39 +5,46 @@ export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 usage()
 {
 cat << EOF
-Usage: rc.usbroot [on|off|status|store [usb_device] (mount_options)|nostore]
+Usage: rc.usbroot [on|off|status|store [usb_device [mount_options]]|nostore]
 USB root mount script - can only be called as an 'init' replacement.
 Parameters:
   status  - check status of USB root; returns 'running' if USB root mount on '/'
             is active, 'stopped' otherwise.
-  on      - activate replacing 'init' by 'rc.usbroot' -> boot with USB root,
-            but only if 'share' has also been set up. Adds something like
-            'init=/etc/init.d/rc.usbroot' to bootloader environment variable
-            'kernel_args'.
   store   - persistently store USB device name in bootloader environment for
             later use with 'mount'. This setting must be configured at least
             once before USB root can be used. If called without parameter,
             this option prints the current values.
+	    Syntax of first parameter 'usb_device' is:
+	    mass-storage-device-name:[filesystem-type:]root-directory
+	    The second parameter 'mount_options' is optional and stores
+	    options which are passed to the mount call when mounting the
+	    USB mass storage device.
   nostore - remove USB storage name from bootloader environment. Even though it
-            does no harm to have the USB variable around int the environment all
+            does no harm to have the USB variable around in the environment all
             the time, you may optionally remove it again using this option.
+  on      - activate replacing 'init' by 'rc.usbroot' -> boot with USB root,
+            adds something like 'init=/etc/init.d/rc.usbroot' to bootloader
+	    environment variable 'kernel_args',
+	    'store' has to been setup before
   off     - deactivate replacing 'init' by 'rc.usbroot' -> boot without
             USB root. Removes 'init' from bootloader environment variable
             'kernel_args'.
 Examples:
-  - rc.usbroot on
-  - rc.usbroot store /dev/sda1:/usbroot
-  - rc.usbroot store /dev/sda1:/usbroot ro,noatime
   - rc.usbroot store
-  - rc.usbroot status
+  - rc.usbroot store /dev/sda1:/usbroot
+  - rc.usbroot store /dev/sda1:/usbroot ro,noatime,nodiratime
+  - rc.usbroot store /dev/sdc1:ext2:/
+  - rc.usbroot on
   - rc.usbroot off
   - rc.usbroot nostore
+  - rc.usbroot status
 EOF
 }
 
 USBROOT_ENV_VAR=kernel_args1
 DEVICE=
 USBPATH=
+FSTYPE=
 MNTOPTIONS=
 HOST=
 HWREVISION=
@@ -46,10 +53,33 @@ SYSFS=/sys
 DEVPATH=${3##/proc/bus/usb/}
 MNTPOINT=/data
 OLDROOT=oldroot
+HOTPLUG=
+
+USBROOT_UNMOUNTOLDROOT='yes'
+[ -f /mod/etc/conf/usbroot.cfg ] && . /mod/etc/conf/usbroot.cfg
+
+hotplugging() {
+	case "$1" in
+		enable)
+			echo "$HOTPLUG" > /proc/sys/kernel/hotplug
+			;;
+		disable)
+			HOTPLUG=$(cat /proc/sys/kernel/hotplug)
+			echo "" > /proc/sys/kernel/hotplug
+			;;
+		*)
+			;;
+	esac
+}
 
 mount_usbroot() {
+	if [ ! -d "$MNTPOINT" ]; then
+		echo "*** Mountpoint $MNTPOINT for USB device does not exist. Exiting. ***"
+		return 1
+	fi
+
 	# disable hotplug
-	echo "" > /proc/sys/kernel/hotplug
+	hotplugging disable
 
 	if [ $HWRevision -eq 122 ]; then
 		load_usb_modules_7270
@@ -57,7 +87,7 @@ mount_usbroot() {
 		load_usb_modules
 	fi
 
-	for i in ext2 usb-storage sd_mod; do
+	for i in $FSTYPE usb-storage sd_mod; do
 		modprobe $i
 	done
 
@@ -65,33 +95,53 @@ mount_usbroot() {
 	sleep 15
 
 	for US in /proc/scsi/usb-storage/*; do
-	if grep "Path: $DEVPATH" $US > /dev/null 2>&1; then
-		HOST=`cat $US|sed -n "s/.* scsi\([0-9]*\): usb.*/\1/p"`
-	fi
+		if grep "Path: $DEVPATH" $US > /dev/null 2>&1; then
+			HOST=`cat $US|sed -n "s/.* scsi\([0-9]*\): usb.*/\1/p"`
+		fi
 	done
 
 	# Some devices are veeery slow (e.g. Transcend StoreJet 40GB), let's
 	# try to find it up to 10 times before giving up:
 	LOOP=0
-	while [ $LOOP -lt 10 ] ; do
-	ls $SYSFS/block/sd* 2> /dev/null && for SD in $SYSFS/block/sd*; do
-		if ls -la $SD/device | grep "host$HOST/target" > /dev/null 2>&1; then
-			mkdir -p $MNTPOINT
-			sleep 2
-			if [ -n "$MNTOPTIONS" ]; then
-				mount $DEVICE $MNTPOINT -o $MNTOPTIONS
-			else
-				mount $DEVICE $MNTPOINT
+	while [ $LOOP -lt 10 ]; do
+		ls $SYSFS/block/sd* 2> /dev/null && \
+		for SD in $SYSFS/block/sd*; do
+			if ls -la $SD/device | grep "host$HOST/target" > /dev/null 2>&1; then
+				sleep 2
+				# check fs if e2fsck is available
+				if [ -x /usr/sbin/e2fsck ]; then
+					echo "*** Checking filesystem on $DEVICE. ***"
+					e2fsck -p $DEVICE
+					FSCKCODE=$?
+					if [ "$FSCKCODE" -gt 3 ]; then
+						echo "*** USB root rejected: filesystem contains errors. ***"
+						# reenable hotplug
+						hotplugging enable
+						return 1
+					elif [ "$FSCKCODE" -gt 1 ]; then
+						echo "*** Filesystem errors corrected, rebooting... ***"
+						# reenable hotplug
+						hotplugging enable
+						# reboot without init
+						reboot -f
+					fi
+				fi
+				# now mount the partition
+				mount $DEVICE $MNTPOINT \
+				    ${FSTYPE:+-t} $FSTYPE ${MNTOPTIONS:+-o} $MNTOPTIONS
+				# reenable hotplug
+				hotplugging enable
+				# return with success
+				return 0
 			fi
-			LOOP=99
-			break
-		fi
-	done
-	[ $LOOP -lt 99 ] && echo "storage: SCSI device not responding!" && sleep 2
-	let LOOP=LOOP+1
+		done
+		[ $LOOP -lt 99 ] && echo "storage: SCSI device not responding!" && sleep 2
+		let LOOP=LOOP+1
 	done
 	# reenable hotplug
-	echo "/sbin/hotplug" > /proc/sys/kernel/hotplug
+	hotplugging enable
+	# return with failure code
+	return 1
 }
 
 # Load piglet module (hardware specific)
@@ -121,8 +171,8 @@ load_usb_modules() {
 				piglet_enable_switch=1 piglet_bitfile_offset=0x51"
 		;;
 		102) # W900V
-		piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x51"
-		[ "$HWRevision_BitFileCount" = "1" ] && \
+			piglet_load_params="$piglet_load_params piglet_bitfile_offset=0x51"
+			[ "$HWRevision_BitFileCount" = "1" ] && \
 				piglet_load_params="$piglet_load_params piglet_enable_switch=1"
 		;;
 		106) # 7150
@@ -137,7 +187,7 @@ load_usb_modules() {
 	modprobe Piglet piglet_bitfile=$piglet_bitfile $piglet_load_params
 	modprobe usbcore
 	if modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1; then
-	mount -t usbfs usbfs /proc/bus/usb
+		mount -t usbfs usbfs /proc/bus/usb
 	fi
 }
 
@@ -147,28 +197,74 @@ load_usb_modules_7270() {
 	dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
 	piglet_load_params=""
 	modprobe Piglet_noemif \
-	piglet_bitfile=$piglet_bitfile \
-	piglet_enable_button=2 \
-	dect_firstlevelfile=$dect_firstlevelfile \
-	dect_secondlevelfile=$dect_secondlevelfile \
-	$piglet_load_params
+		piglet_bitfile=$piglet_bitfile \
+		piglet_enable_button=2 \
+		dect_firstlevelfile=$dect_firstlevelfile \
+		dect_secondlevelfile=$dect_secondlevelfile \
+		$piglet_load_params
 	modprobe usbcore
 	if modprobe musb_hdrc; then
-	mount -t usbfs usbfs /proc/bus/usb
+		mount -t usbfs usbfs /proc/bus/usb
 	fi
 }
 
 # Unmount stuff before pivot_root
-unmount() {
+unmount_virtualfs() {
 	for i in /proc/bus/usb /proc $SYSFS; do
-	umount $i
+		umount "$i"
 	done
 }
 
 rmmodules() {
+	# disable hotplug
+	hotplugging disable
+
 	for i in sd_mod scsi_mod usb-storage usbahcicore musb_hdrc usbcore Piglet; do
-	rmmod $i
+		rmmod $i
 	done
+
+	# reenable hotplug
+	hotplugging enable
+}
+
+cleanup_on_failure() {
+	# unmount filesystems given via parameter
+	umount "$@"
+	# remove modules (requires /proc)
+	rmmodules
+	# unmount virtual filesystems
+	unmount_virtualfs
+}
+
+get_fstype() {
+	# check if kernel modules are available
+	for i in ext2 ext3; do
+		if [ -f "/lib/modules/$(uname -r)/kernel/fs/$i/$i.ko" ]; then
+			eval $i=y
+		else
+			eval $i=n
+		fi
+	done
+
+	# check fs type on media if fstyp is available
+	if [ -x /usr/bin/fstyp ]; then
+		mediafs="$(/usr/bin/fstyp $DEVICE)"
+	fi
+
+	# result matrix (only handle some special cases, thread all other cases as ext2)
+	case "$ext2:$ext3:$mediafs" in
+		n:y:*)
+			FSTYPE="ext3" ;;             # only ext3 available
+		y:y:*)
+			FSTYPE="${mediafs:-ext2}" ;; # use fs type from media or ext2 as default
+		*)
+			FSTYPE="ext2" ;;             # defaults to ext2
+	esac
+
+	# user can force a fs type if kernel module is available
+	if [ -n "$1" -a "$(eval echo \$$1)" == "y" ]; then
+		FSTYPE="$1"
+	fi
 }
 
 get_env_var() {
@@ -176,17 +272,23 @@ get_env_var() {
 	# garbage can be part of the value if the user defines the variable via
 	# Putty directly at the Eva console prompt via copy & paste.
 	usbroot=$(sed -rn "s/^$USBROOT_ENV_VAR[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
-	DEVICE="${usbroot#usbroot=}"
-	DEVICE="${DEVICE%:*}"
-	USBPATH="${usbroot#*:}"
+	usbroot="${usbroot#usbroot=}"
+	DEVICE="${usbroot%%:*}"
+	USBPATH="${usbroot##*:}"
+	fstype="${usbroot#*:}"; fstype="${fstype%:*}"
+	if [ "$fstype" == "$USBPATH" ]; then
+		fstype=""
+	fi
 	MNTOPTIONS=$(sed -rn "s/^$USBROOT_ENV_VAR[[:space:]]+[^[:space:]]+[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
+
+	get_fstype "$fstype"
 
 	# Check variables for plausibility
 	if [ "$1" == "check" ]; then
 		# Device and USB path must be defined
 		[ "$DEVICE" -a "$USBPATH" ] || return 1
 		# Missing colon in $usbroot -> wrong variable expansion
-		[ "$USBPATH" == "$usbroot" ] && return 1
+		[ "$DEVICE" == "$USBPATH" ] && return 1
 		# Device must be "/dev/..."
 		[ "${DEVICE##/dev/*}" ] && return 1
 		# Defined partition must be visible
@@ -203,7 +305,7 @@ get_env_var() {
 		3)
 			HWRevision_BitFileCount=$i
 			if [ $HWRevision_BitFileCount -eq 0 ]; then
-			HWRevision_BitFileCount=""
+				HWRevision_BitFileCount=""
 			fi
 		;;
 		esac
@@ -218,56 +320,103 @@ start()
 	mount sysfs
 
 	if ! get_env_var check; then
-		echo "*** Missing or invalid 'usbroot' configuration in bootloader environment, exiting. ***" >&2
+		echo "*** Missing or invalid 'usbroot' configuration in bootloader environment, exiting. ***"
 		umount proc
-		return
+		return 1
 	fi
 
-	if grep -q " / $DEVICE " /proc/mounts; then
+	if grep -q "^$DEVICE / " /proc/mounts; then
 		echo "*** USB root already mounted, done. ***"
-		return
+		return 0
 	fi
 
-	echo "*** Mounting to USB root ... ***"
+	echo "*** Mounting USB root ... ***"
 	if ! mount_usbroot; then
 		rmmodules
+		unmount_virtualfs
+		return 1
+	fi
+
+	# Ensure that there is a usable /dev/console, create if filesystem is rw, else reject USB directory
+	if [ ! -c "$MNTPOINT$USBPATH/dev/console" ]; then
+		echo "*** Missing device /dev/console on USB root, trying to create ... ***"
+		# remove (possible existing) filesystem object before creating device node
+		rm -f "$MNTPOINT$USBPATH/dev/console" 2>/dev/null
+		# create char device, wWe need this to be able to redirect std{in,err,out} later
+		mknod "$MNTPOINT$USBPATH/dev/console" c 5 1
+		# now check again and fail if still no char device (might be the case of ro mounted fs)
+		if [ ! -c "$MNTPOINT$USBPATH/dev/console" ]; then
+			echo "*** USB root rejected: /dev/console missing, not a character file or/and creation failed! ***"
+			cleanup_on_failure "$MNTPOINT"
+			return 1
+		fi
+	fi
+	
+	# Ensure there is a directory which picks up the old root fs
+	if [ ! -d "$MNTPOINT$USBPATH/$OLDROOT" ]; then
+		# try to create, will fail on ro mounted filesystems
+		mkdir -p "$MNTPOINT$USBPATH/$OLDROOT"
+		# now check again and fail if still not present
+		if [ ! -d "$MNTPOINT$USBPATH/$OLDROOT" ]; then
+			echo "*** USB root rejected: $OLDROOT missing, not a directory or/and creation failed! ***"
+			cleanup_on_failure "$MNTPOINT"
+			return 1
+		fi
 	fi
 
 	echo "*** Pivoting to USB root ... ***"
-	[ -d $MNTPOINT$USBPATH ] && mount -o bind $MNTPOINT$USBPATH $MNTPOINT
-	cd $MNTPOINT
-	[ -d $OLDROOT ] || mkdir -p $OLDROOT
-	unmount
-	if pivot_root . $OLDROOT; then
+	[ -d "$MNTPOINT$USBPATH" ] && mount -o bind "$MNTPOINT$USBPATH" "$MNTPOINT"
+	cd "$MNTPOINT"
+	unmount_virtualfs
+	if pivot_root . "$OLDROOT"; then
+		# explicite chdir to new root as advised by 'man pivot_root'
 		cd /
 		echo "*** USB root pivoting succeeded, done. ***"
 	else
-		rmmodules
-		echo "*** USB root pivoting failed, exiting. ***" >&2
+		echo "*** USB root pivoting failed, exiting. ***"
+		cleanup_on_failure "$MNTPOINT" "$DEVICE"
+		return 1
 	fi
 }
 
 if [ "$PPID" == "0" ]; then
 	echo "*** $0 called as an init process, start setting up USB root ... ***"
 	start
-	echo "*** Creating device /dev/console on USB root ... ***"
-	# Try to remove existing filesystem object before creating device node
-	[ -e /dev/console ] && rm -f /dev/console 2>/dev/null
-	# We need this to be able to redirect std{in,err,out}
-	mknod /dev/console c 5 1
 	echo "*** Switching to init ... ***"
 	exec init >/dev/console 2>&1 <&1
 fi
 
 case "$1" in
-	"")
-		cd /
-		# unmount usb filesystem in old root
-		[ -d "$OLDROOT$MNTPOINT" ] && umount "$OLDROOT$MNTPOINT"
-		# unmount old squashfs root
-		[ -d "$OLDROOT" ] && umount "$OLDROOT" && rmdir "$OLDROOT"
+	""|load)
+		# register with web frontend
+		modreg cgi 'usbroot' 'USB Root'
+
+		# cleanup if usb root is running
+		get_env_var
+		if grep -q "^$DEVICE / " /proc/mounts; then
+			cd /
+			# unmount usb filesystem in old root
+			[ -d "$OLDROOT$MNTPOINT" ] && umount "$OLDROOT$MNTPOINT"
+
+			if [ "$USBROOT_UNMOUNTOLDROOT" == 'yes' ]; then
+				# unmount old squashfs root
+				[ -d "$OLDROOT" ] && umount "$OLDROOT"
+			fi
+		fi
 		;;
-	load|start|stop)
+	start)
+		echo "Starting USB root is only possible during boot up. Nothing done."
+		exit 1
+		;;
+	stop)
+		echo "Stopping USB root is not possible. Deactivate and reboot."
+		exit 1
+		;;
+	restart)
+		# automatically called when storing parameters via web interface, do nothing
+		;;
+	unload)
+		modunreg cgi 'usbroot'
 		;;
 	status)
 		get_env_var

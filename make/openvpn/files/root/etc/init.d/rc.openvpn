@@ -52,6 +52,11 @@ start() {
 		echo 'failed.'
 		exit $exitval
 	fi
+	if [ -n "`grep "dev tap" /mod/etc/${DAEMON}.conf`" -a -x "`which brctl`" ]; then
+		for i in "`ifconfig | sed -n 's/\(tap[0-9]\).*/\1/p'`"; do
+			 brctl addif lan $i
+		done
+	fi
 }
 
 stop() {

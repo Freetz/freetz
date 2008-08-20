@@ -28,7 +28,9 @@ case "$1" in
 esac
 
 start() {
-	modlib_adduser nobody -s /bin/false -D -S -H -g 'nobody'
+	local lease
+
+	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -49,32 +51,30 @@ start() {
 	if [ "$DNSMASQ_DNS_PORT" ]; then
 		OPTIONS="$OPTIONS -p \"$DNSMASQ_DNS_PORT\""
 	fi
-	if [ "$DNSMASQ_DOMAIN" ]; then
-		OPTIONS="$OPTIONS -E -s \"$DNSMASQ_DOMAIN\""
-	fi
-	if [ "$DNSMASQ_TFTP" = 'yes' -a -n "$DNSMASQ_TFTP_TFTPROOT" ]; then
-		OPTIONS="$OPTIONS --enable-tftp --tftp-root=\"$DNSMASQ_TFTP_TFTPROOT\""
-	fi
-	if [ "$DNSMASQ_DHCP" = "yes" -a "$DNSMASQ_DHCP_BOOT" = "yes" -a "$DNSMASQ_DHCP_BOOTFILE" ]; then
-		OPTIONS="$OPTIONS --dhcp-boot=\"$DNSMASQ_DHCP_BOOTFILE\""
-	fi
 	eval "$DAEMON $OPTIONS"
 	exitval=$?
 
 	if [ "$1" != "nomultid" ]; then
 		multid $MULTIDPARAM > /dev/null 2>&1
 		# protect against dnsmasq crash
-		[ -f /var/tmp/avm-resolv.conf ] &&
+		[ -f /var/tmp/avm-resolv.conf -a ! -L /var/tmp/avm-resolv.conf ] &&
 			mv /var/tmp/avm-resolv.conf /var/tmp/resolv.conf
 		ln -s resolv.conf /var/tmp/avm-resolv.conf
 	fi
 
-	if [ ! -L "/var/flash/multid.leases" -a \
-	     "$DNSMASQ_DHCP" = "yes" ]; then
+	if [ ! -L "/var/flash/multid.leases" -a "$DNSMASQ_DHCP" = "yes" ]; then
 		rm -f /var/flash/multid.leases
 		touch /var/tmp/multid.leases
 		ln -s /var/tmp/multid.leases /var/flash/multid.leases
 	fi
+
+	# this could pose problems when a client comes too fast
+	for lease in /var/tmp/multid.leases /var/tmp/dnsmasq.leases; do
+		if [ -f $lease ]; then
+			chmod 0664 $lease
+			chown root:nobody $lease
+		fi
+	done
 
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'

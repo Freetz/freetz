@@ -1,0 +1,11 @@
+--- Makefile.orig	2008-07-26 21:37:20.000000000 +0200
++++ Makefile	2008-07-26 21:37:35.000000000 +0200
+@@ -23,7 +23,7 @@
+ MAN = man
+ 
+ PKG_CONFIG = pkg-config
+-AWK = nawk
++AWK = awk
+ INSTALL = install
+ 
+ DBUS_MINOR=" `echo $(COPTS) | ../bld/pkg-wrapper $(PKG_CONFIG) --modversion dbus-1 | $(AWK) -F . -- '{ if ($$(NF-1)) print \"-DDBUS_MINOR=\"$$(NF-1) }'`" 
