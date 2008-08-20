@@ -40,7 +40,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin 'Einstellungen'
+sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
 cat << EOF
 <p>$(lang de:"Tempor&auml;res Verzeichnis" en:"Temporary folder"):&nbsp;<input type="text" name="rrdtemp" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDTEMP")"></p>
@@ -76,7 +76,7 @@ $(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs"):
 EOF
 
 sec_end
-sec_begin 'Interfaces'
+sec_begin '$(lang de:"Interfaces" en:"Interfaces")'
 
 cat << EOF
 
@@ -86,8 +86,8 @@ cat << EOF
 	<td>$(lang de:"Bezeichnung" en:"Interface label")</td>
 	<td>$(lang de:"Interface" en:"Interface")</td>
 	<td>$(lang de:"Maximal" en:"Maximum")</td>
-	<td>$(lang de:"Logarithm." en:"Logarithm.")</td>
-	<td>$(lang de:"Up/Down" en:"Up/Down")</td>
+	<td>&nbsp;$(lang de:"Logarithm." en:"Logarithm.")</td>
+	<td>&nbsp;$(lang de:"Up/Down" en:"Up/Down")</td>
 </tr>
 <tr>
 	<td>Interface 1:</td>
@@ -102,32 +102,31 @@ cat << EOF
 	<td><input type="text" name="nice_name2" size="15" maxlength="99" value="$(html "$RRDSTATS_NICE_NAME2")"></td>
 	<td><input type="text" name="interface2" size="8" maxlength="99" value="$(html "$RRDSTATS_INTERFACE2")"></td>
 	<td><input type="text" name="max_graph2" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_GRAPH2")"></td>
-	<td><input type="hidden" name="logarithm2" value="no"><input id="s1" type="checkbox" name="logarithm2" value="yes"$logarithm2_chk><label for="s1">$(lang de:"aktiviert" en:"activated")</label></td>
-	<td><input type="hidden" name="xchg_rxtx2" value="no"><input id="x1" type="checkbox" name="xchg_rxtx2" value="yes"$xchg_rxtx2_chk><label for="x1">$(lang de:"tauschen" en:"inverted")</label></td>
+	<td><input type="hidden" name="logarithm2" value="no"><input id="s2" type="checkbox" name="logarithm2" value="yes"$logarithm2_chk><label for="s2">$(lang de:"aktiviert" en:"activated")</label></td>
+	<td><input type="hidden" name="xchg_rxtx2" value="no"><input id="x2" type="checkbox" name="xchg_rxtx2" value="yes"$xchg_rxtx2_chk><label for="x2">$(lang de:"tauschen" en:"inverted")</label></td>
 </tr>
 <tr>
 	<td>Interface 3:</td>
 	<td><input type="text" name="nice_name3" size="15" maxlength="99" value="$(html "$RRDSTATS_NICE_NAME3")"></td>
 	<td><input type="text" name="interface3" size="8" maxlength="99" value="$(html "$RRDSTATS_INTERFACE3")"></td>
 	<td><input type="text" name="max_graph3" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_GRAPH3")"></td>
-	<td><input type="hidden" name="logarithm3" value="no"><input id="s1" type="checkbox" name="logarithm3" value="yes"$logarithm3_chk><label for="s1">$(lang de:"aktiviert" en:"activated")</label></td>
-	<td><input type="hidden" name="xchg_rxtx3" value="no"><input id="x1" type="checkbox" name="xchg_rxtx3" value="yes"$xchg_rxtx3_chk><label for="x1">$(lang de:"tauschen" en:"inverted")</label></td>
+	<td><input type="hidden" name="logarithm3" value="no"><input id="s3" type="checkbox" name="logarithm3" value="yes"$logarithm3_chk><label for="s3">$(lang de:"aktiviert" en:"activated")</label></td>
+	<td><input type="hidden" name="xchg_rxtx3" value="no"><input id="x3" type="checkbox" name="xchg_rxtx3" value="yes"$xchg_rxtx3_chk><label for="x3">$(lang de:"tauschen" en:"inverted")</label></td>
 </tr>
 <tr>
 	<td>Interface 4:</td>
 	<td><input type="text" name="nice_name4" size="15" maxlength="99" value="$(html "$RRDSTATS_NICE_NAME4")"></td>
 	<td><input type="text" name="interface4" size="8" maxlength="99" value="$(html "$RRDSTATS_INTERFACE4")"></td>
 	<td><input type="text" name="max_graph4" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_GRAPH4")"></td>
-	<td><input type="hidden" name="logarithm4" value="no"><input id="s1" type="checkbox" name="logarithm4" value="yes"$logarithm4_chk><label for="s1">$(lang de:"aktiviert" en:"activated")</label></td>
-	<td><input type="hidden" name="xchg_rxtx4" value="no"><input id="x1" type="checkbox" name="xchg_rxtx4" value="yes"$xchg_rxtx4_chk><label for="x1">$(lang de:"tauschen" en:"inverted")</label></td>
+	<td><input type="hidden" name="logarithm4" value="no"><input id="s4" type="checkbox" name="logarithm4" value="yes"$logarithm4_chk><label for="s4">$(lang de:"aktiviert" en:"activated")</label></td>
+	<td><input type="hidden" name="xchg_rxtx4" value="no"><input id="x4" type="checkbox" name="xchg_rxtx4" value="yes"$xchg_rxtx4_chk><label for="x4">$(lang de:"tauschen" en:"inverted")</label></td>
 </tr>
 </table>
-
 
 <font size="-2">
 $(lang de:"Interfaces: cpmac0 (DSL-Modem), wan (ATA-Modus), lan (Netzwerk), usbrndis (USB), ..." en:"Interfaces: cpmac0 (DSL-Modem), wan (ATA-module), lan (Network), usbrndis (USB), ...")
 <br />
-$(lang de:"Maximal: Maximale Bandbreite in Megabit/Sekunde, "0" für automatische Zuweisung" en:"Maximum: Maximum bandwidth megabits per second, "0" for automatic allocation")
+$(lang de:"Maximal: Maximale Bandbreite in Megabit/Sekunde, '0' für automatische Zuweisung" en:"Maximum: Maximum bandwidth megabits per second, '0' for automatic allocation")
 </font>
 
 EOF

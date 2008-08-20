@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,0.4.1)
+$(call PKG_INIT_BIN,0.4.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://code.kryo.se/iodine
 $(PKG)_BINARY:=$($(PKG)_DIR)/bin/iodined

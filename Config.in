@@ -41,7 +41,7 @@ choice
 		select FREETZ_BRANDING_avm
 
 	config FREETZ_TYPE_2170
-		select FREETZ_AVM_VERSION_04_49
+		select FREETZ_AVM_VERSION_04_57
 		bool "2170"
 
 	config FREETZ_TYPE_FON
@@ -73,7 +73,7 @@ choice
 		bool "Fon WLAN 7113"
 
 	config FREETZ_TYPE_FON_WLAN_7140
-		select FREETZ_AVM_VERSION_04_49
+		select FREETZ_AVM_VERSION_04_57
 		bool "Fon WLAN 7140"
 
 	config FREETZ_TYPE_FON_WLAN_7141
@@ -149,7 +149,6 @@ config FREETZ_TYPE_FON_WLAN_7270_16MB
 config FREETZ_TYPE_LABOR
 	bool "Beta/Labor/VPN"
 	depends on \
-		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7270
@@ -204,11 +203,6 @@ choice
 		bool "PHONE"
 		depends on \
 			FREETZ_TYPE_FON_WLAN_7270
-
-	config FREETZ_TYPE_LABOR_VPN
-		bool "VPN - Final"
-		depends on \
-			FREETZ_TYPE_2170
 
 	config FREETZ_TYPE_LABOR_WLAN
 		bool "Labor WLAN / 11n"
@@ -331,7 +325,6 @@ config FREETZ_TYPE_STRING
 	string
 	default "300ip_as_fon"					if FREETZ_TYPE_300IP_AS_FON
 	default "2170"						if FREETZ_TYPE_2170 && ! FREETZ_TYPE_LABOR
-	default "2170_vpn"					if FREETZ_TYPE_2170 && FREETZ_TYPE_LABOR_VPN
 	default "3020"						if FREETZ_TYPE_WLAN_3020
 	default "3030"						if FREETZ_TYPE_WLAN_3030
 	default "3130"						if FREETZ_TYPE_WLAN_3130
@@ -414,7 +407,7 @@ config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
-		! (FREETZ_TYPE_LABOR && ! FREETZ_TYPE_LABOR_VPN) && \
+		! (FREETZ_TYPE_LABOR) && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
 		! (FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN) && \
 		! FREETZ_TYPE_WLAN_3270 && \
@@ -1063,7 +1056,8 @@ config FREETZ_PATCH_GETCONS
 config FREETZ_REMOVE_WEBSRV
 	bool "Replace AVM web server by httpd"
 	depends on \
-		! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN ) \
+		! FREETZ_TYPE_2170 \
+		&& ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN ) \
 		&& ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH ) \
 		&& ! ( FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN ) \
 		&& ! ( FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_EN ) \
@@ -1195,6 +1189,7 @@ config FREETZ_REMOVE_AURA_USB
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		( \
+			FREETZ_TYPE_2170 || \
 			FREETZ_TYPE_FON_7150 || \
 			FREETZ_TYPE_FON_WLAN_7141 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
@@ -1210,6 +1205,7 @@ config FREETZ_REMOVE_AVM_VPN
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		( \
+			FREETZ_TYPE_2170 || \
 			(FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_DE) || \
 			FREETZ_TYPE_FON_WLAN_7270 || \
 			FREETZ_TYPE_WLAN_3170 \
@@ -1381,8 +1377,7 @@ config FREETZ_DL_SITE
 
 config FREETZ_DL_SOURCE
 	string "Firmware source"	if FREETZ_DL_OVERRIDE
-	default "fritz.box_2170.51.04.34.image"						if FREETZ_TYPE_2170 && ! FREETZ_TYPE_LABOR
-	default "FRITZBox_2170_AnnexB_51_04_52-10366.image"				if FREETZ_TYPE_2170 && FREETZ_TYPE_LABOR_VPN
+	default "FRITZ.Box_2170.51.04.57.image"						if FREETZ_TYPE_2170 && ! FREETZ_TYPE_LABOR
 	default "fritz.box_fon.06.04.33.image"						if FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_DE
 	default "fritz.box_fon.annexa.en.06.04.49.image"				if FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "fritz.box_fon.en.06.04.49.image"					if FREETZ_TYPE_300IP_AS_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
@@ -1400,12 +1395,12 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.en.39.04.56.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexB.en.30.04.56.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
-	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.39.04.50.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH
+	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.39.04.57.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.57.image"				if FREETZ_TYPE_FON_WLAN_7141 && ! FREETZ_TYPE_LABOR
 	default "fritz_box_labor-9710.image"						if FREETZ_TYPE_FON_WLAN_7141 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Fon_7150.AnnexB.38.04.56.image"					if FREETZ_TYPE_FON_7150
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.57.image"				if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
-	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.58.04.50.image"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
+	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.58.04.57.image"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.56.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.56.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz_box_7170-beta-10954.image"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_BETA
@@ -1604,8 +1599,19 @@ config FREETZ_FAVICON_STRING
 	default "cuma"			if FREETZ_FAVICON_CUMA
 	default "hansolo"		if FREETZ_FAVICON_HANSOLO
 
+config FREETZ_SUBVERSION_STRING
+	bool "Add Freetz version to subversion string"
+	default y
+	help
+		Add Freetz version to subversion string, e.g. -11945-freetz-devel-2417.
+		Disable this if you have trouble with your isp or plugin downloads from
+		AVM don't work. 
+		
+		Please only disable this option if you really need to!
+
 config FREETZ_DEVELOPER_VERSION_STRING
 	bool "Developer version string"
+	depends on FREETZ_SUBVERSION_STRING
 	default n 
 	help
 		Add SVN (Subversion) repository revision number to firmware image name
