@@ -1,6 +1,6 @@
 --- linux-2.6.19.2/drivers/isdn/capi_oslib/ca_sched.c.orig	2007-05-08 18:29:22.000000000 +0200
 +++ linux-2.6.19.2/drivers/isdn/capi_oslib/ca_sched.c	2007-12-21 23:21:14.000000000 +0100
-@@ -5,14 +5,8 @@
+@@ -5,14 +5,6 @@
  #include <linux/string.h>
  #include <linux/interrupt.h>
  #include <linux/timer.h>
@@ -9,9 +9,84 @@
 -#define ubik2_tasklet_control_enter_critical pcmlink_tasklet_control_enter_critical
 -#define ubik2_tasklet_control_leave_critical pcmlink_tasklet_control_leave_critical
 -#else/*--- #if defined(CONFIG_MIPS_UR8) ---*/
- #include <linux/ubik2_interface.h>
- 
+-#include <linux/ubik2_interface.h>
+-
 -#endif/*--- #else ---*//*--- #if defined(CONFIG_MIPS_UR8) ---*/
  #include <asm/atomic.h>
  #include <asm/semaphore.h>
  #include <linux/new_capi.h>
+@@ -308,6 +300,20 @@
+         release_mem_region (card->io_addr, IO_RANGE);
+     }
+ } /* remove_card */
++/*--------------------------------------------------------------------------------*\
++ * not used: direct setting in isdn_fonx
++\*--------------------------------------------------------------------------------*/
++void  capi_oslib_init_tasklet_control(void (* tasklet_control)(enum _tasklet_control)){
++    if(capi_oslib_stack == NULL) {
++        DEB_ERR("capioslib: not initialized\n");
++    }
++    if(capi_oslib_stack->cm_ctrl_tasklet && tasklet_control) {
++        DEB_ERR("capioslib: cm_ctrl_tasklet already initialized, ignore reinit!\n");
++    }
++    capi_oslib_stack->cm_ctrl_tasklet = tasklet_control;
++    DEB_INFO("capioslib: cm_ctrl_tasklet with %p initialized\n", tasklet_control);
++}
++EXPORT_SYMBOL(capi_oslib_init_tasklet_control);
+ 
+ /*---------------------------------------------------------------------------*\
+ \*---------------------------------------------------------------------------*/
+@@ -321,7 +327,7 @@
+         tasklet_disable (p_delic_tasklet);
+     /*--- printk("2"); ---*/
+     if(capi_oslib_stack->cm_ctrl_tasklet)
+-        (*capi_oslib_stack->cm_ctrl_tasklet)(ubik2_tasklet_control_enter_critical);
++        (*capi_oslib_stack->cm_ctrl_tasklet)(tasklet_control_enter_critical);
+     /*--- printk("3"); ---*/
+ 	atomic_inc (&capi_oslib_crit_level);
+     /*--- printk("4\n"); ---*/
+@@ -350,7 +356,7 @@
+         tasklet_enable(p_delic_tasklet);
+     /*--- printk("3"); ---*/
+     if(capi_oslib_stack->cm_ctrl_tasklet)
+-        (*capi_oslib_stack->cm_ctrl_tasklet)(ubik2_tasklet_control_leave_critical);
++        (*capi_oslib_stack->cm_ctrl_tasklet)(tasklet_control_leave_critical);
+     /*--- printk("4\n"); ---*/
+ } 
+ EXPORT_SYMBOL(LeaveCritical);
+--- linux-2.6.19.2/drivers/isdn/capi_oslib.old/file.c	2007-12-05 10:44:54.000000000 +0100
++++ linux-2.6.19.2/drivers/isdn/capi_oslib/file.c	2008-04-11 15:58:38.000000000 +0200
+@@ -709,7 +709,7 @@
+                     memcpy(p_capi_profile, Buffer, size);
+                 } else {
+                     open_data->last_error = status;
+-                    DEB_ERR("capi_get_version failed status=%d\n", status);
++                    DEB_ERR("capi_get_profile failed status=%d\n", status);
+                     return -EIO;
+                 }
+             }
+@@ -719,7 +719,7 @@
+                 /*--- capi_manufacturer_cmd *p_capi_manufacturer_cmd = &capi_ioctl_struct.cmd; ---*/
+                 size = 0;
+                 open_data->last_error = 0;
+-                DEB_ERR("capi_get_version failed status=%d\n", status);
++                DEB_ERR("capi_get_manufacturer_cmd failed status=%d\n", status);
+                 return -EIO;
+             }
+             break;
+--- linux-2.6.19.2/drivers/isdn/capi_oslib.old/linux_capi_oslib.h	2007-03-28 10:42:26.000000000 +0200
++++ linux-2.6.19.2/drivers/isdn/capi_oslib/linux_capi_oslib.h	2008-06-16 13:13:35.000000000 +0200
+@@ -64,6 +64,13 @@
+ int avm_stack_attach(lib_callback_t *stack_library, struct _stack_interrupt_library *irq_library, struct _stack_init_params *p_params);
+ int avm_stack_detach(lib_callback_t *stack_library);
+ 
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++enum _tasklet_control {
++    tasklet_control_enter_critical = 0,
++    tasklet_control_leave_critical = 1
++};
++void capi_oslib_init_tasklet_control(void (* tasklet_control)(enum _tasklet_control));
+ 
+ void os_trigger_scheduler(void);
+ void os_disable_scheduler (void);
