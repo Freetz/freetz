@@ -18,6 +18,8 @@ config FREETZ_AVM_VERSION_04_49
 	bool
 config FREETZ_AVM_VERSION_04_57
 	bool
+config FREETZ_AVM_VERSION_12043
+	bool
 config FREETZ_AVM_VERSION_7270
 	bool
 config FREETZ_AVM_VERSION_r4884
@@ -89,7 +91,7 @@ choice
 		bool "Fon WLAN 7170"
 	
 	config FREETZ_TYPE_FON_WLAN_7270
-		select FREETZ_AVM_VERSION_7270
+		select FREETZ_AVM_VERSION_12043
 		bool "Fon WLAN 7270"
 	
 	config FREETZ_TYPE_WLAN_3020
@@ -261,6 +263,7 @@ config FREETZ_AVM_VERSION_STRING
 	default "04.49"			if FREETZ_AVM_VERSION_04_49
 	default "04.57"			if FREETZ_AVM_VERSION_04_57
 	default "7270"			if FREETZ_AVM_VERSION_7270
+	default "12043"			if FREETZ_AVM_VERSION_12043
 	default "r4884"			if FREETZ_AVM_VERSION_r4884
 	default "r7203"			if FREETZ_AVM_VERSION_r7203
 	default "r8508"			if FREETZ_AVM_VERSION_r8508
@@ -407,11 +410,10 @@ config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
-		! (FREETZ_TYPE_LABOR) && \
+		! (FREETZ_TYPE_LABOR && ! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL)) && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
 		! (FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN) && \
 		! FREETZ_TYPE_WLAN_3270
-
 	default n
 	help
 		Replace AVM kernel with self-built kernel.

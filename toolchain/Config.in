@@ -1,11 +1,11 @@
 config FREETZ_KERNEL_VERSION_2_6_13_1
 	bool
-	default y if ! FREETZ_AVM_VERSION_7270
+	default y if ! (FREETZ_AVM_VERSION_7270 || FREETZ_AVM_VERSION_12043)
 	default n if FREETZ_AVM_VERSION_7270
 
 config FREETZ_KERNEL_VERSION_2_6_19_2
 	bool
-	default y if FREETZ_AVM_VERSION_7270
+	default y if FREETZ_AVM_VERSION_7270 || FREETZ_AVM_VERSION_12043
 	default n if ! FREETZ_AVM_VERSION_7270
 
 config FREETZ_KERNEL_VERSION
@@ -129,9 +129,8 @@ config FREETZ_TARGET_GXX
 		currently part of that distribution. 
 
 config FREETZ_TARGET_CCACHE
-	bool "Build ccache for target toolchain" if FREETZ_BUILD_TOOLCHAIN
-	default y if FREETZ_BUILD_TOOLCHAIN
-	default n if FREETZ_DOWNLOAD_TOOLCHAIN
+	bool "Build ccache for target toolchain"
+	default y
 	help
 		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
 		compilers, using the -E compiler switch and a hash to detect when a
@@ -171,6 +170,19 @@ choice
 		bool "gcc-3.4.6"
 	
 endchoice
+
+config FREETZ_KERNEL_CCACHE
+	bool "Build ccache for kernel toolchain"
+	default y
+	help
+		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
+		compilers, using the -E compiler switch and a hash to detect when a
+		compilation can be satisfied from cache. This often results in a 5 to 10
+		times speedup in common compilations.
+		
+		The idea came from Erik Thiele wrote the original compilercache program
+		as a bourne shell script. ccache is a re-implementation of Erik's idea
+		in C with more features and better performance.
 
 config FREETZ_KERNEL_GCC_VERSION
 	string
@@ -217,6 +229,10 @@ choice
 
 	config FREETZ_GDB_VERSION_6_6
 		bool "gdb 6.6"
+	
+	config FREETZ_GDB_VERSION_6_8
+		bool "gdb 6.8"
+
 
 endchoice
 
@@ -225,3 +241,4 @@ config FREETZ_GDB_VERSION
 	default "6.3"	if FREETZ_GDB_VERSION_6_3
 	default "6.4"	if FREETZ_GDB_VERSION_6_4
 	default "6.6"	if FREETZ_GDB_VERSION_6_6
+	default "6.8"	if FREETZ_GDB_VERSION_6_8
