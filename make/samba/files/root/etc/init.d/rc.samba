@@ -99,11 +99,11 @@ case "$1" in
 
 		deffile=/mod/etc/default.samba/shares.def
 		[ -r /tmp/flash/samba/shares.def ] && deffile=/tmp/flash/samba/shares.def
-		modreg file "shares" "Samba Freigaben" 1 $deffile
+		modreg file "shares" '$(lang de:"Samba: Freigaben" en:"Samba: Shares")' 1 $deffile
 
 		deffile=/mod/etc/default.samba/sharesx.def
 		[ -r /tmp/flash/samba/sharesx.def ] && deffile=/tmp/flash/samba/sharesx.def
-		modreg file "sharesx" "Samba Erweitert" 1 $deffile
+		modreg file "sharesx" '$(lang de:"Samba: Erweitert" en:"Samba: Options")' 1 $deffile
 
 		if [ "$SAMBA_ENABLED" != yes ]; then
 			echo "samba is disabled" 1>&2
