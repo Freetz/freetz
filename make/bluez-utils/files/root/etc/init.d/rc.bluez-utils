@@ -9,9 +9,9 @@ start() {
 	echo -n "Starting bluetooth ..."
 
 	# Insert bfusb, hci_usb and rfcomm module
-	modprobe -q bfusb
-	modprobe -q hci_usb
-	modprobe -q rfcomm
+	modprobe -q bfusb > /dev/null 2>&1
+	modprobe -q hci_usb > /dev/null 2>&1
+	modprobe -q rfcomm > /dev/null 2>&1
 
 	# start daemons
 	$DAEMON
