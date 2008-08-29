@@ -24,6 +24,8 @@ if [ "$FREETZ_TYPE_LABOR_BETA" == "y" ];then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch"
 elif [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_dsl.patch"
+elif [ "$FREETZ_TYPE_LABOR_ALL" == "y" ];then
+        modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_all.patch"
 elif [ "$FREETZ_TYPE_LABOR_PHONE" == "y" ];then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_phone.patch"
 elif [ "$FREETZ_TYPE_LABOR_GAMING" == "y" ];then
@@ -68,7 +70,7 @@ echo2 "patching webinterface"
 sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/fon/sip1.js"
 sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/fon/siplist.js"
 sed -i -e "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/internet/authform.html"
-sed -i -e "s/<? setvariable var:TextMenuSoftware \"Programme\" ?>\\n//g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/menus/menu2.inc"
+#sed -i - "s/<? setvariable var:TextMenuSoftware \"Programme\" ?>\\n//g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/menus/menu2.inc"
 
 echo2 "swapping info led"
 #swap info led 0,1 with tr69 led
@@ -79,7 +81,7 @@ sed -i -e 's|DEF tr69,0 = 2,6,1,tr69|DEF tr69,0 = 99,32,16,tr69|' \
 	-e 's|DEF info,3 = 99,32,16,info|DEF info,3 = 2,6,1,info|' \
 	-e 's|DEF info,4 = 99,32,16,info|DEF info,4 = 2,6,1,info|' "${FILESYSTEM_MOD_DIR}/etc/led.conf"
 
-echo "DEF tam,0 = 99,32,21,tam" >> "${FILESYSTEM_MOD_DIR}/etc/led.conf"
+echo "DEF tam,1 = 99,32,21,tam" >> "${FILESYSTEM_MOD_DIR}/etc/led.conf"
 # map tam info to power
 echo "MAP tam,0 TO power,1" >> "${FILESYSTEM_MOD_DIR}/etc/led.conf"
 
