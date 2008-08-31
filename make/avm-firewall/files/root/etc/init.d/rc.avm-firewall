@@ -39,8 +39,8 @@ LOWINPUT=`echo "$DSLIFACES" | sed -n '/lowinput/,/}/p' `
 SPACES="`echo "$LOWINPUT" | sed -n 's/\(^[ ]*\)"\(permit\|deny\|reject\).*;.*/\1/p'`";
 
 # Der "accesslit" String (leere Rulestabelle ist ohne accesslist-Eintrag!)
-ACCL=`echo "$DSLIFACES" | sed '/accesslist/!d q' `
-POL=`echo "$DSLIFACES" | sed '/policy/!d q' | sed 's/\(^.*= "\).*/\1/'`
+ACCL=`echo "$DSLIFACES" | sed '/accesslist/!d ; q' `
+POL=`echo "$DSLIFACES" | sed '/policy/!d ; q' | sed 's/\(^.*= "\).*/\1/'`
 RET='
 '
 
@@ -52,6 +52,12 @@ HIGHOUTPUT="`echo "$DSLIFACES" | sed -n '/highoutput/,/}/p'`"
 HORULES=`echo "$HIGHOUTPUT"| sed  -n "s/^[ ]*\"//g ; /^permit\|deny\|reject/ {s/\"[,;]//g;s/[ ]*$//gp}"`
 HOPOL="`echo "$HIGHOUTPUT" | grep "policy =" | sed  's/^.*policy.*"\(.*\)";/\1/'`"
 
+# Die FWD-Rules rauslesen (Am Anfang Leereichen und alles bis zum " loeschen, am Ende die ", oder "; Kombination)
+# dafuer wird der "gewuenschte Teil" im Ausdruck mit \( und \) eingefasst und mit \1 ersetzt
+FWDRULES=`echo "$DSLIFACES" | sed -n '/forwardrules/,/;/ s/^[^"]*"\(.*\)"[,;][ ]*/\1/gp'` ;
+FWDSTART=`echo "$DSLIFACES" | sed -n '/forwardrules/,/,/p'  |tr '\n' '%' | sed -n 's/\([ ]*forwardrules =[ %]*\)".*/\1/p'| tr '%' '\n'`;
+FWDSPACES="`echo "$DSLIFACES" | sed -n '/forwardrules/,/;/  s/\(^[ ]*\)".*;/\1/p'`";  
+
 
 case "$1" in
         ""|load)
@@ -60,6 +66,7 @@ case "$1" in
                echo "export AVM_FIREWALL_RULESTABLE_HO='""$HORULES""'" >> $CONFIG
                echo "export AVM_FIREWALL_POLICY_LI='""$LIPOL""'" >> $CONFIG
                echo "export AVM_FIREWALL_POLICY_HO='""$HOPOL""'" >> $CONFIG
+               echo "export AVM_FIREWALL_FORWARDINGRULES='""$FWDRULES""'" >> $CONFIG
            ;;
 esac
 
@@ -83,23 +90,29 @@ start() {
 
 
                 # Die LI-Accesslist (vorne "Spaces", dann die "Rules" ans Ende ", letzte Zeile "; )
-                LI="$POL$AVM_FIREWALL_POLICY_LI\"; $RET$ACCL$RET"`echo "$AVM_FIREWALL_RULESTABLE_LI" | sed "s/^/$SPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2% ; $ s/,/;/"`
+                LI="$POL$AVM_FIREWALL_POLICY_LI\";$RET$ACCL$RET"`echo "$AVM_FIREWALL_RULESTABLE_LI" | sed "s/^/$SPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2 % ; $ s/, /;/"`
                 # Die HO-Liste...
-                HO="$POL$AVM_FIREWALL_POLICY_HO\"; $RET$ACCL$RET"`echo "$AVM_FIREWALL_RULESTABLE_HO" | sed "s/^/$SPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2% ; $ s/,/;/"`
+                HO="$POL$AVM_FIREWALL_POLICY_HO\";$RET$ACCL$RET"`echo "$AVM_FIREWALL_RULESTABLE_HO" | sed "s/^/$SPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2 % ; $ s/, /;/"`
+                # Die Forwarding-Regeln...
+                FWD="$FWDSTART \""`echo "$AVM_FIREWALL_FORWARDINGRULES" | sed "2,$ s/^/$FWDSPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2% ; $ s/,/;/"`;
                 # ... und alles Einsetzen ...
-                cat  $REAL | awk -v v1="$LI" -v v2="$HO" '/dslifaces/ {ifstart=1} ;/targets/ {ifstart=0}; /lowinput/{if (ifstart && !liend) {listart=1}};/highoutput/{if (ifstart && !hoend) {hostart=1}}; /policy/{{if (listart) {lirules=1;printli=1}}; {if (hostart) {horules=1;printho=1}}};/\}/{{if (lirules) {lirules=0; listart=0}}; {if(horules){horules=0; hostart=0}}} ; {if (lirules) {{if (printli) {print v1; liend=1; printli=0}}; {next}}} ;{if(horules){{if (printho){ print v2; hoend=1; printho=0}}; {next}}}; {print}' > $REALCOPY
+                cat  $REAL | awk -v v1="$LI" -v v2="$HO" -v v3="$FWD" '/dslifaces/ {ifstart=1} ;/targets/ {ifstart=0}; /lowinput/{if (ifstart && !liend) {listart=1}};/highoutput/{if (ifstart && !hoend) {hostart=1}}; /policy/{{if (listart) {lirules=1;printli=1}}; {if (hostart) {horules=1;printho=1}}};/\}/{{if (lirules) {lirules=0; listart=0}}; {if(horules){horules=0; hostart=0}}} ; /forwardrules/{ if (ifstart && hoend && !fwdready) {fwd=1}};/shaper/||/}/{if (fwd) {fwd=0}} ;{if (lirules) {{if (printli) {print v1; liend=1; printli=0}}; {next}}} ;{if(horules){{if (printho){ print v2; hoend=1; printho=0}}; {next}}}; {if (fwd){ { if (!fwdready) {print v3; fwdready=1}}; {next}}}; {print}' > $REALCOPY
 
                 # echte ar7.cfg schreiben
                 cat $REALCOPY > $REAL
                 if [ "$AVM_FIREWALL_DO_ACTIVATE" == "yes" ]; then
                 	echo "Requested activation of rule set. Restarting dsld ..."
                 	eval dsld -s
+			eval ctlmgr -s
                 	sleep 1  
                 	killall -9 dsld 2> /dev/null
-                	if [ $AVM_FIREWALL_LOG == "yes" ]; then
-                		dsld -D AVM_FW 
+			killall -9 ctlmgr 2> /dev/null
+			ctlmgr
+			[ "$AVM_FIREWALL_LOG_DROPPED" != "yes" ] && LOGG="-n" || LOGG=""
+                	if [ "$AVM_FIREWALL_LOG" == "yes" ]; then
+                		dsld $LOGG -D AVM_FW 
                 	else 
-                		dsld
+                		dsld $LOGG
                 	fi
                 	echo "done";
                 fi
@@ -140,3 +153,4 @@ case "$1" in
 esac
 
 exit 0
+
