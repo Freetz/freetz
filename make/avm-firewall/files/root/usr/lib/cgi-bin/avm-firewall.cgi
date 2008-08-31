@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="2.0.3c"
+VERSION="2.0.4_beta"
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 CONFIG=/mod/etc/conf/avm-firewall.cfg
 . /usr/lib/libmodcgi.sh
@@ -10,6 +10,15 @@ SUBNET="255.255.255.252 255.255.255.248 255.255.255.240 255.255.255.224 \
         255.255.192.0 255.255.128.0 255.255.0.0"
 
 echo "<font size='1'>$(lang en:"This firewall is for router mode only and is based on the ar7.cfg file of AVM. New rule settings will be active after next reboot or after clicking the \"Activate Button\" below." de:"Oberfl&auml;che zur AVM-Firewall (nur im Routermodus) bearbeitet die ar7.cfg. &Auml;nderungen werden durch Reboot oder durch Auswahl am Ende der Seite aktiviert")</font>"
+
+sec_begin '$(lang de:"Ansicht" en:"Mode") Firewall / Portforwarding'
+cat << EOF
+Firewall <input id="id_FW" type="radio" name="fwmode" value="firewall"checked onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[1].style.display = "block"; fieldsets[2].style.display = "block"; fieldsets[3].style.display = "none"; fieldsets[4].style.display = "none";'>
+Forwarding <input id="id_FWD" type="radio" name="fwmode" value="fwd"  onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[3].style.display = "block"; fieldsets[4].style.display = "block";  fieldsets[1].style.display = "none"; fieldsets[2].style.display = "none";'>
+
+EOF
+
+sec_end
 
 sec_begin '$(lang de:"Neue Firewall Regel" en:"Firewall add new rule")'
 cat << EOF
@@ -92,10 +101,11 @@ cat << EOF
 <p><table width="100%"> <tr> <td><font color="red">$(lang en:"Incoming" de:"Eingehende Regeln")</font> (lowinput)<input type="radio" name="selectrules" id="id_li_rules" checked onclick='if (selrules=="ho"){allrules_ho=allrules}; selrules="li" ; allrules=allrules_li; Init_FW_Table()'>  
  &nbsp;  &nbsp;   <font color="blue">$(lang en:"Outgoing" de:"Ausgehende Regeln")</font> (highoutput)<input type="radio" name="selectrules" id="id_ho_rules" 
  	onclick='if (selrules=="li") {allrules_li=allrules}; selrules="ho" ; allrules=allrules_ho; Init_FW_Table()'></td> 
- 	<td align=right> $(lang en:"Enable " de:"")logging $(lang en:"feature" de:"einschalten") (<i>dsld -D</i>)  <input type="hidden" name="log" value=""><input type="checkbox" name="log" value="yes"> </td> </tr></table> 
-<br /> $(lang en:"For Debugging : show Rules-Window" de:"nur zum debuggen: Regelwerk anzeigen")  &nbsp;  &nbsp; LowInput: <input type="checkbox" onclick='document.getElementById("id_rules_li").style.display=(this.checked)? "block" : "none"' >
- &nbsp; HighOutput:  <input type="checkbox" onclick='document.getElementById("id_rules_ho").style.display=(this.checked)? "block" : "none"' >
-</p>
+ 	<td align=right> $(lang en:"Enable " de:"")logging $(lang en:"feature" de:"einschalten") (<i>dsld -D</i>)  <input type="hidden" name="log" value=""><input type="checkbox" name="log" value="yes"> </td> </tr> 
+<tr><td> $(lang en:"For Debugging : show Rules-Window" de:"nur zum debuggen: Regelwerk anzeigen")  &nbsp;  &nbsp; LowInput: <input type="checkbox" onclick='document.getElementById("id_rules_li").style.display=(this.checked)? "block" : "none"' >
+ &nbsp; HighOutput:  <input type="checkbox" onclick='document.getElementById("id_rules_ho").style.display=(this.checked)? "block" : "none"' ></td>
+ <td align=right> $(lang en:"Logg all dropped Packets" de:"Verworfene Pakete loggen") (<b>no</b> <i>dsld -n</i>) <input type="hidden" name="log_dropped" value=""><input type="checkbox" name="log_dropped" value="yes"> </td></tr>
+</table></p>
 
 <textarea id="id_rules_li" style="width: 600px; display:none" name="rulestable_li" rows="15" cols="80" wrap="off" ></textarea>
 <input type="hidden" name="policy_li" id="id_policy_li" value="$AVM_FIREWALL_POLICY_LI">
@@ -132,7 +142,73 @@ echo '</table>'
 #EOF
 sec_end
  
+sec_begin 'Portforwarding add new rule'
+cat << EOF
+<p>
+<table border="0">
+<tr><td>Protokoll </td><td><select name="fwdprotokoll" id="id_fwdproto" onchange=" (fdprot=this.value); build_new_fwdrule()">
+	<option title="tcp" value="tcp">tcp</option>
+	<option title="udp" value="udp">udp</option>
+	<option title="gre" value="gre">gre</option>
+</select> </td> 
 
+<td colspan=2> 
+  <div id="div_fwdsport">
+	&nbsp; &nbsp; (Start-)Port <input size="5" id="id_fwd_in_sport" title="startport" value="22" onblur="(fdsport=this.value);build_new_fwdrule()">
+ 	&nbsp;  ( End-Port <input type="text" size="5" id="id_fwd_in_eport"  title="endport" value="" onblur="fdeport=this.value;build_new_fwdrule()" > )
+  </div>
+</td>
+</tr>
+<tr><td>Destination </td><td>
+<select id="id_fwddest_type" onchange='(fddtype=this.value); build_new_fwdrule()'> 
+        <option value="fritz">Fritz!Box</option>   <option value="host">host</option>
+</select></td>
+<td><div id="div_fwddest" style="display:none">
+   &nbsp; <input type="text"  id="id_fwddest" size="15" maxlength="15" value="0.0.0.0"  onblur="fddest=this.value;build_new_fwdrule()">
+</div></td>
+<td>
+<div id="div_fwddport" style="display:inline">
+ &nbsp; (Start-)Port <input type="text" size="5" id='id_fwd_out_sport' value='22' onblur='fdoport=this.value;build_new_fwdrule()'>
+</div>
+</td> 
+</tr>
+<tr> <td>Name </td><td colspan="3"> <input type="text" name="fwd_name" id="id_fwdname" size="18" maxlength="18" value=""  onblur="fdname=this.value;build_new_fwdrule()"></td> </tr>
+
+</table>
+<hr>
+Rule: <input id="id_new_fwdrule" size="90" value=""> <input type="button" value="ADD Rule" onclick='allfwdrules.push(document.getElementById("id_new_fwdrule").value);fwdrulescount +=  1; Init_FWDTable();' />
+</p>
+
+EOF
+sec_end
+
+sec_begin 'Portforwarding rules'
+
+cat << EOF
+
+$(lang en:"For Debugging : show forwarding rules" de:"nur zum debuggen: Forwardregeln anzeigen")  &nbsp;  &nbsp; <input type="checkbox" onclick='document.getElementById("forwardingrules").style.display=(this.checked)? "block" : "none"' >
+<textarea id="forwardingrules" style="width: 600px; display:none;"  name="forwardingrules"  rows="15" cols="80" wrap="off" ></textarea>
+
+<table width="100%" border="1" cellpadding="4" cellspacing="0" align="center" id="id_table_forwardrules">
+        <tr><td align="left" colspan="8">dslifaces forwardrules</td></tr>
+        <tr> <th bgcolor="#bae3ff">Active</th>  <th bgcolor="#bae3ff">Protokoll</th> <th bgcolor="#bae3ff">Source Port</th> <th bgcolor="#bae3ff">Destination</th>
+        <th bgcolor="#bae3ff">Ziel Port</th>  <th bgcolor="#bae3ff">Description</th>  <th bgcolor="#bae3ff">Configure</th> </tr>
+        <tr style="display:none"><td bgcolor="#CDCDCD" width="40" align="center"><input type="checkbox" 
+          onclick='fwddisable[ (this.parentNode.parentNode.rowIndex -3)] = ! this.checked ; rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3));'></td><td><select>
+                <option value="gre">gre</option><option value="tcp">tcp</option><option value="udp">udp</option>
+	</select> </td><td><input type="text" size="10" title="SPort" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwdsport", this.value)'>
+	</td><td><input type="text" size="24" title="Destination" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddest", this.value)'>
+	</td><td><input type="text" size="10" title="DPort" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddport", this.value)'>
+	</td><td><input type="text" title="Descr" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwdname", this.value)'>
+	
+	</td><td><center>
+	<img src="../images/del.jpg" title="delete rule" onclick='allfwdrules.splice(this.parentNode.parentNode.rowIndex -3 ,1); fwdrulescount -=  1;Init_FWDTable()'>
+      	</center></td>
+	</tr>
+</table>
+                        
+
+EOF
 #rm /var/tmp/firewall.*
 cat << EOF
 
@@ -154,7 +230,9 @@ tmp="('""`echo "$AVM_FIREWALL_RULESTABLE_LI"| sed "s/$/', '/" | tr -d '\n'| sed 
 echo "allrules_li=new Array$tmp"
 tmp="('""`echo "$AVM_FIREWALL_RULESTABLE_HO"| sed "s/$/', '/" | tr -d '\n'| sed "s/, '$//"`"')'
 echo "allrules_ho=new Array$tmp"
+echo "allfwdrules=new Array (`sed   -n '/dslifaces/,/} {/p' /var/flash/ar7.cfg | sed -n '/forwardrules/,/;/ s/^[^"]*\(".*"\)[,;][ ]*/\1 , /gp'|  tr -d '\n' | sed 's/" ,[ ]*$/"/'`)";
 cat << EOF
+
 policy_li="$AVM_FIREWALL_POLICY_LI";
 policy_ho="$AVM_FIREWALL_POLICY_HO";
 allrules=allrules_ho;
@@ -162,7 +240,112 @@ selrules="ho";
 showrules();
 allrules=allrules_li;
 selrules="li";
+var fieldsets = document.getElementsByTagName("fieldset");
+fieldsets[1].style.display = "block"; fieldsets[2].style.display = "block"; 
+fieldsets[3].style.display = "none"; fieldsets[4].style.display = "none"; 
+
+fwdproto=new Array();
+fwdsport=new Array();
+fwddport=new Array();
+fwddest=new Array();
+fwddisable=new Array();
+fwdname=new Array();
+
+fdprot="tcp";
+fdsport="22";
+fdeport="";
+fdoport="22";
+fddtype="fritz";
+fddest="0.0.0.0";
+fdname='';
+
+
+split_fwdrules();
+Init_FWDTable();
+build_new_fwdrule();
+
+function split_fwdrules(){
+  count=0;
+    while ( allfwdrules[count]){
+            actrule=allfwdrules[count];
+            splitrules=actrule.split(" ");
+            if (splitrules[0]=="#") {fwddisable[count]=true ; next=1 } else {fwddisable[count]=false ; next=0 } ;
+            fwdproto[count]=splitrules[next];
+            if ( fwdproto[count] != "gre" ) {fwdsport[count]=splitrules[(next+1)].split(":")[1]; fwddport[count]=splitrules[(next+2)].split(":")[1];}
+            	else {fwdsport[count]=""; fwddport[count]=""};
+            fwddest[count]=splitrules[(next+2)].split(":")[0];
+            if (fwdname[count]=splitrules.slice(next+5).join(" ")){}else {fwdname[count]=""};
+            count +=1 ;
+    }
+    fwdrulescount=count;
+}
+function build_new_fwdrule(){
+ document.getElementById("div_fwddport").style.display = ( fdprot != "gre" )? "inline" : "none";
+ document.getElementById("div_fwdsport").style.display= ( fdprot != "gre" )? "inline" : "none";
+ document.getElementById("div_fwddest").style.display= (fddtype != "fritz") ? "inline" : "none";
  
+
+ var tmp=fdprot + " 0.0.0.0";
+ if (fddtype == "fritz") {document.getElementById("id_fwddest").value="0.0.0.0"; fddest="0.0.0.0"};
+ if ( fdprot != "gre" ){ tmp +=":"+fdsport; if (fdeport) {tmp+="+" + (fdeport-fdsport) } };
+ tmp += " "+fddest;
+ if ( fdprot != "gre" ){tmp +=":"+fdoport;};
+ if ( fdname != "" ){tmp +=" 0 # "+fdname;};
+ document.getElementById("id_new_fwdrule").value = tmp;
+}
+
+function showfwdrules(){
+  document.getElementById("forwardingrules").value=allfwdrules.join("\n");
+}
+
+function rebuild_fwdrule(num, name , val){
+  if (name) { tmp=name +"[" + num + "] = '" + val +"'" ; eval (tmp)}
+  allfwdrules[num]= (fwddisable[num]) ? "# " : "" ;
+  allfwdrules[num]+=fwdproto[num]+" 0.0.0.0";
+  allfwdrules[num]+= (fwdproto[num] == "gre") ? " "+fwddest[num] : ":"+fwdsport[num]+" "+fwddest[num]+":"+fwddport[num];
+  if (fwdname[num]){ allfwdrules[num] +=" 0 # "+fwdname[num] ;}
+  showfwdrules();
+}
+function Init_FWDTable(){
+  var number=Number(fwdrulescount);
+  var tbl = document.getElementById("id_table_forwardrules");
+  var lastRow = tbl.rows.length;
+  split_fwdrules() ;
+  for (j=3;j<=fwdrulescount+2;j++){
+  	if (j >= lastRow) {var row = tbl.insertRow(j);for (i=0; i<=6 ; i++){row.appendChild(tbl.rows[2].cells[i].cloneNode(true))}};
+  	tbl.rows[j].style.display='';
+  	
+  	cn=tbl.rows[j].childNodes;
+  	var el_active=cn[0].firstChild;
+  	var el_prot=cn[1].firstChild; 
+  	var el_sport=cn[2].firstChild;
+  	var el_dest=cn[3].firstChild; 
+  	var el_dport=cn[4].firstChild;
+  	var el_name=cn[5].firstChild;
+  	var lastel=cn[6].childNodes;
+  	var is_gre=(fwdproto[j-3] == "gre");
+  	el_active.checked=( !fwddisable[(j-3)] ) ? true : false;
+  	el_prot.value=fwdproto[j-3];
+  	el_sport.disabled=is_gre;
+  	el_sport.value=fwdsport[j-3];
+  	el_dest.value=fwddest[j-3];
+  	el_dport.disabled=is_gre;
+  	el_dport.value=fwddport[j-3];
+  	el_name.value=fwdname[j-3];
+  	for (i=0; i< lastel.length ; i++){  
+  	        switch (lastel[i].title){   
+  	        	case "move rule up": lastel[i].style.display=(j==3) ? "none" : "inline"; break;     
+  	        	case "move rule down": lastel[i].style.display=(j==fwdrulescount+2) ? "none" : "inline"; break;        
+  	         }           
+        } 
+  }
+  for(j=lastRow-1;j>fwdrulescount+2;j--){
+  	tbl.rows[j].style.display="none";
+  }
+  showfwdrules();
+}
+
+
 
 Init_FW_Table();
 /*

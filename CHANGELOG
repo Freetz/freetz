@@ -27,6 +27,7 @@ Latest changes:
 - Updated patches:
     * usbstorage: delete storage.sh patch and therefore add sed line to usbstorage.sh
     * remove tr069: remove tr069 stuff for 7170, 7270
+    * remove_dect: don't remove dect firmware files otherwise boot process will hang 
 
 - Updated packages and libs:
     * bip 0.7.4
@@ -35,6 +36,7 @@ Latest changes:
     * dnsmasq 2.45
     * e2fsprogs 1.40.11
     * espeak 1.37
+    * fuse 2.7.4
     * iodine 0.4.2
     * ntfs-3g 1.2712
     * obexftp 0.22rc9
@@ -53,6 +55,7 @@ Latest changes:
 - Remove packages, libs, modules, tools:
 
 - Firmware updates:
+    * Please see FIRMWARES for the list of currently supported boxes and firmwares.
 
 - BusyBox:
     * updated to 1.11.1
@@ -60,12 +63,16 @@ Latest changes:
 - Web interface:
 
 - Other stuff:
-    * support for new kernel sources (04.57)
-    * kernel patch for multiple ftdi devices
+	* kernel: 
+    	+ support for new sources (04.57)
+    	+ add patch for multiple ftdi devices
+    	+ add squashfs-3.3 patch for 2.6.19.2
+    	+ activate "replace kernel" for 7270
     * mtd char devices were created with wrong minors
     * disable iptables-cgi for 7270
     * add menuconfig option for 7270 with 16 MB flash
     * add option to disable Freetz version string
+    * fix wrong PID in /var/run/httpd.pid after webcfg restart
 
 === release Freetz-1.0 ===
 

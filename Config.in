@@ -18,6 +18,8 @@ config FREETZ_AVM_VERSION_04_49
 	bool
 config FREETZ_AVM_VERSION_04_57
 	bool
+config FREETZ_AVM_VERSION_12043
+	bool
 config FREETZ_AVM_VERSION_7270
 	bool
 config FREETZ_AVM_VERSION_r4884
@@ -89,7 +91,7 @@ choice
 		bool "Fon WLAN 7170"
 	
 	config FREETZ_TYPE_FON_WLAN_7270
-		select FREETZ_AVM_VERSION_7270
+		select FREETZ_AVM_VERSION_12043
 		bool "Fon WLAN 7270"
 	
 	config FREETZ_TYPE_WLAN_3020
@@ -175,7 +177,7 @@ choice
 		depends on \
 			(FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_FON_WLAN_7270) \
-			&& ! (FREETZ_TYPE_SPEEDPORT_W701V_7170 || FREETZ_TYPE_SPEEDPORT_W900V_7170)
+			&& ! FREETZ_TYPE_SPEEDPORT_W701V_7170
 
 	config FREETZ_TYPE_LABOR_DSL
 		bool "DSL"
@@ -261,6 +263,7 @@ config FREETZ_AVM_VERSION_STRING
 	default "04.49"			if FREETZ_AVM_VERSION_04_49
 	default "04.57"			if FREETZ_AVM_VERSION_04_57
 	default "7270"			if FREETZ_AVM_VERSION_7270
+	default "12043"			if FREETZ_AVM_VERSION_12043
 	default "r4884"			if FREETZ_AVM_VERSION_r4884
 	default "r7203"			if FREETZ_AVM_VERSION_r7203
 	default "r8508"			if FREETZ_AVM_VERSION_r8508
@@ -407,7 +410,7 @@ config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
-		! (FREETZ_TYPE_LABOR) && \
+		! (FREETZ_TYPE_LABOR && ! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL)) && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
 		! (FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN) && \
 		! FREETZ_TYPE_WLAN_3270 && \
@@ -1386,12 +1389,12 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_fon.en.06.04.49.image"					if FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz.box_fon_5010.annexa.48.04.43.image"				if FREETZ_TYPE_FON_5010 && FREETZ_TYPE_LANG_A_CH
 	default "fritz.box_fon_5050.12.04.31.image"					if FREETZ_TYPE_FON_5050
-	default "FRITZ.Box_Fon_5140.43.04.57.image"					if FREETZ_TYPE_FON_5140
+	default "FRITZ.Box_Fon_5140.43.04.59.image"					if FREETZ_TYPE_FON_5140
 	default "fritz.box_fon_wlan.08.04.34.image"					if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN.AnnexA.en.08.04.49.image"				if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN.AnnexB.en.08.04.49.image"				if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz.box_fon_wlan_7050.14.04.33.image"				if FREETZ_TYPE_FON_WLAN_7050
-	default "FRITZ.Box_Fon_WLAN_7113.60.04.57.image"				if FREETZ_TYPE_FON_WLAN_7113
+	default "FRITZ.Box_Fon_WLAN_7113.60.04.59.image"				if FREETZ_TYPE_FON_WLAN_7113
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.en.39.04.56.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexB.en.30.04.56.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
@@ -1399,7 +1402,7 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.57.image"				if FREETZ_TYPE_FON_WLAN_7141 && ! FREETZ_TYPE_LABOR
 	default "fritz_box_labor-9710.image"						if FREETZ_TYPE_FON_WLAN_7141 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Fon_7150.AnnexB.38.04.56.image"					if FREETZ_TYPE_FON_7150
-	default "FRITZ.Box_Fon_WLAN_7170.29.04.57.image"				if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7170.29.04.59.image"				if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.58.04.57.image"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.56.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.56.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
@@ -1421,7 +1424,7 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
 	default "fritz.box_wlan_3130.44.04.34.image"					if FREETZ_TYPE_WLAN_3130
 	default "fritz.box_wlan_3131.50.04.57.image"					if FREETZ_TYPE_WLAN_3131
-	default "fritz.box_wlan_3170.49.04.57.image"					if FREETZ_TYPE_WLAN_3170
+	default "fritz.box_wlan_3170.49.04.58.image"					if FREETZ_TYPE_WLAN_3170
 	default "fritz.box_wlan_3270.67.04.57.image"					if FREETZ_TYPE_WLAN_3270
 	default "fw_Speedport_W501V_v_28.04.38.image"					if FREETZ_TYPE_SPEEDPORT_W501V
 	default "fw_Speedport_W701V_v33.04.57.image"					if FREETZ_TYPE_SPEEDPORT_W701V

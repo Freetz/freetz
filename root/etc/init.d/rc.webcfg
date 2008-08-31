@@ -1,11 +1,11 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
+. /etc/init.d/modlibrc
 
 DAEMON=httpd
+PIDFILE=/var/run/webcfg.pid
 
-case "$1" in
+case $1 in
 	""|load|start|restart|status)
 		if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
@@ -30,22 +30,13 @@ config() {
 	) > /mod/etc/$DAEMON.conf
 }
 
-pidfile() {
-	ps | grep " $DAEMON -p $MOD_HTTPD_PORT" | grep -v grep | sed -r 's/ *([0-9]+).*/\1/' | head -1 > /var/run/$DAEMON.pid
-}
-
 start() {
 	config
 
 	echo -n 'Starting webinterface...'
-	webcfg
+	webcfg -P "$PIDFILE"
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
-		pidfile
-		while [ ! -s "/var/run/$DAEMON.pid" ]; do
-			sleep 1
-			pidfile
-		done
 		echo 'done.'
 	else
 		rm -f /var/run/$DAEMON.pid
@@ -55,21 +46,7 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping webinterface...'
-	exitval=0
-
-	if [ -e "/var/run/$DAEMON.pid" ]; then
-		kill "$(cat /var/run/$DAEMON.pid)" > /dev/null 2>&1
-		exitval=$?
-		rm -f /var/run/$DAEMON.pid
-	fi
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_stop "$PIDFILE"
 }
 
 case "$1" in
@@ -103,10 +80,8 @@ case "$1" in
 	status)
 		if [ "$MOD_HTTPD" == "inetd" ]; then
 			echo 'inetd'
-		elif [ -s "/var/run/$DAEMON.pid" ]; then
-			echo 'running'
 		else
-			echo 'stopped'
+			modlib_status "$PIDFILE"
 		fi
 		;;
 	*)
