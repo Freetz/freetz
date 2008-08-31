@@ -15,7 +15,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured | kernel-source
 	find "$(IPTABLES_DIR)" -name "*ip6*" -o -name "*ipv6*" | xargs rm -rf
-	$(MAKE) -C $(IPTABLES_DIR)
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(IPTABLES_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -32,7 +33,7 @@ $(pkg)-clean:
 	-$(MAKE) -C $(IPTABLES_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(IPTABLES_TARGET_BINARY)
-	rm -f $(IPTABLES_EXTENSIONS_DIR)/*
+	$(RM) $(IPTABLES_TARGET_BINARY)
+	$(RM) $(IPTABLES_EXTENSIONS_DIR)/*
 
 $(PKG_FINISH)
