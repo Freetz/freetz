@@ -1279,6 +1279,7 @@ config FREETZ_REMOVE_VOIP_ISDN
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		FREETZ_HAS_PHONE
+	select FREETZ_REMOVE_DECT if FREETZ_TYPE_FON_WLAN_7270 
 	default n
 	help
 		Radically remove a lot of telephony-related files. This patch saves about
