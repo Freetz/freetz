@@ -389,17 +389,6 @@ config FREETZ_INSTALL_BASE
 	help
 		This is mandatory
 
-#overwrite AVM's fat and vfat module with our own because it segfaults
-config FREETZ_INSTALL_MODULE
-	bool
-	depends on FREETZ_REPLACE_KERNEL \
-		&& ! FREETZ_AVM_VERSION_04_40 \
-		&& ! FREETZ_AVM_VERSION_r8508
-	select FREETZ_MODULE_vfat	if FREETZ_HAS_USB_HOST
-	default y
-	help
-		This is mandatory
-
 config FREETZ_REPLACE_BUSYBOX
 	bool
 	default y
