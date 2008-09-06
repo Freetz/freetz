@@ -29,10 +29,11 @@ configure () {
 
 	echo background
 	echo verbose $INADYN_VERBOSE
-	if [ -x /etc/init.d/rc.syslogd -a running = "$(/etc/init.d/rc.syslogd status)" ]; then
-		echo syslog
-	else
-		echo log_file /var/log/inadyn.log
+	[ -x /etc/init.d/rc.syslogd ] && running=$(/etc/init.d/rc.syslogd status)
+	if [ "$running" = "running" ]; then
+    	echo syslog
+    else
+    	echo log_file /var/log/inadyn.log
 	fi
 	echo pid_file /var/run/${DAEMON}.pid
 
