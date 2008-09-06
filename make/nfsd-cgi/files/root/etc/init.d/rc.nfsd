@@ -1,0 +1,131 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=nfsd
+NFS_DIR=/var/lib/nfs
+
+. /etc/init.d/modlibrc 
+
+start() {
+	set -o noglob
+	echo -n 'Starting nfsd...'
+	
+	# portmap needs this
+	modlib_addgroup nobody  
+	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'  
+	
+	[ -e /etc/exports ] || ( echo "can't open /etc/exports"; exit 1 )
+
+	modprobe nfsd > /dev/null 2>&1
+	mkdir -p $NFS_DIR
+	for file in etab rmtab xtab; do
+	    touch $NFS_DIR/$file
+	done
+	/usr/sbin/portmap
+ 	exitval1=$?
+	/usr/sbin/exportfs -r > /dev/null 2>&1
+ 	exitval2=$?
+	/usr/sbin/nfsd -p 2047
+ 	exitval3=$?
+	/usr/sbin/mountd
+	exitval4=$?
+
+	if [ "$exitval1" -eq 0 ] && [ "$exitval2" -eq 0 ] \
+	    && [ "$exitval3" -eq 0 ] && [ "$exitval4" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit 1
+	fi
+}
+
+reload() {
+	/usr/sbin/exportfs -r > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping nfsd...'
+
+	killall mountd >/dev/null 2>&1
+	killall -9 nfsd > /dev/null 2>&1
+	/usr/sbin/exportfs -au
+	killall portmap > /dev/null 2>&1
+	
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in 
+	""|load)
+		[ -d "/tmp/flash/nfsd" ] || mkdir -p /tmp/flash/nfsd
+		ln -fs /tmp/flash/nfsd/exports /var/tmp/exports
+		
+		modreg cgi 'nfsd' 'NFS-Server'
+
+		deffile='/mod/etc/default.nfsd/hosts_allow.def'
+		modreg file 'hosts_allow' 'hosts.allow' 1 "$deffile"
+
+		deffile='/mod/etc/default.nfsd/hosts_deny.def'
+		modreg file 'hosts_deny' 'hosts.deny' 1 "$deffile"
+		
+		deffile='/mod/etc/default.nfsd/exports.def'
+		modreg file 'exports' 'Exports' 1 "$deffile"
+
+		if [ "$NFSD_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+		
+		start
+		;;
+	unload)
+		stop
+		modunreg file 'exports'
+		modunreg file 'hosts_allow'
+		modunreg file 'hosts_deny'
+		modunreg cgi 'nfsd'
+		
+		rmmod nfsd lock sunrpc exportfs > /dev/null 2>&1
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	reload)
+		reload
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof nfsd)" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

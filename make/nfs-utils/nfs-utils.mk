@@ -1,0 +1,59 @@
+$(call PKG_INIT_BIN,1.1.3)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/nfs
+$(PKG)_EXPORTFS_BINARY:=$($(PKG)_DIR)/utils/exportfs/exportfs
+$(PKG)_EXPORTFS_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/exportfs
+$(PKG)_MOUNTD_BINARY:=$($(PKG)_DIR)/utils/mountd/mountd
+$(PKG)_MOUNTD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mountd
+$(PKG)_NFSD_BINARY:=$($(PKG)_DIR)/utils/nfsd/nfsd
+$(PKG)_NFSD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/nfsd
+$(PKG)_SHOWMOUNT_BINARY:=$($(PKG)_DIR)/utils/showmount/showmount
+$(PKG)_SHOWMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/showmount
+
+$(PKG)_DEPENDS_ON := e2fsprogs tcp_wrappers
+
+$(PKG)_CONFIGURE_OPTIONS += --disable-nfsv4
+$(PKG)_CONFIGURE_OPTIONS += --disable-mount
+$(PKG)_CONFIGURE_OPTIONS += --disable-gss
+
+
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
+
+$($(PKG)_EXPORTFS_BINARY) $($(PKG)_MOUNTD_BINARY) \
+		$($(PKG)_NFSD_BINARY) $($(PKG)_SHOWMOUNT_BINARY)) : \
+		$($(PKG)_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(NFS_UTILS_DIR) \
+		OPT="$(TARGET_CFLAGS)" \
+		CC="$(TARGET_CROSS)gcc" \
+		all
+
+$($(PKG)_EXPORTFS_TARGET_BINARY): $($(PKG)_EXPORTFS_BINARY)
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_MOUNTD_TARGET_BINARY):	$($(PKG)_MOUNTD_BINARY)
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_NFSD_TARGET_BINARY): $($(PKG)_NFSD_BINARY)
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_SHOWMOUNT_TARGET_BINARY): $($(PKG)_SHOWMOUNT_BINARY)
+	$(INSTALL_BINARY_STRIP)
+
+$(pkg):
+
+$(pkg)-precompiled: $($(PKG)_EXPORTFS_TARGET_BINARY) $($(PKG)_MOUNTD_TARGET_BINARY) \
+			$($(PKG)_NFSD_TARGET_BINARY) $($(PKG)_SHOWMOUNT_TARGET_BINARY)
+
+$(pkg)-clean:
+	-$(MAKE) -C $(NFS_UTILS_DIR) clean
+
+$(pkg)-uninstall:
+	$(RM) $(NFS_UTILS_EXPORTFS_TARGET_BINARY) \
+		$(NFS_UTILS_MOUNTD_TARGET_BINARY) \
+		$(NFS_UTILS_NFSD_TARGET_BINARY) \
+		$(NFS_UTILS_SHOWMOUNT_TARGET_BINARY)
+
+$(PKG_FINISH)
