@@ -1,0 +1,55 @@
+#external by cuma
+if [ ! "$EXTERNAL_ENABLED" == "y" ]; then
+	echo external is used by make
+	exit 1
+fi
+EXTERNAL_DIRECTORY=`echo $EXTERNAL_DIRECTORY|sed 's/\/*$//'`
+mkdir -p "${EXTERNAL_MOD_DIR}"
+
+EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
+[ "$EXTERNAL_FREETZ_PACKAGE_LTRACE" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/ltrace"
+[ "$EXTERNAL_FREETZ_LIB_libart_lgpl_2" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libart_lgpl_2.so.2.3.19"
+[ "$EXTERNAL_FREETZ_LIB_libdevmapper" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libdevmapper.so.1.02"
+[ "$EXTERNAL_FREETZ_LIB_libelf" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libelf.so.0.8.10"
+[ "$EXTERNAL_FREETZ_LIB_libfreetype" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libfreetype.so.6.3.16"
+[ "$EXTERNAL_FREETZ_LIB_libncurses" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libncurses.so.5.6"
+[ "$EXTERNAL_FREETZ_LIB_libpng12" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libpng12.so.0.10.0"
+[ "$EXTERNAL_FREETZ_LIB_libpopt" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libpopt.so.0.0.0"
+[ "$EXTERNAL_FREETZ_LIB_libresolv" == "y" ] && EXTERNAL_FILES+=" /lib/libresolv-0.9.28.so"
+[ "$EXTERNAL_FREETZ_PACKAGE_LDD" == "y" ] && EXTERNAL_FILES+=" /usr/bin/ldd"
+[ "$EXTERNAL_FREETZ_PACKAGE_RRDTOOL" == "y" ] && EXTERNAL_FILES+=" /usr/bin/rrdtool /usr/lib/librrd.so.2.0.13"
+[ "$EXTERNAL_FREETZ_PACKAGE_INOTIFY_TOOLS" == "y" ] && EXTERNAL_FILES+=" /usr/bin/inotifywait /usr/bin/inotifywatch /usr/lib/libinotifytools.so.0.4.1"
+[ "$EXTERNAL_FREETZ_PACKAGE_WPUT" == "y" ] && EXTERNAL_FILES+=" /usr/bin/wput"
+[ "$EXTERNAL_FREETZ_PACKAGE_NETCAT" == "y" ] && EXTERNAL_FILES+=" /usr/bin/netcat"
+[ "$EXTERNAL_FREETZ_PACKAGE_CRYPTSETUP" == "y" ] && EXTERNAL_FILES+=" /usr/bin/cryptsetup"
+[ "$EXTERNAL_FREETZ_PACKAGE_MTR" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/mtr"
+[ "$EXTERNAL_FREETZ_PACKAGE_SAMBA" == "y" ] && EXTERNAL_FILES+=" /sbin/smbd /sbin/nmbd"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/e2fsck /usr/sbin/mke2fs /usr/sbin/tune2fs"
+[ "$EXTERNAL_FREETZ_PACKAGE_STRACE" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/strace"
+[ "$EXTERNAL_FREETZ_PACKAGE_LYNX" == "y" ] && EXTERNAL_FILES+=" /usr/bin/lynx"
+[ "$EXTERNAL_FREETZ_PACKAGE_LSOF" == "y" ] && EXTERNAL_FILES+=" /usr/bin/lsof"
+[ "$EXTERNAL_FREETZ_PACKAGE_TCPDUMP" == "y" ] && EXTERNAL_FILES+=" /usr/bin/tcpdump"
+EXTERNAL_FILES="`echo $EXTERNAL_FILES|sed 's/ / \//g;s/\/\/*/\//g'`"
+
+for EXTERNAL_FILE in $EXTERNAL_FILES; do
+	EXTERNAL_LINKSUBDIR=""
+	EXTERNAL_TARGETDIR="${EXTERNAL_MOD_DIR}"
+	if [ "$EXTERNAL_SUBDIRS" == "y" ]; then
+		EXTERNAL_LINKSUBDIR="`dirname $EXTERNAL_FILE`"
+		EXTERNAL_TARGETDIR+="$EXTERNAL_LINKSUBDIR"
+		mkdir -p "$EXTERNAL_TARGETDIR"
+	fi
+	EXTERNAL_TEMP="${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE"
+	if [ `ls "$EXTERNAL_TEMP" 2>/dev/null | wc -l` -gt 0 ]; then
+		mv "$EXTERNAL_TEMP" "$EXTERNAL_TARGETDIR/"
+		EXTERNAL_MSG="moved"
+	else
+		EXTERNAL_MSG="not found"
+	fi
+	ln -s "$EXTERNAL_DIRECTORY$EXTERNAL_LINKSUBDIR/$(basename $EXTERNAL_FILE)" "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo "  $EXTERNAL_FILE... $EXTERNAL_MSG & linked"
+done
+echo "$EXTERNAL_DIRECTORY" > "${EXTERNAL_MOD_DIR}/.external"
+
+[ "$EXTERNAL_CREATEPAK" == "y" ] || echo "  NOTE: Please copy content of build/modified/external/ to $EXTERNAL_DIRECTORY on your box BEFORE you flash the reduced image"
+

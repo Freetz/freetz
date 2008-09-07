@@ -1619,6 +1619,62 @@ config FREETZ_DEVELOPER_VERSION_STRING
 		versions of the Freetz source code only and requires svnversion to be
 		installed.
 
+menu External
+config EXTERNAL_ENABLED
+	bool "Enable external processing"
+	default n
+	help
+		Enable this to move (big) files out of the firmware-image onto
+		an attached USB device or a mounted network share like SMB or NFS.
+
+		-------------------------- WARNING ----------------------------------
+		Move all the files from build/modified/external to your choosen
+		directory on the box BEFORE you flash the reduced image!
+		
+		-------------------------- WARNING ----------------------------------
+		Do NOT external files needed to boot up Freetz!
+		
+		------------------------- ADVANCED ----------------------------------
+		You could external services (like Samba) too. First set the service
+		startup to "manual". Then enable the autorun/autoend feature of
+		Freetz and create these files in the root of your device:
+		[autorun.sh]
+		/etc/init.d/rc.XYZ start
+		[autoend.sh]
+		/etc/init.d/rc.XYZ stop
+
+config EXTERNAL_SUBDIRS
+	bool "Keep subdirectories"
+	default n
+	depends on EXTERNAL_ENABLED
+	help
+		Keep the original directory structure
+
+config EXTERNAL_CREATEPAK
+	bool "Create file for upload"
+	default y
+	depends on EXTERNAL_ENABLED
+	help
+		Creates a file for upload with the webinterface
+
+config EXTERNAL_DIRECTORY
+	string "external directory"
+	default "/var/media/ftp/uStor01/external/"
+	depends on EXTERNAL_ENABLED
+	help
+		The directory on the Freetz Box with the externald files
+
+config EXTERNAL_OWN_FILES
+	string "own files"
+	default ""
+	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
+	help
+		Put your own files/directorys here (space seperated)
+
+source make/external.in
+
+endmenu
+
 choice
 
 	prompt "SquashFS block size"

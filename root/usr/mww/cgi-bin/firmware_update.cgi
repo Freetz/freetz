@@ -37,4 +37,13 @@ $(lang de:"ausgef&uuml;hrt werden." en:"")
 <form action="/cgi-bin/status.cgi" method=GET>
 	<input type="submit" value="$(lang de:"Abbrechen" en:"Cancel")" style="width:150px">
 </form>
+
+<br>
+<br>
+
+<form class="btn" action="/cgi-bin/exec.cgi" method="post">
+	<input type="hidden" name="cmd" value="external_update">
+	<input type="submit" value="external (optional)" style="width:150px">
+</form>
+
 EOF

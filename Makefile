@@ -262,7 +262,7 @@ endif
 	@./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
 ifneq ($(FWMOD_PATCH_TEST),y)
 ifneq ($(FWMOD_NOPACK),y)
-	@mv $(BUILD_DIR)/$(FREETZ_TYPE_STRING2)$(FREETZ_TYPE_STRING)*.image ./
+	@mv $(BUILD_DIR)/$(FREETZ_TYPE_STRING2)$(FREETZ_TYPE_STRING)* ./
 endif
 endif
 
@@ -404,6 +404,7 @@ common-clean:
 	rm -f .static .dynamic
 	rm -f .exclude .exclude-dist-tmp
 	rm -f *.image
+	rm -f *.external
 	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 

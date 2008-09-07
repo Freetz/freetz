@@ -174,6 +174,7 @@ TOOLS_SUBDIR="tools"
 SOURCE_SUBDIR="source"
 FIRMWARE_SUBDIR="firmware"
 FILESYSTEM_SUBDIR="filesystem"
+EXTERNAL_SUBDIR="external"
 KERNEL_SUBDIR="kernel"
 VARTAR_SUBDIR="var.tar"
 
@@ -189,6 +190,7 @@ RMTICHKSUM_TOOL="rmtichksum"
 MAKEDEVS_TOOL="makedevs"
 FAKEROOT_TOOL="fakeroot"
 UNSQUASHFS_TOOL="unsquashfs3-lzma"
+EXTERNAL_TOOL="external"
 
 MKSQUASHFS_OPTIONS="-le -noappend -all-root -info"
 
@@ -202,6 +204,7 @@ fi
 TAR_TOOL="tar"
 
 TOOLS_DIR="${ABS_BASE_DIR}/${TOOLS_SUBDIR}"
+EXTERNAL="${TOOLS_DIR}/${EXTERNAL_TOOL}"
 UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
 FINDSQUASHFS="${TOOLS_DIR}/${FINDSQUASHFS_TOOL}"
 MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_TOOL}"
@@ -452,6 +455,7 @@ fi
 MOD_DIR="${DIR}/modified"
 FIRMWARE_MOD_DIR="${MOD_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_MOD_DIR="${MOD_DIR}/${FILESYSTEM_SUBDIR}"
+EXTERNAL_MOD_DIR="${MOD_DIR}/${EXTERNAL_SUBDIR}"
 KERNEL_MOD_DIR="${MOD_DIR}/${KERNEL_SUBDIR}"
 VARTAR_MOD_DIR="${KERNEL_MOD_DIR}/${VARTAR_SUBDIR}"
 
@@ -868,6 +872,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
 	done
 	
+	if [ "$EXTERNAL_ENABLED" == "y" ]; then
+		echo "processing external"
+		[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
+		. "${EXTERNAL}"
+	fi
+
 	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
 		echo "invoking custom script"
 
@@ -1095,8 +1105,9 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
 	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
-	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$(date +%Y%m%d-%H%M%S).image"
-	
+	modmakedate=$(date +%Y%m%d-%H%M%S)
+	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$modmakedate.image"
+
 	# Pack firmware image (use old tar for compatibility)
 	echo "packing ${modimage}"
 	"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
@@ -1104,6 +1115,17 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ ! -s "${DIR}/${modimage}" ]; then
 		rm -f "${DIR}/${modimage}"
 		error 1 "packing of firmware image failed"
+	fi
+
+	if [ "$EXTERNAL_CREATEPAK" == "y" ]; then
+		modexternal="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${modmakedate}.external"
+		echo "packing ${modexternal}"
+		"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$EXTERNAL_MOD_DIR" . > "${DIR}/${modexternal}" || exit 1
+
+		if [ ! -s "${DIR}/${modexternal}" ]; then
+			rm -f "${DIR}/${modexternal}"
+			error 1 "packing of external tar failed"
+		fi
 	fi
 
 	echo "done."
