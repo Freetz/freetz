@@ -468,7 +468,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_mppe_mppc.c linux-2.6.19.2.patched/dri
 +static inline void
 +setup_sg(struct scatterlist *sg, const void  *address, unsigned int length)
 +{
-+    sg[0].page_link = virt_to_page(address);
++    sg[0].page = virt_to_page(address);
 +    sg[0].offset = offset_in_page(address);
 +    sg[0].length = length;
 +}
