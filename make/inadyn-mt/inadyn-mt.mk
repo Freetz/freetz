@@ -25,7 +25,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(INADYN_DIR) clean
+	-$(MAKE) -C $(INADYN_MT_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(INADYN_MT_TARGET_BINARY)
