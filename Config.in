@@ -1007,27 +1007,33 @@ config FREETZ_USBSTORAGE_AUTOMOUNT
 	select FREETZ_PACKAGE_FSTYP
 	default y
 	help
-		ext2 and fat filesystems are mounted automatically. Detection is done
-		by fstyp utility (adds about 8KB uncompressed size). For ext3 or ntfs
-		you have to select one of the following points.
-		
-config FREETZ_AUTOMOUNT_NTFS
-	bool "Automount NTFS"
+		ext2, ext3, fat and ntfs filesystems are mounted automatically. Detection is done
+		by fstyp utility (adds about 8KB uncompressed size). It depends on the original
+		firmware wich of the following points you have to select.
+
+config FREETZ_AUTOMOUNT_EXT2
+	bool "ext2"
 	depends on FREETZ_USBSTORAGE_AUTOMOUNT
-	select FREETZ_PACKAGE_NTFS
+	select FREETZ_MODULE_ext2
 	default n
 	help
-		Automatically mount NTFS filesystems. This adds ntfs-3g binary to your
-		firmware.
+		This adds ext2 module to your firmware.
 
 config FREETZ_AUTOMOUNT_EXT3
-	bool "Automount ext3"
+	bool "ext3"
 	depends on FREETZ_USBSTORAGE_AUTOMOUNT
 	select FREETZ_MODULE_ext3
 	default n
 	help
-		Automatically mount ext3 filesystems. This adds ext3 module to your
-		firmware.
+		This adds ext3 module to your firmware.		
+
+config FREETZ_AUTOMOUNT_NTFS
+	bool "NTFS"
+	depends on FREETZ_USBSTORAGE_AUTOMOUNT
+	select FREETZ_PACKAGE_NTFS
+	default n
+	help
+		This adds ntfs-3g mount helper to your firmware.
 
 config FREETZ_AUTORUN_AUTOEND
 	bool "Execute autorun.sh/autoend.sh script on (un)mount"
