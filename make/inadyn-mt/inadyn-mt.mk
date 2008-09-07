@@ -11,7 +11,7 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(INADYN_DIR) \
+		$(MAKE) -C $(INADYN_MT_DIR) \
 		CC="mipsel-linux-gcc" \
 		STRIP="mipsel-linux-strip" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -28,6 +28,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(INADYN_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(INADYN_TARGET_BINARY)
+	$(RM) $(INADYN_MT_TARGET_BINARY)
 
 $(PKG_FINISH)
