@@ -1,0 +1,1364 @@
+diff -burN html/capture.html usr/www/all/html/capture.html
+--- usr/www/all/html/capture.html	2008-08-01 11:41:14.000000000 +0200
++++ usr/www/all/html/capture.html	2008-09-09 00:28:27.000000000 +0200
+@@ -101,7 +101,7 @@
+ <form name="Capture3start" method="GET" action="../cgi-bin/capture_notimeout" >
+ <table>
+ <tr>
+-interface name:&nbsp;&nbsp;<input type="text" size=14 value="lan" name="iface" > (lan, eth0, eth1, usbrndis, tiwlan0)
++interface name:&nbsp;&nbsp;<input type="text" size=14 value="lan" name="iface" > (lan, eth0, eth1, tiwlan0)
+ </tr>
+ <tr>
+ <br>mit Länge/with length:&nbsp;<input type="text" size=4 value="1600" name="snaplen" > bytes
+diff -burN html/de/home/sitemap.html usr/www/all/html/de/home/sitemap.html
+--- usr/www/all/html/de/home/sitemap.html	2008-08-01 11:41:07.000000000 +0200
++++ usr/www/all/html/de/home/sitemap.html	2008-09-09 00:49:12.000000000 +0200
+@@ -160,22 +160,6 @@
+ </td>
+ <td class="gelb">
+ <div class="gelb">
+-<p class="mb5 fett"><a href="javascript:jslGoTo('usb', 'status');">USB-Geräte</a></p>
+-<p class="ml10"><a href="javascript:jslGoTo('usb', 'status');">Geräteübersicht</a></p>
+-<? setvariable var:showdisk 1 ?>
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? if eq '<? query aura:settings/aura4storage ?>' '1' `
+-<? setvariable var:showdisk 1 ?>` ?>
+-` ?>
+-<? if eq $var:showdisk 1 `
+-<p class="ml10"><a href="javascript:jslGoTo('usb', 'usbdisk');">USB-Speicher</a></p>
+-` ?>
+-<? if eq `<? query box:settings/expertmode/activated ?>` '1' `
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<p class="ml10"><a href="javascript:jslGoTo('usb', 'aura');">USB-Fernanschluss</a></p>
+-` ?>
+-` ?>
+-</div>
+ <!-- wlan:settings/ap_enabled = '<? query wlan:settings/ap_enabled ?>' -->
+ <? setvariable var:showWlan 0 ?>
+ <? if eq <? query wlan:settings/ap_enabled ?> 1 '<? setvariable var:showWlan 1 ?>' ?>
+diff -burN html/de/js/basis.js usr/www/all/html/de/js/basis.js
+--- usr/www/all/html/de/js/basis.js	2008-08-01 11:41:10.000000000 +0200
++++ usr/www/all/html/de/js/basis.js	2008-09-09 00:28:24.000000000 +0200
+@@ -130,7 +130,6 @@
+ else if(m=="enhsettings") { jslGoTo('enhsettings', 'sitemap');}
+ else if(m=="software") {jslGoTo('software', 'sitemap');}
+ else if(m=="wlan") {jslGoTo('wlan', 'sitemap');}
+-else if(m=="usb") {jslGoTo('usb', 'sitemap');}
+ else{ jslGoTo('home', 'sitemap');}
+ }
+ function AddFavoritesLink(breite, titel) {
+diff -burN html/de/menus/menu2_homehome.html usr/www/all/html/de/menus/menu2_homehome.html
+--- usr/www/all/html/de/menus/menu2_homehome.html	2008-09-09 01:01:19.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2008-09-09 00:53:14.000000000 +0200
+@@ -2,7 +2,6 @@
+ <li class="LMenutop">&nbsp;</li>
+ <? setvariable var:classname 'LMenuitemTop' ?>
+ <? if eq $var:pagename home `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+-<? if eq $var:pagename usbdisk_cut `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','home')">Übersicht</a><span class="PTextOnly">Übersicht</span></li>
+ <? setvariable var:classname 'LMenuitemTop' ?>
+ <? if eq $var:pagename foncalls `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+diff -burN html/de/menus/menu2_konfig.html usr/www/all/html/de/menus/menu2_konfig.html
+--- usr/www/all/html/de/menus/menu2_konfig.html	2008-09-09 01:01:19.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_konfig.html	2008-09-09 00:59:38.000000000 +0200
+@@ -42,11 +42,6 @@
+ ` `
+ <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('fon','foncalls')">Telefonie</a><span class="PTextOnly">Telefonie</span></li>
+ ` ?>
+-<? if eq `$var:menu` 'usb' `
+-<? include ../html/de/menus/menu2_usb.html ?>
+-` `
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('usb','status')">USB-Geräte</a><span class="PTextOnly">USB-Geräte</span></li>
+-` ?>
+ <? if eq `$var:menu` 'wlan' `
+ <? include ../html/de/menus/menu2_wlan.html ?>
+ ` `
+diff -burN html/de/menus/menu2_usb.html usr/www/all/html/de/menus/menu2_usb.html
+--- usr/www/all/html/de/menus/menu2_usb.html	2008-08-01 11:41:14.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_usb.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,17 +0,0 @@
+-<? setvariable var:expmode '<? query box:settings/expertmode/activated ?>' ?>
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('usb','status')">USB-Geräte</a><span class="PTextOnly">USB-Geräte</span></li>
+-<? setvariable var:class1 'LSubitem' ?>
+-<? if eq $var:pagename status `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename auraactiv `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<li class="<? echo $var:class1 ?>"><img class="LMenuPfeil" src="<? echo '$var:subpfeil' ?>"><a href="javascript:jslGoTo('usb','status')">Geräteübersicht</a><span class="PTextOnly">Geräteübersicht</span></li>
+-<? setvariable var:class1 'LSubitem' ?>
+-<? if eq $var:pagename usbdisk `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<li id="miUsbdisk" class="<? echo '$var:class1' ?>"><img class="LMenuPfeil" src="<? echo '$var:subpfeil' ?>"><a href="javascript:jslGoTo('usb','usbdisk')">USB-Speicher</a><span class="PTextOnly">USB-Speicher</span></li>
+-<? setvariable var:class1 'LSubitem' ?>
+-<? if eq $var:pagename aura `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename aurachange `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? if eq $var:expmode 1 `
+-<li id="miUsbaura" class="<? echo '$var:class1' ?>"><img class="LMenuPfeil" src="<? echo '$var:subpfeil' ?>"><a href="javascript:jslGoTo('usb','aura')">USB-Fernanschluss</a><span class="PTextOnly">USB-Fernanschluss</span></li>
+-` ?>
+-` ?>
+diff -burN html/de/system/energy.html usr/www/all/html/de/system/energy.html
+--- usr/www/all/html/de/system/energy.html	2008-08-01 11:41:02.000000000 +0200
++++ usr/www/all/html/de/system/energy.html	2008-09-09 00:54:26.000000000 +0200
+@@ -73,15 +73,6 @@
+ </tr></table>
+ </div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb5"><b>USB-Geräte</b></p>
+-<p class="mb5">Über den USB-Anschluss wird die folgende Energie verbraucht:</p>
+-<p class="mb5">Status: <span id="usbstate">&nbsp;</span></p>
+-<table><tr>
+-<td><table class="bar"><tr><td id="usbleft"></td><td id="usbright"></td><td id="usbspace"></td></tr></table></td>
+-<td><span id="usbleft_val">&nbsp;</span> / <span id="usbright_val">&nbsp;</span></td>
+-</tr></table>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p class="mb10"><b>LAN-Schnittstellen</b></p>
+ <p>
+ <img src="../html/de/images/led_<? if eq `<? query eth0:status/carrier ?>` 1 `green` `gray` ?>.gif" /> LAN 1
+diff -burN html/de/system/infoled.html usr/www/all/html/de/system/infoled.html
+--- usr/www/all/html/de/system/infoled.html	2008-08-01 11:41:06.000000000 +0200
++++ usr/www/all/html/de/system/infoled.html	2008-09-09 00:55:57.000000000 +0200
+@@ -12,20 +12,12 @@
+ <option value="3">leuchtet bei aktivem WLAN</option>
+ <option value="4">leuchtet bei bestehender Internetverbindung</option>
+ <option value="5">leuchtet bei Anschluss eines Gerätes über LAN</option>
+-<option value="7">leuchtet bei angeschlossenen USB-Geräten</option>
+ <option value="8">leuchtet bei aktiver Klingelsperre</option>
+ <option value="9">blinkt bei Anruf in Abwesenheit</option>
+ <option value="11">zeigt neue Nachrichten im Anrufbeantworter an</option>
+ <option value="13">zeigt neue Nachrichten im Anrufbeantworter, empfangene Faxe und Anrufe in Abwesenheit an</option>
+ </select>
+ </p>
+-<p class="mt10">
+-<? if eq $var:showstick 1 `
+-Die INFO-LED blinkt immer beim Firmware-Update und während der Übertragung der Sicherheitseinstellungen auf den FRITZ!WLAN USB Stick.
+-` `
+-Die INFO-LED blinkt immer beim Firmware-Update.
+-` ?>
+-</p>
+ </div></div></div></div></div></div>
+ <? include ../html/de/home/rbb_applycancel.html ?>
+ </div>
+diff -burN html/de/system/netipadr.js usr/www/all/html/de/system/netipadr.js
+--- usr/www/all/html/de/system/netipadr.js	2008-08-01 11:41:17.000000000 +0200
++++ usr/www/all/html/de/system/netipadr.js	2008-09-09 00:28:27.000000000 +0200
+@@ -56,10 +56,6 @@
+ var g_mldNetMask_Lan = "Netzmaske (LAN)";
+ var g_mldVon_Lan = "Von (LAN)";
+ var g_mldBis_Lan = "Bis (LAN)";
+-var g_mldIpAdr_Usb = "IP-Adresse (USB)";
+-var g_mldNetMask_Usb = "Netzmaske (USB)";
+-var g_mldVon_Usb = "Von (USB)";
+-var g_mldBis_Usb = "Bis (USB)";
+ var g_mldIpAdr_Wlan = "IP-Adresse (WLAN)";
+ var g_mldNetMask_Wlan = "Netzmaske (WLAN)";
+ function uiDoOnLoad() {
+diff -burN html/de/system/syslog.html usr/www/all/html/de/system/syslog.html
+--- usr/www/all/html/de/system/syslog.html	2008-08-01 11:41:15.000000000 +0200
++++ usr/www/all/html/de/system/syslog.html	2008-09-09 00:57:55.000000000 +0200
+@@ -12,7 +12,6 @@
+ <li class="tabs_on"><div class="activtab">Alle</div></li>
+ <li><a href="javascript:Tabs(1)">Telefonie</a></li>
+ <li><a href="javascript:Tabs(2)">Internetverbindung</a></li>
+-<li><a href="javascript:Tabs(3)">USB-Geräte</a></li>
+ <li><a href="javascript:Tabs(4)">WLAN</a></li>
+ <li><a href="javascript:Tabs(5)">System</a></li>
+ </ul>
+@@ -22,7 +21,6 @@
+ <li><a href="javascript:Tabs(0)">Alle</a></li>
+ <li class="tabs_on"><div class="activtab">Telefonie</div></li>
+ <li><a href="javascript:Tabs(2)">Internetverbindung</a></li>
+-<li><a href="javascript:Tabs(3)">USB-Geräte</a></li>
+ <li><a href="javascript:Tabs(4)">WLAN</a></li>
+ <li><a href="javascript:Tabs(5)">System</a></li>
+ </ul>
+@@ -32,17 +30,6 @@
+ <li><a href="javascript:Tabs(0)">Alle</a></li>
+ <li><a href="javascript:Tabs(1)">Telefonie</a></li>
+ <li class="tabs_on"><div class="activtab">Internetverbindung</div></li>
+-<li><a href="javascript:Tabs(3)">USB-Geräte</a></li>
+-<li><a href="javascript:Tabs(4)">WLAN</a></li>
+-<li><a href="javascript:Tabs(5)">System</a></li>
+-</ul>
+-</div>
+-<div id="uiUsb" style="display:none">
+-<ul class="tabs">
+-<li><a href="javascript:Tabs(0)">Alle</a></li>
+-<li><a href="javascript:Tabs(1)">Telefonie</a></li>
+-<li><a href="javascript:Tabs(2)">Internetverbindung</a></li>
+-<li class="tabs_on"><div class="activtab">USB-Geräte</div></li>
+ <li><a href="javascript:Tabs(4)">WLAN</a></li>
+ <li><a href="javascript:Tabs(5)">System</a></li>
+ </ul>
+@@ -52,7 +39,6 @@
+ <li><a href="javascript:Tabs(0)">Alle</a></li>
+ <li><a href="javascript:Tabs(1)">Telefonie</a></li>
+ <li><a href="javascript:Tabs(2)">Internetverbindung</a></li>
+-<li><a href="javascript:Tabs(3)">USB-Geräte</a></li>
+ <li class="tabs_on"><div class="activtab">WLAN</div></li>
+ <li><a href="javascript:Tabs(5)">System</a></li>
+ </ul>
+@@ -62,7 +48,6 @@
+ <li><a href="javascript:Tabs(0)">Alle</a></li>
+ <li><a href="javascript:Tabs(1)">Telefonie</a></li>
+ <li><a href="javascript:Tabs(2)">Internetverbindung</a></li>
+-<li><a href="javascript:Tabs(3)">USB-Geräte</a></li>
+ <li><a href="javascript:Tabs(4)">WLAN</a></li>
+ <li class="tabs_on"><div class="activtab">System</div></li>
+ </ul>
+diff -burN html/de/usb/auraactiv.frm usr/www/all/html/de/usb/auraactiv.frm
+--- usr/www/all/html/de/usb/auraactiv.frm	2008-08-01 11:41:05.000000000 +0200
++++ usr/www/all/html/de/usb/auraactiv.frm	1970-01-01 01:00:00.000000000 +0100
+@@ -1,2 +0,0 @@
+-<? include ../html/de/usb/aurachange.frm ?>
+-<input type="hidden" name="var:AuraSetActiv" value="<? echo $var:AuraSetActiv ?>" id="uiAuraSetActiv">
+diff -burN html/de/usb/auraactiv.html usr/www/all/html/de/usb/auraactiv.html
+--- usr/www/all/html/de/usb/auraactiv.html	2008-08-01 11:41:14.000000000 +0200
++++ usr/www/all/html/de/usb/auraactiv.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<? include ../html/de/usb/aurachange.html ?>
+diff -burN html/de/usb/auraactiv.js usr/www/all/html/de/usb/auraactiv.js
+--- usr/www/all/html/de/usb/auraactiv.js	2008-08-01 11:41:08.000000000 +0200
++++ usr/www/all/html/de/usb/auraactiv.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<? include ../html/de/usb/aurachange.js ?>
+diff -burN html/de/usb/aurachange.html usr/www/all/html/de/usb/aurachange.html
+--- usr/www/all/html/de/usb/aurachange.html	2008-08-01 11:41:15.000000000 +0200
++++ usr/www/all/html/de/usb/aurachange.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,16 +0,0 @@
+-<div id="content">
+-<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+-Änderung der USB-Einstellungen
+-</div></div></div></div></div></div>
+-<div class="backdialog" id="uiView_TestState"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb10"><span id="uiView_TestText">Die Einstellungen werden übernommen. Der Vorgang kann mehr als 30 Sekunden dauern.</span></p>
+-<p class="mt30 mb20" style="text-align: center;" id="StatusImgP"><img name="StatusPic" src="../html/de/images/wait.gif" style="width: 325px; height: 5px;"></p>
+-<p class="mb10" style="text-align: center;" id="uiPleaseWaitP"><span id="uiView_StateText">Bitte warten Sie, bis der Vorgang abgeschlossen ist.</span></p>
+-<p class="mb10" style="text-align: center; display:none;" id="uiStateText2P"><span id="uiView_StateText2">Der USB-Fernanschluss wurde aktiviert. Klicken Sie auf "Weiter", um Einstellungen an dem FRITZ!Box USB-Fernanschluss vorzunehmen.</span></p>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
+-<input type="button" onclick="uiDoBack()" value="OK" class=Pushbutton id="uiBack">
+-<input type="button" onclick="uiDoGoToAura()" id="uiAuraNextButton" value="Weiter" class=Pushbutton style="display:none">
+-<input type="button" onclick="uiDoHelp()" value="Hilfe" class=Pushbutton id="uiHelp">
+-</div></div></div></div></div></div>
+-</div>
+diff -burN html/de/usb/aurachange.js usr/www/all/html/de/usb/aurachange.js
+--- usr/www/all/html/de/usb/aurachange.js	2008-08-01 11:41:02.000000000 +0200
++++ usr/www/all/html/de/usb/aurachange.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1,92 +0,0 @@
+-<!-- ../usb/aurachange.js -->
+-<style type="text/css">
+-<!--
+-#content {width: 500px; margin: auto;}
+-.mt30 { margin-top: 30px; }
+-.mb20 { margin-bottom: 20px; }
+--->
+-</style>
+-<script type="text/javascript">
+-<? include ../html/de/js/jsl.js ?>
+-var g_PicturePath_Success = "../html/de/images/finished-ok-green.gif";
+-var g_PicturePath_Failed = "../html/de/images/finished-error.gif";
+-var g_testText1 = "Die Einstellungen wurden übernommen.";
+-var g_stateText1 = "Alle angeschlossenen USB-Geräte werden jetzt neu erkannt.";
+-var g_testText2 = "Die USB-Einstellungen wurden nicht übernommen! Klicken Sie auf \"OK\", um die Änderungen an den FRITZ!Box USB-Einstellungen erneut durchzuführen.";
+-var g_stateText2 = "Sollte diese Meldung wiederholt erscheinen, starten Sie FRITZ!Box bitte neu.";
+-var g_AActivText= "Der USB-Fernanschluss wurde aktiviert. Klicken Sie auf \"Weiter\", um Einstellungen an dem FRITZ!Box USB-Fernanschluss vorzunehmen.";
+-var g_QueryItems = new Array();
+-g_QueryItems[0] = new Item( "<? query aura:settings/status ?>", "aura:settings/status");
+-function uiDoOnLoad() {
+-document.title = "<? print `$var:BoxName` ?>" + " " + "Änderung der USB-Einstellungen";
+-<? setvariable var:ShowAuraActiv 0 ?>
+-<? if neq $var:pagename aurachange `
+-<? if eq $var:AuraSetActiv 1 `
+-<? setvariable var:ShowAuraActiv 1 ?>
+-` ?>
+-`?>
+-doPoll(g_QueryItems[0].value);
+-if (g_QueryItems[0].value == "0") {
+-window.setTimeout("doRefresh()", 5000);
+-}
+-}
+-function uiDoGoToAura(){
+-jslGoTo( "", "aura");
+-}
+-function doRefresh() {
+-<? if eq $var:pagename aurachange `
+-jslGoTo( "", "aurachange");
+-` `
+-jslGoTo( "", "auraactiv");
+-` ?>
+-}
+-// AURA_STATUS_CHANGING 0
+-// AURA_STATUS_READY 1
+-// AURA_STATUS_ERROR 2
+-function doPoll(updateState) {
+-switch (updateState) {
+-case "1" :
+-<? if eq $var:AuraSetActiv 1 `
+-jslDisplay("uiAuraNextButton",1);
+-jslSetSpanText("uiView_StateText2", g_AActivText);
+-jslDisplay("uiStateText2P",1);
+-jslSetSpanText("uiView_TestText", g_testText1);
+-jslChangeImage("StatusPic", g_PicturePath_Success, g_stateText1);
+-jslSetSpanText("uiView_StateText", g_stateText1);
+-`
+-`
+-jslSetSpanText("uiView_TestText", g_testText1);
+-jslChangeImage("StatusPic", g_PicturePath_Success, g_stateText1);
+-jslSetSpanText("uiView_StateText", g_stateText1);
+-` ?>
+-break;
+-case "2" :
+-jslSetSpanText("uiView_TestText", g_testText2);
+-jslChangeImage("StatusPic", g_PicturePath_Failed, g_stateText2);
+-jslSetSpanText("uiView_StateText", g_stateText2);
+-break;
+-}
+-}
+-/*function ShowActivAura(updateState){
+-alert(updateState);
+-//if(updateState=="0") window.setTimeout("jslGoTo( '', 'auraactiv');", 5000);
+-jslDisplay("StatusImgP",0);
+-jslDisplay("uiPleaseWaitP",0);
+-jslDisplay("uiAuraNextButton",1);
+-jslSetSpanText("uiView_TestText", g_AActivText);
+-}*/
+-function uiDoHelp() {
+-jslPopHelp("hilfe_usb_fernanschluss");
+-}
+-function uiDoBack() {
+-<? if eq $var:pagename aurachange `
+-jslGoTo( "", "aura");
+-` `
+-jslGoTo( "", "status");
+-` ?>
+-}
+-function Item ( wert, query) {
+-this.value = wert;
+-this.query = query;
+-}
+-</script>
+diff -burN html/de/usb/aura.frm usr/www/all/html/de/usb/aura.frm
+--- usr/www/all/html/de/usb/aura.frm	2008-08-01 11:41:06.000000000 +0200
++++ usr/www/all/html/de/usb/aura.frm	1970-01-01 01:00:00.000000000 +0100
+@@ -1,3 +0,0 @@
+-<input type="hidden" name="aura:settings/aura4storage" value="<? query aura:settings/aura4storage ?>" id="uiPostSpeicher">
+-<input type="hidden" name="aura:settings/aura4printer" value="<? query aura:settings/aura4printer ?>" id="uiPostDrucker">
+-<input type="hidden" name="aura:settings/aura4other" value="<? query aura:settings/aura4other ?>" id="uiPostOther">
+diff -burN html/de/usb/aura.html usr/www/all/html/de/usb/aura.html
+--- usr/www/all/html/de/usb/aura.html	2008-08-01 11:41:04.000000000 +0200
++++ usr/www/all/html/de/usb/aura.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,18 +0,0 @@
+-<div id="content">
+-<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+-USB-Fernanschluss
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb10">Wenn Sie diese Option aktivieren, dann wird ein an die FRITZ!Box angeschlossenes USB-Gerät über den USB-Fernanschluss an einen verbundenen PC durchgereicht. Das USB-Gerät wird auf diesem Computer vom Betriebssystem als neue Hardware erkannt und Gerätetreiber und Software können installiert werden.
+-<ol>
+-<li>Sofern noch nicht geschehen, installieren Sie zunächst auf dem Computer, von dem aus Sie das USB-Gerät nutzen wollen, das <a href="javascript:ShowPopup()" id="auraLink" title="Klicken Sie hier, um die Installation des USB-Fernanschluss Programms zu starten">Programm für den USB-Fernanschluss</a>.</li>
+-<li>Stellen Sie anschließend hier ein, für welche Art von Geräten der USB-Fernanschluss aktiviert werden soll:</li>
+-</ol>
+-<p class="ml50"><input type="checkbox" id="uiViewDrucker" onclick="ShowPrintHinweis()">&nbsp;<label for="uiViewDrucker">Drucker (inkl. Multifunktionsdrucker)</label></p>
+-<p class="ml50"><input type="checkbox" id="uiViewSpeicher" onclick="ShowHinweis()">&nbsp;<label for="uiViewSpeicher">USB-Speicher</label></p>
+-<p class="ml50 mb10"><input type="checkbox" id="uiViewOther" onclick="ShowHinweis()">&nbsp;<label for="uiViewOther">Andere (z.B. Scanner)</label></p>
+-<p id="uiViewPrintHinweis" style="display:none">Bei Multifunktionsdruckern kann es erforderlich sein, den USB-Fernanschluss auch für "USB-Speicher" und "Andere" Geräte zu aktivieren.</p>
+-<p id="uiViewHinweis" style="display:none">Damit die Änderungen wirksam werden, müssen Sie auf Übernehmen klicken. Alle an der FRITZ!Box angeschlossenen USB-Geräte werden anschließend neu erkannt.</p>
+-</div></div></div></div></div></div>
+-<? include ../html/de/home/rbb_applycancel.html ?>
+-</div>
+diff -burN html/de/usb/aura.js usr/www/all/html/de/usb/aura.js
+--- usr/www/all/html/de/usb/aura.js	2008-08-01 11:41:13.000000000 +0200
++++ usr/www/all/html/de/usb/aura.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1,81 +0,0 @@
+-<!-- ../system/aura.js -->
+-<style type="text/css">
+-<!--
+-/*#content {width: 560px; margin: auto;}*/
+-.ml50 { margin-left: 50px; }
+-ol { list-style-type: decimal; margin: 0px 10px 0px 30px; padding: 0px;}
+-ol li {padding-bottom: 10px;}
+-#auraLink:link, #auraLink:visited, #auraLink:active, #auraLink:hover
+-{ text-decoration: underline; }
+--->
+-</style>
+-<script type="text/javascript">
+-<? include ../html/de/js/jsl.js ?>
+-var g_TAMUseStickIsActive = "Achtung, der USB-Fernanschluss wird für USB-Speicher aktiviert. Der Anrufbeantworter kann Anrufe dann nicht mehr auf dem USB-Speicher an der FRITZ!Box ablegen und verwendet stattdessen den Speicher der FRITZ!Box.";
+-function uiDoOnLoad () {
+-document.title = "<? print `$var:BoxName` ?>" + " " + "USB-Fernanschluss";
+-jslSetChecked("uiViewDrucker", jslGetValue("uiPostDrucker") == "1");
+-jslSetChecked("uiViewSpeicher", jslGetValue("uiPostSpeicher") == "1");
+-jslSetChecked("uiViewOther", jslGetValue("uiPostOther") == "1");
+-}
+-function uiDoCancel () {
+-jslGoTo("", "");
+-}
+-function uiDoSave () {
+-var oldDrucker = jslGetValue("uiPostDrucker");
+-var oldSpeicher = jslGetValue("uiPostSpeicher");
+-var oldOther = jslGetValue("uiPostOther");
+-jslSetValue("uiPostDrucker", jslGetChecked("uiViewDrucker") ? "1":"0");
+-jslSetValue("uiPostOther", jslGetChecked("uiViewOther") ? "1":"0");
+-jslSetValue("uiPostSpeicher", jslGetChecked("uiViewSpeicher") ? "1":"0");
+-var nTAM=0;
+-<? if eq '<? query tam:settings/TAM0/Active ?>' '1' `
+-nTAM++;
+-` ?>
+-<? if eq '<? query tam:settings/TAM1/Active ?>' '1' `
+-nTAM++;
+-` ?>
+-<? if eq '<? query tam:settings/TAM2/Active ?>' '1' `
+-nTAM++;
+-` ?>
+-<? if eq '<? query tam:settings/TAM3/Active ?>' '1' `
+-nTAM++;
+-` ?>
+-<? if eq '<? query tam:settings/TAM4/Active ?>' '1' `
+-nTAM++;
+-` ?>
+-if (jslGetChecked("uiViewSpeicher"))
+-{
+-<? if eq '<? query tam:settings/UseStick ?>' '1' `
+-if (nTAM > 0){
+-if (!confirm(g_TAMUseStickIsActive)){
+-jslSetValue("uiPostSpeicher", "0");
+-jslSetChecked("uiViewSpeicher", false);
+-}
+-}
+-` ?>
+-}
+-if (oldDrucker != jslGetValue("uiPostDrucker") || oldSpeicher != jslGetValue("uiPostSpeicher") || oldOther != jslGetValue("uiPostOther")) {
+-jslSubmitFormEx("", "aurachange", "aura");
+-} else {
+-jslSubmitFormEx("", "");
+-}
+-}
+-function uiDoHelp() {
+-jslPopHelp("hilfe_usb_fernanschluss");
+-}
+-function ShowHinweis() {
+-jslDisplay("uiViewHinweis", true);
+-}
+-function ShowPrintHinweis() {
+-if (jslGetChecked("uiViewDrucker"))
+-jslDisplay("uiViewPrintHinweis", true);
+-jslDisplay("uiViewHinweis", true);
+-}
+-function ShowPopup() {
+-var params = "var:lang=<? echo $var:lang ?>";
+-var url = "../cgi-bin/webcm?getpage=../html/de/usb/pp_aura.html&"+params;
+-var ppWindow = window.open(url, "Zweitfenster", "width=520,height=540,scrollbar=yes,resizable=yes");
+-ppWindow.focus();
+-}
+-</script>
+diff -burN html/de/usb/home.frm usr/www/all/html/de/usb/home.frm
+--- usr/www/all/html/de/usb/home.frm	2008-08-01 11:41:15.000000000 +0200
++++ usr/www/all/html/de/usb/home.frm	1970-01-01 01:00:00.000000000 +0100
+@@ -1,9 +0,0 @@
+-<? setvariable var:name 'status' ?>
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? if eq '<? query box:settings/expertmode/activated ?>' '1' `<? setvariable var:name 'aura' ?>` ?>
+-<? if neq '<? query aura:settings/aura4storage ?>' '1' `<? setvariable var:name 'usbdisk' ?>` ?>
+-<? if neq '<? query aura:settings/aura4printer ?>' '1' `<? setvariable var:name 'usbprint' ?>` ?>
+-` `
+-<? setvariable var:name 'usbprint' ?>
+-` ?>
+-<? include ../html/de/usb/$var:name.frm ?>
+diff -burN html/de/usb/home.html usr/www/all/html/de/usb/home.html
+--- usr/www/all/html/de/usb/home.html	2008-08-01 11:41:17.000000000 +0200
++++ usr/www/all/html/de/usb/home.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,9 +0,0 @@
+-<? setvariable var:name 'status' ?>
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? if eq '<? query box:settings/expertmode/activated ?>' '1' `<? setvariable var:name 'aura' ?>` ?>
+-<? if neq '<? query aura:settings/aura4storage ?>' '1' `<? setvariable var:name 'usbdisk' ?>` ?>
+-<? if neq '<? query aura:settings/aura4printer ?>' '1' `<? setvariable var:name 'usbprint' ?>` ?>
+-` `
+-<? setvariable var:name 'usbprint' ?>
+-`?>
+-<? include ../html/de/usb/$var:name.html ?>
+diff -burN html/de/usb/home.js usr/www/all/html/de/usb/home.js
+--- usr/www/all/html/de/usb/home.js	2008-08-01 11:41:02.000000000 +0200
++++ usr/www/all/html/de/usb/home.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1,9 +0,0 @@
+-<? setvariable var:name 'status' ?>
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? if eq '<? query box:settings/expertmode/activated ?>' '1' `<? setvariable var:name 'aura' ?>` ?>
+-<? if neq '<? query aura:settings/aura4storage ?>' '1' `<? setvariable var:name 'usbdisk' ?>` ?>
+-<? if neq '<? query aura:settings/aura4printer ?>' '1' `<? setvariable var:name 'usbprint' ?>` ?>
+-` `
+-<? setvariable var:name 'usbprint' ?>
+-`?>
+-<? include ../html/de/usb/$var:name.js ?>
+diff -burN html/de/usb/lib.js usr/www/all/html/de/usb/lib.js
+--- usr/www/all/html/de/usb/lib.js	2008-08-01 11:41:07.000000000 +0200
++++ usr/www/all/html/de/usb/lib.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1,4 +0,0 @@
+-<? if eq 1 <? error found ?>
+-'<? include ../html/de/$var:menu/$var:errorpagename.js ?>'
+-'<? include ../html/de/$var:menu/$var:pagename.js ?>'
+-?>
+diff -burN html/de/usb/pp_aura.html usr/www/all/html/de/usb/pp_aura.html
+--- usr/www/all/html/de/usb/pp_aura.html	2008-08-01 11:41:02.000000000 +0200
++++ usr/www/all/html/de/usb/pp_aura.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,54 +0,0 @@
+-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+-<html>
+-<? include ../html/config.def ?>
+-<? setvariable var:OEM <? query env:status/OEM ?> ?>
+-<? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
+-<head>
+-<title>USB-Fernanschluss</title>
+-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+-<meta http-equiv="expires" content="0">
+-<style type="text/css">
+-<!--
+-<? include ../html/de/css/fb2.css ?>
+--->
+-</style>
+-<script type="text/javascript">
+-function uiDoOnLoad() {
+-}
+-function DownloadUrl (kontext) {
+-var url = "<? print $var:AccessoryUrl ?>";
+-url += "&features=";
+-<? if eq '$var:isFon' '1' `url += "FON,";` ?>
+-<? if eq '$var:isAura' '1' `url += "AURA,";` ?>
+-<? if eq '$var:isMini' '1' `url += "MINI,";` ?>
+-<? if eq '$var:isVpn' '1' `url += "VPN,";` ?>
+-<? if eq '$var:isKids' '1' `url += "KIDS,";` ?>
+-url += "&kontext="+kontext;
+-return url;
+-}
+-function IFrameStart(kontext) {
+-return "<iframe src=\""+DownloadUrl(kontext)+"\" name=\"software\" width=\"100%\" height=\"420\" frameborder=\"0\" style=\"border: 1px solid #C6C7BE;\">";
+-}
+-</script>
+-</head>
+-<body onload="uiDoOnLoad()">
+-<div id="content" style="margin:auto; width:500px">
+-<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+-USB-Fernanschluss
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<? if eq <? query connection0:status/connect ?> 5 `
+-<script type="text/javascript">document.write(IFrameStart('aura'));</script>
+-Ihr Browser kann leider keine eingebetteten Frames anzeigen. Benutzen Sie das FRITZ!Box Portal im Internet unter <a href="http://www.avm.de" target="_blank">www.avm.de</a>.
+-</iframe>
+-` `
+-<p>Keine Internetverbindung!<br/>Um das Programm für den USB-Fernanschluss zu starten, benötigen Sie Zugriff auf das Internet.</p>
+-` ?>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
+-<a href="javascript:window.close()" style="font-size: 11px;">Fenster schließen</a>
+-</div></div></div></div></div></div>
+-</div>
+-</body>
+-</html>
+diff -burN html/de/usb/sitemap.frm usr/www/all/html/de/usb/sitemap.frm
+--- usr/www/all/html/de/usb/sitemap.frm	2008-08-01 11:41:11.000000000 +0200
++++ usr/www/all/html/de/usb/sitemap.frm	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<? include ../html/de/home/sitemap.frm ?>
+diff -burN html/de/usb/sitemap.html usr/www/all/html/de/usb/sitemap.html
+--- usr/www/all/html/de/usb/sitemap.html	2008-08-01 11:41:13.000000000 +0200
++++ usr/www/all/html/de/usb/sitemap.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<? include ../html/de/home/sitemap.html ?>
+diff -burN html/de/usb/sitemap.js usr/www/all/html/de/usb/sitemap.js
+--- usr/www/all/html/de/usb/sitemap.js	2008-08-01 11:41:18.000000000 +0200
++++ usr/www/all/html/de/usb/sitemap.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<? include ../html/de/home/sitemap.js ?>
+diff -burN html/de/usb/status.frm usr/www/all/html/de/usb/status.frm
+--- usr/www/all/html/de/usb/status.frm	2008-08-01 11:41:03.000000000 +0200
++++ usr/www/all/html/de/usb/status.frm	1970-01-01 01:00:00.000000000 +0100
+@@ -1,7 +0,0 @@
+-<input type="hidden" name="ctlusb:settings/unplug" value="1" id="uiPostUnplug" disabled>
+-<input type="hidden" name="aura:settings/aura4storage" value="0" id="uiPostSpeicher" disabled>
+-<input type="hidden" name="aura:settings/aura4printer" value="0" id="uiPostDrucker" disabled>
+-<input type="hidden" name="aura:settings/aura4other" value="0" id="uiPostOther" disabled>
+-<input type="hidden" name="aura:settings/enabled" value="<? query aura:settings/enabled ?>" id="uiPostAuraEnabled" disabled>
+-<input type="hidden" name="var:tab" value="<? echo `$var:tab` ?>" id="uiPostTab">
+-<input type="hidden" name="var:AuraSetActiv" value="1" id="uiAuraSetActiv" disabled>
+diff -burN html/de/usb/status.html usr/www/all/html/de/usb/status.html
+--- usr/www/all/html/de/usb/status.html	2008-08-01 11:41:13.000000000 +0200
++++ usr/www/all/html/de/usb/status.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,50 +0,0 @@
+-<? setvariable var:titelclass `backtitel` ?>
+-<? if eq '$var:menu' 'home' `<? setvariable var:titelclass `backtitelstatus` ?>` ?>
+-<div id="content">
+-<div class="<? echo $var:titelclass ?>"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+-Geräteübersicht
+-</div></div></div></div></div></div>
+-<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
+-<div class="backdialog"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb10">Auf dieser Seite erhalten Sie eine Übersicht über die an der FRITZ!Box angeschlossenen USB-Geräte.</p>
+-<table class="tAura tborder" id="tAlles">
+-<tr>
+-<th class="c1">USB-Gerät</th>
+-<th class="c2">
+-<script type="text/javascript">document.write(StrOptions());</script>
+-</th>
+-</tr>
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? multiquery aura:settings/device/list(class,manufacturer,comment,client) `
+-<script type="text/javascript">document.write(TrAlles("<? query aura:settings/$11 ?>", "$12", "$13", "$14","$15"));</script>
+-` ?>
+-` ?>
+-<? if eq '<? query ctlusb:settings/printer-avail ?>' '1' `
+-<script type="text/javascript">document.write(TrAlles("<? query ctlusb:settings/printer-name ?>", "07usb", "<? query ctlusb:settings/printer-manu ?>", "",""));</script>
+-` ?>
+-<? multiquery ctlusb:settings/storage-part/list `
+-<script type="text/javascript">document.write(TrAlles("<? query ctlusb:settings/$1 ?>", "08usb", "", "",""));</script>
+-` ?>
+-<script type="text/javascript">document.write(TrNichts(0));</script>
+-</table>
+-<div id="Trennen" class="mt10" style="display:none">
+-<p class="fett mb5 mt10">ACHTUNG</p>
+-<p>Klicken Sie vor dem Abziehen des USB-Speichers auf "Sicher entfernen", um Datenverluste zu vermeiden.</p>
+-<p style="text-align: right;"><input type="button" onclick="uiDoTrennen()" value="Sicher entfernen" class="Pushbutton" style="width:130px" id="uiViewTrennen" disabled></p>
+-</div>
+-<? if eq <? query box:settings/expertmode/activated ?> 1 `
+-</div></div></div></div></div></div>
+-<div class="backdialog" id="uiAuraEnable" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<input type="checkbox" id="uiView_AuraActivated">&nbsp;<label for="uiView_AuraActivated">USB-Fernanschluss aktivieren</label>
+-<p>An die FRITZ!Box angeschlossene USB-Geräte werden über den USB-Fernanschluss an einen verbundenen PC durchgereicht. Die USB-Geräte werden an diesem Computer vom Betriebssystem als neue Hardware erkannt und Gerätetreiber und Software können installiert werden.</p>
+-` ?>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
+-<? if eq <? query box:settings/expertmode/activated ?> 1 `
+-<input type="button" onclick="uiDoSave()" value="Übernehmen" class="Pushbutton" id="btnSave">
+-` ?>
+-<input type="button" onclick="uiDoRefresh()" value="Aktualisieren" class=Pushbutton>
+-<input type="button" onclick="uiDoHelp()" value="Hilfe" class="Pushbutton" id="buttonHilfe">
+-</div></div></div></div></div></div>
+-</div></div></div></div></div></div></div>
+-</div>
+diff -burN html/de/usb/status.js usr/www/all/html/de/usb/status.js
+--- usr/www/all/html/de/usb/status.js	2008-08-01 11:41:11.000000000 +0200
++++ usr/www/all/html/de/usb/status.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1,335 +0,0 @@
+-<!-- ../system/status.js -->
+-<style type="text/css">
+-<!--
+-/*.tUsb {width: 690px; margin: auto; margin-bottom:10px;}
+-.tUsb td {padding: 2px 5px;}
+-.tAura {width: 690px; table-layout: fixed; margin:auto}
+-.tAura td, .tAura th {padding: 2px 5px; overflow: hidden}
+-.tAura .c1 {width: 330px;}
+-.tAura .c2 {width: 330px; padding-left:10px;}
+-*/
+-.tAura {width: 690px; table-layout: fixed}
+-.tAura td {padding: 2px; overflow: hidden}
+-.tAura .c1 {width: 300px;}
+-.tAura .c2 {width: 360px; padding-left:10px;}
+-.ac {text-align: center;}
+-.al {text-align:left;}
+-.fett {font-weight: bold;}
+--->
+-</style>
+-<script type="text/javascript">
+-<? include ../html/de/js/jsl.js ?>
+-var g_expertMode = "<? query box:settings/expertmode/activated ?>";
+-var g_foundPrinter = false;
+-var g_foundDisk = false;
+-var g_foundAlles = false;
+-var g_foundSonst = false;
+-var g_enableTrennen = false;
+-var g_txtNoPrinter = "Es ist kein Drucker an der FRITZ!Box angeschlossen.";
+-var g_txtNoDisk = "Es ist kein USB-Speicher an der FRITZ!Box angeschlossen.";
+-var g_txtNoAlles = "Zur Zeit sind keine USB-Geräte an der FRITZ!Box angeschlossen.";
+-var g_txtNoSonst = "Zur Zeit sind keine anderen USB-Geräte an der FRITZ!Box angeschlossen.";
+-var g_txtState0 = "Bereit";
+-var g_txtState1 = "Beim Drucken";
+-var g_txtState2 = "Bitte Papier einlegen";
+-var g_txtState3 = "Allgemeiner Fehler";
+-var g_txtState4 = "Status nicht verfügbar";
+-function uiDoOnLoad() {
+-document.title = "<? print `$var:BoxName` ?>" + " " + "USB-Geräte";
+-jslSetChecked("uiView_AuraActivated", jslGetValue("uiPostAuraEnabled") == "1");
+-jslDisplay("uiAuraEnable", g_expertMode == "1");
+-jslZebrastreifen("tAlles");
+-var b = "<? query ctlusb:settings/printer-avail ?>";
+-var auraPrinter = "<? query aura:settings/aura4printer ?>";
+-if ( auraPrinter == "1") {
+-jslDisplay("AuraPrinter", true);
+-jslZebrastreifen("AuraPrinter");
+-} else {
+-jslDisplay("NoPrinter", b != "1");
+-jslDisplay("ViewPrinter", b == "1");
+-}
+-var n = Number("<? query ctlusb:settings/storage-part/count ?>");
+-if (isNaN(n)) n = 0;
+-var useSamba = "<? query ctlusb:settings/samba-server-enabled ?>";
+-var auraDisk = "<? query aura:settings/aura4storage ?>";
+-if ( auraDisk == "1") {
+-jslDisplay("AuraDisk", true);
+-jslZebrastreifen("AuraDisk");
+-} else {
+-jslDisplay("NoDisk", n == 0);
+-jslDisplay("ViewDisk", n != 0);
+-jslDisplay("ViewSamba", useSamba == "1");
+-}
+-var useSonst = "<? query aura:settings/aura4other ?>";
+-jslDisplay("uiView3", useSonst == "1");
+-jslDisplay("ViewSonst", useSonst == "1");
+-jslDisplay("NoSonst", useSonst != "1");
+-var numberOfPartition = <? query ctlusb:settings/storage-part/count ?>;
+-jslDisplay("Trennen", numberOfPartition != 0);
+-jslSetEnabled("uiViewTrennen", g_enableTrennen);
+-}
+-function uiDoRefresh() {
+-jslGoTo(jslGetValue("uiPostMenu"), "status");
+-}
+-function uiDoHelp() {
+-jslPopHelp("hilfe_usb_status");
+-}
+-function TrAlles (name, type, manufacturer, comment,client) {
+-var str = "";
+-str = "<tr><td class=\"c1\">"+DeviceName(name, manufacturer, comment, type)+"</td>";
+-str += "<td class=\"c2\">";
+-var strOpt = new Array();
+-if (isAuraActive(type)) {
+-var strAuraOpt="";
+-if (client != "") {
+-strAuraOpt = jslPrintf("USB-Fernanschluss an %1%PcName%",'<nobr><span title="'+client+'">'+PcName(client)+'</span></nobr>');
+-}else{
+-strAuraOpt = "USB-Fernanschluss ";
+-}
+-strOpt.push(strAuraOpt);
+-}
+-if (type == "08usb") {
+-if ("<? query ctlusb:settings/ftp-server-enabled ?>" == "1") {
+-strOpt.push(DiskLink2(name,"FTP-Zugriff"));
+-}
+-var useSamba = ("<? query ctlusb:settings/samba-server-enabled ?>" == "1");
+-if (useSamba) {
+-strOpt.push(SambaLink());
+-}
+-if ("<? query mediasrv:settings/enabled ?>" == "1") {
+-strOpt.push("Musikbox");
+-}
+-if ("<? query ctlusb:settings/storage-ftp-internet ?>" == "1") {
+-strOpt.push("Internetfreigabe");
+-}
+-} // Ende if type == 08usb
+-if (type == "07usb") {
+-strOpt.push("Status: "+uiStatusDisplay("<? query ctlusb:settings/printer-status ?>"));
+-}
+-str += strOpt.join("<br>");
+-str += "</td></tr>";
+-//str += "<td class=\"c2\">"+AuraAktiv(type)+"</td></tr>";
+-if (type == "08" && "<? query aura:settings/aura4storage ?>"!="1") g_enableTrennen = true;
+-if (type == "08usb") g_enableTrennen = true;
+-g_foundAlles = true;
+-return str;
+-}
+-function TrNichts (type) {
+-switch (type) {
+-case 0:
+-if (g_foundAlles) return "";
+-return "<tr><td colspan=2 class=\"al\">"+g_txtNoAlles+"</td></tr>";
+-case 1:
+-if (g_foundPrinter) return "";
+-return "<tr><td colspan=2 class=\"ac\">"+g_txtNoPrinter+"</td></tr>";
+-case 2:
+-if (g_foundDisk) return "";
+-return "<tr><td colspan=2 class=\"ac\">"+g_txtNoDisk+"</td></tr>";
+-case 3:
+-if (g_foundSonst) return "";
+-return "<tr><td colspan=2 class=\"ac\">"+g_txtNoSonst+"</td></tr>";
+-}
+-}
+-function CountUsbDevices() {
+-var countUsb = 0;
+-if ("1" == "<? query ctlusb:settings/printer-avail ?>")
+-countUsb++;
+-var nStor = Number("<? query ctlusb:settings/storage-part/count ?>");
+-if (!isNaN(nStor))
+-countUsb += nStor;
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-var nAura = Number("<? query aura:settings/device/count ?>");
+-if (isNaN(nAura)) nAura=0;
+-countUsb += nAura;
+-` ?>
+-return countUsb;
+-}
+-var nUsb = CountUsbDevices();
+-function StrOptions() {
+-if (nUsb > 0)
+-return "Aktivierte Geräteoptionen";
+-return "&nbsp";
+-}
+-function DeviceName (name, manufacturer, comment, type) {
+-var str = manufacturer;
+-if (str != "") str += " ";
+-str += name;
+-if (comment != "") {
+-if (str != "") str += " ";
+-str += "("+comment+")";
+-}
+-if (str=="") {
+-switch (type) {
+-case "07usb": str = "USB Printer"; break;
+-case "07": str = "USB Printer"; break;
+-case "08usb": str = "USB Storage"; break;
+-case "08": str = "USB Storage"; break;
+-default: str = "USB Device"; break;
+-}
+-}
+-return span(str);
+-}
+-function span(str) {
+-return "<nobr><span title=\""+ str + "\">" + str + "</span></nobr>";
+-}
+-function PcName (client) {
+-var str = client;
+-switch (client) {
+-<? multiquerytext dhcpd:status/lease/list(name,ip) `
+-case "$3": str = "$2"; break;
+-` ?>
+-default: break;
+-}
+-return str;
+-}
+-function isAuraActive(type) {
+-switch (type) {
+-case "07usb": return false;
+-case "08usb": return false;
+-case "07": return ("<? query aura:settings/aura4printer ?>"=="1");
+-case "08": return ("<? query aura:settings/aura4storage ?>"=="1");
+-}
+-return ("<? query aura:settings/aura4other ?>"=="1");
+-}
+-function AuraAktiv(type) {
+-var strAktiv = "aktiviert";
+-switch (type) {
+-case "07usb": return "";
+-case "08usb": return "";
+-case "07": return ("<? query aura:settings/aura4printer ?>"=="1") ? strAktiv:"";
+-case "08": return ("<? query aura:settings/aura4storage ?>"=="1") ? strAktiv:"";
+-}
+-return ("<? query aura:settings/aura4other ?>"=="1") ? strAktiv:"";
+-}
+-function TrDrucker (name, type, manufacturer, comment, client) {
+-if (type != "07") return "";
+-var str = "";
+-str = "<tr><td class=\"c1\">"+DeviceName(name, manufacturer, comment, type)+"</td>";
+-str += "<td class=\"c2\">"+PcName(client)+"</td></tr>";
+-g_foundPrinter = true;
+-return str;
+-}
+-function TrDisk (name, type, manufacturer, comment, client) {
+-if (type != "08") return "";
+-var str = "";
+-str = "<tr><td class=\"c1\">"+DeviceName(name, manufacturer, comment, type)+"</td>";
+-str += "<td class=\"c2\">"+PcName(client)+"</td></tr>";
+-g_foundDisk = true;
+-return str;
+-}
+-function TrSonst (name, type, manufacturer, comment, client) {
+-if (type == "08" || type == "07") return "";
+-var str = "";
+-str = "<tr><td class=\"c1\">"+DeviceName(name, manufacturer, comment, type)+"</td>";
+-str += "<td class=\"c2\">"+PcName(client)+"</td></tr>";
+-g_foundSonst = true;
+-return str;
+-}
+-function IsIpClient () {
+-var conntype = "<? query connection0:settings/type ?>";
+-var atamode = "<? query box:settings/ata_mode ?>";
+-return (atamode == "1") && (conntype == "bridge");
+-}
+-function SambaLink () {
+-var strSamba = "USB-Netzwerkspeicher"
+-if (typeof g_IE == 'undefined' || g_IE != true) return strSamba;
+-var fromInternet = "<? echo $var:frominternet ?>";
+-if (fromInternet == "1") return strSamba;
+-var link;
+-if (IsIpClient()) {
+-link = "<? query connection0:status/ip ?>";
+-} else {
+-link = "<? query interfaces:settings/lan0/ipaddr ?>";
+-}
+-return "<a href=\"file://"+link+"\" target=_blank>"+strSamba+"</a>";
+-}
+-function DiskLink2(name,name2) {
+-var adr = "";
+-if ("<? query ctlusb:settings/ftp-password ?>" != "") adr = "ftpuser@";
+-var fromInternet = "<? echo $var:frominternet ?>";
+-if (fromInternet == "1" && "<? query ctlusb:settings/storage-ftp-internet ?>" == "1") {
+-var ddnsactiv= "<? query ddns:settings/account0/activated ?>";
+-var ddnspass= "<? query ddns:settings/account0/password ?>";
+-var ddnsusername= "<? query ddns:settings/account0/username ?>";
+-var ddnsprovider= "<? query ddns:settings/account0/ddnsprovider ?>";
+-var ddnsdomain= "<? query ddns:settings/account0/domain ?>";
+-var iponly='<? query connection0:pppoe:status/ip ?>';
+-if (!(iponly != "" && iponly != "-" && iponly != "er" && iponly != "0.0.0.0")){iponly="";}
+-if(ddnsactiv=="1" && ddnspass!="" && ddnsusername!="" && ddnsprovider!=""){
+-adr += ddnsdomain;
+-}
+-else {
+-adr += iponly;
+-}
+-}
+-else if (IsIpClient()) {
+-adr += "<? query connection0:status/ip ?>";
+-} else {
+-adr += "<? query interfaces:settings/lan0/ipaddr ?>";
+-}
+-return "<a href=\"ftp://"+adr+"/"+name+"\" target=\"_blank\">"+name2+"</a>";
+-}
+-function DiskLink (name) {
+-if ("<? query ctlusb:settings/ftp-server-enabled ?>" != "1")
+-return name;
+-var adr = "";
+-if ("<? query ctlusb:settings/ftp-password ?>" != "") adr = "ftpuser@";
+-var fromInternet = "<? echo $var:frominternet ?>";
+-if (fromInternet == "1" && "<? query ctlusb:settings/storage-ftp-internet ?>" == "1") {
+-var ddnsactiv= "<? query ddns:settings/account0/activated ?>";
+-var ddnspass= "<? query ddns:settings/account0/password ?>";
+-var ddnsusername= "<? query ddns:settings/account0/username ?>";
+-var ddnsprovider= "<? query ddns:settings/account0/ddnsprovider ?>";
+-var ddnsdomain= "<? query ddns:settings/account0/domain ?>";
+-var iponly='<? query connection0:pppoe:status/ip ?>';
+-if (!(iponly != "" && iponly != "-" && iponly != "er" && iponly != "0.0.0.0")){iponly="";}
+-if(ddnsactiv=="1" && ddnspass!="" && ddnsusername!="" && ddnsprovider!=""){
+-adr += ddnsdomain;
+-}
+-else {
+-adr += iponly;
+-}
+-}
+-else if (IsIpClient()) {
+-adr += "<? query connection0:status/ip ?>";
+-} else {
+-adr += "<? query interfaces:settings/lan0/ipaddr ?>";
+-}
+-return "<a href=\"ftp://"+adr+"/"+name+"\" target=\"_blank\">"+name+"</a>";
+-}
+-function jslSetClass(id, wert) {
+-var h1 = document.getElementById(id);
+-if (h1 != null) h1.className=wert;
+-}
+-function uiDoTrennen() {
+-jslEnable("uiPostUnplug");
+-jslSubmitFormEx("usb", "usbdisk_cut");
+-}
+-function uiStatusDisplay (state) {
+-switch (state) {
+-case "0": return g_txtState0;
+-case "1": return g_txtState1;
+-case "2": return g_txtState2;
+-case "3": return g_txtState3;
+-}
+-return g_txtState4;
+-}
+-function uiDoSave(){
+-if(jslGetChecked("uiView_AuraActivated")) {
+-jslEnable("uiAuraSetActiv");
+-}
+-else{
+-jslDisable("uiAuraSetActiv");
+-}
+-jslSetValue("uiPostAuraEnabled", jslGetChecked("uiView_AuraActivated") ? "1":"0");
+-jslEnable("uiPostAuraEnabled");
+-if (jslGetChecked("uiView_AuraActivated")) {
+-jslSubmitFormEx("", "aura", "status");
+-} else {
+-jslEnable("uiPostSpeicher");
+-jslEnable("uiPostDrucker");
+-jslEnable("uiPostOther");
+-jslSubmitFormEx("", "auraactiv", "status");
+-}
+-}
+-</script>
+diff -burN html/de/usb/usbdisk_cut.html usr/www/all/html/de/usb/usbdisk_cut.html
+--- usr/www/all/html/de/usb/usbdisk_cut.html	2008-08-01 11:41:04.000000000 +0200
++++ usr/www/all/html/de/usb/usbdisk_cut.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,16 +0,0 @@
+-<? setvariable var:titelclass `backtitel` ?>
+-<? if eq '$var:menu' 'home' `<? setvariable var:titelclass `backtitelstatus` ?>` ?>
+-<div id="content">
+-<div class="<? echo $var:titelclass ?>"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+-USB-Speicher trennen
+-</div></div></div></div></div></div>
+-<div class="backdialog" id="uiView_TestState"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb10"><span id="uiView_TestText">FRITZ!Box trennt jetzt alle USB-Speicher. Bitte warten Sie, bis der Vorgang abgeschlossen ist, um Datenverluste zu vermeiden.</span></p>
+-<p class="mt30 mb20" style="text-align: center;"><img name="StatusPic" src="../html/de/images/wait.gif" style="width: 325px; height: 5px;" title="Die Abtrennung der USB-Speicher läuft ..."></p>
+-<p class="mb10" style="text-align: center;"><span id="uiView_StateText">Die Abtrennung der USB-Speicher läuft. Bitte haben Sie einen Moment Geduld.</span></p>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
+-<input type="button" onclick="uiDoBack()" value="OK" class=Pushbutton id="uiBack">
+-<input type="button" onclick="uiDoHelp()" value="Hilfe" class=Pushbutton id="uiHelp">
+-</div></div></div></div></div></div>
+-</div>
+diff -burN html/de/usb/usbdisk_cut.js usr/www/all/html/de/usb/usbdisk_cut.js
+--- usr/www/all/html/de/usb/usbdisk_cut.js	2008-08-01 11:41:10.000000000 +0200
++++ usr/www/all/html/de/usb/usbdisk_cut.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1,63 +0,0 @@
+-<!-- ../usb/usbdisk_cut.js -->
+-<style type="text/css">
+-<!--
+-#content {width: 500px; margin: auto;}
+-.mt30 { margin-top: 30px; }
+-.mb20 { margin-bottom: 20px; }
+--->
+-</style>
+-<script type="text/javascript">
+-<? include ../html/de/js/jsl.js ?>
+-var g_PicturePath_Success = "../html/de/images/finished-ok-green.gif";
+-var g_PicturePath_Failed = "../html/de/images/finished-error.gif";
+-var g_stateText_No_0 = "Es wurde keine Abtrennung der USB-Speicher ausgelöst.";
+-var g_stateText_No_1 = "Der Status der Abtrennung der USB-Speicher ist unbekannt.";
+-var g_stateText_No_2 = "Bitte haben Sie einen Moment Geduld.";
+-var g_stateText_No_3 = "Alle USB-Speicher können nun sicher getrennt werden.";
+-var g_stateText_No_4 = "Die Abtrennung der USB-Speicher ist fehlgeschlagen.";
+-var g_QueryItems = new Array();
+-g_QueryItems[0] = new Item( "<? query ctlusb:settings/unplug-status ?>", "ctlusb:settings/unplug-status");
+-function uiDoOnLoad() {
+-document.title = "<? print `$var:BoxName` ?>" + " " + "USB-Speicher trennen";
+-doPoll( g_QueryItems[0].value);
+-if ( g_QueryItems[0].value == "2")
+-window.setTimeout("doRefresh()", 5000);
+-}
+-function doRefresh() {
+-jslGoTo( jslGetValue("uiPostMenu"), "usbdisk_cut");
+-}
+-function doPoll(updateState) {
+-switch (updateState) {
+-case "0" :
+-jslChangeImage( "StatusPic", g_PicturePath_Failed, g_stateText_No_0);
+-jslSetSpanText( "uiView_StateText", g_stateText_No_0);
+-break;
+-case "1" :
+-jslChangeImage( "StatusPic", g_PicturePath_Failed, g_stateText_No_1);
+-jslSetSpanText( "uiView_StateText", g_stateText_No_1);
+-break;
+-case "2" :
+-break;
+-case "3" :
+-jslChangeImage( "StatusPic", g_PicturePath_Success, g_stateText_No_3);
+-jslSetSpanText( "uiView_StateText", g_stateText_No_3);
+-break;
+-case "4" :
+-jslChangeImage( "StatusPic", g_PicturePath_Failed, g_stateText_No_4);
+-jslSetSpanText( "uiView_StateText", g_stateText_No_4);
+-break;
+-}
+-}
+-function uiDoHelp() {
+-jslPopHelp("hilfe_usb_disk");
+-}
+-function uiDoBack() {
+-var m = jslGetValue("uiPostMenu");
+-if (m == "home") jslGoTo(m, "home");
+-else jslGoTo( m, "status");
+-}
+-function Item ( wert, query) {
+-this.value = wert;
+-this.query = query;
+-}
+-</script>
+diff -burN html/de/usb/usbdisk.frm usr/www/all/html/de/usb/usbdisk.frm
+--- usr/www/all/html/de/usb/usbdisk.frm	2008-08-01 11:41:05.000000000 +0200
++++ usr/www/all/html/de/usb/usbdisk.frm	1970-01-01 01:00:00.000000000 +0100
+@@ -1,10 +0,0 @@
+-<input type="hidden" name="ctlusb:settings/storage-ro" value="<? query ctlusb:settings/storage-ro ?>" id="uiPostRights">
+-<input type="hidden" name="ctlusb:settings/ftp-password" value="<? query ctlusb:settings/ftp-password ?>" id="uiPostPassword">
+-<input type="hidden" name="ctlusb:settings/storage-ftp-internet" value="<? query ctlusb:settings/storage-ftp-internet ?>" id="uiPostFtpServer" disabled>
+-<input type="hidden" name="ctlusb:settings/ftp-server-enabled" value="<? query ctlusb:settings/ftp-server-enabled ?>" id="uiPostUseFtp">
+-<input type="hidden" name="ctlusb:settings/samba-server-enabled" value="<? query ctlusb:settings/samba-server-enabled ?>" id="uiPostUseSamba">
+-<input type="hidden" name="mediasrv:settings/enabled" value="<? query mediasrv:settings/enabled ?>" id="uiPostUseMusik">
+-<input type="hidden" name="ddns:settings/account0/activated" value="<? query ddns:settings/account0/activated ?>" id="uiPostAccountEnabled" disabled>
+-<input type="hidden" name="ddns:settings/account0/domain" value="<? query ddns:settings/account0/domain ?>" id="uiPostAccountDomain" disabled>
+-<input type="hidden" name="telcfg:settings/FaxMailActive" value="<? query telcfg:settings/FaxMailActive ?>" id="uiPostFaxMailActive" disabled />
+-<input type="hidden" name="tam:settings/UseStick" value="<? query tam:settings/UseStick ?>" id="uiPostTamUseStick" disabled />
+diff -burN html/de/usb/usbdisk.html usr/www/all/html/de/usb/usbdisk.html
+--- usr/www/all/html/de/usb/usbdisk.html	2008-08-01 11:41:04.000000000 +0200
++++ usr/www/all/html/de/usb/usbdisk.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,62 +0,0 @@
+-﻿
+-<div id="content">
+-<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+-USB-Speicher
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb5">Zugriffsberechtigungen </p>
+-<p class="ml25"><input type="radio" onclick="uiDoRights(0)" name="Rights" id="uiViewRead">&nbsp;<label for="uiViewRead">nur Lesezugriff</label></p>
+-<p class="ml25 mb10"><input type="radio" onclick="uiDoRights(1)" name="Rights" id="uiViewReadWrite">&nbsp;<label for="uiViewReadWrite">Lese- und Schreibzugriff</label></p>
+-<p class="mb5"><input type="checkbox" id="uiViewUsePassword" onclick="OnUsePassword()">&nbsp;<label for="uiViewUsePassword">Kennwortschutz aktivieren</label></p>
+-<div class="ml25">
+-<table id="t1">
+-<tr>
+-<td>Kennwort (max. 8 Zeichen)</td>
+-<td><input type="password" maxlength="8" size="9" class="Eingabefeld" id="uiViewPassword"></td>
+-</tr>
+-<tr>
+-<td>Kennwortbestätigung</td>
+-<td><input type="password" maxlength="8" size="9" class="Eingabefeld" id="uiViewPassword2"></td>
+-</tr>
+-</table>
+-</div>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb5"><input type="checkbox" id="uiViewUseFtp" onclick="OnUseFtp()">&nbsp;<label for="uiViewUseFtp">USB-Speicher FTP-Zugriff aktivieren</label></p>
+-<? multiquery ctlusb:settings/storage-part/list `
+-<p class="ml25"><script type="text/javascript">document.write(DiskLink('<? query ctlusb:settings/$1 ?>'));</script></p>
+-` ?>
+-<p class="mt10 fett" id="uiViewHinweis1" style="display:none">Hinweis: Geben Sie auf Nachfrage den Benutzernamen "ftpuser" ein.</p>
+-</div></div></div></div></div></div>
+-<div class="backdialog" id="FtpServer" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb10"><input type="checkbox" id="uiViewFtpServer" onclick="OnFtpServer()">&nbsp;<label for="uiViewFtpServer">USB-Speicher für Benutzer aus dem Internet freigeben</label></p>
+-<p>Adresse für den Zugang über das Internet:</p>
+-<p class="ml25"><span id="uiViewFtpAdr">ftp://ftpuser@</span></p>
+-<p class="mt10" id="uiViewNoDyndns" style="display:none">Hinweis: Über die Dynamic DNS-Funktion können Sie erreichen, dass Ihr USB-Speicher immer unter dem gleichen Namen aus dem Internet erreichbar ist. Lesen Sie hierzu die Hinweise in der <a href="javascript:uiDoHelp()">Onlinehilfe</a>.</p>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb10"><input type="checkbox" id="uiViewUseSamba">&nbsp;<label for="uiViewUseSamba">USB-Netzwerkspeicher aktivieren</label></p>
+-<script type="text/javascript">document.write(SambaLink());</script>
+-<p>An der FRITZ!Box angeschlossene USB-Speicher können als Netzlaufwerk im Windows Netzwerk eingebunden werden.<br/>Starten Sie den Windows-Explorer und geben Sie im Feld Adresse \\fritz.box ein, um auf die Dateifreigaben zuzugreifen.</p>
+-<p class="mt10 fett" id="uiViewHinweis2" style="display:none">Hinweis: Geben Sie auf Nachfrage den Benutzernamen "ftpuser" ein.</p>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p class="mb5"><input type="checkbox" id="uiViewUseMusik">&nbsp;<label for="uiViewUseMusik">Musikbox aktivieren</label></p>
+-<p>Mit dieser Funktion können Musikdateien von kompatiblen Abspielgeräten im Netzwerk wiedergegeben werden (streaming). Der USB-Speicher mit der Musiksammlung wird dazu einfach an die FRITZ!Box angeschlossen und ein passendes Abspielgerät mit dem lokalen Netzwerk verbunden. Dies kann z.B. FRITZ! Mini, FRITZ! Media oder ein anderes zum UPnP-AV-Standard kompatibles Gerät sein.</p>
+-</div></div></div></div></div></div>
+-<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-<p id="uiViewNoDisk" style="text-align:center;display:none">Es ist kein USB-Speicher an FRITZ!Box angeschlossen.</p>
+-<? include ../html/de/home/error.html ?>
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? if eq '<? query aura:settings/aura4storage ?>' '1' `
+-<p class="mt10 fett">Es können keine Einstellungen vorgenommen werden, da diese Geräte momentan mit dem USB-Fernanschluss genutzt werden.</p>
+-` ?>
+-` ?>
+-</div></div></div></div></div></div>
+-<div class="backdialog" id="uiButtonbar"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
+-<input type="button" onclick="uiDoSave()" value="Übernehmen" class="Pushbutton" id="btnSave">
+-<input type="button" onclick="uiDoCancel()" value="Abbrechen" class="Pushbutton">
+-<input type="button" onclick="uiDoCancel()" value="Aktualisieren" class="Pushbutton">
+-<input type="button" onclick="uiDoHelp()" value="Hilfe" class="Pushbutton">
+-</div></div></div></div></div></div>
+-</div>
+diff -burN html/de/usb/usbdisk.js usr/www/all/html/de/usb/usbdisk.js
+--- usr/www/all/html/de/usb/usbdisk.js	2008-08-01 11:41:11.000000000 +0200
++++ usr/www/all/html/de/usb/usbdisk.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1,217 +0,0 @@
+-﻿<!-- ../system/usbdisk.js -->
+-<style type="text/css">
+-<!--
+-/*#content {width: 560px; margin: auto;}*/
+-.ml25 {margin-left: 25px;}
+-#t1 td {padding: 1px 3px;}
+-.fett {font-weight: bold;}
+--->
+-</style>
+-<!--[if IE]>
+-<script type="text/javascript">
+-var g_IE = true;
+-</script>
+-<![endif]-->
+-<script type="text/javascript">
+-<? include ../html/de/js/jsl.js ?>
+-var g_expertMode = "<? query box:settings/expertmode/activated ?>";
+-var g_mldPassword = "Das Kennwort stimmt nicht mit der Bestätigung überein.";//
+-var g_mldNoPassword = "Die Freigabe eines USB-Speichers im Internet ist nur mit aktivem Kennwortschutz möglich.";//
+-var g_mldEmptyPassword = "Tragen Sie ein Kennwort ein.";
+-var g_mldMusikWrite = "Die FRITZ!Musikbox kann nur genutzt werden, wenn Schreibrechte für den USB-Speicher vergeben werden.";
+-var g_mldTamUseStick = "Der FRITZ!Box Anrufbeantworter benötigt Schreibrechte um Nachrichten auf dem USB-Speicher abzulegen.";
+-var g_mldFaxUseStick = "Der Faxempfang der FRITZ!Box benötigt Schreibrechte um Faxe auf dem USB-Speicher abzulegen.";
+-var g_mldUseStick = "Die FRITZ!Box benötigt Schreibrechte auf dem USB-Speicher, um Sprachnachrichten und Faxe dort abzulegen.";
+-function uiDoOnLoad() {
+-document.title = "<? print `$var:BoxName` ?>" + " " + "USB-Speicher";
+-var n = <? query ctlusb:settings/storage-part/count ?>;
+-uiDoRights(jslGetValue("uiPostRights") == "0" ? 1:0);
+-var str = jslGetValue("uiPostPassword");
+-jslSetValue("uiViewPassword", str);
+-jslSetValue("uiViewPassword2", str);
+-jslSetChecked("uiViewUsePassword", str.length > 0);
+-OnUsePassword();
+-jslDisplay("uiViewNoDisk", n == 0);
+-jslSetChecked("uiViewUseFtp", jslGetValue("uiPostUseFtp") == "1");
+-jslSetChecked("uiViewUseSamba", jslGetValue("uiPostUseSamba") == "1");
+-jslSetChecked("uiViewUseMusik", jslGetValue("uiPostUseMusik") == "1");
+-if (n != 0 && g_expertMode == "1") {
+-jslDisplay("FtpServer", !IsDslModem() && !IsIpClient() && jslGetChecked("uiViewUseFtp"));
+-jslSetChecked("uiViewFtpServer", jslGetValue("uiPostFtpServer") == "1");
+-SetSpanText("uiViewFtpAdr", GetFtpAdr());
+-jslDisplay("uiViewNoDyndns", jslGetValue("uiPostAccountEnabled") != "1");
+-}
+-<? if eq '<? query aura:settings/enabled ?>' '1' `
+-<? if eq '<? query aura:settings/aura4storage ?>' '1' `
+-jslDisable("uiViewRead");
+-jslDisable("uiViewReadWrite");
+-jslDisable("uiViewUsePassword");
+-jslDisable("uiViewPassword");
+-jslDisable("uiViewPassword2");
+-jslDisable("uiViewUseFtp");
+-jslDisable("uiViewFtpServer");
+-jslDisplay("uiViewNoDisk", false);
+-jslDisable("uiViewUseSamba");
+-jslDisable("uiViewUseMusik");
+-jslDisable("uiViewTrennen");
+-jslDisable("btnSave");
+-` ?>
+-` ?>
+-}
+-function uiDoSave() {
+-if (jslGetChecked("uiViewUsePassword")) {
+-var passwort = jslGetValue("uiViewPassword");
+-if (passwort == "") {alert(g_mldEmptyPassword); return;}
+-if (jslGetValue("uiViewPassword") != jslGetValue("uiViewPassword2")) {alert(g_mldPassword); return;}
+-jslCopyValue("uiPostPassword", "uiViewPassword");
+-} else {
+-jslSetValue("uiPostPassword", "");
+-}
+-jslSetValue("uiPostRights", jslGetChecked("uiViewRead") ? "1":"0");
+-if (g_expertMode == "1") {
+-if (!jslGetChecked("uiViewUsePassword") && jslGetChecked("uiViewFtpServer")) {
+-alert(g_mldNoPassword); return;
+-}
+-}
+-if (jslGetChecked("uiViewUseMusik") && !jslGetChecked("uiViewReadWrite")) {
+-alert(g_mldMusikWrite); return;
+-}
+-if (g_expertMode == "1") {
+-jslSetValue("uiPostFtpServer", jslGetChecked("uiViewFtpServer") ? "1":"0");
+-jslEnable("uiPostFtpServer");
+-}
+-jslSetValue("uiPostUseFtp", jslGetChecked("uiViewUseFtp") ? "1":"0");
+-jslSetValue("uiPostUseSamba", jslGetChecked("uiViewUseSamba") ? "1":"0");
+-jslSetValue("uiPostUseMusik", jslGetChecked("uiViewUseMusik") ? "1":"0");
+-jslSubmitFormEx("usb", "usbdisk");
+-}
+-function uiDoCancel() {
+-jslGoTo("usb", "usbdisk");
+-}
+-function uiDoHelp() {
+-jslPopHelp("hilfe_usb_disk");
+-}
+-function uiDoRights (n) {
+-if (n==0) {
+-if (CheckRights() == false)
+-n = 1;
+-}
+-jslSetChecked("uiViewRead", n==0);
+-jslSetChecked("uiViewReadWrite", n==1);
+-}
+-function CheckRights() {
+-faxMailActive = jslGetValue("uiPostFaxMailActive");
+-tamUseStick = jslGetValue("uiPostTamUseStick");
+-bUseStick = 0;
+-if (faxMailActive == "2" || faxMailActive == "3") {
+-bUseStick = 1;
+-}
+-if ( tamUseStick == "1" && bUseStick == 1) {
+-bUseStick = 3;
+-} else if (tamUseStick == "1") {
+-bUseStick = 2;
+-}
+-switch (bUseStick) {
+-case 1:
+-alert(g_mldFaxUseStick);
+-return false;
+-case 2:
+-alert(g_mldTamUseStick);
+-return false;
+-case 3:
+-alert(g_mldUseStick);
+-return false;
+-default:
+-break;
+-}
+-return true;
+-}
+-function OnUsePassword () {
+-var b = jslGetChecked("uiViewUsePassword");
+-jslSetEnabled("uiViewPassword", b);
+-jslSetEnabled("uiViewPassword2", b);
+-if (b) {
+-jslDisplay("uiViewHinweis1", true);
+-jslDisplay("uiViewHinweis2", true);
+-}
+-}
+-function GetFtpAdr () {
+-var adr = "ftp://ftpuser@";
+-if (jslGetValue("uiPostAccountEnabled") == "1") {
+-adr += jslGetValue("uiPostAccountDomain");
+-} else {
+-adr += "<? query connection0:pppoe:status/ip ?>";
+-}
+-return adr;
+-}
+-function OnFtpServer () {
+-if (!jslGetChecked("uiViewUsePassword") && jslGetChecked("uiViewFtpServer")) {
+-jslSetChecked("uiViewFtpServer", false);
+-alert(g_mldNoPassword);
+-}
+-}
+-function IsDslModem () {
+-var conntype = "<? query connection0:settings/type ?>";
+-var atamode = "<? query box:settings/ata_mode ?>";
+-var encaps = "<? query sar:settings/encapsulation ?>";
+-return (atamode == "0") && (conntype == "bridge") && (encaps == "dslencap_pppoe");
+-}
+-function IsIpClient () {
+-var conntype = "<? query connection0:settings/type ?>";
+-var atamode = "<? query box:settings/ata_mode ?>";
+-return (atamode == "1") && (conntype == "bridge");
+-}
+-function OnUseFtp () {
+-var n = <? query ctlusb:settings/storage-part/count ?>;
+-jslDisplay("FtpServer", jslGetChecked("uiViewUseFtp") && n != 0 && g_expertMode == "1" && !IsDslModem() && !IsIpClient());
+-}
+-function SambaLink () {
+-if (typeof g_IE == 'undefined' || g_IE != true) return "";
+-var fromInternet = "<? echo $var:frominternet ?>";
+-if (fromInternet == "1") return "";
+-<? if eq <? query ctlusb:settings/samba-server-enabled ?> 1 `
+-var n = Number("<? query ctlusb:settings/storage-part/count ?>");
+-if (isNaN(n) || n <= 0)
+-{
+-return "";
+-}
+-var link;
+-if (IsIpClient()) {
+-link = "<? query connection0:status/ip ?>";
+-} else {
+-link = "<? query interfaces:settings/lan0/ipaddr ?>";
+-}
+-return "<p class=\"ml25 mb10\"><a href=\"file://"+link+"\" target=_blank>Zur Dateifreigabe</a></p>";
+-` `
+-return "";
+-` ?>
+-}
+-function DiskLink (name) {
+-if ("<? query ctlusb:settings/ftp-server-enabled ?>" != "1")
+-return name;
+-var adr = "";
+-if ("<? query ctlusb:settings/ftp-password ?>" != "") adr = "ftpuser@";
+-var fromInternet = "<? echo $var:frominternet ?>";
+-if (fromInternet == "1" && "<? query ctlusb:settings/storage-ftp-internet ?>" == "1") {
+-var ddnsactiv= "<? query ddns:settings/account0/activated ?>";
+-var ddnspass= "<? query ddns:settings/account0/password ?>";
+-var ddnsusername= "<? query ddns:settings/account0/username ?>";
+-var ddnsprovider= "<? query ddns:settings/account0/ddnsprovider ?>";
+-var ddnsdomain= "<? query ddns:settings/account0/domain ?>";
+-var iponly='<? query connection0:pppoe:status/ip ?>';
+-if (!(iponly != "" && iponly != "-" && iponly != "er" && iponly != "0.0.0.0")){iponly="";}
+-if(ddnsactiv=="1" && ddnspass!="" && ddnsusername!="" && ddnsprovider!=""){
+-adr += ddnsdomain;
+-}
+-else {
+-adr += iponly;
+-}
+-}
+-else if (IsIpClient()) {
+-adr += "<? query connection0:status/ip ?>";
+-} else {
+-adr += "<? query interfaces:settings/lan0/ipaddr ?>";
+-}
+-return "<a href=\"ftp://"+adr+"/"+name+"\" target=\"_blank\">"+name+"</a>";
+-}
+-</script>
