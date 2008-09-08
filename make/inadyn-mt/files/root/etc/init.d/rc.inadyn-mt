@@ -22,14 +22,14 @@ configure () {
 	echo verbose $INADYN_MT_VERBOSE
 	[ -x /etc/init.d/rc.syslogd ] && running=$(/etc/init.d/rc.syslogd status)
 	if [ "$running" = "running" ]; then
-    	echo syslog
-    else
-    	echo log_file /var/log/${DAEMON}.log
+		echo syslog
+	else
+		echo log_file /var/log/${DAEMON}.log
 	fi
 	echo pid_file /var/run/${DAEMON}.pid
 
 	ii=0
-	# inadyn -> dyndns.h can maintain maximal 5 servers
+	# inadyn-mt -> dyndns.h can maintain maximal 5 servers
 	while [ 5 -gt $ii ]; do
 		if [ yes = "$(ivalueof INADYN_MT_ACTIVE $ii)" ]; then
 
@@ -128,7 +128,7 @@ case "$1" in
 		modlib_restart
 		;;
 	status)
-		modlib_check_running
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
