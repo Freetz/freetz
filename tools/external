@@ -7,6 +7,7 @@ EXTERNAL_DIRECTORY=`echo $EXTERNAL_DIRECTORY|sed 's/\/*$//'`
 mkdir -p "${EXTERNAL_MOD_DIR}"
 
 EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
+[ "$EXTERNAL_FREETZ_PACKAGE_BLUEZ_UTILS" == "y" ] && EXTERNAL_FILES+=" /usr/bin/dund /usr/bin/pand /usr/bin/rfcomm /usr/bin/l2ping /usr/bin/sdptool /usr/sbin/hcid /usr/sbin/sdpd /usr/sbin/hciconfig /usr/sbin/hcitool"
 [ "$EXTERNAL_FREETZ_PACKAGE_LTRACE" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/ltrace"
 [ "$EXTERNAL_FREETZ_LIB_libart_lgpl_2" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libart_lgpl_2.so.2.3.19"
 [ "$EXTERNAL_FREETZ_LIB_libdevmapper" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libdevmapper.so.1.02"
