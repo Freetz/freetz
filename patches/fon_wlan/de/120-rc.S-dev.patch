@@ -6,7 +6,7 @@
  }
 -mount -n /proc
 -mount /var
-+mount -o nosuid -t tmpfs dev /dev
++[ -f /dev/.hotplug-cache ] || mount -o nosuid -t tmpfs dev /dev
 +/sbin/makedevs -d /etc/device.table /
 +mount -a
  #file "./arch/etc/init.d/rc.watchdog.sh", 0
