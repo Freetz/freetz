@@ -41,8 +41,17 @@ Examples:
 EOF
 }
 
+# if we are called as hotplug helper we must not filter these env vars
+case "$1" in
+	scsi|scsi_device|scsi_host|block|usb)
+		;;
+	*)
+		DEVICE=
+		DEVPATH=${3##/proc/bus/usb/}
+		;;
+esac
+# all other vars can always be initialized
 USBROOT_ENV_VAR=kernel_args1
-DEVICE=
 USBPATH=
 FSTYPE=
 MNTOPTIONS=
@@ -50,13 +59,23 @@ HOST=
 HWREVISION=
 HWREVISION_BitFileCount=
 SYSFS=/sys
-DEVPATH=${3##/proc/bus/usb/}
 MNTPOINT=/data
 OLDROOT=oldroot
 HOTPLUG=
+HOTPLUGCACHE=.hotplug-cache
 
 USBROOT_UNMOUNTOLDROOT='yes'
 [ -f /mod/etc/conf/usbroot.cfg ] && . /mod/etc/conf/usbroot.cfg
+
+serialize_env() {
+	local ENV=""
+	local VAL=""
+	for i in $*; do
+		eval "VAL=\$$i"
+		ENV="export $i='$VAL';$ENV"
+	done
+	echo "$ENV"
+}
 
 hotplugging() {
 	case "$1" in
@@ -67,7 +86,61 @@ hotplugging() {
 			HOTPLUG=$(cat /proc/sys/kernel/hotplug)
 			echo "" > /proc/sys/kernel/hotplug
 			;;
+		defer)
+			HOTPLUG=$(cat /proc/sys/kernel/hotplug)
+			# prepare tmpfs which we later move to /dev;
+			# we have to move to /dev as this is the only fs with
+			# can be mounted conditionally (we will skip the mount
+			# later when usb root is active)
+			mount dev /oldroot -t tmpfs -o nosuid
+			mknod /oldroot/console c 5 1
+			# remap hotplug to us
+			echo "/etc/init.d/rc.usbroot" > /proc/sys/kernel/hotplug
+			;;
+		flush)
+			# flush is run with new root so we find the cache file under /dev
+			HOTPLUG=$(cat /proc/sys/kernel/hotplug)
+			if [ -f "/dev/$HOTPLUGCACHE" -a -n "$HOTPLUG" ]; then
+				# separate environment in the following loop
+				cat "/dev/$HOTPLUGCACHE" | while read AGENT ENVSTRING; do
+					(
+					eval "$ENVSTRING"
+					exec "$HOTPLUG" "$AGENT"
+					)
+				done
+				# clean up
+				rm -f "/dev/$HOTPLUGCACHE"
+			fi
+			;;
+		discard)
+			echo "$HOTPLUG" > /proc/sys/kernel/hotplug
+			rm -f "/oldroot/$HOTPLUGCACHE"
+			umount /oldroot
+			;;
+
+		# hotplug actions
+		scsi_device)
+			ENV="$(serialize_env ACTION DEVPATH PHYSDEVBUS PHYSDEVDRIVER PHYSDEVPATH SEQNUM SUBSYSTEM)"
+			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
+			;;
+		scsi_host)
+			ENV="$(serialize_env ACTION DEVPATH PHYSDEVPATH SEQNUM SUBSYSTEM)"
+			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
+			;;
+		scsi)
+			ENV="$(serialize_env ACTION DEVPATH PHYSDEVBUS SEQNUM SUBSYSTEM)"
+			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
+			;;
+		block)
+			ENV="$(serialize_env ACTION DEVPATH MAJOR MINOR PHYSDEVBUS PHYSDEVDRIVER PHYSDEVPATH SEQNUM SUBSYSTEM)"
+			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
+			;;
+		usb)
+			ENV="$(serialize_env ACTION DEVICE DEVPATH INTERFACE MODALIAS PHYSDEVBUS PHYSDEVDRIVER PRODUCT SEQNUM SUBSYSTEM TYPE)"
+			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
+			;;
 		*)
+			return 1
 			;;
 	esac
 }
@@ -78,8 +151,8 @@ mount_usbroot() {
 		return 1
 	fi
 
-	# disable hotplug
-	hotplugging disable
+	# cache hotplug events
+	hotplugging defer
 
 	if [ $HWRevision -eq 122 ]; then
 		load_usb_modules_7270
@@ -115,14 +188,13 @@ mount_usbroot() {
 					FSCKCODE=$?
 					if [ "$FSCKCODE" -gt 3 ]; then
 						echo "*** USB root rejected: filesystem contains errors. ***"
-						# reenable hotplug
-						hotplugging enable
+						# discard hotplug cache
+						hotplugging discard
 						return 1
 					elif [ "$FSCKCODE" -gt 1 ]; then
 						echo "*** Filesystem errors corrected, rebooting... ***"
-						# reenable hotplug
-						hotplugging enable
-						# reboot without init
+						# do not cleanup (e.g. hotplug), just reboot without init
+						# to be as quickly as possible alive again
 						reboot -f
 					fi
 				fi
@@ -138,8 +210,8 @@ mount_usbroot() {
 		[ $LOOP -lt 99 ] && echo "storage: SCSI device not responding!" && sleep 2
 		let LOOP=LOOP+1
 	done
-	# reenable hotplug
-	hotplugging enable
+	# discard hotplug cache
+	hotplugging discard
 	# return with failure code
 	return 1
 }
@@ -185,9 +257,9 @@ load_usb_modules() {
 	esac
 
 	modprobe Piglet piglet_bitfile=$piglet_bitfile $piglet_load_params
-	modprobe usbcore
-	if modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1; then
+	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
+		modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1
 	fi
 }
 
@@ -202,9 +274,9 @@ load_usb_modules_7270() {
 		dect_firstlevelfile=$dect_firstlevelfile \
 		dect_secondlevelfile=$dect_secondlevelfile \
 		$piglet_load_params
-	modprobe usbcore
-	if modprobe musb_hdrc; then
+	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
+		modprobe musb_hdrc
 	fi
 }
 
@@ -228,11 +300,11 @@ rmmodules() {
 }
 
 cleanup_on_failure() {
-	# unmount filesystems given via parameter
-	umount "$@"
+	# unmount usbfs and filesystems given via parameter
+	umount /proc/bus/usb "$@"
 	# remove modules (requires /proc)
 	rmmodules
-	# unmount virtual filesystems
+	# unmount (remaining) virtual filesystems
 	unmount_virtualfs
 }
 
@@ -332,26 +404,10 @@ start()
 
 	echo "*** Mounting USB root ... ***"
 	if ! mount_usbroot; then
-		rmmodules
-		unmount_virtualfs
+		cleanup_on_failure
 		return 1
 	fi
 
-	# Ensure that there is a usable /dev/console, create if filesystem is rw, else reject USB directory
-	if [ ! -c "$MNTPOINT$USBPATH/dev/console" ]; then
-		echo "*** Missing device /dev/console on USB root, trying to create ... ***"
-		# remove (possible existing) filesystem object before creating device node
-		rm -f "$MNTPOINT$USBPATH/dev/console" 2>/dev/null
-		# create char device, wWe need this to be able to redirect std{in,err,out} later
-		mknod "$MNTPOINT$USBPATH/dev/console" c 5 1
-		# now check again and fail if still no char device (might be the case of ro mounted fs)
-		if [ ! -c "$MNTPOINT$USBPATH/dev/console" ]; then
-			echo "*** USB root rejected: /dev/console missing, not a character file or/and creation failed! ***"
-			cleanup_on_failure "$MNTPOINT"
-			return 1
-		fi
-	fi
-	
 	# Ensure there is a directory which picks up the old root fs
 	if [ ! -d "$MNTPOINT$USBPATH/$OLDROOT" ]; then
 		# try to create, will fail on ro mounted filesystems
@@ -367,13 +423,25 @@ start()
 	echo "*** Pivoting to USB root ... ***"
 	[ -d "$MNTPOINT$USBPATH" ] && mount -o bind "$MNTPOINT$USBPATH" "$MNTPOINT"
 	cd "$MNTPOINT"
+	# To flush the hotplug cache finally we have to save the cache file in a location from
+	# where it is read later. The /dev filesystem is the only one which can be mounted
+	# conditionally (in /etc/init.d/rc.S), all other fs are mounted via a "mount -a" call.
+	# /dev would be mounted as tmpfs so we prepared it above an move it now to its final
+	# place.
+	# Note: some avm daemons seems to grab the first mounted tmpfs to store some mmap files,
+	#       this is why we can't use an additional tmpfs and have to 're-use' our tmpfs for /dev
+	mount --move /oldroot "$MNTPOINT/dev"
+	# some cleanup before pivot_root
 	unmount_virtualfs
+
 	if pivot_root . "$OLDROOT"; then
 		# explicite chdir to new root as advised by 'man pivot_root'
 		cd /
 		echo "*** USB root pivoting succeeded, done. ***"
 	else
 		echo "*** USB root pivoting failed, exiting. ***"
+		# discard hotplug cache
+		hotplugging discard
 		cleanup_on_failure "$MNTPOINT" "$DEVICE"
 		return 1
 	fi
@@ -388,6 +456,9 @@ fi
 
 case "$1" in
 	""|load)
+		# flush hotplug cache
+		hotplugging flush
+
 		# register with web frontend
 		modreg cgi 'usbroot' 'USB Root'
 
@@ -451,6 +522,9 @@ case "$1" in
 	nostore)
 		echo "$USBROOT_ENV_VAR" > /proc/sys/urlader/environment
 		echo "USB variable removed from bootloader environment"
+		;;
+	scsi|scsi_device|scsi_host|block|usb)
+		hotplugging $1
 		;;
 	*)
 		usage >&2
