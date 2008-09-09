@@ -35,6 +35,7 @@ $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 		all
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
+	chmod 644 $(TCP_WRAPPERS_DIR)/tcpd.h
 	cp $(TCP_WRAPPERS_DIR)/tcpd.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include
 	cp $(TCP_WRAPPERS_DIR)/libwrap.a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
 	cp $(TCP_WRAPPERS_DIR)/shared/libwrap*.so* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
