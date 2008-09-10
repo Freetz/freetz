@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,0.4)
+$(call PKG_INIT_BIN,0.4.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.hsc.fr/ressources/outils/dns2tcp/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/server/dns2tcpd
