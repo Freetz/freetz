@@ -164,3 +164,86 @@ config FREETZ_BUSYBOX_SEQ
 	default n
 	help
 		Print a sequence of numbers.
+
+config FREETZ_BUSYBOX_TAC
+	bool "tac"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Reverse cat.
+
+config FREETZ_BUSYBOX_MDEV_RENAME
+	bool "mdev rename"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Enables the renaming destination devices as they are created.
+
+config FREETZ_BUSYBOX_MDEV_RENAME_REGEXP
+	bool "mdev rename regexp"
+	depends on FREETZ_BUSYBOX_MDEV_RENAME
+	default n
+	help
+		Enables the rename destination devices using regular expressions.
+
+config FREETZ_BUSYBOX_MOUNT_HELPERS
+	bool "mount helpers"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Enable mounting of virtual file systems via external helpers.
+		E.g. "mount obexfs#-b00.11.22.33.44.55 /mnt" will in effect call
+		"obexfs -b00.11.22.33.44.55 /mnt"
+		Also "mount -t sometype [-o opts] fs /mnt" will try
+		"sometype [-o opts] fs /mnt" if simple mount syscall fails.
+		The idea is to use such virtual filesystems in /etc/fstab.
+
+config FREETZ_BUSYBOX_MOUNT_LABEL
+	bool "mount label"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		This allows for specifying a device by label or uuid, rather than by
+		name.  This feature utilizes the same functionality as findfs.
+
+config FREETZ_BUSYBOX_VOLUMEID
+	bool "volumeid"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Detecting label and uuid on common filesystems.
+
+config FREETZ_BUSYBOX_VOLUMEID_EXT
+	bool "volumeid ext"
+	depends on FREETZ_BUSYBOX_VOLUMEID
+	default n
+	help
+		Ext filesystem.
+
+config FREETZ_BUSYBOX_VOLUMEID_FAT
+	bool "volumeid fat"
+	depends on FREETZ_BUSYBOX_VOLUMEID
+	default n
+	help
+		fat filesystem.
+
+config FREETZ_BUSYBOX_VOLUMEID_NTFS
+	bool "volumeid ntfs"
+	depends on FREETZ_BUSYBOX_VOLUMEID && FREETZ_BUSYBOX_MOUNT_HELPERS
+	default n
+	help
+		ntfs filesystem.
+
+config FREETZ_BUSYBOX_VOLUMEID_LUKS
+	bool "volumeid luks"
+	depends on FREETZ_BUSYBOX_VOLUMEID && FREETZ_BUSYBOX_MOUNT_HELPERS
+	default n
+	help
+		luks filesystem.
+
+config FREETZ_BUSYBOX_VOLUMEID_LINUXRAID
+	bool "volumeid linuxraid"
+	depends on FREETZ_BUSYBOX_VOLUMEID && FREETZ_BUSYBOX_MOUNT_HELPERS
+	default n
+	help
+		linuxraid filesystem.
