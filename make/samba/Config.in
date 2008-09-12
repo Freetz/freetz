@@ -3,13 +3,11 @@ config FREETZ_PACKAGE_SAMBA
 	depends on FREETZ_LANG_DE || ! FREETZ_SELECTED_LANG_ONLY
 	select FREETZ_MODULE_nls_cp437
 	select FREETZ_MODULE_nls_iso8859_1
-	depends on ! FREETZ_REMOVE_SMBD
 	default n
 	help
 		Provides the Samba SMB server (smbd). This is what you need if you would
 		like your router's file system to be accessible from Windows or from
 		other UNIX/Linux machines via smbmount, smbclient, cifsmount or similar.
-		Adds ~1.1 MB to the firmware (uncompressed).
 
 config FREETZ_PACKAGE_NMBD
 	bool "Samba 3.0.24 nmbd (Nameservices)"

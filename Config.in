@@ -1162,6 +1162,7 @@ config FREETZ_REMOVE_SMBD
 	bool "Remove smbd"
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
+		! FREETZ_PACKAGE_SAMBA && \
 		( \
 		(FREETZ_HAS_USB_HOST && ! FREETZ_TYPE_FON_7150) || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 \
@@ -1171,7 +1172,6 @@ config FREETZ_REMOVE_SMBD
 		Remove Samba daemon (smbd)
 		This patch removes only the daemon. The regular options in AVM's webinterface 
 		are still present.
-		Caution: Don't select this item if you plan to use Freetz samba package.
 
 config FREETZ_REMOVE_MINID
 	bool "Remove minid - EXPERIMENTAL"
