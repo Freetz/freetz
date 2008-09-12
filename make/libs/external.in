@@ -30,6 +30,21 @@ config EXTERNAL_FREETZ_LIB_libfreetype
 		externals these file(s):
 		 /usr/lib/libfreetype.so.6.3.16
 
+config EXTERNAL_FREETZ_LIB_libid3tag
+        depends on EXTERNAL_ENABLED && FREETZ_LIB_libid3tag
+        bool "libid3tag"
+        default n
+        help
+                externals these file(s):
+                 /lib/libid3tag.so.0.3.0
+
+config EXTERNAL_FREETZ_LIB_libmad    
+        depends on EXTERNAL_ENABLED && FREETZ_LIB_libmad    
+        bool "libmad"
+        default n
+        help
+                externals these file(s):
+                 /lib/libmad.so.0.2.1
 
 config EXTERNAL_FREETZ_LIB_libncurses
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libncurses
