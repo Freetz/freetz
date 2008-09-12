@@ -964,6 +964,14 @@ config FREETZ_PATCH_ATA
 	help
 		Patches the ATA mode configuration pages into the web menu.
 
+config FREETZ_PATCH_DSL_EXPERT
+        bool "Patch extended DSL-Settings"
+        depends on \
+		FREETZ_TYPE_LABOR_ALL
+        default n
+        help
+                Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares. 
+
 config FREETZ_PATCH_ENUM
 	bool "Patch enum"
 	depends on FREETZ_HAS_PHONE
