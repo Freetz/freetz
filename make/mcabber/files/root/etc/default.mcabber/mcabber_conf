@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cat << EOF
+set username = $MCABBER_USERNAME
+set server = $MCABBER_SERVER
+EOF
+echo "$MCABBER_ADD_SETTINGS" | grep -v "^#" | while read -r line; do
+	[ -n "$line" ] && echo "$line"
+done
+

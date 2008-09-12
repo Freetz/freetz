@@ -1,0 +1,32 @@
+config FREETZ_PACKAGE_MCABBER
+	bool "mcabber"
+	select FREETZ_LIB_libncurses if ! FREETZ_PACKAGE_MCABBER_STATIC
+	select FREETZ_LIB_libglib2 if ! FREETZ_PACKAGE_MCABBER_STATIC
+	select FREETZ_LIB_libpanel if ! FREETZ_PACKAGE_MCABBER_STATIC
+	default n
+	help
+		mcabber is a small Jabber console client.
+		
+		http://www.lilotux.net/~mikael/mcabber/
+
+config FREETZ_PACKAGE_MCABBER_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_MCABBER
+	default n
+	help
+		MCABBER needs the following shared libraries which can be linked in statically
+		by activating this switch:
+		- libncurses
+		- libglib2
+		- libpanel
+		- libcrypto (if ssl-support is selected)
+		- libssl (if ssl-support is selected)
+
+config FREETZ_PACKAGE_MCABBER_WITH_SSL
+	bool "with SSL-Support"
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_MCABBER_STATIC
+	depends on FREETZ_PACKAGE_MCABBER
+	default n
+	help
+		enables SSL-Support for mcabber
+
