@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.37)
+$(call PKG_INIT_BIN, 1.39)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-source.zip
 $(PKG)_SITE:=http://kent.dl.sourceforge.net/sourceforge/espeak
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source
