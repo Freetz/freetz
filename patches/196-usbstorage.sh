@@ -38,4 +38,4 @@ sed -i 's/rm -rf /rmdir /g' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage" \
 	"${FILESYSTEM_MOD_DIR}/etc/hotplug/run_mount"
 
 # remove all lines with "chmod 000"
-sed -i -e "/^chmod 000.*$/d" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
+sed -i -e "/chmod 000.*$/d" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
