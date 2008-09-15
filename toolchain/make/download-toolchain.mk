@@ -1,6 +1,11 @@
+include $(TOOLCHAIN_DIR)/make/kernel/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
 include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
+
+ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
+	CCACHE:=ccache-kernel ccache
+endif
 
 KERNEL_TOOLCHAIN_VERSION:=0.3
 TARGET_TOOLCHAIN_VERSION:=0.6
@@ -21,7 +26,8 @@ else
 endif
 download-toolchain: $(TOOLCHAIN_DIR)/kernel/.installed kernel-configured \
 					$(TOOLCHAIN_DIR)/target/.installed \
-					$(ROOT_DIR)/lib/libc.so.0 $(ROOT_DIR)/lib/libgcc_s.so.1
+					$(ROOT_DIR)/lib/libc.so.0 $(ROOT_DIR)/lib/libgcc_s.so.1 \
+					$(CCACHE)
 
 $(TOOLCHAIN_DIR)/kernel/.installed: $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build

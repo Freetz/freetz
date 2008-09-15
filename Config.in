@@ -1844,6 +1844,14 @@ config FREETZ_KERNEL_MAKE_PATH
 	string
 	default "toolchain/kernel/bin"
 
+config FREETZ_HOSTCC
+	string "Host compiler"
+	default "gcc"
+	help
+		Set host compiler (default: gcc). To speed up compiling host
+		binarys it can be reasonable to set "ccache gcc" instead of
+		only "gcc".
+		
 source toolchain/Config.in
 
 endmenu

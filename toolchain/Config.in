@@ -129,9 +129,8 @@ config FREETZ_TARGET_GXX
 		currently part of that distribution. 
 
 config FREETZ_TARGET_CCACHE
-	bool "Build ccache for target toolchain" if FREETZ_BUILD_TOOLCHAIN
-	default y if FREETZ_BUILD_TOOLCHAIN
-	default n if FREETZ_DOWNLOAD_TOOLCHAIN
+	bool "Build ccache for target toolchains"
+	default y
 	help
 		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
 		compilers, using the -E compiler switch and a hash to detect when a

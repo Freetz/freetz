@@ -5,9 +5,10 @@ CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
 CCACHE_BINARY:=ccache
 CCACHE_TARGET_BINARY:=usr/bin/ccache
 
-
+ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_SOURCE)))
 $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(CCACHE_SITE)/$(CCACHE_SOURCE)
+endif
 
 $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CCACHE_SOURCE)
@@ -26,7 +27,7 @@ $(CCACHE_DIR)/.patched: $(CCACHE_DIR)/.unpacked
 $(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.patched
 	mkdir -p $(CCACHE_DIR)/
 	( cd $(CCACHE_DIR); rm -f config.cache; \
-		CC=$(HOSTCC) \
+		CC="$(HOSTCC)" \
 		./configure \
 		--target=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
@@ -36,7 +37,7 @@ $(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.patched
 	touch $@
 
 $(CCACHE_DIR)/$(CCACHE_BINARY): $(CCACHE_DIR)/.configured
-	$(MAKE) CC=$(HOSTCC) -C $(CCACHE_DIR)
+	$(MAKE) CC="$(HOSTCC)" -C $(CCACHE_DIR)
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY): $(CCACHE_DIR)/$(CCACHE_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin
@@ -76,8 +77,11 @@ ifeq ($(FREETZ_TARGET_GXX),y)
 		ln -fs $(REAL_GNU_TARGET_NAME)-g++ $(GNU_TARGET_NAME)-g++);
 endif
 
-
+ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 ccache: gcc $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
+else
+ccache: $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
+endif
 
 ccache-clean:
 	rm -rf  $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-cc
@@ -106,7 +110,7 @@ ccache-clean:
 		ln -fs $(REAL_GNU_TARGET_NAME)-g++ $(REAL_GNU_TARGET_NAME)-c++);
 	-$(MAKE) -C $(CCACHE_DIR) clean
 
-ccache-dirclean:
+ccache-dirclean: ccache-clean
 	rm -rf $(CCACHE_DIR)
 
 .PHONY: ccache
