@@ -28,12 +28,9 @@ write_config() {
 		fi
 	) > /mod/etc/$DAEMON.conf
 
-	# TODO: find a better way for this
-	if [ $VSFTPD_ALLOW_ROOT == "yes" ]; then
-		echo -n > /mod/etc/vsftpd.user_list
-	else
-		echo root > /mod/etc/vsftpd.user_list
-	fi
+	echo -n > /mod/etc/vsftpd.user_list
+	[ $VSFTPD_ALLOW_ROOT == "yes" ] || echo root >> /mod/etc/vsftpd.user_list
+	[ $VSFTPD_ALLOW_FTPUSER == "yes" ] || echo ftpuser >> /mod/etc/vsftpd.user_list
 }
 
 status_log() {

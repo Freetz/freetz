@@ -4,7 +4,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 auto_chk=''; man_chk=''; inetd_chk=''
-anonym_chk='';users_enabled_chk='';chroot_chk='';root_chk=''
+anonym_chk='';users_enabled_chk='';chroot_chk='';root_chk='';ftpuser_chk=''
 log_enable_chk='';log_protoc_chk='';log_syslog_yes='';log_syslog_no=''
 promiscuous_chk=''
 
@@ -13,6 +13,7 @@ if [ "$VSFTPD_ANONYMOUS" = "yes" ]; then anonym_chk=' checked'; fi
 if [ "$VSFTPD_USERS_ENABLED" = "yes" ]; then users_enabled_chk=' checked'; fi
 if [ "$VSFTPD_CHROOT" = "yes" ]; then chroot_chk=' checked'; fi
 if [ "$VSFTPD_ALLOW_ROOT" = "yes" ]; then root_chk=' checked'; fi
+if [ "$VSFTPD_ALLOW_FTPUSER" = "yes" ]; then ftpuser_chk=' checked'; fi
 if [ "$VSFTPD_PROMISCUOUS" = "yes" ]; then promiscuous_chk=' checked'; fi
 if [ "$VSFTPD_LOG_ENABLE" = "yes" ]; then log_enable_chk=' checked'; fi
 if [ "$VSFTPD_LOG_PROTOC" = "yes" ]; then log_protoc_chk=' checked'; fi
@@ -67,6 +68,8 @@ cat << EOF
 <p>
 <input type="hidden" name="allow_root" value="no">
 <input id="a1" type="checkbox" name="allow_root" value="yes"$root_chk><label for="a1"> $(lang de:"Erlaube root login" en:"Allow root login")</label>
+<input type="hidden" name="allow_ftpuser" value="no">
+<input id="a2" type="checkbox" name="allow_ftpuser" value="yes"$ftpuser_chk><label for="a2"> $(lang de:"Erlaube ftpuser login" en:"Allow ftpuser login")</label>
 </p>
 EOF
 
