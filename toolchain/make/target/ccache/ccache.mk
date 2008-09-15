@@ -10,7 +10,7 @@ $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
 	wget -P $(DL_DIR) $(CCACHE_SITE)/$(CCACHE_SOURCE)
 endif
 
-$(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE)
+$(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CCACHE_SOURCE)
 	touch $@
 

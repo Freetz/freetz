@@ -1,4 +1,5 @@
 include $(TOOLCHAIN_DIR)/make/kernel/ccache/ccache.mk
+include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
 include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
@@ -14,6 +15,12 @@ TARGET_TOOLCHAIN_SOURCE:=gcc-$(TARGET_TOOLCHAIN_GCC_VERSION)-uclibc-$(TARGET_TOO
 KERNEL_TOOLCHAIN_MD5SUM:=79395130ec54cb42807fcd79628c8597
 TARGET_TOOLCHAIN_0_9_28_MD5SUM:=c668571014dff59b307c0b7be956d5a6
 TARGET_TOOLCHAIN_0_9_29_MD5SUM:=6d7a0f928d688754879dcc36adc9ae94
+
+$(KERNEL_TOOLCHAIN_DIR):
+	@mkdir -p $@
+
+$(TARGET_TOOLCHAIN_DIR):
+	@mkdir -p $@
 
 $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(KERNEL_TOOLCHAIN_SOURCE) "" $(KERNEL_TOOLCHAIN_MD5SUM)
