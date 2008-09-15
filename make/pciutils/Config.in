@@ -1,0 +1,22 @@
+config FREETZ_PACKAGE_PCIUTILS
+	bool "pciutils 3.0.0 (binary only)"
+	default n
+	help
+		The PCI Utilities are a collection of programs for inspecting
+		and manipulating configuration of PCI devices, all based on a
+		common portable library libpci which offers access to the PCI
+		configuration space on a variety of operating systems.
+		
+		lspci displays detailed information about all PCI buses and
+		devices in the system.
+		
+		setpci allows reading from and writing to PCI device
+		configuration registers. For example, you can adjust the latency
+		timers with it. 
+
+config FREETZ_PACKAGE_PCIUTILS_IDS
+	bool "pci.ids"
+	depends on FREETZ_PACKAGE_PCIUTILS
+	default y
+	help
+		Add pci.ids file (~550 KB)
