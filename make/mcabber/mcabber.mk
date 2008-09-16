@@ -6,11 +6,11 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mcabber
 
 $(PKG)_DEPENDS_ON := glib2 ncurses ncurses-panel
 
-MYLIBS:="-lpanel -lncurses -lintl -liconv -lm -lglib-2.0"
+MYLIBS:=-lpanel -lncurses -lintl -liconv -lm -lglib-2.0
 
 ifeq ($(strip $(FREETZ_PACKAGE_MCABBER_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
-MYLIBS+="-lssl -lcrypto -ldl"
+MYLIBS+=-lssl -lcrypto -ldl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl --with-openssl=$(TARGET_MAKE_PATH)/../usr/lib
 else
 $(PKG)_CONFIGURE_OPTIONS += --without-ssl
@@ -30,8 +30,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(MCABBER_DIR) \
-		LDFLAGS=$(MYLDFLAGS) \
-		LIBS=$(MYLIBS)
+		LDFLAGS="$(MYLDFLAGS)" \
+		LIBS="$(MYLIBS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
