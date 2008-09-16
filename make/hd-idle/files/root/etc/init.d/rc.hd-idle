@@ -49,7 +49,7 @@ start() {
 	$DAEMON $HD_IDLE_DEVICE -l $HD_IDLE_IDLETIME &
 	exitval=$?
 	sleep 1
-	if [ -n $(pidof hd-idle)  ]; then
+	if [ "$(pidof hd-idle)" != "" ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
@@ -60,7 +60,7 @@ start() {
 stop() {
 	echo -n "Stopping $DAEMON...("
 	for I in $(pidof hd-idle); do
-		kill $(cat $I)  > /dev/null 2>&1
+		kill $I  > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo -n 'v'
@@ -97,7 +97,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -n $(pidof hd-idle) ]; then
+		if [ "$(pidof hd-idle)" != "" ]; then
 			echo 'running'
 		else
 			echo 'stopped'
