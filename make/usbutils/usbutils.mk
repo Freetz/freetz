@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/linux-usb
 $(PKG)_BINARY:=$($(PKG)_DIR)/lsusb
 $(PKG)_IDS:=$($(PKG)_DIR)/usb.ids
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lsusb
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/lsusb
 $(PKG)_TARGET_IDS:=$($(PKG)_DEST_DIR)/usr/share/usb.ids
 
 $(PKG)_DEPENDS_ON := libusb
