@@ -136,6 +136,11 @@ config FREETZ_MODULE_slhc
 	bool "slhc.ko"
 	default n
 
+config FREETZ_MODULE_musb_hdrc
+	bool "musb_hdrc.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	default n
+
 config FREETZ_MODULE_usblp
 	bool "usblp.ko"
 	select FREETZ_MODULE_usbcore
