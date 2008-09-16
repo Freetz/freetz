@@ -1063,6 +1063,7 @@ config FREETZ_REMOVE_WEBSRV
 	bool "Replace AVM web server by httpd"
 	depends on \
 		! FREETZ_TYPE_2170 \
+		&& ! FREETZ_TYPE_FON_5140 \
 		&& ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN ) \
 		&& ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH ) \
 		&& ! ( FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN ) \
