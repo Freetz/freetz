@@ -1052,6 +1052,13 @@ config FREETZ_AUTORUN_AUTOEND
 		Useful to start/terminate applications located on USB devices, eg apache,
 		samba or even swapfiles.
 
+config FREETZ_PATCH_MAXDEVCOUNT
+	bool "Raise the count of connectable usb device to 9"
+	depends on FREETZ_HAS_USB_HOST
+	default n
+	help
+		Use this patch if you would connect more than 3 device to the box
+
 config FREETZ_PATCH_GETCONS
 	bool "Don't redirect console messages"
 	default n
