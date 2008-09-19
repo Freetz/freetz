@@ -23,17 +23,18 @@
  }
  ## Simple semaphore stuff:
  ## includes /etc/hotplug/rc.usbsema
-@@ -44,6 +34,36 @@
+@@ -44,6 +34,34 @@
  ## atomic_touch (Filename)
  USBLOCKFILE=/var/USBLOCK_storage
  test -f /etc/hotplug/rc.usbsema && . /etc/hotplug/rc.usbsema
 +
 +mount_fs () {
-+	if [ -e /usr/bin/fstyp ]; then
-+		FSTYPE=`/usr/bin/fstyp $DEVNODE`
-+	else 
-+		FSTYPE="vfat"
-+	fi
++ # mount according to type of filesystem 
++ # return exit code: true - all went well; other - something went wrong 
++ # gobal variables: 
++ #  $DEVNODE, $MNTPATH, READMODE, FTPUID, FTPGID 
++	FSTYPE="vfat"   # default as long as we dont know better 
++	[[ -x /usr/bin/fstyp ]] && FSTYPE=`/usr/bin/fstyp $DEVNODE` 
 +	
 +	case $FSTYPE in
 +	vfat)
@@ -46,13 +47,10 @@
 +		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +		;;
 +	ntfs)
-+		if [ -e /usr/bin/ntfs-3g ]; then
-+			/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
-+		else
-+			echo "ntfs-3g not installed"
-+		fi
++		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
 +		;;
 +	*) # fs type unknown
++		mount $DEVNODE $MNTPATH
 +		;;
 +	esac
 +}
