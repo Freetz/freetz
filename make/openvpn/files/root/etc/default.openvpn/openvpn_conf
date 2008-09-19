@@ -109,6 +109,12 @@ if [ "$MODE" == "server" ]; then
 	if [ "$DHCP_RANGE" -a "$AUTH_TYPE" == "certs" ]; then
 		echo "mode server" >> $CONFFILE
 		echo "ifconfig-pool $DHCP_RANGE" >> $CONFFILE
+		if [ "$CLIENT2CLIENT" == "yes" ]; then
+		    echo "push \"route ${DHCP_RANGE%.* *}.0 255.255.255.0\"" >> $CONFFILE		
+		else
+		    echo "push \"route $BOX_IP \"" >> $CONFFILE
+		fi
+		echo "push \"route-gateway $BOX_IP \"" >> $CONFFILE
 	fi
 
 	if [ "$CLIENT_INFO" == "yes" ] && [ "$AUTH_TYPE" == "certs" ]; then 
