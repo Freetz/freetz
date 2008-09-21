@@ -8,6 +8,7 @@ mkdir -p "${EXTERNAL_MOD_DIR}"
 
 EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_PACKAGE_OPENVPN" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/openvpn"
+[ "$EXTERNAL_FREETZ_PACKAGE_BASH" == "y" ] && EXTERNAL_FILES+=" /bin/bash"
 [ "$EXTERNAL_FREETZ_PACKAGE_BLUEZ_UTILS" == "y" ] && EXTERNAL_FILES+=" /usr/bin/dund /usr/bin/pand /usr/bin/rfcomm /usr/bin/l2ping /usr/bin/sdptool /usr/sbin/hcid /usr/sbin/sdpd /usr/sbin/hciconfig /usr/sbin/hcitool"
 [ "$EXTERNAL_FREETZ_PACKAGE_LTRACE" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/ltrace"
 [ "$EXTERNAL_FREETZ_LIB_libart_lgpl_2" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libart_lgpl_2.so.2.3.19"
@@ -37,6 +38,8 @@ EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_PACKAGE_MADPLAY" == "y" ] && EXTERNAL_FILES+=" /usr/bin/madplay"
 [ "$EXTERNAL_FREETZ_PACKAGE_ESPEAK" == "y" ] && EXTERNAL_FILES+=" /usr/bin/speak"
 [ "$EXTERNAL_FREETZ_PACKAGE_VIM" == "y" ] && EXTERNAL_FILES+=" /usr/bin/vim"
+[ "$EXTERNAL_FREETZ_PACKAGE_MC" == "y" ] && EXTERNAL_FILES+=" /usr/bin/mc.bin"
+[ "$EXTERNAL_FREETZ_PACKAGE_DECO" == "y" ] && EXTERNAL_FILES+=" /usr/bin/deco"
 
 EXTERNAL_FILES="`echo $EXTERNAL_FILES|sed 's/ / \//g;s/\/\/*/\//g'`"
 
