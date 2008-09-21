@@ -123,7 +123,7 @@ include $(TOOLS_DIR)/make/*.mk
 $(DL_DIR): $(DL_FW_DIR)
 	@mkdir -p $(DL_DIR)
 
-$(DL_FW_DIR): $(DL_DIR)
+$(DL_FW_DIR):
 	@mkdir -p $(DL_FW_DIR)
 
 $(BUILD_DIR):
