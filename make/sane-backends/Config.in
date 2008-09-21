@@ -1,0 +1,449 @@
+menu SANE
+
+config FREETZ_PACKAGE_SANE_BACKENDS
+	bool "SANE 1.0.19"
+	select FREETZ_LIB_libusb
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libjpeg
+	select FREETZ_LIB_libsane
+	default n
+	help
+		SANE - Scanner support
+		(initial Freetz package by Michael Denk, tehron @ http://www.ip-phone-forum.de/)
+
+config FREETZ_LIB_libsane
+	bool "SANE (libsane.so)"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_sane_find_scanner
+	bool "sane-find-scanner"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	default n
+
+config FREETZ_SANE_scanimage
+	bool "scanimage"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	default n
+
+config FREETZ_SANE_BACKEND_dll
+	bool "dll backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	default n
+
+config FREETZ_SANE_BACKEND_abaton
+	bool "abaton backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_agfafocus
+	bool "agfafocus backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_apple
+	bool "apple backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_artec
+	bool "artec backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_artec_eplus48u
+	bool "artec_eplus48u backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_as6e
+	bool "as6e backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_avision
+	bool "avision backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_bh
+	bool "bh backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_canon
+	bool "canon backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_canon630u
+	bool "canon630u backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_cardscan
+	bool "cardscan backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_coolscan
+	bool "coolscan backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_coolscan2
+	bool "coolscan2 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_dc25
+	bool "dc25 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_dmc
+	bool "dmc backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_epjitsu
+	bool "epjitsu backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_epson
+	bool "epson backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_epson2
+	bool "epson2 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_fujitsu
+	bool "fujitsu backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_genesys
+	bool "genesys backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_gt68xx
+	bool "gt68xx backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_hp
+	bool "hp backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_hp3500
+	bool "hp3500 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_hp3900
+	bool "hp3900 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_hp4200
+	bool "hp4200 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_hp5400
+	bool "hp5400 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_hp5590
+	bool "hp5590 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_hpljm1005
+	bool "hpljm1005 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_hs2p
+	bool "hs2p backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_ibm
+	bool "ibm backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_leo
+	bool "leo backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_lexmark
+	bool "lexmark backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_ma1509
+	bool "ma1509 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_matsushita
+	bool "matsushita backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_microtek
+	bool "microtek backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_microtek2
+	bool "microtek2 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_mustek
+	bool "mustek backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_mustek_usb
+	bool "mustek_usb backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_nec
+	bool "nec backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_niash
+	bool "niash backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_pie
+	bool "pie backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_pixma
+	bool "pixma backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_plustek
+	bool "plustek backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_ricoh
+	bool "ricoh backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_s9036
+	bool "s9036 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_sceptre
+	bool "sceptre backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_sharp
+	bool "sharp backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_sm3600
+	bool "sm3600 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_sm3840
+	bool "sm3840 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_snapscan
+	bool "snapscan backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_sp15c
+	bool "sp15c backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_st400
+	bool "st400 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_stv680
+	bool "stv680 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_tamarack
+	bool "tamarack backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_teco1
+	bool "teco1 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_teco2
+	bool "teco2 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_teco3
+	bool "teco3 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_test
+	bool "test backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_u12
+	bool "u12 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_umax
+	bool "umax backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_umax_pp
+	bool "umax_pp backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_umax1220u
+	bool "umax1220u backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_plustek_pp
+	bool "plustek_pp backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_dc210
+	bool "dc210 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_dc240
+	bool "dc240 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_qcam
+	bool "qcam backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_v4l
+	bool "v4l backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_net
+	bool "net backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+config FREETZ_SANE_BACKEND_mustek_usb2
+	bool "mustek_usb2 backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_SANE_BACKEND_dll
+	default n
+
+endmenu
