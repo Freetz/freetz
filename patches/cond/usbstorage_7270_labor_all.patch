@@ -1,5 +1,5 @@
---- etc/hotplug/run_mount.orig	2008-09-03 10:52:22.000000000 +0200
-+++ etc/hotplug/run_mount	2008-09-03 10:52:29.000000000 +0200
+--- etc/hotplug/run_mount.orig	1980-09-21 07:01:10.000000000 +0200
++++ etc/hotplug/run_mount	1980-09-21 07:01:10.000000000 +0200
 @@ -21,19 +21,9 @@
  
  ## Generate a frontend'able 'nice name' to be used as mount point:
@@ -47,7 +47,7 @@
 +		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +		;;
 +	ntfs)
-+		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o $READMODE -o force -o locale=de_DE.ISO-8859-1
 +		;;
 +	*) # fs type unknown
 +		mount $DEVNODE $MNTPATH
@@ -58,12 +58,41 @@
  ## Actually perform the mount operation...
  ## (TODO Checking the partition for known filesystem types)
  do_mount () {
-@@ -75,7 +95,7 @@
+@@ -74,36 +92,7 @@
+ ## run mount with umask 0 so everyone is allowed to rwx everywhere
  local OLD_UMASK=`umask`
  umask 0
- local new_filesystem=false
+-local new_filesystem=false
 -if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
+-new_filesystem=true
+-else
+-if test -x /bin/ntfs-3g ; then
+-ntfs-3g $DEVNODE $MNTPATH -o $READMODE -o locale=de_DE.ISO-8859-1
+-local NTFS_RET=$?
+-case "$NTFS_RET" in
+-0 )
+-new_filesystem=true
+-;;
+-12 ) # NTFS_VOLUME_NOT_NTFS
+-## ignore - not formatted with NTFS
+-;;
+-15 ) # NTFS_VOLUME_UNCLEAN_UNMOUNT
+-## need option -o force, but we don't do this, because its not safe!
+-eventadd 144 $MNTNAME
+-## no fail event later on
+-FAIL_EVENT=0
+-;;
+-* )
+-## NTFS mount error
+-eventadd 145 $MNTNAME $NTFS_RET
+-## no fail event later on
+-FAIL_EVENT=0
+-;;
+-esac
+-fi
+-fi
+-if [ $new_filesystem = true ] ; then
 +if mount_fs; then
- new_filesystem=true
- fi
- if [ $new_filesystem = true ] ; then
+ FAIL_EVENT=0
+ umask $OLD_UMASK
+ eventadd 140 $MNTNAME
