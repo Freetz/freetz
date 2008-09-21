@@ -22,12 +22,12 @@ AVM_DIR:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
 AVM_UNPACK__INT_.gz:=z
 AVM_UNPACK__INT_.bz2:=j
 
-$(DL_DIR)/$(AVM_SOURCE): | $(DL_DIR)
-	wget --passive-ftp -P $(DL_DIR) $(AVM_SITE)$(AVM_SOURCE)
+$(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
+	wget --passive-ftp -P $(DL_FW_DIR) $(AVM_SITE)$(AVM_SOURCE)
 
-$(AVM_DIR)/.unpacked: $(DL_DIR)/$(AVM_SOURCE)
+$(AVM_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE)
 	mkdir -p $(AVM_DIR)
-	tar -C $(AVM_DIR) $(VERBOSE) -x$(AVM_UNPACK__INT_$(suffix $(strip $(AVM_SOURCE))))f $(DL_DIR)/$(AVM_SOURCE)
+	tar -C $(AVM_DIR) $(VERBOSE) -x$(AVM_UNPACK__INT_$(suffix $(strip $(AVM_SOURCE))))f $(DL_FW_DIR)/$(AVM_SOURCE)
 ifeq ($(AVM_VERSION),04.49)
 	mkdir -p $(AVM_DIR)/GPL/base/kernel
 	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
