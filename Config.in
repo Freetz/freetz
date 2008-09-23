@@ -396,17 +396,28 @@ config FREETZ_REPLACE_BUSYBOX
 	help
 		This is mandatory
 
-config FREETZ_REPLACE_KERNEL
-	bool "Replace kernel"
+config FREETZ_REPLACE_KERNEL_AVAILABLE
+	bool
 	depends on \
-		FREETZ_SHOW_ADVANCED && \
 		! FREETZ_TYPE_LABOR && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
 		! (FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN) && \
 		! FREETZ_TYPE_WLAN_3270
+	default y
+
+config FREETZ_REPLACE_KERNEL
+	bool "Replace kernel"
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		FREETZ_REPLACE_KERNEL_AVAILABLE
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
+
+comment "Replace kernel (currently not available)"
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		! FREETZ_REPLACE_KERNEL_AVAILABLE
 
 config FREETZ_SHOW_ADVANCED
 	bool "Show advanced options"
