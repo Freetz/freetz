@@ -21,7 +21,7 @@ done
 for i in bin/pause bin/reinit_jffs2 bin/pause bin/usbhostchanged etc/hotplug \
 	sbin/smbd sbin/smbpasswd sbin/mediasrv sbin/start_mediasrv sbin/stop_mediasrv \
 	etc/samba_config.tar etc/usb_class.tab etc/usb_device.tab etc/samba_control \
-	sbin/lsusb sbin/printserv etc/hotplug sbin/ftpd;do
+	usr/www/all/html/de/usb	sbin/lsusb sbin/printserv etc/hotplug sbin/ftpd;do
 	rm -rf ${FILESYSTEM_MOD_DIR}/$i
 done
 

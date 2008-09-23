@@ -967,7 +967,7 @@ config FREETZ_PATCH_ATA
 config FREETZ_PATCH_DSL_EXPERT
         bool "Patch extended DSL-Settings"
         depends on \
-		FREETZ_TYPE_LABOR_ALL
+					FREETZ_TYPE_LABOR_ALL
         default n
         help
                 Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares. 
@@ -995,8 +995,8 @@ config FREETZ_PATCH_SIGNED
 config FREETZ_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
 	depends on \
-		FREETZ_HAS_USB_HOST && \
-		! FREETZ_TYPE_SPEEDPORT_W701V_7170
+		FREETZ_HAS_USB_HOST #&& \
+		#! FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default y
 	help
 		1. Change the name of USB storage dir to uStorXY
@@ -1140,8 +1140,8 @@ config FREETZ_REMOVE_FTPD
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		( \
-			FREETZ_HAS_USB_HOST || \
-			FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
+			FREETZ_HAS_USB_HOST && \
+			! FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
 		)
 	default n
 	help
@@ -1157,8 +1157,8 @@ config FREETZ_REMOVE_MEDIASRV
 	FREETZ_SHOW_ADVANCED && \
 	! FREETZ_PATCH_MEDIASRV && \
 	( \
-		FREETZ_HAS_USB_HOST || \
-		FREETZ_TYPE_SPEEDPORT_W701V_7170 \
+		FREETZ_HAS_USB_HOST && \
+		! FREETZ_TYPE_SPEEDPORT_W701V_7170 \
 	)
 	default n
 	help
@@ -1172,8 +1172,8 @@ config FREETZ_REMOVE_SMBD
 		FREETZ_SHOW_ADVANCED && \
 		! FREETZ_PACKAGE_SAMBA && \
 		( \
-		(FREETZ_HAS_USB_HOST && ! FREETZ_TYPE_FON_7150) || \
-		FREETZ_TYPE_SPEEDPORT_W701V_7170 \
+		(FREETZ_HAS_USB_HOST && ! FREETZ_TYPE_FON_7150) && \
+		! FREETZ_TYPE_SPEEDPORT_W701V_7170 \
 		)
 	default n
 	help
@@ -1190,8 +1190,9 @@ config FREETZ_REMOVE_MINID
 			FREETZ_TYPE_FON_WLAN_7141 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_WLAN_3270 \
-		)
-
+		) && \
+		! FREETZ_TYPE_SPEEDPORT_W701V_7170
+		
 	help
 		Remove the mini-daemon (minid) and some other related files.
 		This patch removes Fritz!Mini support but only the files,
@@ -1208,7 +1209,9 @@ config FREETZ_REMOVE_AURA_USB
 			FREETZ_TYPE_FON_WLAN_7141 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_WLAN_3170 \
-		)
+		) && \
+		! FREETZ_TYPE_SPEEDPORT_W701V_7170
+
 	help
 		Remove the aura-usb-daemon (USB-Fernanschluss) and some related files. 
 		This patch only removes the files, not the settings in AVM's webinterface
