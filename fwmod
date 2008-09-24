@@ -881,12 +881,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
 	done
 	
-	if [ "$EXTERNAL_ENABLED" == "y" ]; then
-		echo "processing external"
-		[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
-		. "${EXTERNAL}"
-	fi
-
 	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
 		echo "invoking custom script"
 
@@ -983,7 +977,18 @@ if [ "$DO_MOD" -gt 0 ]; then
 		rm -rf libs_to_reduce
 		rm -f ${FILESYSTEM_MOD_DIR}/mklibs-progs
 	fi
-	
+
+	# external should run after modifying and stripping and so on
+	# only run, if packaging is enabled
+
+  if [ "$DO_PACK" -gt 0 ]; then
+    if [ "$EXTERNAL_ENABLED" == "y" ]; then
+      echo "processing external"
+      [ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
+      . "${EXTERNAL}"
+    fi
+  fi
+
 	touch "${DIR}/.modified"
 	echo "done."
 	echo
