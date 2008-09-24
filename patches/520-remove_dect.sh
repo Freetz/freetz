@@ -6,6 +6,6 @@ for files in \
 	usr/bin/dect_manager \
 	usr/share/ctlmgr/libdect.so \
 	; do
-	rm -rf ${FILESYSTEM_MOD_DIR}/$files
+	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 

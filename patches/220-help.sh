@@ -7,7 +7,7 @@ else
 	HTML_DIR="${HTML_LANG_MOD_DIR}/html/en"
 fi
 echo1 "${HTML_DIR}"
-rm -rf "${HTML_DIR}/help"
+rm_files "${HTML_DIR}/help"
 find "${HTML_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuHilfe/d'
 if [ -e "${HTML_DIR}/global.inc" ]; then

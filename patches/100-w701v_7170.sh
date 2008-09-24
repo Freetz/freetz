@@ -16,13 +16,13 @@ cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit"* "${FILES
 
 echo2 "deleting obsolete files"
 for i in fs/ext2 fs/fat fs/isofs fs/nls fs/vfat fs/mbcache.ko drivers/usb drivers/scsi; do
-	rm -rf ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i
+	rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i"
 done
 for i in bin/pause bin/reinit_jffs2 bin/pause bin/usbhostchanged etc/hotplug \
 	sbin/smbd sbin/smbpasswd sbin/mediasrv sbin/start_mediasrv sbin/stop_mediasrv \
 	etc/samba_config.tar etc/usb_class.tab etc/usb_device.tab etc/samba_control \
 	usr/www/all/html/de/usb	sbin/lsusb sbin/printserv etc/hotplug sbin/ftpd;do
-	rm -rf ${FILESYSTEM_MOD_DIR}/$i
+	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done
 
 echo2 "patching webmenu"
