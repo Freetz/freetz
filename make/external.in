@@ -1,4 +1,5 @@
 comment "packages"
+	depends on EXTERNAL_ENABLED
 source make/bash/external.in
 source make/bluez-utils/external.in
 source make/cryptsetup/external.in
@@ -21,7 +22,9 @@ source make/tcpdump/external.in
 source make/vim/external.in
 source make/wput/external.in
 comment "services"
+	depends on EXTERNAL_ENABLED
 source make/openvpn/external.in
 source make/samba/external.in
 comment "libraries"
+	depends on EXTERNAL_ENABLED
 source make/libs/external.in
