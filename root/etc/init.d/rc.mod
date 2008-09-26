@@ -6,7 +6,7 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 export TERM=xterm
 
 start() {
-	echo "rc.mod version $(cat /etc/.subversion)"
+	echo "rc.mod version $(cat /etc/.freetz-version)"
 
 	# Basic Packages
 	[ -e /mod/etc/init.d/rc.crond ] || ln -s /etc/init.d/rc.crond /mod/etc/init.d/rc.crond

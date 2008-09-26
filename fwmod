@@ -576,6 +576,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
 	done
 
+	echo1 "setting freetz-version '${SUBVERSION}'"
+	echo "$SUBVERSION" > "${FILESYSTEM_MOD_DIR}/etc/.freetz-version"
 	if [ "$FREETZ_SUBVERSION_STRING" == "y" ]; then
 		echo1 "setting subversion '${SUBVERSION}'"
 		echo "$SUBVERSION" > "${FILESYSTEM_MOD_DIR}/etc/.subversion"
