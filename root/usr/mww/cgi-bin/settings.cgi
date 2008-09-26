@@ -44,6 +44,7 @@ html_cat << EOF
 </p>
 <h2>Swap ($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)</h2>
 <p>Swap: <input type="text" name="swap_file" size="50" maxlength="50" value="$(html "$MOD_SWAP_FILE")"></p>
+<p><input type="text" name="swap_size" size="3" maxlength="2" value="" /> MB <input type="button" value="$(lang de:"Swap-Datei anlegen" en:"Create swapfile")" onclick="window.open('/cgi-bin/create_swap.cgi?swap_file='+encodeURIComponent(document.forms[0].swap_file.value)+'&swap_size='+encodeURIComponent(document.forms[0].swap_size.value),'$(lang de:"Anlegen der Swap-Datei" en:"Swapfile creation")','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes')" /></p>
 EOF
 
 sec_end
