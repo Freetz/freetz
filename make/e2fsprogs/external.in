@@ -1,10 +1,44 @@
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_E2FSPROGS
-	bool "e2fsprogs"
+	boolean "e2fsprogs"
 	default n
 	help
-		externals these file(s):
-		 /usr/sbin/e2fsck
-		 /usr/sbin/mke2fs
-		 /usr/sbin/tune2fs
-		 /usr/sbin/blkid
+		external these file(s)
+			/usr/bin/e2fsck
+			/usr/bin/mke2fs
+			/usr/bin/tune2fs
+			/usr/bin/blkid
+	
+menu e2fsprogs
+	depends on EXTERNAL_FREETZ_PACKAGE_E2FSPROGS
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2fsck
+	boolean "e2fsck"
+	default n
+	help
+		external these file
+			/usr/bin/e2fsck
+			(use at your own risk, e2fsck is needed to check an uncleanly umounted filesystem)
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_mke2fs
+	boolean "mke2fs"
+	default n
+	help
+		external these file(s)
+			/usr/bin/mke2fs
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_tune2fs
+	boolean "tune2fs"
+  default n
+  help
+    external these file(s)
+      /usr/bin/tune2fs
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid
+	boolean "blkid"
+  default n
+  help
+    external these file(s)
+      /usr/bin/blkid
+
+endmenu

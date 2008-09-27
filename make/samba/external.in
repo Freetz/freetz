@@ -6,3 +6,30 @@ config EXTERNAL_FREETZ_PACKAGE_SAMBA
 		externals these file(s):
 		 /sbin/smbd
 		 /sbin/nmbd
+		 /sbin/smbpasswd
+
+menu Samba
+	depends on EXTERNAL_FREETZ_PACKAGE_SAMBA
+
+config EXTERNAL_FREETZ_PACKAGE_SAMBA_nmbd
+	boolean "nmbd"
+	default n
+	help
+		external these file
+			/sbin/nmbd
+
+config EXTERNAL_FREETZ_PACKAGE_SAMBA_smbd
+	boolean "smbd"
+	default n
+	help
+		external these file(s)
+			/sbin/smbd
+
+config EXTERNAL_FREETZ_PACKAGE_SAMBA_smbpasswd
+	boolean "smbpasswd"
+  default n
+  help
+    external these file(s)
+      /sbin/smbpasswd
+
+endmenu
