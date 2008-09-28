@@ -1,0 +1,39 @@
+#!/bin/sh
+
+cat << EOF
+cd /mod/etc
+
+# create required directories (cache-dir, conf-dir).
+mkdir -p /var/davfs2 2>/dev/null
+mkdir -p $DAVFS2_TMPPATH 2>/dev/null
+mkdir -p /var/cache 2>/dev/null
+rm /var/cache/davfs2 2>/dev/null
+ln -s $DAVFS2_TMPPATH /var/cache/davfs2
+
+# create davfs2.conf
+echo "secrets /var/davfs2/secrets" > /var/davfs2/davfs2.conf
+chmod 0600 /var/davfs2/secrets
+
+modprobe coda
+
+if [ "$DAVFS2_MOUNTPOINT1" != "" ] 
+then
+  echo "mount $DAVFS2_HOST1..."
+  mkdir -p $DAVFS2_MOUNTPOINT1 2>/dev/null
+  mount.davfs $DAVFS2_HOST1 $DAVFS2_MOUNTPOINT1 -o conf=/var/davfs2/davfs2.conf
+fi
+
+if [ "$DAVFS2_MOUNTPOINT2" != "" ]
+then
+  echo "mount $DAVFS2_HOST2..."
+  mkdir -p $DAVFS2_MOUNTPOINT2 2>/dev/null
+  mount.davfs $DAVFS2_HOST2 $DAVFS2_MOUNTPOINT2 -o conf=/var/davfs2/davfs2.conf
+fi
+
+if [ "$DAVFS2_MOUNTPOINT3" != "" ]
+then
+  echo "mount $DAVFS2_HOST3..."
+  mkdir -p $DAVFS2_MOUNTPOINT3 2>/dev/null
+  mount.davfs $DAVFS2_HOST3 $DAVFS2_MOUNTPOINT3 -o conf=/var/davfs2/davfs2.conf
+fi
+EOF

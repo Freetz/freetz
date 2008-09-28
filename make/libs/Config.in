@@ -542,6 +542,17 @@ config FREETZ_LIB_libevent
 		then add or remove events dynamically without having to change the event
 		loop.
 
+config FREETZ_LIB_libexpat
+	bool "libexpat (libexpat.so)"
+	default n
+	help
+		This is Expat, a C library for parsing XML, written by James Clark.
+		Expat is a stream-oriented XML parser.  This means that you register
+		handlers with the parser before starting the parse.  These handlers
+		are called when the parser discovers the associated structures in the
+		document being parsed.  A start tag is an example of the kind of
+		structures for which you may register handlers.
+
 config FREETZ_LIB_libid3tag
 	bool "ID3 Tag (libid3tag.so)"
 	select FREETZ_LIB_libz
@@ -558,6 +569,12 @@ config FREETZ_LIB_libmad
 		so-called MPEG 2.5 format. All three audio layers (Layer I, Layer II,
 		and Layer III a.k.a. MP3) are fully implemented.
 
+config FREETZ_LIB_libneon
+	bool "libneon (libneon.so)"
+	default n
+	help
+		neon is an HTTP and WebDAV client library, with a C language API.
+	
 #config FREETZ_LIB_libpjsip
 #	bool "libpjsip (libpjsip.so)
 #	default n
