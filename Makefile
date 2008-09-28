@@ -83,22 +83,13 @@ SWITCH_UCLIBC:=toolchain-switch
 endif
 export SWITCH_UCLIBC
 
-# Simple checking of build prerequisites
-ifneq ($(shell $(CHECK_PREREQ_TOOL) \
-	$$(cat .build-prerequisites) \
-	>&2 \
-	&& echo OK\
-),OK)
-$(error Some build prerequisites are missing! Please install the missing packages before trying again)
-endif
-
 all: step
-world: $(SWITCH_UCLIBC) $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
+world: prereq-check $(SWITCH_UCLIBC) $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
 		$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
-noconfig_targets:=menuconfig config oldconfig defconfig tools $(TOOLS)
+noconfig_targets:=prereq-check menuconfig config oldconfig defconfig tools $(TOOLS)
 
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
@@ -447,6 +438,16 @@ dist: distclean
 		cd "$$curdir"; \
 	)
 	rm -f .exclude-dist-tmp
+
+prereq-check:
+# Simple checking of build prerequisites
+ifneq ($(shell $(CHECK_PREREQ_TOOL) \
+  $$(cat .build-prerequisites) \
+  >&2 \
+  && echo OK\
+),OK)
+$(error Some build prerequisites are missing! Please install the missing packages before trying again)
+endif
 
 toolchain-switch:
 	@rm -f $(TOOLCHAIN_DIR)/target

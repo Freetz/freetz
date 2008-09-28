@@ -192,6 +192,9 @@ FAKEROOT_TOOL="fakeroot"
 UNSQUASHFS_TOOL="unsquashfs3-lzma"
 EXTERNAL_TOOL="external"
 
+[ "$FREETZ_USE_NICE" == "y" ] && NICE="$(which nice)" || NICE=""
+
+
 MKSQUASHFS_OPTIONS="-le -noappend -all-root -info"
 
 if [ "$FREETZ_REPLACE_KERNEL" == "y" ] || [ "$FREETZ_KERNEL_VERSION_2_6_19_2" ]; then
@@ -392,8 +395,8 @@ VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
 if [ "$DO_UNPACK" -gt 0 ]; then
 	echo "${BOLD}STEP 1: UNPACK${NORM}"
-
-	rm -rf "$ORG_DIR"
+#HIER HIER
+	rm_files "$ORG_DIR"
 	mkdir "$ORG_DIR"
 
 	echo "unpacking firmware image"
@@ -441,12 +444,12 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	echo "unpacking var.tar"
 	mkdir "$VARTAR_DIR"
-	"$TAR" -xif "$VARTAR" -C "$VARTAR_DIR" || exit 1
+	"$NICE" "$TAR" -xif "$VARTAR" -C "$VARTAR_DIR" || exit 1
 
 	# Unpacking second firmware image
 	if [ -n "$FIRMWARE2" ]; then
 		echo "unpacking tk image"
-		rm -rf "${DIR}/.tk"
+		rm_files "${DIR}/.tk"
 		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" > /dev/null
 	fi
 
@@ -660,7 +663,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			./usr/lib/cgi-bin | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 		mkdir -p "${FILESYSTEM_MOD_DIR}/usr/lib"
-		cp "${ROOT_DIR}/usr/lib/lib"*.sh "${FILESYSTEM_MOD_DIR}/usr/lib/"
+		"$NICE" cp "${ROOT_DIR}/usr/lib/lib"*.sh "${FILESYSTEM_MOD_DIR}/usr/lib/"
 
 		# Emergency stop switch for execution of debug.cfg
 		sed -i -r 's#(\. /var/flash/debug\.cfg)#[ "$dbg_off" == "y" ] || \1#g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
@@ -713,12 +716,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 					dn="$(dirname "$i")"
 					lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)2/libg\1-2/')"
 					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp -a "${ROOT_DIR}/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
+					"$NICE" cp -a "${ROOT_DIR}/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
 					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
 				fi
 			done
 		fi
-		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
+		[ "$FREETZ_LIB_libuClibc" == "y" ] && "$NICE" cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 		
 		if [ "$FREETZ_LIB_libterminfo" == "y" ]; then
 			echo1 "installing terminfos"
@@ -734,17 +737,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 					echo2 "${bn}"
 					dn="$(dirname "$i")"
 					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp -a "${ROOT_DIR}/${dn}/${terminfo}" "${FILESYSTEM_MOD_DIR}/${dn}/"
+					"$NICE" cp -a "${ROOT_DIR}/${dn}/${terminfo}" "${FILESYSTEM_MOD_DIR}/${dn}/"
 				fi
 			done
 		fi
 
 		if [ "$FREETZ_FAVICON_STRING" != "none" ]; then
 			echo1 "adding favicons (${FREETZ_FAVICON_STRING})"
-			cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/freetz.ico" "${FILESYSTEM_MOD_DIR}/usr/share/favicon.ico"
+			"$NICE" cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/freetz.ico" "${FILESYSTEM_MOD_DIR}/usr/share/favicon.ico"
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/mww/favicon.ico"
 
-			cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
+			"$NICE" cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
 			ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
 		fi
 
@@ -763,7 +766,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		# Replace busybox
-		cp -f "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" "${FILESYSTEM_MOD_DIR}/bin/busybox"
+		"$NICE" cp -f "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" "${FILESYSTEM_MOD_DIR}/bin/busybox"
 
 		echo1 "installing symlinks"
 
@@ -813,7 +816,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		echo1 "replacing kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING} (${KERNEL_SUBVERSION})"
-		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
+		"$NICE" cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
 	fi	
 
 	echo1 "installing modules"
@@ -832,7 +835,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 					echo2 "${bn}"
 					dn="$(dirname "$i")"
 					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
+					"$NICE" cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
 					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
 		fi
 	done
@@ -1022,7 +1025,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 		if [ ! -d "$MOD_DIR" ]; then
 			# Copy the unpacked directory
-			cp -r "$ORG_DIR" "$MOD_DIR"
+			"$NICE" cp -r "$ORG_DIR" "$MOD_DIR"
 		fi
 	fi
 
@@ -1117,9 +1120,9 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Last, but not least, include .config and addon/static.pkg into firmware
 	# image for further reference, e.g. user support
-	[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
-	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
-	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
+	[ -r "$DOT_CONFIG" ] && "$NICE" cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
+	[ -r "$STATIC_ADDON_FILE" ] && "$NICE" cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
+	[ -r "$PACKAGES_LIST_FILE" ] && "$NICE" cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
 	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$modmakedate.image"
