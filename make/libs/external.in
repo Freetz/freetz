@@ -6,6 +6,14 @@ config EXTERNAL_FREETZ_LIB_libart_lgpl_2
 		externals these file(s):
 		 /usr/lib/libart_lgpl_2.so.2.3.19
 
+config EXTERNAL_FREETZ_LIB_libcrypto
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcrypto
+	bool "libcrypto"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libcrypto.so.0.9.8
+
 config EXTERNAL_FREETZ_LIB_libdevmapper
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdevmapper
 	bool "libdevmapper"
@@ -31,20 +39,20 @@ config EXTERNAL_FREETZ_LIB_libfreetype
 		 /usr/lib/libfreetype.so.6.3.16
 
 config EXTERNAL_FREETZ_LIB_libid3tag
-        depends on EXTERNAL_ENABLED && FREETZ_LIB_libid3tag
-        bool "libid3tag"
-        default n
-        help
-                externals these file(s):
-                 /lib/libid3tag.so.0.3.0
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libid3tag
+	bool "libid3tag"
+	default n
+	help
+		externals these file(s):
+		 /lib/libid3tag.so.0.3.0
 
 config EXTERNAL_FREETZ_LIB_libmad    
-        depends on EXTERNAL_ENABLED && FREETZ_LIB_libmad    
-        bool "libmad"
-        default n
-        help
-                externals these file(s):
-                 /lib/libmad.so.0.2.1
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libmad    
+	bool "libmad"
+	default n
+	help
+		externals these file(s):
+		 /lib/libmad.so.0.2.1
 
 config EXTERNAL_FREETZ_LIB_libncurses
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libncurses

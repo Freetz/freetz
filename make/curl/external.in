@@ -1,0 +1,12 @@
+config EXTERNAL_FREETZ_PACKAGE_CURL
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_CURL
+	bool "Curl"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/curl
+		 /usr/lib/libcurl.so.4.0.1
+		 
+		Note:
+		Curl uses also libcrypto library.
+		If you want to external libcrypto, you should select this library separately under libraries.

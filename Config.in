@@ -1681,26 +1681,69 @@ config EXTERNAL_ENABLED
 		[autoend.sh]
 		/etc/init.d/rc.XYZ stop
 
+config EXTERNAL_DOWNLOADER
+	bool "Prepare files for Downloader"
+	default n
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_DOWNLOADER
+	help
+		Prepare files for Downloader package. 
+		Downloader loads usualy files from a http or ftp server into the RAM of the box.
+
 config EXTERNAL_SUBDIRS
 	bool "Keep subdirectories"
-	default n
+	default n if ! EXTERNAL_DOWNLOADER
+	default y if EXTERNAL_DOWNLOADER
 	depends on EXTERNAL_ENABLED
 	help
 		Keep the original directory structure
 
 config EXTERNAL_CREATEPAK
-	bool "Create file for upload"
+	bool "Create file for upload" if ! EXTERNAL_DOWNLOADER
 	default y
-	depends on EXTERNAL_ENABLED
+	depends on EXTERNAL_ENABLED && ! EXTERNAL_DOWNLOADER
 	help
 		Creates a file for upload with the webinterface
 
-config EXTERNAL_DIRECTORY
-	string "external directory"
-	default "/var/media/ftp/uStor01/external/"
+choice
+
+	prompt "external directory"
+	default EXTERNAL_DIR1 if ! EXTERNAL_DOWNLOADER
+	default EXTERNAL_DIR3 if EXTERNAL_DOWNLOADER
 	depends on EXTERNAL_ENABLED
 	help
 		The directory on the Freetz Box with the externald files
+
+	config EXTERNAL_DIR1
+		depends on ! EXTERNAL_DOWNLOADER
+		bool "/var/media/ftp/uStor01/external/"
+
+	config EXTERNAL_DIR2
+		depends on ! EXTERNAL_DOWNLOADER
+		bool "/var/media/ftp/uStor02/external/"
+
+	config EXTERNAL_DIR3
+		depends on EXTERNAL_DOWNLOADER
+		bool "/mod/"
+
+	config EXTERNAL_CUSTOM_DIR
+		bool "custom directory"
+
+endchoice
+
+config EXTERNAL_CUSTOM_DIRNAME
+	string "custom directory" if EXTERNAL_CUSTOM_DIR
+	default "/var/media/ftp/uStor01/external/"
+	depends on EXTERNAL_ENABLED && EXTERNAL_CUSTOM_DIR
+	help
+		Custom directory on the Freetz Box with the externald files
+
+config EXTERNAL_DIRECTORY
+	string
+	default "/var/media/ftp/uStor01/external/" if EXTERNAL_DIR1
+	default "/var/media/ftp/uStor02/external/" if EXTERNAL_DIR2
+	default "/mod/" if EXTERNAL_DIR3
+	default EXTERNAL_CUSTOM_DIRNAME if EXTERNAL_CUSTOM_DIR
+	depends on EXTERNAL_ENABLED
 
 config EXTERNAL_OWN_FILES
 	string "own files"
