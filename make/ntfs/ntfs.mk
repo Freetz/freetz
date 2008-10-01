@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.2812)
+$(call PKG_INIT_BIN, 1.2918)
 $(PKG)_SOURCE:=ntfs-3g-$($(PKG)_VERSION).tgz
-$(PKG)_SITE:=http://www.ntfs-3g.org/
+$(PKG)_SITE:=http://www.ntfs-3g.org
 $(PKG)_DIR:=$(SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ntfs-3g
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ntfs-3g
