@@ -46,8 +46,16 @@ TOOLCHAIN_DIR:=toolchain
 TOOLS_DIR:=tools
 DL_FW_DIR:=$(DL_DIR)/fw
 FW_IMAGES_DIR:=images
-BUILD_DIR_VERSION=$(shell svnversion | grep -v exported 2> /dev/null)
-BUILD_LAST_VERSION=$(shell cat .lastbuild-version 2> /dev/null)
+MIRROR_DIR:=$(DL_DIR)/mirror
+ALL_PACKAGES:=$(shell ( find make -mindepth 1 -maxdepth 1 -type d ! -name libs \
+			! -name .svn 	! -name avm-gpl \
+					! -name busybox \
+					! -name linux \
+					-printf "%f\n"; \
+			find make/libs -mindepth 1 -maxdepth 1 -type f -name "*.mk" \
+			-printf "%f\n" | cut -d"." -f 1) | sort | sed -e "s/uclibc++/uclibcxx/g")
+BUILD_DIR_VERSION:=$(shell svnversion | grep -v exported 2> /dev/null)
+BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
 
 PACKAGES_BUILD_DIR:=$(PACKAGES_DIR)/$(BUILD_DIR)
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
@@ -90,7 +98,8 @@ world: prereq-check uclibc-check $(CHECK_BUILD_DIR_VERSION)$(SWITCH_UCLIBC) \
 
 include $(TOOLS_DIR)/make/Makefile.in
 
-noconfig_targets:=prereq-check check-builddir-version menuconfig config oldconfig defconfig tools $(TOOLS)
+noconfig_targets:=prereq-check menuconfig config oldconfig defconfig tools \
+		$(TOOLS) $(CHECK_BUILD_DIR_VERSION)
 
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
@@ -117,6 +126,9 @@ $(DL_DIR): $(DL_FW_DIR)
 
 $(DL_FW_DIR):
 	@mkdir -p $(DL_FW_DIR)
+
+$(MIRROR_DIR): $(DL_DIR)
+	@mkdir -p $(MIRROR_DIR)
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
@@ -157,6 +169,8 @@ PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_LIST:=$(patsubst %,%-list,$(PACKAGES))
 PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
 PACKAGES_PRECOMPILED:=$(patsubst %,%-precompiled,$(PACKAGES))
+PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(ALL_PACKAGES))
+PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(ALL_PACKAGES))
 
 LIBS_CLEAN:=$(patsubst %,%-clean,$(LIBS))
 LIBS_DIRCLEAN:=$(patsubst %,%-dirclean,$(LIBS))
@@ -285,11 +299,15 @@ sources: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
 precompiled: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend \
 	$(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
+check-downloads: $(PACKAGES_CHECK_DOWNLOADS)
+
+mirror: $(MIRROR_DIR) $(PACKAGES_MIRROR)
+
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN) $(LIBS_CLEAN) $(TOOLCHAIN_CLEAN) $(TOOLS_CLEAN) common-clean
 dirclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN_DIRCLEAN) $(TOOLS_DIRCLEAN) common-dirclean
 distclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN_DISTCLEAN) $(TOOLS_DISTCLEAN) common-distclean
 
-.PHONY: firmware package-list package-list-clean sources precompiled toolchain toolchain-depend libs \
+.PHONY: firmware package-list package-list-clean sources precompiled toolchain toolchain-depend libs mirror check-downloads \
 	$(TARGETS) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) $(TARGETS_PRECOMPILED) \
 	$(PACKAGES) $(PACKAGES_BUILD) $(PACKAGES_CLEAN) $(PACKAGES_DIRCLEAN) $(PACKAGES_LIST) $(PACKAGES_SOURCE) $(PACKAGES_PRECOMPILED) \
 	$(LIBS) $(LIBS_CLEAN) $(LIBS_DIRCLEAN) $(LIBS_SOURCE) $(LIBS_PRECOMPILED) \
@@ -480,4 +498,5 @@ toolchain-switch:
 
 .PHONY: all world step menuconfig config oldconfig defconfig exclude-lists tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
-	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE)
+	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
+	$(SWITCH_UCLIBC) $(CHECK_BUILD_DIR_VERSION)

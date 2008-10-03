@@ -5,12 +5,18 @@ Latest changes:
 === devel ===
 
 - Build system:
-	* toolchains:
-		- add menuconfig option to adjust HOSTCC variable 
-		- add ccache for download- and kernel-toolchain
+  * toolchains:
+    - add menuconfig option to adjust HOSTCC variable 
+    - add ccache for download- and kernel-toolchain
 
 - New tools and hooks:
-	* external
+  * external
+  * new make targets:
+    - check-downloads: checks all downloads for availability (also 
+      $(pkg)-check-downloads)
+    - mirror: downloads all package downloads into dl/mirror (also
+      $(pkg)-download-mirror). This makes hardlinks for dupes in dl/ and
+      dl/mirror to save disk space.
 
 - New patches (read online help for more info):
     * Remove DECT-files and modules on W900V

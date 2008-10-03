@@ -260,10 +260,34 @@ PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))$(eval $(PKG_FINISH__INT))
 
 define PKG_SOURCE_DOWNLOAD__INT
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	tools/freetz_download $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5)
+	@if [ -e $(MIRROR_DIR)/$($(PKG)_SOURCE) ]; then \
+		echo "Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link"; \
+		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
+	else \
+		tools/freetz_download $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5); \
+	fi
 
 $(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
-.PHONY: $(pkg)-download
+
+$(MIRROR_DIR)/$($(PKG)_SOURCE): | $(MIRROR_DIR)
+	@if [ -e $(DL_DIR)/$($(PKG)_SOURCE) ]; then \
+		echo "Found $($(PKG)_SOURCE) in $(DL_DIR), creating hard link"; \
+		ln $(DL_DIR)/$($(PKG)_SOURCE) $(MIRROR_DIR); \
+	else \
+		tools/freetz_download $(MIRROR_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5); \
+	fi
+
+$(pkg)-download-mirror: $(MIRROR_DIR)/$($(PKG)_SOURCE)
+
+$(pkg)-check-download:
+	@echo -n "Checking download for package $(pkg)..."
+	@if wget --quiet --passive-ftp --spider $($(PKG)_SITE)/$($(PKG)_SOURCE); then \
+		echo "ok."; \
+	else \
+		echo "ERROR: NOT FOUND!"; \
+	fi	
+
+.PHONY: $(pkg)-download $(pkg)-check-download $(pkg)-download-mirror
 endef
 PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 
@@ -335,6 +359,8 @@ $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION):
 	fi
 	@touch $$@
 $(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+$(pkg)-download-mirror:
+$(pkg)-check-download:
 .PHONY: $(pkg) $(pkg)-precompiled
 endef
 
