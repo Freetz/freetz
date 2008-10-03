@@ -1,0 +1,12 @@
+--- Makefile.orig	2008-08-27 20:34:43.000000000 +0200
++++ Makefile	2008-10-03 21:31:07.000000000 +0200
+@@ -21,7 +21,8 @@
+ # Linux defaults:
+ #CFLAGS=-ggdb -Wall -DLINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+ CFLAGS=-O2 -Wall -fomit-frame-pointer -DLINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+-LDFLAGS=-s
++LDFLAGS=
++XOBJS=strverscmp.o
+ 
+ # Uncomment for FreeBSD:
+ #CFLAGS=-O2 -Wall -fomit-frame-pointer

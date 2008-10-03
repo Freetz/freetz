@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,3.3-pre11)
+$(call PKG_INIT_BIN,3.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://www.kernel.org/pub/linux/kernel/people/jcm/module-init-tools
+$(PKG)_SITE:=http://www.kernel.org/pub/linux/utils/kernel/module-init-tools
 $(PKG)_BINARY:=$($(PKG)_DIR)/modinfo
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/modinfo
 
