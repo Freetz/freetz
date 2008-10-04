@@ -8,9 +8,9 @@ $(PKG)_DEPENDS_ON := zlib openssl gettext curl
 
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 
+$(PKG)_CONFIGURE_OPTIONS += --enable-daemon
 $(PKG)_CONFIGURE_OPTIONS += --disable-beos
 $(PKG)_CONFIGURE_OPTIONS += --disable-darwin
-$(PKG)_CONFIGURE_OPTIONS += --disable-daemon
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk
 $(PKG)_CONFIGURE_OPTIONS += --disable-wx
 
@@ -20,7 +20,9 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(TRANSMISSION_DIR)
+		$(MAKE) -C $(TRANSMISSION_DIR) \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CXXFLAGS)" 
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
