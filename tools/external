@@ -39,7 +39,7 @@ fi
 
 EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_PACKAGE_OPENVPN" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/openvpn"
-[ "$EXTERNAL_FREETZ_PACKAGE_CURL" == "y" ] && EXTERNAL_FILES+=" /usr/bin/curl /usr/lib/libcurl.so.4.0.1"
+[ "$EXTERNAL_FREETZ_PACKAGE_CURL" == "y" ] && EXTERNAL_FILES+=" /usr/bin/curl /usr/lib/libcurl.so.4.1.0"
 [ "$EXTERNAL_FREETZ_PACKAGE_BASH" == "y" ] && EXTERNAL_FILES+=" /bin/bash"
 [ "$EXTERNAL_FREETZ_PACKAGE_BLUEZ_UTILS" == "y" ] && EXTERNAL_FILES+=" /usr/bin/dund /usr/bin/pand /usr/bin/rfcomm /usr/bin/l2ping /usr/bin/sdptool /usr/sbin/hcid /usr/sbin/sdpd /usr/sbin/hciconfig /usr/sbin/hcitool"
 [ "$EXTERNAL_FREETZ_PACKAGE_LTRACE" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/ltrace"
@@ -80,7 +80,6 @@ EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_PACKAGE_DECO" == "y" ] && EXTERNAL_FILES+=" /usr/bin/deco"
 [ "$EXTERNAL_FREETZ_PACKAGE_TOR" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/tor"
 [ "$EXTERNAL_FREETZ_PACKAGE_PRIVOXY" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/privoxy"
-[ "$EXTERNAL_FREETZ_PACKAGE_CTORRENT" == "y" ] && EXTERNAL_FILES+=" /usr/bin/ctorrent"
 
 EXTERNAL_FILES="`echo $EXTERNAL_FILES|sed 's/ / \//g;s/\/\/*/\//g'`"
 

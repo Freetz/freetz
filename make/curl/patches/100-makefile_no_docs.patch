@@ -1,6 +1,6 @@
---- Makefile.am.orig	2008-04-11 16:37:03.000000000 +0200
-+++ Makefile.am	2008-04-11 16:44:14.000000000 +0200
-@@ -29,7 +29,7 @@
+--- Makefile.am.orig	2008-09-01 09:46:51.000000000 +0200
++++ Makefile.am	2008-09-24 23:30:00.000000000 +0200
+@@ -32,7 +32,7 @@
  bin_SCRIPTS = curl-config
  
  SUBDIRS = lib src
@@ -9,7 +9,7 @@
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
-@@ -44,10 +44,10 @@
+@@ -47,10 +47,10 @@
  	done)
  
  html:
@@ -22,16 +22,16 @@
  
  check: test examples
  
-@@ -72,7 +72,7 @@
+@@ -75,7 +75,7 @@
  endif
  
  examples:
--	@(cd docs/examples; $(MAKE) all)
-+	#@(cd docs/examples; $(MAKE) all)
+-	@(cd docs/examples; $(MAKE) check)
++	#@(cd docs/examples; $(MAKE) check)
  
  #
  # Build source and binary rpms. For rpm-3.0 and above, the ~/.rpmmacros
-@@ -125,12 +125,12 @@
+@@ -128,12 +128,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
@@ -46,9 +46,9 @@
  
  ca-bundle: lib/mk-ca-bundle.pl
  	@echo "generate a fresh ca-bundle.crt"
---- Makefile.in.orig	2008-03-30 11:10:10.000000000 +0200
-+++ Makefile.in	2008-04-11 16:45:25.000000000 +0200
-@@ -255,7 +255,7 @@
+--- Makefile.in.orig	2008-09-01 16:39:16.000000000 +0200
++++ Makefile.in	2008-09-24 23:30:00.000000000 +0200
+@@ -268,7 +268,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src
@@ -57,7 +57,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  all: all-recursive
-@@ -747,10 +747,10 @@
+@@ -749,10 +749,10 @@
  	done)
  
  html:
@@ -70,16 +70,16 @@
  
  check: test examples
  
-@@ -770,7 +770,7 @@
+@@ -772,7 +772,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all torture-test)
  
  examples:
--	@(cd docs/examples; $(MAKE) all)
-+	#@(cd docs/examples; $(MAKE) all)
+-	@(cd docs/examples; $(MAKE) check)
++	#@(cd docs/examples; $(MAKE) check)
  
  #
  # Build source and binary rpms. For rpm-3.0 and above, the ~/.rpmmacros
-@@ -823,12 +823,12 @@
+@@ -825,12 +825,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
