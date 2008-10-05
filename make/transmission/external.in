@@ -1,0 +1,23 @@
+config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_CLIENT
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION_CLIENT && FREETZ_SHOW_ADVANCED
+	bool "Transmission interactive client"
+	default n
+	help
+		external this file:
+		 /usr/bin/transmissioncli
+
+config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_DAEMON
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION_DAEMON && FREETZ_SHOW_ADVANCED
+	bool "Transmission daemon"
+	default n
+	help
+		external these file(s):
+		 /usr/bin/transmission-daemon
+
+config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_REMOTE
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION_REMOTE && FREETZ_SHOW_ADVANCED
+	bool "Transmission remote"
+	default n
+	help
+		external these file(s):
+		 /usr/bin/transmission-remote
