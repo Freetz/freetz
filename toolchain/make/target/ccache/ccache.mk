@@ -1,5 +1,6 @@
 CCACHE_VERSION:=2.4
 CCACHE_SOURCE:=ccache-$(CCACHE_VERSION).tar.gz
+CCACHE_MD5:=73c1ed1e767c1752dd0f548ec1e66ce7
 CCACHE_SITE:=http://samba.org/ftp/ccache
 CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
 CCACHE_BINARY:=ccache
@@ -7,7 +8,7 @@ CCACHE_TARGET_BINARY:=usr/bin/ccache
 
 ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_SOURCE)))
 $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(CCACHE_SITE)/$(CCACHE_SOURCE)
+	$(DL_TOOL) $(DL_DIR) .config $(CCACHE_SOURCE) $(CCACHE_SITE) $(CCACHE_MD5)
 endif
 
 $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR)

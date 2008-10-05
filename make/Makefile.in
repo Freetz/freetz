@@ -265,7 +265,7 @@ $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 		echo "Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link"; \
 		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
 	else \
-		tools/freetz_download $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5); \
+		$(DL_TOOL) $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5); \
 	fi
 
 $(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
@@ -275,7 +275,7 @@ $(MIRROR_DIR)/$($(PKG)_SOURCE): | $(MIRROR_DIR)
 		echo "Found $($(PKG)_SOURCE) in $(DL_DIR), creating hard link"; \
 		ln $(DL_DIR)/$($(PKG)_SOURCE) $(MIRROR_DIR); \
 	else \
-		tools/freetz_download $(MIRROR_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5); \
+		$(DL_TOOL) $(MIRROR_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5); \
 	fi
 
 $(pkg)-download-mirror: $(MIRROR_DIR)/$($(PKG)_SOURCE)

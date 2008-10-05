@@ -1,7 +1,6 @@
 BINUTILS_VERSION:=$(TARGET_TOOLCHAIN_BINUTILS_VERSION)
 BINUTILS_SOURCE:=binutils-$(BINUTILS_VERSION).tar.bz2
-BINUTILS_STABLE_SITE:=http://ftp.gnu.org/gnu/binutils
-BINUTILS_DEVELOPER_SITE:=http://ftp.kernel.org/pub/linux/devel/binutils
+BINUTILS_SITE:=http://ftp.kernel.org/pub/linux/devel/binutils
 BINUTILS_DIR:=$(TARGET_TOOLCHAIN_DIR)/binutils-$(BINUTILS_VERSION)
 BINUTILS_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/binutils
 BINUTILS_DIR1:=$(BINUTILS_DIR)-build
@@ -14,8 +13,7 @@ endif
 
 ifneq ($(strip $(DL_DIR)/$(BINUTILS_SOURCE)), $(strip $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)))
 $(DL_DIR)/$(BINUTILS_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(BINUTILS_STABLE_SITE)/$(BINUTILS_SOURCE) || \
-	wget -P $(DL_DIR) $(BINUTILS_DEVELOPER_SITE)/$(BINUTILS_SOURCE)
+	$(DL_TOOL) $(DL_DIR) .config $(BINUTILS_SOURCE) $(BINUTILS_SITE)
 endif
 
 $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE)

@@ -13,7 +13,7 @@ GDB_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gdb
 #DISABLE_GDBMI:=--disable-gdbmi
 
 $(DL_DIR)/$(GDB_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(GDB_SITE)/$(GDB_SOURCE)
+	$(DL_TOOL) $(DL_DIR) .config $(GDB_SOURCE) $(GDB_SITE)
 
 gdb-unpacked: $(GDB_DIR)/.unpacked
 $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE)
