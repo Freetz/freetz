@@ -5,7 +5,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 cgi_begin '$(lang de:"Konfiguration sichern/wiederherstellen" en:"Backup/restore configuration")' 'backup_restore'
 
-html_cat << EOF
+cat << EOF
 <h1>$(lang de:"Sicherung (Backup)" en:"Backup")</h1>
 
 $(lang de:"Sichern sämtlicher Einstellungen aus dem Flash-Speicher <i>/var/flash</i>. Dies" en:"Save all settings from flash memory <i>/var/flash</i>. This includes original")

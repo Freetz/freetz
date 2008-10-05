@@ -18,7 +18,7 @@ else
 	/etc/init.d/rc.webcfg restart > /dev/null 2>&1
 fi
 
-html_cat << EOF
+cat << EOF
 <form action="/cgi-bin/status.cgi" method=POST>
 <input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")">
 </form>

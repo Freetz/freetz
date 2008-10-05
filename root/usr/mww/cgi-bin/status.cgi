@@ -42,7 +42,7 @@ fi
 
 sec_begin '$(lang de:"Box" en:"Box")'
 
-html_cat << EOF
+cat << EOF
 <p>
 $(lang de:"Firmware" en:"Firmware"): $(get_env firmware_info)$(cat /etc/.freetz-version)
 </p>
@@ -83,7 +83,7 @@ else
 	fi 
 fi
 
-html_cat << EOF
+cat << EOF
 
 </td>
 <td align="right">$(lang de:"Uptime" en:"Uptime"): $(uptime | sed -r 's/.* up (.*), load .*/\1/')</td></tr>

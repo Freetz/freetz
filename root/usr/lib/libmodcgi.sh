@@ -1,12 +1,5 @@
 . /mod/etc/conf/mod.cfg
 
-html_cat() {
-	local IFS= line
-	while read -r line; do
-		echo "$line"
-	done
-} 
-
 # HTML-escape pieces of texts, large ones in a streaming manner
 # (large_text | html; html "$small_value")
 html() {
@@ -27,7 +20,7 @@ html() {
 }
 
 _cgi_menu() {
-html_cat << EOF
+cat << EOF
 <div class="menu">
 <div id="status"><a href="/cgi-bin/status.cgi">Status</a></div>
 EOF
@@ -40,7 +33,7 @@ if [ "$1" = "status" ]; then
 	fi
 fi
 
-html_cat << EOF
+cat << EOF
 <div id="daemons"><a href="/cgi-bin/daemons.cgi">$(lang de:"Dienste" en:"Services")</a></div>
 <div id="settings"><a href="/cgi-bin/settings.cgi">$(lang de:"Einstellungen" en:"Settings")</a></div>
 EOF
@@ -51,7 +44,7 @@ if [ "$1" = "settings" -a -r /mod/etc/reg/file.reg ]; then
 	done
 fi
 
-html_cat << EOF
+cat << EOF
 <div id="packages"><a href="/cgi-bin/packages.cgi">$(lang de:"Pakete" en:"Packages")</a></div>
 EOF
 
@@ -61,7 +54,7 @@ if [ "$1" != "settings" -a "$1" != "status" -a -r /mod/etc/reg/cgi.reg ]; then
 	done
 fi
 
-html_cat << EOF
+cat << EOF
 <div id="extras"><a href="/cgi-bin/extras.cgi">Extras</a></div>
 <div id="backup_restore"><a href="/cgi-bin/backup_restore.cgi">$(lang de:"Sichern/Wiederherstellen" en:"Backup/restore")</a></div>
 <div id="rudi_shell"><a href="/cgi-bin/rudi_shell.cgi" target="_blank">$(lang de:"Rudi-Shell" en:"Rudi shell")</a></div>
@@ -70,7 +63,7 @@ EOF
 }
 
 cgi_begin() {
-html_cat << EOF
+cat << EOF
 Content-type: text/html; charset=iso-8859-1
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -98,7 +91,7 @@ echo "div.body { width: "$_usr_style"px; }"
 echo "</style>"
 
 if [ -n "$2" ]; then
-html_cat << EOF
+cat << EOF
 <style type="text/css">
 <!--
 #$2 $(cat /usr/share/style.sel)
@@ -107,7 +100,7 @@ html_cat << EOF
 EOF
 fi
 
-html_cat << EOF
+cat << EOF
 </head>
 <body>
 <table border="0" cellspacing="0" cellpadding="0" align="center" width="$_cgi_total_width">
@@ -134,7 +127,7 @@ fi
 }
 
 cgi_end() {
-html_cat << EOF
+cat << EOF
 </td>
 <td width="20" id="edgeright"></td>
 </tr>
@@ -150,7 +143,7 @@ EOF
 }
 
 sec_begin() {
-html_cat << EOF
+cat << EOF
 <div class="body">
 <fieldset>
 <legend>$1</legend>
@@ -158,7 +151,7 @@ EOF
 }
 
 sec_end() {
-html_cat << EOF
+cat << EOF
 </fieldset>
 </div>
 EOF

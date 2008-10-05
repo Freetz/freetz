@@ -5,7 +5,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 cgi_begin 'Passwort' 'password'
 
-html_cat << EOF
+cat << EOF
 <script type=text/javascript>
 function CheckInput(form) {
 	password=form.elements[0];
