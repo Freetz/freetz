@@ -164,6 +164,7 @@ PKG_BASENAME:=$(basename $(notdir $(PKG_MAKEFILE)))
 $(if $(strip $1),,$(error Undefined version for PKG_INIT in $(PKG_MAKEFILE)))
 pkg:=$(if $(strip $2),$(strip $2),$(PKG_BASENAME))
 PKG:=$(if $(strip $3),$(strip $3),$(shell echo "$(pkg)" | tr '[a-z\-]' '[A-Z_]'))
+ALL_PACKAGES+=$(pkg)
 #
 $(PKG)_VERSION:=$(strip $1)
 $(PKG)_CONFIGURE_DEFOPTS:=y

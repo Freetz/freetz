@@ -47,13 +47,6 @@ TOOLS_DIR:=tools
 DL_FW_DIR:=$(DL_DIR)/fw
 FW_IMAGES_DIR:=images
 MIRROR_DIR:=$(DL_DIR)/mirror
-ALL_PACKAGES:=$(shell ( find make -mindepth 1 -maxdepth 1 -type d ! -name libs \
-			! -name .svn 	! -name avm-gpl \
-					! -name busybox \
-					! -name linux \
-					-printf "%f\n"; \
-			find make/libs -mindepth 1 -maxdepth 1 -type f -name "*.mk" \
-			-printf "%f\n" | cut -d"." -f 1) | sort | sed -e "s/uclibc++/uclibcxx/g")
 BUILD_DIR_VERSION:=$(shell svnversion | grep -v exported 2> /dev/null)
 BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
 
@@ -169,8 +162,6 @@ PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_LIST:=$(patsubst %,%-list,$(PACKAGES))
 PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
 PACKAGES_PRECOMPILED:=$(patsubst %,%-precompiled,$(PACKAGES))
-PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(ALL_PACKAGES))
-PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(ALL_PACKAGES))
 
 LIBS_CLEAN:=$(patsubst %,%-clean,$(LIBS))
 LIBS_DIRCLEAN:=$(patsubst %,%-dirclean,$(LIBS))
@@ -182,7 +173,10 @@ TOOLCHAIN_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLCHAIN))
 TOOLCHAIN_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLCHAIN))
 TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
 
+ALL_PACKAGES:=
 include $(MAKE_DIR)/*/*.mk
+PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(ALL_PACKAGES))
+PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(ALL_PACKAGES))
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
