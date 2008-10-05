@@ -322,7 +322,7 @@ push-firmware:
 	@if [ ! -f "build/modified/firmware/var/tmp/kernel.image" ]; then \
 		echo "Please run 'make' first."; \
 	else \
-		./tools/push_firmware build/modified/firmware/var/tmp/kernel.image ; \
+		$(TOOLS_DIR)/push_firmware build/modified/firmware/var/tmp/kernel.image ; \
 	fi
 
 recover:
@@ -355,9 +355,9 @@ recover:
 						echo "local IP has to be in the 192.168.178.0/24 subnet."; \
 						echo "e.g. make recover LOCALIP=192.168.178.20"; \
 						echo; \
-						./tools/recover-$(RECOVER) -f "$(IMAGE)"; \
+						$(TOOLS_DIR)/recover-$(RECOVER) -f "$(IMAGE)"; \
 					else \
-						./tools/recover-$(RECOVER) -l $(LOCALIP) -f "$(IMAGE)"; \
+						$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$(IMAGE)"; \
 					fi; break ;; \
 				[nN]*) \
 					break ;; \
@@ -477,8 +477,9 @@ endif
 
 # Check if last build was with older svn version
 check-builddir-version:
-	@if [ 	"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
-		".svn" -nt ".config" ]; then \
+	@if [ 	-e .config -a \
+		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
+		.svn -nt .config ]; then \
 		echo "ERROR: You have updated to newer svn version since last modifying your config. You have to run 'make oldconfig' or 'make menuconfig' once before building again."; \
 		exit 3; \
 	fi; 
