@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 3.0.8)
+$(call PKG_INIT_BIN, 3.0.10)
 $(PKG)_SOURCE:=privoxy-$($(PKG)_VERSION)-stable-src.tar.gz
 $(PKG)_SITE:=http://surfnet.dl.sourceforge.net/sourceforge/ijbswa
 $(PKG)_DIR:=$(SOURCE_DIR)/privoxy-$($(PKG)_VERSION)-stable
@@ -18,7 +18,6 @@ $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfi
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
-$(PKG)_CONFIGURE_OPTIONS += --disable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-stats
 $(PKG)_CONFIGURE_OPTIONS += --disable-dynamic-pcre
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),--enable-zlib,)
