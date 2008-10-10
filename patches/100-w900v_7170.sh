@@ -55,8 +55,8 @@ sed -i -e '/modprobe Piglet piglet_bitfile.*$/i \
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-W900V_7170.patch"
 
 sed -i -e "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"34\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W 900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_DECT_W900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_DECT=.*$/CONFIG_DECT=\"y\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_DECT_ONOFF=.*$/CONFIG_DECT_ONOFF=\"y\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ar7_8MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_37264\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
