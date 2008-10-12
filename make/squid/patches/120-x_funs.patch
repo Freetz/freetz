@@ -1,0 +1,38 @@
+--- src/x_fun.c	1970-01-01 01:00:00.000000000 +0100
++++ src/x_fun.c	2008-10-11 00:33:17.000000000 +0200
+@@ -0,0 +1,35 @@
++#include <stdlib.h>
++#include <stdio.h>
++#include <string.h>
++
++char *xstrdup(const char *s) {
++  char *p;
++
++  if (s == NULL) {
++    fprintf(stderr, "strdup failed\n");
++  }
++  p = strdup(s);
++  if (p == NULL) {
++    fprintf(stderr, "strdup failed\n");
++  }
++  return p;
++}
++
++void xfree(void *p) {
++  if (p != NULL) {
++    free(p);
++  }
++}
++
++void * xcalloc(unsigned int nelem,  unsigned int elsize) {
++  void * new_mem = (void *) calloc (nelem, elsize);
++  
++  if (new_mem == NULL) {
++    fprintf (stderr, "xcalloc: request for %u elements of size %u failed.\n",
++             nelem, elsize);
++    abort ();
++  }
++  
++  return new_mem;
++}
++
