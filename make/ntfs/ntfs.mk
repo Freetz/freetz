@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.2918)
+$(call PKG_INIT_BIN, 1.5012)
 $(PKG)_SOURCE:=ntfs-3g-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=http://www.ntfs-3g.org
 $(PKG)_DIR:=$(SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
@@ -11,6 +11,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-library
+$(PKG)_CONFIGURE_OPTIONS += --with-fuse=internal
 
 
 $(PKG_SOURCE_DOWNLOAD)
