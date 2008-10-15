@@ -20,6 +20,9 @@ config FREETZ_PACKAGE_IPTABLES
 		and NAT, as well as the tool itself. iptables is a standard part of all
 		modern Linux distributions.
 
+comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
+depends on FREETZ_MODULE_ip_conntrack
+
 # Include here for a cleaner menu structure (list packages before modules/libs)
 source make/iptables-cgi/Config.in
 
@@ -160,8 +163,7 @@ config FREETZ_MODULE_ipt_limit
 	default n
 config FREETZ_MODULE_ipt_LOG
 	bool "ipt_LOG.ko"
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_tables
 	default n
 config FREETZ_MODULE_ipt_mac
 	bool "ipt_mac.ko"

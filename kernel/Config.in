@@ -12,7 +12,7 @@ config FREETZ_MODULE_crypto_algapi
 
 config FREETZ_MODULE_aes
 	bool "aes.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2 
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	default n
 
 config FREETZ_MODULE_arc4

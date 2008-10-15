@@ -102,7 +102,11 @@ if [ -z "$1" ]; then
 fi
 
 img=""
-hexdump -n4 "$1" | grep -iq "1281 feed" && img="$1"
+if [ "$(uname -s)" == "Darwin" ]; then
+  hexdump -n4 "$1" | grep -iq "81 12 ed fd" && img="$1"
+else
+  hexdump -n4 "$1" | grep -iq "1281 feed" && img="$1"
+fi
 if [ -z "$img" ]; then
 	echo >&2
 	echo "Error: file is not a valid image to be written to mtd1. Please use a" >&2
@@ -122,6 +126,9 @@ ping_params="-c1 -w1"
 if [ "$(uname -o)" == "Cygwin" ]; then
 	CYGWIN=1
 	ping_params="-n 1 -w 500"
+fi
+if [ "$(uname -s)" == "Darwin" ]; then
+	ping_params="-c1 -t1"
 fi
 
 if [ -n "`which ftp`" -a -x "`which ftp`" ] ; then

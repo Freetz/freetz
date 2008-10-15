@@ -29,13 +29,15 @@ echo2 "patching webmenu"
 if [ "$FREETZ_TYPE_LABOR_BETA" == "y" ];then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
 elif [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170_labor_gaming.patch"
 elif [ "$FREETZ_TYPE_LABOR_PHONE" == "y" ];then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
 elif [ "$FREETZ_TYPE_LABOR_GAMING" == "y" ];then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170_labor_gaming.patch"
 elif [ "$FREETZ_TYPE_LABOR_MINI" == "y" ];then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
+elif [ "$FREETZ_TYPE_LABOR_ALL" == "y" ];then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170_labor_all.patch"
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
 fi
@@ -57,7 +59,7 @@ sed -i -e "/piglet_irq=9.*$/d" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_CAPI_NT=\"y\"/CONFIG_CAPI_NT=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-sed -i -e "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ar7_8MB_xilinx_4eth_3ab_isdn_nt_te_pots_wlan_usb_host_25762\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ar7_8MB_xilinx_4eth_2ab_isdn_pots_wlan_13200_\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
 echo2 "patching webinterface"
 sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/fon/sip1.js"

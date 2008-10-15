@@ -3,18 +3,9 @@
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 export LD_LIBRARY_PATH=/mod/lib
 
-DAEMON=inadyn
+DAEMON=inadyn-mt
 
-case "$1" in
-	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/$DAEMON.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 ivalueof () {
 	eval "echo -n \$${1}${2}"
@@ -28,22 +19,22 @@ configure () {
 	local ii value
 
 	echo background
-	echo verbose $INADYN_VERBOSE
+	echo verbose $INADYN_MT_VERBOSE
 	[ -x /etc/init.d/rc.syslogd ] && running=$(/etc/init.d/rc.syslogd status)
 	if [ "$running" = "running" ]; then
-    	echo syslog
-    else
-    	echo log_file /var/log/inadyn.log
+		echo syslog
+	else
+		echo log_file /var/log/${DAEMON}.log
 	fi
 	echo pid_file /var/run/${DAEMON}.pid
 
 	ii=0
-	# inadyn -> dyndns.h can maintain maximal 5 servers
+	# inadyn-mt -> dyndns.h can maintain maximal 5 servers
 	while [ 5 -gt $ii ]; do
-		if [ yes = "$(ivalueof INADYN_ACTIVE $ii)" ]; then
+		if [ yes = "$(ivalueof INADYN_MT_ACTIVE $ii)" ]; then
 
-			value=$(ivalueof INADYN_URL $ii | sed 's,\([^/]*\)\(.*\),\1 \2,')
-			case "$(ivalueof INADYN_SERVICE $ii)" in
+			value=$(ivalueof INADYN_MT_URL $ii | sed 's,\([^/]*\)\(.*\),\1 \2,')
+			case "$(ivalueof INADYN_MT_SERVICE $ii)" in
 				dyndns.org)
 					echo -e '\ndyndns_system dyndns@dyndns.org'
 					;;
@@ -72,15 +63,14 @@ configure () {
 				echo dyndns_server_name $(echo $value | cut -d\  -f1)
 				echo dyndns_server_url $(echo $value | cut -d\  -f2)
 			fi
-
-			value=$(ivalueof INADYN_USER $ii)
-			[ -n "$value" ] && echo "username $value"
-			value="$(ivalueof INADYN_PASS $ii)"
-			[ -n "$value" ] && echo "password $(escvalue $value)"
-			for value in $(ivalueof INADYN_ALIAS $ii); do
+			for value in $(ivalueof INADYN_MT_ALIAS $ii); do
 				echo "alias $value"
 			done
-			value=$(ivalueof INADYN_OPTIONS $ii)
+			value=$(ivalueof INADYN_MT_USER $ii)
+			[ -n "$value" ] && echo "username $value"
+			value="$(ivalueof INADYN_MT_PASS $ii)"
+			[ -n "$value" ] && echo "password $(escvalue $value)"
+			value=$(ivalueof INADYN_MT_OPTIONS $ii)
 			[ -n "$value" ] && echo "$value"
 		fi
 		let ii++
@@ -90,13 +80,13 @@ configure () {
 start() {
 	echo -n 'Starting Inadyn Client ...'
 
-	configure >/mod/etc/inadyn.conf
-	if [ 5 -gt `cat /mod/etc/inadyn.conf | wc -l` ]; then
+	configure >/mod/etc/$DAEMON.conf
+	if [ 5 -gt `cat /mod/etc/$DAEMON.conf | wc -l` ]; then
 		echo -n 'failed: not configured.' >&2
 		exit 1
 	fi
 
-	$DAEMON --input_file /mod/etc/inadyn.conf >/dev/null 2>&1
+	$DAEMON --input_file /mod/etc/$DAEMON.conf >/dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -106,28 +96,14 @@ start() {
 	fi
 }
 
-stop() {
-	echo -n 'Stopping Inadyn ...'
-
-	kill "$(cat /var/run/$DAEMON.pid)" > /dev/null 2>&1
-	
-	if [ "$exitval" -eq 0 ]; then
-		rm -f /var/run/$DAEMON.pid > /dev/null 2>&1
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
-}
-
 case "$1" in
 	""|load)
 
 		if type modreg > /dev/null; then
-			modreg cgi $DAEMON 'Inadyn'
+			modreg cgi $DAEMON 'Inadyn-mt'
 		fi
 
-		if [ "$INADYN_ENABLED" != "yes" ]; then
+		if [ "$INADYN_MT_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1;
 		fi
@@ -139,26 +115,20 @@ case "$1" in
 		fi
 		;;
 	unload)
-		stop
+		modlib_stop
 		modunreg cgi $DAEMON
 		;;
 	start)
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ ! -s "/var/run/$DAEMON.pid" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
