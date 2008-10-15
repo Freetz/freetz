@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.11)
+$(call PKG_INIT_BIN, 1.12.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-freetz.tar.bz2
 $(PKG)_SITE:=http://download.berlios.de/callmonitor
 $(PKG)_STARTLEVEL=30

@@ -19,12 +19,12 @@ helpmsg()
 cat << 'EOF'
 freetz_download - download Freetz packages
 
-Usage: freetz_download (-?|--help) | (<download-dir> <dot-config> <filename> [<mirror>])
+Usage: freetz_download (-?|--help) | (<download-dir> <dot-config> <filename> [<main-url>] [<md5>])
     download-dir  - target directory for download file
     dot-config    - path to .config for Freetz
     filename      - download file name
-    mirror        - fallback mirror to download file from if preconfigured
-                    mirrors fail
+    main-url      - url without filename for primary download
+    md5           - md5 of file
     -?, --help    - print this help text
 
 Examples:
@@ -36,21 +36,12 @@ Debugging: just set DEBUG=1, like this:
 EOF
 }
 
-rand()
-{
-  # Create random 1-byte integer (for up to 255 download sites).
-  # If more bytes are needed, increase 'count' parameter.
-  rnd=$(dd if=/dev/urandom bs=1 count=1 2> /dev/null | od -d | head -n 1 | awk '{print $2}')
-  # Normalise random number to return a value in range 1..$1
-  echo $(( $rnd % $1 + 1 ))
-}
-
 do_download()
 {
   # $1 = full download URL, $2 = target directory
   echo
-  if [ "$DEBUG" == "1" ]; then echo -e "wget -P $1 $2"; fi
-  wget -P "$1" "$2"
+  if [ "$DEBUG" == "1" ]; then echo "wget -nd --passive-ftp -P $1 $2"; fi
+  wget -nd --passive-ftp -P "$1" "$2"
   wget_result=$?
   if [ "$wget_result" != "0" ]; then
     echo "Download failed - $2  ->  error code $wget_result" >&2
@@ -67,7 +58,7 @@ if [ "$1" == "-?" -o "$1" == "--help" ]; then
 fi
 
 # Wrong number of parameters -> exit with error
-if [ $# -lt 3 -o $# -gt 4 ]; then
+if [ $# -lt 3 -o $# -gt 5 ]; then
   helpmsg >&2
   exit 1
 fi
@@ -75,7 +66,8 @@ fi
 DL_DIR="$1"
 DOT_CONFIG="$2"
 DL_FILE="$3"
-FALLBACK_MIRROR="$4"
+MAIN_URL="$4"
+MD5="$5"
 
 # Import Freetz config variables
 . $DOT_CONFIG
@@ -85,44 +77,48 @@ if [ "$DEBUG" == "1" ]; then
   echo "  DL_DIR=$1"
   echo "  DOT_CONFIG=$2"
   echo "  DL_FILE=$3"
-  echo "  FALLBACK_MIRROR=$4"
+  echo "  MAIN_URL=$4"
+  echo "  MD5=$5"
 fi
 
-# Fill array 'sites' with download server URLs (exclude empty strings)
-for (( i=1 ; $i<=$FREETZ_MOD_DL_NUM_SITES ; i++ )); do
-  # Trim whitespace from download site name
-  eval "dl_site=\$FREETZ_MOD_DL_SITE_$i"
-  read dl_site <<< "$dl_site";
-  if [ "$dl_site" != "" ]; then
-    (( num_sites++ ))
-    sites[$num_sites]=$dl_site
-  fi
+num_sites=0
+# Fill array 'sites' with download server URLs, first primary site (if specified)
+if [ -n "$MAIN_URL" ]; then
+  sites[$num_sites]=$MAIN_URL
+  (( num_sites++ ))
+fi
+
+# Get Freetz mirror sites in array
+FREETZ_SITES=( $(
+	for (( i=1; i <= FREETZ_MOD_DL_NUM_SITES ; i++ )); do
+	  eval "echo \$FREETZ_MOD_DL_SITE_$i"
+	done
+	) )
+# Fill array 'sites' with download server URLs, add Freetz Mirrors, in random order
+for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
+  p=$(( RANDOM % n ))
+  sites[$num_sites]=${FREETZ_SITES[$p]}
+  (( num_sites++ ))
+  FREETZ_SITES[$p]=${FREETZ_SITES[$((n-1))]}
 done
 
-# Randomly loop over preconfigured servers until a download succeeds
-# or all requests have failed.
-n=$num_sites
-while [ $n -gt 0 ]; do
-  i=$(rand $num_sites)
-  if [ -z ${sites[$i]} ]; then continue; fi
-  (( n-- ))
-  do_download "$DL_DIR" "${sites[$i]}/$DL_FILE"
+# Loop over servers until a download succeeds or all requests have failed.
+for i in ${sites[@]}; do
+  do_download "$DL_DIR" "$i/$DL_FILE"
   if [ "$?" != "0" ]; then
-    sites[$i]=""
     continue
+  fi
+  if [ -n "$MD5" ]; then
+    FILE_MD5=( $(md5sum "$DL_DIR/$DL_FILE") )
+    if [ "$MD5" != "$FILE_MD5" ]; then
+      echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
+      rm -f "$DL_DIR/$DL_FILE"
+      continue;
+    else
+      echo "MD5 verified for $DL_DIR/$DL_FILE: $FILE_MD5"
+    fi
   fi
   exit 0
 done
 
-# Trim whitespace from fallback mirror, too
-read dl_site <<< "$FALLBACK_MIRROR";
-if [ -z $dl_site ]; then
-  echo "No fallback site specified - could not download file $DL_FILE" >&2
-  exit 1
-fi
-
-# Try to download from fallback mirror
-do_download "$DL_DIR" "$dl_site/$DL_FILE"
-if [ "$?" != "0" ]; then
-  exit 1
-fi
+exit 1

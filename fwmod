@@ -515,8 +515,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	ln -s var/mod/home "$FILESYSTEM_MOD_DIR"/
 	# Set version and options
 	SUBVERSION_FILE="${BASE_DIR}/.version"
-	FIRMWARESUBVERSION_FILE="${FILESYSTEM_MOD_DIR}/etc/.subversion"
-	FIRMWARESUBVERSION="$(cat $FIRMWARESUBVERSION_FILE)"
 	FIRMWAREVERSION_FILE="${FILESYSTEM_MOD_DIR}/etc/.version"
 	FIRMWAREVERSION="$(cat $FIRMWAREVERSION_FILE)"
 	PACKAGES_LIST_FILE="${BASE_DIR}/.packages"
@@ -533,7 +531,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	fi
 
-	SUBVERSION="$FIRMWARESUBVERSION-$(cat $SUBVERSION_FILE)${SVN_VERSION}"
+	SUBVERSION="$(cat $SUBVERSION_FILE)${SVN_VERSION}"
 	OPTIONS="+busybox"
 	#delete .packages file
 	rm -f "${PACKAGES_LIST_FILE}"

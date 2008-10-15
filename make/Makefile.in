@@ -260,7 +260,8 @@ PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))$(eval $(PKG_FINISH__INT))
 
 define PKG_SOURCE_DOWNLOAD__INT
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	wget -nd --passive-ftp -P $(DL_DIR) $($(PKG)_SITE)/$($(PKG)_SOURCE)
+	tools/freetz_download $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5)
+
 $(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
 .PHONY: $(pkg)-download
 endef

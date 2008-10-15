@@ -22,22 +22,24 @@ package, as usual in Freetz. If you want to update the package, please read
 the following description:
 
 - Download debootstrap sources and Debian udeb package of the same version
-  (0.3.3.2 at the time of writing this)
+  (1.0.10 at the time of writing this)
 - Extract data.tar.gz (using 'ar' utility) from Debian udeb package
 - Extract data.tar.gz to package/debootstrap-<version>/root
 - Remove unwanted or unneeded scripts from extracted file structure (e.g.
-  usr/lib/debootstrap/scripts/{breezy,hoary,warty,woody}
-- Apply patches, if necessary (see below for a patch used in 0.3.3.2)
-- Compile 'pkgdetails' binary using Freetz makefile and replace the invalid
-  version extracted from the Debian udeb package
+  usr/share/debootstrap/scripts/{breezy,hoary,warty,woody}
+- Apply patches, if necessary (see below for a patch used in 1.0.10)
+- Compile 'pkgdetails' binary using Freetz makefile. The binary can be
+  found in old debian 'debootstrap' source or in newer 'baseinstaller'
+  source packages. At the time of writing this, the debootstrap version
+  0.3.3.2etch1 is sufficient.
 
 -------------------------------------------------------------------------
 
-Patch used to build debootstrap 0.3.3.2 package
+Patch used to build debootstrap 1.0.10 package
 
---- usr/lib/debootstrap/functions	2007-02-17 14:34:58.000000000 +0100
-+++ usr/lib/debootstrap/functions	2007-03-02 22:09:50.915296372 +0100
-@@ -976,7 +976,7 @@
+--- usr/lib/debootstrap/functions.orig      2008-07-02 17:44:00.000000000 +0200
++++ usr/lib/debootstrap/functions   2008-09-03 20:37:31.000000000 +0200
+@@ -1121,7 +1121,7 @@
    N_EXIT_THINGS=0
  }
  

@@ -1,4 +1,12 @@
-$(call PKG_INIT_BIN, 0.3.3.2)
+$(call PKG_INIT_BIN, 0.3.3.2etch1)
+#
+# The only binary needed for debootstrap is 'pkgdetails'. In newer debian revisions
+# is has moved from package 'debootstrap' to 'base_installer', however, the source
+# code didn't changed. So we use an ancient version of debootstrap sources to build
+# this binary.
+# All other files are extracted from the current debootstrap source, at the time of
+# writing this comment this is version 1.0.10.
+#
 $(PKG)_SOURCE:=debootstrap_$(DEBOOTSTRAP_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/d/debootstrap
 $(PKG)_BINARY:=$($(PKG)_DIR)/pkgdetails

@@ -1,0 +1,36 @@
+diff -ruN autoconf-lib-link/Makefile.in autoconf-lib-link/Makefile.in
+--- autoconf-lib-link/Makefile.in	2006-11-27 18:33:54.000000000 +0100
++++ autoconf-lib-link/Makefile.in	2007-08-22 21:18:41.000000000 +0200
+@@ -204,7 +204,7 @@
+ DISTCLEANFILES = build-aux/config.guess build-aux/config.sub \
+ 	build-aux/install-sh build-aux/ltmain.sh build-aux/missing \
+ 	build-aux/config.rpath
+-SUBDIRS = m4 tests
++SUBDIRS = m4
+ 
+ # Subdirectories with separate autoconfiguration.
+ CONFIGURES_RPATHX = $(srcdir)/tests/rpathx/Makefile.in $(srcdir)/tests/rpathx/aclocal.m4 $(srcdir)/tests/rpathx/configure
+diff -ruN gettext-runtime/Makefile.in gettext-runtime/Makefile.in
+--- gettext-runtime/Makefile.in	2006-11-27 18:34:14.000000000 +0100
++++ gettext-runtime/Makefile.in	2007-08-22 21:18:12.000000000 +0200
+@@ -140,7 +140,7 @@
+ ETAGS = etags
+ CTAGS = ctags
+ DIST_SUBDIRS = doc intl intl-java intl-csharp gnulib-lib libasprintf \
+-	src po man m4 tests
++	src po man m4
+ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+ distdir = $(PACKAGE)-$(VERSION)
+ top_distdir = $(distdir)
+diff -ruN gettext-tools/Makefile.in gettext-tools/Makefile.in
+--- gettext-tools/Makefile.in	2006-11-27 18:34:56.000000000 +0100
++++ gettext-tools/Makefile.in	2007-08-22 21:19:11.000000000 +0200
+@@ -484,7 +484,7 @@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = 1.5 gnu no-dependencies
+ ACLOCAL_AMFLAGS = -I m4 -I ../gettext-runtime/m4 -I ../autoconf-lib-link/m4 -I ../m4 -I gnulib-m4 -I libgettextpo/gnulib-m4
+-SUBDIRS = doc intl gnulib-lib libgrep libuniname src libgettextpo po projects misc man m4 tests examples
++SUBDIRS = doc intl gnulib-lib libgrep libuniname src libgettextpo po projects misc man m4
+ 
+ # Allow users to use "gnulib-tool --update".
+ 
