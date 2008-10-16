@@ -353,7 +353,7 @@ get_env_var() {
 	fi
 	MNTOPTIONS=$(sed -rn "s/^$USBROOT_ENV_VAR[[:space:]]+[^[:space:]]+[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
 
-	get_fstype "$fstype"
+	[ -n "$DEVICE" ] && get_fstype "$fstype"
 
 	# Check variables for plausibility
 	if [ "$1" == "check" ]; then

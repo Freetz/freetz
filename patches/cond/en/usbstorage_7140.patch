@@ -42,38 +42,35 @@
  		umask $OLD_UMASK
  		OK=0
  		eventadd 140 $MNTNAME
-@@ -136,6 +113,36 @@
+@@ -136,6 +113,33 @@
  	return $OK
  }
  
-+# Check filesystem type and mount it
 +mount_fs () {
-+       if [ -e /usr/bin/fstyp ]; then
-+               FSTYPE=`/usr/bin/fstyp $DEVNODE`
-+       else
-+               FSTYPE="vfat"
-+       fi
-+
-+       case $FSTYPE in
-+       vfat)
-+               mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH
-+               ;;
-+       ext2)
-+               mount -t ext2 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
-+               ;;
-+       ext3)
-+               mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
-+               ;;
-+       ntfs)
-+               if [ -e /usr/bin/ntfs-3g ]; then
-+                       /usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
-+               else
-+                       echo "ntfs-3g not installed"
-+               fi
-+               ;;
-+       *) # fs type unknown
-+               ;;
-+       esac
++ # mount according to type of filesystem 
++ # return exit code: true - all went well; other - something went wrong 
++ # gobal variables: 
++ #  $DEVNODE, $MNTPATH, READMODE, FTPUID, FTPGID 
++	FSTYPE="vfat"   # default as long as we dont know better 
++	[[ -x /usr/bin/fstyp ]] && FSTYPE=`/usr/bin/fstyp $DEVNODE` 
++	
++	case $FSTYPE in
++	vfat)
++		mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH
++		;;
++	ext2)
++		mount -t ext2 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ext3)
++		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ntfs)
++		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		;;
++	*) # fs type unknown
++		mount $DEVNODE $MNTPATH
++		;;
++	esac
 +}
 +
  # Find partitions to mount...
