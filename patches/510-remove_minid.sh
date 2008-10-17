@@ -12,6 +12,6 @@ for files in \
 	etc/minid \
 	usr/share/ctlmgr/libmini.so \
 	; do
-	rm -rf ${FILESYSTEM_MOD_DIR}/$files
+	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 

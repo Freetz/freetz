@@ -4,6 +4,6 @@ for files in \
  	bin/avmike \
 	usr/share/ctlmgr/libvpnstat.so \
 	; do
-	rm -rf ${FILESYSTEM_MOD_DIR}/$files
+	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 

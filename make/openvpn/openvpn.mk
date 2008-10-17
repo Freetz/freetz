@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 2.1_rc11)
+$(call PKG_INIT_BIN, 2.1_rc12)
 $(PKG)_SOURCE:=openvpn-$(OPENVPN_VERSION).tar.gz
 $(PKG)_SITE:=http://openvpn.net/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/openvpn

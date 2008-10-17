@@ -5,6 +5,6 @@ for files in \
 	bin/auracntl \
 	bin/aurachanged \
 	; do
-	rm -rf ${FILESYSTEM_MOD_DIR}/$files
+	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 

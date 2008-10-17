@@ -44,6 +44,8 @@ ROOT_DIR:=root
 SOURCE_DIR:=source
 TOOLCHAIN_DIR:=toolchain
 TOOLS_DIR:=tools
+DL_FW_DIR:=$(DL_DIR)/fw
+FW_IMAGES_DIR:=images
 
 PACKAGES_BUILD_DIR:=$(PACKAGES_DIR)/$(BUILD_DIR)
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
@@ -118,8 +120,11 @@ TOOLS_SOURCE:=$(patsubst %,%-source,$(TOOLS))
 
 include $(TOOLS_DIR)/make/*.mk
 
-$(DL_DIR):
+$(DL_DIR): $(DL_FW_DIR)
 	@mkdir -p $(DL_DIR)
+
+$(DL_FW_DIR):
+	@mkdir -p $(DL_FW_DIR)
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
@@ -136,6 +141,8 @@ $(PACKAGES_BUILD_DIR):
 $(TOOLCHAIN_BUILD_DIR):
 	@mkdir -p $(TOOLCHAIN_BUILD_DIR)
 
+$(FW_IMAGES_DIR):
+	@mkdir -p $(FW_IMAGES_DIR)
 
 ifeq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
 
@@ -178,18 +185,18 @@ else
 include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 endif
 
-IMAGE:=$(DL_DIR)/$(DL_SOURCE)
+IMAGE:=$(DL_FW_DIR)/$(DL_SOURCE)
 DL_IMAGE:=$(IMAGE)
 
-$(DL_DIR)/$(DL_SOURCE):
+$(DL_FW_DIR)/$(DL_SOURCE):
 ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
 	@echo
-	@echo "Please copy the following file into the 'dl' sub-directory manually:"
+	@echo "Please copy the following file into the '$(DL_FW_DIR)' sub-directory manually:"
 	@echo "$(DL_SOURCE)"
 	@echo
 	@exit 3
 else
-	@if ! ./fwmod_download -C $(DL_DIR) $(DL_SITE) $(DL_SOURCE); then \
+	@if ! ./fwmod_download -C $(DL_FW_DIR) $(DL_SITE) $(DL_SOURCE); then \
 		latest="$$(./fwmod_list "$(DL_SITE)" | sort | tail -1)"; \
 		[ -z "$$latest" ] && exit 1; \
 		if [ "$(DL_SOURCE)" != "$$latest" ]; then \
@@ -217,19 +224,19 @@ else
 endif
 
 ifneq ($(strip $(DL_SOURCE2)),)
-IMAGE2:=$(DL_DIR)/$(DL_SOURCE2)
+IMAGE2:=$(DL_FW_DIR)/$(DL_SOURCE2)
 DL_IMAGE+=$(IMAGE2)
 
-$(DL_DIR)/$(DL_SOURCE2):
+$(DL_FW_DIR)/$(DL_SOURCE2):
 	@if [ -n "$(DL_SOURCE2_CONTAINER)" ]; then \
-		[ -r $(DL_DIR)/$(DL_SOURCE2_CONTAINER) ] || ./fwmod_download -C $(DL_DIR) $(DL_SITE2) $(DL_SOURCE2_CONTAINER) > /dev/null; \
+		[ -r $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) ] || ./fwmod_download -C $(DL_FW_DIR) $(DL_SITE2) $(DL_SOURCE2_CONTAINER) > /dev/null; \
 		case "$(DL_SOURCE2_CONTAINER_SUFFIX)" in \
 			.zip) \
-				unzip $(DL_DIR)/$(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_DIR); \
+				unzip $(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_DIR); \
 				;; \
 		esac \
 	else \
-		./fwmod_download -C $(DL_DIR) $(DL_SITE2) $(DL_SOURCE2) > /dev/null; \
+		./fwmod_download -C $(DL_FW_DIR) $(DL_SITE2) $(DL_SOURCE2) > /dev/null; \
 	fi
 	@echo "done."
 	@echo
@@ -262,7 +269,7 @@ endif
 	@./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
 ifneq ($(FWMOD_PATCH_TEST),y)
 ifneq ($(FWMOD_NOPACK),y)
-	@mv $(BUILD_DIR)/$(FREETZ_TYPE_STRING2)$(FREETZ_TYPE_STRING)*.image ./
+	@mv $(BUILD_DIR)/$(FREETZ_TYPE_STRING2)$(FREETZ_TYPE_STRING)* ./$(FW_IMAGES_DIR)
 endif
 endif
 
@@ -280,10 +287,10 @@ toolchain: $(DL_DIR) $(SOURCE_DIR) $(TOOLCHAIN)
 
 libs: $(DL_DIR) $(SOURCE_DIR) $(LIBS_PRECOMPILED)
 
-sources: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
+sources: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
 	$(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(LIBS_SOURCE) $(TOOLCHAIN_SOURCE) $(TOOLS_SOURCE)
 
-precompiled: $(DL_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend \
+precompiled: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend \
 	$(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN) $(LIBS_CLEAN) $(TOOLCHAIN_CLEAN) $(TOOLS_CLEAN) common-clean
@@ -403,7 +410,7 @@ common-clean:
 	./fwmod_custom clean
 	rm -f .static .dynamic
 	rm -f .exclude .exclude-dist-tmp
-	rm -f *.image
+	rm -f $(FW_IMAGES_DIR)/*
 	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 

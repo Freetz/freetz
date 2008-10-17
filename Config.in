@@ -396,18 +396,26 @@ config FREETZ_REPLACE_BUSYBOX
 	help
 		This is mandatory
 
-config FREETZ_REPLACE_KERNEL
-	bool "Replace kernel"
+config FREETZ_REPLACE_KERNEL_AVAILABLE
+	bool
 	depends on \
-		FREETZ_SHOW_ADVANCED && \
 		! (FREETZ_TYPE_LABOR && ! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL)) && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
 		! (FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN) && \
 		! FREETZ_TYPE_WLAN_3270 && \
 		! FREETZ_TYPE_FON_WLAN_7270
+	default y
+
+config FREETZ_REPLACE_KERNEL
+	bool "Replace kernel"
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
+
+comment "Replace kernel (currently not available)"
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		! FREETZ_REPLACE_KERNEL_AVAILABLE
 
 config FREETZ_SHOW_ADVANCED
 	bool "Show advanced options"
@@ -968,7 +976,7 @@ config FREETZ_PATCH_ATA
 config FREETZ_PATCH_DSL_EXPERT
         bool "Patch extended DSL-Settings"
         depends on \
-		FREETZ_TYPE_LABOR_ALL
+					FREETZ_TYPE_LABOR_ALL
         default n
         help
                 Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares. 
@@ -996,8 +1004,8 @@ config FREETZ_PATCH_SIGNED
 config FREETZ_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
 	depends on \
-		FREETZ_HAS_USB_HOST && \
-		! FREETZ_TYPE_SPEEDPORT_W701V_7170
+		FREETZ_HAS_USB_HOST #&& \
+		#! FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default y
 	help
 		1. Change the name of USB storage dir to uStorXY
@@ -1141,8 +1149,8 @@ config FREETZ_REMOVE_FTPD
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		( \
-			FREETZ_HAS_USB_HOST || \
-			FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
+			FREETZ_HAS_USB_HOST && \
+			! FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
 		)
 	default n
 	help
@@ -1158,8 +1166,8 @@ config FREETZ_REMOVE_MEDIASRV
 	FREETZ_SHOW_ADVANCED && \
 	! FREETZ_PATCH_MEDIASRV && \
 	( \
-		FREETZ_HAS_USB_HOST || \
-		FREETZ_TYPE_SPEEDPORT_W701V_7170 \
+		FREETZ_HAS_USB_HOST && \
+		! FREETZ_TYPE_SPEEDPORT_W701V_7170 \
 	)
 	default n
 	help
@@ -1172,8 +1180,8 @@ config FREETZ_REMOVE_SMBD
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		( \
-		(FREETZ_HAS_USB_HOST && ! FREETZ_TYPE_FON_7150) || \
-		FREETZ_TYPE_SPEEDPORT_W701V_7170 \
+		(FREETZ_HAS_USB_HOST && ! FREETZ_TYPE_FON_7150) && \
+		! FREETZ_TYPE_SPEEDPORT_W701V_7170 \
 		)
 	default n
 	help
@@ -1191,8 +1199,9 @@ config FREETZ_REMOVE_MINID
 			FREETZ_TYPE_FON_WLAN_7141 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_WLAN_3270 \
-		)
-
+		) && \
+		! FREETZ_TYPE_SPEEDPORT_W701V_7170
+		
 	help
 		Remove the mini-daemon (minid) and some other related files.
 		This patch removes Fritz!Mini support but only the files,
@@ -1209,7 +1218,9 @@ config FREETZ_REMOVE_AURA_USB
 			FREETZ_TYPE_FON_WLAN_7141 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_WLAN_3170 \
-		)
+		) && \
+		! FREETZ_TYPE_SPEEDPORT_W701V_7170
+
 	help
 		Remove the aura-usb-daemon (USB-Fernanschluss) and some related files. 
 		This patch only removes the files, not the settings in AVM's webinterface
@@ -1413,7 +1424,7 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.en.39.04.56.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexB.en.30.04.56.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.39.04.57.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH
-	default "FRITZ.Box_Fon_WLAN_7141.40.04.57.image"				if FREETZ_TYPE_FON_WLAN_7141 && ! FREETZ_TYPE_LABOR
+	default "FRITZ.Box_Fon_WLAN_7141.40.04.59.image"				if FREETZ_TYPE_FON_WLAN_7141 && ! FREETZ_TYPE_LABOR
 	default "fritz_box_labor-9710.image"						if FREETZ_TYPE_FON_WLAN_7141 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Fon_7150.AnnexB.38.04.56.image"					if FREETZ_TYPE_FON_7150
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.59.image"				if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
@@ -1421,14 +1432,14 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.56.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.56.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz_box_7170-beta-10954.image"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_BETA
-	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.63-12298.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_ALL
+	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.63-12311.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_ALL
 	default "fritz_box-labor-11500.image"						if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
 	default "Labor_FRITZ.Box_Fon_WLAN_7170_LabGAMING.AnnexB.29.04.93-11435.image"	if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_GAMING
 	default "fritz_box_29_04_57-11063.image"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Box_Fon_WLAN_7170_LabPHONE.AnnexB.29.04.97-10173.image"		if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.58.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "FRITZ_Box_Fon_WLAN_7270-beta-10576.image"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
-	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.63-12190.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL
+	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.63-12298.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL
 	default "fritz_box_54_04_57-11063.image"					if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Box_Fon_WLAN_7270_LabPHONE.AnnexB.54.04.97-11197.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7270_LabCORE.AnnexB.54.04.98-12028.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN

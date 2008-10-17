@@ -1,6 +1,6 @@
 [ "$FREETZ_PACKAGE_SAMBA" == "y" ] || return 0
 echo1 "remove AVM samba config"
-rm -f "${FILESYSTEM_MOD_DIR}/etc/samba_config.tar"
+rm_files "${FILESYSTEM_MOD_DIR}/etc/samba_config.tar"
 
 [ "$FREETZ_HAS_USB_HOST" == "y" ] && \
 sed -i -e "/killall smbd*$/d" \

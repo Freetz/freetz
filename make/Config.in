@@ -108,12 +108,20 @@ source make/wget/Config.in
 source make/xrelayd/Config.in
 endmenu
 
-comment "Unstable--------------------------------"
+config FREETZ_SHOW_UNSTABLE_PACKAGES
+	bool "Unstable"
+	depends on FREETZ_SHOW_ADVANCED
+	help
+		These packages may not work at all. They are currently under development or have known issues which make them not work correctly.
+		Do not use them if you don't know what you are doing.
 
+menu "Unstable"
+	depends on FREETZ_SHOW_UNSTABLE_PACKAGES
 source make/collectd/Config.in
 source make/iptables/Config.in
 # Included by iptables for a cleaner menu structure
 # source make/firewall-cgi/Config.in
+endmenu
 
 # mandatory packages
 source make/haserl/Config.in

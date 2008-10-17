@@ -6,10 +6,10 @@ if [ -e "${HTML_LANG_MOD_DIR}/html/de" ];then
 else
 	HTML_DIR="${HTML_LANG_MOD_DIR}/html/en"
 fi
-rm -rf "${HTML_DIR}/first"
-rm -rf "${HTML_DIR}/konfig"
-rm -f "${HTML_LANG_MOD_DIR}/html/index_assi.html"
-rm -f "${HTML_LANG_MOD_DIR}/html/assistent.html"
+rm_files "${HTML_DIR}/first" \
+	 "${HTML_DIR}/konfig" \
+	 "${HTML_LANG_MOD_DIR}/html/index_assi.html" \
+	 "${HTML_LANG_MOD_DIR}/html/assistent.html"
 find "${HTML_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuAssistent/d'
 

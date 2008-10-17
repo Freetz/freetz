@@ -240,6 +240,15 @@ echo2()
 # Dot-include 'modpatch' shell function
 . "${TOOLS_DIR}/freetz_patch"
 
+# little helper function used by many patches (maybe this should be sourced out)
+rm_files()
+{
+        for file in "$@"; do
+        echo2 "rm $file"
+        rm -rf "$file"
+        done
+}
+
 modunsqfs()
 {
 	local STATUS
