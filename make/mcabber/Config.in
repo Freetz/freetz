@@ -12,6 +12,7 @@ config FREETZ_PACKAGE_MCABBER
 config FREETZ_PACKAGE_MCABBER_STATIC
 	bool "Statically link libraries"
 	depends on FREETZ_PACKAGE_MCABBER
+	select FREETZ_LIB_libterminfo
 	default n
 	help
 		MCABBER needs the following shared libraries which can be linked in statically
