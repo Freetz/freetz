@@ -122,10 +122,7 @@ size="40" maxlength="64" type="text" name="mntoptions" value="$(html "$USBROOT_M
 <small>$(lang de:"Geben Sie hier kommagetrennte Optionen an, welche beim Mounten des Dateisystems
 verwendet werden (siehe Man-Pages von mount). Beispiel: rw,noatime,nodiratime"
 en:"Enter a comma-seperated list of options which are used when the filesystem is mounted.
-E.g.: rw,noatime,nodiratime")</small><br />
-<small><b>$(lang de:"Hinweis:" en:"Hint:")</b> $(lang de:"Das USB-Rootverzeichnis muss zur Initialisierung
-das allererste Mal beschreibbar (rw) gemountet werden." en:"For initialization the USB root directory must
-be mounted writable (rw) the very first time.")</small></p>
+E.g.: rw,noatime,nodiratime")</small></p>
 <p>$(lang de:"Altes Root-Filesystem (Flashspeicher) unmounten:" en:"Unmount old root filesystem
 (flash memory):") <input id="y1" type="radio" name="unmountoldroot" value="yes"$y1_chk><label
 for="y1"> $(lang de:"Ja" en:"Yes")</label><input id="n1" type="radio"
