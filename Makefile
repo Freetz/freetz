@@ -46,6 +46,8 @@ TOOLCHAIN_DIR:=toolchain
 TOOLS_DIR:=tools
 DL_FW_DIR:=$(DL_DIR)/fw
 FW_IMAGES_DIR:=images
+BUILD_DIR_VERSION=$(shell svnversion | grep -v exported 2> /dev/null)
+BUILD_LAST_VERSION=$(shell cat .lastbuild-version 2> /dev/null)
 
 PACKAGES_BUILD_DIR:=$(PACKAGES_DIR)/$(BUILD_DIR)
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
@@ -54,6 +56,7 @@ SED:=sed
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
+CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 SWITCH_UCLIBC:=
 
@@ -75,30 +78,19 @@ ifeq ($(shell uname -o),Cygwin)
 $(error Cygwin is not supported! Please use a real Linux environment.)
 endif
 
-#Simple test if wrong uclibc is used
-UCLIBC:=$(shell $(CHECK_UCLIBC_VERSION) && echo OK || echo NOK)
-ifeq ($(UCLIBC),NOK)
-$(warning WARNING: uClibc-version changed. Packages, toolchain and some other stuff must be rebuilt. This will take a while)
-SWITCH_UCLIBC:=toolchain-switch
-endif
-export SWITCH_UCLIBC
-
-# Simple checking of build prerequisites
-ifneq ($(shell $(CHECK_PREREQ_TOOL) \
-	$$(cat .build-prerequisites) \
-	>&2 \
-	&& echo OK\
-),OK)
-$(error Some build prerequisites are missing! Please install the missing packages before trying again)
+# Run svn version update if building in working copy
+ifneq ($(BUILD_DIR_VERSION),)
+CHECK_BUILD_DIR_VERSION:=check-builddir-version
 endif
 
 all: step
-world: $(SWITCH_UCLIBC) $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
+world: prereq-check uclibc-check $(CHECK_BUILD_DIR_VERSION)$(SWITCH_UCLIBC) \
+		$(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
 		$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
-noconfig_targets:=menuconfig config oldconfig defconfig tools $(TOOLS)
+noconfig_targets:=prereq-check check-builddir-version menuconfig config oldconfig defconfig tools $(TOOLS)
 
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
@@ -318,7 +310,7 @@ push-firmware:
 	@if [ ! -f "build/modified/firmware/var/tmp/kernel.image" ]; then \
 		echo "Please run 'make' first."; \
 	else \
-		./tools/push_firmware build/modified/firmware/var/tmp/kernel.image ; \
+		$(TOOLS_DIR)/push_firmware build/modified/firmware/var/tmp/kernel.image ; \
 	fi
 
 recover:
@@ -351,9 +343,9 @@ recover:
 						echo "local IP has to be in the 192.168.178.0/24 subnet."; \
 						echo "e.g. make recover LOCALIP=192.168.178.20"; \
 						echo; \
-						./tools/recover-$(RECOVER) -f "$(IMAGE)"; \
+						$(TOOLS_DIR)/recover-$(RECOVER) -f "$(IMAGE)"; \
 					else \
-						./tools/recover-$(RECOVER) -l $(LOCALIP) -f "$(IMAGE)"; \
+						$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$(IMAGE)"; \
 					fi; break ;; \
 				[nN]*) \
 					break ;; \
@@ -447,6 +439,39 @@ dist: distclean
 		cd "$$curdir"; \
 	)
 	rm -f .exclude-dist-tmp
+
+prereq-check:
+# Simple checking of build prerequisites
+ifneq ($(NO_PREREQ_CHECK),y)
+ifneq ($(shell $(CHECK_PREREQ_TOOL) \
+  $$(cat .build-prerequisites) \
+  >&2 \
+  && echo OK\
+),OK)
+$(error Some build prerequisites are missing! Please install the missing packages before trying again)
+endif
+endif
+
+uclibc-check:
+#Simple test if wrong uclibc is used
+ifneq ($(NO_UCLIBC_CHECK),y)
+UCLIBC:=$(shell $(CHECK_UCLIBC_VERSION) && echo OK || echo NOK)
+ifeq ($(UCLIBC),NOK)
+$(warning WARNING: uClibc-version changed. Packages, toolchain and some other stuff must be rebuilt. This will take a while)
+SWITCH_UCLIBC:=toolchain-switch
+endif
+export SWITCH_UCLIBC
+endif
+
+# Check if last build was with older svn version
+check-builddir-version:
+	@if [ 	-e .config -a \
+		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
+		.svn -nt .config ]; then \
+		echo "ERROR: You have updated to newer svn version since last modifying your config. You have to run 'make oldconfig' or 'make menuconfig' once before building again."; \
+		exit 3; \
+	fi; 
+	@echo "$(BUILD_DIR_VERSION)" > .lastbuild-version
 
 toolchain-switch:
 	@rm -f $(TOOLCHAIN_DIR)/target

@@ -151,6 +151,7 @@ def undefined_symbols(obj):
         raise "Cannot find lib" + obj
 
     result = Set()
+    debug(DEBUG_SPAM, "provided_symbol result =", `result`)
     output = command(target + "readelf", "-s", "-W", obj)
     for line in output:
         match = symline_regexp.match(line)
@@ -174,7 +175,6 @@ def provided_symbols(obj):
             if bind != "LOCAL" and not ndx in ("UND", "ABS"):
                 debug(DEBUG_SPAM, "provided_symbols adding ", `name`)
                 result.add(name)
-    debug(DEBUG_SPAM, "provided_symbols", obj, "result:", `result`)
     return result
     
 # Return real target of a symlink
@@ -204,11 +204,6 @@ def find_pic(lib):
 	for file in glob.glob(path + "/" + base_name + "_pic.a"):
 	    if os.access(file, os.F_OK):
 		return resolve_link(file)
-	if base_name not in ('libdl', 'libstdc++'):
-    	    for file in glob.glob(path + "/" + base_name + ".a"):
-        	if os.access(file, os.F_OK):
-    		    return resolve_link(file)
-    debug(DEBUG_NORMAL, "no pic for ", base_name)
     return ""
 
 # Find a PIC .map file for the library
@@ -270,7 +265,7 @@ def version(vers):
 ## Required arguments for long options are also mandatory for the short options.
 
 # Clean the environment
-vers="0.12"
+vers="0.12 with uClibc fixes"
 os.environ['LC_ALL'] = "C"
 
 # Argument parsing
@@ -363,6 +358,12 @@ if not ldlib:
 
 debug(DEBUG_NORMAL, "I: Using", ldlib, "as dynamic linker.")
 
+pattern = re.compile(".*ld-uClibc.*");
+if pattern.match(ldlib):
+    uclibc = 1
+else:
+    ulibc = 0
+
 # Check for rpaths
 for obj in objects.values():
     rpath_val = rpath(obj)
@@ -410,19 +411,13 @@ while 1:
         needed_symbols.merge(undefined_symbols(obj))
         libraries.merge(library_depends(obj))
 
-    # FIXME: on i386 this is undefined but not marked UND
-    # I don't know how to detect those symbols but this seems
-    # to be the only one and including it on alpha as well
-    # doesn't hurt. I guess all archs can live with this.
-    needed_symbols.add(("sys_siglist", 1))
-    needed_symbols.add(("unix_io_manager", 1))
-
     # calculate what symbols are present in small_libs
     present_symbols = Set()
     for lib in small_libs:
         present_symbols.merge(provided_symbols(lib))
 
     # are we finished?
+    using_ctor_dtor = 0
     num_unresolved = 0
     present_symbols_elems = present_symbols.elems()
     unresolved = Set()
@@ -476,6 +471,21 @@ while 1:
                 library_symbols[library].add(symbol)
                 symbol_provider[symbol] = library
 
+        # Fixup support for constructors and destructors
+        if symbol_provider.has_key("_init"):
+            debug(DEBUG_VERBOSE, library, ": Library has a constructor!");
+            using_ctor_dtor = 1
+            library_symbols[library].add("_init")
+            symbol_provider["_init"] = library
+            library_symbols_used[library].add("_init")
+
+        if symbol_provider.has_key("_fini"):
+            debug(DEBUG_VERBOSE, library, ": Library has a destructor!");
+            using_ctor_dtor = 1
+            library_symbols[library].add("_fini")
+            symbol_provider["_fini"] = library
+            library_symbols_used[library].add("_fini")
+
     # which symbols are actually used from each lib
     for (symbol, is_weak) in needed_symbols.elems():
 	try:
@@ -516,12 +526,12 @@ while 1:
             debug(DEBUG_SPAM, "soname:", soname)
             base_name = so_pattern.match(library).group(1)
             # libc needs its soinit.o and sofini.o as well as the pic
-            if base_name == "libc":
+            if base_name == "libc" and not uclibc:
                 # force dso_handle.os to be included, otherwise reduced libc
                 # may segfault in ptmalloc_init due to undefined weak reference
                 extra_flags = find_lib(ldlib) + " -u __dso_handle"
-                extra_pre_obj = ""#libc_extras_dir + "/soinit.o"
-                extra_post_obj = ""#libc_extras_dir + "/sofini.o"
+                extra_pre_obj = libc_extras_dir + "/soinit.o"
+                extra_post_obj = libc_extras_dir + "/sofini.o"
             else:
                 extra_flags = ""
                 extra_pre_obj = ""
@@ -533,6 +543,8 @@ while 1:
                 joined_symbols = "-u" + string.join(library_symbols_used[library].elems(), " -u")
             else:
                 joined_symbols = ""
+            if using_ctor_dtor == 1:
+                 extra_flags = extra_flags + " -shared"
             # compile in only used symbols
             command(target + "gcc",
                 "-nostdlib -nostartfiles -shared -Wl,-soname=" + soname,\
@@ -547,7 +559,7 @@ while 1:
                 library_depends_gcc_libnames(so_file))
             # strip result
 	    debug(DEBUG_SPAM, "STRIP", so_file_name)
-            command(target + "objcopy", "--strip-unneeded -R .note -R .comment -R .pdr",
+            command(target + "objcopy", "--strip-unneeded -R .note -R .comment",
                       dest_path + "/" + so_file_name + "-so",
                       dest_path + "/" + so_file_name + "-so-stripped")
             ## DEBUG

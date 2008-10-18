@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.8.6-p111)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=ftp://ftp.ruby-lang.org/pub/ruby/1.8
+$(call PKG_INIT_BIN, 1.8.7)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.xs4all.nl/~hipster/lib/mirror/ruby/1.8
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 

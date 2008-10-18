@@ -44,7 +44,7 @@ GCC_SHARED_LIBGCC:=--enable-shared
 GCC_EXTRA_CONFIG_OPTIONS:=--with-float=soft --enable-cxx-flags=-msoft-float
 
 $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
-	wget --passive-ftp -P $(DL_DIR) $(GCC_SITE)/$(GCC_SOURCE)
+	$(DL_TOOL) $(DL_DIR) .config $(GCC_SOURCE) $(GCC_SITE)
 
 $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)

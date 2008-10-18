@@ -1,5 +1,5 @@
---- etc/hotplug/storage.orig	2008-09-19 12:09:25.000000000 +0200
-+++ etc/hotplug/storage	1980-11-03 14:51:17.000000000 +0100
+--- etc/hotplug/storage.orig	2008-09-26 14:04:54.000000000 +0200
++++ etc/hotplug/storage	2008-10-01 12:03:41.000000000 +0200
 @@ -12,6 +12,10 @@
  FIRST=$6
  MSTART=/sbin/start_mediasrv
@@ -11,7 +11,7 @@
  ## Wait for removal of filesystem semaphores (mask: $1, maximal wait period: $2)
  wait4remove () {
  local COUNT=0
-@@ -165,6 +169,7 @@
+@@ -139,6 +143,7 @@
  ## ftp server control
  ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
  if [ "$ENABLED" != "no" ] ; then
@@ -19,7 +19,7 @@
  if test -x /bin/inetdctl ; then
  inetdctl enable ftpd
  else
-@@ -181,6 +186,7 @@
+@@ -155,6 +160,7 @@
  ftpd -D -q $READONLYOPTION -t 120 -m 15 $USERSOPTION -h "$CONFIG_PRODUKT_NAME" &
  fi
  fi
@@ -27,8 +27,8 @@
  else
  if test -x /bin/inetdctl ; then
  inetdctl disable ftpd
---- etc/hotplug/run_mount.orig	2008-09-19 12:09:28.000000000 +0200
-+++ etc/hotplug/run_mount	1980-11-03 14:51:17.000000000 +0100
+--- etc/hotplug/run_mount.orig	2008-09-26 14:04:56.000000000 +0200
++++ etc/hotplug/run_mount	2008-10-01 12:03:41.000000000 +0200
 @@ -15,6 +15,10 @@
  MSTART=/sbin/start_mediasrv
  TR069START=/bin/tr069starter

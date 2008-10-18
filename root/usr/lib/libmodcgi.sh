@@ -113,7 +113,7 @@ html_cat << EOF
 <table border="0" cellspacing="0" cellpadding="0" align="center" width="$_cgi_total_width">
 <tr>
 <td width="20"><img src="/images/edge_lt.png" width="20" height="40" border="0" alt=""></td>
-<td width="$_cgi_width" id="edgetop"><div class="version">$(cat /etc/.subversion)</div><div class="title">Freetz <a href="/cgi-bin/about.cgi" target="_blank" style="color: white;">-</a> <span style="font-style: italic;">$1</span></div></td>
+<td width="$_cgi_width" id="edgetop"><div class="version">$(cat /etc/.freetz-version)</div><div class="title">Freetz <a href="/cgi-bin/about.cgi" target="_blank" style="color: white;">-</a> <span style="font-style: italic;">$1</span></div></td>
 <td width="20"><img src="/images/edge_rt.png" width="20" height="40" border="0" alt=""></td>
 </tr>
 <tr>

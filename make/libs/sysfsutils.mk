@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.1.0)
 $(PKG)_LIB_VERSION:=2.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://prdownloads.sourceforge.net/linux-diag
+$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/linux-diag
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libsysfs.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsysfs.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libsysfs.so.$($(PKG)_LIB_VERSION)

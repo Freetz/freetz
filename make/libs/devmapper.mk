@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 1.02.26)
+$(call PKG_INIT_LIB, 1.02.27)
 $(PKG)_LIB_VERSION:=1.02
 $(PKG)_SOURCE:=devmapper_$($(PKG)_VERSION).orig.tar.gz
 $(PKG)_SITE:=http://ftp.debian.org/debian/pool/main/d/devmapper

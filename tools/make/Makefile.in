@@ -13,6 +13,12 @@ TOOLS_CXX:=$(TOOLS_MAKE_PATH)/$(TOOLS_CROSS)g++
 TOOLS_AR:=$(TOOLS_MAKE_PATH)/$(TOOLS_CROSS)ar
 endif
 
+ifneq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
+TOOLS_DOT_CONFIG:=.defconfig
+else
+TOOLS_DOT_CONFIG:=.config
+endif
+
 TOOLS+=busybox-tools
 TOOLS+=find-squashfs
 TOOLS+=lzma

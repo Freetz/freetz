@@ -39,6 +39,7 @@ apply_changes() {
 	if [ "$1" = mod ]; then
 		start_stop telnetd "$2"
 		start_stop webcfg "$3"
+		start_stop swap "$4"
 		. /mod/etc/conf/mod.cfg
 		modunreg status mod mod/mounted
 		[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
@@ -75,6 +76,7 @@ package=''
 file_id=''
 oldstatus1=''
 oldstatus2=''
+oldstatus3=''
 
 case "$form" in
 	pkg_*)
@@ -86,6 +88,7 @@ case "$form" in
 				script=settings.cgi
 				oldstatus1=$(rc_status telnetd)
 				oldstatus2=$(rc_status webcfg)
+				oldstatus3=$(rc_status swap)
 			else
 				script=pkgconf.cgi
 				oldstatus1=$("/mod/etc/init.d/rc.$package" status)
@@ -107,7 +110,7 @@ case "$form" in
 			echo 'done.'
 			
 			{
-			apply_changes "$package" "$oldstatus1" "$oldstatus2"
+			apply_changes "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
 			pkg_apply_save
 
 			modsave flash
@@ -125,6 +128,7 @@ case "$form" in
 				script=settings.cgi
 				oldstatus1=$(rc_status telnetd)
                                 oldstatus2=$(rc_status webcfg)
+				oldstatus3=$(rc_status swap)
 			else 
 				script=pkgconf.cgi
                                 oldstatus1=$("/mod/etc/init.d/rc.$package" status)
@@ -135,7 +139,7 @@ case "$form" in
 			echo 'done.'
 
 			{
-			apply_changes "$package" "$oldstatus1" "$oldstatus2"
+			apply_changes "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
 			pkg_apply_def
 
 			modsave flash

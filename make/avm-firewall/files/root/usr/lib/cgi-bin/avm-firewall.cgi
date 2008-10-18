@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="2.0.4_beta"
+VERSION="2.0.4_rc1"
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 CONFIG=/mod/etc/conf/avm-firewall.cfg
 . /usr/lib/libmodcgi.sh
@@ -200,9 +200,7 @@ $(lang en:"For Debugging : show forwarding rules" de:"nur zum debuggen: Forwardr
 	</td><td><input type="text" size="24" title="Destination" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddest", this.value)'>
 	</td><td><input type="text" size="10" title="DPort" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddport", this.value)'>
 	</td><td><input type="text" title="Descr" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwdname", this.value)'>
-	
-	</td><td><center>
-	<img src="../images/del.jpg" title="delete rule" onclick='allfwdrules.splice(this.parentNode.parentNode.rowIndex -3 ,1); fwdrulescount -=  1;Init_FWDTable()'>
+	</td><td><center><img src="../images/del.jpg" title="delete rule" onclick='allfwdrules.splice(this.parentNode.parentNode.parentNode.rowIndex -3 ,1); fwdrulescount -=  1;Init_FWDTable()'>
       	</center></td>
 	</tr>
 </table>
@@ -213,9 +211,6 @@ EOF
 cat << EOF
 
 <script>
-/*
-console.time("mytime");
-*/
 rules="";
 
 action=new Array();
@@ -348,14 +343,6 @@ function Init_FWDTable(){
 
 
 Init_FW_Table();
-/*
-console.timeEnd("mytime");
-console.time("mytime");
-*/
-
-/*
-console.timeEnd("mytime");
-*/
 
 function my_tmp(elem){
 var tmp=elem;
