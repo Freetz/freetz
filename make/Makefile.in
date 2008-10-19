@@ -1,6 +1,6 @@
 MAKE1=make
 MAKE=make -j$(FREETZ_JLEVEL)
-HOSTCC:=$(strip $(subst ",, $(FREETZ_HOSTCC)))
+HOSTCC:=gcc
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	-e 's/sparc.*/sparc/' \
