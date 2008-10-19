@@ -1,6 +1,13 @@
 #!/bin/sh
 
-echo "## Simple Tor client configuration"
+echo "User tor"
+echo "Group tor"
+
+if [ ! -z "$TOR_DATADIRECTORY" ]; then
+    echo "DataDirectory $TOR_DATADIRECTORY"
+else
+    echo "DataDirectory /var/tmp/tor"
+fi
 
 [ "$TOR_SOCKS_PORT" ] && echo "SocksPort $TOR_SOCKS_PORT"
 [ "$TOR_SOCKS_ADDRESS" ] && echo "SocksListenAddress $TOR_SOCKS_ADDRESS"
@@ -36,6 +43,16 @@ if [ ! -z "$TOR_EXIT_NODES" ]; then
 fi
 [ "$TOR_STRICT_EXIT_NODES" == "yes" ] && echo "StrictExitNodes 1"
 
+if [ "$TOR_RELAY_ENABLED" == "yes" ]; then
+	[ "$TOR_NICKNAME" ] && echo "Nickname $TOR_NICKNAME"
+	[ "$TOR_ADDRESS" ] && echo "Address $TOR_ADDRESS"
+	[ "$TOR_BANDWIDTHRATE" ] && echo "BandwidthRate $TOR_BANDWIDTHRATE"
+	[ "$TOR_BANDWIDTHBURST" ] && echo "BandwidthBurst $TOR_BANDWIDTHBURST"
+	[ "$TOR_ORPORT" ] && echo "ORPort $TOR_ORPORT"
+	[ "$TOR_DIRPORT" ] && echo "DirPort $TOR_DIRPORT"
+	[ "$TOR_MAXONIONSPENDING" ] && echo "MaxOnionsPending $TOR_MAXONIONSPENDING"
+	[ "$TOR_EXITPOLICY" ] && echo "ExitPolicy $TOR_EXITPOLICY"
+fi
+
 cat <<EOF
 EOF
-
