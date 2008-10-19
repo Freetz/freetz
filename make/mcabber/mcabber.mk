@@ -8,18 +8,21 @@ $(PKG)_DEPENDS_ON := glib2 ncurses ncurses-panel
 
 MYLIBS:=-lpanel -lncurses -lintl -liconv -lm -lglib-2.0
 
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_MCABBER_STATIC
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_MCABBER_WITH_FIFO
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_MCABBER_WITH_SSL
+
 ifeq ($(strip $(FREETZ_PACKAGE_MCABBER_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
 MYLIBS+=-lssl -lcrypto -ldl
-$(PKG)_CONFIGURE_OPTIONS += --with-ssl --with-openssl=$(TARGET_MAKE_PATH)/../usr/lib
-else
-$(PKG)_CONFIGURE_OPTIONS += --without-ssl
 endif
 
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_MCABBER_WITH_SSL),--with-openssl, --without-ssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_MCABBER_WITH_FIFO),--enable-fifo,)
+
+MYLDFLAGS:= ""
 ifeq ($(strip $(FREETZ_PACKAGE_MCABBER_STATIC)),y)
 MYLDFLAGS:= "-static"
-else
-MYLDFLAGS:= ""
 endif
 
 
@@ -30,6 +33,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(MCABBER_DIR) \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(MYLDFLAGS)" \
 		LIBS="$(MYLIBS)"
 
