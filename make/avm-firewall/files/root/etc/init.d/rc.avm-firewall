@@ -17,8 +17,8 @@ case "$1" in
                 # Original Regeln Kennzeichnen, falls noch nicht geschehen
                 if [  `sed "/targets/q" $REAL | grep -c '/\*AVM\*/'` -eq 0 ]; then
                     DEFar7=`cat "/etc/default.$BOXID/$BOXOEM/ar7.cfg" | sed -n '/dslifaces/,/} {/p'`
-                    DEFli=`echo "$DEFar7" | sed -n '/lowinput/,/}/p' | sed  -n "s/^[ ]*\"//g ; /^permit\|deny\|reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\'`
-                    DEFho=`echo "$DEFar7" | sed -n '/highoutput/,/}/p' | sed  -n "s/^[ ]*\"//g ; /^permit\|deny\|reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\'`
+                    DEFli=`echo "$DEFar7" | sed -n '/lowinput/,/}/p' | sed  -n "s/^[ ]*\"//g ; /^permit\|^deny\|^reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\'`
+                    DEFho=`echo "$DEFar7" | sed -n '/highoutput/,/}/p' | sed  -n "s/^[ ]*\"//g ; /^permit\|^deny\|^reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\'`
                     tmp='cat $REAL | sed "/dslifaces/,/lowoutput/ {/'$DEFli'/ s/^[ ]*\".*\"[,;][ ]*$/&\/*AVM*\/ /g}" | sed "/dslifaces/,/} {/  {/highoutput/,/}/ {/'$DEFho'/ s/^[ ]*\".*\"[,;][ ]*$/&\/*AVM*\/ /g}}" > $REALCOPY'
                     eval $tmp
                     cat $REALCOPY > $REAL
@@ -30,33 +30,28 @@ esac
 DSLIFACES="`cat $REAL | sed   -n '/dslifaces/,/} {/p' `";
 # In diesem Bereich der von "lowinput" bis zu schliessenden Klammer
 LOWINPUT=`echo "$DSLIFACES" | sed -n '/lowinput/,/}/p' `
-# Die anzahl Leerzeichen davorbestimmen:
-# Nimm die letzte Zeile dafuer: In der Zeile, die mit Leerzeichen anfaengt
-# (und merke dir diese Leerzeichen in "\1" [mittels dem ersten  \( und \) ] )
-# und danach mit "deny , "permit oder "reject weitergeht und mit einem ; endet
-# ersetze die ganze Zeile nur mit den Leerzeichen, so dass die "Ausgabe" nur diese
-# Leerzeichen sind
-SPACES="`echo "$LOWINPUT" | sed -n 's/\(^[ ]*\)"\(permit\|deny\|reject\).*;.*/\1/p'`";
-
-# Der "accesslit" String (leere Rulestabelle ist ohne accesslist-Eintrag!)
-ACCL=`echo "$DSLIFACES" | sed '/accesslist/!d ; q' `
+# "policy" und "accesslit" String erzeugen
+# nur policy ist immer da, denn leere Rulestabelle ist ohne accesslist-Eintrag!
 POL=`echo "$DSLIFACES" | sed '/policy/!d ; q' | sed 's/\(^.*= "\).*/\1/'`
+ACCL=`echo "$POL" | sed 's/policy = "/accesslist = /'`
+SPACES=`echo "$ACCL" | sed 's/./ /g'`
 RET='
 '
 
 # Die eigentlichen Rules rauslesen (Am Anfang Leereichen und " loeschen, am Ende die ", oder "; Kombination)
-LIRULES=`echo "$LOWINPUT"| sed  -n "s/^[ ]*\"//g ; /^permit\|deny\|reject/ {s/\"[,;]//g;s/[ ]*$//gp}"`
+LIRULES=`echo "$LOWINPUT"| sed  -n "s/^[ ]*\(accesslist = \)*\"//g ; /^permit\|^deny\|^reject/ {s/\"[,;]//g;s/[ ]*$//gp}"`
 LIPOL="`echo "$LOWINPUT" | grep "policy =" | sed  's/^.*policy.*"\(.*\)";/\1/'`"
 
 HIGHOUTPUT="`echo "$DSLIFACES" | sed -n '/highoutput/,/}/p'`"
-HORULES=`echo "$HIGHOUTPUT"| sed  -n "s/^[ ]*\"//g ; /^permit\|deny\|reject/ {s/\"[,;]//g;s/[ ]*$//gp}"`
+HORULES=`echo "$HIGHOUTPUT"| sed  -n "s/^[ ]*\(accesslist = \)*\"//g ; /^permit\|^deny\|^reject/ {s/\"[,;]//g;s/[ ]*$//gp}"`
 HOPOL="`echo "$HIGHOUTPUT" | grep "policy =" | sed  's/^.*policy.*"\(.*\)";/\1/'`"
 
 # Die FWD-Rules rauslesen (Am Anfang Leereichen und alles bis zum " loeschen, am Ende die ", oder "; Kombination)
 # dafuer wird der "gewuenschte Teil" im Ausdruck mit \( und \) eingefasst und mit \1 ersetzt
-FWDRULES=`echo "$DSLIFACES" | sed -n '/forwardrules/,/;/ s/^[^"]*"\(.*\)"[,;][ ]*/\1/gp'` ;
-FWDSTART=`echo "$DSLIFACES" | sed -n '/forwardrules/,/,/p'  |tr '\n' '%' | sed -n 's/\([ ]*forwardrules =[ %]*\)".*/\1/p'| tr '%' '\n'`;
-FWDSPACES="`echo "$DSLIFACES" | sed -n '/forwardrules/,/;/  s/\(^[ ]*\)".*;/\1/p'`";  
+FWDRULES=`echo "$DSLIFACES" | sed -n '/forwardrules/,/;/ { /shaper/ q ; s/^[^"]*"\(.*\)"[,;][ ]*/\1/gp}'` ;
+FWDSTART=`echo "$DSLIFACES" | sed -n 's/lowinput.*/forwardrules = /p'`
+ENDBRACE=`echo "$DSLIFACES" | sed -n 's/lowinput.*/\}/p'`
+FWDSPACES=`echo "$FWDSTART" | sed 's/./ /g'`;  
 
 
 case "$1" in
@@ -98,9 +93,9 @@ start() {
 		TMPACCL="" && [ -n "$AVM_FIREWALL_RULESTABLE_HO" ]  &&  TMPACCL="$RET$ACCL$RET"`echo "$AVM_FIREWALL_RULESTABLE_HO" | sed "s/^/$SPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2 % ; $ s/, /;/"`
 		HO="$POL$AVM_FIREWALL_POLICY_HO\";$TMPACCL"
                 # Die Forwarding-Regeln...
-                FWD="" && [ -n "$AVM_FIREWALL_FORWARDINGRULES" ] && FWD="$FWDSTART \""`echo "$AVM_FIREWALL_FORWARDINGRULES" | sed "2,$ s/^/$FWDSPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2% ; $ s/,/;/"`;
+                FWD="$ENDBRACE" && [ -n "$AVM_FIREWALL_FORWARDINGRULES" ] && FWD="${ENDBRACE}${RET}${FWDSTART}\""`echo "$AVM_FIREWALL_FORWARDINGRULES" | sed "2,$ s/^/$FWDSPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2% ; $ s/,/;/"`;
                 # ... und alles Einsetzen ...
-                cat  $REAL | awk -v v1="$LI" -v v2="$HO" -v v3="$FWD" '/dslifaces/ {ifstart=1} ;/targets/ {ifstart=0}; /lowinput/{if (ifstart && !liend) {listart=1}};/highoutput/{if (ifstart && !hoend) {hostart=1}}; /policy/{{if (listart) {lirules=1;printli=1}}; {if (hostart) {horules=1;printho=1}}};/\}/{{if (lirules) {lirules=0; listart=0}}; {if(horules){horules=0; hostart=0}}} ; /forwardrules/{ if (ifstart && hoend && !fwdready) {fwd=1}};/shaper/||/}/{if (fwd) {fwd=0}} ;{if (lirules) {{if (printli) {print v1; liend=1; printli=0}}; {next}}} ;{if(horules){{if (printho){ print v2; hoend=1; printho=0}}; {next}}}; {if (fwd){ { if (!fwdready) {print v3; fwdready=1}}; {next}}}; {print}' > $REALCOPY
+                cat  $REAL | awk -v v1="$LI" -v v2="$HO" -v v3="$FWD" '/dslifaces/ {ifstart=1} ;/targets/ {ifstart=0}; /lowinput/{if (ifstart && !liend) {listart=1}};/highoutput/{if (ifstart && !hoend) {hostart=1}}; /policy/{{if (listart) {lirules=1;printli=1}}; {if (hostart) {horules=1;printho=1}}};/\}/{{if (lirules) {lirules=0; listart=0}}; {if(horules){horules=0; hostart=0 ; fwd=1 }}} ;/shaper/||/}/{if (fwd && fwdready) {fwd=0}} ;{if (lirules) {{if (printli) {print v1; liend=1; printli=0}}; {next}}} ;{if(horules){{if (printho){ print v2; hoend=1; printho=0}}; {next}}}; {if (fwd){ { if (!fwdready) {print v3; fwdready=1}}; {next}}}; {print}' > $REALCOPY
 
                 # echte ar7.cfg schreiben
                 cat $REALCOPY > $REAL
