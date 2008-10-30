@@ -6,8 +6,9 @@ CONFIG=/mod/etc/conf/avm-firewall.cfg
 . /mod/etc/conf/avm-firewall.cfg
 
 SUBNET="255.255.255.252 255.255.255.248 255.255.255.240 255.255.255.224 \
-        255.255.255.192 255.255.255.128 255.255.255.0 255.255.254.0 255.255.252.0 255.255.248.0 255.255.240.0 255.255.225.0 \
-        255.255.192.0 255.255.128.0 255.255.0.0 240.0.0.0"
+        255.255.255.192 255.255.255.128 255.255.255.0 255.255.254.0 255.255.252.0 255.255.248.0 255.255.240.0 255.255.224.0 \
+        255.255.192.0 255.255.128.0 255.255.0.0 255.254.0.0 255.252.0.0 255.248.0.0 255.240.0.0 255.224.0.0 \
+        255.192.0.0 255.128.0.0 255.0.0.0 240.0.0.0"
 
 echo "<font size='1'>$(lang en:"This firewall is for router mode only and is based on the ar7.cfg file of AVM. New rule settings will be active after next reboot or after clicking the \"Activate Button\" below." de:"Oberfl&auml;che zur AVM-Firewall (nur im Routermodus) bearbeitet die ar7.cfg. &Auml;nderungen werden durch Reboot oder durch Auswahl am Ende der Seite aktiviert.")</font>"
 
@@ -114,7 +115,7 @@ cat << EOF
 <p><div align="center"><textarea id="id_rules_ho" style="width: 600px; display:none" name="rulestable_ho" rows="15" cols="80" wrap="off"></textarea></div></p>
 <input type="hidden" name="policy_ho" id="id_policy_ho" value="$AVM_FIREWALL_POLICY_HO">
 
-<p><div align="center"><b><font size='1' align="center">$(lang en:"AVM default policy is \"permit\": Every packet not denied will pass. If you change this, you will have to \"reverse\" the rules and allow all desired traffic!" de:"AVM Standard-Regel ist \"permit\": Nur verbotene Pakete werden gesperrt. Wird dies ge&auml;ndert, m&uuml;ssen alle erw&uuml;nschten Pakete explizit erlaubt werden!")</align></font></b></div></p>
+<p><div align="center"><b><font size='1'>$(lang en:"AVM default policy is \"permit\": Every packet not denied will pass. If you change this, you will have to \"reverse\" the rules and allow all desired traffic!" de:"AVM Standard-Regel ist \"permit\": Nur verbotene Pakete werden gesperrt. Wird dies ge&auml;ndert, m&uuml;ssen alle erw&uuml;nschten Pakete explizit erlaubt werden!")</font></b></div></p>
 <br />
 
 <table border="1" cellpadding="4" cellspacing="0" align="center" id="id_table_fwrules">
@@ -277,7 +278,7 @@ function build_new_fwdrule(){
 
  var tmp=fdprot + " 0.0.0.0";
  if (fddtype == "fritz") {document.getElementById("id_fwddest").value="0.0.0.0"; fddest="0.0.0.0"};
- if ( fdprot != "gre" ){ tmp +=":"+fdsport; if (fdeport) {tmp+="+" + (fdeport-fdsport) } };
+ if ( fdprot != "gre" ){ tmp +=":"+fdsport; if (fdeport > fdsport) {tmp+="+" + ((fdeport-fdsport)+1) } };
  tmp += " "+fddest;
  if ( fdprot != "gre" ){tmp +=":"+fdoport;};
  if ( fdname != "" ){tmp +=" 0 # "+fdname;};
