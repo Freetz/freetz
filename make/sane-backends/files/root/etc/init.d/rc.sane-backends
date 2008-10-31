@@ -1,0 +1,111 @@
+#!/bin/sh
+
+DAEMON=sane-backends
+. /etc/init.d/modlibrc
+
+PKG=sane-backends
+DAEMON=saned
+CONFDIR=/mod/etc/sane.d
+
+pre_config() {
+	[ ! -d $CONFDIR ] && mkdir $CONFDIR
+	for conf in /etc/default.$PKG/*.conf; do
+		ln -s $conf $CONFDIR/$(basename $conf);
+	done
+}
+
+config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$PKG/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > $CONFDIR/$DAEMON.conf
+}
+
+start() {
+        echo -n 'Starting saned...'
+        config
+
+        start-stop-daemon -q -p /var/run/$DAEMON.pid -m -b -x $DAEMON -S -- -d
+        exitval=$?
+        if [ "$exitval" -eq 0 ]; then
+                echo 'done.'
+        else
+                echo 'failed.'
+                rm -f $CONFDIR/$DAEMON.conf
+                exit $exitval
+        fi
+}
+
+stop () {
+        echo -n 'Stopping saned...'
+
+        start-stop-daemon -q -p /var/run/$DAEMON.pid -K
+        exitval=$?
+
+        rm -f $CONFDIR/$DAEMON.conf
+
+        if [ "$exitval" -eq 0 ]; then
+                echo 'done.'
+        else
+                echo 'failed.'
+                exit $exitval
+        fi
+}
+
+case "$1" in
+	""|load)
+		pre_config
+
+		modreg cgi 'sane-backends' 'SANE'
+		
+		if [ "$SANE_BACKENDS_SANED_ENABLED" != yes ]; then		
+			if [ "$SANE_BACKENDS_SANED_ENABLED" != inetd ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+				config
+			fi
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg cgi 'sane-backends'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ "$SANE_BACKENDS_SANED_ENABLED" == "inetd" ]; then
+			echo 'inetd'
+ 		else
+			modlib_status
+		fi
+		;;
+	config)
+		config
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

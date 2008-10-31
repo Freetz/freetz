@@ -1,26 +1,4 @@
-DAEMON=saned
-
-write_config() {
-	(
-		for conf in `ls /mod/etc/default.$DAEMON/*.conf`; do
-			cp $conf /mod/etc/$conf
-		done
-
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			"/tmp/flash/${DAEMON}_conf"
-		else
-			"/mod/etc/default.$DAEMON/${DAEMON}_conf"
-		fi
-
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
-	) > /mod/etc/$DAEMON.conf
-}
-
-. /mod/etc/conf/$DAEMON.cfg
-
-write_config
+. /mod/etc/conf/sane-backends.cfg
 
 inetdcfg_desc="saned SANE server"
 inetdcfg_port=$SANE_BACKENDS_SANED_PORT

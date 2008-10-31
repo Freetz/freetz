@@ -3,7 +3,7 @@ $(PKG)_LIB_VERSION:=1.0.19
 $(PKG)_SOURCE:=sane-backends-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp2.sane-project.org/pub/sane/sane-backends-1.0.19
 
-#saned
+# saned
 $(PKG)_TARGET_saned:=$($(PKG)_DEST_DIR)/usr/sbin/saned
 $(PKG)_saned:=$($(PKG)_DIR)/frontend/.libs/saned
 
@@ -81,13 +81,14 @@ $(PKG)_LIB_TARGET_BACKENDS_BINARIES:
 
 $(PKG)_TARGET_CONF:
 	mkdir -p $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends
-	cp -a $(SANE_BACKENDS_DIR)/backend/*.conf $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends
+	# cp -a $(SANE_BACKENDS_DIR)/backend/*.conf $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends
 	$(RM) $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/saned.conf
 	$(RM) $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/dll.conf
 	for backend in $(SANE_BACKENDS); do \
-		if [ "$$backend" != "dll" ]; then \
-			echo $$backend >> $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/dll.conf; \
+		if [ -e $(SANE_BACKENDS_DIR)/backend/$${backend}.conf ]; then \
+			cp $(SANE_BACKENDS_DIR)/backend/$${backend}.conf $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends; \
 		fi; \
+		echo $$backend >> $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/dll.conf; \
 	done
 .PHONY: $(PKG)_TARGET_CONF
 

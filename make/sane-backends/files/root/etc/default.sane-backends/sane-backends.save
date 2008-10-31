@@ -1,0 +1,14 @@
+PKG=sane-backends
+
+pkg_apply() {
+	/mod/etc/init.d/rc.$PKG config
+}
+
+pkg_apply_save() {
+	pkg_apply
+}
+
+pkg_apply_def() {
+	pkg_apply
+}
+

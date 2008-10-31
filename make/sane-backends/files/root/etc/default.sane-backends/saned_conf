@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "$SANE_BACKENDS_SANED_PERMITTED_HOSTS" | grep -v "^#" | while read -r range; do
+	[ -n "$range" ] && echo "$range"
+done
