@@ -61,6 +61,8 @@ CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 SWITCH_UCLIBC:=
 
+export FW_IMAGES_DIR
+
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)
 $(error Running makefile as root is prohibited! Please build Freetz as normal user)

@@ -1144,6 +1144,9 @@ if [ "$DO_PACK" -gt 0 ]; then
 			error 1 "packing of external tar failed"
 		fi
 	fi
+	if [ -s "${DIR}/${modimage}" ]; then
+		echo "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
+	fi
 
 	echo "done."
 	echo
