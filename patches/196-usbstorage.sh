@@ -26,6 +26,8 @@ elif [ "$FREETZ_TYPE_2170" == "y" ] || \
 		fi
 elif [ "$FREETZ_TYPE_WLAN_3270" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270_labor_gaming.patch"
+elif [ "$FREETZ_TYPE_FON_WLAN_7240" == "y" ]; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7240.patch"
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage.patch"
 fi
