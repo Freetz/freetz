@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,0.7.4)
+$(call PKG_INIT_BIN,0.7.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://bip.t1r.net/downloads
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
