@@ -21,9 +21,8 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@ln -snf ../include $@/usr/include
 	@ln -snf ../lib $@/usr/lib
 	@ln -snf ../lib $@/$(REAL_GNU_TARGET_NAME)/lib
-	@ln -fs $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TOOLCHAIN_DIR)/target
 
-target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
+target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) $(TARGET_TOOLCHAIN_SYMLINK) \
 					kernel-configured uclibc-configured \
 					$(TARGET_TOOLCHAIN)
 	

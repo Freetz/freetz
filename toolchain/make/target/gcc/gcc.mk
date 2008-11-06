@@ -89,8 +89,10 @@ $(GCC_BUILD_DIR1)/.compiled: $(GCC_BUILD_DIR1)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR1) all-gcc
 	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(GCC_BUILD_DIR1)/.compiled
+gcc_initial=$(GCC_BUILD_DIR1)/.installed
+$(gcc_initial) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(GCC_BUILD_DIR1)/.compiled
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR1) install-gcc
+	touch $(gcc_initial)
 
 gcc_initial: uclibc-configured binutils $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc
 
@@ -152,7 +154,9 @@ endif
 	);
 	touch $(GCC_BUILD_DIR2)/.installed
 
-gcc: uclibc-configured binutils gcc_initial uclibc $(ROOT_DIR)/lib/libgcc_s.so.1 $(GCC_BUILD_DIR2)/.installed
+cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc
+cross_compiler gcc: uclibc-configured binutils gcc_initial uclibc \
+	$(GCC_BUILD_DIR2)/.installed $(ROOT_DIR)/lib/libgcc_s.so.1
 
 gcc-source: $(DL_DIR)/$(GCC_SOURCE)
 
