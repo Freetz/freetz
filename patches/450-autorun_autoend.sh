@@ -4,10 +4,12 @@ if  [ "$FREETZ_TYPE_LABOR_DSL" ] || [ "$FREETZ_TYPE_LABOR_GAMING" ] || [ "$FREET
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/450-autorun-run_mount-labor_gaming.patch"
 elif [ "$FREETZ_TYPE_LABOR_ALL" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/450-autorun-run_mount-labor_all.patch"
+elif [ "$FREETZ_TYPE_FON_WLAN_7240" ]; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/450-autorun-run_mount-labor_all.patch"
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/450-autorun-run_mount.patch"
 fi
-if [ "$FREETZ_TYPE_LABOR_ALL" ]; then
+if [ "$FREETZ_TYPE_LABOR_ALL" ] || [ "$FREETZ_TYPE_FON_WLAN_7240" ]; then
     modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/450-autoend-storage_labor_all.patch"
 else
     modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/450-autoend-storage.patch"

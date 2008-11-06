@@ -1118,6 +1118,10 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "packing of firmware image failed"
 	fi
 
+	if [ -s "${DIR}/${modimage}" ]; then
+		echo "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
+	fi
+
 	echo "done."
 	echo
 

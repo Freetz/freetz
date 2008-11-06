@@ -116,7 +116,7 @@ trap cleanup EXIT SIGTERM SIGINT
 arg1=$1
 while [ -z "$img" ]; do
 	if [ "$(uname -s)" == "Darwin" ]; then
-		hexdump -n4 "$arg1" | grep -iq "81 12 ed fd" && img="$arg1"
+		hexdump -n4 "$arg1" | grep -iq "81 12 ed fe" && img="$arg1"
 	else
 		hexdump -n4 "$arg1" | grep -iq "1281 feed" && img="$arg1"
 	fi
