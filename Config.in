@@ -39,8 +39,6 @@ choice
 	config FREETZ_TYPE_300IP_AS_FON
 		select FREETZ_AVM_VERSION_04_49
 		bool "300IP as Fon"
-		select FREETZ_BRANDING_tcom
-		select FREETZ_BRANDING_avm
 
 	config FREETZ_TYPE_2170
 		select FREETZ_AVM_VERSION_04_57
@@ -124,17 +122,14 @@ choice
 
 	config FREETZ_TYPE_SPEEDPORT_W501V
 		select FREETZ_AVM_VERSION_r7203
-		select FREETZ_BRANDING_tcom
 		bool "Speedport W501V"
 
 	config FREETZ_TYPE_SPEEDPORT_W701V
 		select FREETZ_AVM_VERSION_r8508
-		select FREETZ_BRANDING_tcom
 		bool "Speedport W701V"
 
 #	config FREETZ_TYPE_SPEEDPORT_W900V
 #		select FREETZ_AVM_VERSION_r4884
-#		select FREETZ_BRANDING_tcom
 #		bool "Speedport W900V"
 
 	config FREETZ_TYPE_CUSTOM
@@ -235,7 +230,6 @@ choice
 	#config FREETZ_TYPE_SINUS_W500V_7150
 	#	bool "Sinus W500V"
 	#	depends on FREETZ_TYPE_FON_7150
-	#	select FREETZ_BRANDING_tcom
 	#	select FREETZ_MODULE_jffs2
 	#	help
 	#		Enable this to compile a mod image for T-Com Sinus W500V based
@@ -244,7 +238,6 @@ choice
 	config FREETZ_TYPE_SPEEDPORT_W701V_7170
 		bool "W701V"
 		depends on FREETZ_TYPE_FON_WLAN_7170
-		select FREETZ_BRANDING_tcom
 		help
 			Enable this to compile a mod image for T-Com Speedport W701V based
 			on a 7170 image.
@@ -252,7 +245,6 @@ choice
 	config FREETZ_TYPE_SPEEDPORT_W900V_7170
 		bool "W900V"
 		depends on FREETZ_TYPE_FON_WLAN_7170
-		select FREETZ_BRANDING_tcom
 		help
 			Enable this to compile a mod image for T-Com Speedport W900V based
 			on a 7170 image.
@@ -687,216 +679,6 @@ config FREETZ_HAS_USB_HOST
 	help
 		Select this if your USB port is a host adapter
 
-menu "Branding"
-	depends on \
-		! FREETZ_TYPE_SPEEDPORT_W501V && \
-		! FREETZ_TYPE_SPEEDPORT_W701V && \
-		! FREETZ_TYPE_SPEEDPORT_W900V
-
-#comment "Brandings ------------------------------"
-#	depends on \
-#		( \
-#		! FREETZ_TYPE_SPEEDPORT_W501V && \
-#		! FREETZ_TYPE_SPEEDPORT_W701V && \
-#		! FREETZ_TYPE_SPEEDPORT_W900V && \
-#		! FREETZ_TYPE_CUSTOM \
-#		)
-
-#comment "Brandings (if exist) -------------------"
-#	depends on FREETZ_TYPE_CUSTOM && FREETZ_SHOW_ADVANCED
-
-config FREETZ_BRANDING_1und1
-	bool "1&1"
-	depends on \
-		FREETZ_TYPE_LANG_DE && \
-		( \
-		FREETZ_TYPE_FON || \
-		FREETZ_TYPE_FON_5050 || \
-		FREETZ_TYPE_FON_5140 || \
-		FREETZ_TYPE_FON_WLAN || \
-		FREETZ_TYPE_FON_WLAN_7050 || \
-		FREETZ_TYPE_FON_WLAN_7113 || \
-		FREETZ_TYPE_FON_WLAN_7141 || \
-		FREETZ_TYPE_FON_WLAN_7170 || \
-		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_WLAN_3020 || \
-		FREETZ_TYPE_WLAN_3030 || \
-		FREETZ_TYPE_WLAN_3130 || \
-		FREETZ_TYPE_CUSTOM \
-		) \
-		&& ! FREETZ_TYPE_ALIEN_HARDWARE
-	default y
-	help
-		1&1 branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure to choose at least one branding corresponding to the one
-		defined in your box's boot loader environment. It can be determined by calling
-		the following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-config FREETZ_BRANDING_avm
-	bool "AVM"
-	depends on \
-		( \
-		! FREETZ_BRANDING_tcom && \
-		FREETZ_TYPE_LANG_A_CH || \
-		FREETZ_TYPE_LANG_DE || \
-		FREETZ_TYPE_CUSTOM \
-		)
-	default y
-	help
-		AVM branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure to choose at least one branding corresponding to the one
-		defined in your box's boot loader environment. It can be determined by calling
-		the following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-config FREETZ_BRANDING_avme
-	bool "AVM international"
-	depends on \
-		( \
-		FREETZ_TYPE_LANG_EN || \
-		FREETZ_TYPE_CUSTOM \
-		)
-	default y
-	help
-		AVM international branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure to choose at least one branding corresponding to the one
-		defined in your box's boot loader environment. It can be determined by calling
-		the following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-config FREETZ_BRANDING_aol
-	bool "AOL"
-	depends on \
-		FREETZ_TYPE_LANG_DE && \
-		( \
-		FREETZ_TYPE_FON || \
-		FREETZ_TYPE_FON_WLAN_7140 || \
-		FREETZ_TYPE_300IP_AS_FON || \
-		FREETZ_TYPE_CUSTOM \
-		)
-	default y
-	help
-		AOL branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure to choose at least one branding corresponding to the one
-		defined in your box's boot loader environment. It can be determined by calling
-		the following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-config FREETZ_BRANDING_arcor
-	bool "Arcor"
-	depends on FREETZ_TYPE_CUSTOM
-	default y
-	help
-		Arcor branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure to choose at least one branding corresponding to the one
-		defined in your box's boot loader environment. It can be determined by calling
-		the following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-config FREETZ_BRANDING_congstar
-	bool "Congstar"
-	depends on \
-		FREETZ_TYPE_SPEEDPORT_W701V 
-	default y
-	help
-		Congstar branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure to choose at least one branding corresponding to the one
-		defined in your box's boot loader environment. It can be determined by calling
-		the following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-config FREETZ_BRANDING_freenet
-	bool "Freenet"
-	depends on \
-		FREETZ_TYPE_LANG_DE && \
-		( \
-		FREETZ_TYPE_FON || \
-		FREETZ_TYPE_FON_7150 || \
-		FREETZ_TYPE_300IP_AS_FON || \
-		FREETZ_TYPE_FON_WLAN_7113 || \
-		FREETZ_TYPE_FON_WLAN_7141 || \
-		FREETZ_TYPE_FON_WLAN_7170 || \
-		FREETZ_TYPE_CUSTOM \
-		) \
-		&& ! FREETZ_TYPE_ALIEN_HARDWARE
-	default y
-	help
-		Freenet branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure to choose at least one branding corresponding to the one
-		defined in your box's boot loader environment. It can be determined by calling
-		the following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-config FREETZ_BRANDING_tcom
-	bool "T-Com"
-	depends on \
-		FREETZ_TYPE_LANG_DE && \
-		( \
-		FREETZ_TYPE_300IP_AS_FON || \
-		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
-		FREETZ_TYPE_ALIEN_HARDWARE \
-		)
-	default y
-	help
-		T-Com branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure to choose at least one branding corresponding to the one
-		defined in your box's boot loader environment. It can be determined by calling
-		the following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-config FREETZ_BRANDING_versatel
-	bool "Versatel"
-	depends on \
-		FREETZ_TYPE_WLAN_3131
-	default y
-	help
-		Versatel branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure to choose at least one branding corresponding to the one
-		defined in your box's boot loader environment. It can be determined by calling
-		the following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-endmenu
 
 comment "Mod ------------------------------------"
 
@@ -921,6 +703,213 @@ config FREETZ_LANG_STRING
 	default "en"			if FREETZ_LANG_EN
 
 menu "Patches"
+
+comment "No Brandings available to remove"
+	depends on \
+		FREETZ_TYPE_SPEEDPORT_W501V || \
+		FREETZ_TYPE_SPEEDPORT_W701V || \
+		FREETZ_TYPE_SPEEDPORT_W900V
+
+menu "Remove Brandings"
+	depends on \
+		! FREETZ_TYPE_SPEEDPORT_W501V && \
+		! FREETZ_TYPE_SPEEDPORT_W701V && \
+		! FREETZ_TYPE_SPEEDPORT_W900V
+
+comment "avm and tcom branding can't be removed"
+	depends on \
+		FREETZ_TYPE_ALIEN_HARDWARE
+
+config FREETZ_BRANDING_1und1
+	bool "1&1"
+	depends on \
+		FREETZ_TYPE_LANG_DE && \
+		( \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_FON_WLAN || \
+		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270 || \
+		FREETZ_TYPE_WLAN_3020 || \
+		FREETZ_TYPE_WLAN_3030 || \
+		FREETZ_TYPE_WLAN_3130 || \
+		FREETZ_TYPE_CUSTOM \
+		)
+	default n
+	help
+		1&1 branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
+config FREETZ_BRANDING_avm
+	bool "AVM"
+	depends on \
+		( \
+		FREETZ_TYPE_LANG_A_CH || \
+		FREETZ_TYPE_LANG_DE || \
+		FREETZ_TYPE_CUSTOM \
+		) \
+		&& ! FREETZ_TYPE_ALIEN_HARDWARE
+	default n
+	help
+		AVM branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
+config FREETZ_BRANDING_avme
+	bool "AVM international"
+	depends on \
+		( \
+		FREETZ_TYPE_LANG_EN || \
+		FREETZ_TYPE_CUSTOM \
+		)
+	default n
+	help
+		AVM international branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
+config FREETZ_BRANDING_aol
+	bool "AOL"
+	depends on \
+		FREETZ_TYPE_LANG_DE && \
+		( \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_FON_WLAN_7140 || \
+		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_CUSTOM \
+		)
+	default n
+	help
+		AOL branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
+config FREETZ_BRANDING_arcor
+	bool "Arcor"
+	depends on FREETZ_TYPE_CUSTOM
+	default n
+	help
+		Arcor branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
+config FREETZ_BRANDING_congstar
+	bool "Congstar"
+	depends on \
+		FREETZ_TYPE_SPEEDPORT_W701V 
+	default n
+	help
+		Congstar branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
+config FREETZ_BRANDING_freenet
+	bool "Freenet"
+	depends on \
+		FREETZ_TYPE_LANG_DE && \
+		( \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_CUSTOM \
+		)
+	default n
+	help
+		Freenet branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
+#config FREETZ_BRANDING_tcom
+#	bool "T-Com"
+#	depends on \
+#		FREETZ_TYPE_LANG_DE && \
+#		( \
+#		FREETZ_TYPE_300IP_AS_FON || \
+#		FREETZ_TYPE_SPEEDPORT_W501V || \
+#		FREETZ_TYPE_SPEEDPORT_W701V || \
+#		FREETZ_TYPE_SPEEDPORT_W900V || \
+#		FREETZ_TYPE_ALIEN_HARDWARE \
+#		)
+#	default n
+#	help
+#		T-Com branding
+#
+#		Each branding provides the web UI templates for a certain manufacturer or OEM.
+#
+#		NOTE: Make sure not to remove the branding corresponding to the one defined 
+#		in your box's boot loader environment. It can be determined by calling the
+#		following command from the box's shell prompt:
+#
+#		echo $(cat /proc/sys/urlader/firmware_version)
+
+config FREETZ_BRANDING_versatel
+	bool "Versatel"
+	depends on \
+		FREETZ_TYPE_WLAN_3131
+	default n
+	help
+		Versatel branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
+endmenu
 
 config FREETZ_REMOVE_HELP
 	bool "Remove help"
