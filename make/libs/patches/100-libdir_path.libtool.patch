@@ -1,0 +1,30 @@
+--- Makefile.in.orig	2008-02-01 17:38:41.000000000 +0100
++++ Makefile.in	2008-11-08 15:55:06.000000000 +0100
+@@ -797,6 +797,7 @@
+ 	-rm -f ltmain.shT
+ 	date=`$(SHELL) $(srcdir)/mkstamp < $(srcdir)/ChangeLog` && \
+ 	sed -e 's/@''PACKAGE@/@PACKAGE@/' -e 's/@''VERSION@/@VERSION@/' \
++		-e 's#@''GLOBAL_LIBDIR@#$(GLOBAL_LIBDIR)#' \
+ 	    -e "s%@""TIMESTAMP@%$$date%" $(srcdir)/ltmain.in > ltmain.shT
+ 	mv -f ltmain.shT $@ || \
+ 	(rm -f $@ && cp ltmain.shT $@ && rm -f ltmain.shT)
+--- ltmain.in.orig	2008-02-01 17:12:00.000000000 +0100
++++ ltmain.in	2008-11-08 15:55:06.000000000 +0100
+@@ -5695,7 +5695,7 @@
+ 		  $echo "$modename: \`$deplib' is not a valid libtool archive" 1>&2
+ 		  exit $EXIT_FAILURE
+ 		fi
+-		newdependency_libs="$newdependency_libs $libdir/$name"
++		newdependency_libs="$newdependency_libs @GLOBAL_LIBDIR@/$name"
+ 		;;
+ 	      *) newdependency_libs="$newdependency_libs $deplib" ;;
+ 	      esac
+@@ -5720,7 +5720,7 @@
+ 		$echo "$modename: \`$lib' is not a valid libtool archive" 1>&2
+ 		exit $EXIT_FAILURE
+ 	      fi
+-	      newdlprefiles="$newdlprefiles $libdir/$name"
++	      newdlprefiles="$newdlprefiles @GLOBAL_LIBDIR@/$name"
+ 	    done
+ 	    dlprefiles="$newdlprefiles"
+ 	  else

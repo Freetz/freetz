@@ -1,0 +1,20 @@
+config FREETZ_PACKAGE_SABLEVM_SDK
+	bool "sablevm 1.13 (binary only)"
+	select FREETZ_LIB_libltdl 
+	select FREETZ_LIB_libpopt
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libz
+	default n
+	help
+		SableVM is a robust, extremely portable, efficient, and specifications-compliant
+		Java virtual machine that aims to be easy to maintain and to extend. It features
+		a state-of-the-art and efficient interpreter engine. Its source code is very
+		accessible and easy to understand. It also has many robustness features that have
+		been the object of careful design.
+
+config FREETZ_PACKAGE_SABLEVM_SDK_MINI
+	bool "use mini classlist"
+	depends on FREETZ_PACKAGE_SABLEVM_SDK
+	default y
+	help
+		Use minimalistic (400 KB) instead of full featured classlist (14 MB).
