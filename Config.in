@@ -720,7 +720,7 @@ comment "avm and tcom branding can't be removed"
 	depends on \
 		FREETZ_TYPE_ALIEN_HARDWARE
 
-config FREETZ_BRANDING_1und1
+config FREETZ_REMOVE_BRANDING_1und1
 	bool "1&1"
 	depends on \
 		FREETZ_TYPE_LANG_DE && \
@@ -752,7 +752,7 @@ config FREETZ_BRANDING_1und1
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_BRANDING_avm
+config FREETZ_REMOVE_BRANDING_avm
 	bool "AVM"
 	depends on \
 		( \
@@ -773,7 +773,7 @@ config FREETZ_BRANDING_avm
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_BRANDING_avme
+config FREETZ_REMOVE_BRANDING_avme
 	bool "AVM international"
 	depends on \
 		( \
@@ -792,12 +792,13 @@ config FREETZ_BRANDING_avme
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_BRANDING_aol
+config FREETZ_REMOVE_BRANDING_aol
 	bool "AOL"
 	depends on \
 		FREETZ_TYPE_LANG_DE && \
 		( \
 		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_300IP_AS_FON || \
 		FREETZ_TYPE_CUSTOM \
@@ -814,7 +815,7 @@ config FREETZ_BRANDING_aol
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_BRANDING_arcor
+config FREETZ_REMOVE_BRANDING_arcor
 	bool "Arcor"
 	depends on FREETZ_TYPE_CUSTOM
 	default n
@@ -829,7 +830,7 @@ config FREETZ_BRANDING_arcor
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_BRANDING_congstar
+config FREETZ_REMOVE_BRANDING_congstar
 	bool "Congstar"
 	depends on \
 		FREETZ_TYPE_SPEEDPORT_W701V 
@@ -845,7 +846,7 @@ config FREETZ_BRANDING_congstar
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_BRANDING_freenet
+config FREETZ_REMOVE_BRANDING_freenet
 	bool "Freenet"
 	depends on \
 		FREETZ_TYPE_LANG_DE && \
@@ -870,7 +871,7 @@ config FREETZ_BRANDING_freenet
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-#config FREETZ_BRANDING_tcom
+#config FREETZ_REMOVE_BRANDING_tcom
 #	bool "T-Com"
 #	depends on \
 #		FREETZ_TYPE_LANG_DE && \
@@ -893,7 +894,7 @@ config FREETZ_BRANDING_freenet
 #
 #		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_BRANDING_versatel
+config FREETZ_REMOVE_BRANDING_versatel
 	bool "Versatel"
 	depends on \
 		FREETZ_TYPE_WLAN_3131
