@@ -1,50 +1,11 @@
 config FREETZ_PACKAGE_CLASSPATH
-	bool "GNU classpath 0.95 (binary only)"
+	bool "GNU classpath 0.97.2 (binary only)"
 	default n
 	requires FREETZ_PACKAGE_JAMVM
-	select FREETZ_LIB_libjavaio
-	select FREETZ_LIB_libjavalang
-	select FREETZ_LIB_libjavareflect
-	select FREETZ_LIB_libjavanet
-	select FREETZ_LIB_libjavanio
-	select FREETZ_LIB_libjavautil
 	help
 		GNU Classpath, Essential Libraries for Java, is a GNU project to create 
 		free core class libraries for use with virtual machines and compilers
 		for the java programming language. Classpath is still a work in
 		progress. The first public release will be version 1.0.
 
-menu "GNU classpath Java class libraries"
-	requires FREETZ_PACKAGE_CLASSPATH
-
-config FREETZ_LIB_libjavalang
-	bool "libjavalang.so"
-	default n
-	help
-		Java core language classes
-config FREETZ_LIB_libjavaio
-	bool "libjavaio.so"
-	default n
-	help
-		Java I/O classes
-config FREETZ_LIB_libjavautil
-	bool "libjavautil.so"
-	default n
-	help
-		Java utility classes
-config FREETZ_LIB_libjavareflect
-	bool "libjavareflect.so"
-	default n
-	help
-		Java reflection API
-config FREETZ_LIB_libjavanet
-	bool "libjavanet.so"
-	default n
-	help
-		Java networking classes
-config FREETZ_LIB_libjavanio
-	bool "libjavanio.so"
-	default n
-	help
-		Java new I/O classes
 endmenu

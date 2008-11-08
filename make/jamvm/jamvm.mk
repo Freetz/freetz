@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.4.5)
+$(call PKG_INIT_BIN, 1.5.1)
 $(PKG)_UGLY_VERSION:=0.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/jamvm
@@ -6,13 +6,13 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/jamvm
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/src/.libs/libjvm.so.$($(PKG)_UGLY_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/jamvm
 $(PKG)_TARGET_LIB_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libjvm.so.$($(PKG)_UGLY_VERSION)
-$(PKG)_STARTLEVEL=40
 
 $(PKG)_DEPENDS_ON := libffi-sable classpath
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-ffi
 $(PKG)_CONFIGURE_OPTIONS += --disable-int-threading
-$(PKG)_CONFIGURE_OPTIONS += --with-classpath-install-dir="/usr/share/classpath"
+$(PKG)_CONFIGURE_OPTIONS += --with-classpath-install-dir="/usr"
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
