@@ -378,8 +378,8 @@ endef
 
 ## only used for BIN packages.
 define PKG_UNPACKED__INT
-$(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.freetz_config
-$(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.freetz_config.temp
+$(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.$(pkg)_config
+$(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.$(pkg)_config.temp
 endef
 
 ## check for changed suboptions
