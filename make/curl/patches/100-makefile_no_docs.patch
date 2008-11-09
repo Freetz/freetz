@@ -1,5 +1,5 @@
---- Makefile.am.orig	2008-09-01 09:46:51.000000000 +0200
-+++ Makefile.am	2008-09-24 23:30:00.000000000 +0200
+--- Makefile.am.orig	2008-10-02 09:54:33.000000000 +0200
++++ Makefile.am	2008-11-08 16:00:13.000000000 +0100
 @@ -32,7 +32,7 @@
  bin_SCRIPTS = curl-config
  
@@ -29,9 +29,9 @@
 -	@(cd docs/examples; $(MAKE) check)
 +	#@(cd docs/examples; $(MAKE) check)
  
- #
- # Build source and binary rpms. For rpm-3.0 and above, the ~/.rpmmacros
-@@ -128,12 +128,12 @@
+ clean-local:
+ 	@(cd tests; $(MAKE) clean)
+@@ -132,12 +132,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
@@ -46,9 +46,9 @@
  
  ca-bundle: lib/mk-ca-bundle.pl
  	@echo "generate a fresh ca-bundle.crt"
---- Makefile.in.orig	2008-09-01 16:39:16.000000000 +0200
-+++ Makefile.in	2008-09-24 23:30:00.000000000 +0200
-@@ -268,7 +268,7 @@
+--- Makefile.in.orig	2008-11-05 13:00:46.000000000 +0100
++++ Makefile.in	2008-11-08 16:02:26.000000000 +0100
+@@ -274,7 +274,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src
@@ -57,7 +57,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  all: all-recursive
-@@ -749,10 +749,10 @@
+@@ -755,10 +755,10 @@
  	done)
  
  html:
@@ -70,16 +70,16 @@
  
  check: test examples
  
-@@ -772,7 +772,7 @@
+@@ -778,7 +778,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all torture-test)
  
  examples:
 -	@(cd docs/examples; $(MAKE) check)
 +	#@(cd docs/examples; $(MAKE) check)
  
- #
- # Build source and binary rpms. For rpm-3.0 and above, the ~/.rpmmacros
-@@ -825,12 +825,12 @@
+ clean-local:
+ 	@(cd tests; $(MAKE) clean)
+@@ -835,12 +835,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install

@@ -6,6 +6,8 @@ export LD_LIBRARY_PATH=/usr/lib:/mod/lib:/usr/lib
 DAEMON=/mod/etc/webdav
 DAEMON_UMOUNT=/mod/etc/webdav_umount
 
+. /etc/init.d/modlibrc
+
 case "$1" in
 	""|load|start|restart)
 		if [ ! -r "/mod/etc/conf/davfs2.cfg" ]; then
@@ -18,6 +20,9 @@ case "$1" in
 esac
 
 start() {
+
+	modlib_addgroup davfs2
+	modlib_adduser davfs2 -s /bin/false -D -S -H -G davfs2 -g 'davfs2'
 
 	mkdir /var/davfs2 2>/dev/null
 	
@@ -104,8 +109,6 @@ case "$1" in
 
 		if type modreg > /dev/null; then
 			modreg cgi davfs2 'WebDAV'
-			adduser -D davfs2 2>/dev/null
-			addgroup davfs2 davfs2 2>/dev/null
 		fi
 
 		if [ "$WEBDAV_ENABLED" != "yes" ]; then
