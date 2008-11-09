@@ -10,3 +10,19 @@ config FREETZ_PACKAGE_DAVFS2
 		WebDAV server as a disk drive. WebDAV is an extension to
 		HTTP/1.1 that allows remote collaborative authoring of Web
 		resources, defined in RFC 4918. 
+
+config FREETZ_DAVFS2_WITH_SSL
+	bool "build with SSL support"
+	depends on FREETZ_PACKAGE_DAVFS2
+	select FREETZ_LIB_libneon_WITH_SSL
+	default n
+	help
+		This option enables SSL support.
+
+config FREETZ_DAVFS2_WITH_ZLIB
+	bool "build with zlib support"
+	depends on FREETZ_PACKAGE_DAVFS2
+	select FREETZ_LIB_libneon_WITH_ZLIB
+	default n
+	help
+		This option enables zlib support.

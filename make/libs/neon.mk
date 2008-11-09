@@ -7,14 +7,25 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libneon.so.$($(PK
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libneon.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_DEPENDS_ON := expat
+ifeq ($(strip $(FREETZ_LIB_libneon_WITH_SSL)),y)
+$(PKG)_DEPENDS_ON += openssl
+endif
+ifeq ($(strip $(FREETZ_LIB_libneon_WITH_ZLIB)),y)
+$(PKG)_DEPENDS_ON += zlib
+endif
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-expat=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.la
 $(PKG)_CONFIGURE_OPTIONS += --with-gssapi
+$(PKG)_CONFIGURE_OPTIONS += --disable-nls
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --without-egd
 $(PKG)_CONFIGURE_OPTIONS += --without-socks
-$(PKG)_CONFIGURE_OPTIONS += --without-zlib
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libneon_WITH_SSL),--with-ssl=openssl,--without-ssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libneon_WITH_ZLIB),,--without-zlib)
+
+$(PKG)_CONFIG_SUBOPTS += FREETZ_LIB_libneon_WITH_SSL
+$(PKG)_CONFIG_SUBOPTS += FREETZ_LIB_libneon_WITH_ZLIB
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -44,12 +55,12 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(NEON_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libneon.* \
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libneon.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/neon \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/neon.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/neon-config
 
 $(pkg)-uninstall:
-	rm -f $(NEON_TARGET_DIR)/libneon*.so*
+	$(RM) $(NEON_TARGET_DIR)/libneon*.so*
 
 $(PKG_FINISH)
