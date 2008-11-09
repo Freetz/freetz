@@ -14,7 +14,8 @@ case "$ethmode" in
 	    devname=eth0
 esac
 
-cat > /mod/etc/ntpd.conf << EOF
+if [ ! -e "/tmp/flash/ntpd.conf" ]; then
+cat > /tmp/flash/ntpd.conf << EOF
 # Addresses to listen on (ntpd does not listen by default)
 listen on $(ifconfig $devname | head -n 2 | tail -n 1 | cut -d: -f2 | cut -d" " -f 1)
 
@@ -22,3 +23,5 @@ listen on $(ifconfig $devname | head -n 2 | tail -n 1 | cut -d: -f2 | cut -d" " 
 # see http://twiki.ntp.org/bin/view/Servers/NTPPoolServers
 servers pool.ntp.org
 EOF
+fi
+
