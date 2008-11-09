@@ -1,0 +1,20 @@
+--- configure.ac	2008-11-09 01:03:53.000000000 +0100
++++ configure.ac.orig	2007-11-14 21:42:27.000000000 +0100
+@@ -59,7 +59,7 @@
+ fi
+ AC_SUBST(TARGET)
+ 
+-AC_CHECK_HEADERS(float.h libintl.h mcheck.h unistd.h langinfo.h)
++AC_CHECK_HEADERS(float.h mcheck.h unistd.h langinfo.h)
+ 
+ # For some systems we know that we have ld_version scripts.
+ # Use it then as default.
+@@ -92,7 +92,7 @@
+ AC_CHECK_FUNC(setreuid, [], [
+     AC_CHECK_LIB(ucb, setreuid, [if echo $LIBS | grep -- -lucb >/dev/null ;then :; else LIBS="$LIBS -lc -lucb" USEUCB=y;fi])
+ ])
+-AC_CHECK_FUNCS(getuid geteuid mtrace __secure_getenv setregid strerror iconv)
++AC_CHECK_FUNCS(getuid geteuid mtrace __secure_getenv setregid strerror)
+ 
+ AM_GNU_GETTEXT([external])
+ 
