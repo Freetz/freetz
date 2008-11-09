@@ -22,13 +22,31 @@ start() {
 	mkdir /var/davfs2 2>/dev/null
 	
 	(
-		if [ -x "/tmp/flash/webdav_secrets" ]; then
-			/tmp/flash/webdav_secrets
+		if [ -x "/tmp/flash/webdav_secrets_1" ]; then
+			/tmp/flash/webdav_secrets_1
 		else
-			/mod/etc/default.davfs2/webdav_secrets
+			/mod/etc/default.davfs2/webdav_secrets_1
 		fi
 
-	) > /var/davfs2/secrets
+	) > /var/davfs2/secrets_1
+
+  (
+    if [ -x "/tmp/flash/webdav_secrets_2" ]; then
+      /tmp/flash/webdav_secrets_2
+    else
+      /mod/etc/default.davfs2/webdav_secrets_2
+    fi
+
+  ) > /var/davfs2/secrets_2
+
+  (
+    if [ -x "/tmp/flash/webdav_secrets_3" ]; then
+      /tmp/flash/webdav_secrets_3
+    else
+      /mod/etc/default.davfs2/webdav_secrets_3
+    fi
+
+  ) > /var/davfs2/secrets_3
 
 	(
 		if [ -x "/tmp/flash/webdav_mount" ]; then
@@ -104,8 +122,6 @@ case "$1" in
 	unload)
 		stop
 		modunreg cgi davfs2
-		delgroup davfs2 
-		deluser davfs2
 		;;
 	start)
 		start
