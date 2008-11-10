@@ -35,24 +35,24 @@ start() {
 
 	) > /var/davfs2/secrets_1
 
-  (
-    if [ -x "/tmp/flash/webdav_secrets_2" ]; then
-      /tmp/flash/webdav_secrets_2
-    else
-      /mod/etc/default.davfs2/webdav_secrets_2
-    fi
+	(
+		if [ -x "/tmp/flash/webdav_secrets_2" ]; then
+			/tmp/flash/webdav_secrets_2
+		else
+			/mod/etc/default.davfs2/webdav_secrets_2
+		fi
 
-  ) > /var/davfs2/secrets_2
+	) > /var/davfs2/secrets_2
 
-  (
-    if [ -x "/tmp/flash/webdav_secrets_3" ]; then
-      /tmp/flash/webdav_secrets_3
-    else
-      /mod/etc/default.davfs2/webdav_secrets_3
-    fi
+	(
+		if [ -x "/tmp/flash/webdav_secrets_3" ]; then
+			/tmp/flash/webdav_secrets_3
+		else
+			/mod/etc/default.davfs2/webdav_secrets_3
+		fi
 
-  ) > /var/davfs2/secrets_3
-
+	) > /var/davfs2/secrets_3
+	
 	(
 		if [ -x "/tmp/flash/webdav_mount" ]; then
 			/tmp/flash/webdav_mount
