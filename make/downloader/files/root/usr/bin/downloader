@@ -35,22 +35,24 @@ else
 fi
 echo "Downloading of $LOADFILE from $SERVERSTR:"
 
-LOADERROR=1 # erstmal als erfolglos definieren
-II=1   # II zu 1 setzen
-while test $II -le $DOWNLOADER_NREP    # While-Schleife, emulieren einer for-schleife II<NN
+LOADERROR=1 # define false
+II=1   # set II = 1
+while test $II -le $DOWNLOADER_NREP    # while loop, emulating for loop II<NN
 do
    echo -n "1. Ping test $II of $DOWNLOADER_NREP for $DOWNLOADER_SRVURL... "
    if (ping -c 1 $DOWNLOADER_SRVURL > /dev/null 2>&1) ; then
-	echo "done"	
+	echo "done"
+	echo -n "1.1. $LOCALDR is being created... "
+	mkdir -p $LOCALDR
 	echo -n "2. $LOADFILE.gz is downloading from $DOWNLOADER_SRVURL... "
        wget -q -O $LOCALDR/$LOADFILE.gz $SERVERSTR$LOADFILE.gz
        LOADERROR=$?       
-       break   #  alles ok, raus aus der for-schleife
+       break   #  okay, leave loop
    else
 	echo "failed"
    fi
-   II=`expr $II + 1`     # Zähler inkrementieren
-   echo -n "1a. Waiting $DOWNLOADER_TWAIT sec... "
+   II=`expr $II + 1`     # increment counter
+   echo -n "1a. Waiting $DOWNLOADER_TWAIT secs... "
    sleep $DOWNLOADER_TWAIT
    echo "done"	
 done
@@ -63,7 +65,7 @@ if [ $LOADERROR -eq 1 ]; then
 fi
 echo "done"
 if test -e $LOCALDR/$LOADFILE ; then
-   echo -n "2a. $LOCALDR/$LOADFILE exists already. $LOADFILE is deleting... "
+   echo -n "2a. $LOCALDR/$LOADFILE exists already. deleting $LOADFILE... "
    chmod "777" $LOCALDR/$LOADFILE
    rm -f $LOCALDR/$LOADFILE
    LOADERROR=$?
@@ -74,7 +76,7 @@ if test -e $LOCALDR/$LOADFILE ; then
    fi
    echo "done"
 fi 
-echo -n "3. $LOADFILE.gz is unpacking... "
+echo -n "3. unpacking $LOADFILE.gz... "
 gzip -df $LOCALDR/$LOADFILE.gz
 LOADERROR=$?
 if [ $LOADERROR -eq 1 ]; then
@@ -83,7 +85,7 @@ if [ $LOADERROR -eq 1 ]; then
    exit $LOADERROR
 fi
 echo "done"
-echo -n "4. permitions for $LOADFILE are setting... "
+echo -n "4. setting permissions for $LOADFILE... "
 chmod $FILEPERM $LOCALDR/$LOADFILE
 LOADERROR=$?
 if [ $LOADERROR -eq 1 ]; then
