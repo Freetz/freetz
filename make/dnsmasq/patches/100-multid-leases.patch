@@ -1,6 +1,6 @@
---- src/dnsmasq.h.orig	2008-02-01 22:42:35.000000000 +0100
-+++ src/dnsmasq.h	2008-02-25 22:04:27.000000000 +0100
-@@ -408,6 +408,7 @@
+--- src/dnsmasq.h.orig	2008-11-09 12:10:24.000000000 +0100
++++ src/dnsmasq.h	2008-11-15 20:44:28.000000000 +0100
+@@ -413,6 +413,7 @@
  #endif
    int hwaddr_len, hwaddr_type;
    unsigned char hwaddr[DHCP_CHADDR_MAX]; 
@@ -8,16 +8,16 @@
    struct in_addr addr, override;
    unsigned char *vendorclass, *userclass;
    unsigned int vendorclass_len, userclass_len;
-@@ -781,6 +782,7 @@
+@@ -800,6 +801,7 @@
+ void lease_set_hwaddr(struct dhcp_lease *lease, unsigned char *hwaddr,
  		      unsigned char *clid, int hw_len, int hw_type, int clid_len);
- void lease_set_hostname(struct dhcp_lease *lease, char *name, 
- 			char *suffix, int auth);
+ void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth);
 +void lease_set_ifrname(struct dhcp_lease *lease, char *ifrname);
  void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now);
  void lease_set_interface(struct dhcp_lease *lease, int interface);
  struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
---- src/lease.c.orig	2007-12-10 22:14:08.000000000 +0100
-+++ src/lease.c	2008-02-25 22:04:27.000000000 +0100
+--- src/lease.c.orig	2008-11-03 17:27:46.000000000 +0100
++++ src/lease.c	2008-11-15 20:46:13.000000000 +0100
 @@ -175,11 +175,16 @@
  
    if (file_dirty != 0 && daemon->lease_stream)
@@ -75,8 +75,8 @@
      }
    
    /* Set alarm for when the first lease expires + slop. */
-@@ -412,6 +435,23 @@
- 
+@@ -437,6 +460,23 @@
+   lease->hostname = lease->fqdn = NULL;
  }
  
 +void lease_set_ifrname (struct dhcp_lease *lease, char *ifrname)
@@ -84,7 +84,7 @@
 +  char *lease_ifrname = NULL;
 +
 +  if (!(lease_ifrname = malloc(strlen(ifrname) + 1)))
-+    return;	/* whoops */
++    return;    /* whoops */
 +
 +  strcpy(lease_ifrname, ifrname);
 +
@@ -96,23 +96,23 @@
 +  file_dirty = 1;
 +}
 +
- void lease_set_hostname(struct dhcp_lease *lease, char *name, char *suffix, int auth)
+ void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth)
  {
    struct dhcp_lease *lease_tmp;
---- src/rfc2131.c.orig	2008-01-24 12:23:19.000000000 +0100
-+++ src/rfc2131.c	2008-02-25 22:04:27.000000000 +0100
-@@ -440,6 +440,7 @@
+--- src/rfc2131.c.orig	2008-11-03 17:28:50.000000000 +0100
++++ src/rfc2131.c	2008-11-15 20:49:48.000000000 +0100
+@@ -457,6 +457,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
  	      if (hostname)
- 		lease_set_hostname(lease, hostname, daemon->domain_suffix, 1); 
-+		lease_set_ifrname(lease, iface_name);
+ 		lease_set_hostname(lease, hostname, 1); 
++ 		lease_set_ifrname(lease, iface_name);
  	      /* infinite lease unless nailed in dhcp-host line. */
  	      lease_set_expires(lease,  
  				have_config(config, CONFIG_TIME) ? config->lease_time : 0xffffffff, 
-@@ -985,7 +986,7 @@
+@@ -1025,7 +1026,7 @@
  	    }
  	  if (hostname)
- 	    lease_set_hostname(lease, hostname, daemon->domain_suffix, hostname_auth);
+ 	    lease_set_hostname(lease, hostname, hostname_auth);
 -	  
 +	    lease_set_ifrname(lease, iface_name);
  	  lease_set_expires(lease, time, now);
