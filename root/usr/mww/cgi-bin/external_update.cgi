@@ -28,7 +28,7 @@ $(lang de:"geflasht werden." en:"flash the expected firmware")
 	<p>
 	$(lang de:"Zielverzeichnis" en:"target directory") <input type="textfield" size=50 name="the_target" value="/var/media/ftp/uStor01/external">
 	<p>
-	<input type=submit value="Datei hochladen" style="width:150px">
+	<input type=submit value="$(lang de:"Datei hochladen" en:"upload data")" style="width:150px">
 </form>
 <form action="/cgi-bin/status.cgi" method=GET>
 	<input type="submit" value="$(lang de:"Abrechen" en:"Abort")" style="width:150px">
