@@ -1,5 +1,5 @@
-$(call PKG_INIT_LIB, 1.95.8)
-$(PKG)_LIB_VERSION:=0.5.0
+$(call PKG_INIT_LIB, 2.0.1)
+$(PKG)_LIB_VERSION:=1.5.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/expat
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libexpat.so.$($(PKG)_LIB_VERSION)
@@ -8,13 +8,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libexpat.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
-$(PKG)_CONFIGURE_OPTIONS += --libdir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
-$(PKG)_CONFIGURE_OPTIONS += --includedir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include
-$(PKG)_CONFIGURE_OPTIONS += --bindir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin
-$(PKG)_CONFIGURE_OPTIONS += --sbindir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/sbin
-$(PKG)_CONFIGURE_OPTIONS += --datadir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share
-$(PKG)_CONFIGURE_OPTIONS += --mandir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/man
-$(PKG)_CONFIGURE_OPTIONS += --infodir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/info
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
