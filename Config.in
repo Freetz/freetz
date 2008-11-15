@@ -677,7 +677,19 @@ config FREETZ_HAS_USB_HOST
 		FREETZ_TYPE_SINUS_W500V_7150 || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 
 	help
-		Select this if your USB port is a host adapter
+		Select this if your USB port is a host adapter.
+
+config FREETZ_HAS_AVM_INETD
+	bool "AVM inetd"	if FREETZ_TYPE_CUSTOM
+	select FREETZ_BUSYBOX_INETD
+	default y			if \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270 && \
+		(FREETZ_TYPE_LABOR_ALL || FREETZ_TYPE_LABOR_DSL)
+	default n
+	
+	help
+		Select this if your original firmware has inetd support.
 
 
 comment "Mod ------------------------------------"
