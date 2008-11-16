@@ -3,21 +3,11 @@
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 export LD_LIBRARY_PATH=/usr/lib:/mod/lib:/usr/lib
 
-DAEMON=/mod/etc/webdav
+DAEMON=davfs2
+DAEMON_MOUNT=/mod/etc/webdav
 DAEMON_UMOUNT=/mod/etc/webdav_umount
 
 . /etc/init.d/modlibrc
-
-case "$1" in
-	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/davfs2.cfg" ]; then
-			echo "Error[webdav]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/davfs2.cfg
-		;;
-esac
 
 start() {
 
@@ -72,9 +62,9 @@ start() {
 		  	
 	echo -n 'mount WebDAV...'
 	
-	chmod +x $DAEMON
+	chmod +x $DAEMON_MOUNT
 	chmod +x $DAEMON_UMOUNT
-	$DAEMON > /dev/null 2>&1
+	$DAEMON_MOUNT > /dev/null 2>&1
 		
 	exitval=$?
 	
