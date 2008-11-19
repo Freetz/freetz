@@ -37,3 +37,9 @@ config FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB
 	default n
 	help
 		ZLIB Compression for SSH Traffic
+
+config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
+	bool "Add sftp server"
+	depends on FREETZ_PACKAGE_DROPBEAR 
+	select FREETZ_PACKAGE_OPENSSH
+	default n

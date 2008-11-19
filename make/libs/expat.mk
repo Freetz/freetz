@@ -35,9 +35,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(EXPAT_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/expat*.h
 
 $(pkg)-uninstall:
-	rm -f $(EXPAT_TARGET_DIR)/libexpat*.so*
+	$(RM) $(EXPAT_TARGET_DIR)/libexpat*.so*
 
 $(PKG_FINISH)
