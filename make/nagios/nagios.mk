@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.11)
 $(PKG)_SOURCE:=nagios-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/nagios
+$(PKG)_SITE:=@SF/nagios
 $(PKG)_BINARY:=$($(PKG)_DIR)/base/nagios
 $(PKG)_STATS_BINARY:=$($(PKG)_DIR)/base/nagiostats
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nagios

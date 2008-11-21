@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.7.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/netcat
+$(PKG)_SITE:=@SF/netcat
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/netcat
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/netcat
 

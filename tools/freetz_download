@@ -19,7 +19,8 @@ helpmsg()
 cat << 'EOF'
 freetz_download - download Freetz packages
 
-Usage: freetz_download (-?|--help) | (<download-dir> <dot-config> <filename> [<main-url>] [<md5>])
+Usage: freetz_download (-?|--help) | ( (<download-dir> | check) <dot-config> <filename> [<main-url>] [<md5>])
+    check         - check download
     download-dir  - target directory for download file
     dot-config    - path to .config for Freetz
     filename      - download file name
@@ -48,6 +49,13 @@ do_download()
     return $wget_result
   fi
   echo "Download succeeded - $2  ->  saved to folder $1"
+}
+
+do_check()
+{
+  wget --quiet --passive-ftp --spider "$1"
+  wget_result=$?
+  return $wget_result
 }
 
 
@@ -84,8 +92,17 @@ fi
 num_sites=0
 # Fill array 'sites' with download server URLs, first primary site (if specified)
 if [ -n "$MAIN_URL" ]; then
-  sites[$num_sites]=$MAIN_URL
-  (( num_sites++ ))
+  # give sourceforge a few more tries, because it redirects to different mirrors
+  if [ ${MAIN_URL:0:3} == "@SF" ]; then
+    MAIN_URL=${MAIN_URL/@SF\//}
+    for (( n=0; n < 5; n++ )); do
+      sites[$num_sites]=http://downloads.sourceforge.net/$MAIN_URL
+      (( num_sites++ ))
+    done
+  else
+    sites[$num_sites]=$MAIN_URL
+    (( num_sites++ ))
+  fi
 fi
 
 # Get Freetz mirror sites in array
@@ -104,18 +121,25 @@ done
 
 # Loop over servers until a download succeeds or all requests have failed.
 for i in ${sites[@]}; do
-  do_download "$DL_DIR" "$i/$DL_FILE"
-  if [ "$?" != "0" ]; then
-    continue
-  fi
-  if [ -n "$MD5" ]; then
-    FILE_MD5=( $(md5sum "$DL_DIR/$DL_FILE") )
-    if [ "$MD5" != "$FILE_MD5" ]; then
-      echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
-      rm -f "$DL_DIR/$DL_FILE"
-      continue;
-    else
-      echo "MD5 verified for $DL_DIR/$DL_FILE: $FILE_MD5"
+  if [ ${DL_DIR:0:5} == "check" ]; then
+    do_check "$i/$DL_FILE"
+    if [ "$?" != "0" ]; then
+      continue
+    fi
+  else
+    do_download "$DL_DIR" "$i/$DL_FILE"
+    if [ "$?" != "0" ]; then
+      continue
+    fi
+    if [ -n "$MD5" ]; then
+      FILE_MD5=( $(md5sum "$DL_DIR/$DL_FILE") )
+      if [ "$MD5" != "$FILE_MD5" ]; then
+        echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
+        rm -f "$DL_DIR/$DL_FILE"
+        continue;
+      else
+        echo "MD5 verified for $DL_DIR/$DL_FILE: $FILE_MD5"
+      fi
     fi
   fi
   exit 0

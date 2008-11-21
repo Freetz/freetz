@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/bftpd
+$(PKG)_SITE:=@SF/bftpd
 $(PKG)_DIR:=$(SOURCE_DIR)/bftpd
 $(PKG)_BINARY:=$($(PKG)_DIR)/bftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/bftpd

@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.4.1)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/linux-atm
+$(PKG)_SITE:=@SF/linux-atm
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lib/.libs/libatm.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libatm.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libatm.so.$($(PKG)_LIB_VERSION)

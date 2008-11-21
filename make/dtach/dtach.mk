@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,0.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/dtach
+$(PKG)_SITE:=@SF/dtach
 $(PKG)_BINARY:=$($(PKG)_DIR)/dtach
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/dtach
 

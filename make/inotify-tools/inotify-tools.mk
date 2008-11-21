@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 3.13)
 $(PKG)_LIB_VERSION:=0.4.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/inotify-tools
+$(PKG)_SITE:=@SF/inotify-tools
 $(PKG)_INWAIT_BINARY:=$($(PKG)_DIR)/src/.libs/inotifywait
 $(PKG)_INWATCH_BINARY:=$($(PKG)_DIR)/src/.libs/inotifywatch
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/libinotifytools/src/.libs/libinotifytools.so.$($(PKG)_LIB_VERSION)

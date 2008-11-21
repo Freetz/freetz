@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,1.3.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/poptop
+$(PKG)_SITE:=@SF/poptop
 $(PKG)_BINARY:=$($(PKG)_DIR)/pptpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/pptpd
 

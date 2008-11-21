@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.15.2b)
 $(PKG)_SOURCE:=madplay-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/mad
+$(PKG)_SITE:=@SF/mad
 $(PKG)_BINARY:=$($(PKG)_DIR)/madplay
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/madplay
 

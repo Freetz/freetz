@@ -282,7 +282,7 @@ $(pkg)-download-mirror: $(MIRROR_DIR)/$($(PKG)_SOURCE)
 
 $(pkg)-check-download:
 	@echo -n "Checking download for package $(pkg)..."
-	@if wget --quiet --passive-ftp --spider $($(PKG)_SITE)/$($(PKG)_SOURCE); then \
+	@if $(DL_TOOL) check .config $($(PKG)_SOURCE) $($(PKG)_SITE); then \
 		echo "ok."; \
 	else \
 		echo "ERROR: NOT FOUND!"; \

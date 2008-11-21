@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.7.4)
 $(PKG)_SOURCE:=fuse-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/fuse
+$(PKG)_SITE:=@SF/fuse
 $(PKG)_BINARY:=$($(PKG)_DIR)/util/fusermount
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/fusermount
 $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/kernel/fuse.ko

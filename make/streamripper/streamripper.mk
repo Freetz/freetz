@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.63.4)
 $(PKG)_SOURCE:=streamripper-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/streamripper
+$(PKG)_SITE:=@SF/streamripper
 $(PKG)_BINARY:=$($(PKG)_DIR)/streamripper
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/streamripper
 

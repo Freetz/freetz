@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,1.1.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/nfs
+$(PKG)_SITE:=@SF/nfs
 $(PKG)_EXPORTFS_BINARY:=$($(PKG)_DIR)/utils/exportfs/exportfs
 $(PKG)_EXPORTFS_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/exportfs
 $(PKG)_MOUNTD_BINARY:=$($(PKG)_DIR)/utils/mountd/mountd

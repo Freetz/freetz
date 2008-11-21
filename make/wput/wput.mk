@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.6.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
-$(PKG)_SITE:=http://switch.dl.sourceforge.net/sourceforge/wput
+$(PKG)_SITE:=@SF/wput
 $(PKG)_BINARY:=$($(PKG)_DIR)/wput
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wput
 

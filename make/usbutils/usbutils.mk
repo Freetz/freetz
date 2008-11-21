@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,0.73)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/linux-usb
+$(PKG)_SITE:=@SF/linux-usb
 $(PKG)_BINARY:=$($(PKG)_DIR)/lsusb
 $(PKG)_IDS:=$($(PKG)_DIR)/usb.ids
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/listusb

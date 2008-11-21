@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.6.15b)
 $(PKG)_SOURCE:=empty-$($(PKG)_VERSION).tgz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/empty
+$(PKG)_SITE:=@SF/empty
 $(PKG)_BINARY:=$($(PKG)_DIR)/empty
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/empty
 
