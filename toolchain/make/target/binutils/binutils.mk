@@ -4,6 +4,7 @@ BINUTILS_SITE:=http://ftp.kernel.org/pub/linux/devel/binutils
 BINUTILS_DIR:=$(TARGET_TOOLCHAIN_DIR)/binutils-$(BINUTILS_VERSION)
 BINUTILS_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/binutils
 BINUTILS_DIR1:=$(BINUTILS_DIR)-build
+BINUTILS_DIR2:=$(BINUTILS_DIR)-target
 
 ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 BINUTILS_EXTRA_MAKE_OPTIONS:="LDFLAGS=-all-static"
@@ -77,3 +78,50 @@ binutils-dirclean:
 binutils: uclibc-configured binutils-dependancies $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ld
 
 .PHONY: binutils binutils-dependancies
+
+#############################################################
+#
+# build binutils for use on the target system
+#
+#############################################################
+$(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
+	mkdir -p $(BINUTILS_DIR2)
+	(cd $(BINUTILS_DIR2); rm -rf config.cache; \
+		CFLAGS_FOR_BUILD="-g -O2 $(HOST_CFLAGS)" \
+		$(TARGET_CONFIGURE_OPTS) \
+		$(BINUTILS_DIR)/configure \
+		--prefix=/usr \
+		--exec-prefix=/usr \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(REAL_GNU_TARGET_NAME) \
+		--target=$(REAL_GNU_TARGET_NAME) \
+		$(DISABLE_NLS) \
+		$(BINUTILS_TARGET_CONFIG_OPTIONS) \
+		--disable-werror \
+	)
+	touch $@
+
+$(BINUTILS_DIR2)/binutils/objdump: $(BINUTILS_DIR2)/.configured
+	PATH=$(TARGET_PATH) $(MAKE) -C $(BINUTILS_DIR2) all
+
+$(TARGET_UTILS_DIR)/usr/bin/ld: $(BINUTILS_DIR2)/binutils/objdump
+	PATH=$(TARGET_PATH) \
+	$(MAKE) DESTDIR=$(TARGET_UTILS_DIR) \
+		tooldir=/usr build_tooldir=/usr \
+		-C $(BINUTILS_DIR2) install
+	rm -rf $(TARGET_UTILS_DIR)/share/locale $(TARGET_UTILS_DIR)/usr/info \
+		$(TARGET_UTILS_DIR)/usr/man $(TARGET_UTILS_DIR)/usr/share/doc
+	-$(TARGET_STRIP) $(TARGET_UTILS_DIR)/usr/bin/* > /dev/null 2>&1
+
+binutils_target: $(TARGET_UTILS_DIR)/usr/bin/ld
+
+binutils_target-clean:
+	(cd $(TARGET_UTILS_DIR)/usr/bin; \
+		rm -f addr2line ar as gprof ld nm objcopy \
+		      objdump ranlib readelf size strings strip; \
+	)
+	rm -f $(TARGET_UTILS_DIR)/bin/$(REAL_GNU_TARGET_NAME)*
+	-$(MAKE) -C $(BINUTILS_DIR2) clean
+
+binutils_target-dirclean:
+	rm -rf $(BINUTILS_DIR2)

@@ -110,8 +110,6 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	install -c $(UCLIBC_DIR)/utils/ldconfig.host $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ldconfig
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(GNU_TARGET_NAME)-ldconfig)
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(REAL_GNU_TARGET_NAME)-ldconfig)
-	# Build the target utils. These are not installed at the moment
-	$(MAKE1) -C $(UCLIBC_DIR) utils
 	touch -c $@
 
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
@@ -151,4 +149,51 @@ uclibc-dirclean:
 	rm -rf $(UCLIBC_DIR)
 
 .PHONY: uclibc-configured uclibc
-	
+
+#############################################################
+#
+# uClibc for the target
+#
+#############################################################
+
+$(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
+	$(MAKE1) -C $(UCLIBC_DIR) \
+		PREFIX=$(TARGET_UTILS_DIR) \
+		DEVEL_PREFIX=/usr/ \
+		RUNTIME_PREFIX=/ \
+		UCLIBC_EXTRA_LDFLAGS="$(TARGET_LDFLAGS)" \
+		UCLIBC_EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
+		install_dev
+	# Install the kernel headers to the target dir if necessary
+	if [ ! -f $(TARGET_UTILS_DIR)/usr/include/linux/version.h ]; then \
+		cp -pLR $(TARGET_TOOLCHAIN_STAGING_DIR)/include/* \
+			$(TARGET_UTILS_DIR)/usr/include/; \
+	fi
+	touch -c $@
+
+$(TARGET_UTILS_DIR)/lib/libc.so.0: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
+	$(MAKE1) -C $(UCLIBC_DIR) \
+		PREFIX=$(TARGET_UTILS_DIR) \
+		DEVEL_PREFIX=/usr/ \
+		RUNTIME_PREFIX=/ \
+		UCLIBC_EXTRA_LDFLAGS="$(TARGET_LDFLAGS)" \
+		UCLIBC_EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
+		install_runtime
+	touch -c $@
+
+$(TARGET_UTILS_DIR)/usr/bin/ldd: $(cross_compiler) $(TARGET_UTILS_DIR)/lib/libc.so.0
+	$(MAKE1) -C $(UCLIBC_DIR) \
+		PREFIX=$(TARGET_UTILS_DIR) \
+		UCLIBC_EXTRA_LDFLAGS="$(TARGET_LDFLAGS)" \
+		UCLIBC_EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
+		utils install_utils
+
+uclibc_target: cross_compiler uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a \
+		$(TARGET_UTILS_DIR)/lib/libc.so.0 $(TARGET_UTILS_DIR)/usr/bin/ldd
+
+uclibc_target-clean:
+	rm -rf $(TARGET_UTILS_DIR)/usr/include $(TARGET_UTILS_DIR)/lib/libc.so.0 \
+		$(TARGET_UTILS_DIR)/usr/lib/libc.a $(TARGET_UTILS_DIR)/usr/bin/ldd
+
+uclibc_target-dirclean:
+	rm -rf $(TARGET_UTILS_DIR)/usr/include

@@ -25,6 +25,7 @@ GCC_DIR:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)
 GCC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gcc
 GCC_BUILD_DIR1:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-initial
 GCC_BUILD_DIR2:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-final
+GCC_BUILD_DIR3:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-target
 
 ifeq ($(strip $(FREETZ_TARGET_GXX)),y)
 GCC_TARGET_LANGUAGES:=c,c++
@@ -134,7 +135,7 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked
 
 $(GCC_BUILD_DIR2)/.compiled: $(GCC_BUILD_DIR2)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR2) all
-	touch $(GCC_BUILD_DIR2)/.compiled
+	touch $@
 
 $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_BUILD_DIR2) install
@@ -152,7 +153,7 @@ endif
 		   	$(GNU_TARGET_NAME)$${app##$(REAL_GNU_TARGET_NAME)}; \
 		done; \
 	);
-	touch $(GCC_BUILD_DIR2)/.installed
+	touch $@
 
 cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc
 cross_compiler gcc: uclibc-configured binutils gcc_initial uclibc \
@@ -171,3 +172,74 @@ gcc-dirclean: gcc_initial-dirclean
 	rm -rf $(GCC_BUILD_DIR2)
 
 .PHONY: gcc gcc_initial
+
+#############################################################
+#
+# Next build target gcc compiler
+#
+#############################################################
+$(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed
+	mkdir -p $(GCC_BUILD_DIR3)
+	( cd $(GCC_BUILD_DIR3); rm -rf config.cache; \
+		GCC="$(TARGET_CC)" \
+		CFLAGS_FOR_BUILD="-g -O2 $(HOST_CFLAGS)" \
+		$(TARGET_CONFIGURE_OPTS) \
+		$(GCC_DIR)/configure \
+		--prefix=/usr \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(REAL_GNU_TARGET_NAME) \
+		--target=$(REAL_GNU_TARGET_NAME) \
+		--enable-languages=$(GCC_TARGET_LANGUAGES) \
+		--with-gxx-include-dir=/usr/include/c++ \
+		--disable-__cxa_atexit \
+		--with-gnu-ld \
+		--disable-libmudflap \
+		--enable-threads \
+		$(GCC_SHARED_LIBGCC) \
+		$(DISABLE_NLS) \
+		$(GCC_USE_SJLJ_EXCEPTIONS) \
+		$(DISABLE_LARGEFILE) \
+		$(GCC_EXTRA_CONFIG_OPTIONS) \
+	);
+	touch $@
+
+$(GCC_BUILD_DIR3)/.compiled: $(GCC_BUILD_DIR3)/.configured
+	PATH=$(TARGET_TOOLCHAIN_PATH) \
+		$(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C$(GCC_BUILD_DIR3) all
+	touch $@
+
+REAL_GCC_VERSION=$(shell cat $(GCC_DIR)/gcc/BASE-VER)
+GCC_LIB_SUBDIR=libexec/gcc/$(REAL_GNU_TARGET_NAME)/$(REAL_GCC_VERSION)
+
+$(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
+	PATH=$(TARGET_TOOLCHAIN_PATH) DESTDIR=$(TARGET_UTILS_DIR) \
+		$(MAKE1) -C $(GCC_BUILD_DIR3) install
+	if [ ! -e $(TARGET_UTILS_DIR)/include ]; then \
+		ln -s $(TARGET_TOOLCHAIN_STAGING_DIR)/include $(TARGET_UTILS_DIR)/include; \
+	fi
+	# Remove broken specs file (cross compile flag is set).
+	rm -f $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/specs
+
+	-(cd $(TARGET_UTILS_DIR)/usr/bin && find -type f | xargs $(TARGET_STRIP) )
+	-(cd $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR) && $(TARGET_STRIP) cc1 cc1plus collect2 > /dev/null 2>&1)
+	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* > /dev/null 2>&1)
+
+	rm -f $(TARGET_UTILS_DIR)/usr/lib/*.la*
+	rm -rf $(TARGET_UTILS_DIR)/share/locale $(TARGET_UTILS_DIR)/usr/info \
+		$(TARGET_UTILS_DIR)/usr/man $(TARGET_UTILS_DIR)/usr/share/doc
+	# Make sure we have 'cc'.
+	if [ ! -e $(TARGET_UTILS_DIR)/usr/bin/cc ]; then \
+		ln -snf gcc $(TARGET_UTILS_DIR)/usr/bin/cc; \
+	fi
+	# These are in /lib, so...
+	rm -rf $(TARGET_UTILS_DIR)/usr/lib/libgcc_s*.so*
+	touch -c $@
+
+gcc_target: uclibc binutils $(TARGET_UTILS_DIR)/usr/bin/gcc
+
+gcc_target-clean:
+	rm -rf $(GCC_BUILD_DIR3)
+	rm -f $(TARGET_UTILS_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)*
+
+gcc_target-dirclean:
+	rm -rf $(GCC_BUILD_DIR3)

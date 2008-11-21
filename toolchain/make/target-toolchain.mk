@@ -4,7 +4,11 @@ ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
 	CCACHE:=ccache
 endif
 
-TARGET_TOOLCHAIN:=binutils gcc $(CCACHE) gdb
+ifeq ($(strip $(FREETZ_TARGET_TOOLCHAIN)),y)
+	TARGETT:=binutils_target gcc_target uclibc_target
+endif
+
+TARGET_TOOLCHAIN:=binutils gcc $(CCACHE) $(TARGETT) gdb
 
 $(TARGET_TOOLCHAIN_DIR):
 	@mkdir -p $@
@@ -16,6 +20,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@/lib/pkgconfig
 	@mkdir -p $@/include
 	@mkdir -p $@/usr
+	@mkdir -p $@/target-utils
 	@mkdir -p $@/$(REAL_GNU_TARGET_NAME)
 	@ln -snf ../bin $@/usr/bin
 	@ln -snf ../include $@/usr/include
@@ -35,10 +40,12 @@ target-toolchain-source: $(TARGET_TOOLCHAIN_DIR) \
 target-toolchain-clean:
 	rm -f $(UCLIBC_DIR)/.config
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)*
+	rm -rf $(TARGET_UTILS_DIR)/*
 	-$(MAKE) -C $(UCLIBC_DIR) clean
 	-$(MAKE) -C $(BINUTILS_DIR) clean
 	rm -rf $(GCC_BUILD_DIR1)
 	rm -rf $(GCC_BUILD_DIR2)
+	rm -rf $(GCC_BUILD_DIR3)
 ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_TARGET_NAME)*
 	-$(MAKE) -C $(CCACHE_DIR) clean
