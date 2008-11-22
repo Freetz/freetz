@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.12.13)
-$(PKG)_LIB_VERSION:=0.1200.13
-$(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=ftp://ftp.gtk.org/pub/glib/2.12
+$(call PKG_INIT_LIB, 2.18.2)
+$(PKG)_LIB_VERSION:=0.1800.2
+$(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SITE:=ftp://ftp.gtk.org/pub/glib/2.18
 $(PKG)_DIR:=$(SOURCE_DIR)/glib-$($(PKG)_VERSION)
 $(PKG)_GLIB_BINARY:=$($(PKG)_DIR)/glib/.libs/libglib-2.0.so.$($(PKG)_LIB_VERSION)
 $(PKG)_GOBJECT_BINARY:=$($(PKG)_DIR)/gobject/.libs/libgobject-2.0.so.$($(PKG)_LIB_VERSION)
@@ -22,6 +22,8 @@ $(PKG)_CONFIGURE_ENV += glib_cv_stack_grows=no
 $(PKG)_CONFIGURE_ENV += glib_cv_uscore=no
 $(PKG)_CONFIGURE_ENV += glib_cv_long_long_format=11
 $(PKG)_CONFIGURE_ENV += glib_cv_have_strlcpy=yes
+$(PKG)_CONFIGURE_ENV += ac_cv_func_mmap_fixed=yes
+$(PKG)_CONFIGURE_ENV += ac_cv_path_GLIB_GENMARSHALL="$($PKG)_DIR)/build/$(GNU_HOST_NAME)/bin/glib-genmarshal"
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-debug=no
