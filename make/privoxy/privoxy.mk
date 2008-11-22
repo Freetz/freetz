@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.0.10)
 $(PKG)_SOURCE:=privoxy-$($(PKG)_VERSION)-stable-src.tar.gz
-$(PKG)_SITE:=http://surfnet.dl.sourceforge.net/sourceforge/ijbswa
+$(PKG)_SITE:=@SF/ijbswa
 $(PKG)_DIR:=$(SOURCE_DIR)/privoxy-$($(PKG)_VERSION)-stable
 $(PKG)_BINARY:=$($(PKG)_DIR)/privoxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/privoxy

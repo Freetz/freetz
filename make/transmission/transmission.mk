@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.34)
+$(call PKG_INIT_BIN, 1.40)
 $(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 $(PKG)_CLIENT_BINARY:=$($(PKG)_DIR)/cli/transmissioncli
@@ -13,7 +13,7 @@ $(PKG)_DEPENDS_ON := zlib openssl gettext curl
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-beos
-$(PKG)_CONFIGURE_OPTIONS += --disable-darwin
+$(PKG)_CONFIGURE_OPTIONS += --disable-mac
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk
 $(PKG)_CONFIGURE_OPTIONS += --disable-wx
 
@@ -25,7 +25,8 @@ $($(PKG)_CLIENT_BINARY) $($(PKG)_DAEMON_BINARY) $($(PKG)_REMOTE_BINARY): $($(PKG
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(TRANSMISSION_DIR) \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CXXFLAGS)"
+		CXXFLAGS="$(TARGET_CXXFLAGS)" \
+		CPPFLAGS="$(TARGET_CXXFLAGS)"
 
 $($(PKG)_TARGET_CLIENT_BINARY): $($(PKG)_CLIENT_BINARY)
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_CLIENT)),y)

@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.15.1b)
 $(PKG)_LIB_VERSION:=0.3.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/mad
+$(PKG)_SITE:=@SF/mad
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)

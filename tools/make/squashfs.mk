@@ -1,7 +1,7 @@
 SQUASHFS_VERSION:=2.2-r2
 SQUASHFS_SOURCE:=squashfs$(SQUASHFS_VERSION).tar.gz
 SQUASHFS_SOURCE_MD5:=a8d09a217240127ae4d339e8368d2de1
-SQUASHFS_SITE:=http://mesh.dl.sourceforge.net/sourceforge/squashfs
+SQUASHFS_SITE:=@SF/squashfs
 SQUASHFS_DIR:=$(SOURCE_DIR)/squashfs$(SQUASHFS_VERSION)
 
 MKSQUASHFS_DIR:=$(SQUASHFS_DIR)/squashfs-tools

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.41.1)
 $(PKG)_SOURCE:=e2fsprogs-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/e2fsprogs
+$(PKG)_SITE:=@SF/e2fsprogs
 $(PKG)_DIR:=$(SOURCE_DIR)/e2fsprogs-$($(PKG)_VERSION)
 $(PKG)_E2FSCK_BINARY:=$(E2FSPROGS_DIR)/e2fsck/e2fsck
 $(PKG)_E2FSCK_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/e2fsck

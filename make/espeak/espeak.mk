@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.39)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-source.zip
-$(PKG)_SITE:=http://kent.dl.sourceforge.net/sourceforge/espeak
+$(PKG)_SITE:=@SF/espeak
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/speak
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/speak

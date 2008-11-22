@@ -35,7 +35,7 @@ SLEEPTIME=0
 echo "$$" > /var/run/spindown.$DEVICE.pid
 trap "rm -f /var/run/spindown.$DEVICE.pid; exit 0" SIGTERM SIGINT
 
-exec 1>&-;exec 2>&-
+exec < /dev/null > /dev/null 2> /dev/null
 
 while true; do
 	if [ -d $SYSFS/block/$DEVICE ]; then

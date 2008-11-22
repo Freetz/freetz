@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.7.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/tinyproxy
+$(PKG)_SITE:=@SF/tinyproxy
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/tinyproxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tinyproxy
 $(PKG)_STARTLEVEL=40

@@ -123,25 +123,21 @@ $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
 		install_runtime
 	touch -c $@
 else
-$(TARGET_MAKE_PATH)/../lib/libc.a: $(TOOLCHAIN_DIR)/target/.installed
+$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(cross_compiler)
 	touch -c $@
 
-$(ROOT_DIR)/lib/libc.so.0: $(TARGET_MAKE_PATH)/../lib/libc.a
+$(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
 	@rm -rf $(ROOT_DIR)/lib
 	@mkdir -p $(ROOT_DIR)/lib
 	for i in $(UCLIBC_FILES); do \
-		cp -a $(TARGET_MAKE_PATH)/../lib/$$i $(ROOT_DIR)/lib/$$i; \
+		cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$$i $(ROOT_DIR)/lib/$$i; \
 	done
 	touch -c $@
 endif
 
 uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
-ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
-uclibc: $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
-else
-uclibc: $(TARGET_TOOLCHAIN_STAGING_DIR)/.installed $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
-endif
+uclibc: $(cross_compiler) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
 
 uclibc-source: $(DL_DIR)/$(UCLIBC_SOURCE)
 

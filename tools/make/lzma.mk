@@ -1,7 +1,7 @@
 LZMA_VERSION:=443
 LZMA_SOURCE:=lzma$(LZMA_VERSION).tar.bz2
 LZMA_SOURCE_MD5:=c4e1b467184c7cffd4371c74df2baf0f
-LZMA_SITE:=http://mesh.dl.sourceforge.net/sourceforge/sevenzip
+LZMA_SITE:=@SF/sevenzip
 LZMA_DIR:=$(SOURCE_DIR)/lzma$(LZMA_VERSION)
 LZMA_MAKE_DIR:=$(TOOLS_DIR)/make
 LZMA_ALONE_DIR:=$(LZMA_DIR)/C/7zip/Compress/LZMA_Alone

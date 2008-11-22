@@ -19,18 +19,21 @@ ifeq ($(strip $(TARGET_TOOLCHAIN_UCLIBC_VERSION)),0.9.28)
 else
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TARGET_TOOLCHAIN_SOURCE) "" $(TARGET_TOOLCHAIN_0_9_29_MD5SUM)
 endif
-download-toolchain: $(TOOLCHAIN_DIR)/kernel/.installed kernel-configured \
-					$(TOOLCHAIN_DIR)/target/.installed \
-					$(ROOT_DIR)/lib/libc.so.0 $(ROOT_DIR)/lib/libgcc_s.so.1
+download-toolchain: $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc kernel-configured \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc \
+			$(ROOT_DIR)/lib/libc.so.0 $(ROOT_DIR)/lib/libgcc_s.so.1 \
+			$(CCACHE)
 
-$(TOOLCHAIN_DIR)/kernel/.installed: $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | $(TOOLS_DIR)/busybox
+$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc: $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | \
+		$(KERNEL_TOOLCHAIN_SYMLINK) $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
 	$(RM) $(TOOLCHAIN_DIR)/kernel
 	$(TOOLS_DIR)/busybox tar $(VERBOSE) -xaf $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) -C $(TOOLCHAIN_DIR)/build
 	-@ln -s $(BUILD_DIR)/gcc-$(KERNEL_TOOLCHAIN_GCC_VERSION)/mipsel-unknown-linux-gnu $(TOOLCHAIN_DIR)/kernel
 	@touch $@
 
-$(TOOLCHAIN_DIR)/target/.installed: $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) | $(TOOLS_DIR)/busybox
+$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) | \
+		$(TARGET_TOOLCHAIN_SYMLINK) $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
 	$(RM) $(TOOLCHAIN_DIR)/target
 	$(TOOLS_DIR)/busybox tar $(VERBOSE) -xaf $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) -C $(TOOLCHAIN_DIR)/build

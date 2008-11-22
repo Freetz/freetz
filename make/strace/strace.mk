@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 4.5.16)
 $(PKG)_SOURCE:=strace-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/strace
+$(PKG)_SITE:=@SF/strace
 $(PKG)_BINARY:=$($(PKG)_DIR)/strace
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/strace
 

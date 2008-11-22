@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.6)
 $(PKG)_SOURCE:=sispmctl-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/sispmctl
+$(PKG)_SITE:=@SF/sispmctl
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/sispmctl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sispmctl
 
