@@ -34,7 +34,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(IRSSI_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LD="$(TARGET_CC)"
+		LD="$(TARGET_CC)" \
+		LIBS=-ldl
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
