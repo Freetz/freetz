@@ -8,8 +8,6 @@ Latest changes:
   * toolchains:
     - add menuconfig option to adjust HOSTCC variable 
     - add ccache for download- and kernel-toolchain
-    - fix some toolchain dependencies
-    - adapt updates from buildroot
 
 - New tools and hooks:
   * external
@@ -21,7 +19,6 @@ Latest changes:
       dl/mirror to save disk space.
 
 - New patches (read online help for more info):
-    * Remove DECT-files and modules on W900V
 
 - New packages, libs, modules:
     * bfusb 3-18-39 (firmware for bluetooth stick)
@@ -55,58 +52,29 @@ Latest changes:
     * new kernel modules: bfusb, pppoe, pppox
 
 - Updated tools and hooks:
-    * push_firmware now supports flashing from complete firmware images (by unpacking to tempfile)
 
 - Updated patches:
 
 - Updated packages and libs:
-    * avm-firewall 2.0.4_rc2
     * bip 0.7.5
-    * callmonitor 1.12.2
     * classpath 0.97.2
-    * curl 7.19.1
     * devmapper 1.02.27
-    * dnsmasq 2.46
-    * dropbear 0.52
     * dns2tcp 0.4.3
-    * e2fsprogs 1.41.1
-    * espeak 1.39
     * expat 2.0.1
-    * fuse 2.7.4
-    * inadyn-mt 02.12.24
     * jamvm 1.5.1
-    * libftdi 0.14
-    * module-init-tools 3.4
-    * ntfs-3g 1.5012
-    * obexftp 0.22
-    * openssl 0.9.8i
-    * openvpn 2.1_rc13
-    * privoxy 3.0.10
-    * ruby 1.8.7
-    * sg3_utils 1.26
-    * tor 0.2.0.31
-    * transmission 1.40
     * tree 1.5.2.1
-    * wget 1.11.4
 
 - Remove packages, libs, modules, tools:
 
 - Firmware updates:
+    * Please see FIRMWARES for the list of currently supported boxes and firmwares.
 
 - BusyBox:
-    * updated to 1.11.3
 
 - Web interface:
 
 - Other stuff:
-	* activate "replace kernel" option for 7270
-	* kernel: 
-		+ Add mppe-mppc.patch to 2.6.19.2
-		+ Raise source version for 5050 to 04.33
-		+ Activate AVM_CPMAC_SWITCH (affects all 4MB Ohios switch boxes)
-	* push_firmware: Add MacOSX support
-	* subdirs for downloaded an generated firmware-images to keep dl- and rootdir clean
-	* fwmod_list: ignore case when searching for new firmwares
+
 
 === release Freetz-1.0.1 ===
 
@@ -119,41 +87,60 @@ Latest changes:
           uClibc version most stuff has to be rebuilt
         + Delete toolchain-distclean target for download toolchain 
         + Add *-toolchain-{dir/dist}clean targets for download toolchain 
+        + fix some toolchain dependencies  
+        + adapt updates from buildroot
 
 - New tools and hooks:
 
 - New patches (read online help for more info):
     * remove tr069-stuff
     * remove dect-stuff from 7270
+    * remove DECT-files and modules on W900V
 
 - New packages, libs, modules:
  
 - Updated tools and hooks:
+    * push_firmware now supports flashing from complete firmware images (by unpacking to tempfile)
 
 - Updated patches:
     * usbstorage: delete storage.sh patch and therefore add sed line to usbstorage.sh
     * remove tr069: remove tr069 stuff for 7170, 7270
+    * remove_dect: don't remove dect firmware files otherwise boot process will hang 
 
 - Updated packages and libs:
+    * avm-firewall 2.0.4_rc2
     * bip 0.7.4
+    * callmonitor 1.12.3
     * ctorrent dnh3.3.2
+    * curl 7.19.1
     * cyassl 0.9.8
-    * dnsmasq 2.45
-    * e2fsprogs 1.40.11
-    * espeak 1.37
+    * devmapper 1.02.27
+    * dns2tcp 0.4.1
+    * dnsmasq 2.46
+    * dropbear 0.52
+    * e2fsprogs 1.41.1
+    * espeak 1.39
+    * fuse 2.7.4
+    * inadyn-mt 02.12.24
     * iodine 0.4.2
-    * ntfs-3g 1.2712
-    * obexftp 0.22rc9
-    * openssl 0.9.8h
-    * openvpn 2.1rc9
+    * libftdi 0.14
+    * module-init-tools 3.4
+    * nano 2.0.9
+    * ntfs-3g 1.5012
+    * obexftp 0.22
+    * openssl 0.9.8i
+    * openvpn 2.1_rc13
     * php 5.2.6
     * pppd 2.4.4
-    * privoxy 3.0.8
+    * privoxy 3.0.10
     * rrdstats: add uptime statistics
+    * ruby 1.8.6
+    * sg3_utils 1.26
     * streamripper 1.63.4
     * stunnel 4.25
-    * transmission 1.32
-    * wget 1.11.3
+    * tor 0.2.0.31
+    * transmission 1.40
+    * wget 1.11.4
     * xrelayd 0.2.1pre2
 
 - Remove packages, libs, modules, tools:
@@ -161,17 +148,28 @@ Latest changes:
 - Firmware updates:
 
 - BusyBox:
-    * updated to 1.11.1
+    * updated to 1.11.3
 
 - Web interface:
 
 - Other stuff:
-    * support for new kernel sources (04.57)
-    * kernel patch for multiple ftdi devices
+    * kernel: 
+        + support for new sources (04.57)
+        + add patch for multiple ftdi devices
+        + add squashfs-3.3 patch for 2.6.19.2
+        + activate "replace kernel" for 7270
+        + Add mppe-mppc.patch to 2.6.19.2
+        + 2.6.19.2: use other net sched timer (AVM changed it)
+        + Raise source version for 5050 to 04.33
+		+ Activate AVM_CPMAC_SWITCH (affects all 4MB Ohios switch boxes)
+    * push_firmware: Add MacOSX support
+    * subdirs for downloaded an generated firmware-images to keep dl- and rootdir clean
     * mtd char devices were created with wrong minors
     * disable iptables-cgi for 7270
     * add menuconfig option for 7270 with 16 MB flash
     * add option to disable Freetz version string
+    * fix wrong PID in /var/run/httpd.pid after webcfg restart
+    * fwmod_list: ignore case when searching for new firmwares
 
 === release Freetz-1.0 ===
 
