@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.8.7)
+$(call PKG_INIT_BIN, 1.8.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.xs4all.nl/~hipster/lib/mirror/ruby/1.8
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
