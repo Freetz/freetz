@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 4.5.16)
+$(call PKG_INIT_BIN, 4.5.18)
 $(PKG)_SOURCE:=strace-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=@SF/strace
 $(PKG)_BINARY:=$($(PKG)_DIR)/strace
