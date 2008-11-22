@@ -1,6 +1,6 @@
---- networking/telnetd.c.orig	2008-06-25 14:51:14.000000000 +0200
-+++ networking/telnetd.c	2008-07-30 11:35:21.000000000 +0200
-@@ -417,7 +417,7 @@
+--- networking/telnetd.c.orig	2008-09-28 20:04:11.000000000 +0200
++++ networking/telnetd.c	2008-11-22 14:22:35.000000000 +0100
+@@ -416,7 +416,7 @@
  	/* We don't want to die if just one session is broken */
  	signal(SIGPIPE, SIG_IGN);
  
@@ -9,9 +9,9 @@
  		signal(SIGCHLD, handle_sigchld);
  	else /* prevent dead children from becoming zombies */
  		signal(SIGCHLD, SIG_IGN);
---- include/usage.h.orig	2008-07-11 22:22:20.000000000 +0200
-+++ include/usage.h	2008-07-30 11:35:21.000000000 +0200
-@@ -4027,8 +4027,8 @@
+--- include/usage.h.orig	2008-09-28 20:04:26.000000000 +0200
++++ include/usage.h	2008-11-22 14:22:35.000000000 +0100
+@@ -4064,8 +4064,8 @@
       "\nOptions:" \
       "\n	-l LOGIN	Exec LOGIN on connect" \
       "\n	-f issue_file	Display issue_file instead of /etc/issue" \
