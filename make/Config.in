@@ -1,0 +1,128 @@
+comment "*** not all packages support selected language ***"
+	depends on ! FREETZ_LANG_DE
+
+config FREETZ_SELECTED_LANG_ONLY
+	bool "Packages supporting selected language only"
+	depends on ! FREETZ_LANG_DE
+	default n
+	help
+		Show only packages supporting the selected language. Packages not
+		supporting your selected language can be installed, but they will be in
+		default language (usually German).
+
+menu "Standard packages"
+source make/bftpd/Config.in
+source make/bird/Config.in
+source make/bridge-utils/Config.in
+source make/callmonitor/Config.in
+source make/checkmaild/Config.in
+source make/cifsmount/Config.in
+source make/cpmaccfg/Config.in
+source make/curl/Config.in
+source make/deco/Config.in
+source make/dnsmasq/Config.in
+source make/dropbear/Config.in
+source make/dtmfbox/Config.in
+source make/espeak/Config.in
+source make/fuse/Config.in
+source make/inetd/Config.in
+source make/knock/Config.in
+source make/mc/Config.in
+source make/mini_fo/Config.in
+source make/mtr/Config.in
+source make/nano/Config.in
+source make/netcat/Config.in
+source make/netsnmp/Config.in
+source make/ntfs/Config.in
+source make/openntpd/Config.in
+source make/openvpn/Config.in
+source make/pingtunnel/Config.in
+source make/privoxy/Config.in
+source make/rcapid/Config.in
+source make/samba/Config.in
+source make/screen/Config.in
+source make/stunnel/Config.in
+source make/tcpdump/Config.in
+source make/tor/Config.in
+source make/vpnc/Config.in
+source make/vsftpd/Config.in
+endmenu
+
+menu "Web interface"
+source make/avm-firewall/Config.in
+source make/downloader/Config.in
+source make/rrdstats/Config.in
+source make/spindown-cgi/Config.in
+source make/syslogd-cgi/Config.in
+source make/virtualip-cgi/Config.in
+source make/wol-cgi/Config.in
+endmenu
+
+menu "Debug helpers"
+source make/ldd/Config.in
+source make/lsof/Config.in
+source make/ltrace/Config.in
+source make/nano-shell/Config.in
+source make/strace/Config.in
+endmenu
+
+menu "Testing"
+# Apache includes PHP by itself, don't include here
+source make/apache/Config.in
+source make/bash/Config.in
+source make/bip/Config.in
+source make/bluez-utils/Config.in
+source make/cryptsetup/Config.in
+source make/ctorrent/Config.in
+source make/debootstrap/Config.in
+source make/dns2tcp/Config.in
+source make/e2fsprogs/Config.in
+source make/empty/Config.in
+source make/fstyp/Config.in
+source make/inadyn-mt/Config.in
+source make/inotify-tools/Config.in
+source make/iodine/Config.in
+source make/irssi/Config.in
+source make/jamvm/Config.in
+source make/lynx/Config.in
+source make/lua/Config.in
+source make/madplay/Config.in
+source make/matrixtunnel/Config.in
+source make/module-init-tools/Config.in
+source make/nfsroot/Config.in
+source make/obexftp/Config.in
+source make/pppd/Config.in
+source make/pptp/Config.in
+source make/pptpd/Config.in
+source make/quagga/Config.in
+source make/rrdtool/Config.in
+source make/ruby/Config.in
+source make/sispmctl/Config.in
+source make/streamripper/Config.in
+source make/tinyproxy/Config.in
+source make/transmission/Config.in
+source make/usbip/Config.in
+source make/usbroot/Config.in
+source make/vim/Config.in
+source make/wget/Config.in
+source make/xrelayd/Config.in
+endmenu
+
+config FREETZ_SHOW_UNSTABLE_PACKAGES
+	bool "Unstable"
+	depends on FREETZ_SHOW_ADVANCED
+	help
+		These packages may not work at all. They are currently under development or have known issues which make them not work correctly.
+		Do not use them if you don't know what you are doing.
+
+menu "Unstable"
+	depends on FREETZ_SHOW_UNSTABLE_PACKAGES
+source make/collectd/Config.in
+source make/iptables/Config.in
+# Included by iptables for a cleaner menu structure
+# source make/firewall-cgi/Config.in
+endmenu
+
+# mandatory packages
+source make/haserl/Config.in
+source make/modcgi/Config.in

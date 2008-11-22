@@ -1,0 +1,85 @@
+#!/bin/sh
+#
+# Usage: modinetd [-n] [package]
+
+usage() {
+	echo "Usage: $(basename $0) [options] [package]..."
+	echo "options:"
+	echo "  -h | --help       - print this help"
+	echo "  -n | --nosave     - do not modsave flash"
+	exit $1
+}
+
+inetd_conf_line() {
+	line="$inetdcfg_port\t$inetdcfg_sock\t$inetdcfg_proto\t$inetdcfg_flags"
+	line="$line\t$inetdcfg_user\t$inetdcfg_exe\t$inetdcfg_arg0 $inetdcfg_args"
+	if [ "$1" = escape ]; then
+		line=$(echo -n "$line" | sed -e 's@/@\\/@g')
+	fi
+	echo -en "$line"
+}
+
+update_inetd() {
+	local pkg=$1
+	if [ ! -e "/etc/init.d/rc.$pkg" ]; then
+		error "package $pkg has no rc script"
+		exit 1
+	fi
+	echo -n "Updating inetd config for $pkg: "
+	local icnf="/var/tmp/flash/inetd.conf"
+	. /etc/default.$pkg/$pkg.inetd
+	if ! grep -q "#:$pkg:" $icnf; then
+		echo >> $icnf
+		echo "#:$pkg: $inetdcfg_desc" >> $icnf
+		echo "$(inetd_conf_line)" >> $icnf
+	fi
+
+	if [ "inetd" == "$(/etc/init.d/rc.$pkg status)" ]; then
+		sed -i -e "/#:$pkg:/ { n; s/^.*/$(inetd_conf_line escape)/ }" $icnf
+		echo "active."
+	else
+		sed -i -e "/#:$pkg:/ { n; s/^[^#].*/#<off>#$(inetd_conf_line escape)/ }" $icnf
+		echo "inactive."
+	fi
+}
+
+error() {
+	echo "$0: $*" 1>&2
+}
+
+save=true
+TEMP=$(getopt -o hn --long help,nosave -n "$(basename $0)" -- "$@")
+
+[ $? == 0 ] || usage 1
+eval set -- "$TEMP"
+
+while true ; do
+	case $1 in
+		-h|--help) usage 0; shift ;;
+		-n|--nosave) save=false; shift ;;
+		--) shift ; break ;;
+		*) echo "Internal error!" ; exit 1 ;;
+	esac
+done
+
+if [ $# -eq 0 ]; then
+	for package in $(ls /etc/default.*/*.inetd | sed -e 's@^/etc/default\.\([^/]*\)/[^/]*\.inetd$@\1@'); do
+		update_inetd $package
+	done
+else
+	for package; do
+		if [ -e "/etc/default.$package/$package.inetd" ]; then
+			update_inetd $package
+		else
+			error "package $package has no default inetd file"
+		fi
+	done
+	
+fi
+
+/etc/init.d/rc.inetd reload
+if $save; then
+	/usr/bin/modsave flash
+fi
+
+exit 0

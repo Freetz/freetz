@@ -1,0 +1,37 @@
+config FREETZ_PACKAGE_NFSROOT
+	bool "NFS-root 0.1"
+	depends on FREETZ_REPLACE_KERNEL
+	select FREETZ_MODULE_nfs
+	default n
+	help
+		Mount a remote filesystem (fs) from an NFS server and use it as a root fs
+		which is fully writable and basically unlimited in size. The Linux kernel will
+		still be loaded from your box and during the first phase of the init process
+		the SquashFS on the box is still used, but after the NFS-root is mounted, we
+		pivot_root into it and it becomes the new root fs. The read-only fs on the box
+		can still be accessed under /oldroot, but is absolutely not necessary anymore
+		after pivot_root.
+
+		Having said that, it should be clear that the remote folder to be mounted
+		should contain everything necessary to run the box. Usually you just create
+		a full copy of a target fs (e.g. from build/modified/filesystem or from an
+		unpacked firmware image) and start modifying it as needed. The binaries
+		(kernel modules, executables, shared libraries) used therein just have to fit
+		the kernel installed on the box.
+
+		Note: The mini_fo overlay filesystem will not be used if an NFS-root was
+		mounted first (see mini_fo package). Still, both packages can be
+		installed at the same time, because mini_fo is still useful if NFS-root
+		is decativated.
+
+		Note: This package needs "replace kernel" because a kernel patch is necessary
+		to make the 'nfsroot' bootloader environment variable usable for our purpose.
+		So, if if "replace kernel" is inactive, you will not see this package in
+		menuconfig.
+
+		Note: There currently is no web interface for this package, because an
+		NFS-root is an expert thing anyway. The command-line interface and help screen
+		of /etc/init.d/rc.nfs makes it pretty easy to (de-)activate and configure the
+		functionality of this package. As configuration data are stored in bootloader
+		environment rather than in TFFS like for other packages, this package is
+		special anyway.

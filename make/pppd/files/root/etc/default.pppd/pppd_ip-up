@@ -1,0 +1,63 @@
+#!/bin/sh
+#ip-up <interface> <device> <speed> <local-ip> <remote-ip> <ipparam>
+
+file_pptp=0
+file_pptpd=0
+
+if [ -f "/mod/etc/conf/pptp.cfg"  ]; then 
+	file_pptp=1    
+	. /mod/etc/conf/pptp.cfg
+fi
+if [ -f "/mod/etc/conf/pptpd.cfg"  ]; then
+	file_pptpd=1
+	. /mod/etc/conf/pptpd.cfg
+fi
+
+cat << EOF
+#!/bin/sh
+if [ "\$6" = "pptp" ]; then
+	echo "ip-up Client"
+EOF
+if [ $file_pptp -eq 1 -a -n "$PPTP_NET_ROUTING" -a "$PPTP_ROUTING" == "yes" ]; then
+cat << EOF
+		echo "ip-up Client"
+EOF
+	echo "$PPTP_NET_ROUTING" | grep -v "^#" | while read netz mask comment; do
+   	if [ -n "$netz" -a -n "$mask" ]; then
+cat << EOF
+		route add -net $netz netmask $mask gw "\$5" dev "\$1" #$comment
+EOF
+		fi
+  done
+else
+cat << EOF
+		echo "#kein Routing konfiguriert oder aktiviert"
+EOF
+fi
+
+cat << EOF
+else 
+	echo "ip-up Server"
+EOF
+if [ $file_pptpd -eq 1 -a -n "$PPTPD_NET_ROUTING" -a "$PPTPD_ROUTING" == "yes" ]; then
+cat << EOF
+		#Routing
+EOF
+	echo "$PPTPD_NET_ROUTING" | grep -v "^#" | while read netz mask client comment; do
+   	if [ -n "$netz" -a -n "$mask" -a -n "$client" ]; then
+cat << EOF
+		if [ "\$5" = "$client" ]; then
+			route add -net $netz netmask $mask gw "\$5" dev "\$1" #$comment
+		fi
+EOF
+		fi
+  done
+else
+cat << EOF
+		echo "#kein Routing konfiguriert oder aktiviert"
+EOF
+fi
+
+cat << EOF
+fi
+EOF

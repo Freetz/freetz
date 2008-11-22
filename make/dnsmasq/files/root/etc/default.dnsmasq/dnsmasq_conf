@@ -1,0 +1,38 @@
+#!/bin/sh
+
+cat << EOF
+domain-needed
+bogus-priv
+log-async=10
+EOF
+if [ "$DNSMASQ_DHCP" = "yes" ]; then
+	echo "$DNSMASQ_DHCP_RANGE" | grep -v "^#" | while read -r range; do
+		[ -n "$range" ] && echo "dhcp-range=$range"
+	done
+fi
+
+if [ "$DNSMASQ_DOMAIN" ]; then
+	echo "domain=$DNSMASQ_DOMAIN"
+	echo "expand-hosts"
+fi
+
+if [ "$DNSMASQ_TFTP" = 'yes' -a -n "$DNSMASQ_TFTP_TFTPROOT" ]; then
+	echo "enable-tftp"
+	echo "tftp-root=$DNSMASQ_TFTP_TFTPROOT"
+fi
+
+if [ "$DNSMASQ_DHCP" = "yes" -a "$DNSMASQ_DHCP_BOOT" = "yes" -a "$DNSMASQ_DHCP_BOOTFILE" ]; then
+	echo "dhcp-boot=$DNSMASQ_DHCP_BOOTFILE"
+fi
+
+[ "$DNSMASQ_ETHERS" = "yes" ] && echo "read-ethers"
+
+isdhcphost () {
+	echo $1 | grep '^dhcp-host$' >/dev/null
+}
+if [ -r /tmp/flash/exhosts ]; then
+	egrep -v '^(#|[[:space:]]*$)' /tmp/flash/exhosts |
+		while read -r ip mac interface host desc; do
+			isdhcphost $mac && echo "dhcp-host=${host}"
+		done
+fi

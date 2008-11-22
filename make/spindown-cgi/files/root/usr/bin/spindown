@@ -1,0 +1,63 @@
+#!/bin/sh
+# This script uses sg_start from the sg3_utils (http://sg.torque.net/sg/) to
+# automatically put a SCSI device into standby mode after a configurable idle
+# time period. This should also work with USB storage devices.
+# Based upon the ruby script of Steffen Rusitschka found at
+# http://rusi.is-a-geek.org/files/rusi_sg_down, version 0.1.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+#
+# Copyright (c) 2007 Michael Heimpold <m.heimpold@web.de>
+#
+# Supported parameters of this script:
+# ./spindown [device [idle_timeout [pc]]]
+# Defaults: device = sda, idle_timeout = 900 (seconds), pc = 3
+# pc is the 'power condition' value (see man page of sg_start),
+# where 3 = standby and 5 = sleep
+
+DEVICE="$1"
+DEVICE="${DEVICE:=sda}"
+IDLETIME="$2"
+IDLETIME="${IDLETIME:=900}"
+PC="$3"
+PC="${PC:=3}"
+
+SYSFS="$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')"
+[ ! -d "$SYSFS" ] && echo "Error: no sysfs found." && exit 1
+IOCNTFILE="$SYSFS/block/$DEVICE/device/iorequest_cnt"
+
+LASTIOCNT=0
+LASTATIME=0
+SLEEPTIME=0
+
+echo "$$" > /var/run/spindown.$DEVICE.pid
+trap "rm -f /var/run/spindown.$DEVICE.pid; exit 0" SIGTERM SIGINT
+
+exec < /dev/null > /dev/null 2> /dev/null
+
+while true; do
+	if [ -d $SYSFS/block/$DEVICE ]; then
+		CURTIME="$(date +'%s')"
+		CURIOCNT=`cat "$IOCNTFILE"`
+
+		if [ "$LASTIOCNT" != "$CURIOCNT" ]; then
+			LASTATIME=$CURTIME
+		fi
+
+		if [ "$(($LASTATIME + $IDLETIME))" -lt "$CURTIME" \
+			-a "$SLEEPTIME" -lt "$LASTATIME" ]; then
+			SLEEPTIME=$CURTIME
+			sg_start --stop --pc=$PC /dev/$DEVICE
+			CURIOCNT=`cat "$IOCNTFILE"`
+		fi
+
+		LASTIOCNT=$CURIOCNT
+	else
+		LASTIOCNT=0
+		LASTATIME=0
+		SLEEPTIME=0
+	fi
+	sleep 60
+done

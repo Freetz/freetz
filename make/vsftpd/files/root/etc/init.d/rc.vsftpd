@@ -1,0 +1,136 @@
+#!/bin/sh
+
+DAEMON=vsftpd
+LOGLINK=/var/log/mod_vsftpd.log
+
+. /etc/init.d/modlibrc
+
+pre_config() {
+	modlib_adduser ftp -G users -D -S -g "FTP account"
+
+	mkdir -p /var/run/vsftpd
+
+	if [ ! -e "/var/tmp/ftp" ]; then
+		ln -s /mod/home/ftp /var/tmp/ftp
+	fi
+}
+
+write_config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+
+	echo -n > /mod/etc/vsftpd.user_list
+	[ $VSFTPD_ALLOW_ROOT == "yes" ] || echo root >> /mod/etc/vsftpd.user_list
+	[ $VSFTPD_ALLOW_FTPUSER == "yes" ] || echo ftpuser >> /mod/etc/vsftpd.user_list
+}
+
+status_log() {
+	remove_status_log
+        if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
+                ln -sf $VSFTPD_LOG_FILE $LOGLINK
+                modreg status vsftpd Vsftpd vsftpd/vsftpd_log
+        fi
+}
+
+remove_status_log() {
+        modunreg status vsftpd vsftpd/vsftpd_log
+	rm -f $LOGLINK
+}
+
+config() {
+	write_config
+	status_log
+}
+
+start() {
+	echo -n 'Starting ftp server...'
+	config
+
+	$DAEMON 
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		rm -f /mod/etc/$DAEMON.conf
+		exit $exitval
+	fi
+}
+
+stop () {
+	echo -n 'Stopping ftp server...'
+	killall $DAEMON > /dev/null 2>&1
+	exitval=$?
+
+	remove_status_log
+	rm -f /mod/etc/$DAEMON.conf
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case $1 in
+	""|load)
+		pre_config
+
+		modreg cgi 'vsftpd' 'Vsftpd'
+
+		if [ "$VSFTPD_ENABLED" != "yes" ]; then
+			if [ "$VSFTPD_ENABLED" != "inetd" ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+				config
+			fi
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg cgi 'vsftpd'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ "$VSFTPD_ENABLED" == "inetd" ]; then
+			echo 'inetd'
+		elif [ ! -z "$(pidof "$DAEMON")" ]; then
+			echo 'running'
+		else
+			echo 'stopped'
+		fi
+		;;
+	config)
+		config	
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

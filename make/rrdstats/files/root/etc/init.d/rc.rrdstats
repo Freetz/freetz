@@ -1,0 +1,98 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+
+case "$1" in
+	""|load|start|restart|config)
+		if [ ! -r "/mod/etc/conf/rrdstats.cfg" ]; then
+			echo "Error[rrdstats]: not configured" 1>&2
+			exit 1
+		fi
+		. /mod/etc/conf/rrdstats.cfg
+		;;
+esac
+
+config() {
+	# kein "-p" wg externer Pfade!
+	mkdir $RRDSTATS_RRDDATA 2>/dev/null
+	mkdir $RRDSTATS_RRDTEMP 2>/dev/null
+	rm /var/mod/etc/statpix 2>/dev/null
+	ln -s $(echo "$RRDSTATS_RRDTEMP" | sed 's/\/*$//g') /var/mod/etc/statpix 2>/dev/null
+}
+
+start() {
+	echo -n 'Starting rrdstats...'
+
+	if [ ! -z "$(pidof rrdstats)" ]; then
+		echo "already running"
+		exit 0
+	fi
+
+	start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
+	exitval=$?
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping rrdstats...'
+	killall rrdstats 2>/dev/null
+	exitval=$?
+
+	if [ $exitval -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+	fi
+}
+
+case "$1" in
+	config)
+		config
+		;;
+	""|load)
+		modreg cgi rrdstats RRDstats
+		modreg status rrdstats RRDstats rrdstats/stats
+		config
+		if [ "$RRDSTATS_ENABLED" != yes ]; then
+			echo "rrdstats is disabled" 1>&2
+			exit 1
+		fi
+		start
+		;;
+	unload)
+		stop
+		modunreg status rrdstats rrdstats/stats
+		modunreg cgi rrdstats
+		;;
+	start)
+		config
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		config
+		start
+		;;
+	status)
+		if [ -z "$(pidof rrdstats)" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
+		exit 1
+		;;
+esac

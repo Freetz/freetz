@@ -1,0 +1,24 @@
+#!/bin/sh
+
+LOADFILE="$1"
+FILEPERM="$2"
+LOCALDR="$3"
+
+if test -e $LOCALDR/$LOADFILE ; then
+   echo -n "$LOCALDR/$LOADFILE is deleting... "
+   chmod "777" $LOCALDR/$LOADFILE
+   rm -f $LOCALDR/$LOADFILE
+   LOADERROR=$?
+   if [ $LOADERROR -eq 1 ]; then
+      echo "failed"
+      echo "file $LOCALDR/$LOADFILE could not be deleted"
+      exit $LOADERROR
+   fi
+   echo "done"
+else
+   echo "$LOCALDR/$LOADFILE does not exist. Deleting not required."
+fi 
+
+exit 0
+
+

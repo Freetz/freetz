@@ -1,0 +1,172 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+usage()
+{
+	cat << EOF
+Usage: rc.nfsroot [on|off|status|share [nfs_share]|noshare]
+NFS root mount script - can only be called as an 'init' replacement.
+Parameters:
+  status  - check status of NFS root; returns 'running' if NFS mount on '/'
+            is active, 'stopped' otherwise.
+  on      - activate replacing 'init' by 'rc.nfsroot' -> boot with NFS root,
+            but only if 'share' has also been set up. Adds something like
+            'init=/etc/init.d/rc.nfsroot' to bootloader environment variable
+            'kernel_args'.
+  share   - persistently store NFS share name in bootloader environment for
+            later use with 'mount'. This setting must be configured at least
+            once before NFS root can be used. Adds variable 'nfsroot' to
+            bootloader environment, setting its value. If called without
+            parameter, this option prints the current 'nfsroot' values.
+  noshare - remove NFS share name from bootloader environment. Even though it
+            does no harm to have the NFS share around int the environment all
+            the time, you may optionally remove it again using this option.
+  off     - deactivate replacing 'init' by 'rc.nfsroot' -> boot without
+            NFS root. Removes 'init' from bootloader environment variable
+            'kernel_args'.
+Examples:
+  - rc.nfsroot on
+  - rc.nfsroot share 192.168.178.22:/home/user/my-nfsroot
+  - rc.nfsroot share
+  - rc.nfsroot status
+  - rc.nfsroot off
+  - rc.nfsroot noshare
+EOF
+}
+
+NFSROOT_ENV_VAR=nfs
+
+start()
+{
+	[ -e /proc/mounts ] || mount proc
+	if grep -q " / nfs " /proc/mounts; then
+		echo "*** NFS root already mounted, done. ***"
+		return
+	fi
+
+	# Remove leading and trailing spaces from nfsroot. Trailing invisible
+	# garbage can be part of the value if the user defines the variable via
+	# Putty directly at the Eva console prompt via copy & paste.
+	nfsroot=$(sed -rn "s/^$NFSROOT_ENV_VAR[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
+	server="${nfsroot%:*}"
+
+	if [ -z "$nfsroot" ]; then
+		echo "*** No 'nfsroot' configured in bootloader environment, exiting. ***" >&2
+		umount proc
+		return
+	fi
+
+	echo "*** Switching to NFS root ... ***"
+
+	# Prepare filesystem stuff neded by multid
+	mount /var
+	tar xf /var.tar -C /
+	major=`grep tffs /proc/devices`
+	tffs_major=${major%%tffs}
+	mkdir -p /var/flash
+	mknod /var/flash/multid.leases	 c $tffs_major $((0x70))
+	mknod /var/flash/ar7.cfg		 c $tffs_major $((0x71))
+	# CONFIG_ETH_COUNT, HWRevision_ATA
+	. /etc/init.d/rc.conf
+
+	echo "*** Initialising network interfaces ... ***"
+	# Start multid temporarily (not needed anymore after setup)
+	multid -tiu || multid -ti
+	sleep 2
+	multid -s
+
+	# Clean up filesystem stuff no longer neded by multid
+	rm -f /var/flash/multid.leases
+	rm -r /var/flash/ar7.cfg
+	umount /var
+
+	echo "*** Loading kernel modules nfs, lockd, sunrpc... ***"
+	if ! modprobe nfs; then
+		echo "*** Could not load (all) kernel modules, exiting. ***" >&2
+		lsmod >&2
+		rmmod nfs; rmmod lockd; rmmod sunrpc; umount proc
+		return
+	fi
+
+	echo "*** Looking for NFS server in network ... ***"
+	local ping_count=5
+	until [ $ping_count -eq 0 ] || ping -c 1 $server; do
+		echo "ping retry countdown: $((ping_count--))"
+	done
+	if [ $ping_count -eq 0 ]; then
+		echo "*** NFS server not found, exiting. ***" >&2
+		rmmod nfs; rmmod lockd; rmmod sunrpc; umount proc
+		return
+	fi
+
+	echo "*** Mounting NFS root ... ***"
+	if ! mount -t nfs -o nolock $nfsroot /var; then
+		echo "*** NFS mount failed, exiting. ***" >&2
+		rmmod nfs; rmmod lockd; rmmod sunrpc; umount proc
+		return
+	fi
+
+	echo "*** Pivoting to NFS root ... ***"
+	umount proc
+	cd /var
+	[ -d oldroot ] || mkdir -p oldroot
+	if pivot_root . oldroot; then
+		echo "*** NFS root pivoting succeeded, done. ***"
+	else
+		echo "*** NFS root pivoting failed, exiting. ***" >&2
+	fi
+}
+
+if [ "$PPID" == "0" ]; then
+	echo "*** $0 called as an init process, start setting up NFS root ... ***"
+	start
+	echo "*** Creating device /dev/console on NFS root ... ***"
+	# Try to remove existing filesystem object before creating device node
+	[ -e /dev/console ] && rm -f /dev/console 2>/dev/null
+	# We need this to be able to redirect std{in,err,out}
+	mknod /dev/console c 5 1
+	echo "*** Switching to init ... ***"
+	exec init >/dev/console 2>&1 <&1
+fi
+
+case "$1" in
+	""|load|start|stop)
+		;;
+	status)
+		grep -q " / nfs " /proc/mounts \
+			&& echo 'running' \
+			|| echo 'stopped'
+		;;
+	on)
+		. kernel_args
+		newval=$(ka_getArgs | sed -r 's/(.*[^ ])?( *init=[^ ]*)(.*)/\1\3/ ; s/^ +(.*)/\1/')
+		echo "kernel_args init=/etc/init.d/rc.nfsroot $newval" > /proc/sys/urlader/environment
+		echo "NFS root switched on (reboot to apply)"
+		;;
+	off)
+		. kernel_args
+		newval=$(ka_getArgs | sed -r 's/(.*[^ ])?( *init=[^ ]*)(.*)/\1\3/ ; s/^ +(.*)/\1/')
+		echo "kernel_args $newval" > /proc/sys/urlader/environment
+		echo "NFS root switched off (reboot to apply)"
+		;;
+	share)
+		if [ "$2" ]; then
+			echo "$NFSROOT_ENV_VAR $2" > /proc/sys/urlader/environment
+			echo "NFS share name added to bootloader environment"
+		else
+			nfs_share=$(sed -nr "s/^$NFSROOT_ENV_VAR[[:space:]]+(.*)/\1/p" /proc/sys/urlader/environment)
+			[ -n "$nfs_share" ] \
+				&& echo "$nfs_share" \
+				|| echo "NFS share name is currently empty"
+		fi
+		;;
+	noshare)
+		echo "$NFSROOT_ENV_VAR" > /proc/sys/urlader/environment
+		echo "NFS share name removed from bootloader environment"
+		;;
+	*)
+		usage >&2
+		exit 1
+		;;
+esac

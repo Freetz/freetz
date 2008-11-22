@@ -1,0 +1,59 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+
+VERBOSE_RC_CONF=n
+. /etc/init.d/rc.conf
+
+DAEMON=websrv
+DAEMON_LONG_NAME="$DAEMON AVM web UI"
+PIDFILE=/var/run/websrv.pid
+
+pid() {
+	cat "$PIDFILE"
+}
+
+start() {
+	echo -n "Starting $DAEMON_LONG_NAME..."
+	httpd -P "$PIDFILE" -p 80 -h /usr/www/all
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo "done."
+	else
+		echo "failed."
+		exit $exitval
+	fi
+}
+
+stop() {
+	modlib_stop
+}
+
+case $1 in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	kill)
+		kill -kill $(pid) 2> /dev/null
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		modlib_status
+		;;
+	pid)
+		pid
+		;;
+	*)
+		echo "Usage: $0 [start|stop|kill|restart|status|pid]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

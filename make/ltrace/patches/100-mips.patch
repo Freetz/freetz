@@ -1,0 +1,1041 @@
+Index: output.c
+===================================================================
+--- output.c	(Revision 77)
++++ output.c	(Arbeitskopie)
+@@ -204,11 +204,13 @@
+ 	} else {
+ 		int i;
+ 		for (i = 0; i < func->num_params - func->params_right - 1; i++) {
++			func->arg_info[i]->arg_num = i;
+ 			current_column +=
+ 			    display_arg(type, proc, func->arg_info[i]);
+ 			current_column += fprintf(output, ", ");
+ 		}
+ 		if (func->num_params > func->params_right) {
++			func->arg_info[i]->arg_num = i;
+ 			current_column +=
+ 			    display_arg(type, proc, func->arg_info[i]);
+ 			if (func->params_right) {
+@@ -289,11 +291,13 @@
+ 		int i;
+ 		for (i = func->num_params - func->params_right;
+ 		     i < func->num_params - 1; i++) {
++			func->arg_info[i]->arg_num = i;
+ 			current_column +=
+ 			    display_arg(type, proc, func->arg_info[i]);
+ 			current_column += fprintf(output, ", ");
+ 		}
+ 		if (func->params_right) {
++			func->arg_info[i]->arg_num = i;
+ 			current_column +=
+ 			    display_arg(type, proc, func->arg_info[i]);
+ 		}
+@@ -303,6 +307,7 @@
+ 		if (func->return_info->type == ARGTYPE_VOID) {
+ 			fprintf(output, "<void>");
+ 		} else {
++			func->return_info->arg_num = -1;
+ 			display_arg(type, proc, func->return_info);
+ 		}
+ 	}
+Index: configure.ac
+===================================================================
+--- configure.ac	(Revision 77)
++++ configure.ac	(Arbeitskopie)
+@@ -15,7 +15,7 @@
+ 
+ dnl Checks for libraries.
+ AC_CHECK_LIB(iberty, cplus_demangle,,,)
+-AC_CHECK_LIB(supc++, __cxa_demangle,,,)
++# AC_CHECK_LIB(supc++, __cxa_demangle,,,)
+ 
+ dnl
+ dnl The following stuff may be useful, but I don't use it now.
+Index: sysdeps/linux-gnu/trace.c
+===================================================================
+--- sysdeps/linux-gnu/trace.c	(Revision 77)
++++ sysdeps/linux-gnu/trace.c	(Arbeitskopie)
+@@ -207,7 +207,7 @@
+ 		continue_process(proc->pid);
+ 	} else {
+ 		proc->breakpoint_being_enabled = sbp;
+-#if defined __sparc__  || defined __ia64___
++#if defined __sparc__  || defined __ia64___ || defined __mips__
+ 		/* we don't want to singlestep here */
+ 		continue_process(proc->pid);
+ #else
+Index: sysdeps/linux-gnu/mipsel/mipsel.h
+===================================================================
+--- sysdeps/linux-gnu/mipsel/mipsel.h	(Revision 77)
++++ sysdeps/linux-gnu/mipsel/mipsel.h	(Arbeitskopie)
+@@ -1,11 +1,19 @@
+ #ifndef MIPSEL_h
+-#define  MIPSEL_h
+-// linux-2.4.30/arch/mips/kernel/ptrace.c for these offsets.
+-#define off_v0 2
+-#define off_pc 64
+-#define off_a0 4
+-#define off_a3 7
++#define MIPSEL_h
++
++/*
++ * These are just the register numbers,
++ * 0 - 31 are integer registers, 32 - 63 are fp registers.
++ */
++#define off_v0  2
++#define off_a0  4
++#define off_a3  7
++#define off_sp 29
+ #define off_lr 31
+-#define off_sp 29
+ 
+-#endif //  MIPSEL_h
++/*
++ * see kernel header include/asm-mips/ptrace.h for these
++ */
++#define off_pc 64
++
++#endif /* MIPSEL_h */
+Index: sysdeps/linux-gnu/mipsel/trace.c
+===================================================================
+--- sysdeps/linux-gnu/mipsel/trace.c	(Revision 77)
++++ sysdeps/linux-gnu/mipsel/trace.c	(Arbeitskopie)
+@@ -6,10 +6,13 @@
+ #include <sys/wait.h>
+ #include <signal.h>
+ #include <sys/ptrace.h>
+-#include <asm/ptrace.h>
++/* #include <asm/ptrace.h> */
++#include <stdlib.h>
++
+ #include "debug.h"
+ #include "ltrace.h"
+ #include "mipsel.h"
++
+ #if (!defined(PTRACE_PEEKUSER) && defined(PTRACE_PEEKUSR))
+ # define PTRACE_PEEKUSER PTRACE_PEEKUSR
+ #endif
+@@ -18,7 +21,13 @@
+ # define PTRACE_POKEUSER PTRACE_POKEUSR
+ #endif
+ 
++#define FUNC_REGISTER_ARGS 4
++#define SYSC_REGISTER_ARGS 6
+ 
++typedef struct {
++  long saved_arg[SYSC_REGISTER_ARGS];
++} callstack_archdep;
++
+ /**
+    \addtogroup mipsel Mipsel specific functions.
+ 
+@@ -90,65 +99,100 @@
+    }
+ 	return 0;
+ }
++
++
+ /**
+    \param type Function/syscall call or return.
+    \param proc The process that had an event.
+    \param arg_num -1 for return value, 
+    \return The argument to fetch. 
+ 
+-   A couple of assumptions. 
++   Mipsel conventions seem to be:
+ 
+--  Type is LT_TOF_FUNCTIONR or LT_TOF_SYSCALLR if arg_num==-1. These
+-   types are only used in calls for output_right(), which only uses -1
+-   for arg_num.
+--  Type is LT_TOF_FUNCTION or LT_TOF_SYSCALL for args 0...4. 
+--   I'm only displaying the first 4 args (Registers a0..a3). Good
+-   enough for now.
++    - syscall parameters: r4...r9
++    - syscall return: if(!a3){ return v0;} else{ errno=v0;return -1;}
++    - function call: r4..r7. Further arguments on the stack (integer!).
++    - function return: v0
+ 
+-  Mipsel conventions seem to be:
+-- syscall parameters: r4...r9
+-- syscall return: if(!a3){ return v0;} else{ errno=v0;return -1;}
+-- function call: r4..r7. Not sure how to get arg number 5. 
+-- function return: v0
++    The argument registers are wiped by a call, so it is a mistake to ask
++    for arguments on a return. So, the registers will be saved in
++    \save_register_args on the call stack.
+ 
+-The argument registers are wiped by a call, so it is a mistake to ask
+-for arguments on a return. If ltrace does this, we will need to cache
+-arguments somewhere on the call.
++    I'm not doing any floating point support here. 
+ 
+-I'm not doing any floating point support here. 
++*/
+ 
+-*/
+-long gimme_arg(enum tof type, struct process *proc, int arg_num)
++long gimme_arg(enum tof type, struct process *proc, arg_type_info *info)
+ {
+-    long ret;
+-    debug(2,"type %d arg %d",type,arg_num);
+-    if (type == LT_TOF_FUNCTION || type == LT_TOF_SYSCALL){
+-        if(arg_num <4){
+-            ret=ptrace(PTRACE_PEEKUSER,proc->pid,off_a0+arg_num,0);
+-            debug(2,"ret = %#lx",ret);
+-            return ret;
+-        } else {
+-            // If we need this, I think we can look at [sp+16] for arg_num==4.
+-            CP;
+-            return 0;
+-        }
+-    } 
+-    if(arg_num>=0){
+-       fprintf(stderr,"args on return?");
++    int arg_num = info->arg_num;
++    long ret = 0;
++
++    debug(2,"tof %d arg %d",type,arg_num);
++
++    if (arg_num == -1) { /* return value */
++      switch (type) {
++       case LT_TOF_FUNCTIONR:
++	ret = ptrace(PTRACE_PEEKUSER,proc->pid,off_v0,0);
++	break;
++       case LT_TOF_SYSCALLR:
++	if(0 == ptrace(PTRACE_PEEKUSER, proc->pid,off_a3,0)) {
++	  ret = ptrace(PTRACE_PEEKUSER, proc->pid,off_v0,0);
++	} else {
++	  ret = -1;
++	}
++	break;
++       default:
++wrong_args:
++	fprintf(stderr, "gimme_arg called with wrong arguments\n");
++      }
++    } else { /* arguments */
++      switch (type) {
++       case LT_TOF_FUNCTION:
++	if (arg_num < FUNC_REGISTER_ARGS) {
++	  ret=ptrace(PTRACE_PEEKUSER,proc->pid,off_a0+arg_num,0);
++	} else {
++from_stack:
++	  if (!proc->stack_pointer)
++	    proc->stack_pointer = get_stack_pointer(proc);
++	  ret = ptrace(PTRACE_PEEKDATA, proc->pid,
++      		       proc->stack_pointer + 4*arg_num, 0);
++	}
++	break;
++       case LT_TOF_FUNCTIONR:
++	if (arg_num < FUNC_REGISTER_ARGS) {
++from_saved:
++	  {
++	    callstack_archdep *a =
++	      proc->callstack[proc->callstack_depth].arch_ptr;
++	    if (a) {
++	      ret = a->saved_arg[arg_num];
++	    }
++	  }
++	} else {
++	  goto from_stack;
++	}
++	break;
++       case LT_TOF_SYSCALL:
++	if (arg_num < SYSC_REGISTER_ARGS) {
++	  ret=ptrace(PTRACE_PEEKUSER,proc->pid,off_a0+arg_num,0);
++	} else {
++	  goto wrong_args;
++	}
++	break;
++       case LT_TOF_SYSCALLR:
++	if (arg_num < SYSC_REGISTER_ARGS) {
++	  goto from_saved;
++	} else {
++	  goto wrong_args;
++	}
++	break;
++       default:
++	goto wrong_args;
++      }
+     }
+-    if(type == LT_TOF_FUNCTIONR) {
+-        return  ptrace(PTRACE_PEEKUSER,proc->pid,off_v0,0);
+-    }
+-    if (type == LT_TOF_SYSCALLR) {
+-        unsigned a3=ptrace(PTRACE_PEEKUSER, proc->pid,off_a3,0);
+-        unsigned v0=ptrace(PTRACE_PEEKUSER, proc->pid,off_v0,0);
+-        if(!a3){
+-            return v0;
+-        }
+-        return -1;
+-    }
+-    fprintf(stderr, "gimme_arg called with wrong arguments\n");
+-	return 0;
++
++    debug(2,"ret = %#lx",ret);
++    return ret;
+ }
+ 
+ /**
+@@ -156,14 +200,30 @@
+    \param proc Process to work with. 
+    
+    Called by \c output_left(), which is called on a syscall or
+-   function.
++   function when there are arguments left that will be displayed on
++   return.
+    
+-   The other architectures stub this out, but seems to be the place to
++   Most other architectures stub this out, but seems to be the place to
+    stash off the arguments on a call so we have them on the return.
++
++   On mips, save register arguments that will be overwritten during
++   the call.
+    
+ */
+ void save_register_args(enum tof type, struct process *proc)
+ {
++  callstack_archdep *a = proc->callstack[proc->callstack_depth].arch_ptr;
++  if (!a) {
++    a = malloc(sizeof *a);
++    proc->callstack[proc->callstack_depth].arch_ptr = a;
++  }
++  if (a) {
++    int argc = LT_TOF_FUNCTION ? FUNC_REGISTER_ARGS : SYSC_REGISTER_ARGS;
++    int i;
++    for (i = 0; i < argc; i++) {
++      a->saved_arg[i] = ptrace(PTRACE_PEEKUSER, proc->pid, off_a0+i, 0);
++    }
++  }
+ }
+ 
+ /**@}*/
+Index: sysdeps/linux-gnu/mipsel/plt.c
+===================================================================
+--- sysdeps/linux-gnu/mipsel/plt.c	(Revision 77)
++++ sysdeps/linux-gnu/mipsel/plt.c	(Arbeitskopie)
+@@ -1,8 +1,8 @@
+-#include <debug.h>
+ #include <gelf.h>
+ #include <sys/ptrace.h>
++#include "debug.h"
+ #include "ltrace.h"
+-#include "ltrace_elf.h"
++#include "elf.h"
+ 
+ /**
+    \addtogroup mipsel
+Index: sysdeps/linux-gnu/mipsel/regs.c
+===================================================================
+--- sysdeps/linux-gnu/mipsel/regs.c	(Revision 77)
++++ sysdeps/linux-gnu/mipsel/regs.c	(Arbeitskopie)
+@@ -4,8 +4,7 @@
+ #include <stddef.h>
+ #include <sys/types.h>
+ #include <sys/ptrace.h>
+-#include <asm/ptrace.h>
+-#include <linux/user.h>
++/* #include <asm/ptrace.h> */
+ 
+ #include "ltrace.h"
+ #include "mipsel.h"
+Index: sysdeps/linux-gnu/mipsel/arch.h
+===================================================================
+--- sysdeps/linux-gnu/mipsel/arch.h	(Revision 77)
++++ sysdeps/linux-gnu/mipsel/arch.h	(Arbeitskopie)
+@@ -1,4 +1,8 @@
++#ifdef __MIPSEL__
+ #define BREAKPOINT_VALUE { 0x0d, 0x00, 0x00, 0x00 }
++#else
++#define BREAKPOINT_VALUE { 0x00, 0x00, 0x00, 0x0d }
++#endif
+ #define BREAKPOINT_LENGTH 4
+ #define DECR_PC_AFTER_BREAK 0
+ 
+Index: sysdeps/linux-gnu/mipsel/syscallent.h
+===================================================================
+--- sysdeps/linux-gnu/mipsel/syscallent.h	(Revision 77)
++++ sysdeps/linux-gnu/mipsel/syscallent.h	(Arbeitskopie)
+@@ -1,241 +1,286 @@
+-    "0",			/*Linux +   0*/
+-    "exit",			/*Linux +   1*/
+-    "fork",			/*Linux +   2*/
+-    "read",			/*Linux +   3*/
+-    "write",			/*Linux +   4*/
+-    "open",			/*Linux +   5*/
+-    "close",			/*Linux +   6*/
+-    "waitpid",			/*Linux +   7*/
+-    "creat",			/*Linux +   8*/
+-    "link",			/*Linux +   9*/
+-    "unlink",			/*Linux +  10*/
+-    "execve",			/*Linux +  11*/
+-    "chdir",			/*Linux +  12*/
+-    "time",			/*Linux +  13*/
+-    "mknod",			/*Linux +  14*/
+-    "chmod",			/*Linux +  15*/
+-    "lchown",			/*Linux +  16*/
+-    "break",			/*Linux +  17*/
+-    "unused18",			/*Linux +  18*/
+-    "lseek",			/*Linux +  19*/
+-    "getpid",			/*Linux +  20*/
+-    "mount",			/*Linux +  21*/
+-    "umount",			/*Linux +  22*/
+-    "setuid",			/*Linux +  23*/
+-    "getuid",			/*Linux +  24*/
+-    "stime",			/*Linux +  25*/
+-    "ptrace",			/*Linux +  26*/
+-    "alarm",			/*Linux +  27*/
+-    "unused28",			/*Linux +  28*/
+-    "pause",			/*Linux +  29*/
+-    "utime",			/*Linux +  30*/
+-    "stty",			/*Linux +  31*/
+-    "gtty",			/*Linux +  32*/
+-    "access",			/*Linux +  33*/
+-    "nice",			/*Linux +  34*/
+-    "ftime",			/*Linux +  35*/
+-    "sync",			/*Linux +  36*/
+-    "kill",			/*Linux +  37*/
+-    "rename",			/*Linux +  38*/
+-    "mkdir",			/*Linux +  39*/
+-    "rmdir",			/*Linux +  40*/
+-    "dup",			/*Linux +  41*/
+-    "pipe",			/*Linux +  42*/
+-    "times",			/*Linux +  43*/
+-    "prof",			/*Linux +  44*/
+-    "brk",			/*Linux +  45*/
+-    "setgid",			/*Linux +  46*/
+-    "getgid",			/*Linux +  47*/
+-    "signal",			/*Linux +  48*/
+-    "geteuid",			/*Linux +  49*/
+-    "getegid",			/*Linux +  50*/
+-    "acct",			/*Linux +  51*/
+-    "umount2",			/*Linux +  52*/
+-    "lock",			/*Linux +  53*/
+-    "ioctl",			/*Linux +  54*/
+-    "fcntl",			/*Linux +  55*/
+-    "mpx",			/*Linux +  56*/
+-    "setpgid",			/*Linux +  57*/
+-    "ulimit",			/*Linux +  58*/
+-    "unused59",			/*Linux +  59*/
+-    "umask",			/*Linux +  60*/
+-    "chroot",			/*Linux +  61*/
+-    "ustat",			/*Linux +  62*/
+-    "dup2",			/*Linux +  63*/
+-    "getppid",			/*Linux +  64*/
+-    "getpgrp",			/*Linux +  65*/
+-    "setsid",			/*Linux +  66*/
+-    "sigaction",			/*Linux +  67*/
+-    "sgetmask",			/*Linux +  68*/
+-    "ssetmask",			/*Linux +  69*/
+-    "setreuid",			/*Linux +  70*/
+-    "setregid",			/*Linux +  71*/
+-    "sigsuspend",			/*Linux +  72*/
+-    "sigpending",			/*Linux +  73*/
+-    "sethostname",		/*Linux +  74*/
+-    "setrlimit",			/*Linux +  75*/
+-    "getrlimit",			/*Linux +  76*/
+-    "getrusage",			/*Linux +  77*/
+-    "gettimeofday",		/*Linux +  78*/
+-    "settimeofday",		/*Linux +  79*/
+-    "getgroups",			/*Linux +  80*/
+-    "setgroups",			/*Linux +  81*/
+-    "reserved82",			/*Linux +  82*/
+-    "symlink",			/*Linux +  83*/
+-    "unused84",			/*Linux +  84*/
+-    "readlink",			/*Linux +  85*/
+-    "uselib",			/*Linux +  86*/
+-    "swapon",			/*Linux +  87*/
+-    "reboot",			/*Linux +  88*/
+-    "readdir",			/*Linux +  89*/
+-    "mmap",			/*Linux +  90*/
+-    "munmap",			/*Linux +  91*/
+-    "truncate",			/*Linux +  92*/
+-    "ftruncate",			/*Linux +  93*/
+-    "fchmod",			/*Linux +  94*/
+-    "fchown",			/*Linux +  95*/
+-    "getpriority",		/*Linux +  96*/
+-    "setpriority",		/*Linux +  97*/
+-    "profil",			/*Linux +  98*/
+-    "statfs",			/*Linux +  99*/
+-    "fstatfs",			/*Linux + 100*/
+-    "ioperm",			/*Linux + 101*/
+-    "socketcall",			/*Linux + 102*/
+-    "syslog",			/*Linux + 103*/
+-    "setitimer",			/*Linux + 104*/
+-    "getitimer",			/*Linux + 105*/
+-    "stat",			/*Linux + 106*/
+-    "lstat",			/*Linux + 107*/
+-    "fstat",			/*Linux + 108*/
+-    "unused109",			/*Linux + 109*/
+-    "iopl",			/*Linux + 110*/
+-    "vhangup",			/*Linux + 111*/
+-    "idle",			/*Linux + 112*/
+-    "vm86",			/*Linux + 113*/
+-    "wait4",			/*Linux + 114*/
+-    "swapoff",			/*Linux + 115*/
+-    "sysinfo",			/*Linux + 116*/
+-    "ipc",			/*Linux + 117*/
+-    "fsync",			/*Linux + 118*/
+-    "sigreturn",			/*Linux + 119*/
+-    "clone",			/*Linux + 120*/
+-    "setdomainname",		/*Linux + 121*/
+-    "uname",			/*Linux + 122*/
+-    "modify_ldt",			/*Linux + 123*/
+-    "adjtimex",			/*Linux + 124*/
+-    "mprotect",			/*Linux + 125*/
+-    "sigprocmask",		/*Linux + 126*/
+-    "create_module",		/*Linux + 127*/
+-    "init_module",		/*Linux + 128*/
+-    "delete_module",		/*Linux + 129*/
+-    "get_kernel_syms",		/*Linux + 130*/
+-    "quotactl",			/*Linux + 131*/
+-    "getpgid",			/*Linux + 132*/
+-    "fchdir",			/*Linux + 133*/
+-    "bdflush",			/*Linux + 134*/
+-    "sysfs",			/*Linux + 135*/
+-    "personality",		/*Linux + 136*/
+-    "afs_syscall",		/*Linux + 137*/ /* Syscall for Andrew File System */
+-    "setfsuid",			/*Linux + 138*/
+-    "setfsgid",			/*Linux + 139*/
+-    "_llseek",			/*Linux + 140*/
+-    "getdents",			/*Linux + 141*/
+-    "_newselect",			/*Linux + 142*/
+-    "flock",			/*Linux + 143*/
+-    "msync",			/*Linux + 144*/
+-    "readv",			/*Linux + 145*/
+-    "writev",			/*Linux + 146*/
+-    "cacheflush",			/*Linux + 147*/
+-    "cachectl",			/*Linux + 148*/
+-    "sysmips",			/*Linux + 149*/
+-    "unused150",			/*Linux + 150*/
+-    "getsid",			/*Linux + 151*/
+-    "fdatasync",			/*Linux + 152*/
+-    "_sysctl",			/*Linux + 153*/
+-    "mlock",			/*Linux + 154*/
+-    "munlock",			/*Linux + 155*/
+-    "mlockall",			/*Linux + 156*/
+-    "munlockall",			/*Linux + 157*/
+-    "sched_setparam",		/*Linux + 158*/
+-    "sched_getparam",		/*Linux + 159*/
+-    "sched_setscheduler",		/*Linux + 160*/
+-    "sched_getscheduler",		/*Linux + 161*/
+-    "sched_yield",		/*Linux + 162*/
+-    "sched_get_priority_max",	/*Linux + 163*/
+-    "sched_get_priority_min",	/*Linux + 164*/
+-    "sched_rr_get_interval",	/*Linux + 165*/
+-    "nanosleep",			/*Linux + 166*/
+-    "mremap",			/*Linux + 167*/
+-    "accept",			/*Linux + 168*/
+-    "bind",			/*Linux + 169*/
+-    "connect",			/*Linux + 170*/
+-    "getpeername",		/*Linux + 171*/
+-    "getsockname",		/*Linux + 172*/
+-    "getsockopt",			/*Linux + 173*/
+-    "listen",			/*Linux + 174*/
+-    "recv",			/*Linux + 175*/
+-    "recvfrom",			/*Linux + 176*/
+-    "recvmsg",			/*Linux + 177*/
+-    "send",			/*Linux + 178*/
+-    "sendmsg",			/*Linux + 179*/
+-    "sendto",			/*Linux + 180*/
+-    "setsockopt",			/*Linux + 181*/
+-    "shutdown",			/*Linux + 182*/
+-    "socket",			/*Linux + 183*/
+-    "socketpair",			/*Linux + 184*/
+-    "setresuid",			/*Linux + 185*/
+-    "getresuid",			/*Linux + 186*/
+-    "query_module",		/*Linux + 187*/
+-    "poll",			/*Linux + 188*/
+-    "nfsservctl",			/*Linux + 189*/
+-    "setresgid",			/*Linux + 190*/
+-    "getresgid",			/*Linux + 191*/
+-    "prctl",			/*Linux + 192*/
+-    "rt_sigreturn",		/*Linux + 193*/
+-    "rt_sigaction",		/*Linux + 194*/
+-    "rt_sigprocmask",		/*Linux + 195*/
+-    "rt_sigpending",		/*Linux + 196*/
+-    "rt_sigtimedwait",		/*Linux + 197*/
+-    "rt_sigqueueinfo",		/*Linux + 198*/
+-    "rt_sigsuspend",		/*Linux + 199*/
+-    "pread",			/*Linux + 200*/
+-    "pwrite",			/*Linux + 201*/
+-    "chown",			/*Linux + 202*/
+-    "getcwd",			/*Linux + 203*/
+-    "capget",			/*Linux + 204*/
+-    "capset",			/*Linux + 205*/
+-    "sigaltstack",		/*Linux + 206*/
+-    "sendfile",			/*Linux + 207*/
+-    "getpmsg",			/*Linux + 208*/
+-    "putpmsg",			/*Linux + 209*/
+-    "mmap2",			/*Linux + 210*/
+-    "truncate64",			/*Linux + 211*/
+-    "ftruncate64",		/*Linux + 212*/
+-    "stat64",			/*Linux + 213*/
+-    "lstat64",			/*Linux + 214*/
+-    "fstat64",			/*Linux + 215*/
+-    "pivot_root",			/*Linux + 216*/
+-    "mincore",			/*Linux + 217*/
+-    "madvise",			/*Linux + 218*/
+-    "getdents64",			/*Linux + 219*/
+-    "fcntl64",			/*Linux + 220*/
+-    "security",			/*Linux + 221*/
+-    "gettid",			/*Linux + 222*/
+-    "readahead",			/*Linux + 223*/
+-    "setxattr",			/*Linux + 224*/
+-    "lsetxattr",			/*Linux + 225*/
+-    "fsetxattr",			/*Linux + 226*/
+-    "getxattr",			/*Linux + 227*/
+-    "lgetxattr",			/*Linux + 228*/
+-    "fgetxattr",			/*Linux + 229*/
+-    "listxattr",			/*Linux + 230*/
+-    "llistxattr",			/*Linux + 231*/
+-    "flistxattr",			/*Linux + 232*/
+-    "removexattr",		/*Linux + 233*/
+-    "lremovexattr",		/*Linux + 234*/
+-    "fremovexattr",		/*Linux + 235*/
+-    "tkill",			/*Linux + 236*/
+-    "sendfile64",			/*Linux + 237*/
+-    "futex",			/*Linux + 238*/
+-    "sched_setaffinity",		/*Linux + 239*/
+-    "sched_getaffinity",		/*Linux + 240*/
++	"syscall",                         /* 0 */
++	"exit",                            /* 1 */
++	"fork",                            /* 2 */
++	"read",                            /* 3 */
++	"write",                           /* 4 */
++	"open",                            /* 5 */
++	"close",                           /* 6 */
++	"waitpid",                         /* 7 */
++	"creat",                           /* 8 */
++	"link",                            /* 9 */
++	"unlink",                          /* 10 */
++	"execve",                          /* 11 */
++	"chdir",                           /* 12 */
++	"time",                            /* 13 */
++	"mknod",                           /* 14 */
++	"chmod",                           /* 15 */
++	"lchown",                          /* 16 */
++	"break",                           /* 17 */
++	"unused18",                        /* 18 */
++	"lseek",                           /* 19 */
++	"getpid",                          /* 20 */
++	"mount",                           /* 21 */
++	"umount",                          /* 22 */
++	"setuid",                          /* 23 */
++	"getuid",                          /* 24 */
++	"stime",                           /* 25 */
++	"ptrace",                          /* 26 */
++	"alarm",                           /* 27 */
++	"unused28",                        /* 28 */
++	"pause",                           /* 29 */
++	"utime",                           /* 30 */
++	"stty",                            /* 31 */
++	"gtty",                            /* 32 */
++	"access",                          /* 33 */
++	"nice",                            /* 34 */
++	"ftime",                           /* 35 */
++	"sync",                            /* 36 */
++	"kill",                            /* 37 */
++	"rename",                          /* 38 */
++	"mkdir",                           /* 39 */
++	"rmdir",                           /* 40 */
++	"dup",                             /* 41 */
++	"pipe",                            /* 42 */
++	"times",                           /* 43 */
++	"prof",                            /* 44 */
++	"brk",                             /* 45 */
++	"setgid",                          /* 46 */
++	"getgid",                          /* 47 */
++	"signal",                          /* 48 */
++	"geteuid",                         /* 49 */
++	"getegid",                         /* 50 */
++	"acct",                            /* 51 */
++	"umount2",                         /* 52 */
++	"lock",                            /* 53 */
++	"ioctl",                           /* 54 */
++	"fcntl",                           /* 55 */
++	"mpx",                             /* 56 */
++	"setpgid",                         /* 57 */
++	"ulimit",                          /* 58 */
++	"unused59",                        /* 59 */
++	"umask",                           /* 60 */
++	"chroot",                          /* 61 */
++	"ustat",                           /* 62 */
++	"dup2",                            /* 63 */
++	"getppid",                         /* 64 */
++	"getpgrp",                         /* 65 */
++	"setsid",                          /* 66 */
++	"sigaction",                       /* 67 */
++	"sgetmask",                        /* 68 */
++	"ssetmask",                        /* 69 */
++	"setreuid",                        /* 70 */
++	"setregid",                        /* 71 */
++	"sigsuspend",                      /* 72 */
++	"sigpending",                      /* 73 */
++	"sethostname",                     /* 74 */
++	"setrlimit",                       /* 75 */
++	"getrlimit",                       /* 76 */
++	"getrusage",                       /* 77 */
++	"gettimeofday",                    /* 78 */
++	"settimeofday",                    /* 79 */
++	"getgroups",                       /* 80 */
++	"setgroups",                       /* 81 */
++	"reserved82",                      /* 82 */
++	"symlink",                         /* 83 */
++	"unused84",                        /* 84 */
++	"readlink",                        /* 85 */
++	"uselib",                          /* 86 */
++	"swapon",                          /* 87 */
++	"reboot",                          /* 88 */
++	"readdir",                         /* 89 */
++	"mmap",                            /* 90 */
++	"munmap",                          /* 91 */
++	"truncate",                        /* 92 */
++	"ftruncate",                       /* 93 */
++	"fchmod",                          /* 94 */
++	"fchown",                          /* 95 */
++	"getpriority",                     /* 96 */
++	"setpriority",                     /* 97 */
++	"profil",                          /* 98 */
++	"statfs",                          /* 99 */
++	"fstatfs",                         /* 100 */
++	"ioperm",                          /* 101 */
++	"socketcall",                      /* 102 */
++	"syslog",                          /* 103 */
++	"setitimer",                       /* 104 */
++	"getitimer",                       /* 105 */
++	"stat",                            /* 106 */
++	"lstat",                           /* 107 */
++	"fstat",                           /* 108 */
++	"unused109",                       /* 109 */
++	"iopl",                            /* 110 */
++	"vhangup",                         /* 111 */
++	"idle",                            /* 112 */
++	"vm86",                            /* 113 */
++	"wait4",                           /* 114 */
++	"swapoff",                         /* 115 */
++	"sysinfo",                         /* 116 */
++	"ipc",                             /* 117 */
++	"fsync",                           /* 118 */
++	"sigreturn",                       /* 119 */
++	"clone",                           /* 120 */
++	"setdomainname",                   /* 121 */
++	"uname",                           /* 122 */
++	"modify_ldt",                      /* 123 */
++	"adjtimex",                        /* 124 */
++	"mprotect",                        /* 125 */
++	"sigprocmask",                     /* 126 */
++	"create_module",                   /* 127 */
++	"init_module",                     /* 128 */
++	"delete_module",                   /* 129 */
++	"get_kernel_syms",                 /* 130 */
++	"quotactl",                        /* 131 */
++	"getpgid",                         /* 132 */
++	"fchdir",                          /* 133 */
++	"bdflush",                         /* 134 */
++	"sysfs",                           /* 135 */
++	"personality",                     /* 136 */
++	"afs_syscall",                     /* 137 */
++	"setfsuid",                        /* 138 */
++	"setfsgid",                        /* 139 */
++	"_llseek",                         /* 140 */
++	"getdents",                        /* 141 */
++	"_newselect",                      /* 142 */
++	"flock",                           /* 143 */
++	"msync",                           /* 144 */
++	"readv",                           /* 145 */
++	"writev",                          /* 146 */
++	"cacheflush",                      /* 147 */
++	"cachectl",                        /* 148 */
++	"sysmips",                         /* 149 */
++	"unused150",                       /* 150 */
++	"getsid",                          /* 151 */
++	"fdatasync",                       /* 152 */
++	"_sysctl",                         /* 153 */
++	"mlock",                           /* 154 */
++	"munlock",                         /* 155 */
++	"mlockall",                        /* 156 */
++	"munlockall",                      /* 157 */
++	"sched_setparam",                  /* 158 */
++	"sched_getparam",                  /* 159 */
++	"sched_setscheduler",              /* 160 */
++	"sched_getscheduler",              /* 161 */
++	"sched_yield",                     /* 162 */
++	"sched_get_priority_max",          /* 163 */
++	"sched_get_priority_min",          /* 164 */
++	"sched_rr_get_interval",           /* 165 */
++	"nanosleep",                       /* 166 */
++	"mremap",                          /* 167 */
++	"accept",                          /* 168 */
++	"bind",                            /* 169 */
++	"connect",                         /* 170 */
++	"getpeername",                     /* 171 */
++	"getsockname",                     /* 172 */
++	"getsockopt",                      /* 173 */
++	"listen",                          /* 174 */
++	"recv",                            /* 175 */
++	"recvfrom",                        /* 176 */
++	"recvmsg",                         /* 177 */
++	"send",                            /* 178 */
++	"sendmsg",                         /* 179 */
++	"sendto",                          /* 180 */
++	"setsockopt",                      /* 181 */
++	"shutdown",                        /* 182 */
++	"socket",                          /* 183 */
++	"socketpair",                      /* 184 */
++	"setresuid",                       /* 185 */
++	"getresuid",                       /* 186 */
++	"query_module",                    /* 187 */
++	"poll",                            /* 188 */
++	"nfsservctl",                      /* 189 */
++	"setresgid",                       /* 190 */
++	"getresgid",                       /* 191 */
++	"prctl",                           /* 192 */
++	"rt_sigreturn",                    /* 193 */
++	"rt_sigaction",                    /* 194 */
++	"rt_sigprocmask",                  /* 195 */
++	"rt_sigpending",                   /* 196 */
++	"rt_sigtimedwait",                 /* 197 */
++	"rt_sigqueueinfo",                 /* 198 */
++	"rt_sigsuspend",                   /* 199 */
++	"pread64",                         /* 200 */
++	"pwrite64",                        /* 201 */
++	"chown",                           /* 202 */
++	"getcwd",                          /* 203 */
++	"capget",                          /* 204 */
++	"capset",                          /* 205 */
++	"sigaltstack",                     /* 206 */
++	"sendfile",                        /* 207 */
++	"getpmsg",                         /* 208 */
++	"putpmsg",                         /* 209 */
++	"mmap2",                           /* 210 */
++	"truncate64",                      /* 211 */
++	"ftruncate64",                     /* 212 */
++	"stat64",                          /* 213 */
++	"lstat64",                         /* 214 */
++	"fstat64",                         /* 215 */
++	"pivot_root",                      /* 216 */
++	"mincore",                         /* 217 */
++	"madvise",                         /* 218 */
++	"getdents64",                      /* 219 */
++	"fcntl64",                         /* 220 */
++	"reserved221",                     /* 221 */
++	"gettid",                          /* 222 */
++	"readahead",                       /* 223 */
++	"setxattr",                        /* 224 */
++	"lsetxattr",                       /* 225 */
++	"fsetxattr",                       /* 226 */
++	"getxattr",                        /* 227 */
++	"lgetxattr",                       /* 228 */
++	"fgetxattr",                       /* 229 */
++	"listxattr",                       /* 230 */
++	"llistxattr",                      /* 231 */
++	"flistxattr",                      /* 232 */
++	"removexattr",                     /* 233 */
++	"lremovexattr",                    /* 234 */
++	"fremovexattr",                    /* 235 */
++	"tkill",                           /* 236 */
++	"sendfile64",                      /* 237 */
++	"futex",                           /* 238 */
++	"sched_setaffinity",               /* 239 */
++	"sched_getaffinity",               /* 240 */
++	"io_setup",                        /* 241 */
++	"io_destroy",                      /* 242 */
++	"io_getevents",                    /* 243 */
++	"io_submit",                       /* 244 */
++	"io_cancel",                       /* 245 */
++	"exit_group",                      /* 246 */
++	"lookup_dcookie",                  /* 247 */
++	"epoll_create",                    /* 248 */
++	"epoll_ctl",                       /* 249 */
++	"epoll_wait",                      /* 250 */
++	"remap_file_pages",                /* 251 */
++	"set_tid_address",                 /* 252 */
++	"restart_syscall",                 /* 253 */
++	"fadvise64",                       /* 254 */
++	"statfs64",                        /* 255 */
++	"fstatfs64",                       /* 256 */
++	"timer_create",                    /* 257 */
++	"timer_settime",                   /* 258 */
++	"timer_gettime",                   /* 259 */
++	"timer_getoverrun",                /* 260 */
++	"timer_delete",                    /* 261 */
++	"clock_settime",                   /* 262 */
++	"clock_gettime",                   /* 263 */
++	"clock_getres",                    /* 264 */
++	"clock_nanosleep",                 /* 265 */
++	"tgkill",                          /* 266 */
++	"utimes",                          /* 267 */
++	"mbind",                           /* 268 */
++	"get_mempolicy",                   /* 269 */
++	"set_mempolicy",                   /* 270 */
++	"mq_open",                         /* 271 */
++	"mq_unlink",                       /* 272 */
++	"mq_timedsend",                    /* 273 */
++	"mq_timedreceive",                 /* 274 */
++	"mq_notify",                       /* 275 */
++	"mq_getsetattr",                   /* 276 */
++	"vserver",                         /* 277 */
++	"waitid",                          /* 278 */
++	"279",                             /* 279 */
++	"add_key",                         /* 280 */
++	"request_key",                     /* 281 */
++	"keyctl",                          /* 282 */
++	"inotify_init",                    /* 283 */
++	"inotify_add_watch",               /* 284 */
++	"inotify_rm_watch",                /* 285 */
+Index: sysdeps/linux-gnu/mipsel/signalent.h
+===================================================================
+--- sysdeps/linux-gnu/mipsel/signalent.h	(Revision 77)
++++ sysdeps/linux-gnu/mipsel/signalent.h	(Arbeitskopie)
+@@ -1,32 +1,32 @@
+-"SIG_0",			/* 0 */
+-    "SIGHUP",	//	    1	/* Hangup (POSIX).  */
+-    "SIGINT", //		 2	/* Interrupt (ANSI).  */
+-    "SIGQUIT", //		 3	/* Quit (POSIX).  */
+-    "SIGILL", //		 4	/* Illegal instruction (ANSI).  */
+-    "SIGTRAP", //		 5	/* Trace trap (POSIX).  */
+-    "SIGIOT", //		 6	/* IOT trap (4.2 BSD).  */
+-    "SIGEMT", //		 7
+-    "SIGFPE", //		 8	/* Floating-point exception (ANSI).  */
+-    "SIGKILL", //		 9	/* Kill, unblockable (POSIX).  */
+-    "SIGBUS", //		10	/* BUS error (4.2 BSD).  */
+-    "SIGSEGV", //		11	/* Segmentation violation (ANSI).  */
+-    "SIGSYS", //		12
+-    "SIGPIPE", //		13	/* Broken pipe (POSIX).  */
+-    "SIGALRM", //		14	/* Alarm clock (POSIX).  */
+-    "SIGTERM", //		15	/* Termination (ANSI).  */
+-    "SIGUSR1", //		16	/* User-defined signal 1 (POSIX).  */
+-    "SIGUSR2", //		17	/* User-defined signal 2 (POSIX).  */
+-    "SIGCHLD", //		18	/* Child status has changed (POSIX).  */
+-    "SIGPWR", //		19	/* Power failure restart (System V).  */
+-    "SIGWINCH", //	20	/* Window size change (4.3 BSD, Sun).  */
+-    "SIGURG", //		21	/* Urgent condition on socket (4.2 BSD).  */
+-    "SIGIO", //		22	/* I/O now possible (4.2 BSD).  */
+-    "SIGSTOP", //		23	/* Stop, unblockable (POSIX).  */
+-    "SIGTSTP", //		24	/* Keyboard stop (POSIX).  */
+-    "SIGCONT", //		25	/* Continue (POSIX).  */
+-    "SIGTTIN", //		26	/* Background read from tty (POSIX).  */
+-    "SIGTTOU", //		27	/* Background write to tty (POSIX).  */
+-    "SIGVTALRM", //	28	/* Virtual alarm clock (4.2 BSD).  */
+-    "SIGPROF", //		29	/* Profiling alarm clock (4.2 BSD).  */
+-    "SIGXCPU", //		30	/* CPU limit exceeded (4.2 BSD).  */
+-    "SIGXFSZ", //		31	/* File size limit exceeded (4.2 BSD).  */
++	"SIG_0",           /* 0 */
++	"SIGHUP",          /* 1 */
++	"SIGINT",          /* 2 */
++	"SIGQUIT",         /* 3 */
++	"SIGILL",          /* 4 */
++	"SIGTRAP",         /* 5 */
++	"SIGIOT",          /* 6 */
++	"SIGEMT",          /* 7 */
++	"SIGFPE",          /* 8 */
++	"SIGKILL",         /* 9 */
++	"SIGBUS",          /* 10 */
++	"SIGSEGV",         /* 11 */
++	"SIGSYS",          /* 12 */
++	"SIGPIPE",         /* 13 */
++	"SIGALRM",         /* 14 */
++	"SIGTERM",         /* 15 */
++	"SIGUSR1",         /* 16 */
++	"SIGUSR2",         /* 17 */
++	"SIGCHLD",         /* 18 */
++	"SIGPWR",          /* 19 */
++	"SIGWINCH",        /* 20 */
++	"SIGURG",          /* 21 */
++	"SIGIO",           /* 22 */
++	"SIGSTOP",         /* 23 */
++	"SIGTSTP",         /* 24 */
++	"SIGCONT",         /* 25 */
++	"SIGTTIN",         /* 26 */
++	"SIGTTOU",         /* 27 */
++	"SIGVTALRM",       /* 28 */
++	"SIGPROF",         /* 29 */
++	"SIGXCPU",         /* 30 */
++	"SIGXFSZ",         /* 31 */
+Index: sysdeps/linux-gnu/mksyscallent
+===================================================================
+--- sysdeps/linux-gnu/mksyscallent	(Revision 77)
++++ sysdeps/linux-gnu/mksyscallent	(Arbeitskopie)
+@@ -8,6 +8,7 @@
+ 
+ BEGIN {
+ 	max=0;
++	ismips=0;
+ 	FS="[ \t\n()+]+";
+ }
+ 
+@@ -16,7 +17,7 @@
+ 	#printf("/%s/%s/%s/%s/\n", $1, $2, $3, $4);
+ 	if (($1 ~ /^#define$/) && ($2 ~ /^__NR_/)) {
+ 	        #ia64 syscalls are > 1000 (lower for x86 compat)
+-		if (($3>=0) && ($3<=2000)) {
++		if (!ismips && ($3>=0) && ($3<=2000)) {
+ 			SYSCALL[$3]=substr($2,6);
+ 			if ($3 > max) {
+ 				max=$3;
+@@ -26,7 +27,16 @@
+ 			if ($4 > max) {
+ 				max=$4;
+ 			}
+-		}
++		} else if (ismips && ($3 ~ /^__NR_Linux$/) && ($4>=0) && ($4<=1000)) {
++			if (!SYSCALL[$4]) {
++				SYSCALL[$4]=substr($2,6);
++				if ($4 > max) {
++					max=$4;
++				}
++			}
++		} else if (($2 ~ /^__NR_Linux$/)) {
++			ismips=1;
++	        }
+ 	}
+ }
+ 
+Index: sysdeps/linux-gnu/Makefile
+===================================================================
+--- sysdeps/linux-gnu/Makefile	(Revision 77)
++++ sysdeps/linux-gnu/Makefile	(Arbeitskopie)
+@@ -1,5 +1,5 @@
+ ARCH		:=	$(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
+-			-e s/arm.*/arm/ -e s/sa110/arm/ -e s/ppc64/ppc/ -e s/s390x/s390/)
++			-e s/arm.*/arm/ -e s/sa110/arm/ -e s/ppc64/ppc/ -e s/s390x/s390/ -e s/mips/mipsel/)
+ 
+ CPPFLAGS	+=	-I$(TOPDIR)/sysdeps/linux-gnu/$(ARCH)
+ 
+@@ -10,8 +10,9 @@
+ sysdep.h:	$(ARCH)/arch.h
+ 		cat $(ARCH)/arch.h > sysdep.h
+ 
+-signalent.h:
+-		cp $(ARCH)/signalent.h signalent.h
++signalent.h:	$(ARCH)/signalent.h
++		cp $< $@
++
+ signalent1.h:
+ 		if [ -f $(ARCH)/signalent1.h ]; then \
+ 			cp $(ARCH)/signalent1.h signalent1.h; \
+@@ -19,8 +20,8 @@
+ 			> signalent1.h; \
+ 		fi
+ 
+-syscallent.h:
+-		cp $(ARCH)/syscallent.h syscallent.h
++syscallent.h:	$(ARCH)/syscallent.h
++		cp $< $@
+ 
+ syscallent1.h:
+ 		if [ -f $(ARCH)/syscallent1.h ]; then \
+Index: ltrace.h
+===================================================================
+--- ltrace.h	(Revision 77)
++++ ltrace.h	(Arbeitskopie)
+@@ -146,6 +146,9 @@
+ 	} c_un;
+ 	int is_syscall;
+ 	void *return_addr;
++#ifdef __mips__
++	void *arch_ptr;
++#endif
+ 	struct timeval time_spent;
+ };
+ 

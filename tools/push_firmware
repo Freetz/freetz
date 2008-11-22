@@ -1,0 +1,182 @@
+#!/bin/bash
+
+# push_firmware.sh
+#
+# Flash kernel image (hidden root) to Fritz!Box or Speedport.
+# Works on Linux (main platform) and Cygwin (inofficially).
+#
+# Copyright (c) 2007 Michael Hampicke	 (mike@mhampicke.de)
+#		2007 Alexander Kriegisch (kriegaex, ip-phone-forum.de)
+#
+# Cygwin users note:
+#   1. There is NO guarantee whatsoever that this will work on Cygwin, even
+#      though it does on my box (kriegaex). Provided as is.
+#   2. For FTP you need the 'ncftp' cygwin package (category 'net').
+#   3. You need the 'ping' command from Windows (tested on XP), NOT from the
+#      'ping' cygwin package (please uninstall or change path so Windows
+#      version is found first), because the cygwin version has no timeout
+#      parameter as of today (2007-07-11).
+#   4. For 'hexdump' you need the 'util-linux' cygwin package (category
+#      'utils').
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+function push_fw() {
+	trap 'echo ; echo "aborted" ; exit 1' TERM INT
+
+	local ip=192.168.178.1
+	[ -n "$2" ] && ip="$2"
+
+	echo
+	echo " * You should now reboot your box."
+	echo "	 Waiting for box to shut down."
+	echo "	 Tip: switch off, if reboot is not detected because it happens too quickly"
+	echo -n "   "
+	while eval "ping $ping_params $ip > /dev/null"; do
+		echo -n "."
+		sleep 0.2
+	done
+	echo
+
+	echo
+	echo " * No reply from box. Assuming switch-off or restart."
+	echo "	 Trying to re-detect box."
+	echo -n "   "
+	while ! eval "ping $ping_params $ip > /dev/null"; do
+		echo -n "."
+		sleep 0.2
+	done
+	echo
+
+	echo
+	echo " * Box is back up again."
+	echo "	 Initiating transfer."
+	echo "	 Tip: switch off/on box several times, if FTP client cannot log in ..."
+	echo
+
+	if [ $FOUND_NCFTP ]; then
+		ncftpput \
+			-d stdout \
+			-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+			-W "quote MEDIA FLSH" \
+			-Y "quote REBOOT" \
+			-u adam2 -p adam2 \
+			-C $ip \
+			$1 mtd1
+  elif [ $FOUND_FTP ]; then
+		ftp -n -p <<EOT
+open $ip
+user adam2 adam2
+debug
+bin
+quote MEDIA FLSH
+put $1 mtd1
+quote REBOOT
+quit
+EOT
+	fi
+	return 0
+}
+
+if [ -z "$1" ]; then
+	echo
+	echo "Usage: $0 <firmware> [ -f ] [ <ip> ]"
+	echo ""
+	echo "firmware	  firmware file to flash (mostly kernel.image)"
+	echo "-f	  disable safety prompt"
+	echo "ip	  bootloader IP address (default: 192.168.178.1)"
+	echo
+	exit 1
+fi
+
+img=""
+basename=$(basename $0)
+[ -e "$1" ] || { echo "$basename: $1: No such file or directory."; exit 1; }
+[ -f "$1" ] || { echo "$basename: $1: Not a file."; exit 1; }
+[ -r "$1" ] || { echo "$basename: $1: Access denied."; exit 1; }
+
+function cleanup() {
+	[ -n "$tmpimg" -a -f "$tmpimg" ] && rm -rf "$tmpimg";
+	exit 1
+}
+
+trap cleanup EXIT SIGTERM SIGINT
+arg1=$1
+while [ -z "$img" ]; do
+	if [ "$(uname -s)" == "Darwin" ]; then
+		hexdump -n4 "$arg1" | grep -iq "81 12 ed fe" && img="$arg1"
+	else
+		hexdump -n4 "$arg1" | grep -iq "1281 feed" && img="$arg1"
+	fi
+	if [ -z "$img" ]; then
+		if tar tf "$arg1" ./var/tmp/kernel.image > /dev/null  2>&1; then
+			tmpimg=$(mktemp -t) || { echo "$basename: Error creating temporary fil."; exit 1; }
+			echo >&2
+			echo "Hint: file seems to be a full firmware image archive in 'tar' format" >&2
+			echo "containing the 'kernel.image'. Now trying to unpack and use that image." >&2
+			tar -Oxf "$arg1" ./var/tmp/kernel.image > $tmpimg
+			arg1=$tmpimg
+		else
+			echo >&2
+			echo "Error: file is not a valid image to be written to mtd1. Please use a" >&2
+			echo "hidden root 'kernel.image' containing both Linux kernel and file system." >&2
+			exit 1
+		fi
+	fi
+done
+
+ping_params="-c1 -w1"
+if [ "$(uname -o)" == "Cygwin" ]; then
+	CYGWIN=1
+	ping_params="-n 1 -w 500"
+fi
+if [ "$(uname -s)" == "Darwin" ]; then
+	ping_params="-c1 -t1"
+fi
+
+if [ -n "`which ftp`" -a -x "`which ftp`" ] ; then
+  FOUND_FTP=1
+  echo "ftp command found"
+elif [ -n "`which ncftp`" -a -x "`which ncftp`" ] ; then
+  FOUND_NCFTP=1
+  echo "ncftp command found"
+else
+  echo "you have to install 'ftp' or 'ncftp' in order to use this script."
+fi
+
+if [ "$2" = "-f" ]; then
+	push_fw "$img" "$3"
+else
+	echo
+	echo		"!!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!" 
+	echo		"!!!  THERE IS NO WARRANTY AT ALL !!! USE AT YOUR OWN RISK   !!!"
+	echo
+	echo	-n	"Are you sure, that you want to flash "
+	echo	-en	"\033[4m$img\033[0m "
+	echo	-n	"directly to "
+	echo	-e	"\033[4mmtd1\033[0m?"
+	echo
+	echo	-n	"proceed (y/n) "
+
+	read -n 1 -s PROCEED
+	echo
+
+	if [ "$PROCEED" = "y" ]; then
+		push_fw "$img" "$2"
+	else
+		echo
+		echo "aborted"
+	fi
+fi

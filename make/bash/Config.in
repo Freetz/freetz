@@ -1,0 +1,26 @@
+config FREETZ_PACKAGE_BASH
+	bool "bash 3.2 (binary only)"
+	default n
+	help
+		Bash is an sh-compatible command language interpreter that 
+		executes commands read from the standard input or from a file.
+		Bash also incorporates useful features from the Korn and C 
+		shells (ksh and csh).
+
+config FREETZ_PACKAGE_BASH_MINIMAL
+	bool "minimal config"
+	depends on FREETZ_PACKAGE_BASH
+	default n
+	help
+		This produces a shell with minimal features, close to the
+		historical Bourne shell (saves ~300KB).
+
+config FREETZ_PACKAGE_BASH_READLINE
+	bool "enable command line editing and history"
+	depends on FREETZ_PACKAGE_BASH
+	select FREETZ_LIB_libncurses
+	select FREETZ_LIB_libreadline
+	select FREETZ_LIB_libhistory
+	default n
+	help
+		Enable command line editing and history. This feature needs ncurses and readline.

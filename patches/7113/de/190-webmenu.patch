@@ -1,0 +1,28 @@
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2008-05-14 17:58:54.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2008-05-21 23:26:39.000000000 +0200
+@@ -47,5 +47,6 @@
+ <? setvariable var:classname 'LMenuitemTop' ?>
+ <? if eq $var:pagename syslog `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','syslog')"><? echo $var:TextMenuEvent ?></a><span class="PTextOnly"><? echo $var:TextMenuEvent ?></span></li>
++<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2.inc.orig	2008-05-14 17:58:42.000000000 +0200
++++ usr/www/all/html/de/menus/menu2.inc	2008-05-21 23:26:39.000000000 +0200
+@@ -14,6 +14,7 @@
+ <? setvariable var:TextMenuSystem "System" ?>
+ <? setvariable var:TextMenuSoftware "Programme" ?>
+ <? setvariable var:TextMenuHilfe "Hilfe" ?>
++<? setvariable var:menuFreetz "Freetz" ?>
+ <? setvariable var:TextMenuAnrufliste "Anrufe" ?>
+ <? setvariable var:TextMenuTelefonbuch "Telefonbuch" ?>
+ <? setvariable var:TextMenuEvent "Ereignisse" ?>
+--- usr/www/all/html/de/menus/menu2_konfig.html.orig	2008-05-14 17:58:54.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_konfig.html	2008-05-21 23:26:39.000000000 +0200
+@@ -62,5 +62,6 @@
+ <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('software','extern')"><? echo '$var:TextMenuSoftware' ?></a><span class="PTextOnly"><? echo '$var:TextMenuSoftware' ?></span></li>
+ ` ?>
+ ` ?>
++<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>

@@ -1,0 +1,31 @@
+TOOLS_CROSS:=
+TOOLS_MAKE_PATH:=
+
+ifeq ($(TOOLS_MAKE_PATH),)
+TOOLS_CC:=$(TOOLS_CROSS)gcc
+TOOLS_LD:=$(TOOLS_CROSS)ld
+TOOLS_CXX:=$(TOOLS_CROSS)g++
+TOOLS_AR:=$(TOOLS_CROSS)ar
+else
+TOOLS_CC:=$(TOOLS_MAKE_PATH)/$(TOOLS_CROSS)gcc
+TOOLS_LD:=$(TOOLS_MAKE_PATH)/$(TOOLS_CROSS)ld
+TOOLS_CXX:=$(TOOLS_MAKE_PATH)/$(TOOLS_CROSS)g++
+TOOLS_AR:=$(TOOLS_MAKE_PATH)/$(TOOLS_CROSS)ar
+endif
+
+ifneq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
+TOOLS_DOT_CONFIG:=.defconfig
+else
+TOOLS_DOT_CONFIG:=.config
+endif
+
+TOOLS+=busybox-tools
+TOOLS+=find-squashfs
+TOOLS+=lzma
+TOOLS+=lzma2eva
+TOOLS+=squashfs
+TOOLS+=squashfs3
+TOOLS+=tichksum
+TOOLS+=fakeroot
+TOOLS+=tar
+TOOLS+=xdelta

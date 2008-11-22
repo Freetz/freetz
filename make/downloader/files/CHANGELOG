@@ -1,0 +1,49 @@
+**** Version 0.2 ***** 02.01.2008 *****
+
+I. Eliminattion of known bugs
+
+1. Download failed.   Status: fixed
+downloader could download files only during first start of service.
+Each additional start of downloader service was terminated with
+"download failed".
+Cause: Files could not be re-written during unzip stage.
+Solution: chmod 777 and rm before unzip stage.
+
+II. New features
+
+1. Wait stage is moved from before to after ping-test. Files are
+   downloaded faster now.
+2. Special Downloader log /var/log/downloader.log can be activated
+   if necessary. This log file can be shown and deleted, too.
+3. Downloaded files can be removed from destination (RAM clearance).
+   This option is very usefull before firmware update. Only downloaded
+   files are removed during this operation.
+4. Features 2 and 3 are outsurced in "Extras"
+5. Password for FTP-user is hidden. Attention: This is only cosmetic
+   change. Password can be shown anymore by "display source code"
+   in your browser!
+
+III. Small changes, internal updates
+
+1. bin/downloader internal changes for better verbosity and log
+2. bin/downremover added for deleting of downloaded files
+3. lib/cgi-bin/downloader folder added for "Extras"
+4. lib/cgi-bin/downloader/downremover.cgi added for deleting of
+   downloaded files (extra cgi)
+5. lib/cgi-bin/downloader/dowlog.cgi added for displaying and deleting
+   of downloader log file (extra cgi)
+6. lib/cgi-bin/downloader.cgi some changes in main cgi:
+   a) check box for log file
+   b) version number
+   c) password hidding (s. II.5)
+   d) extras section added
+7. etc/rc.downloader
+   a) "remove" section added for deleting of downloaded files
+   b) "load" and "unload" sections extended by "Extras"
+8. .language extended by additional multilingual files
+
+
+**** Version 0.1 ***** 25.04.2007 *****
+
+First version of Downloader. First as addon package for ds-mod.
+Since 11.07.2007 Downloader is included in ds-mod (without changes).

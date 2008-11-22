@@ -1,0 +1,94 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+
+DAEMON=httpd-wol
+PIDFILE=/var/run/webcfg-wol.pid
+
+case "$1" in
+	""|load|start|restart|status)
+		if [ ! -r /mod/etc/conf/wol.cfg ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/wol.cfg
+		;;
+esac
+
+config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.wol/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+}
+
+start() {
+	config
+
+	echo -n 'Starting wol webinterface...'
+	webcfg-wol -P "$PIDFILE"
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	modlib_stop "$PIDFILE"
+}
+
+case "$1" in
+	""|load)
+		modreg cgi 'wol' 'Wake on LAN'
+
+		config
+		if [ "$WOL_ENABLED" != "yes" ]; then
+			if [ "$WOL_ENABLED" != "inetd" ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON ist started via inetd" 1>&2
+			fi
+			exit 1
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ "$WOL_ENABLED" = "inetd" ]; then
+			echo 'inetd'
+		else
+			modlib_status "$PIDFILE"
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

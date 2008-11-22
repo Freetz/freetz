@@ -1,0 +1,19 @@
+config FREETZ_PACKAGE_PRIVOXY
+	bool "Privoxy 3.0.10"
+	default n
+	help
+		Privoxy is a web proxy with advanced filtering capabilities for protecting privacy, modifying web page
+		data, managing cookies, controlling access, and removing ads, banners, pop-ups and other obnoxious
+		Internet junk.
+
+		It can also be used together with Tor Proxy to forward HTTP traffic to Tor as described in the Tor
+		documentation.
+
+config FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB
+        bool "With zlib Compression"
+        depends on FREETZ_PACKAGE_PRIVOXY
+        select FREETZ_LIB_libz
+        default n
+        help
+                ZLIB Compression for privoxy
+

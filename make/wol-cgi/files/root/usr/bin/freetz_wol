@@ -1,0 +1,36 @@
+#!/bin/sh
+
+. /mod/etc/conf/mod.cfg
+. /mod/etc/conf/wol.cfg
+
+# Use HTTP_REFERER to determine target host (could be a name or an IP)
+TARGET_HOST=$(env | sed -n -r 's/^HTTP_REFERER=[^:]+:\/\/([^/:]+).*/\1/p')
+
+# Try HTTP_HOST
+if [ -z "$TARGET_HOST" ]; then
+TARGET_HOST=$(env | sed -n -r 's/^HTTP_HOST=(.*)/\1/p')
+fi
+
+# Use fritz.box as fallback
+if [ -z "$TARGET_HOST" ]; then
+TARGET_HOST=fritz.box
+fi
+
+if [ "$(/mod/etc/init.d/rc.wol status)" = "running" ] ; then 
+	location="http://$TARGET_HOST:$WOL_PORT/"
+else
+	location="http://$TARGET_HOST:$MOD_HTTPD_PORT/cgi-bin/pkgconf.cgi?pkg=wol"
+fi
+
+cat << EOF
+Content-type: text/html; charset=iso-8859-1
+
+<html>
+<head>
+<meta http-equiv="refresh" content="0;url=$location">
+</head>
+<body style="margin: 0px: pading: 0px; color: #b0b0b0; font-size: 10px;">
+Redirecting...<a style="color: #b0b0b0;" href="$location">Freetz wol</a>
+</body>
+</html>
+EOF

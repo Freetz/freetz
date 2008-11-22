@@ -1,0 +1,8 @@
+config FREETZ_PACKAGE_INETD
+	bool "Inetd"
+	select FREETZ_BUSYBOX_INETD
+	default n
+	help
+		'Virtual' inetd package. Provides configuration framework for 
+		inetd. Requires a compatible inetd binary. (at the moment, only
+		busybox inetd is supported)

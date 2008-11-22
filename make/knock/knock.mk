@@ -1,0 +1,38 @@
+$(call PKG_INIT_BIN, 0.5)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://www.zeroflux.org/proj/knock/files
+$(PKG)_KNOCK_BINARY:=$($(PKG)_DIR)/knock
+$(PKG)_KNOCKD_BINARY:=$($(PKG)_DIR)/knockd
+$(PKG)_TARGET_KNOCK_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/knock
+$(PKG)_TARGET_KNOCKD_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/knockd
+$(PKG)_STARTLEVEL=80
+
+$(PKG)_DEPENDS_ON := libpcap
+
+
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
+
+$($(PKG)_KNOCK_BINARY) $($(PKG)_KNOCKD_BINARY): $($(PKG)_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(KNOCK_DIR)
+
+$($(PKG)_TARGET_KNOCK_BINARY): $($(PKG)_KNOCK_BINARY) 
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_TARGET_KNOCKD_BINARY): $($(PKG)_KNOCKD_BINARY) 
+	$(INSTALL_BINARY_STRIP)
+
+$(pkg):
+
+$(pkg)-precompiled: $($(PKG)_TARGET_KNOCK_BINARY) $($(PKG)_TARGET_KNOCKD_BINARY)
+
+$(pkg)-clean:
+	-$(MAKE) -C $(KNOCK_DIR) clean
+
+$(pkg)-uninstall: 
+	$(RM) $(KNOCK_TARGET_KNOCK_BINARY)
+	$(RM) $(KNOCK_TARGET_KNOCKD_BINARY)
+
+$(PKG_FINISH)

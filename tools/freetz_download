@@ -1,0 +1,133 @@
+#!/bin/bash
+
+# Download Freetz packages from a randomly chosen mirror server. There are
+# predefined servers in 'make menuconfig' which can be edited, but there is
+# also an empty input field for a user-defined server. Additionally, another
+# download source maybe specified on the command line as $2. $1 is the name
+# of the file to be downloaded.
+#
+# This script is designed to be called by makefile includes (*.mk), but can
+# also be called directly. It expects to find a file with necessary variables
+# at a relative location '../.config' to this script. The variables are:
+#   - FREETZ_MOD_DL_NUM_SITES  (numeric value, e.g. 3)
+#   - FREETZ_MOD_DL_SITE_1     (URL, e.g. http://freetz.3dfxatwork.de)
+#   - ...
+#   - FREETZ_MOD_DL_SITE_n     (n = FREETZ_MOD_DL_NUM_SITES)
+
+helpmsg()
+{
+cat << 'EOF'
+freetz_download - download Freetz packages
+
+Usage: freetz_download (-?|--help) | (<download-dir> <dot-config> <filename> [<main-url>] [<md5>])
+    download-dir  - target directory for download file
+    dot-config    - path to .config for Freetz
+    filename      - download file name
+    main-url      - url without filename for primary download
+    md5           - md5 of file
+    -?, --help    - print this help text
+
+Examples:
+    freetz_download dl .config package.tar.bz2
+    freetz_download dl .config package.tar.bz2 http://myserver.com/freetz
+
+Debugging: just set DEBUG=1, like this:
+    DEBUG=1 freetz_download dl .config package.tar.bz2
+EOF
+}
+
+do_download()
+{
+  # $1 = full download URL, $2 = target directory
+  echo
+  if [ "$DEBUG" == "1" ]; then echo "wget -nd --passive-ftp -P $1 $2"; fi
+  wget -nd --passive-ftp -P "$1" "$2"
+  wget_result=$?
+  if [ "$wget_result" != "0" ]; then
+    echo "Download failed - $2  ->  error code $wget_result" >&2
+    return $wget_result
+  fi
+  echo "Download succeeded - $2  ->  saved to folder $1"
+}
+
+
+# Regular use: help parameter -> exit without error
+if [ "$1" == "-?" -o "$1" == "--help" ]; then
+  helpmsg
+  exit 0
+fi
+
+# Wrong number of parameters -> exit with error
+if [ $# -lt 3 -o $# -gt 5 ]; then
+  helpmsg >&2
+  exit 1
+fi
+
+DL_DIR="$1"
+DOT_CONFIG="$2"
+DL_FILE="$3"
+MAIN_URL="$4"
+MD5="$5"
+
+# Import Freetz config variables
+. $DOT_CONFIG
+
+if [ "$DEBUG" == "1" ]; then
+  echo "freetz_download parameters:"
+  echo "  DL_DIR=$1"
+  echo "  DOT_CONFIG=$2"
+  echo "  DL_FILE=$3"
+  echo "  MAIN_URL=$4"
+  echo "  MD5=$5"
+fi
+
+num_sites=0
+# Fill array 'sites' with download server URLs, first primary site (if specified)
+if [ -n "$MAIN_URL" ]; then
+  # give sourceforge a few more tries, because it redirects to different mirrors
+  if [ ${MAIN_URL:0:3} == "@SF" ]; then
+    MAIN_URL=${MAIN_URL/@SF\//}
+    for (( n=0; n < 5; n++ )); do
+      sites[$num_sites]=http://downloads.sourceforge.net/$MAIN_URL
+      (( num_sites++ ))
+    done
+  else
+    sites[$num_sites]=$MAIN_URL
+    (( num_sites++ ))
+  fi
+fi
+
+# Get Freetz mirror sites in array
+FREETZ_SITES=( $(
+	for (( i=1; i <= FREETZ_MOD_DL_NUM_SITES ; i++ )); do
+	  eval "echo \$FREETZ_MOD_DL_SITE_$i"
+	done
+	) )
+# Fill array 'sites' with download server URLs, add Freetz Mirrors, in random order
+for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
+  p=$(( RANDOM % n ))
+  sites[$num_sites]=${FREETZ_SITES[$p]}
+  (( num_sites++ ))
+  FREETZ_SITES[$p]=${FREETZ_SITES[$((n-1))]}
+done
+
+# Loop over servers until a download succeeds or all requests have failed.
+for i in ${sites[@]}; do
+  do_download "$DL_DIR" "$i/$DL_FILE"
+  if [ "$?" != "0" ]; then
+    continue
+  fi
+  if [ -n "$MD5" ]; then
+    FILE_MD5=( $(md5sum "$DL_DIR/$DL_FILE") )
+    if [ "$MD5" != "$FILE_MD5" ]; then
+      echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
+      rm -f "$DL_DIR/$DL_FILE"
+      continue;
+    else
+      echo "MD5 verified for $DL_DIR/$DL_FILE: $FILE_MD5"
+    fi
+  fi
+  exit 0
+done
+
+exit 1

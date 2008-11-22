@@ -1,0 +1,161 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=bird
+CFGFILE='/tmp/flash/bird.conf'
+[ -e /etc/bird.conf -a ! -e $CFGFILE ] && CFGFILE='/etc/bird.conf'
+
+case "$1" in
+        ''|load|start|restart)
+		if [ ! -r '/mod/etc/conf/bird.cfg' ]; then
+			echo 'Error[bird]: not configured' 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/bird.cfg
+	;;
+esac
+
+ar7ipaddr () {
+	local SEC=$1
+	local DEV=$2
+	echo $(echo 'ar7cfg.'$SEC'['$DEV'].ipaddr' | ar7cfgctl -s)
+}
+
+getipaddr () {
+	local ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
+	local devname=lan
+	local section=ethinterfaces
+	case "$ethmode" in
+		ethmode_bridge)
+			section=brinterfaces
+			break
+			;;
+	esac
+	local ipaddr=$(ar7ipaddr $section $devname)
+	if [ -z "$ipaddr" ]; then
+		devname=eth0
+		ipaddr=$(ar7ipaddr $section $devname)
+	fi
+	if [ -z "$ipaddr" ]; then
+		ipaddr=169.254.1.1
+	fi
+	echo $ipaddr
+}
+
+start() {
+	if [ ! -e "$CFGFILE" ]; then
+		echo "Creating $CFGFILE"
+		{
+		  echo "router id $(getipaddr);"
+		  cat <<"EOF"
+protocol device {
+  scan time 10;
+}
+protocol direct {
+  interface "lan", "wlan", "tun*";
+}
+protocol kernel {
+  learn;
+  scan time 20;
+  import all;
+  export all;
+}
+protocol static {
+}
+filter skipdefault {
+  if net = 0.0.0.0/0 then reject;
+  accept;
+}
+protocol rip mainrip {
+  import filter skipdefault;
+  export filter skipdefault;
+}
+protocol ospf mainospf {
+  import filter skipdefault;
+  export filter skipdefault;
+  area 0 {
+    interface "lan"  { cost 10; };
+    interface "wlan" { cost 15; };
+    interface "tun*" { cost 50; };
+  };
+}
+EOF
+		} > $CFGFILE
+		/usr/bin/modsave flash
+	fi
+
+	echo -n 'Starting bird...'
+	$DAEMON -c $CFGFILE > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	if [ ! -z "$(pidof "$DAEMON")" ]; then
+		echo -n 'Stopping bird...'
+		killall $DAEMON > /dev/null 2>&1
+		exitval=$?
+		
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+			exit $exitval
+		fi
+	fi
+}
+
+case "$1" in
+	''|load)
+		modreg cgi 'bird' 'BIRD'
+
+		deffile='/mod/etc/default.bird/bird_conf.def'
+		[ -r '/tmp/flash/bird_conf.def' ] && deffile='/tmp/flash/bird_conf.def'
+		[ "$CFGFILE" != '/etc/bird.conf' ] && modreg file 'bird_conf' 'BIRD: bird.conf' 0 "$deffile"
+
+		if [ "$BIRD_ENABLED" = 'no' ]; then
+			echo 'BIRD is disabled' 1>&2
+			exit 1
+		fi
+
+		[ "$BIRD_AUTOSTARTDELAY" -gt 0 ] && sleep $BIRD_AUTOSTARTDELAY
+		start
+		;;
+	unload)
+		stop
+		[ "$CFGFILE" != '/etc/bird.conf' ] && modunreg file 'bird_conf'
+		modunreg cgi 'bird'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

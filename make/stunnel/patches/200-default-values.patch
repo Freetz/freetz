@@ -1,0 +1,47 @@
+--- src/options.c.orig	2008-03-27 10:51:45.000000000 +0100
++++ src/options.c	2008-04-27 19:46:10.000000000 +0200
+@@ -281,7 +281,7 @@
+ #ifndef USE_WIN32
+     switch(cmd) {
+     case CMD_INIT:
+-        options.pidfile=PIDFILE;
++        options.pidfile="/var/run/stunnel.pid";
+         break;
+     case CMD_EXEC:
+         if(strcasecmp(opt, "pid"))
+@@ -292,7 +292,7 @@
+             options.pidfile=NULL; /* empty -> do not create a pid file */
+         return NULL; /* OK */
+     case CMD_DEFAULT:
+-        s_log(LOG_RAW, "%-15s = %s", "pid", PIDFILE);
++        s_log(LOG_RAW, "%-15s = %s", "pid", "/var/run/stunnel.pid");
+         break;
+     case CMD_HELP:
+         s_log(LOG_RAW, "%-15s = pid file (empty to disable creating)", "pid");
+@@ -590,7 +590,7 @@
+     switch(cmd) {
+     case CMD_INIT:
+ #ifdef CONFDIR
+-        section->cert=CONFDIR CONFSEPARATOR "stunnel.pem";
++        section->cert="/tmp/flash/.stunnel/certs.pem";
+ #else
+         section->cert="stunnel.pem";
+ #endif
+@@ -827,7 +827,7 @@
+     /* key */
+     switch(cmd) {
+     case CMD_INIT:
+-        section->key=NULL;
++        section->key="/tmp/flash/.stunnel/key.pem";
+         break;
+     case CMD_EXEC:
+         if(strcasecmp(opt, "key"))
+@@ -1334,7 +1334,7 @@
+ 
+ void parse_config(char *name, char *parameter) {
+ #ifdef CONFDIR
+-    char *default_config_file=CONFDIR CONFSEPARATOR "stunnel.conf";
++    char *default_config_file="/mod/etc/stunnel.conf";
+ #else
+     char *default_config_file="stunnel.conf";
+ #endif

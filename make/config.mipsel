@@ -1,0 +1,47 @@
+# Common options for the mipsel target that configure can't find out
+# because we are cross-compiling.
+# To be included by the shell before calling configure.
+# This is included with "source config.mipsel", so values must be exported.
+
+# Machine
+export ac_cv_c_bigendian=no
+# Types and sizes
+export ac_cv_type_pid_t=yes
+export ac_cv_sizeof_char=1
+export ac_cv_sizeof_short=2
+export ac_cv_sizeof_int=4
+export ac_cv_sizeof_long=4
+export ac_cv_sizeof_long_long=8
+export ac_cv_sizeof_void_p=4
+# Header files
+# regex.h is needed by nano
+# export ac_cv_header_regex_h=no
+# C Library function
+export ac_cv_have_decl_malloc=yes
+export ac_cv_func_calloc_0_nonnull=yes
+export ac_cv_func_malloc_0_nonnull=yes
+export ac_cv_func_realloc_0_nonnull=yes
+export ac_cv_func_epoll_ctl=no
+export ac_cv_func_memcmp_working=yes
+export ac_cv_func_posix_getpwuid_r=no
+export ac_cv_func_setpgrp_void=yes
+for name in rename fchmod fchown strerror lstat _exit utimes vsnprintf getcwd setlocale strftime; do
+	export ac_cv_func_$name=yes
+done
+# Other Libraries
+export ac_cv_file__usr_X11R6_lib64=no
+export ac_cv_file__usr_X11R6_lib=no
+export ac_cv_lib_resolv_res_mkquery=yes
+export ac_cv_lib_cups_httpConnect=no
+export ac_cv_lib_intl_tolower=no
+export ac_cv_lib_tiff_TIFFOpen=yes
+export ac_cv_libevent_normal=yes
+export ac_cv_libevent_linker_option='(none)'
+export ac_cv_openssl_linker_option='(none)'
+
+# Linux system
+export ac_cv_linux_vers=2
+export ac_cv_linux_vers=2.6.13.1
+export ac_cv_CAN_USE_SYSCTL=no
+
+# Other

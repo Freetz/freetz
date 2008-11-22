@@ -1,0 +1,35 @@
+--- options.h.orig	2008-11-10 16:17:50.000000000 +0100
++++ options.h	2008-11-10 16:17:50.000000000 +0100
+@@ -197,18 +197,18 @@
+  * not yet authenticated. After this limit, connections are rejected */
+ /* The first setting is per-IP, to avoid denial of service */
+ #ifndef MAX_UNAUTH_PER_IP
+-#define MAX_UNAUTH_PER_IP 5
++#define MAX_UNAUTH_PER_IP 2 /* limited by freetz */
+ #endif
+ 
+ /* And then a global limit to avoid chewing memory if connections 
+  * come from many IPs */
+ #ifndef MAX_UNAUTH_CLIENTS
+-#define MAX_UNAUTH_CLIENTS 30
++#define MAX_UNAUTH_CLIENTS 5 /* limited by freetz */
+ #endif
+ 
+ /* Maximum number of failed authentication tries (server option) */
+ #ifndef MAX_AUTH_TRIES
+-#define MAX_AUTH_TRIES 10
++#define MAX_AUTH_TRIES 2 /* limited by freetz */
+ #endif
+ 
+ /* The default file to store the daemon's process ID, for shutdown
+--- sysoptions.h.orig	2008-11-11 15:09:03.000000000 +0100
++++ sysoptions.h	2008-11-10 16:17:50.000000000 +0100
+@@ -20,7 +20,7 @@
+ #endif
+ /* Close connections to clients which haven't authorised after AUTH_TIMEOUT */
+ #ifndef AUTH_TIMEOUT
+-#define AUTH_TIMEOUT 300 /* we choose 5 minutes */
++#define AUTH_TIMEOUT 60 /* limited by freetz down to 60 seconds */
+ #endif
+ 
+ /* Minimum key sizes for DSS and RSA */

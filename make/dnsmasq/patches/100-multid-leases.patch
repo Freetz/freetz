@@ -1,0 +1,120 @@
+--- src/dnsmasq.h.orig	2008-11-09 12:10:24.000000000 +0100
++++ src/dnsmasq.h	2008-11-15 20:44:28.000000000 +0100
+@@ -413,6 +413,7 @@
+ #endif
+   int hwaddr_len, hwaddr_type;
+   unsigned char hwaddr[DHCP_CHADDR_MAX]; 
++  char *ifrname;         /* name of interface */
+   struct in_addr addr, override;
+   unsigned char *vendorclass, *userclass;
+   unsigned int vendorclass_len, userclass_len;
+@@ -800,6 +801,7 @@
+ void lease_set_hwaddr(struct dhcp_lease *lease, unsigned char *hwaddr,
+ 		      unsigned char *clid, int hw_len, int hw_type, int clid_len);
+ void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth);
++void lease_set_ifrname(struct dhcp_lease *lease, char *ifrname);
+ void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now);
+ void lease_set_interface(struct dhcp_lease *lease, int interface);
+ struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
+--- src/lease.c.orig	2008-11-03 17:27:46.000000000 +0100
++++ src/lease.c	2008-11-15 20:46:13.000000000 +0100
+@@ -175,11 +175,16 @@
+ 
+   if (file_dirty != 0 && daemon->lease_stream)
+     {
++ 
++      FILE *multid_leases;
++ 
+       errno = 0;
+       rewind(daemon->lease_stream);
+       if (errno != 0 || ftruncate(fileno(daemon->lease_stream), 0) != 0)
+ 	err = errno;
+       
++      multid_leases = fopen("/var/tmp/multid.leases", "w");
++      
+       for (lease = leases; lease; lease = lease->next)
+ 	{
+ #ifdef HAVE_BROKEN_RTC
+@@ -206,14 +211,29 @@
+ 	    ourprintf(&err, "*");
+ 	  ourprintf(&err, " ");
+ 	  
++	  /* lease 00:12:79:41:AA:01 192.168.178.40 1122416 "computer" 0100127941b4a0 */
++	  fprintf(multid_leases,"%s %.2X:%.2X:%.2X:%.2X:%.2X:%.2X %s %lu \"%s\" ",
++	  lease->ifrname && strcmp(lease->ifrname, "wlan") == 0 ? "wlease" : "lease",
++	  lease->hwaddr[0], lease->hwaddr[1], lease->hwaddr[2],
++	  lease->hwaddr[3], lease->hwaddr[4], lease->hwaddr[5],
++	  inet_ntoa(lease->addr), lease->expires, 
++	  lease->hostname && strlen(lease->hostname) != 0 ? lease->hostname : "");
++
+ 	  if (lease->clid && lease->clid_len != 0)
+ 	    {
+ 	      for (i = 0; i < lease->clid_len - 1; i++)
+ 		ourprintf(&err, "%.2x:", lease->clid[i]);
+ 	      ourprintf(&err, "%.2x\n", lease->clid[i]);
++ 
++ 	      for (i = 0; i < lease->clid_len; i++) 
++    	    	  fprintf(multid_leases,"%.2x", lease->clid[i]);
++ 
+ 	    }
+ 	  else
+ 	    ourprintf(&err, "*\n");	  
++ 
++	    fprintf(multid_leases,"\n");
++ 
+ 	}
+       
+       if (fflush(daemon->lease_stream) != 0 ||
+@@ -222,6 +242,9 @@
+       
+       if (!err)
+ 	file_dirty = 0;
++      
++      fclose(multid_leases);
++ 
+     }
+   
+   /* Set alarm for when the first lease expires + slop. */
+@@ -437,6 +460,23 @@
+   lease->hostname = lease->fqdn = NULL;
+ }
+ 
++void lease_set_ifrname (struct dhcp_lease *lease, char *ifrname)
++{
++  char *lease_ifrname = NULL;
++
++  if (!(lease_ifrname = malloc(strlen(ifrname) + 1)))
++    return;    /* whoops */
++
++  strcpy(lease_ifrname, ifrname);
++
++  if (lease->ifrname)
++    free(lease->ifrname);
++
++  lease->ifrname = lease_ifrname;
++
++  file_dirty = 1;
++}
++
+ void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth)
+ {
+   struct dhcp_lease *lease_tmp;
+--- src/rfc2131.c.orig	2008-11-03 17:28:50.000000000 +0100
++++ src/rfc2131.c	2008-11-15 20:49:48.000000000 +0100
+@@ -457,6 +457,7 @@
+ 	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
+ 	      if (hostname)
+ 		lease_set_hostname(lease, hostname, 1); 
++ 		lease_set_ifrname(lease, iface_name);
+ 	      /* infinite lease unless nailed in dhcp-host line. */
+ 	      lease_set_expires(lease,  
+ 				have_config(config, CONFIG_TIME) ? config->lease_time : 0xffffffff, 
+@@ -1025,7 +1026,7 @@
+ 	    }
+ 	  if (hostname)
+ 	    lease_set_hostname(lease, hostname, hostname_auth);
+-	  
++	    lease_set_ifrname(lease, iface_name);
+ 	  lease_set_expires(lease, time, now);
+ 	  lease_set_interface(lease, int_index);
+ 

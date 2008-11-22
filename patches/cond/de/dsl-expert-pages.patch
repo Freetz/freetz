@@ -1,0 +1,336 @@
+diff -Naur usr/www/avm/html/de/internet/labor_dsl.frm usr/www/avm/html/de/internet/labor_dsl.frm
+--- usr/www/avm/html/de/internet/labor_dsl.frm	1969-12-31 19:00:00.000000000 -0500
++++ usr/www/avm/html/de/internet/labor_dsl.frm	2008-06-20 08:56:08.000000000 -0400
+@@ -0,0 +1,9 @@
++<input type="hidden" name="sar:settings/MaxDownstreamRate" value="<? query sar:settings/MaxDownstreamRate ?>" id="uiPostMaxDownstreamRate">
++<input type="hidden" name="sar:settings/MaxUpstreamRate" value="<? query sar:settings/MaxUpstreamRate ?>" id="uiPostMaxUpstreamRate">
++<input type="hidden" name="sar:settings/ControlBitfield" value="<? query sar:settings/ControlBitfield ?>" id="uiPostControlBitfield">
++<input type="hidden" name="sar:settings/RFI" value="<? query sar:settings/RFI ?>" id="uiPostRFI">
++<input type="hidden" name="sar:settings/DownstreamBlackoutBandStart" value="<? query sar:settings/DownstreamBlackoutBandStart ?>" id="uiPostDownstreamBlackoutBandStart">
++<input type="hidden" name="sar:settings/DownstreamBlackoutBandEnd" value="<? query sar:settings/DownstreamBlackoutBandEnd ?>" id="uiPostDownstreamBlackoutBandEnd">
++<input type="hidden" name="sar:settings/DownstreamPcbOffset" value="<? query sar:settings/DownstreamPcbOffset ?>" id="iPostDownstreamPcbOffset">
++<input type="hidden" name="sar:settings/UpstreamPcbOffset" value="<? query sar:settings/UpstreamPcbOffset ?>" id="iPostUpstreamPcbOffset">
++<input type="hidden" name="sar:settings/DownstreamMarginOffset" value="<? query sar:settings/DownstreamMarginOffset ?>" id="iPostDownstreamMarginOffset">
+diff -Naur usr/www/avm/html/de/internet/labor_dsl.html usr/www/avm/html/de/internet/labor_dsl.html
+--- usr/www/avm/html/de/internet/labor_dsl.html	1969-12-31 19:00:00.000000000 -0500
++++ usr/www/avm/html/de/internet/labor_dsl.html	2008-08-17 15:49:36.000000000 -0400
+@@ -0,0 +1,122 @@
++<div id="content">
++<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
++DSL-Informationen
++</div></div></div></div></div></div>
++<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
++<ul class="tabs">
++<li><a href="javascript:uiDoOverviewPage()">Übersicht</a></li>
++<li><a href="javascript:uiDoADSLPage()">DSL</a></li>
++<li><a href="javascript:uiDoBitsPage()">Spektrum</a></li>
++<li><a href="javascript:uiDoATMPage()">Statistik</a></li>
++<li class="tabs_on"><div class="activtab">Einstellungen</div></li>
++</ul>
++<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++<fieldset class="groups">
++<legend class="mb10">Bevorzugter Latenzpfad</legend>
++<div>
++<input type="radio" id="LP_Auto" name="bl" value="1">Automatisch</input>
++</div>
++<div>
++<input type="radio" id="LP_Fast" name="bl">Fast</input>
++</div>
++<div>
++<input type="radio" id="LP_Interleaved" name="bl">Interleaved</input>
++</div>
++</fieldset>
++<fieldset class="groups">
++<legend class="mb10">Störungen durch Rundfunksender (RFI)</legend>
++<div class="paramline">
++<p><input type="checkbox" id="uiViewAutoRFI""/>Automatisch ermitteln</p>
++</div>
++<div class="paramline">
++<p class="paramname"><label for="uiViewRFI">Zusätzlicher RFI Träger</label></p>
++<p><input type="text" size="5" maxlength="3" id="uiViewRFI" class="Eingabefeld"/></p>
++</div>
++</fieldset>
++<fieldset class="groups">
++<legend class="mb10">Übertragungsraten</legend>
++<div class="paramline">
++<p class="paramname"><label for="uiViewMaxDownstreamRate">Maximale Downstream Rate (kbit/s)</label></p>
++<p><input type="text" size="5" maxlength="5" id="uiViewMaxDownstreamRate" class="Eingabefeld"/></p>
++</div>
++<div class="paramline">
++<p class="paramname"><label for="uiViewMaxUpstreamRate">Maximale Upstream Rate (kbit/s)</label></p>
++<p><input type="text" size="5" maxlength="5" id="uiViewMaxUpstreamRate" class="Eingabefeld"/></p>
++</div>
++</fieldset>
++<fieldset class="groups">
++<legend class="mb10">Übertragungsbereich ausblenden</legend>
++<div class="paramline">
++<p class="paramname"><label for="uiViewDownstreamBlackoutBandStart">Trägerband im Downstream ausblenden Start</label></p>
++<p><input type="text" size="5" maxlength="5" id="uiViewDownstreamBlackoutBandStart" class="Eingabefeld"/></p>
++</div>
++<div class="paramline">
++<p class="paramname"><label for="uiViewDownstreamBlackoutBandEnd">Trägerband im Downstream ausblenden Ende</label></p>
++<p><input type="text" size="5" maxlength="3" id="uiViewDownstreamBlackoutBandEnd" class="Eingabefeld"/></p>
++</div>
++</fieldset>
++<fieldset class="groups">
++<legend class="mb10">Signal/Rauschabstand (SNR-Margin)</legend>
++<div class="paramline">
++<p class="paramname" id="iShowDownstreamMarginOffset">Verändere Downstream SNR um (dB)</p>
++<p>
++<select id="SelectD_SNR" class="Eingabefeld" onchange="OnChangeDownstreamSNR(value)">
++<option value="3">3</option>
++<option value="2">2</option>
++<option value="1">1</option>
++<option value="0">0</option>
++<option value="-1">-1</option>
++<option value="-2">-2</option>
++<option value="-3">-3</option>
++</select>
++</p>
++</div>
++</fieldset>
++<fieldset class="groups">
++<legend class="mb10">Anpassung der Sendeleistung/Powercutback (PCB)</legend>
++<div class="paramline">
++<p class="paramname" id="iShowDownstreamPcbOffset">Verändere Downstream PCB um (dB)</p>
++<p>
++<select id="SelectD_PCB" class="Eingabefeld" onchange="OnChangeDownstreamPCB(value)">
++<option value="3">3</option>
++<option value="2">2</option>
++<option value="1">1</option>
++<option value="0">0</option>
++<option value="-1">-1</option>
++<option value="-2">-2</option>
++<option value="-3">-3</option>
++</select>
++</p>
++</div>
++<div class="paramline">
++<p class="paramname" id="iShowUpstreamPcbOffset">Verändere Upstream PCB um (dB)</p>
++<p>
++<select id="SelectU_PCB" class="Eingabefeld" onchange="OnChangeUpstreamPCB(value)">
++<option value="3">3</option>
++<option value="2">2</option>
++<option value="1">1</option>
++<option value="0">0</option>
++<option value="-1">-1</option>
++<option value="-2">-2</option>
++<option value="-3">-3</option>
++</select>
++</p>
++</div>
++</fieldset>
++<fieldset class="groups">
++<legend class="mb10">Diverses</legend>
++<div class="paramline">
++<p><input type="checkbox" id="uiViewOptLongLine"/>Optimierung für lange Leitungen aktivieren</p>
++</div>
++<div class="paramline">
++<p><input type="checkbox" id="uiViewOptShortLine"/>Optimierung für kurze Leitungen aktivieren</p>
++</div>
++<div class="paramline">
++<p><input type="checkbox" id="uiViewL2Off"/>Energiesparmodus für DSL aktivieren</p>
++</div>
++</fieldset>
++<!-- Trenner einbauen -->
++</div></div></div></div></div></div>
++<? include ../html/$var:lang/home/rbb_applycancelreset.html ?>
++</div></div></div></div></div></div></div>
++</div>
+diff -Naur usr/www/avm/html/de/internet/labor_dsl.js usr/www/avm/html/de/internet/labor_dsl.js
+--- usr/www/avm/html/de/internet/labor_dsl.js	1969-12-31 19:00:00.000000000 -0500
++++ usr/www/avm/html/de/internet/labor_dsl.js	2008-08-17 16:00:42.000000000 -0400
+@@ -0,0 +1,193 @@
++<!-- ../internet/labor_dsl.js -->
++<? include ../html/$var:lang/internet/labor_dsl.inc ?>
++<style type="text/css">
++<!--
++#content {width: 580px; margin: auto;}
++.ac {text-align:center;}
++.fett {font-weight: bold;}
++.groups { margin-top: 10px;}
++.paramname { float: left; clear: both; width: 300px; text-align:left;margin-left: 2px;}
++.paramline { margin-top: 4px;}
++.diagnosesave {padding:15px 0px 10px 0px;}
++.c1 {padding:1px 15px 1px 0px;}
++-->
++</style>
++<script type="text/javascript">
++<? include ../html/$var:lang/js/jsl.js ?>
++<? include ../html/$var:lang/internet/awatch.js ?>
++function Select(id, index) {
++var obj = document.getElementById(id);
++if (obj) obj.selectedIndex = index;
++}
++function OnClickedOptDefault() {
++}
++function OnClickedOptPerformance() {
++}
++function OnClickedOptStability() {
++}
++function GetValueFromComboIndex(index) {
++var value = 0;
++switch (index) {
++case 0: value = 3; break;
++case 1: value = 2; break;
++case 2: value = 1; break;
++case 3: value = 0; break;
++case 4: value = -1; break;
++case 5: value = -2; break;
++case 6: value = -3; break;
++default: value = 0;
++}
++return value;
++}
++function GetComboIndexFromValue(value) {
++var index = 0;
++switch (value) {
++case "3": index = 0; break;
++case "2": index = 1; break;
++case "1": index = 2; break;
++case "0": index = 3; break;
++case "-1": index = 4; break;
++case "-2": index = 5; break;
++case "-3": index = 6; break;
++default: index = 3;
++}
++return index;
++}
++function OnChangeDownstreamSNR(id) {
++jslSetValue("iPostDownstreamMarginOffset",GetValueFromComboIndex(id));
++}
++function OnChangeDownstreamPCB(id) {
++jslSetValue("iPostDownstreamPcbOffset",GetValueFromComboIndex(id));
++}
++function OnChangeUpstreamPCB(id) {
++jslSetValue("iPostUpstreamPcbOffset",GetValueFromComboIndex(id));
++}
++function uiDoRefresh() {
++}
++var g_mldEingabeZahl = "Die Eingaben dürfen nur Ziffern enthalten.";
++function valIsZahl(nummer) {
++if (nummer.match("[^0-9]") != null) return false;
++return true;
++}
++function uiDoOnLoad() {
++var rfi = document.getElementById("uiViewAutoRFI");
++var optlong = document.getElementById("uiViewOptLongLine");
++var optshort = document.getElementById("uiViewOptShortLine");
++var l2off = document.getElementById("uiViewL2Off");
++var ctlbits = jslGetValue("uiPostControlBitfield");
++if (ctlbits & 1)
++rfi.checked=false;
++else
++rfi.checked=true;
++if (ctlbits & 8)
++optshort.checked=false;
++else
++optshort.checked=true;
++if (ctlbits & 16)
++optlong.checked=false;
++else
++optlong.checked=true;
++if (ctlbits & 32)
++l2off.checked=false;
++else
++l2off.checked=true;
++var auto = document.getElementById("LP_Auto");
++var fast = document.getElementById("LP_Fast");
++var interleaved = document.getElementById("LP_Interleaved");
++if (ctlbits & 2)
++fast.checked=true;
++else if (ctlbits & 4)
++interleaved.checked=true;
++else
++auto.checked=true;
++jslCopyValue("uiViewMaxDownstreamRate","uiPostMaxDownstreamRate");
++jslCopyValue("uiViewMaxUpstreamRate","uiPostMaxUpstreamRate");
++jslCopyValue("uiViewRFI","uiPostRFI");
++jslCopyValue("uiViewDownstreamBlackoutBandStart","uiPostDownstreamBlackoutBandStart");
++jslCopyValue("uiViewDownstreamBlackoutBandEnd","uiPostDownstreamBlackoutBandEnd");
++var dssnrSel = document.getElementById("SelectD_SNR");
++var dspcbSel = document.getElementById("SelectD_PCB");
++var uspcbSel = document.getElementById("SelectU_PCB");
++dssnrSel.selectedIndex = GetComboIndexFromValue((jslGetValue("iPostDownstreamMarginOffset")/10).toString(10));
++dspcbSel.selectedIndex = GetComboIndexFromValue(jslGetValue("iPostDownstreamPcbOffset"));
++uspcbSel.selectedIndex = GetComboIndexFromValue(jslGetValue("iPostUpstreamPcbOffset"));
++}
++function uiDoHelp() {
++jslPopHelp("hilfe_dslinfo_einstellungen");
++}
++function uiDoSave() {
++alert("Bitte denken Sie daran, vor dem Update auf eine spätere Firmware die hier vorgenommenen Einstellungen wieder zurückzusetzen. Beachten Sie bitte auch die Hinweise in der Hilfe. Die Internetverbindung wird nun kurz getrennt.");
++var z = 0;
++var rfi = document.getElementById("uiViewAutoRFI");
++var optlong = document.getElementById("uiViewOptLongLine");
++var optshort = document.getElementById("uiViewOptShortLine");
++var l2off = document.getElementById("uiViewL2Off");
++var ctlbits = jslGetValue("uiPostControlBitfield");
++if (rfi.checked)
++ctlbits &= ~1;
++else
++ctlbits |= 1;
++if (optlong.checked)
++ctlbits &= ~16;
++else
++ctlbits |= 16;
++if (optshort.checked)
++ctlbits &= ~8;
++else
++ctlbits |= 8;
++if (l2off.checked)
++ctlbits &= ~(32);
++else
++ctlbits |= 32;
++var fast = document.getElementById("LP_Fast");
++var interleaved = document.getElementById("LP_Interleaved");
++ctlbits &= ~6;
++if (fast.checked)
++ctlbits |= 2;
++else if (interleaved.checked)
++ctlbits |= 4;
++jslSetValue("uiPostControlBitfield", ctlbits);
++( valIsZahl(jslGetValue("uiViewMaxDownstreamRate")) ? jslCopyValue("uiPostMaxDownstreamRate", "uiViewMaxDownstreamRate" ) : z++);
++( valIsZahl(jslGetValue("uiViewMaxUpstreamRate")) ? jslCopyValue("uiPostMaxUpstreamRate", "uiViewMaxUpstreamRate" ) : z++);
++( valIsZahl(jslGetValue("uiViewRFI")) ? jslCopyValue("uiPostRFI","uiViewRFI") : z++);
++( valIsZahl(jslGetValue("uiViewDownstreamBlackoutBandStart")) ? jslCopyValue("uiPostDownstreamBlackoutBandStart","uiViewDownstreamBlackoutBandStart") : z++);
++( valIsZahl(jslGetValue("uiViewDownstreamBlackoutBandEnd")) ? jslCopyValue("uiPostDownstreamBlackoutBandEnd","uiViewDownstreamBlackoutBandEnd") : z++);
++var dssnr = document.getElementById("SelectD_SNR");
++var dspcbSel = document.getElementById("SelectD_PCB");
++var uspcbSel = document.getElementById("SelectU_PCB");
++jslSetValue("iPostDownstreamMarginOffset",GetValueFromComboIndex(dssnr.selectedIndex)*10);
++jslSetValue("iPostDownstreamPcbOffset",GetValueFromComboIndex(dspcbSel.selectedIndex));
++jslSetValue("iPostUpstreamPcbOffset",GetValueFromComboIndex(uspcbSel.selectedIndex));
++if (z>0) alert(g_mldEingabeZahl);
++jslFormSubmitEx("internet", "labor_dsl");
++}
++function uiDoCancel() {
++jslGoTo("internet", "overview");
++}
++function uiDoReset() {
++var res = confirm("Wollen Sie alle Einstellungen zurücksetzen?");
++if (res == false) {
++return;
++}
++jslSetValue("uiPostMaxDownstreamRate", "0" );
++jslSetValue("uiPostMaxUpstreamRate", "0" );
++jslSetValue("uiPostRFI","0");
++jslSetValue("uiPostDownstreamBlackoutBandStart","0");
++jslSetValue("uiPostDownstreamBlackoutBandEnd","0");
++var dssnrSel = document.getElementById("SelectD_SNR");
++var dspcbSel = document.getElementById("SelectD_PCB");
++var uspcbSel = document.getElementById("SelectU_PCB");
++dssnrSel.selectedIndex = GetComboIndexFromValue(0);
++dspcbSel.selectedIndex = GetComboIndexFromValue(0);
++uspcbSel.selectedIndex = GetComboIndexFromValue(0);
++jslSetValue("iPostDownstreamMarginOffset", 0);
++jslSetValue("iPostDownstreamPcbOffset", 0);
++jslSetValue("iPostUpstreamPcbOffset", 0);
++jslSetValue("uiPostControlBitfield",0);
++jslFormSubmitEx("internet", "labor_dsl");
++}
++function uiDoFeedback()
++{
++jslGoTo('home','feedback');
++}
++</script>

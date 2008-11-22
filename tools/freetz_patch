@@ -1,0 +1,137 @@
+#!/bin/bash
+
+# Freetz patch tool with optional auto-fix feature
+#
+# This script can either be dot-included via '. tools/freetz_patch' to get an
+# in-process definition of the 'modpatch' shell function or executed directly.
+# The execution mode will be determined by checking if $0 has the base name
+# 'freetz_patch'.
+#
+# The functionality has evolved from the original "modpatch" function in
+# Freetz's 'fwmod' script (cf. copyright information there).
+# The additional auto-fix feature for self-healing patches was developed by
+# Alexander Kriegisch (kriegaex), 2007-06-25.
+
+
+helpmsg()
+{
+cat >&2 << EOF
+
+$freetz_patch_name - Freetz patch tool with optional auto-fix feature
+
+Usage: $freetz_patch_name <target-dir> <patch-file>
+    target-dir   - target directory to apply patch to
+    patch-file   - patch file name (unified context diff, patch level -p0)
+
+Examples:
+    $freetz_patch_name source/my-package patches/my.patch
+    $freetz_patch_name another/package another.patch 2
+
+Environment variables changing behaviour:
+    FREETZ_VERBOSITY_LEVEL  - verbose output, if >= 2
+    VERBOSE             - verbose output, if == '-v'
+    AUTO_FIX_PATCHES    - try to auto-fix fuzzy patches, if == 'y'
+
+EOF
+}
+
+
+modpatch()
+{
+	if [ $# -ne 2 ]; then
+		helpmsg
+		return 1
+	fi
+	local is_verbose=""
+	if [ "$FREETZ_VERBOSITY_LEVEL" ] && [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
+		is_verbose="y"
+	fi
+	local backup
+	local do_fix
+	local files
+	if [ "$AUTO_FIX_PATCHES" == "y" ]; then
+		local output=$(patch --dry-run -d "$1" -p0 < "$2" 2> /dev/null)
+		if [ $? -eq 0 ] && echo "$output" | grep -E '^Hunk ' > /dev/null 2>&1; then
+			do_fix="y"
+			backup="-b "
+			files=$(echo "$output" | sed -n -r 's/^patching file (.*)/\1/p')
+		fi
+	fi
+	local STATUS
+	if [ "$is_verbose" ]; then
+		echo2 "applying patch file $2"
+		patch ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
+		STATUS=${PIPESTATUS[0]}
+		echo2 "----------------------------------------------------------------------"
+	else
+		patch ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
+		STATUS=$?
+	fi
+	if [ $STATUS -gt 0 ]; then
+		error 2 "modpatch: Error in patch-file $2"
+	elif [ "$AUTO_FIX_PATCHES" == "y" ] && [ "$do_fix" == "y" ]; then
+		echo2 "auto-fixing fuzzy patch file $2"
+		local patch_file=$(realpath "$2")
+		mv -f "$patch_file" "$patch_file.orig"
+		cd "$1"
+		for file in $files; do
+			# If backup exists, but is unreadable and has a size of zero, it
+			# was created as a placeholder by 'patch -b' previously and can be
+			# safely deleted. It even must be deleted in order to avoid a diff
+			# error because it is unreadable.
+			[ -f "$file.orig" ] && [ ! -r "$file.orig" ] && [ ! -s "$file.orig" ] \
+				&& rm -f "$file.orig"
+			diff -Naur "$file.orig" "$file" >> "$patch_file"
+			rm -f "$file.orig"
+		done
+		cd - > /dev/null
+		echo2 "----------------------------------------------------------------------"
+	fi
+}
+
+
+# Declare unknown function 'echo2', if not dot-included by fwmod
+if ! declare -F | awk '{print $3}' | grep -q echo2; then
+	echo2()
+	{
+		if [ "$FREETZ_VERBOSITY_LEVEL" ] && [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
+			echo -e "$1"
+		fi
+	}
+fi
+
+# Declare unknown function 'error', if not dot-included by fwmod
+if ! declare -F | awk '{print $3}' | grep -q error; then
+	error()
+	{
+		if [ "$1" -gt 0 ]; then
+			echo -e "ERROR: $2" 1>&2
+			exit $1
+		fi
+	}
+fi
+
+# Direct script call? -> delegate parameters to shell function
+if [ "$(basename "$0")" == "freetz_patch" ]; then
+	freetz_patch_name="freetz_patch"
+	modpatch "$@"
+else
+	freetz_patch_name="modpatch"
+fi
+
+
+# Strip one directory level from one patch file
+#
+# The only parameter is the name of the patch file to be stripped in place -
+# no backup! The patch file must be a unidiff, and no care is taken of spaces,
+# tabs or slashes within path names.
+#
+# Note: This is just an inofficial little add-on and not part of the official
+# Freetz patch procedure, use at own risk. The function might come in handy if
+# you wish to canonise a set of patch files so they can be applied with patch
+# level zero (-p0).
+strip_patch_level()
+{
+	echo "Stripping one directory level from $1"
+	sed -i -r 's/^(---|\+\+\+) [^/]+\//\1 /' "$1"
+}

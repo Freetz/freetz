@@ -1,0 +1,14 @@
+diff -ur source/ltrace-0.5_77.orig/Makefile source/ltrace-0.5_77/Makefile
+--- Makefile.in
++++ Makefile.in
+@@ -37,7 +37,9 @@
+ ltrace:		sysdeps/sysdep.o $(OBJ)
+ 		$(CC) $(LDFLAGS) $^ $(LIBS) -o $@
+ 
+-sysdeps/sysdep.o: dummy
++$(OBJ):		sysdeps/$(OS)/sysdep.h sysdeps/$(OS)/signalent.h sysdeps/$(OS)/syscallent.h
++sysdeps/sysdep.o sysdeps/$(OS)/sysdep.h sysdeps/$(OS)/signalent.h sysdeps/$(OS)/syscallent.h: dummy
++dummy:
+ 		$(MAKE) -C sysdeps/$(OS)
+ 
+ clean-deja:

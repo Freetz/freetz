@@ -1,0 +1,30 @@
+config FREETZ_PACKAGE_USBROOT
+	bool "USB root 0.2"
+	depends on FREETZ_HAS_USB_HOST
+	default n
+	help
+		Mount an ext{2,3} filesystem (fs) from an USB stick and use it
+		as root fs which may be fully writable and basically unlimited
+		in size. The Linux kernel will still be loaded from your box
+		and during the first phase of the init process the SquashFS on
+		the box is still used, but after the USB root is mounted, we
+		pivot_root into it and it becomes the new root fs. The default
+		is to unmount the read-only fs on the box to conserve memory,
+		but if desired, it can be still be accessed under /oldroot
+		(though this is absolutely not necessary anymore after
+		pivot_root).
+
+		Having said that, it should be clear that the usb stick	should
+		contain everything necessary to run the box. Usually you just
+		create a full copy of a target filesystem (e.g. from
+		build/modified/filesystem or from an unpacked firmware image)
+		and start modifying it as needed. The binaries (kernel modules,
+		executables, shared libraries) used therein just have to fit
+		the kernel installed on the box.
+
+		Note: The webinterface makes it pretty easy to (de-)activate and
+		configure the functionality of this package. However, USB root
+		is an expert thing! See also the help screen of
+		/etc/init.d/rc.usbroot for further description. As some config
+		data is stored in bootloader environment, this package is
+		special anyway.

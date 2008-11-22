@@ -1,0 +1,228 @@
+config FREETZ_KERNEL_VERSION_2_6_13_1
+	bool
+	default y if ! (FREETZ_AVM_VERSION_7270 || FREETZ_AVM_VERSION_12043)
+	default n if FREETZ_AVM_VERSION_7270
+
+config FREETZ_KERNEL_VERSION_2_6_19_2
+	bool
+	default y if FREETZ_AVM_VERSION_7270 || FREETZ_AVM_VERSION_12043
+	default n if ! FREETZ_AVM_VERSION_7270
+
+config FREETZ_KERNEL_VERSION
+	string
+	default "2.6.13.1" if FREETZ_KERNEL_VERSION_2_6_13_1
+	default "2.6.19.2" if FREETZ_KERNEL_VERSION_2_6_19_2
+
+config FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	bool
+	default y if ! FREETZ_TARGET_UCLIBC_VERSION_0_9_29
+	default n if FREETZ_TARGET_UCLIBC_VERSION_0_9_29
+
+config FREETZ_TARGET_UCLIBC_VERSION_0_9_29
+	bool
+	default y		if \
+		FREETZ_TYPE_WLAN_3270 || \
+		(FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_ALL) || \
+		(FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL) || \
+		(FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_GAMING) || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL) || \
+		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL) || \
+		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING)
+	default n
+
+choice
+
+	prompt "Target compiler" if FREETZ_BUILD_TOOLCHAIN
+	default FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+
+	config FREETZ_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+		bool "gcc-4.1.0-uClibc-0.9.28"
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+
+	config FREETZ_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+		bool "gcc-4.1.1-uClibc-0.9.28"
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+
+	config FREETZ_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+		bool "gcc-4.1.2-uClibc-0.9.28"
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+
+	config FREETZ_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+		bool "gcc-4.2.0-uClibc-0.9.28"
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+
+	config FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+		bool "gcc-4.2.1-uClibc-0.9.28"
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	
+	config FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+		bool "gcc-4.2.1-uClibc-0.9.29"
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_29
+
+endchoice
+
+config FREETZ_TARGET_GCC_VERSION
+	string
+	default "4.1.0"		if FREETZ_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default "4.1.1"		if FREETZ_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "4.1.2"		if FREETZ_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "4.2.0"		if FREETZ_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "4.2.1"		if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+	default "4.2.1"		if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	default "4.2.1"		if FREETZ_DOWNLOAD_TOOLCHAIN
+
+config FREETZ_TARGET_UCLIBC_VERSION
+	string
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "0.9.28"	if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+	default "0.9.29"	if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	default "0.9.28"	if FREETZ_DOWNLOAD_TOOLCHAIN && FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	default "0.9.29"	if FREETZ_DOWNLOAD_TOOLCHAIN && FREETZ_TARGET_UCLIBC_VERSION_0_9_29
+
+config FREETZ_TARGET_BINUTILS_VERSION
+	string
+	default "2.16.91.0.6"	if FREETZ_TARGET_COMPILER_GCC_4_1_0_UCLIBC_0_9_28
+	default "2.17"		if FREETZ_TARGET_COMPILER_GCC_4_1_1_UCLIBC_0_9_28
+	default "2.17"		if FREETZ_TARGET_COMPILER_GCC_4_1_2_UCLIBC_0_9_28
+	default "2.17.50.0.16"	if FREETZ_TARGET_COMPILER_GCC_4_2_0_UCLIBC_0_9_28
+	default "2.17.50.0.17"	if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_28
+	default "2.17.50.0.17"	if FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	default "2.17.50.0.17"	if FREETZ_DOWNLOAD_TOOLCHAIN
+
+choice
+
+	prompt "uClibc config" if FREETZ_BUILD_TOOLCHAIN
+	default FREETZ_TARGET_UCLIBC_CONFIG_MOD
+
+	config FREETZ_TARGET_UCLIBC_CONFIG_MOD
+		bool "mod (recommended)"
+
+	config FREETZ_TARGET_UCLIBC_CONFIG_8MB
+		bool "8MB" if ! FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+	
+	config FREETZ_TARGET_UCLIBC_CONFIG_4MB
+		bool "4MB" if ! FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+
+endchoice
+
+config FREETZ_TARGET_UCLIBC_REF
+	string
+	default "mod"		if FREETZ_TARGET_UCLIBC_CONFIG_MOD || FREETZ_DOWNLOAD_TOOLCHAIN
+	default "orig-4mb"	if FREETZ_TARGET_UCLIBC_CONFIG_4MB
+	default "orig-8mb"	if FREETZ_TARGET_UCLIBC_CONFIG_8MB
+
+config FREETZ_STATIC_TOOLCHAIN
+	bool "Build static toolchains" if FREETZ_BUILD_TOOLCHAIN
+	default n
+	help
+		kernel and target toolchain are build static
+
+config FREETZ_TARGET_GXX
+	bool "Build g++ for target toolchain" if FREETZ_BUILD_TOOLCHAIN
+	default y
+	help
+		g++ is the traditional nickname of GNU C++, a freely redistributable
+		C++ compiler. It is part of gcc, the GNU compiler suite, and is
+		currently part of that distribution. 
+
+config FREETZ_TARGET_CCACHE
+	bool "Build ccache for target toolchain" if FREETZ_BUILD_TOOLCHAIN
+	default y if FREETZ_BUILD_TOOLCHAIN
+	default n if FREETZ_DOWNLOAD_TOOLCHAIN
+	help
+		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
+		compilers, using the -E compiler switch and a hash to detect when a
+		compilation can be satisfied from cache. This often results in a 5 to 10
+		times speedup in common compilations.
+		
+		The idea came from Erik Thiele wrote the original compilercache program
+		as a bourne shell script. ccache is a re-implementation of Erik's idea
+		in C with more features and better performance.
+
+config FREETZ_TARGET_NLS
+	bool "Native language support (NLS) for target toolchain" if FREETZ_BUILD_TOOLCHAIN
+	default n
+	help
+		Support NLS-enabled programs and Linux tools on target system.
+		
+		Example:
+		    $ ls /foo/bar
+		    ls: /foo/bar: No such file or directory
+		    $ export LANG=de_DE.8859-1
+		    $ ls /foo/bar
+		    ls: /foo/bar: Datei oder Verzeichnis nicht gefunden
+
+config FREETZ_TARGET_LFS
+	bool "Large file support (LFS) for target toolchain" if FREETZ_BUILD_TOOLCHAIN
+	default y
+	help
+		Support files > 2 GB on target system. This is desirable for Torrent
+		clients, for example.
+
+choice
+
+	prompt "Kernel compiler" if FREETZ_BUILD_TOOLCHAIN
+	default FREETZ_KERNEL_COMPILER_GCC_3_4_6
+
+	config FREETZ_KERNEL_COMPILER_GCC_3_4_6
+		bool "gcc-3.4.6"
+	
+endchoice
+
+config FREETZ_KERNEL_GCC_VERSION
+	string
+	default "3.4.6"
+
+config FREETZ_KERNEL_BINUTILS_VERSION
+	string
+	default "2.17.50.0.17"
+
+comment "GNU debugger (gdb)"
+
+config FREETZ_PACKAGE_GDB
+	bool "Build gdb for target"
+	default n
+	select FREETZ_LIB_libncurses
+	select FREETZ_LIB_libthread_db
+	help
+	    Build the full gdb debugger to run on the target.
+
+config FREETZ_PACKAGE_GDB_SERVER
+	bool "Build gdb server for target"
+	default n
+	help
+	    Build the gdbserver stub to run on the target.
+	    A full gdb is needed to debug the progam.
+
+config FREETZ_PACKAGE_GDB_HOST
+	bool "Build gdb for host"
+	default n
+	help
+	    Build gdb to run on the host to debug programs run on the target.
+choice
+	prompt "gdb version"
+	default FREETZ_GDB_VERSION_6_6
+	depends on FREETZ_PACKAGE_GDB || FREETZ_PACKAGE_GDB_SERVER || FREETZ_PACKAGE_GDB_HOST
+	help
+	  Select the version of gdb you wish to use.
+
+	config FREETZ_GDB_VERSION_6_3
+		bool "gdb 6.3"
+
+	config FREETZ_GDB_VERSION_6_4
+		bool "gdb 6.4"
+
+	config FREETZ_GDB_VERSION_6_6
+		bool "gdb 6.6"
+
+endchoice
+
+config FREETZ_GDB_VERSION
+	string
+	default "6.3"	if FREETZ_GDB_VERSION_6_3
+	default "6.4"	if FREETZ_GDB_VERSION_6_4
+	default "6.6"	if FREETZ_GDB_VERSION_6_6

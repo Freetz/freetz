@@ -1,0 +1,143 @@
+#!/bin/sh
+
+APPLET=${0##*/}
+
+usage() {
+	cat << EOF
+
+$0: get/put users, groups & passwords from/to save buffer
+Usage: $APPLET {load|save}
+
+Examples:
+  # Retrieve data from save buffer (*not* from TFFS)
+  $APPLET load
+
+  # Put data to save buffer (*not* to TFFS)
+  $APPLET save
+  # Make save buffer persistent in TFFS
+  modsave flash
+
+EOF
+}
+
+[ $# -eq 0 ] && usage && exit 0
+[ $# -ne 1 ] && usage >&2 && exit 1
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+FLASH_DIR=/tmp/flash
+USER_DIR=$FLASH_DIR/users
+TMP_DIR=/tmp
+FILES="passwd group shadow gshadow"
+
+make_user_dir()
+{
+	rm -rf $USER_DIR
+	mkdir -pm 700 $USER_DIR
+}
+
+save()
+{
+	make_user_dir
+	( cd $TMP_DIR && cp -a $FILES $USER_DIR	)
+}
+
+# BEGIN compat
+# TODO: remove in one of the next releases, because it is obsolete
+# and only needed for auto-conversion
+test_load_compat()
+{
+	if [ ! -e "$FLASH_DIR/shadow.save" ]; then
+		return 1
+	fi
+	echo "Obsolete user & password file $FLASH_DIR/shadow.save detected, converting..."
+
+	TMPPASSWD=$TMP_DIR/.passwd.tmp
+	TMPSHADOW=$TMP_DIR/.shadow.tmp
+	rm -f $TMPPASSWD $TMPSHADOW
+
+	userid=0
+	cat $FLASH_DIR/shadow.save | while IFS=: read user pass; do
+		if [ "$user" = "root" ]; then
+			uid=0
+			gid=0
+			user_homedir=/mod/root
+		else
+			let userid="userid+1"
+			uid=$userid
+			gid=1
+			user_homedir="/mod/home/$user"
+		fi
+		echo "$user:x:$uid:$gid:$user:$user_homedir:/bin/sh" >> $TMPPASSWD
+		echo "$user:$pass:12332:0:99999:7:::" >> $TMPSHADOW
+		
+#		mkdir -p "$user_homedir"
+#		chown $uid:$gid "$user_homedir"
+	done
+
+	if ! grep -q "^root:" $TMPPASSWD ; then
+		rm -f $TMPPASSWD $TMPSHADOW
+		echo "ERROR: no user 'root'" 1>&2
+		return 1
+	fi
+	chmod 644 $TMPPASSWD
+	chmod 600 $TMPSHADOW
+
+	mv $TMPPASSWD $USER_DIR/passwd
+	mv $TMPSHADOW $USER_DIR/shadow
+
+	cp -a $TMP_DIR/group $TMP_DIR/gshadow $USER_DIR
+
+	echo "Removing obsolete file $FLASH_DIR/shadow.save..."
+	rm -f $FLASH_DIR/shadow.save
+#	echo "Making data conversion persistent by saving to flash memory..."
+#	save
+#	modsave flash
+	return 0
+}
+# END compat
+
+init_passwd()
+{
+	return 0
+#	WEBUI_PASSWD=$( allcfgconv -c -o - ar7 | sed -n -e '1,/webui/d' -e '/}/,$d' -e '/password/s/^.*"\(.*\)".*$/\1/p' )
+#	CRYPT_PASSWD=$( httpd -m "$WEBUI_PASSWD" )
+#	sed -i -e "s,^\(root:\)[^:]*\(.*\)$,\1${CRYPT_PASSWD}\2,g" $TMP_DIR/shadow
+#	/usr/bin/modconf set mod MOD_HTTPD_PASSWD=$(/usr/sbin/httpd -m "$WEBUI_PASSWD")
+}
+
+load()
+{
+	if ! [ -d "$USER_DIR" ]; then
+		make_user_dir
+		# BEGIN compat
+		test_load_compat ||
+		# END compat
+		init_passwd
+	fi
+
+	for f in $FILES; do
+		if [ -e "$USER_DIR/$f" ]; then
+			cp -a "$USER_DIR/$f" "$TMP_DIR"
+		fi
+	done
+	cat /etc/passwd | while IFS=: read user pass uid gid gecos user_homedir shell; do
+		if [ ! -d "$user_homedir" ]; then
+			rm -f "$user_homedir"
+			mkdir -p "$user_homedir"
+			chown $uid:$gid "$user_homedir"
+		fi
+	done
+}
+
+case "$1" in
+	save)
+		save
+		;;
+	load)
+		load
+		;;
+	*)
+		usage >&2
+		exit 1
+		;;
+esac

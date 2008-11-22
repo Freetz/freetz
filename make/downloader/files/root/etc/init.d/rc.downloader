@@ -1,0 +1,154 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=downloader
+ERRFILE=/var/tmp/downerr
+
+case "$1" in
+	""|load|start|restart|remove)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+if [ "$DOWNLOADER_DEBUG" = "yes" ]; then
+	LOGFILE=/var/log/downloader.log
+	if test -e $LOGFILE ; then
+		rm -f $LOGFILE > /dev/null 2>&1 
+	fi
+else
+	LOGFILE=/dev/null
+fi
+
+
+start() {
+	if test -e $ERRFILE ; then
+		rm -f $ERRFILE > /dev/null 2>&1 
+	fi
+	if [ "$DOWNLOADER_ENABLED" = "yes" ]; then
+		echo "Starting $DAEMON..."
+		echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
+			[ -n "$downfile" ]
+			echo -n "Download: $downfile..."
+			downloader $downfile >> $LOGFILE 2>&1
+ 			errors=$?
+			if [ "$errors" -eq 0 ]; then
+				echo 'done.'
+			else
+				echo 'failed.'
+				echo $ERRORVAL > $ERRFILE
+			fi
+		done 
+		if test -e $ERRFILE ; then
+			rm $ERRFILE > /dev/null 2>&1 
+			echo "Download failed."
+			exit $ERRORVAL
+		else
+			echo "Download completed."
+		fi
+	else
+		echo "$DAEMON is disabled"
+	fi
+
+}
+
+stop() {
+	echo -n "Stopping $DAEMON..."
+	killall $DAEMON > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+remove() {
+	if test -e $ERRFILE ; then
+		rm -f $ERRFILE > /dev/null 2>&1 
+	fi
+	echo "$DAEMON: Remove all downloaded files..."
+	echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
+		[ -n "$downfile" ]
+		echo -n "Delete $downfile..."
+		downremover $downfile >> $LOGFILE 2>&1
+		errors=$?
+		if [ "$errors" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+			echo $ERRORVAL > $ERRFILE
+		fi
+	done 
+	if test -e $ERRFILE ; then
+		rm $ERRFILE > /dev/null 2>&1 
+		echo "Remove failed."
+		exit $ERRORVAL
+	else
+		echo "Removing all downloaded files completed."
+	fi
+}
+
+case "$1" in
+        ""|load)
+		modreg cgi $DAEMON 'Downloader'
+		modreg extra $DAEMON '$(lang de:"Heruntergeladene Dateien löschen" en:"Remove downloaded files")' 1 'downremover'
+		modreg extra $DAEMON '$(lang de:"Protokoll ansehen" en:"View log file")' 1 'downlog'
+
+		if [ "$DOWNLOADER_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ -e "/var/run/downloader.pid" ]; then
+			echo "$DAEMON already started."
+		else
+			start
+		fi
+		;;
+	unload)
+		stop
+		modunreg cgi 'downloader'
+		modunreg extra $DAEMON 'downremover'
+		modunreg extra $DAEMON 'downlog'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	remove)
+		remove
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|remove|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
+
+
+
+
+

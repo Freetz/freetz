@@ -1,0 +1,72 @@
+#!/bin/sh
+#
+# Usage: modpasswd [load|freetz]
+
+TMP=/var/tmp
+FLASH=$TMP/flash
+
+case "$1" in
+	"")
+		echo >&2
+		echo "## OBSOLETE: modpasswd <no parameters> ##" >&2
+		echo "If you want to set the root password, please use the" >&2
+		echo "'passwd' command." >&2
+		echo >&2
+		exit 1
+		;;
+	load)
+		echo >&2
+		echo "## OBSOLETE: modpasswd load ##" >&2
+		echo "If you want to load users, groups and passwords, please use the" >&2
+		echo "'modusers load' command." >&2
+		echo >&2
+		exit 1
+		;;
+	save)
+		echo >&2
+		echo "## OBSOLETE: modpasswd save ##" >&2
+		echo "If you want to save users, groups and passwords, please use the" >&2
+		echo "'modusers save' command." >&2
+		echo >&2
+		exit 1
+		;;
+	freetz)
+		echo 'Changing password for admin (freetz webconfig)'
+		echo 'This password should be different from root'"'"'s password.'
+		echo 'No "weak password" warnings are generated.'
+		echo ''
+		echo 'The webinterface may have major bugs allowing to execute'
+		echo 'arbitrary code. USE AT YOUR OWN RISK!'
+		echo ''
+
+		read -p 'Enter new password: ' -r -s passwd1
+		echo
+		read -p 'Re-enter new password: ' -r -s passwd2
+		echo
+
+		if [ "$passwd1" != "$passwd2" -o -z "$passwd1" ]; then
+			echo 'Passwords do not match or empty password.' 1>&2
+			echo 'modpasswd: The password for admin (freetz webconfig) is unchanged.' 1>&2
+			echo '' 1>&2
+			exit 1
+		fi
+
+		/usr/bin/modconf set mod MOD_HTTPD_PASSWD=$(/usr/sbin/httpd -m "$passwd1")
+
+		echo 'modpasswd: Password for admin (freetz webconfig) changed.'
+		echo ''
+
+		/usr/bin/modconf save mod
+		[ "$2" = "noflash" ] || /usr/bin/modsave flash
+		;;
+	*)
+		echo >&2
+		echo "## OBSOLETE: modpasswd <username> ##" >&2
+		echo "If you want to set the a user's password, please use the" >&2
+		echo "'passwd' command." >&2
+		echo >&2
+		exit 1
+		;;
+esac
+
+exit 0

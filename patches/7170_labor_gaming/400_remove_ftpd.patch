@@ -1,0 +1,56 @@
+--- etc/hotplug/storage.orig	2008-05-21 17:31:32.000000000 +0200
++++ etc/hotplug/storage	2008-05-24 14:22:37.000000000 +0200
+@@ -15,6 +15,9 @@
+ MSTART=/sbin/start_mediasrv
+ MSTOP=/sbin/stop_mediasrv
+ 
++# Do we have a Ftp server (ftpd) or was ist stripped from the firmware?
++_ftpd=$(basename $(which ftpd) 2> /dev/null)
++
+ # Ask the system's configuration for the status of the readonly flag:
+ # (Translates flag's yes/no to ro/rw)
+ #
+@@ -203,6 +206,7 @@
+ 	# ftp server control
+ 	ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
+ 	if [ "$ENABLED" != "no" ] ; then
++	    if [ "$_ftpd" ] ; then
+ 		if test -x /bin/inetdctl ; then
+                       inetdctl enable ftpd
+ 		else
+@@ -215,6 +219,7 @@
+ 				fi
+ 			fi
+ 		fi
++	    fi
+ 	else
+ 		if test -x /bin/inetdctl ; then
+ 			inetdctl disable ftpd
+--- etc/hotplug/run_mount.orig	2008-05-21 17:31:31.000000000 +0200
++++ etc/hotplug/run_mount	2008-05-24 14:37:45.000000000 +0200
+@@ -13,6 +13,9 @@
+ TR069START=/bin/tr069starter
+ SYSFS=/var/sysfs
+ 
++# Do we have a Ftp server (ftpd) or was ist stripped from the firmware?
++_ftpd=$(basename $(which ftpd) 2> /dev/null)
++
+ # Ask the system's configuration for the status of the readonly flag:
+ # (Translates flag's yes/no to ro/rw)
+ #
+@@ -131,6 +134,7 @@
+ 		eventadd 140 $MNTNAME
+ 		ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
+ 		if [ "$ENABLED" != "no" ] ; then
++		    if [ "$_ftpd" ] ; then
+ 			if test -x /bin/inetdctl; then
+ 				inetdctl enable ftpd
+ 			else
+@@ -146,6 +150,7 @@
+ 				fi
+ 			fi
+ 		fi
++		fi
+ 		test -x $TR069START && $TR069START $MNTNAME
+ 		if test -x /etc/samba_control ; then
+ 			/etc/samba_control reconfig

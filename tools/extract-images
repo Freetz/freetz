@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Converts little endian 4-byte unsigned integer given as spaced hex string
+# into decimal number (e.g. "00 D0 4C 00" -> 5033984)
+hex2dec()
+{
+	# ATTENTION, 'strtonum' is gawk-specific, other awk versions like mawk
+	# probably do not know it.
+	echo "$1" | gawk '{ printf "%d\n", strtonum("0x" $4 $3 $2 $1) }'
+}
+
+# Extracts urlader.image candidates from input file, based on bootloader magic
+# string. Applies heuristic check for typical strings occurring in AVM
+# bootloaders. Detects older ADAM as well as newer EVA bootloaders.
+extract_bootloader()
+{
+	echo -e "\nExtracting bootloader (urlader.image) ..."
+	n=1
+	for offs in $(tools/hexgrep "$BOOTLOADER_MAGIC" "$input_file" | sed 's/:.*//'); do
+		output_file="$output_dir/urlader.image-$((n++))"
+		echo "    $output_file - loader @ $offs"
+		dd if="$input_file" of="$output_file" ibs=1 obs=8192 skip=$offs count=65536 2> /dev/null
+		grep -iq 'entering passive mode' "$output_file" \
+			&& grep -iq 'ftp server ready' "$output_file" \
+			&& echo "        file is a possible bootloader candidate" \
+			|| echo "        file is probably not a bootloader"
+	done
+	[ $n -eq 1 ] && echo "    No bootloader candidate found in input file"
+}
+
+# Extracts kernel.image  candidates from input file, based on kernel and
+# SquashFS magic strings. Applies heuristic check if kernel end offset
+# calculated from assumed length header field is close enough to subsequent
+# SquashFS start offset. Detects hidden root images used in ds26-enabled
+# firmwares, but currently no other image types.
+extract_kernel_filesystem()
+{
+	echo -e "\nExtracting hidden root kernel + filesystem (kernel.image) ..."
+	n=1
+	squashfs_lines="$(tools/hexgrep "$SQUASHFS_MAGIC" "$input_file")"
+	squashfs_offs=($(echo "$squashfs_lines" | sed 's/:.*//'))
+	squashfs_length=($(hex2dec "$(echo "$squashfs_lines" | sed -r 's/^[0-9]+:.{24}(.*)/\1/')"))
+	kernel_lines="$(tools/hexgrep "$KERNEL_MAGIC" "$input_file")"
+	kernel_offs=($(echo "$kernel_lines" | sed 's/:.*//'))
+	kernel_length=($(hex2dec "$(echo "$kernel_lines" | sed -r 's/^[0-9]+:.{12}(.*)/\1/')"))
+	k=0
+	while [ $k -lt ${#kernel_offs[*]} ]; do
+		s=0
+		while [ $s -lt ${#squashfs_offs[*]} ]; do
+			delta=$((squashfs_offs[s] - kernel_length[k] - kernel_offs[k]))
+			[ $delta -le 0 -o $delta -gt 1024 ] && s=$((s+1)) && continue
+			squashfs_pad=$(((4096 - squashfs_length[s] % 4096) % 4096))
+			dd_count=$((squashfs_offs[s] - kernel_offs[k] + squashfs_length[s] + squashfs_pad))
+			output_file="$output_dir/kernel.image-$((n++))"
+			echo "    $output_file - kernel @ ${kernel_offs[k]}, SquashFS @ ${squashfs_offs[s]}, total length = $dd_count"
+			dd if="$input_file" of="$output_file" ibs=1 obs=8192 skip=${kernel_offs[k]} count=$dd_count 2> /dev/null
+			"$mod_base/tools/tichksum" "$output_file" | sed 's/^/        /'
+			break
+		done
+		k=$((k+1))
+	done
+	[ $n -eq 1 ] && echo "    No hidden root kernel + filesystem candidate found in input file"
+}
+
+# Parameter handling
+mod_base="."
+case $# in
+	1)
+		input_file="$1"
+		;;
+	2)
+		mod_base="$1"
+		input_file="$2"
+		;;
+	*)
+		echo "usage: $0 [<freetz base directory>] <input file>" >&2
+		echo "    - freetz base directory defaults to '.'" >&2
+		echo "    - input file (e.g. recover exe or mtdblock dump) is to be searched for"
+		echo "      kernel.image and/or urlader.image" >&2
+		exit 1
+esac
+
+# Magic byte sequences prepared for 'hexgrep' usage
+KERNEL_MAGIC="81 12 ED FE .. .. .. .."
+SQUASHFS_MAGIC="68 73 71 73 .. .. .. .. .. .. .. .."
+BOOTLOADER_MAGIC="00 90 80 40"
+
+output_dir="$(basename "$input_file" | sed -r 's/(.*)\.[^\.]*/\1/')"
+mkdir -p "$output_dir"
+
+extract_bootloader
+extract_kernel_filesystem

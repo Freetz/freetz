@@ -1,0 +1,7 @@
+#!/bin/sh
+
+export TERMINFO=/mod/pkg/screen/usr/share/terminfo
+# TERM=foobar yields $TERMINFO/f/foobar
+[ -f "$TERMINFO/${TERM%${TERM#?}}/$TERM" ] || export TERM=xterm
+touch /var/run/utmp
+exec $0.bin "$@"

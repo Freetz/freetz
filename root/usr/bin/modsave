@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# Usage: modsave [flash|all]
+
+save() {
+	TMPFILE=/tmp/.save.tmp
+
+	if [ -r /mod/etc/conf/mod.cfg ]; then
+		. /mod/etc/conf/mod.cfg
+	else
+		MOD_LIMIT=61440
+	fi
+
+	# not really a lock
+	if [ -e "$TMPFILE" ]; then
+		echo "$TMPFILE exists! Concurrent update?" 1>&2
+		exit 1
+	fi
+
+	tar -cf $TMPFILE flash -C /tmp/
+
+	let size="$(wc -c < $TMPFILE)"
+
+	if [ "$size" -gt "$MOD_LIMIT" ]; then
+		rm -f $TMPFILE
+		echo "size: $size limit: $MOD_LIMIT" 1>&2
+		echo "ERROR: /var/flash/freetz too big" 1>&2
+		exit 1
+	fi
+
+	echo -n 'Writing /var/flash/freetz...'
+	cat $TMPFILE > /var/flash/freetz
+	rm -f $TMPFILE
+	echo 'done.'
+	echo "$size bytes written."
+}
+
+case "$1" in
+	""|all)
+		echo -n 'Saving users, groups and passwords...'
+		/usr/bin/modusers save
+		echo 'done.'
+
+		echo -n 'Saving config...'
+		/usr/bin/modconf save mod
+		if [ -e /etc/static.pkg ]; then
+			for pkg in "$(cat /etc/static.pkg)"; do
+				if [ -r "/etc/default.$pkg/$pkg.cfg" ]; then
+					/usr/bin/modconf save "$pkg"
+				fi
+			done
+		fi
+		echo 'done.'
+
+		save
+		;;
+	flash)
+		save
+		;;
+	*)
+		echo "Usage: $0 [flash|all]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,20 @@
+config FREETZ_PACKAGE_INOTIFY_TOOLS
+	bool "inotify-tools 3.13 (binaries only)"
+	default n
+	help
+		inotify-tools - watch file and directory access
+
+		inotify-tools is a C library and a set of command-line programs for
+		Linux providing a simple interface to inotify. These programs can be
+		used to monitor and act upon filesystem events. The programs are
+		written in C and have no dependencies other than a Linux kernel
+		supporting inotify.
+
+		inotifywait
+		This command simply blocks for inotify events, making it appropriate
+		for use in shell scripts. It can watch any set of files and
+		directories, and can recursively watch entire directory trees.
+
+		inotifywatch
+		inotifywatch collects filesystem usage statistics and outputs counts of
+		each inotify event.

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+cat <<EOF
+pty "pptp $PPTP_ADDRESS --nolaunchpppd"
+name $PPTP_USER
+remotename $PPTP_SERVERNAME
+refuse-eap
+refuse-pap
+refuse-chap
+refuse-mschap
+require-mschap-v2
+mppe required,stateless
+ipcp-accept-local
+ipcp-accept-remote
+file /etc/ppp/options.pptp
+ipparam pptp
+EOF

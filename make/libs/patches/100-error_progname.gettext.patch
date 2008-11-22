@@ -1,0 +1,12 @@
+Index: gettext-runtime/intl/intl-compat.c
+===================================================================
+--- gettext-runtime/intl/intl-compat.c	2007-12-29 22:51:09.363903016 +0100
++++ gettext-runtime/intl/intl-compat.c	2007-12-29 22:51:14.048169957 +0100
+@@ -131,3 +131,7 @@
+ {
+   return libintl_bind_textdomain_codeset (domainname, codeset);
+ }
++
++#ifdef __UCLIBC__
++DLL_EXPORTED void (*error_print_progname)(void) = NULL;
++#endif

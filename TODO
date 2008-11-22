@@ -1,0 +1,368 @@
+===================================================
+==  To-do list and collection of ideas for Freetz  ==
+===================================================
+
+$Id$
+
+
+HIGH PRIORITY - critical bugs, important features
+-------------------------------------------------
+
+
+MEDIUM PRIORITY - normal bugs, features, improvements
+-----------------------------------------------------
+
+
+-User reports that box crashes if nfsd works in sync mode 
+  (http://www.ip-phone-forum.de/showpost.php?p=994414&postcount=154)
+
+- Create wrapper for starting external root mount rc.* files (USB, NFS,
+  Mini_fo) and add option to define an order in which they are tried. Default
+  order (editable) should be
+    1. USB root
+    2. NFS root
+    3. Mini_fo root (with or without JFFS2)
+  always the successor being a fallback for a non-functional or undefined
+  predecessor in the ordered list. This way we could regain the lost feature
+  of mini_fo being a fallback for NFS, but in a more general way. Maybe we can
+  even externalise common parts of code, but the latter is just nice to have.
+
+- Where do strange hostnames like "Speedport-W-701V-33.04.44" or
+  "FRITZ-Box-Fon-WLAN-7170-(UI)-29.04.40" come from?
+  Remark (by Oliver): I think from multid. How could we avoid that?
+
+- Check toolchain symlinks because they are not adapted.
+
+- MD5 checksums for DS-Mod packages (our own as well as external ones) incl.
+  necessary make macros or shell scripts
+
+- Enhance Virtual-IP-CGI and Openntpd so it supports other (and possibly
+  multiple) interfaces than lan:1
+  (http://www.ip-phone-forum.de/showpost.php?p=886345)
+    Remark (by Oliver): Add interface option to webinterface (virtualip).
+    Openntpd uses eth0 in ethmode_router and lan in ethmode_bridge.
+    Virtual-IP-CGI doesn't work with actual firmwares anymore.
+
+- Refactor Dnsmasq package, particularly rc.dnsmasq (full of logical mistakes!)
+  and recently improved, but still suboptimal multid wrapper. The whole thing
+  only (kind of) works as long as nobody thinks about using the scripts outside
+  the init process. Otherwise they might work, but could also break. For
+  example, the "start" action does not check if the package is activated at
+  all. The "load" action does, but does not take care of starting multid anyway
+  if Dnsmasq is deactivated. A few more strange things are in there, e.g. the
+  misleading variable name "nomultid" which suggests there is an option to run
+  Dnsmasq without multid. This is not true, the variable is just a flag which
+  means something like "don't start/stop multid, I will take care of it
+  myself". This is used in the restart action where the option keeps "stop" and
+  "start" from restarting multid twice. Actually, I (kriegaex) do not feel so
+  inclined to refactor those scripts myself. It took me a while to at least
+  understand what they do and fix a few quoting bugs in the wrapper.
+
+- Vpnc package: Make hybrid auth feature configureable over webinterface
+
+- bluez-utils: Add Webinterface
+
+- Optionally stop DS-Mod services before firmware upgrade
+
+- Rudi Shell: utilise new FIFO uploading feature in order to enable uploads to
+  specific locations instead of to temp-files with unpredictable names which
+  need to be moved afterwards. The feature is already used by the firmware
+  upgrade assistant, so it seems like a good idea to use it elsewhere, too.
+    Comment (by kriegaex): Thinking about it again, I believe that it is not
+    possible to directly write the output to a target location, but still a
+    good idea to have a handler do the work of reading the data from a FIFO,
+    transparently writing them to the target location. This way we could
+    theoretically handle uploads bigger than RAM size to USB media, for
+    example. If such big uploads would really work or time out prematurely, is
+    another story.
+    Comment (by kriegaex): Having a FIFO handler would also help us to
+    transparently write an uploaded file to /var/flash which does not work
+    presently, because we use 'mv' instead of 'cat' for relocating a completely
+    uploaded temp-file.
+
+- bip, dns2tcp and iodine need configuration files and webinterface
+
+
+LOW PRIORITY - nice to have, cosmetics, ideas
+---------------------------------------------
+
+
+- Make ccache build script aware of gcc version change (needs rebuild in that
+  case)
+    Comment (by Oliver): This would need a config suboption like some packages?
+
+- Make OPIE (One Time Passwords in Everything) work with telnet, FTP and SSH
+  daemons.
+    Remark (by kriegaex): I have it running on my box with BusyBox telnetd
+    after having replaced /bin/login by opielogin. But in order to make it work
+    with Dropbear we either need a patch so Dropbear authenticates users via
+    opielogin or have to include a full-fledged PAM (Pluggable Authentication
+    Modules) infrastructure into ds26. Apart from getting it to compile at all,
+    I do not know how big the payload would be. That is why I put it into this
+    list, after all.
+    Update (by kriegaex): Now we have BusyBox 1.7.2 with PAM login support, so
+    maybe we can have another look at the Dropbear issue now, provided I can
+    figure out how to do that.
+
+- Experiment with and possibly use dietlibc to create smaller binaries by
+  statically compiling in stuff usually dynamically linked to uClibc.
+    Status (by kriegaex): compiled a few binaries - thanks to olistudent for
+    providing a working dietlibc - which are usually a bit smaller than their
+    BusyBox counterparts, but the differences are not as dramatic as hoped for.
+    I think we should try some more packages in order to see where it helps
+    and where it does not. I think good candidates would be packages using one
+    or more libs pretty exclusively, i.e. the libs are not used by many other
+    packages. In this case we could save some overall space by creating static
+    binaries with dietlibc, especially if only a smaller part of the libs'
+    functionalities are used.
+
+- Check possibilities of inetd-enabling more services, see e.g.
+  http://www.ip-phone-forum.de/showpost.php?p=949387.
+  I think we should ask the guy who created the package to do that for us.
+
+- Rudi Shell: add switch to send stderr output to stdout ('2>&1') for lazy
+  users who do not know how to do it otherwise.
+    Remark (by kriegaex): I think we should avoid making Rudi's UI more fancy
+    than necessary. (Keep it simple, stupid!) Rudi stands for rudimentary,
+    after all.
+
+- Maybe we can offer including the binary 'urlader.setconfig26' from firmwares
+  voip-gateway-5188.36.04.30.image or fritz.box_fon.06.04.33.image as a debug
+  tool so users can change the read-only status of bootloader variables.
+  Priority: fairly low, nice to have.
+    Comment (by kriegaex): urlader.setconfig26 is part of the current 06.04.33
+    download. There used to be an older one only containing the 2.4 version.
+    So there are two current sources for this file and several more for
+    urlader.setconfig24. Anyway, it is a good idea to extract the *26 binary
+    now and keep it in a safe place.
+
+- Suggestion by Knox: use awx, an extension to awk, as CGI handler instead of
+  Haserl.
+    Remark (by kriegaex): Maybe it would work beautifully, I do not know. But
+    probably it would mean doing the whole web UI from scratch and completely
+    remove the Haserl stuff. I think three solutions (plain shell, Haserl and
+    awx) would be too much and overkill for maintenance. We should remember
+    awx, though, if we ever decide to do everything from scratch or start a
+    big refactoring project.
+
+- Idea by heini66: implement call-back function as an add-on to DTMF-Box, see
+  http://www.ip-phone-forum.de/showpost.php?p=941080&postcount=698 and
+  http://www.blindi.net/callback/index.php.
+
+- Idea by heini66: port Softmac WLAN driver from Openwrt. Goal is ad-hoc
+  networking, e.g. for Freifunk.
+
+
+FINISHED, NEEDS TESTING
+-----------------------
+
+- Use kernel_args to optionally deactivate DS-Mod or parts of it in order to
+  save an installation without recovering; idea by MaxMuster
+  (http://www.ip-phone-forum.de/showpost.php?p=960303).
+    Remark (by kriegaex): Would work nicely in connection with a script similar
+    to push_firmware which would toggle the switch from outside via EVA FTP.
+    We might as well have several switches to selectively disable debug.cfg,
+    DS-Mod start-up or rc.custom. Essential about this is that we can offer a
+    way of modifying the the contents of debug.cfg and ds_mod. Very nice idea
+    indeed, and probably not all that hard to implement.
+    Status (by Oliver): Done. http://www.ip-phone-forum.de/showthread.php?t=155770
+    Perhaps we should rename ds_off?
+
+- Idea from somewhere in IPPF: implement some kind of auto-update functionality
+  for ds26, especially for patches in between releases. This would lead to
+  fewer questions in the forum and more flexibility as well as a more
+  consistent code base "in the wild", i.e. pretty much all modders using the
+  same set of patches instead of everybody using a more or less different
+  setup.
+    Comment (by kriegaex): I believe that the planned public read access to our
+    SVN repository should suffice, combined with us maintaining the 'stable-15'
+    or a similar SVN branch again. A simple "svn update" would upgrade DS-Mod
+    with the latest bugfixes.
+
+- An automatic mount helper for filesystems would be nice feature (e.g. ntfs)
+    Status (by Oliver): Done.
+
+- Copy actual fakeroot version to mirrors and get it from there.
+    Status (by Oliver): Done.
+
+- 7270 seems to be ur8 (not ohio), as if we have a opensource package
+  we should check this and change Config.in accordingly. There will be
+  some work to do because kernel version differs (2.6.19)
+    Status (by Oliver): Done.
+
+- Bump uClibc to 0.9.29
+    Remark (by kriegaex): Oliver says that it still does not run smoothly, so
+    0.9.28 should stay default for the time being. One problem reported by
+    Oliver is the following concerning UPnP (igdd):
+        Jan  1 01:01:05 igdd[533]: get_file_content: mmap(/etc/default/avm/igddesc.xml) failed - Invalid argument (22)
+        Jan  1 01:01:05 igdd[533]: parse_xml_files: get_text_filecontent failed
+        Jan  1 01:01:05 igdd[533]: parse_xml_files failed
+        Jan  1 01:01:05 igdd[533]: upnp_server_start: failed
+        Jan  1 01:01:05 igdd[533]: upnp_server_stop: wrong parameter
+        Jan  1 01:01:05 igdd[533]: msg_receive_handler: Error:ADDDEV_RESP:igd:igdcb:3::::::
+    Remark (by Oliver): Don't change uClibc version used by AVM. This will avoid above error.
+
+- Check order in which packages are started at boot time (virtualip, ntfs,
+  cifsmount, syslog-cgi)
+    Remark (by Oliver): Done (quickly), perhaps there are some more packages to
+    prioritise.
+    
+- Dsmod version is no more displayed on AVM's webinterface. Instead the 
+  following query is done by webcm/ctlmgr <? query logic:status/nspver ?>.
+  How can we cheat this? (related to firmwares with new webinterface, beta
+  and 7270 atm)
+  Status: Done by supamicha
+  
+- New UNIX-conform user/group/password management
+  (kriegaex, olistudent)
+  Stage 1:
+  * Old user management still in place and default (e.g. used by modload)
+  * New user management already usable
+  * Busybox now includes applets adduser, deluser, addgroup, delgroup, cryptpw.
+    This costs an additional 6,104 bytes, which is pretty good.
+  * fwmod creates symlink /home -> var/mod/home because adduser expects to find
+    /home if no explicit home dir parameter is specified
+  * fwmod creates symlink /etc/gshadow -> /var/tmp/gshadow and also creates an
+    empty /var/tmp/gshadow because BB tools expect file to be writable
+  * New script modusers (not to confuse for moduser without "s") loads/saves
+    /tmp/{passwd,shadow,group,gshadow} from/to save buffer in /tmp/flash/users
+  Stage 2:
+  * Make ds26 + packages like Bftpd and Samba use BB tools or new script modusers
+    instead of old scripts wherever possible
+  * Replace obsolete scripts or parts of them by warning messages telling users
+    that those obsolete parts will vanish soon
+  * Get rid of /tmp/flash/shadow.save -> auto-converter was built into
+    'modpasswd load'
+  * Change modload & modsave to use modusers instead of modpasswd -> modload
+    calls modpasswd load, if old data need to be converted, function will be
+    removed in one of the next later releases.
+  * Old functions in modpasswd show "obsolete" warnings and hints pointing to
+    successor functions.
+  * Applet 'moduser' removed completely, because it is fully replaced by
+    standard BB applets and 'modusers' for loading/saving.
+  Stage 3:
+  * Provide default passwords for root and ds26 web user + warnings to change
+    them, maybe even via Web (I already found out how to control the
+    interactive passwd tool without user interaction) -> done partly (default
+    pw "dsmod" introduced for web user "admin")
+  * Decide whether to include auto-conversion scripts for shadow.save or just
+    mention how to upgrade/downgrade in the IPPF release thread. -> upgrade
+    script in 'modpasswd load' (see above), downgrade script must be provided
+    via forum or wiki.
+  * Update Wiki (general user management article pointing to Linux standard
+    documentation, package articles for Samba & Bftpd, ds26 installation how-to
+    concerning first-time password entry)
+  * Possibly get rid of special case "telnet login with AVM web password if no
+    root pw is set", because root will have a default pw packaged right into
+    var.tar.
+
+- Delete uClibc-files in root/lib when uClibc_version is changed
+    Remark (by Oliver): Done. All files in root/lib are deleted when new
+    uclibc version is installed (uclibc.mk). This should not be a 
+    problem because most libs are in root/usr/lib and others are
+    copied automatically on next make.
+
+- Include polished version of swap space package, see
+  http://www.ip-phone-forum.de/showthread.php?t=148245.
+  Probably we should pretty much redo the package, because the scripts and
+  DS-Mod UI integration are quite ugly.
+  Remark (by Oliver): Should we provide some button/menu to create a swapfile?
+
+- Check bftpd, dropbear, netsnmp and openvpn (try to make suboptions instead of
+  multiple packages)
+    Status (by olistudent): Done. But it needs testing. Open question: Are
+    there options in cfg files that conflict with the features compiled in
+    (e.g. OPENVPN_MGMNT)?
+    
+- bftpd, vsftpd: Configuration file has to be rewritten after change
+    Status (by Oliver): Done, needs testing
+
+- Idea by heini66: optionally remove dsld from image, because it is supposedly
+  not needed in ATA mode.
+    Remark (by kriegaex): According to the discussion under
+    http://www.ip-phone-forum.de/showthread.php?t=148885 dsld *is* needed in
+    ATA mode, at least in PPPoE-passthrough mode (see screenshot at
+    http://www.ip-phone-forum.de/attachment.php?attachmentid=18739&d=1190878250).
+    Maybe it is not needed in IP client mode. Can somebody clarify this with
+    another comment, please?
+    Update (by kriegaex): heini66 tested without dsld on W900V, 7050, FON WLAN,
+    W501V in IP client mode, and it works. Olistudent also says dsld is only
+    needed in PPoE-passthrough mode, so I think we can risk offering a patch. I
+    just prepared one, and it deletes
+      * /sbin/dsld                           (131 KB)
+      * /sbin/showdsldstat                   ( 10 KB)
+      * /lib/modules/*/kernel/drivers/dsld/* (772 KB)
+    File sizes are from 29.04.29. Hopefully, userman.ko is not loaded in
+    IP-client mode, because it needs kdsldmod.ko. This is yet to be tested
+    before a release, we may have to keep this huge module in the image if it
+    is needed. The patch also changes rc.init settings DSL=n, VDSL=n.
+
+- Check out Xrelayd [1], the successor of Matrixtunnel [2]:
+    [1] http://forum.openwrt.org/viewtopic.php?id=12338
+    [2] http://forum.openwrt.org/viewtopic.php?id=5588
+  If Xrelayd is better, smaller, whatever... than Matrixtunnel, replace MT
+  package by XRD package.
+    Status (by kriegaex): The package is ready and functional. Stripped binary
+    size comparison:
+      matrixssl:     84.4 k  /  xyssl:   137.5 k
+      matrixtunnel:  24.2 k  /  xrelayd:  18.4 k
+      ------------------------------------------
+      matrix*:      108.6 k  /  x*:      155.9 k
+    Question to olistudent: Should we switch, given the fact that x* is 44%
+    bigger than matrix*? There are hints for making the lib smaller [3], but
+    most of the options are already used, we are close to minimum size. What
+    might also make xyssl interesting is the fact that it does not seem to be
+    semi-commercial like matrixssl. Furthermore, it seems to be fairly easy to
+    create an OpenSSL wrapper [4]. If this would work for our other packages
+    depending on OpenSSL, it would be a huge gain, not only for the owners of
+    small boxes.
+      [3] http://www.xyssl.org/forum/?0048
+      [4] http://xyssl.org/forum/?0050
+
+- Integrate package brctl (assigned to Ralf)
+    Done. Maybe integrate brctl into busybox?
+
+- Test if it is possible to strip userman.ko and usermand from FW image.
+  "Userman" means "user management" and is responsible for the "child safety"
+  option (Kindersicherung).
+    Status (by Oliver): done. Perhaps we should we disable option for some
+    boxes.
+    Remark (by kriegaex): Three current firmwares do not have 'usermand':
+      - 5140  (43.04.37)
+      - W501V (28.04.38)
+      - W900V (34.04.21)
+    Those three also do not have 'KIDS=y' in rc.init, so it seems logical to
+    disable the patch for them. I have done just that.
+
+- Integrate new firmware for W701 (thanks to heini66 for the hint):
+  http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V/fw_Speedport_W701V_v33.04.44.image
+    Status (by Oliver): done, but web interface needs testing.
+    Status (by kriegaex): I have not tested the web UI, but otherwise it seems
+    to work beautifully, even with "replace kernel" based on *.40 GPL package.
+
+- Add patch to rc.S according or similar to
+  http://www.ip-phone-forum.de/showthread.php?p=949145#post949145
+  so as to make sure that the network is up before starting dsld. Otherwise
+  there might be problems, i.e. dsld does not start during the boot process
+  and must be started manually later. If this only happens in ATA or also in
+  DSL mode, is unknown. Make sure the wait loop does not wait forever (e.g.
+  max. 30 seconds).
+    Status (by kriegaex): patches/110-multid-wait.patch was added in #1415.
+
+- Adapt JPascher's way of utilising current 7170 firmwares, betas and labs
+  for Speedports by replacing some AVM binaries by T-Com versions. I (kriegaex)
+  have not looked into it, but others, e.g. heini66, report it works
+  beautifully.
+    Status (by kriegaex): done by Oliver, tested successfully on my W701V with
+    29.04.40 (no beta or lab tested yet, because I do not use those).
+
+- Think about whether we can do something about LCR Auto Updater not working
+  without httpd restart, if httpd replaces websrv.
+    Remark (by kriegaex): FAQ item in IPPF tells users to add a restart call
+    at the end of the LCR installation procedure. This is not a perfect
+    solution, but a good workaround.
+    Remark (by Oliver): Most firmwares don't have websrv anymore...
+
+- Find a better place for iptables libs
+    Remark (by Oliver): Done. Added patch 150-iptables.sh. A bit odd but it works.
+

@@ -1,0 +1,420 @@
+MAKE1=make
+MAKE=make -j$(FREETZ_JLEVEL)
+HOSTCC:=gcc
+
+HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
+	-e 's/sparc.*/sparc/' \
+	-e 's/arm.*/arm/g' \
+	-e 's/m68k.*/m68k/' \
+	-e 's/ppc/powerpc/g' \
+	-e 's/v850.*/v850/g' \
+	-e 's/sh[234]/sh/' \
+	-e 's/mips-.*/mips/' \
+	-e 's/mipsel-.*/mipsel/' \
+	-e 's/cris.*/cris/' \
+	-e 's/i[3-9]86/i386/' \
+	)
+GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
+
+REAL_GNU_TARGET_NAME:=mipsel-linux-uclibc
+GNU_TARGET_NAME:=mipsel-linux
+
+ifeq ($(strip $(FREETZ_TARGET_NLS)),y)
+DISABLE_NLS:=
+else
+DISABLE_NLS:=--disable-nls
+endif
+
+ifeq ($(strip $(FREETZ_TARGET_LFS)),y)
+DISABLE_LARGEFILE:=
+CFLAGS_LARGEFILE=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+else
+DISABLE_LARGEFILE:=--disable-largefile
+CFLAGS_LARGEFILE=-D_FILE_OFFSET_BITS=32
+endif
+
+TARGET_CROSS:=$(strip $(subst ",, $(FREETZ_TARGET_CROSS)))
+TARGET_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_TARGET_MAKE_PATH)))
+KERNEL_CROSS:=$(strip $(subst ",, $(FREETZ_KERNEL_CROSS)))
+KERNEL_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_KERNEL_MAKE_PATH)))
+TARGET_CFLAGS:=$(strip $(subst ",, $(FREETZ_TARGET_CFLAGS))) $(CFLAGS_LARGEFILE)
+
+ifneq ($(patsubst /%,/,$(TARGET_MAKE_PATH)),/)
+TARGET_MAKE_PATH:=$(FREETZ_BASE_DIR)/$(TARGET_MAKE_PATH)
+endif
+ifneq ($(patsubst /%,/,$(KERNEL_MAKE_PATH)),/)
+KERNEL_MAKE_PATH:=$(FREETZ_BASE_DIR)/$(KERNEL_MAKE_PATH)
+endif
+
+TARGET_CC:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc
+TARGET_CXX:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++-uc
+TARGET_LD:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld
+TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.comment,.note,.pdr}
+
+TARGET_PATH:=$(TARGET_MAKE_PATH):/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+# A better name for TARGET_CONFIGURE_OPTS would be TARGET_CONFIGURE_ENV, but that would require changes to all makefiles
+# usage is deprecated
+# see also TARGET_CONFIGURE_OPTIONS
+# NOTE: defined with "=", not with ":="
+TARGET_CONFIGURE_OPTS = $(TARGET_CONFIGURE_ENV)
+
+# commands to run before calling configure
+# each command has to be terminated by ';'
+TARGET_CONFIGURE_PRE_CMDS:=
+TARGET_CONFIGURE_PRE_CMDS += $(RM) config.{cache,status} ;
+
+# setup environment for configure
+TARGET_CONFIGURE_ENV:=
+TARGET_CONFIGURE_ENV += PATH="$(TARGET_PATH)"
+
+# Set compiler/linker flags here, not in TARGET_CONFIGURE_OPTIONS,
+# because this way they do not disturb old configure scripts
+# (e.g. pjproject, OPIE)
+TARGET_CONFIGURE_ENV += CC="$(TARGET_CC)"
+TARGET_CONFIGURE_ENV += CXX="$(TARGET_CXX)"
+TARGET_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
+TARGET_CONFIGURE_ENV += CXXFLAGS="$(TARGET_CFLAGS)"
+TARGET_CONFIGURE_ENV += LDFLAGS=""
+
+#TARGET_CONFIGURE_ENV += AR="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar"
+#TARGET_CONFIGURE_ENV += AS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as"
+#TARGET_CONFIGURE_ENV += LD="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld"
+#TARGET_CONFIGURE_ENV += NM="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm"
+#TARGET_CONFIGURE_ENV += CC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc"
+#TARGET_CONFIGURE_ENV += GCC="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc"
+#TARGET_CONFIGURE_ENV += CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++"
+#TARGET_CONFIGURE_ENV += RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
+
+# Common options for configure
+TARGET_CONFIGURE_OPTIONS:=
+TARGET_CONFIGURE_OPTIONS += --cache-file=$(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache
+TARGET_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
+TARGET_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
+TARGET_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
+TARGET_CONFIGURE_OPTIONS += --program-prefix=""
+TARGET_CONFIGURE_OPTIONS += --program-suffix=""
+TARGET_CONFIGURE_OPTIONS += --prefix=/usr
+TARGET_CONFIGURE_OPTIONS += --exec-prefix=/usr
+TARGET_CONFIGURE_OPTIONS += --bindir=/usr/bin
+TARGET_CONFIGURE_OPTIONS += --datadir=/usr/share
+TARGET_CONFIGURE_OPTIONS += --includedir=/usr/include
+TARGET_CONFIGURE_OPTIONS += --infodir=/usr/share/info
+TARGET_CONFIGURE_OPTIONS += --libdir=/usr/lib
+TARGET_CONFIGURE_OPTIONS += --libexecdir=/usr/lib
+TARGET_CONFIGURE_OPTIONS += --localstatedir=/var
+TARGET_CONFIGURE_OPTIONS += --mandir=/usr/share/man
+TARGET_CONFIGURE_OPTIONS += --sbindir=/usr/sbin
+TARGET_CONFIGURE_OPTIONS += --sysconfdir=/etc
+TARGET_CONFIGURE_OPTIONS += --with-gnu-ld
+TARGET_CONFIGURE_OPTIONS += $(DISABLE_NLS)
+TARGET_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
+
+DL_SITE:=$(strip $(subst ",, $(FREETZ_DL_SITE)))
+DL_SOURCE:=$(strip $(subst ",, $(FREETZ_DL_SOURCE)))
+
+ifneq ($(strip $(FREETZ_DL_SOURCE2)),)
+DL_SITE2:=$(strip $(subst ",, $(FREETZ_DL_SITE2)))
+DL_SOURCE2:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2)))
+endif
+
+ifneq ($(strip $(FREETZ_DL_SOURCE2_CONTAINER)),)
+DL_SOURCE2_CONTAINER:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2_CONTAINER)))
+DL_SOURCE2_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE2_CONTAINER))
+endif
+
+### Convenience macros
+# Since the makefiles for the packages contain many similar parts, we define some macros to simplify
+# the creation and maintenance of the makefiles.
+# macro names containing _INT are for internal use only and should not be called outside of this file
+# For details of the required targets, see the documentation in README.Makefiles
+
+
+# PKG_EDIT_CONFIG
+# update a config file
+#   $(1) = list of assignments CONFIG_VAR=value
+PKG_EDIT_CONFIG__INT0 = -e 's%^(\# )?($1)[ =].*%$(if $(patsubst n,,$2),\2=$2,\# \2 is not set)%g'
+PKG_EDIT_CONFIG__INT1 = $(call PKG_EDIT_CONFIG__INT0,$(word 1,$(subst =, ,$1)),$(word 2,$(subst =, ,$1)))
+PKG_EDIT_CONFIG = $(SED) -i -r $(foreach asg,$1,$(call PKG_EDIT_CONFIG__INT1,$(asg)))
+
+# PKG_FIX_LIBTOOL_LA
+#   fix directories is libtool .la files and .pc files
+PKG_FIX_LIBTOOL_LA__INT = -e "s,^$1=('?)(.*)('?)$$,$1=\1$(TARGET_TOOLCHAIN_STAGING_DIR)\2\3,g"
+PKG_FIX_LIBTOOL_LA = sed -i -r $(foreach key,libdir includedir prefix exec_prefix,$(call PKG_FIX_LIBTOOL_LA__INT,$(key)))
+
+
+# Use $< (first prerequisite) rather than $^ (all prerequisites), because
+# otherwise there will be errors when make tries to copy multiple source files
+# into one target binary.
+define INSTALL_BINARY_STRIP
+mkdir -p $(dir $@)
+cp $< $@
+$(TARGET_STRIP) $@
+endef
+
+### PKG_INIT - initialise package. See also PKG_FINISH.
+
+# Stage 1: initialise package names
+#   $(1) = version (mandatory)
+#   $(2) = lower-case package name (optional)
+#   $(3) = upper-case package name (optional)
+define PKG_INIT__INT
+#PKG_MAKEFILE:=$(lastword $(MAKEFILE_LIST))
+PKG_MAKEFILE:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+PKG_BASENAME:=$(basename $(notdir $(PKG_MAKEFILE)))
+$(if $(strip $1),,$(error Undefined version for PKG_INIT in $(PKG_MAKEFILE)))
+pkg:=$(if $(strip $2),$(strip $2),$(PKG_BASENAME))
+PKG:=$(if $(strip $3),$(strip $3),$(shell echo "$(pkg)" | tr '[a-z\-]' '[A-Z_]'))
+#
+$(PKG)_VERSION:=$(strip $1)
+$(PKG)_CONFIGURE_DEFOPTS:=y
+# $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
+$(pkg)-precompiled : $(pkg)-precompiled--int $(pkg)
+.PHONY: $(pkg)-precompiled $(pkg)-precompiled--int $(pkg)
+
+endef
+
+# Stage 2a: initialise other package-specific variables for binary packages
+define PKG_INIT_BIN__INT
+PKG_TYPE:=BIN
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+# level 99 for packages that are not actually started
+$(PKG)_STARTLEVEL=99
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
+$(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_DEST_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root
+endef
+
+# Stage 2b: initialise other package-specific variables for library packages
+define PKG_INIT_LIB__INT
+PKG_TYPE:=LIB
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
+$(PKG)_TARGET_DIR:=root/usr/lib
+$(PKG)_DEST_DIR:=root
+endef
+
+# Stage 3: Common definitions after BIN/LIB specific definitions
+define PKG_INIT__INT3
+$(PKG)_DEST_BIN:=$($(PKG)_DEST_DIR)/bin
+$(PKG)_DEST_SBIN:=$($(PKG)_DEST_DIR)/sbin
+$(PKG)_DEST_LIB:=$($(PKG)_DEST_DIR)/lib
+$(PKG)_DEST_USR_BIN:=$($(PKG)_DEST_DIR)/usr/bin
+$(PKG)_DEST_USR_SBIN:=$($(PKG)_DEST_DIR)/usr/sbin
+$(PKG)_DEST_USR_LIB:=$($(PKG)_DEST_DIR)/usr/lib
+endef
+
+define PKG_INIT_BIN__INTV
+$(value PKG_INIT__INT)
+$(value PKG_INIT_BIN__INT)
+$(value PKG_INIT__INT3)
+endef
+# Call & evaluate stages 1,2a,3 for binary packages
+define PKG_INIT_BIN
+$(eval $(call PKG_INIT_BIN__INTV,$1,$2,$3))
+endef
+
+define PKG_INIT_LIB__INTV
+$(value PKG_INIT__INT)
+$(value PKG_INIT_LIB__INT)
+$(value PKG_INIT__INT3)
+endef
+# Call & evaluate stages 1,2b,3 for library packages
+define PKG_INIT_LIB
+$(eval $(call PKG_INIT_LIB__INTV,$1,$2,$3))
+endef
+
+
+
+### PKG_FINISH - package finalisation
+
+# Finalise binary packages
+define PKG_FINISH_BIN__INT
+# Binary dirclean
+$(pkg)-dirclean--int:
+	$(RM) -r $($(PKG)_DIR)
+	$(RM) -r $($(PKG)_TARGET_DIR)
+	$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+$(PKG_LIST)
+endef
+
+# Finalise library packages (currently empty)
+define PKG_FINISH_LIB__INT
+# Library dirclean
+$(pkg)-dirclean--int:
+	$(RM) -r $($(PKG)_DIR)
+endef
+
+# Finalise packages (general functionality + call to type specifics)
+define PKG_FINISH__INT
+$(pkg)-dirclean: $(pkg)-dirclean--int
+.PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
+$(pkg)-precompiled--int : uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON)) 
+PKG:=
+pkg:=
+PKG_TYPE:=
+endef
+PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))$(eval $(PKG_FINISH__INT))
+
+
+### PKG_SOURCE_DOWNLOAD - download source packages
+
+define PKG_SOURCE_DOWNLOAD__INT
+$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
+	tools/freetz_download $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5)
+
+$(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
+.PHONY: $(pkg)-download
+endef
+PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
+
+
+### PKG_UNPACK - unpack source archive & apply patches
+# Naming conventions for patches are different for library vs. binary packages,
+# therefore we have two different macros.
+
+# tar options for uncompression by file extension
+PKG_UNPACK__INT_.tar:=
+PKG_UNPACK__INT_.gz:=z
+PKG_UNPACK__INT_.tgz:=z
+PKG_UNPACK__INT_.bz2:=j
+PKG_UNPACK__INT_.tbz:=j
+PKG_UNPACK__INT_.lzma:=a
+PKG_UNPACK__INT_.tlz:=a
+PKG_UNPACK__INT_.zip:=dummy
+# $1: package name
+define PKG_UNPACK__INT
+	$(if $(PKG_UNPACK__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
+	$(if $(patsubst %.zip,%,$(suffix $(strip $1))),
+		tar -C $(SOURCE_DIR) $(VERBOSE) -x$(PKG_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
+		unzip -u $(strip $1) -d $(SOURCE_DIR)
+	)
+endef
+
+# Unpack, without patch, but only if source package is defined
+define PKG_UNPACK
+	$(if $($(PKG)_SOURCE),$(call PKG_UNPACK__INT, $(DL_DIR)/$($(PKG)_SOURCE)))
+endef
+
+### PKG_PATCH - apply patches
+
+# $1: directory containing the patches
+# $2: directory to apply the patches to
+# $3: optional name for library patches
+define PKG_PATCH__INT
+	shopt -s nullglob; for i in $(strip $1)/*$(strip $3).patch; do \
+		$(PATCH_TOOL) $(strip $2) $$$$i; \
+	done
+endef
+
+# Patch binary package
+define PKG_BIN_PATCH
+	$(call PKG_PATCH__INT, $($(strip $(PKG))_MAKE_DIR)/patches, $($(strip $(PKG))_DIR), )
+endef
+
+# Patch library package
+define PKG_LIB_PATCH
+	$(call PKG_LIB_PATCH__INT, $(PKG), .$(strip $(pkg)))
+	$(call PKG_PATCH__INT, $($(strip $(PKG))_MAKE_DIR)/patches, $($(strip $(PKG))_DIR), .$(strip $(pkg)))
+endef
+
+## Unpack and patch binary package
+define PKG_UNPACKED_BIN__INT
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE)
+	$(RM) -r $($(PKG)_DIR)
+	$(call PKG_UNPACK)
+	$(call PKG_BIN_PATCH)
+	touch $$@
+$(pkg)-source: $($(PKG)_DIR)/.unpacked
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+.PHONY: $(pkg)-source $(pkg)-unpacked
+
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION):
+	mkdir -p $($(PKG)_TARGET_DIR)/root
+	if test -d $($(PKG)_MAKE_DIR)/files; then \
+		tar -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | tar -x -C $($(PKG)_TARGET_DIR) ; \
+	fi
+	@touch $$@
+$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+.PHONY: $(pkg) $(pkg)-precompiled
+endef
+
+## Unpack and patch library package
+define PKG_UNPACKED_LIB__INT
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE)
+	$(call PKG_UNPACK)
+	$(call PKG_LIB_PATCH)
+	touch $$@
+$(pkg)-source: $($(PKG)_DIR)/.unpacked
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+.PHONY: $(pkg)-source $(pkg)-unpacked
+endef
+
+## only used for BIN packages.
+define PKG_UNPACKED__INT
+$(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.$(pkg)_config
+$(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.$(pkg)_config.temp
+endef
+
+## check for changed suboptions
+# should only be called if $(PKG)_CONFIG_SUBOPTS is defined
+define PKG_UNPACKED_CHECK_SUBOPTS__INT
+$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
+	@($(foreach OPT,$($(PKG)_CONFIG_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_TEMP)
+	@diff -q $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE) || \
+		cp $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE)
+	@$(RM) $($(PKG)_FREETZ_CONFIG_TEMP)
+$($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
+
+endef
+
+PKG_BIN_UNPACKED=$(eval $(PKG_UNPACKED_BIN__INT))
+PKG_LIB_UNPACKED=$(eval $(PKG_UNPACKED_LIB__INT))
+PKG_UNPACKED=$(eval $(PKG_UNPACKED__INT))$(eval $(PKG_UNPACKED_$(PKG_TYPE)__INT)) \
+	$(if $($(PKG)_CONFIG_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT)))
+
+### Configure package
+define PKG_CONFIGURED_COMMON__INT
+#$($(PKG)_DIR)/.configured : $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+$(pkg)-configured : $($(PKG)_DIR)/.configured
+.PHONY: $(pkg)-configured
+endef
+## Configure package, using ./configure
+define PKG_CONFIGURED_CONFIGURE__INT
+# Must be first
+$(PKG_CONFIGURED_COMMON__INT)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
+	( cd $($(PKG)_DIR); \
+		$(TARGET_CONFIGURE_PRE_CMDS) \
+		$($(PKG)_CONFIGURE_PRE_CMDS) \
+		source $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
+		$(TARGET_CONFIGURE_ENV) \
+		$($(PKG)_CONFIGURE_ENV) \
+		./configure \
+		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
+		$($(PKG)_CONFIGURE_OPTIONS) \
+	)
+	touch $$@
+endef
+PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
+
+## Package needs no configuration
+define PKG_CONFIGURED_NOP__INT
+# Must be first
+$(PKG_CONFIGURED_COMMON__INT)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
+	touch $$@
+endef
+PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
+
+
+## Add package to static or dynamic list
+define PKG_LIST__INT
+$(pkg)-list:
+ifeq ($(strip $(FREETZ_PACKAGE_$(PKG))),y)
+	@echo "S$(strip $($(PKG)_STARTLEVEL))$(pkg)-$($(PKG)_VERSION)" >> .static
+else
+	@echo "S$(strip $($(PKG)_STARTLEVEL))$(pkg)-$($(PKG)_VERSION)" >> .dynamic
+endif
+.PHONY: $(pkg)-list
+endef
+PKG_LIST=$(eval $(PKG_LIST__INT))

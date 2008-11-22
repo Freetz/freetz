@@ -1,0 +1,109 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+
+case "$1" in
+        ""|load|start|restart)
+            if [ ! -r "/mod/etc/conf/quagga.cfg" ]; then
+		    echo "Error[quagga]: not configured" 1>&2
+		    exit 1
+            fi
+
+            . /mod/etc/conf/quagga.cfg
+
+	    RUN_MODSAVE=0
+
+	    for daemon in zebra bgpd ripd ripngd ospfd ospf6d isisd; do
+		    CFGFILE="/tmp/flash/$daemon.conf"
+		    [ -x /usr/sbin/$daemon ] || continue
+		    daemonlist="$daemonlist $daemon"
+		    if [ ! -e $CFGFILE ]; then
+			    echo "Creating empty $CFGFILE"
+			    : > $CFGFILE
+			    RUN_MODSAVE=1
+		    fi
+	    done
+
+	    [ $RUN_MODSAVE = 1 ] && /usr/bin/modsave flash
+        ;;
+esac
+
+start() {
+	mkdir -p /var/log/quagga
+
+	echo -n 'Starting quagga:'
+	BE_QUIET='yes' /etc/init.d/quagga start
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo ', done.'
+	else
+		echo ', failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping quagga:'
+	BE_QUIET='yes' /etc/init.d/quagga stop
+	exitval=$?
+
+	if [ "$exitval" -eq 0 ]; then
+		echo ', done.'
+	else
+		echo ', failed.'
+		exit $exitval
+	fi
+}
+
+
+case "$1" in
+        ""|load)
+		modreg cgi 'quagga' 'Quagga'
+		for daemon in $daemonlist; do
+			deffile="/mod/etc/default.quagga/${daemon}_conf.def"
+			[ -r "/tmp/flash/${daemon}_conf.def" ] && deffile="/tmp/flash/${daemon}_conf.def"
+			modreg file "${daemon}_conf" "Quagga - $daemon.conf" 0 "$deffile"
+		done
+
+		if [ "$QUAGGA_ENABLED" = "no" ]; then
+			echo "quagga is disabled" 1>&2
+			exit 1
+		fi
+
+		start
+		;;
+	unload)
+		stop
+
+		for daemon in $daemonlist; do
+			modunreg file "${daemon}_conf"
+		done
+		modunreg cgi 'quagga'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof zebra)" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+
+esac
+
+exit 0

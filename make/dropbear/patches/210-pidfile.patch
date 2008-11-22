@@ -1,0 +1,10 @@
+--- svr-main.c.orig	2007-08-08 17:39:37.000000000 +0200
++++ svr-main.c	2007-08-08 18:33:14.000000000 +0200
+@@ -139,6 +139,7 @@
+ 	listensockcount = listensockets(listensocks, MAX_LISTEN_ADDR, &maxsock);
+ 	if (listensockcount == 0)
+ 	{
++		unlink(svr_opts.pidfile);
+ 		dropbear_exit("No listening ports available.");
+ 	}
+ 

@@ -1,0 +1,14 @@
+Prevent endless loop if output is not compressible. May be fixed in 4.56 beta 
+diff -urw source/save/lzma443/C/7zip/Common/OutBuffer.cpp source/lzma443/C/7zip/Common/OutBuffer.cpp
+--- C/7zip/Common/OutBuffer.cpp	2007-11-07 19:41:11.000000000 +0100
++++ C/7zip/Common/OutBuffer.cpp	2006-03-08 14:13:12.000000000 +0100
+@@ -74,6 +74,8 @@
+     UInt32 processedSize = 0;
+     result = _stream->Write(_buffer + _streamPos, size, &processedSize);
+     size = processedSize;
++    if (!size)
++      result = -1;
+   }
+   _streamPos += size;
+   if (_streamPos == _bufferSize)
+diff

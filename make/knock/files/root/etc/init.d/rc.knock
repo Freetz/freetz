@@ -1,0 +1,101 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+PACKAGE=knock
+DAEMON=knockd
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/$PACKAGE.cfg" ]; then
+			echo "Error[$PACKAGE]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$PACKAGE.cfg
+		;;
+esac
+
+start() {
+	if [ ! -e "/tmp/flash/knockd.conf" ]; then
+		echo "Creating knockd.conf"
+		cat /usr/share/doc/knock/knockd.conf > /tmp/flash/knockd.conf
+		/usr/bin/modsave flash
+	fi
+
+	echo -n 'Starting port-knock server...'
+	set -o noglob
+	local countdown=10
+	while [ $((countdown--)) -gt 0 ] && ! ifconfig dsl > /dev/null 2>&1; do
+		sleep 2
+	done
+	$DAEMON -d -c /tmp/flash/knockd.conf -i "$KNOCK_INTERFACE"
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping port-knock server...'
+	killall $DAEMON > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+		[ -d "/tmp/flash/.ssh" ] || mkdir /tmp/flash/.ssh
+
+		modreg cgi 'knock' 'Knock'
+
+		deffile='/mod/etc/default.knock/knockd_conf.def'
+		[ -r "/tmp/flash/knock_conf.def" ] && deffile='/tmp/flash/knockd_conf.def'
+		modreg file 'knockd_conf' 'Knockd config' 0 "$deffile"
+
+		if [ "$KNOCK_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg file 'knockd_conf'
+		modunreg cgi 'knock'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

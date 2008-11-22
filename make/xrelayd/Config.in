@@ -1,0 +1,14 @@
+config FREETZ_PACKAGE_XRELAYD
+	bool "Xrelayd 0.2.1pre2 (binary only)"
+	select FREETZ_LIB_libxyssl
+	default n
+	help
+		SSL tunnel based on XySSL. Xrelayd is a stripped down version of
+		stunnel based on XySSL library. Essentially, this package makes your
+		router's websrv or httpd SSL-enabled, offering you the option of remote
+		configuration via WWW or secure remote use of features like Rudi-Shell.
+
+		This package will eventually replace Matrixtunnel, even though the
+		XySSL library is somewhat bigger than MatrixSSL. Its command line
+		interface is identical to Matrixtunnel's, so switching should be easy
+		for all users.

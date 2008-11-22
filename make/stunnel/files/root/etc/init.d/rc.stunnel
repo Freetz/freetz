@@ -1,0 +1,136 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=stunnel
+PIDFILE="/var/run/$DAEMON.pid"
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+is_running() {
+	local pid
+	[ -e "$PIDFILE" ] && read pid < "$PIDFILE" && 
+	kill -EXIT "$pid" 2> /dev/null
+}
+
+pre_config() {
+	[ -d "/tmp/flash/.stunnel" ] || mkdir /tmp/flash/.stunnel
+}
+
+start() {
+	{
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/stunnel_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+
+		if [ -r "/tmp/flash/stunnel_svcs" ]; then
+			cat /tmp/flash/stunnel_svcs
+		fi
+	} > /mod/etc/${DAEMON}.conf
+
+	echo -n 'Starting stunnel...'
+
+	$DAEMON
+
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping stunnel...'
+	read pid < "$PIDFILE" &&
+	kill -USR1 "$pid" > /dev/null 2>&1
+
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		rm -f $PIDFILE > /dev/null 2>&1
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+		pre_config
+
+		export STUNNEL_CONFIGURED="1"
+		modreg cgi 'stunnel' 'Stunnel'
+
+		deffile="/mod/etc/default.$DAEMON/stunnel_svcs.def"
+		[ -r "/tmp/flash/stunnel_svcs.def" ] && deffile='/tmp/flash/stunnel_svcs.def'
+		modreg file 'stunnel_svcs' 'Stunnel: services' 0 "$deffile"
+
+		deffile="/mod/etc/default.$DAEMON/stunnel_key.def"
+		[ -r "/tmp/flash/stunnel_key.def" ] && deffile='/tmp/flash/stunnel_key.def'
+		modreg file 'stunnel_key' 'Stunnel: Private Key' 0 "$deffile"
+
+		deffile="/mod/etc/default.$DAEMON/stunnel_certchain.def"
+		[ -r "/tmp/flash/stunnel_certchain.def" ] && deffile='/tmp/flash/stunnel_certchain.def'
+		modreg file 'stunnel_certchain' 'Stunnel: Certificate Chain' 0 "$deffile"
+
+		if [ "$STUNNEL_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg file 'stunnel_key'
+		modunreg file 'stunnel_certchain'
+		modunreg file 'stunnel_svcs'
+		modunreg cgi 'stunnel'
+		;;
+	start)
+		start
+		;;
+	stop)
+		if ! is_running; then
+			echo "$DAEMON is not running" >&2
+			exit 1
+		fi
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if is_running; then
+			echo 'running'
+		else
+			echo 'stopped'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

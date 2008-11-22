@@ -1,0 +1,19 @@
+--- etc/init.d/rc.net.orig	2008-04-21 17:12:40.000000000 +0200
++++ etc/init.d/rc.net	2008-04-21 17:12:40.000000000 +0200
+@@ -11,6 +11,8 @@
+ PKG=dnsmasq
+ BASE=/mod/pkg/$PKG
+ PATH=$BASE/usr/lib/$PKG/bin:$PATH
++# Do we have a Samba server (smbd) or was ist stripped from the firmware?
++_smbd=$(basename $(which smbd) 2> /dev/null)
+ 
+ case "`uname -r`" in
+   2.6* ) KERNEL_26=yes; ;;
+@@ -297,6 +299,7 @@
+ #we have the samba cfg in /var, so crate them there
+ sambastart()
+ {
++   [ "$_smbd" ] || return;
+    cd /
+    tar xf /var.tar
+    /bin/smbd

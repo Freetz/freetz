@@ -1,0 +1,37 @@
+#!/bin/sh
+
+if [ "$VSFTPD_ENABLED" != "inetd" ]; then
+	LISTEN="yes"
+else
+	LISTEN="no"
+fi
+
+cat << EOF
+background=yes
+check_shell=no
+listen=$LISTEN
+anonymous_enable=$VSFTPD_ANONYMOUS
+local_enable=$VSFTPD_USERS_ENABLED
+local_umask=022
+chroot_local_user=$VSFTPD_CHROOT
+passwd_chroot_enable=$VSFTPD_CHROOT
+write_enable=yes
+banner_file=/etc/motd
+nopriv_user=root
+secure_chroot_dir=/var/run/vsftpd
+listen_port=$VSFTPD_PORT
+userlist_enable=yes
+anon_root=$VSFTPD_ANON_ROOT
+xferlog_std_format=no
+xferlog_enable=$VSFTPD_LOG_ENABLE
+vsftpd_log_file=$VSFTPD_LOG_FILE
+log_ftp_protocol=$VSFTPD_LOG_PROTOC
+syslog_enable=$VSFTPD_LOG_SYSLOG
+max_clients=$VSFTPD_MAX_CLIENTS
+max_per_ip=$VSFTPD_MAX_PER_IP
+pasv_min_port=$VSFTPD_PASV_MIN
+pasv_max_port=$VSFTPD_PASV_MAX
+pasv_promiscuous=$VSFTPD_PROMISCUOUS
+delay_failed_login=$VSFTPD_DELAY_FAILED_LOGIN
+EOF
+

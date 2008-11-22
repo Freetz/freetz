@@ -1,0 +1,658 @@
+config FREETZ_LIB_libbluetooth
+	bool "bluez-libs (libbluetooth.so)"
+	default n
+	help
+		The overall goal of the bluez project is to make an implementation of
+		the Bluetooth wireless standards specifications for Linux.
+
+config FREETZ_LIB_libopenobex
+	bool "OpenOBEX (libopenobex.so)"
+	select FREETZ_LIB_libbluetooth
+	default n
+	help
+		The overall goal of this project is to make an open source
+		implementation of the Object Exchange (OBEX) protocol.
+
+menu "Crypto & SSL"
+
+comment "GnuPG ----------------------------------"
+
+config FREETZ_LIB_libgpg_error
+	bool "GnuPG error library (libgpg-error.so)"
+	default n
+	help
+		Libgpg-error is a small library that defines common error values for all
+		GnuPG components. Among these are GPG, GPGSM, GPGME, GPG-Agent,
+		libgcrypt, Libksba, DirMngr, Pinentry, SmartCard Daemon and possibly
+		more in the future.
+
+config FREETZ_LIB_libgcrypt
+	bool "GnuPG crypto library (libgcrypt.so)"
+	select FREETZ_LIB_libgpg_error
+	select FREETZ_LIB_libnsl
+	default n
+	help
+		Libgcrypt is a general-purpose cryptographic library based on the code
+		from GnuPG. It provides functions for all cryptographic building blocks:
+		symmetric ciphers (AES, DES, Blowfish, CAST5, Twofish, and Arcfour),
+		hash algorithms (MD4, MD5, RIPE-MD160, SHA-1, and TIGER-192), MACs
+		(HMAC for all hash algorithms), public key algorithms (RSA, ElGamal,
+		and DSA), large integer functions, random numbers, and a lot of
+		supporting functions. 
+
+comment "SSL ------------------------------------"
+
+config FREETZ_LIB_libcyassl
+	bool "CyaSSL (libcyassl.so)"
+	default n
+	help
+		The yaSSL software package is a fast, open source, dual licensed
+		implementation of SSL (SSLv3 and TLSv1). It includes SSL client libraries
+		and an SSL server implementation. yaSSL supports multiple API's, including
+		those defined by SSL and TLS. yaSSL also supports an OpenSSL compatibility
+		interface.
+
+		In Freetz, currently no package depends on MatrixSSL, but the OpenSSL
+		compatibility interface might one day enable us to port applications like
+		Stunnel or even OpenVPN (maybe a bit too ambitious, but who knows?) to this
+		lightweight SSL library. The testsuite runs fine on the target system,
+		I (kriegaex) tried it.
+
+config FREETZ_LIB_libmatrixssl
+	bool "MatrixSSL (libmatrixssl.so)"
+	select FREETZ_LIB_libpthread
+	default n
+	help
+		MatrixSSL is an open source embedded SSL implementation designed for
+		small footprint applications and devices. There are existing open-source
+		SSL implementations available and there are existing embedded SSL
+		implementations, but there was a notable absence of packages that offer
+		both.
+		
+		In Freetz, matrixtunnel depends on MatrixSSL.
+
+config FREETZ_LIB_libxyssl
+	bool "XySSL (libxyssl.so)"
+	default n
+	help
+		The aim of the XySSL project is to provide a quality, open-source
+		cryptographic library written in C and targeted at embedded systems.
+		It can be used for free under the LGPL or BSD license.
+
+		For more information about this project, please contact cd1@xyssl.org.
+		Web site: http://xyssl.org
+
+		In Freetz, xrelayd depends on XySSL.
+
+config FREETZ_LIB_libcrypto
+	bool "OpenSSL cryptographic library (libcrypto.so)"
+	default n
+	help
+		crypto - OpenSSL cryptographic library
+		
+		The OpenSSL crypto library implements a wide range of cryptographic
+		algorithms used in various Internet standards. The services provided by
+		this library are used by the OpenSSL implementations of SSL, TLS and
+		S/MIME, and they have also been used to implement SSH, OpenPGP, and
+		other cryptographic standards.
+		
+		libcrypto consists of a number of sub-libraries that implement the
+		individual algorithms. The functionality includes symmetric encryption,
+		public key cryptography and key agreement, certificate handling,
+		cryptographic hash functions and a cryptographic pseudo-random number
+		generator. 
+
+config FREETZ_LIB_libssl
+	bool "OpenSSL SSL/TLS library (libssl.so)"
+	select FREETZ_LIB_libcrypto
+	default n
+	help
+		SSL - OpenSSL SSL/TLS library
+		
+		The OpenSSL ssl library implements the Secure Sockets Layer (SSL v2/v3)
+		and Transport Layer Security (TLS v1) protocols. It provides a rich API.
+		
+		In Freetz, e.g. Tor, sTunnel and OpenVPN depend on libssl.
+
+config FREETZ_LIB_libavmhmac
+	bool "Replace libavmhmac - EXPERIMENTAL"
+	depends on ! FREETZ_TYPE_LABOR_VPN
+	requires FREETZ_LIB_libcrypto
+	default n
+	help
+		Our libavmhmac only forwards functions to openssl's libcrypto where AVM
+		wrote their own implementations. We have no clue why they did this. 
+
+endmenu
+
+menu "Data compression"
+
+config FREETZ_LIB_liblzo2
+	bool "LZO (liblzo2.so)"
+	default n
+	help
+		LZO is a portable lossless data compression library written in ANSI C.
+		It offers pretty fast compression and *very* fast decompression.
+		Decompression requires no memory. In addition there are slower
+		compression levels achieving a quite competitive compression ratio while
+		still decompressing at this very high speed. 
+
+config FREETZ_LIB_libz
+	bool "Zlib (libz.so)"
+	default n
+	help
+		zlib is a lossless data-compression library for use on virtually any
+		computer hardware and operating system. The zlib data format is itself
+		portable across platforms.
+
+		In Freetz, e.g. Tor, Bftpd and Stunnel depend on zlib.
+
+endmenu
+
+menu "Graphics & fonts"
+
+config FREETZ_LIB_libfreetype
+	bool "FreeType 2 font engine (freetype.so)"
+	default n
+	help
+		FreeType 2 is a software font engine that is designed to be small, efficient,
+		highly customizable, and portable while capable of producing high-quality
+		output (glyph images). It can be used in graphics libraries, display servers,
+		font conversion tools, text image generation tools, and many other products
+		as well.
+
+		In Freetz, rrdtool depends on freetype.
+
+config FREETZ_LIB_libart_lgpl_2
+	bool "Libart 2D graphics (libart.so)"
+	default n
+	help
+		Libart is a library for high-performance 2D graphics. It supports a very
+		powerful imaging model, basically the same as SVG and the Java 2D API.
+		It includes all PostScript imaging operations, and adds antialiasing and
+		alpha-transparency. It is also highly tuned for incremental rendering. It
+		contains data structures and algorithms suited to rapid, precise computation
+		of Region of Interest, and a two-phase rendering pipeline optimized for
+		interactive display. 
+
+		In Freetz, rrdtool depends on libart.
+
+config FREETZ_LIB_libjpeg
+	bool "JPEG library (libjpeg.so)"
+	default n
+	help
+		libjpeg is a library for handling the JPEG (JFIF) image format
+
+config FREETZ_LIB_libpng12
+	bool "PNG library (libpng.so)"
+	select FREETZ_LIB_libz
+	default n
+	help
+		libpng is the official PNG reference library. It supports almost all PNG
+		features, is extensible, and has been extensively tested for over 12 years.
+		The home site for development versions (i.e., may be buggy or subject to 
+		change or include experimental features) is http://libpng.sourceforge.net/,
+		and the place to go for questions about the library is the png-mng-implement
+		mailing list. 
+
+		In Freetz, rrdtool depends on libpng.
+
+endmenu
+
+menu "uClibc"
+
+config FREETZ_LIB_ld_uClibc
+	bool "ld-uClibc-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_libcrypt
+	bool "libcrypt-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_libdl
+	bool "libdl-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_libm
+	bool "libm-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_libnsl
+	bool "libnsl-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_libpthread
+	bool "libpthread-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_libresolv
+	bool "libresolv-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_librt
+	bool "librt-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_libthread_db
+	bool "libthread_db-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_libuClibc
+	bool "libuClibc-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+config FREETZ_LIB_libutil
+	bool "libutil-0.9.28.so"
+	default n
+	help
+		uClibc is a small C standard library intended for embedded Linux
+		systems. uClibc was created to support uClinux, a version of Linux not
+		requiring a memory management unit and thus suited for microcontrollers
+		(hence the "uC" in the name - "u" is a replacement for the Greek
+		character "miu" often used as an abbreviation for the prefix "micro").
+
+		uClibc is much smaller than GNU C Library (glibc), the C library
+		normally used with Linux distributions. While glibc is intended to fully
+		support all relevant C standards across a wide range of platforms,
+		uClibc is specifically focused on embedded Linux. Features can be
+		enabled or disabled according to space requirements.
+
+endmenu
+
+config FREETZ_LIB_libuClibcxx
+	bool "uClibc++ (libuClibc++-0.2.1.so)"
+	default n
+	help
+		The uClibc++ library is my implementation of the C++ standard library.
+		It is designed for use in embedded systems. 
+
+config FREETZ_LIB_libgcc_s
+	bool "GCC low-level runtime library (libgcc_s.so)"
+	default n
+	help
+		GCC low-level runtime library
+
+		GCC provides a low-level runtime library, `libgcc.a' or `libgcc_s.so.1'
+		on some platforms. GCC generates calls to routines in this library
+		automatically, whenever it needs to perform some operation that is too
+		complicated to emit inline code for.
+
+		Most of the routines in libgcc handle arithmetic operations that the
+		target processor cannot perform directly. This includes integer multiply
+		and divide on some machines, and all floating-point operations on other
+		machines. libgcc also includes routines for exception handling, and a
+		handful of miscellaneous operations.
+
+config FREETZ_LIB_libglib
+	bool "GLib 1.2 (libglib-1.2.so)"
+	select FREETZ_LIB_libpthread
+	default n
+	help
+		GLib is a library containing many useful C routines for things such as trees, 
+		hashes, and lists.
+
+		GLib 1.2 is needed by MC 4.6.1
+
+menu "GLib2"
+
+config FREETZ_LIB_libglib2
+	bool "GLib2 (libglib-2.0.so)"
+	select FREETZ_LIB_libiconv
+	select FREETZ_LIB_libintl
+	default n
+	help
+		GLib is a library containing many useful C routines for things such as trees, 
+		hashes, and lists.
+
+		GLib2 is needed by Irssi
+
+config FREETZ_LIB_libgobject2
+	bool "libgobject-2.0.so"
+	select FREETZ_LIB_libglib2
+	default n
+	help
+		If your application uses Glib2 GObjects, select this library.
+
+config FREETZ_LIB_libgmodule2
+	bool "libgmodule-2.0.so"
+	select FREETZ_LIB_libglib2
+	default n
+	help
+		If your application uses Glib2 modules (plug-ins), select this library.
+		E.g. Irssi needs this library and auto-selects it.
+
+config FREETZ_LIB_libgthread2
+	bool "libgthread-2.0.so"
+	select FREETZ_LIB_libglib2
+	default n
+	help
+		If your application uses Glib2 threads, select this library.
+
+endmenu
+
+menu "ncurses"
+
+config FREETZ_LIB_libncurses
+	bool "ncurses (libncurses.so)"
+	select FREETZ_LIB_libterminfo
+	default n
+	help
+		ncurses is a programming library providing an API, allowing the
+		programmer to write text user interfaces in a terminal-independent
+		manner. It also optimizes screen changes, in order to reduce the latency
+		experienced when using remote shells.
+
+		Ncurses stands for "new curses", and is a replacement for the
+		discontinued 4.4 BSD classic curses.
+		
+		In Freetz, e.g. Lua, Bird, Mc, Lynx and Screen use libncurses.
+
+source make/libs/ncurses-Config.in
+
+config FREETZ_LIB_libform
+	bool "libform (libform.so)"
+	default n
+	select FREETZ_LIB_libncurses
+	help
+		The form library is a curses extension that supports easy programming
+		of on-screen forms for data entry and program control.
+
+		In Freetz, there is currently no package which depends on this library.
+
+config FREETZ_LIB_libmenu
+	bool "libmenu (libmenu.so)"
+	default n
+	select FREETZ_LIB_libncurses
+	help
+		The menu library is a curses extension that supports easy programming of
+		menu hierarchies with a uniform but flexible interface.
+
+		In Freetz, there is currently no package which depends on this library.
+
+config FREETZ_LIB_libpanel
+	bool "libpanel (libpanel.so)"
+	default n
+	select FREETZ_LIB_libncurses
+	help
+		The ncurses library by itself provides good support for screen displays in
+		which the windows are tiled (non-overlapping).
+		When your interface design is such that windows may dive deeper into the
+		visibility stack or pop to the top at runtime, the resulting book-keeping
+		can be tedious and difficult to get right. Hence the panels library.
+
+		In Freetz, there is currently no package which depends on this library.
+
+endmenu
+
+config FREETZ_LIB_libcapi20
+	bool "CAPI 2.0 (libcapi20.so)"
+	default n
+	help
+		COMMON-ISDN-API (CAPI) 2.0 Library
+
+config FREETZ_LIB_libcurl
+	bool "libcurl (libcurl.so)"
+	default n
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libz
+	help
+		A client-side URL transfer library.
+
+config FREETZ_LIB_libevent
+	bool "libevent (libevent.so)"
+	default n
+	select FREETZ_LIB_libresolv
+	help
+		libevent is an asynchronous event notification software library.
+		
+		The libevent API provides a mechanism to execute a callback function
+		when a specific event occurs on a file descriptor or after a timeout
+		has been reached. Furthermore, libevent also support callbacks due to
+		signals or regular timeouts.
+
+		libevent is meant to replace the event loop found in event-driven
+		network servers. An application just needs to call event_dispatch() and
+		then add or remove events dynamically without having to change the event
+		loop.
+
+config FREETZ_LIB_libid3tag
+	bool "ID3 Tag (libid3tag.so)"
+	select FREETZ_LIB_libz
+	default n
+	help
+		ID3 tag manipulation library
+
+config FREETZ_LIB_libmad
+	bool "MAD (libmad.so)"
+	default n
+	help
+		MAD is a high-quality MPEG audio decoder. It currently supports MPEG-1
+		and the MPEG-2 extension to Lower Sampling Frequencies, as well as the
+		so-called MPEG 2.5 format. All three audio layers (Layer I, Layer II,
+		and Layer III a.k.a. MP3) are fully implemented.
+
+#config FREETZ_LIB_libpjsip
+#	bool "libpjsip (libpjsip.so)
+#	default n
+#	help
+#		PJSIP is a SIP stack supporting many SIP extensions/features
+
+config FREETZ_LIB_libpcap
+	bool "libpcap (libpcap.so)"
+	default n
+	help
+		libpcap is a system-independent interface for user-level packet capture.
+		libpcap provides a portable framework for low-level network monitoring.
+		Applications include network statistics collection, security monitoring,
+		network debugging, etc.
+
+		In Freetz, e.g. tcpdump, knock and pingtunnel depend on libpcap.
+
+menu "Readline"
+
+config FREETZ_LIB_libreadline
+	bool "libreadline.so"
+	default n
+	help
+		The Readline library provides a set of functions for use by applications
+		that allow users to edit command lines as they are typed in. Both Emacs
+		and vi editing modes are available. The Readline library includes
+		additional functions to maintain a list of previously-entered command
+		lines, to recall and perhaps reedit those lines, and perform csh-like
+		history expansion on previous commands.
+
+		In Freetz, e.g. Lua and Bird depend on libreadline.
+
+config FREETZ_LIB_libhistory
+	bool "libhistory.so"
+	default n
+	select FREETZ_LIB_libreadline
+	help
+		The Readline library provides a set of functions for use by applications
+		that allow users to edit command lines as they are typed in. Both Emacs
+		and vi editing modes are available. The Readline library includes
+		additional functions to maintain a list of previously-entered command
+		lines, to recall and perhaps reedit those lines, and perform csh-like
+		history expansion on previous commands.
+
+		In Freetz, e.g. Lua and Bird depend on libhistory.
+
+endmenu
+
+config FREETZ_LIB_libusb
+	bool "libusb (libusb.so)"
+	default n
+	help
+		A library for accessing Linux USB devices.
+
+config FREETZ_LIB_libelf
+	bool "ELF object file access library (libelf.so)"
+	default n
+	help
+		libelf - ELF object file access library
+
+		libelf-0.8.5 is a free ELF object file access library.
+		http://www.stud.uni-hannover.de/~michael/software/
+
+		In Freetz, e.g ltrace depends on libelf.
+
+config FREETZ_LIB_libintl
+	bool "libintl (libintl.so)"
+	default n
+	help
+		GNU Internationalization library
+
+config FREETZ_LIB_libiconv
+	bool "libiconv (libiconv.so)"
+	default n
+	help
+		This library provides an iconv() implementation, for use on systems which don't 
+		have one, or whose implementation cannot convert from/to Unicode. 
+
+config FREETZ_LIB_libftdi
+	bool "libftdi (libftdi.so)"
+	select FREETZ_LIB_libusb
+	default n
+	help
+		A library (using libusb) to talk to FTDI's FT232BM/245BM, FT2232C/D and 
+		FT232/245R type chips including the popular bitbang mode.
+
+config FREETZ_LIB_libsysfs
+	bool "libsysfs (libsysfs.so)"
+	default n
+	help
+		The library's purpose is to provide a consistant and stable
+		interface for querying system device information exposed through sysfs.
+
+config FREETZ_LIB_libpopt
+	bool "popt (libpopt.so)"
+	default n
+	help
+		The popt library exists essentially for parsing command line
+		options.
+
+config FREETZ_LIB_libdevmapper
+	bool "devmapper (libdevmapper.so)"
+	default n
+	help
+		Device-mapper library.

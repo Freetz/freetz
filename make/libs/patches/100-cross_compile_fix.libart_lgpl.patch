@@ -1,0 +1,15 @@
+diff -urN libart.old/Makefile.in libart.dev/Makefile.in
+--- Makefile.in	2005-01-21 10:52:11.000000000 +0100
++++ Makefile.in	2005-07-17 19:31:05.000000000 +0200
+@@ -474,9 +474,9 @@
+ 	  echo " rm -f $$p $$f"; \
+ 	  rm -f $$p $$f ; \
+ 	done
+-gen_art_config$(EXEEXT): $(gen_art_config_OBJECTS) $(gen_art_config_DEPENDENCIES) 
++gen_art_config$(EXEEXT):
+ 	@rm -f gen_art_config$(EXEEXT)
+-	$(LINK) $(gen_art_config_OBJECTS) $(gen_art_config_LDADD) $(LIBS)
++	$(HOSTCC) -I. -DLIBART_COMPILATION -DHAVE_CONFIG_H -o $@ gen_art_config.c
+ testart$(EXEEXT): $(testart_OBJECTS) $(testart_DEPENDENCIES) 
+ 	@rm -f testart$(EXEEXT)
+ 	$(testart_LINK) $(testart_OBJECTS) $(testart_LDADD) $(LIBS)

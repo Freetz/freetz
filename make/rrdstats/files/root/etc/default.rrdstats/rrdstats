@@ -1,0 +1,125 @@
+#!/bin/sh
+
+# initial by ramik, extended by cuma
+
+[ ! -r /mod/etc/conf/rrdstats.cfg ] && exit 1
+. /mod/etc/conf/rrdstats.cfg
+
+_NICE=$(which nice)
+
+collect_cpu() {
+	NAMEPREFIX=cpu_$RRDSTATS_INTERVAL
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:user:COUNTER:600:0:100 \
+			DS:nice:COUNTER:600:0:100 \
+			DS:syst:COUNTER:600:0:100 \
+			DS:wait:COUNTER:600:0:100 \
+			DS:idle:COUNTER:600:0:100 \
+			RRA:AVERAGE:0.5:1:576 \
+			RRA:AVERAGE:0.5:6:672 \
+			RRA:AVERAGE:0.5:24:732 \
+			RRA:AVERAGE:0.5:144:1460	
+	fi
+	cpudata=$(grep '^cpu ' /proc/stat | awk '{print "N:"$2":"$3":"$4":"$6+$7":"$5;}')
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $cpudata --template user:nice:syst:wait:idle
+}
+
+collect_mem() {
+	NAMEPREFIX=mem_$RRDSTATS_INTERVAL
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:used:GAUGE:600:0:5000000000 \
+			DS:free:GAUGE:600:0:5000000000 \
+			DS:buff:GAUGE:600:0:5000000000 \
+			DS:cached:GAUGE:600:0:5000000000 \
+			DS:swap:GAUGE:600:0:5000000000 \
+			DS:swaptotal:GAUGE:600:0:5000000000 \
+			DS:swapfree:GAUGE:600:0:5000000000 \
+			RRA:AVERAGE:0.5:1:576 \
+			RRA:AVERAGE:0.5:6:672 \
+			RRA:AVERAGE:0.5:24:732 \
+			RRA:AVERAGE:0.5:144:1460
+	fi
+	memdata=$(awk '
+		/^MemTotal:/ {total=$2*1024}
+		/^MemFree:/ {free=$2*1024}
+		/^Buffers:/ {buff=$2*1024}
+		/^Cached:/ {cached=$2*1024}
+		/^SwapTotal:/ {swaptotal=$2*1024}
+		/^SwapFree:/ {swapfree=$2*1024}
+		END {
+			used=total-(free+buff+cached)
+			swap=swaptotal-swapfree
+		print "N:" used ":" free ":" buff ":" cached ":" swap ":" swaptotal ":" swapfree}' /proc/meminfo)
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $memdata --template used:free:buff:cached:swap:swaptotal:swapfree
+}
+
+collect_upt() {
+	NAMEPREFIX=upt_$RRDSTATS_INTERVAL
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:uptime:GAUGE:600:0:99999 \
+			RRA:MAX:0.1:1:576 \
+			RRA:MAX:0.1:6:672 \
+			RRA:MAX:0.1:24:732 \
+			RRA:MAX:0.1:144:1460
+	fi
+	uX=$(( `cat /proc/uptime |sed 's/ .*$//;s/\..*//'`/60 ))
+	uH=$(( $uX/60 ))
+	uM=$(( ($uX-$uH*60)*100/60 ))
+	[ -z "$(echo $uM|sed 's/^.//')" ] && uM=0$uM
+	uptdata=N:$uH.$uM
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdata --template uptime
+}
+
+collect_net() {
+	[ $# -eq 0 ] && return
+	case $1 in 
+		1)
+			IF=$RRDSTATS_INTERFACE1
+			;;
+		2)
+			IF=$RRDSTATS_INTERFACE2
+			;;
+		3)
+			IF=$RRDSTATS_INTERFACE3
+			;;
+		4)
+			IF=$RRDSTATS_INTERFACE4
+			;;
+		*)
+			return
+			;;
+	esac
+	NAMEPREFIX=if$1_$RRDSTATS_INTERVAL-$(echo $IF|sed 's/\:/_/g')
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:in:DERIVE:600:0:12500000 \
+			DS:out:DERIVE:600:0:12500000 \
+			RRA:AVERAGE:0.5:1:576 \
+			RRA:AVERAGE:0.5:6:672 \
+			RRA:AVERAGE:0.5:24:732 \
+			RRA:AVERAGE:0.5:144:1460
+	fi
+	netdata=$(ifconfig $IF | sed '/bytes/!d;s/.*RX bytes/N/;s/ .*TX bytes//;s/ .*//')
+	[ -z "$netdata" ] && netdata="N:0:0"
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $netdata --template in:out
+}
+
+while true; do
+	collect_cpu
+	collect_mem
+	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
+	[ ! -z "$RRDSTATS_INTERFACE1" ] && collect_net 1
+	[ ! -z "$RRDSTATS_INTERFACE2" ] && collect_net 2
+	[ ! -z "$RRDSTATS_INTERFACE3" ] && collect_net 3
+	[ ! -z "$RRDSTATS_INTERFACE4" ] && collect_net 4
+	[ $# -eq 0 ] && exit
+	sleep $1
+done
+

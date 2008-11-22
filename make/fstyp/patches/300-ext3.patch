@@ -1,0 +1,11 @@
+--- src/mount_guess_fstype.c.orig	2008-02-06 22:35:27.000000000 +0100
++++ src/mount_guess_fstype.c	2008-02-19 23:09:20.000000000 +0100
+@@ -198,7 +198,7 @@
+ 	 if ((assemble4le(sb.e2s.s_feature_compat)
+ 	      & EXT3_FEATURE_COMPAT_HAS_JOURNAL) &&
+ 	     assemble4le(sb.e2s.s_journal_inum) != 0)
+-		 type = "ext3,ext2";
++		 type = "ext3";
+     }
+ 
+     else if (minixmagic(sb.ms) == MINIX_SUPER_MAGIC

@@ -1,0 +1,10 @@
+config FREETZ_PACKAGE_PPTP
+	bool "pptp 1.7.1"
+	depends on FREETZ_REPLACE_KERNEL
+	select FREETZ_PACKAGE_PPPD
+	select FREETZ_LIB_libutil
+	default n
+	help
+		Linux and FreeBSD client for the proprietary Microsoft
+		Point-to-Point tunneling protocol, PPTP, sponsored by HP.
+

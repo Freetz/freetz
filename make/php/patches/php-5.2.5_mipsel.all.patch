@@ -1,0 +1,15 @@
+--- configure.orig	2008-06-06 23:42:22.000000000 +0200
++++ configure	2008-06-06 23:42:23.000000000 +0200
+@@ -81424,7 +81424,11 @@
+ echo "configure:81425: checking for working ttyname_r() implementation" >&5
+   if test "$cross_compiling" = yes; then
+   
+-    echo "$ac_t""no, cannot detect working ttyname_r() when cross compiling. posix_ttyname() will be thread-unsafe" 1>&6
++    #evaluated by running test program on target platform                                                                          .
++    echo "$ac_t""yes" 1>&6                                                                                                         .
++    cat >> confdefs.h <<\EOF                                                                                                       .
++#define HAVE_TTYNAME_R 1                                                                                                           .
++EOF
+   
+ else
+   cat > conftest.$ac_ext <<EOF

@@ -1,0 +1,13 @@
+config FREETZ_PACKAGE_DOWNLOADER
+	bool "Downloader CGI 0.2 (status: TESTING)"
+	default n
+	help
+		Download files from HTTP or FTP server during the boot process.
+
+		This is particularly useful for binary packages which do not fit into
+		the firmware image, but should be used on the box anyway. As long as
+		they fit into the RAM disk this solution helps to automate the
+		downloads and keeps them out of debug.cfg.
+
+		by hermann72pb (ip-phone-forum.de)
+		Support thread: http://www.ip-phone-forum.de/showthread.php?t=134934

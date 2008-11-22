@@ -1,0 +1,53 @@
+config FREETZ_PACKAGE_IPTABLES_CGI
+	bool "Iptables-CGI 1.0.4"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	default n
+
+	# Be visible only if iptables is selected
+	requires FREETZ_PACKAGE_IPTABLES
+
+	# Activate group menus for modules and libs before selecting sub-entries
+	select FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+	select FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
+
+	# Kernel modules
+	select FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_ip_conntrack
+	select FREETZ_MODULE_ip_conntrack_ftp
+	select FREETZ_MODULE_iptable_filter
+	select FREETZ_MODULE_ipt_iprange
+	select FREETZ_MODULE_ipt_LOG
+	select FREETZ_MODULE_ipt_mac
+	select FREETZ_MODULE_ipt_multiport
+	select FREETZ_MODULE_ipt_state
+	select FREETZ_MODULE_iptable_nat
+	select FREETZ_MODULE_ipt_MASQUERADE
+	select FREETZ_MODULE_ipt_REDIRECT
+
+	# Shared libs
+	select FREETZ_LIB_libipt_iprange
+	select FREETZ_LIB_libipt_LOG
+	select FREETZ_LIB_libipt_mac
+	select FREETZ_LIB_libipt_multiport
+	select FREETZ_LIB_libipt_standard
+	select FREETZ_LIB_libipt_state
+	select FREETZ_LIB_libipt_tcp
+	select FREETZ_LIB_libipt_udp
+	select FREETZ_LIB_libipt_DNAT
+	select FREETZ_LIB_libipt_SNAT
+	select FREETZ_LIB_libipt_MASQUERADE
+	select FREETZ_LIB_libipt_REDIRECT
+
+	help
+		New Configuration front-end to iptables.
+		
+		This front-end is used for setting and deleting iptable rules.
+		In the front-end table list, you can see current rules for the default chains.
+		All iptables command rules, will be stored in the flash-rom.
+
+		All necessary modules will be loaded from the daemon.
+		Stopping the daemon unloads all these modules.
+
+		Note: This package is only selectable if iptables has been activated,
+		otherwise it would not make sense to have a web configuration for it.
+

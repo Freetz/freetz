@@ -1,0 +1,38 @@
+--- pppd/plugins/radius/etc/radiusclient.conf	2004-11-14 00:48:39.000000000 +0100
++++ pppd/plugins/radius/etc/radiusclient.conf	2007-01-23 23:56:52.000000000 +0100
+@@ -22,7 +22,7 @@
+ 
+ # name of the issue file. it's only display when no username is passed
+ # on the radlogin command line  (default /etc/radiusclient/issue)
+-issue	/usr/local/etc/radiusclient/issue
++issue	/etc/radiusclient/issue
+ 
+ # RADIUS settings
+ 
+@@ -43,22 +43,22 @@
+ 
+ # file holding shared secrets used for the communication
+ # between the RADIUS client and server
+-servers		/usr/local/etc/radiusclient/servers
++servers		/etc/radiusclient/servers
+ 
+ # dictionary of allowed attributes and values
+ # just like in the normal RADIUS distributions
+-dictionary 	/usr/local/etc/radiusclient/dictionary
++dictionary 	/etc/radiusclient/dictionary
+ 
+ # program to call for a RADIUS authenticated login 
+ # (default /usr/sbin/login.radius)
+-login_radius	/usr/local/sbin/login.radius
++login_radius	/sbin/login.radius
+ 
+ # file which holds sequence number for communication with the
+ # RADIUS server
+ seqfile		/var/run/radius.seq
+ 
+ # file which specifies mapping between ttyname and NAS-Port attribute
+-mapfile		/usr/local/etc/radiusclient/port-id-map
++mapfile		/etc/radiusclient/port-id-map
+ 
+ # default authentication realm to append to all usernames if no
+ # realm was explicitly specified by the user

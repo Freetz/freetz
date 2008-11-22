@@ -1,0 +1,47 @@
+config FREETZ_PACKAGE_OPENVPN
+	bool "OpenVPN 2.1_rc13"
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_OPENVPN_STATIC
+	default n
+	help
+		VPN Server
+
+config FREETZ_PACKAGE_OPENVPN_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_OPENVPN
+	default n
+	help
+		OpenVPN needs the following shared libraries which can be linked in statically
+		by activating this switch:
+		- libcrypto.so
+		- libssl.so
+		- libc.so
+		- libgcc_s.so
+		- libdl.so
+		- libz.so
+		- ld-linux.so.2
+		(- liblzo2.so)
+
+config FREETZ_PACKAGE_OPENVPN_WITH_LZO
+	bool "With lzo Compression"
+	depends on FREETZ_PACKAGE_OPENVPN
+	select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_OPENVPN_STATIC
+	default y
+	help
+		LZO2 Compression for VPN Traffic
+
+config FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
+	bool "Enable Management Console"
+	depends on FREETZ_PACKAGE_OPENVPN
+	default n
+	help
+		Enables OpenVPN's Management Console for administrative Tasks.
+		This feature is not configurable via Web-UI.
+
+config FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
+	bool "Optimize for size"
+	depends on FREETZ_PACKAGE_OPENVPN
+	default y
+	help
+		Enables binary optimiziation for size.
+		Must be disabled to use the config option "explicit-exit-notify".
+

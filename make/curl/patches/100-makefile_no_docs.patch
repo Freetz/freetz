@@ -1,0 +1,96 @@
+--- Makefile.am.orig	2008-10-02 09:54:33.000000000 +0200
++++ Makefile.am	2008-11-08 16:00:13.000000000 +0100
+@@ -32,7 +32,7 @@
+ bin_SCRIPTS = curl-config
+ 
+ SUBDIRS = lib src
+-DIST_SUBDIRS = $(SUBDIRS) tests include packages docs
++DIST_SUBDIRS = $(SUBDIRS) tests include packages
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libcurl.pc
+@@ -47,10 +47,10 @@
+ 	done)
+ 
+ html:
+-	cd docs; make html
++	#cd docs; make html
+ 
+ pdf:
+-	cd docs; make pdf
++	#cd docs; make pdf
+ 
+ check: test examples
+ 
+@@ -75,7 +75,7 @@
+ endif
+ 
+ examples:
+-	@(cd docs/examples; $(MAKE) check)
++	#@(cd docs/examples; $(MAKE) check)
+ 
+ clean-local:
+ 	@(cd tests; $(MAKE) clean)
+@@ -132,12 +132,12 @@
+ # We extend the standard install with a custom hook:
+ install-data-hook:
+ 	cd include && $(MAKE) install
+-	cd docs && $(MAKE) install
++	#cd docs && $(MAKE) install
+ 
+ # We extend the standard uninstall with a custom hook:
+ uninstall-hook:
+ 	cd include && $(MAKE) uninstall
+-	cd docs && $(MAKE) uninstall
++	#cd docs && $(MAKE) uninstall
+ 
+ ca-bundle: lib/mk-ca-bundle.pl
+ 	@echo "generate a fresh ca-bundle.crt"
+--- Makefile.in.orig	2008-11-05 13:00:46.000000000 +0100
++++ Makefile.in	2008-11-08 16:02:26.000000000 +0100
+@@ -274,7 +274,7 @@
+ 
+ bin_SCRIPTS = curl-config
+ SUBDIRS = lib src
+-DIST_SUBDIRS = $(SUBDIRS) tests include packages docs
++DIST_SUBDIRS = $(SUBDIRS) tests include packages
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libcurl.pc
+ all: all-recursive
+@@ -755,10 +755,10 @@
+ 	done)
+ 
+ html:
+-	cd docs; make html
++	#cd docs; make html
+ 
+ pdf:
+-	cd docs; make pdf
++	#cd docs; make pdf
+ 
+ check: test examples
+ 
+@@ -778,7 +778,7 @@
+ @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all torture-test)
+ 
+ examples:
+-	@(cd docs/examples; $(MAKE) check)
++	#@(cd docs/examples; $(MAKE) check)
+ 
+ clean-local:
+ 	@(cd tests; $(MAKE) clean)
+@@ -835,12 +835,12 @@
+ # We extend the standard install with a custom hook:
+ install-data-hook:
+ 	cd include && $(MAKE) install
+-	cd docs && $(MAKE) install
++	#cd docs && $(MAKE) install
+ 
+ # We extend the standard uninstall with a custom hook:
+ uninstall-hook:
+ 	cd include && $(MAKE) uninstall
+-	cd docs && $(MAKE) uninstall
++	#cd docs && $(MAKE) uninstall
+ 
+ ca-bundle: lib/mk-ca-bundle.pl
+ 	@echo "generate a fresh ca-bundle.crt"

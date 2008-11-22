@@ -1,0 +1,28 @@
+pkg_pre_save() 
+{
+	oldstorage=$(/mod/etc/init.d/rc.mini_fo store | sed -e "s/mini_fo=//")
+	oldboot=$(/mod/etc/init.d/rc.mini_fo bootstatus)
+	vars=$(modcgi "boot:storage")
+	storage=$(echo "$vars" | sed -ne "/MOD_STORAGE/s/MOD_STORAGE='\(.*\)'/\1/p")
+	boot=$(echo "$vars" | sed -ne "/MOD_BOOT/s/MOD_BOOT='\(.*\)'/\1/p")
+
+	if [ "$oldstorage" != "$storage" ]; then
+		if [ "$storage" ]; then
+			/mod/etc/init.d/rc.mini_fo store $storage
+		else
+			/mod/etc/init.d/rc.mini_fo nostore
+		fi
+	fi
+	if [ "$oldboot" != "$boot" ]; then
+		if [ "enabled" = "$boot" ]; then
+			/mod/etc/init.d/rc.mini_fo on
+		else
+			/mod/etc/init.d/rc.mini_fo off
+		fi
+	fi
+}
+pkg_pre_def() 
+{
+	/mod/etc/init.d/rc.mini_fo nostore
+	/mod/etc/init.d/rc.mini_fo off
+}

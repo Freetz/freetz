@@ -1,0 +1,26 @@
+config FREETZ_PACKAGE_MINI_FO
+	bool "mini_fo 0.3"
+	select FREETZ_MODULE_mini_fo
+	default n
+	help
+		Makes the filesystem writeable. Changes are not reboot-persistent,
+		unless stored on a hard disk or on flash storage media. The way mini_fo
+		is configured here creates the overlay filesystem in the router's RAM
+		disk, so they definitely are *not* reboot-persistent. Nonetheless,
+		mini_fo is tremendously helpful, eliminating the need for tricks like
+		'mount -o bind' etc.
+
+		Note: The mini_fo root filesystem will not be used if an NFS-root was
+		mounted first (see NFS-root package). Still, both packages can be
+		installed at the same time, because mini_fo is still useful if NFS-root
+		is decativated.
+
+config FREETZ_PACKAGE_MINI_FO_JFFS2
+	bool "Use jffs2 for data storage (persistent) "
+	depends on FREETZ_REPLACE_KERNEL
+	depends on FREETZ_PACKAGE_MINI_FO
+	select FREETZ_MODULE_jffs2
+	default n
+	help
+		Enables possibility to store filesystem changes persisten to jffs2.
+		When a new image is flashed the data will be lost!

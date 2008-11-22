@@ -1,0 +1,29 @@
+DAEMON=bftpd
+
+write_config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			"/tmp/flash/${DAEMON}_conf"
+		else
+			"/mod/etc/default.$DAEMON/${DAEMON}_conf"
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+}
+
+. /mod/etc/conf/bftpd.cfg
+
+write_config
+
+inetdcfg_desc="bftpd ftp server"
+inetdcfg_port=$BFTPD_PORT
+inetdcfg_sock=stream
+inetdcfg_proto=tcp
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/sbin/bftpd
+inetdcfg_arg0=bftpd
+inetdcfg_args="-i $BFTPD_OPTIONS"

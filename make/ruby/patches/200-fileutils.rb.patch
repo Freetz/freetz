@@ -1,0 +1,11 @@
+--- lib/fileutils.rb	2007-07-16 15:10:57.000000000 +0200
++++ lib/fileutils.rb	2007-07-16 15:10:58.000000000 +0200
+@@ -1026,7 +1026,7 @@
+     list.each do |path|
+       created = nocreate
+       begin
+-        File.utime(t, t, path)
++        #File.utime(t, t, path)
+       rescue Errno::ENOENT
+         raise if created
+         File.open(path, 'a') {

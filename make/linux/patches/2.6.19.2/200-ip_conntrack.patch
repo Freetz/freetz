@@ -1,0 +1,28 @@
+--- linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_core.c.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_core.c	2008-03-17 01:41:00.000000000 +0100
+@@ -1467,13 +1467,7 @@
+ 	/* Idea from tcp.c: use 1/16384 of memory.  On i386: 32MB
+ 	 * machine has 256 buckets.  >= 1GB machines have 8192 buckets. */
+  	if (!ip_conntrack_htable_size) {
+-		ip_conntrack_htable_size
+-			= (((num_physpages << PAGE_SHIFT) / 16384)
+-			   / sizeof(struct list_head));
+-		if (num_physpages > (1024 * 1024 * 1024 / PAGE_SIZE))
+-			ip_conntrack_htable_size = 8192;
+-		if (ip_conntrack_htable_size < 16)
+-			ip_conntrack_htable_size = 16;
++		ip_conntrack_htable_size = 256;
+ 	}
+ 	ip_conntrack_max = 8 * ip_conntrack_htable_size;
+ 
+--- linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_proto_tcp.c.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_proto_tcp.c	2008-03-17 01:41:17.000000000 +0100
+@@ -48,7 +48,7 @@
+ /* "Be conservative in what you do, 
+     be liberal in what you accept from others." 
+     If it's non-zero, we mark only out of window RST segments as INVALID. */
+-int ip_ct_tcp_be_liberal __read_mostly = 0;
++int ip_ct_tcp_be_liberal __read_mostly = 1;
+ 
+ /* When connection is picked up from the middle, how many packets are required
+    to pass in each direction when we assume we are in sync - if any side uses

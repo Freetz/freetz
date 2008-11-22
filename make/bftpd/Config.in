@@ -1,0 +1,11 @@
+config FREETZ_PACKAGE_BFTPD
+	bool "Bftpd 2.1"
+	default n
+	help
+	    Small FTP Server
+
+config FREETZ_PACKAGE_BFTPD_WITH_ZLIB
+	bool "With on-the-fly compression"
+	depends on FREETZ_PACKAGE_BFTPD
+	select FREETZ_LIB_libz
+	default n

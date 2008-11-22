@@ -1,0 +1,19 @@
+--- src/mount_guess_fstype.c	2008-02-06 22:34:36.000000000 +0100
++++ src/mount_guess_fstype.c	2008-02-06 22:27:43.000000000 +0100
+@@ -255,15 +255,7 @@
+ 	      type = "ntfs";
+ 	 else if(cramfsmagic(xsb.cramfssb) == CRAMFS_SUPER_MAGIC)
+ 	      type = "cramfs";
+-	 else if ((!strncmp(xsb.fatsb.s_os, "MSDOS", 5) ||
+-		   !strncmp(xsb.fatsb.s_os, "MSWIN", 5) ||
+-		   !strncmp(xsb.fatsb.s_os, "MTOOL", 5) ||
+-		   !strncmp(xsb.fatsb.s_os, "mkdosfs", 7) ||
+-		   !strncmp(xsb.fatsb.s_os, "kmkdosfs", 8) ||
+-		   /* Michal Svec: created by fdformat, old msdos utility for
+-		      formatting large (1.7) floppy disks. */
+-		   !strncmp(xsb.fatsb.s_os, "CH-FOR18", 8))
+-		  && (!strncmp(xsb.fatsb.s_fs, "FAT12   ", 8) ||
++	 else if ((!strncmp(xsb.fatsb.s_fs, "FAT12   ", 8) ||
+ 		      !strncmp(xsb.fatsb.s_fs, "FAT16   ", 8) ||
+ 		      !strncmp(xsb.fatsb.s_fs2, "FAT32   ", 8)))
+ 	      type = "vfat";	/* only guessing - might as well be fat or umsdos */

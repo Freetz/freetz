@@ -1,0 +1,93 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+
+DAEMON=httpd
+PIDFILE=/var/run/webcfg.pid
+
+case $1 in
+	""|load|start|restart|status)
+		if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/mod.cfg;
+		;;
+esac
+
+config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.mod/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+}
+
+start() {
+	config
+
+	echo -n 'Starting webinterface...'
+	webcfg -P "$PIDFILE"
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		rm -f /var/run/$DAEMON.pid
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	modlib_stop "$PIDFILE"
+}
+
+case "$1" in
+	""|load)
+		config
+		if [ "$MOD_HTTPD" != "yes" ]; then
+			if [ "$MOD_HTTPD" != "inetd" ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+			fi
+			exit 1
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ "$MOD_HTTPD" == "inetd" ]; then
+			echo 'inetd'
+		else
+			modlib_status "$PIDFILE"
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

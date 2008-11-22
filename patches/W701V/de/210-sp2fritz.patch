@@ -1,0 +1,3491 @@
+--- usr/www/all/html/de/fon/fonab.frm.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonab.frm	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,10 @@
++<input type="hidden" name="tam:settings/TAM0/Active" value="<? query tam:settings/TAM0/Active ?>" id="uiPostAktiv">
++<input type="hidden" name="tam:settings/TAM0/MSNBitmap" value="<? query tam:settings/TAM0/MSNBitmap ?>" id="uiPostBitmap">
++<? multiquery sip:settings/sip/list(displayname) '
++<input type="hidden" name="sip:settings/$1/displayname" value="$2" id="ui$1" disabled>
++' ?>
++<? repeat [ 0 9 ] `
++<input type="hidden" name="telcfg:settings/MSN/MSN$0" value="<? query telcfg:settings/MSN/MSN$0 ?>" id="uiMsn$0" disabled>` ?>
++<input type="hidden" name="telcfg:settings/MSN/POTS" value="<? query telcfg:settings/MSN/POTS ?>" id="uiPots" disabled>
++<? repeat [ 0 9 ] `
++<input type="hidden" name="tam:settings/MSN$0" value="<? query tam:settings/MSN$0 ?>" id="uiPostTamMsn$0">` ?>
+--- usr/www/all/html/de/fon/fonab.html.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonab.html	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,35 @@
++<? include ../html/$var:lang/fon/fonab.inc ?>
++<div id="content">
++	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
++		<? echo $var:Text1 ?>
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<div style="padding-left: 20px">
++			<p><input type="checkbox" id="uiViewAktiv">&nbsp;<label for="uiViewAktiv"><? echo $var:Text2 ?></label></p>
++			<p style="padding-top:10px"><label for="uiViewN00"><? echo $var:Text3 ?></label></p>
++			<p class="combo">
++				<select size="1" id="uiViewN00" class="Eingabefeld" style="width:200px"></select>
++			</p>
++			<p style="padding-top:10px"><label for="uiViewN01"><? echo $var:Text4 ?></label></p>
++			<table>
++				<tr>
++					<td style="vertical-align:top">
++						<p class="combo"><select size="1" id="uiViewN01" class="Eingabefeld" style="width:200px"></select></p>
++						<p class="combo"><select size="1" id="uiViewN02" class="Eingabefeld" style="width:200px" onchange="OnChange(id, value)"></select></p>
++						<p class="combo" id="p03" style="display:none"><select size="1" id="uiViewN03" class="Eingabefeld" style="width:200px" onchange="OnChange(id, value)"></select></p>
++						<p class="combo" id="p04" style="display:none"><select size="1" id="uiViewN04" class="Eingabefeld" style="width:200px" onchange="OnChange(id, value)"></select></p>
++						<p class="combo" id="p05" style="display:none"><select size="1" id="uiViewN05" class="Eingabefeld" style="width:200px" onchange="OnChange(id, value)"></select></p>
++					</td>
++					<td style="vertical-align:top">
++						<p class="combo" id="p06" style="display:none"><select size="1" id="uiViewN06" class="Eingabefeld" style="width:200px" onchange="OnChange(id, value)"></select></p>
++						<p class="combo" id="p07" style="display:none"><select size="1" id="uiViewN07" class="Eingabefeld" style="width:200px" onchange="OnChange(id, value)"></select></p>
++						<p class="combo" id="p08" style="display:none"><select size="1" id="uiViewN08" class="Eingabefeld" style="width:200px" onchange="OnChange(id, value)"></select></p>
++						<p class="combo" id="p09" style="display:none"><select size="1" id="uiViewN09" class="Eingabefeld" style="width:200px" onchange="OnChange(id, value)"></select></p>
++					</td>
++				</tr>
++			</table>
++		</div>
++		<? include ../html/$var:lang/home/error.html ?>
++	</div></div></div></div></div></div>
++	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
++</div>
+--- usr/www/all/html/de/fon/fonab.inc.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonab.inc	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,5 @@
++<? include ../html/$var:lang/global.inc ?>
++<? setvariable var:Text1 'Anrufbeantworter ' ?>
++<? setvariable var:Text2 'Anrufbeantworter aktivieren' ?>
++<? setvariable var:Text3 'Rufnummer des Anrufbeantworters' ?>
++<? setvariable var:Text4 'zusätzliche Rufnummern' ?>
+--- usr/www/all/html/de/fon/fonab.js.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonab.js	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,119 @@
++<!--		../fon/fonab.js		-->
++<style type="text/css">
++<!--
++#content {width: 540px; margin: auto;}
++.pFett {font-weight: bold; 	padding-bottom: 10px;}
++.combo {padding-top: 2px; padding-left: 20px;}
++.left20 {margin-left: 20px;}
++-->
++</style>
++<script type="text/javascript">
++<? include ../html/$var:lang/js/jsl.js ?>
++var g_txtFestnetz	= "Festnetz: ";
++var g_txtInternet	= "Internet: ";
++<? multiquery sip:settings/sip/list '
++var g_$1;
++' ?>
++var g_msn0;
++var g_msn1;
++var g_msn2;
++var g_msn3;
++var g_msn4;
++var g_msn5;
++var g_msn6;
++var g_msn7;
++var g_msn8;
++var g_msn9;
++var g_Pots;
++function uiDoOnLoad() {
++<? multiquery sip:settings/sip/list '
++	g_$1 = jslGetValue("ui$1");
++' ?>
++	g_msn0 = jslGetValue("uiMsn0");
++	g_msn1 = jslGetValue("uiMsn1");
++	g_msn2 = jslGetValue("uiMsn2");
++	g_msn3 = jslGetValue("uiMsn3");
++	g_msn4 = jslGetValue("uiMsn4");
++	g_msn5 = jslGetValue("uiMsn5");
++	g_msn6 = jslGetValue("uiMsn6");
++	g_msn7 = jslGetValue("uiMsn7");
++	g_msn8 = jslGetValue("uiMsn8");
++	g_msn9 = jslGetValue("uiMsn9");
++	g_Pots = jslGetValue("uiPots");
++	fillId("uiViewN00", jslGetValue("uiPostTamMsn0"));
++	fillId("uiViewN01", jslGetValue("uiPostTamMsn1"));
++	fillId("uiViewN02", jslGetValue("uiPostTamMsn2"));
++	var i, j;
++	for (i = 9; i >1 && jslGetValue("uiPostTamMsn"+i) == ""; i--) ;
++	for (j = Math.min(9, i+1); j>2; j--) {
++		jslDisplay("p0"+j, true);
++		fillId("uiViewN0"+j, jslGetValue("uiPostTamMsn"+j));
++	}
++	jslSetChecked("uiViewAktiv", jslGetValue("uiPostAktiv") == "1");
++}
++function uiDoSave() {
++	jslSetValue("uiPostAktiv", jslGetChecked("uiViewAktiv") ? "1" :"0");
++<? repeat [ 0 9 ] `
++	if (jslGetValue("uiViewN0$0") == "Leer") jslSetValue("uiPostTamMsn$0", ""); else jslCopyValue("uiPostTamMsn$0", "uiViewN0$0");` ?>
++	jslSetValue("uiPostBitmap", "1023");
++	jslSubmitFormEx("fon", "fonlist");
++}
++function uiDoCancel() {
++	jslGoTo("fon", "fonlist");
++}
++function uiDoHelp() {
++	jslPopHelp("hilfe_fon_nebenstelle");
++}
++function fillId(id, nr) {
++<? if eq '$var:usePSTN' 1 `
++	// Auswahl mit den vorgegebenen MSN füllen und Eintrag msn selektieren
++<? repeat [ 0 9 ] `
++	if (g_msn$10 != "") addOption(id, g_msn$10, g_txtFestnetz+g_msn$10);` ?>
++	if (g_Pots != "") addOption(id, g_Pots, g_txtFestnetz+g_Pots);
++` ?> 
++	// Sip Zugänge anfügen
++<? multiquery sip:settings/sip/list(ID,displayname) '
++	if ("$3" != "") addOption(id, "SIP"+"$2", g_txtInternet+g_$1);
++' ?>
++	addOption(id, "Leer", "");
++	jslSetSelection(id, nr=="" ? "Leer":nr);
++}
++function addMsn (id, msn) {
++	if (msn != "") addOption(id, msn, g_txtFestnetz+msn);
++}
++function addOption (id, val, text) {
++	var element;
++	element = document.getElementById(id);
++	if (element == null) return;
++	var eintrag = new Option(text, val, false, false);
++	element.options[element.length]=eintrag;
++}
++function isFilled(id) {
++	var element = document.getElementById(id);
++	if (element == null) return false;
++	return (element.length>0);
++}
++function enableSelect(num) {
++	jslDisplay("p"+num, true);
++	if (!isFilled("uiViewN"+num))
++		fillId("uiViewN"+num, "");
++}
++function OnChange (id, value) {
++	if (value == "Leer") return;
++	switch (id) {
++		case "uiViewN02": enableSelect("03"); break;
++		case "uiViewN03": enableSelect("04"); break;
++		case "uiViewN04": enableSelect("05"); break;
++		case "uiViewN05": enableSelect("06"); break;
++		case "uiViewN06": enableSelect("07"); break;
++		case "uiViewN07": enableSelect("08"); break;
++		case "uiViewN08": enableSelect("09"); break;
++	}
++}
++function SetChecked (postid, viewid) {
++	jslSetChecked(viewid, jslGetValue(postid) != "0");
++}
++function GetChecked (postid, viewid) {
++	jslSetValue(postid, jslGetChecked(viewid) ? "1":"0");
++}
++</script>
+--- usr/www/all/html/de/fon/fondevices.html.orig	2007-07-10 13:47:43.000000000 +0200
++++ usr/www/all/html/de/fon/fondevices.html	2007-10-24 00:13:30.000000000 +0200
+@@ -7,7 +7,9 @@
+ 	<ul class="tabs">
+ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo $var:Text20 ?></a></li>
+ 		<li><a href="javascript:uiDoMsn()"><? echo '$var:Text21' ?></a></li>
+-<!--
++		<li><a href="javascript:uiDoEditDevice( 0, 0, 0)">Nebenstelle 1</a></li>
++		<li><a href="javascript:uiDoEditDevice( 0, 1, 0)">Nebenstelle 2</a></li>
++	<!--
+ <? if eq '<? query box:settings/expertmode/activated ?>' '1' `
+ 		<li><a href="javascript:uiDoListIsdn()"><? echo '$var:Text22' ?></a></li>
+ ` ?>
+@@ -28,6 +30,10 @@
+ <? repeat [ 0 2 ] `
+ 				<script type="text/javascript">document.write(TrDevice( "DeviceFonExt$0", $0, "0", "<? query telcfg:settings/MSN/Port$0/Name ?>", "<? query telcfg:settings/MSN/Port$0/MSN0 ?>","0"));</script>
+ ` ?>
++<? repeat [ 1 8 ] `
++				<script type="text/javascript">document.write(TrDevice( "DeviceFonIsdn$0", $0, "1", "<? query telcfg:settings/NTHotDialList/Name$0 ?>", "<? query telcfg:settings/NTHotDialList/Number$0 ?>","0"));</script>
++` ?>
++				<script type="text/javascript">document.write(TrDevice( "DeviceIsdnDefauft", 0, "1", "ISDN Basiseinstellungen", " ","21"));</script>
+ 			</table>
+ 		</div>
+ 		<div id="uiShowABTable" style="display:none">
+@@ -43,6 +49,9 @@
+ <? repeat [ 0 2 ] `
+ 				<script type="text/javascript">document.write(TrDevice( "DeviceABExt$0", $0, "0", "<? query telcfg:settings/MSN/Port$0/Name ?>", "<? query telcfg:settings/MSN/Port$0/MSN0 ?>","1"));</script>
+ ` ?>
++<? repeat [ 1 8 ] `
++				<script type="text/javascript">document.write(TrDevice( "DeviceABIsdn$0", $0, "1", "<? query telcfg:settings/NTHotDialList/Name$0 ?>", "<? query telcfg:settings/NTHotDialList/Number$0 ?>","1"));</script>
++` ?>
+ 			</table>
+ 		</div>
+ 		<div id="uiShowFaxTable" style="display:none">
+@@ -58,6 +67,9 @@
+ <? repeat [ 0 2 ] `
+ 				<script type="text/javascript">document.write(TrDevice( "DeviceFaxExt$0", $0, "0", "<? query telcfg:settings/MSN/Port$0/Name ?>", "<? query telcfg:settings/MSN/Port$0/MSN0 ?>","2"));</script>
+ ` ?>
++<? repeat [ 1 8 ] `
++				<script type="text/javascript">document.write(TrDevice( "DeviceFaxIsdn$0", $0, "1", "<? query telcfg:settings/NTHotDialList/Name$0 ?>", "<? query telcfg:settings/NTHotDialList/Number$0 ?>","2"));</script>
++` ?>
+ 			</table>
+ 		</div>
+ 		<div id="uiNoDevicesFound" style="display:none">
+@@ -65,7 +77,6 @@
+ 			<p class="mt20" id="uiNoDevicesConfigurable" style="display:none"><? echo $var:Text17 ?></p>
+ 		</div>
+ 		<p class="mt20" id="uiNoUnconfigurableDevices" style="display:none"><? echo $var:Text24 ?></p>
+-		<div class="mt10 ar mb10"><input type="button" id="uiBTNNewDevice" value="<? echo $var:Text10 ?>" onclick="uiDoNewDevice()" class="Pushbutton" style="width:180px;"></div>
+ 	</div></div></div></div></div></div>
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
+ 		<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
+--- usr/www/all/html/de/fon/msn.html.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/msn.html	2007-10-24 00:13:30.000000000 +0200
+@@ -4,46 +4,22 @@
+ 		<? echo '$var:Text26' ?>
+ 	</div></div></div></div></div></div>
+ 	<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
+-<? if eq '$var:pagename' 'dectmsn' `
+-	<ul class="tabs">
+-		<li><a href="javascript:uiDoDect()"><? echo '$var:Text20' ?></a></li>
+-		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text1' ?></a></li>
+-<? if eq '<? query box:settings/expertmode/activated ?>' '1' `
+-		<li><a href="javascript:uiDoListDect()"><? echo '$var:Text21' ?></a></li>
+-` ?>
+-	</ul>
+-` `
+-<? if eq '$var:pagemaster' 'fondevices' `
+ 	<ul class="tabs">
+ 		<li><a href="javascript:uiDoIsdn()"><? echo '$var:Text20' ?></a></li>
+ 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text1' ?></a></li>
+-<? if eq '$var:pagemaster' 'isdn' `
+-		<li><a href="javascript:uiDoOptionen()"><? echo '$var:Text22' ?></a></li>
+-` ?>
+-	</ul>
+-` `
+-	<ul class="tabs">
+-		<li><a href="javascript:uiDoFonlist()"><? echo '$var:Text20' ?></a></li>
+-		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo '$var:Text1' ?></a></li>
+ 	</ul>
+-` ?> 	
+-` ?> 	
+-<? if eq $var:ShowUsePstn 1 `
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="pCheck25"><input type="checkbox" id="uiViewPstn">&nbsp;<label for="uiViewPstn"><? echo `$var:Text27` ?></label></p>
+-		<p class="pText25"><? echo `$var:Text28` ?></p>
++		<p class="pText25"><? echo `$var:Text30` ?></p>
+ 		<? include ../html/$var:lang/home/error.html ?>
+ 	</div></div></div></div></div></div>
+-` ?>
+-<? if eq '$var:usePSTN' 1 `
++
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="mb10" style="font-weight: bold"><? echo '$var:Text14' ?></p>
+ 		<p class="mb5"><? echo '$var:Text15' ?></p>
+ 		<p class="ml25"><input type=radio name="Art" onclick="uiOnArt(0)" id="uiViewIsdn">&nbsp;<label for="uiViewIsdn"><? echo '$var:Text16' ?></label></p>
+ 		<p class="ml25"><input type=radio name="Art" onclick="uiOnArt(1)" id="uiViewAnalog">&nbsp;<label for="uiViewAnalog"><? echo '$var:Text17' ?></label></p>
+ 	</div></div></div></div></div></div>
+-` ?>
+-<? if eq '$var:usePSTN' 1 `
+ 	<div class="backdialog" id="uiIsdn" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="mb5"><? echo '$var:Text2' ?></p>
+ 		<table style="margin: auto;">
+@@ -69,11 +45,9 @@
+ 			</tr>
+ 		</table>
+ 	</div></div></div></div></div></div>
+-` ?>
+-<? if eq '$var:usePSTN' 1 `
+ 	<div class="backdialog" id="uiAnalog" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<p class="mb10"><? echo '$var:Text18' ?></p>
+ 		<p class="ml25"><label for="uiViewPots"><? echo '$var:Text19' ?></label>&nbsp;<input type="text" id="uiViewPots" size="21" maxlength="20" class="Eingabefeld"></p>
+ 	</div></div></div></div></div></div>
+-` ?>
++
+ 	<? include ../html/$var:lang/home/rbb_applycancel.html ?></div></div></div></div></div></div></div></div>
+--- usr/www/all/html/de/fon/msn.inc.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/msn.inc	2007-10-24 00:13:30.000000000 +0200
+@@ -18,11 +18,17 @@
+ <? setvariable var:Text18 'Geben Sie hier die Rufnummer Ihres Analog-Anschlusses ein:' ?>
+ <? setvariable var:Text19 'Rufnummer' ?>
+ <? setvariable var:Text20 'Übersicht' ?>
+-<? setvariable var:Text21 'Interne Nummern' ?>
+-<? setvariable var:Text22 'Leistungsmerkmale' ?>
+-<? setvariable var:Text23 'ISDN-Endgeräte' ?>
++<? setvariable var:Text21 'Intern' ?>
++<? setvariable var:Text22 'Optionen' ?>
++<? setvariable var:Text23 'Telefonie-Geräte' ?>
+ <? setvariable var:Text24 'Nebenstellen' ?>
+ <? setvariable var:Text25 'DECT-Endgeräte' ?>
+-<? setvariable var:Text26 'Telefoniegeräte' ?>
++<? setvariable var:Text28 'Zuordnung' ?>
++<? setvariable var:Text29 'Mobilteile' ?>
++<? setvariable var:Text26 'Festnetz' ?>
+ <? setvariable var:Text27 'Festnetz aktiv' ?>
+-<? setvariable var:Text28 'Das Festnetz kann deaktiviert werden, wenn die FRITZ!Box nur mit dem DSL-Anschluss und nicht mit einem Festnetz verbunden ist. Alle Telefonate werden dann über das Internet geführt. Der Internettelefonie-Anbieter muss in diesem Fall alle Anrufe weiterleiten.' ?>
++
++
++
++
++<? setvariable var:Text30 'Das Festnetz kann deaktiviert werden, wenn die FRITZ!Box nur mit dem DSL-Anschluss und nicht mit einem Festnetz verbunden ist. Alle Telefonate werden dann über das Internet geführt. Der Internettelefonie-Anbieter muss in diesem Fall alle Anrufe weiterleiten.' ?>
+--- usr/www/all/html/de/fon/msn.js.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/msn.js	2007-10-24 00:13:30.000000000 +0200
+@@ -11,21 +11,15 @@
+ <script type="text/javascript">
+ <? include ../html/$var:lang/js/val.js ?>
+ <? include ../html/$var:lang/js/jsl.js ?>
+-<? setvariable var:ShowUsePstn 0 ?>
+-<? if eq $var:OEM avm `<? setvariable var:ShowUsePstn 1 ?>` ?>
+-<? if eq $var:OEM freenet `<? setvariable var:ShowUsePstn 1 ?>` ?>
+-<? if eq $var:OEM 1und1 `<? setvariable var:ShowUsePstn 1 ?>` ?>
++<? setvariable var:ShowUsePstn 1 ?>
+ var g_mldDigit			= "Eine Rufnummer darf nur aus Ziffern bestehen.";
+ var g_mldPotsDigit		= "Die Rufnummer für den Festnetzanschluss darf nur aus Ziffern bestehen.";
+ var g_mldWarningAus = "Wichtiger Hinweis: Die FRITZ!Box wird auf den gewählten Anschlussmodus umgestellt. Die Telefonie-Einstellungen werden dafür in den Grundzustand zurückgesetzt. Alle Wahlregeln werden entfernt. Notrufe werden jetzt über das Internet geführt. Erkundigen Sie sich, ob Ihr Internettelefonie-Anbieter Notrufe weiterleiten kann.\x0d\x0aDieser Vorgang kann einen Moment dauern. Führen Sie die Einrichtung der Telefonie anschließend noch einmal durch.";
+ var g_mldWarningAn = "Wichtiger Hinweis: Die FRITZ!Box wird auf den gewählten Anschlussmodus umgestellt. Die Telefonie-Einstellungen werden dafür in den Grundzustand zurückgesetzt.\x0d\x0aDieser Vorgang kann einen Moment dauern. Führen Sie die Einrichtung der Telefonie anschließend noch einmal durch.";
+ var g_oldmode;
+ function uiDoOnLoad() {
+-<? if eq $var:ShowUsePstn 1 `
+ 	jslSetChecked("uiViewPstn", jslGetValue("uiPostPstn") == "1");
+ 	g_oldmode = jslGetValue("uiPostPstn");
+-` ?>
+-<? if eq '$var:usePSTN' 1 `
+ 	var n = 0;
+ 	jslCopyValue("uiViewPots", "uiPostPots");
+ 	if (jslGetValue("uiPostPots") != "") n = 1;
+@@ -34,7 +28,6 @@
+ 		if (jslGetValue("uiViewMsn"+i) != "") n = 0;
+ 	}
+ 	uiOnArt(n);
+-` ?>
+ }
+ function uiDoSave() {
+ <? if eq $var:ShowUsePstn 1 `
+@@ -66,7 +59,6 @@
+ 		jslEnable("uiPostUseSepVcc");
+ 	}
+ ` ?>
+-<? if eq '$var:usePSTN' 1 `
+ 	var i;
+ 	for (i=0; i<=9; i++) {
+ 		if (!valIsZahl(jslGetValue("uiViewMsn"+i))) {alert(g_mldDigit); return;}
+@@ -74,7 +66,6 @@
+ 	}
+ 	if (!valIsZahl(jslGetValue("uiViewPots"))) {alert(g_mldPotsDigit); return;}
+ 	jslCopyValue("uiPostPots", "uiViewPots");
+-` ?>
+ 	jslFormSubmitEx("", "msn");
+ }
+ function uiDoCancel() {
+@@ -105,12 +96,10 @@
+ 	jslPopHelp("hilfe_fon_festnetz");
+ ` ?>	
+ }
+-<? if eq '$var:usePSTN' 1 `
+ function uiOnArt(n) {
+ 	jslSetChecked("uiViewIsdn", n==0);
+ 	jslSetChecked("uiViewAnalog", n==1);
+ 	jslDisplay("uiAnalog", n==1);
+ 	jslDisplay("uiIsdn", n==0);
+ }
+-` ?>
+ </script>
+--- usr/www/all/html/de/fon/sip1.frm.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/sip1.frm	2007-10-24 00:13:30.000000000 +0200
+@@ -10,11 +10,6 @@
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/stunserver" value="" id="uiPostStun">
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/authname_needed" value="0" id="uiPostSipUri">
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/outboundproxy" value="" id="uiPostProxy">
+-<input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/dditype" value="0" id="uiPostDditype">
+-<input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/only_call_from_registrar" value="0" id="uiPostSpit" disabled>
+-<? if eq $var:Annex A `
+-<input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/Trunk" value="" id="uiPostTrunk" disabled>
+-` ?>
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/sipping_enabled" value="<? query sip:settings/sip0/sipping_enabled ?>" id="uiSipPing">
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/sipping_interval" value="<? query sip:settings/sip0/sipping_interval ?>" id="uiSipPingTimer">
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/tx_packetsize_in_ms" value="<? if eq $var:OEM avme `20` `30` ?>" id="uiPostPacketsize" disabled>
+@@ -27,11 +22,6 @@
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/stunserver" value="<? query sip:settings/<? echo $var:sipnr ?>/stunserver ?>" id="uiPostStun">
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/authname_needed" value="<? query sip:settings/<? echo $var:sipnr ?>/authname_needed ?>" id="uiPostSipUri">
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/outboundproxy" value="<? query sip:settings/<? echo $var:sipnr ?>/outboundproxy ?>" id="uiPostProxy">
+-<input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/dditype" value="<? query sip:settings/<? echo $var:sipnr ?>/dditype ?>" id="uiPostDditype">
+-<input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/only_call_from_registrar" value="<? query sip:settings/<? echo $var:sipnr ?>/only_call_from_registrar ?>" id="uiPostSpit" disabled>
+-<? if eq $var:Annex A `
+-<input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/Trunk" value="<? query sip:settings/<? echo $var:sipnr ?>/Trunk ?>" id="uiPostTrunk" disabled>
+-` ?>
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/sipping_enabled" value="<? query sip:settings/<? echo $var:sipnr ?>/sipping_enabled ?>" id="uiSipPing">
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/sipping_interval" value="<? query sip:settings/<? echo $var:sipnr ?>/sipping_interval ?>" id="uiSipPingTimer">
+ <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/tx_packetsize_in_ms" value="<? query sip:settings/<? echo $var:sipnr ?>/tx_packetsize_in_ms ?>" id="uiPostPacketsize" disabled>
+@@ -39,25 +29,34 @@
+ <? if eq $var:isnew 1 `
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/AKN" value="1" id="uiPostAKN">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/RegistryType" value="other" id="uiPostType">
++<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/OKZ" value="" id="uiPostOKZ">
++<? if eq $var:OEM arcor `
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/UseOKZ" value="1" id="uiPostUseOKZ">
++` `
++<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/UseOKZ" value="0" id="uiPostUseOKZ">
++`?>
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/MSN" value="" id="uiPostMsn">
++<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/LKZ" value="" id="uiPostLKZ">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/UseLKZ" value="0" id="uiPostUseLKZ">
++<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/OKZPrefix" value="0" id="uiPostOKZPrefix">
++<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/LKZPrefix" value="" id="uiPostLKZPrefix">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/KeepOKZPrefix" value="1" id="uiPostKeepOKZPrefix">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/KeepLKZPrefix" value="1" id="uiPostKeepLKZPrefix">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/Suffix" value="" id="uiPostSuffix">
+-<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/AlternatePrefix" value="" id="uiPostAlternatePrefix">
+ ` `
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/AKN" value="<? query telcfg:settings/$var:telnr/AKN ?>" id="uiPostAKN">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/RegistryType" value="<? query telcfg:settings/<? echo $var:telnr ?>/RegistryType ?>" id="uiPostType">
++<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/OKZ" value="<? query telcfg:settings/<? echo $var:telnr ?>/OKZ ?>" id="uiPostOKZ">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/UseOKZ" value="<? query telcfg:settings/<? echo $var:telnr ?>/UseOKZ ?>" id="uiPostUseOKZ">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/MSN" value="<? query telcfg:settings/<? echo $var:telnr ?>/MSN ?>" id="uiPostMsn">
++<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/LKZ" value="<? query telcfg:settings/$var:telnr/LKZ ?>" id="uiPostLKZ">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/UseLKZ" value="<? query telcfg:settings/$var:telnr/UseLKZ ?>" id="uiPostUseLKZ">
++<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/OKZPrefix" value="<? query telcfg:settings/$var:telnr/OKZPrefix ?>" id="uiPostOKZPrefix">
++<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/LKZPrefix" value="<? query telcfg:settings/$var:telnr/LKZPrefix ?>" id="uiPostLKZPrefix">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/KeepOKZPrefix" value="<? query telcfg:settings/$var:telnr/KeepOKZPrefix ?>" id="uiPostKeepOKZPrefix">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/KeepLKZPrefix" value="<? query telcfg:settings/$var:telnr/KeepLKZPrefix ?>" id="uiPostKeepLKZPrefix">
+ <input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/Suffix" value="<? query telcfg:settings/$var:telnr/Suffix ?>" id="uiPostSuffix">
+-<input type="hidden" name="telcfg:settings/<? echo $var:telnr ?>/AlternatePrefix" value="<? query telcfg:settings/$var:telnr/AlternatePrefix ?>" id="uiPostAlternatePrefix">
+ ` ?>
+-<input type="hidden" name="telcfg:settings/Location/OKZ" value="<? query telcfg:settings/Location/OKZ ?>" id="uiPostOKZ" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port0/MSN0" value="<? query telcfg:settings/MSN/Port0/MSN0 ?>" id="uiPostNr00" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/Port1/MSN0" value="<? query telcfg:settings/MSN/Port1/MSN0 ?>" id="uiPostNr10" disabled>
+ <input type="hidden" name="connection0:pppoe:settings/username" value="<? query connection0:pppoe:settings/username ?>" id="uiPostPppUsername" disabled>
+--- usr/www/all/html/de/fon/sip1.html.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/sip1.html	2007-10-24 00:13:30.000000000 +0200
+@@ -52,8 +52,6 @@
+ 						<option value="1u1">$var:Text4</option>
+ 						<option value="AOL">$var:Text9</option>
+ 						<option value="Arcor">$var:Text7</option>
+-						<option value="DBD">$var:Text98</option>
+-						<option value="DBD-DSL">$var:Text99</option>
+ 						<option value="Dus">$var:Text13</option>
+ 						<option value="Freenet">$var:Text8</option>
+ 						<option value="GMX">$var:Text5</option>
+@@ -90,31 +88,17 @@
+ 			<table>
+ 				<tr>
+ 					<td class="c1"></td>
+-					<td colspan=3 style="font-size:12px"><? echo $var:Text56 ?></td>
++					<td colspan=3 style="font-size:12px">Ortsvorwahl</td>
+ 				</tr>
+ 				<tr>
+-					<td><? echo $var:Text57 ?></td>
++					<td>Rufnummer</td>
+ 					<td><input type="text" size="6" maxlength="12" class="Eingabefeld" id="uiViewArcorOKZ"></td>
+-					<td><? echo $var:Text58 ?></td>
++					<td>-</td>
+ 					<td><input type="text" size="12" maxlength="128" class="Eingabefeld" id="uiViewArcorUsername"></td>
+ 				</tr>
+ 				<tr>
+ 					<td class="c1"></td>
+-					<td colspan=3 style="font-size:12px; padding: 0px 1px 5px 1px"><? echo $var:Text59 ?></td>
+-				</tr>
+-			</table>
+-		</div>
+-		<div id="DbdRufnummer" class="left20 mb10" style="display:none">
+-			<table>
+-				<tr>
+-					<td class="c1"></td>
+-					<td colspan=3 style="font-size:12px"><? echo $var:Text56 ?></td>
+-				</tr>
+-				<tr>
+-					<td><? echo $var:Text57 ?></td>
+-					<td><input type="text" size="6" maxlength="12" class="Eingabefeld" id="uiViewDbdOKZ"></td>
+-					<td><? echo $var:Text58 ?></td>
+-					<td><input type="text" size="12" maxlength="128" class="Eingabefeld" id="uiViewDbdRufnummer"></td>
++					<td colspan=3 style="font-size:12px; padding: 0px 1px 5px 1px">z.B. 069</td>
+ 				</tr>
+ 			</table>
+ 		</div>
+@@ -143,15 +127,9 @@
+ 					<td class="c1"><label for="uiViewPassword2"><span id="LabelKennwort2"><? echo $var:Text23 ?></span></label></td>
+ 					<td><input type="password" size="14" maxlength="128" class="Eingabefeld" id="uiViewPassword2" onfocus="uiSelect(id);"></td>
+ 				</tr>
+-<? if eq $var:Annex A `
+-				<tr id="Trunk" style="display:none">
+-					<td class="c1"><label for="uiViewTrunk"><? echo '$var:Text102' ?></label></td>
+-					<td><input type="text" size="40" maxlength="48" class="Eingabefeld" id="uiViewTrunk"></td>
+-				</tr>
+-` ?>
+ 				<tr id="Registrar" style="display:none">
+-					<td class="c1" style="padding-top:10px"><label for="uiViewRegistrar"><? echo $var:Text24 ?></label></td>
+-					<td style="padding-top:10px"><input type="text" size="45" maxlength="48" class="Eingabefeld" id="uiViewRegistrar"></td>
++					<td class="c1"><label for="uiViewRegistrar"><? echo $var:Text24 ?></label></td>
++					<td><input type="text" size="45" maxlength="48" class="Eingabefeld" id="uiViewRegistrar"></td>
+ 				</tr>
+ 				<tr id="Proxy" style="display:none">
+ 					<td class="c1"><label for="uiViewProxy"><? echo $var:Text45 ?></label></td>
+@@ -169,73 +147,59 @@
+ 			</table>
+ 		</div>
+ 		<div id="ArcorUseOKZ" class="left20" style="display:none">
+-			<p><input type="checkbox" id="uiViewArcorUseOKZ">&nbsp;<label for="uiViewArcorUseOKZ"><? echo $var:Text26 ?></label></p>
++			<p><input type="checkbox" id="uiViewArcorUseOKZ">&nbsp;<label for="uiViewArcorUseOKZ">Ortsvorwahl für ausgehende Gespräche einfügen</label></p>
+ 		</div>
+ 		<div id="UseOKZ" style="display:none">
+-			<p id="OKZProvider"style="display:none"><input type="checkbox" id="uiViewUseOKZProvider">&nbsp;<label for="uiViewUseOKZProvider"><? echo $var:Text26 ?></label></p>
+-			<div id="uiOKZ" style="display:none">
+-				<p class="mt10 mb5"><? echo $var:Text94 ?></p>
+-				<div class="left25">
+-					<table>
+-						<tr>
+-							<td class="c1"><label for="uiViewOKZ"><? echo $var:Text56 ?></label></td>
+-							<td><input type="text" size="5" maxlength="32" class="Eingabefeld" id="uiViewOKZ"></td>
+-						</tr>
+-					</table>
+-				</div>
+-			</div>
++			<p><input type="checkbox" id="uiViewUseOKZ" onclick="OnChangeOKZ()">&nbsp;<label for="uiViewUseOKZ"><? echo $var:Text26 ?></label></p>
++			<p class="left20"><label for="uiViewOKZ"><? echo $var:Text27 ?></label>&nbsp;<input type="text" size="6" maxlength="32" class="Eingabefeld" id="uiViewOKZ"></p>
+ 		</div>
++<? if eq $var:showLKZ 1 '
+ 		<div id="ExpUseOKZ" style="display:none">
+-			<div id="uiExpOKZ" style="display:none">
+-				<p class="mt10"><? echo $var:Text94 ?></p>
+-				<div class="left25"> 
++			<p class="mb10">$var:Text28</p>
++			<p><input type="checkbox" id="uiViewExpUseOKZ">&nbsp;<label for="uiViewExpUseOKZ">$var:Text33</label></p>
++			<div class="left25 mb10">
+ 					<table>
+ 						<tr>
+-							<td class="c1"><label for="uiViewExpOKZ"><? echo $var:Text56 ?></label></td>
+-							<td><input type="text" size="5" maxlength="32" class="Eingabefeld" id="uiViewExpOKZ"></td>
++						<td class="c0"><label for="uiViewExpOKZ">$var:Text34</label></td>
++						<td><input type="text" size="6" maxlength="32" class="Eingabefeld" id="uiViewExpOKZ"></td>
++					</tr>
++					<tr>
++						<td class="c0"><label for="uiViewExpOKZPrefix">$var:Text35</label></td>
++						<td><input type="text" size="6" maxlength="32" class="Eingabefeld" id="uiViewExpOKZPrefix"></td>
++					</tr>
++					<tr>
++						<td colspan=2><input type="checkbox" id="uiViewExpKeepOKZPrefix">&nbsp;<label for="uiViewExpKeepOKZPrefix">$var:Text36</label></td>
+ 						</tr>
+ 					</table>
+ 				</div>
+-			</div>
+-			<p class="mt10 mb5"><? echo $var:Text92 ?></p>
+-			<div class="left25">
++			<p><input type="checkbox" id="uiViewExpUseLKZ">&nbsp;<label for="uiViewExpUseLKZ">$var:Text37</label></p>
++			<div class="left25 mb10">
+ 				<table>
+ 					<tr>
+-						<td class="c1"><? echo $var:Text93 ?></td>
+-						<td class="c3"><input type="checkbox" id="uiViewExpKeepLKZPrefix"></td>
+-						<td class="c3"><input type="checkbox" id="uiViewExpUseLKZ" onclick="OnExpLkz()"></td>
+-						<td class="c3"><input type="checkbox" id="uiViewExpKeepOKZPrefix"></td>
+-						<td class="c3"><input type="checkbox" id="uiViewExpUseOKZ" onclick="OnExpOkz()"></td>
++						<td class="c0"><label for="uiViewExpLKZ">$var:Text38</label></td>
++						<td><input type="text" size="6" maxlength="32" class="Eingabefeld" id="uiViewExpLKZ"></td>
++					</tr>
++					<tr>
++						<td class="c0"><label for="uiViewExpLKZPrefix">$var:Text39</label></td>
++						<td><input type="text" size="6" maxlength="32" class="Eingabefeld" id="uiViewExpLKZPrefix"></td>
+ 					</tr>
+ 					<tr>
+-						<td class="c1">&nbsp;</td>
+-						<td class="c3"><? query telcfg:settings/Location/LKZPrefix ?></td>
+-						<td class="c3"><? query telcfg:settings/Location/LKZ ?></td>
+-						<td class="c3"><? query telcfg:settings/Location/OKZPrefix ?></td>
+-						<td class="c3"><? query telcfg:settings/Location/OKZ ?></td>
++						<td colspan=2><input type="checkbox" id="uiViewExpKeepLKZPrefix">&nbsp;<label for="uiViewExpKeepLKZPrefix">$var:Text40</label></td>
+ 					</tr>
+ 				</table>
+-				<p class="pCheck25 mb10" id="uiShowAlternatePrefix_USA" style="display:none">
+-					<input type="checkbox" name="AlternatePrefix" id="uiViewAlternatePrefix_USA">&nbsp;<label for="uiViewAlternatePrefix_USA"><? echo $var:Text95 ?></label><br /><? echo $var:Text96 ?>
+-				</p>
+ 			</div>
+ <? if neq $var:OEM avme '
+-			<div class="left25"> 
++			<div>
+ 				<table>
+ 					<tr>
+-						<td class="c1"><label for="uiViewExpSuffix">$var:Text46</label></td>
++						<td class="c00"><label for="uiViewExpSuffix">$var:Text46</label></td>
+ 						<td><input type="text" size="10" maxlength="32" class="Eingabefeld" id="uiViewExpSuffix"></td>
+ 					</tr>
+ 				</table>
+ 			</div>
+ ' ?>
+-			<div id="SpitSchutz" style="display:none">
+-				<p class="mt10 mb5"><? echo $var:Text103 ?></p>
+-				<div class="left50">
+-					<input class="left25 pCheck25" type="checkbox" id="uiViewSpit">&nbsp;<label for="uiViewSpit"><? echo $var:Text104 ?></label>
+-				</div>
+-			</div>
+ 		</div>
++' ?>
+ 		<? include ../html/$var:lang/home/error.html ?>
+ 	</div></div></div></div></div></div>
+ <? if eq $var:showtcom 1 '
+--- usr/www/all/html/de/fon/sip1.inc.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/sip1.inc	2007-10-24 00:13:30.000000000 +0200
+@@ -24,11 +24,16 @@
+ <? setvariable var:Text23 'Kennwortbestätigung' ?>
+ <? setvariable var:Text24 'Registrar' ?>
+ <? setvariable var:Text25 'STUN-Server' ?>
+-<? setvariable var:Text26 'Ortsvorwahl für ausgehende Gespräche einfügen' ?>
++<? setvariable var:Text26 'Ortsvorwahl ergänzen' ?>
++<? setvariable var:Text27 'Geben Sie hier Ihre Ortsvorwahl ein' ?>
+ <? setvariable var:Text28 'Stellen Sie Ortskennzahl und Landeskennzahl gemäß Ihren Anforderungen ein oder richten Sie sich nach den Vorgaben Ihres Telefonieanbieters.' ?>
+ <? setvariable var:Text33 'Ortskennzahl verwenden' ?>
++<? setvariable var:Text34 'Geben Sie hier Ihre Ortskennzahl ein' ?>
++<? setvariable var:Text35 'Geben Sie hier Ihren Ortskennzahl-Prefix ein' ?>
+ <? setvariable var:Text36 'Ortskennzahl-Prefix beibehalten' ?>
+ <? setvariable var:Text37 'Landeskennzahl verwenden' ?>
++<? setvariable var:Text38 'Geben Sie hier Ihre Landeskennzahl ein' ?>
++<? setvariable var:Text39 'Geben Sie hier Ihren Landeskennzahl-Prefix ein' ?>
+ <? setvariable var:Text40 'Landeskennzahl-Prefix beibehalten' ?>
+ <? setvariable var:Text41 'Der Anbieter unterstützt die Online-Liste' ?>
+ <? setvariable var:Text42 'Internetrufnummer für die Anmeldung verwenden' ?>
+--- usr/www/all/html/de/fon/sip1.js.orig	2007-10-24 00:13:30.000000000 +0200
++++ usr/www/all/html/de/fon/sip1.js	2007-10-24 00:13:30.000000000 +0200
+@@ -12,11 +12,9 @@
+ .c0 {padding: 1px 15px 1px 0px; width: 300px;}
+ .c00 {padding: 1px 15px 1px 0px; width: 325px;}
+ .c1 {width: 180px;}
+-.c3 {padding-right: 4px; text-align:center; vertical-align:bottom;}
+ #tLinks td {padding: 2px 0px;}
+ #tLinks .c1 {width: 330px;}
+ #tLinks .c2 {width: 190px; text-align: right;}
+-.pCheck25 {text-indent: -25px; padding-left: 25px;}
+ -->
+ </style>
+ <script type="text/javascript">
+@@ -39,7 +37,7 @@
+ var g_mldPasswortEnterNew	= "Sie haben Ihre Zugangsdaten geändert.\x0d\x0aBitte geben Sie Ihr %1 erneut ein.";
+ var g_txt1u1Kennwort		= "VoIP-Passwort";
+ var g_txt1u1Confirmation	= "Passwortbestätigung";
+-var g_txtFreenetRufnr			= "freenet-Rufnummer";
++var g_txtFreenetRufnr			= "iPhone-Rufnummer";
+ var g_txtFreenetVoIPName		= "Login-Name";
+ var g_txtFreenetKennwort		= "VoIP-Passwort";
+ var g_txtFreenetConfirmation	= "Passwortbestätigung";
+@@ -76,16 +74,6 @@
+ var g_txtInodeVoIPName		= "Rufnummer";
+ var g_txtInodeKennwort		= "Kennwort";
+ var g_txtInodeConfirmation	= "Kennwortbestätigung";
+-<? if eq $var:Annex A `
+-var g_txtInodeIsdnRufnr			= "Internetrufnummer";
+-var g_txtInodeIsdnVoIPName		= "Rufnummer";
+-var g_txtInodeIsdnKennwort		= "Kennwort";
+-var g_txtInodeIsdnConfirmation	= "Kennwortbestätigung";
+-` ?>
+-var g_txtDbdRufnr				= "Rufnummer";
+-var g_txtDbdVoIPName		= "SIP-Kennung";
+-var g_txtDbdKennwort			= "SIP-Passwort";
+-var g_txtDbdConfirmation		= "Passwort-Bestätigung";
+ var g_txtSonstRufnr			= "Internetrufnummer";
+ var g_txtSonstVoIPName		= "Benutzername";
+ var g_txtSonstKennwort		= "Kennwort";
+@@ -98,9 +86,7 @@
+ var g_isDsl = "<? echo $var:isDsl ?>";
+ var g_isAta = "<? echo $var:isAta ?>";
+ var g_AtaMode = "<? query box:settings/ata_mode ?>";
+-var g_ShowOKZ = false;
+ function uiDoOnLoad() {
+-	if (jslGetValue("uiPostOKZ") == "") g_ShowOKZ = true;
+ 	jslGetCheckValue("uiViewUseSip", "uiPostUseSip");
+ 	jslCopyValue("uiViewRufnr","uiPostRufnr");
+ 	jslCopyValue("uiViewUsername","uiPostUsername");
+@@ -110,33 +96,29 @@
+ 	jslCopyValue("uiViewProxy","uiPostProxy");
+ 	jslCopyValue("uiViewStun","uiPostStun");
+ 	jslSetChecked("uiViewSipUri", jslGetValue("uiPostSipUri") == "1");
+-<? if eq $var:Annex A `
+-	jslCopyValue("uiViewTrunk", "uiPostTrunk");
+-`?>
++	
++<? if eq $var:showLKZ 1 '
+ 	if (g_expertMode == "1") {
+-		jslDisplay("uiExpOKZ", g_ShowOKZ);
+ 		jslGetCheckValue("uiViewExpUseOKZ", "uiPostUseOKZ");
++		jslCopyValue("uiViewExpOKZ", "uiPostOKZ");
+ 		jslGetCheckValue("uiViewExpKeepOKZPrefix", "uiPostKeepOKZPrefix");
++		jslCopyValue("uiViewExpOKZPrefix", "uiPostOKZPrefix");
+ 		jslGetCheckValue("uiViewExpUseLKZ", "uiPostUseLKZ");
++		jslCopyValue("uiViewExpLKZ", "uiPostLKZ");
+ 		jslGetCheckValue("uiViewExpKeepLKZPrefix", "uiPostKeepLKZPrefix");
+-		g_okzprestate = jslGetChecked("uiViewExpKeepOKZPrefix");
+-		g_lkzprestate = jslGetChecked("uiViewExpKeepLKZPrefix");
++		jslCopyValue("uiViewExpLKZPrefix", "uiPostLKZPrefix");
+ <? if neq $var:OEM avme '
+ 		jslCopyValue("uiViewExpSuffix", "uiPostSuffix");
+ ' ?>
+-		jslSetChecked("uiViewAlternatePrefix_USA", jslGetValue("uiPostAlternatePrefix") == "011");
+-		jslSetChecked("uiViewSpit", jslGetValue("uiPostSpit") == "1");
+-	} else {
+-		jslDisplay("uiOKZ", g_ShowOKZ);
+ 	}
++' ?>
+ 	jslCopyValue("uiView1u1Username","uiPostRufnr");
+ 	jslSetValue("uiViewArcorUsername", ArcorUsername());
+-	jslGetCheckValue("uiViewUseOKZProvider", "uiPostUseOKZ");
++	jslGetCheckValue("uiViewUseOKZ", "uiPostUseOKZ");
+ 	jslGetCheckValue("uiViewArcorUseOKZ", "uiPostUseOKZ");
+-	jslSetValue("uiViewArcorOKZ", ArcorOKZ());
+-	jslSetValue("uiView1u1OKZ", UnitedInternetOKZ());
+-	jslSetValue("uiViewDbdRufnummer", DbdUsername());
+-	jslSetValue("uiViewDbdOKZ", DbdOKZ());
++	jslSetValue("uiViewOKZ", GetOKZDisplay("uiPostOKZ"));
++	jslSetValue("uiViewArcorOKZ", GetOKZDisplay("uiPostOKZ"));
++	jslCopyValue("uiView1u1OKZ", "uiPostOKZ");
+ 	OnChangeSip();
+ 	if (g_Variante == "arcor") {
+ 		if ((jslGetValue("uiPostRegistrar") != "") && (jslGetValue("uiPostRegistrar") != "arcor.de")) {
+@@ -209,67 +191,21 @@
+ 			jslSetSelection("uiViewProvider", "Dus");
+ 			OnChangeProvider("Dus");
+ 		} else if (registrar == "voip.inode.at") {
+-<? if eq $var:Annex A `
+-			if (jslGetValue("uiPostDditype") == "0") {
+-				jslSetSelection("uiViewProvider", "Inode");
+-				OnChangeProvider("Inode");
+-			} else {
+-				jslSetSelection("uiViewProvider", "InodeIsdn");
+-				OnChangeProvider("InodeIsdn");
+-			}
+-` `
+ 			jslSetSelection("uiViewProvider", "Inode");
+ 			OnChangeProvider("Inode");
+-` ?>			
+-		} else if (registrar.indexOf("dbd-") >= 0) {
+-			if (registrar.indexOf("dsl") >= 0) {
+-				jslSetSelection("uiViewProvider", "DBD-DSL");
+-				OnDbd();
+-			} else {
+-				jslSetSelection("uiViewProvider", "DBD");
+-				OnDbd();
+-			}
+ 		} else {
+ 			jslSetSelection("uiViewProvider", "Sonst");
+ 			OnChangeProvider("Sonst");
+ 		}
+ ' ?>
+ 	}
+-	if (g_expertMode == "1") {
+-		OnExpLkz();
+-		OnExpOkz();
+-	}
+ }
+ function ArcorUsername () {
+-	return jslGetValue("uiPostMsn");
+-}
+-function ArcorOKZ() {
+-	var rufnr = jslGetValue("uiPostMsn");
+-	var username = jslGetValue("uiPostUsername");
+-	if (username.length <= rufnr.length) return "";
+-	if (username.substr(username.length-rufnr.length) != rufnr) return "";
+-	return username.substr(0, username.length-rufnr.length);
+-}
+-function UnitedInternetUsername() {
+-	return jslGetValue("uiPostRufnr");
+-}
+-function UnitedInternetOKZ() {
++	// Die eventuell vorhandene OKZ muss entfernt werden
+ 	var rufnr = jslGetValue("uiPostRufnr");
+-	var username = jslGetValue("uiPostUsername");
+-	if (username.substr(0,2) != "49") return "";
+-	if (username.length <= rufnr.length+2) return "";
+-	if (username.substr(username.length-rufnr.length) != rufnr) return "";
+-	return username.substr(2, username.length-rufnr.length-2);
+-}
+-function DbdUsername () {
+-	return jslGetValue("uiPostMsn");
+-}
+-function DbdOKZ() {
+-	var rufnr = jslGetValue("uiPostMsn");
+-	var username = jslGetValue("uiPostRufnr");
+-	if (username.length <= rufnr.length) return "";
+-	if (username.substr(username.length-rufnr.length) != rufnr) return "";
+-	return username.substr(0, username.length-rufnr.length);
++	var okz = GetOKZDisplay("uiPostOKZ");
++	if (rufnr.indexOf(okz) != 0) return rufnr;
++	return rufnr.substr(okz.length);
+ }
+ function uiDoValidate() {
+ 	var provider = jslGetValue("uiViewProvider");
+@@ -331,30 +267,19 @@
+ 	if (ShowStun()) jslCopyValue("uiPostStun", "uiViewStun");
+ 	SetRegType("other");
+ 	if (g_expertMode == "1") {
+-		if (g_ShowOKZ) {
+-			if (!valIsZahl(jslGetValue("uiViewExpOKZ"))) {alert(g_mldOkzDigit); return false;}
+-			jslSetValue("uiPostOKZ", GetOKZohneNull("uiViewExpOKZ"));
+-			jslEnable("uiPostOKZ");
+-		}
+ 		jslSetCheckValue("uiPostUseOKZ", "uiViewExpUseOKZ");
+-		if (jslGetChecked("uiViewExpUseOKZ"))
++		if (!valIsZahl(jslGetValue("uiViewExpOKZ"))) {alert(g_mldOkzDigit); return false;}
++		jslCopyValue("uiPostOKZ", "uiViewExpOKZ");
+ 			jslSetCheckValue("uiPostKeepOKZPrefix", "uiViewExpKeepOKZPrefix");
+-		else
+-			jslSetValue("uiPostKeepOKZPrefix", "1");
++		jslCopyValue("uiPostOKZPrefix", "uiViewExpOKZPrefix");
+ 		jslSetCheckValue("uiPostUseLKZ", "uiViewExpUseLKZ");
+-		if (jslGetChecked("uiViewExpUseLKZ"))
++		if (!valIsZahl(jslGetValue("uiViewExpLKZ"))) {alert(g_mldLkzDigit); return false;}
++		jslCopyValue("uiPostLKZ", "uiViewExpLKZ");
+ 			jslSetCheckValue("uiPostKeepLKZPrefix", "uiViewExpKeepLKZPrefix");
+-		else
+-			jslSetValue("uiPostKeepLKZPrefix", "1");
++		jslCopyValue("uiPostLKZPrefix", "uiViewExpLKZPrefix");
+ <? if neq $var:OEM avme '
+ 		jslCopyValue("uiPostSuffix", "uiViewExpSuffix");
+ ' ?>
+-	} else {
+-		if (g_ShowOKZ) {
+-			if (!valIsZahl(jslGetValue("uiViewOKZ"))) {alert(g_mldOkzDigit); return false;}
+-			jslSetValue("uiPostOKZ", GetOKZohneNull("uiViewOKZ"));
+-			jslEnable("uiPostOKZ");
+-		}
+ 	}
+ 	return true;
+ }
+@@ -365,8 +290,6 @@
+ 	jslSetValue("uiPostProxy","");
+ 	jslSetValue("uiPostSipUri", "0");
+ 	jslSetValue("uiPostStun","");
+-	jslSetValue("uiPostDditype", "0");
+-	jslDisable("uiPostSpit");
+ 	var type= jslGetValue("uiViewProvider");
+ 	if (type == "1u1") {
+ 		if (!SaveUnitedInternet("1und1", "1und1.de", "1und1.de")) return false;
+@@ -393,17 +316,22 @@
+ 		jslSetValue("uiPostRufnr", name);
+ 		jslCopyValue("uiPostMsn","uiViewArcorUsername");
+ 		jslSetCheckValue("uiPostUseOKZ", "uiViewArcorUseOKZ");
+-		if (g_ShowOKZ) {
+ 			jslSetValue("uiPostOKZ", GetOKZohneNull("uiViewArcorOKZ"));
+-			jslEnable("uiPostOKZ");
+-		}
+-	} else if (type == "DBD" || type== "DBD-DSL") {
+-		if (!SaveDbd()) return false;
+ 	} else {
+-		if (type != "Inode" && type != "InodeIsdn") {
++		if (type != "Inode") {
+ 			var rufnr = jslGetValue("uiViewRufnr");
+ 			if (rufnr.length == 0) {alert1(g_mldNoRufnr, g_LabelRufnr); return false;}
+ 		}
++<? if eq $var:showLKZ 1 `
++		if (g_expertMode == "1") {
++			if (!valIsZahl(jslGetValue("uiViewExpOKZ"))) {alert(g_mldOkzDigit); return false;}
++			if (!valIsZahl(jslGetValue("uiViewExpLKZ"))) {alert(g_mldLkzDigit); return false;}
++		} else {
++			if (jslGetChecked("uiViewUseOKZ") && !valOKZ(jslGetValue("uiViewOKZ"))) return false;
++		}
++` `
++		if (jslGetChecked("uiViewUseOKZ") && !valOKZ(jslGetValue("uiViewOKZ"))) return false;
++` ?>
+ 		if (type == "Sipgate") {
+ 			if (!valIsSipname(jslGetValue("uiViewUsername"))) {alert(g_mldNameChar); return false;}
+ 			jslSetValue("uiPostRegistrar", "sipgate.de");
+@@ -421,10 +349,6 @@
+ 			// Bei freenet den STUN-Server immer eintragen
+ 			jslSetValue("uiPostStun", "freenet.de");
+ 			SetRegType("freenet");
+-			if (g_expertMode == "1") {
+-				jslSetValue("uiPostSpit", jslGetChecked("uiViewSpit") ? "1":"0");
+-				jslEnable("uiPostSpit");
+-			}
+ 		} else if (type == "Strato") {
+ 			if (!SaveStrato()) return false;
+ <? if eq $var:showtcom 1 '
+@@ -439,11 +363,7 @@
+ 		} else if (type == "Webde") {
+ 			if (!SaveWebde()) return false;
+ 		} else if (type == "Inode") {
+-			if (!SaveInode(false)) return false;
+-<? if eq $var:Annex A `
+-		} else if (type == "InodeIsdn") {
+-			if (!SaveInode(true)) return false;
+-` ?>
++			if (!SaveInode()) return false;
+ 		} else if (type == "Dus") {
+ 			if (!SaveDus()) return false;
+ 		} else {
+@@ -458,36 +378,30 @@
+ 		if (type == "Sipgate" || type=="AOL") {
+ 			jslSetValue("uiPostUseOKZ", "0");
+ 		} else {
++<? if eq $var:showLKZ 1 `
+ 			if (g_expertMode == "1") {
+-				if (g_ShowOKZ) {
+-					if (!valIsZahl(jslGetValue("uiViewExpOKZ"))) {alert(g_mldOkzDigit); return false;}
+-					jslSetValue("uiPostOKZ", GetOKZohneNull("uiViewExpOKZ"));
+-					jslEnable("uiPostOKZ");
+-				}
+ 				jslSetCheckValue("uiPostUseOKZ", "uiViewExpUseOKZ");
+-				if (jslGetChecked("uiViewExpUseOKZ"))
++				jslCopyValue("uiPostOKZ", "uiViewExpOKZ");
+ 					jslSetCheckValue("uiPostKeepOKZPrefix", "uiViewExpKeepOKZPrefix");
+-				else
+-					jslSetValue("uiPostKeepOKZPrefix", "1");
++				jslCopyValue("uiPostOKZPrefix", "uiViewExpOKZPrefix");
+ 				jslSetCheckValue("uiPostUseLKZ", "uiViewExpUseLKZ");
+-				if (jslGetChecked("uiViewExpUseLKZ"))
++				jslCopyValue("uiPostLKZ", "uiViewExpLKZ");
+ 					jslSetCheckValue("uiPostKeepLKZPrefix", "uiViewExpKeepLKZPrefix");
+-				else
+-					jslSetValue("uiPostKeepLKZPrefix", "1");
++				jslCopyValue("uiPostLKZPrefix", "uiViewExpLKZPrefix");
+ 				jslCopyValue("uiPostSuffix", "uiViewExpSuffix");
+ 			} else {
+-				if (g_ShowOKZ) {
+-					if (!valIsZahl(jslGetValue("uiViewOKZ"))) {alert(g_mldOkzDigit); return false;}
++				jslSetCheckValue("uiPostUseOKZ", "uiViewUseOKZ");
+ 					jslSetValue("uiPostOKZ", GetOKZohneNull("uiViewOKZ"));
+-					jslEnable("uiPostOKZ");
+-				}
+-				jslSetCheckValue("uiPostUseOKZ", "uiViewUseOKZProvider");
+ 			}
++` `
++			jslSetCheckValue("uiPostUseOKZ", "uiViewUseOKZ");
++			jslSetValue("uiPostOKZ", GetOKZohneNull("uiViewOKZ"));
++` ?>
+ 		}
+ 		if (type != "Dus") jslCopyValue("uiPostUsername","uiViewUsername");
+ 		jslCopyValue("uiPostPassword","uiViewPassword");
+ 		jslCopyValue("uiPostRufnr","uiViewRufnr");
+-		if (type != "InodeIsdn") jslCopyValue("uiPostMsn","uiViewRufnr");
++		jslCopyValue("uiPostMsn","uiViewRufnr");
+ 	}
+ 	return true;
+ }
+@@ -508,20 +422,17 @@
+ 	jslCopyValue("uiPostPassword","uiViewPassword");
+ 	jslSetValue("uiPostRegistrar", registrar);
+ 	jslSetValue("uiPostStun", stun);
+-	jslCopyValue("uiPostRufnr", "uiView1u1Username");
+-	jslCopyValue("uiPostMsn", "uiView1u1Username");
+-	jslSetValue("uiPostUseOKZ", "1");
+-	if (g_ShowOKZ) {
++	jslCopyValue("uiPostRufnr","uiView1u1Username");
++	jslCopyValue("uiPostMsn","uiView1u1Username");
++	jslSetValue("uiPostUseOKZ","1");
+ 		jslSetValue("uiPostOKZ", GetOKZohneNull("uiView1u1OKZ"));
+-		jslEnable("uiPostOKZ");
+-	}
+ 	return true;
+ }
+ ` ?>
+ <? if neq $var:OEM avme `
+ function SaveStrato () {
+ 	if (!valIsSipname(jslGetValue("uiViewUsername"))) {alert(g_mldNameChar); return false;}
+-	jslSetValue("uiPostRegistrar", "strato-iphone.de");
++	jslSetValue("uiPostRegistrar","strato-iphone.de");
+ 	jslSetValue("uiPostStun", "iphone-stun.strato-iphone.de");
+ 	jslEnable("uiPostStun");
+ 	SetRegType("other");
+@@ -529,33 +440,15 @@
+ }
+ ` ?>
+ <? if neq $var:OEM avme `
+-function SaveInode (isdn) {
+-	if (isdn) {
+-		var rufnr = jslGetValue("uiViewUsername");
+-		if (rufnr.length == 0) {alert1(g_mldNoRufnrIsdn, g_LabelUsername); return false;}
+-		if (!valIsZahl(rufnr)) {alert1(g_mldRufnrDigit, g_LabelUsername); return false;}
+-		var trunk = jslGetValue("uiViewTrunk");
+-		if (!valIsZahl(rufnr)) {alert1(g_mldRufnrDigit, "Kopfnummer"); return false;}
+-	} else {
++function SaveInode () {
+ 		if (!valIsSipname(jslGetValue("uiViewUsername"))) {alert(g_mldNameChar); return false;}
+-	}
+ 	jslSetValue("uiPostRegistrar","voip.inode.at");
+ 	jslSetValue("uiPostProxy","voip.inode.at");
+ 	SetRegType("other");
+ 	jslCopyValue("uiViewRufnr","uiViewUsername");
+-	if (isdn) {
+-		jslSetValue("uiPostDditype", "2");
+-		var username = jslGetValue("uiViewUsername");
+-		jslCopyValue("uiPostTrunk", "uiViewTrunk");
+-		jslEnable("uiPostTrunk");
+-		jslSetValue("uiPostMsn", jslGetValue("uiViewTrunk")+"0");
+-	} else {
+-		jslSetValue("uiPostDditype", "0");
+-	}
+-	
+ 	// Erweiterte Einstellungen fest setzen, ohne Rücksichtauf andere Zugänge
+ 	// Keine Festnetzersatzverbindung
+-	for (var i=0; i < <? query telcfg:settings/SIP/count ?>; i++) {
++	for (var i=0; i<10; i++) {
+ 		jslSetValue("uiPostFallback"+i, "0");
+ 		jslEnable("uiPostFallback"+i);
+ 	}
+@@ -564,6 +457,7 @@
+ 	jslSetValue("uiPostLowCodecs", "0");
+ 	jslEnable("uiPostDynCodec");
+ 	jslEnable("uiPostLowCodecs");
++	
+ 	return true;
+ }
+ ` ?>
+@@ -587,44 +481,19 @@
+ 	return true;
+ }
+ ` ?>
+-<? if neq $var:OEM avme `
+-function SaveDbd() {
+-	if (!valOKZ(jslGetValue("uiViewDbdOKZ"))) return false;
+-	var rufnr = jslGetValue("uiViewDbdRufnummer");
+-	if (rufnr.length == 0) {alert1(g_mldNoRufnr, g_LabelRufnr); return false;}
+-	if (!valIsZahl(rufnr)) {alert(g_mldUsernameDigit); return false;}
+-	jslCopyValue("uiPostUsername", "uiViewUsername");
+-	jslCopyValue("uiPostPassword", "uiViewPassword");
+-	jslCopyValue("uiPostRegistrar", "uiViewRegistrar");
+-	SetRegType("other");
+-	jslSetValue("uiPostRufnr", GetOKZDisplay("uiViewDbdOKZ")+rufnr);
+-	jslCopyValue("uiPostMsn","uiViewDbdRufnummer");
+-	jslSetValue("uiPostUseOKZ", "1");
+-	if (g_ShowOKZ) {
+-		jslSetValue("uiPostOKZ", GetOKZohneNull("uiViewDbdOKZ"));
+-		jslEnable("uiPostOKZ");
+-	}
+-	return true;
+-}		
+-` ?>
+ function SetRegType (t) {
+ 	jslSetValue("uiPostType", t);
+ <? if neq $var:OEM avme '
+ 	if (g_expertMode != "1") {
++		jslSetValue("uiPostLKZ", "");
+ 		jslSetValue("uiPostUseLKZ", "0");
++		jslSetValue("uiPostOKZPrefix", "0");
++		jslSetValue("uiPostLKZPrefix", "");
+ 		jslSetValue("uiPostKeepOKZPrefix", "1");
+ 		jslSetValue("uiPostKeepLKZPrefix", "1");
+ 		jslSetValue("uiPostSuffix", "");
+ 	}
+ ' ?>
+-	if (g_expertMode == "1") {
+-		if ( t == "other") {
+-			jslSetValue( "uiPostAlternatePrefix", "");
+-			if ( (jslGetValue("uiViewProvider") == "Sonst") && (jslGetChecked( "uiViewAlternatePrefix_USA") == true)) {
+-				jslSetValue( "uiPostAlternatePrefix", "011");
+-			}
+-		}
+-	}
+ 	switch (t) {
+ 		case "aol":
+ 		case "avm":
+@@ -650,15 +519,11 @@
+ 	jslPopHelp("hilfe_fon_internet");
+ }
+ function OnChangeProvider (id) {
+-	jslDisplay("SpitSchutz", false);
+ 	if (id == "GMX") On1u1();
+ 	else if (id == "1u1") On1u1();
+ 	else if (id == "SuP") On1u1();
+ 	else if (id == "Freenet") OnFreenet();
+ 	else if (id == "Inode") OnInode();
+-<? if eq $var:Annex A `
+-	else if (id == "InodeIsdn") OnInodeIsdn();
+-` ?>	
+ 	else if (id == "AOL") OnAOL();
+ 	else if (id == "Arcor") OnArcor();
+ 	else if (id == "Sipgate") OnSipgate();
+@@ -668,19 +533,13 @@
+ ' ?>
+ 	else if (id == "Webde") OnWebde();
+ 	else if (id == "Dus") OnDus();
+-	else if (id == "DBD") {OnDbd(); jslSetValue("uiViewRegistrar", "sip.dbd-breitband.de");}
+-	else if (id == "DBD-DSL") {OnDbd(); jslSetValue("uiViewRegistrar", "sip-dsl.dbd-breitband.de");}
+ 	else OnSonst();
+-<? if eq $var:Annex A `
+-	jslDisplay("Trunk", id=="InodeIsdn");
+-` ?>
+ }
+ function On1u1() {
+ 	g_LabelRufnr = "VoIP-Rufnummer";
+ 	g_LabelKennwort = g_txt1u1Kennwort;
+ 	jslDisplay("1u1Username", true);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", false);
+ 	jslDisplay("Rufnummer", false);
+ 	jslDisplay("Label", false);
+@@ -691,8 +550,8 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", false);
+ 	jslDisplay("SipUri", false);
+-	DisplayOKZ("off");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(false);
++	jslDisplay("ArcorUseOKZ", false);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+@@ -703,7 +562,6 @@
+ 	g_LabelKennwort = g_txtAOLKennwort;
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", true);
+ 	jslDisplay("Rufnummer", true);
+ 	jslDisplay("Label", true);
+@@ -716,8 +574,8 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", false);
+ 	jslDisplay("SipUri", false);
+-	DisplayOKZ("off");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(false);
++	jslDisplay("ArcorUseOKZ", false);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+@@ -727,7 +585,6 @@
+ 	g_LabelKennwort = g_txtArcorKennwort;
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", true);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", false);
+ 	jslDisplay("Rufnummer", false);
+ 	jslDisplay("Label", false);
+@@ -738,8 +595,8 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", ShowStun());
+ 	jslDisplay("SipUri", false);
+-	DisplayOKZ("arcor");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(false);
++	jslDisplay("ArcorUseOKZ", true);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+@@ -763,7 +620,6 @@
+ 	g_LabelKennwort = g_txtFreenetKennwort;
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", true);
+ 	jslDisplay("Rufnummer", true);
+ 	jslDisplay("Label", true);
+@@ -776,9 +632,8 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", false);
+ 	jslDisplay("SipUri", false);
+-	DisplayOKZ("on");
+-	jslDisplay("SpitSchutz", g_expertMode == "1");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(true);
++	jslDisplay("ArcorUseOKZ", false);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+@@ -789,7 +644,6 @@
+ 	g_LabelKennwort = g_txtSipgateKennwort;
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", true);
+ 	jslDisplay("Rufnummer", true);
+ 	jslDisplay("Label", true);
+@@ -802,8 +656,8 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", ShowStun());
+ 	jslDisplay("SipUri", false);
+-	DisplayOKZ("off");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(false);
++	jslDisplay("ArcorUseOKZ", false);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+@@ -814,7 +668,6 @@
+ 	g_LabelKennwort = g_txtStratoKennwort;
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", true);
+ 	jslDisplay("Rufnummer", true);
+ 	jslDisplay("Label", true);
+@@ -827,8 +680,8 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", false);
+ 	jslDisplay("SipUri", false);
+-	DisplayOKZ("on");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(true);
++	jslDisplay("ArcorUseOKZ", false);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+@@ -841,7 +694,6 @@
+ 	jslSetValue("uiViewRegistrar","tel.t-online.de");
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", true);
+ 	jslDisplay("Rufnummer", true);
+ 	jslDisplay("Label", true);
+@@ -855,8 +707,8 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", ShowStun());
+ 	jslDisplay("SipUri", false);
+-	DisplayOKZ("on");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(true);
++	jslDisplay("ArcorUseOKZ", false);
+ 	jslDisplay("uiTComLinks", true);
+ }
+ ' ?>
+@@ -867,7 +719,6 @@
+ 	jslSetValue("uiViewRegistrar","sip.web.de");
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", true);
+ 	jslDisplay("Rufnummer", true);
+ 	jslDisplay("Label", true);
+@@ -880,8 +731,8 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", ShowStun());
+ 	jslDisplay("SipUri", false);
+-	DisplayOKZ("on");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(true);
++	jslDisplay("ArcorUseOKZ", false);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+@@ -892,7 +743,6 @@
+ 	g_LabelKennwort = g_txtDusKennwort;
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", true);
+ 	jslDisplay("Rufnummer", true);
+ 	jslDisplay("Label", true);
+@@ -906,33 +756,8 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", false);
+ 	jslDisplay("SipUri", false);
+-	DisplayOKZ("on");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
+-<? if eq $var:showtcom 1 '
+-	jslDisplay("uiTComLinks", false);
+-' ?>
+-}
+-function OnDbd() {
+-	g_LabelRufnr = g_txtDbdRufnr;
+-	g_LabelUsername = g_txtDbdVoIPName;
+-	g_LabelKennwort = g_txtDbdKennwort;
+-	jslDisplay("1u1Username", false);
+-	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", true);
+-	jslDisplay("Username", true);
+-	jslDisplay("Rufnummer", false);
+-	jslDisplay("Label", false);
+-	SetSpanText("LabelRufnr", g_txtDbdRufnr);
+-	SetSpanText("LabelUsername", g_txtDbdVoIPName);
+-	SetSpanText("LabelKennwort", g_txtDbdKennwort);
+-	SetSpanText("LabelKennwort2", g_txtDbdConfirmation);
+-	jslDisplay("uiUserprefix", false);
+-	jslDisplay("Registrar", true);
+-	jslDisplay("Proxy", false);
+-	jslDisplay("Stun", false);
+-	jslDisplay("SipUri", false);
+-	DisplayOKZ("off");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(true);
++	jslDisplay("ArcorUseOKZ", false);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+@@ -943,7 +768,6 @@
+ 	g_LabelKennwort = g_txtInodeKennwort;
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", true);
+ 	jslDisplay("Rufnummer", false);
+ 	jslDisplay("Label", false);
+@@ -956,46 +780,18 @@
+ 	jslDisplay("Proxy", false);
+ 	jslDisplay("Stun", false);
+ 	jslDisplay("SipUri",false);
+-	DisplayOKZ("on");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
+-<? if eq $var:showtcom 1 '
+-	jslDisplay("uiTComLinks", false);
+-' ?>
+-}
+-<? if eq $var:Annex A `
+-function OnInodeIsdn() {
+-	g_LabelRufnr = g_txtInodeIsdnRufnr;
+-	g_LabelUsername = g_txtInodeIsdnVoIPName;
+-	g_LabelKennwort = g_txtInodeIsdnKennwort;
+-	jslDisplay("1u1Username", false);
+-	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+-	jslDisplay("Username", true);
+-	jslDisplay("Rufnummer", false);
+-	jslDisplay("Label", false);
+-	SetSpanText("LabelRufnr", g_txtInodeIsdnRufnr);
+-	SetSpanText("LabelUsername", g_txtInodeIsdnVoIPName);
+-	SetSpanText("LabelKennwort", g_txtInodeIsdnKennwort);
+-	SetSpanText("LabelKennwort2", g_txtInodeIsdnConfirmation);
+-	jslDisplay("uiUserprefix", false);
+-	jslDisplay("Registrar", false);
+-	jslDisplay("Proxy", false);
+-	jslDisplay("Stun", false);
+-	jslDisplay("SipUri",false);
+-	DisplayOKZ("on");
+-	jslDisplay("uiShowAlternatePrefix_USA", false);
++	DisplayOKZ(true);
++	jslDisplay("ArcorUseOKZ", false);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+ }
+-` ?>
+ function OnSonst() {
+ 	g_LabelRufnr = g_txtSonstRufnr;
+ 	g_LabelUsername = g_txtSonstVoIPName;
+ 	g_LabelKennwort = g_txtSonstKennwort;
+ 	jslDisplay("1u1Username", false);
+ 	jslDisplay("ArcorUsername", false);
+-	jslDisplay("DbdRufnummer", false);
+ 	jslDisplay("Username", true);
+ 	jslDisplay("Rufnummer", true);
+ 	jslDisplay("Label", true);
+@@ -1008,22 +804,22 @@
+ 	jslDisplay("Proxy", g_expertMode == "1");
+ 	jslDisplay("Stun", ShowStun());
+ 	jslDisplay("SipUri", g_expertMode == "1");
+-	DisplayOKZ("other");
+-	jslDisplay("uiShowAlternatePrefix_USA", g_expertMode == "1");
++	DisplayOKZ(true);
++	jslDisplay("ArcorUseOKZ", false);
+ <? if eq $var:showtcom 1 '
+ 	jslDisplay("uiTComLinks", false);
+ ' ?>
+ }
+-// mode: off, on, arcor, other
+-function DisplayOKZ (mode) {
+-	jslDisplay("ArcorUseOKZ", mode == "arcor");
+-<? if eq $var:OEM avme `	
+-	jslDisplay("UseOKZ", false);
++function DisplayOKZ(b) {
++<? if eq $var:showLKZ 1 `
++	if (g_expertMode == "1") {
++		jslDisplay("ExpUseOKZ", b);
++	} else {
++		<? if eq $var:OEM avme 'jslDisplay("UseOKZ", false);' 'jslDisplay("UseOKZ", b);' ?>
++	}
+ ` `
+-	jslDisplay("UseOKZ", (mode == "other" || mode == "on") && g_expertMode == "0");
++	jslDisplay("UseOKZ", b);
+ ` ?>	
+-	jslDisplay("OKZProvider", (mode == "other" || mode == "on") && g_expertMode == "0");
+-	jslDisplay("ExpUseOKZ", (mode == "other" || mode == "on") && g_expertMode == "1");
+ }
+ // nummer = SIP0 oder SIP1
+ function SetNst (nummer) {
+@@ -1035,11 +831,8 @@
+ 	var h = document.getElementById(id);
+ 	if (h == null) return "";
+ 	var nr = jslDoEliminateBlanks(h.value);
+-	return OhneNull(nr);
+-}
+-function OhneNull (str) {
+-	if (str.substr(0,1) != "0") return str;
+-	return str.substr(1, str.length-1);
++	if (nr.substr(0,1) != "0") return nr;
++	return nr.substr(1, nr.length-1);
+ }
+ // Ortsvorwahl mit führender Null anzeigen
+ function GetOKZDisplay (id) {
+@@ -1060,60 +853,54 @@
+ 	jslSetEnabled("uiViewArcorOKZ", b);
+ 	jslSetEnabled("uiViewArcorUsername", b);
+ 	jslSetEnabled("uiViewArcorUseOKZ", b);
+-	jslSetEnabled("uiViewDbdOKZ", b);
+-	jslSetEnabled("uiViewDbdRufnummer", b);
+ 	jslSetEnabled("uiViewRufnr", b);
+ 	jslSetEnabled("uiViewUsername", b);
+ 	jslSetEnabled("uiViewPassword", b);
+ 	jslSetEnabled("uiViewPassword2", b);
+ 	jslSetEnabled("uiViewRegistrar", b);
+-	jslSetEnabled("uiViewUseOKZProvider", b);
++	jslSetEnabled("uiViewUseOKZ", b);
+ 	jslSetEnabled("uiViewProxy", b);
+ 	jslSetEnabled("uiViewStun", b);
+ 	jslSetEnabled("uiViewSipUri", b);
+-	jslSetEnabled("uiViewOKZ", b);
+-	jslSetEnabled("uiViewExpOKZ", b);
+-	jslSetEnabled("uiViewExpUseOKZ", b);
+-	jslSetEnabled("uiViewExpKeepOKZPrefix", b);
+-	jslSetEnabled("uiViewExpUseLKZ", b);
+-	jslSetEnabled("uiViewExpKeepLKZPrefix", b);
++	if (b) {
++<? if neq $var:showLKZ 1 '
++		OnChangeOKZ();
++' ' 
++		jslEnable("uiViewExpUseOKZ");
++		jslEnable("uiViewExpOKZ");
++		jslEnable("uiViewExpOKZPrefix");
++		jslEnable("uiViewExpKeepOKZPrefix");
++		jslEnable("uiViewExpUseLKZ");
++		jslEnable("uiViewExpLKZ");
++		jslEnable("uiViewExpLKZPrefix");
++		jslEnable("uiViewExpKeepLKZPrefix");
++<? if neq $var:OEM avme '
++		jslEnable("uiViewExpSuffix");
++' ?>
++' ?>
++	} else {
++		jslDisable("uiViewOKZ");
++<? if eq $var:showLKZ 1 '
++		jslDisable("uiViewExpUseOKZ");
++		jslDisable("uiViewExpOKZ");
++		jslDisable("uiViewExpOKZPrefix");
++		jslDisable("uiViewExpKeepOKZPrefix");
++		jslDisable("uiViewExpUseLKZ");
++		jslDisable("uiViewExpLKZ");
++		jslDisable("uiViewExpLKZPrefix");
++		jslDisable("uiViewExpKeepLKZPrefix");
+ <? if neq $var:OEM avme '
+-	jslSetEnabled("uiViewExpSuffix", b);
++		jslDisable("uiViewExpSuffix");
+ ' ?>
++' ?>
++	}
++}
++function OnChangeOKZ() {
++	jslSetEnabled("uiViewOKZ", jslGetChecked("uiViewUseOKZ"));
+ }
+ function ShowStun () {
+ 	return (g_isDsl == "0") || (g_isAta == "1" && g_AtaMode == "1");
+ }
+-var g_lkzprestate;
+-function OnExpLkz()
+-{
+-	if (jslGetChecked('uiViewExpUseLKZ'))
+-	{
+-		jslEnable('uiViewExpKeepLKZPrefix');
+-		jslSetChecked('uiViewExpKeepLKZPrefix',g_lkzprestate);
+-	}
+-	else
+-	{
+-		g_lkzprestate = jslGetChecked('uiViewExpKeepLKZPrefix');
+-		jslSetChecked('uiViewExpKeepLKZPrefix',false);
+-		jslDisable('uiViewExpKeepLKZPrefix');
+-	}
+-}
+-var g_okzprestate;
+-function OnExpOkz()
+-{
+-	if (jslGetChecked('uiViewExpUseOKZ'))
+-	{
+-		jslEnable('uiViewExpKeepOKZPrefix');
+-		jslSetChecked('uiViewExpKeepOKZPrefix',g_okzprestate);
+-	}
+-	else
+-	{
+-		g_okzprestate = jslGetChecked('uiViewExpKeepOKZPrefix');
+-		jslSetChecked('uiViewExpKeepOKZPrefix',false);
+-		jslDisable('uiViewExpKeepOKZPrefix');
+-	}
+-}
+ <? if eq $var:showtcom 1 '
+ function OnEMailAdresse() {
+ 	var pp = window.open("http://www.t-online.de/service/redir/ata_emailadresse.htm", "_blank");
+--- usr/www/all/html/de/fon/sipoptionen.frm.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/sipoptionen.frm	2007-10-24 00:13:30.000000000 +0200
+@@ -5,8 +5,6 @@
+ <input type="hidden" name="sipextra:settings/sip/sip_prio" value="<? query sipextra:settings/sip/sip_prio ?>" id="uiPostSipPrio">
+ <input type="hidden" name="sipextra:settings/sip/rtp_prio" value="<? query sipextra:settings/sip/rtp_prio ?>" id="uiPostRtpPrio">
+ <input type="hidden" name="sipextra:settings/sip/blacklist" value="<? query sipextra:settings/sip/blacklist ?>" id="uiPostBlacklist">
+-<input type="hidden" name="sipextra:settings/sip/sip_srcport" value="<? query sipextra:settings/sip/sip_srcport ?>" id="uiPostSourcePort">
+-<input type="hidden" name="sipextra:settings/sip/t38_support_enabled" value="<? query sipextra:settings/sip/t38_support_enabled ?>" id="uiPostT38" disabled>
+ <? multiquery telcfg:settings/SIP/list '
+ <input type="hidden" name="telcfg:settings/$1/Fallback" value="<? query telcfg:settings/$1/Fallback ?>" id="uiPostFallback$0" disabled>
+ ' ?>
+@@ -27,7 +25,3 @@
+ <input type="hidden" name="connection_voip:settings/dns_first" value="<? query connection_voip:settings/dns_first ?>" id="uiPostDns0" disabled />
+ <input type="hidden" name="connection_voip:settings/dns_second" value="<? query connection_voip:settings/dns_second ?>" id="uiPostDns1" disabled />
+ <input type="hidden" name="sar:settings/autodetect" value="<? query sar:settings/autodetect ?>" id="uiPostSarAuto" disabled />
+-<input type="hidden" name="telcfg:settings/Location/OKZ" value="<? query telcfg:settings/Location/OKZ ?>" id="uiPostOKZ">
+-<input type="hidden" name="telcfg:settings/Location/LKZ" value="<? query telcfg:settings/Location/LKZ ?>" id="uiPostLKZ">
+-<input type="hidden" name="telcfg:settings/Location/OKZPrefix" value="<? query telcfg:settings/Location/OKZPrefix ?>" id="uiPostOKZPrefix">
+-<input type="hidden" name="telcfg:settings/Location/LKZPrefix" value="<? query telcfg:settings/Location/LKZPrefix ?>" id="uiPostLKZPrefix">
+--- usr/www/all/html/de/fon/sipoptionen.html.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/sipoptionen.html	2007-10-24 00:13:30.000000000 +0200
+@@ -1,15 +1,12 @@
+ <? include ../html/$var:lang/fon/sipoptionen.inc ?>
+ <div id="content">
+  	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+-		<? echo $var:Text60 ?>
++		Internettelefonie
+ 	</div></div></div></div></div></div>
+ 	<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
+  	<ul class="tabs">
+- 		<li><a href="javascript:uiDoSiplist()"><? echo $var:Text59 ?></a></li>
+- 		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo $var:Text1 ?></a></li>
+-<? if eq <? query box:settings/expertmode/activated ?> 1 `
+- 		<li><a href="javascript:uiDoQuality()"><? echo `$var:Text61` ?></a></li>
+-` ?>
++ 		<li><a href="javascript:uiDoSiplist()">Internetrufnummern</a></li>
++ 		<li class="tabs_on"><a href="javascript:uiDoCancel()">Erweiterte Einstellungen</a></li>
+  	</ul>
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 		<? echo $var:Text43 ?>
+@@ -32,27 +29,6 @@
+ 			<option value="30"><? echo $var:Text58 ?></option>
+ 		</select></p>
+ 	</div></div></div></div></div></div>
+-	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-		<p class="mb10"><? echo $var:Text64 ?></p>
+-		<div class="ml25">
+-			<select size="1" id="uiViewLand" class="Eingabefeld mb10" onchange="OnLand(value)">
+-				<option value="49"><? echo $var:Text67 ?></option>
+-				<option value="43"><? echo $var:Text68 ?></option>
+-				<option value="41"><? echo $var:Text69 ?></option>
+-				<option value=""><? echo $var:Text70 ?></option>
+-			</select>
+-			<table>
+-				<tr>
+-					<td><label for="uiViewLKZ"><? echo $var:Text65 ?></label></td>
+-					<td><input type="text" size="3" maxlength="32" class="Eingabefeld" id="uiViewLKZPrefix">&nbsp;<input type="text" size="4" maxlength="32" class="Eingabefeld" id="uiViewLKZ"></td>
+-				</tr>
+-				<tr>
+-					<td><label for="uiViewOKZ"><? echo $var:Text66 ?></label></td>
+-					<td><input type="text" size="3" maxlength="32" class="Eingabefeld" id="uiViewOKZPrefix">&nbsp;<input type="text" size="4" maxlength="32" class="Eingabefeld" id="uiViewOKZ"></td>
+-				</tr>
+-			</table>
+-		</div>
+-	</div></div></div></div></div></div>
+ 	<div id="uiExpert" style="display:none">
+ 		<div class="backdialog" id="uiEnum" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 			<p class="pCheck25"><input type="checkbox" id="uiViewEnum">&nbsp;<label for="uiViewEnum"><? echo $var:Text4 ?></label></p>
+@@ -68,7 +44,7 @@
+ 			<p class="pCheck25"><input type="radio" name="Kompress" onclick="OnKompress(0)" id="uiViewNoCodec">&nbsp;<label for="uiViewNoCodec"><? echo $var:Text47 ?></label><br><? echo $var:Text50 ?></p>
+ 			<p class="pCheck25"><input type="radio" name="Kompress" onclick="OnKompress(2)" id="uiViewDynLowCodec">&nbsp;<label for="uiViewDynLowCodec"><? echo $var:Text48 ?></label><br><? echo $var:Text51 ?></p>
+ 		</div></div></div></div></div></div>
+-		<div class="backdialog" id="uiTos" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 			<p class="mb10"><? echo $var:Text12 ?></p>
+ 			<p class="mb10"><? echo $var:Text13 ?></p>
+ 			<table class="ml25">
+@@ -111,11 +87,11 @@
+ 			<table class="ml50 mb10">
+ 				<tr>
+ 					<td><label for="uiViewVPI"><? echo $var:Text25 ?></label></td>
+-					<td><input type="text" size="5" maxlength="3" class="Eingabefeld" id="uiViewVPI"></td>
++					<td><input type="text" size="3" maxlength="4" class="Eingabefeld" id="uiViewVPI"></td>
+ 				</tr>
+ 				<tr>
+ 					<td><label for="uiViewVCI"><? echo $var:Text26 ?></label></td>
+-					<td><input type="text" size="5" maxlength="5" class="Eingabefeld" id="uiViewVCI"></td>
++					<td><input type="text" size="3" maxlength="4" class="Eingabefeld" id="uiViewVCI"></td>
+ 				</tr>
+ 			</table>
+ 			<table class="ml50" id="uiViewPppEncaps">
+@@ -159,10 +135,6 @@
+ 				</div>
+ 			</div>
+ 		</div></div></div></div></div></div>
+-		<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-			<p class="pCheck25"><input type="checkbox" id="uiViewT38">&nbsp;<label for="uiViewT38"><? echo $var:Text74 ?></label></p>
+-			<p class="pText25"><? echo $var:Text75 ?></p>
+-		</div></div></div></div></div></div>
+ 	</div>
+ 	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
+ 	</div></div></div></div></div></div></div>
+--- usr/www/all/html/de/fon/sipoptionen.js.orig	2007-07-10 13:47:41.000000000 +0200
++++ usr/www/all/html/de/fon/sipoptionen.js	2007-10-24 00:13:30.000000000 +0200
+@@ -1,7 +1,7 @@
+ <!--		../fon/sipoptionen.js		-->
+ <style type="text/css">
+ <!--
+-#content {width: 580px; margin: auto;}
++#content {width: 560px; margin: auto;}
+ .pText25 {margin-left: 25px;}
+ .pCheck25 {text-indent: -25px; margin-left: 25px; margin-bottom: 5px;}
+ .pRadio50 {text-indent: -25px; margin-left: 50px;}
+@@ -19,23 +19,20 @@
+ var g_expertMode = "<? query box:settings/expertmode/activated ?>";
+ var g_usePstn = "<? echo $var:usePSTN ?>";
+ var g_mldVad		= "Durch die Aktivierung der Sprechpausen-Erkennung kann auf der Gegenseite die Sprachqualität beeinträchtigt werden.";
+-var g_mldSipPrio	= "Geben Sie im Feld SIP-Wert eine Zahl zwischen 0 und 63 ein.";
+-var g_mldRtpPrio	= "Geben Sie im Feld RTP-Wert eine Zahl zwischen 0 und 63 ein.";
++var g_mldSipPrio	= "Geben Sie im Feld SIP-Wert eine Zahl zwischen 0 und 255 ein.";
++var g_mldRtpPrio	= "Geben Sie im Feld RTP-Wert eine Zahl zwischen 0 und 255 ein.";
+ var g_mldUserLeer			= "Der Benutzername darf nicht leer sein.";
+ var g_mldKennwortDiff		= "Das Passwort/Kennwort stimmt nicht mit der Bestätigung überein.";
+ var g_VPIMustNumber		= "VPI: Ungültige Eingabe, es sind nur Ziffern erlaubt.";
+ var g_VCIMustNumber		= "VCI: Ungültige Eingabe, es sind nur Ziffern erlaubt.";
+ var g_VPIOutOfRange		= "VPI: Ungültige Eingabe, es sind Eingaben zwischen 0 und 255 erlaubt.";
+-var g_VCIOutOfRange		= "VCI: Ungültige Eingabe, es sind Eingaben zwischen 32 und 65535 erlaubt.";
++var g_VCIOutOfRange		= "VCI: Ungültige Eingabe, es sind Eingaben zwischen 0 und 255 erlaubt.";
+ var g_mldIpaddrFormatPre	= "Fehler im Feld ";
+ var g_mldIpaddrFormatPost	= ": die Eingabe ist keine gültige IP-Adresse.";
+ var g_mldNetmaskPost		= ": die eingegebene Subnetzmaske ist ungültig.";
+ var g_mldIpaddrTheNet		= ": dieser Wert stellt das Subnetz an sich dar und kann nicht verwendet werden.";
+ var g_mldIpaddrBroadcast		= ": dieser Wert stellt die Broadcast-Adresse in Ihrem Subnetz dar und kann nicht verwendet werden.";
+ var g_mldIpaddrDiffNet		= ": diese Adresse befindet sich in einem anderen Subnetz, als das durch die IP-Adresse und Netzmaske definierte.";
+-var g_mldOkzDigit = "Die Ortsvorwahl darf nur aus Ziffern bestehen.";
+-var g_mldOkz0 = "Geben Sie bei der Ortsvorwahl einen gültigen Wert ein.";
+-var g_mldLkzDigit = "Die Landesvorwahl darf nur aus Ziffern bestehen.";
+ var g_txtIpAdr		= "IP-Adresse";
+ var g_txtNetmask	= "Subnetzmaske";
+ var g_txtGateway	= "Standard-Gateway";
+@@ -66,24 +63,11 @@
+ 		jslSetSelection("uiViewSippingTimer", jslGetValue("uiPostSipPingTimersip0"));
+ 		OnSipping();
+ 	}
+-	var lkz = jslGetValue("uiPostLKZ");
+-	switch (lkz) {
+-		case "49":
+-		case "43":
+-		case "41": jslSetSelection("uiViewLand", lkz); break;
+-		default: jslSetSelection("uiViewLand", ""); break;
+-	}
+-	jslCopyValue("uiViewLKZPrefix", "uiPostLKZPrefix");
+-	jslCopyValue("uiViewLKZ", "uiPostLKZ");
+-	jslCopyValue("uiViewOKZPrefix", "uiPostOKZPrefix");
+-	jslCopyValue("uiViewOKZ", "uiPostOKZ");
+ 	if (g_expertMode == "1") {
+ 		jslDisplay("uiExpert", true);
+ 		jslSetChecked("uiViewVad", jslGetValue("uiPostVad") == "1");
+ 		jslCopyValue("uiViewSipPrio", "uiPostSipPrio");
+ 		jslCopyValue("uiViewRtpPrio", "uiPostRtpPrio");
+-		jslSetChecked("uiViewT38", jslGetValue("uiPostT38") == "1");
+-		if (g_Oem != "freenet" || g_usePstn != "0") jslDisplay("uiTos", true);
+ 		var kompress = 0;
+ 		if (jslGetValue("uiPostDynCodec") == "1") {
+ 			kompress = jslGetValue("uiPostLowCodecs")=="1" ? 2 : 1;
+@@ -120,6 +104,7 @@
+ 			jslCopyValue("uiViewGateway", "uiPostGateway");
+ 			jslCopyValue("uiViewDns0", "uiPostDns0");
+ 			jslCopyValue("uiViewDns1", "uiPostDns1");
++			
+ 			OnClickUseVcc();
+ 			ShowParams(ppp);
+ 			uiDoUseDhcp();
+@@ -132,12 +117,6 @@
+ 	}
+ }
+ function uiDoSave() {
+-	if (!valIsZahl(jslGetValue("uiViewLKZ")) || !valIsZahl(jslGetValue("uiViewLKZPrefix"))) {alert(g_mldLkzDigit); return;}
+-	if (!valIsZahl(jslGetValue("uiViewOKZ")) || !valIsZahl(jslGetValue("uiViewOKZPrefix"))) {alert(g_mldOkzDigit); return;}
+-	jslCopyValue("uiPostOKZ", "uiViewOKZ");
+-	jslCopyValue("uiPostOKZPrefix", "uiViewOKZPrefix");
+-	jslCopyValue("uiPostLKZ", "uiViewLKZ");
+-	jslCopyValue("uiPostLKZPrefix", "uiViewLKZPrefix");
+ 	if (g_usePstn == "1") {
+ 		var b = jslGetChecked("uiViewFallback") ? "1":"0";
+ 		for (var i=0; i<10; i++) {
+@@ -157,15 +136,15 @@
+ 	if (g_expertMode == "1") {
+ 		var n = jslGetValue("uiViewSipPrio");
+ 		if (!valIsZahlVorhanden(n)) {alert(g_mldSipPrio); return;}
+-		if (Number(n)<0 || Number(n)>63) {alert(g_mldSipPrio); return;}
++		if (Number(n)<0 || Number(n)>255) {alert(g_mldSipPrio); return;}
+ 		n = jslGetValue("uiViewRtpPrio");
+ 		if (!valIsZahlVorhanden(n)) {alert(g_mldRtpPrio); return;}
+-		if (Number(n)<0 || Number(n)>63) {alert(g_mldRtpPrio); return;}
++		if (Number(n)<0 || Number(n)>255) {alert(g_mldRtpPrio); return;}
++		
+ 		jslSetValue("uiPostVad", jslGetChecked("uiViewVad") ? "1" : "0");
+ 		jslCopyValue("uiPostSipPrio", "uiViewSipPrio");
+ 		jslCopyValue("uiPostRtpPrio", "uiViewRtpPrio");
+-		jslSetValue("uiPostT38", jslGetChecked("uiViewT38") ? "1" : "0");
+-		jslEnable("uiPostT38");
++	
+ 		jslSetValue("uiPostDynCodec", jslGetChecked("uiViewNoCodec") ? "0" : "1");
+ 		jslSetValue("uiPostLowCodecs", jslGetChecked("uiViewDynLowCodec") ? "1" : "0");
+ 		jslEnable("uiPostDynCodec");
+@@ -210,6 +189,7 @@
+ 						jslSetValue("uiPostEncaps", "dslencap_ether");
+ 						jslEnable("uiPostDhcp");
+ 						jslEnable("uiPostEncaps");
++		
+ 					} else if (jslGetChecked("uiViewIpEncaps2")) {
+ 						if (!ValidateIpForm("uiView")) return;
+ 						jslSetValue("uiPostEncaps", "dslencap_ipnlpid");
+@@ -220,6 +200,7 @@
+ 						jslEnable("uiPostGateway");
+ 						jslEnable("uiPostDns0");
+ 						jslEnable("uiPostDns1");
++	
+ 					} else if (jslGetChecked("uiViewIpEncaps3")) {
+ 						if (!ValidateIpForm("uiView")) return false;
+ 						jslSetValue("uiPostEncaps", "dslencap_ipsnap");
+@@ -230,6 +211,7 @@
+ 						jslEnable("uiPostGateway");
+ 						jslEnable("uiPostDns0");
+ 						jslEnable("uiPostDns1");
++	
+ 					} else if (jslGetChecked("uiViewIpEncaps4")) {
+ 						if (!ValidateIpForm("uiView")) return false;
+ 						jslSetValue("uiPostEncaps", "dslencap_ipraw");
+@@ -257,7 +239,7 @@
+ 	if (!valIsZahlVorhanden(vpi)) {alert(g_VPIMustNumber); return false;}
+ 	if ((vpi < 0) || (vpi > 255)) {alert(g_VPIOutOfRange); return false;}
+ 	if (!valIsZahlVorhanden(vci)) {alert(g_VCIMustNumber); return false;}
+-	if ((vci < 32) || (vci > 65535)) {alert(g_VCIOutOfRange); return false;}
++	if ((vci < 0) || (vci > 255)) {alert(g_VCIOutOfRange); return false;}
+ 	jslSetValue("uiPostVpi", vpi);
+ 	jslSetValue("uiPostVci", vci);
+ 	return true;
+@@ -395,12 +377,15 @@
+ }
+ function pppDoValidateIpaddrFormat(addr) {
+ 	var pattern = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
++	
+ 	if (addr.match(pattern) == null) return false;
++	
+ 	pattern.exec(addr);
+ 	if (RegExp.$1>255) return false;
+ 	if (RegExp.$2>255) return false;
+ 	if (RegExp.$3>255) return false;
+ 	if (RegExp.$4>255) return false;
++	
+ 	return true;
+ }
+ function DecToBin(num) {
+@@ -414,15 +399,18 @@
+ function IpToBitstring(mask) {
+ 	var pattern = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+ 	var str = '';
++	
+ 	pattern.exec(mask);
+ 	str+=DecToBin(RegExp.$1);
+ 	str+=DecToBin(RegExp.$2);
+ 	str+=DecToBin(RegExp.$3);
+ 	str+=DecToBin(RegExp.$4);
++	
+ 	return str;
+ }
+ function pppDoValidateNetmask(mask) {
+ 	var str = IpToBitstring(mask);
++	
+ 	if (str.match(/^1+0+0$/) == null) return false;
+ 	return true;
+ }
+@@ -444,38 +432,4 @@
+ function isAtamode () {
+ 	return (g_isDsl == "0") || (g_isAta == "1" && g_AtaMode == "1");
+ }
+-function uiDoQuality() {
+-	jslGoTo("fon", "quality");
+-}
+-// Ortsvorwahl mit führender Null anzeigen
+-function GetOKZDisplay (id) {
+-	var h = document.getElementById(id);
+-	if (h == null) return "";
+-	var nr = h.value;
+-	if (nr.length == 0) return nr;
+-	if (nr.substr(0,1) == "0") return nr;
+-	return "0"+nr;
+-}
+-// führende Null bei Ortsvorwahl abschneiden
+-function GetOKZohneNull (id) {
+-	var h = document.getElementById(id);
+-	if (h == null) return "";
+-	var nr = jslDoEliminateBlanks(h.value);
+-	if (nr.substr(0,1) != "0") return nr;
+-	return nr.substr(1, nr.length-1);
+-}
+-function valOKZ (okz) {
+-	var nr = jslDoEliminateBlanks(okz);
+-	if (nr.length == 0) {alert(g_mldOkz0); return false;}
+-	if (!valIsZahlVorhanden(nr)) {alert(g_mldOkzDigit); return false;}
+-	if (nr == "0") {alert(g_mldOkz0); return false;}
+-	return true;
+-}
+-function OnLand (n) {
+-	switch (n) {
+-		case "49": jslSetValue("uiViewLKZPrefix", "00"); jslSetValue("uiViewLKZ", "49"); jslSetValue("uiViewOKZPrefix", "0"); break;
+-		case "43": jslSetValue("uiViewLKZPrefix", "00"); jslSetValue("uiViewLKZ", "43"); jslSetValue("uiViewOKZPrefix", "0"); break;
+-		case "41": jslSetValue("uiViewLKZPrefix", "00"); jslSetValue("uiViewLKZ", "41"); jslSetValue("uiViewOKZPrefix", "0"); break;
+-	}
+-}
+ </script>
+--- usr/www/all/html/de/fon/tam.frm.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/tam.frm	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,5 @@
++<input type="hidden" name="tam:settings/TAM0/Active" value="<? query tam:settings/TAM0/Active ?>" id="uiPostActive" />
++<input type="hidden" name="tam:settings/TAM0/Mode" value="<? query tam:settings/TAM0/Mode ?>" id="uiPostMode" />
++<input type="hidden" name="tam:settings/TAM0/RingCount" value="<? query tam:settings/TAM0/RingCount ?>" id="uiPostRing" />
++<input type="hidden" name="tam:settings/TAM0/RecordLength" value="<? query tam:settings/TAM0/RecordLength ?>" id="uiPostLen" />
++<input type="hidden" name="tam:settings/TAM0/PIN" value="<? query tam:settings/TAM0/PIN ?>" id="uiPostPin" />
+--- usr/www/all/html/de/fon/tam.html.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/tam.html	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,53 @@
++<? include ../html/$var:lang/fon/tam.inc ?>
++<div id="content">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
++		<? echo $var:Text1 ?>
++	</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p class="mt10 mb10 fett" >Einstellmöglichkeiten für den Anrufbeantworter</p>
++		<p class="mb5"><input type="checkbox" id="uiViewActive" onclick="OnActiv()">&nbsp;<label for="uiViewActive"><? echo $var:Text2 ?></label></p>
++		<table class="ml25">
++			<tr>
++				<td><label for="uiViewMode"><? echo $var:Text3 ?></label></td>
++				<td><select id="uiViewMode" size="1" class="Eingabefeld" onchange="OnChangeMode(value)">
++					<option value="0"><? echo $var:Text4 ?></option>
++					<option value="1"><? echo $var:Text5 ?></option>
++				</select></td>
++			</tr>
++			<tr>
++				<td><label for="uiViewRing"><? echo $var:Text6 ?></label></td>
++				<td><select size="1" id="uiViewRing" class="Eingabefeld">
++					<option value="0"><? echo $var:Text7 ?></option>
++					<option value="1">1</option>
++					<option value="2">2</option>
++					<option value="3">3</option>
++					<option value="4">4</option>
++					<option value="5">5</option>
++					<option value="6">6</option>
++					<option value="255">automatisch</option>
++				</select></td>
++			</tr>
++			<tr>
++				<td><label for="uiViewLen"><? echo $var:Text8 ?></label></td>
++				<td><select size="1" id="uiViewLen" class="Eingabefeld">
++					<option value="0">Keine Zeitbegrenzung</option>
++					<option value="60">60 Sekunden</option>
++					<option value="120">120 Sekunden</option>
++					<option value="180">180 Sekunden</option>
++				</select></td>
++			</tr>
++		</table>
++		<p class="mt10 mb5"><? echo $var:Text10 ?></p>
++		<table class="ml25">
++			<tr>
++				<td><label for="uiViewPin"><? echo $var:Text11 ?></label></td>
++				<td><input type="password" size="12" maxlength="4" id="uiViewPin" onfocus="uiSelect(id);" /></td>
++			</tr>
++			<tr>
++				<td><label for="uiViewPin2"><? echo $var:Text12 ?></label></td>
++				<td><input type="password" size="12" maxlength="4" id="uiViewPin2" onfocus="uiSelect(id);" /></td>
++			</tr>
++		</table>
++	</div></div></div></div></div></div>
++	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
++</div>
+--- usr/www/all/html/de/fon/tam.inc.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/tam.inc	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,13 @@
++<? include ../html/$var:lang/global.inc ?>
++<? setvariable var:Text1 'Anrufbeantworter' ?>
++<? setvariable var:Text2 'Anrufbeantworter aktivieren' ?>
++<? setvariable var:Text3 'Betriebsart' ?>
++<? setvariable var:Text4 'nur Ansage' ?>
++<? setvariable var:Text5 'Mitteilungen aufnehmen' ?>
++<? setvariable var:Text6 'Klingelzeichen' ?>
++<? setvariable var:Text7 'sofort annehmen' ?>
++<? setvariable var:Text8 'Aufnahmelänge' ?>
++<? setvariable var:Text9 'Sekunden' ?>
++<? setvariable var:Text10 'Wenn Sie den Anrufbeantworter von einem anderen Telefonanschluss aus abfragen möchten, benötigen Sie eine PIN. Die PIN muß aus genau vier Ziffern bestehen.' ?>
++<? setvariable var:Text11 'PIN' ?>
++<? setvariable var:Text12 'PIN Bestätigung' ?>
+--- usr/www/all/html/de/fon/tam.js.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/tam.js	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,62 @@
++<!--		../fon/tam.js		-->
++<style type="text/css">
++<!--
++#content {width: 480px; margin: auto;}
++td {padding: 3px 5px;}
++.ml25 {margin-left: 25px;}
++-->
++</style>
++<script type="text/javascript">
++<? include ../html/$var:lang/js/val.js ?>
++<? include ../html/$var:lang/js/jsl.js ?>
++var g_mldPin 	= "Geben Sie bitte bei der PIN nur Ziffern ein.";
++var g_mldPinLength = "Die PIN muß aus genau vier Ziffern bestehen.";
++var g_mldPinDiff = "Die PIN stimmt nicht mit der Bestätigung überein.";
++function uiDoOnLoad() {
++	jslSetChecked("uiViewActive", jslGetValue("uiPostActive") == "1");
++	jslSetSelection("uiViewMode", jslGetValue("uiPostMode"));
++	jslSetSelection("uiViewRing", jslGetValue("uiPostRing"));
++	jslSetSelection("uiViewLen", jslGetValue("uiPostLen"));
++	jslCopyValue("uiViewPin", "uiPostPin");
++	jslCopyValue("uiViewPin2", "uiPostPin");
++	OnActiv();
++}
++function uiDoSave() {
++	if (jslGetChecked("uiViewActive")) {
++		jslSetValue("uiPostActive", "1");
++		jslCopyValue("uiPostMode","uiViewMode");
++		jslCopyValue("uiPostRing","uiViewRing");
++		
++		var p = jslGetValue("uiViewPin");
++		if (!valIsZahlVorhanden(p)) {alert(g_mldPin); return;}
++		if (p.length != 4) {alert(g_mldPinLength); return;}
++		
++		var p2 = jslGetValue("uiViewPin2");
++		if (p2!=p) {alert(g_mldPinDiff); return;}
++		
++		jslCopyValue("uiPostLen", "uiViewLen");
++		jslCopyValue("uiPostPin", "uiViewPin");
++	} else {
++		jslSetValue("uiPostActive", "0");
++	}
++	
++	jslFormSubmitEx("fon", "tam");
++}
++function uiDoCancel() {
++	jslGoTo("fon", "tam");
++}
++function uiDoHelp() {
++	jslPopHelp("hilfe_fon_anrufbeantworter");
++}
++function OnActiv() {
++	var b = jslGetChecked("uiViewActive");
++	jslSetEnabled("uiViewMode", b);
++	jslSetEnabled("uiViewRing", b);
++	jslSetEnabled("uiViewLen", b && (jslGetValue("uiViewMode")=="1"));
++	jslSetEnabled("uiViewPin", b);
++	jslSetEnabled("uiViewPin2", b);
++}
++function OnChangeMode (value) {
++	jslSetEnabled("uiViewLen", value=="1");
++}
++</script>
+--- usr/www/all/html/de/fon/tamlist.frm.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/tamlist.frm	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,23 @@
++<? if eq '$var:TamNr' '' `<? setvariable var:TamNr '0' ?>` ?>
++<input type="hidden" name="var:TamNr" value="<? echo $var:TamNr ?>" id="uiPostTamNr">
++<input type="hidden" name="tam:settings/TAM<? echo $var:TamNr ?>/Active" value="<? query tam:settings/TAM<? echo $var:TamNr ?>/Active ?>" id="uiPostActive" />
++<input type="hidden" name="tam:settings/TAM<? echo $var:TamNr ?>/Mode" value="<? query tam:settings/TAM<? echo $var:TamNr ?>/Mode ?>" id="uiPostMode" />
++<input type="hidden" name="tam:settings/TAM<? echo $var:TamNr ?>/RingCount" value="<? query tam:settings/TAM<? echo $var:TamNr ?>/RingCount ?>" id="uiPostRing" />
++<input type="hidden" name="tam:settings/TAM<? echo $var:TamNr ?>/RecordLength" value="<? query tam:settings/TAM<? echo $var:TamNr ?>/RecordLength ?>" id="uiPostLen" />
++<input type="hidden" name="tam:settings/TAM<? echo $var:TamNr ?>/PIN" value="<? query tam:settings/TAM<? echo $var:TamNr ?>/PIN ?>" id="uiPostPin" />
++<? repeat [ 0 4 ] `
++<input type="hidden" name="tam:settings/TAM$0/MSNBitmap" value="<? query tam:settings/TAM$0/MSNBitmap ?>" id="uiPostMSNBitmap$0" disabled />
++` ?>
++<? repeat [ 0 4 ] `
++<input type="hidden" name="tam:settings/TAM$0/Display" value="<? query tam:settings/TAM$0/Display ?>" id="uiPostDisplay$0" />
++` ?>
++<? repeat [ 0 9 ] `
++<input type="hidden" name="tam:settings/MSN$0" value="<? query tam:settings/MSN$0 ?>" id="uiPostMSN$0" />
++` ?>
++<? multiquery sip:settings/sip/list(displayname) '
++<input type="hidden" name="sip:settings/$1/displayname" value="$2" id="ui$1" disabled>
++' ?>
++<? repeat [ 0 9 ] `
++<input type="hidden" name="telcfg:settings/MSN/MSN$0" value="<? query telcfg:settings/MSN/MSN$0 ?>" id="uiMsn$0" disabled>
++` ?>
++<input type="hidden" name="telcfg:settings/MSN/POTS" value="<? query telcfg:settings/MSN/POTS ?>" id="uiPots" disabled>
+--- usr/www/all/html/de/fon/tamlist.html.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/tamlist.html	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,120 @@
++<? include ../html/$var:lang/fon/tamlist.inc ?>
++<div id="content">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
++		<? echo $var:Text1 ?>
++	</div></div></div></div></div></div>
++	<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
++		<p class="pretab"><? echo $var:Text13 ?></p>
++		<ul class="tabs" >
++			<li id="uiView0"><a href="javascript:DoTabs(0)">600</a></li>
++			<li id="uiView1" style="display:none"><a href="javascript:DoTabs(1)">601</a></li>
++			<li id="uiView2" style="display:none"><a href="javascript:DoTabs(2)">602</a></li>
++			<li id="uiView3" style="display:none"><a href="javascript:DoTabs(3)">603</a></li>
++			<li id="uiView4" style="display:none"><a href="javascript:DoTabs(4)">604</a></li>
++		</ul>
++		<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++			<p class="mb10 fett" >Auswahl der Rufnummern für den Anrufbeantworter</p>
++			<table class="ml25">
++				<tr>
++					<td style="vertical-align:top;">
++						<table> 
++							<tr id="uitrMSN_0">
++								<td class="ar">1.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_0" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++							<tr id="uitrMSN_1" style="display:none">
++								<td class="ar">2.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_1" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++							<tr id="uitrMSN_2" style="display:none">
++								<td class="ar">3.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_2" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++							<tr id="uitrMSN_3" style="display:none">
++								<td class="ar">4.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_3" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++							<tr id="uitrMSN_4" style="display:none">
++								<td class="ar">5.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_4" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++						</table> 
++					</td>
++					<td style="vertical-align:top;">
++						<table> 
++							<tr id="uitrMSN_5" style="display:none">
++								<td class="ar">6.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_5" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++							<tr id="uitrMSN_6" style="display:none">
++								<td class="ar">7.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_6" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++							<tr id="uitrMSN_7" style="display:none">
++								<td class="ar">8.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_7" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++							<tr id="uitrMSN_8" style="display:none">
++								<td class="ar">9.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_8" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++							<tr id="uitrMSN_9" style="display:none">
++								<td class="ar">10.</td>
++								<td><p class="combo"><select size="1" id="uiViewMSN_9" style="width:200px" onchange="OnNextMSN(id)"></select></p></td>											 
++							</tr>
++						</table> 
++					</td>
++				</tr>
++			</table>
++			<p class="mt10 mb10 fett" >Einstellmöglichkeiten für den Anrufbeantworter</p>
++			<p class="mb5"><input type="checkbox" id="uiViewActive" onclick="OnActiv()">&nbsp;<label for="uiViewActive"><? echo $var:Text2 ?></label></p>
++			<table class="ml25">
++				<tr>
++					<td><label for="uiViewMode"><? echo $var:Text3 ?></label></td>
++					<td><select id="uiViewMode" size="1" class="Eingabefeld" onchange="OnChangeMode(value)">
++						<option value="0"><? echo $var:Text4 ?></option>
++						<option value="1"><? echo $var:Text5 ?></option>
++					</select></td>
++				</tr>
++				<tr>
++					<td><label for="uiViewRing"><? echo $var:Text6 ?></label></td>
++					<td><select size="1" id="uiViewRing" class="Eingabefeld">
++						<option value="0"><? echo $var:Text7 ?></option>
++						<option value="1">nach 5 Sekunden</option>
++						<option value="2">nach 10 Sekunden</option>
++						<option value="3">nach 15 Sekunden</option>
++						<option value="4">nach 20 Sekunden</option>
++						<option value="5">nach 25 Sekunden</option>
++						<option value="6">nach 30 Sekunden</option>
++					</select></td>
++				</tr>
++				<tr>
++					<td><label for="uiViewLen"><? echo $var:Text8 ?></label></td>
++					<td><select size="1" id="uiViewLen" class="Eingabefeld">
++						<option value="0">Keine Zeitbegrenzung</option>
++						<option value="60">60 Sekunden</option>
++						<option value="120">120 Sekunden</option>
++						<option value="180">180 Sekunden</option>
++					</select></td>
++				</tr>
++			</table>
++			<p class="mt10 mb5"><? echo $var:Text10 ?></p>
++			<table class="ml25">
++				<tr>
++					<td><label for="uiViewPin"><? echo $var:Text11 ?></label></td>
++					<td><input type="password" size="12" maxlength="4" id="uiViewPin" onfocus="uiSelect(id);" /></td>
++				</tr>
++				<tr>
++					<td><label for="uiViewPin2"><? echo $var:Text12 ?></label></td>
++					<td><input type="password" size="12" maxlength="4" id="uiViewPin2" onfocus="uiSelect(id);" /></td>
++				</tr>
++			</table>
++			<? include ../html/$var:lang/home/error.html ?>
++			<p style="text-align:right">
++				<input type="button" onclick="uiTamAppend()" id="uiViewTamAppend" value="Anrufbeantworter hinzufügen" disabled /> 
++				<input type="button" onclick="uiTamDelete()" id="uiViewTamDelete" value="Anrufbeantworter löschen" disabled /> 
++			</p>
++		</div></div></div></div></div></div>
++		<? include ../html/$var:lang/home/rbb_applycancel.html ?>
++	</div></div></div></div></div></div></div>
++</div>
+--- usr/www/all/html/de/fon/tamlist.inc.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/tamlist.inc	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,14 @@
++<? include ../html/$var:lang/global.inc ?>
++<? setvariable var:Text1 'Anrufbeantworter' ?>
++<? setvariable var:Text2 'Anrufbeantworter aktivieren' ?>
++<? setvariable var:Text3 'Betriebsart' ?>
++<? setvariable var:Text4 'nur Ansage' ?>
++<? setvariable var:Text5 'Mitteilungen aufnehmen' ?>
++<? setvariable var:Text6 'Klingelzeichen' ?>
++<? setvariable var:Text7 'sofort annehmen' ?>
++<? setvariable var:Text8 'Aufnahmelänge' ?>
++<? setvariable var:Text9 'Sekunden' ?>
++<? setvariable var:Text10 'Wenn Sie den Anrufbeantworter von einem anderen Telefonanschluss aus abfragen möchten, benötigen Sie eine PIN. Die PIN muß aus genau vier Ziffern bestehen.' ?>
++<? setvariable var:Text11 'PIN' ?>
++<? setvariable var:Text12 'PIN Bestätigung' ?>
++<? setvariable var:Text13 'Über die Registerkarten können Sie zwischen den unterschiedlichen Anrufbeantwortern auswählen. Die Nummern entsprechen dabei den internen Rufnummern, über die die Anrufbeantworter erreichbar sind.' ?>
+--- usr/www/all/html/de/fon/tamlist.js.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/tamlist.js	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,259 @@
++<!--		../fon/tamlist.js		-->
++<style type="text/css">
++<!--
++#content {width: 580px; margin: auto;}
++td {padding: 2px 5px;}
++.ml25 {margin-left: 25px;}
++.ar {text-align: right;}
++p.pretab {padding-bottom:10px;}
++-->
++</style>
++<!--[if lte IE 6]>
++<style type="text/css">
++p.pretab {position:relative;} /* Fix IE6 Peekaboo */
++</style>
++<![endif]-->
++<script type="text/javascript">
++<? include ../html/$var:lang/js/val.js ?>
++<? include ../html/$var:lang/js/jsl.js ?>
++var g_txt_Festnetz	= "Festnetz: ";
++var g_txt_Internet		= "Internet: ";
++var g_mldPin 	= "Geben Sie bitte bei der PIN nur Ziffern ein.";
++var g_mldPinLength = "Die PIN muß aus genau vier Ziffern bestehen.";
++var g_mldPinDiff = "Die PIN stimmt nicht mit der Bestätigung überein.";
++<? multiquery sip:settings/sip/list '
++var g_$1;
++' ?>
++var g_msn0;
++var g_msn1;
++var g_msn2;
++var g_msn3;
++var g_msn4;
++var g_msn5;
++var g_msn6;
++var g_msn7;
++var g_msn8;
++var g_msn9;
++var g_pots;
++var g_MsnGesperrt = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
++var g_MSNs;
++function uiDoOnLoad() {
++	var nr = jslGetValue("uiPostTamNr");
++	if (nr == "") nr="0";
++	jslSetClass("uiView"+nr, "tabs_on");
++	for (var i=1; i<5; i++) jslDisplay("uiView"+i, jslGetValue("uiPostDisplay"+i) != "0");
++	
++<? multiquery sip:settings/sip/list '
++	g_$1 = jslGetValue("ui$1");
++' ?>
++	g_msn0 = jslGetValue("uiMsn0");
++	g_msn1 = jslGetValue("uiMsn1");
++	g_msn2 = jslGetValue("uiMsn2");
++	g_msn3 = jslGetValue("uiMsn3");
++	g_msn4 = jslGetValue("uiMsn4");
++	g_msn5 = jslGetValue("uiMsn5");
++	g_msn6 = jslGetValue("uiMsn6");
++	g_msn7 = jslGetValue("uiMsn7");
++	g_msn8 = jslGetValue("uiMsn8");
++	g_msn9 = jslGetValue("uiMsn9");
++	g_pots = jslGetValue("uiPots");
++	
++	InitGesperrt("0");
++	InitGesperrt("1");
++	InitGesperrt("2");
++	InitGesperrt("3");
++	InitGesperrt("4");
++	for (var i=0; i<10; i++) {
++		fillId("uiViewMSN_"+i, "");
++	}
++	
++	// MSN füllen
++	var bits = jslGetValue("uiPostMSNBitmap"+nr);
++	var m=0; // nächste Combobox
++	for (var i=0; i<10; i++) {
++		if ((bits & (1<<i)) != 0) {
++			SwitchOnCombobox(m);
++			jslSetSelection("uiViewMSN_"+m, jslGetValue("uiPostMSN"+i));
++			m++;
++		}
++	}	
++	g_MSNs = m;
++	if (g_MSNs > 0) 
++	{ // Eine zusätzlich leere Combobox wird angezeigt
++		SwitchOnCombobox(m);			
++		jslSetSelection("uiViewMSN_"+m, "");
++	}
++	jslSetChecked("uiViewActive", jslGetValue("uiPostActive") == "1");
++	jslSetSelection("uiViewMode", jslGetValue("uiPostMode"));
++	jslSetSelection("uiViewRing", jslGetValue("uiPostRing"));
++	jslSetSelection("uiViewLen", jslGetValue("uiPostLen"));
++	jslCopyValue("uiViewPin", "uiPostPin");
++	jslCopyValue("uiViewPin2", "uiPostPin");
++	OnActiv();
++	jslSetEnabled("uiViewTamAppend", FindeFreieTam() != -1);
++	jslSetEnabled("uiViewTamDelete", nr != "0");
++}
++function uiDoSave() {
++	var tamnr = jslGetValue("uiPostTamNr");
++	if (tamnr == "") tamnr="0";
++	if (jslGetChecked("uiViewActive")) {
++		jslSetValue("uiPostActive", "1");
++		jslCopyValue("uiPostMode","uiViewMode");
++		jslCopyValue("uiPostRing","uiViewRing");
++		
++		var p = jslGetValue("uiViewPin");
++		if (!valIsZahlVorhanden(p)) {alert(g_mldPin); return;}
++		if (p.length != 4) {alert(g_mldPinLength); return;}
++		
++		var p2 = jslGetValue("uiViewPin2");
++		if (p2!=p) {alert(g_mldPinDiff); return;}
++		
++		jslCopyValue("uiPostLen", "uiViewLen");
++		jslCopyValue("uiPostPin", "uiViewPin");
++	} else {
++		jslSetValue("uiPostActive", "0");
++	}
++	
++	// Alle freien MSN löschen
++	for (var i=0; i<10; i++) {
++		if (g_MsnGesperrt[i] == 0) jslSetValue("uiPostMSN"+i, "");
++	}
++	var bits = 0;
++	// eingetragene Nummern in die MSN füllen und Bitmap setzen
++	for (var i=0; i<10; i++) {
++		var msn= jslGetValue("uiViewMSN_"+i);
++		if (msn != "Leer") {
++			var n = FindFreePos(msn);
++			if (n>=0) {
++				jslSetValue("uiPostMSN"+n, msn);
++				bits |= 1<<n;
++			}
++		}
++	}
++	jslSetValue("uiPostMSNBitmap"+tamnr, bits);
++	jslEnable("uiPostMSNBitmap"+tamnr);
++	
++	jslFormSubmitEx("fon", "tamlist");
++}
++function uiDoCancel() {
++	jslGoTo("fon", "tamlist");
++}
++function uiDoHelp() {
++	jslPopHelp("hilfe_fon_anrufbeantworter");
++}
++function OnActiv() {
++	var b = jslGetChecked("uiViewActive");
++	jslSetEnabled("uiViewMode", b);
++	jslSetEnabled("uiViewRing", b);
++	jslSetEnabled("uiViewLen", b && (jslGetValue("uiViewMode")=="1"));
++	jslSetEnabled("uiViewPin", b);
++	jslSetEnabled("uiViewPin2", b);
++}
++function SwitchOnCombobox(m) {
++	jslDisplay("uitrMSN_" + m, true);
++}
++function InitGesperrt (nr) {
++	if (nr == jslGetValue("uiPostTamNr")) return;	//Aktuelle Nummern nicht sperren
++	var bits=Number(jslGetValue("uiPostMSNBitmap"+nr));
++	if (isNaN(bits)) return;
++	for (var i=0; i<10; i++) {
++		if ((bits & (1<<i)) != 0) {
++			g_MsnGesperrt[i] = 1;
++		}
++	}
++}
++function isFrei(msn) {
++	var i=FindMsn(msn);
++	if (i < 0) return true;
++	return g_MsnGesperrt[i] == 0;
++}
++function FindMsn(msn) {
++	for (var i=0; i<10; i++) {
++		if (msn == jslGetValue("uiPostMSN"+i)) return i;
++	}
++	return -1;
++}
++function FindFreePos (msn) {
++	var freepos = -1;
++	for (var i=0; i<10; i++) {
++		var str = jslGetValue("uiPostMSN"+i);
++		if (str == msn) return -2; // MSN schon eingetragen
++		if (str == "" && freepos == -1) freepos = i;
++	}
++	return freepos;
++}
++function fillId(id, nr) {
++<? if eq '$var:usePSTN' 1 `
++	// Auswahl mit den vorgegebenen MSN füllen und Eintrag msn selektieren
++	addMsn(id, g_msn0);
++	addMsn(id, g_msn1);
++	addMsn(id, g_msn2);
++	addMsn(id, g_msn3);
++	addMsn(id, g_msn4);
++	addMsn(id, g_msn5);
++	addMsn(id, g_msn6);
++	addMsn(id, g_msn7);
++	addMsn(id, g_msn8);
++	addMsn(id, g_msn9);
++	addMsn(id, g_pots);
++` ?> 
++	// Sip Zugänge anfügen
++<? multiquery sip:settings/sip/list(ID,displayname) '
++	if ("$3" != "" && isFrei("$3")) addOption(id, "$3", g_txt_Internet+g_$1);
++' ?>
++	addOption(id, "Leer", "");
++	jslSetSelection(id, nr=="" ? "Leer":nr);
++}
++function addMsn (id, msn) {
++	if (msn != "" && isFrei(msn)) addOption(id, msn, g_txt_Festnetz+msn);
++}
++function addOption (id, val, text) {
++	var element;
++	element = document.getElementById(id);
++	if (element == null) return;
++	var eintrag = new Option(text, val, false, false);
++	element.options[element.length]=eintrag;
++}
++function DoTabs(n) {
++	jslSetValue("uiPostTamNr", n);
++	jslGoTo("", "");
++}
++function jslSetClass(id, wert) {
++	var h1 = document.getElementById(id);
++	if (h1 != null) h1.className=wert;
++}
++function OnNextMSN (id) {
++	var nr = id.split("_");
++	var index = Number(nr[1]);
++	if (index<9 && jslGetValue(id) != "Leer") {
++		SwitchOnCombobox(index+1);
++	}
++}
++function OnChangeMode (value) {
++	jslSetEnabled("uiViewLen", value=="1");
++}
++function FindeFreieTam () {
++	for (var i=1; i<5; i++) {
++		if (jslGetValue("uiPostDisplay"+i) == "0") return i;
++	}
++	return -1;
++}
++function uiTamAppend() {
++	var i = FindeFreieTam();
++	if (i == -1) return;
++	jslSetValue("uiPostDisplay"+i, "1");
++	jslSetValue("uiPostTamNr", i);
++	jslFormSubmitEx("", "");
++}
++function uiTamDelete() {
++	var nr = jslGetValue("uiPostTamNr");
++	if (nr == "0") return;
++	if (!confirm("Möchten Sie den Anrufbeantworter löschen?")) return;
++	jslSetValue("uiPostActive", "0");
++	jslSetValue("uiPostDisplay"+nr, "0");
++	jslSetValue("uiPostMSNBitmap"+nr, "0");
++	jslEnable("uiPostMSNBitmap"+nr);
++	jslSetValue("uiPostTamNr", "0");
++	jslFormSubmitEx("", "");
++}
++</script>
+--- usr/www/all/html/de/help/hilfe_fon_anrufbeantworter.html.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_anrufbeantworter.html	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,28 @@
++<div class="Hilfe">
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Anrufbeantworter</div></div></div></div></div></div>
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++		<p>Auf dieser Seite richten Sie den in die FRITZ!Box integrierten Anrufbeantworter ein.</p>
++		<p>Sie können insgesamt fünf Anrufbeantworter einrichten und jedem Anrufbeantworter verschiedene Einstellungen zuordnen.</p>
++		<p><b>Auswahl der Rufnummern für den Anrufbeantworter</b></p>
++		<p>Wählen Sie hier aus, für welche Ihrer Rufnummern der Anrufbeantworter verwendet werden soll. Sie können bis zu zehn Nummern angeben.</p>
++		<p><b>Anrufbeantworter aktivieren</b></p>
++		<p>Wählen Sie diese Einstellung aus, wenn Sie den integrierten Anrufbeantworter einschalten möchten.<br />
++		Deaktivieren Sie diese Einstellung, wenn Sie den Anrufbeantworter ausschalten möchten.</p>
++		<p><b>Betriebsart</b></p>
++		<p>Wählen Sie in diesem Feld aus, wie der Anrufbeantworter arbeiten soll:</p>
++		<p>Wählen Sie &quot;Mitteilungen aufnehmen&quot;, wenn der Anrufbeantworter Mitteilungen von Anrufern aufzeichnen soll.</p>
++		<p>Wählen Sie &quot;nur Ansage&quot;, wenn keine Mitteilungen aufgezeichnet werden sollen.</p>
++		<p><b>Klingelzeichen</b></p>
++		<p>Stellen Sie in diesem Feld ein, nach wie vielen Klingelzeichen der Anrufbeantworter das Gespräch annehmen soll.</p>
++		<p>Die Einstellung &quot;sofort annehmen&quot; bewirkt, dass der Anrufbeantworter Gespräche sofort annimmt.</p>
++		<p><b>Aufnahmelänge</b></p>
++		<p>Wählen Sie hier aus, wie lang die einzelnen Aufnahmen höchstens sein dürfen.</p>
++		<p><b>PIN</b></p>
++		<p>Legen Sie hier die PIN fest, die bei der Fernabfrage des Anrufbeantworters eingegeben werden muss. Für die PIN sind die Ziffern von 0 bis 
++		9 erlaubt. Die PIN muss immer genau vier Zeichen lang sein.</p>
++		<p><b>PIN Bestätigung</b></p>
++		<p>Geben Sie hier die PIN zur Bestätigung nochmals ein.</p>
++		<p>Klicken Sie auf die Schaltfläche &quot;Übernehmen&quot;, um die Einstellungen in die FRITZ!Box zu übernehmen.</p>
++	</div></div></div></div></div></div>
++	<? include ../html/$var:lang/help/rback.html ?>
++</div>
+--- usr/www/all/html/de/help/home.html.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/help/home.html	2007-10-24 00:13:30.000000000 +0200
+@@ -54,14 +54,6 @@
+ 				</td>
+ 			</tr>
+ 			<tr>
+-				<td valign="top"><b>&#8226;</b>&nbsp;<? echo $var:Text39 ?></td>
+-				<td>
+-					<a href="javascript:jslGoTo('help','hilfe_usb_status')"><? echo $var:Text58 ?></a><br>
+-					<a href="javascript:jslGoTo('help','hilfe_usb_print')"><? echo $var:Text40 ?></a><br>
+-					<a href="javascript:jslGoTo('help','hilfe_usb_disk')"><? echo $var:Text41 ?></a><br>
+-				</td>
+-			</tr>
+-			<tr>
+ 				<td valign="top"><b>&#8226;</b>&nbsp;<? echo $var:Text25 ?></td>
+ 				<td>
+ 					<a href="javascript:jslGoTo('help','hilfe_wlan_monitor')"><? echo $var:Text30 ?></a><br>
+@@ -80,7 +72,6 @@
+ 					<a href="javascript:jslGoTo('help','hilfe_system_energiemonitor')"><? echo $var:Text72 ?></a><br>
+ 					<a href="javascript:jslGoTo('help','hilfe_system_energieeinstellungen')"><? echo $var:Text73 ?></a><br>
+ 					<a href="javascript:jslGoTo('help','hilfe_system_pushservice')"><? echo $var:Text50 ?></a><br>
+-					<a href="javascript:jslGoTo('help','hilfe_system_infoanzeige')"><? echo $var:Text54 ?></a><br>
+ <? setvariable var:shownacht 0 ?>
+ <? setvariable var:shownacht 1 ?>
+ <? setvariable var:shownacht 1 ?>
+--- usr/www/all/html/de/help/popup.html.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/help/popup.html	2007-10-24 00:13:30.000000000 +0200
+@@ -61,7 +61,6 @@
+ function OnPortal() {
+ 	var url = jslGetValue("uiPostPortal");
+ 	if (url.length != 0) {
+-		url += "&help="+jslGetValue("uiPostPageName");
+ 		var pp = window.open(url, "_blank");
+ 	}
+ }
+--- usr/www/all/html/de/home/home.html.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/home/home.html	2007-10-24 00:13:30.000000000 +0200
+@@ -32,11 +32,6 @@
+ 							<td><? echo $var:txt008 ?></td>
+ 							<td><script type="text/javascript">document.write(WlanStateDisplay());</script></td>
+ 						</tr>
+-						<tr>
+-							<td><script type="text/javascript">document.write(UsbHostLed());</script></td>
+-							<td><? echo $var:txt036 ?></td>
+-							<td><script type="text/javascript">document.write(uiUsbDisplay());</script></td>
+-						</tr>
+ 					</table>
+ 				</td>
+ 				<td>
+@@ -88,5 +83,5 @@
+ <? if eq `<? query box:status/hint_telefon_message_waiting ?>` `1` `<p class="info">$var:txt046</p>` ?>
+ 		<p id="uiViewEventlink" class="mt10" style="display:none"><a href="javascript:jslGoTo('', 'syslog');"><? echo $var:txt052 ?></a></p>
+ 	</div></div></div></div></div></div>
+-	<? include ../html/$var:lang/home/rbb_refresh.html ?>
++	<? include ../html/$var:lang/home/rbb_refresh1.html ?>
+ </div>
+--- usr/www/all/html/de/home/rbb_refresh1.html.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/rbb_refresh1.html	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,5 @@
++	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
++		<input type="button" onclick="uiDoInfo()" value="Info" class=Pushbutton>
++		<input type="button" onclick="uiDoRefresh()" value="<? echo $var:txtRefresh ?>" class=Pushbutton>
++		<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
++	</div></div></div></div></div></div>
+--- usr/www/all/html/de/menus/menu2_fon.html.orig	2007-10-24 00:13:30.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_fon.html	2007-10-24 00:13:30.000000000 +0200
+@@ -17,11 +17,7 @@
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','siplist')"><? echo $var:txt01 ?></a></li>
+ <? setvariable var:classname 'LSubitem' ?>
+ <? if eq $var:pagename fondevices `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename isdnmsn `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename fonlistdect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename fon1isdn `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename isdn `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename isdnoptionen `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename msn `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename fon1 `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename merkmale `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+@@ -54,6 +50,9 @@
+ <? if eq $var:pagename sperre1 `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','sperre')"><? echo $var:txt12 ?></a></li>
+ <? setvariable var:classname 'LSubitem' ?>
++<? if eq $var:pagename tam `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
++	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','tamlist')"><? echo '$var:txt13' ?></a></li>
++<? setvariable var:classname 'LSubitem' ?>
+ <? if eq $var:pagename wecker `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','wecker')"><? echo $var:txt09 ?></a></li>
+ <? setvariable var:showlaender 0 ?>
+@@ -64,7 +63,6 @@
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','laender')">$var:txt06</a></li>
+ ` ?>
+ 	<li class="LMenutrenner"></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2007-10-24 00:13:30.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2007-10-24 00:13:30.000000000 +0200
+@@ -36,8 +36,6 @@
+ <? if eq $var:pagename syslog `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('home','syslog')"><? echo $var:evtxt04 ?></a></li>
+ <? setvariable var:classname 'LSubitem' ?>
+-<? if eq $var:pagename status `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('home','status')"><? echo $var:evtxt05 ?></a></li>
+ <? setvariable var:show 1 ?>
+ <? if eq <? query box:settings/ata_mode ?> 1 `
+ <? if eq '<? query connection0:settings/type ?>' 'bridge' '<? setvariable var:show 0 ?>' ?>
+--- usr/www/all/html/de/menus/menu2_homekonfig.html.orig	2007-10-24 00:13:30.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homekonfig.html	2007-10-24 00:13:30.000000000 +0200
+@@ -5,7 +5,6 @@
+ <? setvariable var:title $var:menuInternet ?>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:menuTelefonie ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
+--- usr/www/all/html/de/menus/menu2_internet.html.orig	2007-10-24 00:13:30.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_internet.html	2007-10-24 00:13:30.000000000 +0200
+@@ -87,7 +87,6 @@
+ 	` ?>
+ `?>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:menuTelefonie ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
+--- usr/www/all/html/de/menus/menu2_software.html.orig	2007-10-24 00:13:30.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_software.html	2007-10-24 00:13:30.000000000 +0200
+@@ -5,7 +5,6 @@
+ <? setvariable var:title $var:menuInternet ?>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:menuTelefonie ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+ 	<li class="LMenuitemaktiv"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
+--- usr/www/all/html/de/menus/menu2_system.html.orig	2007-10-24 00:13:30.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_system.html	2007-10-24 00:13:30.000000000 +0200
+@@ -5,7 +5,6 @@
+ <? setvariable var:title $var:menuInternet ?>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:menuTelefonie ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:aktivpfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
+ <? setvariable var:classname 'LSubitem' ?>
+@@ -28,9 +27,6 @@
+ <? if eq $var:showemail 1 `
+ 	<li class="$var:classname"><img src="$var:subpfeil"> <a href="javascript:jslGoTo('system','email')">$var:txt09</a></li>
+ ` ?>
+-<? setvariable var:classname 'LSubitem' ?>
+-<? if eq $var:pagename infoled `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('system','infoled')"><? echo `$var:txt11` ?></a></li>
+ <? setvariable var:classnacht 'LSubitem' ?>
+ <? if eq $var:pagename nacht `<? setvariable var:classnacht 'LSubitemaktiv' ?>` ?>
+ <? setvariable var:shownacht 0 ?>
+--- usr/www/all/html/de/menus/menu2_wlan.html.orig	2007-10-24 00:13:30.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_wlan.html	2007-10-24 00:13:30.000000000 +0200
+@@ -5,7 +5,6 @@
+ <? setvariable var:title $var:menuInternet ?>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
+ 	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('fon','foncalls')"><? echo $var:menuTelefonie ?></a></li>
+-	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('usb','status')"><? echo $var:menuUSB ?></a></li>
+ <li class="LMenuitem"><img src="<? echo $var:aktivpfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
+ <!-- wlan:settings/ap_enabled = '<? query wlan:settings/ap_enabled ?>' -->
+ <? setvariable var:showWlan 0 ?>
+--- usr/www/all/html/de/menus/menuwatch.html.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/menus/menuwatch.html	2007-10-24 00:13:30.000000000 +0200
+@@ -5,7 +5,7 @@
+ <? include ../html/$var:lang/menus/menu2.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "Speedport" ?>' ?>
+ <head>
+ <title><? echo $var:BoxName ?></title>
+ <meta http-equiv=content-type content="text/html; charset=iso-8859-1">
+--- usr/www/all/html/de/internet/pp_wanbridge.html.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/internet/pp_wanbridge.html	2007-10-24 00:13:30.000000000 +0200
+@@ -3,7 +3,7 @@
+ <? include ../html/config.def ?>
+ <? setvariable var:OEM <? query env:status/OEM ?> ?>
+ <? setvariable var:BoxName 'FRITZ!Box' ?>
+-<? if eq $var:OEM tcom '<? setvariable var:BoxName "Eumex" ?>' ?>
++<? if eq $var:OEM tcom '<? setvariable var:BoxName "Speedport" ?>' ?>
+ <? include ../html/$var:lang/internet/pp_wanbridge.inc ?>
+ <head>
+ <title><? echo $var:txt00 ?></title>
+--- usr/www/all/html/de/system/infoled.frm.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/system/infoled.frm	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-<input type="hidden" name="box:settings/infoled_reason" value="<? query box:settings/infoled_reason ?>" id="uiPostInfoled">
+--- usr/www/all/html/de/system/infoled.html.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/system/infoled.html	1970-01-01 01:00:00.000000000 +0100
+@@ -1,24 +0,0 @@
+-<? include ../html/$var:lang/system/infoled.inc ?>
+-<? setvariable var:showstick 0 ?>
+-<? setvariable var:showstick 1 ?> 
+-<? setvariable var:showstick 1 ?>
+-<div id="content">
+-	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+-		<? echo $var:Text1 ?>
+-	</div></div></div></div></div></div>
+-	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-		<p class="mb10"><? echo $var:Text2 ?></p>
+-		<p><? echo $var:Text3 ?>&nbsp;<select id="uiViewInfoled" class="Eingabefeld">
+-			<option value="1"><? echo $var:Text4 ?></option>
+-			<option value="3"><? echo $var:Text5 ?></option>
+-			<option value="4"><? echo $var:Text6 ?></option>
+-			<option value="5"><? echo $var:Text7 ?></option>
+-			<option value="7"><? echo $var:Text9 ?></option>
+-			<option value="8"><? echo $var:Text10 ?></option>
+-			<option value="9"><? echo $var:Text11 ?></option>
+-			</select>
+-		</p>
+-		<p class="mt10"><? if eq $var:showstick 1 `$var:Text12` `$var:Text13` ?></p>
+-	</div></div></div></div></div></div>
+-	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
+-</div>
+--- usr/www/all/html/de/system/infoled.inc.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/system/infoled.inc	1970-01-01 01:00:00.000000000 +0100
+@@ -1,15 +0,0 @@
+-<? include ../html/$var:lang/global.inc ?>
+-<? setvariable var:Text1 'INFO-Anzeige' ?>
+-<? setvariable var:Text2 'Hier können Sie auswählen, welche Informationen die INFO-LED der FRITZ!Box anzeigen soll.' ?>
+-<? setvariable var:Text3 'INFO-LED' ?>
+-<? setvariable var:Text4 'zeigt kostenbezogene Informationen an' ?>
+-<? setvariable var:Text5 'leuchtet bei aktivem WLAN' ?>
+-<? setvariable var:Text6 'leuchtet bei bestehender Internetverbindung' ?>
+-<? setvariable var:Text7 'leuchtet bei Anschluss eines Gerätes über LAN' ?>
+-<? setvariable var:Text8 'leuchtet bei Anschluss eines Gerätes über USB' ?>
+-<? setvariable var:Text9 'leuchtet bei angeschlossenem USB-Zubehör' ?>
+-<? setvariable var:Text10 'leuchtet bei aktiver Klingelsperre' ?>
+-<? setvariable var:Text11 'blinkt bei Anruf in Abwesenheit' ?>
+-<? setvariable var:Text12 'Die INFO-LED blinkt immer beim Firmware-Update und während der Übertragung der Sicherheitseinstellungen auf den FRITZ!WLAN USB Stick.' ?>
+-<? setvariable var:Text13 'Die INFO-LED blinkt immer beim Firmware-Update.' ?>
+-<? setvariable var:Text14 'zeigt neue Nachrichten im AB an' ?>
+--- usr/www/all/html/de/system/infoled.js.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/system/infoled.js	1970-01-01 01:00:00.000000000 +0100
+@@ -1,24 +0,0 @@
+-<!--		../system/infoled.js		-->
+-<style type="text/css">
+-<!--
+-#content {width: 500px; margin: auto;}
+-.ac {text-align: center;}
+--->
+-</style>
+-<script type="text/javascript">
+-<? include ../html/$var:lang/js/jsl.js ?>
+-function uiDoOnLoad() {
+-	jslSetSelection("uiViewInfoled", "0");
+-	jslSetSelection("uiViewInfoled", jslGetValue("uiPostInfoled"));
+-}
+-function uiDoSave() {
+-	jslCopyValue("uiPostInfoled", "uiViewInfoled");
+-	jslFormSubmitEx("system", "infoled");
+-}
+-function uiDoCancel() {
+-	jslGoTo("system", "infoled");
+-}
+-function uiDoHelp() {
+-	jslPopHelp("hilfe_system_infoanzeige");
+-}
+-</script>
+--- usr/www/all/html/de/system/net.html.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/system/net.html	2007-10-24 00:13:30.000000000 +0200
+@@ -14,7 +14,7 @@
+ 	</div></div></div></div></div></div>
+ 	<div id="uiExpert" style="display:none">
+ <? if eq $var:isTr069 1 '
+-<? if eq `<? query box:settings/ata_mode ?>` 0 `
++<? if eq  1 1 `
+ <? if eq '$var:showTr069Switch' 1 `
+ 		<div class="backdialog" id="uiSetTr069" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ 			<p class="pCheck25"><input type="checkbox" id="uiViewSetTr069" onclick="OnChangeSetTr069()">&nbsp;<label for="uiViewSetTr069">$var:tx12</label></p>
+--- usr/www/all/html/de/system/net.inc.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/system/net.inc	2007-10-24 00:13:30.000000000 +0200
+@@ -11,7 +11,7 @@
+ <? setvariable var:tx10 'IP-Adressen' ?>
+ <? setvariable var:tx11 'IP-Routen' ?>
+ <? if eq $var:isTr069 1 '
+-<? if eq `<? query box:settings/ata_mode ?>` 0 `
++<? if eq  1 1 `
+ <? setvariable var:tx12 'Automatische Einrichtung durch den Dienstanbieter zulassen' ?>
+ <? setvariable var:tx13 'Diese Einstellung ermöglicht dem DSL-Dienstanbieter die sichere (verschlüsselte) Übertragung der Internetzugangsdaten und Anmeldedaten für Internettelefonie auf diese FRITZ!Box. Diese Funktion wird nicht von allen Internet- und Internettelefonieanbietern unterstützt.' ?>
+ <? setvariable var:tx14 'Hinweis:' ?>
+--- usr/www/all/html/de/system/net.js.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/system/net.js	2007-10-24 00:13:30.000000000 +0200
+@@ -19,7 +19,7 @@
+ 	OnChangeUpnpAktiv();
+ 	if (g_ExpertMode == "1") {
+ <? if eq $var:isTr069 1 '
+-<? if eq `<? query box:settings/ata_mode ?>` 0 `
++<? if eq  1 1 `
+ 		jslSetChecked("uiViewSetTr069", jslGetValue("uiPostSetTr069") == "1");
+ 		jslDisplay("uiSetTr069", true);
+ 		jslSetEnabled( "uiViewUpdateTr069", (jslGetValue("uiPostSetTr069") == "1"));
+@@ -52,7 +52,7 @@
+ 	}
+ 	
+ <? if eq $var:isTr069 1 '
+-<? if eq `<? query box:settings/ata_mode ?>` 0 `
++<? if eq  1 1 `
+ 	jslSetValue("uiPostSetTr069", jslGetChecked("uiViewSetTr069") ? "1":"0");
+ 	jslEnable("uiPostSetTr069");
+ 	jslSetValue("uiPostUpdateTr069", jslGetChecked("uiViewUpdateTr069") ? "1":"0");
+--- usr/www/all/html/de/system/syslog.html.orig	2007-07-10 13:47:43.000000000 +0200
++++ usr/www/all/html/de/system/syslog.html	2007-10-24 00:13:30.000000000 +0200
+@@ -9,9 +9,8 @@
+ 	 		<li class="tabs_on"><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div id="uiFon" style="display:none">
+@@ -19,9 +18,8 @@
+ 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li class="tabs_on"><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div id="uiDsl" style="display:none">
+@@ -29,19 +27,8 @@
+ 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li class="tabs_on"><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
+-	 	</ul>
+-	</div>	 	
+-	<div id="uiUsb" style="display:none">
+-	 	<ul class="tabs">
+-	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+-	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+-	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li class="tabs_on"><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div id="uiWlan" style="display:none">
+@@ -49,9 +36,8 @@
+ 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li class="tabs_on"><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li class="tabs_on"><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div id="uiSystem" style="display:none">
+@@ -59,9 +45,8 @@
+ 	 		<li><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
+ 	 		<li><a href="javascript:Tabs(2)"><? echo $var:txt05 ?></a></li>
+-	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt06 ?></a></li>
+-	 		<li><a href="javascript:Tabs(4)"><? echo $var:txt07 ?></a></li>
+-	 		<li class="tabs_on"><a href="javascript:Tabs(5)"><? echo $var:txt08 ?></a></li>
++	 		<li><a href="javascript:Tabs(3)"><? echo $var:txt07 ?></a></li>
++	 		<li class="tabs_on"><a href="javascript:Tabs(4)"><? echo $var:txt08 ?></a></li>
+ 	 	</ul>
+ 	</div>	 	
+ 	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+--- usr/www/all/html/de/system/syslog.js.orig	2007-07-10 13:47:43.000000000 +0200
++++ usr/www/all/html/de/system/syslog.js	2007-10-24 00:13:30.000000000 +0200
+@@ -18,11 +18,10 @@
+ function uiDoOnLoad() {
+ 	var filter = jslGetValue("uiPostFilter");
+ 	switch (filter) {
+-		case "1": ShowTabs(5); break;
++		case "1": ShowTabs(4); break;
+ 		case "2": ShowTabs(2); break;
+ 		case "3": ShowTabs(1); break;
+-		case "4": ShowTabs(4); break;
+-		case "5": ShowTabs(3); break;
++		case "4": ShowTabs(3); break;
+ 		default: ShowTabs(0); break;
+ 	}
+ }
+@@ -48,9 +47,8 @@
+ 		case 0: jslSetValue("uiPostFilter", "0"); break;
+ 		case 1: jslSetValue("uiPostFilter", "3"); break;
+ 		case 2: jslSetValue("uiPostFilter", "2"); break;
+-		case 3: jslSetValue("uiPostFilter", "5"); break;
+-		case 4: jslSetValue("uiPostFilter", "4"); break;
+-		case 5: jslSetValue("uiPostFilter", "1"); break;
++		case 3: jslSetValue("uiPostFilter", "4"); break;
++		case 4: jslSetValue("uiPostFilter", "1"); break;
+ 	}
+ 	jslFormSubmitEx(jslGetValue("uiPostMenu"),"syslog");
+ }
+@@ -59,9 +57,8 @@
+ 		case 0: jslSetValue("uiPostFilter", "0"); break;
+ 		case 1: jslSetValue("uiPostFilter", "3"); break;
+ 		case 2: jslSetValue("uiPostFilter", "2"); break;
+-		case 3: jslSetValue("uiPostFilter", "5"); break;
+-		case 4: jslSetValue("uiPostFilter", "4"); break;
+-		case 5: jslSetValue("uiPostFilter", "1"); break;
++		case 3: jslSetValue("uiPostFilter", "4"); break;
++		case 4: jslSetValue("uiPostFilter", "1"); break;
+ 	}
+ 	jslFormSubmitEx(jslGetValue("uiPostMenu"),"syslog");
+ }
+@@ -70,9 +67,8 @@
+ 	jslDisplay( "uiBTNCleanList", n==0);
+ 	jslDisplay("uiFon", n==1);
+ 	jslDisplay("uiDsl", n==2);
+-	jslDisplay("uiUsb", n==3);
+-	jslDisplay("uiWlan", n==4);
+-	jslDisplay("uiSystem", n==5);
++	jslDisplay("uiWlan", n==3);
++	jslDisplay("uiSystem", n==4);
+ 	
+ }
+ function uiShowAll() {
+--- usr/www/all/html/de/wlan/common.html.orig	2007-07-10 13:47:42.000000000 +0200
++++ usr/www/all/html/de/wlan/common.html	2007-10-24 00:13:30.000000000 +0200
+@@ -64,7 +64,6 @@
+ 				<p class="pCheck25 mb10"><input type="checkbox" id="uiViewIpTv">&nbsp;<label for="uiViewIpTv"><? echo $var:Text35 ?></label></p>
+ 				<p class="pCheck25"><input type="checkbox" id="uiView_UserIsolation">&nbsp;<label for="uiView_UserIsolation"><? echo $var:Text30 ?></label></p>
+ 			</div>
+-			<p class="pCheck25 mt10"><input type="checkbox" id="uiViewAutoprov">&nbsp;<label for="uiViewAutoprov"><? echo $var:Text32 ?></label></p>
+ 		</div>
+ 	</div></div></div></div></div></div>
+ 	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
+--- usr/www/all/html/tam.html.orig	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/tam.html	2007-10-24 00:13:30.000000000 +0200
+@@ -0,0 +1,640 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++<html>
++<head>
++<title>FRITZ!Box TAM</title>
++<script type="text/javascript">
++function selecttam(index)
++{
++	var h1;
++ var x = 0;
++ for (x = 0; x < 10; x++) {
++ h1 = document.getElementById("tam" + x);
++ if (h1 != null) {
++ h1.style.display="none";
++ } else {
++ alert("selecttam(): Element "+"tam"+x+" nicht gefunden");
++ }
++ }
++ h1 = document.getElementById("tam" + index);
++	if (h1 != null) {
++		h1.style.display="";
++	} else {
++		alert("selecttam(): Element "+"tam"+index+" nicht gefunden");
++ }
++}
++</script>
++</head>
++<body>
++<p>MSNs:</p>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>0</td>
++ <td><input type="text" name="tam:settings/MSN0" value="<? query tam:settings/MSN0 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>1</td>
++ <td><input type="text" name="tam:settings/MSN1" value="<? query tam:settings/MSN1 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>2</td>
++ <td><input type="text" name="tam:settings/MSN2" value="<? query tam:settings/MSN2 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>3</td>
++ <td><input type="text" name="tam:settings/MSN3" value="<? query tam:settings/MSN3 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>4</td>
++ <td><input type="text" name="tam:settings/MSN4" value="<? query tam:settings/MSN4 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>5</td>
++ <td><input type="text" name="tam:settings/MSN5" value="<? query tam:settings/MSN5 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>6</td>
++ <td><input type="text" name="tam:settings/MSN6" value="<? query tam:settings/MSN6 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>7</td>
++ <td><input type="text" name="tam:settings/MSN7" value="<? query tam:settings/MSN7 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>8</td>
++ <td><input type="text" name="tam:settings/MSN8" value="<? query tam:settings/MSN8 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<form method="POST" action="../cgi-bin/webcm" >
++<input type="hidden" name="getpage" value="../html/tam.html">
++<table cellspacing="0">
++<colgroup> <col width="20"> <col> <col> </colgroup>
++<tr>
++ <td>9</td>
++ <td><input type="text" name="tam:settings/MSN9" value="<? query tam:settings/MSN9 ?>"></td>
++ <td><input type="submit" value="Set"></td>
++</tr>
++</table>
++</form>
++<p>
++Anrufbeantworter <select name="tamsel" size="1" onchange="selecttam(this.selectedIndex)">
++<option>TAM 0</option>
++<option>TAM 1</option>
++<option>TAM 2</option>
++<option>TAM 3</option>
++<option>TAM 4</option>
++<option>TAM 5</option>
++<option>TAM 6</option>
++<option>TAM 7</option>
++<option>TAM 8</option>
++<option>TAM 9</option>
++</select>
++</p>
++<form method="POST" action="../cgi-bin/webcm">
++<input type="hidden" name="getpage" value="../html/tam.html">
++<div id="tam0">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM0/Active" value="<? query tam:settings/TAM0/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM0/MSNBitmap" value="<? query tam:settings/TAM0/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM0/Mode" value="<? query tam:settings/TAM0/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM0/UserAnsVP" value="<? query tam:settings/TAM0/UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM0/UserAnsRecVP" value="<? query tam:settings/TAM0/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM0/UserEndVP" value="<? query tam:settings/TAM0/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM0/RecordLength" value="<? query tam:settings/TAM0/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM0/RingCount" value="<? query tam:settings/TAM0/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM0/PIN" value="<? query tam:settings/TAM0/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM0/PlayTimestamp" value="<? query tam:settings/TAM0/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM0/CompressionLevel" value="<? query tam:settings/TAM0/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<div id="tam1" style="display:none;">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM1/Active" value="<? query tam:settings/TAM1/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM1/MSNBitmap" value="<? query tam:settings/TAM1/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM1/Mode" value="<? query tam:settings/TAM1/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM1/UserAnsVP" value="<? query tam:settings/TAM1/UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM1/UserAnsRecVP" value="<? query tam:settings/TAM1/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM1/UserEndVP" value="<? query tam:settings/TAM1/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM1/RecordLength" value="<? query tam:settings/TAM1/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM1/RingCount" value="<? query tam:settings/TAM1/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM1/PIN" value="<? query tam:settings/TAM1/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM1/PlayTimestamp" value="<? query tam:settings/TAM1/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM1/CompressionLevel" value="<? query tam:settings/TAM1/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<div id="tam2" style="display:none;">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM2/Active" value="<? query tam:settings/TAM2/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM2/MSNBitmap" value="<? query tam:settings/TAM2/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM2/Mode" value="<? query tam:settings/TAM2/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM2/UserAnsVP" value="<? query tam:settings/TAM2/UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM2/UserAnsRecVP" value="<? query tam:settings/TAM2/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM2/UserEndVP" value="<? query tam:settings/TAM2/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM2/RecordLength" value="<? query tam:settings/TAM2/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM2/RingCount" value="<? query tam:settings/TAM2/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM2/PIN" value="<? query tam:settings/TAM2/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM2/PlayTimestamp" value="<? query tam:settings/TAM2/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM2/CompressionLevel" value="<? query tam:settings/TAM2/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<div id="tam3" style="display:none;">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM3/Active" value="<? query tam:settings/TAM3/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM3/MSNBitmap" value="<? query tam:settings/TAM3/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM3/Mode" value="<? query tam:settings/TAM3/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM3/UserAnsVP" value="<? query tam:settings/TAM3/UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM3/UserAnsRecVP" value="<? query tam:settings/TAM3/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM3/UserEndVP" value="<? query tam:settings/TAM3/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM3/RecordLength" value="<? query tam:settings/TAM3/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM3/RingCount" value="<? query tam:settings/TAM3/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM3/PIN" value="<? query tam:settings/TAM3/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM3/PlayTimestamp" value="<? query tam:settings/TAM3/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM3/CompressionLevel" value="<? query tam:settings/TAM3/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<div id="tam4" style="display:none;">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM4/Active" value="<? query tam:settings/TAM4/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM4/MSNBitmap" value="<? query tam:settings/TAM4/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM4/Mode" value="<? query tam:settings/TAM4/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM4/UserAnsVP" value="<? query tam:settings/TAM4/UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM4/UserAnsRecVP" value="<? query tam:settings/TAM4/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM4/UserEndVP" value="<? query tam:settings/TAM4/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM4/RecordLength" value="<? query tam:settings/TAM4/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM4/RingCount" value="<? query tam:settings/TAM4/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM4/PIN" value="<? query tam:settings/TAM4/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM4/PlayTimestamp" value="<? query tam:settings/TAM4/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM4/CompressionLevel" value="<? query tam:settings/TAM4/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<div id="tam5" style="display:none;">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM5/Active" value="<? query tam:settings/TAM5/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM5/MSNBitmap" value="<? query tam:settings/TAM5/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM5/Mode" value="<? query tam:settings/TAM5/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM5/UserAnsVP" value="<? query tam:settings/TAM5/UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM5/UserAnsRecVP" value="<? query tam:settings/TAM5/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM5/UserEndVP" value="<? query tam:settings/TAM5/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM5/RecordLength" value="<? query tam:settings/TAM5/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM5/RingCount" value="<? query tam:settings/TAM5/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM5/PIN" value="<? query tam:settings/TAM5/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM5/PlayTimestamp" value="<? query tam:settings/TAM5/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM5/CompressionLevel" value="<? query tam:settings/TAM5/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<div id="tam6" style="display:none;">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM6/Active" value="<? query tam:settings/TAM6/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM6/MSNBitmap" value="<? query tam:settings/TAM6/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM6/Mode" value="<? query tam:settings/TAM6/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM6/UserAnsVP" value="<? query tam:settings/TAM6-UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM6/UserAnsRecVP" value="<? query tam:settings/TAM6/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM6/UserEndVP" value="<? query tam:settings/TAM6/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM6/RecordLength" value="<? query tam:settings/TAM6/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM6/RingCount" value="<? query tam:settings/TAM6/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM6/PIN" value="<? query tam:settings/TAM6/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM6/PlayTimestamp" value="<? query tam:settings/TAM6/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM6/CompressionLevel" value="<? query tam:settings/TAM6/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<div id="tam7" style="display:none;">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM7/Active" value="<? query tam:settings/TAM7/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM7/MSNBitmap" value="<? query tam:settings/TAM7/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM7/Mode" value="<? query tam:settings/TAM7/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM7/UserAnsVP" value="<? query tam:settings/TAM7/UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM7/UserAnsRecVP" value="<? query tam:settings/TAM7/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM7/UserEndVP" value="<? query tam:settings/TAM7/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM7/RecordLength" value="<? query tam:settings/TAM7/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM7/RingCount" value="<? query tam:settings/TAM7/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM7/PIN" value="<? query tam:settings/TAM7/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM7/PlayTimestamp" value="<? query tam:settings/TAM7/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM7/CompressionLevel" value="<? query tam:settings/TAM7/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<div id="tam8" style="display:none;">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM8/Active" value="<? query tam:settings/TAM8/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM8/MSNBitmap" value="<? query tam:settings/TAM8/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM8/Mode" value="<? query tam:settings/TAM8/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM8/UserAnsVP" value="<? query tam:settings/TAM8/UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM8/UserAnsRecVP" value="<? query tam:settings/TAM8/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM8/UserEndVP" value="<? query tam:settings/TAM8/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM8/RecordLength" value="<? query tam:settings/TAM8/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM8/RingCount" value="<? query tam:settings/TAM8/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM8/PIN" value="<? query tam:settings/TAM8/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM8/PlayTimestamp" value="<? query tam:settings/TAM8/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM8/CompressionLevel" value="<? query tam:settings/TAM8/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<div id="tam9" style="display:none;">
++<table>
++<tr>
++<td>Active:</td>
++<td><input type="text" name="tam:settings/TAM9/Active" value="<? query tam:settings/TAM9/Active ?>"></td>
++</tr>
++<tr>
++<td>MSN-Bitmap:</td>
++<td><input type="text" name="tam:settings/TAM9/MSNBitmap" value="<? query tam:settings/TAM9/MSNBitmap ?>"></td>
++</tr>
++<tr>
++<td>Mode:</td>
++<td><input type="text" name="tam:settings/TAM9/Mode" value="<? query tam:settings/TAM9/Mode ?>"></td>
++</tr>
++<tr>
++<td>User Answer Only Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM9/UserAnsVP" value="<? query tam:settings/TAM9/UserAnsVP ?>"></td>
++</tr>
++<tr>
++<td>User Answer and Record Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM9/UserAnsRecVP" value="<? query tam:settings/TAM9/UserAnsRecVP ?>"></td>
++</tr>
++<tr>
++<td>User End Voice Prompt:</td>
++<td><input type="text" name="tam:settings/TAM9/UserEndVP" value="<? query tam:settings/TAM9/UserEndVP ?>"></td>
++</tr>
++<tr>
++<td>Record Length:</td>
++<td><input type="text" name="tam:settings/TAM9/RecordLength" value="<? query tam:settings/TAM9/RecordLength ?>"></td>
++</tr>
++<tr>
++<td>Ring Count:</td>
++<td><input type="text" name="tam:settings/TAM9/RingCount" value="<? query tam:settings/TAM9/RingCount ?>"></td>
++</tr>
++<tr>
++<td>PIN:</td>
++<td><input type="text" name="tam:settings/TAM9/PIN" value="<? query tam:settings/TAM9/PIN ?>"></td>
++</tr>
++<tr>
++<td>Play Timestamp:</td>
++<td><input type="text" name="tam:settings/TAM9/PlayTimestamp" value="<? query tam:settings/TAM9/PlayTimestamp ?>"></td>
++</tr>
++<tr>
++<td>Kompressionsstufe:</td>
++<td><input type="text" name="tam:settings/TAM9/CompressionLevel" value="<? query tam:settings/TAM9/CompressionLevel ?>"></td>
++</tr>
++</table>
++</div>
++<p>
++<input type="submit" value="Set">
++</p>
++</form>
++</body>
++</html>

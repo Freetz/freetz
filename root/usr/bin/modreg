@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Usage: modreg cgi <pkg> <title>
+#        modreg extra <pkg> <title> <sec-level> <cgi-name>
+#        modreg file <id> <title> <sec-level> <desc-file>
+
+replace() {
+	local regexp=$1 file=$2 data=$3
+	[ -e "$file" ] || touch "$file"
+
+	local content=$(grep -v "$regexp" "$file")
+	( echo "$data"; echo -n "$content" ) | sort > "$file"
+}
+
+case "$1" in
+	cgi)
+		replace "^$2|" /mod/etc/reg/cgi.reg "$2|$3"
+		rm -f /mod/var/cache/menu_packages
+		;;
+	extra)
+		replace "^$2|.*|$5\$" /mod/etc/reg/extra.reg "$2|$3|$4|$5"
+		rm -f /mod/var/cache/extras
+		;;
+	file)
+		replace "^$2|" /mod/etc/reg/file.reg "$2|$3|$4|$5"
+		rm -f /mod/var/cache/menu_settings
+		;;
+	status)
+		cgi=${4:-$2-status.cgi}
+		replace "^$2|.*|$cgi\$" /mod/etc/reg/status.reg "$2|$3|$cgi"
+		rm -f /mod/var/cache/menu_status
+		;;
+		
+	*)
+		echo "Usage: $0 cgi <pkg> <title>" 1>&2
+		echo "       $0 extra <pkg> <title> <sec-level> <cgi-name>" 1>&2
+		echo "       $0 file <id> <title> <sec-level> <desc-file>" 1>&2
+		echo "       $0 status <pkg> <title> [<cgi-name>]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
