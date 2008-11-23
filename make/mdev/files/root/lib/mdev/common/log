@@ -1,0 +1,29 @@
+#!/bin/false
+# vim: se ft=sh:
+
+log_debug () {
+	logger -t "${0##*/}[$$]" -p local0.debug "$@"
+}
+log_error () {
+	logger -t "${0##*/}[$$]" -p local0.error "$@"
+}
+log_info () {
+	logger -t "${0##*/}[$$]" -p local0.info "$@"
+}
+
+# can't get the return code from a piped process
+# cat /etc/passwd | log_error => $? is from log_error not cat ;(
+log_rt_error () {
+	local fifo=/tmp/.log_rt_error_$$
+	trap "trap - HUP QUIT TERM CHLD; log_error exited prematurely; rm -f $fifo; exit 1" \
+		HUP QUIT TERM
+	mkfifo -m 600 $fifo
+
+	trap "trap - HUP QUIT TERM CHLD; rm -f $fifo" CHLD
+	log_error <$fifo &
+	"$@" 2>$fifo
+}
+
+log_clean () {
+	unset -f log_debug log_error log_info log_rt_error
+}

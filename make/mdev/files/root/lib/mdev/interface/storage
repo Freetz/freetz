@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# stops a specific block partition, avm front-end uses this
+# the avm library 'libctlusb.so' calls this program
+# this probram expects the arguments
+#   - unplug or stop
+#   - mountpoint to stop (not required with the 'stop' parameter)
+
+if [ unplug = "$1" ]; then
+	. /lib/mdev/common/log
+
+	# avm prepends '/var/media/ftp/' to parameter 2
+	if [ -d "$2" ]; then
+		export MOUNT_DST=$2
+	else
+		export MOUNT_DST=${2#/var/media/ftp/}
+	fi
+
+	# swapoff specified partition
+	if echo $MOUNT_DST | egrep -q "^uStor.*/swap$"; then
+		bdev=$(echo $MOUNT_DST | sed 's,uStor,,;s,/swap,,')
+
+		# turn off swap
+		MOUNT_SRC=/dev/sd${bdev}
+		log_rt_error swapoff $MOUNT_SRC &&
+			log_info "user swapoff '$MOUNT_DST'"
+		rc=$?
+	else
+		. /lib/mdev/block/umount
+		rc=$?
+
+		# remove memory from tam (telephone answering machine)
+		[ -d /data/tam -a ! -L /data/tam -a -p /var/tam/mount ] &&
+			echo "u${MOUNT_DST}" >>/var/tam/mount
+
+		# TODO tr069starter?
+	fi
+
+	if [ 0 -eq $rc ]; then
+		c=$(echo -ne '\01')
+		sed -i "\\${c}=${MOUNT_SRC}:${MOUNT_DST}${c}d" /var/media/devmap
+	fi
+elif [ stop = "$1" -a -f /var/media/devmap ]; then
+	# TODO this is QAD => don't want to rely on avm's devmap
+	sed 's/[^:]*://' /var/media/devmap |
+		while read mp; do
+			"$0" unplug "/var/media/ftp/$mp"
+		done
+	# HACK give hotplug time to catch up
+	sleep 2
+fi

@@ -1,0 +1,103 @@
+#!/bin/sh
+
+# get'n paranoid;-)
+if [ ! -e /tmp/.sticknsurf -o reload = "$ACTION" ]; then
+	touch /tmp/.sticknsurf
+	if [ reload != "$ACTION" ]; then
+		CLIENTMAC=$(cat /sys${DEVPATH}/../serial)
+		# reload is called from avm-event triggered /bin/iwlancfgchanged
+		# must be able to restore atleast a partial hotplug environment
+		cat >>/tmp/.sticknsurf<<-EOF
+			CLIENTMAC=$CLIENTMAC
+			DEVPATH=$DEVPATH
+			PRODUCT=$PRODUCT
+			HOTPLUG=$HOTPLUG
+EOF
+	fi
+else
+	log_error "discovered multiple stick'n'surf devices"
+	exit
+fi
+
+avmusbwlan_add () {
+	local m_mini m_vers m_module m_bssid m_srvr rc ii rt
+
+	echo " ${PRODUCT%%/*} " | grep -q " 7001 " && m_mini=1
+	. /lib/mdev/common/ar7value
+	if [ no = "$(ar7value usbhost.autoprov_enabled)" -o \
+		  no = "$(ar7value fminiframework.enabled)" -a -n "$m_mini" ]; then
+		echo "not configured to stick'n'surf" |
+			tee -a /tmp/.sticknsurf | log_error
+		return
+	fi
+	ar7value_clean
+
+	. /lib/mdev/common/led
+	led_sns_master_on
+	# blink @2Hz
+	led_sns_set 18
+	#TODO let led blink @ another rate when error occured
+
+	if [ -n "$m_mini" ]; then
+		m_vers=1
+	else
+		m_vers=2
+	fi
+
+	# find module path
+	#TODO do we really need 2.4 kernel support?
+	m_module=$(find /lib/modules/$(uname -r)/kernel/drivers/usb -name 'usbauth.[k]o')
+	[ -z "$m_module" ] &&
+		echo "could not find kernel module usbauth" |
+			tee -a /tmp/.sticknsurf | log_error && return
+
+	# get a few more parameters
+	m_srvr=$(sed '/^maca\t/!d;s/^.*\t//;s/://g' /proc/sys/urlader/environment)
+	m_bssid=$(sed '/^macwlan\t/!d;s/^.*\t//;s/://g' /proc/sys/urlader/environment)
+#	log_debug "m_mini=>$m_mini< m_vers=>$m_vers< m_module=>$m_module< m_bssid=>$m_bssid< CLIENTMAC=>$CLIENTMAC< m_srvr=>$m_srvr<"
+
+	#XXX the original says something about a log file?
+	# strace says it's /dev/tts/0
+	snsexe=/lib/mdev/misc/avmusbwlanstart
+	rt=$($snsexe $m_vers $m_bssid $m_module $CLIENTMAC $m_srvr 2>&1)
+	rc=$?
+	if [ 20 -ne $rc ]; then
+		echo "$rt" | tee -a /tmp/.sticknsurf | log_error
+		echo "avmusbwlanstart failed with status '$rc'" |
+			tee -a /tmp/.sticknsurf | log_error
+		return
+	fi
+
+	ii=0
+	# module loaded || flash in progress || no timeout
+	while [ 30 -eq $rc -o 31 -eq $rc -o 20 -gt $ii ]; do
+		sleep 1
+		let ii++
+		rc=$(cat /proc/driver/usbauth)
+	done
+
+	[ 20 -eq $ii ] &&
+		echo "wlan usb device stick'n'surf timed out" |
+			tee -a /tmp/.sticknsurf | log_error && return
+
+	[ 32 -ne $rc ] &&
+		echo "wlan usb device stick'n'surf failed with status '$rc'" |
+			tee -a /tmp/.sticknsurf | log_error && return
+
+	# led on, no blinking
+	led_sns_set 1
+	# remove led functions from namespace
+	led_clean
+	echo "wlan usb device ready to stick'n'surf" |
+		tee -a /tmp/.sticknsurf | log_info
+}
+
+# no lib specifica in hotplug chain
+# I need drink; box, go fetch a beer:-)
+if [ "$CLIENTMAC" = "$(sed '1!d;s/.*=//' /tmp/.sticknsurf)" ]; then
+	avmusbwlan_add
+else
+	log_error "stick'n'surf device locked out"
+fi
+unset -f avmusbwlan_add
+unset CLIENTMAC

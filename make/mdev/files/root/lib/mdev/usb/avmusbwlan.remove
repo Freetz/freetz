@@ -1,0 +1,18 @@
+#!/bin/sh
+
+avmusbwlan_remove () {
+	log_info "detached stick'n'surf device"
+	. /lib/mdev/common/led
+	# turn off led
+	led_set 0
+	log_rt_error rmmod usbauth
+	# turn off led interface
+	led_sns_master_off
+	led_clean
+	rm -f /tmp/.sticknsurf
+}
+
+# no lib specifica in hotplug chain
+[ 4 -lt $(cat /tmp/.sticknsurf | wc -l) ] &&
+	avmusbwlan_remove
+unset -f avmusbwlan_remove

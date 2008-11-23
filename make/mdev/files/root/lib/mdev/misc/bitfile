@@ -1,0 +1,21 @@
+#!/bin/sh
+
+BOOTENV=/proc/sys/urlader/environment
+
+# hardware version take the for <ver>.<int>[.<rev>]
+revision=$(sed '/^HWRevision\t/!d;s/.*\t//;s/\([0-9]*\.\?\)\{2\}//' $BOOTENV)
+[ -z "$revision" -o 0 = "$revision" ] && exit 0
+
+version=$(sed '/^HWRevision\t/!d;s/.*\t//;s/\..*//' $BOOTENV)
+
+MODCONF=/etc/modprobe.conf
+
+# supplement bitfile path with revision
+cp $MODCONF /tmp
+mount -o bind /tmp/modprobe.conf $MODCONF
+sed -i "s/\( piglet_bitfile=[^ ]*\)/\1${revision}/" $MODCONF
+
+# enable switch on the W900V revision 1
+if [ 102 = "$version" ]; then
+	sed -i '/ piglet_bitfile=/s// piglet_enable_switch=1 piglet_bifile=/' $MODCONF
+fi

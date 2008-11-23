@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# set MDEV_TYPE, MDEV_UUID and eventually MDEV_LABEL
+eval "$(blkid /dev/$MDEV | sed 's/^[^ ]* //;s/\([^ ]*=\)/MDEV_\1/g')"
+readonly MDEV_TYPE MDEV_UUID MDEV_LABEL MDEV_PATH=/dev/$MDEV
+
+# unrecognized filesystem
+[ -z "$MDEV_TYPE" ] && exit 0
+
+# restart a disk at the console
+# - get disk host, channel, id, lun
+# - echo /sys/block/sda/device/scsi_disk:* | sed 's/[^:]*://;s/:/ /g'
+# > 0 0 0 0
+#   | | | +-- lun     \
+#   | | +---- id       > not sure of the order...
+#   | +------ channel /
+#   +-------- host
+#   echo >/sys/block/sda/device/delete
+#   echo 0 0 0 >/sys/class/scsi_host/host0/scan
+
+if [ remove != "$ACTION" ]; then
+	. /lib/mdev/common/log
+	. /lib/mdev/block/mount
+	if [ -r /lib/mdev/block/$MDEV_TYPE.mount ]; then
+		. /lib/mdev/block/$MDEV_TYPE.mount
+		${MDEV_TYPE}_mount
+	else
+		. /lib/mdev/block/unrecognized
+	fi
+fi

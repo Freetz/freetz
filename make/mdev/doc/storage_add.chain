@@ -1,0 +1,52 @@
+
+1) The modules usbcore and musb_hdrc are loaded at boot. Thier presence prerequisite
+   recognition and identification of events and external usb devices.
+
+2) Connect memory key to the AVM 7270.
+
+   usb \  usb_endpoint  \   usb   \  usb_endpoint  \ usb_device \  usb_endpoint
+   1-1 / usbdev1.2_ep00 / 1-1:1.0 / usbdev1.2_ep81 /  usbdev1.2 / usbdev1.2_ep02
+         -------+------                                           -------+------
+			       !                                                        !
+					 +----------- announce device discovery                   !
+                                                                         !
+                             load usb-storage ---------------------------+
+
+   usbdev1.2_ep02/device/modalias
+   usb:v05E3p07A0d0111dc00dsc00dp00ic08isc06ip50
+
+   alias usb:v*p*d*dc*dsc*dp*ic08isc06ip* usb-storage
+
+
+3) Load module usb-storage.
+
+    module  \    module   \   drivers   \ scsi_host \   scsi  \ scsi_device
+	scsi_mod / usb_storage / usb-storage /   host0   / 0:0:0:0 /   0:0:0:0
+                            -----+-----
+                                 !
+   load sd_mod and sg -----------+
+
+
+4) Load module sd_mod.
+
+   module \ drivers \ scsi_disk \# usb_endpoint #\ block \ block
+	sd_mod /   sd    /  0:0:0:0  /#    bounce    #/  sda  /  sda1
+                                                   --+--   --+--
+                                                     !       !
+   perform disk performance adjustment --------------+       !
+                                                             !
+   swapon / mount partition ---------------------------------+
+
+   Note: Experienced endpoint "bouncing": cause remains unknown.
+
+               remove              !               add
+	 usb_endpoint  \  usb_endpoint  \  usb_endpoint  \  usb_endpoint  \ 
+   usbdev1.2_ep81 / usbdev1.2_ep02 / usbdev1.2_ep81 / usbdev1.2_ep02 / 
+
+               remove              !               add
+	 usb_endpoint  \  usb_endpoint  \  usb_endpoint  \  usb_endpoint  \ 
+   usbdev1.2_ep81 / usbdev1.2_ep02 / usbdev1.2_ep81 / usbdev1.2_ep02 / 
+
+               remove              !               add
+	 usb_endpoint  \  usb_endpoint  \  usb_endpoint  \  usb_endpoint
+   usbdev1.2_ep02 / usbdev1.2_ep81 / usbdev1.2_ep81 / usbdev1.2_ep02

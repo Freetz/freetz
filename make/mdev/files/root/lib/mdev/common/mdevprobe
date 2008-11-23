@@ -1,0 +1,9 @@
+#!/bin/sh
+
+[ remove = "$ACTION" ] && remove='-r -a'
+
+. /lib/mdev/common/log
+for module in "$@"; do
+	modprobe $remove $module ||
+		log_error "${ACTION:-scan} module $module failed"
+done

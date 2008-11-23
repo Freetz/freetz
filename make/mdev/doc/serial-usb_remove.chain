@@ -1,0 +1,18 @@
+
+
+1) Remove serial-usb device from the AVM 7270.
+
+    usb_endpoint  \  usb_endpoint  \   tty   \  usb_endpoint  \ usb-serial \ usb_device \
+   usbdev1.4_ep81 / usbdev1.4_ep02 / ttyUSB0 / usbdev1.4_ep83 /   ttyUSB0  /  usbdev1.4 /
+                                     ---+---
+                                        !
+   unload pl2303 driver ----------------+
+
+     usb   \ usb \ usb_endpoint
+   1-1:1.0 / 1-1 / usbdev1.4_ep00
+
+
+2) Unload pl2303 module.
+
+   drivers \ drivers \ module \  drivers  \   bus   \   bus   \    bus     \ module
+    pl2303 /  pl2303 / pl2303 / usbserial / drivers / devices / usb-serial / usbserial

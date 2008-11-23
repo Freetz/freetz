@@ -1,0 +1,68 @@
+#!/bin/false
+# vim: se ft=sh:
+
+. /lib/mdev/common/log
+
+umount_service () {
+	# TODO do anything cheap until we can get things figured out
+	for file in $(ls -1 "$MOUNT_DST"/.freetz/service/K[0-9][0-9]* 2>/dev/null); do
+		if [ -x "$file" ]; then
+			log_info "stopping '${file##*/}'..."
+			"$file" stop
+		else
+			log_error "'$file' not executable..."
+		fi
+	done
+}
+
+umount_module () {
+	# remove fs module
+	if [ -n "$FS_TYPE" -a -r /lib/mdev/block/$FS_TYPE.mount ]; then
+		. /lib/mdev/block/$FS_TYPE.mount
+		${FS_TYPE}_unload
+	else
+		. /lib/mdev/block/unrecognized
+	fi
+}
+
+umount_exec () {
+	local ii rc FS_TYPE c=$(echo -ne '\01')
+
+	if [ -n "$MDEV" ]; then
+		MOUNT_SRC=/dev/$MDEV
+		MOUNT_DST=$(sed "\\${c}^$MOUNT_SRC ${c}!d;s/^[^ ]* //;s/ .*//" /proc/mounts)
+	elif [ -n "$MOUNT_DST" ]; then
+		MOUNT_SRC=$(sed "\\${c} $MOUNT_DST ${c}!d;s/ .*//" /proc/mounts)
+	else
+		log_error "neither MOUNT_SRC nor MOUNT_DST are set"
+		exit 0
+	fi
+
+	umount_service
+	FS_TYPE=$(sed "\\${c}^$MOUNT_SRC ${c}!d;s/^\([^ ]* \)\{2\}//;s/ .*//" /proc/mounts)
+	log_rt_error umount "$MOUNT_DST"
+
+	ii=0
+	while [ 30 -gt $ii ] && grep -q " $MOUNT_DST " /proc/mounts; do
+		let ii++
+		usleep 200000
+	done
+
+	if [ 30 -gt $ii ]; then
+		rc=0
+		log_info "user umount '$MOUNT_DST'"
+	else
+		rc=1
+		log_error "user umount '$MOUNT_DST' time out"
+	fi
+
+	[ 0 -eq $rc ] && umount_module
+	umount_clean
+	return $rc
+}
+
+umount_clean () {
+	unset -f umount_exec umount_module umount_service
+}
+
+umount_exec

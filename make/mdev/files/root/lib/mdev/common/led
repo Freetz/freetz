@@ -1,0 +1,36 @@
+#!/bin/false
+# vim: se ft=sh:
+
+#
+# base led functions
+# these provide a basic interface to the leds
+#
+led_clean () {
+	unset -f led led_master_on led_master_off led_set led_clean
+	unset -f led_sns_master_on led_sns_master_off led_sns_set
+}
+led () {
+	echo "$@" >/dev/new_led
+}
+led_master_on () {
+	led "MASTER_ENABLE $@"
+}
+led_master_off () {
+	led "MASTER_DISABLE $@"
+}
+led_set () {
+	led "SET $1 = $2"
+}
+
+#
+# Stick 'N Surf led functions
+#
+led_sns_master_on () {
+	led_master_on "stick_surf,0"
+}
+led_sns_master_off () {
+	led_master_off "stick_surf,0"
+}
+led_sns_set () {
+	led_set "stick_surf,0" "$1"
+}

@@ -1,0 +1,21 @@
+--- etc/init.d/rc.S	2008-09-10 19:04:38.000000000 +0200
++++ etc/init.d/rc.S.new	2008-09-10 19:16:59.000000000 +0200
+@@ -96,9 +96,17 @@
+ ##########################################################################################
+ ## rc.S for 2.6 Kernel
+ ##########################################################################################
+-[ -f /dev/.hotplug-cache ] || mount -o nosuid -t tmpfs dev /dev
++if [ ! -f /dev/.hotplug-cache ]; then
++	mount -t tmpfs -o nosuid mdev /dev
++	mkdir -p /dev/pts /dev/shm
++	mount -t devpts devpts /dev/pts
++	mount -t tmpfs -o nosuid,nodev,noexec devshm /dev/shm
++	mount -t sysfs -o nosuid,nodev,noexec sysfs  /sys
++fi
++mdev -s
+ /sbin/makedevs -d /etc/device.table /
+ mount -a
++echo /sbin/mdev >/proc/sys/kernel/hotplug
+ ##########################################################################################
+ ##########################################################################################
+ echo init-start 240 >/dev/watchdog

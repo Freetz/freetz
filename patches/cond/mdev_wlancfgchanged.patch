@@ -1,0 +1,32 @@
+--- bin/wlancfgchanged.orig	2008-04-21 08:53:44.000000000 +0200
++++ bin/wlancfgchanged	2008-04-21 08:56:54.000000000 +0200
+@@ -2,14 +2,12 @@
+ 
+ cmd=$1;
+ case "$cmd" in
+-
+-   usbwlanreload )
+-       echo "usbwlanreload--->"
+-       if lsmod | grep ^usbauth > /dev/null &&
+-           test -x /etc/hotplug/avmusbwlan; then
+-               /etc/hotplug/avmusbwlan reload
+-       fi
+-       ;;
++	usbwlanreload)
++		echo "usbwlanreload--->"
++		grep -qs '^usbauth ' /proc/modules &&
++			[ -x /etc/hotplug/avmusbwlan ] &&
++				/etc/hotplug/avmusbwlan
++		;;
+     * ) ;;
+ esac
+ 
+@@ -20,7 +18,7 @@
+ if [ -x /etc/init.d/rc.wlan ] ; then
+       /etc/init.d/rc.wlan reconfig
+ else
+-      /etc/init.d/rc.net wlanreload 1>/dev/null 2>/dev/null
++      /etc/init.d/rc.net wlanreload >/dev/null 2>&1
+ fi
+ 
+ if [ -x /etc/init.d/rc.media ] ; then

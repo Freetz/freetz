@@ -1,0 +1,41 @@
+#!/bin/sh
+
+if [ ! -x /sbin/ftpd ]; then
+	log_error "ftp server binary not found"
+	exit 0
+fi
+
+. /lib/mdev/common/log
+. /lib/mdev/common/ar7value
+
+case "$1" in
+	start)
+		if [ no = "$(ar7value 'usbhost.ftp_server_enabled')" ]; then
+			log_info "ftp server is not enabled"
+			ar7value_clean
+			exit 0
+		fi
+
+		if ! pidof -s -o $$ ftpd >/dev/null 2>&1; then
+			# equivalent to modhosts
+			HOSTNAME=$(ar7hostname)
+			[ yes = "$(ar7value 'usbhost.users_enabled')" ] &&
+				ftpd_opts="$ftpd_opts -U"
+			ftpd -D -q -t 120 -m 15 $ftpd_opts -h "$HOSTNAME"
+			log_info "ftpd started"
+		fi
+		;;
+	stop)
+		# stop all instances when server not enabled
+		if [ no = "$(ar7value 'usbhost.ftp_server_enabled')" ]; then
+			for pid in $(pidof -o $$ ftpd | tac); do
+				kill -9 $pid
+			done
+			log_info "ftpd stopped"
+		else
+			log_info "ftpd will continue to run"
+		fi
+		;;
+esac
+
+ar7value_clean

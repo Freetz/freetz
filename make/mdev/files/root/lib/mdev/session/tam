@@ -1,0 +1,57 @@
+#!/bin/sh
+
+. /lib/mdev/common/log
+if ! type telefon >/dev/null 2>&1; then
+	log_error "answering machine server not found"
+	exit 0
+fi
+
+[ -r "$MOUNT_DST/.freetz/etc/tam.conf" ] &&
+	. "$MOUNT_DST/.freetz/etc/tam.conf"
+
+case "$1" in
+	start)
+		# /data mounted only when jffs2 is large enough
+		if [ -d /data/tam ] ; then
+			log_info "already configured"
+			# default (avm) configuration
+			if [ yes = "$TAM_FORCE" ] && grep -qs '^tmpfs /data/tam/rec ' /proc/mounts; then
+				log_info "revoking current configuration"
+				umount /data/tam/rec 2>&1 | log_error
+				rm -rf /data/tam
+				umount /data 2>&1 | log_error
+			fi
+		fi
+
+		if [ ! -d /data/tam ]; then
+			log_info "using direct disk tam"
+			if [ ! -f "$MOUNT_DST/var/spool/tam/config" ]; then
+				for envar in CONFIG_PRODUKT OEM; do
+					eval "$(sed "/ $envar=/!d;s/export //" /var/env.cache)"
+				done
+				mkdir -p "$MOUNT_DST/var/spool/tam/rec"
+				cp /etc/default.$CONFIG_PRODUKT/$OEM/config.tam "$MOUNT_DST/var/spool/tam/config"
+				log_info "created initial configuration"
+			fi
+			cd /data
+			mount -t tmpfs tam /data
+			cd - >/dev/null 2>&1
+			ln -s "$MOUNT_DST/var/spool/tam" /data/tam
+			log_info "configuration complete"
+		fi
+		;;
+	stop)
+		tam=$(realpath /data/tam 2>/dev/null)
+		if [ "${tam%/var/spool/tam}" = "$MOUNT_DST" ]; then
+			# answering machine active
+			while [ -L /data/tam ]; do
+				rm -f /data/tam 2>/dev/null
+				umount /data
+				usleep 200000
+			done
+			log_info "separation complete"
+		else
+			log_info "$MOUNT_DST not hosting tam"
+		fi
+		;;
+esac

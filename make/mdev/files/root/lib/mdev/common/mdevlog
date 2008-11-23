@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# log only when requested
+[ 0 -eq $# ] && exit 0
+
+. /lib/mdev/common/log
+env | egrep -v '^(HOME|PATH|PWD|CONFIG_.*)=' | log_debug

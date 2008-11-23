@@ -1,0 +1,16 @@
+#!/bin/false
+# vim: se ft=sh:
+
+# this is actually a development hook
+
+# cp /lib/hotplug/mount/unrecognized /var/tmp/newfs.mount
+# mount -o bind /var/tmp/newfs.mount /lib/hotplug/mount/unrecognized
+
+# XXX to obtain a complete avialable enviroment uncomment the following
+#set | log_info
+
+case "$MDEV_TYPE" in
+	*)
+		log_error "unrecognized filesystem type $MDEV_TYPE on $MDEV"
+		;;
+esac

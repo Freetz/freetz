@@ -1,0 +1,28 @@
+#!/bin/false
+# vim: se ft=sh:
+
+swap_unload () {
+	export ACTION=remove
+	grep '^swap ' /proc/modules &&
+		/lib/mdev/common/mdevprobe swap
+	swap_clean
+}
+
+swap_mount () {
+	# swap kernel module is built-in
+	[ -r /proc/swaps ] || /lib/mdev/common/mdevprobe swap
+
+	# swap on device
+	if log_rt_error swapon $MDEV_PATH; then
+		log_info "swap activated on '$MDEV_PATH'"
+
+		# notify avm front-end
+		MOUNT_DST=uStor${MDEV_PATH#/dev/sd}
+		echo "$DEVICE=$MDEV_PATH:$MOUNT_DST/swap" >>/var/media/devmap
+	fi
+	swap_clean
+}
+
+swap_clean () {
+	unset -f swap_mount swap_unload
+}

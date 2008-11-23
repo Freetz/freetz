@@ -1,0 +1,146 @@
+#!/bin/sh
+
+#########
+### TODO incorporate locking for samba configuration file
+#########
+
+. /lib/mdev/common/log
+if [ ! -x /etc/init.d/rc.samba ]; then
+	log_error "samba server start/stop script not found"
+	exit 0
+fi
+
+# no accidental alteration
+readonly SMB_CONF=/mod/etc/smb.conf
+. /lib/mdev/common/ar7value
+
+# indent specified lines
+echo1 () {
+	local eopt
+	[ "-n" = "$1" ] && eopt=-n && shift
+	echo $eopt "   $@"
+}
+
+# single mountpoint samba configuration
+mountpoint_single_configure () {
+	local MOUNT_POINT MOUNT_NAME MD=${MOUNT_DST%/}
+
+	# build mount point path and name
+	if [ 0 -eq $# ]; then
+		MOUNT_POINT="$MD"
+		MOUNT_NAME="${MD##*/}"
+	else
+		# [rl]strip slashes (/) from parameter
+		local name=${1#/}
+		MOUNT_POINT="$MD/${1%%/}"
+		MOUNT_NAME="${MD##*/} $(echo ${1%%/} | tr '/' ' ')"
+	fi
+
+	# mountpoint missing or already configured
+	[ -d "$MOUNT_POINT" ] || return 1
+	grep -qs "^\[$MOUNT_NAME\]" $SMB_CONF && return 1
+
+	local USERS_ENABLED CRYPTED_PW READONLY READONLY_FILE
+
+	USERS_ENABLED=$(ar7value 'usbhost.users_enabled')
+	if [ yes != "$USERS_ENABLED" ]; then
+		READONLY=$(ar7value 'usbhost.readonly')
+		CRYPTED_PW=$(ar7value 'usbhost.password')
+	fi
+
+	if [ yes != "$USERS_ENABLED" -a no != "$READONLY" ]; then
+		READONLY=yes
+	else
+		READONLY=no
+	fi
+
+	cat <<- EOF
+		[$MOUNT_NAME]
+		   path = $MOUNT_POINT
+		   readonly = $READONLY
+		   write cache size = 65536
+	EOF
+
+	if [ yes != "$USERS_ENABLED" ]; then
+		echo1 "user = ftpuser"
+		[ -z "$CRYPTED_PW" ] && echo1 "guest ok = yes"
+	else
+		echo1 -n "read list = "
+
+		# TODO read-only list pro configured directory
+		if [ -f "$MOUNT_DST/.freetz/etc/samba/ftpusers_readonly" ]; then
+			READONLY_FILE="$MOUNT_DST/.freetz/etc/samba/ftpusers_readonly"
+		else
+			READONLY_FILE=/var/ftpusers_readonly
+		fi
+
+		log_info "reading 'read list' from '$READONLY_FILE'"
+		[ -r "$READONLY_FILE" ] &&
+			cat "$READONLY_FILE" | tr '\n' ',' | sed 's/,$/\n/'
+	fi
+	echo
+}
+
+# let users specify which directories may be configured
+mountpoint_configure () {
+	local directory
+
+	if [ -f "${MOUNT_DST}/.freetz/etc/samba/directories" ]; then
+		while read directory; do
+			log_info "creating samba configuration for '$MOUNT_DST/$directory'"
+			mountpoint_single_configure "$directory" >>$SMB_CONF
+		done <"$MOUNT_DST/.freetz/etc/samba/directories"
+	else
+		log_info "creating samba configuration for '$MOUNT_DST'"
+		mountpoint_single_configure >>$SMB_CONF
+	fi
+}
+
+#
+# delete configured directory from samba configuration
+# don't reference directory configuration file: may have been altered;)
+#
+mountpoint_delete () {
+	local directory c=$(echo -ne '\01') MD=${MOUNT_DST%/}
+
+	sed "\\${c}^\[${MD##*/}${c}!d;s,^\[,,;s,\]$,," $SMB_CONF |
+		while read directory; do
+			log_info "deleting samba configuration for '[$directory]'"
+
+			# delete til first emtpy line
+			sed -i "\\${c}^\[$directory\]\$${c},\\${c}^\$${c}d" $SMB_CONF
+		done
+}
+
+# reload configuration
+reload () {
+	local pid
+	for pid in $(pidof -s -o $$ smbd); do
+		kill -HUP $pid
+		log_info "samba configuration reloaded"
+	done
+	[ -n "$pid" ]
+	return $?
+}
+
+case "$1" in
+	start)
+		pidof -s -o $$ smbd >/dev/null ||
+			/etc/init.d/rc.samba start | log_info
+		mountpoint_configure
+		reload
+		;;
+	stop)
+		mountpoint_delete 
+		if pidof -s -o $$ smbd >/dev/null; then
+			if [ 1 -eq $(grep -c '^\[' $SMB_CONF 2>/dev/null || echo 1) ]; then
+				log_info "samba not configured"
+				/etc/init.d/rc.samba stop | log_info
+			else
+				reload
+			fi
+		fi
+		;;
+esac
+
+ar7value_clean

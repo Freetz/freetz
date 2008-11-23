@@ -1,0 +1,39 @@
+#!/bin/false
+# vim: se ft=sh:
+
+vfat_option () {
+	local m_rfg m_usr
+
+	. /lib/mdev/common/ar7value
+	if [ yes = "$(ar7value usbhost.users_enabled)" ]; then
+		m_rfg=rw
+	elif [ no = "$(ar7value usbhost.readonly)" ]; then
+		m_rfg=rw
+	else
+		m_rfg=ro
+	fi
+	ar7value_clean
+
+	m_usr=$(id ftpuser 2>/dev/null | sed 's/[^=]*=\([^(]*\)[^=]*=\([^(]*\).*/\1 \2/')
+	m_usr=${m_usr:=0 0}
+
+	echo "$m_rfg,uid=${m_usr% *},gid=${m_usr#* },fmask=0000,dmask=0000"
+}
+
+vfat_unload () {
+	export ACTION=remove
+	/lib/mdev/common/mdevprobe vfat nls_cp437 nls_iso8859-1
+	vfat_clean
+}
+
+vfat_mount () {
+	if /lib/mdev/common/mdevprobe nls_iso8859-1 nls_cp437 vfat && mount_point; then
+		[ -n "$MOUNT_DST" ] && MOUNT_OPT=$(vfat_option)
+		mount_exec
+	fi
+	vfat_clean
+}
+
+vfat_clean () {
+	unset -f vfat_option vfat_mount vfat_unload
+}

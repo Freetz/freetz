@@ -1,0 +1,123 @@
+#!/bin/false
+# vim: se ft=sh:
+
+mount_service () {
+	# having problems while booting w/ wlan on
+	while pidof rc.S >/dev/null; do
+		usleep 200000
+	done
+
+	# TODO do anything cheap until we can get things figured out
+	[ -n "$MOUNT_DST" ] &&
+		for file in $(ls -1 "$MOUNT_DST"/.freetz/service/S[0-9][0-9]* 2>/dev/null); do
+			if [ -x "$file" ]; then
+				log_info "starting '${file##*/}'..."
+				"$file" start
+			else
+				log_error "'$file' not executable..."
+			fi
+		done
+	[ -z "$file" ] && log_info "not starting any services on '$MOUNT_DST'"
+}
+
+mount_announce () {
+   local ii=0
+   local c=$(echo -en '\01')
+
+   # triggered before mount is available
+   MOUNT_DST=$(sed "\\${c}^$MDEV_PATH ${c}!d;s/[^ ]* //;s/ .*//" /proc/mounts)
+   while [ 30 -gt $ii -a -z "$MOUNT_DST" ]; do
+      # .2s * 30 = 6s
+      usleep 200000
+      let ii++
+      MOUNT_DST=$(sed "\\${c}^$MDEV_PATH ${c}!d;s/[^ ]* //;s/ .*//" /proc/mounts)
+   done
+
+   if [ 30 -eq $ii ]; then
+      log_error "mount point discovery time-out for '$MDEV_PATH'"
+      unset MOUNT_DST
+      return 1
+   fi
+
+   # announce mount to avm's frontend
+   echo "$DEVICE=$MDEV_PATH:$MOUNT_DST" >>/var/media/devmap
+   export MOUNT_DST
+
+	# start mountpoint specific services
+	mount_service
+
+	# announce memory to tam (telephone answering machine)
+	[ -d /data/tam -a ! -L /data/tam -a -p /var/tam/mount ] &&
+		echo "m${MOUNT_DST}" >>/var/tam/mount
+}
+
+mount_exec () {
+	if [ -z "$MOUNT_DST" ]; then
+		# let mount work with fstab
+		log_rt_error mount "$MOUNT_SRC" &&
+			log_info "mounted '$MOUNT_SRC' to a user configured mountpoint"
+	else
+		[ -n "$MOUNT_OPT" ] && MOUNT_OPT="-o $MOUNT_OPT"
+		log_rt_error mount -t $MDEV_TYPE $MOUNT_OPT "$MOUNT_SRC" "$MOUNT_DST" &&
+			log_info "mounted '$MOUNT_SRC' on '$MOUNT_DST' with '${MOUNT_OPT#-o }'"
+	fi
+	[ 0 -eq $? ] && mount_announce
+}
+
+# exports the following environment variables
+#	MOUNT_SRC - source object from which will be mounted and may be a
+#		- absolute path to a device node
+#		- MDEV_UUID as ascertained by the program blkid
+#		- MDEV_LABEL as ascertained by the program blkid
+#	MOUNT_DST - absolute mount point for MOUNT_SRC
+#	MOUNT_CHK - flag dictating if MOUNT_SRC required checking before mounting
+
+# MOUNT_DST, MOUNT_CHK are export when MOUNT_SRC cannot be automatically mounted,
+#	i.e. not in /etc/fstab
+
+# the routine requires MDEV_UUID, MDEV_LABEL, MDEV_PATH
+
+mount_point () {
+	local line
+
+	# grab the last matching line as mount does
+	line=$(tac /etc/fstab | egrep -m 1 "^(UUID=${MDEV_UUID}|LABEL=${MDEV_LABEL}|${MDEV_PATH})[ \t]")
+
+	if [ -z "$line" ]; then
+		MOUNT_SRC=$MDEV_PATH
+		MOUNT_DST=/var/media/ftp/uStor${MDEV_PATH#/dev/sd}
+		MOUNT_CHK=1
+	else
+		MOUNT_SRC=$(echo $line | sed 's/ .*//')
+
+		# noauto mounting
+		if echo "$line" | egrep -q '[, \t]noauto[, \t]'; then
+			log_info "noauto has been specified for $MOUNT_SRC"
+			return 1
+		fi
+
+		MOUNT_DST=$(echo $line | sed 's/^[^ \t]*[ \t]*//;s/[ \t].*//')
+		#TODO ensure passno is present
+		MOUNT_CHK=$(echo $line | sed 's/.*[ \t]//')
+	fi
+
+	if [ -d "$MOUNT_DST" ]; then
+		# configured mountpoints may have an existant directory
+		if [ -z "$line" ]; then
+			log_error "mount point '$MOUNT_DST' already exists"
+			unset MOUNT_SRC MOUNT_DST MOUNT_CHK
+			return 1
+		fi
+	else
+		mkdir -m 755 -p "$MOUNT_DST"
+		log_info "created mount point '$MOUNT_DST'"
+	fi
+
+	# set only what's required
+	if [ -z "$line" ]; then
+		export MOUNT_SRC MOUNT_DST MOUNT_CHK
+	else
+		unset MOUNT_DST
+		export MOUNT_SRC MOUNT_CHK
+	fi
+}

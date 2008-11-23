@@ -1,0 +1,59 @@
+#!/bin/sh
+
+. /lib/mdev/common/log
+
+# setup environment for cold plug events
+[ -z "$ACTION" ] && . /lib/mdev/usb/eventvars
+
+# proper device names
+[ -z "$DEVPATH" ] && logerror 'uevent environment variable DEVPATH is unset' && exit 1
+if [ -d /sys${DEVPATH} ]; then
+	cd /sys${DEVPATH}/..
+	for f in product manufacturer id[PV]*; do
+		[ -r $f ] && eval "$f='$(cat $f)'"
+	done
+	cd $MDEV
+fi
+
+channel=${MDEV%:1.0}
+log_info "${ACTION} $channel ${manufacturer:-$idVendor} ${product:-$idProduct}"
+
+# http://en.wikipedia.org/wiki/Universal_Serial_Bus#Device_classes
+[ 0 -eq "${TYPE%%/*}" ] && TYPE=$INTERFACE
+case "$TYPE" in
+	8/2/*)
+		# wlan sticks and mini fon
+		if [ 57c = ${PRODUCT%%/*} -o 7001 = ${PRODUCT%%/*} ]; then
+			log_info "$channel avm stick 'n surf device"
+			/lib/mdev/usb/avmusbwlan.${ACTION}
+			exit 0
+		fi
+		;;
+	8/6/*)
+		log_info "$channel transparent scsi mass storage device"
+		;;
+	9/*)
+		log_info "$channel usb hub device"
+		;;
+	224/1/1)
+		log_info "$channel bluetooth device"
+		[ -d hci* ] && HCI=hci* && log_info "$channel found $HCI"
+		# TODO augment start/stop for HCI, no default runlevel
+		if [ remove = "ACTION" ]; then
+			/etc/init.d/rc.bluez-utils stop $HCI
+		else
+			/etc/init.d/rc.bluez-utils start $HCI
+		fi
+		;;
+	3/1/1)
+		log_info "$channel keyboard hid device"
+		;;
+	3/1/2)
+		log_info "$channel mouse hid device"
+		;;
+	*)
+		log_info "$channel device $MODALIAS"
+		;;
+esac
+
+/lib/mdev/common/mdevprobe $MODALIAS

@@ -1,0 +1,13 @@
+--- bin/prepare_fwupgrade	2008-09-09 20:51:09.000000000 +0200
++++ bin/prepare_fwupgrade.new	2008-09-09 20:55:56.000000000 +0200
+@@ -75,8 +75,8 @@
+ ## groﬂe Aufr‰umen auslˆst. Dieser Hintergrundprozeﬂ wartet bis zu 5 Sekunden auf
+ ## das Beenden aller USB-Klienten und schieﬂt dann den OHCI-Treiber ab: Kein USB
+ ## mehr vorhanden.
+-if [ -e /etc/hotplug/usb.pandu ] ; then
+-/etc/hotplug/usb.pandu stop
++if [ -e /etc/hotplug/storage ] ; then
++/etc/hotplug/storage stop
+ sleep 2
+ fi
+ ## now kill everything else to avoid access to flash while flashing

@@ -1,0 +1,29 @@
+
+1) Connect bluetooth dongle.
+
+   usb \  usb_endpoint  \   usb   \  usb_endpoint  \  usb_endpoint  \  usb_endpoint  \
+	1-1 / usbdev1.3_ep00 / 1-1:1.0 / usbdev1.3_ep81 / usbdev1.3_ep82 / usbdev1.3_ep02 /
+         -------+------                                               -------+------
+                !                                                            !
+                +-------------- announce device discovery                    !
+                                                                             !
+                                     load rfcomm ----------------------------+
+
+     usb   \  usb_endpoint  \  usb_endpoint  \
+   1-1:1.1 / usbdev1.3_ep83 / usbdev1.3_ep03 /
+
+     usb   \  usb_endpoint  \  usb_endpoint  \
+   1-1:1.2 / usbdev1.3_ep84 / usbdev1.3_ep04 /
+
+     usb   \ usb_device
+   1-1:1.3 /  usbdev1.3
+
+   usbdev1.3_ep02/device/modalias
+   usb:v050Dp0012d0000dcE0dsc01dp01icFFiscFFipFF
+
+	alias usb:v*p*d*dcE0dsc01dp01ic*isc*ip* rfcomm
+
+2) Load rfcomm module.
+
+     module  \  platform \ module \ module
+   bluetooth / bluetooth /  l2cap / rfcomm

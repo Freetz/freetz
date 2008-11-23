@@ -1,0 +1,32 @@
+#!/bin/false
+# vim: se ft=sh:
+
+for path in $(find /sys/devices -name "$MDEV" 2>/dev/null); do
+	DEVPATH=${path#/sys}
+done
+
+MODALIAS=$(cat /sys${DEVPATH}/modalias 2>/dev/null)
+
+parse_interface () {
+	printf '%d/%d/%d' $(sed 's/.*dp[0-F]\{2\}//;s/[iscp]\+/ 0x/g')
+}
+parse_type () {
+	printf '%d/%d/%d' $(sed 's/.*d[0-9]\{4\}//;s/ic.*//;s/[dscp]\+/ 0x/g')
+}
+parse_product () {
+	sed 's!^usb:\(.*\)dc.*!\1!;s![vpd]!/!g;s!/0\{1,3\}!/!g;s!^/!!;y!ABCDEF!abcdef!'
+}
+
+TYPE=$(echo $MODALIAS | parse_type)
+PRODUCT=$(echo $MODALIAS | parse_product)
+INTERFACE=$(echo $MODALIAS | parse_interface)
+
+for var in DEVPATH MODALIAS TYPE PRODUCT INTERFACE; do
+	if [ -z "$(eval "echo \$${var}")" ]; then
+		logerror "Could not set uevent environment variable $var"
+		exit 1
+	fi
+done
+
+unset path var
+unset -f parse_type parse_interface parse_product

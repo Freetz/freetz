@@ -1,0 +1,35 @@
+1) The following will be started by umounting/swap offing the correlating partition or
+   device.
+
+2) Remove memory key. Simulated by sending delete to disk block device.
+
+   scsi_disk \ block \ block \   scsi
+    0:0:0:0  /  sda1 /  sda  / 0:0:0:0
+                       --+--
+                         !
+   unload sd_mod / sg ---+
+
+
+3) Unload sd_mod driver chain.
+
+   drivers \   class   \ module
+      sd   / scsi_disk / sd_mod
+                         ---+--
+                            !
+   unload usb-storage ------+
+
+
+4) Unload usb-storage driver chain.
+
+   scsi_host \# usb_endpoint #\   drivers   \    module   \    class    \   bus   \
+     host0   /#    bounce    #/ usb-storage / usb_storage / scsi_device / drivers /
+
+     bus   \  bus \   class   \  module
+   devices / scsi / scsi_host / scsi_mod
+
+   Note: Experienced endpoint "bouncing": cause remains unknown.
+
+               remove              !               add
+	 usb_endpoint  \  usb_endpoint  \  usb_endpoint  \  usb_endpoint
+   usbdev1.2_ep81 / usbdev1.2_ep02 / usbdev1.2_ep81 / usbdev1.2_ep02
+

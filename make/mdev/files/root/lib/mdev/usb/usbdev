@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Cold plugging: tell the kernel to generate a real event during scan.
+[ -z "$ACTION" ] &&
+	for uevent in /sys/class/usb_endpoint/$MDEV/device/1-*:1.0/uevent; do
+		echo add >$uevent
+	done

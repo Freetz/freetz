@@ -1,0 +1,14 @@
+#!/bin/false
+# vim: se ft=sh:
+
+ar7value () {
+	echo "$1" | ar7cfgctl -s | sed 's/^"//;s/"$//'
+}
+
+ar7hostname () {
+	ar7value 'servercfg.hostname' | sed 's/^(none)$/freetz.box/'
+}
+
+ar7value_clean () {
+	unset -f ar7value ar7hostname ar7value_clean
+}

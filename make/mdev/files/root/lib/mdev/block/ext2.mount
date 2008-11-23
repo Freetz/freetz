@@ -1,0 +1,44 @@
+#!/bin/false
+# vim: se ft=sh:
+
+ext2_fsck () {
+	local rt rc
+
+	log_info "starting e2fsck on '$MDEV_PATH'"
+	rt=$(e2fsck -p $MDEV_PATH 2>&1)
+	rc=$?
+	if [ $rc -lt 2 ]; then
+		rc=0
+		log_info "$rt"
+	elif [ $rc -eq 2 ]; then
+		# XXX e2fsck recommends reboot, we just report the discrepency
+		log_error "fsck recommends restarting '$MDEV_PATH', not mounting"
+		log_info "$rt"
+	else
+		log_error "$rt"
+	fi
+
+	return $rc
+}
+
+ext2_unload () {
+	export ACTION=remove
+	/lib/mdev/common/mdevprobe ext2
+	ext2_clean
+}
+
+ext2_mount () {
+	if /lib/mdev/common/mdevprobe ext2 && mount_point; then
+		[ -n "$MOUNT_DST" ] && MOUNT_OPT=noatime,nodiratime
+		if [ $MOUNT_CHK -gt 0 ]; then
+			ext2_fsck && mount_exec
+		else
+			mount_exec
+		fi
+	fi
+	ext2_clean
+}
+
+ext2_clean () {
+	unset -f ext2_fsck ext2_unload ext2_mount
+}

@@ -1,0 +1,24 @@
+#!/bin/false
+# vim: se ft=sh:
+
+log_error "skipping ntfs support for now"
+exit 1
+
+ntfs_unload () {
+	export ACTION=remove
+	/lib/mdev/common/mdevprobe fuse ntfs-3g
+	ntfs_clean
+}
+
+ntfs_mount () {
+	if /lib/mdev/common/mdevprobe fuse && mount_point; then
+		[ -n "$MOUNT_DST" ] && MOUNT_OPT='noatime,nodiratime'
+		MDEV_TYPE=ntfs-3g
+		mount_exec
+	fi
+	ntfs_clean
+}
+
+ntfs_clean () {
+	unset -f ntfs_mount ntfs_unload
+}

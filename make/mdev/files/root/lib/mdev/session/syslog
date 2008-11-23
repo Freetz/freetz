@@ -1,0 +1,35 @@
+#!/bin/sh
+
+. /lib/mdev/common/log
+if [ ! -x /etc/init.d/rc.syslogd ]; then
+	log_error "syslogd server start/stop script not found"
+	exit 0
+fi
+
+case "$1" in
+	start)
+		rm -f "$MOUNT_DST/.freetz/etc/syslogd.cfg"
+
+		if pidof -s syslogd >/dev/null; then
+			mkdir -p "$MOUNT_DST/var/log" "$MOUNT_DST/.freetz/etc"
+			cp /mod/etc/conf/syslogd.cfg "$MOUNT_DST/.freetz/etc"
+			msg=$(sed "\\, SYSLOGD_ALTERNATIVE_LOGFILE=,!d;s,.*=',,;s,',," /mod/etc/conf/syslogd.cfg)
+			msg=${msg:-/var/log/messages}
+			cp "$msg" "$MOUNT_DST/var/log/messages"
+			sed -i "s,\( SYSLOGD_ALTERNATIVE_LOGFILE=\).*,\1'$MOUNT_DST/var/log/messages'," /mod/etc/conf/syslogd.cfg
+
+			/etc/init.d/rc.syslogd restart | log_info
+		else
+			log_info "syslogd: no reconfigure"
+		fi
+		;;
+	stop)
+		if [ -f "$MOUNT_DST/.freetz/etc/syslogd.cfg" ]; then
+			log_info "syslogd: restore original configuration"
+			cp "$MOUNT_DST/.freetz/etc/syslogd.cfg" /mod/etc/conf
+			/etc/init.d/rc.syslogd restart | log_info
+		else
+			log_info "syslogd: backup configuration not found"
+		fi
+		;;
+esac

@@ -1,0 +1,27 @@
+
+
+1) Connect serial-usb device to AVM 7270 usb interface. Device and interface
+   properties are not unique. Therefore, each device must be aliased to the
+	the proper module, if not already working properly.
+
+   usb \  usb_endpoint  \   usb   \  usb_endpoint  \  usb_endpoint  \
+   1-1 / usbdev1.4_ep00 / 1-1:1.0 / usbdev1.4_ep81 / usbdev1.4_ep02 /
+         -------+------                             -------+------
+                !                                          !
+					 +----------- announce device discovery     !
+                                                           !
+                                    load pl2303 -----------+
+
+    usb_endpoint  \ usb_device
+   usbdev1.4_ep83 /  usbdev1.4
+
+   usbdev1.4_ep02/device/modalias
+	usb:v067Bp2303d0300dc00dsc00dp00icFFisc00ip00
+
+   alias usb:v067Bp2303d0300dc00dsc00dp00icFFisc00ip00 pl2303
+
+
+2) Load pl2303 driver. The drivers/pl2303 events have different DEVPATHs.
+
+     module  \  drivers  \ module \ drivers \ drivers \ usb-serial \   tty
+   usbserial / usbserial / pl2303 /  pl2303 /  pl2303 /   ttyUSB0  / ttyUSB0

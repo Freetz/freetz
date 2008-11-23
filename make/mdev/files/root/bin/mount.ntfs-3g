@@ -1,0 +1,10 @@
+#!/bin/sh
+. /etc/hotplug/lib/log
+log_error "skipping ntfs support for now"
+exit 1
+
+if [ "$1" = -o ]; then
+	[ -n "$2" ] && option="$1 $2"
+	shift 2
+fi
+ntfs-3g "$1" "$2" $option

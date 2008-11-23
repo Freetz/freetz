@@ -1,0 +1,31 @@
+#!/bin/sh
+
+#
+# Create virtual mtd nodes: AVM requires these above the real/discovered nodes.
+# The program creates the virtual nodes above the last node name/number found.
+#
+
+# get last mtd device number, major and minor
+cd /sys/class/mtd
+mxmtd=$(echo mtd*[^o] | sed 's/mtd//g;s/ /\n/g' | sort -n | tail -1)
+major=$(cut -d: -f1 mtd${mxmtd}/dev)
+minor=$(cut -d: -f2 mtd${mxmtd}/dev)
+cd - >/dev/null 2>&1
+
+# minor increment
+stride=$((minor / mxmtd))
+if [ 0 -ne $? ]; then
+	. /lib/mdev/common/log
+	log_error "divide by zero/none"
+	exit 0
+fi
+
+# double up mtd devices
+count=1
+while [ $count -le $mxmtd ]; do
+	node=$((mxmtd + count))
+	# testing: scan more than once
+	[ -e mtd${node} ] && rm -f mtd${node}
+	mknod -m 0600 mtd${node} c $major $((node * stride))
+	count=$((count + 1))
+done

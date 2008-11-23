@@ -1,0 +1,60 @@
+#!/bin/sh
+
+# TODO patch rc.S: tmpfs on /dev
+
+mount_vfs () {
+	[ -f /proc/mounts ] ||
+		mount -t proc -o proc /proc
+	mount -t tmpfs -o nosuid,mode=0755 mdev /dev
+	mkdir -p /dev/pts
+	mount -t devpts -o mode=0620 devpts /dev/pts
+	mount -t sysfs -o nosuid,nodev,noexec sysfs /sys
+	mount -t tmpfs tmp /tmp
+}
+
+move_vfs () {
+	local directory
+
+	echo "   moving virtual filesystems to '$MOUNT_DST'"
+	for directory in dev proc sys tmp; do
+		mkdir $MOUNT_DST/$directory
+		mount -o mv /$directory $MOUNT_DST/$directory
+		mount -o bind $MOUNT_DST/$directory /$directory 
+	done
+}
+
+create_and_load () {
+	echo "   creating initial device nodes"
+	mdev -s
+	/sbin/makedevs -d /dev/device.table /
+	modprobe piglet usbhost
+}
+
+root_params () {
+	local timeout
+	echo "   retrieving root parameters"
+
+	timeout=25
+	while [ ! -f $ROOT_NODE -a 0 -ne $timeout ]; do
+		usleep 200000
+		$((timeout--))
+	done
+}
+
+change_root () {
+	echo "   changing root directory to '$MOUNT_DST'"
+}
+
+start () {
+	mount_vfs
+	HOTPLUG=$(cat /proc/sys/kernel/hotplug)
+	: >/proc/sys/kernel/hotplug
+
+	root_params
+	export MDEV=$ROOT_NODE
+	/lib/mdev/block/partition
+	# XXX inform program partition of boot status by adding param
+	# /lib/mdev/block/partition $ROOT_NODE
+	move_vfs
+	change_root
+}

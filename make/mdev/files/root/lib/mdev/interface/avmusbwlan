@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# reload is called from avm-event triggered /bin/iwlancfgchanged
+if [ -r /tmp/.sticknsurf ]; then
+	. /lib/mdev/common/log
+	log_info "reloading stick'n'surf device"
+	log_rt_error rmmod usbauth
+	# restore a minimal hotplug environment
+	eval "$(sed '/^[a-Z_0-9]\+=/!d' /tmp/.sticknsurf)"
+	ACTION=reload
+	/lib/mdev/usb/avmusbwlan.add
+fi

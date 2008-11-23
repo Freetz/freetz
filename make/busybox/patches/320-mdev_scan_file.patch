@@ -1,0 +1,22 @@
+--- util-linux/mdev.c.orig	2008-11-23 14:59:15.000000000 +0100
++++ util-linux/mdev.c	2008-11-23 14:59:15.000000000 +0100
+@@ -303,11 +303,17 @@
+ 		void *userData,
+ 		int depth UNUSED_PARAM)
+ {
+-	size_t len = strlen(fileName) - 4; /* can't underflow */
++	size_t len = strlen(fileName); /* can't underflow */
+ 	char *scratch = userData;
+ 
+ 	/* len check is for paranoid reasons */
+-	if (strcmp(fileName + len, "/dev") != 0 || len >= PATH_MAX)
++	if (len >= PATH_MAX)
++		return FALSE;
++	else if (0 == strcmp(fileName + len - 4, "/dev"))
++		len -= 4;
++	else if (0 == strcmp(fileName + len - 9, "/modalias"))
++		len -= 9;
++	else
+ 		return FALSE;
+ 
+ 	strcpy(scratch, fileName);

@@ -1,0 +1,13 @@
+--- root/etc/modprobe.conf	2008-08-07 17:30:20.000000000 +0200
++++ root/etc/modprobe.conf.new	2008-08-07 17:30:56.000000000 +0200
+@@ -1,5 +1,9 @@
+ # specific hardware piglet module options
+-alias piglet
++alias avm_piglet Piglet
++alias avm_usb_host usbahcicore
++
++options Piglet piglet_width_running=1 piglet_usb_power_bit=-1 piglet_disable_test=1 piglet_cs=5 piglet_reset_bit=-2 piglet_bitfile_write=-1 piglet_bitfile_revbytes=1 piglet_irq_gpio=18 piglet_irq=9 piglet_bitfile_offset=0x4b piglet_bitfile=/lib/modules/microvoip_isdn_top.bit
++options usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1
+ 
+ # general bulk keys (disks, memory keys)
+ alias usb:v*p*d*dc08dsc06dp*ic*isc*ip* usb-storage

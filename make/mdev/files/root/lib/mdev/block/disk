@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ remove = "$ACTION" ]; then
+	/lib/mdev/common/mdevmodule sg sd_mod
+else
+	# tune write behaviour
+	echo   2 > /proc/sys/vm/laptop_mode
+	echo 100 > /proc/sys/vm/dirty_expire_centisecs
+	echo 100 > /proc/sys/vm/dirty_writeback_centisecs
+	# allow disk mounting
+	/lib/mdev/block/partition
+fi
