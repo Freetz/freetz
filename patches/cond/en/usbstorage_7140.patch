@@ -42,7 +42,7 @@
  		umask $OLD_UMASK
  		OK=0
  		eventadd 140 $MNTNAME
-@@ -136,6 +113,33 @@
+@@ -136,6 +113,36 @@
  	return $OK
  }
  
@@ -66,6 +66,9 @@
 +		;;
 +	ntfs)
 +		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		;;
++	reiserfs)
++		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +		;;
 +	*) # fs type unknown
 +		mount $DEVNODE $MNTPATH

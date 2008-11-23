@@ -1085,6 +1085,14 @@ config FREETZ_AUTOMOUNT_NTFS
 	help
 		This adds ntfs-3g mount helper to your firmware.
 
+config FREETZ_AUTOMOUNT_REISER_FS
+	bool "ReiserFS"
+	depends on FREETZ_USBSTORAGE_AUTOMOUNT
+	select FREETZ_MODULE_reiserfs
+	default n
+	help
+		This adds reiserfs module to your firmware.
+
 config FREETZ_AUTORUN_AUTOEND
 	bool "Execute autorun.sh/autoend.sh script on (un)mount"
 	depends on FREETZ_HAS_USB_HOST

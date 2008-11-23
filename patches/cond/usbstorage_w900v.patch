@@ -50,7 +50,7 @@
  	echo $NICE
  }
  
-@@ -73,6 +52,66 @@
+@@ -73,6 +52,69 @@
  	done
  }
  
@@ -83,6 +83,9 @@
 +	else
 +		echo "ntfs-3g not installed"
 +	fi
++	;;
++reiserfs)
++	mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +	;;
 +
 +*) # fstyp not known

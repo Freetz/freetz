@@ -33,7 +33,7 @@
  	echo $NICE
  }
  
-@@ -73,6 +51,33 @@
+@@ -73,6 +51,36 @@
  	done
  }
  
@@ -57,6 +57,9 @@
 +		;;
 +	ntfs)
 +		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		;;
++	reiserfs)
++		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +		;;
 +	*) # fs type unknown
 +		mount $DEVNODE $MNTPATH

@@ -33,7 +33,7 @@
  	echo $NICE
  }
  
-@@ -74,6 +51,33 @@
+@@ -74,6 +51,36 @@
  USBLOCKFILE=/var/USBLOCK_storage
  test -f /etc/hotplug/rc.usbsema && . /etc/hotplug/rc.usbsema
  
@@ -57,6 +57,9 @@
 +		;;
 +	ntfs)
 +		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		;;
++	reiserfs)
++		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +		;;
 +	*) # fs type unknown
 +		mount $DEVNODE $MNTPATH
