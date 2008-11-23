@@ -32,7 +32,8 @@ echo1 "applying usb wlan configuration change patch"
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/mdev_wlancfgchanged.patch"
 
 echo1 "applying usb prepare fwupgrade patch"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/mdev_prepare_fwupgrade.patch"
+sed -i -e "s/usb.pandu/storage/g" "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
+
 
 echo1 "applying usb post_install patch"
 modpatch "$VARTAR_MOD_DIR" "${PATCHES_DIR}/cond/mdev_post_install.patch"
