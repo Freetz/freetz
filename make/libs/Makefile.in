@@ -30,6 +30,10 @@ ifeq ($(strip $(FREETZ_LIB_libffi)),y)
 LIBS+=libffi-sable
 endif
 
+ifeq ($(strip $(FREETZ_LIB_libatm)),y)
+LIBS+=libfreetz
+endif
+
 ifeq ($(strip $(FREETZ_LIB_libgpg_error)),y)
 LIBS+=libgpg-error
 endif

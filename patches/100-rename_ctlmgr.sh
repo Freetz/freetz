@@ -1,3 +1,8 @@
+# process only when libfreetz is not selected
+[ "$FREETZ_LIB_libfreetz" == "n" ] || return 0
+
+echo1 "rename ctlmgr"
+
 mkdir "$FILESYSTEM_MOD_DIR/usr/bin/avm" 2>/dev/null
 mv "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr" "$FILESYSTEM_MOD_DIR/usr/bin/avm/ctlmgr"
 touch "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr"
