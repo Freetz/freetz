@@ -1,0 +1,24 @@
+config FREETZ_PACKAGE_DIGITEMP
+	bool "digitemp 3.0.6"
+	default n
+	help
+		digitemp for 1-wire modules
+
+choice
+	prompt "digitemp"
+	default FREETZ_PACKAGE_DIGITEMP_DS9097
+	depends on FREETZ_PACKAGE_DIGITEMP
+	help
+		digitemp for 1-wire modules
+
+config FREETZ_PACKAGE_DIGITEMP_DS2490
+	select FREETZ_LIB_libusb
+	bool "digitemp for ds2490"
+
+config FREETZ_PACKAGE_DIGITEMP_DS9097U
+	bool "digitemp for ds9097u"
+
+config FREETZ_PACKAGE_DIGITEMP_DS9097
+	bool "digitemp for ds9097"
+
+endchoice
