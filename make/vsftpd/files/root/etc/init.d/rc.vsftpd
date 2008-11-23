@@ -31,6 +31,11 @@ write_config() {
 	echo -n > /mod/etc/vsftpd.user_list
 	[ $VSFTPD_ALLOW_ROOT == "yes" ] || echo root >> /mod/etc/vsftpd.user_list
 	[ $VSFTPD_ALLOW_FTPUSER == "yes" ] || echo ftpuser >> /mod/etc/vsftpd.user_list
+
+	echo -n > /mod/etc/vsftpd.chroot_list
+	echo "$VSFTPD_CHROOT_JAIL_LIST" | grep -v "^#" | while read -r line; do
+	[ -n "$line" ] && echo "$line" >> /mod/etc/vsftpd.chroot_list
+	done
 }
 
 status_log() {
@@ -87,6 +92,12 @@ case $1 in
 		pre_config
 
 		modreg cgi 'vsftpd' 'Vsftpd'
+
+		if ! strings /usr/sbin/vsftpd | grep -q "SSL support not compiled in"; then
+			deffile='/mod/etc/default.vsftpd/vsftpd_crt.def'
+			[ -r "/tmp/flash/vsftpd_crt.def" ] && deffile='/tmp/flash/vsftpd_crt.def'
+			modreg file 'vsftpd_crt' '$(lang de:"VSFTPD: Zertifikat&amp;Schl&uuml;ssel" en:"VSFTPD: Cert&amp;Key")' 0 "$deffile"
+		fi
 
 		if [ "$VSFTPD_ENABLED" != "yes" ]; then
 			if [ "$VSFTPD_ENABLED" != "inetd" ]; then

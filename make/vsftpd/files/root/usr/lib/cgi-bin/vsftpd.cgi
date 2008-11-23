@@ -18,6 +18,12 @@ if [ "$VSFTPD_PROMISCUOUS" = "yes" ]; then promiscuous_chk=' checked'; fi
 if [ "$VSFTPD_LOG_ENABLE" = "yes" ]; then log_enable_chk=' checked'; fi
 if [ "$VSFTPD_LOG_PROTOC" = "yes" ]; then log_protoc_chk=' checked'; fi
 if [ "$VSFTPD_LOG_SYSLOG" = "yes" ]; then log_syslog_yes=' checked'; else log_syslog_no=' checked'; fi
+if [ "$VSFTPD_ENABLE_SSL" = "yes" ]; then ssl_chk=' checked'; fi
+if [ "$VSFTPD_ENABLE_SSLV2" = "yes" ]; then sslv2_chk=' checked'; fi
+if [ "$VSFTPD_ENABLE_SSLV3" = "yes" ]; then sslv3_chk=' checked'; fi
+if [ "$VSFTPD_ENABLE_TLSV1" = "yes" ]; then tlsv1_chk=' checked'; fi
+if [ "$VSFTPD_FORCE_DATA_SSL" = "yes" ]; then data_ssl_chk=' checked'; fi
+if [ "$VSFTPD_FORCE_LOGIN_SSL" = "yes" ]; then login_ssl_chk=' checked'; fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -74,6 +80,32 @@ cat << EOF
 EOF
 
 sec_end
+if ! strings /usr/sbin/vsftpd | grep -q "SSL support not compiled in"; then
+sec_begin '$(lang de:"SSL-Einstellungen" en:"SSL Settings")'
+
+cat << EOF
+<p>
+<input type="hidden" name="enable_ssl" value="no">
+<input id="s1" type="checkbox" name="enable_ssl" value="yes"$ssl_chk><label for="s1"> $(lang de:"SSL aktivieren" en:"enable SSL")</label>
+</p>
+<p>
+<input type="hidden" name="enable_sslv2" value="no">
+<input id="s2" type="checkbox" name="enable_sslv2" value="yes"$sslv2_chk><label for="s2"> $(lang de:"erlaube SSLv2" en:"permit SSL v2")</label>
+<input type="hidden" name="enable_sslv3" value="no">
+<input id="s3" type="checkbox" name="enable_sslv3" value="yes"$sslv3_chk><label for="s3"> $(lang de:"erlaube SSLv3" en:"permit SSL v3")</label>
+<input type="hidden" name="enable_tlsv1" value="no">
+<input id="s4" type="checkbox" name="enable_tlsv1" value="yes"$tlsv1_chk><label for="s4"> $(lang de:"erlaube TLSv1" en:"permit TLS v1")</label>
+</p>
+<p>
+<input type="hidden" name="force_data_ssl" value="no">
+<input id="s5" type="checkbox" name="force_data_ssl" value="yes"$data_ssl_chk><label for="s5"> $(lang de:"lokale Benutzer zwingen eine SSL-Verbindung f&uuml;r den Datenverkehr zu nutzen" en:"force users to use a secure SSL connection to send and recieve data")</label><br>
+<input type="hidden" name="force_login_ssl" value="no">
+<input id="s6" type="checkbox" name="force_login_ssl" value="yes"$login_ssl_chk><label for="s6"> $(lang de:"lokale Benutzer zwingen eine SSL-Verbindung f&uuml;r den Login zu nutzen" en:"force users to use a secure SSL connection to login")</label>
+</p>
+EOF
+
+sec_end
+fi
 sec_begin '$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")'
 
 cat << EOF
@@ -105,6 +137,14 @@ $(lang de:"Pause nach fehlerhaftem Login in Sekunden:" en:"Delay after failed lo
 EOF
 
 sec_end
+sec_begin '$(lang de:"Zus&auml;tzliche Konfigurationsoptionen (f&uuml;r Experten)" en:"Additional config options (for experts)")'
+
+cat << EOF
+$(lang de:"Mehr Infos: <a TARGET=\"_blank\" href=\"http://vsftpd.beasts.org/vsftpd_conf.html\">hier</a>" en:"more information: <a TARGET=\"_blank\" http://vsftpd.beasts.org/vsftpd_conf.html\">here</a>")</font><br />
+<p><textarea name="add_settings" rows="2" cols="50" maxlength="255">$(html "$VSFTPD_ADD_SETTINGS")</textarea></p>
+EOF
+
+sec_end
 sec_begin '$(lang de:"Logging" en:"Logging")'
 
 cat << EOF
@@ -126,5 +166,13 @@ cat << EOF
 
 EOF
 
+
+sec_end
+sec_begin '$(lang de:"Chroot_List" en:"chroot_list")'
+
+cat << EOF
+<p style="font-size:10px;">$(lang de:"F&uuml; alle Nutzer in die Liste ein, die ein chroot jail gesperrt werden sollen. Falls du 'chroot jail' aktiviert hast, &auml;ndert sich die Bedeutung der Liste. Alle User in der Liste werden dann NICHT in das chroot jail geschlossen." en:"Put all local users in the list who should be placed in a chroot jail in their home directory upon login. The meaning is slightly different if 'chroot jail' is set to YES. In this case, the list becomes a list of users which are NOT to be placed in a chroot() jail.")</p>
+<p><textarea name="chroot_jail_list" rows="2" cols="50" maxlength="255">$(html "$VSFTPD_CHROOT_JAIL_LIST")</textarea></p>
+EOF
 
 sec_end
