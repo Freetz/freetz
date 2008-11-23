@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.63.4)
+$(call PKG_INIT_BIN, 1.64.0)
 $(PKG)_SOURCE:=streamripper-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/streamripper
 $(PKG)_BINARY:=$($(PKG)_DIR)/streamripper
