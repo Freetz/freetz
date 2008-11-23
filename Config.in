@@ -422,6 +422,23 @@ config FREETZ_SHOW_ADVANCED
 		Show advanced Options for patching the firmware. This is only useful
 		for experienced users who really know what they are doing
 
+config FREETZ_TARGET_IPV6_SUPPORT
+	bool "Enable IPv6 support"
+	depends on FREETZ_SHOW_ADVANCED
+	select FREETZ_REPLACE_KERNEL
+	select FREETZ_MODULE_ipv6
+	select FREETZ_BUILD_TOOLCHAIN
+	default n
+	help
+		Copies the ipv6 kernel module to the firmware and enables ipv6 support
+		in uClibc and busybox.
+		Shows additional options for busybox and iptables and other packages.
+		To use IPv6 with Fritz!Box, at least the kernel, ucLibc and busybox
+		have to be recompiled with IPv6 enabled.
+		The toolchain will automatically be rebuild to achieve this.
+		It is also recommended to include the package iptables/ip6tables for
+		firewall settings.
+
 config FREETZ_TARGET_REF
 	string "Target ref"		if FREETZ_TYPE_CUSTOM
 	default "8mb_26"		if \

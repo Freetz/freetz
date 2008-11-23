@@ -247,3 +247,39 @@ config FREETZ_BUSYBOX_VOLUMEID_LINUXRAID
 	default n
 	help
 		linuxraid filesystem.
+
+menu "IPv6 Options"
+	requires FREETZ_ENABLE_IPV6_SUPPORT
+config FREETZ_BUSYBOX_FEATURE_PREFER_IPV4_ADDRESS
+	bool "Prefer IPv4 addresses"
+	default n
+config FREETZ_BUSYBOX_IP
+	bool "ip command"
+	default n
+	select FREETZ_BUSYBOX_FEATURE_IP_ADDRESS
+	select FREETZ_BUSYBOX_FEATURE_IP_LINK
+	select FREETZ_BUSYBOX_FEATURE_IP_ROUTE
+	select FREETZ_BUSYBOX_FEATURE_IP_TUNNEL
+	select FREETZ_BUSYBOX_FEATURE_IP_RULE
+config FREETZ_BUSYBOX_FEATURE_IP_ADDRESS
+	bool
+	default n
+config FREETZ_BUSYBOX_FEATURE_IP_LINK
+	bool
+	default n
+config FREETZ_BUSYBOX_FEATURE_IP_ROUTE
+	bool
+	default n
+config FREETZ_BUSYBOX_FEATURE_IP_TUNNEL
+	bool
+	default n
+config FREETZ_BUSYBOX_FEATURE_IP_RULE
+	bool
+	default n
+config FREETZ_BUSYBOX_PING6
+	bool "ping6 command"
+	default n
+config FREETZ_BUSYBOX_PSCAN
+	bool "pscan command, simple port scanner"
+	default n
+endmenu

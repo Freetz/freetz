@@ -37,7 +37,7 @@ config FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 		and vice versa, so please make sure to select both of them, if they are
 		needed for your purpose.
 
-menu "Select kernel modules"
+menu "Select kernel modules (IPv4)"
 	requires FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 config FREETZ_MODULE_ip_conntrack
 	bool "ip_conntrack.ko"
@@ -238,7 +238,9 @@ config FREETZ_MODULE_ipt_ttl
 	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_2
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-menu "x_tables"
+endmenu
+menu "x_tables (both IPv4 and IPv6)"
+	requires FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 config FREETZ_MODULE_x_tables
 	bool "x_tables.ko"
@@ -336,6 +338,94 @@ config FREETZ_MODULE_xt_tcpmss
 	select FREETZ_MODULE_x_tables
 	default n
 endmenu
+menu "Select kernel modules (IPv6)"
+	requires FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+	depends on FREETZ_TARGET_IPV6_SUPPORT
+config FREETZ_MODULE_ip6_queue
+	bool "ip6_queue.ko"
+	default n
+config FREETZ_MODULE_ip6_tables
+	select FREETZ_LIB_libxt_standard
+	bool "ip6_tables.ko"
+	default n
+config FREETZ_MODULE_ip6table_filter
+	select FREETZ_MODULE_ip6_tables
+	bool "ip6table_filter.ko"
+	default n
+config FREETZ_MODULE_ip6table_mangle
+	select FREETZ_MODULE_ip6_tables
+	bool "ip6table_mangle.ko"
+	default n
+config FREETZ_MODULE_ip6table_raw
+	select FREETZ_MODULE_ip6_tables
+	bool "ip6table_raw.ko"
+	default n
+config FREETZ_MODULE_ip6t_ah
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_ah.ko"
+	default n
+config FREETZ_MODULE_ip6t_dst
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_dst.ko"
+	default n
+config FREETZ_MODULE_ip6t_esp
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_esp.ko"
+	default n
+config FREETZ_MODULE_ip6t_eui64
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_eui64.ko"
+	default n
+config FREETZ_MODULE_ip6t_frag
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_frag.ko"
+	default n
+config FREETZ_MODULE_ip6t_hbh
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_hbh.ko"
+	default n
+config FREETZ_MODULE_ip6t_hl
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_hl.ko"
+	default n
+config FREETZ_MODULE_ip6t_ipv6header
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_ipv6header.ko"
+	default n
+config FREETZ_MODULE_ip6t_length
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_length.ko"
+	default n
+config FREETZ_MODULE_ip6t_limit
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_limit.ko"
+	default n
+config FREETZ_MODULE_ip6t_LOG
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_LOG.ko"
+	default n
+config FREETZ_MODULE_ip6t_mac
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_mac.ko"
+	default n
+config FREETZ_MODULE_ip6t_mark
+	bool "ip6t_mark.ko"
+	default n
+config FREETZ_MODULE_ip6t_MARK
+	bool "ip6t_MARK.ko"
+	default n
+config FREETZ_MODULE_ip6t_multiport
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_multiport.ko"
+	default n
+config FREETZ_MODULE_ip6t_owner
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_owner.ko"
+	default n
+config FREETZ_MODULE_ip6t_rt
+	select FREETZ_MODULE_ip6table_filter
+	bool "ip6t_rt.ko"
+	default n
 endmenu
 
 config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
@@ -349,7 +439,7 @@ config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 		and vice versa, so please make sure to select both of them, if they are
 		needed for your purpose.
 
-menu "Select shared libraries"
+menu "Select shared libraries (IPv4)"
 	requires FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 config FREETZ_LIB_libipt_addrtype
 	bool "libipt_addrtype.so"
@@ -357,12 +447,86 @@ config FREETZ_LIB_libipt_addrtype
 config FREETZ_LIB_libipt_ah
 	bool "libipt_ah.so"
 	default n
+config FREETZ_LIB_libipt_CLUSTERIP
+	bool "lipipt_CLUSTERIP.so"
+	default n
+config FREETZ_LIB_libipt_DNAT
+	bool "libipt_DNAT.so"
+	default n
+config FREETZ_LIB_libipt_ecn
+	bool "libipt_ecn.so"
+	default n
+config FREETZ_LIB_libipt_ECN
+	bool "libipt_ECN.so"
+	default n
+config FREETZ_LIB_libipt_icmp
+	bool "libipt_icmp.so"
+	default n
+config FREETZ_LIB_libipt_ipp2p
+	bool "libipt_ipp2p.so"
+	select  FREETZ_MODULE_ipt_ipp2p
+	default n
+config FREETZ_LIB_libipt_LOG
+	bool "libipt_LOG.so"
+	default n
+config FREETZ_LIB_libipt_MASQUERADE
+	bool "libipt_MASQUERADE.so"
+	default n
+config FREETZ_LIB_libipt_MIRROR
+	bool "libipt_MIRROR.so"
+	default n
+config FREETZ_LIB_libipt_NETMAP
+	bool "libipt_NETMAP.so"
+	default n
+config FREETZ_LIB_libipt_policy
+	bool "libipt_policy.so"
+	default n
+config FREETZ_LIB_libipt_realm
+	bool "libipt_realm.so"
+	select FREETZ_MODULE_xt_realm if FREETZ_KERNEL_VERSION_2_6_19_2
+	default n
+config FREETZ_LIB_libipt_REDIRECT
+	bool "libipt_REDIRECT.so"
+	default n
+config FREETZ_LIB_libipt_REJECT
+	bool "libipt_REJECT.so"
+	default n
+config FREETZ_LIB_libipt_SAME
+	bool "libipt_SAME.so"
+	default n
+config FREETZ_LIB_libipt_set
+	bool "libipt_set.so"
+	default n
+config FREETZ_LIB_libipt_SET
+	bool "libipt_SET.so"
+	default n
+config FREETZ_LIB_libipt_SNAT
+	bool "libipt_SNAT.so"
+	default n
+config FREETZ_LIB_libipt_ttl
+	bool "libipt_ttl.so"
+	default n
+config FREETZ_LIB_libipt_TTL
+	bool "libipt_TTL.so"
+	default n
+config FREETZ_LIB_libipt_ULOG
+	bool "libipt_ULOG.so"
+	default n
+config FREETZ_LIB_libipt_unclean
+	bool "libipt_unclean.so"
+	default n
+endmenu
+menu "Select shared libraries (both IPv4 and IPv6)"
+	requires FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 config FREETZ_LIB_libxt_CLASSIFY
 	bool "libxt_CLASSIFY.so"
 	default n
 config FREETZ_LIB_libxt_comment
 	bool "libxt_comment.so"
 	select FREETZ_MODULE_xt_comment if FREETZ_KERNEL_VERSION_2_6_19_2
+	default n
+config FREETZ_LIB_libxt_connbytes
+	bool "libxt_connbytes.so"
 	default n
 #config FREETZ_LIB_libxt_connlimit
 #	bool "libxt_connlimit.so"
@@ -373,24 +537,18 @@ config FREETZ_LIB_libxt_connmark
 config FREETZ_LIB_libxt_CONNMARK
 	bool "libxt_CONNMARK.so"
 	default n
+config FREETZ_LIB_libxt_CONNSECMARK
+	bool "libxt_CONNSECMARK.so"
+	default n
 config FREETZ_LIB_libxt_conntrack
 	bool "libxt_conntrack.so"
 	select FREETZ_MODULE_xt_conntrack if FREETZ_KERNEL_VERSION_2_6_19_2
-	default n
-config FREETZ_LIB_libipt_DNAT
-	bool "libipt_DNAT.so"
 	default n
 config FREETZ_LIB_libxt_dscp
 	bool "libxt_dscp.so"
 	default n
 config FREETZ_LIB_libxt_DSCP
 	bool "libxt_DSCP.so"
-	default n
-config FREETZ_LIB_libipt_ecn
-	bool "libipt_ecn.so"
-	default n
-config FREETZ_LIB_libipt_ECN
-	bool "libipt_ECN.so"
 	default n
 config FREETZ_LIB_libxt_esp
 	bool "libxt_esp.so"
@@ -402,15 +560,8 @@ config FREETZ_LIB_libxt_helper
 	bool "libxt_helper.so"
 	select FREETZ_MODULE_xt_helper if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-config FREETZ_LIB_libipt_icmp
-	bool "libipt_icmp.so"
-	default n
 config FREETZ_LIB_libxt_iprange
 	bool "libxt_iprange.so"
-	default n
-config FREETZ_LIB_libipt_ipp2p
-	bool "libipt_ipp2p.so"
-	select  FREETZ_MODULE_ipt_ipp2p
 	default n
 config FREETZ_LIB_libxt_length
 	bool "libxt_length.so"
@@ -419,9 +570,6 @@ config FREETZ_LIB_libxt_length
 config FREETZ_LIB_libxt_limit
 	bool "libxt_limit.so"
 	select FREETZ_MODULE_xt_limit if FREETZ_KERNEL_VERSION_2_6_19_2
-	default n
-config FREETZ_LIB_libipt_LOG
-	bool "libipt_LOG.so"
 	default n
 config FREETZ_LIB_libxt_mac
 	bool "libxt_mac.so"
@@ -435,18 +583,12 @@ config FREETZ_LIB_libxt_MARK
 	bool "libxt_MARK.so"
 	select FREETZ_MODULE_xt_MARK if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-config FREETZ_LIB_libipt_MASQUERADE
-	bool "libipt_MASQUERADE.so"
-	default n
-config FREETZ_LIB_libipt_MIRROR
-	bool "libipt_MIRROR.so"
-	default n
 config FREETZ_LIB_libxt_multiport
 	bool "libxt_multiport.so"
 	select FREETZ_MODULE_xt_multiport if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-config FREETZ_LIB_libipt_NETMAP
-	bool "libipt_NETMAP.so"
+config FREETZ_LIB_xt_NFLOG
+	bool "libxt_NFLOG.so"
 	default n
 config FREETZ_LIB_libxt_NFQUEUE
 	bool "libxt_NFQUEUE.so"
@@ -465,27 +607,20 @@ config FREETZ_LIB_libxt_pkttype
 	bool "libxt_pkttype.so"
 	select FREETZ_MODULE_xt_pkttype if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-config FREETZ_LIB_libipt_policy
-	bool "libipt_policy.so"
+config FREETZ_LIB_libxt_quota
+	bool "libxt_quota.so"
 	default n
-config FREETZ_LIB_libipt_realm
-	bool "libipt_realm.so"
-		select FREETZ_MODULE_xt_realm if FREETZ_KERNEL_VERSION_2_6_19_2
+config FREETZ_LIB_libxt_rateest
+	bool "libxt_rateest.so"
 	default n
-config FREETZ_LIB_libipt_REDIRECT
-	bool "libipt_REDIRECT.so"
-	default n
-config FREETZ_LIB_libipt_REJECT
-	bool "libipt_REJECT.so"
-	default n
-config FREETZ_LIB_libipt_SAME
-	bool "libipt_SAME.so"
+config FREETZ_LIB_libxt_RATEEST
+	bool "libxt_RATEEST.so"
 	default n
 config FREETZ_LIB_libxt_sctp
 	bool "libxt_sctp.so"
 	default n
-config FREETZ_LIB_libipt_SNAT
-	bool "libipt_SNAT.so"
+config FREETZ_LIB_libxt_SECMARK
+	bool "libxt_SECMARK.so"
 	default n
 config FREETZ_LIB_libxt_standard
 	bool "libxt_standard.so"
@@ -493,6 +628,9 @@ config FREETZ_LIB_libxt_standard
 config FREETZ_LIB_libxt_state
 	bool "libxt_state.so"
 	select FREETZ_MODULE_xt_state if FREETZ_KERNEL_VERSION_2_6_19_2
+	default n
+config FREETZ_LIB_libxt_statistic
+	bool "libxt_statistic.so"
 	default n
 config FREETZ_LIB_libxt_string
         bool "libxt_string.so"
@@ -509,6 +647,9 @@ config FREETZ_LIB_libxt_tcp
 	bool "libxt_tcp.so"
 	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
+config FREETZ_LIB_libxt_time
+	bool "libxt_time.so"
+	default n
 config FREETZ_LIB_libxt_tos
 	bool "libxt_tos.so"
 	default n
@@ -518,20 +659,57 @@ config FREETZ_LIB_libxt_TOS
 config FREETZ_LIB_libxt_TRACE
 	bool "libxt_TRACE.so"
 	default n
-config FREETZ_LIB_libipt_ttl
-	bool "libipt_ttl.so"
-	default n
-config FREETZ_LIB_libipt_TTL
-	bool "libipt_TTL.so"
+config FREETZ_LIB_libxt_u32
+	bool "libxt_u32.so"
 	default n
 config FREETZ_LIB_libxt_udp
 	bool "libxt_udp.so"
 	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-config FREETZ_LIB_libipt_ULOG
-	bool "libipt_ULOG.so"
+endmenu
+menu "Select shared libraries (IPv6)"
+	requires FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
+	depends on FREETZ_ENABLE_IPV6_SUPPORT
+config FREETZ_LIB_libip6t_ah
+	bool "libip6t_ah.so"
 	default n
-config FREETZ_LIB_libipt_unclean
-	bool "libipt_unclean.so"
+config FREETZ_LIB_libip6t_dst
+	bool "libip6t_dst.so"
+	default y
+config FREETZ_LIB_libip6t_eui64
+	bool "libip6t_eui64.so"
+	default n
+config FREETZ_LIB_libip6t_frag
+	bool "libip6t_frag.so"
+	default n
+config FREETZ_LIB_libip6t_hbh
+	bool "libip6t_hbh.so"
+	default n
+config FREETZ_LIB_libip6t_hl
+	bool "libip6t_hl.so"
+	default n
+config FREETZ_LIB_libip6t_HL
+	bool "libip6t_HL.so"
+	default n
+config FREETZ_LIB_libip6t_icmp6
+	bool "libip6t_icmp6.so"
+	default y
+config FREETZ_LIB_libip6t_ipv6header
+	bool "libip6t_ipv6header.so"
+	default n
+config FREETZ_LIB_libip6t_LOG
+	bool "libip6t_LOG.so"
+	default n
+config FREETZ_LIB_libip6t_mh
+	bool "libip6t_mh.so"
+	default n
+config FREETZ_LIB_libip6t_policy
+	bool "libip6t_policy.so"
+	default y
+config FREETZ_LIB_libip6t_REJECT
+	bool "libip6t_REJECT.so"
+	default n
+config FREETZ_LIB_libip6t_rt
+	bool "libip6t_rt.so"
 	default n
 endmenu

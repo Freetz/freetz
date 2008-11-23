@@ -2,12 +2,14 @@
 echo1 "Copying iptables"
 IPTABLES_DIR=${PACKAGES_DIR}/iptables-1.4.1.1
 IPTABLES_BINARY=$IPTABLES_DIR/root/usr/sbin/iptables
+IP6TABLES_BINARY=$IPTABLES_DIR/root/usr/sbin/ip6tables
 IPTABLES_DEST_BINARY="${FILESYSTEM_MOD_DIR}/usr/sbin"
 EXT_DIR="$IPTABLES_DIR/usr/lib/xtables"
 EXT_DEST_DIR="${FILESYSTEM_MOD_DIR}/usr/lib/xtables"
 mkdir -p $EXT_DEST_DIR
 
 cp $IPTABLES_BINARY $IPTABLES_DEST_BINARY
+[ -e $IP6TABLES_BINARY ] && cp $IP6TABLES_BINARY $IPTABLES_DEST_BINARY
 
 for i in \
 $( \

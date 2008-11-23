@@ -1,0 +1,21 @@
+--- ../gw6c-config/Makefile.orig	2008-11-21 15:00:22.000000000 +0100
++++ ../gw6c-config/Makefile	2008-11-21 15:01:20.000000000 +0100
+@@ -17,12 +17,12 @@
+ BIN_DIR=bin
+ LIB_DIR=lib
+ INC_DIR=gw6cconfig
+-C_COMPILER=gcc -c
+-COMPILER=g++ -c
+-LINKER=g++
+-C_LINKER=gcc
+-RANLIB=ranlib
+-ARCHIVER=ar
++C_COMPILER=$(CC) -c
++COMPILER=$(CXX) -c
++LINKER=$(CXX)
++C_LINKER=$(CC)
++#RANLIB=ranlib
++ARCHIVER=$(AR)
+ CPP_FLAGS=-I. -O2 -Wall -DNDEBUG $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
+ C_FLAGS=-I. -O2 -Wall -DNDEBUG $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
+ TARGET=$(LIB_DIR)/libgw6cconfig.a

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+[ ! -z "$AICCU_USERNAME" ] && echo "username $AICCU_USERNAME"
+[ ! -z "$AICCU_PASSWORD" ] && echo "password $AICCU_PASSWORD"
+[ ! -z "$AICCU_TUNNELID" ] && echo "tunnel_id $AICCU_TUNNELID"
+[ ! -z "$AICCU_INTERFACE" ] && echo "ipv6_interface $AICCU_INTERFACE"
+
+cat << EOF
+protocol $AICCU_PROTOCOL
+server $AICCU_SERVER
+verbose $AICCU_VERBOSE
+daemonize $AICCU_DAEMONIZE
+automatic $AICCU_AUTOMATIC
+pidfile $AICCU_PIDFILE
+EOF

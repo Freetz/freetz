@@ -1,0 +1,11 @@
+config FREETZ_PACKAGE_GW6
+	depends on FREETZ_TARGET_IPV6_SUPPORT
+	select FREETZ_BUSYBOX_IP
+	bool "Gateway6 client"
+	default n
+	help
+		Client to build a tunnel to the ipv6 network (see http://go6.net).
+		The binary will be installed as /usr/sbin/gw6c and sample
+		configuration in /usr/share/gw6/.
+
+		Unfortunately this program depends on libcrypto and libstdc++.

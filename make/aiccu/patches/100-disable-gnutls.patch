@@ -1,0 +1,17 @@
+--- unix-console/Makefile.orig	2008-04-26 19:37:26.000000000 +0200
++++ unix-console/Makefile	2008-04-26 19:35:25.000000000 +0200
+@@ -40,10 +40,10 @@
+ # GnuTLS Support ?
+ # Used by TIC to secure that communication
+ # Currently defaultly builds only on Linux, but other platforms might easily also support it
+-ifeq ($(shell uname | grep -c "Linux"),1)
+-CFLAGS	+= -D AICCU_GNUTLS
+-LDFLAGS += -lgnutls
+-endif
++#ifeq ($(shell uname | grep -c "Linux"),1)
++#CFLAGS	+= -D AICCU_GNUTLS
++#LDFLAGS += -lgnutls
++#endif
+ 
+ # Linux
+ ifeq ($(shell uname | grep -c "Linux"),1)

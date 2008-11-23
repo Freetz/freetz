@@ -1,0 +1,21 @@
+--- ../gw6c-messaging/Makefile.orig	2008-11-21 15:00:22.000000000 +0100
++++ ../gw6c-messaging/Makefile	2008-11-21 15:01:20.000000000 +0100
+@@ -17,12 +17,12 @@
+ BIN_DIR=bin
+ LIB_DIR=lib
+ INC_DIR=gw6cmessaging
+-C_COMPILER=gcc -c -O2 -DNDEBUG
+-COMPILER=g++ -c -O2 -DNDEBUG 
+-LINKER=g++ -O2
+-C_LINKER=gcc -O2
+-RANLIB=ranlib
+-ARCHIVER=ar
++C_COMPILER=$(CC) -c -O2 -DNDEBUG
++COMPILER=$(CXX) -c -O2 -DNDEBUG 
++LINKER=$(CXX) -O2
++C_LINKER=$(CC) -O2
++#RANLIB=ranlib
++ARCHIVER=$(AR)
+ CPP_FLAGS=-I. -Wall $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
+ C_FLAGS=-I. -Wall $(HAP6_DEFINES)
+ TEST_IPCLAYER=$(BIN_DIR)/test_ipclayer
