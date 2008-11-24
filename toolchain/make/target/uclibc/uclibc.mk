@@ -27,6 +27,11 @@ else
 	$(SED) -i -e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=\"$(shell pwd)/$(UCLIBC_KERNEL_HEADERS_DIR)\",g' $(UCLIBC_DIR)/.config
 endif
 	$(SED) -i -e 's,^CROSS=.*,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS),g' $(UCLIBC_DIR)/Rules.mak
+ifeq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
+	$(SED) -i -e 's,.*UCLIBC_HAS_IPV6.*,UCLIBC_HAS_IPV6=y,g' $(UCLIBC_DIR)/.config
+else
+	$(SED) -i -e 's,.*UCLIBC_HAS_IPV6.*,# UCLIBC_HAS_IPV6 is not set,g' $(UCLIBC_DIR)/.config
+endif
 ifeq ($(strip $(FREETZ_TARGET_LFS)),y)
 	$(SED) -i -e 's,.*UCLIBC_HAS_LFS.*,UCLIBC_HAS_LFS=y,g' $(UCLIBC_DIR)/.config
 else
