@@ -23,7 +23,6 @@ $(PKG)_CONFIGURE_ENV += glib_cv_uscore=no
 $(PKG)_CONFIGURE_ENV += glib_cv_long_long_format=11
 $(PKG)_CONFIGURE_ENV += glib_cv_have_strlcpy=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_func_mmap_fixed=yes
-$(PKG)_CONFIGURE_ENV += ac_cv_path_GLIB_GENMARSHALL="$($PKG)_DIR)/build/$(GNU_HOST_NAME)/bin/glib-genmarshal"
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-debug=no
