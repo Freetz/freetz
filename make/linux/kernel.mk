@@ -227,8 +227,7 @@ kernel-configured: $(KERNEL_DIR)/.depend_done
 
 kernel-modules: $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT)
 
-kernel-menuconfig: $(KERNEL_DIR)/.unpacked
-	[ -f $(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/.config ] || cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/.config
+kernel-menuconfig: $(KERNEL_DIR)/.configured
 		PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 		$(MAKE) -C $(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
