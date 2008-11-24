@@ -404,14 +404,16 @@ config FREETZ_REPLACE_BUSYBOX
 config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
-		! (FREETZ_TYPE_LABOR && ! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL)) && \
+		! FREETZ_TYPE_LABOR && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
-		! FREETZ_TYPE_WLAN_3270 && \
-		! FREETZ_TYPE_FON_WLAN_7270
+		! FREETZ_TYPE_WLAN_3270
 	default y
 
 config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		FREETZ_REPLACE_KERNEL_AVAILABLE
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
