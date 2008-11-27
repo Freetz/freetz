@@ -66,7 +66,7 @@ ifeq ($(AVM_VERSION),12043)
 		ln -sf ../../drivers/isdn/capi_oslib/linux_$$i \
 			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
 	done
-	for i in ubik2_debug.h ubik2_interface.h; do \
+	for i in ubik2_debug.h ubik2_interface.h ubik2_ul.h; do \
 		ln -sf ../../drivers/char/ubik2/linux_$$i \
 			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
 	done
@@ -94,7 +94,7 @@ ifeq ($(AVM_VERSION),7270)
 		ln -sf ../../drivers/isdn/capi_oslib/linux_$$i \
 			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
 	done
-	for i in ubik2_debug.h ubik2_interface.h linux_ubik2_ul.h; do \
+	for i in ubik2_debug.h ubik2_interface.h ubik2_ul.h; do \
 		ln -sf ../../drivers/char/ubik2/linux_$$i \
 			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
 	done
@@ -126,7 +126,7 @@ ifneq ($(AVM_VERSION),04.33)
 	done
 	ln -sf ../../drivers/char/avm_power/linux_avm_power.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_power.h
-	for i in ubik2_debug.h ubik2_interface.h linux_ubik2_ul.h; do \
+	for i in ubik2_debug.h ubik2_interface.h ubik2_ul.h; do \
 		ln -sf ../../drivers/char/ubik2/linux_$$i \
 			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
 	done
