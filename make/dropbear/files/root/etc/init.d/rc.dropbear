@@ -47,6 +47,11 @@ start() {
 	fi
 
 	echo -n 'Starting ssh server...'
+        if [ -s /var/run/$DAEMON.pid ]; then
+                echo 'already running.'
+                exit 0
+        fi
+
 	set -o noglob
 	$DAEMON -p "$DROPBEAR_PORT" $DROPBEAR_OPTIONS
 	exitval=$?
