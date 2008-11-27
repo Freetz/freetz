@@ -16,7 +16,18 @@ $(PKG)_TARGET_EXTENSIONS:=$($(PKG)_EXTENSIONS_DIR)/.installed
 $(PKG)_CONFIGURE_ENV += AR="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar" RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
 
 $(PKG_SOURCE_DOWNLOAD)
-$(PKG_UNPACKED)
+
+$(IPTABLES_DIR)/.unpacked: $(DL_DIR)/$(IPTABLES_SOURCE)
+	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(IPTABLES_SOURCE)
+	for i in $(IPTABLES_MAKE_DIR)/patches/*.patch; do \
+		patch -d $(IPTABLES_DIR) -p0 < $$i; \
+	done
+ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
+	patch -d $(IPTABLES_DIR) -p0 < $(IPTABLES_MAKE_DIR)/patches/cond/009-remove_ipv6.patch
+endif
+	touch $@
+
+
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_IP6_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured | kernel-source
