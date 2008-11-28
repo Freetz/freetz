@@ -1941,12 +1941,13 @@ menu "Compiler options"
 
 choice
 	prompt "Toolchains"
-	default FREETZ_DOWNLOAD_TOOLCHAIN
+	default FREETZ_DOWNLOAD_TOOLCHAIN if ! FREETZ_TARGET_IPV6_SUPPORT
+	default FREETZ_BUILD_TOOLCHAIN if FREETZ_TARGET_IPV6_SUPPORT
 	help
 		Download Toolchain, build toolchain
 
 	config FREETZ_DOWNLOAD_TOOLCHAIN
-		bool "Download and use precompiled toolchain"
+		bool "Download and use precompiled toolchain" if ! FREETZ_TARGET_IPV6_SUPPORT
 
 	config FREETZ_BUILD_TOOLCHAIN
 		bool "Build toolchain (requires 4GB diskspace)"
