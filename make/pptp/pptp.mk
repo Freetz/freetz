@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,1.7.1)
+$(call PKG_INIT_BIN,1.7.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/pptpclient
 $(PKG)_BINARY:=$($(PKG)_DIR)/pptp
