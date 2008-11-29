@@ -1,5 +1,5 @@
---- ../gw6c-messaging/Makefile.orig	2008-11-21 15:00:22.000000000 +0100
-+++ ../gw6c-messaging/Makefile	2008-11-21 15:01:20.000000000 +0100
+--- gw6c-messaging/Makefile.orig	2008-11-21 15:00:22.000000000 +0100
++++ gw6c-messaging/Makefile	2008-11-21 15:01:20.000000000 +0100
 @@ -17,12 +17,12 @@
  BIN_DIR=bin
  LIB_DIR=lib
@@ -10,12 +10,23 @@
 -C_LINKER=gcc -O2
 -RANLIB=ranlib
 -ARCHIVER=ar
-+C_COMPILER=$(CC) -c -O2 -DNDEBUG
-+COMPILER=$(CXX) -c -O2 -DNDEBUG 
-+LINKER=$(CXX) -O2
-+C_LINKER=$(CC) -O2
++C_COMPILER=$(CC) -c -Os -DNDEBUG
++COMPILER=$(CXX) -c -Os -DNDEBUG 
++LINKER=$(CXX) -Os
++C_LINKER=$(CC) -Os
 +#RANLIB=ranlib
 +ARCHIVER=$(AR)
  CPP_FLAGS=-I. -Wall $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
  C_FLAGS=-I. -Wall $(HAP6_DEFINES)
  TEST_IPCLAYER=$(BIN_DIR)/test_ipclayer
+--- gw6c-messaging/Makefile.orig	2008-11-29 13:41:26.000000000 +0100
++++ gw6c-messaging/Makefile	2008-11-29 13:42:27.000000000 +0100
+@@ -54,7 +54,7 @@
+ 	  $(MAKE) target=$(target) ADDITIONAL_LDFLAGS="-lrt -lpthread" all-real ;\
+ 	fi
+ 
+-all-real: $(TARGET) $(BIN_DIR) $(TEST_IPCLAYER) $(TEST_MESSAGING) $(TEST_GW6CEMUL8OR)
++all-real: $(TARGET) $(BIN_DIR)
+ 
+ export:
+ 	@if [ "$(target)" = "windows" ]; then \
