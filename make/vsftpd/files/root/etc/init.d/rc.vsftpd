@@ -96,7 +96,7 @@ case $1 in
 		if ! strings /usr/sbin/vsftpd | grep -q "SSL support not compiled in"; then
 			deffile='/mod/etc/default.vsftpd/vsftpd_crt.def'
 			[ -r "/tmp/flash/vsftpd_crt.def" ] && deffile='/tmp/flash/vsftpd_crt.def'
-			modreg file 'vsftpd_crt' '$(lang de:"VSFTPD: Zertifikat&amp;Schl&uuml;ssel" en:"VSFTPD: Cert&amp;Key")' 0 "$deffile"
+			modreg file 'vsftpd_crt' 'VSFTPD:Cert+Key' 0 "$deffile"
 		fi
 
 		if [ "$VSFTPD_ENABLED" != "yes" ]; then

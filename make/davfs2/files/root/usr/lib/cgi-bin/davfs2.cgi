@@ -61,6 +61,8 @@ document.write("<p><SELECT NAME='account' onChange='change(value)'>" +
 "</SELECT></p>");
 
 document.write("<div id='Acc1' style='display:block'><p><label id='acc1' for='r06'>Host: </label><input id='r06' type='text' name='host1' size='50' maxlength='255' value='$(httpd -e "$DAVFS2_HOST1")'></p>" +
+"<p>$(lang en:"Use certificate for server (see 'Settings' in GUI)" de:"Zertifikat f&uuml;r Server nutzen (siehe Punkt 'Einstellungen')")"+  
+"<input type='hidden' name='servercert1' value=''><input type='checkbox' name='servercert1' value='yes' `[ "$DAVFS2_SERVERCERT1" = yes ] && echo checked`> </p>" + 
 "<p><label for='r03'>User: </label><input id='r03' type='text' name='user1' size='50' maxlength='255' value='$(httpd -e "$DAVFS2_USER1")'></p>" +
 "<p><label for='r04'>Pass: </label><input id='r04' type='password' name='pass1' size='50' maxlength='255' value='$(httpd -e "$DAVFS2_PASS1")'></p>" + 
 "<hr color='silver'>" + 
@@ -68,6 +70,8 @@ document.write("<div id='Acc1' style='display:block'><p><label id='acc1' for='r0
 "</div>");
 
 document.write("<div id='Acc2' style='display:none'><p><label id='acc2' for='r16'>Host: </label><input id='r16' type='text' name='host2' size='50' maxlength='255' value='$(httpd -e "$DAVFS2_HOST2")'></p>" +
+"<p>$(lang en:"Use certificate for server (see 'Settings' in GUI)" de:"Zertifikat f&uuml;r Server nutzen (siehe Punkt 'Einstellungen')")"+  
+"<input type='hidden' name='servercert2' value=''><input type='checkbox' name='servercert2' value='yes' `[ "$DAVFS2_SERVERCERT2" = yes ] && echo checked`> </p>" + 
 "<p><label for='r13'>User: </label><input id='r13' type='text' name='user2' size='50' maxlength='255' value='$(httpd -e "$DAVFS2_USER2")'></p>" +
 "<p><label for='r14'>Pass: </label><input id='r14' type='password' name='pass2' size='50' maxlength='255' value='$(httpd -e "$DAVFS2_PASS2")'></p>" + 
 "<hr color='silver'>" + 
@@ -75,6 +79,8 @@ document.write("<div id='Acc2' style='display:none'><p><label id='acc2' for='r16
 "</div>");
 
 document.write("<div id='Acc3' style='display:none'><p><label id='acc3' for='r26'>Host: </label><input id='r26' type='text' name='host3' size='50' maxlength='255' value='$(httpd -e "$DAVFS2_HOST3")'></p>" +
+"<p>$(lang en:"Use certificate for server (see 'Settings' in GUI)" de:"Zertifikat f&uuml;r Server nutzen (siehe Punkt 'Einstellungen')")"+  
+"<input type='hidden' name='servercert3' value=''><input type='checkbox' name='servercert3' value='yes' `[ "$DAVFS2_SERVERCERT3" = yes ] && echo checked`> </p>" + 
 "<p><label for='r23'>User: </label><input id='r23' type='text' name='user3' size='50' maxlength='255' value='$(httpd -e "$DAVFS2_USER3")'></p>" +
 "<p><label for='r24'>Pass: </label><input id='r24' type='password' name='pass3' size='50' maxlength='255' value='$(httpd -e "$DAVFS2_PASS3")'></p>" + 
 "<hr color='silver'>" + 

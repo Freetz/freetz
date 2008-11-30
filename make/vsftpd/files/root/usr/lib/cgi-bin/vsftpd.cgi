@@ -6,7 +6,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 auto_chk=''; man_chk=''; inetd_chk=''
 anonym_chk='';users_enabled_chk='';chroot_chk='';root_chk='';ftpuser_chk=''
 log_enable_chk='';log_protoc_chk='';log_syslog_yes='';log_syslog_no=''
-promiscuous_chk=''
+promiscuous_chk='';ssl_chk='';sslv2_chk='';sslv3_chk='';tlsv1_chk=''
+data_ssl_chk='';login_ssl_chk=''
 
 case "$VSFTPD_ENABLED" in yes) auto_chk=' checked';; inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
 if [ "$VSFTPD_ANONYMOUS" = "yes" ]; then anonym_chk=' checked'; fi
@@ -73,9 +74,9 @@ cat << EOF
 </p>
 <p>
 <input type="hidden" name="allow_root" value="no">
-<input id="a1" type="checkbox" name="allow_root" value="yes"$root_chk><label for="a1"> $(lang de:"Erlaube root login" en:"Allow root login")</label>
+<input id="a4" type="checkbox" name="allow_root" value="yes"$root_chk><label for="a4"> $(lang de:"Erlaube root login" en:"Allow root login")</label>
 <input type="hidden" name="allow_ftpuser" value="no">
-<input id="a2" type="checkbox" name="allow_ftpuser" value="yes"$ftpuser_chk><label for="a2"> $(lang de:"Erlaube ftpuser login" en:"Allow ftpuser login")</label>
+<input id="a5" type="checkbox" name="allow_ftpuser" value="yes"$ftpuser_chk><label for="a5"> $(lang de:"Erlaube ftpuser login" en:"Allow ftpuser login")</label>
 </p>
 EOF
 
@@ -113,24 +114,24 @@ cat << EOF
 <p>
 $(lang de:"Anzahl Verbindungen" en:"Maximum connections"):
 &nbsp;
-<label for="p1">$(lang de:"insgesamt" en:"overall")
+<label for="b1">$(lang de:"insgesamt" en:"overall")
 <input type="text" name="max_clients" size="5" maxlength="5" value="$(html "$VSFTPD_MAX_CLIENTS")"></label>
 &nbsp;
-<label for="p2">$(lang de:"pro Client" en:"per client")
+<label for="b2">$(lang de:"pro Client" en:"per client")
 <input type="text" name="max_per_ip" size="5" maxlength="5" value="$(html "$VSFTPD_MAX_PER_IP")"></label>
 </p>
 <p>
 $(lang de:"Passive Ports" en:"Passive ports"):
 &nbsp;
-<label for="p1">$(lang de:"Minimum" en:"minimum")
+<label for="b3">$(lang de:"Minimum" en:"minimum")
 <input type="text" name="pasv_min" size="5" maxlength="5" value="$(html "$VSFTPD_PASV_MIN")"></label>
 &nbsp;
-<label for="p2">$(lang de:"Maximum" en:"maximum")
+<label for="b4">$(lang de:"Maximum" en:"maximum")
 <input type="text" name="pasv_max" size="5" maxlength="5" value="$(html "$VSFTPD_PASV_MAX")"></label>
 </p>
 <p>
 <input type="hidden" name="promiscuous" value="no">
-<input id="a1" type="checkbox" name="promiscuous" value="yes"$promiscuous_chk><label for="a1"> $(lang de:"FXP aktivieren" en:"Enable FXP")</label>
+<input id="b5" type="checkbox" name="promiscuous" value="yes"$promiscuous_chk><label for="b5"> $(lang de:"FXP aktivieren" en:"Enable FXP")</label>
 </p>
 <p>
 $(lang de:"Pause nach fehlerhaftem Login in Sekunden:" en:"Delay after failed login in sec:"): <input type="text" name="delay_failed_login" size="5" maxlength="5" value="$(httpd -e "$VSFTPD_DELAY_FAILED_LOGIN")">
@@ -152,10 +153,10 @@ cat << EOF
 
 <p>
 <input type="hidden" name="log_enable" value="no">
-<input id="a1" type="checkbox" name="log_enable" value="yes"$log_enable_chk><label for="a1"> $(lang de:"Logging aktivieren" en:"Enable logging")</label>
+<input id="l1" type="checkbox" name="log_enable" value="yes"$log_enable_chk><label for="l1"> $(lang de:"Logging aktivieren" en:"Enable logging")</label>
 <br>
 <input type="hidden" name="log_protoc" value="no">
-<input id="a2" type="checkbox" name="log_protoc" value="yes"$log_protoc_chk><label for="a2"> $(lang de:"zus&auml;tzlich Protokoll-Log" en:"Extend by protocol-log")</label>
+<input id="l2" type="checkbox" name="log_protoc" value="yes"$log_protoc_chk><label for="l2"> $(lang de:"zus&auml;tzlich Protokoll-Log" en:"Extend by protocol-log")</label>
 </p>
 
 <p>
@@ -172,7 +173,7 @@ sec_end
 sec_begin '$(lang de:"Chroot_List" en:"chroot_list")'
 
 cat << EOF
-<p style="font-size:10px;">$(lang de:"F&uuml; alle Nutzer in die Liste ein, die ein chroot jail gesperrt werden sollen. Falls du 'chroot jail' aktiviert hast, &auml;ndert sich die Bedeutung der Liste. Alle User in der Liste werden dann NICHT in das chroot jail geschlossen." en:"Put all local users in the list who should be placed in a chroot jail in their home directory upon login. The meaning is slightly different if 'chroot jail' is set to YES. In this case, the list becomes a list of users which are NOT to be placed in a chroot() jail.")</p>
+<p style="font-size:10px;">$(lang de:"F&uuml;ge alle Nutzer in die Liste ein, die ein chroot jail gesperrt werden sollen. Falls du 'chroot jail' aktiviert hast, &auml;ndert sich die Bedeutung der Liste. Alle User in der Liste werden dann NICHT in das chroot jail geschlossen." en:"Put all local users in the list who should be placed in a chroot jail in their home directory upon login. The meaning is slightly different if 'chroot jail' is set to YES. In this case, the list becomes a list of users which are NOT to be placed in a chroot() jail.")</p>
 <p><textarea name="chroot_jail_list" rows="2" cols="50" maxlength="255">$(html "$VSFTPD_CHROOT_JAIL_LIST")</textarea></p>
 EOF
 
