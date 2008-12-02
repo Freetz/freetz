@@ -114,7 +114,7 @@ generate_graph() {
 				--title "$TITLE"						\
 				--start -1-$PERIODE -l 0 -r					\
 				--width $WIDTH --height $HEIGHT $LAZY				\
-				--vertical-label "Uptime [h]" -X 1				\
+				--vertical-label "hours" -X 1					\
 				--color SHADEA#ffffff						\
 				--color SHADEB#ffffff						\
 				--color BACK#ffffff						\
@@ -123,9 +123,126 @@ generate_graph() {
 												\
 				DEF:uptime=$FILE:uptime:MAX					\
 												\
-				AREA:uptime$YELLOW:"Uptime (maximal/current)[hours]\:   ":STACK	\
+				AREA:uptime$YELLOW:"Uptime (avg/max/cur)[hours]\:   "		\
+				GPRINT:uptime:AVERAGE:"%3.2lf /"				\
 				GPRINT:uptime:MAX:"%3.2lf /"					\
 				GPRINT:uptime:LAST:"%3.2lf\n"				> /dev/null
+			fi
+			;;
+		tt0)
+			FILE=$RRDSTATS_RRDDATA/thg_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png		\
+				--title "$TITLE"						\
+				--start now-$PERIODE						\
+				--width $WIDTH --height $HEIGHT					\
+				--vertical-label "values"					\
+				--color SHADEA#ffffff						\
+				--color SHADEB#ffffff						\
+				--color BACK#ffffff						\
+				--color CANVAS#eeeeee80						\
+				$LAZY								\
+				-W "Generated on: $DATESTRING"					\
+												\
+				DEF:rx=$FILE:rx:LAST						\
+				DEF:sn=$FILE:sn:LAST						\
+				DEF:tx=$FILE:tx:LAST						\
+				DEF:ip=$FILE:ip:LAST						\
+												\
+				LINE3:tx$GREEN:"Upstream    (min/avg/max/cur)[dBmV]\: "		\
+				GPRINT:tx:MIN:"\t%3.0lf%s"					\
+				GPRINT:tx:AVERAGE:"\t%3.0lf%s"					\
+				GPRINT:tx:MAX:"\t%3.0lf%s"					\
+				GPRINT:tx:LAST:"\t%3.0lf%s\n"					\
+												\
+				LINE3:sn$YELLOW:"S-N Ratio   (min/avg/max/cur)[dB]\:   "	\
+				GPRINT:sn:MIN:"\t%3.0lf%s"					\
+				GPRINT:sn:AVERAGE:"\t%3.0lf%s"					\
+				GPRINT:sn:MAX:"\t%3.0lf%s"					\
+				GPRINT:sn:LAST:"\t%3.0lf%s\n"					\
+												\
+				LINE3:rx$RED:"Downstream  (min/avg/max/cur)[dBmV]\: "		\
+				GPRINT:rx:MIN:"\t%3.0lf%s"					\
+				GPRINT:rx:AVERAGE:"\t%3.0lf%s"					\
+				GPRINT:rx:MAX:"\t%3.0lf%s"					\
+				GPRINT:rx:LAST:"\t%3.0lf%s\n"					\
+												\
+				LINE3:ip$BLUE:"Computers   (min/avg/max/cur)[count]\:"		\
+				GPRINT:ip:MIN:"\t%3.0lf%s"					\
+				GPRINT:ip:AVERAGE:"\t%3.0lf%s"					\
+				GPRINT:ip:MAX:"\t%3.0lf%s"					\
+				GPRINT:ip:LAST:"\t%3.0lf%s\n"				> /dev/null
+			fi
+			;;
+		tt1)
+			FILE=$RRDSTATS_RRDDATA/thg_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png		\
+				--title "$TITLE"						\
+				--start now-$PERIODE						\
+				--width $WIDTH --height $HEIGHT					\
+				--vertical-label "hours"					\
+				--color SHADEA#ffffff						\
+				--color SHADEB#ffffff						\
+				--color BACK#ffffff						\
+				--color CANVAS#eeeeee80						\
+				-l 0 $LAZY							\
+				-W "Generated on: $DATESTRING"					\
+												\
+				DEF:up=$FILE:up:LAST						\
+												\
+				AREA:up$YELLOW:"System Uptime (avg/max/cur)[hours]\: "		\
+				GPRINT:up:AVERAGE:"%3.2lf /"					\
+				GPRINT:up:MAX:"%3.2lf /"					\
+				GPRINT:up:LAST:"%3.2lf\n"				> /dev/null
+			fi
+			;;
+		tt2)
+			FILE=$RRDSTATS_RRDDATA/thg_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png		\
+				--title "$TITLE"						\
+				--start now-$PERIODE						\
+				--width $WIDTH --height $HEIGHT					\
+				--vertical-label "MHz"						\
+				--color SHADEA#ffffff						\
+				--color SHADEB#ffffff						\
+				--color BACK#ffffff						\
+				--color CANVAS#eeeeee80						\
+				$LAZY								\
+				-W "Generated on: $DATESTRING"					\
+												\
+				DEF:if=$FILE:if:LAST						\
+												\
+				LINE3:if$GREEN:"DS Frequency (min/avg/max/cur)[MHz]\: "		\
+				GPRINT:if:MIN:"%3.0lf /"					\
+				GPRINT:if:AVERAGE:"%3.0lf /"					\
+				GPRINT:if:MAX:"%3.0lf /"					\
+				GPRINT:if:LAST:"%3.0lf\n"				> /dev/null
+			fi
+			;;
+		tt3)
+			FILE=$RRDSTATS_RRDDATA/thg_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png		\
+				--title "$TITLE"						\
+				--start now-$PERIODE						\
+				--width $WIDTH --height $HEIGHT					\
+				--vertical-label "ID"						\
+				--color SHADEA#ffffff						\
+				--color SHADEB#ffffff						\
+				--color BACK#ffffff						\
+				--color CANVAS#eeeeee80						\
+				-l 0 -u 5 $LAZY							\
+				-W "Generated on: $DATESTRING"					\
+												\
+				DEF:uc=$FILE:uc:LAST						\
+												\
+				LINE3:uc$BLUE:"Upstream Channel (min/avg/max/cur)[ID]\: "	\
+				GPRINT:uc:MIN:"%3.0lf   /"					\
+				GPRINT:uc:AVERAGE:"%3.0lf   /"					\
+				GPRINT:uc:MAX:"%3.0lf   /"					\
+				GPRINT:uc:LAST:"%3.0lf\n"				> /dev/null
 			fi
 			;;
 		swap)
@@ -271,10 +388,20 @@ gen_main() {
 
 graph="$(echo "$QUERY_STRING" | sed -e 's/^.*graph=//' -e 's/&.*$//' -e 's/\.//g')"
 case "$graph" in
-	cpu|mem|swap|upt|if1|if2|if3|if4)
+	cpu|mem|swap|upt|tt0|tt1|tt2|tt3|if1|if2|if3|if4)
 		set_lazy "$RRDSTATS_NOTLAZYS"
-		heading=$(echo $graph|sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g")
+		heading=$(echo $graph|sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g")
 		echo "<center><font size=+1><b>$heading stats</b></font></center>"
+		
+		if [ `echo "$graph"|sed 's/^tt./yes/'` = yes -a "$RRDSTATS_THOMSONADV" = yes ]; then
+			echo "<br><center> \
+			<input type=\"button\" value=\"THG basics\" onclick=\"window.location=('$URL_EXTENDED&graph=tt0')\" /> \
+			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$URL_EXTENDED&graph=tt1')\" /> \
+			<input type=\"button\" value=\"DS Frequency\" onclick=\"window.location=('$URL_EXTENDED&graph=tt2')\" /> \
+			<input type=\"button\" value=\"Upstream Channel\" onclick=\"window.location=('$URL_EXTENDED&graph=tt3')\" /> \
+			</center>"
+		fi
+
 		for period in $RRDSTATS_PERIODSSUB; do
 			set_period $period
 			sec_begin ""
@@ -292,6 +419,7 @@ case "$graph" in
 		gen_main "mem" "Memory" "$periodnn"
 		[ "$(free | grep "Swap:" | awk '{print $2}')" != "0" ] && gen_main "swap" "Swapspace" "$periodnn"
 		[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
+		[ "$RRDSTATS_THOMSONTHG" = yes ] && gen_main "tt0" "Thomson THG" "$periodnn"
 		[ ! -z "$RRDSTATS_INTERFACE1" ] && gen_main "if1" "$RRDSTATS_NICE_NAME1" "$periodnn"
 		[ ! -z "$RRDSTATS_INTERFACE2" ] && gen_main "if2" "$RRDSTATS_NICE_NAME2" "$periodnn"
 		[ ! -z "$RRDSTATS_INTERFACE3" ] && gen_main "if3" "$RRDSTATS_NICE_NAME3" "$periodnn"
