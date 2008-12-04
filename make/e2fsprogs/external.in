@@ -14,6 +14,7 @@ menu e2fsprogs
 
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2fsck
 	boolean "e2fsck"
+	depends on ! FREETZ_PACKAGE_MDEV
 	default n
 	help
 		external these file
@@ -29,16 +30,17 @@ config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_mke2fs
 
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_tune2fs
 	boolean "tune2fs"
-  default n
-  help
-    external these file(s)
-      /usr/bin/tune2fs
+	default n
+	help
+		external these file(s)
+			/usr/bin/tune2fs
 
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid
 	boolean "blkid"
-  default n
-  help
-    external these file(s)
-      /usr/bin/blkid
+	depends on ! FREETZ_PACKAGE_MDEV
+	default n
+	help
+		external these file(s)
+			/usr/bin/blkid
 
 endmenu
