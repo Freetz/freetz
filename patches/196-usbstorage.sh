@@ -43,3 +43,6 @@ sed -i 's/rm -rf /rmdir /g' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage" \
 
 # remove all lines with "chmod 000"
 sed -i -e "/chmod 000.*$/d" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
+
+# fix AVM typo, lsmod output is usb_storage
+sed -i -e "s/lsmod | grep usb-storage/lsmod | grep usb_storage/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
