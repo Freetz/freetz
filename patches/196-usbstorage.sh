@@ -22,7 +22,7 @@ elif [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ]; then
 	if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270_labor_dsl.patch"
 	else
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170.patch"
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
 	fi
 elif [ "$FREETZ_TYPE_WLAN_3270" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_3270.patch"
