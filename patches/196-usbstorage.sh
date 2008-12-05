@@ -10,22 +10,22 @@ elif [ "$FREETZ_TYPE_2170" == "y" ] || \
 	[ "$FREETZ_TYPE_FON_WLAN_7140" == "y" -a "$FREETZ_TYPE_LANG_A_CH" == "y" ] || \
 	[ "$FREETZ_TYPE_FON_WLAN_7141" == "y" ] || \
 	[ "$FREETZ_TYPE_FON_WLAN_7170" == "y" ] || \
-	[ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ] || \
 	[ "$FREETZ_TYPE_WLAN_3131" == "y" ] || \
 	[ "$FREETZ_TYPE_WLAN_3170" == "y" ] || \
 	[ "$FREETZ_TYPE_SPEEDPORT_W900V" == "y" ]; then
-		if [ "$FREETZ_TYPE_LABOR_GAMING" == "y" ] || \
-			[ "$FREETZ_TYPE_LABOR_DSL" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270_labor_gaming.patch"
-		elif [ "$FREETZ_TYPE_LABOR_ALL" == "y" -a "$FREETZ_TYPE_FON_WLAN_7270" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270_labor_all.patch"
-		elif [ "$FREETZ_TYPE_LABOR_ALL" == "y" -a "$FREETZ_TYPE_FON_WLAN_7170" == "y"  ]; then
-      modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170_labor_all.patch"
+		if [ "$FREETZ_TYPE_LABOR_ALL" == "y" -a "$FREETZ_TYPE_FON_WLAN_7170" == "y"  ]; then
+      			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170_labor_all.patch"
 		else
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
+			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170.patch"
 		fi
+elif [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ]; then
+	if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ]; then
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270_labor_dsl.patch"
+	else
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170.patch"
+	fi
 elif [ "$FREETZ_TYPE_WLAN_3270" == "y" ]; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270_labor_gaming.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_3270.patch"
 elif [ "$FREETZ_TYPE_FON_WLAN_7240" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7240.patch"
 else
