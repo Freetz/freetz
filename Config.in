@@ -702,8 +702,7 @@ config FREETZ_HAS_AVM_INETD
 	select FREETZ_BUSYBOX_INETD
 	default y			if \
 		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270 && \
-		(FREETZ_TYPE_LABOR_ALL || FREETZ_TYPE_LABOR_DSL)
+		FREETZ_TYPE_FON_WLAN_7270
 	default n
 	
 	help
@@ -1014,7 +1013,8 @@ config FREETZ_PATCH_ATA
 config FREETZ_PATCH_DSL_EXPERT
         bool "Patch extended DSL-Settings"
         depends on \
-					FREETZ_TYPE_LABOR_ALL
+		FREETZ_TYPE_LABOR_ALL || \
+		FREETZ_TYPE_FON_WLAN_7270
         default n
         help
                 Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares. 
@@ -1387,13 +1387,13 @@ config FREETZ_REMOVE_VOIP_ISDN
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
-config FREETZ_REMOVE_ANNEX_A_FIRMWARE
-	bool "Remove Annex A firmware file"
-	depends on FREETZ_TYPE_FON_WLAN_7270
-	default n
-	help
-		Remove lib/modules/dsp_ur8/ur8-A-dsl.bin. This saves about 400 KB of
-		uncompressed data size.
+#config FREETZ_REMOVE_ANNEX_A_FIRMWARE
+#	bool "Remove Annex A firmware file"
+#	depends on FREETZ_TYPE_FON_WLAN_7270
+#	default n
+#	help
+#		Remove lib/modules/dsp_ur8/ur8-A-dsl.bin. This saves about 400 KB of
+#		uncompressed data size.
 
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	bool "Remove Annex B firmware file"
@@ -1405,9 +1405,6 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	help
 		Remove lib/modules/dsp_ur8/ur8-B-dsl.bin. This saves about 400 KB of
 		uncompressed data size.
-
-comment "WARNING: Both Annex firmware files will be removed."
-	depends on FREETZ_REMOVE_ANNEX_A_FIRMWARE && FREETZ_REMOVE_ANNEX_B_FIRMWARE
 
 endmenu
 
