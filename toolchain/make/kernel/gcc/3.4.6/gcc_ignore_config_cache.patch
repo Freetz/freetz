@@ -1,0 +1,11 @@
+--- gcc/configure.orig	2005-06-01 18:32:31.000000000 +0200
++++ gcc/configure	2008-12-05 13:43:05.000000000 +0100
+@@ -9380,7 +9380,7 @@
+ 	esac
+ 	saved_CFLAGS="${CFLAGS}"
+ 	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" \
+-	${realsrcdir}/configure \
++	CONFIG_SITE= ${realsrcdir}/configure --cache-file=./other.cache \
+ 		--target=$target_alias --host=$build_alias --build=$build_alias
+ 	CFLAGS="${saved_CFLAGS}"
+ 
