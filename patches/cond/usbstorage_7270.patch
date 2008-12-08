@@ -1,42 +1,33 @@
---- etc/hotplug/run_mount.orig	2008-02-29 13:58:24.000000000 +0100
-+++ etc/hotplug/run_mount	2008-03-07 02:06:39.000000000 +0100
-@@ -33,31 +33,8 @@
- # Generate a frontend'able 'nice name' to be used as mount point:
- #
+--- etc/hotplug/run_mount.orig	2008-11-21 23:36:10.000000000 +0100
++++ etc/hotplug/run_mount	2008-11-21 23:36:13.000000000 +0100
+@@ -21,19 +21,9 @@
+ 
+ ## Generate a frontend'able 'nice name' to be used as mount point:
  nicename () {
--	local PROD
--	local SNUM
--	local MANU
--	local NAME="USB"
- 	local NICE=""
--
--	# Find device's strings, remove/translate evil chars...
--	for VAR in `/sbin/lsusb -s -h $1|tr -d ' '`; do
--		if echo $VAR | grep "='" > /dev/null 2>&1; then
--			eval "${VAR%%=*}=`echo ${VAR##*=}|tr -c "\n\'a-zA-Z0-9" '-' | tr -d \' `"
--		fi
--	done
--	
--	# Find a string for our new nice name...
--	if ! test -z "$PROD"; then
--		NAME="$PROD"
--	elif ! test -z "$MANU"; then
--		NAME="$MANU"
--	fi
--	if ! test -z "$NAME"; then
--		NAME=`echo $NAME|tr ':' ' '`
--	fi
--	
--	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
--	NICE="$NAME-Partition-$2-$3"
-+	NICE="uStor$2$3"
- 	echo $NICE
+-## Find device's strings, remove/translate evil chars...
+-local MANU=`cat $SYSFS/block/$1/device/vendor|tr -d ' '|tr -c "\na-zA-Z0-9" '-'`
+-local NAME=`cat $SYSFS/block/$1/device/model|tr -d ' '|tr -c "\na-zA-Z0-9" '-'`
+-local PARTHEX=$3
+-if [ $PARTHEX -gt 9 ]; then
+-PARTHEX=`echo $((PARTHEX-10)) | tr "0-5" "A-F"`
+-fi
+-test -z "$NAME" && NAME="Storage"
+-test -n "$MANU" && NAME="$MANU-$NAME"
+-## limit NAME to 30 characters+3 extra characters (-00)
+-NAME=`echo -n "$NAME" | sed -e 's#\(.\{0,30\}\).*#\1#g'`
+-## Build nice name: [Vendor-Product]-<x><y>
+-echo "$NAME-$2$PARTHEX"
++local NICE=""
++NICE="uStor$2$3"
++echo $NICE
  }
- 
-@@ -71,6 +48,33 @@
- USBLOCKFILE=/var/USBLOCK_storage 
+ ## Simple semaphore stuff:
+ ## includes /etc/hotplug/rc.usbsema
+@@ -44,6 +34,37 @@
+ ## atomic_touch (Filename)
+ USBLOCKFILE=/var/USBLOCK_storage
  test -f /etc/hotplug/rc.usbsema && . /etc/hotplug/rc.usbsema
- 
++
 +mount_fs () {
 + # mount according to type of filesystem 
 + # return exit code: true - all went well; other - something went wrong 
@@ -56,7 +47,10 @@
 +		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +		;;
 +	ntfs)
-+		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o $READMODE -o force -o locale=de_DE.ISO-8859-1
++		;;
++	reiserfs)
++		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +		;;
 +	*) # fs type unknown
 +		mount $DEVNODE $MNTPATH
@@ -64,15 +58,49 @@
 +	esac
 +}
 +
- # Actually perform the mount operation...
- # (TODO Checking the partition for known filesystem types)
- #
-@@ -96,7 +103,7 @@
- 	# run mount with umask 0 so everyone is allowed to rwx everywhere
-         local OLD_UMASK=`umask`
- 	umask 0
--	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
-+	if mount_fs; then
- 		umask $OLD_UMASK
- 		OK=0
- 		eventadd 140 $MNTNAME
+ ## Actually perform the mount operation...
+ ## (TODO Checking the partition for known filesystem types)
+ do_mount () {
+@@ -78,41 +96,7 @@
+ ## run mount with umask 0 so everyone is allowed to rwx everywhere
+ local OLD_UMASK=`umask`
+ umask 0
+-local new_filesystem=false
+-if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
+-new_filesystem=true
+-else
+-if test -x /bin/ntfs-3g ; then
+-ntfs-3g $DEVNODE $MNTPATH -o $READMODE -o locale=de_DE.ISO-8859-1
+-local NTFS_RET=$?
+-case "$NTFS_RET" in
+-0 )
+-new_filesystem=true
+-;;
+-12 ) # NTFS_VOLUME_NOT_NTFS
+-## ignore - not formatted with NTFS
+-;;
+-15 ) # NTFS_VOLUME_UNCLEAN_UNMOUNT
+-## need option -o force, but we don't do this, because its not safe!
+-eventadd 144 $MNTNAME
+-## no fail event later on
+-FAIL_EVENT=0
+-led-ctrl filesystem_mount_failure
+-;;
+-* )
+-## NTFS mount error
+-eventadd 145 $MNTNAME $NTFS_RET
+-## no fail event later on
+-FAIL_EVENT=0
+-led-ctrl filesystem_mount_failure
+-;;
+-esac
+-else
+-echo "ntfs not yet ready -> mount later" > /dev/ttyS0
+-FAIL_EVENT=0
+-fi
+-fi
+-if [ $new_filesystem = true ] ; then
++if mount_fs; then
+ FAIL_EVENT=0
+ umask $OLD_UMASK
+ eventadd 140 $MNTNAME
