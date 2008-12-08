@@ -1,6 +1,6 @@
 MAKE1=make
 MAKE=make -j$(FREETZ_JLEVEL)
-HOSTCC:=$(strip $(subst ",, $(FREETZ_HOSTCC)))
+HOSTCC:=gcc
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	-e 's/sparc.*/sparc/' \
@@ -344,7 +344,7 @@ endef
 
 ## Unpack and patch binary package
 define PKG_UNPACKED_BIN__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE)
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(SOURCE_DIR)
 	$(RM) -r $($(PKG)_DIR)
 	$(call PKG_UNPACK)
 	$(call PKG_BIN_PATCH)

@@ -698,7 +698,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"
 		ln -s ../var/tmp/onlinechanged "${FILESYSTEM_MOD_DIR}/bin/onlinechanged" > /dev/null 2>&1
 
-		if [ "$FREETZ_STRIP_LIBRARIES" != "y" ]; then
 		echo1 "installing libs"
 			for i in \
 			$( \
@@ -718,7 +717,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
 				fi
 			done
-		fi
 		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 		
 		if [ "$FREETZ_LIB_libterminfo" == "y" ]; then
@@ -934,21 +932,22 @@ if [ "$DO_MOD" -gt 0 ]; then
 		# any shared lib or binary
 		# __cxa_pure_virtual is referenced at some places..
 		UNNEEDED_SYMBOLS="-u get_UserAgentTransport -u __cxa_pure_virtual"
+		
+		# some more referenced symbols not provided on 3170, this box does not have tr069
+		# but this should not break compatibility for other boxes
+		UNNEEDED_SYMBOLS+=" -u __cxa_atexit -u add_node -u add_object -u get_ctlmgr_value -u set_ctlmgr_value"
 
 		if [ "$FREETZ_REMOVE_TR069" == "y" ]; then
 			# ignore some symbols provided by libtr069.so and referenced at
 			# some places e.g. in libfon.so libwlan.so 
-			# is this really a good idea to remove this lib ?!? ;-)
-			# here it works...
 			UNNEEDED_SYMBOLS+=" -u get_ctlmgr_value -u _ZN14ModuleRegistry12ApplyChangesEv \
-				-u add_node -u 'get_ctlmgr_value -u get_UIModule -u getNode \
+				-u get_UIModule -u getNode -u cm_create_node -u GetContext \
 				-u _Z23TR069_SOAPEnvelope_FreeP18TR069_SOAPEnvelope -u findRefNodeOfName \
-				-u TR069_Helper_Parse_SOAP -u add_object -u _ZN14ModuleRegistry19TransactionRollbackEv \
-				-u Unregister_VOIP_1und1_Assi -u _ZN14ModuleRegistry17TransactionCommitEv -u GetContext \
+				-u TR069_Helper_Parse_SOAP -u _ZN14ModuleRegistry19TransactionRollbackEv \
+				-u Unregister_VOIP_1und1_Assi -u _ZN14ModuleRegistry17TransactionCommitEv \
 				-u Register_VOIP_1und1_Assi -u get_NumberOfEntries -u _fLog -u remove_node \
 				-u _Z20Get_g_pParamRegistryv -u _ZN14ModuleRegistry17SetParameterValueEPcS0_ \
-				-u get_ExternalIPAddress -u _ZN14ModuleRegistry16TransactionBeginEv -u set_ctlmgr_value \
-				-u cm_create_node"
+				-u get_ExternalIPAddress -u _ZN14ModuleRegistry16TransactionBeginEv"
 		else
 			# set_PPPoEServiceName is referenced by libtr069.so but not 
 			# provided by and shared lib or binary
@@ -972,8 +971,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 			--root ${FILESYSTEM_MOD_DIR} \
 			-d ${FILESYSTEM_MOD_DIR}/lib \
 			-D \
-			-L ${TARGET_TOOLCHAIN_STAGING_DIR}/lib \
 			-L ${CUR}/libs_to_reduce \
+			-L ${TARGET_TOOLCHAIN_STAGING_DIR}/lib \
 			${UNNEEDED_SYMBOLS} \
 			`cat "${FILESYSTEM_MOD_DIR}/mklibs-progs"` > "${DIR}/modified/mklibs.log" 2>&1
 

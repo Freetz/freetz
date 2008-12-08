@@ -5,18 +5,22 @@ Latest changes:
 === Freetz-1.1-stable ===
 
 - Build system:
-  * toolchains:
-    - add menuconfig option to adjust HOSTCC variable 
-    - add ccache for download- and kernel-toolchain
+    * toolchains:
+      - add menuconfig option to adjust HOSTCC variable 
+      - add ccache for download- and kernel-toolchain
+      - add two patches for gcc-3.4.6  
+        + Fix failure with newer host gccs  
+        + Fix failure on some machines  
+    * uClibc-0.9.29: Add 2 patches from openwrt 
 
 - New tools and hooks:
-  * external
-  * new make targets:
-    - check-downloads: checks all downloads for availability (also 
-      $(pkg)-check-downloads)
-    - mirror: downloads all package downloads into dl/mirror (also
-      $(pkg)-download-mirror). This makes hardlinks for dupes in dl/ and
-      dl/mirror to save disk space.
+    * external
+    * new make targets:
+      - check-downloads: checks all downloads for availability (also 
+        $(pkg)-check-downloads)
+      - mirror: downloads all package downloads into dl/mirror (also
+        $(pkg)-download-mirror). This makes hardlinks for dupes in dl/ and
+        dl/mirror to save disk space.
 
 - New patches (read online help for more info):
 
@@ -59,6 +63,7 @@ Latest changes:
     * bip 0.7.5
     * classpath 0.97.2
     * devmapper 1.02.27
+    * dropbear: fixed init script not to start dropbear a second time when already running 
     * dns2tcp 0.4.3
     * expat 2.0.1
     * jamvm 1.5.1
@@ -74,6 +79,9 @@ Latest changes:
 - Web interface:
 
 - Other stuff:
+    + use Labor kernel sources for 3270 instead of 04.57  
+    + fix strip library function for 3170  
+    + 3131: Remove "remove cdrom.iso" patch  
 
 
 === release Freetz-1.0.1 ===
