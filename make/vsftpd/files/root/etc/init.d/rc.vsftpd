@@ -56,6 +56,22 @@ config() {
 	status_log
 }
 
+reload() {
+	echo -n 'Reloading ftp server...'
+
+	write_config	
+
+	killall -HUP $DAEMON > /dev/null 2>&1
+	exitval=$?
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
 start() {
 	echo -n 'Starting ftp server...'
 	config
@@ -126,6 +142,9 @@ case $1 in
 		sleep 1
 		start
 		;;
+	reload)
+		reload
+		;;
 	status)
 		if [ "$VSFTPD_ENABLED" == "inetd" ]; then
 			echo 'inetd'
@@ -139,7 +158,7 @@ case $1 in
 		config	
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status|config]" 1>&2
 		exit 1
 		;;
 esac

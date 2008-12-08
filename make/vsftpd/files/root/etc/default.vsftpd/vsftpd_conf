@@ -41,6 +41,7 @@ ssl_tlsv1=$VSFTPD_ENABLE_TLSV1
 force_local_data_ssl=$VSFTPD_FORCE_DATA_SSL
 force_local_logins_ssl=$VSFTPD_FORCE_LOGIN_SSL
 EOF
+if [ "$VSFTPD_PASV_ADDRESS" = "yes" ]; then echo "pasv_address=`/usr/bin/get_ip -e`"; fi
 echo "$VSFTPD_ADD_SETTINGS" | grep -v "^#" | while read -r line; do
 	[ -n "$line" ] && echo "$line"
 done
