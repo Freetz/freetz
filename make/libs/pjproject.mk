@@ -1,5 +1,5 @@
-$(call PKG_INIT_LIB, 0.9.0)
-$(PKG)_LIB_VERSION:=0.9.0
+$(call PKG_INIT_LIB, 1.0)
+$(PKG)_LIB_VERSION:=1.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://fritz.v3v.de/dtmfbox/libs
 $(PKG)_BINARY:=$($(PKG)_DIR)/pjsip/lib/libpjsip.a
@@ -44,9 +44,6 @@ $($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
 	echo "#define PJSIP_SAFE_MODULE 0"  		>> $(PJPROJECT_CONFIG_SITE)
 	echo "#define PJMEDIA_HAS_SRTP 0" 		>> $(PJPROJECT_CONFIG_SITE)
 	echo "#define PJ_HAS_FLOATING_POINT 0"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define SIOCGIFCONF 1"  			>> $(PJPROJECT_CONFIG_SITE)
-	echo "#undef PJ_HAS_NET_IF_H" 			>> $(PJPROJECT_CONFIG_SITE)
-	echo "#undef PJ_HAS_IFADDR_H" 			>> $(PJPROJECT_CONFIG_SITE)
 	echo "#define PJMEDIA_SOUND_IMPLEMENTATION PJMEDIA_SOUND_NULL_SOUND" >> $(PJPROJECT_CONFIG_SITE)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 	    LDFLAGS="-lm" \

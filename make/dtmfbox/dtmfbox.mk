@@ -1,10 +1,10 @@
 $(call PKG_INIT_BIN, 0.5.0)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)_beta1-src.tar.bz2
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)_rc1-src.tar.bz2
 $(PKG)_SITE:=http://fritz.v3v.de/$(pkg)/$(pkg)-src
 $(PKG)_WEBPHONE:=http://fritz.v3v.de/webphone/sWebPhone.jar
 $(PKG)_WEBPHONE_LOCAL:=$(DTMFBOX_TARGET_DIR)/root/usr/mww/sWebPhone.jar
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)_beta1-src
-$(PKG)_PJPATH:=../pjproject-0.9.0
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-src
+$(PKG)_PJPATH:=../pjproject-1.0
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_BINARY_MENU_SO:=$($(PKG)_DIR)/plugins/menu.plugin/menu.plugin.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/$(pkg)
@@ -15,8 +15,7 @@ $(PKG)_DEPENDS_ON := libcapi pjproject
 
 $(PKG)_CONFIGURE_PRE_CMDS := cp $(DTMFBOX_DIR)/configure.in $(DTMFBOX_DIR)/configure.ac
 
-$(PKG)_CONFIGURE_OPTIONS := --with-pjsip-version=9
-$(PKG)_CONFIGURE_OPTIONS += --with-pjsip-path=$(DTMFBOX_PJPATH)
+$(PKG)_CONFIGURE_OPTIONS := --with-pjsip-path=$(DTMFBOX_PJPATH)
 $(PKG)_CONFIGURE_OPTIONS += --prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)
 $(PKG)_CONFIGURE_OPTIONS += --exec-prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)
 $(PKG)_CONFIGURE_OPTIONS += --disable-sound
