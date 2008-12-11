@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.5.1)
+$(call PKG_INIT_BIN, 0.5.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.unix-ag.uni-kl.de/~massar/vpnc
 $(PKG)_BINARY:=$($(PKG)_DIR)/vpnc
