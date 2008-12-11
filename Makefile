@@ -86,14 +86,35 @@ ifneq ($(BUILD_DIR_VERSION),)
 CHECK_BUILD_DIR_VERSION:=check-builddir-version
 endif
 
+# Simple checking of build prerequisites
+ifneq ($(NO_PREREQ_CHECK),y)
+ifneq ($(shell $(CHECK_PREREQ_TOOL) \
+	$$(cat .build-prerequisites) \
+	>&2 \
+	&& echo OK\
+),OK)
+$(error Some build prerequisites are missing! Please install the missing packages before trying again)
+endif
+endif
+
+#Simple test if wrong uclibc is used
+ifneq ($(NO_UCLIBC_CHECK),y)
+UCLIBC:=$(shell $(CHECK_UCLIBC_VERSION) && echo OK || echo NOK)
+ifeq ($(UCLIBC),NOK)
+$(warning WARNING: uClibc-version changed. Packages, toolchain and some other stuff must be rebuilt. This will take a while)
+SWITCH_UCLIBC:=toolchain-switch
+endif
+export SWITCH_UCLIBC
+endif
+
 all: step
-world: prereq-check uclibc-check $(CHECK_BUILD_DIR_VERSION)$(SWITCH_UCLIBC) \
+world: $(CHECK_BUILD_DIR_VERSION)$(SWITCH_UCLIBC) \
 		$(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
 		$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
-noconfig_targets:=prereq-check menuconfig config oldconfig defconfig tools \
+noconfig_targets:=menuconfig config oldconfig defconfig tools \
 		$(TOOLS) $(CHECK_BUILD_DIR_VERSION)
 
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
@@ -453,29 +474,6 @@ dist: distclean
 		cd "$$curdir"; \
 	)
 	rm -f .exclude-dist-tmp
-
-prereq-check:
-# Simple checking of build prerequisites
-ifneq ($(NO_PREREQ_CHECK),y)
-ifneq ($(shell $(CHECK_PREREQ_TOOL) \
-  $$(cat .build-prerequisites) \
-  >&2 \
-  && echo OK\
-),OK)
-$(error Some build prerequisites are missing! Please install the missing packages before trying again)
-endif
-endif
-
-uclibc-check:
-#Simple test if wrong uclibc is used
-ifneq ($(NO_UCLIBC_CHECK),y)
-UCLIBC:=$(shell $(CHECK_UCLIBC_VERSION) && echo OK || echo NOK)
-ifeq ($(UCLIBC),NOK)
-$(warning WARNING: uClibc-version changed. Packages, toolchain and some other stuff must be rebuilt. This will take a while)
-SWITCH_UCLIBC:=toolchain-switch
-endif
-export SWITCH_UCLIBC
-endif
 
 # Check if last build was with older svn version
 check-builddir-version:
