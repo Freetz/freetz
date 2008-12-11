@@ -1387,14 +1387,6 @@ config FREETZ_REMOVE_VOIP_ISDN
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
-#config FREETZ_REMOVE_ANNEX_A_FIRMWARE
-#	bool "Remove Annex A firmware file"
-#	depends on FREETZ_TYPE_FON_WLAN_7270
-#	default n
-#	help
-#		Remove lib/modules/dsp_ur8/ur8-A-dsl.bin. This saves about 400 KB of
-#		uncompressed data size.
-
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	bool "Remove Annex B firmware file"
 	depends on \
@@ -1405,6 +1397,16 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	help
 		Remove lib/modules/dsp_ur8/ur8-B-dsl.bin. This saves about 400 KB of
 		uncompressed data size.
+
+
+config FREETZ_ADD_ANNEX_A_FIRMWARE
+	bool "Add Annex A firmware file"
+	depends on FREETZ_TYPE_FON_WLAN_7270
+	default n
+	help
+		Add lib/modules/dsp_ur8/ur8-A-dsl.bin. This costs about 400 KB of
+		uncompressed data size. But you can remove Annex B file if you
+		plan to use Annex A.
 
 endmenu
 
@@ -1532,13 +1534,15 @@ config FREETZ_DL_SITE2
 		FREETZ_TYPE_SPEEDPORT_W701V || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
 		FREETZ_TYPE_SPEEDPORT_W900V || \
-		FREETZ_TYPE_SPEEDPORT_W900V_7170
-	default "http://www.t-home.de/dlp/eki/downloads/Sinus%20W%20500%20V"				if FREETZ_TYPE_SINUS_W500V_7150
+		FREETZ_TYPE_SPEEDPORT_W900V_7170 || \
+		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_ADD_ANNEX_A_FIRMWARE)
+	default "http://www.t-home.de/dlp/eki/downloads/Sinus%20W%20500%20V"			if FREETZ_TYPE_SINUS_W500V_7150
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"		if FREETZ_TYPE_SPEEDPORT_W501V
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch" 		if FREETZ_TYPE_SPEEDPORT_W701V
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V"	if FREETZ_TYPE_SPEEDPORT_W701V_7170
-	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"							if FREETZ_TYPE_SPEEDPORT_W900V
+	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"				if FREETZ_TYPE_SPEEDPORT_W900V
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20900V"		if FREETZ_TYPE_SPEEDPORT_W900V_7170
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/x_misc/deutsch"		if FREETZ_TYPE_FON_WLAN_7270
 
 config FREETZ_DL_SOURCE2
 	string "AVM web interface firmware source"	if FREETZ_DL_OVERRIDE
@@ -1548,14 +1552,15 @@ config FREETZ_DL_SOURCE2
 		FREETZ_TYPE_SPEEDPORT_W701V || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
 		FREETZ_TYPE_SPEEDPORT_W900V || \
-		FREETZ_TYPE_SPEEDPORT_W900V_7170
+		FREETZ_TYPE_SPEEDPORT_W900V_7170 || \
+		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_ADD_ANNEX_A_FIRMWARE)
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if FREETZ_TYPE_SPEEDPORT_W501V
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if FREETZ_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W701V_v33.04.57.image"		if FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default "fritz.fon_7150.annexb.38.04.32.image"		if FREETZ_TYPE_SPEEDPORT_W900V
 	default "fw_Speedport_W900V_v34.04.57.image"		if FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "Sinus_W_500V.27.04.27.image"			if FREETZ_TYPE_SINUS_W500V_7150
-
+	default "FRITZ.Box_Fon_WLAN_7270.54.04.59.image"	if FREETZ_TYPE_FON_WLAN_7270
 
 config FREETZ_DL_SOURCE2_CONTAINER
 	string
