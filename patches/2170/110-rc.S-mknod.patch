@@ -1,11 +1,14 @@
---- etc/init.d/rc.S.orig	2007-06-06 12:49:19.000000000 +0200
-+++ etc/init.d/rc.S	2007-06-25 11:21:18.000000000 +0200
-@@ -221,6 +221,8 @@
-  mknod /var/flash/userstat.cfg c $tffs_major $((0x79))
-  mknod /var/flash/aura-usb c $tffs_major $((0xA0))
-  mknod /var/flash/browser-data c $tffs_major $((0xA8))
-+	mknod /var/flash/freetz c $tffs_major $((0x3c))
-+	/usr/bin/modload 2>&1 | tee /var/log/mod_load.log
- #file "stdin", 9
- #file "./arch/etc/init.d/rc.cpmac.sh", 0
- #file "stdin", 10
+--- etc/init.d/rc.S.orig	2008-06-13 16:49:19.000000000 +0200
++++ etc/init.d/rc.S	2008-06-20 21:11:13.000000000 +0200
+@@ -801,6 +801,11 @@
+ #########################################################################
+ mknod /var/flash/aura-usb c $tffs_major $((0xA0))
+ mknod /var/flash/browser-data c $tffs_major $((0xA8))
++#########################################################################
++## freetz
++#########################################################################
++mknod /var/flash/freetz c $tffs_major $((0x3c))
++/usr/bin/modload 2>&1 | tee /var/log/mod_load.log
+ ##########################################################################################
+ ## CPMAC Treiber laden
+ ##########################################################################################
