@@ -139,7 +139,7 @@ modlib_status()
 
 # load config
 [ -n "$DAEMON" ] && case "$1" in
-	""|load|start|restart|config|status)
+	""|config|load|reload|restart|start|status)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1

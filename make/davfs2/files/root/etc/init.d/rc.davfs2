@@ -99,6 +99,15 @@ case "$1" in
 
 		if type modreg > /dev/null; then
 			modreg cgi davfs2 'WebDAV'
+			deffile='/mod/etc/default.davfs2/davfs_servercrt1.def'
+			[ -r "/tmp/flash/davfs_servercrt1.def" ] && deffile='/tmp/flash/davfs_servercrt1.def'
+			modreg file 'davfs_servercrt1' 'WebDav Server Cert 1' 0 "$deffile"
+			deffile='/mod/etc/default.davfs2/davfs_servercrt2.def'
+			[ -r "/tmp/flash/davfs_servercrt2.def" ] && deffile='/tmp/flash/davfs_servercrt2.def'
+			modreg file 'davfs_servercrt2' 'WebDav Server Cert 2' 0 "$deffile"
+			deffile='/mod/etc/default.davfs2/davfs_servercrt3.def'
+			[ -r "/tmp/flash/davfs_servercrt3.def" ] && deffile='/tmp/flash/davfs_servercrt3.def'
+			modreg file 'davfs_servercrt3' 'WebDav Server Cert 3' 0 "$deffile"
 		fi
 
 		if [ "$WEBDAV_ENABLED" != "yes" ]; then
@@ -115,6 +124,9 @@ case "$1" in
 	unload)
 		stop
 		modunreg cgi davfs2
+		modunreg file davfs_servercrt1
+		modunreg file davfs_servercrt2
+		modunreg file davfs_servercrt3
 		;;
 	start)
 		start

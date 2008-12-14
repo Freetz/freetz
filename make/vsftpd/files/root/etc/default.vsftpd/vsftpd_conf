@@ -33,5 +33,16 @@ pasv_min_port=$VSFTPD_PASV_MIN
 pasv_max_port=$VSFTPD_PASV_MAX
 pasv_promiscuous=$VSFTPD_PROMISCUOUS
 delay_failed_login=$VSFTPD_DELAY_FAILED_LOGIN
+chroot_list_enable=yes
+ssl_enable=$VSFTPD_ENABLE_SSL
+ssl_sslv2=$VSFTPD_ENABLE_SSLV2
+ssl_sslv3=$VSFTPD_ENABLE_SSLV3
+ssl_tlsv1=$VSFTPD_ENABLE_TLSV1
+force_local_data_ssl=$VSFTPD_FORCE_DATA_SSL
+force_local_logins_ssl=$VSFTPD_FORCE_LOGIN_SSL
 EOF
+if [ "$VSFTPD_PASV_ADDRESS" = "yes" ]; then echo "pasv_address=`/usr/bin/get_ip -e`"; fi
+echo "$VSFTPD_ADD_SETTINGS" | grep -v "^#" | while read -r line; do
+	[ -n "$line" ] && echo "$line"
+done
 

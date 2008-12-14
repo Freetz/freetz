@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.2.0.31)
+$(call PKG_INIT_BIN, 0.2.0.32)
 $(PKG)_SOURCE:=tor-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.torproject.org/dist
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor

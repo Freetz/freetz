@@ -1,8 +1,22 @@
 config FREETZ_PACKAGE_VSFTPD
 	bool "Vsftpd 2.0.6"
-	select FREETZ_LIB_libcrypt
-	select FREETZ_LIB_libnsl
+	select FREETZ_LIB_libcrypt if ! FREETZ_PACKAGE_VSFTPD_STATIC
+	select FREETZ_LIB_libnsl if ! FREETZ_PACKAGE_VSFTPD_STATIC
 	default n
 	help
 		A fast and secure FTP server
 
+config FREETZ_PACKAGE_VSFTPD_WITH_SSL
+	bool "build with SSL support"
+	depends on FREETZ_PACKAGE_VSFTPD
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_VSFTPD_STATIC
+	default n
+	help
+		This option enables SSL support for Vsftpd.
+
+config FREETZ_PACKAGE_VSFTPD_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_VSFTPD
+	default n
+	help
+		Build VSFTPD with staticly linked Libs.

@@ -53,7 +53,7 @@ stop() {
 	fi
 
 	rm -rf /mod/etc/$DAEMON
-	if [ $TOR_DATADIRPERSISTENT = "no" ]; then
+	if [ "$TOR_DATADIRPERSISTENT" = "no" ]; then
 	  rm -rf $TOR_DATADIRECTORY
 	fi
 }
