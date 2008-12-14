@@ -1,5 +1,5 @@
---- etc/hotplug/storage.orig	2008-10-27 14:41:09.000000000 +0100
-+++ etc/hotplug/storage	2008-11-04 22:11:09.000000000 +0100
+--- etc/hotplug/storage.orig	2008-12-04 15:26:08.000000000 +0100
++++ etc/hotplug/storage	2008-12-10 21:55:46.000000000 +0100
 @@ -12,6 +12,10 @@
  FIRST=$6
  MSTART=/sbin/start_mediasrv
@@ -27,8 +27,8 @@
  else
  if test -x /bin/inetdctl ; then
  inetdctl disable ftpd
---- etc/hotplug/run_mount.orig	2008-10-27 14:41:19.000000000 +0100
-+++ etc/hotplug/run_mount	2008-11-04 22:11:09.000000000 +0100
+--- etc/hotplug/run_mount.orig	2008-12-04 15:26:05.000000000 +0100
++++ etc/hotplug/run_mount	2008-12-10 21:55:46.000000000 +0100
 @@ -15,6 +15,10 @@
  MSTART=/sbin/start_mediasrv
  TR069START=/bin/tr069starter
@@ -40,7 +40,7 @@
  ## Generate a frontend'able 'nice name' to be used as mount point:
  nicename () {
  ## Find device's strings, remove/translate evil chars...
-@@ -80,6 +84,7 @@
+@@ -114,6 +118,7 @@
  eventadd 140 $MNTNAME
  ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
  if [ "$ENABLED" != "no" ] ; then
@@ -48,7 +48,7 @@
  if test -x /bin/inetdctl; then
  inetdctl enable ftpd
  else
-@@ -99,6 +104,7 @@
+@@ -133,6 +138,7 @@
  fi
  fi
  fi

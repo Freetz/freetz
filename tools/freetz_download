@@ -40,8 +40,8 @@ do_download()
 {
   # $1 = full download URL, $2 = target directory
   echo
-  if [ "$DEBUG" == "1" ]; then echo "wget -nd --passive-ftp -P $1 $2"; fi
-  wget -nd --passive-ftp -P "$1" "$2"
+  if [ "$DEBUG" == "1" ]; then echo "wget -nd -T 20 -t 3 --passive-ftp -P $1 $2"; fi
+  wget -nd -t3 --timeout=20 --passive-ftp -P "$1" "$2"
   wget_result=$?
   if [ "$wget_result" != "0" ]; then
     echo "Download failed - $2  ->  error code $wget_result" >&2
@@ -128,6 +128,6 @@ for i in ${sites[@]}; do
     fi
   fi
   exit 0
-done
+  done
 
 exit 1

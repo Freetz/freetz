@@ -1,5 +1,5 @@
---- etc/hotplug/run_mount.orig	2008-09-03 10:52:22.000000000 +0200
-+++ etc/hotplug/run_mount	2008-09-03 10:52:29.000000000 +0200
+--- etc/hotplug/run_mount.orig	2008-12-10 21:55:46.000000000 +0100
++++ etc/hotplug/run_mount	2008-12-10 21:55:47.000000000 +0100
 @@ -21,19 +21,9 @@
  
  ## Generate a frontend'able 'nice name' to be used as mount point:
@@ -58,12 +58,12 @@
  ## Actually perform the mount operation...
  ## (TODO Checking the partition for known filesystem types)
  do_mount () {
-@@ -75,7 +95,7 @@
+@@ -79,7 +100,7 @@
  local OLD_UMASK=`umask`
  umask 0
  local new_filesystem=false
 -if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
 +if mount_fs; then
  new_filesystem=true
- fi
- if [ $new_filesystem = true ] ; then
+ else
+ if test -x /bin/ntfs-3g ; then
