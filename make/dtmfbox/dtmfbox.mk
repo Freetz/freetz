@@ -61,7 +61,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $(pkg):
 
-$(pkg)-precompiled: 
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(DTMFBOX_DIR) clean
