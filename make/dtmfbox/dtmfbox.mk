@@ -59,7 +59,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	cp -f $(DTMFBOX_BINARY_MENU_SO) $(DTMFBOX_TARGET_BINARY_MENU_SO)	
 	$(INSTALL_BINARY_STRIP)	
 
-$(pkg): $($(PKG)_TARGET_BINARY)
+$(pkg):
 
 $(pkg)-precompiled: 
 
@@ -68,6 +68,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(DTMFBOX_DIR)/plugins/menu.plugin clean
 
 $(pkg)-uninstall:
-	rm -f $(DTMFBOX_TARGET_BINARY)
+	$(RM) $(DTMFBOX_TARGET_BINARY)
 
 $(PKG_FINISH)

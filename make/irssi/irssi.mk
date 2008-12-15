@@ -40,7 +40,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$(pkg): $($(PKG)_BINARY)
+$(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) 
 
@@ -48,6 +48,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(IRSSI_DIR) clean
 
 $(pkg)-uninstall: 
-	rm -f $(IRSSI_TARGET_BINARY)
+	$(RM) $(IRSSI_TARGET_BINARY)
 
 $(PKG_FINISH)
