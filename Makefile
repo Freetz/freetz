@@ -112,12 +112,11 @@ ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 
 #Simple test if wrong uclibc is used
 ifneq ($(NO_UCLIBC_CHECK),y)
-UCLIBC_CHANGED:=$(shell $(CHECK_UCLIBC_VERSION))
-endif
-
 ifneq ($(shell $(CHECK_UCLIBC_VERSION) && echo OK), OK)
 $(error Error: uClibc-version changed. Please type "make dirclean")
 endif
+endif
+
 endif
 
 ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),0)

@@ -9,17 +9,20 @@ CONFIG_FILE="$FILEPATH.config"
 if [ -f "${CONFIG_FILE}" ];then
 	OLD_VERSION_REQUESTED=$(grep "^$OLD_VERSION" $CONFIG_FILE)
 	NEW_VERSION_REQUESTED=$(grep "^$NEW_VERSION" $CONFIG_FILE)
-	CHANGED=1
-	FILE=""
 	if [ $OLD_VERSION_REQUESTED ]; then
 		FILENAME="${OLDFILENAME}"
 	else 
 		FILENAME="${NEWFILENAME}"
 	fi
-	if [ -f "${FILENAME}" ]; then
-		CHANGED=0 
+	if [ ! -f "${OLDFILENAME}" ] && [ ! -f "${NEWFILENAME}" ]; then
+		touch ${FILENAME}
+		CHANGED=0
 	else
-		CHANGED=1
+		if [ -f "${FILENAME}" ]; then
+			CHANGED=0 
+		else
+			CHANGED=1
+		fi
 	fi
 fi
 exit $CHANGED
