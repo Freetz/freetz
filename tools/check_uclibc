@@ -1,11 +1,5 @@
 #!/bin/bash
 
-make_flag() {
-	rm -f $OLDFILENAME
-	rm -f $NEWFILENAME
-	touch $@
-}
-
 FILEPATH=""
 OLD_VERSION="FREETZ_TARGET_UCLIBC_VERSION_0_9_28"
 NEW_VERSION="FREETZ_TARGET_UCLIBC_VERSION_0_9_29"
@@ -27,6 +21,5 @@ if [ -f "${CONFIG_FILE}" ];then
 	else
 		CHANGED=1
 	fi
-	make_flag "${FILENAME}"
 fi
 exit $CHANGED
