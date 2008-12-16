@@ -82,7 +82,7 @@ cat << EOF
 <td style="font-size:10pt;"><b>$(lang de:"Beispiel" en:"Example"):</b></td><td style="font-size:10pt;">dropbear</td><td style="font-size:10pt;">755</td><td style="font-size:10pt;">/mod/bin</td>
 </tr>
 </table>
-<p><textarea name="files" rows="4" cols="50" maxlength="255">$(html "$DOWNLOADER_FILES")</textarea></p>
+<p><textarea name="files" rows="4" cols="50">$(html "$DOWNLOADER_FILES")</textarea></p>
 EOF
 
 sec_end
