@@ -1,5 +1,5 @@
 $(call PKG_INIT_BIN, 1.2.29)
-$(PKG)_LIB_VERSION:=2.0.13
+$(PKG)_LIB_VERSION:=2.0.15
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://oss.oetiker.ch/rrdtool/pub/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/rrdtool
