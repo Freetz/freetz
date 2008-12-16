@@ -72,7 +72,7 @@ case "$1" in
 			exit 1;
 		fi
 
-		if [ -n "/var/run/$DAEMON.pid" ]; then
+		if [ -e "/var/run/$DAEMON.pid" ]; then
 			echo "$DAEMON already started."
 		else
 			start
