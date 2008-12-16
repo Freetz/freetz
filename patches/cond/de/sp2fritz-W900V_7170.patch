@@ -1,5 +1,5 @@
 --- usr/www/avm/html/de/dect/setting.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.frm	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/dect/setting.frm	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,7 @@
 +<input type="hidden" name="dect:settings/enabled" value="<? query dect:settings/enabled ?>" id="uiPost_DectActivated">
 +<input type="hidden" name="dect:command/Unsubscribe" value="0" id="uiPostUnsubscribe" disabled>
@@ -9,7 +9,7 @@
 +<input type="hidden" name="var:TechType" value="<? echo $var:TechType ?>" id="uiTechType">
 +<input type="hidden" id="uiPostVarName" name="">
 --- usr/www/avm/html/de/dect/setting.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/dect/setting.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,26 @@
 +<? include ../html/$var:lang/dect/setting.js ?>
 +<div id="content">
@@ -38,7 +38,7 @@
 +<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 +</div>
 --- usr/www/avm/html/de/dect/setting.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.inc	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/dect/setting.inc	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,7 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:TextDectEinstellungen "DECT-Einstellungen" ?>
@@ -48,7 +48,7 @@
 +<? setvariable var:TextDectSetPin 'PIN setzen' ?>
 +<? setvariable var:TextBoxNeuStart "$var:BoxName neu starten" ?>
 --- usr/www/avm/html/de/dect/setting.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.js	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/dect/setting.js	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,52 @@
 +<!-- ../dect/setting.js -->
 +<? include ../html/$var:lang/dect/setting.inc ?>
@@ -103,7 +103,7 @@
 +}
 +</script>
 --- usr/www/avm/html/de/fon/dect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect.frm	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/dect.frm	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,29 @@
 +<input type="hidden" name="var:FonNr" value="<? echo $var:FonNr ?>" id="uiPostFonNr">
 +<input type="hidden" name="var:IsdnNr" value="<? echo $var:IsdnNr ?>" id="uiPostIsdnNr">
@@ -135,7 +135,7 @@
 +<input type="hidden" name="telcfg:settings/MSN/Port3/MWI_Mail" value="<? query telcfg:settings/MSN/Port3/MWI_Mail?>" id="uiPostMwiMail">
 +<input type="hidden" name="telcfg:settings/MSN/Port3/MWI_Once" value="<? query telcfg:settings/MSN/Port3/MWI_Once ?>" id="uiPostMwiOnce">
 --- usr/www/avm/html/de/fon/dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/dect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,51 @@
 +<? include ../html/$var:lang/fon/dect.inc ?>
 +<div id="content">
@@ -189,7 +189,7 @@
 +</div>
 +
 --- usr/www/avm/html/de/fon/dect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect.inc	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/dect.inc	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,46 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'DECT-Endger‰te' ?>
@@ -238,7 +238,7 @@
 +<? setvariable var:Text46 'nur bei der ersten neuen Nachricht' ?>
 +<? setvariable var:Text47 'bei jeder neuen Nachricht' ?>
 --- usr/www/avm/html/de/fon/dect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect.js	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/dect.js	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,181 @@
 +<!--		../fon/dect.js		-->
 +<style type="text/css">
@@ -422,7 +422,7 @@
 +}
 +</script>
 --- usr/www/avm/html/de/fon/fon1dect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.frm	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fon1dect.frm	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,14 @@
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/MSN" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/MSN ?>" id="uiPostThisMSN">
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/CLIR" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/CLIR ?>" id="uiPostCLIR">
@@ -439,7 +439,7 @@
 +<? repeat [ 0 4 ] `
 +<input type="hidden" name="dect:settings/MSN$0/MSN" value="<? query dect:settings/MSN$0/MSN ?>" id="uiPostMSN$0" disabled>` ?>
 --- usr/www/avm/html/de/fon/fon1dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fon1dect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,36 @@
 +<? include ../html/$var:lang/fon/fon1dect.inc ?>
 +<div id="content">
@@ -478,7 +478,7 @@
 +	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 +</div>
 --- usr/www/avm/html/de/fon/fon1dect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.inc	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fon1dect.inc	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,16 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'MSN zuordnen' ?>
@@ -497,7 +497,7 @@
 +<? setvariable var:Text28 'Zuordnung' ?>
 +<? setvariable var:Text29 'Mobilteile' ?>
 --- usr/www/avm/html/de/fon/fon1dect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.js	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fon1dect.js	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,175 @@
 +<!--		../fon/fon1dect.js		-->
 +<style type="text/css">
@@ -674,10 +674,10 @@
 +	return g_Index[Number(nr)];
 +}
 +</script>
---- usr/www/avm/html/de/fon/fondevices.html.orig	2008-04-22 12:03:04.000000000 +0200
-+++ usr/www/avm/html/de/fon/fondevices.html	2008-04-29 11:19:21.000000000 +0200
+--- usr/www/avm/html/de/fon/fondevices.html.orig	2008-09-22 15:30:20.000000000 +0200
++++ usr/www/avm/html/de/fon/fondevices.html	2008-09-24 11:32:57.000000000 +0200
 @@ -1 +1,86 @@
--<? include ../html/$var:lang/home/fondevices.html ?>
+-<? include ../html/de/home/fondevices.html ?>
 +<? include ../html/$var:lang/fon/fondevices.inc ?>
 +<div id="content">
 +	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -765,7 +765,7 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/avm/html/de/fon/foneditdect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.frm	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/foneditdect.frm	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,8 @@
 +<input type="hidden" name="dect:command/StartSubscription" id="uiPostStartSubscription" disabled>
 +<input type="hidden" name="dect:command/Unsubscribe" id="uiPostUnsubscribe" disabled>
@@ -776,7 +776,7 @@
 +<input type="hidden" name="dect:settings/Handset$0/Type" value="<? query dect:settings/Handset$0/Type ?>" id="uiPostType$0" disabled>
 +` ?>
 --- usr/www/avm/html/de/fon/foneditdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/foneditdect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,50 @@
 +<? include ../html/$var:lang/fon/foneditdect.inc ?> 
 +<div id="content">
@@ -829,7 +829,7 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/avm/html/de/fon/foneditdect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.inc	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/foneditdect.inc	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,22 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text3 'Nummer' ?>
@@ -854,7 +854,7 @@
 +<? setvariable var:Text34 'Datum und Uhrzeit setzen' ?>
 +<? setvariable var:Text35 'Mit Hilfe der Paging-Funktion kˆnnen Sie Mobilteile lokalisieren. Per Knopfdruck kˆnnen auch Datum und Uhrzeit der DECT-Telefone gesetzt werden.' ?>
 --- usr/www/avm/html/de/fon/foneditdect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.js	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/foneditdect.js	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,106 @@
 +<!--		../fon/foneditdect.js		-->
 +<style type="text/css">
@@ -963,7 +963,7 @@
 +}
 +</script>
 --- usr/www/avm/html/de/fon/fonlistdect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.frm	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlistdect.frm	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,6 @@
 +<input type="hidden" name="var:IsdnNr" value="<? echo $var:IsdnNr ?>" id="uiPostIsdnNr">
 +<input type="hidden" name="var:parent" value="<? echo $var:parent ?>" id="uiPostParent">
@@ -972,7 +972,7 @@
 +<input type="hidden" name="telcfg:settings/NTHotDialList/Number$0" value="<? query telcfg:settings/NTHotDialList/Number$0 ?>" id="uiPostNummer$0" disabled>
 +` ?>
 --- usr/www/avm/html/de/fon/fonlistdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlistdect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,44 @@
 +<? include ../html/$var:lang/fon/fonlistisdn.inc ?>
 +<div id="content">
@@ -1019,7 +1019,7 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/avm/html/de/fon/fonlistdect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.inc	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlistdect.inc	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,19 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text3 'Nummer' ?>
@@ -1041,7 +1041,7 @@
 +<? setvariable var:Text30 'Nebenstelle' ?>
 +
 --- usr/www/avm/html/de/fon/fonlistdect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.js	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlistdect.js	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,77 @@
 +<!--		../fon/fonlistdect.js		-->
 +<style type="text/css">
@@ -1121,7 +1121,7 @@
 +}
 +</script>
 --- usr/www/avm/html/de/fon/fonlist.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlist.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlist.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,46 @@
 +<? include ../html/$var:lang/fon/fonlist.inc ?> 
 +<div id="content">
@@ -1170,7 +1170,7 @@
 +` ?>
 +</div>
 --- usr/www/avm/html/de/fon/fonsetupdect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.frm	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fonsetupdect.frm	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,9 @@
 +<input type="hidden" name="var:MsnNr" value="<? echo $var:MsnNr ?>" id="uiPostMsnNr">
 +<input type="hidden" name="dect:settings/RingOnAllMSNs" value="<? query dect:settings/RingOnAllMSNs ?>" id="uiPostRingOnAllMSNs" disabled>
@@ -1182,7 +1182,7 @@
 +<input type="hidden" name="dect:settings/MSN$0/Handsets" value="<? query dect:settings/MSN$0/Handsets ?>" id="uiPostHandsets$0" disabled>
 +` ?>
 --- usr/www/avm/html/de/fon/fonsetupdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fonsetupdect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,54 @@
 +<? include ../html/$var:lang/fon/fonsetupdect.inc ?> 
 +<div id="content">
@@ -1239,7 +1239,7 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/avm/html/de/fon/fonsetupdect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.inc	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fonsetupdect.inc	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,27 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'Die Mobilteile kˆnnen so eingerichtet werden, dass sie auf alle eingehenden Anrufe reagieren. Durch das Setzen dieser Option gehen alle Rufnummernzuordnungen verloren.' ?>
@@ -1269,7 +1269,7 @@
 +<? setvariable var:Text54 'E' ?>
 +
 --- usr/www/avm/html/de/fon/fonsetupdect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.js	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/fon/fonsetupdect.js	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,144 @@
 +<!--		../fon/fonsetupdect.js		-->
 +<style type="text/css">
@@ -1416,7 +1416,7 @@
 +}
 +</script>
 --- usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,12 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Festnetzrufnummern</div></div></div></div></div></div>
@@ -1431,7 +1431,7 @@
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,23 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Interne Nummer</div></div></div></div></div></div>
@@ -1457,7 +1457,7 @@
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_dect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_dect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,25 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">DECT-Endger‰te</div></div></div></div></div></div>
@@ -1485,7 +1485,7 @@
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_editdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_editdect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_editdect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,19 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
@@ -1507,7 +1507,7 @@
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_fon1dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_fon1dect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_fon1dect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,19 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
@@ -1529,7 +1529,7 @@
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_listdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_listdect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_listdect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,21 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Interne Nummern</div></div></div></div></div></div>
@@ -1553,7 +1553,7 @@
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_setupdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_setupdect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_setupdect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,21 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Rufnummernzuordnung</div></div></div></div></div></div>
@@ -1576,41 +1576,24 @@
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
---- usr/www/avm/html/de/home/fon1Mini.frm.orig	2008-04-22 12:03:00.000000000 +0200
-+++ usr/www/avm/html/de/home/fon1Mini.frm	2008-04-29 11:19:21.000000000 +0200
-@@ -35,3 +35,4 @@
- <input type="hidden" name="telcfg:settings/MSN/MSN9" value="<? query telcfg:settings/MSN/MSN9 ?>" id="uiMsn9" disabled>
- <input type="hidden" name="telcfg:settings/MSN/POTS" value="<? query telcfg:settings/MSN/POTS ?>" id="uiPots" disabled>
- <input type="hidden" name="var:FonAssiFromPage" value="<? echo $var:FonAssiFromPage ?>" id="uiFonAssiFromPage">
-+<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
---- usr/www/avm/html/de/home/fondevices.frm.orig	2008-04-22 12:02:32.000000000 +0200
-+++ usr/www/avm/html/de/home/fondevices.frm	2008-04-29 11:19:21.000000000 +0200
-@@ -97,3 +97,4 @@
+--- usr/www/avm/html/de/home/fondevices.frm.orig	2008-09-22 15:30:19.000000000 +0200
++++ usr/www/avm/html/de/home/fondevices.frm	2008-09-24 11:32:57.000000000 +0200
+@@ -105,3 +105,4 @@
  <input type="hidden" name="telcfg:settings/FaxMailAddress" value="<? query telcfg:settings/FaxMailAddress ?>" id="uiPostFaxMailAdr" disabled />
  <input type="hidden" name="telcfg:settings/FaxSavePath" value="<? query telcfg:settings/FaxSavePath ?>" id="uiPostFaxMailPath" disabled />
  <input type="hidden" name="var:FromFondevice" value="<? echo $var:FromFondevice ?>" id="uiPostFromFondevice" disabled />
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
---- usr/www/avm/html/de/home/fondevices.inc.orig	2008-04-22 12:02:41.000000000 +0200
-+++ usr/www/avm/html/de/home/fondevices.inc	2008-04-29 11:19:21.000000000 +0200
-@@ -25,3 +25,7 @@
- <? setvariable var:TextFax2Mail 'Fax-Empfang' ?>
- <? setvariable var:TextFaxWeiche 'bei Fax-Erkennung' ?>
- <? setvariable var:TextFaxNumber 'Fax-Nummer' ?>
-+<? setvariable var:Text27 'DECT-Handger‰te' ?>
-+<? setvariable var:Text30 'Name' ?>
-+<? setvariable var:TextDectPin 'DECT-Basisstation PIN' ?>
-+<? setvariable var:TextDectSetPin 'PIN setzen' ?>
---- usr/www/avm/html/de/home/home.html.orig	2008-04-22 12:02:38.000000000 +0200
-+++ usr/www/avm/html/de/home/home.html	2008-04-29 11:19:21.000000000 +0200
-@@ -12,7 +12,6 @@
+--- usr/www/avm/html/de/home/home.html.orig	2008-09-22 15:30:25.000000000 +0200
++++ usr/www/avm/html/de/home/home.html	2008-09-24 11:32:57.000000000 +0200
+@@ -14,7 +14,6 @@
  <script type="text/javascript">document.write(TrProduktInfo());</script>
  <tr id="uiNotSigned" style="display:none;">
  <td colspan="2" style="text-align:right;" >
--<? echo $var:txt053 ?><a href="javascript:jslPopHelp('hilfe_nichtsigniert')" id="nsLink"><? echo $var:txt054 ?></a>
+-Vom Hersteller nicht unterst√ºtzte √Ñnderungen: <a href="javascript:jslPopHelp('hilfe_nichtsigniert')">Weitere Informationen.</a>
  </td>
  </tr>
  </table>
-@@ -24,6 +23,11 @@
+@@ -26,6 +25,11 @@
  <td><script type="text/javascript">document.write(DslStateDisplay());</script></td>
  </tr>
  <tr>
@@ -1622,20 +1605,19 @@
  <td class="tdName"><script type="text/javascript">document.write(WlanStateTitle(true));</script></td>
  <td class="tdLed"><script type="text/javascript">document.write(WlanStateLed());</script></td>
  <td><script type="text/javascript">document.write(WlanStateDisplay());</script></td>
-@@ -143,5 +147,9 @@
- </tr>
+@@ -146,4 +150,9 @@
  </table>
  </div></div></div></div></div></div>
--<? include ../html/$var:lang/home/rbb_refresh.html ?>
+ <? include ../html/de/home/rbb_refresh.html ?>
 +<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
 +<input type="button" onclick="uiDoInfo()" value="Info" class=Pushbutton>
 +<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
 +<input type="button" onclick="uiDoRefresh()" value="<? echo $var:txtRefresh ?>" class=Pushbutton>
 +</div></div></div></div></div></div>
  </div>
---- usr/www/avm/html/de/home/home.js.orig	2008-04-22 12:02:56.000000000 +0200
-+++ usr/www/avm/html/de/home/home.js	2008-04-29 11:19:21.000000000 +0200
-@@ -86,6 +86,7 @@
+--- usr/www/avm/html/de/home/home.js.orig	2008-09-22 15:30:19.000000000 +0200
++++ usr/www/avm/html/de/home/home.js	2008-09-24 11:32:57.000000000 +0200
+@@ -78,6 +78,7 @@
  var g_Fon50 = "ISDN-Telefone";
  var g_FonAll = "alle Telefone";
  var g_tamActive = 0;
@@ -1643,28 +1625,28 @@
  <? repeat [ 0 4 ] `
  if ("<? query tam:settings/TAM$0/Active ?>" == "1") {
  g_tamActive += 1;
-@@ -170,7 +171,7 @@
+@@ -179,7 +180,7 @@
  SetSpanText("Status$1", uiSipState("$1"));
- ' ?>
+ ` ?>
  if (!showFon) jslDisplay("FonAll", true);
 -var signed = "<? query box:status/signed_firmware ?>";
 +var signed = "1";
- if (g_showEventlink != 0) jslDisplay("uiViewEventlink", true);
+ // if (g_showEventlink != 0) jslDisplay("uiViewEventlink", true);
  jslDisplay("uiNotSigned", signed == "0");
  jslZebrastreifen("tProdukt", "#F8F8F8", "#FFFFFF");
-@@ -1138,10 +1139,43 @@
- case "8": str += "<? echo $var:TextLeuchtetKlingelsperre ?>"; break;
- case "9": str += "<? echo $var:TextBlinkAbwesenheit ?>"; break;
- case "11": str += "<? echo $var:TextShowNews ?>"; break;
-+case "12": str += "<? echo $var:TextBlinkDECT ?>"; break;
- case "13": str += "<? echo $var:TextLeuchtetAbwesenheitUndTam ?>"; break;
+@@ -1005,10 +1006,43 @@
+ case "8": str += "leuchtet bei aktiver Klingelsperre"; break;
+ case "9": str += "blinkt bei Anruf in Abwesenheit"; break;
+ case "11": str += "zeigt neue Nachrichten im Anrufbeantworter an"; break;
++case "12": str += "leuchtet bei aktiver DECT-Verbindung"; break;
+ case "13": str += "zeigt neue Nachrichten im Anrufbeantworter, empfangene Faxe und Anrufe in Abwesenheit an"; break;
  }
  return str + ".";
  }
 +function DectStateTitle(asLink) {
 +var str = "";
 +if (asLink) str += "<a href=\"javascript:jslGoTo('dect', 'setting');\">";
-+str += "<? echo $var:TextDECT ?>";
++str += "DECT";
 +if (asLink) str += "</a>";
 +return str;
 +}
@@ -1694,9 +1676,9 @@
 +}
 +}
  function RufumleitungDisplay() {
- switch (g_cntRufumleitung)
- {
-@@ -1537,4 +1571,7 @@
+ isAllIncoming=0;
+ <? multiquery telcfg:settings/CallerIDActions/list(CallerID) `
+@@ -1419,4 +1453,7 @@
  }
  jslGoTo('fon','wecker');
  }
@@ -1705,14 +1687,14 @@
 +}
  </script>
 --- usr/www/avm/html/de/menus/klingelsperre_mimi.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/menus/klingelsperre_mimi.frm	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/menus/klingelsperre_mimi.frm	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1 @@
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
 --- usr/www/avm/html/de/menus/menu2_dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/menus/menu2_dect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/de/menus/menu2_dect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,15 @@
 +<? include ../html/$var:lang/menus/menu2_$var:menu.inc ?>
-+<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('dect','setting')"><? echo $var:TextMenuDECT ?></a><span class="PTextOnly"><? echo $var:TextMenuDECT ?></span></li>
++<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('dect','setting')">DECT</a><span class="PTextOnly">DECT</span></li>
 +<!-- wlan:settings/ap_enabled = '<? query wlan:settings/ap_enabled ?>' -->
 +<? setvariable var:showDect 0 ?>
 +<? if eq <? query dect:settings/enabled ?> 1 '<? setvariable var:showDect 1 ?>' ?>
@@ -1722,20 +1704,15 @@
 +<? if eq $var:pagename handset `<? setvariable var:classhandset 'LSubitemaktiv' ?>` ?>
 +<? if eq $var:pagename fon1NewDect `<? setvariable var:classhandset 'LSubitemaktiv' ?>` ?>
 +<? if eq $var:showDect 0 `
-+<li class="$var:classsetting"><img class="LMenuPfeil" src="$var:subpfeil"><a href="javascript:jslGoTo('dect','setting')"><? echo '$var:TextDectEinstellungen' ?></a><span class="PTextOnly"><? echo '$var:TextDectEinstellungen' ?></span></li>
++<li class="$var:classsetting"><img class="LMenuPfeil" src="$var:subpfeil"><a href="javascript:jslGoTo('dect','setting')">DECT-Einstellungen</a><span class="PTextOnly">DECT-Einstellungen</span></li>
 +` `
-+<li class="$var:classsetting"><img class="LMenuPfeil" src="$var:subpfeil"><a href="javascript:jslGoTo('dect','setting')"><? echo '$var:TextDectEinstellungen' ?></a><span class="PTextOnly"><? echo '$var:TextDectEinstellungen' ?></span></li>
++<li class="$var:classsetting"><img class="LMenuPfeil" src="$var:subpfeil"><a href="javascript:jslGoTo('dect','setting')">DECT-Einstellungen</a><span class="PTextOnly">DECT-Einstellungen</span></li>
 +` ?>
---- usr/www/avm/html/de/menus/menu2_dect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/menus/menu2_dect.inc	2008-04-29 11:19:21.000000000 +0200
-@@ -0,0 +1,2 @@
-+<? setvariable var:TextDectEinstellungen "DECT-Einstellungen" ?>
-+<? setvariable var:TextDectHandset "DECT-Handger‰te" ?>
---- usr/www/avm/html/de/menus/menu2_fon.html.orig	2008-04-22 12:02:59.000000000 +0200
-+++ usr/www/avm/html/de/menus/menu2_fon.html	2008-04-29 11:19:21.000000000 +0200
-@@ -51,6 +51,15 @@
+--- usr/www/avm/html/de/menus/menu2_fon.html.orig	2008-09-22 15:30:16.000000000 +0200
++++ usr/www/avm/html/de/menus/menu2_fon.html	2008-09-24 11:32:57.000000000 +0200
+@@ -50,6 +50,15 @@
  <? if eq $var:pagename quality `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
- <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:jslGoTo('fon','siplist')"><? echo $var:TextFonInternettelefonie ?></a><span class="PTextOnly"><? echo $var:TextFonInternettelefonie ?></span></li>
+ <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:jslGoTo('fon','siplist')">Internettelefonie</a><span class="PTextOnly">Internettelefonie</span></li>
  <? setvariable var:classname 'LSubitem' ?>
 +<? if eq $var:pagename dect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
 +<? if eq $var:pagename foneditdect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
@@ -1744,59 +1721,37 @@
 +<? if eq $var:pagename fon1 `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
 +<? if eq $var:pagename fonab `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
 +<? if eq $var:pagename fon1isdn `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
-+<li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:jslGoTo('fon','dect')"><? echo $var:TextFonDectEndgeraete ?></a><span class="PTextOnly"><? echo $var:TextFonDectEndgeraete ?></span></li>
++<li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:jslGoTo('fon','dect')">DECT-Handger‰te</a><span class="PTextOnly">DECT-Handger‰te</span></li>
 +<? setvariable var:classname 'LSubitem' ?>
  <? if eq $var:pagename routing `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  <? if eq $var:pagename route `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  <? if eq $var:pagename vorwahl `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
---- usr/www/avm/html/de/menus/menu2.inc.orig	2008-04-29 11:19:20.000000000 +0200
-+++ usr/www/avm/html/de/menus/menu2.inc	2008-04-29 11:19:21.000000000 +0200
-@@ -35,3 +35,4 @@
- <? setvariable var:TextMenuClients "Netzwerk" ?>
- <? setvariable var:TextEnergyMonitor "Energiemonitor" ?>
- <? setvariable var:TextMenuErwEinst "Erweiterte Einstellungen" ?>
-+<? setvariable var:TextMenuDECT "DECT" ?>
---- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2008-04-29 11:19:20.000000000 +0200
-+++ usr/www/avm/html/de/menus/menu2_konfig.html	2008-04-29 11:19:21.000000000 +0200
-@@ -53,6 +53,11 @@
+--- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2008-09-24 11:32:56.000000000 +0200
++++ usr/www/avm/html/de/menus/menu2_konfig.html	2008-09-24 11:32:57.000000000 +0200
+@@ -52,6 +52,11 @@
  ` `
- <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:TextMenuWLAN ?></a><span class="PTextOnly"><? echo $var:TextMenuWLAN ?></span></li>
+ <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('wlan','wlan')">WLAN</a><span class="PTextOnly">WLAN</span></li>
  ` ?>
 +<? if eq `$var:menu` 'dect' `
 +<? include ../html/$var:lang/menus/menu2_dect.html ?>
 +` `
-+<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('dect','setting')"><? echo $var:TextMenuDECT ?></a><span class="PTextOnly"><? echo $var:TextMenuDECT ?></span></li>
++<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('dect','setting')">DECT</a><span class="PTextOnly">DECT</span></li>
 +` ?>
  <? if eq `$var:menu` 'system' `
- <? include ../html/$var:lang/menus/menu2_system.html ?>
+ <? include ../html/de/menus/menu2_system.html ?>
  ` `
---- usr/www/avm/html/de/menus/menu2_konfig.inc.orig	2008-04-22 12:03:00.000000000 +0200
-+++ usr/www/avm/html/de/menus/menu2_konfig.inc	2008-04-29 11:19:21.000000000 +0200
-@@ -4,3 +4,5 @@
- <? setvariable var:TextErweiterteEinstellung "Erweiterte Einstellungen" ?>
- <? setvariable var:TextSetting "setting" ?>
- <? setvariable var:TextHandset "handset" ?>
-+<? setvariable var:TextSetting "setting" ?>
-+<? setvariable var:TextHandset "handset" ?>
---- usr/www/avm/html/de/system/infoled.html.orig	2008-04-22 12:02:59.000000000 +0200
-+++ usr/www/avm/html/de/system/infoled.html	2008-04-29 11:19:21.000000000 +0200
+--- usr/www/avm/html/de/system/infoled.html.orig	2008-09-22 15:30:11.000000000 +0200
++++ usr/www/avm/html/de/system/infoled.html	2008-09-24 11:32:57.000000000 +0200
 @@ -17,6 +17,7 @@
- <option value="9"><? echo $var:TextBlinkAbwesenheit ?></option>
- <option value="11"><? echo $var:TextShowNews ?></option>
- <option value="13"><? echo $var:TextLeuchtetAbwesenheitUndTam ?></option>
-+<option value="12"><? echo $var:TextBlinkDECT ?></option>
+ <option value="9">blinkt bei Anruf in Abwesenheit</option>
+ <option value="11">zeigt neue Nachrichten im Anrufbeantworter an</option>
+ <option value="13">zeigt neue Nachrichten im Anrufbeantworter, empfangene Faxe und Anrufe in Abwesenheit an</option>
++<option value="12">leuchtet bei aktivem DECT</option>
  </select>
  </p>
- <p class="mt10"><? if eq $var:showstick 1 `$var:TextBlinkFWUpdateUSB` `$var:TextBlinkFWUpdate` ?></p>
---- usr/www/avm/html/de/system/infoled.inc.orig	2008-04-22 12:02:36.000000000 +0200
-+++ usr/www/avm/html/de/system/infoled.inc	2008-04-29 11:19:21.000000000 +0200
-@@ -15,3 +15,4 @@
- <? setvariable var:TextShowNews 'zeigt neue Nachrichten im Anrufbeantworter an' ?>
- <? setvariable var:TextBlinkFWUpdateUSB 'Die INFO-LED blinkt immer beim Firmware-Update und w‰hrend der ‹bertragung der Sicherheitseinstellungen auf den FRITZ!WLAN USB Stick.' ?>
- <? setvariable var:TextLeuchtetAbwesenheitUndTam 'zeigt neue Nachrichten im Anrufbeantworter, empfangene Faxe und Anrufe in Abwesenheit an' ?>
-+<? setvariable var:TextBlinkDECT 'leuchtet bei aktivem DECT' ?>
+ <p class="mt10">
 --- usr/www/avm/html/dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/dect.html	2008-04-29 11:19:21.000000000 +0200
++++ usr/www/avm/html/dect.html	2008-09-24 11:32:57.000000000 +0200
 @@ -0,0 +1,93 @@
 +<html>
 +<head>
@@ -1891,3 +1846,12 @@
 +</p>
 +</body>
 +</html>
+--- usr/www/avm/html/de/home/fon1Mini.frm.orig	2008-09-22 15:30:11.000000000 +0200
++++ usr/www/avm/html/de/home/fon1Mini.frm	2008-09-24 11:32:57.000000000 +0200
+@@ -34,5 +34,6 @@
+ <input type="hidden" name="telcfg:settings/MSN/MSN8" value="<? query telcfg:settings/MSN/MSN8 ?>" id="uiMsn8" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/MSN9" value="<? query telcfg:settings/MSN/MSN9 ?>" id="uiMsn9" disabled>
+ <input type="hidden" name="telcfg:settings/MSN/POTS" value="<? query telcfg:settings/MSN/POTS ?>" id="uiPots" disabled>
++<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
+ <input type="hidden" name="var:FonAssiFromPage" value="<? echo $var:FonAssiFromPage ?>" id="uiFonAssiFromPage">
+ <input type="hidden" name="var:RufnummerKonfig" value="<? echo $var:RufnummerKonfig ?>" id="uiPostRufnummerKonfig">

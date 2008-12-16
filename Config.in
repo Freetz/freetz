@@ -32,7 +32,7 @@ config FREETZ_AVM_VERSION_r8508
 choice
 
 	prompt "Hardware type"
-		default FREETZ_TYPE_FON_WLAN_7170
+		default FREETZ_TYPE_FON_WLAN_7270
 		help
 			Select your box type here.
 
@@ -161,22 +161,7 @@ choice
 
 	prompt "Labor version"
 		depends on FREETZ_TYPE_LABOR
-		default FREETZ_TYPE_LABOR_MINI
-
-#	config FREETZ_TYPE_LABOR_BETA
-#		bool "BETA"
-#		depends on \
-#			( \
-#			FREETZ_TYPE_FON_WLAN_7170 || \
-#			FREETZ_TYPE_FON_WLAN_7270 \
-#			)
-
-	config FREETZ_TYPE_LABOR_ALL
-		bool "All In One"
-		depends on \
-			( \
-			FREETZ_TYPE_FON_WLAN_7170 \
-			)
+		default FREETZ_TYPE_LABOR_DSL
 
 	config FREETZ_TYPE_LABOR_DSL
 		bool "DSL"
@@ -186,28 +171,10 @@ choice
 			FREETZ_TYPE_FON_WLAN_7270 \
 			)
 
-#	config FREETZ_TYPE_LABOR_GAMING
-#		bool "GAMING"
-#		depends on ( \
-#			FREETZ_TYPE_FON_WLAN_7170 || \
-#			FREETZ_TYPE_FON_WLAN_7270 \
-#		)
-
 	config FREETZ_TYPE_LABOR_MINI
 		bool "MINI"
 		depends on \
-			FREETZ_TYPE_FON_WLAN_7141 || \
-			FREETZ_TYPE_FON_WLAN_7170
-	
-#	config FREETZ_TYPE_LABOR_PHONE
-#		bool "PHONE"
-#		depends on \
-#			FREETZ_TYPE_FON_WLAN_7270
-
-#	config FREETZ_TYPE_LABOR_WLAN
-#		bool "Labor WLAN / 11n"
-#		depends on \
-#			FREETZ_TYPE_FON_WLAN_7270
+			FREETZ_TYPE_FON_WLAN_7141
 
 endchoice
 
@@ -341,21 +308,10 @@ config FREETZ_TYPE_STRING
 	default "7141_labor_mini"				if FREETZ_TYPE_FON_WLAN_7141 && FREETZ_TYPE_LABOR_MINI
 	default "7150"						if FREETZ_TYPE_FON_7150
 	default "7170"						if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR
-	default "7170_beta"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_BETA
-	default "7170_labor_all"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_ALL
 	default "7170_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
-	default "7170_labor_gaming"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_GAMING
-	default "7170_labor_mini"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_MINI
-	default "7170_labor_phone"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PHONE
 	default "7240"						if FREETZ_TYPE_FON_WLAN_7240
 	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
-	default "7270_beta"					if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
-	default "7270_labor_all"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL
 	default "7270_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
-	default "7270_labor_mini"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_MINI
-	default "7270_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
-	default "7270_labor_gaming"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING
-	default "7270_labor_wlan"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN
 	default "W501V"						if FREETZ_TYPE_SPEEDPORT_W501V
 	default "W701V"						if FREETZ_TYPE_SPEEDPORT_W701V
 	default "W900V"						if FREETZ_TYPE_SPEEDPORT_W900V
@@ -397,6 +353,7 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	depends on \
 		! FREETZ_TYPE_LABOR && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
+		! FREETZ_TYPE_FON_WLAN_7170 && \
 		! FREETZ_TYPE_FON_WLAN_7240 && \
 		! FREETZ_TYPE_FON_WLAN_7270 && \
 		! FREETZ_TYPE_WLAN_3270
@@ -952,9 +909,6 @@ config FREETZ_REMOVE_HELP
 config FREETZ_REMOVE_ASSISTANT
 	bool "Remove assistant"
 	default n
-	depends on \
-		! FREETZ_TYPE_FON_WLAN_7240 \
-		&& ! FREETZ_TYPE_FON_WLAN_7270
 	help
 		Removes the installation assistant from the web menu.
 
@@ -1502,25 +1456,14 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.59.image"				if FREETZ_TYPE_FON_WLAN_7141 && ! FREETZ_TYPE_LABOR
 	default "fritz_box_40_04_59-11763M.image"						if FREETZ_TYPE_FON_WLAN_7141 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Fon_7150.AnnexB.38.04.56.image"					if FREETZ_TYPE_FON_7150
-	default "FRITZ.Box_Fon_WLAN_7170.29.04.59.image"				if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7170.29.04.67.image"				if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.58.04.59.image"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.57.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.57.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
-	default "fritz_box_7170-beta-10954.image"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_BETA
-	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.63-13038.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_ALL
 	default "fritz_box-labor-12526.image"						if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
-	default "Labor_FRITZ.Box_Fon_WLAN_7170_LabGAMING.AnnexB.29.04.93-11435.image"	if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_GAMING
-	default "fritz_box_29_04_59-11763M.image"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_MINI
-	default "FRITZ.Box_Fon_WLAN_7170_LabPHONE.AnnexB.29.04.97-10173.image"		if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7240.AnnexB.73.04.68.image"				if FREETZ_TYPE_FON_WLAN_7240
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.67.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
-	default "FRITZ_Box_Fon_WLAN_7270-beta-10576.image"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
-	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.63-13046.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL
-	default "fritz_box_54_04_59-11779M.image"					if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_MINI
-	default "FRITZ.Box_Fon_WLAN_7270_LabPHONE.AnnexB.54.04.97-11197.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
-	default "FRITZ.Box_Fon_WLAN_7270_LabCORE.AnnexB.54.04.98-12028.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN
-	default "FRITZ.Box_Fon_WLAN_7270_LabGAMING.AnnexB.54.04.93-11632.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING
-	default "fritz_box-labor-12606.image"						if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
+	default "fritz_box-labor-13225.image"						if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "fritz.box_sl_wlan.09.04.34.image"					if FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
 	default "fritz.box_wlan_3130.44.04.34.image"					if FREETZ_TYPE_WLAN_3130

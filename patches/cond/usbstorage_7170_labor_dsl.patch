@@ -1,0 +1,108 @@
+--- etc/hotplug/run_mount.orig	2008-05-24 14:38:58.000000000 +0200
++++ etc/hotplug/run_mount	2008-05-24 14:42:31.000000000 +0200
+@@ -36,31 +36,8 @@
+ # Generate a frontend'able 'nice name' to be used as mount point:
+ #
+ nicename () {
+-	local PROD
+-	local SNUM
+-	local MANU
+-	local NAME="USB"
+ 	local NICE=""
+-
+-	# Find device's strings, remove/translate evil chars...
+-	for VAR in `/sbin/lsusb -s -h $1|tr -d ' '`; do
+-		if echo $VAR | grep "='" > /dev/null 2>&1; then
+-			eval "${VAR%%=*}=`echo ${VAR##*=}|tr -c "\n\'a-zA-Z0-9" '-' | tr -d \' `"
+-		fi
+-	done
+-	
+-	# Find a string for our new nice name...
+-	if ! test -z "$PROD"; then
+-		NAME="$PROD"
+-	elif ! test -z "$MANU"; then
+-		NAME="$MANU"
+-	fi
+-	if ! test -z "$NAME"; then
+-		NAME=`echo $NAME|tr ':' ' '`
+-	fi
+-	
+-	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
+-	NICE="$NAME-Partition-$2-$3"
++	NICE="uStor$2$3"
+ 	echo $NICE
+ }
+ 
+@@ -74,6 +51,36 @@
+ USBLOCKFILE=/var/USBLOCK_storage
+ test -f /etc/hotplug/rc.usbsema && . /etc/hotplug/rc.usbsema
+ 
++mount_fs () {
++ # mount according to type of filesystem 
++ # return exit code: true - all went well; other - something went wrong 
++ # gobal variables: 
++ #  $DEVNODE, $MNTPATH, READMODE, FTPUID, FTPGID 
++	FSTYPE="vfat"   # default as long as we dont know better 
++	[[ -x /usr/bin/fstyp ]] && FSTYPE=`/usr/bin/fstyp $DEVNODE` 
++	
++	case $FSTYPE in
++	vfat)
++		mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH
++		;;
++	ext2)
++		mount -t ext2 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ext3)
++		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ntfs)
++		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		;;
++	reiserfs)
++		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	*) # fs type unknown
++		mount $DEVNODE $MNTPATH
++		;;
++	esac
++}
++
+ # Actually perform the mount operation...
+ # (TODO Checking the partition for known filesystem types)
+ #
+@@ -100,34 +106,8 @@
+         local OLD_UMASK=`umask`
+ 	umask 0
+ 	local new_filesystem=false
+-	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
+-		new_filesystem=true
+-	else
+-		if test -x /bin/ntfs-3g ; then
+-			ntfs-3g $DEVNODE $MNTPATH -o $READMODE
+-			local NTFS_RET=$?
+-			case "$NTFS_RET" in
+-			0 )
++	if mount_fs; then
+ 				new_filesystem=true
+-				;;
+-
+-			12 )	# NTFS_VOLUME_NOT_NTFS
+-				# ignore - not formatted with NTFS
+-				;;
+-			16 )    # NTFS_VOLUME_UNCLEAN_UNMOUNT
+-				# need option -o force, but we don't do this, because its not safe!
+-				eventadd 144 $MNTNAME
+-				# no fail event later on
+-				FAIL_EVENT=0
+-				;;
+-			* )
+-				# NTFS mount error
+-				eventadd 145 $MNTNAME $NTFS_RET
+-				# no fail event later on
+-				FAIL_EVENT=0
+-				;;
+-			esac
+-		fi
+ 	fi
+ 	if [ $new_filesystem = true ] ; then
+ 		umask $OLD_UMASK
