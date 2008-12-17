@@ -1,0 +1,19 @@
+--- etc/init.d/rc.net.orig	2008-12-17 23:50:33.000000000 +0100
++++ etc/init.d/rc.net	2008-12-17 23:50:33.000000000 +0100
+@@ -71,6 +71,8 @@
+ #   a) it has the parameter at all AND
+ #   b) igdd binary does *not* exist
+ [ "$_dsld_upnp" ] && [ ! "$_igdd" ] && DSLDDPARAM="-g"
++# Do we have a Samba server (smbd) or was ist stripped from the firmware?
++_smbd=$(basename $(which smbd) 2> /dev/null)
+ 
+ 
+ igddstart()
+@@ -316,6 +318,7 @@
+ #we have the samba cfg in /var, so crate them there
+ sambastart()
+ {
++   [ "$_smbd" ] || return;
+    cd /
+    tar xf /var.tar
+    /bin/smbd
