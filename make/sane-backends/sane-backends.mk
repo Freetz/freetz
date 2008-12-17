@@ -75,7 +75,9 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 
 $(PKG)_LIB_TARGET_BACKENDS_BINARIES:
 	mkdir -p $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane
-	cp -a $(SANE_BACKENDS_DIR)/backend/.libs/libsane-*.so* $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane
+	for backend in $(SANE_BACKENDS); do \
+		cp -a $(SANE_BACKENDS_DIR)/backend/.libs/libsane-$${backend}.so* $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane; \
+	done
 	$(TARGET_STRIP) $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane/*
 .PHONY: $(PKG)_LIB_TARGET_BACKENDS_BINARIES
 
@@ -85,10 +87,12 @@ $(PKG)_TARGET_CONF:
 	$(RM) $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/saned.conf
 	$(RM) $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/dll.conf
 	for backend in $(SANE_BACKENDS); do \
-		if [ -e $(SANE_BACKENDS_DIR)/backend/$${backend}.conf ]; then \
-			cp $(SANE_BACKENDS_DIR)/backend/$${backend}.conf $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends; \
+		if [ "$$backend" != "dll" ]; then \
+			if [ -e $(SANE_BACKENDS_DIR)/backend/$${backend}.conf ]; then \
+				cp $(SANE_BACKENDS_DIR)/backend/$${backend}.conf $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends; \
+			fi; \
+			echo $$backend >> $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/dll.conf; \
 		fi; \
-		echo $$backend >> $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/dll.conf; \
 	done
 .PHONY: $(PKG)_TARGET_CONF
 
