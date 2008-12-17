@@ -31,6 +31,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(LSOF_DIR) clean
 
 $(pkg)-uninstall: 
-	rm -f $(LSOF_TARGET_BINARY)
+	$(RM) $(LSOF_TARGET_BINARY)
 
 $(PKG_FINISH)

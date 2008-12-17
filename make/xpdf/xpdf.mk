@@ -38,6 +38,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(XPDF_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(XPDF_TARGET_BINARIES) $(XPDF_TARGET_LIBS)
+	$(RM) $(XPDF_TARGET_BINARIES) $(XPDF_TARGET_LIBS)
 
 $(PKG_FINISH)

@@ -66,6 +66,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(COLLECTD_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) -f $(COLLECTD_TARGET_BINARY)
+	$(RM) $(COLLECTD_TARGET_BINARY)
 
 $(PKG_FINISH)

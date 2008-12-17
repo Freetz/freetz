@@ -42,9 +42,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBGCRYPT_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgcrypt*
 
 $(pkg)-uninstall:
-	rm -f $(LIBGCRYPT_TARGET_DIR)/libgcrypt*.so*
+	$(RM) $(LIBGCRYPT_TARGET_DIR)/libgcrypt*.so*
 
 $(PKG_FINISH)

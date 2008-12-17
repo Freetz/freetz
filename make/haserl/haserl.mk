@@ -25,6 +25,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(HASERL_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(HASERL_TARGET_BINARY)
+	$(RM) $(HASERL_TARGET_BINARY)
 
 $(PKG_FINISH)

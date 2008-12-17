@@ -50,6 +50,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(MCABBER_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(MCABBER_TARGET_BINARY)
+	$(RM) $(MCABBER_TARGET_BINARY)
 
 $(PKG_FINISH)

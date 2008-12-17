@@ -58,8 +58,8 @@ $(pkg)-clean:
 	-$(MAKE) -C $(CLASSPATH_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(CLASSPATH_TARGET_BINARY)
-	rm -rf root/usr/lib/libjava*.so*
-	rm -f $(CLASSPATH_DIR)/.installed
+	$(RM) $(CLASSPATH_TARGET_BINARY)
+	$(RM) root/usr/lib/libjava*.so*
+	$(RM) $(CLASSPATH_DIR)/.installed
 
 $(PKG_FINISH)

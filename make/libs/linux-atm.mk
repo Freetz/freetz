@@ -36,9 +36,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LINUX_ATM_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libatm*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libatm*
 
 $(pkg)-uninstall:
-	rm -f $(LINUX_ATM_TARGET_DIR)/libatm*.so*
+	$(RM) $(LINUX_ATM_TARGET_DIR)/libatm*.so*
 
 $(PKG_FINISH)

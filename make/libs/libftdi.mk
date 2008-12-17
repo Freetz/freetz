@@ -38,9 +38,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBFTDI_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*
 
 $(pkg)-uninstall:
-	rm -f $(LIBFTDI_TARGET_DIR)/libftdi*.so*
+	$(RM) $(LIBFTDI_TARGET_DIR)/libftdi*.so*
 
 $(PKG_FINISH)

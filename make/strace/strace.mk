@@ -24,6 +24,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(STRACE_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(STRACE_TARGET_BINARY)
+	$(RM) $(STRACE_TARGET_BINARY)
 
 $(PKG_FINISH)

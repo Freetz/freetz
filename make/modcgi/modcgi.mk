@@ -24,6 +24,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(MODCGI_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(MODCGI_TARGET_BINARY)
+	$(RM) $(MODCGI_TARGET_BINARY)
 
 $(PKG_FINISH)

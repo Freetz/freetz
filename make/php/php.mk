@@ -51,9 +51,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(PHP_DIR) clean
-	rm -f $(PHP_FREETZ_CONFIG_FILE)
+	$(RM) $(PHP_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
-	rm -f $(PHP_TARGET_BINARY)
+	$(RM) $(PHP_TARGET_BINARY)
 
 $(PKG_FINISH)

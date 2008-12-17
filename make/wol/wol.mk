@@ -25,6 +25,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(WOL_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(WOL_TARGET_BINARY)
+	$(RM) $(WOL_TARGET_BINARY)
 
 $(PKG_FINISH)

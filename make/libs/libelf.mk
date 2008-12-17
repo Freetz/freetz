@@ -42,9 +42,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBELF_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*
 
 $(pkg)-uninstall:
-	rm -f $(LIBELF_TARGET_DIR)/libelf*.so*
+	$(RM) $(LIBELF_TARGET_DIR)/libelf*.so*
 
 $(PKG_FINISH)

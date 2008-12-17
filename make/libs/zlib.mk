@@ -39,11 +39,11 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.* \
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.* \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zlib.h \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zconf.h 	
 
 $(pkg)-uninstall:
-	rm -f $(ZLIB_TARGET_DIR)/libz*.so*
+	$(RM) $(ZLIB_TARGET_DIR)/libz*.so*
 
 $(PKG_FINISH)

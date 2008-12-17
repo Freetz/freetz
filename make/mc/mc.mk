@@ -66,12 +66,12 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(pkg)-clean-help
 endif
 
 $(pkg)-clean-help: 
-	@rm -f $(MC_TARGET_HELP)
+	@$(RM) $(MC_TARGET_HELP)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(MC_DIR) clean
 
 $(pkg)-uninstall: 
-	rm -f $(MC_TARGET_BINARY)
+	$(RM) $(MC_TARGET_BINARY)
 
 $(PKG_FINISH)

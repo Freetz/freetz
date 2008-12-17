@@ -41,9 +41,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBFREETZ_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfreetz*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfreetz*
 
 $(pkg)-uninstall:
-	rm -f $(LIBFREETZ_DEST_LIB)/libfreetz*.so*
+	$(RM) $(LIBFREETZ_DEST_LIB)/libfreetz*.so*
 
 $(PKG_FINISH)

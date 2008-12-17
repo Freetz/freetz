@@ -27,11 +27,11 @@ $(pkg)-precompiled: $(FLEX_STAGING_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(FLEX_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfl* \
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfl* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fl* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man1/flex.1
 
 $(pkg)-uninstall:
-	rm -f $(FLEX_TARGET_DIR)/libfl*
+	$(RM) $(FLEX_TARGET_DIR)/libfl*
 
 $(PKG_FINISH)

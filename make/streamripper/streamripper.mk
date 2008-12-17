@@ -35,6 +35,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(STREAMRIPPER_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(STREAMRIPPER_TARGET_BINARY)
+	$(RM) $(STREAMRIPPER_TARGET_BINARY)
 
 $(PKG_FINISH)

@@ -32,6 +32,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(MATRIXTUNNEL_DIR)/src clean
 
 $(pkg)-uninstall: 
-	rm -f $(MATRIXTUNNEL_TARGET_BINARY)
+	$(RM) $(MATRIXTUNNEL_TARGET_BINARY)
 
 $(PKG_FINISH)

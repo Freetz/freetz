@@ -29,10 +29,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(CYASSL_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl*
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl*
 
 $(pkg)-uninstall:
-	rm -f $(CYASSL_TARGET_DIR)/libcyassl*.so*
+	$(RM) $(CYASSL_TARGET_DIR)/libcyassl*.so*
 
 $(PKG_FINISH)

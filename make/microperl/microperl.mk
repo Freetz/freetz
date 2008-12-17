@@ -39,11 +39,11 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_MODULES)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(MICROPERL_DIR) -f Makefile.micro clean
-	-$(RM) -rf $(MICROPERL_TARGET_MODULES_DIR)
+	-$(RM) -r $(MICROPERL_TARGET_MODULES_DIR)
 	-$(RM) $(MICROPERL_TARGET_MODULES)
 
 $(pkg)-uninstall:
 	$(RM) $(MICROPERL_TARGET_BINARY)
-	$(RM) -rf $(MICROPERL_TARGET_MODULES_DIR)
+	$(RM) -r $(MICROPERL_TARGET_MODULES_DIR)
 
 $(PKG_FINISH)

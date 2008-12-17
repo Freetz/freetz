@@ -26,12 +26,12 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(SG3UTILS_DIR) clean
-	rm -f $(SG3UTILS_DIR)/.installed
-	rm -f $(SG3UTILS_DIR)/.built
-	rm -f $(SG3UTILS_DIR)/.configured
+	$(RM) $(SG3UTILS_DIR)/.installed
+	$(RM) $(SG3UTILS_DIR)/.built
+	$(RM) $(SG3UTILS_DIR)/.configured
 
 $(pkg)-uninstall:
-	rm -f $(SG3UTILS_TARGET_BINARY)
+	$(RM) $(SG3UTILS_TARGET_BINARY)
 
 $(PKG_FINISH)
 

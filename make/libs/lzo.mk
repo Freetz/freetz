@@ -39,9 +39,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LZO_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2*
 
 $(pkg)-uninstall:
-	rm -f $(LZO_TARGET_DIR)/liblzo2*.so*
+	$(RM) $(LZO_TARGET_DIR)/liblzo2*.so*
 
 $(PKG_FINISH)

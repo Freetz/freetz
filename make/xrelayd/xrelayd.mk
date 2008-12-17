@@ -29,6 +29,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(XRELAYD_DIR) clean
 
 $(pkg)-uninstall: 
-	rm -f $(XRELAYD_TARGET_BINARY)
+	$(RM) $(XRELAYD_TARGET_BINARY)
 
 $(PKG_FINISH)

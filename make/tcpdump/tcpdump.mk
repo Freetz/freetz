@@ -39,6 +39,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(TCPDUMP_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(TCPDUMP_TARGET_BINARY)
+	$(RM) $(TCPDUMP_TARGET_BINARY)
 
 $(PKG_FINISH)

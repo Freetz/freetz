@@ -38,10 +38,10 @@ $(pkg)-precompiled:  $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(XYSSL_DIR)/library clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxyssl*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/xyssl*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxyssl*
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/xyssl*
 
 $(pkg)-uninstall:
-	rm -f $(XYSSL_TARGET_DIR)/libxyssl*.so*
+	$(RM) $(XYSSL_TARGET_DIR)/libxyssl*.so*
 
 $(PKG_FINISH)

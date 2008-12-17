@@ -35,9 +35,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBEVENT_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*
 
 $(pkg)-uninstall:
-	rm -f $(LIBEVENT_TARGET_DIR)/libevent*.so*
+	$(RM) $(LIBEVENT_TARGET_DIR)/libevent*.so*
 
 $(PKG_FINISH)

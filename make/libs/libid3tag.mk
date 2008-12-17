@@ -40,9 +40,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBID3TAG_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libid3tag*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libid3tag*
 
 $(pkg)-uninstall:
-	rm -f $(LIBID3TAG_TARGET_DIR)/libid3tag*.so*
+	$(RM) $(LIBID3TAG_TARGET_DIR)/libid3tag*.so*
 
 $(PKG_FINISH)

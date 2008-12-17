@@ -37,9 +37,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBTOOL_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libltdl.*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libltdl.*
 
 $(pkg)-uninstall:
-	rm -f $(LIBTOOL_TARGET_DIR)/libltdl*.so*
+	$(RM) $(LIBTOOL_TARGET_DIR)/libltdl*.so*
 
 $(PKG_FINISH)

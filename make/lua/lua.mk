@@ -41,6 +41,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(LUA_DIR) clean
 
 $(pkg)-uninstall: 
-	rm -f $(LUA_TARGET_BINARY)
+	$(RM) $(LUA_TARGET_BINARY)
 
 $(PKG_FINISH)

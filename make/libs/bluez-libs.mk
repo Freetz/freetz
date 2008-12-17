@@ -36,12 +36,12 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(BLUEZ_LIBS_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libbluetooth.* \
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libbluetooth.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/bluetooth \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/bluez.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/bluez.m4
 
 $(pkg)-uninstall:
-	rm -f $(BLUEZ_LIBS_TARGET_DIR)/libbluetooth*.so*
+	$(RM) $(BLUEZ_LIBS_TARGET_DIR)/libbluetooth*.so*
 
 $(PKG_FINISH)

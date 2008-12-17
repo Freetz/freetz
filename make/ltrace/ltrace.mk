@@ -50,7 +50,7 @@ $(pkg)-clean:
 	-$(MAKE) -C $(LTRACE_DIR) clean ARCH=mipsel
 
 $(pkg)-uninstall:
-	rm -f $(LTRACE_TARGET_BINARY)
-	rm -f $(LTRACE_TARGET_CONF)
+	$(RM) $(LTRACE_TARGET_BINARY)
+	$(RM) $(LTRACE_TARGET_CONF)
 
 $(PKG_FINISH)
