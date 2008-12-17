@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.9.24)
+$(call PKG_INIT_BIN, 0.9.25)
 $(PKG)_SOURCE:=haserl-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/haserl
 $(PKG)_DIR:=$(SOURCE_DIR)/haserl-$($(PKG)_VERSION)
