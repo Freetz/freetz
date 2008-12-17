@@ -38,10 +38,10 @@ lzma-source: $(LZMA_DIR)/.unpacked
 
 lzma-clean:
 	-$(MAKE) -C $(LZMA_LIB_DIR) clean
-	rm -f $(LZMA_DIR)/liblzma.a
+	$(RM) $(LZMA_DIR)/liblzma.a
 
 lzma-dirclean:
-	rm -rf $(LZMA_DIR)
+	$(RM) -r $(LZMA_DIR)
 
 lzma-distclean: lzma-dirclean
-	rm -f $(TOOLS_DIR)/lzma
+	$(RM) $(TOOLS_DIR)/lzma

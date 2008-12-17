@@ -50,8 +50,8 @@ squashfs3-clean:
 	-$(MAKE) -C $(MKSQUASHFS3_DIR) clean
 
 squashfs3-dirclean:
-	rm -rf $(SQUASHFS3_DIR)
+	$(RM) -r $(SQUASHFS3_DIR)
 
 squashfs3-distclean: squashfs3-dirclean
-	rm -f $(TOOLS_DIR)/mksquashfs3-lzma
-	rm -f $(TOOLS_DIR)/unsquashfs3-lzma
+	$(RM) $(TOOLS_DIR)/mksquashfs3-lzma
+	$(RM) $(TOOLS_DIR)/unsquashfs3-lzma

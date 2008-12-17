@@ -48,7 +48,7 @@ fakeroot-clean:
 	$(MAKE) -C $(FAKEROOT_DIR) clean
 
 fakeroot-dirclean:
-	rm -rf $(FAKEROOT_DIR)
+	$(RM) -r $(FAKEROOT_DIR)
 
 fakeroot-distclean:
-	rm -rf $(TOOLS_DIR)/usr
+	$(RM) -r $(TOOLS_DIR)/usr
