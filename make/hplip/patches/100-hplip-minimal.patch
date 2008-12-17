@@ -1,0 +1,866 @@
+--- configure	2008-12-17 11:40:54.000000000 +0100
++++ configure	2008-12-17 11:41:08.000000000 +0100
+@@ -22678,225 +22678,6 @@
+ 
+ fi
+ 
+-if test "$hpijs_only_build" = "no"; then
+-   { echo "$as_me:$LINENO: checking for cupsDoFileRequest in -lcups" >&5
+-echo $ECHO_N "checking for cupsDoFileRequest in -lcups... $ECHO_C" >&6; }
+-if test "${ac_cv_lib_cups_cupsDoFileRequest+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lcups  $LIBS"
+-cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
+-_ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
+-/* end confdefs.h.  */
+-
+-/* Override any GCC internal prototype to avoid an error.
+-   Use char because int might match the return type of a GCC
+-   builtin and then its argument prototype would still apply.  */
+-#ifdef __cplusplus
+-extern "C"
+-#endif
+-char cupsDoFileRequest ();
+-int
+-main ()
+-{
+-return cupsDoFileRequest ();
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-rm -f conftest.$ac_objext conftest$ac_exeext
+-if { (ac_try="$ac_link"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_link") 2>conftest.er1
+-  ac_status=$?
+-  grep -v '^ *+' conftest.er1 >conftest.err
+-  rm -f conftest.er1
+-  cat conftest.err >&5
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } && {
+-	 test -z "$ac_c_werror_flag" ||
+-	 test ! -s conftest.err
+-       } && test -s conftest$ac_exeext &&
+-       $as_test_x conftest$ac_exeext; then
+-  ac_cv_lib_cups_cupsDoFileRequest=yes
+-else
+-  echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-	ac_cv_lib_cups_cupsDoFileRequest=no
+-fi
+-
+-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+-      conftest$ac_exeext conftest.$ac_ext
+-LIBS=$ac_check_lib_save_LIBS
+-fi
+-{ echo "$as_me:$LINENO: result: $ac_cv_lib_cups_cupsDoFileRequest" >&5
+-echo "${ECHO_T}$ac_cv_lib_cups_cupsDoFileRequest" >&6; }
+-if test $ac_cv_lib_cups_cupsDoFileRequest = yes; then
+-  LIBS="$LIBS"
+-else
+-  { { echo "$as_me:$LINENO: error: cannot find libcups support" >&5
+-echo "$as_me: error: cannot find libcups support" >&2;}
+-   { (exit 9); exit 9; }; }
+-fi
+-
+-
+-for ac_header in cups/cups.h
+-do
+-as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+-  { echo "$as_me:$LINENO: checking for $ac_header" >&5
+-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-fi
+-ac_res=`eval echo '${'$as_ac_Header'}'`
+-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+-echo "${ECHO_T}$ac_res" >&6; }
+-else
+-  # Is the header compilable?
+-{ echo "$as_me:$LINENO: checking $ac_header usability" >&5
+-echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6; }
+-cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
+-_ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
+-/* end confdefs.h.  */
+-$ac_includes_default
+-#include <$ac_header>
+-_ACEOF
+-rm -f conftest.$ac_objext
+-if { (ac_try="$ac_compile"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_compile") 2>conftest.er1
+-  ac_status=$?
+-  grep -v '^ *+' conftest.er1 >conftest.err
+-  rm -f conftest.er1
+-  cat conftest.err >&5
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } && {
+-	 test -z "$ac_c_werror_flag" ||
+-	 test ! -s conftest.err
+-       } && test -s conftest.$ac_objext; then
+-  ac_header_compiler=yes
+-else
+-  echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-	ac_header_compiler=no
+-fi
+-
+-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+-{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+-echo "${ECHO_T}$ac_header_compiler" >&6; }
+-
+-# Is the header present?
+-{ echo "$as_me:$LINENO: checking $ac_header presence" >&5
+-echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6; }
+-cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
+-_ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
+-/* end confdefs.h.  */
+-#include <$ac_header>
+-_ACEOF
+-if { (ac_try="$ac_cpp conftest.$ac_ext"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+-  ac_status=$?
+-  grep -v '^ *+' conftest.er1 >conftest.err
+-  rm -f conftest.er1
+-  cat conftest.err >&5
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } >/dev/null && {
+-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+-	 test ! -s conftest.err
+-       }; then
+-  ac_header_preproc=yes
+-else
+-  echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-  ac_header_preproc=no
+-fi
+-
+-rm -f conftest.err conftest.$ac_ext
+-{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+-echo "${ECHO_T}$ac_header_preproc" >&6; }
+-
+-# So?  What about this header?
+-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+-  yes:no: )
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+-echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+-echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
+-    ac_header_preproc=yes
+-    ;;
+-  no:yes:* )
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+-echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+-echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+-echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+-echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+-echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+-echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
+-    ( cat <<\_ASBOX
+-## ------------------------ ##
+-## Report this to 2.8.10.33 ##
+-## ------------------------ ##
+-_ASBOX
+-     ) | sed "s/^/$as_me: WARNING:     /" >&2
+-    ;;
+-esac
+-{ echo "$as_me:$LINENO: checking for $ac_header" >&5
+-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  eval "$as_ac_Header=\$ac_header_preproc"
+-fi
+-ac_res=`eval echo '${'$as_ac_Header'}'`
+-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+-echo "${ECHO_T}$ac_res" >&6; }
+-
+-fi
+-if test `eval echo '${'$as_ac_Header'}'` = yes; then
+-  cat >>confdefs.h <<_ACEOF
+-#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
+-_ACEOF
+-
+-else
+-  { { echo "$as_me:$LINENO: error: cannot find cups-devel support" >&5
+-echo "$as_me: error: cannot find cups-devel support" >&2;}
+-   { (exit 3); exit 3; }; }
+-fi
+-
+-done
+-
+    { echo "$as_me:$LINENO: checking for usb_init in -lusb" >&5
+ echo $ECHO_N "checking for usb_init in -lusb... $ECHO_C" >&6; }
+ if test "${ac_cv_lib_usb_usb_init+set}" = set; then
+@@ -23115,350 +22896,6 @@
+ 
+ done
+ 
+-
+-
+-
+-
+-
+-        if test -n "$PYTHON"; then
+-      # If the user set $PYTHON, use it and don't search something else.
+-      { echo "$as_me:$LINENO: checking whether $PYTHON version >= 2.2" >&5
+-echo $ECHO_N "checking whether $PYTHON version >= 2.2... $ECHO_C" >&6; }
+-      prog="import sys, string
+-# split strings by '.' and convert to numeric.  Append some zeros
+-# because we need at least 4 digits for the hex conversion.
+-minver = map(int, string.split('2.2', '.')) + [0, 0, 0]
+-minverhex = 0
+-for i in xrange(0, 4): minverhex = (minverhex << 8) + minver[i]
+-sys.exit(sys.hexversion < minverhex)"
+-  if { echo "$as_me:$LINENO: $PYTHON -c "$prog"" >&5
+-   ($PYTHON -c "$prog") >&5 2>&5
+-   ac_status=$?
+-   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-   (exit $ac_status); }; then
+-  { echo "$as_me:$LINENO: result: yes" >&5
+-echo "${ECHO_T}yes" >&6; }
+-else
+-  { { echo "$as_me:$LINENO: error: too old" >&5
+-echo "$as_me: error: too old" >&2;}
+-   { (exit 1); exit 1; }; }
+-fi
+-
+-      am_display_PYTHON=$PYTHON
+-    else
+-      # Otherwise, try each interpreter until we find one that satisfies
+-      # VERSION.
+-      { echo "$as_me:$LINENO: checking for a Python interpreter with version >= 2.2" >&5
+-echo $ECHO_N "checking for a Python interpreter with version >= 2.2... $ECHO_C" >&6; }
+-if test "${am_cv_pathless_PYTHON+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-
+-	for am_cv_pathless_PYTHON in python python2 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0 python1.6 python1.5 none; do
+-	  test "$am_cv_pathless_PYTHON" = none && break
+-	  prog="import sys, string
+-# split strings by '.' and convert to numeric.  Append some zeros
+-# because we need at least 4 digits for the hex conversion.
+-minver = map(int, string.split('2.2', '.')) + [0, 0, 0]
+-minverhex = 0
+-for i in xrange(0, 4): minverhex = (minverhex << 8) + minver[i]
+-sys.exit(sys.hexversion < minverhex)"
+-  if { echo "$as_me:$LINENO: $am_cv_pathless_PYTHON -c "$prog"" >&5
+-   ($am_cv_pathless_PYTHON -c "$prog") >&5 2>&5
+-   ac_status=$?
+-   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-   (exit $ac_status); }; then
+-  break
+-fi
+-
+-	done
+-fi
+-{ echo "$as_me:$LINENO: result: $am_cv_pathless_PYTHON" >&5
+-echo "${ECHO_T}$am_cv_pathless_PYTHON" >&6; }
+-      # Set $PYTHON to the absolute path of $am_cv_pathless_PYTHON.
+-      if test "$am_cv_pathless_PYTHON" = none; then
+-	PYTHON=:
+-      else
+-        # Extract the first word of "$am_cv_pathless_PYTHON", so it can be a program name with args.
+-set dummy $am_cv_pathless_PYTHON; ac_word=$2
+-{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+-if test "${ac_cv_path_PYTHON+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  case $PYTHON in
+-  [\\/]* | ?:[\\/]*)
+-  ac_cv_path_PYTHON="$PYTHON" # Let the user override the test with a path.
+-  ;;
+-  *)
+-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+-for as_dir in $PATH
+-do
+-  IFS=$as_save_IFS
+-  test -z "$as_dir" && as_dir=.
+-  for ac_exec_ext in '' $ac_executable_extensions; do
+-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+-    ac_cv_path_PYTHON="$as_dir/$ac_word$ac_exec_ext"
+-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+-    break 2
+-  fi
+-done
+-done
+-IFS=$as_save_IFS
+-
+-  ;;
+-esac
+-fi
+-PYTHON=$ac_cv_path_PYTHON
+-if test -n "$PYTHON"; then
+-  { echo "$as_me:$LINENO: result: $PYTHON" >&5
+-echo "${ECHO_T}$PYTHON" >&6; }
+-else
+-  { echo "$as_me:$LINENO: result: no" >&5
+-echo "${ECHO_T}no" >&6; }
+-fi
+-
+-
+-      fi
+-      am_display_PYTHON=$am_cv_pathless_PYTHON
+-    fi
+-
+-
+-  if test "$PYTHON" = :; then
+-      { { echo "$as_me:$LINENO: error: no suitable Python interpreter found" >&5
+-echo "$as_me: error: no suitable Python interpreter found" >&2;}
+-   { (exit 1); exit 1; }; }
+-  else
+-
+-
+-  { echo "$as_me:$LINENO: checking for $am_display_PYTHON version" >&5
+-echo $ECHO_N "checking for $am_display_PYTHON version... $ECHO_C" >&6; }
+-if test "${am_cv_python_version+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  am_cv_python_version=`$PYTHON -c "import sys; print sys.version[:3]"`
+-fi
+-{ echo "$as_me:$LINENO: result: $am_cv_python_version" >&5
+-echo "${ECHO_T}$am_cv_python_version" >&6; }
+-  PYTHON_VERSION=$am_cv_python_version
+-
+-
+-
+-  PYTHON_PREFIX='${prefix}'
+-
+-  PYTHON_EXEC_PREFIX='${exec_prefix}'
+-
+-
+-
+-  { echo "$as_me:$LINENO: checking for $am_display_PYTHON platform" >&5
+-echo $ECHO_N "checking for $am_display_PYTHON platform... $ECHO_C" >&6; }
+-if test "${am_cv_python_platform+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  am_cv_python_platform=`$PYTHON -c "import sys; print sys.platform"`
+-fi
+-{ echo "$as_me:$LINENO: result: $am_cv_python_platform" >&5
+-echo "${ECHO_T}$am_cv_python_platform" >&6; }
+-  PYTHON_PLATFORM=$am_cv_python_platform
+-
+-
+-
+-
+-                { echo "$as_me:$LINENO: checking for $am_display_PYTHON script directory" >&5
+-echo $ECHO_N "checking for $am_display_PYTHON script directory... $ECHO_C" >&6; }
+-if test "${am_cv_python_pythondir+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  am_cv_python_pythondir=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib(0,0,prefix='$PYTHON_PREFIX')" 2>/dev/null ||
+-     echo "$PYTHON_PREFIX/lib/python$PYTHON_VERSION/site-packages"`
+-fi
+-{ echo "$as_me:$LINENO: result: $am_cv_python_pythondir" >&5
+-echo "${ECHO_T}$am_cv_python_pythondir" >&6; }
+-  pythondir=$am_cv_python_pythondir
+-
+-
+-
+-  pkgpythondir=\${pythondir}/$PACKAGE
+-
+-
+-            { echo "$as_me:$LINENO: checking for $am_display_PYTHON extension module directory" >&5
+-echo $ECHO_N "checking for $am_display_PYTHON extension module directory... $ECHO_C" >&6; }
+-if test "${am_cv_python_pyexecdir+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  am_cv_python_pyexecdir=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib(1,0,prefix='$PYTHON_EXEC_PREFIX')" 2>/dev/null ||
+-     echo "${PYTHON_EXEC_PREFIX}/lib/python${PYTHON_VERSION}/site-packages"`
+-fi
+-{ echo "$as_me:$LINENO: result: $am_cv_python_pyexecdir" >&5
+-echo "${ECHO_T}$am_cv_python_pyexecdir" >&6; }
+-  pyexecdir=$am_cv_python_pyexecdir
+-
+-
+-
+-  pkgpyexecdir=\${pyexecdir}/$PACKAGE
+-
+-
+-
+-  fi
+-
+-
+-   { echo "$as_me:$LINENO: checking for path to Python.h" >&5
+-echo $ECHO_N "checking for path to Python.h... $ECHO_C" >&6; }
+-   PYTHONINCLUDEDIR=`$PYTHON -c "from distutils.sysconfig import get_python_inc; print get_python_inc();"`
+-   { echo "$as_me:$LINENO: result: \"using $PYTHONINCLUDEDIR\"" >&5
+-echo "${ECHO_T}\"using $PYTHONINCLUDEDIR\"" >&6; }
+-
+-
+-for ac_header in python$PYTHON_VERSION/Python.h
+-do
+-as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+-  { echo "$as_me:$LINENO: checking for $ac_header" >&5
+-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-fi
+-ac_res=`eval echo '${'$as_ac_Header'}'`
+-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+-echo "${ECHO_T}$ac_res" >&6; }
+-else
+-  # Is the header compilable?
+-{ echo "$as_me:$LINENO: checking $ac_header usability" >&5
+-echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6; }
+-cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
+-_ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
+-/* end confdefs.h.  */
+-$ac_includes_default
+-#include <$ac_header>
+-_ACEOF
+-rm -f conftest.$ac_objext
+-if { (ac_try="$ac_compile"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_compile") 2>conftest.er1
+-  ac_status=$?
+-  grep -v '^ *+' conftest.er1 >conftest.err
+-  rm -f conftest.er1
+-  cat conftest.err >&5
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } && {
+-	 test -z "$ac_c_werror_flag" ||
+-	 test ! -s conftest.err
+-       } && test -s conftest.$ac_objext; then
+-  ac_header_compiler=yes
+-else
+-  echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-	ac_header_compiler=no
+-fi
+-
+-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+-{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+-echo "${ECHO_T}$ac_header_compiler" >&6; }
+-
+-# Is the header present?
+-{ echo "$as_me:$LINENO: checking $ac_header presence" >&5
+-echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6; }
+-cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
+-_ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
+-/* end confdefs.h.  */
+-#include <$ac_header>
+-_ACEOF
+-if { (ac_try="$ac_cpp conftest.$ac_ext"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+-  ac_status=$?
+-  grep -v '^ *+' conftest.er1 >conftest.err
+-  rm -f conftest.er1
+-  cat conftest.err >&5
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } >/dev/null && {
+-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+-	 test ! -s conftest.err
+-       }; then
+-  ac_header_preproc=yes
+-else
+-  echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-  ac_header_preproc=no
+-fi
+-
+-rm -f conftest.err conftest.$ac_ext
+-{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+-echo "${ECHO_T}$ac_header_preproc" >&6; }
+-
+-# So?  What about this header?
+-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+-  yes:no: )
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+-echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+-echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
+-    ac_header_preproc=yes
+-    ;;
+-  no:yes:* )
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+-echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+-echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+-echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+-echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+-echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+-echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
+-    ( cat <<\_ASBOX
+-## ------------------------ ##
+-## Report this to 2.8.10.33 ##
+-## ------------------------ ##
+-_ASBOX
+-     ) | sed "s/^/$as_me: WARNING:     /" >&2
+-    ;;
+-esac
+-{ echo "$as_me:$LINENO: checking for $ac_header" >&5
+-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  eval "$as_ac_Header=\$ac_header_preproc"
+-fi
+-ac_res=`eval echo '${'$as_ac_Header'}'`
+-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+-echo "${ECHO_T}$ac_res" >&6; }
+-
+-fi
+-if test `eval echo '${'$as_ac_Header'}'` = yes; then
+-  cat >>confdefs.h <<_ACEOF
+-#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
+-_ACEOF
+-
+-else
+-  { { echo "$as_me:$LINENO: error: cannot find python-devel support" >&5
+-echo "$as_me: error: cannot find python-devel support" >&2;}
+-   { (exit 6); exit 6; }; }
+-fi
+-
+-done
+-
+-fi
+-
+ if test "$hpijs_only_build" = "no" && test "$scan_build" = "yes"; then
+    { echo "$as_me:$LINENO: checking for sane_open in -lsane" >&5
+ echo $ECHO_N "checking for sane_open in -lsane... $ECHO_C" >&6; }
+--- hplip.conf.in	2008-12-17 11:40:54.000000000 +0100
++++ hplip.conf.in	2008-12-17 11:41:08.000000000 +0100
+@@ -5,14 +5,6 @@
+ 
+ [dirs]
+ home=@abs_datadir@/hplip
+-run=/var/run
+-ppd=@abs_hpppddir@
+-ppdbase=@abs_ppddir@
+-doc=@abs_docdir@
+-icon=@icondir@
+-cupsbackend=@cupsbackenddir@
+-cupsfilter=@cupsfilterdir@
+-drv=@abs_drvdir@
+ 
+ # Following values are determined at configure time and cannot be changed.
+ [configure]
+--- ltmain.sh	2008-12-17 11:40:54.000000000 +0100
++++ ltmain.sh	2008-12-17 11:41:08.000000000 +0100
+@@ -5984,17 +5984,6 @@
+ 	  # Determine the prefix the user has applied to our future dir.
+ 	  inst_prefix_dir=`$echo "$destdir" | $SED "s%$libdir\$%%"`
+ 
+-	  # Don't allow the user to place us outside of our expected
+-	  # location b/c this prevents finding dependent libraries that
+-	  # are installed to the same prefix.
+-	  # At present, this check doesn't affect windows .dll's that
+-	  # are installed into $libdir/../bin (currently, that works fine)
+-	  # but it's something to keep an eye on.
+-	  if test "$inst_prefix_dir" = "$destdir"; then
+-	    $echo "$modename: error: cannot install \`$file' to a directory not ending in $libdir" 1>&2
+-	    exit $EXIT_FAILURE
+-	  fi
+-
+ 	  if test -n "$inst_prefix_dir"; then
+ 	    # Stick the inst_prefix_dir data into the link command.
+ 	    relink_command=`$echo "$relink_command" | $SP2NL | $SED "s%@inst_prefix_dir@%-inst-prefix-dir $inst_prefix_dir%" | $NL2SP`
+--- Makefile.in	2008-12-17 11:40:53.000000000 +0100
++++ Makefile.in	2008-12-17 11:42:14.000000000 +0100
+@@ -179,9 +179,7 @@
+ libsane_hpaioLTLIBRARIES_INSTALL = $(INSTALL)
+ pcardextLTLIBRARIES_INSTALL = $(INSTALL)
+ scanextLTLIBRARIES_INSTALL = $(INSTALL)
+-LTLIBRARIES = $(cupsext_LTLIBRARIES) $(hpmudext_LTLIBRARIES) \
+-	$(lib_LTLIBRARIES) $(libsane_hpaio_LTLIBRARIES) \
+-	$(pcardext_LTLIBRARIES) $(scanext_LTLIBRARIES)
++LTLIBRARIES = $(lib_LTLIBRARIES) $(libsane_hpaio_LTLIBRARIES)
+ cupsext_la_DEPENDENCIES =
+ am__cupsext_la_SOURCES_DIST = prnt/cupsext/cupsext.c
+ @HPLIP_BUILD_TRUE@am_cupsext_la_OBJECTS = cupsext_la-cupsext.lo
+@@ -2741,7 +2739,7 @@
+ @HPLIP_BUILD_TRUE@hplip_desktop_DATA = hplip.desktop
+ 
+ # hplip.conf
+-@HPLIP_BUILD_TRUE@hplip_confdir = /etc/hp
++@HPLIP_BUILD_TRUE@hplip_confdir = /etc/default.hplip
+ @HPLIP_BUILD_TRUE@hplip_conf_DATA = hplip.conf
+ 
+ # hplip-systray.desktop
+@@ -3027,19 +3025,6 @@
+ 	$(pcardext_la_LINK) $(am_pcardext_la_rpath) $(pcardext_la_OBJECTS) $(pcardext_la_LIBADD) $(LIBS)
+ scanext.la: $(scanext_la_OBJECTS) $(scanext_la_DEPENDENCIES) 
+ 	$(scanext_la_LINK) $(am_scanext_la_rpath) $(scanext_la_OBJECTS) $(scanext_la_LIBADD) $(LIBS)
+-install-binPROGRAMS: $(bin_PROGRAMS)
+-	@$(NORMAL_INSTALL)
+-	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
+-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+-	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+-	  if test -f $$p \
+-	     || test -f $$p1 \
+-	  ; then \
+-	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
+-	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(binPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(bindir)/$$f'"; \
+-	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(binPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(bindir)/$$f" || exit 1; \
+-	  else :; fi; \
+-	done
+ 
+ uninstall-binPROGRAMS:
+ 	@$(NORMAL_UNINSTALL)
+@@ -6833,7 +6818,7 @@
+ 	       exit 1; } >&2
+ check-am: all-am
+ check: check-am
+-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA)
++all-am: Makefile $(LTLIBRARIES)
+ install-binPROGRAMS: install-libLTLIBRARIES
+ 
+ installdirs:
+@@ -6890,29 +6875,9 @@
+ 
+ info-am:
+ 
+-install-data-am: install-cupsextLTLIBRARIES install-dist_baseSCRIPTS \
+-	install-dist_cmdSCRIPTS install-dist_copierSCRIPTS \
+-	install-dist_cupsdrvDATA install-dist_faxSCRIPTS \
+-	install-dist_faxppdDATA install-dist_hpfaxSCRIPTS \
+-	install-dist_hplipSCRIPTS install-dist_images_128x128DATA \
+-	install-dist_images_16x16DATA install-dist_images_24x24DATA \
+-	install-dist_images_32x32DATA install-dist_images_48x48DATA \
+-	install-dist_images_devicesDATA install-dist_images_otherDATA \
+-	install-dist_installSCRIPTS install-dist_ldlDATA \
+-	install-dist_localzDATA install-dist_modelsDATA \
+-	install-dist_pcardSCRIPTS install-dist_pclDATA \
+-	install-dist_plugins4SCRIPTS install-dist_pluginsSCRIPTS \
+-	install-dist_postscriptDATA install-dist_ppdDATA \
+-	install-dist_prntSCRIPTS install-dist_ripSCRIPTS \
+-	install-dist_rulesDATA install-dist_scanSCRIPTS \
+-	install-dist_ui4SCRIPTS install-dist_uiSCRIPTS \
+-	install-dist_unrelDATA install-dist_www0DATA \
+-	install-dist_www3DATA install-dist_www4DATA install-docDATA \
+-	install-hpPROGRAMS install-hp_mkuriPROGRAMS \
+-	install-hplip_confDATA install-hplip_desktopDATA \
+-	install-hplip_systrayDATA install-hplipjsPROGRAMS \
+-	install-hpmudextLTLIBRARIES install-libsane_hpaioLTLIBRARIES \
+-	install-pcardextLTLIBRARIES install-scanextLTLIBRARIES
++install-data-am: install-dist_modelsDATA \
++       install-hplip_confDATA \
++       install-libsane_hpaioLTLIBRARIES
+ 	@$(NORMAL_INSTALL)
+ 	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
+ 
+@@ -7069,15 +7034,6 @@
+ @HPLIP_BUILD_TRUE@		  echo hpaio >>$(DESTDIR)/etc/sane.d/dll.conf ; \
+ @HPLIP_BUILD_TRUE@	   fi \
+ @HPLIP_BUILD_TRUE@	fi
+-#	   Create hp-xxx commands in bindir.
+-@HPLIP_BUILD_TRUE@	$(mkinstalldirs) $(DESTDIR)$(bindir)
+-@HPLIP_BUILD_TRUE@	for i in $(dist_cmd_SCRIPTS); do \
+-@HPLIP_BUILD_TRUE@	   cmd=`basename $$i .py`; \
+-@HPLIP_BUILD_TRUE@	   if [ ! \( "$$cmd" = "toolbox" -a "$(gui_build)" = "no" \) ]; then \
+-@HPLIP_BUILD_TRUE@		  ln -sf ../share/$(PACKAGE)/$$i $(DESTDIR)$(bindir)/hp-$$cmd; \
+-@HPLIP_BUILD_TRUE@	   fi \
+-@HPLIP_BUILD_TRUE@	done
+-#
+ #	   Install fax support. 
+ @HPLIP_BUILD_TRUE@	if [ "$(fax_build)" = "yes" ]; then \
+ @HPLIP_BUILD_TRUE@	   mv $(DESTDIR)$(hpfaxdir)/hpfax.py $(DESTDIR)$(hpfaxdir)/hpfax; \
+--- scan/sane/hpaio.c	2008-12-17 11:40:53.000000000 +0100
++++ scan/sane/hpaio.c	2008-12-17 11:41:08.000000000 +0100
+@@ -39,7 +39,6 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <ctype.h>
+-#include <cups/cups.h>
+ #include "sane.h"
+ #include "saneopts.h"
+ #include "common.h"
+@@ -112,45 +111,6 @@
+    return 0;
+ }
+ 
+-static int AddCupsList(char *uri, char ***printer)
+-{
+-   int i, stat=1;
+-
+-   /* Look for hp network URIs only. */
+-   if (strncasecmp(uri, "hp:/net/", 8) !=0)
+-      goto bugout;
+-
+-   if (*printer == NULL)
+-   {
+-      /* Allocate array of string pointers. */
+-      *printer = malloc(sizeof(char *) * MAX_DEVICE);
+-      memset(*printer, 0, sizeof(char *) * MAX_DEVICE);
+-   }
+-
+-   /* Ignor duplicates (ie: printer queues using the same device). */
+-   for (i=0; (*printer)[i] != NULL && i<MAX_DEVICE; i++)
+-   {
+-      if (strcmp((*printer)[i], uri) == 0)
+-         goto bugout;
+-   }
+-
+-   /* Find empty slot in array of pointers. */
+-   for (i=0; i<MAX_DEVICE; i++)
+-   {
+-      if ((*printer)[i] == NULL)
+-      {
+-         (*printer)[i] = strdup(uri);
+-         break;
+-      }
+-   }
+-
+-   stat = 0;
+-
+-bugout:
+-
+-   return stat;
+-}
+-
+ /* Parse URI record from buf. Assumes one record per line. All returned strings are zero terminated. */
+ static int GetUriLine(char *buf, char *uri, char **tail)
+ {
+@@ -183,58 +143,6 @@
+    return i;
+ }
+ 
+-static int GetCupsPrinters(char ***printer)
+-{
+-   http_t *http=NULL;     /* HTTP object */
+-   ipp_t *request=NULL;  /* IPP request object */
+-   ipp_t *response=NULL; /* IPP response object */
+-   ipp_attribute_t *attr;     /* Current IPP attribute */
+-   int cnt=0;
+-
+-   /* Connect to the HTTP server */
+-   if ((http = httpConnectEncrypt(cupsServer(), ippPort(), cupsEncryption())) == NULL)
+-      goto bugout;
+-
+-   /* Assemble the IPP request */
+-   request = ippNew();
+-
+-   request->request.op.operation_id = CUPS_GET_PRINTERS;
+-   request->request.any.request_id  = 1;
+-
+-   ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_CHARSET, "attributes-charset", NULL, "utf-8");
+-   ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_LANGUAGE, "attributes-natural-language", NULL, "en");
+-   ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_KEYWORD, "requested-attributes", NULL, "device-uri");
+-
+-   /* Send the request and get a response. */
+-   if ((response = cupsDoRequest(http, request, "/")) == NULL)
+-      goto bugout;
+-
+-   for (attr = response->attrs; attr != NULL; attr = attr->next)
+-   {
+-      /* Skip leading attributes until we hit a printer. */
+-      while (attr != NULL && attr->group_tag != IPP_TAG_PRINTER)
+-         attr = attr->next;
+-
+-      if (attr == NULL)
+-         break;
+-
+-      while (attr != NULL && attr->group_tag == IPP_TAG_PRINTER)
+-      {
+-         if (strcmp(attr->name, "device-uri") == 0 && attr->value_tag == IPP_TAG_URI && AddCupsList(attr->values[0].string.text, printer) == 0)
+-            cnt++;
+-         attr = attr->next;
+-      }
+-
+-      if (attr == NULL)
+-         break;
+-   }
+-
+-   ippDelete(response);
+-
+- bugout:
+-   return cnt;
+-}
+-
+ static int DevDiscovery(int localOnly)
+ {
+    struct hpmud_model_attributes ma;
+@@ -243,7 +151,6 @@
+    char model[HPMUD_LINE_SIZE];
+    char *tail;
+    int i, scan_type, cnt=0, total=0, bytes_read;  
+-   char **cups_printer=NULL;     /* list of printers */
+    enum HPMUD_RESULT stat;
+ 
+    stat = hpmud_probe_devices(HPMUD_BUS_ALL, message, sizeof(message), &cnt, &bytes_read);
+@@ -270,26 +177,6 @@
+       }
+    }
+ 
+-   /* Ignore localOnly flag (used by saned) and always look for network all-in-one scan devices (defined by cups). */
+-   cnt = GetCupsPrinters(&cups_printer);
+-   for (i=0; i<cnt; i++)
+-   {
+-      hpmud_query_model(cups_printer[i], &ma);
+-      if (ma.scantype > 0)
+-      {
+-         hpmud_get_uri_model(cups_printer[i], model, sizeof(model));
+-         AddDeviceList(cups_printer[i], model, &DeviceList);
+-         total++;
+-      }
+-      else
+-      {
+-         DBG6("unsupported scantype=%d %s\n", ma.scantype, cups_printer[i]);
+-      }
+-      free(cups_printer[i]);
+-   }
+-   if (cups_printer)
+-      free(cups_printer);
+-
+ bugout:
+    return total;
+ }
