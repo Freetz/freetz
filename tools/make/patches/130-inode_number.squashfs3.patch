@@ -1,0 +1,35 @@
+diff -Nurp squashfs-tools/unsquashfs.c squashfs-tools-fixed/unsquashfs.c
+--- squashfs-tools/unsquashfs.c	2008-12-16 11:26:05.000000000 +0000
++++ squashfs-tools-fixed/unsquashfs.c	2008-12-16 11:31:20.000000000 +0000
+@@ -1325,6 +1325,7 @@ int create_inode(char *pathname, struct 
+ }
+ 
+ 
++int inode_number = 1;
+ struct inode *read_inode_2(unsigned int start_block, unsigned int offset)
+ {
+ 	static squashfs_inode_header_2 header;
+@@ -1332,7 +1333,6 @@ struct inode *read_inode_2(unsigned int 
+ 	int bytes = lookup_entry(inode_table_hash, start);
+ 	char *block_ptr = inode_table + bytes + offset;
+ 	static struct inode i;
+-	static int inode_number = 1;
+ 
+ 	if(bytes == -1)
+ 		goto error;
+@@ -1458,7 +1458,6 @@ struct inode *read_inode_1(unsigned int 
+ 	int bytes = lookup_entry(inode_table_hash, start);
+ 	char *block_ptr = inode_table + bytes + offset;
+ 	static struct inode i;
+-	static int inode_number = 1;
+ 
+ 	if(bytes == -1)
+ 		goto error;
+@@ -2689,6 +2688,7 @@ options:
+ 	pre_scan(dest, SQUASHFS_INODE_BLK(sBlk.root_inode), SQUASHFS_INODE_OFFSET(sBlk.root_inode), paths);
+ 
+ 	memset(created_inode, 0, sBlk.inodes * sizeof(char *));
++	inode_number = 1;
+ 
+ 	printf("%d inodes (%d blocks) to write\n\n", total_inodes, total_inodes - total_files + total_blocks);
+ 
