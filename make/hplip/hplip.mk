@@ -67,7 +67,6 @@ $($(PKG)_LIB_HPAIO_TARGET_BINARY): $($(PKG)_LIB_HPAIO_STAGING_BINARY)
 	mkdir -p $(HPLIP_DEST_DIR)/etc
 	mkdir -p $(HPLIP_DEST_DIR)/usr/share
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio.so* $(HPLIP_DEST_DIR)/usr/lib/sane
-	cp -R $(TARGET_TOOLCHAIN_STAGING_DIR)/etc/sane.d $(HPLIP_DEST_DIR)/etc
 	cp -R $(TARGET_TOOLCHAIN_STAGING_DIR)/etc/default.hplip $(HPLIP_DEST_DIR)/etc
 	cp -R $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip $(HPLIP_DEST_DIR)/usr/share
 	$(TARGET_STRIP) $@
@@ -86,7 +85,6 @@ $(pkg)-uninstall:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/hpmud.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/etc/default.hplip \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/etc/sane.d
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/etc/default.hplip
 
 $(PKG_FINISH)

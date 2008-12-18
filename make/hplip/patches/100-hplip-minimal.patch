@@ -1,5 +1,5 @@
---- configure	2008-12-17 11:40:54.000000000 +0100
-+++ configure	2008-12-17 11:41:08.000000000 +0100
+--- configure	2008-12-18 16:48:27.000000000 +0100
++++ configure	2008-12-18 16:48:41.000000000 +0100
 @@ -22678,225 +22678,6 @@
  
  fi
@@ -577,8 +577,8 @@
  if test "$hpijs_only_build" = "no" && test "$scan_build" = "yes"; then
     { echo "$as_me:$LINENO: checking for sane_open in -lsane" >&5
  echo $ECHO_N "checking for sane_open in -lsane... $ECHO_C" >&6; }
---- hplip.conf.in	2008-12-17 11:40:54.000000000 +0100
-+++ hplip.conf.in	2008-12-17 11:41:08.000000000 +0100
+--- hplip.conf.in	2008-12-18 16:48:27.000000000 +0100
++++ hplip.conf.in	2008-12-18 16:48:41.000000000 +0100
 @@ -5,14 +5,6 @@
  
  [dirs]
@@ -594,8 +594,8 @@
  
  # Following values are determined at configure time and cannot be changed.
  [configure]
---- ltmain.sh	2008-12-17 11:40:54.000000000 +0100
-+++ ltmain.sh	2008-12-17 11:41:08.000000000 +0100
+--- ltmain.sh	2008-12-18 16:48:27.000000000 +0100
++++ ltmain.sh	2008-12-18 16:48:41.000000000 +0100
 @@ -5984,17 +5984,6 @@
  	  # Determine the prefix the user has applied to our future dir.
  	  inst_prefix_dir=`$echo "$destdir" | $SED "s%$libdir\$%%"`
@@ -614,8 +614,8 @@
  	  if test -n "$inst_prefix_dir"; then
  	    # Stick the inst_prefix_dir data into the link command.
  	    relink_command=`$echo "$relink_command" | $SP2NL | $SED "s%@inst_prefix_dir@%-inst-prefix-dir $inst_prefix_dir%" | $NL2SP`
---- Makefile.in	2008-12-17 11:40:53.000000000 +0100
-+++ Makefile.in	2008-12-17 11:42:14.000000000 +0100
+--- Makefile.in	2008-12-18 16:48:27.000000000 +0100
++++ Makefile.in	2008-12-18 16:49:31.000000000 +0100
 @@ -179,9 +179,7 @@
  libsane_hpaioLTLIBRARIES_INSTALL = $(INSTALL)
  pcardextLTLIBRARIES_INSTALL = $(INSTALL)
@@ -627,6 +627,15 @@
  cupsext_la_DEPENDENCIES =
  am__cupsext_la_SOURCES_DIST = prnt/cupsext/cupsext.c
  @HPLIP_BUILD_TRUE@am_cupsext_la_OBJECTS = cupsext_la-cupsext.lo
+@@ -2653,7 +2651,7 @@
+ @DARWIN_BUILD_FALSE@@HPLIP_BUILD_TRUE@@SCAN_BUILD_TRUE@libsane_hpaio_la_LDFLAGS = -version-info 1:0:0
+ @DARWIN_BUILD_TRUE@@HPLIP_BUILD_TRUE@@SCAN_BUILD_TRUE@libsane_hpaio_la_LDFLAGS = -module -framework CoreFoundation -version-info 1:0:0
+ # The following is a interlibrary dependency that must be compiled first.
+-@HPLIP_BUILD_TRUE@@SCAN_BUILD_TRUE@libsane_hpaio_la_LIBADD = libhpip.la libhpmud.la $(DBUS_LIBS) -lcups
++@HPLIP_BUILD_TRUE@@SCAN_BUILD_TRUE@libsane_hpaio_la_LIBADD = libhpip.la libhpmud.la $(DBUS_LIBS)
+ #libsane_hpaio_la_CFLAGS = -DWITH_NONAMESPACES -DSOAP_DEBUG
+ @HPLIP_BUILD_TRUE@@SCAN_BUILD_TRUE@libsane_hpaio_la_CFLAGS = $(DBUS_CFLAGS) 
+ 
 @@ -2741,7 +2739,7 @@
  @HPLIP_BUILD_TRUE@hplip_desktop_DATA = hplip.desktop
  
@@ -698,10 +707,21 @@
  	@$(NORMAL_INSTALL)
  	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
  
-@@ -7069,15 +7034,6 @@
- @HPLIP_BUILD_TRUE@		  echo hpaio >>$(DESTDIR)/etc/sane.d/dll.conf ; \
- @HPLIP_BUILD_TRUE@	   fi \
- @HPLIP_BUILD_TRUE@	fi
+@@ -7058,26 +7023,6 @@
+ 
+ 
+ install-data-hook: 
+-#	   If scanner build, add hpaio entry to sane dll.conf.
+-@HPLIP_BUILD_TRUE@	if [ "$(scan_build)" = "yes" ]; then \
+-@HPLIP_BUILD_TRUE@	   $(mkinstalldirs) $(DESTDIR)/etc/sane.d; \
+-@HPLIP_BUILD_TRUE@	   if [ ! -f $(DESTDIR)/etc/sane.d/dll.conf ]; then \
+-@HPLIP_BUILD_TRUE@		  touch $(DESTDIR)/etc/sane.d/dll.conf; \
+-@HPLIP_BUILD_TRUE@	   fi; \
+-@HPLIP_BUILD_TRUE@	   if ! grep ^hpaio $(DESTDIR)/etc/sane.d/dll.conf >/dev/null 2>/dev/null ; then \
+-@HPLIP_BUILD_TRUE@		  echo "Adding hpaio entry to /etc/sane.d/dll.conf." ; \
+-@HPLIP_BUILD_TRUE@		  echo hpaio >>$(DESTDIR)/etc/sane.d/dll.conf ; \
+-@HPLIP_BUILD_TRUE@	   fi \
+-@HPLIP_BUILD_TRUE@	fi
 -#	   Create hp-xxx commands in bindir.
 -@HPLIP_BUILD_TRUE@	$(mkinstalldirs) $(DESTDIR)$(bindir)
 -@HPLIP_BUILD_TRUE@	for i in $(dist_cmd_SCRIPTS); do \
@@ -714,8 +734,8 @@
  #	   Install fax support. 
  @HPLIP_BUILD_TRUE@	if [ "$(fax_build)" = "yes" ]; then \
  @HPLIP_BUILD_TRUE@	   mv $(DESTDIR)$(hpfaxdir)/hpfax.py $(DESTDIR)$(hpfaxdir)/hpfax; \
---- scan/sane/hpaio.c	2008-12-17 11:40:53.000000000 +0100
-+++ scan/sane/hpaio.c	2008-12-17 11:41:08.000000000 +0100
+--- scan/sane/hpaio.c	2008-12-18 16:48:27.000000000 +0100
++++ scan/sane/hpaio.c	2008-12-18 16:48:41.000000000 +0100
 @@ -39,7 +39,6 @@
  #include <sys/stat.h>
  #include <fcntl.h>
