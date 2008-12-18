@@ -1,4 +1,4 @@
-#!/usr/bin/haserl -u -U /var/tmp
+#!/usr/bin/haserl -u 10000 -U /var/tmp
 Content-Type: text/html; charset=ISO-8859-1
 
 <html>
