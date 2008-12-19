@@ -219,29 +219,7 @@ ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
 	@exit 3
 else
 	@if ! ./fwmod_download -C $(DL_FW_DIR) $(DL_SITE) $(DL_SOURCE); then \
-		latest="$$(./fwmod_list "$(DL_SITE)" | sort | tail -1)"; \
-		[ -z "$$latest" ] && exit 1; \
-		if [ "$(DL_SOURCE)" != "$$latest" ]; then \
-			while true; do \
-				echo -n "Use the latest firmware $$latest? (y/n) "; \
-				read yn; \
-				case "$$yn" in \
-					[yY]*) \
-						sed -e 's/# FREETZ_DL_OVERRIDE is not set/FREETZ_DL_OVERRIDE=y/' \
-							-e 's/DL_SOURCE="$(DL_SOURCE)"/DL_SOURCE="'"$$latest"'"/' \
-							.config > .config.tmp; \
-						mv .config.tmp .config; \
-						echo; \
-						echo "Re-run \`make' for the changes to take effect."; \
-						echo "WARNING: This configuration is probably untested!"; \
-						echo; \
-						break ;; \
-					[nN]*) \
-						break ;; \
-				esac; \
-			done; \
-			exit 3; \
-		fi; \
+		$(error Error: Firmware file '$(DL_SOURCE)' not found on AVM FTP)
 	fi
 endif
 
