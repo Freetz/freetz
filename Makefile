@@ -59,7 +59,6 @@ PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
-SWITCH_UCLIBC:=
 
 export FW_IMAGES_DIR
 
@@ -110,10 +109,12 @@ noconfig_targets:=menuconfig config oldconfig defconfig tools \
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
 
+ifeq ($(filter dirclean,$(MAKECMDGOALS)),)
 #Simple test if wrong uclibc is used
 ifneq ($(NO_UCLIBC_CHECK),y)
 ifneq ($(shell $(CHECK_UCLIBC_VERSION) && echo OK), OK)
 $(error Error: uClibc-version changed. Please type "make dirclean")
+endif
 endif
 endif
 
