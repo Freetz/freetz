@@ -2,7 +2,42 @@ config FREETZ_PACKAGE_E2FSPROGS
 	bool "e2fsprogs 1.41.3 (binary only)"
 	default n
 	help
-			This package contains essential ext2, ext3 and ext4 filesystem
-			utilities which consists of e2fsck, mke2fs, debugfs, dumpe2fs,
-			tune2fs, and most of the other core ext2 filesystem utilities.
-			Homepage: http://e2fsprogs.sourceforge.net/
+		This package contains essential ext2, ext3 and ext4 filesystem
+		utilities which consists of e2fsck, mke2fs, debugfs, dumpe2fs,
+		tune2fs, and most of the other core ext2 filesystem utilities.
+		Homepage: http://e2fsprogs.sourceforge.net/
+
+config FREETZ_E2FSPROGS_E2FSCK
+	bool "e2fsck"
+	default y
+	depends FREETZ_PACKAGE_E2FSPROGS
+	help
+		Copy e2fsck to image
+
+config FREETZ_E2FSPROGS_E2MAKING
+	bool "Making tools"
+	default y
+	depends FREETZ_PACKAGE_E2FSPROGS
+	help
+		Copy mke2fs and mklost+found to image
+
+config FREETZ_E2FSPROGS_E2TUNING
+	bool "Tuning tools"
+	default y
+	depends FREETZ_PACKAGE_E2FSPROGS
+	help
+		Copy tune2fs, chattr, lsattr and dumpe2fs to image
+
+config FREETZ_E2FSPROGS_E2DEBUG
+	bool "Debugging tools"
+	default n
+	depends FREETZ_PACKAGE_E2FSPROGS
+	help
+		Copy e2image, e2undo, debugfs and logsave to image
+
+config FREETZ_E2FSPROGS_E2FIXING
+	bool "Repair and misc. tools"
+	default n
+	depends FREETZ_PACKAGE_E2FSPROGS
+	help
+		Copy badblocks, filefrag, blkid, uuidd and uuidgen to image
