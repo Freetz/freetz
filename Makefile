@@ -219,7 +219,8 @@ ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
 	@exit 3
 else
 	@if ! ./fwmod_download -C $(DL_FW_DIR) $(DL_SITE) $(DL_SOURCE); then \
-		$(error Error: Firmware file '$(DL_SOURCE)' not found on AVM FTP)
+		echo "ERROR: Could not download Firmwareimage."; \
+		exit 3; \
 	fi
 endif
 
