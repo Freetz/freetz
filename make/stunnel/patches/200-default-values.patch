@@ -1,6 +1,6 @@
---- src/options.c.orig	2008-03-27 10:51:45.000000000 +0100
-+++ src/options.c	2008-04-27 19:46:10.000000000 +0200
-@@ -281,7 +281,7 @@
+--- src/options.c.orig	2008-06-21 23:18:23.000000000 +0200
++++ src/options.c	2008-12-25 01:12:28.000000000 +0100
+@@ -285,7 +285,7 @@
  #ifndef USE_WIN32
      switch(cmd) {
      case CMD_INIT:
@@ -9,7 +9,7 @@
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "pid"))
-@@ -292,7 +292,7 @@
+@@ -296,7 +296,7 @@
              options.pidfile=NULL; /* empty -> do not create a pid file */
          return NULL; /* OK */
      case CMD_DEFAULT:
@@ -18,7 +18,7 @@
          break;
      case CMD_HELP:
          s_log(LOG_RAW, "%-15s = pid file (empty to disable creating)", "pid");
-@@ -590,7 +590,7 @@
+@@ -606,7 +606,7 @@
      switch(cmd) {
      case CMD_INIT:
  #ifdef CONFDIR
@@ -27,7 +27,7 @@
  #else
          section->cert="stunnel.pem";
  #endif
-@@ -827,7 +827,7 @@
+@@ -843,7 +843,7 @@
      /* key */
      switch(cmd) {
      case CMD_INIT:
@@ -36,7 +36,7 @@
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "key"))
-@@ -1334,7 +1334,7 @@
+@@ -1350,7 +1350,7 @@
  
  void parse_config(char *name, char *parameter) {
  #ifdef CONFDIR
