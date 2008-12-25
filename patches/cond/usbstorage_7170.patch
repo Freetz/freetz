@@ -70,3 +70,11 @@
  new_filesystem=true
  fi
  if [ $new_filesystem = true ] ; then
+@@ -118,6 +118,7 @@
+ led-ctrl filesystem_mount_failure
+ umask $OLD_UMASK
+ rmdir $MNTPATH
++eventadd 142 $MNTNAME NOTMOUNTABLE
+ fi
+ if grep $MNTPATH /proc/mounts > /dev/null; then
+ if test -f $1; then

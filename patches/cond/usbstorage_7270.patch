@@ -104,3 +104,11 @@
  FAIL_EVENT=0
  umask $OLD_UMASK
  eventadd 140 $MNTNAME
+@@ -152,6 +152,7 @@
+ else
+ umask $OLD_UMASK
+ rmdir $MNTPATH
++eventadd 142 $MNTNAME NOTMOUNTABLE
+ fi
+ if grep $MNTPATH /proc/mounts > /dev/null; then
+ if test -f $1; then
