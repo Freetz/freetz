@@ -62,6 +62,10 @@ case "$1" in
 	""|load)
 		modlib_addgroup tor
 		modlib_adduser tor -G tor -D -S -g "Tor Router"
+		mkdir -p /mod/home/tor
+
+		# Setting permissions
+		chown tor:tor /mod/home/tor -R
 		
 		modreg cgi 'tor' 'Tor Onion Router'
 		deffile='/mod/etc/default.tor/secret_id_key.def'

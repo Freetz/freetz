@@ -13,7 +13,11 @@ start() {
 
 	modlib_addgroup davfs2
 	modlib_adduser davfs2 -s /bin/false -D -S -H -G davfs2 -g 'davfs2'
-
+	mkdir -p /mod/home/davfs2
+	
+	# Setting permissions
+	chown davfs2:davfs2 /mod/home/davfs2 -R
+	
 	mkdir /var/davfs2 2>/dev/null
 	
 	(

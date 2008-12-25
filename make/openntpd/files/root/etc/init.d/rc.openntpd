@@ -6,6 +6,7 @@ DAEMON=openntpd
 
 start() {
 	modlib_adduser ntp -G users -D -S -g "NTP daemon"
+	mkdir -p /mod/home/ntp
 
 	# Setting permissions
 	chown root /mod/home/ntp -R

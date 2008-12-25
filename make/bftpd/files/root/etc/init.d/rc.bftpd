@@ -6,6 +6,10 @@ DAEMON=bftpd
 
 pre_config() {
 	modlib_adduser ftp -G users -D -S -g "FTP account"
+	mkdir -p /mod/home/ftp
+
+	# Setting permissions
+	chown ftp:users /mod/home/ftp -R
 
 	mkdir -p /var/run/bftpd
 

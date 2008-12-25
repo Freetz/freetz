@@ -7,6 +7,10 @@ LOGLINK=/var/log/mod_vsftpd.log
 
 pre_config() {
 	modlib_adduser ftp -G users -D -S -g "FTP account"
+	mkdir -p /mod/home/ftp
+	
+	# Setting permissions
+	chown ftp:users /mod/home/ftp -R
 
 	mkdir -p /var/run/vsftpd
 
@@ -40,14 +44,14 @@ write_config() {
 
 status_log() {
 	remove_status_log
-        if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
-                ln -sf $VSFTPD_LOG_FILE $LOGLINK
-                modreg status vsftpd Vsftpd vsftpd/vsftpd_log
-        fi
+	if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
+		ln -sf $VSFTPD_LOG_FILE $LOGLINK
+		modreg status vsftpd Vsftpd vsftpd/vsftpd_log
+	fi
 }
 
 remove_status_log() {
-        modunreg status vsftpd vsftpd/vsftpd_log
+	modunreg status vsftpd vsftpd/vsftpd_log
 	rm -f $LOGLINK
 }
 
