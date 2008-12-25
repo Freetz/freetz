@@ -29,7 +29,7 @@
 -	
 -	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
 -	NICE="$NAME-Partition-$2-$3"
-+	NICE="uStor$2$3"
++	NICE="uStor`echo $1|sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/'`$3"
  	echo $NICE
  }
  
