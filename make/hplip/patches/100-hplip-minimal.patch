@@ -1,6 +1,6 @@
---- configure	2008-12-18 16:48:27.000000000 +0100
-+++ configure	2008-12-18 16:48:41.000000000 +0100
-@@ -22678,225 +22678,6 @@
+--- configure	2008-12-26 20:06:32.000000000 +0100
++++ configure	2008-12-26 20:11:35.000000000 +0100
+@@ -22687,225 +22687,6 @@
  
  fi
  
@@ -192,7 +192,7 @@
 -echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
 -    ( cat <<\_ASBOX
 -## ------------------------ ##
--## Report this to 2.8.10.33 ##
+-## Report this to 2.8.12.26 ##
 -## ------------------------ ##
 -_ASBOX
 -     ) | sed "s/^/$as_me: WARNING:     /" >&2
@@ -226,7 +226,7 @@
     { echo "$as_me:$LINENO: checking for usb_init in -lusb" >&5
  echo $ECHO_N "checking for usb_init in -lusb... $ECHO_C" >&6; }
  if test "${ac_cv_lib_usb_usb_init+set}" = set; then
-@@ -23115,350 +22896,6 @@
+@@ -23124,350 +22905,6 @@
  
  done
  
@@ -541,7 +541,7 @@
 -echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
 -    ( cat <<\_ASBOX
 -## ------------------------ ##
--## Report this to 2.8.10.33 ##
+-## Report this to 2.8.12.26 ##
 -## ------------------------ ##
 -_ASBOX
 -     ) | sed "s/^/$as_me: WARNING:     /" >&2
@@ -577,8 +577,8 @@
  if test "$hpijs_only_build" = "no" && test "$scan_build" = "yes"; then
     { echo "$as_me:$LINENO: checking for sane_open in -lsane" >&5
  echo $ECHO_N "checking for sane_open in -lsane... $ECHO_C" >&6; }
---- hplip.conf.in	2008-12-18 16:48:27.000000000 +0100
-+++ hplip.conf.in	2008-12-18 16:48:41.000000000 +0100
+--- hplip.conf.in	2008-12-26 20:06:32.000000000 +0100
++++ hplip.conf.in	2008-12-26 20:06:58.000000000 +0100
 @@ -5,14 +5,6 @@
  
  [dirs]
@@ -594,8 +594,8 @@
  
  # Following values are determined at configure time and cannot be changed.
  [configure]
---- ltmain.sh	2008-12-18 16:48:27.000000000 +0100
-+++ ltmain.sh	2008-12-18 16:48:41.000000000 +0100
+--- ltmain.sh	2008-12-26 20:06:32.000000000 +0100
++++ ltmain.sh	2008-12-26 20:06:58.000000000 +0100
 @@ -5984,17 +5984,6 @@
  	  # Determine the prefix the user has applied to our future dir.
  	  inst_prefix_dir=`$echo "$destdir" | $SED "s%$libdir\$%%"`
@@ -614,9 +614,9 @@
  	  if test -n "$inst_prefix_dir"; then
  	    # Stick the inst_prefix_dir data into the link command.
  	    relink_command=`$echo "$relink_command" | $SP2NL | $SED "s%@inst_prefix_dir@%-inst-prefix-dir $inst_prefix_dir%" | $NL2SP`
---- Makefile.in	2008-12-18 16:48:27.000000000 +0100
-+++ Makefile.in	2008-12-18 16:49:31.000000000 +0100
-@@ -179,9 +179,7 @@
+--- Makefile.in	2008-12-26 20:06:29.000000000 +0100
++++ Makefile.in	2008-12-26 20:08:56.000000000 +0100
+@@ -180,9 +180,7 @@
  libsane_hpaioLTLIBRARIES_INSTALL = $(INSTALL)
  pcardextLTLIBRARIES_INSTALL = $(INSTALL)
  scanextLTLIBRARIES_INSTALL = $(INSTALL)
@@ -627,7 +627,7 @@
  cupsext_la_DEPENDENCIES =
  am__cupsext_la_SOURCES_DIST = prnt/cupsext/cupsext.c
  @HPLIP_BUILD_TRUE@am_cupsext_la_OBJECTS = cupsext_la-cupsext.lo
-@@ -2653,7 +2651,7 @@
+@@ -4345,7 +4343,7 @@
  @DARWIN_BUILD_FALSE@@HPLIP_BUILD_TRUE@@SCAN_BUILD_TRUE@libsane_hpaio_la_LDFLAGS = -version-info 1:0:0
  @DARWIN_BUILD_TRUE@@HPLIP_BUILD_TRUE@@SCAN_BUILD_TRUE@libsane_hpaio_la_LDFLAGS = -module -framework CoreFoundation -version-info 1:0:0
  # The following is a interlibrary dependency that must be compiled first.
@@ -636,7 +636,7 @@
  #libsane_hpaio_la_CFLAGS = -DWITH_NONAMESPACES -DSOAP_DEBUG
  @HPLIP_BUILD_TRUE@@SCAN_BUILD_TRUE@libsane_hpaio_la_CFLAGS = $(DBUS_CFLAGS) 
  
-@@ -2741,7 +2739,7 @@
+@@ -4436,7 +4434,7 @@
  @HPLIP_BUILD_TRUE@hplip_desktop_DATA = hplip.desktop
  
  # hplip.conf
@@ -645,7 +645,7 @@
  @HPLIP_BUILD_TRUE@hplip_conf_DATA = hplip.conf
  
  # hplip-systray.desktop
-@@ -3027,19 +3025,6 @@
+@@ -4722,19 +4720,6 @@
  	$(pcardext_la_LINK) $(am_pcardext_la_rpath) $(pcardext_la_OBJECTS) $(pcardext_la_LIBADD) $(LIBS)
  scanext.la: $(scanext_la_OBJECTS) $(scanext_la_DEPENDENCIES) 
  	$(scanext_la_LINK) $(am_scanext_la_rpath) $(scanext_la_OBJECTS) $(scanext_la_LIBADD) $(LIBS)
@@ -665,7 +665,7 @@
  
  uninstall-binPROGRAMS:
  	@$(NORMAL_UNINSTALL)
-@@ -6833,7 +6818,7 @@
+@@ -8545,7 +8530,7 @@
  	       exit 1; } >&2
  check-am: all-am
  check: check-am
@@ -674,40 +674,40 @@
  install-binPROGRAMS: install-libLTLIBRARIES
  
  installdirs:
-@@ -6890,29 +6875,9 @@
+@@ -8602,30 +8587,8 @@
  
  info-am:
  
 -install-data-am: install-cupsextLTLIBRARIES install-dist_baseSCRIPTS \
 -	install-dist_cmdSCRIPTS install-dist_copierSCRIPTS \
 -	install-dist_cupsdrvDATA install-dist_faxSCRIPTS \
--	install-dist_faxppdDATA install-dist_hpfaxSCRIPTS \
--	install-dist_hplipSCRIPTS install-dist_images_128x128DATA \
--	install-dist_images_16x16DATA install-dist_images_24x24DATA \
--	install-dist_images_32x32DATA install-dist_images_48x48DATA \
--	install-dist_images_devicesDATA install-dist_images_otherDATA \
--	install-dist_installSCRIPTS install-dist_ldlDATA \
--	install-dist_localzDATA install-dist_modelsDATA \
--	install-dist_pcardSCRIPTS install-dist_pclDATA \
--	install-dist_plugins4SCRIPTS install-dist_pluginsSCRIPTS \
--	install-dist_postscriptDATA install-dist_ppdDATA \
--	install-dist_prntSCRIPTS install-dist_ripSCRIPTS \
--	install-dist_rulesDATA install-dist_scanSCRIPTS \
--	install-dist_ui4SCRIPTS install-dist_uiSCRIPTS \
--	install-dist_unrelDATA install-dist_www0DATA \
--	install-dist_www3DATA install-dist_www4DATA install-docDATA \
--	install-hpPROGRAMS install-hp_mkuriPROGRAMS \
--	install-hplip_confDATA install-hplip_desktopDATA \
--	install-hplip_systrayDATA install-hplipjsPROGRAMS \
--	install-hpmudextLTLIBRARIES install-libsane_hpaioLTLIBRARIES \
--	install-pcardextLTLIBRARIES install-scanextLTLIBRARIES
-+install-data-am: install-dist_modelsDATA \
-+       install-hplip_confDATA \
-+       install-libsane_hpaioLTLIBRARIES
+-	install-dist_faxppdDATA install-dist_halpreDATA \
+-	install-dist_hpfaxSCRIPTS install-dist_hplipSCRIPTS \
+-	install-dist_images_128x128DATA install-dist_images_16x16DATA \
+-	install-dist_images_24x24DATA install-dist_images_32x32DATA \
+-	install-dist_images_48x48DATA install-dist_images_devicesDATA \
+-	install-dist_images_otherDATA install-dist_installSCRIPTS \
+-	install-dist_ldlDATA install-dist_localzDATA \
+-	install-dist_modelsDATA install-dist_pcardSCRIPTS \
+-	install-dist_pclDATA install-dist_plugins4SCRIPTS \
+-	install-dist_pluginsSCRIPTS install-dist_postscriptDATA \
+-	install-dist_ppdDATA install-dist_prntSCRIPTS \
+-	install-dist_ripSCRIPTS install-dist_rulesDATA \
+-	install-dist_scanSCRIPTS install-dist_ui4SCRIPTS \
+-	install-dist_uiSCRIPTS install-dist_unrelDATA \
+-	install-dist_www0DATA install-dist_www3DATA \
+-	install-dist_www4DATA install-docDATA install-hpPROGRAMS \
+-	install-hp_mkuriPROGRAMS install-hplip_confDATA \
+-	install-hplip_desktopDATA install-hplip_systrayDATA \
+-	install-hplipjsPROGRAMS install-hpmudextLTLIBRARIES \
+-	install-libsane_hpaioLTLIBRARIES install-pcardextLTLIBRARIES \
+-	install-scanextLTLIBRARIES
++install-data-am: install-dist_modelsDATA install-hplip_confDATA \
++	install-libsane_hpaioLTLIBRARIES
  	@$(NORMAL_INSTALL)
  	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
  
-@@ -7058,26 +7023,6 @@
+@@ -8772,26 +8735,6 @@
  
  
  install-data-hook: 
@@ -734,8 +734,8 @@
  #	   Install fax support. 
  @HPLIP_BUILD_TRUE@	if [ "$(fax_build)" = "yes" ]; then \
  @HPLIP_BUILD_TRUE@	   mv $(DESTDIR)$(hpfaxdir)/hpfax.py $(DESTDIR)$(hpfaxdir)/hpfax; \
---- scan/sane/hpaio.c	2008-12-18 16:48:27.000000000 +0100
-+++ scan/sane/hpaio.c	2008-12-18 16:48:41.000000000 +0100
+--- scan/sane/hpaio.c	2008-12-26 20:06:29.000000000 +0100
++++ scan/sane/hpaio.c	2008-12-26 20:06:58.000000000 +0100
 @@ -39,7 +39,6 @@
  #include <sys/stat.h>
  #include <fcntl.h>
