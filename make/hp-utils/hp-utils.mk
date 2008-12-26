@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,0.2.2)
+$(call PKG_INIT_BIN,0.3.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://freetz.magenbrot.net
+$(PKG)_SITE:=http://www.michaeldenk.de/projects/hp-utils
 $(PKG)_BINARY:=$($(PKG)_DIR)/hp-levels
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/hp-levels
 
@@ -19,7 +19,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		LDFLAGS=""
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	$(INSTALL_BINARY_STRIP)
+	cp $(HP_UTILS_DIR)/hp-clean $(HP_UTILS_DEST_DIR)/usr/bin
+	cp $(HP_UTILS_DIR)/hp-levels $(HP_UTILS_DEST_DIR)/usr/bin
+	cp $(HP_UTILS_DIR)/hp-probe $(HP_UTILS_DEST_DIR)/usr/bin
+	cp $(HP_UTILS_DIR)/hp-status $(HP_UTILS_DEST_DIR)/usr/bin
+	$(TARGET_STRIP) $(HP_UTILS_DEST_DIR)/usr/bin/hp-clean \
+		$(HP_UTILS_DEST_DIR)/usr/bin/hp-levels \
+		$(HP_UTILS_DEST_DIR)/usr/bin/hp-probe \
+		$(HP_UTILS_DEST_DIR)/usr/bin/hp-status
 
 $(pkg):
 
@@ -29,6 +36,9 @@ $(pkg)-clean:
 	-$(MAKE) -C $(HP_UTILS_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(HP_UTILS_TARGET_BINARY)
+	$(RM) $(HP_UTILS_DEST_DIR)/usr/bin/hp-clean \
+		$(HP_UTILS_DEST_DIR)/usr/bin/hp-levels \
+		$(HP_UTILS_DEST_DIR)/usr/bin/hp-probe \
+		$(HP_UTILS_DEST_DIR)/usr/bin/hp-status
 
 $(PKG_FINISH)
