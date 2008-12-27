@@ -1,0 +1,154 @@
+			     BASH PATCH REPORT
+			     =================
+
+Bash-Release: 3.2
+Patch-ID: bash32-041
+
+Bug-Reported-by:	Dan Jacobson <jidanni@jidanni.org>
+Bug-Reference-ID:	<873arjs11h.fsf@jidanni.org>
+Bug-Reference-URL:	http://lists.gnu.org/archive/html/bug-bash/2008-02/msg00049.html
+
+Bug-Description:
+
+Bash saved and restored the value of `set -o history' while sourcing files,
+preventing users from turning off history with `set +o history' in .bashrc.
+
+Patch:
+
+*** ../bash-3.2-patched/bashhist.c	2005-12-26 13:31:16.000000000 -0500
+--- bashhist.c	2008-08-17 13:07:40.000000000 -0400
+***************
+*** 81,84 ****
+--- 81,85 ----
+     becomes zero when we read lines from a file, for example. */
+  int remember_on_history = 1;
++ int enable_history_list = 1;	/* value for `set -o history' */
+  
+  /* The number of lines that Bash has added to this history session.  The
+***************
+*** 235,239 ****
+    history_expansion_inhibited = 1;
+  #endif
+!   remember_on_history = interact != 0;
+    history_inhibit_expansion_function = bash_history_inhibit_expansion;
+  }
+--- 236,240 ----
+    history_expansion_inhibited = 1;
+  #endif
+!   remember_on_history = enable_history_list = interact != 0;
+    history_inhibit_expansion_function = bash_history_inhibit_expansion;
+  }
+*** ../bash-3.2-patched/builtins/set.def	2006-07-27 09:41:43.000000000 -0400
+--- builtins/set.def	2008-08-14 16:33:41.000000000 -0400
+***************
+*** 190,194 ****
+  #endif /* BANG_HISTORY */
+  #if defined (HISTORY)
+!   { "history",   '\0', &remember_on_history, bash_set_history, (setopt_get_func_t *)NULL },
+  #endif
+    { "ignoreeof", '\0', &ignoreeof, set_ignoreeof, (setopt_get_func_t *)NULL },
+--- 198,202 ----
+  #endif /* BANG_HISTORY */
+  #if defined (HISTORY)
+!   { "history",   '\0', &enable_history_list, bash_set_history, (setopt_get_func_t *)NULL },
+  #endif
+    { "ignoreeof", '\0', &ignoreeof, set_ignoreeof, (setopt_get_func_t *)NULL },
+***************
+*** 382,385 ****
+--- 390,394 ----
+    if (on_or_off == FLAG_ON)
+      {
++       enable_history_list = 1;
+        bash_history_enable ();
+        if (history_lines_this_session == 0)
+***************
+*** 387,392 ****
+      }
+    else
+!     bash_history_disable ();
+!   return (1 - remember_on_history);
+  }
+  #endif
+--- 396,404 ----
+      }
+    else
+!     {
+!       enable_history_list = 0;
+!       bash_history_disable ();
+!     }
+!   return (1 - enable_history_list);
+  }
+  #endif
+***************
+*** 566,570 ****
+  {
+  #if defined (HISTORY)
+!   remember_on_history = 1;
+  #endif
+    ignoreeof = 0;
+--- 578,582 ----
+  {
+  #if defined (HISTORY)
+!   remember_on_history = enable_history_list = 1;
+  #endif
+    ignoreeof = 0;
+*** ../bash-3.2-patched/builtins/evalstring.c	2006-07-28 15:12:16.000000000 -0400
+--- builtins/evalstring.c	2008-11-10 21:17:16.000000000 -0500
+***************
+*** 68,71 ****
+--- 68,79 ----
+  static int cat_file __P((REDIRECT *));
+  
++ #if defined (HISTORY)
++ static void
++ set_history_remembering ()
++ {
++   remember_on_history = enable_history_list;
++ }
++ #endif
++ 
+  /* How to force parse_and_execute () to clean up after itself. */
+  void
+***************
+*** 116,120 ****
+  
+  #if defined (HISTORY)
+!   unwind_protect_int (remember_on_history);	/* can be used in scripts */
+  #  if defined (BANG_HISTORY)
+    if (interactive_shell)
+--- 124,131 ----
+  
+  #if defined (HISTORY)
+!   if (parse_and_execute_level == 0)
+!     add_unwind_protect (set_history_remembering, (char *)NULL);
+!   else
+!     unwind_protect_int (remember_on_history);	/* can be used in scripts */
+  #  if defined (BANG_HISTORY)
+    if (interactive_shell)
+*** ../bash-3.2-patched/bashhist.h	2005-07-01 15:44:41.000000000 -0400
+--- bashhist.h	2008-08-17 12:51:07.000000000 -0400
+***************
+*** 32,35 ****
+--- 32,38 ----
+  
+  extern int remember_on_history;
++ extern int enable_history_list;		/* value for `set -o history' */
++ extern int literal_history;		/* controlled by `shopt lithist' */
++ extern int force_append_history;
+  extern int history_lines_this_session;
+  extern int history_lines_in_file;
+*** ../bash-3.2/patchlevel.h	Thu Apr 13 08:31:04 2006
+--- patchlevel.h	Mon Oct 16 14:22:54 2006
+***************
+*** 26,30 ****
+     looks for to find the patch level (for the sccs version string). */
+  
+! #define PATCHLEVEL 40
+  
+  #endif /* _PATCHLEVEL_H_ */
+--- 26,30 ----
+     looks for to find the patch level (for the sccs version string). */
+  
+! #define PATCHLEVEL 41
+  
+  #endif /* _PATCHLEVEL_H_ */

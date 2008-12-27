@@ -1,0 +1,44 @@
+			     BASH PATCH REPORT
+			     =================
+
+Bash-Release: 3.2
+Patch-ID: bash32-036
+
+Bug-Reported-by:	Len Lattanzi <llattanzi@apple.com>
+Bug-Reference-ID:	<87493131-7AEC-4301-A684-E6CC6D06E3E1@apple.com>
+Bug-Reference-URL:
+
+Bug-Description:
+
+When initializing a subshell, bash did not reset a sentinel keeping track
+of the number of command substitutions, leading to an infinite loop if
+an error was encountered in the subshell.
+
+Patch:
+
+*** ../bash-3.2-patched/execute_cmd.c	2007-12-13 22:31:14.000000000 -0500
+--- execute_cmd.c	2007-12-20 08:52:34.000000000 -0500
+***************
+*** 3881,3884 ****
+--- 3916,3921 ----
+  
+    clear_unwind_protect_list (0);
++   /* XXX -- are there other things we should be resetting here? */
++   parse_and_execute_level = 0;		/* nothing left to restore it */
+  
+    /* We're no longer inside a shell function. */
+*** ../bash-3.2/patchlevel.h	Thu Apr 13 08:31:04 2006
+--- patchlevel.h	Mon Oct 16 14:22:54 2006
+***************
+*** 26,30 ****
+     looks for to find the patch level (for the sccs version string). */
+  
+! #define PATCHLEVEL 35
+  
+  #endif /* _PATCHLEVEL_H_ */
+--- 26,30 ----
+     looks for to find the patch level (for the sccs version string). */
+  
+! #define PATCHLEVEL 36
+  
+  #endif /* _PATCHLEVEL_H_ */

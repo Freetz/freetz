@@ -68,7 +68,7 @@ $($(PKG)_LIB_HPAIO_TARGET_BINARY): $($(PKG)_LIB_HPAIO_STAGING_BINARY)
 	mkdir -p $(HPLIP_DEST_DIR)/usr/share
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio.so* $(HPLIP_DEST_DIR)/usr/lib/sane
 	cp -R $(TARGET_TOOLCHAIN_STAGING_DIR)/etc/default.hplip $(HPLIP_DEST_DIR)/etc
-	#cp -R $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip $(HPLIP_DEST_DIR)/usr/share
+	cp -R $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip $(HPLIP_DEST_DIR)/usr/share
 	$(TARGET_STRIP) $@
 
 $(pkg):
