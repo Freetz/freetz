@@ -4,7 +4,7 @@ export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/
 export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 
 case "$1" in
-	""|load|start|restart|config)
+	""|load|start|backup|restart|config)
 		if [ ! -r "/mod/etc/conf/rrdstats.cfg" ]; then
 			echo "Error[rrdstats]: not configured" 1>&2
 			exit 1
@@ -29,6 +29,8 @@ start() {
 		exit 0
 	fi
 
+	[ "$RRDSTATS_SAVEBACKUP" = yes ] && backup
+
 	start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
 	exitval=$?
 
@@ -49,6 +51,22 @@ stop() {
 		echo 'done.'
 	else
 		echo 'failed.'
+	fi
+}
+
+backup() {
+	_CURRENT=$RRDSTATS_RRDDATA/backup/`echo $(date -Iseconds|sed 's/\:/-/g;s/\+.*//g;s/T/_/g')`
+	if [ `ls $RRDSTATS_RRDDATA/*.rrd 2>/dev/null |wc -w` -le 0 ]; then
+		echo -n "backup skipped, no files found..."
+		return
+	fi
+	mkdir $RRDSTATS_RRDDATA/backup 2>/dev/null
+	mkdir $_CURRENT 2>/dev/null
+	cp -p $RRDSTATS_RRDDATA/*.rrd $_CURRENT/ 2>/dev/null
+	exitval=$?
+	if [ $exitval -ne 0 ]; then
+		echo 'backup failed, abort.'
+		exit $exitval
 	fi
 }
 
@@ -77,6 +95,10 @@ case "$1" in
 		;;
 	stop)
 		stop
+		;;
+	backup)
+		config
+		backup
 		;;
 	restart)
 		stop

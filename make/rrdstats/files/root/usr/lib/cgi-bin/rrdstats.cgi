@@ -6,7 +6,7 @@ auto_chk=''; man_chk=''; log_protoc_chk=''
 notlazym_chk=''; notlazys_chk=''; cpu100perc_chk=''
 logarithm1_chk=''; logarithm2_chk=''; logarithm3_chk=''; logarithm4_chk='';
 xchg_rxtx1_chk=''; xchg_rxtx2_chk=''; xchg_rxtx3_chk=''; xchg_rxtx4_chk='';
-uptime_enb_chk=''; thomsonthg_chk=''; thomsonadv_chk=''
+uptime_enb_chk=''; savebackup_chk=''; thomsonthg_chk=''; thomsonadv_chk=''
 
 if [ "$RRDSTATS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then xchgupdown_chk=' checked'; fi
@@ -22,6 +22,7 @@ if [ "$RRDSTATS_XCHG_RXTX3" = "yes" ]; then xchg_rxtx3_chk=' checked'; fi
 if [ "$RRDSTATS_XCHG_RXTX4" = "yes" ]; then xchg_rxtx4_chk=' checked'; fi
 if [ "$RRDSTATS_CPU100PERC" = "yes" ]; then cpu100perc_chk=' checked'; fi
 if [ "$RRDSTATS_UPTIME_ENB" = "yes" ]; then uptime_enb_chk=' checked'; fi
+if [ "$RRDSTATS_SAVEBACKUP" = "yes" ]; then savebackup_chk=' checked'; fi
 if [ "$RRDSTATS_THOMSONTHG" = "yes" ]; then thomsonthg_chk=' checked'; fi
 if [ "$RRDSTATS_THOMSONADV" = "yes" ]; then thomsonadv_chk=' checked'; fi
 
@@ -73,6 +74,10 @@ $(lang de:"Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen" en:"Ma
 <input type="hidden" name="uptime_enb" value="no">
 <input id="u1" type="checkbox" name="uptime_enb" value="yes"$uptime_enb_chk><label for="u1"></label>
 $(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs")</p>
+<p>
+<input type="hidden" name="savebackup" value="no">
+<input id="b1" type="checkbox" name="savebackup" value="yes"$savebackup_chk><label for="b1"></label>
+$(lang de:"Backup vor dem Starten anlegen" en:"Backup files before startup")</p>
 EOF
 
 sec_end
