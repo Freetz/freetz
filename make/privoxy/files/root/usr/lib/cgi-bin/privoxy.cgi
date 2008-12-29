@@ -41,12 +41,12 @@ cat << EOF
 <ul>
 <li>enable-remote-toggle  <input id="e5" type="radio" name="enable_remote_toggle" value="1"$remote_toggle_yes_chk><label for="e5"> $(lang de:"Ja" en:"set")</label> <input id="e6" type="radio" name="enable_remote_toggle" value="0"$remote_toggle_no_chk><label for="e6"> $(lang de:"Nein" en:"unset")</label>
 <font size="-2">
-<br>$(lang de:"Web-based Toggle Feature: Wenn die Option aktiviert ist, kann jeder Nutzer die Privoxy-Filterfunktionen &uuml;ber die Web-Schnittstelle ausschalten, siehe" en:"Whether or not the web-based toggle feature may be used, see") <a href="http://www.privoxy.org/3.0.10/user-manual/config.html#ENABLE-REMOTE-TOGGLE" target=_blank>$(lang de:"hier" en:"here")</a>
+<br>$(lang de:"Web-based Toggle Feature: Wenn die Option aktiviert ist, kann jeder Nutzer die Privoxy-Filterfunktionen &uuml;ber die Web-Schnittstelle ausschalten, siehe" en:"Whether or not the web-based toggle feature may be used, see") <a href="http://www.privoxy.org/user-manual/config.html#ENABLE-REMOTE-TOGGLE" target=_blank>$(lang de:"hier" en:"here")</a>
 <p>
 </font></li>
 <li>enforce-blocks  <input id="e7" type="radio" name="enforce_blocks" value="1"$enforce_blocks_yes_chk><label for="e7"> $(lang de:"Ja" en:"set")</label> <input id="e8" type="radio" name="enforce_blocks" value="0"$enforce_blocks_no_chk><label for="e8"> $(lang de:"Nein" en:"unset")</label>
 <font size="-2">
-<br>$(lang de:"Wenn die Option aktiviert ist, k&ouml;nnen Filter nicht umgangen werden ("go there anyway" wird ausgeblendet), siehe" en:"Whether the user is allowed to ignore blocks and can go there anyway, see") <a href="http://www.privoxy.org/3.0.10/user-manual/config.html#ENFORCE-BLOCKS" target=_blank>$(lang de:"hier" en:"here")</a>
+<br>$(lang de:"Wenn die Option aktiviert ist, k&ouml;nnen Filter nicht umgangen werden ('go there anyway' wird ausgeblendet), siehe" en:"Whether the user is allowed to ignore blocks and can go there anyway, see") <a href="http://www.privoxy.org/user-manual/config.html#ENFORCE-BLOCKS" target=_blank>$(lang de:"hier" en:"here")</a>
 </font>
 </li>
 </ul>
