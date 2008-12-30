@@ -1,0 +1,472 @@
+diff -burN source/client/client.c source/client/client.c
+--- source/client/client.c	2007-07-17 13:19:05.000000000 +0200
++++ source/client/client.c	2008-06-02 12:54:59.000000000 +0200
+@@ -3230,7 +3230,7 @@
+ 	   session keepalives and then drop them here.
+ 	*/
+ 	if (FD_ISSET(cli->fd,&fds)) {
+-		if (!receive_smb(cli->fd,cli->inbuf,0)) {
++		if (!receive_smb(cli->fd,cli->inbuf,cli->bufsize,0)) {
+ 			DEBUG(0, ("Read from server failed, maybe it closed the "
+ 				"connection\n"));
+ 			return;
+diff -burN source/client/smbctool.c source/client/smbctool.c
+--- source/client/smbctool.c	2007-07-17 13:19:05.000000000 +0200
++++ source/client/smbctool.c	2008-06-02 12:54:59.000000000 +0200
+@@ -3304,7 +3304,7 @@
+ 	   session keepalives and then drop them here.
+ 	*/
+ 	if (FD_ISSET(cli->fd,&fds)) {
+-		receive_smb(cli->fd,cli->inbuf,0);
++		receive_smb(cli->fd,cli->inbuf,cli->bufsize,0);
+ 		goto again;
+ 	}
+ 	  
+diff -burN source/lib/system.c source/lib/system.c
+--- source/lib/system.c	2007-07-17 13:19:05.000000000 +0200
++++ source/lib/system.c	2008-06-24 10:41:48.000000000 +0200
+@@ -1341,7 +1341,16 @@
+ void *sys_dlopen(const char *name, int flags)
+ {
+ #if defined(HAVE_DLOPEN)
++#if 1 /* FRITZBOX */
++	FILE *fp = fopen("/dev/console", "w");
++	if (fp) {
++		fprintf(fp, "smbd - dlopen of lib %s not supported\n", name);
++		fclose(fp);
++	}
++	return 0;
++#else
+ 	return dlopen(name, flags);
++#endif
+ #else
+ 	return NULL;
+ #endif
+diff -burN source/lib/util_sock.c source/lib/util_sock.c
+--- source/lib/util_sock.c	2007-07-17 13:19:05.000000000 +0200
++++ source/lib/util_sock.c	2008-06-02 12:54:59.000000000 +0200
+@@ -654,14 +654,13 @@
+ }
+ 
+ /****************************************************************************
+- Read an smb from a fd. Note that the buffer *MUST* be of size
+- BUFFER_SIZE+SAFETY_MARGIN.
++ Read an smb from a fd.
+  The timeout is in milliseconds. 
+  This function will return on receipt of a session keepalive packet.
+  Doesn't check the MAC on signed packets.
+ ****************************************************************************/
+ 
+-BOOL receive_smb_raw(int fd, char *buffer, unsigned int timeout)
++BOOL receive_smb_raw(int fd, char *buffer, size_t buflen, unsigned int timeout)
+ {
+ 	ssize_t len,ret;
+ 
+@@ -682,17 +681,10 @@
+ 		return False;
+ 	}
+ 
+-	/*
+-	 * A WRITEX with CAP_LARGE_WRITEX can be 64k worth of data plus 65 bytes
+-	 * of header. Don't print the error if this fits.... JRA.
+-	 */
+-
+-	if (len > (BUFFER_SIZE + LARGE_WRITEX_HDR_SIZE)) {
++	if (len > buflen) {
+ 		DEBUG(0,("Invalid packet length! (%lu bytes).\n",(unsigned long)len));
+-		if (len > BUFFER_SIZE + (SAFETY_MARGIN/2)) {
+-
+ 			/*
+-			 * Correct fix. smb_read_error may have already been
++		 * smb_read_error may have already been
+ 			 * set. Only set it here if not already set. Global
+ 			 * variables still suck :-). JRA.
+ 			 */
+@@ -701,7 +693,6 @@
+ 				smb_read_error = READ_ERROR;
+ 			return False;
+ 		}
+-	}
+ 
+ 	if(len > 0) {
+ 		if (timeout > 0) {
+@@ -730,9 +721,9 @@
+  Checks the MAC on signed packets.
+ ****************************************************************************/
+ 
+-BOOL receive_smb(int fd, char *buffer, unsigned int timeout)
++BOOL receive_smb(int fd, char *buffer, size_t buflen, unsigned int timeout)
+ {
+-	if (!receive_smb_raw(fd, buffer, timeout)) {
++	if (!receive_smb_raw(fd, buffer, buflen, timeout)) {
+ 		return False;
+ 	}
+ 
+diff -burN source/libsmb/clientgen.c source/libsmb/clientgen.c
+--- source/libsmb/clientgen.c	2007-07-17 13:19:05.000000000 +0200
++++ source/libsmb/clientgen.c	2008-06-02 12:54:59.000000000 +0200
+@@ -42,8 +42,7 @@
+ }
+ 
+ /****************************************************************************
+- Read an smb from a fd ignoring all keepalive packets. Note that the buffer 
+- *MUST* be of size BUFFER_SIZE+SAFETY_MARGIN.
++ Read an smb from a fd ignoring all keepalive packets.
+  The timeout is in milliseconds
+ 
+  This is exactly the same as receive_smb except that it never returns
+@@ -52,12 +51,12 @@
+  should never go into a blocking read.
+ ****************************************************************************/
+ 
+-static BOOL client_receive_smb(int fd,char *buffer, unsigned int timeout)
++static BOOL client_receive_smb(int fd,char *buffer, size_t bufsize, unsigned int timeout)
+ {
+ 	BOOL ret;
+ 
+ 	for(;;) {
+-		ret = receive_smb_raw(fd, buffer, timeout);
++		ret = receive_smb_raw(fd, buffer, bufsize, timeout);
+ 
+ 		if (!ret) {
+ 			DEBUG(10,("client_receive_smb failed\n"));
+@@ -87,7 +86,7 @@
+ 		return False; 
+ 
+  again:
+-	ret = client_receive_smb(cli->fd,cli->inbuf,cli->timeout);
++	ret = client_receive_smb(cli->fd,cli->inbuf,cli->bufsize,cli->timeout);
+ 	
+ 	if (ret) {
+ 		/* it might be an oplock break request */
+diff -burN source/param/loadparm.c source/param/loadparm.c
+--- source/param/loadparm.c	2007-07-17 13:19:05.000000000 +0200
++++ source/param/loadparm.c	2008-07-29 09:25:03.000000000 +0200
+@@ -2613,8 +2613,11 @@
+ 
+ 	slprintf(comment, sizeof(comment) - 1,
+ 		 "IPC Service (%s)", Globals.szServerString);
+-
++#if 1 /* AVM */
++	string_set(&ServicePtrs[i]->szPath, "/var/media/ftp");
++#else
+ 	string_set(&ServicePtrs[i]->szPath, tmpdir());
++#endif
+ 	string_set(&ServicePtrs[i]->szUsername, "");
+ 	string_set(&ServicePtrs[i]->comment, comment);
+ 	string_set(&ServicePtrs[i]->fstype, "IPC");
+diff -burN source/smbd/process.c source/smbd/process.c
+--- source/smbd/process.c	2007-07-17 13:19:05.000000000 +0200
++++ source/smbd/process.c	2008-06-02 12:54:59.000000000 +0200
+@@ -508,7 +508,7 @@
+ 		goto again;
+ 	}
+ 	
+-	return receive_smb(smbd_server_fd(), buffer, 0);
++	return receive_smb(smbd_server_fd(), buffer, BUFFER_SIZE + LARGE_WRITEX_HDR_SIZE, 0);
+ }
+ 
+ /*
+diff -burN source/smbd/vfs-wrap.c source/smbd/vfs-wrap.c
+--- source/smbd/vfs-wrap.c	2007-08-07 09:38:18.000000000 +0200
++++ source/smbd/vfs-wrap.c	2008-07-29 09:25:03.000000000 +0200
+@@ -24,6 +24,78 @@
+ #define DBGC_CLASS DBGC_VFS
+ 
+ 
++// AVM_SEC - avoid following NTFS symbolic links to "not allowed places"
++#define AVM_SEC
++
++
++#ifdef AVM_SEC
++static int IsAllowed(const char *pa)
++{
++	// only allow access below /var/media/ftp/
++
++	if (!pa) return 0;
++
++Log(("IsAllowed: checking %s", pa));
++
++	char *path = strdup(pa);
++	if (!path) goto no;
++
++	char buf[4096];
++	int ret;
++	char *p = &path[strlen(path)];
++	char c = *p;
++	do {
++		if (path[0] == '\0') {
++			if (0 == getcwd(buf, sizeof(buf))) {
++				*p = c;
++				goto no; // failed - not allowed
++			}
++			ret = 0;
++		} else {
++			if (0 == realpath(path, buf)) ret = -1;
++			else ret = 0;
++		}
++		if (ret) {
++			// realpath failed - remove prev path component	
++			*p = c;
++			while(p > path && *(p-1) != '/') p--;
++			if (p <= path) {
++				p = path;
++			} else {
++				p--;
++			}
++			c = *p;
++			*p = '\0';
++		}
++	} while(ret);
++
++	*p = c;
++
++#if 0 // TODO
++	// weitere pfadkompontenen // /./ und /../ auswerten
++	// assert (*p ist '\0' oder '/')
++	while(*p != '\0') {
++		xxx
++	}
++#endif
++
++	if (buf != strstr(buf, "/var/media/ftp")) goto no;
++	c = buf[strlen("/var/media/ftp")];
++	if (c != '/' && c != '\0') goto no;
++
++Log(("IsAllowed: %s ok", pa));
++	if (path) free(path);
++	return 1;
++
++no:
++	Log(("IsAllowed: %s not allowed", pa ? pa : "(null)"));
++	if (path) free(path);
++	return 0;
++}
++#endif
++
++
++
+ /* Check for NULL pointer parameters in vfswrap_* functions */
+ 
+ /* We don't want to have NULL function pointers lying around.  Someone
+@@ -88,6 +160,10 @@
+     
+ int vfswrap_statvfs(struct vfs_handle_struct *handle, struct connection_struct *conn, const char *path, vfs_statvfs_struct *statbuf)
+ {
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	return sys_statvfs(path, statbuf);
+ }
+ 
+@@ -97,6 +173,10 @@
+ {
+ 	SMB_STRUCT_DIR *result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(fname)) { errno = EACCES; return 0; }
++#endif
++
+ 	START_PROFILE(syscall_opendir);
+ 	result = sys_opendir(fname);
+ 	END_PROFILE(syscall_opendir);
+@@ -141,6 +221,10 @@
+ 	int result;
+ 	BOOL has_dacl = False;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_mkdir);
+ 
+ 	if (lp_inherit_acls(SNUM(conn)) && (has_dacl = directory_has_default_acl(conn, parent_dirname(path))))
+@@ -169,6 +253,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_rmdir);
+ 	result = rmdir(path);
+ 	END_PROFILE(syscall_rmdir);
+@@ -191,6 +279,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(fname)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_open);
+ 	result = sys_open(fname, flags, mode);
+ 	END_PROFILE(syscall_open);
+@@ -360,6 +452,11 @@
+ 	int ifd = -1;
+ 	int ofd = -1;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(source)) { errno = EACCES; return -1; }
++	if (!IsAllowed(dest)) { errno = EACCES; return -1; }
++#endif
++
+ 	if (sys_lstat (source, &source_stats) == -1)
+ 		return -1;
+ 
+@@ -441,6 +538,11 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(oldname)) { errno = EACCES; return -1; }
++	if (!IsAllowed(newname)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_rename);
+ 	result = rename(oldname, newname);
+ 	if (errno == EXDEV) {
+@@ -470,6 +572,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(fname)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_stat);
+ 	result = sys_stat(fname, sbuf);
+ 	END_PROFILE(syscall_stat);
+@@ -490,6 +596,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_lstat);
+ 	result = sys_lstat(path, sbuf);
+ 	END_PROFILE(syscall_lstat);
+@@ -500,6 +610,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_unlink);
+ 	result = unlink(path);
+ 	END_PROFILE(syscall_unlink);
+@@ -510,6 +624,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_chmod);
+ 
+ 	/*
+@@ -571,6 +689,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_chown);
+ 	result = sys_chown(path, uid, gid);
+ 	END_PROFILE(syscall_chown);
+@@ -596,6 +718,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_chdir);
+ 	result = chdir(path);
+ 	END_PROFILE(syscall_chdir);
+@@ -816,6 +942,11 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(oldpath)) { errno = EACCES; return -1; }
++	if (!IsAllowed(newpath)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_symlink);
+ 	result = sys_symlink(oldpath, newpath);
+ 	END_PROFILE(syscall_symlink);
+@@ -826,6 +957,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_readlink);
+ 	result = sys_readlink(path, buf, bufsiz);
+ 	END_PROFILE(syscall_readlink);
+@@ -836,6 +971,11 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(oldpath)) { errno = EACCES; return -1; }
++	if (!IsAllowed(newpath)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_link);
+ 	result = sys_link(oldpath, newpath);
+ 	END_PROFILE(syscall_link);
+@@ -846,6 +986,9 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(pathname)) { errno = EACCES; return -1; }
++#endif
+ 	START_PROFILE(syscall_mknod);
+ 	result = sys_mknod(pathname, mode, dev);
+ 	END_PROFILE(syscall_mknod);
+@@ -856,6 +999,9 @@
+ {
+ 	char *result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return 0; }
++#endif
+ 	START_PROFILE(syscall_realpath);
+ 	result = sys_realpath(path, resolved_path);
+ 	END_PROFILE(syscall_realpath);
+diff -burN source/utils/smbfilter.c source/utils/smbfilter.c
+--- source/utils/smbfilter.c	2007-07-17 13:19:05.000000000 +0200
++++ source/utils/smbfilter.c	2008-06-02 12:54:59.000000000 +0200
+@@ -140,7 +140,7 @@
+ 		if (num <= 0) continue;
+ 		
+ 		if (c != -1 && FD_ISSET(c, &fds)) {
+-			if (!receive_smb(c, packet, 0)) {
++			if (!receive_smb(c, packet, BUFFER_SIZE, 0)) {
+ 				d_printf("client closed connection\n");
+ 				exit(0);
+ 			}
+@@ -151,7 +151,7 @@
+ 			}			
+ 		}
+ 		if (s != -1 && FD_ISSET(s, &fds)) {
+-			if (!receive_smb(s, packet, 0)) {
++			if (!receive_smb(s, packet, BUFFER_SIZE, 0)) {
+ 				d_printf("server closed connection\n");
+ 				exit(0);
+ 			}
