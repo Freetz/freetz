@@ -747,6 +747,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 			ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
 		fi
 
+		if [ "$FREETZ_STATUS_STYLE" == "y" ]; then
+			echo1 "patching bar-style and cache-usage"
+			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/bar-style_n_cache-usage.patch"
+		fi
+
 		modlang "${BASE_DIR}/.language" "${FILESYSTEM_MOD_DIR}"
 	else
 		error 1 "installation of base system is mandatory"
