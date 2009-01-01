@@ -1,6 +1,5 @@
-diff -urN gio/Makefile.in gio/Makefile.in
---- gio/Makefile.in	2008-10-03 23:13:00.000000000 +0200
-+++ gio/Makefile.in	2008-10-03 23:15:25.000000000 +0200
+--- gio/Makefile.in.orig	2008-10-16 16:41:08.000000000 +0200
++++ gio/Makefile.in	2009-01-01 16:06:20.000000000 +0100
 @@ -180,7 +180,7 @@
    distclean-recursive maintainer-clean-recursive
  ETAGS = etags
@@ -10,9 +9,17 @@ diff -urN gio/Makefile.in gio/Makefile.in
  DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
  ACLOCAL = @ACLOCAL@
  ALLOCA = @ALLOCA@
-diff -urN glib/Makefile.in glib/Makefile.in
---- glib/Makefile.in	2008-10-03 23:12:28.000000000 +0200
-+++ glib/Makefile.in	2008-10-03 23:14:46.000000000 +0200
+@@ -394,7 +394,7 @@
+ TEST_PROGS = 
+ NULL = 
+ SUBDIRS = $(am__append_1) $(am__append_2) $(am__append_6) \
+-	$(am__append_9) . $(am__append_12) tests
++	$(am__append_9) . $(am__append_12)
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
+--- glib/Makefile.in.orig	2008-10-16 16:41:09.000000000 +0200
++++ glib/Makefile.in	2009-01-01 16:06:20.000000000 +0100
 @@ -412,8 +412,8 @@
  @ENABLE_REGEX_TRUE@gregex_c = gregex.c
  @ENABLE_REGEX_FALSE@gregex_h = 
@@ -24,9 +31,8 @@ diff -urN glib/Makefile.in glib/Makefile.in
  AM_CPPFLAGS = \
  	-I$(top_srcdir) 		\
  	$(pcre_inc) 			\
-diff -urN gobject/Makefile.in gobject/Makefile.in
---- gobject/Makefile.in	2008-10-03 23:12:46.000000000 +0200
-+++ gobject/Makefile.in	2008-10-03 23:16:12.000000000 +0200
+--- gobject/Makefile.in.orig	2008-10-16 16:41:10.000000000 +0200
++++ gobject/Makefile.in	2009-01-01 16:06:20.000000000 +0100
 @@ -341,7 +341,7 @@
  # GObject - GLib Type, Object, Parameter and Signal Library
  # Copyright (C) 1997,98,99,2000 Tim Janik and Red Hat, Inc.
@@ -36,9 +42,8 @@ diff -urN gobject/Makefile.in gobject/Makefile.in
  AM_CPPFLAGS = \
  	-DG_LOG_DOMAIN=\"GLib-GObject\"		\
  	-I$(top_srcdir)				\
-diff -urN Makefile.in Makefile.in
---- Makefile.in	2008-10-03 23:12:28.000000000 +0200
-+++ Makefile.in	2008-10-03 23:14:14.000000000 +0200
+--- Makefile.in.orig	2008-10-16 16:41:11.000000000 +0200
++++ Makefile.in	2009-01-01 16:06:20.000000000 +0100
 @@ -340,7 +340,7 @@
  	gio-2.0-uninstalled.pc.in gio-unix-2.0-uninstalled.pc.in
  TEST_PROGS = 
