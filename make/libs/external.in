@@ -7,12 +7,14 @@ config EXTERNAL_FREETZ_LIB_libart_lgpl_2
 		 /usr/lib/libart_lgpl_2.so.2.3.19
 
 config EXTERNAL_FREETZ_LIB_libcrypto
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcrypto
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcrypto && FREETZ_SHOW_ADVANCED
 	bool "libcrypto"
 	default n
 	help
 		externals these file(s):
 		 /usr/lib/libcrypto.so.0.9.8
+		WARNING: when this file is external'ed, wlan-encryption
+		is not possible at boot time any more. 
 
 config EXTERNAL_FREETZ_LIB_libdevmapper
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdevmapper
