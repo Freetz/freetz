@@ -68,16 +68,21 @@ $($(PKG)_LIB_HPAIO_TARGET_BINARY): $($(PKG)_LIB_HPAIO_STAGING_BINARY)
 	mkdir -p $(HPLIP_DEST_DIR)/usr/share/hplip/data/models
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio.so* $(HPLIP_DEST_DIR)/usr/lib/sane
 	cp -R $(TARGET_TOOLCHAIN_STAGING_DIR)/etc/default.hplip $(HPLIP_DEST_DIR)/etc
+	$(TARGET_STRIP) $@
+
+$(PKG)_TARGET_CONF:
 	awk 'BEGIN { found=0 } /^\[.*\]/ || /^$$/ { found=0 } /^\['$(FREETZ_HPLIP_PRINTER_TYPE)'\]/ { found=1 } \
 		{ if (found) { print $$0 } }' < $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip/data/models/models.dat \
 		> $(HPLIP_DEST_DIR)/usr/share/hplip/data/models/models.dat	
-	$(TARGET_STRIP) $@
+
+.PHONY: $(PKG)_TARGET_CONF
 
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_LIB_IP_TARGET_BINARY) \
 			$($(PKG)_LIB_MUD_TARGET_BINARY) \
-			$($(PKG)_LIB_HPAIO_TARGET_BINARY)
+			$($(PKG)_LIB_HPAIO_TARGET_BINARY) \
+			$(PKG)_TARGET_CONF
 
 $(pkg)-clean:
 	-$(MAKE) -C $(HPLIP_DIR) clean
