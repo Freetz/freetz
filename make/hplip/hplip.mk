@@ -71,7 +71,8 @@ $($(PKG)_LIB_HPAIO_TARGET_BINARY): $($(PKG)_LIB_HPAIO_STAGING_BINARY)
 	$(TARGET_STRIP) $@
 
 $(PKG)_TARGET_CONF:
-	awk 'BEGIN { found=0 } /^\[.*\]/ || /^$$/ { found=0 } /^\['$(FREETZ_HPLIP_PRINTER_TYPE)'\]/ { found=1 } \
+	@echo "HPLIP: Strip down models.dat to $(FREETZ_HPLIP_PRINTER_TYPE)"
+	@awk 'BEGIN { found=0 } /^\[.*\]/ || /^$$/ { found=0 } /^\['$(FREETZ_HPLIP_PRINTER_TYPE)'\]/ { found=1 } \
 		{ if (found) { print $$0 } }' < $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip/data/models/models.dat \
 		> $(HPLIP_DEST_DIR)/usr/share/hplip/data/models/models.dat	
 
@@ -88,7 +89,7 @@ $(pkg)-clean:
 	-$(MAKE) -C $(HPLIP_DIR) clean
 
 $(pkg)-config-update:
-	$(HPLIP_MAKE_DIR)/hplip-config-update.sh $(HPLIP_VERSION) \
+	$(HPLIP_MAKE_DIR)/hplip-config-update.pl $(HPLIP_VERSION) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip/data/models/models.dat > $(HPLIP_MAKE_DIR)/Config.in
 
 $(pkg)-uninstall:
