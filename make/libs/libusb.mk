@@ -26,7 +26,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so* $(LIBUSB_TARGET_DIR)/
