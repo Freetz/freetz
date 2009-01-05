@@ -1,0 +1,19 @@
+--- coreutils/printf.c	Sun Sep 28 20:04:18 2008
++++ coreutils/printf.c	Wed Dec 17 03:23:27 2008
+@@ -359,8 +359,15 @@
+ 	 * We will mimic coreutils. */
+ 	if (argv[1] && argv[1][0] == '-' && argv[1][1] == '-' && !argv[1][2])
+ 		argv++;
+-	if (!argv[1])
++	if (!argv[1]) {
++		if (ENABLE_ASH_BUILTIN_PRINTF
++		 && applet_name[0] != 'p'
++		) {
++			bb_error_msg("usage: printf FORMAT [ARGUMENT...]");
++			return 2; /* bash compat */
++		}
+ 		bb_show_usage();
++	}
+ 
+ 	format = argv[1];
+ 	argv2 = argv + 2;

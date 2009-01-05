@@ -38,6 +38,38 @@ config FREETZ_BUSYBOX_INETD
 
 		This feature adds about 11.4 KB to BusyBox.
 
+config FREETZ_BUSYBOX_IP
+	bool "ip"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		ip command
+
+config FREETZ_BUSYBOX_FEATURE_IP_ADDRESS
+	bool "address option"
+	depends on FREETZ_BUSYBOX_IP
+	default n
+
+config FREETZ_BUSYBOX_FEATURE_IP_LINK
+	bool "link option"
+	depends on FREETZ_BUSYBOX_IP
+	default n
+
+config FREETZ_BUSYBOX_FEATURE_IP_RULE
+	bool "rule option"
+	depends on FREETZ_BUSYBOX_IP
+	default n
+
+config FREETZ_BUSYBOX_FEATURE_IP_ROUTE
+	bool "route option"
+	depends on FREETZ_BUSYBOX_IP
+	default n
+
+config FREETZ_BUSYBOX_FEATURE_IP_TUNNEL
+	bool "tunnel option"
+	depends on FREETZ_BUSYBOX_IP
+	default n
+
 config FREETZ_BUSYBOX_PATCH
 	bool "patch"
 	depends on FREETZ_REPLACE_BUSYBOX
