@@ -40,6 +40,6 @@ $(pkg)-clean:
 	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg*
 
 $(pkg)-uninstall:
-	rm -f $(JPEG_TARGET_DIR)/libjpeg*.so*
+	$(RM) $(JPEG_TARGET_DIR)/libjpeg*.so*
 
 $(PKG_FINISH)

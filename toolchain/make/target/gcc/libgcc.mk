@@ -9,4 +9,3 @@ endif
 $(ROOT_DIR)/lib/libgcc_s.so.1: $(DEPEND) 
 	-cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(ROOT_DIR)/lib/
 	$(TARGET_STRIP) $@
-	touch $@

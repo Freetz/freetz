@@ -36,7 +36,8 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(POPT_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpopt.*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpopt.* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/popt.h
 
 $(pkg)-uninstall:
 	$(RM) $(POPT_TARGET_DIR)/libpopt*.so*

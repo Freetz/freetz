@@ -21,7 +21,7 @@ find-squashfs-clean:
 	-$(MAKE) -C $(FIND_SQUASHFS_DIR) clean
 
 find-squashfs-dirclean:
-	rm -rf $(FIND_SQUASHFS_DIR)
+	$(RM) -r $(FIND_SQUASHFS_DIR)
 
 find-squashfs-distclean: find-squashfs-dirclean
-	rm -f $(TOOLS_DIR)/find-squashfs
+	$(RM) $(TOOLS_DIR)/find-squashfs

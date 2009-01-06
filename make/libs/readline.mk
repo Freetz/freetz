@@ -49,7 +49,7 @@ $(pkg)-clean:
 	-$(MAKE) -C $(READLINE_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(READLINE_TARGET_DIR)/libreadline*.so*
-	rm -f $(READLINE_TARGET_DIR)/libhistory*.so*
+	$(RM) $(READLINE_TARGET_DIR)/libreadline*.so*
+	$(RM) $(READLINE_TARGET_DIR)/libhistory*.so*
 
 $(PKG_FINISH)

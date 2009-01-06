@@ -1,7 +1,6 @@
-diff -burN linux-2.6.19.2/drivers/net/Kconfig linux-2.6.19.2.patched/drivers/net/Kconfig
---- linux-2.6.19.2/drivers/net/Kconfig	2007-12-18 18:34:01.000000000 +0100
-+++ linux-2.6.19.2.patched/drivers/net/Kconfig	2008-09-07 12:40:16.000000000 +0200
-@@ -2758,18 +2758,30 @@
+--- linux-2.6.19.2/drivers/net/Kconfig.orig	2008-12-19 18:49:55.000000000 +0100
++++ linux-2.6.19.2/drivers/net/Kconfig	2008-12-19 18:49:55.000000000 +0100
+@@ -2756,18 +2756,30 @@
  	  module; it is called bsd_comp and will show up in the directory
  	  modules once you have said "make modules". If unsure, say N.
  
@@ -41,9 +40,8 @@ diff -burN linux-2.6.19.2/drivers/net/Kconfig linux-2.6.19.2.patched/drivers/net
  
  config PPPOE
  	tristate "PPP over Ethernet (EXPERIMENTAL)"
-diff -burN linux-2.6.19.2/drivers/net/Makefile linux-2.6.19.2.patched/drivers/net/Makefile
---- linux-2.6.19.2/drivers/net/Makefile	2007-09-25 09:29:15.000000000 +0200
-+++ linux-2.6.19.2.patched/drivers/net/Makefile	2008-09-07 12:36:57.000000000 +0200
+--- linux-2.6.19.2/drivers/net/Makefile.orig	2007-09-25 09:29:15.000000000 +0200
++++ linux-2.6.19.2/drivers/net/Makefile	2008-12-19 18:49:55.000000000 +0100
 @@ -122,7 +122,7 @@
  obj-$(CONFIG_PPP_SYNC_TTY) += ppp_synctty.o
  obj-$(CONFIG_PPP_DEFLATE) += ppp_deflate.o
@@ -53,9 +51,8 @@ diff -burN linux-2.6.19.2/drivers/net/Makefile linux-2.6.19.2.patched/drivers/ne
  obj-$(CONFIG_PPPOE) += pppox.o pppoe.o
  
  obj-$(CONFIG_SLIP) += slip.o
-diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drivers/net/ppp_generic.c
---- linux-2.6.19.2/drivers/net/ppp_generic.c	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2.patched/drivers/net/ppp_generic.c	2008-09-07 12:48:28.000000000 +0200
+--- linux-2.6.19.2/drivers/net/ppp_generic.c.orig	2008-09-02 11:49:50.000000000 +0200
++++ linux-2.6.19.2/drivers/net/ppp_generic.c	2008-12-19 18:49:55.000000000 +0100
 @@ -19,7 +19,7 @@
   * PPP driver, written by Michael Callahan and Al Longyear, and
   * subsequently hacked by Paul Mackerras.
@@ -65,7 +62,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
   */
  
  #include <linux/module.h>
-@@ -104,6 +104,7 @@
+@@ -109,6 +109,7 @@
  	spinlock_t	rlock;		/* lock for receive side 58 */
  	spinlock_t	wlock;		/* lock for transmit side 5c */
  	int		mru;		/* max receive unit 60 */
@@ -73,7 +70,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
  	unsigned int	flags;		/* control bits 64 */
  	unsigned int	xstate;		/* transmit state bits 68 */
  	unsigned int	rstate;		/* receive state bits 6c */
-@@ -136,14 +137,13 @@
+@@ -141,14 +142,13 @@
  
  /*
   * Bits in flags: SC_NO_TCP_CCID, SC_CCP_OPEN, SC_CCP_UP, SC_LOOP_TRAFFIC,
@@ -90,7 +87,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
  
  /*
   * Private data structure for each channel.
-@@ -629,7 +629,9 @@
+@@ -634,7 +634,9 @@
  	case PPPIOCSMRU:
  		if (get_user(val, p))
  			break;
@@ -101,7 +98,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
  		err = 0;
  		break;
  
-@@ -1017,56 +1019,6 @@
+@@ -1022,56 +1024,6 @@
  	ppp_xmit_unlock(ppp);
  }
  
@@ -158,7 +155,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
  /*
   * Compress and send a frame.
   * The caller should have locked the xmit path,
-@@ -1147,21 +1099,73 @@
+@@ -1152,21 +1104,73 @@
  	case PPP_CCP:
  		/* peek at outbound CCP frames */
  		ppp_ccp_peek(ppp, skb, 0);
@@ -237,7 +234,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
  
  	/*
  	 * If we are waiting for traffic (demand dialling),
-@@ -1180,7 +1184,6 @@
+@@ -1185,7 +1189,6 @@
  	return;
  
   drop:
@@ -245,7 +242,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
  		kfree_skb(skb);
  	++ppp->stats.tx_errors;
  }
-@@ -1578,9 +1581,6 @@
+@@ -1588,9 +1591,6 @@
  	    && (ppp->rstate & (SC_DC_FERROR | SC_DC_ERROR)) == 0)
  		skb = ppp_decompress_frame(ppp, skb);
  
@@ -255,7 +252,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
  	proto = PPP_PROTO(skb);
  	switch (proto) {
  	case PPP_VJC_COMP:
-@@ -1744,7 +1744,14 @@
+@@ -1769,7 +1769,14 @@
  	return skb;
  
   err:
@@ -270,7 +267,7 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
  	ppp_receive_error(ppp);
  	return skb;
  }
-@@ -2415,6 +2422,7 @@
+@@ -2440,6 +2447,7 @@
  		goto out1;
  
  	ppp->mru = PPP_MRU;
@@ -278,9 +275,8 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_generic.c linux-2.6.19.2.patched/drive
  	init_ppp_file(&ppp->file, INTERFACE);
  	ppp->file.hdrlen = PPP_HDRLEN - 2;	/* don't count proto bytes */
  	for (i = 0; i < NUM_NP; ++i)
-diff -burN linux-2.6.19.2/drivers/net/ppp_mppe.h linux-2.6.19.2.patched/drivers/net/ppp_mppe.h
---- linux-2.6.19.2/drivers/net/ppp_mppe.h	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2.patched/drivers/net/ppp_mppe.h	1970-01-01 01:00:00.000000000 +0100
+--- linux-2.6.19.2/drivers/net/ppp_mppe.h.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/drivers/net/ppp_mppe.h	1970-01-01 01:00:00.000000000 +0100
 @@ -1,86 +0,0 @@
 -#define MPPE_PAD                4      /* MPPE growth per frame */
 -#define MPPE_MAX_KEY_LEN       16      /* largest key length (128-bit) */
@@ -368,9 +364,8 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_mppe.h linux-2.6.19.2.patched/drivers/
 -       if (ptr[3] & ~MPPE_ALL_BITS)            \
 -           opts |= MPPE_OPT_UNKNOWN;           \
 -    } while (/* CONSTCOND */ 0)
-diff -burN linux-2.6.19.2/drivers/net/ppp_mppe_mppc.c linux-2.6.19.2.patched/drivers/net/ppp_mppe_mppc.c
---- linux-2.6.19.2/drivers/net/ppp_mppe_mppc.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2.patched/drivers/net/ppp_mppe_mppc.c	2008-09-07 12:36:57.000000000 +0200
+--- linux-2.6.19.2/drivers/net/ppp_mppe_mppc.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/drivers/net/ppp_mppe_mppc.c	2008-12-19 18:49:55.000000000 +0100
 @@ -0,0 +1,1299 @@
 +/*
 + * ppp_mppe_mppc.c - MPPC/MPPE "compressor/decompressor" module.
@@ -1671,9 +1666,8 @@ diff -burN linux-2.6.19.2/drivers/net/ppp_mppe_mppc.c linux-2.6.19.2.patched/dri
 +MODULE_VERSION("1.3");
 +MODULE_LICENSE("Dual BSD/GPL");
 +MODULE_ALIAS("ppp-compress-" __stringify(CI_MPPE));
-diff -burN linux-2.6.19.2/include/linux/crypto.h linux-2.6.19.2.patched/include/linux/crypto.h
---- linux-2.6.19.2/include/linux/crypto.h	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2.patched/include/linux/crypto.h	2008-09-07 12:36:57.000000000 +0200
+--- linux-2.6.19.2/include/linux/crypto.h.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/include/linux/crypto.h	2008-12-19 18:49:55.000000000 +0100
 @@ -717,6 +717,16 @@
  			  struct scatterlist *sg, unsigned int nsg, u8 *out)
  	__deprecated_for_modules;
@@ -1691,9 +1685,8 @@ diff -burN linux-2.6.19.2/include/linux/crypto.h linux-2.6.19.2.patched/include/
  static inline struct crypto_hash *__crypto_hash_cast(struct crypto_tfm *tfm)
  {
  	return (struct crypto_hash *)tfm;
-diff -burN linux-2.6.19.2/include/linux/if_ppp.h linux-2.6.19.2.patched/include/linux/if_ppp.h
---- linux-2.6.19.2/include/linux/if_ppp.h	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2.patched/include/linux/if_ppp.h	2008-09-07 12:36:57.000000000 +0200
+--- linux-2.6.19.2/include/linux/if_ppp.h.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/include/linux/if_ppp.h	2008-12-19 18:49:55.000000000 +0100
 @@ -21,7 +21,7 @@
   */
  
@@ -1713,9 +1706,8 @@ diff -burN linux-2.6.19.2/include/linux/if_ppp.h linux-2.6.19.2.patched/include/
  
  /* state bits */
  #define SC_XMIT_BUSY	0x10000000	/* (used by isdn_ppp?) */
-diff -burN linux-2.6.19.2/include/linux/ppp-comp.h linux-2.6.19.2.patched/include/linux/ppp-comp.h
---- linux-2.6.19.2/include/linux/ppp-comp.h	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2.patched/include/linux/ppp-comp.h	2008-09-07 12:36:57.000000000 +0200
+--- linux-2.6.19.2/include/linux/ppp-comp.h.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/include/linux/ppp-comp.h	2008-12-19 18:49:55.000000000 +0100
 @@ -28,7 +28,7 @@
   */
  

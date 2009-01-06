@@ -1,15 +1,15 @@
---- etc/init.d/rc.net.orig	2008-08-21 16:39:20.000000000 +0200
-+++ etc/init.d/rc.net	2008-08-21 16:39:20.000000000 +0200
-@@ -11,6 +11,8 @@
- PKG=dnsmasq
- BASE=/mod/pkg/$PKG
- PATH=$BASE/usr/lib/$PKG/bin:$PATH
+--- etc/init.d/rc.net.orig	2008-10-09 16:07:13.000000000 +0200
++++ etc/init.d/rc.net	2008-10-09 16:07:13.000000000 +0200
+@@ -71,6 +71,8 @@
+ #   a) it has the parameter at all AND
+ #   b) igdd binary does *not* exist
+ [ "$_dsld_upnp" ] && [ ! "$_igdd" ] && DSLDDPARAM="-g"
 +# Do we have a Samba server (smbd) or was ist stripped from the firmware?
 +_smbd=$(basename $(which smbd) 2> /dev/null)
  
- case "`uname -r`" in
-   2.6* ) KERNEL_26=yes; ;;
-@@ -297,6 +299,7 @@
+ 
+ igddstart()
+@@ -310,6 +312,7 @@
  #we have the samba cfg in /var, so crate them there
  sambastart()
  {

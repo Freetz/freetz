@@ -38,9 +38,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBGPG_ERROR_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*
 
 $(pkg)-uninstall:
-	rm -f $(LIBGPG_ERROR_TARGET_DIR)/libgpg-error*.so*
+	$(RM) $(LIBGPG_ERROR_TARGET_DIR)/libgpg-error*.so*
 
 $(PKG_FINISH)

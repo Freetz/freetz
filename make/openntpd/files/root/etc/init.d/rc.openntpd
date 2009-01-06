@@ -33,6 +33,11 @@ start() {
 	if [ ! -e "/var/db" ]; then
 		mkdir -p /var/db
 	fi
+
+	if [ ! -e "/mod/etc/ntpd.conf" ]; then
+		echo "Creating needed ntpd.conf links"
+		ln -s /tmp/flash/ntpd.conf /mod/etc/ntpd.conf
+	fi
 	
 	ntpd -s -f /mod/etc/ntpd.conf
 	exitval=$?
@@ -46,7 +51,7 @@ start() {
 
 stop () {
 	echo -n 'Stopping ntp server...'
-	killall ntpd > /dev/null 2>&1
+	kill -USR1 $(pidof -s ntpd) > /dev/null 2>&1
 	exitval=$?
 
 	rm -f /mod/etc/$DAEMON.conf
@@ -63,6 +68,10 @@ case "$1" in
 	""|load)
 		modreg cgi 'openntpd' 'Openntpd'
 
+		deffile='/mod/etc/default.openntpd/openntpd_conf.def'
+		[ -r '/tmp/flash/openntpd_conf.def' ] && deffile='/tmp/flash/openntpd_conf.def'
+		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file 'openntpd_conf' 'Openntpd config' 0 "$deffile"
+
 		if [ "$OPENNTPD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1;
@@ -72,6 +81,7 @@ case "$1" in
 		;;
 	unload)
 		stop
+		modunreg file 'openntpd_conf'
 		modunreg cgi 'openntpd'
 		;;
 	start)

@@ -38,7 +38,7 @@ tar-clean:
 	-$(MAKE) -C $(TAR_DIR) clean
 
 tar-dirclean:
-	rm -rf $(TAR_DIR)
+	$(RM) -r $(TAR_DIR)
 
 tar-distclean: tar-dirclean
-	rm -f $(TOOLS_DIR)/tar
+	$(RM) $(TOOLS_DIR)/tar

@@ -58,7 +58,6 @@ PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
-SWITCH_UCLIBC:=
 
 export FW_IMAGES_DIR
 
@@ -96,18 +95,8 @@ $(error Some build prerequisites are missing! Please install the missing package
 endif
 endif
 
-#Simple test if wrong uclibc is used
-ifneq ($(NO_UCLIBC_CHECK),y)
-UCLIBC:=$(shell $(CHECK_UCLIBC_VERSION) && echo OK || echo NOK)
-ifeq ($(UCLIBC),NOK)
-$(warning WARNING: uClibc-version changed. Packages, toolchain and some other stuff must be rebuilt. This will take a while)
-SWITCH_UCLIBC:=toolchain-switch
-endif
-export SWITCH_UCLIBC
-endif
-
 all: step
-world: $(CHECK_BUILD_DIR_VERSION) $(SWITCH_UCLIBC) \
+world: $(CHECK_BUILD_DIR_VERSION) \
 		$(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
 		$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 
@@ -117,6 +106,16 @@ noconfig_targets:=prereq-check check-builddir-version menuconfig config oldconfi
 
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
+
+ifeq ($(filter dirclean,$(MAKECMDGOALS)),)
+#Simple test if wrong uclibc is used
+ifneq ($(NO_UCLIBC_CHECK),y)
+ifneq ($(shell $(CHECK_UCLIBC_VERSION) && echo OK), OK)
+$(error Error: uClibc-version changed. Please type "make dirclean")
+endif
+endif
+endif
+
 endif
 
 ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),0)
@@ -212,29 +211,8 @@ ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
 	@exit 3
 else
 	@if ! ./fwmod_download -C $(DL_FW_DIR) $(DL_SITE) $(DL_SOURCE); then \
-		latest="$$(./fwmod_list "$(DL_SITE)" | sort | tail -1)"; \
-		[ -z "$$latest" ] && exit 1; \
-		if [ "$(DL_SOURCE)" != "$$latest" ]; then \
-			while true; do \
-				echo -n "Use the latest firmware $$latest? (y/n) "; \
-				read yn; \
-				case "$$yn" in \
-					[yY]*) \
-						sed -e 's/# FREETZ_DL_OVERRIDE is not set/FREETZ_DL_OVERRIDE=y/' \
-							-e 's/DL_SOURCE="$(DL_SOURCE)"/DL_SOURCE="'"$$latest"'"/' \
-							.config > .config.tmp; \
-						mv .config.tmp .config; \
-						echo; \
-						echo "Re-run \`make' for the changes to take effect."; \
-						echo "WARNING: This configuration is probably untested!"; \
-						echo; \
-						break ;; \
-					[nN]*) \
-						break ;; \
-				esac; \
-			done; \
-			exit 3; \
-		fi; \
+		echo "ERROR: Could not download Firmwareimage."; \
+		exit 3; \
 	fi
 endif
 
@@ -431,7 +409,7 @@ common-clean:
 
 common-dirclean:
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
-	rm -f make/config.cache
+	rm -f make/config.cache .new-uclibc .old-uclibc
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
@@ -439,7 +417,7 @@ common-distclean: common-clean
 	rm -f .config .config.old .config.cmd .tmpconfig.h
 	rm -rf $(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
 	rm -rf $(DL_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
-	rm -f make/config.cache
+	rm -f make/config.cache .new-uclibc .old-uclibc
 	-rm -rf $(ADDON_DIR)/*
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
@@ -473,12 +451,7 @@ check-builddir-version:
 	fi; 
 	@echo "$(BUILD_DIR_VERSION)" > .lastbuild-version
 
-toolchain-switch:
-	@rm -f $(TOOLCHAIN_DIR)/target
-	@rm -rf $(SOURCE_DIR) 
-	@rm -rf $(PACKAGES_DIR)
-	@rm -f make/config.cache
-
 .PHONY: all world step menuconfig config oldconfig defconfig exclude-lists tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
-	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE)
+	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
+	$(CHECK_BUILD_DIR_VERSION)

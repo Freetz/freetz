@@ -43,10 +43,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBAVMHMAC_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libavmhmac*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libavmhmac*
 
 $(pkg)-uninstall:
-	rm -f $(LIBAVMHMAC_DEST_LIB)/libavmhmac*.so*
+	$(RM) $(LIBAVMHMAC_DEST_LIB)/libavmhmac*.so*
 
 $(PKG_FINISH)
 

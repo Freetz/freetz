@@ -57,7 +57,7 @@ $($(PKG)_GLIB_STAGING_BINARY) $($(PKG)_GOBJECT_STAGING_BINARY) $($(PKG)_GMODULE_
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gmodule-2.0.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gmodule-no-export-2.0.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gmodule-export-2.0.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gthread-2.0.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gthread-2.0.pc
 
 
 $($(PKG)_GLIB_TARGET_BINARY): $($(PKG)_GLIB_STAGING_BINARY)
@@ -82,21 +82,20 @@ $(pkg)-precompiled: $($(PKG)_GLIB_TARGET_BINARY) \
 	$($(PKG)_GOBJECT_TARGET_BINARY) $($(PKG)_GMODULE_TARGET_BINARY) $($(PKG)_GTHREAD_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(GLIB2_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgobject-2.0*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmodule-2.0*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgthread-2.0*
-
-$(pkg)-uninstall:
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(GLIB2_DIR) \
+	-$(MAKE) -C $(GLIB2_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		uninstall
-	rm -f $(GLIB2_TARGET_DIR)/libglib-2.0.so*
-	rm -f $(GLIB2_TARGET_DIR)/libglib-2.0.so*
-	rm -f $(GLIB2_TARGET_DIR)/libgobject-2.0.so*
-	rm -f $(GLIB2_TARGET_DIR)/libgmodule-2.0.so*
-	rm -f $(GLIB2_TARGET_DIR)/libgthread-2.0.so*
+	-$(MAKE) -C $(GLIB2_DIR) clean
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0* \
+	      $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgobject-2.0* \
+	      $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmodule-2.0* \
+	      $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgthread-2.0*
+
+$(pkg)-uninstall:
+	$(RM) $(GLIB2_TARGET_DIR)/libglib-2.0.so* \
+	      $(GLIB2_TARGET_DIR)/libglib-2.0.so* \
+	      $(GLIB2_TARGET_DIR)/libgobject-2.0.so* \
+	      $(GLIB2_TARGET_DIR)/libgmodule-2.0.so* \
+	      $(GLIB2_TARGET_DIR)/libgthread-2.0.so*
 
 $(PKG_FINISH)

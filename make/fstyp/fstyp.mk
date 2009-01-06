@@ -30,6 +30,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(FSTYP_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(FSTYP_TARGET_BINARY)
+	$(RM) $(FSTYP_TARGET_BINARY)
 
 $(PKG_FINISH)

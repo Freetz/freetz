@@ -16,7 +16,7 @@ for file in \
 <li><a href=\"javascript:uiDoLaborDSLPage()\">Einstellungen<\/a><\/li>\n\
 \` ?>\
 " "$file"
-  echo "patching $file"
+  echo2 "patching $file"
   fi
  done
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/dsl-expert-pages.patch"

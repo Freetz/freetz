@@ -1,4 +1,4 @@
-#!/usr/bin/haserl -u -U /var/tmp
+#!/usr/bin/haserl -u 10000 -U /var/tmp
 Content-Type: application/x-gzip
 Content-Disposition: attachment; filename="var_flash.tar.gz"
 

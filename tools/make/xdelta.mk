@@ -13,7 +13,6 @@ $(DL_DIR)/$(XDELTA_SOURCE): | $(DL_DIR)
 xdelta-source: $(DL_DIR)/$(XDELTA_SOURCE)
 
 $(XDELTA_DIR)/.unpacked: $(DL_DIR)/$(XDELTA_SOURCE)
-	@rm -rf $(XDELTA_DIR) && mkdir -p $(XDELTA_DIR)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(XDELTA_SOURCE)
 	touch $@
 
@@ -29,8 +28,8 @@ xdelta-clean:
 	$(MAKE) -C $(XDELTA_DIR) clean
 
 xdelta-dirclean:
-	rm -rf $(XDELTA_DIR)
+	$(RM) -r $(XDELTA_DIR)
 
 xdelta-distclean:
-	rm -rf $(TOOLS_DIR)/xdelta3
+	$(RM) $(TOOLS_DIR)/xdelta3
 

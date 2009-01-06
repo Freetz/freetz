@@ -46,7 +46,7 @@ start() {
 
 	echo -n 'Starting stunnel...'
 
-	$DAEMON
+	$DAEMON > /dev/null 2>&1
 
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then

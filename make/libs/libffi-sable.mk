@@ -37,9 +37,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBFFI_SABLE_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi*
 
 $(pkg)-uninstall:
-	rm -f $(LIBFFI_SABLE_TARGET_DIR)/libffi*.so*
+	$(RM) $(LIBFFI_SABLE_TARGET_DIR)/libffi*.so*
 
 $(PKG_FINISH)

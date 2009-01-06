@@ -49,7 +49,7 @@ $(pkg)-precompiled: $($(PKG)_SMBP_TARGET_BINARY) $($(PKG)_SMBD_TARGET_BINARY) $(
 endif
 
 $(pkg)-clean-nmbd:
-	$(RM) -rf $(SAMBA_NMBD_TARGET_BINARY)
+	$(RM) $(SAMBA_NMBD_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(SAMBA_DIR)/source clean
