@@ -25,19 +25,19 @@ cat << EOF
 <table border="0">
 <tr>
 	<td>$(lang de:"Benutzername" en:"Username"):</td>
-	<td><input type="text" name="username" size="15" maxlength="50" value="$(httpd -e "$AICCU_USERNAME")"></td>
+	<td><input type="text" name="username" size="15" maxlength="50" value="$(html "$AICCU_USERNAME")"></td>
 </tr>
 <tr>
 	<td>$(lang de:"Passwort" en:"Password"):</td>
-	<td><input type="password" name="password" size="15" maxlength="50" value="$(httpd -e "$AICCU_PASSWORD")"></td>
+	<td><input type="password" name="password" size="15" maxlength="50" value="$(html "$AICCU_PASSWORD")"></td>
 </tr>
 <tr>
 	<td>$(lang de:"Tunnel ID" en:"Tunnel Id"):</td>
-	<td><input type="text" name="tunnelid" size="15" maxlength="50" value="$(httpd -e "$AICCU_TUNNELID")"></td>
+	<td><input type="text" name="tunnelid" size="15" maxlength="50" value="$(html "$AICCU_TUNNELID")"></td>
 </tr>
 <tr>
-	<td>$(lang de:"Name des virt. IPv6 Interface" en:"Name of virtual ipv6 interface"):</td>
-	<td><input type="text" name="interface" size="15" maxlength="16" value="$(httpd -e "$AICCU_INTERFACE")"></td>
+	<td>$(lang de:"Name des virt. IPv6 Interface" en:"Name of virtual IPv6 interface"):</td>
+	<td><input type="text" name="interface" size="15" maxlength="16" value="$(html "$AICCU_INTERFACE")"></td>
 </tr>
 </table>
 EOF
