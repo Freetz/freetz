@@ -3,9 +3,8 @@ menu SANE
 config FREETZ_PACKAGE_SANE_BACKENDS
 	bool "SANE 1.0.19"
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
-	select FREETZ_LIB_libusb
 	select FREETZ_LIB_libm
-	select FREETZ_LIB_libjpeg
+	select FREETZ_LIB_libusb
 	select FREETZ_LIB_libsane
 	default n
 	help
@@ -415,12 +414,14 @@ config FREETZ_SANE_BACKEND_dc210
 	bool "dc210 backend"
 	depends FREETZ_PACKAGE_SANE_BACKENDS
 	select FREETZ_SANE_BACKEND_dll
+	select FREETZ_LIB_libjpeg
 	default n
 
 config FREETZ_SANE_BACKEND_dc240
 	bool "dc240 backend"
 	depends FREETZ_PACKAGE_SANE_BACKENDS
 	select FREETZ_SANE_BACKEND_dll
+	select FREETZ_LIB_libjpeg
 	default n
 
 config FREETZ_SANE_BACKEND_qcam
