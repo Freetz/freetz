@@ -2,7 +2,27 @@ config FREETZ_PACKAGE_E2FSPROGS
 	bool "e2fsprogs 1.41.3 (binary only)"
 	default n
 	help
-			This package contains essential ext2, ext3 and ext4 filesystem
-			utilities which consists of e2fsck, mke2fs, debugfs, dumpe2fs,
-			tune2fs, and most of the other core ext2 filesystem utilities.
-			Homepage: http://e2fsprogs.sourceforge.net/
+		This package contains essential ext2, ext3 and ext4 filesystem
+		utilities which consists of e2fsck, mke2fs, debugfs, dumpe2fs,
+		tune2fs, and most of the other core ext2 filesystem utilities.
+		Homepage: http://e2fsprogs.sourceforge.net/
+
+config FREETZ_PACKAGE_E2FSPROGS_BLKID
+	bool "blkid"
+	depends on FREETZ_PACKAGE_E2FSPROGS
+	default n
+
+config FREETZ_PACKAGE_E2FSPROGS_E2FSCK
+	bool "e2fsck"
+	depends on FREETZ_PACKAGE_E2FSPROGS
+	default y
+
+config FREETZ_PACKAGE_E2FSPROGS_MKE2FS
+	bool "mke2fs"
+	depends on FREETZ_PACKAGE_E2FSPROGS
+	default n
+
+config FREETZ_PACKAGE_E2FSPROGS_TUNE2FS
+	bool "tune2fs"
+	depends on FREETZ_PACKAGE_E2FSPROGS
+	default n
