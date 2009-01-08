@@ -1,24 +1,6 @@
---- Makefile.orig	2007-02-23 13:44:42.000000000 +0100
-+++ Makefile	2007-07-29 03:53:04.000000000 +0200
-@@ -106,7 +106,7 @@
- ZLIB_INCLUDE=
- LIBZLIB=
- 
--DIRS=   crypto ssl engines apps test tools
-+DIRS=   crypto ssl engines apps tools
- SHLIBDIRS= crypto ssl
- 
- # dirs in crypto to build
-@@ -123,7 +123,7 @@
- 
- # tests to perform.  "alltests" is a special word indicating that all tests
- # should be performed.
--TESTS = alltests
-+TESTS = 
- 
- MAKEFILE= Makefile
- 
-@@ -135,7 +135,7 @@
+--- Makefile.orig	2009-01-07 12:57:01.000000000 +0100
++++ Makefile	2009-01-08 15:37:02.000000000 +0100
+@@ -162,7 +162,7 @@
  
  TOP=    .
  ONEDIRS=out tmp
@@ -27,16 +9,16 @@
  WDIRS=  windows
  LIBS=   libcrypto.a libssl.a
  SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
-@@ -225,7 +225,7 @@
- 	@[ -n "$(THIS)" ] && $(CLEARENV) && $(MAKE) $(THIS) -e $(BUILDENV)
+@@ -321,7 +321,7 @@
+ 	../crypto/uid.o
  
  sub_all: build_all
 -build_all: build_libs build_apps build_tests build_tools
 +build_all: build_libs build_apps build_tools
  
- build_libs: build_crypto build_ssl build_engines
+ build_libs: build_crypto build_fips build_ssl build_shared build_engines
  
-@@ -475,7 +475,7 @@
+@@ -610,7 +610,7 @@
  dist_pem_h:
  	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
  
@@ -45,9 +27,9 @@
  
  install_sw:
  	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
---- Makefile.org.orig	2007-07-29 03:53:03.000000000 +0200
-+++ Makefile.org	2007-07-29 03:53:04.000000000 +0200
-@@ -121,7 +121,7 @@
+--- Makefile.org.orig	2009-01-08 15:37:02.000000000 +0100
++++ Makefile.org	2009-01-08 15:37:03.000000000 +0100
+@@ -148,7 +148,7 @@
  
  # tests to perform.  "alltests" is a special word indicating that all tests
  # should be performed.
@@ -56,7 +38,7 @@
  
  MAKEFILE= Makefile
  
-@@ -133,7 +133,7 @@
+@@ -160,7 +160,7 @@
  
  TOP=    .
  ONEDIRS=out tmp
@@ -65,16 +47,16 @@
  WDIRS=  windows
  LIBS=   libcrypto.a libssl.a
  SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
-@@ -223,7 +223,7 @@
- 	@[ -n "$(THIS)" ] && $(CLEARENV) && $(MAKE) $(THIS) -e $(BUILDENV)
+@@ -319,7 +319,7 @@
+ 	../crypto/uid.o
  
  sub_all: build_all
 -build_all: build_libs build_apps build_tests build_tools
 +build_all: build_libs build_apps build_tools
  
- build_libs: build_crypto build_ssl build_engines
+ build_libs: build_crypto build_fips build_ssl build_shared build_engines
  
-@@ -240,7 +240,7 @@
+@@ -344,7 +344,7 @@
  build_tools:
  	@dir=tools; target=all; $(BUILD_ONE_CMD)
  
@@ -83,7 +65,7 @@
  build_testapps:
  	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
  
-@@ -473,7 +473,7 @@
+@@ -608,7 +608,7 @@
  dist_pem_h:
  	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
  
