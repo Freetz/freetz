@@ -1,4 +1,4 @@
-#!/usr/bin/haserl -u -U /var/tmp
+#!/usr/bin/haserl -u 10000 -U /var/tmp
 <? if [ "$FORM_display_mode" = "binary" ]; then
 	[ -z $FORM_download_name ] && FORM_download_name=rudi_download
 	echo 'Content-Type: application/octet-stream'

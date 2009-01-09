@@ -41,10 +41,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(MATRIXSSL_DIR)/src clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl*
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl*
 
 $(pkg)-uninstall:
-	rm -f $(MATRIXSSL_TARGET_DIR)/libmatrixssl*.so*
+	$(RM) $(MATRIXSSL_TARGET_DIR)/libmatrixssl*.so*
 
 $(PKG_FINISH)

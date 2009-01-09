@@ -21,18 +21,8 @@ ln -sf  microvoip_isdn_top.bit "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn
 if [ ! "$FREETZ_REMOVE_DECT" == "y" ];then
 	echo2 "Add dect sites to webmenu"
 	#Test if a beta-image or a labor-image is used and use another patchfile for them
-	if [ "$FREETZ_TYPE_LABOR_BETA" == "y" ];then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch"
-	elif [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
+	if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_dsl.patch"
-	elif [ "$FREETZ_TYPE_LABOR_ALL" == "y" ];then
-	        modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_all.patch"
-	elif [ "$FREETZ_TYPE_LABOR_PHONE" == "y" ];then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_phone.patch"
-	elif [ "$FREETZ_TYPE_LABOR_GAMING" == "y" ];then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_gaming.patch"
-	elif [ "$FREETZ_TYPE_LABOR_MINI" == "y" ];then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_mini.patch"
 	else
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch"
 	fi

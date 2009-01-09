@@ -35,12 +35,12 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBCAPI_DIR) clean
-	$(RM) -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcapi20.* \
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcapi20.* \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/include/capi20.h \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/include/capiutils.h \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/include/capicmd.h
 
 $(pkg)-uninstall:
-	$(RM) -f $(LIBCAPI_DEST_LIB)/libcapi*.so*
+	$(RM) $(LIBCAPI_DEST_LIB)/libcapi*.so*
 
 $(PKG_FINISH)

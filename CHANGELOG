@@ -15,7 +15,7 @@ Latest changes:
     * kernel-toolchain: Add two patches for gcc-3.4.6  
       + Fix failure with newer host gccs  
       + Fix failure on some machines  
-     
+    * Bump squashfs3 version to 3.4
 
 - New tools and hooks:
     * external
@@ -37,7 +37,11 @@ Latest changes:
 - New patches (read online help for more info):
     * 7270:   
       * Option to add Annex A firmware into image  
-      * Fix flashing of firmwares > 8 MB over webinterface  
+      * Fix flashing of firmwares > 8 MB over webinterface
+      * Add volume counter  
+    * Fix wrong usb mounts status message in AVM webinterface (7170, 7270)  
+    * Add new status bar design (optional) 
+      
 
 - New packages, libs, modules:
     * bfusb 3-18-39 (firmware for bluetooth stick)
@@ -75,15 +79,26 @@ Latest changes:
 
 - Updated patches:
     * add reiserfs to automountable filesystems
+    * change nice names for USB devices (sdax > uStor0x, sdby > uStor1y, ...)
 
 - Updated packages and libs:
     * bip 0.7.5
     * classpath 0.97.2
+    * curl 7.19.2
     * devmapper 1.02.27
     * dropbear: fixed init script not to start dropbear a second time when already running 
     * dns2tcp 0.4.3
+    * dtmfbox 0.5.0_rc2
     * expat 2.0.1
+    * haserl 0.9.25
     * jamvm 1.5.1
+    * openvpn 2.1_rc15
+    * PHP 5.2.8
+    * pjproject 1.0
+    * popt 1.14
+    * RRDtool 1.2.29
+    * Stunnel 4.26
+    * Transmission 1.42
     * vsftpd 2.0.7: add SSL support
     * tree 1.5.2.1
 
@@ -98,10 +113,11 @@ Latest changes:
 - Web interface:
 
 - Other stuff:
-    + use Labor kernel sources for 3270 instead of 04.57  
-    + fix strip library function for 3170  
+    + use Labor kernel sources for 3270 instead of 04.57
+    + fix strip library function for 3170
     + 3131: Remove "remove cdrom.iso" patch
-    + tune behaviour of freetz_download (retries: 3, timeout: 20s)   
+    + tune behaviour of freetz_download (retries: 3, timeout: 20s)
+    + Integrate new AVM open source packages (04.67 and 7270_04.67) 
 
 
 === release Freetz-1.0.1 ===

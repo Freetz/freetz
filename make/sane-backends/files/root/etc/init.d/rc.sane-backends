@@ -8,9 +8,12 @@ DAEMON=saned
 CONFDIR=/mod/etc/sane.d
 
 pre_config() {
-	[ ! -d $CONFDIR ] && mkdir $CONFDIR
+	[ ! -d $CONFDIR/dll.d ] && mkdir -p $CONFDIR/dll.d
 	for conf in /etc/default.$PKG/*.conf; do
-		ln -s $conf $CONFDIR/$(basename $conf);
+		[ -e $conf ] && ln -s $conf $CONFDIR/$(basename $conf);
+	done
+	for conf in /etc/default.$PKG/dll.d/*; do
+		[ -e $conf ] && cp $conf $CONFDIR/dll.d/;
 	done
 }
 

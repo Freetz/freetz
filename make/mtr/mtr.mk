@@ -32,6 +32,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(MTR_DIR) clean
 
 $(pkg)-uninstall: 
-	rm -f $(MTR_TARGET_BINARY)
+	$(RM) $(MTR_TARGET_BINARY)
 
 $(PKG_FINISH)

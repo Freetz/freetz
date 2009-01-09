@@ -14,7 +14,7 @@ ar7hostname () {
   if [ "$HOSTNAME" != "(none)" ] ; then
 	echo $HOSTNAME
   else	
-	echo fritz.box
+	echo $CONFIG_HOSTNAME
   fi
 }
 
@@ -87,7 +87,7 @@ case "$1" in
 		if [ -z "$ipaddr" ] ; then
 		  ipaddr=169.254.1.1
 		fi
-		echo -e "$ipaddr\t$(ar7hostname)" >> /var/tmp/hosts
+		echo -e "$ipaddr\tfritz.box\t$(ar7hostname)" >> /var/tmp/hosts
 		;;
 	*)
 		echo "Usage: $0 [load]" 1>&2

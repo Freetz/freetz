@@ -82,8 +82,8 @@ $(pkg)-clean:
 	-$(MAKE) -C $(LYNX_DIR) clean
 
 $(pkg)-uninstall: 
-	rm -f $(LYNX_TARGET_BINARY)
-	rm -f $(LYNX_TARGET_CFG)
+	$(RM) $(LYNX_TARGET_BINARY)
+	$(RM) $(LYNX_TARGET_CFG)
 
 $(PKG_FINISH)
 

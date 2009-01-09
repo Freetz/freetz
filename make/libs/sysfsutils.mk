@@ -35,10 +35,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(SYSFSUTILS_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsysfs.* \
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsysfs.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/sysfs
 
 $(pkg)-uninstall:
-	rm -f $(SYSFSUTILS_TARGET_DIR)/libsysfs*.so*
+	$(RM) $(SYSFSUTILS_TARGET_DIR)/libsysfs*.so*
 
 $(PKG_FINISH)

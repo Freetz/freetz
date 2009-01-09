@@ -26,6 +26,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(TINC_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(TINC_TARGET_BINARY)
+	$(RM) $(TINC_TARGET_BINARY)
 
 $(PKG_FINISH)

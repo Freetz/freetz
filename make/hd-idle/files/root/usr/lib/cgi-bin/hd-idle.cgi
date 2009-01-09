@@ -21,6 +21,6 @@ sec_begin '$(lang de:"Optionen" en:"Options")'
 cat << EOF
 <p><label for="idletime">$(lang de:"Leerlaufzeit" en:"Idle time"):</label> <input
 id="idletime" size="5" maxlength="8" type="text" name="idletime"
-value="$(httpd -e "$HD_IDLE_IDLETIME")"> $(lang de:"Sekunden" en:"seconds")</p>
+value="$(html "$HD_IDLE_IDLETIME")"> $(lang de:"Sekunden" en:"seconds")</p>
 EOF
 sec_end

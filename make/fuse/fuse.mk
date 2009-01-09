@@ -99,8 +99,8 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
 
 $(pkg)-uninstall:
-	rm -f $(FUSE_TARGET_BINARY)
-	rm -f $(FUSE_MOD_TARGET_BINARY)
-	rm -f $(FUSE_TARGET_DIR)/root/usr/lib/libfuse*.so*
+	$(RM) $(FUSE_TARGET_BINARY)
+	$(RM) $(FUSE_MOD_TARGET_BINARY)
+	$(RM) $(FUSE_TARGET_DIR)/root/usr/lib/libfuse*.so*
 
 $(PKG_FINISH)

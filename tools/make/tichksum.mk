@@ -22,7 +22,7 @@ tichksum-clean:
 	-$(MAKE) -C $(TI_CHKSUM_DIR) clean
 
 tichksum-dirclean:
-	rm -rf $(TI_CHKSUM_DIR)
+	$(RM) -r $(TI_CHKSUM_DIR)
 
 tichksum-distclean: tichksum-dirclean
-	rm -f $(TOOLS_DIR)/tichksum
+	$(RM) $(TOOLS_DIR)/tichksum

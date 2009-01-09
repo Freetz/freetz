@@ -1,4 +1,4 @@
-#!/usr/bin/haserl -u 8000000 -U /var/tmp -H /usr/mww/cgi-bin/do_update_handler.sh
+#!/usr/bin/haserl -u 20000 -U /var/tmp -H /usr/mww/cgi-bin/do_update_handler.sh
 
 <%
 PATH=/bin:/usr/bin:/sbin:/usr/sbin

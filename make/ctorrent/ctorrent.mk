@@ -28,6 +28,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(CTORRENT_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(CTORRENT_TARGET_BINARY)
+	$(RM) $(CTORRENT_TARGET_BINARY)
 
 $(PKG_FINISH)

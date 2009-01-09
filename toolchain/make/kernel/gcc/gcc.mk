@@ -76,7 +76,6 @@ $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc: $(GCC_KERNEL_BU
 ifeq ($(GCC_KERNEL_STRIP_HOST_BINARIES),true)
 	-strip --strip-all -R .note -R .comment $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-*
 endif
-	touch $@
 
 gcc-kernel: binutils-kernel $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
 

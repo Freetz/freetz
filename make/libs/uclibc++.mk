@@ -44,12 +44,12 @@ uclibcxx: $($(PKG)_STAGING_BINARY)
 uclibcxx-precompiled: $($(PKG)_TARGET_BINARY)
 
 uclibcxx-clean:
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-g++-uc
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-g++-uc
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
 	-$(MAKE) -C $(UCLIBCXX_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++* 
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libuClibc++* 
 
 uclibcxx-uninstall:
-	rm -f $(UCLIBCXX_TARGET_DIR)/libuClibc++*.so*
+	$(RM) $(UCLIBCXX_TARGET_DIR)/libuClibc++*.so*
 
 $(PKG_FINISH)

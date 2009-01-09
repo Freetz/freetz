@@ -1,24 +1,24 @@
 config FREETZ_PACKAGE_DTMFBOX
 	depends on FREETZ_LANG_DE || ! FREETZ_SELECTED_LANG_ONLY
-	bool "dtmfbox v0.5.0 (beta1)"
+	bool "dtmfbox v0.5.0 (rc2)"
 	select FREETZ_LIB_libcapi20
 	select FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
 	default n
 	help		
 		dtmfbox is a small softswitch application, that can be used to 
 		control different tasks over telephone keyboard (via DTMF).
-		The DTMF signals are handed over to a scriptfile.
+		The DTMF signals are handed over to a scriptfile or a plugin.
 		
-		While scriptfile running, you can answer an incoming call, record
-		or play a wave file, make another call, bridge calls, etc.
+		While scriptfile/plugin running, you can answer an incoming call, 
+		record or play a wave file, make another call, bridge calls, etc.
 		
-		The scriptfiles that are included in this package, contain an 
-		answering machine, administration menu and a callback/callthrough 
-		script.
+		The scriptfiles included in this package, contain an 
+		answering machine, callback/callthrough script, reverse lookup, 
+		anti-callcenter script, weather forecast, webradio ...
 
 		The application can also be configured as registrar, to allow 
 		SIP client connects.
-		
+
 		http://dtmfbox.v3v.de
 
 menu "CAPI/SIP"
@@ -83,6 +83,14 @@ endmenu
 
 menu "Misc"
 	depends on FREETZ_PACKAGE_DTMFBOX
+
+config FREETZ_PACKAGE_DTMFBOX_SVN
+	depends on FREETZ_PACKAGE_DTMFBOX
+	bool "Download trunk from SVN"
+	default n
+	help		
+	    Download latest dtmfbox from subversion repository.
+	    This is the current development trunk.
 
 config FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE
 	bool "Webphone Applet (beta)"

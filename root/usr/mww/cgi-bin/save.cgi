@@ -153,9 +153,6 @@ case "$form" in
 
 		[ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
 
-		sec_level=1
-		[ -r /tmp/flash/security ] && let sec_level=$(cat /tmp/flash/security)
-
 		OIFS=$IFS
 		IFS='|'
 		set -- $(cat /mod/etc/reg/file.reg | grep "^$file_id|")

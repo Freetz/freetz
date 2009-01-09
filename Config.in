@@ -18,6 +18,10 @@ config FREETZ_AVM_VERSION_04_49
 	bool
 config FREETZ_AVM_VERSION_04_57
 	bool
+config FREETZ_AVM_VERSION_04_67
+	bool
+config FREETZ_AVM_VERSION_7270_04_67
+	bool
 config FREETZ_AVM_VERSION_12043
 	bool
 config FREETZ_AVM_VERSION_7270
@@ -85,15 +89,15 @@ choice
 		bool "Fon 7150"
 
 	config FREETZ_TYPE_FON_WLAN_7170
-		select FREETZ_AVM_VERSION_04_57
+		select FREETZ_AVM_VERSION_04_67
 		bool "Fon WLAN 7170"
 	
 	config FREETZ_TYPE_FON_WLAN_7240
-		select FREETZ_AVM_VERSION_12043
+		select FREETZ_AVM_VERSION_7270_04_67
 		bool "Fon WLAN 7240"
 
 	config FREETZ_TYPE_FON_WLAN_7270
-		select FREETZ_AVM_VERSION_12043
+		select FREETZ_AVM_VERSION_7270_04_67
 		bool "Fon WLAN 7270"
 	
 	config FREETZ_TYPE_WLAN_3020
@@ -117,7 +121,7 @@ choice
 		bool "WLAN 3170"
 	
 	config FREETZ_TYPE_WLAN_3270
-		select FREETZ_AVM_VERSION_12043
+		select FREETZ_AVM_VERSION_7270_04_67
 		bool "WLAN 3270"
 
 	config FREETZ_TYPE_SPEEDPORT_W501V
@@ -257,8 +261,10 @@ config FREETZ_AVM_VERSION_STRING
 	default "04.40"			if FREETZ_AVM_VERSION_04_40
 	default "04.49"			if FREETZ_AVM_VERSION_04_49
 	default "04.57"			if FREETZ_AVM_VERSION_04_57
+	default "04.67"			if FREETZ_AVM_VERSION_04_67
 	default "7270"			if FREETZ_AVM_VERSION_7270
 	default "12043"			if FREETZ_AVM_VERSION_12043
+	default "7270_04.67"		if FREETZ_AVM_VERSION_7270_04_67
 	default "r4884"			if FREETZ_AVM_VERSION_r4884
 	default "r7203"			if FREETZ_AVM_VERSION_r7203
 	default "r8508"			if FREETZ_AVM_VERSION_r8508
@@ -395,10 +401,14 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
 		! FREETZ_TYPE_LABOR && \
+<<<<<<< .working
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
 		! FREETZ_TYPE_FON_WLAN_7240 && \
 		! FREETZ_TYPE_FON_WLAN_7270 && \
 		! FREETZ_TYPE_WLAN_3270
+=======
+		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN)
+>>>>>>> .merge-right.r2945
 	default y
 
 config FREETZ_REPLACE_KERNEL
@@ -1485,6 +1495,7 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170_LabPHONE.AnnexB.29.04.97-10173.image"		if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7240.AnnexB.73.04.68.image"				if FREETZ_TYPE_FON_WLAN_7240
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.67.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
+<<<<<<< .working
 	default "FRITZ_Box_Fon_WLAN_7270-beta-10576.image"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.63-13046.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_ALL
 	default "fritz_box_54_04_59-11779M.image"					if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_MINI
@@ -1492,6 +1503,11 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7270_LabCORE.AnnexB.54.04.98-12028.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN
 	default "FRITZ.Box_Fon_WLAN_7270_LabGAMING.AnnexB.54.04.93-11632.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_GAMING
 	default "fritz_box-labor-12606.image"						if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
+=======
+	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.99-13225.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
+	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.97-13286.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
+	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.95-13265.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_UMTS
+>>>>>>> .merge-right.r2945
 	default "fritz.box_sl_wlan.09.04.34.image"					if FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
 	default "fritz.box_wlan_3130.44.04.34.image"					if FREETZ_TYPE_WLAN_3130
@@ -1704,6 +1720,13 @@ config FREETZ_DEVELOPER_VERSION_STRING
 		ATTENTION! This option is for developers working on checked-out
 		versions of the Freetz source code only and requires svnversion to be
 		installed.
+
+config FREETZ_STATUS_STYLE
+	bool "New style for status-bars and cache-usage"
+	default n
+	help
+		Changes the style of the Freetz status-bars and	also adds the
+		cache-usage to these bars.
 
 menu External
 config EXTERNAL_ENABLED

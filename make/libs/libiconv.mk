@@ -37,9 +37,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBICONV_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiconv*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiconv*
 
 $(pkg)-uninstall:
-	rm -f $(LIBICONV_TARGET_DIR)/libiconv*.so*
+	$(RM) $(LIBICONV_TARGET_DIR)/libiconv*.so*
 
 $(PKG_FINISH)

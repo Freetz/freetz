@@ -29,6 +29,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(DECO_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(DECO_TARGET_BINARY)
+	$(RM) $(DECO_TARGET_BINARY)
 
 $(PKG_FINISH)

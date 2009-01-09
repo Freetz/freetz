@@ -40,7 +40,7 @@ start() {
 		exit 0
 	fi
 
-	$SMBD -D -s $CONF 2>/dev/null
+	$SMBD -D -s $CONF > /dev/null 2>&1
 	exitvals=$?
 
 	NST=1

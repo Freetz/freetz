@@ -41,9 +41,6 @@ if [ -z "$PATH_INFO" ]; then
 
 	cgi_end
 else
-	sec_level=1
-	[ -r "/tmp/flash/security" ] && let sec_level="$(cat /tmp/flash/security)"
-
 	OIFS="$IFS"
 	IFS='/'
 	set -- $(echo "$PATH_INFO" | sed -e 's/\.//g')
@@ -52,10 +49,7 @@ else
 	set -- $(cat /mod/etc/reg/extra.reg | grep "^$pkg|.*|$cgi\$")
 	IFS="$OIFS"
 
-	sec=1
-	[ -z "$3" ] || let sec="$3"
-
-	if [ "$sec_level" -gt "$sec" ]; then
+	if [ "$sec_level" -gt "$3" ]; then
 		cgi_begin 'Extras'
 		echo '<h1>$(lang de:"Zusatz-Skript" en:"Additional script")</h1>'
 		echo '<div style="color: #800000;">$(lang de:"Dieses Zusatz-Skript in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" en:"This script is not available at the current security level!")</div>'

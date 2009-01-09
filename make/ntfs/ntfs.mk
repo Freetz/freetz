@@ -35,6 +35,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(NTFS_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(NTFS_TARGET_BINARY)
+	$(RM) $(NTFS_TARGET_BINARY)
 
 $(PKG_FINISH)

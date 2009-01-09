@@ -9,9 +9,6 @@ id="$(echo "$QUERY_STRING" | sed -e 's/^.*id=//' -e 's/&.*$//' -e 's/\.//g')"
 
 cgi_begin "$id" "file_$id"
 
-sec_level=1
-[ -r "/tmp/flash/security" ] && let sec_level="$(cat /tmp/flash/security)"
-
 OIFS="$IFS"
 IFS='|'
 set -- $(cat /mod/etc/reg/file.reg | grep "^$id|")

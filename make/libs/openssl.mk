@@ -79,13 +79,13 @@ $(pkg)-precompiled: $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(OPENSSL_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/openssl
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/openssl
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/openssl
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/openssl
 
 $(pkg)-uninstall:
-	rm -f $(OPENSSL_TARGET_DIR)/libssl*.so*
-	rm -f $(OPENSSL_TARGET_DIR)/libcrypto*.so*
+	$(RM) $(OPENSSL_TARGET_DIR)/libssl*.so*
+	$(RM) $(OPENSSL_TARGET_DIR)/libcrypto*.so*
 
 $(PKG_FINISH)

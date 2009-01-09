@@ -1,0 +1,159 @@
+			     BASH PATCH REPORT
+			     =================
+
+Bash-Release: 3.2
+Patch-ID: bash32-035
+
+Bug-Reported-by:	Ingo Molnar <mingo@elte.hu>
+Bug-Reference-ID:	<20071205202901.GA25202@elte.hu>
+Bug-Reference-URL:	http://lists.gnu.org/archive/html/bug-bash/2007-12/msg00014.html
+
+Bug-Description:
+
+Bash incorrectly puts the second and subsequent children spawned by a
+shell forked to run a command substitution in the wrong process group.
+
+Patch:
+
+*** ../bash-3.2-patched/subst.c	2007-12-13 22:31:21.000000000 -0500
+--- subst.c	2008-01-17 22:48:15.000000000 -0500
+***************
+*** 4621,4627 ****
+  
+  #if defined (JOB_CONTROL)
+    set_sigchld_handler ();
+    stop_making_children ();
+!   pipeline_pgrp = old_pipeline_pgrp;
+  #else
+    stop_making_children ();
+--- 4721,4728 ----
+  
+  #if defined (JOB_CONTROL)
+    set_sigchld_handler ();
+    stop_making_children ();
+!   if (pid != 0)
+!     pipeline_pgrp = old_pipeline_pgrp;
+  #else
+    stop_making_children ();
+*** ../bash-3.2-patched/jobs.c	2007-08-25 13:46:59.000000000 -0400
+--- jobs.c	2007-12-08 16:47:43.000000000 -0500
+***************
+*** 251,254 ****
+--- 251,255 ----
+  static int set_job_status_and_cleanup __P((int));
+  
++ static WAIT job_signal_status __P((int));
+  static WAIT raw_job_exit_status __P((int));
+  
+***************
+*** 2220,2223 ****
+--- 2238,2261 ----
+  }
+  
++ static WAIT
++ job_signal_status (job)
++      int job;
++ {
++   register PROCESS *p;
++   WAIT s;
++ 
++   p = jobs[job]->pipe;
++   do
++     {
++       s = p->status;
++       if (WIFSIGNALED(s) || WIFSTOPPED(s))
++ 	break;
++       p = p->next;
++     }
++   while (p != jobs[job]->pipe);
++ 
++   return s;
++ }
++   
+  /* Return the exit status of the last process in the pipeline for job JOB.
+     This is the exit status of the entire job. */
+***************
+*** 2302,2310 ****
+       received, only if one of the jobs run is killed via SIGINT.  If
+       job control is not set, the job will be run in the same pgrp as
+!      the shell, and the shell will see any signals the job gets. */
+  
+    /* This is possibly a race condition -- should it go in stop_pipeline? */
+    wait_sigint_received = 0;
+!   if (job_control == 0)
+      {
+        old_sigint_handler = set_signal_handler (SIGINT, wait_sigint_handler);
+--- 2343,2354 ----
+       received, only if one of the jobs run is killed via SIGINT.  If
+       job control is not set, the job will be run in the same pgrp as
+!      the shell, and the shell will see any signals the job gets.  In
+!      fact, we want this set every time the waiting shell and the waited-
+!      for process are in the same process group, including command
+!      substitution. */
+  
+    /* This is possibly a race condition -- should it go in stop_pipeline? */
+    wait_sigint_received = 0;
+!   if (job_control == 0 || (subshell_environment&SUBSHELL_COMSUB))
+      {
+        old_sigint_handler = set_signal_handler (SIGINT, wait_sigint_handler);
+***************
+*** 2452,2464 ****
+  	     the last process in the pipeline.  If no process exits due to a
+  	     signal, S is left as the status of the last job in the pipeline. */
+! 	  p = jobs[job]->pipe;
+! 	  do
+! 	    {
+! 	      s = p->status;
+! 	      if (WIFSIGNALED(s) || WIFSTOPPED(s))
+! 		break;
+! 	      p = p->next;
+! 	    }
+! 	  while (p != jobs[job]->pipe);
+  
+  	  if (WIFSIGNALED (s) || WIFSTOPPED (s))
+--- 2496,2500 ----
+  	     the last process in the pipeline.  If no process exits due to a
+  	     signal, S is left as the status of the last job in the pipeline. */
+! 	  s = job_signal_status (job);
+  
+  	  if (WIFSIGNALED (s) || WIFSTOPPED (s))
+***************
+*** 2494,2497 ****
+--- 2530,2551 ----
+  	    }
+  	}
++       else if ((subshell_environment & SUBSHELL_COMSUB) && wait_sigint_received)
++ 	{
++ 	  /* If waiting for a job in a subshell started to do command
++ 	     substitution, simulate getting and being killed by the SIGINT to
++ 	     pass the status back to our parent. */
++ 	  s = job_signal_status (job);
++ 	
++ 	  if (WIFSIGNALED (s) && WTERMSIG (s) == SIGINT && signal_is_trapped (SIGINT) == 0)
++ 	    {
++ 	      UNBLOCK_CHILD (oset);
++ 	      restore_sigint_handler ();
++ 	      old_sigint_handler = set_signal_handler (SIGINT, SIG_DFL);
++ 	      if (old_sigint_handler == SIG_IGN)
++ 		restore_sigint_handler ();
++ 	      else
++ 		kill (getpid (), SIGINT);
++ 	    }
++ 	}
+  
+        /* Moved here from set_job_status_and_cleanup, which is in the SIGCHLD
+*** ../bash-3.2/patchlevel.h	Thu Apr 13 08:31:04 2006
+--- patchlevel.h	Mon Oct 16 14:22:54 2006
+***************
+*** 26,30 ****
+     looks for to find the patch level (for the sccs version string). */
+  
+! #define PATCHLEVEL 34
+  
+  #endif /* _PATCHLEVEL_H_ */
+--- 26,30 ----
+     looks for to find the patch level (for the sccs version string). */
+  
+! #define PATCHLEVEL 35
+  
+  #endif /* _PATCHLEVEL_H_ */

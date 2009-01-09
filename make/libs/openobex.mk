@@ -41,12 +41,12 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(OPENOBEX_DIR) clean
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libopenobex.* \
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libopenobex.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/openobex \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/openobex.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/openobex.m4
 
 $(pkg)-uninstall:
-	rm -f $(OPENOBEX_TARGET_DIR)/libopenobex*.so*
+	$(RM) $(OPENOBEX_TARGET_DIR)/libopenobex*.so*
 
 $(PKG_FINISH)

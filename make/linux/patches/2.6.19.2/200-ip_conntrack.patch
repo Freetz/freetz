@@ -1,6 +1,6 @@
---- linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_core.c.orig	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_core.c	2008-03-17 01:41:00.000000000 +0100
-@@ -1467,13 +1467,7 @@
+--- linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_core.c.orig	2008-09-02 11:49:50.000000000 +0200
++++ linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_core.c	2008-12-19 18:49:55.000000000 +0100
+@@ -1478,13 +1478,7 @@
  	/* Idea from tcp.c: use 1/16384 of memory.  On i386: 32MB
  	 * machine has 256 buckets.  >= 1GB machines have 8192 buckets. */
   	if (!ip_conntrack_htable_size) {
@@ -15,9 +15,9 @@
  	}
  	ip_conntrack_max = 8 * ip_conntrack_htable_size;
  
---- linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_proto_tcp.c.orig	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_proto_tcp.c	2008-03-17 01:41:17.000000000 +0100
-@@ -48,7 +48,7 @@
+--- linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_proto_tcp.c.orig	2008-09-02 11:49:50.000000000 +0200
++++ linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_proto_tcp.c	2008-12-19 18:49:55.000000000 +0100
+@@ -49,7 +49,7 @@
  /* "Be conservative in what you do, 
      be liberal in what you accept from others." 
      If it's non-zero, we mark only out of window RST segments as INVALID. */

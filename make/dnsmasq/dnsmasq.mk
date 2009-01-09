@@ -28,6 +28,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(DNSMASQ_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(DNSMASQ_TARGET_BINARY)
+	$(RM) $(DNSMASQ_TARGET_BINARY)
 
 $(PKG_FINISH)

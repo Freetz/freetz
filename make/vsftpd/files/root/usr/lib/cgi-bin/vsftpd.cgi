@@ -136,7 +136,7 @@ $(lang de:"Passive Ports" en:"Passive ports"):
 <input id="b5" type="checkbox" name="promiscuous" value="yes"$promiscuous_chk><label for="b5"> $(lang de:"FXP aktivieren" en:"Enable FXP")</label>
 </p>
 <p>
-$(lang de:"Pause nach fehlerhaftem Login in Sekunden:" en:"Delay after failed login in sec:") <input type="text" name="delay_failed_login" size="5" maxlength="5" value="$(httpd -e "$VSFTPD_DELAY_FAILED_LOGIN")">
+$(lang de:"Pause nach fehlerhaftem Login in Sekunden:" en:"Delay after failed login in sec:") <input type="text" name="delay_failed_login" size="5" maxlength="5" value="$(html "$VSFTPD_DELAY_FAILED_LOGIN")">
 </p>
 <p>
 $(lang de:"Die beiden folgenden Einstellungen werden haupts&auml;chlich f&uuml;r den Betrieb mit SSL-Verschl&uuml;sselung ben&ouml;tigt, da die Firewall dem Verkehr nicht mehr folgen kann." en:"The following 2 settings are mainly for operating with SSL, because the firewall can't follow the encrypted traffic.")<br>

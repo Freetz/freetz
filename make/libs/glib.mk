@@ -77,9 +77,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(GLIB_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-1.2*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-1.2*
 
 $(pkg)-uninstall:
-	rm -f $(GLIB_TARGET_DIR)/libglib-1.2.so*
+	$(RM) $(GLIB_TARGET_DIR)/libglib-1.2.so*
 
 $(PKG_FINISH)

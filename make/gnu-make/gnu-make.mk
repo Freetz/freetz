@@ -30,6 +30,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(GNU_MAKE_DIR) clean
 
 $(pkg)-uninstall: 
-	rm -f $(GNU_MAKE_TARGET_BINARY)
+	$(RM) $(GNU_MAKE_TARGET_BINARY)
 
 $(PKG_FINISH)

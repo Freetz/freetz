@@ -20,7 +20,7 @@ lzma2eva-clean:
 	-$(MAKE) -C $(LZMA2EVA_DIR) clean
 
 lzma2eva-dirclean:
-	rm -rf $(LZMA2EVA_DIR)
+	$(RM) -r $(LZMA2EVA_DIR)
 
 lzma2eva-distclean: lzma2eva-dirclean
-	rm -f $(TOOLS_DIR)/lzma2eva
+	$(RM) $(TOOLS_DIR)/lzma2eva

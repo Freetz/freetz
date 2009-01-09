@@ -1,4 +1,9 @@
 SANE_BACKENDS=
+
+ifeq ($(strip $(FREETZ_SANE_BACKEND_dll)),y)
+SANE_BACKENDS+=dll
+endif
+
 ifeq ($(strip $(FREETZ_SANE_BACKEND_abaton)),y)
 SANE_BACKENDS+=abaton
 endif
@@ -277,10 +282,6 @@ endif
 
 ifeq ($(strip $(FREETZ_SANE_BACKEND_mustek_usb2)),y)
 SANE_BACKENDS+=mustek_usb2
-endif
-
-ifeq ($(strip $(FREETZ_SANE_BACKEND_dll)),y)
-# SANE_BACKENDS+=dll
 endif
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_SANE_BACKEND_dll

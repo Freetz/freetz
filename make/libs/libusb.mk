@@ -26,7 +26,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb*.so* $(LIBUSB_TARGET_DIR)/
@@ -38,12 +39,12 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBUSB_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config \
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/includes/usb*.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.pc
 
 $(pkg)-uninstall:
-	rm -f $(LIBUSB_TARGET_DIR)/libusb*.so*
+	$(RM) $(LIBUSB_TARGET_DIR)/libusb*.so*
 
 $(PKG_FINISH)

@@ -8,6 +8,8 @@ toggle_chk=''; neutral_chk='';
 
 if [ "$PRIVOXY_ENABLED" == "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$PRIVOXY_TOGGLE" == "1" ]; then toggle_chk=' checked'; else neutral_chk=' checked'; fi
+if [ "$PRIVOXY_ENABLE_REMOTE_TOGGLE" == "1" ]; then remote_toggle_yes_chk=' checked'; else remote_toggle_no_chk=' checked'; fi
+if [ "$PRIVOXY_ENFORCE_BLOCKS" == "1" ]; then enforce_blocks_yes_chk=' checked'; else enforce_blocks_no_chk=' checked'; fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -34,6 +36,19 @@ cat << EOF
 <ul>
 <li><a href="/cgi-bin/file.cgi?id=user_filter">$(lang de:"Eigene Filter bearbeiten" en:"Edit custom filter")</a></li>
 <li><a href="/cgi-bin/file.cgi?id=user_action">$(lang de:"Eigene Aktionen bearbeiten" en:"Edit custom actions")</a></li>
+</ul>
+<p>$(lang de:"Weitere Optionen:" en:"More options:")<br>
+<ul>
+<li>enable-remote-toggle  <input id="e5" type="radio" name="enable_remote_toggle" value="1"$remote_toggle_yes_chk><label for="e5"> $(lang de:"Ja" en:"set")</label> <input id="e6" type="radio" name="enable_remote_toggle" value="0"$remote_toggle_no_chk><label for="e6"> $(lang de:"Nein" en:"unset")</label>
+<font size="-2">
+<br>$(lang de:"Web-based Toggle Feature: Wenn die Option aktiviert ist, kann jeder Nutzer die Privoxy-Filterfunktionen &uuml;ber die Web-Schnittstelle ausschalten, siehe" en:"Whether or not the web-based toggle feature may be used, see") <a href="http://www.privoxy.org/user-manual/config.html#ENABLE-REMOTE-TOGGLE" target=_blank>$(lang de:"hier" en:"here")</a>
+<p>
+</font></li>
+<li>enforce-blocks  <input id="e7" type="radio" name="enforce_blocks" value="1"$enforce_blocks_yes_chk><label for="e7"> $(lang de:"Ja" en:"set")</label> <input id="e8" type="radio" name="enforce_blocks" value="0"$enforce_blocks_no_chk><label for="e8"> $(lang de:"Nein" en:"unset")</label>
+<font size="-2">
+<br>$(lang de:"Wenn die Option aktiviert ist, k&ouml;nnen Filter nicht umgangen werden ('go there anyway' wird ausgeblendet), siehe" en:"Whether the user is allowed to ignore blocks and can go there anyway, see") <a href="http://www.privoxy.org/user-manual/config.html#ENFORCE-BLOCKS" target=_blank>$(lang de:"hier" en:"here")</a>
+</font>
+</li>
 </ul>
 EOF
 

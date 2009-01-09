@@ -36,6 +36,6 @@ $(pkg)-clean:
 	-$(MAKE) -C $(MADPLAY_DIR) clean
 
 $(pkg)-uninstall:
-	rm -f $(MADPLAY_TARGET_BINARY)
+	$(RM) $(MADPLAY_TARGET_BINARY)
 
 $(PKG_FINISH)

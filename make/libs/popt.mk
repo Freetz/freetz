@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 1.13)
+$(call PKG_INIT_LIB, 1.14)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=popt-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://rpm5.org/files/popt
@@ -6,7 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libpopt.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpopt.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpopt.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
+$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ; autoreconf -f -i ;
 
 $(PKG)_CONFIGURE_ENV += ac_cv_va_copy=yes
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
@@ -40,7 +40,8 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(POPT_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpopt.*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpopt.* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/popt.h
 
 $(pkg)-uninstall:
 	$(RM) $(POPT_TARGET_DIR)/libpopt*.so*

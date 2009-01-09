@@ -40,14 +40,14 @@ write_config() {
 
 status_log() {
 	remove_status_log
-        if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
-                ln -sf $VSFTPD_LOG_FILE $LOGLINK
-                modreg status vsftpd Vsftpd vsftpd/vsftpd_log
-        fi
+	if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
+		ln -sf $VSFTPD_LOG_FILE $LOGLINK
+		modreg status vsftpd Vsftpd vsftpd/vsftpd_log
+	fi
 }
 
 remove_status_log() {
-        modunreg status vsftpd vsftpd/vsftpd_log
+	modunreg status vsftpd vsftpd/vsftpd_log
 	rm -f $LOGLINK
 }
 

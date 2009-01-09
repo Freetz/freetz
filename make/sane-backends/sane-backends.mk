@@ -29,7 +29,13 @@ ifeq ($(strip $(FREETZ_SANE_scanimage)),y)
 $(PKG)_TARGET_BINARIES+=$($(PKG)_TARGET_scanimage)
 endif
 
-$(PKG)_DEPENDS_ON:= jpeg libusb
+$(PKG)_DEPENDS_ON:= libusb
+ifeq ($(strip $(FREETZ_SANE_BACKEND_dc210)),y)
+$(PKG)_DEPENDS_ON+= jpeg
+endif
+ifeq ($(strip $(FREETZ_SANE_BACKEND_dc240)),y)
+$(PKG)_DEPENDS_ON+= jpeg
+endif
 
 # include selected backends
 include $($(PKG)_MAKE_DIR)/sane-backends.in
@@ -49,7 +55,8 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_saned) $($(PKG)_sane_find_scanner) $($(PKG)_scanimage) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" $(MAKE) -C $(SANE_BACKENDS_DIR)
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(SANE_BACKENDS_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
@@ -75,20 +82,23 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 
 $(PKG)_LIB_TARGET_BACKENDS_BINARIES:
 	mkdir -p $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane
-	cp -a $(SANE_BACKENDS_DIR)/backend/.libs/libsane-*.so* $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane
+	for backend in $(SANE_BACKENDS); do \
+		cp -a $(SANE_BACKENDS_DIR)/backend/.libs/libsane-$${backend}.so* $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane; \
+	done
 	$(TARGET_STRIP) $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane/*
 .PHONY: $(PKG)_LIB_TARGET_BACKENDS_BINARIES
 
 $(PKG)_TARGET_CONF:
 	mkdir -p $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends
-	# cp -a $(SANE_BACKENDS_DIR)/backend/*.conf $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends
 	$(RM) $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/saned.conf
 	$(RM) $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/dll.conf
 	for backend in $(SANE_BACKENDS); do \
-		if [ -e $(SANE_BACKENDS_DIR)/backend/$${backend}.conf ]; then \
-			cp $(SANE_BACKENDS_DIR)/backend/$${backend}.conf $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends; \
+		if [ "$$backend" != "dll" ]; then \
+			if [ -e $(SANE_BACKENDS_DIR)/backend/$${backend}.conf ]; then \
+				cp $(SANE_BACKENDS_DIR)/backend/$${backend}.conf $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends; \
+			fi; \
+			echo $$backend >> $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/dll.conf; \
 		fi; \
-		echo $$backend >> $(SANE_BACKENDS_DEST_DIR)/etc/default.sane-backends/dll.conf; \
 	done
 .PHONY: $(PKG)_TARGET_CONF
 
@@ -102,9 +112,9 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/sane
 
 $(pkg)-uninstall:
-	$(RM) -r $($(PKG)_TARGET_saned) \
-		$($(PKG)_TARGET_sane_find_scanner) \
-		$($(PKG)_TARGET_scanimage) \
-		$($(PKG)_LIB_TARGET_BACKENDS_BINARIES)
+	$(RM) -r $(SANE_BACKENDS_TARGET_saned) \
+		$(SANE_BACKENDS_TARGET_sane_find_scanner) \
+		$(SANE_BACKENDS_TARGET_scanimage) \
+		$(SANE_BACKENDS_LIB_TARGET_BACKENDS_BINARIES)
 
 $(PKG_FINISH)

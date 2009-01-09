@@ -1,5 +1,8 @@
 . /mod/etc/conf/mod.cfg
 
+sec_level=1
+[ -r "/tmp/flash/security" ] && let sec_level="$(cat /tmp/flash/security)"
+
 # HTML-escape pieces of texts, large ones in a streaming manner
 # (large_text | html; html "$small_value")
 html() {

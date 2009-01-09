@@ -39,9 +39,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBMAD_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmad*
 
 $(pkg)-uninstall:
-	rm -f $(LIBMAD_TARGET_DIR)/libmad*.so*
+	$(RM) $(LIBMAD_TARGET_DIR)/libmad*.so*
 
 $(PKG_FINISH)

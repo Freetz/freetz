@@ -65,10 +65,10 @@ squashfs-clean:
 	-$(MAKE) -C $(MKSQUASHFS_DIR) clean
 
 squashfs-dirclean:
-	rm -rf $(SQUASHFS_DIR)
+	$(RM) -r $(SQUASHFS_DIR)
 
 squashfs-distclean: squashfs-dirclean
-	rm -f $(TOOLS_DIR)/mksquashfs
-	rm -f $(TOOLS_DIR)/mksquashfs-lzma
-	rm -f $(TOOLS_DIR)/unsquashfs
-	rm -f $(TOOLS_DIR)/unsquashfs-lzma
+	$(RM) $(TOOLS_DIR)/mksquashfs
+	$(RM) $(TOOLS_DIR)/mksquashfs-lzma
+	$(RM) $(TOOLS_DIR)/unsquashfs
+	$(RM) $(TOOLS_DIR)/unsquashfs-lzma

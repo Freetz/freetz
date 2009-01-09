@@ -1,4 +1,4 @@
-#!/usr/bin/haserl -u 25000000 -U /var/tmp -H /usr/mww/cgi-bin/do_external_handler.sh
+#!/usr/bin/haserl -u 100000 -U /var/tmp -H /usr/mww/cgi-bin/do_external_handler.sh
 
 <%
 PATH=/bin:/usr/bin:/sbin:/usr/sbin

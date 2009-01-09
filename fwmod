@@ -194,6 +194,7 @@ UNSQUASHFS_TOOL="unsquashfs3-lzma"
 EXTERNAL_TOOL="external"
 
 MKSQUASHFS_OPTIONS="-le -noappend -all-root -info"
+UNSQUASHFS_OPTIONS="-no-progress"
 
 if [ "$FREETZ_REPLACE_KERNEL" == "y" ] || [ "$FREETZ_KERNEL_VERSION_2_6_19_2" ]; then
 	MKSQUASHFS_TOOL="mksquashfs3-lzma"
@@ -257,10 +258,10 @@ modunsqfs()
 {
 	local STATUS
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		"$FAKEROOT" "$UNSQUASHFS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L1}/g"
+		"$FAKEROOT" "$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L1}/g"
 		STATUS=${PIPESTATUS[0]}
 	else
-		"$FAKEROOT" "$UNSQUASHFS" -dest "$1" "$2" > /dev/null
+		"$FAKEROOT" "$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" > /dev/null
 		STATUS=$?
 	fi
 	if [ $STATUS -gt 0 ]; then
@@ -744,6 +745,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 			cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
 			ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
+		fi
+
+		if [ "$FREETZ_STATUS_STYLE" == "y" ]; then
+			echo1 "patching bar-style and cache-usage"
+			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/bar-style_n_cache-usage.patch"
 		fi
 
 		modlang "${BASE_DIR}/.language" "${FILESYSTEM_MOD_DIR}"

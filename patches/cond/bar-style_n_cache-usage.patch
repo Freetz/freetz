@@ -1,0 +1,106 @@
+diff -Naur -x .svn usr/mww/cgi-bin/status.cgi usr/mww/cgi-bin/status.cgi
+--- usr/mww/cgi-bin/status.cgi	2008-04-15 15:42:04.000000000 +0200
++++ usr/mww/cgi-bin/status.cgi	2008-04-15 16:04:38.000000000 +0200
+@@ -11,11 +11,34 @@
+ 	sed -n "/^$1:/ s/[^0-9]//gp" /proc/meminfo
+ }
+ 
+-
+ stat_bar() {
+ 	let multip="($_cgi_width-230-50)/100";
+-	percent=$1; let bar="percent*multip"; let grey="(100-percent)*multip"
+-	echo '<p><img src="/images/green.png" width="'"$bar"'" height="10" border="0" alt=""><img src="/images/grey.png" width="'"$grey"'" height="10" border="0" alt=""> &nbsp;&nbsp;'$percent' %</p>'
++	let _the_width="$multip*100"
++	percent=$1
++	let bar="percent*multip"
++	if [ $# -gt 1 ]; then
++		let perc_buff=$2
++		let buff_bar="perc_buff*multip";
++		let grey="(100-percent-perc_buff)*multip"
++	else
++		let grey="(100-percent)*multip"
++	fi
++cat << EOF
++<table><tr>
++<td>
++<table width='$_the_width' border='1' cellspacing='0' cellpadding='0' style='border-width:1px;border-style:solid;border-color:#a0a0a0;width:"$_the_width"px;height:10px;'>
++<tr>
++EOF
++[ $1 -gt 0 ] && echo "<td width='$bar' bgcolor='#999999' style='background-color:#999999;border-style:solid;border-width:1px;border-color:#e2e2e2'></td>"
++[ $# -gt 1 -a $2 -gt 0 ] && echo "<td width='$buff_bar' bgcolor='#c9c9c9' style='background-color:#c9c9c9;border-style:solid;border-width:1px;border-color:#e2e2e2'></td>"
++cat << EOF
++<td width='$grey' bgcolor='#f3f3f3' style='background-color:#f3f3f3;border-style:solid;border-width:1px;border-color:#e2e2e2'><img src='/images/null.gif' width='1' height='1' alt='' /></td>
++</tr>
++</table>
++</td>
++<td>$percent %</td>
++</tr></table>
++EOF
+ }
+ 
+ btn_count=0
+@@ -98,8 +121,9 @@
+ cached=$(meminfo Cached)
+ let usedwc="total-cached-free"
+ let percent="100*usedwc/total"
+-echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt (ohne Cache $cached KB)" en:"used (without cache $cached KB)")</p>"
+-stat_bar $percent
++let perc_buff="100*cached/total"
++echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt (Cache: $cached KB)" en:"used (cache: $cached KB)")</p>"
++stat_bar $percent $perc_buff
+ 
+ sec_end
+ sec_begin '$(lang de:"Flash-Speicher (TFFS) für Konfigurationsdaten" en:"Flash memory (TFFS) for configuration data")'
+@@ -113,16 +137,18 @@
+ stat_bar $percent
+ 
+ sec_end
+-
+ if has_swap; then
+ sec_begin '$(lang de:"Swap-Speicher" en:"Swap") (RAM)'
++
+ total=$(meminfo SwapTotal)
+ free=$(meminfo SwapFree)
+ cached=$(meminfo SwapCached)
+ let usedwc="total-cached-free"
+ let percent="100*usedwc/total"
+-echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt" en:"used") ($(lang de:"ohne Cache" en:"without cache") $cached KB)</p>"
+-stat_bar $percent
++let perc_buff="100*cached/total"
++echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt" en:"used") ($(lang de:"Cache:" en:"cache:") $cached KB)</p>"
++stat_bar $percent $perc_buff
++
+ sec_end
+ fi
+ 
+diff -Naur -x .svn usr/lib/cgi-bin/mod/mounted.cgi usr/lib/cgi-bin/mod/mounted.cgi
+--- usr/lib/cgi-bin/mod/mounted.cgi	2008-04-06 09:22:26.000000000 +0200
++++ usr/lib/cgi-bin/mod/mounted.cgi	2008-04-07 15:50:25.000000000 +0200
+@@ -1,8 +1,25 @@
+ 
+ stat_bar() {
+	let multip="($_cgi_width-230-50)/100";
+-	percent=$1; let bar="percent*multip"; let grey="(100-percent)*multip"
+-	echo '<p><img src="/images/green.png" width="'"$bar"'" height="10" border="0" alt=""><img src="/images/grey.png" width="'"$grey"'" height="10" border="0" alt=""> &nbsp;&nbsp;'$percent' %</p>'
++	let _the_width="($multip*100)"
++	percent=$1
++	let bar="percent*multip"
++	let grey="(100-percent)*multip"
++cat << EOF
++<table><tr>
++<td>
++<table width='$_the_width' border='1' cellspacing='0' cellpadding='0' style='border-width:1px;border-style:solid;border-color:#a0a0a0;width:"$_the_width"px;height:10px;'>
++<tr>
++EOF
++[ $1 -gt 0 ] && echo "<td width='$bar' bgcolor='#999999' style='background-color:#999999;border-style:solid;border-width:1px;border-color:#e2e2e2'></td>"
++cat << EOF
++<td width='$grey' bgcolor='#f3f3f3' style='background-color:#f3f3f3;border-style:solid;border-width:1px;border-color:#e2e2e2'><img src='/images/null.gif' width='1' height='1' alt='' /></td>
++</tr>
++</table>
++</td>
++<td>$percent %</td>
++</tr></table>
++EOF
+ }
+ 
+ sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'

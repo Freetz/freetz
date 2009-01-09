@@ -6,7 +6,7 @@ auto_chk=''; man_chk=''; log_protoc_chk=''
 notlazym_chk=''; notlazys_chk=''; cpu100perc_chk=''
 logarithm1_chk=''; logarithm2_chk=''; logarithm3_chk=''; logarithm4_chk='';
 xchg_rxtx1_chk=''; xchg_rxtx2_chk=''; xchg_rxtx3_chk=''; xchg_rxtx4_chk='';
-uptime_enb_chk=''
+uptime_enb_chk=''; savebackup_chk=''; thomsonthg_chk=''; thomsonadv_chk=''
 
 if [ "$RRDSTATS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then xchgupdown_chk=' checked'; fi
@@ -22,6 +22,9 @@ if [ "$RRDSTATS_XCHG_RXTX3" = "yes" ]; then xchg_rxtx3_chk=' checked'; fi
 if [ "$RRDSTATS_XCHG_RXTX4" = "yes" ]; then xchg_rxtx4_chk=' checked'; fi
 if [ "$RRDSTATS_CPU100PERC" = "yes" ]; then cpu100perc_chk=' checked'; fi
 if [ "$RRDSTATS_UPTIME_ENB" = "yes" ]; then uptime_enb_chk=' checked'; fi
+if [ "$RRDSTATS_SAVEBACKUP" = "yes" ]; then savebackup_chk=' checked'; fi
+if [ "$RRDSTATS_THOMSONTHG" = "yes" ]; then thomsonthg_chk=' checked'; fi
+if [ "$RRDSTATS_THOMSONADV" = "yes" ]; then thomsonadv_chk=' checked'; fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -64,15 +67,36 @@ $(lang de:"Graphen immer neu generieren (not lazy)" en:"Always generate new grap
 <input id="l2" type="checkbox" name="notlazys" value="yes"$notlazys_chk><label for="l2">$(lang de:"Unterseiten" en:"Sub-pages")</label>
 </p>
 <p>
-$(lang de:"Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen" en:"Maximum of the CPU utilization graph always at 100%"):
 <input type="hidden" name="cpu100perc" value="no">
 <input id="c1" type="checkbox" name="cpu100perc" value="yes"$cpu100perc_chk><label for="c1"></label>
-</p>
+$(lang de:"Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen" en:"Maximum of the CPU utilization graph always at 100%")</p>
 <p>
-$(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs"):
 <input type="hidden" name="uptime_enb" value="no">
 <input id="u1" type="checkbox" name="uptime_enb" value="yes"$uptime_enb_chk><label for="u1"></label>
-</p>
+$(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs")</p>
+<p>
+<input type="hidden" name="savebackup" value="no">
+<input id="b1" type="checkbox" name="savebackup" value="yes"$savebackup_chk><label for="b1"></label>
+$(lang de:"Backup vor dem Starten anlegen" en:"Backup files before startup")</p>
+EOF
+
+sec_end
+sec_begin 'Thomson THG'
+
+cat << EOF
+<br>
+
+<input type="hidden" name="thomsonthg" value="no">
+<input id="t1" type="checkbox" name="thomsonthg" value="yes"$thomsonthg_chk><label for="t1"></label>
+$(lang de:"Überwachung des Kabelmodems aktivieren" en:"Observe the cable-modem")
+<br>
+
+<input type="hidden" name="thomsonadv" value="no">
+<input id="t2" type="checkbox" name="thomsonadv" value="yes"$thomsonadv_chk><label for="t2"></label>
+$(lang de:"Zusätzliche Parameter überwachen" en:"Observe more parameters")
+<br>
+
+<br>
 EOF
 
 sec_end

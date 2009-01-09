@@ -114,19 +114,19 @@ $(pkg)-terminfo-clean:
 
 $(pkg)-clean: $(pkg)-terminfo-clean
 	-$(MAKE) -C $(NCURSES_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmenu*
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel*
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset
-	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmenu*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel*
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo
 
 $(pkg)-uninstall:
-	rm -f $(NCURSES_TARGET_DIR)/libncurses*.so*
-	rm -f $(NCURSES_TARGET_DIR)/libform*.so*
-	rm -f $(NCURSES_TARGET_DIR)/libmenu*.so*
-	rm -f $(NCURSES_TARGET_DIR)/libpanel*.so*
-	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset
-	rm -rf $(NCURSES_TARGET_DIR)/../share/terminfo
+	$(RM) $(NCURSES_TARGET_DIR)/libncurses*.so*
+	$(RM) $(NCURSES_TARGET_DIR)/libform*.so*
+	$(RM) $(NCURSES_TARGET_DIR)/libmenu*.so*
+	$(RM) $(NCURSES_TARGET_DIR)/libpanel*.so*
+	$(RM) -r $(NCURSES_TARGET_DIR)/../share/tabset
+	$(RM) -r $(NCURSES_TARGET_DIR)/../share/terminfo
 
 $(PKG_FINISH)

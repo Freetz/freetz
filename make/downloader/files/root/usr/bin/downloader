@@ -36,8 +36,8 @@ fi
 echo "Downloading of $LOADFILE from $SERVERSTR:"
 
 LOADERROR=1 # define false
-II=1   # set II = 1
-while test $II -le $DOWNLOADER_NREP    # while loop, emulating for loop II<NN
+II=1
+while test $II -le $DOWNLOADER_NREP
 do
    echo -n "1. Ping test $II of $DOWNLOADER_NREP for $DOWNLOADER_SRVURL... "
    if (ping -c 1 $DOWNLOADER_SRVURL > /dev/null 2>&1) ; then
@@ -47,11 +47,11 @@ do
 	echo -n "2. $LOADFILE.gz is downloading from $DOWNLOADER_SRVURL... "
        wget -q -O $LOCALDR/$LOADFILE.gz $SERVERSTR$LOADFILE.gz
        LOADERROR=$?       
-       break   #  okay, leave loop
+       break
    else
 	echo "failed"
    fi
-   II=`expr $II + 1`     # increment counter
+   II=`expr $II + 1`
    echo -n "1a. Waiting $DOWNLOADER_TWAIT secs... "
    sleep $DOWNLOADER_TWAIT
    echo "done"	
@@ -95,5 +95,3 @@ if [ $LOADERROR -eq 1 ]; then
 fi
 echo "done"
 exit 0
-
-

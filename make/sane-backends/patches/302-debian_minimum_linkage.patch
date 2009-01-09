@@ -1,0 +1,277 @@
+--- acinclude.m4.orig	2007-11-10 08:12:54.000000000 +0100
++++ acinclude.m4	2009-01-05 19:36:29.000000000 +0100
+@@ -200,7 +200,7 @@
+ 	struct parport p; char *buf; 
+ 	ieee1284_nibble_read(&p, 0, buf, 1);
+  	], 
+-        [sane_cv_use_libieee1284="yes"; LIBS="${LIBS} -lieee1284"
++        [sane_cv_use_libieee1284="yes"; LIBIEEE1284="-lieee1284"
+       ],[sane_cv_use_libieee1284="no"])
+     ],)
+   ],)
+@@ -235,10 +235,11 @@
+     ])
+   AC_CHECK_HEADERS(pthread.h,
+     [
++       SANE_save_LIBS="${LIBS}"
+        AC_CHECK_LIB(pthread,pthread_create)
+-       have_pthread=yes
+        AC_CHECK_FUNCS([pthread_create pthread_kill pthread_join pthread_detach pthread_cancel pthread_testcancel],
+-	,[ have_pthread=no; use_pthread=no ])
++	[ AC_DEFINE(HAVE_PTHREAD, 1) have_pthread=yes; LIBPTHREAD=-lpthread ] ,[ have_pthread=no; use_pthread=no ])
++       LIBS="${SANE_save_LIBS}"
+     ],)
+  
+   if test $use_pthread = yes ; then
+@@ -270,7 +271,7 @@
+         #if JPEG_LIB_VERSION >= 61
+           sane_correct_jpeg_lib_version_found
+         #endif
+-      ],[sane_cv_use_libjpeg="yes"; LIBS="${LIBS} -ljpeg"; 
++      ],[sane_cv_use_libjpeg="yes"; LIBJPEG="-ljpeg"; 
+       AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+     ],)
+   ],)
+@@ -282,7 +283,7 @@
+   AC_CHECK_LIB(tiff,TIFFFdOpen, 
+   [
+     AC_CHECK_HEADER(tiffio.h, 
+-    [sane_cv_use_libtiff="yes"; LIBS="${LIBS} -ltiff"],)
++    [sane_cv_use_libtiff="yes"; LIBTIFF="-ltiff"],)
+   ],)
+ ])
+ 
+@@ -449,18 +450,20 @@
+ 			if pkg-config --exists libgphoto2 ; then
+ 				with_gphoto2=`pkg-config --modversion libgphoto2`
+ 				CPPFLAGS="${CPPFLAGS} `pkg-config --cflags libgphoto2`"
+-				GPHOTO2_LIBS="`pkg-config --libs libgphoto2`"
+-				SANE_EXTRACT_LDFLAGS(GPHOTO2_LDFLAGS, GPHOTO2_LIBS)
++				LIBGPHOTO2="`pkg-config --libs libgphoto2`"
++				SANE_EXTRACT_LDFLAGS(GPHOTO2_LDFLAGS, LIBGPHOTO2)
+ 				LDFLAGS="$LDFLAGS $GPHOTO2_LDFLAGS"
+ 
++				old_LIBS="$LIBS"
++				LIBS="$LIBS $LIBGPHOTO2"
++
+ 				AC_SUBST(GPHOTO2_LDFLAGS)
+ 
+-			 	saved_LIBS="${LIBS}"
+-				LIBS="${LIBS} ${GPHOTO2_LIBS}"
+ 				# Make sure we an really use the library
+ 				AC_CHECK_FUNCS(gp_camera_init,HAVE_GPHOTO2=true, 
+-					[ LIBS="${saved_LIBS}"
+-					HAVE_GPHOTO2=false ])
++					[ HAVE_GPHOTO2=false ])
++
++				LIBS="$old_LIBS"
+ 			else
+ 				HAVE_GPHOTO2=false
+ 			fi
+--- backend/Makefile.in.orig	2009-01-05 19:36:28.000000000 +0100
++++ backend/Makefile.in	2009-01-05 19:36:29.000000000 +0100
+@@ -51,7 +51,7 @@
+ CPPFLAGS = @CPPFLAGS@
+ CFLAGS = @CFLAGS@
+ LDFLAGS = @LDFLAGS@
+-BACKENDLIBS = @LIBS@ @DL_LIB@
++BACKENDLIBS = @LIBS@
+ DEFS = @DEFS@
+ DYNAMIC_FLAG=@DYNAMIC_FLAG@
+ USE_LINKS=@USE_LINKS@
+@@ -213,7 +213,7 @@
+ 
+ libsane-%.la: %.lo %-s.lo $(EXTRA) $(LIBOBJS)
+ 	@$(LIBTOOL) $(MLINK) $(CC) -export-dynamic -o $@ $($*_LIBS) \
+-	$(LDFLAGS) $(BACKENDLIBS) $^ @LIBTOOL_LINK_EXTRA@ -rpath $(libsanedir) \
++	$(LDFLAGS) $(BACKENDLIBS) $^ $(ADDLIB-$*) @LIBTOOL_LINK_EXTRA@ -rpath $(libsanedir) \
+ 	-version-info $(V_MAJOR):$(V_REV):$(V_MINOR) $(DYNAMIC_FLAG)
+ 
+ %-s.lo:	%-s.c
+@@ -321,7 +321,7 @@
+ 	echo "};" >> $@
+ 
+ libsane.la: dll.lo dll-s.lo $(EXTRA) $(addsuffix .lo,$(DLL_PRELOAD)) $(LIBOBJS)
+-	@$(LIBTOOL) $(MLINK) $(CC) -o $@ $(LDFLAGS) $(BACKENDLIBS)  $^ \
++	@$(LIBTOOL) $(MLINK) $(CC) -o $@ $(LDFLAGS) $(BACKENDLIBS) @DL_LIB@ $^ \
+ 		$(addsuffix .lo,$(DLL_PRELOAD_EXTRAS)) @LIBTOOL_LINK_EXTRA@ \
+ 		-rpath $(libdir) -version-info $(V_MAJOR):$(V_REV):$(V_MINOR)
+ 
+@@ -350,6 +350,88 @@
+ EXTRA_lexmark = lexmark_low
+ EXTRA_pixma = pixma_io_sanei pixma_common pixma_mp150 pixma_mp730 pixma_mp750
+ 
++# Additional library dependencies
++LIBGPHOTO2 = @LIBGPHOTO2@
++LIBUSB = @LIBUSB@
++LIBIEEE1284 = @LIBIEEE1284@
++LIBCAM = @LIBCAM@
++LIBJPEG = @LIBJPEG@
++LIBTIFF = @LIBTIFF@
++LIBM = @LIBM@
++LIBPTHREAD = @LIBPTHREAD@
++LIBDL = @DL_LIB@
++
++ADDLIB-abaton = $(LIBCAM)
++ADDLIB-agfafocus = $(LIBCAM)
++ADDLIB-apple = $(LIBCAM)
++ADDLIB-artec = $(LIBCAM)
++ADDLIB-artec_eplus48u = $(LIBM) $(LIBUSB)
++ADDLIB-avision = $(LIBM) $(LIBUSB) $(LIBCAM)
++ADDLIB-bh = $(LIBCAM)
++ADDLIB-canon = $(LIBM) $(LIBCAM)
++ADDLIB-canon630u = $(LIBM) $(LIBUSB)
++ADDLIB-canon_pp = $(LIBIEEE1284)
++ADDLIB-cardscan = $(LIBUSB)
++ADDLIB-coolscan = $(LIBM) $(LIBCAM)
++ADDLIB-coolscan2 = $(LIBM) $(LIBUSB) $(LIBCAM)
++ADDLIB-dc25 = $(LIBM)
++ADDLIB-dc210 = $(LIBJPEG)
++ADDLIB-dc240 = $(LIBJPEG)
++ADDLIB-dell1600n_net = $(LIBJPEG) $(LIBTIFF)
++ADDLIB-dll = $(LIBDL)
++ADDLIB-dmc = $(LIBCAM)
++ADDLIB-epjitsu = $(LIBUSB)
++ADDLIB-epson = $(LIBUSB) $(LIBCAM)
++ADDLIB-epson2 = $(LIBUSB) $(LIBCAM)
++ADDLIB-fujitsu = $(LIBM) $(LIBUSB) $(LIBCAM)
++ADDLIB-genesys = $(LIBM) $(LIBUSB)
++ADDLIB-gphoto2 = $(LIBGPHOTO2) $(LIBJPEG)
++ADDLIB-gt68xx = $(LIBM) $(LIBUSB)
++ADDLIB-hp = $(LIBUSB) $(LIBCAM)
++ADDLIB-hp3500 = $(LIBUSB)
++ADDLIB-hp3900 = $(LIBM) $(LIBUSB) $(LIBTIFF)
++ADDLIB-hp4200 = $(LIBM) $(LIBUSB)
++ADDLIB-hp5400 = $(LIBUSB)
++ADDLIB-hp5590 = $(LIBUSB)
++ADDLIB-hpljm1005 = $(LIBM) $(LIBUSB)
++ADDLIB-hpsj5s = $(LIBIEEE1284)
++ADDLIB-ibm = $(LIBCAM)
++ADDLIB-leo = $(LIBCAM)
++ADDLIB-lexmark = $(LIBUSB)
++ADDLIB-ma1509 = $(LIBUSB)
++ADDLIB-matsushita = $(LIBCAM)
++ADDLIB-microtek = $(LIBM) $(LIBCAM)
++ADDLIB-microtek2 = $(LIBM) $(LIBCAM)
++ADDLIB-mustek = $(LIBIEEE1284) $(LIBCAM)
++ADDLIB-mustek_pp = $(LIBM) $(LIBIEEE1284)
++ADDLIB-mustek_usb = $(LIBUSB)
++ADDLIB-mustek_usb2 = $(LIBM) $(LIBPTHREAD) $(LIBUSB)
++ADDLIB-nec = $(LIBM) $(LIBCAM)
++ADDLIB-niash = $(LIBM) $(LIBUSB)
++ADDLIB-pie = $(LIBCAM)
++ADDLIB-pixma = $(LIBM) $(LIBUSB)
++ADDLIB-plustek = $(LIBM) $(LIBUSB)
++ADDLIB-plustek_pp = $(LIBM) $(LIBIEEE1284)
++ADDLIB-ricoh = $(LIBCAM)
++ADDLIB-s9036 = $(LIBCAM)
++ADDLIB-sceptre = $(LIBCAM)
++ADDLIB-sharp = $(LIBM) $(LIBCAM)
++ADDLIB-sm3600 = $(LIBUSB)
++ADDLIB-sm3840 = $(LIBM) $(LIBUSB) $(LIBCAM)
++ADDLIB-snapscan = $(LIBM) $(LIBUSB) $(LIBCAM)
++ADDLIB-sp15c = $(LIBCAM)
++ADDLIB-st400 = $(LIBCAM)
++ADDLIB-stv680 = $(LIBUSB)
++ADDLIB-tamarack = $(LIBCAM)
++ADDLIB-teco1 = $(LIBCAM)
++ADDLIB-teco2 = $(LIBCAM)
++ADDLIB-teco3 = $(LIBCAM)
++ADDLIB-u12 = $(LIBM) $(LIBUSB)
++ADDLIB-umax = $(LIBM) $(LIBUSB) $(LIBCAM)
++ADDLIB-umax1220u = $(LIBM) $(LIBUSB)
++ADDLIB-umax_pp = $(LIBM)
++
++
+ # When preloading dll, we need to add in all preloaded objects:
+ libsane-dll.la: $(addsuffix .lo,$(DLL_PRELOAD))
+ libsane-dll.la: $(addsuffix .lo,$(DLL_PRELOAD_EXTRAS))
+--- configure.in.orig	2009-01-05 19:36:28.000000000 +0100
++++ configure.in	2009-01-05 19:36:29.000000000 +0100
+@@ -99,9 +99,13 @@
+ dnl ***********************************************************************
+ SANE_CHECK_DLL_LIB
+ dnl Checks for Backend libraries.
+-AC_CHECK_LIB(m,sqrt)
++AC_CHECK_LIB(m,sqrt, [ AC_DEFINE(HAVE_LIBM, 1) LIBM="-lm"])
++AC_SUBST(LIBM)
++AC_CHECK_LIB(cam, cam_open_device, [AC_DEFINE(HAVE_LIBCAM, 1) LIBCAM="-lcam"])   # FreeBSD 3+ needs this
++AC_SUBST(LIBCAM)
++
+ AC_CHECK_LIB(scsi, scsireq_enter)	# FreeBSD needs this
+-AC_CHECK_LIB(cam, cam_open_device)      # FreeBSD 3+ needs this
++
+ dnl IRIX sometimes has SYSVR3/4 network DSOs, but we do not need or want
+ dnl to use them!
+ if test "`uname`" != "IRIX" -a "`uname`" != "IRIX64"; then
+@@ -109,12 +113,24 @@
+     AC_SEARCH_LIBS(socket, socket)
+     AC_SEARCH_LIBS(syslog, syslog be)            # OS/2 needs -lsyslog, BeOS needs -lbe
+ fi
++
+ SANE_CHECK_JPEG
++AC_SUBST(LIBJPEG)
++
+ SANE_CHECK_TIFF
++AC_SUBST(LIBTIFF)
++
+ SANE_CHECK_IEEE1284
++AC_SUBST(LIBIEEE1284)
++
+ SANE_CHECK_PTHREAD
+-SANE_CHECK_LOCKING
++AC_SUBST(LIBPTHREAD)
++
+ SANE_CHECK_GPHOTO2
++AC_SUBST(LIBGPHOTO2)
++
++SANE_CHECK_LOCKING
++
+ dnl check sane to make sure we don't have two installations
+ AC_CHECK_LIB(sane, sane_init, LIBSANE_EXISTS="yes")
+ 
+@@ -291,11 +307,12 @@
+ 
+ dnl we need both libusb header and a libusb providing usb_interrupt_read
+ if test "${ac_cv_header_usb_h}" = "yes" && test "$USE_LIBUSB" = "yes" ; then
+-  AC_CHECK_LIB(usb, usb_interrupt_read)
++  AC_CHECK_LIB(usb, usb_interrupt_read, [ AC_DEFINE(HAVE_LIBUSB, 1) LIBUSB="-lusb" ])
+   if test "${ac_cv_lib_usb_usb_interrupt_read}" = "yes" ; then
+     HAVE_LIBUSB="yes"
+   fi
+ fi
++AC_SUBST(LIBUSB)
+ 
+ dnl disable Linux SCSI generic version 3 to avoid 32/64 bit problems
+ if sparc64 -q > /dev/null 2>&1 ; then
+--- tools/Makefile.in.orig	2008-02-03 07:59:36.000000000 +0100
++++ tools/Makefile.in	2009-01-05 19:36:29.000000000 +0100
+@@ -72,6 +72,10 @@
+ # Library routines that should be part of libc, but aren't on some systems:
+ LIBLIB = ../lib/liblib.a
+ 
++LIBUSB = @LIBUSB@
++LIBIEEE1284 = @LIBIEEE1284@
++LIBCAM = @LIBCAM@
++
+ DISTFILES = Makefile.in RenSaneDlls.cmd README libtool-get-dll-ext     \
+ 	mustek600iin-off.c sane-config.in sane-desc.c check-usb-chip.c \
+ 	sane-find-scanner.c umax_pp.c xerox gamma4scanimage.c check-po.awk
+@@ -104,7 +108,7 @@
+ 	../sanei/sanei_scsi.lo ../sanei/sanei_usb.lo ../sanei/sanei_init_debug.lo \
+ 	../sanei/sanei_config.lo
+ 	@$(LIBTOOL) $(MLINK) $(LINK) sane-find-scanner.o check-usb-chip.o \
+-	  ../backend/sane_strstatus.lo $(LIBSANEI) $(LIBLIB) $(LIBS)
++	  ../backend/sane_strstatus.lo $(LIBSANEI) $(LIBLIB) $(LIBS) $(LIBUSB) $(LIBIEEE1284) $(LIBCAM)
+ 
+ gamma4scanimage: gamma4scanimage.o
+ 	@$(LIBTOOL) $(MLINK) $(LINK) gamma4scanimage.o -lm
+@@ -115,7 +119,7 @@
+ 
+ umax_pp: umax_pp.o ../backend/umax_pp_low.o
+ 	@$(LIBTOOL) $(MLINK) $(LINK) umax_pp.o ../backend/umax_pp_low.o \
+-	   $(LIBSANEI) $(LIBLIB) $(LIBS)
++	   $(LIBSANEI) $(LIBLIB) $(LIBS) -lm
+ sane-desc: sane-desc.o
+ 	@$(LIBTOOL) $(MLINK) $(LINK) sane-desc.o $(LIBSANEI) $(LIBLIB)
+ 
