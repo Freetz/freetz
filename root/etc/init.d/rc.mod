@@ -9,11 +9,10 @@ start() {
 	echo "rc.mod version $(cat /etc/.freetz-version)"
 
 	# Basic Packages
-	[ -e /mod/etc/init.d/rc.crond ] || ln -s /etc/init.d/rc.crond /mod/etc/init.d/rc.crond
-	[ -e /mod/etc/init.d/rc.swap ] || ln -s /etc/init.d/rc.swap /mod/etc/init.d/rc.swap
-	[ -e /mod/etc/init.d/rc.telnetd ] || ln -s /etc/init.d/rc.telnetd /mod/etc/init.d/rc.telnetd
-	[ -e /mod/etc/init.d/rc.webcfg ] || ln -s /etc/init.d/rc.webcfg /mod/etc/init.d/rc.webcfg
-	[ -e /mod/etc/init.d/rc.websrv ] || ln -s /etc/init.d/rc.websrv /mod/etc/init.d/rc.websrv
+	for pkg in crond swap telnetd webcfg websrv; do
+		rc="/etc/init.d/rc.$pkg"
+		[ -e "/mod$rc" ] || ln -s "$rc" "/mod$rc"
+	done
 
 	[ -d /tmp/flash ] || /usr/bin/modload
 
