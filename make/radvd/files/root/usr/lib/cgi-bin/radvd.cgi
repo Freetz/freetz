@@ -24,16 +24,16 @@ sec_begin '$(lang de:"radvd" en:"radvd")'
 cat << EOF
 <table border="0">
 <tr>
-	<td>$(lang de:"IPv6 Schnittstelle" en:"ipv6 interface"):</td>
-	<td><input type="text" name="interface" size="15" maxlength="16" value="$(httpd -e "$RADVD_INTERFACE")"></td>
+	<td>$(lang de:"IPv6 Schnittstelle" en:"IPv6 interface"):</td>
+	<td><input type="text" name="interface" size="15" maxlength="16" value="$(html "$RADVD_INTERFACE")"></td>
 </tr>
 <tr>
-	<td>$(lang de:"IPv6 Adresse" en:"ipv6 address"):</td>
-	<td><input type="text" name="address" size="30" maxlength="100" value="$(httpd -e "$RADVD_ADDRESS")"></td>
+	<td>$(lang de:"IPv6 Adresse" en:"IPv6 address"):</td>
+	<td><input type="text" name="address" size="30" maxlength="100" value="$(html "$RADVD_ADDRESS")"></td>
 </tr>
 <tr>
-	<td>$(lang de:"IPv6 Prefix" en:"ipv6 prefix"):</td>
-	<td><input type="text" name="prefix" size="30" maxlength="100" value="$(httpd -e "$RADVD_PREFIX")"></td>
+	<td>$(lang de:"IPv6 Prefix" en:"IPv6 prefix"):</td>
+	<td><input type="text" name="prefix" size="30" maxlength="100" value="$(html "$RADVD_PREFIX")"></td>
 </tr>
 </table>
 EOF

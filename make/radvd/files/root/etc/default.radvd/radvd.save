@@ -1,0 +1,16 @@
+pkg_pre_save() 
+{
+	[ -f /mod/etc/conf/radvd.cfg ] && . /mod/etc/conf/radvd.cfg
+
+	old_address=$RADVD_ADDRESS
+	old_interface=$RADVD_INTERFACE
+	old_prefix=$RADVD_PREFIX
+	vars=$(modcgi "address:interface:prefix")
+	new_address=$(echo "$vars" | sed -ne "/MOD_ADDRESS/s/MOD_ADDRESS='\(.*\)'/\1/p")
+	new_interface=$(echo "$vars" | sed -ne "/MOD_INTERFACE/s/MOD_INTERFACE='\(.*\)'/\1/p")
+	new_prefix=$(echo "$vars" | sed -ne "/MOD_PREFIX/s/MOD_PREFIX='\(.*\)'/\1/p")
+
+	if [ "$old_address" != "$new_address" -o "$old_interface" != "$new_interface" -o "$old_prefix" != "$new_prefix" ]; then
+		/mod/etc/init.d/rc.radvd remove
+	fi
+}

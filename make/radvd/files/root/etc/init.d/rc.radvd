@@ -20,7 +20,7 @@ write_config() {
 }
 
 setup_ipv6_interface() {
-	echo -n 'Set ipv6 address: '
+	echo -n 'Set IPv6 address: '
 	echo -n $RADVD_ADDRESS
 	ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
 	if [ $? -eq 0 ]; then
@@ -30,8 +30,45 @@ setup_ipv6_interface() {
 		echo  ' done.'
 	fi
 	
-	echo -n 'Set ipv6 forwarding...'
+	echo 'Set IPv6 Subnet Address: '
+	RADVD_SUBNET_IP=$(echo $RADVD_PREFIX | sed 's/\/64/1\/64/')
+	echo -n $RADVD_SUBNET_IP
+	ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_SUBNET_IP > /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		echo ' already set.'
+	else
+		ip -6 addr add $RADVD_SUBNET_IP dev $RADVD_INTERFACE
+		echo  ' done.'
+	fi
+	echo -n 'Enable IPv6 forwarding...'
 	echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+	echo 'done.'
+}
+
+shut_ipv6_interface() {
+	echo -n 'Unset IPv6 address: '
+	echo -n $RADVD_ADDRESS
+	ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		ip -6 addr del $RADVD_ADDRESS dev $RADVD_INTERFACE
+		echo  ' done.'
+	else
+		echo ' already unset.'
+	fi
+	
+	echo -n 'Unset IPv6 Subnet Address: '
+	RADVD_SUBNET_IP=$(echo $RADVD_PREFIX | sed 's/\/64/1\/64/')
+	echo -n $RADVD_SUBNET_IP
+	ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_SUBNET_IP > /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		ip -6 addr del $RADVD_SUBNET_IP dev $RADVD_INTERFACE
+		echo  ' done.'
+	else
+		echo ' already unset.'
+	fi
+
+	echo -n 'Disable IPv6 forwarding...'
+	echo 0 > /proc/sys/net/ipv6/conf/all/forwarding
 	echo 'done.'
 }
 
@@ -50,6 +87,7 @@ start() {
 }
 
 stop () {
+	shut_ipv6_interface
 	echo -n 'Stopping radvd...'
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
@@ -96,6 +134,9 @@ case "$1" in
 		else
 			echo 'stopped'
 		fi
+		;;
+	remove)
+		shut_ipv6_interface
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
