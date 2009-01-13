@@ -41,9 +41,8 @@ $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		AR="$(TARGET_CROSS)ar r" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
-		all build-shared
+		all
 	# Work around openssl build bug to link libssl.so with libcrypto.so.
-	-rm $(OPENSSL_DIR)/libssl.so.*.*.*
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \

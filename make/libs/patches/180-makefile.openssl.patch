@@ -1,11 +1,32 @@
---- Makefile.org.orig	2009-01-08 11:58:35.000000000 +0100
-+++ Makefile.org	2009-01-08 11:58:35.000000000 +0100
-@@ -337,7 +337,7 @@
+--- Makefile.org.orig	2009-01-13 17:44:06.000000000 +0100
++++ Makefile.org	2009-01-13 17:42:39.000000000 +0100
+@@ -321,7 +321,7 @@
+ sub_all: build_all
+ build_all: build_libs build_apps build_tools
+ 
+-build_libs: build_crypto build_fips build_ssl build_shared build_engines
++build_libs: build_crypto build_fips build_ssl build_engines
+ 
+ build_crypto:
+ 	if [ -n "$(FIPSCANLIB)" ]; then \
+@@ -333,15 +333,15 @@
+ 		dir=crypto; target=all; $(BUILD_ONE_CMD)
+ build_fips:
+ 	@dir=fips; target=all; [ -z "$(FIPSCANLIB)" ] || $(BUILD_ONE_CMD)
+-build_ssl:
++build_ssl: build_crypto
  	@dir=ssl; target=all; $(BUILD_ONE_CMD)
- build_engines:
+-build_engines:
++build_engines: build_crypto
  	@dir=engines; target=all; $(BUILD_ONE_CMD)
 -build_apps:
 +build_apps: build_libs
  	@dir=apps; target=all; $(BUILD_ONE_CMD)
- build_tests:
+-build_tests:
++build_tests: build_libs
  	@dir=test; target=all; $(BUILD_ONE_CMD)
+-build_tools:
++build_tools: build_libs
+ 	@dir=tools; target=all; $(BUILD_ONE_CMD)
+ 
+ all_testapps: build_libs
