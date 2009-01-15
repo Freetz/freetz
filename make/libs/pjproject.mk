@@ -1,5 +1,5 @@
-$(call PKG_INIT_LIB, 1.0)
-$(PKG)_LIB_VERSION:=1.0
+$(call PKG_INIT_LIB, 1.0.1)
+$(PKG)_LIB_VERSION:=1.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://fritz.v3v.de/dtmfbox/libs
 $(PKG)_BINARY:=$($(PKG)_DIR)/pjsip/lib/libpjsip.a

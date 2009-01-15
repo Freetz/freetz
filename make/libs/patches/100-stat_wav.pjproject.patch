@@ -1,0 +1,22 @@
+--- pjlib/src/pj/file_access_unistd.c.orig	2008-12-25 17:28:01.000000000 +0100
++++ pjlib/src/pj/file_access_unistd.c	2008-12-25 17:33:19.000000000 +0100
+@@ -48,11 +48,17 @@
+ PJ_DEF(pj_off_t) pj_file_size(const char *filename)
+ {
+     struct stat buf;
++    FILE *fp;
+ 
+     PJ_ASSERT_RETURN(filename, -1);
+ 
+-    if (stat(filename, &buf) != 0)
+-	return -1;
++    buf.st_size = -1;
++    fp = fopen(filename, "r");
++    if(fp) {
++	fseek(fp, 0L, SEEK_END);
++	buf.st_size = ftell(fp);
++	fclose(fp);
++    }
+ 
+     return buf.st_size;
+ }

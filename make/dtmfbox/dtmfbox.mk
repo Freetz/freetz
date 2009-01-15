@@ -6,8 +6,8 @@ $(PKG)_WEBPHONE:=http://fritz.v3v.de/webphone/sWebPhone.jar
 $(PKG)_WEBPHONE_LOCAL:=$(DTMFBOX_TARGET_DIR)/root/usr/mww/sWebPhone.jar
 $(PKG)_SUBDIR:=$(pkg)-$($(PKG)_VERSION)_rc2-src
 $(PKG)_DIR:=$(SOURCE_DIR)/$(DTMFBOX_SUBDIR)
-$(PKG)_PJPATH:=../pjproject-1.0
-$(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
+$(PKG)_PJPATH:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/pjproject-1.0.1
+$(PKG)_BINARY:=$(if $(FREETZ_PACKAGE_DTMFBOX_SVN), $($(PKG)_DIR)/src/$(pkg), $($(PKG)_DIR)/$(pkg)) 
 $(PKG)_BINARY_MENU_SO:=$($(PKG)_DIR)/plugins/menu.plugin/.libs/libmenu.plugin.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/$(pkg)
 $(PKG)_TARGET_BINARY_MENU_SO:=$($(PKG)_TARGET_DIR)/root/usr/lib/libmenu.plugin.so
@@ -55,9 +55,9 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	cp -f $(DTMFBOX_DIR)/webinterface/httpd/dtmfbox_style.css $(DTMFBOX_TARGET_DIR)/root/usr/mww/cgi-bin
 	cp -f $(DTMFBOX_DIR)/webinterface/httpd/cgi-bin/* $(DTMFBOX_TARGET_DIR)/root/usr/mww/cgi-bin
 	touch $(DTMFBOX_TARGET_DIR)/root/etc/default.dtmfbox/dtmfbox.cfg
-	$(if $(FREETZ_PACKAGE_DTMFBOX_WITH_HELP),, rm "$(DTMFBOX_TARGET_DIR)/root/usr/mww/cgi-bin/dtmfbox_help.cgi")	
-	$(if $(FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE),if [ ! -f "$(DTMFBOX_WEBPHONE_LOCAL)" ]; then wget -O "$(DTMFBOX_WEBPHONE_LOCAL)" "$(DTMFBOX_WEBPHONE)"; fi, rm "$(DTMFBOX_TARGET_DIR)/root/usr/mww/cgi-bin/dtmfbox_webphone.cgi")
-	cp -f $(DTMFBOX_BINARY_MENU_SO) $(DTMFBOX_TARGET_BINARY_MENU_SO)	
+	$(if $(FREETZ_PACKAGE_DTMFBOX_WITH_HELP),, rm "$(DTMFBOX_TARGET_DIR)/root/usr/mww/cgi-bin/dtmfbox_help.cgi")
+	$(if $(FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE),if [ ! -f "$(DTMFBOX_WEBPHONE_LOCAL)" ]; then wget -O "$(DTMFBOX_WEBPHONE_LOCAL)" "$(DTMFBOX_WEBPHONE)"; fi, rm "$(DTMFBOX_TARGET_DIR)/root/usr/mww/cgi-bin/dtmfbox_webphone.cgi")	
+	cp -f $(DTMFBOX_BINARY_MENU_SO) $(DTMFBOX_TARGET_BINARY_MENU_SO)
 	$(INSTALL_BINARY_STRIP)	
 
 $(pkg):
