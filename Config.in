@@ -929,6 +929,8 @@ config FREETZ_REMOVE_ASSISTANT
 config FREETZ_REMOVE_TR069
 	bool "Remove tr069 stuff"
 	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		( \
 		FREETZ_TYPE_300IP_AS_FON || \
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_FON_WLAN || \
@@ -936,10 +938,14 @@ config FREETZ_REMOVE_TR069
 		FREETZ_TYPE_FON_7150 || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270
+		FREETZ_TYPE_FON_WLAN_7270 \
+		)
 	default n
 	help
 		Removes libtr069 to save space.
+		WARNING: Removing tr069-stuff without disabling it 
+		on the box causes permanent reboots until the box 
+		is recovered
 
 config FREETZ_REMOVE_USB_MODULE
 	bool "Remove avalanche_usb.ko"
