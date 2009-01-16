@@ -20,6 +20,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-owside
 $(PKG)_CONFIGURE_OPTIONS += --disable-owcapi
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-zero
+$(PKG)_CONFIGURE_OPTIONS += --with-libusb-config="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libusb-config"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -27,7 +28,9 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $(OWFS_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-		$(MAKE) -C $(OWFS_DIR)
+		$(MAKE) -C $(OWFS_DIR) \
+		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
+		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
