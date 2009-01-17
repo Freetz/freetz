@@ -82,7 +82,7 @@ case "$form" in
 	pkg_*)
 		package=${form#pkg_}
 		[ -r "/mod/etc/default.$package/$package.save" ] && . "/mod/etc/default.$package/$package.save"
-		pkg_pre_save | html
+
 		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 			if [ "$package" = mod ]; then
 				script=settings.cgi
@@ -101,8 +101,14 @@ case "$form" in
 				delim=':'
 			done
 
+			settings=$(modcgi "$vars" "$package")
+		fi
+
+		pkg_pre_save | html
+
+		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 			echo -n 'Saving settings...'
-			modcgi "$vars" "$package" | modconf set "$package" -
+			echo "$settings" | modconf set "$package" -
 			echo 'done.'
 
 			echo -n "Saving $package.cfg..."
