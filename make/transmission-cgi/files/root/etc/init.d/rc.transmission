@@ -1,0 +1,182 @@
+#!/bin/sh
+
+DAEMON=transmission
+DAEMON_BIN="$DAEMON-daemon"
+USERNAME=bittorrent
+PIDFILE=/var/run/transmission.pid
+
+. /etc/init.d/modlibrc
+
+case $1 in
+	""|load|start|restart|status)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg;
+		;;
+esac
+
+echoFailedAndExit() {
+	echo 'failed.'
+	[ -n "$1" ] && exit $1 || exit 1
+}
+
+checkNotEmpty() {
+	if [ -z "$1" ]; then
+		[ -n "$2" ] && echo -e "\n$2 must not be empty."
+		echoFailedAndExit 255
+	fi
+}
+
+checkDirectoryExists() {
+	if [ ! -d "$1" ]; then
+		echo -e "\n'""$1""' doesn't exist. Creating directory."
+		mkdir -p "$1" || echoFailedAndExit 255
+	fi
+}
+
+trim() {
+	echo "$1" | sed 's|^[ ]*||;s|[ ]*$||';
+}
+
+stripAllSpaces() {
+	echo "$1" | sed 's| ||g;';
+}
+
+start() {
+	echo -n 'Starting transmission daemon... '
+
+	TRANSMISSION_BASEDIR=$(trim "$TRANSMISSION_BASEDIR")
+	TRANSMISSION_CONFIGDIR=$(trim "$TRANSMISSION_CONFIGDIR")
+	TRANSMISSION_DOWNLOADDIR=$(trim "$TRANSMISSION_DOWNLOADDIR")
+	TRANSMISSION_WEBDIR=$(trim "$TRANSMISSION_WEBDIR")
+
+	checkNotEmpty "$TRANSMISSION_CONFIGDIR" 'TRANSMISSION_CONFIGDIR'
+	checkNotEmpty "$TRANSMISSION_DOWNLOADDIR" 'TRANSMISSION_DOWNLOADDIR'
+	if [ "${TRANSMISSION_CONFIGDIR:0:1}" != "/" -o "${TRANSMISSION_DOWNLOADDIR:0:1}" != "/" ]; then
+		checkNotEmpty "$TRANSMISSION_BASEDIR" 'TRANSMISSION_BASEDIR'
+		if [ ${TRANSMISSION_BASEDIR:0:1} != "/" ]; then
+			echo -e "\nTRANSMISSION_BASEDIR must be an absolute path."
+			echoFailedAndExit 255
+		fi
+
+		checkDirectoryExists "$TRANSMISSION_BASEDIR"
+
+		if [ "${TRANSMISSION_BASEDIR:$((${#TRANSMISSION_BASEDIR}-1)):1}" != "/" ]; then
+			# add trailing slash in case it is missing
+			TRANSMISSION_BASEDIR="$TRANSMISSION_BASEDIR/"
+		fi
+	fi
+
+	[ ${TRANSMISSION_CONFIGDIR:0:1} = "/" ] && CONFIGDIR="$TRANSMISSION_CONFIGDIR" || CONFIGDIR="$TRANSMISSION_BASEDIR$TRANSMISSION_CONFIGDIR"
+	checkDirectoryExists "$CONFIGDIR"
+
+	[ ${TRANSMISSION_DOWNLOADDIR:0:1} = "/" ] && DOWNLOADDIR="$TRANSMISSION_DOWNLOADDIR" || DOWNLOADDIR="$TRANSMISSION_BASEDIR$TRANSMISSION_DOWNLOADDIR"
+	checkDirectoryExists "$DOWNLOADDIR"
+
+	# Setting permissions
+	chown -R "$USERNAME":users "$CONFIGDIR" "$DOWNLOADDIR"
+	chmod -R 0755 "$CONFIGDIR" "$DOWNLOADDIR"
+
+	local OPTIONS="--no-portmap"
+
+	[ -n "$TRANSMISSION_PEERPORT" ] && OPTIONS="$OPTIONS -P $TRANSMISSION_PEERPORT"
+	[ -n "$TRANSMISSION_GLOBALPEERLIMIT" ] && OPTIONS="$OPTIONS -L $TRANSMISSION_GLOBALPEERLIMIT"
+	[ -n "$TRANSMISSION_TORRENTPEERLIMIT" ] && OPTIONS="$OPTIONS -l $TRANSMISSION_TORRENTPEERLIMIT"
+	if [ "$TRANSMISSION_PEERENCRYPTIONMODE" = "ENCRYPTION_REQUIRED" ]; then
+		OPTIONS="$OPTIONS -er"
+	elif [ "$TRANSMISSION_PEERENCRYPTIONMODE" = "ENCRYPTION_PREFERRED" ]; then
+		OPTIONS="$OPTIONS -ep"
+	else
+		OPTIONS="$OPTIONS -et"
+	fi
+	[ "$TRANSMISSION_USEBLOCKLIST" = "yes" ] && OPTIONS="$OPTIONS -b" || OPTIONS="$OPTIONS -B"
+
+	if [ -n "$TRANSMISSION_RPCUSERNAME" -a -n "$TRANSMISSION_RPCPASSWORD" ]; then
+		OPTIONS="$OPTIONS --auth --username $TRANSMISSION_RPCUSERNAME --password $TRANSMISSION_RPCPASSWORD"
+	else
+		OPTIONS="$OPTIONS --no-auth"
+		echo -n "without password protection.. "
+	fi
+
+	[ -n "$TRANSMISSION_RPCPORT" ] && OPTIONS="$OPTIONS -p $TRANSMISSION_RPCPORT"
+	TRANSMISSION_RPCWHITELIST=$(stripAllSpaces "$TRANSMISSION_RPCWHITELIST")
+	[ -n "$TRANSMISSION_RPCWHITELIST" ] && OPTIONS="$OPTIONS -a $TRANSMISSION_RPCWHITELIST"
+
+	if [ -n "$TRANSMISSION_WEBDIR" -a -d "$TRANSMISSION_WEBDIR" -a -r "$TRANSMISSION_WEBDIR/index.html" ]; then
+		export TRANSMISSION_WEB_HOME="$TRANSMISSION_WEBDIR"
+	else
+		echo -n "without web interface.. "
+		unset TRANSMISSION_WEB_HOME
+	fi
+
+	start-stop-daemon \
+		-S \
+		-p "$PIDFILE" \
+		-x "$DAEMON_BIN" \
+		-c "$USERNAME" \
+		-- \
+		$OPTIONS --config-dir "$CONFIGDIR" --download-dir "$DOWNLOADDIR" \
+		> /dev/null
+
+	exitval=$?
+	[ "$exitval" -eq 0 ] && echo 'done.' || echoFailedAndExit "$exitval"
+}
+
+stop () {
+        echo -n 'Stopping transmission daemon... '
+        # As transmission takes care of killing its child processes by itself
+        # do send the signal to its parent process only. Sending the signal
+        # to all processes leads sometimes to a wrong "stopping failed" message.
+        local DAEMON_PID=$(pidof $DAEMON_BIN | tr " " "\n" | sort | head -1)
+        if [ -z "$DAEMON_PID" ]; then
+                echo -e "\nSeems $DAEMON_BIN is not running."
+                echoFailedAndExit 1
+        fi
+
+#        start-stop-daemon -K -q -o -p "$PIDFILE" >/dev/null 2>&1
+        kill -SIGINT $DAEMON_PID >/dev/null 2>&1
+        exitval=$?
+        [ "$exitval" -eq 0 ] && echo 'done.' || echoFailedAndExit "$exitval"
+}
+
+
+case "$1" in
+	""|load)
+		modlib_adduser bittorrent -G users -D -S -g "Torrent server"
+		modreg cgi 'transmission' 'Transmission'
+
+		if [ "$TRANSMISSION_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg cgi 'transmission'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 5
+		start
+		;;
+	status)
+		[ -z "$(pidof $DAEMON_BIN)" ] && echo 'stopped' || echo 'running'
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

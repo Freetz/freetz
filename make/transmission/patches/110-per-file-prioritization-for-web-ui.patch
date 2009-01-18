@@ -1,0 +1,854 @@
+Index: web/javascript/common.js
+===================================================================
+--- web/javascript/common.js	(revision 7108)
++++ web/javascript/common.js	(working copy)
+@@ -83,7 +83,7 @@
+ /**
+  * "innerHTML = html" is pretty slow in FF.  Happily a lot of our innerHTML
+  * changes are triggered by periodic refreshes on torrents whose state hasn't
+- * changed sine the last update, so even this simple test helps a lot.
++ * changed since the last update, so even this simple test helps a lot.
+  */
+ function setInnerHTML( e, html )
+ {
+Index: web/javascript/transmission.js
+===================================================================
+--- web/javascript/transmission.js	(revision 7108)
++++ web/javascript/transmission.js	(working copy)
+@@ -54,6 +54,7 @@
+ 		$('#prefs_cancel_button').bind('click', this.cancelPrefsClicked);
+ 		$('#inspector_tab_info').bind('click', this.inspectorTabClicked);
+ 		$('#inspector_tab_activity').bind('click', this.inspectorTabClicked);
++		$('#inspector_tab_files').bind('click', this.inspectorTabClicked);
+ 		if (iPhone) {
+ 			$('#torrent_inspector').bind('click', this.hideInspector);
+ 			$('#preferences_link').bind('click', this.releaseClutchPreferencesButton);
+@@ -79,28 +80,31 @@
+ 		
+ 		// Get preferences & torrents from the daemon
+ 		this.remote.loadDaemonPrefs( );
+-		this.remote.loadTorrents( );
++		this.remote.loadTorrents( true );
+ 		this.togglePeriodicRefresh( true );
+ 	},
+ 
+ 	preloadImages: function() {
+ 		if (iPhone) {
+ 			this.loadImages(
++				'images/buttons/info_general.png',
+ 				'images/buttons/info_activity.png',
+-				'images/buttons/info_general.png',
++				'images/buttons/info_files.png',
+ 				'images/buttons/toolbar_buttons.png',
+ 				'images/graphics/filter_bar.png',
+ 				'images/graphics/iphone_chrome.png',
+-				'images/graphics/logo.png',
+-				'images/progress/progress.png'
++				'images/graphics/logo.png'
+ 			);
+ 		} else {
+ 			this.loadImages(
++				'images/buttons/info_general.png',
+ 				'images/buttons/info_activity.png',
+-				'images/buttons/info_general.png',
++				'images/buttons/info_files.png',
+ 				'images/buttons/tab_backgrounds.png',
+ 				'images/buttons/toolbar_buttons.png',
+ 				'images/buttons/torrent_buttons.png',
++				'images/buttons/file_wanted_buttons.png',
++				'images/buttons/file_priority_buttons.png',
+ 				'images/graphics/chrome.png',
+ 				'images/graphics/filter_bar.png',
+ 				'images/graphics/logo.png',
+@@ -280,7 +284,18 @@
+ 				s.push( v[i] );
+ 		return s;
+ 	},
+-
++	
++	getDeselectedTorrents: function() {
++		var visible_torrent_ids = jQuery.map(this.getVisibleTorrents(), function(t) { return t.id(); } );
++		var s = [ ];
++		jQuery.each( this.getAllTorrents( ), function() {
++			var visible = (-1 != jQuery.inArray(this.id(), visible_torrent_ids));
++			if (!this.isSelected() || !visible)
++				s.push( this );
++		} );
++		return s;
++	},
++	
+ 	getVisibleRows: function()
+ 	{
+ 		var rows = [ ];
+@@ -397,7 +412,7 @@
+ 		if( doUpdate )
+ 			this.selectionChanged( );
+ 	},
+-    
++
+ 	selectionChanged: function()
+ 	{
+ 		this.updateButtonStates();
+@@ -559,7 +574,9 @@
+ 		
+ 		// Select the clicked tab, unselect the others,
+ 		// and display the appropriate info
+-		var tab_ids = ['inspector_tab_info', 'inspector_tab_activity'];
++		var tab_ids = $(this).parent('#inspector_tabs').find('.inspector_tab').map(
++			function() { return $(this).attr('id'); } 
++		);
+ 		for( var i=0; i<tab_ids.length; ++i ) {
+ 			if (this.id == tab_ids[i]) {
+ 				$('#' + tab_ids[i]).addClass('selected');
+@@ -623,12 +640,24 @@
+ 			// sanity check
+ 			if( !this[Prefs._RefreshRate] )
+ 			     this[Prefs._RefreshRate] = 5;
+-			this._periodic_refresh = setInterval('transmission.remote.loadTorrents()', this[Prefs._RefreshRate] * 1000 );
++			remote = this.remote;
++			this._periodic_refresh = setInterval(this.periodicRefresh, this[Prefs._RefreshRate] * 1000 );
+ 		} else {
+ 			clearInterval(this._periodic_refresh);
+ 			this._periodic_refresh = null;
+ 		}
+ 	},
++	
++	periodicRefresh: function() {
++		if (!this._periodicRefreshIterations)
++			this._periodicRefreshIterations = 0;
++		
++		remote.loadTorrents(this._periodicRefreshIterations++ % 10 == 0);
++	},
++	
++	scheduleFileRefresh: function() {
++		this._periodicRefreshIterations = 0;
++	},
+ 
+ 	/*--------------------------------------------
+ 	 * 
+@@ -636,8 +665,7 @@
+ 	 * 
+ 	 *--------------------------------------------*/
+     
+-	showPrefsDialog: function( )
+-	{
++	showPrefsDialog: function( ) {
+ 		$('body').addClass('prefs_showing');
+ 		$('#prefs_container').show();
+ 		transmission.hideiPhoneAddressbar();
+@@ -845,7 +873,7 @@
+ 		var na = 'N/A';
+ 		
+ 		$("#torrent_inspector_size, .inspector_row div").css('color', '#222');
+-
++		
+ 		if( torrents.length == 0 )
+ 		{
+ 			var ti = '#torrent_inspector_';
+@@ -870,7 +898,8 @@
+ 			setInnerHTML( $(ti+'progress')[0], na );
+ 			setInnerHTML( $(ti+'comment')[0], na );
+ 			setInnerHTML( $(ti+'creator')[0], na );
+-			setInnerHTML( $(ti+'error')[0], na );		
++			setInnerHTML( $(ti+'error')[0], na );
++			this.updateVisibleFileLists();
+ 			$("#torrent_inspector_size, .inspector_row > div:contains('N/A')").css('color', '#666');
+ 			return;
+ 		}
+@@ -898,7 +927,7 @@
+ 			date_created = Math.formatTimestamp( t._creator_date );
+ 		}
+ 
+-		for( i=0; i<torrents.length; ++i ) {
++		for(i = 0; i < torrents.length; ++i ) {
+ 			var t = torrents[i];
+ 			sizeWhenDone         += t._sizeWhenDone;
+ 			sizeDone             += t._sizeWhenDone - t._leftUntilDone;
+@@ -959,7 +988,17 @@
+ 		$(ti+'error')[0].innerHTML           = error;
+ 		
+ 		$(".inspector_row > div:contains('N/A')").css('color', '#666');
++		this.updateVisibleFileLists();
+ 	},
++	
++	updateVisibleFileLists: function() {
++		jQuery.each( this.getSelectedTorrents(), function() {
++			this.showFileList();
++		} );
++		jQuery.each( this.getDeselectedTorrents(), function() {
++			this.hideFileList();
++		} );
++	},
+     
+ 	/*
+ 	 * Toggle the visibility of the inspector (used by the context menu)
+@@ -970,7 +1009,7 @@
+ 		else
+ 			this.showInspector( );
+ 	},
+-    
++	
+ 	showInspector: function() {
+ 		$('#torrent_inspector').show();
+ 		if (iPhone) {
+@@ -1034,36 +1073,53 @@
+ 		this.setFilter( Prefs._FilterAll );
+ 	},
+ 
++	updateTorrentsData: function( torrent_list ) {
++		var tr = this;
++		jQuery.each( torrent_list, function() {
++			var t = Torrent.lookup(tr._torrents, this.id);
++			if (t) t.refresh(this);
++		} );
++	},
++	
+ 	/*
+ 	 * Process got some new torrent data from the server
+ 	 */
+-	updateTorrents: function( torrent_list )
+-	{
++	updateAllTorrents: function( torrent_list ) {
+ 		var torrent_data;
+ 		var new_torrents = [];
+ 		var torrent_ids = [];
+ 		var handled = [];
+ 		
+ 		// refresh existing torrents
++		this.updateTorrentsData( torrent_list );
++		
++		// partition existing and new torrents
++		
+ 		for( var i=0, len=torrent_list.length; i<len; ++i ) {
+ 			var data = torrent_list[i];
+ 			var t = Torrent.lookup( this._torrents, data.id );
+ 			if( !t )
+ 				new_torrents.push( data );
+ 			else {
+-				t.refresh( data );
+ 				handled.push( t );
+ 			}
+ 		}
+ 		
+ 		// Add any torrents that aren't already being displayed
++		// if file data is available
+ 		if( new_torrents.length ) {
+-			for( var i=0, len=new_torrents.length; i<len; ++i ) {
+-				var t = new Torrent( this, new_torrents[i] );
+-				this._torrents.push( t );
+-				handled.push( t );
++			if (data.files) {
++				for( var i=0, len=new_torrents.length; i<len; ++i ) {
++					var t = new Torrent( this, new_torrents[i] );
++					this._torrents.push( t );
++					handled.push( t );
++				}
++				this._torrents.sort( Torrent.compareById );
++			} else {
++				// There are new torrents available
++				// pick them up on the next refresh
++				this.togglePeriodicRefresh(this._periodicRefresh);
+ 			}
+-			this._torrents.sort( Torrent.compareById ); 
+ 		}
+ 		
+ 		// Remove any torrents that weren't in the refresh list
+@@ -1169,7 +1225,7 @@
+ 			args.dataType = 'xml';
+ 			args.iframe = true;
+ 			args.success = function( data ) {
+-				tr.remote.loadTorrents( );
++				tr.remote.loadTorrents( true );
+ 				tr.togglePeriodicRefresh( true );
+ 			};
+ 			this.togglePeriodicRefresh( false );
+@@ -1229,6 +1285,9 @@
+ 	stopTorrents: function( torrents ) {
+ 		this.remote.stopTorrents( torrents );
+ 	},
++	changeFileCommand: function(command, torrent, file) {
++		this.remote.changeFileCommand(command, torrent, file)
++	},
+     
+ 	hideiPhoneAddressbar: function(timeInSeconds) {
+ 		if( iPhone ) {
+Index: web/javascript/torrent.js
+===================================================================
+--- web/javascript/torrent.js	(revision 7108)
++++ web/javascript/torrent.js	(working copy)
+@@ -23,8 +23,7 @@
+ 	/*
+ 	 * Constructor
+ 	 */
+-	initialize: function(controller,data)
+-	{
++	initialize: function(controller, data) {
+ 		// Create a new <li> element
+ 		var element = $('<li/>');
+ 		element.addClass('torrent');
+@@ -77,7 +76,7 @@
+ 		e.addClass('torrent_peer_details');
+ 		element.append( e );
+ 		element._peer_details_container = e;
+-			
++		
+ 		// Set the torrent click observer
+ 		element.bind('click', {element: element}, this.clickTorrent);
+ 		if (!iPhone) element.bind('contextmenu', {element: element}, this.rightClickTorrent);		
+@@ -89,12 +88,39 @@
+ 		
+ 		// insert the element
+ 		$('#torrent_list').append(this._element);
++		this.initializeTorrentFilesInspectorGroup();
+ 		
++		for (var i = 0; i < data.files.length; i++) {
++			var file = data.files[i];
++			file.index    = i;
++			file.torrent  = this;
++			file.priority = data.priorities[i];
++			file.wanted   = data.wanted[i];
++			var torrentFile = new TorrentFile(file); 
++			this._files.push(torrentFile);
++			this._fileList.append(
++				torrentFile.element().addClass(i % 2 ? 'even' : 'odd').addClass('inspector_torrent_file_list_entry')
++			);
++		}
++		
+ 		// Update all the labels etc
+ 		this.refresh(data);
+ 	},
+-
+-
++	
++	initializeTorrentFilesInspectorGroup: function() {
++		this._files = [];
++		this._fileList = $('<ul/>').addClass('inspector_torrent_file_list').addClass('inspector_group').hide().
++			append($('<li/>').addClass('inspector_group_label').append(
++				$('<div/>').append(this.name())
++			)
++		);
++		$('#inspector_file_list').append(this._fileList);
++	},
++	
++	fileList: function() {
++		return this._fileList;
++	},
++	
+ 	/*--------------------------------------------
+ 	 * 
+ 	 *  S E T T E R S   /   G E T T E R S
+@@ -131,8 +157,7 @@
+ 	getPercentDone: function() {
+ 		if( !this._sizeWhenDone ) return 1.0;
+ 		if( !this._leftUntilDone ) return 1.0;
+-		return ( this._sizeWhenDone - this._leftUntilDone )
+-		       / this._sizeWhenDone;
++		return ( this._sizeWhenDone - this._leftUntilDone ) / this._sizeWhenDone;
+ 	},
+ 	getPercentDoneStr: function() {
+ 		return Math.ratio( 100 * ( this._sizeWhenDone - this._leftUntilDone ),
+@@ -155,7 +180,9 @@
+ 	totalSeeders: function() { return this._total_seeders; },
+ 	uploadSpeed: function() { return this._upload_speed; },
+ 	uploadTotal: function() { return this._upload_total; },
+-
++	showFileList: function() { if (this.fileList()) return this.fileList().show(); },
++	hideFileList: function() { if (this.fileList()) return this.fileList().hide(); },
++	
+ 	/*--------------------------------------------
+ 	 * 
+ 	 *  E V E N T   F U N C T I O N S
+@@ -252,8 +279,7 @@
+ 	/*
+ 	 * Refresh display
+ 	 */
+-	refreshData: function(data)
+-	{
++	refreshData: function(data) {
+ 		// These variables never change after the inital load
+ 		if (data.isPrivate)     this._is_private    = data.isPrivate;
+ 		if (data.hashString)    this._hashString    = data.hashString;
+@@ -263,8 +289,8 @@
+ 		if (data.comment)       this._comment       = data.comment;
+ 		if (data.creator)       this._creator       = data.creator;
+ 		if (data.dateCreated)   this._creator_date  = data.dateCreated;
+-                if (data.leftUntilDone) this._leftUntilDone = data.leftUntilDone;
+-                if (data.sizeWhenDone)  this._sizeWhenDone  = data.sizeWhenDone;
++		if (data.leftUntilDone) this._leftUntilDone = data.leftUntilDone;
++		if (data.sizeWhenDone)  this._sizeWhenDone  = data.sizeWhenDone;
+ 		if (data.path)          this._torrent_file  = data.path;//FIXME
+ 		if (data.name) {
+ 			this._name = data.name;
+@@ -289,10 +315,18 @@
+ 		this._total_leechers        = Math.max( 0, data.leechers );
+ 		this._total_seeders         = Math.max( 0, data.seeders );
+ 		this._state                 = data.status;
++		
++		if (data.files) {
++			for (var i = 0; i < data.files.length; i++) {
++				var file_data      = data.files[i];
++				if (data.priorities) { file_data.priority = data.priorities[i]; }
++				if (data.wanted)     { file_data.wanted   = data.wanted[i]; }
++				this._files[i].readAttributes(file_data);
++			}
++		}
+ 	},
+ 
+-	refreshHTML: function()
+-	{
++	refreshHTML: function() {
+ 		var progress_details;
+ 		var peer_details;
+ 		var root = this._element;
+@@ -426,6 +460,12 @@
+ 		}
+ 		
+ 		setInnerHTML( root._peer_details_container[0], peer_details );
++		
++		// Update individual files within a torrent
++		jQuery.each(this._files, function () {
++			this.refreshHTML();
++		} );
++
+ 	},
+ 
+ 	/*
+@@ -587,3 +627,127 @@
+ 	var pos = Torrent.indexOf( torrents, id );
+ 	return pos >= 0 ? torrents[pos] : null;
+ };
++
++function TorrentFile(file_data) {
++	this.initialize(file_data);
++}
++
++TorrentFile.prototype = {
++	initialize: function(file_data) {
++		this._torrent = file_data.torrent;
++		var pos = file_data.name.indexOf('/');
++		if (pos >= 0)
++			this.name = file_data.name.substring(pos + 1);
++		else
++			this.name = file_data.name;
++		this.readAttributes(file_data);
++		
++		this._element = $('<li/>').append(
++			$('<div/>').addClass('file_wanted_control').
++			bind('click', { file: this }, this.fileWantedControlClicked)
++			
++		).append(
++			this._priority_control = $('<div/>').addClass('file_priority_control').
++			bind('click', { file: this }, this.filePriorityControlClicked)
++			
++		).append(
++			$('<div/>').addClass('inspector_torrent_file_list_entry_name').
++			append(this.name)
++			
++		).append(
++			this._progress = $('<div/>').addClass('inspector_torrent_file_list_entry_progress')
++		)
++	},
++	
++	readAttributes: function(file_data) {
++		if (undefined != file_data.index)          this._index  = file_data.index;
++		if (undefined != file_data.bytesCompleted) this._done   = file_data.bytesCompleted;
++		if (undefined != file_data.length)         this._size   = file_data.length;
++		if (undefined != file_data.priority)       this._prio   = file_data.priority;
++		if (undefined != file_data.wanted)         this._wanted = file_data.wanted;
++	},
++	
++	element: function() {
++		return this._element;
++	},
++	
++	setPriority: function(priority) {
++		var priority_level = { high: 1, normal: 0, low: -1 }[priority];
++		if (this._prio == priority_level) { return; }
++		this._prio = priority_level;
++		this._torrent._controller.changeFileCommand("priority-" + priority, this._torrent, this);
++		this.refreshPriorityHTML();
++	},
++	
++	setWanted: function(wanted) {
++		this._wanted = wanted;
++		var command;
++		
++		if (wanted) {
++			this.element().removeClass('skip');
++			command = 'files-wanted'
++		} else {
++			this.element().addClass('skip');
++			command = 'files-unwanted';
++		}
++		this._torrent._controller.changeFileCommand(command, this._torrent, this);
++	},
++	
++	toggleWanted: function() {
++		this.setWanted(!this._wanted);
++	},
++	
++	refreshHTML: function() {
++		this.refreshProgressHTML();
++		this.refreshWantedHTML();
++		this.refreshPriorityHTML();
++	},
++	
++	refreshProgressHTML: function() {
++		progress_details = Math.formatBytes(this._done) + ' of ' +
++							Math.formatBytes(this._size) + ' (' +
++							Math.ratio(100 * this._done, this._size) + '%)';
++		setInnerHTML(this._progress[0], progress_details);
++	},
++	
++	refreshWantedHTML: function() {
++		var element = this.element();
++		if (this._wanted && element.hasClass('skip'))
++			this.element().removeClass('skip');
++		else if (!this._wanted && !element.hasClass('skip'))
++			this.element().addClass('skip');
++		
++		if (this._done < this._size && this.element().hasClass('complete'))
++			this.element().removeClass('complete');
++		else if (!this.element().hasClass('complete'))
++			this.element().addClass('complete');
++	},
++	
++	refreshPriorityHTML: function() {
++		if (this['_last_refreshed_prio'] == this._prio) { return; }
++		var priority = { '1': 'high', '0': 'normal', '-1': 'low' }[new String(this._prio)];
++		var off_priorities = [ 'high', 'normal', 'low' ].sort(function(a,b) { return (a == priority); } );
++		this._priority_control.addClass(priority).
++			removeClass(off_priorities[0]).
++			removeClass(off_priorities[1]);
++		this._last_refreshed_prio = this._prio;
++	},
++	
++	fileWantedControlClicked: function(event) {
++		event.data.file.toggleWanted();
++	},
++	
++	filePriorityControlClicked: function(event) {
++		var x = event.pageX;
++		var target = this;
++		while (target != null) {
++			x = x - target.offsetLeft;
++			target = target.offsetParent;
++		}
++		var file = event.data.file;
++		if (x < 8) { file.setPriority('low'); }
++		else if (x < 16) { file.setPriority('normal'); }
++		else { file.setPriority('high'); }
++	}
++	
++};
+Index: web/javascript/transmission.remote.js
+===================================================================
+--- web/javascript/transmission.remote.js	(revision 7108)
++++ web/javascript/transmission.remote.js	(working copy)
+@@ -55,63 +55,92 @@
+ 			'Dismiss');
+ 		transmission.togglePeriodicRefresh(false);
+ 	},
+-
+-	sendRequest: function( url, data, success, contentType )
+-	{
+-		var o = { };
+-		o.cache = false;
+-		o.contentType = contentType;
+-		o.data = data;
+-		o.dataType = 'json';
+-		o.error = this.ajaxError;
+-		o.success = success;
+-		o.type = 'POST';
+-		o.url = url;
+-		$.ajax( o );
++	
++	sendRequest: function( data, success ) {
++		$.ajax( {
++			url: RPC._Root,
++			type: 'POST',
++			contentType: 'json',
++			dataType: 'json',
++			cache: false,
++			data: $.toJSON(data),
++			error: this.ajaxError,
++			success: success
++		} );
+ 	},
+ 
+ 	loadDaemonPrefs: function() {
+ 		var tr = this._controller;
+-		var o = { };
+-		o.method = 'session-get';
+-		this.sendRequest( RPC._Root, $.toJSON(o), function(data) {
++		var o = { method: 'session-get' };
++		this.sendRequest( o, function(data) {
+ 			var o = data.arguments;
+ 			Prefs.getClutchPrefs( o );
+ 			tr.updatePrefs( o );
+-		}, "json" );
++		} );
+ 	},
+ 
+-	loadTorrents: function() {
++	loadTorrents: function(update_files) {
+ 		var tr = this._controller;
+-		var o = { };
+-		o.method = 'torrent-get'
+-		o.arguments = { };
+-		o.arguments.fields = [
+-			'addedDate', 'announceURL', 'comment', 'creator',
+-			'dateCreated', 'downloadedEver', 'error', 'errorString',
+-			'eta', 'hashString', 'haveUnchecked', 'haveValid', 'id',
+-			'isPrivate', 'leechers', 'leftUntilDone', 'name',
+-			'peersConnected', 'peersGettingFromUs', 'peersSendingToUs',
+-			'rateDownload', 'rateUpload', 'seeders', 'sizeWhenDone',
+-			'status', 'swarmSpeed', 'totalSize', 'uploadedEver' ];
+-		this.sendRequest( RPC._Root, $.toJSON(o), function(data) {
+-			tr.updateTorrents( data.arguments.torrents );
+-		}, "json" );
++		var o = {
++			method: 'torrent-get',
++			arguments: { fields: [
++				'addedDate', 'announceURL', 'comment', 'creator',
++				'dateCreated', 'downloadedEver', 'error', 'errorString',
++				'eta', 'hashString', 'haveUnchecked', 'haveValid', 'id',
++				'isPrivate', 'leechers', 'leftUntilDone', 'name',
++				'peersConnected', 'peersGettingFromUs', 'peersSendingToUs',
++				'rateDownload', 'rateUpload', 'seeders', 'sizeWhenDone',
++				'status', 'swarmSpeed', 'totalSize', 'uploadedEver' ]
++			}
++		};
++		if (update_files) {
++			o.arguments.fields.push('files');
++			o.arguments.fields.push('wanted');
++			o.arguments.fields.push('priorities');
++		}
++		this.sendRequest( o, function(data) {
++			tr.updateAllTorrents( data.arguments.torrents );
++		} );
+ 	},
+-
++	
++	loadTorrentFiles: function( torrent_ids ) {
++		var tr = this._controller;
++		this.sendRequest( {
++			method: 'torrent-get',
++			arguments: { fields: [ 'files', 'wanted', 'priorities'] },
++			ids: torrent_ids
++		}, function(data) {
++			tr.updateTorrentsData( data.arguments.torrents );
++		} );
++	},
++	
++	changeFileCommand: function( command, torrent, file ) {
++		var remote = this;
++		var torrent_ids = [ torrent.id() ];
++		var o = {
++			method: 'torrent-set',
++			arguments: { ids: torrent_ids }
++		};
++		o.arguments[command] = [ file._index ];
++		this.sendRequest( o, function( ) {
++			remote.loadTorrentFiles( torrent_ids );
++		} );
++	},
++	
+ 	sendTorrentCommand: function( method, torrents ) {
+ 		var remote = this;
+-		var o = { };
+-		o.method = method;
+-		o.arguments = { };
+-		o.arguments.ids = [ ];
++		var o = {
++			method: method,
++			arguments: { ids: [ ] }
++		};
+ 		if( torrents != null )
+ 			for( var i=0, len=torrents.length; i<len; ++i )
+ 				o.arguments.ids.push( torrents[i].id() );
+-		this.sendRequest( RPC._Root, $.toJSON(o), function( ) {
++		this.sendRequest( o, function( ) {
+ 			remote.loadTorrents();
+-		}, "json" );
++		} );
+ 	},
++	
+ 	startTorrents: function( torrents ) {
+ 		this.sendTorrentCommand( 'torrent-start', torrents );
+ 	},
+@@ -124,11 +153,12 @@
+ 
+ 	savePrefs: function( args ) {
+ 		var remote = this;
+-		var o = { };
+-		o.method = 'session-set';
+-		o.arguments = args;
+-		this.sendRequest( RPC._Root, $.toJSON(o), function(){
++		var o = {
++			method: 'session-set',
++			arguments: args
++		};
++		this.sendRequest( o, function() {
+ 			remote.loadDaemonPrefs();
+-		}, "json" );
++		} );
+ 	}
+ };
+Index: web/index.html
+===================================================================
+--- web/index.html	(revision 7108)
++++ web/index.html	(working copy)
+@@ -14,6 +14,7 @@
+ 		<link media="screen and (min-device-width: 481px)" href="./stylesheets/common.css" type="text/css" rel="stylesheet" />
+ 		<script type="text/javascript" src="./javascript/jquery/jquery.transmenu.min.js"></script>
+ 		<script type="text/javascript" src="./javascript/jquery/jquery.contextmenu.min.js"></script>
++		<script type="text/javascript" src="./javascript/jquery/jquery.tinysort.min.js"></script>
+ 		<script type="text/javascript" src="./javascript/menu.js"></script>
+ 		<script type="text/javascript" src="./javascript/jquery/jquery.dimensions.min.js"></script>
+ 		<script type="text/javascript" src="./javascript/jquery/jquery.form.min.js"></script>
+@@ -61,6 +62,7 @@
+ 			<div id="inspector_tabs">
+ 				<div class="inspector_tab selected" id="inspector_tab_info"><a href="#info"><img src="images/buttons/info_general.png" alt="Information"/></a></div>
+ 				<div class="inspector_tab" id="inspector_tab_activity"><a href="#activity"><img src="images/buttons/info_activity.png" alt="Activity"/></a></div>
++				<div class="inspector_tab" id="inspector_tab_files"><a href="#files"><img src="images/buttons/info_files.png" alt="Files"/></a></div>
+ 			</div>
+ 			
+ 			<div id="inspector_header">
+@@ -168,6 +170,11 @@
+ 					</div>
+ 				</div><!-- class="inspector_group"-->
+ 			</div><!-- id="inspector_tab_activity_container" -->
++
++			<div style="display:none;" class="inspector_container" id="inspector_tab_files_container">
++				<span id="inspector_file_list"></span>
++			</div><!-- id="inspector_tab_files_container" -->
++
+ 		</div>
+ 		
+ 		<div id="torrent_container">
+Index: web/stylesheets/common.css
+===================================================================
+--- web/stylesheets/common.css	(revision 7108)
++++ web/stylesheets/common.css	(working copy)
+@@ -524,9 +524,9 @@
+ 	padding-right: 10px;
+ }
+ div#inspector_tabs {
++	width: 189px;
+ 	margin: 0 auto;
+ 	padding-top: 10px;
+-	width: 140px;
+ }
+ .inspector_tab {
+ 	float: left;
+@@ -567,6 +567,109 @@
+ 	width: 230px; /* inspector_container_width==330 - inspector_label_width==100 */
+ }
+ 
++/* Files Inspector Tab */
++#inspector_file_list {
++	padding: 0 0 0 0;
++	margin: 0 0 0 0;
++	text-align: left;
++	cursor: default;
++	overflow: hidden;
++}
++ul.inspector_torrent_file_list {
++	width: 100%;
++	margin: 0  0 0 0;
++	padding-bottom: 10px;
++	text-align: left;
++	display: block;
++	cursor: default;
++	list-style-type: none;
++	list-style: none;
++	list-style-image: none;
++}
++li.inspector_torrent_file_list_entry {
++	padding: 3px 0 3px 2px;
++	display: block;
++}
++
++li.inspector_torrent_file_list_entry.skip {
++	color: #666;
++}
++
++li.inspector_torrent_file_list_entry.even {
++	background-color: #EEEEEE;
++}
++div.inspector_torrent_file_list_entry_name {
++	font-size: 1.2em;
++	font-weight: bold;
++	color: #222;
++	margin-left: 20px;
++}
++li.inspector_torrent_file_list_entry.skip>.inspector_torrent_file_list_entry_name {
++	color: #666;
++}
++li.inspector_torrent_file_list_entry.even {
++	background-color: #EEEEEE;
++}
++div.inspector_torrent_file_list_entry_progress {
++	font-size: 1em;
++	color: #666;
++	margin-left: 20px;
++} 
++div.file_wanted_control {
++	background-position: left -16px;
++	float: left;
++	position: absolute;
++	cursor: pointer;
++	margin: 0 0 0 0;
++	width: 16px;
++	height: 16px;
++	background-image: url('../images/buttons/file_wanted_buttons.png');
++	background-repeat: no-repeat;
++	background-color: transparent;
++}
++
++li.inspector_torrent_file_list_entry.skip>.file_wanted_control {
++	background-position: left 0px;
++}
++
++li.inspector_torrent_file_list_entry.complete>.file_wanted_control {
++	background-position: -16px -16px;
++}
++
++li.inspector_torrent_file_list_entry.complete.skip>.file_wanted_control {
++	background-position: -16px 0px;
++}
++
++div.file_priority_control {
++	float: right;
++	margin: 0 0 0 0;
++	width: 24px;
++	height: 12px;
++	background-image: url('../images/buttons/file_priority_buttons.png');
++	background-repeat: no-repeat;
++	background-color: transparent;
++	cursor: pointer;
++}
++div.file_priority_control.high {
++	background-position: left -12px;
++}
++div.file_priority_control.high:hover {
++	background-position: right -12px;
++}
++div.file_priority_control.normal {
++	background-position: left -24px;
++}
++div.file_priority_control.normal:hover {
++	background-position: right -24px;
++}
++div.file_priority_control.low {
++	background-position: left 0px;
++}
++div.file_priority_control.low:hover {
++	background-position: right 0px;
++}
++
++
+ /*--------------------------------------
+  *
+  * T O R R E N T   F O O T E R
