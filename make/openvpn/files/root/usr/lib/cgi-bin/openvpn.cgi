@@ -66,6 +66,11 @@ cat << EOF
 <input type="hidden" id="id_additional"   name="additional" value="$OPENVPN_ADDITIONAL">
 <input type="hidden" id="id_own_keys"   name="own_keys" value="$OPENVPN_OWN_KEYS">
 <input type="hidden" id="id_expert"   name="expert" value="$OPENVPN_EXPERT">
+<input type="hidden" id="id_no_certtype"   name="no_certtype" value="$OPENVPN_NO_CERTTYPE">
+<input type="hidden" id="id_param_1"   name="param_1" value="$OPENVPN_PARAM_1">
+<input type="hidden" id="id_param_2"   name="param_2" value="$OPENVPN_PARAM_2">
+<input type="hidden" id="id_param_3"   name="param_2" value="$OPENVPN_PARAM_3">
+
 
 <p><b>$(lang de:"Starttyp" en:"Start type"): &nbsp; &nbsp;</b><input id="id_act_start_auto" type="radio" name="my_enabled"  onclick='(local_autostart[act_conf]="yes"); changeval()'><label for="start_auto"> $(lang de:"Automatisch" en:"Automatic")</label> 
 <input id="id_act_start_man" type="radio" name="my_enabled" onclick='(local_autostart[act_conf]=""); changeval()'><label for="start_man"> $(lang de:"Manuell" en:"Manual")</label>
@@ -115,6 +120,10 @@ Cipher: <select id="id_act_cipher" name="my_cipher" onchange="changeval()"><opti
 </div>
 <br />
 <small style="font-size:0.8em">$(lang de:"Muss auf Server <b>und</b> Client identisch sein" en:"Must be equal on server <b>and</b> client")</small>
+<div id="div_no_certtype" style="display:none">&nbsp; &nbsp; $(lang de:"Keine Pr&uuml;fung vom " en:"Accept server cert w/o ") "ns-cert-type"
+<input id="id_act_no_certtype" type="checkbox" name="my_no_certtype" title=$(lang de:"\'Auch Zertifikate ohne \"ns-cert-type server\" akzeptieren'" en:"\'Accept server certs even without \"ns-cert-type server\"'") onclick='if (this.checked) (local_no_certtype[act_conf]="yes"); else (local_no_certtype[act_conf]=""); changeval()'> 
+</div>
+
 <p>
 <div id="div_own_keys"  style="display:inline"> 
 <input id="id_act_own_keys" type="checkbox" name="my_own_keys"
@@ -272,7 +281,7 @@ var act_conf=1;
 
 FIELDSET_CONFIG = 0
 FIELDSET_SERVER = 5
-variablen=[ "AUTOSTART", "DEBUG", "DEBUG_TIME", "LOCAL", "MODE", "REMOTE", "PORT", "PROTO", "TYPE", "BOX_IP", "BOX_MASK", "REMOTE_IP", "DHCP_RANGE", "LOCAL_NET", "REMOTE_NET", "DHCP_CLIENT", "MTU", "AUTH_TYPE", "CIPHER", "TLS_AUTH", "FLOAT", "KEEPALIVE", "KEEPALIVE_PING", "KEEPALIVE_TIMEOUT", "COMPLZO", "MAXCLIENTS", "CLIENT2CLIENT", "PUSH_DNS", "PUSH_WINS", "REDIRECT", "VERBOSE", "SHAPER", "UDP_FRAGMENT", "PULL", "LOGFILE", "MGMNT", "CLIENTS_DEFINED", "CLIENT_INFO", "CLIENT_IPS", "CLIENT_NAMES", "CLIENT_NETS", "CLIENT_MASKS", "CONFIG_NAMES", "ADDITIONAL", "OWN_KEYS" ]
+variablen=[ "AUTOSTART", "DEBUG", "DEBUG_TIME", "LOCAL", "MODE", "REMOTE", "PORT", "PROTO", "TYPE", "BOX_IP", "BOX_MASK", "REMOTE_IP", "DHCP_RANGE", "LOCAL_NET", "REMOTE_NET", "DHCP_CLIENT", "MTU", "AUTH_TYPE", "CIPHER", "TLS_AUTH", "FLOAT", "KEEPALIVE", "KEEPALIVE_PING", "KEEPALIVE_TIMEOUT", "COMPLZO", "MAXCLIENTS", "CLIENT2CLIENT", "PUSH_DNS", "PUSH_WINS", "REDIRECT", "VERBOSE", "SHAPER", "UDP_FRAGMENT", "PULL", "LOGFILE", "MGMNT", "CLIENTS_DEFINED", "CLIENT_INFO", "CLIENT_IPS", "CLIENT_NAMES", "CLIENT_NETS", "CLIENT_MASKS", "CONFIG_NAMES", "ADDITIONAL", "OWN_KEYS", "NO_CERTTYPE", "PARAM_1", "PARAM_2", "PARAM_3" ]
 
 function Init_Vars(){
 local_config_count=$OPENVPN_CONFIG_COUNT;
@@ -351,6 +360,7 @@ if ( local_dhcp_client[act_conf] == "yes" ) { document.getElementById("id_act_dh
 if ( local_pull[act_conf] == "yes" ) { document.getElementById("id_act_pull").checked=true }else { document.getElementById("id_act_pull").checked=false };
 if ( local_tls_auth[act_conf] == "yes" ) { document.getElementById("id_act_tls_auth").checked=true } else{ document.getElementById("id_act_tls_auth").checked = false };
 if ( local_debug[act_conf] == "yes" ) { document.getElementById("id_act_debug").checked=true }else { document.getElementById("id_act_debug").checked=false };
+document.getElementById("id_act_no_certtype").checked= ( local_no_certtype[act_conf] == "yes" )? "checked" : ""
 if ( local_client_info[act_conf] == "yes" ) { document.getElementById("id_act_client_info").checked=true }else { document.getElementById("id_act_client_info").checked=false };
 if ( local_own_keys[act_conf] != "" ) { 
 	document.getElementById("id_act_own_keys").checked=true
@@ -542,7 +552,6 @@ function removeRowFromTable(name)
 
 function changeval(value) {
   if(!document.getElementsByTagName) return;
-  if(window.opera) return;
 
 local_cipher[act_conf]= document.getElementById("id_act_cipher").value ; 
 var fieldsets = document.getElementsByTagName("fieldset");
@@ -571,12 +580,14 @@ var fieldsets = document.getElementsByTagName("fieldset");
 
  if ( document.getElementById("id_act_static").checked ){
   	document.getElementById("div_tls").style.display = "none";
+	document.getElementById("div_no_certtype").style.display = "none";
 	document.getElementById("div_client_pull").style.display = "none";
 	document.getElementById("id_act_pull").checked = false ;
 	}
   else {
   	document.getElementById("div_tls").style.display = "inline";
 	document.getElementById("div_client_pull").style.display = "block";
+	document.getElementById("div_no_certtype").style.display = ( document.getElementById("id_act_server").checked )? "none": "inline";
   }
    
   if ( document.getElementById("id_act_debug").checked ){
@@ -610,6 +621,7 @@ var fieldsets = document.getElementsByTagName("fieldset");
 		document.getElementById("div_push_local_net").style.display = "none";
 		document.getElementById("div_dhcp").style.display = "none";
 		local_dhcp_range[act_conf]=""; document.getElementById("id_act_dhcp_range").value ="";
+		local_client2client[act_conf]=""; document.getElementById("id_act_c2c").checked = "";
 	} 
     	else{
 		fieldsets[FIELDSET_SERVER].style.display = "block";
