@@ -1,13 +1,13 @@
 $(call PKG_INIT_BIN, 0.5.0)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)_rc2-src.tar.bz2
+$(PKG)_SOURCE:=$(if $(FREETZ_PACKAGE_DTMFBOX_SVN),$(pkg)-$($(PKG)_VERSION)_svn-src.tar.bz2,$(pkg)-$($(PKG)_VERSION)_rc3-src.tar.bz2)
 $(PKG)_SITE:=http://fritz.v3v.de/$(pkg)/$(pkg)-src
 $(PKG)_SVN:=http://svn.v3v.de/svn/dtmfbox/trunk
 $(PKG)_WEBPHONE:=http://fritz.v3v.de/webphone/sWebPhone.jar
 $(PKG)_WEBPHONE_LOCAL:=$(DTMFBOX_TARGET_DIR)/root/usr/mww/sWebPhone.jar
-$(PKG)_SUBDIR:=$(pkg)-$($(PKG)_VERSION)_rc2-src
+$(PKG)_SUBDIR:=$(if $(FREETZ_PACKAGE_DTMFBOX_SVN),$(pkg)-$($(PKG)_VERSION)_svn-src,$(pkg)-$($(PKG)_VERSION)_rc3-src)
 $(PKG)_DIR:=$(SOURCE_DIR)/$(DTMFBOX_SUBDIR)
 $(PKG)_PJPATH:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/pjproject-1.0.1
-$(PKG)_BINARY:=$(if $(FREETZ_PACKAGE_DTMFBOX_SVN), $($(PKG)_DIR)/src/$(pkg), $($(PKG)_DIR)/$(pkg)) 
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_BINARY_MENU_SO:=$($(PKG)_DIR)/plugins/menu.plugin/.libs/libmenu.plugin.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/$(pkg)
 $(PKG)_TARGET_BINARY_MENU_SO:=$($(PKG)_TARGET_DIR)/root/usr/lib/libmenu.plugin.so
@@ -34,7 +34,11 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$(DTMFBOX_DIR)/.forcesvn:
+	cd $(DTMFBOX_DIR); \
+	if [ -f .unpacked ]; then rm .unpacked; fi
+
+$($(PKG)_BINARY): $(if $(FREETZ_PACKAGE_DTMFBOX_SVN_FORCE_LATEST_REV),$(DTMFBOX_DIR)/.forcesvn,) $($(PKG)_DIR)/.configured
 	cd $(DTMFBOX_DIR)
 	PATH="$(TARGET_PATH)" \
 		$(TARGET_CONFIGURE_OPTS) \
