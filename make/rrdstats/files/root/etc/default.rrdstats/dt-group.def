@@ -1,0 +1,10 @@
+CAPTION='$(lang de:"RRDstats - Gruppen-Definition f&uuml;r DigiTemp" en:"RRDstats - group definition for DigiTemp")'
+DESCRIPTION='Syntax: &lt;nice_name&gt; &lt;group_name&gt; &lt;some useless comments&gt;<br>
+($(lang de:"z.B.: Sensor_1 Gruppe_A" en:"for example: Sensor_1 Group_A"))<br>
+$(lang de:"KEINE TABULATOREN - NUR LEERZEICHEN!" en:"NO TABS - ONLY SPACEBARS!")'
+
+CONFIG_FILE='/tmp/flash/rrdstats/digitemp.group'
+CONFIG_SAVE='modsave flash; if pidof rrdstats > /dev/null; then echo ""; /mod/etc/init.d/rc.rrdstats restart; fi'
+CONFIG_TYPE='text'
+
+TEXT_ROWS=15

@@ -6,6 +6,9 @@
 . /mod/etc/conf/rrdstats.cfg
 
 _NICE=$(which nice)
+_SENSOR_CNF=/tmp/flash/rrdstats/digitemp.conf
+_SENSOR_HEX=`grep "^ROM " $_SENSOR_CNF 2>/dev/null |sort| sed 's/^ROM [0-9]*//g;s/ 0x//g'`
+[ "$RRDSTATS_DIGITEMP_C" = yes ] && _SENSOR_UOM=C || _SENSOR_UOM=F
 
 collect_cpu() {
 	NAMEPREFIX=cpu_$RRDSTATS_INTERVAL
@@ -142,7 +145,74 @@ collect_net() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $netdata --template in:out
 }
 
+collect_one() {
+	[ -n "$RRDSTATS_DIGITEMPRS" ] && rs_param=" -s $RRDSTATS_DIGITEMPRS "
+	_CURRENT=`date +"%d.%m.%Y %T"`
+	_SENSOR_CUR=0
+	for _CURRENT_HEX in $_SENSOR_HEX; do
+		collect_one_sub $_SENSOR_CUR $_CURRENT_HEX
+		let _SENSOR_CUR=_SENSOR_CUR+1
+	done
+}
+
+collect_one_sub() {
+	NAMEPREFIX=one_${RRDSTATS_INTERVAL}-$2_$_SENSOR_UOM
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:temp:GAUGE:600:-67:257 \
+			RRA:MIN:0.5:1:576    RRA:AVERAGE:0.5:1:576    RRA:MAX:0.5:1:576    \
+			RRA:MIN:0.5:6:672    RRA:AVERAGE:0.5:6:672    RRA:MAX:0.5:6:672    \
+			RRA:MIN:0.5:24:732   RRA:AVERAGE:0.5:24:732   RRA:MAX:0.5:24:732   \
+			RRA:MIN:0.5:144:1460 RRA:AVERAGE:0.5:144:1460 RRA:MAX:0.5:144:1460
+	fi
+	onedata=`$_NICE digitemp $rs_param -t$1 -q -o%$_SENSOR_UOM -c$_SENSOR_CNF`
+	oneretv=$?
+	if [ -n "$onedata" -a "$oneretv" -eq 0 ]; then
+		echo "$_CURRENT;$onedata;" >> $RRDSTATS_RRDDATA/one_00-$2_$_SENSOR_UOM.cvs
+		[ "$RRDSTATS_DIGITEMP85" = "yes" -a "$onedate" = "$_SENSOR_ERR" ] && return
+		[ "$RRDSTATS_DIGITEMP_A" = "yes" ] && one_alert $onedata $2
+		$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd "N:$onedata" --template temp
+	fi
+}
+
+one_alert() {
+	[ $# -lt 2 ] && return
+	_ALERT_NUM=0
+	_SENSOR_ALI=`grep "^\$2 " /tmp/flash/rrdstats/digitemp.alias |tr -s " "| cut -d" " -f3`
+	_ALERT_COUNT=`grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert |wc -l`
+	while [ $_ALERT_NUM -lt $_ALERT_COUNT ]; do
+		_ALERT_NUM=$(( $_ALERT_NUM+1 ))
+		_ALERT=`grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert | head -n $_ALERT_NUM |tail -n1 |tr -s " "`
+		_ALERT_SEC=`echo $_ALERT| cut -d " " -f4`
+
+		_ALERT_FILE=/tmp/rrdstats/digitemp_alert.$_ALERT_NUM
+		if [ -f $_ALERT_FILE ]; then
+			[ $(( `cat $_ALERT_FILE`+$_ALERT_SEC )) -gt `date +%s` ] && return
+		fi
+
+		_ALERT_VAL=`echo $_ALERT| cut -d " " -f2`
+		case "`echo $_ALERT| cut -d " " -f3`" in
+			MAX|Max|max)
+				[ $1 -gt $_ALERT_VAL ] && _ALERT_2DO=yes
+			;;
+			MIN|Min|min)
+				[ $1 -lt $_ALERT_VAL ] && _ALERT_2DO=yes
+			;;
+		esac
+
+		[ "$_ALERT_2DO" != yes ] && return
+		echo `date +%s` > $_ALERT_FILE
+		echo "`echo $_ALERT| cut -d " " -f5-`" > $_ALERT_FILE.run
+		chmod +x $_ALERT_FILE.run
+		$_ALERT_FILE.run $1 &
+	done
+}
+
+
+[ "$RRDSTATS_DIGITEMP_C" = yes ] && _SENSOR_ERR="85.0000" || _SENSOR_ERR="185.0000"
 while true; do
+	[ $# -eq 0 ] || _NEXTRUN=$(( `date +%s`+$1 ))
 	collect_cpu
 	collect_mem
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
@@ -151,7 +221,9 @@ while true; do
 	[ ! -z "$RRDSTATS_INTERFACE2" ] && collect_net 2
 	[ ! -z "$RRDSTATS_INTERFACE3" ] && collect_net 3
 	[ ! -z "$RRDSTATS_INTERFACE4" ] && collect_net 4
+	[ "$RRDSTATS_DIGITEMP1W" = yes ] && collect_one
 	[ $# -eq 0 ] && exit
-	sleep $1
+	_SLEEPER=$(( $_NEXTRUN-`date +%s` ))
+	[ $_SLEEPER -gt 0 ] && sleep $_SLEEPER 
 done
 

@@ -6,8 +6,25 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 . /mod/etc/conf/rrdstats.cfg
 
-URL_STATUS="?pkg=rrdstats&cgi=rrdstats/stats"
-URL_EXTENDED="$SCRIPT_NAME$URL_STATUS"
+URL_CGINAME=$(echo "$SCRIPT_NAME" | sed -e 's/^.*\/cgi-bin\///g' -e 's/\.cgi$//g')
+if [ "$URL_CGINAME" != "pkgstatus" ]; then
+	#. /mod/etc/conf/mod.cfg; _cgi_width=$(( $MOD_CGI_WIDTH-210))   #uncomment for reduced width
+	case "$URL_CGINAME" in
+		rrddt)
+			cgi_begin 'RRDstats for DigiTemp'
+			;;
+		*)
+			cgi_begin 'RRDstats'
+			;;
+	esac
+	echo '<style type="text/css">'
+	echo "fieldset { margin: 0px; margin-top: 10px; margin-bottom: 10px; padding: 10px; width: $(( _cgi_width-20 ))px;}" 
+	echo "</style>"
+	_cgi_width=$(( _cgi_width+210 ))
+fi
+
+URL_STATUS=$(echo "$QUERY_STRING" | sed -e 's/^.*cgi=rrdstats\///' -e 's/&.*$//' -e 's/\.//g')
+URL_EXTENDED="$SCRIPT_NAME?pkg=rrdstats&cgi=rrdstats/$URL_STATUS"
 DATESTRING=`date +'%d/%m/%y %X'`
 let WIDTH="$_cgi_width-230-100"
 let HEIGHT=$WIDTH*$RRDSTATS_DIMENSIONY/$RRDSTATS_DIMENSIONX
@@ -26,6 +43,7 @@ generate_graph() {
 	TITLE=""
 	[ $# -ge 4 ] && TITLE="$4"
 	IMAGENAME="$3"
+	[ $# -ge 5 ] && IMAGENAME="$3$5"
 	PERIODE="$2"
 	case $1 in
 		cpu)
@@ -349,10 +367,58 @@ generate_graph() {
 				AREA:out#0000FF80:"Outgoing    (max/avg/cur)[bytes/s]\:"	\
 				GPRINT:out:MAX:"%3.0lf%s /"					\
 				GPRINT:out:AVERAGE:"%3.0lf%s /"					\
-				GPRINT:out:LAST:"%3.0lf%s\n"		> /dev/null
+				GPRINT:out:LAST:"%3.0lf%s\n		"		> /dev/null
 			fi
 			;;
 
+		one)
+			_SENSOR_GEN=""
+			_SENSOR_CUR=0
+			[ "$RRDSTATS_DIGITEMP_C" = yes ] && _SENSOR_UOM=Celsius || _SENSOR_UOM=Fahrenheit
+			[ -n "$RRDSTATS_DIGITEMP_L" -o -n "$RRDSTATS_DIGITEMP_U" ] && _SENSOR_LOW="-r "
+			[ -n "$RRDSTATS_DIGITEMP_L" ] && _SENSOR_LOW="$_SENSOR_LOW -l $RRDSTATS_DIGITEMP_L"
+			[ -n "$RRDSTATS_DIGITEMP_U" ] && _SENSOR_LOW="$_SENSOR_LOW -u $RRDSTATS_DIGITEMP_U"
+
+			if [ $# -ge 5 ]; then
+				_SENSOR_ALI=`grep -vE "^#|^ |^$|^//" /tmp/flash/rrdstats/digitemp.group |tr -s " "| cut -d" " -f1-2 |grep $5$ |cut -d " " -f1`
+				_SENSOR_HEX=`grep -vE "^#|^ |^$|^//" /tmp/flash/rrdstats/digitemp.alias |tr -s " "| cut -d" " -f 1,3 |grep -E "$(echo $_SENSOR_ALI|sed 's/ /\$|/g')$" |cut -d " " -f1`
+			else
+				_SENSOR_HEX=`grep "^ROM " /tmp/flash/rrdstats/digitemp.conf 2>/dev/null | sed 's/^ROM .//g;s/ 0x//g'`
+			fi
+			
+			for _CURRENT_HEX in $_SENSOR_HEX; do
+				FILE=$RRDSTATS_RRDDATA/one_${RRDSTATS_INTERVAL}-${_CURRENT_HEX}_${_SENSOR_UOM:0:1}.rrd
+				if [ -e $FILE ]; then
+					_ALIAS=`grep ^$_CURRENT_HEX /tmp/flash/rrdstats/digitemp.alias |tr -s " "|cut -d " " -f3`
+					[ -z "$_ALIAS" ] && _ALIAS=$_CURRENT_HEX
+					_COLOR=`grep ^$_CURRENT_HEX /tmp/flash/rrdstats/digitemp.alias |tr -s " "|cut -d " " -f2`
+					[ -z "$_COLOR" ] && _COLOR="#999999"
+					_SENSOR_GEN=" $_SENSOR_GEN							\
+					 DEF:temp$_SENSOR_CUR=$FILE:temp:AVERAGE					\
+					 LINE3:temp$_SENSOR_CUR$_COLOR:$_ALIAS(min/avg/max/cur)[°${_SENSOR_UOM:0:1}]	\
+					 GPRINT:temp$_SENSOR_CUR:MIN:\t%8.3lf						\
+					 GPRINT:temp$_SENSOR_CUR:AVERAGE:%8.3lf						\
+					 GPRINT:temp$_SENSOR_CUR:MAX:%8.3lf						\
+					 GPRINT:temp$_SENSOR_CUR:LAST:\t%8.3lf\n "
+				fi
+				let _SENSOR_CUR=_SENSOR_CUR+1
+			done
+			if [ -n "$_SENSOR_GEN" ]; then
+				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png			\
+				--title "$TITLE"							\
+				--start now-$PERIODE							\
+				--width $WIDTH --height $HEIGHT						\
+				--vertical-label "Grad $_SENSOR_UOM"					\
+				--color SHADEA#ffffff							\
+				--color SHADEB#ffffff							\
+				--color BACK#ffffff							\
+				--color CANVAS#eeeeee80							\
+				--slope-mode HRULE:0#000000						\
+				$LAZY $_SENSOR_LOW							\
+				-W "Generated on: $DATESTRING"						\
+				$_SENSOR_GEN							> /dev/null	
+			fi
+			;;
 		*)
 			echo "error"
 			;;
@@ -380,17 +446,21 @@ gen_main() {
 	SNAME=$1
 	FNAME=$2
 	LAPSE=$3
+	GROUP=$4
+	[ $# -ge 4 ] && GROUP_URL="&group=$4"
 	sec_begin "$FNAME "
-	generate_graph "$SNAME" "$RRDSTATS_PERIODMAIN" "$SNAME" "" 
-	echo "<a href=\"$URL_EXTENDED&graph=$SNAME\"><img src=\"/statpix/$SNAME.png$NOCACHE\" alt=\"$FNAME stats for last $LAPSE\" border=\"0\"/></a>"
+	generate_graph "$SNAME" "$RRDSTATS_PERIODMAIN" "$SNAME" "" $GROUP
+	echo "<a href=\"$URL_EXTENDED&graph=$SNAME$GROUP_URL\"><img src=\"/statpix/$SNAME$GROUP.png$NOCACHE\" alt=\"$FNAME stats for last $LAPSE\" border=\"0\"/></a>"
 	sec_end
 }
 
 graph="$(echo "$QUERY_STRING" | sed -e 's/^.*graph=//' -e 's/&.*$//' -e 's/\.//g')"
 case "$graph" in
-	cpu|mem|swap|upt|tt0|tt1|tt2|tt3|if1|if2|if3|if4)
+	cpu|mem|swap|upt|tt0|tt1|tt2|tt3|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
-		heading=$(echo $graph|sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g")
+		heading=$(echo $graph|sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
+		GROUP_PERIOD=$(echo "$QUERY_STRING" |grep "&group="| sed -e 's/^.*&group=//' -e 's/&.*$//' -e 's/\.//g')
+                [ -n "$GROUP_PERIOD" ] && heading="$heading [$GROUP_PERIOD]"
 		echo "<center><font size=+1><b>$heading stats</b></font></center>"
 		
 		if [ `echo "$graph"|sed 's/^tt./yes/'` = yes -a "$RRDSTATS_THOMSONADV" = yes ]; then
@@ -405,8 +475,8 @@ case "$graph" in
 		for period in $RRDSTATS_PERIODSSUB; do
 			set_period $period
 			sec_begin ""
-			generate_graph "$graph" "$period" "$graph-$period" "last $periodnn"
-			echo "<img src=\"/statpix/$graph-$period.png$NOCACHE\" alt=\"$heading stats for last $periodnn\" />"
+			generate_graph "$graph" "$period" "$graph-$period" "last $periodnn" $GROUP_PERIOD 
+			echo "<img src=\"/statpix/$graph-$period$GROUP_PERIOD.png$NOCACHE\" alt=\"$heading stats for last $periodnn\" />"
 			sec_end
 		done
 		echo "<br><input type=\"button\" value=\"Back\" onclick=\"history.go(-1)\" />"
@@ -415,15 +485,28 @@ case "$graph" in
 		set_lazy "$RRDSTATS_NOTLAZYM"
 		set_period "$RRDSTATS_PERIODMAIN"
 		echo "<center><font size=+1><b>Stats for last $periodnn</b></font></center>"
-		gen_main "cpu" "Processor" "$periodnn"
-		gen_main "mem" "Memory" "$periodnn"
-		[ "$(free | grep "Swap:" | awk '{print $2}')" != "0" ] && gen_main "swap" "Swapspace" "$periodnn"
-		[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
-		[ "$RRDSTATS_THOMSONTHG" = yes ] && gen_main "tt0" "Thomson THG" "$periodnn"
-		[ ! -z "$RRDSTATS_INTERFACE1" ] && gen_main "if1" "$RRDSTATS_NICE_NAME1" "$periodnn"
-		[ ! -z "$RRDSTATS_INTERFACE2" ] && gen_main "if2" "$RRDSTATS_NICE_NAME2" "$periodnn"
-		[ ! -z "$RRDSTATS_INTERFACE3" ] && gen_main "if3" "$RRDSTATS_NICE_NAME3" "$periodnn"
-		[ ! -z "$RRDSTATS_INTERFACE4" ] && gen_main "if4" "$RRDSTATS_NICE_NAME4" "$periodnn"
+		case "$URL_STATUS" in
+			rrddt)
+				ALL_GROUPS=`grep -vE "^#|^$|^ " /var/tmp/flash/rrdstats/digitemp.group |tr -s " "|cut -d " " -f2|uniq`
+				[ -z "$ALL_GROUPS" ] && gen_main "one" "$curgroup" "$periodnn" 
+				for curgroup in $ALL_GROUPS; do
+					gen_main "one" "$curgroup" "$periodnn" "$curgroup"
+				done
+				;;
+			*)
+				gen_main "cpu" "Processor" "$periodnn"
+				gen_main "mem" "Memory" "$periodnn"
+				[ "$(free | grep "Swap:" | awk '{print $2}')" != "0" ] && gen_main "swap" "Swapspace" "$periodnn"
+				[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
+				[ "$RRDSTATS_THOMSONTHG" = yes ] && gen_main "tt0" "Thomson THG" "$periodnn"
+				[ ! -z "$RRDSTATS_INTERFACE1" ] && gen_main "if1" "$RRDSTATS_NICE_NAME1" "$periodnn"
+				[ ! -z "$RRDSTATS_INTERFACE2" ] && gen_main "if2" "$RRDSTATS_NICE_NAME2" "$periodnn"
+				[ ! -z "$RRDSTATS_INTERFACE3" ] && gen_main "if3" "$RRDSTATS_NICE_NAME3" "$periodnn"
+				[ ! -z "$RRDSTATS_INTERFACE4" ] && gen_main "if4" "$RRDSTATS_NICE_NAME4" "$periodnn"
+				;;
+		esac
 		;;
 esac
+
+[ "$URL_CGINAME" != "pkgstatus" ] && cgi_end
 

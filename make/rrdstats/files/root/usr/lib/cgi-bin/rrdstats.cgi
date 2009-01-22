@@ -6,7 +6,9 @@ auto_chk=''; man_chk=''; log_protoc_chk=''
 notlazym_chk=''; notlazys_chk=''; cpu100perc_chk=''
 logarithm1_chk=''; logarithm2_chk=''; logarithm3_chk=''; logarithm4_chk='';
 xchg_rxtx1_chk=''; xchg_rxtx2_chk=''; xchg_rxtx3_chk=''; xchg_rxtx4_chk='';
-uptime_enb_chk=''; savebackup_chk=''; thomsonthg_chk=''; thomsonadv_chk=''
+uptime_enb_chk=''; savebackup_chk=''; thomsonthg_chk=''; thomsonadv_chk='';
+webenabled_chk=''; digitemp1w_chk=''; digitemp_c_chk=''; digitemp_f_chk='';
+digitemp85_chk=''; digitemp_a_chk=''; digitemp_http_chk=''
 
 if [ "$RRDSTATS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then xchgupdown_chk=' checked'; fi
@@ -20,11 +22,17 @@ if [ "$RRDSTATS_XCHG_RXTX1" = "yes" ]; then xchg_rxtx1_chk=' checked'; fi
 if [ "$RRDSTATS_XCHG_RXTX2" = "yes" ]; then xchg_rxtx2_chk=' checked'; fi
 if [ "$RRDSTATS_XCHG_RXTX3" = "yes" ]; then xchg_rxtx3_chk=' checked'; fi
 if [ "$RRDSTATS_XCHG_RXTX4" = "yes" ]; then xchg_rxtx4_chk=' checked'; fi
+if [ "$RRDSTATS_SAVEBACKUP" = "yes" ]; then savebackup_chk=' checked'; fi
 if [ "$RRDSTATS_CPU100PERC" = "yes" ]; then cpu100perc_chk=' checked'; fi
 if [ "$RRDSTATS_UPTIME_ENB" = "yes" ]; then uptime_enb_chk=' checked'; fi
-if [ "$RRDSTATS_SAVEBACKUP" = "yes" ]; then savebackup_chk=' checked'; fi
+if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then webenabled_chk=' checked'; fi
 if [ "$RRDSTATS_THOMSONTHG" = "yes" ]; then thomsonthg_chk=' checked'; fi
 if [ "$RRDSTATS_THOMSONADV" = "yes" ]; then thomsonadv_chk=' checked'; fi
+if [ "$RRDSTATS_DIGITEMP1W" = "yes" ]; then digitemp1w_chk=' checked'; fi
+if [ "$RRDSTATS_DIGITEMP_C" = "yes" ]; then digitemp_c_chk=' checked'; else digitemp_f_chk=' checked'; fi
+if [ "$RRDSTATS_DIGITEMP85" = "yes" ]; then digitemp85_chk=' checked'; fi
+if [ "$RRDSTATS_DIGITEMP_A" = "yes" ]; then digitemp_a_chk=' checked'; fi
+if [ "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then digitemp_http_chk=' checked'; fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -37,15 +45,30 @@ EOF
 
 sec_end
 sec_begin '$(lang de:"Anzeigen" en:"Show statistics")'
+
 cat << EOF
 <ul>
 <li><a href="/cgi-bin/pkgstatus.cgi?pkg=rrdstats&cgi=rrdstats/stats">$(lang de:"Statistiken anzeigen" en:"Show statistics")</a></li>
 EOF
 
+if [ "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
+cat << EOF
+<li><a href="/cgi-bin/pkgstatus.cgi?pkg=rrdstats&cgi=rrdstats/rrddt">$(lang de:"DigiTemp anzeigen" en:"Show DigiTemp")</a></li>
+EOF
+fi
+
 sec_end
 sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
 cat << EOF
+
+<p>
+<input type="hidden" name="webenabled" value="no">
+<input id="w1" type="checkbox" name="webenabled" value="yes"$webenabled_chk><label for="w1"></label>
+$(lang de:"Zusätzlichen Webserver aktiveren auf Port" en:"Activate additional webserver on port")&nbsp;
+<input type="text" name="webtcpport" size="4" maxlength="5" value="$(html "$RRDSTATS_WEBTCPPORT")">
+</p>
+
 <p>$(lang de:"Tempor&auml;res Verzeichnis" en:"Temporary folder"):&nbsp;<input type="text" name="rrdtemp" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDTEMP")"></p>
 <p>$(lang de:"Persistentes Verzeichnis" en:"Persistent folder"):&nbsp;<input type="text" name="rrddata" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDDATA")"></p>
 <p>$(lang de:"Aufzeichnungsintervall in Sekunden" en:"Log interval in seconds"):&nbsp;<input type="text" name="interval" size="3" maxlength="9" value="$(html "$RRDSTATS_INTERVAL")"></p>
@@ -67,6 +90,10 @@ $(lang de:"Graphen immer neu generieren (not lazy)" en:"Always generate new grap
 <input id="l2" type="checkbox" name="notlazys" value="yes"$notlazys_chk><label for="l2">$(lang de:"Unterseiten" en:"Sub-pages")</label>
 </p>
 <p>
+<input type="hidden" name="savebackup" value="no">
+<input id="b1" type="checkbox" name="savebackup" value="yes"$savebackup_chk><label for="b1"></label>
+$(lang de:"Backup vor dem Starten anlegen" en:"Backup files before startup")</p>
+<p>
 <input type="hidden" name="cpu100perc" value="no">
 <input id="c1" type="checkbox" name="cpu100perc" value="yes"$cpu100perc_chk><label for="c1"></label>
 $(lang de:"Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen" en:"Maximum of the CPU utilization graph always at 100%")</p>
@@ -74,10 +101,6 @@ $(lang de:"Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen" en:"Ma
 <input type="hidden" name="uptime_enb" value="no">
 <input id="u1" type="checkbox" name="uptime_enb" value="yes"$uptime_enb_chk><label for="u1"></label>
 $(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs")</p>
-<p>
-<input type="hidden" name="savebackup" value="no">
-<input id="b1" type="checkbox" name="savebackup" value="yes"$savebackup_chk><label for="b1"></label>
-$(lang de:"Backup vor dem Starten anlegen" en:"Backup files before startup")</p>
 EOF
 
 sec_end
@@ -156,3 +179,76 @@ $(lang de:"Maximal: Maximale Bandbreite in Megabit/Sekunde, '0' für automatische
 EOF
 
 sec_end
+
+if [ -x "`which digitemp`" ]; then
+sec_begin 'DigiTemp'
+
+cat << EOF
+
+<p>
+<input type="hidden" name="digitemp1w" value="no">
+<input id="d1" type="checkbox" name="digitemp1w" value="yes"$digitemp1w_chk><label for="d1"></label>
+$(lang de:"Temperatur&uuml;berwachung von 1-wire Adaptern mit DigiTemp aktivieren" en:"Observe 1-wire adapters with DigiTemp")
+</p>
+
+<p>
+<input type="hidden" name="digitemp_http" value="no">
+<input id="d4" type="checkbox" name="digitemp_http" value="yes"$digitemp_http_chk><label for="d4"></label>
+$(lang de:"Webserver aktiveren auf Port" en:"Activate webserver on port")&nbsp;
+<input type="text" name="digitemp_port" size="4" maxlength="5" value="$(html "$RRDSTATS_DIGITEMP_PORT")">
+</p>
+
+<p>
+$(lang de:"Maßeinheit" en:"Unit of measure"):
+<input id="m1" type="radio" name="digitemp_c" value="yes"$digitemp_c_chk><label for="m1">Celsius</label>
+<input id="m2" type="radio" name="digitemp_c" value="no"$digitemp_f_chk><label for="m2">Fahrenheit</label>
+</p>
+
+<p>
+$(lang de:"Serieller Port" en:"Serial port"):
+<input type="text" name="digitemprs" size="10" maxlength="25" value="$(html "$RRDSTATS_DIGITEMPRS")">
+$(lang de:"zB /dev/ttyS0 - leer lassen f&uuml;r USB" en:"eg /dev/ttyS0 - leave empty for USB")
+</p>
+
+<p>
+$(lang de:"Bereich der Y-Achse" en:"Y-axis range"):
+min:<input type="text" name="digitemp_l" size="3" maxlength="4" value="$(html "$RRDSTATS_DIGITEMP_L")">
+max:<input type="text" name="digitemp_u" size="3" maxlength="4" value="$(html "$RRDSTATS_DIGITEMP_U")">
+&nbsp;$(lang de:"leer lassen f&uuml;r automatisch" en:"leave empty for autoscaling")
+</p>
+
+<p>
+<input type="hidden" name="digitemp85" value="no">
+<input id="d2" type="checkbox" name="digitemp85" value="yes"$digitemp85_chk><label for="d2"></label>
+$(lang de:"Unterdr&uuml;cke 85,0000°C (Fehler und Werte)" en:"Ignore 185.0000°F (errors and values)")
+</p>
+
+<p>
+<input type="hidden" name="digitemp_a" value="no">
+<input id="d3" type="checkbox" name="digitemp_a" value="yes"$digitemp_a_chk><label for="d3"></label>
+$(lang de:"Aktiviere Alarmierungs&uuml;berwachung" en:"Activate alert observer")
+</p>
+
+<p>
+<input type="button" value="DigiTemp initialisieren" onclick="if (confirm('$(lang de:"Fortfahren?" en:"Proceed?")')==true) window.open('/cgi-bin/pkgstatus.cgi?pkg=rrdstats&cgi=rrdstats/dt-init','Initialisieren_von_DigiTemp','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes');" /> &nbsp;&nbsp;
+<br><font size="-2">$(lang de:"Vor dem ersten Aktivieren oder nach Ver&auml;nderungen der Ger&auml;te ausf&uuml;hren" en:"Run this before the first start of if you change your devices")</font>
+
+EOF
+if [ "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
+cat << EOF
+<br><br>$(lang de:"Bearbeite Datei:" en:"Edit file:")
+&nbsp;<a href="/cgi-bin/file.cgi?id=rrdstats_dt-conf">conf</a>
+&nbsp;-&nbsp;<a href="/cgi-bin/file.cgi?id=rrdstats_dt-alias">alias</a>
+&nbsp;-&nbsp;<a href="/cgi-bin/file.cgi?id=rrdstats_dt-group">group</a>
+&nbsp;-&nbsp;<a href="/cgi-bin/file.cgi?id=rrdstats_dt-alert">alert</a>
+EOF
+fi
+cat << EOF
+</p>
+
+
+EOF
+
+sec_end
+fi
+

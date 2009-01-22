@@ -1,0 +1,13 @@
+CAPTION='$(lang de:"RRDstats - Alert-Definition f&uuml;r DigiTemp" en:"RRDstats - alert definition for DigiTemp")'
+DESCRIPTION='Syntax: &lt;nice_name&gt; &lt;value&gt; &lt;condition&gt; &lt;interval&gt; &lt;command(s)&gt;<br>
+$(lang de:"Beispiele" en:"Examples"):<br>
+<tt>Sensor_1 35 max 300 callaction dial 00001234567; sleep 25; callaction hangup;</tt><br>
+<tt>Sensor_2 10 min 60 mailer -t temp@abcdefg.net -s "Sensor_2: $1 < 10"</tt><br>
+<tt>Sensor_3 85 max 3600 /my/own/skript.sh $1</tt><br>
+$(lang de:"KEINE TABULATOREN - NUR LEERZEICHEN!" en:"NO TABS - ONLY SPACEBARS!")'
+
+CONFIG_FILE='/tmp/flash/rrdstats/digitemp.alert'
+CONFIG_SAVE='modsave flash; if pidof rrdstats > /dev/null; then echo ""; /mod/etc/init.d/rc.rrdstats restart; fi'
+CONFIG_TYPE='text'
+
+TEXT_ROWS=15

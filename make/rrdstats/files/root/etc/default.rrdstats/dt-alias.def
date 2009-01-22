@@ -1,0 +1,10 @@
+CAPTION='$(lang de:"RRDstats - Alias-Definition f&uuml;r DigiTemp" en:"RRDstats - alias definition for DigiTemp")'
+DESCRIPTION='Syntax: &lt;device_id&gt; &lt;color_code&gt; &lt;nice_name&gt; &lt;some comments&gt;<br>
+($(lang de:"z.B.: 0123456789ABCDEF #0069FF Sensor_1" en:"for example: 0123456789ABCDEF #0069FF Sensor_1"))<br>
+$(lang de:"KEINE TABULATOREN - NUR LEERZEICHEN!" en:"NO TABS - ONLY SPACEBARS!")'
+
+CONFIG_FILE='/tmp/flash/rrdstats/digitemp.alias'
+CONFIG_SAVE='modsave flash; if pidof rrdstats > /dev/null; then echo ""; /mod/etc/init.d/rc.rrdstats restart; fi'
+CONFIG_TYPE='text'
+
+TEXT_ROWS=15

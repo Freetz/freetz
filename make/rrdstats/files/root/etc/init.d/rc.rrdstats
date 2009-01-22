@@ -3,6 +3,9 @@
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 
+HTTPD_PID_RRD=/var/run/httpd_rrd.pid
+HTTPD_PID_ONE=/var/run/httpd_one.pid
+
 case "$1" in
 	""|load|start|backup|restart|config)
 		if [ ! -r "/mod/etc/conf/rrdstats.cfg" ]; then
@@ -14,11 +17,13 @@ case "$1" in
 esac
 
 config() {
+	mkdir -p /tmp/rrdstats/
 	# kein "-p" wg externer Pfade!
 	mkdir $RRDSTATS_RRDDATA 2>/dev/null
 	mkdir $RRDSTATS_RRDTEMP 2>/dev/null
 	rm /var/mod/etc/statpix 2>/dev/null
 	ln -s $(echo "$RRDSTATS_RRDTEMP" | sed 's/\/*$//g') /var/mod/etc/statpix 2>/dev/null
+	show_digitemp
 }
 
 start() {
@@ -31,9 +36,15 @@ start() {
 
 	[ "$RRDSTATS_SAVEBACKUP" = yes ] && backup
 
+	mkdir -p /tmp/rrdstats/
+	rm -f /tmp/rrdstats/digitemp_alert*
+
+	stop_webserver
+	[ "$RRDSTATS_WEBENABLED" = "yes" ] && httpd -P $HTTPD_PID_RRD -p $RRDSTATS_WEBTCPPORT -h /mod/pkg/rrdstats/usr/mww-rrd
+	[ "$RRDSTATS_DIGITEMP_HTTP" = "yes" ] && httpd -P $HTTPD_PID_ONE -p $RRDSTATS_DIGITEMP_PORT -h /mod/pkg/rrdstats/usr/mww-one
+
 	start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
 	exitval=$?
-
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
@@ -44,13 +55,43 @@ start() {
 
 stop() {
 	echo -n 'Stopping rrdstats...'
-	killall rrdstats 2>/dev/null
-	exitval=$?
-
-	if [ $exitval -eq 0 ]; then
+	stop_webserver
+	start-stop-daemon -n rrdstats -K >/dev/null 2>&1
+	sleep 1
+	killall -9 rrdstats >/dev/null 2>&1
+	sleep 1
+	if [ -z "$(pidof rrdstats)" ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
+	fi
+}
+
+stop_webserver() {
+	kill -9 "`cat $HTTPD_PID_RRD 2>/dev/null`" 2>/dev/null
+	kill -9 "`cat $HTTPD_PID_ONE 2>/dev/null`" 2>/dev/null
+}
+
+show_digitemp() {
+	modunreg status rrdstats rrdstats/rrddt
+	modunreg file 'rrdstats_dt-conf'
+	modunreg file 'rrdstats_dt-alias'
+	modunreg file 'rrdstats_dt-group'
+	modunreg file 'rrdstats_dt-alert'
+	if [ "$RRDSTATS_DIGITEMP1W" = yes ]; then
+		modreg status rrdstats DigiTemp rrdstats/rrddt
+		deffile='/mod/etc/default.rrdstats/dt-conf.def'
+		[ -r "/tmp/flash/rrdstats/dt-conf.def" ] && deffile='/tmp/flash/rrdstats/dt-conf.def'
+		modreg file 'rrdstats_dt-conf' 'RRDstats: dt-conf' 0 "$deffile"
+		deffile='/mod/etc/default.rrdstats/dt-alias.def'
+		[ -r "/tmp/flash/rrdstats/dt-alias.def" ] && deffile='/tmp/flash/rrdstats/dt-alias.def'
+		modreg file 'rrdstats_dt-alias' 'RRDstats: dt-alias' 1 "$deffile"
+		deffile='/mod/etc/default.rrdstats/dt-group.def'
+		[ -r "/tmp/flash/rrdstats/dt-group.def" ] && deffile='/tmp/flash/rrdstats/dt-group.def'
+		modreg file 'rrdstats_dt-group' 'RRDstats: dt-group' 1 "$deffile"
+		deffile='/mod/etc/default.rrdstats/dt-alert.def'
+		[ -r "/tmp/flash/rrdstats/dt-alert.def" ] && deffile='/tmp/flash/rrdstats/dt-alert.def'
+		modreg file 'rrdstats_dt-alert' 'RRDstats: dt-alert' 1 "$deffile"
 	fi
 }
 
@@ -86,8 +127,13 @@ case "$1" in
 		;;
 	unload)
 		stop
+		modunreg status rrdstats rrdstats/rrddt
 		modunreg status rrdstats rrdstats/stats
 		modunreg cgi rrdstats
+		modunreg file 'rrdstats_dt-alias'
+		modunreg file 'rrdstats_dt-conf'
+		modunreg file 'rrdstats_dt-group'
+		modunreg file 'rrdstats_dt-alert'
 		;;
 	start)
 		config
