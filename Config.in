@@ -1202,9 +1202,10 @@ config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv"
 	depends on \
 	FREETZ_SHOW_ADVANCED && \
-	! FREETZ_PATCH_MEDIASRV && \
 	( \
 		FREETZ_HAS_USB_HOST && \
+		! FREETZ_TYPE_FON_WLAN_7240 && \
+		! FREETZ_TYPE_FON_WLAN_7270 && \
 		! FREETZ_TYPE_SPEEDPORT_W701V_7170 \
 	)
 	default n
