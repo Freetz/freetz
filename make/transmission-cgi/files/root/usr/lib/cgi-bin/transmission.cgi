@@ -30,6 +30,18 @@ EOF
 
 sec_end
 
+sec_begin '$(lang de:"Priorit&auml;t" en:"Priority")'
+
+cat << EOF
+<p>
+<label for='nice'>Nice-Level: </label>
+<input type='text' id='nice' name='nice' size='3' maxlength='3' value="$(html "$TRANSMISSION_NICE")">
+</p>
+
+EOF
+
+sec_end
+
 
 sec_begin '$(lang de:"Arbeitsverzeichnisse" en:"Working Directories")'
 

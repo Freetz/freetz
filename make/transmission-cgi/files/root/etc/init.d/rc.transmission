@@ -114,6 +114,7 @@ start() {
 
 	start-stop-daemon \
 		-S \
+		-N "$TRANSMISSION_NICE" \
 		-p "$PIDFILE" \
 		-x "$DAEMON_BIN" \
 		-c "$USERNAME" \
