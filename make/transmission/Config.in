@@ -4,7 +4,6 @@ config FREETZ_PACKAGE_TRANSMISSION
   help
 		If needed, remember to change the base directory as well
 		as the installation directory on the webif.
-		
 
 config FREETZ_PACKAGE_TRANSMISSION_CLIENT
 	bool "Transmission interactive client"
@@ -41,6 +40,13 @@ config FREETZ_PACKAGE_TRANSMISSION_REMOTE
 	help
 		A remote control utility for transmission-daemon
 		Adds ~384KB to the firmware (uncompressed)
+
+config FREETZ_PACKAGE_TRANSMISSION_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_TRANSMISSION
+	default n
+	help
+		Build transmission binaries with statically linked libraries.
 
 config FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE
 	bool "Transmission web interface"
