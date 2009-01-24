@@ -9,11 +9,11 @@ config FREETZ_PACKAGE_TRANSMISSION_CLIENT
 	bool "Transmission interactive client"
 	depends FREETZ_PACKAGE_TRANSMISSION
 	default y
-	select FREETZ_LIB_libcurl
-	select FREETZ_LIB_libresolv
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libssl
-	select FREETZ_LIB_libz
+	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
 	help
 		Torrent client (interactive)
 		Adds ~380KB to the firmware (uncompressed)
@@ -23,11 +23,11 @@ config FREETZ_PACKAGE_TRANSMISSION_DAEMON
 	depends FREETZ_PACKAGE_TRANSMISSION
 	default n
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
-	select FREETZ_LIB_libcurl
-	select FREETZ_LIB_libresolv
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libssl
-	select FREETZ_LIB_libz
+	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
 	help
 		Torrent client (daemon)
 		Adds ~374KB to the firmware (uncompressed).
