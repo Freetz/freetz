@@ -367,7 +367,7 @@ generate_graph() {
 				AREA:out#0000FF80:"Outgoing    (max/avg/cur)[bytes/s]\:"	\
 				GPRINT:out:MAX:"%3.0lf%s /"					\
 				GPRINT:out:AVERAGE:"%3.0lf%s /"					\
-				GPRINT:out:LAST:"%3.0lf%s\n		"		> /dev/null
+				GPRINT:out:LAST:"%3.0lf%s		"		> /dev/null
 			fi
 			;;
 
