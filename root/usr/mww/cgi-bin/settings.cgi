@@ -81,6 +81,7 @@ EOF
 fi
 cat << EOF
 </p>
+<p>$(lang de:"Benutzername f&uuml;r Weboberfl&auml;che" en:"username for webinterface"): <input type="text" name="httpd_user" size="15" maxlength="15" value="$(html "$MOD_HTTPD_USER")"> <a href="/cgi-bin/passwd.cgi"><u>$(lang de:"Passwort &auml;ndern" en:"change password")</u></a></p>
 <p>$(lang de:"Port der Weboberfl&auml;che" en:"Port of webinterface"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(html "$MOD_HTTPD_PORT")"></p>
 <h1>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h1>
 <p>

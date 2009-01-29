@@ -1,4 +1,17 @@
-#!/usr/bin/haserl -u 10000 -U /var/tmp
+#!/bin/sh
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+. /usr/lib/libmodcgi.sh
+
+if [ "$sec_level" -gt "0" ]; then
+
+cgi_begin '$(lang de:"Rudi-Shell" en:"Rudi shell")' 'rudishell'
+echo '<p><div style="color: #800000;">$(lang de:"Rudi-Shell ist in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" en:"Rudi shell is not available at the current security level!")</div></p>'
+cgi_end
+
+else
+
+cat << EOF
 Content-Type: text/html; charset=ISO-8859-1
 
 <html>
@@ -37,14 +50,14 @@ Content-Type: text/html; charset=ISO-8859-1
 				'echo "cat > '+ file + ' << \'RUDI_EOF\'"' + LF +
 				'echo -e "`cat ' + file + '`"' + LF +
 				'echo "RUDI_EOF"';
-			tmp = '/cgi-bin/rudi_shellcmd.cgi?onload=parent.copyOut2Cmd()&' + tcmd;
+			tmp = '/cgi-bin/rudi_shellcmd.cgi?pid=$$&onload=parent.copyOut2Cmd()&' + tcmd;
 			parent.frames["shellcmd"].location.href = tmp;
 		}
 	</script>
 </head>
 <body>
 	<!--h1>$(lang de:"Rudi(mentär)-Shell" en:"Rudi(mentary) Shell")</h1-->
-	<form action="/cgi-bin/rudi_shellcmd.cgi" target="shellcmd" method=POST enctype="multipart/form-data">
+	<form action="/cgi-bin/rudi_shellcmd.cgi?pid=$$" target="shellcmd" method=POST enctype="multipart/form-data">
 		<textarea id="script_code" name="script" rows="10" cols="80"></textarea><p>
 		<input type=submit value="$(lang de:"Skript ausführen" en:"Run script")">&nbsp;&nbsp;
 		$(lang de:"Historie" en:"History") <select id="history" onChange="historySelected(this.selectedIndex)"></select>
@@ -54,7 +67,7 @@ Content-Type: text/html; charset=ISO-8859-1
 		<input type="checkbox" name="gz" value="true">.gz )
 	</form>
 	<table>
-		<form action="/cgi-bin/rudi_upload.cgi" target="shellcmd" method=POST enctype="multipart/form-data">
+		<form action="/cgi-bin/rudi_upload.cgi?pid=$$" target="shellcmd" method=POST enctype="multipart/form-data">
 			<tr><td>$(lang de:"Quelldatei" en:"Source file")</td><td><input type=file name="source" size=50></td></tr>
 			<tr><td>$(lang de:"Zieldatei" en:"Target file")</td><td><input name="target" value="/var/tmp/rudi_upload" size=50> <input type=submit value="$(lang de:"Hochladen" en:"Upload")"></td></tr>
 		</form>
@@ -64,3 +77,7 @@ Content-Type: text/html; charset=ISO-8859-1
 	<pre id="shell_output">---</pre>
 </body>
 </html>
+EOF
+
+echo $$ > /var/run/rudi_shell.pid
+fi

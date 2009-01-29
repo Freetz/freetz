@@ -552,14 +552,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 	rm -f "${PACKAGES_LIST_FILE}"
 	
 	[ "$FREETZ_REMOVE_ASSISTANT" == "y" ]		&& OPTIONS+=" -assistant"
-	[ "$FREETZ_REMOVE_HELP" == "y" ]			&& OPTIONS+=" -help"
+	[ "$FREETZ_REMOVE_HELP" == "y" ]		&& OPTIONS+=" -help"
 	[ "$FREETZ_REMOVE_CDROM_ISO" == "y" ]		&& OPTIONS+=" -cdrom.iso"
-	[ "$FREETZ_PATCH_ATA" == "y" ]				&& OPTIONS+=" +ata"
-	[ "$FREETZ_PATCH_ENUM" == "y" ]				&& OPTIONS+=" +enum"
+	[ "$FREETZ_PATCH_ATA" == "y" ]			&& OPTIONS+=" +ata"
+	[ "$FREETZ_PATCH_DSL_EXPERT" == "y" ]		&& OPTIONS+=" +dslexpert"
+	[ "$FREETZ_PATCH_ENUM" == "y" ]			&& OPTIONS+=" +enum"
+	[ "$FREETZ_PATCH_GETCONS" == "y" ]		&& OPTIONS+=" +getcons"
 	[ "$FREETZ_PATCH_INTERNATIONAL" == "y" ]	&& OPTIONS+=" +international"
-	[ "$FREETZ_PATCH_PUSH" == "y" ]				&& OPTIONS+=" +push"
-	[ "$FREETZ_PATCH_WDS" == "y" ]				&& OPTIONS+=" +wds"
-	[ "$FREETZ_PATCH_SIGNED" == "y" ]			&& OPTIONS+=" +signed"
+	[ "$FREETZ_PATCH_MAXDEVCOUNT" == "y" ]		&& OPTIONS+=" +maxdevcount"
+	[ "$FREETZ_PATCH_VCC" == "y" ]			&& OPTIONS+=" +vcc"
+	[ "$FREETZ_PATCH_SIGNED" == "y" ]		&& OPTIONS+=" +signed"
 	[ "$FREETZ_PATCH_USBSTORAGE" == "y" ]		&& OPTIONS+=" +usbstorage"
 
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
@@ -584,14 +586,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo1 "setting subversion '${SUBVERSION}'"
 		echo "$SUBVERSION" > "${FILESYSTEM_MOD_DIR}/etc/.subversion"
 		sed -i -e "s/\export\ FIRMWARE_SUBVERSION=.*\$/export\ FIRMWARE_SUBVERSION=\"${SUBVERSION}\"/g" "${FILESYSTEM_MOD_DIR}/etc/version"
-		sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
-		sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
 		if [ ! -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
 			AVM_SUBVERSION=`grep "SUBVERSION=" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" | sed -e "s/[^-0-9]//g"`
 			sed -i -e "s/SUBVERSION=\"$AVM_SUBVERSION\"/SUBVERSION=\"$SUBVERSION\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 		fi
 	fi
+
+	sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
+	sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
 	# Execute general patch scripts 
 	for i in "${PATCHES_DIR}/"*.sh; do
