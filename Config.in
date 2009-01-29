@@ -188,6 +188,7 @@ choice
 	config FREETZ_TYPE_LABOR_AIO
 		bool "AiO"
 		depends on \
+			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_FON_WLAN_7270
 
 endchoice
@@ -195,7 +196,8 @@ endchoice
 config FREETZ_TYPE_ALIEN_HARDWARE
 	bool "Compile image for \"alien\" hardware"
 	depends on \
-		FREETZ_TYPE_FON_WLAN_7170
+		FREETZ_TYPE_FON_WLAN_7170 && \
+		! FREETZ_TYPE_LABOR_AIO
 	default n
 	help
 		Enable this to compile the mod image for another hardware type
@@ -325,6 +327,7 @@ config FREETZ_TYPE_STRING
 	default "7150"						if FREETZ_TYPE_FON_7150
 	default "7170"						if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR
 	default "7170_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
+	default "7170_labor_aio"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_AIO
 	default "7240"						if FREETZ_TYPE_FON_WLAN_7240
 	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "7270_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
@@ -1482,6 +1485,7 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.57.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.57.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz_box-labor-12526.image"						if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
+	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.70-13475.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_AIO
 	default "FRITZ.Box_Fon_WLAN_7240.AnnexB.73.04.68.image"				if FREETZ_TYPE_FON_WLAN_7240
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.67.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.99-13225.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
