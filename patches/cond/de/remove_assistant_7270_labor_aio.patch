@@ -38,7 +38,7 @@
  {
 --- usr/www/all/html/de/menus/menu2_konfig.html.orig	2009-01-12 14:38:35.000000000 +0100
 +++ usr/www/all/html/de/menus/menu2_konfig.html	2009-01-13 18:35:56.000000000 +0100
-@@ -14,19 +14,6 @@
+@@ -14,23 +14,9 @@
  <? setvariable var:showmoremenu 0 ?>
  <? if neq $var:menu 'software' `<? setvariable var:showmoremenu 1 ?>` ?>
  <? if eq '$var:ShowAssiMenu' 1 `
@@ -58,7 +58,11 @@
  ` `
  <? if eq '$var:showmoremenu' '1' `
  <script type="text/javascript">javascript:jslSetMenuPage("enhsettings","enhsettings",100);</script>
-@@ -70,7 +57,6 @@
+-<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">{?txtAssi?}</a><span class="PTextOnly">{?txtAssi?}</span></li>
+ <? if eq `$var:menu` 'enhsettings' `
+ <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">{?txtAdvancedSettings?}</a><span class="PTextOnly">{?txtAdvancedSettings?}</span></li>
+ ` `
+@@ -70,7 +56,6 @@
  ` ?>
  <? if eq '$var:menu' 'software' `
  <script type="text/javascript">javascript:jslSetMenuPage("software","extern",100);</script>
