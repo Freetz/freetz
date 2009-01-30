@@ -193,7 +193,7 @@ choice
 	config FREETZ_TYPE_LABOR_AIO
 		bool "AiO"
 		depends on \
-			FREETZ_TYPE_FON_WLAN_7170
+			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_FON_WLAN_7270
 
 endchoice
@@ -201,7 +201,7 @@ endchoice
 config FREETZ_TYPE_ALIEN_HARDWARE
 	bool "Compile image for \"alien\" hardware"
 	depends on \
-		FREETZ_TYPE_FON_WLAN_7170  && \  
+		FREETZ_TYPE_FON_WLAN_7170 && \
 		! FREETZ_TYPE_LABOR_AIO 
 		
 	default n
