@@ -1,0 +1,685 @@
+--- backend/pixma.c.orig	2008-02-03 11:34:20.000000000 +0100
++++ backend/pixma.c	2008-03-01 13:31:20.050339566 +0100
+@@ -826,6 +826,10 @@
+     }
+   result = sanei_thread_waitpid (pid, &status);
+   ss->reader_taskid = -1;
++
++  if ((ss->sp.source & (PIXMA_SOURCE_ADF | PIXMA_SOURCE_ADFDUP)) == 0)
++    ss->idle = SANE_TRUE;
++
+   if (result == pid)
+     {
+       if (exit_code)
+@@ -857,7 +861,8 @@
+     }
+   if (ss->reader_taskid != -1)
+     {
+-      PDBG (pixma_dbg (1, "BUG:reader_taskid(%d) != -1\n", ss->reader_taskid));
++      PDBG (pixma_dbg
++	    (1, "BUG:reader_taskid(%d) != -1\n", ss->reader_taskid));
+       terminate_reader_task (ss, NULL);
+     }
+   if (pipe (fds) == -1)
+@@ -1245,7 +1250,8 @@
+     return SANE_STATUS_INVAL;
+   if (ss->cancel)
+     return SANE_STATUS_CANCELLED;
+-  if (ss->idle)
++  if ((ss->idle)
++      && ((ss->sp.source & (PIXMA_SOURCE_ADF | PIXMA_SOURCE_ADFDUP)) != 0))
+     return SANE_STATUS_INVAL;
+   if (!ss->scanning)
+     return ss->last_read_status;
+--- backend/pixma.h.orig	2007-07-20 00:17:21.000000000 +0200
++++ backend/pixma.h	2008-03-01 13:31:20.050339566 +0100
+@@ -107,8 +107,8 @@
+ /** \name Version of the driver */
+ /**@{*/
+ #define PIXMA_VERSION_MAJOR 0
+-#define PIXMA_VERSION_MINOR 13
+-#define PIXMA_VERSION_BUILD 1
++#define PIXMA_VERSION_MINOR 14
++#define PIXMA_VERSION_BUILD 3
+ /**@}*/
+ 
+ /** \name Error codes */
+--- backend/pixma_common.c.orig	2007-04-09 22:41:25.000000000 +0200
++++ backend/pixma_common.c	2008-03-01 13:31:20.051338964 +0100
+@@ -86,7 +86,8 @@
+ {
+   static const char hdigit[16] =
+     { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
+-'e', 'f' };
++    'e', 'f'
++  };
+   str[0] = hdigit[(x >> 4) & 0xf];
+   str[1] = hdigit[x & 0xf];
+   str[2] = '\0';
+@@ -747,6 +748,9 @@
+ 	(sp->xdpi == s->cfg->xdpi && sp->ydpi == s->cfg->ydpi)))
+     return PIXMA_EINVAL;
+ 
++  if (s->ops->check_param (s, sp) < 0)
++    return PIXMA_EINVAL;
++
+   /* FIXME: I assume the same minimum width and height for every model. */
+   CLAMP2 (sp->x, sp->w, 13, s->cfg->width, sp->xdpi);
+   CLAMP2 (sp->y, sp->h, 8, s->cfg->height, sp->ydpi);
+--- backend/pixma_io_sanei.c.orig	2007-04-09 22:41:25.000000000 +0200
++++ backend/pixma_io_sanei.c	2008-03-01 13:31:20.051338964 +0100
+@@ -144,7 +144,8 @@
+ {
+   static const char hdigit[16] =
+     { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
+-'E', 'F' };
++    'E', 'F'
++  };
+   str[0] = hdigit[(x >> 12) & 0xf];
+   str[1] = hdigit[(x >> 8) & 0xf];
+   str[2] = hdigit[(x >> 4) & 0xf];
+--- backend/pixma_mp150.c.orig	2007-07-20 00:17:21.000000000 +0200
++++ backend/pixma_mp150.c	2008-03-01 13:31:20.052339059 +0100
+@@ -95,6 +95,17 @@
+ #define MP810_PID 0x171a
+ #define MP960_PID 0x171b
+ 
++#define MP140_PID 0x172b
++
++/* Generation 3 */
++#define MP210_PID 0x1721
++#define MP220_PID 0x1722	/* untested */
++#define MP470_PID 0x1723
++#define MP520_PID 0x1724
++#define MP610_PID 0x1725
++#define MP970_PID 0x1726	/* untested */
++
++
+ enum mp150_state_t
+ {
+   state_idle,
+@@ -116,6 +127,10 @@
+   cmd_read_image = 0xd420,
+   cmd_error_info = 0xff20,
+ 
++  cmd_scan_param_3 = 0xd820,
++  cmd_scan_start_3 = 0xd920,
++  cmd_status_3 = 0xda20,
++
+   cmd_e920 = 0xe920		/* seen in MP800 */
+ };
+ 
+@@ -127,6 +142,9 @@
+   uint8_t current_status[16];
+   unsigned last_block;
+   int generation;
++  /* for Generation 3 */
++  uint8_t *linebuf;
++  unsigned linelag;
+ } mp150_t;
+ 
+ 
+@@ -186,9 +204,20 @@
+ static void mp150_finish_scan (pixma_t * s);
+ 
+ static int
++start_scan_3 (pixma_t * s)
++{
++  mp150_t *mp = (mp150_t *) s->subdriver;
++  return pixma_exec_short_cmd (s, &mp->cb, cmd_scan_start_3);
++}
++
++static int
+ is_calibrated (pixma_t * s)
+ {
+   mp150_t *mp = (mp150_t *) s->subdriver;
++  if (mp->generation == 3)
++    {
++      return (mp->current_status[0] == 1);
++    }
+   if (mp->generation == 1)
+     {
+       return (mp->current_status[8] == 1);
+@@ -199,6 +228,31 @@
+     }
+ }
+ 
++/* For processing Generation 3 high dpi images.
++ * Each complete line in mp->imgbuf is reordered for 1200,2400 and 4800 dpi Generation 3 format. */
++static int
++process_high_dpi_3 (pixma_t * s, pixma_imagebuf_t * ib)
++{
++  mp150_t *mp = (mp150_t *) s->subdriver;
++  uint8_t *rptr = mp->imgbuf;
++  unsigned i;
++  const unsigned n = s->param->xdpi / 600;
++  const unsigned m = s->param->w / n;
++  const unsigned c = s->param->channels;
++
++  while (rptr + s->param->line_size <= ib->rend)
++    {
++      for (i = 0; i < s->param->w; i++)
++	{
++	  memcpy (mp->linebuf + (c * (n * (i % m) + i / m)), rptr + (c * i),
++		  c);
++	}
++      memcpy (rptr, mp->linebuf, s->param->line_size);
++      rptr += s->param->line_size;
++    }
++  return ib->rend - rptr;
++}
++
+ static int
+ has_paper (pixma_t * s)
+ {
+@@ -335,7 +389,7 @@
+   /* NOTE: Actually, we can send arbitary width to MP150. Lines returned
+      are always padded to multiple of 4 or 12 pixels. Is this valid for
+      other models, too? */
+-  if (mp->generation == 2)
++  if (mp->generation >= 2)
+     {
+       raw_width = ALIGN (param->w, 32);
+     }
+@@ -357,23 +411,65 @@
+   uint8_t *data;
+   unsigned raw_width = calc_raw_width (mp, s->param);
+ 
+-  data = pixma_newcmd (&mp->cb, cmd_scan_param, 0x30, 0);
+-  pixma_set_be16 (s->param->xdpi | 0x8000, data + 0x04);
+-  pixma_set_be16 (s->param->ydpi | 0x8000, data + 0x06);
+-  pixma_set_be32 (s->param->x, data + 0x08);
+-  pixma_set_be32 (s->param->y, data + 0x0c);
+-  pixma_set_be32 (raw_width, data + 0x10);
+-  pixma_set_be32 (s->param->h, data + 0x14);
+-  data[0x18] = (s->param->channels == 1) ? 0x04 : 0x08;
+-  data[0x19] = s->param->channels * s->param->depth;	/* bits per pixel */
+-  data[0x20] = 0xff;
+-  data[0x23] = 0x81;
+-  data[0x26] = 0x02;
+-  data[0x27] = 0x01;
++  if (mp->generation <= 2)
++    {
++      data = pixma_newcmd (&mp->cb, cmd_scan_param, 0x30, 0);
++      pixma_set_be16 (s->param->xdpi | 0x8000, data + 0x04);
++      pixma_set_be16 (s->param->ydpi | 0x8000, data + 0x06);
++      pixma_set_be32 (s->param->x, data + 0x08);
++      pixma_set_be32 (s->param->y, data + 0x0c);
++      pixma_set_be32 (raw_width, data + 0x10);
++      pixma_set_be32 (s->param->h, data + 0x14);
++      data[0x18] = (s->param->channels == 1) ? 0x04 : 0x08;
++      data[0x19] = s->param->channels * s->param->depth;	/* bits per pixel */
++      data[0x20] = 0xff;
++      data[0x23] = 0x81;
++      data[0x26] = 0x02;
++      data[0x27] = 0x01;
++    }
++  else
++    {
++      data = pixma_newcmd (&mp->cb, cmd_scan_param_3, 0x38, 0);
++      data[0x00] = 0x01;
++      data[0x01] = 0x01;
++      data[0x02] = 0x01;
++      data[0x05] = 0x01;	/* This one also seen at 0. Don't know yet what's used for */
++      pixma_set_be16 (s->param->xdpi | 0x8000, data + 0x08);
++      pixma_set_be16 (s->param->ydpi | 0x8000, data + 0x0a);
++      pixma_set_be32 (s->param->x, data + 0x0c);
++      pixma_set_be32 (s->param->y, data + 0x10);
++      pixma_set_be32 (raw_width, data + 0x14);
++      pixma_set_be32 (s->param->h, data + 0x18);
++      data[0x1c] = (s->param->channels == 1) ? 0x04 : 0x08;
++      data[0x1d] = s->param->channels * s->param->depth;	/* bits per pixel */
++      data[0x1f] = 0x01;
++      data[0x20] = 0xff;
++      data[0x21] = 0x81;
++      data[0x23] = 0x02;
++      data[0x24] = 0x01;
++      data[0x30] = 0x01;
++    }
+   return pixma_exec (s, &mp->cb);
+ }
+ 
+ static int
++query_status_3 (pixma_t * s)
++{
++  mp150_t *mp = (mp150_t *) s->subdriver;
++  uint8_t *data;
++  int error, status_len;
++
++  status_len = 8;
++  data = pixma_newcmd (&mp->cb, cmd_status_3, 0, status_len);
++  error = pixma_exec (s, &mp->cb);
++  if (error >= 0)
++    {
++      memcpy (mp->current_status, data, status_len);
++    }
++  return error;
++}
++
++static int
+ query_status (pixma_t * s)
+ {
+   mp150_t *mp = (mp150_t *) s->subdriver;
+@@ -526,14 +622,17 @@
+ static int
+ wait_until_ready (pixma_t * s)
+ {
++  mp150_t *mp = (mp150_t *) s->subdriver;
+   int error, tmo = 60;
+ 
+-  error = query_status (s);
++  error = (mp->generation == 3) ? query_status_3 (s) : query_status (s);
+   if (error < 0)
+     return error;
+   while (!is_calibrated (s))
+     {
+       error = handle_interrupt (s, 1000);
++      if (mp->generation == 3)
++	error = query_status_3 (s);
+       if (s->cancel)
+ 	return PIXMA_ECANCELED;
+       if (error != PIXMA_ECANCELED && error < 0)
+@@ -596,7 +695,14 @@
+   mp->cb.cmd_len_field_ofs = 14;
+ 
+   mp->imgbuf = buf + CMDBUF_SIZE;
++
++  /* General rules for setting Pixma protocol generation # */
+   mp->generation = (s->cfg->pid >= MP160_PID) ? 2 : 1;
++  if (s->cfg->pid >= MP210_PID)
++    mp->generation = 3;
++  /* And exceptions to be added here */
++  if (s->cfg->pid == MP140_PID)
++    mp->generation = 2;
+ 
+   query_status (s);
+   handle_interrupt (s, 200);
+@@ -620,10 +726,11 @@
+   mp150_t *mp = (mp150_t *) s->subdriver;
+ 
+   sp->depth = 8;		/* MP150 only supports 8 bit per channel. */
+-  if (mp->generation == 2)
++  if (mp->generation >= 2)
+     {
+       sp->x = ALIGN (sp->x, 32);
+       sp->y = ALIGN (sp->y, 32);
++      sp->w = calc_raw_width (mp, sp);
+     }
+   sp->line_size = calc_raw_width (mp, sp) * sp->channels;
+   return 0;
+@@ -702,12 +809,14 @@
+     }
+   if (error >= 0)
+     mp->state = state_warmup;
+-  if (error >= 0)
++  if ((error >= 0) && (mp->generation <= 2))
+     error = select_source (s);
+   if (error >= 0)
+     error = send_gamma_table (s);
+   if (error >= 0)
+     error = send_scan_param (s);
++  if ((error >= 0) && (mp->generation == 3))
++    error = start_scan_3 (s);
+   if (error < 0)
+     {
+       mp150_finish_scan (s);
+@@ -733,6 +842,15 @@
+ 				 * sleep 1.5 sec. */
+       mp->state = state_scanning;
+       mp->last_block = 0;
++
++      mp->cb.buf =
++	realloc (mp->cb.buf,
++		 CMDBUF_SIZE + IMAGE_BLOCK_SIZE + 2 * s->param->line_size);
++      if (!mp->cb.buf)
++	return PIXMA_ENOMEM;
++      mp->linebuf = mp->cb.buf + CMDBUF_SIZE;
++      mp->imgbuf = mp->linebuf + s->param->line_size;
++      mp->linelag = 0;
+     }
+ 
+   do
+@@ -748,7 +866,8 @@
+ 	  return 0;
+ 	}
+ 
+-      error = read_image_block (s, header, mp->imgbuf);
++      memcpy (mp->imgbuf, mp->linebuf, mp->linelag);
++      error = read_image_block (s, header, mp->imgbuf + mp->linelag);
+       if (error < 0)
+ 	{
+ 	  if (error == PIXMA_ECANCELED)
+@@ -779,6 +898,14 @@
+ 
+   ib->rptr = mp->imgbuf;
+   ib->rend = mp->imgbuf + bytes_received;
++
++  if ((s->param->xdpi > 600) && (mp->generation >= 3))
++    {
++      ib->rend += mp->linelag;
++      mp->linelag = process_high_dpi_3 (s, ib);
++      ib->rend -= mp->linelag;
++      memcpy (mp->linebuf, ib->rend, mp->linelag);
++    }
+   return ib->rend - ib->rptr;
+ }
+ 
+@@ -874,6 +1001,7 @@
+ 	  PIXMA_CAP_CCD | PIXMA_CAP_ADFDUP | PIXMA_CAP_48BIT),
+ 
+   /* Generation 2: CIS */
++  DEVICE ("Canon PIXMA MP140", MP140_PID, 600, PIXMA_CAP_CIS),
+   DEVICE ("Canon PIXMA MP160", MP160_PID, 600, PIXMA_CAP_CIS),
+   DEVICE ("Canon PIXMA MP180", MP180_PID, 1200, PIXMA_CAP_CIS),
+   DEVICE ("Canon PIXMA MP460", MP460_PID, 1200, PIXMA_CAP_CIS),
+@@ -887,5 +1015,16 @@
+   DEVICE ("Canon PIXMA MP960", MP960_PID, 4800,
+ 	  PIXMA_CAP_CCD | PIXMA_CAP_TPU),
+ 
++  /* Generation 3: CIS */
++  DEVICE ("Canon PIXMA MP210", MP210_PID, 600, PIXMA_CAP_CIS),
++  DEVICE ("Canon PIXMA MP220", MP220_PID, 1200, PIXMA_CAP_CIS),
++  DEVICE ("Canon PIXMA MP470", MP470_PID, 2400, PIXMA_CAP_CIS),
++  DEVICE ("Canon PIXMA MP520", MP520_PID, 2400, PIXMA_CAP_CIS),
++  DEVICE ("Canon PIXMA MP610", MP610_PID, 4800, PIXMA_CAP_CIS),
++
++  /* Generation 3: CCD */
++  DEVICE ("Canon PIXMA MP970", MP970_PID, 4800,
++	  PIXMA_CAP_CCD | PIXMA_CAP_TPU | PIXMA_CAP_EXPERIMENT),
++
+   END_OF_DEVICE_LIST
+ };
+--- backend/pixma_mp730.c.orig	2007-04-09 22:41:25.000000000 +0200
++++ backend/pixma_mp730.c	2008-03-01 13:31:20.052339059 +0100
+@@ -42,8 +42,10 @@
+  */
+ #include "../include/sane/config.h"
+ 
++#include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <time.h>		/* localtime(C90) */
+ 
+ #include "pixma_rename.h"
+ #include "pixma_common.h"
+@@ -63,8 +65,10 @@
+ #define MP370_PID 0x263d
+ #define MP390_PID 0x263e
+ #define MP700_PID 0x2630
+-#define MP730_PID 0x262f
+ 
++#define MP740_PID 0x264c	/* Untested */
++#define MP710_PID 0x264d
++#define MP730_PID 0x262f
+ 
+ enum mp730_state_t
+ {
+@@ -79,15 +83,15 @@
+ {
+   cmd_start_session = 0xdb20,
+   cmd_select_source = 0xdd20,
+-  cmd_gamma = 0xee20,
+-  cmd_scan_param = 0xde20,
+-  cmd_status = 0xf320,
++  cmd_gamma         = 0xee20,
++  cmd_scan_param    = 0xde20,
++  cmd_status        = 0xf320,
+   cmd_abort_session = 0xef20,
+-  cmd_time = 0xeb80,
+-  cmd_read_image = 0xd420,
++  cmd_time          = 0xeb80,
++  cmd_read_image    = 0xd420,
+ 
+-  cmd_activate = 0xcf60,
+-  cmd_calibrate = 0xe920
++  cmd_activate      = 0xcf60,
++  cmd_calibrate     = 0xe920
+ };
+ 
+ typedef struct mp730_t
+@@ -243,10 +247,21 @@
+ static int
+ send_time (pixma_t * s)
+ {
+-  /* TODO */
+-  UNUSED (s);
+-  PDBG (pixma_dbg (3, "send_time() is not yet implemented.\n"));
+-  return 0;
++  /* Why does a scanner need a time? */
++  time_t now;
++  struct tm *t;
++  uint8_t *data;
++  mp730_t *mp = (mp730_t *) s->subdriver;
++
++  data = pixma_newcmd (&mp->cb, cmd_time, 20, 0);
++  pixma_get_time (&now, NULL);
++  t = localtime (&now);
++  snprintf ((char *) data, 16,
++	    "%02d/%02d/%02d %02d:%02d",
++	    t->tm_year % 100, t->tm_mon + 1, t->tm_mday,
++	    t->tm_hour, t->tm_min);
++  PDBG (pixma_dbg (3, "Sending time: '%s'\n", (char *) data));
++  return pixma_exec (s, &mp->cb);
+ }
+ 
+ static int
+@@ -284,6 +299,8 @@
+ 
+     case MP700_PID:
+     case MP730_PID:
++    case MP710_PID:
++    case MP740_PID:
+       if (len != 8)
+ 	{
+ 	  PDBG (pixma_dbg
+@@ -504,7 +521,7 @@
+ 	      /* no image data at this moment. */
+ 	      /*pixma_sleep(100000); *//* FIXME: too short, too long? */
+ 	      handle_interrupt (s, 100);
+-	    /*XXX*/}
++	     /*XXX*/}
+ 	}
+       while (block_size == 0);
+ 
+@@ -618,6 +635,8 @@
+   DEVICE ("Canon SmartBase MP370", MP370_PID, 1200, 636, 868, 0),
+   DEVICE ("Canon SmartBase MP390", MP390_PID, 1200, 636, 868, 0),
+   DEVICE ("Canon MultiPASS MP700", MP700_PID, 1200, 638, 877 /*1035 */ , 0),
++  DEVICE ("Canon MultiPASS MP710", MP710_PID, 1200, 637, 868, 0),
+   DEVICE ("Canon MultiPASS MP730", MP730_PID, 1200, 637, 868, PIXMA_CAP_ADF),
++  DEVICE ("Canon MultiPASS MP740", MP740_PID, 1200, 637, 868, PIXMA_CAP_ADF),
+   DEVICE (NULL, 0, 0, 0, 0, 0)
+ };
+--- backend/pixma_mp750.c.orig	2007-04-09 22:41:25.000000000 +0200
++++ backend/pixma_mp750.c	2008-03-01 13:31:20.053338560 +0100
+@@ -386,7 +386,7 @@
+   if (s->param->source == PIXMA_SOURCE_ADF && !has_paper (s))
+     return PIXMA_ENO_PAPER;
+   error = activate_cs (s, 0);
+-  /*SIM*/ if (error < 0)
++   /*SIM*/ if (error < 0)
+     return error;
+   error = activate_cs (s, 0x20);
+   if (error < 0)
+@@ -628,7 +628,7 @@
+ 
+       query_status (s);
+       check_status (s);
+-      /*SIM*/ while (!is_calibrated (s) && --tmo >= 0)
++       /*SIM*/ while (!is_calibrated (s) && --tmo >= 0)
+ 	{
+ 	  if (s->cancel)
+ 	    return PIXMA_ECANCELED;
+@@ -636,7 +636,7 @@
+ 	    {
+ 	      block_size = 0;
+ 	      error = request_image_block (s, &block_size, &info);
+-	      /*SIM*/ if (error < 0)
++	       /*SIM*/ if (error < 0)
+ 		return error;
+ 	    }
+ 	}
+@@ -655,7 +655,7 @@
+ 	}
+       block_size = 0;
+       request_image_block (s, &block_size, &info);
+-      /*SIM*/ mp->state = state_scanning;
++       /*SIM*/ mp->state = state_scanning;
+       mp->last_block = 0;
+     }
+ 
+@@ -693,7 +693,7 @@
+ 	      if (info != 0x38)
+ 		{
+ 		  query_status (s);
+-		  /*SIM*/ while ((info & 0x28) != 0x28)
++		   /*SIM*/ while ((info & 0x28) != 0x28)
+ 		    {
+ 		      pixma_sleep (10000);
+ 		      error = request_image_block2 (s, &info);
+@@ -710,8 +710,8 @@
+ 	    }
+ 
+ 	  check_status (s);
+-	  /*SIM*/ while (handle_interrupt (s, 1) > 0);
+-	  /*SIM*/ block_size = IMAGE_BLOCK_SIZE;
++	   /*SIM*/ while (handle_interrupt (s, 1) > 0);
++	   /*SIM*/ block_size = IMAGE_BLOCK_SIZE;
+ 	  error = request_image_block (s, &block_size, &info);
+ 	  if (error < 0)
+ 	    {
+@@ -791,7 +791,7 @@
+ 	    }
+ 	}
+       query_status (s);
+-      /*SIM*/ activate (s, 0);
++       /*SIM*/ activate (s, 0);
+       if (mp->needs_abort)
+ 	{
+ 	  mp->needs_abort = 0;
+--- doc/descriptions/pixma.desc.orig	2008-01-23 02:51:09.000000000 +0100
++++ doc/descriptions/pixma.desc	2008-03-01 13:31:31.037150091 +0100
+@@ -11,9 +11,10 @@
+ ; See doc/descriptions.txt for details.
+ 
+ :backend "pixma"                  ; name of backend
+-:version "0.13.1"                 ; version of backend (or "unmaintained")
++:version "0.14.3"                 ; version of backend (or "unmaintained")
+ :manpage "sane-pixma"             ; name of manpage (if it exists)
+-:url "http://home.arcor.de/wittawat/pixma/" ; backend's web page
++:url "http://home.arcor.de/wittawat/pixma/" ; 0.13.1 backend's web page
++:url "http://mp610.blogspot.com/"            ; 0.14.2 backend's web page
+ ;:comment "Devices marked as experimantal are disabled by default. See the manual page for how to enable them."
+ 
+ :devicetype :scanner              ; start of a list of devices....
+@@ -23,6 +24,12 @@
+ :mfg "Canon"                   ; name a manufacturer
+ :url "http://www.canon.com/"
+ 
++:model "PIXMA MP140"
++:interface "USB"
++:usbid "0x04a9" "0x172b"
++:status :good
++:comment "up to 600 DPI"
++
+ :model "PIXMA MP150"
+ :interface "USB"
+ :usbid "0x04a9" "0x1709"
+@@ -43,6 +50,18 @@
+ :usbid "0x04a9" "0x1715"
+ :status :basic
+ 
++:model "PIXMA MP210"
++:interface "USB"
++:usbid "0x04a9" "0x1721"
++:status :good
++:comment "up to 600DPI"
++
++:model "PIXMA MP220"
++:interface "USB"
++:usbid "0x04a9" "0x1722"
++:status :untested
++:comment "Testers needed! Likely to use generation 3 protocol."
++
+ :model "PIXMA MP450"
+ :interface "USB"
+ :usbid "0x04a9" "0x170b"
+@@ -54,6 +73,12 @@
+ :usbid "0x04a9" "0x1716"
+ :status :basic
+ 
++:model "PIXMA MP470"
++:interface "USB"
++:usbid "0x04a9" "0x1723"
++:status :good
++:comment "up to 2400DPI"
++
+ :model "PIXMA MP500"
+ :interface "USB"
+ :usbid "0x04a9" "0x170c"
+@@ -64,6 +89,12 @@
+ :usbid "0x04a9" "0x1717"
+ :status :basic
+ 
++:model "PIXMA MP520"
++:interface "USB"
++:usbid "0x04a9" "0x1724"
++:status :good
++:comment "up to 2400DPI"
++
+ :model "PIXMA MP530"
+ :interface "USB"
+ :usbid "0x04a9" "0x1712"
+@@ -81,6 +112,12 @@
+ :status :minimal
+ :comment "2400DPI doesn't work."
+ 
++:model "PIXMA MP610"
++:interface "USB"
++:usbid "0x04a9" "0x1725"
++:status :good
++:comment "up to 4800DPI"
++
+ :model "PIXMA MP750"
+ :interface "USB"
+ :usbid "0x04a9" "0x1706"
+@@ -115,6 +152,7 @@
+ :interface "USB"
+ :usbid "0x04a9" "0x171a"
+ :status :untested
++:comment "Testers needed!"
+ 
+ :model "PIXMA MP830"
+ :interface "USB"
+@@ -127,6 +165,12 @@
+ :usbid "0x04a9" "0x171b"
+ :status :minimal
+ 
++:model "PIXMA MP970"
++:interface "USB"
++:usbid "0x04a9" "0x1726"
++:status :untested
++:comment "Testers needed!"
++
+ :model "SmartBase MP360"
+ :interface "USB"
+ :usbid "0x04a9" "0x263c"
+@@ -151,6 +195,18 @@
+ :status :basic
+ :comment "Same model as SmartBase MP700 Photo?"
+ 
++:model "PIXMA MP710"
++:interface "USB"
++:usbid "0x04a9" "0x264d"
++:status :good
++:comment "up to 1200DPI"
++
++:model "PIXMA MP740"
++:interface "USB"
++:usbid "0x04a9" "0x264c"
++:status :untested
++:comment "Same protocol as Pixma MP710? Testers needed!"
++
+ :model "MultiPASS MP730"
+ :interface "USB"
+ :usbid "0x04a9" "0x262f"
