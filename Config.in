@@ -190,9 +190,10 @@ choice
 		depends on \
 			FREETZ_TYPE_FON_WLAN_7270
 
-	config FREETZ_TYPE_LABOR_UMTS
-		bool "UMTS"
+	config FREETZ_TYPE_LABOR_AIO
+		bool "AiO"
 		depends on \
+			FREETZ_TYPE_FON_WLAN_7170
 			FREETZ_TYPE_FON_WLAN_7270
 
 endchoice
@@ -200,7 +201,9 @@ endchoice
 config FREETZ_TYPE_ALIEN_HARDWARE
 	bool "Compile image for \"alien\" hardware"
 	depends on \
-		FREETZ_TYPE_FON_WLAN_7170
+		FREETZ_TYPE_FON_WLAN_7170  && \  
+		! FREETZ_TYPE_LABOR_AIO 
+		
 	default n
 	help
 		Enable this to compile the mod image for another hardware type
@@ -333,11 +336,12 @@ config FREETZ_TYPE_STRING
 	default "7150"						if FREETZ_TYPE_FON_7150
 	default "7170"						if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR
 	default "7170_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
+	default "7170_labor_aio"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_AIO 
 	default "7240"						if FREETZ_TYPE_FON_WLAN_7240
 	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "7270_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "7270_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
-	default "7270_labor_umts"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_UMTS
+	default "7270_labor_aio"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AIO
 	default "W501V"						if FREETZ_TYPE_SPEEDPORT_W501V
 	default "W701V"						if FREETZ_TYPE_SPEEDPORT_W701V
 	default "W900V"						if FREETZ_TYPE_SPEEDPORT_W900V
@@ -1178,9 +1182,10 @@ config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv"
 	depends on \
 	FREETZ_SHOW_ADVANCED && \
-	! FREETZ_PATCH_MEDIASRV && \
 	( \
 		FREETZ_HAS_USB_HOST && \
+		! FREETZ_TYPE_FON_WLAN_7240 && \
+		! FREETZ_TYPE_FON_WLAN_7270 && \
 		! FREETZ_TYPE_SPEEDPORT_W701V_7170 \
 	)
 	default n
@@ -1456,17 +1461,18 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.57.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.57.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz_box-labor-12526.image"						if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
+	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.70-13475.image"		if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_AIO 
 	default "FRITZ.Box_Fon_WLAN_7240.AnnexB.73.04.68.image"				if FREETZ_TYPE_FON_WLAN_7240
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.67.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.99-13225.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.97-13286.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
-	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.95-13265.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_UMTS
+	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.97-13483.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
+	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.70-13486.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AIO
 	default "fritz.box_sl_wlan.09.04.34.image"					if FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
 	default "fritz.box_wlan_3130.44.04.34.image"					if FREETZ_TYPE_WLAN_3130
 	default "fritz.box_wlan_3131.50.04.57.image"					if FREETZ_TYPE_WLAN_3131
 	default "fritz.box_wlan_3170.49.04.58.image"					if FREETZ_TYPE_WLAN_3170
-	default "fritz.box_wlan_3270.67.04.57.image"					if FREETZ_TYPE_WLAN_3270
+	default "fritz.box_wlan_3270.67.04.68.image"					if FREETZ_TYPE_WLAN_3270
 	default "fw_Speedport_W501V_v_28.04.38.image"					if FREETZ_TYPE_SPEEDPORT_W501V
 	default "fw_Speedport_W701V_v33.04.57.image"					if FREETZ_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W900V_v34.04.57.image"					if FREETZ_TYPE_SPEEDPORT_W900V

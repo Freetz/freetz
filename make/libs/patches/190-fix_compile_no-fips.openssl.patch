@@ -1,0 +1,11 @@
+--- crypto/evp/enc_min.c.orig	2009-01-08 16:22:29.000000000 +0100
++++ crypto/evp/enc_min.c	2009-01-08 16:12:06.000000000 +0100
+@@ -199,7 +199,7 @@
+ 			enc = 1;
+ 		ctx->encrypt = enc;
+ 		}
+-#ifdef OPENSSL_NO_FIPS
++#ifdef OPENSSL_FIPS
+ 	if(FIPS_selftest_failed())
+ 		{
+ 		FIPSerr(FIPS_F_EVP_CIPHERINIT_EX,FIPS_R_FIPS_SELFTEST_FAILED);
