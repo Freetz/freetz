@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.61)
+$(call PKG_INIT_BIN, 0.70)
 $(PKG)_SOURCE:=PingTunnel-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.cs.uit.no/~daniels/PingTunnel/
 $(PKG)_DIR:=$(SOURCE_DIR)/PingTunnel
