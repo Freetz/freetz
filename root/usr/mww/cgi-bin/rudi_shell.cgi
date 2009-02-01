@@ -44,11 +44,12 @@ Content-Type: text/html; charset=ISO-8859-1
 		function RudiEdit() {
 			file = document.getElementById("file2edit").value;
 			LF="%0A"
+			tdata = "cat " + file;
 			tcmd = 'script=' +
 				'echo "%23%23 $(lang de:"Rudi-Editor" en:"Rudi Editor")"' + LF +
 				'echo "%23%23 $(lang de:"Bitte umgebende Zeilen NICHT löschen" en:"Please DO NOT delete surrounding lines") (\\"cat > ...\\", \\"RUDI_EOF\\")"' + LF +
 				'echo "cat > '+ file + ' << \'RUDI_EOF\'"' + LF +
-				'echo -e "`cat ' + file + '`"' + LF +
+				tdata + LF +
 				'echo "RUDI_EOF"';
 			tmp = '/cgi-bin/rudi_shellcmd.cgi?pid=$$&onload=parent.copyOut2Cmd()&' + tcmd;
 			parent.frames["shellcmd"].location.href = tmp;
