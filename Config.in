@@ -1684,7 +1684,8 @@ config FREETZ_FAVICON_STRING
 
 config FREETZ_SUBVERSION_STRING
 	bool "Add Freetz version to subversion string"
-	default y
+	default y if ! FREETZ_TYPE_FON_WLAN_7270
+	default n 
 	help
 		Add Freetz version to subversion string, e.g. -11945-freetz-devel-2417.
 		Disable this if you have trouble with your isp or plugin downloads from
