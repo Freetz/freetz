@@ -1918,11 +1918,16 @@ endmenu
 
 menu "Shared libraries"
 	config FREETZ_STRIP_LIBRARIES
-		bool "Run mklibs on the built root filesystem"
+		bool "Run mklibs on the built root filesystem (Experimental)"
+		depends on FREETZ_SHOW_ADVANCED
 		default n
 		help
 			Recompiles all the shared libraries to only include the
 			symbols actually needed to run the binaries on the target.
+			
+			Caution: Because symbols are different in every AVM image
+			you have to update the list of missing symbols in fwmod 
+			by hand.
 
 			EXPERIMENTAL FEATURE, USE AT OWN RISK!
 	comment "Libraries -------------------------------"
