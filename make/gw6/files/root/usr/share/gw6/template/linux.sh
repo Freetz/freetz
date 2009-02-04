@@ -78,12 +78,12 @@ Display 1 "Script: " `basename $0`
 
 ifconfig=/sbin/ifconfig
 route=/sbin/route
-ipconfig=/sbin/ip
+ipconfig=/bin/ip
 rtadvd=/usr/sbin/radvd
-rtadvd_pid=/var/run/radvd/radvd.pid
+rtadvd_pid=/var/run/radvd.pid
 sysctl=/sbin/sysctl
 rtadvdconfigfilename=gw6c-rtadvd.conf
-rtadvdconfigfile=$TSP_HOME_DIR/$rtadvdconfigfilename
+rtadvdconfigfile=/tmp/$rtadvdconfigfilename
 
 if [ -z $TSP_HOME_DIR ]; then
    echo "TSP_HOME_DIR variable not specified!;"
@@ -156,6 +156,8 @@ if [ X"${TSP_OPERATION}" = X"TSP_TUNNEL_TEARDOWN" ]; then
     fi
   fi
   
+  # Stop radvd daemon if it was running
+  KillProcess $rtadvdconfigfile  
 
   Display 1 Tunnel tear down completed.
 
@@ -248,8 +250,8 @@ interface $TSP_HOME_INTERFACE
 EOF
 
    # Start the radvd daemon.
-   Display 1 "Starting radvd: $rtadvd -u radvd -C $rtadvdconfigfile"
-   Exec $rtadvd -u radvd -p $rtadvd_pid -C $rtadvdconfigfile
+   Display 1 "Starting radvd: $rtadvd -p $rtadvd_pid -C $rtadvdconfigfile"
+   Exec $rtadvd -p $rtadvd_pid -C $rtadvdconfigfile
 fi
 
 Display 1 "--- End of configuration script. ---"

@@ -33,7 +33,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(GW6_DIR)/tspc-advanced \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -fno-builtin -Wall -I../../include -I../../platform/openwrt -I../.." \
-		LDFLAGS="-L../../gw6cconfig -L../../gw6cmessaging -nodefaultlibs -luClibc++ -lgcc_s" \
+		LDFLAGS="-L../../gw6cconfig -L../../gw6cmessaging -nodefaultlibs -luClibc++ -lgcc_s -lpthread" \
 		target="openwrt"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)

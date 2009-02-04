@@ -1,7 +1,26 @@
-#-----------------------------------------------------------------------------
-# $Id: gw6c.conf.in,v 1.7 2007/11/28 17:27:05 cnepveu Exp $
-#-----------------------------------------------------------------------------
+#!/bin/sh
 
+GW6_SERVER='broker.freenet6.net'
+[ -z "$GW6_USERID" ] && GW6_SERVER='anon.freenet6.net'
+
+GW6_HOST_TYPE='router'
+[ -z "$GW6_USERID" ] && GW6_HOST_TYPE='host'
+
+GW6_AUTH_METHOD='any'
+[ -z "$GW6_USERID" ] && GW6_AUTH_METHOD='anonymous'
+
+# default prefix length if host type is router
+GW6_PREFIX_LEN='64'
+# default interface for radvd if host type is router
+GW6_IF_PREFIX='lan'
+
+GW6_LOG_FILE=0
+[ "$GW6_LOGGING" = "yes" ] && GW6_LOG_FILE=3
+GW6_LOG_FILENAME='/tmp/gw6c.log'
+
+
+cat << END_OF_CAT_SECTION
+#-----------------------------------------------------------------------------
 ##########################      READ ME!      ################################
 #
 # Welcome to the Gateway6 Client configuration file.
@@ -28,8 +47,8 @@
 #   userid=<your_userid>
 #   passwd=<your_password>
 #
-userid=
-passwd=
+userid=$GW6_USERID
+passwd=$GW6_PASSWD
 
 #
 # Gateway6 Server:
@@ -48,7 +67,7 @@ passwd=
 #   Freenet6 account holders should enter broker.freenet6.net, otherwise use
 #   anon.freenet6.net. Your ISP may provide you with a different server name. 
 #
-server=anon.freenet6.net
+server=$GW6_SERVER
 #server=anon.freenet6.net
 #server=broker.freenet6.net
 
@@ -68,7 +87,8 @@ server=anon.freenet6.net
 #   - any:          If you are authenticating a username / password.
 #   - anonymous:    If you are connecting anonymously.
 #
-auth_method=anonymous
+auth_method=$GW6_AUTH_METHOD
+#auth_method=anonymous
 #auth_method=any
 
 
@@ -82,7 +102,7 @@ auth_method=anonymous
 #
 #   host_type=<host|router>
 #
-host_type=host
+host_type=$GW6_HOST_TYPE
 
 #
 # Prefix Length:
@@ -91,7 +111,7 @@ host_type=host
 #
 #   prefixlen=<integer>
 #
-prefixlen=64
+prefixlen=$GW6_PREFIX_LEN
 
 #
 # Advertisement Interface Prefix:
@@ -101,7 +121,7 @@ prefixlen=64
 #
 #   if_prefix=<interface name>
 #
-if_prefix=lan
+if_prefix=$GW6_IF_PREFIX
 
 #
 # DNS Server: 
@@ -277,10 +297,10 @@ always_use_same_server=no
 #     log_file=0
 #     log_syslog=0
 #
-#log_console=
-#log_stderr=
-#log_file=
-#log_syslog=
+log_console=0
+log_stderr=0
+log_file=$GW6_LOG_FILE
+log_syslog=1
 
 #
 # Log File Name:
@@ -289,7 +309,7 @@ always_use_same_server=no
 #
 #   log_filename=<file_name>
 #
-log_filename=/tmp/gw6c.log
+log_filename=$GW6_LOG_FILENAME
 
 #
 # Log File Rotation:
@@ -342,3 +362,4 @@ syslog_facility=USER
 
 # end of gw6c.conf
 #------------------------------------------------------------------------------
+END_OF_CAT_SECTION
