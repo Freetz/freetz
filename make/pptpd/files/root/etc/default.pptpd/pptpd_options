@@ -1,8 +1,6 @@
 #!/bin/sh
 
 cat <<EOF
-# Authentication
-
 # Name of the local system for authentication purposes 
 # (must match the second field in /etc/ppp/chap-secrets entries)
 name fritzbox
@@ -11,23 +9,19 @@ name fritzbox
 # (applies if you use pppd with chapms-strip-domain patch)
 #chapms-strip-domain
 
-# Encryption
-# (There have been multiple versions of PPP with encryption support,
-# choose with of the following sections you will use.)
-
-# BSD licensed ppp-2.4.2 upstream with MPPE only, kernel module ppp_mppe.o
-# {{{
+# Authentication
 refuse-pap
 refuse-chap
 refuse-mschap
 # Require the peer to authenticate itself using MS-CHAPv2 [Microsoft
 # Challenge Handshake Authentication Protocol, Version 2] authentication.
 require-mschap-v2
+
+# Encryption
 # Require MPPE 128-bit encryption
 # (note that MPPE requires the use of MSCHAP-V2 during authentication)
-# require-mppe-128
 mppe required
-# }}}
+#mppe stateless
 
 # Network and Routing
 
@@ -72,6 +66,9 @@ lock
 
 # Disable BSD-Compress compression
 nobsdcomp 
+
+# Disable Deflate compression
+#nodeflate
 
 # Disable Van Jacobson compression 
 # (needed on some networks with Windows 9x/ME/XP clients, see posting to
