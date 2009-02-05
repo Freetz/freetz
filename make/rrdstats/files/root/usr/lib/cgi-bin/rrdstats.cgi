@@ -8,7 +8,7 @@ logarithm1_chk=''; logarithm2_chk=''; logarithm3_chk=''; logarithm4_chk='';
 xchg_rxtx1_chk=''; xchg_rxtx2_chk=''; xchg_rxtx3_chk=''; xchg_rxtx4_chk='';
 uptime_enb_chk=''; savebackup_chk=''; thomsonthg_chk=''; thomsonadv_chk='';
 webenabled_chk=''; digitemp1w_chk=''; digitemp_c_chk=''; digitemp_f_chk='';
-digitemp85_chk=''; digitemp_a_chk=''; digitemp_http_chk=''
+digitemp85_chk=''; digitemp_a_chk=''; digitemp_http_chk=''; delbackup_chk=''
 
 if [ "$RRDSTATS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then xchgupdown_chk=' checked'; fi
@@ -23,6 +23,7 @@ if [ "$RRDSTATS_XCHG_RXTX2" = "yes" ]; then xchg_rxtx2_chk=' checked'; fi
 if [ "$RRDSTATS_XCHG_RXTX3" = "yes" ]; then xchg_rxtx3_chk=' checked'; fi
 if [ "$RRDSTATS_XCHG_RXTX4" = "yes" ]; then xchg_rxtx4_chk=' checked'; fi
 if [ "$RRDSTATS_SAVEBACKUP" = "yes" ]; then savebackup_chk=' checked'; fi
+if [ "$RRDSTATS_DELBACKUP" = "yes" ]; then delbackup_chk=' checked'; fi
 if [ "$RRDSTATS_CPU100PERC" = "yes" ]; then cpu100perc_chk=' checked'; fi
 if [ "$RRDSTATS_UPTIME_ENB" = "yes" ]; then uptime_enb_chk=' checked'; fi
 if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then webenabled_chk=' checked'; fi
@@ -90,10 +91,6 @@ $(lang de:"Graphen immer neu generieren (not lazy)" en:"Always generate new grap
 <input id="l2" type="checkbox" name="notlazys" value="yes"$notlazys_chk><label for="l2">$(lang de:"Unterseiten" en:"Sub-pages")</label>
 </p>
 <p>
-<input type="hidden" name="savebackup" value="no">
-<input id="b1" type="checkbox" name="savebackup" value="yes"$savebackup_chk><label for="b1"></label>
-$(lang de:"Backup vor dem Starten anlegen" en:"Backup files before startup")</p>
-<p>
 <input type="hidden" name="cpu100perc" value="no">
 <input id="c1" type="checkbox" name="cpu100perc" value="yes"$cpu100perc_chk><label for="c1"></label>
 $(lang de:"Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen" en:"Maximum of the CPU utilization graph always at 100%")</p>
@@ -101,6 +98,22 @@ $(lang de:"Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen" en:"Ma
 <input type="hidden" name="uptime_enb" value="no">
 <input id="u1" type="checkbox" name="uptime_enb" value="yes"$uptime_enb_chk><label for="u1"></label>
 $(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs")</p>
+EOF
+
+sec_end
+sec_begin '$(lang de:"Backup" en:"Backup")'
+
+cat << EOF
+<p>$(lang de:"Backup Verzeichnis" en:"Backup folder"):&nbsp;<input type="text" name="rrdbackup" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDBACKUP")"></p>
+<p>
+<input type="hidden" name="savebackup" value="no">
+<input id="b1" type="checkbox" name="savebackup" value="yes"$savebackup_chk><label for="b1"></label>
+$(lang de:"Backup vor dem Starten anlegen" en:"Backup files before startup")</p>
+<p>
+<input type="hidden" name="delbackup" value="no">
+<input id="b2" type="checkbox" name="delbackup" value="yes"$delbackup_chk><label for="b2"></label>
+$(lang de:"Nicht mehr Backups aufbewahren als" en:"Do not keep more backups than"):&nbsp;
+<input type="text" name="maximumbackups" size="2" maxlength="3" value="$(html "$RRDSTATS_MAXIMUMBACKUPS")"></p>
 EOF
 
 sec_end

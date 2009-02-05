@@ -7,7 +7,7 @@
 
 _NICE=$(which nice)
 _SENSOR_CNF=/tmp/flash/rrdstats/digitemp.conf
-_SENSOR_HEX=`grep "^ROM " $_SENSOR_CNF 2>/dev/null |sort| sed 's/^ROM [0-9]*//g;s/ 0x//g'`
+_SENSOR_HEX=`grep "^ROM " $_SENSOR_CNF 2>/dev/null | sed 's/^ROM [0-9]*//g;s/ 0x//g'`
 [ "$RRDSTATS_DIGITEMP_C" = yes ] && _SENSOR_UOM=C || _SENSOR_UOM=F
 
 collect_cpu() {

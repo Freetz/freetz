@@ -22,8 +22,6 @@ mv .digitemprc /tmp/flash/rrdstats/digitemp.conf >/dev/null 2>&1
 echo '</pre>'
 modsave >/dev/null
 
-echo '<p><b>$(lang de:"Jetzt bitte noch die .alias-Datei anpassen!" en:"Please verify the the .alias-file now.")</b></p>'
-
 echo -n '<p><input type="button" value="$(lang de:"Fenster Schliessen" en:"Close Window")" onclick="window.close()"/></p>'
 
 sec_end

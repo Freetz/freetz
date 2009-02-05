@@ -7,7 +7,7 @@ HTTPD_PID_RRD=/var/run/httpd_rrd.pid
 HTTPD_PID_ONE=/var/run/httpd_one.pid
 
 case "$1" in
-	""|load|start|backup|restart|config)
+	""|load|start|backup|restore|restart|config)
 		if [ ! -r "/mod/etc/conf/rrdstats.cfg" ]; then
 			echo "Error[rrdstats]: not configured" 1>&2
 			exit 1
@@ -96,17 +96,45 @@ show_digitemp() {
 }
 
 backup() {
-	_CURRENT=$RRDSTATS_RRDDATA/backup/`echo $(date -Iseconds|sed 's/\:/-/g;s/\+.*//g;s/T/_/g')`
+	_TIMESTRING=`echo $(date -Iseconds|sed 's/\:/-/g;s/\+.*//g;s/T/_/g')`
+	_BACKUPNAME=$RRDSTATS_RRDBACKUP/$_TIMESTRING
 	if [ `ls $RRDSTATS_RRDDATA/*.rrd 2>/dev/null |wc -w` -le 0 ]; then
-		echo -n "backup skipped, no files found..."
+		echo "Backup skipped, no files found..."
 		return
 	fi
-	mkdir $RRDSTATS_RRDDATA/backup 2>/dev/null
-	mkdir $_CURRENT 2>/dev/null
-	cp -p $RRDSTATS_RRDDATA/*.rrd $_CURRENT/ 2>/dev/null
+	mkdir $RRDSTATS_RRDBACKUP 2>/dev/null
+	mkdir $_BACKUPNAME 2>/dev/null
+	cp -p $RRDSTATS_RRDDATA/*.rrd $_BACKUPNAME/ 2>/dev/null
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
-		echo 'backup failed, abort.'
+		echo 'Backup failed, abort.'
+		exit $exitval
+	fi
+	_BACKUPLOG=$RRDSTATS_RRDBACKUP/backup.log
+	echo $_TIMESTRING >> $_BACKUPLOG
+	if [ "$RRDSTATS_DELBACKUP" = yes ]; then
+		countbackup=`cat $_BACKUPLOG | wc -l`
+		countdelete=$(($countbackup-$RRDSTATS_MAXIMUMBACKUPS))
+		if [ $countdelete -gt 0 ]; then
+			for delname in `head $_BACKUPLOG -n $countdelete`; do
+				rm -rf $RRDSTATS_RRDBACKUP/$delname
+			done
+			tail $_BACKUPLOG -n $(($countbackup-$countdelete)) > $_BACKUPLOG.temp
+			mv $_BACKUPLOG.temp $_BACKUPLOG
+		fi
+	fi
+}
+
+restore() {
+	if [ `ls $RRDSTATS_RRDBACKUP/* 2>/dev/null |wc -w` -le 0 ]; then
+		echo "Restore skipped, no files found..."
+		return
+	fi
+	[ ! -d "$RRDSTATS_RRDDATA" ] && mkdir -p $RRDSTATS_RRDDATA 2>/dev/null
+	cp -p $RRDSTATS_RRDBACKUP/`echo $(tail -n1 $RRDSTATS_RRDBACKUP/backup.log)`/*.rrd $RRDSTATS_RRDDATA/ 2>/dev/null
+	exitval=$?
+	if [ $exitval -ne 0 ]; then
+		echo 'Restore failed, abort.'
 		exit $exitval
 	fi
 }
@@ -143,12 +171,19 @@ case "$1" in
 		stop
 		;;
 	backup)
-		config
+		echo
 		backup
+		;;
+	restore)
+		if [ -n "$(pidof rrdstats)" ]; then
+			restart_rrdstats=yes
+			stop
+		fi
+		restore
+		[ "$restart_rrdstats" = yes ] && start
 		;;
 	restart)
 		stop
-		sleep 1
 		config
 		start
 		;;
@@ -160,7 +195,7 @@ case "$1" in
 		fi
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|config|backup|restore]" 1>&2
 		exit 1
 		;;
 esac
