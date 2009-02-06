@@ -584,6 +584,31 @@ config FREETZ_HAS_PHONE
 	help
 		Select this if you have a box with phone support.
 
+config FREETZ_HAS_TAM
+	bool "Has TAM"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_HAS_PHONE
+	default y				if \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_SPEEDPORT_W701V || \
+		FREETZ_TYPE_SPEEDPORT_W900V || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270 
+	default n				if \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_FON_5010 || \
+		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_FON_WLAN || \
+		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7140 || \
+		FREETZ_TYPE_CUSTOM
+	help
+		Select this if you have a box with TAM (Telephone Answering Machine) support.
+
 config FREETZ_HAS_WLAN
 	bool "Has WLAN"		if FREETZ_TYPE_CUSTOM
 	default y			if \

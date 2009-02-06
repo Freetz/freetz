@@ -1093,21 +1093,25 @@ if [ "$DO_PACK" -gt 0 ]; then
 	let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 
 	echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
-	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		if [ "$FREETZ_TYPE_FON_7150" = "y" ]; then
-			# Calculate aproximately free space in seconds for the answering machine
-			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 233472)))
-			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
-			echo "${L1}Aproximately free time for the answering machine: $((($FREE_BYTE_JFFS2 / 2017)))s (${FREE_MINUTES}min $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60)))s)"
-		fi
-	fi
+
 	if [ "$KERNEL_SIZE" -eq 0 ]; then
 		error 1 "kernel image is empty"
 	fi
 	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
 		error 1 "kernel image is $DIFF bytes too big"
 	fi
-
+	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
+		if [ "$FREETZ_HAS_TAM" = "y" ]; then
+			# Calculate aproximately free space in seconds for the answering machine
+			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 233472)))
+			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
+			if [ "$FREE_BYTE_JFFS2" -gt 0 ]; then
+				echo "${L1}Aproximately free time for the answering machine: $((($FREE_BYTE_JFFS2 / 2017)))s (${FREE_MINUTES}min $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60)))s)"
+			else
+				echo "${L1}WARNING: Not enough free flash space for answering machine!"
+			fi
+		fi
+	fi
 	# Do we have the tool ?
 	if [ ! -x "$TICHKSUM" ]; then
 		error 1 "cannot find wonderful tool $TICHKSUM_TOOL"
