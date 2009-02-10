@@ -30,7 +30,7 @@ start() {
 	echo -n 'Starting rrdstats...'
 
 	if [ ! -z "$(pidof rrdstats)" ]; then
-		echo "already running"
+		echo 'already running'
 		exit 0
 	fi
 
@@ -99,7 +99,7 @@ backup() {
 	_TIMESTRING=`echo $(date -Iseconds|sed 's/\:/-/g;s/\+.*//g;s/T/_/g')`
 	_BACKUPNAME=$RRDSTATS_RRDBACKUP/$_TIMESTRING
 	if [ `ls $RRDSTATS_RRDDATA/*.rrd 2>/dev/null |wc -w` -le 0 ]; then
-		echo "Backup skipped, no files found..."
+		echo -n 'Backup skipped, no files found...'
 		return
 	fi
 	mkdir $RRDSTATS_RRDBACKUP 2>/dev/null
@@ -127,7 +127,7 @@ backup() {
 
 restore() {
 	if [ `ls $RRDSTATS_RRDBACKUP/* 2>/dev/null |wc -w` -le 0 ]; then
-		echo "Restore skipped, no files found..."
+		echo 'Restore skipped, no files found...'
 		return
 	fi
 	[ ! -d "$RRDSTATS_RRDDATA" ] && mkdir -p $RRDSTATS_RRDDATA 2>/dev/null
@@ -171,8 +171,9 @@ case "$1" in
 		stop
 		;;
 	backup)
-		echo
+		echo 'Creating backup of .rrd files'
 		backup
+		echo
 		;;
 	restore)
 		if [ -n "$(pidof rrdstats)" ]; then
@@ -180,7 +181,11 @@ case "$1" in
 			stop
 		fi
 		restore
-		[ "$restart_rrdstats" = yes ] && start
+		if [ "$restart_rrdstats" = yes ]; then
+			start
+		else
+			exit $exitval
+		fi
 		;;
 	restart)
 		stop
