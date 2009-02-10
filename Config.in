@@ -146,7 +146,7 @@ endchoice
 config FREETZ_TYPE_FON_WLAN_7270_16MB
 	bool "16 MB flash"
 	depends on \
-		FREETZ_TYPE_FON_WLAN_7270
+		FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
 	default n
 	help
 		Enable this to build an image for boxes with 16 MB flash.
@@ -267,7 +267,8 @@ choice
 			( \
 			FREETZ_TYPE_FON_5010 || \
 			FREETZ_TYPE_FON_WLAN_7140 || \
-			FREETZ_TYPE_FON_WLAN_7170 \
+			FREETZ_TYPE_FON_WLAN_7170 || \
+			FREETZ_TYPE_FON_WLAN_7270 \
 			)
 
 	config FREETZ_TYPE_LANG_EN
@@ -280,7 +281,8 @@ choice
 			FREETZ_TYPE_300IP_AS_FON || \
 			FREETZ_TYPE_FON_WLAN || \
 			FREETZ_TYPE_FON_WLAN_7140 || \
-			FREETZ_TYPE_FON_WLAN_7170 \
+			FREETZ_TYPE_FON_WLAN_7170 || \
+			FREETZ_TYPE_FON_WLAN_7270 \
 			)
 
 endchoice
@@ -294,7 +296,8 @@ config FREETZ_TYPE_LANG_STRING
 choice
 
 	prompt "Annex"
-		depends on FREETZ_TYPE_LANG_EN
+		depends on FREETZ_TYPE_LANG_EN && \
+			! FREETZ_TYPE_FON_WLAN_7270
 		default FREETZ_TYPE_ANNEX_B
 
 	config FREETZ_TYPE_ANNEX_A
@@ -955,6 +958,9 @@ config FREETZ_REMOVE_HELP
 config FREETZ_REMOVE_ASSISTANT
 	bool "Remove assistant"
 	default n
+	depends on \
+	( ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN ) ) && \
+	( ! ( FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN ) )
 	help
 		Removes the installation assistant from the web menu.
 
@@ -1023,6 +1029,7 @@ config FREETZ_PATCH_DSL_EXPERT
         depends on \
 		! FREETZ_TYPE_LABOR_DSL && \
 		! FREETZ_REMOVE_DSLD && \
+		FREETZ_TYPE_LANG_DE && \
 		(FREETZ_TYPE_FON_WLAN_7170 || FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270)
         default n
         help
@@ -1400,6 +1407,19 @@ config FREETZ_REMOVE_VOIP_ISDN
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
+config FREETZ_REMOVE_ANNEX_A_FIRMWARE
+	bool "Remove Annex A firmware file"
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7270 && \
+		( \
+			FREETZ_TYPE_LANG_A_CH || \
+			FREETZ_TYPE_LANG_EN \
+		)
+	default n
+	help
+		Remove lib/modules/dsp_ur8/ur8-A-dsl.bin. This saves about 400 KB of
+		uncompressed data size.
+
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	bool "Remove Annex B firmware file"
 	depends on \
@@ -1414,7 +1434,7 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 
 config FREETZ_ADD_ANNEX_A_FIRMWARE
 	bool "Add Annex A firmware file"
-	depends on FREETZ_TYPE_FON_WLAN_7270
+	depends on FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
 	default n
 	help
 		Add lib/modules/dsp_ur8/ur8-A-dsl.bin. This costs about 400 KB of
@@ -1473,7 +1493,9 @@ config FREETZ_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/english/annex_a"	if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/firmware/english/annex_b"	if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7240/firmware/deutsch"		if FREETZ_TYPE_FON_WLAN_7240
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch"		if FREETZ_TYPE_FON_WLAN_7270
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch_a-ch"	if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_A_CH
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/firmware/english"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_EN
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.sl_wlan/firmware"				if FREETZ_TYPE_WLAN_3020
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3030/firmware"			if FREETZ_TYPE_WLAN_3030
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3130/firmware"			if FREETZ_TYPE_WLAN_3130
@@ -1503,21 +1525,23 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_fon_wlan_7050.14.04.33.image"				if FREETZ_TYPE_FON_WLAN_7050
 	default "FRITZ.Box_Fon_WLAN_7113.60.04.61.image"				if FREETZ_TYPE_FON_WLAN_7113
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_DE
-	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.en.39.04.57.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
-	default "FRITZ.Box_Fon_WLAN_7140.AnnexB.en.30.04.57.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
+	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.en.39.04.67.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
+	default "FRITZ.Box_Fon_WLAN_7140.AnnexB.en.30.04.67.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.39.04.59.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.68.image"				if FREETZ_TYPE_FON_WLAN_7141 && ! FREETZ_TYPE_LABOR
 	default "fritz_box_40_04_59-11763M.image"					if FREETZ_TYPE_FON_WLAN_7141 && FREETZ_TYPE_LABOR_MINI
 	default "FRITZ.Fon_7150.AnnexB.38.04.56.image"					if FREETZ_TYPE_FON_7150
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.67.image"				if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.58.04.59.image"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
-	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.57.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
-	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.57.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
+	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.67.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
+	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.67.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.70-13531.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_AIO
 	default "fritz_box-labor-12526.image"						if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
 	default "FRITZ.Box_Fon_WLAN_7240.AnnexB.73.04.68.image"				if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
 	default "FRITZ.Box_Fon_WLAN_7240.Labor.73.04.97-13537.image"			if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_PHONE
-	default "FRITZ.Box_Fon_WLAN_7270.54.04.67.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
+	default "FRITZ.Box_Fon_WLAN_7270.54.04.67.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7270_16.AnnexB.en-de-es-it.54.04.67.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_A_CH
+	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it.54.04.67.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_EN
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.70-13538.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AIO
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.99-13225.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "FRITZ.Box_Fon_WLAN_7270_Labor.54.04.97-13537.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE

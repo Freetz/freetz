@@ -4,7 +4,7 @@ if 	[ "$FREETZ_TYPE_FON_WLAN_7140" == "y" -a "$FREETZ_TYPE_LANG_DE" == "y" ] || 
 	[ "$FREETZ_TYPE_WLAN_3130" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_wotam.patch"
 elif [ "$FREETZ_TYPE_FON_WLAN_7140" == "y" -a "$FREETZ_TYPE_LANG_EN" == "y" ]; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/en/usbstorage_7140.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170.patch"
 elif [ "$FREETZ_TYPE_2170" == "y" ] || \
 	[ "$FREETZ_TYPE_FON_7150" == "y" ] || \
 	[ "$FREETZ_TYPE_FON_WLAN_7140" == "y" -a "$FREETZ_TYPE_LANG_A_CH" == "y" ] || \
