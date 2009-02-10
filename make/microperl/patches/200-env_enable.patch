@@ -1,0 +1,68 @@
+--- perl.c.orig	2007-12-18 11:47:08.000000000 +0100
++++ perl.c	2009-02-10 10:09:40.000000000 +0100
+@@ -370,11 +370,11 @@
+ 	("__environ", (unsigned long *) &environ_pointer, NULL);
+ #endif /* environ */
+ 
+-#ifndef PERL_MICRO
++//#ifndef PERL_MICRO
+ #   ifdef  USE_ENVIRON_ARRAY
+     PL_origenviron = environ;
+ #   endif
+-#endif
++//#endif
+ 
+     /* Use sysconf(_SC_CLK_TCK) if available, if not
+      * available or if the sysconf() fails, use the HZ.
+@@ -821,7 +821,7 @@
+     /* if PERL_USE_SAFE_PUTENV is defined environ will not have been copied
+      * so we certainly shouldn't free it here
+      */
+-#ifndef PERL_MICRO
++//#ifndef PERL_MICRO
+ #if defined(USE_ENVIRON_ARRAY) && !defined(PERL_USE_SAFE_PUTENV)
+     if (environ != PL_origenviron && !PL_use_safe_putenv
+ #ifdef USE_ITHREADS
+@@ -841,7 +841,7 @@
+ 	environ = PL_origenviron;
+     }
+ #endif
+-#endif /* !PERL_MICRO */
++//#endif /* !PERL_MICRO */
+ 
+     if (destruct_level == 0) {
+ 
+@@ -4657,7 +4657,7 @@
+ 	GvMULTI_on(PL_envgv);
+ 	hv = GvHVn(PL_envgv);
+ 	hv_magic(hv, NULL, PERL_MAGIC_env);
+-#ifndef PERL_MICRO
++//#ifndef PERL_MICRO
+ #ifdef USE_ENVIRON_ARRAY
+ 	/* Note that if the supplied env parameter is actually a copy
+ 	   of the global environ then it may now point to free'd memory
+@@ -4693,7 +4693,7 @@
+ 	  }
+       }
+ #endif /* USE_ENVIRON_ARRAY */
+-#endif /* !PERL_MICRO */
++//#endif /* !PERL_MICRO */
+     }
+     TAINT_NOT;
+     if ((tmpgv = gv_fetchpvs("$", GV_ADD|GV_NOTQUAL, SVt_PV))) {
+--- perl.h.orig	2007-12-18 11:47:08.000000000 +0100
++++ perl.h	2009-02-10 10:09:40.000000000 +0100
+@@ -4059,11 +4059,12 @@
+ #else
+    /* VMS and some other platforms don't use the environ array */
+ #  ifdef USE_ENVIRON_ARRAY
++extern char **  environ;        /* environment variables supplied via exec */
+ #    if !defined(DONT_DECLARE_STD) || \
+         (defined(__svr4__) && defined(__GNUC__) && defined(sun)) || \
+         defined(__sgi) || \
+         defined(__DGUX)
+-extern char **	environ;	/* environment variables supplied via exec */
++//extern char **	environ;	/* environment variables supplied via exec */
+ #    endif
+ #  endif
+ #endif
