@@ -1,0 +1,197 @@
+#!/bin/sh
+#
+# Todo: enable/disable logging
+
+cat << EOF
+server.modules = ( "mod_access" )
+server.document-root = "$LIGHTTPD_DOCROOT"
+index-file.names            = ( "index.cgi", "index.html",
+                                "index.htm", "default.htm" )
+mimetype.assign             = (
+  ".pdf"          =>      "application/pdf",
+  ".sig"          =>      "application/pgp-signature",
+  ".spl"          =>      "application/futuresplash",
+  ".class"        =>      "application/octet-stream",
+  ".ps"           =>      "application/postscript",
+  ".torrent"      =>      "application/x-bittorrent",
+  ".dvi"          =>      "application/x-dvi",
+  ".gz"           =>      "application/x-gzip",
+  ".pac"          =>      "application/x-ns-proxy-autoconfig",
+  ".swf"          =>      "application/x-shockwave-flash",
+  ".tar.gz"       =>      "application/x-tgz",
+  ".tgz"          =>      "application/x-tgz",
+  ".tar"          =>      "application/x-tar",
+  ".zip"          =>      "application/zip",
+  ".mp3"          =>      "audio/mpeg",
+  ".m3u"          =>      "audio/x-mpegurl",
+  ".wma"          =>      "audio/x-ms-wma",
+  ".wax"          =>      "audio/x-ms-wax",
+  ".ogg"          =>      "application/ogg",
+  ".wav"          =>      "audio/x-wav",
+  ".gif"          =>      "image/gif",
+  ".jar"          =>      "application/x-java-archive",
+  ".jpg"          =>      "image/jpeg",
+  ".jpeg"         =>      "image/jpeg",
+  ".png"          =>      "image/png",
+  ".xbm"          =>      "image/x-xbitmap",
+  ".xpm"          =>      "image/x-xpixmap",
+  ".xwd"          =>      "image/x-xwindowdump",
+  ".css"          =>      "text/css",
+  ".html"         =>      "text/html",
+  ".htm"          =>      "text/html",
+  ".js"           =>      "text/javascript",
+  ".asc"          =>      "text/plain",
+  ".c"            =>      "text/plain",
+  ".cpp"          =>      "text/plain",
+  ".log"          =>      "text/plain",
+  ".conf"         =>      "text/plain",
+  ".text"         =>      "text/plain",
+  ".txt"          =>      "text/plain",
+  ".dtd"          =>      "text/xml",
+  ".xml"          =>      "text/xml",
+  ".mpeg"         =>      "video/mpeg",
+  ".mpg"          =>      "video/mpeg",
+  ".mov"          =>      "video/quicktime",
+  ".qt"           =>      "video/quicktime",
+  ".avi"          =>      "video/x-msvideo",
+  ".asf"          =>      "video/x-ms-asf",
+  ".asx"          =>      "video/x-ms-asf",
+  ".wmv"          =>      "video/x-ms-wmv",
+  ".bz2"          =>      "application/x-bzip",
+  ".tbz"          =>      "application/x-bzip-compressed-tar",
+  ".tar.bz2"      =>      "application/x-bzip-compressed-tar",
+  ""              =>      "application/octet-stream",
+ )
+url.access-deny = ( "~", ".inc" )
+static-file.exclude-extensions = ( ".php", ".pl", ".fcgi" )
+server.port = $LIGHTTPD_PORT
+server.pid-file = "/var/run/lighttpd.pid"
+server.username = "wwwrun"
+#server.groupname = "wwwrun"
+connection.kbytes-per-second = $LIGHTTPD_LIMITCONN
+server.kbytes-per-second = $LIGHTTPD_LIMITSRV
+EOF
+
+if [ "$LIGHTTPD_CHROOT" = "yes" ];then
+cat << EOF
+server.chroot = "/"
+EOF
+fi
+
+if [ -f /usr/lib/mod_dirlisting.so ]; then
+cat << EOF
+dir-listing.activate = "$LIGHTTPD_DIRLISTING"
+dir-listing.encoding = "$LIGHTTPD_DIRLISTINGENC"
+EOF
+fi
+
+if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
+cat << EOF
+ssl.engine = "$LIGHTTPD_SSLENABLE"
+ssl.pemfile = "/tmp/flash/lighttpd_crt.pem"
+ssl.use-sslv2 = "disable"
+EOF
+	if [ -r "/tmp/flash/lighttpd_ca.pem" ]; then
+		if grep -q "BEGIN CERTIFICATE" /tmp/flash/lighttpd_ca.pem; then
+cat << EOF
+ssl.ca-file = "/tmp/flash/lighttpd_ca.pem"
+EOF
+		fi
+	fi
+fi
+
+if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
+cat << EOF
+server.modules += ( "mod_accesslog" )
+server.errorlog             = "/var/log/lighttpd/error.log"
+EOF
+	if [ -f /usr/lib/mod_accesslog.so ]; then
+cat << EOF
+accesslog.filename          = "/var/log/lighttpd/access.log"
+EOF
+	fi
+fi
+
+if [ -f /usr/lib/mod_cgi.so ]; then
+	if [ "$LIGHTTPD_MODCGI" = "yes" ]; then
+cat << EOF
+server.modules += ( "mod_cgi" )
+cgi.assign = ( ".cgi" => "",
+               "/cgi-bin/" => "" )
+EOF
+	fi
+fi
+
+if [ -f /usr/lib/mod_compress.so ]; then
+	if [ "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
+cat << EOF
+server.modules += ( "mod_compress" )
+compress.cache-dir = "$LIGHTTPD_MODCOMPRESSDIR"
+compress.filetype  = ("text/plain", "text/html")
+EOF
+	fi
+fi
+
+if [ "$LIGHTTPD_ERROR" = "yes" ]; then
+cat << EOF
+server.errorfile-prefix   = "$LIGHTTPD_ERRORFILE"
+EOF
+fi
+
+if [ -f /usr/lib/mod_auth.so ]; then
+if [ "$LIGHTTPD_AUTH" = "yes" ]; then
+cat << EOF
+server.modules += ( "mod_auth" )
+auth.backend = "htdigest"
+auth.backend.htdigest.userfile = "/tmp/flash/lighttpd-htdigest.user"
+EOF
+#just a return
+IFS="
+"
+echo "auth.require = ( "
+authrequire=$(cat /tmp/flash/lighttpd-rights.user)
+for i in $authrequire; do
+	IFS="\""
+	for j in $i; do
+		if [ -z "$dir" ]; then dir=$j; continue; fi
+		if [ -z "$mid" ]; then mid=$j; continue; fi
+		user=$j
+		echo "\"$dir\" => ( \"method\" => \"$LIGHTTPD_AUTHMETH\", \"realm\" => \"lighttpd\", \"require\" => \"$user\" ),"
+		dir=""
+		user=""
+		mid=""
+		break
+	done
+done 
+echo ")"
+fi
+fi
+
+if [ -f /usr/lib/mod_status.so ]; then
+	if [ "$LIGHTTPD_MODSTATUS" = "yes" ]; then
+cat << EOF
+server.modules += ( "mod_status" )
+status.enable-sort = "$LIGHTTPD_MODSTATUSSORT"
+EOF
+		if [ -n "$LIGHTTPD_MODSTATUSCONFIG" ]; then
+cat << EOF
+status.config-url = "$LIGHTTPD_MODSTATUSCONFIG"
+EOF
+		fi
+		if [ -n "$LIGHTTPD_MODSTATUSSTATISTIC" ]; then
+cat << EOF
+status.statistics-url = "$LIGHTTPD_MODSTATUSSTATISTIC"
+EOF
+		fi
+		if [ -n "$LIGHTTPD_MODSTATUSSTATUS" ]; then
+cat << EOF
+status.status-url = "$LIGHTTPD_MODSTATUSSTATUS"
+EOF
+		fi
+	fi
+fi
+
+if [ -f /tmp/flash/lighttpd_add ]; then
+	cat /tmp/flash/lighttpd_add
+fi
+

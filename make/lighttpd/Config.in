@@ -1,0 +1,379 @@
+config FREETZ_PACKAGE_LIGHTTPD
+	bool "lighttpd 1.4.20"
+	select FREETZ_LIB_libpthread
+	default n
+	help
+		Security, speed, compliance, and flexibility -- all of these describe lighttpd 
+		(pron. lighty) which is rapidly redefining efficiency of a webserver; as it is 
+		designed and optimized for high performance environments. With a small memory
+		footprint compared to other web-servers, effective management of the cpu-load,
+		and advanced feature set (FastCGI, SCGI, Auth, Output-Compression, 
+		URL-Rewriting and many more) lighttpd is the perfect solution for every server
+		that is suffering load problems.
+
+config FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
+        bool "build with SSL support"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        select FREETZ_LIB_libssl
+	select FREETZ_LIB_libcrypto
+        default n
+        help
+                This option enables SSL support for lighttpd.
+
+#config FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
+#        bool "build mod_cml and mod_magnet with LUA support"
+#        depends on FREETZ_PACKAGE_LIGHTTPD
+#        select FREETZ_PACKAGE_LUA
+#        default n
+#        help
+#                This option enables LUA support for the mod_cml and mod_magnet
+#		modules.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_ACCESSLOG
+        bool "mod_accesslog not installed (saves about 17kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_accesslog.so from the install image (saves
+		about 17kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_ALIAS
+        bool "mod_alias not installed (saves about 8kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_alias.so from the install image (saves
+		about 8kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_AUTH
+        bool "mod_auth not installed (saves about 29kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_auth.so from the install image (saves
+		about 29kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_CGI
+        bool "mod_cgi not installed (saves about 25kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_cgi.so from the install image (saves
+		about 25kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_CML
+        bool "mod_cml not installed (saves about 58kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_cml.so from the install image (saves
+		about 58kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_COMPRESS
+        bool "mod_compress not installed (saves about 10kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_compress.so from the install image (saves
+		about 10kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_DIRLISTING
+        bool "mod_dirlisting not installed (saves about 19kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_dirlisting.so from the install image (saves
+		about 19kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_EVASIVE
+        bool "mod_evasive not installed (saves about 7kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_evasive.so from the install image (saves
+		about 7kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_EVHOST
+        bool "mod_evhost not installed (saves about 10kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_evhost.so from the install image (saves
+		about 10kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_EXPIRE
+        bool "mod_expire not installed (saves about 11kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_expire.so from the install image (saves
+		about 11kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_EXTFORWARD
+        bool "mod_extforward not installed (saves about 11kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_extforward.so from the install image (saves
+		about 11kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_FASTCGI
+        bool "mod_fastcgi not installed (saves about 55kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_fastcgi.so from the install image (saves
+		about 55kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_MAGNET
+        bool "mod_magnet not installed (saves about 58kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_magnet.so from the install image (saves
+		about 58kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_FLV_STREAMING
+        bool "mod_flv_streaming not installed (saves about 10kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_flv_streaming.so from the install image (saves
+		about 10kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_MYSQL_VHOST
+        bool "mod_mysql_vhost not installed (saves about 5kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_mysql_vhost.so from the install image (saves
+		about 5kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_PROXY
+        bool "mod_proxy not installed (saves about 24kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_proxy.so from the install image (saves
+		about 24kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_REDIRECT
+        bool "mod_redirect not installed (saves about 8kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_redirect.so from the install image (saves
+		about 8kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_REWRITE
+        bool "mod_rewrite not installed (saves about 9kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_rewrite.so from the install image (saves
+		about 8kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_RRDTOOL
+        bool "mod_rrdtool not installed (saves about 48kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_rrdtool.so from the install image (saves
+		about 48kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_SCGI
+        bool "mod_scgi not installed (saves about 43kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_scgi.so from the install image (saves
+		about 43kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_SECDOWNLOAD
+        bool "mod_secdownload not installed (saves about 10kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_secdownload.so from the install image (saves
+		about 10kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_SETENV
+        bool "mod_setenv not installed (saves about 9kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_setenv.so from the install image (saves
+		about 9kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_SIMPLE_VHOST
+        bool "mod_simple_vhost not installed (saves about 10kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_simple_vhost.so from the install image (saves
+		about 10kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_SSI
+        bool "mod_ssi not installed (saves about 23kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_ssi.so from the install image (saves
+		about 23kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_STATUS
+        bool "mod_status not installed (saves about 56kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_status.so from the install image (saves
+		about 56kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_TRIGGER_B4_DL
+        bool "mod_trigger_b4_dl not installed (saves about 8kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_trigger_b4_dl.so from the install image (saves
+		about 8kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_USERDIR
+        bool "mod_userdir not installed (saves about 10kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_userdir.so from the install image (saves
+		about 10kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_USERTRACK
+        bool "mod_usertrack not installed (saves about 10kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_usertrack.so from the install image (saves
+		about 10kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+
+config FREETZ_PACKAGE_LIGHTTPD_NO_MOD_WEBDAV
+        bool "mod_webdav not installed (saves about 27kb)"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        default n
+        help
+                This option removes mod_webdav.so from the install image (saves
+		about 27kb). Please see
+		http://redmine.lighttpd.net/wiki/lighttpd/Docs for more
+		information on the functionality of modules. If this option
+		is selected, the module and its functionality is not available
+		any more.
+

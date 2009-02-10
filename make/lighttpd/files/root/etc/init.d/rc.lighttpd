@@ -1,0 +1,162 @@
+#!/bin/sh
+
+DAEMON=lighttpd
+
+. /etc/init.d/modlibrc
+
+pre_config() {
+	modlib_addgroup wwwrun
+	modlib_adduser wwwrun -G wwwrun -s /bin/false -H -D -g "lighttpd account"
+}
+
+cleanup_always() {
+	rm -f /mod/etc/$DAEMON/$DAEMON.conf
+	modunreg status lighttpd lighttpd-log
+}
+
+cleanup() {
+	cleanup_always
+	rm -rf /var/log/lighttpd/
+}
+
+status_log() {
+	if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
+		mkdir /var/log/$DAEMON
+		chown wwwrun:wwwrun /var/log/$DAEMON
+		modreg status lighttpd lighttpd-log lighttpd/lighttpd-log
+	fi
+}
+
+configure() {
+	cleanup
+
+	mkdir -p /mod/etc/$DAEMON
+        (
+                if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+                        /tmp/flash/${DAEMON}_conf
+                else
+                        /mod/etc/default.$DAEMON/${DAEMON}_conf
+                fi
+
+                if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+                        cat /tmp/flash/${DAEMON}.extra
+                fi
+        ) > /mod/etc/$DAEMON/$DAEMON.conf
+
+	status_log
+	
+}
+
+stop () {
+        echo -n 'Stopping lighttpd server...'
+        killall $DAEMON > /dev/null 2>&1
+        exitval=$?
+
+        cleanup
+
+        if [ "$exitval" -eq 0 ]; then
+                echo 'done.'
+        else
+                echo 'failed.'
+                exit $exitval
+        fi
+}
+
+start() {
+	echo -n 'Starting lighttpd ...'
+	configure
+
+	while [ ! -d "$LIGHTTPD_DOCROOT" ]; do
+		echo "Docroot $LIGHTTPD_DOCROOT not yet available, sleeping"
+		sleep 5
+	done
+	if [ "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
+		while [ ! -d "$LIGHTTPD_MODCOMPRESSDIR" ]; do
+			echo "Compress dir $LIGHTTPD_MODCOMPRESSDIR not yet available, sleeping"
+			sleep 5
+		done
+	fi
+
+	$DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf >/dev/null 2>&1
+	exitval=$?
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'daemon failed.'
+		cleanup_always
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+		pre_config
+
+		modreg cgi 'lighttpd' 'lighttpd'
+
+		if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
+			deffile='/mod/etc/default.lighttpd/lighttpd_crt.def'
+			[ -r /tmp/flash/lighttpd_crt.def ] && deffile='/tmp/flash/lighttpd_crt.def'
+			modreg file 'lighttpd_crt' 'lighttpd: Cert/Key' 0 "$deffile"
+			deffile='/mod/etc/default.lighttpd/lighttpd_ca.def'
+			[ -r /tmp/flash/lighttpd_ca.def ] && deffile='/tmp/flash/lighttpd_ca.def'
+			modreg file 'lighttpd_ca' 'lighttpd: CA Cert' 0 "$deffile"
+		fi
+
+		if [ -f /usr/lib/mod_auth.so ]; then
+			deffile='/mod/etc/default.lighttpd/lighttpd_user.def'
+			[ -r /tmp/flash/lighttpd_user.def ] && deffile='/tmp/flash/lighttpd_user.def'
+			modreg file 'lighttpd_user' 'lighttpd: Accounts' 0 "$deffile"
+			deffile='/mod/etc/default.lighttpd/lighttpd_rights.def'
+			[ -r /tmp/flash/lighttpd_rights.def ] && deffile='/tmp/flash/lighttpd_rights.def'
+			modreg file 'lighttpd_rights' 'lighttpd: Rights' 0 "$deffile"
+		fi
+
+		deffile='/mod/etc/default.lighttpd/lighttpd_add.def'
+		[ -r /tmp/flash/lighttpd_add.def ] && deffile='/tmp/flash/lighttpd_add.def'
+		modreg file 'lighttpd_add' 'lighttpd: Additional' 0 "$deffile"
+
+		if [ "$LIGHTTPD_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ -e "/var/run/lighttpd.pid" ]; then
+			echo "$DAEMON already started."
+		else
+			start
+		fi
+		;;
+	unload)
+		modlib_stop
+		if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
+			modunreg file 'lighttpd_crt'
+			modunreg file 'lighttpd_ca'
+		fi
+		if [ -f /usr/lib/mod_auth.so ]; then
+			modunreg file 'lighttpd_user'
+			modunreg file 'lighttpd_rights'
+		fi
+		modunreg file 'lighttpd_add'
+		modunreg cgi 'lighttpd'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
