@@ -11,8 +11,14 @@ else
 DROPBEAR_MAKE_OPTIONS:=PROGRAMS="dropbear dbclient dropbearkey scp" MULTI=1 SCPPROGRESS=1
 endif
 
+CPPFLAGS:=
+
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER)),y)
-CPPFLAGS:=-DSFTPSERVER_PATH='\"/usr/lib/sftp-server\"'
+CPPFLAGS+=-DSFTPSERVER_PATH='\"/usr/lib/sftp-server\"'
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP)),y)
+CPPFLAGS+=-DNO_HOST_LOOKUP
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB)),y)

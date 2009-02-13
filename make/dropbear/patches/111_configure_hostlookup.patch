@@ -1,0 +1,12 @@
+--- options.h.orig	2009-02-12 16:01:30.000000000 +0100
++++ options.h	2009-02-12 16:03:30.000000000 +0100
+@@ -129,7 +129,9 @@
+ /* #define DSS_PROTOK */
+ 
+ /* Whether to do reverse DNS lookups. */
++#ifndef NO_HOST_LOOKUP
+ #define DO_HOST_LOOKUP
++#endif
+ 
+ /* Whether to print the message of the day (MOTD). This doesn't add much code
+  * size */

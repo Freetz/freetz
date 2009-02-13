@@ -47,3 +47,14 @@ config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
 		Adds sftp-server-support to dropbear. OpenSSH is needed
 		for this feature. 
 
+config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
+	bool "Disable DNS reverse-lookup of the client"
+	depends on FREETZ_PACKAGE_DROPBEAR 
+	default y
+	help
+		With this option, a connection between the client and
+		the server is established faster.	
+
+		Without this option selected, the ssh server performs a DNS
+		reverse lookup of the client's IP address.
+

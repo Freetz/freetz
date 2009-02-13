@@ -1,0 +1,28 @@
+--- svr-runopts.c.orig	2009-02-12 16:48:54.000000000 +0100
++++ svr-runopts.c	2009-02-12 16:49:36.000000000 +0100
+@@ -60,6 +60,7 @@
+ 					"-m		Don't display the motd on login\n"
+ #endif
+ 					"-w		Disallow root logins\n"
++					"-R		Allow only root logins\n"
+ #if defined(ENABLE_SVR_PASSWORD_AUTH) || defined(ENABLE_SVR_PAM_AUTH)
+ 					"-s		Disable password logins\n"
+ 					"-g		Disable password logins for root\n"
+@@ -113,6 +114,7 @@
+ 	svr_opts.banner = NULL;
+ 	svr_opts.forkbg = 1;
+ 	svr_opts.norootlogin = 0;
++	svr_opts.rootonlylogin = 0;
+ 	svr_opts.noauthpass = 0;
+ 	svr_opts.norootpass = 0;
+ 	svr_opts.inetdmode = 0;
+@@ -215,6 +217,9 @@
+ 				case 'w':
+ 					svr_opts.norootlogin = 1;
+ 					break;
++				case 'R':
++					svr_opts.rootonlylogin = 1;
++					break;
+ 				case 'W':
+ 					next = &recv_window_arg;
+ 					break;
