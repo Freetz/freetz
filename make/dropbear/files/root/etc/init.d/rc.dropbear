@@ -44,9 +44,9 @@ start() {
 		fi
 	else
 		DROPBEAR_OPTIONS="-s $DROPBEAR_OPTIONS"
-		if [ "$DROPBEAR_ROOTONLY" = "yes" ]; then
-			DROPBEAR_OPTIONS="-R $DROPBEAR_OPTIONS"
-		fi
+	fi
+	if [ "$DROPBEAR_ROOTONLY" = "yes" ]; then
+		DROPBEAR_OPTIONS="-R $DROPBEAR_OPTIONS"
 	fi
 
 	echo -n 'Starting ssh server...'
