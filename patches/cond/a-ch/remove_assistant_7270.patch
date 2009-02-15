@@ -1,5 +1,5 @@
---- usr/www/avme/html/de/home/sitemap.html.orig  2008-02-01 17:06:49.000000000 +0100
-+++ usr/www/avme/html/de/home/sitemap.html       2008-02-09 00:24:59.000000000 +0100
+--- usr/www/avme/html/de/home/sitemap.html.orig	2009-01-28 15:58:34.000000000 +0100
++++ usr/www/avme/html/de/home/sitemap.html	2009-02-15 23:51:30.000000000 +0100
 @@ -24,19 +24,6 @@
  <p class="ml10"><a href="javascript:jslGoTo('home', 'syslog');">{?de.home.sitemap.html:9348?}</a></p>
  <p class="ml10"><a href="javascript:jslGoTo('home', 'energy');">{?de.home.sitemap.html:65Systemtxt13?}</a></p>
@@ -20,8 +20,8 @@
  <? setvariable var:title "{?de.home.sitemap.html:110TextMenuInternet?}" ?>
  <? setvariable var:showsubmenu 1 ?>
  <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `
---- usr/www/avme/html/de/js/basis.js.orig        2007-12-18 11:00:36.000000000 +0100
-+++ usr/www/avme/html/de/js/basis.js     2008-02-17 22:51:37.000000000 +0100
+--- usr/www/avme/html/de/js/basis.js.orig	2009-01-28 15:58:39.000000000 +0100
++++ usr/www/avme/html/de/js/basis.js	2009-02-15 23:51:30.000000000 +0100
 @@ -107,11 +107,11 @@
  else
  page = myCookie.substring(myCookie.search('=')+1);
@@ -36,8 +36,8 @@
  }
  function GoToSitemap()
  {
---- usr/www/avme/html/de/menus/menu2_konfig.html.orig    2008-10-02 15:20:08.000000000 +0200
-+++ usr/www/avme/html/de/menus/menu2_konfig.html 2008-10-02 15:23:00.000000000 +0200
+--- usr/www/avme/html/de/menus/menu2_konfig.html.orig	2009-02-15 23:51:30.000000000 +0100
++++ usr/www/avme/html/de/menus/menu2_konfig.html	2009-02-15 23:51:30.000000000 +0100
 @@ -14,23 +14,9 @@
  <? setvariable var:showmoremenu 0 ?>
  <? if neq $var:menu 'software' `<? setvariable var:showmoremenu 1 ?>` ?>
@@ -69,4 +69,17 @@
 -<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">{?de.menus.menu2_konfig.html:225MenuSoftware?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:230MenuSoftware?}</span></li>
  <li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">{?de.menus.menu2_konfig.html:235MenuAssi?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:240MenuAssi?}</span></li>
  <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="../html/de/images/leer.gif" style="width:7px;"><a href="javascript:jslGoTo('software','extern')">{?de.menus.menu2_konfig.html:245?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:250?}</span></li>
+ ` ?>
+--- usr/www/avme/html/logincheck.html.orig	2009-01-28 15:58:31.000000000 +0100
++++ usr/www/avme/html/logincheck.html	2009-02-15 23:51:30.000000000 +0100
+@@ -118,8 +118,8 @@
+ {
+ var pagename = "<? echo $var:pagename ?>";
+ if (pagename != "sitemap" && pagename != "mini" && pagename != "enhsettings" && pagename != "foncalls") {
+-jslSetValue("uiPostPageName", "first_Start_ISP");
+-jslSetValue("uiPostMenu", "first");
++jslSetValue("uiPostPageName", "home");
++jslSetValue("uiPostMenu", "home");
+ }
+ }
  ` ?>
