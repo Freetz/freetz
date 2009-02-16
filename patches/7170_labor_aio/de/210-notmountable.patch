@@ -1,0 +1,23 @@
+--- usr/www/all/html/de/home/home.js.orig	2009-01-22 10:12:00.000000000 +0100
++++ usr/www/all/html/de/home/home.js	2009-01-29 15:39:43.000000000 +0100
+@@ -694,12 +694,6 @@
+ if (isNaN(nStor)) nStor = 0;
+ var nPartTotal = Number("<? query ctlusb:settings/storage-part-total ?>");
+ if (isNaN(nPartTotal)) nPartTotal = 0;
+-if (nPartTotal > nStor) {
+-var str="";
+-str += "Mindestens ein USB-Speicher oder Teile davon sind nicht eingebunden. ";
+-str += "<a href=\"javascript:jslGoTo('home', 'syslog');\">Weitere Informationen.</a>";
+-return str.fontcolor("#cc0000");
+-}
+ var strArr = new Array();
+ if (nUsb == 0)
+ {
+@@ -708,6 +702,7 @@
+ strArr.push(g_usbConnected);
+ return strArr.join(" ");
+ }
++strArr.push("Es wurden " + nStor + " von " + nPartTotal + " Partitionen eingebunden.");
+ <? if eq '<? query aura:settings/enabled ?>' '1' `
+ <? multiquery aura:settings/device/list(class,manufacturer,comment,client) `
+ var strAura = UsbDeviceName("<? query aura:settings/$11 ?>", "$13","$14","$12");

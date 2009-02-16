@@ -18,15 +18,18 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	   $(MAKE) -C $(LIBFTDI_DIR) all
+		$(MAKE) -C $(LIBFTDI_DIR) \
+		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
-	    $(MAKE) -C $(LIBFTDI_DIR) \
-	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-	    install
+		$(MAKE) -C $(LIBFTDI_DIR) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libftdi.pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libftdi.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libftdi.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libftdi-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*.so* $(LIBFTDI_TARGET_DIR)/
@@ -38,7 +41,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBFTDI_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libftdi*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libftdi* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libftdi.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libftdi-config \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/ftdi.h
 
 $(pkg)-uninstall:
 	$(RM) $(LIBFTDI_TARGET_DIR)/libftdi*.so*

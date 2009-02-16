@@ -552,14 +552,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 	rm -f "${PACKAGES_LIST_FILE}"
 	
 	[ "$FREETZ_REMOVE_ASSISTANT" == "y" ]		&& OPTIONS+=" -assistant"
-	[ "$FREETZ_REMOVE_HELP" == "y" ]			&& OPTIONS+=" -help"
+	[ "$FREETZ_REMOVE_HELP" == "y" ]		&& OPTIONS+=" -help"
 	[ "$FREETZ_REMOVE_CDROM_ISO" == "y" ]		&& OPTIONS+=" -cdrom.iso"
-	[ "$FREETZ_PATCH_ATA" == "y" ]				&& OPTIONS+=" +ata"
-	[ "$FREETZ_PATCH_ENUM" == "y" ]				&& OPTIONS+=" +enum"
+	[ "$FREETZ_PATCH_ATA" == "y" ]			&& OPTIONS+=" +ata"
+	[ "$FREETZ_PATCH_DSL_EXPERT" == "y" ]		&& OPTIONS+=" +dslexpert"
+	[ "$FREETZ_PATCH_ENUM" == "y" ]			&& OPTIONS+=" +enum"
+	[ "$FREETZ_PATCH_GETCONS" == "y" ]		&& OPTIONS+=" +getcons"
 	[ "$FREETZ_PATCH_INTERNATIONAL" == "y" ]	&& OPTIONS+=" +international"
-	[ "$FREETZ_PATCH_PUSH" == "y" ]				&& OPTIONS+=" +push"
-	[ "$FREETZ_PATCH_WDS" == "y" ]				&& OPTIONS+=" +wds"
-	[ "$FREETZ_PATCH_SIGNED" == "y" ]			&& OPTIONS+=" +signed"
+	[ "$FREETZ_PATCH_MAXDEVCOUNT" == "y" ]		&& OPTIONS+=" +maxdevcount"
+	[ "$FREETZ_PATCH_VCC" == "y" ]			&& OPTIONS+=" +vcc"
+	[ "$FREETZ_PATCH_SIGNED" == "y" ]		&& OPTIONS+=" +signed"
 	[ "$FREETZ_PATCH_USBSTORAGE" == "y" ]		&& OPTIONS+=" +usbstorage"
 
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
@@ -584,14 +586,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo1 "setting subversion '${SUBVERSION}'"
 		echo "$SUBVERSION" > "${FILESYSTEM_MOD_DIR}/etc/.subversion"
 		sed -i -e "s/\export\ FIRMWARE_SUBVERSION=.*\$/export\ FIRMWARE_SUBVERSION=\"${SUBVERSION}\"/g" "${FILESYSTEM_MOD_DIR}/etc/version"
-		sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
-		sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
 		if [ ! -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
 			AVM_SUBVERSION=`grep "SUBVERSION=" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" | sed -e "s/[^-0-9]//g"`
 			sed -i -e "s/SUBVERSION=\"$AVM_SUBVERSION\"/SUBVERSION=\"$SUBVERSION\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 		fi
 	fi
+
+	sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
+	sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
 	# Execute general patch scripts 
 	for i in "${PATCHES_DIR}/"*.sh; do
@@ -863,7 +866,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
 			modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
 		
-		echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
+		grep -q "^$pkg_name$" "${FILESYSTEM_MOD_DIR}/etc/static.pkg" >/dev/null 2>&1 || ( echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg" )
 	done
 	for pkg in $(static_addons); do
 		echo1 "${pkg} (addon)"
@@ -884,7 +887,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				modlang "${ADDON_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
 		fi
 
-		echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg"
+		grep -q "^$pkg_name$" "${FILESYSTEM_MOD_DIR}/etc/static.pkg" >/dev/null 2>&1 || ( echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg" )
 	done
 	
 	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
@@ -1090,21 +1093,25 @@ if [ "$DO_PACK" -gt 0 ]; then
 	let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 
 	echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
-	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		if [ "$FREETZ_TYPE_FON_7150" = "y" ]; then
-			# Calculate aproximately free space in seconds for the answering machine
-			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 233472)))
-			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
-			echo "${L1}Aproximately free time for the answering machine: $((($FREE_BYTE_JFFS2 / 2017)))s (${FREE_MINUTES}min $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60)))s)"
-		fi
-	fi
+
 	if [ "$KERNEL_SIZE" -eq 0 ]; then
 		error 1 "kernel image is empty"
 	fi
 	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
 		error 1 "kernel image is $DIFF bytes too big"
 	fi
-
+	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
+		if [ "$FREETZ_HAS_TAM" = "y" ]; then
+			# Calculate aproximately free space in seconds for the answering machine
+			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 233472)))
+			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
+			if [ "$FREE_BYTE_JFFS2" -gt 0 ]; then
+				echo "${L1}Aproximately free time for the answering machine: $((($FREE_BYTE_JFFS2 / 2017)))s (${FREE_MINUTES}min $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60)))s)"
+			else
+				echo "${L1}WARNING: Not enough free flash space for answering machine!"
+			fi
+		fi
+	fi
 	# Do we have the tool ?
 	if [ ! -x "$TICHKSUM" ]; then
 		error 1 "cannot find wonderful tool $TICHKSUM_TOOL"

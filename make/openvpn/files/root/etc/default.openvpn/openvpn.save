@@ -10,6 +10,7 @@ if [ "$OPENVPN_CONFIG_COUNT" -gt 1 ]; then
 		changed=${changed#*#};
 	done;
 else
+	rm  -f /mod/etc/openvpn_multid.pkg ;
 	start_stop openvpn "$oldstatus1" ;
 fi ;
 }

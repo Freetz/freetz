@@ -23,7 +23,7 @@ unset IFS;
 }
 
 delimiter="#"
-vars="DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES UDP_FRAGMENT ADDITIONAL OWN_KEYS" ;
+vars="DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES UDP_FRAGMENT ADDITIONAL OWN_KEYS NO_CERTTYPE PARAM_1 PARAM_2 PARAM_3" ;
 count=1;
 
 while [ $count -le $OPENVPN_CONFIG_COUNT ]; do
@@ -84,7 +84,7 @@ if [ "$AUTH_TYPE" == "certs" ]; then
 		fi
 	else
 		echo "tls-client" >> $CONFFILE
-		echo "ns-cert-type server" >> $CONFFILE
+		[ "yes" != "$NO_CERTTYPE" ] && echo "ns-cert-type server" >> $CONFFILE
 		if [ "$TLS_AUTH" == "yes" ]; then
 			echo "tls-auth ${keypath}static.key 1" >> $CONFFILE
 		fi
@@ -114,7 +114,6 @@ if [ "$MODE" == "server" ]; then
 		else
 		    echo "push \"route $BOX_IP \"" >> $CONFFILE
 		fi
-		echo "push \"route-gateway $BOX_IP \"" >> $CONFFILE
 	fi
 
 	if [ "$CLIENT_INFO" == "yes" ] && [ "$AUTH_TYPE" == "certs" ]; then 
@@ -192,6 +191,7 @@ if [ "$MODE" == "server" ]; then
 				client=$(($client+1))
 			done
 	fi
+	[ "$CLIENT2CLIENT" == "yes" ] && echo "client-to-client" >> $CONFFILE
 
 	if [ "$TYPE" == "tap" ]; then
 		echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
@@ -220,6 +220,7 @@ if [ "$MODE" == "server" ]; then
 			fi
 		fi
 	fi
+	[ "$CLIENT2CLIENT" == "yes" ] && echo "client-to-client" >> $CONFFILE
 
 else
 	echo "remote $REMOTE" >> $CONFFILE

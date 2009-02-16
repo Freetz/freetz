@@ -1,0 +1,445 @@
+--- usr/www/all/html/de/home/home.js.orig	2009-01-28 08:22:55.000000000 +0100
++++ usr/www/all/html/de/home/home.js	2009-01-28 08:22:59.000000000 +0100
+@@ -373,6 +373,9 @@
+ var timeBudgetReached = "<? query box:status/hint_time_budget_reached ?>";
+ if (timeBudgetReached == "1")
+ strWarn = "{?de.home.home.js:305?}";
++var volBudgetReached = "<? query box:status/hint_volume_budget_reached ?>";
++if (volBudgetReached == "1")
++strWarn = "das in Ihrem Tarif enthaltene Datenvolumen f&uuml;r diesen Monat ist aufgebraucht.";
+ if (strWarn != "")
+ {
+ strWarn = strWarn.fontcolor("#cc0000");
+@@ -385,6 +388,27 @@
+ var minutes = Math.ceil(cur%60);
+ var hmstr = timestrings.getHmStr(hours,minutes);
+ var retstr = timestrings.getOfHStr(hmstr,maxh);
++var g_Mega = 1000000; //1000*1000;
++var g_Shift32 = 4294967296; //2**32
++function mb2byte(mb){ return Math.floor(g_Mega*mb); }
++function byte2mb(b){ return Math.round(b/g_Mega); }
++function byte2low(b){ return b%g_Shift32; }
++function byte2high(b){ return Math.floor(b/g_Shift32); }
++function highlow2byte(h,l){ return h*g_Shift32+l; }
++if (maxtime==0)
++{
++var maxlow = <? query connection0:settings/Budget/VolumeLow ?>;
++var maxhigh = <? query connection0:settings/Budget/VolumeHigh ?>;
++var reclow = <? query inetstat:status/ThisMonth/BytesReceivedLow ?>;
++var rechigh = <? query inetstat:status/ThisMonth/BytesReceivedHigh ?>;
++var sentlow = <? query inetstat:status/ThisMonth/BytesSentLow ?>;
++var senthigh = <? query inetstat:status/ThisMonth/BytesSentHigh ?>;
++var maxvol = highlow2byte(maxhigh,maxlow);
++var curvol = highlow2byte(rechigh,reclow) + highlow2byte(senthigh,sentlow);
++var maxmb = byte2mb(maxvol);
++var curmb = byte2mb(curvol);
++retstr = curmb+g_txt_von+maxmb+ "MB"+".";
++}
+ return retstr;
+ }
+ function ConnectDisplay(n) {
+--- usr/www/all/html/de/internet/budget.frm.orig	2009-01-23 18:35:08.000000000 +0100
++++ usr/www/all/html/de/internet/budget.frm	2009-01-28 08:22:59.000000000 +0100
+@@ -3,3 +3,8 @@
+ <input type="hidden" name="connection0:settings/Budget/Enabled" value="<? query connection0:settings/Budget/Enabled ?>" id="uiPostBudgetOn">
+ <input type="hidden" name="connection0:settings/Budget/ConnectionTime" value="<? query connection0:settings/Budget/ConnectionTime ?>" id="uiPostBudgetTime">
+ <input type="hidden" name="connection0:settings/Budget/WarnOnly" value="<? query connection0:settings/Budget/WarnOnly ?>" id="uiPostWarnOnly">
++<input type="hidden" name="connection0:settings/VolumeRoundUp/Enabled" value="<? query connection0:settings/VolumeRoundUp/Enabled ?>" id="uiPostRoundUpOn">
++<input type="hidden" name="connection0:settings/VolumeRoundUp/Bytes" value="<? query connection0:settings/VolumeRoundUp/Bytes ?>" id="uiPostRoundUpBytes">
++<input type="hidden" name="connection0:settings/Budget/Period" value="<? query connection0:settings/Budget/Period ?>" id="uiPostBudgetPeriod">
++<input type="hidden" name="connection0:settings/Budget/VolumeLow" value="<? query connection0:settings/Budget/VolumeLow ?>" id="uiPostBudgetVolumeLow">
++<input type="hidden" name="connection0:settings/Budget/VolumeHigh" value="<? query connection0:settings/Budget/VolumeHigh ?>" id="uiPostBudgetVolumeHigh">
+--- usr/www/all/html/de/internet/budget.html.orig	2009-01-28 08:22:48.000000000 +0100
++++ usr/www/all/html/de/internet/budget.html	2009-01-28 08:22:59.000000000 +0100
+@@ -1,13 +1,25 @@
+ <div id="content">
+ <div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
+-{?de.internet.budget.html:6010?}
++Tarif eintragen
+ </div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+-{?de.internet.budget.html:8198?}
++Geben Sie hier das enthaltene Datenvolumen oder die Freistunden Ihres Tarifs an.
+ </div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p class="mb5"><input type="checkbox" id="uiViewBudgetOn" onclick="OnToggleBudget()">&nbsp;<label for="uiViewBudgetOn">{?de.internet.budget.html:15?}</label></p>
+ <div class="ml25">
++<p class="mb5"><input type="radio" name="uiViewTarif" id="uiViewBudgetVolumeOn" onclick="OnToggleTarif(1)">&nbsp;<label for="uiViewBudgetVolumeOn">Volumentarif</label></p>
++<p class="mb5" style="margin-left: 25px">
++<input type="text" size="7" maxlength="6" class="Eingabefeld" id="uiViewBudgetVolumeVal" style="text-align: right"> MB Datenvolumen pro Monat inklusive<br />
++Beispiel: 5000 MB (entsprechen 5 Gigabyte)</p>
++<p class="mb5" style="margin-left: 25px"><input type="checkbox" id="uiViewRoundUpOn" onclick="OnToggleRoundUp()">&nbsp;<label for="uiViewRoundUpOn">Runden des Übertragungsvolumens pro Verbindung auf</label>&nbsp;
++<select id="uiViewRoundUpBytes">
++<option value="1000">volle kB</option>
++<option value="1000000" selected>volle MB</option>
++</select>
++</p>
++<p class="mb5"><input type="radio" name="uiViewTarif" id="uiViewBudgetTimeOn" onclick="OnToggleTarif(2)">&nbsp;<label for="uiViewBudgetTimeOn">Zeittarif</label></p>
++<p class="mb5" style="margin-left: 25px">
+ <input type="text" size="6" maxlength="3" class="Eingabefeld" id="uiViewBudgetTimeVal" style="text-align: right">{?de.internet.budget.html:65?}<br />{?de.internet.budget.html:70?}
+ </div>
+ </div></div></div></div></div></div>
+@@ -17,10 +29,10 @@
+ </div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p class="mb5">
+-{?de.internet.budget.html:3635?}
++Im Bereich "System / INFO-Anzeige" können Sie festlegen, dass die INFO-LED der FRITZ!Box zu blinken beginnt, wenn [?das angegebene Datenvolumen oder?] die Freistunden überschritten sind.
+ <span id="uiViewDisconnectText" style="display:none">{?de.internet.budget.html:90?}</span></p>
+-<p class="pCheck25" id="uiDisconnect"><input type="checkbox" id="uiViewDisconnect">&nbsp;
+-<label for="uiViewDisconnect">{?de.internet.budget.html:6889?}
++<p class="pCheck25" id="uiDisconnect" style="display:none"><input type="checkbox" id="uiViewDisconnect">&nbsp;
++<label for="uiViewDisconnect">Trennung der Internetverbindung bei Überschreiten [?des angegebenen Datenvolumens oder?] der Freistunden.
+ </label></p>
+ </div></div></div></div></div></div>
+ <? include ../html/de/home/rbb_applyok.html ?>
+--- usr/www/all/html/de/internet/budget.js.orig	2009-01-28 08:22:52.000000000 +0100
++++ usr/www/all/html/de/internet/budget.js	2009-01-28 08:22:59.000000000 +0100
+@@ -19,20 +19,34 @@
+ function byte2high(b){ return Math.floor(b/g_Shift32); }
+ function highlow2byte(h,l){ return h*g_Shift32+l; }
+ function uiDoOnLoad() {
+-var Title = "{?de.internet.budget.js:5632?}";
++var Title = "Tarif eintragen";
+ document.title = Title;
+ var tmp=0;
+ var tmp2=0;
+ // StartofMonth
+ jslCopyValue("uiViewStartOfMonth","uiPostStartOfMonth");
++// RoundUp
++jslGetCheckValue("uiViewRoundUpOn","uiPostRoundUpOn");
++if (jslGetValue("uiPostRoundUpBytes")=="1000")
++jslSetSelection("uiViewRoundUpBytes","1000");
++else
++jslSetSelection("uiViewRoundUpBytes","1000000");
++OnToggleRoundUp();
+ // WarnOnly
+ jslSetChecked("uiViewDisconnect",jslGetValue("uiPostWarnOnly") != "1");
+ // Time (in hours)
+ tmp = jslGetValue("uiPostBudgetTime");
+ tmp /= 3600;
+ jslSetValue("uiViewBudgetTimeVal", Math.floor(tmp));
+-jslSetEnabled("uiViewBudgetTimeVal", 1);
+-jslSetChecked("uiViewBudgetOn",jslGetValue("uiPostBudgetOn") == "1");
++// Volume (in MB)
++var low = Number(jslGetValue("uiPostBudgetVolumeLow"));
++var high = Number(jslGetValue("uiPostBudgetVolumeHigh"));
++tmp = highlow2byte(high,low);
++tmp = byte2mb(tmp);
++jslSetValue("uiViewBudgetVolumeVal", Math.floor(tmp));
++OnToggleTarif(jslGetValue("uiPostBudgetTime") != "0" ? 2:1);
++// Budget
++jslGetCheckValue("uiViewBudgetOn","uiPostBudgetOn");
+ OnToggleBudget();
+ if (!isDslIp() && !isWanIp()) {
+ jslDisplay("uiViewDisconnectText", true);
+@@ -51,6 +65,12 @@
+ alert(g_mldSoM); return false;
+ }
+ }
++// RoundUp
++jslSetCheckValue("uiPostRoundUpOn","uiViewRoundUpOn");
++if (document.getElementById("uiViewRoundUpBytes").options[0].selected == true)
++jslSetValue("uiPostRoundUpBytes","1000");
++else
++jslSetValue("uiPostRoundUpBytes","1000000");
+ // WarnOnly
+ jslSetValue("uiPostWarnOnly",jslGetChecked("uiViewDisconnect") ? "0" : "1");
+ // Budget
+@@ -58,6 +78,10 @@
+ // Time (in hours)
+ if (jslGetChecked("uiViewBudgetOn"))
+ {
++if (jslGetChecked("uiViewBudgetTimeOn") == true)
++{
++jslSetValue("uiPostBudgetVolumeLow","0");
++jslSetValue("uiPostBudgetVolumeHigh","0");
+ tmp = jslGetValue("uiViewBudgetTimeVal");
+ if (valIsZahl(tmp) && tmp>0 && tmp<=744)
+ {
+@@ -69,6 +93,30 @@
+ return false;
+ }
+ }
++else
++jslSetValue("uiPostBudgetTime","0");
++// Volume (in MB)
++if (jslGetChecked("uiViewBudgetVolumeOn") == true)
++{
++tmp = Number(jslGetValue("uiViewBudgetVolumeVal"));
++if (isNaN(tmp) || tmp <= 0)
++{
++alert(g_mldVolume);
++return false;
++}
++tmp = mb2byte(tmp);
++var tmphigh = byte2high(tmp);
++tmphigh = byte2low(tmphigh); // Damit ist auch tmphigh höchstens 32-Bit
++var tmplow = byte2low(tmp);
++jslSetValue("uiPostBudgetVolumeLow",tmplow);
++jslSetValue("uiPostBudgetVolumeHigh",tmphigh);
++}
++else
++{
++jslSetValue("uiPostBudgetVolumeLow","0");
++jslSetValue("uiPostBudgetVolumeHigh","0");
++}
++}
+ // Save
+ jslSetValue("uiPostMenu", jslGetValue("uiPostMenu"));
+ jslSetValue("uiPostPageName", "inetstat");
+@@ -78,13 +126,38 @@
+ function uiDoCancel() {
+ jslGoTo(jslGetValue("uiPostMenu"), "inetstat");
+ }
++function OnToggleRoundUp () {
++if (jslGetChecked("uiViewRoundUpOn") == true)
++jslEnable("uiViewRoundUpBytes");
++else
++jslDisable("uiViewRoundUpBytes");
++}
+ function OnToggleBudget() {
+-if(jslGetChecked("uiViewBudgetOn")){
+-jslSetEnabled("uiViewBudgetTimeVal",1);
++if (jslGetChecked("uiViewBudgetOn") == true) {
++jslEnable("uiViewBudgetTimeOn");
++jslEnable("uiViewBudgetVolumeOn");
++OnToggleTarif(jslGetChecked("uiViewBudgetTimeOn") ? 2:1);
+ jslEnable("uiViewDisconnect");
+ }else{
+-jslSetEnabled("uiViewBudgetTimeVal",0);
+-jslSetEnabled("uiViewDisconnect",0);
++jslDisable("uiViewBudgetTimeOn");
++jslDisable("uiViewBudgetTimeVal");
++jslDisable("uiViewBudgetVolumeOn");
++jslDisable("uiViewBudgetVolumeVal");
++jslDisable("uiViewRoundUpOn");
++jslDisable("uiViewRoundUpBytes");
++jslDisable("uiViewDisconnect");
++}
++}
++function OnToggleTarif(id) {
++jslSetChecked("uiViewBudgetVolumeOn", id==1);
++jslSetChecked("uiViewBudgetTimeOn", id==2);
++jslSetEnabled("uiViewBudgetTimeVal", id==2);
++jslSetEnabled("uiViewBudgetVolumeVal", id==1);
++jslSetEnabled("uiViewRoundUpOn", id==1);
++if (id==1) {
++OnToggleRoundUp();
++} else {
++jslDisable("uiViewRoundUpBytes");
+ }
+ }
+ function isAtamode () {
+--- usr/www/all/html/de/internet/inetstat.html.orig	2009-01-28 08:22:48.000000000 +0100
++++ usr/www/all/html/de/internet/inetstat.html	2009-01-28 08:22:59.000000000 +0100
+@@ -21,7 +21,7 @@
+ </div></div></div></div></div></div>
+ <div class="backdialog" id="BudgetNoTarif" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p class="mb10">
+-{?de.internet.inetstat.html:2597?}
++Wenn Sie einen Zeit- oder Volumentarif haben, können Sie sich den aktuellen Verbrauch graphisch anzeigen lassen.
+ </p>
+ <p>{?de.internet.inetstat.html:45?}</p>
+ <p class="Buttonlink"><input type="button" onclick="uiDoBudget()" value="{?de.internet.inetstat.html:50?}" class="Pushbutton180"></p>
+@@ -29,7 +29,7 @@
+ <div id="BudgetTarif" style="display:none">
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p class="mb5">
+-{?de.internet.inetstat.html:7489?}
++<? print $var:BoxName ?> zeigt Ihnen den aktuellen Verbrauch des enthaltenen Datenvolumens oder der Freistunden Ihres Tarifs an.
+ </p>
+ <? if eq $var:showBalken 1 `
+ <table id="tBalken">
+@@ -66,7 +66,7 @@
+ </ul>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p class="mb5">
+-{?de.internet.inetstat.html:8376?}
++<? print $var:BoxName ?> erfasst die Online-Zeit und das dabei verbrauchte Datenvolumen. Der Online-Zähler kann von der exakten Abrechnung Ihres Internetanbieters abweichen.
+ </p>
+ <? if neq $var:settimeknown 1 `
+ <p>{?de.internet.inetstat.html:130?}</p>
+@@ -74,33 +74,51 @@
+ <? if eq {?de.internet.inetstat.html:135settimeknown?} 1 `
+ <table id="tStat" class="tborder">
+ <tr>
+-<th>&nbsp;</th>
+-<th style="text-align:center;">{?de.internet.inetstat.html:295?} {?de.internet.inetstat.html:300?}</th>
++<th></th>
++<th style="width: 130px; text-align: left;">{?de.internet.inetstat.html:295?} {?de.internet.inetstat.html:300?}</th>
++<th style="width: 100px; text-align: center;">Daten gesamt</th>
++<th style="text-align: center;">gesendet</th>
++<th style="text-align: center;">empfangen</th>
+ <th style="text-align:center;">{?de.internet.inetstat.html:305?}</th>
+ </tr>
+ <tr>
+ <th class="c1">{?de.internet.inetstat.html:310?}</th>
+ <td class="c211"><span id="spanTodayTime">__:__</span></td>
++<td class="c212"><span id="spanTodaySum">____ MB</span></td>
++<td class="c22"><span id="spanTodayOut">____ MB</span></td>
++<td class="c24"><span id="spanTodayIn">____ MB</span></td>
+ <td class="c23"><? query inetstat:status/Today/OutgoingCalls ?></td>
+ </tr>
+ <tr>
+ <th class="c1">{?de.internet.inetstat.html:320?}</th>
+ <td class="c211"><span id="spanYesterdayTime">__:__</span></td>
++<td class="c212"><span id="spanYesterdaySum">____ MB</span></td>
++<td class="c22"><span id="spanYesterdayOut">____ MB</span></td>
++<td class="c24"><span id="spanYesterdayIn">____ MB</span></td>
+ <td class="c23"><? query inetstat:status/Yesterday/OutgoingCalls ?></td>
+ </tr>
+ <tr>
+ <th class="c1">{?de.internet.inetstat.html:330?}</th>
+ <td class="c211"><span id="spanThisWeekTime">__:__</span></td>
++<td class="c212"><span id="spanThisWeekSum">____ MB</span></td>
++<td class="c22"><span id="spanThisWeekOut">____ MB</span></td>
++<td class="c24"><span id="spanThisWeekIn">____ MB</span></td>
+ <td class="c23"><? query inetstat:status/ThisWeek/OutgoingCalls ?></td>
+ </tr>
+ <tr>
+ <th class="c1">{?de.internet.inetstat.html:340?}</th>
+ <td class="c211"><span id="spanThisMonthTime">__:__</span></td>
++<td class="c212"><span id="spanThisMonthSum">____ MB</span></td>
++<td class="c22"><span id="spanThisMonthOut">____ MB</span></td>
++<td class="c24"><span id="spanThisMonthIn">____ MB</span></td>
+ <td class="c23"><? query inetstat:status/ThisMonth/OutgoingCalls ?></td>
+ </tr>
+ <tr>
+ <th class="c1">{?de.internet.inetstat.html:350?}</th>
+ <td class="c211"><span id="spanLastMonthTime">__:__</span></td>
++<td class="c212"><span id="spanLastMonthSum">____ MB</span></td>
++<td class="c22"><span id="spanLastMonthOut">____ MB</span></td>
++<td class="c24"><span id="spanLastMonthIn">____ MB</span></td>
+ <td class="c23"><? query inetstat:status/LastMonth/OutgoingCalls ?></td>
+ </tr>
+ </table>
+@@ -108,7 +126,7 @@
+ </div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p>
+-{?de.internet.inetstat.html:7443?}
++Hier können Sie die erfasste Online-Zeit und das Datenvolumen auf "0" setzen.
+ </p>
+ <p class="Buttonlink"><input type="button" onclick="uiDoReset()" value="{?de.internet.inetstat.html:365?}" class="Pushbutton180"></p>
+ </div></div></div></div></div></div>
+--- usr/www/all/html/de/internet/inetstat.js.orig	2009-01-28 08:22:58.000000000 +0100
++++ usr/www/all/html/de/internet/inetstat.js	2009-01-28 08:22:59.000000000 +0100
+@@ -3,9 +3,12 @@
+ <!--
+ #tStat {margin: 1px; width: 100%; font-size: 12px;}
+ #tStat td, #tStat th {padding: 0px 1px;}
+-#tStat .c1 {text-align: left;font-weight: normal}
+-#tStat .c211 {text-align: right; padding-right: 180px;}
+-#tStat .c23 {text-align: right; padding-right: 130px;}
++#tStat .c1 {width:130px; text-align: left;font-weight: normal}
++#tStat .c211 {text-align: right; padding-right: 95px;}
++#tStat .c212 {text-align: right; padding-right: 45px;}
++#tStat .c22 {text-align: right; padding-right: 30px;}
++#tStat .c23 {text-align: right; padding-right: 80px;}
++#tStat .c24 {text-align: right; padding-right: 50px;}
+ #tBalken {margin: auto;}
+ #tBalken td {padding: 4px;}
+ .bar {
+@@ -29,6 +32,8 @@
+ var g_now = new Date();
+ var g_mldReset = '{?de.internet.inetstat.js:30?}';
+ var g_mldCritTim = '{?de.internet.inetstat.js:35?} ';
++var g_mldCritVol = 'Das in Ihrem Tarif enthaltene Datenvolumen von %1%Anzahl% MB wird voraussichtlich schon am %2%Datum% aufgebraucht sein. ';
++var g_mldMaxVol = 'Das in Ihrem Tarif enthaltene Datenvolumen von %1%Nummer% MB ist aufgebraucht. ';
+ var g_mldMaxTim = '{?de.internet.inetstat.js:40?} ';
+ var g_txt_isTage = "{?de.internet.inetstat.js:45?}"
+ var g_txt_Stunden = " {?de.internet.inetstat.js:50?} ";
+@@ -53,15 +58,55 @@
+ <? if eq $var:settimeknown 1 `
+ GetBoxDate();
+ var time = <? query inetstat:status/Today/PhyConnTimeOutgoing ?>;
+-SetRow("Today",time);
++var inh = <? query inetstat:status/Today/BytesReceivedHigh ?>;
++var inl = <? query inetstat:status/Today/BytesReceivedLow ?>;
++var outh = <? query inetstat:status/Today/BytesSentHigh ?>;
++var outl = <? query inetstat:status/Today/BytesSentLow ?>;
++var vinh = <? query inetstat:status/Today/VoIPBytesReceivedHigh ?>;
++var vinl = <? query inetstat:status/Today/VoIPBytesReceivedLow ?>;
++var vouth = <? query inetstat:status/Today/VoIPBytesSentHigh ?>;
++var voutl = <? query inetstat:status/Today/VoIPBytesSentLow ?>;
++SetRow("Today",time,inh,inl,outh,outl,vinh,vinl,vouth,voutl);
+ time = <? query inetstat:status/Yesterday/PhyConnTimeOutgoing ?>;
+-SetRow("Yesterday",time);
++inh = <? query inetstat:status/Yesterday/BytesReceivedHigh ?>;
++inl = <? query inetstat:status/Yesterday/BytesReceivedLow ?>;
++outh = <? query inetstat:status/Yesterday/BytesSentHigh ?>;
++outl = <? query inetstat:status/Yesterday/BytesSentLow ?>;
++vinh = <? query inetstat:status/Yesterday/VoIPBytesReceivedHigh ?>;
++vinl = <? query inetstat:status/Yesterday/VoIPBytesReceivedLow ?>;
++vouth = <? query inetstat:status/Yesterday/VoIPBytesSentHigh ?>;
++voutl = <? query inetstat:status/Yesterday/VoIPBytesSentLow ?>;
++SetRow("Yesterday",time,inh,inl,outh,outl,vinh,vinl,vouth,voutl);
+ time = <? query inetstat:status/ThisWeek/PhyConnTimeOutgoing ?>;
+-SetRow("ThisWeek",time);
++inh = <? query inetstat:status/ThisWeek/BytesReceivedHigh ?>;
++inl = <? query inetstat:status/ThisWeek/BytesReceivedLow ?>;
++outh = <? query inetstat:status/ThisWeek/BytesSentHigh ?>;
++outl = <? query inetstat:status/ThisWeek/BytesSentLow ?>;
++vinh = <? query inetstat:status/ThisWeek/VoIPBytesReceivedHigh ?>;
++vinl = <? query inetstat:status/ThisWeek/VoIPBytesReceivedLow ?>;
++vouth = <? query inetstat:status/ThisWeek/VoIPBytesSentHigh ?>;
++voutl = <? query inetstat:status/ThisWeek/VoIPBytesSentLow ?>;
++SetRow("ThisWeek",time,inh,inl,outh,outl,vinh,vinl,vouth,voutl);
+ time = <? query inetstat:status/ThisMonth/PhyConnTimeOutgoing ?>;
+-SetRow("ThisMonth",time);
++inh = <? query inetstat:status/ThisMonth/BytesReceivedHigh ?>;
++inl = <? query inetstat:status/ThisMonth/BytesReceivedLow ?>;
++outh = <? query inetstat:status/ThisMonth/BytesSentHigh ?>;
++outl = <? query inetstat:status/ThisMonth/BytesSentLow ?>;
++vinh = <? query inetstat:status/ThisMonth/VoIPBytesReceivedHigh ?>;
++vinl = <? query inetstat:status/ThisMonth/VoIPBytesReceivedLow ?>;
++vouth = <? query inetstat:status/ThisMonth/VoIPBytesSentHigh ?>;
++voutl = <? query inetstat:status/ThisMonth/VoIPBytesSentLow ?>;
++SetRow("ThisMonth",time,inh,inl,outh,outl,vinh,vinl,vouth,voutl);
+ time = <? query inetstat:status/LastMonth/PhyConnTimeOutgoing ?>;
+-SetRow("LastMonth",time);
++inh = <? query inetstat:status/LastMonth/BytesReceivedHigh ?>;
++inl = <? query inetstat:status/LastMonth/BytesReceivedLow ?>;
++outh = <? query inetstat:status/LastMonth/BytesSentHigh ?>;
++outl = <? query inetstat:status/LastMonth/BytesSentLow ?>;
++vinh = <? query inetstat:status/LastMonth/VoIPBytesReceivedHigh ?>;
++vinl = <? query inetstat:status/LastMonth/VoIPBytesReceivedLow ?>;
++vouth = <? query inetstat:status/LastMonth/VoIPBytesSentHigh ?>;
++voutl = <? query inetstat:status/LastMonth/VoIPBytesSentLow ?>;
++SetRow("LastMonth",time,inh,inl,outh,outl,vinh,vinl,vouth,voutl);
+ ` ?>
+ <? if eq <? query connection0:settings/Budget/Enabled ?> 1 `
+ var maxw = 174;
+@@ -164,6 +209,18 @@
+ var tipp = "";
+ if (cur<max) tipp = g_mldCritTim;
+ else tipp = g_mldMaxTim;
++if (max==0)
++{
++// Volumenbalken
++max = highlow2byte(<? query connection0:settings/Budget/VolumeHigh ?>,<? query connection0:settings/Budget/VolumeLow ?>);
++maxh = byte2mb(max);
++cur = highlow2byte(<? query inetstat:status/ThisMonth/BytesReceivedHigh ?>,<? query inetstat:status/ThisMonth/BytesReceivedLow ?>);
++cur += highlow2byte(<? query inetstat:status/ThisMonth/BytesSentHigh ?>,<? query inetstat:status/ThisMonth/BytesSentLow ?>);
++curh = byte2mb(cur);
++what = "MB";
++if (cur<max) tipp = g_mldCritVol;
++else tipp = g_mldMaxVol;
++}
+ // Verbrauchsbalken setzen
+ document.getElementById("uiViewImageValue").width = Math.ceil(Math.min(maxw,(cur/max)*maxw));
+ SetSpanText("uiViewLabelValue", jslPrintf("{?de.internet.inetstat.js:2729?}",curh,maxh,what));
+@@ -211,8 +268,11 @@
+ default: Tabs(budget=="1" ? 0:1); break;
+ }
+ }
+-function SetRow(name,time) {
++function SetRow(name,time,inh,inl,outh,outl,vinh,vinl,vouth,voutl) {
+ SetSpanText("span"+name+"Time",MakeTimeStr(time));
++SetSpanText("span"+name+"In",MakeVolStr(inh,inl));
++SetSpanText("span"+name+"Out",MakeVolStr(outh,outl));
++SetSpanText("span"+name+"Sum",MakeVolSumStr(inh,outh,inl,outl));
+ }
+ function uiDoRefresh() {
+ jslGoTo("","inetstat");

@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_DTMFBOX
 	depends on FREETZ_LANG_DE || ! FREETZ_SELECTED_LANG_ONLY
-	bool "dtmfbox v0.5.0 (rc2)"
+	bool "dtmfbox v0.5.0 (rc3)"
 	select FREETZ_LIB_libcapi20
 	select FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
 	default n
@@ -30,7 +30,18 @@ config FREETZ_PACKAGE_DTMFBOX_WITH_CAPI
 	default y
 	help
 		Compile dtmfbox with CAPI support (ISDN/Analog)
-	
+
+#config FREETZ_PACKAGE_DTMFBOX_WITH_REMOTE_CAPI
+#	bool "Remote CAPI support"	
+#	depends on FREETZ_PACKAGE_DTMFBOX_WITH_CAPI
+#	default n
+#	help
+#		Compile dtmfbox with Remote-CAPI support (ISDN/Analog).		
+#		You can connect two Fritz!Boxes via capiotcp daemon (eg. repeater and base).
+#		
+#		You will get 5 controllers additionally:
+#		1-5 are the internal controllers. 6-10 are the remote controllers.
+
 config FREETZ_PACKAGE_DTMFBOX_WITH_VOIP
 	bool "SIP support"
 	depends on FREETZ_PACKAGE_DTMFBOX
@@ -86,11 +97,22 @@ menu "Misc"
 
 config FREETZ_PACKAGE_DTMFBOX_SVN
 	depends on FREETZ_PACKAGE_DTMFBOX
-	bool "Download trunk from SVN"
+	bool "Download from SVN"
 	default n
 	help		
-	    Download latest dtmfbox from subversion repository.
-	    This is the current development trunk.
+		Download latest dtmfbox from subversion repository.
+		This is the current development trunk.
+
+config FREETZ_PACKAGE_DTMFBOX_SVN_FORCE_LATEST_REV
+	depends on FREETZ_PACKAGE_DTMFBOX_SVN
+	bool "Always checkout latest revision and compile"
+	default y
+	help
+		Always latest revision from SVN repository without 
+		running 'dtmfbox-dirclean'.
+		
+		Everytime you run 'make', a complete checkout and
+		recompilation is performed.
 
 config FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE
 	bool "Webphone Applet (beta)"

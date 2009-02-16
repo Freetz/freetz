@@ -136,11 +136,13 @@ if [ "true" == "$inetd" ]; then
 	inetd_status="$(/etc/init.d/rc.inetd status 2> /dev/null)"
 fi
 
+# comment out dynamic packages until we implemented it
+
 case "$view" in
 	"")
 		stat_builtin
 		stat_static
-		stat_dynamic
+#		stat_dynamic
 		;;
 	builtin)
 		stat_builtin
@@ -148,9 +150,9 @@ case "$view" in
 	static)
 		stat_static
 		;;
-	dynamic)
-		stat_dynamic
-		;;
+#	dynamic)
+#		stat_dynamic
+#		;;
 	*)
 		echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Unbekannte Ansicht" en:"unknown view") '$view'</p>"
 		;;

@@ -1,6 +1,5 @@
-diff -burN html/capture.html usr/www/all/html/capture.html
---- usr/www/all/html/capture.html	2008-08-01 11:41:14.000000000 +0200
-+++ usr/www/all/html/capture.html	2008-09-09 00:28:27.000000000 +0200
+--- usr/www/all/html/capture.html.orig	2009-02-03 10:54:08.000000000 +0100
++++ usr/www/all/html/capture.html	2009-02-08 18:52:39.000000000 +0100
 @@ -101,7 +101,7 @@
  <form name="Capture3start" method="GET" action="../cgi-bin/capture_notimeout" >
  <table>
@@ -10,10 +9,9 @@ diff -burN html/capture.html usr/www/all/html/capture.html
  </tr>
  <tr>
  <br>mit Länge/with length:&nbsp;<input type="text" size=4 value="1600" name="snaplen" > bytes
-diff -burN html/de/home/sitemap.html usr/www/all/html/de/home/sitemap.html
---- usr/www/all/html/de/home/sitemap.html	2008-08-01 11:41:07.000000000 +0200
-+++ usr/www/all/html/de/home/sitemap.html	2008-09-09 00:49:12.000000000 +0200
-@@ -160,22 +160,6 @@
+--- usr/www/all/html/de/home/sitemap.html.orig	2009-02-03 10:54:06.000000000 +0100
++++ usr/www/all/html/de/home/sitemap.html	2009-02-08 18:52:39.000000000 +0100
+@@ -157,22 +157,6 @@
  </td>
  <td class="gelb">
  <div class="gelb">
@@ -36,9 +34,8 @@ diff -burN html/de/home/sitemap.html usr/www/all/html/de/home/sitemap.html
  <!-- wlan:settings/ap_enabled = '<? query wlan:settings/ap_enabled ?>' -->
  <? setvariable var:showWlan 0 ?>
  <? if eq <? query wlan:settings/ap_enabled ?> 1 '<? setvariable var:showWlan 1 ?>' ?>
-diff -burN html/de/js/basis.js usr/www/all/html/de/js/basis.js
---- usr/www/all/html/de/js/basis.js	2008-08-01 11:41:10.000000000 +0200
-+++ usr/www/all/html/de/js/basis.js	2008-09-09 00:28:24.000000000 +0200
+--- usr/www/all/html/de/js/basis.js.orig	2009-02-03 10:54:11.000000000 +0100
++++ usr/www/all/html/de/js/basis.js	2009-02-08 18:52:39.000000000 +0100
 @@ -130,7 +130,6 @@
  else if(m=="enhsettings") { jslGoTo('enhsettings', 'sitemap');}
  else if(m=="software") {jslGoTo('software', 'sitemap');}
@@ -47,20 +44,18 @@ diff -burN html/de/js/basis.js usr/www/all/html/de/js/basis.js
  else{ jslGoTo('home', 'sitemap');}
  }
  function AddFavoritesLink(breite, titel) {
-diff -burN html/de/menus/menu2_homehome.html usr/www/all/html/de/menus/menu2_homehome.html
---- usr/www/all/html/de/menus/menu2_homehome.html	2008-09-09 01:01:19.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homehome.html	2008-09-09 00:53:14.000000000 +0200
-@@ -2,7 +2,6 @@
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2009-02-08 18:52:39.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_homehome.html	2009-02-08 18:52:39.000000000 +0100
+@@ -3,7 +3,6 @@
  <li class="LMenutop">&nbsp;</li>
  <? setvariable var:classname 'LMenuitemTop' ?>
  <? if eq $var:pagename home `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
 -<? if eq $var:pagename usbdisk_cut `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
  <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','home')">Übersicht</a><span class="PTextOnly">Übersicht</span></li>
+ <!--CONFIG_isIsdnTE==1 || CONFIG_isPots==1 -->
  <? setvariable var:classname 'LMenuitemTop' ?>
- <? if eq $var:pagename foncalls `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
-diff -burN html/de/menus/menu2_konfig.html usr/www/all/html/de/menus/menu2_konfig.html
---- usr/www/all/html/de/menus/menu2_konfig.html	2008-09-09 01:01:19.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_konfig.html	2008-09-09 00:59:38.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_konfig.html.orig	2009-02-08 18:52:39.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_konfig.html	2009-02-08 18:52:39.000000000 +0100
 @@ -42,11 +42,6 @@
  ` `
  <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('fon','foncalls')">Telefonie</a><span class="PTextOnly">Telefonie</span></li>
@@ -73,8 +68,7 @@ diff -burN html/de/menus/menu2_konfig.html usr/www/all/html/de/menus/menu2_konfi
  <? if eq `$var:menu` 'wlan' `
  <? include ../html/de/menus/menu2_wlan.html ?>
  ` `
-diff -burN html/de/menus/menu2_usb.html usr/www/all/html/de/menus/menu2_usb.html
---- usr/www/all/html/de/menus/menu2_usb.html	2008-08-01 11:41:14.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_usb.html.orig	2009-02-03 10:53:52.000000000 +0100
 +++ usr/www/all/html/de/menus/menu2_usb.html	1970-01-01 01:00:00.000000000 +0100
 @@ -1,17 +0,0 @@
 -<? setvariable var:expmode '<? query box:settings/expertmode/activated ?>' ?>
@@ -94,9 +88,8 @@ diff -burN html/de/menus/menu2_usb.html usr/www/all/html/de/menus/menu2_usb.html
 -<li id="miUsbaura" class="<? echo '$var:class1' ?>"><img class="LMenuPfeil" src="<? echo '$var:subpfeil' ?>"><a href="javascript:jslGoTo('usb','aura')">USB-Fernanschluss</a><span class="PTextOnly">USB-Fernanschluss</span></li>
 -` ?>
 -` ?>
-diff -burN html/de/system/energy.html usr/www/all/html/de/system/energy.html
---- usr/www/all/html/de/system/energy.html	2008-08-01 11:41:02.000000000 +0200
-+++ usr/www/all/html/de/system/energy.html	2008-09-09 00:54:26.000000000 +0200
+--- usr/www/all/html/de/system/energy.html.orig	2009-02-03 10:53:50.000000000 +0100
++++ usr/www/all/html/de/system/energy.html	2009-02-08 18:52:39.000000000 +0100
 @@ -73,15 +73,6 @@
  </tr></table>
  </div></div></div></div></div></div>
@@ -113,9 +106,8 @@ diff -burN html/de/system/energy.html usr/www/all/html/de/system/energy.html
  <p class="mb10"><b>LAN-Schnittstellen</b></p>
  <p>
  <img src="../html/de/images/led_<? if eq `<? query eth0:status/carrier ?>` 1 `green` `gray` ?>.gif" /> LAN 1
-diff -burN html/de/system/infoled.html usr/www/all/html/de/system/infoled.html
---- usr/www/all/html/de/system/infoled.html	2008-08-01 11:41:06.000000000 +0200
-+++ usr/www/all/html/de/system/infoled.html	2008-09-09 00:55:57.000000000 +0200
+--- usr/www/all/html/de/system/infoled.html.orig	2009-02-03 10:53:58.000000000 +0100
++++ usr/www/all/html/de/system/infoled.html	2009-02-08 18:52:39.000000000 +0100
 @@ -12,20 +12,12 @@
  <option value="3">leuchtet bei aktivem WLAN</option>
  <option value="4">leuchtet bei bestehender Internetverbindung</option>
@@ -137,10 +129,9 @@ diff -burN html/de/system/infoled.html usr/www/all/html/de/system/infoled.html
  </div></div></div></div></div></div>
  <? include ../html/de/home/rbb_applycancel.html ?>
  </div>
-diff -burN html/de/system/netipadr.js usr/www/all/html/de/system/netipadr.js
---- usr/www/all/html/de/system/netipadr.js	2008-08-01 11:41:17.000000000 +0200
-+++ usr/www/all/html/de/system/netipadr.js	2008-09-09 00:28:27.000000000 +0200
-@@ -56,10 +56,6 @@
+--- usr/www/all/html/de/system/netipadr.js.orig	2009-02-03 10:53:46.000000000 +0100
++++ usr/www/all/html/de/system/netipadr.js	2009-02-08 18:52:39.000000000 +0100
+@@ -54,10 +54,6 @@
  var g_mldNetMask_Lan = "Netzmaske (LAN)";
  var g_mldVon_Lan = "Von (LAN)";
  var g_mldBis_Lan = "Bis (LAN)";
@@ -151,9 +142,8 @@ diff -burN html/de/system/netipadr.js usr/www/all/html/de/system/netipadr.js
  var g_mldIpAdr_Wlan = "IP-Adresse (WLAN)";
  var g_mldNetMask_Wlan = "Netzmaske (WLAN)";
  function uiDoOnLoad() {
-diff -burN html/de/system/syslog.html usr/www/all/html/de/system/syslog.html
---- usr/www/all/html/de/system/syslog.html	2008-08-01 11:41:15.000000000 +0200
-+++ usr/www/all/html/de/system/syslog.html	2008-09-09 00:57:55.000000000 +0200
+--- usr/www/all/html/de/system/syslog.html.orig	2009-02-03 10:53:40.000000000 +0100
++++ usr/www/all/html/de/system/syslog.html	2009-02-08 18:52:39.000000000 +0100
 @@ -12,7 +12,6 @@
  <li class="tabs_on"><div class="activtab">Alle</div></li>
  <li><a href="javascript:Tabs(1)">Telefonie</a></li>

@@ -345,15 +345,15 @@ menu "net"
 config FREETZ_MODULE_bluetooth
 	bool "bluetooth.ko"
 	default n
-	
-config FREETZ_MODULE_l2cap
-	bool "l2cap.ko"
-	select FREETZ_MODULE_bluetooth
-	default n
 
 config FREETZ_MODULE_bnep
 	bool "bnep.ko"
 	select FREETZ_MODULE_l2cap
+	default n
+
+config FREETZ_MODULE_l2cap
+	bool "l2cap.ko"
+	select FREETZ_MODULE_bluetooth
 	default n
 	
 config FREETZ_MODULE_rfcomm

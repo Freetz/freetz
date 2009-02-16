@@ -40,9 +40,9 @@ sec_begin 'VPNC - VPN Client'
 cat << EOF
 <h2>VPN Benutzer-Daten</h2>
 <p>IPSec Gruppenname: <input type="text" name="ipsecid" size="15" maxlength="30" value="$(html "$VPNC_IPSECID")"></p>
-<p>IPSec Gruppenpasswort: <input type="password" name="ipsecsecret" size="15" maxlength="30" value="$(html "$VPNC_IPSECSECRET")"></p>
+<p>IPSec Gruppenpasswort: <input type="password" name="ipsecsecret" size="15" maxlength="35" value="$(html "$VPNC_IPSECSECRET")"></p>
 <p>Benutzername: <input type="text" name="xauthusername" size="15" maxlength="40" value="$(html "$VPNC_XAUTHUSERNAME")"></p>
-<p>Benutzerpasswort: <input type="password" name="xauthpassword" size="15" maxlength="30" value="$(html "$VPNC_XAUTHPASSWORD")"></p>
+<p>Benutzerpasswort: <input type="password" name="xauthpassword" size="15" maxlength="35" value="$(html "$VPNC_XAUTHPASSWORD")"></p>
 <h2>VPN Server-Daten</h2>
 <p>IP/Name des IPSec Gateway<br>
 IPSec gateway: <input type="text" name="ipsecgateway" size="15" maxlength="30" value="$(html "$VPNC_IPSECGATEWAY")"> &lt;IP/Name&gt;</p>

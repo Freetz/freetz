@@ -31,7 +31,7 @@ case "$1" in
 		exit 1
 		;;
 	freetz)
-		echo 'Changing password for admin (freetz webconfig)'
+		echo 'Changing password for freetz webconfig'
 		echo 'This password should be different from root'"'"'s password.'
 		echo 'No "weak password" warnings are generated.'
 		echo ''
@@ -46,14 +46,14 @@ case "$1" in
 
 		if [ "$passwd1" != "$passwd2" -o -z "$passwd1" ]; then
 			echo 'Passwords do not match or empty password.' 1>&2
-			echo 'modpasswd: The password for admin (freetz webconfig) is unchanged.' 1>&2
+			echo 'modpasswd: The password for freetz webconfig is unchanged.' 1>&2
 			echo '' 1>&2
 			exit 1
 		fi
 
 		/usr/bin/modconf set mod MOD_HTTPD_PASSWD=$(/usr/sbin/httpd -m "$passwd1")
 
-		echo 'modpasswd: Password for admin (freetz webconfig) changed.'
+		echo 'modpasswd: Password for freetz webconfig changed.'
 		echo ''
 
 		/usr/bin/modconf save mod

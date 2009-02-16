@@ -106,6 +106,10 @@ stop() {
 case "$1" in
         ""|load)
 		modreg cgi 'dnsmasq' 'Dnsmasq'
+		
+		deffile='/mod/etc/default.dnsmasq/dnsmasq_extra.def'
+		[ -r "/tmp/flash/dnsmasq_extra.def" ] && deffile='/tmp/flash/dnsmasq_extra.def'
+		modreg file 'dnsmasq_extra' 'Dnsmasq-Extra' 0 "$deffile"
 
 		if [ "$DNSMASQ_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2

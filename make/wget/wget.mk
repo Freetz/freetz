@@ -15,6 +15,19 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_WGET_WITH_SSL),--with-libssl-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_WGET_WITH_SSL
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_WGET_STATIC
+
+ifeq ($(strip $(FREETZ_WGET_WITH_SSL)),y)
+	WGET_LIBS="-lssl -lcrypto -ldl"
+	ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
+		WGET_LDFLAGS="-static"
+	else
+		WGET_LDFLAGS=""
+	endif
+else
+	WGET_LIBS="-ldl"
+	WGET_LDFLAGS=""
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -22,7 +35,9 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(WGET_DIR)
+		$(MAKE) -C $(WGET_DIR) \
+		LDFLAGS=$(WGET_LDFLAGS) \
+		LIBS=$(WGET_LIBS)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
