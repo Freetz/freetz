@@ -31,7 +31,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/pcre-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre*.so* $(EXPAT_TARGET_DIR)/
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre*.so* $(PCRE_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
 $(pkg): $($(PKG)_STAGING_BINARY)
@@ -44,6 +44,6 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/pcre*.h
 
 $(pkg)-uninstall:
-	$(RM) $(EXPAT_TARGET_DIR)/libpcre*.so*
+	$(RM) $(PCRE_TARGET_DIR)/libpcre*.so*
 
 $(PKG_FINISH)
