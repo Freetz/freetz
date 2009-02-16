@@ -10,9 +10,9 @@ $(PKG)_MODULE_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/mod_access.so
 include $($(PKG)_MAKE_DIR)/lighttpd.in
 
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
-#$(PKG)_CONFIGURE_ENV += PCRE_LIB="-lpcre"
+$(PKG)_CONFIGURE_ENV += PCRE_LIB="-lpcre"
 
-$(PKG)_DEPENDS_ON:=
+$(PKG)_DEPENDS_ON:= pcre
 
 ifeq ($(strip $(FREETZ_PACKAGE_LIGHTTPD_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
@@ -39,7 +39,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-gdbm
 $(PKG)_CONFIGURE_OPTIONS += --without-ldap
 $(PKG)_CONFIGURE_OPTIONS += --without-memcache
 $(PKG)_CONFIGURE_OPTIONS += --without-mysql
-$(PKG)_CONFIGURE_OPTIONS += --with-pcre="no"
+$(PKG)_CONFIGURE_OPTIONS += --with-pcre="yes"
 $(PKG)_CONFIGURE_OPTIONS += --without-valgrind
 
 ifneq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT )),y)
