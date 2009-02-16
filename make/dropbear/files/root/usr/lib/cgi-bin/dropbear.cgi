@@ -51,7 +51,7 @@ cat << EOF
 <input id="r1" type="radio" name="rootonly" value="yes"$rootonly_yes_chk><label for="r1"> $(lang de:"Aktiviert" en:"Enabled")</label>
 <input id="r2" type="radio" name="rootonly" value="no"$rootonly_no_chk><label for="r2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
 </p>
-<p style="font-size:10px;">$(lang de:"Bitte beachte, dass die FRITZ!Box kein ad&auml;quates Benutzermanagement bietet. Die Dateien /etc/passwd und /etc/shadow werden bei jedem Boot neu angelegt. Bitte aktiviere die Unterst&uuml;tzung f&uuml; normale Benutzer nur, wenn Du genau wei&szlig;t, was Du tust." en:"Please note that the FRITZ!Box does not support normal user management. The files /etc/passwd and /etc/shadow are re-created during each boot. Please activate the support for regular users only if you know what you are doing.")</p>
+<p style="font-size:10px;">$(lang de:"Bitte beachte, dass die FRITZ!Box kein ad&auml;quates Benutzermanagement bietet. Die Dateien /etc/passwd und /etc/shadow werden bei jedem Boot neu angelegt. Bitte aktiviere die Unterst&uuml;tzung f&uuml;r normale Benutzer nur, wenn Du genau wei&szlig;t, was Du tust." en:"Please note that the FRITZ!Box does not support normal user management. The files /etc/passwd and /etc/shadow are re-created during each boot. Please activate the support for regular users only if you know what you are doing.")</p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
 <p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(html "$DROPBEAR_OPTIONS")"></p>
 EOF

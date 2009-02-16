@@ -81,7 +81,7 @@ config EXTERNAL_FREETZ_LIB_libmad
 		 /lib/libmad.so.0.2.1
 
 config EXTERNAL_FREETZ_LIB_libncurses
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libncurses
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libncurses && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
 	bool "libncurses"
 	default n
 	help
@@ -118,5 +118,20 @@ config EXTERNAL_FREETZ_LIB_libcurl
 	default n
 	help
 		externals these file(s):
-		 /usr/lib/libcurl-4.1.0.so
+		 /usr/lib/libcurl.so.4.1.1
 
+config EXTERNAL_FREETZ_LIB_libreadline
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libreadline && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
+	bool "libreadline"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libreadline.so.5.2
+
+config EXTERNAL_FREETZ_LIB_libhistory
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libhistory && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
+	bool "libhistory"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libhistory.so.5.2
