@@ -66,6 +66,10 @@ start() {
 	echo -n 'Starting lighttpd ...'
 	configure
 
+	# required by modules in order to spawn processes (e.g. FastCGI)
+	mkdir -p /var/run/$DAEMON
+	chown wwwrun:wwwrun /var/run/$DAEMON
+
 	while [ ! -d "$LIGHTTPD_DOCROOT" ]; do
 		echo "Docroot $LIGHTTPD_DOCROOT not yet available, sleeping"
 		sleep 5
