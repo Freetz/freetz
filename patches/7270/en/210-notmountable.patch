@@ -1,0 +1,23 @@
+--- usr/www/avme/html/de/home/home.js	2008-12-21 23:09:50.000000000 +0100
++++ usr/www/avme/html/de/home/home.js	2008-12-21 23:37:35.000000000 +0100
+@@ -697,12 +697,6 @@
+ if (isNaN(nStor)) nStor = 0;
+ var nPartTotal = Number("<? query ctlusb:settings/storage-part-total ?>");
+ if (isNaN(nStor)) nPartTotal = 0;
+-if (nPartTotal > nStor) {
+-var str="";
+-str += "{?de.home.home.js:5308?} ";
+-str += "<a href=\"javascript:jslGoTo('home', 'syslog');\">{?de.home.home.js:3744?}</a>";
+-return str.fontcolor("#cc0000");
+-}
+ var strArr = new Array();
+ if (nUsb == 0)
+ {
+@@ -711,6 +705,7 @@
+ strArr.push(g_usbConnected);
+ return strArr.join(" ");
+ }
++strArr.push("Es wurden " + nStor + " von " + nPartTotal + " Partitionen eingebunden.");
+ <? if eq '<? query aura:settings/enabled ?>' '1' `
+ <? multiquery aura:settings/device/list(class,manufacturer,comment,client) `
+ var strAura = UsbDeviceName("<? query aura:settings/$11 ?>", "$13","$14","$12");
