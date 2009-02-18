@@ -1,10 +1,23 @@
 config FREETZ_PACKAGE_OPENSSH
-	bool "OpenSSH 5.1p1"
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libresolv
-	select FREETZ_LIB_libutil
-	select FREETZ_LIB_libz
+	bool "OpenSSH 5.1p1 sftp-server"
+	depends on FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENSSH_STATIC
+	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_OPENSSH_STATIC
+	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_OPENSSH_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_OPENSSH_STATIC
 	default n
 	help
-		OpenSSH package 
+		This option is selected to add SFTP support to dropbear
+		by using OpenSSH's SFTP server.
 
+config FREETZ_PACKAGE_OPENSSH_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_OPENSSH
+	default n
+	help
+		OpenSSH needs the following shared libraries which
+		can be linked in statically by activating this switch:
+		- libcrypto
+		- libresolv
+		- libz
+		- libutil

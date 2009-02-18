@@ -39,13 +39,13 @@ config FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB
 		ZLIB Compression for SSH Traffic
 
 config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
-	bool "Add sftp server"
+	bool "Add SFTP support"
 	depends on FREETZ_PACKAGE_DROPBEAR 
 	select FREETZ_PACKAGE_OPENSSH
 	default n
 	help
-		Adds sftp-server-support to dropbear. OpenSSH is needed
-		for this feature. 
+		This option adds SFTP support to dropbear by using
+		OpenSSH's SFTP server.
 
 config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
 	bool "Disable DNS reverse-lookup of the client"
