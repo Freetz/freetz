@@ -10,7 +10,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 
 $(PKG)_CONFIGURE_ENV += BUILD_CC="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += HOSTCC="$(HOSTCC)"
-$(PKG)_CONFIGURE_ENV += td_cv_gubbygetaddrinfo="no"
+$(PKG)_CONFIGURE_ENV += td_cv_buggygetaddrinfo="no"
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
 $(PKG)_CONFIGURE_OPTIONS += --without-crypto

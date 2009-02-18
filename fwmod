@@ -194,7 +194,6 @@ UNSQUASHFS_TOOL="unsquashfs3-lzma"
 EXTERNAL_TOOL="external"
 
 MKSQUASHFS_OPTIONS="-le -noappend -all-root -info"
-UNSQUASHFS_OPTIONS="-no-progress"
 
 if [ "$FREETZ_REPLACE_KERNEL" == "y" ] || [ "$FREETZ_KERNEL_VERSION_2_6_19_2" ]; then
 	MKSQUASHFS_TOOL="mksquashfs3-lzma"
@@ -258,10 +257,10 @@ modunsqfs()
 {
 	local STATUS
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		"$FAKEROOT" "$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L1}/g"
+		"$FAKEROOT" "$UNSQUASHFS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L1}/g"
 		STATUS=${PIPESTATUS[0]}
 	else
-		"$FAKEROOT" "$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" > /dev/null
+		"$FAKEROOT" "$UNSQUASHFS" -dest "$1" "$2" > /dev/null
 		STATUS=$?
 	fi
 	if [ $STATUS -gt 0 ]; then

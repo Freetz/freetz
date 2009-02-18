@@ -1,47 +1,6 @@
-Index: output.c
-===================================================================
---- output.c	(Revision 77)
-+++ output.c	(Arbeitskopie)
-@@ -204,11 +204,13 @@
- 	} else {
- 		int i;
- 		for (i = 0; i < func->num_params - func->params_right - 1; i++) {
-+			func->arg_info[i]->arg_num = i;
- 			current_column +=
- 			    display_arg(type, proc, func->arg_info[i]);
- 			current_column += fprintf(output, ", ");
- 		}
- 		if (func->num_params > func->params_right) {
-+			func->arg_info[i]->arg_num = i;
- 			current_column +=
- 			    display_arg(type, proc, func->arg_info[i]);
- 			if (func->params_right) {
-@@ -289,11 +291,13 @@
- 		int i;
- 		for (i = func->num_params - func->params_right;
- 		     i < func->num_params - 1; i++) {
-+			func->arg_info[i]->arg_num = i;
- 			current_column +=
- 			    display_arg(type, proc, func->arg_info[i]);
- 			current_column += fprintf(output, ", ");
- 		}
- 		if (func->params_right) {
-+			func->arg_info[i]->arg_num = i;
- 			current_column +=
- 			    display_arg(type, proc, func->arg_info[i]);
- 		}
-@@ -303,6 +307,7 @@
- 		if (func->return_info->type == ARGTYPE_VOID) {
- 			fprintf(output, "<void>");
- 		} else {
-+			func->return_info->arg_num = -1;
- 			display_arg(type, proc, func->return_info);
- 		}
- 	}
-Index: configure.ac
-===================================================================
---- configure.ac	(Revision 77)
-+++ configure.ac	(Arbeitskopie)
+diff -burN configure.ac configure.ac
+--- configure.ac	2006-06-14 06:55:21.000000000 +0200
++++ configure.ac	2008-11-22 12:41:48.000000000 +0100
 @@ -15,7 +15,7 @@
  
  dnl Checks for libraries.
@@ -51,268 +10,94 @@ Index: configure.ac
  
  dnl
  dnl The following stuff may be useful, but I don't use it now.
-Index: sysdeps/linux-gnu/trace.c
-===================================================================
---- sysdeps/linux-gnu/trace.c	(Revision 77)
-+++ sysdeps/linux-gnu/trace.c	(Arbeitskopie)
-@@ -207,7 +207,7 @@
- 		continue_process(proc->pid);
- 	} else {
- 		proc->breakpoint_being_enabled = sbp;
--#if defined __sparc__  || defined __ia64___
-+#if defined __sparc__  || defined __ia64___ || defined __mips__
- 		/* we don't want to singlestep here */
- 		continue_process(proc->pid);
- #else
-Index: sysdeps/linux-gnu/mipsel/mipsel.h
-===================================================================
---- sysdeps/linux-gnu/mipsel/mipsel.h	(Revision 77)
-+++ sysdeps/linux-gnu/mipsel/mipsel.h	(Arbeitskopie)
+diff -burN ltrace.h ltrace.h
+--- ltrace.h	2008-03-12 15:56:01.000000000 +0100
++++ ltrace.h	2008-11-22 12:41:48.000000000 +0100
+@@ -144,6 +144,9 @@
+ 	} c_un;
+ 	int is_syscall;
+ 	void *return_addr;
++#ifdef __mips__
++	void *arch_ptr;
++#endif
+ 	struct timeval time_spent;
+ };
+ 
+diff -burN sysdeps/linux-gnu/Makefile sysdeps/linux-gnu/Makefile
+--- sysdeps/linux-gnu/Makefile	2006-02-20 22:44:45.000000000 +0100
++++ sysdeps/linux-gnu/Makefile	2008-11-22 12:41:48.000000000 +0100
+@@ -1,5 +1,5 @@
+ ARCH		:=	$(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
+-			-e s/arm.*/arm/ -e s/sa110/arm/ -e s/ppc64/ppc/ -e s/s390x/s390/)
++			-e s/arm.*/arm/ -e s/sa110/arm/ -e s/ppc64/ppc/ -e s/s390x/s390/ -e s/mips/mipsel/)
+ 
+ CPPFLAGS	+=	-I$(TOPDIR)/sysdeps/linux-gnu/$(ARCH)
+ 
+@@ -10,8 +10,9 @@
+ sysdep.h:	$(ARCH)/arch.h
+ 		cat $(ARCH)/arch.h > sysdep.h
+ 
+-signalent.h:
+-		cp $(ARCH)/signalent.h signalent.h
++signalent.h:	$(ARCH)/signalent.h
++		cp $< $@
++
+ signalent1.h:
+ 		if [ -f $(ARCH)/signalent1.h ]; then \
+ 			cp $(ARCH)/signalent1.h signalent1.h; \
+@@ -19,8 +20,8 @@
+ 			> signalent1.h; \
+ 		fi
+ 
+-syscallent.h:
+-		cp $(ARCH)/syscallent.h syscallent.h
++syscallent.h:	$(ARCH)/syscallent.h
++		cp $< $@
+ 
+ syscallent1.h:
+ 		if [ -f $(ARCH)/syscallent1.h ]; then \
+diff -burN sysdeps/linux-gnu/mipsel/arch.h sysdeps/linux-gnu/mipsel/arch.h
+--- sysdeps/linux-gnu/mipsel/arch.h	2006-12-28 15:59:03.000000000 +0100
++++ sysdeps/linux-gnu/mipsel/arch.h	2008-11-22 12:41:48.000000000 +0100
+@@ -1,4 +1,8 @@
++#ifdef __MIPSEL__
+ #define BREAKPOINT_VALUE { 0x0d, 0x00, 0x00, 0x00 }
++#else
++#define BREAKPOINT_VALUE { 0x00, 0x00, 0x00, 0x0d }
++#endif
+ #define BREAKPOINT_LENGTH 4
+ #define DECR_PC_AFTER_BREAK 0
+ 
+diff -burN sysdeps/linux-gnu/mipsel/mipsel.h sysdeps/linux-gnu/mipsel/mipsel.h
+--- sysdeps/linux-gnu/mipsel/mipsel.h	2006-12-28 15:59:03.000000000 +0100
++++ sysdeps/linux-gnu/mipsel/mipsel.h	2008-11-22 12:41:48.000000000 +0100
 @@ -1,11 +1,19 @@
  #ifndef MIPSEL_h
--#define  MIPSEL_h
+ #define  MIPSEL_h
 -// linux-2.4.30/arch/mips/kernel/ptrace.c for these offsets.
--#define off_v0 2
--#define off_pc 64
--#define off_a0 4
--#define off_a3 7
-+#define MIPSEL_h
 +
 +/*
 + * These are just the register numbers,
 + * 0 - 31 are integer registers, 32 - 63 are fp registers.
 + */
-+#define off_v0  2
-+#define off_a0  4
-+#define off_a3  7
-+#define off_sp 29
- #define off_lr 31
--#define off_sp 29
- 
--#endif //  MIPSEL_h
+ #define off_v0 2
+-#define off_pc 64
+ #define off_a0 4
+ #define off_a3 7
+-#define off_lr 31
+ #define off_sp 29
++#define off_lr 31
++
 +/*
 + * see kernel header include/asm-mips/ptrace.h for these
 + */
 +#define off_pc 64
-+
+ 
+-#endif //  MIPSEL_h
 +#endif /* MIPSEL_h */
-Index: sysdeps/linux-gnu/mipsel/trace.c
-===================================================================
---- sysdeps/linux-gnu/mipsel/trace.c	(Revision 77)
-+++ sysdeps/linux-gnu/mipsel/trace.c	(Arbeitskopie)
-@@ -6,10 +6,13 @@
- #include <sys/wait.h>
- #include <signal.h>
- #include <sys/ptrace.h>
--#include <asm/ptrace.h>
-+/* #include <asm/ptrace.h> */
-+#include <stdlib.h>
-+
- #include "debug.h"
- #include "ltrace.h"
- #include "mipsel.h"
-+
- #if (!defined(PTRACE_PEEKUSER) && defined(PTRACE_PEEKUSR))
- # define PTRACE_PEEKUSER PTRACE_PEEKUSR
- #endif
-@@ -18,7 +21,13 @@
- # define PTRACE_POKEUSER PTRACE_POKEUSR
- #endif
- 
-+#define FUNC_REGISTER_ARGS 4
-+#define SYSC_REGISTER_ARGS 6
- 
-+typedef struct {
-+  long saved_arg[SYSC_REGISTER_ARGS];
-+} callstack_archdep;
-+
- /**
-    \addtogroup mipsel Mipsel specific functions.
- 
-@@ -90,65 +99,100 @@
-    }
- 	return 0;
- }
-+
-+
- /**
-    \param type Function/syscall call or return.
-    \param proc The process that had an event.
-    \param arg_num -1 for return value, 
-    \return The argument to fetch. 
- 
--   A couple of assumptions. 
-+   Mipsel conventions seem to be:
- 
---  Type is LT_TOF_FUNCTIONR or LT_TOF_SYSCALLR if arg_num==-1. These
--   types are only used in calls for output_right(), which only uses -1
--   for arg_num.
---  Type is LT_TOF_FUNCTION or LT_TOF_SYSCALL for args 0...4. 
---   I'm only displaying the first 4 args (Registers a0..a3). Good
--   enough for now.
-+    - syscall parameters: r4...r9
-+    - syscall return: if(!a3){ return v0;} else{ errno=v0;return -1;}
-+    - function call: r4..r7. Further arguments on the stack (integer!).
-+    - function return: v0
- 
--  Mipsel conventions seem to be:
--- syscall parameters: r4...r9
--- syscall return: if(!a3){ return v0;} else{ errno=v0;return -1;}
--- function call: r4..r7. Not sure how to get arg number 5. 
--- function return: v0
-+    The argument registers are wiped by a call, so it is a mistake to ask
-+    for arguments on a return. So, the registers will be saved in
-+    \save_register_args on the call stack.
- 
--The argument registers are wiped by a call, so it is a mistake to ask
--for arguments on a return. If ltrace does this, we will need to cache
--arguments somewhere on the call.
-+    I'm not doing any floating point support here. 
- 
--I'm not doing any floating point support here. 
-+*/
- 
--*/
--long gimme_arg(enum tof type, struct process *proc, int arg_num)
-+long gimme_arg(enum tof type, struct process *proc, arg_type_info *info)
- {
--    long ret;
--    debug(2,"type %d arg %d",type,arg_num);
--    if (type == LT_TOF_FUNCTION || type == LT_TOF_SYSCALL){
--        if(arg_num <4){
--            ret=ptrace(PTRACE_PEEKUSER,proc->pid,off_a0+arg_num,0);
--            debug(2,"ret = %#lx",ret);
--            return ret;
--        } else {
--            // If we need this, I think we can look at [sp+16] for arg_num==4.
--            CP;
--            return 0;
--        }
--    } 
--    if(arg_num>=0){
--       fprintf(stderr,"args on return?");
-+    int arg_num = info->arg_num;
-+    long ret = 0;
-+
-+    debug(2,"tof %d arg %d",type,arg_num);
-+
-+    if (arg_num == -1) { /* return value */
-+      switch (type) {
-+       case LT_TOF_FUNCTIONR:
-+	ret = ptrace(PTRACE_PEEKUSER,proc->pid,off_v0,0);
-+	break;
-+       case LT_TOF_SYSCALLR:
-+	if(0 == ptrace(PTRACE_PEEKUSER, proc->pid,off_a3,0)) {
-+	  ret = ptrace(PTRACE_PEEKUSER, proc->pid,off_v0,0);
-+	} else {
-+	  ret = -1;
-+	}
-+	break;
-+       default:
-+wrong_args:
-+	fprintf(stderr, "gimme_arg called with wrong arguments\n");
-+      }
-+    } else { /* arguments */
-+      switch (type) {
-+       case LT_TOF_FUNCTION:
-+	if (arg_num < FUNC_REGISTER_ARGS) {
-+	  ret=ptrace(PTRACE_PEEKUSER,proc->pid,off_a0+arg_num,0);
-+	} else {
-+from_stack:
-+	  if (!proc->stack_pointer)
-+	    proc->stack_pointer = get_stack_pointer(proc);
-+	  ret = ptrace(PTRACE_PEEKDATA, proc->pid,
-+      		       proc->stack_pointer + 4*arg_num, 0);
-+	}
-+	break;
-+       case LT_TOF_FUNCTIONR:
-+	if (arg_num < FUNC_REGISTER_ARGS) {
-+from_saved:
-+	  {
-+	    callstack_archdep *a =
-+	      proc->callstack[proc->callstack_depth].arch_ptr;
-+	    if (a) {
-+	      ret = a->saved_arg[arg_num];
-+	    }
-+	  }
-+	} else {
-+	  goto from_stack;
-+	}
-+	break;
-+       case LT_TOF_SYSCALL:
-+	if (arg_num < SYSC_REGISTER_ARGS) {
-+	  ret=ptrace(PTRACE_PEEKUSER,proc->pid,off_a0+arg_num,0);
-+	} else {
-+	  goto wrong_args;
-+	}
-+	break;
-+       case LT_TOF_SYSCALLR:
-+	if (arg_num < SYSC_REGISTER_ARGS) {
-+	  goto from_saved;
-+	} else {
-+	  goto wrong_args;
-+	}
-+	break;
-+       default:
-+	goto wrong_args;
-+      }
-     }
--    if(type == LT_TOF_FUNCTIONR) {
--        return  ptrace(PTRACE_PEEKUSER,proc->pid,off_v0,0);
--    }
--    if (type == LT_TOF_SYSCALLR) {
--        unsigned a3=ptrace(PTRACE_PEEKUSER, proc->pid,off_a3,0);
--        unsigned v0=ptrace(PTRACE_PEEKUSER, proc->pid,off_v0,0);
--        if(!a3){
--            return v0;
--        }
--        return -1;
--    }
--    fprintf(stderr, "gimme_arg called with wrong arguments\n");
--	return 0;
-+
-+    debug(2,"ret = %#lx",ret);
-+    return ret;
- }
- 
- /**
-@@ -156,14 +200,30 @@
-    \param proc Process to work with. 
-    
-    Called by \c output_left(), which is called on a syscall or
--   function.
-+   function when there are arguments left that will be displayed on
-+   return.
-    
--   The other architectures stub this out, but seems to be the place to
-+   Most other architectures stub this out, but seems to be the place to
-    stash off the arguments on a call so we have them on the return.
-+
-+   On mips, save register arguments that will be overwritten during
-+   the call.
-    
- */
- void save_register_args(enum tof type, struct process *proc)
- {
-+  callstack_archdep *a = proc->callstack[proc->callstack_depth].arch_ptr;
-+  if (!a) {
-+    a = malloc(sizeof *a);
-+    proc->callstack[proc->callstack_depth].arch_ptr = a;
-+  }
-+  if (a) {
-+    int argc = LT_TOF_FUNCTION ? FUNC_REGISTER_ARGS : SYSC_REGISTER_ARGS;
-+    int i;
-+    for (i = 0; i < argc; i++) {
-+      a->saved_arg[i] = ptrace(PTRACE_PEEKUSER, proc->pid, off_a0+i, 0);
-+    }
-+  }
- }
- 
- /**@}*/
-Index: sysdeps/linux-gnu/mipsel/plt.c
-===================================================================
---- sysdeps/linux-gnu/mipsel/plt.c	(Revision 77)
-+++ sysdeps/linux-gnu/mipsel/plt.c	(Arbeitskopie)
+diff -burN sysdeps/linux-gnu/mipsel/plt.c sysdeps/linux-gnu/mipsel/plt.c
+--- sysdeps/linux-gnu/mipsel/plt.c	2006-12-28 15:59:03.000000000 +0100
++++ sysdeps/linux-gnu/mipsel/plt.c	2008-11-22 12:41:48.000000000 +0100
 @@ -1,8 +1,8 @@
 -#include <debug.h>
  #include <gelf.h>
@@ -324,10 +109,9 @@ Index: sysdeps/linux-gnu/mipsel/plt.c
  
  /**
     \addtogroup mipsel
-Index: sysdeps/linux-gnu/mipsel/regs.c
-===================================================================
---- sysdeps/linux-gnu/mipsel/regs.c	(Revision 77)
-+++ sysdeps/linux-gnu/mipsel/regs.c	(Arbeitskopie)
+diff -burN sysdeps/linux-gnu/mipsel/regs.c sysdeps/linux-gnu/mipsel/regs.c
+--- sysdeps/linux-gnu/mipsel/regs.c	2006-12-28 15:59:03.000000000 +0100
++++ sysdeps/linux-gnu/mipsel/regs.c	2008-11-22 12:41:48.000000000 +0100
 @@ -4,8 +4,7 @@
  #include <stddef.h>
  #include <sys/types.h>
@@ -338,23 +122,77 @@ Index: sysdeps/linux-gnu/mipsel/regs.c
  
  #include "ltrace.h"
  #include "mipsel.h"
-Index: sysdeps/linux-gnu/mipsel/arch.h
-===================================================================
---- sysdeps/linux-gnu/mipsel/arch.h	(Revision 77)
-+++ sysdeps/linux-gnu/mipsel/arch.h	(Arbeitskopie)
-@@ -1,4 +1,8 @@
-+#ifdef __MIPSEL__
- #define BREAKPOINT_VALUE { 0x0d, 0x00, 0x00, 0x00 }
-+#else
-+#define BREAKPOINT_VALUE { 0x00, 0x00, 0x00, 0x0d }
-+#endif
- #define BREAKPOINT_LENGTH 4
- #define DECR_PC_AFTER_BREAK 0
- 
-Index: sysdeps/linux-gnu/mipsel/syscallent.h
-===================================================================
---- sysdeps/linux-gnu/mipsel/syscallent.h	(Revision 77)
-+++ sysdeps/linux-gnu/mipsel/syscallent.h	(Arbeitskopie)
+diff -burN sysdeps/linux-gnu/mipsel/signalent.h sysdeps/linux-gnu/mipsel/signalent.h
+--- sysdeps/linux-gnu/mipsel/signalent.h	2006-12-28 15:59:03.000000000 +0100
++++ sysdeps/linux-gnu/mipsel/signalent.h	2008-11-22 12:41:48.000000000 +0100
+@@ -1,32 +1,32 @@
+-"SIG_0",			/* 0 */
+-    "SIGHUP",	//	    1	/* Hangup (POSIX).  */
+-    "SIGINT", //		 2	/* Interrupt (ANSI).  */
+-    "SIGQUIT", //		 3	/* Quit (POSIX).  */
+-    "SIGILL", //		 4	/* Illegal instruction (ANSI).  */
+-    "SIGTRAP", //		 5	/* Trace trap (POSIX).  */
+-    "SIGIOT", //		 6	/* IOT trap (4.2 BSD).  */
+-    "SIGEMT", //		 7
+-    "SIGFPE", //		 8	/* Floating-point exception (ANSI).  */
+-    "SIGKILL", //		 9	/* Kill, unblockable (POSIX).  */
+-    "SIGBUS", //		10	/* BUS error (4.2 BSD).  */
+-    "SIGSEGV", //		11	/* Segmentation violation (ANSI).  */
+-    "SIGSYS", //		12
+-    "SIGPIPE", //		13	/* Broken pipe (POSIX).  */
+-    "SIGALRM", //		14	/* Alarm clock (POSIX).  */
+-    "SIGTERM", //		15	/* Termination (ANSI).  */
+-    "SIGUSR1", //		16	/* User-defined signal 1 (POSIX).  */
+-    "SIGUSR2", //		17	/* User-defined signal 2 (POSIX).  */
+-    "SIGCHLD", //		18	/* Child status has changed (POSIX).  */
+-    "SIGPWR", //		19	/* Power failure restart (System V).  */
+-    "SIGWINCH", //	20	/* Window size change (4.3 BSD, Sun).  */
+-    "SIGURG", //		21	/* Urgent condition on socket (4.2 BSD).  */
+-    "SIGIO", //		22	/* I/O now possible (4.2 BSD).  */
+-    "SIGSTOP", //		23	/* Stop, unblockable (POSIX).  */
+-    "SIGTSTP", //		24	/* Keyboard stop (POSIX).  */
+-    "SIGCONT", //		25	/* Continue (POSIX).  */
+-    "SIGTTIN", //		26	/* Background read from tty (POSIX).  */
+-    "SIGTTOU", //		27	/* Background write to tty (POSIX).  */
+-    "SIGVTALRM", //	28	/* Virtual alarm clock (4.2 BSD).  */
+-    "SIGPROF", //		29	/* Profiling alarm clock (4.2 BSD).  */
+-    "SIGXCPU", //		30	/* CPU limit exceeded (4.2 BSD).  */
+-    "SIGXFSZ", //		31	/* File size limit exceeded (4.2 BSD).  */
++	"SIG_0",           /* 0 */
++	"SIGHUP",          /* 1 */
++	"SIGINT",          /* 2 */
++	"SIGQUIT",         /* 3 */
++	"SIGILL",          /* 4 */
++	"SIGTRAP",         /* 5 */
++	"SIGIOT",          /* 6 */
++	"SIGEMT",          /* 7 */
++	"SIGFPE",          /* 8 */
++	"SIGKILL",         /* 9 */
++	"SIGBUS",          /* 10 */
++	"SIGSEGV",         /* 11 */
++	"SIGSYS",          /* 12 */
++	"SIGPIPE",         /* 13 */
++	"SIGALRM",         /* 14 */
++	"SIGTERM",         /* 15 */
++	"SIGUSR1",         /* 16 */
++	"SIGUSR2",         /* 17 */
++	"SIGCHLD",         /* 18 */
++	"SIGPWR",          /* 19 */
++	"SIGWINCH",        /* 20 */
++	"SIGURG",          /* 21 */
++	"SIGIO",           /* 22 */
++	"SIGSTOP",         /* 23 */
++	"SIGTSTP",         /* 24 */
++	"SIGCONT",         /* 25 */
++	"SIGTTIN",         /* 26 */
++	"SIGTTOU",         /* 27 */
++	"SIGVTALRM",       /* 28 */
++	"SIGPROF",         /* 29 */
++	"SIGXCPU",         /* 30 */
++	"SIGXFSZ",         /* 31 */
+diff -burN sysdeps/linux-gnu/mipsel/syscallent.h sysdeps/linux-gnu/mipsel/syscallent.h
+--- sysdeps/linux-gnu/mipsel/syscallent.h	2006-12-28 15:59:03.000000000 +0100
++++ sysdeps/linux-gnu/mipsel/syscallent.h	2008-11-22 12:41:48.000000000 +0100
 @@ -1,241 +1,286 @@
 -    "0",			/*Linux +   0*/
 -    "exit",			/*Linux +   1*/
@@ -883,79 +721,203 @@ Index: sysdeps/linux-gnu/mipsel/syscallent.h
 +	"inotify_init",                    /* 283 */
 +	"inotify_add_watch",               /* 284 */
 +	"inotify_rm_watch",                /* 285 */
-Index: sysdeps/linux-gnu/mipsel/signalent.h
-===================================================================
---- sysdeps/linux-gnu/mipsel/signalent.h	(Revision 77)
-+++ sysdeps/linux-gnu/mipsel/signalent.h	(Arbeitskopie)
-@@ -1,32 +1,32 @@
--"SIG_0",			/* 0 */
--    "SIGHUP",	//	    1	/* Hangup (POSIX).  */
--    "SIGINT", //		 2	/* Interrupt (ANSI).  */
--    "SIGQUIT", //		 3	/* Quit (POSIX).  */
--    "SIGILL", //		 4	/* Illegal instruction (ANSI).  */
--    "SIGTRAP", //		 5	/* Trace trap (POSIX).  */
--    "SIGIOT", //		 6	/* IOT trap (4.2 BSD).  */
--    "SIGEMT", //		 7
--    "SIGFPE", //		 8	/* Floating-point exception (ANSI).  */
--    "SIGKILL", //		 9	/* Kill, unblockable (POSIX).  */
--    "SIGBUS", //		10	/* BUS error (4.2 BSD).  */
--    "SIGSEGV", //		11	/* Segmentation violation (ANSI).  */
--    "SIGSYS", //		12
--    "SIGPIPE", //		13	/* Broken pipe (POSIX).  */
--    "SIGALRM", //		14	/* Alarm clock (POSIX).  */
--    "SIGTERM", //		15	/* Termination (ANSI).  */
--    "SIGUSR1", //		16	/* User-defined signal 1 (POSIX).  */
--    "SIGUSR2", //		17	/* User-defined signal 2 (POSIX).  */
--    "SIGCHLD", //		18	/* Child status has changed (POSIX).  */
--    "SIGPWR", //		19	/* Power failure restart (System V).  */
--    "SIGWINCH", //	20	/* Window size change (4.3 BSD, Sun).  */
--    "SIGURG", //		21	/* Urgent condition on socket (4.2 BSD).  */
--    "SIGIO", //		22	/* I/O now possible (4.2 BSD).  */
--    "SIGSTOP", //		23	/* Stop, unblockable (POSIX).  */
--    "SIGTSTP", //		24	/* Keyboard stop (POSIX).  */
--    "SIGCONT", //		25	/* Continue (POSIX).  */
--    "SIGTTIN", //		26	/* Background read from tty (POSIX).  */
--    "SIGTTOU", //		27	/* Background write to tty (POSIX).  */
--    "SIGVTALRM", //	28	/* Virtual alarm clock (4.2 BSD).  */
--    "SIGPROF", //		29	/* Profiling alarm clock (4.2 BSD).  */
--    "SIGXCPU", //		30	/* CPU limit exceeded (4.2 BSD).  */
--    "SIGXFSZ", //		31	/* File size limit exceeded (4.2 BSD).  */
-+	"SIG_0",           /* 0 */
-+	"SIGHUP",          /* 1 */
-+	"SIGINT",          /* 2 */
-+	"SIGQUIT",         /* 3 */
-+	"SIGILL",          /* 4 */
-+	"SIGTRAP",         /* 5 */
-+	"SIGIOT",          /* 6 */
-+	"SIGEMT",          /* 7 */
-+	"SIGFPE",          /* 8 */
-+	"SIGKILL",         /* 9 */
-+	"SIGBUS",          /* 10 */
-+	"SIGSEGV",         /* 11 */
-+	"SIGSYS",          /* 12 */
-+	"SIGPIPE",         /* 13 */
-+	"SIGALRM",         /* 14 */
-+	"SIGTERM",         /* 15 */
-+	"SIGUSR1",         /* 16 */
-+	"SIGUSR2",         /* 17 */
-+	"SIGCHLD",         /* 18 */
-+	"SIGPWR",          /* 19 */
-+	"SIGWINCH",        /* 20 */
-+	"SIGURG",          /* 21 */
-+	"SIGIO",           /* 22 */
-+	"SIGSTOP",         /* 23 */
-+	"SIGTSTP",         /* 24 */
-+	"SIGCONT",         /* 25 */
-+	"SIGTTIN",         /* 26 */
-+	"SIGTTOU",         /* 27 */
-+	"SIGVTALRM",       /* 28 */
-+	"SIGPROF",         /* 29 */
-+	"SIGXCPU",         /* 30 */
-+	"SIGXFSZ",         /* 31 */
-Index: sysdeps/linux-gnu/mksyscallent
-===================================================================
---- sysdeps/linux-gnu/mksyscallent	(Revision 77)
-+++ sysdeps/linux-gnu/mksyscallent	(Arbeitskopie)
+diff -burN sysdeps/linux-gnu/mipsel/trace.c sysdeps/linux-gnu/mipsel/trace.c
+--- sysdeps/linux-gnu/mipsel/trace.c	2007-09-04 17:34:53.000000000 +0200
++++ sysdeps/linux-gnu/mipsel/trace.c	2008-11-22 12:58:31.000000000 +0100
+@@ -6,10 +6,13 @@
+ #include <sys/wait.h>
+ #include <signal.h>
+ #include <sys/ptrace.h>
+-#include <asm/ptrace.h>
++/* #include <asm/ptrace.h> */
++#include <stdlib.h>
++
+ #include "debug.h"
+ #include "ltrace.h"
+ #include "mipsel.h"
++
+ #if (!defined(PTRACE_PEEKUSER) && defined(PTRACE_PEEKUSR))
+ # define PTRACE_PEEKUSER PTRACE_PEEKUSR
+ #endif
+@@ -18,6 +21,12 @@
+ # define PTRACE_POKEUSER PTRACE_POKEUSR
+ #endif
+ 
++#define FUNC_REGISTER_ARGS 4
++#define SYSC_REGISTER_ARGS 6
++
++typedef struct {
++  long saved_arg[SYSC_REGISTER_ARGS];
++} callstack_archdep;
+ 
+ /**
+    \addtogroup mipsel Mipsel specific functions.
+@@ -96,59 +105,89 @@
+    \param arg_num -1 for return value, 
+    \return The argument to fetch. 
+ 
+-   A couple of assumptions. 
+-
+--  Type is LT_TOF_FUNCTIONR or LT_TOF_SYSCALLR if arg_num==-1. These
+-   types are only used in calls for output_right(), which only uses -1
+-   for arg_num.
+--  Type is LT_TOF_FUNCTION or LT_TOF_SYSCALL for args 0...4. 
+--   I'm only displaying the first 4 args (Registers a0..a3). Good
+-   enough for now.
+-
+   Mipsel conventions seem to be:
+-- syscall parameters: r4...r9
+-- syscall return: if(!a3){ return v0;} else{ errno=v0;return -1;}
+-- function call: r4..r7. Not sure how to get arg number 5. 
+-- function return: v0
+-
+-The argument registers are wiped by a call, so it is a mistake to ask
+-for arguments on a return. If ltrace does this, we will need to cache
+-arguments somewhere on the call.
+-
+-I'm not doing any floating point support here. 
++  - syscall parameters: r4...r9
++  - syscall return: if(!a3){ return v0;} else{ errno=v0;return -1;}
++  - function call: r4..r7. Further arguments on the stack (integer!).
++  - function return: v0
++
++  The argument registers are wiped by a call, so it is a mistake to ask
++  for arguments on a return. So, the registers will be saved in
++  \save_register_args on the call stack.
+ 
++  I'm not doing any floating point support here. 
+ */
++
+ long gimme_arg(enum tof type, struct process *proc, int arg_num, arg_type_info *info)
+ {
+-    long ret;
+-    debug(2,"type %d arg %d",type,arg_num);
+-    if (type == LT_TOF_FUNCTION || type == LT_TOF_SYSCALL){
+-        if(arg_num <4){
++    long ret = 0;
++    
++    debug(2,"tof %d arg %d",type,arg_num);
++    
++    if (arg_num == -1) { /* return value */
++      switch (type) {
++       case LT_TOF_FUNCTIONR:
++       ret = ptrace(PTRACE_PEEKUSER,proc->pid,off_v0,0);
++       break;
++       case LT_TOF_SYSCALLR:
++       if(0 == ptrace(PTRACE_PEEKUSER, proc->pid,off_a3,0)) {
++         ret = ptrace(PTRACE_PEEKUSER, proc->pid,off_v0,0);
++       } else {
++         ret = -1;
++       }
++       break;
++       default:
++wrong_args:
++       fprintf(stderr, "gimme_arg called with wrong arguments\n");
++      }
++    } else { /* arguments */
++      switch (type) {
++       case LT_TOF_FUNCTION:
++       if (arg_num < FUNC_REGISTER_ARGS) {
+             ret=ptrace(PTRACE_PEEKUSER,proc->pid,off_a0+arg_num,0);
+-            debug(2,"ret = %#lx",ret);
+-            return ret;
+         } else {
+-            // If we need this, I think we can look at [sp+16] for arg_num==4.
+-            CP;
+-            return 0;
++from_stack:
++         if (!proc->stack_pointer)
++           proc->stack_pointer = get_stack_pointer(proc);
++         ret = ptrace(PTRACE_PEEKDATA, proc->pid,
++                      proc->stack_pointer + 4*arg_num, 0);
++       }
++       break;
++       case LT_TOF_FUNCTIONR:
++       if (arg_num < FUNC_REGISTER_ARGS) {
++from_saved:
++         {
++           callstack_archdep *a =
++             proc->callstack[proc->callstack_depth].arch_ptr;
++           if (a) {
++             ret = a->saved_arg[arg_num];
+         }
+     } 
+-    if(arg_num>=0){
+-       fprintf(stderr,"args on return?");
++       } else {
++         goto from_stack;
+     }
+-    if(type == LT_TOF_FUNCTIONR) {
+-        return  ptrace(PTRACE_PEEKUSER,proc->pid,off_v0,0);
++       break;
++       case LT_TOF_SYSCALL:
++       if (arg_num < SYSC_REGISTER_ARGS) {
++         ret=ptrace(PTRACE_PEEKUSER,proc->pid,off_a0+arg_num,0);
++       } else {
++         goto wrong_args;
+     }
+-    if (type == LT_TOF_SYSCALLR) {
+-        unsigned a3=ptrace(PTRACE_PEEKUSER, proc->pid,off_a3,0);
+-        unsigned v0=ptrace(PTRACE_PEEKUSER, proc->pid,off_v0,0);
+-        if(!a3){
+-            return v0;
++       break;
++       case LT_TOF_SYSCALLR:
++       if (arg_num < SYSC_REGISTER_ARGS) {
++         goto from_saved;
++       } else {
++         goto wrong_args;
+         }
+-        return -1;
++       break;
++       default:
++       goto wrong_args;
+     }
+-    fprintf(stderr, "gimme_arg called with wrong arguments\n");
+-	return 0;
++    }
++
++    debug(2,"ret = %#lx",ret);
++    return ret;
+ }
+ 
+ /**
+@@ -156,14 +194,30 @@
+    \param proc Process to work with. 
+    
+    Called by \c output_left(), which is called on a syscall or
+-   function.
++   function when there are arguments left that will be displayed on
++   return.
+    
+-   The other architectures stub this out, but seems to be the place to
++   Most other architectures stub this out, but seems to be the place to
+    stash off the arguments on a call so we have them on the return.
+    
++   On mips, save register arguments that will be overwritten during
++   the call.
++   
+ */
+ void save_register_args(enum tof type, struct process *proc)
+ {
++  callstack_archdep *a = proc->callstack[proc->callstack_depth].arch_ptr;
++  if (!a) {
++    a = malloc(sizeof *a);
++    proc->callstack[proc->callstack_depth].arch_ptr = a;
++  }
++  if (a) {
++    int argc = LT_TOF_FUNCTION ? FUNC_REGISTER_ARGS : SYSC_REGISTER_ARGS;
++    int i;
++    for (i = 0; i < argc; i++) {
++      a->saved_arg[i] = ptrace(PTRACE_PEEKUSER, proc->pid, off_a0+i, 0);
++    }
++  }
+ }
+ 
+ /**@}*/
+diff -burN sysdeps/linux-gnu/mksyscallent sysdeps/linux-gnu/mksyscallent
+--- sysdeps/linux-gnu/mksyscallent	2006-06-19 14:20:05.000000000 +0200
++++ sysdeps/linux-gnu/mksyscallent	2008-11-22 12:41:48.000000000 +0100
 @@ -8,6 +8,7 @@
  
  BEGIN {
@@ -973,11 +935,10 @@ Index: sysdeps/linux-gnu/mksyscallent
  			SYSCALL[$3]=substr($2,6);
  			if ($3 > max) {
  				max=$3;
-@@ -26,7 +27,16 @@
+@@ -26,6 +27,15 @@
  			if ($4 > max) {
  				max=$4;
  			}
--		}
 +		} else if (ismips && ($3 ~ /^__NR_Linux$/) && ($4>=0) && ($4<=1000)) {
 +			if (!SYSCALL[$4]) {
 +				SYSCALL[$4]=substr($2,6);
@@ -987,55 +948,18 @@ Index: sysdeps/linux-gnu/mksyscallent
 +			}
 +		} else if (($2 ~ /^__NR_Linux$/)) {
 +			ismips=1;
-+	        }
+ 		}
  	}
  }
- 
-Index: sysdeps/linux-gnu/Makefile
-===================================================================
---- sysdeps/linux-gnu/Makefile	(Revision 77)
-+++ sysdeps/linux-gnu/Makefile	(Arbeitskopie)
-@@ -1,5 +1,5 @@
- ARCH		:=	$(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
--			-e s/arm.*/arm/ -e s/sa110/arm/ -e s/ppc64/ppc/ -e s/s390x/s390/)
-+			-e s/arm.*/arm/ -e s/sa110/arm/ -e s/ppc64/ppc/ -e s/s390x/s390/ -e s/mips/mipsel/)
- 
- CPPFLAGS	+=	-I$(TOPDIR)/sysdeps/linux-gnu/$(ARCH)
- 
-@@ -10,8 +10,9 @@
- sysdep.h:	$(ARCH)/arch.h
- 		cat $(ARCH)/arch.h > sysdep.h
- 
--signalent.h:
--		cp $(ARCH)/signalent.h signalent.h
-+signalent.h:	$(ARCH)/signalent.h
-+		cp $< $@
-+
- signalent1.h:
- 		if [ -f $(ARCH)/signalent1.h ]; then \
- 			cp $(ARCH)/signalent1.h signalent1.h; \
-@@ -19,8 +20,8 @@
- 			> signalent1.h; \
- 		fi
- 
--syscallent.h:
--		cp $(ARCH)/syscallent.h syscallent.h
-+syscallent.h:	$(ARCH)/syscallent.h
-+		cp $< $@
- 
- syscallent1.h:
- 		if [ -f $(ARCH)/syscallent1.h ]; then \
-Index: ltrace.h
-===================================================================
---- ltrace.h	(Revision 77)
-+++ ltrace.h	(Arbeitskopie)
-@@ -146,6 +146,9 @@
- 	} c_un;
- 	int is_syscall;
- 	void *return_addr;
-+#ifdef __mips__
-+	void *arch_ptr;
-+#endif
- 	struct timeval time_spent;
- };
- 
+diff -burN sysdeps/linux-gnu/trace.c sysdeps/linux-gnu/trace.c
+--- sysdeps/linux-gnu/trace.c	2008-03-12 15:56:01.000000000 +0100
++++ sysdeps/linux-gnu/trace.c	2008-11-22 12:41:48.000000000 +0100
+@@ -221,7 +221,7 @@
+ 		continue_process(proc->pid);
+ 	} else {
+ 		proc->breakpoint_being_enabled = sbp;
+-#if defined __sparc__  || defined __ia64___
++#if defined __sparc__  || defined __ia64___ || defined __mips__
+ 		/* we don't want to singlestep here */
+ 		continue_process(proc->pid);
+ #else

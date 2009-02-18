@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.9.7)
+$(call PKG_INIT_BIN, 0.9.9)
 $(PKG)_SOURCE:=mcabber-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://www.lilotux.net/~mikael/mcabber/files
+$(PKG)_SITE:=http://mirror.mcabber.com/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/mcabber
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mcabber
 

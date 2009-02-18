@@ -1,17 +1,19 @@
 config FREETZ_PACKAGE_TRANSMISSION
-	bool "Transmission 1.42 (binary only)"
+	bool "Transmission 1.50b4 (binary and optionally web interface)"
 	default n
+  help
+		If needed, remember to change the base directory as well
+		as the installation directory on the webif.
 
 config FREETZ_PACKAGE_TRANSMISSION_CLIENT
 	bool "Transmission interactive client"
 	depends FREETZ_PACKAGE_TRANSMISSION
 	default y
-	select FREETZ_LIB_libcurl
-	select FREETZ_LIB_libintl
-	select FREETZ_LIB_libresolv
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libssl
-	select FREETZ_LIB_libz
+	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
 	help
 		Torrent client (interactive)
 		Adds ~380KB to the firmware (uncompressed)
@@ -20,15 +22,16 @@ config FREETZ_PACKAGE_TRANSMISSION_DAEMON
 	bool "Transmission daemon"
 	depends FREETZ_PACKAGE_TRANSMISSION
 	default n
-	select FREETZ_LIB_libcurl
-	select FREETZ_LIB_libintl
-	select FREETZ_LIB_libresolv
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libssl
-	select FREETZ_LIB_libz
+	select FREETZ_BUSYBOX_START_STOP_DAEMON
+	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
 	help
 		Torrent client (daemon)
-		Adds ~374KB to the firmware (uncompressed)
+		Adds ~374KB to the firmware (uncompressed).
+		It also selects busybox's start-stop-daemon.
 
 config FREETZ_PACKAGE_TRANSMISSION_REMOTE
 	bool "Transmission remote"
@@ -37,3 +40,18 @@ config FREETZ_PACKAGE_TRANSMISSION_REMOTE
 	help
 		A remote control utility for transmission-daemon
 		Adds ~384KB to the firmware (uncompressed)
+
+config FREETZ_PACKAGE_TRANSMISSION_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_TRANSMISSION
+	default n
+	help
+		Build transmission binaries with statically linked libraries.
+
+config FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE
+	bool "Transmission web interface"
+	depends FREETZ_PACKAGE_TRANSMISSION_DAEMON
+	default n
+	help
+		An official web interface for transmission called clutch
+		Adds ~289KB(uncompressed)/~130KB(compressed) to the firmware

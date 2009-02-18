@@ -1,5 +1,8 @@
 #!/bin/sh
 
+CFGCTL=`which usbcfgctl`
+[ -z "$CFGCTL" ] && CFGCTL=ar7cfgctl
+
 echo "### global"
 
 cat << EOF
@@ -34,7 +37,7 @@ fi
 
 echo "### default"
 
-if [ "`echo usbhost.samba_server_enabled | ar7cfgctl -s`" = "yes" ]; then
+if [ "`echo usbhost.samba_server_enabled | $CFGCTL -s`" = "yes" ]; then
 #if [ "$SAMBA_DEFAULT_SHARE" = "yes" ]; then
 	for SHARE in /var/media/ftp/* ; do
 	  if test -d $SHARE ; then
@@ -43,13 +46,13 @@ if [ "`echo usbhost.samba_server_enabled | ar7cfgctl -s`" = "yes" ]; then
 		echo " path = $SHARE"
 		echo " user = ftpuser"
 
-		if [ "$(echo usbhost.readonly | ar7cfgctl -s)" != "yes" ] ; then  
+		if [ "$(echo usbhost.readonly | $CFGCTL -s)" != "yes" ] ; then  
 			echo " read only = no"
 		else
 			echo " read only = yes"
 		fi
 
-		if [ "$(echo usbhost.password | ar7cfgctl -s)" = "\"\"" ] ; then
+		if [ "$(echo usbhost.password | $CFGCTL -s)" = "\"\"" ] ; then
 			echo " guest ok = yes"
 		fi
 

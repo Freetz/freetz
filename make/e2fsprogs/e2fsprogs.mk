@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.41.1)
+$(call PKG_INIT_BIN, 1.41.3)
 $(PKG)_SOURCE:=e2fsprogs-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/e2fsprogs
 $(PKG)_DIR:=$(SOURCE_DIR)/e2fsprogs-$($(PKG)_VERSION)
@@ -22,8 +22,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 
 $($(PKG)_E2FSCK_BINARY) \
-	$(PKG)_TUNE2FS_BINARY \
-	$(PKG)_MKE2FS_BINARY \
+	$($(PKG)_TUNE2FS_BINARY) \
+	$($(PKG)_MKE2FS_BINARY) \
 	$($(PKG)_BLKID_LIB_BINARY) \
 	$($(PKG)_UUID_LIB_BINARY) : $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \

@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.39)
+$(call PKG_INIT_BIN, 1.40.02)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-source.zip
 $(PKG)_SITE:=@SF/espeak
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source

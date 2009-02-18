@@ -1,5 +1,5 @@
---- src/dnsmasq.h.orig	2008-11-09 12:10:24.000000000 +0100
-+++ src/dnsmasq.h	2008-11-15 20:44:28.000000000 +0100
+--- src/dnsmasq.h.orig	2009-02-01 16:59:35.000000000 +0100
++++ src/dnsmasq.h	2009-02-17 10:39:02.000000000 +0100
 @@ -413,6 +413,7 @@
  #endif
    int hwaddr_len, hwaddr_type;
@@ -8,7 +8,7 @@
    struct in_addr addr, override;
    unsigned char *vendorclass, *userclass;
    unsigned int vendorclass_len, userclass_len;
-@@ -800,6 +801,7 @@
+@@ -808,6 +809,7 @@
  void lease_set_hwaddr(struct dhcp_lease *lease, unsigned char *hwaddr,
  		      unsigned char *clid, int hw_len, int hw_type, int clid_len);
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth);
@@ -16,8 +16,8 @@
  void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now);
  void lease_set_interface(struct dhcp_lease *lease, int interface);
  struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
---- src/lease.c.orig	2008-11-03 17:27:46.000000000 +0100
-+++ src/lease.c	2008-11-15 20:46:13.000000000 +0100
+--- src/lease.c.orig	2009-02-01 17:00:16.000000000 +0100
++++ src/lease.c	2009-02-17 10:39:02.000000000 +0100
 @@ -175,11 +175,16 @@
  
    if (file_dirty != 0 && daemon->lease_stream)
@@ -99,9 +99,9 @@
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth)
  {
    struct dhcp_lease *lease_tmp;
---- src/rfc2131.c.orig	2008-11-03 17:28:50.000000000 +0100
-+++ src/rfc2131.c	2008-11-15 20:49:48.000000000 +0100
-@@ -457,6 +457,7 @@
+--- src/rfc2131.c.orig	2009-02-01 17:01:34.000000000 +0100
++++ src/rfc2131.c	2009-02-17 10:39:02.000000000 +0100
+@@ -458,6 +458,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
  	      if (hostname)
  		lease_set_hostname(lease, hostname, 1); 
@@ -109,7 +109,7 @@
  	      /* infinite lease unless nailed in dhcp-host line. */
  	      lease_set_expires(lease,  
  				have_config(config, CONFIG_TIME) ? config->lease_time : 0xffffffff, 
-@@ -1025,7 +1026,7 @@
+@@ -1056,7 +1057,7 @@
  	    }
  	  if (hostname)
  	    lease_set_hostname(lease, hostname, hostname_auth);

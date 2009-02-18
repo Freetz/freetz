@@ -5,6 +5,7 @@ Latest changes:
 === Freetz-1.1-stable ===
 
 - Build system:
+    * xdelta: Disable build because we don't make use of it
     * toolchains:
       - add menuconfig option to adjust HOSTCC variable 
       - add ccache for download- and kernel-toolchain
@@ -14,8 +15,7 @@ Latest changes:
     * uClibc-0.9.29: Add 2 patches from openwrt 
     * kernel-toolchain: Add two patches for gcc-3.4.6  
       + Fix failure with newer host gccs  
-      + Fix failure on some machines  
-    * Bump squashfs3 version to 3.4
+      + Fix failure on some machines 
 
 - New tools and hooks:
     * external
@@ -41,7 +41,7 @@ Latest changes:
       * Add volume counter (7240, 7270)  
     * Fix wrong usb mounts status message in AVM webinterface (7170, 7270)  
     * Add new status bar design (optional) 
-      
+
 
 - New packages, libs, modules:
     * bfusb 3-18-39 (firmware for bluetooth stick)
@@ -52,8 +52,8 @@ Latest changes:
     * httptunnel 3.3
     * libtool 1.5.26
     * linux-atm 2.4.1
-    * mcabber 0.9.7
-    * microperl 5.8.8
+    * mcabber 0.9.9
+    * microperl 5.10.0
     * nagios 2.11
     * nano 2.0.9
     * nfs-utils 1.1.3
@@ -67,7 +67,6 @@ Latest changes:
     * squid 3.0.STABLE9
     * tcp_wrappers 7.6
     * tinc 1.0.8
-    * tor 0.2.0.32
     * tree 1.5.1.2
     * usbutils 0.73
     * wol 0.7.1
@@ -78,30 +77,42 @@ Latest changes:
 - Updated tools and hooks:
 
 - Updated patches:
-    * add reiserfs to automountable filesystems
     * change nice names for USB devices (sdax > uStor0x, sdby > uStor1y, ...)
 
 - Updated packages and libs:
+    * bftpd 2.3
     * bip 0.7.5
     * classpath 0.97.2
     * curl 7.19.2
+    * cyassl 0.9.9
     * devmapper 1.02.27
     * dropbear: fixed init script not to start dropbear a second time when already running 
     * dns2tcp 0.4.3
-    * dtmfbox 0.5.0_rc3
+    * dnsmasq 2.47
+    * dtmfbox 0.5.0
+    * e2fsprogs 1.41.3
+    * espeak 1.40.02
     * expat 2.0.1
     * haserl 0.9.25
+    * iodine 0.5.0
     * jamvm 1.5.1
-	* openssl 0.9.8j
+    * lsof 4.81
+    * ltrace 0.5 svn 81
+    * mcabber 0.9.9
+    * ntfs-3g 1.5310
+    * openssl 0.9.8j
     * openvpn 2.1_rc15
-    * PHP 5.2.8
+    * php 5.2.8
+    * pingtunnel 0.70
     * pjproject 1.0.1
     * popt 1.14
-    * RRDtool 1.2.30
+    * pptp 1.7.2
+    * rrdtool 1.2.30
+    * strace 4.5.18
     * Stunnel 4.26
-    * Transmission 1.42
+    * tor 0.2.0.34
+    * transmission 1.42
     * vsftpd 2.0.7: add SSL support
-	* tor 0.2.0.34
     * tree 1.5.2.1
 
 - Remove packages, libs, modules, tools:

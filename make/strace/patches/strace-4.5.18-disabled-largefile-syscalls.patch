@@ -1,0 +1,21 @@
+--- syscall.c	2008-08-25 05:16:26.000000000 +0200
++++ syscall.c	2008-10-28 14:36:08.000000000 +0100
+@@ -125,6 +125,18 @@
+ #define TP TRACE_PROCESS
+ #define TS TRACE_SIGNAL
+ 
++#ifndef HAVE_STATFS64
++/*
++ * Ugly hacks for systems that do not have LFS
++ */
++
++#define sys_truncate64  sys_truncate
++#define sys_ftruncate64 sys_ftruncate
++#define sys_getdents64  sys_getdents
++#define sys_statfs64    sys_statfs
++#define sys_fstatfs64   sys_fstatfs
++#endif
++
+ static const struct sysent sysent0[] = {
+ #include "syscallent.h"
+ };

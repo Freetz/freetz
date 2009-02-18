@@ -100,7 +100,7 @@ choice
 		bool "mod (recommended)"
 
 	config FREETZ_TARGET_UCLIBC_CONFIG_8MB
-		bool "8MB" if ! FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
+		bool "8MB"
 	
 	config FREETZ_TARGET_UCLIBC_CONFIG_4MB
 		bool "4MB" if ! FREETZ_TARGET_COMPILER_GCC_4_2_1_UCLIBC_0_9_29
@@ -158,7 +158,9 @@ config FREETZ_TARGET_LFS
 	default y
 	help
 		Support files > 2 GB on target system. This is desirable for Torrent
-		clients, for example.
+		clients, for example. This option is enabled by default and should not 
+		be changed unless you know what you are doing, as it can easily cause
+		problems.
 
 choice
 

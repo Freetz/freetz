@@ -6,8 +6,10 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sftp-server
 
 $(PKG)_DEPENDS_ON := openssl zlib
 
-$(PKG)_CONFIGURE_OPTIONS += --enable-shared
-$(PKG)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_OPENSSH_STATIC
+
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),--disable-shared,--enable-shared)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),--enable-static,--disable-static)
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-etc-default-login
 $(PKG)_CONFIGURE_OPTIONS += --disable-lastlog
@@ -18,13 +20,20 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-wtmpx
 $(PKG)_CONFIGURE_OPTIONS += --without-bsd-auth
 $(PKG)_CONFIGURE_OPTIONS += --without-kerberos5
 
+ifeq ($(strip $(FREETZ_PACKAGE_OPENSSH_STATIC)),y)
+OPENSSH_LDFLAGS := "-static -all-static -L. -Lopenbsd-compat/"
+else
+OPENSSH_LDFLAGS := "-L. -Lopenbsd-compat/"
+endif
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured 
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(OPENSSH_DIR) sftp-server
+		$(MAKE) -C $(OPENSSH_DIR) sftp-server \
+		LDFLAGS=$(OPENSSH_LDFLAGS)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

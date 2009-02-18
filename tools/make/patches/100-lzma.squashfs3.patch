@@ -1,7 +1,6 @@
-diff -burN squashfs-tools/Makefile squashfs-tools/Makefile
---- squashfs-tools/Makefile	2008-08-26 09:10:13.000000000 +0200
-+++ squashfs-tools/Makefile	2008-09-23 14:11:12.000000000 +0200
-@@ -4,10 +4,10 @@
+--- squashfs-tools/Makefile	2007-10-25 02:47:07.000000000 +0200
++++ squashfs-tools/Makefile	2007-11-07 01:19:02.000000000 +0100
+@@ -2,10 +2,10 @@
  
  CFLAGS := -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -O2
  
@@ -15,21 +14,41 @@ diff -burN squashfs-tools/Makefile squashfs-tools/Makefile
  
  mksquashfs.o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h
  
-@@ -15,8 +15,8 @@
+@@ -13,7 +13,7 @@
  
  sort.o: sort.c squashfs_fs.h global.h sort.h
  
 -unsquashfs: unsquashfs.o
--	$(CC) unsquashfs.o -lz -lpthread -lm -o $@
+-	$(CC) unsquashfs.o -lz -o $@
 +unsquashfs3-lzma: unsquashfs.o
-+	$(CXX) unsquashfs.o -L$(LZMA_DIR) -llzma -lpthread -lm -o $@
++	$(CXX) unsquashfs.o -L$(LZMA_DIR) -llzma -o $@
  
  unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
- 
-diff -burN squashfs-tools/mksquashfs.c squashfs-tools/mksquashfs.c
---- squashfs-tools/mksquashfs.c	2008-08-26 09:01:39.000000000 +0200
-+++ squashfs-tools/mksquashfs.c	2008-09-23 14:12:47.000000000 +0200
-@@ -802,6 +802,12 @@
+--- squashfs-tools/squashfs_fs.h	2007-08-19 05:31:15.000000000 +0200
++++ squashfs-tools/squashfs_fs.h	2007-11-07 01:07:02.000000000 +0100
+@@ -37,7 +37,7 @@
+ #endif
+ #define SQUASHFS_CACHED_FRAGMENTS	CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE	
+ #define SQUASHFS_MAJOR			3
+-#define SQUASHFS_MINOR			1
++#define SQUASHFS_MINOR			76
+ #define SQUASHFS_MAGIC			0x73717368
+ #define SQUASHFS_MAGIC_SWAP		0x68737173
+ #define SQUASHFS_START			0
+--- squashfs-tools/unsquashfs.c	2007-11-01 07:53:46.000000000 +0100
++++ squashfs-tools/unsquashfs.c	2007-11-07 01:06:00.000000000 +0100
+@@ -1812,7 +1812,7 @@
+ 			s_ops.read_block_list = read_block_list;
+ 			s_ops.read_inode = read_inode_2;
+ 		}
+-	} else if(sBlk.s_major == 3 && sBlk.s_minor <= 1) {
++	} else if(sBlk.s_major == 3 && sBlk.s_minor == SQUASHFS_MINOR) {
+ 		s_ops.squashfs_opendir = squashfs_opendir;
+ 		s_ops.read_fragment = read_fragment;
+ 		s_ops.read_fragment_table = read_fragment_table;
+--- squashfs-tools/mksquashfs.c	2007-11-07 20:08:18.000000000 +0100
++++ squashfs-tools/mksquashfs.c	2007-11-07 20:13:43.000000000 +0100
+@@ -601,6 +601,12 @@
  	if(uncompressed)
  		goto notcompressed;
  
@@ -42,7 +61,7 @@ diff -burN squashfs-tools/mksquashfs.c squashfs-tools/mksquashfs.c
  	if(stream == NULL) {
  		if((stream = *strm = malloc(sizeof(z_stream))) == NULL)
  			BAD_ERROR("mangle::compress failed, not enough memory\n");
-@@ -843,6 +849,7 @@
+@@ -642,6 +648,7 @@
  	}
  
  	c_byte = stream->total_out;
@@ -50,9 +69,9 @@ diff -burN squashfs-tools/mksquashfs.c squashfs-tools/mksquashfs.c
  
  	if(res != Z_STREAM_END || c_byte >= size) {
  notcompressed:
-@@ -3842,9 +3852,9 @@
+@@ -3496,9 +3503,9 @@
+ 	reader_buffer_size = readb_mbytes << (20 - block_log);
  	writer_buffer_size = writeb_mbytes << (20 - block_log);
- 	fragment_buffer_size = fragmentb_mbytes << (20 - block_log);
  
 -	if(block_size <= 65536 && sparse_files == FALSE)
 +/*	if(block_size <= 65536 && sparse_files == FALSE)
@@ -61,28 +80,4 @@ diff -burN squashfs-tools/mksquashfs.c squashfs-tools/mksquashfs.c
 +	else */
  		s_minor = SQUASHFS_MINOR;
  
- 	for(i = 0; i < source; i++)
-diff -burN squashfs-tools/squashfs_fs.h squashfs-tools/squashfs_fs.h
---- squashfs-tools/squashfs_fs.h	2008-08-20 06:46:54.000000000 +0200
-+++ squashfs-tools/squashfs_fs.h	2008-09-22 01:05:00.000000000 +0200
-@@ -37,7 +37,7 @@
- #endif
- #define SQUASHFS_CACHED_FRAGMENTS	CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE	
- #define SQUASHFS_MAJOR			3
--#define SQUASHFS_MINOR			1
-+#define SQUASHFS_MINOR			76
- #define SQUASHFS_MAGIC			0x73717368
- #define SQUASHFS_MAGIC_SWAP		0x68737173
- #define SQUASHFS_START			0
-diff -burN squashfs-tools/unsquashfs.c squashfs-tools/unsquashfs.c
---- squashfs-tools/unsquashfs.c	2008-08-26 09:01:54.000000000 +0200
-+++ squashfs-tools/unsquashfs.c	2008-09-22 01:05:00.000000000 +0200
-@@ -2197,7 +2197,7 @@
- 			s_ops.read_block_list = read_block_list;
- 			s_ops.read_inode = read_inode_2;
- 		}
--	} else if(sBlk.s_major == 3 && sBlk.s_minor <= 1) {
-+	} else if(sBlk.s_major == 3 && sBlk.s_minor == SQUASHFS_MINOR) {
- 		s_ops.squashfs_opendir = squashfs_opendir;
- 		s_ops.read_fragment = read_fragment;
- 		s_ops.read_fragment_table = read_fragment_table;
+         for(i = 0; i < source; i++)

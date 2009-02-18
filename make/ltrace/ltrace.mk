@@ -1,4 +1,4 @@
-LTRACE_SVN_REVISION:=77
+LTRACE_SVN_REVISION:=81
 $(call PKG_INIT_BIN, 0.5_$(LTRACE_SVN_REVISION))
 $(PKG)_SOURCE:=ltrace-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://freetz.magenbrot.net
@@ -9,8 +9,8 @@ $(PKG)_TARGET_CONF:=$($(PKG)_DEST_DIR)/etc/ltrace.conf
 
 # Remarks:
 #   - LTRACE_SOURCE is created like this:
-#     svn export -r 77 svn://svn.debian.org/ltrace/ltrace/trunk ltrace-0.5_77
-#     tar cvjf ltrace-0.5_77.tar.bz2 ltrace-0.5_77/
+#     svn export -r 81 svn://svn.debian.org/ltrace/ltrace/trunk ltrace-0.5_81
+#     tar cvjf ltrace-0.5_81.tar.bz2 ltrace-0.5_81/
 #   - Because we do not want the build process to depend on the availability
 #     of a Subversion client (svn checkout), we provide the ltrace source
 #     package as a download on Freetz mirrors and use DL_TOOL to download it.

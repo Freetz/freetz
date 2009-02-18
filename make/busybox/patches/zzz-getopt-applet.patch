@@ -1,8 +1,10 @@
---- util-linux/getopt.c.orig	2008-06-25 14:51:32.000000000 +0200
-+++ util-linux/getopt.c	2008-12-10 22:25:25.000000000 +0100
-@@ -164,6 +164,14 @@
- 	/* optreset = 1; */
- #endif
+Index: util-linux/getopt.c
+===================================================================
+--- util-linux/getopt.c	(revision 23733)
++++ util-linux/getopt.c	(working copy)
+@@ -157,6 +157,14 @@
+ 	if (quiet_errors) /* No error reporting from getopt(3) */
+ 		opterr = 0;
  
 +	/* We used it already in getopt32(), we *must* reset getopt(3) */
 +#ifdef __GLIBC__

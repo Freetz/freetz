@@ -1,170 +1,40 @@
---- src/Makefile.orig	2008-06-12 17:24:21.000000000 +0200
-+++ src/Makefile	2008-06-12 17:34:19.000000000 +0200
-@@ -1,5 +1,6 @@
+--- src/Makefile.orig	2009-02-07 15:51:29.000000000 +0100
++++ src/Makefile	2009-02-07 15:51:33.000000000 +0100
+@@ -1,5 +1,5 @@
  # remove -fno-exceptions  if it causes problems with stdio library on some platforms (ARM)
- 
+-
 +CXX=mipsel-linux-g++
  PREFIX=/usr
  BINDIR=$(PREFIX)/bin
  INCDIR=$(PREFIX)/include/espeak
-@@ -8,9 +9,9 @@
- 
- RELEASE = 1.37
- BIN_NAME = speak
--BIN2_NAME = espeak
--LIB_NAME = libespeak.so
--STATIC_LIB_NAME = libespeak.a
-+#BIN2_NAME = espeak
-+#LIB_NAME = libespeak.so
-+#STATIC_LIB_NAME = libespeak.a
- LIB_VERSION = 1
- LIBTAG = $(LIB_VERSION).$(RELEASE)
-
-@@ -24,7 +25,7 @@
+@@ -24,7 +24,7 @@
  LN_SF = /bin/ln -sf
  MKDIR = mkdir -p
-
+ 
 -AUDIO = portaudio
 +#AUDIO = portaudio
  #AUDIO = pulseaudio
  #AUDIO = sada
-
-@@ -52,29 +53,30 @@
- 	synthdata.cpp synthesize.cpp translate.cpp tr_english.cpp \
- 	tr_languages.cpp voices.cpp wavegen.cpp phonemelist.cpp
  
--libespeak_SOURCES = speak_lib.cpp compiledict.cpp dictionary.cpp intonation.cpp \
--	readclause.cpp setlengths.cpp numbers.cpp synth_mbrola.cpp \
--	synthdata.cpp synthesize.cpp translate.cpp tr_english.cpp \
--	tr_languages.cpp voices.cpp wavegen.cpp phonemelist.cpp \
--	espeak_command.cpp event.cpp fifo.cpp $(WAVE) debug.cpp
-+#libespeak_SOURCES = speak_lib.cpp compiledict.cpp dictionary.cpp intonation.cpp \
-+#	readclause.cpp setlengths.cpp numbers.cpp synth_mbrola.cpp \
-+#	synthdata.cpp synthesize.cpp translate.cpp tr_english.cpp \
-+#	tr_languages.cpp voices.cpp wavegen.cpp phonemelist.cpp \
-+#	espeak_command.cpp event.cpp fifo.cpp $(WAVE) debug.cpp
+@@ -60,17 +60,17 @@
  
  SRCS1=$(speak_SOURCES)
  OBJS1=$(patsubst %.cpp,%.o,$(SRCS1))
 -LIBS1=-lstdc++ $(LIB_AUDIO) -lpthread $(EXTRA_LIBS)
-+LIBS1=-static -lstdc++
++LIBS1=-static -lstdc++ $(EXTRA_LIBS)
  
--SRCS2=$(libespeak_SOURCES)
--OBJS2=$(patsubst %.cpp,x_%.o,$(SRCS2))
+ SRCS2=$(libespeak_SOURCES)
+ OBJS2=$(patsubst %.cpp,x_%.o,$(SRCS2))
 -LIBS2=-lstdc++ $(LIB_AUDIO) -lpthread
-+#SRCS2=$(libespeak_SOURCES)
-+#OBJS2=$(patsubst %.cpp,x_%.o,$(SRCS2))
-+#LIBS2=-lstdc++ $(LIB_AUDIO) -lpthread
++LIBS2=-static -lstdc++ -Wl,-Bdynamic -lpthread
  
--SRCS3 = espeak.cpp
--OBJS3=$(patsubst %.cpp,%.o,$(SRCS3))
+ SRCS3 = espeak.cpp
+ OBJS3=$(patsubst %.cpp,%.o,$(SRCS3))
 -LIBS3=-lstdc++ -L . -lespeak
-+#SRCS3 = espeak.cpp
-+#OBJS3=$(patsubst %.cpp,%.o,$(SRCS3))
-+#LIBS3=-lstdc++ -L . -lespeak
++LIBS3=-lstdc++ -L . -lespeak
  
 -CXXFLAGS=-O2
-+CXXFLAGS=-march=mips32 -mips32 -Os -pipe
++CXXFLAGS=-Os -march=mips32 -mips32 -pipe
  
  
  all: $(BIN_NAME) $(LIB_NAME) $(STATIC_LIB_NAME) $(BIN2_NAME)
--	mv $(LIB_NAME) $(LIB_NAME).$(LIBTAG)
-+	mipsel-linux-strip $(BIN_NAME)
-+	#mv $(LIB_NAME) $(LIB_NAME).$(LIBTAG)
- 
- .cpp.o:
- 	$(CXX) $(CXXFLAGS) $(USE_AUDIO) -D PATH_ESPEAK_DATA=\"$(DATADIR)\" -Wall -pedantic -I. -c -fno-exceptions  $<
-@@ -82,8 +84,8 @@
- $(BIN_NAME): $(OBJS1)
- 	$(CXX) -o $@ $(OBJS1) $(LIBS1)
- 
--$(BIN2_NAME): $(OBJS3) $(LIB_NAME)
--	$(CXX) -o $@ $(OBJS3) $(LIBS3)
-+#$(BIN2_NAME): $(OBJS3) $(LIB_NAME)
-+#	$(CXX) -o $@ $(OBJS3) $(LIBS3)
- 
- 
- 
-@@ -91,11 +93,11 @@
- 	$(CXX) $(CXXFLAGS) $(USE_AUDIO) -Wall -fpic -pedantic \
- 	-I. -D LIBRARY -c -fno-exceptions  $<  -o x_$*.o
- 
--$(LIB_NAME): $(OBJS2)
--	$(CXX) -shared $(SONAME_OPT)$(LIB_NAME).$(LIB_VERSION) -o $@ $(OBJS2) $(LIBS2)
-+#$(LIB_NAME): $(OBJS2)
-+#	$(CXX) -shared $(SONAME_OPT)$(LIB_NAME).$(LIB_VERSION) -o $@ $(OBJS2) $(LIBS2)
- 
--$(STATIC_LIB_NAME): $(OBJS2)
--	$(AR) cqs $(STATIC_LIB_NAME) $(OBJS2)
-+#$(STATIC_LIB_NAME): $(OBJS2)
-+#	$(AR) cqs $(STATIC_LIB_NAME) $(OBJS2)
- 
- clean:
- 	rm -f *.o *.a *~
---- src/speak.cpp.orig	2008-06-12 17:24:21.000000000 +0200
-+++ src/speak.cpp	2008-06-12 17:36:34.000000000 +0200
-@@ -410,7 +410,9 @@
- #endif
- 
- 
--	WavegenInit(22050,0);   // 22050
-+	//WavegenInit(22050,0);   // 22050
-+	WavegenInit(16000,0);
-+
- 	if((result = LoadPhData()) != 1)
- 	{
- 		if(result == -1)
-@@ -612,7 +614,7 @@
- 			break;
- 
- 		case 'f':
--			strncpy0(filename,optarg2,sizeof(filename));
-+			strncpy(filename,optarg2,sizeof(filename));
- 			break;
- 
- 		case 'l':
-@@ -634,12 +636,12 @@
- 			break;
- 
- 		case 'v':
--			strncpy0(voicename,optarg2,sizeof(voicename));
-+			strncpy(voicename,optarg2,sizeof(voicename));
- 			break;
- 
- 		case 'w':
- 			option_waveout = 1;
--			strncpy0(wavefile,optarg2,sizeof(wavefile));
-+			strncpy(wavefile,optarg2,sizeof(wavefile));
- 			break;
- 
- 		case 'z':
-@@ -658,7 +660,7 @@
- 		case 0x101:    // --compile-debug
- 		case 0x102:		// --compile
- 			if(optarg2 != NULL)
--				strncpy0(voicename,optarg2,sizeof(voicename));
-+				strncpy(voicename,optarg2,sizeof(voicename));
- 			flag_compile = c;
- 			break;
- 
---- src/speech.h.orig	2008-06-12 17:24:21.000000000 +0200
-+++ src/speech.h	2008-06-12 17:39:24.000000000 +0200
-@@ -36,7 +36,7 @@
- #define ESPEAK_API  extern "C"
- 
- #ifdef LIBRARY
--#define USE_ASYNC
-+//#define USE_ASYNC
- //#define USE_MBROLA_LIB
- #endif
- 
---- src/wave.h.orig	2007-08-27 13:19:01.000000000 +0200
-+++ src/wave.h	2007-12-28 23:11:58.000000000 +0100
-@@ -38,6 +38,6 @@
- extern void add_time_in_ms(struct timespec *ts, int time_in_ms);
- 
- // for tests
--extern void *wave_test_get_write_buffer();
-+extern uint32_t wave_test_get_write_buffer();
- 
- #endif
