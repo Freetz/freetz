@@ -1,4 +1,7 @@
-[ "$FREETZ_TYPE_FON_WLAN_7240" == "y" -o "$FREETZ_TYPE_FON_WLAN_7270" == "y" ] || return 0
+[ "$FREETZ_TYPE_FON_WLAN_7240" == "y" \
+	-o "$FREETZ_TYPE_FON_WLAN_7270" == "y" \
+	-a "$FREETZ_TYPE_LANG_DE" == "y" ] \
+  || return 0
 
 echo1 "adding volume counter"
 if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ]; then
