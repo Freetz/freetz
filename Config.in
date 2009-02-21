@@ -98,6 +98,7 @@ choice
 
 	config FREETZ_TYPE_FON_WLAN_7270
 		select FREETZ_AVM_VERSION_7270_04_67
+		select FREETZ_TYPE_FON_WLAN_7270_16MB if ! FREETZ_TYPE_LANG_DE
 		bool "Fon WLAN 7270"
 	
 	config FREETZ_TYPE_WLAN_3020
@@ -146,7 +147,7 @@ endchoice
 config FREETZ_TYPE_FON_WLAN_7270_16MB
 	bool "16 MB flash"
 	depends on \
-		FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
+		FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
 		Enable this to build an image for boxes with 16 MB flash.
