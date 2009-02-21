@@ -53,8 +53,8 @@ start() {
 		exit $exitval
 	fi
 	if [ -n "`grep "dev tap" /mod/etc/${DAEMON}.conf`" -a -x "`which brctl`" ]; then
-		for i in "`ifconfig | sed -n 's/\(tap[0-9]\).*/\1/p'`"; do
-			 brctl addif lan $i
+		for i in `ifconfig | grep -o tap[0-9]`; do
+			 brctl show lan 2> /dev/null | grep -q $i || brctl addif lan $i
 		done
 	fi
 }
