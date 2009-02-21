@@ -50,7 +50,6 @@ MIRROR_DIR:=$(DL_DIR)/mirror
 BUILD_DIR_VERSION:=$(shell svnversion | grep -v exported 2> /dev/null)
 BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
 
-PACKAGES_BUILD_DIR:=$(PACKAGES_DIR)/$(BUILD_DIR)
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 
 SED:=sed
@@ -97,9 +96,8 @@ endif
 endif
 
 all: step
-world: $(CHECK_BUILD_DIR_VERSION) \
-		$(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR) \
-		$(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
+world: $(CHECK_BUILD_DIR_VERSION) $(DL_DIR) $(BUILD_DIR) \
+	$(PACKAGES_DIR) $(SOURCE_DIR) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
@@ -153,9 +151,6 @@ $(PACKAGES_DIR):
 
 $(SOURCE_DIR):
 	@mkdir -p $(SOURCE_DIR)
-
-$(PACKAGES_BUILD_DIR):
-	@mkdir -p $(PACKAGES_BUILD_DIR)
 
 $(TOOLCHAIN_BUILD_DIR):
 	@mkdir -p $(TOOLCHAIN_BUILD_DIR)
@@ -430,7 +425,7 @@ common-dirclean:
 
 common-distclean: common-clean
 	rm -f .config .config.old .config.cmd .tmpconfig.h
-	rm -rf $(PACKAGES_BUILD_DIR) $(TOOLCHAIN_BUILD_DIR)
+	rm -rf $(TOOLCHAIN_BUILD_DIR)
 	rm -rf $(DL_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	rm -f make/config.cache .new-uclibc .old-uclibc
 	find $(ROOT_DIR)/lib $(ROOT_DIR)/usr/lib \
