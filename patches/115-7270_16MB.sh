@@ -1,4 +1,4 @@
-[ "$FREETZ_TYPE_FON_WLAN_7270_16MB" == "y" ] || return 0
+[ "$FREETZ_TYPE_FON_WLAN_7270_16MB" == "y" -a "$FREETZ_TYPE_LANG_DE" == "y" ] || return 0
 
 echo1 "applying 16MB patch"
 if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
