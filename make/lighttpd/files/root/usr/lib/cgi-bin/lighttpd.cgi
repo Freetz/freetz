@@ -1,9 +1,9 @@
 #!/bin/sh
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''
+auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''; modfastcgiphp_chk=''; modfastcgiruby_chk=''
 
 case "$LIGHTTPD_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
 case "$LIGHTTPD_CHROOT" in yes) chrooten_chk=' checked';; *) chrootdi_chk=' checked';;esac
@@ -11,6 +11,8 @@ case "$LIGHTTPD_DIRLISTING" in enable) dirlista_chk=' checked';; *) dirlistd_chk
 case "$LIGHTTPD_SSLENABLE" in enable) sslenaba_chk=' checked';; *) sslenabd_chk=' checked';;esac
 if [ "$LIGHTTPD_LOGGING" = "yes" ]; then log_chk=' checked'; fi
 if [ "$LIGHTTPD_MODCGI" = "yes" ]; then modcgi_chk=' checked'; fi
+if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" ]; then modfastcgiphp_chk=' checked'; fi
+if [ "$LIGHTTPD_MODFASTCGIRUBY" = "yes" ]; then modfastcgiruby_chk=' checked'; fi
 if [ "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then modcompress_chk=' checked'; fi
 if [ "$LIGHTTPD_ERROR" = "yes" ]; then error_chk=' checked'; fi
 if [ "$LIGHTTPD_AUTH" = "yes" ]; then auth_chk=' checked'; fi
@@ -92,6 +94,49 @@ cat << EOF
 <br />
 EOF
 fi
+if [ -f /usr/lib/mod_fastcgi.so ]; then
+cat << EOF
+<p><input type="hidden" name="modfastcgiphp" value="no">
+<input id="b6" type="checkbox" name="modfastcgiphp" value="yes"$modfastcgiphp_chk><label for="b6"> $(lang de:"mod_fastcgi f&uuml;r PHP aktivieren (Dateien *.php ausf&uuml;hrbar)" en:"Activate mod_fastcgi for PHP (files *.php executable)")</label></p>
+EOF
+	foundphp=`which php-cgi`
+	if [ ! -x "$foundphp" ]; then
+		foundphp=""
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Programm php-cgi wurde nicht gefunden. Bitte geben Sie den vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program php-cgi was not found. Please provide complete path to this program.")</p>
+EOF
+	else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Programm php-cgi wurde im Pfad $foundphp gefunden. Bitte geben Sie diesen oder den entsprechenden vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program php-cgi was found at $foundphp. Please either provide this or the correct path to this program in following box.")</p>
+EOF
+	fi
+	if [ "x$LIGHTTPD_MODFASTCGIPHPPATH" = "x" ]; then LIGHTTPD_MODFASTCGIPHPPATH=$foundphp; fi
+cat << EOF
+<p> $(lang de:"Pfad zu php-cgi" en:"Path to php-cgi"): <input type="text" name="modfastcgiphppath" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODFASTCGIPHPPATH")"></p>
+<p> $(lang de:"Maximale Anzahl der PHP Prozesse" en:"Maximum number of PHP processes"): <input type="text" name="modfastcgiphpmaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIPHPMAXPROC")"></p>
+<br />
+<p><input type="hidden" name="modfastcgiruby" value="no">
+<input id="b8" type="checkbox" name="modfastcgiruby" value="yes"$modfastcgiruby_chk><label for="b8"> $(lang de:"mod_fastcgi f&uuml;r RUBY aktivieren (Dateien *.rb ausf&uuml;hrbar)" en:"Activate mod_fastcgi for RUBY (files *.rb executable)")</label></p>
+EOF
+	foundruby=`which fcgiwrap.rb`
+	if [ ! -x "$foundphp" ]; then
+		foundphp=""
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Programm fcgiwrap.rb wurde nicht gefunden. Bitte geben Sie den vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program fcgiwrap.rb was not found. Please provide complete path to this program.")</p>
+EOF
+	else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Programm fcgiwrap.rb wurde im Pfad $foundruby gefunden. Bitte geben Sie diesen oder den entsprechenden vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program fcgiwrap.rb was found at $foundruby. Please either provide this or the correct path to this program in following box.")</p>
+EOF
+	fi
+	if [ "x$LIGHTTPD_MODFASTCGIRUBYPATH" = "x" ]; then LIGHTTPD_MODFASTCGIRUBYPATH=$foundruby; fi
+cat << EOF
+<p> $(lang de:"Pfad zu fcgiwrap.rb" en:"Path to fcgiwrap.rb"): <input type="text" name="modfastcgirubypath" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODFASTCGIRUBYPATH")"></p>
+<p> $(lang de:"Maximale Anzahl der RUBY Prozesse" en:"Maximum number of RUBY processes"): <input type="text" name="modfastcgirubymaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIRUBYMAXPROC")"></p>
+<br />
+EOF
+fi
+
 if [ -f /usr/lib/mod_compress.so ]; then
 cat << EOF
 <p><input type="hidden" name="modcompress" value="no">

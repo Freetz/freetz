@@ -191,6 +191,31 @@ EOF
 	fi
 fi
 
+if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" -a -f /usr/lib/mod_fastcgi.so ]; then
+cat << EOF
+server.modules += ( "mod_fastcgi" )
+fastcgi.server = ( ".php" =>
+  ((
+    "socket" => "/var/run/lighttpd/php-fastcgi.socket",
+    "bin-path" => "$LIGHTTPD_MODFASTCGIPHPPATH",
+    "max-procs" => $LIGHTTPD_MODFASTCGIPHPMAXPROC
+  ))
+)
+EOF
+fi
+if [ "$LIGHTTPD_MODFASTCGIRUBY" = "yes" -a -f /usr/lib/mod_fastcgi.so ]; then
+cat << EOF
+server.modules += ( "mod_fastcgi" )
+fastcgi.server = ( ".rb" =>
+  ((
+    "socket" => "/var/run/lighttpd/ruby-fastcgi.socket",
+    "bin-path" => "$LIGHTTPD_MODFASTCGIRUBYPATH",
+    "max-procs" => $LIGHTTPD_MODFASTCGIRUBYMAXPROC
+  ))
+)
+EOF
+fi
+
 if [ -f /tmp/flash/lighttpd_add ]; then
 	cat /tmp/flash/lighttpd_add
 fi
