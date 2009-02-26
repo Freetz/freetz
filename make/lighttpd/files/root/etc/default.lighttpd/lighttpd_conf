@@ -103,11 +103,11 @@ fi
 if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_accesslog" )
-server.errorlog             = "/var/log/lighttpd/error.log"
+server.errorlog             = "$LIGHTTPD_LOGGING_ERROR"
 EOF
 	if [ -f /usr/lib/mod_accesslog.so ]; then
 cat << EOF
-accesslog.filename          = "/var/log/lighttpd/access.log"
+accesslog.filename          = "$LIGHTTPD_LOGGING_ACCESS"
 EOF
 	fi
 fi

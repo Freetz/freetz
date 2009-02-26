@@ -181,7 +181,7 @@ sec_end
 
 sec_begin '$(lang de:"Server Logdateien" en:"Server log files")'
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Bitte beachten Sie, dass die Logdateien wertvollen RAM Speicher belegen. Nutzen Sie das Logging nur f&uuml;r Fehlersuche und schalten es f&uuml;r den normalen Betrieb ab." en:"Please note that the log files use precious RAM memory. Use logging only for debugging and disable it for regular operation.")</p>
+<p style="font-size:10px;">$(lang de:"Bitte beachten Sie, dass die Logdateien wertvollen RAM Speicher belegen falls das Standardverzeichnis f&uuml;r die Logdateien verwendet wird (siehe unten). Nutzen Sie das Logging nur f&uuml;r Fehlersuche und schalten es f&uuml;r den normalen Betrieb ab." en:"Please note that the log files use precious RAM memory if the standard directory for the log files is used (see below). Use logging only for debugging and disable it for regular operation.")</p>
 <p style="font-size:10px;"><a href="/cgi-bin/pkgstatus.cgi?pkg=lighttpd&cgi=lighttpd/lighttpd-log">$(lang de:"Logdateien anzeigen" en:"Show logfiles")</a></p>
 EOF
 
@@ -190,6 +190,9 @@ cat << EOF
 <input type="hidden" name="logging" value="no">
 <input id="a1" type="checkbox" name="logging" value="yes"$log_chk><label for="a1"> $(lang de:"Log aktivieren" en:"Activate logging")</label>
 </p>
+<p style="font-size:10px;">$(lang de:"In den folgenden Boxen k&ouml;nnen Sie die absoluten Pfade zu den Logdateien &auml;ndern. Beachten Sie, dass lighttpd mit der Benutzer ID wwwrun l&auml;ft und die Datei und das Verzeichnis f&uuml;r wwwrun schreibbar sein muss. Das Standardverzeichnis /var/log/lighttpd/ ist immer f&uuml;r den Benutzer wwwrun schreibbar. Falls ein anderes Verzeichnis als das Standardverzeichnis verwendet wird, erfolgt keine automatische L&ouml;schung der Logdateien, wenn logging deaktiviert wird." en:"In the following boxes, you can alter the absolute path names to the log files. Please note, the lighttpd web server runs with the user ID of wwwrun. The provided file/path must be writeable for this user ID. The default directory /var/log/lighttpd/ is always writeable for wwwrun. If you use a different directory than the default directory, the log files will not be automatically removed in case you deactivate logging.")</p>
+<p> $(lang de:"Zugriffs-Log (Access log)" en:"Access log"): <input type="text" name="logging_access" size="30" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ACCESS")"></p>
+<p> $(lang de:"Fehler-Log (Error log)" en:"Error log"): <input type="text" name="logging_error" size="30" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ERROR")"></p>
 EOF
 sec_end
 

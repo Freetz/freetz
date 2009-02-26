@@ -5,8 +5,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 let _width=$_cgi_width-230
 
-LOGA=/var/log/lighttpd/access.log
-LOGE=/var/log/lighttpd/error.log
+LOGA=$(cat /mod/etc/lighttpd/lighttpd.conf | grep "accesslog.filename" | cut -d\" -f 2)
+LOGE=$(cat /mod/etc/lighttpd/lighttpd.conf | grep "server.errorlog" | cut -d\" -f 2)
 
 if [ -f /usr/lib/mod_accesslog.so ]; then
 	if [ -r "$LOGA" ]; then
