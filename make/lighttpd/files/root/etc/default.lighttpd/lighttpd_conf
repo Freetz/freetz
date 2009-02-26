@@ -63,7 +63,7 @@ mimetype.assign             = (
   ""              =>      "application/octet-stream",
  )
 url.access-deny = ( "~", ".inc" )
-static-file.exclude-extensions = ( ".php", ".pl", ".fcgi" )
+static-file.exclude-extensions = ( ".php", ".pl", ".fcgi", ".rb", ".cgi" )
 server.port = $LIGHTTPD_PORT
 server.pid-file = "/var/run/lighttpd.pid"
 server.username = "wwwrun"
@@ -138,8 +138,7 @@ server.errorfile-prefix   = "$LIGHTTPD_ERRORFILE"
 EOF
 fi
 
-if [ -f /usr/lib/mod_auth.so ]; then
-if [ "$LIGHTTPD_AUTH" = "yes" ]; then
+if [ -f /usr/lib/mod_auth.so -a "$LIGHTTPD_AUTH" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_auth" )
 auth.backend = "htdigest"
@@ -151,20 +150,11 @@ IFS="
 echo "auth.require = ( "
 authrequire=$(cat /tmp/flash/lighttpd-rights.user)
 for i in $authrequire; do
-	IFS="\""
-	for j in $i; do
-		if [ -z "$dir" ]; then dir=$j; continue; fi
-		if [ -z "$mid" ]; then mid=$j; continue; fi
-		user=$j
-		echo "\"$dir\" => ( \"method\" => \"$LIGHTTPD_AUTHMETH\", \"realm\" => \"lighttpd\", \"require\" => \"$user\" ),"
-		dir=""
-		user=""
-		mid=""
-		break
-	done
+	dir=$(echo $i | cut -d\" -f 2)
+	user=$(echo $i | cut -d\" -f 4)
+	echo "\"$dir\" => ( \"method\" => \"$LIGHTTPD_AUTHMETH\", \"realm\" => \"lighttpd\", \"require\" => \"$user\" ),"
 done 
 echo ")"
-fi
 fi
 
 if [ -f /usr/lib/mod_status.so ]; then

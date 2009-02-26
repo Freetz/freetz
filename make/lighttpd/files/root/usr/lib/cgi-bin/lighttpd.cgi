@@ -118,20 +118,20 @@ cat << EOF
 <p><input type="hidden" name="modfastcgiruby" value="no">
 <input id="b8" type="checkbox" name="modfastcgiruby" value="yes"$modfastcgiruby_chk><label for="b8"> $(lang de:"mod_fastcgi f&uuml;r RUBY aktivieren (Dateien *.rb ausf&uuml;hrbar)" en:"Activate mod_fastcgi for RUBY (files *.rb executable)")</label></p>
 EOF
-	foundruby=`which fcgiwrap.rb`
-	if [ ! -x "$foundphp" ]; then
-		foundphp=""
+	foundruby=`which ruby-cgi`
+	if [ ! -x "$foundruby" ]; then
+		foundruby=""
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Programm fcgiwrap.rb wurde nicht gefunden. Bitte geben Sie den vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program fcgiwrap.rb was not found. Please provide complete path to this program.")</p>
+<p style="font-size:10px;">$(lang de:"Programm ruby-cgi wurde nicht gefunden. Bitte geben Sie den vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program ruby-cgi was not found. Please provide complete path to this program.")</p>
 EOF
 	else
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Programm fcgiwrap.rb wurde im Pfad $foundruby gefunden. Bitte geben Sie diesen oder den entsprechenden vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program fcgiwrap.rb was found at $foundruby. Please either provide this or the correct path to this program in following box.")</p>
+<p style="font-size:10px;">$(lang de:"Programm ruby-cgi wurde im Pfad $foundruby gefunden. Bitte geben Sie diesen oder den entsprechenden vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program ruby-cgi was found at $foundruby. Please either provide this or the correct path to this program in following box.")</p>
 EOF
 	fi
 	if [ "x$LIGHTTPD_MODFASTCGIRUBYPATH" = "x" ]; then LIGHTTPD_MODFASTCGIRUBYPATH=$foundruby; fi
 cat << EOF
-<p> $(lang de:"Pfad zu fcgiwrap.rb" en:"Path to fcgiwrap.rb"): <input type="text" name="modfastcgirubypath" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODFASTCGIRUBYPATH")"></p>
+<p> $(lang de:"Pfad zu ruby-cgi" en:"Path to ruby-cgi"): <input type="text" name="modfastcgirubypath" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODFASTCGIRUBYPATH")"></p>
 <p> $(lang de:"Maximale Anzahl der RUBY Prozesse" en:"Maximum number of RUBY processes"): <input type="text" name="modfastcgirubymaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIRUBYMAXPROC")"></p>
 <br />
 EOF
