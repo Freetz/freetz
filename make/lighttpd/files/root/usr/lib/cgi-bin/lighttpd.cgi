@@ -3,7 +3,7 @@
 PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''; modfastcgiphp_chk=''; modfastcgiruby_chk=''
+auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''; modfastcgiphp_chk=''; modfastcgiruby_chk=''; accesslog_syslog=''; accesslog_file=''; errorlog_syslog=''; errorlog_file=''
 
 case "$LIGHTTPD_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
 case "$LIGHTTPD_CHROOT" in yes) chrooten_chk=' checked';; *) chrootdi_chk=' checked';;esac
@@ -19,6 +19,8 @@ if [ "$LIGHTTPD_AUTH" = "yes" ]; then auth_chk=' checked'; fi
 if [ "$LIGHTTPD_MODSTATUS" = "yes" ]; then modstatus_chk=' checked'; fi
 if [ "$LIGHTTPD_MODSTATUSSORT" = "enable" ]; then modstatussort_chk=' checked'; fi
 case "$LIGHTTPD_AUTHMETH" in basic) authbasic_chk=' checked';; digest) authdigest_chk=' checked';;esac
+case "$LIGHTTPD_LOGGING_ACCESS_FILE" in yes) accesslog_file=' checked';; *) accesslog_syslog=' checked';;esac
+case "$LIGHTTPD_LOGGING_ERROR_FILE" in yes) errorlog_file=' checked';; *) errorlog_syslog=' checked';;esac
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
@@ -63,8 +65,8 @@ if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
 sec_begin '$(lang de:"SSL Unterst&uuml;tzung" en:"SSL support")'
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Damit lighttpd mit SSL-Unterst&uuml;tzung gestartet werden kann, m&uuml;ssen Zertifikat &amp; Schl&uuml;ssel <a href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">hier</a> eingetragen sein." en:"To start lighttpd with SSL-Support you have to setup Certifikat&amp;Key <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">here</a>.")</p>
-<p style="font-size:10px;">$(lang de:"Falls das Zertifikat mit einer CA signiert wurde, tragen Sie bitte das CA Zertifikat <a href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">hier</a> ein." en:"In case the certificate was signed with a CA, please provide the CA certificate <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">here</a>.")</p>
-<p style="font-size:10px;">$(lang de:"Bitte beachten Sie, dass der Port entsprechend konfiguriert werden sollte (HTTPS: 443)" en:"Please consider also to configure the appropriate port (HTTPS: 443)")</p>
+<p style="font-size:10px;">$(lang de:"Falls das Zertifikat mit einer CA signiert wurde, trage bitte das CA Zertifikat <a href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">hier</a> ein." en:"In case the certificate was signed with a CA, please provide the CA certificate <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">here</a>.")</p>
+<p style="font-size:10px;">$(lang de:"Bitte beachte, dass der Port entsprechend konfiguriert werden sollte (HTTPS: 443)" en:"Please consider also to configure the appropriate port (HTTPS: 443)")</p>
 <input id="d1" type="radio" name="sslenable" value="enable"$sslenaba_chk><label for="d1"> $(lang de:"Aktiviert" en:"Activated")</label>
 <input id="d2" type="radio" name="sslenable" value="disable"$sslenabd_chk><label for="e2"> $(lang de:"Deaktiviert" en:"Deactivate")</label>
 </p>
@@ -103,11 +105,11 @@ EOF
 	if [ ! -x "$foundphp" ]; then
 		foundphp=""
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Programm php-cgi wurde nicht gefunden. Bitte geben Sie den vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program php-cgi was not found. Please provide complete path to this program.")</p>
+<p style="font-size:10px;">$(lang de:"Programm php-cgi wurde nicht gefunden. Bitte gib den vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program php-cgi was not found. Please provide complete path to this program.")</p>
 EOF
 	else
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Programm php-cgi wurde im Pfad $foundphp gefunden. Bitte geben Sie diesen oder den entsprechenden vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program php-cgi was found at $foundphp. Please either provide this or the correct path to this program in following box.")</p>
+<p style="font-size:10px;">$(lang de:"Programm php-cgi wurde im Pfad $foundphp gefunden. Bitte gib diesen oder den entsprechenden vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program php-cgi was found at $foundphp. Please either provide this or the correct path to this program in following box.")</p>
 EOF
 	fi
 	if [ "x$LIGHTTPD_MODFASTCGIPHPPATH" = "x" ]; then LIGHTTPD_MODFASTCGIPHPPATH=$foundphp; fi
@@ -122,11 +124,11 @@ EOF
 	if [ ! -x "$foundruby" ]; then
 		foundruby=""
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Programm ruby-cgi wurde nicht gefunden. Bitte geben Sie den vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program ruby-cgi was not found. Please provide complete path to this program.")</p>
+<p style="font-size:10px;">$(lang de:"Programm ruby-cgi wurde nicht gefunden. Bitte gib den vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program ruby-cgi was not found. Please provide complete path to this program.")</p>
 EOF
 	else
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Programm ruby-cgi wurde im Pfad $foundruby gefunden. Bitte geben Sie diesen oder den entsprechenden vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program ruby-cgi was found at $foundruby. Please either provide this or the correct path to this program in following box.")</p>
+<p style="font-size:10px;">$(lang de:"Programm ruby-cgi wurde im Pfad $foundruby gefunden. Bitte gib diesen oder den entsprechenden vollst&auml;ndigen Pfad zu diesem Programm in folgender Box an." en:"Program ruby-cgi was found at $foundruby. Please either provide this or the correct path to this program in following box.")</p>
 EOF
 	fi
 	if [ "x$LIGHTTPD_MODFASTCGIRUBYPATH" = "x" ]; then LIGHTTPD_MODFASTCGIRUBYPATH=$foundruby; fi
@@ -162,10 +164,10 @@ fi
 cat << EOF
 <p><input type="hidden" name="error" value="no">
 <input id="b5" type="checkbox" name="error" value="yes"$error_chk><label for="b5"> $(lang de:"Eigene Fehlermeldungen anstelle der automatischen Fehlermeldung aktivieren (Dateiprefix angeben)" en:"Return own error message instead of the automated error messages (provide file prefix")</label></p>
-<p style="font-size:10px;">$(lang de:"Sie k&ouml;nnen den Server selbst-erstellte Fehlermeldungen zur&uuml;cksenden lassen, inklusive eigene 404 Fehlerseiten. Generell k&ouml;nnen auch andere HTTP-Fehler (zum Beispiel 500) entsprechend behandelt werden. Es k&ouml;nnen ausschliesslich statische Seiten zur&uuml;ckgesendet werden. Das Format der Dateinamen lautet: &lt;Fehlerdatei-Prefix&gt;&lt;status-code&gt;.html. Der Prefix muss dabei der absolute Pfadname auf dem Hostsystem sein, nicht nur innerhalb des Datenverzeichnisses." en:"You can customize what page to send back based on a status code. This provides you with an alternative way to customize 404 pages. You may also customize other status-codes with their own custom page (500 pages, etc). Only static files are allowed to be sent back. Format: &lt;errorfile-prefix&gt;&lt;status-code&gt;.html. This path must be the absolute path name on the host system, not only starting with the docroot.")</p>
+<p style="font-size:10px;">$(lang de:"Der Server kann selbst-erstellte Fehlermeldungen zur&uuml;cksenden, inklusive eigene 404 Fehlerseiten. Generell k&ouml;nnen auch andere HTTP-Fehler (zum Beispiel 500) entsprechend behandelt werden. Es k&ouml;nnen ausschliesslich statische Seiten zur&uuml;ckgesendet werden. Das Format der Dateinamen lautet: &lt;Fehlerdatei-Prefix&gt;&lt;status-code&gt;.html. Der Prefix muss dabei der absolute Pfadname auf dem Hostsystem sein, nicht nur innerhalb des Datenverzeichnisses." en:"You can customize what page to send back based on a status code. This provides you with an alternative way to customize 404 pages. You may also customize other status-codes with their own custom page (500 pages, etc). Only static files are allowed to be sent back. Format: &lt;errorfile-prefix&gt;&lt;status-code&gt;.html. This path must be the absolute path name on the host system, not only starting with the docroot.")</p>
 <p> $(lang de:"Datei-Prefix f&uuml;r Fehler" en:"File prefix for error"): <input type="text" name="errorfile" size="30" maxlength="255" value="$(html "$LIGHTTPD_ERRORFILE")"></p>
 <br />
-<p style="font-size:10px;">$(lang de:"Die folgenden Boxen erlauben die maximale Datentransferrate in kBytes/s festzulegen. Der Wert 0 bedeutet kein Limit. Bitte beachten Sie, dass ein Wert von unter 32 kb/s effektiv den Verkehr auf 32 kb/s aufgrund der Gr&ouml;sse der TCP Sendepuffer drosselt." en:"The following boxes allw the specification of the maximum data transfer rate in kBytes/s. The value of 0 means no limit. Please note  that a limit below 32kb/s might actually limit the traffic to 32kb/s. This is caused by the size of the TCP send buffer.")</p>
+<p style="font-size:10px;">$(lang de:"Die folgenden Boxen erlauben, die maximale Datentransferrate in kBytes/s festzulegen. Der Wert 0 bedeutet kein Limit. Bitte beachte, dass ein Wert von unter 32 kb/s effektiv den Verkehr auf 32 kb/s aufgrund der Gr&ouml;sse der TCP Sendepuffer drosselt." en:"The following boxes allw the specification of the maximum data transfer rate in kBytes/s. The value of 0 means no limit. Please note  that a limit below 32kb/s might actually limit the traffic to 32kb/s. This is caused by the size of the TCP send buffer.")</p>
 <p> $(lang de:"Maximale Datenrate pro Verbindung" en:"Maximum throughput per connection"): <input type="text" name="limitconn" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITCONN")"> kBytes/s</p>
 <p> $(lang de:"Maximale Datenrate aller Verbindungen" en:"Maximum throughput for all connections"): <input type="text" name="limitsrv" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITSRV")"> kBytes/s</p>
 
@@ -181,7 +183,7 @@ sec_end
 
 sec_begin '$(lang de:"Server Logdateien" en:"Server log files")'
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Bitte beachten Sie, dass die Logdateien wertvollen RAM Speicher belegen falls das Standardverzeichnis f&uuml;r die Logdateien verwendet wird (siehe unten). Nutzen Sie das Logging nur f&uuml;r Fehlersuche und schalten es f&uuml;r den normalen Betrieb ab." en:"Please note that the log files use precious RAM memory if the standard directory for the log files is used (see below). Use logging only for debugging and disable it for regular operation.")</p>
+<p style="font-size:10px;">$(lang de:"Bitte beachte, dass die Logdateien wertvollen RAM Speicher belegen falls das Standardverzeichnis f&uuml;r die Logdateien verwendet wird (siehe unten). Nutze das Logging nur f&uuml;r Fehlersuche und schalten es f&uuml;r den normalen Betrieb ab." en:"Please note that the log files use precious RAM memory if the standard directory for the log files is used (see below). Use logging only for debugging and disable it for regular operation.")</p>
 <p style="font-size:10px;"><a href="/cgi-bin/pkgstatus.cgi?pkg=lighttpd&cgi=lighttpd/lighttpd-log">$(lang de:"Logdateien anzeigen" en:"Show logfiles")</a></p>
 EOF
 
@@ -190,7 +192,15 @@ cat << EOF
 <input type="hidden" name="logging" value="no">
 <input id="a1" type="checkbox" name="logging" value="yes"$log_chk><label for="a1"> $(lang de:"Log aktivieren" en:"Activate logging")</label>
 </p>
-<p style="font-size:10px;">$(lang de:"In den folgenden Boxen k&ouml;nnen Sie die absoluten Pfade zu den Logdateien &auml;ndern. Beachten Sie, dass lighttpd mit der Benutzer ID wwwrun l&auml;ft und die Datei und das Verzeichnis f&uuml;r wwwrun schreibbar sein muss. Das Standardverzeichnis /var/log/lighttpd/ ist immer f&uuml;r den Benutzer wwwrun schreibbar. Falls ein anderes Verzeichnis als das Standardverzeichnis verwendet wird, erfolgt keine automatische L&ouml;schung der Logdateien, wenn logging deaktiviert wird." en:"In the following boxes, you can alter the absolute path names to the log files. Please note, the lighttpd web server runs with the user ID of wwwrun. The provided file/path must be writeable for this user ID. The default directory /var/log/lighttpd/ is always writeable for wwwrun. If you use a different directory than the default directory, the log files will not be automatically removed in case you deactivate logging.")</p>
+<p>$(lang de:"Speicherart des Zugriffs-Logs (Access Log)" en:"Save type of access log")
+<input id="e3" type="radio" name="logging_access_file" value="yes"$accesslog_file><label for="e3"> $(lang de:"Datei" en:"File")</label>
+<input id="e4" type="radio" name="logging_access_file" value="no"$accesslog_syslog><label for="e4"> $(lang de:"Syslog" en:"Syslog")</label>
+</p>
+<p>$(lang de:"Speicherart des Feler-Logs (Error Log)" en:"Save type of error log")
+<input id="e5" type="radio" name="logging_error_file" value="yes"$errorlog_file><label for="e5"> $(lang de:"Datei" en:"File")</label>
+<input id="e6" type="radio" name="logging_error_file" value="no"$errorlog_syslog><label for="e6"> $(lang de:"Syslog" en:"Syslog")</label>
+</p>
+<p style="font-size:10px;">$(lang de:"In den folgenden Boxen k&ouml;nnen die absoluten Pfade zu den Logdateien ge&auml;ndert werden. Beachte, dass lighttpd mit der Benutzer ID wwwrun l&auml;ft und die Datei und das Verzeichnis f&uuml;r wwwrun schreibbar sein muss. Das Standardverzeichnis /var/log/lighttpd/ ist immer f&uuml;r den Benutzer wwwrun schreibbar. Falls ein anderes Verzeichnis als das Standardverzeichnis verwendet wird, erfolgt keine automatische L&ouml;schung der Logdateien, wenn logging deaktiviert wird. Wenn der Pfadname mit einem '|' beginnt, wird der im Anschluss folgende Pfadname als Prozess ausgef&uuml;hrt und erh&auml;lt die Logdaten als Eingabe via STDIN." en:"In the following boxes, you can alter the absolute path names to the log files. Please note, the lighttpd web server runs with the user ID of wwwrun. The provided file/path must be writeable for this user ID. The default directory /var/log/lighttpd/ is always writeable for wwwrun. If you use a different directory than the default directory, the log files will not be automatically removed in case you deactivate logging. If the path name starts with a '|' the rest of the name is taken as the name of a process which will be spawned and will get the output via STDIN.")</p>
 <p> $(lang de:"Zugriffs-Log (Access log)" en:"Access log"): <input type="text" name="logging_access" size="30" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ACCESS")"></p>
 <p> $(lang de:"Fehler-Log (Error log)" en:"Error log"): <input type="text" name="logging_error" size="30" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ERROR")"></p>
 EOF

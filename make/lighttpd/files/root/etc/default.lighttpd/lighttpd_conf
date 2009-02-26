@@ -101,14 +101,28 @@ EOF
 fi
 
 if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
+	if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ]; then
 cat << EOF
-server.modules += ( "mod_accesslog" )
-server.errorlog             = "$LIGHTTPD_LOGGING_ERROR"
+server.errorlog = "$LIGHTTPD_LOGGING_ERROR"
 EOF
+	else
+cat << EOF
+server.errorlog-use-syslog = "enable"
+EOF
+	fi
 	if [ -f /usr/lib/mod_accesslog.so ]; then
 cat << EOF
-accesslog.filename          = "$LIGHTTPD_LOGGING_ACCESS"
+server.modules += ( "mod_accesslog" )
 EOF
+		if [ "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
+cat << EOF
+accesslog.filename = "$LIGHTTPD_LOGGING_ACCESS"
+EOF
+		else
+cat << EOF
+accesslog.use-syslog = "enable"
+EOF
+		fi
 	fi
 fi
 
