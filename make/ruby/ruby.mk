@@ -4,6 +4,12 @@ $(PKG)_SITE:=http://www.xs4all.nl/~hipster/lib/mirror/ruby/1.8
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
+ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
+$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
+else
+$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
+endif
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
