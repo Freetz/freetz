@@ -46,23 +46,24 @@ cat << EOF
 EOF
 sec_end
 
-if [ -f /usr/lib/mod_dirlisting.so ]; then
 sec_begin '$(lang de:"Erlaube Auflistung des Verzeichnisinhalts" en:"Allow listing of directory contents")'
+if [ -f /usr/lib/mod_dirlisting.so ]; then
 cat << EOF
 <p>
 <input id="d1" type="radio" name="dirlisting" value="enable"$dirlista_chk><label for="d1"> $(lang de:"Aktiviert" en:"Activated")</label>
 <input id="d2" type="radio" name="dirlisting" value="disable"$dirlistd_chk><label for="e2"> $(lang de:"Deaktiviert" en:"Deactivate")</label>
 </p>
-EOF
-
-cat << EOF
 <p> $(lang de:"Kodierung der Dateinamen" en:"File name encoding"): <input type="text" name="dirlistingenc" size="6" maxlength="10" value="$(html "$LIGHTTPD_DIRLISTINGENC")"></p>
 EOF
-sec_end
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Auflistung des Verzeichnisinhaltes nicht m&ouml;glich - mod_dirlisting.so nicht vorhanden." en:"Listing of directory contents not available - mod_dirlisting.so unavailable.")</p>
+EOF
 fi
+sec_end
 
-if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
 sec_begin '$(lang de:"SSL Unterst&uuml;tzung" en:"SSL support")'
+if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Damit lighttpd mit SSL-Unterst&uuml;tzung gestartet werden kann, m&uuml;ssen Zertifikat &amp; Schl&uuml;ssel <a href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">hier</a> eingetragen sein." en:"To start lighttpd with SSL-Support you have to setup Certifikat&amp;Key <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">here</a>.")</p>
 <p style="font-size:10px;">$(lang de:"Falls das Zertifikat mit einer CA signiert wurde, trage bitte das CA Zertifikat <a href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">hier</a> ein." en:"In case the certificate was signed with a CA, please provide the CA certificate <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">here</a>.")</p>
@@ -71,11 +72,15 @@ cat << EOF
 <input id="d2" type="radio" name="sslenable" value="disable"$sslenabd_chk><label for="e2"> $(lang de:"Deaktiviert" en:"Deactivate")</label>
 </p>
 EOF
-sec_end
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"SSL Unterst&uuml;tzung in lighttpd nicht einkompiliert." en:"SSL support for lighttpd not compiled in.")</p>
+EOF
 fi
+sec_end
 
-if [ -f /usr/lib/mod_auth.so ]; then
 sec_begin '$(lang de:"Zugriffskontrolle" en:"Access control")'
+if [ -f /usr/lib/mod_auth.so ]; then
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Damit lighttpd Benutzer authentisieren kann, m&uuml;ssen Benutzer <a href=\"/cgi-bin/file.cgi?id=lighttpd_user\">hier</a> eingetragen sein." en:"To allow lighttpd to authenticate users, you have to add users <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_user\">here</a>.")</p>
 <p style="font-size:10px;">$(lang de:"Zugriffsrechte k&ouml;nnen <a href=\"/cgi-bin/file.cgi?id=lighttpd_rights\">hier</a> eingetragen werden." en:"Access rights can be added <a href=\"/cgi-bin/file.cgi?id=lighttpd_rights\">here</a>.")</p>
@@ -85,8 +90,12 @@ cat << EOF
 <input id="z2" type="radio" name="authmeth" value="basic"$authbasic_chk><label for="z2"> $(lang de:"Basic Authentisierung" en:"Basic authentication")</label>
 <input id="z3" type="radio" name="authmeth" value="digest"$authdigest_chk><label for="z3"> $(lang de:"Digest Authentisierung" en:"Digest Authentication")</label>
 EOF
-sec_end
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Zugriffskontrolle kann nicht konfiguriert werden - mod_auth.so nicht vorhanden." en:"Access control cannot be configured - mod_auth.so unavailable.")</p>
+EOF
 fi
+sec_end
 
 sec_begin '$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")'
 if [ -f /usr/lib/mod_cgi.so ]; then
@@ -94,6 +103,10 @@ cat << EOF
 <p><input type="hidden" name="modcgi" value="no">
 <input id="b1" type="checkbox" name="modcgi" value="yes"$modcgi_chk><label for="b1"> $(lang de:"mod_cgi aktivieren (Dateien *.cgi und in /cgi-bin ausf&uuml;hrbar)" en:"Activate mod_cgi (files *.cgi and in /cgi-bin executable")</label></p>
 <br />
+EOF
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"CGI Unterst&uuml;tzung kann nicht konfiguriert werden - mod_cgi.so nicht vorhanden." en:"CGI support cannot be configured - mod_cgi.so unavailable.")</p>
 EOF
 fi
 if [ -f /usr/lib/mod_fastcgi.so ]; then
@@ -137,6 +150,10 @@ cat << EOF
 <p> $(lang de:"Maximale Anzahl der RUBY Prozesse" en:"Maximum number of RUBY processes"): <input type="text" name="modfastcgirubymaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIRUBYMAXPROC")"></p>
 <br />
 EOF
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"FastCGI Unterst&uuml;tzung kann nicht konfiguriert werden - mod_fastcgi.so nicht vorhanden." en:"FastCGI support cannot be configured - mod_fastcgi.so unavailable.")</p>
+EOF
 fi
 
 if [ -f /usr/lib/mod_compress.so ]; then
@@ -145,6 +162,10 @@ cat << EOF
 <input id="b2" type="checkbox" name="modcompress" value="yes"$modcompress_chk><label for="b2"> $(lang de:"mod_compress aktivieren (Cache Verzeichnis muss konfiguriert werden)" en:"Activate mod_compress (Cache dir must be configured")</label></p>
 <p> $(lang de:"Verzeichnis der Cache Daten" en:"Directory of Cache"): <input type="text" name="modcompressdir" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODCOMPRESSDIR")"></p>
 <br />
+EOF
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Dateicaching kann nicht konfiguriert werden - mod_compress.so nicht vorhanden." en:"Caching of files cannot be configured - mod_compress.so unavailable.")</p>
 EOF
 fi
 if [ -f /usr/lib/mod_status.so ]; then
@@ -159,6 +180,10 @@ cat << EOF
 <p> $(lang de:"URL f&uuml;r Statistiken" en:"URL for statistics"): <input type="text" name="modstatusstatistic" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODSTATUSSTATISTIC")"></p>
 <p> $(lang de:"URL f&uuml;r Status" en:"URL for status"): <input type="text" name="modstatusstatus" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODSTATUSSTATUS")"></p>
 <br />
+EOF
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Statusinformationen k&ouml;nnen nicht angezeigt werden - mod_status.so nicht vorhanden." en:"Status information cannot be displayed - mod_status.so unavailable.")</p>
 EOF
 fi
 cat << EOF
@@ -192,16 +217,32 @@ cat << EOF
 <input type="hidden" name="logging" value="no">
 <input id="a1" type="checkbox" name="logging" value="yes"$log_chk><label for="a1"> $(lang de:"Log aktivieren" en:"Activate logging")</label>
 </p>
+EOF
+if [ -f /usr/lib/mod_accesslog.so ]; then
+cat << EOF
 <p>$(lang de:"Speicherart des Zugriffs-Logs (Access Log)" en:"Save type of access log")
 <input id="e3" type="radio" name="logging_access_file" value="yes"$accesslog_file><label for="e3"> $(lang de:"Datei" en:"File")</label>
 <input id="e4" type="radio" name="logging_access_file" value="no"$accesslog_syslog><label for="e4"> $(lang de:"Syslog" en:"Syslog")</label>
 </p>
+EOF
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Zugriffs-Logs (Access Log) kann nicht konfiguriert werden - mod_accesslog.so nicht vorhanden." en:"Access logs cannot be configured - mod_accesslog.so unavailable.")</p>
+EOF
+fi
+cat << EOF
 <p>$(lang de:"Speicherart des Feler-Logs (Error Log)" en:"Save type of error log")
 <input id="e5" type="radio" name="logging_error_file" value="yes"$errorlog_file><label for="e5"> $(lang de:"Datei" en:"File")</label>
 <input id="e6" type="radio" name="logging_error_file" value="no"$errorlog_syslog><label for="e6"> $(lang de:"Syslog" en:"Syslog")</label>
 </p>
 <p style="font-size:10px;">$(lang de:"In den folgenden Boxen k&ouml;nnen die absoluten Pfade zu den Logdateien ge&auml;ndert werden. Beachte, dass lighttpd mit der Benutzer ID wwwrun l&auml;ft und die Datei und das Verzeichnis f&uuml;r wwwrun schreibbar sein muss. Das Standardverzeichnis /var/log/lighttpd/ ist immer f&uuml;r den Benutzer wwwrun schreibbar. Falls ein anderes Verzeichnis als das Standardverzeichnis verwendet wird, erfolgt keine automatische L&ouml;schung der Logdateien, wenn logging deaktiviert wird. Wenn der Pfadname mit einem '|' beginnt, wird der im Anschluss folgende Pfadname als Prozess ausgef&uuml;hrt und erh&auml;lt die Logdaten als Eingabe via STDIN." en:"In the following boxes, you can alter the absolute path names to the log files. Please note, the lighttpd web server runs with the user ID of wwwrun. The provided file/path must be writeable for this user ID. The default directory /var/log/lighttpd/ is always writeable for wwwrun. If you use a different directory than the default directory, the log files will not be automatically removed in case you deactivate logging. If the path name starts with a '|' the rest of the name is taken as the name of a process which will be spawned and will get the output via STDIN.")</p>
+EOF
+if [ -f /usr/lib/mod_accesslog.so ]; then
+cat << EOF
 <p> $(lang de:"Zugriffs-Log (Access log)" en:"Access log"): <input type="text" name="logging_access" size="30" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ACCESS")"></p>
+EOF
+fi
+cat << EOF
 <p> $(lang de:"Fehler-Log (Error log)" en:"Error log"): <input type="text" name="logging_error" size="30" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ERROR")"></p>
 EOF
 sec_end
