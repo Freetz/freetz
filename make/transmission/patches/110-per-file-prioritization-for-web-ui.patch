@@ -1,6 +1,6 @@
---- web/javascript/common.js.orig	2009-01-22 23:05:33.000000000 +0100
-+++ web/javascript/common.js	2009-01-23 16:29:09.000000000 +0100
-@@ -83,7 +83,7 @@
+--- web/javascript/common.js.orig	2009-02-27 17:46:38.000000000 +0100
++++ web/javascript/common.js	2009-02-28 11:51:09.000000000 +0100
+@@ -88,7 +88,7 @@
  /**
   * "innerHTML = html" is pretty slow in FF.  Happily a lot of our innerHTML
   * changes are triggered by periodic refreshes on torrents whose state hasn't
@@ -9,9 +9,9 @@
   */
  function setInnerHTML( e, html )
  {
---- web/javascript/transmission.js.orig	2009-01-22 23:05:33.000000000 +0100
-+++ web/javascript/transmission.js	2009-01-23 16:29:09.000000000 +0100
-@@ -55,6 +55,7 @@
+--- web/javascript/transmission.js.orig	2009-02-27 17:46:38.000000000 +0100
++++ web/javascript/transmission.js	2009-02-28 11:51:09.000000000 +0100
+@@ -58,6 +58,7 @@
  		$('#prefs_cancel_button').bind('click', this.cancelPrefsClicked);
  		$('#inspector_tab_info').bind('click', this.inspectorTabClicked);
  		$('#inspector_tab_activity').bind('click', this.inspectorTabClicked);
@@ -19,7 +19,7 @@
  		if (iPhone) {
  			$('#torrent_inspector').bind('click', this.hideInspector);
  			$('#preferences_link').bind('click', this.releaseClutchPreferencesButton);
-@@ -80,28 +81,31 @@
+@@ -83,28 +84,31 @@
  		
  		// Get preferences & torrents from the daemon
  		this.remote.loadDaemonPrefs( );
@@ -56,7 +56,7 @@
  				'images/graphics/chrome.png',
  				'images/graphics/filter_bar.png',
  				'images/graphics/logo.png',
-@@ -285,7 +289,18 @@
+@@ -288,7 +292,18 @@
  				s.push( v[i] );
  		return s;
  	},
@@ -76,7 +76,7 @@
  	getVisibleRows: function()
  	{
  		var rows = [ ];
-@@ -402,7 +417,7 @@
+@@ -405,7 +420,7 @@
  		if( doUpdate )
  			this.selectionChanged( );
  	},
@@ -85,7 +85,7 @@
  	selectionChanged: function()
  	{
  		this.updateButtonStates();
-@@ -572,7 +587,9 @@
+@@ -575,7 +590,9 @@
  		
  		// Select the clicked tab, unselect the others,
  		// and display the appropriate info
@@ -96,7 +96,7 @@
  		for( var i=0; i<tab_ids.length; ++i ) {
  			if (this.id == tab_ids[i]) {
  				$('#' + tab_ids[i]).addClass('selected');
-@@ -636,12 +654,24 @@
+@@ -639,12 +656,24 @@
  			// sanity check
  			if( !this[Prefs._RefreshRate] )
  			     this[Prefs._RefreshRate] = 5;
@@ -122,7 +122,7 @@
  
  	/*--------------------------------------------
  	 * 
-@@ -649,8 +678,7 @@
+@@ -652,8 +681,7 @@
  	 * 
  	 *--------------------------------------------*/
      
@@ -132,7 +132,7 @@
  		$('body').addClass('prefs_showing');
  		$('#prefs_container').show();
  		transmission.hideiPhoneAddressbar();
-@@ -858,7 +886,7 @@
+@@ -861,7 +889,7 @@
  		var na = 'N/A';
  		
  		$("#torrent_inspector_size, .inspector_row div").css('color', '#222');
@@ -141,7 +141,7 @@
  		if( torrents.length == 0 )
  		{
  			var ti = '#torrent_inspector_';
-@@ -883,7 +911,8 @@
+@@ -886,7 +914,8 @@
  			setInnerHTML( $(ti+'progress')[0], na );
  			setInnerHTML( $(ti+'comment')[0], na );
  			setInnerHTML( $(ti+'creator')[0], na );
@@ -151,7 +151,7 @@
  			$("#torrent_inspector_size, .inspector_row > div:contains('N/A')").css('color', '#666');
  			return;
  		}
-@@ -911,7 +940,7 @@
+@@ -914,7 +943,7 @@
  			date_created = Math.formatTimestamp( t._creator_date );
  		}
  
@@ -160,7 +160,7 @@
  			var t = torrents[i];
  			sizeWhenDone         += t._sizeWhenDone;
  			sizeDone             += t._sizeWhenDone - t._leftUntilDone;
-@@ -972,6 +1001,16 @@
+@@ -975,6 +1004,16 @@
  		$(ti+'error')[0].innerHTML           = error;
  		
  		$(".inspector_row > div:contains('N/A')").css('color', '#666');
@@ -177,7 +177,7 @@
  	},
      
  	/*
-@@ -983,7 +1022,7 @@
+@@ -986,7 +1025,7 @@
  		else
  			this.showInspector( );
  	},
@@ -186,7 +186,7 @@
  	showInspector: function() {
  		$('#torrent_inspector').show();
  		if (iPhone) {
-@@ -1047,36 +1086,53 @@
+@@ -1050,36 +1089,53 @@
  		this.setFilter( Prefs._FilterAll );
  	},
  
@@ -248,7 +248,7 @@
  		}
  		
  		// Remove any torrents that weren't in the refresh list
-@@ -1185,7 +1241,7 @@
+@@ -1188,7 +1244,7 @@
  				args.dataType = 'xml';
  				args.iframe = true;
  				args.success = function( data ) {
@@ -257,7 +257,7 @@
  					tr.togglePeriodicRefresh( true );
  				};
  				this.togglePeriodicRefresh( false );
-@@ -1273,6 +1329,9 @@
+@@ -1276,6 +1332,9 @@
  	stopTorrents: function( torrents ) {
  		this.remote.stopTorrents( torrents );
  	},
@@ -267,8 +267,8 @@
      
  	hideiPhoneAddressbar: function(timeInSeconds) {
  		if( iPhone ) {
---- web/javascript/torrent.js.orig	2009-01-22 23:05:33.000000000 +0100
-+++ web/javascript/torrent.js	2009-01-23 16:29:09.000000000 +0100
+--- web/javascript/torrent.js.orig	2009-02-27 17:46:38.000000000 +0100
++++ web/javascript/torrent.js	2009-02-28 11:51:09.000000000 +0100
 @@ -23,8 +23,7 @@
  	/*
  	 * Constructor
@@ -534,8 +534,8 @@
 +	}
 +	
 +};
---- web/javascript/transmission.remote.js.orig	2009-01-22 23:05:33.000000000 +0100
-+++ web/javascript/transmission.remote.js	2009-01-23 16:29:09.000000000 +0100
+--- web/javascript/transmission.remote.js.orig	2009-02-27 17:46:38.000000000 +0100
++++ web/javascript/transmission.remote.js	2009-02-28 11:51:09.000000000 +0100
 @@ -55,63 +55,92 @@
  			'Dismiss');
  		transmission.togglePeriodicRefresh(false);
@@ -686,8 +686,8 @@
 +		} );
  	}
  };
---- web/index.html.orig	2009-01-22 23:05:33.000000000 +0100
-+++ web/index.html	2009-01-23 16:29:09.000000000 +0100
+--- web/index.html.orig	2009-02-27 17:46:38.000000000 +0100
++++ web/index.html	2009-02-28 11:51:09.000000000 +0100
 @@ -14,6 +14,7 @@
  		<link media="screen and (min-device-width: 481px)" href="./stylesheets/common.css" type="text/css" rel="stylesheet" />
  		<script type="text/javascript" src="./javascript/jquery/jquery.transmenu.min.js"></script>
@@ -696,7 +696,7 @@
  		<script type="text/javascript" src="./javascript/menu.js"></script>
  		<script type="text/javascript" src="./javascript/jquery/jquery.dimensions.min.js"></script>
  		<script type="text/javascript" src="./javascript/jquery/jquery.form.min.js"></script>
-@@ -62,6 +63,7 @@
+@@ -63,6 +64,7 @@
  			<div id="inspector_tabs">
  				<div class="inspector_tab selected" id="inspector_tab_info"><a href="#info"><img src="images/buttons/info_general.png" alt="Information"/></a></div>
  				<div class="inspector_tab" id="inspector_tab_activity"><a href="#activity"><img src="images/buttons/info_activity.png" alt="Activity"/></a></div>
@@ -704,7 +704,7 @@
  			</div>
  			
  			<div id="inspector_header">
-@@ -169,6 +171,11 @@
+@@ -170,6 +172,11 @@
  					</div>
  				</div><!-- class="inspector_group"-->
  			</div><!-- id="inspector_tab_activity_container" -->
@@ -716,8 +716,8 @@
  		</div>
  		
  		<div id="torrent_container">
---- web/stylesheets/common.css.orig	2009-01-22 23:05:33.000000000 +0100
-+++ web/stylesheets/common.css	2009-01-23 16:29:09.000000000 +0100
+--- web/stylesheets/common.css.orig	2009-02-27 17:46:38.000000000 +0100
++++ web/stylesheets/common.css	2009-02-28 11:51:09.000000000 +0100
 @@ -532,9 +532,9 @@
  	padding-right: 10px;
  }
