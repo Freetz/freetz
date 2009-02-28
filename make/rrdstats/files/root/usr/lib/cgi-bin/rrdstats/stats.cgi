@@ -293,71 +293,6 @@ generate_graph() {
 				GPRINT:freepct:LAST:"%3.2lf%% current free swap\j"	> /dev/null
 			fi
 			;;
-		diskio1|diskio2|diskio3|diskio4)
-			case $1 in
-				diskio1)
-					DISK=$RRDSTATS_DISK_DEV1
-					LG=$RRDSTATS_DISK_LOGARITHM1
-					MX=$RRDSTATS_MAX_DISK_GRAPH1
-					;;
-				diskio2)
-					DISK=$RRDSTATS_DISK_DEV2
-					LG=$RRDSTATS_DISK_LOGARITHM2
-					MX=$RRDSTATS_MAX_DISK_GRAPH2
-					;;
-				diskio3)
-					DISK=$RRDSTATS_DISK_DEV3
-					LG=$RRDSTATS_DISK_LOGARITHM3
-					MX=$RRDSTATS_MAX_DISK_GRAPH3
-					;;
-				diskio4)
-					DISK=$RRDSTATS_DISK_DEV4
-					LG=$RRDSTATS_DISK_LOGARITHM4
-					MX=$RRDSTATS_MAX_DISK_GRAPH4
-					;;
-			esac
-
-			if [ "$LG" = "yes" ]; then
-				LOGARITHMIC=" -o "
-			else
-				LOGARITHMIC=" -l 0 "
-			fi
-
-			if [ -z "$MX" -o "$MX" -eq 0 ]; then
-				MAXIMALBW=""
-			else
-				let MAXIMALBW=$MX*1000*1000
-				MAXIMALBW=" -r -u $MAXIMALBW "
-			fi
-
-			FILE=$RRDSTATS_RRDDATA/$1_$RRDSTATS_INTERVAL-$DISK.rrd
-			if [ -e $FILE ]; then
-				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png		\
-				--title "$TITLE"						\
-				--start -1-$PERIODE $LOGARITHMIC $LAZY $MAXIMALBW		\
-				--width $WIDTH --height $HEIGHT					\
-				--vertical-label "bytes/s"					\
-				--color SHADEA#ffffff						\
-				--color SHADEB#ffffff						\
-				--color BACK#ffffff						\
-				--color CANVAS#eeeeee80						\
-				--units=si							\
-				-W "Generated on: $DATESTRING"					\
-												\
-				DEF:read=$FILE:read:AVERAGE					\
-				DEF:write=$FILE:write:AVERAGE					\
-												\
-				AREA:read$GREEN:"Read        (max/avg/cur)[bytes/s]\:"		\
-				GPRINT:read:MAX:"%3.0lf%s /"					\
-				GPRINT:read:AVERAGE:"%3.0lf%s /"				\
-				GPRINT:read:LAST:"%3.0lf%s\n"					\
-												\
-				AREA:write#0000FF80:"Write       (max/avg/cur)[bytes/s]\:"	\
-				GPRINT:write:MAX:"%3.0lf%s /"					\
-				GPRINT:write:AVERAGE:"%3.0lf%s /"				\
-				GPRINT:write:LAST:"%3.0lf%s\n"				> /dev/null
-			fi
-			;;
 		if1|if2|if3|if4)
 			case $1 in
 				if1)
@@ -432,7 +367,7 @@ generate_graph() {
 				AREA:out#0000FF80:"Outgoing    (max/avg/cur)[bytes/s]\:"	\
 				GPRINT:out:MAX:"%3.0lf%s /"					\
 				GPRINT:out:AVERAGE:"%3.0lf%s /"					\
-				GPRINT:out:LAST:"%3.0lf%s"				> /dev/null
+				GPRINT:out:LAST:"%3.0lf%s		"		> /dev/null
 			fi
 			;;
 
@@ -521,9 +456,9 @@ gen_main() {
 
 graph="$(echo "$QUERY_STRING" | sed -e 's/^.*graph=//' -e 's/&.*$//' -e 's/\.//g')"
 case "$graph" in
-	cpu|mem|swap|upt|tt0|tt1|tt2|tt3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
+	cpu|mem|swap|upt|tt0|tt1|tt2|tt3|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
-		heading=$(echo $graph|sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^diskio1$/$RRDSTATS_DISK_NAME1/g;s/^diskio2$/$RRDSTATS_DISK_NAME2/g;s/^diskio3$/$RRDSTATS_DISK_NAME3/g;s/^diskio4$/$RRDSTATS_DISK_NAME4/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
+		heading=$(echo $graph|sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
 		GROUP_PERIOD=$(echo "$QUERY_STRING" |grep "&group="| sed -e 's/^.*&group=//' -e 's/&.*$//' -e 's/\.//g')
                 [ -n "$GROUP_PERIOD" ] && heading="$heading [$GROUP_PERIOD]"
 		echo "<center><font size=+1><b>$heading stats</b></font></center>"
@@ -564,10 +499,6 @@ case "$graph" in
 				[ "$(free | grep "Swap:" | awk '{print $2}')" != "0" ] && gen_main "swap" "Swapspace" "$periodnn"
 				[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
 				[ "$RRDSTATS_THOMSONTHG" = yes ] && gen_main "tt0" "Thomson THG" "$periodnn"
-				[ ! -z "$RRDSTATS_DISK_DEV1" ] && gen_main "diskio1" "$RRDSTATS_DISK_NAME1" "$periodnn"
-				[ ! -z "$RRDSTATS_DISK_DEV2" ] && gen_main "diskio2" "$RRDSTATS_DISK_NAME2" "$periodnn"
-				[ ! -z "$RRDSTATS_DISK_DEV3" ] && gen_main "diskio3" "$RRDSTATS_DISK_NAME3" "$periodnn"
-				[ ! -z "$RRDSTATS_DISK_DEV4" ] && gen_main "diskio4" "$RRDSTATS_DISK_NAME4" "$periodnn"
 				[ ! -z "$RRDSTATS_INTERFACE1" ] && gen_main "if1" "$RRDSTATS_NICE_NAME1" "$periodnn"
 				[ ! -z "$RRDSTATS_INTERFACE2" ] && gen_main "if2" "$RRDSTATS_NICE_NAME2" "$periodnn"
 				[ ! -z "$RRDSTATS_INTERFACE3" ] && gen_main "if3" "$RRDSTATS_NICE_NAME3" "$periodnn"

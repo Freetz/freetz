@@ -79,53 +79,6 @@ collect_upt() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdata --template uptime
 }
 
-collect_diskio() {
-	[ $# -eq 0 ] && return
-	case $1 in 
-		1)
-			DISK=$RRDSTATS_DISK_DEV1
-			;;
-		2)
-			DISK=$RRDSTATS_DISK_DEV2
-			;;
-		3)
-			DISK=$RRDSTATS_DISK_DEV3
-			;;
-		4)
-			DISK=$RRDSTATS_DISK_DEV4
-			;;
-		*)
-			return
-			;;
-	esac
-	if ( cat /proc/diskstats | grep -E "$DISK " >/dev/null 2>&1 ); then
-		NAMEPREFIX=diskio$1_$RRDSTATS_INTERVAL-$DISK
-		if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
-			rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
-				--step $RRDSTATS_INTERVAL \
-				DS:read:DERIVE:600:0:U \
-				DS:write:DERIVE:600:0:U \
-				RRA:AVERAGE:0.5:1:576 \
-				RRA:AVERAGE:0.5:6:672 \
-				RRA:AVERAGE:0.5:24:732 \
-				RRA:AVERAGE:0.5:144:1460
-		fi
-		if ( echo $DISK | grep -E 'sd[a-z][0-9]' >/dev/null 2>&1 ); then
-			io="$(cat /proc/diskstats | sed -n 's/^.*'$DISK' \([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.*$/\2:\4/p')"
-		else
-			io="$(cat /proc/diskstats | sed -n 's/^.*'$DISK' \([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.*$/\3:\7/p')"
-		fi
-			[ -z "$io" ] && return
-			rB=$(($(echo $io | cut -d : -f1) * 512))
-			wB=$(($(echo $io | cut -d : -f2) * 512))
-			diskiodata=N:$rB:$wB
-			[ -z "$diskiodata" ] && diskiodata="N:0:0"
-		$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $diskiodata --template read:write
-	else
-		return
-	fi
-}
-
 collect_thg() {
 	NAMEPREFIX=thg_$RRDSTATS_INTERVAL
 	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
@@ -264,10 +217,6 @@ while true; do
 	collect_mem
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
 	[ "$RRDSTATS_THOMSONTHG" = yes ] && collect_thg
-	[ ! -z "$RRDSTATS_DISK_DEV1" ] && collect_diskio 1
-	[ ! -z "$RRDSTATS_DISK_DEV2" ] && collect_diskio 2
-	[ ! -z "$RRDSTATS_DISK_DEV3" ] && collect_diskio 3
-	[ ! -z "$RRDSTATS_DISK_DEV4" ] && collect_diskio 4
 	[ ! -z "$RRDSTATS_INTERFACE1" ] && collect_net 1
 	[ ! -z "$RRDSTATS_INTERFACE2" ] && collect_net 2
 	[ ! -z "$RRDSTATS_INTERFACE3" ] && collect_net 3

@@ -4,22 +4,16 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 auto_chk=''; man_chk=''; log_protoc_chk=''
 notlazym_chk=''; notlazys_chk=''; cpu100perc_chk=''
-disk_logarithm1_chk=''; disk_logarithm2_chk=''; disk_logarithm3_chk='';
-disk_logarithm4_chk=''; logarithm1_chk=''; logarithm2_chk='';
-logarithm3_chk=''; logarithm4_chk=''; xchg_rxtx1_chk=''; xchg_rxtx2_chk='';
-xchg_rxtx3_chk=''; xchg_rxtx4_chk=''; uptime_enb_chk=''; savebackup_chk='';
-thomsonthg_chk=''; thomsonadv_chk=''; webenabled_chk=''; digitemp1w_chk='';
-digitemp_c_chk=''; digitemp_f_chk=''; digitemp85_chk=''; digitemp_a_chk='';
-digitemp_http_chk=''; delbackup_chk=''
+logarithm1_chk=''; logarithm2_chk=''; logarithm3_chk=''; logarithm4_chk='';
+xchg_rxtx1_chk=''; xchg_rxtx2_chk=''; xchg_rxtx3_chk=''; xchg_rxtx4_chk='';
+uptime_enb_chk=''; savebackup_chk=''; thomsonthg_chk=''; thomsonadv_chk='';
+webenabled_chk=''; digitemp1w_chk=''; digitemp_c_chk=''; digitemp_f_chk='';
+digitemp85_chk=''; digitemp_a_chk=''; digitemp_http_chk=''; delbackup_chk=''
 
 if [ "$RRDSTATS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then xchgupdown_chk=' checked'; fi
 if [ "$RRDSTATS_NOTLAZYM" = "yes" ]; then notlazym_chk=' checked'; fi
 if [ "$RRDSTATS_NOTLAZYS" = "yes" ]; then notlazys_chk=' checked'; fi
-if [ "$RRDSTATS_DISK_LOGARITHM1" = "yes" ]; then disk_logarithm1_chk=' checked'; fi
-if [ "$RRDSTATS_DISK_LOGARITHM2" = "yes" ]; then disk_logarithm2_chk=' checked'; fi
-if [ "$RRDSTATS_DISK_LOGARITHM3" = "yes" ]; then disk_logarithm3_chk=' checked'; fi
-if [ "$RRDSTATS_DISK_LOGARITHM4" = "yes" ]; then disk_logarithm4_chk=' checked'; fi
 if [ "$RRDSTATS_LOGARITHM1" = "yes" ]; then logarithm1_chk=' checked'; fi
 if [ "$RRDSTATS_LOGARITHM2" = "yes" ]; then logarithm2_chk=' checked'; fi
 if [ "$RRDSTATS_LOGARITHM3" = "yes" ]; then logarithm3_chk=' checked'; fi
@@ -72,7 +66,7 @@ cat << EOF
 <p>
 <input type="hidden" name="webenabled" value="no">
 <input id="w1" type="checkbox" name="webenabled" value="yes"$webenabled_chk><label for="w1"></label>
-$(lang de:"Zus&auml;tzlichen Webserver aktiveren auf Port" en:"Activate additional webserver on port")&nbsp;
+$(lang de:"Zusätzlichen Webserver aktiveren auf Port" en:"Activate additional webserver on port")&nbsp;
 <input type="text" name="webtcpport" size="4" maxlength="5" value="$(html "$RRDSTATS_WEBTCPPORT")">
 </p>
 
@@ -130,67 +124,15 @@ cat << EOF
 
 <input type="hidden" name="thomsonthg" value="no">
 <input id="t1" type="checkbox" name="thomsonthg" value="yes"$thomsonthg_chk><label for="t1"></label>
-$(lang de:"&Uuml;berwachung des Kabelmodems aktivieren" en:"Observe the cable-modem")
+$(lang de:"Überwachung des Kabelmodems aktivieren" en:"Observe the cable-modem")
 <br>
 
 <input type="hidden" name="thomsonadv" value="no">
 <input id="t2" type="checkbox" name="thomsonadv" value="yes"$thomsonadv_chk><label for="t2"></label>
-$(lang de:"Zus&auml;tzliche Parameter &uuml;berwachen" en:"Observe more parameters")
+$(lang de:"Zusätzliche Parameter überwachen" en:"Observe more parameters")
 <br>
 
 <br>
-EOF
-
-sec_end
-sec_begin '$(lang de:"Disks" en:"Disks")'
-
-cat << EOF
-
-<table>
-<tr>
-	<td>&nbsp;</td>
-	<td>$(lang de:"Bezeichnung" en:"Disk label")</td>
-	<td>$(lang de:"Device" en:"Device")</td>
-	<td>$(lang de:"Maximal" en:"Maximum")</td>
-	<td>&nbsp;$(lang de:"Logarithm." en:"Logarithm.")</td>
-</tr>
-<tr>
-	<td>Disk 1:</td>
-	<td><input type="text" name="disk_name1" size="15" maxlength="99" value="$(html "$RRDSTATS_DISK_NAME1")"></td>
-	<td><input type="text" name="disk_dev1" size="8" maxlength="99" value="$(html "$RRDSTATS_DISK_DEV1")"></td>
-	<td><input type="text" name="max_disk_graph1" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_DISK_GRAPH1")"></td>
-	<td><input type="hidden" name="disk_logarithm1" value="no"><input id="i1" type="checkbox" name="disk_logarithm1" value="yes"$disk_logarithm1_chk><label for="i1">$(lang de:"aktiviert" en:"activated")</label></td>
-</tr>
-<tr>
-	<td>Disk 2:</td>
-	<td><input type="text" name="disk_name2" size="15" maxlength="99" value="$(html "$RRDSTATS_DISK_NAME2")"></td>
-	<td><input type="text" name="disk_dev2" size="8" maxlength="99" value="$(html "$RRDSTATS_DISK_DEV2")"></td>
-	<td><input type="text" name="max_disk_graph2" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_DISK_GRAPH2")"></td>
-	<td><input type="hidden" name="disk_logarithm2" value="no"><input id="i2" type="checkbox" name="disk_logarithm2" value="yes"$disk_logarithm2_chk><label for="i2">$(lang de:"aktiviert" en:"activated")</label></td>
-</tr>
-<tr>
-	<td>Disk 3:</td>
-	<td><input type="text" name="disk_name3" size="15" maxlength="99" value="$(html "$RRDSTATS_DISK_NAME3")"></td>
-	<td><input type="text" name="disk_dev3" size="8" maxlength="99" value="$(html "$RRDSTATS_DISK_DEV3")"></td>
-	<td><input type="text" name="max_disk_graph3" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_DISK_GRAPH3")"></td>
-	<td><input type="hidden" name="disk_logarithm3" value="no"><input id="i3" type="checkbox" name="disk_logarithm3" value="yes"$disk_logarithm3_chk><label for="i3">$(lang de:"aktiviert" en:"activated")</label></td>
-</tr>
-<tr>
-	<td>Disk 4:</td>
-	<td><input type="text" name="disk_name4" size="15" maxlength="99" value="$(html "$RRDSTATS_DISK_NAME4")"></td>
-	<td><input type="text" name="disk_dev4" size="8" maxlength="99" value="$(html "$RRDSTATS_DISK_DEV4")"></td>
-	<td><input type="text" name="max_disk_graph4" size="4" maxlength="99" value="$(html "$RRDSTATS_MAX_DISK_GRAPH4")"></td>
-	<td><input type="hidden" name="disk_logarithm4" value="no"><input id="i4" type="checkbox" name="disk_logarithm4" value="yes"$disk_logarithm4_chk><label for="i4">$(lang de:"aktiviert" en:"activated")</label></td>
-</tr>
-
-</table>
-
-<font size="-2">
-$(lang de:"Devices: sda, sda1, sda2, sdb, ..." en:"Devices: sda, sda1, sda2, sdb, ...")
-<br />
-$(lang de:"Maximal: Maximale Bandbreite in MegaByte/Sekunde, '0' f&uuml;r automatische Zuweisung" en:"Maximum: Maximum bandwidth megabytes per second, '0' for automatic allocation")
-</font>
-
 EOF
 
 sec_end
@@ -244,7 +186,7 @@ cat << EOF
 <font size="-2">
 $(lang de:"Interfaces: cpmac0 (DSL-Modem), wan (ATA-Modus), lan (Netzwerk), usbrndis (USB), ..." en:"Interfaces: cpmac0 (DSL-Modem), wan (ATA-module), lan (Network), usbrndis (USB), ...")
 <br />
-$(lang de:"Maximal: Maximale Bandbreite in Megabit/Sekunde, '0' f&uuml;r automatische Zuweisung" en:"Maximum: Maximum bandwidth megabits per second, '0' for automatic allocation")
+$(lang de:"Maximal: Maximale Bandbreite in Megabit/Sekunde, '0' für automatische Zuweisung" en:"Maximum: Maximum bandwidth megabits per second, '0' for automatic allocation")
 </font>
 
 EOF
