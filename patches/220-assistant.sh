@@ -10,8 +10,7 @@ fi
 if [ "$FREETZ_TYPE_FON_WLAN_7141" == "y" \
 	-o "$FREETZ_TYPE_FON_WLAN_7170" == "y" \
 	-o "$FREETZ_TYPE_FON_WLAN_7240" == "y" \
-	-o "$FREETZ_TYPE_FON_WLAN_7270" == "y" ] \
-	&& [ "$FREETZ_TYPE_LABOR_PHONE" == "y" -o "$FREETZ_TYPE_LABOR_AIO" == "y" ]; then
+	-o "$FREETZ_TYPE_FON_WLAN_7270" == "y" ]; then
 	cp ${HTML_DIR}/first/provider.js ${HTML_DIR}/js
 fi
 
