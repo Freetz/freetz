@@ -34,8 +34,6 @@ if [ -e "$HTML_DIR/home/sitemap.html" ]; then
 	if [ "$FREETZ_HAS_PHONE" == "y" ]; then
 		if [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" -o "$FREETZ_TYPE_FON_WLAN_7240" == "y" ] && [ "$FREETZ_TYPE_LABOR_PHONE" == "y" ]; then
 			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_7270_labor_phone.patch"
-		elif [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" -a "$FREETZ_TYPE_LABOR_AIO" == "y" ]; then
-                	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_7270_labor_aio.patch"
 		elif [ "$FREETZ_TYPE_FON_WLAN_7240" == "y" ] || [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ]; then
 			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/$FREETZ_TYPE_LANG_STRING/remove_assistant_7270.patch"
 		elif [ "$FREETZ_TYPE_FON_WLAN_7170" == "y" -a "$FREETZ_TYPE_LABOR_DSL" == "y" ]; then

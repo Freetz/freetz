@@ -8,8 +8,6 @@ if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/470-volumecounter_7270_labor_dsl.patch"
 elif [ "$FREETZ_TYPE_LABOR_PHONE" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/470-volumecounter_7270_labor_phone.patch"
-elif [ "$FREETZ_TYPE_LABOR_AIO" == "y" ]; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/470-volumecounter_7270_labor_aio.patch"
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/470-volumecounter_7270.patch"
 fi

@@ -1,0 +1,28 @@
+--- usr/www/all/html/de/home/foncalls.js.orig	2008-12-16 18:54:14.000000000 +0100
++++ usr/www/all/html/de/home/foncalls.js	2008-12-17 22:22:17.000000000 +0100
+@@ -304,17 +304,17 @@
+ var buchname = GetBuchName(name);
+ var buchnrtype = GetBuchNumberType(telbooknumbertyp);
+ var buchentryinfo = GetBuchEntryInfo(buchname,buchnrtype);
+-if (nr=="" && buchname=="") return g_txtUnbekannt;
++if (nr=="" && buchname=="") return g_sym0 + g_txtUnbekannt;
+ if ("<? query telcfg:settings/UseClickToDial ?>" == "1") {
+-if (nr == "") return span(buchentryinfo);
+-if (buchname == "") {
+-return "<nobr>" +
+-"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
+-}
+-return "<nobr><a href=\"javascript:Dial('"+nr+"')\" title=\""+buchentryinfo+"\">"+buchentryinfo+"</a></nobr>";
++if (nr == "") return g_sym0 + span(buchentryinfo);
++if (buchname == "") return "<nobr>" + uiRufnummerInfo (nr) +"<a href=\"javascript:Dial('"+nr+"')\" title=\""+nr+"\">"+nr+"</a></nobr>";
++return "<nobr>" +  g_sym0 + "<a href=\"javascript:Dial('"+nr+"')\" title=\""+buchentryinfo+"\">"+buchentryinfo+"</a></nobr>";
+ } else {
+-return span(buchname=="" ? nr:buchentryinfo);
++return (buchname=="" ? uiRufnummerInfo(nr):g_sym0) + span(buchname=="" ? nr:buchentryinfo);
++}
+ }
++function uiRufnummerInfo (nr) {
++return "<a href=\"http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "+nr+")\" target=\"_blank\" title=\"Rückwärtssuche bei dasoertliche.de nach "+nr+"\"><img src=\"../html/<? echo $var:lang ?>/images/bearbeiten.gif\"></a>";
+ }
+ function uiRouteDisplay (n, t) {
+ var name;
