@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 5.2.8)
 $(PKG)_SOURCE:=php-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://de.php.net/distributions
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi
-$(PKG)_TARGET_BINARY:=$(APACHE_TARGET_DIR)/apache-1.3.41/cgi-bin/php-cgi
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/php-cgi
 
 ifeq ($(strip $(FREETZ_PHP_STATIC)),y)
 PHP_STATIC:= -all-static
@@ -29,7 +29,8 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-force-cgi-redirect
 $(PKG)_CONFIGURE_OPTIONS += --enable-discard-path
 $(PKG)_CONFIGURE_OPTIONS += --enable-fastcgi
 $(PKG)_CONFIGURE_OPTIONS += --enable-exif
-$(PKG)_CONFIGURE_OPTIONS += --with-config-file-path=php.ini
+$(PKG)_CONFIGURE_OPTIONS += --with-config-file-path=/tmp/flash
+$(PKG)_CONFIGURE_OPTIONS += --with-config-file-scan-dir=/tmp/flash/php
 
 
 $(PKG_SOURCE_DOWNLOAD)
