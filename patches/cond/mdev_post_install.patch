@@ -1,11 +1,11 @@
---- var/post_install.orig	2008-05-10 21:50:35.000000000 +0200
-+++ var/post_install	2008-05-10 21:51:53.000000000 +0200
+--- var/post_install.orig	2009-03-02 19:38:51.000000000 +0100
++++ var/post_install	2009-03-02 19:40:29.000000000 +0100
 @@ -1,4 +1,8 @@
  # ! /bin/sh
 +if [ -x /etc/hotplug/storage ]; then
 +	echo "stopping usb devices..."
 +	/etc/hotplug/storage stop
 +fi
- if [ -x /etc/init.d/rc.dsl.sh ] ; then
-     echo "unload dsl and dependend driver .."
-     /etc/init.d/rc.dsl.sh stop
+ if [ -x /etc/hotplug/usb.pandu -a -f /proc/bus/usb/devices ] ; then
+     echo "stopping USB-Subsystem .."
+     /etc/hotplug/usb.pandu stop
