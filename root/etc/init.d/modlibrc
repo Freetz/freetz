@@ -52,11 +52,11 @@ modlib_adduser()
 
 # modlib_check_running
 #   check whether daemon is running. return status
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+#	$1: optional pid-file. Default ${PID_FILE-/var/run/$DAEMON.pid}
 modlib_check_running()
 {
 	local fn="$1"
-	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
+	[ -z "$fn" ] && fn=${PID_FILE-/var/run/$DAEMON.pid}
 	[ ! -s "$fn" ] && return 1
 	kill -0 $(cat "$fn") 2> /dev/null
 	local status="$?"
@@ -66,13 +66,13 @@ modlib_check_running()
 
 # modlib_stop
 #   stop daemon
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+#	$1: optional pid-file. Default ${PID_FILE-/var/run/$DAEMON.pid}
 modlib_stop()
 {
 	local fn="$1"
-	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
+	[ -z "$fn" ] && fn=${PID_FILE-/var/run/$DAEMON.pid}
 
-	echo -n "Stopping $DAEMON..."
+	echo -n "Stopping ${DAEMON_LONG_NAME-$DAEMON}..."
 	if ! modlib_check_running "$fn"; then
 		echo 'not running.'
 		return 0
@@ -91,13 +91,13 @@ modlib_stop()
 
 # modlib_reload
 #   reload daemon
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+#	$1: optional pid-file. Default ${PID_FILE-/var/run/$DAEMON.pid}
 modlib_reload()
 {
 	local fn="$1"
-	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
+	[ -z "$fn" ] && fn=${PID_FILE-/var/run/$DAEMON.pid}
 
-	echo -n "Reloading $DAEMON..."
+	echo -n "Reloading ${DAEMON_LONG_NAME-$DAEMON}..."
 	if ! modlib_check_running "$fn"; then
 		echo 'not running.'
 		return 0
@@ -117,7 +117,7 @@ modlib_reload()
 # modlib_restart
 #   restart daemon
 #   function "start" must be defined in the calling script
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+#	$1: optional pid-file. Default ${PID_FILE-/var/run/$DAEMON.pid}
 modlib_restart()
 {
 	modlib_stop "$1"
@@ -127,7 +127,7 @@ modlib_restart()
 
 # modlib_status
 #   check whether daemon is running
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+#	$1: optional pid-file. Default ${PID_FILE-/var/run/$DAEMON.pid}
 modlib_status()
 {
 	if modlib_check_running "$1"; then
