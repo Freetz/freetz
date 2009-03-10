@@ -38,7 +38,7 @@ case "$1" in
     retval=$?
     ;;
   -e|--extquery)
-    ip=$(wget -q -O - http://whatismyip.org)
+    ip=$(wget -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]')
     retval=$?
     ;;
   -?|--help)
