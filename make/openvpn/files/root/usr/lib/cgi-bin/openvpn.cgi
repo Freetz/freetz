@@ -67,6 +67,7 @@ cat << EOF
 <input type="hidden" id="id_own_keys"   name="own_keys" value="$OPENVPN_OWN_KEYS">
 <input type="hidden" id="id_expert"   name="expert" value="$OPENVPN_EXPERT">
 <input type="hidden" id="id_no_certtype"   name="no_certtype" value="$OPENVPN_NO_CERTTYPE">
+<input type="hidden" id="id_tap2lan"   name="tap2lan" value="$OPENVPN_TAP2LAN">
 <input type="hidden" id="id_param_1"   name="param_1" value="$OPENVPN_PARAM_1">
 <input type="hidden" id="id_param_2"   name="param_2" value="$OPENVPN_PARAM_2">
 <input type="hidden" id="id_param_3"   name="param_2" value="$OPENVPN_PARAM_3">
@@ -87,17 +88,33 @@ sec_end
 
 sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
 
+HASBRCTL=$(which brctl 2> /dev/null) 
+
 cat << EOF
-<p>$(lang de:"Modus" en:"Mode"): <input id="id_act_server" type="radio" name="my_mode" onclick='(local_mode[act_conf]="server"); changeval()'; ><label for="id_server"> Server</label>
-&nbsp;<input id="id_act_client" type="radio" name="my_mode" onclick='(local_mode[act_conf]="client"); changeval()'; ><label for="id_client"> Client</label>
- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input id="id_act_tap" type="radio" name="my_type" value="tap" onclick='(local_type[act_conf]="tap"); changeval()'; ><label for="id_tap"> $(lang de:"Br&uuml;cke" en:"Bridge") (TAP)</label>&nbsp;
-<input id="id_act_tun" type="radio" name="my_type" value="tun" onclick='(local_type[act_conf]="tun"); changeval()' ><label for="id_tun"> Tunnel (TUN)</label></p>
-<p style="display:inline" >$(lang de:"Protokoll" en:"Protocol"): <input id="id_act_udp" type="radio" name="my_proto" value="udp" onclick='(local_proto[act_conf]="udp"); Consolidate_Vars()'><label for="id_udp"> UDP</label>
-&nbsp;<input id="id_act_tcp" type="radio" name="my_proto" value="tcp" onclick='(local_proto[act_conf]="tcp"); Consolidate_Vars()'> <label for="id_tcp"> TCP</label>
- &nbsp; &nbsp; <div id="div_port" style="display:inline"> Server Port: <input id="id_act_port" type="text" 
- title=$(lang de:"\'Port, auf dem der Server auf Verbindungsw&uuml;nsche \"lauscht\"\'" en:"\"Server is listening for incoming requests on this port\"")size="4" maxlength="5" 
- onblur='(local_port[act_conf]=this.value); Consolidate_Vars() ' > </div> 
-  </p>
+<table><tr>
+<td><input id="id_act_server" type="radio" name="my_mode" onclick='(local_mode[act_conf]="server"); changeval()'; > Server </td><td> </td>
+<td><input id="id_act_client" type="radio" name="my_mode" onclick='(local_mode[act_conf]="client"); changeval()'; > Client </td><td>  &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;</td>
+<td><input id="id_act_tun" type="radio" name="my_type" value="tun" onclick='(local_type[act_conf]="tun"); `[ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "none" : "block";'` changeval()' > Tunnel (TUN) </td><td> </td>
+<td><input id="id_act_tap" type="radio" name="my_type" value="tap" onclick='(local_type[act_conf]="tap"); `[ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "block" : "none";'` changeval()'; > $(lang de:"Br&uuml;cke" en:"Bridge") (TAP)</td><td> </td>
+</tr>
+<tr>
+<td><input id="id_act_udp" type="radio" name="my_proto" value="udp" onclick='(local_proto[act_conf]="udp"); Consolidate_Vars()'> UDP </td><td> </td>
+<td><input id="id_act_tcp" type="radio" name="my_proto" value="tcp" onclick='(local_proto[act_conf]="tcp"); Consolidate_Vars()'> TCP </td>
+<td><div id="div_port" style="display:inline"> &nbsp; &nbsp; Port: <input id="id_act_port" type="text"
+ title=$(lang de:"\'Port, auf dem der Server auf Verbindungsw&uuml;nsche \"lauscht\"\'" en:"\"Server is listening for incoming requests on this port\"")'size="4" maxlength="5"
+  onblur='(local_port[act_conf]=this.value); Consolidate_Vars() ' > </div>  </td><td> </td><td> </td>
+  <td> 
+EOF
+if [ $HASBRCTL ]; then cat << CASEEOF
+  <div id="div_add_tap"> <small>&nbsp; &nbsp; $(lang de:"mit LAN br&uuml;cken" en:"bridge to LAN") </small> <input id="id_act_tap2lan" type="checkbox" 
+  title=$(lang de:"\'Das tap-Interface wird automatisch zum lan-Interface gebr&uuml;ckt\'" en:"\'tap interface will be bridged to lan with brctl\'")'
+name="my_tap2lan" value="yes" onclick='(local_tap2lan[act_conf]=(this.checked)? "yes" : ""); changeval()' > </div> 
+CASEEOF
+fi
+cat << EOF
+  </td><td> </td>
+  </tr>                                                                   
+</table>  
 <div id="div_config_server_off_ip">
 <p>Server $(lang de:"und ggf. Port" en:"(and port if needed)"): <input id="id_act_remote" type="text" size="40" value="" onblur='(local_remote[act_conf]=this.value); Consolidate_Vars() '>
 <br />
@@ -281,7 +298,7 @@ var act_conf=1;
 
 FIELDSET_CONFIG = 0
 FIELDSET_SERVER = 5
-variablen=[ "AUTOSTART", "DEBUG", "DEBUG_TIME", "LOCAL", "MODE", "REMOTE", "PORT", "PROTO", "TYPE", "BOX_IP", "BOX_MASK", "REMOTE_IP", "DHCP_RANGE", "LOCAL_NET", "REMOTE_NET", "DHCP_CLIENT", "MTU", "AUTH_TYPE", "CIPHER", "TLS_AUTH", "FLOAT", "KEEPALIVE", "KEEPALIVE_PING", "KEEPALIVE_TIMEOUT", "COMPLZO", "MAXCLIENTS", "CLIENT2CLIENT", "PUSH_DNS", "PUSH_WINS", "REDIRECT", "VERBOSE", "SHAPER", "UDP_FRAGMENT", "PULL", "LOGFILE", "MGMNT", "CLIENTS_DEFINED", "CLIENT_INFO", "CLIENT_IPS", "CLIENT_NAMES", "CLIENT_NETS", "CLIENT_MASKS", "CONFIG_NAMES", "ADDITIONAL", "OWN_KEYS", "NO_CERTTYPE", "PARAM_1", "PARAM_2", "PARAM_3" ]
+variablen=[ "AUTOSTART", "DEBUG", "DEBUG_TIME", "LOCAL", "MODE", "REMOTE", "PORT", "PROTO", "TYPE", "BOX_IP", "BOX_MASK", "REMOTE_IP", "DHCP_RANGE", "LOCAL_NET", "REMOTE_NET", "DHCP_CLIENT", "MTU", "AUTH_TYPE", "CIPHER", "TLS_AUTH", "FLOAT", "KEEPALIVE", "KEEPALIVE_PING", "KEEPALIVE_TIMEOUT", "COMPLZO", "MAXCLIENTS", "CLIENT2CLIENT", "PUSH_DNS", "PUSH_WINS", "REDIRECT", "VERBOSE", "SHAPER", "UDP_FRAGMENT", "PULL", "LOGFILE", "MGMNT", "CLIENTS_DEFINED", "CLIENT_INFO", "CLIENT_IPS", "CLIENT_NAMES", "CLIENT_NETS", "CLIENT_MASKS", "CONFIG_NAMES", "ADDITIONAL", "OWN_KEYS", "NO_CERTTYPE", "TAP2LAN", "PARAM_1", "PARAM_2", "PARAM_3" ]
 
 function Init_Vars(){
 local_config_count=$OPENVPN_CONFIG_COUNT;
@@ -361,6 +378,7 @@ if ( local_pull[act_conf] == "yes" ) { document.getElementById("id_act_pull").ch
 if ( local_tls_auth[act_conf] == "yes" ) { document.getElementById("id_act_tls_auth").checked=true } else{ document.getElementById("id_act_tls_auth").checked = false };
 if ( local_debug[act_conf] == "yes" ) { document.getElementById("id_act_debug").checked=true }else { document.getElementById("id_act_debug").checked=false };
 document.getElementById("id_act_no_certtype").checked= ( local_no_certtype[act_conf] == "yes" )? "checked" : ""
+`[ $HASBRCTL ] && echo 'document.getElementById("id_act_tap2lan").checked= ( local_tap2lan[act_conf] == "yes" )? "checked" : ""'` 
 if ( local_client_info[act_conf] == "yes" ) { document.getElementById("id_act_client_info").checked=true }else { document.getElementById("id_act_client_info").checked=false };
 if ( local_own_keys[act_conf] != "" ) { 
 	document.getElementById("id_act_own_keys").checked=true
@@ -603,6 +621,7 @@ var fieldsets = document.getElementsByTagName("fieldset");
   	fieldsets[FIELDSET_SERVER].style.display = "block";
 	document.getElementById("div_redirect").style.display = "none";
   	document.getElementById("div_dhcp").style.display = "block";
+  	document.getElementById("div_configure_ip").style.display = "block";
   	document.getElementById("div_port").style.display = "inline";
   	document.getElementById("div_config_server_off_ip").style.display = "none"; 
   	document.getElementById("div_client_pull").style.display = "none";
