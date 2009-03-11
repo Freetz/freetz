@@ -1,6 +1,7 @@
---- usr/www/all/html/de/home/home.js.orig	2009-01-28 08:22:55.000000000 +0100
-+++ usr/www/all/html/de/home/home.js	2009-01-28 08:22:59.000000000 +0100
-@@ -373,6 +373,9 @@
+diff -Naur usr/www/all/html/de/home/home.js usr/www/all/html/de/home/home.js
+--- usr/www/all/html/de/home/home.js	Mon Dec 22 19:32:36 2008
++++ usr/www/all/html/de/home/home.js	Wed Dec 24 00:59:27 2008
+@@ -369,6 +369,9 @@
  var timeBudgetReached = "<? query box:status/hint_time_budget_reached ?>";
  if (timeBudgetReached == "1")
  strWarn = "{?de.home.home.js:305?}";
@@ -10,7 +11,7 @@
  if (strWarn != "")
  {
  strWarn = strWarn.fontcolor("#cc0000");
-@@ -385,6 +388,27 @@
+@@ -381,6 +384,27 @@
  var minutes = Math.ceil(cur%60);
  var hmstr = timestrings.getHmStr(hours,minutes);
  var retstr = timestrings.getOfHStr(hmstr,maxh);
@@ -38,8 +39,9 @@
  return retstr;
  }
  function ConnectDisplay(n) {
---- usr/www/all/html/de/internet/budget.frm.orig	2009-01-23 18:35:08.000000000 +0100
-+++ usr/www/all/html/de/internet/budget.frm	2009-01-28 08:22:59.000000000 +0100
+diff -Naur usr/www/all/html/de/internet/budget.frm usr/www/all/html/de/internet/budget.frm
+--- usr/www/all/html/de/internet/budget.frm	2008-11-24 17:25:33.000000000 +0100
++++ usr/www/all/html/de/internet/budget.frm	2008-12-24 00:07:50.000000000 +0100
 @@ -3,3 +3,8 @@
  <input type="hidden" name="connection0:settings/Budget/Enabled" value="<? query connection0:settings/Budget/Enabled ?>" id="uiPostBudgetOn">
  <input type="hidden" name="connection0:settings/Budget/ConnectionTime" value="<? query connection0:settings/Budget/ConnectionTime ?>" id="uiPostBudgetTime">
@@ -49,8 +51,9 @@
 +<input type="hidden" name="connection0:settings/Budget/Period" value="<? query connection0:settings/Budget/Period ?>" id="uiPostBudgetPeriod">
 +<input type="hidden" name="connection0:settings/Budget/VolumeLow" value="<? query connection0:settings/Budget/VolumeLow ?>" id="uiPostBudgetVolumeLow">
 +<input type="hidden" name="connection0:settings/Budget/VolumeHigh" value="<? query connection0:settings/Budget/VolumeHigh ?>" id="uiPostBudgetVolumeHigh">
---- usr/www/all/html/de/internet/budget.html.orig	2009-01-28 08:22:48.000000000 +0100
-+++ usr/www/all/html/de/internet/budget.html	2009-01-28 08:22:59.000000000 +0100
+diff -Naur usr/www/all/html/de/internet/budget.html usr/www/all/html/de/internet/budget.html
+--- usr/www/all/html/de/internet/budget.html	2008-11-24 17:25:33.000000000 +0100
++++ usr/www/all/html/de/internet/budget.html	2008-12-24 00:07:50.000000000 +0100
 @@ -1,13 +1,25 @@
  <div id="content">
  <div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -63,7 +66,7 @@
  </div></div></div></div></div></div>
  <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
  <p class="mb5"><input type="checkbox" id="uiViewBudgetOn" onclick="OnToggleBudget()">&nbsp;<label for="uiViewBudgetOn">{?de.internet.budget.html:15?}</label></p>
- <div class="ml25">
+ <div style="margin-left: 25px;">
 +<p class="mb5"><input type="radio" name="uiViewTarif" id="uiViewBudgetVolumeOn" onclick="OnToggleTarif(1)">&nbsp;<label for="uiViewBudgetVolumeOn">Volumentarif</label></p>
 +<p class="mb5" style="margin-left: 25px">
 +<input type="text" size="7" maxlength="6" class="Eingabefeld" id="uiViewBudgetVolumeVal" style="text-align: right"> MB Datenvolumen pro Monat inklusive<br />
@@ -93,15 +96,16 @@
  </label></p>
  </div></div></div></div></div></div>
  <? include ../html/de/home/rbb_applyok.html ?>
---- usr/www/all/html/de/internet/budget.js.orig	2009-01-28 08:22:52.000000000 +0100
-+++ usr/www/all/html/de/internet/budget.js	2009-01-28 08:22:59.000000000 +0100
-@@ -19,20 +19,34 @@
+diff -Naur usr/www/all/html/de/internet/budget.js usr/www/all/html/de/internet/budget.js
+--- usr/www/all/html/de/internet/budget.js	2008-11-24 17:25:17.000000000 +0100
++++ usr/www/all/html/de/internet/budget.js	2008-12-24 00:07:50.000000000 +0100
+@@ -20,20 +20,34 @@
  function byte2high(b){ return Math.floor(b/g_Shift32); }
  function highlow2byte(h,l){ return h*g_Shift32+l; }
  function uiDoOnLoad() {
 -var Title = "{?de.internet.budget.js:5632?}";
 +var Title = "Tarif eintragen";
- document.title = Title;
+ document.title = "<? print `$var:BoxName` ?>" + " " + Title;
  var tmp=0;
  var tmp2=0;
  // StartofMonth
@@ -133,7 +137,7 @@
  OnToggleBudget();
  if (!isDslIp() && !isWanIp()) {
  jslDisplay("uiViewDisconnectText", true);
-@@ -51,6 +65,12 @@
+@@ -52,6 +66,12 @@
  alert(g_mldSoM); return false;
  }
  }
@@ -146,7 +150,7 @@
  // WarnOnly
  jslSetValue("uiPostWarnOnly",jslGetChecked("uiViewDisconnect") ? "0" : "1");
  // Budget
-@@ -58,6 +78,10 @@
+@@ -59,6 +79,10 @@
  // Time (in hours)
  if (jslGetChecked("uiViewBudgetOn"))
  {
@@ -157,7 +161,7 @@
  tmp = jslGetValue("uiViewBudgetTimeVal");
  if (valIsZahl(tmp) && tmp>0 && tmp<=744)
  {
-@@ -69,6 +93,30 @@
+@@ -70,6 +94,30 @@
  return false;
  }
  }
@@ -188,9 +192,9 @@
  // Save
  jslSetValue("uiPostMenu", jslGetValue("uiPostMenu"));
  jslSetValue("uiPostPageName", "inetstat");
-@@ -78,13 +126,38 @@
- function uiDoCancel() {
- jslGoTo(jslGetValue("uiPostMenu"), "inetstat");
+@@ -82,13 +130,38 @@
+ function uiDoHelp() {
+ jslPopHelp("hilfe_budget");
  }
 +function OnToggleRoundUp () {
 +if (jslGetChecked("uiViewRoundUpOn") == true)
@@ -231,8 +235,9 @@
  }
  }
  function isAtamode () {
---- usr/www/all/html/de/internet/inetstat.html.orig	2009-01-28 08:22:48.000000000 +0100
-+++ usr/www/all/html/de/internet/inetstat.html	2009-01-28 08:22:59.000000000 +0100
+diff -Naur usr/www/all/html/de/internet/inetstat.html usr/www/all/html/de/internet/inetstat.html
+--- usr/www/all/html/de/internet/inetstat.html	2008-12-23 22:45:55.000000000 +0100
++++ usr/www/all/html/de/internet/inetstat.html	2008-12-24 00:09:20.000000000 +0100
 @@ -21,7 +21,7 @@
  </div></div></div></div></div></div>
  <div class="backdialog" id="BudgetNoTarif" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
@@ -323,10 +328,11 @@
  </p>
  <p class="Buttonlink"><input type="button" onclick="uiDoReset()" value="{?de.internet.inetstat.html:365?}" class="Pushbutton180"></p>
  </div></div></div></div></div></div>
---- usr/www/all/html/de/internet/inetstat.js.orig	2009-01-28 08:22:58.000000000 +0100
-+++ usr/www/all/html/de/internet/inetstat.js	2009-01-28 08:22:59.000000000 +0100
-@@ -3,9 +3,12 @@
- <!--
+diff -Naur usr/www/all/html/de/internet/inetstat.js usr/www/all/html/de/internet/inetstat.js
+--- usr/www/all/html/de/internet/inetstat.js	2008-12-23 22:45:55.000000000 +0100
++++ usr/www/all/html/de/internet/inetstat.js	2008-12-24 00:07:50.000000000 +0100
+@@ -4,9 +4,12 @@
+ #content {width: 560px; margin: auto;}
  #tStat {margin: 1px; width: 100%; font-size: 12px;}
  #tStat td, #tStat th {padding: 0px 1px;}
 -#tStat .c1 {text-align: left;font-weight: normal}
@@ -341,7 +347,7 @@
  #tBalken {margin: auto;}
  #tBalken td {padding: 4px;}
  .bar {
-@@ -29,6 +32,8 @@
+@@ -30,6 +33,8 @@
  var g_now = new Date();
  var g_mldReset = '{?de.internet.inetstat.js:30?}';
  var g_mldCritTim = '{?de.internet.inetstat.js:35?} ';
@@ -350,7 +356,7 @@
  var g_mldMaxTim = '{?de.internet.inetstat.js:40?} ';
  var g_txt_isTage = "{?de.internet.inetstat.js:45?}"
  var g_txt_Stunden = " {?de.internet.inetstat.js:50?} ";
-@@ -53,15 +58,55 @@
+@@ -54,15 +59,55 @@
  <? if eq $var:settimeknown 1 `
  GetBoxDate();
  var time = <? query inetstat:status/Today/PhyConnTimeOutgoing ?>;
@@ -411,7 +417,7 @@
  ` ?>
  <? if eq <? query connection0:settings/Budget/Enabled ?> 1 `
  var maxw = 174;
-@@ -164,6 +209,18 @@
+@@ -165,6 +210,18 @@
  var tipp = "";
  if (cur<max) tipp = g_mldCritTim;
  else tipp = g_mldMaxTim;
@@ -430,7 +436,7 @@
  // Verbrauchsbalken setzen
  document.getElementById("uiViewImageValue").width = Math.ceil(Math.min(maxw,(cur/max)*maxw));
  SetSpanText("uiViewLabelValue", jslPrintf("{?de.internet.inetstat.js:2729?}",curh,maxh,what));
-@@ -211,8 +268,11 @@
+@@ -212,8 +269,11 @@
  default: Tabs(budget=="1" ? 0:1); break;
  }
  }

@@ -1,0 +1,85 @@
+--- usr/www/all/html/de/home/sitemap.html.orig	2008-11-24 17:25:29.000000000 +0100
++++ usr/www/all/html/de/home/sitemap.html	2009-02-15 23:46:06.000000000 +0100
+@@ -24,19 +24,6 @@
+ <p class="ml10"><a href="javascript:jslGoTo('home', 'syslog');">{?de.home.sitemap.html:9348?}</a></p>
+ <p class="ml10"><a href="javascript:jslGoTo('home', 'energy');">{?de.home.sitemap.html:65Systemtxt13?}</a></p>
+ </div>
+-<div class="gelb">
+-<p class="mb5 fett"><a href="javascript:jslGoTo('konfig', 'home');">{?de.home.sitemap.html:70MenuAssi?}</a></p>
+-<p class="ml10"><a href="javascript:DoFirstLotse();">{?de.home.sitemap.html:75Ersteinrichtung?}</a></p>
+-<? if eq $var:showInternetLotse 1 `
+-<p class="ml10"><a href="javascript:DoInternetLotse();">{?de.home.sitemap.html:80SitemapText5?}</a></p>
+-` ?>
+-<p id="SitemapFonVoipItem" class="ml10"><a href="javascript:DoVoipFonLotse();">{?de.home.sitemap.html:85SitemapText6?}</a></p>
+-<? if eq $var:showFonLotse 1 `
+-<p id="SitemapFonItem" class="ml10"><a href="javascript:DoFonLotse();">{?de.home.sitemap.html:90SitemapText7?}</a></p>
+-` ?>
+-<p class="ml10"><a href="javascript:DoFirmwareLotse();">{?de.home.sitemap.html:100FWAktualisieren?}</a></p>
+-<p class="ml10"><a href="javascript:DoSaveLotse();">{?de.home.sitemap.html:105EinstellungSichern?}</a></p>
+-</div>
+ <? setvariable var:title "{?de.home.sitemap.html:110TextMenuInternet?}" ?>
+ <? setvariable var:showsubmenu 1 ?>
+ <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `
+--- usr/www/all/html/de/js/basis.js.orig	2008-11-24 17:25:19.000000000 +0100
++++ usr/www/all/html/de/js/basis.js	2009-02-15 23:46:06.000000000 +0100
+@@ -107,11 +107,11 @@
+ else
+ page = myCookie.substring(myCookie.search('=')+1);
+ if ((menu == "konfig" || menu == "software" || menu =="enhsettings") && (page =="enhsettings" || page == "home" || page == "extern")) {
+-jslGoTo(menu, page);
++jslGoTo("enhsettings", "enhsettings");
+ return;
+ }
+ }
+-jslGoTo("konfig", "home");
++jslGoTo("enhsettings", "enhsettings");
+ }
+ function GoToSitemap()
+ {
+--- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2009-02-15 23:46:06.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_konfig.html	2009-02-15 23:46:06.000000000 +0100
+@@ -14,23 +14,9 @@
+ <? setvariable var:showmoremenu 0 ?>
+ <? if neq $var:menu 'software' `<? setvariable var:showmoremenu 1 ?>` ?>
+ <? if eq '$var:ShowAssiMenu' 1 `
+-<li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">{?de.menus.menu2_konfig.html:10MenuNetzwerk?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:25?}</span></li>
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoFirstLotse();">{?de.menus.menu2_konfig.html:30?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:35Ersteinrichtung?}</span></li>
+-<? if eq $var:showInternetLotse 1 `
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoInternetLotse();">{?de.menus.menu2_konfig.html:40Ersteinrichtung?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:45?}</span></li>
+-` ?>
+-<li class="LMenuitem" id="VoipFonLotseMenuItem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoVoipFonLotse();">{?de.menus.menu2_konfig.html:50?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:55?}</span></li>
+-<? if eq $var:showFonLotse 1 `
+-<li class="LMenuitem" id="FonLotseMenuItem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoFonLotse();">{?de.menus.menu2_konfig.html:60?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:65?}</span></li>
+-` ?>
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoFirmwareLotse();">{?de.menus.menu2_konfig.html:80?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:85FWAktualisieren?}</span></li>
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoSaveLotse();">{?de.menus.menu2_konfig.html:90FWAktualisieren?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:95EinstellungSichern?}</span></li>
+-<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">{?de.menus.menu2_konfig.html:100EinstellungSichern?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:105ErweiterteEinstellung?}</span></li>
+-<li class="LMenuitemTop"><img class="LMenuPfeil" src="../html/de/images/leer.gif" style="width:7px;"><a href="javascript:jslGoTo('software','extern')">{?de.menus.menu2_konfig.html:110ErweiterteEinstellung?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:115MenuSoftware?}</span></li>
+ ` `
+ <? if eq '$var:showmoremenu' '1' `
+ <script type="text/javascript">javascript:jslSetMenuPage("enhsettings","enhsettings",100);</script>
+-<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">{?de.menus.menu2_konfig.html:120MenuSoftware?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:125MenuAssi?}</span></li>
+ <? if eq `$var:menu` 'enhsettings' `
+ <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">{?de.menus.menu2_konfig.html:130MenuAssi?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:135ErweiterteEinstellung?}</span></li>
+ ` `
+@@ -70,7 +56,6 @@
+ ` ?>
+ <? if eq '$var:menu' 'software' `
+ <script type="text/javascript">javascript:jslSetMenuPage("software","extern",100);</script>
+-<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">{?de.menus.menu2_konfig.html:225MenuSoftware?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:230MenuSoftware?}</span></li>
+ <li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">{?de.menus.menu2_konfig.html:235MenuAssi?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:240MenuAssi?}</span></li>
+ <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="../html/de/images/leer.gif" style="width:7px;"><a href="javascript:jslGoTo('software','extern')">{?de.menus.menu2_konfig.html:245?}</a><span class="PTextOnly">{?de.menus.menu2_konfig.html:250?}</span></li>
+ ` ?>
+--- usr/www/all/html/logincheck.html.orig	2008-11-24 17:25:14.000000000 +0100
++++ usr/www/all/html/logincheck.html	2009-02-15 23:46:06.000000000 +0100
+@@ -118,8 +118,8 @@
+ {
+ var pagename = "<? echo $var:pagename ?>";
+ if (pagename != "sitemap" && pagename != "mini" && pagename != "enhsettings" && pagename != "foncalls") {
+-jslSetValue("uiPostPageName", "first_Start_ISP");
+-jslSetValue("uiPostMenu", "first");
++jslSetValue("uiPostPageName", "home");
++jslSetValue("uiPostMenu", "home");
+ }
+ }
+ ` ?>

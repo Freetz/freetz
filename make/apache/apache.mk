@@ -34,7 +34,6 @@ $(pkg)-precompiled: $(APACHE_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(APACHE_DIR) clean
-	$(RM) $(PACKAGES_BUILD_DIR)/$(APACHE_PKG_SOURCE)
 	$(RM) $(APACHE_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
