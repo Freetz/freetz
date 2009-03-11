@@ -18,6 +18,7 @@ $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfi
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
+$(PKG)_CONFIGURE_OPTIONS += --disable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-stats
 $(PKG)_CONFIGURE_OPTIONS += --disable-dynamic-pcre
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),--enable-zlib,)
