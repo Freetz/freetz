@@ -1,0 +1,32 @@
+Index: linux-2.6.13.1/fs/jffs2/super.c
+===================================================================
+diff -u -r1.1 -r1.2
+--- linux-2.6.13.1/fs/jffs2/super.c	6 Jun 2006 16:18:24 -0000	1.1
++++ linux-2.6.13.1/fs/jffs2/super.c	6 Sep 2006 14:14:37 -0000	1.2
+@@ -80,6 +80,10 @@
+ 	.sync_fs =	jffs2_sync_fs,
+ };
+ 
++/* Just declare a void structure as A NULL value implies the default */
++static struct export_operations jffs2_export_ops;
++
++
+ static int jffs2_sb_compare(struct super_block *sb, void *data)
+ {
+ 	struct jffs2_sb_info *p = data;
+@@ -150,6 +154,7 @@
+ 	spin_lock_init(&c->inocache_lock);
+ 
+ 	sb->s_op = &jffs2_super_operations;
++	sb->s_export_op = &jffs2_export_ops;
+ 	sb->s_flags = flags | MS_NOATIME;
+ 
+ 	ret = jffs2_do_fill_super(sb, data, (flags&MS_VERBOSE)?1:0);
+@@ -311,6 +319,7 @@
+ 	.name =		"jffs2",
+ 	.get_sb =	jffs2_get_sb,
+ 	.kill_sb =	jffs2_kill_sb,
++	.fs_flags = FS_REQUIRES_DEV,
+ };
+ 
+ static int __init init_jffs2_fs(void)
