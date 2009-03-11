@@ -52,10 +52,9 @@ start() {
 		echo 'failed.'
 		exit $exitval
 	fi
-	if [ -n "`grep "dev tap" /mod/etc/${DAEMON}.conf`" -a -x "`which brctl`" ]; then
-		for i in `ifconfig | grep -o tap[0-9]`; do
-			 brctl show lan 2> /dev/null | grep -q $i || brctl addif lan $i
-		done
+	# if we have brctl, then try to add tap to "lan" if requestet (ignore errors)
+	if [ $(which brctl) ] && TAP=`grep "#Helperline" /mod/etc/${DAEMON}.conf | grep -o tap[0-9] `; then
+	brctl addif lan $TAP 2> /dev/null 
 	fi
 }
 
