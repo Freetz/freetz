@@ -13,7 +13,7 @@ else
   if [ "$storage" = "ram" ]; then
     ram_chk=' checked="checked"';
   else
-    jffs2_chk==' checked="checked"';
+    jffs2_chk=' checked="checked"';
   fi
 fi
 
