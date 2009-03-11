@@ -100,6 +100,7 @@ choice
 
 	config FREETZ_TYPE_FON_WLAN_7270
 		select FREETZ_AVM_VERSION_7270_04_67
+		select FREETZ_TYPE_FON_WLAN_7270_16MB if ! FREETZ_TYPE_LANG_DE
 		bool "Fon WLAN 7270"
 	
 	config FREETZ_TYPE_WLAN_3020
@@ -151,7 +152,7 @@ endchoice
 config FREETZ_TYPE_FON_WLAN_7270_16MB
 	bool "16 MB flash"
 	depends on \
-		FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
+		FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
 		Enable this to build an image for boxes with 16 MB flash.
@@ -172,6 +173,11 @@ choice
 		depends on FREETZ_TYPE_LABOR
 		default FREETZ_TYPE_LABOR_DSL
 
+	config FREETZ_TYPE_LABOR_AIO
+		bool "AiO"
+		depends on \
+			FREETZ_TYPE_FON_WLAN_7170
+
 	config FREETZ_TYPE_LABOR_DSL
 		bool "DSL"
 		depends on \
@@ -190,10 +196,9 @@ choice
 		depends on \
 			FREETZ_TYPE_FON_WLAN_7270
 
-	config FREETZ_TYPE_LABOR_AIO
-		bool "AiO"
+	config FREETZ_TYPE_LABOR_WLAN
+		bool "WLAN"
 		depends on \
-			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_FON_WLAN_7270
 
 endchoice
@@ -344,7 +349,7 @@ config FREETZ_TYPE_STRING
 	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "7270_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "7270_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
-	default "7270_labor_aio"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AIO
+	default "7270_labor_wlan"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN
 	default "W501V"						if FREETZ_TYPE_SPEEDPORT_W501V
 	default "W701V"						if FREETZ_TYPE_SPEEDPORT_W701V
 	default "W900V"						if FREETZ_TYPE_SPEEDPORT_W900V
@@ -1482,17 +1487,16 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.58.04.59.image"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.67.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.67.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
-	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.70-13531.image"		if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_AIO
+	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.70-13679.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_AIO
 	default "fritz_box-labor-12526.image"						if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7240.AnnexB.73.04.68.image"		if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
-	default "FRITZ.Box_Fon_WLAN_7240.Labor.73.04.97-13537.image"				if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_PHONE
-	default "FRITZ.Box_Fon_WLAN_7270.54.04.67.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7240.AnnexB.73.04.68.image"				if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
+	default "fritz_box-labor-7240-13806.image"					if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_PHONE
+	default "FRITZ.Box_Fon_WLAN_7270.54.04.70.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7270_16.AnnexB.en-de-es-it.54.04.67.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it.54.04.67.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_EN
-	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.70-13640.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AIO
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.99-13225.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_Labor.54.04.97-13537.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
-	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.70-13486.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AIO
+	default "fritz_box-labor-7270-13806.image"					if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
+	default "FRITZ.Box_Fon_WLAN_7270_WLAN_Labor_54.04.98-13783.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN	
 	default "fritz.box_sl_wlan.09.04.34.image"					if FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
 	default "fritz.box_wlan_3130.44.04.34.image"					if FREETZ_TYPE_WLAN_3130
@@ -1807,7 +1811,7 @@ endmenu
 
 menu "Shared libraries"
 	config FREETZ_STRIP_LIBRARIES
-		bool "Run mklibs on the built root filesystem"
+#		bool "Run mklibs on the built root filesystem"
 		default n
 		help
 			Recompiles all the shared libraries to only include the
