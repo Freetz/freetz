@@ -1,0 +1,29 @@
+--- squashfs-tools/unsquashfs.c	2009-02-27 16:36:42.000000000 +0100
++++ squashfs-tools/unsquashfs.c	2009-02-27 23:01:23.000000000 +0100
+@@ -1048,7 +1048,7 @@
+ 
+ 	for(i = 0; i < inode->blocks; i++) {
+ 		int c_byte = SQUASHFS_COMPRESSED_SIZE_BLOCK(block_list[i]);
+-		struct file_entry *block = malloc(sizeof(struct file_entry *));
++		struct file_entry *block = malloc(sizeof(struct file_entry));
+ 
+ 		if(block == NULL)
+ 			EXIT_UNSQUASH("write_file: unable to malloc file\n");
+@@ -1068,7 +1068,7 @@
+ 	if(inode->frag_bytes) {
+ 		int size;
+ 		long long start;
+-		struct file_entry *block = malloc(sizeof(struct file_entry *));
++		struct file_entry *block = malloc(sizeof(struct file_entry));
+ 
+ 		if(block == NULL)
+ 			EXIT_UNSQUASH("write_file: unable to malloc file\n");
+@@ -1930,7 +1930,7 @@
+ 
+ struct pathnames *init_subdir()
+ {
+-	struct pathnames *new = malloc(sizeof(struct pathnames *));
++	struct pathnames *new = malloc(sizeof(struct pathnames));
+ 	new->count = 0;
+ 	return new;
+ }
