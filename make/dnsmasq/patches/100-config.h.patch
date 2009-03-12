@@ -1,5 +1,14 @@
 --- src/config.h.orig	2009-02-05 13:14:24.000000000 +0100
 +++ src/config.h	2009-02-17 10:45:52.000000000 +0100
+@@ -37,7 +37,7 @@
+ #else
+ #  define RESOLVFILE "/etc/resolv.conf"
+ #endif
+-#define RUNFILE "/var/run/dnsmasq.pid"
++#define RUNFILE "/var/run/dnsmasq/dnsmasq.pid"
+ 
+ #ifndef LEASEFILE
+ #   if defined(__FreeBSD__) || defined (__OpenBSD__) || defined(__DragonFly__) || defined(__NetBSD__)
 @@ -45,7 +45,7 @@
  #   elif defined(__sun__) || defined (__sun)
  #      define LEASEFILE "/var/cache/dnsmasq.leases"

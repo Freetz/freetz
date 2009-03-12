@@ -1,8 +1,5 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
-
 DAEMON=dnsmasq
 
 . /etc/init.d/modlibrc
@@ -21,6 +18,8 @@ start() {
 
 	modlib_addgroup nobody
 	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+	mkdir -p /var/run/dnsmasq
+	chown nobody:nobody /var/run/dnsmasq
 
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
