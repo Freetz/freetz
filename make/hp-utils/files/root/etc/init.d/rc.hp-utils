@@ -3,7 +3,7 @@
 . /etc/init.d/modlibrc
 
 DAEMON=httpd-hp-utils
-PIDFILE=/var/run/$DAEMON.pid
+PID_FILE=/var/run/$DAEMON.pid
 
 case "$1" in
 	""|load|start|restart|status)
@@ -34,7 +34,7 @@ start() {
 	config
 
 	echo -n 'Starting hp-utils webinterface...'
-	webcfg-hp-utils -P "$PIDFILE"
+	webcfg-hp-utils -P "$PID_FILE"
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -45,7 +45,7 @@ start() {
 }
 
 stop() {
-	modlib_stop "$PIDFILE"
+	modlib_stop
 }
 
 case "$1" in
@@ -82,7 +82,7 @@ case "$1" in
 		if [ "$HP_UTILS_ENABLED" = "inetd" ]; then
 			echo 'inetd'
 		else
-			modlib_status "$PIDFILE"
+			modlib_status
 		fi
 		;;
 	*)

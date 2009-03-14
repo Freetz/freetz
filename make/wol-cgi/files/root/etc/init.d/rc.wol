@@ -3,7 +3,8 @@
 . /etc/init.d/modlibrc
 
 DAEMON=httpd-wol
-PIDFILE=/var/run/webcfg-wol.pid
+DAEMON_LONG_NAME="wol webinterface"
+PID_FILE=/var/run/webcfg-wol.pid
 
 case "$1" in
 	""|load|start|restart|status)
@@ -33,8 +34,8 @@ config() {
 start() {
 	config
 
-	echo -n 'Starting wol webinterface...'
-	webcfg-wol -P "$PIDFILE"
+	echo -n "Starting $DAEMON_LONG_NAME..."
+	webcfg-wol -P "$PID_FILE"
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -45,7 +46,7 @@ start() {
 }
 
 stop() {
-	modlib_stop "$PIDFILE"
+	modlib_stop
 }
 
 case "$1" in
@@ -82,7 +83,7 @@ case "$1" in
 		if [ "$WOL_ENABLED" = "inetd" ]; then
 			echo 'inetd'
 		else
-			modlib_status "$PIDFILE"
+			modlib_status
 		fi
 		;;
 	*)

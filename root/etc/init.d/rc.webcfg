@@ -3,7 +3,8 @@
 . /etc/init.d/modlibrc
 
 DAEMON=httpd
-PIDFILE=/var/run/webcfg.pid
+DAEMON_LONG_NAME="Freetz webinterface"
+PID_FILE=/var/run/webcfg.pid
 
 case $1 in
 	""|load|start|restart|status)
@@ -12,7 +13,7 @@ case $1 in
 			exit 1
 		fi
 
-		. /mod/etc/conf/mod.cfg;
+		. /mod/etc/conf/mod.cfg
 		;;
 esac
 
@@ -33,20 +34,21 @@ config() {
 start() {
 	config
 
-	echo -n 'Starting webinterface...'
-	webcfg -P "$PIDFILE"
+	echo -n "Starting $DAEMON_LONG_NAME..."
+	homedir=/usr/mww/
+	httpd -P "$PID_FILE" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "Freetz"
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
-		rm -f /var/run/$DAEMON.pid
+		rm -f $PID_FILE
 		echo 'failed.'
 		exit $exitval
 	fi
 }
 
 stop() {
-	modlib_stop "$PIDFILE"
+	modlib_stop
 }
 
 case "$1" in
@@ -73,15 +75,13 @@ case "$1" in
 		stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
 		if [ "$MOD_HTTPD" == "inetd" ]; then
 			echo 'inetd'
 		else
-			modlib_status "$PIDFILE"
+			modlib_status
 		fi
 		;;
 	config)
