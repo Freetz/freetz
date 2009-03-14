@@ -175,12 +175,14 @@ TOOLS_SUBDIR="tools"
 SOURCE_SUBDIR="source"
 FIRMWARE_SUBDIR="firmware"
 FILESYSTEM_SUBDIR="filesystem"
+AVMPLUGINS_SUBDIR="plugins.image"
 EXTERNAL_SUBDIR="external"
 KERNEL_SUBDIR="kernel"
 VARTAR_SUBDIR="var.tar"
 
 KERNEL_IMAGE="var/tmp/kernel.image"
 
+AVMPLUGINS_FILE="var/tmp/plugins.update"
 RAW_KERNEL_FILE="kernel.raw"
 RAW_HIDDEN_FILE="kernelsquashfs.raw"
 VARTAR_FILE="var.tar"
@@ -384,12 +386,14 @@ ORG_DIR="${DIR}/original"
 FIRMWARE_DIR="${ORG_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_DIR="${ORG_DIR}/${FILESYSTEM_SUBDIR}"
 KERNEL_DIR="${ORG_DIR}/${KERNEL_SUBDIR}"
+AVMPLUGINS_DIR="${KERNEL_DIR}/${AVMPLUGINS_SUBDIR}"
 VARTAR_DIR="${KERNEL_DIR}/${VARTAR_SUBDIR}"
 
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
 
 RAW_KERNEL="${KERNEL_DIR}/${RAW_KERNEL_FILE}"
 FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
+AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
 if [ "$DO_UNPACK" -gt 0 ]; then
@@ -433,6 +437,20 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	chmod -R +w "$FILESYSTEM_DIR"
 
+	if [ -r "$AVMPLUGINS" ]; then
+		echo "unpacking AVM plugins"
+		mkdir -p "$AVMPLUGINS_DIR"
+		"$TAR" -xif "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
+
+		for i in "${AVMPLUGINS_DIR}/var/"*.image; do
+			AVMPLUGIN="${i##*/plugin-}"
+			AVMPLUGIN="${AVMPLUGIN%\.image}"
+			echo1 "$AVMPLUGIN image"
+			modunsqfs "$AVMPLUGINS_DIR/plugin-${AVMPLUGIN}" "$i" > /dev/null
+		done
+		chmod -R +w "$AVMPLUGINS_DIR"
+	fi
+
 	if [ ! -r "$FILESYSTEM_DIR/var" ]; then
 		error 1 "could not unpack the filesystem image"
 	fi
@@ -468,6 +486,8 @@ FIRMWARE_MOD_DIR="${MOD_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_MOD_DIR="${MOD_DIR}/${FILESYSTEM_SUBDIR}"
 EXTERNAL_MOD_DIR="${MOD_DIR}/${EXTERNAL_SUBDIR}"
 KERNEL_MOD_DIR="${MOD_DIR}/${KERNEL_SUBDIR}"
+AVMPLUGINS_MOD_DIR="${KERNEL_MOD_DIR}/${AVMPLUGINS_SUBDIR}"
+AVMPLUGINS_FILESYSTEM_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/share/avmplugins"
 VARTAR_MOD_DIR="${KERNEL_MOD_DIR}/${VARTAR_SUBDIR}"
 
 KERNEL_MOD="${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}"
@@ -651,6 +671,27 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	if [ "$oem_kept" -eq 0 ]; then
 		error 1 "please choose at least one OEM (branding) in menuconfig: AVM, 1&1, Freenet etc."
+	fi
+
+	# Copy selected plugins into the firmware
+	if [ "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
+		echo "installing AVM plugins"
+		echo "#" > ${FILESYSTEM_MOD_DIR}/sbin/start_plugin.sh
+		rm -rf ${FIRMWARE_MOD_DIR}/${AVMPLUGINS_FILE}
+		mkdir "${AVMPLUGINS_FILESYSTEM_MOD_DIR}"
+		for i in \
+		$( \
+			cd "${AVMPLUGINS_MOD_DIR}" && \
+			find . -maxdepth 1 -type d -name var -prune -false , -type d -name "plugin-*" \
+		)
+		do
+			AVMPLUGIN="${i##*plugin-}"
+			if [ "$(eval "echo \"\$FREETZ_AVMPLUGINS_$(echo "$AVMPLUGIN" | tr [:lower:] [:upper:])\"")" == "y" ]; then
+				echo1 "$AVMPLUGIN plugin"
+				cp -a "${AVMPLUGINS_MOD_DIR}/plugin-${AVMPLUGIN}" "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}"
+				ln -s "/usr/share/avmplugins/plugin-${AVMPLUGIN}" "${VARTAR_MOD_DIR}/var/plugin-${AVMPLUGIN}"
+			fi
+		done
 	fi
 
 	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
@@ -991,13 +1032,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# external should run after modifying and stripping and so on
 	# only run, if packaging is enabled
 
-  if [ "$DO_PACK" -gt 0 ]; then
-    if [ "$EXTERNAL_ENABLED" == "y" ]; then
-      echo "processing external"
-      [ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
-      . "${EXTERNAL}"
-    fi
-  fi
+	if [ "$DO_PACK" -gt 0 ]; then
+		if [ "$EXTERNAL_ENABLED" == "y" ]; then
+			echo "processing external"
+			[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
+			. "${EXTERNAL}"
+		fi
+	fi
 
 	touch "${DIR}/.modified"
 	echo "done."

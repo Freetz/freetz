@@ -1770,6 +1770,49 @@ config FREETZ_STATUS_STYLE
 		Changes the style of the Freetz status-bars and	also adds the
 		cache-usage to these bars.
 
+config FREETZ_AVMPLUGINS_ENABLED
+	bool "Integrate AVM Plugins into image"
+	depends on FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
+	default y if FREETZ_TYPE_FON_WLAN_7270_16MB
+	default n
+	help
+		Integrate AVM Plugins directly into firmware image. This saves
+		some RAM because plugins are not mounted with loop devices.
+		Normal AVM Plugin handling is disabled by activating this feature.
+
+		Default	behaviour for boxes with 16 MB flash.
+
+menu "Plugin selection"
+	depends on FREETZ_AVMPLUGINS_ENABLED
+	
+	comment "Select plugins for insertion"
+
+	config FREETZ_AVMPLUGINS_MEDIASRV
+		bool "MEDIASRV"
+		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
+		default n
+
+	config FREETZ_AVMPLUGINS_MINI
+		bool "MINI"
+		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
+		default n
+
+	config FREETZ_AVMPLUGINS_NTFS
+		bool "NTFS"
+		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
+		default n
+
+	config FREETZ_AVMPLUGINS_SAMBA
+		bool "SAMBA"
+		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
+		default n
+
+	config FREETZ_AVMPLUGINS_TAM
+		bool "TAM"
+		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
+		default n
+endmenu
+
 menu External
 config EXTERNAL_ENABLED
 	bool "Enable external processing"
