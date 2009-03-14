@@ -231,7 +231,7 @@ cat << EOF
 EOF
 fi
 cat << EOF
-<p>$(lang de:"Speicherart des Feler-Logs (Error Log)" en:"Save type of error log")
+<p>$(lang de:"Speicherart des Fehler-Logs (Error Log)" en:"Save type of error log")
 <input id="e5" type="radio" name="logging_error_file" value="yes"$errorlog_file><label for="e5"> $(lang de:"Datei" en:"File")</label>
 <input id="e6" type="radio" name="logging_error_file" value="no"$errorlog_syslog><label for="e6"> $(lang de:"Syslog" en:"Syslog")</label>
 </p>

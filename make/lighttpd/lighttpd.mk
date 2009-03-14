@@ -65,6 +65,9 @@ $($(PKG)_MODULE_TARGET_BINARY): $($(PKG)_MODULE_BINARY)
 	mkdir -p $(LIGHTTPD_DEST_DIR)/usr/lib
 	cp -a $(LIGHTTPD_DIR)/src/.libs/mod_*.so $(LIGHTTPD_DEST_DIR)/usr/lib/
 	rm -f $(LIGHTTPD_NO_MODS)
+	for i in $(LIGHTTPD_DEST_DIR)/usr/lib/mod_*.so; do \
+		$(TARGET_STRIP) $$i; \
+	done
 
 $(pkg):
 
