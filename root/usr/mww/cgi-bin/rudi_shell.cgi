@@ -47,7 +47,7 @@ Content-Type: text/html; charset=ISO-8859-1
 			tdata = "cat " + file;
 			tcmd = 'script=' +
 				'echo "%23%23 $(lang de:"Rudi-Editor" en:"Rudi Editor")"' + LF +
-				'echo "%23%23 $(lang de:"Bitte umgebende Zeilen NICHT löschen" en:"Please DO NOT delete surrounding lines") (\\"cat > ...\\", \\"RUDI_EOF\\")"' + LF +
+				'echo "%23%23 $(lang de:"Bitte umgebende Zeilen NICHT löschen" en:"Please DO NOT delete surrounding lines") (\'cat > ...\', \'RUDI_EOF\')"' + LF +
 				'echo "cat > '+ file + ' << \'RUDI_EOF\'"' + LF +
 				tdata + LF +
 				'echo "RUDI_EOF"';
