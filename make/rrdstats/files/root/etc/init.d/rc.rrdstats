@@ -1,7 +1,6 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+. /etc/init.d/modlibrc
 
 HTTPD_PID_RRD=/var/run/httpd_rrd.pid
 HTTPD_PID_ONE=/var/run/httpd_one.pid
@@ -41,7 +40,7 @@ start() {
 
 	stop_webserver
 	[ "$RRDSTATS_WEBENABLED" = "yes" ] && httpd -P $HTTPD_PID_RRD -p $RRDSTATS_WEBTCPPORT -h /mod/pkg/rrdstats/usr/mww-rrd
-	[ "$RRDSTATS_DIGITEMP_HTTP" = "yes" ] && httpd -P $HTTPD_PID_ONE -p $RRDSTATS_DIGITEMP_PORT -h /mod/pkg/rrdstats/usr/mww-one
+	[ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" ] && httpd -P $HTTPD_PID_ONE -p $RRDSTATS_DIGITEMP_PORT -h /mod/pkg/rrdstats/usr/mww-one
 
 	start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
 	exitval=$?
@@ -78,7 +77,7 @@ show_digitemp() {
 	modunreg file 'rrdstats_dt-alias'
 	modunreg file 'rrdstats_dt-group'
 	modunreg file 'rrdstats_dt-alert'
-	if [ "$RRDSTATS_DIGITEMP1W" = yes ]; then
+	if [ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP1W" = yes ]; then
 		modreg status rrdstats DigiTemp rrdstats/rrddt
 		deffile='/mod/etc/default.rrdstats/dt-conf.def'
 		[ -r "/tmp/flash/rrdstats/dt-conf.def" ] && deffile='/tmp/flash/rrdstats/dt-conf.def'

@@ -58,7 +58,7 @@ cat << EOF
 <li><a href="/cgi-bin/pkgstatus.cgi?pkg=rrdstats&cgi=rrdstats/stats">$(lang de:"Statistiken anzeigen" en:"Show statistics")</a></li>
 EOF
 
-if [ "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
+if [ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
 cat << EOF
 <li><a href="/cgi-bin/pkgstatus.cgi?pkg=rrdstats&cgi=rrdstats/rrddt">$(lang de:"DigiTemp anzeigen" en:"Show DigiTemp")</a></li>
 EOF
