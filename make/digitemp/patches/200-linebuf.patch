@@ -1,0 +1,12 @@
+--- src/digitemp.c	2005-06-26 02:58:10.000000000 +0200
++++ src/digitemp.c	2005-12-28 13:21:31.000000000 +0100
+@@ -2428,7 +2428,8 @@
+ 
+   /* Make sure the structure is erased */
+   bzero( &sensor_list, sizeof( struct _roms ) );
+- 
++
++  setlinebuf(stdout);
+ 
+   if( argc <= 1 )
+   {

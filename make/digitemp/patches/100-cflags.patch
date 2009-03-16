@@ -1,0 +1,11 @@
+--- Makefile.orig	2008-08-28 23:37:00.000000000 +0200
++++ Makefile	2009-03-16 10:28:20.000000000 +0100
+@@ -12,7 +12,7 @@
+ VERSION = 3.6.0
+ 
+ CC	= gcc
+-CFLAGS	= -I./src -I./userial -O2 -Wall # -g
++CFLAGS	= -I./src -I./userial $(OPT_CFLAGS) # -Wall -g
+ 
+ OBJS		=	src/digitemp.o src/device_name.o src/ds2438.o
+ HDRS		= 	src/digitemp.h src/device_name.h
