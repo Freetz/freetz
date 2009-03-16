@@ -3,7 +3,7 @@
 PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''; modfastcgiphp_chk=''; modfastcgiruby_chk=''; accesslog_syslog=''; accesslog_file=''; errorlog_syslog=''; errorlog_file=''
+auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''; modfastcgiphp_chk=''; modfastcgiruby_chk=''; accesslog_syslog=''; accesslog_file=''; errorlog_syslog=''; errorlog_file=''; virthost_0=''; virthost_1=''; virthost_2=''; virthost_3=''; virhost_4=''; virthost_chk=''
 
 case "$LIGHTTPD_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
 case "$LIGHTTPD_CHROOT" in yes) chrooten_chk=' checked';; *) chrootdi_chk=' checked';;esac
@@ -21,6 +21,8 @@ if [ "$LIGHTTPD_MODSTATUSSORT" = "enable" ]; then modstatussort_chk=' checked'; 
 case "$LIGHTTPD_AUTHMETH" in basic) authbasic_chk=' checked';; digest) authdigest_chk=' checked';;esac
 case "$LIGHTTPD_LOGGING_ACCESS_FILE" in yes) accesslog_file=' checked';; *) accesslog_syslog=' checked';;esac
 case "$LIGHTTPD_LOGGING_ERROR_FILE" in yes) errorlog_file=' checked';; *) errorlog_syslog=' checked';;esac
+if [ "$LIGHTTPD_VIRTHOST" = "yes" ]; then virthost_chk=' checked'; fi
+case "$LIGHTTPD_VIRTHOSTTYPE" in 0) virthost_0=' checked';; 1) virthost_1=' checked';; 2) virthost_2=' checked';; 3) virthost_3=' checked';; 4) virthost_4=' checked';;esac
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
@@ -37,6 +39,7 @@ cat << EOF
 EOF
 
 cat << EOF
+<p style="font-size:10px;">$(lang de:"Das im Folgenden angegebene Datenverzeichnis muss existieren, da lighttpd sonst nicht startet." en:"The document root directory must exist as otherwise lighttpd will not start.")</p>
 <p> $(lang de:"Verzeichnis der Daten" en:"Document Root"): <input type="text" name="docroot" size="30" maxlength="255" value="$(html "$LIGHTTPD_DOCROOT")"></p>
 <p>$(lang de:"Soll das angegebe Datenverzeichnis auch als chroot-Verzeichnis genutzt werden?" en:"Shall the document root directory used as chroot directory?")</p>
 <p>
@@ -195,8 +198,25 @@ cat << EOF
 <p style="font-size:10px;">$(lang de:"Die folgenden Boxen erlauben, die maximale Datentransferrate in kBytes/s festzulegen. Der Wert 0 bedeutet kein Limit. Bitte beachte, dass ein Wert von unter 32 kb/s effektiv den Verkehr auf 32 kb/s aufgrund der Gr&ouml;sse der TCP Sendepuffer drosselt." en:"The following boxes allw the specification of the maximum data transfer rate in kBytes/s. The value of 0 means no limit. Please note  that a limit below 32kb/s might actually limit the traffic to 32kb/s. This is caused by the size of the TCP send buffer.")</p>
 <p> $(lang de:"Maximale Datenrate pro Verbindung" en:"Maximum throughput per connection"): <input type="text" name="limitconn" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITCONN")"> kBytes/s</p>
 <p> $(lang de:"Maximale Datenrate aller Verbindungen" en:"Maximum throughput for all connections"): <input type="text" name="limitsrv" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITSRV")"> kBytes/s</p>
-
+<br/>
 EOF
+if [ -f /usr/lib/mod_evhost.so ]; then
+cat << EOF
+<p><input type="hidden" name="virthost" value="no">
+<input id="b9" type="checkbox" name="virthost" value="yes"$virthost_chk><label for="b9"> $(lang de:"Virtuelle Hosts aktivieren" en:"Activate virtual hosts")</label></p>
+<p style="font-size:10px;">$(lang de:"Das Verzeichnis der Daten (Document Root) der virtuellen Hosts setzt sich zusammen aus dem Verzeichnis der Daten (Document Root) welches oben angegeben wurde plus der Erweiterung welche im Folgenden gew&auml;hlt wird (&lt;docroot&gt;/&lt;extension&gt;). Falls das Datenverzeichnis mit der gew&auml;hlten Extension existiert, wird dieses Verzeichnis als Datenverzeichnis des virtuellen Hosts verwendet. Falls dieses Verzeichnis nicht existiert, wird das oben gew&auml;hlte Datenverzeichnis plus \"/default/\" als Datenverzeichnis verwendet. Dies bedeutet, dass bei aktivieren virtuellen Hosts das oben gew&auml;hlte Datenverzeichnis nicht mehr direkt verwendet wird.<br />lighttpd wird nur starten, wenn bei aktivierten virtuellen Hosts das default/ Datenverzeichnis existiert." en:"The document root of the virtual host is defined by combining the above configured document root plus the extension selected as follows (&lt;docroot&gt;/&lt;extension&gt;). If the directory for the virtual host does not exist, the above configured document root extended with \"/default/\" is used as document root. This also means that with activated virtual host support, the above configured document root will not be used directly any more.<br />lighttpd will only start if the the default/ document root exists.")</p>
+<p>$(lang de:"Datenverzeichnis-Erweiterung" en:"Document root directory extension")</p>
+<p><input id="v0" type="radio" name="virthosttype" value="0"$virthost_0><label for="v0"> $(lang de:"Domain Name plus Top Level Domain" en:"Domain name plus top level domain")</label></p>
+<p><input id="v1" type="radio" name="virthosttype" value="1"$virthost_1><label for="v1"> $(lang de:"Top Level Domain" en:"Top level domain")</label></p>
+<p><input id="v2" type="radio" name="virthosttype" value="2"$virthost_2><label for="v2"> $(lang de:"Domain Name ohne Top Level Domain" en:"Domain name without top lelvel domain")</label></p>
+<p><input id="v3" type="radio" name="virthosttype" value="3"$virthost_3><label for="v3"> $(lang de:"Subdomain 1 Name" en:"Subdomain 1 name")</label></p>
+<p><input id="v4" type="radio" name="virthosttype" value="4"$virthost_4><label for="v4"> $(lang de:"Subdomain 2 Name" en:"Subdomain 2 name")</label></p>
+EOF
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Virtuelle Hosts k&ouml;nnen nicht konfiguriert werden - mod_evhost.so nicht vorhanden." en:"Virtual hosts support cannot be configured - mod_evhost.so unavailable.")</p>
+EOF
+fi
 sec_end
 
 sec_begin '$(lang de:"Zus&auml;tzliche Konfigurationsoptionen (f&uuml;r Experten)" en:"Additional config options (for experts)")'
@@ -235,7 +255,7 @@ cat << EOF
 <input id="e5" type="radio" name="logging_error_file" value="yes"$errorlog_file><label for="e5"> $(lang de:"Datei" en:"File")</label>
 <input id="e6" type="radio" name="logging_error_file" value="no"$errorlog_syslog><label for="e6"> $(lang de:"Syslog" en:"Syslog")</label>
 </p>
-<p style="font-size:10px;">$(lang de:"In den folgenden Boxen k&ouml;nnen die absoluten Pfade zu den Logdateien ge&auml;ndert werden. Beachte, dass lighttpd mit der Benutzer ID wwwrun l&auml;ft und die Datei und das Verzeichnis f&uuml;r wwwrun schreibbar sein muss. Das Standardverzeichnis /var/log/lighttpd/ ist immer f&uuml;r den Benutzer wwwrun schreibbar. Falls ein anderes Verzeichnis als das Standardverzeichnis verwendet wird, erfolgt keine automatische L&ouml;schung der Logdateien, wenn logging deaktiviert wird. Wenn der Pfadname mit einem '|' beginnt, wird der im Anschluss folgende Pfadname als Prozess ausgef&uuml;hrt und erh&auml;lt die Logdaten als Eingabe via STDIN." en:"In the following boxes, you can alter the absolute path names to the log files. Please note, the lighttpd web server runs with the user ID of wwwrun. The provided file/path must be writeable for this user ID. The default directory /var/log/lighttpd/ is always writeable for wwwrun. If you use a different directory than the default directory, the log files will not be automatically removed in case you deactivate logging. If the path name starts with a '|' the rest of the name is taken as the name of a process which will be spawned and will get the output via STDIN.")</p>
+<p style="font-size:10px;">$(lang de:"In den folgenden Boxen k&ouml;nnen die absoluten Pfade zu den Logdateien ge&auml;ndert werden. Beachte, dass lighttpd mit der Benutzer ID wwwrun l&auml;uft und die Datei und das Verzeichnis f&uuml;r wwwrun schreibbar sein muss. Das Standardverzeichnis /var/log/lighttpd/ ist immer f&uuml;r den Benutzer wwwrun schreibbar. Falls ein anderes Verzeichnis als das Standardverzeichnis verwendet wird, erfolgt keine automatische L&ouml;schung der Logdateien, wenn logging deaktiviert wird. Wenn der Pfadname mit einem '|' beginnt, wird der im Anschluss folgende Pfadname als Prozess ausgef&uuml;hrt und erh&auml;lt die Logdaten als Eingabe via STDIN." en:"In the following boxes, you can alter the absolute path names to the log files. Please note, the lighttpd web server runs with the user ID of wwwrun. The provided file/path must be writeable for this user ID. The default directory /var/log/lighttpd/ is always writeable for wwwrun. If you use a different directory than the default directory, the log files will not be automatically removed in case you deactivate logging. If the path name starts with a '|' the rest of the name is taken as the name of a process which will be spawned and will get the output via STDIN.")</p>
 EOF
 if [ -f /usr/lib/mod_accesslog.so ]; then
 cat << EOF

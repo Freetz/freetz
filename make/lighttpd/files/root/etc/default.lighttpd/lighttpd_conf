@@ -4,7 +4,6 @@
 
 cat << EOF
 server.modules = ( "mod_access" )
-server.document-root = "$LIGHTTPD_DOCROOT"
 index-file.names            = ( "index.cgi", "index.html",
                                 "index.htm", "default.htm",
 				"index.php", "index.rb" )
@@ -218,6 +217,18 @@ fastcgi.server = ( ".rb" =>
     "max-procs" => $LIGHTTPD_MODFASTCGIRUBYMAXPROC
   ))
 )
+EOF
+fi
+
+if [ -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+cat << EOF
+server.modules += ( "mod_evhost" )
+evhost.path-pattern = "$LIGHTTPD_DOCROOT/%$LIGHTTPD_VIRTHOSTTYPE/"
+server.document-root = "$LIGHTTPD_DOCROOT/default/"
+EOF
+else
+cat << EOF
+server.document-root = "$LIGHTTPD_DOCROOT"
 EOF
 fi
 

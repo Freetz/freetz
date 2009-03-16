@@ -11,7 +11,7 @@ LOGE=$(cat /mod/etc/lighttpd/lighttpd.conf | grep "server.errorlog" | cut -d\" -
 if [ -f /usr/lib/mod_accesslog.so ]; then
 	if [ -r "$LOGA" ]; then
         	echo "<h1>lighttpd access log $LOGA</h1>"
-	        echo -n '<pre style="height: 480px width: '$_width'px; overflow: auto;">'
+	        echo -n '<pre style="height: 480px; width: '$_width'px; overflow: auto;">'
         	html < $LOGA
 	        echo '</pre>'
 	else
@@ -23,7 +23,7 @@ fi
 
 if [ -r "$LOGE" ]; then
         echo "<h1>lighttpd access log $LOGE</h1>"
-        echo -n '<pre style="height: 480px width: '$_width'px; overflow: auto;">'
+        echo -n '<pre style="height: 480px; width: '$_width'px; overflow: auto;">'
         html < $LOGE
         echo '</pre>'
 else
