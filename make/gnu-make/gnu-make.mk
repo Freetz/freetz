@@ -7,7 +7,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/make
 
 
 $(PKG)_CONFIGURE_ENV += make_cv_sys_gnu_glob=no
-$(PKG)_CONFIGURE_ENV += GLOBINC='-I$($(PKG)DIR)/glob'
+$(PKG)_CONFIGURE_ENV += GLOBINC='-Iglob/'
 $(PKG)_CONFIGURE_ENV += GLOBLIB=glob/libglob.a
 
 
