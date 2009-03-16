@@ -673,18 +673,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "please choose at least one OEM (branding) in menuconfig: AVM, 1&1, Freenet etc."
 	fi
 
-	# Copy selected plugins into the firmware
+	# Copy selected avmplugins into the firmware
 	if [ "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
 		echo "installing AVM plugins"
 		echo "#" > ${FILESYSTEM_MOD_DIR}/sbin/start_plugin.sh
 		rm -rf ${FIRMWARE_MOD_DIR}/${AVMPLUGINS_FILE}
 		mkdir "${AVMPLUGINS_FILESYSTEM_MOD_DIR}"
-		for i in \
-		$( \
-			cd "${AVMPLUGINS_MOD_DIR}" && \
-			find . -maxdepth 1 -type d -name var -prune -false , -type d -name "plugin-*" \
-		)
-		do
+		for i in `find "${AVMPLUGINS_MOD_DIR}" -maxdepth 1 -type d -name var -prune -false , -type d -name "plugin-*"`; do
 			AVMPLUGIN="${i##*plugin-}"
 			if [ "$(eval "echo \"\$FREETZ_AVMPLUGINS_$(echo "$AVMPLUGIN" | tr [:lower:] [:upper:])\"")" == "y" ]; then
 				echo1 "$AVMPLUGIN plugin"

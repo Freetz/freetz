@@ -1776,41 +1776,54 @@ config FREETZ_AVMPLUGINS_ENABLED
 	default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 	default n
 	help
-		Integrate AVM Plugins directly into firmware image. This saves
-		some RAM because plugins are not mounted with loop devices.
-		Normal AVM Plugin handling is disabled by activating this feature.
+		This feature disables AVM's plugin download and handling.
+		You could integrate these plugins directly into the firmware image by
+		selecting them below. This saves some resources because plugins are not
+		copied into RAM nor mounted with loop-devices.
 
-		Default	behaviour for boxes with 16 MB flash.
+		Default behaviour for boxes with 16 MB flash.
 
 menu "Plugin selection"
 	depends on FREETZ_AVMPLUGINS_ENABLED
 	
-	comment "Select plugins for insertion"
+	comment "Select plugin(s) for insertion"
 
 	config FREETZ_AVMPLUGINS_MEDIASRV
 		bool "MEDIASRV"
 		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 		default n
+		help
+			Integrates UPNP Mediaserver
 
 	config FREETZ_AVMPLUGINS_MINI
 		bool "MINI"
 		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 		default n
+		help
+			Integrates FRITZ! Mini support
 
 	config FREETZ_AVMPLUGINS_NTFS
 		bool "NTFS"
 		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 		default n
+		help
+			Integrates NTFS filesystem support
+			Not recommended if you are using Freetz-NTFS!
 
 	config FREETZ_AVMPLUGINS_SAMBA
 		bool "SAMBA"
 		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 		default n
+		help
+			Integrates AVM's Samba Fileserver
+			Not recommended if you are using Freetz-Samba!
 
 	config FREETZ_AVMPLUGINS_TAM
 		bool "TAM"
 		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 		default n
+		help
+			Integrates Telephone Answering Machine (TAM)
 endmenu
 
 menu External
