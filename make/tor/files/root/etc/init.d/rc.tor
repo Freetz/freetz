@@ -15,12 +15,10 @@ start() {
 	touch /var/run/tor.pid
 	chown tor:tor /var/run/tor.pid
 	
-	if [ ! -e $TOR_DATADIRECTORY/keys/secret_id_key ]; then
-		if [ -e "/tmp/flash/.tor/secret_id_key" ]; then
+	if [ "$TOR_RELAY_ENABLED" = "yes" ] && [ -e "/tmp/flash/.tor/secret_id_key" ] && [ ! -e $TOR_DATADIRECTORY/keys/secret_id_key ]; then
 			mkdir -p $TOR_DATADIRECTORY/keys
 			ln -s /tmp/flash/.tor/secret_id_key $TOR_DATADIRECTORY/keys/secret_id_key
-		fi
-		chown tor:tor $TOR_DATADIRECTORY/keys -R
+			chown tor:tor $TOR_DATADIRECTORY/keys -R
 	fi
 	
 	(
@@ -44,18 +42,21 @@ start() {
 }
 
 stop() {
-	modlib_stop
+	. /mod/etc/conf/$DAEMON.cfg
 
-	if [ ! -e "/tmp/flash/.tor/secret_id_key" ]; then
+	modlib_stop
+	
+	if [ ! -e "/tmp/flash/.tor/secret_id_key" ] && [-e $TOR_DATADIRECTORY/keys/secret_id_key ]; then
 		[ -d "/tmp/flash/.tor" ] || mkdir /tmp/flash/.tor
 		cp $TOR_DATADIRECTORY/keys/secret_id_key /tmp/flash/.tor/secret_id_key
 		/usr/bin/modsave flash
 	fi
-
-	rm -rf /mod/etc/$DAEMON
+	
 	if [ "$TOR_DATADIRPERSISTENT" = "no" ]; then
-	  rm -rf $TOR_DATADIRECTORY
+	      rm -rf $TOR_DATADIRECTORY
 	fi
+			
+	rm -rf /mod/etc/$DAEMON
 }
 
 case "$1" in
