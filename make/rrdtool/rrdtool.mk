@@ -11,6 +11,12 @@ $(PKG)_STARTLEVEL=40
 
 $(PKG)_DEPENDS_ON := libpng freetype libart_lgpl zlib
 
+# fix libtool library search paths
+$(PKG)_CONFIGURE_PRE_CMDS += sed -i \
+			    -e 's|sys_lib_search_path_spec=.*|sys_lib_search_path_spec="$(TARGET_TOOLCHAIN_STAGING_DIR)/lib"|g' \
+			    -e 's|sys_lib_dlsearch_path_spec=.*|sys_lib_dlsearch_path_spec=""|g' \
+			    -e 's|hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' configure;
+
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_ENV += ac_cv_func_setpgrp_void=yes
 $(PKG)_CONFIGURE_ENV += rd_cv_ieee_works=yes
