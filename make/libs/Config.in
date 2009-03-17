@@ -385,7 +385,7 @@ config FREETZ_LIB_libutil
 
 endmenu
 
-config FREETZ_LIB_libuClibcxx
+config FREETZ_LIB_libuClibc__
 	bool "uClibc++ (libuClibc++-0.2.2.so)"
 	default n
 	help
@@ -409,7 +409,7 @@ config FREETZ_LIB_libgcc_s
 		machines. libgcc also includes routines for exception handling, and a
 		handful of miscellaneous operations.
 
-config FREETZ_LIB_libglib
+config FREETZ_LIB_libglib_1
 	bool "GLib 1.2 (libglib-1.2.so)"
 	select FREETZ_LIB_libpthread
 	default n
@@ -421,7 +421,7 @@ config FREETZ_LIB_libglib
 
 menu "GLib2"
 
-config FREETZ_LIB_libglib2
+config FREETZ_LIB_libglib_2
 	bool "GLib2 (libglib-2.0.so)"
 	select FREETZ_LIB_libiconv
 	select FREETZ_LIB_libintl
@@ -432,24 +432,24 @@ config FREETZ_LIB_libglib2
 
 		GLib2 is needed by Irssi
 
-config FREETZ_LIB_libgobject2
+config FREETZ_LIB_libgobject_2
 	bool "libgobject-2.0.so"
-	select FREETZ_LIB_libglib2
+	select FREETZ_LIB_libglib_2
 	default n
 	help
 		If your application uses Glib2 GObjects, select this library.
 
-config FREETZ_LIB_libgmodule2
+config FREETZ_LIB_libgmodule_2
 	bool "libgmodule-2.0.so"
-	select FREETZ_LIB_libglib2
+	select FREETZ_LIB_libglib_2
 	default n
 	help
 		If your application uses Glib2 modules (plug-ins), select this library.
 		E.g. Irssi needs this library and auto-selects it.
 
-config FREETZ_LIB_libgthread2
+config FREETZ_LIB_libgthread_2
 	bool "libgthread-2.0.so"
-	select FREETZ_LIB_libglib2
+	select FREETZ_LIB_libglib_2
 	default n
 	help
 		If your application uses Glib2 threads, select this library.

@@ -738,24 +738,25 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"
 
 		echo1 "installing libs"
-			for i in \
-			$( \
-				 cd "${ROOT_DIR}" && \
-				 find lib usr/lib -type d -name .svn -prune -false , -type f -name "*.so*" \
-			)
-			do
-				bn="$(basename "$i")"
-				lib="${bn%\.so*}"
-				lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)-2/libg\12-2/;s/-[0-9][\.0-9a-z]*$//')"
-				if [ "$(eval "echo \"\$FREETZ_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
-					echo2 "${bn}"
-					dn="$(dirname "$i")"
-					lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)2/libg\1-2/')"
-					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp -a "${ROOT_DIR}/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
-					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
+		for i in $(set | grep ^FREETZ_LIB_.*=y | grep -v '^FREETZ_LIB_libterminfo[=_]' | sort); do
+			found=0
+			conf=${i%%=*}
+			bn=${conf#FREETZ_LIB_}
+			fn=${bn//_/[-+._]}
+			echo2 "$bn"
+			for dn in lib usr/lib; do
+				files=$(shopt -s nullglob; echo ${ROOT_DIR}/$dn/$fn[-.]*so*)
+				if [ -z "$files" ]; then
+					continue;
 				fi
+				found=1
+				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
+				cp -a $files "${FILESYSTEM_MOD_DIR}/${dn}/"
 			done
+			if [ "$found" = 0 ]; then
+				warn "Library $bn selected, but no files found"
+			fi
+		done
 		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 		
 		if [ "$FREETZ_LIB_libterminfo" == "y" ]; then
