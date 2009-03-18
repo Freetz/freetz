@@ -1,6 +1,6 @@
---- etc/hotplug/storage.orig	2008-09-30 16:22:35.000000000 +0200
-+++ etc/hotplug/storage	2008-10-02 14:54:14.000000000 +0200
-@@ -12,6 +12,10 @@
+--- etc/hotplug/storage.orig	2009-03-06 09:36:18.000000000 +0100
++++ etc/hotplug/storage	2009-03-17 18:46:41.686812984 +0100
+@@ -13,6 +13,10 @@
  FIRST=$6
  MSTART=/sbin/start_mediasrv
  MSTOP=/sbin/stop_mediasrv
@@ -11,15 +11,15 @@
  ## Wait for removal of filesystem semaphores (mask: $1, maximal wait period: $2)
  wait4remove () {
  local COUNT=0
-@@ -139,6 +143,7 @@
+@@ -146,6 +150,7 @@
  ## ftp server control
- ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
+ ENABLED=`echo usbhost.ftp_server_enabled|usbcfgctl -s`
  if [ "$ENABLED" != "no" ] ; then
 +if [ "$_ftpd" ] ; then
  if test -x /bin/inetdctl ; then
  inetdctl enable ftpd
  else
-@@ -155,6 +160,7 @@
+@@ -162,6 +167,7 @@
  ftpd -D -q $READONLYOPTION -t 120 -m 15 $USERSOPTION -h "$CONFIG_PRODUKT_NAME" &
  fi
  fi
@@ -27,8 +27,8 @@
  else
  if test -x /bin/inetdctl ; then
  inetdctl disable ftpd
---- etc/hotplug/run_mount.orig	2008-09-30 16:22:37.000000000 +0200
-+++ etc/hotplug/run_mount	2008-10-02 14:54:14.000000000 +0200
+--- etc/hotplug/run_mount.orig	2009-03-06 09:36:14.000000000 +0100
++++ etc/hotplug/run_mount	2009-03-17 18:46:41.686812984 +0100
 @@ -15,6 +15,10 @@
  MSTART=/sbin/start_mediasrv
  TR069START=/bin/tr069starter
@@ -40,15 +40,15 @@
  ## Generate a frontend'able 'nice name' to be used as mount point:
  nicename () {
  ## Find device's strings, remove/translate evil chars...
-@@ -80,6 +84,7 @@
+@@ -84,6 +88,7 @@
  eventadd 140 $MNTNAME
- ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
+ ENABLED=`echo usbhost.ftp_server_enabled|usbcfgctl -s`
  if [ "$ENABLED" != "no" ] ; then
 +if [ "$_ftpd" ] ; then
  if test -x /bin/inetdctl; then
  inetdctl enable ftpd
  else
-@@ -99,6 +104,7 @@
+@@ -103,6 +108,7 @@
  fi
  fi
  fi
