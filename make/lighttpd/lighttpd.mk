@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.4.21)
+$(call PKG_INIT_BIN, 1.4.22)
 $(PKG)_SOURCE:=lighttpd-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.lighttpd.net/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lighttpd

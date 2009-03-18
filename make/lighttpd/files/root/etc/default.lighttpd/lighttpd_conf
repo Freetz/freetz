@@ -1,6 +1,24 @@
 #!/bin/sh
 #
-# Todo: enable/disable logging
+
+virthost_conf() {
+#$1 virtual host (the string can have multiple entries separated by IFS - we loop) - if empty, we skip virthost config
+#$2 configuration string to be enclosed in virtual host conditional (\n will be interpreted
+if [ -n "$1" -a -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+old_IFS=$IFS
+IFS=" 	"
+	for i in $1; do
+		regexp="~"
+		if [ -z "$(echo $i | sed 's/[A-Za-z0-9\.]//g')" ]; then regexp="="; fi
+echo "\$HTTP[\"host\"] =$regexp \"$i\" {"
+echo -e "$2"
+echo "}"
+	done
+IFS=$old_IFS
+else
+echo -e "$2"
+fi
+}
 
 cat << EOF
 server.modules = ( "mod_access" )
@@ -68,9 +86,10 @@ server.port = $LIGHTTPD_PORT
 server.pid-file = "/var/run/lighttpd.pid"
 server.username = "wwwrun"
 #server.groupname = "wwwrun"
-connection.kbytes-per-second = $LIGHTTPD_LIMITCONN
-server.kbytes-per-second = $LIGHTTPD_LIMITSRV
 EOF
+
+out="connection.kbytes-per-second = $LIGHTTPD_LIMITCONN\nserver.kbytes-per-second = $LIGHTTPD_LIMITSRV"
+virthost_conf "$LIGHTTPD_LIMITVIRT" "$out"
 
 if [ "$LIGHTTPD_CHROOT" = "yes" ];then
 cat << EOF
@@ -79,13 +98,11 @@ EOF
 fi
 
 if [ -f /usr/lib/mod_dirlisting.so ]; then
-cat << EOF
-dir-listing.activate = "$LIGHTTPD_DIRLISTING"
-dir-listing.encoding = "$LIGHTTPD_DIRLISTINGENC"
-EOF
+out="dir-listing.activate = \"$LIGHTTPD_DIRLISTING\"\ndir-listing.encoding = \"$LIGHTTPD_DIRLISTINGENC\""
+virthost_conf "$LIGHTTPD_DIRLISTINGVIRT" "$out"
 fi
 
-if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
+if /usr/bin/lighttpd -V | grep -q "+ SSL Support"; then
 cat << EOF
 ssl.engine = "$LIGHTTPD_SSLENABLE"
 ssl.pemfile = "/tmp/flash/lighttpd_crt.pem"
@@ -126,30 +143,25 @@ EOF
 	fi
 fi
 
-if [ -f /usr/lib/mod_cgi.so ]; then
-	if [ "$LIGHTTPD_MODCGI" = "yes" ]; then
+if [ -f /usr/lib/mod_cgi.so -a "$LIGHTTPD_MODCGI" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_cgi" )
-cgi.assign = ( ".cgi" => "",
-               "/cgi-bin/" => "" )
 EOF
-	fi
+	out="cgi.assign = ( \".cgi\" => \"\", \"/cgi-bin/\" => \"\" )"
+	virthost_conf "$LIGHTTPD_MODCGIVIRT" "$out"
 fi
 
-if [ -f /usr/lib/mod_compress.so ]; then
-	if [ "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
+if [ -f /usr/lib/mod_compress.so -a "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_compress" )
-compress.cache-dir = "$LIGHTTPD_MODCOMPRESSDIR"
-compress.filetype  = ("text/plain", "text/html")
 EOF
-	fi
+	out="compress.cache-dir = \"$LIGHTTPD_MODCOMPRESSDIR\"\ncompress.filetype  = (\"text/plain\", \"text/html\")"
+	virthost_conf "$LIGHTTPD_MODCOMPRESSVIRT" "$out"
 fi
 
 if [ "$LIGHTTPD_ERROR" = "yes" ]; then
-cat << EOF
-server.errorfile-prefix   = "$LIGHTTPD_ERRORFILE"
-EOF
+	out="server.errorfile-prefix = \"$LIGHTTPD_ERRORFILE\""
+	virthost_conf "$LIGHTTPD_ERRORVIRT" "$out"
 fi
 
 if [ -f /usr/lib/mod_auth.so -a "$LIGHTTPD_AUTH" = "yes" ]; then
@@ -161,14 +173,25 @@ EOF
 #just a return
 IFS="
 "
-echo "auth.require = ( "
 authrequire=$(cat /tmp/flash/lighttpd-rights.user)
+virthost_auth=""
+out="auth.require = ( "
 for i in $authrequire; do
+	if [ "$(echo $i | cut -c1)" = "[" ]; then
+		if [ -n "$out" ]; then
+			out="$out )"
+			virthost_conf "$virthost_auth" "$out"
+		fi
+		out="auth.require = ( "
+		virthost_auth=$(echo $i | sed 's/^\[//' | sed 's/\]$//')
+		continue
+	fi
 	dir=$(echo $i | cut -d\" -f 2)
 	user=$(echo $i | cut -d\" -f 4)
-	echo "\"$dir\" => ( \"method\" => \"$LIGHTTPD_AUTHMETH\", \"realm\" => \"lighttpd\", \"require\" => \"$user\" ),"
+	out="$out \"$dir\" => ( \"method\" => \"$LIGHTTPD_AUTHMETH\", \"realm\" => \"lighttpd\", \"require\" => \"$user\" ),"
 done 
-echo ")"
+out="$out )"
+virthost_conf "$virthost_auth" "$out"
 fi
 
 if [ -f /usr/lib/mod_status.so ]; then
@@ -177,47 +200,33 @@ cat << EOF
 server.modules += ( "mod_status" )
 status.enable-sort = "$LIGHTTPD_MODSTATUSSORT"
 EOF
+	out=""
 		if [ -n "$LIGHTTPD_MODSTATUSCONFIG" ]; then
-cat << EOF
-status.config-url = "$LIGHTTPD_MODSTATUSCONFIG"
-EOF
+			out="status.config-url = \"$LIGHTTPD_MODSTATUSCONFIG\"\n"
 		fi
 		if [ -n "$LIGHTTPD_MODSTATUSSTATISTIC" ]; then
-cat << EOF
-status.statistics-url = "$LIGHTTPD_MODSTATUSSTATISTIC"
-EOF
+			out="$out status.statistics-url = \"$LIGHTTPD_MODSTATUSSTATISTIC\"\n"
 		fi
 		if [ -n "$LIGHTTPD_MODSTATUSSTATUS" ]; then
-cat << EOF
-status.status-url = "$LIGHTTPD_MODSTATUSSTATUS"
-EOF
+			out="$out status.status-url = \"$LIGHTTPD_MODSTATUSSTATUS\""
 		fi
 	fi
+	virthost_conf "$LIGHTTPD_MODSTATUSVIRT" "$out"
 fi
 
 if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" -a -f /usr/lib/mod_fastcgi.so ]; then
 cat << EOF
 server.modules += ( "mod_fastcgi" )
-fastcgi.server = ( ".php" =>
-  ((
-    "socket" => "/var/run/lighttpd/php-fastcgi.socket",
-    "bin-path" => "$LIGHTTPD_MODFASTCGIPHPPATH",
-    "max-procs" => $LIGHTTPD_MODFASTCGIPHPMAXPROC
-  ))
-)
 EOF
+out="fastcgi.server = ( \".php\" => (( \"socket\" => \"/var/run/lighttpd/php-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIPHPPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIPHPMAXPROC )) )"
+virthost_conf "$LIGHTTPD_MODFASTCGIPHPVIRT" "$out"
 fi
 if [ "$LIGHTTPD_MODFASTCGIRUBY" = "yes" -a -f /usr/lib/mod_fastcgi.so ]; then
 cat << EOF
 server.modules += ( "mod_fastcgi" )
-fastcgi.server = ( ".rb" =>
-  ((
-    "socket" => "/var/run/lighttpd/ruby-fastcgi.socket",
-    "bin-path" => "$LIGHTTPD_MODFASTCGIRUBYPATH",
-    "max-procs" => $LIGHTTPD_MODFASTCGIRUBYMAXPROC
-  ))
-)
 EOF
+out="fastcgi.server = ( \".rb\" => (( \"socket\" => \"/var/run/lighttpd/ruby-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIRUBYPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIRUBYMAXPROC )) )"
+virthost_conf "$LIGHTTPD_MODFASTCGIRUBYVIRT" "$out"
 fi
 
 if [ -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then

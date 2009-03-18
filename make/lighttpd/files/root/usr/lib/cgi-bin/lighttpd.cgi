@@ -3,6 +3,18 @@
 PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
+virthost_conf() {
+#$1 string of input-tag name-attribute
+#$2 variable containing current value to display in input field
+#$3 name to display
+if [ -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+cat << EOF
+<p style="font-size:10px;">$(lang de:"In folgender Box werden die virtuellen Hostnamen angegeben, f&uuml;r welche die Konfiguration bez&uuml;glich $3 gilt. Es k&ouml;nnen entweder der vollst&auml;ndige Hostname oder ein regul&auml;rer Ausdruck f&uuml;r mehrere Hostnamen verwendet werden. Mehrere Werte k&ouml;nnen angegeben werden, in dem diese mit Leerzeichen getrennt werden. Wenn die Konfiguration generell f&uuml;r alle virtuellen Hosts gelten soll, ist die Box leer zu lassen." en:"Please specify the virtual hosts the configuration of $3 applies to in the following box. You can either provide a full qualified domain name or a regular expression to match multiple host names. When supplying multiple values, please separate them using a space character. In case the configuration applies to all virtual hosts, leave the box empty.")</p>
+<p> $(lang de:"Virtuelle Hosts" en:"Virtual hosts"): <input type="text" name="$1" size="30" maxlength="255" value="$(html "$2")"></p>
+EOF
+fi
+}
+
 auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''; modfastcgiphp_chk=''; modfastcgiruby_chk=''; accesslog_syslog=''; accesslog_file=''; errorlog_syslog=''; errorlog_file=''; virthost_0=''; virthost_1=''; virthost_2=''; virthost_3=''; virhost_4=''; virthost_chk=''
 
 case "$LIGHTTPD_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
@@ -49,6 +61,26 @@ cat << EOF
 EOF
 sec_end
 
+sec_begin '$(lang de:"Virtuelle Hosts" en:"Virtual Hosts")'
+if [ -f /usr/lib/mod_evhost.so ]; then
+cat << EOF
+<p><input type="hidden" name="virthost" value="no">
+<input id="b9" type="checkbox" name="virthost" value="yes"$virthost_chk><label for="b9"> $(lang de:"Virtuelle Hosts aktivieren" en:"Activate virtual hosts")</label></p>
+<p style="font-size:10px;">$(lang de:"Das Verzeichnis der Daten (Document Root) der virtuellen Hosts setzt sich zusammen aus dem Verzeichnis der Daten (Document Root) welches oben angegeben wurde plus der Erweiterung welche im Folgenden gew&auml;hlt wird (&lt;docroot&gt;/&lt;extension&gt;). Falls das Datenverzeichnis mit der gew&auml;hlten Extension existiert, wird dieses Verzeichnis als Datenverzeichnis des virtuellen Hosts verwendet. Falls dieses Verzeichnis nicht existiert, wird das oben gew&auml;hlte Datenverzeichnis plus \"/default/\" als Datenverzeichnis verwendet. Dies bedeutet, dass bei aktivieren virtuellen Hosts das oben gew&auml;hlte Datenverzeichnis nicht mehr direkt verwendet wird.<br />lighttpd wird nur starten, wenn bei aktivierten virtuellen Hosts das default/ Datenverzeichnis existiert." en:"The document root of the virtual host is defined by combining the above configured document root plus the extension selected as follows (&lt;docroot&gt;/&lt;extension&gt;). If the directory for the virtual host does not exist, the above configured document root extended with \"/default/\" is used as document root. This also means that with activated virtual host support, the above configured document root will not be used directly any more.<br />lighttpd will only start if the the default/ document root exists.")</p>
+<p>$(lang de:"Datenverzeichnis-Erweiterung" en:"Document root directory extension")</p>
+<p><input id="v0" type="radio" name="virthosttype" value="0"$virthost_0><label for="v0"> $(lang de:"Domain Name plus Top Level Domain" en:"Domain name plus top level domain")</label></p>
+<p><input id="v1" type="radio" name="virthosttype" value="1"$virthost_1><label for="v1"> $(lang de:"Top Level Domain" en:"Top level domain")</label></p>
+<p><input id="v2" type="radio" name="virthosttype" value="2"$virthost_2><label for="v2"> $(lang de:"Domain Name ohne Top Level Domain" en:"Domain name without top lelvel domain")</label></p>
+<p><input id="v3" type="radio" name="virthosttype" value="3"$virthost_3><label for="v3"> $(lang de:"Subdomain 1 Name" en:"Subdomain 1 name")</label></p>
+<p><input id="v4" type="radio" name="virthosttype" value="4"$virthost_4><label for="v4"> $(lang de:"Subdomain 2 Name" en:"Subdomain 2 name")</label></p>
+EOF
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Virtuelle Hosts k&ouml;nnen nicht konfiguriert werden - mod_evhost.so nicht vorhanden." en:"Virtual hosts support cannot be configured - mod_evhost.so unavailable.")</p>
+EOF
+fi
+sec_end
+
 sec_begin '$(lang de:"Erlaube Auflistung des Verzeichnisinhalts" en:"Allow listing of directory contents")'
 if [ -f /usr/lib/mod_dirlisting.so ]; then
 cat << EOF
@@ -58,6 +90,7 @@ cat << EOF
 </p>
 <p> $(lang de:"Kodierung der Dateinamen" en:"File name encoding"): <input type="text" name="dirlistingenc" size="6" maxlength="10" value="$(html "$LIGHTTPD_DIRLISTINGENC")"></p>
 EOF
+virthost_conf "dirlistingvirt" "$LIGHTTPD_DIRLISTINGVIRT" '$(lang de:"Verzeichnisauflistung" en:"directory listing")'
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Auflistung des Verzeichnisinhaltes nicht m&ouml;glich - mod_dirlisting.so nicht vorhanden." en:"Listing of directory contents not available - mod_dirlisting.so unavailable.")</p>
@@ -66,7 +99,7 @@ fi
 sec_end
 
 sec_begin '$(lang de:"SSL Unterst&uuml;tzung" en:"SSL support")'
-if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
+if /usr/bin/lighttpd -V | grep -q "+ SSL Support"; then
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Damit lighttpd mit SSL-Unterst&uuml;tzung gestartet werden kann, m&uuml;ssen Zertifikat &amp; Schl&uuml;ssel <a href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">hier</a> eingetragen sein." en:"To start lighttpd with SSL-Support you have to setup Certifikat&amp;Key <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">here</a>.")</p>
 <p style="font-size:10px;">$(lang de:"Falls das Zertifikat mit einer CA signiert wurde, trage bitte das CA Zertifikat <a href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">hier</a> ein." en:"In case the certificate was signed with a CA, please provide the CA certificate <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">here</a>.")</p>
@@ -100,13 +133,14 @@ EOF
 fi
 sec_end
 
-sec_begin '$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")'
+sec_begin '$(lang de:"Dynamische Webseiten" en:"Dynamic Web Pages")'
 if [ -f /usr/lib/mod_cgi.so ]; then
 cat << EOF
 <p><input type="hidden" name="modcgi" value="no">
 <input id="b1" type="checkbox" name="modcgi" value="yes"$modcgi_chk><label for="b1"> $(lang de:"mod_cgi aktivieren (Dateien *.cgi und in /cgi-bin ausf&uuml;hrbar)" en:"Activate mod_cgi (files *.cgi and in /cgi-bin executable")</label></p>
-<br />
 EOF
+virthost_conf "modcgivirt" "$LIGHTTPD_MODCGIVIRT" '$(lang de:"Aktivierung von mod_cgi" en:"activation of mod_cgi")'
+echo "<br />"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"CGI Unterst&uuml;tzung kann nicht konfiguriert werden - mod_cgi.so nicht vorhanden." en:"CGI support cannot be configured - mod_cgi.so unavailable.")</p>
@@ -132,7 +166,10 @@ EOF
 cat << EOF
 <p> $(lang de:"Pfad zu php-cgi" en:"Path to php-cgi"): <input type="text" name="modfastcgiphppath" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODFASTCGIPHPPATH")"></p>
 <p> $(lang de:"Maximale Anzahl der PHP Prozesse" en:"Maximum number of PHP processes"): <input type="text" name="modfastcgiphpmaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIPHPMAXPROC")"></p>
-<br />
+EOF
+virthost_conf "modfastcgiphpvirt" "$LIGHTTPD_MODFASTCGIPHPVIRT" '$(lang de:"Aktivierung der PHP-FastCGI Unterst&uuml;tzung" en:"activation of PHP FastCGI support")'
+echo "<br />"
+cat << EOF
 <p><input type="hidden" name="modfastcgiruby" value="no">
 <input id="b8" type="checkbox" name="modfastcgiruby" value="yes"$modfastcgiruby_chk><label for="b8"> $(lang de:"mod_fastcgi f&uuml;r RUBY aktivieren (Dateien *.rb ausf&uuml;hrbar)" en:"Activate mod_fastcgi for RUBY (files *.rb executable)")</label></p>
 EOF
@@ -151,21 +188,25 @@ EOF
 cat << EOF
 <p> $(lang de:"Pfad zu ruby-cgi" en:"Path to ruby-cgi"): <input type="text" name="modfastcgirubypath" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODFASTCGIRUBYPATH")"></p>
 <p> $(lang de:"Maximale Anzahl der RUBY Prozesse" en:"Maximum number of RUBY processes"): <input type="text" name="modfastcgirubymaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIRUBYMAXPROC")"></p>
-<br />
 EOF
+virthost_conf "modfastcgirubyvirt" "$LIGHTTPD_MODFASTCGIRUBYVIRT" '$(lang de:"Aktivierung der RUBY-FastCGI Unterst&uuml;tzung" en:"activation of RUBY FastCGI support")'
+echo "<br />"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"FastCGI Unterst&uuml;tzung kann nicht konfiguriert werden - mod_fastcgi.so nicht vorhanden." en:"FastCGI support cannot be configured - mod_fastcgi.so unavailable.")</p>
 EOF
 fi
+sec_end
 
+sec_begin '$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")'
 if [ -f /usr/lib/mod_compress.so ]; then
 cat << EOF
 <p><input type="hidden" name="modcompress" value="no">
 <input id="b2" type="checkbox" name="modcompress" value="yes"$modcompress_chk><label for="b2"> $(lang de:"mod_compress aktivieren (Cache Verzeichnis muss konfiguriert werden)" en:"Activate mod_compress (Cache dir must be configured")</label></p>
 <p> $(lang de:"Verzeichnis der Cache Daten" en:"Directory of Cache"): <input type="text" name="modcompressdir" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODCOMPRESSDIR")"></p>
-<br />
 EOF
+virthost_conf "modcompressvirt" "$LIGHTTPD_MODCOMPRESSVIRT" '$(lang de:"Aktivierung von mod_compress" en:"activation of mod_compress support")'
+echo "<br />"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Dateicaching kann nicht konfiguriert werden - mod_compress.so nicht vorhanden." en:"Caching of files cannot be configured - mod_compress.so unavailable.")</p>
@@ -182,8 +223,9 @@ cat << EOF
 <p> $(lang de:"URL f&uuml;r Konfiguration" en:"URL for configuration"): <input type="text" name="modstatusconfig" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODSTATUSCONFIG")"></p>
 <p> $(lang de:"URL f&uuml;r Statistiken" en:"URL for statistics"): <input type="text" name="modstatusstatistic" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODSTATUSSTATISTIC")"></p>
 <p> $(lang de:"URL f&uuml;r Status" en:"URL for status"): <input type="text" name="modstatusstatus" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODSTATUSSTATUS")"></p>
-<br />
 EOF
+virthost_conf "modstatusvirt" "$LIGHTTPD_MODSTATUSVIRT" '$(lang de:"Aktivierung von mod_status" en:"activation of mod_status support")'
+echo "<br />"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Statusinformationen k&ouml;nnen nicht angezeigt werden - mod_status.so nicht vorhanden." en:"Status information cannot be displayed - mod_status.so unavailable.")</p>
@@ -194,29 +236,16 @@ cat << EOF
 <input id="b5" type="checkbox" name="error" value="yes"$error_chk><label for="b5"> $(lang de:"Eigene Fehlermeldungen anstelle der automatischen Fehlermeldung aktivieren (Dateiprefix angeben)" en:"Return own error message instead of the automated error messages (provide file prefix")</label></p>
 <p style="font-size:10px;">$(lang de:"Der Server kann selbst-erstellte Fehlermeldungen zur&uuml;cksenden, inklusive eigene 404 Fehlerseiten. Generell k&ouml;nnen auch andere HTTP-Fehler (zum Beispiel 500) entsprechend behandelt werden. Es k&ouml;nnen ausschliesslich statische Seiten zur&uuml;ckgesendet werden. Das Format der Dateinamen lautet: &lt;Fehlerdatei-Prefix&gt;&lt;status-code&gt;.html. Der Prefix muss dabei der absolute Pfadname auf dem Hostsystem sein, nicht nur innerhalb des Datenverzeichnisses." en:"You can customize what page to send back based on a status code. This provides you with an alternative way to customize 404 pages. You may also customize other status-codes with their own custom page (500 pages, etc). Only static files are allowed to be sent back. Format: &lt;errorfile-prefix&gt;&lt;status-code&gt;.html. This path must be the absolute path name on the host system, not only starting with the docroot.")</p>
 <p> $(lang de:"Datei-Prefix f&uuml;r Fehler" en:"File prefix for error"): <input type="text" name="errorfile" size="30" maxlength="255" value="$(html "$LIGHTTPD_ERRORFILE")"></p>
+EOF
+virthost_conf "errorvirt" "$LIGHTTPD_ERRORVIRT" '$(lang de:"Aktivierung der Fehlerseiten" en:"activation of error pages")'
+cat << EOF
 <br />
 <p style="font-size:10px;">$(lang de:"Die folgenden Boxen erlauben, die maximale Datentransferrate in kBytes/s festzulegen. Der Wert 0 bedeutet kein Limit. Bitte beachte, dass ein Wert von unter 32 kb/s effektiv den Verkehr auf 32 kb/s aufgrund der Gr&ouml;sse der TCP Sendepuffer drosselt." en:"The following boxes allw the specification of the maximum data transfer rate in kBytes/s. The value of 0 means no limit. Please note  that a limit below 32kb/s might actually limit the traffic to 32kb/s. This is caused by the size of the TCP send buffer.")</p>
 <p> $(lang de:"Maximale Datenrate pro Verbindung" en:"Maximum throughput per connection"): <input type="text" name="limitconn" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITCONN")"> kBytes/s</p>
 <p> $(lang de:"Maximale Datenrate aller Verbindungen" en:"Maximum throughput for all connections"): <input type="text" name="limitsrv" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITSRV")"> kBytes/s</p>
-<br/>
 EOF
-if [ -f /usr/lib/mod_evhost.so ]; then
-cat << EOF
-<p><input type="hidden" name="virthost" value="no">
-<input id="b9" type="checkbox" name="virthost" value="yes"$virthost_chk><label for="b9"> $(lang de:"Virtuelle Hosts aktivieren" en:"Activate virtual hosts")</label></p>
-<p style="font-size:10px;">$(lang de:"Das Verzeichnis der Daten (Document Root) der virtuellen Hosts setzt sich zusammen aus dem Verzeichnis der Daten (Document Root) welches oben angegeben wurde plus der Erweiterung welche im Folgenden gew&auml;hlt wird (&lt;docroot&gt;/&lt;extension&gt;). Falls das Datenverzeichnis mit der gew&auml;hlten Extension existiert, wird dieses Verzeichnis als Datenverzeichnis des virtuellen Hosts verwendet. Falls dieses Verzeichnis nicht existiert, wird das oben gew&auml;hlte Datenverzeichnis plus \"/default/\" als Datenverzeichnis verwendet. Dies bedeutet, dass bei aktivieren virtuellen Hosts das oben gew&auml;hlte Datenverzeichnis nicht mehr direkt verwendet wird.<br />lighttpd wird nur starten, wenn bei aktivierten virtuellen Hosts das default/ Datenverzeichnis existiert." en:"The document root of the virtual host is defined by combining the above configured document root plus the extension selected as follows (&lt;docroot&gt;/&lt;extension&gt;). If the directory for the virtual host does not exist, the above configured document root extended with \"/default/\" is used as document root. This also means that with activated virtual host support, the above configured document root will not be used directly any more.<br />lighttpd will only start if the the default/ document root exists.")</p>
-<p>$(lang de:"Datenverzeichnis-Erweiterung" en:"Document root directory extension")</p>
-<p><input id="v0" type="radio" name="virthosttype" value="0"$virthost_0><label for="v0"> $(lang de:"Domain Name plus Top Level Domain" en:"Domain name plus top level domain")</label></p>
-<p><input id="v1" type="radio" name="virthosttype" value="1"$virthost_1><label for="v1"> $(lang de:"Top Level Domain" en:"Top level domain")</label></p>
-<p><input id="v2" type="radio" name="virthosttype" value="2"$virthost_2><label for="v2"> $(lang de:"Domain Name ohne Top Level Domain" en:"Domain name without top lelvel domain")</label></p>
-<p><input id="v3" type="radio" name="virthosttype" value="3"$virthost_3><label for="v3"> $(lang de:"Subdomain 1 Name" en:"Subdomain 1 name")</label></p>
-<p><input id="v4" type="radio" name="virthosttype" value="4"$virthost_4><label for="v4"> $(lang de:"Subdomain 2 Name" en:"Subdomain 2 name")</label></p>
-EOF
-else
-cat << EOF
-<p style="font-size:10px;">$(lang de:"Virtuelle Hosts k&ouml;nnen nicht konfiguriert werden - mod_evhost.so nicht vorhanden." en:"Virtual hosts support cannot be configured - mod_evhost.so unavailable.")</p>
-EOF
-fi
+virthost_conf "limitvirt" "$LIGHTTPD_LIMITVIRT" '$(lang de:"Drosselung der Datentransferrate" en:"limitation of data transfer rate")'
+echo "<br/>"
 sec_end
 
 sec_begin '$(lang de:"Zus&auml;tzliche Konfigurationsoptionen (f&uuml;r Experten)" en:"Additional config options (for experts)")'
@@ -259,11 +288,11 @@ cat << EOF
 EOF
 if [ -f /usr/lib/mod_accesslog.so ]; then
 cat << EOF
-<p> $(lang de:"Zugriffs-Log (Access log)" en:"Access log"): <input type="text" name="logging_access" size="30" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ACCESS")"></p>
+<p> $(lang de:"Zugriffs-Log (Access log)" en:"Access log"): <input type="text" name="logging_access" size="25" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ACCESS")"></p>
 EOF
 fi
 cat << EOF
-<p> $(lang de:"Fehler-Log (Error log)" en:"Error log"): <input type="text" name="logging_error" size="30" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ERROR")"></p>
+<p> $(lang de:"Fehler-Log (Error log)" en:"Error log"): <input type="text" name="logging_error" size="25" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ERROR")"></p>
 EOF
 sec_end
 
