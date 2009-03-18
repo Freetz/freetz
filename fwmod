@@ -738,7 +738,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"
 
 		echo1 "installing libs"
-		for i in $(set | grep ^FREETZ_LIB_.*=y | grep -v '^FREETZ_LIB_libterminfo[=_]' | sort); do
+		for i in $(set | grep ^FREETZ_LIB_.*=y ); do
 			found=0
 			conf=${i%%=*}
 			bn=${conf#FREETZ_LIB_}
@@ -759,22 +759,23 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 		
-		if [ "$FREETZ_LIB_libterminfo" == "y" ]; then
+		if [ "$FREETZ_SHARE_terminfo" == "y" ]; then
 			echo1 "installing terminfos"
-			for i in \
-			$( \
-				cd "${ROOT_DIR}" && \
-				find usr/share/terminfo -type d -name .svn -prune -false , -type f \
-			)
-			do
-				bn="$(basename "$i")"
-				terminfo="${bn}"
-				if [ "$(eval "echo \"\$FREETZ_LIB_libterminfo_$(echo "$terminfo" | sed 's/-/minus/g;s/+/plus/g;s/\./dot/g')\"")" == "y" ]; then
-					echo2 "${bn}"
-					dn="$(dirname "$i")"
-					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp -a "${ROOT_DIR}/${dn}/${terminfo}" "${FILESYSTEM_MOD_DIR}/${dn}/"
+			for i in $(set | grep ^FREETZ_SHARE_terminfo_.*=y |grep -v '^FREETZ_LIB_libterminfo_showall=' ); do
+				dn=usr/share/terminfo
+				conf=${i%%=*}
+				bn=${conf#FREETZ_SHARE_terminfo_}
+				fn=$(echo "$bn" | sed 's/MINUS/-/g;s/PLUS/+/g;s/\DOT/./g')
+				echo2 "$fn"
+				fn="${fn:0:1}/$fn"
+				file="${ROOT_DIR}/$dn/$fn"
+				if [ ! -e "$file" ]; then
+					warn "Terminfo $bn selected, but no file found"
+					continue;
 				fi
+				dest="${FILESYSTEM_MOD_DIR}/$dn/$fn"
+				[ -d "$dest" ] || mkdir -p "$dest"
+				cp -a $file "$dest/"		
 			done
 		fi
 
