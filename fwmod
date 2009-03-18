@@ -761,7 +761,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		
 		if [ "$FREETZ_SHARE_terminfo" == "y" ]; then
 			echo1 "installing terminfos"
-			for i in $(set | grep ^FREETZ_SHARE_terminfo_.*=y |grep -v '^FREETZ_LIB_libterminfo_showall=' ); do
+			for i in $(set | grep ^FREETZ_SHARE_terminfo_.*=y |grep -v '^FREETZ_SHARE_terminfo_showall=' ); do
 				dn=usr/share/terminfo
 				conf=${i%%=*}
 				bn=${conf#FREETZ_SHARE_terminfo_}
