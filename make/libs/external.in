@@ -40,21 +40,45 @@ config EXTERNAL_FREETZ_LIB_libfreetype
 		externals these file(s):
 		 /usr/lib/libfreetype.so.6.3.16
 
-config EXTERNAL_FREETZ_LIB_libglib2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libglib2
+config EXTERNAL_FREETZ_LIB_libglib_1
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libglib_1
+	bool "libglib"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libglib-1.2.so.0.0.10
+
+config EXTERNAL_FREETZ_LIB_libglib_2
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libglib_2
 	bool "libglib2"
 	default n
 	help
 		externals these file(s):
 		 /usr/lib/libglib-2.0.so.0.1800.2
 
-config EXTERNAL_FREETZ_LIB_libgmodule2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgmodule2
+config EXTERNAL_FREETZ_LIB_libgmodule_2
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgmodule_2
 	bool "libgmodule2"
 	default n
 	help
 		externals these file(s):
 		 /usr/lib/libgmodule-2.0.so.0.1800.2
+
+config EXTERNAL_FREETZ_LIB_libgobject_2
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgobject_2
+	bool "libgobject2"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libgobject-2.0.so.0.1800.2
+
+config EXTERNAL_FREETZ_LIB_libgthread_2
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgthread_2
+	bool "libgthread2"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libgthread-2.0.so.0.1800.2
 
 config EXTERNAL_FREETZ_LIB_libiconv
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libiconv
