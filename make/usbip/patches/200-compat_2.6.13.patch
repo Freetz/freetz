@@ -1,10 +1,8 @@
-Index: drivers/2.6.21/stub_rx.c
-===================================================================
---- drivers/2.6.21/stub_rx.c	(Revision 49)
-+++ drivers/2.6.21/stub_rx.c	(Arbeitskopie)
-@@ -311,28 +346,28 @@
- 			return usb_rcvctrlpipe(udev, 0);
+--- drivers/2.6.21/stub_rx.c.orig	2008-04-20 15:19:42.000000000 +0200
++++ drivers/2.6.21/stub_rx.c	2009-03-08 06:39:07.000000000 +0100
+@@ -464,28 +464,28 @@
  	}
+ #endif
  
 -	if (usb_endpoint_xfer_control(epd)) {
 +	if ((epd->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_CONTROL) {
@@ -35,7 +33,7 @@ Index: drivers/2.6.21/stub_rx.c
  		if (dir == USBIP_DIR_OUT)
  			return usb_sndisocpipe(udev, epnum);
  		else
-@@ -373,21 +408,35 @@
+@@ -526,21 +526,35 @@
  	/* set priv->urb->transfer_buffer */
  	if (pdu->u.cmd_submit.transfer_buffer_length > 0) {
  		priv->urb->transfer_buffer =
@@ -71,10 +69,8 @@ Index: drivers/2.6.21/stub_rx.c
  	memcpy(priv->urb->setup_packet, &pdu->u.cmd_submit.setup, 8);
  
  	/* set other members from the base header of pdu */
-Index: drivers/2.6.21/stub_tx.c
-===================================================================
---- drivers/2.6.21/stub_tx.c	(Revision 49)
-+++ drivers/2.6.21/stub_tx.c	(Arbeitskopie)
+--- drivers/2.6.21/stub_tx.c.orig	2008-04-20 15:19:42.000000000 +0200
++++ drivers/2.6.21/stub_tx.c	2009-03-08 06:39:07.000000000 +0100
 @@ -45,13 +45,21 @@
  {
  	struct stub_unlink *unlink;
@@ -97,10 +93,8 @@ Index: drivers/2.6.21/stub_tx.c
  	unlink->seqnum = seqnum;
  	unlink->status = status;
  
-Index: drivers/2.6.21/usbip_common.c
-===================================================================
---- drivers/2.6.21/usbip_common.c	(Revision 49)
-+++ drivers/2.6.21/usbip_common.c	(Arbeitskopie)
+--- drivers/2.6.21/usbip_common.c.orig	2008-04-20 15:19:42.000000000 +0200
++++ drivers/2.6.21/usbip_common.c	2009-03-08 06:39:07.000000000 +0100
 @@ -847,10 +847,18 @@
  	ssize_t size = np * sizeof(*iso);
  	int i;
@@ -120,9 +114,9 @@ Index: drivers/2.6.21/usbip_common.c
  	for (i = 0; i < np; i++) {
  		iso = buff + (i * sizeof(*iso));
  
-@@ -877,10 +885,18 @@
- 	if (!usb_pipeisoc(urb->pipe))
+@@ -884,10 +892,18 @@
  		return 0;
+ 	}
  
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)
 +	buff = kmalloc(size, GFP_KERNEL);
@@ -139,11 +133,9 @@ Index: drivers/2.6.21/usbip_common.c
  	ret = usbip_xmit(0, ud->tcp_socket, buff, size, 0);
  	if (ret != size) {
  		uerr("recv iso_frame_descriptor, %d\n", ret);
-Index: drivers/2.6.21/stub_dev.c
-===================================================================
---- drivers/2.6.21/stub_dev.c	(Revision 49)
-+++ drivers/2.6.21/stub_dev.c	(Arbeitskopie)
-@@ -327,12 +327,20 @@
+--- drivers/2.6.21/stub_dev.c.orig	2008-04-20 15:19:42.000000000 +0200
++++ drivers/2.6.21/stub_dev.c	2009-03-08 06:39:07.000000000 +0100
+@@ -322,12 +322,20 @@
  
  	udbg("allocating stub device");
  	/* yes, it's a new device */
@@ -162,5 +154,5 @@ Index: drivers/2.6.21/stub_dev.c
 +#endif
 +
  	sdev->interface = interface;
- 	sdev->devid     = (busnum << 16) | devnum;
  
+ 	/*
