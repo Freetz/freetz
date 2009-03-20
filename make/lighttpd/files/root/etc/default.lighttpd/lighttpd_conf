@@ -4,19 +4,22 @@
 virthost_conf() {
 #$1 virtual host (the string can have multiple entries separated by IFS - we loop) - if empty, we skip virthost config
 #$2 configuration string to be enclosed in virtual host conditional (\n will be interpreted
+#$3 optional: the character for the equality check (you can only provide a "=" or "!" here; default is "=")
 if [ -n "$1" -a -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
-old_IFS=$IFS
-IFS=" 	"
+	eq=$3
+	if [ -z "$eq" ]; then eq="="; fi
+	old_IFS=$IFS
+	IFS=" 	"
 	for i in $1; do
 		regexp="~"
 		if [ -z "$(echo $i | sed 's/[A-Za-z0-9\.]//g')" ]; then regexp="="; fi
-echo "\$HTTP[\"host\"] =$regexp \"$i\" {"
-echo -e "$2"
-echo "}"
+		echo "\$HTTP[\"host\"] $eq$regexp \"$i\" {"
+		echo -e "$2"
+		echo "}"
 	done
-IFS=$old_IFS
+	IFS=$old_IFS
 else
-echo -e "$2"
+	echo -e "$2"
 fi
 }
 
@@ -102,19 +105,45 @@ out="dir-listing.activate = \"$LIGHTTPD_DIRLISTING\"\ndir-listing.encoding = \"$
 virthost_conf "$LIGHTTPD_DIRLISTINGVIRT" "$out"
 fi
 
-if /usr/bin/lighttpd -V | grep -q "+ SSL Support"; then
+enable_ssl() {
 cat << EOF
 ssl.engine = "$LIGHTTPD_SSLENABLE"
 ssl.pemfile = "/tmp/flash/lighttpd_crt.pem"
 ssl.use-sslv2 = "disable"
 EOF
-	if [ -r "/tmp/flash/lighttpd_ca.pem" ]; then
-		if grep -q "BEGIN CERTIFICATE" /tmp/flash/lighttpd_ca.pem; then
+if [ -r "/tmp/flash/lighttpd_ca.pem" ]; then
+	if grep -q "BEGIN CERTIFICATE" /tmp/flash/lighttpd_ca.pem; then
 cat << EOF
 ssl.ca-file = "/tmp/flash/lighttpd_ca.pem"
 EOF
-		fi
 	fi
+fi
+}
+
+if /usr/bin/lighttpd -V | grep -q "+ SSL Support"; then
+if [ "$LIGHTTPD_SSLENABLE" = "yes" ]; then
+	virtsrv=$(echo $LIGHTTPD_SSLVIRT | sed 's/ /|/g')
+	if [ "$LIGHTTPD_SSLADDITIONAL" = "yes" ]; then
+		echo "\$SERVER[\"socket\"] == \":$LIGHTTPD_SSLPORT\" {"
+		enable_ssl
+		[ -n "$virtsrv" ] && virthost_conf "$virtsrv" "url.access-deny = ( \"\" )" "!"
+		echo "}"
+		out=""
+		[ -n "$virtsrv" ] && out="url.access-deny = ( \"\" )"
+		if [ -f /usr/lib/mod_redirect.so -a "$LIGHTTPD_SSLREDIRECT" = "yes" ]; then
+			echo "server.modules += ( \"mod_redirect\" )"
+			virtsrv="($virtsrv)"
+			out="url.redirect = ( \"^/(.*)\" => \"https://%1/\$1\" )"
+		fi
+		if [ -n "$out" ]; then
+			echo "\$SERVER[\"socket\"] == \":$LIGHTTPD_PORT\" {"
+			virthost_conf "$virtsrv" "$out"
+			echo "}"
+		fi
+	else
+		enable_ssl
+	fi
+fi
 fi
 
 if [ "$LIGHTTPD_LOGGING" = "yes" ]; then

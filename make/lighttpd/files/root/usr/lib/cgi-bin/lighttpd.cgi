@@ -15,12 +15,14 @@ EOF
 fi
 }
 
-auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''; modfastcgiphp_chk=''; modfastcgiruby_chk=''; accesslog_syslog=''; accesslog_file=''; errorlog_syslog=''; errorlog_file=''; virthost_0=''; virthost_1=''; virthost_2=''; virthost_3=''; virhost_4=''; virthost_chk=''
+auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''; modfastcgiphp_chk=''; modfastcgiruby_chk=''; accesslog_syslog=''; accesslog_file=''; errorlog_syslog=''; errorlog_file=''; virthost_0=''; virthost_1=''; virthost_2=''; virthost_3=''; virhost_4=''; virthost_chk=''; ssladdly_chk=''; ssladdln_chk=''; sslredirect_chk=''
 
 case "$LIGHTTPD_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
 case "$LIGHTTPD_CHROOT" in yes) chrooten_chk=' checked';; *) chrootdi_chk=' checked';;esac
 case "$LIGHTTPD_DIRLISTING" in enable) dirlista_chk=' checked';; *) dirlistd_chk=' checked';;esac
 case "$LIGHTTPD_SSLENABLE" in enable) sslenaba_chk=' checked';; *) sslenabd_chk=' checked';;esac
+case "$LIGHTTPD_SSLADDITIONAL" in "yes") ssladdly_chk=' checked';; "no") ssladdln_chk=' checked';;esac
+if [ "$LIGHTTPD_SSLREDIRECT" = "yes" ]; then sslredirect_chk=' checked'; fi
 if [ "$LIGHTTPD_LOGGING" = "yes" ]; then log_chk=' checked'; fi
 if [ "$LIGHTTPD_MODCGI" = "yes" ]; then modcgi_chk=' checked'; fi
 if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" ]; then modfastcgiphp_chk=' checked'; fi
@@ -103,11 +105,30 @@ if /usr/bin/lighttpd -V | grep -q "+ SSL Support"; then
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Damit lighttpd mit SSL-Unterst&uuml;tzung gestartet werden kann, m&uuml;ssen Zertifikat &amp; Schl&uuml;ssel <a href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">hier</a> eingetragen sein." en:"To start lighttpd with SSL-Support you have to setup Certifikat&amp;Key <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">here</a>.")</p>
 <p style="font-size:10px;">$(lang de:"Falls das Zertifikat mit einer CA signiert wurde, trage bitte das CA Zertifikat <a href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">hier</a> ein." en:"In case the certificate was signed with a CA, please provide the CA certificate <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">here</a>.")</p>
-<p style="font-size:10px;">$(lang de:"Bitte beachte, dass der Port entsprechend konfiguriert werden sollte (HTTPS: 443)" en:"Please consider also to configure the appropriate port (HTTPS: 443)")</p>
-<input id="d1" type="radio" name="sslenable" value="enable"$sslenaba_chk><label for="d1"> $(lang de:"Aktiviert" en:"Activated")</label>
-<input id="d2" type="radio" name="sslenable" value="disable"$sslenabd_chk><label for="e2"> $(lang de:"Deaktiviert" en:"Deactivate")</label>
+<p><input id="d1" type="radio" name="sslenable" value="enable"$sslenaba_chk><label for="d1"> $(lang de:"Aktiviert" en:"Activated")</label>
+<input id="d2" type="radio" name="sslenable" value="disable"$sslenabd_chk><label for="d2"> $(lang de:"Deaktiviert" en:"Deactivate")</label>
+</p>
+<hr>
+<p style="font-size:10px;">$(lang de:"Die SSL Unterst&uuml;tzung kann global als einzigstes konfiguriert werden (der oben konfigurierte Port wird verwendet) oder zus&auml;tzlich zur unverschl&uuml;sselten Verbindung konfiguriert werden. Falls die SSL Unterst&uuml;tzung zus&auml;tzlich gew&uuml;nscht ist, sind folgende Optionen zu setzen." en:"The SSL support can be configured globally as the exclusive access method (the above configured port will be used) or in addition to the unencrypted communication. In case the SSL support is intended to be in addition to the unencrypted communication, all of the following options must be set.")</p>
+<p><input id="d3" type="radio" name="ssladditional" value="yes"$ssladdly_chk><label for="d3"> $(lang de:"SSL zus&auml;tzlich" en:"Additional SSL support")</label>
+<input id="d4" type="radio" name="ssladditional" value="no"$ssladdln_chk><label for="d4"> $(lang de:"SSL exklusiv" en:"Exclusive SSL support")</label>
+</p>
+<p> $(lang de:"SSL Port" en:"SSL port"): <input type="text" name="sslport" size="5" maxlength="5" value="$(html "$LIGHTTPD_SSLPORT")"></p>
+EOF
+if [ -f /usr/lib/mod_redirect.so ]; then
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Mit der folgenden Option wird eine Umleitung (HTTP redirect) vom unverschl&uuml;sselten Port zum SSL Port aktiviert. Diese Umleitung wird nur aktiv, wenn SSL zus&auml;tzlich zur unverschl&uuml;sselten Verbindung konfiguriert wurde. Bei der Benutzung von virtuellen Hosts werden nur die Hostnamen umgeleitet, f&uuml;r die eine SSL Unterst&uuml;tzung aktiv ist." en:"Using the following option, a HTTP redirect is activated redirecting traffic from the unencrypted port to the SSL port. This redirect is only active if SSL is configured as an additional service. When using virtual hosts, only the host names are redirected which are also configured for the SSL support.")</p>
+<p>
+<input type="hidden" name="logging" value="no">
+<input id="s1" type="checkbox" name="sslredirect" value="yes"$sslredirect_chk><label for="a1"> $(lang de:"Umleitung aktivieren" en:"Activate redirect")</label>
 </p>
 EOF
+else
+cat << EOF
+<p style="font-size:10px;">$(lang de:"HTTP redirect kann nicht konfiguriert werden - mod_redirect.so nicht vorhanden." en:"HTTP redirect cannot be configured - mod_redirect.so unavailable.")</p>
+EOF
+fi
+virthost_conf "sslvirt" "$LIGHTTPD_SSLVIRT" '$(lang de:"Aktivierung der SSL-Unterst&uuml;tzung" en:"activation of SSL support")'
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"SSL Unterst&uuml;tzung in lighttpd nicht einkompiliert." en:"SSL support for lighttpd not compiled in.")</p>
@@ -140,7 +161,7 @@ cat << EOF
 <input id="b1" type="checkbox" name="modcgi" value="yes"$modcgi_chk><label for="b1"> $(lang de:"mod_cgi aktivieren (Dateien *.cgi und in /cgi-bin ausf&uuml;hrbar)" en:"Activate mod_cgi (files *.cgi and in /cgi-bin executable")</label></p>
 EOF
 virthost_conf "modcgivirt" "$LIGHTTPD_MODCGIVIRT" '$(lang de:"Aktivierung von mod_cgi" en:"activation of mod_cgi")'
-echo "<br />"
+echo "<hr>"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"CGI Unterst&uuml;tzung kann nicht konfiguriert werden - mod_cgi.so nicht vorhanden." en:"CGI support cannot be configured - mod_cgi.so unavailable.")</p>
@@ -168,7 +189,7 @@ cat << EOF
 <p> $(lang de:"Maximale Anzahl der PHP Prozesse" en:"Maximum number of PHP processes"): <input type="text" name="modfastcgiphpmaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIPHPMAXPROC")"></p>
 EOF
 virthost_conf "modfastcgiphpvirt" "$LIGHTTPD_MODFASTCGIPHPVIRT" '$(lang de:"Aktivierung der PHP-FastCGI Unterst&uuml;tzung" en:"activation of PHP FastCGI support")'
-echo "<br />"
+echo "<hr>"
 cat << EOF
 <p><input type="hidden" name="modfastcgiruby" value="no">
 <input id="b8" type="checkbox" name="modfastcgiruby" value="yes"$modfastcgiruby_chk><label for="b8"> $(lang de:"mod_fastcgi f&uuml;r RUBY aktivieren (Dateien *.rb ausf&uuml;hrbar)" en:"Activate mod_fastcgi for RUBY (files *.rb executable)")</label></p>
@@ -190,7 +211,6 @@ cat << EOF
 <p> $(lang de:"Maximale Anzahl der RUBY Prozesse" en:"Maximum number of RUBY processes"): <input type="text" name="modfastcgirubymaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIRUBYMAXPROC")"></p>
 EOF
 virthost_conf "modfastcgirubyvirt" "$LIGHTTPD_MODFASTCGIRUBYVIRT" '$(lang de:"Aktivierung der RUBY-FastCGI Unterst&uuml;tzung" en:"activation of RUBY FastCGI support")'
-echo "<br />"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"FastCGI Unterst&uuml;tzung kann nicht konfiguriert werden - mod_fastcgi.so nicht vorhanden." en:"FastCGI support cannot be configured - mod_fastcgi.so unavailable.")</p>
@@ -206,7 +226,7 @@ cat << EOF
 <p> $(lang de:"Verzeichnis der Cache Daten" en:"Directory of Cache"): <input type="text" name="modcompressdir" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODCOMPRESSDIR")"></p>
 EOF
 virthost_conf "modcompressvirt" "$LIGHTTPD_MODCOMPRESSVIRT" '$(lang de:"Aktivierung von mod_compress" en:"activation of mod_compress support")'
-echo "<br />"
+echo "<hr>"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Dateicaching kann nicht konfiguriert werden - mod_compress.so nicht vorhanden." en:"Caching of files cannot be configured - mod_compress.so unavailable.")</p>
@@ -225,7 +245,7 @@ cat << EOF
 <p> $(lang de:"URL f&uuml;r Status" en:"URL for status"): <input type="text" name="modstatusstatus" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODSTATUSSTATUS")"></p>
 EOF
 virthost_conf "modstatusvirt" "$LIGHTTPD_MODSTATUSVIRT" '$(lang de:"Aktivierung von mod_status" en:"activation of mod_status support")'
-echo "<br />"
+echo "<hr>"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Statusinformationen k&ouml;nnen nicht angezeigt werden - mod_status.so nicht vorhanden." en:"Status information cannot be displayed - mod_status.so unavailable.")</p>
@@ -239,13 +259,12 @@ cat << EOF
 EOF
 virthost_conf "errorvirt" "$LIGHTTPD_ERRORVIRT" '$(lang de:"Aktivierung der Fehlerseiten" en:"activation of error pages")'
 cat << EOF
-<br />
+<hr>
 <p style="font-size:10px;">$(lang de:"Die folgenden Boxen erlauben, die maximale Datentransferrate in kBytes/s festzulegen. Der Wert 0 bedeutet kein Limit. Bitte beachte, dass ein Wert von unter 32 kb/s effektiv den Verkehr auf 32 kb/s aufgrund der Gr&ouml;sse der TCP Sendepuffer drosselt." en:"The following boxes allw the specification of the maximum data transfer rate in kBytes/s. The value of 0 means no limit. Please note  that a limit below 32kb/s might actually limit the traffic to 32kb/s. This is caused by the size of the TCP send buffer.")</p>
 <p> $(lang de:"Maximale Datenrate pro Verbindung" en:"Maximum throughput per connection"): <input type="text" name="limitconn" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITCONN")"> kBytes/s</p>
 <p> $(lang de:"Maximale Datenrate aller Verbindungen" en:"Maximum throughput for all connections"): <input type="text" name="limitsrv" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITSRV")"> kBytes/s</p>
 EOF
 virthost_conf "limitvirt" "$LIGHTTPD_LIMITVIRT" '$(lang de:"Drosselung der Datentransferrate" en:"limitation of data transfer rate")'
-echo "<br/>"
 sec_end
 
 sec_begin '$(lang de:"Zus&auml;tzliche Konfigurationsoptionen (f&uuml;r Experten)" en:"Additional config options (for experts)")'
