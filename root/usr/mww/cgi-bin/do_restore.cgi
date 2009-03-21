@@ -6,7 +6,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
 ?>
 <h1>$(lang de:"Wiederherstellung (Restore)" en:"Restore configuration")</h1>
 
-<? if test -n "$FORM_uploadfile"; then ?>
+<? if test -n "$FORM_uploadfile_name"; then ?>
   $(lang de:"Sie haben gerade die Datei" en:"You just uploaded the file") <b><? echo -n $FORM_uploadfile_name ?></b>$(lang de:" hochgeladen." en:".")<br>
   $(lang de:"Sie ist unter dem temporären Namen" en:"It is stored on the Fritz!Box under the temporary name") <i><? echo $FORM_uploadfile ?></i>$(lang de:" auf der Fritz!Box gespeichert." en:".")<br>
   $(lang de:"Die Dateigröße beträgt" en:"The file size is") <? cat $FORM_uploadfile | wc -c ?> $(lang de:"Bytes." en:"bytes.")
@@ -26,24 +26,29 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
     	echo "$(lang de:"Alte Sicherungsdatei gefunden" en:"Found old backup file")"
 	mv $BACKUP_DIR/$DS_BCK_FILE $BACKUP_DIR/$FREETZ_BCK_FILE
     fi
-    if [ "$FORM_freetz_only" = "on" ]; then
-	echo "cat $BACKUP_DIR/$FREETZ_BCK_FILE > /var/flash/freetz"
-	cat $BACKUP_DIR/$FREETZ_BCK_FILE > /var/flash/freetz
+    if [ ! -e "$BACKUP_DIR/$FREETZ_BCK_FILE" ]; then
+       FORM_restart=off
+       echo "$(lang de:"FEHLER: Keine passende Sicherungsdatei" en:"ERROR: Not a valid backup file")"
     else
-      for file in $(ls $BACKUP_DIR); do
-        echo "cat $BACKUP_DIR/$file > /var/flash/$file"
-        cat $BACKUP_DIR/$file > /var/flash/$file
-      done
+       if [ "$FORM_freetz_only" = "on" ]; then
+          echo "cat $BACKUP_DIR/$FREETZ_BCK_FILE > /var/flash/freetz"
+          cat $BACKUP_DIR/$FREETZ_BCK_FILE > /var/flash/freetz
+       else
+          for file in $(ls $BACKUP_DIR); do
+            echo "cat $BACKUP_DIR/$file > /var/flash/$file"
+            cat $BACKUP_DIR/$file > /var/flash/$file
+          done
+       fi
+      echo "$(lang de:"ERLEDIGT" en:"DONE")"
     fi
-    echo "$(lang de:"ERLEDIGT" en:"DONE")"
     echo "$(lang de:"Sicherungsdateien löschen" en:"Removing backup")..."
     rm -rf $BACKUP_DIR
-      rm -f $FORM_uploadfile
+    rm -f $FORM_uploadfile
     echo "$(lang de:"ERLEDIGT" en:"DONE")"
     if [ "$FORM_restart" = "on" ]; then
       echo "$(lang de:"Neustart in 5 Sekunden" en:"Restarting in 5 seconds")..."
       (sleep 5; reboot)&
-     fi
+    fi
   } | html
   ?></pre>
 <? else ?>
