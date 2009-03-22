@@ -121,7 +121,7 @@ fi
 }
 
 if /usr/bin/lighttpd -V | grep -q "+ SSL Support"; then
-if [ "$LIGHTTPD_SSLENABLE" = "yes" ]; then
+if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 	virtsrv=$(echo $LIGHTTPD_SSLVIRT | sed 's/ /|/g')
 	if [ "$LIGHTTPD_SSLADDITIONAL" = "yes" ]; then
 		echo "\$SERVER[\"socket\"] == \":$LIGHTTPD_SSLPORT\" {"
@@ -261,7 +261,7 @@ fi
 if [ -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_evhost" )
-evhost.path-pattern = "$LIGHTTPD_DOCROOT/%$LIGHTTPD_VIRTHOSTTYPE/"
+evhost.path-pattern = "$LIGHTTPD_DOCROOT/$LIGHTTPD_VIRTHOSTTYPE/"
 server.document-root = "$LIGHTTPD_DOCROOT/default/"
 EOF
 else

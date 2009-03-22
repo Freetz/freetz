@@ -10,13 +10,13 @@ pre_config() {
 }
 
 cleanup_always() {
-	rm -f /mod/etc/$DAEMON/$DAEMON.conf
 	modunreg status lighttpd lighttpd-log
 }
 
 cleanup() {
 	cleanup_always
 	rm -rf /var/log/lighttpd/
+	rm -f /mod/etc/$DAEMON/$DAEMON.conf
 }
 
 status_log() {
@@ -62,6 +62,20 @@ stop () {
         fi
 }
 
+checkdir() {
+	i=10
+	while [ ! -d "$1" ]; do
+		echo -n "Directory $1 not available at round $i"
+		let i=$i-1
+		if [ $i -eq 0 ]; then
+			echo " - not starting lighttpd"
+			exit 1
+		fi
+		echo " - sleeping"
+		sleep 5
+	done
+}
+
 start() {
 	echo -n 'Starting lighttpd ...'
 	configure
@@ -70,15 +84,9 @@ start() {
 	mkdir -p /var/run/$DAEMON
 	chown wwwrun:wwwrun /var/run/$DAEMON
 
-	while [ ! -d "$LIGHTTPD_DOCROOT" ]; do
-		echo "Docroot $LIGHTTPD_DOCROOT not yet available, sleeping"
-		sleep 5
-	done
+	checkdir "$LIGHTTPD_DOCROOT"
 	if [ "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
-		while [ ! -d "$LIGHTTPD_MODCOMPRESSDIR" ]; do
-			echo "Compress dir $LIGHTTPD_MODCOMPRESSDIR not yet available, sleeping"
-			sleep 5
-		done
+		checkdir "$LIGHTTPD_MODCOMPRESSDIR"
 	fi
 
 	$DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf >/dev/null 2>&1
