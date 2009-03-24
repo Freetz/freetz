@@ -744,7 +744,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			bn=${conf#FREETZ_LIB_}
 			fn=${bn//_/[-+._]}
 			echo2 "$bn"
-			for dn in lib usr/lib; do
+			for dn in lib usr/lib usr/lib/xtables; do
 				files=$(shopt -s nullglob; echo ${ROOT_DIR}/$dn/$fn[-.]*so*)
 				if [ -z "$files" ]; then
 					continue;
