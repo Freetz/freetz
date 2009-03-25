@@ -15,3 +15,5 @@ for files in \
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
+echo1 "patching rc.conf"
+sed -i -e "s/CONFIG_MINI=.*$/CONFIG_MINI=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"

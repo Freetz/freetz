@@ -1389,6 +1389,21 @@ config FREETZ_REMOVE_DECT_UPDATE
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
+config FREETZ_REMOVE_DTRACE
+	bool"Remove dtrace"
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270
+	default n
+	help
+		Remove /usr/bin/dtrace. This utility is only needed to 
+		trace ISDN D-channel.
+		This will save about 87kB uncompressed size.
+
+		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
 config FREETZ_REMOVE_VOIP_ISDN
 	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL"
 	depends on \
@@ -1410,6 +1425,18 @@ config FREETZ_REMOVE_VOIP_ISDN
 		encounter several empty web pages or submenus.
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
+config FREETZ_REMOVE_WLAN
+	bool "Remove WLAN files (for non-wlan boxes) - EXPERIMENTAL"
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		FREETZ_HAS_WLAN
+	default n
+	help
+		Radically remove a lot of wlan-related files. This patch saves about
+		700 kb of uncomrpessed data size in the firmware image.
+
+		EXPERMINTAL FEATURE, USE AT OWN RISK!
 
 config FREETZ_REMOVE_ANNEX_A_FIRMWARE
 	bool "Remove Annex A firmware file"

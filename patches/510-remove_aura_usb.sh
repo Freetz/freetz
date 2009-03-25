@@ -8,3 +8,6 @@ for files in \
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
+echo1 "patching rc.conf"
+sed -i -e "s/CONFIG_AURA=.*$/CONFIG_AURA=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
