@@ -1,9 +1,9 @@
 #!/bin/sh
 
 cd /
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 export TERM=xterm
+
+. /etc/init.d/modlibrc
 
 start() {
 	echo "rc.mod version $(cat /etc/.freetz-version)"
@@ -20,10 +20,23 @@ start() {
 	/etc/init.d/rc.telnetd
 	/etc/init.d/rc.webcfg
 
+	# Static Packages
 	if [ -e /etc/static.pkg ]; then
 		for pkg in $(cat /etc/static.pkg); do
 			[ -x "/etc/init.d/rc.$pkg" ] && "/etc/init.d/rc.$pkg"
 		done
+	fi
+
+	# AVM-Plugins
+	plugins="`ls /var/plugin-*/control 2>/dev/null`"
+	if [ -n "$plugins" ]; then
+		echo -n "Starting AVM-Plugins"
+		for plugin in "$plugins"; do
+			echo -n "...`echo $plugin|sed 's/.*plugin-//;s/\/.*//'`"
+			$plugin start 2>&1 >/dev/null
+			[ $? -ne 0 ] && echo -n "(failed)"
+		done
+		echo "...done."
 	fi
 
 	[ -r /tmp/flash/rc.custom ] && . /tmp/flash/rc.custom

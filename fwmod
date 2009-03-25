@@ -175,12 +175,14 @@ TOOLS_SUBDIR="tools"
 SOURCE_SUBDIR="source"
 FIRMWARE_SUBDIR="firmware"
 FILESYSTEM_SUBDIR="filesystem"
+AVMPLUGINS_SUBDIR="plugins.image"
 EXTERNAL_SUBDIR="external"
 KERNEL_SUBDIR="kernel"
 VARTAR_SUBDIR="var.tar"
 
 KERNEL_IMAGE="var/tmp/kernel.image"
 
+AVMPLUGINS_FILE="var/tmp/plugins.update"
 RAW_KERNEL_FILE="kernel.raw"
 RAW_HIDDEN_FILE="kernelsquashfs.raw"
 VARTAR_FILE="var.tar"
@@ -383,12 +385,14 @@ ORG_DIR="${DIR}/original"
 FIRMWARE_DIR="${ORG_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_DIR="${ORG_DIR}/${FILESYSTEM_SUBDIR}"
 KERNEL_DIR="${ORG_DIR}/${KERNEL_SUBDIR}"
+AVMPLUGINS_DIR="${KERNEL_DIR}/${AVMPLUGINS_SUBDIR}"
 VARTAR_DIR="${KERNEL_DIR}/${VARTAR_SUBDIR}"
 
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
 
 RAW_KERNEL="${KERNEL_DIR}/${RAW_KERNEL_FILE}"
 FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
+AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
 if [ "$DO_UNPACK" -gt 0 ]; then
@@ -432,6 +436,20 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	chmod -R +w "$FILESYSTEM_DIR"
 
+	if [ -r "$AVMPLUGINS" ]; then
+		echo "unpacking AVM plugins"
+		mkdir -p "$AVMPLUGINS_DIR"
+		"$TAR" -xif "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
+
+		for i in "${AVMPLUGINS_DIR}/var/"*.image; do
+			AVMPLUGIN="${i##*/plugin-}"
+			AVMPLUGIN="${AVMPLUGIN%\.image}"
+			echo1 "$AVMPLUGIN image"
+			modunsqfs "$AVMPLUGINS_DIR/plugin-${AVMPLUGIN}" "$i" > /dev/null
+		done
+		chmod -R +w "$AVMPLUGINS_DIR"
+	fi
+
 	if [ ! -r "$FILESYSTEM_DIR/var" ]; then
 		error 1 "could not unpack the filesystem image"
 	fi
@@ -467,6 +485,8 @@ FIRMWARE_MOD_DIR="${MOD_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_MOD_DIR="${MOD_DIR}/${FILESYSTEM_SUBDIR}"
 EXTERNAL_MOD_DIR="${MOD_DIR}/${EXTERNAL_SUBDIR}"
 KERNEL_MOD_DIR="${MOD_DIR}/${KERNEL_SUBDIR}"
+AVMPLUGINS_MOD_DIR="${KERNEL_MOD_DIR}/${AVMPLUGINS_SUBDIR}"
+AVMPLUGINS_FILESYSTEM_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/share/avmplugins"
 VARTAR_MOD_DIR="${KERNEL_MOD_DIR}/${VARTAR_SUBDIR}"
 
 KERNEL_MOD="${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}"
@@ -652,6 +672,22 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "please choose at least one OEM (branding) in menuconfig: AVM, 1&1, Freenet etc."
 	fi
 
+	# Copy selected avmplugins into the firmware
+	if [ "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
+		echo "installing AVM plugins"
+		echo "#" > ${FILESYSTEM_MOD_DIR}/sbin/start_plugin.sh
+		rm -rf ${FIRMWARE_MOD_DIR}/${AVMPLUGINS_FILE}
+		mkdir "${AVMPLUGINS_FILESYSTEM_MOD_DIR}"
+		for i in `find "${AVMPLUGINS_MOD_DIR}" -maxdepth 1 -type d -name var -prune -false , -type d -name "plugin-*"`; do
+			AVMPLUGIN="${i##*plugin-}"
+			if [ "$(eval "echo \"\$FREETZ_AVMPLUGINS_$(echo "$AVMPLUGIN" | tr [:lower:] [:upper:])\"")" == "y" ]; then
+				echo1 "$AVMPLUGIN plugin"
+				cp -a "${AVMPLUGINS_MOD_DIR}/plugin-${AVMPLUGIN}" "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}"
+				ln -s "/usr/share/avmplugins/plugin-${AVMPLUGIN}" "${VARTAR_MOD_DIR}/var/plugin-${AVMPLUGIN}"
+			fi
+		done
+	fi
+
 	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
 		echo "installing mod base"
 
@@ -701,42 +737,44 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"
 
 		echo1 "installing libs"
-			for i in \
-			$( \
-				 cd "${ROOT_DIR}" && \
-				 find lib usr/lib -type d -name .svn -prune -false , -type f -name "*.so*" \
-			)
-			do
-				bn="$(basename "$i")"
-				lib="${bn%\.so*}"
-				lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)-2/libg\12-2/;s/-[0-9][\.0-9a-z]*$//')"
-				if [ "$(eval "echo \"\$FREETZ_LIB_$(echo "$lib" | tr '\-+' '_x')\"")" == "y" ]; then
-					echo2 "${bn}"
-					dn="$(dirname "$i")"
-					lib="$(echo "$lib" | sed -r 's/^libg(lib|object|module|thread)2/libg\1-2/')"
-					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp -a "${ROOT_DIR}/${dn}/${lib}"[-\|\.]*so* "${FILESYSTEM_MOD_DIR}/${dn}/"
-					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
+		for i in $(set | grep ^FREETZ_LIB_.*=y ); do
+			found=0
+			conf=${i%%=*}
+			bn=${conf#FREETZ_LIB_}
+			fn=${bn//_/[-+._]}
+			echo2 "$bn"
+			for dn in lib usr/lib usr/lib/xtables; do
+				files=$(shopt -s nullglob; echo ${ROOT_DIR}/$dn/$fn[-.]*so*)
+				if [ -z "$files" ]; then
+					continue;
 				fi
+				found=1
+				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
+				cp -a $files "${FILESYSTEM_MOD_DIR}/${dn}/"
 			done
+			if [ "$found" = 0 ]; then
+				warn "Library $bn selected, but no files found"
+			fi
+		done
 		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 		
-		if [ "$FREETZ_LIB_libterminfo" == "y" ]; then
+		if [ "$FREETZ_SHARE_terminfo" == "y" ]; then
 			echo1 "installing terminfos"
-			for i in \
-			$( \
-				cd "${ROOT_DIR}" && \
-				find usr/share/terminfo -type d -name .svn -prune -false , -type f \
-			)
-			do
-				bn="$(basename "$i")"
-				terminfo="${bn}"
-				if [ "$(eval "echo \"\$FREETZ_LIB_libterminfo_$(echo "$terminfo" | sed 's/-/minus/g;s/+/plus/g;s/\./dot/g')\"")" == "y" ]; then
-					echo2 "${bn}"
-					dn="$(dirname "$i")"
-					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp -a "${ROOT_DIR}/${dn}/${terminfo}" "${FILESYSTEM_MOD_DIR}/${dn}/"
+			for i in $(set | grep ^FREETZ_SHARE_terminfo_.*=y |grep -v '^FREETZ_SHARE_terminfo_showall=' ); do
+				dn=usr/share/terminfo
+				conf=${i%%=*}
+				bn=${conf#FREETZ_SHARE_terminfo_}
+				fn=$(echo "$bn" | sed 's/MINUS/-/g;s/PLUS/+/g;s/\DOT/./g')
+				echo2 "$fn"
+				fn="${fn:0:1}/$fn"
+				file="${ROOT_DIR}/$dn/$fn"
+				if [ ! -e "$file" ]; then
+					warn "Terminfo $bn selected, but no file found"
+					continue;
 				fi
+				dest="${FILESYSTEM_MOD_DIR}/$dn/${fn:0:1}"
+				[ -d "$dest" ] || mkdir -p "$dest"
+				cp -a $file "$dest/"		
 			done
 		fi
 
@@ -990,13 +1028,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# external should run after modifying and stripping and so on
 	# only run, if packaging is enabled
 
-  if [ "$DO_PACK" -gt 0 ]; then
-    if [ "$EXTERNAL_ENABLED" == "y" ]; then
-      echo "processing external"
-      [ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
-      . "${EXTERNAL}"
-    fi
-  fi
+	if [ "$DO_PACK" -gt 0 ]; then
+		if [ "$EXTERNAL_ENABLED" == "y" ]; then
+			echo "processing external"
+			[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
+			. "${EXTERNAL}"
+		fi
+	fi
 
 	touch "${DIR}/.modified"
 	echo "done."

@@ -1,5 +1,5 @@
---- etc/hotplug/run_mount.orig	2007-11-22 21:45:15.000000000 +0100
-+++ etc/hotplug/run_mount	2007-11-27 23:20:06.000000000 +0100
+--- etc/hotplug/run_mount.orig	2007-06-04 16:20:05.000000000 +0200
++++ etc/hotplug/run_mount	2009-03-20 23:24:51.000000000 +0100
 @@ -27,31 +27,9 @@
  # Generate a frontend'able 'nice name' to be used as mount point:
  #
@@ -33,27 +33,13 @@
  	echo $NICE
  }
  
-@@ -74,25 +52,36 @@
+@@ -74,6 +52,40 @@
  	done
  }
  
--# Actually perform the mount operation...
--# (TODO Checking the partition for known filesystem types)
 +# Check filesystem type and mount it
- #
--do_mount () {
--	local OK=1
--	local READMODE=`readflag`
--	local DEVNODE=$2
--	local PARTNUM=$3
--	local BLKDEV=${DEVNODE##/dev/}
--	local TEMP=${BLKDEV##sd}
--	local HOSTNUM=`echo ${TEMP%%[0-9]*}|tr 'abcd' '0123'`
--	local MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
--	local MNTPATH=$FTPDIR/$MNTNAME
- 	
--	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
--	test -d $MNTPATH || mkdir -p $MNTPATH
++#
++	
 +mount_fs () {
 + # mount according to type of filesystem 
 + # return exit code: true - all went well; other - something went wrong 
@@ -75,46 +61,46 @@
 +	ntfs)
 +		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
 +		;;
++	reiserfs)
++		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
 +	*) # fs type unknown
 +		mount $DEVNODE $MNTPATH
 +		;;
 +	esac
-+}
++}	
++
++
+ # Actually perform the mount operation...
+ # (TODO Checking the partition for known filesystem types)
+ #
+@@ -83,16 +95,19 @@
+ 	local DEVNODE=$2
+ 	local PARTNUM=$3
+ 	local BLKDEV=${DEVNODE##/dev/}
++	local BLKDEVMAIN=${BLKDEV:0:3}
+ 	local TEMP=${BLKDEV##sd}
+ 	local HOSTNUM=`echo ${TEMP%%[0-9]*}|tr 'abcd' '0123'`
+-	local MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
++	MNTNAME=`nicename $BLKDEVMAIN $HOSTNUM $PARTNUM`
+ 	local MNTPATH=$FTPDIR/$MNTNAME
  	
--	passeeren
+ 	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
+ 	test -d $MNTPATH || mkdir -p $MNTPATH
+ 	
+ 	passeeren
 -	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
++	
++	if mount_fs; then
++
  		OK=0
  		eventadd 140 $MNTNAME
  		if ! pidof ftpd; then
-@@ -115,9 +110,28 @@
- 		if test -x /etc/samba_control ; then 
- 			/etc/samba_control reconfig
+@@ -117,6 +131,7 @@
  		fi
--	else
--		rm -rf $MNTPATH
--	fi
-+}
-+
-+# Actually perform the mount operation...
-+# (TODO Checking the partition for known filesystem types)
-+#
-+do_mount () {
-+	local OK=1
-+	local READMODE=`readflag`
-+	local DEVNODE=$2
-+	local PARTNUM=$3
-+	local BLKDEV=${DEVNODE##/dev/}
-+	local TEMP=${BLKDEV##sd}
-+	local HOSTNUM=`echo ${TEMP%%[0-9]*}|tr 'abcd' '0123'`
-+	MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
-+	local MNTPATH=$FTPDIR/$MNTNAME
-+	
-+	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
-+	test -d $MNTPATH || mkdir -p $MNTPATH
-+	
-+	passeeren
-+	
-+	mount_fs
+ 	else
+ 		rm -rf $MNTPATH
++		eventadd 142 $MNTNAME NOTMOUNTABLE
+ 	fi
  
  	if grep $MNTPATH /proc/mounts > /dev/null; then
- 		if test -f $1; then

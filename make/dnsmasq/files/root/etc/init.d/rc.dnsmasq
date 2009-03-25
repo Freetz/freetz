@@ -1,9 +1,10 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
-
 DAEMON=dnsmasq
+DAEMON_LONG_NAME=dnsmasq
+DAEMON_USER=nobody
+DAEMON_GROUP=nobody
+PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 
 . /etc/init.d/modlibrc
 
@@ -19,8 +20,10 @@ _multid_upnp=$(/sbin/multid -? 2>&1 | grep upnp)
 start() {
 	local lease
 
-	modlib_addgroup nobody
-	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+	modlib_addgroup $DAEMON_GROUP
+	modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
+	mkdir -p ${PID_FILE%/*}
+	chown $DAEMON_USER:$DAEMON_GROUP ${PID_FILE%/*}
 
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
@@ -38,7 +41,7 @@ start() {
 	if [ "$1" != "nomultid" ]; then
 		multid -s > /dev/null 2>&1
 	fi
-	OPTIONS="$DNSMASQ_OPTIONS"
+	OPTIONS="--pid-file=$PID_FILE $DNSMASQ_OPTIONS"
 	if [ "$DNSMASQ_DNS_PORT" ]; then
 		OPTIONS="$OPTIONS -p \"$DNSMASQ_DNS_PORT\""
 	fi
@@ -81,7 +84,7 @@ stop() {
 		multid -s > /dev/null 2>&1
 		rm /var/tmp/avm-resolv.conf
 	fi
-	killall $DAEMON > /dev/null 2>&1
+	kill $(cat $PID_FILE) 2> /dev/null
 	exitval=$?
 	if [ "$1" != "nomultid" ]; then
 		multid $MULTIDPARAM > /dev/null 2>&1
@@ -116,7 +119,7 @@ case "$1" in
 			exit 1;
 		fi
 
-		if [ -e "/var/run/dnsmasq.pid" ]; then
+		if modlib_check_running; then
 			echo "$DAEMON already started."
 		else
 			if [ -z "$(pidof multid)" ]; then
@@ -144,11 +147,7 @@ case "$1" in
 		multid $MULTIDPARAM > /dev/null 2>&1
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

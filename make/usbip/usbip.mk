@@ -1,7 +1,6 @@
-$(call PKG_INIT_BIN,0.1.6)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-r49.tar.gz
-#$(PKG)_SITE:=http://prdownloads.sourceforge.net/usbip
-$(PKG)_SITE:=http://freetz.magenbrot.net
+$(call PKG_INIT_BIN,0.1.7)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=@SF/usbip
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cmd/usbipd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/usbipd
 $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/drivers/2.6.21/usbip.ko

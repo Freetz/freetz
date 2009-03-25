@@ -215,7 +215,7 @@ if [ "$MODE" == "server" ]; then
 				#echo "route $REMOTE_NET" >> $CONFFILE
 				echo  "route $REMOTE_NET" | sed 's/[[:space:]]*;[[:space:]]*/\nroute /g' >> $CONFFILE
 			fi
-			if [ "$LOCAL_NET" -a "$AUTH_TYPE" == "certs"]; then
+			if [ "$LOCAL_NET" -a "$AUTH_TYPE" == "certs" ]; then
 				#echo "push \"route $LOCAL_NET\"" >> $CONFFILE
 				echo "push \"route $LOCAL_NET\"" | sed 's/[[:space:]]*;[[:space:]]*/\"\npush \"route /g' >> $CONFFILE
 			fi

@@ -9,13 +9,13 @@ menu "terminfo database"
 
 comment "Select terminfo database entries to install (see help of 'Show all items')"
 
-config FREETZ_LIB_libterminfo
+config FREETZ_SHARE_terminfo
 	bool "terminfo database"
 	default n
 
-config FREETZ_LIB_libterminfo_showall
+config FREETZ_SHARE_terminfo_showall
 	bool "Show all items"
-	depends on FREETZ_LIB_libterminfo
+	depends on FREETZ_SHARE_terminfo
 	default n
 	help
 		Terminfo is a library and database that enables programs to use display
@@ -33,7 +33,7 @@ for O in `find . -type f -o -type l | sort`; do
 	FILE="$(basename $O)"
 
 	# config id
-	ID="$(echo "$FILE" | sed -e 's/\./dot/g' -e 's/-/minus/g' -e 's/\+/plus/g')"
+	ID="$(echo "$FILE" | sed -e 's/\./DOT/g' -e 's/-/MINUS/g' -e 's/\+/PLUS/g')"
 
 	# check link
 	if [ -L "$O" ]; then
@@ -41,7 +41,7 @@ for O in `find . -type f -o -type l | sort`; do
 		TARGET_DIR="$(dirname $TARGET_O)"
 		TARGET_FILE="$(basename $TARGET_O)"
 
-		TARGET_ID="$(echo "$TARGET_FILE" | sed -e 's/\./dot/g' -e 's/-/minus/g' -e 's/\+/plus/g')"
+		TARGET_ID="$(echo "$TARGET_FILE" | sed -e 's/\./DOT/g' -e 's/-/MINUS/g' -e 's/\+/PLUS/g')"
 	else
 		TARGET_ID=""
 	fi
@@ -51,17 +51,17 @@ for O in `find . -type f -o -type l | sort`; do
 	DEFAULT="$(for I in $DEFAULTSET; do [ "$I" = "$FILE" ] && echo "y"; done)"
 	[ -z "$DEFAULT" ] && DEFAULT="n"
 
-	echo "config FREETZ_LIB_libterminfo_$ID"
+	echo "config FREETZ_SHARE_terminfo_$ID"
 	echo "	bool \"$FILE ($SIZE Bytes)\""
 	
 	if [ "$DEFAULT" = "y" ]; then
-		echo "	depends on FREETZ_LIB_libterminfo"
+		echo "	depends on FREETZ_SHARE_terminfo"
 	else
-		echo "	depends on FREETZ_LIB_libterminfo_showall"
+		echo "	depends on FREETZ_SHARE_terminfo_showall"
 	fi
 
 	if [ -n "$TARGET_ID" ]; then
-		echo "	select FREETZ_LIB_libterminfo_${TARGET_ID}"
+		echo "	select FREETZ_SHARE_terminfo_${TARGET_ID}"
 	fi
 
 	echo "	default $DEFAULT"

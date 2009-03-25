@@ -1,6 +1,10 @@
 # Shell functions for the scripts in /etc/init.d
 
 # If $DAEMON is defined before including this file, some additional preparations is performed
+# other environment variables:
+# DAEMON_LONG_NAME	service name to display in start/stop message, default $DAEMON
+# PID_FILE		pid-file for DAEMON, default /var/run/$DAEMON.pid
+
 
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
@@ -52,11 +56,9 @@ modlib_adduser()
 
 # modlib_check_running
 #   check whether daemon is running. return status
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
 modlib_check_running()
 {
-	local fn="$1"
-	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
+	local fn=${PID_FILE-/var/run/$DAEMON.pid}
 	[ ! -s "$fn" ] && return 1
 	kill -0 $(cat "$fn") 2> /dev/null
 	local status="$?"
@@ -66,21 +68,18 @@ modlib_check_running()
 
 # modlib_stop
 #   stop daemon
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
 modlib_stop()
 {
-	local fn="$1"
-	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
-
-	echo -n "Stopping $DAEMON..."
-	if ! modlib_check_running "$fn"; then
+	local fn=${PID_FILE-/var/run/$DAEMON.pid}
+	echo -n "Stopping ${DAEMON_LONG_NAME-$DAEMON}..."
+	if ! modlib_check_running; then
 		echo 'not running.'
 		return 0
 	fi
 	kill $(cat "$fn") 2> /dev/null
-	exitval=$?
+	local status=$?
 	rm -f "$fn"
-	if [ "$exitval" -eq 0 ]; then
+	if [ "$status" -eq 0 ]; then
 		echo 'done.'
 		return 0
 	else
@@ -90,21 +89,18 @@ modlib_stop()
 }
 
 # modlib_reload
-#   reload daemon
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
+#   reload daemon (send signal SIGHUP)
 modlib_reload()
 {
-	local fn="$1"
-	[ -z "$fn" ] && fn=/var/run/$DAEMON.pid
-
-	echo -n "Reloading $DAEMON..."
-	if ! modlib_check_running "$fn"; then
+	local fn=${PID_FILE-/var/run/$DAEMON.pid}
+	echo -n "Reloading ${DAEMON_LONG_NAME-$DAEMON}..."
+	if ! modlib_check_running; then
 		echo 'not running.'
 		return 0
 	fi
 	kill -HUP $(cat "$fn") 2> /dev/null
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
+	local status=$?
+	if [ "$status" -eq 0 ]; then
 		echo 'done.'
 		return 0
 	else
@@ -117,23 +113,23 @@ modlib_reload()
 # modlib_restart
 #   restart daemon
 #   function "start" must be defined in the calling script
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
 modlib_restart()
 {
-	modlib_stop "$1"
+	modlib_stop
 	sleep 1
 	start
 }
 
 # modlib_status
 #   check whether daemon is running
-#	$1: optional pid-file. Default /var/run/$DAEMON.pid
 modlib_status()
 {
-	if modlib_check_running "$1"; then
+	if modlib_check_running; then
 		echo 'running'
+		return 0
 	else
 		echo 'stopped'
+		return 3
 	fi
 }
 
