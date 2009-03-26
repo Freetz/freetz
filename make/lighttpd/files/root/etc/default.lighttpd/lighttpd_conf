@@ -223,24 +223,22 @@ out="$out )"
 virthost_conf "$virthost_auth" "$out"
 fi
 
-if [ -f /usr/lib/mod_status.so ]; then
-	if [ "$LIGHTTPD_MODSTATUS" = "yes" ]; then
+if [ -f /usr/lib/mod_status.so -a "$LIGHTTPD_MODSTATUS" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_status" )
 status.enable-sort = "$LIGHTTPD_MODSTATUSSORT"
 EOF
 	out=""
-		if [ -n "$LIGHTTPD_MODSTATUSCONFIG" ]; then
-			out="status.config-url = \"$LIGHTTPD_MODSTATUSCONFIG\"\n"
-		fi
-		if [ -n "$LIGHTTPD_MODSTATUSSTATISTIC" ]; then
-			out="$out status.statistics-url = \"$LIGHTTPD_MODSTATUSSTATISTIC\"\n"
-		fi
-		if [ -n "$LIGHTTPD_MODSTATUSSTATUS" ]; then
-			out="$out status.status-url = \"$LIGHTTPD_MODSTATUSSTATUS\""
-		fi
+	if [ -n "$LIGHTTPD_MODSTATUSCONFIG" ]; then
+		out="status.config-url = \"$LIGHTTPD_MODSTATUSCONFIG\"\n"
 	fi
-	virthost_conf "$LIGHTTPD_MODSTATUSVIRT" "$out"
+	if [ -n "$LIGHTTPD_MODSTATUSSTATISTIC" ]; then
+		out="$out status.statistics-url = \"$LIGHTTPD_MODSTATUSSTATISTIC\"\n"
+	fi
+	if [ -n "$LIGHTTPD_MODSTATUSSTATUS" ]; then
+		out="$out status.status-url = \"$LIGHTTPD_MODSTATUSSTATUS\""
+	fi
+	[ -n "$out" ] && virthost_conf "$LIGHTTPD_MODSTATUSVIRT" "$out"
 fi
 
 if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" -a -f /usr/lib/mod_fastcgi.so ]; then
