@@ -20,8 +20,8 @@ $(lang de:"(z.B. LCR-Updater)." en:"")
 
 <h1>$(lang de:"Wiederherstellung (Restore)" en:"Restore")</h1>
 
-$(lang de:"Wiederherstellen eines zuvor gesicherten Archivs mit Einstellungen" en:"Restore previously saved configuration archive <i>(var_flash.tar.gz)</i>.")
-$(lang de:"<i>(var_flash.tar.gz)</i>. Damit wird die Fritz!Box wieder in den Zustand zum" en:"This way the Fritz!Box will be restored to the state it was in when you")
+$(lang de:"Wiederherstellen eines zuvor gesicherten Archivs mit Einstellungen." en:"Restore previously saved configuration archive.")
+$(lang de:"Damit wird die Fritz!Box wieder in den Zustand zum" en:"This way the Fritz!Box will be restored to the state it was in when you")
 $(lang de:"Zeitpunkt der entsprechenden Sicherung versetzt." en:"created the corresponding backup.")
 <p>
 
