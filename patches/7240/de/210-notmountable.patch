@@ -1,0 +1,20 @@
+--- usr/www/all/html/de/home/home.js.orig	2009-03-17 18:29:26.000000000 +0100
++++ usr/www/all/html/de/home/home.js	2009-03-22 01:11:06.000000000 +0100
+@@ -750,15 +750,13 @@
+ var nPartTotal = Number("<? query ctlusb:settings/storage-part-total ?>");
+ if (isNaN(nPartTotal)) nPartTotal = 0;
+ var unplugOk = parseInt("<? query ctlusb:settings/unplug-ok ?>", 10) == 1;
+-if (nPartTotal > nStor) {
++if (nPartTotal > 0) {
+ var strStor = "";
+ if (unplugOk) {
+ strStor = "{?de.home.home.js:1071?}";
+ }
+ else {
+-strStor = "{?de.home.home.js:5308?} ";
+-strStor += "<a href=\"javascript:jslGoTo('home', 'syslog');\">{?de.home.home.js:3744?}</a>";
+-strStor = strStor.fontcolor("#cc0000");
++strStor = "Es wurden " + nStor + " von " + nPartTotal + " Partitionen eingebunden.";
+ }
+ strArr.push(strStor);
+ }
