@@ -21,9 +21,11 @@ cleanup() {
 
 status_log() {
 	if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
-		mkdir /var/log/$DAEMON
-		chown wwwrun:wwwrun /var/log/$DAEMON
-		modreg status lighttpd lighttpd-log lighttpd/lighttpd-log
+		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ -f /usr/lib/mod_accesslog.so -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
+			mkdir /var/log/$DAEMON
+			chown wwwrun:wwwrun /var/log/$DAEMON
+			modreg status lighttpd lighttpd-log lighttpd/lighttpd-log
+		fi
 	fi
 }
 
