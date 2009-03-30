@@ -502,7 +502,9 @@ if [ "$FREETZ_TYPE_LANG_EN" == "y" ]; then
 	[ -d "${HTML_MOD_DIR}/avme/en" ] && HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/en"
 	[ -d "${HTML_MOD_DIR}/avme" ] && HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme"
 else
-	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/all"
+	[ -d "${HTML_MOD_DIR}/all" ] &&	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/all"
+	# 7270 A-CH
+	[ -d "${HTML_MOD_DIR}/avme" ] && HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme"
 fi
 
 [ -z "$HTML_LANG_MOD_DIR" ] && error1 "No html directory given."
