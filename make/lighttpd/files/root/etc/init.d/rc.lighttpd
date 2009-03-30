@@ -22,8 +22,6 @@ cleanup() {
 status_log() {
 	if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
 		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ -f /usr/lib/mod_accesslog.so -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
-			mkdir /var/log/$DAEMON
-			chown wwwrun:wwwrun /var/log/$DAEMON
 			modreg status lighttpd lighttpd-log lighttpd/lighttpd-log
 		fi
 	fi
@@ -80,18 +78,12 @@ checkdir() {
 
 start() {
 	echo -n 'Starting lighttpd ...'
-	configure
-
-	# required by modules in order to spawn processes (e.g. FastCGI)
-	mkdir -p /var/run/$DAEMON
-	chown wwwrun:wwwrun /var/run/$DAEMON
 
 	checkdir "$LIGHTTPD_DOCROOT"
-	if [ "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
-		checkdir "$LIGHTTPD_MODCOMPRESSDIR"
-	fi
+	configure
 
-	$DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf >/dev/null 2>&1
+	LD_PRELOAD=
+	$DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf
 	exitval=$?
 
 	if [ "$exitval" -eq 0 ]; then

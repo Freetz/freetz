@@ -1,18 +1,17 @@
 #!/bin/sh
-#
-
+[ -z "$LIGHTTPD_DOCROOT" ] && exit 1
 virthost_conf() {
-#$1 virtual host (the string can have multiple entries separated by IFS - we loop) - if empty, we skip virthost config
-#$2 configuration string to be enclosed in virtual host conditional (\n will be interpreted
+#$1 virtual host 
+#$2 configuration string
 #$3 optional: the character for the equality check (you can only provide a "=" or "!" here; default is "=")
 if [ -n "$1" -a -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 	eq=$3
-	if [ -z "$eq" ]; then eq="="; fi
+	[ -z "$eq" ] && eq="="
 	old_IFS=$IFS
 	IFS=" 	"
 	for i in $1; do
 		regexp="~"
-		if [ -z "$(echo $i | sed 's/[A-Za-z0-9\.]//g')" ]; then regexp="="; fi
+		[ -z "$(echo $i | sed 's/[A-Za-z0-9\.]//g')" ] && regexp="="
 		echo "\$HTTP[\"host\"] $eq$regexp \"$i\" {"
 		echo -e "$2"
 		echo "}"
@@ -25,70 +24,68 @@ fi
 
 cat << EOF
 server.modules = ( "mod_access" )
-index-file.names            = ( "index.cgi", "index.html",
-                                "index.htm", "default.htm",
-				"index.php", "index.rb" )
-mimetype.assign             = (
-  ".pdf"          =>      "application/pdf",
-  ".sig"          =>      "application/pgp-signature",
-  ".spl"          =>      "application/futuresplash",
-  ".class"        =>      "application/octet-stream",
-  ".ps"           =>      "application/postscript",
-  ".torrent"      =>      "application/x-bittorrent",
-  ".dvi"          =>      "application/x-dvi",
-  ".gz"           =>      "application/x-gzip",
-  ".pac"          =>      "application/x-ns-proxy-autoconfig",
-  ".swf"          =>      "application/x-shockwave-flash",
-  ".tar.gz"       =>      "application/x-tgz",
-  ".tgz"          =>      "application/x-tgz",
-  ".tar"          =>      "application/x-tar",
-  ".zip"          =>      "application/zip",
-  ".mp3"          =>      "audio/mpeg",
-  ".m3u"          =>      "audio/x-mpegurl",
-  ".wma"          =>      "audio/x-ms-wma",
-  ".wax"          =>      "audio/x-ms-wax",
-  ".ogg"          =>      "application/ogg",
-  ".wav"          =>      "audio/x-wav",
-  ".gif"          =>      "image/gif",
-  ".jar"          =>      "application/x-java-archive",
-  ".jpg"          =>      "image/jpeg",
-  ".jpeg"         =>      "image/jpeg",
-  ".png"          =>      "image/png",
-  ".xbm"          =>      "image/x-xbitmap",
-  ".xpm"          =>      "image/x-xpixmap",
-  ".xwd"          =>      "image/x-xwindowdump",
-  ".css"          =>      "text/css",
-  ".html"         =>      "text/html",
-  ".htm"          =>      "text/html",
-  ".js"           =>      "text/javascript",
-  ".asc"          =>      "text/plain",
-  ".c"            =>      "text/plain",
-  ".cpp"          =>      "text/plain",
-  ".log"          =>      "text/plain",
-  ".conf"         =>      "text/plain",
-  ".text"         =>      "text/plain",
-  ".txt"          =>      "text/plain",
-  ".dtd"          =>      "text/xml",
-  ".xml"          =>      "text/xml",
-  ".mpeg"         =>      "video/mpeg",
-  ".mpg"          =>      "video/mpeg",
-  ".mov"          =>      "video/quicktime",
-  ".qt"           =>      "video/quicktime",
-  ".avi"          =>      "video/x-msvideo",
-  ".asf"          =>      "video/x-ms-asf",
-  ".asx"          =>      "video/x-ms-asf",
-  ".wmv"          =>      "video/x-ms-wmv",
-  ".bz2"          =>      "application/x-bzip",
-  ".tbz"          =>      "application/x-bzip-compressed-tar",
-  ".tar.bz2"      =>      "application/x-bzip-compressed-tar",
-  ""              =>      "application/octet-stream",
- )
+index-file.names = ( "index.cgi", "index.html", "index.htm", "default.htm", "index.php", "index.rb" )
+mimetype.assign = (
+".pdf" => "application/pdf",
+".sig" => "application/pgp-signature",
+".spl" => "application/futuresplash",
+".class" => "application/octet-stream",
+".ps" => "application/postscript",
+".torrent" => "application/x-bittorrent",
+".dvi" => "application/x-dvi",
+".gz" => "application/x-gzip",
+".pac" => "application/x-ns-proxy-autoconfig",
+".swf" => "application/x-shockwave-flash",
+".tar.gz" => "application/x-tgz",
+".tgz" => "application/x-tgz",
+".tar" => "application/x-tar",
+".zip" => "application/zip",
+".mp3" => "audio/mpeg",
+".m3u" => "audio/x-mpegurl",
+".wma" => "audio/x-ms-wma",
+".wax" => "audio/x-ms-wax",
+".ogg" => "application/ogg",
+".wav" => "audio/x-wav",
+".gif" => "image/gif",
+".jar" => "application/x-java-archive",
+".jpg" => "image/jpeg",
+".jpeg" => "image/jpeg",
+".png" => "image/png",
+".xbm" => "image/x-xbitmap",
+".xpm" => "image/x-xpixmap",
+".xwd" => "image/x-xwindowdump",
+".css" => "text/css",
+".html" => "text/html",
+".htm" => "text/html",
+".js" => "text/javascript",
+".asc" => "text/plain",
+".c" => "text/plain",
+".cpp" => "text/plain",
+".log" => "text/plain",
+".conf" => "text/plain",
+".text" => "text/plain",
+".txt" => "text/plain",
+".dtd" => "text/xml",
+".xml" => "text/xml",
+".mpeg" => "video/mpeg",
+".mpg" => "video/mpeg",
+".mov" => "video/quicktime",
+".qt" => "video/quicktime",
+".avi" => "video/x-msvideo",
+".asf" => "video/x-ms-asf",
+".asx" => "video/x-ms-asf",
+".wmv" => "video/x-ms-wmv",
+".bz2" => "application/x-bzip",
+".tbz" => "application/x-bzip-compressed-tar",
+".tar.bz2" => "application/x-bzip-compressed-tar",
+"" => "application/octet-stream",
+)
 url.access-deny = ( "~", ".inc" )
 static-file.exclude-extensions = ( ".php", ".pl", ".fcgi", ".rb", ".cgi" )
 server.port = $LIGHTTPD_PORT
 server.pid-file = "/var/run/lighttpd.pid"
 server.username = "wwwrun"
-#server.groupname = "wwwrun"
+server.groupname = "wwwrun"
 EOF
 
 out="connection.kbytes-per-second = $LIGHTTPD_LIMITCONN\nserver.kbytes-per-second = $LIGHTTPD_LIMITSRV"
@@ -96,8 +93,11 @@ virthost_conf "$LIGHTTPD_LIMITVIRT" "$out"
 
 if [ "$LIGHTTPD_CHROOT" = "yes" ];then
 cat << EOF
-server.chroot = "/"
+server.chroot = "$LIGHTTPD_DOCROOT"
 EOF
+mkdir -p "$LIGHTTPD_DOCROOT/dev"
+mknod "$LIGHTTPD_DOCROOT/dev/null" c 1 3
+chmod 666 "$LIGHTTPD_DOCROOT/dev/null"
 fi
 
 if [ -f /usr/lib/mod_dirlisting.so ]; then
@@ -146,8 +146,17 @@ if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 fi
 fi
 
+gendir() {
+	dir="$1"
+	[ "$LIGHTTPD_CHROOT" = "yes" ] && dir="$LIGHTTPD_DOCROOT/$dir"
+	mkdir -p "$dir"
+	chown wwwrun:wwwrun "$dir"
+	chmod 700 "$dir"
+}
+
 if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
 	if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ]; then
+		gendir "$(dirname $LIGHTTPD_LOGGING_ERROR)"
 cat << EOF
 server.errorlog = "$LIGHTTPD_LOGGING_ERROR"
 EOF
@@ -161,6 +170,7 @@ cat << EOF
 server.modules += ( "mod_accesslog" )
 EOF
 		if [ "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
+			gendir "$(dirname $LIGHTTPD_LOGGING_ACCESS)"
 cat << EOF
 accesslog.filename = "$LIGHTTPD_LOGGING_ACCESS"
 EOF
@@ -184,6 +194,7 @@ if [ -f /usr/lib/mod_compress.so -a "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_compress" )
 EOF
+	gendir "$LIGHTTPD_MODCOMPRESSDIR"
 	out="compress.cache-dir = \"$LIGHTTPD_MODCOMPRESSDIR\"\ncompress.filetype  = (\"text/plain\", \"text/html\")"
 	virthost_conf "$LIGHTTPD_MODCOMPRESSVIRT" "$out"
 fi
@@ -193,25 +204,29 @@ if [ "$LIGHTTPD_ERROR" = "yes" ]; then
 	virthost_conf "$LIGHTTPD_ERRORVIRT" "$out"
 fi
 
+getfiles() {
+	dir=$(dirname $1)
+	mkdir -p "$LIGHTTPD_DOCROOT/$dir"
+	cp -rpf $1 "$LIGHTTPD_DOCROOT/$dir"
+}
+
 if [ -f /usr/lib/mod_auth.so -a "$LIGHTTPD_AUTH" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_auth" )
 auth.backend = "htdigest"
 auth.backend.htdigest.userfile = "/tmp/flash/lighttpd-htdigest.user"
 EOF
-#just a return
+[ "$LIGHTTPD_CHROOT" = "yes" ] && getfiles "/tmp/flash/lighttpd-htdigest.user"
+
 IFS="
 "
 authrequire=$(cat /tmp/flash/lighttpd-rights.user)
 virthost_auth=""
-out="auth.require = ( "
+out=""
 for i in $authrequire; do
 	if [ "$(echo $i | cut -c1)" = "[" ]; then
-		if [ -n "$out" ]; then
-			out="$out )"
-			virthost_conf "$virthost_auth" "$out"
-		fi
-		out="auth.require = ( "
+		[ -n "$out" ] && virthost_conf "$virthost_auth" "auth.require = ( $out )"
+		out=""
 		virthost_auth=$(echo $i | sed 's/^\[//' | sed 's/\]$//')
 		continue
 	fi
@@ -219,8 +234,7 @@ for i in $authrequire; do
 	user=$(echo $i | cut -d\" -f 4)
 	out="$out \"$dir\" => ( \"method\" => \"$LIGHTTPD_AUTHMETH\", \"realm\" => \"lighttpd\", \"require\" => \"$user\" ),"
 done 
-out="$out )"
-virthost_conf "$virthost_auth" "$out"
+virthost_conf "$virthost_auth" "auth.require = ( $out )"
 fi
 
 if [ -f /usr/lib/mod_status.so -a "$LIGHTTPD_MODSTATUS" = "yes" ]; then
@@ -241,30 +255,57 @@ EOF
 	[ -n "$out" ] && virthost_conf "$LIGHTTPD_MODSTATUSVIRT" "$out"
 fi
 
+socketdir="/var/run/lighttpd"
+gendir "$socketdir"
+	
+genchroot() {
+#$1 prog
+#$2 chroot dir
+	[ "$LIGHTTPD_CHROOT" = "yes" ] || return
+	[ -x "$(which ldd)" ] || return
+	[ -f "$1" ] || return
+	[ -d "$2" ] || return
+	dir="$(dirname $1)"
+	mkdir -p "$2/$dir"
+	cp -pf $1 "$2/$dir"
+	ldd $1 | while read -r ln; do
+		genchroot "$(echo $ln | awk '{print $3}')" "$2"
+	done
+}
+
 if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" -a -f /usr/lib/mod_fastcgi.so ]; then
 cat << EOF
 server.modules += ( "mod_fastcgi" )
 EOF
-out="fastcgi.server = ( \".php\" => (( \"socket\" => \"/var/run/lighttpd/php-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIPHPPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIPHPMAXPROC )) )"
+out="fastcgi.server = ( \".php\" => (( \"socket\" => \"$socketdir/php-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIPHPPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIPHPMAXPROC )) )"
 virthost_conf "$LIGHTTPD_MODFASTCGIPHPVIRT" "$out"
+genchroot "$LIGHTTPD_MODFASTCGIPHPPATH" "$LIGHTTPD_DOCROOT"
+[ "$LIGHTTPD_CHROOT" = "yes" ] && getfiles "/tmp/flash/php.ini"
+[ "$LIGHTTPD_CHROOT" = "yes" ] && getfiles "/tmp/flash/php"
 fi
 if [ "$LIGHTTPD_MODFASTCGIRUBY" = "yes" -a -f /usr/lib/mod_fastcgi.so ]; then
 cat << EOF
 server.modules += ( "mod_fastcgi" )
 EOF
-out="fastcgi.server = ( \".rb\" => (( \"socket\" => \"/var/run/lighttpd/ruby-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIRUBYPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIRUBYMAXPROC )) )"
+out="fastcgi.server = ( \".rb\" => (( \"socket\" => \"$socketdir/ruby-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIRUBYPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIRUBYMAXPROC )) )"
 virthost_conf "$LIGHTTPD_MODFASTCGIRUBYVIRT" "$out"
+genchroot "$LIGHTTPD_MODFASTCGIRUBYPATH" "$LIGHTTPD_DOCROOT"
 fi
 
+docroot="$LIGHTTPD_DOCROOT"
+if [ "$LIGHTTPD_CHROOT" = "yes" ]; then
+	docroot="/websites"
+	mkdir -p "$LIGHTTPD_DOCROOT/websites/default"
+fi
 if [ -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_evhost" )
-evhost.path-pattern = "$LIGHTTPD_DOCROOT/$LIGHTTPD_VIRTHOSTTYPE/"
-server.document-root = "$LIGHTTPD_DOCROOT/default/"
+evhost.path-pattern = "$docroot/$LIGHTTPD_VIRTHOSTTYPE/"
+server.document-root = "$docroot/default"
 EOF
 else
 cat << EOF
-server.document-root = "$LIGHTTPD_DOCROOT"
+server.document-root = "$docroot"
 EOF
 fi
 

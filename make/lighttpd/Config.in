@@ -24,6 +24,18 @@ config FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
         help
                 This option enables SSL support for lighttpd.
 
+config FREETZ_PACKAGE_LIGHTTPD_LDD
+        bool "Include LDD support"
+        depends on FREETZ_PACKAGE_LIGHTTPD
+        select FREETZ_PACKAGE_LDD
+        default n
+        help
+                This option includes the /usr/bin/ldd application which is used
+		to automatically copy php-cgi and all libraries it depends on
+		into the chroot in case a chroot is configured for with the
+		lighttpd frontend and php-cgi is configured to be used.
+
+
 #config FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
 #        bool "build mod_cml and mod_magnet with LUA support"
 #        depends on FREETZ_PACKAGE_LIGHTTPD
