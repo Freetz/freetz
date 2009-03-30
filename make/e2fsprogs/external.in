@@ -3,44 +3,138 @@ config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS
 	boolean "e2fsprogs"
 	default n
 	help
-		external these file(s)
-			/usr/bin/e2fsck
-			/usr/bin/mke2fs
-			/usr/bin/tune2fs
-			/usr/bin/blkid
+		external e2fsprogs file(s)
 	
 menu e2fsprogs
 	depends on EXTERNAL_FREETZ_PACKAGE_E2FSPROGS
 
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2fsck
 	boolean "e2fsck"
-	depends on ! FREETZ_PACKAGE_MDEV
+	depends on FREETZ_E2FSPROGS_E2FSCK && ! FREETZ_PACKAGE_MDEV
 	default n
 	help
 		external these file
-			/usr/bin/e2fsck
+			/usr/sbin/e2fsck
 			(use at your own risk, e2fsck is needed to check an uncleanly umounted filesystem)
 
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_mke2fs
 	boolean "mke2fs"
+	depends on FREETZ_E2FSPROGS_E2MAKING
 	default n
 	help
 		external these file(s)
-			/usr/bin/mke2fs
+			/usr/sbin/mke2fs
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_mklost_found
+	boolean "mklost+found"
+	depends on FREETZ_E2FSPROGS_E2MAKING
+	default n
+	help
+		external these file(s)
+			/usr/sbin/mklost+found
 
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_tune2fs
 	boolean "tune2fs"
+	depends on FREETZ_E2FSPROGS_E2TUNING
 	default n
 	help
 		external these file(s)
-			/usr/bin/tune2fs
+			/usr/sbin/tune2fs
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_dumpe2fs
+	boolean "dumpe2fs"
+	depends on FREETZ_E2FSPROGS_E2TUNING
+	default n
+	help
+		external these file(s)
+			/usr/sbin/dumpe2fs
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_chattr
+	boolean "chattr"
+	depends on FREETZ_E2FSPROGS_E2TUNING
+	default n
+	help
+		external these file(s)
+			/usr/sbin/chattr
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_lsattr
+	boolean "lsattr"
+	depends on FREETZ_E2FSPROGS_E2TUNING
+	default n
+	help
+		external these file(s)
+			/usr/sbin/lsattr
+			
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2image
+	boolean "e2image"
+	depends on FREETZ_E2FSPROGS_E2DEBUG
+	default n
+	help
+		external these file(s)
+			/usr/sbin/e2image
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2undo
+	boolean "e2undo"
+	depends on FREETZ_E2FSPROGS_E2DEBUG
+	default n
+	help
+		external these file(s)
+			/usr/sbin/e2undo
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_debugfs
+	boolean "debugfs"
+	depends on FREETZ_E2FSPROGS_E2DEBUG
+	default n
+	help
+		external these file(s)
+			/usr/sbin/debugfs
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_logsave
+	boolean "logsave"
+	depends on FREETZ_E2FSPROGS_E2DEBUG
+	default n
+	help
+		external these file(s)
+			/usr/sbin/logsave
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_badblocks
+	boolean "badblocks"
+	depends on FREETZ_E2FSPROGS_EFIXING
+	default n
+	help
+		external these file(s)
+			/usr/sbin/badblocks
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_filefrag
+	boolean "filefrag"
+	depends on FREETZ_E2FSPROGS_EFIXING
+	default n
+	help
+		external these file(s)
+			/usr/sbin/filefrag
 
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid
 	boolean "blkid"
-	depends on ! FREETZ_PACKAGE_MDEV
+	depends on FREETZ_E2FSPROGS_EFIXING && ! FREETZ_PACKAGE_MDEV
 	default n
 	help
 		external these file(s)
-			/usr/bin/blkid
+			/usr/sbin/blkid
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_uuidd
+	boolean "uuidd"
+	depends on FREETZ_E2FSPROGS_EFIXING
+	default n
+	help
+		external these file(s)
+			/usr/sbin/uuidd
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_uuidgen
+	boolean "uuidgen"
+	depends on FREETZ_E2FSPROGS_EFIXING
+	default n
+	help
+		external these file(s)
+			/usr/sbin/uuidgen
 
 endmenu
