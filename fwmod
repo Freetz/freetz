@@ -497,11 +497,15 @@ FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
 VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
 
 HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www"
+
 if [ "$FREETZ_TYPE_LANG_EN" == "y" ]; then
-	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/en"
+	[ -d "${HTML_MOD_DIR}/avme/en" ] && HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme/en"
+	[ -d "${HTML_MOD_DIR}/avme" ] && HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/avme"
 else
 	HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/all"
 fi
+
+[ -z "$HTML_LANG_MOD_DIR" ] && error1 "No html directory given."
 
 MODULES_DIR="${FILESYSTEM_MOD_DIR}/lib/modules/${FREETZ_KERNEL_VERSION}"
 
