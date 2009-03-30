@@ -56,7 +56,7 @@ endif
 $($(PKG)_TARGET_WEBINTERFACE_INDEX_HTML): $($(PKG)_DIR)/.unpacked
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
 	mkdir -p $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
-	cp -a $(TRANSMISSION_WEBINTERFACE_DIR)/* $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)/
+	tar -c -C $(TRANSMISSION_WEBINTERFACE_DIR) --exclude=.svn . | tar -x -C $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
 	# we do respect the license, but delete it as it just takes place in the firmware
 	$(RM) $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)/LICENSE
 	# remove all non-min.js files, these are not needed	
