@@ -207,7 +207,7 @@ fi
 getfiles() {
 	dir=$(dirname $1)
 	mkdir -p "$LIGHTTPD_DOCROOT/$dir"
-	cp -rpf $1 "$LIGHTTPD_DOCROOT/$dir"
+	cp -rpf "/$1" "$LIGHTTPD_DOCROOT/$dir"
 }
 
 if [ -f /usr/lib/mod_auth.so -a "$LIGHTTPD_AUTH" = "yes" ]; then

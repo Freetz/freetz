@@ -9,6 +9,9 @@ $(PKG)_MODULE_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/mod_access.so
 # include selected modules to remove
 include $($(PKG)_MAKE_DIR)/lighttpd.in
 
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_LIGHTTPD_WITH_ZLIB
+
 $(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_ENV += PCRE_LIB="-lpcre"
 
@@ -17,6 +20,12 @@ $(PKG)_DEPENDS_ON:= pcre
 ifeq ($(strip $(FREETZ_PACKAGE_LIGHTTPD_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-openssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_LIGHTTPD_WITH_ZLIB)),y)
+$(PKG)_DEPENDS_ON += zlib
+$(PKG)_CONFIGURE_OPTIONS += --with-zlib
+else
+$(PKG)_CONFIGURE_OPTIONS += --without-zlib
 endif
 
 #ifeq ($(strip $(FREETZ_PACKAGE_LIGHTTPD_WITH_LUA)),y)
@@ -33,7 +42,6 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --without-attr
 $(PKG)_CONFIGURE_OPTIONS += --without-bzip2
-$(PKG)_CONFIGURE_OPTIONS += --without-zlib
 $(PKG)_CONFIGURE_OPTIONS += --without-fam
 $(PKG)_CONFIGURE_OPTIONS += --without-gdbm
 $(PKG)_CONFIGURE_OPTIONS += --without-ldap
