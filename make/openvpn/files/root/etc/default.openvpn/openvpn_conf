@@ -284,6 +284,10 @@ if [ "$LOGFILE" == "yes" ]; then
 	echo "status /var/log/$prefix.log" >> $CONFFILE
 fi
 
+echo "chroot /tmp/openvpn" >> $CONFFILE
+echo "user openvpn" >> $CONFFILE
+echo "group openvpn" >> $CONFFILE
+
 if [ "$ADDITIONAL" != "" ]; then
 	echo  "$ADDITIONAL" | sed 's/[[:space:]]*;[[:space:]]*/\n/g' >> $CONFFILE
 fi

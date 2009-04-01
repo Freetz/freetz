@@ -1,7 +1,6 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+. /etc/init.d/modlibrc
 
 scriptname=$0;
 DAEMON=${scriptname##*/rc.}
@@ -21,6 +20,9 @@ case "$1" in
 			exit 1
 		fi
 
+		modlib_addgroup openvpn
+		modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
+		mkdir -p /tmp/openvpn
 		. /mod/etc/conf/${DAEMON}.cfg
 		;;
 esac
