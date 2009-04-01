@@ -1,0 +1,809 @@
+diff -burN lib/internal.h lib/internal.h
+--- lib/internal.h	2007-10-25 09:11:19.000000000 +0200
++++ lib/internal.h	2008-09-16 17:35:50.000000000 +0200
+@@ -40,7 +40,7 @@
+ 			          const char *key);
+ 	int		(*status)(int details, struct crypt_options *options,
+ 			          char **key);
+-	int		(*remove)(struct crypt_options *options);
++	int		(*remove)(int force, struct crypt_options *options);
+ 
+ 	const char *	(*dir)(void);
+ };
+@@ -70,6 +70,7 @@
+ ssize_t write_lseek_blockwise(int fd, const char *buf, size_t count, off_t offset);
+ 
+ 
+-int get_key(char *prompt, char **key, int *passLen, int key_size, const char *key_file, int passphrase_fd, int timeout, int how2verify);
++int get_key(char *prompt, char **key, unsigned int *passLen, int key_size,
++            const char *key_file, int passphrase_fd, int timeout, int how2verify);
+ 
+ #endif /* INTERNAL_H */
+diff -burN lib/libcryptsetup.h lib/libcryptsetup.h
+--- lib/libcryptsetup.h	2007-12-01 17:01:40.000000000 +0100
++++ lib/libcryptsetup.h	2008-06-30 14:21:06.000000000 +0200
+@@ -1,5 +1,8 @@
+ #ifndef _LIBCRYPTSETUP_H
+ #define _LIBCRYPTSETUP_H
++#ifdef __cplusplus
++extern "C" {
++#endif
+ 
+ #include <stdint.h>
+ 
+@@ -17,6 +20,7 @@
+ #define CRYPT_FLAG_READONLY	        (1 << 1)
+ #define	CRYPT_FLAG_VERIFY_IF_POSSIBLE	(1 << 2)
+ #define	CRYPT_FLAG_VERIFY_ON_DELKEY	(1 << 3)
++#define	CRYPT_FLAG_NON_EXCLUSIVE_ACCESS	(1 << 4)
+ 
+ struct crypt_options {
+ 	const char	*name;
+@@ -65,4 +69,7 @@
+ void crypt_put_options(struct crypt_options *options);
+ const char *crypt_get_dir(void);
+ 
++#ifdef __cplusplus
++}
++#endif
+ #endif /* _LIBCRYPTSETUP_H */
+diff -burN lib/libdevmapper.c lib/libdevmapper.c
+--- lib/libdevmapper.c	2007-10-25 09:11:19.000000000 +0200
++++ lib/libdevmapper.c	2008-09-16 17:35:50.000000000 +0200
+@@ -17,13 +17,7 @@
+ #define DEVICE_DIR	"/dev"
+ 
+ #define	CRYPT_TARGET	"crypt"
+-
+-#define UDEVSETTLE	"/sbin/udevsettle"
+-
+-static void run_udevsettle(void)
+-{
+-	system(UDEVSETTLE);
+-}
++#define	RETRY_COUNT	5
+ 
+ static void set_dm_error(int level, const char *file, int line,
+                          const char *f, ...)
+@@ -38,9 +32,16 @@
+ 	va_end(va);
+ }
+ 
++static int _dm_simple(int task, const char *name);
++
+ static int dm_init(void)
+ {
+ 	dm_log_init(set_dm_error);
++	if (!_dm_simple(DM_DEVICE_LIST_VERSIONS, "test")) {
++		set_error("Cannot communicate with device-mapper. Is the dm_mod module loaded?");
++		return -1;
++	}
++
+ 	return 1;	/* unsafe memory */
+ }
+ 
+@@ -50,16 +51,6 @@
+ 	dm_lib_release();
+ }
+ 
+-static void flush_dm_workqueue(void)
+-{
+-	/* 
+-	 * Unfortunately this is the only way to trigger libdevmapper's
+-	 * update_nodes function 
+-	 */ 
+-	dm_exit(); 
+-	dm_init();
+-}
+-
+ static char *__lookup_dev(char *path, dev_t dev)
+ {
+ 	struct dirent *entry;
+@@ -152,6 +143,89 @@
+ 	return params;
+ }
+ 
++/* DM helpers */
++static int _dm_simple(int task, const char *name)
++{
++	int r = 0;
++	struct dm_task *dmt;
++
++	if (!(dmt = dm_task_create(task)))
++		return 0;
++
++	if (!dm_task_set_name(dmt, name))
++		goto out;
++
++	r = dm_task_run(dmt);
++
++      out:
++	dm_task_destroy(dmt);
++	return r;
++}
++
++static int _error_device(struct crypt_options *options)
++{
++	struct dm_task *dmt;
++	int r = 0;
++
++	if (!(dmt = dm_task_create(DM_DEVICE_RELOAD)))
++		return 0;
++
++	if (!dm_task_set_name(dmt, options->name))
++		goto error;
++
++	if (!dm_task_add_target(dmt, UINT64_C(0), options->size, "error", ""))
++		goto error;
++
++	if (!dm_task_set_ro(dmt))
++		goto error;
++
++	if (!dm_task_no_open_count(dmt))
++		goto error;
++
++	if (!dm_task_run(dmt))
++		goto error;
++
++	if (!_dm_simple(DM_DEVICE_RESUME, options->name)) {
++		_dm_simple(DM_DEVICE_CLEAR, options->name);
++		goto error;
++	}
++
++	r = 1;
++
++error:
++	dm_task_destroy(dmt);
++	return r;
++}
++
++static int _dm_remove(struct crypt_options *options, int force)
++{
++	int r = -EINVAL;
++	int retries = force ? RETRY_COUNT : 1;
++
++	/* If force flag is set, replace device with error, read-only target.
++	 * it should stop processes from reading it and also removed underlying
++	 * device from mapping, so it is usable again.
++	 * Force flag should be used only for temporary devices, which are
++	 * intended to work inside cryptsetup only!
++	 * Anyway, if some process try to read temporary cryptsetup device,
++	 * it is bug - no other process should try touch it (e.g. udev).
++	 */
++	if (force) {
++		 _error_device(options);
++		retries = RETRY_COUNT;
++	}
++
++	do {
++		r = _dm_simple(DM_DEVICE_REMOVE, options->name) ? 0 : -EINVAL;
++		if (--retries)
++			sleep(1);
++	} while (r == -EINVAL && retries);
++
++	dm_task_update_nodes();
++
++	return r;
++}
++
+ static int dm_create_device(int reload, struct crypt_options *options,
+                             const char *key)
+ {
+@@ -191,24 +265,14 @@
+ 	if (dmi.read_only)
+ 		options->flags |= CRYPT_FLAG_READONLY;
+ 
+-	/* run udevsettle to avoid a race in libdevmapper causing busy dm devices */
+-	run_udevsettle();
+-
+ 	r = 0;
+-	
+ out:
+ 	if (r < 0 && !reload) {
+ 		char *error = (char *)get_error();
+ 		if (error)
+ 			error = strdup(error);
+-		if (dmt)
+-			dm_task_destroy(dmt);
+ 
+-		if (!(dmt = dm_task_create(DM_DEVICE_REMOVE)))
+-			goto out_restore_error;
+-		if (!dm_task_set_name(dmt, options->name))
+-			goto out_restore_error;
+-		if (!dm_task_run(dmt))
++		if (!_dm_remove(options, 0))
+ 			goto out_restore_error;
+ 
+ out_restore_error:
+@@ -224,7 +288,7 @@
+ 		dm_task_destroy(dmt);
+ 	if(dmt_query)
+ 		dm_task_destroy(dmt_query);
+-	flush_dm_workqueue();
++	dm_task_update_nodes();
+ 	return r;
+ }
+ 
+@@ -352,25 +416,12 @@
+ 	return r;
+ }
+ 
+-static int dm_remove_device(struct crypt_options *options)
++static int dm_remove_device(int force, struct crypt_options *options)
+ {
+-	struct dm_task *dmt;
+-	int r = -EINVAL;
+-
+-	if (!(dmt = dm_task_create(DM_DEVICE_REMOVE)))
+-		goto out;
+-	if (!dm_task_set_name(dmt, options->name))
+-		goto out;
+-	if (!dm_task_run(dmt))
+-		goto out;
+-
+-	r = 0;
++	if (!options || !options->name)
++		return -EINVAL;
+ 
+-out:	
+-	if (dmt)
+-		dm_task_destroy(dmt);
+-	flush_dm_workqueue();
+-	return r;
++	return _dm_remove(options, force);;
+ }
+ 
+ 
+diff -burN lib/setup.c lib/setup.c
+--- lib/setup.c	2008-03-10 23:27:04.000000000 +0100
++++ lib/setup.c	2009-01-16 18:06:31.000000000 +0100
+@@ -198,6 +198,34 @@
+ 	return ret;
+ }
+ 
++static int wipe_device_header(const char *device, int sectors)
++{
++	char *buffer;
++	int size = sectors * SECTOR_SIZE;
++	int r = -1;
++	int devfd;
++
++	devfd = open(device, O_RDWR | O_DIRECT | O_SYNC);
++	if(devfd == -1) {
++		set_error("Can't wipe header on device %s", device);
++		return -EINVAL;
++	}
++
++	buffer = malloc(size);
++	if (!buffer) {
++		close(devfd);
++		return -ENOMEM;
++	}
++	memset(buffer, 0, size);
++
++	r = write_blockwise(devfd, buffer, size) < size ? -EIO : 0;
++
++	free(buffer);
++	close(devfd);
++
++	return r;
++}
++
+ static int parse_into_name_and_mode(const char *nameAndMode, char *name,
+ 				    char *mode)
+ {
+@@ -226,6 +254,33 @@
+ #undef str
+ #undef xstr
+ }
++
++/* Select free keyslot or verifies that the one specified is empty */
++static int keyslot_from_option(int keySlotOption, struct luks_phdr *hdr) {
++        if(keySlotOption != -1) {
++                if(keySlotOption >= LUKS_NUMKEYS) {
++                        set_error("slot %d too high, please pick between 0 and %d", keySlotOption, LUKS_NUMKEYS);
++                        return -EINVAL;
++                } else if(hdr->keyblock[keySlotOption].active != LUKS_KEY_DISABLED) {
++                        set_error("slot %d full, please pick another one", keySlotOption);
++                        return -EINVAL;
++                } else {
++                        return keySlotOption;
++                }
++        } else {
++                int i;
++                /* Find empty key slot */
++                for(i=0; i<LUKS_NUMKEYS; i++) {
++                        if(hdr->keyblock[i].active == LUKS_KEY_DISABLED) break;
++                }
++                if(i==LUKS_NUMKEYS) {
++                        set_error("All slots full");
++                        return -EINVAL;
++                }
++                return i;
++        }
++}
++
+ static int __crypt_create_device(int reload, struct setup_backend *backend,
+                                  struct crypt_options *options)
+ {
+@@ -234,7 +289,7 @@
+ 	};
+ 	struct device_infos infos;
+ 	char *key = NULL;
+-	int keyLen;
++	unsigned int keyLen;
+ 	char *processed_key = NULL;
+ 	int r;
+ 
+@@ -369,7 +424,7 @@
+ 		return -EBUSY;
+ 	}
+ 
+-	return backend->remove(options);
++	return backend->remove(0, options);
+ }
+ 
+ static int __crypt_luks_format(int arg, struct setup_backend *backend, struct crypt_options *options)
+@@ -381,8 +436,9 @@
+ 	char *password=NULL; 
+ 	char cipherName[LUKS_CIPHERNAME_L];
+ 	char cipherMode[LUKS_CIPHERMODE_L];
+-	int passwordLen;
++	unsigned int passwordLen;
+ 	int PBKDF2perSecond;
++        int keyIndex;
+ 	
+ 	if (!LUKS_device_ready(options->device, O_RDWR | O_EXCL)) {
+ 		set_error("Can not access device");
+@@ -390,7 +446,7 @@
+ 	}
+ 
+ 	mk = LUKS_generate_masterkey(options->key_size);
+-	if(NULL == mk) return -ENOMEM; 
++	if(NULL == mk) return -ENOMEM; // FIXME This may be misleading, since we don't know what went wrong
+ 
+ #ifdef LUKS_DEBUG
+ #define printoffset(entry) logger(options, CRYPT_LOG_ERROR, ("offset of " #entry " = %d\n", (char *)(&header.entry)-(char *)(&header))
+@@ -419,8 +475,10 @@
+ 		return r; 
+ 	}
+ 
++        keyIndex = keyslot_from_option(options->key_slot, &header);
++
+ 	PBKDF2perSecond = LUKS_benchmarkt_iterations();
+-	header.keyblock[0].passwordIterations = at_least_one(PBKDF2perSecond * ((float)options->iteration_time / 1000.0));
++	header.keyblock[keyIndex].passwordIterations = at_least_one(PBKDF2perSecond * ((float)options->iteration_time / 1000.0));
+ #ifdef LUKS_DEBUG
+ 	logger(options->icb->log,CRYPT_LOG_ERROR, "pitr %d\n", header.keyblock[0].passwordIterations);
+ #endif
+@@ -429,8 +487,12 @@
+ 		r = -EINVAL; goto out;
+ 	}
+ 
++	/* Wipe first 8 sectors - fs magic numbers etc. */
++	r = wipe_device_header(options->device, 8);
++	if(r < 0) goto out;
++
+ 	/* Set key, also writes phdr */
+-	r = LUKS_set_key(options->device, options->key_slot==-1?0:(unsigned int)options->key_slot, password, passwordLen, &header, mk, backend);
++	r = LUKS_set_key(options->device, keyIndex, password, passwordLen, &header, mk, backend);
+ 	if(r < 0) goto out; 
+ 
+ 	r = 0;
+@@ -444,13 +506,15 @@
+ {
+ 	struct luks_masterkey *mk=NULL;
+ 	struct luks_phdr hdr;
+-	char *password; int passwordLen;
++	char *password;
++	unsigned int passwordLen;
+ 	struct device_infos infos;
+ 	struct crypt_options tmp = {
+ 		.name = options->name,
+ 	};
+ 	char *dmCipherSpec;
+ 	int r, tries = options->tries;
++	int excl = (options->flags & CRYPT_FLAG_NON_EXCLUSIVE_ACCESS) ? 0 : O_EXCL ;
+ 	
+ 	r = backend->status(0, &tmp, NULL);
+ 	if (r >= 0) {
+@@ -458,7 +522,7 @@
+ 		return -EEXIST;
+ 	}
+ 
+-	if (!LUKS_device_ready(options->device, O_RDONLY | O_EXCL)) {
++	if (!LUKS_device_ready(options->device, O_RDONLY | excl)) {
+ 		set_error("Can not access device");
+ 		return -ENOTBLK;
+ 	}
+@@ -484,10 +548,11 @@
+ 	}
+         
+         r = LUKS_open_any_key(options->device, password, passwordLen, &hdr, &mk, backend);
+-	if(r < 0) {
++	if (r == -EPERM)
+ 		set_error("No key available with this passphrase.\n");
++	if (r < 0)
+ 		goto out1;
+-	} else
++
+                 logger(options, CRYPT_LOG_NORMAL,"key slot %d unlocked.\n", r);
+ 
+ 	
+@@ -530,10 +595,9 @@
+ 	struct luks_masterkey *mk=NULL;
+ 	struct luks_phdr hdr;
+ 	char *password=NULL; unsigned int passwordLen;
+-	unsigned int i; unsigned int keyIndex;
++        unsigned int keyIndex;
+ 	const char *device = options->device;
+ 	int r;
+-	int key_slot = options->key_slot;
+ 	
+ 	if (!LUKS_device_ready(options->device, O_RDWR)) {
+ 		set_error("Can not access device");
+@@ -543,27 +607,8 @@
+ 	r = LUKS_read_phdr(device, &hdr);
+ 	if(r < 0) return r;
+ 
+-        if(key_slot != -1) {
+-                if(key_slot >= LUKS_NUMKEYS) {
+-                        set_error("slot %d too high, please pick between 0 and %d", key_slot, LUKS_NUMKEYS);
+-                        return -EINVAL;
+-                } else if(hdr.keyblock[key_slot].active != LUKS_KEY_DISABLED) {
+-                        set_error("slot %d full, please pick another one", key_slot);
+-                        return -EINVAL;
+-                } else {
+-                        keyIndex = key_slot;
+-                }
+-        } else {
+-                /* Find empty key slot */
+-                for(i=0; i<LUKS_NUMKEYS; i++) {
+-                        if(hdr.keyblock[i].active == LUKS_KEY_DISABLED) break;
+-                }
+-                if(i==LUKS_NUMKEYS) {
+-                        set_error("All slots full");
+-                        return -EINVAL;
+-                }
+-                keyIndex = i;
+-        }
++
++        keyIndex = keyslot_from_option(options->key_slot, &hdr);
+ 
+ 	get_key("Enter any LUKS passphrase: ",
+                 &password,
+@@ -653,17 +698,25 @@
+ 		if(!password) {
+ 			r = -EINVAL; goto out;
+ 		}
+-		openedIndex = LUKS_open_any_key(device, password, passwordLen, &hdr, &mk, backend);
++
++                r = LUKS_read_phdr(device, &hdr);
++                if(r < 0) { 
++                        options->icb->log(CRYPT_LOG_ERROR,"Failed to access device.\n");
++                        r = -EIO; goto out;
++                }
++                hdr.keyblock[keyIndex].active = LUKS_KEY_DISABLED;
++
++		openedIndex = LUKS_open_any_key_with_hdr(device, password, passwordLen, &hdr, &mk, backend);
+                 /* Clean up */
+                 if (openedIndex >= 0) {
+                         LUKS_dealloc_masterkey(mk);
+                         mk = NULL;
+                 }
+-		if(openedIndex < 0 || keyIndex == openedIndex) {
++		if(openedIndex < 0) {
+                             options->icb->log(CRYPT_LOG_ERROR,"No remaining key available with this passphrase.\n");
+ 			    r = -EPERM; goto out;
+ 		} else
+-                        logger(options, CRYPT_LOG_NORMAL,"key slot %d verified.\n", keyIndex);
++                        logger(options, CRYPT_LOG_NORMAL,"key slot %d verified.\n", openedIndex);
+ 	}
+ 	r = LUKS_del_key(device, keyIndex);
+ 	if(r < 0) goto out;
+@@ -692,7 +745,10 @@
+ 
+ 	backend = get_setup_backend(default_backend);
+ 
+-	setup_enter(backend,options->icb->log);
++	if (setup_enter(backend,options->icb->log) < 0) {
++		r = -ENOSYS;
++		goto out;
++	}
+ 
+ 	if (!backend) {
+ 		set_error("No setup backend available");
+diff -burN lib/utils.c lib/utils.c
+--- lib/utils.c	2007-12-01 17:29:27.000000000 +0100
++++ lib/utils.c	2009-04-01 22:36:35.000000000 +0200
+@@ -32,6 +32,8 @@
+ 	    error=NULL;
+ 	}
+ 
++	if(!fmt) return;
++
+         vasprintf(&error, fmt, va);
+ }
+ 
+@@ -230,19 +232,19 @@
+ 	char frontPadBuf[bsize];
+ 	int frontHang = offset % bsize;
+ 	int r;
++	int innerCount = count < bsize ? count : bsize;
+ 
+ 	if (bsize < 0)
+ 		return bsize;
+ 
+ 	lseek(fd, offset - frontHang, SEEK_SET);
+ 	if(offset % bsize) {
+-		int innerCount = count<bsize?count:bsize;
+-
+ 		r = read(fd,frontPadBuf,bsize);
+ 		if(r < 0) return -1;
+ 
+ 		memcpy(frontPadBuf+frontHang, buf, innerCount);
+ 
++		lseek(fd, offset - frontHang, SEEK_SET);
+ 		r = write(fd,frontPadBuf,bsize);
+ 		if(r < 0) return -1;
+ 
+@@ -251,7 +253,7 @@
+ 	}
+ 	if(count <= 0) return buf - orig_buf;
+ 
+-	return write_blockwise(fd, buf, count);
++	return write_blockwise(fd, buf, count) + innerCount;
+ }
+ 
+ /* Password reading helpers */
+@@ -345,7 +347,8 @@
+  * reading can be retried as for interactive terminals).
+  */
+ 
+-int get_key(char *prompt, char **key, int *passLen, int key_size, const char *key_file, int passphrase_fd, int timeout, int how2verify)
++int get_key(char *prompt, char **key, unsigned int *passLen, int key_size,
++            const char *key_file, int passphrase_fd, int timeout, int how2verify)
+ {
+ 	int fd;
+ 	const int verify = how2verify & CRYPT_FLAG_VERIFY;
+diff -burN luks/af.c luks/af.c
+--- luks/af.c	2007-10-25 09:11:19.000000000 +0200
++++ luks/af.c	2008-09-01 10:54:05.000000000 +0200
+@@ -87,7 +87,7 @@
+ 		if(r < 0) goto out;
+ 
+ 		XORblock(dst+(blocksize*i),bufblock,bufblock,blocksize);
+-		diffuse(bufblock,bufblock,blocksize);
++		diffuse((unsigned char *) bufblock, (unsigned char *) bufblock, blocksize);
+ 	}
+ 	/* the last block is computed */
+ 	XORblock(src,bufblock,dst+(i*blocksize),blocksize);
+@@ -107,7 +107,7 @@
+ 	memset(bufblock,0,blocksize);
+ 	for(i=0; i<blocknumbers-1; i++) {
+ 		XORblock(src+(blocksize*i),bufblock,bufblock,blocksize);
+-		diffuse(bufblock,bufblock,blocksize);
++		diffuse((unsigned char *) bufblock, (unsigned char *) bufblock, blocksize);
+ 	}
+ 	XORblock(src + blocksize * i, bufblock, dst, blocksize);
+ 
+diff -burN luks/keyencryption.c luks/keyencryption.c
+--- luks/keyencryption.c	2008-01-25 23:00:30.000000000 +0100
++++ luks/keyencryption.c	2008-09-16 17:35:50.000000000 +0200
+@@ -45,6 +45,11 @@
+ 	return div_round_up(x, m) * m;
+ }
+ 
++static struct setup_backend *cleaner_backend=NULL;
++static const char *cleaner_name=NULL;
++static uint64_t cleaner_size = 0;
++static int devfd=-1;
++
+ static int setup_mapping(const char *cipher, const char *name, 
+ 			 const char *device, unsigned int payloadOffset,
+ 			 const char *key, size_t keyLength, 
+@@ -52,7 +57,7 @@
+ 			 struct setup_backend *backend,
+ 			 int mode)
+ {
+-	struct crypt_options k;
++	struct crypt_options k = {0};
+ 	struct crypt_options *options = &k;
+ 	int device_sector_size = sector_size_for_device(device);
+ 	int r;
+@@ -66,6 +71,7 @@
+ 		return -EINVAL;
+ 	}
+ 	options->size = round_up_modulo(srcLength,device_sector_size)/SECTOR_SIZE;
++	cleaner_size = options->size;
+ 
+ 	options->offset = sector;
+ 	options->cipher = cipher;
+@@ -87,24 +93,21 @@
+ 	return r;
+ }
+ 
+-static int clear_mapping(const char *name, struct setup_backend *backend)
++static int clear_mapping(const char *name, uint64_t size, struct setup_backend *backend)
+ {
+-	struct crypt_options options;
++	struct crypt_options options = {0};
+ 	options.name=name;
+-	return backend->remove(&options);
++	options.size = size;
++	return backend->remove(1, &options);
+ }
+ 
+-/* I miss closures in C! */
+-static struct setup_backend *cleaner_backend=NULL;
+-static const char *cleaner_name=NULL; 
+-static int devfd=0;
+-
+ static void sigint_handler(int sig)
+ {
+-        if(devfd)
++        if(devfd >= 0)
+                 close(devfd);
++        devfd = -1;
+         if(cleaner_backend && cleaner_name) 
+-                clear_mapping(cleaner_name, cleaner_backend);
++                clear_mapping(cleaner_name, cleaner_size, cleaner_backend);
+         signal(SIGINT, SIG_DFL);
+         kill(getpid(), SIGINT);
+ }
+@@ -160,13 +163,14 @@
+ 	r = 0;
+  out3:
+ 	close(devfd);
+-	devfd = 0;
++	devfd = -1;
+  out2:
+-	clear_mapping(name,backend);
++	clear_mapping(cleaner_name, cleaner_size, cleaner_backend);
+  out1:
+ 	signal(SIGINT, SIG_DFL);
+ 	cleaner_name = NULL;
+ 	cleaner_backend = NULL;
++	cleaner_size = 0;
+ 	free(dmCipherSpec);
+ 	free(fullpath); 
+ 	free(name); 
+diff -burN luks/keymanage.c luks/keymanage.c
+--- luks/keymanage.c	2008-03-01 14:37:45.000000000 +0100
++++ luks/keymanage.c	2008-12-19 20:39:42.000000000 +0100
+@@ -50,6 +50,7 @@
+ struct luks_masterkey *LUKS_alloc_masterkey(int keylength)
+ { 
+ 	struct luks_masterkey *mk=malloc(sizeof(*mk) + keylength);
++	if(NULL == mk) return NULL;
+ 	mk->keyLength=keylength;
+ 	return mk;
+ }
+@@ -66,7 +67,13 @@
+ struct luks_masterkey *LUKS_generate_masterkey(int keylength)
+ {
+ 	struct luks_masterkey *mk=LUKS_alloc_masterkey(keylength);
+-	getRandom(mk->key,keylength);
++	if(NULL == mk) return NULL;
++
++	int r = getRandom(mk->key,keylength);
++	if(r < 0) {
++		LUKS_dealloc_masterkey(mk);
++		return NULL;
++	}
+ 	return mk;
+ }
+ 
+@@ -324,6 +331,8 @@
+ 	return r;
+ }
+ 
++
++/* Tries to open any key from a given LUKS device reading the header on its own */
+ int LUKS_open_any_key(const char *device, 
+ 		      const char *password, 
+ 		      size_t passwordLen,
+@@ -331,12 +340,24 @@
+ 		      struct luks_masterkey **mk,
+ 		      struct setup_backend *backend)
+ {
+-	unsigned int i;
+ 	int r;
+ 
+ 	r = LUKS_read_phdr(device, hdr);
+ 	if(r < 0) 
+       		return r;
++        return LUKS_open_any_key_with_hdr(device,password,passwordLen,hdr,mk,backend);
++}
++
++
++int LUKS_open_any_key_with_hdr(const char *device, 
++		      const char *password, 
++		      size_t passwordLen,
++		      struct luks_phdr *hdr, 
++		      struct luks_masterkey **mk,
++		      struct setup_backend *backend)
++{
++	unsigned int i;
++	int r;
+ 
+ 	*mk=LUKS_alloc_masterkey(hdr->keyBytes);
+ 	for(i=0; i<LUKS_NUMKEYS; i++) {
+diff -burN luks/luks.h luks/luks.h
+--- luks/luks.h	2007-12-01 17:01:40.000000000 +0100
++++ luks/luks.h	2008-12-19 20:39:42.000000000 +0100
+@@ -117,6 +117,14 @@
+ 					struct luks_masterkey **mk,
+ 					struct setup_backend *backend);
+ 
++int LUKS_open_any_key_with_hdr(const char *device, 
++					const char *password, 
++					size_t passwordLen, 
++					struct luks_phdr *hdr, 
++					struct luks_masterkey **mk,
++					struct setup_backend *backend);
++
++
+ int LUKS_del_key(const char *device, unsigned int keyIndex);
+ int LUKS_is_last_keyslot(const char *device, unsigned int keyIndex);
+ int LUKS_benchmarkt_iterations();
+diff -burN luks/random.c luks/random.c
+--- luks/random.c	2007-10-25 09:11:19.000000000 +0200
++++ luks/random.c	2008-08-20 12:40:45.000000000 +0200
+@@ -23,8 +23,6 @@
+    closeRandom */
+ int getRandom(char *buf, size_t len)
+ {
+-    int r = 0;
+-
+     if(openRandom() == -1) {
+ 	perror("getRandom:");
+ 	return -EINVAL;
+@@ -37,7 +35,7 @@
+ 	}
+ 	len-= r; buf += r;
+     }
+-    return r;
++    return 0;
+ }
+ 
+ void closeRandom() {
+diff -burN src/cryptsetup.c src/cryptsetup.c
+--- src/cryptsetup.c	2008-03-10 23:14:07.000000000 +0100
++++ src/cryptsetup.c	2009-01-13 21:09:17.000000000 +0100
+@@ -31,6 +31,7 @@
+ static int opt_timeout = 0;
+ static int opt_tries = 3;
+ static int opt_align_payload = 0;
++static int opt_non_exclusive = 0;
+ 
+ static const char **action_argv;
+ static int action_argc;
+@@ -289,6 +290,8 @@
+ 	options.flags = 0;
+ 	if (opt_readonly)
+ 		options.flags |= CRYPT_FLAG_READONLY;
++	if (opt_non_exclusive)
++		options.flags |= CRYPT_FLAG_NON_EXCLUSIVE_ACCESS;
+ 	r = crypt_luksOpen(&options);
+ 	show_status(-r);
+ 	return r;
+@@ -458,6 +461,7 @@
+  		{ "timeout",           't',  POPT_ARG_INT,                                &opt_timeout,           0, N_("Timeout for interactive passphrase prompt (in seconds)"),          N_("secs") },
+   		{ "tries",             'T',  POPT_ARG_INT,                                &opt_tries,             0, N_("How often the input of the passphrase can be retried"),            NULL },
+  		{ "align-payload",     '\0',  POPT_ARG_INT,                                &opt_align_payload,     0, N_("Align payload at <n> sector boundaries - for luksFormat"),         N_("SECTORS") },
++ 		{ "non-exclusive",     '\0',  POPT_ARG_NONE,                              &opt_non_exclusive,     0, N_("Allows non-exclusive access for luksOpen, WARNING see manpage."),        NULL },
+ 		POPT_TABLEEND
+ 	};
+ 	poptContext popt_context;
+@@ -467,8 +471,8 @@
+ 	const char *null_action_argv[] = {NULL};
+ 
+ 	setlocale(LC_ALL, "");
+-	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+-	textdomain(GETTEXT_PACKAGE);
++	bindtextdomain(PACKAGE, LOCALEDIR);
++	textdomain(PACKAGE);
+ 
+ 	popt_context = poptGetContext(PACKAGE, argc, (const char **)argv,
+ 	                              popt_options, 0);
