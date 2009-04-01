@@ -182,6 +182,12 @@ choice
 			FREETZ_TYPE_FON_WLAN_7270 \
 			)
 
+	config FREETZ_TYPE_LABOR_IPV6
+		bool "IPv6"
+		depends on \
+			FREETZ_TYPE_FON_WLAN_7270
+		select FREETZ_TARGET_IPV6_SUPPORT
+
 	config FREETZ_TYPE_LABOR_MINI
 		bool "MINI"
 		depends on \
@@ -361,6 +367,7 @@ config FREETZ_TYPE_STRING
 	default "7240_labor_phone"				if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_PHONE
 	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "7270_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
+	default "7270_labor_ipv6"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_IPV6
 	default "7270_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
 	default "7270_labor_wlan"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN
 	default "W501V"						if FREETZ_TYPE_SPEEDPORT_W501V
@@ -435,10 +442,11 @@ config FREETZ_SHOW_ADVANCED
 config FREETZ_TARGET_IPV6_SUPPORT
 	bool "Enable IPv6 support"
 	depends on \
-		FREETZ_SHOW_ADVANCED && \
-		FREETZ_REPLACE_KERNEL_AVAILABLE
-	select FREETZ_REPLACE_KERNEL
-	select FREETZ_MODULE_ipv6
+		FREETZ_TYPE_LABOR_IPV6 || \
+		(FREETZ_SHOW_ADVANCED && \
+		FREETZ_REPLACE_KERNEL_AVAILABLE)
+	select FREETZ_REPLACE_KERNEL if ! FREETZ_TYPE_LABOR_IPV6
+	select FREETZ_MODULE_ipv6 if FREETZ_REPLACE_KERNEL
 	select FREETZ_BUILD_TOOLCHAIN
 	default n
 	help
@@ -1600,7 +1608,8 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it.54.04.67.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_EN
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.99-13225.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "fritz_box-labor-7270-13806.image"					if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
-	default "FRITZ.Box_Fon_WLAN_7270_WLAN_Labor_54.04.98-13783.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN	
+	default "FRITZ.Box_Fon_WLAN_7270_WLAN_Labor_54.04.98-13783.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN
+	default "FRITZ.Box_Fon_WLAN_7270_LabIPV6.AnnexB.54.04.94-13988.image" 		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_IPV6
 	default "fritz.box_sl_wlan.09.04.34.image"					if FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
 	default "fritz.box_wlan_3130.44.04.34.image"					if FREETZ_TYPE_WLAN_3130
@@ -1888,6 +1897,14 @@ menu "Plugin selection"
 		default n
 		help
 			Integrates Telephone Answering Machine (TAM)
+
+	config FREETZ_AVMPLUGINS_WEBDAV
+		bool "WEBDAV"
+		depends on FREETZ_TYPE_LABOR_IPV6
+		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
+		default n
+		help
+			Integrates AVM's webdav
 endmenu
 
 menu External
