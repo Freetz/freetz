@@ -390,7 +390,8 @@ $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 	@($(foreach OPT,$($(PKG)_CONFIG_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_TEMP)
 	@if ! diff -q $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null; then \
 		mv $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE); \
-		$(RM) -r $($(PKG)_TARGET_DIR); \
+			$(RM) -r $($(PKG)_TARGET_DIR); \
+			$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION); \
 	else \
 		$(RM) $($(PKG)_FREETZ_CONFIG_TEMP); \
 	fi
