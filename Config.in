@@ -174,6 +174,11 @@ choice
 #		depends on \
 #			FREETZ_TYPE_FON_WLAN_7170
 
+	config FREETZ_TYPE_LABOR_AURA
+		bool "Aura"
+		depends on \
+			FREETZ_TYPE_FON_WLAN_7270
+
 	config FREETZ_TYPE_LABOR_DSL
 		bool "DSL"
 		depends on \
@@ -366,6 +371,7 @@ config FREETZ_TYPE_STRING
 	default "7240"						if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
 	default "7240_labor_phone"				if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_PHONE
 	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
+	default "7270_labor_aura"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AURA
 	default "7270_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "7270_labor_ipv6"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_IPV6
 	default "7270_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
@@ -1606,6 +1612,7 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.70.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7270_16.AnnexB.en-de-es-it.54.04.67.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it.54.04.67.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_EN
+	default "FRITZ.Box_Fon_WLAN_7270_LabAURA.AnnexB.54.04.95-14047.image" 		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AURA
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.99-13225.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "fritz_box-labor-7270-13806.image"					if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7270_WLAN_Labor_54.04.98-13783.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_WLAN
@@ -1900,7 +1907,7 @@ menu "Plugin selection"
 
 	config FREETZ_AVMPLUGINS_WEBDAV
 		bool "WEBDAV"
-		depends on FREETZ_TYPE_LABOR_USB
+		depends on FREETZ_TYPE_LABOR_AURA
 		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 		default n
 		help
