@@ -8,6 +8,7 @@ AVM_SOURCE__04.40:=$(AVM_SITE__AVM)/fritzbox-source-files.04.40.tar.bz2
 AVM_SOURCE__04.49:=$(AVM_SITE__AVM)/fritzbox-source-files-04.49.tar.gz
 AVM_SOURCE__04.57:=$(AVM_SITE__AVM)/fritzbox-source-files.04.57.tar.gz
 AVM_SOURCE__04.67:=$(AVM_SITE__AVM)/fritzbox-source-files.04.67.tar.gz
+AVM_SOURCE__04.70:=$(AVM_SITE__AVM)/fritzbox-source-files-04.70.tar.gz
 AVM_SOURCE__7270:=$(AVM_SITE__AVM)/fritzbox7270-source-files-04-57.tar.gz
 AVM_SOURCE__12043:=$(AVM_SITE__AVM)/fritzbox-lab-source-files-12043.tar.gz
 AVM_SOURCE__7270_04.67:=$(AVM_SITE__AVM)/fritzbox7270-source-files-04.67.tar.gz
@@ -40,6 +41,10 @@ ifeq ($(AVM_VERSION),04.57)
 	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
 endif
 ifeq ($(AVM_VERSION),04.67)
+	mkdir -p $(AVM_DIR)/GPL/base/kernel
+	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
+endif
+ifeq ($(AVM_VERSION),04.70)
 	mkdir -p $(AVM_DIR)/GPL/base/kernel
 	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
 endif
