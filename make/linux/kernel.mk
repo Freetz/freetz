@@ -23,6 +23,7 @@ KERNEL_SOURCE_PATH__04.67:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base
 KERNEL_SOURCE_PATH__7270:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base
 KERNEL_SOURCE_PATH__12043:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base
 KERNEL_SOURCE_PATH__7270_04.67:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base
+KERNEL_SOURCE_PATH__7270_04.70:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/base
 KERNEL_SOURCE_PATH__r4884:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__r7203:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/GPL/$(KERNEL_BUILD_DIR_N)
 KERNEL_SOURCE_PATH__r8508:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/open-source-package/kernel/$(KERNEL_BUILD_DIR_N)
@@ -59,6 +60,35 @@ $(KERNEL_DIR)/.unpacked: $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_N
 		mkdir -p $(KERNEL_BUILD_DIR)/$$i; \
 		touch $(KERNEL_BUILD_DIR)/$$i/Makefile; \
 	done
+ifeq ($(AVM_VERSION),7270_04.70)
+	for i in ar7wdt.h avm_debug.h avm_event.h avm_led.h avm_profile.h; do \
+		ln -sf ../../drivers/char/avm_new/linux_$$i \
+			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
+	done
+	for i in capi_oslib.h new_capi.h new_capi_debug.h zugriff.h; do \
+		ln -sf ../../drivers/isdn/capi_oslib/linux_$$i \
+			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
+	done
+	for i in ubik2_debug.h ubik2_interface.h ubik2_ul.h; do \
+		ln -sf ../../drivers/char/ubik2/linux_$$i \
+			$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/$$i; \
+	done
+	ln -sf ../../drivers/char/avm_power/linux_avm_power.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_power.h
+	ln -sf ../../drivers/net/avm_cpmac/linux_adm_reg.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/adm_reg.h
+	ln -sf ../../drivers/net/avm_cpmac/linux_ar_reg.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/ar_reg.h
+	ln -sf ../../drivers/net/avm_cpmac/linux_avm_cpmac.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_cpmac.h
+	ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
+		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_net_trace.h
+	for i in $(KERNEL_DUMMY_MAKE_FILES); do \
+		ln -sf Makefile.26 $(KERNEL_BUILD_DIR)/$$i; \
+	done
+	touch $(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/drivers/dsl/Kconfig
+	touch $(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/drivers/video/davinci/Kconfig
+else
 ifeq ($(AVM_VERSION),7270_04.67)
 	for i in ar7wdt.h avm_debug.h avm_event.h avm_led.h avm_profile.h; do \
 		ln -sf ../../drivers/char/avm_new/linux_$$i \
@@ -176,10 +206,11 @@ ifneq ($(AVM_VERSION),04.33)
 		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_cpmac.h
 	ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
 		$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)/include/linux/avm_net_trace.h
-    endif
-   endif
-  endif
- endif
+endif
+endif
+endif
+endif
+endif
 endif
 	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-$(KERNEL_VERSION) $(KERNEL_DIR)/linux
 	touch $@
