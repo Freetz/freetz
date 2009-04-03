@@ -1,0 +1,49 @@
+#!/bin/sh
+
+DAEMON=onlinechanged
+
+. /etc/init.d/modlibrc
+
+start() {
+	echo -n 'Setting up onlinechange scripting ...'
+	[ ! -f /tmp/flash/$DAEMON-cgi ] && cp /etc/default.$DAEMON/$DAEMON-cgi /tmp/flash/
+	(sh /tmp/flash/$DAEMON-cgi start
+	echo $? > /var/run/$DAEMON)&
+	echo 'done.'
+}
+
+case "$1" in
+	""|load)
+		deffile="/mod/etc/default.$DAEMON/$DAEMON.def"
+		[ -r /tmp/flash/$DAEMON.def ] && deffile="/tmp/flash/$DAEMON.def"
+		modreg file 'onlinechanged' 'IP-reconfig' 0 "$deffile"
+		;;
+	unload)
+		modlib_stop
+		modunreg file 'onlinechanged'
+		;;
+	start)
+		start
+		;;
+	stop)
+		rm -f /var/run/$DAEMON
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		if [ "$(cat /var/run/$DAEMON)" = "0" ]; then
+			echo 'running'
+			return 0
+		else
+			echo 'stopped'
+			return 3
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

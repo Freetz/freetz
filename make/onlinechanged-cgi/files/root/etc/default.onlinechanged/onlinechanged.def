@@ -1,0 +1,55 @@
+CAPTION='Execution of programs when IP address changes'
+DESCRIPTION='$(lang de:"Das folgende Shell-Skript (Busybox ash) wird jedes mal ausgef&uuml;hrt, wenn sich die IP-Adresse und damit auch die Verbindung des Routers ver&auml;ndert.<br />Das Skript wird mit einem Parameter aufgerufen, welcher folgende Werte annehmen kann: start, online, offline. Dieser Parameter kann wie folgt benutzt werden:<br />
+<pre style="width: 480px; overflow: auto;">case \"$1\" in
+ start)
+   # Kommandos beim Start des Routers
+   # ggf. sollten hier die Entr&auml;ge von online) stehen
+   ;;
+ online)
+   # Kommandos wenn der Router online geht (nach Zwangstrennung)
+   #
+   # Beispiel f&uuml;r DynDNS bei Strato (n&uuml;tzlich
+   # bei mehreren DynDNS-Eintr&auml;gen)
+   # wget -q -O /dev/null \
+   # http://&lt;hostname2&gt;:&lt;passwort&gt;@dyndns.strato.com\
+   # /nic/update?hostname=&lt;hostname2&gt;
+   #
+   # mit SSL
+   # wget -q --no-check-certificate -O /dev/null \
+   # https://&lt;hostname2&gt;:&lt;passwort&gt;@dyndns.strato.com\
+   # /nic/update?hostname=&lt;hostname2&gt;
+   ;;
+ offline)
+   # Kommandos wenn der Router offline geht (nach Zwangstrennung)
+   ;;
+esac</pre>" en:"The following shell script (Busybox ash) is executed every time when the IP address and therefore also the connection of the router changes.<br />The script is executed with one parameter, which can have one of the following values: start, online, offline. This parameter can be used as follows:<br />
+<pre style="width: 470px; overflow: auto;">case \"$1\" in
+ start)
+   # Commands executed during start of the router
+   # the entries made in online) should probably also
+   # placed here
+   ;;
+ online)
+   # Commands executed when the router goes online
+   # (after forced reconnect)
+   #
+   # Example for DynDNS with the Provider Strato
+   # (useful when using multiple DynDNS
+   # configurations)
+   # wget -q -O /dev/null \
+   # http://&lt;hostname2&gt;:&lt;password&gt;@dyndns.strato.com\
+   # /nic/update?hostname=&lt;hostname2&gt;
+   #
+   # with SSL
+   # wget -q --no-check-certificate -O /dev/null \
+   # https://&lt;hostname2&gt;:&lt;password&gt;@dyndns.strato.com\
+   # /nic/update?hostname=&lt;hostname2&gt;
+   ;;
+ offline)
+   # Commands executed when the router goes offline
+   # (after forced reconnect)
+   ;;
+esac</pre>")'
+CONFIG_FILE='/tmp/flash/onlinechanged-cgi'
+CONFIG_SAVE='modsave flash'
+CONFIG_TYPE='text'
