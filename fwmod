@@ -1101,7 +1101,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Pack var.tar (use old tar for compatibility)
 	echo "packing var.tar"
-	"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
+	"$TAR" -c --owner=0 --group=0 --format=oldgnu -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
 
 	if [ ! -s "$VARTAR_MOD" ]; then
 		error 1 "packing of var.tar failed"
