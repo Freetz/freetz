@@ -6,3 +6,5 @@ sed -i \
 	-e 's/kernel_size=7798784/kernel_size=16121856/' \
 	-e 's/urlader_size=65536/urlader_size=131072/' \
 	"${FIRMWARE_MOD_DIR}/var/install"
+
+ln -sf default.Fritz_Box_7270 "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7270_16"
