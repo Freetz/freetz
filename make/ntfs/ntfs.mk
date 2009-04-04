@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 2009.2.1)
+$(call PKG_INIT_BIN, 2009.4.4)
 $(PKG)_SOURCE:=ntfs-3g-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=http://www.ntfs-3g.org
 $(PKG)_DIR:=$(SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
