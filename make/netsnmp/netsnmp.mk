@@ -107,6 +107,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
+	mkdir -p $(NETSNMP_DEST_DIR)/usr/lib
 	for file in $$(find $(NETSNMP_DIR) -name 'libnetsnmp*.so*'); do \
 		cp -d $$file $(NETSNMP_DEST_DIR)/usr/lib/; \
 	done
