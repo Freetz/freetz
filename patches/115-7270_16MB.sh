@@ -1,12 +1,10 @@
 [ "$FREETZ_TYPE_FON_WLAN_7270_16MB" == "y" -a "$FREETZ_TYPE_LANG_DE" == "y" ] || return 0
 
 echo1 "applying 16MB patch"
-if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/7270_labor_dsl_16MB_flash.patch"
-elif [ "$FREETZ_TYPE_LABOR_PHONE" == "y" ];then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/7270_labor_phone_16MB_flash.patch"
-elif [ "$FREETZ_TYPE_LABOR_WLAN" == "y" ];then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/7270_labor_wlan_16MB_flash.patch"
-else
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/7270_16MB_flash.patch"
-fi
+sed -i \
+	-e 's/kernel_start=0x90010000/kernel_start=0x90020000/' \
+	-e 's/kernel_size=7798784/kernel_size=16121856/' \
+	-e 's/urlader_size=65536/urlader_size=131072/' \
+	"${FIRMWARE_MOD_DIR}/var/install"
+
+[ -x "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7270_16" ] || ln -sf default.Fritz_Box_7270 "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7270_16" 

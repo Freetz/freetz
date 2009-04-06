@@ -7,6 +7,29 @@ KERNEL_MODULES_DIR:=$(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)
 KERNEL_SOURCE_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel/linux
 KERNEL_HEADERS_DIR:=$(KERNEL_SOURCE_DIR)/include
 
+ifeq ($(AVM_VERSION),7270_04.70)
+KERNEL_DUMMY_MAKE_FILES = \
+	kernel/linux-2.6.19.2/drivers/char/Piglet_noemif/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/audio/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/avm_new/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/avm_power/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/dect_io/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/flash_update/Makefile \
+	kernel/linux-2.6.19.2/drivers/char/ubik2/Makefile \
+	kernel/linux-2.6.19.2/drivers/dsl/Makefile \
+	kernel/linux-2.6.19.2/drivers/isdn/avm_dect/Makefile \
+	kernel/linux-2.6.19.2/drivers/isdn/capi_codec/Makefile \
+	kernel/linux-2.6.19.2/drivers/isdn/capi_oslib/Makefile \
+	kernel/linux-2.6.19.2/drivers/isdn/isdn_fon5/Makefile \
+	kernel/linux-2.6.19.2/drivers/net/avm_cpmac/Makefile \
+	kernel/linux-2.6.19.2/drivers/usb/musb/Makefile
+
+KERNEL_DUMMY_DIRS = \
+	kernel/linux-2.6.19.2/drivers/net/rfcntl \
+	kernel/linux-2.6.19.2/drivers/usb/misc/usbauth \
+	kernel/linux-2.6.19.2/drivers/video/davinci \
+	kernel/linux-2.6.19.2/sound/oss/davinci
+else
 ifeq ($(AVM_VERSION),7270_04.67)
 KERNEL_DUMMY_MAKE_FILES = \
 	kernel/linux-2.6.19.2/drivers/char/Piglet_noemif/Makefile \
@@ -155,6 +178,28 @@ KERNEL_DUMMY_MAKE_FILES = \
 	kernel/linux-2.6.13.1/drivers/net/wireless/avm_wlan/Makefile
 
 KERNEL_DUMMY_DIRS = ""
+else
+ifeq ($(AVM_VERSION),04.70)
+KERNEL_DUMMY_MAKE_FILES = \
+	kernel/linux-2.6.13.1/drivers/char/avm_new/Makefile \
+	kernel/linux-2.6.13.1/drivers/char/ubik2/Makefile \
+	kernel/linux-2.6.13.1/drivers/char/audio/Makefile \
+	kernel/linux-2.6.13.1/drivers/char/Piglet/Makefile \
+	kernel/linux-2.6.13.1/drivers/char/Piglet_noemif/Makefile \
+	kernel/linux-2.6.13.1/drivers/char/avm_power/Makefile \
+	kernel/linux-2.6.13.1/drivers/char/flash_update/Makefile \
+	kernel/linux-2.6.13.1/drivers/atm/avm_atm/Makefile \
+	kernel/linux-2.6.13.1/drivers/usb/ahci/Makefile \
+	kernel/linux-2.6.13.1/drivers/usb/misc/usbauth/Makefile \
+	kernel/linux-2.6.13.1/drivers/isdn/capi_codec/Makefile \
+	kernel/linux-2.6.13.1/drivers/isdn/capi_oslib/Makefile \
+	kernel/linux-2.6.13.1/drivers/isdn/isdn_fon3/Makefile \
+	kernel/linux-2.6.13.1/drivers/isdn/isdn_fon4/Makefile \
+	kernel/linux-2.6.13.1/drivers/net/avm_cpmac/Makefile \
+	kernel/linux-2.6.13.1/drivers/net/rfcntl/Makefile \
+	kernel/linux-2.6.13.1/drivers/net/wireless/avm_wlan/Makefile
+
+KERNEL_DUMMY_DIRS = ""
 
 else
 KERNEL_DUMMY_MAKE_FILES = \
@@ -183,6 +228,8 @@ KERNEL_DUMMY_MAKE_FILES = \
 
 KERNEL_DUMMY_DIRS = ""
 
+endif
+endif
 endif
 endif
 endif
