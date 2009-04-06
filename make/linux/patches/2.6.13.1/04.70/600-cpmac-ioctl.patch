@@ -1,0 +1,11 @@
+--- linux-2.6.13.1/drivers/net/avm_cpmac/cpmac_eth.c.orig	2008-10-10 15:03:30.000000000 +0200
++++ linux-2.6.13.1/drivers/net/avm_cpmac/cpmac_eth.c	2008-12-18 11:43:34.000000000 +0100
+@@ -333,6 +333,8 @@
+     case SIOCGMIIPHY:
+     case SIOCGMIIREG:
+     case SIOCSMIIREG:
++    case AVM_CPMAC_IOCTL_INFO:
++    case AVM_CPMAC_IOCTL_GENERIC:
+     case AVM_CPMAC_IOCTL_SET_CONFIG_N:
+     case AVM_CPMAC_IOCTL_GET_CONFIG_N:
+         if(real_dev->do_ioctl && netif_device_present(real_dev))

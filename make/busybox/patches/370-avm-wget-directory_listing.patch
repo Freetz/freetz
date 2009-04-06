@@ -1,0 +1,29 @@
+--- networking/wget.c.orig	2009-04-03 14:42:44.000000000 +0200
++++ networking/wget.c	2009-04-03 14:42:44.000000000 +0200
+@@ -781,9 +781,23 @@
+ 				content_len -= beg_range;
+ 		}
+ 
+-		if (ftpcmd("RETR ", target.path, sfp, buf) > 150)
+-			bb_error_msg_and_die("bad response to %s: %s", "RETR", buf);
+-	}
++#if 1 /* AVM */
++        if (!target.path || target.path[0] == '\0' || target.path[strlen(target.path)-1] == '/') 
++        {
++        /* get directory listing */
++            if (ftpcmd("LIST ", target.path, sfp, buf) >= 400) 
++                bb_error_msg_and_die("bad response to %s: %s", "LIST", buf);
++        } 
++        else 
++        {
++            if (ftpcmd("RETR ", target.path, sfp, buf) > 150)
++            bb_error_msg_and_die("bad response to %s: %s", "RETR", buf);
++        }
++#else
++        if (ftpcmd("RETR ", target.path, sfp, buf) > 150)
++            bb_error_msg_and_die("bad response to %s: %s", "RETR", buf);
++#endif /* if 1 AVM */
++    }
+ 
+ 	if (opt & WGET_OPT_SPIDER) {
+ 		if (ENABLE_FEATURE_CLEAN_UP)

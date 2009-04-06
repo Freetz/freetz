@@ -275,3 +275,26 @@
  sane-desc: sane-desc.o
  	@$(LIBTOOL) $(MLINK) $(LINK) sane-desc.o $(LIBSANEI) $(LIBLIB)
  
+--- frontend/Makefile.in.orig	2009-03-29 23:31:23.000000000 +0200
++++ frontend/Makefile.in	2009-03-29 23:32:07.000000000 +0200
+@@ -39,6 +39,7 @@
+ CFLAGS = @CFLAGS@
+ LDFLAGS = @LDFLAGS@
+ LIBS = @LIBS@
++LIBPTHREAD = @LIBPTHREAD@
+ 
+ LIBTOOL = ../libtool
+ MINST	= --mode=install
+@@ -95,10 +95,10 @@
+ 
+ saned: saned.o $(LIBSANEI) $(LIBSANE) $(LIBLIB)
+ 	@$(LIBTOOL) $(MLINK) $(LINK) saned.o $(LIBSANEI) $(LIBLIB) $(LIBSANE)  \
+-		$(LIBS)
++		$(LIBS) $(LIBPTHREAD)
+ 
+ scanimage: $(SCAN_OBJS) $(LIBSANE) $(LIBLIB)
+-	@$(LIBTOOL) $(MLINK) $(LINK) $(SCAN_OBJS) $(LIBLIB) $(LIBSANE)  $(LIBS)
++	@$(LIBTOOL) $(MLINK) $(LINK) $(SCAN_OBJS) $(LIBLIB) $(LIBSANE)  $(LIBS) $(LIBPTHREAD)
+ 
+ # tstbackend is not compiled by default. 
+ # To compile it, add tstbackend to BINPROGS.

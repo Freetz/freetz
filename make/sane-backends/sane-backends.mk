@@ -44,6 +44,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
 $(PKG)_CONFIGURE_OPTIONS += --disable-translations
 $(PKG)_CONFIGURE_OPTIONS += --without-gphoto2
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-fork-process
 
 $(PKG)_CONFIGURE_ENV+=BACKENDS="$(SANE_BACKENDS)"
 $(PKG)_CONFIGURE_ENV+=SANEI_JPEG="$(SANEI_JPEG)"
@@ -56,7 +57,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_saned) $($(PKG)_sane_find_scanner) $($(PKG)_scanimage) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SANE_BACKENDS_DIR)
+		$(MAKE1) -C $(SANE_BACKENDS_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \

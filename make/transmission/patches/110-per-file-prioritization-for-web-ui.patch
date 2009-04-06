@@ -1,6 +1,48 @@
+--- web/index.html.orig	2009-02-27 17:46:38.000000000 +0100
++++ web/index.html	2009-03-30 16:25:55.000000000 +0200
+@@ -14,6 +14,7 @@
+ 		<link media="screen and (min-device-width: 481px)" href="./stylesheets/common.css" type="text/css" rel="stylesheet" />
+ 		<script type="text/javascript" src="./javascript/jquery/jquery.transmenu.min.js"></script>
+ 		<script type="text/javascript" src="./javascript/jquery/jquery.contextmenu.min.js"></script>
++		<script type="text/javascript" src="./javascript/jquery/jquery.tinysort.min.js"></script>
+ 		<script type="text/javascript" src="./javascript/menu.js"></script>
+ 		<script type="text/javascript" src="./javascript/jquery/jquery.dimensions.min.js"></script>
+ 		<script type="text/javascript" src="./javascript/jquery/jquery.form.min.js"></script>
+@@ -63,6 +64,7 @@
+ 			<div id="inspector_tabs">
+ 				<div class="inspector_tab selected" id="inspector_tab_info"><a href="#info"><img src="images/buttons/info_general.png" alt="Information"/></a></div>
+ 				<div class="inspector_tab" id="inspector_tab_activity"><a href="#activity"><img src="images/buttons/info_activity.png" alt="Activity"/></a></div>
++				<div class="inspector_tab" id="inspector_tab_files"><a href="#files"><img src="images/buttons/info_files.png" alt="Files"/></a></div>
+ 			</div>
+ 			
+ 			<div id="inspector_header">
+@@ -170,6 +172,11 @@
+ 					</div>
+ 				</div><!-- class="inspector_group"-->
+ 			</div><!-- id="inspector_tab_activity_container" -->
++
++			<div style="display:none;" class="inspector_container" id="inspector_tab_files_container">
++				<span id="inspector_file_list"></span>
++			</div><!-- id="inspector_tab_files_container" -->
++
+ 		</div>
+ 		
+ 		<div id="torrent_container">
 --- web/javascript/common.js.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/javascript/common.js	2009-02-28 11:51:09.000000000 +0100
-@@ -88,7 +88,7 @@
++++ web/javascript/common.js	2009-03-30 16:25:55.000000000 +0200
+@@ -42,11 +42,6 @@
+ 	transmission = new Transmission();
+ 
+ 	if ($.browser.safari) {
+-		
+-		// Fix div height problem - causes scrollbar flash in
+-		// firefox so have to be safari-specific
+-		$('#torrent_inspector').css('height', '100%');
+-		
+ 		// Move search field's margin down for the styled input
+ 		$('#torrent_search').css('margin-top', 3);		
+ 	}
+@@ -88,7 +83,7 @@
  /**
   * "innerHTML = html" is pretty slow in FF.  Happily a lot of our innerHTML
   * changes are triggered by periodic refreshes on torrents whose state hasn't
@@ -9,266 +51,8 @@
   */
  function setInnerHTML( e, html )
  {
---- web/javascript/transmission.js.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/javascript/transmission.js	2009-02-28 11:51:09.000000000 +0100
-@@ -58,6 +58,7 @@
- 		$('#prefs_cancel_button').bind('click', this.cancelPrefsClicked);
- 		$('#inspector_tab_info').bind('click', this.inspectorTabClicked);
- 		$('#inspector_tab_activity').bind('click', this.inspectorTabClicked);
-+		$('#inspector_tab_files').bind('click', this.inspectorTabClicked);
- 		if (iPhone) {
- 			$('#torrent_inspector').bind('click', this.hideInspector);
- 			$('#preferences_link').bind('click', this.releaseClutchPreferencesButton);
-@@ -83,28 +84,31 @@
- 		
- 		// Get preferences & torrents from the daemon
- 		this.remote.loadDaemonPrefs( );
--		this.remote.loadTorrents( );
-+		this.remote.loadTorrents( true );
- 		this.togglePeriodicRefresh( true );
- 	},
- 
- 	preloadImages: function() {
- 		if (iPhone) {
- 			this.loadImages(
--				'images/buttons/info_activity.png',
- 				'images/buttons/info_general.png',
-+				'images/buttons/info_activity.png',
-+				'images/buttons/info_files.png',
- 				'images/buttons/toolbar_buttons.png',
- 				'images/graphics/filter_bar.png',
- 				'images/graphics/iphone_chrome.png',
--				'images/graphics/logo.png',
--				'images/progress/progress.png'
-+				'images/graphics/logo.png'
- 			);
- 		} else {
- 			this.loadImages(
--				'images/buttons/info_activity.png',
- 				'images/buttons/info_general.png',
-+				'images/buttons/info_activity.png',
-+				'images/buttons/info_files.png',
- 				'images/buttons/tab_backgrounds.png',
- 				'images/buttons/toolbar_buttons.png',
- 				'images/buttons/torrent_buttons.png',
-+				'images/buttons/file_wanted_buttons.png',
-+				'images/buttons/file_priority_buttons.png',
- 				'images/graphics/chrome.png',
- 				'images/graphics/filter_bar.png',
- 				'images/graphics/logo.png',
-@@ -288,7 +292,18 @@
- 				s.push( v[i] );
- 		return s;
- 	},
--
-+	
-+	getDeselectedTorrents: function() {
-+		var visible_torrent_ids = jQuery.map(this.getVisibleTorrents(), function(t) { return t.id(); } );
-+		var s = [ ];
-+		jQuery.each( this.getAllTorrents( ), function() {
-+			var visible = (-1 != jQuery.inArray(this.id(), visible_torrent_ids));
-+			if (!this.isSelected() || !visible)
-+				s.push( this );
-+		} );
-+		return s;
-+	},
-+	
- 	getVisibleRows: function()
- 	{
- 		var rows = [ ];
-@@ -405,7 +420,7 @@
- 		if( doUpdate )
- 			this.selectionChanged( );
- 	},
--    
-+
- 	selectionChanged: function()
- 	{
- 		this.updateButtonStates();
-@@ -575,7 +590,9 @@
- 		
- 		// Select the clicked tab, unselect the others,
- 		// and display the appropriate info
--		var tab_ids = ['inspector_tab_info', 'inspector_tab_activity'];
-+		var tab_ids = $(this).parent('#inspector_tabs').find('.inspector_tab').map(
-+			function() { return $(this).attr('id'); } 
-+		);
- 		for( var i=0; i<tab_ids.length; ++i ) {
- 			if (this.id == tab_ids[i]) {
- 				$('#' + tab_ids[i]).addClass('selected');
-@@ -639,12 +656,24 @@
- 			// sanity check
- 			if( !this[Prefs._RefreshRate] )
- 			     this[Prefs._RefreshRate] = 5;
--			this._periodic_refresh = setInterval('transmission.remote.loadTorrents()', this[Prefs._RefreshRate] * 1000 );
-+			remote = this.remote;
-+			this._periodic_refresh = setInterval(this.periodicRefresh, this[Prefs._RefreshRate] * 1000 );
- 		} else {
- 			clearInterval(this._periodic_refresh);
- 			this._periodic_refresh = null;
- 		}
- 	},
-+	
-+	periodicRefresh: function() {
-+		if (!this._periodicRefreshIterations)
-+			this._periodicRefreshIterations = 0;
-+		
-+		remote.loadTorrents(this._periodicRefreshIterations++ % 10 == 0);
-+	},
-+	
-+	scheduleFileRefresh: function() {
-+		this._periodicRefreshIterations = 0;
-+	},
- 
- 	/*--------------------------------------------
- 	 * 
-@@ -652,8 +681,7 @@
- 	 * 
- 	 *--------------------------------------------*/
-     
--	showPrefsDialog: function( )
--	{
-+	showPrefsDialog: function( ) {
- 		$('body').addClass('prefs_showing');
- 		$('#prefs_container').show();
- 		transmission.hideiPhoneAddressbar();
-@@ -861,7 +889,7 @@
- 		var na = 'N/A';
- 		
- 		$("#torrent_inspector_size, .inspector_row div").css('color', '#222');
--
-+		
- 		if( torrents.length == 0 )
- 		{
- 			var ti = '#torrent_inspector_';
-@@ -886,7 +914,8 @@
- 			setInnerHTML( $(ti+'progress')[0], na );
- 			setInnerHTML( $(ti+'comment')[0], na );
- 			setInnerHTML( $(ti+'creator')[0], na );
--			setInnerHTML( $(ti+'error')[0], na );		
-+			setInnerHTML( $(ti+'error')[0], na );
-+			this.updateVisibleFileLists();
- 			$("#torrent_inspector_size, .inspector_row > div:contains('N/A')").css('color', '#666');
- 			return;
- 		}
-@@ -914,7 +943,7 @@
- 			date_created = Math.formatTimestamp( t._creator_date );
- 		}
- 
--		for( i=0; i<torrents.length; ++i ) {
-+		for(i = 0; i < torrents.length; ++i ) {
- 			var t = torrents[i];
- 			sizeWhenDone         += t._sizeWhenDone;
- 			sizeDone             += t._sizeWhenDone - t._leftUntilDone;
-@@ -975,6 +1004,16 @@
- 		$(ti+'error')[0].innerHTML           = error;
- 		
- 		$(".inspector_row > div:contains('N/A')").css('color', '#666');
-+		this.updateVisibleFileLists();
-+	},
-+	
-+	updateVisibleFileLists: function() {
-+		jQuery.each( this.getSelectedTorrents(), function() {
-+			this.showFileList();
-+		} );
-+		jQuery.each( this.getDeselectedTorrents(), function() {
-+			this.hideFileList();
-+		} );
- 	},
-     
- 	/*
-@@ -986,7 +1025,7 @@
- 		else
- 			this.showInspector( );
- 	},
--    
-+	
- 	showInspector: function() {
- 		$('#torrent_inspector').show();
- 		if (iPhone) {
-@@ -1050,36 +1089,53 @@
- 		this.setFilter( Prefs._FilterAll );
- 	},
- 
-+	updateTorrentsData: function( torrent_list ) {
-+		var tr = this;
-+		jQuery.each( torrent_list, function() {
-+			var t = Torrent.lookup(tr._torrents, this.id);
-+			if (t) t.refresh(this);
-+		} );
-+	},
-+	
- 	/*
- 	 * Process got some new torrent data from the server
- 	 */
--	updateTorrents: function( torrent_list )
--	{
-+	updateAllTorrents: function( torrent_list ) {
- 		var torrent_data;
- 		var new_torrents = [];
- 		var torrent_ids = [];
- 		var handled = [];
- 		
- 		// refresh existing torrents
-+		this.updateTorrentsData( torrent_list );
-+		
-+		// partition existing and new torrents
-+		
- 		for( var i=0, len=torrent_list.length; i<len; ++i ) {
- 			var data = torrent_list[i];
- 			var t = Torrent.lookup( this._torrents, data.id );
- 			if( !t )
- 				new_torrents.push( data );
- 			else {
--				t.refresh( data );
- 				handled.push( t );
- 			}
- 		}
- 		
- 		// Add any torrents that aren't already being displayed
-+		// if file data is available
- 		if( new_torrents.length ) {
--			for( var i=0, len=new_torrents.length; i<len; ++i ) {
--				var t = new Torrent( this, new_torrents[i] );
--				this._torrents.push( t );
--				handled.push( t );
-+			if (data.files) {
-+				for( var i=0, len=new_torrents.length; i<len; ++i ) {
-+					var t = new Torrent( this, new_torrents[i] );
-+					this._torrents.push( t );
-+					handled.push( t );
-+				}
-+				this._torrents.sort( Torrent.compareById );
-+			} else {
-+				// There are new torrents available
-+				// pick them up on the next refresh
-+				this.togglePeriodicRefresh(this._periodicRefresh);
- 			}
--			this._torrents.sort( Torrent.compareById ); 
- 		}
- 		
- 		// Remove any torrents that weren't in the refresh list
-@@ -1188,7 +1244,7 @@
- 				args.dataType = 'xml';
- 				args.iframe = true;
- 				args.success = function( data ) {
--					tr.remote.loadTorrents( );
-+					tr.remote.loadTorrents( true );
- 					tr.togglePeriodicRefresh( true );
- 				};
- 				this.togglePeriodicRefresh( false );
-@@ -1276,6 +1332,9 @@
- 	stopTorrents: function( torrents ) {
- 		this.remote.stopTorrents( torrents );
- 	},
-+	changeFileCommand: function(command, torrent, file) {
-+		this.remote.changeFileCommand(command, torrent, file)
-+	},
-     
- 	hideiPhoneAddressbar: function(timeInSeconds) {
- 		if( iPhone ) {
 --- web/javascript/torrent.js.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/javascript/torrent.js	2009-02-28 11:51:09.000000000 +0100
++++ web/javascript/torrent.js	2009-03-30 16:25:55.000000000 +0200
 @@ -23,8 +23,7 @@
  	/*
  	 * Constructor
@@ -509,7 +293,7 @@
 +	refreshPriorityHTML: function() {
 +		if (this['_last_refreshed_prio'] == this._prio) { return; }
 +		var priority = { '1': 'high', '0': 'normal', '-1': 'low' }[new String(this._prio)];
-+		var off_priorities = [ 'high', 'normal', 'low' ].sort(function(a,b) { return (a == priority); } );
++		var off_priorities = [ 'high', 'normal', 'low' ].sort(function(a,b) { return (a == priority) ? 1 : -1; } );
 +		this._priority_control.addClass(priority).
 +			removeClass(off_priorities[0]).
 +			removeClass(off_priorities[1]);
@@ -534,8 +318,274 @@
 +	}
 +	
 +};
+--- web/javascript/transmission.js.orig	2009-02-27 17:46:38.000000000 +0100
++++ web/javascript/transmission.js	2009-03-30 16:25:55.000000000 +0200
+@@ -58,6 +58,7 @@
+ 		$('#prefs_cancel_button').bind('click', this.cancelPrefsClicked);
+ 		$('#inspector_tab_info').bind('click', this.inspectorTabClicked);
+ 		$('#inspector_tab_activity').bind('click', this.inspectorTabClicked);
++		$('#inspector_tab_files').bind('click', this.inspectorTabClicked);
+ 		if (iPhone) {
+ 			$('#torrent_inspector').bind('click', this.hideInspector);
+ 			$('#preferences_link').bind('click', this.releaseClutchPreferencesButton);
+@@ -83,28 +84,31 @@
+ 		
+ 		// Get preferences & torrents from the daemon
+ 		this.remote.loadDaemonPrefs( );
+-		this.remote.loadTorrents( );
++		this.remote.loadTorrents( true );
+ 		this.togglePeriodicRefresh( true );
+ 	},
+ 
+ 	preloadImages: function() {
+ 		if (iPhone) {
+ 			this.loadImages(
+-				'images/buttons/info_activity.png',
+ 				'images/buttons/info_general.png',
++				'images/buttons/info_activity.png',
++				'images/buttons/info_files.png',
+ 				'images/buttons/toolbar_buttons.png',
+ 				'images/graphics/filter_bar.png',
+ 				'images/graphics/iphone_chrome.png',
+-				'images/graphics/logo.png',
+-				'images/progress/progress.png'
++				'images/graphics/logo.png'
+ 			);
+ 		} else {
+ 			this.loadImages(
+-				'images/buttons/info_activity.png',
+ 				'images/buttons/info_general.png',
++				'images/buttons/info_activity.png',
++				'images/buttons/info_files.png',
+ 				'images/buttons/tab_backgrounds.png',
+ 				'images/buttons/toolbar_buttons.png',
+ 				'images/buttons/torrent_buttons.png',
++				'images/buttons/file_wanted_buttons.png',
++				'images/buttons/file_priority_buttons.png',
+ 				'images/graphics/chrome.png',
+ 				'images/graphics/filter_bar.png',
+ 				'images/graphics/logo.png',
+@@ -288,7 +292,18 @@
+ 				s.push( v[i] );
+ 		return s;
+ 	},
+-
++	
++	getDeselectedTorrents: function() {
++		var visible_torrent_ids = jQuery.map(this.getVisibleTorrents(), function(t) { return t.id(); } );
++		var s = [ ];
++		jQuery.each( this.getAllTorrents( ), function() {
++			var visible = (-1 != jQuery.inArray(this.id(), visible_torrent_ids));
++			if (!this.isSelected() || !visible)
++				s.push( this );
++		} );
++		return s;
++	},
++	
+ 	getVisibleRows: function()
+ 	{
+ 		var rows = [ ];
+@@ -405,7 +420,7 @@
+ 		if( doUpdate )
+ 			this.selectionChanged( );
+ 	},
+-    
++
+ 	selectionChanged: function()
+ 	{
+ 		this.updateButtonStates();
+@@ -575,7 +590,9 @@
+ 		
+ 		// Select the clicked tab, unselect the others,
+ 		// and display the appropriate info
+-		var tab_ids = ['inspector_tab_info', 'inspector_tab_activity'];
++		var tab_ids = $(this).parent('#inspector_tabs').find('.inspector_tab').map(
++			function() { return $(this).attr('id'); } 
++		);
+ 		for( var i=0; i<tab_ids.length; ++i ) {
+ 			if (this.id == tab_ids[i]) {
+ 				$('#' + tab_ids[i]).addClass('selected');
+@@ -639,12 +656,24 @@
+ 			// sanity check
+ 			if( !this[Prefs._RefreshRate] )
+ 			     this[Prefs._RefreshRate] = 5;
+-			this._periodic_refresh = setInterval('transmission.remote.loadTorrents()', this[Prefs._RefreshRate] * 1000 );
++			remote = this.remote;
++			this._periodic_refresh = setInterval(this.periodicRefresh, this[Prefs._RefreshRate] * 1000 );
+ 		} else {
+ 			clearInterval(this._periodic_refresh);
+ 			this._periodic_refresh = null;
+ 		}
+ 	},
++	
++	periodicRefresh: function() {
++		if (!this._periodicRefreshIterations)
++			this._periodicRefreshIterations = 0;
++		
++		remote.loadTorrents(this._periodicRefreshIterations++ % 10 == 0);
++	},
++	
++	scheduleFileRefresh: function() {
++		this._periodicRefreshIterations = 0;
++	},
+ 
+ 	/*--------------------------------------------
+ 	 * 
+@@ -652,8 +681,7 @@
+ 	 * 
+ 	 *--------------------------------------------*/
+     
+-	showPrefsDialog: function( )
+-	{
++	showPrefsDialog: function( ) {
+ 		$('body').addClass('prefs_showing');
+ 		$('#prefs_container').show();
+ 		transmission.hideiPhoneAddressbar();
+@@ -861,7 +889,7 @@
+ 		var na = 'N/A';
+ 		
+ 		$("#torrent_inspector_size, .inspector_row div").css('color', '#222');
+-
++		
+ 		if( torrents.length == 0 )
+ 		{
+ 			var ti = '#torrent_inspector_';
+@@ -886,7 +914,8 @@
+ 			setInnerHTML( $(ti+'progress')[0], na );
+ 			setInnerHTML( $(ti+'comment')[0], na );
+ 			setInnerHTML( $(ti+'creator')[0], na );
+-			setInnerHTML( $(ti+'error')[0], na );		
++			setInnerHTML( $(ti+'error')[0], na );
++			this.updateVisibleFileLists();
+ 			$("#torrent_inspector_size, .inspector_row > div:contains('N/A')").css('color', '#666');
+ 			return;
+ 		}
+@@ -914,7 +943,7 @@
+ 			date_created = Math.formatTimestamp( t._creator_date );
+ 		}
+ 
+-		for( i=0; i<torrents.length; ++i ) {
++		for(i = 0; i < torrents.length; ++i ) {
+ 			var t = torrents[i];
+ 			sizeWhenDone         += t._sizeWhenDone;
+ 			sizeDone             += t._sizeWhenDone - t._leftUntilDone;
+@@ -975,6 +1004,16 @@
+ 		$(ti+'error')[0].innerHTML           = error;
+ 		
+ 		$(".inspector_row > div:contains('N/A')").css('color', '#666');
++		this.updateVisibleFileLists();
++	},
++	
++	updateVisibleFileLists: function() {
++		jQuery.each( this.getSelectedTorrents(), function() {
++			this.showFileList();
++		} );
++		jQuery.each( this.getDeselectedTorrents(), function() {
++			this.hideFileList();
++		} );
+ 	},
+     
+ 	/*
+@@ -986,7 +1025,7 @@
+ 		else
+ 			this.showInspector( );
+ 	},
+-    
++	
+ 	showInspector: function() {
+ 		$('#torrent_inspector').show();
+ 		if (iPhone) {
+@@ -1050,36 +1089,53 @@
+ 		this.setFilter( Prefs._FilterAll );
+ 	},
+ 
++	updateTorrentsData: function( torrent_list ) {
++		var tr = this;
++		jQuery.each( torrent_list, function() {
++			var t = Torrent.lookup(tr._torrents, this.id);
++			if (t) t.refresh(this);
++		} );
++	},
++	
+ 	/*
+ 	 * Process got some new torrent data from the server
+ 	 */
+-	updateTorrents: function( torrent_list )
+-	{
++	updateAllTorrents: function( torrent_list ) {
+ 		var torrent_data;
+ 		var new_torrents = [];
+ 		var torrent_ids = [];
+ 		var handled = [];
+ 		
+ 		// refresh existing torrents
++		this.updateTorrentsData( torrent_list );
++		
++		// partition existing and new torrents
++		
+ 		for( var i=0, len=torrent_list.length; i<len; ++i ) {
+ 			var data = torrent_list[i];
+ 			var t = Torrent.lookup( this._torrents, data.id );
+ 			if( !t )
+ 				new_torrents.push( data );
+ 			else {
+-				t.refresh( data );
+ 				handled.push( t );
+ 			}
+ 		}
+ 		
+ 		// Add any torrents that aren't already being displayed
++		// if file data is available
+ 		if( new_torrents.length ) {
+-			for( var i=0, len=new_torrents.length; i<len; ++i ) {
+-				var t = new Torrent( this, new_torrents[i] );
+-				this._torrents.push( t );
+-				handled.push( t );
++			if (data.files) {
++				for( var i=0, len=new_torrents.length; i<len; ++i ) {
++					var t = new Torrent( this, new_torrents[i] );
++					this._torrents.push( t );
++					handled.push( t );
++				}
++				this._torrents.sort( Torrent.compareById );
++			} else {
++				// There are new torrents available
++				// pick them up on the next refresh
++				this.togglePeriodicRefresh(this._periodicRefresh);
+ 			}
+-			this._torrents.sort( Torrent.compareById ); 
+ 		}
+ 		
+ 		// Remove any torrents that weren't in the refresh list
+@@ -1095,6 +1151,7 @@
+ 					delete e._torrent;
+ 					e.hide( );
+ 				}
++				t.hideFileList();
+ 				this._torrents.splice( pos, 1 );
+ 				removedAny = true;
+ 			}
+@@ -1188,7 +1245,7 @@
+ 				args.dataType = 'xml';
+ 				args.iframe = true;
+ 				args.success = function( data ) {
+-					tr.remote.loadTorrents( );
++					tr.remote.loadTorrents( true );
+ 					tr.togglePeriodicRefresh( true );
+ 				};
+ 				this.togglePeriodicRefresh( false );
+@@ -1276,6 +1333,9 @@
+ 	stopTorrents: function( torrents ) {
+ 		this.remote.stopTorrents( torrents );
+ 	},
++	changeFileCommand: function(command, torrent, file) {
++		this.remote.changeFileCommand(command, torrent, file)
++	},
+     
+ 	hideiPhoneAddressbar: function(timeInSeconds) {
+ 		if( iPhone ) {
 --- web/javascript/transmission.remote.js.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/javascript/transmission.remote.js	2009-02-28 11:51:09.000000000 +0100
++++ web/javascript/transmission.remote.js	2009-03-30 16:25:55.000000000 +0200
 @@ -55,63 +55,92 @@
  			'Dismiss');
  		transmission.togglePeriodicRefresh(false);
@@ -686,39 +736,17 @@
 +		} );
  	}
  };
---- web/index.html.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/index.html	2009-02-28 11:51:09.000000000 +0100
-@@ -14,6 +14,7 @@
- 		<link media="screen and (min-device-width: 481px)" href="./stylesheets/common.css" type="text/css" rel="stylesheet" />
- 		<script type="text/javascript" src="./javascript/jquery/jquery.transmenu.min.js"></script>
- 		<script type="text/javascript" src="./javascript/jquery/jquery.contextmenu.min.js"></script>
-+		<script type="text/javascript" src="./javascript/jquery/jquery.tinysort.min.js"></script>
- 		<script type="text/javascript" src="./javascript/menu.js"></script>
- 		<script type="text/javascript" src="./javascript/jquery/jquery.dimensions.min.js"></script>
- 		<script type="text/javascript" src="./javascript/jquery/jquery.form.min.js"></script>
-@@ -63,6 +64,7 @@
- 			<div id="inspector_tabs">
- 				<div class="inspector_tab selected" id="inspector_tab_info"><a href="#info"><img src="images/buttons/info_general.png" alt="Information"/></a></div>
- 				<div class="inspector_tab" id="inspector_tab_activity"><a href="#activity"><img src="images/buttons/info_activity.png" alt="Activity"/></a></div>
-+				<div class="inspector_tab" id="inspector_tab_files"><a href="#files"><img src="images/buttons/info_files.png" alt="Files"/></a></div>
- 			</div>
- 			
- 			<div id="inspector_header">
-@@ -170,6 +172,11 @@
- 					</div>
- 				</div><!-- class="inspector_group"-->
- 			</div><!-- id="inspector_tab_activity_container" -->
-+
-+			<div style="display:none;" class="inspector_container" id="inspector_tab_files_container">
-+				<span id="inspector_file_list"></span>
-+			</div><!-- id="inspector_tab_files_container" -->
-+
- 		</div>
- 		
- 		<div id="torrent_container">
 --- web/stylesheets/common.css.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/stylesheets/common.css	2009-02-28 11:51:09.000000000 +0100
-@@ -532,9 +532,9 @@
++++ web/stylesheets/common.css	2009-03-30 16:25:55.000000000 +0200
+@@ -514,6 +514,7 @@
+ 	border-left: 1px solid #888;
+ 	z-index: 2;
+ 	text-align: left;
++	overflow: auto;
+ }
+ div#torrent_inspector #torrent_inspector_name {
+ 	margin: 0;
+@@ -532,9 +533,9 @@
  	padding-right: 10px;
  }
  div#inspector_tabs {
@@ -729,7 +757,18 @@
  }
  .inspector_tab {
  	float: left;
-@@ -575,6 +575,109 @@
+@@ -548,8 +549,8 @@
+ 	background-position: left -26px; /* the highlighted part of the image */
+ }
+ .inspector_container {
+-	margin: 10px;
+-	width: 330px; /* inspector_width==350 - ((margin==10)*2) */
++	margin: 3%;
++	width: 96%;
+ }
+ .inspector_group {
+ 	display: table;
+@@ -575,6 +576,109 @@
  	width: 230px; /* inspector_container_width==330 - inspector_label_width==100 */
  }
  
