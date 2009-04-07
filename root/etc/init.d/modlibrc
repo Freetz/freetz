@@ -4,7 +4,7 @@
 # other environment variables:
 # DAEMON_LONG_NAME	service name to display in start/stop message, default $DAEMON
 # PID_FILE		pid-file for DAEMON, default /var/run/$DAEMON.pid
-
+# CONF_NAME		config is in /mod/etc/conf/${CONF_NAME}.cfg instead of /mod/etc/conf/${DAEMON}.cfg
 
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
@@ -133,15 +133,35 @@ modlib_status()
 	fi
 }
 
+# modlib_loadconfig
+#    load configuration
+modlib_loadconfig ()
+{
+	local CONF_FILE="/mod/etc/conf/${1-${CONF_NAME-$DAEMON}}.cfg"
+	if [ -r "$CONF_FILE" ]; then
+		alias export=
+		. /mod/etc/conf/${1-${CONF_NAME-$DAEMON}}.cfg
+		unalias export
+	fi
+}
+
+# modlib_startdaemon
+#    clear environment, start daemon
+#    "$@": commandline tu execute
+modlib_startdaemon()
+{
+	env - PATH="$PATH" "$@"
+}
+
 # load config
 [ -n "$DAEMON" ] && case "$1" in
 	""|config|load|reload|restart|start|status)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+		if [ ! -r "/mod/etc/conf/${CONF_NAME-$DAEMON}.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
 		fi
 
-		. /mod/etc/conf/$DAEMON.cfg
+		modlib_loadconfig
 		;;
 esac
 
