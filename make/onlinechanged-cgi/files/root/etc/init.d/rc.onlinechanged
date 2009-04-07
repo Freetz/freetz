@@ -7,6 +7,7 @@ DAEMON=onlinechanged
 start() {
 	echo -n 'Setting up onlinechange scripting ...'
 	[ ! -f /tmp/flash/$DAEMON-cgi ] && cp /etc/default.$DAEMON/$DAEMON-cgi /tmp/flash/
+	[ ! -d /var/run/ ] && mkdir -p /var/run
 	(sh /tmp/flash/$DAEMON-cgi start
 	echo $? > /var/run/$DAEMON)&
 	echo 'done.'

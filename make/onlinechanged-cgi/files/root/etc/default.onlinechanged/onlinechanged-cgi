@@ -1,8 +1,23 @@
 case "$1" in
-	start)
-		;;
-	online)
-		;;
-	offline)
-		;;
+ start)
+   # Kommandos beim Start des Routers
+   # ggf. sollten hier die Enträge von online) stehen
+   ;;
+ online)
+   # Kommandos wenn der Router online geht (nach Zwangstrennung)
+   #
+   # Beispiel für DynDNS bei Strato (nützlich
+   # bei mehreren DynDNS-Einträgen)
+   # wget -q -O /dev/null \
+   # http://<hostname>:<;passwort>@dyndns.strato.com\
+   # /nic/update?hostname=&lt;hostname2&gt;
+   #
+   # mit SSL
+   # wget -q --no-check-certificate -O /dev/null \
+   # https://<hostname>:<passwort>@dyndns.strato.com\
+   # /nic/update?hostname=&lt;hostname2&gt;
+   ;;
+ offline)
+   # Kommandos wenn der Router offline geht (nach Zwangstrennung)
+   ;;
 esac
