@@ -139,9 +139,7 @@ modlib_loadconfig ()
 {
 	local CONF_FILE="/mod/etc/conf/${1-${CONF_NAME-$DAEMON}}.cfg"
 	if [ -r "$CONF_FILE" ]; then
-		alias export=
 		. /mod/etc/conf/${1-${CONF_NAME-$DAEMON}}.cfg
-		unalias export
 	fi
 }
 
