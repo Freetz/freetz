@@ -1,0 +1,11 @@
+--- libc/unistd/daemon.c
++++ libc/unistd/daemon.c
+@@ -54,7 +54,7 @@ libc_hidden_proto(_exit)
+ libc_hidden_proto(dup2)
+ libc_hidden_proto(setsid)
+ libc_hidden_proto(chdir)
+-libc_hidden_proto(fork)
++/* libc_hidden_proto(fork) */
+ 
+ int daemon( int nochdir, int noclose )
+ {
