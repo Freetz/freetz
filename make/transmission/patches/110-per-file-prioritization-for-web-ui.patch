@@ -1,14 +1,14 @@
---- web/index.html.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/index.html	2009-03-30 16:25:55.000000000 +0200
+--- web/index.html.orig	2009-04-13 03:55:56.000000000 +0200
++++ web/index.html	2009-04-16 12:18:23.000000000 +0200
 @@ -14,6 +14,7 @@
  		<link media="screen and (min-device-width: 481px)" href="./stylesheets/common.css" type="text/css" rel="stylesheet" />
  		<script type="text/javascript" src="./javascript/jquery/jquery.transmenu.min.js"></script>
  		<script type="text/javascript" src="./javascript/jquery/jquery.contextmenu.min.js"></script>
 +		<script type="text/javascript" src="./javascript/jquery/jquery.tinysort.min.js"></script>
  		<script type="text/javascript" src="./javascript/menu.js"></script>
- 		<script type="text/javascript" src="./javascript/jquery/jquery.dimensions.min.js"></script>
  		<script type="text/javascript" src="./javascript/jquery/jquery.form.min.js"></script>
-@@ -63,6 +64,7 @@
+ 		<script type="text/javascript" src="./javascript/jquery/json.min.js"></script>
+@@ -62,6 +63,7 @@
  			<div id="inspector_tabs">
  				<div class="inspector_tab selected" id="inspector_tab_info"><a href="#info"><img src="images/buttons/info_general.png" alt="Information"/></a></div>
  				<div class="inspector_tab" id="inspector_tab_activity"><a href="#activity"><img src="images/buttons/info_activity.png" alt="Activity"/></a></div>
@@ -16,7 +16,7 @@
  			</div>
  			
  			<div id="inspector_header">
-@@ -170,6 +172,11 @@
+@@ -169,6 +171,11 @@
  					</div>
  				</div><!-- class="inspector_group"-->
  			</div><!-- id="inspector_tab_activity_container" -->
@@ -28,8 +28,8 @@
  		</div>
  		
  		<div id="torrent_container">
---- web/javascript/common.js.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/javascript/common.js	2009-03-30 16:25:55.000000000 +0200
+--- web/javascript/common.js.orig	2009-04-13 03:55:56.000000000 +0200
++++ web/javascript/common.js	2009-04-16 12:18:23.000000000 +0200
 @@ -42,11 +42,6 @@
  	transmission = new Transmission();
  
@@ -51,8 +51,8 @@
   */
  function setInnerHTML( e, html )
  {
---- web/javascript/torrent.js.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/javascript/torrent.js	2009-03-30 16:25:55.000000000 +0200
+--- web/javascript/torrent.js.orig	2009-04-13 03:55:56.000000000 +0200
++++ web/javascript/torrent.js	2009-04-16 12:18:23.000000000 +0200
 @@ -23,8 +23,7 @@
  	/*
  	 * Constructor
@@ -318,8 +318,8 @@
 +	}
 +	
 +};
---- web/javascript/transmission.js.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/javascript/transmission.js	2009-03-30 16:25:55.000000000 +0200
+--- web/javascript/transmission.js.orig	2009-04-13 03:55:56.000000000 +0200
++++ web/javascript/transmission.js	2009-04-16 12:18:23.000000000 +0200
 @@ -58,6 +58,7 @@
  		$('#prefs_cancel_button').bind('click', this.cancelPrefsClicked);
  		$('#inspector_tab_info').bind('click', this.inspectorTabClicked);
@@ -584,8 +584,8 @@
      
  	hideiPhoneAddressbar: function(timeInSeconds) {
  		if( iPhone ) {
---- web/javascript/transmission.remote.js.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/javascript/transmission.remote.js	2009-03-30 16:25:55.000000000 +0200
+--- web/javascript/transmission.remote.js.orig	2009-04-13 03:55:56.000000000 +0200
++++ web/javascript/transmission.remote.js	2009-04-16 12:18:23.000000000 +0200
 @@ -55,63 +55,92 @@
  			'Dismiss');
  		transmission.togglePeriodicRefresh(false);
@@ -633,21 +633,7 @@
  
 -	loadTorrents: function() {
 +	loadTorrents: function(update_files) {
- 		var tr = this._controller;
--		var o = { };
--		o.method = 'torrent-get'
--		o.arguments = { };
--		o.arguments.fields = [
--			'addedDate', 'announceURL', 'comment', 'creator',
--			'dateCreated', 'downloadedEver', 'error', 'errorString',
--			'eta', 'hashString', 'haveUnchecked', 'haveValid', 'id',
--			'isPrivate', 'leechers', 'leftUntilDone', 'name',
--			'peersConnected', 'peersGettingFromUs', 'peersSendingToUs',
--			'rateDownload', 'rateUpload', 'seeders', 'sizeWhenDone',
--			'status', 'swarmSpeed', 'totalSize', 'uploadedEver' ];
--		this.sendRequest( RPC._Root, $.toJSON(o), function(data) {
--			tr.updateTorrents( data.arguments.torrents );
--		}, "json" );
++		var tr = this._controller;
 +		var o = {
 +			method: 'torrent-get',
 +			arguments: { fields: [
@@ -668,11 +654,24 @@
 +		this.sendRequest( o, function(data) {
 +			tr.updateAllTorrents( data.arguments.torrents );
 +		} );
- 	},
--
++	},
 +	
 +	loadTorrentFiles: function( torrent_ids ) {
-+		var tr = this._controller;
+ 		var tr = this._controller;
+-		var o = { };
+-		o.method = 'torrent-get'
+-		o.arguments = { };
+-		o.arguments.fields = [
+-			'addedDate', 'announceURL', 'comment', 'creator',
+-			'dateCreated', 'downloadedEver', 'error', 'errorString',
+-			'eta', 'hashString', 'haveUnchecked', 'haveValid', 'id',
+-			'isPrivate', 'leechers', 'leftUntilDone', 'name',
+-			'peersConnected', 'peersGettingFromUs', 'peersSendingToUs',
+-			'rateDownload', 'rateUpload', 'seeders', 'sizeWhenDone',
+-			'status', 'swarmSpeed', 'totalSize', 'uploadedEver' ];
+-		this.sendRequest( RPC._Root, $.toJSON(o), function(data) {
+-			tr.updateTorrents( data.arguments.torrents );
+-		}, "json" );
 +		this.sendRequest( {
 +			method: 'torrent-get',
 +			arguments: { fields: [ 'files', 'wanted', 'priorities'] },
@@ -680,7 +679,8 @@
 +		}, function(data) {
 +			tr.updateTorrentsData( data.arguments.torrents );
 +		} );
-+	},
+ 	},
+-
 +	
 +	changeFileCommand: function( command, torrent, file ) {
 +		var remote = this;
@@ -718,7 +718,7 @@
  	startTorrents: function( torrents ) {
  		this.sendTorrentCommand( 'torrent-start', torrents );
  	},
-@@ -146,11 +175,12 @@
+@@ -149,11 +178,12 @@
  	},
  	savePrefs: function( args ) {
  		var remote = this;
@@ -736,8 +736,8 @@
 +		} );
  	}
  };
---- web/stylesheets/common.css.orig	2009-02-27 17:46:38.000000000 +0100
-+++ web/stylesheets/common.css	2009-03-30 16:25:55.000000000 +0200
+--- web/stylesheets/common.css.orig	2009-04-13 03:55:56.000000000 +0200
++++ web/stylesheets/common.css	2009-04-16 12:18:23.000000000 +0200
 @@ -514,6 +514,7 @@
  	border-left: 1px solid #888;
  	z-index: 2;
