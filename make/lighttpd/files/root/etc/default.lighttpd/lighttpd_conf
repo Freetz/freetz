@@ -267,7 +267,7 @@ genchroot() {
 	[ -d "$2" ] || return
 	dir="$(dirname $1)"
 	mkdir -p "$2/$dir"
-	cp -pf $1 "$2/$dir"
+	cp -pf "/$1" "$2/$dir"
 	ldd $1 | while read -r ln; do
 		genchroot "$(echo $ln | awk '{print $3}')" "$2"
 	done

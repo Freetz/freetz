@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=lighttpd
+DAEMON_LONG_NAME="lighttpd web server"
 
 . /etc/init.d/modlibrc
 
@@ -48,7 +49,7 @@ configure() {
 }
 
 stop () {
-        echo -n 'Stopping lighttpd server...'
+        echo -n 'Stopping $DAEMON_LONG_NAME...'
         killall $DAEMON > /dev/null 2>&1
         exitval=$?
 
@@ -77,13 +78,17 @@ checkdir() {
 }
 
 start() {
-	echo -n 'Starting lighttpd ...'
+	echo -n "Starting $DAEMON_LONG_NAME ..."
+	if modlib_check_running; then
+		echo "$DAEMON already running."
+		exit 0
+	fi
 
 	checkdir "$LIGHTTPD_DOCROOT"
 	configure
 
 	LD_PRELOAD=
-	$DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf
+	modlib_startdaemon $DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf
 	exitval=$?
 
 	if [ "$exitval" -eq 0 ]; then
@@ -128,11 +133,7 @@ case "$1" in
 			exit 1;
 		fi
 
-		if [ -e "/var/run/lighttpd.pid" ]; then
-			echo "$DAEMON already started."
-		else
-			start
-		fi
+		start
 		;;
 	unload)
 		modlib_stop
