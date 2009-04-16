@@ -1,20 +1,9 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
-
 DAEMON=dropbear
+DAEMON_LONG_NAME="dropbear SSH server"
 
-case "$1" in
-	""|load|start|restart|status)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/$DAEMON.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 pre_config() {
 	if [ ! -e "/tmp/flash/rsa_host_key" -o ! -e "/tmp/flash/dss_host_key" ]; then
@@ -49,14 +38,14 @@ start() {
 		DROPBEAR_OPTIONS="-R $DROPBEAR_OPTIONS"
 	fi
 
-	echo -n 'Starting ssh server...'
-        if [ -s /var/run/$DAEMON.pid ]; then
+	echo -n "Starting $DAEMON_LONG_NAME..."
+        if modlib_check_running; then
                 echo 'already running.'
                 exit 0
         fi
 
 	set -o noglob
-	$DAEMON -p "$DROPBEAR_PORT" $DROPBEAR_OPTIONS
+	modlib_startdaemon $DAEMON -p "$DROPBEAR_PORT" $DROPBEAR_OPTIONS
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -67,17 +56,7 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping ssh server...'
-	if [ -e /var/run/$DAEMON.pid ]; then
-		kill "$(cat /var/run/$DAEMON.pid)" > /dev/null 2>&1		
-		exitval=$?
-	fi
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_stop
 }
 
 case "$1" in
@@ -121,11 +100,7 @@ case "$1" in
 		if [ "$DROPBEAR_ENABLED" == "inetd" ]; then
 			echo 'inetd'
  		else
-			if [ -s "/var/run/$DAEMON.pid" ]; then
-				echo 'running'
-			else
-				echo 'stopped'
-			fi
+			modlib_status
 		fi
 		;;
 	*)
