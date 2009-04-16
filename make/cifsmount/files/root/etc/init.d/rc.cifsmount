@@ -1,20 +1,10 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
-
-DAEMON=/mod/etc/cifs_mount
+DAEMON=cifs_mount
+DAEMON_MOUNT=/mod/etc/cifs_mount
 DAEMON_UMOUNT=/mod/etc/cifs_umount
 
-case "$1" in
-	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/cifsmount.cfg" ]; then
-			echo "Error[cifsmount]: not configured" 1>&2
-			exit 1
-		fi
-		. /mod/etc/conf/cifsmount.cfg
-	;;
-esac
+. /etc/init.d/modlibrc
 
 start() {
 
@@ -37,8 +27,8 @@ start() {
 
 	echo -n 'mount cifs...'
 
-	chmod +x $DAEMON $DAEMON_UMOUNT
-	$DAEMON > /dev/null 2>&1
+	chmod +x $DAEMON_MOUNT $DAEMON_UMOUNT
+	$DAEMON_MOUNT > /dev/null 2>&1
 
 	exitval=$?
 

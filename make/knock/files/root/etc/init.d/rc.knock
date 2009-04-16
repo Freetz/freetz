@@ -1,21 +1,8 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
+DAEMON=knock
 
-PACKAGE=knock
-DAEMON=knockd
-
-case "$1" in
-	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/$PACKAGE.cfg" ]; then
-			echo "Error[$PACKAGE]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/$PACKAGE.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 start() {
 	if [ ! -e "/tmp/flash/knockd.conf" ]; then
@@ -30,7 +17,7 @@ start() {
 	while [ $((countdown--)) -gt 0 ] && ! ifconfig dsl > /dev/null 2>&1; do
 		sleep 2
 	done
-	$DAEMON -d -c /tmp/flash/knockd.conf -i "$KNOCK_INTERFACE"
+	knockd -d -c /tmp/flash/knockd.conf -i "$KNOCK_INTERFACE"
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -42,7 +29,7 @@ start() {
 
 stop() {
 	echo -n 'Stopping port-knock server...'
-	killall $DAEMON > /dev/null 2>&1
+	killall knockd > /dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -63,7 +50,7 @@ case "$1" in
 		modreg file 'knockd_conf' 'Knockd config' 0 "$deffile"
 
 		if [ "$KNOCK_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
+			echo "knockd is disabled" 1>&2
 			exit 1;
 		fi
 
@@ -86,7 +73,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
+		if [ -z "$(pidof "$knockd")" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

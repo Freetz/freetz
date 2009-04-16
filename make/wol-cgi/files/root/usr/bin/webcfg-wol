@@ -1,17 +1,9 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
+DAEMON=wol
 
-DAEMON=httpd-wol
-
-if [ ! -r "/mod/etc/conf/wol.cfg" ]; then
-	echo "Error[$DAEMON]: not configured" 1>&2
-	exit 1
-fi
-
-. /mod/etc/conf/wol.cfg
+. /etc/init.d/modlibrc
 
 homedir=/mod/pkg/wol/usr/mww-wol/
 
-exec httpd "$@" -p "$WOL_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "Wake-on-LAN"
+exec httpd "$@" -p "$WOL_PORT" -c /mod/etc/httpd-$DAEMON.conf -h "$homedir" -r "Wake-on-LAN"

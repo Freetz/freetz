@@ -1,21 +1,9 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
-
 DAEMON=checkmaild
 #OPTIONS=-path /mod/etc/checkmaild.conf
 
-case "$1" in
-	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/$DAEMON.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 start() {
 	

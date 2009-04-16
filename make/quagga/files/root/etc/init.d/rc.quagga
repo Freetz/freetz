@@ -1,16 +1,11 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+DAEMON=quagga
+
+. /etc/init.d/modlibrc
 
 case "$1" in
         ""|load|start|restart)
-            if [ ! -r "/mod/etc/conf/quagga.cfg" ]; then
-		    echo "Error[quagga]: not configured" 1>&2
-		    exit 1
-            fi
-
-            . /mod/etc/conf/quagga.cfg
 
 	    RUN_MODSAVE=0
 

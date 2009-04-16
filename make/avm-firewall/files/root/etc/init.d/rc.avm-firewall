@@ -1,9 +1,9 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/var/mod/sbin
-export LD_LIBRARY_PATH=/mod/lib
-
 DAEMON=avm-firewall
+
+. /etc/init.d/modlibrc
+
 # Variablen fuer Pfade
 REAL=/var/flash/ar7.cfg
 REALCOPY=/var/tmp/firewall.ar7.copy
@@ -65,13 +65,6 @@ case "$1" in
                echo "export AVM_FIREWALL_POLICY_HO='""$HOPOL""'" >> $CONFIG
                echo "export AVM_FIREWALL_FORWARDINGRULES='""$FWDRULES""'" >> $CONFIG
            ;;
-esac
-
-
-case "$1" in
-        ""|load|start|restart)
-                . /mod/etc/conf/$DAEMON.cfg
-                ;;
 esac
 
 start() {

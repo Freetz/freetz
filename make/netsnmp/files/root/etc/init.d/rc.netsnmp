@@ -1,22 +1,14 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
-
 DAEMON=snmpd
 SNMPDOPTS='-Lf /dev/null -p /var/run/snmpd.pid'
 CFGFILE="/tmp/flash/snmpd.conf"
 [ -e /etc/snmp/snmpd.conf ] && CFGFILE="/etc/snmp/snmpd.conf"
 
+. /etc/init.d/modlibrc
+
 case "$1" in
 	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/netsnmp.cfg" ]; then
-			echo "Error[netsnmp]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/netsnmp.cfg;
-
 		if [ ! -e "$CFGFILE" ] ; then
 			echo "Creating $CFGFILE"
 			{

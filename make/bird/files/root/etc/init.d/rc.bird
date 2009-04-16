@@ -1,22 +1,10 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
-
 DAEMON=bird
 CFGFILE='/tmp/flash/bird.conf'
 [ -e /etc/bird.conf -a ! -e $CFGFILE ] && CFGFILE='/etc/bird.conf'
 
-case "$1" in
-        ''|load|start|restart)
-		if [ ! -r '/mod/etc/conf/bird.cfg' ]; then
-			echo 'Error[bird]: not configured' 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/bird.cfg
-	;;
-esac
+. /etc/init.d/modlibrc
 
 ar7ipaddr () {
 	local SEC=$1

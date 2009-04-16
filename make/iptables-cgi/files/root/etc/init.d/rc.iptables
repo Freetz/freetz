@@ -1,24 +1,12 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/var/mod/sbin
-export LD_LIBRARY_PATH=/mod/lib
-
 DAEMON=iptables
 SAVEFILE=/var/tmp/flash/iptables_rules
 MODULES="ip_tables ip_conntrack ipt_LOG iptable_filter ipt_state \
 			ip_conntrack_ftp ipt_mac ipt_multiport ipt_iprange iptable_nat \
 			ipt_MASQUERADE ipt_REDIRECT"
 
-case "$1" in
-	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/$DAEMON.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 start() {
 
