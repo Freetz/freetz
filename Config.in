@@ -1388,12 +1388,13 @@ config FREETZ_REMOVE_DSLD
 	select FREETZ_REMOVE_USERMAN if ! (FREETZ_TYPE_FON_5140 || FREETZ_TYPE_FON_WLAN_7113 || FREETZ_TYPE_SPEEDPORT_W501V || FREETZ_TYPE_SPEEDPORT_W900V)
 	help
 		Remove DSL deamon (dsld), if you are planning to use your box as a simple
-		IP client in ATA mode.
+		IP client in ATA mode. 
 
-		ATTENTION: Do *not* use this option if your ATA mode box uses PPoE
-		passthrough, because in this case dsld is still needed! Furthermore,
-		selecting this patch also selects the UPnP patch, because UPnP must be
-		deactivated anyway for IP clients, otherwise dsld will be used again.
+		ATTENTION: You won't be able to use your box as a modem nor a router anymore.
+		As well do *not* use this option if your ATA mode box uses PPoE passthrough,
+		because in this case dsld is still needed! Furthermore, selecting this patch
+		also selects the UPnP patch, because UPnP must be deactivated anyway for 
+		IP clients, otherwise dsld will be used again.
 		You can find the UPnP settings in the German web UI under
 		  Einstellungen
 		    System
