@@ -9,7 +9,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/lib/libz.so.$($(PKG)_LIB_VERSION)
 $(PKG)_CONFIGURE_DEFOPTS := n
 $(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
-$(PKG)_CONFIGURE_ENV += LDSHARED="$(TARGET_CC) -shared -Wl,-soname,libz.so.1"
 $(PKG)_CONFIGURE_ENV += prefix=/usr
 $(PKG)_CONFIGURE_OPTIONS += --shared
 
@@ -21,7 +20,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(ZLIB_DIR) \
-		libz.a libz.so
+		all libz.a
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
