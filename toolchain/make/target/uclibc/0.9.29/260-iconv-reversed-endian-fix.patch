@@ -1,0 +1,42 @@
+--- libc/misc/wchar/wchar.c.old.ak	2007-07-03 13:05:59.000000000 +0200
++++ libc/misc/wchar/wchar.c	2007-07-03 13:11:07.000000000 +0200
+@@ -1368,9 +1368,9 @@
+ 			if (inci == 4) {
+ 				wc = (((unsigned int)((unsigned char)((*inbuf)[2]))) << 8)
+ 					+ ((unsigned char)((*inbuf)[3])) + (wc << 16);
+-				if (!(px->fromcodeset & 1)) wc = bswap_32(wc);
++				if (px->fromcodeset & 1) wc = bswap_32(wc);
+ 			} else {
+-				if (!(px->fromcodeset & 1)) wc = bswap_16(wc);
++				if (px->fromcodeset & 1) wc = bswap_16(wc);
+ 				if (((px->fromcodeset & IC_UTF_16) == IC_UTF_16)
+ 					 && (((__uwchar_t)(wc - 0xd800U)) < (0xdc00U - 0xd800U))
+ 					) {			/* surrogate */
+@@ -1378,7 +1378,7 @@
+ 					if (*inbytesleft < 4) goto INVALID;
+ 					wc2 = (((unsigned int)((unsigned char)((*inbuf)[2]))) << 8)
+ 						+ ((unsigned char)((*inbuf)[3]));
+-					if (!(px->fromcodeset & 1)) wc = bswap_16(wc2);
++					if (px->fromcodeset & 1) wc = bswap_16(wc2);
+ 					if (((__uwchar_t)(wc2 -= 0xdc00U)) < (0xe0000U - 0xdc00U)) {
+ 						goto ILLEGAL;
+ 					}
+@@ -1503,11 +1503,14 @@
+ 					wc += (wc2 << 16);
+ 				} else if (px->tocodeset & 1) wc = bswap_16(wc);
+ 			}				
+-			(*outbuf)[0] = (char)((unsigned char)(wc));
+-			(*outbuf)[1] = (char)((unsigned char)(wc >> 8));
+ 			if (inco == 4) {
+-				(*outbuf)[2] = (char)((unsigned char)(wc >> 16));
+-				(*outbuf)[3] = (char)((unsigned char)(wc >> 24));
++				(*outbuf)[0] = (char)((unsigned char)(wc >> 24));
++				(*outbuf)[1] = (char)((unsigned char)(wc >> 16));
++				(*outbuf)[2] = (char)((unsigned char)(wc >> 8));
++				(*outbuf)[3] = (char)((unsigned char)(wc));
++			} else {
++				(*outbuf)[0] = (char)((unsigned char)(wc >> 8));
++				(*outbuf)[1] = (char)((unsigned char)(wc));
+ 			}
+ 		} else if (px->tocodeset == IC_UTF_8) {
+ 			const wchar_t *pw = &wc;

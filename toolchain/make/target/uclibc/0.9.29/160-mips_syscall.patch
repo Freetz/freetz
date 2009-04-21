@@ -1,26 +1,30 @@
---- libc/sysdeps/linux/mips/syscall.S~	2006-09-11 20:46:39.000000000 +0200
-+++ libc/sysdeps/linux/mips/syscall.S	2007-11-24 20:09:40.000000000 +0100
-@@ -29,6 +29,7 @@
+--- libc/sysdeps/linux/mips/syscall.S	2009-02-27 19:26:57.420288905 +0100
++++ libc/sysdeps/linux/mips/syscall.S	2009-02-27 19:43:18.000000000 +0100
+@@ -29,6 +29,9 @@
  .type   syscall,@function
  .ent    syscall
  syscall:
-+	.cpload	t9
++#ifdef __PIC__
++	SETUP_GP
++#endif
  	move	v0, a0		/* Load system call number from first arg.  */
  	move	a0, a1		/* Move the next three args up a register.  */
  	move	a1, a2
-@@ -60,6 +61,16 @@
+@@ -60,6 +63,18 @@
  #else
  	addiu	sp,sp,32
  #endif
 +	bnez	a3, 1f
       	j ra			/* Return to caller.  */
 +1:
++	move	a0,v0		/* Pass return val to C function. */
++
 +#ifdef __PIC__
++	SETUP_GP64(v0, syscall)
 +	PTR_LA	t9, __syscall_error
-+	move	a0,v0
++	RESTORE_GP64
 +	jr	t9
 +#else
-+	move	a0,v0
 +	j	__syscall_error
 +#endif
  .end    syscall

@@ -6,20 +6,34 @@ UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
 UCLIBC_KERNEL_SOURCE_DIR:=$(KERNEL_SOURCE_DIR)
 UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DIR)
 
+# uClibc pregenerated locale data
+UCLIBC_SITE_LOCALE:=http://www.uclibc.org/downloads
+UCLIBC_SOURCE_LOCALE:=uClibc-locale-030818.tgz
+
+$(DL_DIR)/$(UCLIBC_SOURCE_LOCALE): | $(DL_DIR)
+	$(DL_TOOL) $(DL_DIR) .config $(UCLIBC_SOURCE_LOCALE) $(UCLIBC_SITE_LOCALE)
+
+UCLIBC_LOCALE_DATA:=$(DL_DIR)/$(UCLIBC_SOURCE_LOCALE)
+
 
 $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(UCLIBC_SOURCE) $(UCLIBC_SOURCE_SITE)
 
 uclibc-unpacked: $(UCLIBC_DIR)/.unpacked
-$(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE)
+$(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(UCLIBC_LOCALE_DATA)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(UCLIBC_SOURCE)
+	touch $@
+
+uclibc-patched: $(UCLIBC_DIR)/.patched
+$(UCLIBC_DIR)/.patched: $(UCLIBC_DIR)/.unpacked
 	for i in $(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(UCLIBC_DIR) $$i; \
 	done
+	cp -dpf $(UCLIBC_LOCALE_DATA) $(UCLIBC_DIR)/extra/locale/
 	touch $@
 
-$(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
+$(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.patched
 	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(UCLIBC_VERSION) $(UCLIBC_DIR)/.config
 ifeq ($(strip $(UCLIBC_VERSION)),0.9.28)
 	$(SED) -i -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(shell pwd)/$(UCLIBC_KERNEL_SOURCE_DIR)\",g' $(UCLIBC_DIR)/.config
@@ -56,8 +70,8 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
-		HOSTCC="$(HOSTCC)" \
-		pregen install_dev
+		HOSTCC="$(HOSTCC)" headers \
+		$(if $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28),install_dev,install_headers)
 	# Install the kernel headers to the first stage gcc include dir if necessary
 	if [ ! -f $(TARGET_TOOLCHAIN_STAGING_DIR)/include/linux/version.h ] ; then \
 	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
@@ -79,7 +93,7 @@ uclibc-menuconfig: $(UCLIBC_DIR)/.config
 	cp -f $^ $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(UCLIBC_VERSION) && \
 	touch $^
 
-$(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured
+$(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(gcc_initial)
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		PREFIX= \
 		DEVEL_PREFIX=/ \

@@ -1,0 +1,22 @@
+--- libc/string/mips/sysdep.h.orig	2006-01-14 01:58:03.000000000 +0100
++++ libc/string/mips/sysdep.h	2009-04-09 04:54:37.000000000 +0200
+@@ -29,7 +29,7 @@
+   .globl name;                                                                \
+   .align 2;                                                                   \
+   .ent name,0;                                                                \
+-  name##:
++  name:
+ 
+ #undef END
+ #define END(function)                                   \
+--- Rules.mak.orig	2009-04-09 04:54:36.000000000 +0200
++++ Rules.mak	2009-04-09 04:54:37.000000000 +0200
+@@ -394,7 +394,7 @@
+ CFLAGS += -DSTATIC
+ endif
+ 
+-CFLAGS += $(call check_gcc,-std=gnu99,)
++# CFLAGS += $(call check_gcc,-std=gnu99,)
+ 
+ LDFLAGS_NOSTRIP:=$(CPU_LDFLAGS-y) -shared --warn-common --warn-once -z combreloc
+ # binutils-2.16.1 warns about ignored sections, 2.16.91.0.3 and newer are ok

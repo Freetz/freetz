@@ -132,15 +132,6 @@
  			}
  			fclose(fp);
  			DPRINTF("nameservers = %d\n", __nameservers);
-@@ -1700,7 +1727,7 @@
- int gethostent_r(struct hostent *result_buf, char *buf, size_t buflen,
- 	struct hostent **result, int *h_errnop)
- {
--    int ret;
-+    int ret = HOST_NOT_FOUND;
- 
-     __UCLIBC_MUTEX_LOCK(mylock);
-     if (__gethostent_fp == NULL) {
 --- libc/string/mips/memcpy.S	2006-11-04 20:48:12.000000000 +0100
 +++ libc/string/mips/memcpy.S	2007-09-03 14:16:52.000000000 +0200
 @@ -153,7 +153,10 @@
