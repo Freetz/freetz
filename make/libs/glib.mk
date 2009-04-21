@@ -59,13 +59,13 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(GLIB_DIR) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libglib.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/glib.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gmodule.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gthread.pc 
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/glib.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gmodule.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gthread.pc 
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-1.2.so* $(GLIB_TARGET_DIR)/

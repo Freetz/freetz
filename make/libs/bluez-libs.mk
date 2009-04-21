@@ -20,11 +20,11 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		-C $(BLUEZ_LIBS_DIR) install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libbluetooth.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/bluez.pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libbluetooth.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/bluez.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libbluetooth*.so* $(BLUEZ_LIBS_TARGET_DIR)/

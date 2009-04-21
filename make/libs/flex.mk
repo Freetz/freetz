@@ -18,7 +18,7 @@ $(FLEX_BINARY): $(FLEX_DIR)/.configured
 $(FLEX_STAGING_BINARY): $(FLEX_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(FLEX_DIR) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install
 	# Don't try to run mipsel flex on host
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/flex

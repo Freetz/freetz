@@ -25,11 +25,11 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(LIBPNG_DIR)\
-	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 	    install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libpng12.la \
-	        $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libpng12.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.la \
+	        $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpng12.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libpng12-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)

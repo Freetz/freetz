@@ -46,19 +46,19 @@ $($(PKG)_GLIB_STAGING_BINARY) $($(PKG)_GOBJECT_STAGING_BINARY) $($(PKG)_GMODULE_
 	$($(PKG)_GLIB_BINARY) $($(PKG)_GOBJECT_BINARY) $($(PKG)_GMODULE_BINARY) $($(PKG)_GTHREAD_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) \
 		$(MAKE) -C $(GLIB2_DIR) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libglib-2.0.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgobject-2.0.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgmodule-2.0.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgthread-2.0.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/glib-2.0.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gobject-2.0.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gmodule-2.0.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gmodule-no-export-2.0.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gmodule-export-2.0.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/gthread-2.0.pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-2.0.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgobject-2.0.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmodule-2.0.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgthread-2.0.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/glib-2.0.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gobject-2.0.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gmodule-2.0.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gmodule-no-export-2.0.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gmodule-export-2.0.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gthread-2.0.pc
 
 
 $($(PKG)_GLIB_TARGET_BINARY): $($(PKG)_GLIB_STAGING_BINARY)

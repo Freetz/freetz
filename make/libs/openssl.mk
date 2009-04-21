@@ -53,12 +53,12 @@ $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): \
 		$($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
 		-C $(OPENSSL_DIR) \
-		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcrypto.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libssl.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/openssl.pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libcrypto.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libssl.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/openssl.pc
 
 $($(PKG)_TARGET_SSL_BINARY): $($(PKG)_STAGING_SSL_BINARY) 
 	# FIXME: Strange enough, this chmod is really necessary. Maybe the
