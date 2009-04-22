@@ -14,7 +14,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
+	PATH=$(TARGET_PATH) $(MAKE) \
 		-C $(LIBAVMHMAC_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
@@ -24,7 +24,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(LIBAVMHMAC_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \

@@ -51,7 +51,7 @@ TARGET_CXX:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++-uc
 TARGET_LD:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld
 TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.comment,.note,.pdr}
 
-TARGET_PATH:=$(TARGET_MAKE_PATH):/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+TARGET_PATH="$(TARGET_TOOLCHAIN_STAGING_DIR)/bin:$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin:$(PATH)"
 # A better name for TARGET_CONFIGURE_OPTS would be TARGET_CONFIGURE_ENV, but that would require changes to all makefiles
 # usage is deprecated
 # see also TARGET_CONFIGURE_OPTIONS

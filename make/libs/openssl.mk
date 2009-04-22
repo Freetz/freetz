@@ -21,7 +21,7 @@ $(PKG_UNPACKED)
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	$(SED) -i -e 's/FREETZ_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
 	( cd $(OPENSSL_DIR); \
-		PATH="$(TARGET_TOOLCHAIN_PATH)" \
+		PATH="$(TARGET_PATH)" \
 		./Configure linux-freetz \
 		--prefix=/usr \
 		--openssldir=/mod/etc/ssl \
@@ -35,7 +35,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	PATH=$(TARGET_PATH) \
 		SHARED_LDFLAGS="" \
 		$(MAKE) -C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \
@@ -43,7 +43,7 @@ $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		all
 	# Work around openssl build bug to link libssl.so with libcrypto.so.
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \
 		CCOPTS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
@@ -51,7 +51,7 @@ $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): \
 		$($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
+	PATH=$(TARGET_PATH) $(MAKE) \
 		-C $(OPENSSL_DIR) \
 		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install

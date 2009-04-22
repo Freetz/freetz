@@ -11,7 +11,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(XYSSL_DIR)/library \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -DLINUX -I../include" \

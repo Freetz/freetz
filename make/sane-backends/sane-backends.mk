@@ -60,7 +60,7 @@ $($(PKG)_saned) $($(PKG)_sane_find_scanner) $($(PKG)_scanimage) $($(PKG)_LIB_BIN
 		$(MAKE1) -C $(SANE_BACKENDS_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(SANE_BACKENDS_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		freetz-install-devel

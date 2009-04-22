@@ -25,7 +25,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CPPFLAGS="-std=gnu99 -fgnu89-inline"
 
 $($(PKG)_MOD_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) \
+	PATH=$(TARGET_PATH):$(KERNEL_MAKE_PATH) \
 		$(MAKE) -C $(USBIP_DIR)/drivers/2.6.21 \
 		KSOURCE="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
 		ARCH="$(KERNEL_ARCH)" \

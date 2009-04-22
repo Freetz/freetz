@@ -26,12 +26,12 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 # We only want libintl
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install

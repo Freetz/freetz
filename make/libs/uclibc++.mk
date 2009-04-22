@@ -18,14 +18,14 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_TOOLCHAIN_PATH) \
+	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) \
+	PATH=$(TARGET_PATH) $(MAKE) \
 		-C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
