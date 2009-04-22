@@ -6,7 +6,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mcabber
 
 $(PKG)_DEPENDS_ON := glib2 ncurses ncurses-panel
 
-MYLIBS:=-lpanel -lncurses -lintl -liconv -lm -lglib-2.0
+MYLIBS:=-lpanel -lncurses -lintl -lm -lglib-2.0
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_MCABBER_STATIC
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_MCABBER_WITH_FIFO
