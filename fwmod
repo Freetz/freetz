@@ -804,6 +804,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/bar-style_n_cache-usage.patch"
 		fi
 
+		# security level
+		echo1 "patching security level"
+		sed -i -e "s/sec_level=1/sec_level=$FREETZ_SECURITY_LEVEL/g" ${FILESYSTEM_MOD_DIR}/usr/lib/libmodcgi.sh
+
 		modlang "${BASE_DIR}/.language" "${FILESYSTEM_MOD_DIR}"
 	else
 		error 1 "installation of base system is mandatory"
