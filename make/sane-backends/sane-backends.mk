@@ -65,7 +65,7 @@ $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		freetz-install-devel
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libsane.la
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane.la
 
 $($(PKG)_TARGET_saned): $($(PKG)_saned)
 	$(INSTALL_BINARY_STRIP)

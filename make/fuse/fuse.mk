@@ -65,9 +65,9 @@ $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfuse.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libulockmgr.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libulockmgr.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse.pc
 	PATH=$(TARGET_TOOLCHAIN_PATH):$(KERNEL_MAKE_PATH) \
 		$(MAKE) -C $(FUSE_DIR)/include \
 		ARCH="$(KERNEL_ARCH)" \

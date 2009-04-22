@@ -83,12 +83,12 @@ $($(PKG)_LIB_STAGING_CLASSPATH_BINARY): $($(PKG)_LIB_BINARY)
 	PATH=$(TARGET_TOOLCHAIN_PATH) $(MAKE) -C $(SABLEVM_SDK_DIR)/sablevm-classpath/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/sablevm-classpath/libjavaio.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/sablevm-classpath/libjavalang.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/sablevm-classpath/libjavalangreflect.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/sablevm-classpath/libjavanet.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/sablevm-classpath/libjavanio.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/sablevm-classpath/libjavautil.la
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavaio.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavalang.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavalangreflect.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavanet.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavanio.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavautil.la
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_BINARY)
 	cp -a $(SABLEVM_SDK_DIR)/sablevm/src/libsablevm/.libs/libsablevm*.so $(SABLEVM_SDK_DEST_DIR)/usr/lib
