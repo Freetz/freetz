@@ -6,7 +6,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/obexftpd
 
 $(PKG)_DEPENDS_ON := bluez-libs openobex
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_OPTIONS += --disable-swig
 $(PKG)_CONFIGURE_OPTIONS += --disable-perl
 $(PKG)_CONFIGURE_OPTIONS += --disable-python

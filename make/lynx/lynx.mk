@@ -34,8 +34,8 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	( cd $(LYNX_DIR); rm -f config.{cache,status}; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
+		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
+		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		ac_cv_prog_CC="$(GNU_TARGET_NAME)-gcc" \
 		./configure \
 		--target=$(GNU_TARGET_NAME) \

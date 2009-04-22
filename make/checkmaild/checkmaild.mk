@@ -10,7 +10,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_MAKE_PATH):$(PATH); \
+	PATH=$(TARGET_PATH) \
 	$(MAKE) CROSS="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="-lpthread" \

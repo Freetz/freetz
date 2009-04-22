@@ -7,7 +7,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/socat
 $(PKG)_DEPENDS_ON := openssl
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-termios
-$(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_MAKE_PATH)/../usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --enable-ssl
 
 $(PKG_SOURCE_DOWNLOAD)

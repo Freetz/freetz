@@ -18,8 +18,8 @@ $(PKG)_CONFIGURE_ENV += tor_cv_time_t_signed=yes
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-static
-$(PKG)_CONFIGURE_OPTIONS += --with-ssl-dir="$(TARGET_MAKE_PATH)/../usr/lib"
-$(PKG)_CONFIGURE_OPTIONS += --with-libevent-dir="$(TARGET_MAKE_PATH)/../usr/lib"
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
+$(PKG)_CONFIGURE_OPTIONS += --with-libevent-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

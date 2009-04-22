@@ -15,8 +15,6 @@ $(PKG)_DEPENDS_ON := zlib openssl curl
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_TRANSMISSION_STATIC
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
-
 $(PKG)_CONFIGURE_OPTIONS += --disable-beos
 $(PKG)_CONFIGURE_OPTIONS += --disable-mac
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk

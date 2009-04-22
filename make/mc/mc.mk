@@ -12,7 +12,6 @@ ifeq ($(strip $(FREETZ_MC_WITH_NCURSES)),y)
 $(PKG)_DEPENDS_ON += ncurses 
 endif
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_ENV += am_cv_func_iconv=no
 $(PKG)_CONFIGURE_ENV += am_cv_lib_iconv=no
 $(PKG)_CONFIGURE_ENV += mc_cv_have_zipinfo=yes

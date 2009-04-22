@@ -19,8 +19,8 @@ $(PKG)_DEPENDS_ON := libelf
 
 $(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh ;
 $(PKG)_CONFIGURE_PRE_CMDS += ( cd sysdeps/linux-gnu/mipsel; \
-					../mksyscallent $(TARGET_MAKE_PATH)/../include/asm/unistd.h > syscallent.h; \
-					../mksignalent $(TARGET_MAKE_PATH)/../include/asm/signal.h > signalent.h; );
+					../mksyscallent $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/asm/unistd.h > syscallent.h; \
+					../mksignalent $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/asm/signal.h > signalent.h; );
 
 $(PKG)_CONFIGURE_ENV += LD="$(TARGET_LD)"
 

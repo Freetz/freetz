@@ -8,7 +8,6 @@ ifeq ($(strip $(FREETZ_WGET_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON := openssl
 endif
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-ipv6

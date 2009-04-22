@@ -113,12 +113,12 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	done
 	$(TARGET_STRIP) $(NETSNMP_TARGET_LIBS)
 
-	#mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/agent
-	#mkdir -p $(TARGET_MAKE_PATH)/../include/net-snmp/library
-	#cp $(NETSNMP_DIR)/agent/mibgroup/struct.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
-	#cp $(NETSNMP_DIR)/agent/mibgroup/util_funcs.h $(TARGET_MAKE_PATH)/../include/net-snmp
-	#cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_MAKE_PATH)/../include/net-snmp/library
-	#cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_MAKE_PATH)/../include/net-snmp/agent
+	#mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/agent
+	#mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/library
+	#cp $(NETSNMP_DIR)/agent/mibgroup/struct.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/agent
+	#cp $(NETSNMP_DIR)/agent/mibgroup/util_funcs.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp
+	#cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/library
+	#cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/agent
 
 $(pkg):
 

@@ -10,7 +10,7 @@ $(PKG)_DEPENDS_ON := openssl zlib
 $(PKG)_CONFIGURE_OPTIONS += --disable-libwrap
 $(PKG)_CONFIGURE_OPTIONS += --with-threads=fork
 #$(PKG)_CONFIGURE_OPTIONS += --with-threads=pthread
-$(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_MAKE_PATH)/../usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

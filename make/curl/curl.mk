@@ -22,8 +22,6 @@ $(PKG)_DEPENDS_ON := openssl
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_CURL_STATIC
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
-
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CURL_STATIC),--disable-shared,--enable-shared)
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
@@ -46,7 +44,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-sspi
 $(PKG)_CONFIGURE_OPTIONS += --disable-telnet
 $(PKG)_CONFIGURE_OPTIONS += --disable-verbose
 $(PKG)_CONFIGURE_OPTIONS += --with-random="/dev/urandom"
-$(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_MAKE_PATH)/../usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-ca-bundle
 $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
 $(PKG)_CONFIGURE_OPTIONS += --without-libidn

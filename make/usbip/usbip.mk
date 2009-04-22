@@ -11,7 +11,6 @@ $(PKG)_DEPENDS_ON := kernel sysfsutils glib2
 
 $(PKG)_CONFIGURE_PRE_CMDS += cd src ;
 $(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh ;
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --with-usbids-dir=/usr/share/usbip

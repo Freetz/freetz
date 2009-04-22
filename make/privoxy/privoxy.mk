@@ -14,7 +14,6 @@ $(PKG)_DEPENDS_ON := zlib
 endif
 
 $(PKG)_CONFIGURE_ENV += ac_cv_func_setpgrp_void=yes
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no

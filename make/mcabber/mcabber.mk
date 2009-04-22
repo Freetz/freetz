@@ -17,8 +17,6 @@ $(PKG)_DEPENDS_ON += openssl
 MYLIBS+=-lssl -lcrypto -ldl
 endif
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
-
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_MCABBER_WITH_SSL),--with-openssl, --without-ssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_MCABBER_WITH_FIFO),--enable-fifo,)
 

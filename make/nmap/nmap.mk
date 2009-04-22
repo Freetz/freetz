@@ -8,8 +8,6 @@ $(PKG)_TARGET_SERVICES_LIST:=$($(PKG)_DEST_DIR)/usr/share/nmap/nmap-services
 
 $(PKG)_DEPENDS_ON := uclibcxx libpcap
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
-
 $(PKG)_CONFIGURE_OPTIONS += --with-liblua=included
 $(PKG)_CONFIGURE_OPTIONS += --with-pcap=linux
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre=included

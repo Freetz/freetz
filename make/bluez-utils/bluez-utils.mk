@@ -6,7 +6,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/hcid
 
 $(PKG)_DEPENDS_ON := bluez-libs
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_OPTIONS +=--disable-dbus
 $(PKG)_CONFIGURE_OPTIONS +=--disable-fuse
 $(PKG)_CONFIGURE_OPTIONS +=--disable-obex
@@ -21,7 +20,7 @@ $(PKG)_CONFIGURE_OPTIONS +=--disable-hid2hci
 $(PKG)_CONFIGURE_OPTIONS +=--disable-dfutool
 $(PKG)_CONFIGURE_OPTIONS +=--disable-bcm203x
 $(PKG)_CONFIGURE_OPTIONS +=--disable-bluepin
-$(PKG)_CONFIGURE_OPTIONS +=--with-bluez="$(TARGET_TOOLCHAIN_STAGING_DIR)/include"
+$(PKG)_CONFIGURE_OPTIONS +=--with-bluez="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include"
 $(PKG)_CONFIGURE_OPTIONS +=--with-usb=no
 
 $(PKG_SOURCE_DOWNLOAD)

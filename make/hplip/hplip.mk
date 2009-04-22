@@ -17,8 +17,6 @@ $(PKG)_LIB_HPAIO_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sane/libsane-hpaio.so
 
 $(PKG)_DEPENDS_ON := sane-backends
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
-
 $(PKG)_CONFIGURE_OPTIONS += --disable-doc-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-network-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-pp-build

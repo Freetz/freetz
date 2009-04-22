@@ -8,7 +8,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libopenobex.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_DEPENDS_ON := bluez-libs
 
-$(PKG)_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../usr/lib/pkgconfig"
 $(PKG)_CONFIGURE_OPTIONS += --disable-irda
 $(PKG)_CONFIGURE_OPTIONS += --disable-usb
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
