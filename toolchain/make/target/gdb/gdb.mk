@@ -8,9 +8,10 @@ GDB_SITE:=http://ftp.gnu.org/gnu/gdb
 GDB_SOURCE:=gdb-$(GDB_VERSION).tar.bz2
 GDB_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdb-$(GDB_VERSION)
 GDB_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gdb
+GDB_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils
 
-# NOTE: This option should not be used with newer gdb versions.
-#DISABLE_GDBMI:=--disable-gdbmi
+$(GDB_STAGING_DIR):
+	mkdir -p $(GDB_STAGING_DIR)
 
 $(DL_DIR)/$(GDB_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(GDB_SOURCE) $(GDB_SITE)
@@ -19,13 +20,16 @@ gdb-unpacked: $(GDB_DIR)/.unpacked
 $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GDB_SOURCE)
+	touch $@
+
+gdb-patched: $(GDB_DIR)/.patched
+$(GDB_DIR)/.patched: $(GDB_DIR)/.unpacked
 	for i in $(GDB_MAKE_DIR)/$(GDB_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GDB_DIR) $$i; \
 	done
-	# Copy a config.sub from gcc.  This is only necessary until
-	# gdb's config.sub supports <arch>-linux-uclibc tuples.
-	# Should probably integrate this into the patch.
-	touch  $(GDB_DIR)/.unpacked
+	touch $@
+
+gdb-source: $(DL_DIR)/$(GDB_SOURCE)
 
 ######################################################################
 #
@@ -34,10 +38,6 @@ $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE)
 ######################################################################
 
 GDB_TARGET_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdb-$(GDB_VERSION)-target
-GDB_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils
-
-$(GDB_STAGING_DIR):
-	mkdir -p $(GDB_STAGING_DIR)
 
 GDB_TARGET_CONFIGURE_VARS:= \
 	ac_cv_type_uintptr_t=yes \
@@ -49,30 +49,33 @@ GDB_TARGET_CONFIGURE_VARS:= \
 	bash_cv_func_sigsetjmp=present \
 	bash_cv_have_mbstate_t=yes
 
-$(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.unpacked
+$(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.patched
 	mkdir -p $(GDB_TARGET_DIR)
-	(cd $(GDB_TARGET_DIR); PATH=$(TARGET_TOOLCHAIN_PATH) \
+	(cd $(GDB_TARGET_DIR); PATH=$(TARGET_PATH) \
 		gdb_cv_func_sigsetjmp=yes \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS_FOR_TARGET="$(TARGET_CFLAGS)" \
-		CPPFLAGS_FOR_TARGET="-I$(TARGET_MAKE_PATH)/../usr/include" \
-		LDFLAGS_FOR_TARGET="-L$(TARGET_MAKE_PATH)/../usr/lib" \
+		CPPFLAGS_FOR_TARGET="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
+		LDFLAGS_FOR_TARGET="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		$(GDB_TARGET_CONFIGURE_VARS) \
 		$(GDB_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(REAL_GNU_TARGET_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
-		--prefix=$(GDB_STAGING_DIR) \
+		--prefix=/usr \
 		$(DISABLE_NLS) \
 		--without-uiout $(DISABLE_GDBMI) \
 		--disable-tui --disable-gdbtk --without-x \
 		--disable-sim --enable-gdbserver \
 		--without-included-gettext \
+		--enable-threads \
+		--disable-werror \
+		$(QUIET) \
 	);
 ifeq ($(ENABLE_LOCALE),true)
 	-$(SED) "s,^INTL *=.*,INTL = -lintl,g;" $(GDB_DIR)/gdb/Makefile
 endif
-	touch  $(GDB_TARGET_DIR)/.configured
+	touch  $@
 
 $(GDB_TARGET_DIR)/gdb/gdb: $(GDB_TARGET_DIR)/.configured
 	PATH=$(TARGET_PATH) \
@@ -100,25 +103,38 @@ gdb_target-dirclean:
 
 GDB_SERVER_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdbserver-$(GDB_VERSION)
 
-$(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.unpacked
+$(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.patched
 	mkdir -p $(GDB_SERVER_DIR)
-	(cd $(GDB_SERVER_DIR); PATH=$(TARGET_TOOLCHAIN_PATH) \
+	(cd $(GDB_SERVER_DIR); PATH=$(TARGET_PATH) \
 		$(TARGET_CONFIGURE_OPTS) \
 		gdb_cv_func_sigsetjmp=yes \
+		bash_cv_have_mbstate_t=yes \
 		$(GDB_DIR)/gdb/gdbserver/configure \
+		--cache-file=/dev/null \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(REAL_GNU_TARGET_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
-		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR) \
+		--prefix=/usr \
+		--exec-prefix=/usr \
+		--bindir=/usr/bin \
+		--sbindir=/usr/sbin \
+		--libexecdir=/usr/lib \
+		--sysconfdir=/etc \
+		--datadir=/usr/share \
+		--localstatedir=/var \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--includedir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include \
 		$(DISABLE_NLS) \
 		--without-uiout $(DISABLE_GDBMI) \
 		--disable-tui --disable-gdbtk --without-x \
 		--without-included-gettext \
 	);
-	touch  $(GDB_SERVER_DIR)/.configured
+	touch  $@
 
 $(GDB_SERVER_DIR)/gdbserver: $(GDB_SERVER_DIR)/.configured
-	$(MAKE) CC=$(TARGET_CC) MT_CFLAGS="$(TARGET_CFLAGS)" \
+	PATH=$(TARGET_PATH) \
+		$(MAKE) CC=$(TARGET_CC) MT_CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(GDB_SERVER_DIR)
 	
 $(GDB_STAGING_DIR)/gdbserver: $(GDB_SERVER_DIR)/gdbserver | $(GDB_STAGING_DIR)
@@ -140,11 +156,13 @@ gdbserver-dirclean:
 
 GDB_HOST_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdbhost-$(GDB_VERSION)
 
-$(GDB_HOST_DIR)/.configured: $(GDB_DIR)/.unpacked
+$(GDB_HOST_DIR)/.configured: $(GDB_DIR)/.patched
 	mkdir -p $(GDB_HOST_DIR)
-	(cd $(GDB_HOST_DIR); PATH=$(TARGET_TOOLCHAIN_PATH) \
+	(cd $(GDB_HOST_DIR); PATH=$(TARGET_PATH) \
 		gdb_cv_func_sigsetjmp=yes \
+		bash_cv_have_mbstate_t=yes \
 		$(GDB_DIR)/configure \
+		--cache-file=/dev/null \
 		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
@@ -154,20 +172,21 @@ $(GDB_HOST_DIR)/.configured: $(GDB_DIR)/.unpacked
 		--disable-tui --disable-gdbtk --without-x \
 		--without-included-gettext \
 		--enable-threads \
+		--disable-werror \
 	);
-	touch  $(GDB_HOST_DIR)/.configured
+	touch  $@
 
 $(GDB_HOST_DIR)/gdb/gdb: $(GDB_HOST_DIR)/.configured
 	$(MAKE) -C $(GDB_HOST_DIR)
 	strip $(GDB_HOST_DIR)/gdb/gdb
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(TARGET_CROSS)gdb: $(GDB_HOST_DIR)/gdb/gdb
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; \
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(TARGET_CROSS)gdb: $(GDB_HOST_DIR)/gdb/gdb
+	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
 	install -c $(GDB_HOST_DIR)/gdb/gdb $(TARGET_CROSS)gdb; \
 	ln -fs $(TARGET_CROSS)gdb $(GNU_TARGET_NAME)-gdb; \
 	);
 
-gdbhost: $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(TARGET_CROSS)gdb
+gdbhost: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(TARGET_CROSS)gdb
 
 gdbhost-clean:
 	$(MAKE) -C $(GDB_HOST_DIR) clean
@@ -175,7 +194,7 @@ gdbhost-clean:
 gdbhost-dirclean:
 	rm -rf $(GDB_HOST_DIR)
 
-gdb: uclibc $(TARGETS)
+gdb: uclibc $(GDB_TARGETS)
 
 gdb-clean:
 	-$(MAKE) -C $(GDB_HOST_DIR) clean

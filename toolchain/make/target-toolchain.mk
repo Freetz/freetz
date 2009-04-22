@@ -17,15 +17,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@
 	@mkdir -p $@/bin
 	@mkdir -p $@/lib
-	@mkdir -p $@/lib/pkgconfig
-	@mkdir -p $@/include
 	@mkdir -p $@/usr
+	@mkdir -p $@/usr/include
+	@mkdir -p $@/usr/lib
+	@mkdir -p $@/usr/lib/pkgconfig
 	@mkdir -p $@/target-utils
-	@mkdir -p $@/$(REAL_GNU_TARGET_NAME)
-	@ln -snf ../bin $@/usr/bin
-	@ln -snf ../include $@/usr/include
-	@ln -snf ../lib $@/usr/lib
-	@ln -snf ../lib $@/$(REAL_GNU_TARGET_NAME)/lib
 
 target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) $(TARGET_TOOLCHAIN_SYMLINK) \
 					kernel-configured uclibc-configured \

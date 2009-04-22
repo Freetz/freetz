@@ -1,9 +1,0 @@
---- gcc/config/t-linux-uclibc
-+++ gcc/config/t-linux-uclibc
-@@ -3,3 +3,6 @@
- 
- # Use unwind-dw2-fde instead of unwind-dw2-fde-glibc
- LIB2ADDEH := $(subst unwind-dw2-fde-glibc.c,unwind-dw2-fde.c,$(LIB2ADDEH))
-+
-+# compile libcc with softfloat (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=8765)
-+TARGET_LIBGCC2_CFLAGS= -fPIC -msoft-float

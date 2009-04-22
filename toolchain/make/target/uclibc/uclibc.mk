@@ -103,19 +103,19 @@ $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(gcc_initial)
 	touch -c $@
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
-$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
-		PREFIX= \
-		DEVEL_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/ \
-		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/ \
+		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
+		DEVEL_PREFIX=/usr/ \
+		RUNTIME_PREFIX=/ \
 		install_runtime install_dev
 	# Install the kernel headers to the staging dir if necessary
 	if [ ! -f $(TARGET_TOOLCHAIN_STAGING_DIR)/include/linux/version.h ] ; then \
-	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_STAGING_DIR)/include/ ; \
-	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_STAGING_DIR)/include/ ; \
+	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
+	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
 	    if [ -d $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic ] ; then \
 		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
-		    $(TARGET_TOOLCHAIN_STAGING_DIR)/include/ ; \
+		    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
 	    fi; \
 	fi;								    
 	# Build the host utils. 
@@ -123,38 +123,35 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		HOSTCC="$(HOSTCC)" \
 		hostutils
-	install -c $(UCLIBC_DIR)/utils/ldd.host $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ldd
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldd $(GNU_TARGET_NAME)-ldd)
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldd $(REAL_GNU_TARGET_NAME)-ldd)
-	install -c $(UCLIBC_DIR)/utils/ldconfig.host $(TARGET_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/bin/ldconfig
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(GNU_TARGET_NAME)-ldconfig)
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(REAL_GNU_TARGET_NAME)-ldconfig)
+	install -c $(UCLIBC_DIR)/utils/ldd.host $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ldd
+	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldd $(REAL_GNU_TARGET_NAME)-ldd)
+	install -c $(UCLIBC_DIR)/utils/ldconfig.host $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ldconfig
+	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(REAL_GNU_TARGET_NAME)-ldconfig)
 	touch -c $@
 
-$(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
-	@rm -rf $(ROOT_DIR)/lib
+$(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
-		PREFIX="$(shell pwd)/$(ROOT_DIR)" \
+		PREFIX="$(FREETZ_BASE_DIR)/$(ROOT_DIR)" \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=/ \
 		install_runtime
 	touch -c $@
 else
-$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a: $(cross_compiler)
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(cross_compiler)
 	touch -c $@
 
-$(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a
+$(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 	@rm -rf $(ROOT_DIR)/lib
 	@mkdir -p $(ROOT_DIR)/lib
 	for i in $(UCLIBC_FILES); do \
-		cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$$i $(ROOT_DIR)/lib/$$i; \
+		cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$$i $(ROOT_DIR)/lib/$$i; \
 	done
 	touch -c $@
 endif
 
 uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
-uclibc: $(cross_compiler) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
+uclibc: $(cross_compiler) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
 
 uclibc-source: $(DL_DIR)/$(UCLIBC_SOURCE)
 

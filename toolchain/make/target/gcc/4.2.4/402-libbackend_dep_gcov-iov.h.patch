@@ -1,0 +1,11 @@
+--- gcc/Makefile.in.orig	2008-04-01 23:26:19.000000000 +0200
++++ gcc/Makefile.in	2009-04-15 21:06:32.000000000 +0200
+@@ -2664,7 +2664,7 @@
+ # FIXME: writing proper dependencies for this is a *LOT* of work.
+ libbackend.o : $(OBJS-common:.o=.c) $(out_file) \
+   insn-config.h insn-flags.h insn-codes.h insn-constants.h \
+-  insn-attr.h  $(DATESTAMP) $(BASEVER) $(DEVPHASE)
++  insn-attr.h  $(DATESTAMP) $(BASEVER) $(DEVPHASE) gcov-iov.h
+ 	$(CC) $(ALL_CFLAGS) $(ALL_CPPFLAGS) \
+ 	  -DTARGET_NAME=\"$(target_noncanonical)\" \
+ 	  -DLOCALEDIR=\"$(localedir)\" \
