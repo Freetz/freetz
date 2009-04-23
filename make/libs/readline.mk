@@ -45,7 +45,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_READLINE_BINARY) \
 					$($(PKG)_TARGET_HISTORY_BINARY)
 
 $(pkg)-clean:
-	$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" -C $(READLINE_DIR) uninstall
+	$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" -C $(READLINE_DIR) uninstall
 	-$(MAKE) -C $(READLINE_DIR) clean
 
 $(pkg)-uninstall:
