@@ -8,7 +8,7 @@ ifeq ($(strip $(FREETZ_BIP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON := openssl
 endif
 
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_BIP_WITH_SSL),,--disable-ssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_BIP_WITH_SSL),,--disable-openssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_BIP_WITH_OIDENTD),--enable-oidentd)
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_BIP_WITH_SSL
