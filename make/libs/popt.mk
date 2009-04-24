@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 1.14)
+$(call PKG_INIT_LIB, 1.15)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=popt-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://rpm5.org/files/popt

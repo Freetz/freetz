@@ -1,0 +1,42 @@
+--- Makefile.am.orig	2009-04-12 21:31:09.000000000 +0200
++++ Makefile.am	2009-04-24 10:00:02.000000000 +0200
+@@ -40,7 +40,7 @@
+ usrlib_LTLIBRARIES = libpopt.la
+ 
+ libpopt_la_SOURCES = popt.c poptparse.c poptconfig.c popthelp.c poptint.c
+-libpopt_la_LDFLAGS = -no-undefined @LTLIBINTL@ @LTLIBICONV@
++libpopt_la_LDFLAGS = -no-undefined
+ 
+ if HAVE_LD_VERSION_SCRIPT
+ libpopt_la_LDFLAGS += -Wl,--version-script=$(srcdir)/libpopt.vers
+--- Makefile.in.orig	2009-04-12 21:31:13.000000000 +0200
++++ Makefile.in	2009-04-24 10:00:02.000000000 +0200
+@@ -180,15 +180,15 @@
+ INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+ LD = @LD@
+ LDFLAGS = @LDFLAGS@
+-LIBICONV = @LIBICONV@
+-LIBINTL = @LIBINTL@
++LIBICONV =
++LIBINTL =
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LIBTOOL = @LIBTOOL@
+ LIPO = @LIPO@
+ LN_S = @LN_S@
+-LTLIBICONV = @LTLIBICONV@
+-LTLIBINTL = @LTLIBINTL@
++LTLIBICONV =
++LTLIBINTL =
+ LTLIBOBJS = @LTLIBOBJS@
+ LT_AGE = @LT_AGE@
+ LT_CURRENT = @LT_CURRENT@
+@@ -310,7 +310,7 @@
+ usrlibdir = $(libdir)
+ usrlib_LTLIBRARIES = libpopt.la
+ libpopt_la_SOURCES = popt.c poptparse.c poptconfig.c popthelp.c poptint.c
+-libpopt_la_LDFLAGS = -no-undefined @LTLIBINTL@ @LTLIBICONV@ \
++libpopt_la_LDFLAGS = -no-undefined \
+ 	$(am__append_1)
+ man_MANS = popt.3
+ 
