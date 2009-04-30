@@ -17,9 +17,9 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@
 	@mkdir -p $@/bin
 	@mkdir -p $@/lib
-	@mkdir -p $@/usr
-	@mkdir -p $@/usr/include
-	@mkdir -p $@/usr/lib
+	@ln -snf . $(TARGET_TOOLCHAIN_STAGING_DIR)/usr
+	@mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)
+	@ln -snf ../lib $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/lib
 	@mkdir -p $@/usr/lib/pkgconfig
 	@mkdir -p $@/target-utils
 

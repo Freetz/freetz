@@ -94,17 +94,17 @@ ccache-clean:
 	rm -rf  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
 	if [ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-gcc ] ; then \
 		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-gcc \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/; \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/; \
 		(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
 		    ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(REAL_GNU_TARGET_NAME)-cc; \
 		    ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(GNU_TARGET_NAME)-cc; \
 		    ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(GNU_TARGET_NAME)-gcc; \
 		); \
 	fi
-	if [ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_TARGET_NAME)-c++ ] ; then \
-		rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-c++; \
-		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_TARGET_NAME)-c++ \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/; \
+	if [ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-c++ ] ; then \
+		rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-c++; \
+		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-c++ \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/; \
 	fi;
 	if [ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-g++ ] ; then \
 		rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++; \

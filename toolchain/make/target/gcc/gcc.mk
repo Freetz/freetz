@@ -160,13 +160,11 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.patched $(GCC_STAGING_PREREQ)
 		PATH=$(TARGET_PATH) \
 		CC="$(HOSTCC)" \
 		$(GCC_DIR)/configure \
-		--prefix=/usr \
+		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
 		--enable-languages=$(GCC_CROSS_LANGUAGES) \
-		--with-sysroot=$(TARGET_TOOLCHAIN_STAGING_DIR) \
-		--with-build-time-tools=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin \
 		--disable-__cxa_atexit \
 		--enable-target-optspace \
 		--with-gnu-ld \
@@ -189,7 +187,7 @@ $(GCC_BUILD_DIR2)/.compiled: $(GCC_BUILD_DIR2)/.configured
 	touch $@
 
 $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
-	PATH=$(TARGET_PATH) $(MAKE) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) -C $(GCC_BUILD_DIR2) install
+	PATH=$(TARGET_PATH) $(MAKE) -C $(GCC_BUILD_DIR2) install
 	# Strip the host binaries
 ifeq ($(GCC_STRIP_HOST_BINARIES),true)
 	-strip --strip-all -R .note -R .comment $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-*

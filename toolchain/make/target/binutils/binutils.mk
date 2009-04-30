@@ -63,12 +63,10 @@ $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.patched
 	( cd $(BINUTILS_DIR1); rm -rf config.cache; \
 		CC="$(HOSTCC)" \
 		$(BINUTILS_DIR)/configure \
-		--prefix=/usr \
+		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
-		--with-sysroot="$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/" \
-		--with-sysroot="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		--disable-multilib \
 		--disable-libssp \
 		$(DISABLE_NLS) \
@@ -83,7 +81,7 @@ $(BINUTILS_DIR1)/binutils/objdump: $(BINUTILS_DIR1)/.configured
 	$(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) all
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/binutils/objdump
-	$(MAKE) -C $(BINUTILS_DIR1) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) install
+	$(MAKE) -C $(BINUTILS_DIR1) install
 
 binutils-dependancies:
 	@if ! which bison > /dev/null ; then \

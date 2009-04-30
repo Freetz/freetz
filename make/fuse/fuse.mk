@@ -57,7 +57,7 @@ $($(PKG)_BINARY) $($(PKG)_MOD_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.confi
 		all
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	cp $(FUSE_DIR)/fuse.pc $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/fuse.pc
+	cp $(FUSE_DIR)/fuse.pc $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse.pc
 	PATH=$(TARGET_PATH):$(KERNEL_MAKE_PATH) \
 		$(MAKE) -C $(FUSE_DIR)/lib \
 		ARCH="$(KERNEL_ARCH)" \

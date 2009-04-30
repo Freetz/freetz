@@ -105,9 +105,9 @@ $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(gcc_initial)
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
-		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
-		DEVEL_PREFIX=/usr/ \
-		RUNTIME_PREFIX=/ \
+		PREFIX=/ \
+		DEVEL_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
+		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
 		install_runtime install_dev
 	# Install the kernel headers to the staging dir if necessary
 	if [ ! -f $(TARGET_TOOLCHAIN_STAGING_DIR)/include/linux/version.h ] ; then \
@@ -137,6 +137,7 @@ $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 		install_runtime
 	touch -c $@
 else
+cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(cross_compiler)
 	touch -c $@
 
@@ -144,8 +145,12 @@ $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 	@rm -rf $(ROOT_DIR)/lib
 	@mkdir -p $(ROOT_DIR)/lib
 	for i in $(UCLIBC_FILES); do \
-		cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$$i $(ROOT_DIR)/lib/$$i; \
+		cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$$i $(ROOT_DIR)/lib/$$i; \
 	done
+ifeq ($(strip $(TARGET_TOOLCHAIN_UCLIBC_VERSION)),0.9.29)
+	$(SED) -i -e 's|$$(FREETZ_BASE_DIR)|$(FREETZ_BASE_DIR)|g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.so
+	ln -sf libuClibc-0.9.29.so $(ROOT_DIR)/lib/libc.so
+endif
 	touch -c $@
 endif
 
