@@ -45,8 +45,8 @@ endif
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(KERNEL_DIR)/.unpacked: $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc \
-				$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL_FREETZ_CONFIG_FILE)
+$(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL_FREETZ_CONFIG_FILE) \
+				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
 	rm -rf $(KERNEL_DIR)
 	mkdir -p $(KERNEL_DIR)
 	cp -a $(KERNEL_SOURCE_PATH) $(KERNEL_BUILD_DIR)
