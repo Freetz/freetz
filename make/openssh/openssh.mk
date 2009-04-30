@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.1p1)
+$(call PKG_INIT_BIN, 5.2p1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/
+$(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 $(PKG)_BINARY:=$($(PKG)_DIR)/sftp-server
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sftp-server
 
