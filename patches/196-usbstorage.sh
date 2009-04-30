@@ -13,7 +13,9 @@ elif [ "$FREETZ_TYPE_2170" == "y" ] || \
 	[ "$FREETZ_TYPE_SPEEDPORT_W900V" == "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_3170.patch"
 elif [ "$FREETZ_TYPE_FON_WLAN_7141" == "y" -o "$FREETZ_TYPE_FON_WLAN_7170" == "y" ]; then
-	if [ "$FREETZ_TYPE_LANG_A_CH" == "y" ]; then
+	if [ "$FREETZ_TYPE_LABOR_DSL" == "y"  ]; then
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170_labor_dsl.patch"
+	elif [ "$FREETZ_TYPE_LANG_A_CH" == "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170_a_ch.patch"
 	else
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170.patch"
