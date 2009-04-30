@@ -1,6 +1,16 @@
---- Makefile.in.orig	2009-04-20 12:27:00.000000000 +0200
-+++ Makefile.in	2009-04-20 12:30:32.000000000 +0200
-@@ -40,6 +40,8 @@
+--- Makefile.in.orig	2009-04-30 17:30:14.000000000 +0200
++++ Makefile.in	2009-04-30 17:30:14.000000000 +0200
+@@ -28,7 +28,8 @@
+ LDSHARED=$(CC)
+ CPP=$(CC) -E
+ 
+-LIBS=libz.a
++LIBS=
++STATICLIB=libz.a
+ SHAREDLIB=libz.so
+ SHAREDLIBV=libz.so.1.2.3
+ SHAREDLIBM=libz.so.1
+@@ -40,6 +41,8 @@
  SHELL=/bin/sh
  EXE=
  
@@ -9,7 +19,16 @@
  prefix = /usr/local
  exec_prefix = ${prefix}
  libdir = ${exec_prefix}/lib
-@@ -91,23 +93,23 @@
+@@ -68,7 +71,7 @@
+ 	  echo '		*** zlib test FAILED ***'; \
+ 	fi
+ 
+-libz.a: $(OBJS) $(OBJA)
++$(STATICLIB): $(OBJS) $(OBJA)
+ 	$(AR) $(ARFLAGS) $@ $(OBJS) $(OBJA)
+ 	-@ ($(RANLIB) $@ || true) >/dev/null 2>&1
+ 
+@@ -91,23 +94,23 @@
  	$(CC) $(CFLAGS) -o $@ minigzip.o $(LDFLAGS)
  
  install: $(LIBS)
