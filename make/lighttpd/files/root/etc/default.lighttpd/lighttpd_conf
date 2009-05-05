@@ -96,7 +96,7 @@ cat << EOF
 server.chroot = "$LIGHTTPD_DOCROOT"
 EOF
 mkdir -p "$LIGHTTPD_DOCROOT/dev"
-mknod "$LIGHTTPD_DOCROOT/dev/null" c 1 3
+[ -c "$LIGHTTPD_DOCROOT/dev/null" ] || mknod "$LIGHTTPD_DOCROOT/dev/null" c 1 3
 chmod 666 "$LIGHTTPD_DOCROOT/dev/null"
 fi
 
@@ -295,7 +295,7 @@ fi
 docroot="$LIGHTTPD_DOCROOT"
 if [ "$LIGHTTPD_CHROOT" = "yes" ]; then
 	docroot="/websites"
-	mkdir -p "$LIGHTTPD_DOCROOT/websites/default"
+	[ "$LIGHTTPD_VIRTHOST" = "yes" ] && mkdir -p "$LIGHTTPD_DOCROOT/websites/default"
 fi
 if [ -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 cat << EOF
