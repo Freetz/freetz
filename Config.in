@@ -66,7 +66,7 @@ choice
 		bool "Fon 5050"
 
 	config FREETZ_TYPE_FON_5140
-		select FREETZ_AVM_VERSION_04_57
+		select FREETZ_AVM_VERSION_04_67
 		bool "Fon 5140"
 
 	config FREETZ_TYPE_FON_WLAN
@@ -1594,7 +1594,7 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_fon.en.06.04.49.image"					if FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz.box_fon_5010.annexa.48.04.43.image"				if FREETZ_TYPE_FON_5010 && FREETZ_TYPE_LANG_A_CH
 	default "fritz.box_fon_5050.12.04.31.image"					if FREETZ_TYPE_FON_5050
-	default "FRITZ.Box_Fon_5140.43.04.59.image"					if FREETZ_TYPE_FON_5140
+	default "FRITZ.Box_Fon_5140.AnnexB.43.04.67.image"				if FREETZ_TYPE_FON_5140
 	default "fritz.box_fon_wlan.08.04.34.image"					if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN.AnnexA.en.08.04.49.image"				if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN.AnnexB.en.08.04.49.image"				if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
@@ -2167,7 +2167,7 @@ config FREETZ_TARGET_CROSS
 
 config FREETZ_TARGET_MAKE_PATH
 	string
-	default "toolchain/target/usr/bin"
+	default "toolchain/target/bin"
 
 config FREETZ_TARGET_CFLAGS
 	string "Target compiler flags"
