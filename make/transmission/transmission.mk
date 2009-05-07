@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.52)
+$(call PKG_INIT_BIN, 1.60)
 $(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 $(PKG)_CLIENT_BINARY:=$($(PKG)_DIR)/cli/transmissioncli
@@ -60,9 +60,6 @@ ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
 	# remove all non-min.js files, these are not needed	
 	for f in $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)/javascript/jquery/*.js; do if ! (echo "$$f" | grep -q '\.min\.js$$' >/dev/null 2>&1); then $(RM) "$$f"; fi; done
 	chmod 644 $(TRANSMISSION_TARGET_WEBINTERFACE_INDEX_HTML)
-endif
-ifneq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
-	$(RM) -r $(TRANSMISSION_DEST_DIR)/usr/share
 endif
 
 $(pkg):
