@@ -1,7 +1,5 @@
-Index: src/qgen/Makefile.am
-===================================================================
---- src/qgen/Makefile.am	2007-10-20 19:19:10.354218533 +0200
-+++ src/qgen/Makefile.am	2007-10-20 19:19:16.814586679 +0200
+--- src/qgen/Makefile.am.orig	2008-01-01 00:14:51.000000000 +0000
++++ src/qgen/Makefile.am	2009-05-09 12:53:50.000000000 +0000
 @@ -3,7 +3,7 @@
  
  qgen_SOURCES = common.c common.h file.c file.h first.c ql_y.y ql_l.l qgen.c \
@@ -11,24 +9,20 @@ Index: src/qgen/Makefile.am
  
  q_dump_SOURCES = common.c
  q_dump_LDADD = qd.dump.standalone.o
-Index: src/qgen/Makefile.in
-===================================================================
---- src/qgen/Makefile.in	2007-10-20 19:19:11.898306522 +0200
-+++ src/qgen/Makefile.in	2007-10-20 19:19:16.814586679 +0200
-@@ -90,7 +90,7 @@
- 
- qgen_SOURCES = common.c common.h file.c file.h first.c ql_y.y ql_l.l qgen.c 		qgen.h second.c third.c
+--- src/qgen/Makefile.in.orig	2009-05-09 12:46:38.000000000 +0000
++++ src/qgen/Makefile.in	2009-05-09 12:53:50.000000000 +0000
+@@ -210,7 +210,7 @@
+ qgen_SOURCES = common.c common.h file.c file.h first.c ql_y.y ql_l.l qgen.c \
+ 		qgen.h second.c third.c
  
 -qgen_LDADD = -lfl
-+qgen_LDADD = 
- 
++qgen_LDADD =
  q_dump_SOURCES = common.c
  q_dump_LDADD = qd.dump.standalone.o
-Index: src/qgen/ql_l.c
-===================================================================
---- src/qgen/ql_l.c	2007-10-20 19:19:11.906306980 +0200
-+++ src/qgen/ql_l.c	2007-10-20 19:19:16.842588278 +0200
-@@ -501,6 +501,11 @@
+ # FIXME: paulsch: We don't really depend on qd.dump.o or q.out.o here, but this
+--- src/qgen/ql_l.l.orig	2001-10-09 22:33:07.000000000 +0000
++++ src/qgen/ql_l.l	2009-05-09 12:53:50.000000000 +0000
+@@ -14,6 +14,11 @@
  #include "qgen.h"
  #include "ql_y.h"
  
@@ -40,25 +34,21 @@ Index: src/qgen/ql_l.c
  
  typedef struct _tree {
      struct _tree *left,*right;
-Index: src/sigd/cfg_l.c
-===================================================================
---- src/sigd/cfg_l.c	2007-10-20 19:19:10.378219897 +0200
-+++ src/sigd/cfg_l.c	2007-10-20 19:19:16.854588969 +0200
-@@ -11,6 +11,10 @@
- #include <stdio.h>
- #include <unistd.h>
+--- src/sigd/cfg_l.l.orig	2008-01-01 00:14:52.000000000 +0000
++++ src/sigd/cfg_l.l	2009-05-09 12:53:50.000000000 +0000
+@@ -16,6 +16,10 @@
+ 
+ #include "cfg_y.h"
  
 +int yywrap(void)
 +{
 +        return 1;
 +}
  
- /* cfront 1.2 defines "c_plusplus" instead of "__cplusplus" */
- #ifdef c_plusplus
-Index: src/sigd/Makefile.am
-===================================================================
---- src/sigd/Makefile.am	2007-10-20 19:19:10.386220355 +0200
-+++ src/sigd/Makefile.am	2007-10-20 19:19:16.882590565 +0200
+ static int lineno = 1;
+ static int token; /* f@#%ing flex doesn't grok return after BEGIN */
+--- src/sigd/Makefile.am.orig	2008-01-01 00:14:52.000000000 +0000
++++ src/sigd/Makefile.am	2009-05-09 12:53:50.000000000 +0000
 @@ -8,7 +8,7 @@
  			$(top_builddir)/src/qgen/qd.dump.o \
  			$(top_builddir)/src/lib/libatm.la \
@@ -68,23 +58,19 @@ Index: src/sigd/Makefile.am
  atmsigd_DEPENDENCIES = mess.c $(atmsigd_XTRAS)
  
  CLEANFILES = mess.c
-Index: src/sigd/Makefile.in
-===================================================================
---- src/sigd/Makefile.in	2007-10-20 19:19:12.018313361 +0200
-+++ src/sigd/Makefile.in	2007-10-20 19:19:16.886590795 +0200
-@@ -92,7 +92,7 @@
- 
- atmsigd_XTRAS = mess.o $(top_builddir)/src/qgen/q.out.o 			$(top_builddir)/src/qgen/qd.dump.o 			$(top_builddir)/src/lib/libatm.la 			$(top_builddir)/src/saal/libsaal.a
+--- src/sigd/Makefile.in.orig	2009-05-09 12:46:39.000000000 +0000
++++ src/sigd/Makefile.in	2009-05-09 12:53:50.000000000 +0000
+@@ -225,7 +225,7 @@
+ 			$(top_builddir)/src/lib/libatm.la \
+ 			$(top_builddir)/src/saal/libsaal.a
  
 -atmsigd_LDADD = $(atmsigd_XTRAS) -lfl
 +atmsigd_LDADD = $(atmsigd_XTRAS) 
  atmsigd_DEPENDENCIES = mess.c $(atmsigd_XTRAS)
- 
  CLEANFILES = mess.c
-Index: src/switch/debug/debug.c
-===================================================================
---- src/switch/debug/debug.c	2007-10-20 19:19:12.414335932 +0200
-+++ src/switch/debug/debug.c	2007-10-20 19:19:16.894591246 +0200
+ sysconf_DATA = atmsigd.conf
+--- src/switch/debug/debug.c.orig	2008-01-01 00:14:52.000000000 +0000
++++ src/switch/debug/debug.c	2009-05-09 12:53:50.000000000 +0000
 @@ -20,6 +20,11 @@
  
  #define PRV(call) ((FAB *) (call)->fab)
@@ -97,10 +83,8 @@ Index: src/switch/debug/debug.c
  
  typedef struct _fab {
      CALL *next; /* relay.c may not keep track of calls, but WE are */
-Index: src/switch/debug/Makefile.am
-===================================================================
---- src/switch/debug/Makefile.am	2007-10-20 19:19:10.406221495 +0200
-+++ src/switch/debug/Makefile.am	2007-10-20 19:19:16.906591931 +0200
+--- src/switch/debug/Makefile.am.orig	2008-01-01 00:14:52.000000000 +0000
++++ src/switch/debug/Makefile.am	2009-05-09 12:53:50.000000000 +0000
 @@ -5,7 +5,7 @@
  sw_debug_SOURCES = debug.c
  sw_debug_XTRAS = $(top_builddir)/src/switch/libsw.a \
@@ -110,23 +94,19 @@ Index: src/switch/debug/Makefile.am
  			
  sw_debug_DEPENDENCIES = $(sw_debug_XTRAS)
  
-Index: src/switch/debug/Makefile.in
-===================================================================
---- src/switch/debug/Makefile.in	2007-10-20 19:19:12.378333877 +0200
-+++ src/switch/debug/Makefile.in	2007-10-20 19:19:16.918592613 +0200
-@@ -92,7 +92,7 @@
- sw_debug_SOURCES = debug.c
- sw_debug_XTRAS = $(top_builddir)/src/switch/libsw.a 			$(top_builddir)/src/lib/libatm.la
+--- src/switch/debug/Makefile.in.orig	2009-05-09 12:46:39.000000000 +0000
++++ src/switch/debug/Makefile.in	2009-05-09 12:53:50.000000000 +0000
+@@ -193,7 +193,7 @@
+ sw_debug_XTRAS = $(top_builddir)/src/switch/libsw.a \
+ 			$(top_builddir)/src/lib/libatm.la
  
 -sw_debug_LDADD = $(sw_debug_XTRAS) -lfl
-+sw_debug_LDADD = $(sw_debug_XTRAS) 
- 
++sw_debug_LDADD = $(sw_debug_XTRAS)
  sw_debug_DEPENDENCIES = $(sw_debug_XTRAS)
- 
-Index: src/switch/tcp/Makefile.am
-===================================================================
---- src/switch/tcp/Makefile.am	2007-10-20 19:19:10.422222406 +0200
-+++ src/switch/tcp/Makefile.am	2007-10-20 19:19:16.922592837 +0200
+ EXTRA_DIST = demo README
+ all: all-am
+--- src/switch/tcp/Makefile.am.orig	2008-01-01 00:14:52.000000000 +0000
++++ src/switch/tcp/Makefile.am	2009-05-09 12:53:50.000000000 +0000
 @@ -5,7 +5,7 @@
  sw_tcp_SOURCES = tcpsw.c
  sw_tcp_XTRAS = $(top_builddir)/src/switch/libsw.a \
@@ -136,23 +116,19 @@ Index: src/switch/tcp/Makefile.am
  sw_tcp_DEPENDENCIES = $(sw_tcp_XTRAS)
  
  EXTRA_DIST = mkfiles README
-Index: src/switch/tcp/Makefile.in
-===================================================================
---- src/switch/tcp/Makefile.in	2007-10-20 19:19:12.422336385 +0200
-+++ src/switch/tcp/Makefile.in	2007-10-20 19:19:16.926593064 +0200
-@@ -92,7 +92,7 @@
- sw_tcp_SOURCES = tcpsw.c
- sw_tcp_XTRAS = $(top_builddir)/src/switch/libsw.a 		$(top_builddir)/src/lib/libatm.la
+--- src/switch/tcp/Makefile.in.orig	2009-05-09 12:46:39.000000000 +0000
++++ src/switch/tcp/Makefile.in	2009-05-09 12:53:50.000000000 +0000
+@@ -193,7 +193,7 @@
+ sw_tcp_XTRAS = $(top_builddir)/src/switch/libsw.a \
+ 		$(top_builddir)/src/lib/libatm.la
  
 -sw_tcp_LDADD = $(sw_tcp_XTRAS) -lfl
 +sw_tcp_LDADD = $(sw_tcp_XTRAS) 
  sw_tcp_DEPENDENCIES = $(sw_tcp_XTRAS)
- 
  EXTRA_DIST = mkfiles README
-Index: src/switch/tcp/tcpsw.c
-===================================================================
---- src/switch/tcp/tcpsw.c	2007-10-20 19:19:12.426336614 +0200
-+++ src/switch/tcp/tcpsw.c	2007-10-20 19:19:16.954594660 +0200
+ all: all-am
+--- src/switch/tcp/tcpsw.c.orig	2008-01-01 00:14:52.000000000 +0000
++++ src/switch/tcp/tcpsw.c	2009-05-09 12:53:50.000000000 +0000
 @@ -35,6 +35,10 @@
  #define MAX_PACKET (ATM_MAX_AAL5_PDU+sizeof(struct atmtcp_hdr))
  #define BUFFER_SIZE (MAX_PACKET*2)
@@ -164,13 +140,11 @@ Index: src/switch/tcp/tcpsw.c
  
  typedef struct _table {
      struct _link *out;	/* output port */
-Index: src/test/ispl_l.c
-===================================================================
---- src/test/ispl_l.c	2007-10-20 19:19:10.442223546 +0200
-+++ src/test/ispl_l.c	2007-10-20 19:19:16.962595124 +0200
-@@ -11,6 +11,11 @@
- #include <stdio.h>
- #include <unistd.h>
+--- src/test/ispl_l.l.orig	2001-10-09 22:33:08.000000000 +0000
++++ src/test/ispl_l.l	2009-05-09 12:53:50.000000000 +0000
+@@ -17,6 +17,11 @@
+ #include "isp.h"
+ #include "ispl_y.h"
  
 +int yywrap(void)
 +{
@@ -178,13 +152,11 @@ Index: src/test/ispl_l.c
 +}
 +
  
- /* cfront 1.2 defines "c_plusplus" instead of "__cplusplus" */
- #ifdef c_plusplus
-Index: src/test/Makefile.am
-===================================================================
---- src/test/Makefile.am	2007-10-20 19:19:11.858304242 +0200
-+++ src/test/Makefile.am	2007-10-20 19:19:16.962595124 +0200
-@@ -15,7 +15,7 @@
+ static int lineno = 1;
+ 
+--- src/test/Makefile.am.orig	2008-01-01 00:14:53.000000000 +0000
++++ src/test/Makefile.am	2009-05-09 12:53:50.000000000 +0000
+@@ -20,7 +20,7 @@
  bw_SOURCES = bw.c
  isp_SOURCES = isp.c isp.h ispl_y.y ispl_l.l
  isp_XTRAS = $(LDADD)
@@ -193,11 +165,9 @@ Index: src/test/Makefile.am
  isp_DEPENDENCIES = $(isp_XTRAS) errnos.inc
  window_SOURCES = window.c
  
-Index: src/test/Makefile.in
-===================================================================
---- src/test/Makefile.in	2007-10-20 19:19:11.826302420 +0200
-+++ src/test/Makefile.in	2007-10-20 19:19:16.962595124 +0200
-@@ -102,7 +102,7 @@
+--- src/test/Makefile.in.orig	2009-05-09 12:46:39.000000000 +0000
++++ src/test/Makefile.in	2009-05-09 12:53:50.000000000 +0000
+@@ -277,7 +277,7 @@
  bw_SOURCES = bw.c
  isp_SOURCES = isp.c isp.h ispl_y.y ispl_l.l
  isp_XTRAS = $(LDADD)
@@ -205,4 +175,4 @@ Index: src/test/Makefile.in
 +isp_LDADD = $(isp_XTRAS) 
  isp_DEPENDENCIES = $(isp_XTRAS) errnos.inc
  window_SOURCES = window.c
- 
+ CLEANFILES = errnos.inc
