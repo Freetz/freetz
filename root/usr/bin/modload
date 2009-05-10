@@ -27,6 +27,7 @@ else
 	tar -cf $MODFILE -C /tmp flash
 	echo 'done.'
 fi
+[ -d /tmp/flash/mod ] || mkdir -p /tmp/flash/mod
 
 [ -e /mod/etc/default.mod ] || ln -s /etc/default.mod /mod/etc/default.mod
 [ -e /mod/usr/lib/cgi-bin/mod ] || ln -s /usr/lib/cgi-bin/mod /mod/usr/lib/cgi-bin/mod
@@ -58,8 +59,9 @@ fi
 echo 'done.'
 
 echo -n 'Loading modules...'
-if [ -r "/tmp/flash/modules" ]; then
-	grep -v "^#" /tmp/flash/modules | while read -r module; do
+[ -r /tmp/flash/modules ] && mv /tmp/flash/modules /tmp/flash/mod/modules
+if [ -r /tmp/flash/mod/modules ]; then
+	grep -v "^#" /tmp/flash/mod/modules | while read -r module; do
 		[ -z "$module" ] || modprobe $module
 	done
 fi

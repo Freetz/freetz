@@ -6,23 +6,27 @@ DAEMON_LONG_NAME="dropbear SSH server"
 . /etc/init.d/modlibrc
 
 pre_config() {
-	if [ ! -e "/tmp/flash/rsa_host_key" -o ! -e "/tmp/flash/dss_host_key" ]; then
+	[ -d "/tmp/flash/.ssh" ] && mv /tmp/flash/.ssh /tmp/flash/dropbear
+	[ -d /dropbear ] || mkdir -p /tmp/flash/dropbear
+	[ -e /tmp/flash/rsa_host_key ] && mv /tmp/flash/rsa_host_key /tmp/flash/dropbear/rsa_host_key
+	[ -e /tmp/flash/dss_host_key ] && mv /tmp/flash/dss_host_key /tmp/flash/dropbear/dss_host_key
+
+	if [ ! -e "/tmp/flash/dropbear/rsa_host_key" -o ! -e "/tmp/flash/dropbear/dss_host_key" ]; then
 		echo "Creating RSA and DSS host keys"
-		rm -f /tmp/flash/rsa_host_key
-		rm -f /tmp/flash/dss_host_key
-		dropbearkey -t rsa -f /tmp/flash/rsa_host_key
-		dropbearkey -t dss -f /tmp/flash/dss_host_key
+		rm -f /tmp/flash/dropbear/rsa_host_key
+		rm -f /tmp/flash/dropbear/dss_host_key
+		dropbearkey -t rsa -f /tmp/flash/dropbear/rsa_host_key
+		dropbearkey -t dss -f /tmp/flash/dropbear/dss_host_key
 		/usr/bin/modsave flash
 	fi
 
 	if [ ! -d "/mod/etc/ssh" ]; then
 		mkdir -p /mod/etc/ssh
-		ln -s /tmp/flash/rsa_host_key /mod/etc/ssh/rsa_host_key
-		ln -s /tmp/flash/dss_host_key /mod/etc/ssh/dss_host_key
+		ln -s /tmp/flash/dropbear/rsa_host_key /mod/etc/ssh/rsa_host_key
+		ln -s /tmp/flash/dropbear/dss_host_key /mod/etc/ssh/dss_host_key
 	fi
 	
-	[ -d "/tmp/flash/.ssh" ] || mkdir /tmp/flash/.ssh
-	[ -e "/mod/root/.ssh" ] || ln -s /tmp/flash/.ssh /mod/root/.ssh
+	[ -e "/mod/root/.ssh" ] || ln -s /tmp/flash/dropbear /mod/root/.ssh
 }
 
 start() {
@@ -66,8 +70,8 @@ case "$1" in
 		modreg cgi 'dropbear' 'Dropbear'
 
 		deffile='/mod/etc/default.dropbear/authorized_keys.def'
-		[ -r /tmp/flash/authorized_keys.def ] && deffile='/tmp/flash/authorized_keys.def'
-		modreg file 'authorized_keys' 'Authorized keys' 0 "$deffile"
+		[ -r /tmp/flash/dropbear/authorized_keys.def ] && deffile='/tmp/flash/dropbear/authorized_keys.def'
+		modreg file 'dropbear__authorized_keys' 'Dropbear: keys' 0 "$deffile"
 
 		if [ "$DROPBEAR_ENABLED" != "yes" ]; then
 			if [ "$DROPBEAR_ENABLED" != "inetd" ]; then
@@ -82,7 +86,7 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'authorized_keys'
+		modunreg file 'dropbear__authorized_keys'
 		modunreg cgi 'dropbear'
 		;;
 	start)

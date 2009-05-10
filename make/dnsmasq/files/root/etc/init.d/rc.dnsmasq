@@ -32,8 +32,8 @@ start() {
 			/mod/etc/default.$DAEMON/${DAEMON}_conf
 		fi
 
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
+		if [ -r "/tmp/flash/${DAEMON}/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}/${DAEMON}.extra
 		fi
 	) > /mod/etc/$DAEMON.conf
 
@@ -108,11 +108,14 @@ stop() {
 
 case "$1" in
         ""|load)
+		mkdir -p "/tmp/flash/${DAEMON}"
+		[ -r "/tmp/flash/${DAEMON}.extra" ] && mv "/tmp/flash/${DAEMON}.extra" "/tmp/flash/${DAEMON}/${DAEMON}.extra"
+
 		modreg cgi 'dnsmasq' 'Dnsmasq'
 		
 		deffile='/mod/etc/default.dnsmasq/dnsmasq_extra.def'
-		[ -r "/tmp/flash/dnsmasq_extra.def" ] && deffile='/tmp/flash/dnsmasq_extra.def'
-		modreg file 'dnsmasq_extra' 'Dnsmasq-Extra' 0 "$deffile"
+		[ -r "/tmp/flash/dnsmasq/dnsmasq_extra.def" ] && deffile='/tmp/flash/dnsmasq/dnsmasq_extra.def'
+		modreg file 'dnsmasq__extra' 'Dnsmasq: extra' 0 "$deffile"
 
 		if [ "$DNSMASQ_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -131,6 +134,7 @@ case "$1" in
 		;;
 	unload)
 		stop
+		modunreg file 'dnsmasq__extra'
 		modunreg cgi 'dnsmasq'
 		;;
 	start)

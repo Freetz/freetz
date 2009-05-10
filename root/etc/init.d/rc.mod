@@ -16,6 +16,8 @@ start() {
 
 	[ -d /tmp/flash ] || /usr/bin/modload
 
+	[ -r /tmp/flash/mod/resolv.conf ] || cat /var/tmp/resolv.conf>/tmp/flash/mod/resolv.conf
+
 	/etc/init.d/rc.crond
 	/etc/init.d/rc.telnetd
 	/etc/init.d/rc.webcfg
@@ -39,24 +41,34 @@ start() {
 		echo "...done."
 	fi
 
-	[ -r /tmp/flash/rc.custom ] && . /tmp/flash/rc.custom
+	[ -r /tmp/flash/rc.custom ] && mv /tmp/flash/rc.custom /tmp/flash/mod/rc.custom
+	[ -r /tmp/flash/mod/rc.custom ] && . /tmp/flash/mod/rc.custom
 
 	/etc/init.d/rc.swap
 }
 
 case "$1" in
 	"")
-		deffile='/etc/default.mod/exhosts.def'
-		[ -r /tmp/flash/exhosts.def ] && deffile='/tmp/flash/exhosts.def'
-		modreg file 'exhosts' 'Hosts' 1 "$deffile"
 
-		deffile='/etc/default.mod/rc_custom.def'
-		[ -r /tmp/flash/rc_custom.def ] && deffile='/tmp/flash/rc_custom.def'
-		modreg file 'rc_custom' 'rc.custom' 0 "$deffile"
+		deffile='/etc/default.mod/_profile.def'
+		[ -r /tmp/flash/mod/_profile.def ] && deffile='/tmp/flash/mod/_profile.def'
+		modreg file 'Freetz___profile' 'Freetz: .profile' 0 "$deffile"
+
+		deffile='/etc/default.mod/hosts.def'
+		[ -r /tmp/flash/mod/hosts.def ] && deffile='/tmp/flash/mod/hosts.def'
+		modreg file 'Freetz__hosts' 'Freetz: hosts' 1 "$deffile"
 
 		deffile='/etc/default.mod/modules.def'
-		[ -r /tmp/flash/modules.def ] && deffile='/tmp/flash/modules.def'
-		modreg file 'modules' 'modules' 0 "$deffile"
+		[ -r /tmp/flash/mod/modules.def ] && deffile='/tmp/flash/mod/modules.def'
+		modreg file 'Freetz__modules' 'Freetz: modules' 0 "$deffile"
+
+		deffile='/etc/default.mod/resolv_conf.def'
+		[ -r /tmp/flash/mod/resolv_conf.def ] && deffile='/tmp/flash/mod/resolv_conf.def'
+		modreg file 'Freetz__resolv_conf' 'Freetz: resolv.conf' 0 "$deffile"
+
+		deffile='/etc/default.mod/rc_custom.def'
+		[ -r /tmp/flash/mod/rc_custom.def ] && deffile='/tmp/flash/mod/rc_custom.def'
+		modreg file 'Freetz__rc_custom' 'Freetz: rc.custom' 0 "$deffile"
 
 		[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
 		modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' mod/logs

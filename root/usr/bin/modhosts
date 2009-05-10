@@ -27,7 +27,7 @@ ismac () {
 
 case "$1" in
 	"")
-		mvi /tmp/flash/exhosts
+		mvi /tmp/flash/mod/hosts
 		$0 load
 		;;
 	load)
@@ -52,8 +52,9 @@ case "$1" in
 			fi
 		fi
 
-		if [ -r /tmp/flash/exhosts ]; then
-			egrep -v '^(#|[[:space:]]*$)' /tmp/flash/exhosts |
+		[ -r /tmp/flash/exhosts ] && mv /tmp/flash/exhosts /tmp/flash/mod/hosts
+		if [ -r /tmp/flash/mod/hosts ]; then
+			egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts |
 				while read -r ip mac interface host desc; do
 					if [ -z "$host" -o "$host" = "*" ]; then
 						let hnr="$hnr+1"

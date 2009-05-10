@@ -5,9 +5,9 @@ DAEMON=knock
 . /etc/init.d/modlibrc
 
 start() {
-	if [ ! -e "/tmp/flash/knockd.conf" ]; then
+	if [ ! -e "/tmp/flash/knock/knockd.conf" ]; then
 		echo "Creating knockd.conf"
-		cat /usr/share/doc/knock/knockd.conf > /tmp/flash/knockd.conf
+		cat /usr/share/doc/knock/knockd.conf > /tmp/flash/knock/knockd.conf
 		/usr/bin/modsave flash
 	fi
 
@@ -17,7 +17,7 @@ start() {
 	while [ $((countdown--)) -gt 0 ] && ! ifconfig dsl > /dev/null 2>&1; do
 		sleep 2
 	done
-	knockd -d -c /tmp/flash/knockd.conf -i "$KNOCK_INTERFACE"
+	knockd -d -c /tmp/flash/knock/knockd.conf -i "$KNOCK_INTERFACE"
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -41,13 +41,14 @@ stop() {
 
 case "$1" in
 	""|load)
-		[ -d "/tmp/flash/.ssh" ] || mkdir /tmp/flash/.ssh
+		[ -d "/tmp/flash/knock" ] || mkdir /tmp/flash/knock
+		[ -r /tmp/flash/knockd.conf ] && mv /tmp/flash/knockd.conf /tmp/flash/knock/knockd.conf
 
 		modreg cgi 'knock' 'Knock'
 
 		deffile='/mod/etc/default.knock/knockd_conf.def'
-		[ -r "/tmp/flash/knock_conf.def" ] && deffile='/tmp/flash/knockd_conf.def'
-		modreg file 'knockd_conf' 'Knockd config' 0 "$deffile"
+		[ -r "/tmp/flash/knock/knock_conf.def" ] && deffile='/tmp/flash/knock/knockd_conf.def'
+		modreg file 'knockd_conf' 'Knockd: config' 0 "$deffile"
 
 		if [ "$KNOCK_ENABLED" != "yes" ]; then
 			echo "knockd is disabled" 1>&2

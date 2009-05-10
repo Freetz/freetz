@@ -44,7 +44,7 @@ cat << EOF
 <p><textarea name="dhcp_range" rows="3" cols="50" maxlength="255">$(html "$DNSMASQ_DHCP_RANGE")</textarea></p>
 <p>
 <input type="hidden" name="ethers" value="no">
-<input id="s1" type="checkbox" name="ethers" value="yes"$ethers_chk><label for="s1"> $(lang de:"Statische DHCP Leases aus" en:"Static DHCP leases from") <a href="/cgi-bin/file.cgi?id=exhosts">Hosts</a> (MAC &lt;-&gt; IP)</label><br>
+<input id="s1" type="checkbox" name="ethers" value="yes"$ethers_chk><label for="s1"> $(lang de:"Statische DHCP Leases aus" en:"Static DHCP leases from") <a href="/cgi-bin/file.cgi?id=Freetz__hosts">hosts</a> (MAC &lt;-&gt; IP)</label><br>
 <span style="font-size:10px;">($(lang de:"nur Eintr&auml;ge, die eine g&uuml;ltige IP und MAC aufweisen" en:"items with valid IP and MAC addresses only"))</span>
 </p>
 EOF

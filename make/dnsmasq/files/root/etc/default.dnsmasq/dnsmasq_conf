@@ -30,8 +30,9 @@ fi
 isdhcphost () {
 	echo $1 | grep '^dhcp-host$' >/dev/null
 }
-if [ -r /tmp/flash/exhosts ]; then
-	egrep -v '^(#|[[:space:]]*$)' /tmp/flash/exhosts |
+[ -r /tmp/flash/exhosts ] && mv /tmp/flash/exhosts /tmp/flash/mod/hosts
+if [ -r /tmp/flash/mod/hosts ]; then
+	egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts |
 		while read -r ip mac interface host desc; do
 			isdhcphost $mac && echo "dhcp-host=${host}"
 		done

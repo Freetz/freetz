@@ -16,8 +16,8 @@ case "$1" in
 esac
 
 start() {
-	if [ -r /tmp/flash/crontab.save ]; then
-		cp /tmp/flash/crontab.save /var/spool/cron/crontabs/root
+	if [ -r /tmp/flash/mod/crontab ]; then
+		cp /tmp/flash/mod/crontab /var/spool/cron/crontabs/root
 	else
 		touch /var/spool/cron/crontabs/root
 	fi
@@ -50,9 +50,10 @@ stop() {
 
 case "$1" in
         ""|load)
+		[ -r /tmp/flash/crontab.save ] && mv /tmp/flash/crontab.save /tmp/flash/mod/crontab
 		deffile='/etc/default.mod/crontab.def'
-		[ -r "/tmp/flash/crontab.def" ] && deffile='/tmp/flash/crontab.def'
-		modreg file 'crontab' 'Crontab' 0 "$deffile"
+		[ -r "/tmp/flash/mod/crontab.def" ] && deffile='/tmp/flash/mod/crontab.def'
+		modreg file 'Freetz__crontab' 'Freetz: crontab' 0 "$deffile"
 
 		if [ "$MOD_CROND" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -63,7 +64,7 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'crontab'
+		modunreg file 'Freetz__crontab'
 		;;
 	start)
 		start
