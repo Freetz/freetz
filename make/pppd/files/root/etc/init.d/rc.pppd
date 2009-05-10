@@ -19,15 +19,15 @@ case "$1" in
 
 		deffile='/mod/etc/default.pppd/chap_secrets.def'
 		[ -r "/tmp/flash/chap_secrets.def" ] && deffile='/tmp/flash/chap_secrets.def'
-		modreg file 'chap_secrets' 'PPP: chap-secrets' 0 "$deffile"
+		modreg file 'chap_secrets' 'PPPD: chap-secrets' 0 "$deffile"
 
 		#deffile='/mod/etc/default.pppd/pap_secrets.def'
 		#[ -r "/tmp/flash/pap_secrets.def" ] && deffile='/tmp/flash/pap_secrets.def'
-		#modreg file 'pap_secrets' 'PPP: pap-secrets' 0 "$deffile"
+		#modreg file 'pap_secrets' 'PPPD: pap-secrets' 0 "$deffile"
 
 		#deffile='/mod/etc/default.pppd/pppd_options.def'
 		#[ -r "/tmp/flash/pppd_options.def" ] && deffile='/tmp/flash/pppd_options.def'
-		#modreg file 'pppd_options' 'PPP: options' 0 "$deffile"
+		#modreg file 'pppd_options' 'PPPD: options' 0 "$deffile"
 		;;
 	unload)
 		modunreg file 'chap_secrets'

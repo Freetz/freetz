@@ -5,7 +5,7 @@ DAEMON=onlinechanged
 . /etc/init.d/modlibrc
 
 start() {
-	echo -n 'Setting up onlinechange scripting ...'
+	echo -n 'Setting up onlinechanged scripting ...'
 	[ ! -f /tmp/flash/$DAEMON-cgi ] && cp /etc/default.$DAEMON/$DAEMON-cgi /tmp/flash/
 	[ ! -d /var/run/ ] && mkdir -p /var/run
 	(sh /tmp/flash/$DAEMON-cgi start
@@ -17,7 +17,7 @@ case "$1" in
 	""|load)
 		deffile="/mod/etc/default.$DAEMON/$DAEMON.def"
 		[ -r /tmp/flash/$DAEMON.def ] && deffile="/tmp/flash/$DAEMON.def"
-		modreg file 'onlinechanged' 'IP-reconfig' 0 "$deffile"
+		modreg file 'onlinechanged' 'Onlinechanged' 0 "$deffile"
 		;;
 	unload)
 		modlib_stop
