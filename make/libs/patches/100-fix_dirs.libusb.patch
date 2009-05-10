@@ -1,0 +1,29 @@
+--- libusb-config.in.orig	2004-01-27 23:36:37.000000000 +0100
++++ libusb-config.in	2009-01-16 18:21:43.000000000 +0100
+@@ -2,6 +2,8 @@
+ 
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
+ exec_prefix_set=no
+ 
+ usage()
+@@ -50,8 +52,8 @@
+       exit 0
+       ;;
+     --cflags)
+-      if test "@includedir@" != /usr/include ; then
+-        includes="-I@includedir@"
++      if test "$includedir" != /usr/include ; then
++        includes="-I$includedir"
+       fi
+       echo_cflags=yes
+       ;;
+@@ -75,5 +77,5 @@
+ 	echo $includes
+ fi
+ if test "$echo_libs" = "yes"; then
+-	echo -L@libdir@ -lusb @OSLIBS@
++	echo -L$libdir -lusb @OSLIBS@
+ fi
