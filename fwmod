@@ -437,6 +437,10 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	chmod -R +w "$FILESYSTEM_DIR"
 
+	for dir in `find -P "${FILESYSTEM_DIR}" -maxdepth 1 -type d`; do
+		chmod +rx $dir
+	done
+
 	if [ -r "$AVMPLUGINS" ]; then
 		echo "unpacking AVM plugins"
 		mkdir -p "$AVMPLUGINS_DIR"
