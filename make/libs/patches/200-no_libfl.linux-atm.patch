@@ -9,17 +9,6 @@
  
  q_dump_SOURCES = common.c
  q_dump_LDADD = qd.dump.standalone.o
---- src/qgen/Makefile.in.orig	2009-05-09 12:46:38.000000000 +0000
-+++ src/qgen/Makefile.in	2009-05-09 12:53:50.000000000 +0000
-@@ -210,7 +210,7 @@
- qgen_SOURCES = common.c common.h file.c file.h first.c ql_y.y ql_l.l qgen.c \
- 		qgen.h second.c third.c
- 
--qgen_LDADD = -lfl
-+qgen_LDADD =
- q_dump_SOURCES = common.c
- q_dump_LDADD = qd.dump.standalone.o
- # FIXME: paulsch: We don't really depend on qd.dump.o or q.out.o here, but this
 --- src/qgen/ql_l.l.orig	2001-10-09 22:33:07.000000000 +0000
 +++ src/qgen/ql_l.l	2009-05-09 12:53:50.000000000 +0000
 @@ -14,6 +14,11 @@
@@ -58,17 +47,6 @@
  atmsigd_DEPENDENCIES = mess.c $(atmsigd_XTRAS)
  
  CLEANFILES = mess.c
---- src/sigd/Makefile.in.orig	2009-05-09 12:46:39.000000000 +0000
-+++ src/sigd/Makefile.in	2009-05-09 12:53:50.000000000 +0000
-@@ -225,7 +225,7 @@
- 			$(top_builddir)/src/lib/libatm.la \
- 			$(top_builddir)/src/saal/libsaal.a
- 
--atmsigd_LDADD = $(atmsigd_XTRAS) -lfl
-+atmsigd_LDADD = $(atmsigd_XTRAS) 
- atmsigd_DEPENDENCIES = mess.c $(atmsigd_XTRAS)
- CLEANFILES = mess.c
- sysconf_DATA = atmsigd.conf
 --- src/switch/debug/debug.c.orig	2008-01-01 00:14:52.000000000 +0000
 +++ src/switch/debug/debug.c	2009-05-09 12:53:50.000000000 +0000
 @@ -20,6 +20,11 @@
@@ -94,17 +72,6 @@
  			
  sw_debug_DEPENDENCIES = $(sw_debug_XTRAS)
  
---- src/switch/debug/Makefile.in.orig	2009-05-09 12:46:39.000000000 +0000
-+++ src/switch/debug/Makefile.in	2009-05-09 12:53:50.000000000 +0000
-@@ -193,7 +193,7 @@
- sw_debug_XTRAS = $(top_builddir)/src/switch/libsw.a \
- 			$(top_builddir)/src/lib/libatm.la
- 
--sw_debug_LDADD = $(sw_debug_XTRAS) -lfl
-+sw_debug_LDADD = $(sw_debug_XTRAS)
- sw_debug_DEPENDENCIES = $(sw_debug_XTRAS)
- EXTRA_DIST = demo README
- all: all-am
 --- src/switch/tcp/Makefile.am.orig	2008-01-01 00:14:52.000000000 +0000
 +++ src/switch/tcp/Makefile.am	2009-05-09 12:53:50.000000000 +0000
 @@ -5,7 +5,7 @@
@@ -116,17 +83,6 @@
  sw_tcp_DEPENDENCIES = $(sw_tcp_XTRAS)
  
  EXTRA_DIST = mkfiles README
---- src/switch/tcp/Makefile.in.orig	2009-05-09 12:46:39.000000000 +0000
-+++ src/switch/tcp/Makefile.in	2009-05-09 12:53:50.000000000 +0000
-@@ -193,7 +193,7 @@
- sw_tcp_XTRAS = $(top_builddir)/src/switch/libsw.a \
- 		$(top_builddir)/src/lib/libatm.la
- 
--sw_tcp_LDADD = $(sw_tcp_XTRAS) -lfl
-+sw_tcp_LDADD = $(sw_tcp_XTRAS) 
- sw_tcp_DEPENDENCIES = $(sw_tcp_XTRAS)
- EXTRA_DIST = mkfiles README
- all: all-am
 --- src/switch/tcp/tcpsw.c.orig	2008-01-01 00:14:52.000000000 +0000
 +++ src/switch/tcp/tcpsw.c	2009-05-09 12:53:50.000000000 +0000
 @@ -35,6 +35,10 @@
@@ -165,14 +121,3 @@
  isp_DEPENDENCIES = $(isp_XTRAS) errnos.inc
  window_SOURCES = window.c
  
---- src/test/Makefile.in.orig	2009-05-09 12:46:39.000000000 +0000
-+++ src/test/Makefile.in	2009-05-09 12:53:50.000000000 +0000
-@@ -277,7 +277,7 @@
- bw_SOURCES = bw.c
- isp_SOURCES = isp.c isp.h ispl_y.y ispl_l.l
- isp_XTRAS = $(LDADD)
--isp_LDADD = $(isp_XTRAS) -lfl
-+isp_LDADD = $(isp_XTRAS) 
- isp_DEPENDENCIES = $(isp_XTRAS) errnos.inc
- window_SOURCES = window.c
- CLEANFILES = errnos.inc
