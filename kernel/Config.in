@@ -238,6 +238,15 @@ config FREETZ_MODULE_fat
 	bool "fat.ko"
 	default n
 
+config FREETZ_MODULE_hfs
+        bool "hfs.ko"
+        default n
+
+config FREETZ_MODULE_hfsplus
+        bool "hfsplus.ko"
+	select FREETZ_MODULE_nls_utf8
+        default n
+
 config FREETZ_MODULE_fuse
 	bool "fuse.ko"
 	default n
