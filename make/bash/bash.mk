@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 3.2)
+$(call PKG_INIT_BIN, 3.2.48)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/bash
 $(PKG)_BINARY:=$(BASH_DIR)/bash
