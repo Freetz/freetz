@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://www.wormulon.net/slurm
 $(PKG)_BINARY:=$($(PKG)_DIR)/slurm
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/slurm
 
+$(PKG)_DEPENDS_ON := ncurses
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
