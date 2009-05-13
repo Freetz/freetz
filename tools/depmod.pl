@@ -13,7 +13,7 @@
 
 # This program is free software; you can redistribute it and/or modify it
 # under the same terms as Perl itself.
-use Getopt::Long;
+use Getopt::Long qw(:config no_auto_abbrev no_ignore_case);
 use File::Find;
 use strict;
 
@@ -22,6 +22,10 @@ my $kdir="";
 my $basedir="";
 my $kernel="";
 my $kernelsyms="";
+my $symprefix="";
+my $all=0;
+my $quick=0;
+my $errsyms=0;
 my $stdout=0;
 my $verbose=0;
 my $help=0;
@@ -36,30 +40,43 @@ my $mod = {};
 my $usage = <<TXT;
 $0 -b basedir { -k <vmlinux> | -F <System.map> } [options]...
   Where:
-   -h --help         : Show this help screen
-   -b --basedir      : Modules base directory (e.g /lib/modules/<2.x.y>)
-   -k --kernel       : Kernel binary for the target (e.g. vmlinux)
-   -F --kernelsyms   : Kernel symbol file (e.g. System.map)
-   -n --stdout       : Write to stdout instead of <basedir>/modules.dep
-   -v --verbose      : Print out lots of debugging stuff
+   -h --help          : Show this help screen
+   -b --basedir       : Modules base directory (e.g /lib/modules/<2.x.y>)
+   -k --kernel        : Kernel binary for the target (e.g. vmlinux)
+   -F --kernelsyms    : Kernel symbol file (e.g. System.map)
+   -n --stdout        : Write to stdout instead of <basedir>/modules.dep
+   -v --verbose       : Print out lots of debugging stuff
+   -P --symbol-prefix : Symbol prefix
+   -a --all           : Probe all modules (default/only thing supported)
+   -e --errsyms       : Report any symbols not supplied by modules/kernel
 TXT
 
 # get command-line options
 GetOptions(
-	"help|h"         => \$help,
-	"basedir|b=s"    => \$basedir,
-	"kernel|k=s"     => \$kernel,
-	"kernelsyms|F=s" => \$kernelsyms,
-	"stdout|n"       => \$stdout,
-	"verbose|v"      => \$verbose,
+	"help|h"            => \$help,
+	"basedir|b=s"       => \$basedir,
+	"kernel|k=s"        => \$kernel,
+	"kernelsyms|F=s"    => \$kernelsyms,
+	"stdout|n"          => \$stdout,
+	"verbose|v"         => \$verbose,
+	"symbol-prefix|P=s" => \$symprefix,
+	"all|a"             => \$all,
+	# unsupported options
+	"quick|A"           => \$quick,
+	# ignored options (for historical usage)
+	"quiet|q",
+	"root|r",
+	"unresolved-error|u"
 );
 
 die $usage if $help;
 die $usage unless $basedir && ( $kernel || $kernelsyms );
 die "can't use both -k and -F\n\n$usage" if $kernel && $kernelsyms;
+die "sorry, -A/--quick is not supported" if $quick;
+die "--errsyms requires --kernelsyms" if $errsyms && !$kernelsyms;
 
 # Strip any trailing or multiple slashes from basedir
-$basedir =~ s-(/)\1+-/-g;
+$basedir =~ s-/+$--g;
 
 # The base directory should contain /lib/modules somewhere
 if($basedir !~ m-/lib/modules-) {
@@ -134,6 +151,35 @@ foreach my $module (keys %$dep) {
     }
 }
 
+# build a complete dependency list for each module and make sure it
+# is kept in order proper order
+my $mod2 = {};
+sub maybe_unshift
+{
+	my ($array, $ele) = @_;
+	# chop off the leading path /lib/modules/<kver>/ as modprobe
+	# will handle relative paths just fine
+	#$ele =~ s:^/lib/modules/[^/]*/::;
+	foreach (@{$array}) {
+		if ($_ eq $ele) {
+			return;
+		}
+	}
+	unshift (@{$array}, $ele);
+}
+foreach my $module (keys %$mod) {
+    warn "filling out module: $module\n" if $verbose;
+    @{$mod2->{$module}} = ();
+    foreach my $md (keys %{$mod->{$module}}) {
+        foreach my $md2 (keys %{$mod->{$md}}) {
+            warn "outputting $md2\n" if $verbose;
+            maybe_unshift (\@{$mod2->{$module}}, $md2);
+        }
+        warn "outputting $md\n" if $verbose;
+        maybe_unshift (\@{$mod2->{$module}}, $md);
+    }
+}
+
 # figure out where the output should go
 if ($stdout == 0) {
     open(STDOUT, ">$basedir/modules.dep")
@@ -148,8 +194,11 @@ foreach my $module ( keys %$mod ) {
 	    print join(" \\\n\t",@sorted);
 	    print "\n\n";
     } else {
-	    print "$module: ";
-	    my @sorted = sort bydep keys %{$mod->{$module}};
+	    my $shortmod = $module;
+	    #$shortmod =~ s:^/lib/modules/[^/]*/::;
+	    print "$shortmod:";
+	    my @sorted = @{$mod2->{$module}};
+	    printf " " if @sorted;
 	    print join(" ",@sorted);
 	    print "\n";
     }
@@ -160,21 +209,22 @@ sub build_ref_tables
 {
     my ($name, $sym_ar, $exp, $dep) = @_;
 
-	my $ksymtab = grep m/ __ksymtab/, @$sym_ar;
+	my $ksymtab = grep m/ ${symprefix}__ksymtab/, @$sym_ar;
 
     # gather the exported symbols
 	if($ksymtab){
         # explicitly exported
         foreach ( @$sym_ar ) {
-            / __ksymtab_(.*)$/ and do {
-                warn "sym = $1\n" if $verbose;
-                $exp->{$1} = $name;
+            / ${symprefix}__ksymtab_(.*)$/ and do {
+                my $sym = ${symprefix} . $1;
+                warn "sym = $sym\n" if $verbose;
+                $exp->{$sym} = $name;
             };
         }
 	} else {
         # exporting all symbols
         foreach ( @$sym_ar ) {
-            / [ABCDGRST] (.*)$/ and do {
+            / [ABCDGRSTW] (.*)$/ and do {
                 warn "syma = $1\n" if $verbose;
                 $exp->{$1} = $name;
             };
@@ -182,11 +232,11 @@ sub build_ref_tables
 	}
 
     # this takes makes sure modules with no dependencies get listed
-    push @{$dep->{$name}}, 'printk' unless $name eq 'vmlinux';
+    push @{$dep->{$name}}, $symprefix . 'printk' unless $name eq 'vmlinux';
 
     # gather the unresolved symbols
     foreach ( @$sym_ar ) {
-        !/ __this_module/ && / U (.*)$/ and do {
+        !/ ${symprefix}__this_module/ && / U (.*)$/ and do {
             warn "und = $1\n" if $verbose;
             push @{$dep->{$name}}, $1;
         };
