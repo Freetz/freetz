@@ -57,6 +57,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	cp $(QUAGGA_DIR)/vtysh/.libs/vtysh $(QUAGGA_DEST_DIR)/usr/bin
 	$(TARGET_STRIP) $(QUAGGA_DEST_DIR)/usr/bin/vtysh
 	# install routing routing daemons and libs
+	mkdir -p $(QUAGGA_DEST_DIR)/usr/sbin $(QUAGGA_TARGET_LIBDIR)
 	for d in $(QUAGGA_DAEMONS); do \
 		if [ -f $(QUAGGA_DIR)/$$d/.libs/$$d ]; then \
 			cp $(QUAGGA_DIR)/$$d/.libs/$$d $(QUAGGA_DEST_DIR)/usr/sbin; \

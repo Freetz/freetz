@@ -1,15 +1,15 @@
---- usr/www/all/html/de/fon/sperre1.js.orig	2008-04-18 12:51:38.000000000 +0200
-+++ usr/www/all/html/de/fon/sperre1.js	2008-04-21 17:14:08.000000000 +0200
-@@ -58,7 +58,7 @@
- switch (mode) {
- case "In": {
- var nummer = jslGetValue("uiViewNummer");
+--- usr/www/avm/html/de/fon/sperre1.js.orig	2009-03-06 09:36:16.000000000 +0100
++++ usr/www/avm/html/de/fon/sperre1.js	2009-03-17 18:46:41.610815057 +0100
+@@ -68,7 +68,7 @@
+ var nummer="";
+ if (jslGetValue("uiViewBereichIncoming") == "")
+ nummer = jslGetValue("uiViewNummer");
 -if (!isZahlRaute(nummer)) {alert(g_mldNonDigits); return;}
 +//if (!isZahlRaute(nummer)) {alert(g_mldNonDigits); return;}
  var x = IstActionVorhanden(nummer);
  if (x != "") {
  if (jslGetValue("uiPostInAction"+x) == "1") {
-@@ -151,7 +151,7 @@
+@@ -161,7 +161,7 @@
  }
  } else {
  var nummer = jslGetValue("uiViewNummer");

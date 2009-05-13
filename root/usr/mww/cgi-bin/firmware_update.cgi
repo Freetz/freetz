@@ -27,9 +27,9 @@ $(lang de:"ausgef&uuml;hrt werden." en:"")
 <form action="/cgi-bin/do_update.cgi" method=POST enctype="multipart/form-data" onsubmit="return CheckInput(document.forms[0]);">
 	$(lang de:"Firmware-Image" en:"Firmware image") <input type=file size=50 id="fw_file">
 	<p>
-	<input type="radio" name="do_prepare" value="stop_avm" checked>
+	<input type="radio" name="do_prepare" value="stop_avm">
 	$(lang de:"AVM-Dienste stoppen (bei Speichermangel)" en:"Stop AVM services (low available memory)")<br>
-	<input type="radio" name="do_prepare" value="nostop_avm">
+	<input type="radio" name="do_prepare" value="nostop_avm" checked>
 	$(lang de:"AVM-Dienste nicht stoppen (bei genug Speicher bzw. Pseudo-Update ohne Reboot)" en:"Do not stop AVM services (enough available memory or pseudo update without reboot)")
 	<p>
 	<input type=submit value="$(lang de:"Firmware hochladen" en:"Upload firmware")" style="width:150px">

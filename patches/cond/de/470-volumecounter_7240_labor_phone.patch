@@ -1,5 +1,5 @@
---- usr/www/all/html/de/home/home.js.orig	2009-04-30 18:15:03.000000000 +0200
-+++ usr/www/all/html/de/home/home.js	2009-04-30 18:15:13.000000000 +0200
+--- usr/www/all/html/de/home/home.js.orig	2009-04-30 18:15:45.000000000 +0200
++++ usr/www/all/html/de/home/home.js	2009-04-30 18:15:55.000000000 +0200
 @@ -394,6 +394,9 @@
  var timeBudgetReached = "<? query box:status/hint_time_budget_reached ?>";
  if (timeBudgetReached == "1")
@@ -38,8 +38,8 @@
  return retstr;
  }
  function ConnectDisplay(n) {
---- usr/www/all/html/de/internet/budget.frm.orig	2009-04-21 18:37:40.000000000 +0200
-+++ usr/www/all/html/de/internet/budget.frm	2009-04-30 18:15:13.000000000 +0200
+--- usr/www/all/html/de/internet/budget.frm.orig	2009-04-21 18:39:25.000000000 +0200
++++ usr/www/all/html/de/internet/budget.frm	2009-04-30 18:15:55.000000000 +0200
 @@ -3,3 +3,8 @@
  <input type="hidden" name="connection0:settings/Budget/Enabled" value="<? query connection0:settings/Budget/Enabled ?>" id="uiPostBudgetOn">
  <input type="hidden" name="connection0:settings/Budget/ConnectionTime" value="<? query connection0:settings/Budget/ConnectionTime ?>" id="uiPostBudgetTime">
@@ -49,8 +49,8 @@
 +<input type="hidden" name="connection0:settings/Budget/Period" value="<? query connection0:settings/Budget/Period ?>" id="uiPostBudgetPeriod">
 +<input type="hidden" name="connection0:settings/Budget/VolumeLow" value="<? query connection0:settings/Budget/VolumeLow ?>" id="uiPostBudgetVolumeLow">
 +<input type="hidden" name="connection0:settings/Budget/VolumeHigh" value="<? query connection0:settings/Budget/VolumeHigh ?>" id="uiPostBudgetVolumeHigh">
---- usr/www/all/html/de/internet/budget.html.orig	2009-04-30 18:15:01.000000000 +0200
-+++ usr/www/all/html/de/internet/budget.html	2009-04-30 18:15:13.000000000 +0200
+--- usr/www/all/html/de/internet/budget.html.orig	2009-04-30 18:15:43.000000000 +0200
++++ usr/www/all/html/de/internet/budget.html	2009-04-30 18:15:55.000000000 +0200
 @@ -1,13 +1,25 @@
  <div id="content">
  <div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -93,8 +93,8 @@
  </label></p>
  </div></div></div></div></div></div>
  <? include ../html/de/home/rbb_applyok.html ?>
---- usr/www/all/html/de/internet/budget.js.orig	2009-04-30 18:15:11.000000000 +0200
-+++ usr/www/all/html/de/internet/budget.js	2009-04-30 18:15:13.000000000 +0200
+--- usr/www/all/html/de/internet/budget.js.orig	2009-04-30 18:15:53.000000000 +0200
++++ usr/www/all/html/de/internet/budget.js	2009-04-30 18:15:55.000000000 +0200
 @@ -19,20 +19,34 @@
  function byte2high(b){ return Math.floor(b/g_Shift32); }
  function highlow2byte(h,l){ return h*g_Shift32+l; }
@@ -231,8 +231,8 @@
  }
  }
  function isAtamode () {
---- usr/www/all/html/de/internet/inetstat.html.orig	2009-04-30 18:15:01.000000000 +0200
-+++ usr/www/all/html/de/internet/inetstat.html	2009-04-30 18:15:13.000000000 +0200
+--- usr/www/all/html/de/internet/inetstat.html.orig	2009-04-30 18:15:43.000000000 +0200
++++ usr/www/all/html/de/internet/inetstat.html	2009-04-30 18:15:55.000000000 +0200
 @@ -21,7 +21,7 @@
  </div></div></div></div></div></div>
  <div class="backdialog" id="BudgetNoTarif" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
@@ -323,8 +323,8 @@
  </p>
  <p class="Buttonlink"><input type="button" onclick="uiDoReset()" value="{?de.internet.inetstat.html:365?}" class="Pushbutton180"></p>
  </div></div></div></div></div></div>
---- usr/www/all/html/de/internet/inetstat.js.orig	2009-04-30 18:15:11.000000000 +0200
-+++ usr/www/all/html/de/internet/inetstat.js	2009-04-30 18:15:13.000000000 +0200
+--- usr/www/all/html/de/internet/inetstat.js.orig	2009-04-30 18:15:53.000000000 +0200
++++ usr/www/all/html/de/internet/inetstat.js	2009-04-30 18:15:55.000000000 +0200
 @@ -3,9 +3,12 @@
  <!--
  #tStat {margin: 1px; width: 100%; font-size: 12px;}

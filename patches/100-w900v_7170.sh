@@ -21,14 +21,12 @@ ln -sf  microvoip_isdn_top.bit "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn
 if [ ! "$FREETZ_REMOVE_DECT" == "y" ];then
 	echo2 "Add dect sites to webmenu"
 	#Test if a beta-image or a labor-image is used and use another patchfile for them
-	if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_dsl.patch"
-	elif [ "$FREETZ_TYPE_LABOR_AIO" == "y" ];then
-                modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_aio.patch"
-	else
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch"
-	fi
-
+	#if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
+	#	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_dsl.patch"
+	#else
+	#	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch"
+	#fi
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch"
 	cp "${DIR}/.tk/original/filesystem/usr/share/ctlmgr/libdect.so" "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr"
 fi
 
