@@ -32,13 +32,13 @@ access MyROSystem "" any noauth exact system none none
 access MyROGroup  "" any noauth exact all    none none
 EOF
 			} > $CFGFILE
-		/usr/bin/modsave flash
+			/usr/bin/modsave flash
 		fi
 		;;
 esac
 
 start() {
-	echo -n 'Starting snmpd...'
+	echo -n "Starting $DAEMON..."
 	
 	mkdir -p /var/lib/snmp
 	$DAEMON -c $CFGFILE $SNMPDOPTS
@@ -52,7 +52,7 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping snmpd...'
+	echo -n "Stopping $DAEMON..."
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
 	
