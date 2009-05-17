@@ -22,7 +22,8 @@ case "$1" in
 
 		modlib_addgroup openvpn
 		modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
-		mkdir -p /tmp/openvpn
+		mkdir -p /tmp/openvpn/etc
+		cp -f /etc/resolv.conf /tmp/openvpn/etc
 		. /mod/etc/conf/${DAEMON}.cfg
 		;;
 esac
