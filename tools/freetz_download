@@ -46,6 +46,8 @@ do_download()
   wget_result=$?
   if [ "$wget_result" != "0" ]; then
     echo "Download failed - $2  ->  error code $wget_result" >&2
+    fname=$(basename $2)
+    rm -f $1/$fname
     return $wget_result
   fi
   echo "Download succeeded - $2  ->  saved to folder $1"
