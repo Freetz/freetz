@@ -1,10 +1,15 @@
 #!/bin/sh
 
+. /etc/init.d/modlibrc
+
 DAEMON=ser2net
+DAEMON_LONG_NAME="Serial to Network Proxy"
+PID_FILE=/var/run/$DAEMON.pid
+
+modlib_loadconfig
+
 CFGFILE="/tmp/flash/ser2net.conf"
 [ -e /etc/ser2net.conf ] && CFGFILE="/etc/ser2net.conf"
-
-. /etc/init.d/modlibrc
 
 case "$1" in
 	""|load|start|restart)
@@ -27,7 +32,7 @@ esac
 start() {
 	echo -n "Starting $DAEMON..."
 	
-	$DAEMON -c $CFGFILE
+	$DAEMON -c $CFGFILE -P $PID_FILE
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -36,20 +41,6 @@ start() {
 		exit $exitval
 	fi
 }
-
-stop() {
-	echo -n "Stopping $DAEMON..."
-	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-	
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
-}
-
 
 case "$1" in
 	""|load)
@@ -65,7 +56,7 @@ case "$1" in
 		start
 		;;
 	unload)
-		stop
+		modlib_stop
 
 		[ "$CFGFILE" != "/etc/ser2net.conf" ] && modunreg file 'ser2net_conf'
 		;;
@@ -73,19 +64,13 @@ case "$1" in
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
