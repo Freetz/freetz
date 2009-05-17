@@ -1,11 +1,18 @@
 #!/bin/sh
 
+. /etc/init.d/modlibrc
+
 DAEMON=snmpd
-SNMPDOPTS='-Lf /dev/null -p /var/run/snmpd.pid'
+DAEMON_LONG_NAME="Net-SNMP daemon"
+PID_FILE=/var/run/$DAEMON.pid
+CONF_NAME=netsnmp
+
+modlib_loadconfig
+
+SNMPDOPTS="-Lf /dev/null"
+
 CFGFILE="/tmp/flash/snmpd.conf"
 [ -e /etc/snmp/snmpd.conf ] && CFGFILE="/etc/snmp/snmpd.conf"
-
-. /etc/init.d/modlibrc
 
 case "$1" in
 	""|load|start|restart)
@@ -41,7 +48,7 @@ start() {
 	echo -n "Starting $DAEMON..."
 	
 	mkdir -p /var/lib/snmp
-	$DAEMON -c $CFGFILE $SNMPDOPTS
+	$DAEMON -c $CFGFILE -p $PID_FILE $SNMPDOPTS
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -50,20 +57,6 @@ start() {
 		exit $exitval
 	fi
 }
-
-stop() {
-	echo -n "Stopping $DAEMON..."
-	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-	
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
-}
-
 
 case "$1" in
 	""|load)
@@ -79,7 +72,7 @@ case "$1" in
 		start
 		;;
 	unload)
-		stop
+		modlib_stop
 
 		[ "$CFGFILE" != "/etc/snmpd/snmpd.conf" ] && modunreg file 'snmpd_conf'
 		;;
@@ -87,19 +80,13 @@ case "$1" in
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
