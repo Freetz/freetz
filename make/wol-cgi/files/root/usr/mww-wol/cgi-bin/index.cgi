@@ -14,8 +14,8 @@ $(lang de:"Bekannte Hosts" en:"Known hosts"):
 <option value="*" selected>$(lang de:"(w&auml;hlen)" en:"(choose)")</option>
 EOF
 
-if [ -r /tmp/flash/exhosts ]; then
-	egrep -v '^(#|[[:space:]]*$)' /tmp/flash/exhosts |
+if [ -r /tmp/flash/mod/hosts ]; then
+	egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts |
 		while read -r ip mac interface host desc; do
 			if [ dhcp-host = "$mac" ]; then
 				if [ -n "$host" -a -r /var/tmp/multid.leases ]; then
