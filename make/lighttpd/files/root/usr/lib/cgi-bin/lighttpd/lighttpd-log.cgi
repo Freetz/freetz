@@ -13,7 +13,7 @@ if [ -n "$CHROOT" ]; then
 	LOGE="$CHROOT/$LOGE"
 fi
 
-if [ -f /usr/lib/mod_accesslog.so ]; then
+if [ -f /usr/lib/lighttpd/mod_accesslog.so ]; then
 	if [ -r "$LOGA" ]; then
         	echo "<h1>lighttpd access log $LOGA</h1>"
 	        echo -n '<pre style="height: 480px; width: '$_width'px; overflow: auto;">'

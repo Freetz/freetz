@@ -4,7 +4,8 @@ $(PKG)_SITE:=http://www.lighttpd.net/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lighttpd
 $(PKG)_MODULE_BINARY:=$($(PKG)_DIR)/src/.libs/mod_access.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lighttpd
-$(PKG)_MODULE_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/mod_access.so
+$(PKG)_LIB_DIR:=$($(PKG)_DEST_DIR)/usr/lib/lighttpd
+$(PKG)_MODULE_TARGET_BINARY:=$($(PKG)_LIB_DIR)/mod_access.so
 
 # include selected modules to remove
 include $($(PKG)_MAKE_DIR)/lighttpd.in
@@ -69,10 +70,10 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_MODULE_TARGET_BINARY): $($(PKG)_MODULE_BINARY)
-	mkdir -p $(LIGHTTPD_DEST_DIR)/usr/lib
-	cp -a $(LIGHTTPD_DIR)/src/.libs/mod_*.so $(LIGHTTPD_DEST_DIR)/usr/lib/
+	mkdir -p $(LIGHTTPD_LIB_DIR)
+	cp -a $(LIGHTTPD_DIR)/src/.libs/mod_*.so $(LIGHTTPD_LIB_DIR)
 	rm -f $(LIGHTTPD_NO_MODS)
-	for i in $(LIGHTTPD_DEST_DIR)/usr/lib/mod_*.so; do \
+	for i in $(LIGHTTPD_LIB_DIR)/mod_*.so; do \
 		$(TARGET_STRIP) $$i; \
 	done
 
@@ -86,5 +87,6 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(LIGHTTPD_TARGET_BINARY)
+	$(RM) -rf $(LIGHTTPD_LIB_DIR)
 
 $(PKG_FINISH)

@@ -4,7 +4,7 @@ virthost_conf() {
 #$1 virtual host 
 #$2 configuration string
 #$3 optional: the character for the equality check (you can only provide a "=" or "!" here; default is "=")
-if [ -n "$1" -a -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+if [ -n "$1" -a -f /usr/lib/lighttpd/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 	eq=$3
 	[ -z "$eq" ] && eq="="
 	old_IFS=$IFS
@@ -100,7 +100,7 @@ mkdir -p "$LIGHTTPD_DOCROOT/dev"
 chmod 666 "$LIGHTTPD_DOCROOT/dev/null"
 fi
 
-if [ -f /usr/lib/mod_dirlisting.so ]; then
+if [ -f /usr/lib/lighttpd/mod_dirlisting.so ]; then
 out="dir-listing.activate = \"$LIGHTTPD_DIRLISTING\"\ndir-listing.encoding = \"$LIGHTTPD_DIRLISTINGENC\""
 virthost_conf "$LIGHTTPD_DIRLISTINGVIRT" "$out"
 fi
@@ -130,7 +130,7 @@ if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 		echo "}"
 		out=""
 		[ -n "$virtsrv" ] && out="url.access-deny = ( \"\" )"
-		if [ -f /usr/lib/mod_redirect.so -a "$LIGHTTPD_SSLREDIRECT" = "yes" ]; then
+		if [ -f /usr/lib/lighttpd/mod_redirect.so -a "$LIGHTTPD_SSLREDIRECT" = "yes" ]; then
 			echo "server.modules += ( \"mod_redirect\" )"
 			virtsrv="($virtsrv)"
 			out="url.redirect = ( \"^/(.*)\" => \"https://%1/\$1\" )"
@@ -165,7 +165,7 @@ cat << EOF
 server.errorlog-use-syslog = "enable"
 EOF
 	fi
-	if [ -f /usr/lib/mod_accesslog.so ]; then
+	if [ -f /usr/lib/lighttpd/mod_accesslog.so ]; then
 cat << EOF
 server.modules += ( "mod_accesslog" )
 EOF
@@ -182,7 +182,7 @@ EOF
 	fi
 fi
 
-if [ -f /usr/lib/mod_cgi.so -a "$LIGHTTPD_MODCGI" = "yes" ]; then
+if [ -f /usr/lib/lighttpd/mod_cgi.so -a "$LIGHTTPD_MODCGI" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_cgi" )
 EOF
@@ -190,7 +190,7 @@ EOF
 	virthost_conf "$LIGHTTPD_MODCGIVIRT" "$out"
 fi
 
-if [ -f /usr/lib/mod_compress.so -a "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
+if [ -f /usr/lib/lighttpd/mod_compress.so -a "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_compress" )
 EOF
@@ -210,7 +210,7 @@ getfiles() {
 	cp -rpf "/$1" "$LIGHTTPD_DOCROOT/$dir"
 }
 
-if [ -f /usr/lib/mod_auth.so -a "$LIGHTTPD_AUTH" = "yes" ]; then
+if [ -f /usr/lib/lighttpd/mod_auth.so -a "$LIGHTTPD_AUTH" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_auth" )
 auth.backend = "htdigest"
@@ -237,7 +237,7 @@ done
 virthost_conf "$virthost_auth" "auth.require = ( $out )"
 fi
 
-if [ -f /usr/lib/mod_status.so -a "$LIGHTTPD_MODSTATUS" = "yes" ]; then
+if [ -f /usr/lib/lighttpd/mod_status.so -a "$LIGHTTPD_MODSTATUS" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_status" )
 status.enable-sort = "$LIGHTTPD_MODSTATUSSORT"
@@ -273,7 +273,7 @@ genchroot() {
 	done
 }
 
-if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" -a -f /usr/lib/mod_fastcgi.so ]; then
+if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" -a -f /usr/lib/lighttpd/mod_fastcgi.so ]; then
 cat << EOF
 server.modules += ( "mod_fastcgi" )
 EOF
@@ -283,7 +283,7 @@ genchroot "$LIGHTTPD_MODFASTCGIPHPPATH" "$LIGHTTPD_DOCROOT"
 [ "$LIGHTTPD_CHROOT" = "yes" ] && getfiles "/tmp/flash/php.ini"
 [ "$LIGHTTPD_CHROOT" = "yes" ] && getfiles "/tmp/flash/php"
 fi
-if [ "$LIGHTTPD_MODFASTCGIRUBY" = "yes" -a -f /usr/lib/mod_fastcgi.so ]; then
+if [ "$LIGHTTPD_MODFASTCGIRUBY" = "yes" -a -f /usr/lib/lighttpd/mod_fastcgi.so ]; then
 cat << EOF
 server.modules += ( "mod_fastcgi" )
 EOF
@@ -297,7 +297,7 @@ if [ "$LIGHTTPD_CHROOT" = "yes" ]; then
 	docroot="/websites"
 	[ "$LIGHTTPD_VIRTHOST" = "yes" ] && mkdir -p "$LIGHTTPD_DOCROOT/websites/default"
 fi
-if [ -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+if [ -f /usr/lib/lighttpd/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_evhost" )
 evhost.path-pattern = "$docroot/$LIGHTTPD_VIRTHOSTTYPE/"

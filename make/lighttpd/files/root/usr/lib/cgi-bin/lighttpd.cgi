@@ -7,7 +7,7 @@ virthost_conf() {
 #$1 string of input-tag name-attribute
 #$2 variable containing current value to display in input field
 #$3 name to display
-if [ -f /usr/lib/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+if [ -f /usr/lib/lighttpd/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 cat << EOF
 <p style="font-size:10px;">$(lang de:"In folgender Box werden die virtuellen Hostnamen angegeben, f&uuml;r welche die Konfiguration bez&uuml;glich $3 gilt. Es k&ouml;nnen entweder der vollst&auml;ndige Hostname oder ein regul&auml;rer Ausdruck f&uuml;r mehrere Hostnamen verwendet werden. Mehrere Werte k&ouml;nnen angegeben werden, in dem diese mit Leerzeichen getrennt werden. Wenn die Konfiguration generell f&uuml;r alle virtuellen Hosts gelten soll, ist die Box leer zu lassen." en:"Please specify the virtual hosts the configuration of $3 applies to in the following box. You can either provide a full qualified domain name or a regular expression to match multiple host names. When supplying multiple values, please separate them using a space character. In case the configuration applies to all virtual hosts, leave the box empty.")</p>
 <p> $(lang de:"Virtuelle Hosts" en:"Virtual hosts"): <input type="text" name="$1" size="30" maxlength="255" value="$(html "$2")"></p>
@@ -64,7 +64,7 @@ EOF
 sec_end
 
 sec_begin '$(lang de:"Virtuelle Hosts" en:"Virtual Hosts")'
-if [ -f /usr/lib/mod_evhost.so ]; then
+if [ -f /usr/lib/lighttpd/mod_evhost.so ]; then
 cat << EOF
 <p><input type="hidden" name="virthost" value="no">
 <input id="b9" type="checkbox" name="virthost" value="yes"$virthost_chk><label for="b9"> $(lang de:"Virtuelle Hosts aktivieren" en:"Activate virtual hosts")</label></p>
@@ -79,7 +79,7 @@ fi
 sec_end
 
 sec_begin '$(lang de:"Erlaube Auflistung des Verzeichnisinhalts" en:"Allow listing of directory contents")'
-if [ -f /usr/lib/mod_dirlisting.so ]; then
+if [ -f /usr/lib/lighttpd/mod_dirlisting.so ]; then
 cat << EOF
 <p>
 <input id="d1" type="radio" name="dirlisting" value="enable"$dirlista_chk><label for="d1"> $(lang de:"Aktiviert" en:"Activated")</label>
@@ -110,7 +110,7 @@ cat << EOF
 </p>
 <p> $(lang de:"SSL Port" en:"SSL port"): <input type="text" name="sslport" size="5" maxlength="5" value="$(html "$LIGHTTPD_SSLPORT")"></p>
 EOF
-if [ -f /usr/lib/mod_redirect.so ]; then
+if [ -f /usr/lib/lighttpd/mod_redirect.so ]; then
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Mit der folgenden Option wird eine Umleitung (HTTP redirect) vom unverschl&uuml;sselten Port zum SSL Port aktiviert. Diese Umleitung wird nur aktiv, wenn SSL zus&auml;tzlich zur unverschl&uuml;sselten Verbindung konfiguriert wurde. Bei der Benutzung von virtuellen Hosts werden nur die Hostnamen umgeleitet, f&uuml;r die eine SSL Unterst&uuml;tzung aktiv ist." en:"Using the following option, a HTTP redirect is activated redirecting traffic from the unencrypted port to the SSL port. This redirect is only active if SSL is configured as an additional service. When using virtual hosts, only the host names are redirected which are also configured for the SSL support.")</p>
 <p>
@@ -132,7 +132,7 @@ fi
 sec_end
 
 sec_begin '$(lang de:"Zugriffskontrolle" en:"Access control")'
-if [ -f /usr/lib/mod_auth.so ]; then
+if [ -f /usr/lib/lighttpd/mod_auth.so ]; then
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Damit lighttpd Benutzer authentisieren kann, m&uuml;ssen Benutzer <a href=\"/cgi-bin/file.cgi?id=lighttpd_user\">hier</a> eingetragen sein." en:"To allow lighttpd to authenticate users, you have to add users <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_user\">here</a>.")</p>
 <p style="font-size:10px;">$(lang de:"Zugriffsrechte k&ouml;nnen <a href=\"/cgi-bin/file.cgi?id=lighttpd_rights\">hier</a> eingetragen werden." en:"Access rights can be added <a href=\"/cgi-bin/file.cgi?id=lighttpd_rights\">here</a>.")</p>
@@ -150,7 +150,7 @@ fi
 sec_end
 
 sec_begin '$(lang de:"Dynamische Webseiten" en:"Dynamic Web Pages")'
-if [ -f /usr/lib/mod_cgi.so ]; then
+if [ -f /usr/lib/lighttpd/mod_cgi.so ]; then
 cat << EOF
 <p><input type="hidden" name="modcgi" value="no">
 <input id="b1" type="checkbox" name="modcgi" value="yes"$modcgi_chk><label for="b1"> $(lang de:"mod_cgi aktivieren (Dateien *.cgi und in /cgi-bin ausf&uuml;hrbar)" en:"Activate mod_cgi (files *.cgi and in /cgi-bin executable")</label></p>
@@ -162,7 +162,7 @@ cat << EOF
 <p style="font-size:10px;">$(lang de:"CGI Unterst&uuml;tzung kann nicht konfiguriert werden - mod_cgi.so nicht vorhanden." en:"CGI support cannot be configured - mod_cgi.so unavailable.")</p>
 EOF
 fi
-if [ -f /usr/lib/mod_fastcgi.so ]; then
+if [ -f /usr/lib/lighttpd/mod_fastcgi.so ]; then
 cat << EOF
 <p><input type="hidden" name="modfastcgiphp" value="no">
 <input id="b6" type="checkbox" name="modfastcgiphp" value="yes"$modfastcgiphp_chk><label for="b6"> $(lang de:"mod_fastcgi f&uuml;r PHP aktivieren (Dateien *.php ausf&uuml;hrbar)" en:"Activate mod_fastcgi for PHP (files *.php executable)")</label></p>
@@ -214,7 +214,7 @@ fi
 sec_end
 
 sec_begin '$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")'
-if [ -f /usr/lib/mod_compress.so ]; then
+if [ -f /usr/lib/lighttpd/mod_compress.so ]; then
 cat << EOF
 <p><input type="hidden" name="modcompress" value="no">
 <input id="b2" type="checkbox" name="modcompress" value="yes"$modcompress_chk><label for="b2"> $(lang de:"mod_compress aktivieren (Cache Verzeichnis muss konfiguriert werden)" en:"Activate mod_compress (Cache dir must be configured")</label></p>
@@ -227,7 +227,7 @@ cat << EOF
 <p style="font-size:10px;">$(lang de:"Dateicaching kann nicht konfiguriert werden - mod_compress.so nicht vorhanden." en:"Caching of files cannot be configured - mod_compress.so unavailable.")</p>
 EOF
 fi
-if [ -f /usr/lib/mod_status.so ]; then
+if [ -f /usr/lib/lighttpd/mod_status.so ]; then
 cat << EOF
 <p><input type="hidden" name="modstatus" value="no">
 <input id="b3" type="checkbox" name="modstatus" value="yes"$modstatus_chk><label for="b3"> $(lang de:"Statusanzeige aktivieren (URLs m&uuml;ssen konfiguriert werden)" en:"Activate status display (URLs must be configured")</label></p>
@@ -281,7 +281,7 @@ cat << EOF
 <input id="a1" type="checkbox" name="logging" value="yes"$log_chk><label for="a1"> $(lang de:"Log aktivieren" en:"Activate logging")</label>
 </p>
 EOF
-if [ -f /usr/lib/mod_accesslog.so ]; then
+if [ -f /usr/lib/lighttpd/mod_accesslog.so ]; then
 cat << EOF
 <p>$(lang de:"Speicherart des Zugriffs-Logs (Access Log)" en:"Save type of access log")
 <input id="e3" type="radio" name="logging_access_file" value="yes"$accesslog_file><label for="e3"> $(lang de:"Datei" en:"File")</label>
@@ -300,7 +300,7 @@ cat << EOF
 </p>
 <p style="font-size:10px;">$(lang de:"In den folgenden Boxen k&ouml;nnen die absoluten Pfade zu den Logdateien ge&auml;ndert werden. Beachte, dass lighttpd mit der Benutzer ID wwwrun l&auml;uft und die Datei und das Verzeichnis f&uuml;r wwwrun schreibbar sein muss. Das Standardverzeichnis /var/log/lighttpd/ ist immer f&uuml;r den Benutzer wwwrun schreibbar. Falls ein anderes Verzeichnis als das Standardverzeichnis verwendet wird, erfolgt keine automatische L&ouml;schung der Logdateien, wenn logging deaktiviert wird. Wenn der Pfadname mit einem '|' beginnt, wird der im Anschluss folgende Pfadname als Prozess ausgef&uuml;hrt und erh&auml;lt die Logdaten als Eingabe via STDIN." en:"In the following boxes, you can alter the absolute path names to the log files. Please note, the lighttpd web server runs with the user ID of wwwrun. The provided file/path must be writeable for this user ID. The default directory /var/log/lighttpd/ is always writeable for wwwrun. If you use a different directory than the default directory, the log files will not be automatically removed in case you deactivate logging. If the path name starts with a '|' the rest of the name is taken as the name of a process which will be spawned and will get the output via STDIN.")</p>
 EOF
-if [ -f /usr/lib/mod_accesslog.so ]; then
+if [ -f /usr/lib/lighttpd/mod_accesslog.so ]; then
 cat << EOF
 <p> $(lang de:"Zugriffs-Log (Access log)" en:"Access log"): <input type="text" name="logging_access" size="25" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ACCESS")"></p>
 EOF
