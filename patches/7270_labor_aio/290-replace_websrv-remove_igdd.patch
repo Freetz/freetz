@@ -4,20 +4,20 @@
     WLAN_TEST=0
  fi
  
-+# Do we have a UPnP server (igdd) or was ist stripped from the firmware?
-+_igdd=$(basename $(which igdd) 2> /dev/null)
++# Do we have a UPnP server (upnpd) or was ist stripped from the firmware?
++_upnpd=$(basename $(which upnpd) 2> /dev/null)
 +# Does a multid option to start without UPnP device (-u) exist?
 +_multid_upnp=$(/sbin/multid -? 2>&1 | grep upnp)
 +# Does a dsld option to start without igd (-g) exist?
 +_dsld_upnp=$(/sbin/dsld -? 2>&1 | grep igd)
 +# Set multid "no UPnP" option, if
 +#   a) it has the parameter at all AND
-+#   b) igdd binary does *not* exist
-+[ "$_multid_upnp" ] && [ ! "$_igdd" ] && MULTIDPARAM="-u"
++#   b) upnpd binary does *not* exist
++[ "$_multid_upnp" ] && [ ! "$_upnpd" ] && MULTIDPARAM="-u"
 +# Set dsld "no igd" option, if
 +#   a) it has the parameter at all AND
-+#   b) igdd binary does *not* exist
-+[ "$_dsld_upnp" ] && [ ! "$_igdd" ] && DSLDDPARAM="-g"
++#   b) upnpd binary does *not* exist
++[ "$_dsld_upnp" ] && [ ! "$_upnpd" ] && DSLDDPARAM="-g"
  
  upnpdstart()
  {

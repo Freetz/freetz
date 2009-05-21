@@ -8,14 +8,15 @@ PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 
 . /etc/init.d/modlibrc
 
-# Do we have a UPnP server (igdd) or was ist stripped from the firmware?
+# Do we have a UPnP server (igdd or upnpd) or was ist stripped from the firmware?
 _igdd=$(basename $(which igdd) 2> /dev/null)
+_upnpd=$(basename $(which upnpd) 2> /dev/null)
 # Does a multid option to start without UPnP device (-u) exist?
 _multid_upnp=$(/sbin/multid -? 2>&1 | grep upnp)
 # Set multid "no UPnP" option, if
 #   a) it has the parameter at all AND
 #   b) igdd binary does *not* exist
-[ "$_multid_upnp" ] && [ ! "$_igdd" ] && MULTIDPARAM="-u"
+[ "$_multid_upnp" ] && [ ! "$_igdd" ] && [ ! "$_upnpd" ] && MULTIDPARAM="-u"
 
 start() {
 	local lease

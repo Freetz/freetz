@@ -2,8 +2,8 @@
 +++ etc/init.d/rc.net	2009-05-16 13:12:26.733078922 +0200
 @@ -71,6 +71,8 @@
  #   a) it has the parameter at all AND
- #   b) igdd binary does *not* exist
- [ "$_dsld_upnp" ] && [ ! "$_igdd" ] && DSLDDPARAM="-g"
+ #   b) upnpd binary does *not* exist
+ [ "$_dsld_upnp" ] && [ ! "$_upnpd" ] && DSLDDPARAM="-g"
 +# Do we have a Samba server (smbd) or was ist stripped from the firmware?
 +_smbd=$(basename $(which smbd) 2> /dev/null)
  
