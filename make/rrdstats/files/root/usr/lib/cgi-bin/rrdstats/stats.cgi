@@ -44,7 +44,7 @@ generate_graph() {
 	[ $# -ge 4 ] && TITLE="$4"
 	IMAGENAME="$3"
 	[ $# -ge 5 ] && IMAGENAME="$3$5"
-	PERIODE="$2"
+	PERIODE=`echo "$2"|sed 's/[0-9]\+m$/month/'`
 	case $1 in
 		cpu)
 			FILE=$RRDSTATS_RRDDATA/cpu_$RRDSTATS_INTERVAL.rrd
@@ -497,7 +497,7 @@ set_lazy() {
 }
 
 set_period() {
-	periodA=$(echo $1|sed 's/[0-9]\+h/hour/g;s/[0-9]\+d$/day/g;s/[0-9]\+w$/week/g;s/[0-9]\+m$/month/g;s/[0-9]\+y$/year/g')
+	periodA=$(echo $1|sed 's/[0-9]\+h$/hour/g;s/[0-9]\+d$/day/g;s/[0-9]\+w$/week/g;s/[0-9]\+m$/month/g;s/[0-9]\+y$/year/g')
 	period0=$(echo $1|sed 's/[a-zA-Z]/ /g')
 	if [ $period0 -gt 1 ]; then
 		periodA="$periodA"s

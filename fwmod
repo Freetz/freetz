@@ -435,11 +435,9 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	echo "unpacking filesystem image"
 	modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM"
 
-	chmod -R +w "$FILESYSTEM_DIR"
+	chmod -R u+w "$FILESYSTEM_DIR"
 
-	for dir in `find "${FILESYSTEM_DIR}" -maxdepth 1 -type d`; do
-		chmod +rx $dir
-	done
+	find "${FILESYSTEM_DIR}" -maxdepth 1 -type d -exec chmod +rx {} ';'
 
 	if [ -r "$AVMPLUGINS" ]; then
 		echo "unpacking AVM plugins"
