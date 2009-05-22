@@ -1,6 +1,6 @@
---- Makefile.am.orig	2008-10-02 09:54:33.000000000 +0200
-+++ Makefile.am	2008-11-08 16:00:13.000000000 +0100
-@@ -32,7 +32,7 @@
+--- Makefile.am.orig	2009-04-27 14:26:41.000000000 +0200
++++ Makefile.am	2009-05-22 12:38:18.000000000 +0200
+@@ -38,7 +38,7 @@
  bin_SCRIPTS = curl-config
  
  SUBDIRS = lib src
@@ -9,7 +9,7 @@
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
-@@ -47,10 +47,10 @@
+@@ -53,10 +53,10 @@
  	done)
  
  html:
@@ -22,7 +22,7 @@
  
  check: test examples
  
-@@ -75,7 +75,7 @@
+@@ -81,7 +81,7 @@
  endif
  
  examples:
@@ -31,7 +31,7 @@
  
  clean-local:
  	@(cd tests; $(MAKE) clean)
-@@ -132,12 +132,12 @@
+@@ -138,12 +138,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
@@ -46,9 +46,9 @@
  
  ca-bundle: lib/mk-ca-bundle.pl
  	@echo "generate a fresh ca-bundle.crt"
---- Makefile.in.orig	2008-11-05 13:00:46.000000000 +0100
-+++ Makefile.in	2008-11-08 16:02:26.000000000 +0100
-@@ -287,7 +287,7 @@
+--- Makefile.in.orig	2009-05-18 09:07:46.000000000 +0200
++++ Makefile.in	2009-05-22 12:38:18.000000000 +0200
+@@ -293,7 +293,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src
@@ -57,7 +57,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  all: all-recursive
-@@ -768,10 +768,10 @@
+@@ -774,10 +774,10 @@
  	done)
  
  html:
@@ -70,7 +70,7 @@
  
  check: test examples
  
-@@ -791,7 +791,7 @@
+@@ -797,7 +797,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all torture-test)
  
  examples:
@@ -79,7 +79,7 @@
  
  clean-local:
  	@(cd tests; $(MAKE) clean)
-@@ -848,12 +848,12 @@
+@@ -854,12 +854,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install

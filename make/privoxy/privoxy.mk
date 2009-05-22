@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 3.0.10)
+$(call PKG_INIT_BIN, 3.0.12)
 $(PKG)_SOURCE:=privoxy-$($(PKG)_VERSION)-stable-src.tar.gz
 $(PKG)_SITE:=@SF/ijbswa
 $(PKG)_DIR:=$(SOURCE_DIR)/privoxy-$($(PKG)_VERSION)-stable
