@@ -9,8 +9,12 @@ $(PKG)_STARTLEVEL=40
 $(PKG)_CONFIGURE_PRE_CMDS += autoheader;
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf;
 
+ifeq ($(strip $(FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE)),y)
+$(PKG)_DEPENDS_ON := pcre
+endif
+
 ifeq ($(strip $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB)),y)
-$(PKG)_DEPENDS_ON := zlib
+$(PKG)_DEPENDS_ON += zlib
 endif
 
 $(PKG)_CONFIGURE_ENV += ac_cv_func_setpgrp_void=yes
@@ -19,7 +23,7 @@ $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
 $(PKG)_CONFIGURE_OPTIONS += --disable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-stats
-$(PKG)_CONFIGURE_OPTIONS += --disable-dynamic-pcre
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE),,--disable-dynamic-pcre)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),--enable-zlib,)
 
 $(PKG_SOURCE_DOWNLOAD)

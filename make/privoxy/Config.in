@@ -9,6 +9,15 @@ config FREETZ_PACKAGE_PRIVOXY
 		It can also be used together with Tor Proxy to forward HTTP traffic to Tor as described in the Tor
 		documentation.
 
+config FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE
+        bool "With shared libpcre"
+        depends on FREETZ_PACKAGE_PRIVOXY
+        select FREETZ_LIB_libpcre
+        select FREETZ_LIB_libpcreposix
+        default y
+        help
+                Causes libpcre to be linked in dynamically.
+
 config FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB
         bool "With zlib Compression"
         depends on FREETZ_PACKAGE_PRIVOXY
