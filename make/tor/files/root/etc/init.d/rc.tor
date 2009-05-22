@@ -1,23 +1,43 @@
 #!/bin/sh
 
 DAEMON=tor
+DAEMON_LONG_NAME="Tor Onion Router"  
+DAEMON_USER=tor  
+DAEMON_GROUP=tor  
+PID_FILE=/var/run/$DAEMON/$DAEMON.pid  
 
 . /etc/init.d/modlibrc
 
+DAEMON_STORAGE=/tmp/flash/$DAEMON
+
 start() {
-	mkdir -p /mod/etc/$DAEMON
-	[ -d $TOR_DATADIRECTORY ] || mkdir $TOR_DATADIRECTORY
-	chown tor:tor $TOR_DATADIRECTORY -R
-	chmod 0700 $TOR_DATADIRECTORY -R
-	touch /var/run/tor.pid
-	chown tor:tor /var/run/tor.pid
 	
-	if [ "$TOR_RELAY_ENABLED" = "yes" ] && [ -e "/tmp/flash/.tor/secret_id_key" ] && [ ! -e $TOR_DATADIRECTORY/keys/secret_id_key ]; then
-			mkdir -p $TOR_DATADIRECTORY/keys
-			ln -s /tmp/flash/.tor/secret_id_key $TOR_DATADIRECTORY/keys/secret_id_key
-			chown tor:tor $TOR_DATADIRECTORY/keys -R
+	echo -n "Starting ${DAEMON_LONG_NAME}..."
+
+	if modlib_check_running; then
+		echo "already running."
+		exit 0
+	fi
+
+	[ -d "$DAEMON_STORAGE" ] || mkdir -p $DAEMON_STORAGE
+	chown $DAEMON_USER:$DAEMON_GROUP "$DAEMON_STORAGE"
+
+	if [ ! -d "$TOR_DATADIRECTORY" ]; then
+		mkdir "$TOR_DATADIRECTORY" 2>/dev/null
+		if [ ! -d "$TOR_DATADIRECTORY" ]; then
+			echo "Failed. Could not create $TOR_DATADIRECTORY."
+			exit $exitval
+		fi
+		chown $DAEMON_USER:$DAEMON_GROUP "$TOR_DATADIRECTORY"
 	fi
 	
+	if [ "$TOR_RELAY_ENABLED" = "yes" ] && [ -e "$DAEMON_STORAGE/secret_id_key" ] && [ ! -e "$TOR_DATADIRECTORY/keys/secret_id_key" ]; then
+		mkdir -p $TOR_DATADIRECTORY/keys 2>/dev/null
+		ln -s $DAEMON_STORAGE/secret_id_key $TOR_DATADIRECTORY/keys/secret_id_key
+		chown $DAEMON_USER:$DAEMON_GROUP "$TOR_DATADIRECTORY/keys" -R
+	fi
+	
+	mkdir -p /mod/etc/$DAEMON
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -26,46 +46,49 @@ start() {
 		fi
 	) > /mod/etc/$DAEMON/torrc
 
-	echo -n 'Starting Tor Proxy...'
-	$DAEMON --runasdaemon 1 --log "notice syslog" --pidfile /var/run/tor.pid > /dev/null 2>&1
+	[ -f $DAEMON_STORAGE/secret_id_key ] && savetimer=no
+	$DAEMON --runasdaemon 1 --log "notice syslog" --pidfile $PID_FILE > /dev/null 2>&1
 	exitval=$?
-
 	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
+		if [ "$savetimer" != "no" -a "$TOR_RELAY_ENABLED" == "yes" ]; then
+			count=0
+			while [ ! -f $TOR_DATADIRECTORY/keys/secret_id_key ]; do
+				sleep 1
+				echo -n "."
+				count=$(( $count+1 ))
+				[ $count -gt 99 ] && break;
+			done
+			if [ $count -le 99 ]; then
+  				cp $TOR_DATADIRECTORY/keys/secret_id_key $DAEMON_STORAGE/secret_id_key
+				echo -n "secret id_key saved..."
+				modsave flash >/dev/null
+			else
+				echo -n "secret id_key not found..."
+			fi
+		fi
+		echo "done."
 	else
-		echo 'failed.'
+		echo "failed."
 		exit $exitval
 	fi
+
 }
 
-stop() {
-	. /mod/etc/conf/$DAEMON.cfg
-
-	modlib_stop
-	
-	if [ ! -e "/tmp/flash/.tor/secret_id_key" ] && [-e $TOR_DATADIRECTORY/keys/secret_id_key ]; then
-		[ -d "/tmp/flash/.tor" ] || mkdir /tmp/flash/.tor
-		cp $TOR_DATADIRECTORY/keys/secret_id_key /tmp/flash/.tor/secret_id_key
-		/usr/bin/modsave flash
-	fi
-	
-	if [ "$TOR_DATADIRPERSISTENT" = "no" ]; then
-	      rm -rf $TOR_DATADIRECTORY
-	fi
-			
-	rm -rf /mod/etc/$DAEMON
+stop_post() {
+	[ "$TOR_DATADIRPERSISTENT" == "no" ] && rm -rf $TOR_DATADIRECTORY 2>/dev/null
 }
 
 case "$1" in
 	""|load)
-		modlib_addgroup tor
-		modlib_adduser tor -G tor -D -S -g "Tor Router"
-		mkdir -p /mod/home/tor
+		#For compatiblity!
+		[ -d /tmp/flash/.tor ] && mv /tmp/flash/.tor $DAEMON_STORAGE
 
-		# Setting permissions
-		chown tor:tor /mod/home/tor -R
-		
-		modreg cgi 'tor' 'Tor Onion Router'
+		modlib_addgroup $DAEMON_GROUP
+		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
+		mkdir -p ${PID_FILE%/*}
+		chown $DAEMON_USER:$DAEMON_GROUP ${PID_FILE%/*}
+
+		modreg cgi "$DAEMON" "$DAEMON_LONG_NAME"
 		deffile='/mod/etc/default.tor/secret_id_key.def'
 		modreg file 'secret_id_key' 'Tor: Secret ID Key' 0 "$deffile"
 		
@@ -74,27 +97,21 @@ case "$1" in
 			exit 1;
 		fi
 
-		if [ -e "/var/run/$DAEMON.pid" ]; then
-			echo "$DAEMON already started."
-		else
-			start
-		fi
+		start
 		;;
 	unload)
-		stop
 		modunreg file 'secret_id_key'
-		modunreg cgi 'tor'
+		modunreg cgi "$DAEMON"
+		modlib_stop
 		;;
 	start)
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 10
-		start
+		modlib_restart
 		;;
 	status)
 		modlib_status
@@ -106,3 +123,4 @@ case "$1" in
 esac
 
 exit 0
+

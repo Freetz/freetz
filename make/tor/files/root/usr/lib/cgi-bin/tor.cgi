@@ -31,7 +31,7 @@ cat << EOF
 $(lang de:"Port" en:"Port"):&nbsp;<input id="port" type="text" size="5" maxlength="5" name="socks_port" value="$(html "$TOR_SOCKS_PORT")"></p>
 <h2>$(lang de:"Fernsteuerung" en:"Remote Control") (optional)</h2>
 <p>Control Port:&nbsp;<input id="control" type="text" size="5" maxlength="5" name="control_port" value="$(html "$TOR_CONTROL_PORT")"></p>
-<p>Control Interface&nbsp;($(lang de:"z.B." en:"e.g.") 192.168.167.1):&nbsp;<input id="controlif" type="text" size="21" maxlength="21" name="control_address" value="$(html "$TOR_CONTROL_ADDRESS")"><br />
+<p>Control Interface&nbsp;($(lang de:"z.B." en:"e.g.") 192.168.178.1):&nbsp;<input id="controlif" type="text" size="21" maxlength="21" name="control_address" value="$(html "$TOR_CONTROL_ADDRESS")"><br />
 <span style="font-size:10px;">127.0.0.1 $(lang de:", falls nicht angegeben" en:", if not specified")</span></p>
 <p>Control Password Hash:&nbsp;<input id="controlpw" type="text" size="61" maxlength="61" name="control_hashed_pass" value="$(html "$TOR_CONTROL_HASHED_PASS")"><br />
 <span style="font-size:10px;">$(lang de:"Falls ein Control Interface angegeben wurde, muss hier ebenfalls ein Passwort-Hash angegeben werden." en:"If Control Interface is not empty you must provide a password.")<br />
@@ -70,13 +70,11 @@ cat << EOF
 <p>$(lang de:"Tor auch als Server starten" en:"Open tor relay"): <input type="hidden" name="relay_enabled" value="no"><input id="e8" type="checkbox" name="relay_enabled" value="yes"$relay_enabled_chck></p>
 <p>$(lang de:"Nickname des Servers" en:"Nickname"):&nbsp;<input id="nick" type="text" size="16" maxlength="16" name="nickname" value="$(html "$TOR_NICKNAME")")></p>
 <p>$(lang de:"IP oder FQDN des Servers" en:"IP or FQDN for your server"):&nbsp;<input id="address" type="text" size="30" maxlength="30" name="address" value="$(html "$TOR_ADDRESS")")></p>
-<p>BandwidthRate ($(lang de:"z.B." en:"e.g.") "20 KB"):&nbsp;<input id="bandwith" type="text" size="5" maxlength="5" name="bandwidthrate" value="$(html "$TOR_BANDWIDTHRATE")"></p>
-<p>BandwidthBurst ($(lang de:"z.B." en:"e.g.") "40 KB"):&nbsp;<input id="bandwithburst" type="text" size="5" maxlength="5" name="bandwidthburst" value="$(html "$TOR_BANDWIDTHBURST")"></p>
-<p>ORPort:&nbsp;<input id="or" type="text" size="5" maxlength="5" name="orport" value="$(html "$TOR_ORPORT")"> &nbsp; DirPort:&nbsp;<input id="dir" type="text" size="5" maxlength="5" name="dirport" value="$(html "$TOR_DIRPORT")"> 
-&nbsp;<i> $(lang de:"Lokale Portfreigaben einrichten" en:"Open local ports"): <a href="/cgi-bin/pkgconf.cgi?pkg=avm-firewall">$(lang de:"hier klicken" en:"click here")</a></i></p>
+<p>BandwidthRate ($(lang de:"z.B." en:"e.g.") "20 KB"):&nbsp;<input id="bandwith" type="text" size="5" maxlength="7" name="bandwidthrate" value="$(html "$TOR_BANDWIDTHRATE")"></p>
+<p>BandwidthBurst ($(lang de:"z.B." en:"e.g.") "40 KB"):&nbsp;<input id="bandwithburst" type="text" size="5" maxlength="7" name="bandwidthburst" value="$(html "$TOR_BANDWIDTHBURST")"></p>
+<p>ORPort:&nbsp;<input id="or" type="text" size="5" maxlength="5" name="orport" value="$(html "$TOR_ORPORT")"> &nbsp; DirPort:&nbsp;<input id="dir" type="text" size="5" maxlength="5" name="dirport" value="$(html "$TOR_DIRPORT")"></p> 
 <p>MaxOnionsPending (Default 100): &nbsp;<input id="maxonions" type="text" size="5" maxlength="5" name="maxonionspending" value="$(html "$TOR_MAXONIONSPENDING")"></p>
 <p>ExitPolicy ($(lang de:"z.B." en:"e.g.") "reject *.*" = no exits allowed):&nbsp;<input id="policy" type="text" size="20" maxlength="20" name="exitpolicy" value="$(html "$TOR_EXITPOLICY")"></p>
-<a href="/cgi-bin/file.cgi?id=secret_id_key">$(lang de:"Secret ID Key bearbeiten" en:"Edit secret ID key")</a>
 <p>DataDirectory (Default /var/tmp/tor): &nbsp;<input id="datadir" type="text" size="40" maxlength="40" name="datadirectory" 
 value="$(html "$TOR_DATADIRECTORY")"> &nbsp; 
 $(lang de:"Verzeichnis" en:"directory") persistent: <input type="hidden" name="datadirpersistent" value="no"><input id="e9" type="checkbox" name="datadirpersistent" value="yes"$datadirpersistent_enabled_chck></p>
@@ -85,3 +83,18 @@ $(lang de:"Verzeichnis" en:"directory") persistent: <input type="hidden" name="d
 EOF
 
 sec_end
+
+if [ "$TOR_RELAY_ENABLED" == "yes" ]; then
+sec_begin '$(lang de:"Erweiterte Relay-Konfiguration" en:"Advanced relay options")'
+cat << EOF
+<ul>
+<li><a href="/cgi-bin/file.cgi?id=secret_id_key">$(lang de:"Secret ID Key bearbeiten" en:"Edit secret id key")</a></li>
+EOF
+if [ -x /etc/init.d/rc.avm-firewall ]; then
+cat << EOF
+<li>$(lang de:"Lokale Portfreigaben einrichten" en:"Edit local port-forwarding"): <a href="/cgi-bin/pkgconf.cgi?pkg=avm-firewall">$(lang de:"hier klicken" en:"click here")</a></li>
+EOF
+fi
+sec_end
+fi
+
