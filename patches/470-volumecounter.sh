@@ -1,6 +1,6 @@
 [ "$FREETZ_TYPE_FON_WLAN_7240" == "y" \
 	-o "$FREETZ_TYPE_FON_WLAN_7270" == "y" \
-	-a "$FREETZ_TYPE_LANG_DE" == "y" ] \
+	-a "$FREETZ_TYPE_LANG_DE" == "y" ] && ! [ "$FREETZ_TYPE_LABOR_AIO" == "y" ] \
   || return 0
 
 echo1 "adding volume counter"
