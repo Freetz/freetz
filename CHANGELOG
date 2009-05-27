@@ -19,13 +19,15 @@ Latest changes:
   * Bump squashfs3 version to 3.4
 
 - New tools and hooks:
-    * Add patch that enhances posibilities of /bin/onlinechanged:
+    * Add patch that enhances possibilities of /bin/onlinechanged:
       Based on changes by AVM we execute 3 locations on a call to /bin/onlinechanged:
       1. /var/tmp/onlinechanged (compatibility to old behaviour) 
       2. /etc/onlinechanged/*   (new AVM behaviour)
       3. /tmp/flash/onlinechanged/* 
       If a package needs actions on changes of online status create a script
       make/$package/files/root/etc/onlinechanged/$action_$package.
+    * New hook to add files/directories to var.tar
+     * Put desired files/directories into make/{package}/files/var.tar
 
 - New patches (read online help for more info):
     * 7270: 
