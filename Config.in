@@ -1246,12 +1246,12 @@ config FREETZ_REMOVE_WEBSRV
 		Patch init scripts so BusyBox's httpd is used instead of AVM's websrv.
 		The websrv binary will be removed from the firmware image.
 
-		If "Remove UPnP daemon (igdd)" patch is also selected and "Integrate
+		If "Remove UPnP daemon (igdd/upnpd)" patch is also selected and "Integrate
 		Media Server from USB Labor firmware" is not selected, 'libwebsrv.so'
 		will also be removed, because only those three binaries use it.
 
 config FREETZ_REMOVE_UPNP
-	bool "Remove UPnP daemon (igdd)"
+	bool "Remove UPnP daemon (igdd/upnpd)"
 	select FREETZ_REMOVE_UPNP_LIBS if \
 			( \
 			! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN ) \
@@ -1265,7 +1265,7 @@ config FREETZ_REMOVE_UPNP
 			)
 	default n
 	help
-		Remove Universal Plug'n'Play daemon 'igdd' and some more files used by
+		Remove Universal Plug'n'Play daemon 'igdd/upnpd' and some more files used by
 		it from firmware. Patch init scripts so they can cope with the
 		non-existent binary.
 
