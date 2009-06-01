@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 2.1.0)
+$(call PKG_INIT_BIN, 2.1.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://vsftpd.beasts.org/users/cevans
 $(PKG)_BINARY:=$($(PKG)_DIR)/vsftpd
