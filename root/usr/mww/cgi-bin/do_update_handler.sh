@@ -8,7 +8,7 @@ indent() {
     sed 's/^/  /' | html
 }
 
-if [ "$NAME" = "stop_avm" ]; then
+if [ "$NAME" = "stop_avm" -o "$NAME" = "stop_avm_reboot" ]; then
 	echo "$(lang de:"AVM-Dienste anhalten, Teil 1" en:"Stopping AVM services, part 1") (prepare_fwupgrade start) ..."
 	prepare_fwupgrade start 2>&1 | indent
 	echo "$(lang de:"ERLEDIGT" en:"DONE")"
@@ -72,5 +72,10 @@ echo "$(lang de:"ENDE DER DATEI" en:"END OF FILE")"
 echo
 echo "$(lang de:"Das Nach-Installationsskript läuft beim Neutart (reboot) und führt die" en:"The post-installation script will be executed upon reboot and perform")"
 echo "$(lang de:"darin definiterten Aktionen aus, z.B. das tatsächliche Flashen der Firmware." en:"the actions specified therein, e.g. the actual firmware flashing.")"
-echo "$(lang de:"Sie können immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie" en:"You may still choose to interrupt this process by removing the script")"
-echo "$(lang de:"das Skript und den Rest der extrahierten Firmware-Komponenten löschen." en:"along with the rest of the extracted firmware components.")"
+if [ ! "$NAME" = "stop_avm_reboot" ]; then
+	echo "$(lang de:"Sie können immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie" en:"You may still choose to interrupt this process by removing the script")"
+	echo "$(lang de:"das Skript und den Rest der extrahierten Firmware-Komponenten löschen." en:"along with the rest of the extracted firmware components.")"
+else
+	echo "$(lang de:"Neustart in 10 Sekunden." en:"Reboot in 10 seconds.")"
+	sleep 10; reboot
+fi

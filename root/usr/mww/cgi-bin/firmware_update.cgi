@@ -30,7 +30,9 @@ $(lang de:"ausgef&uuml;hrt werden." en:"")
 	<input type="radio" name="do_prepare" value="stop_avm">
 	$(lang de:"AVM-Dienste stoppen (bei Speichermangel)" en:"Stop AVM services (low available memory)")<br>
 	<input type="radio" name="do_prepare" value="nostop_avm" checked>
-	$(lang de:"AVM-Dienste nicht stoppen (bei genug Speicher bzw. Pseudo-Update ohne Reboot)" en:"Do not stop AVM services (enough available memory or pseudo update without reboot)")
+	$(lang de:"AVM-Dienste nicht stoppen (bei genug Speicher bzw. Pseudo-Update ohne Reboot)" en:"Do not stop AVM services (enough available memory or pseudo update without reboot)")<br>
+	<input type="radio" name="do_prepare" value="stop_avm_reboot">
+        $(lang de:"AVM-Dienste stoppen und automatischer reboot (wie AVM-Update)" en:"Stop AVM services and automatically reboot (like AVM-update)")<br>
 	<p>
 	<input type=submit value="$(lang de:"Firmware hochladen" en:"Upload firmware")" style="width:150px">
 </form>
