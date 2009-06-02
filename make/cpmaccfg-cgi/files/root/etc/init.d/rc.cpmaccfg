@@ -1,0 +1,186 @@
+#!/bin/sh
+
+DAEMON=cpmaccfg
+
+. /etc/init.d/modlibrc
+
+start() {
+	echo -n 'Setting Ports...'
+	echo ''
+
+	# Port Mode
+	/mod/sbin/$DAEMON spm 1 $CPMACCFG_MODE1
+	/mod/sbin/$DAEMON spm 2 $CPMACCFG_MODE2
+	/mod/sbin/$DAEMON spm 3 $CPMACCFG_MODE3
+	/mod/sbin/$DAEMON spm 4 $CPMACCFG_MODE4
+
+	# Port Settings
+	/mod/sbin/$DAEMON spme 1 $CPMACCFG_SPEED1 $CPMACCFG_FLOW1
+	/mod/sbin/$DAEMON spme 2 $CPMACCFG_SPEED2 $CPMACCFG_FLOW2
+	/mod/sbin/$DAEMON spme 3 $CPMACCFG_SPEED3 $CPMACCFG_FLOW3
+	/mod/sbin/$DAEMON spme 4 $CPMACCFG_SPEED4 $CPMACCFG_FLOW4
+
+	# VLAN Settings
+	vlan
+	
+	# WLAN Settings
+	wlan	
+
+	# IP Adressen setzen
+	ethernet
+	
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'nothing to stop...'
+	echo ''
+}
+
+vlan() {
+	d_eth0=32
+	d_eth1=32
+	d_eth2=32
+	d_eth3=32
+
+	if [ $CPMACCFG_VLAN1 = "eth0" ]; then d_eth0=`expr $d_eth0 + 1`; fi
+	if [ $CPMACCFG_VLAN1 = "eth1" ]; then d_eth1=`expr $d_eth1 + 1`; fi
+	if [ $CPMACCFG_VLAN1 = "eth2" ]; then d_eth2=`expr $d_eth2 + 1`; fi
+	if [ $CPMACCFG_VLAN1 = "eth3" ]; then d_eth3=`expr $d_eth3 + 1`; fi
+
+	if [ $CPMACCFG_VLAN2 = "eth0" ]; then d_eth0=`expr $d_eth0 + 2`; fi
+	if [ $CPMACCFG_VLAN2 = "eth1" ]; then d_eth1=`expr $d_eth1 + 2`; fi
+	if [ $CPMACCFG_VLAN2 = "eth2" ]; then d_eth2=`expr $d_eth2 + 2`; fi
+	if [ $CPMACCFG_VLAN2 = "eth3" ]; then d_eth3=`expr $d_eth3 + 2`; fi
+
+	if [ $CPMACCFG_VLAN3 = "eth0" ]; then d_eth0=`expr $d_eth0 + 4`; fi
+	if [ $CPMACCFG_VLAN3 = "eth1" ]; then d_eth1=`expr $d_eth1 + 4`; fi
+	if [ $CPMACCFG_VLAN3 = "eth2" ]; then d_eth2=`expr $d_eth2 + 4`; fi
+	if [ $CPMACCFG_VLAN3 = "eth3" ]; then d_eth3=`expr $d_eth3 + 4`; fi
+
+	if [ $CPMACCFG_VLAN4 = "eth0" ]; then d_eth0=`expr $d_eth0 + 8`; fi
+	if [ $CPMACCFG_VLAN4 = "eth1" ]; then d_eth1=`expr $d_eth1 + 8`; fi
+	if [ $CPMACCFG_VLAN4 = "eth2" ]; then d_eth2=`expr $d_eth2 + 8`; fi
+	if [ $CPMACCFG_VLAN4 = "eth3" ]; then d_eth3=`expr $d_eth3 + 8`; fi
+
+	h_eth0='0x'`printf "%X" $d_eth0`;
+	h_eth1='0x'`printf "%X" $d_eth1`;
+	h_eth2='0x'`printf "%X" $d_eth2`;
+	h_eth3='0x'`printf "%X" $d_eth3`;
+
+	if [ "$h_eth0" != "0x20" ]; then
+		SpecialMode='eth0 '$h_eth0
+	fi
+	if [ "$h_eth1" != "0x20" ]; then
+		SpecialMode=$SpecialMode' eth1 '$h_eth1
+	fi
+	if [ "$h_eth2" != "0x20" ]; then
+		SpecialMode=$SpecialMode' eth2 '$h_eth2
+	fi
+	if [ "$h_eth3" != "0x20" ]; then
+		SpecialMode=$SpecialMode' eth3 '$h_eth3
+	fi
+
+	if [ "$h_eth0" != "0x2F" ]; then
+		ifconfig eth3 down 2>/dev/null
+		ifconfig eth2 down 2>/dev/null
+		ifconfig eth1 down 2>/dev/null
+		sleep 2
+		echo -n 'VLAN Settings...'
+		echo ''
+		echo -n "/mod/sbin/$DAEMON ssms $SpecialMode..."
+		echo ''
+		/mod/sbin/$DAEMON ssms $SpecialMode
+		/mod/sbin/$DAEMON ssm special
+	else
+		/mod/sbin/$DAEMON ssm normal
+	fi
+}
+
+wlan () {
+	echo -n 'Setting WLAN to '$CPMACCFG_WLAN
+	echo ''
+	/sbin/brctl addif wlan $CPMACCFG_WLAN
+}
+
+ipv4bcast () {
+	local IP1=${1%%.*.*.*}
+	local IP2=${1#*.};    IP2=${IP2%%.*.*}
+	local IP3=${1#*.*.};  IP3=${IP3%%.*}
+	local IP4=${1#*.*.*.}
+	local NM1=${2%%.*.*.*}
+	local NM2=${2#*.};    NM2=${NM2%%.*.*}
+	local NM3=${2#*.*.};  NM3=${NM3%%.*}
+	local NM4=${2#*.*.*.}
+	local IIP=$(($IP1 << 24 | $IP2 << 16 | $IP3 << 8 | $IP4))
+	local INM=$(($NM1 << 24 | $NM2 << 16 | $NM3 << 8 | $NM4))
+	local IBC=$((${IIP} | ~${INM}))
+	printf "%u.%u.%u.%u" $((${IBC} >> 24 & 0xFF)) $((${IBC} >> 16 & 0xFF)) \
+	$((${IBC} >> 8 & 0xFF)) $((${IBC} & 0xFF))
+}
+ 
+ethernet() {
+	if [ "$CPMACCFG_ETH1_IP" != "" ]; then
+		if [ "$h_eth1" != "0x20" ]; then
+			BROADCAST="`ipv4bcast $CPMACCFG_ETH1_IP $CPMACCFG_ETH1_SUBNET`"
+			echo "ifconfig eth1 $CPMACCFG_ETH1_IP netmask $CPMACCFG_ETH1_SUBNET broadcast $BROADCAST up"
+			ifconfig eth1 $CPMACCFG_ETH1_IP netmask $CPMACCFG_ETH1_SUBNET broadcast $BROADCAST up
+		fi
+	fi
+
+	if [ "$CPMACCFG_ETH2_IP" != "" ]; then
+		if [ "$h_eth2" != "0x20" ]; then
+			BROADCAST="`ipv4bcast $CPMACCFG_ETH2_IP $CPMACCFG_ETH2_SUBNET`"
+			echo "ifconfig eth2 $CPMACCFG_ETH2_IP netmask $CPMACCFG_ETH2_SUBNET broadcast $BROADCAST up"
+			ifconfig eth2 $CPMACCFG_ETH2_IP netmask $CPMACCFG_ETH2_SUBNET broadcast $BROADCAST up
+		fi
+	fi
+
+	if [ "$CPMACCFG_ETH3_IP" != "" ]; then
+		if [ "$h_eth3" != "0x20" ]; then
+			BROADCAST="`ipv4bcast $CPMACCFG_ETH3_IP $CPMACCFG_ETH3_SUBNET`"
+			echo "ifconfig eth3 $CPMACCFG_ETH3_IP netmask $CPMACCFG_ETH3_SUBNET broadcast $BROADCAST up"
+			ifconfig eth3 $CPMACCFG_ETH3_IP netmask $CPMACCFG_ETH3_SUBNET broadcast $BROADCAST up
+		fi
+	fi
+} 
+
+
+
+case "$1" in
+	""|load)
+		pre_config
+		modreg cgi 'cpmaccfg' 'Cpmaccfg'
+		start
+		;;
+	unload)
+		stop
+		modunreg cgi 'cpmaccfg'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		echo 'running'
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
