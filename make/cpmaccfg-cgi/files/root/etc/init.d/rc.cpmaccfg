@@ -5,21 +5,27 @@ DAEMON=cpmaccfg
 . /etc/init.d/modlibrc
 
 start() {
+	
+	BOXTYPE=$(set|grep "Fritz_Box"|sed -e "s/.*_//g"|sed -e "s/'//g")
+	if [ $BOXTYPE = "7170" ];then
+	
 	echo -n 'Setting Ports...'
 	echo ''
 
 	# Port Mode
-	/mod/sbin/$DAEMON spm 1 $CPMACCFG_MODE1
-	/mod/sbin/$DAEMON spm 2 $CPMACCFG_MODE2
-	/mod/sbin/$DAEMON spm 3 $CPMACCFG_MODE3
-	/mod/sbin/$DAEMON spm 4 $CPMACCFG_MODE4
+	/sbin/$DAEMON spm 1 $CPMACCFG_MODE1
+	/sbin/$DAEMON spm 2 $CPMACCFG_MODE2
+	/sbin/$DAEMON spm 3 $CPMACCFG_MODE3
+	/sbin/$DAEMON spm 4 $CPMACCFG_MODE4
 
 	# Port Settings
-	/mod/sbin/$DAEMON spme 1 $CPMACCFG_SPEED1 $CPMACCFG_FLOW1
-	/mod/sbin/$DAEMON spme 2 $CPMACCFG_SPEED2 $CPMACCFG_FLOW2
-	/mod/sbin/$DAEMON spme 3 $CPMACCFG_SPEED3 $CPMACCFG_FLOW3
-	/mod/sbin/$DAEMON spme 4 $CPMACCFG_SPEED4 $CPMACCFG_FLOW4
+	/sbin/$DAEMON spme 1 $CPMACCFG_SPEED1 $CPMACCFG_FLOW1
+	/sbin/$DAEMON spme 2 $CPMACCFG_SPEED2 $CPMACCFG_FLOW2
+	/sbin/$DAEMON spme 3 $CPMACCFG_SPEED3 $CPMACCFG_FLOW3
+	/sbin/$DAEMON spme 4 $CPMACCFG_SPEED4 $CPMACCFG_FLOW4
 
+	fi
+	
 	# VLAN Settings
 	vlan
 	
@@ -94,12 +100,12 @@ vlan() {
 		sleep 2
 		echo -n 'VLAN Settings...'
 		echo ''
-		echo -n "/mod/sbin/$DAEMON ssms $SpecialMode..."
+		echo -n "/sbin/$DAEMON ssms $SpecialMode..."
 		echo ''
-		/mod/sbin/$DAEMON ssms $SpecialMode
-		/mod/sbin/$DAEMON ssm special
+		/sbin/$DAEMON ssms $SpecialMode
+		/sbin/$DAEMON ssm special
 	else
-		/mod/sbin/$DAEMON ssm normal
+		/sbin/$DAEMON ssm normal
 	fi
 }
 
