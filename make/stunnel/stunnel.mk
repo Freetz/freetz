@@ -1,11 +1,12 @@
-$(call PKG_INIT_BIN,4.26)
+$(call PKG_INIT_BIN,4.27)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.stunnel.org/download/stunnel/src
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 $(PKG)_STARTLEVEL=30
 
-$(PKG)_DEPENDS_ON := openssl zlib
+#$(PKG)_DEPENDS_ON := openssl zlib
+$(PKG)_DEPENDS_ON := cyassl zlib
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-libwrap
 $(PKG)_CONFIGURE_OPTIONS += --with-threads=fork
