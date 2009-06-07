@@ -74,6 +74,16 @@ ifeq ($(shell MWW=root/usr/mww; \
 $(error File permissions or links are wrong! Please unpack Freetz on a filesystem with Unix-like permissions)
 endif
 
+# Folder root/ needs 755 permissions
+ifneq ($(shell stat -c %a root),755)
+$(error Please unpack again with umask set to 0022)
+endif
+
+# We need umask 0022
+ifneq ($(shell umask),0022)
+$(error Please run "umask 0022", it is now $(shell umask))
+endif
+
 # We don't like cygwin
 ifeq ($(shell uname -o),Cygwin)
 $(error Cygwin is not supported! Please use a real Linux environment.)
