@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 2.47)
+$(call PKG_INIT_BIN, 2.49)
 $(PKG)_SOURCE:=dnsmasq-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
 $(PKG)_DIR:=$(SOURCE_DIR)/dnsmasq-$($(PKG)_VERSION)
