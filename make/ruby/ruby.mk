@@ -1,8 +1,20 @@
-$(call PKG_INIT_BIN, 1.8.6)
+$(call PKG_INIT_BIN, 1.8.6-p368)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www.xs4all.nl/~hipster/lib/mirror/ruby/1.8
+$(PKG)_SITE:=ftp://ftp.ruby-lang.org/pub/ruby/1.8/
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
+
+
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --enable-wide-getaddrinfo
+
+ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
+$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
+else
+$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -10,7 +22,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(RUBY_DIR)
+		$(MAKE) -C $(RUBY_DIR) all
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(dir $@)

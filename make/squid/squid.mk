@@ -4,6 +4,8 @@ $(PKG)_SITE:=http://www.squid-cache.org/Versions/v$(firstword $(subst ., ,$($(PK
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/squid
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/squid
 
+$(PKG)_DEPENDS_ON := uclibcxx
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
