@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.61)
+$(call PKG_INIT_BIN, 1.71)
 $(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 $(PKG)_CLIENT_BINARY:=$($(PKG)_DIR)/cli/transmissioncli
