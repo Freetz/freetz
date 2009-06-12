@@ -10,11 +10,8 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --enable-wide-getaddrinfo
 
-ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
-$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
-else
 $(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
-endif
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
