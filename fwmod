@@ -1033,7 +1033,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		#find all executables which uses parts of shared objects
 		find "${FILESYSTEM_MOD_DIR}" -type f -perm +100 -exec \
 			file -r -N -F '' {} + | \
-			awk ' /executable.*dynamically/ { print $1 }' > "${FILESYSTEM_MOD_DIR}/mklibs-progs"
+			awk ' /executable.*dynamically/ { print $1 }; /shared object/ {print $1} ' > "${FILESYSTEM_MOD_DIR}/mklibs-progs"
 
 		#we need the rest of shared objects in mod dir too
 		#iptables shared libs... ctlrmg shared libs
