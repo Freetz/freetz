@@ -126,7 +126,9 @@ E.g.: rw,noatime,nodiratime")</small></p>
 <p>$(lang de:"Altes Root-Filesystem (Flashspeicher) unmounten:" en:"Unmount old root filesystem
 (flash memory):") <input id="y1" type="radio" name="unmountoldroot" value="yes"$y1_chk><label
 for="y1"> $(lang de:"Ja" en:"Yes")</label><input id="n1" type="radio"
-name="unmountoldroot" value="no"$n1_chk/><label for="n1"> $(lang de:"Nein" en:"No")</label></p>
+name="unmountoldroot" value="no"$n1_chk/><label for="n1"> $(lang de:"Nein" en:"No")</label><br />
+<small>$(lang de:"Achtung: Das Aktivieren dieser Option kann zu einer Reboot-Schleife führen." en:"Caution: 
+Activating this option can cause reboot loops")</small></p>
 EOF
 
 sec_end
