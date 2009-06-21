@@ -1,6 +1,6 @@
---- configure.orig	2008-12-05 18:48:05.000000000 +0100
-+++ configure	2008-12-05 18:48:06.000000000 +0100
-@@ -9220,7 +9220,7 @@
+--- configure.orig	2009-06-17 14:35:22.000000000 +0200
++++ configure	2009-06-20 11:55:21.000000000 +0200
+@@ -9252,7 +9252,7 @@
      BUILD_CLI="\$(LIBTOOL) --mode=link \$(CC) -export-dynamic \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(PHP_RPATHS) \$(PHP_CLI_OBJS) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -Lnetware -lphp5lib -o \$(SAPI_CLI_PATH)"
      ;;
    *)
@@ -9,7 +9,7 @@
      ;;
    esac
    INSTALL_CLI="\$(mkinstalldirs) \$(INSTALL_ROOT)\$(bindir); \$(INSTALL) -m 0755 \$(SAPI_CLI_PATH) \$(INSTALL_ROOT)\$(bindir)/\$(program_prefix)php\$(program_suffix)\$(EXEEXT)"
-@@ -12651,7 +12651,7 @@
+@@ -12683,7 +12683,7 @@
          BUILD_CGI="\$(CC) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(EXTRA_LDFLAGS_PROGRAM) \$(LDFLAGS) \$(NATIVE_RPATHS) \$(PHP_GLOBAL_OBJS:.lo=.o) \$(PHP_SAPI_OBJS:.lo=.o) \$(PHP_FRAMEWORKS) \$(EXTRA_LIBS) \$(ZEND_EXTRA_LIBS) -o \$(SAPI_CGI_PATH)"
        ;;
        *)

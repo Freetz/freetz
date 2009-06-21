@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 5.2.9)
+$(call PKG_INIT_BIN, 5.2.10)
 $(PKG)_SOURCE:=php-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://de.php.net/distributions
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi

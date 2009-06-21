@@ -1,5 +1,5 @@
-$(call PKG_INIT_BIN, 1.4.22)
-$(PKG)_SOURCE:=lighttpd-$($(PKG)_VERSION).tar.gz
+$(call PKG_INIT_BIN, 1.4.23)
+$(PKG)_SOURCE:=lighttpd-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://www.lighttpd.net/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lighttpd
 $(PKG)_MODULE_BINARY:=$($(PKG)_DIR)/src/.libs/mod_access.so
