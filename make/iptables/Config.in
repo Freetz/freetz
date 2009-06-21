@@ -1,6 +1,7 @@
 config FREETZ_PACKAGE_IPTABLES
 	bool "Iptables 1.4.1.1"
-	depends on ! FREETZ_TYPE_SPEEDPORT_W501V
+	depends on ! FREETZ_TYPE_SPEEDPORT_W501V && \
+			! FREETZ_TYPE_FON_5140
 	default n
 	help
 		Netfilter/iptables
