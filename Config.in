@@ -1235,6 +1235,12 @@ config FREETZ_PATCH_GETCONS
 		Patch /etc/profile so that console messages are not redirected to
 		/dev/pts/0. These can sometimes be very anoying.
 
+config FREETZ_REMOVE_SUPPORT
+	bool "Remove the support-files"
+	default n
+	help
+		Remove the support-files which can be taken by http://fritz.box/html/support.html
+
 config FREETZ_REMOVE_WEBSRV
 	bool "Replace AVM web server by httpd"
 	depends on \
