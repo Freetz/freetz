@@ -19,40 +19,18 @@
 #set -x
 
 OS="`uname -s`"
-
-VPNC_WIN_SCRIPT=/etc/vpnc/vpnc-script-win
-
-case "$OS" in
-	CYGWIN_NT*)
-		# why does "--kernel-name" include "--kernel-release" on cygwin?!
-		exec $VPNC_WIN_SCRIPT
-		;;
-	*)
-		;;
-esac
-
+MODULES='ip_tables ip_conntrack iptable_filter iptable_nat ipt_MASQUERADE'
 DEFAULT_ROUTE_FILE=/var/run/vpnc/defaultroute
 RESOLV_CONF_BACKUP=/var/run/vpnc/resolv.conf-backup
 
-# some systems, eg. Darwin & FreeBSD, prune /var/run on boot
 if ! [ -d "/var/run/vpnc" ]; then
        mkdir -p /var/run/vpnc
 fi
 
-# stupid SunOS: no blubber in /usr/local/bin ... (on stdout)
-#IPROUTE="`which ip | grep '^/' 2> /dev/null`"
-
-if [ "$OS" = "Linux" ]; then
-	ifconfig_syntax_ptp="pointopoint"
-	route_syntax_gw="gw"
-	route_syntax_del="del"
-	route_syntax_netmask="netmask"
-else
-	ifconfig_syntax_ptp=""
-	route_syntax_gw=""
-	route_syntax_del="delete"
-	route_syntax_netmask="-netmask"
-fi
+ifconfig_syntax_ptp="pointopoint"
+route_syntax_gw="gw"
+route_syntax_del="del"
+route_syntax_netmask="netmask"
 
 ####
 
@@ -68,41 +46,27 @@ kernel_is_2_6_or_above() {
 }
 
 do_pre_init() {
-	if [ "$OS" = "Linux" ]; then
-		if (exec 6<> /dev/net/tun) > /dev/null 2>&1 ; then
-			:
-		else # can't open /dev/net/tun
-			test -e /proc/sys/kernel/modprobe && `cat /proc/sys/kernel/modprobe` tun 2>/dev/null
-			# fix for broken devfs in kernel 2.6.x
-			if [ "`readlink /dev/net/tun`" = misc/net/tun \
-				-a ! -e /dev/net/misc/net/tun -a -e /dev/misc/net/tun ] ; then
-				ln -sf /dev/misc/net/tun /dev/net/tun
-			fi
-			# make sure tun device exists
-			if [ ! -e /dev/net/tun ]; then
-				mkdir -p /dev/net
-				mknod -m 0640 /dev/net/tun c 10 200
-			fi
-			# workaround for a possible latency caused by udev, sleep max. 10s
-			if kernel_is_2_6_or_above ; then
-				for x in `seq 100` ; do
-					(exec 6<> /dev/net/tun) > /dev/null 2>&1 && break;
-					sleep 0.1
-				done
-			fi
+	if (exec 6<> /dev/net/tun) > /dev/null 2>&1 ; then
+		:
+	else # can't open /dev/net/tun
+		test -e /proc/sys/kernel/modprobe && `cat /proc/sys/kernel/modprobe` tun 2>/dev/null
+		# fix for broken devfs in kernel 2.6.x
+		if [ "`readlink /dev/net/tun`" = misc/net/tun \
+			-a ! -e /dev/net/misc/net/tun -a -e /dev/misc/net/tun ] ; then
+			ln -sf /dev/misc/net/tun /dev/net/tun
 		fi
-	elif [ "$OS" = "FreeBSD" ]; then
-		if [ ! -e /dev/tun ]; then
-			kldload if_tun
+		# make sure tun device exists
+		if [ ! -e /dev/net/tun ]; then
+			mkdir -p /dev/net
+			mknod -m 0640 /dev/net/tun c 10 200
 		fi
-	elif [ "$OS" = "NetBSD" ]; then
-		:
-	elif [ "$OS" = "OpenBSD" ]; then
-		:
-	elif [ "$OS" = "SunOS" ]; then
-		:
-	elif [ "$OS" = "Darwin" ]; then
-		:
+		# workaround for a possible latency caused by udev, sleep max. 10s
+		if kernel_is_2_6_or_above ; then
+			for x in `seq 100` ; do
+				(exec 6<> /dev/net/tun) > /dev/null 2>&1 && break;
+				sleep 0.1
+			done
+		fi
 	fi
 }
 
@@ -111,11 +75,7 @@ do_ifconfig() {
 }
 
 destroy_tun_device() {
-	case "$OS" in
-	NetBSD) # and probably others...
-		ifconfig "$TUNDEV" destroy
-		;;
-	esac
+	:
 }
 
 if [ -n "$IPROUTE" ]; then
@@ -258,56 +218,6 @@ nameserver $i"
 search $CISCO_DEF_DOMAIN"
 	fi
 	echo "$NEW_RESOLVCONF" > /etc/resolv.conf
-
-	if [ "$OS" = "Darwin" ]; then
-		case "`uname -r`" in
-			# Skip for pre-10.4 systems
-			4.*|5.*|6.*|7.*)
-				;;
-			# 10.4 and later require use of scutil for DNS to work properly
-			*)
-				scutil >/dev/null 2>&1 <<-EOF
-					open
-					d.init
-					d.add ServerAddresses * $INTERNAL_IP4_DNS
-					set State:/Network/Service/$TUNDEV/DNS
-					get State:/Network/Global/IPv4
-					d.remove PrimaryService
-					d.remove PrimaryInterface
-					d.add Addresses * $INTERNAL_IP4_ADDRESS
-					d.add SubnetMasks * 255.255.255.255
-					d.add InterfaceName $TUNDEV
-					set State:/Network/Service/$TUNDEV/IPv4
-					close
-				EOF
-				if [ -n "$CISCO_DEF_DOMAIN" ]; then
-					scutil >/dev/null 2>&1 <<-EOF
-						open
-						get State:/Network/Service/$TUNDEV/DNS
-						d.add DomainName $CISCO_DEF_DOMAIN
-						d.add SearchDomains * $CISCO_DEF_DOMAIN
-						d.add SupplementalMatchDomains * $CISCO_DEF_DOMAIN
-						set State:/Network/Service/$TUNDEV/DNS
-						close
-					EOF
-				fi
-				# Uncomment the following if/fi pair to use multiple
-				# DNS matching when available.  When multiple DNS matching
-				# is present, anything reading the /etc/resolv.conf file
-				# directly will probably not work as intended.
-				#if [ -z "$CISCO_DEF_DOMAIN" ]; then
-					# Cannot use multiple DNS matching without a domain
-					scutil >/dev/null 2>&1 <<-EOF
-						open
-						get State:/Network/Service/$TUNDEV/IPv4
-						d.add OverridePrimary # 1
-						set State:/Network/Service/$TUNDEV/IPv4
-						close
-					EOF
-				#fi
-				;;
-		esac
-	fi
 }
 
 reset_resolvconf() {
@@ -316,23 +226,6 @@ reset_resolvconf() {
 	fi
 	grep '^#@VPNC_GENERATED@' /etc/resolv.conf > /dev/null 2>&1 && cat "$RESOLV_CONF_BACKUP" > /etc/resolv.conf
 	rm -f -- "$RESOLV_CONF_BACKUP"
-
-	if [ "$OS" = "Darwin" ]; then
-		case "`uname -r`" in
-			# Skip for pre-10.4 systems
-			4.*|5.*|6.*|7.*)
-				;;
-			# 10.4 and later require use of scutil for DNS to work properly
-			*)
-				scutil >/dev/null 2>&1 <<-EOF
-					open
-					remove State:/Network/Service/$TUNDEV/IPv4
-					remove State:/Network/Service/$TUNDEV/DNS
-					close
-				EOF
-				;;
-		esac
-	fi
 }
 
 do_connect() {
@@ -394,6 +287,9 @@ do_disconnect() {
 }
 
 start_vpn_nat() {
+	for MODUL in $MODULES; do
+		modprobe $MODUL
+	done
 	iptables -A FORWARD -o $TUNDEV -j ACCEPT
 	iptables -A FORWARD -i $TUNDEV -j ACCEPT
 	iptables -t nat -A POSTROUTING -o $TUNDEV -j MASQUERADE
@@ -403,6 +299,13 @@ stop_vpn_nat() {
 	iptables -t nat -D POSTROUTING -o $TUNDEV -j MASQUERADE
 	iptables -D FORWARD -i $TUNDEV -j ACCEPT
 	iptables -D FORWARD -o $TUNDEV -j ACCEPT
+	reverse_list=
+	for MODUL in $MODULES; do
+		reverse_list="$MODUL $reverse_list"
+	done
+	for MODUL in $reverse_list; do
+		rmmod $MODUL
+	done
 }
 
 ####
@@ -423,6 +326,9 @@ case "$reason" in
 	disconnect)
 		#stop_vpn_nat
 		do_disconnect
+		if [ "`dirname $0`" = '/var/tmp' ]; then
+			rm -f $0
+		fi
 		;;
 	*)
 		echo "unknown reason '$reason'. Maybe vpnc-script is out of date" 1>&2
