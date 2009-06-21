@@ -62,8 +62,28 @@ cat << EOF
 </p>
 
 <small>$(lang
-de:"Beim Konfigurations- und Download-Verzeichnis d&uuml;rfen sowohl absolute als auch relative Pfade angegeben werden. Die relativen Pfade werden dabei als relativ zum Basisverzeichnis verstanden."
-en:"Both absolute and relative paths are allowed for config- and download-directories. The relative ones will be interpreted as being relative to the base-directory."
+de:"Verschiebe fertige Dateien in folgendes Seed-Verzeichnis (Leer lassen falls die Dateien nicht verschoben werden sollen):"
+en:"Finished downloads will be moved to seed-directory and start seeding there (no action if empty):"
+)</small>
+
+<p>
+<label for='seeddir'>$(lang de:"Seed-Verzeichnis" en:"Seed-Directory"): </label>
+<input type='text' id='seeddir' name='seeddir' size='40' maxlength='255' value="$(html "$TRANSMISSION_SEEDDIR")"><br />
+</p>
+
+<small>$(lang
+de:"Verschiebe komplett fertige Dateien (gedownloaded und geseedet) in das unten stehen Verzeichnis:"
+en:"Completely seeded downloads will be moved to seed-directory (no action if empty):"
+)</small>
+
+<p>
+<label for='finishdir'>$(lang de:"End-Verzeichnis" en:"Finish-Directory"): </label>
+<input type='text' id='finishdir' name='finishdir' size='40' maxlength='255' value="$(html "$TRANSMISSION_FINISHDIR")"><br />
+</p>
+
+<small>$(lang
+de:"Auﬂer beim Basisverzeichnis d&uuml;rfen auch relative Pfade angegeben werden. Die relativen Pfade werden dabei als relativ zum Basisverzeichnis verstanden."
+en:"Both absolute and relative paths are allowed for directories except for the base-directory. The relative ones will be interpreted as being relative to the base-directory."
 )</small>
 <br />
 EOF
@@ -83,6 +103,16 @@ en:"Don't forget to open this port. Use the freetz' package AVM-Firewall for thi
 <input type='text' id='peerport' name='peerport' value="$(html "$TRANSMISSION_PEERPORT")">
 </p>
 
+<small>$(lang
+de:"Beim Erreichen der Ratio werden Uploads automatisch gestoppt und in das End-Verzeichnis verschoben (falls angegeben)"
+en:"Seeding torrents will be stopped when they reach the ratio and moved into the seed-directory (if not empty)"
+)</small>
+
+<p>
+<label for='ratio'>$(lang de:"Ratio" en:"Ratio") </label>
+<input type='text' id='ratio' name='ratio' value="$(html "$TRANSMISSION_RATIO")">
+</p>
+
 <p>
 <label for='globalpeerlimit'>$(lang de:"Maximale Gesamtanzahl der Peers" en:"Maximum overall number of peers") </label>
 <input type='text' id='globalpeerlimit' name='globalpeerlimit' value="$(html "$TRANSMISSION_GLOBALPEERLIMIT")">
@@ -91,6 +121,11 @@ en:"Don't forget to open this port. Use the freetz' package AVM-Firewall for thi
 <p>
 <label for='torrentpeerlimit'>$(lang de:"Maximale Anzahl der Peers pro Torrent" en:"Maximum number of peers per torrent") </label>
 <input type='text' id='torrentpeerlimit' name='torrentpeerlimit' value="$(html "$TRANSMISSION_TORRENTPEERLIMIT")">
+</p>
+
+<p>
+<label for='msglevel'>$(lang de:"Debug-Level (zur Zeit ohne Wikung)" en:"Log-Verbosity (currently not used)") </label>
+<input type='text' id='msglevel' name='meglevel' value="$(html "$TRANSMISSION_MSGLEVEL")">
 </p>
 
 <p>
@@ -106,6 +141,7 @@ en:"Don't forget to open this port. Use the freetz' package AVM-Firewall for thi
 <label for='useblocklist'>$(lang de:"Peer-Blockliste verwenden" en:"Use peer-blocklist") </label>
 <input type='checkbox' id='useblocklist' name='useblocklist' value='yes'$blocklist_chk>
 </p>
+
 EOF
 
 sec_end
