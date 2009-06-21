@@ -1,6 +1,6 @@
---- etc/init.d/rc.net.orig	2009-05-16 13:12:26.513081551 +0200
-+++ etc/init.d/rc.net	2009-05-16 13:12:26.693082013 +0200
-@@ -57,6 +57,20 @@
+--- etc/init.d/rc.net.orig	2008-12-17 22:22:17.000000000 +0100
++++ etc/init.d/rc.net	2008-12-17 22:22:17.000000000 +0100
+@@ -57,9 +57,25 @@
     WLAN_TEST=0
  fi
  
@@ -18,10 +18,15 @@
 +#   a) it has the parameter at all AND
 +#   b) upnpd binary does *not* exist
 +[ "$_dsld_upnp" ] && [ ! "$_upnpd" ] && DSLDDPARAM="-g"
++
  
  upnpdstart()
  {
-@@ -285,9 +299,9 @@
++	 [ "$_upnpd" ] || return;
+    if [ "`pidof upnpd`" = "" ] ; then
+       upnpd $VERBOSEPARAM
+       sleep 1
+@@ -285,9 +301,9 @@
     if [ "$CONFIG_DSL" ] ; then
       if [ "`pidof dsld`" = "" ] ; then
         if [ "$CONFIG_RAMSIZE" = 8 ] ; then

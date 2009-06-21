@@ -1,5 +1,5 @@
---- etc/init.d/rc.net.orig	2009-05-16 13:12:26.693082013 +0200
-+++ etc/init.d/rc.net	2009-05-16 13:12:26.733078922 +0200
+--- etc/init.d/rc.net.orig	2009-06-21 16:07:33.000000000 +0000
++++ etc/init.d/rc.net	2009-06-21 16:07:34.000000000 +0000
 @@ -71,6 +71,8 @@
  #   a) it has the parameter at all AND
  #   b) upnpd binary does *not* exist
@@ -7,9 +7,9 @@
 +# Do we have a Samba server (smbd) or was ist stripped from the firmware?
 +_smbd=$(basename $(which smbd) 2> /dev/null)
  
+ 
  upnpdstart()
- {
-@@ -314,6 +316,7 @@
+@@ -316,6 +318,7 @@
  #we have the samba cfg in /var, so crate them there
  sambastart()
  {
