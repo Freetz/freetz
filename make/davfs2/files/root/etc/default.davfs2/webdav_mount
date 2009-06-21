@@ -23,7 +23,7 @@ if [ "$DAVFS2_MOUNTPOINT1" != "" ]; then
   chmod 0600 /var/davfs2/secrets_1
   echo "mount $DAVFS2_HOST1..."
   mkdir -p $DAVFS2_MOUNTPOINT1 2>/dev/null
-  mount.davfs $DAVFS2_HOST1 $DAVFS2_MOUNTPOINT1 -o conf=/var/davfs2/davfs2_1.conf
+  mount.davfs $DAVFS2_HOST1 $DAVFS2_MOUNTPOINT1 -o conf=/var/davfs2/davfs2_1.conf,uid=ftpuser
 fi
 
 if [ "$DAVFS2_MOUNTPOINT2" != "" ]; then
@@ -34,7 +34,7 @@ if [ "$DAVFS2_MOUNTPOINT2" != "" ]; then
   chmod 0600 /var/davfs2/secrets_2
   echo "mount $DAVFS2_HOST2..."
   mkdir -p $DAVFS2_MOUNTPOINT2 2>/dev/null
-  mount.davfs $DAVFS2_HOST2 $DAVFS2_MOUNTPOINT2 -o conf=/var/davfs2/davfs2_2.conf
+  mount.davfs $DAVFS2_HOST2 $DAVFS2_MOUNTPOINT2 -o conf=/var/davfs2/davfs2_2.conf,uid=ftpuser
 fi
 
 if [ "$DAVFS2_MOUNTPOINT3" != "" ]; then
@@ -45,6 +45,6 @@ if [ "$DAVFS2_MOUNTPOINT3" != "" ]; then
   chmod 0600 /var/davfs2/secrets_3
   echo "mount $DAVFS2_HOST3..."
   mkdir -p $DAVFS2_MOUNTPOINT3 2>/dev/null
-  mount.davfs $DAVFS2_HOST3 $DAVFS2_MOUNTPOINT3 -o conf=/var/davfs2/davfs2_3.conf
+  mount.davfs $DAVFS2_HOST3 $DAVFS2_MOUNTPOINT3 -o conf=/var/davfs2/davfs2_3.conf,uid=ftpuser
 fi
 EOF
