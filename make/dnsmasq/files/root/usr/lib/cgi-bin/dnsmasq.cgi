@@ -30,7 +30,7 @@ cat << EOF
 <p>Port: <input type="text" name="dns_port" size="5" maxlength="5" value="$(html "$DNSMASQ_DNS_PORT")"></p>
 <p>$(lang de:"Domain" en:"Domain"): <input type="text" name="domain" size="20" maxlength="255" value="$(html "$DNSMASQ_DOMAIN")"></p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
-<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="20" maxlength="255" value="$(html "$DNSMASQ_OPTIONS")"></p>
+<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="55" maxlength="255" value="$(html "$DNSMASQ_OPTIONS")"></p>
 EOF
 sec_end
 
