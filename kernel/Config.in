@@ -374,6 +374,11 @@ config FREETZ_MODULE_ipv6
 		For specific information about IPv6 under Linux, read the HOWTO at
 		<http://www.bieringer.de/linux/IPv6/>.
 
+config FREETZ_MODULE_sit
+	bool "sit.ko"
+	depends on FREETZ_MODULE_ipv6
+	default n
+
 config FREETZ_MODULE_l2cap
 	bool "l2cap.ko"
 	select FREETZ_MODULE_bluetooth
