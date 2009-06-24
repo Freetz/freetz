@@ -18,8 +18,8 @@ config FREETZ_PACKAGE_LIGHTTPD
 config FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
         bool "build with SSL support"
         depends on FREETZ_PACKAGE_LIGHTTPD
+        select FREETZ_LIB_libcrypto
         select FREETZ_LIB_libssl
-	select FREETZ_LIB_libcrypto
         default n
         help
                 This option enables SSL support for lighttpd.

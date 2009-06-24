@@ -93,6 +93,7 @@ config FREETZ_LIB_libxyssl
 
 config FREETZ_LIB_libcrypto
 	bool "OpenSSL cryptographic library (libcrypto.so)"
+	select FREETZ_LIB_libssl if FREETZ_HAS_LIBSSL
 	default n
 	help
 		crypto - OpenSSL cryptographic library
@@ -111,7 +112,7 @@ config FREETZ_LIB_libcrypto
 
 config FREETZ_LIB_libssl
 	bool "OpenSSL SSL/TLS library (libssl.so)"
-	select FREETZ_LIB_libcrypto
+	requires FREETZ_LIB_libcrypto
 	default n
 	help
 		SSL - OpenSSL SSL/TLS library
@@ -580,6 +581,7 @@ config FREETZ_LIB_libneon
 config FREETZ_LIB_libneon_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_LIB_libneon
+	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
 	default n
 	help

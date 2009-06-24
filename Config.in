@@ -790,6 +790,36 @@ config FREETZ_HAS_AVM_INETD
 	help
 		Select this if your original firmware has inetd support.
 
+config FREETZ_HAS_LIBSSL
+	bool "Has libssl"	if FREETZ_TYPE_CUSTOM
+	default y			if \
+		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7140 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_SPEEDPORT_W701V || \
+		FREETZ_TYPE_SPEEDPORT_W900V || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270 || \
+		FREETZ_TYPE_WLAN_3131 || \
+		FREETZ_TYPE_WLAN_3130 || \
+		FREETZ_TYPE_WLAN_3170 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_CUSTOM
+	default n			if \
+		FREETZ_TYPE_FON_5010 || \
+		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_FON_WLAN || \
+		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_WLAN_3020 || \
+		FREETZ_TYPE_WLAN_3030 || \
+		FREETZ_TYPE_SPEEDPORT_W501V || \
+		FREETZ_TYPE_300IP_AS_FON
+	help
+		Select this if you have a box with libssl.
 
 comment "Mod ------------------------------------"
 

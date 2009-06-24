@@ -13,6 +13,7 @@ config FREETZ_PACKAGE_WGET
 config FREETZ_WGET_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_WGET
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_WGET_STATIC
 	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_WGET_STATIC
 	default n
 	help
