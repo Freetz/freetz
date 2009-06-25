@@ -123,14 +123,22 @@ cat << EOF
 <hr>
 <table>
 <tr>
+EOF
+ETHERMODE="$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)"
+if [ $ETHERMODE = "ethmode_router" ]; then
+cat << EOF
 <td align="center">WLAN group:</td><td align="center"><select name="wlan"><option selected>$(html "$CPMACCFG_WLAN")
 <option value="eth0">eth0</option><option value="eth1">eth1</option><option value="eth2">eth2</option><option value="eth3">eth3</option></select></td>
 <td> Please choose the assignment for wireless LAN</td>
 </tr>
 </table>
 </p>
-
 EOF
+else
+	echo -n "<table><tr><td>No WLAN assignment available! WLAN is bridged in AVM webinterface.<br>"
+	echo -n "Please disable the option 'All computers are in the same network'<br>"
+	echo -n "to use the WLAN feature for VLAN assignment.</td></tr></table>"
+fi
 sec_end
 
 SetToNull=''

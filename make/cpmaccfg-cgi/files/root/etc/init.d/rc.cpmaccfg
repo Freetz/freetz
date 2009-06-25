@@ -28,13 +28,13 @@ start() {
 	
 	# VLAN Settings
 	vlan
-	
-	# WLAN Settings
-	wlan	
 
 	# IP Adressen setzen
 	ethernet
-	
+
+	# WLAN Settings
+	wlan
+
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -110,9 +110,15 @@ vlan() {
 }
 
 wlan () {
-	echo -n 'Setting WLAN to '$CPMACCFG_WLAN
-	echo ''
-	/sbin/brctl addif wlan $CPMACCFG_WLAN
+	ETHERMODE="$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)"
+	if [ $ETHERMODE = "ethmode_router" ]; then
+		echo -n 'Setting WLAN to '$CPMACCFG_WLAN
+		echo ''
+		/sbin/brctl addif wlan $CPMACCFG_WLAN
+	else
+		echo -n 'Skipping WLAN bridge-settings. WLAN is bridged in AVM webinterface'
+		echo ''
+	fi
 }
 
 ipv4bcast () {
@@ -161,7 +167,6 @@ ethernet() {
 
 case "$1" in
 	""|load)
-		pre_config
 		modreg cgi 'cpmaccfg' 'Cpmaccfg'
 		start
 		;;
