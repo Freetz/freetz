@@ -1,6 +1,6 @@
---- etc/hotplug/run_mount.orig	2008-12-10 21:55:46.000000000 +0100
-+++ etc/hotplug/run_mount	2008-12-10 21:55:47.000000000 +0100
-@@ -21,19 +21,9 @@
+--- etc/hotplug/run_mount.orig	2009-06-27 12:48:33.352551645 +0200
++++ etc/hotplug/run_mount	2009-06-27 12:48:36.296562545 +0200
+@@ -22,19 +22,9 @@
  
  ## Generate a frontend'able 'nice name' to be used as mount point:
  nicename () {
@@ -23,7 +23,7 @@
  }
  ## Simple semaphore stuff:
  ## includes /etc/hotplug/rc.usbsema
-@@ -44,6 +34,37 @@
+@@ -45,6 +35,37 @@
  ## atomic_touch (Filename)
  USBLOCKFILE=/var/USBLOCK_storage
  test -f /etc/hotplug/rc.usbsema && . /etc/hotplug/rc.usbsema
@@ -61,7 +61,7 @@
  ## Actually perform the mount operation...
  ## (TODO Checking the partition for known filesystem types)
  do_mount () {
-@@ -79,7 +100,7 @@
+@@ -80,7 +101,7 @@
  local OLD_UMASK=`umask`
  umask 0
  local new_filesystem=false
