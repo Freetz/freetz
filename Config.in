@@ -175,26 +175,7 @@ choice
 
 	prompt "Labor version"
 		depends on FREETZ_TYPE_LABOR
-		default FREETZ_TYPE_LABOR_AIO
-
-	config FREETZ_TYPE_LABOR_AIO
-		bool "AiO"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270
-		help
-			FRITZ!Lab AIO: This release combines several software improvements.
-			Therefore AIO means All-In-One. As of now, it contains various
-			fixes for WiFI (Green AP, sources of interference), Facsimile
-			reception and DECT-support and expands NAS functionality.
-
-	config FREETZ_TYPE_LABOR_AURA
-		bool "Aura"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270
-		help
-			FRITZ!Lab AURA: Thanks to AVM USB Remote Architecture (AURA), 
-			all devices connected to FRITZ!Box behave as if they were connected 
-			directly to your PC.
+		default FREETZ_TYPE_LABOR_DSL
 
 	config FREETZ_TYPE_LABOR_DSL
 		bool "DSL"
@@ -216,23 +197,6 @@ choice
 			FRITZ!Lab IPV6: This release adds native IPv6 over PPP 
 			(Internet Protocol Version 6) and 6to4 tunnels.
 
-	config FREETZ_TYPE_LABOR_PHONE
-		bool "PHONE"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270
-		help
-			FRITZ!Lab Phone: This release improves DECT-Repeating, call lists,
-			and fixes various software problems, e.g. answering machine and
-			facsimile reception.
-
-	config FREETZ_TYPE_LABOR_WLAN
-		bool "WLAN"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270
-		help
-			FRITZ!Lab WLAN: This release reduces the power consumption when
-			no more WiFi clients are connected, and avoids channels with
-			interference.
 endchoice
 
 config FREETZ_TYPE_ALIEN_HARDWARE
