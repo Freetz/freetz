@@ -3,7 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 . /usr/lib/libmodcgi.sh
 
-VERSION="1.0.4"
+VERSION="1.0.5"
 
 # HTML QUERY STRING for remove option
 IPTABLES_DELETE_CHAIN="$(echo "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*chain=//g' | sed -e 's/&.*//g')"
@@ -65,17 +65,28 @@ done < /tmp/flash/iptables_services
 
 cat << EOF
 </select></td></tr>
-<tr><td>Protokoll</td><td colspan="2"><select name="protokoll">
+<tr><td>Protocol</td><td colspan="2"><select name="protokoll">
+<option title="all" value="all">all</option>
 <option title="tcp" value="tcp">tcp</option>
 <option title="udp" value="udp">udp</option>
 <option title="icmp" value="icmp">icmp</option>
 </select>
-<tr><td>Interface</td><td colspan="2"><select name="interface">
-<option title="tcp" value="tcp">ANY</option>
+<tr><td>Input-Interface</td><td colspan="2"><select name="input_interface">
+<option title="ANY" value="ANY">ANY</option>
 EOF
 
-for INTERFACE in $(ifconfig |grep ^[a-z]|cut -f1 -d ' '); do
-	echo '<option title="'$INTERFACE'" value="'$INTERFACE'">'$INTERFACE'</option>'
+for INPUT_INTERFACE in $(ifconfig |grep ^[a-z]|cut -f1 -d ' '); do
+	echo '<option title="'$INPUT_INTERFACE'" value="'$INPUT_INTERFACE'">'$INPUT_INTERFACE'</option>'
+done
+
+cat << EOF
+<tr><td>Output-Interface</td><td colspan="2"><select name="output_interface">
+<option title="ANY" value="ANY">ANY</option>
+
+EOF
+
+for OUTPUT_INTERFACE in $(ifconfig |grep ^[a-z]|cut -f1 -d ' '); do
+	echo '<option title="'$OUTPUT_INTERFACE'" value="'$OUTPUT_INTERFACE'">'$OUTPUT_INTERFACE'</option>'
 done
 
 cat << EOF  
@@ -125,16 +136,17 @@ else
 			fi
 			echo "<br>"
 			echo "<table width='100%' class='center' border='1' cellpadding='4' cellspacing='0'>"
-			echo "<tr><td align='left' colspan='9'>${IPTABLES_LINE}</td>"
+			echo "<tr><td align='left' colspan='10'>${IPTABLES_LINE}</td>"
 			echo "</tr><tr>"
 			echo "<th bgcolor="#bae3ff">ID</th>"
 			echo "<th bgcolor="#bae3ff">Source</th>"
 			echo "<th bgcolor="#bae3ff">Destination</th>"
-			echo "<th bgcolor="#bae3ff">Protokoll</th>"
+			echo "<th bgcolor="#bae3ff">Protocol</th>"
 			echo "<th bgcolor="#bae3ff">Service</th>"
 			echo "<th bgcolor="#bae3ff">Service</th>"
 			echo "<th bgcolor="#bae3ff">Action</th>"
 			echo "<th bgcolor="#bae3ff">in</th>"
+			echo "<th bgcolor="#bae3ff">out</th>"
 			echo "<th bgcolor="#bae3ff">Configure</th>" 
 			echo "</tr>"
 			i=i+1
@@ -171,6 +183,7 @@ else
 				IMAGE="$(echo ${IPTABLES_LINE} | awk '{print $4}')"
 				echo "<td align='center'><img src='../images/"$IMAGE".gif' title='"$IMAGE"'></td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $7}')</td>"
+				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $8}')</td>"
 				echo "<td align='center'><a href='pkgconf.cgi?pkg=iptables&chain="$CHAIN"&remove="$(echo ${IPTABLES_LINE} | awk '{print $1}')"'>remove</a></td>"
 				echo "</tr>"
 			fi
