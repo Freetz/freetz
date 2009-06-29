@@ -1243,8 +1243,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 	if [ -s "${DIR}/${modimage}" ]; then
 		echo "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
+		[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://www.freetz.org for details."
 	fi
-
 	echo "done."
 	echo
 
