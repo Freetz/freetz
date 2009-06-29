@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 7.8)
+$(call PKG_INIT_LIB, 7.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
 

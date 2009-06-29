@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.71)
+$(call PKG_INIT_BIN, 1.72)
 $(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 $(PKG)_CLIENT_BINARY:=$($(PKG)_DIR)/cli/transmissioncli
@@ -11,7 +11,7 @@ $(PKG)_WEBINTERFACE_DIR:=$($(PKG)_DIR)/web
 $(PKG)_TARGET_WEBINTERFACE_DIR:=$($(PKG)_DEST_DIR)/usr/share/transmission-web-home
 $(PKG)_TARGET_WEBINTERFACE_INDEX_HTML:=$($(PKG)_TARGET_WEBINTERFACE_DIR)/index.html
 
-$(PKG)_DEPENDS_ON := zlib openssl curl
+$(PKG)_DEPENDS_ON := zlib openssl curl libevent
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_TRANSMISSION_STATIC
 

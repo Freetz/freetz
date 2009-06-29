@@ -1,10 +1,12 @@
-$(call PKG_INIT_LIB, 1.3e)
-$(PKG)_LIB_VERSION:=1.0.3
+$(call PKG_INIT_LIB, 1.4.11-stable)
+$(PKG)_MAJOR_VERSION:=1.4
+$(PKG)_SHLIB_VERSION:=2.1.3
+$(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.monkey.org/~provos
-$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$(pkg)-$($(PKG)_VERSION).so.$($(PKG)_LIB_VERSION)
-$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg)-$($(PKG)_VERSION).so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg)-$($(PKG)_VERSION).so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -24,6 +26,13 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		install-strip
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.la
+	# As we don't (want to) include libevent_{core,extra} into the firmware
+	# remove them from the staging dir to prevent other applications
+	# from being occasionally linked against them.
+	# NB: libevent_{core,extra} is just a split-up of libevent. Everything
+	# provided by libevent_{core,extra} is also provided by single libevent.
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent_core*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent_extra*
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*.so* $(LIBEVENT_TARGET_DIR)/
