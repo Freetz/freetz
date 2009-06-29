@@ -1,0 +1,114 @@
+--- etc/hotplug/run_mount.orig	2009-06-29 11:30:22.000000000 +0200
++++ etc/hotplug/run_mount	2009-06-29 11:30:23.000000000 +0200
+@@ -22,19 +22,9 @@
+ 
+ ## Generate a frontend'able 'nice name' to be used as mount point:
+ nicename () {
+-## Find device's strings, remove/translate evil chars...
+-local MANU=`cat $SYSFS/block/$1/device/vendor|tr -d ' '|tr -c "\na-zA-Z0-9" '-'`
+-local NAME=`cat $SYSFS/block/$1/device/model|tr -d ' '|tr -c "\na-zA-Z0-9" '-'`
+-local PARTHEX=$3
+-if [ $PARTHEX -gt 9 ]; then
+-PARTHEX=`echo $((PARTHEX-10)) | tr "0-5" "A-F"`
+-fi
+-test -z "$NAME" && NAME="Storage"
+-test -n "$MANU" && NAME="$MANU-$NAME"
+-## limit NAME to 30 characters+3 extra characters (-00)
+-NAME=`echo -n "$NAME" | sed -e 's#\(.\{0,30\}\).*#\1#g'`
+-## Build nice name: [Vendor-Product]-<x><y>
+-echo "$NAME-$2$PARTHEX"
++local NICE=""
++NICE="uStor`echo $1|sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/'`$3"
++echo $NICE
+ }
+ ## Simple semaphore stuff:
+ ## includes /etc/hotplug/rc.usbsema
+@@ -45,6 +35,37 @@
+ ## atomic_touch (Filename)
+ USBLOCKFILE=/var/USBLOCK_storage
+ test -f /etc/hotplug/rc.usbsema && . /etc/hotplug/rc.usbsema
++
++mount_fs () {
++ # mount according to type of filesystem 
++ # return exit code: true - all went well; other - something went wrong 
++ # gobal variables: 
++ #  $DEVNODE, $MNTPATH, READMODE, FTPUID, FTPGID 
++	FSTYPE="vfat"   # default as long as we dont know better 
++	[[ -x /usr/bin/fstyp ]] && FSTYPE=`/usr/bin/fstyp $DEVNODE` 
++	
++	case $FSTYPE in
++	vfat)
++		mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH
++		;;
++	ext2)
++		mount -t ext2 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ext3)
++		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ntfs)
++		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o $READMODE -o force -o locale=de_DE.ISO-8859-1
++		;;
++	reiserfs)
++		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	*) # fs type unknown
++		mount $DEVNODE $MNTPATH
++		;;
++	esac
++}
++
+ ## Actually perform the mount operation...
+ ## (TODO Checking the partition for known filesystem types)
+ do_mount () {
+@@ -79,41 +100,7 @@
+ ## run mount with umask 0 so everyone is allowed to rwx everywhere
+ local OLD_UMASK=`umask`
+ umask 0
+-local new_filesystem=false
+-if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
+-new_filesystem=true
+-else
+-if test -x /bin/ntfs-3g ; then
+-ntfs-3g $DEVNODE $MNTPATH -o $READMODE -o locale=de_DE.ISO-8859-1
+-local NTFS_RET=$?
+-case "$NTFS_RET" in
+-0 )
+-new_filesystem=true
+-;;
+-12 ) # NTFS_VOLUME_NOT_NTFS
+-## ignore - not formatted with NTFS
+-;;
+-15 ) # NTFS_VOLUME_UNCLEAN_UNMOUNT
+-## need option -o force, but we don't do this, because its not safe!
+-eventadd 144 $MNTNAME
+-## no fail event later on
+-FAIL_EVENT=0
+-led-ctrl filesystem_mount_failure
+-;;
+-* )
+-## NTFS mount error
+-eventadd 145 $MNTNAME $NTFS_RET
+-## no fail event later on
+-FAIL_EVENT=0
+-led-ctrl filesystem_mount_failure
+-;;
+-esac
+-else
+-echo "ntfs not yet ready -> mount later" > /dev/ttyS0
+-FAIL_EVENT=0
+-fi
+-fi
+-if [ $new_filesystem = true ] ; then
++if mount_fs; then
+ FAIL_EVENT=0
+ umask $OLD_UMASK
+ eventadd 140 $MNTNAME
+@@ -154,6 +141,7 @@
+ else
+ umask $OLD_UMASK
+ rmdir $MNTPATH
++eventadd 142 $MNTNAME NOTMOUNTABLE
+ fi
+ if grep $MNTPATH /proc/mounts > /dev/null; then
+ if test -f $1; then
