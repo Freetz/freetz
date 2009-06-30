@@ -1,0 +1,72 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+
+DAEMON=synce-dccm
+PID_FILE=/mod/root/.synce/dccm.pid
+
+case "$1" in
+	""|load|start|restart|status)
+		if [ ! -r /mod/etc/conf/synce-dccm.cfg ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/synce-dccm.cfg
+		;;
+esac
+
+start() {
+
+	echo -n 'Starting SynCE dccm daemon...'
+	dccm -r
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping SynCE dccm daemon...'
+	modlib_stop
+}
+
+case "$1" in
+	""|load)
+		modreg cgi 'synce-dccm' 'SynCE DCCM'
+
+		if [ "$SYNCE_DCCM_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1
+		fi
+
+		start
+		;;
+	unload)
+		modunreg cgi 'synce-dccm'
+		stop
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+                modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
