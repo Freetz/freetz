@@ -1,10 +1,11 @@
 #!/bin/sh
 [ -z "$LIGHTTPD_DOCROOT" ] && exit 1
-virthost_conf() {
-#$1 virtual host 
+
+encloseWithHTTPHost() {
+#$1 space- or tab-separated list of virtual hosts or regular expression (with no space or tab in it)
 #$2 configuration string
-#$3 optional: the character for the equality check (you can only provide a "=" or "!" here; default is "=")
-if [ -n "$1" -a -f /usr/lib/lighttpd/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+#$3 optional: the character for the equality check (you can only provide "=" or "!" here; default is "=")
+if [ -n "$1" ]; then
 	eq=$3
 	[ -z "$eq" ] && eq="="
 	old_IFS=$IFS
@@ -17,6 +18,13 @@ if [ -n "$1" -a -f /usr/lib/lighttpd/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "ye
 		echo "}"
 	done
 	IFS=$old_IFS
+fi
+}
+
+virthost_conf() {
+#$1, $2 and $3 are the same as in encloseWithHTTPHost
+if [ -n "$1" -a -f /usr/lib/lighttpd/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+	encloseWithHTTPHost "$@"
 else
 	echo -e "$2"
 fi
@@ -122,8 +130,11 @@ fi
 
 if /usr/bin/lighttpd -V | grep -q "+ SSL Support"; then
 if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
-	virtsrv=$(echo $LIGHTTPD_SSLVIRT | sed 's/ /|/g')
 	if [ "$LIGHTTPD_SSLADDITIONAL" = "yes" ]; then
+		virtsrv=""
+		if [ -f /usr/lib/lighttpd/mod_evhost.so -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+			virtsrv=$(echo $LIGHTTPD_SSLVIRT | sed 's/ /|/g')
+		fi
 		echo "\$SERVER[\"socket\"] == \":$LIGHTTPD_SSLPORT\" {"
 		enable_ssl
 		[ -n "$virtsrv" ] && virthost_conf "$virtsrv" "url.access-deny = ( \"\" )" "!"
@@ -132,12 +143,16 @@ if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 		[ -n "$virtsrv" ] && out="url.access-deny = ( \"\" )"
 		if [ -f /usr/lib/lighttpd/mod_redirect.so -a "$LIGHTTPD_SSLREDIRECT" = "yes" ]; then
 			echo "server.modules += ( \"mod_redirect\" )"
-			virtsrv="($virtsrv)"
-			out="url.redirect = ( \"^/(.*)\" => \"https://%1/\$1\" )"
+			[ "$LIGHTTPD_SSLPORT" != "443" ] && REDIRECT_PORT_SUFFIX=":$LIGHTTPD_SSLPORT" || REDIRECT_PORT_SUFFIX=""
+			out="url.redirect = ( \"^/(.*)\" => \"https://%1${REDIRECT_PORT_SUFFIX}/\$1\" )"
 		fi
 		if [ -n "$out" ]; then
 			echo "\$SERVER[\"socket\"] == \":$LIGHTTPD_PORT\" {"
-			virthost_conf "$virtsrv" "$out"
+			if [ -n "$virtsrv" ]; then
+				virthost_conf "($virtsrv)" "$out"
+			else
+				encloseWithHTTPHost '^([^:]*)(\:[0-9]+)?$' "$out"
+			fi
 			echo "}"
 		fi
 	else
