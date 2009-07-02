@@ -22,7 +22,8 @@ config FREETZ_PACKAGE_IPTABLES
 		modern Linux distributions.
 
 comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
-depends on FREETZ_MODULE_ip_conntrack
+depends on FREETZ_MODULE_ip_conntrack && \
+		FREETZ_KERNEL_VERSION_2_6_13_1
 
 # Include here for a cleaner menu structure (list packages before modules/libs)
 source make/iptables-cgi/Config.in
