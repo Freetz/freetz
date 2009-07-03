@@ -17,6 +17,7 @@ esac
 if [ ! -e "/tmp/flash/ntpd.conf" ]; then
 cat > /tmp/flash/ntpd.conf << EOF
 # Addresses to listen on (ntpd does not listen by default)
+# Use '*' to listen on every local interface
 listen on $(ifconfig $devname | head -n 2 | tail -n 1 | cut -d: -f2 | cut -d" " -f 1)
 
 # use a random selection of 8 public stratum 2 servers
