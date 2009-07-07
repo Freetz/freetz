@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.2)
+$(call PKG_INIT_BIN, 1.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.litech.org/radvd/dist
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
