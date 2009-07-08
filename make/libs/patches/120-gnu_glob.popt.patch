@@ -1,17 +1,6 @@
-Freetz: We build uClibc without gnu globbing functions.
+Freetz: We build new versions (>=0.9.29) of uClibc without gnu globbing functions.
+The old builds (<=0.9.28) do however contain them.
 
---- config.h.in.orig	2009-04-24 09:54:42.000000000 +0200
-+++ config.h.in	2009-04-24 09:54:17.000000000 +0200
-@@ -37,6 +37,9 @@
- /* Define to 1 if you have the <glob.h> header file. */
- #undef HAVE_GLOB_H
- 
-+/* Define to 1 if you have the `glob_pattern_p' function. */
-+#undef HAVE_GNU_GLOB
-+
- /* Define if you have the iconv() function and it works. */
- #undef HAVE_ICONV
- 
 --- poptconfig.c.orig	2009-04-12 20:14:38.000000000 +0200
 +++ poptconfig.c	2009-04-24 09:56:48.000000000 +0200
 @@ -42,7 +42,7 @@
@@ -19,7 +8,7 @@ Freetz: We build uClibc without gnu globbing functions.
  #endif	/* __LCLINT__ */
  
 -#if !defined(__GLIBC__)
-+#if !defined(HAVE_GNU_GLOB)
++#if !defined(HAVE_GLOB_PATTERN_P)
  /* Return nonzero if PATTERN contains any metacharacters.
     Metacharacters can be quoted with backslashes if QUOTE is nonzero.  */
  static int
