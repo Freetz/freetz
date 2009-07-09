@@ -424,8 +424,9 @@ menu "GLib2"
 
 config FREETZ_LIB_libglib_2
 	bool "GLib2 (libglib-2.0.so)"
-	#select FREETZ_LIB_libiconv
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
 	select FREETZ_LIB_libintl
+	select FREETZ_LIB_libpcre
 	default n
 	help
 		GLib is a library containing many useful C routines for things such as trees, 

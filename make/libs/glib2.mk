@@ -16,7 +16,19 @@ $(PKG)_GOBJECT_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgobject-2.0.so.$($(PKG)_LI
 $(PKG)_GMODULE_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgmodule-2.0.so.$($(PKG)_LIB_VERSION)
 $(PKG)_GTHREAD_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgthread-2.0.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DEPENDS_ON := gettext
+$(PKG)_DEPENDS_ON := gettext pcre
+
+# NB: glib2 does require iconv-functions, see glib/gconvert.c
+# The configure option "--with-libiconv=no" means
+# "do use the implementation provided by C library", i.e. by uClibc.
+# As freetz' builds of uClibc prior to and excluding 0.9.29 do not
+# provide them, we must use an extra library - the gnu-libiconv.
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+$(PKG)_DEPENDS_ON += libiconv
+$(PKG)_CONFIGURE_OPTIONS += --with-libiconv=gnu
+else
+$(PKG)_CONFIGURE_OPTIONS += --with-libiconv=no
+endif
 
 $(PKG)_CONFIGURE_ENV += glib_cv_stack_grows=no
 $(PKG)_CONFIGURE_ENV += glib_cv_uscore=no
@@ -28,10 +40,10 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-debug=no
 $(PKG)_CONFIGURE_OPTIONS += --disable-mem-pools
 $(PKG)_CONFIGURE_OPTIONS += --disable-rebuilds
-$(PKG)_CONFIGURE_OPTIONS += --with-libiconv=no
 $(PKG)_CONFIGURE_OPTIONS += --with-threads=posix
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc
 $(PKG)_CONFIGURE_OPTIONS += --disable-man
+$(PKG)_CONFIGURE_OPTIONS += --with-pcre=system
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
