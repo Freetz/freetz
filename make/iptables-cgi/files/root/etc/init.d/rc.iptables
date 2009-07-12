@@ -75,14 +75,24 @@ start() {
 				IPTABLES_DPORT='--dport '$IPTABLES_DPORT
 			fi
 
-			# Interface
-			if [ $IPTABLES_INTERFACE = "ANY" ]; then
-				IPTABLES_INTERFACE=''
+			# Input-Interface
+			if [ $IPTABLES_INPUT_INTERFACE = "ANY" ]; then
+				IPTABLES_INPUT_INTERFACE=''
 			else
 				if [ $IPTABLES_CHAIN != "OUTPUT" ]; then
-					IPTABLES_INTERFACE='-i '$IPTABLES_INTERFACE
+					IPTABLES_INPUT_INTERFACE='-i '$IPTABLES_INPUT_INTERFACE
 				else
-					IPTABLES_INTERFACE=''
+					IPTABLES_INPUT_INTERFACE=''
+				fi
+			fi
+			# Output-Interface
+			if [ $IPTABLES_OUTPUT_INTERFACE = "ANY" ]; then
+				IPTABLES_OUTPUT_INTERFACE=''
+			else
+				if [ $IPTABLES_CHAIN != "INPUT" ]; then
+					IPTABLES_OUTPUT_INTERFACE='-o '$IPTABLES_OUTPUT_INTERFACE
+				else
+					IPTABLES_OUTPUT_INTERFACE=''
 				fi
 			fi
 
@@ -90,7 +100,7 @@ start() {
 			if [ $IPTABLES_NAT != "None" ]; then
 				IPTABLES_RULE="-t nat "$IPTABLES_RULE
 				IPTABLES_ACTION=$IPTABLES_NAT
-				IPTABLES_INTERFACE='-o '$(echo $IPTABLES_INTERFACE|sed -e "s/-i //g")
+				IPTABLES_INPUT_INTERFACE='-o '$(echo $IPTABLES_INPUT_INTERFACE|sed -e "s/-i //g")
 				if [ $IPTABLES_NAT != "Normal" ]; then
 					$SPECIAL="--to "$(echo $IPTABLES_DESTINATION|sed -e "s/-d //g")
 					$IPTABLES_DESTINATION=''
@@ -107,12 +117,13 @@ start() {
 			echo "proto $IPTABLES_PROTOKOLL"
 			echo "sport $IPTABLES_SPORT"
 			echo "dport $IPTABLES_DPORT"
-			echo "interface $IPTABLES_INTERFACE"
+			echo "input-interface $IPTABLES_INPUT_INTERFACE"
+			echo "output-interface $IPTABLES_OUTPUT_INTERFACE"
 			echo "action $IPTABLES_ACTION"
 			echo "nat $IPTABLES_NAT"
 			echo "<br>"
-			echo "iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INTERFACE -j $IPTABLES_ACTION $SPECIAL"
-			iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INTERFACE -j $IPTABLES_ACTION $SPECIAL > /dev/null 2>&1
+			echo "iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INPUT_INTERFACE $IPTABLES_OUTPUT_INTERFACE -j $IPTABLES_ACTION $SPECIAL"
+			iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INPUT_INTERFACE $IPTABLES_OUTPUT_INTERFACE -j $IPTABLES_ACTION $SPECIAL > /dev/null 2>&1
 
 			exitval=$?
 			if [ "$exitval" -eq 0 ]; then
@@ -171,13 +182,22 @@ save () {
 				S="-s $(echo $LINE|awk '{print $9}')"
 				D="-d $(echo $LINE|awk '{print $10}')"
 				I="-i $(echo $LINE|awk '{print $7}')"
+				O="-o $(echo $LINE|awk '{print $8}')"
 
-				# Check if interface is available
+				# Check if input interface is available
 				echo $I|grep x > /dev/null
 				if [ $? -eq 0 ]; then
 					I=""
 				fi
-				echo "$N-A $CHAIN $S $D $P $SPORT $DPORT $I -j $A" >> $SAVEFILE
+				
+				# Check if output interface is available
+				echo $O|grep x > /dev/null
+				if [ $? -eq 0 ]; then
+					O=""
+				fi
+				
+
+				echo "$N-A $CHAIN $S $D $P $SPORT $DPORT $I $O -j $A" >> $SAVEFILE
 			fi
 		fi
 	done </var/tmp/iptables_tmp

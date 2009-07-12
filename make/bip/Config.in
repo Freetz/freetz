@@ -13,6 +13,7 @@ config FREETZ_PACKAGE_BIP
 config FREETZ_BIP_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_BIP
+	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
 	default n
 	help

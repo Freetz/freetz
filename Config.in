@@ -109,8 +109,7 @@ choice
 		select FREETZ_AVM_VERSION_7270_04_70 if FREETZ_TYPE_LANG_DE
 		select FREETZ_AVM_VERSION_7270_04_67 if ! FREETZ_TYPE_LANG_DE
 		select FREETZ_TYPE_FON_WLAN_7270_16MB if ! FREETZ_TYPE_LANG_DE
-		bool "Fon WLAN 7270"
-	
+		bool "Fon WLAN 7270 (v1 and v2 only)"
 	config FREETZ_TYPE_WLAN_3020
 		select FREETZ_AVM_VERSION_04_33
 		bool "WLAN 3020"
@@ -139,9 +138,9 @@ choice
 		select FREETZ_AVM_VERSION_r7203
 		bool "Speedport W501V"
 
-	config FREETZ_TYPE_SPEEDPORT_W701V
-		select FREETZ_AVM_VERSION_r8508
-		bool "Speedport W701V"
+#	config FREETZ_TYPE_SPEEDPORT_W701V
+#		select FREETZ_AVM_VERSION_r8508
+#		bool "Speedport W701V"
 
 #	config FREETZ_TYPE_SPEEDPORT_W900V
 #		select FREETZ_AVM_VERSION_r4884
@@ -167,7 +166,6 @@ config FREETZ_TYPE_LABOR
 	bool
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7170 || \
-		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
@@ -177,17 +175,7 @@ choice
 
 	prompt "Labor version"
 		depends on FREETZ_TYPE_LABOR
-		default FREETZ_TYPE_LABOR_AIO
-
-#	config FREETZ_TYPE_LABOR_AIO
-#		bool "AiO"
-#		depends on \
-#			FREETZ_TYPE_FON_WLAN_7170
-
-	config FREETZ_TYPE_LABOR_AURA
-		bool "Aura"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270
+		default FREETZ_TYPE_LABOR_DSL
 
 	config FREETZ_TYPE_LABOR_DSL
 		bool "DSL"
@@ -197,16 +185,6 @@ choice
 			FREETZ_TYPE_FON_WLAN_7270 \
 			)
 
-	config FREETZ_TYPE_LABOR_PHONE
-		bool "PHONE"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7240 || \
-			FREETZ_TYPE_FON_WLAN_7270
-
-	config FREETZ_TYPE_LABOR_WLAN
-		bool "WLAN"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270
 endchoice
 
 config FREETZ_TYPE_ALIEN_HARDWARE
@@ -393,9 +371,9 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
 		( ! FREETZ_TYPE_LABOR || \
-		FREETZ_TYPE_LABOR_AIO && \
-		(FREETZ_TYPE_FON_WLAN_7170 || FREETZ_TYPE_FON_WLAN_7270) ) && \
-		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN)
+		(( FREETZ_TYPE_FON_WLAN_7170 || FREETZ_TYPE_FON_WLAN_7270 ) && ! FREETZ_TYPE_LABOR )) && \
+		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
+		! (FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270)
 	default y
 
 config FREETZ_REPLACE_KERNEL
@@ -705,6 +683,7 @@ config FREETZ_HAS_AVM_INETD
 	bool "AVM inetd"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_BUSYBOX_INETD
 	default y			if \
+		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270
 	default n
@@ -712,6 +691,36 @@ config FREETZ_HAS_AVM_INETD
 	help
 		Select this if your original firmware has inetd support.
 
+config FREETZ_HAS_LIBSSL
+	bool "Has libssl"	if FREETZ_TYPE_CUSTOM
+	default y			if \
+		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7140 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_SPEEDPORT_W701V || \
+		FREETZ_TYPE_SPEEDPORT_W900V || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270 || \
+		FREETZ_TYPE_WLAN_3131 || \
+		FREETZ_TYPE_WLAN_3130 || \
+		FREETZ_TYPE_WLAN_3170 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_CUSTOM
+	default n			if \
+		FREETZ_TYPE_FON_5010 || \
+		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_FON_WLAN || \
+		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_WLAN_3020 || \
+		FREETZ_TYPE_WLAN_3030 || \
+		FREETZ_TYPE_SPEEDPORT_W501V || \
+		FREETZ_TYPE_300IP_AS_FON
+	help
+		Select this if you have a box with libssl.
 
 comment "Mod ------------------------------------"
 
@@ -976,10 +985,9 @@ config FREETZ_REMOVE_TR069
 		)
 	default n
 	help
-		Removes libtr069 to save space.
-		WARNING: Removing tr069-stuff without disabling it 
-		on the box causes permanent reboots until the box 
-		is recovered
+		Removes libtr069 to save space. This also removes libtr064.
+		WARNING: Removing tr069-stuff without disabling it on the
+		box causes permanent reboots until the box is recovered.
 
 config FREETZ_REMOVE_USB_MODULE
 	bool "Remove avalanche_usb.ko"
@@ -1560,11 +1568,13 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.67.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.70-13679.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_AIO
 	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.99-14119.image"						if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7240.AnnexB.73.04.70.image"				if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
+	default "FRITZ.Box_Fon_WLAN_7240.73.04.76.image"				if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
+	default "FRITZ.Box_Fon_WLAN_7240.Labor.73.04.75-14543.image"	 		if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_AIO
 	default "FRITZ.Box_Fon_WLAN_7240_LabPHONE.AnnexB.73.04.97-14138.image"		if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_PHONE
-	default "FRITZ.Box_Fon_WLAN_7270.54.04.70.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7270.54.04.76.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it.54.04.67.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it.54.04.67.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_EN
+	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.75-14543.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AIO
 	default "FRITZ.Box_Fon_WLAN_7270_LabAURA.AnnexB.54.04.95-14142.image" 		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AURA
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.99-14000.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "FRITZ.Box_Fon_WLAN_7270_LabPHONE.AnnexB.54.04.97-14138.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE

@@ -9,6 +9,7 @@ config FREETZ_PACKAGE_VSFTPD
 config FREETZ_PACKAGE_VSFTPD_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_VSFTPD
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_VSFTPD_STATIC
 	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_VSFTPD_STATIC
 	default n
 	help

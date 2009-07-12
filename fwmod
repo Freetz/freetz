@@ -514,6 +514,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 	mkdir -p "$MOD_DIR"
 	"$TAR" -c -C "$ORG_DIR" --exclude=dev . | "$TAR" -x -C "$MOD_DIR" || exit 1
 
+	if [ -d "${FILESYSTEM_MOD_DIR}/usr/www/avm" ]; then
+		echo1 "Applying symlinks, deleting additional webinterfaces"
+		mv ${FILESYSTEM_MOD_DIR}/usr/www/avm ${FILESYSTEM_MOD_DIR}/usr/www/all
+		oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
+		for i in $oems; do
+			rm -rf ${FILESYSTEM_MOD_DIR}/usr/www/$i
+			ln -s all ${FILESYSTEM_MOD_DIR}/usr/www/$i
+		done
+	fi
+
 	echo "applying patches"
 
 	echo1 "applying patches (${FREETZ_TYPE_STRING}-${FREETZ_TYPE_LANG_STRING})"
@@ -1007,7 +1017,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		#find all executables which uses parts of shared objects
 		find "${FILESYSTEM_MOD_DIR}" -type f -perm +100 -exec \
 			file -r -N -F '' {} + | \
-			awk ' /executable.*dynamically/ { print $1 }' > "${FILESYSTEM_MOD_DIR}/mklibs-progs"
+			awk ' /executable.*dynamically/ { print $1 }; /shared object/ {print $1} ' > "${FILESYSTEM_MOD_DIR}/mklibs-progs"
 
 		#we need the rest of shared objects in mod dir too
 		#iptables shared libs... ctlrmg shared libs
@@ -1199,8 +1209,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 	if [ -s "${DIR}/${modimage}" ]; then
 		echo "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
+		[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://www.freetz.org for details."
 	fi
-
 	echo "done."
 	echo
 
