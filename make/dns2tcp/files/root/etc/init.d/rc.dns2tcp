@@ -1,0 +1,109 @@
+#!/bin/sh
+
+DAEMON=dns2tcp
+APP=dns2tcpd
+DAEMON_LONG_NAME="TCP over DNS tunnel"
+
+. /etc/init.d/modlibrc
+
+pre_config() {
+	modlib_addgroup $DAEMON
+	modlib_adduser $DAEMON -G $DAEMON -s /bin/false -H -D -g "dns2tcp account"
+}
+
+cleanup() {
+	modunreg status $DAEMON
+	rm -f /mod/etc/$DAEMON.conf
+	rm -f /var/run/$DAEMON.pid
+	rm -rf /tmp/$DAEMON
+}
+
+configure() {
+	cleanup
+
+        (
+                if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+                        /tmp/flash/${DAEMON}_conf
+                else
+                        /mod/etc/default.$DAEMON/${DAEMON}_conf
+                fi
+
+        ) > /mod/etc/$DAEMON.conf
+
+	mkdir -p /tmp/$DAEMON
+}
+
+stop () {
+        echo -n "Stopping $DAEMON_LONG_NAME..."
+        killall $APP > /dev/null 2>&1
+        exitval=$?
+
+        cleanup
+
+        if [ "$exitval" -eq 0 ]; then
+                echo 'done.'
+        else
+                echo 'failed.'
+                exit $exitval
+        fi
+}
+
+start() {
+	echo -n "Starting $DAEMON_LONG_NAME ..."
+	if modlib_check_running; then
+		echo "$APP already running."
+		exit 0
+	fi
+
+	configure
+
+	modlib_startdaemon $APP -f /mod/etc/$DAEMON.conf
+	exitval=$?
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'daemon failed.'
+		cleanup
+		exit $exitval
+	fi
+
+	pidof $APP > /var/run/$DAEMON.pid
+}
+
+case "$1" in
+	""|load)
+		pre_config
+
+		modreg cgi 'dns2tcp' 'DNS2TCP'
+
+		if [ "$DNS2TCP_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		modlib_stop
+		modunreg cgi 'dns2tcp'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
