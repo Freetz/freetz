@@ -51,6 +51,11 @@ cat << EOF
 <p> $(lang de:"Server binden an Port" en:"Listen on port"): <input type="text" name="port" size="5" maxlength="5" value="$(html "$LIGHTTPD_PORT")"></p>
 EOF
 
+dirs="$LIGHTTPD_DOCROOT"
+[ "$LIGHTTPD_CHROOT" = "yes" ] && dirs="$dirs/websites"
+[ "$LIGHTTPD_VIRTHOST" = "yes" ] && dirs="$dirs/default</li><li>$dirs/$LIGHTTPD_VIRTHOSTTYPE"
+dirs="<ul><li>$dirs</li></ul>"
+
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Das im Folgenden angegebene Datenverzeichnis muss existieren, da lighttpd sonst nicht startet." en:"The document root directory must exist as otherwise lighttpd will not start.")</p>
 <p> $(lang de:"Verzeichnis der Daten" en:"Document Root"): <input type="text" name="docroot" size="30" maxlength="255" value="$(html "$LIGHTTPD_DOCROOT")"></p>
@@ -60,6 +65,7 @@ cat << EOF
 <input id="c2" type="radio" name="chroot" value="no"$chrootdi_chk><label for="c2"> $(lang de:"Ohne chroot" en:"No chroot")</label>
 </p>
 <p style="font-size:10px;">$(lang de:"Bitte beachte, dass bei einem aktivierten chroot, folgende Eigenschaften gelten relativ zum oben angegebenen Datenverzeichnis, welches das chroot-Verzeichnis ist: Datenverzeichnisse werden im Verzeichnis /websites/default und virtuelle Hosts im Verzeichnis /websites/&lt;extension&gt; gesucht, alle sonstigen Pfadkonfigurationen m&uuml;ssen unterhalb des chroots liegen. Falls FastCGI konfiguriert wird, m&uuml;ssen alle FastCGI Programme und all ihre Bibliotheken innerhalb des chroots liegen - falls das Programm ldd vorhanden ist, wird dies automatisch durchgef&uuml;hrt." en:"Please note that with an activated chroot, the following properties apply relative to the above supplied docroot directory which becomes the chroot directory: the docroot will be searched in /websites/default and virtual hosts in /websites/&lt;extension&gt;, all other path configurations are to be supplied relative to the chroot directory. If FastCGI is configured, all FastCGI programs and their libraries must be found within the chroot - if the ldd program exists, this will be done automatically.")</p>
+<p style="font-size:10px;">$(lang de:"Entsprechend der Konfiguration sucht lighttpd deine HTML und andere Dateien in folgenden Verzeichnis(sen) - Anzeige wird nach jeder Speicherung aktualisiert:$dirs" en:"Based on the configuration lighttpd is looking for your HTML and other files in the following directories - the listing is updated after each save:$dirs")</p>
 EOF
 sec_end
 
