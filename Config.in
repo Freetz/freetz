@@ -500,7 +500,6 @@ config FREETZ_KERNEL_REF
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
 		FREETZ_TYPE_WLAN_3270 
 	default "4mb_26"		if \
@@ -673,7 +672,7 @@ config FREETZ_HAS_WLAN
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3 || \
 		FREETZ_TYPE_CUSTOM
 	default n			if \
 		FREETZ_TYPE_2170 || \
@@ -1100,7 +1099,7 @@ config FREETZ_REMOVE_CHRONYD
 		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7270
+		FREETZ_TYPE_FON_WLAN_7270_V3
 	default n
 	help
 		Removes AVM's time synchronization tool (chrony) and related files.
@@ -1363,7 +1362,7 @@ config FREETZ_REMOVE_SMBD
 		FREETZ_HAS_USB_HOST && \
 		! FREETZ_TYPE_FON_7150 && \
 		! FREETZ_TYPE_FON_WLAN_7270 && \
-		! FREETZ_TYPE_FON_WLAN_7270 && \
+		! FREETZ_TYPE_FON_WLAN_7270_V3 && \
 		! FREETZ_TYPE_SPEEDPORT_W701V_7170 \
 		)
 	default n
@@ -1676,7 +1675,7 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7240.Labor.73.04.75-14543.image"	 		if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_AIO
 	default "FRITZ.Box_Fon_WLAN_7240_LabPHONE.AnnexB.73.04.97-14138.image"		if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.76.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
-        default "FRITZ.Box_Fon_WLAN_7270_v3.74.04.76.image"                                if FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7270_v3.74.04.76.image"				if FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it.54.04.67.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it.54.04.67.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_EN
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.75-14543.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_AIO
@@ -1891,7 +1890,7 @@ config FREETZ_FAVICON_STRING
 config FREETZ_SUBVERSION_STRING
 	bool "Add Freetz version to subversion string"
 	default y if ! FREETZ_TYPE_FON_WLAN_7270
-	default n 
+	default n
 	help
 		Add Freetz version to subversion string, e.g. -11945-freetz-devel-2417.
 		Disable this if you have trouble with your isp or plugin downloads from
