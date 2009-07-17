@@ -164,7 +164,8 @@ config FREETZ_TYPE_FON_WLAN_7270_16MB
 	bool "16 MB flash"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7270
-	default n if FREETZ_TYPE_FON_WLAN_7270
+	select FREETZ_AVMPLUGINS_ENABLED if FREETZ_TYPE_LANG_DE
+	default n
 	help
 		Enable this to build an image for boxes with 16 MB flash.
 
@@ -1927,7 +1928,6 @@ config FREETZ_STATUS_STYLE
 config FREETZ_AVMPLUGINS_ENABLED
 	bool "Integrate AVM Plugins into image"
 	depends on FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
-	default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 	default n
 	help
 		This feature disables AVM's plugin download and handling.
