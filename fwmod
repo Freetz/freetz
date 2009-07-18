@@ -567,6 +567,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 				echo1 "$AVMPLUGIN plugin"
 				cp -a "${AVMPLUGINS_MOD_DIR}/plugin-${AVMPLUGIN}" "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}"
 				ln -s "/usr/share/avmplugins/plugin-${AVMPLUGIN}" "${VARTAR_MOD_DIR}/var/plugin-${AVMPLUGIN}"
+				for module in `cd "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}";find -type f -name "*.ko"`; do
+					echo2 "moving ${module##*/} to standard modules dir"
+					mv "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}/$module" "${FILESYSTEM_MOD_DIR}/$module"
+				done
 			fi
 		done
 	fi
