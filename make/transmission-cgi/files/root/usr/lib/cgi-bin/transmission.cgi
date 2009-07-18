@@ -166,7 +166,7 @@ en:"Leave user name and password empty if no password protection required."
 
 <p>
 <label for='rpcpassword'>$(lang de:"Kennwort" en:"Password"): </label>
-<input type='text' id='rpcpassword' name='rpcpassword' value="$(html "$TRANSMISSION_RPCPASSWORD")">
+<input type='password' id='rpcpassword' name='rpcpassword' value="$(html "$TRANSMISSION_RPCPASSWORD")">
 <p>
 
 <p>
