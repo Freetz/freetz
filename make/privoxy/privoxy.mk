@@ -17,6 +17,9 @@ ifeq ($(strip $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB)),y)
 $(PKG)_DEPENDS_ON += zlib
 endif
 
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB
+
 $(PKG)_CONFIGURE_ENV += ac_cv_func_setpgrp_void=yes
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
@@ -24,7 +27,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
 $(PKG)_CONFIGURE_OPTIONS += --disable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-stats
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE),,--disable-dynamic-pcre)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),--enable-zlib,)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),--enable-zlib,--disable-zlib)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
