@@ -1,4 +1,4 @@
-[ "$FREETZ_TYPE_FON_WLAN_7270_16MB" == "y" -a "$FREETZ_TYPE_LANG_DE" == "y" ] || return 0
+isFreetzType 7270_16MB && isFreetzType LANG_DE || return 0
 
 echo1 "applying 16MB patch"
 sed -i \

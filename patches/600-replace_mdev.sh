@@ -35,11 +35,7 @@ echo1 "applying usb prepare fwupgrade patch"
 sed -i -e "s/usb.pandu/storage/g" "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
 
 echo1 "applying usb post_install patch"
-if [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" -a "$FREETZ_TYPE_LABOR_PHONE" == "y" ]; then
-        modpatch "$VARTAR_MOD_DIR" "${PATCHES_DIR}/cond/mdev_post_install_7270_labor_phone.patch"
-else
 	modpatch "$VARTAR_MOD_DIR" "${PATCHES_DIR}/cond/mdev_post_install.patch"
-fi
 
 echo1 "set up local fstab"
 modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR/cond/mdev_my_uuid.patch"

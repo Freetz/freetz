@@ -1,4 +1,4 @@
-[ "$FREETZ_TYPE_7141_7170" == "y" ] || return 0
+isFreetzType 7141_7170 || return 0
 
 if [ -z "$FIRMWARE2" ]; then
 	echo "ERROR: no tk firmware" 1>&2
