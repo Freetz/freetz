@@ -823,9 +823,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 				) . | \
 			"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
-			[ -d "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" ] && \
+			[ -d "${ADDON_DIR}/${pkg}/${VARTAR_SUBDIR}" ] && \
 				$(
-					"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" . | \
+					"$TAR" -c -C "${ADDON_DIR}/${pkg}/${VARTAR_SUBDIR}" . | \
 					"$TAR" -x -C ${VARTAR_MOD_DIR} || exit 1
 				)
 
