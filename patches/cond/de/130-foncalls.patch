@@ -46,7 +46,7 @@
  	}
  }
 +function uiRufnummerInfo (nr) {
-+	return "<a href=\"http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "+nr+")\" target=\"_blank\" title=\"Rückwärtssuche bei dasoertliche.de nach "+nr+"\"><img src=\"../html/<? echo $var:lang ?>/images/bearbeiten.gif\"></a>";
++	return "<a href=\"http://www.dasoertliche.de/Controller?form_name=search_inv&ph=" + encodeURI (nr) + "\" target=\"_blank\" title=\"R&uuml;ckw&auml;rtssuche bei dasoertliche.de nach "+nr+"\"><img src=\"../html/<? echo $var:lang ?>/images/bearbeiten.gif\"></a>";
 +}
  function uiRouteDisplay (n, t) {
  	var name;
