@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.5)
+$(call PKG_INIT_BIN, 0.6)
 $(PKG)_SOURCE:=cpmaccfg-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.heimpold.de/freetz
 $(PKG)_BINARY:=$($(PKG)_DIR)/cpmaccfg
