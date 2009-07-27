@@ -1,0 +1,30 @@
+--- block/ctrldev.c.orig	2008-04-25 00:05:43.000000000 +0200
++++ block/ctrldev.c	2009-06-14 21:03:48.000000000 +0200
+@@ -1083,6 +1083,18 @@
+ #endif
+ #endif
+ 
++/*
++ * In 2.6.13 and 2.6.14 kernels class_device_create() had different prototype. 
++ */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15) && \
++    LINUX_VERSION_CODE > KERNEL_VERSION(2,6,12)
++#define ndas_class_device_create(cls, parent, devt, device, fmt) \
++               class_device_create(cls, devt, device, fmt)
++#else
++#define ndas_class_device_create(cls, parent, devt, device, fmt) \
++               class_device_create(cls, parent, devt, device, fmt)
++#endif
++
+ int ndas_ctrldev_init(void)
+ {
+ 	int ret = 0;
+@@ -1118,7 +1130,7 @@
+         return PTR_ERR(ndas_ctrldev_class);
+     }
+ 
+-    class_device_create(ndas_ctrldev_class, NULL,
++    ndas_class_device_create(ndas_ctrldev_class, NULL,
+         MKDEV(NDAS_CHR_DEV_MAJOR, NDAS_CHR_DEV_MINOR),
+         NULL, "ndas");
+ #else 
