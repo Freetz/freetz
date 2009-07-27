@@ -399,7 +399,7 @@ config-clean-deps:
 	@{ \
 	cp .config .config_tmp; \
 	echo -n "Step 1: temporarily deactivate all kernel modules, shared libraries and optional BusyBox applets ... "; \
-	sed -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX)_)/# \1/' .config; \
+	sed -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .config; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
 	make oldconfig < /dev/null > /dev/null; \
