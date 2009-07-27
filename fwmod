@@ -1052,7 +1052,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "kernel image is empty"
 	fi
 	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
-		error 1 "kernel image is $DIFF bytes too big"
+		error 1 "kernel image is $DIFF bytes too big. See http://trac.freetz.org/wiki/FAQ#Filesystemimagetoobig for details"
 	fi
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
 		if [ "$FREETZ_HAS_TAM" = "y" ]; then
