@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 5.2)
+$(call PKG_INIT_LIB, 6.0)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/readline
