@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_QUAGGA
-	bool "quagga 0.99.6"
+	bool "quagga 0.99.14"
 	default n
 	select FREETZ_LIB_libncurses
 	select FREETZ_LIB_libreadline
@@ -31,11 +31,8 @@ config FREETZ_PACKAGE_QUAGGA_RIPD
 	default n
 
 config FREETZ_PACKAGE_QUAGGA_RIPNGD
-# This depends on IPv6 support in uclibc.
-# Adapt this lines when we can 'select' something.
-#        bool "ripngd"
-	bool
-	depends on FREETZ_PACKAGE_QUAGGA
+	bool "ripngd"
+	depends on FREETZ_PACKAGE_QUAGGA && FREETZ_TARGET_IPV6_SUPPORT
 	default n
 
 config FREETZ_PACKAGE_QUAGGA_OSPFD
@@ -44,10 +41,8 @@ config FREETZ_PACKAGE_QUAGGA_OSPFD
 	default n
 
 config FREETZ_PACKAGE_QUAGGA_OSPF6D
-# This depends on IPv6. See above.
-#        bool "ospf6d"
-	bool
-	depends on FREETZ_PACKAGE_QUAGGA
+	bool "ospf6d"
+	depends on FREETZ_PACKAGE_QUAGGA && FREETZ_TARGET_IPV6_SUPPORT
 	default n
 
 config FREETZ_PACKAGE_QUAGGA_ISISD
