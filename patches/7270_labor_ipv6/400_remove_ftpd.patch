@@ -1,5 +1,5 @@
---- etc/hotplug/storage.orig	2009-04-02 13:48:08.000000000 +0200
-+++ etc/hotplug/storage	2009-04-02 18:04:30.000000000 +0200
+--- etc/hotplug/storage.orig	2009-06-29 16:42:43.000000000 +0200
++++ etc/hotplug/storage	2009-07-28 15:59:45.206160115 +0200
 @@ -14,6 +14,10 @@
  MSTART=/sbin/start_mediasrv
  MSTOP=/sbin/stop_mediasrv
@@ -11,7 +11,7 @@
  ## Wait for removal of filesystem semaphores (mask: $1, maximal wait period: $2)
  wait4remove () {
  local COUNT=0
-@@ -147,6 +151,7 @@
+@@ -183,6 +187,7 @@
  ## ftp server control
  ENABLED=`echo usbhost.ftp_server_enabled|usbcfgctl -s`
  if [ "$ENABLED" != "no" ] ; then
@@ -19,7 +19,7 @@
  if test -x /bin/inetdctl ; then
  inetdctl enable ftpd
  else
-@@ -163,6 +168,7 @@
+@@ -199,6 +204,7 @@
  ftpd -D -q $READONLYOPTION -t 120 -m 15 $USERSOPTION -h "$CONFIG_PRODUKT_NAME" &
  fi
  fi
@@ -27,8 +27,8 @@
  else
  if test -x /bin/inetdctl ; then
  inetdctl disable ftpd
---- etc/hotplug/run_mount.orig	2009-04-02 13:48:19.000000000 +0200
-+++ etc/hotplug/run_mount	2009-04-02 18:04:30.000000000 +0200
+--- etc/hotplug/run_mount.orig	2009-06-29 16:42:49.000000000 +0200
++++ etc/hotplug/run_mount	2009-07-28 15:59:45.206160115 +0200
 @@ -16,6 +16,10 @@
  WEBDAVCONTROL=/etc/webdav_control
  TR069START=/bin/tr069starter
