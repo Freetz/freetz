@@ -1,0 +1,179 @@
+<HR>
+<p><b><a name="exampleset"> Example Settings </b></p>
+
+
+
+Generell<br>
+<BLOCKQUOTE>
+<p>
+	MAC:  "00:11:22:33:44:55" Mac of the Bluetooth-USB-Stick  <br>
+	PIN: "1234" <br>
+	Use linkkeys-files to save pairing: "YES"<br>
+</p>
+</BLOCKQUOTE>
+modules and daemons<br>
+<BLOCKQUOTE>
+<p>
+	Start Sdpd: "YES"<br>
+	sdpd options: "" <br>
+	Start Bnep: "YES"<br>
+	bnep options: ""<br>
+	Start Rfcomm: "YES"<br>
+	rfcomm options:""<br>
+</p>
+</BLOCKQUOTE>
+Programs<br>
+<BLOCKQUOTE>
+<p>
+	Run (once) sdptool: "NO"<br>
+	sdptool options : "" <br>
+	Run (once) rfcomm: "YES"<br>
+	rfcomm options : "bind all"<br>
+</p>
+</BLOCKQUOTE>
+Network Access Point (pand)<br>
+<BLOCKQUOTE>
+<p>
+	Start Pand : "YES"<br>
+	sdptool options for usage with pand: "add NAP" <br>
+	pand options : "--listen --role=NAP"<br>
+</p>
+</BLOCKQUOTE>
+Network Access Point (dund)<br>
+<BLOCKQUOTE>
+<p>
+	Start Dund: "YES"<br>
+	sdptool options for usage with dund: "add --channel=1 SP" <br>
+	dund options : "--listen --pppd /usr/bin/pppd --persist --msdun call dun"<br>
+</p>
+</BLOCKQUOTE>
+
+<HR>
+<p><b><a name="dund"> Bluez-Dun file: /etc/ppp/peers/dun </b></p>
+<BLOCKQUOTE>
+<p>
+	19200<br>
+	192.168.178.1:192.168.178.123<br>
+	local<br>
+	ms-dns 192.168.178.1<br>
+	noauth<br>
+	debug<br>
+	passive<br>
+</p>
+<p>
+	speed<br>
+	Fritzbox IP:IP for BT Device<br>
+	local<br>
+	ms-dns DNS-IP (mostly Fritzbox IP)<br>
+	noauth<br>
+	debuging to /var/log/debug<br>
+	passive<br>
+</p>
+</BLOCKQUOTE>
+<a href="javascript:history.back()">Zurück</a>
+<HR>
+<p><b><a name="hcidconf"> HCI daemon configuration file: /etc/bluetooth/hcid.conf </b></p>
+<p>
+# HCId options<br>
+options {<br>
+<BLOCKQUOTE>
+	# Automatically initialize new devices<br>
+	autoinit yes;<br>
+<br>
+	# Security Manager mode<br>
+	#   none - Security manager disabled<br>
+	#   auto - Use local PIN for incoming connections<br>
+	#   user - Always ask user for a PIN<br>
+	#<br>
+	security auto;<br>
+<br>
+	# Pairing mode<br>
+	#   none  - Pairing disabled<br>
+	#   multi - Allow pairing with already paired devices<br>
+	#   once  - Pair once and deny successive attempts<br>
+	pairing multi;<br>
+<br>
+	# PIN helper<br>
+	pin_helper /usr/bin/bluepin;<br>
+</BLOCKQUOTE>
+}<br>
+<br>
+# Default settings for HCI devices<br>
+device {<br>
+<BLOCKQUOTE>
+	# Local device name<br>
+	#   %d - device id<br>
+	#   %h - host name<br>
+	name "%h";<br>
+<br>
+	# Local device class<br>
+	class 0x3e0100;<br>
+<br>
+	# Default packet type<br>
+	#pkt_type DH1,DM1,HV1;<br>
+<br>
+	# Inquiry and Page scan<br>
+	iscan enable; pscan enable;<br>
+<br>
+	# Default link mode<br>
+	#   none   - no specific policy<br>
+	#   accept - always accept incoming connections<br>
+	#   master - become master on incoming connections,<br>
+	#            deny role switch on outgoing connections<br>
+	#<br>
+	#lm accept,master;<br>
+	lm accept;<br>
+<br>
+	# Default link policy<br>
+	#   none    - no specific policy<br>
+	#   rswitch - allow role switch<br>
+	#   hold    - allow hold mode<br>
+	#   sniff   - allow sniff mode<br>
+	#   park    - allow park mode<br>
+	#<br>
+	#lp hold,sniff;<br>
+	lp hold,sniff,park;<br>
+<br>
+	# Authentication and Encryption<br>
+	auth enable;<br>
+	encrypt enable;<br>
+</BLOCKQUOTE>
+}<br>
+<br>
+<a href="javascript:history.back()">Zurück</a>
+<HR>
+<p><b><a name="linkkeys"> Paired devices - file /var/lib/bluetooth/"MAC_ADR"/linkkeys </b></p>
+<p>
+00:11:22:33:44:55 12345678901234567890123456789012 0 #MAC HASHED_KEY 0 (Device 1) <br>
+77:88:99:00:11:22 88888888888888888888999999999999 0 #MAC HASHED_KEY 0 (Device 2) <br>
+</p>
+<a href="javascript:history.back()">Zurück</a>
+<HR>
+<p><b><a name="pandu"> Hotplug script for pand - file: /etc/hotplug/net.pandu </b></p>
+<p>
+<br>
+Caution, for this example you have to install "bridge-utils". 
+<br>
+brctl addif lan bnep0<br>
+ifconfig bnep0 up<br>
+</p>
+<a href="javascript:history.back()">Zurück</a>
+<HR>
+<p><b><a name="rfcomm"> rfcomm bindings - file: /etc/bluetooth/rfcomm.conf  </b></p>
+<p>
+rfcomm0 {
+<BLOCKQUOTE>
+        bind yes; <br>
+        device 00:11:22:33:44:55; <br>
+        channel 1; <br>
+	  comment "IPAQ3870"; <br>
+</BLOCKQUOTE>
+}
+rfcomm1 {
+<BLOCKQUOTE>
+	...
+</BLOCKQUOTE>
+}
+</p>
+<a href="javascript:history.back()">Zurück</a>
+<HR>

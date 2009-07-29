@@ -1,23 +1,94 @@
 #!/bin/sh
 
+PIDFILE=/var/run/webcfg-bluez-utils.pid
+
 . /etc/init.d/modlibrc
 
 DAEMON=hcid
 
+config() {
+	# create PIN-File
+	umount /etc/bluetooth/pin > /dev/null 2>&1
+	mkdir -p /tmp/bluetooth > /dev/null 2>&1
+	rm /tmp/bluetooth/pin  > /dev/null 2>&1
+	echo $BLUEZ_UTILS_PIN >> /tmp/bluetooth/pin
+	mount -o bind /tmp/bluetooth/pin /etc/bluetooth/pin > /dev/null 2>&1
+
+	# create PIN-Helper
+	umount /usr/bin/bluepin  > /dev/null 2>&1
+	rm /tmp/bluetooth/bluepin  > /dev/null 2>&1
+	echo '#!/bin/sh' >> /tmp/bluetooth/bluepin
+	echo 'echo PIN:"'$BLUEZ_UTILS_PIN'"' >> /tmp/bluetooth/bluepin
+	chmod 755 /tmp/bluetooth/bluepin
+	mount -o bind /tmp/bluetooth/bluepin /usr/bin/bluepin > /dev/null 2>&1
+
+	# create Linkkeys for prepaired devices
+	if [ "$BLUEZ_UTILS_USE_LINKKEYS" = "yes" ]; then
+		mkdir /var/lib/ > /dev/null 2>&1
+		mkdir /var/lib/bluetooth/ > /dev/null 2>&1
+		mkdir /var/lib/bluetooth/$BLUEZ_UTILS_MAC/ > /dev/null 2>&1
+		cat /tmp/flash/bluez/linkkeys >> /var/lib/bluetooth/$BLUEZ_UTILS_MAC/linkkeys
+	fi
+
+	# /wtc/hotplug/net.pandu Rechte setzen
+	chmod 755 /tmp/flash/bluez/netpandu
+}
+
 start() {
 	echo -n "Starting bluetooth ..."
 
-	# Insert bfusb, hci_usb and rfcomm module
+	# Insert bfusb (bluefritz driver), hci_usb and rfcomm module
 	modprobe -q bfusb > /dev/null 2>&1
 	modprobe -q hci_usb > /dev/null 2>&1
-	modprobe -q rfcomm > /dev/null 2>&1
+
+	if [ "$BLUEZ_UTILS_RFCOMM_START" = "yes" ]; then
+		echo -n "starting rfcomm ..."
+		modprobe -q rfcomm > /dev/null 2>&1
+	fi
 
 	# start daemons
 	$DAEMON
-	exitval1=$?
+	exitval1=$?	
 
-	sdpd
-	exitval2=$?
+	if [ "$BLUEZ_UTILS_SDPD_START" = "yes" ]; then
+		echo -n "starting sdpd ..."
+		sdpd $BLUEZ_UTILS_SDPD_OPTIONS
+		exitval2=$?
+	else
+		exitval2=0
+	fi
+
+	if [ "$BLUEZ_UTILS_RFCOMMPRG_START" = "yes" ]; then
+		echo -n "set rfcomm (rfcomm "$BLUEZ_UTILS_RFCOMMPRG_OPTIONS") ..."
+		rfcomm $BLUEZ_UTILS_RFCOMMPRG_OPTIONS
+	fi
+
+	if [ "$BLUEZ_UTILS_BNEP_START" = "yes" ]; then
+		echo -n "starting bnep ..."
+		modprobe -q bnep $BLUEZ_UTILS_BNEP_OPTIONS  > /dev/null 2>&1
+	fi
+
+	
+	if [ "$BLUEZ_UTILS_SDPTOOL_START" = "yes" ]; then
+		echo -n "starting sdptool ..."
+		sdptool $BLUEZ_UTILS_SDPDTOOL_OPTIONS
+	fi
+
+
+	if [ "$BLUEZ_UTILS_PAND_START" = "yes" ]; then
+		echo -n "starting sdptool (sdptool "$BLUEZ_UTILS_PAND_SDPDTOOL_OPTIONS") ..."
+		sdptool $BLUEZ_UTILS_PAND_SDPDTOOL_OPTIONS 
+		echo -n "starting pand (pand "$BLUEZ_UTILS_PAND_OPTIONS") ..."
+		pand $BLUEZ_UTILS_PAND_OPTIONS 
+	fi
+
+
+	if [ "$BLUEZ_UTILS_DUND_START" = "yes" ]; then
+		echo -n "starting sdptool (sdptool "$BLUEZ_UTILS_DUND_SDPDTOOL_OPTIONS") ..."
+		sdptool $BLUEZ_UTILS_DUND_SDPDTOOL_OPTIONS
+		echo -n "starting dund  (dund  "$BLUEZ_UTILS_DUND_OPTIONS") ..."
+		dund  $BLUEZ_UTILS_DUND_OPTIONS
+	fi
 
 	if [ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ]; then
 		echo 'done.'
@@ -29,13 +100,21 @@ start() {
 
 stop() {
 	echo -n "Stopping bluetooth ..."
+
+	killall -9 dund  > /dev/null 2>&1
+	killall -9 pand  > /dev/null 2>&1
+	killall -9 rfcomm > /dev/null 2>&1
+	killall -9 sdpd > /dev/null 2>&1
+	killall -9 hcid > /dev/null 2>&1
+
+	killall -9 sdpd > /dev/null 2>&1
+	exitval2=$? 
+
 	killall -9 $DAEMON > /dev/null 2>&1
 	exitval1=$?
 
-	killall -9 sdpd > /dev/null 2>&1
-	exitval2=$?
-
-	rmmod hci_usb > /dev/null 2>&1 
+	rmmod bnep > /dev/null 2>&1
+	rmmod hci_usb > /dev/null 2>&1
 	rmmod rfcomm > /dev/null 2>&1
 	rmmod l2cap > /dev/null 2>&1
 	rmmod bluetooth > /dev/null 2>&1
@@ -50,6 +129,21 @@ stop() {
 
 case "$1" in
 	""|load)
+		modreg cgi 'bluez-utils' 'Bluez-Utils'
+
+		modreg extra bluez-utils bluez-utils-help 2 bluez-utils-help
+		modreg file 'bluez_dun' 'Bluez-Dun' 0 "/mod/etc/default.bluez-utils/dun.def"
+		modreg file 'bluez_rfcomm' 'Bluez-Rfcomm' 0 "/mod/etc/default.bluez-utils/rfcomm.def"
+		modreg file 'bluez_linkkeys' 'Bluez-Linkkeys' 0 "/mod/etc/default.bluez-utils/linkkeys.def"
+		modreg file 'bluez_netpandu' 'Bluez-Netpandu' 0 "/mod/etc/default.bluez-utils/netpandu.def"
+		modreg file 'bluez_hcidconf' 'Bluez-Hcidconf' 0 "/mod/etc/default.bluez-utils/hcidconf.def"
+
+		config
+		if [ "$BLUEZ_UTILS_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1
+		fi
+
 		start
 		;;
 	unload)
@@ -61,7 +155,7 @@ case "$1" in
 	stop)
 		stop
 		;;
-	restart) 
+	restart)
 		stop
 		sleep 1
 		start
@@ -74,7 +168,7 @@ case "$1" in
 		fi
 		;;
 	*)
-		echo "rc.bluez-utils [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac
