@@ -44,7 +44,7 @@ generate_graph() {
 	[ $# -ge 4 ] && TITLE="$4"
 	IMAGENAME="$3"
 	[ $# -ge 5 ] && IMAGENAME="$3$5"
-	PERIODE=`echo "$2"|sed 's/[0-9]\+m$/month/'`
+	PERIODE="$2"
 	case $1 in
 		cpu)
 			FILE=$RRDSTATS_RRDDATA/cpu_$RRDSTATS_INTERVAL.rrd
@@ -498,9 +498,10 @@ set_lazy() {
 
 set_period() {
 	periodA=$(echo $1|sed 's/[0-9]\+h$/hour/g;s/[0-9]\+d$/day/g;s/[0-9]\+w$/week/g;s/[0-9]\+m$/month/g;s/[0-9]\+y$/year/g')
-	period0=$(echo $1|sed 's/[a-zA-Z]/ /g')
+	period0=$(echo $1|sed 's/[a-zA-Z]//g')
+	periodG=${period0}${periodA}s
 	if [ $period0 -gt 1 ]; then
-		periodA="$periodA"s
+		periodA=" $periodA"s
 	else
 		period0=""
 	fi
@@ -540,7 +541,7 @@ case "$graph" in
 		for period in $RRDSTATS_PERIODSSUB; do
 			set_period $period
 			sec_begin ""
-			generate_graph "$graph" "$period" "$graph-$period" "last $periodnn" $GROUP_PERIOD 
+			generate_graph "$graph" "$periodG" "$graph-$period" "last $periodnn" $GROUP_PERIOD 
 			echo "<img src=\"/statpix/$graph-$period$GROUP_PERIOD.png$NOCACHE\" alt=\"$heading stats for last $periodnn\" />"
 			sec_end
 		done
