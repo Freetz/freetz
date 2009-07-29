@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, r38)
-$(PKG)_SOURCE:=$(pkg)-svn-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://znerol.ch/files
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-svn-$($(PKG)_VERSION)
+$(call PKG_INIT_LIB, 0.9)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-gpl.tgz
+$(PKG)_SITE:=http://polarssl.org/code/releases
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/library/libxyssl.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxyssl.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libxyssl.so
