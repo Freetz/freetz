@@ -10,6 +10,15 @@ config FREETZ_PACKAGE_PHP
 		thrown in. The goal of the language is to allow web developers to write
 		dynamically generated pages quickly. 
 
+config FREETZ_PACKAGE_PHP_WITH_GD
+        bool "build with GD support"
+        depends on FREETZ_PACKAGE_PHP
+        select FREETZ_LIB_libpng12
+        select FREETZ_LIB_libjpeg
+        default n
+        help
+                This option enables the GD support for PHP
+
 config FREETZ_PHP_STATIC
 	bool "Statically linked libraries"
 	depends on FREETZ_PACKAGE_PHP

@@ -10,7 +10,12 @@ else
 PHP_STATIC:=
 endif
 
+ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_GD)),y)
+$(PKG)_DEPENDS_ON += jpeg libpng
+endif
+
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PHP_STATIC
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_GD
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-libxml
 $(PKG)_CONFIGURE_OPTIONS += --disable-dom
@@ -31,7 +36,11 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-fastcgi
 $(PKG)_CONFIGURE_OPTIONS += --enable-exif
 $(PKG)_CONFIGURE_OPTIONS += --with-config-file-path=/tmp/flash
 $(PKG)_CONFIGURE_OPTIONS += --with-config-file-scan-dir=/tmp/flash/php
-
+ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_GD)),y)
+$(PKG)_CONFIGURE_OPTIONS += --with-gd
+$(PKG)_CONFIGURE_OPTIONS += --with-png-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-jpeg-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
