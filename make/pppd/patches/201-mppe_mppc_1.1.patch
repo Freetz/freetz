@@ -1,5 +1,5 @@
---- include/linux/ppp-comp.h	2002-12-06 10:49:15.000000000 +0100
-+++ include/linux/ppp-comp.h	2004-11-21 13:54:09.000000000 +0100
+--- include/linux/ppp-comp.h.orig	2002-12-06 10:49:15.000000000 +0100
++++ include/linux/ppp-comp.h	2009-07-31 00:40:29.000000000 +0200
 @@ -36,7 +36,7 @@
   */
  
@@ -61,8 +61,8 @@
  /*
   * Definitions for other, as yet unsupported, compression methods.
   */
---- include/net/ppp-comp.h	2002-12-06 10:49:15.000000000 +0100
-+++ include/net/ppp-comp.h	2004-11-21 13:54:09.000000000 +0100
+--- include/net/ppp-comp.h.orig	2002-12-06 10:49:15.000000000 +0100
++++ include/net/ppp-comp.h	2009-07-31 00:40:29.000000000 +0200
 @@ -255,6 +255,33 @@
  	    opts |= MPPE_OPT_UNKNOWN;		\
      } while (/* CONSTCOND */ 0)
@@ -98,7 +98,7 @@
   * Definitions for other, as yet unsupported, compression methods.
   */
 --- pppd/ccp.c.orig	2005-07-09 02:23:05.000000000 +0200
-+++ pppd/ccp.c	2006-07-21 23:34:12.121546000 +0200
++++ pppd/ccp.c	2009-07-31 00:40:29.000000000 +0200
 @@ -62,12 +62,10 @@
  static char bsd_value[8];
  static char deflate_value[8];
@@ -1461,8 +1461,8 @@
  	ccp_localstate[f->unit] &= ~RACK_PENDING;
  }
 -
---- pppd/ccp.h	2004-11-04 11:02:26.000000000 +0100
-+++ pppd/ccp.h	2004-11-21 13:54:09.000000000 +0100
+--- pppd/ccp.h.orig	2004-11-04 11:02:26.000000000 +0100
++++ pppd/ccp.h	2009-07-31 00:40:29.000000000 +0200
 @@ -37,9 +37,17 @@
      bool predictor_2;		/* do Predictor-2? */
      bool deflate_correct;	/* use correct code for deflate? */
@@ -1481,9 +1481,9 @@
      short method;		/* code for chosen compression method */
  } ccp_options;
  
---- pppd/chap_ms.c	2004-11-12 10:57:43.000000000 +0100
-+++ pppd/chap_ms.c	2004-11-21 13:54:09.000000000 +0100
-@@ -895,13 +895,17 @@
+--- pppd/chap_ms.c.orig	2009-07-31 00:40:28.000000000 +0200
++++ pppd/chap_ms.c	2009-07-31 00:40:29.000000000 +0200
+@@ -897,13 +897,17 @@
      /*
       * Disable undesirable encryption types.  Note that we don't ENABLE
       * any encryption types, to avoid overriding manual configuration.
@@ -1503,9 +1503,9 @@
  	    break;
  	default:
  	    break;
---- pppd/pppd.8	2004-11-13 13:22:49.000000000 +0100
-+++ pppd/pppd.8	2004-11-21 14:24:47.000000000 +0100
-@@ -622,9 +622,29 @@
+--- pppd/pppd.8.orig	2009-07-31 00:40:28.000000000 +0200
++++ pppd/pppd.8	2009-07-31 00:40:29.000000000 +0200
+@@ -632,9 +632,29 @@
  Enables the use of PPP multilink; this is an alias for the `multilink'
  option.  This option is currently only available under Linux.
  .TP
@@ -1538,7 +1538,7 @@
  .TP
  .B mpshortseq
  Enables the use of short (12-bit) sequence numbers in multilink
-@@ -757,17 +777,11 @@
+@@ -777,17 +797,11 @@
  Disables the use of PPP multilink.  This option is currently only
  available under Linux.
  .TP
@@ -1560,7 +1560,7 @@
  .TP
  .B nompshortseq
  Disables the use of short (12-bit) sequence numbers in the PPP
-@@ -948,19 +962,6 @@
+@@ -968,19 +982,6 @@
  Require the peer to authenticate itself using CHAP [Challenge
  Handshake Authentication Protocol] authentication.
  .TP
