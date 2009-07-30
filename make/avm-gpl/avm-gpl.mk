@@ -1,5 +1,6 @@
 AVM_SITE__AVM:=ftp://ftp.avm.de/develper/opensrc
 AVM_SITE__AVM_7270:=ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/x_misc/opensrc
+AVM_SITE__AVM_7170:=ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/x_misc/opensrc
 AVM_SITE__TCOM:=http://www.t-home.de/dlp/eki/downloads/Speedport
 
 AVM_SOURCE__04.29:=$(AVM_SITE__AVM)/fritzbox-source-files-04.29.tar.bz2
@@ -10,6 +11,7 @@ AVM_SOURCE__04.49:=$(AVM_SITE__AVM)/fritzbox-source-files-04.49.tar.gz
 AVM_SOURCE__04.57:=$(AVM_SITE__AVM)/fritzbox-source-files.04.57.tar.gz
 AVM_SOURCE__04.67:=$(AVM_SITE__AVM)/fritzbox-source-files.04.67.tar.gz
 AVM_SOURCE__04.70:=$(AVM_SITE__AVM)/fritzbox-source-files-04.70.tar.gz
+AVM_SOURCE__04.76:=$(AVM_SITE__AVM_7170)/fritzbox7170-source-files-04.76.tar.gz
 AVM_SOURCE__7270:=$(AVM_SITE__AVM)/fritzbox7270-source-files-04-57.tar.gz
 AVM_SOURCE__12043:=$(AVM_SITE__AVM)/fritzbox-lab-source-files-12043.tar.gz
 AVM_SOURCE__7270_04.67:=$(AVM_SITE__AVM)/fritzbox7270-source-files-04.67.tar.gz
@@ -47,6 +49,10 @@ ifeq ($(AVM_VERSION),04.67)
 	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
 endif
 ifeq ($(AVM_VERSION),04.70)
+	mkdir -p $(AVM_DIR)/GPL/base/kernel
+	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
+endif
+ifeq ($(AVM_VERSION),04.76)
 	mkdir -p $(AVM_DIR)/GPL/base/kernel
 	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
 endif

@@ -1,6 +1,6 @@
---- aconfigure.orig	2008-07-19 18:24:30.000000000 +0200
-+++ aconfigure	2008-07-19 18:31:12.000000000 +0200
-@@ -3351,149 +3351,6 @@
+--- aconfigure.orig	2008-09-27 15:16:35.000000000 +0200
++++ aconfigure	2009-07-30 23:54:05.000000000 +0200
+@@ -3360,149 +3360,6 @@
  
  fi
  
@@ -150,7 +150,7 @@
  echo "$as_me:$LINENO: result: Setting PJ_M_NAME to $target_cpu" >&5
  echo "${ECHO_T}Setting PJ_M_NAME to $target_cpu" >&6
  cat >>confdefs.h <<_ACEOF
-@@ -8662,149 +8519,6 @@
+@@ -8875,149 +8732,6 @@
  
  fi
  
@@ -300,9 +300,9 @@
  echo "$as_me:$LINENO: checking for net/if.h" >&5
  echo $ECHO_N "checking for net/if.h... $ECHO_C" >&6
  if test "${ac_cv_header_net_if_h+set}" = set; then
-@@ -9551,11 +9265,7 @@
+@@ -9783,11 +9497,7 @@
    *)
- 	ac_os_objs="file_access_unistd.o file_io_ansi.o os_core_unix.o os_error_unix.o os_time_unix.o os_timestamp_posix.o ioqueue_select.o"
+ 	ac_os_objs="$ac_os_objs file_access_unistd.o file_io_ansi.o os_core_unix.o os_error_unix.o os_time_unix.o os_timestamp_posix.o"
  	# UUID
 -	if test "$ac_has_uuid_lib" = "1" -a "$ac_has_uuid_h" = "1"; then
 -		ac_os_objs="$ac_os_objs guid_uuid.o"
