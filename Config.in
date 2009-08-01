@@ -742,7 +742,7 @@ config FREETZ_HAS_USB_HOST
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 && ! FREETZ_TYPE_SINUS_W500V_7150 || \
-		FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
+		(FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_SPEEDPORT_W701V_7170) || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
@@ -1180,9 +1180,7 @@ config FREETZ_PATCH_SIGNED
 
 config FREETZ_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
-	depends on \
-		FREETZ_HAS_USB_HOST #&& \
-		#! FREETZ_TYPE_SPEEDPORT_W701V_7170
+	depends on FREETZ_HAS_USB_HOST
 	default y
 	help
 		1. Change the name of USB storage dir to uStorXY
@@ -1341,12 +1339,7 @@ config FREETZ_REMOVE_USERMAN
 
 config FREETZ_REMOVE_FTPD
 	bool "Remove ftpd"
-	depends on \
-		FREETZ_SHOW_ADVANCED && \
-		( \
-			FREETZ_HAS_USB_HOST && \
-			! FREETZ_TYPE_SPEEDPORT_W701V_7170 \\
-		)
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_USB_HOST
 	default n
 	help
 		Remove FTP deamon (ftpd)
@@ -1357,15 +1350,7 @@ config FREETZ_REMOVE_FTPD
 
 config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv"
-	depends on \
-	FREETZ_SHOW_ADVANCED && \
-	( \
-		FREETZ_HAS_USB_HOST && \
-		! FREETZ_TYPE_FON_WLAN_7240 && \
-		! FREETZ_TYPE_FON_WLAN_7270 && \
-		! FREETZ_TYPE_FON_WLAN_7270_V3 && \
-		! FREETZ_TYPE_SPEEDPORT_W701V_7170 \
-	)
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_USB_HOST && ! FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
 		Remove MediaServer daemon (mediasrv)
@@ -1380,9 +1365,7 @@ config FREETZ_REMOVE_SMBD
 		( \
 		FREETZ_HAS_USB_HOST && \
 		! FREETZ_TYPE_FON_7150 && \
-		! FREETZ_TYPE_FON_WLAN_7270 && \
-		! FREETZ_TYPE_FON_WLAN_7270_V3 && \
-		! FREETZ_TYPE_SPEEDPORT_W701V_7170 \
+		! FREETZ_TYPE_FON_WLAN_7270 \
 		)
 	default n
 	help
