@@ -14,7 +14,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(XYSSL_DIR)/library \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) -DLINUX -I../include" \
+		CFLAGS="$(TARGET_CFLAGS) $(FPIC) -DLINUX -I../include" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		AR="$(TARGET_CROSS)ar" \

@@ -33,6 +33,12 @@ DISABLE_LARGEFILE:=--disable-largefile
 CFLAGS_LARGEFILE=-D_FILE_OFFSET_BITS=32
 endif
 
+ifeq ($(strip $(FREETZ_TARGET_GCC_VERSION_4_3)),y)
+FPIC:=-fPIC
+else
+FPIC:=
+endif
+
 TARGET_CROSS:=$(strip $(subst ",, $(FREETZ_TARGET_CROSS)))
 TARGET_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_TARGET_MAKE_PATH)))
 KERNEL_CROSS:=$(strip $(subst ",, $(FREETZ_KERNEL_CROSS)))
