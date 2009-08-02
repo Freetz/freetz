@@ -25,7 +25,6 @@ sed -i -e "s/piglet_bitfile_offset=0/piglet_bitfile_offset=0x4d/g" "${FILESYSTEM
 
 sed -i -e "s/CONFIG_AB_COUNT=.*$/CONFIG_AB_COUNT=\"2\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_CAPI_NT=.*$/CONFIG_CAPI_NT=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-sed -i -e "s/CONFIG_ETH_COUNT=.*$/CONFIG_ETH_COUNT=\"4\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"30\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon WLAN 7140\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_7140\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
