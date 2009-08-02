@@ -37,6 +37,9 @@ sed -i -e "s/piglet_bitfile_offset=0/piglet_bitfile_offset=0x4b/g" "${FILESYSTEM
 sed -i -e "s/CONFIG_HOSTNAME=.*$/CONFIG_HOSTNAME=\"fritz.box\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
 sed -i -e "s/CONFIG_FON=.*$/CONFIG_FON=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_FONGUI2=.*$/CONFIG_FONGUI2=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_FON_IPPHONE=.*$/CONFIG_FON_IPPHONE=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sed -i -e "s/CONFIG_FONQUALITY=.*$/CONFIG_FONQUALITY=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_FONBOOK2=.*$/CONFIG_FONBOOK2=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_T38=.*$/CONFIG_T38=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 sed -i -e "s/CONFIG_AUDIO=.*$/CONFIG_AUDIO=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
