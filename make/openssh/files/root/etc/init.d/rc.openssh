@@ -1,0 +1,144 @@
+#!/bin/sh
+
+DAEMON=openssh
+DAEMON_LONG_NAME="openssh SSH server"
+CONFFILE=/mod/etc/sshd_conf
+
+. /etc/init.d/modlibrc
+
+pre_config() {
+	[ -d "/tmp/flash/.ssh" ] && mv /tmp/flash/.ssh /tmp/flash/openssh
+	[ -d /openssh ] || mkdir -p /tmp/flash/openssh
+	[ -d /var/empty ] || mkdir -p /var/empty
+	[ -e /tmp/flash/rsa_host_key ] && mv /tmp/flash/rsa_host_key /tmp/flash/openssh/rsa_host_key
+	[ -e /tmp/flash/dsa_host_key ] && mv /tmp/flash/dsa_host_key /tmp/flash/openssh/dsa_host_key
+	[ -e /tmp/flash/host_key ] && mv /tmp/flash/host_key /tmp/flash/openssh/host_key
+
+	if [ ! -e "/tmp/flash/openssh/rsa_host_key" -o ! -e "/tmp/flash/openssh/dsa_host_key" -o ! -e "/tmp/flash/openssh/host_key" ]; then
+		echo "Creating host keys"
+		rm -f /tmp/flash/openssh/rsa_host_key
+		rm -f /tmp/flash/openssh/dsa_host_key
+		rm -f /tmp/flash/openssh/host_key
+		if [ ! -e /usr/bin/ssh-keygen ]; then
+			echo "Error[$DAEMON]: Can't generate key. Please include openssh keyutils to your image!"
+			exit 1
+		fi
+		/usr/bin/ssh-keygen -q -t rsa -f /tmp/flash/openssh/rsa_host_key -N ""
+		/usr/bin/ssh-keygen -q -t dsa -f /tmp/flash/openssh/dsa_host_key -N ""
+		/usr/bin/ssh-keygen -q -t rsa1 -f /tmp/flash/openssh/host_key -N ""
+		/usr/bin/modsave flash
+	fi
+
+	if [ ! -d "/mod/etc/ssh" ]; then
+		mkdir -p /mod/etc/ssh
+		ln -s /tmp/flash/openssh/rsa_host_key /mod/etc/ssh/rsa_host_key
+		ln -s /tmp/flash/openssh/dsa_host_key /mod/etc/ssh/dsa_host_key
+		ln -s /tmp/flash/openssh/host_key /mod/etc/ssh/host_key
+	fi
+	
+	[ -e "/mod/root/.ssh" ] || ln -s /tmp/flash/openssh /mod/root/.ssh
+}
+
+start() {
+	echo "$OPENSSH_SETTINGS" > $CONFFILE
+	if [ "$OPENSSH_PWDAUTH" = "yes" ]; then
+		if cat /etc/shadow | grep -q '^root:[*!]:'; then
+			echo "Error[$DAEMON]: no root password set - run 'passwd root'" 1>&2
+			exit 1
+		fi
+		echo "PasswordAuthentication yes" >> $CONFFILE
+	else
+		echo "PasswordAuthentication no" >> $CONFFILE
+	fi
+	if [ "$OPENSSH_ROOT" = "yes" ]; then
+		echo "PermitRootLogin yes" >> $CONFFILE
+	else
+		echo "PermitRootLogin no" >> $CONFFILE
+	fi
+
+	echo -n "Starting $DAEMON_LONG_NAME..."
+	if modlib_check_running; then
+		echo 'already running.'
+		exit 0
+	fi
+
+	set -o noglob
+	modlib_startdaemon /usr/sbin/sshd -p "$OPENSSH_PORT" -f $CONFFILE $OPENSSH_OPTIONS
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	if [ ! -z "$(pidof sshd)" ];then
+		echo -n "Stopping ${DAEMON} ... "
+		killall sshd > /dev/null 2>&1
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+			exit $exitval
+		fi
+	fi
+}
+
+case "$1" in
+	""|load)
+		pre_config
+
+		modreg cgi 'openssh' 'OpenSSH sshd'
+
+		deffile='/mod/etc/default.openssh/authorized_keys.def'
+		[ -r /tmp/flash/openssh/authorized_keys.def ] && deffile='/tmp/flash/openssh/authorized_keys.def'
+		modreg file 'openssh__authorized_keys' 'OpenSSH: keys' 0 "$deffile"
+
+		if [ "$OPENSSH_ENABLED" != "yes" ]; then
+			if [ "$OPENSSH_ENABLED" != "inetd" ]; then
+				echo "OpenSSH $DAEMON is disabled" 1>&2
+			else
+				echo OpenSSH "$DAEMON is started via inetd" 1>&2
+			fi
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg file 'openssh__authorized_keys'
+		modunreg cgi 'sshd'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ "$OPENSSH_ENABLED" == "inetd" ]; then
+			echo 'inetd'
+		else
+			if [ -z "$(pidof sshd)" ]; then
+				echo 'stopped'
+			else
+				echo 'running'
+			fi
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

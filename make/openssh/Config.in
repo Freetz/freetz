@@ -1,17 +1,74 @@
+menu "OpenSSH"
 config FREETZ_PACKAGE_OPENSSH
-	bool "OpenSSH 5.2p1 sftp-server"
-	depends on FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENSSH_STATIC
-	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_OPENSSH_STATIC
-	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_OPENSSH_STATIC
-	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_OPENSSH_STATIC
+	bool
+	select FREETZ_LIB_libcrypto if ! FREETZ_OPENSSH_STATIC
+	select FREETZ_LIB_libresolv if ! FREETZ_OPENSSH_STATIC
+	select FREETZ_LIB_libutil if ! FREETZ_OPENSSH_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_OPENSSH_STATIC
+	depends on FREETZ_OPENSSH_SSHD || FREETZ_OPENSSH_CLIENT || FREETZ_OPENSSH_CLIENTUTILS || FREETZ_OPENSSH_KEYUTILS || FREETZ_OPENSSH_SFTPCLIENT || FREETZ_OPENSSH_SFTP
 	default n
 	help
-		This option is selected to add SFTP support to dropbear
-		by using OpenSSH's SFTP server.
+		OpenSSH needs the shared library "libcrypto". Be carefull about
+		"libcrypto" and the impact on the Image! You will be able to build
+		static binaries	by activating the corresponding switch.
 
-config FREETZ_PACKAGE_OPENSSH_STATIC
-	bool "Statically link libraries"
+config FREETZ_OPENSSH_SSHD
+	bool "Build OpenSSH sshd"
+	select FREETZ_PACKAGE_OPENSSH
+	default n
+	help
+		Build the OpenSSH sshd
+
+config FREETZ_OPENSSH_CLIENT
+	bool "Build OpenSSH SSH-Client"
+	select FREETZ_PACKAGE_OPENSSH
+	default n
+	help
+		Build the OpenSSH client
+		(ssh, scp)
+
+config FREETZ_OPENSSH_CLIENTUTILS
+        bool "Build OpenSSH SSH client utilities"
+	select FREETZ_PACKAGE_OPENSSH
+	default n
+	help
+		Build the OpenSSH client utilities
+		(ssh-add, ssh-agent)
+
+config FREETZ_OPENSSH_KEYUTILS
+	bool "Build OpenSSH SSH key utilities"
+	select FREETZ_PACKAGE_OPENSSH
+	default n
+	help
+		Build the OpenSSH client utilities
+		(ssh-keygen, ssh-keysign, ssh-keyscan, ssh-rand-helper)
+
+config FREETZ_OPENSSH_SFTPCLIENT
+	bool "Build OpenSSH SFTP client"
+	select FREETZ_PACKAGE_OPENSSH
+	default n
+	help
+		Build the OpenSSH SFTP client
+
+config FREETZ_OPENSSH_SFTP
+	bool "Build OpenSSH sftp-server"
+	select FREETZ_PACKAGE_OPENSSH
+	default n
+	help
+		Build the OpenSSH SFTP server (e.g. to use with dropbear as SFTP server)
+
+config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
+	bool "Add SFTP support to dropbear"
+	depends on FREETZ_PACKAGE_DROPBEAR && FREETZ_OPENSSH_SFTP
+	default n
+	help
+		This option adds the SFTP support to dropbear by using
+
+comment "Build statically linked binaries ---"
+	depends on FREETZ_PACKAGE_OPENSSH
+
+config FREETZ_PACKAGE_OPENSSH_STATIC 
+	bool "Statically link OpenSSH binaries"
 	depends on FREETZ_PACKAGE_OPENSSH
 	default n
 	help
@@ -21,3 +78,9 @@ config FREETZ_PACKAGE_OPENSSH_STATIC
 		- libresolv
 		- libz
 		- libutil
+		Be carefull about "libcrypto" and the impact on the Image!
+		You will be able to build ststic binaries by activating this switch
+		Note: The image size may increase dramatically depending on the number of binaries selected!
+
+
+endmenu
