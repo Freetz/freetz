@@ -1330,10 +1330,10 @@ config FREETZ_REMOVE_UPNP
 		non-existent binary.
 
 		ATTENTION: Fritz!Fax relies on UPnP.
-		Make sure you deactivate all UPnP features in the web menu
-		before updating the firmware with this option. It may not be harmful
-		not to deactivate it, but there is no guarantee. You can find the
-		settings in the German web UI under
+		Make sure you deactivate all UPnP features in the web menu before
+		updating the firmware with this option. It may not be harmful not
+		to deactivate it, but there is no guarantee.
+		You can find the settings in the German web UI under
 		  Einstellungen
 		    System
 		      Netzwerkeinstellungen
@@ -1526,12 +1526,28 @@ config FREETZ_REMOVE_DTRACE
 		trace ISDN D-channel.
 		This will save about 87kB uncompressed size.
 
+config FREETZ_REMOVE_VOIPD
+	bool "Remove VoIP files (for non-telephony boxes)"
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		FREETZ_HAS_PHONE
+	default n
+	help
+		This removes the integrated sip-client and -server and the releated Web menu,
+		normal telefon use (ISDN, POTS and DECT) is not affected. This saves 250 KB
+		on a 7170/7270 of compressed firmware size.
+
+		ATTENTION: You must remove all sip phone numbers and all sip clients before
+		flashing this image. Afterward there is no possibility to remove thees numbers
+		because the Web UI is also removed.
+
 config FREETZ_REMOVE_VOIP_ISDN
 	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL"
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		FREETZ_HAS_PHONE
 	select FREETZ_REMOVE_DECT if FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
+	select FREETZ_REMOVE_VOIPD
 	default n
 	help
 		Radically remove a lot of telephony-related files. This patch saves about
