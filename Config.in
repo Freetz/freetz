@@ -1401,14 +1401,18 @@ config FREETZ_REMOVE_MINID
 			FREETZ_TYPE_FON_7150 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7270_V3 || \
 			FREETZ_TYPE_WLAN_3270 \
 		) && \
 		! FREETZ_TYPE_SPEEDPORT_W701V_7170
 		
 	help
-		Remove the mini-daemon (minid) and some other related files.
-		This patch removes Fritz!Mini support but only the files,
-		not the settings in AVM's webinterface.
+		Remove the mini-daemon (minid) and some other related files. This patch
+		removes Fritz!Mini support and all Web UI entrys.
+		Saves compressed 250 KB on a 7270_V3 and 260 KB on a 7170.
+
+		ATTENTION: You must remove all Fritz!Mini's from your Fritz!Box configuration
+		and delete all Mini users with the Gini! software to avoid complications.
 
 config FREETZ_REMOVE_AURA_USB
 	bool "Remove aura usb - EXPERIMENTAL"

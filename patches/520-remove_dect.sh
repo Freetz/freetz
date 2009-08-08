@@ -1,9 +1,14 @@
 [ "$FREETZ_REMOVE_DECT" == "y" ] || return 0
 echo1 "removing DECT files"
 for files in \
-	lib/modules/2.6.??.?/kernel/drivers/isdn/avm_dect lib/modules/2.6.??.?/kernel/drivers/char/dect_io usr/bin/dect_manager \
-	usr/share/ctlmgr/libdect.so bin/supportdata.dect sbin/start_dect_update.sh \
-	$(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*dect*" -printf "%P\n"); do
+	bin/supportdata.dect \
+	lib/modules/2.6.??.?/kernel/drivers/char/dect_io \
+	lib/modules/2.6.??.?/kernel/drivers/isdn/avm_dect \
+	sbin/start_dect_update.sh \
+	usr/bin/dect_manager \
+	usr/share/ctlmgr/libdect.so \
+	$(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*dect*" -printf "%P\n") \
+	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libfoncclient.so*"
