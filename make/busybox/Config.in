@@ -190,6 +190,20 @@ config FREETZ_BUSYBOX_UDHCPD_LEASES_FILE
 	help
 		Set default path to udhcpd leases file
 
+config FREETZ_BUSYBOX_UDHCPC
+	bool "udhcpc"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Add udhcpc, a simple DHCP client
+
+config FREETZ_BUSYBOX_SLACK_FOR_BUGGY_SERVERS
+	int "DHCP options slack buffer size"
+	depends on FREETZ_BUSYBOX_UDHCPC
+	default 80
+	help
+		DHCP options slack buffer size
+
 config FREETZ_BUSYBOX_SEQ
 	bool "seq"
 	depends on FREETZ_REPLACE_BUSYBOX
