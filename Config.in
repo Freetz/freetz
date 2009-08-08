@@ -97,7 +97,7 @@ choice
 		bool "Fon WLAN 7141"
 
 	config FREETZ_TYPE_FON_7150
-		select FREETZ_AVM_VERSION_04_57
+		select FREETZ_AVM_VERSION_04_70
 		bool "Fon 7150"
 
 	config FREETZ_TYPE_FON_WLAN_7170
@@ -1297,6 +1297,7 @@ config FREETZ_REMOVE_UPNP
 			! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN ) \
 			&& ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH ) \
 			&& ! FREETZ_TYPE_FON_WLAN_7141 \
+			&& ! FREETZ_TYPE_FON_7150 \
 			&& ! FREETZ_TYPE_FON_WLAN_7170 \
 			&& ! FREETZ_TYPE_FON_WLAN_7240 \
 			&& ! FREETZ_TYPE_FON_WLAN_7270 \
@@ -1379,6 +1380,7 @@ config FREETZ_REMOVE_MINID
 		FREETZ_SHOW_ADVANCED && \
 		( \
 			FREETZ_TYPE_FON_WLAN_7141 || \
+			FREETZ_TYPE_FON_7150 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_FON_WLAN_7240 || \
 			FREETZ_TYPE_WLAN_3270 \
@@ -1418,6 +1420,7 @@ config FREETZ_REMOVE_AVM_VPN
 		FREETZ_SHOW_ADVANCED && \
 		( \
 			FREETZ_TYPE_2170 || \
+			FREETZ_TYPE_FON_7150 || \
 			(FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_DE) || \
 			FREETZ_TYPE_FON_WLAN_7240 || \
 			FREETZ_TYPE_FON_WLAN_7270 || \
@@ -1469,6 +1472,7 @@ config FREETZ_REMOVE_CAPIOVERTCP
 config FREETZ_REMOVE_DECT 
 	bool "Remove DECT files"
 	depends on \
+		FREETZ_TYPE_FON_7150 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
@@ -1480,7 +1484,7 @@ config FREETZ_REMOVE_DECT
 
 
 config FREETZ_REMOVE_DECT_UPDATE
-	bool"Remove dect_update - EXPERIMENTAL"
+	bool"Remove dect_update"
 	depends on \
 		FREETZ_TYPE_FON_7150
 	default n
@@ -1489,12 +1493,11 @@ config FREETZ_REMOVE_DECT_UPDATE
 		update the dect firmware.
 		This will save about 32kB uncompressed size.
 
-		EXPERIMENTAL FEATURE, USE AT OWN RISK!
-
 config FREETZ_REMOVE_DTRACE
 	bool"Remove dtrace"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_7150 || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
@@ -1504,8 +1507,6 @@ config FREETZ_REMOVE_DTRACE
 		Remove /usr/bin/dtrace. This utility is only needed to 
 		trace ISDN D-channel.
 		This will save about 87kB uncompressed size.
-
-		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
 config FREETZ_REMOVE_VOIP_ISDN
 	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL"
@@ -1665,7 +1666,7 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexB.en.30.04.67.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.39.04.59.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.70.image"				if FREETZ_TYPE_FON_WLAN_7141
-	default "FRITZ.Fon_7150.AnnexB.38.04.56.image"					if FREETZ_TYPE_FON_7150
+	default "fritz.fon_7150.annexb.38.04.71.image"					if FREETZ_TYPE_FON_7150
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.76.image"				if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.58.04.59.image"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.67.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
