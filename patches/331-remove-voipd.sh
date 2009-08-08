@@ -1,10 +1,19 @@
 [ "$FREETZ_REMOVE_VOIPD" == "y" ] || return 0
 
 echo1 "removing VoIP files"
-for files in bin/voipd bin/showvoipdstat lib/libsiplib.so* lib/librtpstream*.so* \
-	lib/libosip*2.so* usr/www/all/html/de/fon/sip* usr/www/all/html/de/first/sip*; do
-	rm_files ${FILESYSTEM_MOD_DIR}/$files
+for files in \
+	bin/showvoipdstat \
+	bin/voipd \
+	lib/libosip*2.so*
+	lib/librtpstream*.so* \
+	lib/libsiplib.so* \
+	usr/www/all/html/de/first/sip* \
+	usr/www/all/html/de/fon/sip* \
+	; do
+	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
+[ ! -e "${FILESYSTEM_MOD_DIR}/usr/share/telefon/libtam.so" -o "$FREETZ_REMOVE_VOIP_ISDN" == "y" ] && rm_files \
+	"${FILESYSTEM_MOD_DIR}/lib/libmscodex.so*"
 
 echo1 "patching web UI"
 sed -i -e '/document.write(Sip.\{1,5\}(.*))/d' "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
