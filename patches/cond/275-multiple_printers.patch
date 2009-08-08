@@ -1,0 +1,169 @@
+--- etc/hotplug/printer.orig	2009-06-24 15:54:14.000000000 +0000
++++ etc/hotplug/printer	2009-08-08 16:39:21.000000000 +0000
+@@ -13,9 +13,15 @@
+ 
+ # no K2.4 support
+ BIN=/sbin/printserv
+-USB_DEVICE=/dev/usblp0
++DEFAULT_NODE=/dev/usblp0
++DEV_PREFIX=/dev/usb_prntsvr
+ 
+-PORT=9100
++# Get physical USB port
++UPRT=$(lsusb -t -h $3 | sed -n 's/.*TOPO=\([0-9]*\).*/\1/p')
++UPRT=$(printf "%02d" $UPRT)
++UPRT=${UPRT:0:1}
++# AVM's printserv does need two ports, therefore skip every other port
++PORT=$((9100 + 2 * UPRT))
+ PRINTER_STATUS_FILE=/var/log/printer_status
+ PRINTER_ID_FILE=/var/log/printer_id
+ DEVID="USB`echo $3 | tr "/" "-"`"
+@@ -35,10 +41,11 @@
+ 
+ case $1 in
+ 
+-add)	if test "$6" = "1"; then
++add)	#if test "$6" = "1"; then
+ 
+ 		# Detect supported printer...
+-		PROTOCOL=`grep "print" /proc/bus/usb/devices | sed -n 's/.*Prot=\(0[12]\).*/\1/p'`
++		#PROTOCOL=`grep "print" /proc/bus/usb/devices | sed -n 's/.*Prot=\(0[12]\).*/\1/p'`
++		PROTOCOL=$(hexdump -s 34 -n 1 -e '1/1 "%02x"' $3)
+ 		case $PROTOCOL in
+ 			01*|02*) # uni- and bidirectional
+ 				 ;;
+@@ -47,41 +54,95 @@
+ 				 exit 1;
+ 				 ;;
+ 		esac
+-
++		
++		# Get next USB minor number...
++		MINOR=0
++		while [ -c $DEV_PREFIX-*.$MINOR ]; do
++			if [ "$MINOR" = "15" ]; then
++				eventadd 1 "Printer limit exceeded"
++				exit 1;
++			fi
++			MINOR=$((MINOR + 1))
++		done
++		# Device node
++		USB_DEVICE=$DEV_PREFIX-$2.$MINOR
++		# Create it
++		mknod -m 666 $USB_DEVICE c 180 $MINOR
++		
++		# Set printer on physical USB port 0 as default
++		if [ "$UPRT" = "0" ]; then
++			rm -f $DEFAULT_NODE
++			mknod -m 666 $DEFAULT_NODE c 180 $MINOR
++		# Disable default printer
++		#elif [ "$MINOR" = "0" ]; then
++		#	rm -f $DEFAULT_NODE
++		#	mknod -m 666 $DEFAULT_NODE c 180 255
++		fi
++		
+ 		# Load usb printer class module...
+ 		modprobe $MODULE
+-
++		
++		# Printserver port already in use?
++		netstat -nlt | grep ":$PORT" > /dev/null 2>&1 && PORT=n/a
++		
+ 		# Find device's strings...
+ 		for var in `/sbin/lsusb -s -h $3|tr " " "_"`; do
+ 			if echo $var | grep "='" > /dev/null 2>&1; then
+ 				eval $var
+ 			fi
+ 		done
+-		echo "${MANU:=USB}:${PROD:=Printer}"|tr "_" " " > $PRINTER_ID_FILE
++		#echo "${MANU:=USB}:${PROD:=Printer}"|tr "_" " " > $PRINTER_ID_FILE
++		[ ! -e $PRINTER_ID_FILE ] && echo -e ":\t" > $PRINTER_ID_FILE
++		# Add to available printers
++		sed -i "s/\t$/\t$2: `echo ${PROD:=USB-Printer} | tr "_" " "` (Port $PORT)\t/" $PRINTER_ID_FILE
+ 		
+-		# Starting printserver...
+-		if ! $BIN -d $USB_DEVICE -p $PORT -c $CONSOLE; then
+-			eventadd 153
+-		fi
+-
++		echo "0" > $PRINTER_STATUS_FILE
+ 		echo "1" > $HANDLE
+ 		
+-		eventadd 150 9100 	# `echo ar7cfg.brinterfaces.ipaddr | ar7cfgctl -s` 
+-					# (IP address should not be displayed in log at the moment.)
+-	else	
+-		eventadd 152
+-		echo "0" > $HANDLE
+-	fi
++		# Start printserver
++		if [ "$PORT" != "n/a" ]; then
++			if ! $BIN -d $USB_DEVICE -p $PORT -c $CONSOLE; then
++				eventadd 153
++			fi
++			
++			eventadd 150 $PORT 	# `echo ar7cfg.brinterfaces.ipaddr | ar7cfgctl -s` 
++						# (IP address should not be displayed in log at the moment.)
++		fi
++	#else	
++	#	eventadd 152
++	#	echo "0" > $HANDLE
++	#fi
+ 	;;
+ 
+ remove)	if test $4 -eq 1; then
+ 
+ 		# Stop it all...
+-		killall ${BIN##*/}
+-		rm -f $PRINTER_STATUS_FILE
+-		rm -f $PRINTER_ID_FILE
+-		sleep 1;
+-		rmmod $MODULE
++		#killall ${BIN##*/}
++		
++		# Remove device node
++		rm -f $DEV_PREFIX-$2*
++		# Update available printers
++		sed -i "s/\t$2[^\t]*//" $PRINTER_ID_FILE
++		
++		# Get corresponding pids
++		PIDS=$(ps w | sed -n "s=^ *\([0-9]*\).*$BIN.*$DEV_PREFIX-$2.*=\1=p")
++		
++		# Check for other printers
++		if [ -c $DEV_PREFIX-* ]; then
++			# This prevents semaphore failures within other printserv processes
++			[ -n "$PIDS" ] && kill -KILL $PIDS
++			# Be sure the status file exists, even if deleted by killed process
++			[ ! -e $PRINTER_STATUS_FILE ] && echo "0" > $PRINTER_STATUS_FILE
++		# No printers left
++		else
++			# Terminate as usual
++			[ -n "$PIDS" ] && kill -TERM $PIDS
++			# Clean up
++			rm -f $PRINTER_STATUS_FILE
++			rm -f $PRINTER_ID_FILE
++			sleep 1;
++			rmmod $MODULE
++		fi
+ 		eventadd 151
+ 	fi
+ 	;;
+--- usr/www/avm/html/de/usb/status.js.orig	2009-06-24 15:54:41.000000000 +0000
++++ usr/www/avm/html/de/usb/status.js	2009-08-08 16:39:21.000000000 +0000
+@@ -8,7 +8,7 @@
+ .tAura .c1 {width: 330px;}
+ .tAura .c2 {width: 330px; padding-left:10px;}
+ */
+-.tAura {width: 690px; table-layout: fixed}
++.tAura {width: 690px; table-layout: auto}
+ .tAura td {padding: 2px; overflow: hidden}
+ .tAura .c1 {width: 300px;}
+ .tAura .c2 {width: 360px; padding-left:10px;}
+@@ -196,7 +196,7 @@
+ function DeviceName (name, manufacturer, comment, type) {
+ var str = manufacturer;
+ if (str != "") str += " ";
+-str += name;
++str += name.replace(/^\s+|\s+$/g, "").replace(/\t/g, "<br />");
+ if (comment != "") {
+ if (str != "") str += " ";
+ str += "("+comment+")";
