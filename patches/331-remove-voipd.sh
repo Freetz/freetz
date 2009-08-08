@@ -4,7 +4,7 @@ echo1 "removing VoIP files"
 for files in \
 	bin/showvoipdstat \
 	bin/voipd \
-	lib/libosip*2.so*
+	lib/libosip*2.so* \
 	lib/librtpstream*.so* \
 	lib/libsiplib.so* \
 	usr/www/all/html/de/first/sip* \
