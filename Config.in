@@ -1371,9 +1371,10 @@ config FREETZ_REMOVE_MEDIASRV
 	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_USB_HOST && ! FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
-		Remove MediaServer daemon (mediasrv)
-		This patch removes only the deamon. The regular options in AVM's webinterface 
-		are still present.
+		Remove the MediaServer-daemon (mediasrv) and some other related files.
+		This patch hides also the MediaServer options in the Web UI, so you must
+		disable it before flashing the new image.
+		Saves compressed 280 KB on a 7270_V3 and 40 KB on a 7170.
 
 config FREETZ_REMOVE_SMBD
 	bool "Remove smbd"
@@ -1392,7 +1393,7 @@ config FREETZ_REMOVE_SMBD
 		are still present.
 
 config FREETZ_REMOVE_MINID
-	bool "Remove minid - EXPERIMENTAL"
+	bool "Remove minid"
 	default n
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
@@ -1409,7 +1410,7 @@ config FREETZ_REMOVE_MINID
 	help
 		Remove the mini-daemon (minid) and some other related files. This patch
 		removes Fritz!Mini support and all Web UI entrys.
-		Saves compressed 250 KB on a 7270_V3 and 260 KB on a 7170.
+		Saves compressed 340 KB on a 7270_V3 and 7170.
 
 		ATTENTION: You must remove all Fritz!Mini's from your Fritz!Box configuration
 		and delete all Mini users with the Gini! software to avoid complications.

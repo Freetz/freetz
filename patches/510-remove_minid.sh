@@ -10,8 +10,13 @@ for files in \
 	bin/telephon.plugin \
 	bin/update.plugin \
 	etc/minid \
+	lib/libavcodec.so* \
+	lib/libavformat.so* \
 	lib/libavm_audio.so* \
+	lib/libavutil.so* \
 	lib/libflashclient.so* \
+	lib/libhttp.so* \
+	lib/libmediacli.so* \
 	usr/share/ctlmgr/libmini.so \
 	$(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*mini*" ! -iname "*mini*.gif" -printf "%P\n") \
 	; do
@@ -19,6 +24,7 @@ for files in \
 done
 
 [ "$FREETZ_REMOVE_VOIPD" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libfoncclient*"
+[ "$FREETZ_REMOVE_MEDIASRV" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmid3*.so*"
 
 echo1 "patching rc.conf"
 sed -i -e "s/CONFIG_MINI=.*$/CONFIG_MINI=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
