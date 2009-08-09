@@ -250,9 +250,10 @@ set_lazy() {
 
 set_period() {
 	periodA=$(echo $1|sed 's/[0-9]\+h/hour/g;s/[0-9]\+d$/day/g;s/[0-9]\+w$/week/g;s/[0-9]\+m$/month/g;s/[0-9]\+y$/year/g')
-	period0=$(echo $1|sed 's/[a-zA-Z]/ /g')
+	period0=$(echo $1|sed 's/[a-zA-Z]//g')
+	periodG=${period0}${periodA}s
 	if [ $period0 -gt 1 ]; then
-		periodA="$periodA"s
+		periodA=" $periodA"s
 	else
 		period0=""
 	fi

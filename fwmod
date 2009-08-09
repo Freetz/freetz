@@ -581,23 +581,23 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	SUBVERSION="$(cat $SUBVERSION_FILE)${SVN_VERSION}"
-	OPTIONS="+busybox"
 	#delete .packages file
 	rm -f "${PACKAGES_LIST_FILE}"
-	
-	[ "$FREETZ_REMOVE_ASSISTANT" == "y" ]		&& OPTIONS+=" -assistant"
-	[ "$FREETZ_REMOVE_HELP" == "y" ]		&& OPTIONS+=" -help"
-	[ "$FREETZ_REMOVE_CDROM_ISO" == "y" ]		&& OPTIONS+=" -cdrom.iso"
-	[ "$FREETZ_PATCH_ATA" == "y" ]			&& OPTIONS+=" +ata"
-	[ "$FREETZ_PATCH_DSL_EXPERT" == "y" ]		&& OPTIONS+=" +dslexpert"
-	[ "$FREETZ_PATCH_ENUM" == "y" ]			&& OPTIONS+=" +enum"
-	[ "$FREETZ_PATCH_GETCONS" == "y" ]		&& OPTIONS+=" +getcons"
-	[ "$FREETZ_PATCH_INTERNATIONAL" == "y" ]	&& OPTIONS+=" +international"
-	[ "$FREETZ_PATCH_MAXDEVCOUNT" == "y" ]		&& OPTIONS+=" +maxdevcount"
-	[ "$FREETZ_PATCH_VCC" == "y" ]			&& OPTIONS+=" +vcc"
-	[ "$FREETZ_PATCH_SIGNED" == "y" ]		&& OPTIONS+=" +signed"
-	[ "$FREETZ_PATCH_USBSTORAGE" == "y" ]		&& OPTIONS+=" +usbstorage"
 
+	for i in $(set|grep -i "^FREETZ_REMOVE_.*=y$"|sed -e "s/^.\{14\}//;s/=.*//"|tr [A-Z] [a-z]|sort); do
+		OPTIONS+=" -$i"
+	done
+	
+	OPTIONS_ADD=" +busybox"
+	for i in $(set|grep -i "^FREETZ_PATCH_.*=y$"|sed -e "s/^.\{13\}//;s/=.*//"|tr [A-Z] [a-z]); do
+		OPTIONS_ADD+=" +$i"
+	done
+
+	for pkg in $(static_packages) $(static_addons); do
+		OPTIONS_ADD+=" +$pkg"
+		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
+	done
+	
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
 		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
 
@@ -606,12 +606,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		KERNEL_SUBVERSION="$(cat $KERNEL_SUBVERSION_FILE)"
-		OPTIONS+=" +kernel ($KERNEL_SUBVERSION)"
+		OPTIONS_ADD+=" +kernel ($KERNEL_SUBVERSION)"
 	fi
 
-	for pkg in $(static_packages) $(static_addons); do
-		OPTIONS+=" +$pkg"
-		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
+	for i in $(echo ${OPTIONS_ADD}|sed -e's: +:\n+:g'|sort); do
+		OPTIONS+=" $i"
 	done
 
 	echo1 "setting freetz-version '${SUBVERSION}'"
@@ -699,6 +698,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 				echo1 "$AVMPLUGIN plugin"
 				cp -a "${AVMPLUGINS_MOD_DIR}/plugin-${AVMPLUGIN}" "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}"
 				ln -s "/usr/share/avmplugins/plugin-${AVMPLUGIN}" "${VARTAR_MOD_DIR}/var/plugin-${AVMPLUGIN}"
+				for module in `cd "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}";find -type f -name "*.ko"`; do
+					echo2 "moving ${module##*/} to standard modules dir"
+					mv "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}/$module" "${FILESYSTEM_MOD_DIR}/$module"
+				done
 			fi
 		done
 	fi
@@ -1150,7 +1153,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "kernel image is empty"
 	fi
 	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
-		error 1 "kernel image is $DIFF bytes too big"
+		error 1 "kernel image is $DIFF bytes too big. See http://trac.freetz.org/wiki/FAQ#Filesystemimagetoobig for details"
 	fi
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
 		if [ "$FREETZ_HAS_TAM" = "y" ]; then
@@ -1209,7 +1212,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 	if [ -s "${DIR}/${modimage}" ]; then
 		echo "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
-		[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://www.freetz.org for details."
+		[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://trac.freetz.org/wiki/FAQ#NachdemFlashenistdasAVM-Webinterfacenichtmehrerreichbar for details."
 	fi
 	echo "done."
 	echo

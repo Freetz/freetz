@@ -8,15 +8,12 @@ PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 
 . /etc/init.d/modlibrc
 
-# Do we have a UPnP server (igdd or upnpd) or was ist stripped from the firmware?
-_igdd=$(basename $(which igdd) 2> /dev/null)
-_upnpd=$(basename $(which upnpd) 2> /dev/null)
-# Does a multid option to start without UPnP device (-u) exist?
-_multid_upnp=$(/sbin/multid -? 2>&1 | grep upnp)
-# Set multid "no UPnP" option, if
-#   a) it has the parameter at all AND
-#   b) igdd binary does *not* exist
-[ "$_multid_upnp" ] && [ ! "$_igdd" ] && [ ! "$_upnpd" ] && MULTIDPARAM="-u"
+PID_MULTID=$(pidof -s multid)
+if [ ! -z "$PID_MULTID" ]; then
+	MULTID=$(xargs -0 </proc/$PID_MULTID/cmdline)
+else
+	MULTID=multid
+fi
 
 start() {
 	local lease
@@ -50,7 +47,7 @@ start() {
 	exitval=$?
 
 	if [ "$1" != "nomultid" ]; then
-		multid $MULTIDPARAM > /dev/null 2>&1
+		$MULTID > /dev/null 2>&1
 		# protect against dnsmasq crash
 		[ -f /var/tmp/avm-resolv.conf -a ! -L /var/tmp/avm-resolv.conf ] &&
 			mv /var/tmp/avm-resolv.conf /var/tmp/resolv.conf
@@ -88,7 +85,7 @@ stop() {
 	kill $(cat $PID_FILE) 2> /dev/null
 	exitval=$?
 	if [ "$1" != "nomultid" ]; then
-		multid $MULTIDPARAM > /dev/null 2>&1
+		$MULTID > /dev/null 2>&1
 	fi
 
 	rm -f /mod/etc/$DAEMON.conf
@@ -145,7 +142,7 @@ case "$1" in
 		stop nomultid
 		sleep 1
 		start nomultid
-		multid $MULTIDPARAM > /dev/null 2>&1
+		$MULTID > /dev/null 2>&1
 		;;
 	status)
 		modlib_status

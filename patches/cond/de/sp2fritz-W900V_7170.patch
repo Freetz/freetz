@@ -1,5 +1,5 @@
 --- usr/www/avm/html/de/dect/setting.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.frm	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/dect/setting.frm	2009-07-30 16:27:21.120240832 +0200
 @@ -0,0 +1,7 @@
 +<input type="hidden" name="dect:settings/enabled" value="<? query dect:settings/enabled ?>" id="uiPost_DectActivated">
 +<input type="hidden" name="dect:command/Unsubscribe" value="0" id="uiPostUnsubscribe" disabled>
@@ -9,7 +9,7 @@
 +<input type="hidden" name="var:TechType" value="<? echo $var:TechType ?>" id="uiTechType">
 +<input type="hidden" id="uiPostVarName" name="">
 --- usr/www/avm/html/de/dect/setting.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/dect/setting.html	2009-07-30 16:27:21.120240832 +0200
 @@ -0,0 +1,26 @@
 +<? include ../html/$var:lang/dect/setting.js ?>
 +<div id="content">
@@ -38,17 +38,17 @@
 +<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 +</div>
 --- usr/www/avm/html/de/dect/setting.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.inc	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/dect/setting.inc	2009-07-30 16:27:21.128245853 +0200
 @@ -0,0 +1,7 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:TextDectEinstellungen "DECT-Einstellungen" ?>
-+<? setvariable var:TextDectOption 'Hier können Sie Einstellungen für Ihre DECT-Basisstation vornehmen, die Einstellungen werden erst nach "Übernehmen" und "Neustart" wirksam.' ?>
++<? setvariable var:TextDectOption 'Hier kï¿½nnen Sie Einstellungen fï¿½r Ihre DECT-Basisstation vornehmen, die Einstellungen werden erst nach "ï¿½bernehmen" und "Neustart" wirksam.' ?>
 +<? setvariable var:TextDectAktive "DECT-Basisstation aktivieren" ?>
 +<? setvariable var:TextDectPin 'PIN:' ?>
 +<? setvariable var:TextDectSetPin 'PIN setzen' ?>
 +<? setvariable var:TextBoxNeuStart "$var:BoxName neu starten" ?>
 --- usr/www/avm/html/de/dect/setting.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.js	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/dect/setting.js	2009-07-30 16:27:21.132242253 +0200
 @@ -0,0 +1,52 @@
 +<!-- ../dect/setting.js -->
 +<? include ../html/$var:lang/dect/setting.inc ?>
@@ -103,7 +103,7 @@
 +}
 +</script>
 --- usr/www/avm/html/de/fon/dect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect.frm	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/dect.frm	2009-07-30 16:27:21.136239180 +0200
 @@ -0,0 +1,29 @@
 +<input type="hidden" name="var:FonNr" value="<? echo $var:FonNr ?>" id="uiPostFonNr">
 +<input type="hidden" name="var:IsdnNr" value="<? echo $var:IsdnNr ?>" id="uiPostIsdnNr">
@@ -135,7 +135,7 @@
 +<input type="hidden" name="telcfg:settings/MSN/Port3/MWI_Mail" value="<? query telcfg:settings/MSN/Port3/MWI_Mail?>" id="uiPostMwiMail">
 +<input type="hidden" name="telcfg:settings/MSN/Port3/MWI_Once" value="<? query telcfg:settings/MSN/Port3/MWI_Once ?>" id="uiPostMwiOnce">
 --- usr/www/avm/html/de/fon/dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/dect.html	2009-07-30 16:27:21.140239943 +0200
 @@ -0,0 +1,51 @@
 +<? include ../html/$var:lang/fon/dect.inc ?>
 +<div id="content">
@@ -189,26 +189,26 @@
 +</div>
 +
 --- usr/www/avm/html/de/fon/dect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect.inc	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/dect.inc	2009-07-30 16:27:21.144239681 +0200
 @@ -0,0 +1,46 @@
 +<? include ../html/$var:lang/global.inc ?>
-+<? setvariable var:Text1 'DECT-Endgeräte' ?>
-+<? setvariable var:Text3 'DECT-Endgeräte ohne eingestellte MSN führen ausgehende Anrufe über die Hauptrufnummer und reagieren auf alle einkommenden Anrufe.' ?>
++<? setvariable var:Text1 'DECT-Endgerï¿½te' ?>
++<? setvariable var:Text3 'DECT-Endgerï¿½te ohne eingestellte MSN fï¿½hren ausgehende Anrufe ï¿½ber die Hauptrufnummer und reagieren auf alle einkommenden Anrufe.' ?>
 +<? setvariable var:Text4 'Hauptrufnummer' ?>
-+<? setvariable var:Text5 'Auf Wunsch können Sie an Ihren DECT-Endgeräten folgende MSN einstellen. Hinweise dazu entnehmen Sie den Unterlagen des DECT-Endgeräts.' ?>
++<? setvariable var:Text5 'Auf Wunsch kï¿½nnen Sie an Ihren DECT-Endgerï¿½ten folgende MSN einstellen. Hinweise dazu entnehmen Sie den Unterlagen des DECT-Endgerï¿½ts.' ?>
 +<? setvariable var:Text6 'vorhandene Rufnummern' ?>
 +<? setvariable var:Text7 'Festnetz:' ?>
 +<? setvariable var:Text16 'Internet:' ?>
 +<? setvariable var:Text17 'Keine Rufnummern eingerichtet' ?>
-+<? setvariable var:Text18 'Sie können die Telefonbucheinträge an ein Mobilteil senden.' ?>
-+<? setvariable var:Text24 'Rufnummer des Endgerätes' ?>
-+<? setvariable var:Text18 'Sie können die Telefonbucheinträge an ein Mobilteil senden.' ?>
++<? setvariable var:Text18 'Sie kï¿½nnen die Telefonbucheintrï¿½ge an ein Mobilteil senden.' ?>
++<? setvariable var:Text24 'Rufnummer des Endgerï¿½tes' ?>
++<? setvariable var:Text18 'Sie kï¿½nnen die Telefonbucheintrï¿½ge an ein Mobilteil senden.' ?>
 +<? setvariable var:Text24 'Interne Nummer' ?>
 +<? setvariable var:Text19 'Telefonbuch senden' ?>
 +<? setvariable var:Text20 'Geben Sie hier Ihre Festnetz ein:' ?>
 +
-+<? setvariable var:Text23 'DECT-Endgeräte' ?>
-+<? setvariable var:Text24 'Übersicht' ?>
++<? setvariable var:Text23 'DECT-Endgerï¿½te' ?>
++<? setvariable var:Text24 'ï¿½bersicht' ?>
 +<? setvariable var:Text25 'Festnetz' ?>
 +<? setvariable var:Text26 'Interne Nummern' ?>
 +<? setvariable var:Text27 'Optionen' ?>
@@ -217,28 +217,28 @@
 +<? setvariable var:Text30 'Nebenstelle' ?>
 +
 +<? setvariable var:Text53 'Intern' ?>
-+<? setvariable var:Text54 'Rufnummer des Endgerätes' ?>
++<? setvariable var:Text54 'Rufnummer des Endgerï¿½tes' ?>
 +<? setvariable var:Text55 'Rufnummer' ?>
 +<? setvariable var:Text56 'Verbindung via' ?>
-+<? setvariable var:Text57 'Weitere Optionen für DECT-Endgeräte' ?>
-+<? setvariable var:Text31 'Aktivieren Sie die gewünschten Komfort- und Optionen' ?>
++<? setvariable var:Text57 'Weitere Optionen fï¿½r DECT-Endgerï¿½te' ?>
++<? setvariable var:Text31 'Aktivieren Sie die gewï¿½nschten Komfort- und Optionen' ?>
 +<? setvariable var:Text32 'Ruf abweisen bei besetzt (Busy on busy).' ?>
-+<? setvariable var:Text33 'Einkommende Rufe werden abgelehnt, wenn mit der angerufenen MSN bereits ein Gespräch geführt wird.' ?>
-+<? setvariable var:Text34 'Eigene Rufnummer unterdrücken (COLR).' ?>
++<? setvariable var:Text33 'Einkommende Rufe werden abgelehnt, wenn mit der angerufenen MSN bereits ein Gesprï¿½ch gefï¿½hrt wird.' ?>
++<? setvariable var:Text34 'Eigene Rufnummer unterdrï¿½cken (COLR).' ?>
 +<? setvariable var:Text35 'Die eigene Rufnummer erscheint nicht im Display des Anrufenden.' ?>
-+<? setvariable var:Text36 'Ruf abweisen bei besetzt durch das DECT-Endgerät bestimmen.' ?>
++<? setvariable var:Text36 'Ruf abweisen bei besetzt durch das DECT-Endgerï¿½t bestimmen.' ?>
 +<? setvariable var:Text38 'Neue Nachrichten am Telefon signalisieren (MWI)' ?>
-+<? setvariable var:Text39 'Die FRITZ!Box informiert Sie über das Telefon, ob sich neue Nachrichten in der Mailbox Ihres Telefonie-Anbieters befinden. Bei neuen Nachrichten finden Sie einen Eintrag in der Anrufliste Ihres Telefons.' ?>
-+<? setvariable var:Text40 'Die Benachrichtigung erfolgt durch ein kurzes Klingeln des Telefons an dieser Nebenstelle. Welche Nachrichten sollen berücksichtigt werden?' ?>
++<? setvariable var:Text39 'Die FRITZ!Box informiert Sie ï¿½ber das Telefon, ob sich neue Nachrichten in der Mailbox Ihres Telefonie-Anbieters befinden. Bei neuen Nachrichten finden Sie einen Eintrag in der Anrufliste Ihres Telefons.' ?>
++<? setvariable var:Text40 'Die Benachrichtigung erfolgt durch ein kurzes Klingeln des Telefons an dieser Nebenstelle. Welche Nachrichten sollen berï¿½cksichtigt werden?' ?>
 +<? setvariable var:Text41 'neue Sprachnachricht' ?>
 +<? setvariable var:Text42 'neues Fax' ?>
 +<? setvariable var:Text43 'neue E-Mail' ?>
 +<? setvariable var:Text44 'Informationen senden' ?>
-+<? setvariable var:Text45 'für' ?>
++<? setvariable var:Text45 'fï¿½r' ?>
 +<? setvariable var:Text46 'nur bei der ersten neuen Nachricht' ?>
 +<? setvariable var:Text47 'bei jeder neuen Nachricht' ?>
 --- usr/www/avm/html/de/fon/dect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect.js	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/dect.js	2009-07-30 16:27:21.152240895 +0200
 @@ -0,0 +1,181 @@
 +<!--		../fon/dect.js		-->
 +<style type="text/css">
@@ -422,7 +422,7 @@
 +}
 +</script>
 --- usr/www/avm/html/de/fon/fon1dect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.frm	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fon1dect.frm	2009-07-30 16:27:21.156239522 +0200
 @@ -0,0 +1,14 @@
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/MSN" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/MSN ?>" id="uiPostThisMSN">
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/CLIR" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/CLIR ?>" id="uiPostCLIR">
@@ -439,7 +439,7 @@
 +<? repeat [ 0 4 ] `
 +<input type="hidden" name="dect:settings/MSN$0/MSN" value="<? query dect:settings/MSN$0/MSN ?>" id="uiPostMSN$0" disabled>` ?>
 --- usr/www/avm/html/de/fon/fon1dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fon1dect.html	2009-07-30 16:27:21.156239522 +0200
 @@ -0,0 +1,36 @@
 +<? include ../html/$var:lang/fon/fon1dect.inc ?>
 +<div id="content">
@@ -478,7 +478,7 @@
 +	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 +</div>
 --- usr/www/avm/html/de/fon/fon1dect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.inc	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fon1dect.inc	2009-07-30 16:27:21.156239522 +0200
 @@ -0,0 +1,16 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'MSN zuordnen' ?>
@@ -497,7 +497,7 @@
 +<? setvariable var:Text28 'Zuordnung' ?>
 +<? setvariable var:Text29 'Mobilteile' ?>
 --- usr/www/avm/html/de/fon/fon1dect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.js	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fon1dect.js	2009-07-30 16:27:21.156239522 +0200
 @@ -0,0 +1,175 @@
 +<!--		../fon/fon1dect.js		-->
 +<style type="text/css">
@@ -541,8 +541,8 @@
 +var g_MsnNr;
 +var g_OptsCount = 0;
 +var g_mldNoNummer = "Geben Sie bitte eine Rufnummer an.";
-+var g_mldNoHandset = "Wählen Sie bitte mind. ein Mobilteil aus.";
-+var g_mldNoOpts = "Es sind bereits alle verfügbaren Rufnummern zugeordnet.";
++var g_mldNoHandset = "Wï¿½hlen Sie bitte mind. ein Mobilteil aus.";
++var g_mldNoOpts = "Es sind bereits alle verfï¿½gbaren Rufnummern zugeordnet.";
 +function uiDoOnLoad() {
 +	g_Handsets = 0;
 +
@@ -624,7 +624,7 @@
 +} 
 +function fillId(id, nr) {
 +<? if eq '$var:usePSTN' 1 `
-+	// Auswahl mit den vorgegebenen MSN füllen und Eintrag msn selektieren
++	// Auswahl mit den vorgegebenen MSN fï¿½llen und Eintrag msn selektieren
 +	addMsn(id, g_msn0, g_txt_Festnetz);
 +	addMsn(id, g_msn1, g_txt_Festnetz);
 +	addMsn(id, g_msn2, g_txt_Festnetz);
@@ -637,11 +637,11 @@
 +	addMsn(id, g_msn9, g_txt_Festnetz);
 +	addMsn(id, g_pots, g_txt_Festnetz);
 +` ?> 
-+	// Sip Zugänge anfügen
++	// Sip Zugï¿½nge anfï¿½gen
 +<? multiquery sip:settings/sip/list(ID,displayname) '
 +	if ("$3" != "" && isFrei("$3")) addOption(id, "$3", g_txt_Internet+g_$1);
 +' ?>
-+	// Interne Nummern anfügen
++	// Interne Nummern anfï¿½gen
 +	addMsn(id, g_int1, g_txt_Intern);
 +	addMsn(id, g_int2, g_txt_Intern);
 +	addMsn(id, g_int3, g_txt_Intern);
@@ -674,8 +674,8 @@
 +	return g_Index[Number(nr)];
 +}
 +</script>
---- usr/www/avm/html/de/fon/fondevices.html.orig	2008-09-22 15:30:20.000000000 +0200
-+++ usr/www/avm/html/de/fon/fondevices.html	2008-09-24 11:32:57.000000000 +0200
+--- usr/www/avm/html/de/fon/fondevices.html.orig	2009-07-27 17:04:47.000000000 +0200
++++ usr/www/avm/html/de/fon/fondevices.html	2009-07-30 16:27:21.164239075 +0200
 @@ -1 +1,86 @@
 -<? include ../html/de/home/fondevices.html ?>
 +<? include ../html/$var:lang/fon/fondevices.inc ?>
@@ -765,7 +765,7 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/avm/html/de/fon/foneditdect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.frm	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/foneditdect.frm	2009-07-30 16:27:21.168239139 +0200
 @@ -0,0 +1,8 @@
 +<input type="hidden" name="dect:command/StartSubscription" id="uiPostStartSubscription" disabled>
 +<input type="hidden" name="dect:command/Unsubscribe" id="uiPostUnsubscribe" disabled>
@@ -776,7 +776,7 @@
 +<input type="hidden" name="dect:settings/Handset$0/Type" value="<? query dect:settings/Handset$0/Type ?>" id="uiPostType$0" disabled>
 +` ?>
 --- usr/www/avm/html/de/fon/foneditdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/foneditdect.html	2009-07-30 16:27:21.168239139 +0200
 @@ -0,0 +1,50 @@
 +<? include ../html/$var:lang/fon/foneditdect.inc ?> 
 +<div id="content">
@@ -829,19 +829,19 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/avm/html/de/fon/foneditdect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.inc	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/foneditdect.inc	2009-07-30 16:27:21.168239139 +0200
 @@ -0,0 +1,22 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text3 'Nummer' ?>
 +<? setvariable var:Text4 'Angemeldet' ?>
-+<? setvariable var:Text7 'Einstellung ändern' ?>
++<? setvariable var:Text7 'Einstellung ï¿½ndern' ?>
 +<? setvariable var:Text16 'Mobilteile an- und abmelden' ?>
-+<? setvariable var:Text17 'Sie können DECT-Telefone an der FRITZ!Box an- und abmelden. Zum Anmelden eines DECT-Telefons müssen Sie die System-PIN (im Lieferzustand: 0000) am Mobilteil eingeben.' ?>
++<? setvariable var:Text17 'Sie kï¿½nnen DECT-Telefone an der FRITZ!Box an- und abmelden. Zum Anmelden eines DECT-Telefons mï¿½ssen Sie die System-PIN (im Lieferzustand: 0000) am Mobilteil eingeben.' ?>
 +<? setvariable var:Text20 'Swissvoice/GAP' ?>
 +<? setvariable var:Text21 'Mobilteil anmelden' ?>
-+<? setvariable var:Text22 'Zurück' ?>
-+<? setvariable var:Text23 'DECT-Endgeräte' ?>
-+<? setvariable var:Text24 'Übersicht' ?>
++<? setvariable var:Text22 'Zurï¿½ck' ?>
++<? setvariable var:Text23 'DECT-Endgerï¿½te' ?>
++<? setvariable var:Text24 'ï¿½bersicht' ?>
 +<? setvariable var:Text25 'Festnetz' ?>
 +<? setvariable var:Text26 'Interne Nummern' ?>
 +<? setvariable var:Text27 'Optionen' ?>
@@ -852,9 +852,9 @@
 +<? setvariable var:Text32 'Es sind keine Mobilteile angemeldet' ?>
 +<? setvariable var:Text33 'Mobilteile pagen' ?>
 +<? setvariable var:Text34 'Datum und Uhrzeit setzen' ?>
-+<? setvariable var:Text35 'Mit Hilfe der Paging-Funktion können Sie Mobilteile lokalisieren. Per Knopfdruck können auch Datum und Uhrzeit der DECT-Telefone gesetzt werden.' ?>
++<? setvariable var:Text35 'Mit Hilfe der Paging-Funktion kï¿½nnen Sie Mobilteile lokalisieren. Per Knopfdruck kï¿½nnen auch Datum und Uhrzeit der DECT-Telefone gesetzt werden.' ?>
 --- usr/www/avm/html/de/fon/foneditdect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.js	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/foneditdect.js	2009-07-30 16:27:21.168239139 +0200
 @@ -0,0 +1,106 @@
 +<!--		../fon/foneditdect.js		-->
 +<style type="text/css">
@@ -963,7 +963,7 @@
 +}
 +</script>
 --- usr/www/avm/html/de/fon/fonlistdect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.frm	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlistdect.frm	2009-07-30 16:27:21.168239139 +0200
 @@ -0,0 +1,6 @@
 +<input type="hidden" name="var:IsdnNr" value="<? echo $var:IsdnNr ?>" id="uiPostIsdnNr">
 +<input type="hidden" name="var:parent" value="<? echo $var:parent ?>" id="uiPostParent">
@@ -972,16 +972,16 @@
 +<input type="hidden" name="telcfg:settings/NTHotDialList/Number$0" value="<? query telcfg:settings/NTHotDialList/Number$0 ?>" id="uiPostNummer$0" disabled>
 +` ?>
 --- usr/www/avm/html/de/fon/fonlistdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlistdect.html	2009-07-30 16:27:21.172239637 +0200
 @@ -0,0 +1,44 @@
 +<? include ../html/$var:lang/fon/fonlistisdn.inc ?>
 +<div id="content">
 +	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
-+		DECT-Endgeräte
++		DECT-Endgerï¿½te
 +	</div></div></div></div></div></div>
 +	<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
 +	<ul class="tabs">
-+		<li><a href="javascript:uiDoDect()">Übersicht</a></li>
++		<li><a href="javascript:uiDoDect()">ï¿½bersicht</a></li>
 +		<li class="tabs_on"><a href="javascript:uiDoCancel()">Interne Nummer</a></li>
 +		<li><a href="javascript:uiDoSetupDect()">Zuordnung</a></li>
 +		<li><a href="javascript:uiDoEditDect()">Mobilteile</a></li>
@@ -1019,20 +1019,20 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/avm/html/de/fon/fonlistdect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.inc	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlistdect.inc	2009-07-30 16:27:21.172239637 +0200
 @@ -0,0 +1,19 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text3 'Nummer' ?>
 +<? setvariable var:Text4 'Bezeichnung' ?>
-+<? setvariable var:Text7 'Einstellung ändern' ?>
-+<? setvariable var:Text16 'Interne Nummern für DECT-Telefone' ?>
-+<? setvariable var:Text17 'Für die DECT-Telefone der FRITZ!Box können interne Nummern eingerichtet werden. Die Telefone können so über die Anwahl **<Nummer> von anderen Telefonen an der FRITZ!Box erreicht werden.' ?>
++<? setvariable var:Text7 'Einstellung ï¿½ndern' ?>
++<? setvariable var:Text16 'Interne Nummern fï¿½r DECT-Telefone' ?>
++<? setvariable var:Text17 'Fï¿½r die DECT-Telefone der FRITZ!Box kï¿½nnen interne Nummern eingerichtet werden. Die Telefone kï¿½nnen so ï¿½ber die Anwahl **<Nummer> von anderen Telefonen an der FRITZ!Box erreicht werden.' ?>
 +<? setvariable var:Text20 'Rufnummer des Telefons' ?>
-+<? setvariable var:Text31 'Nummer löschen' ?>
++<? setvariable var:Text31 'Nummer lï¿½schen' ?>
 +<? setvariable var:Text21 'Neue Nummer' ?>
-+<? setvariable var:Text22 'Zurück' ?>
-+<? setvariable var:Text23 'DECT-Endgeräte' ?
-+<? setvariable var:Text24 'Übersicht' ?>
++<? setvariable var:Text22 'Zurï¿½ck' ?>
++<? setvariable var:Text23 'DECT-Endgerï¿½te' ?
++<? setvariable var:Text24 'ï¿½bersicht' ?>
 +<? setvariable var:Text25 'Festnetz' ?>
 +<? setvariable var:Text26 'Interne Nummern' ?>
 +<? setvariable var:Text27 'Optionen' ?>
@@ -1041,7 +1041,7 @@
 +<? setvariable var:Text30 'Nebenstelle' ?>
 +
 --- usr/www/avm/html/de/fon/fonlistdect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.js	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlistdect.js	2009-07-30 16:27:21.172239637 +0200
 @@ -0,0 +1,77 @@
 +<!--		../fon/fonlistdect.js		-->
 +<style type="text/css">
@@ -1059,7 +1059,7 @@
 +</style>
 +<script type="text/javascript">
 +<? include ../html/$var:lang/js/jsl.js ?>
-+var g_mldDelete	= "Wollen Sie diese Nummer löschen ?";
++var g_mldDelete	= "Wollen Sie diese Nummer lï¿½schen ?";
 +var g_New = 0;
 +function uiDoOnLoad() {
 +	var bFound = false;
@@ -1121,7 +1121,7 @@
 +}
 +</script>
 --- usr/www/avm/html/de/fon/fonlist.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlist.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fonlist.html	2009-07-30 16:27:21.172239637 +0200
 @@ -0,0 +1,46 @@
 +<? include ../html/$var:lang/fon/fonlist.inc ?> 
 +<div id="content">
@@ -1170,7 +1170,7 @@
 +` ?>
 +</div>
 --- usr/www/avm/html/de/fon/fonsetupdect.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.frm	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fonsetupdect.frm	2009-07-30 16:27:21.172239637 +0200
 @@ -0,0 +1,9 @@
 +<input type="hidden" name="var:MsnNr" value="<? echo $var:MsnNr ?>" id="uiPostMsnNr">
 +<input type="hidden" name="dect:settings/RingOnAllMSNs" value="<? query dect:settings/RingOnAllMSNs ?>" id="uiPostRingOnAllMSNs" disabled>
@@ -1182,7 +1182,7 @@
 +<input type="hidden" name="dect:settings/MSN$0/Handsets" value="<? query dect:settings/MSN$0/Handsets ?>" id="uiPostHandsets$0" disabled>
 +` ?>
 --- usr/www/avm/html/de/fon/fonsetupdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fonsetupdect.html	2009-07-30 16:27:21.172239637 +0200
 @@ -0,0 +1,54 @@
 +<? include ../html/$var:lang/fon/fonsetupdect.inc ?> 
 +<div id="content">
@@ -1239,10 +1239,10 @@
 +	</div></div></div></div></div></div></div>
 +</div>
 --- usr/www/avm/html/de/fon/fonsetupdect.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.inc	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fonsetupdect.inc	2009-07-30 16:27:21.172239637 +0200
 @@ -0,0 +1,27 @@
 +<? include ../html/$var:lang/global.inc ?>
-+<? setvariable var:Text1 'Die Mobilteile können so eingerichtet werden, dass sie auf alle eingehenden Anrufe reagieren. Durch das Setzen dieser Option gehen alle Rufnummernzuordnungen verloren.' ?>
++<? setvariable var:Text1 'Die Mobilteile kï¿½nnen so eingerichtet werden, dass sie auf alle eingehenden Anrufe reagieren. Durch das Setzen dieser Option gehen alle Rufnummernzuordnungen verloren.' ?>
 +<? setvariable var:Text2 'Auf alle Rufnummern reagieren' ?>
 +<? setvariable var:Text3 'MSN' ?>
 +<? setvariable var:Text4 'Rufnummer' ?>
@@ -1250,18 +1250,18 @@
 +<? setvariable var:Text6 'Anklopfen' ?>
 +<? setvariable var:Text7 'MSN besetzt' ?>
 +<? setvariable var:Text8 'Mobilteile' ?>
-+<? setvariable var:Text17 'Ordnen Sie den Mobilteilen bis zu fünf Rufnummern zu, auf die die Mobilteile reagieren und die für abgehende Anrufe verwendet werden können.' ?>
++<? setvariable var:Text17 'Ordnen Sie den Mobilteilen bis zu fï¿½nf Rufnummern zu, auf die die Mobilteile reagieren und die fï¿½r abgehende Anrufe verwendet werden kï¿½nnen.' ?>
 +<? setvariable var:Text21 'Neue Zuordnung' ?>
-+<? setvariable var:Text23 'DECT-Endgeräte' ?>
-+<? setvariable var:Text24 'Übersicht' ?>
++<? setvariable var:Text23 'DECT-Endgerï¿½te' ?>
++<? setvariable var:Text24 'ï¿½bersicht' ?>
 +<? setvariable var:Text25 'Festnetz' ?>
 +<? setvariable var:Text26 'Interne Nummern' ?>
 +<? setvariable var:Text27 'Optionen' ?>
 +<? setvariable var:Text28 'Zuordnung' ?>
 +<? setvariable var:Text29 'Mobilteile' ?>
 +<? setvariable var:Text30 'Nebenstelle' ?>
-+<? setvariable var:Text32 'Zuordnung ändern' ?>
-+<? setvariable var:Text31 'Zuordnung löschen' ?>
++<? setvariable var:Text32 'Zuordnung ï¿½ndern' ?>
++<? setvariable var:Text31 'Zuordnung lï¿½schen' ?>
 +<? setvariable var:Text50 'A' ?>
 +<? setvariable var:Text51 'B' ?>
 +<? setvariable var:Text52 'C' ?>
@@ -1269,7 +1269,7 @@
 +<? setvariable var:Text54 'E' ?>
 +
 --- usr/www/avm/html/de/fon/fonsetupdect.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.js	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/fon/fonsetupdect.js	2009-07-30 16:27:21.176242318 +0200
 @@ -0,0 +1,144 @@
 +<!--		../fon/fonsetupdect.js		-->
 +<style type="text/css">
@@ -1292,8 +1292,8 @@
 +</style>
 +<script type="text/javascript">
 +<? include ../html/$var:lang/js/jsl.js ?>
-+var g_mldDelete	= "Wollen Sie diese Zuordnung löschen ?";
-+var g_mldAllOn	= "Wollen Sie alle bestehenden Zuordnungen löschen ?";
++var g_mldDelete	= "Wollen Sie diese Zuordnung lï¿½schen ?";
++var g_mldAllOn	= "Wollen Sie alle bestehenden Zuordnungen lï¿½schen ?";
 +var g_New = -1;
 +var g_Sequence = new Array("1 ", "2 ", "3 ", "4 ", "5 ", "6 ");
 +var g_Index = new Array("A", "B", "C", "D", "E");
@@ -1416,282 +1416,172 @@
 +}
 +</script>
 --- usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html	2009-07-30 16:27:21.176242318 +0200
 @@ -0,0 +1,12 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Festnetzrufnummern</div></div></div></div></div></div>
 +	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
 +		<p>Auf dieser Registerkarte tragen Sie die Rufnummern Ihres Festnetzanschlusses in die FRITZ!Box ein.</p>
 +		<ol>
-+			<li>Wählen Sie die Art Ihres Festnetzanschlusses aus.</li>
-+			<li>Tragen Sie Ihre ISDN-Rufnummern oder die Rufnummer Ihres analogen Anschlusses in die dafür vorgesehenen Felder ein.</li>
-+			<li>Klicken Sie auf die Schaltfläche &quot;Übernehmen&quot;, damit die Rufnummern in der FRITZ!Box eingetragen werden.</li>
++			<li>Wï¿½hlen Sie die Art Ihres Festnetzanschlusses aus.</li>
++			<li>Tragen Sie Ihre ISDN-Rufnummern oder die Rufnummer Ihres analogen Anschlusses in die dafï¿½r vorgesehenen Felder ein.</li>
++			<li>Klicken Sie auf die Schaltflï¿½che &quot;ï¿½bernehmen&quot;, damit die Rufnummern in der FRITZ!Box eingetragen werden.</li>
 +		</ol>
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html	2009-07-30 16:27:21.176242318 +0200
 @@ -0,0 +1,23 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Interne Nummer</div></div></div></div></div></div>
 +	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
 +		<p>Auf dieser Seite weisen Sie einem DECT-Telefon, das mit der FRITZ!Box verbunden ist, eine interne Nummer zu. Das Telefon, dem Sie die interne 
-+		Nummer zuweisen möchten, bestimmen Sie durch die Angabe im Feld &quot;Rufnummer des Telefons&quot;.</p>
++		Nummer zuweisen mï¿½chten, bestimmen Sie durch die Angabe im Feld &quot;Rufnummer des Telefons&quot;.</p>
 +		<h3>Nummer</h3>
 +		<p>Der hier angezeigte Wert ist die interne Nummer, die dem DECT-Telefon zugewiesen wird. Die Nummer wird automatisch von der FRITZ!Box vorgegeben 
-+		und kann nicht verändert werden.</p>
++		und kann nicht verï¿½ndert werden.</p>
 +		<h3>Bezeichnung</h3>
-+		<p>Tragen Sie hier eine beliebige Bezeichnung für das DECT-Telefon ein, dem Sie die interne Nummer zuweisen möchten. Mit dieser Bezeichnung 
-+		wird das DECT-Telefon in den Listen anderer Menüs (z.B. &quot;Anrufliste&quot;, &quot;Wecker&quot;) angezeigt.</p>
++		<p>Tragen Sie hier eine beliebige Bezeichnung fï¿½r das DECT-Telefon ein, dem Sie die interne Nummer zuweisen mï¿½chten. Mit dieser Bezeichnung 
++		wird das DECT-Telefon in den Listen anderer Menï¿½s (z.B. &quot;Anrufliste&quot;, &quot;Wecker&quot;) angezeigt.</p>
 +		<h3>Rufnummer des Telefons</h3>
-+		<p>Wählen Sie hier eine Rufnummer aus, die Sie direkt am DECT-Telefon eingegeben haben. Mit dieser Auswahl legen Sie das DECT-Telefon fest, 
-+		dem Sie die interne Nummer zuweisen möchten. Hier werden nur Rufnummern zur Auswahl angeboten, die Sie bereits in die FRITZ!Box eingetragen 
++		<p>Wï¿½hlen Sie hier eine Rufnummer aus, die Sie direkt am DECT-Telefon eingegeben haben. Mit dieser Auswahl legen Sie das DECT-Telefon fest, 
++		dem Sie die interne Nummer zuweisen mï¿½chten. Hier werden nur Rufnummern zur Auswahl angeboten, die Sie bereits in die FRITZ!Box eingetragen 
 +		haben.</p>
 +		<p>Die automatisch von der FRITZ!Box vorgegebene interne Nummer steht ebenfalls in dieser Liste zur Auswahl. Die Auswahl der internen Nummer 
 +		als Rufnummer des Telefons ist dann sinnvoll, wenn die Rufnummer des Telefons auch an anderen Telefonen zugewiesen worden ist. Geben Sie in 
 +		diesem Fall auch direkt am DECT-Telefon die interne Nummer als Rufnummer ein. Damit stellen Sie sicher, dass nur dieses eine DECT-Telefon auf 
 +		die interne Nummer reagiert.</p>
-+		<p>Klicken Sie auf die Schaltfläche &quot;Übernehmen&quot;, um die Änderungen der Einstellungen zu übernehmen.</p>
++		<p>Klicken Sie auf die Schaltflï¿½che &quot;ï¿½bernehmen&quot;, um die ï¿½nderungen der Einstellungen zu ï¿½bernehmen.</p>
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_dect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_dect.html	2009-07-30 16:27:21.176242318 +0200
 @@ -0,0 +1,25 @@
 +<div class="Hilfe">
-+ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">DECT-Endgeräte</div></div></div></div></div></div>
++ 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">DECT-Endgerï¿½te</div></div></div></div></div></div>
 +	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
-+		<p>Um die DECT-Endgeräte an der FRITZ!Box in Betrieb zu nehmen, sind folgende Schritte notwendig:</p>
++		<p>Um die DECT-Endgerï¿½te an der FRITZ!Box in Betrieb zu nehmen, sind folgende Schritte notwendig:</p>
 +		<ul>
 +			<li>Tragen Sie Ihre Internetrufnummern und Ihre Festnetzrufnummern in die FRITZ!Box ein.</li>
-+			<li>Weisen Sie den DECT-Endgeräten die Rufnummern zu.</li>
++			<li>Weisen Sie den DECT-Endgerï¿½ten die Rufnummern zu.</li>
 +		</ul>
 +		<p><b>Rufnummern in die FRITZ!Box eintragen:</b><br>
-+		Internetrufnummern tragen Sie im Menü &quot;Telefonie / Internettelefonie&quot; ein. Festnetzrufnummern tragen Sie auf der Seite &quot;Festnetzrufnummern&quot; 
-+		in diesem Menü ein.</p>
++		Internetrufnummern tragen Sie im Menï¿½ &quot;Telefonie / Internettelefonie&quot; ein. Festnetzrufnummern tragen Sie auf der Seite &quot;Festnetzrufnummern&quot; 
++		in diesem Menï¿½ ein.</p>
 +		<h2>Hauptrufnummer</h2>
-+		<p>DECT-Endgeräte, an denen keine Rufnummer zugewiesen wurde, führen ausgehende Rufe über die im Feld &quot;Hauptrufnummer&quot; eingetragene Rufnummer. 
++		<p>DECT-Endgerï¿½te, an denen keine Rufnummer zugewiesen wurde, fï¿½hren ausgehende Rufe ï¿½ber die im Feld &quot;Hauptrufnummer&quot; eingetragene Rufnummer. 
 +		Die erste Internetrufnummer, die in die FRITZ!Box eingtragen wird, wird automatisch zur Hauptrufnummer.</p>
 +		<h2>vorhandene Rufnummern</h2>
 +		<p>In der Liste &quot;vorhandene Rufnummern&quot; werden die Rufnummern angezeigt, die Sie bereits in die FRITZ!Box eingetragen haben. Diese Rufnummern 
-+		können an den DECT-Endgeräten als Mehrfachrufnummern (MSNs) angegeben werden.<br>
-+		<b>Hinweis:</b> Falls an den DECT-Endgeräten Rufnummern eingetragen sind, die in dieser Liste noch nicht aufgeführt sind, tragen Sie diese Rufnummern 
++		kï¿½nnen an den DECT-Endgerï¿½ten als Mehrfachrufnummern (MSNs) angegeben werden.<br>
++		<b>Hinweis:</b> Falls an den DECT-Endgerï¿½ten Rufnummern eingetragen sind, die in dieser Liste noch nicht aufgefï¿½hrt sind, tragen Sie diese Rufnummern 
 +		ebenfalls in die FRITZ!Box ein. </p>
 +		<h2>Telefonbuch senden</h2>
-+		<p>Klicken Sie auf diese Schaltfläche, wenn Sie das Telefonbuch oder einzelne Einträge aus dem Telefonbuch zu einem Mobilteil übertragen möchten.</p>
-+		<p>Klicken Sie auf die Schaltfläche &quot;Übernehmen&quot;, um die Änderungen der Einstellungen zu übernehmen.</p>
++		<p>Klicken Sie auf diese Schaltflï¿½che, wenn Sie das Telefonbuch oder einzelne Eintrï¿½ge aus dem Telefonbuch zu einem Mobilteil ï¿½bertragen mï¿½chten.</p>
++		<p>Klicken Sie auf die Schaltflï¿½che &quot;ï¿½bernehmen&quot;, um die ï¿½nderungen der Einstellungen zu ï¿½bernehmen.</p>
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_editdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_editdect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_editdect.html	2009-07-30 16:27:21.176242318 +0200
 @@ -0,0 +1,19 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
 +	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
-+		<p>Bis zu sechs DECT-Telefone, können mit der FRITZ!Box verbunden werden. </p>
-+		<p>In der Tabelle werden Ihnen die DECT-Telefone angezeigt, die bereits mit der FRITZ!Box verbunden sind. Über 
-+		die Schaltflächen am rechten Tabellenrand können Sie registrierte DECT-Telefone abmelden.</p>
-+		<p>Nur bei DECT-Telefonen mit dem Zusatzmerkmal &quot;Swissvoice/GAP&quot; können die erweiterten Einstellungen, u.a. für den Anrufbeantworter und die 
++		<p>Bis zu sechs DECT-Telefone, kï¿½nnen mit der FRITZ!Box verbunden werden. </p>
++		<p>In der Tabelle werden Ihnen die DECT-Telefone angezeigt, die bereits mit der FRITZ!Box verbunden sind. ï¿½ber 
++		die Schaltflï¿½chen am rechten Tabellenrand kï¿½nnen Sie registrierte DECT-Telefone abmelden.</p>
++		<p>Nur bei DECT-Telefonen mit dem Zusatzmerkmal &quot;Swissvoice/GAP&quot; kï¿½nnen die erweiterten Einstellungen, u.a. fï¿½r den Anrufbeantworter und die 
 +		Rufnummernzuordnung, vom Mobilteil aus vorgenommen werden.</p>
-+		<h4>Schaltfläche &quot;Mobilteil anmelden&quot;</h4>
-+		<p>Um ein neues DECT-Telefon an der FRITZ!Box anzumelden, klicken Sie auf die Schaltfläche &quot;Mobilteil anmelden&quot;. Am DECT-Telefon müssen Sie
++		<h4>Schaltflï¿½che &quot;Mobilteil anmelden&quot;</h4>
++		<p>Um ein neues DECT-Telefon an der FRITZ!Box anzumelden, klicken Sie auf die Schaltflï¿½che &quot;Mobilteil anmelden&quot;. Am DECT-Telefon mï¿½ssen Sie
 +		zur Registrierung die System-PIN (in der Werkseinstellung &quot;0000&quot;) eingeben.</p>
-+		<h4>Schaltfläche &quot;Mobilteile pagen&quot;</h4>
-+		<p>Über diese Schaltfläche können Sie alle mit der FRITZ!Box verbundene DECT-Telefonen durch einen internen Anruf lokalisieren.</p>
-+		<h4>Schaltfläche &quot;Datum und Uhrzeit setzen&quot;</h4>
-+		<p>Über diese Schaltfläche können Sie auf den angemeldeten DECT-Telefonen das aktuelle Datum und die Uhrzeit der FRITZ!Box setzen (z.B. nach einem 
++		<h4>Schaltflï¿½che &quot;Mobilteile pagen&quot;</h4>
++		<p>ï¿½ber diese Schaltflï¿½che kï¿½nnen Sie alle mit der FRITZ!Box verbundene DECT-Telefonen durch einen internen Anruf lokalisieren.</p>
++		<h4>Schaltflï¿½che &quot;Datum und Uhrzeit setzen&quot;</h4>
++		<p>ï¿½ber diese Schaltflï¿½che kï¿½nnen Sie auf den angemeldeten DECT-Telefonen das aktuelle Datum und die Uhrzeit der FRITZ!Box setzen (z.B. nach einem 
 +		Akkuwechsel am Mobilteil).</p>
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_fon1dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_fon1dect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_fon1dect.html	2009-07-30 16:27:21.176242318 +0200
 @@ -0,0 +1,19 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
 +	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
-+		<p>Bis zu sechs DECT-Telefone, können mit der FRITZ!Box verbunden werden. </p>
-+		<p>In der Tabelle werden Ihnen die DECT-Telefone angezeigt, die bereits mit der FRITZ!Box verbunden sind. Über 
-+		die Schaltflächen am rechten Tabellenrand können Sie registrierte DECT-Telefone abmelden.</p>
-+		<p>Nur bei DECT-Telefonen mit dem Zusatzmerkmal &quot;Swissvoice/GAP&quot; können die erweiterten Einstellungen, u.a. für den Anrufbeantworter und die 
++		<p>Bis zu sechs DECT-Telefone, kï¿½nnen mit der FRITZ!Box verbunden werden. </p>
++		<p>In der Tabelle werden Ihnen die DECT-Telefone angezeigt, die bereits mit der FRITZ!Box verbunden sind. ï¿½ber 
++		die Schaltflï¿½chen am rechten Tabellenrand kï¿½nnen Sie registrierte DECT-Telefone abmelden.</p>
++		<p>Nur bei DECT-Telefonen mit dem Zusatzmerkmal &quot;Swissvoice/GAP&quot; kï¿½nnen die erweiterten Einstellungen, u.a. fï¿½r den Anrufbeantworter und die 
 +		Rufnummernzuordnung, vom Mobilteil aus vorgenommen werden.</p>
-+		<h4>Schaltfläche &quot;Mobilteil anmelden&quot;</h4>
-+		<p>Um ein neues DECT-Telefon an der FRITZ!Box anzumelden, klicken Sie auf die Schaltfläche &quot;Mobilteil anmelden&quot;. Am DECT-Telefon müssen Sie
++		<h4>Schaltflï¿½che &quot;Mobilteil anmelden&quot;</h4>
++		<p>Um ein neues DECT-Telefon an der FRITZ!Box anzumelden, klicken Sie auf die Schaltflï¿½che &quot;Mobilteil anmelden&quot;. Am DECT-Telefon mï¿½ssen Sie
 +		zur Registrierung die System-PIN (in der Werkseinstellung &quot;0000&quot;) eingeben.</p>
-+		<h4>Schaltfläche &quot;Mobilteile pagen&quot;</h4>
-+		<p>Über diese Schaltfläche können Sie alle mit der FRITZ!Box verbundene DECT-Telefonen durch einen internen Anruf lokalisieren.</p>
-+		<h4>Schaltfläche &quot;Datum und Uhrzeit setzen&quot;</h4>
-+		<p>Über diese Schaltfläche können Sie auf den angemeldeten DECT-Telefonen das aktuelle Datum und die Uhrzeit der FRITZ!Box setzen (z.B. nach einem 
++		<h4>Schaltflï¿½che &quot;Mobilteile pagen&quot;</h4>
++		<p>ï¿½ber diese Schaltflï¿½che kï¿½nnen Sie alle mit der FRITZ!Box verbundene DECT-Telefonen durch einen internen Anruf lokalisieren.</p>
++		<h4>Schaltflï¿½che &quot;Datum und Uhrzeit setzen&quot;</h4>
++		<p>ï¿½ber diese Schaltflï¿½che kï¿½nnen Sie auf den angemeldeten DECT-Telefonen das aktuelle Datum und die Uhrzeit der FRITZ!Box setzen (z.B. nach einem 
 +		Akkuwechsel am Mobilteil).</p>
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_listdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_listdect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_listdect.html	2009-07-30 16:27:21.180239203 +0200
 @@ -0,0 +1,21 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Interne Nummern</div></div></div></div></div></div>
 +	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
-+		<p>DECT-Telefonen, die mit der FRITZ!Box verbunden sind, können Sie interne Rufnummern zuweisen. </p>
++		<p>DECT-Telefonen, die mit der FRITZ!Box verbunden sind, kï¿½nnen Sie interne Rufnummern zuweisen. </p>
 +		<p>Mit der internen Nummer </p>
 +		<ul>
-+			<li>können die DECT-Telefone, die mit der FRITZ!Box verbunden sind, sich gegenseitig anwählen</li>
-+			<li>können die DECT-Telefone in anderen Einstellungsoptionen, wie z. B. der &quot;Anrufliste&quot; gezielt ausgewählt werden.</li>
++			<li>kï¿½nnen die DECT-Telefone, die mit der FRITZ!Box verbunden sind, sich gegenseitig anwï¿½hlen</li>
++			<li>kï¿½nnen die DECT-Telefone in anderen Einstellungsoptionen, wie z. B. der &quot;Anrufliste&quot; gezielt ausgewï¿½hlt werden.</li>
 +		</ul>
 +		<p></p>
-+		<p>Um einen Anruf zwischen zwei mit der FRITZ!Box verbundenen DECT-Telefonen herzustellen, wählen Sie **&lt;Nummer&gt;<br>
-+		<b>Beispiel: </b>Sie wollen von einem mit der FRITZ!Box verbundenen DECT-Telefon das DECT-Telefon mit der internen Nummer &quot;55&quot; anrufen. Wählen 
++		<p>Um einen Anruf zwischen zwei mit der FRITZ!Box verbundenen DECT-Telefonen herzustellen, wï¿½hlen Sie **&lt;Nummer&gt;<br>
++		<b>Beispiel: </b>Sie wollen von einem mit der FRITZ!Box verbundenen DECT-Telefon das DECT-Telefon mit der internen Nummer &quot;55&quot; anrufen. Wï¿½hlen 
 +		Sie: **55</p>
-+		<p>Um eine interne Nummer einem DECT-Telefon zuzuweisen, klicken Sie auf die Schaltfläche &quot;Neue Nummer&quot;.</p>
-+		<p>In der Tabelle werden Ihnen die DECT-Telefone angezeigt, die schon über eine interne Nummer verfügen. Die Tabelleneinträge können Sie über 
-+		die Schaltflächen am rechten Tabellenrand verändern oder löschen.</p>
-+		<h4>Schaltfläche &quot;Neue Nummer&quot;</h4>
-+		<p>Über diese Schaltfläche weisen Sie den DECT-Telefonen interne Nummern zu.</p>
++		<p>Um eine interne Nummer einem DECT-Telefon zuzuweisen, klicken Sie auf die Schaltflï¿½che &quot;Neue Nummer&quot;.</p>
++		<p>In der Tabelle werden Ihnen die DECT-Telefone angezeigt, die schon ï¿½ber eine interne Nummer verfï¿½gen. Die Tabelleneintrï¿½ge kï¿½nnen Sie ï¿½ber 
++		die Schaltflï¿½chen am rechten Tabellenrand verï¿½ndern oder lï¿½schen.</p>
++		<h4>Schaltflï¿½che &quot;Neue Nummer&quot;</h4>
++		<p>ï¿½ber diese Schaltflï¿½che weisen Sie den DECT-Telefonen interne Nummern zu.</p>
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
 --- usr/www/avm/html/de/help/hilfe_fon_setupdect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_setupdect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/help/hilfe_fon_setupdect.html	2009-07-30 16:27:21.180239203 +0200
 @@ -0,0 +1,21 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Rufnummernzuordnung</div></div></div></div></div></div>
 +	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
-+		<p>DECT-Telefonen, die mit der FRITZ!Box verbunden sind, können Sie bis zu fünf Rufnummern (MSN A bis E) zuweisen. </p>
-+		<p>Rufnummern, die einem Mobilteil zugeordnet werden können, sind </p>
++		<p>DECT-Telefonen, die mit der FRITZ!Box verbunden sind, kï¿½nnen Sie bis zu fï¿½nf Rufnummern (MSN A bis E) zuweisen. </p>
++		<p>Rufnummern, die einem Mobilteil zugeordnet werden kï¿½nnen, sind </p>
 +		<ul>
-+			<li>Internetrufnummern, die im Menü &quot;Internettelefonie&quot; eingerichtet wurden.</li>
++			<li>Internetrufnummern, die im Menï¿½ &quot;Internettelefonie&quot; eingerichtet wurden.</li>
 +			<li>Festnetzrufnummer(n) eines vorhandenen Analog- oder ISDN-Telefonanschlusses.</li>
 +			<li>Unter &quot;Interne Nummern&quot; eingerichtete interne Rufnummern der DECT-Telefone.</li>
 +		</ul>
 +		<p></p>
-+		<h4>Schaltfläche &quot;Neue Zuordnung&quot</h4>
-+		<p>Um eine Rufnummer einem DECT-Telefon zuzuweisen, klicken Sie auf die Schaltfläche &quot;Neue Zuordnung&quot;.</p>
-+		<p>In der Tabelle werden Ihnen die Rufnummern (MSN A bis E) angezeigt, die schon einem DECT-Telefon zugeordnet sind. Die Tabelleneinträge können Sie über 
-+		die Schaltflächen am rechten Tabellenrand verändern oder löschen.</p>
++		<h4>Schaltflï¿½che &quot;Neue Zuordnung&quot</h4>
++		<p>Um eine Rufnummer einem DECT-Telefon zuzuweisen, klicken Sie auf die Schaltflï¿½che &quot;Neue Zuordnung&quot;.</p>
++		<p>In der Tabelle werden Ihnen die Rufnummern (MSN A bis E) angezeigt, die schon einem DECT-Telefon zugeordnet sind. Die Tabelleneintrï¿½ge kï¿½nnen Sie ï¿½ber 
++		die Schaltflï¿½chen am rechten Tabellenrand verï¿½ndern oder lï¿½schen.</p>
 +		<h4>Option &quot;Auf alle Rufnummern reagieren&quot;</h4>
-+		<p>Über diese Option weisen Sie die DECT-Telefone an, auf eingehende Anrufe an allen Rufnummern zu reagiern. Durch das Setzen dieser Option 
-+		werden bereits eingerichtete Rufnummernzuordnungen gelöscht.</p>
++		<p>ï¿½ber diese Option weisen Sie die DECT-Telefone an, auf eingehende Anrufe an allen Rufnummern zu reagiern. Durch das Setzen dieser Option 
++		werden bereits eingerichtete Rufnummernzuordnungen gelï¿½scht.</p>
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
---- usr/www/avm/html/de/home/fondevices.frm.orig	2008-09-22 15:30:19.000000000 +0200
-+++ usr/www/avm/html/de/home/fondevices.frm	2008-09-24 11:32:57.000000000 +0200
-@@ -120,3 +120,4 @@
- <input type="hidden" name="telcfg:settings/VoipExtension$0/enabled" value="0" id="uiPostTelCfgVoipExtEnable$0" disabled />
- <input type="hidden" name="voipextension:settings/extension$0/enabled" value="0" id="uiPostVoipExtEnable$0" disabled />
- ` ?>
-+<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
---- usr/www/avm/html/de/home/home.html.orig	2008-09-22 15:30:25.000000000 +0200
-+++ usr/www/avm/html/de/home/home.html	2008-09-24 11:32:57.000000000 +0200
-@@ -14,7 +14,6 @@
- <script type="text/javascript">document.write(TrProduktInfo());</script>
- <tr id="uiNotSigned" style="display:none;">
- <td colspan="2" style="text-align:right;" >
--Vom Hersteller nicht unterstÃ¼tzte Ã„nderungen: <a href="javascript:jslPopHelp('hilfe_nichtsigniert')">Weitere Informationen.</a>
- </td>
- </tr>
- </table>
-@@ -26,6 +25,11 @@
- <td><script type="text/javascript">document.write(DslStateDisplay());</script></td>
- </tr>
- <tr>
-+<td class="tdName"><script type="text/javascript">document.write(DectStateTitle(true));</script></td>
-+<td class="tdLed"><script type="text/javascript">document.write(DectLed());</script></td>
-+<td><script type="text/javascript">document.write(DectStateDisplay());</script></td>
-+</tr>
-+<tr>
- <td class="tdName"><script type="text/javascript">document.write(WlanStateTitle(true));</script></td>
- <td class="tdLed"><script type="text/javascript">document.write(WlanStateLed());</script></td>
- <td><script type="text/javascript">document.write(WlanStateDisplay());</script></td>
-@@ -146,4 +150,9 @@
- </table>
- </div></div></div></div></div></div>
- <? include ../html/de/home/rbb_refresh.html ?>
-+<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
-+<input type="button" onclick="uiDoInfo()" value="Info" class=Pushbutton>
-+<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
-+<input type="button" onclick="uiDoRefresh()" value="<? echo $var:txtRefresh ?>" class=Pushbutton>
-+</div></div></div></div></div></div>
- </div>
---- usr/www/avm/html/de/home/home.js.orig	2008-09-22 15:30:19.000000000 +0200
-+++ usr/www/avm/html/de/home/home.js	2008-09-24 11:32:57.000000000 +0200
-@@ -78,6 +78,7 @@
- var g_Fon50 = "ISDN-Telefone";
- var g_FonAll = "alle Telefone";
- var g_tamActive = 0;
-+var mCount = "<? query telcfg:settings/Foncontrol ?>";
- <? repeat [ 0 4 ] `
- if ("<? query tam:settings/TAM$0/Active ?>" == "1") {
- g_tamActive += 1;
-@@ -179,7 +180,7 @@
- SetSpanText("Status$1", uiSipState("$1"));
- ` ?>
- if (!showFon) jslDisplay("FonAll", true);
--var signed = "<? query box:status/signed_firmware ?>";
-+var signed = "1";
- // if (g_showEventlink != 0) jslDisplay("uiViewEventlink", true);
- jslDisplay("uiNotSigned", signed == "0");
- jslZebrastreifen("tProdukt", "#F8F8F8", "#FFFFFF");
-@@ -1005,10 +1006,43 @@
- case "8": str += "leuchtet bei aktiver Klingelsperre"; break;
- case "9": str += "blinkt bei Anruf in Abwesenheit"; break;
- case "11": str += "zeigt neue Nachrichten im Anrufbeantworter an"; break;
-+case "12": str += "leuchtet bei aktiver DECT-Verbindung"; break;
- case "13": str += "zeigt neue Nachrichten im Anrufbeantworter, empfangene Faxe und Anrufe in Abwesenheit an"; break;
- }
- return str + ".";
- }
-+function DectStateTitle(asLink) {
-+var str = "";
-+if (asLink) str += "<a href=\"javascript:jslGoTo('dect', 'setting');\">";
-+str += "DECT";
-+if (asLink) str += "</a>";
-+return str;
-+}
-+function DectLed() {
-+var str = "<img src=\"../html/<? echo $var:lang ?>/images/led_gray.gif\">";
-+<? if eq '<? query dect:settings/enabled ?>' '1' `
-+str = "<img src=\"../html/<? echo $var:lang ?>/images/led_green.gif\">";
-+` ?>
-+return str;
-+}
-+
-+function DectStateDisplay() {
-+var g_countDect2 = 0;
-+<? if eq '<? query dect:settings/enabled ?>' '0' `
-+return "aus";
-+` ?>
-+//g_countDect2
-+<? multiquery dect:settings/Handset/list(Subscribed) `
-+if ( "$2" == "1") g_countDect2++;
-+` ?>
-+var str = new Array(" Schnurlostelefon"," angemeldet");
-+switch (g_countDect2)
-+{
-+case 0: return "an, kein" + str.join("");
-+case 1: return "an, ein" + str.join("");
-+default: return "an, "+g_countDect2+str.join("e");
-+}
-+}
- function RufumleitungDisplay() {
- isAllIncoming=0;
- <? multiquery telcfg:settings/CallerIDActions/list(CallerID) `
-@@ -1419,4 +1453,7 @@
- }
- jslGoTo('fon','wecker');
- }
-+function uiDoInfo() {
-+	jslPopHelp("modinfo");
-+}
- </script>
 --- usr/www/avm/html/de/menus/klingelsperre_mimi.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/menus/klingelsperre_mimi.frm	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/menus/klingelsperre_mimi.frm	2009-07-30 16:27:21.180239203 +0200
 @@ -0,0 +1 @@
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
 --- usr/www/avm/html/de/menus/menu2_dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/menus/menu2_dect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/de/menus/menu2_dect.html	2009-07-30 16:27:21.184240554 +0200
 @@ -0,0 +1,15 @@
 +<? include ../html/$var:lang/menus/menu2_$var:menu.inc ?>
 +<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('dect','setting')">DECT</a><span class="PTextOnly">DECT</span></li>
@@ -1708,9 +1598,9 @@
 +` `
 +<li class="$var:classsetting"><img class="LMenuPfeil" src="$var:subpfeil"><a href="javascript:jslGoTo('dect','setting')">DECT-Einstellungen</a><span class="PTextOnly">DECT-Einstellungen</span></li>
 +` ?>
---- usr/www/avm/html/de/menus/menu2_fon.html.orig	2008-09-22 15:30:16.000000000 +0200
-+++ usr/www/avm/html/de/menus/menu2_fon.html	2008-09-24 11:32:57.000000000 +0200
-@@ -50,6 +50,15 @@
+--- usr/www/avm/html/de/menus/menu2_fon.html.orig	2009-07-27 17:04:44.000000000 +0200
++++ usr/www/avm/html/de/menus/menu2_fon.html	2009-07-30 16:27:21.184240554 +0200
+@@ -51,6 +51,15 @@
  <? if eq $var:pagename quality `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:jslGoTo('fon','siplist')">Internettelefonie</a><span class="PTextOnly">Internettelefonie</span></li>
  <? setvariable var:classname 'LSubitem' ?>
@@ -1721,13 +1611,13 @@
 +<? if eq $var:pagename fon1 `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
 +<? if eq $var:pagename fonab `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
 +<? if eq $var:pagename fon1isdn `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
-+<li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:jslGoTo('fon','dect')">DECT-Handgeräte</a><span class="PTextOnly">DECT-Handgeräte</span></li>
++<li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:jslGoTo('fon','dect')">DECT-Handgerï¿½te</a><span class="PTextOnly">DECT-Handgerï¿½te</span></li>
 +<? setvariable var:classname 'LSubitem' ?>
  <? if eq $var:pagename routing `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  <? if eq $var:pagename route `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  <? if eq $var:pagename vorwahl `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
---- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2008-09-24 11:32:56.000000000 +0200
-+++ usr/www/avm/html/de/menus/menu2_konfig.html	2008-09-24 11:32:57.000000000 +0200
+--- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2009-07-30 16:27:20.760240473 +0200
++++ usr/www/avm/html/de/menus/menu2_konfig.html	2009-07-30 16:27:21.188239616 +0200
 @@ -52,6 +52,11 @@
  ` `
  <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('wlan','wlan')">WLAN</a><span class="PTextOnly">WLAN</span></li>
@@ -1740,8 +1630,8 @@
  <? if eq `$var:menu` 'system' `
  <? include ../html/de/menus/menu2_system.html ?>
  ` `
---- usr/www/avm/html/de/system/infoled.html.orig	2008-09-22 15:30:11.000000000 +0200
-+++ usr/www/avm/html/de/system/infoled.html	2008-09-24 11:32:57.000000000 +0200
+--- usr/www/avm/html/de/system/infoled.html.orig	2009-07-27 17:04:42.000000000 +0200
++++ usr/www/avm/html/de/system/infoled.html	2009-07-30 16:27:21.188239616 +0200
 @@ -17,6 +17,7 @@
  <option value="9">blinkt bei Anruf in Abwesenheit</option>
  <option value="11">zeigt neue Nachrichten im Anrufbeantworter an</option>
@@ -1751,7 +1641,7 @@
  </p>
  <p class="mt10">
 --- usr/www/avm/html/dect.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/dect.html	2008-09-24 11:32:57.000000000 +0200
++++ usr/www/avm/html/dect.html	2009-07-30 16:27:21.188239616 +0200
 @@ -0,0 +1,93 @@
 +<html>
 +<head>
@@ -1846,12 +1736,127 @@
 +</p>
 +</body>
 +</html>
---- usr/www/avm/html/de/home/fon1Mini.frm.orig	2008-09-22 15:30:11.000000000 +0200
-+++ usr/www/avm/html/de/home/fon1Mini.frm	2008-09-24 11:32:57.000000000 +0200
-@@ -34,5 +34,6 @@
+--- usr/www/avm/html/de/home/fon1Mini.frm.orig	2009-07-27 17:04:26.000000000 +0200
++++ usr/www/avm/html/de/home/fon1Mini.frm	2009-07-30 16:27:21.192240259 +0200
+@@ -35,6 +35,7 @@
  <input type="hidden" name="telcfg:settings/MSN/MSN8" value="<? query telcfg:settings/MSN/MSN8 ?>" id="uiMsn8" disabled>
  <input type="hidden" name="telcfg:settings/MSN/MSN9" value="<? query telcfg:settings/MSN/MSN9 ?>" id="uiMsn9" disabled>
  <input type="hidden" name="telcfg:settings/MSN/POTS" value="<? query telcfg:settings/MSN/POTS ?>" id="uiPots" disabled>
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
  <input type="hidden" name="var:FonAssiFromPage" value="<? echo $var:FonAssiFromPage ?>" id="uiFonAssiFromPage">
  <input type="hidden" name="var:RufnummerKonfig" value="<? echo $var:RufnummerKonfig ?>" id="uiPostRufnummerKonfig">
+ <? if neq $var:pagename fon1Mini `
+--- usr/www/avm/html/de/home/home.html.orig	2009-07-27 17:04:36.000000000 +0200
++++ usr/www/avm/html/de/home/home.html	2009-07-30 16:27:21.192240259 +0200
+@@ -14,7 +14,6 @@
+ <script type="text/javascript">document.write(TrProduktInfo());</script>
+ <tr id="uiNotSigned" style="display:none;">
+ <td colspan="2" style="text-align:right;" >
+-Vom Hersteller nicht unterstÃ¼tzte Ã„nderungen: <a href="javascript:jslPopHelp('hilfe_nichtsigniert')">Weitere Informationen.</a>
+ </td>
+ </tr>
+ <tr id="uiProviderDefaults" style="display:none;">
+@@ -57,6 +56,10 @@
+ <td class="tdLed"><script type="text/javascript">document.write(PppLed());</script></td>
+ <td ><script type="text/javascript">document.write(PppDisplay());</script></td>
+ </tr>
++<td class="tdName"><script type="text/javascript">document.write(DectStateTitle(true));</script></td>
++<td class="tdLed"><script type="text/javascript">document.write(DectLed());</script></td>
++<td><script type="text/javascript">document.write(DectStateDisplay());</script></td>
++</tr>
+ <tr id="FonAll" style="display:none">
+ <td class="tdName"><script type="text/javascript">document.write(FonTitle(false));</script></td>
+ <td class="tdLed"><img src="../html/de/images/led_gray.gif"></td>
+@@ -160,4 +163,9 @@
+ </table>
+ </div></div></div></div></div></div>
+ <? include ../html/de/home/rbb_refresh.html ?>
++<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
++<input type="button" onclick="uiDoInfo()" value="Info" class=Pushbutton>
++<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
++<input type="button" onclick="uiDoRefresh()" value="<? echo $var:txtRefresh ?>" class=Pushbutton>
++</div></div></div></div></div></div>
+ </div>
+--- usr/www/avm/html/de/home/fondevices.frm.orig	2009-07-27 17:04:40.000000000 +0200
++++ usr/www/avm/html/de/home/fondevices.frm	2009-07-30 16:27:21.196240759 +0200
+@@ -128,6 +128,7 @@
+ <? repeat [ 0 9 ] `
+ <input type="hidden" name="telcfg:settings/VoipExtension$0/enabled" value="0" id="uiPostTelCfgVoipExtEnable$0" disabled />
+ <Input type="hidden" name="telcfg:settings/VoipExtension$0/Name" value="" id="uiPostTelCfgVoipExtName$0" disabled />
++<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
+ ` ?>
+ <? multiquery voipextension:settings/extension/list '
+ <Input type="hidden" name="voipextension:command/$1" value="delete" id="uiPostDelete$1" disabled>
+--- usr/www/avm/html/de/home/home.js.orig	2009-07-30 16:27:20.784241548 +0200
++++ usr/www/avm/html/de/home/home.js	2009-07-30 16:27:21.200242326 +0200
+@@ -78,6 +78,7 @@
+ var g_FonAll = "alle Telefone";
+ var g_tamActive = 0;
+ var g_tamDisplay = 0;
++var mCount = "<? query telcfg:settings/Foncontrol ?>";
+ <? repeat [ 0 4 ] `
+ if ("<? query tam:settings/TAM$0/Active ?>" == "1") {
+ g_tamActive += 1;
+@@ -191,7 +192,7 @@
+ SetSpanText("Status$1", uiSipState("$1"));
+ ` ?>
+ if (!showFon) jslDisplay("FonAll", true);
+-var signed = "<? query box:status/signed_firmware ?>";
++var signed = "1";
+ // if (g_showEventlink != 0) jslDisplay("uiViewEventlink", true);
+ jslDisplay("uiNotSigned", signed == "0");
+ var defaults="<? query box:status/provider_default_config ?>";
+@@ -1074,10 +1075,43 @@
+ case "8": str += "leuchtet bei aktiver Klingelsperre"; break;
+ case "9": str += "blinkt bei Anruf in Abwesenheit"; break;
+ case "11": str += "zeigt neue Nachrichten im Anrufbeantworter an"; break;
++case "12": str += "leuchtet bei aktiver DECT-Verbindung"; break;
+ case "13": str += "zeigt neue Nachrichten im Anrufbeantworter, empfangene Faxe und Anrufe in Abwesenheit an"; break;
+ }
+ return str + ".";
+ }
++function DectStateTitle(asLink) {
++var str = "";
++if (asLink) str += "<a href=\"javascript:jslGoTo('dect', 'setting');\">";
++str += "DECT";
++if (asLink) str += "</a>";
++return str;
++}
++function DectLed() {
++var str = "<img src=\"../html/<? echo $var:lang ?>/images/led_gray.gif\">";
++<? if eq '<? query dect:settings/enabled ?>' '1' `
++str = "<img src=\"../html/<? echo $var:lang ?>/images/led_green.gif\">";
++` ?>
++return str;
++}
++
++function DectStateDisplay() {
++var g_countDect2 = 0;
++<? if eq '<? query dect:settings/enabled ?>' '0' `
++return "aus";
++` ?>
++//g_countDect2
++<? multiquery dect:settings/Handset/list(Subscribed) `
++if ( "$2" == "1") g_countDect2++;
++` ?>
++var str = new Array(" Schnurlostelefon"," angemeldet");
++switch (g_countDect2)
++{
++case 0: return "an, kein" + str.join("");
++case 1: return "an, ein" + str.join("");
++default: return "an, "+g_countDect2+str.join("e");
++}
++}
+ function RufumleitungDisplay() {
+ isAllIncoming=0;
+ <? multiquery telcfg:settings/CallerIDActions/list(CallerID) `
+@@ -1481,6 +1515,9 @@
+ }
+ jslGoTo('fon','wecker');
+ }
++function uiDoInfo() {
++jslPopHelp("modinfo");
++}
+ function make_ajax_url(txt)
+ {
+ var url = "/cgi-bin/webcm?getpage=../html/de/home/"+txt;

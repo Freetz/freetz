@@ -21,7 +21,9 @@ elif [ "$FREETZ_TYPE_FON_WLAN_7141" == "y" -o "$FREETZ_TYPE_FON_WLAN_7170" == "y
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170.patch"
 	fi
 elif [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ]; then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270.patch"
+elif [ "$FREETZ_TYPE_FON_WLAN_7270_V3" == "y" ]; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7270_v3.patch"
 elif [ "$FREETZ_TYPE_WLAN_3270" == "y" ]; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_3270.patch"
 elif [ "$FREETZ_TYPE_FON_WLAN_7240" == "y" ]; then
