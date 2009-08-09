@@ -16,9 +16,15 @@ done
 	"${FILESYSTEM_MOD_DIR}/lib/libmscodex.so*"
 
 echo1 "patching web UI"
-sed -i -e '/document.write(Sip.\{1,5\}(.*))/d' "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
-sed -i -e '/\<Status$1\>/d' "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
-sed -i -e '/jslGoTo('fon','siplist')/d;/^<?.* sip.*?>$/d' "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/menus/menu2_fon.html"
+sed -i -e "/document.write(Sip.\{1,5\}(.*))/d" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
+sed -i -e "/\<Status$1\>/d" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
+sed -i -e "/document.write(FonDisplay()/d" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
+sed -i -e "/document.write(FonTitle(false))/ {
+	N
+	s/\n//g
+	D }" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
+
+sed -i -e "/jslGoTo('fon','siplist')/d;/^<?.* sip.*?>$/d" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/menus/menu2_fon.html"
 
 echo1 "patching rc.conf"
 sed -i -e "s/CONFIG_FON_IPHONE=.*$/CONFIG_FON_IPHONE=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
