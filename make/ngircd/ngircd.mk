@@ -4,13 +4,13 @@ $(PKG)_SITE:=ftp://ftp.berlios.de/pub/ngircd
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ngircd/ngircd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ngircd
 
-ifeq ($(strip $(FREETZ_PACKAGE_TCP_WRAPPER)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS)),y)
 $(PKG)_DEPENDS_ON += tcp_wrappers
 endif
 
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_TCP_WRAPPER
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS
 
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_TCP_WRAPPER),--with-tcp-wrappers=$(TARGET_TOOLCHAIN_STAGING_DIR),--without-tcp-wrappers)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS),--with-tcp-wrappers=$(TARGET_TOOLCHAIN_STAGING_DIR),--without-tcp-wrappers)
 $(PKG)_CONFIGURE_OPTIONS += --with-syslog
 $(PKG)_CONFIGURE_OPTIONS += --without-zlib
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
