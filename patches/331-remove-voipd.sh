@@ -16,14 +16,9 @@ done
 	"${FILESYSTEM_MOD_DIR}/lib/libmscodex.so*"
 
 echo1 "patching web UI"
-sed -i -e "/document.write(Sip.\{1,5\}(.*))/d" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
-sed -i -e "/\<Status$1\>/d" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
-sed -i -e "/document.write(FonDisplay()/d" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
-sed -i -e "/document.write(FonTitle(false))/ {
-	N
-	s/\n//g
-	D }" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
-
+# this works on all firmwares from 04_33 and higher; maybe also befor 04_33, but not tested
+sed -i -e '/<tr.*\<FonAll\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
+sed -i -e '/<tr.*\<FonStatus$1\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
 sed -i -e "/jslGoTo('fon','siplist')/d;/^<?.* sip.*?>$/d" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/menus/menu2_fon.html"
 
 echo1 "patching rc.conf"
