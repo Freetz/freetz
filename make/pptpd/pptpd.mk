@@ -14,7 +14,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(PPTPD_DIR)
+		$(MAKE) -C $(PPTPD_DIR) \
+		CC="$(TARGET_CC)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(PPTPD_DEST_DIR)/usr/sbin
