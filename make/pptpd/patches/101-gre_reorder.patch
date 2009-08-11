@@ -1,0 +1,26 @@
+--- pptpgre.c.orig
++++ pptpgre.c
+@@ -403,15 +403,20 @@
+ 			stats.rx_truncated++;
+ 			return 0;
+ 		}
+-		/* check for out-of-order sequence number */
+-		if (seq == gre.seq_recv + 1) {
++		/* check for out-of-order sequence number
++		 * N.B.: some client implementations violate RFC 2637
++		 * and start their sequence numbers at 1 instead of 0,
++		 * so we have to introduce a kludge to deal with it. 
++		 * on wrap we may allow an out of order packet to pass
++		*/
++		if (seq == gre.seq_recv + 1 || seq == 1) {
+ 			if (pptpctrl_debug)
+ 				syslog(LOG_DEBUG, "GRE: accepting packet #%d", 
+ 				       seq);
+ 			stats.rx_accepted++;
+ 			gre.seq_recv = seq;
+ 			return cb(cl, buffer + ip_len + headersize, payload_len);
+-		} else if (seq == gre.seq_recv) {
++		} else if (!seq_greater(seq, gre.seq_recv)) {
+ 			if (pptpctrl_debug)
+ 				syslog(LOG_DEBUG,
+ 				       "GRE: discarding duplicate or old packet #%d (expecting #%d)", 

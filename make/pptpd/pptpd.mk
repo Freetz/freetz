@@ -4,6 +4,8 @@ $(PKG)_SITE:=@SF/poptop
 $(PKG)_BINARY:=$($(PKG)_DIR)/pptpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/pptpd
 
+$(PKG)_DEPENDS_ON := pppd
+
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-bcrelay
@@ -15,7 +17,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(PPTPD_DIR) \
-		CC="$(TARGET_CC)"
+		CC="$(TARGET_CC)" \
+		PLUGINS_CFLAGS="-I$(FREETZ_BASE_DIR)/$(PPPD_DIR)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(PPTPD_DEST_DIR)/usr/sbin
