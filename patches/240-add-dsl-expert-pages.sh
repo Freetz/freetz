@@ -5,6 +5,7 @@ for file in \
         ${FILESYSTEM_MOD_DIR}/usr/www/avm/html/de/internet/bits.html \
         ${FILESYSTEM_MOD_DIR}/usr/www/avm/html/de/internet/atm.html \
         ${FILESYSTEM_MOD_DIR}/usr/www/avm/html/de/internet/overview.html \
+	${FILESYSTEM_MOD_DIR}/usr/www/avm/html/de/internet/feedback.html \
 ; do
   if [ -f "$file" ]; then
     sed -i -e "
