@@ -80,7 +80,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-kerberos5
 OPENSSH_LDFLAGS := $(echo $(LDFLAGS)) -L. -Lopenbsd-compat/
 OPENSSH_LIBS := -lcrypto -lutil -lz -lcrypt -lresolv
 
-ifeq ($(strip $(FREETZ_PACKAGE_OPENSSH_STATIC)),y)
+ifeq ($(strip $(FREETZ_OPENSSH_STATIC)),y)
 OPENSSH_LDFLAGS += -static -all-static
 OPENSSH_LIBS += -ldl
 endif

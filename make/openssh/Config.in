@@ -1,7 +1,7 @@
 menu "OpenSSH"
 config FREETZ_PACKAGE_OPENSSH
 	bool
-	select FREETZ_LIB_libcrypto if ! FREETZ_OPENSSH_STATIC
+	#select FREETZ_LIB_libcrypto if ! FREETZ_OPENSSH_STATIC
 	select FREETZ_LIB_libresolv if ! FREETZ_OPENSSH_STATIC
 	select FREETZ_LIB_libutil if ! FREETZ_OPENSSH_STATIC
 	select FREETZ_LIB_libz if ! FREETZ_OPENSSH_STATIC
@@ -67,7 +67,7 @@ config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
 comment "Build statically linked binaries ---"
 	depends on FREETZ_PACKAGE_OPENSSH
 
-config FREETZ_PACKAGE_OPENSSH_STATIC 
+config FREETZ_OPENSSH_STATIC 
 	bool "Statically link OpenSSH binaries"
 	depends on FREETZ_PACKAGE_OPENSSH
 	default n
