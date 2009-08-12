@@ -10,23 +10,23 @@ config FREETZ_PACKAGE_BIP
 		workstations, or when you simply want to have a playback of what
 		was said while you were away.
 
-config FREETZ_BIP_WITH_SSL
+config FREETZ_PACKAGE_BIP_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_BIP
-	select FREETZ_LIB_libcrypto if ! FREETZ_BIP_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_BIP_STATIC
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_BIP_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_BIP_STATIC
 	default n
 	help
 		This option enables SSL support for bip.
 
-config FREETZ_BIP_STATIC
+config FREETZ_PACKAGE_BIP_STATIC
 	bool "Statically link libraries"
-	depends on FREETZ_BIP_WITH_SSL
+	depends on FREETZ_PACKAGE_BIP_WITH_SSL
 	default n
 	help
 		Build bip binary with statically linked libraries.
 
-config FREETZ_BIP_WITH_OIDENTD
+config FREETZ_PACKAGE_BIP_WITH_OIDENTD
 	bool "build with oidentd support"
 	depends on FREETZ_PACKAGE_BIP
 	default n
