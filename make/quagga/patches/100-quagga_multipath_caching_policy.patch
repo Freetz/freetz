@@ -108,8 +108,8 @@
 +#endif
 +#endif
 +
---- a/zebra/rt_netlink.c
-+++ b/zebra/rt_netlink.c
+--- zebra/rt_netlink.c
++++ zebra/rt_netlink.c
 @@ -36,6 +36,7 @@
  #include "thread.h"
  #include "privs.h"
@@ -135,8 +135,8 @@
        if (rta->rta_len > RTA_LENGTH (0))
          addattr_l (&req.n, 1024, RTA_MULTIPATH, RTA_DATA (rta),
                     RTA_PAYLOAD (rta));
---- a/zebra/zserv.c
-+++ b/zebra/zserv.c
+--- zebra/zserv.c
++++ zebra/zserv.c
 @@ -36,6 +36,7 @@
  #include "privs.h"
  #include "network.h"
@@ -273,8 +273,8 @@
  #endif /* HAVE_NETLINK */
  
  #ifdef HAVE_IPV6
---- a/zebra/zserv.h
-+++ b/zebra/zserv.h
+--- zebra/zserv.h
++++ zebra/zserv.h
 @@ -55,6 +55,9 @@ struct zserv
    /* default routing table this client munges */
    int rtm_table;
