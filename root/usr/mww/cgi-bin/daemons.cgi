@@ -1,5 +1,7 @@
 #!/bin/sh
 
+PACKAGEURL=/cgi-bin/pkgconf.cgi?pkg=
+SETTINGSURL=/cgi-bin/settings.cgi
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
@@ -12,6 +14,13 @@ stat_button() {
 	echo '<td><form class="btn" action="/cgi-bin/exec.cgi" method="post"><input type="hidden" name="pkg" value="'"$1"'"><input type="hidden" name="cmd" value="'"$2"'"><input type="submit" value="'"$2"'"'"$disabled"'></form></td>'
 }
 
+stat_packagelink() {
+	if [ "$1" = "crond" -o "$1" = "swap" -o "$1" = "telnetd" -o "$1" = "webcfg" ]; then
+		echo '<a href="'"$SETTINGSURL"'">'"$1"'</a>'
+	else
+ 		echo '<a href="'"$PACKAGEURL$1"'">'"$1"'</a>'
+	fi
+}
 stat_line() {
 	status="$(/mod/etc/init.d/rc.$1 status 2> /dev/null)"
 	if [ -n "$2" ]; then name="$2"; else name="$1"; fi
@@ -53,7 +62,7 @@ stat_line() {
 			;;
 	esac
 	echo '<tr>'
-	echo '<td width="180">'"$name"'</td><td style="color: '"$color"';" width="120">'"$status"'</td>'
+	echo '<td width="180">'$(stat_packagelink $name)'</td><td style="color: '"$color"';" width="120">'"$status"'</td>'
 
 	stat_button $1 start $start
 	stat_button $1 stop $stop
