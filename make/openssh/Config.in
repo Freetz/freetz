@@ -1,7 +1,7 @@
 menu "OpenSSH"
 config FREETZ_PACKAGE_OPENSSH
 	bool
-	#select FREETZ_LIB_libcrypto if ! FREETZ_OPENSSH_STATIC
+	select FREETZ_LIB_libcrypto if ! FREETZ_OPENSSH_STATIC
 	select FREETZ_LIB_libresolv if ! FREETZ_OPENSSH_STATIC
 	select FREETZ_LIB_libutil if ! FREETZ_OPENSSH_STATIC
 	select FREETZ_LIB_libz if ! FREETZ_OPENSSH_STATIC
