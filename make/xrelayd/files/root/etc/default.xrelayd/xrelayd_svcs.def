@@ -1,0 +1,6 @@
+CAPTION='XRelayd: $(lang de:"Dienste" en:"services")'
+DESCRIPTION='Syntax: $(lang de:"&lt;[Quell-IP:]Port&gt; &lt;[Ziel-IP:]Port&gt; [&lt;Bemerkung&gt;]<br>z.B.: 0.0.0.0:443 127.0.0.1:80 AVM-WebIf" en:"&lt;[source IP:]port&gt; &lt;[target IP:]port&gt; [&lt;comment&gt;]<br>e.g.: 0.0.0.0:443 127.0.0.1:80 AVM-WebIf")'
+
+CONFIG_FILE='/tmp/flash/.xrelayd/xrelayd_svcs'
+CONFIG_SAVE='modsave flash; if [ -n "$(pidof xrelayd)" ]; then echo $(lang de:"Starte xrelayd neu" en:"restart xrelayd"); /mod/etc/init.d/rc.xrelayd restart; fi'
+CONFIG_TYPE='text'

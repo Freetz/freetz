@@ -1,0 +1,101 @@
+#!/bin/sh
+
+DAEMON=xrelayd
+PIDFILE="/var/run/$DAEMON.pid"
+
+. /etc/init.d/modlibrc
+
+pre_config() {
+	[ -d "/tmp/flash/.xrelayd" ] || mkdir /tmp/flash/.xrelayd
+}
+
+start() {
+  echo "Starting xrelayd services..."
+  if [ -r "/tmp/flash/.xrelayd/xrelayd_svcs" ]; then
+    cat /tmp/flash/.xrelayd/xrelayd_svcs | grep -v "^#" | while read -r remote local comment; do
+	if [ -n "$remote" -a -n "$local" ]; then
+          echo -n "Starting xrelayd($remote>$local $comment)..."  		
+	  $DAEMON -D$XRELAYD_VERBOSE -d $remote -r $local -p $XRELAYD_KEY -A $XRELAYD_CERTCHAIN
+	  exitval=$?
+	  if [ "$exitval" -eq 0 ]; then
+	    echo 'done.'
+	  else
+	    echo 'failed.'
+	  fi
+	fi
+    done
+    echo 'done.'
+  else 
+    echo 'Error: services not found'  
+  fi
+}
+
+stop() {
+  echo -n "Stopping xrelayd services..."
+  if [ ! -z "$(pidof "$DAEMON")" ]; then
+    killall -15 $DAEMON > /dev/null 2>&1
+    exitval=$?
+    if [ "$exitval" -eq 0 ]; then
+	echo 'done.'
+    else
+	echo 'failed.'
+	exit $exitval
+    fi
+  else
+    echo 'not running'
+  fi
+}
+
+case "$1" in
+	""|load)
+		pre_config
+
+		modreg cgi 'xrelayd' 'XRelayd'
+
+		deffile="/mod/etc/default.$DAEMON/xrelayd_certchain.def"
+		[ -r "/tmp/flash/xrelayd_certchain.def" ] && deffile='/tmp/flash/xrelayd_certchain.def'
+		modreg file 'xrelayd_certchain' 'XRelayd: Certificate' 0 "$deffile"
+
+		deffile="/mod/etc/default.$DAEMON/xrelayd_key.def"
+		[ -r "/tmp/flash/xrelayd_key.def" ] && deffile='/tmp/flash/xrelayd_key.def'
+		modreg file 'xrelayd_key' 'XRelayd: Private Key' 0 "$deffile"
+
+		deffile="/mod/etc/default.$DAEMON/xrelayd_svcs.def"
+		[ -r "/tmp/flash/xrelayd_svcs.def" ] && deffile='/tmp/flash/xrelayd_svcs.def'
+		modreg file 'xrelayd_svcs' 'XRelayd: services' 0 "$deffile"
+
+		if [ "$XRELAYD_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg file 'xrelayd_certchain'
+		modunreg file 'xrelayd_key'
+		modunreg file 'xrelayd_svcs'
+		modunreg cgi 'xrelayd'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
