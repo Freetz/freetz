@@ -542,10 +542,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo
 	fi
 
-	if [ "$FREETZ_TYPE_SPEEDPORT_W501V" == "y" ] || \
-		[ "$FREETZ_TYPE_SPEEDPORT_W701V" == "y" ] || \
-		[ "$FREETZ_TYPE_SPEEDPORT_W900V" == "y" ]
-	then
+	if isFreetzType W501V W701V W900V; then
 		oem_list="tcom congstar avm"
 	fi
 	sed -i -r -e 's/for i in  (avm|tcom).*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"

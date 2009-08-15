@@ -1,6 +1,6 @@
 # Partially copied from sp-to-fritz by spirou & jpascher
 
-[ "$FREETZ_TYPE_SINUS_W500V_7150" == "y" ] || return 0
+isFreetzType W500V_7150 || return 0 
 
 if [ -z "$FIRMWARE2" ]; then
 	echo "ERROR: no tk firmware" 1>&2
