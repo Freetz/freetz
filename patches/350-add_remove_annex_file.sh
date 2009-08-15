@@ -1,3 +1,5 @@
+isFreetzType 7270 7270_V3 || return 0
+
 if [ "$FREETZ_ADD_ANNEX_A_FIRMWARE" == "y" ]; then
 	echo1 "adding Annex A firmware file"
 	cp "${DIR}/.tk/original/filesystem/lib/modules/dsp_ur8/ur8-A-dsl.bin" "${FILESYSTEM_MOD_DIR}/lib/modules/dsp_ur8"

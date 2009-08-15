@@ -1,0 +1,184 @@
+#!/bin/sh
+
+
+
+# -------------------------------------------------------------------
+# isFreetzType
+# -------------------------------------------------------------------
+# Author: Alexander Kriegisch (http://scrum-master.de)
+# -------------------------------------------------------------------
+# Simplify logical OR comparisons with Freetz box types or types of
+# lab firmwares etc.
+#
+# Example: The following construct...
+#
+# if [ "$FREETZ_TYPE_FON_5010" == "y" ] || \
+#     [ "$FREETZ_TYPE_FON_5050" == "y" ] || \
+#     [ "$FREETZ_TYPE_FON_WLAN_7050" == "y" ] || \
+#     [ "$FREETZ_TYPE_FON_WLAN_7140" == "y" ] || \
+#     [ "$FREETZ_TYPE_FON_WLAN_7141" == "y" ] || \
+#     [ "$FREETZ_TYPE_FON_7150" == "y" ] || \
+#     [ "$FREETZ_TYPE_FON_WLAN_7170" == "y" ]
+# then
+#
+# ... can now be abbreviated by:
+#
+# if isFreetzType 5010 5050 7050 7140 7141 7150 7170; then
+#
+# This is also possible:
+#
+# if isFreetzType 7170 7240 7270 && isFreetzType LABOR_AIO; then
+# -------------------------------------------------------------------
+
+isFreetzType()
+{
+	while [ $# -gt 0 ]; do
+		for group in '' _FON _FON_WLAN _WLAN _SINUS _SPEEDPORT; do
+			varname=`echo "\\$FREETZ_TYPE$group"_$1`
+			[ "`eval echo $varname`" == "y" ] && return 0
+		done
+		shift
+	done
+	return 1
+}
+
+# little helper function used by many patches (maybe this should be sourced out)
+rm_files()
+{
+        for file in "$@"; do
+        echo2 "rm $file"
+        rm -rf $file
+        done
+}
+
+echo0()
+{
+        [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echo -e "${L0}$1"
+}
+echo1()
+{
+        [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo -e "${L1}$1"
+}
+echo2()
+{
+        [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echo -e "${L2}$1"
+}
+# error exit-code error-message
+error()
+{
+	if [ "$1" -gt 0 ]; then
+		echo -e "ERROR: $2" 1>&2
+		exit $1
+	fi
+}
+# warn warn-message
+warn()
+{
+	echo -e "WARNING: $1" 1>&2
+}
+
+modunsqfs()
+{
+	local STATUS
+	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
+		"$FAKEROOT" "$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L1}/g"
+		STATUS=${PIPESTATUS[0]}
+	else
+		"$FAKEROOT" "$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" > /dev/null
+		STATUS=$?
+	fi
+	if [ $STATUS -gt 0 ]; then
+		error 1 "modunsqfs: Error in $2"
+	fi
+}
+
+
+modlangsubst()
+{
+	# modlangsubst <lang> <file>
+	#   Substitutes all $(lang de:"Deutscher Text" en:"English text" ...) occurrences
+	#   in <file> with <text> of the corresponding <lang>:"<text>" section.
+
+	s='[\t\r\n ]'
+	val='\(\([^"\\]*\(\\.\)*\)*\)'
+	entry="\w\+:\"${val}\""
+
+	LC_ALL="" LC_CTYPE=C sed -i -e "
+		:a
+		s/\$(lang\(${s}\+${entry}\)*${s}\+${1}:\"${val}\"\(${s}\+${entry}\)*${s}*)/\$(lang:\"\5\")/g
+		s/\$(lang\(${s}\+${entry}\)*${s}*)/*** error: language[${1}] not available ***/g
+		:n
+		s/\$(lang:\"\(\([^\"\\]\+\)\|[\\]\(.\)\)${val}\")/\2\3\$(lang:\"\4\")/g
+		tn
+		s/\$(lang:\"\")//g
+		/\$(lang\(${s}\|\$\)/ {N; ba}
+		" "$2"
+}
+
+modlangconf()
+{
+	# modlangconf <key> <file>
+	#   Get <content> of a <key> { <content> } section in <file>
+
+	s='[\t\r\n ]'
+
+	sed -n -e ":n;N;\$!bn;s/^.*${1}${s}\+{${s}*\([^}]*\)${s}*}.*$/\1/p" "$2"
+}
+
+modlang()
+{
+	# modlang <conffile> <dir>
+
+	avail="$(modlangconf "languages" "$1")"
+	default="$FREETZ_LANG_STRING $(modlangconf "default" "$1") en de $avail"
+	lang=""
+
+	for i in $default; do
+		for j in $avail; do
+			if [ "$i" == "$j" ]; then
+				lang="$j"
+				break 2
+			fi
+		done
+	done
+
+	if [ -z "$lang" ]; then
+		error 1 "no language available"
+	fi
+
+	[ "$lang" == "$FREETZ_LANG_STRING" ] || \
+		echo "NOTICE: language $FREETZ_LANG_STRING not available; $lang chosen." 1>&2
+
+	for i in $(modlangconf "files" "$1"); do
+		if [ -e "${2}/${i}" ]; then
+			modlangsubst "$lang" "${2}/${i}"
+		else
+			warn "${2}/${i} not found"
+		fi
+	done
+}
+
+# list of static packages, sorted by start level
+static_packages()
+{
+	if [ -r "$STATIC_PACKAGES_FILE" ]; then
+		sort "$STATIC_PACKAGES_FILE" \
+		  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
+		  | grep -v '^#' | grep -v '^$'
+	fi
+}
+
+static_addons()
+{
+	if [ -r "$STATIC_ADDON_FILE" ]; then
+		cat "$STATIC_ADDON_FILE" \
+		  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
+		  | grep -v '^#' | grep -v '^$'
+	fi
+}
+
+pkg_name() 
+{
+	local name=$1
+	echo "$name" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//'
+}

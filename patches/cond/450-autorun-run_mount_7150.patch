@@ -1,0 +1,13 @@
+--- etc/hotplug/run_mount.orig	2009-07-28 16:01:15.334661633 +0200
++++ etc/hotplug/run_mount	2009-07-28 16:01:15.590661390 +0200
+@@ -129,6 +129,10 @@
+ fi
+ fi
+ test -x $TR069START && $TR069START $MNTNAME
++AUTORUN=$MNTPATH/autorun.sh
++if [ -x $AUTORUN ]; then
++$AUTORUN &
++fi
+ if test -x /etc/samba_control ; then
+ /etc/samba_control reconfig
+ fi

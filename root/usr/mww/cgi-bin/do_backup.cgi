@@ -1,6 +1,9 @@
 #!/usr/bin/haserl -u 10000 -U /var/tmp
-Content-Type: application/x-gzip
-Content-Disposition: attachment; filename="var_flash.tar.gz"
+<?
+fname=$(echo ${CONFIG_PRODUKT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}${CONFIG_SUBVERSION}`date '+_%Y-%m-%d_%H%M.freetz'`|sed 's/ /_/g;s/!/./')
+echo "Content-Type: application/x-gzip"
+echo "Content-Disposition: attachment; filename=\"$fname\""
+echo
 
 <?
 # Create backup of all config files in /var/flash

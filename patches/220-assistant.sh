@@ -18,27 +18,11 @@ find "${HTML_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuAssistent/d'
 
 if [ -e "$HTML_DIR/home/sitemap.html" ]; then
-	if [ "$FREETZ_HAS_PHONE" == "y" ]; then
-		if [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ] && [ "$FREETZ_TYPE_LABOR_IPV6" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_7270_labor_ipv6.patch"
-		elif [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" -a "$FREETZ_TYPE_LABOR_DSL" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/$FREETZ_TYPE_LANG_STRING/remove_assistant_7270_labor_dsl.patch"
-		elif [ "$FREETZ_TYPE_FON_WLAN_7240" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/$FREETZ_TYPE_LANG_STRING/remove_assistant_7240.patch"
-		elif [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/$FREETZ_TYPE_LANG_STRING/remove_assistant_7270.patch"
-		elif [ "$FREETZ_TYPE_FON_WLAN_7170" == "y" -a "$FREETZ_TYPE_LABOR_DSL" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_7170_labor_dsl.patch"
-		elif [ "$FREETZ_TYPE_FON_WLAN_7141" == "y" -o "$FREETZ_TYPE_FON_WLAN_7170" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_7170.patch"
-		else
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant.patch"
-		fi
-	else	
-		if [ "$FREETZ_TYPE_WLAN_3270" == "y" ]; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_3270.patch"
-		else
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_wop.patch"
-		fi
+	if isFreetzType 3270 7141 7150 7170 7240 7270 7270_V3; then
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_${FREETZ_TYPE_STRING}.patch"
+	elif [ "$FREETZ_HAS_PHONE" == "y" ]; then
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant.patch"
+	else
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_wop.patch"
 	fi
 fi
