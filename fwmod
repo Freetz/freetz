@@ -49,9 +49,6 @@ Usage: fwmod [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
 EOF
 }
 
-# Dot-include some helper shell function (error, isFreetzType, rm_files)
-. "${TOOLS_DIR}/freetz_functions"
-
 # Dont run this script as root
 if [ $UID -eq 0 ]; then
 	error 1 "running this script as root is prohibited"
@@ -220,8 +217,13 @@ DYNAMIC_PACKAGES_FILE="${BASE_DIR}/.dynamic"
 STATIC_ADDON_FILE="${ADDON_DIR}/static.pkg"
 DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 
+#HIER
+
 # Dot-include 'modpatch' shell function
 . "${TOOLS_DIR}/freetz_patch"
+
+# Dot-include some helper shell function (isFreetzType, rm_files)
+. "${TOOLS_DIR}/freetz_functions"
 
 if [ -z "$FIRMWARE" ]; then
 	error 1 "no firmware filename supplied"
