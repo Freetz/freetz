@@ -1437,7 +1437,7 @@ config FREETZ_REMOVE_AURA_USB
 		This patch only removes the files, not the settings in AVM's webinterface
 
 config FREETZ_REMOVE_AVM_VPN
-	bool "Remove AVM vpn - EXPERIMENTAL"
+	bool "Remove AVM vpn"
 	default n
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
@@ -1453,7 +1453,8 @@ config FREETZ_REMOVE_AVM_VPN
 
 	help
 		Remove AVM's vpn and some other related files
-		This patch only removes the files, not the settings in AVM's webinterface
+		This patch removes the files and related Web UI entrys, but not the
+		vpn settings. This will save about 120kB compressed size.
 
 config FREETZ_REMOVE_DSLD
 	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"	
