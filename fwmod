@@ -27,7 +27,7 @@
 # This script is based on Christian Volkmann's fritzbox mod-0.57.
 # Legacy URL: http://www.ip-phone-forum.de/showthread.php?t=65894
 #
-# Special Thanks to Andreas Bühmann, Christian Volkmann, Enrik Berkhan,
+# Special Thanks to Andreas BÃ¼hmann, Christian Volkmann, Enrik Berkhan,
 # SpeedyBZ and all members on ip-phone-forum.de who contributed to this mod
 
 SHELL=$BASH
@@ -48,14 +48,6 @@ Usage: fwmod [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
     <tk_fw>    2nd firmware name (e.g. for merging in web UI)
 EOF
 }
-
-# Dot-include some helper shell function (error, isFreetzType, rm_files)
-. "${TOOLS_DIR}/freetz_functions"
-
-# Dont run this script as root
-if [ $UID -eq 0 ]; then
-	error 1 "running this script as root is prohibited"
-fi
 
 # Print usage info to stdout (no error, just info)
 if [ $# -eq 0 ]; then
@@ -81,14 +73,6 @@ while getopts "$CMDLINE_OPTS" opt; do
 		echo $DOT_CCONFIG
 	fi
 done
-
-# Config file readable?
-if [ ! -r "$DOT_CONFIG" ]; then
-	error 1 "not configured"
-fi
-
-# Load config
-. "$DOT_CONFIG"
 
 DO_UNPACK=0
 DO_MOD=0
@@ -222,6 +206,20 @@ DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 # Dot-include 'modpatch' shell function
 . "${TOOLS_DIR}/freetz_patch"
 
+# Dot-include some helper shell function (isFreetzType, rm_files)
+. "${TOOLS_DIR}/freetz_functions"
+
+
+# Dont run this script as root
+if [ $UID -eq 0 ]; then
+	error 1 "running this script as root is prohibited"
+fi
+
+# Config file readable?
+if [ ! -r "$DOT_CONFIG" ]; then
+	error 1 "not configured"
+fi
+
 if [ -z "$FIRMWARE" ]; then
 	error 1 "no firmware filename supplied"
 fi
@@ -236,6 +234,9 @@ fi
 if [ ! -e "$DIR" ]; then
 	mkdir -p "$DIR"
 fi
+
+# Load config
+. "$DOT_CONFIG"
 
 
 ############################################
