@@ -1,16 +1,27 @@
-$(call PKG_INIT_BIN, 1.14)
+$(call PKG_INIT_BIN, 1.15)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-freetz.tar.bz2
 $(PKG)_SITE:=http://download.berlios.de/callmonitor
+$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/recode
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/callmonitor/bin/recode
 $(PKG)_STARTLEVEL=30
 
 $(PKG_SOURCE_DOWNLOAD)
-$(pkg)-source: $(pkg)-download
-.PHONY: $(pkg)-source
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_NOP)
 
-$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
-.PHONY: $(pkg) $(pkg)-precompiled
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+	$(MAKE) $(TARGET_CONFIGURE_ENV) -C $(CALLMONITOR_DIR)/src
 
-$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(DL_DIR)/$($(PKG)_SOURCE) | $(PACKAGES_DIR)
-	tar -C $(PACKAGES_DIR) -xjf $< && touch $@
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
+	$(INSTALL_BINARY_STRIP)
+
+$(pkg) $(pkg)-precompiled: $($(PKG)_TARGET_DIR)/.packaged $($(PKG)_TARGET_BINARY)
+
+$($(PKG)_TARGET_DIR)/.packaged: $(CALLMONITOR_DIR)/.configured
+	mkdir -p $(CALLMONITOR_TARGET_DIR)/root
+	tar -c -C $(CALLMONITOR_DIR)/root --exclude=.svn . | tar -x -C $(CALLMONITOR_DEST_DIR)
+	cp $(CALLMONITOR_DIR)/.language $(CALLMONITOR_TARGET_DIR)/
+	@touch $@
 
 $(PKG_FINISH)
