@@ -1,6 +1,5 @@
 config FREETZ_PACKAGE_IPTABLES_CGI
 	bool "Iptables-CGI 1.0.4"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	default n
 
 	# Be visible only if iptables is selected
@@ -10,33 +9,97 @@ config FREETZ_PACKAGE_IPTABLES_CGI
 	select FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 	select FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 
+	# We could use if (FREETZ_KERNEL_VERSION_2_6_13_1 || FREETZ_KERNEL_VERSION_2_6_19_2)
+	# at many places here, but let's do it explicitly for now.
+
 	# Kernel modules
-	select FREETZ_MODULE_ip_tables
-	select FREETZ_MODULE_ip_conntrack
-	select FREETZ_MODULE_ip_conntrack_ftp
-	select FREETZ_MODULE_iptable_filter
-	select FREETZ_MODULE_ipt_iprange
-	select FREETZ_MODULE_ipt_LOG
-	select FREETZ_MODULE_ipt_mac
-	select FREETZ_MODULE_ipt_multiport
-	select FREETZ_MODULE_ipt_state
-	select FREETZ_MODULE_iptable_nat
-	select FREETZ_MODULE_ipt_MASQUERADE
-	select FREETZ_MODULE_ipt_REDIRECT
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_conntrack_ftp if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_iptable_filter if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ipt_iprange if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ipt_LOG if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ipt_mac if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ipt_multiport if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ipt_state if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ipt_MASQUERADE if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ipt_REDIRECT if FREETZ_KERNEL_VERSION_2_6_13_1
 
 	# Shared libs
-	select FREETZ_LIB_libxt_iprange
-	select FREETZ_LIB_libipt_LOG
-	select FREETZ_LIB_libxt_mac
-	select FREETZ_LIB_libxt_multiport
-	select FREETZ_LIB_libxt_standard
-	select FREETZ_LIB_libxt_state
-	select FREETZ_LIB_libxt_tcp
-	select FREETZ_LIB_libxt_udp
-	select FREETZ_LIB_libipt_DNAT
-	select FREETZ_LIB_libipt_SNAT
-	select FREETZ_LIB_libipt_MASQUERADE
-	select FREETZ_LIB_libipt_REDIRECT
+	select FREETZ_LIB_libxt_iprange if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libipt_LOG if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libxt_mac if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libxt_multiport if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libxt_standard if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libxt_state if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libxt_tcp if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libxt_udp if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libipt_DNAT if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libipt_SNAT if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libipt_MASQUERADE if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_LIB_libipt_REDIRECT if FREETZ_KERNEL_VERSION_2_6_13_1
+
+
+	# Kernel modules
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_conntrack_ftp if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_nat_ftp if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_iptable_filter if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ipt_REJECT if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ipt_iprange if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ipt_LOG if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ipt_MASQUERADE if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ipt_REDIRECT if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_mac if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_multiport if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_state if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_conntrack if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_length if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_limit if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_mark if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_MARK if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_pkttype if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_physdev if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19_2
+
+	# Shared libs
+
+	select FREETZ_LIB_libxt_CLASSIFY if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_connbytes if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_connmark if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_CONNMARK if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_conntrack if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_iprange if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_length if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_limit if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_mac if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_mark if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_MARK if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_multiport if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_physdev if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_pkttype if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_standard if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_state if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_TCPMSS if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_tcp if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libxt_udp if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_addrtype if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_DNAT if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_icmp if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_LOG if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_MASQUERADE if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_policy if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_REDIRECT if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_REJECT if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_set if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_SET if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_SNAT if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_LIB_libipt_ULOG if FREETZ_KERNEL_VERSION_2_6_19_2
+
 
 	help
 		New Configuration front-end to iptables.
