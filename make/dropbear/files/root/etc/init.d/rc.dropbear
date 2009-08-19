@@ -7,7 +7,7 @@ DAEMON_LONG_NAME="dropbear SSH server"
 
 pre_config() {
 	[ -d "/tmp/flash/.ssh" ] && mv /tmp/flash/.ssh /tmp/flash/dropbear
-	[ -d /dropbear ] || mkdir -p /tmp/flash/dropbear
+	[ -d /tmp/flash/dropbear ] || mkdir -p /tmp/flash/dropbear
 	[ -e /tmp/flash/rsa_host_key ] && mv /tmp/flash/rsa_host_key /tmp/flash/dropbear/rsa_host_key
 	[ -e /tmp/flash/dss_host_key ] && mv /tmp/flash/dss_host_key /tmp/flash/dropbear/dss_host_key
 
