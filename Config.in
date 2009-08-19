@@ -1095,6 +1095,13 @@ config FREETZ_REMOVE_TR069
 		Removes libtr069 to save space. This also removes libtr064.
 		WARNING: Removing tr069-stuff without disabling it on the
 		box causes permanent reboots until the box is recovered.
+config FREETZ_REMOVE_TR069_FWUPDATE
+	bool "Remove fwupdate"
+	depends on FREETZ_REMOVE_TR069
+	default n
+	help 
+		Removes the file /usr/bin/tr069fwupdate, needed for 
+		updating the firmware in MT-D devices
 
 config FREETZ_REMOVE_USB_MODULE
 	bool "Remove avalanche_usb.ko"
