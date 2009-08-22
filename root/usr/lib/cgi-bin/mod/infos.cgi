@@ -5,14 +5,14 @@ PATH=/mod/bin:/mod/usr/bin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 
 let _width=$_cgi_width-230
 
-sec_begin '$(lang de:"Firmware-Informationen" en:"Informations about firmware")'
- echo "<p><b>$(lang de:"Boxtyp:" en:"Box type:")</b> $FREETZ_INFO_BOXTYPE&nbsp;&nbsp;<b>$(lang de:"AVM Firmwareversion:" en:"AVM Firmware version:")</b> $FREETZ_INFO_FIRMWAREVERSION&nbsp;&nbsp;<b>$(lang de:"Sprache:" en:"Language:")</b> $FREETZ_INFO_LANG</p>"
+sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
+ echo "<p><b>$(lang de:"Boxtyp:" en:"Box type:")</b> $FREETZ_INFO_BOXTYPE&nbsp;&nbsp;<b>$(lang de:"AVM Firmwareversion:" en:"AVM firmware version:")</b> $FREETZ_INFO_FIRMWAREVERSION&nbsp;&nbsp;<b>$(lang de:"Sprache:" en:"Language:")</b> $FREETZ_INFO_LANG</p>"
  echo "<p><b>$(lang de:"FREETZ-Version:" en:"FREETZ version:")</b> $FREETZ_INFO_SUBVERSION</p>"
 date_de_format=$(echo "$FREETZ_INFO_MAKEDATE" \
 		| sed -e 's/\([0-9][0-9][0-9][0-9]\)\([0-9][0-9]\)\([0-9][0-9]\)\-\([0-9][0-9]\)\([0-9][0-9]\)\([0-9][0-9]\)\(.*\)/\3.\2.\1 \4\:\5\:\6/')
- echo "<p><b>$(lang de:"Erstellungsdatum:" en:"Making date:")</b> $date_de_format</p>"
+ echo "<p><b>$(lang de:"Erstellungsdatum:" en:"Creation date:")</b> $date_de_format</p>"
  echo "<p><b>$(lang de:"Urspr&uuml;nglicher Dateiname:" en:"Initial file name:")</b><br>$FREETZ_INFO_IMAGE_NAME</p>"
- echo "<p><b>$(lang de:"Benutzerdefinierte Informationen:" en:"User defined informations:")</b><br>$FREETZ_INFO_COMMENT</p>"
+ echo "<p><b>$(lang de:"Benutzerdefinierte Informationen:" en:"User defined information:")</b><br>$FREETZ_INFO_COMMENT</p>"
 sec_end
 
 if [ -r /etc/.config ]; then
@@ -50,13 +50,9 @@ if [ -r /etc/.config ]; then
 fi
 
 if [ ! -z "$FREETZ_INFO_EXTERNAL_FILES" ]; then
-	sec_begin '$(lang de:"Ausgelagerte (externalisierte) Dateien:" en:"Externalised files:")'
+	sec_begin '$(lang de:"Ausgelagerte Dateien:" en:"Externalised files:")'
 		echo -n '<textarea style="width: '$_width'px;" name="content" rows="5" cols="10" wrap="off" readonly>'
 		echo -n "$FREETZ_INFO_EXTERNAL_FILES"
 		echo -n '</textarea>'
 	sec_end
 fi
-
-
-
-
