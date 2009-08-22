@@ -73,6 +73,7 @@ case "$1" in
 		[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
 		modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' mod/logs
 		[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
+		modreg status infos '$(lang de:"Informationen" en:"Informations")' mod/infos
 
 		start
 		;;

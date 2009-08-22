@@ -1989,6 +1989,25 @@ config FREETZ_STATUS_STYLE
 		Changes the style of the Freetz status-bars and	also adds the
 		cache-usage to these bars.
 
+config FREETZ_USER_DEFINED_COMMENT
+	string "User defined comment"
+	default ""
+	help
+		User defined comment for generated image.
+
+config FREETZ_REMOVE_DOT_CONFIG
+	bool "Remove .config from image"
+	depends on FREETZ_SHOW_ADVANCED
+	default n
+	help
+		Usualy a striped version of FREETZ configuration file .config
+		is integrated into image for better trouble-shooting.
+		
+		It is not recommended to remove .config from image,
+		but if you want to save a few bytes in your image and
+		you are sure, that this removing is the last chance to have
+		a working image, you can do it on your own risk! 
+
 config FREETZ_AVMPLUGINS_ENABLED
 	bool "Integrate AVM Plugins into image"
 	depends on FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
@@ -2322,3 +2341,4 @@ source toolchain/Config.in
 endmenu
 
 endmenu
+

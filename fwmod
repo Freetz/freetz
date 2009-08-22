@@ -1005,6 +1005,35 @@ if [ "$DO_PACK" -gt 0 ]; then
 		echo "${L1}root filesystem: $FILESYSTEM_BLOCKSIZE"
 	fi
 
+	# Packing .config into image
+	if [ "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
+		echo ".config file was not integrated into image"
+	else
+		echo "integrate stripped .config file into image"
+		dot_config_file="$MOD_DIR/filesystem/etc/.config"
+		cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
+	fi
+	
+	modmakedate=$(date +%Y%m%d-%H%M%S)
+	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$modmakedate.image"
+	
+	# Create freetz-info
+	echo "integrate freetz info file into image"
+	freetz_info_file="$MOD_DIR/filesystem/etc/freetz_info.cfg"
+	echo "export FREETZ_INFO_BOXTYPE='${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}'" > "$freetz_info_file"
+	echo "export FREETZ_INFO_FIRMWAREVERSION='${FIRMWAREVERSION}'" >> "$freetz_info_file"
+	echo "export FREETZ_INFO_SUBVERSION='${SUBVERSION}'" >> "$freetz_info_file"
+	echo "export FREETZ_INFO_LANG='${FREETZ_TYPE_LANG_STRING}'" >> "$freetz_info_file"
+	echo "export FREETZ_INFO_MAKEDATE='$modmakedate'" >> "$freetz_info_file"
+	echo "export FREETZ_INFO_IMAGE_NAME='$modimage'" >> "$freetz_info_file"
+	echo "export FREETZ_INFO_COMMENT='${FREETZ_USER_DEFINED_COMMENT}'" >> "$freetz_info_file"
+	if [ -e "$MOD_DIR/external" ]; then
+		externalised_files=$(find build/modified/external/* -type f | sed -e "s/build\/modified\/external\///")
+	else
+		externalised_files=""
+	fi
+	echo "export FREETZ_INFO_EXTERNAL_FILES='${externalised_files}'" >> "$freetz_info_file"
+
 	# Pack var.tar (use old tar for compatibility)
 	echo "packing var.tar"
 	"$TAR" -c --owner=0 --group=0 --format=oldgnu -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
@@ -1083,9 +1112,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
 	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
-	modmakedate=$(date +%Y%m%d-%H%M%S)
-	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$modmakedate.image"
-
 	# Pack firmware image (use old tar for compatibility)
 	echo "packing ${modimage}"
 	"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
@@ -1116,3 +1142,4 @@ if [ "$DO_PACK" -gt 0 ]; then
 fi
 
 exit 0
+
