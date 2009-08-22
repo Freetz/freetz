@@ -32,6 +32,8 @@ start() {
 
 			if [ ! -z "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -O $SYSLOGD_ALTERNATIVE_LOGFILE "
+				#create a symbolic link to /var/log
+				[ ! -e "/var/log/`basename "$SYSLOGD_ALTERNATIVE_LOGFILE"`" ] && ln -sf "$SYSLOGD_ALTERNATIVE_LOGFILE" /var/log/
 			fi
 			if [ "$SYSLOGD_MAXFILES" -ge "1" ]; then
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -b $SYSLOGD_MAXFILES -s $SYSLOGD_MAXSIZE "
