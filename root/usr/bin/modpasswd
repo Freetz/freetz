@@ -39,6 +39,16 @@ case "$1" in
 		echo 'arbitrary code. USE AT YOUR OWN RISK!'
 		echo ''
 
+		. /mod/etc/conf/mod.cfg
+
+		read -p 'Enter old password: ' -r -s oldpasswd
+		echo
+
+		if [ "$(/usr/sbin/httpd -m "$oldpasswd")" != "$MOD_HTTPD_PASSWD" ]; then
+		    	echo 'Wrong password.' >&2
+			exit 2
+		fi
+
 		read -p 'Enter new password: ' -r -s passwd1
 		echo
 		read -p 'Re-enter new password: ' -r -s passwd2
