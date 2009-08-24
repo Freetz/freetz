@@ -1,8 +1,7 @@
-diff -urN bird-1.0.11/client/client.c bird-1.0.11/client/client.c
---- client/client.c	2004-06-05 05:26:48.000000000 -0400
-+++ client/client.c	2006-07-13 09:34:04.000000000 -0400
-@@ -254,7 +254,7 @@
-     die("Cannot create socket: %m");
+--- client/client.c.orig	2009-08-16 22:42:37.000000000 +0200
++++ client/client.c	2009-08-24 12:02:29.000000000 +0200
+@@ -322,7 +322,7 @@
+ 
    bzero(&sa, sizeof(sa));
    sa.sun_family = AF_UNIX;
 -  strcpy(sa.sun_path, server_path);
@@ -10,12 +9,11 @@ diff -urN bird-1.0.11/client/client.c bird-1.0.11/client/client.c
    if (connect(server_fd, (struct sockaddr *) &sa, SUN_LEN(&sa)) < 0)
      die("Unable to connect to server control socket (%s): %m", server_path);
    if (fcntl(server_fd, F_SETFL, O_NONBLOCK) < 0)
-diff -urN bird-1.0.11/sysdep/unix/io.c bird-1.0.11/sysdep/unix/io.c
---- sysdep/unix/io.c	2005-02-14 18:15:04.000000000 -0500
-+++ sysdep/unix/io.c	2006-07-13 09:34:29.000000000 -0400
-@@ -866,7 +866,7 @@
-     goto bad;
-   unlink(name);
+--- sysdep/unix/io.c.orig	2009-06-28 09:33:51.000000000 +0200
++++ sysdep/unix/io.c	2009-08-24 12:02:29.000000000 +0200
+@@ -1016,7 +1016,7 @@
+     die("sk_open_unix: path too long");
+ 
    sa.sun_family = AF_UNIX;
 -  strcpy(sa.sun_path, name);
 +  strncpy(sa.sun_path, name, sizeof(sa.sun_path));

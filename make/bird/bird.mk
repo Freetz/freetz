@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.0.11)
+$(call PKG_INIT_BIN, 1.1.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://bird.network.cz/pub/bird
 $(PKG)_BINARY:=$($(PKG)_DIR)/bird
@@ -8,9 +8,9 @@ $(PKG)_STARTLEVEL=80
 ifeq ($(strip $(FREETZ_PACKAGE_BIRDC)),y)
 $(PKG)_CLIENT_BINARY:=$($(PKG)_DIR)/birdc
 $(PKG)_CLIENT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/birdc
-endif
 
 $(PKG)_DEPENDS_ON := ncurses readline
+endif
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_BIRD_DEBUG
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_BIRDC
