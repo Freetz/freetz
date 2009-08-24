@@ -207,7 +207,7 @@
              default:  showUsage( );
                        break;
          }
-@@ -339,10 +511,74 @@
+@@ -339,10 +507,70 @@
          tr_ctorFree( ctor );
      }
  
@@ -216,23 +216,21 @@
 -        tr_wait( 1000 ); /* sleep one second */
 -        dtr_watchdir_update( watchdir );
 +    // be sure our paths have no delemiter at the end
-+    if( *( strchr( z_seedPath, '\0') - 1 ) == TR_PATH_DELIMITER )
++    if( strlen( z_seedPath ) > 0 && *( strchr( z_seedPath, '\0') - 1 ) == TR_PATH_DELIMITER )
 +        *( strchr( z_seedPath, '\0') - 1 ) = '\0';
 +
-+    if( *( strchr( z_finishPath, '\0') - 1 ) == TR_PATH_DELIMITER )
++    if( strlen( z_finishPath ) > 0 && *( strchr( z_finishPath, '\0') - 1 ) == TR_PATH_DELIMITER )
 +        *( strchr( z_finishPath, '\0') - 1 ) = '\0';
 +
 +    while( !closing ) {
 +
 +        tr_wait( 5000 ); /* sleep some seconds */
-+		dtr_watchdir_update( watchdir );
++        dtr_watchdir_update( watchdir );
 +
 +        /* move seeding torrents to seeding-dir */
 +        if( strlen( z_seedPath ) > 0 && access( z_seedPath, W_OK ) == 0 ) {
 +
 +            static tr_torrent * tor;
-+            tor = tr_torrentNext( mySession, NULL );
-+
 +            for( tor = tr_torrentNext( mySession, NULL ); tor != NULL; tor = tr_torrentNext( mySession, tor ) ) {
 +
 +                if( tr_torrentGetActivity( tor ) & TR_STATUS_SEED ) {
@@ -263,8 +261,6 @@
 +        if( z_ratio > 0 ) {
 +
 +            static tr_torrent * tor;
-+            tor = tr_torrentNext( mySession, NULL );
-+
 +            for( tor = tr_torrentNext( mySession, NULL ); tor != NULL; tor = tr_torrentNext( mySession, tor ) ) {
 +
 +                static const tr_stat * s;
@@ -274,7 +270,7 @@
 +
 +                  tr_torrentStop( tor );
 +
-+                  if( strlen( z_finishPath ) > 0 )
++                  if( strlen( z_finishPath ) > 0 && access( z_finishPath, W_OK ) == 0 )
 +                      z_moveTorrentFiles( tor, z_finishPath, NULL, Z_ACTION_PAUSE_TORRENT );
 +
 +                }
