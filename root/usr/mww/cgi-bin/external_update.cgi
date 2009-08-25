@@ -18,7 +18,7 @@ function CheckInput(form) {
 
 <h1>1. $(lang de:"external-Datei hochladen" en:"upload external-file")</h1>
 
-$(lang de:"Im ersten Schritt ist eine external-Datei zum Upload auszuw&auml;hlen. Dieses Datei wird auf" en:"First choose a external-file for upload. This")
+$(lang de:"Im ersten Schritt ist eine external-Datei zum Upload auszuw&auml;hlen. Diese Datei wird auf" en:"First choose a external-file for upload. This")
 $(lang de:"die Box geladen und dort entpackt. Anschlie&szlig;end sollte die entsprechende Firmware" en:"file will be uploaded and extraced. Then you should")
 $(lang de:"geflasht werden." en:"flash the expected firmware")
 <p>
