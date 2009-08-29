@@ -1,0 +1,20 @@
+--- Hashtable.c	2008-07-15 15:37:33.000000000 +0200
++++ Hashtable.c	2009-08-09 15:25:13.000000000 +0200
+@@ -32,8 +32,6 @@
+ };
+ }*/
+ 
+-#ifdef DEBUG
+-
+ static bool Hashtable_isConsistent(Hashtable* this) {
+    int items = 0;
+    for (int i = 0; i < this->size; i++) {
+@@ -46,6 +44,8 @@
+    return items == this->items;
+ }
+ 
++#ifdef DEBUG
++
+ int Hashtable_count(Hashtable* this) {
+    int items = 0;
+    for (int i = 0; i < this->size; i++) {
