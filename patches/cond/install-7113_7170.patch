@@ -1,0 +1,33 @@
+--- var/install.orig	2009-07-27 17:05:29.000000000 +0200
++++ var/install	2009-08-02 16:25:55.000000000 +0200
+@@ -217,11 +217,11 @@
+ export ANNEX=`cat ${CONFIG_ENVIRONMENT_PATH}/annex`
+ if [ -z "${ANNEX}" ] ; then echo ANNEX=${ANNEX} not supported ; exit $INSTALL_WRONG_HARDWARE ; fi
+ echo ANNEX=$ANNEX
+-# Fritz_Box_7170
+-if [ -z "$DISABLE_Fritz_Box_7170" ] ; then
+-   echo testing acceptance for device Fritz_Box_7170 ...
+-   if /etc/version --install=ar7_8MB_xilinx_4eth_3ab_isdn_nt_te_pots_wlan_usb_host_25762 ; then
+-       echo device has installtype ar7_8MB_xilinx_4eth_3ab_isdn_nt_te_pots_wlan_usb_host_25762
++# Fritz_Box_7113
++if [ -z "$DISABLE_Fritz_Box_7113" ] ; then
++   echo testing acceptance for device Fritz_Box_7113 ...
++   if /etc/version --install=ar7_8MB_xilinx_1eth_2ab_isdn_te_pots_wlan_01427 ; then
++       echo device has installtype ar7_8MB_xilinx_1eth_2ab_isdn_te_pots_wlan_01427
+        # passt der ANNEX ?
+        accept_annex=B
+        echo assumed ANNEX ${accept_annex} -- found ANNEX "${ANNEX}"
+@@ -242,11 +242,11 @@
+                    exit $INSTALL_WRONG_HARDWARE
+                fi
+            fi
+-           echo OK - accept this update for device Fritz_Box_7170 ...
++           echo OK - accept this update for device Fritz_Box_7113 ...
+            korrekt_version=1
+        fi
+    fi
+-   echo testing acceptance for device Fritz_Box_7170 done
++   echo testing acceptance for device Fritz_Box_7113 done
+ fi
+ 
+ kernel_start=0x90010000

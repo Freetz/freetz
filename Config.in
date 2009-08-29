@@ -273,6 +273,13 @@ choice
 			Enable this to compile a mod image for FritzBox FON WLAN 3170 based
 			on a 7170 image.
 
+	config FREETZ_TYPE_7113_7170
+		bool "7113"
+		depends on FREETZ_TYPE_FON_WLAN_7170
+		help
+			Enable this to compile am mod image for FritzBox Fon WLAN 7113 based
+			on a 7170 image.
+
 	config FREETZ_TYPE_7140_7170
 		bool "7140"
 		depends on FREETZ_TYPE_FON_WLAN_7170
@@ -413,6 +420,7 @@ config FREETZ_TYPE_STRING2
 	default "W701V_"					if FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default "W900V_"					if FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "3170_"						if FREETZ_TYPE_3170_7170
+	default "7113_"						if FREETZ_TYPE_7113_7170
 	default "7140_"						if FREETZ_TYPE_7140_7170
 	default "7141_"						if FREETZ_TYPE_7141_7170
 
@@ -1762,6 +1770,7 @@ config FREETZ_DL_SITE2
 	string "AVM web interface DL Site"		if FREETZ_DL_OVERRIDE
 	depends on \
 		FREETZ_TYPE_3170_7170 || \
+		FREETZ_TYPE_7113_7170 || \
 		FREETZ_TYPE_7140_7170 || \
 		FREETZ_TYPE_7141_7170 || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
@@ -1786,6 +1795,7 @@ config FREETZ_DL_SOURCE2
 	string "AVM web interface firmware source"	if FREETZ_DL_OVERRIDE
 	depends on \
 		FREETZ_TYPE_3170_7170 || \
+		FREETZ_TYPE_7113_7170 || \
 		FREETZ_TYPE_7140_7170 || \
 		FREETZ_TYPE_7141_7170 || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
@@ -1797,6 +1807,7 @@ config FREETZ_DL_SOURCE2
 		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_ADD_ANNEX_A_FIRMWARE)
 	default "fritz.box_wlan_3170.49.04.58.image"		if FREETZ_TYPE_3170_7170
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"	if FREETZ_TYPE_7140_7170
+	default "FRITZ.Box_Fon_WLAN_7113.60.04.68.image"	if FREETZ_TYPE_7113_7170
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.70.image"	if FREETZ_TYPE_7141_7170
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if FREETZ_TYPE_SPEEDPORT_W501V
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if FREETZ_TYPE_SPEEDPORT_W701V
