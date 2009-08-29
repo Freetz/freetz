@@ -1,5 +1,5 @@
---- daemon/daemon.c	2009-04-27 15:04:10.000000000 +0200
-+++ daemon/daemon.c.mod	2009-04-30 22:29:31.213576873 +0200
+--- daemon/daemon.c.orig	2009-08-25 01:43:02.000000000 +0200
++++ daemon/daemon.c	2009-08-28 20:43:41.000000000 +0200
 @@ -30,6 +30,8 @@
  #include <libtransmission/tr-getopt.h>
  #include <libtransmission/utils.h>
@@ -22,9 +22,9 @@
  /***
  ****  Config File
  ***/
-@@ -87,6 +95,10 @@
+@@ -88,6 +96,10 @@
      { 'i', "bind-address-ipv4", "Where to listen for peer connections", "i", 1, "<ipv4 address>" },
-     { 'I', "bind-address-ipv6", "Where to listen for peer connections", "I", 1, "<ipv6 address" },
+     { 'I', "bind-address-ipv6", "Where to listen for peer connections", "I", 1, "<ipv6 address>" },
      { 'r', "rpc-bind-address", "Where to listen for RPC connections", "r", 1, "<ipv4 address>" },
 +    { 913, "z_seed-dir", "Move seeding files to dir if set (Default: NULL)", "z_sd", 1, "<path>" },
 +    { 914, "z_finish-dir", "Move completed files (everything done) to dir if set (Default: NULL)", "z_fd", 1, "<path>" },
@@ -33,7 +33,7 @@
      { 0, NULL, NULL, NULL, 0, NULL }
  };
  
-@@ -200,6 +212,158 @@
+@@ -201,6 +213,158 @@
      }
  }
  
@@ -192,7 +192,7 @@
  int
  main( int argc, char ** argv )
  {
-@@ -288,6 +452,14 @@
+@@ -291,6 +455,14 @@
              case 'r':
                        tr_bencDictAddStr( &settings, TR_PREFS_KEY_RPC_BIND_ADDRESS, optarg );
                        break;
@@ -207,14 +207,13 @@
              default:  showUsage( );
                        break;
          }
-@@ -339,10 +507,70 @@
+@@ -342,10 +514,70 @@
          tr_ctorFree( ctor );
      }
  
 -    while( !closing )
 -    {
 -        tr_wait( 1000 ); /* sleep one second */
--        dtr_watchdir_update( watchdir );
 +    // be sure our paths have no delemiter at the end
 +    if( strlen( z_seedPath ) > 0 && *( strchr( z_seedPath, '\0') - 1 ) == TR_PATH_DELIMITER )
 +        *( strchr( z_seedPath, '\0') - 1 ) = '\0';
@@ -225,7 +224,7 @@
 +    while( !closing ) {
 +
 +        tr_wait( 5000 ); /* sleep some seconds */
-+        dtr_watchdir_update( watchdir );
+         dtr_watchdir_update( watchdir );
 +
 +        /* move seeding torrents to seeding-dir */
 +        if( strlen( z_seedPath ) > 0 && access( z_seedPath, W_OK ) == 0 ) {
