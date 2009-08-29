@@ -1915,6 +1915,22 @@ config FREETZ_USER_DEFINED_COMMENT
 	help
 		User defined comment for generated image.
 
+config FREETZ_CUSTOM_IMAGE_NAME
+        bool "Add user defined comment to image name"
+        depends on FREETZ_SHOW_ADVANCED
+        default n
+        help
+               Add the user defined comment to the file name of the created image
+
+config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
+        bool "Add custom string as prefix"
+        depends on FREETZ_SHOW_ADVANCED && FREETZ_CUSTOM_IMAGE_NAME
+        default n
+        help
+               Add the user defined comment as a prefix in front of the image file name.
+               Otherwise the user defined comment will be added between the language setting
+               and the build date
+
 config FREETZ_REMOVE_DOT_CONFIG
 	bool "Remove .config from image"
 	depends on FREETZ_SHOW_ADVANCED

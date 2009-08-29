@@ -275,7 +275,11 @@ endif
 	@./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
 ifneq ($(FWMOD_PATCH_TEST),y)
 ifneq ($(FWMOD_NOPACK),y)
+ifeq ($(strip $(FREETZ_CUSTOM_IMAGE_NAME_PREFIX)),y)
+	@mv $(BUILD_DIR)/*_$(FREETZ_TYPE_STRING2)$(FREETZ_TYPE_STRING)* ./$(FW_IMAGES_DIR)
+else
 	@mv $(BUILD_DIR)/$(FREETZ_TYPE_STRING2)$(FREETZ_TYPE_STRING)* ./$(FW_IMAGES_DIR)
+endif
 endif
 endif
 

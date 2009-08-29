@@ -1015,7 +1015,16 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 	
 	modmakedate=$(date +%Y%m%d-%H%M%S)
-	modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$modmakedate.image"
+	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" ]; then
+               FREETZ_USER_DEFINED_COMMENT="$(echo $FREETZ_USER_DEFINED_COMMENT | tr -cd [:alnum:])"
+               if [ "$FREETZ_CUSTOM_IMAGE_NAME_PREFIX" == "y" ]; then
+                       modimage="${FREETZ_USER_DEFINED_COMMENT}_${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$modmakedate.image"
+               else
+                       modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${FREETZ_USER_DEFINED_COMMENT}_$modmakedate.image"
+               fi
+        else
+                modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$modmakedate.image"
+        fi
 	
 	# Create freetz-info
 	echo "integrate freetz info file into image"
@@ -1122,7 +1131,16 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	if [ "$EXTERNAL_CREATEPAK" == "y" ]; then
-		modexternal="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${modmakedate}.external"
+               if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" ]; then
+                       FREETZ_USER_DEFINED_COMMENT="$(echo $FREETZ_USER_DEFINED_COMMENT | tr -cd [:alnum:])"
+                       if [ "$FREETZ_CUSTOM_IMAGE_NAME_PREFIX" == "y" ]; then
+                               modexternal="${FREETZ_USER_DEFINED_COMMENT}_${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${modmakedate}.external"
+                       else
+                               modexternal="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${FREETZ_USER_DEFINED_COMMENT}_${modmakedate}.external"
+                       fi
+               else
+                       modexternal="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${modmakedate}.external"
+               fi
 		echo "packing ${modexternal}"
 		"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$EXTERNAL_MOD_DIR" . > "${DIR}/${modexternal}" || exit 1
 
