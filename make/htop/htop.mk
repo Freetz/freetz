@@ -5,6 +5,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/htop
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/htop
 $(PKG)_SOURCE_MD5:=5c9f093f9eaddf6e77aa6d54c2116d0c
 
+$(PKG)_DEPENDS_ON := ncurses
+
 $(PKG)_CONFIGURE_OPTIONS += ac_cv_file__proc_stat=yes
 $(PKG)_CONFIGURE_OPTIONS += ac_cv_file__proc_meminfo=yes
 
