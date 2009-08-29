@@ -51,7 +51,7 @@ sec_begin '$(lang de:"Dienste" en:"Services")'
 cat << EOF
 <ul>
 <li><a href="/cgi-bin/file.cgi?id=xrelayd_certchain">$(lang de:"Zertifikats-Kette bearbeiten" en:"Edit certificate chain")</a></li>
-<li><a href="/cgi-bin/file.cgi?id=xrelayd_key">$(lang de:"Privaten Schlüssel bearbeiten" en:"Edit private key")</a></li>
+<li><a href="/cgi-bin/file.cgi?id=xrelayd_key">$(lang de:"Privaten Schl&uuml;ssel bearbeiten" en:"Edit private key")</a></li>
 <li><a href="/cgi-bin/file.cgi?id=xrelayd_svcs">$(lang de:"Dienste bearbeiten" en:"Edit services file")</a></li>
 </ul>
 EOF
