@@ -6,10 +6,6 @@ config FREETZ_HAVE_DOT_CONFIG
 
 comment "General --------------------------------"
 
-config FREETZ_AVM_VERSION_04_29
-	bool
-config FREETZ_AVM_VERSION_04_30
-	bool
 config FREETZ_AVM_VERSION_04_33
 	bool
 config FREETZ_AVM_VERSION_04_40
@@ -30,19 +26,10 @@ config FREETZ_AVM_VERSION_7270_04_70
 	bool
 config FREETZ_AVM_VERSION_7270_04_76
 	bool
-config FREETZ_AVM_VERSION_12043
-	bool
-config FREETZ_AVM_VERSION_7270
-	bool
-config FREETZ_AVM_VERSION_r4884
-	bool
 config FREETZ_AVM_VERSION_r7203
-	bool
-config FREETZ_AVM_VERSION_r8508
 	bool
 
 choice
-
 	prompt "Hardware type"
 		default FREETZ_TYPE_FON_WLAN_7270
 		help
@@ -148,14 +135,6 @@ choice
 	config FREETZ_TYPE_SPEEDPORT_W501V
 		select FREETZ_AVM_VERSION_r7203
 		bool "Speedport W501V"
-
-#	config FREETZ_TYPE_SPEEDPORT_W701V
-#		select FREETZ_AVM_VERSION_r8508
-#		bool "Speedport W701V"
-
-#	config FREETZ_TYPE_SPEEDPORT_W900V
-#		select FREETZ_AVM_VERSION_r4884
-#		bool "Speedport W900V"
 
 	config FREETZ_TYPE_CUSTOM
 		bool "Custom"
@@ -298,8 +277,6 @@ endchoice
 
 config FREETZ_AVM_VERSION_STRING
 	string
-	default "04.29"			if FREETZ_AVM_VERSION_04_29
-	default "04.30"			if FREETZ_AVM_VERSION_04_30
 	default "04.33"			if FREETZ_AVM_VERSION_04_33
 	default "04.40"			if FREETZ_AVM_VERSION_04_40
 	default "04.49"			if FREETZ_AVM_VERSION_04_49
@@ -307,14 +284,10 @@ config FREETZ_AVM_VERSION_STRING
 	default "04.67"			if FREETZ_AVM_VERSION_04_67
 	default "04.70"			if FREETZ_AVM_VERSION_04_70
 	default "04.76"			if FREETZ_AVM_VERSION_04_76
-	default "7270"			if FREETZ_AVM_VERSION_7270
-	default "12043"			if FREETZ_AVM_VERSION_12043
 	default "7270_04.67"		if FREETZ_AVM_VERSION_7270_04_67
 	default "7270_04.70"		if FREETZ_AVM_VERSION_7270_04_70
 	default "7270_04.76"		if FREETZ_AVM_VERSION_7270_04_76
-	default "r4884"			if FREETZ_AVM_VERSION_r4884
 	default "r7203"			if FREETZ_AVM_VERSION_r7203
-	default "r8508"			if FREETZ_AVM_VERSION_r8508
 
 choice
 
@@ -410,15 +383,13 @@ config FREETZ_TYPE_STRING
 	default "7270_v3_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_DSL
 	default "7270_v3_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_PHONE
 	default "W501V"						if FREETZ_TYPE_SPEEDPORT_W501V
-	default "W701V"						if FREETZ_TYPE_SPEEDPORT_W701V
-	default "W900V"						if FREETZ_TYPE_SPEEDPORT_W900V
 	default "custom"					if FREETZ_TYPE_CUSTOM
 
 config FREETZ_TYPE_STRING2
 	string
 	default "W500V_"					if FREETZ_TYPE_SINUS_W500V_7150
-	default "W701V_"					if FREETZ_TYPE_SPEEDPORT_W701V_7170
-	default "W900V_"					if FREETZ_TYPE_SPEEDPORT_W900V_7170
+	default "W701V_"                                        if FREETZ_TYPE_SPEEDPORT_W701V_7170
+	default "W900V_"                                        if FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "3170_"						if FREETZ_TYPE_3170_7170
 	default "7113_"						if FREETZ_TYPE_7113_7170
 	default "7140_"						if FREETZ_TYPE_7140_7170
@@ -501,8 +472,6 @@ config FREETZ_TARGET_IPV6_SUPPORT
 config FREETZ_TARGET_REF
 	string "Target ref"		if FREETZ_TYPE_CUSTOM
 	default "8mb_26"		if \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
@@ -535,8 +504,6 @@ config FREETZ_KERNEL_REF
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
@@ -571,9 +538,7 @@ config FREETZ_KERNEL_LAYOUT
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3131 || \
 		FREETZ_TYPE_WLAN_3170 || \
-		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V
+		FREETZ_TYPE_SPEEDPORT_W501V
 	default "ar7"			if \
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_300IP_AS_FON || \
@@ -613,8 +578,6 @@ config FREETZ_KERNEL_MTD_SIZE
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		(FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_FON_WLAN_7270_16MB) || \
 		FREETZ_TYPE_CUSTOM && FREETZ_HIDDEN_ROOT
@@ -648,8 +611,6 @@ config FREETZ_HAS_PHONE
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
@@ -673,8 +634,6 @@ config FREETZ_HAS_TAM
 	default y				if \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
@@ -707,8 +666,6 @@ config FREETZ_HAS_WLAN
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
@@ -750,8 +707,6 @@ config FREETZ_HAS_USB_CLIENT
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
 		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_CUSTOM
 	help
 		Select this if you have a box with USB.
@@ -762,7 +717,7 @@ config FREETZ_HAS_USB_HOST
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
-		FREETZ_TYPE_FON_7150 && ! FREETZ_TYPE_SINUS_W500V_7150 || \
+		(FREETZ_TYPE_FON_7150 && ! FREETZ_TYPE_SINUS_W500V_7150) || \
 		(FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_SPEEDPORT_W701V_7170) || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
@@ -770,8 +725,7 @@ config FREETZ_HAS_USB_HOST
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3131 || \
 		FREETZ_TYPE_WLAN_3170 || \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_SPEEDPORT_W900V
+		FREETZ_TYPE_WLAN_3270
 	default n			if \
 		FREETZ_TYPE_WLAN_3020 || \
 		FREETZ_TYPE_WLAN_3030 || \
@@ -784,7 +738,6 @@ config FREETZ_HAS_USB_HOST
 		FREETZ_TYPE_FON_WLAN_7050 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 
 	help
@@ -811,8 +764,6 @@ config FREETZ_HAS_LIBSSL
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
@@ -861,15 +812,11 @@ menu "Patches"
 
 comment "No Brandings available to remove"
 	depends on \
-		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V
+		FREETZ_TYPE_SPEEDPORT_W501V
 
 menu "Remove Brandings"
 	depends on \
-		! FREETZ_TYPE_SPEEDPORT_W501V && \
-		! FREETZ_TYPE_SPEEDPORT_W701V && \
-		! FREETZ_TYPE_SPEEDPORT_W900V
+		! FREETZ_TYPE_SPEEDPORT_W501V
 
 comment "avm and tcom branding can't be removed"
 	depends on \
@@ -986,22 +933,6 @@ config FREETZ_REMOVE_BRANDING_arcor
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_REMOVE_BRANDING_congstar
-	bool "Congstar"
-	depends on \
-		FREETZ_TYPE_SPEEDPORT_W701V 
-	default n
-	help
-		Congstar branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure not to remove the branding corresponding to the one defined 
-		in your box's boot loader environment. It can be determined by calling the
-		following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
 config FREETZ_REMOVE_BRANDING_freenet
 	bool "Freenet"
 	depends on \
@@ -1034,8 +965,6 @@ config FREETZ_REMOVE_BRANDING_freenet
 #		( \
 #		FREETZ_TYPE_300IP_AS_FON || \
 #		FREETZ_TYPE_SPEEDPORT_W501V || \
-#		FREETZ_TYPE_SPEEDPORT_W701V || \
-#		FREETZ_TYPE_SPEEDPORT_W900V || \
 #		FREETZ_TYPE_ALIEN_HARDWARE \
 #		)
 #	default n
@@ -1155,9 +1084,7 @@ config FREETZ_REMOVE_CHRONYD
 config FREETZ_PATCH_ATA
 	bool "Patch ATA"
 	depends on \
-		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
-		FREETZ_TYPE_SPEEDPORT_W900V
+		FREETZ_TYPE_SPEEDPORT_W501V
 	default n
 	help
 		Patches the ATA mode configuration pages into the web menu.
@@ -1195,7 +1122,7 @@ config FREETZ_PATCH_ENUM
 
 #config FREETZ_PATCH_INTERNATIONAL
 #	bool "Patch international"
-#	depends on FREETZ_HAS_PHONE && FREETZ_TYPE_LANG_DE && ! FREETZ_TYPE_SPEEDPORT_W900V
+#	depends on FREETZ_HAS_PHONE && FREETZ_TYPE_LANG_DE
 #	default y
 #	help
 #		Reveals some options from the international firmware in the web menu.
@@ -1214,9 +1141,9 @@ config FREETZ_PATCH_USBSTORAGE
 		1. Change the name of USB storage dir to uStorXY
 
 		2. Auto-mounted USB storage devices will be fully accessible, i.e. it
-		is now possible to put user home directories for (e.g. for FTP) on a
-		FAT32-formatted partition and permit shell and FTP users to actually
-		write to their own home directories.
+		   is now possible to put user home directories for (e.g. for FTP) on a
+		   FAT32-formatted partition and permit shell and FTP users to actually
+		   write to their own home directories.
 
 		3. Avoid deleting whole filesystem on usb devices.
 
@@ -1378,8 +1305,7 @@ config FREETZ_REMOVE_USERMAN
 	depends on \
 		! FREETZ_TYPE_FON_5140 \
 		&& ! FREETZ_TYPE_FON_WLAN_7113 \
-		&& ! FREETZ_TYPE_SPEEDPORT_W501V \
-		&& ! FREETZ_TYPE_SPEEDPORT_W900V
+		&& ! FREETZ_TYPE_SPEEDPORT_W501V
 	default n
 	help
 		Remove userman files (Kindersicherung)
@@ -1410,11 +1336,9 @@ config FREETZ_REMOVE_SMBD
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		! FREETZ_PACKAGE_SAMBA && \
-		( \
 		FREETZ_HAS_USB_HOST && \
 		! FREETZ_TYPE_FON_7150 && \
-		! FREETZ_TYPE_FON_WLAN_7270 \
-		)
+		! FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
 		Remove Samba daemon (smbd)
@@ -1435,7 +1359,6 @@ config FREETZ_REMOVE_MINID
 			FREETZ_TYPE_WLAN_3270 \
 		) && \
 		! FREETZ_TYPE_SPEEDPORT_W701V_7170
-		
 	help
 		Remove the mini-daemon (minid) and some other related files. This patch
 		removes Fritz!Mini support and all Web UI entrys.
@@ -1460,7 +1383,6 @@ config FREETZ_REMOVE_AURA_USB
 			FREETZ_TYPE_WLAN_3170 \
 		) && \
 		! FREETZ_TYPE_SPEEDPORT_W701V_7170
-
 	help
 		Remove the aura-usb-daemon (USB-Fernanschluss) and some related files. 
 		This patch only removes the files, not the settings in AVM's webinterface
@@ -1490,7 +1412,7 @@ config FREETZ_REMOVE_DSLD
 	default n
 	depends on FREETZ_SHOW_ADVANCED
 	select FREETZ_REMOVE_UPNP
-	select FREETZ_REMOVE_USERMAN if ! (FREETZ_TYPE_FON_5140 || FREETZ_TYPE_FON_WLAN_7113 || FREETZ_TYPE_SPEEDPORT_W501V || FREETZ_TYPE_SPEEDPORT_W900V)
+	select FREETZ_REMOVE_USERMAN if ! (FREETZ_TYPE_FON_5140 || FREETZ_TYPE_FON_WLAN_7113 || FREETZ_TYPE_SPEEDPORT_W501V)
 	help
 		Remove DSL deamon (dsld), if you are planning to use your box as a simple
 		IP client in ATA mode. 
@@ -1636,7 +1558,6 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 		Remove lib/modules/dsp_ur8/ur8-B-dsl.bin. This saves about 400 KB of
 		uncompressed data size.
 
-
 config FREETZ_ADD_ANNEX_A_FIRMWARE
 	bool "Add Annex A firmware file"
 	depends on FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
@@ -1709,8 +1630,6 @@ config FREETZ_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3170/firmware/deutsch"		if FREETZ_TYPE_WLAN_3170
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3270/firmware/deutsch"		if FREETZ_TYPE_WLAN_3270
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport_W501V" 		if FREETZ_TYPE_SPEEDPORT_W501V
-	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V"	if FREETZ_TYPE_SPEEDPORT_W701V
-	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20900V"		if FREETZ_TYPE_SPEEDPORT_W900V
 	default "ftp://ftp.avm.de/fritz.box/..."						if FREETZ_TYPE_CUSTOM
 
 config FREETZ_DL_SOURCE
@@ -1762,8 +1681,6 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_wlan_3170.49.04.58.image"					if FREETZ_TYPE_WLAN_3170
 	default "fritz.box_wlan_3270.67.04.70.image"					if FREETZ_TYPE_WLAN_3270
 	default "fw_Speedport_W501V_v_28.04.38.image"					if FREETZ_TYPE_SPEEDPORT_W501V
-	default "fw_Speedport_W701V_v33.04.57.image"					if FREETZ_TYPE_SPEEDPORT_W701V
-	default "fw_Speedport_W900V_v34.04.57.image"					if FREETZ_TYPE_SPEEDPORT_W900V
 	default "fritz.box..."								if FREETZ_TYPE_CUSTOM
 
 config FREETZ_DL_SITE2
@@ -1775,9 +1692,7 @@ config FREETZ_DL_SITE2
 		FREETZ_TYPE_7141_7170 || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_SPEEDPORT_W900V_7170 || \
 		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_ADD_ANNEX_A_FIRMWARE)
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3170/firmware/deutsch"		if FREETZ_TYPE_3170_7170
@@ -1785,9 +1700,7 @@ config FREETZ_DL_SITE2
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"		if FREETZ_TYPE_7141_7170
 	default "http://www.t-home.de/dlp/eki/downloads/Sinus%20W%20500%20V"			if FREETZ_TYPE_SINUS_W500V_7150
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"		if FREETZ_TYPE_SPEEDPORT_W501V
-	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch" 		if FREETZ_TYPE_SPEEDPORT_W701V
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V"	if FREETZ_TYPE_SPEEDPORT_W701V_7170
-	default "ftp://ftp.avm.de/fritz.box/fritzfon.7150/firmware"				if FREETZ_TYPE_SPEEDPORT_W900V
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20900V"		if FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch_a-ch"	if FREETZ_TYPE_FON_WLAN_7270
 
@@ -1800,9 +1713,7 @@ config FREETZ_DL_SOURCE2
 		FREETZ_TYPE_7141_7170 || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
-		FREETZ_TYPE_SPEEDPORT_W701V || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
-		FREETZ_TYPE_SPEEDPORT_W900V || \
 		FREETZ_TYPE_SPEEDPORT_W900V_7170 || \
 		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_ADD_ANNEX_A_FIRMWARE)
 	default "fritz.box_wlan_3170.49.04.58.image"		if FREETZ_TYPE_3170_7170
@@ -1810,9 +1721,7 @@ config FREETZ_DL_SOURCE2
 	default "FRITZ.Box_Fon_WLAN_7113.60.04.68.image"	if FREETZ_TYPE_7113_7170
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.70.image"	if FREETZ_TYPE_7141_7170
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if FREETZ_TYPE_SPEEDPORT_W501V
-	default "fritz.box_fon_wlan_7141.40.04.37.image"	if FREETZ_TYPE_SPEEDPORT_W701V
 	default "fw_Speedport_W701V_v33.04.57.image"		if FREETZ_TYPE_SPEEDPORT_W701V_7170
-	default "fritz.fon_7150.annexb.38.04.32.image"		if FREETZ_TYPE_SPEEDPORT_W900V
 	default "fw_Speedport_W900V_v34.04.57.image"		if FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "Sinus_W_500V.27.04.27.image"			if FREETZ_TYPE_SINUS_W500V_7150
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it.54.04.67.image"	if FREETZ_TYPE_FON_WLAN_7270

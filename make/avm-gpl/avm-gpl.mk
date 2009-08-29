@@ -3,8 +3,6 @@ AVM_SITE__AVM_7270:=ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/x_misc/ope
 AVM_SITE__AVM_7170:=ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/x_misc/opensrc
 AVM_SITE__TCOM:=http://www.t-home.de/dlp/eki/downloads/Speedport
 
-AVM_SOURCE__04.29:=$(AVM_SITE__AVM)/fritzbox-source-files-04.29.tar.bz2
-AVM_SOURCE__04.30:=$(AVM_SITE__AVM)/fritzbox7141-source-files-04.30.tar.bz2
 AVM_SOURCE__04.33:=$(AVM_SITE__AVM)/fritzbox-source-files-04.33.tar.bz2
 AVM_SOURCE__04.40:=$(AVM_SITE__AVM)/fritzbox-source-files.04.40.tar.bz2
 AVM_SOURCE__04.49:=$(AVM_SITE__AVM)/fritzbox-source-files-04.49.tar.gz
@@ -12,14 +10,10 @@ AVM_SOURCE__04.57:=$(AVM_SITE__AVM)/fritzbox-source-files.04.57.tar.gz
 AVM_SOURCE__04.67:=$(AVM_SITE__AVM)/fritzbox-source-files.04.67.tar.gz
 AVM_SOURCE__04.70:=$(AVM_SITE__AVM)/fritzbox-source-files-04.70.tar.gz
 AVM_SOURCE__04.76:=$(AVM_SITE__AVM_7170)/fritzbox7170-source-files-04.76.tar.gz
-AVM_SOURCE__7270:=$(AVM_SITE__AVM)/fritzbox7270-source-files-04-57.tar.gz
-AVM_SOURCE__12043:=$(AVM_SITE__AVM)/fritzbox-lab-source-files-12043.tar.gz
 AVM_SOURCE__7270_04.67:=$(AVM_SITE__AVM)/fritzbox7270-source-files-04.67.tar.gz
 AVM_SOURCE__7270_04.70:=$(AVM_SITE__AVM)/fritzbox7270-source-files-04.70.tar.gz
 AVM_SOURCE__7270_04.76:=$(AVM_SITE__AVM_7270)/fritzbox7270-source-files-04.76.tar.gz
-AVM_SOURCE__r4884:=$(AVM_SITE__TCOM)/Speedport%20W%20900V/GPL-r4884-8mb_26-tar.bz2
 AVM_SOURCE__r7203:=$(AVM_SITE__TCOM)/Speedport_W501V/GPL-r7203-4mb_26-tar.bz2
-AVM_SOURCE__r8508:=$(AVM_SITE__TCOM)/Speedport%20W%20701%20V/GPL-r8508-8mb_26.tar.bz2
 
 AVM_URL:=$(AVM_SOURCE__$(AVM_VERSION))
 AVM_SOURCE:=$(notdir $(AVM_URL))
@@ -36,46 +30,10 @@ $(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
 $(AVM_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE)
 	mkdir -p $(AVM_DIR)
 	tar -C $(AVM_DIR) $(VERBOSE) -x$(AVM_UNPACK__INT_$(suffix $(strip $(AVM_SOURCE))))f $(DL_FW_DIR)/$(AVM_SOURCE)
-ifeq ($(AVM_VERSION),04.49)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
-ifeq ($(AVM_VERSION),04.57)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
-ifeq ($(AVM_VERSION),04.67)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
-ifeq ($(AVM_VERSION),04.70)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
-ifeq ($(AVM_VERSION),04.76)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
-ifeq ($(AVM_VERSION),7270)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
-ifeq ($(AVM_VERSION),12043)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
-ifeq ($(AVM_VERSION),7270_04.67)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
-ifeq ($(AVM_VERSION),7270_04.70)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
-ifeq ($(AVM_VERSION),7270_04.76)
-	mkdir -p $(AVM_DIR)/GPL/base/kernel
-	tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz
-endif
+	if test -e $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz; then \
+		mkdir -p $(AVM_DIR)/GPL/base/kernel; \
+		tar -C $(AVM_DIR)/GPL/base/kernel $(VERBOSE) -xzf $(AVM_DIR)/GPL/GPL-release_kernel.tar.gz; \
+	fi
 	touch $@
 
 avm-gpl-precompiled: $(AVM_DIR)/.unpacked
