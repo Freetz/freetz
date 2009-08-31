@@ -1015,16 +1015,25 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 	
 	modmakedate=$(date +%Y%m%d-%H%M%S)
-	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" ]; then
-               FREETZ_USER_DEFINED_COMMENT="$(echo $FREETZ_USER_DEFINED_COMMENT | tr -cd [:alnum:])"
-               if [ "$FREETZ_CUSTOM_IMAGE_NAME_PREFIX" == "y" ]; then
-                       modimage="${FREETZ_USER_DEFINED_COMMENT}_${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$modmakedate.image"
-               else
-                       modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${FREETZ_USER_DEFINED_COMMENT}_$modmakedate.image"
-               fi
-        else
-                modimage="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_$modmakedate.image"
-        fi
+	modbaseimagename="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}"
+	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then
+		modcustomimagestring=$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')
+	else
+		modcustomimagestring=""
+	fi
+	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "${modcustomimagestring}" ]; then
+		if [ "$FREETZ_CUSTOM_IMAGE_NAME_PREFIX" == "y" ]; then
+			modimagenameprefix="${modcustomimagestring}_"
+			modimagenamesuffix=""
+		else
+			modimagenameprefix=""
+			modimagenamesuffix="_${modcustomimagestring}"
+		fi	
+	else
+		modimagenameprefix=""
+		modimagenamesuffix=""
+	fi
+	modimage="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.image"
 	
 	# Create freetz-info
 	echo "integrate freetz info file into image"
@@ -1131,16 +1140,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	if [ "$EXTERNAL_CREATEPAK" == "y" ]; then
-               if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" ]; then
-                       FREETZ_USER_DEFINED_COMMENT="$(echo $FREETZ_USER_DEFINED_COMMENT | tr -cd [:alnum:])"
-                       if [ "$FREETZ_CUSTOM_IMAGE_NAME_PREFIX" == "y" ]; then
-                               modexternal="${FREETZ_USER_DEFINED_COMMENT}_${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${modmakedate}.external"
-                       else
-                               modexternal="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${FREETZ_USER_DEFINED_COMMENT}_${modmakedate}.external"
-                       fi
-               else
-                       modexternal="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}_${modmakedate}.external"
-               fi
+		modexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.external"
 		echo "packing ${modexternal}"
 		"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$EXTERNAL_MOD_DIR" . > "${DIR}/${modexternal}" || exit 1
 
@@ -1160,4 +1160,5 @@ if [ "$DO_PACK" -gt 0 ]; then
 fi
 
 exit 0
+
 
