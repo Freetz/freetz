@@ -5,7 +5,6 @@ echo "Content-Type: application/x-gzip"
 echo "Content-Disposition: attachment; filename=\"$fname\""
 echo
 
-<?
 # Create backup of all config files in /var/flash
 #
 # Make sure that no command accidentally writes stdout or stderr stuff into the
