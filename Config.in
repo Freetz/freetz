@@ -69,13 +69,17 @@ choice
 		select FREETZ_AVM_VERSION_04_33
 		bool "Fon WLAN 7050"
 
+	config FREETZ_TYPE_FON_WLAN_7112
+		select FREETZ_AVM_VERSION_04_76
+		bool "Fon WLAN 7112"
+
 	config FREETZ_TYPE_FON_WLAN_7113
 		select FREETZ_AVM_VERSION_04_67
 		bool "Fon WLAN 7113"
 
 	config FREETZ_TYPE_FON_WLAN_7140
 		select FREETZ_AVM_VERSION_04_33 if FREETZ_TYPE_LANG_DE
-		select FREETZ_AVM_VERSION_04_57 if FREETZ_TYPE_LANG_A_CH
+		select FREETZ_AVM_VERSION_04_76 if FREETZ_TYPE_LANG_A_CH
 		select FREETZ_AVM_VERSION_04_67 if FREETZ_TYPE_LANG_EN
 		bool "Fon WLAN 7140"
 
@@ -252,6 +256,13 @@ choice
 			Enable this to compile a mod image for FritzBox FON WLAN 3170 based
 			on a 7170 image.
 
+#	config FREETZ_TYPE_7112_7170
+#		bool "7112"
+#		depends on FREETZ_TYPE_FON_WLAN_7170
+#		help
+#			Enable this to compile am mod image for FritzBox Fon WLAN 7113 based
+#			on a 7170 image.
+
 	config FREETZ_TYPE_7113_7170
 		bool "7113"
 		depends on FREETZ_TYPE_FON_WLAN_7170
@@ -364,6 +375,7 @@ config FREETZ_TYPE_STRING
 	default "5140"						if FREETZ_TYPE_FON_5140
 	default "fon_wlan"					if FREETZ_TYPE_FON_WLAN
 	default "7050"						if FREETZ_TYPE_FON_WLAN_7050
+	default "7112"						if FREETZ_TYPE_FON_WLAN_7112
 	default "7113"						if FREETZ_TYPE_FON_WLAN_7113
 	default "7140"						if FREETZ_TYPE_FON_WLAN_7140
 	default "7141"						if FREETZ_TYPE_FON_WLAN_7141
@@ -391,6 +403,7 @@ config FREETZ_TYPE_STRING2
 	default "W701V_"                                        if FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default "W900V_"                                        if FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "3170_"						if FREETZ_TYPE_3170_7170
+	default "7112_"						if FREETZ_TYPE_7112_7170
 	default "7113_"						if FREETZ_TYPE_7113_7170
 	default "7140_"						if FREETZ_TYPE_7140_7170
 	default "7141_"						if FREETZ_TYPE_7141_7170
@@ -472,6 +485,7 @@ config FREETZ_TARGET_IPV6_SUPPORT
 config FREETZ_TARGET_REF
 	string "Target ref"		if FREETZ_TYPE_CUSTOM
 	default "8mb_26"		if \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
@@ -500,6 +514,7 @@ config FREETZ_TARGET_REF
 config FREETZ_KERNEL_REF
 	string "Kernel ref"		if FREETZ_TYPE_CUSTOM
 	default "8mb_26"		if \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -530,6 +545,7 @@ config FREETZ_KERNEL_LAYOUT
 	default "ohio"			if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -574,6 +590,7 @@ config FREETZ_KERNEL_MTD_SIZE
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050
 	default 119					if \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -606,6 +623,7 @@ config FREETZ_HAS_PHONE
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -646,6 +664,7 @@ config FREETZ_HAS_TAM
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_CUSTOM
@@ -661,6 +680,7 @@ config FREETZ_HAS_WLAN
 		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -697,6 +717,7 @@ config FREETZ_HAS_USB_CLIENT
 	default n				if \
 		FREETZ_TYPE_FON_5010 || \
 		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -736,6 +757,7 @@ config FREETZ_HAS_USB_HOST
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
@@ -760,6 +782,7 @@ config FREETZ_HAS_LIBSSL
 	bool "Has libssl"	if FREETZ_TYPE_CUSTOM
 	default y			if \
 		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -832,6 +855,7 @@ config FREETZ_REMOVE_BRANDING_1und1
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
@@ -1032,6 +1056,7 @@ config FREETZ_REMOVE_TR069
 		Removes libtr069 to save space. This also removes libtr064.
 		WARNING: Removing tr069-stuff without disabling it on the
 		box causes permanent reboots until the box is recovered.
+
 config FREETZ_REMOVE_TR069_FWUPDATE
 	bool "Remove fwupdate"
 	depends on FREETZ_REMOVE_TR069
@@ -1606,6 +1631,7 @@ config FREETZ_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/english/annex_a"		if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan/firmware/english/annex_b"		if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7050/firmware"			if FREETZ_TYPE_FON_WLAN_7050
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7112/firmware/deutsch/"		if FREETZ_TYPE_FON_WLAN_7112
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7113/firmware/deutsch"		if FREETZ_TYPE_FON_WLAN_7113
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"		if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_DE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch_a-ch"	if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH
@@ -1647,11 +1673,12 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN.AnnexA.en.08.04.49.image"				if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN.AnnexB.en.08.04.49.image"				if FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "fritz.box_fon_wlan_7050.14.04.33.image"				if FREETZ_TYPE_FON_WLAN_7050
+	default "FRITZ.Box_Fon_WLAN_7112.87.04.76.image"                                if FREETZ_TYPE_FON_WLAN_7112
 	default "FRITZ.Box_Fon_WLAN_7113.60.04.68.image"				if FREETZ_TYPE_FON_WLAN_7113
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.en.39.04.67.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7140.AnnexB.en.30.04.67.image"			if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
-	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.39.04.59.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH
+	default "FRITZ.Box_Fon_WLAN_7140.AnnexA.39.04.76.image"				if FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.70.image"				if FREETZ_TYPE_FON_WLAN_7141
 	default "fritz.fon_7150.annexb.38.04.71.image"					if FREETZ_TYPE_FON_7150
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.76.image"				if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
@@ -1686,6 +1713,7 @@ config FREETZ_DL_SITE2
 	string "AVM web interface DL Site"		if FREETZ_DL_OVERRIDE
 	depends on \
 		FREETZ_TYPE_3170_7170 || \
+		FREETZ_TYPE_7112_7170 || \
 		FREETZ_TYPE_7113_7170 || \
 		FREETZ_TYPE_7140_7170 || \
 		FREETZ_TYPE_7141_7170 || \
@@ -1707,6 +1735,7 @@ config FREETZ_DL_SOURCE2
 	string "AVM web interface firmware source"	if FREETZ_DL_OVERRIDE
 	depends on \
 		FREETZ_TYPE_3170_7170 || \
+		FREETZ_TYPE_7112_7170 || \
 		FREETZ_TYPE_7113_7170 || \
 		FREETZ_TYPE_7140_7170 || \
 		FREETZ_TYPE_7141_7170 || \
@@ -1717,6 +1746,7 @@ config FREETZ_DL_SOURCE2
 		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_ADD_ANNEX_A_FIRMWARE)
 	default "fritz.box_wlan_3170.49.04.58.image"		if FREETZ_TYPE_3170_7170
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"	if FREETZ_TYPE_7140_7170
+	default "FRITZ.Box_Fon_WLAN_7112.87.04.76.image"	if FREETZ_TYPE_7113_7170
 	default "FRITZ.Box_Fon_WLAN_7113.60.04.68.image"	if FREETZ_TYPE_7113_7170
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.70.image"	if FREETZ_TYPE_7141_7170
 	default "fritz.box_fon_wlan_7141.40.04.37.image"	if FREETZ_TYPE_SPEEDPORT_W501V
