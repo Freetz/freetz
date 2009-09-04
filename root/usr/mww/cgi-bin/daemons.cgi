@@ -92,15 +92,15 @@ stat_static() {
 	sec_begin '$(lang de:"Statische Pakete" en:"Static packages")'
 	stat_begin
 
-	empty=1
+	no_packages=true
 	if [ -e /etc/static.pkg ]; then
 		for pkg in $(cat /etc/static.pkg); do
 			if [ -x "/mod/etc/init.d/rc.$pkg" ] && [ ! -e "/mod/etc/${pkg}_multid.pkg" ]; then
-				empty=0
+				no_packages=false
 				stat_line "$pkg"
 			else
 				if [ -e "/mod/etc/${pkg}_multid.pkg" ]; then
-					empty=0
+					no_packages=false
 					echo "<tr><td><b>Deamons <i>${pkg}</i>:</b></td></tr>"
 					for pkgline in $(cat /mod/etc/${pkg}_multid.pkg); do
 						if [ -n "$(echo $pkgline | grep \#)" ]; then
@@ -116,7 +116,7 @@ stat_static() {
 			fi
 		done
 	fi
-	if [ "$empty" -eq 1 ]; then
+	if $no_packages; then
 		echo '<p><i>$(lang de:"keine statischen Pakete" en:"no static packages")</i></p>'
 	fi
 
