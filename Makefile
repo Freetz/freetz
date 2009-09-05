@@ -54,6 +54,7 @@ TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 
 SED:=sed
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
+FAKEROOT_TOOL:=$(TOOLS_DIR)/fakeroot/bin/fakeroot
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
@@ -272,7 +273,7 @@ firmware-nocompile: tools $(DL_IMAGE) package-list exclude-lists
 else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
 endif
-	@./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
+	@$(FAKEROOT_TOOL) -- ./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
 ifneq ($(FWMOD_PATCH_TEST),y)
 ifneq ($(FWMOD_NOPACK),y)
 ifeq ($(strip $(FREETZ_CUSTOM_IMAGE_NAME_PREFIX)),y)

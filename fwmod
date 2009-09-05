@@ -164,7 +164,6 @@ FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
 RMTICHKSUM_TOOL="rmtichksum"
 MAKEDEVS_TOOL="makedevs"
-FAKEROOT_TOOL="fakeroot"
 UNSQUASHFS_TOOL="unsquashfs3-lzma"
 EXTERNAL_TOOL="external"
 
@@ -220,12 +219,6 @@ fi
 # Dot-include some helper shell function (isFreetzType, rm_files)
 . "${TOOLS_DIR}/freetz_functions"
 
-
-# Dont run this script as root
-if [ $UID -eq 0 ]; then
-	error 1 "running this script as root is prohibited"
-fi
-
 if [ -z "$FIRMWARE" ]; then
 	error 1 "no firmware filename supplied"
 fi
@@ -268,7 +261,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	echo "unpacking firmware image"
 	mkdir "$FIRMWARE_DIR"
-	"$TAR" -xif "$FIRMWARE" -C "$FIRMWARE_DIR" || exit 1
+	"$TAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || exit 1
 
 	# Do the images exist ?
 	if [ ! -r "${FIRMWARE_DIR}/${KERNEL_IMAGE}" ]; then
@@ -306,7 +299,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ -r "$AVMPLUGINS" ]; then
 		echo "unpacking AVM plugins"
 		mkdir -p "$AVMPLUGINS_DIR"
-		"$TAR" -xif "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
+		"$TAR" -xf "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
 
 		for i in "${AVMPLUGINS_DIR}/var/"*.image; do
 			AVMPLUGIN="${i##*/plugin-}"
@@ -327,7 +320,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	echo "unpacking var.tar"
 	mkdir "$VARTAR_DIR"
-	"$TAR" -xpif "$VARTAR" -C "$VARTAR_DIR" || exit 1
+	"$TAR" -xpf "$VARTAR" -C "$VARTAR_DIR" || exit 1
 
 	# Unpacking second firmware image
 	if [ -n "$FIRMWARE2" ]; then
@@ -1054,7 +1047,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Pack var.tar (use old tar for compatibility)
 	echo "packing var.tar"
-	"$TAR" -c --owner=0 --group=0 --format=oldgnu -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
+	"$TAR" -c -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
 
 	if [ ! -s "$VARTAR_MOD" ]; then
 		error 1 "packing of var.tar failed"
@@ -1065,12 +1058,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	echo "creating filesystem image"
-	"$FAKEROOT" -s fakechroot.save -- $MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
-	# Possible race condition: save file must become available in file system.
-	# This can take an instant, so wait if necessary.
-	until [ -r fakechroot.save ]; do sleep 0.1; done
-	"$FAKEROOT" -i fakechroot.save -- $TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
-	rm -f fakechroot.save
+	$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
+	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
 	if [ ! -s "$FILESYSTEM_MOD" ]; then
 		error 1 "creation of filesystem failed"
@@ -1132,7 +1121,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Pack firmware image (use old tar for compatibility)
 	echo "packing ${modimage}"
-	"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
+	"$TAR" -c -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
 
 	if [ ! -s "${DIR}/${modimage}" ]; then
 		rm -f "${DIR}/${modimage}"
@@ -1142,7 +1131,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ "$EXTERNAL_CREATEPAK" == "y" ]; then
 		modexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.external"
 		echo "packing ${modexternal}"
-		"$TAR" -c --owner=0 --group=0 --mode=0755 --format=oldgnu -C "$EXTERNAL_MOD_DIR" . > "${DIR}/${modexternal}" || exit 1
+		"$TAR" -c -C "$EXTERNAL_MOD_DIR" . > "${DIR}/${modexternal}" || exit 1
 
 		if [ ! -s "${DIR}/${modexternal}" ]; then
 			rm -f "${DIR}/${modexternal}"
