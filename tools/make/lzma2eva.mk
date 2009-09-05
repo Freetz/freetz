@@ -1,9 +1,9 @@
 LZMA2EVA_SOURCE:=lzma2eva.tar.bz2
-LZMA2EVA_DIR:=$(SOURCE_DIR)/lzma2eva
+LZMA2EVA_DIR:=$(TOOLS_SOURCE_DIR)/lzma2eva
 
 
-$(LZMA2EVA_DIR)/.unpacked: $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE)
+$(LZMA2EVA_DIR)/.unpacked: $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE) | $(TOOLS_SOURCE_DIR)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xjf $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE)
 	touch $@
 
 $(LZMA2EVA_DIR)/lzma2eva: $(LZMA2EVA_DIR)/.unpacked

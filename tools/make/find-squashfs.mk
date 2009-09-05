@@ -1,9 +1,9 @@
 FIND_SQUASHFS_SOURCE:=find-squashfs.tar.bz2
-FIND_SQUASHFS_DIR:=$(SOURCE_DIR)/find-squashfs
+FIND_SQUASHFS_DIR:=$(TOOLS_SOURCE_DIR)/find-squashfs
 
 
-$(FIND_SQUASHFS_DIR)/.unpacked: $(TOOLS_DIR)/source/$(FIND_SQUASHFS_SOURCE)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(TOOLS_DIR)/source/$(FIND_SQUASHFS_SOURCE)
+$(FIND_SQUASHFS_DIR)/.unpacked: $(TOOLS_DIR)/source/$(FIND_SQUASHFS_SOURCE) | $(TOOLS_SOURCE_DIR)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xjf $(TOOLS_DIR)/source/$(FIND_SQUASHFS_SOURCE)
 	touch $@
 
 $(FIND_SQUASHFS_DIR)/find-squashfs: $(FIND_SQUASHFS_DIR)/.unpacked

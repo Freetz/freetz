@@ -19,6 +19,11 @@ else
 TOOLS_DOT_CONFIG:=.config
 endif
 
+TOOLS_SOURCE_DIR:=$(FREETZ_BASE_DIR)/source/host-tools
+
+$(TOOLS_SOURCE_DIR):
+	mkdir -p $(TOOLS_SOURCE_DIR)
+
 TOOLS+=busybox-tools
 TOOLS+=find-squashfs
 TOOLS+=lzma
