@@ -10,6 +10,7 @@ else
 PHP_STATIC:=
 endif
 
+$(PKG)_DEPENDS_ON := pcre
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_GD)),y)
 $(PKG)_DEPENDS_ON += jpeg libpng
 endif
@@ -36,6 +37,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-fastcgi
 $(PKG)_CONFIGURE_OPTIONS += --enable-exif
 $(PKG)_CONFIGURE_OPTIONS += --with-config-file-path=/tmp/flash
 $(PKG)_CONFIGURE_OPTIONS += --with-config-file-scan-dir=/tmp/flash/php
+$(PKG)_CONFIGURE_OPTIONS += --with-pcre-regex="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_GD)),y)
 $(PKG)_CONFIGURE_OPTIONS += --with-gd
 $(PKG)_CONFIGURE_OPTIONS += --with-png-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"

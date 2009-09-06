@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.18.2)
-$(PKG)_LIB_VERSION:=0.1800.2
+$(call PKG_INIT_LIB, 2.20.5)
+$(PKG)_LIB_VERSION:=0.2000.5
 $(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=ftp://ftp.gtk.org/pub/glib/2.18
+$(PKG)_SITE:=ftp://ftp.gtk.org/pub/glib/2.20
 $(PKG)_DIR:=$(SOURCE_DIR)/glib-$($(PKG)_VERSION)
 $(PKG)_GLIB_BINARY:=$($(PKG)_DIR)/glib/.libs/libglib-2.0.so.$($(PKG)_LIB_VERSION)
 $(PKG)_GOBJECT_BINARY:=$($(PKG)_DIR)/gobject/.libs/libgobject-2.0.so.$($(PKG)_LIB_VERSION)

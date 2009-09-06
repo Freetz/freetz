@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 1.4.11-stable)
+$(call PKG_INIT_LIB, 1.4.12-stable)
 $(PKG)_MAJOR_VERSION:=1.4
 $(PKG)_SHLIB_VERSION:=2.1.3
 $(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)

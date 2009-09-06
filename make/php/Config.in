@@ -1,5 +1,6 @@
 config FREETZ_PACKAGE_PHP
 	bool "PHP 5.2.10"
+	select FREETZ_LIB_libpcre if ! FREETZ_PHP_STATIC
 	default n
 	help
 		PHP: Hypertext Preprocessor
@@ -13,8 +14,8 @@ config FREETZ_PACKAGE_PHP
 config FREETZ_PACKAGE_PHP_WITH_GD
         bool "build with GD support"
         depends on FREETZ_PACKAGE_PHP
-        select FREETZ_LIB_libpng12
-        select FREETZ_LIB_libjpeg
+        select FREETZ_LIB_libpng12 if ! FREETZ_PHP_STATIC
+        select FREETZ_LIB_libjpeg if ! FREETZ_PHP_STATIC
         default n
         help
                 This option enables the GD support for PHP
@@ -30,3 +31,4 @@ config FREETZ_PHP_STATIC
 		  - libc.so.0
 		  - libgcc_s.so.1
 		  - libm.so.0
+		  - libpcre.so.0

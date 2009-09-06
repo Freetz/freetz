@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 2.02)
+$(call PKG_INIT_LIB, 2.03)
 $(PKG)_LIB_VERSION:=2.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.oberhumer.com/opensource/lzo/download/
