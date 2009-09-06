@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN,1.0.19)
-$(PKG)_LIB_VERSION:=1.0.19
-$(PKG)_SOURCE:=sane-backends-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=ftp://ftp2.sane-project.org/pub/sane/sane-backends-1.0.19
+$(call PKG_INIT_BIN,1.0.20)
+$(PKG)_LIB_VERSION:=1.0.20
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=ftp://ftp2.sane-project.org/pub/sane/$(pkg)-$($(PKG)_VERSION)
 
 # saned
 $(PKG)_TARGET_saned:=$($(PKG)_DEST_DIR)/usr/sbin/saned
@@ -22,34 +22,31 @@ $(PKG)_LIB_TARGET_BINARY:=root/usr/lib/libsane.so.$($(PKG)_LIB_VERSION)
 
 
 $(PKG)_TARGET_BINARIES:=$($(PKG)_TARGET_saned)
-ifeq ($(strip $(FREETZ_SANE_sane_find_scanner)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner)),y)
 $(PKG)_TARGET_BINARIES+=$($(PKG)_TARGET_sane_find_scanner)
 endif
-ifeq ($(strip $(FREETZ_SANE_scanimage)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_SANE_BACKENDS_scanimage)),y)
 $(PKG)_TARGET_BINARIES+=$($(PKG)_TARGET_scanimage)
 endif
 
 $(PKG)_DEPENDS_ON:= libusb
-ifeq ($(strip $(FREETZ_SANE_BACKEND_dc210)),y)
-$(PKG)_DEPENDS_ON+= jpeg
-endif
-ifeq ($(strip $(FREETZ_SANE_BACKEND_dc240)),y)
-$(PKG)_DEPENDS_ON+= jpeg
-endif
 
 # include selected backends
 include $($(PKG)_MAKE_DIR)/sane-backends.in
 
+ifeq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
+$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
+else
 $(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
-$(PKG)_CONFIGURE_OPTIONS += --disable-translations
+endif
 $(PKG)_CONFIGURE_OPTIONS += --without-gphoto2
-$(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-fork-process
+$(PKG)_CONFIGURE_OPTIONS += --disable-avahi
+$(PKG)_CONFIGURE_OPTIONS += --disable-libusb_1_0
+$(PKG)_CONFIGURE_OPTIONS += --disable-translations
+$(PKG)_CONFIGURE_OPTIONS += --disable-latex
 
 $(PKG)_CONFIGURE_ENV+=BACKENDS="$(SANE_BACKENDS)"
-$(PKG)_CONFIGURE_ENV+=SANEI_JPEG="$(SANEI_JPEG)"
-$(PKG)_CONFIGURE_ENV+=SANEI_JPEG_LO="$(SANEI_JPEG_LO)"
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -57,13 +54,17 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_saned) $($(PKG)_sane_find_scanner) $($(PKG)_scanimage) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE1) -C $(SANE_BACKENDS_DIR)
+		$(MAKE) -C $(SANE_BACKENDS_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(SANE_BACKENDS_DIR) \
+		$(MAKE) -C $(SANE_BACKENDS_DIR)/include \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		freetz-install-devel
+		install
+	PATH=$(TARGET_PATH) \
+		$(MAKE) -C $(SANE_BACKENDS_DIR)/backend \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install-libLTLIBRARIES
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane.la
 
@@ -117,5 +118,13 @@ $(pkg)-uninstall:
 		$(SANE_BACKENDS_TARGET_sane_find_scanner) \
 		$(SANE_BACKENDS_TARGET_scanimage) \
 		$(SANE_BACKENDS_LIB_TARGET_BACKENDS_BINARIES)
+
+$(pkg)-config-update: $($(PKG)_DIR)/.unpacked
+	$(SANE_BACKENDS_MAKE_DIR)/config-update.pl \
+		$(SANE_BACKENDS_VERSION) \
+		$(SOURCE_DIR)/sane-backends-$(SANE_BACKENDS_VERSION)/configure \
+		$(SANE_BACKENDS_MAKE_DIR)/Config.in \
+		$(SANE_BACKENDS_MAKE_DIR)/sane-backends.in
+.PHONY: $(pkg)-config-update
 
 $(PKG_FINISH)
