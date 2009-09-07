@@ -1,11 +1,11 @@
-$(call PKG_INIT_BIN, 2.8.12)
+$(call PKG_INIT_BIN, 3.9.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/hplip
 $(PKG)_LIB_IP_VERSION=0.0.1
 $(PKG)_LIB_IP_BINARY:=$($(PKG)_DIR)/.libs/libhpip.so.$($(PKG)_LIB_IP_VERSION)
 $(PKG)_LIB_IP_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhpip.so.$($(PKG)_LIB_IP_VERSION)
 $(PKG)_LIB_IP_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libhpip.so.$($(PKG)_LIB_IP_VERSION)
-$(PKG)_LIB_MUD_VERSION=0.0.4
+$(PKG)_LIB_MUD_VERSION=0.0.6
 $(PKG)_LIB_MUD_BINARY:=$($(PKG)_DIR)/.libs/libhpmud.so.$($(PKG)_LIB_MUD_VERSION)
 $(PKG)_LIB_MUD_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhpmud.so.$($(PKG)_LIB_MUD_VERSION)
 $(PKG)_LIB_MUD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libhpmud.so.$($(PKG)_LIB_MUD_VERSION)
@@ -17,14 +17,19 @@ $(PKG)_LIB_HPAIO_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sane/libsane-hpaio.so
 
 $(PKG)_DEPENDS_ON := sane-backends
 
+$(PKG)_CONFIGURE_PRE_CMDS += autoreconf -f -i;
+
+$(PKG)_CONFIGURE_OPTIONS += --enable-lite-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-doc-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-network-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-pp-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-gui-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-fax-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-dbus-build
+$(PKG)_CONFIGURE_OPTIONS += --disable-cups-drv-install
 $(PKG)_CONFIGURE_OPTIONS += --disable-foomatic-drv-install
 $(PKG)_CONFIGURE_OPTIONS += --disable-foomatic-rip-hplip-install
+$(PKG)_CONFIGURE_OPTIONS += --disable-hpcups-install
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -71,7 +76,7 @@ $($(PKG)_LIB_HPAIO_TARGET_BINARY): $($(PKG)_LIB_HPAIO_STAGING_BINARY)
 $(PKG)_TARGET_CONF:
 	@echo "HPLIP: Strip down models.dat to $(FREETZ_HPLIP_PRINTER_TYPE)"
 	@awk 'BEGIN { found=0 } /^\[.*\]/ || /^$$/ { found=0 } /^\['$(FREETZ_HPLIP_PRINTER_TYPE)'\]/ { found=1 } \
-		{ if (found) { print $$0 } }' < $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip/data/models/models.dat \
+		{ if (found) { print $$0 } }' < $(HPLIP_DIR)/data/models/models.dat \
 		> $(HPLIP_DEST_DIR)/usr/share/hplip/data/models/models.dat	
 
 .PHONY: $(PKG)_TARGET_CONF
@@ -88,7 +93,7 @@ $(pkg)-clean:
 
 $(pkg)-config-update:
 	$(HPLIP_MAKE_DIR)/hplip-config-update.pl $(HPLIP_VERSION) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip/data/models/models.dat > $(HPLIP_MAKE_DIR)/Config.in
+		$(HPLIP_DIR)/data/models/models.dat > $(HPLIP_MAKE_DIR)/Config.in
 
 $(pkg)-uninstall:
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhp* \
