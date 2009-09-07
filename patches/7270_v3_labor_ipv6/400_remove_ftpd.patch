@@ -1,0 +1,58 @@
+--- etc/hotplug/storage.orig	2009-06-29 16:45:31.000000000 +0200
++++ etc/hotplug/storage	2009-08-16 15:10:08.603825390 +0200
+@@ -14,6 +14,10 @@
+ MSTART=/sbin/start_mediasrv
+ MSTOP=/sbin/stop_mediasrv
+ WEBDAVCONTROL=/etc/webdav_control
++
++# Do we have a Ftp server (ftpd) or was ist stripped from the firmware?
++_ftpd=$(basename $(which ftpd) 2> /dev/null)
++
+ ## Wait for removal of filesystem semaphores (mask: $1, maximal wait period: $2)
+ wait4remove () {
+ local COUNT=0
+@@ -183,6 +187,7 @@
+ ## ftp server control
+ ENABLED=`echo usbhost.ftp_server_enabled|usbcfgctl -s`
+ if [ "$ENABLED" != "no" ] ; then
++if [ "$_ftpd" ] ; then
+ if test -x /bin/inetdctl ; then
+ inetdctl enable ftpd
+ else
+@@ -199,6 +204,7 @@
+ ftpd -D -q $READONLYOPTION -t 120 -m 15 $USERSOPTION -h "$CONFIG_PRODUKT_NAME" &
+ fi
+ fi
++fi
+ else
+ if test -x /bin/inetdctl ; then
+ inetdctl disable ftpd
+--- etc/hotplug/run_mount.orig	2009-06-29 16:45:37.000000000 +0200
++++ etc/hotplug/run_mount	2009-08-16 15:10:08.611994228 +0200
+@@ -16,6 +16,10 @@
+ WEBDAVCONTROL=/etc/webdav_control
+ TR069START=/bin/tr069starter
+ SYSFS=/var/sysfs
++
++# Do we have a Ftp server (ftpd) or was ist stripped from the firmware?
++_ftpd=$(basename $(which ftpd) 2> /dev/null)
++
+ ## Generate a frontend'able 'nice name' to be used as mount point:
+ nicename () {
+ ## Find device's strings, remove/translate evil chars...
+@@ -115,6 +119,7 @@
+ eventadd 140 $MNTNAME
+ ENABLED=`echo usbhost.ftp_server_enabled|usbcfgctl -s`
+ if [ "$ENABLED" != "no" ] ; then
++if [ "$_ftpd" ] ; then
+ if test -x /bin/inetdctl; then
+ inetdctl enable ftpd
+ else
+@@ -134,6 +139,7 @@
+ fi
+ fi
+ fi
++fi
+ test -x $TR069START && $TR069START $MNTNAME
+ if test -x /etc/samba_control ; then
+ /etc/samba_control reconfig

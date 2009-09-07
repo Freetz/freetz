@@ -8,8 +8,8 @@ cgi_begin 'Passwort' 'password'
 cat << EOF
 <script type=text/javascript>
 function CheckInput(form) {
-	password=form.elements[0];
-	replay=form.elements[1];
+	password=form.elements[1];
+	replay=form.elements[2];
 if (password.value=="") {
 	alert("$(lang de:"Passwort leer!" en:"Empty password!")");
 	return false;
@@ -32,6 +32,7 @@ return true;
 
 <form action="/cgi-bin/passwd_save.cgi" method=POST onsubmit="return CheckInput(document.forms[0])">
 <table border="0" cellspacing="1" cellpadding="0">
+<tr><td>$(lang de:"altes Passwort: " en:"old password ")</td><td><input type="password" size=20 name="oldpassword"></td></tr>
 <tr><td>$(lang de:"neues Passwort: " en:"new password ")</td><td><input type="password" size=20 name="password"></td></tr>
 <tr><td>$(lang de:"Wiederholung: " en:"new password ")</td><td><input type="password" size=20 name="replay"></td></tr>
 </table>

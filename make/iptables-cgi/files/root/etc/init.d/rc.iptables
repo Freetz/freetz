@@ -5,9 +5,11 @@ export LD_LIBRARY_PATH=/mod/lib
 
 DAEMON=iptables
 SAVEFILE=/var/tmp/flash/iptables_rules
-MODULES="ip_tables ip_conntrack ipt_LOG iptable_filter ipt_state \
-			ip_conntrack_ftp ipt_mac ipt_multiport ipt_iprange iptable_nat \
-			ipt_MASQUERADE ipt_REDIRECT"
+MODULES="iptable_nat iptable_filter \
+		ip_tables ip_nat ip_conntrack ip_conntrack_ftp \
+		ipt_LOG ipt_state ipt_mac ipt_multiport ipt_iprange ipt_MASQUERADE ipt_REDIRECT ipt_REJECT \
+		x_tables \
+		xt_state xt_mark xt_MARK xt_tcpudp"
 
 case "$1" in
 	""|load|start|restart)
@@ -31,7 +33,7 @@ start() {
 	if [ $? -eq 1 ]; then
 		echo 'Loading modules...'
 		for MODUL in $MODULES; do
-			modprobe $MODUL
+			modprobe $MODUL > /dev/null 2>&1
 		done
 		echo 'Loading table list...'
 		while read LINE; do

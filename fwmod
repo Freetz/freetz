@@ -27,7 +27,7 @@
 # This script is based on Christian Volkmann's fritzbox mod-0.57.
 # Legacy URL: http://www.ip-phone-forum.de/showthread.php?t=65894
 #
-# Special Thanks to Andreas Bühmann, Christian Volkmann, Enrik Berkhan,
+# Special Thanks to Andreas Buehmann, Christian Volkmann, Enrik Berkhan,
 # SpeedyBZ and all members on ip-phone-forum.de who contributed to this mod
 
 SHELL=$BASH
@@ -171,13 +171,6 @@ EXTERNAL_TOOL="external"
 MKSQUASHFS_OPTIONS="-le -noappend -all-root -info"
 UNSQUASHFS_OPTIONS="-no-progress"
 
-if [ "$FREETZ_REPLACE_KERNEL" == "y" ] || [ "$FREETZ_KERNEL_VERSION_2_6_19_2" ]; then
-	MKSQUASHFS_TOOL="mksquashfs3-lzma"
-	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
-else
-	MKSQUASHFS_TOOL="mksquashfs-lzma"
-fi
-
 TAR_TOOL="tar"
 
 TOOLS_DIR="${ABS_BASE_DIR}/${TOOLS_SUBDIR}"
@@ -204,6 +197,23 @@ DYNAMIC_PACKAGES_FILE="${BASE_DIR}/.dynamic"
 STATIC_ADDON_FILE="${ADDON_DIR}/static.pkg"
 DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 
+
+# Config file readable?
+if [ ! -r "$DOT_CONFIG" ]; then
+	echo -e "ERROR: not configured" 1>&2
+	exit 1
+fi
+
+# Load config
+. "$DOT_CONFIG"
+
+if [ "$FREETZ_REPLACE_KERNEL" == "y" ] || [ "$FREETZ_KERNEL_VERSION_2_6_19_2" ]; then
+	MKSQUASHFS_TOOL="mksquashfs3-lzma"
+	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
+else
+	MKSQUASHFS_TOOL="mksquashfs-lzma"
+fi
+
 # Dot-include 'modpatch' shell function
 . "${TOOLS_DIR}/freetz_patch"
 
@@ -214,11 +224,6 @@ DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 # Dont run this script as root
 if [ $UID -eq 0 ]; then
 	error 1 "running this script as root is prohibited"
-fi
-
-# Config file readable?
-if [ ! -r "$DOT_CONFIG" ]; then
-	error 1 "not configured"
 fi
 
 if [ -z "$FIRMWARE" ]; then
@@ -235,10 +240,6 @@ fi
 if [ ! -e "$DIR" ]; then
 	mkdir -p "$DIR"
 fi
-
-# Load config
-. "$DOT_CONFIG"
-
 
 ############################################
 ## Unpack and unsquash the firmware image ##
@@ -538,8 +539,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo
 	fi
 
-	if isFreetzType W501V W701V W900V; then
-		oem_list="tcom congstar avm"
+	if isFreetzType W501V; then
+		oem_list="tcom avm"
 	fi
 	sed -i -r -e 's/for i in  (avm|tcom).*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
 

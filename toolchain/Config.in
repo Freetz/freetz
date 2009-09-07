@@ -1,12 +1,17 @@
 config FREETZ_KERNEL_VERSION_2_6_13_1
 	bool
-	default y if ! (FREETZ_AVM_VERSION_7270 || FREETZ_AVM_VERSION_12043 || FREETZ_AVM_VERSION_7270_04_67 || FREETZ_AVM_VERSION_7270_04_70 || FREETZ_AVM_VERSION_7270_04_76)
+	default y if !	( \
+			FREETZ_TYPE_WLAN_3270 || \
+			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7270 || \
+			FREETZ_TYPE_FON_WLAN_7270_V3 \
+			)
 	default n
 
 config FREETZ_KERNEL_VERSION_2_6_19_2
 	bool
 	default y if ! FREETZ_KERNEL_VERSION_2_6_13_1
-	default n 
+	default n
 
 config FREETZ_KERNEL_VERSION
 	string
@@ -20,12 +25,12 @@ config FREETZ_TARGET_UCLIBC_VERSION_0_9_28
 
 config FREETZ_TARGET_UCLIBC_VERSION_0_9_29
 	bool
-	default y		if \
+	default y if \
 		FREETZ_TYPE_WLAN_3270 || \
-		(FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN) || \
+		(FREETZ_TYPE_FON_WLAN_7140 && (FREETZ_TYPE_LANG_EN || FREETZ_TYPE_LANG_A_CH)) || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
-		(FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LANG_A_CH)|| \
+		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3
@@ -149,11 +154,11 @@ config FREETZ_TARGET_NLS
 		Support NLS-enabled programs and Linux tools on target system.
 		
 		Example:
-		    $ ls /foo/bar
-		    ls: /foo/bar: No such file or directory
-		    $ export LANG=de_DE.8859-1
-		    $ ls /foo/bar
-		    ls: /foo/bar: Datei oder Verzeichnis nicht gefunden
+			$ ls /foo/bar
+			ls: /foo/bar: No such file or directory
+			$ export LANG=de_DE.8859-1
+			$ ls /foo/bar
+			ls: /foo/bar: Datei oder Verzeichnis nicht gefunden
 
 config FREETZ_TARGET_LFS
 	bool "Large file support (LFS) for target toolchain" if FREETZ_BUILD_TOOLCHAIN
@@ -183,11 +188,11 @@ config FREETZ_KERNEL_BINUTILS_VERSION
 	default "2.17.50.0.17"
 
 config FREETZ_TARGET_TOOLCHAIN
-        bool "Build binutils and gcc for target" if FREETZ_BUILD_TOOLCHAIN
-        default n
-        help
-                Build the binutils and gcc to run on the target.
-                Files are installed into toolchain/target/target-utils.
+	bool "Build binutils and gcc for target" if FREETZ_BUILD_TOOLCHAIN
+	default n
+	help
+		Build the binutils and gcc to run on the target.
+		Files are installed into toolchain/target/target-utils.
 
 comment "GNU debugger (gdb)"
 
@@ -197,26 +202,26 @@ config FREETZ_PACKAGE_GDB
 	select FREETZ_LIB_libncurses
 	select FREETZ_LIB_libthread_db
 	help
-	    Build the full gdb debugger to run on the target.
+		Build the full gdb debugger to run on the target.
 
 config FREETZ_PACKAGE_GDB_SERVER
 	bool "Build gdb server for target"
 	default n
 	help
-	    Build the gdbserver stub to run on the target.
-	    A full gdb is needed to debug the progam.
+		Build the gdbserver stub to run on the target.
+		A full gdb is needed to debug the progam.
 
 config FREETZ_PACKAGE_GDB_HOST
 	bool "Build gdb for host"
 	default n
 	help
-	    Build gdb to run on the host to debug programs run on the target.
+		Build gdb to run on the host to debug programs run on the target.
 choice
 	prompt "gdb version"
 	default FREETZ_GDB_VERSION_6_6
 	depends on FREETZ_PACKAGE_GDB || FREETZ_PACKAGE_GDB_SERVER || FREETZ_PACKAGE_GDB_HOST
 	help
-	  Select the version of gdb you wish to use.
+		Select the version of gdb you wish to use.
 
 	config FREETZ_GDB_VERSION_6_3
 		bool "gdb 6.3"

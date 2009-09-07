@@ -118,6 +118,10 @@ load()
 	for f in $FILES; do
 		if [ -e "$USER_DIR/$f" ]; then
 			cp -a "$USER_DIR/$f" "$TMP_DIR"
+			# BEGIN compat 
+			# TODO: remove in one of the next releases
+			[ "$f" = "shadow" -o "$f" = "gshadow" ] && chmod 600 "$TMP_DIR/$f"
+			# END compat 
 		fi
 	done
 	cat /etc/passwd | while IFS=: read user pass uid gid gecos user_homedir shell; do

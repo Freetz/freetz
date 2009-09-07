@@ -82,7 +82,7 @@ Content-type: text/html; charset=iso-8859-1
 EOF
 
 # custom style for fieldset and div.body
-if [ ! "$_cgi_width" ]; then
+if [ ! "$_cgi_width" ] || [ "$_cgi_width" != "$MOD_CGI_WIDTH" ]; then
 	let _cgi_width=$MOD_CGI_WIDTH
 fi
 export _cgi_width
