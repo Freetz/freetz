@@ -1,0 +1,12 @@
+--- root/etc/modprobe.conf	2008-08-07 17:24:21.000000000 +0200
++++ root/etc/modprobe.conf.new	2008-08-07 17:23:16.000000000 +0200
+@@ -1,5 +1,8 @@
+ # specific hardware piglet module options
+-alias piglet
++alias avm_piglet Piglet_noemif
++alias avm_usb_host musb_hdrc
++
++options Piglet_noemif piglet_enable_button=2 dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex piglet_bitfile=/lib/modules/microvoip_isdn_top.bit
+ 
+ # general bulk keys (disks, memory keys)
+ alias usb:v*p*d*dc08dsc06dp*ic*isc*ip* usb-storage
