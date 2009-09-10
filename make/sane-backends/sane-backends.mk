@@ -122,7 +122,7 @@ $(pkg)-uninstall:
 $(pkg)-config-update: $($(PKG)_DIR)/.unpacked
 	$(SANE_BACKENDS_MAKE_DIR)/config-update.pl \
 		$(SANE_BACKENDS_VERSION) \
-		$(SOURCE_DIR)/sane-backends-$(SANE_BACKENDS_VERSION)/configure \
+		$(SANE_BACKENDS_DIR)/configure \
 		$(SANE_BACKENDS_MAKE_DIR)/Config.in \
 		$(SANE_BACKENDS_MAKE_DIR)/sane-backends.in
 .PHONY: $(pkg)-config-update
