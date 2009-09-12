@@ -7,7 +7,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DIR)/root/usr/lib/callmonitor/bin/recode
 $(PKG)_STARTLEVEL=30
 
 CALLMONITOR_FEATURES:=$(foreach feat,webif actions monitor phonebook,\
-    	$(if $(CALLMONITOR_$(feat)),$(feat)))
+    	$(if $(FREETZ_PACKAGE_CALLMONITOR_$(feat)),$(feat)))
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
