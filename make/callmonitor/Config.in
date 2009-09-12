@@ -2,7 +2,54 @@ config FREETZ_PACKAGE_CALLMONITOR
 	bool "Callmonitor 1.15.1"
 	default n
 	help
-		Callmonitor enables you to perform arbitrary actions upon incoming calls
-		on your AVM Fritz!Box (e.g., to send notifications to your favorite
-		set-top box, to wake up your PC, or to send you a mail when you have
-		missed a call).
+		Callmonitor enables you to perform arbitrary actions upon incoming
+		calls on your AVM Fritz!Box (e.g., to send notifications to your
+		favorite set-top box, to wake up your PC, or to send you a mail when
+		you have missed a call).
+
+config CALLMONITOR_webif
+	bool "Web interface"
+	default y
+	depends FREETZ_PACKAGE_CALLMONITOR
+	help
+		This options installs a number of configuration pages in Freetz's Web
+		interface. 
+		
+		Say YES here unless you feel comfortable configuring Callmonitor via
+		text files. Which parts of the configuration pages are actually
+		displayed may depend on the installed features.
+
+config CALLMONITOR_actions
+	bool "Actions"
+	default y
+	depends FREETZ_PACKAGE_CALLMONITOR
+	help
+		This options installs all the actions to be used in the 'Listeners'
+		rules, such as 'dboxmessage', 'mailmessage', 'config', and many more.
+		These actions may be used independently of the Callmonitor daemon by
+		calling them via the 'callaction' command.
+
+		You probably want to say YES here.
+
+config CALLMONITOR_monitor
+	bool "Monitoring daemon"
+	default y
+	depends FREETZ_PACKAGE_CALLMONITOR
+	help
+		This options installs the heart of Callmonitor, a daemon that monitors
+		incoming and outgoing call events and performs actions according to a
+		set of rules. Actions range from ready-to-use notifications to
+		arbitrary shell code.
+
+		You want to say YES here if you are new to Callmonitor.
+
+config CALLMONITOR_phonebook
+	bool "Phonebook support"
+	default y
+	depends FREETZ_PACKAGE_CALLMONITOR
+	help
+		This option makes Callmonitor map phone numbers to names using several
+		sources of information: reverse-lookup Web services, AVM's built-in
+		phonebook and an additional text file named 'Callers'.
+
+		Only say NO here if you are not interested in who is calling you.
