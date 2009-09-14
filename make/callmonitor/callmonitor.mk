@@ -29,6 +29,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
+	chmod 755 $@
 
 $(pkg)-clean: FORCE
 	if [ -d "$(CALLMONITOR_DIR)" ]; then $(MAKE) -C $(CALLMONITOR_DIR) clean; else true; fi
