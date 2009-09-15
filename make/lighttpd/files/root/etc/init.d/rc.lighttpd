@@ -32,39 +32,46 @@ configure() {
 	cleanup
 
 	mkdir -p /mod/etc/$DAEMON
-        (
-                if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-                        /tmp/flash/${DAEMON}_conf
-                else
-                        /mod/etc/default.$DAEMON/${DAEMON}_conf
-                fi
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
 
-                if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-                        cat /tmp/flash/${DAEMON}.extra
-                fi
-        ) > /mod/etc/$DAEMON/$DAEMON.conf
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON/$DAEMON.conf
 
 	status_log
 	
 }
 
 stop () {
-        echo -n "Stopping $DAEMON_LONG_NAME..."
-        killall $DAEMON > /dev/null 2>&1
-        exitval=$?
+	echo -n "Stopping $DAEMON_LONG_NAME..."
+	exitval=255
+	if [ -s /var/run/rc.lighttpd.pid ]; then
+		kill $(cat /var/run/rc.lighttpd.pid) > /dev/null 2>&1
+		exitval=$?
+		rm -f /var/run/rc.lighttpd.pid
+	else
+		killall $DAEMON > /dev/null 2>&1
+		exitval=$?
+	fi
 
-        cleanup
+	cleanup
 
-        if [ "$exitval" -eq 0 ]; then
-                echo 'done.'
-        else
-                echo 'failed.'
-                exit $exitval
-        fi
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
 }
 
 checkdir() {
-	i=10
+	i=60
 	while [ ! -d "$1" ]; do
 		echo -n "Directory $1 not available at round $i"
 		let i=$i-1
@@ -73,11 +80,12 @@ checkdir() {
 			exit 1
 		fi
 		echo " - sleeping"
-		sleep 5
+		sleep 10
 	done
 }
 
 start() {
+	trap "rm -f /var/run/rc.lighttpd.pid; exit 255" 0 1 2 3 15
 	echo -n "Starting $DAEMON_LONG_NAME ..."
 	if modlib_check_running; then
 		echo "$DAEMON already running."
@@ -100,6 +108,7 @@ start() {
 	fi
 }
 
+trap "rm -f /var/run/rc.lighttpd.pid; exit 255" 1 2 3 15
 case "$1" in
 	""|load)
 		pre_config
@@ -133,7 +142,8 @@ case "$1" in
 			exit 1;
 		fi
 
-		start
+		( start ) &
+		echo $! > /var/run/rc.lighttpd.pid
 		;;
 	unload)
 		modlib_stop
@@ -149,7 +159,16 @@ case "$1" in
 		modunreg cgi 'lighttpd'
 		;;
 	start)
-		start
+		if [ -s /var/run/rc.lighttpd.pid ]; then
+			kill -0 $(cat /var/run/rc.lighttpd.pid)
+			if [ $? -eq 0 ]; then
+				echo "Startup of $DAEMON already performed."
+				exit 0
+			fi
+			rm -f /var/run/rc.lighttpd.pid
+		fi
+		( start ) &
+		echo $! > /var/run/rc.lighttpd.pid
 		;;
 	stop)
 		stop
