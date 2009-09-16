@@ -267,34 +267,16 @@ $(GCC_BUILD_DIR3)/.compiled: $(GCC_BUILD_DIR3)/.configured
 #
 # gcc-lib dir changes names to gcc with 3.4.mumble
 #
-GCC_LIB_SUBDIR=lib/gcc-lib/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
-# sigh... we need to find a better way
-ifeq ($(findstring x4.0.,x$(FREETZ_TARGET_GCC_VERSION)),x4.0.)
 GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
-endif
-ifeq ($(findstring x4.1.,x$(FREETZ_TARGET_GCC_VERSION)),x4.1.)
-GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
-endif
-ifeq ($(findstring x4.2,x$(FREETZ_TARGET_GCC_VERSION)),x4.2)
-ifneq ($(findstring x4.2.,x$(GCC_VERSION)),x4.2.)
-REAL_GCC_VERSION=$(shell cat $(GCC_DIR)/gcc/BASE-VER)
-GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(REAL_GCC_VERSION)
-else
-GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
-endif
-endif
 GCC_INCLUDE_DIR:=include
-ifeq ($(findstring x4.3,x$(FREETZ_TARGET_GCC_VERSION)),x4.3)
-GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
+ifeq ($(findstring 4.3.3,$(FREETZ_TARGET_GCC_VERSION)),4.3.3)
 GCC_INCLUDE_DIR:=include-fixed
 endif
 
 $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
 	PATH=$(TARGET_PATH) DESTDIR=$(TARGET_UTILS_DIR) \
 		$(MAKE1) -C $(GCC_BUILD_DIR3) install
-	if [ ! -e $(TARGET_UTILS_DIR)/include ]; then \
-		ln -s $(TARGET_TOOLCHAIN_STAGING_DIR)/include $(TARGET_UTILS_DIR)/include; \
-	fi
+
 	# Remove broken specs file (cross compile flag is set).
 	rm -f $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/specs
 

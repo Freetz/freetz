@@ -192,29 +192,10 @@ $(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/li
 	fi
 	touch -c $@
 
-$(TARGET_UTILS_DIR)/lib/libc.so.0: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
-	$(MAKE1) -C $(UCLIBC_DIR) \
-		PREFIX=$(TARGET_UTILS_DIR) \
-		DEVEL_PREFIX=/usr/ \
-		RUNTIME_PREFIX=/ \
-		UCLIBC_EXTRA_LDFLAGS="$(TARGET_LDFLAGS)" \
-		UCLIBC_EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
-		install_runtime
-	touch -c $@
-
-$(TARGET_UTILS_DIR)/usr/bin/ldd: $(cross_compiler) $(TARGET_UTILS_DIR)/lib/libc.so.0
-	$(MAKE1) -C $(UCLIBC_DIR) \
-		PREFIX=$(TARGET_UTILS_DIR) \
-		UCLIBC_EXTRA_LDFLAGS="$(TARGET_LDFLAGS)" \
-		UCLIBC_EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
-		utils install_utils
-
-uclibc_target: cross_compiler uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a \
-		$(TARGET_UTILS_DIR)/lib/libc.so.0 $(TARGET_UTILS_DIR)/usr/bin/ldd
+uclibc_target: cross_compiler uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a
 
 uclibc_target-clean:
-	rm -rf $(TARGET_UTILS_DIR)/usr/include $(TARGET_UTILS_DIR)/lib/libc.so.0 \
-		$(TARGET_UTILS_DIR)/usr/lib/libc.a $(TARGET_UTILS_DIR)/usr/bin/ldd
+	rm -rf $(TARGET_UTILS_DIR)/usr/include $(TARGET_UTILS_DIR)/lib/libc.a
 
 uclibc_target-dirclean:
 	rm -rf $(TARGET_UTILS_DIR)/usr/include
