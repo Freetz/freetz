@@ -1,0 +1,15 @@
+--- src/dnsmasq.h	2009-09-08 14:29:53.000000000 +0200
++++ src/dnsmasq.h	2009-09-08 14:30:43.000000000 +0200
+@@ -16,12 +16,6 @@
+ 
+ #define COPYRIGHT "Copyright (C) 2000-2009 Simon Kelley" 
+ 
+-#ifndef NO_LARGEFILE
+-/* Ensure we can use files >2GB (log files may grow this big) */
+-#  define _LARGEFILE_SOURCE 1
+-#  define _FILE_OFFSET_BITS 64
+-#endif
+-
+ /* Get linux C library versions. */
+ #ifdef __linux__
+ #  define _GNU_SOURCE
