@@ -1,5 +1,5 @@
---- etc/hotplug/run_mount.orig	2009-08-13 12:43:53.000000000 +0200
-+++ etc/hotplug/run_mount	2009-08-16 16:17:22.995324686 +0200
+--- etc/hotplug/run_mount.orig	2009-09-16 11:47:48.815412149 +0200
++++ etc/hotplug/run_mount	2009-09-16 11:47:50.238914912 +0200
 @@ -19,19 +19,9 @@
  MORPHSTICK_PARTITION_FILE=/var/tmp/MORPHSTICK_PARTITION_NAME
  ## Generate a frontend'able 'nice name' to be used as mount point:
@@ -68,5 +68,5 @@
 -if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
 +if mount_fs; then
  new_filesystem=true
+ if test -x /bin/swlstream ; then
  MORPHSTICK_ENABLED=`echo morphstick.enabled|usbcfgctl -s`
- echo "run_mount: do_mount MORPHSTICK_ENABLED=$MORPHSTICK_ENABLED" > /dev/ttyS0
