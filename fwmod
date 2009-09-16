@@ -183,6 +183,8 @@ MAKEDEVS="${TOOLS_DIR}/${MAKEDEVS_TOOL}"
 MAKEDEVS_FILE="${TOOLS_DIR}/device_table.txt"    
 FAKEROOT="${TOOLS_DIR}/fakeroot/bin/${FAKEROOT_TOOL}"
 TAR="${TOOLS_DIR}/${TAR_TOOL}"
+#temporarily use system tar to unpack avm images
+UNTAR="$(which tar)"
 
 PACKAGES_DIR="${BASE_DIR}/packages"
 PATCHES_DIR="${BASE_DIR}/patches"
@@ -261,7 +263,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	echo "unpacking firmware image"
 	mkdir "$FIRMWARE_DIR"
-	"$TAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || exit 1
+	"$UNTAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || exit 1
 
 	# Do the images exist ?
 	if [ ! -r "${FIRMWARE_DIR}/${KERNEL_IMAGE}" ]; then
@@ -299,7 +301,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ -r "$AVMPLUGINS" ]; then
 		echo "unpacking AVM plugins"
 		mkdir -p "$AVMPLUGINS_DIR"
-		"$TAR" -xf "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
+		"$UNTAR" -xf "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
 
 		for i in "${AVMPLUGINS_DIR}/var/"*.image; do
 			AVMPLUGIN="${i##*/plugin-}"
@@ -320,7 +322,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	echo "unpacking var.tar"
 	mkdir "$VARTAR_DIR"
-	"$TAR" -xpf "$VARTAR" -C "$VARTAR_DIR" || exit 1
+	"$UNTAR" -xpf "$VARTAR" -C "$VARTAR_DIR" || exit 1
 
 	# Unpacking second firmware image
 	if [ -n "$FIRMWARE2" ]; then
