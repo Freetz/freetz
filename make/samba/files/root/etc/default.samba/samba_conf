@@ -75,7 +75,7 @@ if [ -r "/tmp/flash/samba/shares" ]; then
 				0|n|no|N|NO|"") ro="no"  ;;
 			esac
 cat << EOF
-[$name]
+[${name/%20/ }]
  comment = $comment
  path = $path
  guest ok = $gk
