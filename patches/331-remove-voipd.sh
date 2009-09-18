@@ -16,10 +16,9 @@ done
 	"${FILESYSTEM_MOD_DIR}/lib/libmscodex.so*"
 
 echo1 "patching web UI"
-# this works on all firmwares from 04_33 and higher; maybe also befor 04_33, but not tested
-sed -i -e '/<tr.*\<FonAll\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
-sed -i -e '/<tr.*\<FonStatus$1\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.html"
-sed -i -e "/jslGoTo('fon','siplist')/d;/^<?.* sip.*?>$/d" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/menus/menu2_fon.html"
+        sed -i -e '/<tr.*\<FonAll\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${HTML_LANG_MOD_DIR}/html/de/home/home.html"
+        sed -i -e '/<tr.*\<FonStatus$1\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${HTML_LANG_MOD_DIR}/html/de/home/home.html"
+        sed -i -e "/jslGoTo('fon','siplist')/d;/^<?.* sip.*?>$/d" "${HTML_LANG_MOD_DIR}/html/de/menus/menu2_fon.html"
 
 echo1 "patching rc.conf"
 sed -i -e "s/CONFIG_FON_IPHONE=.*$/CONFIG_FON_IPHONE=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"

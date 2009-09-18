@@ -1,23 +1,20 @@
---- usr/www/avme/html/de/home/home.js	2008-12-21 23:09:50.000000000 +0100
-+++ usr/www/avme/html/de/home/home.js	2008-12-21 23:37:35.000000000 +0100
-@@ -697,12 +697,6 @@
- if (isNaN(nStor)) nStor = 0;
+--- usr/www/avme/html/de/home/home.js.orig	2009-09-15 15:26:15.000000000 +0200
++++ usr/www/avme/html/de/home/home.js	2009-09-16 19:26:35.000000000 +0200
+@@ -802,15 +802,13 @@
  var nPartTotal = Number("<? query ctlusb:settings/storage-part-total ?>");
- if (isNaN(nStor)) nPartTotal = 0;
+ if (isNaN(nPartTotal)) nPartTotal = 0;
+ var unplugOk = parseInt("<? query ctlusb:settings/unplug-ok ?>", 10) == 1;
 -if (nPartTotal > nStor) {
--var str="";
--str += "{?de.home.home.js:5308?} ";
--str += "<a href=\"javascript:jslGoTo('home', 'syslog');\">{?de.home.home.js:3744?}</a>";
--return str.fontcolor("#cc0000");
--}
- var strArr = new Array();
- if (nUsb == 0)
- {
-@@ -711,6 +705,7 @@
- strArr.push(g_usbConnected);
- return strArr.join(" ");
++if (nPartTotal > 0) {
+ var strStor = "";
+ if (unplugOk) {
+ strStor = "{?de.home.home.js:912?}";
  }
-+strArr.push("Es wurden " + nStor + " von " + nPartTotal + " Partitionen eingebunden.");
- <? if eq '<? query aura:settings/enabled ?>' '1' `
- <? multiquery aura:settings/device/list(class,manufacturer,comment,client) `
- var strAura = UsbDeviceName("<? query aura:settings/$11 ?>", "$13","$14","$12");
+ else {
+-strStor = "{?de.home.home.js:5308?} ";
+-strStor += "<a href=\"javascript:jslGoTo('home', 'syslog');\">{?de.home.home.js:3744?}</a>";
+-strStor = strStor.fontcolor("#cc0000");
++strStor = nStor + " of " + nPartTotal + " partitions mounted.";
+ }
+ strArr.push(strStor);
+ }
