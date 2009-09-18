@@ -1959,6 +1959,32 @@ config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
                Otherwise the user defined comment will be added between the language setting
                and the build date
 
+config FREETZ_REMOVE_BOX_INFO
+	bool "Remove BOX-Info page from image"
+	depends on FREETZ_SHOW_ADVANCED
+	default n
+	help
+		BOX-Info is a special status page for compact presentation of important
+		informations about your Fritz!Box: ROM/RAM size, processor type,
+		DSL driver informations, etc. 
+
+		If you do not have enough space in your image, you can remove BOX-Info
+		from your image. But usualy it is not necessary: The size of BOX-Info cgi
+		is very small (2-3 kByte). 		
+
+config FREETZ_REMOVE_FREETZ_INFO
+	bool "Remove FREETZ-Info page from image"
+	depends on FREETZ_SHOW_ADVANCED
+	default n
+	help
+		FREETZ-Info is a special status page for compact presentation of important
+		informations about FREETZ. This status page can also show the .config, 
+		if it is included into image (s. "Remove .config from Image").
+
+		If you do not have enough space in your image, you can remove FREETZ-Info
+		from your image. But usualy it is not necessary: The size of FREETZ-Info
+		is very small (2-3 kByte). 		
+
 config FREETZ_REMOVE_DOT_CONFIG
 	bool "Remove .config from image"
 	depends on FREETZ_SHOW_ADVANCED

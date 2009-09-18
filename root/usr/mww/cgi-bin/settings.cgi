@@ -14,7 +14,10 @@ swap_auto_chk=''; swap_man_chk=''
 telnetd_auto_chk=''; telnetd_man_chk=''; telnet_inetd_chk='';
 httpd_auto_chk=''; httpd_man_chk=''; httpd_inetd_chk='';
 mounted_main_chk='';mounted_sub_chk='';
+show_box_info_chk='';show_freetz_info_chk='';
 
+if [ "$MOD_SHOW_BOX_INFO" = "yes" ]; then show_box_info_chk=' checked'; fi
+if [ "$MOD_SHOW_FREETZ_INFO" = "yes" ]; then show_freetz_info_chk=' checked'; fi
 if [ "$MOD_MOUNTED_MAIN" = "yes" ]; then mounted_main_chk=' checked'; fi
 if [ "$MOD_MOUNTED_SUB" = "yes" ]; then mounted_sub_chk=' checked'; fi
 if [ "$MOD_CROND" = "yes" ]; then crond_auto_chk=' checked'; else crond_man_chk=' checked'; fi
@@ -91,6 +94,26 @@ $(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
 <input type="hidden" name="mounted_main" value="no">
 <input id="a1" type="checkbox" name="mounted_main" value="yes"$mounted_main_chk><label for="a1">$(lang de:"Hauptseite" en:"Mainpage")</label>
 </p>
+EOF
+if [ -r "/usr/lib/cgi-bin/mod/box_infos.cgi" -o -r "/usr/lib/cgi-bin/mod/infos.cgi" ]; then
+	echo '<p> $(lang de:"Zusätzliche Status-Seiten" en:"Additional status pages"):'
+fi
+if [ -r "/usr/lib/cgi-bin/mod/box_infos.cgi" ]; then
+cat << EOF
+<input type="hidden" name="show_box_info" value="no">
+<input id="i1" type="checkbox" name="show_box_info" value="yes"$show_box_info_chk><label for="i1">$(lang de:"BOX-Infos" en:"BOX infos")</label>
+EOF
+fi
+if [ -r "/usr/lib/cgi-bin/mod/infos.cgi" ]; then
+cat << EOF
+<input type="hidden" name="show_freetz_info" value="no">
+<input id="i2" type="checkbox" name="show_freetz_info" value="yes"$show_freetz_info_chk><label for="i2">$(lang de:"FREETZ-Infos" en:"FREETZ infos")</label>
+EOF
+fi
+if [ -r "/usr/lib/cgi-bin/mod/box_infos.cgi" -o -r "/usr/lib/cgi-bin/mod/infos.cgi" ]; then
+	echo "</p>"
+fi
+cat << EOF
 <p>$(lang de:"Breite des Freetz-Webinterfaces" en:"Width of the Freetz webinterface"): <input type="text" name="cgi_width" size="4" maxlength="4" value="$(html "$MOD_CGI_WIDTH")"></p>
 EOF
 
