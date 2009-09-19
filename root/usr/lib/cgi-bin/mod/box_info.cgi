@@ -44,7 +44,7 @@ else
 	avm_revision=$notdefined
 fi
 
-sec_begin '$(lang de:"Hardware-Informationen" en:"Informations about hardware"):'
+sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware"):'
  echo '<div '$divstyle'><b>$(lang de:"Boxname" en:"Box name"):</b> '$CONFIG_PRODUKT_NAME'&nbsp;&nbsp;&nbsp;<b>ANNEX:</b> '$CONFIG_ANNEX'</div>'
  echo -n "<div $divstyle><b>HWRevision:</b> $HWRevision.$(($HWRevision_ATA)).$((HWRevision_BitFileCount)).$(($HWRevision_Reserved1))&nbsp;&nbsp;&nbsp;"
  echo "<b>Flash(ROM):</b> $CONFIG_ROMSIZE MB&nbsp;&nbsp;&nbsp;<b>RAM:</b> $CONFIG_RAMSIZE MB</div>"
@@ -76,7 +76,7 @@ if [ -r /proc/avalanche/avsar_ver ]; then
 	sec_end
 fi
 
-sec_begin '$(lang de:"Firmware-Informationen" en:"Informations about firmware"):'
+sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware"):'
  echo -n '<div '$divstyle'><b>Firmware$(lang de:"" en:" ")version:</b> '$CONFIG_VERSION_MAJOR'.'$CONFIG_VERSION'&nbsp;&nbsp;'
  echo -n '<b>AVM-Revision:</b> '$avm_revision'&nbsp;&nbsp;&nbsp;'
  echo -n '<b>$(lang de:"Sprache" en:"Language"):</b> '$Language'</div>'
