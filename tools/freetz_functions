@@ -57,7 +57,7 @@ modsed()
 #modsed <expression> <file>
 #should be used instead of sed -i -e in patch scripts
 	if [ -f "$2" ]; then
-		echo1 "patching $2: done"
+		echo2 "patching $2"
 		sed -i -e "$1" "$2"
 	else
 		warn "$2 not found, skipping"
