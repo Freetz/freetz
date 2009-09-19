@@ -1310,7 +1310,7 @@ config FREETZ_REMOVE_UPNP
 		  Einstellungen
 		    System
 		      Netzwerkeinstellungen
-		        Statusinformationen �ber UPnP �bertragen (empfohlen)
+		        Statuinformationen �ber UPnP �bertragen (empfohlen)
 
 config FREETZ_REMOVE_UPNP_LIBS
 	bool 
@@ -1958,6 +1958,9 @@ config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
                Otherwise the user defined comment will be added between the language setting
                and the build date
 
+menu "Info pages"
+	depends on FREETZ_SHOW_ADVANCED
+
 config FREETZ_REMOVE_BOX_INFO
 	bool "Remove BOX-Info page from image"
 	depends on FREETZ_SHOW_ADVANCED
@@ -1996,6 +1999,7 @@ config FREETZ_REMOVE_DOT_CONFIG
 		but if you want to save a few bytes in your image and
 		you are sure that removing this file is the last chance to have
 		a working image, you can do it on your own risk! 
+endmenu
 
 config FREETZ_AVMPLUGINS_ENABLED
 	bool "Integrate AVM Plugins into image"
