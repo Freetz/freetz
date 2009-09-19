@@ -28,7 +28,7 @@ config FREETZ_PACKAGE_NANO
 menu "Nano additional features"
 	depends FREETZ_PACKAGE_NANO
 
-config FREETZ_NANO_TINY
+config FREETZ_PACKAGE_NANO_TINY
 	bool "Tiny binary"
 	default y
 	help
@@ -37,9 +37,9 @@ config FREETZ_NANO_TINY
 
 		With this option, Nano's binary has an approximate size of 86 KB.
 
-config FREETZ_NANO_HELP
+config FREETZ_PACKAGE_NANO_HELP
 	bool "Online help"
-	depends !FREETZ_NANO_TINY
+	depends ! FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		Show a list of available keyboard shortcuts via Ctrl-G or F1. As the
@@ -49,9 +49,9 @@ config FREETZ_NANO_HELP
 		If you are unfamiliar with Nano and Pico and hhhave some space left
 		in the firmware image, we recommend you to choose this option anyway.
 
-config FREETZ_NANO_TABCOMP
+config FREETZ_PACKAGE_NANO_TABCOMP
 	bool "Tab completion for file names"
-	depends !FREETZ_NANO_TINY
+	depends ! FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		When opening or saving files, you get tab completion for directory and
@@ -60,9 +60,9 @@ config FREETZ_NANO_TABCOMP
 
 		This option adds about 7.5 KB to the minimum 86 KB of Nano's binary.
 
-config FREETZ_NANO_BROWSER
+config FREETZ_PACKAGE_NANO_BROWSER
 	bool "File browser"
-	depends !FREETZ_NANO_TINY
+	depends ! FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		Browse the directory structure in a multi-line area showning
@@ -71,9 +71,9 @@ config FREETZ_NANO_BROWSER
 
 		This option adds about 12.5 KB to the minimum 86 KB of Nano's binary.
 
-config FREETZ_NANO_OPERATINGDIR
+config FREETZ_PACKAGE_NANO_OPERATINGDIR
 	bool "Set operating directory"
-	depends !FREETZ_NANO_TINY
+	depends ! FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		Set operating directory.
@@ -81,8 +81,8 @@ config FREETZ_NANO_OPERATINGDIR
 
 		This option adds almost nothing to the minimum 86 KB of Nano's binary.
 
-config FREETZ_NANO_WRAPPING
-	depends !FREETZ_NANO_TINY
+config FREETZ_PACKAGE_NANO_WRAPPING
+	depends ! FREETZ_PACKAGE_NANO_TINY
 	bool "Long line wrapping"
 	default n
 	help
@@ -91,17 +91,17 @@ config FREETZ_NANO_WRAPPING
 
 		This option adds almost nothing to the minimum 86 KB of Nano's binary.
 
-config FREETZ_NANO_JUSTIFY
+config FREETZ_PACKAGE_NANO_JUSTIFY
 	bool "Justify/unjustify functions"
-	depends !FREETZ_NANO_TINY
+	depends ! FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		Support for (un-)justifying paragraphs of text, e.g. program code.
 
 		This option adds about 12.5 KB to the minimum 86 KB of Nano's binary.
 
-config FREETZ_NANO_MULTIBUFFER
-	depends !FREETZ_NANO_TINY
+config FREETZ_PACKAGE_NANO_MULTIBUFFER
+	depends ! FREETZ_PACKAGE_NANO_TINY
 	bool "Multiple file buffers"
 	default n
 	help
@@ -110,11 +110,11 @@ config FREETZ_NANO_MULTIBUFFER
 
 		This option adds about 4 KB to the minimum 86 KB of Nano's binary.
 
-config FREETZ_NANO_COLOR_SYNTAX
-	depends !FREETZ_NANO_TINY
+config FREETZ_PACKAGE_NANO_COLOR_SYNTAX
+	depends ! FREETZ_PACKAGE_NANO_TINY
 	bool "Coloured syntax highlighting"
 	default n
-	select FREETZ_NANO_NANORC
+	select FREETZ_PACKAGE_NANO_NANORC
 	help
 		Enable support for syntax coloring of files using the nanorc file.
 		This enables nanorc support, but does NOT automatically copy any
@@ -132,8 +132,8 @@ config FREETZ_NANO_COLOR_SYNTAX
 		/tmp/flash/rc.custom on the target system. There, the actual '.nanorc'
 		should be created, so Nano finds it upon start-up.
 
-config FREETZ_NANO_NANORC
-	depends !FREETZ_NANO_TINY
+config FREETZ_PACKAGE_NANO_NANORC
+	depends ! FREETZ_PACKAGE_NANO_TINY
 	bool "Nanorc startup file support"
 	default n
 	help

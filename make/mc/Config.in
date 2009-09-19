@@ -11,7 +11,7 @@ config FREETZ_PACKAGE_MC
 		Deco a try, but don't expect as much comfort and power there as you 
 		will get here.
 
-config FREETZ_MC_INTERNAL_EDITOR
+config FREETZ_PACKAGE_MC_INTERNAL_EDITOR
 	bool "Internal editor"
 	depends on FREETZ_PACKAGE_MC
 	default y
@@ -24,7 +24,7 @@ config FREETZ_MC_INTERNAL_EDITOR
 
 		Switching off this feature saves about 95 KB in the main binary.
 
-config FREETZ_MC_SUBSHELL
+config FREETZ_PACKAGE_MC_SUBSHELL
 	bool "Subshell support"
 	depends on FREETZ_PACKAGE_MC
 	select FREETZ_PACKAGE_BASH
@@ -32,7 +32,7 @@ config FREETZ_MC_SUBSHELL
 	help
 		MC subshell support (~15 KB + bash).
 
-config FREETZ_MC_ONLINE_HELP
+config FREETZ_PACKAGE_MC_ONLINE_HELP
 	bool "Online help"
 	depends on FREETZ_PACKAGE_MC
 	default y
@@ -41,7 +41,7 @@ config FREETZ_MC_ONLINE_HELP
 
 		Switching off this feature saves about 115 KB in the file system.
 
-config FREETZ_MC_WITH_NCURSES
+config FREETZ_PACKAGE_MC_WITH_NCURSES
 	bool "Use ncurses library instead of internal mcslang"
 	depends on FREETZ_PACKAGE_MC
 	select FREETZ_LIB_libncurses
