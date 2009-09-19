@@ -7,8 +7,8 @@ else
 	HTML_DIR="${HTML_LANG_MOD_DIR}/html/en"
 fi
 if isFreetzType W501V W701V W901V; then
-	sed -i -e "s/avme/tcom/g" "${HTML_DIR}/fon/sipoptionen.js"
+	modsed "s/avme/tcom/g" "${HTML_DIR}/fon/sipoptionen.js"
 else
-	sed -i -e "s/avme/avm/g" "${HTML_DIR}/fon/sipoptionen.js"
+	modsed "s/avme/avm/g" "${HTML_DIR}/fon/sipoptionen.js"
 fi
 

@@ -14,11 +14,11 @@ done
 echo1 "patching WebUI"
 for files in $(grep -rsl '<? setvariable var:showVpn 1 ?>' ${FILESYSTEM_MOD_DIR}); do
 	echo2 "patching $files"
-	sed -i -e 's/<? setvariable var:showVpn 1 ?>//' "$files"
+	modsed 's/<? setvariable var:showVpn 1 ?>//' "$files"
 done
 
 
 
 
 echo1 "patching rc.conf"
-sed -i -e "s/CONFIG_VPN=.*$/CONFIG_VPN=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+modsed "s/CONFIG_VPN=.*$/CONFIG_VPN=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"

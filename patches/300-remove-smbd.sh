@@ -6,4 +6,4 @@ rm_files "${FILESYSTEM_MOD_DIR}/sbin/smbd" \
 	 "${FILESYSTEM_MOD_DIR}/etc/samba_control"
 
 echo1 "patching rc.conf"
-sed -i -e "s/CONFIG_SAMBA=.*$/CONFIG_SAMBA=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+modsed "s/CONFIG_SAMBA=.*$/CONFIG_SAMBA=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"

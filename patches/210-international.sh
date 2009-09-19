@@ -6,5 +6,5 @@ if [ -e "${HTML_LANG_MOD_DIR}/html/de" ];then
 else
 	HTML_DIR="${HTML_LANG_MOD_DIR}/html/en"
 fi
-sed -i -e "s/LKZ 0/LKZ 1/g" "${HTML_DIR}/fon/sip1.js"
+modsed "s/LKZ 0/LKZ 1/g" "${HTML_DIR}/fon/sip1.js"
 

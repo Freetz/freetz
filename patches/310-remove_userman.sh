@@ -5,12 +5,12 @@ rm_files "${FILESYSTEM_MOD_DIR}/bin/usermand" \
 	 $(find ${HTML_LANG_MOD_DIR} -name 'userlist*' -o -name 'useradd*')
 for j in userlist useradd; do
 	for i in $(find "${HTML_LANG_MOD_DIR}" -type f | xargs grep -l $j); do
-		sed -i -e "/$j/d" $i
+		modsed "/$j/d" $i
 	done
 done
 if [ -e "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init" ]; then
-	sed -i -e "s/KIDS=y/KIDS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init"
+	modsed "s/KIDS=y/KIDS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init"
 else
-	sed -i -e "s/CONFIG_KIDS=y/CONFIG_KIDS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
+	modsed "s/CONFIG_KIDS=y/CONFIG_KIDS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
 fi
 

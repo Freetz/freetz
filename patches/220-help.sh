@@ -11,7 +11,7 @@ rm_files "${HTML_DIR}/help"
 find "${HTML_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuHilfe/d'
 if [ -e "${HTML_DIR}/global.inc" ]; then
-    sed -i -e '/setvariable var:txtHelp/d' "${HTML_DIR}/global.inc"
+    modsed '/setvariable var:txtHelp/d' "${HTML_DIR}/global.inc"
 fi
 find "${HTML_DIR}/.." -name "*.html" -type f |
 	xargs sed -s -i -e '/<input type="button" onclick="uiDoHelp/d'

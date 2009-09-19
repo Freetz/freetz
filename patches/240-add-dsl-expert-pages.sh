@@ -8,10 +8,10 @@ for file in \
 	${FILESYSTEM_MOD_DIR}/usr/www/avm/html/de/internet/feedback.html \
 ; do
   if [ -f "$file" ]; then
-    sed -i -e "
+    modsed "
     s|query box:settings.expertmode.activated ?>. .1.|query box:settings/expertmode/activated ?>' '0'|
     " "$file"
-    sed -i -e "
+    modsed "
 /query box:settings.expertmode.activated ?>. .0./i \
 <? if eq '<? query box:settings\/expertmode\/activated ?>' '1' \`\n\
 <li><a href=\"javascript:uiDoLaborDSLPage()\">Einstellungen<\/a><\/li>\n\
