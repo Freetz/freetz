@@ -54,7 +54,8 @@ rm_files()
 #another little helper
 modsed()
 {
-#modset <command> <file>
+#modsed <expression> <file>
+#should be used instead of sed -i -e in patch scripts
 	if [ -f "$2" ]; then
 		echo1 "patching $2: done"
 		sed -i -e "$1" "$2"
