@@ -73,8 +73,8 @@ case "$1" in
 		[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
 		modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' mod/logs
 		[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
-		[ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_infos.cgi" ] && modreg status BOXinfos 'BOX$(lang de:"-Infos" en:" infos")' mod/box_infos
-		[ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/infos.cgi" ] && modreg status FREETZinfos 'FREETZ$(lang de:"-Infos" en:" infos")' mod/infos
+		[ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ] && modreg status BOXinfo 'BOX$(lang de:"-Info" en:" info")' mod/box_info
+		[ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ] && modreg status FREETZinfo 'FREETZ$(lang de:"-Info" en:" info")' mod/info
 
 		start
 		;;

@@ -95,22 +95,22 @@ $(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
 <input id="a1" type="checkbox" name="mounted_main" value="yes"$mounted_main_chk><label for="a1">$(lang de:"Hauptseite" en:"Mainpage")</label>
 </p>
 EOF
-if [ -r "/usr/lib/cgi-bin/mod/box_infos.cgi" -o -r "/usr/lib/cgi-bin/mod/infos.cgi" ]; then
-	echo '<p> $(lang de:"Zusätzliche Status-Seiten" en:"Additional status pages"):'
+if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
+	echo '<p> $(lang de:"Zus&auml;tzliche Status-Seiten" en:"Additional status pages"):'
 fi
-if [ -r "/usr/lib/cgi-bin/mod/box_infos.cgi" ]; then
+if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" ]; then
 cat << EOF
 <input type="hidden" name="show_box_info" value="no">
-<input id="i1" type="checkbox" name="show_box_info" value="yes"$show_box_info_chk><label for="i1">$(lang de:"BOX-Infos" en:"BOX infos")</label>
+<input id="i1" type="checkbox" name="show_box_info" value="yes"$show_box_info_chk><label for="i1">$(lang de:"BOX-Info" en:"BOX info")</label>
 EOF
 fi
-if [ -r "/usr/lib/cgi-bin/mod/infos.cgi" ]; then
+if [ -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
 cat << EOF
 <input type="hidden" name="show_freetz_info" value="no">
-<input id="i2" type="checkbox" name="show_freetz_info" value="yes"$show_freetz_info_chk><label for="i2">$(lang de:"FREETZ-Infos" en:"FREETZ infos")</label>
+<input id="i2" type="checkbox" name="show_freetz_info" value="yes"$show_freetz_info_chk><label for="i2">$(lang de:"FREETZ-Info" en:"FREETZ info")</label>
 EOF
 fi
-if [ -r "/usr/lib/cgi-bin/mod/box_infos.cgi" -o -r "/usr/lib/cgi-bin/mod/infos.cgi" ]; then
+if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
 	echo "</p>"
 fi
 cat << EOF
