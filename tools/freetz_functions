@@ -51,6 +51,19 @@ rm_files()
         done
 }
 
+#another little helper
+modsed()
+{
+#modset <command> <file>
+	if [ -f "$2" ]; then
+		echo1 "patching $2: done"
+		sed -i -e "$1" "$2"
+	else
+		warn "$2 not found, skipping"
+	fi
+}
+
+
 echo0()
 {
         [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echo -e "${L0}$1"
