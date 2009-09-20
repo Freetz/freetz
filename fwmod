@@ -1003,7 +1003,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Remove BOX-Info
 	if [ "$FREETZ_REMOVE_BOX_INFO" == "y" ]; then
 		echo "removing BOX-Info cgis from image"
-		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/box_infos.cgi"
+		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/box_info.cgi"
 	else
 		echo "BOX-Info cgi is integrated into image"
 	fi
@@ -1011,7 +1011,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Remove FREETZ-Info
 	if [ "$FREETZ_REMOVE_FREETZ_INFO" == "y" ]; then
 		echo "removing FREETZ-Info cgis from image"
-		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/infos.cgi"
+		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/info.cgi"
 		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/do_download_config.cgi"
 	else
 		echo "FREETZ-Info cgis are integrated into image"
