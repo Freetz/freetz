@@ -20,7 +20,7 @@ EOF
 		$PRINTER =~ tr/a-z-/A-Z_/;
 		my $models = join(", ", @{${$printers}{$printer}});
 		print <<EOF
-	config FREETZ_HPLIP_PRINTER_TYPE_$PRINTER
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_$PRINTER
 		bool "$printer"
 		help
 			Supported models: $models
@@ -116,7 +116,7 @@ printclass("FREETZ_PACKAGE_HPLIP_OTHER", \%others);
 
 print <<EOF;
 
-config FREETZ_HPLIP_PRINTER_TYPE
+config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	string
 EOF
 
@@ -124,6 +124,6 @@ foreach (@printers) {
 	my $PRINTER = $_;
 	$PRINTER =~ tr/a-z-/A-Z_/;
 	print <<EOF;
-	default "$_" if FREETZ_HPLIP_PRINTER_TYPE_$PRINTER
+	default "$_" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_$PRINTER
 EOF
 }
