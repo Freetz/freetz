@@ -55,6 +55,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(NEON_DIR) clean
+	$(RM) $(NEON_FREETZ_CONFIG_FILE)
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libneon.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/neon \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/neon.pc \
