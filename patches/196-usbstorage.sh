@@ -4,7 +4,7 @@ if isFreetzType 2170 3131 W900V; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_3170.patch"
 elif isFreetzType 3130; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_wotam.patch"
-elif isFreetzType 7141; then
+elif isFreetzType 7141 && isFreetzType LANG_A_CH; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_7170_a_ch.patch"
 elif isFreetzType 3170 3270 7141 7150 7170 7240 7270 7270_V3; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_${FREETZ_TYPE_STRING}.patch"
