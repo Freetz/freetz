@@ -24,16 +24,23 @@ config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SSHD
 	depends on FREETZ_PACKAGE_OPENSSH_SSHD
 	default n
 	help
-		external these file
+		externals these file(s):
 			/usr/sbin/sshd
 
 config EXTERNAL_FREETZ_PACKAGE_OPENSSH_CLIENT
-	bool "OpenSSH Client (ssh, scp)"
+	bool "OpenSSH Client"
 	depends on FREETZ_PACKAGE_OPENSSH_CLIENT
 	default n
 	help
-		external these file(s)
+		externals these file(s):
 			/usr/bin/ssh
+
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SCP
+	bool "OpenSSH SCP Client"
+	depends on FREETZ_PACKAGE_OPENSSH_SCP
+	default n
+	help
+		externals these file(s):
 			/usr/bin/scp
 
 config EXTERNAL_FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
@@ -41,7 +48,7 @@ config EXTERNAL_FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
 	depends on FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
 	default n
 	help
-		external these file(s)
+		externals these file(s):
 			/usr/bin/ssh-add
 			/usr/bin/ssh-agent
 
@@ -50,7 +57,7 @@ config EXTERNAL_FREETZ_PACKAGE_OPENSSH_KEYUTILS
 	depends on FREETZ_PACKAGE_OPENSSH_KEYUTILS
 	default n
 	help
-		external these file(s)
+		externals these file(s):
 		(ssh-keygen, ssh-keysign, ssh-keyscan, ssh-rand-helper)
 			/usr/bin/ssh-keygen
 			/usr/bin/ssh-keysign
@@ -62,7 +69,7 @@ config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SFTPCLIENT
 	depends on FREETZ_PACKAGE_OPENSSH_SFTPCLIENT
 	default n
 	help
-		external these file(s)
+		externals these file(s):
 			/usr/bin/sftp
 
 config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SFTP
@@ -70,7 +77,7 @@ config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SFTP
 	depends on FREETZ_PACKAGE_OPENSSH_SFTP
 	default n
 	help
-		external these file(s)
+		externals these file(s):
 			/usr/lib/sftp-server
 
 endmenu
