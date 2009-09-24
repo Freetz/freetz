@@ -1,0 +1,51 @@
+#!/bin/sh
+
+DAEMON=authorized-keys
+
+. /etc/init.d/modlibrc
+
+case "$1" in
+	""|load)
+		deffile="/mod/etc/default.$DAEMON/$DAEMON.def"
+		[ -r /tmp/flash/$DAEMON.def ] && deffile="/tmp/flash/$DAEMON.def"
+		modreg file "ssh_$DAEMON" 'SSH: authorized_keys' 0 "$deffile"
+
+		echo -n "Setting up SSH authorized_keys for root ..."
+		dir="/tmp/flash/authorized_keys_root"
+		if [ -e ~root/.ssh ]; then
+			tmp="existent."
+			if [ $(basename $(realpath ~root/.ssh)) != $(basename $dir) ]; then
+				mv ~root/.ssh ~root/.ssh.orig
+		                mkdir -p $dir
+		                chown root $dir
+	        	        chmod 700 $dir
+				cp -f ~root/.ssh.orig/authorized_keys $dir
+				modsave flash
+				ln -s $dir ~root/.ssh
+				tmp="initialized."
+			fi
+			echo $tmp
+		else
+			ln -s $dir ~root/.ssh
+			echo "initialized."
+		fi
+		;;
+	unload)
+		modunreg file "ssh_$DAEMON"
+		;;
+	start)
+		;;
+	stop)
+		;;
+	restart)
+		;;
+	status)
+		echo 'skip'
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

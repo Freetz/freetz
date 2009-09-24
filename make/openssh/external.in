@@ -1,0 +1,76 @@
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_OPENSSH && FREETZ_SHOW_ADVANCED
+	bool "OpenSSH"
+	default n
+	help
+		externals these file(s):
+			/usr/lib/sftp-server
+			/usr/sbin/sshd
+			/usr/bin/ssh-agent
+			/usr/bin/ssh-add
+			/usr/bin/ssh
+			/usr/bin/scp
+			/usr/bin/ssh-keysign
+			/usr/bin/ssh-rand-helper
+			/usr/bin/sftp
+			/usr/bin/ssh-keygen
+			/usr/bin/ssh-keyscan
+
+menu OpenSSH
+	depends on EXTERNAL_FREETZ_PACKAGE_OPENSSH
+
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SSHD
+	bool "OpenSSH Server"
+	depends on FREETZ_PACKAGE_OPENSSH_SSHD
+	default n
+	help
+		external these file
+			/usr/sbin/sshd
+
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_CLIENT
+	bool "OpenSSH Client (ssh, scp)"
+	depends on FREETZ_PACKAGE_OPENSSH_CLIENT
+	default n
+	help
+		external these file(s)
+			/usr/bin/ssh
+			/usr/bin/scp
+
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
+       bool "OpenSSH Client Utilities (ssh-add, ssh-agent)"
+	depends on FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
+	default n
+	help
+		external these file(s)
+			/usr/bin/ssh-add
+			/usr/bin/ssh-agent
+
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_KEYUTILS
+	bool "OpenSSH Key Utilities (ssh-keygen, ssh-keysign, ssh-keyscan, ssh-rand-helper)"
+	depends on FREETZ_PACKAGE_OPENSSH_KEYUTILS
+	default n
+	help
+		external these file(s)
+		(ssh-keygen, ssh-keysign, ssh-keyscan, ssh-rand-helper)
+			/usr/bin/ssh-keygen
+			/usr/bin/ssh-keysign
+			/usr/bin/ssh-keyscan
+			/usr/bin/ssh-rand-helper
+
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SFTPCLIENT
+	bool "OpenSSH SFTP Client (sftp)"
+	depends on FREETZ_PACKAGE_OPENSSH_SFTPCLIENT
+	default n
+	help
+		external these file(s)
+			/usr/bin/sftp
+
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SFTP
+	bool "OpenSSH SFTP Server (sftp-server)"
+	depends on FREETZ_PACKAGE_OPENSSH_SFTP
+	default n
+	help
+		external these file(s)
+			/usr/lib/sftp-server
+
+endmenu

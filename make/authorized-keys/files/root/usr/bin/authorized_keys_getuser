@@ -1,0 +1,17 @@
+#!/bin/sh
+passwd=$(cat /etc/passwd)
+check_user() {
+	[ ."$7" = ."/bin/false" ] && return
+	[ ! -d "$6" ] && return
+	echo "$1:$6"
+}
+IFS="
+"
+for user in $passwd
+do
+	OIFS=$IFS
+	IFS=":"
+	check_user $user
+	IFS=$OIFS
+done
+

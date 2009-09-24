@@ -7,6 +7,33 @@ CONFFILE=/mod/etc/sshd_conf
 . /etc/init.d/modlibrc
 
 pre_config() {
+	mkdir /tmp/openssh
+	modlib_addgroup sshd
+	modlib_adduser sshd -G sshd -s /bin/false -H -D -h /tmp/openssh -g "sshd account"
+	config
+}
+
+gen_key() {
+	rm -f "$1"
+	rm -f "$1.pub"
+	echo "Creating host key $(basename $1)"
+	if [ ! -e /usr/bin/ssh-keygen ]; then
+		echo "Error[$DAEMON]: Can't generate key. Please include openssh keyutils to your image or provide public and private $2 host keys via Web Interface!"
+		exit 1
+	fi
+	/usr/bin/ssh-keygen -q -t $2 -f "$1" -N ""
+}
+
+check_key_file() {
+	if [ -e "$1" ]; then
+		grep -q "[a-zA-Z0-9]" $1 && return
+	fi
+	gen_key "$1" "$2"
+	chmod 600 $1
+	/usr/bin/modsave flash
+}
+
+config() {
 	[ -d "/tmp/flash/.ssh" ] && mv /tmp/flash/.ssh /tmp/flash/openssh
 	[ -d /openssh ] || mkdir -p /tmp/flash/openssh
 	[ -d /var/empty ] || mkdir -p /var/empty
@@ -14,32 +41,19 @@ pre_config() {
 	[ -e /tmp/flash/dsa_host_key ] && mv /tmp/flash/dsa_host_key /tmp/flash/openssh/dsa_host_key
 	[ -e /tmp/flash/host_key ] && mv /tmp/flash/host_key /tmp/flash/openssh/host_key
 
-	if [ ! -e "/tmp/flash/openssh/rsa_host_key" -o ! -e "/tmp/flash/openssh/dsa_host_key" -o ! -e "/tmp/flash/openssh/host_key" ]; then
-		echo "Creating host keys"
-		rm -f /tmp/flash/openssh/rsa_host_key
-		rm -f /tmp/flash/openssh/dsa_host_key
-		rm -f /tmp/flash/openssh/host_key
-		if [ ! -e /usr/bin/ssh-keygen ]; then
-			echo "Error[$DAEMON]: Can't generate key. Please include openssh keyutils to your image!"
-			exit 1
-		fi
-		/usr/bin/ssh-keygen -q -t rsa -f /tmp/flash/openssh/rsa_host_key -N ""
-		/usr/bin/ssh-keygen -q -t dsa -f /tmp/flash/openssh/dsa_host_key -N ""
-		/usr/bin/ssh-keygen -q -t rsa1 -f /tmp/flash/openssh/host_key -N ""
-		/usr/bin/modsave flash
-	fi
+	check_key_file "/tmp/flash/openssh/rsa_host_key" "rsa"
+	check_key_file "/tmp/flash/openssh/dsa_host_key" "dsa"
 
 	if [ ! -d "/mod/etc/ssh" ]; then
 		mkdir -p /mod/etc/ssh
 		ln -s /tmp/flash/openssh/rsa_host_key /mod/etc/ssh/rsa_host_key
 		ln -s /tmp/flash/openssh/dsa_host_key /mod/etc/ssh/dsa_host_key
-		ln -s /tmp/flash/openssh/host_key /mod/etc/ssh/host_key
 	fi
-	
-	[ -e "/mod/root/.ssh" ] || ln -s /tmp/flash/openssh /mod/root/.ssh
 }
 
 start() {
+	config
+
 	echo "$OPENSSH_SETTINGS" > $CONFFILE
 	if [ "$OPENSSH_PWDAUTH" = "yes" ]; then
 		if cat /etc/shadow | grep -q '^root:[*!]:'; then
@@ -87,22 +101,23 @@ stop() {
 	fi
 }
 
+reg_files() {
+	for i in $@; do
+		deffile="/mod/etc/default.openssh/$i.def"
+		[ -r /tmp/flash/openssh/$i.def ] && deffile="/tmp/flash/openssh/$i.def"
+		modreg file "openssh__$i" "OpenSSH: $i" 0 "$deffile"
+	done
+}
+
 case "$1" in
 	""|load)
+		modreg cgi 'openssh' 'OpenSSH sshd'
+		reg_files rsa_key dsa_key
+
 		pre_config
 
-		modreg cgi 'openssh' 'OpenSSH sshd'
-
-		deffile='/mod/etc/default.openssh/authorized_keys.def'
-		[ -r /tmp/flash/openssh/authorized_keys.def ] && deffile='/tmp/flash/openssh/authorized_keys.def'
-		modreg file 'openssh__authorized_keys' 'OpenSSH: keys' 0 "$deffile"
-
 		if [ "$OPENSSH_ENABLED" != "yes" ]; then
-			if [ "$OPENSSH_ENABLED" != "inetd" ]; then
-				echo "OpenSSH $DAEMON is disabled" 1>&2
-			else
-				echo OpenSSH "$DAEMON is started via inetd" 1>&2
-			fi
+			echo "OpenSSH $DAEMON is disabled" 1>&2
 			exit 1;
 		fi
 
@@ -110,7 +125,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'openssh__authorized_keys'
+		modunreg file 'openssh__rsa_key'
+		modunreg file 'openssh__dsa_key'
 		modunreg cgi 'sshd'
 		;;
 	start)
@@ -125,14 +141,10 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ "$OPENSSH_ENABLED" == "inetd" ]; then
-			echo 'inetd'
+		if [ -z "$(pidof sshd)" ]; then
+			echo 'stopped'
 		else
-			if [ -z "$(pidof sshd)" ]; then
-				echo 'stopped'
-			else
-				echo 'running'
-			fi
+			echo 'running'
 		fi
 		;;
 	*)

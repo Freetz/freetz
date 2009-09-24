@@ -23,6 +23,9 @@ TEXT_ROWS=18
 # Set width
 let _width=$_cgi_width-230
 
+# Execute pre-script
+[ -n "$CONFIG_PREEXEC" ] && $CONFIG_PREEXEC
+
 echo "<h1>$CAPTION</h1>"
 [ -n "$DESCRIPTION" ] && echo "<p>$DESCRIPTION</p>"
 

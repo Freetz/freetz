@@ -26,7 +26,6 @@ pre_config() {
 		ln -s /tmp/flash/dropbear/dss_host_key /mod/etc/ssh/dss_host_key
 	fi
 	
-	[ -e "/mod/root/.ssh" ] || ln -s /tmp/flash/dropbear /mod/root/.ssh
 }
 
 start() {
@@ -69,10 +68,6 @@ case "$1" in
 
 		modreg cgi 'dropbear' 'Dropbear'
 
-		deffile='/mod/etc/default.dropbear/authorized_keys.def'
-		[ -r /tmp/flash/dropbear/authorized_keys.def ] && deffile='/tmp/flash/dropbear/authorized_keys.def'
-		modreg file 'dropbear__authorized_keys' 'Dropbear: keys' 0 "$deffile"
-
 		if [ "$DROPBEAR_ENABLED" != "yes" ]; then
 			if [ "$DROPBEAR_ENABLED" != "inetd" ]; then
 				echo "$DAEMON is disabled" 1>&2
@@ -86,7 +81,6 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'dropbear__authorized_keys'
 		modunreg cgi 'dropbear'
 		;;
 	start)

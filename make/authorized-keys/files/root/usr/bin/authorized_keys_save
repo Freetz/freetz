@@ -1,0 +1,48 @@
+#!/bin/sh
+ids=$(authorized_keys_getuser)
+if [ -z "$1" ]; then echo "execute $0 file"; exit 1; fi
+while read -r line ; do
+	[ -z "$line" ] && continue
+	$(echo $line | grep -q "^#") && continue
+	if [ $(echo $line | grep "\-\-\-[a-zA-Z]") ]; then
+		user=${line##---}
+		key=""
+		continue
+	fi
+	[ -z "$user" ] && continue
+	key=$line
+	found=0
+	for id in $ids; do
+		u=$(echo $id | cut -d":" -f1)
+		if [ "$u" = "$user" ]; then
+			found=1
+			dir=$(echo $id | cut -d":" -f2)/.ssh
+		fi
+	done
+	[ "$user" = "root" ] && dir="/tmp/flash/authorized_keys_root"
+	[ $found -eq 0 ] && continue
+	if [ -e "$dir" -a ! -d "$dir" ]; then
+		echo "User $user has something that is not a directory for $dir!"
+		continue
+	fi
+	if [ ! -e "$dir" ]; then
+		mkdir $dir
+		chown $user $dir
+		chmod 700 $dir
+	fi
+	touch $dir/authorized_keys.new
+	echo -e $key >> $dir/authorized_keys.new
+done < $1
+for id in $ids; do
+	user=$(echo $id | cut -d":" -f1)
+	dir=$(echo $id | cut -d":" -f2)/.ssh/
+	[ "$user" = "root" ] && dir="/tmp/flash/authorized_keys_root"
+	if [ -f "$dir/authorized_keys.new" ]; then
+		mv $dir/authorized_keys.new $dir/authorized_keys
+		chown -R $user $dir/authorized_keys
+		chmod -R 700 $dir/authorized_keys
+		[ "$user" = "root" ] && modsave flash
+	else
+		rm -f $dir/authorized_keys
+	fi
+done 
