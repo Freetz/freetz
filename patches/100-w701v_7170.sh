@@ -59,7 +59,7 @@ modsed "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?
 
 echo2 "swapping info led"
 #swap info led 0,1 with tr69 led  
-modsed 's|DEF tr69,0 = 2,6,1,tr69|DEF tr69,0 = 99,32,16,tr69|' \
+sed -i -e 's|DEF tr69,0 = 2,6,1,tr69|DEF tr69,0 = 99,32,16,tr69|' \
 	-e 's|DEF info,0 = 99,32,16,info|DEF info,0 = 2,6,1,info|' \
 	-e 's|DEF info,1 = 99,32,16,info|DEF info,1 = 2,6,1,info|' \
 	-e 's|DEF info,2 = 99,32,16,info|DEF info,2 = 2,6,1,info|' \
