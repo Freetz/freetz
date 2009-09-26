@@ -2,53 +2,51 @@
 
 helpmsg()
 {
-  echo "get_ip - determine external IP address"
-  echo
-  echo "Usage: $0 [option]"
-  echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares) [default]"
-  echo "    -e, --extquery - use external site query method"
-  echo "    -w, --webcm    - use webcm CGI handler method"
-  echo "    -?, --help     - print this help message"
-  echo
+	echo "get_ip - determine external IP address"
+	echo
+	echo "Usage: $0 [option]"
+	echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)"
+	echo "    -e, --extquery - use external site query method"
+	echo "    -w, --webcm    - use webcm CGI handler method [default]"
+	echo "    -?, --help     - print this help message"
+	echo
 }
 
 local ip=""
+local queryfile="/usr/www/all/html/query.txt"
+local querystring=""
 local retval=0
 
 case "$1" in
-  ""|-d|--dsld)
-    ip=$(/sbin/showdsldstat | grep "0: ip" | cut -d\/ -f1 | cut -d ' ' -f3)
-    retval=$?
-    ;;
+  -d|--dsld)
+	ip=$(/sbin/showdsldstat | grep "0: ip" | cut -d\/ -f1 | cut -d ' ' -f3)
+	retval=$?
+	;;
   -e|--extquery)
-    ip=$(wget -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-    retval=$?
-    ;;
-  -w|--webcm)
-    local pw=$(/bin/allcfgconv -C ar7 -c -o - | sed -ne '/^webui[[:space:]]*{/,/^}/{
-/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
-}' | grep '^password=' | cut -d '"' -f2)
-    retval=$?
-    if [ $retval != 0 ]; then
-      echo "get_ip error (exit code $retval)" >&2
-      exit $retval
-    fi
-    export POST_DATA="getpage=/usr/www/all/html/query.txt&login:command/password=$pw&var:cnt=1&var:n0=connection0:pppoe:status/ip"
-    ip=$(echo -n "$POST_DATA" | REQUEST_METHOD="POST" REMOTE_ADDR="127.0.0.1" CONTENT_TYPE="application/x-www-form-urlencoded" CONTENT_LENGTH=${#POST_DATA} /usr/www/html/cgi-bin/webcm | sed -e '1,/^$/d;$d')
-    retval=$?
-    ;;
+	ip=$(wget -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+	retval=$?
+	;;
+  ""|-w|--webcm)
+	if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
+		querystring="var:n[0]=connection0:pppoe:status/ip"
+	else
+		querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
+	fi
+	ip=$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")
+    	retval=$?
+	;;
   -?|--help)
-    helpmsg
-    exit 0
-    ;;
+	helpmsg
+	exit 0
+	;;
   *)
-    helpmsg >&2
-    exit 1
+	helpmsg >&2
+	exit 1
 esac
 
 if [ $retval == 0 ]; then
-  echo "$ip"
-  exit 0
+	echo "$ip"
+	exit 0
 fi
 echo "get_ip error (exit code $retval)" >&2
 exit $retval
