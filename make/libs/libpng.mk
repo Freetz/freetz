@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.10)
-$(PKG)_LIB_VERSION:=0.10.0
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://oss.oetiker.ch/rrdtool/pub/libs/
+$(call PKG_INIT_LIB, 1.2.39)
+$(PKG)_LIB_VERSION:=0.39.0
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SITE:=@SF/libpng
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libpng12.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpng12.so.$($(PKG)_LIB_VERSION)
@@ -11,7 +11,6 @@ $(PKG)_DEPENDS_ON := zlib
 $(PKG)_CONFIGURE_ENV += gl_cv_func_malloc_0_nonnull=yes
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
-$(PKG)_CONFIGURE_OPTIONS += --with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
 
 $(PKG_SOURCE_DOWNLOAD)

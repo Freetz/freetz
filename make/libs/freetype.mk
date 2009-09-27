@@ -1,5 +1,5 @@
-$(call PKG_INIT_LIB, 2.3.5)
-$(PKG)_LIB_VERSION:=6.3.16
+$(call PKG_INIT_LIB, 2.3.9)
+$(PKG)_LIB_VERSION:=6.3.20
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://download.savannah.gnu.org/releases/freetype
 $(PKG)_BINARY:=$($(PKG)_DIR)/objs/.libs/libfreetype.so.$($(PKG)_LIB_VERSION)
@@ -8,7 +8,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libfreetype.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
-$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 
 
 $(PKG_SOURCE_DOWNLOAD)

@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 2.3.19)
+$(call PKG_INIT_LIB, 2.3.20)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://ftp.gnome.org/pub/gnome/sources/libart_lgpl/2.3/
