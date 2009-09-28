@@ -11,9 +11,9 @@ out="$out# Beispiel / Example:\n"
 out="$out#---root\n#ssh-dss KEYSCHLUESSELKEYSCHLUESSEL\n"
 out="$out#---user1\n#ssh-dss KEYSCHLUESSELKEYSCHLUESSEL\n#\n"
 out="$out# Eine Zeile, die mit 3 Bindestrichen anfängt gefolgt von einem Benutzernamen\n"
-out="$out# definiert, dass die folgenden Schlüssel für diesen Benutzer gelten."
+out="$out# definiert, dass die folgenden Schlüssel für diesen Benutzer gelten.\n"
 out="$out# If a line starts with three hyphens followed by a user name implies that\n"
-out="$out# the following keys are assigned to that user\n"
+out="$out# the following keys are assigned to that user.\n"
 for id in $ids
 do
 	user=$(echo $id | cut -d":" -f1)
@@ -21,8 +21,7 @@ do
 	[ ! -f $dir/authorized_keys ] && continue
 	keys=$(cat $dir/authorized_keys)
 	OIFS=$IFS
-	IFS="
-"
+	IFS=""
 	for key in $keys; do
 		out="$out---$user\n$key\n"
 	done
