@@ -22,6 +22,18 @@ config FREETZ_LIB_libopenobex
 
 menu "Crypto & SSL"
 
+comment "GMP ------------------------------------"
+
+config FREETZ_LIB_libgmp
+	bool "GNU MP Bignum Library (libgmp.so)"
+	default n
+	help
+		GNU MP Bignum Library
+		
+		The GMP library provides arbitrary precision arithmetic, 
+		operating on signed integers, rational numbers, and floating point numbers.
+		It can be used to implement cryptographic algorithms. 
+
 comment "GnuPG ----------------------------------"
 
 config FREETZ_LIB_libgpg_error
