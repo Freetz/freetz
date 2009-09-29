@@ -1,0 +1,26 @@
+#!/bin/sh
+
+. /mod/etc/conf/polipo.cfg
+
+echo "daemonise = true"
+
+# set listening port
+if [ -n "$POLIPO_PORT" ]; then
+	echo "proxyPort = $POLIPO_PORT" 
+fi 
+
+# set listening IP
+if [ -n "$POLIPO_IP" ]; then
+	echo "proxyAddress = $POLIPO_IP" 
+fi 
+
+# set allowed clients
+if [ -n "$POLIPO_CLIENTS" ]; then
+	echo "allowedClients = $POLIPO_CLIENTS" 
+fi 
+
+# optional settings
+if [ -n "$POLIPO_OPTIONS" ]; then 
+	echo "$POLIPO_OPTIONS" | sed 's/[[:space:]]*;[[:space:]]*/\n/g'
+fi 
+
