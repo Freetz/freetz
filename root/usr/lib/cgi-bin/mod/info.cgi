@@ -37,7 +37,7 @@ if [ -r /etc/.config ]; then
 	_libs=$(echo "$_dot_config" | grep "LIB_" | sed -e "/EXTERNAL/d" | sed -e "s/LIB_//g")
 	_modules=$(echo "$_dot_config" | grep "MODULE_" | sed -e "s/MODULE_//g")
 	_packages=$(echo "$_dot_config" | grep "PACKAGE_" | sed -e "/EXTERNAL/d" \
-	| sed -e "s/PACKAGE_//g;s/AVM_FIREWALL/AVM-FIREWALL/g;s/INADYN_MT/INADYN-MT/g;/_CGI/d;s/\([^_]*\)\(_\)\(.*\)/\<small\>\> \3\<\/small>/g")
+	| sed -e "s/PACKAGE_//g;s/AUTHORIZED_KEYS/AUTHORIZED-KEYS/g;s/AVM_FIREWALL/AVM-FIREWALL/g;s/INADYN_MT/INADYN-MT/g;s/SANE_BACKENDS/SANE-BACKENDS/g;/_CGI/d;s/\([^_]*\)\(_\)\(.*\)/\<small\>\> \3\<\/small>/g")
 	_cgis=$(echo "$_dot_config" | grep -E "(PACKAGE_.*_CGI)" | sed -e "/EXTERNAL/d" | sed -e "s/PACKAGE_//g;s/_CGI//g;/_/d")
 	_td_th_style='vertical-align:top; text-align: left; font-weight: normal; padding-right:10px;'
 	_lowercase=' text-transform: lowercase;'
