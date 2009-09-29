@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://ftp.gnu.org/gnu/gmp
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_USR_LIB)/libgmp.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgmp.so.$($(PKG)_LIB_VERSION)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -15,15 +15,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(GMP_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+	PATH=$(TARGET_PATH) $(MAKE) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		-C $(GMP_DIR) install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	mkdir -p $(GMP_DEST_USR_LIB)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp*.so* $(GMP_DEST_USR_LIB)/
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp*.so* $(GMP_TARGET_DIR)/
 	$(TARGET_STRIP) $@
 
 $(pkg): $($(PKG)_STAGING_BINARY)
@@ -36,7 +35,7 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/gmp*.h
 
 $(pkg)-uninstall:
-#	$(RM) $(GMP_TARGET_DIR)/libgmp*.so*
+	$(RM) $(GMP_TARGET_DIR)/libgmp*.so*
 
 $(PKG_FINISH)
 
