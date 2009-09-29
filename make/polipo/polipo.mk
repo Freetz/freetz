@@ -1,5 +1,5 @@
 $(call PKG_INIT_BIN, 1.0.4)
-$(PKG)_SOURCE:=polipo-$(POLIPO_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.pps.jussieu.fr/~jch/software/files/polipo/
 $(PKG)_BINARY:=$($(PKG)_DIR)/polipo
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/polipo
