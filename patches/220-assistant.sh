@@ -18,8 +18,8 @@ find "${HTML_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuAssistent/d'
 
 if [ -e "$HTML_DIR/home/sitemap.html" ]; then
-	if isFreetzType 3270 7141 7150 7170 7240 7270 7270_V3; then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_${FREETZ_TYPE_STRING}.patch"
+	if isFreetzType 3270 7112 7141 7150 7170 7240 7270 7270_V3; then
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/${FREETZ_TYPE_LANG_STRING}/remove_assistant_${FREETZ_TYPE_STRING}.patch"
 	elif isFreetzType 7140; then
 		if isFreetzType LANG_A_CH; then
 			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_assistant_7170.patch"

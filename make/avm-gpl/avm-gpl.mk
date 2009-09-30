@@ -10,8 +10,6 @@ AVM_SOURCE__04.57:=$(AVM_SITE__AVM)/fritzbox-source-files.04.57.tar.gz
 AVM_SOURCE__04.67:=$(AVM_SITE__AVM)/fritzbox-source-files.04.67.tar.gz
 AVM_SOURCE__04.70:=$(AVM_SITE__AVM)/fritzbox-source-files-04.70.tar.gz
 AVM_SOURCE__04.76:=$(AVM_SITE__AVM_7170)/fritzbox7170-source-files-04.76.tar.gz
-AVM_SOURCE__7270_04.67:=$(AVM_SITE__AVM)/fritzbox7270-source-files-04.67.tar.gz
-AVM_SOURCE__7270_04.70:=$(AVM_SITE__AVM)/fritzbox7270-source-files-04.70.tar.gz
 AVM_SOURCE__7270_04.76:=$(AVM_SITE__AVM_7270)/fritzbox7270-source-files-04.76.tar.gz
 AVM_SOURCE__r7203:=$(AVM_SITE__TCOM)/Speedport_W501V/GPL-r7203-4mb_26-tar.bz2
 
