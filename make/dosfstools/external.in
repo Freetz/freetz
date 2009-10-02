@@ -1,0 +1,36 @@
+config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_DOSFSTOOLS
+	boolean "dosfstools"
+	default n
+	help
+		external dosfsprogs file(s)
+	
+menu dosfstools
+	depends on EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS
+
+config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_dosfsck
+	boolean "dosfsck"
+	depends on FREETZ_PACKAGE_DOSFSTOOLS_DOSFSCK
+	default n
+	help
+		external these file
+			/usr/sbin/dosfsck
+			(use at your own risk, dosfsck is needed to check an uncleanly umounted filesystem)
+
+config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_dosfslabel
+	boolean "mkdosfs"
+	depends on FREETZ_PACKAGE_DOSFSTOOLS_DOSFSLABEL
+	default n
+	help
+		external these file(s)
+			/usr/sbin/dosfslabel
+
+config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_mkdosfs
+	boolean "mkdosfs"
+	depends on FREETZ_PACKAGE_DOSFSTOOLS_MKDOSFS
+	default n
+	help
+		external these file(s)
+			/usr/sbin/mkdosfs
+
+endmenu

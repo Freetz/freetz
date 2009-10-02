@@ -1,0 +1,26 @@
+config FREETZ_PACKAGE_DOSFSTOOLS
+	bool "dosfstools 3.0.5"
+	default n
+	help
+		utilities to create, check and label MS-DOS FAT filesystems
+
+config FREETZ_PACKAGE_DOSFSTOOLS_DOSFSCK
+	bool "check"
+	depends on FREETZ_PACKAGE_DOSFSTOOLS
+	default n
+	help
+		This option enables the checking utility for MS-DOS FAT filesystems
+
+config FREETZ_PACKAGE_DOSFSTOOLS_DOSFSLABEL
+	bool "label"
+	depends on FREETZ_PACKAGE_DOSFSTOOLS
+	default n
+	help
+		This option enables labeling utility for MS-DOS FAT filesystems
+
+config FREETZ_PACKAGE_DOSFSTOOLS_MKDOSFS
+	bool "create"
+	depends on FREETZ_PACKAGE_DOSFSTOOLS
+	default n
+	help
+		This option enables the creation utility for MS-DOS FAT filesystems
