@@ -26,7 +26,7 @@ mfilt=$(mount|grep -E "^/dev/sd|^/dev/mapper/|^https://|^.* on .* type jffs|^.* 
 MPOINTS=$(echo "$mfilt" | cut -d" " -f3)
 rwstatus=$(echo "$mfilt" | sed -e 's/.* \(\/[^ ]*\) [^(]*(.*r\([o,w]\).*/\1 \2/') 
 if [ "$MPOINTS" ]; then
-	echo '<table border="0" style="border-spacing:0pt;">'
+	echo '<table border="0" colspacing="0" colpadding="0" style="border-spacing:0pt; table-layout:fixed;">'
 	for path in $MPOINTS; do
 		dfrow=$(echo "$dfout" | grep -m 1 $path)
 		device="$(echo $dfrow | awk '{print $1}')"
@@ -49,13 +49,13 @@ if [ "$MPOINTS" ]; then
 		echo -n '<tr><td class="path'$barstyle'"><b>'$path'</b></td><td class="bartdthpdg">'$device'</td>'
 		echo '<th colspan="2" class="bartdth"><small>$(lang de:"Mountoptionen" en:"Mount options"):</small></td></tr>'
 		echo -n '<tr><th colspan="2" class="bartdthpdg">'$used'B $(lang de:"von" en:"of") '$total'B $(lang de:"belegt" en:"used"), '$free'B $(lang de:"frei" en:"free")</th>'
-		echo '<td class="bartdthpdg" style="width:58px;">'
+		echo '<td nowrap="nowrap" class="bartdth" style="width:52px;">'
 		echo '<form class="btn" action="'$formact'" method="post">'
 		echo '<input type="hidden" name="cmd" value="-'$newstatus' '$path'">'
 		echo '<input type="submit" value="R" '$rdisabled'class="rbtn'$barstyle'">'
 		echo '<input type="submit" value="W" '$wdisabled'class="wbtn'$barstyle'">'
 		echo '</form></td>'
-		echo '<td class="bartdth" style="width:62px;">'
+		echo '<td class="bartdth" style="width:62px; text-align:right;">'
 		echo '<form class="btn" action="'$formact'" method="post">'
 		echo '<input type="hidden" name="cmd" value="'$path'">'
 		echo '<input type="submit" value="unmount" style="width:60px;">'
