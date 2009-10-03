@@ -671,9 +671,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 			ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
 		fi
 
-		if [ "$FREETZ_STATUS_STYLE" == "y" ]; then
-			echo1 "patching bar-style and cache-usage"
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/bar-style_n_cache-usage.patch"
+		if [ "$FREETZ_STYLE" == "grey" ]; then
+			echo1 "setting grey style as default"
+			mv ${FILESYSTEM_MOD_DIR}/usr/share/style-grey.css ${FILESYSTEM_MOD_DIR}/usr/share/style.css
+			rm ${FILESYSTEM_MOD_DIR}/usr/share/style-colored.css
+		else
+			echo1 "setting colored style as default"
+			mv ${FILESYSTEM_MOD_DIR}/usr/share/style-colored.css ${FILESYSTEM_MOD_DIR}/usr/share/style.css
+			rm ${FILESYSTEM_MOD_DIR}/usr/share/style-grey.css
 		fi
 
 		# security level

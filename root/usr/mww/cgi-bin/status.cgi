@@ -11,13 +11,6 @@ meminfo() {
 	sed -n "/^$1:/ s/[^0-9]//gp" /proc/meminfo
 }
 
-
-stat_bar() {
-	let multip="($_cgi_width-230-50)/100";
-	percent=$1; let bar="percent*multip"; let grey="(100-percent)*multip"
-	echo '<p><img src="/images/green.png" width="'"$bar"'" height="10" border="0" alt=""><img src="/images/grey.png" width="'"$grey"'" height="10" border="0" alt=""> &nbsp;&nbsp;'$percent' %</p>'
-}
-
 btn_count=0
 stat_button() {
 	let _btn_width="($_cgi_width-230+16)/3"
@@ -98,8 +91,9 @@ free=$(meminfo MemFree)
 cached=$(meminfo Cached)
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
-echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt (ohne Cache $cached KB)" en:"used (without cache $cached KB)")</p>"
-stat_bar $percent
+let perc_buff="100*cached/total"
+echo '<div>'$usedwc' KB (+ '$cached' KB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") '$total' KB $(lang de:"belegt" en:"used"), '$free' KB $(lang de:"frei" en:"free")</div>'
+stat_bar "br" $percent $perc_buff
 
 sec_end
 sec_begin '$(lang de:"Flash-Speicher (TFFS) für Konfigurationsdaten" en:"Flash memory (TFFS) for configuration data")'
@@ -109,7 +103,8 @@ percent=$(grep '^fill=' /proc/tffs)
 percent=${percent#fill=}
 let tffs_size="0x$(awk '/tffs/ { print $2; exit }' /proc/mtd)/1024"
 let tffs_used="tffs_size*percent/100"
-echo "<p>$tffs_used $(lang de:"von" en:"of") $tffs_size KB $(lang de:"belegt" en:"used")</p>"
+tffs_free=`expr $tffs_size - $tffs_used`
+echo '<div>'$tffs_used' KB $(lang de:"von" en:"of") '$tffs_size' KB $(lang de:"belegt" en:"used"), '$tffs_free' KB $(lang de:"frei" en:"free")</div>'
 stat_bar $percent
 
 sec_end
@@ -121,8 +116,9 @@ free=$(meminfo SwapFree)
 cached=$(meminfo SwapCached)
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
-echo "<p>$usedwc $(lang de:"von" en:"of") $total KB $(lang de:"belegt" en:"used") ($(lang de:"ohne Cache" en:"without cache") $cached KB)</p>"
-stat_bar $percent
+let perc_buff="100*cached/total"
+echo '<div>'$usedwc' KB (+ '$cached' KB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") '$total' KB $(lang de:"belegt" en:"used"), '$free' KB $(lang de:"frei" en:"free")</div>'
+stat_bar "br" $percent $perc_buff
 sec_end
 fi
 
