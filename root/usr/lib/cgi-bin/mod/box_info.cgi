@@ -27,14 +27,14 @@ else
 	mac_wlan=$notdefined
 fi
 if [ -r /proc/cpuinfo ]; then
-	cpu_family="$(cat /proc/cpuinfo | grep 'system type'| sed -e 's/.*: //')"
-	cpu_model="$(cat /proc/cpuinfo | grep 'cpu model'| sed -e 's/.*: //')"
+	cpu_family="$(grep 'system type' /proc/cpuinfo | sed -e 's/.*: //')"
+	cpu_model="$(grep 'cpu model' /proc/cpuinfo | sed -e 's/.*: //')"
 else
 	cpu_family=""
 	cpu_model=""
 fi
 if [ -r /etc/version ]; then
-	avm_date=$(cat /etc/version | grep "export FIRMWARE_DATE" | sed -e 's/export FIRMWARE_DATE\="\(.*\)"/\1/')
+	avm_date=$(grep "export FIRMWARE_DATE" /etc/version | sed -e 's/export FIRMWARE_DATE\="\(.*\)"/\1/')
 else
 	avm_date=$notdefined
 fi
@@ -43,11 +43,16 @@ if [ -r /etc/.revision ]; then
 else
 	avm_revision=$notdefined
 fi
+if [ -r /proc/sys/urlader/environment ]; then
+	flash_size=$(($(grep flashsize /proc/sys/urlader/environment | sed -e "s/flashsize.\([0-9x].*\)/\1/") / 1048576))
+else
+	flash_size=$CONFIG_ROMSIZE
+fi
 
 sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware"):'
  echo '<div '$divstyle'><b>$(lang de:"Boxname" en:"Box name"):</b> '$CONFIG_PRODUKT_NAME'&nbsp;&nbsp;&nbsp;<b>ANNEX:</b> '$CONFIG_ANNEX'</div>'
  echo -n "<div $divstyle><b>HWRevision:</b> $HWRevision.$(($HWRevision_ATA)).$((HWRevision_BitFileCount)).$(($HWRevision_Reserved1))&nbsp;&nbsp;&nbsp;"
- echo "<b>Flash(ROM):</b> $CONFIG_ROMSIZE MB&nbsp;&nbsp;&nbsp;<b>RAM:</b> $CONFIG_RAMSIZE MB</div>"
+ echo "<b>Flash(ROM):</b> $flash_size MB&nbsp;&nbsp;&nbsp;<b>RAM:</b> $CONFIG_RAMSIZE MB</div>"
  echo "<div $divstyle>"
  if [ ! -z "$cpu_family" ]; then
 	echo '<b>CPU$(lang de:"-Familie" en:" family"):</b> '$cpu_family'&nbsp;&nbsp;&nbsp;'
