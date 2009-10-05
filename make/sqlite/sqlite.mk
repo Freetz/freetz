@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 3.6.16)
+$(call PKG_INIT_BIN, 3.6.18)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-amalgamation-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.sqlite.org

@@ -22,7 +22,7 @@ if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
 		if [ $TMPERR -eq 1 ]; then
 			echo "$ERROR Directory \"$OUT_DIR\" can not be created"
 			exit 1
-		fi 
+		fi
 	fi
 	if [ -e "$OUT_DIR/$OUT_CONF" ]; then
 		echo "  removing old Downloader configuration file $OUT_DIR/$OUT_CONF"
@@ -31,7 +31,7 @@ if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
 		if [ $TMPERR -eq 1 ]; then
 			echo "$ERROR $OUT_DIR/$OUT_CONF can not be deleted"
 			exit 1
-		fi 
+		fi
 	fi
 	echo "  creating new Downloader configuration file $OUT_DIR/$OUT_CONF"
 	touch "$OUT_DIR/$OUT_CONF"
@@ -44,6 +44,7 @@ EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_LIB_libdevmapper" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libdevmapper.so.1.02"
 [ "$EXTERNAL_FREETZ_LIB_libelf" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libelf.so.0.8.10"
 [ "$EXTERNAL_FREETZ_LIB_libevent" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libevent-1.4.so.2.1.3"
+[ "$EXTERNAL_FREETZ_LIB_libexpat" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libexpat.so.1.5.2"
 [ "$EXTERNAL_FREETZ_LIB_libfreetype" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libfreetype.so.6.3.20"
 [ "$EXTERNAL_FREETZ_LIB_libglib_1" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libglib-1.2.so.0.0.10"
 [ "$EXTERNAL_FREETZ_LIB_libglib_2" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libglib-2.0.so.0.2000.5"
@@ -53,18 +54,22 @@ EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_LIB_libhistory" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libhistory.so.6.0"
 [ "$EXTERNAL_FREETZ_LIB_libiconv" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libiconv.so.2.2.0"
 [ "$EXTERNAL_FREETZ_LIB_libid3tag" == "y" ] && EXTERNAL_FILES+=" /lib/libid3tag.so.0.3.0"
+[ "$EXTERNAL_FREETZ_LIB_liblzo2" == "y" ] && EXTERNAL_FILES+=" /usr/lib/liblzo2.so.2.0.0"
 [ "$EXTERNAL_FREETZ_LIB_libmad" == "y" ] && EXTERNAL_FILES+=" /lib/libmad.so.0.2.1"
 [ "$EXTERNAL_FREETZ_LIB_libncurses" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libncurses.so.5.7"
+[ "$EXTERNAL_FREETZ_LIB_libpanel" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libpanel.so.5.7"
+[ "$EXTERNAL_FREETZ_LIB_libpcap" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libpcap.so.0.9.8"
 [ "$EXTERNAL_FREETZ_LIB_libpng12" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libpng12.so.0.40.0"
 [ "$EXTERNAL_FREETZ_LIB_libpopt" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libpopt.so.0.0.0"
 [ "$EXTERNAL_FREETZ_LIB_libreadline" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libreadline.so.6.0"
 [ "$EXTERNAL_FREETZ_LIB_libresolv" == "y" ] && EXTERNAL_FILES+=" /lib/libresolv-${FREETZ_TARGET_UCLIBC_VERSION}.so"
+[ "$EXTERNAL_FREETZ_LIB_libsqlite3" == "y" ] && EXTERNAL_FILES+=" /usr/lib/libsqlite3.so.0.8.6"
 [ "$EXTERNAL_FREETZ_PACKAGE_BASH" == "y" ] && EXTERNAL_FILES+=" /bin/bash"
 [ "$EXTERNAL_FREETZ_PACKAGE_BIP" == "y" ] && EXTERNAL_FILES+=" /usr/bin/bip"
 [ "$EXTERNAL_FREETZ_PACKAGE_BLUEZ_UTILS" == "y" ] && EXTERNAL_FILES+=" /usr/bin/dund /usr/bin/pand /usr/bin/rfcomm /usr/bin/l2ping /usr/bin/sdptool /usr/sbin/hcid /usr/sbin/sdpd /usr/sbin/hciconfig /usr/sbin/hcitool"
 [ "$EXTERNAL_FREETZ_PACKAGE_CHECKMAILD" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/checkmaild"
 [ "$EXTERNAL_FREETZ_PACKAGE_CRYPTSETUP" == "y" ] && EXTERNAL_FILES+=" /usr/bin/cryptsetup"
-[ "$EXTERNAL_FREETZ_PACKAGE_CTORRENT" == "y" ] && EXTERNAL_FILES+=" /usr/bin/ctorrent" 
+[ "$EXTERNAL_FREETZ_PACKAGE_CTORRENT" == "y" ] && EXTERNAL_FILES+=" /usr/bin/ctorrent"
 [ "$EXTERNAL_FREETZ_PACKAGE_CURL" == "y" ] && EXTERNAL_FILES+=" /usr/bin/curl"
 [ "$EXTERNAL_FREETZ_PACKAGE_DECO" == "y" ] && EXTERNAL_FILES+=" /usr/bin/deco"
 [ "$EXTERNAL_FREETZ_PACKAGE_DECO" == "y" -a "$EXTERNAL_SUBDIRS" == "y" ] && EXTERNAL_FILES+=" /usr/lib/deco"
@@ -94,8 +99,11 @@ EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_PACKAGE_ESPEAK" == "y" ] && EXTERNAL_FILES+=" /usr/bin/speak"
 [ "$EXTERNAL_FREETZ_PACKAGE_INOTIFY_TOOLS" == "y" ] && EXTERNAL_FILES+=" /usr/bin/inotifywait /usr/bin/inotifywatch /usr/lib/libinotifytools.so.0.4.1"
 [ "$EXTERNAL_FREETZ_PACKAGE_IODINE" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/iodined"
-[ "$EXTERNAL_FREETZ_PACKAGE_IRSSI" == "y" ] && EXTERNAL_FILES+=" /usr/bin/irssi" 
+[ "$EXTERNAL_FREETZ_PACKAGE_IPTRAF" == "y" ] && EXTERNAL_FILES+=" /usr/bin/iptraf"
+[ "$EXTERNAL_FREETZ_PACKAGE_IRSSI" == "y" ] && EXTERNAL_FILES+=" /usr/bin/irssi"
+[ "$EXTERNAL_FREETZ_PACKAGE_HTOP" == "y" ] && EXTERNAL_FILES+=" /usr/bin/htop"
 [ "$EXTERNAL_FREETZ_PACKAGE_HTTPTUNNEL" == "y" ] && EXTERNAL_FILES+=" /usr/bin/hts"
+[ "$EXTERNAL_FREETZ_PACKAGE_KNOCK" == "y" ] && EXTERNAL_FILES+=" /usr/bin/knock /usr/bin/knockd"
 [ "$EXTERNAL_FREETZ_PACKAGE_LDD" == "y" ] && EXTERNAL_FILES+=" /usr/bin/ldd"
 [ "$EXTERNAL_FREETZ_PACKAGE_LSOF" == "y" ] && EXTERNAL_FILES+=" /usr/bin/lsof"
 [ "$EXTERNAL_FREETZ_PACKAGE_LTRACE" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/ltrace"
@@ -116,6 +124,7 @@ EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_PACKAGE_OPENSSH_SFTPCLIENT" == "y" ] && EXTERNAL_FILES+=" /usr/bin/sftp"
 [ "$EXTERNAL_FREETZ_PACKAGE_OPENSSH_SFTP" == "y" ] && EXTERNAL_FILES+=" /usr/lib/sftp-server"
 [ "$EXTERNAL_FREETZ_PACKAGE_PHP" == "y" ] && EXTERNAL_FILES+=" /usr/bin/php-cgi"
+[ "$EXTERNAL_FREETZ_PACKAGE_POLIPO" == "y" ] && EXTERNAL_FILES+=" /usr/bin/polipo"
 [ "$EXTERNAL_FREETZ_PACKAGE_PRIVOXY" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/privoxy"
 [ "$EXTERNAL_FREETZ_PACKAGE_RRDTOOL" == "y" ] && EXTERNAL_FILES+=" /usr/bin/rrdtool /usr/lib/librrd.so.2.0.15"
 [ "$EXTERNAL_FREETZ_PACKAGE_RRDTOOL" == "y" -a "$EXTERNAL_SUBDIRS" == "y" ] && EXTERNAL_FILES+=" /usr/share/rrdtool"
@@ -124,6 +133,8 @@ EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_PACKAGE_SAMBA_nmbd" == "y" ] && EXTERNAL_FILES+=" /sbin/nmbd"
 [ "$EXTERNAL_FREETZ_PACKAGE_SAMBA_smbpasswd" == "y" ] && EXTERNAL_FILES+=" /sbin/smbpasswd"
 [ "$EXTERNAL_FREETZ_PACKAGE_SCREEN" == "y" ] && EXTERNAL_FILES+=" /usr/bin/screen.bin"
+[ "$EXTERNAL_FREETZ_PACKAGE_SLURM" == "y" ] && EXTERNAL_FILES+=" /usr/bin/slurm"
+[ "$EXTERNAL_FREETZ_PACKAGE_SQLITE" == "y" ] && EXTERNAL_FILES+=" /usr/bin/sqlite3"
 [ "$EXTERNAL_FREETZ_PACKAGE_STRACE" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/strace"
 [ "$EXTERNAL_FREETZ_PACKAGE_STUNNEL" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/stunnel"
 [ "$EXTERNAL_FREETZ_PACKAGE_TCPDUMP" == "y" ] && EXTERNAL_FILES+=" /usr/bin/tcpdump"
@@ -135,6 +146,7 @@ EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 [ "$EXTERNAL_FREETZ_PACKAGE_TREE" == "y" ] && EXTERNAL_FILES+=" /usr/bin/tree"
 [ "$EXTERNAL_FREETZ_PACKAGE_VIM" == "y" ] && EXTERNAL_FILES+=" /usr/bin/vim"
 [ "$EXTERNAL_FREETZ_PACKAGE_VSFTPD" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/vsftpd"
+[ "$EXTERNAL_FREETZ_PACKAGE_WOL" == "y" ] && EXTERNAL_FILES+=" /usr/bin/wol"
 [ "$EXTERNAL_FREETZ_PACKAGE_WPUT" == "y" ] && EXTERNAL_FILES+=" /usr/bin/wput"
 
 EXTERNAL_FILES="`echo $EXTERNAL_FILES|sed 's/ / \//g;s/\/\/*/\//g'`"
@@ -173,7 +185,7 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 	fi
         ln -s "$EXTERNAL_DIRECTORY$EXTERNAL_LINKSUBDIR/$FILENAME" "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE"
 	[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo "  $EXTERNAL_FILE... $EXTERNAL_MSG & linked"
-    fi    
+    fi
 done
 echo "$EXTERNAL_DIRECTORY" > "${EXTERNAL_MOD_DIR}/.external"
 if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then

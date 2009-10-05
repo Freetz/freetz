@@ -4,7 +4,7 @@ config EXTERNAL_FREETZ_LIB_libart_lgpl_2
 	default n
 	help
 		externals these file(s):
-		 /usr/lib/libart_lgpl_2.so.2.3.19
+		 /usr/lib/libart_lgpl_2.so.2.3.20
 
 config EXTERNAL_FREETZ_LIB_libcrypto
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcrypto && FREETZ_SHOW_ADVANCED
@@ -14,7 +14,15 @@ config EXTERNAL_FREETZ_LIB_libcrypto
 		externals these file(s):
 		 /usr/lib/libcrypto.so.0.9.8
 		WARNING: when this file is external'ed, wlan-encryption
-		is not possible at boot time any more. 
+		is not possible at boot time any more.
+
+config EXTERNAL_FREETZ_LIB_libcurl
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcurl
+	bool "libcurl"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libcurl.so.4.1.1
 
 config EXTERNAL_FREETZ_LIB_libdevmapper
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdevmapper
@@ -39,6 +47,14 @@ config EXTERNAL_FREETZ_LIB_libevent
 	help
 		externals these file(s):
 		 /usr/lib/libevent-1.4.so.2.1.3
+
+config EXTERNAL_FREETZ_LIB_libexpat
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libexpat
+	bool "libexpat"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libexpat.so.1.5.2
 
 config EXTERNAL_FREETZ_LIB_libfreetype
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libfreetype
@@ -88,6 +104,14 @@ config EXTERNAL_FREETZ_LIB_libgthread_2
 		externals these file(s):
 		 /usr/lib/libgthread-2.0.so.0.2000.5
 
+config EXTERNAL_FREETZ_LIB_libhistory
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libhistory && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
+	bool "libhistory"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libhistory.so.6.0
+
 config EXTERNAL_FREETZ_LIB_libiconv
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libiconv
 	bool "libiconv"
@@ -104,8 +128,16 @@ config EXTERNAL_FREETZ_LIB_libid3tag
 		externals these file(s):
 		 /lib/libid3tag.so.0.3.0
 
-config EXTERNAL_FREETZ_LIB_libmad    
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libmad    
+config EXTERNAL_FREETZ_LIB_liblzo2
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_liblzo2
+	bool "liblzo2"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/liblzo2.so.2.0.0
+
+config EXTERNAL_FREETZ_LIB_libmad
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libmad
 	bool "libmad"
 	default n
 	help
@@ -119,6 +151,22 @@ config EXTERNAL_FREETZ_LIB_libncurses
 	help
 		externals these file(s):
 		 /usr/lib/libncurses.so.5.7
+
+config EXTERNAL_FREETZ_LIB_libpanel
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpanel
+	bool "libpanel"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libpanel.so.5.7
+
+config EXTERNAL_FREETZ_LIB_libpcap
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpcap
+	bool "libpcap"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libpcap.so.0.9.8
 
 config EXTERNAL_FREETZ_LIB_libpng12
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpng12
@@ -142,15 +190,7 @@ config EXTERNAL_FREETZ_LIB_libresolv
 	default n
 	help
 		externals these file(s):
-		 /lib/libresolv-0.9.28.so
-
-config EXTERNAL_FREETZ_LIB_libcurl
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcurl
-	bool "libcurl"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/libcurl.so.4.1.1
+		 /lib/libresolv-0.9.x.so
 
 config EXTERNAL_FREETZ_LIB_libreadline
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libreadline && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
@@ -160,10 +200,10 @@ config EXTERNAL_FREETZ_LIB_libreadline
 		externals these file(s):
 		 /usr/lib/libreadline.so.6.0
 
-config EXTERNAL_FREETZ_LIB_libhistory
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libhistory && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
-	bool "libhistory"
+config EXTERNAL_FREETZ_LIB_libsqlite3
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libsqlite3
+	bool "libsqlite"
 	default n
 	help
 		externals these file(s):
-		 /usr/lib/libhistory.so.6.0
+		 /usr/lib/libsqlite3.so.0.8.6
