@@ -76,6 +76,37 @@ collect_upt() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdata --template uptime
 }
 
+collect_thg() {
+	NAMEPREFIX=thg_$RRDSTATS_INTERVAL
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:rx:GAUGE:600:-100:150 \
+			DS:sn:GAUGE:600:-100:150 \
+			DS:tx:GAUGE:600:-100:150 \
+			DS:ip:GAUGE:600:0:999 \
+			DS:up:GAUGE:600:0:99999 \
+			DS:if:GAUGE:600:0:999 \
+			DS:uc:GAUGE:600:0:9 \
+			RRA:LAST:0.1:1:576 \
+			RRA:LAST:0.1:6:672 \
+			RRA:LAST:0.1:24:732 \
+			RRA:LAST:0.1:144:1460
+	fi
+	uptdatBL=N`wget http://192.168.100.1/BasicLan.htm -O - -q | grep -E "Power|Ratio|Computers" |sed 's/ dB.*//g;s/<\/td><\/tr>$//;s/^.*>/:/'|tr -d "\n"`
+	[ $uptdatBL = N ] && return
+	if [ "$RRDSTATS_THOMSONADV" = yes ]; then
+		tX=`wget http://192.168.100.1/BasicLan.htm -O - -q |grep "System uptime"`
+		tH=$(( `echo $tX |sed 's/.*<td>//;s/ .*//'` *24+ `echo $tX |sed -r 's/.* 0{0,1}//;s/h.*//'` ))
+		tM=$(( ( `echo $tX |sed -r 's/.*h:0{0,1}//;s/m:.*//'` *100)/60 ))
+		[ -z "$(echo $tM|sed 's/^.//')" ] && tM=0$tM
+		uptdatUP=:$tH.$tM
+		uptdatIS=:`wget http://192.168.100.1/InitialScan.htm -O - -q |grep -E "mCmInfoDsFreq1|mCmInfoUsId1" |sed 's/.*ue="//;s/".*//;s/000000/:/'|tr -d "\n"`
+		templateADD=:up:if:uc
+	fi
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdatBL$uptdatUP$uptdatIS --template rx:sn:tx:ip$templateADD
+}
+
 collect_net() {
 	[ $# -eq 0 ] && return
 	case $1 in 
@@ -115,6 +146,7 @@ while true; do
 	collect_cpu
 	collect_mem
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
+	[ "$RRDSTATS_THOMSONTHG" = yes ] && collect_thg
 	[ ! -z "$RRDSTATS_INTERFACE1" ] && collect_net 1
 	[ ! -z "$RRDSTATS_INTERFACE2" ] && collect_net 2
 	[ ! -z "$RRDSTATS_INTERFACE3" ] && collect_net 3
