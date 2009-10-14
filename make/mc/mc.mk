@@ -5,6 +5,7 @@ $(PKG)_HELP:=$($(PKG)_MAKE_DIR)/files/root/usr/share/mc/mc.hlp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc.bin
 $(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
+$(PKG)_SOURCE_MD5:=18b20db6e40480a53bac2870c56fc3c4
 
 $(PKG)_DEPENDS_ON := glib ncurses-terminfo
 

@@ -1,4 +1,5 @@
 $(call PKG_INIT_BIN, 0.6.2)
+$(PKG)_SOURCE_MD5:=
 
 $(PKG)_MAKE_DIR := $(MAKE_DIR)/mdev
 
@@ -8,7 +9,6 @@ $(PKG)_TABLES := root/etc/device.table tools/device_table.txt
 $(PKG)_DEVICE := /dev pts misc mem kmem null zero random urandom loop ttyp ptyp ptmx
 $(PKG)_DEVICE += ttyP ttyS fb psaux pts/ mtd mtdblock net net/tun coda coda/ vhci
 $(PKG)_DEVICE += rfcomm sd[a-z] usblp[0-9] ttyUSB misc/fuse "tty\tc\t666\t0\t0\t5"
-$(PKG)_DEVICE += shm
 
 $(PKG)_KERNEL_VERSION := $(shell echo $(KERNEL_VERSION) | $(SED) 's/\.[^.]*$$//')
 

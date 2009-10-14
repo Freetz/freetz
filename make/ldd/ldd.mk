@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_SOURCE_FILE:=$($(PKG)_DIR)/ldd.c
 $(PKG)_BINARY:=$($(PKG)_DIR)/ldd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ldd
+$(PKG)_SOURCE_MD5:=d9910f5828f325cca92e4072c69d7caf 
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

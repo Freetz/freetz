@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://noc.sixxs.net/archive/sixxs/aiccu/unix
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/unix-console/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
+$(PKG)_SOURCE_MD5:=c9bcc83644ed788e22a7c3f3d4021350 
 
 
 $(PKG_SOURCE_DOWNLOAD)

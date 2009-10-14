@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://www.stunnel.org/download/stunnel/src
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 $(PKG)_STARTLEVEL=30
+$(PKG)_SOURCE_MD5:=3c655d815576f50046a1c28744b88681 
 
 $(PKG)_DEPENDS_ON := openssl zlib
 

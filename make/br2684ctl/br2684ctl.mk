@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://ftp.debian.org/debian/pool/main/b/br2684ctl
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION).orig
 $(PKG)_BINARY:=$($(PKG)_DIR)/br2684ctl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/br2684ctl
+$(PKG)_SOURCE_MD5:=6eb4d8cd174e24a7c078eb4f594f5b69 
 
 $(PKG)_DEPENDS_ON := linux-atm
 

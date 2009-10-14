@@ -5,6 +5,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/lsusb
 $(PKG)_IDS:=$($(PKG)_DIR)/usb.ids
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/listusb
 $(PKG)_TARGET_IDS:=$($(PKG)_DEST_DIR)/usr/share/usb.ids
+$(PKG)_SOURCE_MD5:=88978b4ad891f610620b1b8e5e0f43eb 
 
 $(PKG)_DEPENDS_ON := libusb
 

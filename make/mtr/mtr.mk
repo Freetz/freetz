@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.bitwizard.nl/mtr
 $(PKG)_BINARY:=$($(PKG)_DIR)/mtr
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mtr
+$(PKG)_SOURCE_MD5:=d771061f8da96b80ecca2f69a3a2d594 
 
 $(PKG)_DEPENDS_ON := ncurses
 

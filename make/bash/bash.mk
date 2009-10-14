@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/bash
 $(PKG)_BINARY:=$(BASH_DIR)/bash
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/bash
+$(PKG)_SOURCE_MD5:=338dcf975a93640bb3eaa843ca42e3f8 
 
 ifeq ($(strip $(FREETZ_PACKAGE_BASH_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline 

@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=tcpdump-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.tcpdump.org/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpdump
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tcpdump
+$(PKG)_SOURCE_MD5:=c491a78c52fe73f1f7271aa5d8c6ab2e 
 
 $(PKG)_DEPENDS_ON := libpcap
 

@@ -10,6 +10,7 @@ $(PKG)_TARGET_REMOTE_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/transmission-remote
 $(PKG)_WEBINTERFACE_DIR:=$($(PKG)_DIR)/web
 $(PKG)_TARGET_WEBINTERFACE_DIR:=$($(PKG)_DEST_DIR)/usr/share/transmission-web-home
 $(PKG)_TARGET_WEBINTERFACE_INDEX_HTML:=$($(PKG)_TARGET_WEBINTERFACE_DIR)/index.html
+$(PKG)_SOURCE_MD5:=ec09b76ca941f5c389d8dd4f469f1fa6 
 
 $(PKG)_DEPENDS_ON := zlib openssl curl libevent
 

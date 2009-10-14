@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=mcabber-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://mirror.mcabber.com/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/mcabber
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mcabber
+$(PKG)_SOURCE_MD5:=189fb9d23f5a8412bc660884528475ea 
 
 $(PKG)_DEPENDS_ON := glib2 ncurses ncurses-panel
 

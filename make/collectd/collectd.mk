@@ -4,6 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://collectd.org/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/collectd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/collectd
+$(PKG)_SOURCE_MD5:=4ebb6308ff2c8ff0bf26770f38e81943 
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-apache
 $(PKG)_CONFIGURE_OPTIONS += --disable-apcups

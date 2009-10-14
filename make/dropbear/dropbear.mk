@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://matt.ucc.asn.au/dropbear/releases
 $(PKG)_BINARY:=$($(PKG)_DIR)/dropbearmulti
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dropbearmulti
 $(PKG)_STARTLEVEL=40
+$(PKG)_SOURCE_MD5:=a1fc7adf601bca53330a792a9c873439 
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
 DROPBEAR_MAKE_OPTIONS:=PROGRAMS="dropbear dropbearkey" MULTI=1

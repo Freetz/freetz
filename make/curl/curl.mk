@@ -2,6 +2,7 @@ $(call PKG_INIT_BIN, 7.19.6)
 $(PKG)_LIB_VERSION:=4.1.1
 $(PKG)_SOURCE:=curl-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://curl.haxx.se/download
+$(PKG)_SOURCE_MD5:=8402c1f654c51ad7287aad57c3aa79be 
 
 ifeq ($(strip $(FREETZ_PACKAGE_CURL_STATIC)),y)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/curl

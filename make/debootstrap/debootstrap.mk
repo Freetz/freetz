@@ -11,6 +11,7 @@ $(PKG)_SOURCE:=debootstrap_$(DEBOOTSTRAP_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/d/debootstrap
 $(PKG)_BINARY:=$($(PKG)_DIR)/pkgdetails
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/debootstrap/pkgdetails
+$(PKG)_SOURCE_MD5:=f8172809afe7cfdcdc6745229f024d9d 
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

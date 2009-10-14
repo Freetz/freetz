@@ -5,6 +5,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/nmap
 $(PKG)_SERVICES_LIST:=$($(PKG)_DIR)/nmap-services
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/nmap
 $(PKG)_TARGET_SERVICES_LIST:=$($(PKG)_DEST_DIR)/usr/share/nmap/nmap-services
+$(PKG)_SOURCE_MD5:=c363d32a00c697d15996fced22072b6c 
 
 $(PKG)_DEPENDS_ON := uclibcxx libpcap
 

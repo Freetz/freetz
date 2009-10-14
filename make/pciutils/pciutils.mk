@@ -7,6 +7,7 @@ $(PKG)_IDS:=$($(PKG)_DIR)/pci.ids
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lspci
 $(PKG)_SETPCI_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/setpci
 $(PKG)_TARGET_IDS:=$($(PKG)_DEST_DIR)/usr/share/pci.ids
+$(PKG)_SOURCE_MD5:=85b5dae042217cf11bca10d52210a78d 
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

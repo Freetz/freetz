@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/synce
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/dccm
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/dccm
+$(PKG)_SOURCE_MD5:=8818b71133049fe9c739166225aebe0c 
 
 $(PKG)_DEPENDS_ON := libsynce
 

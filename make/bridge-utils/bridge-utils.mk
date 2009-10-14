@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=bridge-utils-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/bridge
 $(PKG)_BINARY:=$($(PKG)_DIR)/brctl/brctl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/brctl
+$(PKG)_SOURCE_MD5:=1e6cff57ac90d7ab984d9512fdd9f2dd 
 
 $(PKG)_CONFIGURE_PRE_CMDS += aclocal --force ;
 $(PKG)_CONFIGURE_PRE_CMDS += libtoolize --force ;

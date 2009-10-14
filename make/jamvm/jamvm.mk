@@ -6,6 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/jamvm
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/src/.libs/libjvm.so.$($(PKG)_UGLY_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/jamvm
 $(PKG)_TARGET_LIB_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libjvm.so.$($(PKG)_UGLY_VERSION)
+$(PKG)_SOURCE_MD5:=5a82751b50391eb092c906ce64f3b6bf 
 
 $(PKG)_DEPENDS_ON := zlib libffi-sable classpath
 

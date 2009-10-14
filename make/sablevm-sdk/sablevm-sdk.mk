@@ -11,6 +11,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sablevm
 $(PKG)_LIB_TARGET_CLASSPATH:=$($(PKG)_DEST_DIR)/usr/share/sablevm-classpath/libclasspath.jar
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libsablevm-$($(PKG)_VERSION).so
 $(PKG)_LIB_TARGET_CLASSPATH_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sablevm-classpath/libjavaio-$($(PKG)_VERSION).so
+$(PKG)_SOURCE_MD5:=18a7c1a92b0748a206f9767a76a6b3bb 
 
 $(PKG)_DEPENDS_ON := libtool popt zlib
 

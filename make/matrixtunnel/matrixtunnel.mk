@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://znerol.ch/files/OLDSTUFF-PLEASE-DONT-USE
 $(PKG)_DIR:=$(SOURCE_DIR)/matrixtunnel
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/matrixtunnel
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/matrixtunnel
+$(PKG)_SOURCE_MD5:=af169751efc7d87d500716a48d74ddc5 
 
 $(PKG)_DEPENDS_ON := matrixssl
 

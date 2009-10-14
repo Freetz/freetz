@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.dest-unreach.org/socat/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/socat
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/socat
+$(PKG)_SOURCE_MD5:=5a6a1d1e398d5c4d32fa6515baf477af 
 
 $(PKG)_DEPENDS_ON := openssl
 

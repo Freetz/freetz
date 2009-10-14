@@ -9,6 +9,7 @@ $(PKG)_NFSD_BINARY:=$($(PKG)_DIR)/utils/nfsd/nfsd
 $(PKG)_NFSD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/nfsd
 $(PKG)_SHOWMOUNT_BINARY:=$($(PKG)_DIR)/utils/showmount/showmount
 $(PKG)_SHOWMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/showmount
+$(PKG)_SOURCE_MD5:=779cf81044e92cb51ad590960e7b3671 
 
 $(PKG)_DEPENDS_ON := e2fsprogs tcp_wrappers
 

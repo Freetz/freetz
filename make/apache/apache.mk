@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://archive.apache.org/dist/httpd
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/apache
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/apache-1.3.41/bin/apache
+$(PKG)_SOURCE_MD5:=f7f00b635243f03a787ca9f4d4c85651 
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_APACHE_STATIC
 

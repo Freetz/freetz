@@ -5,6 +5,7 @@ $(PKG)_SITE:=ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
 $(PKG)_DIR:=$(SOURCE_DIR)/lsof_$($(PKG)_VERSION)_src
 $(PKG)_BINARY:=$($(PKG)_DIR)/lsof
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lsof
+$(PKG)_SOURCE_MD5:=f7112535c2588d08c9234f157f079676 
 
 
 $(PKG_SOURCE_DOWNLOAD)

@@ -6,6 +6,7 @@ $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/ndas_block.ko
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ndasadmin
 $(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/kernel/fs/ndas
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/ndas_block.ko
+$(PKG)_SOURCE_MD5:=f6b5d28b638ac074f54d404e4c136d5e 
 
 $(PKG)_DEPENDS_ON := kernel
 

@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/owfs
 $(PKG)_BINARY:=$($(PKG)_DIR)/module/owhttpd/src/c/.libs/owhttpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/owhttpd
+$(PKG)_SOURCE_MD5:=4c189f64a1a6110bef19639a36c3b0e1 
 
 $(PKG)_DEPENDS_ON := libusb
 

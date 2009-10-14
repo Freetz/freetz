@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.ruby-lang.org/pub/ruby/1.8/
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
+$(PKG)_SOURCE_MD5:=508bf1911173ac43e4e6c31d9dc36b8f
 
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared

@@ -6,6 +6,7 @@ $(PKG)_MODULE_BINARY:=$($(PKG)_DIR)/src/.libs/mod_access.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lighttpd
 $(PKG)_LIB_DIR:=$($(PKG)_DEST_DIR)/usr/lib/lighttpd
 $(PKG)_MODULE_TARGET_BINARY:=$($(PKG)_LIB_DIR)/mod_access.so
+$(PKG)_SOURCE_MD5:=0ab6bb7b17bf0f515ce7dce68e5e215a 
 
 # include selected modules to remove
 include $($(PKG)_MAKE_DIR)/lighttpd.in

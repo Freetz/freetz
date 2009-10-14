@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=madplay-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/mad
 $(PKG)_BINARY:=$($(PKG)_DIR)/madplay
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/madplay
+$(PKG)_SOURCE_MD5:=6814b47ceaa99880c754c5195aa1aac1 
 
 $(PKG)_DEPENDS_ON := zlib libid3tag libmad
 

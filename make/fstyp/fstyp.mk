@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mkp.net/code/fstyp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/fstyp
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/fstyp
+$(PKG)_SOURCE_MD5:=05ea6ba0244df54ab2edba1f61734a32 
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 

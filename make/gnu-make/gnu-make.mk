@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/make
 $(PKG)_DIR:=$(SOURCE_DIR)/make-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/make
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/make
+$(PKG)_SOURCE_MD5:=354853e0b2da90c527e35aabb8d6f1e6
 
 
 $(PKG)_CONFIGURE_ENV += make_cv_sys_gnu_glob=no

@@ -1,6 +1,7 @@
 $(call PKG_INIT_BIN, 3.02)
 $(PKG)_SOURCE:=xpdf-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.foolabs.com/pub/xpdf/
+$(PKG)_SOURCE_MD5:=599dc4cc65a07ee868cf92a667a913d2
 
 XPDF_PDFTOOLS:=pdftops pdftotext pdfinfo pdffonts pdfimages
 XPDF_PROGRAMS:=$(foreach target,$(XPDF_PDFTOOLS),\

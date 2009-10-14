@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/dtach
 $(PKG)_BINARY:=$($(PKG)_DIR)/dtach
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/dtach
+$(PKG)_SOURCE_MD5:=ec5999f3b6bb67da19754fcb2e5221f3 
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

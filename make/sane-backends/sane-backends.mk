@@ -2,6 +2,7 @@ $(call PKG_INIT_BIN,1.0.20)
 $(PKG)_LIB_VERSION:=1.0.20
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp2.sane-project.org/pub/sane/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_SOURCE_MD5:=a0cfdfdebca2feb4f2ba5d3418b15a42 
 
 # saned
 $(PKG)_TARGET_saned:=$($(PKG)_DEST_DIR)/usr/sbin/saned

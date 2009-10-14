@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.digitemp.com/software/linux
 $(PKG)_BINARY:=$($(PKG)_DIR)/digitemp
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/digitemp
+$(PKG)_SOURCE_MD5:=9be2e48db37920f21925ae6e88f83b84 
 
 $(PKG)_MAKE_TARGET:=ds9097
 

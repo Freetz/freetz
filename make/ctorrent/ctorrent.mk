@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=ctorrent-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.rahul.net/dholmes/ctorrent/
 $(PKG)_BINARY:=$($(PKG)_DIR)/ctorrent
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ctorrent
+$(PKG)_SOURCE_MD5:=59b23dd05ff70791cd6449effa7fc3b6 
 
 $(PKG)_DEPENDS_ON := uclibcxx
 

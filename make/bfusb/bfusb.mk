@@ -2,6 +2,7 @@ $(call PKG_INIT_BIN, 3-18-39)
 $(PKG)_SOURCE:=bfubase.frm
 $(PKG)_SITE:=ftp://ftp.in-berlin.de/pub/capi4linux/firmware/bluefusb/$($(PKG)_VERSION)
 $(PKG)_STARTLEVEL=99
+$(PKG)_SOURCE_MD5:=067d7c4b00db528f0b956ba9ce6b7299
 
 $(PKG_SOURCE_DOWNLOAD)
 $(pkg)-source: $(pkg)-download

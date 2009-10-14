@@ -4,6 +4,7 @@ $(PKG)_SITE:=ftp://bird.network.cz/pub/bird
 $(PKG)_BINARY:=$($(PKG)_DIR)/bird
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/bird
 $(PKG)_STARTLEVEL=80
+$(PKG)_SOURCE_MD5:=183c0f8d0218230ca07f0a11afd01fc2 
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIRDC)),y)
 $(PKG)_CLIENT_BINARY:=$($(PKG)_DIR)/birdc

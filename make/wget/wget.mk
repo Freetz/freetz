@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.gnu.org/gnu/wget
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wget
+$(PKG)_SOURCE_MD5:=141461b9c04e454dc8933c9d1f2abf83
 
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON := openssl

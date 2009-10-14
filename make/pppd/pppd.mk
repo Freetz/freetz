@@ -5,6 +5,7 @@ $(PKG)_DIR:=$(SOURCE_DIR)/ppp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/pppd/pppd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/pppd
 $(PKG)_STARTLEVEL=40
+$(PKG)_SOURCE_MD5:=183800762e266132218b204dfb428d29
 
 $(PKG)_DEPENDS_ON := libpcap
 

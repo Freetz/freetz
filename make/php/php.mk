@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=php-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://de.php.net/distributions
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/php-cgi
+$(PKG)_SOURCE_MD5:=286bf34630f5643c25ebcedfec5e0a09 
 
 ifeq ($(strip $(FREETZ_PHP_STATIC)),y)
 PHP_STATIC:= -all-static

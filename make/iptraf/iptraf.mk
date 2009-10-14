@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=iptraf-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://iptraf.seul.org/pub/iptraf
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/iptraf
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/iptraf
+$(PKG)_SOURCE_MD5:=377371c28ee3c21a76f7024920649ea8 
 
 $(PKG)_DEPENDS_ON := ncurses
 

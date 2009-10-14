@@ -5,6 +5,7 @@ $(PKG)_MOUNT_BINARY:=$($(PKG)_DIR)/src/mount.davfs
 $(PKG)_MOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mount.davfs
 $(PKG)_UMOUNT_BINARY:=$($(PKG)_DIR)/src/umount.davfs
 $(PKG)_UMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/umount.davfs
+$(PKG)_SOURCE_MD5:=d9ce95298fe57d6ff8b7a040064ab0fd 
 
 $(PKG)_DEPENDS_ON := neon libiconv
 
