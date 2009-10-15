@@ -5,6 +5,7 @@ $(PKG)_SITE:=ftp://ftp.gtk.org/pub/gtk/v1.2
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libglib-1.2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-1.2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libglib-1.2.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=6fe30dad87c77b91b632def29dd69ef9
 
 $(PKG)_CONFIGURE_DEFOPTS := n
 $(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"

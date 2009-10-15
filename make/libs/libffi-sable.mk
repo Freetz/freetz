@@ -5,6 +5,7 @@ $(PKG)_SITE:=http://downloads.openwrt.org/sources
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libffi.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libffi.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=0c32eaaea0269c5fbe156fcd0be3e5bd 
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

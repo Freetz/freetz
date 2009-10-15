@@ -4,6 +4,7 @@ $(PKG)_SITE:=http://yassl.com
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libcyassl.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libcyassl.so
+$(PKG)_SOURCE_MD5:=e9e85a2d78cd535a049e4acce786e42d 
 
 $(PKG)_DEPENDS_ON := openssl zlib
 

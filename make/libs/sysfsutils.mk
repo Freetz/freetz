@@ -5,6 +5,7 @@ $(PKG)_SITE:=@SF/linux-diag
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libsysfs.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsysfs.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libsysfs.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=14e7dcd0436d2f49aa403f67e1ef7ddc 
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

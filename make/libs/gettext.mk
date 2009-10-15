@@ -5,6 +5,7 @@ $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/gettext/
 $(PKG)_BINARY:=$($(PKG)_DIR)/gettext-runtime/intl/.libs/libintl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libintl.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=3d9ad24301c6d6b17ec30704a13fe127 
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

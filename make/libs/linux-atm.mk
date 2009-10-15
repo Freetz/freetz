@@ -6,6 +6,7 @@ $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lib/.libs/libatm.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libatm.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libatm.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=fcd96e157632e26a6411cc1c517cfa51 
 
 
 $(PKG)_CONFIGURE_PRE_CMDS += ./autotools ;

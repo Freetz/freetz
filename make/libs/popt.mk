@@ -5,6 +5,7 @@ $(PKG)_SITE:=http://rpm5.org/files/popt
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libpopt.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpopt.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpopt.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=c61ef795fa450eb692602a661ec8d7f1 
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ; autoreconf -f -i ;
 

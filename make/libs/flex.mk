@@ -5,6 +5,7 @@ $(PKG)_SITE:=http://surfnet.dl.sourceforge.net/sourceforge/flex
 $(PKG)_BINARY:=$($(PKG)_DIR)/libfl.a
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfl.a
 #$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libfl.a
+$(PKG)_SOURCE_MD5:=201d3f38758d95436cbc64903386de0b 
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -5,6 +5,7 @@ $(PKG)_SITE:=http://www.mpfr.org/mpfr-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_USR_LIB)/libmpfr.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=c5ee0a8ce82ad55fe29ac57edd35d09e 
 
 $(PKG)_DEPENDS_ON:= gmp
 

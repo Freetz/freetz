@@ -5,6 +5,7 @@ $(PKG)_SITE:=@SF/openobex
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libopenobex.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libopenobex.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libopenobex.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=feaa5dfe5151c0e70e8f868fa4648a43 
 
 $(PKG)_DEPENDS_ON := bluez-libs
 

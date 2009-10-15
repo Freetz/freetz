@@ -5,6 +5,7 @@ $(PKG)_SITE:=http://ftp.gnu.org/gnu/gmp
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgmp.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=fc1e3b3a2a5038d4d74138d0b9cf8dbe 
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

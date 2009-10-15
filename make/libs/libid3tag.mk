@@ -5,6 +5,7 @@ $(PKG)_SITE:=@SF/mad
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=e5808ad997ba32c498803822078748c3 
 
 $(PKG)_DEPENDS_ON := zlib
 

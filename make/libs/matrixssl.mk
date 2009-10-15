@@ -7,6 +7,7 @@ $(PKG)_DIR:=$(SOURCE_DIR)/matrixssl
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libmatrixssl.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmatrixssl.so
+$(PKG)_SOURCE_MD5:=b80faff3e389000b9a161dda4812112d 
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

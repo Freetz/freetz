@@ -5,6 +5,7 @@ $(PKG)_SITE:=http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=43f20478e725aa5ba6cdae311ca0593d 
 
 $(PKG)_DEPENDS_ON := libusb
 

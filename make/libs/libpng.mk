@@ -5,6 +5,7 @@ $(PKG)_SITE:=@SF/libpng
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libpng12.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpng12.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=29bbd1c3cbe54b04bfc2bda43067ccb5 
 
 $(PKG)_DEPENDS_ON := zlib
 

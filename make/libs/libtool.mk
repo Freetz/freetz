@@ -5,6 +5,7 @@ $(PKG)_SITE:=http://ftp.gnu.org/gnu/libtool
 $(PKG)_BINARY:=$($(PKG)_DIR)/libltdl/.libs/libltdl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libltdl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libltdl.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=aa9c5107f3ec9ef4200eb6556f3b3c29 
 
 TARGET_CONFIGURE_ENV += GLOBAL_LIBDIR=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
 
