@@ -13,6 +13,13 @@ $(PKG)_LS:=$($(PKG)_DIR)/bin/ncftpls
 $(PKG)_TARGET_LS:=$($(PKG)_DEST_DIR)/usr/bin/ncftpls
 $(PKG)_SOURCE_MD5:=f08238032ab247aa78f935edfc4db9fb 
 
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NCFTP_WITH_NCFTPGET
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NCFTP_WITH_NCFTPPUT
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NCFTP_WITH_NCFTPBATCH
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NCFTP_WITH_NCFTPLS
+
+NCFTP_LIBS := -lresolv
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -20,28 +27,49 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 	$(MAKE) -C $(NCFTP_DIR) \
+	LIBS="$(NCFTP_LIBS)" \
 	CC="$(TARGET_CC)" \
 	CFLAGS="$(TARGET_CFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
+
 $($(PKG)_TARGET_GET): $($(PKG)_GET)
+ifeq ($(strip $(FREETZ_PACKAGE_NCFTP_WITH_NCFTPGET)),y)
 	$(INSTALL_BINARY_STRIP)
+else
+	$(RM) $($(PKG)_TARGET_GET)
+endif
+
 $($(PKG)_TARGET_PUT): $($(PKG)_PUT)
+ifeq ($(strip $(FREETZ_PACKAGE_NCFTP_WITH_NCFTPPUT)),y)
 	$(INSTALL_BINARY_STRIP)
+else
+	$(RM) $($(PKG)_TARGET_PUT)
+endif
+
 $($(PKG)_TARGET_BATCH): $($(PKG)_BATCH)
+ifeq ($(strip $(FREETZ_PACKAGE_NCFTP_WITH_NCFTPBATCH)),y)
 	$(INSTALL_BINARY_STRIP)
+else
+	$(RM) $($(PKG)_TARGET_BATCH)
+endif
+
 $($(PKG)_TARGET_LS): $($(PKG)_LS)
+ifeq ($(strip $(FREETZ_PACKAGE_NCFTP_WITH_NCFTPLS)),y)
 	$(INSTALL_BINARY_STRIP)
+else
+	$(RM) $($(PKG)_TARGET_LS)
+endif
 
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) \
-		    $($(PKG)_TARGET_GET) \
-		    $($(PKG)_TARGET_PUT) \
-		    $($(PKG)_TARGET_BATCH) \
-		    $($(PKG)_TARGET_LS)
-		  
+		      $($(PKG)_TARGET_GET) \
+		      $($(PKG)_TARGET_PUT) \
+		      $($(PKG)_TARGET_BATCH) \
+		      $($(PKG)_TARGET_LS)
+	  
 $(pkg)-clean:
 	-$(MAKE) -C $(NCFTP_DIR) clean
 	$(RM) $(NCFTP_DIR)/.configured
