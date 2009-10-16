@@ -63,7 +63,7 @@ cat << EOF
 <input type="hidden" id="id_config_names"   name="config_names" value="$OPENVPN_CONFIG_NAMES">
 <input type="hidden" id="id_config_count"   name="config_count" value="$OPENVPN_CONFIG_COUNT">
 <input type="hidden" id="id_config_changed"   name="config_changed" value="$OPENVPN_CONFIG_CHANGED">
-<input type="hidden" id="id_additional"   name="additional" value="$OPENVPN_ADDITIONAL">
+<input type="hidden" id="id_additional"   name="additional" value="$(html "$OPENVPN_ADDITIONAL")">
 <input type="hidden" id="id_own_keys"   name="own_keys" value="$OPENVPN_OWN_KEYS">
 <input type="hidden" id="id_expert"   name="expert" value="$OPENVPN_EXPERT">
 <input type="hidden" id="id_no_certtype"   name="no_certtype" value="$OPENVPN_NO_CERTTYPE">

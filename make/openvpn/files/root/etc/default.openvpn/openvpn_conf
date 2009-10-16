@@ -103,7 +103,7 @@ if [ "$MODE" == "server" ]; then
 		echo "push \"dhcp-option DNS $PUSH_DNS\"" >> $CONFFILE
 	fi
 	if [ "$PUSH_WINS" ]; then
-		echo "push \"dhcp-option DNS $PUSH_WINS\"" >> $CONFFILE
+		echo "push \"dhcp-option WINS $PUSH_WINS\"" >> $CONFFILE
 	fi
 	if [ "$REDIRECT" ]; then
 		echo "push \"redirect-gateway\"" >> $CONFFILE
