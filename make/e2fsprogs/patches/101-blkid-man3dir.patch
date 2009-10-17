@@ -1,15 +1,14 @@
---- lib/blkid/Makefile.in.orig	2008-09-13 17:56:12.000000000 +0200
-+++ lib/blkid/Makefile.in	2008-09-13 17:56:43.000000000 +0200
-@@ -142,9 +142,10 @@
- 	@cd $(top_builddir); CONFIG_FILES=lib/blkid/blkid.pc ./config.status
+--- lib/blkid/Makefile.in	2009-08-13 03:39:57.000000000 +0200
++++ lib/blkid/Makefile.in	2009-10-17 00:40:41.000000000 +0200
+@@ -142,9 +142,9 @@
+ 	$(Q) cd $(top_builddir); CONFIG_FILES=lib/blkid/blkid.pc ./config.status
  
  installdirs::
--	@echo "	MKINSTALLDIRS $(libdir) $(includedir)/blkid"
-+	@echo "	MKINSTALLDIRS $(libdir) $(includedir)/blkid $(man3dir)"
- 	@$(MKINSTALLDIRS) $(DESTDIR)$(libdir) \
+-	$(E) "	MKINSTALLDIRS $(libdir) $(includedir)/blkid"
++	$(E) "	MKINSTALLDIRS $(libdir) $(includedir)/blkid $(man3dir)"
+ 	$(Q) $(MKINSTALLDIRS) $(DESTDIR)$(libdir) \
 -		$(DESTDIR)$(includedir)/blkid $(DESTDIR)$(libdir)/pkgconfig
-+		$(DESTDIR)$(includedir)/blkid $(DESTDIR)$(man3dir) \
-+		$(DESTDIR)$(libdir)/pkgconfig
++		$(DESTDIR)$(includedir)/blkid $(DESTDIR)$(man3dir) $(DESTDIR)$(libdir)/pkgconfig
  
  install:: all installdirs 
- 	@echo "	INSTALL_DATA $(libdir)/libblkid.a"
+ 	$(E) "	INSTALL_DATA $(libdir)/libblkid.a"
