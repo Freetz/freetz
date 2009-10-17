@@ -1,10 +1,10 @@
 config FREETZ_PACKAGE_BASH
-	bool "bash 3.2.48 (binary only)"
+	bool "bash 3.2.50 (binary only)"
 	default n
 	help
-		Bash is an sh-compatible command language interpreter that 
+		Bash is an sh-compatible command language interpreter that
 		executes commands read from the standard input or from a file.
-		Bash also incorporates useful features from the Korn and C 
+		Bash also incorporates useful features from the Korn and C
 		shells (ksh and csh).(roundabout 540K minimal and 840K full featured)
 
 config FREETZ_PACKAGE_BASH_MINIMAL
@@ -25,3 +25,9 @@ config FREETZ_PACKAGE_BASH_READLINE
 	help
 		Enable command line editing and history. This feature needs ncurses and readline.
 
+config FREETZ_PATCH_BASH_LOGIN_SHELL
+	bool "add bash to the list of login shells"
+	depends on FREETZ_PACKAGE_BASH
+	default n
+	help
+		Add bash to /etc/shells. This allows bash to be used as a login shell.
