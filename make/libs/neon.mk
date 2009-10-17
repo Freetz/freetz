@@ -15,11 +15,12 @@ ifeq ($(strip $(FREETZ_LIB_libneon_WITH_ZLIB)),y)
 $(PKG)_DEPENDS_ON += zlib
 endif
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-expat=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.la
 $(PKG)_CONFIGURE_OPTIONS += --with-gssapi
 $(PKG)_CONFIGURE_OPTIONS += --disable-nls
-$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --without-egd
 $(PKG)_CONFIGURE_OPTIONS += --without-socks
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libneon_WITH_SSL),--with-ssl=openssl,--without-ssl)
@@ -34,8 +35,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(NEON_DIR) \
-		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
+		$(MAKE) -C $(NEON_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_PATH) $(MAKE) \
