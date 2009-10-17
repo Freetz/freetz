@@ -853,11 +853,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "shrink shared libs"
 		TARGET_TOOLCHAIN_STAGING_DIR="${ABS_BASE_DIR}/toolchain/target"
 
-		# TODO: replace the next 3 lines with code that replaces all
+		# TODO: replace the next 5 lines with code that replaces all
 		# absolute sym links... to make mklibs.py happy
 		ln -sf libcapi20.so.3.0.4 "${FILESYSTEM_MOD_DIR}/lib/libcapi20.so"
 		ln -sf libcapi20.so.3.0.4 "${FILESYSTEM_MOD_DIR}/lib/libcapi20.so.3"
 		ln -sf libfwsign.so "${FILESYSTEM_MOD_DIR}/lib/libfwsign.so.0"
+		ln -sf libled2.so.2.2.0 "${FILESYSTEM_MOD_DIR}/lib/libled2.so.2.2"
+		ln -sf libled2.so.2.2.0 "${FILESYSTEM_MOD_DIR}/lib/libled2.so.2"
 
 		# move shared libs from /lib and /usr/lib to libs_to_reduce folder
 		# this is fundamental for mklibs.py !!
