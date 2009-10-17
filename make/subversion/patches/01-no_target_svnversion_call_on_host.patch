@@ -1,0 +1,11 @@
+--- Makefile.in
++++ Makefile.in
+@@ -364,7 +364,7 @@
+ 
+ ### HACK!! Find a better way to do this
+ revision-install:
+-	subversion/svnversion/svnversion $(top_srcdir) /repos/svn/trunk > $(DESTDIR)$(includedir)/subversion-1/svn-revision.txt
++	#disable as it doesn't work when cross-compiling #subversion/svnversion/svnversion $(top_srcdir) /repos/svn/trunk > $(DESTDIR)$(includedir)/subversion-1/svn-revision.txt
+ 
+ install-static: @INSTALL_STATIC_RULES@
+ 

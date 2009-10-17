@@ -1,0 +1,213 @@
+--- build/generator/gen_base.py
++++ build/generator/gen_base.py
+@@ -357,7 +357,7 @@
+     self.install = options.get('install')
+     self.compile_cmd = options.get('compile-cmd')
+     self.sources = options.get('sources', '*.c *.cpp')
+-    self.link_cmd = options.get('link-cmd', '$(LINK)')
++    self.link_cmd = options.get('link-cmd', '$(LINK_LIB)')
+ 
+     self.external_lib = options.get('external-lib')
+     self.external_project = options.get('external-project')
+@@ -409,6 +409,7 @@
+       extmap = self.gen_obj._extension_map
+       self.objext = extmap['exe', 'object']
+       self.filename = build_path_join(self.path, name + extmap['exe', 'target'])
++      self.link_cmd = '$(LINK)'
+ 
+     self.manpages = options.get('manpages', '')
+     self.testing = options.get('testing')
+--- build/generator/gen_make.py
++++ build/generator/gen_make.py
+@@ -386,8 +386,8 @@
+           name = base.replace('mod_', '')
+           self.ofile.write('\tcd %s ; '
+                            '$(MKDIR) "$(APACHE_LIBEXECDIR)" ; '
+-                           '$(INSTALL_MOD_SHARED) -n %s %s\n'
+-                           % (dirname, name, fname))
++                           '$(INSTALL_LIB) %s $(APACHE_LIBEXECDIR)\n'
++                           % (dirname, fname))
+         self.ofile.write('\n')
+ 
+       elif area != 'test' and area != 'bdb-test':
+--- build.conf
++++ build.conf
+@@ -472,7 +472,7 @@
+ lang = python
+ path = subversion/bindings/swig/python/libsvn_swig_py
+ libs = libsvn_client libsvn_wc libsvn_ra libsvn_delta libsvn_subr apriconv apr
+-link-cmd = $(LINK) $(SWIG_PY_LIBS)
++link-cmd = $(LINK_LIB) $(SWIG_PY_LIBS)
+ install = swig-py-lib
+ # need special build rule to include -DSWIGPYTHON
+ compile-cmd = $(COMPILE_SWIG_PY)
+@@ -495,7 +495,7 @@
+ lang = ruby
+ path = subversion/bindings/swig/ruby/libsvn_swig_ruby
+ libs = libsvn_client libsvn_wc libsvn_delta libsvn_subr apriconv apr
+-link-cmd = $(LINK) $(SWIG_RB_LIBS)
++link-cmd = $(LINK_LIB) $(SWIG_RB_LIBS)
+ install = swig-rb-lib
+ # need special build rule to include
+ compile-cmd = $(COMPILE_SWIG_RB)
+--- build-outputs.mk
++++ build-outputs.mk
+@@ -220,7 +220,7 @@
+ libsvn_auth_gnome_keyring_DEPS =  subversion/libsvn_auth_gnome_keyring/gnome_keyring.lo subversion/libsvn_auth_gnome_keyring/version.lo subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_auth_gnome_keyring_OBJECTS = gnome_keyring.lo version.lo
+ subversion/libsvn_auth_gnome_keyring/libsvn_auth_gnome_keyring-1.la: $(libsvn_auth_gnome_keyring_DEPS)
+-	cd subversion/libsvn_auth_gnome_keyring && $(LINK) -o libsvn_auth_gnome_keyring-1.la $(LT_NO_UNDEFINED) $(libsvn_auth_gnome_keyring_OBJECTS) $(SVN_APR_LIBS) $(SVN_GNOME_KEYRING_LIBS) ../../subversion/libsvn_subr/libsvn_subr-1.la $(LIBS)
++	cd subversion/libsvn_auth_gnome_keyring && $(LINK_LIB) -o libsvn_auth_gnome_keyring-1.la $(LT_NO_UNDEFINED) $(libsvn_auth_gnome_keyring_OBJECTS) $(SVN_APR_LIBS) $(SVN_GNOME_KEYRING_LIBS) ../../subversion/libsvn_subr/libsvn_subr-1.la $(LIBS)
+ 
+ libsvn_auth_kwallet_PATH = subversion/libsvn_auth_kwallet
+ libsvn_auth_kwallet_DEPS =  subversion/libsvn_auth_kwallet/kwallet.lo subversion/libsvn_auth_kwallet/version.lo subversion/libsvn_subr/libsvn_subr-1.la
+@@ -232,93 +232,93 @@
+ libsvn_client_DEPS =  subversion/libsvn_client/add.lo subversion/libsvn_client/blame.lo subversion/libsvn_client/cat.lo subversion/libsvn_client/changelist.lo subversion/libsvn_client/checkout.lo subversion/libsvn_client/cleanup.lo subversion/libsvn_client/cmdline.lo subversion/libsvn_client/commit.lo subversion/libsvn_client/commit_util.lo subversion/libsvn_client/compat_providers.lo subversion/libsvn_client/copy.lo subversion/libsvn_client/ctx.lo subversion/libsvn_client/delete.lo subversion/libsvn_client/deprecated.lo subversion/libsvn_client/diff.lo subversion/libsvn_client/export.lo subversion/libsvn_client/externals.lo subversion/libsvn_client/info.lo subversion/libsvn_client/list.lo subversion/libsvn_client/locking_commands.lo subversion/libsvn_client/log.lo subversion/libsvn_client/merge.lo subversion/libsvn_client/mergeinfo.lo subversion/libsvn_client/prop_commands.lo subversion/libsvn_client/ra.lo subversion/libsvn_client/relocate.lo subversion/libsvn_client/repos_diff.lo subversion/libsvn_client/repos_diff_summarize.lo subversion/libsvn_client/resolved.lo subversion/libsvn_client/revert.lo subversion/libsvn_client/revisions.lo subversion/libsvn_client/status.lo subversion/libsvn_client/switch.lo subversion/libsvn_client/update.lo subversion/libsvn_client/url.lo subversion/libsvn_client/util.lo subversion/libsvn_client/version.lo subversion/libsvn_wc/libsvn_wc-1.la subversion/libsvn_ra/libsvn_ra-1.la subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_diff/libsvn_diff-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_client_OBJECTS = add.lo blame.lo cat.lo changelist.lo checkout.lo cleanup.lo cmdline.lo commit.lo commit_util.lo compat_providers.lo copy.lo ctx.lo delete.lo deprecated.lo diff.lo export.lo externals.lo info.lo list.lo locking_commands.lo log.lo merge.lo mergeinfo.lo prop_commands.lo ra.lo relocate.lo repos_diff.lo repos_diff_summarize.lo resolved.lo revert.lo revisions.lo status.lo switch.lo update.lo url.lo util.lo version.lo
+ subversion/libsvn_client/libsvn_client-1.la: $(libsvn_client_DEPS)
+-	cd subversion/libsvn_client && $(LINK) -o libsvn_client-1.la $(LT_NO_UNDEFINED) $(libsvn_client_OBJECTS) ../../subversion/libsvn_wc/libsvn_wc-1.la ../../subversion/libsvn_ra/libsvn_ra-1.la ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_diff/libsvn_diff-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/libsvn_client && $(LINK_LIB) -o libsvn_client-1.la $(LT_NO_UNDEFINED) $(libsvn_client_OBJECTS) ../../subversion/libsvn_wc/libsvn_wc-1.la ../../subversion/libsvn_ra/libsvn_ra-1.la ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_diff/libsvn_diff-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvn_delta_PATH = subversion/libsvn_delta
+ libsvn_delta_DEPS =  subversion/libsvn_delta/cancel.lo subversion/libsvn_delta/compat.lo subversion/libsvn_delta/compose_delta.lo subversion/libsvn_delta/debug_editor.lo subversion/libsvn_delta/default_editor.lo subversion/libsvn_delta/depth_filter_editor.lo subversion/libsvn_delta/path_driver.lo subversion/libsvn_delta/svndiff.lo subversion/libsvn_delta/text_delta.lo subversion/libsvn_delta/version.lo subversion/libsvn_delta/xdelta.lo subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_delta_OBJECTS = cancel.lo compat.lo compose_delta.lo debug_editor.lo default_editor.lo depth_filter_editor.lo path_driver.lo svndiff.lo text_delta.lo version.lo xdelta.lo
+ subversion/libsvn_delta/libsvn_delta-1.la: $(libsvn_delta_DEPS)
+-	cd subversion/libsvn_delta && $(LINK) -o libsvn_delta-1.la $(LT_NO_UNDEFINED) $(libsvn_delta_OBJECTS) ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_ZLIB_LIBS) $(LIBS)
++	cd subversion/libsvn_delta && $(LINK_LIB) -o libsvn_delta-1.la $(LT_NO_UNDEFINED) $(libsvn_delta_OBJECTS) ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_ZLIB_LIBS) $(LIBS)
+ 
+ libsvn_diff_PATH = subversion/libsvn_diff
+ libsvn_diff_DEPS =  subversion/libsvn_diff/deprecated.lo subversion/libsvn_diff/diff.lo subversion/libsvn_diff/diff3.lo subversion/libsvn_diff/diff4.lo subversion/libsvn_diff/diff_file.lo subversion/libsvn_diff/diff_memory.lo subversion/libsvn_diff/lcs.lo subversion/libsvn_diff/token.lo subversion/libsvn_diff/util.lo subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_diff_OBJECTS = deprecated.lo diff.lo diff3.lo diff4.lo diff_file.lo diff_memory.lo lcs.lo token.lo util.lo
+ subversion/libsvn_diff/libsvn_diff-1.la: $(libsvn_diff_DEPS)
+-	cd subversion/libsvn_diff && $(LINK) -o libsvn_diff-1.la $(LT_NO_UNDEFINED) $(libsvn_diff_OBJECTS) ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/libsvn_diff && $(LINK_LIB) -o libsvn_diff-1.la $(LT_NO_UNDEFINED) $(libsvn_diff_OBJECTS) ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvn_fs_PATH = subversion/libsvn_fs
+ install-ramod-lib: $(SVN_FS_LIB_INSTALL_DEPS)
+ libsvn_fs_DEPS = $(SVN_FS_LIB_DEPS) subversion/libsvn_fs/access.lo subversion/libsvn_fs/fs-loader.lo subversion/libsvn_fs_util/libsvn_fs_util-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_fs_OBJECTS = access.lo fs-loader.lo
+ subversion/libsvn_fs/libsvn_fs-1.la: $(libsvn_fs_DEPS)
+-	cd subversion/libsvn_fs && $(LINK) -o libsvn_fs-1.la $(LT_NO_UNDEFINED) $(libsvn_fs_OBJECTS) ../../subversion/libsvn_fs_util/libsvn_fs_util-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_FS_LIB_LINK) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/libsvn_fs && $(LINK_LIB) -o libsvn_fs-1.la $(LT_NO_UNDEFINED) $(libsvn_fs_OBJECTS) ../../subversion/libsvn_fs_util/libsvn_fs_util-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_FS_LIB_LINK) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvn_fs_base_PATH = subversion/libsvn_fs_base
+ libsvn_fs_base_DEPS =  subversion/libsvn_fs_base/bdb/bdb-err.lo subversion/libsvn_fs_base/bdb/bdb_compat.lo subversion/libsvn_fs_base/bdb/changes-table.lo subversion/libsvn_fs_base/bdb/checksum-reps-table.lo subversion/libsvn_fs_base/bdb/copies-table.lo subversion/libsvn_fs_base/bdb/dbt.lo subversion/libsvn_fs_base/bdb/env.lo subversion/libsvn_fs_base/bdb/lock-tokens-table.lo subversion/libsvn_fs_base/bdb/locks-table.lo subversion/libsvn_fs_base/bdb/miscellaneous-table.lo subversion/libsvn_fs_base/bdb/node-origins-table.lo subversion/libsvn_fs_base/bdb/nodes-table.lo subversion/libsvn_fs_base/bdb/reps-table.lo subversion/libsvn_fs_base/bdb/rev-table.lo subversion/libsvn_fs_base/bdb/strings-table.lo subversion/libsvn_fs_base/bdb/txn-table.lo subversion/libsvn_fs_base/bdb/uuids-table.lo subversion/libsvn_fs_base/dag.lo subversion/libsvn_fs_base/err.lo subversion/libsvn_fs_base/fs.lo subversion/libsvn_fs_base/id.lo subversion/libsvn_fs_base/key-gen.lo subversion/libsvn_fs_base/lock.lo subversion/libsvn_fs_base/node-rev.lo subversion/libsvn_fs_base/reps-strings.lo subversion/libsvn_fs_base/revs-txns.lo subversion/libsvn_fs_base/trail.lo subversion/libsvn_fs_base/tree.lo subversion/libsvn_fs_base/util/fs_skels.lo subversion/libsvn_fs_base/uuid.lo subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la subversion/libsvn_fs_util/libsvn_fs_util-1.la
+ libsvn_fs_base_OBJECTS = bdb/bdb-err.lo bdb/bdb_compat.lo bdb/changes-table.lo bdb/checksum-reps-table.lo bdb/copies-table.lo bdb/dbt.lo bdb/env.lo bdb/lock-tokens-table.lo bdb/locks-table.lo bdb/miscellaneous-table.lo bdb/node-origins-table.lo bdb/nodes-table.lo bdb/reps-table.lo bdb/rev-table.lo bdb/strings-table.lo bdb/txn-table.lo bdb/uuids-table.lo dag.lo err.lo fs.lo id.lo key-gen.lo lock.lo node-rev.lo reps-strings.lo revs-txns.lo trail.lo tree.lo util/fs_skels.lo uuid.lo
+ subversion/libsvn_fs_base/libsvn_fs_base-1.la: $(libsvn_fs_base_DEPS)
+-	cd subversion/libsvn_fs_base && $(LINK) -o libsvn_fs_base-1.la $(LT_NO_UNDEFINED) $(libsvn_fs_base_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_DB_LIBS) ../../subversion/libsvn_fs_util/libsvn_fs_util-1.la $(LIBS)
++	cd subversion/libsvn_fs_base && $(LINK_LIB) -o libsvn_fs_base-1.la $(LT_NO_UNDEFINED) $(libsvn_fs_base_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_DB_LIBS) ../../subversion/libsvn_fs_util/libsvn_fs_util-1.la $(LIBS)
+ 
+ libsvn_fs_fs_PATH = subversion/libsvn_fs_fs
+ libsvn_fs_fs_DEPS =  subversion/libsvn_fs_fs/caching.lo subversion/libsvn_fs_fs/dag.lo subversion/libsvn_fs_fs/err.lo subversion/libsvn_fs_fs/fs.lo subversion/libsvn_fs_fs/fs_fs.lo subversion/libsvn_fs_fs/id.lo subversion/libsvn_fs_fs/key-gen.lo subversion/libsvn_fs_fs/lock.lo subversion/libsvn_fs_fs/rep-cache.lo subversion/libsvn_fs_fs/tree.lo subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la subversion/libsvn_fs_util/libsvn_fs_util-1.la
+ libsvn_fs_fs_OBJECTS = caching.lo dag.lo err.lo fs.lo fs_fs.lo id.lo key-gen.lo lock.lo rep-cache.lo tree.lo
+ subversion/libsvn_fs_fs/libsvn_fs_fs-1.la: $(libsvn_fs_fs_DEPS)
+-	cd subversion/libsvn_fs_fs && $(LINK) -o libsvn_fs_fs-1.la $(LT_NO_UNDEFINED) $(libsvn_fs_fs_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) ../../subversion/libsvn_fs_util/libsvn_fs_util-1.la $(LIBS)
++	cd subversion/libsvn_fs_fs && $(LINK_LIB) -o libsvn_fs_fs-1.la $(LT_NO_UNDEFINED) $(libsvn_fs_fs_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) ../../subversion/libsvn_fs_util/libsvn_fs_util-1.la $(LIBS)
+ 
+ libsvn_fs_util_PATH = subversion/libsvn_fs_util
+ libsvn_fs_util_DEPS =  subversion/libsvn_fs_util/fs-util.lo subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_fs_util_OBJECTS = fs-util.lo
+ subversion/libsvn_fs_util/libsvn_fs_util-1.la: $(libsvn_fs_util_DEPS)
+-	cd subversion/libsvn_fs_util && $(LINK) -o libsvn_fs_util-1.la $(LT_NO_UNDEFINED) $(libsvn_fs_util_OBJECTS) ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/libsvn_fs_util && $(LINK_LIB) -o libsvn_fs_util-1.la $(LT_NO_UNDEFINED) $(libsvn_fs_util_OBJECTS) ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvn_ra_PATH = subversion/libsvn_ra
+ install-lib: $(SVN_RA_LIB_INSTALL_DEPS)
+ libsvn_ra_DEPS = $(SVN_RA_LIB_DEPS) subversion/libsvn_ra/compat.lo subversion/libsvn_ra/deprecated.lo subversion/libsvn_ra/ra_loader.lo subversion/libsvn_ra/util.lo subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_ra_OBJECTS = compat.lo deprecated.lo ra_loader.lo util.lo
+ subversion/libsvn_ra/libsvn_ra-1.la: $(libsvn_ra_DEPS)
+-	cd subversion/libsvn_ra && $(LINK) -o libsvn_ra-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_RA_LIB_LINK) $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/libsvn_ra && $(LINK_LIB) -o libsvn_ra-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_RA_LIB_LINK) $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvn_ra_local_PATH = subversion/libsvn_ra_local
+ libsvn_ra_local_DEPS =  subversion/libsvn_ra_local/ra_plugin.lo subversion/libsvn_ra_local/split_url.lo subversion/libsvn_repos/libsvn_repos-1.la subversion/libsvn_fs/libsvn_fs-1.la subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_ra_local_OBJECTS = ra_plugin.lo split_url.lo
+ subversion/libsvn_ra_local/libsvn_ra_local-1.la: $(libsvn_ra_local_DEPS)
+-	cd subversion/libsvn_ra_local && $(LINK) -o libsvn_ra_local-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_local_OBJECTS) ../../subversion/libsvn_repos/libsvn_repos-1.la ../../subversion/libsvn_fs/libsvn_fs-1.la ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/libsvn_ra_local && $(LINK_LIB) -o libsvn_ra_local-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_local_OBJECTS) ../../subversion/libsvn_repos/libsvn_repos-1.la ../../subversion/libsvn_fs/libsvn_fs-1.la ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvn_ra_neon_PATH = subversion/libsvn_ra_neon
+ libsvn_ra_neon_DEPS =  subversion/libsvn_ra_neon/commit.lo subversion/libsvn_ra_neon/fetch.lo subversion/libsvn_ra_neon/file_revs.lo subversion/libsvn_ra_neon/get_dated_rev.lo subversion/libsvn_ra_neon/get_deleted_rev.lo subversion/libsvn_ra_neon/get_location_segments.lo subversion/libsvn_ra_neon/get_locations.lo subversion/libsvn_ra_neon/get_locks.lo subversion/libsvn_ra_neon/lock.lo subversion/libsvn_ra_neon/log.lo subversion/libsvn_ra_neon/merge.lo subversion/libsvn_ra_neon/mergeinfo.lo subversion/libsvn_ra_neon/options.lo subversion/libsvn_ra_neon/props.lo subversion/libsvn_ra_neon/replay.lo subversion/libsvn_ra_neon/session.lo subversion/libsvn_ra_neon/util.lo subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_ra_neon_OBJECTS = commit.lo fetch.lo file_revs.lo get_dated_rev.lo get_deleted_rev.lo get_location_segments.lo get_locations.lo get_locks.lo lock.lo log.lo merge.lo mergeinfo.lo options.lo props.lo replay.lo session.lo util.lo
+ subversion/libsvn_ra_neon/libsvn_ra_neon-1.la: $(libsvn_ra_neon_DEPS)
+-	cd subversion/libsvn_ra_neon && $(LINK) -o libsvn_ra_neon-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_neon_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(NEON_LIBS) $(LIBS)
++	cd subversion/libsvn_ra_neon && $(LINK_LIB) -o libsvn_ra_neon-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_neon_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(NEON_LIBS) $(LIBS)
+ 
+ libsvn_ra_serf_PATH = subversion/libsvn_ra_serf
+ libsvn_ra_serf_DEPS =  subversion/libsvn_ra_serf/auth.lo subversion/libsvn_ra_serf/blame.lo subversion/libsvn_ra_serf/commit.lo subversion/libsvn_ra_serf/get_deleted_rev.lo subversion/libsvn_ra_serf/getdate.lo subversion/libsvn_ra_serf/getlocations.lo subversion/libsvn_ra_serf/getlocationsegments.lo subversion/libsvn_ra_serf/getlocks.lo subversion/libsvn_ra_serf/locks.lo subversion/libsvn_ra_serf/log.lo subversion/libsvn_ra_serf/merge.lo subversion/libsvn_ra_serf/mergeinfo.lo subversion/libsvn_ra_serf/options.lo subversion/libsvn_ra_serf/property.lo subversion/libsvn_ra_serf/replay.lo subversion/libsvn_ra_serf/serf.lo subversion/libsvn_ra_serf/update.lo subversion/libsvn_ra_serf/util.lo subversion/libsvn_ra_serf/win32_auth_sspi.lo subversion/libsvn_ra_serf/xml.lo subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_ra_serf_OBJECTS = auth.lo blame.lo commit.lo get_deleted_rev.lo getdate.lo getlocations.lo getlocationsegments.lo getlocks.lo locks.lo log.lo merge.lo mergeinfo.lo options.lo property.lo replay.lo serf.lo update.lo util.lo win32_auth_sspi.lo xml.lo
+ subversion/libsvn_ra_serf/libsvn_ra_serf-1.la: $(libsvn_ra_serf_DEPS)
+-	cd subversion/libsvn_ra_serf && $(LINK) -o libsvn_ra_serf-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_serf_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_SERF_LIBS) $(LIBS)
++	cd subversion/libsvn_ra_serf && $(LINK_LIB) -o libsvn_ra_serf-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_serf_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_SERF_LIBS) $(LIBS)
+ 
+ libsvn_ra_svn_PATH = subversion/libsvn_ra_svn
+ libsvn_ra_svn_DEPS =  subversion/libsvn_ra_svn/client.lo subversion/libsvn_ra_svn/cram.lo subversion/libsvn_ra_svn/cyrus_auth.lo subversion/libsvn_ra_svn/editorp.lo subversion/libsvn_ra_svn/internal_auth.lo subversion/libsvn_ra_svn/marshal.lo subversion/libsvn_ra_svn/streams.lo subversion/libsvn_ra_svn/version.lo subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_ra_svn_OBJECTS = client.lo cram.lo cyrus_auth.lo editorp.lo internal_auth.lo marshal.lo streams.lo version.lo
+ subversion/libsvn_ra_svn/libsvn_ra_svn-1.la: $(libsvn_ra_svn_DEPS)
+-	cd subversion/libsvn_ra_svn && $(LINK) -o libsvn_ra_svn-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_svn_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_SASL_LIBS) $(LIBS)
++	cd subversion/libsvn_ra_svn && $(LINK_LIB) -o libsvn_ra_svn-1.la $(LT_NO_UNDEFINED) $(libsvn_ra_svn_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_SASL_LIBS) $(LIBS)
+ 
+ libsvn_repos_PATH = subversion/libsvn_repos
+ libsvn_repos_DEPS =  subversion/libsvn_repos/authz.lo subversion/libsvn_repos/commit.lo subversion/libsvn_repos/delta.lo subversion/libsvn_repos/deprecated.lo subversion/libsvn_repos/dump.lo subversion/libsvn_repos/fs-wrap.lo subversion/libsvn_repos/hooks.lo subversion/libsvn_repos/load.lo subversion/libsvn_repos/log.lo subversion/libsvn_repos/node_tree.lo subversion/libsvn_repos/replay.lo subversion/libsvn_repos/reporter.lo subversion/libsvn_repos/repos.lo subversion/libsvn_repos/rev_hunt.lo subversion/libsvn_fs/libsvn_fs-1.la subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_repos_OBJECTS = authz.lo commit.lo delta.lo deprecated.lo dump.lo fs-wrap.lo hooks.lo load.lo log.lo node_tree.lo replay.lo reporter.lo repos.lo rev_hunt.lo
+ subversion/libsvn_repos/libsvn_repos-1.la: $(libsvn_repos_DEPS)
+-	cd subversion/libsvn_repos && $(LINK) -o libsvn_repos-1.la $(LT_NO_UNDEFINED) $(libsvn_repos_OBJECTS) ../../subversion/libsvn_fs/libsvn_fs-1.la ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/libsvn_repos && $(LINK_LIB) -o libsvn_repos-1.la $(LT_NO_UNDEFINED) $(libsvn_repos_OBJECTS) ../../subversion/libsvn_fs/libsvn_fs-1.la ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvn_subr_PATH = subversion/libsvn_subr
+ libsvn_subr_DEPS =  subversion/libsvn_subr/atomic.lo subversion/libsvn_subr/auth.lo subversion/libsvn_subr/cache-inprocess.lo subversion/libsvn_subr/cache-memcache.lo subversion/libsvn_subr/cache.lo subversion/libsvn_subr/checksum.lo subversion/libsvn_subr/cmdline.lo subversion/libsvn_subr/compat.lo subversion/libsvn_subr/config.lo subversion/libsvn_subr/config_auth.lo subversion/libsvn_subr/config_file.lo subversion/libsvn_subr/config_win.lo subversion/libsvn_subr/constructors.lo subversion/libsvn_subr/ctype.lo subversion/libsvn_subr/date.lo subversion/libsvn_subr/deprecated.lo subversion/libsvn_subr/dirent_uri.lo subversion/libsvn_subr/dso.lo subversion/libsvn_subr/error.lo subversion/libsvn_subr/hash.lo subversion/libsvn_subr/io.lo subversion/libsvn_subr/iter.lo subversion/libsvn_subr/kitchensink.lo subversion/libsvn_subr/lock.lo subversion/libsvn_subr/log.lo subversion/libsvn_subr/macos_keychain.lo subversion/libsvn_subr/md5.lo subversion/libsvn_subr/mergeinfo.lo subversion/libsvn_subr/nls.lo subversion/libsvn_subr/opt.lo subversion/libsvn_subr/path.lo subversion/libsvn_subr/pool.lo subversion/libsvn_subr/prompt.lo subversion/libsvn_subr/properties.lo subversion/libsvn_subr/quoprint.lo subversion/libsvn_subr/sha1.lo subversion/libsvn_subr/simple_providers.lo subversion/libsvn_subr/skel.lo subversion/libsvn_subr/sorts.lo subversion/libsvn_subr/sqlite.lo subversion/libsvn_subr/ssl_client_cert_providers.lo subversion/libsvn_subr/ssl_client_cert_pw_providers.lo subversion/libsvn_subr/ssl_server_trust_providers.lo subversion/libsvn_subr/stream.lo subversion/libsvn_subr/subst.lo subversion/libsvn_subr/svn_base64.lo subversion/libsvn_subr/svn_string.lo subversion/libsvn_subr/target.lo subversion/libsvn_subr/time.lo subversion/libsvn_subr/user.lo subversion/libsvn_subr/username_providers.lo subversion/libsvn_subr/utf.lo subversion/libsvn_subr/utf_validate.lo subversion/libsvn_subr/validate.lo subversion/libsvn_subr/version.lo subversion/libsvn_subr/win32_crashrpt.lo subversion/libsvn_subr/win32_crypto.lo subversion/libsvn_subr/win32_xlate.lo subversion/libsvn_subr/xml.lo
+ libsvn_subr_OBJECTS = atomic.lo auth.lo cache-inprocess.lo cache-memcache.lo cache.lo checksum.lo cmdline.lo compat.lo config.lo config_auth.lo config_file.lo config_win.lo constructors.lo ctype.lo date.lo deprecated.lo dirent_uri.lo dso.lo error.lo hash.lo io.lo iter.lo kitchensink.lo lock.lo log.lo macos_keychain.lo md5.lo mergeinfo.lo nls.lo opt.lo path.lo pool.lo prompt.lo properties.lo quoprint.lo sha1.lo simple_providers.lo skel.lo sorts.lo sqlite.lo ssl_client_cert_providers.lo ssl_client_cert_pw_providers.lo ssl_server_trust_providers.lo stream.lo subst.lo svn_base64.lo svn_string.lo target.lo time.lo user.lo username_providers.lo utf.lo utf_validate.lo validate.lo version.lo win32_crashrpt.lo win32_crypto.lo win32_xlate.lo xml.lo
+ subversion/libsvn_subr/libsvn_subr-1.la: $(libsvn_subr_DEPS)
+-	cd subversion/libsvn_subr && $(LINK) -o libsvn_subr-1.la $(LT_NO_UNDEFINED) $(libsvn_subr_OBJECTS) $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_XML_LIBS) $(SVN_ZLIB_LIBS) $(SVN_APR_MEMCACHE_LIBS) $(SVN_SQLITE_LIBS) $(LIBS)
++	cd subversion/libsvn_subr && $(LINK_LIB) -o libsvn_subr-1.la $(LT_NO_UNDEFINED) $(libsvn_subr_OBJECTS) $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(SVN_XML_LIBS) $(SVN_ZLIB_LIBS) $(SVN_APR_MEMCACHE_LIBS) $(SVN_SQLITE_LIBS) $(LIBS)
+ 
+ libsvn_swig_perl_PATH = subversion/bindings/swig/perl/libsvn_swig_perl
+ libsvn_swig_perl_DEPS =  subversion/bindings/swig/perl/libsvn_swig_perl/swigutil_pl.lo subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_swig_perl_OBJECTS = swigutil_pl.lo
+ subversion/bindings/swig/perl/libsvn_swig_perl/libsvn_swig_perl-1.la: $(libsvn_swig_perl_DEPS)
+-	cd subversion/bindings/swig/perl/libsvn_swig_perl && $(LINK) -o libsvn_swig_perl-1.la $(LT_NO_UNDEFINED) $(libsvn_swig_perl_OBJECTS) ../../../../../subversion/libsvn_delta/libsvn_delta-1.la ../../../../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/bindings/swig/perl/libsvn_swig_perl && $(LINK_LIB) -o libsvn_swig_perl-1.la $(LT_NO_UNDEFINED) $(libsvn_swig_perl_OBJECTS) ../../../../../subversion/libsvn_delta/libsvn_delta-1.la ../../../../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvn_swig_py_PATH = subversion/bindings/swig/python/libsvn_swig_py
+ libsvn_swig_py_DEPS =  subversion/bindings/swig/python/libsvn_swig_py/swigutil_py.lo subversion/libsvn_client/libsvn_client-1.la subversion/libsvn_wc/libsvn_wc-1.la subversion/libsvn_ra/libsvn_ra-1.la subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la
+@@ -336,13 +336,13 @@
+ libsvn_test_DEPS =  subversion/tests/svn_test_editor.lo subversion/tests/svn_test_fs.lo subversion/tests/svn_test_main.lo subversion/libsvn_repos/libsvn_repos-1.la subversion/libsvn_fs/libsvn_fs-1.la subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_test_OBJECTS = svn_test_editor.lo svn_test_fs.lo svn_test_main.lo
+ subversion/tests/libsvn_test-1.la: $(libsvn_test_DEPS)
+-	cd subversion/tests && $(LINK) -o libsvn_test-1.la  $(libsvn_test_OBJECTS) ../../subversion/libsvn_repos/libsvn_repos-1.la ../../subversion/libsvn_fs/libsvn_fs-1.la ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/tests && $(LINK_LIB) -o libsvn_test-1.la  $(libsvn_test_OBJECTS) ../../subversion/libsvn_repos/libsvn_repos-1.la ../../subversion/libsvn_fs/libsvn_fs-1.la ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvn_wc_PATH = subversion/libsvn_wc
+ libsvn_wc_DEPS =  subversion/libsvn_wc/adm_crawler.lo subversion/libsvn_wc/adm_files.lo subversion/libsvn_wc/adm_ops.lo subversion/libsvn_wc/ambient_depth_filter_editor.lo subversion/libsvn_wc/copy.lo subversion/libsvn_wc/crop.lo subversion/libsvn_wc/deprecated.lo subversion/libsvn_wc/diff.lo subversion/libsvn_wc/entries.lo subversion/libsvn_wc/lock.lo subversion/libsvn_wc/log.lo subversion/libsvn_wc/merge.lo subversion/libsvn_wc/props.lo subversion/libsvn_wc/questions.lo subversion/libsvn_wc/relocate.lo subversion/libsvn_wc/revision_status.lo subversion/libsvn_wc/status.lo subversion/libsvn_wc/translate.lo subversion/libsvn_wc/tree_conflicts.lo subversion/libsvn_wc/update_editor.lo subversion/libsvn_wc/util.lo subversion/libsvn_wc/wc_db.lo subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_diff/libsvn_diff-1.la subversion/libsvn_subr/libsvn_subr-1.la
+ libsvn_wc_OBJECTS = adm_crawler.lo adm_files.lo adm_ops.lo ambient_depth_filter_editor.lo copy.lo crop.lo deprecated.lo diff.lo entries.lo lock.lo log.lo merge.lo props.lo questions.lo relocate.lo revision_status.lo status.lo translate.lo tree_conflicts.lo update_editor.lo util.lo wc_db.lo
+ subversion/libsvn_wc/libsvn_wc-1.la: $(libsvn_wc_DEPS)
+-	cd subversion/libsvn_wc && $(LINK) -o libsvn_wc-1.la $(LT_NO_UNDEFINED) $(libsvn_wc_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_diff/libsvn_diff-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
++	cd subversion/libsvn_wc && $(LINK_LIB) -o libsvn_wc-1.la $(LT_NO_UNDEFINED) $(libsvn_wc_OBJECTS) ../../subversion/libsvn_delta/libsvn_delta-1.la ../../subversion/libsvn_diff/libsvn_diff-1.la ../../subversion/libsvn_subr/libsvn_subr-1.la $(SVN_APRUTIL_LIBS) $(SVN_APR_LIBS) $(LIBS)
+ 
+ libsvnjavahl_PATH = subversion/bindings/javahl/native
+ libsvnjavahl_DEPS = $(javahl_javah_DEPS) $(javahl_java_DEPS) subversion/bindings/javahl/native/BlameCallback.lo subversion/bindings/javahl/native/ChangelistCallback.lo subversion/bindings/javahl/native/CommitMessage.lo subversion/bindings/javahl/native/ConflictResolverCallback.lo subversion/bindings/javahl/native/CopySources.lo subversion/bindings/javahl/native/CreateJ.lo subversion/bindings/javahl/native/DiffSummaryReceiver.lo subversion/bindings/javahl/native/EnumMapper.lo subversion/bindings/javahl/native/InfoCallback.lo subversion/bindings/javahl/native/Inputer.lo subversion/bindings/javahl/native/JNIByteArray.lo subversion/bindings/javahl/native/JNICriticalSection.lo subversion/bindings/javahl/native/JNIMutex.lo subversion/bindings/javahl/native/JNIStackElement.lo subversion/bindings/javahl/native/JNIStringHolder.lo subversion/bindings/javahl/native/JNIThreadData.lo subversion/bindings/javahl/native/JNIUtil.lo subversion/bindings/javahl/native/ListCallback.lo subversion/bindings/javahl/native/LogMessageCallback.lo subversion/bindings/javahl/native/MessageReceiver.lo subversion/bindings/javahl/native/Notify.lo subversion/bindings/javahl/native/Notify2.lo subversion/bindings/javahl/native/Outputer.lo subversion/bindings/javahl/native/Path.lo subversion/bindings/javahl/native/Pool.lo subversion/bindings/javahl/native/ProgressListener.lo subversion/bindings/javahl/native/Prompter.lo subversion/bindings/javahl/native/ProplistCallback.lo subversion/bindings/javahl/native/Revision.lo subversion/bindings/javahl/native/RevisionRange.lo subversion/bindings/javahl/native/RevpropTable.lo subversion/bindings/javahl/native/SVNAdmin.lo subversion/bindings/javahl/native/SVNBase.lo subversion/bindings/javahl/native/SVNClient.lo subversion/bindings/javahl/native/StatusCallback.lo subversion/bindings/javahl/native/StringArray.lo subversion/bindings/javahl/native/Targets.lo subversion/bindings/javahl/native/libsvnjavahl.la.lo subversion/bindings/javahl/native/org_tigris_subversion_javahl_NativeResources.lo subversion/bindings/javahl/native/org_tigris_subversion_javahl_Path.lo subversion/bindings/javahl/native/org_tigris_subversion_javahl_SVNAdmin.lo subversion/bindings/javahl/native/org_tigris_subversion_javahl_SVNClient.lo subversion/bindings/javahl/native/org_tigris_subversion_javahl_Version.lo subversion/libsvn_repos/libsvn_repos-1.la subversion/libsvn_client/libsvn_client-1.la subversion/libsvn_wc/libsvn_wc-1.la subversion/libsvn_ra/libsvn_ra-1.la subversion/libsvn_delta/libsvn_delta-1.la subversion/libsvn_diff/libsvn_diff-1.la subversion/libsvn_subr/libsvn_subr-1.la subversion/libsvn_fs/libsvn_fs-1.la
+--- Makefile.in
++++ Makefile.in
+@@ -184,8 +184,9 @@
+ COMPILE_JAVAHL_JAVAC = $(JAVAC) $(JAVAC_FLAGS)
+ COMPILE_JAVAHL_JAVAH = $(JAVAH)
+ 
+-LINK = $(LIBTOOL) $(LTFLAGS) --mode=link $(CC) $(LT_LDFLAGS) $(CFLAGS) $(LDFLAGS) -rpath $(libdir)
+-LINK_CXX = $(LIBTOOL) $(LTCXXFLAGS) --mode=link $(CXX) $(LT_LDFLAGS) $(CXXFLAGS) $(LDFLAGS) -rpath $(libdir)
++LINK = $(LIBTOOL) $(LTFLAGS) --mode=link $(CC) $(LT_LDFLAGS) $(CFLAGS) $(LDFLAGS)
++LINK_CXX = $(LIBTOOL) $(LTCXXFLAGS) --mode=link $(CXX) $(LT_LDFLAGS) $(CXXFLAGS) $(LDFLAGS)
++LINK_LIB = $(LINK) -rpath $(libdir)
+ 
+ # special link rule for mod_dav_svn
+ LINK_APACHE_MOD = $(LIBTOOL) $(LTFLAGS) --mode=link $(CC) $(LT_LDFLAGS) $(CFLAGS) $(LDFLAGS) -rpath $(APACHE_LIBEXECDIR) -avoid-version -module $(APACHE_LDFLAGS)
+@@ -677,7 +678,9 @@
+ 	./config.status subversion/bindings/swig/perl/native/Makefile.PL
+ 
+ $(SWIG_PL_DIR)/native/Makefile: $(SWIG_PL_DIR)/native/Makefile.PL
+-	cd $(SWIG_PL_DIR)/native; $(PERL) Makefile.PL
++	cd $(SWIG_PL_DIR)/native; \
++		$(PERL) Makefile.PL INSTALLDIRS=vendor; \
++		sed -i -e '/^LD_RUN_PATH/s/^/#/' Makefile Makefile.[a-z]*
+ 
+ swig-pl_DEPS = autogen-swig-pl libsvn_swig_perl \
+   $(SWIG_PL_DIR)/native/Makefile

@@ -1,0 +1,94 @@
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_SUBVERSION
+	boolean "subversion"
+	default n
+	help
+		external subversion tools and libraries
+
+menu subversion
+	depends on EXTERNAL_FREETZ_PACKAGE_SUBVERSION
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVN
+	boolean "svn"
+	depends on FREETZ_PACKAGE_SUBVERSION_SVN
+	default n
+	help
+		externals these file(s)
+		    /usr/bin/svn
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNADMIN
+	boolean "svnadmin"
+	depends on FREETZ_PACKAGE_SUBVERSION_SVNADMIN
+	default n
+	help
+		externals these file(s)
+		    /usr/bin/svnadmin
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
+	boolean "svndumpfilter"
+	depends on FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
+	default n
+	help
+		externals these file(s)
+		    /usr/bin/svndumpfilter
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNLOOK
+	boolean "svnlook"
+	depends on FREETZ_PACKAGE_SUBVERSION_SVNLOOK
+	default n
+	help
+		externals these file(s)
+		    /usr/bin/svnlook
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSERVE
+	boolean "svnserve"
+	depends on FREETZ_PACKAGE_SUBVERSION_SVNSERVE
+	default n
+	help
+		externals these file(s)
+		    /usr/bin/svnserve
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSYNC
+	boolean "svnsync"
+	depends on FREETZ_PACKAGE_SUBVERSION_SVNSYNC
+	default n
+	help
+		externals these file(s)
+		    /usr/bin/svnsync
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNVERSION
+	boolean "svnversion"
+	depends on FREETZ_PACKAGE_SUBVERSION_SVNVERSION
+	default n
+	help
+		externals these file(s)
+		    /usr/bin/svnversion
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_LIBRARIES
+	boolean "svn libraries"
+	depends on FREETZ_PACKAGE_SUBVERSION_LIBRARIES \
+		&& (!FREETZ_PACKAGE_SUBVERSION_SVN || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVN) \
+		&& (!FREETZ_PACKAGE_SUBVERSION_SVNADMIN || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNADMIN) \
+		&& (!FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER) \
+		&& (!FREETZ_PACKAGE_SUBVERSION_SVNLOOK || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNLOOK) \
+		&& (!FREETZ_PACKAGE_SUBVERSION_SVNSERVE || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSERVE) \
+		&& (!FREETZ_PACKAGE_SUBVERSION_SVNSYNC || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSYNC) \
+		&& (!FREETZ_PACKAGE_SUBVERSION_SVNVERSION || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNVERSION)
+	default n
+	help
+		externals these file(s)
+		    /usr/lib/libsvn_client-1.so.0.0.0
+		    /usr/lib/libsvn_delta-1.so.0.0.0
+		    /usr/lib/libsvn_diff-1.so.0.0.0
+		    /usr/lib/libsvn_fs-1.so.0.0.0
+		    /usr/lib/libsvn_fs_fs-1.so.0.0.0
+		    /usr/lib/libsvn_fs_util-1.so.0.0.0
+		    /usr/lib/libsvn_ra-1.so.0.0.0
+		    /usr/lib/libsvn_ra_local-1.so.0.0.0
+		    /usr/lib/libsvn_ra_neon-1.so.0.0.0
+		    /usr/lib/libsvn_ra_svn-1.so.0.0.0
+		    /usr/lib/libsvn_repos-1.so.0.0.0
+		    /usr/lib/libsvn_subr-1.so.0.0.0
+		    /usr/lib/libsvn_wc-1.so.0.0.0
+
+endmenu

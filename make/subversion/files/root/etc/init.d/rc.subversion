@@ -1,0 +1,102 @@
+#!/bin/sh
+
+DAEMON=subversion # causes modlibrc' modlib_loadconfig to be called
+. /etc/init.d/modlibrc
+
+DAEMON=svnserve # real daemon name
+DAEMON_USER=svn
+DAEMON_GROUP=svn
+PIDFILE=/var/run/$DAEMON.pid
+
+echoDone() { echo 'done.'; }
+echoFailed() { echo 'failed.'; }
+echoFailedAndExit() { echoFailed; [ -n "$1" ] && exit $1 || exit 1; }
+
+pre_config() {
+	modlib_addgroup $DAEMON_GROUP
+	modlib_adduser $DAEMON_USER -G $DAEMON_GROUP -s /bin/false -D -S -H -g "subversion account"
+}
+
+start() {
+	echo -n "Starting $DAEMON..."
+	if modlib_check_running; then
+		echo "already running."
+		exit 0
+	fi
+
+	if [ -z "$SUBVERSION_ROOT" ]; then
+		echo -e "\nSubversion repository directory must not be empty."
+		echoFailedAndExit
+	fi
+
+	if [ ! -d "$SUBVERSION_ROOT" ]; then
+		echoFailed
+		echo "The subversion repository ($SUBVERSION_ROOT) does not exist."
+		echo "Create a new repository and/or change the path using freetz' webinterface."
+		echo
+		echo "To create a new subversion repository use the following commands:"
+		echo "    mkdir -p /srv"
+		echo "    svnadmin create --fs-type fsfs /srv/SVNROOT"
+		exit 1
+	fi
+
+	chown -R $DAEMON_USER:$DAEMON_GROUP "$SUBVERSION_ROOT"
+
+	[ ! -e $PIDFILE ] && echo -n > $PIDFILE
+	chown $DAEMON_USER:$DAEMON_GROUP $PIDFILE
+
+	local OPTIONS="--daemon --pid-file $PIDFILE"
+	[ -n "$SUBVERSION_BINDADDRESS" ] && OPTIONS="$OPTIONS --listen-host $SUBVERSION_BINDADDRESS"
+	[ -n "$SUBVERSION_PORT" ] && OPTIONS="$OPTIONS --listen-port $SUBVERSION_PORT"
+
+	start-stop-daemon -S -x /usr/bin/$DAEMON -c $DAEMON_USER -q -- $OPTIONS --root "$SUBVERSION_ROOT" \
+	|| echoFailedAndExit
+
+	sleep 1
+	modlib_check_running && echoDone || echoFailedAndExit
+}
+
+case "$1" in
+	""|load)
+		pre_config
+
+		modreg cgi 'subversion' 'Subversion'
+
+		if [ "$SUBVERSION_ENABLED" != yes ]; then
+			if [ "$SUBVERSION_ENABLED" != inetd ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+			fi
+			exit 1
+		fi
+
+		start
+		;;
+	unload)
+		modlib_stop
+		modunreg cgi 'subversion'
+		;;
+	start)
+		start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		if [ "$SUBVERSION_ENABLED" == "inetd" ]; then
+			echo 'inetd'
+		else
+			modlib_status
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

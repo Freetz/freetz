@@ -1,0 +1,84 @@
+config FREETZ_PACKAGE_SUBVERSION_LIBRARIES
+	bool
+
+config FREETZ_PACKAGE_SUBVERSION
+	bool "Subversion 1.6.5"
+	select FREETZ_PACKAGE_SUBVERSION_LIBRARIES
+	select FREETZ_BUSYBOX_START_STOP_DAEMON
+	select FREETZ_LIB_libapr
+	select FREETZ_LIB_libaprutil
+	select FREETZ_LIB_libneon
+	select FREETZ_LIB_libsqlite3
+	select FREETZ_LIB_libz
+	default n
+	help
+		Subversion, also known as svn, is a version control system much like
+		the Concurrent Versions System (CVS). Version control systems allow
+		many individuals (who may be distributed geographically) to collaborate
+		on a set of files (typically source code). Subversion has all the major
+		features of CVS, plus certain new features that CVS users often wish
+		they had.
+
+config FREETZ_PACKAGE_SUBVERSION_WITH_SSL
+	bool "build with SSL support"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	select FREETZ_LIB_libneon_WITH_SSL
+	default y
+	help
+		Enables ssl support in subversion.
+
+config FREETZ_PACKAGE_SUBVERSION_SVN
+	bool "Include svn"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	default y
+	help
+		Include svn (subversion client tool) in the image.
+		Requires 168 KB (uncompressed).
+
+config FREETZ_PACKAGE_SUBVERSION_SVNADMIN
+	bool "Inlcude svnadmin"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	default y
+	help
+		Include svnadmin (subversion repository administration tool)
+		in the image. Requires 44 KB (uncompressed).
+
+config FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
+	bool "Include svndumpfilter"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	default y
+	help
+		Include svndumpfilter (tool to filter subversion repository dumpfile)
+		in the image. Requires 25 KB (uncompressed).
+
+config FREETZ_PACKAGE_SUBVERSION_SVNLOOK
+	bool "Include svnlook"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	default y
+	help
+		Include svnlook (subversion repository examination tool)
+		in the image. Requires 50 KB (uncompressed).
+
+config FREETZ_PACKAGE_SUBVERSION_SVNSERVE
+	bool "Include svnserve"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	default y
+	help
+		Include svnserve (server for the 'svn' repository access method)
+		in the image. Requires 60 KB (uncompressed).
+
+config FREETZ_PACKAGE_SUBVERSION_SVNSYNC
+	bool "Inlcude svnsync"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	default y
+	help
+		Include svnsync (repository synchronization tool)
+		in the image. Requires 35 KB (uncompressed).
+
+config FREETZ_PACKAGE_SUBVERSION_SVNVERSION
+	bool "Include svnversion"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	default y
+	help
+		Include svnversion (tool to produce a compact version number
+		for a working copy) in the image. Requires 9 KB (uncompressed).

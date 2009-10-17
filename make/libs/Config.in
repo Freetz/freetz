@@ -1,3 +1,22 @@
+config FREETZ_LIB_libapr
+	select FREETZ_LIB_libpthread
+	bool "Apache Portable Runtime Library (libapr-1.so)"
+	default n
+	help
+		APR is Apache's Portable Runtime Library, designed to be a support
+		library that provides a predictable and consistent interface
+		to underlying platform-specific implementations.
+
+config FREETZ_LIB_libaprutil
+	select FREETZ_LIB_libapr
+	select FREETZ_LIB_libexpat
+	select FREETZ_LIB_libsqlite3
+	bool "Apache Portable Runtime Utility Library (libaprutil-1.so)"
+	default n
+	help
+		APR Util is a utilities library implemented on top of APR,
+		providing database access, xml parsing, and other useful functionality.
+
 config FREETZ_LIB_libatm
 	bool "linux-atm (libatm.so)"
 	select FREETZ_LIB_libresolv
