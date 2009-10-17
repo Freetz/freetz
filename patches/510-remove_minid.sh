@@ -18,7 +18,6 @@ for files in \
 	lib/libhttp.so* \
 	lib/libmediacli.so* \
 	usr/share/ctlmgr/libmini.so \
-#	$(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*mini*" ! -iname "*mini*.gif" ! -iname "*Mini.js" -printf "%P\n") \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done

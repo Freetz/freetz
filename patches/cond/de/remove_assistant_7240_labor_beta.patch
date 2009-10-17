@@ -1,5 +1,5 @@
---- usr/www/all/html/de/home/sitemap.html.orig	2009-08-07 13:23:39.000000000 +0200
-+++ usr/www/all/html/de/home/sitemap.html	2009-08-16 15:57:21.998828781 +0200
+--- usr/www/all/html/de/home/sitemap.html.orig	2009-10-16 14:23:59.000000000 +0200
++++ usr/www/all/html/de/home/sitemap.html	2009-10-17 09:55:06.973430970 +0200
 @@ -24,19 +24,6 @@
  <p class="ml10"><a href="javascript:jslGoTo('home', 'syslog');">{?de.home.sitemap.html:9348?}</a></p>
  <p class="ml10"><a href="javascript:jslGoTo('home', 'energy');">{?de.home.sitemap.html:65Systemtxt13?}</a></p>
@@ -20,9 +20,9 @@
  <? setvariable var:title "{?txtINet?}" ?>
  <? setvariable var:showsubmenu 1 ?>
  <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `
---- usr/www/all/html/logincheck.html.orig	2009-08-07 13:23:54.000000000 +0200
-+++ usr/www/all/html/logincheck.html	2009-08-16 15:57:22.046825872 +0200
-@@ -248,8 +248,8 @@
+--- usr/www/all/html/logincheck.html.orig	2009-10-16 14:23:58.000000000 +0200
++++ usr/www/all/html/logincheck.html	2009-10-17 09:55:06.983420089 +0200
+@@ -190,8 +190,8 @@
  if (user=="" && pass=="" && type=="bridge") {
  var pagename = "<? echo $var:pagename ?>";
  if (pagename != "sitemap" && pagename != "mini" && pagename != "enhsettings" && pagename != "foncalls") {
@@ -33,23 +33,30 @@
  return true;
  }
  }
---- usr/www/all/html/de/js/basis.js.orig	2009-08-07 13:23:59.000000000 +0200
-+++ usr/www/all/html/de/js/basis.js	2009-08-16 15:57:22.063037320 +0200
-@@ -94,10 +94,10 @@
+--- usr/www/all/html/de/js/basis.js.orig	2009-10-16 14:23:48.000000000 +0200
++++ usr/www/all/html/de/js/basis.js	2009-10-17 09:55:06.983420089 +0200
+@@ -94,16 +94,16 @@
  var menu = readCookie("menu");
  var page = readCookie("page");
- if ((menu == "konfig" || menu == "software" || menu =="enhsettings") && (page =="enhsettings" || page == "home" || page == "extern")) {
--jslGoTo(menu, page);
-+jslGoTo("enhsettings", "enhsettings");
- return;
- }
+ if (menu == "konfig") {
 -jslGoTo("konfig", "home");
 +jslGoTo("enhsettings", "enhsettings");
  }
+ else if (menu == "software") {
+-jslGoTo("software", "extern");
++jslGoTo("enhsettings", "enhsettings");
+ }
+ else if (menu == "enhsettings") {
+ jslGoTo("enhsettings", "enhsettings");
+ }
+ else {
+-jslGoTo("konfig", "home");
++jslGoTo("enhsettings", "enhsettings");
+ }
+ }
  function GoToSitemap()
- {
---- usr/www/all/html/de/menus/menu2_konfig.html.orig	2009-08-16 15:57:21.819823337 +0200
-+++ usr/www/all/html/de/menus/menu2_konfig.html	2009-08-16 15:57:22.090829673 +0200
+--- usr/www/all/html/de/menus/menu2_konfig.html.orig	2009-10-17 09:55:06.913420269 +0200
++++ usr/www/all/html/de/menus/menu2_konfig.html	2009-10-17 09:55:06.983420089 +0200
 @@ -14,19 +14,6 @@
  <? setvariable var:showmoremenu 0 ?>
  <? if neq $var:menu 'software' `<? setvariable var:showmoremenu 1 ?>` ?>
