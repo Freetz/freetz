@@ -1,3 +1,5 @@
+# order is important, uclibcxx should be build first
+
 ifeq ($(strip $(FREETZ_TARGET_GXX)),y)
 LIBS+=uclibcxx
 endif
@@ -169,4 +171,12 @@ endif
 
 ifeq ($(strip $(FREETZ_LIB_libsqlite3)),y)
 LIBS+=sqlite
+endif
+
+ifeq ($(strip $(FREETZ_LIB_libexpat)),y)
+LIBS+=expat
+endif
+
+ifeq ($(strip $(FREETZ_LIB_libneon)),y)
+LIBS+=neon
 endif
