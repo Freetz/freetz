@@ -80,7 +80,7 @@ cat << EOF
 <div id="div_debug">
  $(lang de:"\"Ausf&uuml;rlichkeit\" des Logs" en:"Verbosity") (Verb-Level) <input id="id_act_verbose" type="text" title=$(lang de:"\'\"Geschw&auml;tzigkeit\": Normal=3,  \"R\"/\"W\" pro Paket=5,  Ausf&uuml;hrlich=6,  \"alles\"=11\'" en:"\'Verbosity: normal=3,  \"R\"/\"W\ per paket=5, detailed=6, \"everything\"=11\'") size="1" maxlength="1"  onblur='(local_verbose[act_conf]=this.value); Consolidate_Vars();' >
  <br />
- <small style="font-size:0.8em">$(lang de:"<b>!Stoppen des Dienstes nach einiger Zeit nicht vergessen!</b>, sonst l&auml;uft das Filesystem voll!" en:"<b>!Don\'t forget to stop deamon after some time to prevent filesystem overflow!</b>") <br />
+ <small style="font-size:0.8em">$(lang de:"<b>!Stoppen des Dienstes nach einiger Zeit nicht vergessen!</b>, sonst l&auml;uft das Filesystem voll!" en:"<b>!Don\'t forget to stop daemon after some time to prevent filesystem overflow!</b>") <br />
 $(lang de:"Die Log-Datei wird beim n&auml;chsten Start ohne Debug-Mode gel&ouml;scht." en:"Log file will be deleted next start w/o debug mode")  </small> <br /> 
 </div>
 EOF

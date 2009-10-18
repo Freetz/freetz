@@ -101,7 +101,7 @@ stat_static() {
 			else
 				if [ -e "/mod/etc/${pkg}_multid.pkg" ]; then
 					no_packages=false
-					echo "<tr><td><b>Deamons <i>${pkg}</i>:</b></td></tr>"
+					echo "<tr><td><b>Daemons <i>${pkg}</i>:</b></td></tr>"
 					for pkgline in $(cat /mod/etc/${pkg}_multid.pkg); do
 						if [ -n "$(echo $pkgline | grep \#)" ]; then
 							mpkg=${pkgline%%#*};
