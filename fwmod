@@ -521,10 +521,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 	ln -sf /usr/www/cgi-bin/freetz_wol "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_wol"
 	
 	for i in $oems; do
+		echo "$i"
 		if [ "$(eval "echo \"\$FREETZ_REMOVE_BRANDING_${i}\"")" == "y" ]; then
 			[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo -n " $i"
-			rm -rf "${FILESYSTEM_MOD_DIR}/usr/www/${i}"
-			rm -rf "${FILESYSTEM_MOD_DIR}/etc/default."*"/${i}"
+			find "${FILESYSTEM_MOD_DIR}/etc" -name "*${i}*" |xargs rm -rf
+			rm -rvf "${FILESYSTEM_MOD_DIR}/usr/www/${i}"
+#			rm -rvf "${FILESYSTEM_MOD_DIR}/etc/default."*"/*${i}*"
 			oem_removed=1
 		else
 			oem_list+=" $i"
