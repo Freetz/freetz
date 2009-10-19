@@ -25,8 +25,8 @@ sec_end
 sec_begin '$(lang de:"Repository" en:"Repository")'
 cat << EOF
 <p>
-<label for="svnroot">$(lang de:"Pfad" en:"Path"): </label>
-<input type="text" id="svnroot" name="svnroot" size="55" maxlength="255" value="$(html "$SUBVERSION_ROOT")">
+<label for="root">$(lang de:"Pfad" en:"Path"): </label>
+<input type="text" id="root" name="root" size="55" maxlength="255" value="$(html "$SUBVERSION_ROOT")">
 </p>
 EOF
 sec_end
