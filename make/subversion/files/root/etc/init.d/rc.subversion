@@ -17,6 +17,21 @@ pre_config() {
 	modlib_adduser $DAEMON_USER -G $DAEMON_GROUP -s /bin/false -D -S -H -g "subversion account"
 }
 
+cleanup() {
+	modunreg status subversion
+}
+
+logfileOptions() {
+	cleanup >/dev/null 2>&1
+	if [ "$SUBVERSION_LOGGING" = "yes" -a -n "$SUBVERSION_LOGFILE" ]; then
+		[ ! -f "$SUBVERSION_LOGFILE" ] && touch "$SUBVERSION_LOGFILE" >/dev/null 2>&1
+		if [ -f "$SUBVERSION_LOGFILE" ] && chown $DAEMON_USER:$DAEMON_GROUP "$SUBVERSION_LOGFILE" >/dev/null 2>&1; then
+			modreg status subversion Subversion-Log subversion/subversion-log >/dev/null 2>&1
+			echo -n "--log-file $SUBVERSION_LOGFILE"
+		fi
+	fi
+}
+
 start() {
 	echo -n "Starting $DAEMON..."
 	if modlib_check_running; then
@@ -49,11 +64,16 @@ start() {
 	[ -n "$SUBVERSION_BINDADDRESS" ] && OPTIONS="$OPTIONS --listen-host $SUBVERSION_BINDADDRESS"
 	[ -n "$SUBVERSION_PORT" ] && OPTIONS="$OPTIONS --listen-port $SUBVERSION_PORT"
 
-	start-stop-daemon -S -x /usr/bin/$DAEMON -c $DAEMON_USER -q -- $OPTIONS --root "$SUBVERSION_ROOT" \
-	|| echoFailedAndExit
+	start-stop-daemon -S -x /usr/bin/$DAEMON -c $DAEMON_USER -q -- $OPTIONS --root "$SUBVERSION_ROOT" $(logfileOptions) \
+	|| (cleanup; echoFailedAndExit)
 
 	sleep 1
-	modlib_check_running && echoDone || echoFailedAndExit
+	modlib_check_running && echoDone || (cleanup; echoFailedAndExit)
+}
+
+stop() {
+	cleanup
+	modlib_stop
 }
 
 case "$1" in
@@ -74,17 +94,19 @@ case "$1" in
 		start
 		;;
 	unload)
-		modlib_stop
+		stop
 		modunreg cgi 'subversion'
 		;;
 	start)
 		start
 		;;
 	stop)
-		modlib_stop
+		stop
 		;;
 	restart)
-		modlib_restart
+		stop
+		sleep 2
+		start
 		;;
 	status)
 		if [ "$SUBVERSION_ENABLED" == "inetd" ]; then
@@ -92,6 +114,9 @@ case "$1" in
 		else
 			modlib_status
 		fi
+		;;
+	logfile-options) # for internal use only
+		logfileOptions
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
