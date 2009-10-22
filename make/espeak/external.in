@@ -1,7 +1,15 @@
 config EXTERNAL_FREETZ_PACKAGE_ESPEAK
-	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_ESPEAK && FREETZ_SHOW_ADVANCED
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_ESPEAK
 	bool "espeak"
 	default n
 	help
 		externals these file(s):
 			/usr/bin/speak
+
+config EXTERNAL_FREETZ_PACKAGE_ESPEAK_ALL_LANGUAGES
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_ESPEAK_ALL_LANGUAGES
+	bool "espeak language files"
+	default n
+	help
+		externals these file(s):
+			/usr/share/espeak-data
