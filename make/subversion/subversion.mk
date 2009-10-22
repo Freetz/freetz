@@ -1,11 +1,11 @@
 # TODOs:
 #   - statisches Linken von Binaries ermöglichen
 
-$(call PKG_INIT_BIN, 1.6.5)
+$(call PKG_INIT_BIN, 1.6.6)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_MAJOR_VERSION:=1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=1a53a0e72bee0bf814f4da83a9b6a636
+$(PKG)_SOURCE_MD5:=e5109da756d74c7d98f683f004a539af
 $(PKG)_SITE:=http://subversion.tigris.org/downloads/
 
 # Libraries
