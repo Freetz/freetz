@@ -26,7 +26,7 @@ $(PKG)_CONFIGURE_ENV += apr_cv_tcp_nodelay_with_cork=yes
 $(PKG)_CONFIGURE_ENV += apr_cv_pthreads_lib=-lpthread
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
-$(PKG)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-dso
 $(PKG)_CONFIGURE_OPTIONS += --enable-threads
 $(PKG)_CONFIGURE_OPTIONS += --with-devrandom=/dev/urandom

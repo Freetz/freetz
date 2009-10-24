@@ -3,13 +3,13 @@ config FREETZ_PACKAGE_SUBVERSION_LIBRARIES
 
 config FREETZ_PACKAGE_SUBVERSION
 	bool "Subversion 1.6.6"
-	select FREETZ_PACKAGE_SUBVERSION_LIBRARIES
+	select FREETZ_PACKAGE_SUBVERSION_LIBRARIES if ! FREETZ_PACKAGE_SUBVERSION_STATIC
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
-	select FREETZ_LIB_libapr
-	select FREETZ_LIB_libaprutil
-	select FREETZ_LIB_libneon
-	select FREETZ_LIB_libsqlite3
-	select FREETZ_LIB_libz
+	select FREETZ_LIB_libapr if ! FREETZ_PACKAGE_SUBVERSION_STATIC
+	select FREETZ_LIB_libaprutil if ! FREETZ_PACKAGE_SUBVERSION_STATIC
+	select FREETZ_LIB_libneon if ! FREETZ_PACKAGE_SUBVERSION_STATIC
+	select FREETZ_LIB_libsqlite3 if ! FREETZ_PACKAGE_SUBVERSION_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_SUBVERSION_STATIC
 	default n
 	help
 		Subversion, also known as svn, is a version control system much like
@@ -22,6 +22,7 @@ config FREETZ_PACKAGE_SUBVERSION
 config FREETZ_PACKAGE_SUBVERSION_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_SUBVERSION
+	select FREETZ_LIB_libneon if FREETZ_PACKAGE_SUBVERSION_STATIC
 	select FREETZ_LIB_libneon_WITH_SSL
 	default y
 	help
@@ -33,52 +34,67 @@ config FREETZ_PACKAGE_SUBVERSION_SVN
 	default y
 	help
 		Include svn (subversion client tool) in the image.
-		Requires 168 KB (uncompressed).
+		Requires 168 KB (uncompressed) in case required libraries are linked in dynamically
+		and 3.4 MB in case they are linked in statically.
 
 config FREETZ_PACKAGE_SUBVERSION_SVNADMIN
 	bool "Inlcude svnadmin"
 	depends on FREETZ_PACKAGE_SUBVERSION
 	default y
 	help
-		Include svnadmin (subversion repository administration tool)
-		in the image. Requires 44 KB (uncompressed).
+		Include svnadmin (subversion repository administration tool) in the image.
+		Requires 44 KB (uncompressed) in case required libraries are linked in dynamically
+		and 1.7 MB in case they are linked in statically.
 
 config FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
 	bool "Include svndumpfilter"
 	depends on FREETZ_PACKAGE_SUBVERSION
 	default y
 	help
-		Include svndumpfilter (tool to filter subversion repository dumpfile)
-		in the image. Requires 25 KB (uncompressed).
+		Include svndumpfilter (tool to filter subversion repository dumpfile) in the image.
+		Requires 25 KB (uncompressed) in case required libraries are linked in dynamically
+		and 1.7 MB in case they are linked in statically.
 
 config FREETZ_PACKAGE_SUBVERSION_SVNLOOK
 	bool "Include svnlook"
 	depends on FREETZ_PACKAGE_SUBVERSION
 	default y
 	help
-		Include svnlook (subversion repository examination tool)
-		in the image. Requires 50 KB (uncompressed).
+		Include svnlook (subversion repository examination tool) in the image.
+		Requires 50 KB (uncompressed) in case required libraries are linked in dynamically
+		and 1.7 MB in case they are linked in statically.
 
 config FREETZ_PACKAGE_SUBVERSION_SVNSERVE
 	bool "Include svnserve"
 	depends on FREETZ_PACKAGE_SUBVERSION
 	default y
 	help
-		Include svnserve (server for the 'svn' repository access method)
-		in the image. Requires 60 KB (uncompressed).
+		Include svnserve (server for the 'svn' repository access method) in the image.
+		Requires 60 KB (uncompressed) in case required libraries are linked in dynamically
+		and 1.8 MB in case they are linked in statically.
 
 config FREETZ_PACKAGE_SUBVERSION_SVNSYNC
 	bool "Inlcude svnsync"
 	depends on FREETZ_PACKAGE_SUBVERSION
 	default y
 	help
-		Include svnsync (repository synchronization tool)
-		in the image. Requires 35 KB (uncompressed).
+		Include svnsync (repository synchronization tool) in the image.
+		Requires 35 KB (uncompressed) in case required libraries are linked in dynamically
+		and 2.8 MB in case they are linked in statically.
 
 config FREETZ_PACKAGE_SUBVERSION_SVNVERSION
 	bool "Include svnversion"
 	depends on FREETZ_PACKAGE_SUBVERSION
 	default y
 	help
-		Include svnversion (tool to produce a compact version number
-		for a working copy) in the image. Requires 9 KB (uncompressed).
+		Include svnversion (tool to produce a compact version number for a working copy) in the image.
+		Requires 9 KB (uncompressed) in case required libraries are linked in dynamically
+		and 1.2 MB in case they are linked in statically.
+
+config FREETZ_PACKAGE_SUBVERSION_STATIC
+	bool "Create statically linked binaries"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	default n
+	help
+		Activating this switch causes all libraries subversion tools
+		depend on to be linked in statically.
