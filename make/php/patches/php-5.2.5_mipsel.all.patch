@@ -5,10 +5,10 @@
    if test "$cross_compiling" = yes; then
    
 -    echo "$ac_t""no, cannot detect working ttyname_r() when cross compiling. posix_ttyname() will be thread-unsafe" 1>&6
-+    #evaluated by running test program on target platform                                                                          .
-+    echo "$ac_t""yes" 1>&6                                                                                                         .
-+    cat >> confdefs.h <<\EOF                                                                                                       .
-+#define HAVE_TTYNAME_R 1                                                                                                           .
++    #evaluated by running test program on target platform
++    echo "$ac_t""yes" 1>&6
++    cat >> confdefs.h <<EOF
++#define HAVE_TTYNAME_R 1
 +EOF
    
  else
