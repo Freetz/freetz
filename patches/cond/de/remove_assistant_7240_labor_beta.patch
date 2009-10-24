@@ -20,14 +20,26 @@
  <? setvariable var:title "{?txtINet?}" ?>
  <? setvariable var:showsubmenu 1 ?>
  <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `
---- usr/www/all/html/logincheck.html.orig	2009-10-16 14:23:58.000000000 +0200
-+++ usr/www/all/html/logincheck.html	2009-10-17 09:55:06.983420089 +0200
-@@ -190,8 +190,8 @@
+--- usr/www/all/html/logincheck.html.orig	2009-10-24 14:36:59.009827251 +0200
++++ usr/www/all/html/logincheck.html	2009-10-24 14:40:15.792327882 +0200
+@@ -190,20 +190,8 @@
  if (user=="" && pass=="" && type=="bridge") {
  var pagename = "<? echo $var:pagename ?>";
  if (pagename != "sitemap" && pagename != "mini" && pagename != "enhsettings" && pagename != "foncalls") {
+-var BSA_ON=jslGetValue("uiPostBSA_ON");
+-if (BSA_ON=="1")
+-{
+-jslSetValue("uiPppProvider","O2");
+-jslSetValue("uiO2Mode","2");
+-jslSetValue("uiPostBSA_ON","0");
+-jslSetValue("uiPostPageName", "first_ISP_o2");
+-jslSetValue("uiPostMenu", "first");
+-}
+-else
+-{
 -jslSetValue("uiPostPageName", "first_Start_ISP");
 -jslSetValue("uiPostMenu", "first");
+-}
 +jslSetValue("uiPostPageName", "home");
 +jslSetValue("uiPostMenu", "home");
  return true;

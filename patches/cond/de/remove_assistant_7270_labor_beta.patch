@@ -1,5 +1,5 @@
---- usr/www/all/html/de/home/sitemap.html.orig	2009-10-16 14:26:00.000000000 +0200
-+++ usr/www/all/html/de/home/sitemap.html	2009-10-17 09:53:47.773419517 +0200
+--- usr/www/all/html/de/home/sitemap.html.orig	2009-10-22 22:25:14.000000000 +0200
++++ usr/www/all/html/de/home/sitemap.html	2009-10-24 14:43:48.859848198 +0200
 @@ -24,19 +24,6 @@
  <p class="ml10"><a href="javascript:jslGoTo('home', 'syslog');">{?de.home.sitemap.html:9348?}</a></p>
  <p class="ml10"><a href="javascript:jslGoTo('home', 'energy');">{?de.home.sitemap.html:65Systemtxt13?}</a></p>
@@ -20,21 +20,33 @@
  <? setvariable var:title "{?txtINet?}" ?>
  <? setvariable var:showsubmenu 1 ?>
  <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `
---- usr/www/all/html/logincheck.html.orig	2009-10-16 14:25:57.000000000 +0200
-+++ usr/www/all/html/logincheck.html	2009-10-17 09:53:47.773419517 +0200
-@@ -250,8 +250,8 @@
+--- usr/www/all/html/logincheck.html.orig	2009-10-22 22:25:25.000000000 +0200
++++ usr/www/all/html/logincheck.html	2009-10-24 14:43:48.859848198 +0200
+@@ -250,20 +250,8 @@
  if (user=="" && pass=="" && type=="bridge") {
  var pagename = "<? echo $var:pagename ?>";
  if (pagename != "sitemap" && pagename != "mini" && pagename != "enhsettings" && pagename != "foncalls") {
+-var BSA_ON=jslGetValue("uiPostBSA_ON");
+-if (BSA_ON=="1")
+-{
+-jslSetValue("uiPppProvider","O2");
+-jslSetValue("uiO2Mode","2");
+-jslSetValue("uiPostBSA_ON","0");
+-jslSetValue("uiPostPageName", "first_ISP_o2");
+-jslSetValue("uiPostMenu", "first");
+-}
+-else
+-{
 -jslSetValue("uiPostPageName", "first_Start_ISP");
 -jslSetValue("uiPostMenu", "first");
+-}
 +jslSetValue("uiPostPageName", "home");
 +jslSetValue("uiPostMenu", "home");
  return true;
  }
  }
---- usr/www/all/html/de/js/basis.js.orig	2009-10-16 14:26:01.000000000 +0200
-+++ usr/www/all/html/de/js/basis.js	2009-10-17 09:53:47.773419517 +0200
+--- usr/www/all/html/de/js/basis.js.orig	2009-10-22 22:25:38.000000000 +0200
++++ usr/www/all/html/de/js/basis.js	2009-10-24 14:43:48.859848198 +0200
 @@ -94,16 +94,16 @@
  var menu = readCookie("menu");
  var page = readCookie("page");
@@ -55,8 +67,8 @@
  }
  }
  function GoToSitemap()
---- usr/www/all/html/de/menus/menu2_konfig.html.orig	2009-10-17 09:53:47.693432608 +0200
-+++ usr/www/all/html/de/menus/menu2_konfig.html	2009-10-17 09:53:47.773419517 +0200
+--- usr/www/all/html/de/menus/menu2_konfig.html.orig	2009-10-24 14:43:48.779827552 +0200
++++ usr/www/all/html/de/menus/menu2_konfig.html	2009-10-24 14:43:48.859848198 +0200
 @@ -14,19 +14,6 @@
  <? setvariable var:showmoremenu 0 ?>
  <? if neq $var:menu 'software' `<? setvariable var:showmoremenu 1 ?>` ?>
