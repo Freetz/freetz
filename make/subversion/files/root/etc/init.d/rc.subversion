@@ -39,6 +39,11 @@ start() {
 		exit 0
 	fi
 
+	if ! echo "$SUBVERSION_NICELEVEL" | egrep -q "^(-20|-?1?[0-9])$" >/dev/null 2>&1; then
+		echo -e "\nInvalid nice level ($SUBVERSION_NICELEVEL), nice level must be between -20 (the highest priority) and 19 (the lowest)."
+		echoFailedAndExit
+	fi
+
 	if [ -z "$SUBVERSION_ROOT" ]; then
 		echo -e "\nSubversion repository directory must not be empty."
 		echoFailedAndExit
@@ -64,7 +69,7 @@ start() {
 	[ -n "$SUBVERSION_BINDADDRESS" ] && OPTIONS="$OPTIONS --listen-host $SUBVERSION_BINDADDRESS"
 	[ -n "$SUBVERSION_PORT" ] && OPTIONS="$OPTIONS --listen-port $SUBVERSION_PORT"
 
-	start-stop-daemon -S -x /usr/bin/$DAEMON -c $DAEMON_USER -q -- $OPTIONS --root "$SUBVERSION_ROOT" $(logfileOptions) \
+	start-stop-daemon -S -N "$SUBVERSION_NICELEVEL" -x /usr/bin/$DAEMON -c $DAEMON_USER -q -- $OPTIONS --root "$SUBVERSION_ROOT" $(logfileOptions) \
 	|| (cleanup; echoFailedAndExit)
 
 	sleep 1

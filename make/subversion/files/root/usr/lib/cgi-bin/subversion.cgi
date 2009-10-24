@@ -23,6 +23,15 @@ cat << EOF
 EOF
 sec_end
 
+sec_begin '$(lang de:"Priorit&auml;t" en:"Priority")'
+cat << EOF
+<p>
+<label for='nicelevel'>Nice-Level: </label>
+<input type='text' id='nicelevel' name='nicelevel' size='3' maxlength='3' value="$(html "$SUBVERSION_NICELEVEL")">
+</p>
+EOF
+sec_end
+
 sec_begin '$(lang de:"Repository" en:"Repository")'
 cat << EOF
 <p>
