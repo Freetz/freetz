@@ -9,19 +9,27 @@ config FREETZ_PACKAGE_PHP
 		suited for Web development and can be embedded into HTML. Much of its syntax
 		is borrowed from C, Java and Perl with a couple of unique PHP-specific features
 		thrown in. The goal of the language is to allow web developers to write
-		dynamically generated pages quickly. 
+		dynamically generated pages quickly.
 
 config FREETZ_PACKAGE_PHP_WITH_GD
-        bool "build with GD support"
-        depends on FREETZ_PACKAGE_PHP
-        select FREETZ_LIB_libpng12 if ! FREETZ_PHP_STATIC
-        select FREETZ_LIB_libjpeg if ! FREETZ_PHP_STATIC
-        default n
-        help
-                This option enables the GD support for PHP
+	bool "build with GD support"
+	depends on FREETZ_PACKAGE_PHP
+	select FREETZ_LIB_libpng12 if ! FREETZ_PHP_STATIC
+	select FREETZ_LIB_libjpeg if ! FREETZ_PHP_STATIC
+	default n
+	help
+		This option enables the GD support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_SQLITE
+	bool "build with SQLite (v3) support"
+	depends on FREETZ_PACKAGE_PHP
+	select FREETZ_LIB_libsqlite3 if ! FREETZ_PHP_STATIC
+	default n
+	help
+		This option enables the SQLite (v3) support for PHP
 
 config FREETZ_PHP_STATIC
-	bool "Statically linked libraries"
+	bool "Create statically linked binary"
 	depends on FREETZ_PACKAGE_PHP
 	default n
 	help
@@ -32,3 +40,4 @@ config FREETZ_PHP_STATIC
 		  - libgcc_s.so.1
 		  - libm.so.0
 		  - libpcre.so.0
+		  - libsqlite3.so.0
