@@ -1,14 +1,14 @@
-$(call PKG_INIT_BIN, 3.6.18)
+$(call PKG_INIT_BIN, 3.6.19)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-amalgamation-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.sqlite.org
-$(PKG)_SOURCE_MD5:=18c9f044e2f50cdab3bca87386d4fcc8 
+$(PKG)_SOURCE_MD5:=f0876d555eb4c454dbacfe900a678f4a
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/sqlite3
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sqlite3
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/.libs/libsqlite3.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsqlite3.so.$($(PKG)_LIB_VERSION)
-$(PKG)_LIB_TARGET_BINARY:=root/usr/lib/libsqlite3.so.$($(PKG)_LIB_VERSION)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libsqlite3.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -37,7 +37,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 	mkdir -p $(dir $@)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsqlite3*.so* root/usr/lib
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsqlite3*.so* $(dir $@)
 	$(TARGET_STRIP) $@
 
 $(pkg):
@@ -53,6 +53,6 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(SQLITE_TARGET_BINARY)
-	$(RM) root/usr/lib/libsqlite3*.so*
+	$(RM) $(SQLITE_DEST_DIR)/usr/lib/libsqlite3*.so*
 
 $(PKG_FINISH)
