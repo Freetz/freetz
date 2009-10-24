@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Some of the menuconfig variables have recently been renamed.
+# This script converts .config-file containing old named variables
+# into the new format by doing some regular expression substitutions.
+
+if [ -z "$1" -o ! -f "$1" ]; then
+	echo "Usage: $(basename $0) .config-file-to-be-converted"
+	exit 1
+fi
+
+for pkg in E2FSPROGS DAVFS2 HPLIP MC NANO PHP WGET; do
+	sed -i -r -e 's|FREETZ_('"${pkg}"'[ _])|FREETZ_PACKAGE_\1|g' "$1"
+done
+sed -i -r -e 's|FREETZ_COMPILE_TINYPROXY|FREETZ_PACKAGE_TINYPROXY|g' "$1"
