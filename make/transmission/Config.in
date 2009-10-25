@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_TRANSMISSION
 	bool "Transmission 1.75 (binary and optionally web interface)"
 	default n
-  help
+	help
 		If needed, remember to change the base directory as well
 		as the installation directory on the webif.
 
@@ -24,7 +24,6 @@ config FREETZ_PACKAGE_TRANSMISSION_DAEMON
 	bool "Transmission daemon"
 	depends FREETZ_PACKAGE_TRANSMISSION
 	default n
-	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
 	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
 	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_TRANSMISSION_STATIC

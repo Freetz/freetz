@@ -1,9 +1,9 @@
 config FREETZ_PACKAGE_TRANSMISSION_CGI
 	bool "Transmission CGI 0.0.2"
-	select FREETZ_PACKAGE_TRANSMISSION 
+	select FREETZ_PACKAGE_TRANSMISSION
 	select FREETZ_PACKAGE_TRANSMISSION_DAEMON
+	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	default n
 	help
 		Provides a simple configuration interface
 		for transmission-daemon.
-
