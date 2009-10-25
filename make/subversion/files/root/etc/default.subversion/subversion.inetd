@@ -1,10 +1,10 @@
 . /mod/etc/conf/subversion.cfg
 inetdcfg_desc="subversion server"
-inetdcfg_port=$SUBVERSION_PORT
+inetdcfg_port=$SUBVERSION_BINDADDRESS:$SUBVERSION_PORT
 inetdcfg_sock=stream
 inetdcfg_proto=tcp
 inetdcfg_flags=nowait
-inetdcfg_user=svn
+inetdcfg_user=svn:svn
 inetdcfg_exe=/usr/bin/svnserve
 inetdcfg_arg0=svnserve
 inetdcfg_args="-i --root $SUBVERSION_ROOT $(/etc/init.d/rc.subversion logfile-options)"
