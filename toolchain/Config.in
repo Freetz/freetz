@@ -205,12 +205,14 @@ config FREETZ_PACKAGE_GDB
 	select FREETZ_LIB_libthread_db
 	help
 		Build the full gdb debugger to run on the target.
+		Files are installed into toolchain/target/target-utils.
 
 config FREETZ_PACKAGE_GDB_SERVER
 	bool "Build gdb server for target"
 	default n
 	help
-		Build the gdbserver stub to run on the target.
+		Build the gdbserver stub to run on the target. 
+		Files are installed into toolchain/target/target-utils.
 		A full gdb is needed to debug the progam.
 
 config FREETZ_PACKAGE_GDB_HOST
