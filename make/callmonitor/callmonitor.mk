@@ -16,10 +16,10 @@ $(PKG_UNPACKED)
 .PHONY: FORCE
 
 $(CALLMONITOR_DIR)/.features.new: FORCE
-	echo $(CALLMONITOR_FEATURES) > $@
+	@echo $(CALLMONITOR_FEATURES) > $@
 
 $(CALLMONITOR_DIR)/.features: $(CALLMONITOR_DIR)/.features.new
-	if ! diff -q $< $@; then cp $< $@; fi
+	@if ! diff -q $< $@; then cp $< $@; fi
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_DIR)/.features
 	$(MAKE) -C $(CALLMONITOR_DIR) configure
