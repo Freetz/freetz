@@ -23,12 +23,15 @@ $(PKG)_CONFIGURE_ENV += ac_cv_sizeof_struct_iovec=8
 $(PKG)_CONFIGURE_ENV += apr_cv_process_shared_works=no
 $(PKG)_CONFIGURE_ENV += apr_cv_mutex_robust_shared=no
 $(PKG)_CONFIGURE_ENV += apr_cv_tcp_nodelay_with_cork=yes
-$(PKG)_CONFIGURE_ENV += apr_cv_pthreads_lib=-lpthread
+
+# disable threads in libapr until svn-client problems are solved
+#$(PKG)_CONFIGURE_ENV += apr_cv_pthreads_lib=-lpthread
+#$(PKG)_CONFIGURE_OPTIONS += --enable-threads
+$(PKG)_CONFIGURE_OPTIONS += --disable-threads
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-dso
-$(PKG)_CONFIGURE_OPTIONS += --enable-threads
 $(PKG)_CONFIGURE_OPTIONS += --with-devrandom=/dev/urandom
 $(PKG)_CONFIGURE_OPTIONS += --includedir=$(APR_INCLUDE_DIR)
 $(PKG)_CONFIGURE_OPTIONS += --with-installbuilddir=$(APR_BUILD_DIR)
