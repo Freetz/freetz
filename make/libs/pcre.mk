@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 7.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
-$(PKG)_SOURCE_MD5:=b6a9669d1863423f01ea46cdf00f93dc 
+$(PKG)_SOURCE_MD5:=b6a9669d1863423f01ea46cdf00f93dc
 
 $(PKG)_LIB_VERSION:=0.0.1
 $(PKG)_LIBNAME=libpcre.so.$($(PKG)_LIB_VERSION)
@@ -41,12 +41,10 @@ $($(PKG)_STAGING_BINARY) $($(PKG)_POSIX_STAGING_BINARY): $($(PKG)_BINARY) $($(PK
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcre-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre.so* $(PCRE_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $($(PKG)_POSIX_TARGET_BINARY): $($(PKG)_POSIX_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcreposix.so* $(PCRE_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY) $($(PKG)_POSIX_STAGING_BINARY)
 

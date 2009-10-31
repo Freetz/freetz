@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://www.tcpdump.org/release/
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=5208f24d0328ee7c20b52c43eaa9aa0e 
+$(PKG)_SOURCE_MD5:=5208f24d0328ee7c20b52c43eaa9aa0e
 
 $(PKG)_CONFIGURE_OPTIONS += --with-pcap=linux
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
@@ -38,8 +38,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		install
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap*.so* $(LIBPCAP_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 

@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://www.mr511.de/software
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=9db4d36c283d9790d8fa7df1f4d7b4d9 
+$(PKG)_SOURCE_MD5:=9db4d36c283d9790d8fa7df1f4d7b4d9
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 $(PKG)_CONFIGURE_ENV += mr_cv_working_memmove=yes
@@ -34,8 +34,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libelf.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*.so* $(LIBELF_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 

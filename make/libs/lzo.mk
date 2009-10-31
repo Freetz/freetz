@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://www.oberhumer.com/opensource/lzo/download/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/liblzo2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/liblzo2.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=0c3d078c2e8ea5a88971089a2f02a726 
+$(PKG)_SOURCE_MD5:=0c3d078c2e8ea5a88971089a2f02a726
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-libtool-lock
@@ -31,8 +31,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2*.so* $(LZO_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 

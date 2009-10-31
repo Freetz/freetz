@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://download.savannah.gnu.org/releases/freetype
 $(PKG)_BINARY:=$($(PKG)_DIR)/objs/.libs/libfreetype.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libfreetype.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=d76233108aca9c9606cdbd341562ad9a 
+$(PKG)_SOURCE_MD5:=d76233108aca9c9606cdbd341562ad9a
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -29,8 +29,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/freetype2.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype*.so* $(FREETYPE_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 

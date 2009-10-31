@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://www.webdav.org/neon
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libneon.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libneon.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libneon.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=18a3764b70f9317f8b61509fd90d9e7a 
+$(PKG)_SOURCE_MD5:=18a3764b70f9317f8b61509fd90d9e7a
 
 $(PKG)_DEPENDS_ON := expat
 ifeq ($(strip $(FREETZ_LIB_libneon_WITH_SSL)),y)
@@ -47,8 +47,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/neon-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libneon*.so* $(NEON_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 

@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 7.19.6)
 $(PKG)_LIB_VERSION:=4.1.1
 $(PKG)_SOURCE:=curl-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://curl.haxx.se/download
-$(PKG)_SOURCE_MD5:=8402c1f654c51ad7287aad57c3aa79be 
+$(PKG)_SOURCE_MD5:=8402c1f654c51ad7287aad57c3aa79be
 
 ifeq ($(strip $(FREETZ_PACKAGE_CURL_STATIC)),y)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/curl
@@ -72,9 +72,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
-	mkdir -p $(dir $@)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl*.so* root/usr/lib
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg):
 
@@ -90,7 +88,7 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libcurl.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/curl \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/curl*
-	
+
 $(pkg)-uninstall:
 	$(RM) $(CURL_TARGET_BINARY)
 	$(RM) root/usr/lib/libcurl*.so*

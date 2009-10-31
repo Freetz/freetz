@@ -38,8 +38,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	ln -sf $(REAL_GNU_TARGET_NAME)-g++-uc $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(GNU_TARGET_NAME)-g++-uc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuClibc++*.so* $(UCLIBCXX_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP_WILDCARD_BEFORE_SO)
 
 uclibcxx: $($(PKG)_STAGING_BINARY)
 
@@ -49,7 +48,7 @@ uclibcxx-clean:
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(GNU_TARGET_NAME)-g++-uc
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
 	-$(MAKE) -C $(UCLIBCXX_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuClibc++* 
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuClibc++*
 
 uclibcxx-uninstall:
 	$(RM) $(UCLIBCXX_TARGET_DIR)/libuClibc++*.so*

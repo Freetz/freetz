@@ -30,8 +30,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		install
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz*.so* $(ZLIB_DEST_DIR)/lib/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 
@@ -41,7 +40,7 @@ $(pkg)-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.* \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zlib.h \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zconf.h 	
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zconf.h
 
 $(pkg)-uninstall:
 	$(RM) $(ZLIB_TARGET_DIR)/libz*.so*

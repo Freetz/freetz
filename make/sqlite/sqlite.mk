@@ -36,9 +36,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
-	mkdir -p $(dir $@)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsqlite3*.so* $(dir $@)
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg):
 
