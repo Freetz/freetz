@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://ftp.debian.org/debian/pool/main/d/devmapper
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/ioctl/libdevmapper.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdevmapper.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libdevmapper.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=4aa921c9d65af281d1a16d6c1788b15f 
+$(PKG)_SOURCE_MD5:=4aa921c9d65af281d1a16d6c1788b15f
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-pkgconfig
 $(PKG)_CONFIGURE_OPTIONS += --with-user=""
@@ -30,10 +30,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/devmapper.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	# This chmod is really necessary!
-	chmod 755 $(DEVMAPPER_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdevmapper*.so* $(DEVMAPPER_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 

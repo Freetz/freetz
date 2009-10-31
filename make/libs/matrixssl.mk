@@ -7,7 +7,7 @@ $(PKG)_DIR:=$(SOURCE_DIR)/matrixssl
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libmatrixssl.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmatrixssl.so
-$(PKG)_SOURCE_MD5:=b80faff3e389000b9a161dda4812112d 
+$(PKG)_SOURCE_MD5:=b80faff3e389000b9a161dda4812112d
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -22,7 +22,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		AR="$(TARGET_CROSS)ar" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
-		STRIP="$(TARGET_CROSS)strip" 
+		STRIP="$(TARGET_CROSS)strip"
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
@@ -33,8 +33,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	ln -sf matrixSsl/matrixSsl.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl.h
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl*.so* $(MATRIXSSL_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 

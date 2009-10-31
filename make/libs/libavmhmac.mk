@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=b7dba580f887d3d10c2df808eed00e69 
+$(PKG)_SOURCE_MD5:=b7dba580f887d3d10c2df808eed00e69
 
 $(PKG)_DEPENDS_ON := openssl
 
@@ -35,8 +35,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		install DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libavmhmac*.so* $(LIBAVMHMAC_DEST_LIB)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 

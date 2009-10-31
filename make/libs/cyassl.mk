@@ -4,7 +4,7 @@ $(PKG)_SITE:=http://yassl.com
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libcyassl.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libcyassl.so
-$(PKG)_SOURCE_MD5:=e9e85a2d78cd535a049e4acce786e42d 
+$(PKG)_SOURCE_MD5:=e9e85a2d78cd535a049e4acce786e42d
 
 $(PKG)_DEPENDS_ON := openssl zlib
 
@@ -23,8 +23,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	cp -a $(CYASSL_DIR)/src/.libs/libcyassl.so* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl*.so* $(CYASSL_TARGET_DIR)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 

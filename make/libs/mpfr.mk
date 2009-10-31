@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://www.mpfr.org/mpfr-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_USR_LIB)/libmpfr.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=c5ee0a8ce82ad55fe29ac57edd35d09e 
+$(PKG)_SOURCE_MD5:=c5ee0a8ce82ad55fe29ac57edd35d09e
 
 $(PKG)_DEPENDS_ON:= gmp
 
@@ -25,9 +25,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		-C $(MPFR_DIR) install
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	mkdir -p $(MPFR_DEST_USR_LIB)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr*.so* $(MPFR_DEST_USR_LIB)/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
 
