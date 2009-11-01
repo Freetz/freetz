@@ -904,6 +904,20 @@ config FREETZ_REMOVE_BRANDING_avme
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
+config FREETZ_REMOVE_BRANDING_otwo
+        bool "otwo"
+        depends on FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_BETA
+        default n
+        help
+		O2 branding
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
 config FREETZ_REMOVE_BRANDING_aol
 	bool "AOL"
 	depends on \
