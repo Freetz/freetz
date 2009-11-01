@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.75)
+$(call PKG_INIT_BIN, 1.76)
 $(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 $(PKG)_CLIENT_BINARY:=$($(PKG)_DIR)/cli/transmissioncli
@@ -10,7 +10,7 @@ $(PKG)_TARGET_REMOTE_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/transmission-remote
 $(PKG)_WEBINTERFACE_DIR:=$($(PKG)_DIR)/web
 $(PKG)_TARGET_WEBINTERFACE_DIR:=$($(PKG)_DEST_DIR)/usr/share/transmission-web-home
 $(PKG)_TARGET_WEBINTERFACE_INDEX_HTML:=$($(PKG)_TARGET_WEBINTERFACE_DIR)/index.html
-$(PKG)_SOURCE_MD5:=ec09b76ca941f5c389d8dd4f469f1fa6 
+$(PKG)_SOURCE_MD5:=ac44511ba4c203998be3079626126ede
 
 $(PKG)_DEPENDS_ON := zlib openssl curl libevent
 
@@ -58,7 +58,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
 	tar -c -C $(TRANSMISSION_WEBINTERFACE_DIR) --exclude=.svn . | tar -x -C $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
 	# we do respect the license, but delete it as it just takes place in the firmware
 	$(RM) $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)/LICENSE
-	# remove all non-min.js files, these are not needed	
+	# remove all non-min.js files, these are not needed
 	for f in $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)/javascript/jquery/*.js; do if ! (echo "$$f" | grep -q '\.min\.js$$' >/dev/null 2>&1); then $(RM) "$$f"; fi; done
 	chmod 644 $(TRANSMISSION_TARGET_WEBINTERFACE_INDEX_HTML)
 endif
