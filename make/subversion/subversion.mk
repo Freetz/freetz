@@ -132,9 +132,30 @@ $($(PKG)_BINARIES_TARGET_DIR): \
 	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/%
 	$(INSTALL_BINARY_STRIP)
 
+.PHONY: subversion-keep-required-files-only
+$(pkg)-keep-required-files-only: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR)
+ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
+	@#compute transitive closure of all required svn-libraries
+	@getlibs() { $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/mipsel-linux-uclibc-readelf -d "$$@" | grep -i "Shared library" | sed -r -e 's|^.*\[(.+)\].*$$|\1|g' | sort -u; }; \
+	getsvnlibs() { getlibs "$$@" | grep "libsvn"; }; \
+	getsvnlibslist() { local ret=""; for l in `getsvnlibs $$bins \`[ -n "$$libs" ] && (echo "$$libs" | sed -e 's| | '"$(SUBVERSION_DEST_DIR)/usr/lib/"'|g')\``; do ret="$$ret $$l"; done; echo -n "$$ret"; }; \
+	\
+	bins="$(SUBVERSION_BINARIES_TARGET_DIR)"; libs=""; \
+	echo -n "Determining required svn-libraries: "; \
+	libs=`getsvnlibslist`; previoslibs=""; \
+	while [ "$$libs" != "$$previoslibs" ]; do \
+		previoslibs="$$libs"; libs=`getsvnlibslist`; \
+	done; \
+	echo $$libs; \
+	for l in $(SUBVERSION_DEST_DIR)/usr/lib/libsvn*; do \
+		lbasename=`echo "$$l" | sed -r -e 's|'"$(SUBVERSION_DEST_DIR)/usr/lib/"'(libsvn[^.]+)[.]so.*|\1|g'`; \
+		(echo $$libs | grep -q "$$lbasename" >/dev/null 2>&1) || (echo "Removing unneeded svn-library: $$l"; rm -f $$l) \
+	done
+endif
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR)
+$(pkg)-precompiled: $(pkg)-keep-required-files-only
 
 $(pkg)-clean:
 	-$(MAKE) -C $(SUBVERSION_DIR) clean
