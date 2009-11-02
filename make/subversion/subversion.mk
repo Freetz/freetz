@@ -142,9 +142,9 @@ ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	\
 	bins="$(SUBVERSION_BINARIES_TARGET_DIR)"; libs=""; \
 	echo -n "Determining required svn-libraries: "; \
-	libs=`getsvnlibslist`; previoslibs=""; \
-	while [ "$$libs" != "$$previoslibs" ]; do \
-		previoslibs="$$libs"; libs=`getsvnlibslist`; \
+	libs=`getsvnlibslist`; previouslibs=""; \
+	while [ "$$libs" != "$$previouslibs" ]; do \
+		previouslibs="$$libs"; libs=`getsvnlibslist`; \
 	done; \
 	echo $$libs; \
 	for l in $(SUBVERSION_DEST_DIR)/usr/lib/libsvn*; do \
