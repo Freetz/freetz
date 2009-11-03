@@ -1,0 +1,10 @@
+config FREETZ_PACKAGE_PPP_CGI
+	bool "ppp dial-up-network"
+	depends on FREETZ_HAS_USB_HOST
+	select FREETZ_PACKAGE_PPPD_CHAT
+	select FREETZ_MODULE_option
+	select FREETZ_BUSYBOX_START_STOP_DAEMON
+	default n
+	help
+		Use this package to establish a dun connection
+

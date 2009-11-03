@@ -1,0 +1,98 @@
+#!/bin/sh
+
+DAEMON=ppp
+
+. /etc/init.d/modlibrc
+
+initial() {
+		modprobe option
+		modprobe ppp_generic
+		modprobe ppp_async
+		modprobe ppp-deflate
+		modprobe slhc
+}
+
+start() {
+	initial
+	if [ -n "$(pidof ppp_runner)" ]; then
+		echo "ERROR. Modem off-hook."
+		exit 1
+	fi
+	echo -n "Starting ppp..."
+	start-stop-daemon -n ppp -a /etc/default.ppp/ppp_runner -b -q -S	
+	echo "done."
+}
+
+stop() {
+	if [ -z "$(pidof ppp_runner)" ] && [ -z "$(pidof pppd)" ]; then
+		echo "ERROR. Modem on-hook."
+		exit 1
+	fi
+	echo -n "Stopping ppp..."
+	killall -9 ppp_runner
+	killall pppd
+	sleep 2
+	cnt=17
+	if [ -n "$(pidof pppd)" ]; then
+		while [ -n  "`pidof pppd`" ] && [ $cnt -gt 0 ]; do
+			killall -9 pppd 2>/dev/null
+			sleep 1
+			let cnt=cnt-1
+		done
+	fi
+	echo "done."
+}
+
+case "$1" in
+	""|load)
+		[ ! -d "/mod/etc/ppp" ] && mkdir -p /mod/etc/ppp
+		[ ! -d "/tmp/flash/ppp/peers" ] && mkdir -p /tmp/flash/ppp/peers
+		[ ! -e "/mod/etc/ppp/peers" ] && ln -s /tmp/flash/ppp/peers /mod/etc/ppp/peers
+
+		[ ! -e "/tmp/flash/ppp/peers/dun" ] && /etc/default.${DAEMON}/peers_options > /tmp/flash/ppp/peers/dun
+		[ ! -e "/tmp/flash/ppp/peers/dun.chat" ] && /etc/default.${DAEMON}/peers_chat > /tmp/flash/ppp/peers/dun.chat
+
+		modreg cgi 'ppp' 'PPP'
+		modreg status ppp ppp-cgi ppp/ppplog
+
+		deffile='/mod/etc/default.ppp/peers_options.def'
+		[ -r "/tmp/flash/peers_options.def" ] && deffile='/tmp/flash/peers_options.def'
+		modreg file 'peers_options' 'PEERS: options' 0 "$deffile"
+
+		deffile='/mod/etc/default.ppp/peers_chat.def'
+		[ -r "/tmp/flash/peers_chat.def" ] && deffile='/tmp/flash/peers_chat.def'
+		modreg file 'peers_chat' 'PEERS: chat' 0 "$deffile"
+
+		initial
+		;;
+	unload)
+		modunreg cgi 'ppp'
+		modunreg status ppp ppp/ppplog
+		modunreg file 'peers_options'
+		modunreg file 'peers_chat'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 2
+		start
+		;;
+	status)
+                if [ -z "$(pidof ppp_runner)" ]; then
+                        echo 'stopped'
+                else
+                        echo 'running'
+                fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

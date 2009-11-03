@@ -1,0 +1,23 @@
+#!/bin/sh
+
+cat <<EOF
+/dev/ttyUSB0
+#debug
+460800
+idle 10000
+lock
+crtscts
+modem
+noauth
+usepeerdns
+replacedefaultroute
+defaultroute
+noipdefault
+noccp
+nobsdcomp
+novj
+#user ""
+#password ""
+connect "/usr/sbin/chat -V -E -f /etc/ppp/peers/dun.chat"
+nodetach
+EOF

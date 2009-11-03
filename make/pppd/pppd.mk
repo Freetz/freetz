@@ -4,8 +4,12 @@ $(PKG)_SITE:=ftp://ftp.samba.org/pub/ppp
 $(PKG)_DIR:=$(SOURCE_DIR)/ppp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/pppd/pppd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/pppd
+$(PKG)_CHAT_BINARY:=$(PPPD_DIR)/chat/chat
+$(PKG)_CHAT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/chat
 $(PKG)_STARTLEVEL=40
 $(PKG)_SOURCE_MD5:=183800762e266132218b204dfb428d29
+
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PPPD_CHAT
 
 $(PKG)_DEPENDS_ON := libpcap
 
@@ -13,7 +17,8 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY) \
+	$($(PKG)_CHAT_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" $(MAKE) \
 	CC="$(TARGET_CC)" \
 	COPTS="$(TARGET_CFLAGS)" \
@@ -23,14 +28,22 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+# chat
+$($(PKG)_CHAT_TARGET_BINARY): $($(PKG)_CHAT_BINARY)
+ifeq ($(strip $(FREETZ_PACKAGE_PPPD_CHAT)),y)
+	$(INSTALL_BINARY_STRIP)
+endif
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) \
+			$($(PKG)_CHAT_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(PPPD_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(PPPD_TARGET_BINARY)
+	$(RM) $(PPPD_TARGET_BINARY) \
+		$(PPPD_CHAT_TARGET_BINARY)
 
 $(PKG_FINISH)

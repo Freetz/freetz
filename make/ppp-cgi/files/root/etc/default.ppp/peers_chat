@@ -1,0 +1,16 @@
+#!/bin/sh
+
+cat <<EOF
+ABORT	BUSY
+ABORT	ERROR
+ABORT	'NO CARRIER'
+REPORT	CONNECT
+TIMEOUT	10
+""	"AT&F"
+OK	"ATE1"
+OK	'AT+CGDCONT=1,"IP","your.personal.apn"'
+OK	"ATD*99#"
+#OK	"ATD*99***1#"
+TIMEOUT	10
+CONNECT	' '
+EOF

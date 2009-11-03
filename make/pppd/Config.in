@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_PPPD
 	bool "pppd 2.4.4"
 	depends on FREETZ_REPLACE_KERNEL && \
-		(FREETZ_PACKAGE_PPTP || FREETZ_PACKAGE_PPTPD || FREETZ_PACKAGE_SYNCE_SERIAL)
+		(FREETZ_PACKAGE_PPPD_CHAT || FREETZ_PACKAGE_PPTP || FREETZ_PACKAGE_PPTPD || FREETZ_PACKAGE_SYNCE_SERIAL)
 	select FREETZ_LIB_libcrypt
 	select FREETZ_LIB_libdl
 	select FREETZ_MODULE_ppp_async
@@ -15,3 +15,11 @@ config FREETZ_PACKAGE_PPPD
 		An implementation of the Point-to-point protocol.
 
 		http://www.samba.org/ppp/
+
+config FREETZ_PACKAGE_PPPD_CHAT
+	bool "chat"
+	select FREETZ_PACKAGE_PPPD
+	default n
+	help
+		Automated conversational script with a modem
+
