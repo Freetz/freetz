@@ -1,6 +1,6 @@
---- etc/hotplug/run_mount.orig	2008-05-09 12:14:10.000000000 +0200
-+++ etc/hotplug/run_mount	2008-05-09 12:19:43.000000000 +0200
-@@ -33,31 +33,8 @@
+--- etc/hotplug/run_mount.orig	2007-06-04 16:20:05.000000000 +0200
++++ etc/hotplug/run_mount	2009-03-20 23:24:51.000000000 +0100
+@@ -27,31 +27,9 @@
  # Generate a frontend'able 'nice name' to be used as mount point:
  #
  nicename () {
@@ -9,11 +9,11 @@
 -	local MANU
 -	local NAME="USB"
  	local NICE=""
--
+ 
 -	# Find device's strings, remove/translate evil chars...
 -	for VAR in `/sbin/lsusb -s -h $1|tr -d ' '`; do
 -		if echo $VAR | grep "='" > /dev/null 2>&1; then
--			eval "${VAR%%=*}=`echo ${VAR##*=}|tr -c "\n\'a-zA-Z0-9" '-' | tr -d \' `"
+-			eval "${VAR%%=*}=`echo ${VAR##*=}|tr $EVILSET '-'|tr -d \'`"
 -		fi
 -	done
 -	
@@ -33,19 +33,13 @@
  	echo $NICE
  }
  
-@@ -96,7 +73,7 @@
- 	# run mount with umask 0 so everyone is allowed to rwx everywhere
-         local OLD_UMASK=`umask`
- 	umask 0
--	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
-+	if mount_fs; then
- 		umask $OLD_UMASK
- 		OK=0
- 		eventadd 140 $MNTNAME
-@@ -136,6 +113,36 @@
- 	return $OK
+@@ -74,6 +52,40 @@
+ 	done
  }
  
++# Check filesystem type and mount it
++#
++	
 +mount_fs () {
 + # mount according to type of filesystem 
 + # return exit code: true - all went well; other - something went wrong 
@@ -74,8 +68,39 @@
 +		mount $DEVNODE $MNTPATH
 +		;;
 +	esac
-+}
++}	
 +
- # Find partitions to mount...
++
+ # Actually perform the mount operation...
+ # (TODO Checking the partition for known filesystem types)
  #
- USBDEV=`echo $1|sed s/^0*//`
+@@ -83,16 +95,19 @@
+ 	local DEVNODE=$2
+ 	local PARTNUM=$3
+ 	local BLKDEV=${DEVNODE##/dev/}
++	local BLKDEVMAIN=${BLKDEV:0:3}
+ 	local TEMP=${BLKDEV##sd}
+ 	local HOSTNUM=`echo ${TEMP%%[0-9]*}|tr 'abcd' '0123'`
+-	local MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
++	MNTNAME=`nicename $BLKDEVMAIN $HOSTNUM $PARTNUM`
+ 	local MNTPATH=$FTPDIR/$MNTNAME
+ 	
+ 	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
+ 	test -d $MNTPATH || mkdir -p $MNTPATH
+ 	
+ 	passeeren
+-	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
++	
++	if mount_fs; then
++
+ 		OK=0
+ 		eventadd 140 $MNTNAME
+ 		if ! pidof ftpd; then
+@@ -117,6 +131,7 @@
+ 		fi
+ 	else
+ 		rm -rf $MNTPATH
++		eventadd 142 $MNTNAME NOTMOUNTABLE
+ 	fi
+ 
+ 	if grep $MNTPATH /proc/mounts > /dev/null; then
