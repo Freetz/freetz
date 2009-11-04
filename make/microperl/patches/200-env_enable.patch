@@ -1,6 +1,6 @@
---- perl.c.orig	2007-12-18 11:47:08.000000000 +0100
-+++ perl.c	2009-02-10 10:09:40.000000000 +0100
-@@ -370,11 +370,11 @@
+--- perl.c	2009-04-22 20:07:41.000000000 +0200
++++ perl.c	2009-09-26 16:18:08.000000000 +0200
+@@ -396,11 +396,11 @@
  	("__environ", (unsigned long *) &environ_pointer, NULL);
  #endif /* environ */
  
@@ -14,7 +14,7 @@
  
      /* Use sysconf(_SC_CLK_TCK) if available, if not
       * available or if the sysconf() fails, use the HZ.
-@@ -821,7 +821,7 @@
+@@ -857,7 +857,7 @@
      /* if PERL_USE_SAFE_PUTENV is defined environ will not have been copied
       * so we certainly shouldn't free it here
       */
@@ -23,7 +23,7 @@
  #if defined(USE_ENVIRON_ARRAY) && !defined(PERL_USE_SAFE_PUTENV)
      if (environ != PL_origenviron && !PL_use_safe_putenv
  #ifdef USE_ITHREADS
-@@ -841,7 +841,7 @@
+@@ -877,7 +877,7 @@
  	environ = PL_origenviron;
      }
  #endif
@@ -32,7 +32,7 @@
  
      if (destruct_level == 0) {
  
-@@ -4657,7 +4657,7 @@
+@@ -4780,7 +4780,7 @@
  	GvMULTI_on(PL_envgv);
  	hv = GvHVn(PL_envgv);
  	hv_magic(hv, NULL, PERL_MAGIC_env);
@@ -41,7 +41,7 @@
  #ifdef USE_ENVIRON_ARRAY
  	/* Note that if the supplied env parameter is actually a copy
  	   of the global environ then it may now point to free'd memory
-@@ -4693,7 +4693,7 @@
+@@ -4819,7 +4819,7 @@
  	  }
        }
  #endif /* USE_ENVIRON_ARRAY */
@@ -50,9 +50,9 @@
      }
      TAINT_NOT;
      if ((tmpgv = gv_fetchpvs("$", GV_ADD|GV_NOTQUAL, SVt_PV))) {
---- perl.h.orig	2007-12-18 11:47:08.000000000 +0100
-+++ perl.h	2009-02-10 10:09:40.000000000 +0100
-@@ -4059,11 +4059,12 @@
+--- perl.h	2009-07-06 13:18:58.000000000 +0200
++++ perl.h	2009-09-26 16:18:08.000000000 +0200
+@@ -4190,11 +4190,12 @@
  #else
     /* VMS and some other platforms don't use the environ array */
  #  ifdef USE_ENVIRON_ARRAY
@@ -66,3 +66,23 @@
  #    endif
  #  endif
  #endif
+--- util.c	2009-08-15 18:36:34.000000000 +0200
++++ util.c	2009-09-26 16:18:28.000000000 +0200
+@@ -5801,7 +5801,7 @@
+ Perl_my_clearenv(pTHX)
+ {
+     dVAR;
+-#if ! defined(PERL_MICRO)
++//#if ! defined(PERL_MICRO)
+ #  if defined(PERL_IMPLICIT_SYS) || defined(WIN32)
+     PerlEnv_clearenv();
+ #  else /* ! (PERL_IMPLICIT_SYS || WIN32) */
+@@ -5849,7 +5849,7 @@
+     }
+ #    endif /* USE_ENVIRON_ARRAY */
+ #  endif /* PERL_IMPLICIT_SYS || WIN32 */
+-#endif /* PERL_MICRO */
++//#endif /* PERL_MICRO */
+ }
+ 
+ #ifdef PERL_IMPLICIT_CONTEXT
