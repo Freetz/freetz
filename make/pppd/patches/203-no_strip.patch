@@ -1,5 +1,5 @@
---- chat/Makefile.linux.orig	2006-06-04 07:07:46.000000000 +0200
-+++ chat/Makefile.linux	2009-07-31 00:40:29.000000000 +0200
+--- chat/Makefile.linux.orig	2008-11-26 11:02:29.000000000 +0100
++++ chat/Makefile.linux	2009-11-05 10:18:14.000000000 +0100
 @@ -25,7 +25,7 @@
  
  install: chat
@@ -9,8 +9,8 @@
  	$(INSTALL) -c -m 644 chat.8 $(MANDIR)
  
  clean:
---- pppd/Makefile.linux.orig	2009-07-31 00:40:29.000000000 +0200
-+++ pppd/Makefile.linux	2009-07-31 00:40:29.000000000 +0200
+--- pppd/Makefile.linux.orig	2009-11-05 10:18:13.000000000 +0100
++++ pppd/Makefile.linux	2009-11-05 10:18:14.000000000 +0100
 @@ -99,7 +99,7 @@
  CFLAGS	+= -DUSE_SRP -DOPENSSL -I/usr/local/ssl/include
  LIBS	+= -lsrp -L/usr/local/ssl/lib -lcrypto
@@ -29,8 +29,8 @@
  	if chgrp pppusers $(BINDIR)/pppd 2>/dev/null; then \
  	  chmod o-rx,u+s $(BINDIR)/pppd; fi
  	$(INSTALL) -c -m 444 pppd.8 $(MANDIR)
---- pppd/plugins/radius/Makefile.linux.orig	2006-06-04 07:04:14.000000000 +0200
-+++ pppd/plugins/radius/Makefile.linux	2009-07-31 00:40:29.000000000 +0200
+--- pppd/plugins/radius/Makefile.linux.orig	2008-11-26 11:02:29.000000000 +0100
++++ pppd/plugins/radius/Makefile.linux	2009-11-05 10:18:14.000000000 +0100
 @@ -36,9 +36,9 @@
  
  install: all
@@ -44,9 +44,9 @@
  	$(INSTALL) -c -m 444 pppd-radius.8 $(MANDIR)
  	$(INSTALL) -c -m 444 pppd-radattr.8 $(MANDIR)
  
---- pppd/plugins/rp-pppoe/Makefile.linux.orig	2009-07-31 00:40:27.000000000 +0200
-+++ pppd/plugins/rp-pppoe/Makefile.linux	2009-07-31 00:40:29.000000000 +0200
-@@ -39,9 +39,9 @@
+--- pppd/plugins/rp-pppoe/Makefile.linux.orig	2009-11-05 10:18:11.000000000 +0100
++++ pppd/plugins/rp-pppoe/Makefile.linux	2009-11-05 10:18:14.000000000 +0100
+@@ -43,9 +43,9 @@
  
  install: all
  	$(INSTALL) -d -m 755 $(LIBDIR)
@@ -57,9 +57,9 @@
 +	$(INSTALL) -c -m 555 pppoe-discovery $(BINDIR)
  
  clean:
- 	rm -f *.o *.so
---- pppdump/Makefile.linux.orig	2006-06-04 07:04:14.000000000 +0200
-+++ pppdump/Makefile.linux	2009-07-31 00:40:29.000000000 +0200
+ 	rm -f *.o *.so pppoe-discovery
+--- pppdump/Makefile.linux.orig	2008-11-26 11:02:29.000000000 +0100
++++ pppdump/Makefile.linux	2009-11-05 10:18:14.000000000 +0100
 @@ -17,5 +17,5 @@
  
  install:
@@ -67,8 +67,8 @@
 -	$(INSTALL) -s -c pppdump $(BINDIR)
 +	$(INSTALL) -c pppdump $(BINDIR)
  	$(INSTALL) -c -m 444 pppdump.8 $(MANDIR)
---- pppstats/Makefile.linux.orig	2006-06-04 07:07:46.000000000 +0200
-+++ pppstats/Makefile.linux	2009-07-31 00:40:29.000000000 +0200
+--- pppstats/Makefile.linux.orig	2008-11-26 11:02:29.000000000 +0100
++++ pppstats/Makefile.linux	2009-11-05 10:18:14.000000000 +0100
 @@ -22,7 +22,7 @@
  
  install: pppstats

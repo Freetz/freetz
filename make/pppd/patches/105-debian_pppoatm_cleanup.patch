@@ -1,5 +1,5 @@
---- pppd/plugins/pppoatm/pppoatm.c.orig	2004-11-06 07:55:28.000000000 +0100
-+++ pppd/plugins/pppoatm/pppoatm.c	2007-07-29 03:52:40.000000000 +0200
+--- pppd/plugins/pppoatm/pppoatm.c.orig	2008-11-26 11:02:29.000000000 +0100
++++ pppd/plugins/pppoatm/pppoatm.c	2009-11-05 11:00:29.000000000 +0100
 @@ -70,18 +70,20 @@
  {
  	struct sockaddr_atmpvc addr;
@@ -51,28 +51,7 @@
  	if (ioctl(fd, ATM_SETBACKEND, &be) < 0)
  		fatal("ioctl(ATM_SETBACKEND): %m");
  }
-@@ -175,16 +178,19 @@
- {
- 	int sock;
- 	struct ifreq ifr;
-+
- 	if (mtu > pppoatm_max_mtu)
- 		error("Couldn't increase MTU to %d", mtu);
-+
- 	sock = socket(AF_INET, SOCK_DGRAM, 0);
- 	if (sock < 0)
- 		fatal("Couldn't create IP socket: %m");
-+
- 	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
- 	ifr.ifr_mtu = mtu;
- 	if (ioctl(sock, SIOCSIFMTU, (caddr_t) &ifr) < 0)
- 		fatal("ioctl(SIOCSIFMTU): %m");
--	(void) close (sock);
-+	close(sock);
- }
- 
- static void recv_config_pppoa(int mru,
-@@ -198,7 +204,7 @@
+@@ -170,7 +173,7 @@
  
  void plugin_init(void)
  {
@@ -81,7 +60,7 @@
  	extern int new_style_driver;	/* From sys-linux.c */
  	if (!ppp_available() && !new_style_driver)
  		fatal("Kernel doesn't support ppp_generic - "
-@@ -206,9 +212,9 @@
+@@ -178,9 +181,9 @@
  #else
  	fatal("No PPPoATM support on this OS");
  #endif

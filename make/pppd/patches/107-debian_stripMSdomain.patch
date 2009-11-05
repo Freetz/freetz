@@ -1,6 +1,6 @@
---- pppd/chap-new.c.orig	2005-07-13 12:41:58.000000000 +0200
-+++ pppd/chap-new.c	2009-07-31 00:40:27.000000000 +0200
-@@ -57,6 +57,7 @@
+--- pppd/chap-new.c.orig	2008-11-26 11:02:29.000000000 +0100
++++ pppd/chap-new.c	2009-11-05 10:18:12.000000000 +0100
+@@ -58,6 +58,7 @@
  int chap_timeout_time = 3;
  int chap_max_transmits = 10;
  int chap_rechallenge_time = 0;
@@ -8,7 +8,7 @@
  
  /*
   * Command-line options.
-@@ -68,6 +69,8 @@
+@@ -69,6 +70,8 @@
  	  "Set max #xmits for challenge", OPT_PRIO },
  	{ "chap-interval", o_int, &chap_rechallenge_time,
  	  "Set interval for rechallenge", OPT_PRIO },
@@ -17,7 +17,7 @@
  	{ NULL }
  };
  
-@@ -335,6 +338,14 @@
+@@ -336,6 +339,14 @@
  			/* Null terminate and clean remote name. */
  			slprintf(rname, sizeof(rname), "%.*v", len, name);
  			name = rname;

@@ -1,5 +1,5 @@
---- pppd/main.c.orig	2009-07-31 00:40:28.000000000 +0200
-+++ pppd/main.c	2009-07-31 00:40:30.000000000 +0200
+--- pppd/main.c.orig	2009-11-05 10:18:13.000000000 +0100
++++ pppd/main.c	2009-11-05 10:18:14.000000000 +0100
 @@ -90,6 +90,7 @@
  #include <sys/socket.h>
  #include <netinet/in.h>
@@ -8,7 +8,7 @@
  
  #include "pppd.h"
  #include "magic.h"
-@@ -227,6 +228,7 @@
+@@ -228,6 +229,7 @@
  
  /* Prototypes for procedures local to this file. */
  
@@ -16,7 +16,7 @@
  static void setup_signals __P((void));
  static void create_pidfile __P((int pid));
  static void create_linkpidfile __P((int pid));
-@@ -532,6 +534,7 @@
+@@ -533,6 +535,7 @@
  	    info("Starting link");
  	}
  
@@ -24,7 +24,7 @@
  	gettimeofday(&start_time, NULL);
  	script_unsetenv("CONNECT_TIME");
  	script_unsetenv("BYTES_SENT");
-@@ -1264,6 +1267,36 @@
+@@ -1265,6 +1268,36 @@
  
  static struct callout *callout = NULL;	/* Callout list */
  static struct timeval timenow;		/* Current time */
@@ -61,7 +61,7 @@
  
  /*
   * timeout - Schedule a timeout.
-@@ -1334,6 +1367,8 @@
+@@ -1335,6 +1368,8 @@
  {
      struct callout *p;
  
@@ -70,7 +70,7 @@
      while (callout != NULL) {
  	p = callout;
  
-@@ -1361,6 +1396,8 @@
+@@ -1362,6 +1397,8 @@
  {
      if (callout == NULL)
  	return NULL;
