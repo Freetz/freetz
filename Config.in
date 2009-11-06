@@ -1289,6 +1289,27 @@ config FREETZ_REMOVE_WEBSRV
 		Media Server from USB Labor firmware" is not selected, 'libwebsrv.so'
 		will also be removed, because only those three binaries use it.
 
+config FREETZ_REMOVE_UMTSD
+	bool "Remove UMTS support (USB GSM)"
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7270_V3 || FREETZ_TYPE_FON_WLAN_7240
+	default n
+	help
+		Remove UMTS-Support
+		this patch will remove umts-dependend files from firmware
+		saves about 12K compressed space in kernel.image
+
+config FREETZ_REMOVE_NTFS
+        bool "Remove NTFS-support"
+        depends on \
+                FREETZ_TYPE_FON_WLAN_7270_V3 || FREETZ_TYPE_FON_WLAN_7240
+        default n
+        help
+                Remove NTFS-Support
+		this patch will remove ntfs-3g dependen files from the firmware
+		Be careful, mounting volumes with this filesystem will not work
+                saves about 118K compressed space in kernel.image
+
 config FREETZ_REMOVE_UPNP
 	bool "Remove UPnP daemon (igdd/upnpd)"
 	select FREETZ_REMOVE_UPNP_LIBS if \
