@@ -1,6 +1,16 @@
---- pppd/plugins/rp-pppoe/discovery.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/plugins/rp-pppoe/discovery.c	2009-11-05 11:08:32.000000000 +0100
-@@ -563,7 +563,9 @@
+--- pppd/plugins/rp-pppoe/discovery.c	2009-11-06 13:27:55.000000000 +0100
++++ pppd/plugins/rp-pppoe/discovery.c	2009-11-06 15:16:24.000000000 +0100
+@@ -548,7 +548,9 @@ discovery(PPPoEConnection *conn)
+ 	conn->discoveryState = STATE_SENT_PADI;
+ 	waitForPADO(conn, timeout);
+ 
++#if 0
+ 	timeout *= 2;
++#endif
+     } while (conn->discoveryState == STATE_SENT_PADI);
+ 
+     timeout = conn->discoveryTimeout;
+@@ -563,7 +565,9 @@ discovery(PPPoEConnection *conn)
  	sendPADR(conn);
  	conn->discoveryState = STATE_SENT_PADR;
  	waitForPADS(conn, timeout);

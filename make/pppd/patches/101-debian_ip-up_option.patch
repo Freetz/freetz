@@ -1,5 +1,5 @@
 --- pppd/ipcp.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/ipcp.c	2009-11-05 10:18:10.000000000 +0100
++++ pppd/ipcp.c	2009-11-06 15:01:46.000000000 +0100
 @@ -1883,7 +1883,7 @@
       */
      if (ipcp_script_state == s_down && ipcp_script_pid == 0) {
@@ -35,7 +35,7 @@
  	break;
      }
 --- pppd/main.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/main.c	2009-11-05 10:18:10.000000000 +0100
++++ pppd/main.c	2009-11-06 15:01:46.000000000 +0100
 @@ -316,6 +316,9 @@
      struct protent *protp;
      char numbuf[16];
@@ -47,7 +47,7 @@
      new_phase(PHASE_INITIALIZE);
  
 --- pppd/options.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/options.c	2009-11-05 10:18:10.000000000 +0100
++++ pppd/options.c	2009-11-06 15:01:46.000000000 +0100
 @@ -113,6 +113,8 @@
  bool	tune_kernel;		/* may alter kernel settings */
  int	connect_delay = 1000;	/* wait this many ms after connect script */
@@ -72,7 +72,7 @@
      { "multilink", o_bool, &multilink,
        "Enable multilink operation", OPT_PRIO | 1 },
 --- pppd/pppd.h.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/pppd.h	2009-11-05 10:18:10.000000000 +0100
++++ pppd/pppd.h	2009-11-06 15:01:46.000000000 +0100
 @@ -313,6 +313,8 @@
  extern int	connect_delay;	/* Time to delay after connect script */
  extern int	max_data_rate;	/* max bytes/sec through charshunt */

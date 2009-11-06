@@ -1,5 +1,5 @@
 --- include/linux/ppp-comp.h.orig	2008-11-26 11:02:29.000000000 +0100
-+++ include/linux/ppp-comp.h	2009-11-05 10:18:13.000000000 +0100
++++ include/linux/ppp-comp.h	2009-11-06 15:01:48.000000000 +0100
 @@ -36,7 +36,7 @@
   */
  
@@ -62,7 +62,7 @@
   * Definitions for other, as yet unsupported, compression methods.
   */
 --- include/net/ppp-comp.h.orig	2008-11-26 11:02:29.000000000 +0100
-+++ include/net/ppp-comp.h	2009-11-05 10:18:13.000000000 +0100
++++ include/net/ppp-comp.h	2009-11-06 15:01:48.000000000 +0100
 @@ -168,6 +168,33 @@
  #define CI_MPPE			18	/* config option for MPPE */
  #define CILEN_MPPE		6	/* length of config option */
@@ -98,7 +98,7 @@
   * Definitions for other, as yet unsupported, compression methods.
   */
 --- pppd/ccp.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/ccp.c	2009-11-05 10:18:13.000000000 +0100
++++ pppd/ccp.c	2009-11-06 15:01:48.000000000 +0100
 @@ -62,12 +62,10 @@
  static char bsd_value[8];
  static char deflate_value[8];
@@ -1462,7 +1462,7 @@
  }
 -
 --- pppd/ccp.h.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/ccp.h	2009-11-05 10:18:13.000000000 +0100
++++ pppd/ccp.h	2009-11-06 15:01:48.000000000 +0100
 @@ -37,9 +37,17 @@
      bool predictor_2;		/* do Predictor-2? */
      bool deflate_correct;	/* use correct code for deflate? */
@@ -1482,7 +1482,7 @@
  } ccp_options;
  
 --- pppd/chap_ms.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/chap_ms.c	2009-11-05 10:18:13.000000000 +0100
++++ pppd/chap_ms.c	2009-11-06 15:01:48.000000000 +0100
 @@ -898,13 +898,17 @@
      /*
       * Disable undesirable encryption types.  Note that we don't ENABLE
@@ -1503,8 +1503,8 @@
  	    break;
  	default:
  	    break;
---- pppd/pppd.8.orig	2009-11-05 10:18:12.000000000 +0100
-+++ pppd/pppd.8	2009-11-05 10:18:13.000000000 +0100
+--- pppd/pppd.8.orig	2009-11-06 15:01:47.000000000 +0100
++++ pppd/pppd.8	2009-11-06 15:01:48.000000000 +0100
 @@ -643,9 +643,29 @@
  Enables the use of PPP multilink; this is an alias for the `multilink'
  option.  This option is currently only available under Linux.
