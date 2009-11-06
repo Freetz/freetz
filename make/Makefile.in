@@ -83,7 +83,7 @@ TARGET_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
 TARGET_CONFIGURE_ENV += CXXFLAGS="$(TARGET_CFLAGS)"
 TARGET_CONFIGURE_ENV += LDFLAGS=""
 
-TARGET_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../lib/pkgconfig" 
+TARGET_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../lib/pkgconfig"
 
 #TARGET_CONFIGURE_ENV += AR="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar"
 #TARGET_CONFIGURE_ENV += AS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as"
@@ -283,7 +283,7 @@ endef
 define PKG_FINISH__INT
 $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
-$(pkg)-precompiled--int : uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON)) 
+$(pkg)-precompiled--int : uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
 PKG:=
 pkg:=
 PKG_TYPE:=
@@ -320,7 +320,7 @@ $(pkg)-check-download:
 		echo "ok."; \
 	else \
 		echo "ERROR: NOT FOUND!"; \
-	fi	
+	fi
 
 .PHONY: $(pkg)-download $(pkg)-check-download $(pkg)-download-mirror
 endef
@@ -449,7 +449,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	( cd $($(PKG)_DIR); \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
 		$($(PKG)_CONFIGURE_PRE_CMDS) \
-		source $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
+		FREETZ_TARGET_LFS="$(strip $(FREETZ_TARGET_LFS))" source $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
 		$(TARGET_CONFIGURE_ENV) \
 		$($(PKG)_CONFIGURE_ENV) \
 		./configure \
