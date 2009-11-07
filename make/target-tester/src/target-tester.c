@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <sys/poll.h>
 
 int main(int argc, char** argv) {
 	struct stat x;
@@ -69,4 +70,27 @@ int main(int argc, char** argv) {
 	printf("sizeof(voidp)=%d\n", sizeof(void*));
 	printf("sizeof(mbstate_t)=%d\n", sizeof(mbstate_t));
 	printf("sizeof(__off64_t)=%d\n", sizeof(__off64_t));
+
+	{
+	    printf("cv_type_of_bool=");
+    	    bool x = true;
+	    if ((bool)(-x) >= 0)
+		printf("unsigned ");
+	    if (sizeof(x) == sizeof(int))
+		printf("int\n");
+	    else if (sizeof(x) == sizeof(char))
+		printf("char\n");
+	    else if (sizeof(x) == sizeof(short))
+		printf("short\n");
+	    else if (sizeof(x) == sizeof(long))
+		printf("long\n");
+	}
+
+
+	{
+	    struct pollfd myfds;
+	    myfds.fd = 0;
+	    myfds.events = POLLIN;
+	    printf("cf_cv_working_poll=%s%s", poll(&myfds, 1, 100) ? "yes" : "no", "\n");
+	}
 }

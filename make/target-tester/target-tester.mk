@@ -18,7 +18,7 @@ $(1): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(TARGET_TESTER_DIR) \
 		TARGET=$$(notdir $$@) \
-		CC="$(TARGET_CC)" \
+		CC="$(TARGET_CXX)" \
 		CFLAGS="$(TARGET_CFLAGS_WITHOUT_LARGEFILE_FLAGS) $(2)"
 endef
 

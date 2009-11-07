@@ -18,6 +18,12 @@ $(PKG)_TERMINFO_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo
 $(PKG)_TERMINFO_TARGET_DIR:=$(ROOT_DIR)/usr/share/terminfo
 $(PKG)_SOURCE_MD5:=cce05daf61a64501ef6cd8da1f727ec6
 
+$(PKG)_CONFIGURE_ENV += cf_cv_func_nanosleep=yes
+$(PKG)_CONFIGURE_ENV += cf_cv_link_dataonly=yes
+#evaluated by running test program on target platform
+$(PKG)_CONFIGURE_ENV += cf_cv_type_of_bool='unsigned char'
+$(PKG)_CONFIGURE_ENV += cf_cv_working_poll=no
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-echo
 $(PKG)_CONFIGURE_OPTIONS += --enable-const
 $(PKG)_CONFIGURE_OPTIONS += --enable-overwrite
