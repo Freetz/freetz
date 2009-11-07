@@ -1,0 +1,110 @@
+--- configure
++++ configure
+@@ -812,104 +812,9 @@
+ 		NDEFS="$NDEFS -DDYNIX=$os_int"
+ 		;;
+ 	linux)
+-		case "$arch" in
+-			*86)
+-				arch=x86
+-				;;
+-		esac
+-
+-		libc=""
+-		os_r1=`echo "$os_r" | cut -d. -f1`
+-		os_r2=`echo "$os_r" | cut -d. -f2`
+-		os_r3=`echo "$os_r" | cut -d- -f1 | cut -d. -f3`
+-		os_int=`expr "$os_r1" '*' 10000 + "$os_r2" '*' 1000 + "$os_r3"`
+-		NDEFS="$NDEFS -DLINUX=$os_int"
+-
+-		vertest="./vertest.$$"
+-		rm -f "$vertest" "$vertest.c"
+-		cat <<EOF > "$vertest.c"
+-#include <stdio.h>
+-#include <gnu/libc-version.h>
+-
+-main()
+-{
+-	const char *ver = gnu_get_libc_version();
+-	const char *rel = gnu_get_libc_release();
+-
+-	fprintf(stdout, "glibc%s\n", ver);
+-	exit(0);
+-}
+-EOF
+-		echo $ac_n "checking version of C library""... $ac_c" 1>&6
+-		echo "configure:: checking version of C library" >&5
+-		${CC-cc} $DEFS $CPPFLAGS $CFLAGS "$vertest.c" -o "$vertest" >/dev/null 2>&1
+-		if [ -x "$vertest" ] ; then libc=`$vertest 2>/dev/null` ; fi
+-		rm -f "$vertest" "$vertest.c"
+-
+-		if [ "$libc" = "" ] ; then
+-			libc_sysroot=`"${CC-gcc}" -v 2>&1 | sed -n '/with-libc_sysroot/{s/^.*--with-libc_sysroot=//;s/ .*//;p;q;}'`	# Only results in non-empty with a GCC cross-compiler
+-
+-			libc_file=`/bin/ls -1 -t "${libc_sysroot}"/lib/libc.so.* 2>/dev/null | sed -n 1,1p`
+-			if [ "$libc_file" != "" ] ; then
+-				libc_file=`echo "$libc_file" | sed 's|^.*/||'`
+-				libc_file="$libc_sysroot/lib/$libc_file"
+-			elif [ -f "$libc_sysroot/usr/lib/libc.a" ] ; then
+-				libc_file="$libc_sysroot/usr/lib/libc.a"
+-			else
+-				libc_file="/error"
+-			fi
+-
+-			libc=`strings -n 40 "$libc_file" 2>/dev/null | fgrep 'GNU C Library' | sed 's/^.*version //;s/[^0-9\.].*$//;' | sed -n 1,1p`
+-
+-			if [ "$libc" != "" ] ; then
+-				libc="glibc${libc}"
+-			fi
+-		fi
+-
+-		case "$libc" in
+-			glibc*)
+-				echo "$libc" 1>&6
+-				glibc_r=`echo "$libc" | sed 's/glibc//'`
+-				glibc_r1=`echo "$glibc_r" | cut -d. -f1`
+-				glibc_r2=`echo "$glibc_r" | cut -d. -f2`
+-				glibc_r3=`echo "$glibc_r" | cut -d- -f1 | cut -d. -f3`
+-				if test "$glibc_r1" = "" ; then glibc_r1=0 ; fi
+-				if test "$glibc_r2" = "" ; then glibc_r2=0 ; fi
+-				if test "$glibc_r3" = "" ; then glibc_r3=0 ; fi
+-				glibc_int=`expr "$glibc_r1" '*' 10000 + "$glibc_r2" '*' 1000 + "$glibc_r3"`
+-				NDEFS="$NDEFS -DLINUX_GLIBC=$glibc_int"
+-				libc="glibc${glibc_r1}.${glibc_r2}"
+-				OS="linux-$arch"
+-				;;
+-			*)
+-				if test -f /lib/libc-2.1.3.so ; then
+-					NDEFS="$NDEFS -DLINUX_GLIBC=21003"
+-					libc="glibc2.1"
+-					OS="linux-$arch"
+-				elif test -f /lib/libc-2.1.2.so ; then
+-					NDEFS="$NDEFS -DLINUX_GLIBC=21002"
+-					libc="glibc2.1"
+-					OS="linux-$arch"
+-				elif test -f /lib/libc-2.1.1.so ; then
+-					NDEFS="$NDEFS -DLINUX_GLIBC=21001"
+-					libc="glibc2.1"
+-					OS="linux-$arch"
+-				elif test -f /lib/libc.so.6 ; then
+-					NDEFS="$NDEFS -DLINUX_GLIBC=20000"
+-					libc="glibc2.0"
+-					OS="linux-$arch"
+-				elif test -f /lib/libc.so.6.1 ; then
+-					NDEFS="$NDEFS -DLINUX_GLIBC=20001"
+-					libc="glibc2.0"
+-					OS="linux-$arch"
+-				else
+-					NDEFS="$NDEFS -DLINUX_LIBC=5"
+-					libc="libc5"
+-					OS="linux-$arch"
+-				fi
+-				echo "$libc" 1>&6
+-				;;
+-		esac
++		libc="uClibc"
++		arch="mipsel"
++		OS="linux-$arch"
+ 		SYS=linux
+ 		;;
+ 	bsd/os)
