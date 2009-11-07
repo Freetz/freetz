@@ -33,7 +33,7 @@ $(PKG_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	( cd $(LYNX_DIR); rm -f config.{cache,status}; \
-		$(TARGET_CONFIGURE_OPTS) \
+		$(TARGET_CONFIGURE_ENV) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \

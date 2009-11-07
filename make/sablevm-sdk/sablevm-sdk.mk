@@ -29,7 +29,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_DIR)/sablevm/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(SABLEVM_SDK_DIR)/sablevm; rm -rf config.cache; \
-		$(TARGET_CONFIGURE_OPTS) \
+		$(TARGET_CONFIGURE_ENV) \
 		./configure \
 		--cache-file=$(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache \
 		--target=$(GNU_TARGET_NAME) \
@@ -48,7 +48,7 @@ $($(PKG)_DIR)/sablevm/.configured: $($(PKG)_DIR)/.unpacked
 
 $($(PKG)_DIR)/sablevm-classpath/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(SABLEVM_SDK_DIR)/sablevm-classpath; rm -rf config.cache; \
-		$(TARGET_CONFIGURE_OPTS) \
+		$(TARGET_CONFIGURE_ENV) \
 		./configure \
 		--cache-file=$(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache \
 		--target=$(GNU_TARGET_NAME) \

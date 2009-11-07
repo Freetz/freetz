@@ -18,7 +18,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	cd $(DEBOOTSTRAP_DIR) && $(TARGET_CONFIGURE_OPTS) \
+	cd $(DEBOOTSTRAP_DIR) && $(TARGET_CONFIGURE_ENV) \
 		$(TARGET_CC) $(TARGET_CFLAGS) -o pkgdetails pkgdetails.c
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)

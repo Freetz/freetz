@@ -124,7 +124,7 @@ $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
 	mkdir -p $(BINUTILS_DIR2)
 	(cd $(BINUTILS_DIR2); rm -rf config.cache; \
 		CFLAGS_FOR_BUILD="-g -O2 $(HOST_CFLAGS)" \
-		$(TARGET_CONFIGURE_OPTS) \
+		$(TARGET_CONFIGURE_ENV) \
 		$(BINUTILS_DIR)/configure \
 		--prefix=/usr \
 		--exec-prefix=/usr \

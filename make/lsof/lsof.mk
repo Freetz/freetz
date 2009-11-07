@@ -12,7 +12,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(LSOF_DIR); echo n | $(TARGET_CONFIGURE_OPTS) DEBUG="$(TARGET_CFLAGS)" LSOF_CC="$(TARGET_CC)" \
+	(cd $(LSOF_DIR); echo n | $(TARGET_CONFIGURE_ENV) DEBUG="$(TARGET_CFLAGS)" LSOF_CC="$(TARGET_CC)" \
 		LSOF_INCLUDE=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include ./Configure linux)
 	touch $@
 

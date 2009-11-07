@@ -61,11 +61,6 @@ TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.commen
 
 # Don't use TARGET_TOOLCHAIN_PATH here because it's not set
 TARGET_PATH="$(TARGET_MAKE_PATH):$(PATH)"
-# A better name for TARGET_CONFIGURE_OPTS would be TARGET_CONFIGURE_ENV, but that would require changes to all makefiles
-# usage is deprecated
-# see also TARGET_CONFIGURE_OPTIONS
-# NOTE: defined with "=", not with ":="
-TARGET_CONFIGURE_OPTS = $(TARGET_CONFIGURE_ENV)
 
 # commands to run before calling configure
 # each command has to be terminated by ';'

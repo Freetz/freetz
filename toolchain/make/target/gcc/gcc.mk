@@ -234,7 +234,7 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 	( cd $(GCC_BUILD_DIR3); rm -rf config.cache; \
 		GCC="$(TARGET_CC)" \
 		CFLAGS_FOR_BUILD="-g -O2 $(HOST_CFLAGS)" \
-		$(TARGET_CONFIGURE_OPTS) \
+		$(TARGET_CONFIGURE_ENV) \
 		$(GCC_DIR)/configure \
 		--prefix=/usr \
 		--build=$(GNU_HOST_NAME) \
