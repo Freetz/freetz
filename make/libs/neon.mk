@@ -38,9 +38,10 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(NEON_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE) \
+	PATH=$(TARGET_PATH) \
+		$(MAKE) -C $(NEON_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		-C $(NEON_DIR) install
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libneon.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/neon.pc \

@@ -23,9 +23,10 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(DEVMAPPER_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE) \
+	PATH=$(TARGET_PATH) \
+		$(MAKE) -C $(DEVMAPPER_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		-C $(DEVMAPPER_DIR) install
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/devmapper.pc
 

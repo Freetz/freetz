@@ -81,7 +81,8 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_LIB_STAGING_CLASSPATH_BINARY): $($(PKG)_LIB_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE) -C $(SABLEVM_SDK_DIR)/sablevm-classpath/native/jni \
+	PATH=$(TARGET_PATH) \
+		$(MAKE) -C $(SABLEVM_SDK_DIR)/sablevm-classpath/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavaio.la \

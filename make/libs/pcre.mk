@@ -32,9 +32,10 @@ $($(PKG)_BINARY) $($(PKG)_POSIX_BINARY): $($(PKG)_DIR)/.configured
 		all
 
 $($(PKG)_STAGING_BINARY) $($(PKG)_POSIX_STAGING_BINARY): $($(PKG)_BINARY) $($(PKG)_POSIX_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE) \
+	PATH=$(TARGET_PATH) \
+		$(MAKE) -C $(PCRE_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		-C $(PCRE_DIR) install
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcreposix.la \

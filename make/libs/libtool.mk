@@ -22,9 +22,10 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(LIBTOOL_DIR)/libltdl
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE) \
+	PATH=$(TARGET_PATH) \
+		$(MAKE) -C $(LIBTOOL_DIR)/libltdl \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		-C $(LIBTOOL_DIR)/libltdl install
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libltdl.la
 

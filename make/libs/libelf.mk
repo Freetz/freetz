@@ -27,9 +27,10 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(LIBELF_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE1) \
+	PATH=$(TARGET_PATH) \
+		$(MAKE1) -C $(LIBELF_DIR) \
 		instroot="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		-C $(LIBELF_DIR) install
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libelf.pc
 
