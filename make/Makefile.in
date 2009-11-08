@@ -66,7 +66,7 @@ TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.commen
 TARGET_PATH="$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(PATH)"
 
 # We have some libraries (e.g. libcrypto) that should not be used by AVM binaries
-FREETZ_LIBRARY_PATH=LD_RUN_PATH="/freetz/lib"
+FREETZ_LIBRARY_PATH=LD_RUN_PATH="/usr/lib/freetz"
 
 # commands to run before calling configure
 # each command has to be terminated by ';'
@@ -227,7 +227,7 @@ define PKG_INIT_LIB__INT
 PKG_TYPE:=LIB
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
-$(PKG)_TARGET_DIR:=root/freetz/lib
+$(PKG)_TARGET_DIR:=root/usr/lib/freetz
 $(PKG)_DEST_DIR:=root
 endef
 

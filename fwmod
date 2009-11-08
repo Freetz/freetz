@@ -593,7 +593,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		mkdir -p "${MOD_ROOT}/bin" "${MOD_ROOT}/sbin"
 		mkdir -p "${MOD_ROOT}/var/cache"
 		mkdir -p "${MOD_ROOT}/usr/bin" "${MOD_ROOT}/usr/sbin" "${MOD_ROOT}/usr/share" \
-			"${MOD_ROOT}/usr/lib" "${MOD_ROOT}/usr/lib/cgi-bin" "${MOD_ROOT}/freetz/lib"
+			"${MOD_ROOT}/usr/lib" "${MOD_ROOT}/usr/lib/cgi-bin" "${MOD_ROOT}/usr/lib/freetz"
 		mkdir -p "${MOD_ROOT}/etc/conf" "${MOD_ROOT}/etc/init.d" "${MOD_ROOT}/etc/reg"
 		ln -s /tmp/flash/mod/.profile "${MOD_ROOT}/root/.profile"
 		# AVM compatibility symlink
@@ -633,7 +633,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			bn=${conf#FREETZ_LIB_}
 			fn=${bn//_/[-+._]}
 			echo2 "$bn"
-			for dn in lib usr/lib freetz/lib usr/lib/xtables; do
+			for dn in lib usr/lib usr/lib/freetz usr/lib/xtables; do
 				files=$(shopt -s nullglob; echo ${ROOT_DIR}/$dn/$fn[-.]*so*)
 				if [ -z "$files" ]; then
 					continue;
