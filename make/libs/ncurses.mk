@@ -15,7 +15,7 @@ $(PKG)_PANEL_BINARY:=$($(PKG)_DIR)/lib/libpanel.so.$($(PKG)_LIB_VERSION)
 $(PKG)_PANEL_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel.so.$($(PKG)_LIB_VERSION)
 $(PKG)_PANEL_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpanel.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TERMINFO_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo
-$(PKG)_TERMINFO_TARGET_DIR:=$(ROOT_DIR)/usr/share/terminfo
+$(PKG)_TERMINFO_TARGET_DIR:=$($(PKG)_DEST_DIR)/usr/share/terminfo
 $(PKG)_SOURCE_MD5:=cce05daf61a64501ef6cd8da1f727ec6
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-echo
@@ -64,15 +64,15 @@ $($(PKG)_TERMINFO_STAGING_DIR)/.installed: $($(PKG)_DIR)/.configured
 	touch $@
 
 $($(PKG)_TERMINFO_TARGET_DIR)/.installed: $($(PKG)_TERMINFO_STAGING_DIR)/.installed
-	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
-	mkdir -p $(NCURSES_TERMINFO_TARGET_DIR) $(NCURSES_TARGET_DIR)/../share
+	rm -rf $(NCURSES_DEST_DIR)/usr/share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
+	mkdir -p $(NCURSES_TERMINFO_TARGET_DIR) $(NCURSES_DEST_DIR)/usr/share
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/* $(NCURSES_TERMINFO_TARGET_DIR)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset $(NCURSES_TARGET_DIR)/../share
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset $(NCURSES_DEST_DIR)/usr/share
 	touch $@
 
 $($(PKG)_NCURSES_TARGET_BINARY): $($(PKG)_NCURSES_STAGING_BINARY)
 	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset \
-		$(NCURSES_TARGET_DIR)/../share/
+		$(NCURSES_DEST_DIR)/usr/share/
 	$(INSTALL_LIBRARY_STRIP)
 
 $($(PKG)_FORM_TARGET_BINARY): $($(PKG)_FORM_STAGING_BINARY)
@@ -104,7 +104,7 @@ $(pkg)-terminfo: $($(PKG)_TERMINFO_TARGET_DIR)/.installed
 $(pkg)-terminfo-precompiled: $(pkg)-terminfo
 
 $(pkg)-terminfo-clean:
-	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
+	rm -rf $(NCURSES_DEST_DIR)/usr/share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
 
 $(pkg)-clean: $(pkg)-terminfo-clean
 	-$(SUBMAKE) -C $(NCURSES_DIR) clean
@@ -120,7 +120,7 @@ $(pkg)-uninstall:
 	$(RM) $(NCURSES_TARGET_DIR)/libform*.so*
 	$(RM) $(NCURSES_TARGET_DIR)/libmenu*.so*
 	$(RM) $(NCURSES_TARGET_DIR)/libpanel*.so*
-	$(RM) -r $(NCURSES_TARGET_DIR)/../share/tabset
-	$(RM) -r $(NCURSES_TARGET_DIR)/../share/terminfo
+	$(RM) -r $(NCURSES_DEST_DIR)/usr/share/tabset
+	$(RM) -r $(NCURSES_DEST_DIR)/usr/share/terminfo
 
 $(PKG_FINISH)

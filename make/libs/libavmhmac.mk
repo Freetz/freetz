@@ -44,7 +44,7 @@ $(pkg)-clean:
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libavmhmac*
 
 $(pkg)-uninstall:
-	$(RM) $(LIBAVMHMAC_DEST_FREETZ_LIB)/libavmhmac*.so*
+	$(RM) $(LIBAVMHMAC_DEST_LIB)/libavmhmac*.so*
 
 $(PKG_FINISH)
 

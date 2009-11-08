@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_SOURCE_MD5:=390a25cbf34a3601895e55832d249e18
 
 
@@ -42,6 +42,6 @@ $(pkg)-clean:
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfreetz*
 
 $(pkg)-uninstall:
-	$(RM) $(LIBFREETZ_TARGET_DIR)/libfreetz*.so*
+	$(RM) $(LIBFREETZ_DEST_LIB)/libfreetz*.so*
 
 $(PKG_FINISH)
