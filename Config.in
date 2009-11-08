@@ -2302,16 +2302,23 @@ choice
 
 endchoice
 
-	config FREETZ_REPLACE_SSL_LIBS
-		bool "Replace AVM ssl-libs"
-		depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_LIBSSL
-		default n
-		help
-			Use this option only if you are running out of space and if you
-			really know, what you are doing.
-			activating this option may cause an unstable system, uncontrolled reboots
-			and other side effects
-			(Activiating this option saves about 400K space in image)
+config FREETZ_REPLACE_SSL_LIBS
+	bool "Replace AVM ssl-libs"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_LIBSSL
+	default y if ( \
+			FREETZ_TYPE_2170 || \
+			FREETZ_TYPE_WLAN_3131 || \
+			FREETZ_TYPE_WLAN_3130 || \
+			FREETZ_TYPE_WLAN_3170 || \
+			FREETZ_TYPE_3170_7170 \
+		)
+	default n
+	help
+		Use this option only if you are running out of space and if you
+		really know, what you are doing.
+		activating this option may cause an unstable system, uncontrolled reboots
+		and other side effects
+		(Activiating this option saves about 400K space in image)
 
 menu "BusyBox options"
 	depends on FREETZ_REPLACE_BUSYBOX
