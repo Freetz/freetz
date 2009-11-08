@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.41.4)
+$(call PKG_INIT_BIN, 1.41.9)
 $(PKG)_SOURCE:=e2fsprogs-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/e2fsprogs
 $(PKG)_DIR:=$(SOURCE_DIR)/e2fsprogs-$($(PKG)_VERSION)
