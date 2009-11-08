@@ -1,0 +1,13 @@
+config FREETZ_PACKAGE_UNRAR
+	bool "unrar 3.9.6"
+	select FREETZ_LIB_libuClibc__ if ! FREETZ_PACKAGE_UNRAR_STATIC
+	default n
+	help
+		Unarchiver for .rar files
+
+config FREETZ_PACKAGE_UNRAR_STATIC
+	bool "create statically linked binary"
+	depends on FREETZ_PACKAGE_UNRAR
+	default n
+	help
+		Causes all libraries unrar depends on to be linked in statically

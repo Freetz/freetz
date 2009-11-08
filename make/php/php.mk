@@ -25,6 +25,10 @@ $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_SQLITE
 
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ssize_t=4
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ptrdiff_t=4
+$(PKG)_CONFIGURE_ENV += ac_cv_c_bigendian_php=no
+$(PKG)_CONFIGURE_ENV += php_cv_sizeof_intmax_t=8
+$(PKG)_CONFIGURE_ENV += lt_cv_prog_gnu_ldcxx=yes
+$(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_TOOLCHAIN_SYMLINK)/bin/mipsel-linux-nm -B"
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath

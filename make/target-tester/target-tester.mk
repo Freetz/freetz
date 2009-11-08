@@ -17,7 +17,7 @@ define TARGET_TESTER_COMPILE_BINARY
 $(1): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(TARGET_TESTER_DIR) \
 		TARGET=$$(notdir $$@) \
-		CC="$(TARGET_CC)" \
+		CC="$(TARGET_CXX)" \
 		CFLAGS="$(TARGET_CFLAGS_WITHOUT_LARGEFILE_FLAGS) $(2)"
 endef
 

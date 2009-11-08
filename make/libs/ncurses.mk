@@ -18,6 +18,20 @@ $(PKG)_TERMINFO_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo
 $(PKG)_TERMINFO_TARGET_DIR:=$($(PKG)_DEST_DIR)/usr/share/terminfo
 $(PKG)_SOURCE_MD5:=cce05daf61a64501ef6cd8da1f727ec6
 
+$(PKG)_CONFIGURE_ENV += cf_cv_func_nanosleep=yes
+$(PKG)_CONFIGURE_ENV += cf_cv_link_dataonly=yes
+
+#evaluated by running test program on target platform
+$(PKG)_CONFIGURE_ENV += cf_cv_type_of_bool='unsigned char'
+
+# NB: The test actually says that poll()-function works.
+# Setting cf_cv_working_poll to 'yes' would however activate
+# a code branch that has not been extensively tested in
+# freetz environment. That's the reason we set it to 'no' here
+# and keep on using ncurses' select-branch used until now.
+# TODO: remove this comment as soon as poll-branch has been tested.
+$(PKG)_CONFIGURE_ENV += cf_cv_working_poll=no
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-echo
 $(PKG)_CONFIGURE_OPTIONS += --enable-const
 $(PKG)_CONFIGURE_OPTIONS += --enable-overwrite
