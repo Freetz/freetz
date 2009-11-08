@@ -10,7 +10,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <poll.h>
 #include <sys/poll.h>
+
+#include <errno.h>
+#include <time.h>
+#include <sys/time.h>
 
 int main(int argc, char** argv) {
 	struct stat x;
@@ -86,11 +91,24 @@ int main(int argc, char** argv) {
 		printf("long\n");
 	}
 
-
 	{
 	    struct pollfd myfds;
+	    int code;
 	    myfds.fd = 0;
 	    myfds.events = POLLIN;
-	    printf("cf_cv_working_poll=%s%s", poll(&myfds, 1, 100) ? "yes" : "no", "\n");
+	    code = poll(&myfds, 1, 100);
+	    printf("cf_cv_working_poll=%s\n", (code>=0) ? "yes" : "no");
+	}
+
+	{
+	    struct timespec ts1, ts2;
+	    int code;
+	    ts1.tv_sec  = 0;
+	    ts1.tv_nsec = 750000000;
+	    ts2.tv_sec  = 0;
+	    ts2.tv_nsec = 0;
+	    errno = 0;
+	    code = nanosleep(&ts1, &ts2); /* on failure errno is ENOSYS. */
+	    printf("cf_cv_func_nanosleep=%s\n", (code==0) ? "yes" : "no");
 	}
 }
