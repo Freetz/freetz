@@ -26,7 +26,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(BIP_DIR) \
+	$(SUBMAKE) -C $(BIP_DIR) \
 		LDFLAGS="$(BIP_LDFLAGS)" \
 		LIBS="$(BIP_LIBS)"
 

@@ -17,13 +17,13 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_SMBP_BINARY) $($(PKG)_SMBD_BINARY) $($(PKG)_NMBD_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(SAMBA_DIR)/source \
+	$(SUBMAKE) -C $(SAMBA_DIR)/source \
 		CC=$(TARGET_CC) \
 		LD=$(TARGET_LD) \
 		SAMBA_CFLAGS="$(TARGET_CFLAGS)" \
 		CODEPAGEDIR="/mod/usr/share/samba" \
 		proto
-		$(SUBMAKE) -C $(SAMBA_DIR)/source \
+	$(SUBMAKE) -C $(SAMBA_DIR)/source \
 		CC=$(TARGET_CC) \
 		LD=$(TARGET_LD) \
 		SAMBA_CFLAGS="$(TARGET_CFLAGS)" \

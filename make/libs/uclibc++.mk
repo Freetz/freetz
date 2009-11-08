@@ -18,13 +18,13 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(UCLIBCXX_DIR) \
+	$(SUBMAKE) -C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-		$(SUBMAKE) -C $(UCLIBCXX_DIR) \
+	$(SUBMAKE) -C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \

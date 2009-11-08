@@ -13,7 +13,7 @@ $(PKG_CONFIGURED_NOP)
 
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(AICCU_DIR) aiccu \
+	$(SUBMAKE) -C $(AICCU_DIR) aiccu \
 		CC="$(TARGET_CC)" \
 		RPM_OPT_FLAGS="$(TARGET_CFLAGS)"
 

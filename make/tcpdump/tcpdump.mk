@@ -24,7 +24,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(TCPDUMP_DIR) all \
+	$(SUBMAKE) -C $(TCPDUMP_DIR) all \
 		CCOPT="$(TARGET_CFLAGS)" \
 		INCLS="-I." 
 

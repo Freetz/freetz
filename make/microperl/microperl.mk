@@ -16,7 +16,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(MICROPERL_DIR) -f Makefile.micro \
+	$(SUBMAKE) -C $(MICROPERL_DIR) -f Makefile.micro \
 		CC="$(TARGET_CC)" OPTIMIZE="$(TARGET_CFLAGS)" 
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)

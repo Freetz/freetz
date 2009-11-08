@@ -12,7 +12,7 @@ $(PKG_CONFIGURED_NOP)
 
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(IPUTILS_DIR) traceroute6 tracepath6 tracepath ping ping6 \
+	$(SUBMAKE) -C $(IPUTILS_DIR) traceroute6 tracepath6 tracepath ping ping6 \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)"
 		

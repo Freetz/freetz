@@ -16,9 +16,9 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) \
+	$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) \
 		config-check
-		$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) \
+	$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) \
 		CC="$(TARGET_CROSS)gcc" \
 		OPT_CFLAGS="$(TARGET_CFLAGS)" \
 		LIBS=-lnsl \

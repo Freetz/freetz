@@ -50,19 +50,19 @@ $($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
 	echo "#undef PJ_HAS_IFADDR_H"			>> $(PJPROJECT_CONFIG_SITE)	
 	echo "#define PJMEDIA_SOUND_IMPLEMENTATION PJMEDIA_SOUND_NULL_SOUND" >> $(PJPROJECT_CONFIG_SITE)
 	
-		$(SUBMAKE) -C $(PJPROJECT_DIR) dep \
+	$(SUBMAKE) -C $(PJPROJECT_DIR) dep \
 		LDFLAGS="-lm"
 	touch $@
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_DIR)/.depend
-	cd $(PJPROJECT_DIR)
-		$(SUBMAKE1) -C $(PJPROJECT_DIR) \
+	cd $(PJPROJECT_DIR);
+	$(SUBMAKE1) -C $(PJPROJECT_DIR) \
 		LDFLAGS="-lm"
 	touch $@
 
 #$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 #	cd $(PJPROJECT_DIR)
-#		$(SUBMAKE1) -C $(PJPROJECT_DIR) LDFLAGS="-lm" \
+#	$(SUBMAKE1) -C $(PJPROJECT_DIR) LDFLAGS="-lm" \
 #		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 #	install
 #	touch $@

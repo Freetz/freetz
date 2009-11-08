@@ -36,21 +36,21 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(OPENSSL_DIR) \
+	$(SUBMAKE) -C $(OPENSSL_DIR) \
 		SHARED_LDFLAGS="" \
 		CC="$(TARGET_CC)" \
 		AR="$(TARGET_CROSS)ar r" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		all
 	# Work around openssl build bug to link libssl.so with libcrypto.so.
-		$(SUBMAKE) -C $(OPENSSL_DIR) \
+	$(SUBMAKE) -C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \
 		CCOPTS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		do_linux-shared
 
 $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): \
 		$($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY)
-		$(SUBMAKE) -C $(OPENSSL_DIR) \
+	$(SUBMAKE) -C $(OPENSSL_DIR) \
 		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \

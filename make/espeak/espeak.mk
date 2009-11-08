@@ -13,7 +13,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $(ESPEAK_DIR)/.configured
-		$(SUBMAKE) -C $(ESPEAK_DIR)/src \
+	$(SUBMAKE) -C $(ESPEAK_DIR)/src \
 		CXX="mipsel-linux-g++-uc" \
 		CXXFLAGS="$(TARGET_CFLAGS)" \
 		LIBS1="-lm"

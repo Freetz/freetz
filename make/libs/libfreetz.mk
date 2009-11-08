@@ -13,7 +13,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(LIBFREETZ_DIR) \
+	$(SUBMAKE) -C $(LIBFREETZ_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -22,7 +22,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-		$(SUBMAKE) -C $(LIBFREETZ_DIR) \
+	$(SUBMAKE) -C $(LIBFREETZ_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		CFLAGS="$(TARGET_CFLAGS)" \

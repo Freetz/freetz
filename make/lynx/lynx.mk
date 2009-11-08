@@ -63,7 +63,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_BINARY) $($(PKG)_CFG): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(LYNX_DIR) \
+	$(SUBMAKE) -C $(LYNX_DIR) \
 		LD="$(TARGET_LD)"
 	touch $@
 

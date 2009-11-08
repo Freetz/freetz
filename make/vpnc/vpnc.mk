@@ -25,7 +25,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(VPNC_DIR) vpnc \
+	$(SUBMAKE) -C $(VPNC_DIR) vpnc \
 		CC="$(TARGET_CC)" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include $(VPNC_CPPFLAGS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \

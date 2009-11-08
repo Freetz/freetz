@@ -42,7 +42,7 @@ $($(PKG)_NCURSES_BINARY) \
 $($(PKG)_FORM_BINARY) \
 $($(PKG)_MENU_BINARY) \
 $($(PKG)_PANEL_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(NCURSES_DIR) \
+	$(SUBMAKE) -C $(NCURSES_DIR) \
 		libs panel menu form headers
 
 $($(PKG)_NCURSES_STAGING_BINARY) \
@@ -53,12 +53,12 @@ $($(PKG)_PANEL_STAGING_BINARY): \
 		$($(PKG)_FORM_BINARY) \
 		$($(PKG)_MENU_BINARY) \
 		$($(PKG)_PANEL_BINARY)
-		$(SUBMAKE) -C $(NCURSES_DIR) \
+	$(SUBMAKE) -C $(NCURSES_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install.libs install.data
 
 $($(PKG)_TERMINFO_STAGING_DIR)/.installed: $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(NCURSES_DIR)/misc \
+	$(SUBMAKE) -C $(NCURSES_DIR)/misc \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		all install
 	touch $@

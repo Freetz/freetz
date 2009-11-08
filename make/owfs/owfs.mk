@@ -28,10 +28,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $(OWFS_DIR)/.configured
-		$(SUBMAKE) -C $(OWFS_DIR)
+	$(SUBMAKE) -C $(OWFS_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-		$(SUBMAKE) -C $(OWFS_DIR) \
+	$(SUBMAKE) -C $(OWFS_DIR) \
 		DESTDIR="$(FREETZ_BASE_DIR)/$(OWFS_DEST_DIR)" \
 		install-strip
 	$(RM) -r $(OWFS_DEST_DIR)/usr/include \

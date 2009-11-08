@@ -14,7 +14,7 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(TARGET_CONFIGURE_ENV) \
-		$(SUBMAKE) -C $(XRELAYD_DIR) \
+	$(SUBMAKE) -C $(XRELAYD_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LD="$(TARGET_CC)" \

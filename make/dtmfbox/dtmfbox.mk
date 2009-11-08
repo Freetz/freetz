@@ -40,7 +40,7 @@ $(DTMFBOX_DIR)/.forcesvn:
 	if [ -f .unpacked ]; then rm .unpacked; fi
 
 $($(PKG)_BINARY): $(if $(FREETZ_PACKAGE_DTMFBOX_SVN_FORCE_LATEST_REV),$(DTMFBOX_DIR)/.forcesvn,) $($(PKG)_DIR)/.configured
-		$(SUBMAKE1) -C $(DTMFBOX_DIR)
+	$(SUBMAKE1) -C $(DTMFBOX_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(DTMFBOX_TARGET_DIR)/root/etc/init.d

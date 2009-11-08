@@ -37,7 +37,7 @@ $($(PKG)_TARGET_CONF): $($(PKG)_CONF)
 	cp $< $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(LTRACE_DIR) ARCH=mipsel
+	$(SUBMAKE) -C $(LTRACE_DIR) ARCH=mipsel
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

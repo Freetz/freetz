@@ -24,11 +24,11 @@ $(PKG_CONFIGURED_NOP)
 
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(GW6_DIR)/gw6c-config \
+	$(SUBMAKE) -C $(GW6_DIR)/gw6c-config \
 		$(GW6C_OPTS)
-		$(SUBMAKE) -C $(GW6_DIR)/gw6c-messaging \
+	$(SUBMAKE) -C $(GW6_DIR)/gw6c-messaging \
 		$(GW6C_OPTS)
-		$(SUBMAKE) -C $(GW6_DIR)/tspc-advanced \
+	$(SUBMAKE) -C $(GW6_DIR)/tspc-advanced \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -fno-builtin -Wall -I../../include -I../../platform/openwrt -I../.." \
 		LDFLAGS="-L../../gw6cconfig -L../../gw6cmessaging -nodefaultlibs -luClibc++ -lgcc_s -lpthread" \

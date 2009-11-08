@@ -10,7 +10,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(TCPPROXY_DIR) -f makefile \
+	$(SUBMAKE) -C $(TCPPROXY_DIR) -f makefile \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -DVERSION='\"$(TCPPROXY_VERSION)\"'"
 

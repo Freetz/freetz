@@ -13,10 +13,10 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 
 $(FLEX_BINARY): $(FLEX_DIR)/.configured
-		$(SUBMAKE) -C $(FLEX_DIR)
+	$(SUBMAKE) -C $(FLEX_DIR)
 
 $(FLEX_STAGING_BINARY): $(FLEX_BINARY)
-		$(SUBMAKE) -C $(FLEX_DIR) \
+	$(SUBMAKE) -C $(FLEX_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	# Don't try to run mipsel flex on host

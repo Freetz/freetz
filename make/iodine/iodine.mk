@@ -12,7 +12,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(IODINE_DIR) \
+	$(SUBMAKE) -C $(IODINE_DIR) \
 		CC="$(TARGET_CC)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)

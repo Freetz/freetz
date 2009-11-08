@@ -16,10 +16,10 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	   $(SUBMAKE) -C $(JPEG_DIR)  all
+	$(SUBMAKE) -C $(JPEG_DIR)  all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	   $(SUBMAKE) -C $(JPEG_DIR) \
+	$(SUBMAKE) -C $(JPEG_DIR) \
 		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		install-headers install-lib

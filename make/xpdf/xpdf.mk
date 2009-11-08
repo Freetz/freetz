@@ -21,7 +21,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 		
 $(XPDF_BINARIES): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -j 1 -C $(XPDF_DIR) $(XPDF_PROGRAMS)
+	$(SUBMAKE) -j 1 -C $(XPDF_DIR) $(XPDF_PROGRAMS)
 # -j 1 because my ad-hoc 'shared' patch does not specify all depencies properly
 
 $(XPDF_TARGET_BINARIES): $(XPDF_DEST_DIR)/usr/bin/%: $(XPDF_DIR)/xpdf/%

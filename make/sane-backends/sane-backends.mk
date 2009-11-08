@@ -54,13 +54,13 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_saned) $($(PKG)_sane_find_scanner) $($(PKG)_scanimage) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(SANE_BACKENDS_DIR)
+	$(SUBMAKE) -C $(SANE_BACKENDS_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-		$(SUBMAKE) -C $(SANE_BACKENDS_DIR)/include \
+	$(SUBMAKE) -C $(SANE_BACKENDS_DIR)/include \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-		$(SUBMAKE) -C $(SANE_BACKENDS_DIR)/backend \
+	$(SUBMAKE) -C $(SANE_BACKENDS_DIR)/backend \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install-libLTLIBRARIES
 	$(PKG_FIX_LIBTOOL_LA) \

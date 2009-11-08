@@ -14,7 +14,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY) $($(PKG)_SETPCI_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(PCIUTILS_DIR) \
+	$(SUBMAKE) -C $(PCIUTILS_DIR) \
 		CC=$(TARGET_CC) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		IDSDIR="/usr/share" \

@@ -19,11 +19,11 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(ZLIB_DIR) \
+	$(SUBMAKE) -C $(ZLIB_DIR) \
 		all libz.a
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-		$(SUBMAKE) -C $(ZLIB_DIR) \
+	$(SUBMAKE) -C $(ZLIB_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 

@@ -16,10 +16,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(LIBICONV_DIR)
+	$(SUBMAKE) -C $(LIBICONV_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-		$(SUBMAKE) -C $(LIBICONV_DIR) \
+	$(SUBMAKE) -C $(LIBICONV_DIR) \
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		all install-lib

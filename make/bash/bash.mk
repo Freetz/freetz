@@ -40,9 +40,9 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(BASH_DIR)/builtins \
+	$(SUBMAKE) -C $(BASH_DIR)/builtins \
 		LDFLAGS_FOR_BUILD= mkbuiltins
-		$(SUBMAKE) -C $(BASH_DIR) \
+	$(SUBMAKE) -C $(BASH_DIR) \
 		READLINE_LDFLAGS="" \
 		HISTORY_LDFLAGS="" \
 		all

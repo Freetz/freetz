@@ -27,11 +27,11 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 # We only want libintl
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
+	$(SUBMAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-		$(SUBMAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
+	$(SUBMAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \

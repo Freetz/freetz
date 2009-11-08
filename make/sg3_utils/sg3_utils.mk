@@ -12,8 +12,8 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		$(SUBMAKE) -C $(SG3UTILS_DIR)/lib
-		$(SUBMAKE) sg_start -C $(SG3UTILS_DIR)/src
+	$(SUBMAKE) -C $(SG3UTILS_DIR)/lib
+	$(SUBMAKE) sg_start -C $(SG3UTILS_DIR)/src
 	touch $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
