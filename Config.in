@@ -2302,6 +2302,17 @@ choice
 
 endchoice
 
+	config FREETZ_REPLACE_SSL_LIBS
+		bool "Replace AVM ssl-libs"
+		depends on FREETZ_SHOW_ADVANCED
+		default n
+		help
+			Use this option only if you are running out of space and if you
+			really know, what you are doing.
+			activating this option may cause an unstable system, uncontrolled reboots
+			and other side effects
+			(Activiating this option saves about 400K space in image)
+
 menu "BusyBox options"
 	depends on FREETZ_REPLACE_BUSYBOX
 	source make/busybox/Config.in

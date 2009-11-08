@@ -1172,7 +1172,9 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 	if [ -s "${DIR}/${modimage}" ]; then
 		echo "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
-		[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://trac.freetz.org/wiki/FAQ#NachdemFlashenistdasAVM-Webinterfacenichtmehrerreichbar for details."
+		if [ "$FREETZ_REPLACE_SSL_LIBS" == "y" ]; then
+			[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://trac.freetz.org/wiki/FAQ#NachdemFlashenistdasAVM-Webinterfacenichtmehrerreichbar for details."
+		fi
 	fi
 	echo "done."
 	echo
