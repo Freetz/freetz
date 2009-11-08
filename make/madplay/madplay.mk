@@ -23,8 +23,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $(MADPLAY_DIR)/.configured
-	PATH="$(TARGET_PATH)"; \
-		$(MAKE) -C $(MADPLAY_DIR)
+		$(SUBMAKE) -C $(MADPLAY_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -34,7 +33,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(MADPLAY_DIR) clean
+	-$(SUBMAKE) -C $(MADPLAY_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(MADPLAY_TARGET_BINARY)

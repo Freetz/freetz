@@ -16,11 +16,9 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(TCP_WRAPPERS_DIR) \
+		$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) \
 		config-check
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(TCP_WRAPPERS_DIR) \
+		$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) \
 		CC="$(TARGET_CROSS)gcc" \
 		OPT_CFLAGS="$(TARGET_CFLAGS)" \
 		LIBS=-lnsl \
@@ -54,7 +52,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(TCP_WRAPPERS_DIR) clean
+	-$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/tcpd.h \

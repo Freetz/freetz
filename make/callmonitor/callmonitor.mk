@@ -22,18 +22,18 @@ $(CALLMONITOR_DIR)/.features: $(CALLMONITOR_DIR)/.features.new
 	@if ! diff -q $< $@; then cp $< $@; fi
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_DIR)/.features
-	$(MAKE) -C $(CALLMONITOR_DIR) configure
+	$(SUBMAKE) -C $(CALLMONITOR_DIR) configure
 	@touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(MAKE) $(TARGET_CONFIGURE_ENV) -C $(CALLMONITOR_DIR) build
+	$(SUBMAKE) $(TARGET_CONFIGURE_ENV) -C $(CALLMONITOR_DIR) build
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 	chmod 755 $@
 
 $(pkg)-clean: FORCE
-	if [ -d "$(CALLMONITOR_DIR)" ]; then $(MAKE) -C $(CALLMONITOR_DIR) clean; else true; fi
+	if [ -d "$(CALLMONITOR_DIR)" ]; then $(SUBMAKE) -C $(CALLMONITOR_DIR) clean; else true; fi
 
 $(pkg) $(pkg)-precompiled: $($(PKG)_TARGET_DIR)/.packaged
 

@@ -11,8 +11,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-	$(MAKE) CROSS="$(TARGET_CROSS)" \
+	$(SUBMAKE) CROSS="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="-lpthread" \
 		-C $(CHECKMAILD_DIR)
@@ -25,7 +24,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(CHECKMAILD_DIR) clean
+	-$(SUBMAKE) -C $(CHECKMAILD_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(CHECKMAILD_TARGET_BINARY)

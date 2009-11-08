@@ -15,8 +15,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(CYASSL_DIR) \
+		$(SUBMAKE) -C $(CYASSL_DIR) \
 		LDFLAGS=""
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
@@ -30,7 +29,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(CYASSL_DIR) clean
+	-$(SUBMAKE) -C $(CYASSL_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl*
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl*
 

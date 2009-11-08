@@ -54,16 +54,13 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_saned) $($(PKG)_sane_find_scanner) $($(PKG)_scanimage) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SANE_BACKENDS_DIR)
+		$(SUBMAKE) -C $(SANE_BACKENDS_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(SANE_BACKENDS_DIR)/include \
+		$(SUBMAKE) -C $(SANE_BACKENDS_DIR)/include \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(SANE_BACKENDS_DIR)/backend \
+		$(SUBMAKE) -C $(SANE_BACKENDS_DIR)/backend \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install-libLTLIBRARIES
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -110,7 +107,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARIES) $($(PKG)_LIB_TARGET_BINARY) $(PKG)_LIB_TARGET_BACKENDS_BINARIES $(PKG)_TARGET_CONF
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SANE_BACKENDS_DIR) clean
+	-$(SUBMAKE) -C $(SANE_BACKENDS_DIR) clean
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/sane
 

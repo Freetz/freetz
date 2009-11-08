@@ -12,7 +12,6 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	(cd $(CIFSMOUNT_DIR); \
-		PATH=$(TARGET_PATH) \
 		$(TARGET_CC) $(TARGET_CFLAGS) -o mount.cifs mount.cifs.c \
 	)
 
@@ -24,7 +23,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(CIFSMOUNT_DIR) clean
+	-$(SUBMAKE) -C $(CIFSMOUNT_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(CIFSMOUNT_TARGET_BINARY)

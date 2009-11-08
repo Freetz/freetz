@@ -24,8 +24,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-	$(MAKE) CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
+	$(SUBMAKE) CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		CFLAGS="-DNDEBUG $(TARGET_CFLAGS)" \
 		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		-C $(TINYPROXY_DIR) 
@@ -38,7 +37,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(TINYPROXY_DIR) clean
+	-$(SUBMAKE) -C $(TINYPROXY_DIR) clean
 	$(RM) $(TINYPROXY_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:

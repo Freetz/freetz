@@ -86,21 +86,21 @@ $(BUSYBOX_CUSTOM_CONFIG_FILE): $(TOPDIR)/.config $(BUSYBOX_CONFIG_FILE)
 $(BUSYBOX_DIR)/.configured: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CUSTOM_CONFIG_FILE) 
 	cp $(BUSYBOX_CUSTOM_CONFIG_FILE) $(BUSYBOX_DIR)/.config
 	$(call PKG_EDIT_CONFIG, CONFIG_LFS=$(FREETZ_TARGET_LFS)) $(BUSYBOX_DIR)/.config
-	$(MAKE) CC="$(TARGET_CC)" \
+	$(SUBMAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(BUSYBOX_DIR) oldconfig
 	touch $@
 
 $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY): $(BUSYBOX_DIR)/.configured
-	$(MAKE) CC="$(TARGET_CC)" \
+	$(SUBMAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
 		ARCH="mipsel" \
 		-C $(BUSYBOX_DIR)
 
 $(BUSYBOX_DIR)/busybox.links: $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
-	$(MAKE) CC="$(TARGET_CC)" \
+	$(SUBMAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(BUSYBOX_DIR) busybox.links
@@ -117,7 +117,7 @@ busybox-source: $(BUSYBOX_DIR)/.unpacked
 
 busybox-menuconfig: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
 	cp $(BUSYBOX_CONFIG_FILE) $(BUSYBOX_DIR)/.config
-	$(MAKE) CC="$(TARGET_CC)" \
+	$(SUBMAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(BUSYBOX_DIR) menuconfig
@@ -128,7 +128,7 @@ busybox-oldconfig: $(BUSYBOX_DIR)/.configured
 busybox-precompiled: uclibc $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
 
 busybox-clean: busybox-uninstall
-	-$(MAKE) -C $(BUSYBOX_DIR) clean
+	-$(SUBMAKE) -C $(BUSYBOX_DIR) clean
 
 busybox-uninstall:
 	rm -rf $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF) \

@@ -19,13 +19,11 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(ZLIB_DIR) \
+		$(SUBMAKE) -C $(ZLIB_DIR) \
 		all libz.a
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(ZLIB_DIR) \
+		$(SUBMAKE) -C $(ZLIB_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
@@ -37,7 +35,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(ZLIB_DIR) clean
+	-$(SUBMAKE) -C $(ZLIB_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.* \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zlib.h \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zconf.h

@@ -24,8 +24,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(TCPDUMP_DIR) all \
+		$(SUBMAKE) -C $(TCPDUMP_DIR) all \
 		CCOPT="$(TARGET_CFLAGS)" \
 		INCLS="-I." 
 
@@ -37,7 +36,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(TCPDUMP_DIR) clean
+	-$(SUBMAKE) -C $(TCPDUMP_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(TCPDUMP_TARGET_BINARY)

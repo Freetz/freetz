@@ -10,8 +10,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.unpacked
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(POLIPO_DIR) \
+		$(SUBMAKE) -C $(POLIPO_DIR) \
 		CC="$(TARGET_CC)" \
 		CDEBUGFLAGS="$(TARGET_CFLAGS)"
 
@@ -23,7 +22,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(POLIPO_DIR) clean
+	-$(SUBMAKE) -C $(POLIPO_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(POLIPO_TARGET_BINARY)

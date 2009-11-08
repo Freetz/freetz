@@ -25,12 +25,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(APACHE_DIR)
+		$(SUBMAKE) -C $(APACHE_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(APACHE_DIR) install \
+		$(SUBMAKE) -C $(APACHE_DIR) install \
 		root="$(FREETZ_BASE_DIR)/$(APACHE_TARGET_DIR)"
 	$(INSTALL_BINARY_STRIP)
 
@@ -39,7 +37,7 @@ $(pkg):
 $(pkg)-precompiled: $(APACHE_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(APACHE_DIR) clean
+	-$(SUBMAKE) -C $(APACHE_DIR) clean
 	$(RM) $(APACHE_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:

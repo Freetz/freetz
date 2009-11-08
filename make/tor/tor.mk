@@ -34,8 +34,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(TOR_DIR) \
+		$(SUBMAKE) -C $(TOR_DIR) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(MYLDFLAGS)"
 
@@ -47,7 +46,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(TOR_DIR) clean
+	-$(SUBMAKE) -C $(TOR_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(TOR_TARGET_BINARY)

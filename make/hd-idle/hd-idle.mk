@@ -10,8 +10,7 @@ $(PKG_CONFIGURED_NOP)
 $(PKG)_SOURCE_MD5:=7087d9b6b12836e0117bde6a0cc10824 
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-	$(MAKE) -C $(HD_IDLE_DIR) \
+	$(SUBMAKE) -C $(HD_IDLE_DIR) \
   	CC="$(TARGET_CC)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -22,7 +21,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	$(MAKE) -C $(HD_IDLE_DIR) clean
+	$(SUBMAKE) -C $(HD_IDLE_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(HD_IDLE_TARGET_BINARY)

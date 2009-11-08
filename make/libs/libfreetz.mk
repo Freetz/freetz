@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_SOURCE_MD5:=390a25cbf34a3601895e55832d249e18
 
 
@@ -13,8 +13,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBFREETZ_DIR) \
+		$(SUBMAKE) -C $(LIBFREETZ_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -23,8 +22,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBFREETZ_DIR) \
+		$(SUBMAKE) -C $(LIBFREETZ_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -40,10 +38,10 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LIBFREETZ_DIR) clean
+	-$(SUBMAKE) -C $(LIBFREETZ_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfreetz*
 
 $(pkg)-uninstall:
-	$(RM) $(LIBFREETZ_DEST_LIB)/libfreetz*.so*
+	$(RM) $(LIBFREETZ_TARGET_DIR)/libfreetz*.so*
 
 $(PKG_FINISH)

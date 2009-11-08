@@ -68,8 +68,7 @@ $($(PKG)_DIR)/sablevm-classpath/.configured: $($(PKG)_DIR)/.unpacked
 
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured \
 	$($(PKG)_DIR)/sablevm/.configured $($(PKG)_DIR)/sablevm-classpath/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(SABLEVM_SDK_DIR) all \
+		$(SUBMAKE) -C $(SABLEVM_SDK_DIR) all \
 		EARLY_CONFIGURE= \
 		EXTRA_CONFIGURE=
 	cp $(SABLEVM_SDK_MAKE_DIR)/mini.classlist $(SABLEVM_SDK_DIR)/sablevm-classpath/lib/
@@ -81,8 +80,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_LIB_STAGING_CLASSPATH_BINARY): $($(PKG)_LIB_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(SABLEVM_SDK_DIR)/sablevm-classpath/native/jni \
+		$(SUBMAKE) -C $(SABLEVM_SDK_DIR)/sablevm-classpath/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavaio.la \
@@ -112,7 +110,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY) $($(PKG)_LIB_TARGET_CLASSPATH_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SABLEVM_SDK_DIR) clean
+	-$(SUBMAKE) -C $(SABLEVM_SDK_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(SABLEVM_SDK_TARGET_BINARY)

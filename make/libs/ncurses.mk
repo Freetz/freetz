@@ -42,8 +42,7 @@ $($(PKG)_NCURSES_BINARY) \
 $($(PKG)_FORM_BINARY) \
 $($(PKG)_MENU_BINARY) \
 $($(PKG)_PANEL_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(NCURSES_DIR) \
+		$(SUBMAKE) -C $(NCURSES_DIR) \
 		libs panel menu form headers
 
 $($(PKG)_NCURSES_STAGING_BINARY) \
@@ -54,14 +53,12 @@ $($(PKG)_PANEL_STAGING_BINARY): \
 		$($(PKG)_FORM_BINARY) \
 		$($(PKG)_MENU_BINARY) \
 		$($(PKG)_PANEL_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(NCURSES_DIR) \
+		$(SUBMAKE) -C $(NCURSES_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install.libs install.data
 
 $($(PKG)_TERMINFO_STAGING_DIR)/.installed: $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(NCURSES_DIR)/misc \
+		$(SUBMAKE) -C $(NCURSES_DIR)/misc \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		all install
 	touch $@
@@ -110,7 +107,7 @@ $(pkg)-terminfo-clean:
 	rm -rf $(NCURSES_TARGET_DIR)/../share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
 
 $(pkg)-clean: $(pkg)-terminfo-clean
-	-$(MAKE) -C $(NCURSES_DIR) clean
+	-$(SUBMAKE) -C $(NCURSES_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform*
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmenu*

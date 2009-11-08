@@ -51,8 +51,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(DROPBEAR_DIR) \
+		$(SUBMAKE) -C $(DROPBEAR_DIR) \
 		$(DROPBEAR_MAKE_OPTIONS) CPPFLAGS="$(CPPFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -63,7 +62,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(DROPBEAR_DIR) clean
+	-$(SUBMAKE) -C $(DROPBEAR_DIR) clean
 	$(RM) $(DROPBEAR_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:

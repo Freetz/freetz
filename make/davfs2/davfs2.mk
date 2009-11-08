@@ -19,8 +19,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_MOUNT_BINARY) $($(PKG)_UMOUNT_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(DAVFS2_DIR) \
+		$(SUBMAKE) -C $(DAVFS2_DIR) \
 		LIBS="-liconv -lneon" \
 
 $($(PKG)_MOUNT_TARGET_BINARY): $($(PKG)_MOUNT_BINARY)
@@ -34,7 +33,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_MOUNT_TARGET_BINARY) $($(PKG)_UMOUNT_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(DAVFS2_DIR) clean
+	-$(SUBMAKE) -C $(DAVFS2_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(DAVFS2_MOUNT_TARGET_BINARY)

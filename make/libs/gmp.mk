@@ -12,12 +12,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(GMP_DIR)
+		$(SUBMAKE) -C $(GMP_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(GMP_DIR) \
+		$(SUBMAKE) -C $(GMP_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -31,7 +29,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(GMP_DIR) clean
+	-$(SUBMAKE) -C $(GMP_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/gmp*.h
 
@@ -60,14 +58,14 @@ $(GMP_DIR2)/.configured: $(GMP_DIR)/.unpacked
 	touch $@
 
 $(GMP_HOST_BINARY): $(GMP_DIR2)/.configured
-	$(MAKE) DESTDIR=$(GMP_HOST_DIR) \
+	$(SUBMAKE) DESTDIR=$(GMP_HOST_DIR) \
 		-C $(GMP_DIR2) install
 
 host-libgmp: $(GMP_HOST_BINARY)
 
 host-libgmp-clean:
 	rm -rf $(GMP_HOST_DIR)
-	-$(MAKE) -C $(GMP_DIR2) clean
+	-$(SUBMAKE) -C $(GMP_DIR2) clean
 
 host-libgmp-dirclean:
 	#rm -rf $(GMP_HOST_DIR) $(GMP_DIR2)

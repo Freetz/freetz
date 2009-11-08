@@ -11,7 +11,6 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
 		$(TARGET_CC) \
 		$(TARGET_CFLAGS) \
 		-DUCLIBC_RUNTIME_PREFIX=\ \
@@ -25,7 +24,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LDD_DIR) clean
+	-$(SUBMAKE) -C $(LDD_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(LDD_TARGET_BINARY)

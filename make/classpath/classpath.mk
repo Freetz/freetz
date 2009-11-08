@@ -25,8 +25,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(CLASSPATH_DIR)
+		$(SUBMAKE) -C $(CLASSPATH_DIR)
 	cp $(CLASSPATH_MAKE_DIR)/mini.classlist $(CLASSPATH_DIR)/lib;
 	( cd $(CLASSPATH_DIR)/lib; fastjar -Mcf mini.jar -@ < mini.classlist );
 
@@ -34,8 +33,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	cp $(CLASSPATH_BINARY) $(CLASSPATH_TARGET_BINARY)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(CLASSPATH_DIR)/native/jni \
+		$(SUBMAKE) -C $(CLASSPATH_DIR)/native/jni \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavaio.la \
@@ -57,7 +55,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(CLASSPATH_DIR) clean
+	-$(SUBMAKE) -C $(CLASSPATH_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(CLASSPATH_TARGET_BINARY)

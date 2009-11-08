@@ -12,10 +12,8 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SG3UTILS_DIR)/lib
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) sg_start -C $(SG3UTILS_DIR)/src
+		$(SUBMAKE) -C $(SG3UTILS_DIR)/lib
+		$(SUBMAKE) sg_start -C $(SG3UTILS_DIR)/src
 	touch $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -26,7 +24,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SG3UTILS_DIR) clean
+	-$(SUBMAKE) -C $(SG3UTILS_DIR) clean
 	$(RM) $(SG3UTILS_DIR)/.installed
 	$(RM) $(SG3UTILS_DIR)/.built
 	$(RM) $(SG3UTILS_DIR)/.configured

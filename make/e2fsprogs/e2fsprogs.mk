@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 1.41.9)
+$(call PKG_INIT_BIN, 1.41.4)
 $(PKG)_SOURCE:=e2fsprogs-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/e2fsprogs
 $(PKG)_DIR:=$(SOURCE_DIR)/e2fsprogs-$($(PKG)_VERSION)
@@ -77,8 +77,7 @@ $($(PKG)_E2FSCK_BINARY) \
 	$($(PKG)_UUIDGEN_BINARY) \
 	$($(PKG)_BLKID_LIB_BINARY) \
 	$($(PKG)_UUID_LIB_BINARY) : $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(E2FSPROGS_DIR) \
+		$(SUBMAKE) -C $(E2FSPROGS_DIR) \
 		all
 
 # e2fsck
@@ -167,16 +166,14 @@ ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2FIXING)),y)
 endif
 
 $($(PKG)_BLKID_LIB_STAGING_BINARY): $($(PKG)_BLKID_LIB_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(E2FSPROGS_DIR)/lib/blkid \
+		$(SUBMAKE) -C $(E2FSPROGS_DIR)/lib/blkid \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/blkid.pc
 
 $($(PKG)_UUID_LIB_STAGING_BINARY): $($(PKG)_UUID_LIB_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(E2FSPROGS_DIR)/lib/uuid \
+		$(SUBMAKE) -C $(E2FSPROGS_DIR)/lib/uuid \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -204,7 +201,7 @@ $(pkg)-precompiled: $($(PKG)_E2FSCK_TARGET_BINARY) \
 			$($(PKG)_UUID_LIB_STAGING_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(E2FSPROGS_DIR) clean
+	-$(SUBMAKE) -C $(E2FSPROGS_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(E2FSPROGS_E2FSCK_TARGET_BINARY) \

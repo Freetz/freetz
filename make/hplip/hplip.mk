@@ -39,16 +39,14 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_LIB_IP_BINARY) \
 	$($(PKG)_LIB_MUD_BINARY) \
 	$($(PKG)_LIB_HPAIO_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(HPLIP_DIR)
+		$(SUBMAKE) -C $(HPLIP_DIR)
 
 $($(PKG)_LIB_IP_STAGING_BINARY) \
 	$($(PKG)_LIB_MUD_STAGING_BINARY) \
 	$($(PKG)_LIB_HPAIO_STAGING_BINARY): $($(PKG)_LIB_IP_BINARY) \
 						$($(PKG)_LIB_MUD_BINARY) \
 						$($(PKG)_LIB_HPAIO_BINARY)
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(HPLIP_DIR) \
+		$(SUBMAKE) -C $(HPLIP_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -90,7 +88,7 @@ $(pkg)-precompiled: $($(PKG)_LIB_IP_TARGET_BINARY) \
 			$(PKG)_TARGET_CONF
 
 $(pkg)-clean:
-	-$(MAKE) -C $(HPLIP_DIR) clean
+	-$(SUBMAKE) -C $(HPLIP_DIR) clean
 
 $(pkg)-config-update:
 	$(HPLIP_MAKE_DIR)/hplip-config-update.pl $(HPLIP_VERSION) \

@@ -27,13 +27,11 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBPCAP_DIR) all \
+		$(SUBMAKE) -C $(LIBPCAP_DIR) all \
 		CCOPT="-fPIC $(TARGET_CFLAGS)"
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBPCAP_DIR) \
+		$(SUBMAKE) -C $(LIBPCAP_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
@@ -45,7 +43,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LIBPCAP_DIR) clean
+	-$(SUBMAKE) -C $(LIBPCAP_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/pcap* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man3/pcap.3

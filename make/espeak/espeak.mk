@@ -13,8 +13,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $(ESPEAK_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(ESPEAK_DIR)/src \
+		$(SUBMAKE) -C $(ESPEAK_DIR)/src \
 		CXX="mipsel-linux-g++-uc" \
 		CXXFLAGS="$(TARGET_CFLAGS)" \
 		LIBS1="-lm"
@@ -29,7 +28,7 @@ $(pkg):
 $(pkg)-precompiled: $(ESPEAK_TARGET_BINARY) 
 
 $(pkg)-clean:
-	-$(MAKE) -C $(ESPEAK_DIR) clean
+	-$(SUBMAKE) -C $(ESPEAK_DIR) clean
 
 $(pkg)-uninstall: 
 	$(RM) $(ESPEAK_TARGET_BINARY)

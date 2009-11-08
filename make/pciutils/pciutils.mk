@@ -14,8 +14,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY) $($(PKG)_SETPCI_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(PCIUTILS_DIR) \
+		$(SUBMAKE) -C $(PCIUTILS_DIR) \
 		CC=$(TARGET_CC) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		IDSDIR="/usr/share" \
@@ -47,7 +46,7 @@ $(pkg)-clean-ids:
 	@$(RM) $(PCIUTILS_TARGET_IDS)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(PCIUTILS_DIR) clean
+	-$(SUBMAKE) -C $(PCIUTILS_DIR) clean
 
 $(pkg)-uninstall: $(pkg)-clean-ids
 	$(RM) $(PCIUTILS_TARGET_BINARY)

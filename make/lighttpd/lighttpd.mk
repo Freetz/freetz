@@ -64,8 +64,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_MODULE_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(LIGHTTPD_DIR)
+		$(SUBMAKE) -C $(LIGHTTPD_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -83,7 +82,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MODULE_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LIGHTTPD_DIR) clean
+	-$(SUBMAKE) -C $(LIGHTTPD_DIR) clean
 	$(RM) $(LIGHTTPD_DIR)/.configured
 
 $(pkg)-uninstall:

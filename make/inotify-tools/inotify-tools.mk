@@ -18,8 +18,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_INWAIT_BINARY) $($(PKG)_INWATCH_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(INOTIFY_TOOLS_DIR)
+		$(SUBMAKE) -C $(INOTIFY_TOOLS_DIR)
 	touch $@
 
 $($(PKG)_INWAIT_TARGET_BINARY): $($(PKG)_INWAIT_BINARY)
@@ -40,7 +39,7 @@ $(pkg)-precompiled: $($(PKG)_INWAIT_TARGET_BINARY) \
 		$($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(INOTIFY_TOOLS_DIR) clean
+	-$(SUBMAKE) -C $(INOTIFY_TOOLS_DIR) clean
 	$(RM) $(INOTIFY_TOOLS_DIR)/.compiled
 
 $(pkg)-uninstall:

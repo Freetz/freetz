@@ -12,8 +12,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(XYSSL_DIR)/library \
+		$(SUBMAKE) -C $(XYSSL_DIR)/library \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) $(FPIC) -DLINUX -I../include" \
 		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
@@ -37,7 +36,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled:  $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(XYSSL_DIR)/library clean
+	-$(SUBMAKE) -C $(XYSSL_DIR)/library clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxyssl*
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/xyssl*
 

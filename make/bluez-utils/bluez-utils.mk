@@ -29,8 +29,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(BLUEZ_UTILS_DIR)
+		$(SUBMAKE) -C $(BLUEZ_UTILS_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(BLUEZ_UTILS_DEST_DIR)/usr/bin \
@@ -59,7 +58,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(BLUEZ_UTILS_DIR) clean
+	-$(SUBMAKE) -C $(BLUEZ_UTILS_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(BLUEZ_UTILS_DEST_USR_BIN)/dund

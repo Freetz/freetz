@@ -25,10 +25,9 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include $(VPNC_CPPFLAGS)" \
-		$(MAKE) -C $(VPNC_DIR) vpnc \
+		$(SUBMAKE) -C $(VPNC_DIR) vpnc \
 		CC="$(TARGET_CC)" \
+		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include $(VPNC_CPPFLAGS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
 		EXTRA_LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib $(VPNC_LDFLAGS)"
 
@@ -46,7 +45,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(PKG)_NAT_SUPPORT
 
 $(pkg)-clean:
-	-$(MAKE) -C $(VPNC_DIR) clean
+	-$(SUBMAKE) -C $(VPNC_DIR) clean
 	$(RM) $(VPNC_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:

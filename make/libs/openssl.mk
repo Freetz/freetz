@@ -22,7 +22,7 @@ $(PKG_UNPACKED)
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	$(SED) -i -e 's/FREETZ_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
 	( cd $(OPENSSL_DIR); \
-		PATH="$(TARGET_PATH)" \
+		$(TARGET_CONFIGURE_ENV) \
 		./Configure linux-freetz \
 		--prefix=/usr \
 		--openssldir=/mod/etc/ssl \
@@ -36,24 +36,21 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
+		$(SUBMAKE) -C $(OPENSSL_DIR) \
 		SHARED_LDFLAGS="" \
-		$(MAKE) -C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \
 		AR="$(TARGET_CROSS)ar r" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		all
 	# Work around openssl build bug to link libssl.so with libcrypto.so.
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(OPENSSL_DIR) \
+		$(SUBMAKE) -C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \
 		CCOPTS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		do_linux-shared
 
 $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): \
 		$($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(OPENSSL_DIR) \
+		$(SUBMAKE) -C $(OPENSSL_DIR) \
 		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -72,7 +69,7 @@ $(pkg): $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(OPENSSL_DIR) clean
+	-$(SUBMAKE) -C $(OPENSSL_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/openssl
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*

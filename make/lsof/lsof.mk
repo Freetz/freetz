@@ -17,8 +17,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(LSOF_DIR) \
+		$(SUBMAKE) -C $(LSOF_DIR) \
 		DEBUG="$(TARGET_CFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) 
@@ -29,7 +28,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) 
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LSOF_DIR) clean
+	-$(SUBMAKE) -C $(LSOF_DIR) clean
 
 $(pkg)-uninstall: 
 	$(RM) $(LSOF_TARGET_BINARY)

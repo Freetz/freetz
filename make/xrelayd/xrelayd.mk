@@ -14,7 +14,7 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(TARGET_CONFIGURE_ENV) \
-		$(MAKE) -C $(XRELAYD_DIR) \
+		$(SUBMAKE) -C $(XRELAYD_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LD="$(TARGET_CC)" \
@@ -27,7 +27,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) 
 
 $(pkg)-clean:
-	-$(MAKE) -C $(XRELAYD_DIR) clean
+	-$(SUBMAKE) -C $(XRELAYD_DIR) clean
 
 $(pkg)-uninstall: 
 	$(RM) $(XRELAYD_TARGET_BINARY)

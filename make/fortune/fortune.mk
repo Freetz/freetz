@@ -11,8 +11,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(FORTUNE_DIR) \
+		$(SUBMAKE) -C $(FORTUNE_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)"
 
@@ -24,7 +23,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(FORTUNE_DIR) clean
+	-$(SUBMAKE) -C $(FORTUNE_DIR) clean
 	$(RM) $(FORTUNE_DIR)/.configured
 
 $(pkg)-uninstall:

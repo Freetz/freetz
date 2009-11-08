@@ -12,8 +12,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SLURM_DIR) \
+		$(SUBMAKE) -C $(SLURM_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)"
 
@@ -25,7 +24,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SLURM_DIR) clean
+	-$(SUBMAKE) -C $(SLURM_DIR) clean
 	$(RM) $(SLURM_DIR)/.configured
 
 $(pkg)-uninstall:

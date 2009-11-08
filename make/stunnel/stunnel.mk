@@ -18,8 +18,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(STUNNEL_DIR)
+		$(SUBMAKE) -C $(STUNNEL_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -29,7 +28,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(STUNNEL_DIR) clean
+	-$(SUBMAKE) -C $(STUNNEL_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(STUNNEL_TARGET_BINARY)

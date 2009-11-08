@@ -27,7 +27,7 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_MOD_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
-		$(MAKE1) -C $(NDAS_DIR) \
+		$(SUBMAKE1) -C $(NDAS_DIR) \
 		$(NDAS_OPTIONS) \
 		ARCH="$(KERNEL_ARCH)" \
 		CC="$(KERNEL_CROSS)gcc" \
@@ -36,8 +36,7 @@ $($(PKG)_MOD_BINARY): $($(PKG)_DIR)/.configured
 		ndas-kernel
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(NDAS_DIR) \
+		$(SUBMAKE) -C $(NDAS_DIR) \
 		$(NDAS_OPTIONS) ndas-admin
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -55,7 +54,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(NDAS_DIR) \
+	-$(SUBMAKE) -C $(NDAS_DIR) \
 		$(NDAS_OPTIONS) \
 		clean
 	$(RM) $(NDAS_DIR)/.configured

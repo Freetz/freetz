@@ -24,14 +24,11 @@ $(PKG_CONFIGURED_NOP)
 
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(GW6_DIR)/gw6c-config \
+		$(SUBMAKE) -C $(GW6_DIR)/gw6c-config \
 		$(GW6C_OPTS)
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(GW6_DIR)/gw6c-messaging \
+		$(SUBMAKE) -C $(GW6_DIR)/gw6c-messaging \
 		$(GW6C_OPTS)
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(GW6_DIR)/tspc-advanced \
+		$(SUBMAKE) -C $(GW6_DIR)/tspc-advanced \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -fno-builtin -Wall -I../../include -I../../platform/openwrt -I../.." \
 		LDFLAGS="-L../../gw6cconfig -L../../gw6cmessaging -nodefaultlibs -luClibc++ -lgcc_s -lpthread" \
@@ -45,9 +42,9 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(GW6_DIR)/tspc-advanced target=openwrt clean
-	-$(MAKE) -C $(GW6_DIR)/gw6c-config target=openwrt clean
-	-$(MAKE) -C $(GW6_DIR)/gw6c-messaging target=openwrt clean
+	-$(SUBMAKE) -C $(GW6_DIR)/tspc-advanced target=openwrt clean
+	-$(SUBMAKE) -C $(GW6_DIR)/gw6c-config target=openwrt clean
+	-$(SUBMAKE) -C $(GW6_DIR)/gw6c-messaging target=openwrt clean
 
 $(pkg)-uninstall:
 	$(RM) $($(PKG)_TARGET_BINARY)

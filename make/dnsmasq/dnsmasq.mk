@@ -13,7 +13,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(MAKE) CC="$(TARGET_CC)" \
+	$(SUBMAKE) CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="" \
 		-C $(DNSMASQ_DIR)
@@ -26,7 +26,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(DNSMASQ_DIR) clean
+	-$(SUBMAKE) -C $(DNSMASQ_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(DNSMASQ_TARGET_BINARY)

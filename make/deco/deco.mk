@@ -16,8 +16,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(DECO_DIR)
+		$(SUBMAKE) -C $(DECO_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -27,7 +26,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(DECO_DIR) clean
+	-$(SUBMAKE) -C $(DECO_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(DECO_TARGET_BINARY)

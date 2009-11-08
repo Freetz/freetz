@@ -16,8 +16,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(MICROPERL_DIR) -f Makefile.micro \
+		$(SUBMAKE) -C $(MICROPERL_DIR) -f Makefile.micro \
 		CC="$(TARGET_CC)" OPTIMIZE="$(TARGET_CFLAGS)" 
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -41,7 +40,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_MODULES)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(MICROPERL_DIR) -f Makefile.micro clean
+	-$(SUBMAKE) -C $(MICROPERL_DIR) -f Makefile.micro clean
 	-$(RM) $(MICROPERL_TARGET_SYMLINK)
 	-$(RM) -r $(MICROPERL_TARGET_MODULES_DIR)
 	-$(RM) $(MICROPERL_TARGET_MODULES)

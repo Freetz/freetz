@@ -28,8 +28,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-	$(MAKE) -C $(NCFTP_DIR) \
+	$(SUBMAKE) -C $(NCFTP_DIR) \
 	LIBS="$(NCFTP_LIBS)" \
 	CC="$(TARGET_CC)" \
 	CFLAGS="$(TARGET_CFLAGS)"
@@ -74,7 +73,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) \
 		      $($(PKG)_TARGET_LS)
 	  
 $(pkg)-clean:
-	-$(MAKE) -C $(NCFTP_DIR) clean
+	-$(SUBMAKE) -C $(NCFTP_DIR) clean
 	$(RM) $(NCFTP_DIR)/.configured
 
 $(pkg)-uninstall:

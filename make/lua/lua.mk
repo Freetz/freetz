@@ -19,8 +19,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(LUA_DIR) \
+		$(SUBMAKE) -C $(LUA_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		MYCFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include $(TARGET_CFLAGS)" \
@@ -39,7 +38,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LUA_DIR) clean
+	-$(SUBMAKE) -C $(LUA_DIR) clean
 
 $(pkg)-uninstall: 
 	$(RM) $(LUA_TARGET_BINARY)

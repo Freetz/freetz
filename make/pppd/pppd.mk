@@ -35,8 +35,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) \
 	$($(PKG)_CHAT_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(PPPD_DIR) \
+		$(SUBMAKE) -C $(PPPD_DIR) \
 		CC="$(TARGET_CC)" \
 		COPTS="$(TARGET_CFLAGS)" \
 		STAGING_DIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -56,7 +55,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_CHAT_TARGET_BINARY) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(PPPD_DIR) clean
+	-$(SUBMAKE) -C $(PPPD_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(PPPD_TARGET_BINARY) \

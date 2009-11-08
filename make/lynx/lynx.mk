@@ -63,8 +63,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_BINARY) $($(PKG)_CFG): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(LYNX_DIR) \
+		$(SUBMAKE) -C $(LYNX_DIR) \
 		LD="$(TARGET_LD)"
 	touch $@
 
@@ -80,7 +79,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CFG)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LYNX_DIR) clean
+	-$(SUBMAKE) -C $(LYNX_DIR) clean
 
 $(pkg)-uninstall: 
 	$(RM) $(LYNX_TARGET_BINARY)

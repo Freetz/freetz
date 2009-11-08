@@ -29,7 +29,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(DEBOOTSTRAP_DIR) clean
+	-$(SUBMAKE) -C $(DEBOOTSTRAP_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(DEBOOTSTRAP_TARGET_BINARY)

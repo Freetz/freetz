@@ -18,15 +18,13 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(UCLIBCXX_DIR) \
+		$(SUBMAKE) -C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(UCLIBCXX_DIR) \
+		$(SUBMAKE) -C $(UCLIBCXX_DIR) \
 		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
@@ -47,7 +45,7 @@ uclibcxx-precompiled: $($(PKG)_TARGET_BINARY)
 uclibcxx-clean:
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(GNU_TARGET_NAME)-g++-uc
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
-	-$(MAKE) -C $(UCLIBCXX_DIR) clean
+	-$(SUBMAKE) -C $(UCLIBCXX_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuClibc++*
 
 uclibcxx-uninstall:

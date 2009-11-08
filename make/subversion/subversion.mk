@@ -109,12 +109,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SUBVERSION_DIR)
+		$(SUBMAKE) -C $(SUBVERSION_DIR)
 
 $($(PKG)_LIBS_STAGING_DIR) $($(PKG)_BINARIES_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(SUBVERSION_DIR) \
+		$(SUBMAKE) -C $(SUBVERSION_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -158,7 +156,7 @@ $(pkg):
 $(pkg)-precompiled: $(pkg)-keep-required-files-only
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SUBVERSION_DIR) clean
+	-$(SUBMAKE) -C $(SUBVERSION_DIR) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/svn* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsvn*-$(SUBVERSION_MAJOR_VERSION)* \

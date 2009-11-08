@@ -17,15 +17,13 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_SMBP_BINARY) $($(PKG)_SMBD_BINARY) $($(PKG)_NMBD_BINARY): $($(PKG)_DIR)/.configured
-		PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SAMBA_DIR)/source \
+		$(SUBMAKE) -C $(SAMBA_DIR)/source \
 		CC=$(TARGET_CC) \
 		LD=$(TARGET_LD) \
 		SAMBA_CFLAGS="$(TARGET_CFLAGS)" \
 		CODEPAGEDIR="/mod/usr/share/samba" \
 		proto
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SAMBA_DIR)/source \
+		$(SUBMAKE) -C $(SAMBA_DIR)/source \
 		CC=$(TARGET_CC) \
 		LD=$(TARGET_LD) \
 		SAMBA_CFLAGS="$(TARGET_CFLAGS)" \
@@ -53,7 +51,7 @@ $(pkg)-clean-nmbd:
 	$(RM) $(SAMBA_NMBD_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SAMBA_DIR)/source clean
+	-$(SUBMAKE) -C $(SAMBA_DIR)/source clean
 	$(RM) -r $(SAMBA_DIR)/source/bin
 
 $(pkg)-uninstall:
