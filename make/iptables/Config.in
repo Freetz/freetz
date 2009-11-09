@@ -300,6 +300,13 @@ config FREETZ_MODULE_ipt_LOG
 		This option adds a `LOG' target, which allows you to create rules in
 		any iptables table which records the packet header to the syslog.
 
+config FREETZ_MODULE_ipt_comment
+	bool "ipt_comment.ko"
+	select FREETZ_MODULE_ip_tables
+	default n
+	help
+		This option adds a module, which allows you to add comments to your rules.
+
 config FREETZ_MODULE_ipt_mac
 	bool "ipt_mac.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_13_1
