@@ -13,7 +13,7 @@ else
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/curl
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libcurl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.so.$($(PKG)_LIB_VERSION)
-$(PKG)_LIB_TARGET_BINARY:=root/usr/lib/libcurl.so.$($(PKG)_LIB_VERSION)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libcurl.so.$($(PKG)_LIB_VERSION)
 LDFLAGS:=""
 endif
 
@@ -56,7 +56,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
- 	$(SUBMAKE) -C $(CURL_DIR) LDFLAGS=$(LDFLAGS)
+	$(SUBMAKE) -C $(CURL_DIR) LDFLAGS=$(LDFLAGS)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	$(SUBMAKE) -C $(CURL_DIR) \
@@ -78,6 +78,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_CURL_STATIC)),y)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_STAGING_BINARY)
 else
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
+	echo $(CURL_LIB_TARGET_BINARY)
 endif
 
 $(pkg)-clean:
@@ -89,6 +90,6 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(CURL_TARGET_BINARY)
-	$(RM) root/usr/lib/libcurl*.so*
+	$(RM) $(CURL_TARGET_LIBDIR)/libcurl*.so*
 
 $(PKG_FINISH)
