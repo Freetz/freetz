@@ -2,8 +2,8 @@ MAKE1=make
 MAKE=make -j$(FREETZ_JLEVEL)
 HOSTCC:=gcc
 
-SUBMAKE1=PATH=$(TARGET_PATH) $(FREETZ_LIBRARY_PATH) $(MAKE1)
-SUBMAKE=PATH=$(TARGET_PATH) $(FREETZ_LIBRARY_PATH) $(MAKE)
+SUBMAKE1=PATH=$(TARGET_PATH) $(FREETZ_LD_RUN_PATH) $(MAKE1)
+SUBMAKE=PATH=$(TARGET_PATH) $(FREETZ_LD_RUN_PATH) $(MAKE)
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	-e 's/sparc.*/sparc/' \
@@ -66,7 +66,8 @@ TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.commen
 TARGET_PATH="$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(PATH)"
 
 # We have some libraries (e.g. libcrypto) that should not be used by AVM binaries
-FREETZ_LIBRARY_PATH=LD_RUN_PATH="/usr/lib/freetz"
+FREETZ_LIBRARY_PATH:=/usr/lib/freetz
+FREETZ_LD_RUN_PATH:=LD_RUN_PATH="$(FREETZ_LIBRARY_PATH)"
 
 # commands to run before calling configure
 # each command has to be terminated by ';'
@@ -219,7 +220,9 @@ $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_STARTLEVEL=99
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
 $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
-$(PKG)_DEST_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root
+$(PKG)_TARGET_LIBDIR:=root$(FREETZ_LIBRARY_PATH)
+$(PKG)_DEST_DIR:=$($(PKG)_TARGET_DIR)/root
+$(PKG)_DEST_LIBDIR:=$($(PKG)_TARGET_DIR)/root$(FREETZ_LIBRARY_PATH)
 endef
 
 # Stage 2b: initialise other package-specific variables for library packages
@@ -227,7 +230,8 @@ define PKG_INIT_LIB__INT
 PKG_TYPE:=LIB
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
-$(PKG)_TARGET_DIR:=root/usr/lib/freetz
+$(PKG)_TARGET_DIR:=root$(FREETZ_LIBRARY_PATH)
+$(PKG)_TARGET_LIBDIR:=$($(PKG)_TARGET_DIR)
 $(PKG)_DEST_DIR:=root
 endef
 
