@@ -1,0 +1,106 @@
+--- etc/hotplug/run_mount.orig	2007-06-04 16:20:05.000000000 +0200
++++ etc/hotplug/run_mount	2009-03-20 23:24:51.000000000 +0100
+@@ -27,31 +27,9 @@
+ # Generate a frontend'able 'nice name' to be used as mount point:
+ #
+ nicename () {
+-	local PROD
+-	local SNUM
+-	local MANU
+-	local NAME="USB"
+ 	local NICE=""
+ 
+-	# Find device's strings, remove/translate evil chars...
+-	for VAR in `/sbin/lsusb -s -h $1|tr -d ' '`; do
+-		if echo $VAR | grep "='" > /dev/null 2>&1; then
+-			eval "${VAR%%=*}=`echo ${VAR##*=}|tr $EVILSET '-'|tr -d \'`"
+-		fi
+-	done
+-	
+-	# Find a string for our new nice name...
+-	if ! test -z "$PROD"; then
+-		NAME="$PROD"
+-	elif ! test -z "$MANU"; then
+-		NAME="$MANU"
+-	fi
+-	if ! test -z "$NAME"; then
+-		NAME=`echo $NAME|tr ':' ' '`
+-	fi
+-	
+-	# Build nice name: [Product/Vendor name]-Partition-<x>-<y>
+-	NICE="$NAME-Partition-$2-$3"
++	NICE="uStor`echo $1|sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/'`$3"
+ 	echo $NICE
+ }
+ 
+@@ -74,6 +52,40 @@
+ 	done
+ }
+ 
++# Check filesystem type and mount it
++#
++	
++mount_fs () {
++ # mount according to type of filesystem 
++ # return exit code: true - all went well; other - something went wrong 
++ # gobal variables: 
++ #  $DEVNODE, $MNTPATH, READMODE, FTPUID, FTPGID 
++	FSTYPE="vfat"   # default as long as we dont know better 
++	[[ -x /usr/bin/fstyp ]] && FSTYPE=`/usr/bin/fstyp $DEVNODE` 
++	
++	case $FSTYPE in
++	vfat)
++		mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID,fmask=0000,dmask=0000 $DEVNODE $MNTPATH
++		;;
++	ext2)
++		mount -t ext2 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ext3)
++		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	ntfs)
++		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		;;
++	reiserfs)
++		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	*) # fs type unknown
++		mount $DEVNODE $MNTPATH
++		;;
++	esac
++}	
++
++
+ # Actually perform the mount operation...
+ # (TODO Checking the partition for known filesystem types)
+ #
+@@ -83,16 +95,19 @@
+ 	local DEVNODE=$2
+ 	local PARTNUM=$3
+ 	local BLKDEV=${DEVNODE##/dev/}
++	local BLKDEVMAIN=${BLKDEV:0:3}
+ 	local TEMP=${BLKDEV##sd}
+ 	local HOSTNUM=`echo ${TEMP%%[0-9]*}|tr 'abcd' '0123'`
+-	local MNTNAME=`nicename $1 $HOSTNUM $PARTNUM`
++	MNTNAME=`nicename $BLKDEVMAIN $HOSTNUM $PARTNUM`
+ 	local MNTPATH=$FTPDIR/$MNTNAME
+ 	
+ 	echo "Mounting $MNTNAME to device $DEVNODE..." > /dev/ttyS0
+ 	test -d $MNTPATH || mkdir -p $MNTPATH
+ 	
+ 	passeeren
+-	if mount -t vfat -o $READMODE,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
++	
++	if mount_fs; then
++
+ 		OK=0
+ 		eventadd 140 $MNTNAME
+ 		if ! pidof ftpd; then
+@@ -117,6 +131,7 @@
+ 		fi
+ 	else
+ 		rm -rf $MNTPATH
++		eventadd 142 $MNTNAME NOTMOUNTABLE
+ 	fi
+ 
+ 	if grep $MNTPATH /proc/mounts > /dev/null; then
