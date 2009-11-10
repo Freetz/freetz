@@ -8,8 +8,8 @@ $(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/$(KERNEL_VERSION)-$(KER
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/fuse.ko
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
-$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
-$(PKG)_SOURCE_MD5:=4879f06570d2225667534c37fea04213 
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libfuse.so.$($(PKG)_VERSION)
+$(PKG)_SOURCE_MD5:=4879f06570d2225667534c37fea04213
 
 $(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.freetz_config
 $(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.freetz_config.temp
@@ -81,9 +81,7 @@ $($(PKG)_MOD_TARGET_BINARY): $($(PKG)_MOD_BINARY)
 	cp $^ $@
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
-	mkdir -p $(dir $@)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_TARGET_DIR)/root/usr/lib
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg):
 
@@ -91,7 +89,8 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY) $($(PKG)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(FUSE_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
@@ -99,6 +98,6 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) $(FUSE_TARGET_BINARY)
 	$(RM) $(FUSE_MOD_TARGET_BINARY)
-	$(RM) $(FUSE_TARGET_DIR)/root/usr/lib/libfuse*.so*
+	$(RM) $(FUSE_DEST_LIBDIR)/libfuse*.so*
 
 $(PKG_FINISH)

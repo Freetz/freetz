@@ -7,8 +7,8 @@ $(PKG)_INWATCH_BINARY:=$($(PKG)_DIR)/src/.libs/inotifywatch
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/libinotifytools/src/.libs/libinotifytools.so.$($(PKG)_LIB_VERSION)
 $(PKG)_INWAIT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/inotifywait
 $(PKG)_INWATCH_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/inotifywatch
-$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libinotifytools.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=35d7178297390f18bae451e083362acf 
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libinotifytools.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=35d7178297390f18bae451e083362acf
 
 $(PKG)_CONFIGURE_ENV += LD="$(TARGET_LD)"
 
@@ -28,9 +28,7 @@ $($(PKG)_INWATCH_TARGET_BINARY): $($(PKG)_INWATCH_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_BINARY)
-	mkdir -p $(dir $@)
-	cp -a $(INOTIFY_TOOLS_DIR)/libinotifytools/src/.libs/libinotifytools.so* $(INOTIFY_TOOLS_TARGET_DIR)/root/usr/lib/
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg):
 
@@ -45,6 +43,6 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) $(INOTIFY_TOOLS_INWAIT_TARGET_BINARY)
 	$(RM) $(INOTIFY_TOOLS_INWATCH_TARGET_BINARY)
-	$(RM) $(INOTIFY_TOOLS_TARGET_DIR)/root/usr/lib/libinotifytools.so*
+	$(RM) $(INOTIFY_TOOLS_DEST_LIBDIR)/libinotifytools*.so*
 
 $(PKG_FINISH)

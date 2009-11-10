@@ -7,8 +7,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/tcpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/tcpd
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/shared/libwrap.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libwrap.so.$($(PKG)_LIB_VERSION)
-$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libwrap.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=e6fa25f71226d090f34de3f6b122fb5a 
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libwrap.so.$($(PKG)_LIB_VERSION)
+$(PKG)_SOURCE_MD5:=e6fa25f71226d090f34de3f6b122fb5a
 
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -43,9 +43,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
-	mkdir -p $(dir $@)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libwrap*.so* $(TCP_WRAPPERS_TARGET_DIR)/root/usr/lib
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg):
 
@@ -53,11 +51,14 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) clean
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/tcpd.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libwrap.a \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libwrap*.so*
 
 $(pkg)-uninstall:
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/tcpd.h \
-	 	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libwrap.a \
+	$(RM) \
 		$(TCP_WRAPPERS_TARGET_BINARY) \
-		$(TCP_WRAPPERS_LIB_TARGET_BINARY)
+		$(TCP_WRAPPERS_DEST_LIBDIR)/libwrap*.so*
 
 $(PKG_FINISH)
