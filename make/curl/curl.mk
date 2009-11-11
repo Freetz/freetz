@@ -78,7 +78,6 @@ ifeq ($(strip $(FREETZ_PACKAGE_CURL_STATIC)),y)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_STAGING_BINARY)
 else
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
-	echo $(CURL_LIB_TARGET_BINARY)
 endif
 
 $(pkg)-clean:
