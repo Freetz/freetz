@@ -1724,8 +1724,8 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.78-15620.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
 	default "FRITZ.Box_Fon_WLAN_7270_LabDSL.AnnexB.54.04.99-15335.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "FRITZ.Box_Fon_WLAN_7270_LabIPV6.AnnexB.54.04.94-15316.image" 		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_IPV6
-	default "FRITZ.Box_Fon_WLAN_7270_LabCORE.AnnexB.54.04.98-15220.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_CORE
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabCORE.AnnexB.74.04.98-15220.image"	if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_CORE
+	default "FRITZ.Box_Fon_WLAN_7270_LabCORE.AnnexB.54.04.98-15627.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_CORE
+	default "FRITZ.Box_Fon_WLAN_7270_v3_LabCORE.AnnexB.74.04.98-15627.image"	if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_CORE
 	default "FRITZ.Box_Fon_WLAN_7270_v3_LabIPV6.AnnexB.74.04.94-15316.image" 	if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_IPV6
 	default "FRITZ.Box_Fon_WLAN_7270_v3_LabDSL.AnnexB.74.04.99-15335.image"		if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_DSL
 	default "FRITZ.Box_Fon_WLAN_7270_v3.Labor.74.04.78-15620.image"			if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_BETA
@@ -2301,6 +2301,24 @@ choice
 #		depends on FREETZ_REPLACE_KERNEL
 
 endchoice
+
+config FREETZ_REPLACE_SSL_LIBS
+	bool "Replace AVM ssl-libs"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_LIBSSL
+	default y if ( \
+			FREETZ_TYPE_2170 || \
+			FREETZ_TYPE_WLAN_3131 || \
+			FREETZ_TYPE_WLAN_3130 || \
+			FREETZ_TYPE_WLAN_3170 || \
+			FREETZ_TYPE_3170_7170 \
+		)
+	default n
+	help
+		Use this option only if you are running out of space and if you
+		really know, what you are doing.
+		activating this option may cause an unstable system, uncontrolled reboots
+		and other side effects
+		(Activiating this option saves about 400K space in image)
 
 menu "BusyBox options"
 	depends on FREETZ_REPLACE_BUSYBOX
