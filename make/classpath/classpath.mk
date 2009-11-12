@@ -62,6 +62,6 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) \
 		$(CLASSPATH_TARGET_BINARY) \
-		$($(PKG)_DEST_DIR)$(CLASSPATH_LIBRARY_DIR)/libjava*.so*
+		$(CLASSPATH_DEST_DIR)$(CLASSPATH_LIBRARY_DIR)/libjava*.so*
 
 $(PKG_FINISH)
