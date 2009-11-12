@@ -17,6 +17,9 @@ $(PKG)_GMODULE_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgmodule-2.0.so.$($(PKG)_LI
 $(PKG)_GTHREAD_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgthread-2.0.so.$($(PKG)_LIB_VERSION)
 $(PKG)_SOURCE_MD5:=4c178b91d82ef80a2da3c26b772569c0
 
+$(PKG)_BUILD_PREREQ += glib-genmarshal
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the libglib2.0-dev package
+
 $(PKG)_DEPENDS_ON := gettext pcre
 
 # NB: glib2 does require iconv-functions, see glib/gconvert.c
