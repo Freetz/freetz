@@ -175,9 +175,12 @@ PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODIN
 # Use $< (first prerequisite) rather than $^ (all prerequisites), because
 # otherwise there will be errors when make tries to copy multiple source files
 # into one target binary.
-define INSTALL_BINARY_STRIP
+define INSTALL_BINARY
 mkdir -p $(dir $@)
 cp $< $@
+endef
+define INSTALL_BINARY_STRIP
+$(INSTALL_BINARY)
 $(TARGET_STRIP) $@
 endef
 define INSTALL_LIBRARY_STRIP__INT
@@ -205,6 +208,8 @@ PKG:=$(if $(strip $3),$(strip $3),$(shell echo "$(pkg)" | tr '[a-z\-]' '[A-Z_]')
 ALL_PACKAGES+=$(pkg)
 #
 $(PKG)_VERSION:=$(strip $1)
+$(PKG)_BUILD_PREREQ:=
+$(PKG)_BUILD_PREREQ_HINT:=
 $(PKG)_CONFIGURE_DEFOPTS:=y
 # $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
 $(pkg)-precompiled : $(pkg)-precompiled--int $(pkg)
@@ -274,6 +279,7 @@ define PKG_FINISH_BIN__INT
 # Binary dirclean
 $(pkg)-dirclean--int:
 	$(RM) -r $($(PKG)_DIR)
+	$(RM) $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
 	$(RM) -r $($(PKG)_TARGET_DIR)
 	$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 $(PKG_LIST)
@@ -289,8 +295,26 @@ endef
 # Finalise packages (general functionality + call to type specifics)
 define PKG_FINISH__INT
 $(pkg)-dirclean: $(pkg)-dirclean--int
-.PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
-$(pkg)-precompiled--int : uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+.PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-build-prereq
+$(pkg)-precompiled--int : $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+$(pkg)-build-prereq: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
+$(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked:
+ifneq ($($(PKG)_BUILD_PREREQ),)
+	@$(PKG)_MISSING_PREREQ=""; \
+	for f in $($(PKG)_BUILD_PREREQ); do \
+		if ! which $$$$f >/dev/null 2>&1; then $(PKG)_MISSING_PREREQ="$$$${$(PKG)_MISSING_PREREQ} $$$$f"; fi; \
+	done; \
+	if [ -n "$$$${$(PKG)_MISSING_PREREQ}" ]; then \
+		echo -e \
+			"[Error] The following commands required for building of $(pkg)-package are missing on your system:" \
+			`echo $$$${$(PKG)_MISSING_PREREQ} | sed -e 's| |, |g'`; \
+		if [ -n "$(strip $($(PKG)_BUILD_PREREQ_HINT))" ]; then \
+			echo "$($(PKG)_BUILD_PREREQ_HINT)"; \
+		fi; \
+		exit 1 >/dev/null 2>&1; \
+	fi;
+endif
+	touch $$@
 PKG:=
 pkg:=
 PKG_TYPE:=
@@ -464,7 +488,7 @@ endef
 define PKG_CONFIGURED_CONFIGURE__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
 	( cd $($(PKG)_DIR); \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
 		$($(PKG)_CONFIGURE_PRE_CMDS) \
@@ -483,7 +507,7 @@ PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
 define PKG_CONFIGURED_NOP__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
 	touch $$@
 endef
 PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
