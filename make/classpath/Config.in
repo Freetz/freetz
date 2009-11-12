@@ -2,9 +2,9 @@ config FREETZ_PACKAGE_CLASSPATH
 	bool "GNU classpath 0.97.2 (binary only)"
 	default n
 	requires FREETZ_PACKAGE_JAMVM
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
 	help
-		GNU Classpath, Essential Libraries for Java, is a GNU project to create 
+		GNU Classpath, Essential Libraries for Java, is a GNU project to create
 		free core class libraries for use with virtual machines and compilers
 		for the java programming language. Classpath is still a work in
 		progress. The first public release will be version 1.0.
-
