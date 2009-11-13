@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 2.1_rc20)
+$(call PKG_INIT_BIN, 2.1_rc21)
 $(PKG)_SOURCE:=openvpn-$(OPENVPN_VERSION).tar.gz
 $(PKG)_SITE:=http://openvpn.net/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/openvpn
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
 $(PKG)_STARTLEVEL=50
-$(PKG)_SOURCE_MD5:=8187f8f21507faac5e320e32747203b8 
+$(PKG)_SOURCE_MD5:=c9124abda3aa140172eefc7b31f1a100
 
 $(PKG)_DEPENDS_ON := openssl
 
