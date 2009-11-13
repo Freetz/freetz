@@ -8,7 +8,7 @@ if [ ! -z "$MOD_CGI_CMD" ]; then
 		eval "$(mount -o remount $MOD_CGI_CMD)"
 	else
 		if [ ! -z "$chkumount" ]; then
-			eval "$(umount $MOD_CGI_CMD)"
+			eval "$(/etc/hotplug/storage unplug $MOD_CGI_CMD)"
 		fi
 	fi
 fi
