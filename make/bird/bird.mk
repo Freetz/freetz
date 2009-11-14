@@ -24,7 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIRDC),--enable-client,--disab
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIRD_DEBUG),--enable-debug,--disable-debug)
 $(PKG)_CONFIGURE_OPTIONS += --disable-memcheck
 $(PKG)_CONFIGURE_OPTIONS += --disable-warnings
-$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

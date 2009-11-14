@@ -35,11 +35,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-dso
 $(PKG)_CONFIGURE_OPTIONS += --with-devrandom=/dev/urandom
 $(PKG)_CONFIGURE_OPTIONS += --includedir=$(APR_INCLUDE_DIR)
 $(PKG)_CONFIGURE_OPTIONS += --with-installbuilddir=$(APR_BUILD_DIR)
-ifeq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
-$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
-else
-$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
-endif
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

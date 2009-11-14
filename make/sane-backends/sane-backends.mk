@@ -35,11 +35,7 @@ $(PKG)_DEPENDS_ON:= libusb
 # include selected backends
 include $($(PKG)_MAKE_DIR)/sane-backends.in
 
-ifeq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
-$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
-else
-$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
-endif
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --without-gphoto2
 $(PKG)_CONFIGURE_OPTIONS += --disable-fork-process
 $(PKG)_CONFIGURE_OPTIONS += --disable-avahi
