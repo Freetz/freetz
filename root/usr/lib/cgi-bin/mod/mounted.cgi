@@ -20,15 +20,16 @@ if [ ! -z "$MOD_CGI_CMD" ]; then
 	fi
 fi
 
+securityl=`cat /tmp/flash/mod/security`
 if [ "$0" = "pkgstatus.cgi" ]
 then
 	formact="/cgi-bin/pkgstatus.cgi?pkg=mod&cgi=mod/mounted"
 else
 	formact="/cgi-bin/status.cgi"
+	[ "$MOD_MOUNTED_UMOUNT" != "yes" ] && securityl=9
 fi
 	
 sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'
-[ "$MOD_MOUNTED_UMOUNT" = "yes" ] && [ `cat /tmp/flash/mod/security` != "0" ] && MOD_MOUNTED_UMOUNT=no
 disabledbtn='disabled="disabled" '
 dfout=$(df -h | sed -e '1d' | sed -n ':a;$!N;$!ba;s/\n  */ /g;p')
 mfilt=$(mount|grep -E "^/dev/sd|^/dev/mapper/|^https://|^http://|^.* on .* type jffs|^.* on .* type fuse|^.* on .* type cifs|^.*:/.* on .* type nfs")
@@ -64,11 +65,11 @@ then
 			then
 				barstyle="rw"
 				newstatus="r"
-				[ "$MOD_MOUNTED_UMOUNT" = "yes" ] && rdisabled=''
+				[ "$securityl" = 0 ] && rdisabled=''
 			else
 				barstyle="ro"
 				newstatus="w"
-				[ "$MOD_MOUNTED_UMOUNT" = "yes" ] && wdisabled=''
+				[ "$securityl" = 0 ] && wdisabled=''
 			fi
 			echo -n '<tr><td class="path'$barstyle'"><b>'$showpath'</b></td><td class="bartdthpdg">'$showdev'</td>'
 			echo -n '<td class="bartdth"><b>'$fstyp'</b></td>'
@@ -85,7 +86,7 @@ then
 			echo '<input type="submit" value="R" '$rdisabled'class="rbtn'$barstyle'">'
 			echo '<input type="submit" value="W" '$wdisabled'class="wbtn'$barstyle'">'
 			echo '</form>'
-			if [ "$MOD_MOUNTED_UMOUNT" = "yes" ]
+			if [ "$securityl" = 0 ]
 			then
 				echo '<form class="btn" action="'$formact'" method="post" style="display:inline;">'
 				echo '<input type="hidden" name="cmd" value="'$path'">'
