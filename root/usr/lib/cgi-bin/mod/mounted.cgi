@@ -28,6 +28,7 @@ else
 fi
 	
 sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'
+[ "$MOD_MOUNTED_UMOUNT" = "yes" ] && [ `cat /tmp/flash/mod/security` != "0" ] && MOD_MOUNTED_UMOUNT=no
 disabledbtn='disabled="disabled" '
 dfout=$(df -h | sed -e '1d' | sed -n ':a;$!N;$!ba;s/\n  */ /g;p')
 mfilt=$(mount|grep -E "^/dev/sd|^/dev/mapper/|^https://|^http://|^.* on .* type jffs|^.* on .* type fuse|^.* on .* type cifs|^.*:/.* on .* type nfs")
