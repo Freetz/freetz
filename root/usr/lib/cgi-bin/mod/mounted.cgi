@@ -28,7 +28,6 @@ else
 fi
 	
 sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'
-security=$(cat /tmp/flash/mod/security)
 disabledbtn='disabled="disabled" '
 dfout=$(df -h | sed -e '1d' | sed -n ':a;$!N;$!ba;s/\n  */ /g;p')
 mfilt=$(mount|grep -E "^/dev/sd|^/dev/mapper/|^https://|^http://|^.* on .* type jffs|^.* on .* type fuse|^.* on .* type cifs|^.*:/.* on .* type nfs")
@@ -64,17 +63,11 @@ then
 			then
 				barstyle="rw"
 				newstatus="r"
-				if [ "$security" -eq "0" ]
-				then
-					rdisabled=''
-				fi
+				[ "$MOD_MOUNTED_UMOUNT" = "yes" ] && rdisabled=''
 			else
 				barstyle="ro"
 				newstatus="w"
-				if [ "$security" -eq "0" ]
-				then
-					wdisabled=''
-				fi
+				[ "$MOD_MOUNTED_UMOUNT" = "yes" ] && wdisabled=''
 			fi
 			echo -n '<tr><td class="path'$barstyle'"><b>'$showpath'</b></td><td class="bartdthpdg">'$showdev'</td>'
 			echo -n '<td class="bartdth"><b>'$fstyp'</b></td>'
@@ -91,7 +84,7 @@ then
 			echo '<input type="submit" value="R" '$rdisabled'class="rbtn'$barstyle'">'
 			echo '<input type="submit" value="W" '$wdisabled'class="wbtn'$barstyle'">'
 			echo '</form>'
-			if [ "$security" -eq "0" ]
+			if [ "$MOD_MOUNTED_UMOUNT" = "yes" ]
 			then
 				echo '<form class="btn" action="'$formact'" method="post" style="display:inline;">'
 				echo '<input type="hidden" name="cmd" value="'$path'">'
