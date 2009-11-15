@@ -7,7 +7,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/share/classpath/mini.jar
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/native/jni/java-lang/.libs/libjavalang.so.$($(PKG)_UGLY_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/classpath/libjavalang.so.$($(PKG)_UGLY_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/classpath/libjavalang.so.$($(PKG)_UGLY_VERSION)
-$(PKG)_SOURCE_MD5:=6a35347901ace03c31cc49751b338f31 
+$(PKG)_SOURCE_MD5:=6a35347901ace03c31cc49751b338f31
 
 $(PKG)_DEPENDS_ON := libiconv
 
@@ -15,10 +15,9 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-peer
 $(PKG)_CONFIGURE_OPTIONS += --disable-qt-peer
 $(PKG)_CONFIGURE_OPTIONS += --disable-gconf-peer
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
-$(PKG)_CONFIGURE_OPTIONS += --disable-plugin       
-$(PKG)_CONFIGURE_OPTIONS += --with-ecj               
+$(PKG)_CONFIGURE_OPTIONS += --disable-plugin
+$(PKG)_CONFIGURE_OPTIONS += --with-ecj
 $(PKG)_CONFIGURE_OPTIONS += --disable-Werror
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

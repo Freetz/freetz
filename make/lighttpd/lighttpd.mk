@@ -55,7 +55,6 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 # this needs libxml2 and sqlite
 #$(PKG)_CONFIGURE_OPTIONS += --with-webdav-props
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

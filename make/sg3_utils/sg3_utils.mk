@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=sg3_utils-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=http://sg.danny.cz/sg/p
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/sg_start
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sg_start
-$(PKG)_SOURCE_MD5:=9a7aa8d954d75dc6c91e066e215867f2 
+$(PKG)_SOURCE_MD5:=9a7aa8d954d75dc6c91e066e215867f2
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 

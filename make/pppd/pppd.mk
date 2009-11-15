@@ -18,7 +18,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(SOURCE_DIR)
 	$(RM) -r $(PPPD_DIR)
 	tar -xOf $(DL_DIR)/$(PPPD_SOURCE) ppp-2.4.5git1/upstream/tarballs/$(PPPD_SOURCE) | \
-		tar -C $(SOURCE_DIR) $(VERBOSE) -xzf - 
+		tar -C $(SOURCE_DIR) $(VERBOSE) -xzf -
 	shopt -s nullglob; for i in $(PPPD_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(PPPD_DIR) $$i; \
 	done

@@ -4,7 +4,7 @@ $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/checkmaild
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/checkmaild
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=c82af968a87cf3c734495a76c6e628f6 
+$(PKG)_SOURCE_MD5:=c82af968a87cf3c734495a76c6e628f6
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

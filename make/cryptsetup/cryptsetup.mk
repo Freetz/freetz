@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://cryptsetup.googlecode.com/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cryptsetup
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/cryptsetup
-$(PKG)_SOURCE_MD5:=00d452eb7a76e39f5749545d48934a10 
+$(PKG)_SOURCE_MD5:=00d452eb7a76e39f5749545d48934a10
 
 $(PKG)_DEPENDS_ON := devmapper e2fsprogs popt
 
@@ -15,7 +15,6 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared-library
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

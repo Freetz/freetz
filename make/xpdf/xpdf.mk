@@ -31,7 +31,7 @@ $(XPDF_TARGET_BINARIES): $(XPDF_DEST_DIR)/usr/bin/%: $(XPDF_DIR)/xpdf/%
 $(XPDF_TARGET_LIBS): $(XPDF_DEST_DIR)/usr/lib/%: $(XPDF_DIR)/xpdf/% $(XPDF_TARGET_BINARIES)
 	$(INSTALL_BINARY_STRIP)
 
-$(pkg): 
+$(pkg):
 
 $(pkg)-precompiled: $(XPDF_TARGET_BINARIES) $(XPDF_TARGET_LIBS)
 

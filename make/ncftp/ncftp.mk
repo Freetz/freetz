@@ -11,7 +11,7 @@ $(PKG)_BATCH:=$($(PKG)_DIR)/bin/ncftpbatch
 $(PKG)_TARGET_BATCH:=$($(PKG)_DEST_DIR)/usr/bin/ncftpbatch
 $(PKG)_LS:=$($(PKG)_DIR)/bin/ncftpls
 $(PKG)_TARGET_LS:=$($(PKG)_DEST_DIR)/usr/bin/ncftpls
-$(PKG)_SOURCE_MD5:=f08238032ab247aa78f935edfc4db9fb 
+$(PKG)_SOURCE_MD5:=f08238032ab247aa78f935edfc4db9fb
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NCFTP_WITH_NCFTPGET
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NCFTP_WITH_NCFTPPUT
@@ -72,7 +72,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) \
 		      $($(PKG)_TARGET_PUT) \
 		      $($(PKG)_TARGET_BATCH) \
 		      $($(PKG)_TARGET_LS)
-	  
+
 $(pkg)-clean:
 	-$(MAKE) -C $(NCFTP_DIR) clean
 	$(RM) $(NCFTP_DIR)/.configured

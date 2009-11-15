@@ -8,10 +8,9 @@ $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/libinotifytools/src/.libs/libinotifytools.so.$(
 $(PKG)_INWAIT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/inotifywait
 $(PKG)_INWATCH_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/inotifywatch
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libinotifytools.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=35d7178297390f18bae451e083362acf 
+$(PKG)_SOURCE_MD5:=35d7178297390f18bae451e083362acf
 
 $(PKG)_CONFIGURE_ENV += LD="$(TARGET_LD)"
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

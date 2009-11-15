@@ -12,15 +12,15 @@ $(PKG)_BINARY_MENU_SO:=$($(PKG)_DIR)/plugins/menu.plugin/.libs/libmenu.plugin.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/$(pkg)
 $(PKG)_TARGET_BINARY_MENU_SO:=$($(PKG)_TARGET_DIR)/root/usr/lib/libmenu.plugin.so
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=40dac2970d1048e554e41ca9b5abedbd 
+$(PKG)_SOURCE_MD5:=40dac2970d1048e554e41ca9b5abedbd
 
 $(PKG)_DEPENDS_ON := libcapi pjproject
 
-$(PKG)_CONFIGURE_PRE_CMDS := 
+$(PKG)_CONFIGURE_PRE_CMDS :=
 $(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_$(PKG)_SVN),cd ../../; rm -Rf $(DTMFBOX_DIR);,)
-$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_$(PKG)_SVN),svn co $(DTMFBOX_SVN) $(DTMFBOX_DIR);,) 
-$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_$(PKG)_SVN),cd $(DTMFBOX_DIR);,) 
-$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_$(PKG)_SVN),touch .unpacked;,) 
+$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_$(PKG)_SVN),svn co $(DTMFBOX_SVN) $(DTMFBOX_DIR);,)
+$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_$(PKG)_SVN),cd $(DTMFBOX_DIR);,)
+$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_$(PKG)_SVN),touch .unpacked;,)
 
 $(PKG)_CONFIGURE_OPTIONS := --with-pjsip-path=$(DTMFBOX_PJPATH)
 $(PKG)_CONFIGURE_OPTIONS += --prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)

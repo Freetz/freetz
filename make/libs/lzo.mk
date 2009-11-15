@@ -12,7 +12,6 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-libtool-lock
 $(PKG)_CONFIGURE_OPTIONS += --disable-asm
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -20,7 +19,6 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(LZO_DIR)
-
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_PATH) \

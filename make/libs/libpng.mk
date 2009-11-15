@@ -13,7 +13,6 @@ $(PKG)_CONFIGURE_ENV += gl_cv_func_malloc_0_nonnull=yes
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -29,7 +28,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	    install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.la \
-	        $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpng12.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpng12.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libpng12-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)

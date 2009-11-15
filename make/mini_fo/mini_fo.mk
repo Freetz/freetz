@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 0.3)
 
 $(PKG_UNPACKED)
 
-$(pkg): 
+$(pkg):
 
 $(pkg)-clean:
 

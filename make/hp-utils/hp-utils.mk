@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://www.michaeldenk.de/projects/hp-utils
 $(PKG)_BINARY:=$($(PKG)_DIR)/hp-levels
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/hp-levels
-$(PKG)_SOURCE_MD5:=f870752e105db811bf87577123353c58 
+$(PKG)_SOURCE_MD5:=f870752e105db811bf87577123353c58
 
 $(PKG)_DEPENDS_ON:= hplip
 

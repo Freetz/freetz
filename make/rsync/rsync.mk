@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=rsync-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://samba.anu.edu.au/ftp/rsync
 $(PKG)_BINARY:=$($(PKG)_DIR)/rsync
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/rsync
-$(PKG)_SOURCE_MD5:=e9865d093a18e4668b9d31b635dc8e99 
+$(PKG)_SOURCE_MD5:=e9865d093a18e4668b9d31b635dc8e99
 
 $(PKG)_DEPENDS_ON := popt
 

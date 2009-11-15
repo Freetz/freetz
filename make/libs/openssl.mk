@@ -18,7 +18,6 @@ OPENSSL_OPTIONS:= shared no-ec no-err no-fips no-hw no-engines \
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 
-
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	$(SED) -i -e 's/FREETZ_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
 	( cd $(OPENSSL_DIR); \

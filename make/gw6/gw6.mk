@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=gw6c-$($(PKG)_VERSION).tar.bz2
 #$(PKG)_SITE:=http://go6.net/4105/file.asp?file_id=150
 $(PKG)_BINARY:=$($(PKG)_DIR)/tspc-advanced/bin/gw6c
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/gw6c
-$(PKG)_SOURCE_MD5:=eeac7292a622681651ec3bd9b2e5b061 
+$(PKG)_SOURCE_MD5:=eeac7292a622681651ec3bd9b2e5b061
 
 $(PKG)_DEPENDS_ON := uclibcxx
 
@@ -17,11 +17,9 @@ GW6C_OPTS:= \
 	C_LINKER="$(TARGET_CC)" \
 	LINKER="$(TARGET_CROSS)g++"
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
-
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \

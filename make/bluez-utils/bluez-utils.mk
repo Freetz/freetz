@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://bluez.sourceforge.net/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/hcid/hcid
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/hcid
-$(PKG)_SOURCE_MD5:=ae3729ab5592be06ed01b973d4b3e9fe 
+$(PKG)_SOURCE_MD5:=ae3729ab5592be06ed01b973d4b3e9fe
 
 $(PKG)_DEPENDS_ON := bluez-libs
 

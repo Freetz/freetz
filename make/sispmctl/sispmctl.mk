@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=sispmctl-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/sispmctl
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/sispmctl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sispmctl
-$(PKG)_SOURCE_MD5:=33b2975d2c9ee5346f3561e676892c0d 
+$(PKG)_SOURCE_MD5:=33b2975d2c9ee5346f3561e676892c0d
 
 $(PKG)_DEPENDS_ON := libusb
 

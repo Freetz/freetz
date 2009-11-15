@@ -4,7 +4,7 @@ $(PKG)_SITE:=http://www.torproject.org/dist
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tor
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=2c0ca9bf5d0cfb771f4d6bec9c4360ca 
+$(PKG)_SOURCE_MD5:=2c0ca9bf5d0cfb771f4d6bec9c4360ca
 
 $(PKG)_DEPENDS_ON := zlib openssl libevent
 

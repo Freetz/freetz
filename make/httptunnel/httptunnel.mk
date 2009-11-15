@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.gnu.org/pub/gnu/httptunnel
 $(PKG)_BINARY:=$($(PKG)_DIR)/hts
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/hts
-$(PKG)_SOURCE_MD5:=493cc0f5f21e9955db27ee9cd9a976d5 
+$(PKG)_SOURCE_MD5:=493cc0f5f21e9955db27ee9cd9a976d5
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

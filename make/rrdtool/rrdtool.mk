@@ -8,7 +8,7 @@ $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/src/.libs/librrd.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/librrd.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/librrd.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=19b24f7184a8dbf7b48c1bbb565ad9fb 
+$(PKG)_SOURCE_MD5:=19b24f7184a8dbf7b48c1bbb565ad9fb
 
 $(PKG)_DEPENDS_ON := libpng freetype libart_lgpl zlib
 

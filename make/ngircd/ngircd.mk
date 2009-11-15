@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=ngircd-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.berlios.de/pub/ngircd
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ngircd/ngircd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ngircd
-$(PKG)_SOURCE_MD5:=eef90855414c35bfb6590d17e24ee06f 
+$(PKG)_SOURCE_MD5:=eef90855414c35bfb6590d17e24ee06f
 
 ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS)),y)
 $(PKG)_DEPENDS_ON += tcp_wrappers

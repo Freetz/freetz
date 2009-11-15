@@ -16,7 +16,7 @@ rm_files "$(find ${FILESYSTEM_MOD_DIR}/etc/hotplug -depth ! -name hotplug)"
 rm_files "${FILESYSTEM_MOD_DIR}/etc/hotplug"
 mkdir ${FILESYSTEM_MOD_DIR}/var/media
 
-# 
+#
 echo1 "setup mdev boot sequence"
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/mdev_fstab.patch"
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/mdev_rc.S.patch"

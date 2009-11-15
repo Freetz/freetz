@@ -5,7 +5,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/zebra/.libs/zebra
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/zebra
 $(PKG)_TARGET_LIBDIR:=$($(PKG)_DEST_DIR)/usr/lib
 $(PKG)_STARTLEVEL=80
-$(PKG)_SOURCE_MD5:=3a075fd5e26ec6d52f4a51b14a2d3c2c 
+$(PKG)_SOURCE_MD5:=3a075fd5e26ec6d52f4a51b14a2d3c2c
 
 $(PKG)_DEPENDS_ON := ncurses readline
 
@@ -37,7 +37,7 @@ $(PKG)_DAEMONS:=zebra \
 		$(if $(FREETZ_PACKAGE_QUAGGA_RIPD),ripd,) \
 		$(if $(FREETZ_PACKAGE_QUAGGA_RIPNGD),ripngd,) \
 		$(if $(FREETZ_PACKAGE_QUAGGA_OSPFD),ospfd,) \
-	        $(if $(FREETZ_PACKAGE_QUAGGA_OSPF6D),ospf6d,) \
+		$(if $(FREETZ_PACKAGE_QUAGGA_OSPF6D),ospf6d,) \
 		$(if $(FREETZ_PACKAGE_QUAGGA_ISISD),isisd,)
 
 $(PKG_SOURCE_DOWNLOAD)

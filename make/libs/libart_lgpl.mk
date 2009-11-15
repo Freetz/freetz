@@ -11,7 +11,6 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(MAKE) -C $(LIBART_LGPL_DIR) gen_art_config \
 		HOSTCC="$(HOSTCC)"

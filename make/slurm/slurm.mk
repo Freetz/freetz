@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=slurm-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.wormulon.net/slurm
 $(PKG)_BINARY:=$($(PKG)_DIR)/slurm
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/slurm
-$(PKG)_SOURCE_MD5:=e68d09202b835c644f7f6b7f070f29a2 
+$(PKG)_SOURCE_MD5:=e68d09202b835c644f7f6b7f070f29a2
 
 $(PKG)_DEPENDS_ON := ncurses
 

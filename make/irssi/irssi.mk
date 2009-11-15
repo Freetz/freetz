@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=irssi-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://irssi.org/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/fe-text/irssi
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/irssi
-$(PKG)_SOURCE_MD5:=ddf717a430e1c13a272f528c4f529430 
+$(PKG)_SOURCE_MD5:=ddf717a430e1c13a272f528c4f529430
 
 $(PKG)_DEPENDS_ON := glib2 ncurses
 
@@ -39,12 +39,12 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) 
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(IRSSI_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(IRSSI_TARGET_BINARY)
 
 $(PKG_FINISH)

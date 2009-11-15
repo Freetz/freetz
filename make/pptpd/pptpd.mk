@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/poptop
 $(PKG)_BINARY:=$($(PKG)_DIR)/pptpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/pptpd
-$(PKG)_SOURCE_MD5:=b38df9c431041922c997c1148bedf591 
+$(PKG)_SOURCE_MD5:=b38df9c431041922c997c1148bedf591
 
 $(PKG)_DEPENDS_ON := pppd
 
