@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=unrarsrc-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.rarlab.com/rar/
 $(PKG)_BINARY:=$($(PKG)_DIR)/unrar
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/unrar
-$(PKG)_SOURCE_MD5:=59b23dd05ff70791cd6449effa7fc3b6
+$(PKG)_SOURCE_MD5:=07d7c5dd3d3b778fc1870a981c43a3d3
 
 $(PKG)_DEPENDS_ON := uclibcxx
 
