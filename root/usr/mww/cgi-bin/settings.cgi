@@ -95,7 +95,7 @@ $(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
 <input type="hidden" name="mounted_main" value="no">
 <input id="a1" type="checkbox" name="mounted_main" value="yes"$mounted_main_chk><label for="a1">$(lang de:"Hauptseite" en:"Mainpage")</label>
 <input type="hidden" name="mounted_umount" value="no">
-<input id="a3" type="checkbox" name="mounted_umount" value="yes"$mounted_umount_chk><label for="a3">$(lang de:"aush&auml;ngbar" en:"unmountable")</label>
+<input id="a3" type="checkbox" name="mounted_umount" value="yes"$mounted_umount_chk><label for="a3">$(lang de:"mit Kn&ouml;pfen" en:"with buttons")</label>
 </p>
 EOF
 if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
