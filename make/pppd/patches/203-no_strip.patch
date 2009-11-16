@@ -11,7 +11,7 @@
  clean:
 --- pppd/Makefile.linux.orig	2009-11-06 15:01:48.000000000 +0100
 +++ pppd/Makefile.linux	2009-11-06 15:01:49.000000000 +0100
-@@ -99,7 +99,7 @@
+@@ -101,7 +101,7 @@
  CFLAGS	+= -DUSE_SRP -DOPENSSL -I/usr/local/ssl/include
  LIBS	+= -lsrp -L/usr/local/ssl/lib -lcrypto
  TARGETS	+= srp-entry
@@ -20,7 +20,7 @@
  MANPAGES += srp-entry.8
  EXTRACLEAN += srp-entry.o
  NEEDDES=y
-@@ -198,7 +198,7 @@
+@@ -200,7 +200,7 @@
  install: pppd
  	mkdir -p $(BINDIR) $(MANDIR)
  	$(EXTRAINSTALL)

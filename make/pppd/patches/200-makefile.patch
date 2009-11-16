@@ -1,5 +1,5 @@
---- pppd/Makefile.linux	2006-06-04 07:07:46.000000000 +0200
-+++ pppd/Makefile.linux	2007-10-04 08:53:26.000000000 +0200
+--- pppd/Makefile.linux.orig	2009-11-16 12:36:50.000000000 +0100
++++ pppd/Makefile.linux	2009-11-16 12:40:02.000000000 +0100
 @@ -48,7 +48,7 @@
  # Uncomment the next line to include support for PPP packet filtering.
  # This requires that the libpcap library and headers be installed
@@ -9,7 +9,7 @@
  
  # Uncomment the next line to enable multilink PPP (enabled by default)
  # Linux distributions: Please leave multilink ENABLED in your builds
-@@ -58,9 +58,9 @@
+@@ -58,11 +58,13 @@
  # Uncomment the next line to enable the TDB database (enabled by default.)
  # If you enable multilink, then TDB is automatically enabled also.
  # Linux distributions: Please leave TDB ENABLED in your builds.
@@ -19,9 +19,14 @@
 -HAS_SHADOW=y
 +#HAS_SHADOW=y
  #USE_PAM=y
- #HAVE_INET6=y
+-#HAVE_INET6=y
++#ifdef FREETZ_TARGET_IPV6_SUPPORT
++HAVE_INET6=y
++#endif
  
-@@ -77,7 +77,7 @@
+ # Enable plugins
+ PLUGIN=y
+@@ -77,7 +79,7 @@
  
  INCLUDE_DIRS= -I../include
  
@@ -30,7 +35,7 @@
  
  CFLAGS= $(COPTS) $(COMPILE_FLAGS) $(INCLUDE_DIRS) '-DDESTDIR="@DESTDIR@"'
  
-@@ -117,10 +117,8 @@
+@@ -117,10 +119,8 @@
  #LIBS     += -lshadow $(LIBS)
  endif
  
