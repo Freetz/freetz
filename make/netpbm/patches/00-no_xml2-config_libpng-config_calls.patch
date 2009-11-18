@@ -1,0 +1,89 @@
+--- converter/other/Makefile	2009-09-18 21:04:37.000000000 +0200
++++ converter/other/Makefile	2009-11-13 18:51:24.000000000 +0100
+@@ -7,13 +7,13 @@
+ 
+ include $(BUILDDIR)/Makefile.config
+ 
+-ifeq ($(shell xml2-config --version),)
++#ifeq ($(shell xml2-config --version),)
+   XML2_LIBS=NONE
+   XML2_CFLAGS=NONE
+-else
+-  XML2_LIBS=$(shell xml2-config --libs)
+-  XML2_CFLAGS=$(shell xml2-config --cflags)
+-endif
++#else
++#  XML2_LIBS=$(shell xml2-config --libs)
++#  XML2_CFLAGS=$(shell xml2-config --cflags)
++#endif
+ 
+ SUBDIRS = jbig pnmtopalm jpeg2000 cameratopam pamtosvg
+ ifneq ($(BUILD_FIASCO), N)
+@@ -27,7 +27,7 @@
+   endif
+ endif
+ 
+-ifeq ($(shell libpng-config --version),)
++#ifeq ($(shell libpng-config --version),)
+   ifneq ($(PNGLIB),NONE)
+     HAVE_PNGLIB = Y
+     ifneq ($(PNGHDR_DIR)x,x)
+@@ -37,10 +37,10 @@
+       INCLUDES += -I$(ZHDR_DIR)
+     endif
+   endif
+-else
+-  HAVE_PNGLIB = Y
+-  INCLUDES += $(shell libpng-config --cflags)
+-endif
++#else
++#  HAVE_PNGLIB = Y
++#  INCLUDES += $(shell libpng-config --cflags)
++#endif
+ 
+ ifneq ($(JPEGLIB),NONE)
+   ifneq ($(JPEGHDR_DIR)x,x)
+@@ -148,11 +148,11 @@
+ 	$(LD) -o $@ $@.o tiff.o \
+ 	  $(LIBOPTS_TIFF) $(MATHLIB) $(LDFLAGS) $(LDLIBS) $(RPATH) $(LADD)
+ 
+-ifeq ($(shell libpng-config --version),)
++#ifeq ($(shell libpng-config --version),)
+   PNGLIB_LIBOPTS = $(shell $(LIBOPT) $(LIBOPTR) $(PNGLIB) $(ZLIB))
+-else
+-  PNGLIB_LIBOPTS = $(shell libpng-config --ldflags)
+-endif
++#else
++#  PNGLIB_LIBOPTS = $(shell libpng-config --ldflags)
++#endif
+ 
+ pngtopnm: %: %.o $(NETPBMLIB) $(LIBOPT)
+ 	$(LD) -o $@ $@.o \
+--- GNUmakefile	2008-09-27 03:37:09.000000000 +0200
++++ GNUmakefile	2009-11-13 18:52:35.000000000 +0100
+@@ -263,17 +263,17 @@
+   MERGELIBS += $(X11LIB)
+ endif
+ 
+-ifeq ($(shell libpng-config --version),)
++#ifeq ($(shell libpng-config --version),)
+   PNGLD = $(shell $(LIBOPT) $(LIBOPTR) $(PNGLIB) $(ZLIB))
+-else
+-  PNGLD = $(shell libpng-config --ldflags)
+-endif
++#else
++#  PNGLD = $(shell libpng-config --ldflags)
++#endif
+ 
+-ifeq ($(shell xml2-config --version),)
++#ifeq ($(shell xml2-config --version),)
+   XML2LD=
+-else
+-  XML2LD=$(shell xml2-config --libs)
+-endif
++#else
++#  XML2LD=$(shell xml2-config --libs)
++#endif
+ 
+ 
+ # If URTLIB is BUNDLED_URTLIB, then we're responsible for building it, which

@@ -3,8 +3,7 @@ $(PKG)_SOURCE:=empty-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=@SF/empty
 $(PKG)_BINARY:=$($(PKG)_DIR)/empty
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/empty
-$(PKG)_SOURCE_MD5:=e56d0d81e5e40b1c41c4b9ed74a1edd8 
-
+$(PKG)_SOURCE_MD5:=e56d0d81e5e40b1c41c4b9ed74a1edd8
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

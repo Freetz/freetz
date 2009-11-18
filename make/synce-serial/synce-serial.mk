@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/synce
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/synce-serial-chat
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/synce-serial-chat
-$(PKG)_SOURCE_MD5:=3a155a770cc2e05fc3af452731d48954 
+$(PKG)_SOURCE_MD5:=3a155a770cc2e05fc3af452731d48954
 
 $(PKG)_CONFIGURE_OPTIONS += --libexecdir=/usr/sbin
 

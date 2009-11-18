@@ -11,7 +11,7 @@ endif
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
-$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_WGET_WITH_SSL),--with-libssl-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_WGET_WITH_SSL

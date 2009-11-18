@@ -5,17 +5,11 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 $(PKG)_SOURCE_MD5:=508bf1911173ac43e4e6c31d9dc36b8f
 
-
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --enable-wide-getaddrinfo
-
-ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
-$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
-else
-$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
-endif
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -37,7 +31,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(RUBY_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(RUBY_TARGET_BINARY)
 
 $(PKG_FINISH)

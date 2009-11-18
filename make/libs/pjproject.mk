@@ -7,7 +7,7 @@ $(PKG)_CONFIG_SITE:=$(PJPROJECT_DIR)/pjlib/include/pj/config_site.h
 $(PKG)_STAGING_BINARY:=$(PJPROJECT_DIR)/pjproject.build
 # only static lib
 #$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpjsip.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=6462f2a636e5b14f50e92efc000924f0 
+$(PKG)_SOURCE_MD5:=6462f2a636e5b14f50e92efc000924f0
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-sound
 $(PKG)_CONFIGURE_OPTIONS += --disable-oss

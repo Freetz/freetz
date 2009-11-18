@@ -1,5 +1,5 @@
---- pcre-config.in	2008-02-16 11:13:56.000000000 +0100
-+++ pcre-config.in	2008-02-16 11:13:57.000000000 +0100
+--- pcre-config.in	2009-09-01 18:21:54.000000000 +0200
++++ pcre-config.in	2009-11-17 21:31:08.000000000 +0100
 @@ -21,6 +21,10 @@
    libR=" -Wl,-R@libdir@"
    ;;
@@ -12,7 +12,7 @@
  while test $# -gt 0; do
    case "$1" in
 @@ -55,10 +59,10 @@
-       echo $includes
+       echo $includes @PCRE_STATIC_CFLAG@
        ;;
      --libs-posix)
 -      echo -L@libdir@$libR -lpcreposix -lpcre

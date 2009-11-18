@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=@SF/wput
 $(PKG)_BINARY:=$($(PKG)_DIR)/wput
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wput
-$(PKG)_SOURCE_MD5:=92b41efed4db8eb4f3443c23bf7ceecf 
+$(PKG)_SOURCE_MD5:=92b41efed4db8eb4f3443c23bf7ceecf
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -129,7 +129,7 @@ $(pkg)-clean:
 	$(RM) $(NETSNMP_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
-	$(RM) $(NETSNMP_TARGET_BINARY) 
+	$(RM) $(NETSNMP_TARGET_BINARY)
 	$(RM) $(NETSNMP_TARGET_LIBS)
 
 $(PKG_FINISH)

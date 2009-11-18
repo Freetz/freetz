@@ -3,8 +3,7 @@ $(PKG)_SOURCE:=cpmaccfg-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.heimpold.de/freetz
 $(PKG)_BINARY:=$($(PKG)_DIR)/cpmaccfg
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/cpmaccfg
-$(PKG)_SOURCE_MD5:=d5f0c71600479a1c58b931eb99e592cf 
-
+$(PKG)_SOURCE_MD5:=d5f0c71600479a1c58b931eb99e592cf
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

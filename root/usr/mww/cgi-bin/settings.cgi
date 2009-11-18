@@ -13,13 +13,14 @@ crond_auto_chk=''; crond_man_chk=''
 swap_auto_chk=''; swap_man_chk=''
 telnetd_auto_chk=''; telnetd_man_chk=''; telnet_inetd_chk='';
 httpd_auto_chk=''; httpd_man_chk=''; httpd_inetd_chk='';
-mounted_main_chk='';mounted_sub_chk='';
+mounted_main_chk='';mounted_sub_chk=''; mounted_umount_chk='';
 show_box_info_chk='';show_freetz_info_chk='';
 
 if [ "$MOD_SHOW_BOX_INFO" = "yes" ]; then show_box_info_chk=' checked'; fi
 if [ "$MOD_SHOW_FREETZ_INFO" = "yes" ]; then show_freetz_info_chk=' checked'; fi
 if [ "$MOD_MOUNTED_MAIN" = "yes" ]; then mounted_main_chk=' checked'; fi
 if [ "$MOD_MOUNTED_SUB" = "yes" ]; then mounted_sub_chk=' checked'; fi
+if [ "$MOD_MOUNTED_UMOUNT" = "yes" ]; then mounted_umount_chk=' checked'; fi
 if [ "$MOD_CROND" = "yes" ]; then crond_auto_chk=' checked'; else crond_man_chk=' checked'; fi
 if [ "$MOD_SWAP" = "yes" ]; then swap_auto_chk=' checked'; else swap_man_chk=' checked'; fi
 case "$MOD_TELNETD" in yes) telnetd_auto_chk=' checked';; inetd) telnetd_inetd_chk=' checked';; *) telnetd_man_chk=' checked';; esac
@@ -93,6 +94,8 @@ $(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
 <input id="a2" type="checkbox" name="mounted_sub" value="yes"$mounted_sub_chk><label for="a2">$(lang de:"Untermen&uuml;" en:"Submenu")</label>
 <input type="hidden" name="mounted_main" value="no">
 <input id="a1" type="checkbox" name="mounted_main" value="yes"$mounted_main_chk><label for="a1">$(lang de:"Hauptseite" en:"Mainpage")</label>
+<input type="hidden" name="mounted_umount" value="no">
+<input id="a3" type="checkbox" name="mounted_umount" value="yes"$mounted_umount_chk><label for="a3">$(lang de:"mit Kn&ouml;pfen" en:"with buttons")</label>
 </p>
 EOF
 if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then

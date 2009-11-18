@@ -20,7 +20,6 @@ $(PKG)_CONFIGURE_OPTIONS += --without-libexpat-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-emacs
 $(PKG)_CONFIGURE_OPTIONS += --disable-csharp
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

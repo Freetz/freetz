@@ -28,7 +28,6 @@ $(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DI
 $(PKG)_CONFIGURE_OPTIONS += --disable-mtab
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
 
-
 $(PKG_SOURCE_DOWNLOAD)
 
 $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config

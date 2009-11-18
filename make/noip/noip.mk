@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=noip-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.no-ip.com/client/linux
 $(PKG)_BINARY:=$($(PKG)_DIR)/noip2
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/noip2
-$(PKG)_SOURCE_MD5:=eed8e9ef9edfb7ddc36e187de867fe64 
+$(PKG)_SOURCE_MD5:=eed8e9ef9edfb7ddc36e187de867fe64
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN,1.0.20)
 $(PKG)_LIB_VERSION:=1.0.20
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp2.sane-project.org/pub/sane/$(pkg)-$($(PKG)_VERSION)
-$(PKG)_SOURCE_MD5:=a0cfdfdebca2feb4f2ba5d3418b15a42 
+$(PKG)_SOURCE_MD5:=a0cfdfdebca2feb4f2ba5d3418b15a42
 
 # saned
 $(PKG)_TARGET_saned:=$($(PKG)_DEST_DIR)/usr/sbin/saned
@@ -21,7 +21,6 @@ $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/backend/.libs/libsane.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=root/usr/lib/libsane.so.$($(PKG)_LIB_VERSION)
 
-
 $(PKG)_TARGET_BINARIES:=$($(PKG)_TARGET_saned)
 ifeq ($(strip $(FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner)),y)
 $(PKG)_TARGET_BINARIES+=$($(PKG)_TARGET_sane_find_scanner)
@@ -35,11 +34,7 @@ $(PKG)_DEPENDS_ON:= libusb
 # include selected backends
 include $($(PKG)_MAKE_DIR)/sane-backends.in
 
-ifeq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
-$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
-else
-$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
-endif
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --without-gphoto2
 $(PKG)_CONFIGURE_OPTIONS += --disable-fork-process
 $(PKG)_CONFIGURE_OPTIONS += --disable-avahi

@@ -6,7 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/ltrace
 $(PKG)_CONF:=$($(PKG)_DIR)/etc/ltrace.conf
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ltrace
 $(PKG)_TARGET_CONF:=$($(PKG)_DEST_DIR)/etc/ltrace.conf
-$(PKG)_SOURCE_MD5:=aedc537a2d937c4fc6f6d95c3b028be0 
+$(PKG)_SOURCE_MD5:=aedc537a2d937c4fc6f6d95c3b028be0
 
 # Remarks:
 #   - LTRACE_SOURCE is created like this:
@@ -24,7 +24,6 @@ $(PKG)_CONFIGURE_PRE_CMDS += ( cd sysdeps/linux-gnu/mipsel; \
 					../mksignalent $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/asm/signal.h > signalent.h; );
 
 $(PKG)_CONFIGURE_ENV += LD="$(TARGET_LD)"
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

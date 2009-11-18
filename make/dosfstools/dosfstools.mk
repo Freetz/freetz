@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 3.0.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.daniel-baumann.ch/software/dosfstools
-$(PKG)_SOURCE_MD5:=d48177cde9c6ce64333133424bf32912 
+$(PKG)_SOURCE_MD5:=d48177cde9c6ce64333133424bf32912
 
 $(PKG)_DOSFSCK_BINARY:=$($(PKG)_DIR)/dosfsck
 $(PKG)_DOSFSCK_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dosfsck
@@ -54,7 +54,7 @@ $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_DOSFSCK_TARGET_BINARY) \
 			$($(PKG)_DOSFSLABEL_TARGET_BINARY) \
-			$($(PKG)_MKDOSFS_TARGET_BINARY) 
+			$($(PKG)_MKDOSFS_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(DOSFSTOOLS_DIR) clean

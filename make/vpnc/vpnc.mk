@@ -4,7 +4,7 @@ $(PKG)_SITE:=http://www.unix-ag.uni-kl.de/~massar/vpnc
 $(PKG)_BINARY:=$($(PKG)_DIR)/vpnc
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/vpnc
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=4378f9551d5b077e1770bbe09995afb3 
+$(PKG)_SOURCE_MD5:=4378f9551d5b077e1770bbe09995afb3
 
 $(PKG)_DEPENDS_ON := libgpg-error libgcrypt
 
@@ -35,10 +35,10 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $(PKG)_NAT_SUPPORT: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
-ifeq ($(strip $(FREETZ_PACKAGE_VPNC_NAT_SUPPORT)),y)  
+ifeq ($(strip $(FREETZ_PACKAGE_VPNC_NAT_SUPPORT)),y)
 	@$(SED) -i -e 's/#start_vpn_nat/start_vpn_nat/g' $(VPNC_DEST_DIR)/etc/default.vpnc/vpnc-script
 	@$(SED) -i -e 's/#stop_vpn_nat/stop_vpn_nat/g' $(VPNC_DEST_DIR)/etc/default.vpnc/vpnc-script
-endif  
+endif
 
 $(pkg):
 

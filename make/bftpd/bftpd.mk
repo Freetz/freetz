@@ -5,7 +5,7 @@ $(PKG)_DIR:=$(SOURCE_DIR)/bftpd
 $(PKG)_BINARY:=$($(PKG)_DIR)/bftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/bftpd
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=4ab1eb33135fa5eaaf050e6d3dd0b319 
+$(PKG)_SOURCE_MD5:=4ab1eb33135fa5eaaf050e6d3dd0b319
 
 ifeq ($(strip $(FREETZ_PACKAGE_BFTPD_WITH_ZLIB)),y)
 $(PKG)_DEPENDS_ON := zlib

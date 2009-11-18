@@ -13,12 +13,16 @@ $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PPPD_CHAT
 
 $(PKG)_DEPENDS_ON := libpcap
 
+ifeq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
+PPPD_CFLAGS := -DFREETZ_TARGET_IPV6_SUPPORT
+endif
+
 $(PKG_SOURCE_DOWNLOAD)
 
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(SOURCE_DIR)
 	$(RM) -r $(PPPD_DIR)
 	tar -xOf $(DL_DIR)/$(PPPD_SOURCE) ppp-2.4.5git1/upstream/tarballs/$(PPPD_SOURCE) | \
-		tar -C $(SOURCE_DIR) $(VERBOSE) -xzf - 
+		tar -C $(SOURCE_DIR) $(VERBOSE) -xzf -
 	shopt -s nullglob; for i in $(PPPD_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(PPPD_DIR) $$i; \
 	done
@@ -37,7 +41,7 @@ $($(PKG)_BINARY) \
 	$($(PKG)_CHAT_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(PPPD_DIR) \
 		CC="$(TARGET_CC)" \
-		COPTS="$(TARGET_CFLAGS)" \
+		COPTS="$(TARGET_CFLAGS) $(PPPD_CFLAGS)" \
 		STAGING_DIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		all
 

@@ -12,25 +12,9 @@ initial() {
 		modprobe slhc
 }
 
-start() {
-	initial
-	if [ -n "$(pidof ppp_runner)" ]; then
-		echo "ERROR. Modem off-hook."
-		exit 1
-	fi
-	echo -n "Starting ppp..."
-	start-stop-daemon -n ppp -a /etc/default.ppp/ppp_runner -b -q -S	
-	echo "done."
-}
-
-stop() {
-	if [ -z "$(pidof ppp_runner)" ] && [ -z "$(pidof pppd)" ]; then
-		echo "ERROR. Modem on-hook."
-		exit 1
-	fi
-	echo -n "Stopping ppp..."
-	killall -9 ppp_runner
-	killall pppd
+disconnect () {
+	killall -9 ppp_dialer 2>/dev/null
+	killall pppd 2>/dev/null
 	sleep 2
 	cnt=17
 	if [ -n "$(pidof pppd)" ]; then
@@ -40,7 +24,35 @@ stop() {
 			let cnt=cnt-1
 		done
 	fi
-	echo "done."
+	[ -z "$PPP_LOGFILE" ] || echo -e "TERMINATED\n`date "+%Y-%m-%d %H:%M,%S"`\n##\n" >> $PPP_LOGFILE
+	[ -e "$PPP_SCRIPT_HUP" ] && . $PPP_SCRIPT_HUP
+	[ -n "$(pidof pppd)" ] && return 1
+	return 0
+}
+
+start() {
+	echo -n 'Starting ppp-cgi...'
+	if [ -n "$(pidof ppp_observer)" ] || [ -n "$(pidof ppp_dialer)" ] && [ -z "$(pidof pppd)" ]; then
+		echo 'failed.'
+		exit 1
+	fi
+	start-stop-daemon -n ppp -a /etc/default.ppp/ppp_observer -b -q -S
+	echo 'done.'
+}
+
+stop() {
+	echo -n 'Stopping ppp-cgi...'
+	if [ -z "$(pidof ppp_observer)" ] && [ -z "$(pidof ppp_dialer)" ] && [ -z "$(pidof pppd)" ]; then
+		echo 'failed.'
+	fi
+	killall -9 ppp_observer 2>/dev/null
+	disconnect
+	if [ $? -ne 0 ]; then
+		echo 'failed.'
+		exit 1
+	fi
+	echo 'done.'
+
 }
 
 case "$1" in
@@ -64,6 +76,11 @@ case "$1" in
 		modreg file 'peers_chat' 'PEERS: chat' 0 "$deffile"
 
 		initial
+		if [ "$PPP_ENABLED" != "yes" ]; then
+			echo "ppp-cgi is disabled" 1>&2
+			exit 1;
+		fi
+                start
 		;;
 	unload)
 		modunreg cgi 'ppp'
@@ -72,6 +89,7 @@ case "$1" in
 		modunreg file 'peers_chat'
 		;;
 	start)
+		initial
 		start
 		;;
 	stop)
@@ -83,11 +101,15 @@ case "$1" in
 		start
 		;;
 	status)
-                if [ -z "$(pidof ppp_runner)" ]; then
-                        echo 'stopped'
-                else
+                if [ -n "$(pidof ppp_observer)" ] || [ -n "$(pidof ppp_dialer)" ] || [ -n "$(pidof pppd)" ]; then
                         echo 'running'
+                else
+                        echo 'stopped'
                 fi
+		;;
+	disconnect)
+		disconnect
+		exit $?
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

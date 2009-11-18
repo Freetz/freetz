@@ -5,7 +5,7 @@ $(PKG)_DIR:=$(SOURCE_DIR)/privoxy-$($(PKG)_VERSION)-stable
 $(PKG)_BINARY:=$($(PKG)_DIR)/privoxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/privoxy
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=c973e608d27b248ef567b47664308da1 
+$(PKG)_SOURCE_MD5:=c973e608d27b248ef567b47664308da1
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoheader;
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf;
@@ -25,7 +25,6 @@ $(PKG)_CONFIGURE_ENV += ac_cv_func_setpgrp_void=yes
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
-$(PKG)_CONFIGURE_OPTIONS += --disable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-stats
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE),,--disable-dynamic-pcre)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),--enable-zlib,--disable-zlib)

@@ -1,9 +1,12 @@
 #!/bin/sh
 #by cuma
+
 [ ! -r /var/mod/etc/conf/ppp.cfg ] && exit 1
 . /var/mod/etc/conf/ppp.cfg
 
-cd /tmp
+[ -z "$PPP_LOGFILE" ] && PPP_LOGFILE='/dev/null'
+
+[ -e "$PPP_SCRIPT_DIAL" ] && . $PPP_SCRIPT_DIAL
 while [ 1 ]; do
 	echo -e "\n##\n`date "+%Y-%m-%d %H:%M,%S"`" >> $PPP_LOGFILE
 	pppd call dun 2>&1 >> $PPP_LOGFILE

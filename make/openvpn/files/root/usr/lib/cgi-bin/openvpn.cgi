@@ -26,6 +26,7 @@ cat << EOF
 <input type="hidden" id="id_remote"   name="remote" value="$OPENVPN_REMOTE">
 <input type="hidden" id="id_port"   name="port" value="$OPENVPN_PORT">
 <input type="hidden" id="id_proto"   name="proto" value="$OPENVPN_PROTO">
+<input type="hidden" id="id_ipv6"   name="ipv6" value="$OPENVPN_IPV6">
 <input type="hidden" id="id_type"   name="type" value="$OPENVPN_TYPE">
 <input type="hidden" id="id_box_ip"   name="box_ip" value="$OPENVPN_BOX_IP">
 <input type="hidden" id="id_box_mask"   name="box_mask" value="$OPENVPN_BOX_MASK">
@@ -89,6 +90,7 @@ sec_end
 sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
 
 HASBRCTL=$(which brctl 2> /dev/null) 
+HASIPV6=$([ -d /proc/sys/net/ipv6 ] && echo true)
 
 cat << EOF
 <table><tr>
@@ -114,7 +116,18 @@ fi
 cat << EOF
   </td><td> </td>
   </tr>                                                                   
-</table>  
+</table>
+EOF
+if [ $HASIPV6 ]; then cat << CASEEOF
+<div id="div_use_ipv6">
+<input id="id_act_ipv6" type="checkbox"
+  title=$(lang de:"\'Verbindung wird &uuml;ber IPv6 hergestellt (als Client) oder Server kann per IPv4 und IPv6 erreicht werden (als Server)\'" en:"\'Connection will be established via IPv6 (as client) or server can be reached via IPv4 and IPv6 (as server)\'")'
+  name="my_ipv6" value="yes" onclick='(local_ipv6[act_conf]=(this.checked)? "yes" : ""); changeval()' >
+    <label for="id_act_ipv6">$(lang de:"IPv6 benutzen" en:"Use IPv6") </label>
+</div>
+CASEEOF
+fi
+cat << EOF
 <div id="div_config_server_off_ip">
 <p>Server $(lang de:"und ggf. Port" en:"(and port if needed)"): <input id="id_act_remote" type="text" size="40" value="" onblur='(local_remote[act_conf]=this.value); Consolidate_Vars() '>
 <br />
@@ -298,7 +311,7 @@ var act_conf=1;
 
 FIELDSET_CONFIG = 0
 FIELDSET_SERVER = 5
-variablen=[ "AUTOSTART", "DEBUG", "DEBUG_TIME", "LOCAL", "MODE", "REMOTE", "PORT", "PROTO", "TYPE", "BOX_IP", "BOX_MASK", "REMOTE_IP", "DHCP_RANGE", "LOCAL_NET", "REMOTE_NET", "DHCP_CLIENT", "MTU", "AUTH_TYPE", "CIPHER", "TLS_AUTH", "FLOAT", "KEEPALIVE", "KEEPALIVE_PING", "KEEPALIVE_TIMEOUT", "COMPLZO", "MAXCLIENTS", "CLIENT2CLIENT", "PUSH_DNS", "PUSH_WINS", "REDIRECT", "VERBOSE", "SHAPER", "UDP_FRAGMENT", "PULL", "LOGFILE", "MGMNT", "CLIENTS_DEFINED", "CLIENT_INFO", "CLIENT_IPS", "CLIENT_NAMES", "CLIENT_NETS", "CLIENT_MASKS", "CONFIG_NAMES", "ADDITIONAL", "OWN_KEYS", "NO_CERTTYPE", "TAP2LAN", "PARAM_1", "PARAM_2", "PARAM_3" ]
+variablen=[ "AUTOSTART", "DEBUG", "DEBUG_TIME", "LOCAL", "MODE", "REMOTE", "PORT", "PROTO", "IPV6", "TYPE", "BOX_IP", "BOX_MASK", "REMOTE_IP", "DHCP_RANGE", "LOCAL_NET", "REMOTE_NET", "DHCP_CLIENT", "MTU", "AUTH_TYPE", "CIPHER", "TLS_AUTH", "FLOAT", "KEEPALIVE", "KEEPALIVE_PING", "KEEPALIVE_TIMEOUT", "COMPLZO", "MAXCLIENTS", "CLIENT2CLIENT", "PUSH_DNS", "PUSH_WINS", "REDIRECT", "VERBOSE", "SHAPER", "UDP_FRAGMENT", "PULL", "LOGFILE", "MGMNT", "CLIENTS_DEFINED", "CLIENT_INFO", "CLIENT_IPS", "CLIENT_NAMES", "CLIENT_NETS", "CLIENT_MASKS", "CONFIG_NAMES", "ADDITIONAL", "OWN_KEYS", "NO_CERTTYPE", "TAP2LAN", "PARAM_1", "PARAM_2", "PARAM_3" ]
 
 function Init_Vars(){
 local_config_count=$OPENVPN_CONFIG_COUNT;
@@ -364,6 +377,7 @@ function Init_Checkbox(){
 if ( local_autostart[act_conf] == "yes" ) { document.getElementById("id_act_start_auto").checked=true  } else {document.getElementById("id_act_start_man").checked=true };
 if ( local_mode[act_conf] == "server" ) { document.getElementById("id_act_server").checked=true  } else {document.getElementById("id_act_client").checked=true };
 if ( local_proto[act_conf] == "tcp" ) { document.getElementById("id_act_tcp").checked=true } else {document.getElementById("id_act_udp").checked=true };
+`[ $HASIPV6 ] && echo 'document.getElementById("id_act_ipv6").checked= ( local_ipv6[act_conf] == "yes" )? "checked" : ""'`
 if ( local_keepalive[act_conf] == "yes" ) { document.getElementById("id_act_keepalive").checked=true } else { document.getElementById("id_act_keepalive").checked=false };
 if ( local_complzo[act_conf] == "yes" ) { document.getElementById("id_act_comp_lzo").checked=true } else { document.getElementById("id_act_comp_lzo").checked=false };
 if ( local_type[act_conf] == "tap" ) { document.getElementById("id_act_tap").checked=true } else {document.getElementById("id_act_tun").checked=true };

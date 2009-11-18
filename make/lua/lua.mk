@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=lua-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.lua.org/ftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lua
-$(PKG)_SOURCE_MD5:=a70a8dfaa150e047866dc01a46272599 
+$(PKG)_SOURCE_MD5:=a70a8dfaa150e047866dc01a46272599
 
 ifeq ($(strip $(FREETZ_PACKAGE_LUA_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline
@@ -30,7 +30,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		PKG_VERSION="$(LUA_VERSION)" \
 		$(LUA_MAKE_TARGET)
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) 
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
@@ -40,7 +40,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LUA_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(LUA_TARGET_BINARY)
 
 $(PKG_FINISH)

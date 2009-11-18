@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 7.9)
+$(call PKG_INIT_LIB, 8.00)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
-$(PKG)_SOURCE_MD5:=b6a9669d1863423f01ea46cdf00f93dc
+$(PKG)_SOURCE_MD5:=caf564aa69d68e965e9bf0ff2a094c65
 
 $(PKG)_LIB_VERSION:=0.0.1
 $(PKG)_LIBNAME=libpcre.so.$($(PKG)_LIB_VERSION)
@@ -20,7 +20,6 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-utf8
 $(PKG)_CONFIGURE_OPTIONS += --disable-cpp
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -35,9 +34,9 @@ $($(PKG)_STAGING_BINARY) $($(PKG)_POSIX_STAGING_BINARY): $($(PKG)_BINARY) $($(PK
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcreposix.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcre-config
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre*.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcre-config \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpcre*.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -51,8 +50,13 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_POSIX_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PCRE_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre*.* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/pcre*.h
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre*.* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/pcre*.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcre* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpcre*.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man?/pcre* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/doc/pcre/
 
 $(pkg)-uninstall:
 	$(RM) $(PCRE_TARGET_DIR)/libpcre*.so*

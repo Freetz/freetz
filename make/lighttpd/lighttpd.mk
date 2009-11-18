@@ -50,14 +50,10 @@ $(PKG)_CONFIGURE_OPTIONS += --without-memcache
 $(PKG)_CONFIGURE_OPTIONS += --without-mysql
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre="yes"
 $(PKG)_CONFIGURE_OPTIONS += --without-valgrind
-
-ifneq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT )),y)
-$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
-endif
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 
 # this needs libxml2 and sqlite
 #$(PKG)_CONFIGURE_OPTIONS += --with-webdav-props
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -8,12 +8,10 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libatm.so.$($(PKG
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libatm.so.$($(PKG)_LIB_VERSION)
 $(PKG)_SOURCE_MD5:=fcd96e157632e26a6411cc1c517cfa51
 
-
 $(PKG)_CONFIGURE_PRE_CMDS += ./autotools ;
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
