@@ -1,9 +1,21 @@
 config FREETZ_PACKAGE_TINC
 	bool "Tinc 1.0.8 (binary only)"
 	default n
-	select FREETZ_LIB_liblzo2
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
-	select FREETZ_LIB_libz
+	select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_TINC_STATIC
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_TINC_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TINC_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_TINC_STATIC
 	help
 		VPN daemon
+
+config FREETZ_PACKAGE_TINC_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_TINC
+	default n
+	help
+		Tinc needs the following shared libraries which can be linked in statically
+		by activating this switch:
+		- liblzo2.so
+		- libcrypto.so
+		- libssl.so
+		- libz.so
