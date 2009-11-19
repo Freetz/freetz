@@ -7,9 +7,15 @@ $(PKG)_UMOUNT_BINARY:=$($(PKG)_DIR)/src/umount.davfs
 $(PKG)_UMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/umount.davfs
 $(PKG)_SOURCE_MD5:=d9ce95298fe57d6ff8b7a040064ab0fd
 
-$(PKG)_DEPENDS_ON := neon libiconv
+$(PKG)_DEPENDS_ON := neon
+$(PKG)_LIBS := -lneon
 
-$(PKG)_CONFIGURE_OPTIONS += without-libintl-prefix
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+$(PKG)_DEPENDS_ON += iconv
+$(PKG)_LIBS += -liconv
+endif
+
+$(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_DAVFS2_WITH_SSL
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_DAVFS2_WITH_ZLIB
@@ -21,7 +27,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_MOUNT_BINARY) $($(PKG)_UMOUNT_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(DAVFS2_DIR) \
-		LIBS="-liconv -lneon" \
+		LIBS="$(DAVFS2_LIBS)"
 
 $($(PKG)_MOUNT_TARGET_BINARY): $($(PKG)_MOUNT_BINARY)
 	$(INSTALL_BINARY_STRIP)
