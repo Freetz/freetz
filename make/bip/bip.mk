@@ -14,7 +14,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_BIP_STATIC)),y)
 BIP_LDFLAGS := -static
 endif
 
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_SSL),,--disable-openssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_SSL),--with-openssl,--without-openssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_OIDENTD),--enable-oidentd)
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_BIP_STATIC
