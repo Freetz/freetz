@@ -1,0 +1,106 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+
+
+DAEMON=nhipt
+
+# Liest Paketkonfiguration ein und definiert einige Hilsfunktionen
+. /etc/init.d/modlibrc
+#         echo "MAIN ENTERING ---$1" >> /var/tmp/log.log
+
+start() {
+		config
+         # HIER KOMMEN DIE VERARBEITUNGEN REIN
+         echo "configuring nhipt gui...$NHIPT_ROOT" 
+		# Save settings to RAM-parameter file
+
+		if [ -n "$(ps | grep -v grep | grep iptlogger)" ]; then log_run='yes'; else log_run='no'; fi
+		if [ -n "$(ps | grep -v grep | grep nhipd.pid)" ]; then cgi_run='yes'; else cgi_run='no'; fi
+
+
+		if [ "$NHIPT_START_CGI" = "stopped" ]; 
+		then 
+			if [ "$cgi_run" = "yes" ]; then ps | grep -v grep | grep nhipd.pid | awk '{print $1}' | xargs kill; fi
+		fi
+		if [ "$NHIPT_START_LOG" = "stopped" ]; 
+		then
+			if [ "$log_run" = "yes" ]; 
+			then 
+				ps | grep -v grep | grep iptlogger | awk '{print $1}' | xargs kill;
+				ps | grep -v grep | grep logfw | awk '{print $1}' | xargs kill;
+			fi
+		fi
+		if [ "$NHIPT_START_CGI" = "running" ]; 
+		then 
+			if [ "$cgi_run" = "no" ]; then httpd -P /var/run/nhipd.pid -p $NHIPT_SERVERIP:$NHIPT_PORT -h $NHIPT_ROOT -c /mod/etc/httpd.conf -r Freetz ; fi
+		fi
+		if [ "$NHIPT_START_LOG" = "running" ]; 
+		then 
+			if [ "$log_run" = "no" ]; 
+			then 
+				export NHIPT_START_LOG='start'
+			fi
+		fi
+		export NHIPT_CONFIG='box'
+		. $NHIPT_ROOT/cgi-bin/nhipt.cgi
+}
+
+stop() {
+         # HIER KOMMEN DIE VERARBEITUNGEN REIN
+         echo "Configuring services..."
+
+}
+config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.nhipt/${DAEMON}.cfg
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                start
+                ;;
+        status)
+				echo 'running'
+                ;;
+     ""|load)
+                # CGI registrieren
+				if [ ! -r "/var/tmp/nhipt.par" ]
+				then
+        			chmod 777 /tmp/flash/nhiptboot.cfg
+			        chmod +x /tmp/flash/nhiptboot.cfg
+			        . /tmp/flash/nhiptboot.cfg
+				fi
+                modreg cgi $DAEMON NHIPT
+				echo "done."
+				exit 0
+                ;;
+        unload)
+                stop
+                modunreg cgi 'nhipt'
+                ;;
+        *)
+                echo "Usage: $0 [start|stop|restart|status]" 1>&2
+                exit 1
+                ;;
+esac
+exit 0
+
