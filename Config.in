@@ -131,6 +131,10 @@ choice
 		select FREETZ_AVM_VERSION_7270_04_76
 		bool "WLAN 3270"
 
+	config FREETZ_TYPE_WLAN_3270_V3
+		select FREETZ_AVM_VERSION_7270_04_76
+		bool "WLAN 3270 V3"
+
 	config FREETZ_TYPE_SPEEDPORT_W501V
 		select FREETZ_AVM_VERSION_r7203
 		bool "Speedport W501V"
@@ -355,6 +359,7 @@ config FREETZ_TYPE_STRING
 	default "3131"						if FREETZ_TYPE_WLAN_3131
 	default "3170"						if FREETZ_TYPE_WLAN_3170
 	default "3270"						if FREETZ_TYPE_WLAN_3270
+	default "3270_v3"					if FREETZ_TYPE_WLAN_3270_V3
 	default "fon"						if FREETZ_TYPE_FON
 	default "5010"						if FREETZ_TYPE_FON_5010
 	default "5050"						if FREETZ_TYPE_FON_5050
@@ -479,7 +484,8 @@ config FREETZ_TARGET_REF
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		FREETZ_TYPE_WLAN_3270 
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 	default "4mb_26"		if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
@@ -508,7 +514,8 @@ config FREETZ_KERNEL_REF
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		FREETZ_TYPE_WLAN_3270 
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 	default "4mb_26"		if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
@@ -553,9 +560,9 @@ config FREETZ_KERNEL_LAYOUT
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		FREETZ_TYPE_WLAN_3270 
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 
-	
 config FREETZ_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if FREETZ_TYPE_CUSTOM
 	default 59				if \
@@ -586,6 +593,7 @@ config FREETZ_KERNEL_MTD_SIZE
 	default 246					if \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_FON_WLAN_7270_16MB || \
 		FREETZ_TYPE_FON_WLAN_7270_V3
 	help
@@ -626,7 +634,8 @@ config FREETZ_HAS_PHONE
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3131 || \
 		FREETZ_TYPE_WLAN_3170 || \
-		FREETZ_TYPE_WLAN_3270
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 
 	help
 		Select this if you have a box with phone support.
@@ -663,6 +672,7 @@ config FREETZ_HAS_WLAN
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3170 || \
 		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
 		FREETZ_TYPE_FON_WLAN_7112 || \
@@ -712,6 +722,7 @@ config FREETZ_HAS_USB_CLIENT
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
 		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
 		FREETZ_TYPE_CUSTOM
 	help
@@ -731,7 +742,8 @@ config FREETZ_HAS_USB_HOST
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3131 || \
 		FREETZ_TYPE_WLAN_3170 || \
-		FREETZ_TYPE_WLAN_3270
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 	default n			if \
 		FREETZ_TYPE_WLAN_3020 || \
 		FREETZ_TYPE_WLAN_3030 || \
@@ -755,6 +767,7 @@ config FREETZ_HAS_AVM_INETD
 	select FREETZ_BUSYBOX_INETD
 	default y			if \
 		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3
@@ -780,6 +793,7 @@ config FREETZ_HAS_LIBSSL
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3170 || \
 		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_CUSTOM
 	default n			if \
 		FREETZ_TYPE_FON_5010 || \
@@ -1099,6 +1113,7 @@ config FREETZ_REMOVE_CHRONYD
 	bool "Remove chronyd"
 	depends on \
 		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3
@@ -1403,7 +1418,8 @@ config FREETZ_REMOVE_MINID
 			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_FON_WLAN_7240 || \
 			FREETZ_TYPE_FON_WLAN_7270_V3 || \
-			FREETZ_TYPE_WLAN_3270 \
+			FREETZ_TYPE_WLAN_3270 || \
+			FREETZ_TYPE_WLAN_3270_V3 \
 		) && \
 		! FREETZ_TYPE_SPEEDPORT_W701V_7170
 	help
@@ -1683,6 +1699,7 @@ config FREETZ_DL_SITE
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3131/firmware/deutsch"		if FREETZ_TYPE_WLAN_3131
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3170/firmware/deutsch"		if FREETZ_TYPE_WLAN_3170
 	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3270/firmware/deutsch"		if FREETZ_TYPE_WLAN_3270
+	default "ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3270_v3/firmware/deutsch"		if FREETZ_TYPE_WLAN_3270_V3
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport_W501V" 		if FREETZ_TYPE_SPEEDPORT_W501V
 	default "ftp://ftp.avm.de/fritz.box/..."						if FREETZ_TYPE_CUSTOM
 
@@ -1735,6 +1752,7 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_wlan_3131.50.04.57.image"					if FREETZ_TYPE_WLAN_3131
 	default "fritz.box_wlan_3170.49.04.58.image"					if FREETZ_TYPE_WLAN_3170
 	default "fritz.box_wlan_3270.67.04.76.image"					if FREETZ_TYPE_WLAN_3270
+	default "fritz.box_wlan_3270_v3.96.04.77.image"					if FREETZ_TYPE_WLAN_3270_V3
 	default "fw_Speedport_W501V_v_28.04.38.image"					if FREETZ_TYPE_SPEEDPORT_W501V
 	default "fritz.box..."								if FREETZ_TYPE_CUSTOM
 
