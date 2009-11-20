@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 2009.4.4)
+$(call PKG_INIT_BIN, 2009.11.14)
 $(PKG)_SOURCE:=ntfs-3g-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=http://www.ntfs-3g.org
 $(PKG)_DIR:=$(SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ntfs-3g
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ntfs-3g
-$(PKG)_SOURCE_MD5:=e0b5c170f088a8d82968f0a6b34d31da
+$(PKG)_SOURCE_MD5:=68a8d622bb6ef900b8bb64cdffad48f8
 
 $(PKG)_DEPENDS_ON := fuse
 
