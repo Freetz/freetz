@@ -27,6 +27,16 @@ $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ssize_t=4
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ptrdiff_t=4
 $(PKG)_CONFIGURE_ENV += ac_cv_c_bigendian_php=no
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_intmax_t=8
+$(PKG)_CONFIGURE_ENV += ac_cv_func_getaddrinfo=yes
+$(PKG)_CONFIGURE_ENV += ac_cv_c_stack_direction=-1
+$(PKG)_CONFIGURE_ENV += ac_cv_ebcdic=no
+$(PKG)_CONFIGURE_ENV += ac_cv_header_stdc=yes
+$(PKG)_CONFIGURE_ENV += ac_cv_func_memcmp_clean=no
+$(PKG)_CONFIGURE_ENV += ac_cv_func_utime_null=no
+$(PKG)_CONFIGURE_ENV += ac_cv_time_r_type=POSIX
+$(PKG)_CONFIGURE_ENV += ac_cv_what_readdir_r=POSIX
+$(PKG)_CONFIGURE_ENV += ac_cv_write_stdout=yes
+$(PKG)_CONFIGURE_ENV += cookie_io_functions_use_off64_t=yes
 $(PKG)_CONFIGURE_ENV += lt_cv_prog_gnu_ldcxx=yes
 $(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_TOOLCHAIN_SYMLINK)/bin/mipsel-linux-nm -B"
 
