@@ -24,7 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-gtk
 $(PKG)_CONFIGURE_OPTIONS += --disable-wx
 
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_STATIC)),y)
-TRANSMISSION_LDFLAGS := -all-static
+$(PKG)_LDFLAGS := -all-static
 endif
 
 $(PKG_SOURCE_DOWNLOAD)

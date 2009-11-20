@@ -7,6 +7,13 @@ $(PKG)_SOURCE_MD5:=141461b9c04e454dc8933c9d1f2abf83
 
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON := openssl
+$(PKG)_LIBS := -lssl -lcrypto -ldl
+else
+$(PKG)_LIBS := -ldl
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
+$(PKG)_LDFLAGS := -static
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
@@ -17,18 +24,6 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_WGET_WITH_SSL),--with-libssl-p
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_WGET_WITH_SSL
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_WGET_STATIC
 
-ifeq ($(strip $(FREETZ_PACKAGE_WGET_WITH_SSL)),y)
-	WGET_LIBS="-lssl -lcrypto -ldl"
-	ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
-		WGET_LDFLAGS="-static"
-	else
-		WGET_LDFLAGS=""
-	endif
-else
-	WGET_LIBS="-ldl"
-	WGET_LDFLAGS=""
-endif
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -36,8 +31,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(WGET_DIR) \
-		LDFLAGS=$(WGET_LDFLAGS) \
-		LIBS=$(WGET_LIBS)
+		LDFLAGS="$(WGET_LDFLAGS)" \
+		LIBS="$(WGET_LIBS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

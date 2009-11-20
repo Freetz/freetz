@@ -10,10 +10,10 @@ $(PKG)_DEPENDS_ON := openssl
 $(PKG)_DEPENDS_ON += lzo
 $(PKG)_DEPENDS_ON += zlib
 
-TINC_LIBS := -lssl -lcrypto -llzo2 -lz -ldl
+$(PKG)_LIBS := -lssl -lcrypto -llzo2 -lz -ldl
 
 ifeq ($(strip $(FREETZ_PACKAGE_TINC_STATIC)),y)
-TINC_LDFLAGS := -static 
+$(PKG)_LDFLAGS := -static 
 endif
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_TINC_STATIC

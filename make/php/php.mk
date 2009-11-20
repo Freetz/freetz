@@ -6,9 +6,9 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/php-cgi
 $(PKG)_SOURCE_MD5:=286bf34630f5643c25ebcedfec5e0a09
 
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_STATIC)),y)
-PHP_STATIC:= -all-static
+$(PKG)_STATIC := -all-static
 else
-PHP_STATIC:=
+$(PKG)_STATIC :=
 endif
 
 $(PKG)_DEPENDS_ON := pcre
