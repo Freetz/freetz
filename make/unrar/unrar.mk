@@ -10,9 +10,7 @@ $(PKG)_DEPENDS_ON := uclibcxx
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_UNRAR_STATIC
 ifeq ($(strip $(FREETZ_PACKAGE_UNRAR_STATIC)),y)
-$(PKG)_LDFLAGS:="-static"
-else
-$(PKG)_LDFLAGS:=""
+$(PKG)_LDFLAGS := -static
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
