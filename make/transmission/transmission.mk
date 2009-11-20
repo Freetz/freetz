@@ -16,6 +16,8 @@ $(PKG)_DEPENDS_ON := zlib openssl curl libevent
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_TRANSMISSION_STATIC
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-beos
 $(PKG)_CONFIGURE_OPTIONS += --disable-mac
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk
