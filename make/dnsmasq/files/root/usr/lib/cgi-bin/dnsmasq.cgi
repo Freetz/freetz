@@ -5,12 +5,14 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 auto_chk=''; man_chk=''
 dhcp_yes_chk=''; dhcp_no_chk=''
+boguspriv_chk=''
 ethers_chk=''
 dhcp_boot_yes_chk=''; dhcp_boot_no_chk=''
 tftp_yes_chk=''; tftp_no_chk=''
 
 if [ "$DNSMASQ_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$DNSMASQ_DHCP" = "yes" ]; then dhcp_yes_chk=' checked'; else dhcp_no_chk=' checked'; fi
+if [ "$DNSMASQ_BOGUSPRIV" = "yes" ]; then boguspriv_chk=' checked'; fi
 if [ "$DNSMASQ_ETHERS" = "yes" ]; then ethers_chk=' checked'; fi
 if [ "$DNSMASQ_DHCP_BOOT" = "yes" ]; then dhcp_boot_yes_chk=' checked'; else dhcp_boot_no_chk=' checked'; fi
 if [ "$DNSMASQ_TFTP" = "yes" ]; then tftp_yes_chk=' checked'; else tftp_no_chk=' checked'; fi
@@ -29,6 +31,10 @@ cat << EOF
 <h2>$(lang de:"Der DNS Server ist gebunden an" en:"The DNS server is listening on"):</h2>
 <p>Port: <input type="text" name="dns_port" size="5" maxlength="5" value="$(html "$DNSMASQ_DNS_PORT")"></p>
 <p>$(lang de:"Domain" en:"Domain"): <input type="text" name="domain" size="20" maxlength="255" value="$(html "$DNSMASQ_DOMAIN")"></p>
+<p>
+<input type="hidden" name="boguspriv" value="no">
+<input id="b1" type="checkbox" name="boguspriv" value="yes"$boguspriv_chk><label for="b1"> $(lang de:"Reverse DNS-Anfragen f&uuml;r private IP-Adressen (RFC1918) nicht an andere DNS-Server (z.B. im VPN) weiterleiten." en:"Do not forward reverse DNS lookups for private IP address ranges (RFC1918).")</label><br>
+</p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
 <p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="55" maxlength="255" value="$(html "$DNSMASQ_OPTIONS")"></p>
 EOF
