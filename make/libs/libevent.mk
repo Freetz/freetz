@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 1.4.12-stable)
+$(call PKG_INIT_LIB, 1.4.13-stable)
 $(PKG)_MAJOR_VERSION:=1.4
 $(PKG)_SHLIB_VERSION:=2.1.3
 $(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)
@@ -7,7 +7,7 @@ $(PKG)_SITE:=http://www.monkey.org/~provos
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
-$(PKG)_SOURCE_MD5:=77b0d8b9885496871bb083165b35ba11
+$(PKG)_SOURCE_MD5:=0b3ea18c634072d12b3c1ee734263664
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -44,7 +44,17 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBEVENT_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent*
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/event-config.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/event.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/evdns.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/evhttp.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/evrpc.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/evutil.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/event_rpcgen.py \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man?/event.? \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man?/evdns.?
 
 $(pkg)-uninstall:
 	$(RM) $(LIBEVENT_TARGET_DIR)/libevent*.so*
