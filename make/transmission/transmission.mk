@@ -16,13 +16,15 @@ $(PKG)_DEPENDS_ON := zlib openssl curl libevent
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_TRANSMISSION_STATIC
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-beos
 $(PKG)_CONFIGURE_OPTIONS += --disable-mac
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk
 $(PKG)_CONFIGURE_OPTIONS += --disable-wx
 
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_STATIC)),y)
-TRANSMISSION_LDFLAGS := -all-static
+$(PKG)_LDFLAGS := -all-static
 endif
 
 $(PKG_SOURCE_DOWNLOAD)

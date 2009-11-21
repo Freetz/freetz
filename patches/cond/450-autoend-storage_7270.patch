@@ -1,5 +1,5 @@
---- etc/hotplug/storage.orig	2009-08-16 16:18:03.187824613 +0200
-+++ etc/hotplug/storage	2009-08-16 16:18:15.435823848 +0200
+--- etc/hotplug/storage.orig	2009-11-19 18:35:10.424615299 +0100
++++ etc/hotplug/storage	2009-11-19 18:35:19.244608901 +0100
 @@ -44,6 +44,10 @@
  local DEVICE=$1
  local MPOINT=$2
@@ -9,5 +9,5 @@
 +$AUTOEND
 +fi
  passeeren
- if [ "$MPNAME" = `cat $MORPHSTICK_PARTITION_FILE 2> /dev/null` ]; then
- echo "stopping swlstream for $MPNAME" >/dev/ttyS0
+ if [ -p "/var/tam/mount" ]; then
+ echo "u$MPOINT" > /var/tam/mount

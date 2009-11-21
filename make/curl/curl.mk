@@ -8,13 +8,12 @@ ifeq ($(strip $(FREETZ_PACKAGE_CURL_STATIC)),y)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/curl
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libcurl.a
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.a
-LDFLAGS:="-all-static"
+$(PKG)_LDFLAGS:=-all-static
 else
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/curl
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libcurl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libcurl.so.$($(PKG)_LIB_VERSION)
-LDFLAGS:=""
 endif
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
@@ -56,7 +55,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(CURL_DIR) LDFLAGS=$(LDFLAGS)
+	$(SUBMAKE) -C $(CURL_DIR) LDFLAGS="$(CURL_LDFLAGS)"
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	$(SUBMAKE) -C $(CURL_DIR) \

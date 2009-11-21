@@ -10,6 +10,8 @@ $(PKG)_SOURCE_MD5:=29bbd1c3cbe54b04bfc2bda43067ccb5
 $(PKG)_DEPENDS_ON := zlib
 
 $(PKG)_CONFIGURE_ENV += gl_cv_func_malloc_0_nonnull=yes
+$(PKG)_CONFIGURE_ENV += ac_cv_func_strtod=yes
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 

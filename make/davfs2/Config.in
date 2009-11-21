@@ -1,7 +1,6 @@
 config FREETZ_PACKAGE_DAVFS2
-	bool "davfs 1.4.1"
-	select FREETZ_LIB_libexpat
-	select FREETZ_LIB_libiconv
+	bool "davfs 1.4.5"
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
 	select FREETZ_LIB_libneon
 	select FREETZ_MODULE_coda
 	default n
@@ -9,7 +8,7 @@ config FREETZ_PACKAGE_DAVFS2
 		davfs is a Linux file system driver that allows you to mount a
 		WebDAV server as a disk drive. WebDAV is an extension to
 		HTTP/1.1 that allows remote collaborative authoring of Web
-		resources, defined in RFC 4918. 
+		resources, defined in RFC 4918.
 
 config FREETZ_PACKAGE_DAVFS2_WITH_SSL
 	bool "build with SSL support"

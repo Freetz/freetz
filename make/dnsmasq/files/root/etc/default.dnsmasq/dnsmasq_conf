@@ -2,9 +2,11 @@
 
 cat << EOF
 domain-needed
-bogus-priv
 log-async=10
 EOF
+
+[ "$DNSMASQ_BOGUSPRIV" = "yes" ] && echo "bogus-priv"
+
 if [ "$DNSMASQ_DHCP" = "yes" ]; then
 	echo "$DNSMASQ_DHCP_RANGE" | grep -v "^#" | while read -r range; do
 		[ -n "$range" ] && echo "dhcp-range=$range"

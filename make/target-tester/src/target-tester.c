@@ -1,3 +1,5 @@
+#define _REENTRANT
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -17,10 +19,36 @@
 #include <time.h>
 #include <sys/time.h>
 
-int main(int argc, char** argv) {
-	struct stat x;
-	FILE *fp;
+#include <dirent.h>
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
 
+#define TEXT "This is the test message -- "
+
+
+struct cookiedata {
+    __off64_t pos;
+};
+__ssize_t reader(void *cookie, char *buffer, size_t size) { return size; }
+__ssize_t writer(void *cookie, const char *buffer, size_t size) { return size; }
+int closer(void *cookie) { return 0; }
+int seeker(void *cookie, __off64_t *position, int whence) { ((struct cookiedata*)cookie)->pos = *position; return 0; }
+
+
+int find_stack_direction() {
+    static char *addr = 0;
+    auto char dummy;
+    if (addr == 0) {
+        addr = &dummy;
+	return find_stack_direction();
+    }
+    else
+	return (&dummy > addr) ? 1 : -1;
+}
+
+
+int main(int argc, char** argv) {
 	printf("sizeof(__int16_t)=%d\n", sizeof(__int16_t));
 	printf("sizeof(__int32_t)=%d\n", sizeof(__int32_t));
 	printf("sizeof(__int64_t)=%d\n", sizeof(__int64_t));
@@ -54,10 +82,16 @@ int main(int argc, char** argv) {
 	printf("sizeof(size_t)=%d\n", sizeof(size_t));
 	printf("sizeof(socklen_t)=%d\n", sizeof(socklen_t));
 	printf("sizeof(ssize_t)=%d\n", sizeof(ssize_t));
-	fp = fopen("/dev/null", "w");
-	if (fp != NULL) {
-	    printf("sizeof(stat_st_size)=%d\n", sizeof(x.st_size));
-	    fclose(fp);
+
+	{
+	    struct stat x;
+	    FILE *fp;
+
+	    fp = fopen("/dev/null", "w");
+	    if (fp != NULL) {
+		printf("sizeof(stat_st_size)=%d\n", sizeof(x.st_size));
+		fclose(fp);
+	    }
 	}
 	//printf("sizeof(struct_iovec)=%d\n", sizeof(struct_iovec));
 	printf("sizeof(time_t)=%d\n", sizeof(time_t));
@@ -111,4 +145,55 @@ int main(int argc, char** argv) {
 	    code = nanosleep(&ts1, &ts2); /* on failure errno is ENOSYS. */
 	    printf("cf_cv_func_nanosleep=%s\n", (code==0) ? "yes" : "no");
 	}
+
+	{
+	    int n = write(1, TEXT, sizeof(TEXT)-1);
+	    printf("\nac_cv_write_stdout=%s\n", (n == sizeof(TEXT)-1) ? "yes" : "no");
+	}
+
+	{
+	    cookie_io_functions_t funcs = {reader, writer, seeker, closer};
+	    struct cookiedata g = { 0 };
+	    FILE *fp = fopencookie(&g, "r", funcs);
+	    printf("cookie_io_functions_use_off64_t=%s\n", (fp && fseek(fp, 8192, SEEK_SET) == 0 && g.pos == 8192) ? "yes" : "no");
+	}
+
+	{
+	    struct stat s, t;
+	    int code =
+#if 1
+	    0;
+#else
+	    // doesn't compile so no
+	    (
+		stat ("conftestdata", &s) == 0
+		&& utime("conftestdata", (long *)0) == 0
+		&& stat("conftestdata", &t) == 0
+		&& t.st_mtime >= s.st_mtime
+		&& t.st_mtime - s.st_mtime < 120
+	    );
+#endif
+	    printf("ac_cv_func_utime_null=%s\n", code ? "yes" : "no");
+	}
+
+	printf("ac_cv_c_stack_direction=%d\n", find_stack_direction());
+
+	{
+	    DIR *dir;
+	    char entry[sizeof(struct dirent)+PATH_MAX];
+	    struct dirent *pentry = (struct dirent *) &entry;
+	    int code;
+
+	    dir = opendir("/");
+	    code = dir && (readdir_r(dir, (struct dirent *) entry, &pentry) == 0);
+	    printf("ac_cv_what_readdir_r=%s\n", code ? "POSIX" : "none");
+	}
+
+#if 0
+	{
+	    char c0 = 0x40, c1 = 0x80, c2 = 0x81;
+	    int code = memcmp(&c0, &c2, 1) < 0 && memcmp(&c1, &c2, 1) < 0;
+	    printf("ac_cv_func_memcmp_clean=%s\n", code ? "yes" : "no");
+	}
+#endif
 }

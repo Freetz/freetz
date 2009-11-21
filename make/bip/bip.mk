@@ -7,14 +7,14 @@ $(PKG)_SOURCE_MD5:=76fe2800efdfbe54bf72540e40a91150
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON := openssl
-BIP_LIBS := -lssl -lcrypto -ldl
+$(PKG)_LIBS := -lssl -lcrypto -ldl
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_STATIC)),y)
-BIP_LDFLAGS := -static
+$(PKG)_LDFLAGS := -static
 endif
 
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_SSL),,--disable-openssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_SSL),--with-openssl,--without-openssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_OIDENTD),--enable-oidentd)
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_BIP_STATIC
