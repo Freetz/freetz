@@ -18,6 +18,7 @@ $(PKG)_POSIX_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_POSIX_LIBNAME)
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-utf8
+$(PKG)_CONFIGURE_OPTIONS += --enable-unicode-properties
 $(PKG)_CONFIGURE_OPTIONS += --disable-cpp
 
 $(PKG_SOURCE_DOWNLOAD)
