@@ -7,27 +7,21 @@ PIDFILE=/var/run/webcfg-bluez-utils.pid
 DAEMON=hcid
 
 config() {
+	# create directories
+	[ ! -d "/mod/etc/ppp/peers" ] && mkdir -p /mod/etc/ppp/peers
+	[ ! -d "/tmp/bluetooth" ] && mkdir -p /tmp/bluetooth
+	
 	# create PIN-File
-	umount /etc/bluetooth/pin > /dev/null 2>&1
-	mkdir -p /tmp/bluetooth > /dev/null 2>&1
-	rm /tmp/bluetooth/pin  > /dev/null 2>&1
-	echo $BLUEZ_UTILS_PIN >> /tmp/bluetooth/pin
-	mount -o bind /tmp/bluetooth/pin /etc/bluetooth/pin > /dev/null 2>&1
+	echo $BLUEZ_UTILS_PIN > /tmp/bluetooth/pin
 
 	# create PIN-Helper
-	umount /usr/bin/bluepin  > /dev/null 2>&1
-	rm /tmp/bluetooth/bluepin  > /dev/null 2>&1
-	echo '#!/bin/sh' >> /tmp/bluetooth/bluepin
-	echo 'echo PIN:"'$BLUEZ_UTILS_PIN'"' >> /tmp/bluetooth/bluepin
+	echo -e '#!/bin/sh'"\nPIN:$BLUEZ_UTILS_PIN" > /tmp/bluetooth/bluepin
 	chmod 755 /tmp/bluetooth/bluepin
-	mount -o bind /tmp/bluetooth/bluepin /usr/bin/bluepin > /dev/null 2>&1
 
 	# create Linkkeys for prepaired devices
 	if [ "$BLUEZ_UTILS_USE_LINKKEYS" = "yes" ]; then
-		mkdir /var/lib/ > /dev/null 2>&1
-		mkdir /var/lib/bluetooth/ > /dev/null 2>&1
-		mkdir /var/lib/bluetooth/$BLUEZ_UTILS_MAC/ > /dev/null 2>&1
-		cat /tmp/flash/bluez/linkkeys >> /var/lib/bluetooth/$BLUEZ_UTILS_MAC/linkkeys
+		[ ! -d "/var/lib/bluetooth/$BLUEZ_UTILS_MAC" ] && mkdir -p /var/lib/bluetooth/$BLUEZ_UTILS_MAC
+		ln -sf /tmp/flash/bluez/linkkeys /var/lib/bluetooth/$BLUEZ_UTILS_MAC/linkkeys
 	fi
 
 	# /wtc/hotplug/net.pandu Rechte setzen
@@ -68,12 +62,10 @@ start() {
 		modprobe -q bnep $BLUEZ_UTILS_BNEP_OPTIONS  > /dev/null 2>&1
 	fi
 
-	
 	if [ "$BLUEZ_UTILS_SDPTOOL_START" = "yes" ]; then
 		echo -n "starting sdptool ..."
 		sdptool $BLUEZ_UTILS_SDPDTOOL_OPTIONS
 	fi
-
 
 	if [ "$BLUEZ_UTILS_PAND_START" = "yes" ]; then
 		echo -n "starting sdptool (sdptool "$BLUEZ_UTILS_PAND_SDPDTOOL_OPTIONS") ..."
@@ -81,7 +73,6 @@ start() {
 		echo -n "starting pand (pand "$BLUEZ_UTILS_PAND_OPTIONS") ..."
 		pand $BLUEZ_UTILS_PAND_OPTIONS 
 	fi
-
 
 	if [ "$BLUEZ_UTILS_DUND_START" = "yes" ]; then
 		echo -n "starting sdptool (sdptool "$BLUEZ_UTILS_DUND_SDPDTOOL_OPTIONS") ..."
