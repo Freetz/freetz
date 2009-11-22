@@ -1,6 +1,6 @@
---- pppd/ipcp.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/ipcp.c	2009-11-06 15:01:46.000000000 +0100
-@@ -1883,7 +1883,7 @@
+--- pppd/ipcp.c	2009-11-22 19:47:44.000000000 +0100
++++ pppd/ipcp.c	2009-11-22 19:48:53.000000000 +0100
+@@ -1939,7 +1939,7 @@ ipcp_up(f)
       */
      if (ipcp_script_state == s_down && ipcp_script_pid == 0) {
  	ipcp_script_state = s_up;
@@ -9,7 +9,7 @@
      }
  }
  
-@@ -1933,7 +1933,7 @@
+@@ -1989,7 +1989,7 @@ ipcp_down(f)
      /* Execute the ip-down script */
      if (ipcp_script_state == s_up && ipcp_script_pid == 0) {
  	ipcp_script_state = s_down;
@@ -18,7 +18,7 @@
      }
  }
  
-@@ -1987,13 +1987,13 @@
+@@ -2043,13 +2043,13 @@ ipcp_script_done(arg)
      case s_up:
  	if (ipcp_fsm[0].state != OPENED) {
  	    ipcp_script_state = s_down;
@@ -34,9 +34,9 @@
  	}
  	break;
      }
---- pppd/main.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/main.c	2009-11-06 15:01:46.000000000 +0100
-@@ -316,6 +316,9 @@
+--- pppd/main.c	2009-11-22 19:47:44.000000000 +0100
++++ pppd/main.c	2009-11-22 19:49:33.000000000 +0100
+@@ -316,6 +316,9 @@ main(argc, argv)
      struct protent *protp;
      char numbuf[16];
  
@@ -46,9 +46,9 @@
      link_stats_valid = 0;
      new_phase(PHASE_INITIALIZE);
  
---- pppd/options.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/options.c	2009-11-06 15:01:46.000000000 +0100
-@@ -113,6 +113,8 @@
+--- pppd/options.c	2009-11-22 19:47:44.000000000 +0100
++++ pppd/options.c	2009-11-22 19:49:33.000000000 +0100
+@@ -113,6 +113,8 @@ char	linkname[MAXPATHLEN];	/* logical na
  bool	tune_kernel;		/* may alter kernel settings */
  int	connect_delay = 1000;	/* wait this many ms after connect script */
  int	req_unit = -1;		/* requested interface unit */
@@ -57,7 +57,7 @@
  bool	multilink = 0;		/* Enable multilink operation */
  char	*bundle_name = NULL;	/* bundle name for multilink */
  bool	dump_options;		/* print out option values */
-@@ -281,6 +283,13 @@
+@@ -281,6 +283,13 @@ option_t general_options[] = {
        "Number of seconds to wait for child processes at exit",
        OPT_PRIO },
  
@@ -71,9 +71,9 @@
  #ifdef HAVE_MULTILINK
      { "multilink", o_bool, &multilink,
        "Enable multilink operation", OPT_PRIO | 1 },
---- pppd/pppd.h.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/pppd.h	2009-11-06 15:01:46.000000000 +0100
-@@ -313,6 +313,8 @@
+--- pppd/pppd.h	2009-11-22 19:47:44.000000000 +0100
++++ pppd/pppd.h	2009-11-22 19:49:33.000000000 +0100
+@@ -313,6 +313,8 @@ extern bool	tune_kernel;	/* May alter ke
  extern int	connect_delay;	/* Time to delay after connect script */
  extern int	max_data_rate;	/* max bytes/sec through charshunt */
  extern int	req_unit;	/* interface unit number to use */
