@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,0.8.5)
+$(call PKG_INIT_BIN,0.8.2k)
 $(PKG)_STARTLEVEL=20
 
 $(PKG_UNPACKED)
