@@ -74,10 +74,7 @@ then
 			echo -n '<tr><td class="path'$barstyle'"><b>'$showpath'</b></td><td class="bartdthpdg">'$showdev'</td>'
 			echo -n '<td class="bartdth"><b>'$fstyp'</b></td>'
 			echo -n '<td class="bartdth">'
-			if [ "$security" -eq "0" ]
-			then
-				echo -n '<small>$(lang de:"Mountoptionen" en:"Mount options"):</small>'
-			fi
+			[ "$securityl" = 0 ] && echo -n '<small>$(lang de:"Mountoptionen" en:"Mount options"):</small>'
 			echo '</td></tr>'
 			echo -n '<tr><th colspan="2" class="bartdthpdg">'$used'B $(lang de:"von" en:"of") '$total'B $(lang de:"belegt" en:"used"), '$free'B $(lang de:"frei" en:"free")</th>'
 			echo '<th colspan="2" nowrap="nowrap" class="bartdth" style="text-align:right; padding-right:3px;">'
