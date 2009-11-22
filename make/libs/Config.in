@@ -1,5 +1,6 @@
 config FREETZ_LIB_libapr
 	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	bool "Apache Portable Runtime Library (libapr-1.so)"
 	default n
 	help
@@ -186,6 +187,8 @@ config FREETZ_LIB_libz
 		In Freetz, e.g. Tor, Bftpd and Stunnel depend on zlib.
 
 endmenu
+
+source make/e2fsprogs/libraries-Config.in
 
 menu "Graphics & fonts"
 

@@ -12,9 +12,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 $(PKG)_INCLUDE_DIR:=/usr/include/apr-$(APR_MAJOR_VERSION)
 $(PKG)_BUILD_DIR:=/usr/share/apr-$(APR_MAJOR_VERSION)/build
 
-#We only need libuuid.a from e2fsprogs-package
 $(PKG)_DEPENDS_ON := e2fsprogs
-#TODO: create shared version of libuuid and link it dynamically here
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 

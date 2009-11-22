@@ -7,10 +7,32 @@ config FREETZ_PACKAGE_E2FSPROGS
 		tune2fs, and most of the other core ext2 filesystem utilities.
 		Homepage: http://e2fsprogs.sourceforge.net/
 
+config FREETZ_PACKAGE_E2FSPROGS_STATIC
+	bool "link all e2fsprog-libraries statically"
+	default y
+	depends FREETZ_PACKAGE_E2FSPROGS
+	help
+		This option causes all e2fsprog-libraries to be linked in statically.
+		Other libraries, e.g. libuClibc, libgcc, are still linked in dynamically.
+
+		Deactivating this option causes dynamic versions of all e2fsprog-libraries
+		to be created and copied into the image. By using dynamic libraries you
+		can save upto 650KB (uncompressed) in the image provided you include more
+		than one tool in it, that is by including only one tool you don't save
+		anything, the image may even become bigger (and it actually does).
+
+		NB: Once again for those who don't read long explanations, DON'T deactivate
+		this option, if e2fsck is the only tool you actually include in the image.
+
 config FREETZ_PACKAGE_E2FSPROGS_E2FSCK
 	bool "e2fsck"
 	default y
 	depends FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_LIB_libblkid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libcom_err if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libe2p if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libext2fs if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	help
 		Copy e2fsck to image
 
@@ -18,6 +40,11 @@ config FREETZ_PACKAGE_E2FSPROGS_E2MAKING
 	bool "Making tools"
 	default y
 	depends FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_LIB_libblkid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libcom_err if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libe2p if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libext2fs if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	help
 		Copy mke2fs and mklost+found to image
 
@@ -25,6 +52,11 @@ config FREETZ_PACKAGE_E2FSPROGS_E2TUNING
 	bool "Tuning tools"
 	default y
 	depends FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_LIB_libblkid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libcom_err if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libe2p if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libext2fs if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	help
 		Copy tune2fs, chattr, lsattr and dumpe2fs to image
 
@@ -32,6 +64,12 @@ config FREETZ_PACKAGE_E2FSPROGS_E2DEBUG
 	bool "Debugging tools"
 	default n
 	depends FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_LIB_libblkid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libcom_err if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libe2p if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libext2fs if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libss if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	help
 		Copy e2image, e2undo, debugfs and logsave to image
 
@@ -39,14 +77,18 @@ config FREETZ_PACKAGE_E2FSPROGS_BLKID
 	bool "blkid"
 	default n
 	depends FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_LIB_libblkid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libext2fs if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	help
 		Copy blkid to image
-
 
 config FREETZ_PACKAGE_E2FSPROGS_E2FIXING
 	bool "Repair and misc. tools"
 	default n
-	select FREETZ_PACKAGE_E2FSPROGS_BLKID
 	depends FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_PACKAGE_E2FSPROGS_BLKID
+	select FREETZ_LIB_libext2fs if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libcom_err if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	help
 		Copy badblocks, filefrag, uuidd and uuidgen to image

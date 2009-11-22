@@ -196,3 +196,8 @@ endif
 ifeq ($(strip $(FREETZ_LIB_libgmp)),y)
 LIBS+=gmp
 endif
+
+# NB: the following simulates logical OR
+ifneq (,$(strip $(filter y,$(FREETZ_LIB_libblkid) $(FREETZ_LIB_libcom_err) $(FREETZ_LIB_libe2p) $(FREETZ_LIB_libext2fs) $(FREETZ_LIB_libss) $(FREETZ_LIB_libuuid))))
+LIBS+=e2fsprogs
+endif

@@ -13,7 +13,7 @@ config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2fsck
 	depends on FREETZ_PACKAGE_E2FSPROGS_E2FSCK && ! FREETZ_PACKAGE_MDEV
 	default n
 	help
-		external these file
+		external these file(s)
 			/usr/sbin/e2fsck
 			(use at your own risk, e2fsck is needed to check an uncleanly umounted filesystem)
 
@@ -136,5 +136,25 @@ config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_uuidgen
 	help
 		external these file(s)
 			/usr/sbin/uuidgen
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_libraries
+	boolean "libraries used by e2fsprogs"
+	depends on \
+		(!FREETZ_PACKAGE_E2FSPROGS_STATIC) \
+		&& (!FREETZ_PACKAGE_E2FSPROGS_E2FSCK || EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2fsck) \
+		&& (!FREETZ_PACKAGE_E2FSPROGS_E2MAKING || (EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_mke2fs && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_mklost_found)) \
+		&& (!FREETZ_PACKAGE_E2FSPROGS_E2TUNING || (EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_tune2fs && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_dumpe2fs && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_chattr && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_lsattr)) \
+		&& (!FREETZ_PACKAGE_E2FSPROGS_E2DEBUG || (EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2image && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2undo && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_debugfs && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_logsave)) \
+		&& (!FREETZ_PACKAGE_E2FSPROGS_E2FIXING || (EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_badblocks && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_filefrag && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_uuidd && EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_uuidgen)) \
+		&& (!FREETZ_PACKAGE_E2FSPROGS_BLKID || EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid)
+	default n
+	help
+		external these files
+			/usr/lib/libblkid.so.1.0
+			/usr/lib/libcom_err.so.2.1
+			/usr/lib/libe2p.so.2.3
+			/usr/lib/libext2fs.so.2.4
+			/usr/lib/libss.so.2.0
+			/usr/lib/libuuid.so.1.2
 
 endmenu
