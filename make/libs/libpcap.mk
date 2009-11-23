@@ -1,25 +1,20 @@
-$(call PKG_INIT_LIB, 0.9.8)
+$(call PKG_INIT_LIB, 1.0.0)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.tcpdump.org/release/
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=5208f24d0328ee7c20b52c43eaa9aa0e
+$(PKG)_SOURCE_MD5:=9ad1358c5dec48456405eac197a46d3d
 
 $(PKG)_CONFIGURE_OPTIONS += --with-pcap=linux
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
-$(PKG)_CONFIGURE_OPTIONS += --disable-pthread
-$(PKG)_CONFIGURE_OPTIONS += --enable-debug
-$(PKG)_CONFIGURE_OPTIONS += --disable-plugins
-$(PKG)_CONFIGURE_OPTIONS += --disable-management
-$(PKG)_CONFIGURE_OPTIONS += --disable-socks
-$(PKG)_CONFIGURE_OPTIONS += --disable-http
-$(PKG)_CONFIGURE_OPTIONS += --enable-password-save
-$(PKG)_CONFIGURE_OPTIONS += --enable-small
 $(PKG)_CONFIGURE_OPTIONS += --disable-yydebug
 $(PKG)_CONFIGURE_OPTIONS += --with-build-cc="$(HOSTCC)"
+$(PKG)_CONFIGURE_OPTIONS += --without-septel
+$(PKG)_CONFIGURE_OPTIONS += --without-dag
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -28,13 +23,15 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(LIBPCAP_DIR) all \
-		CCOPT="-fPIC $(TARGET_CFLAGS)"
+		CCOPT="$(TARGET_CFLAGS)"
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(LIBPCAP_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcap-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
