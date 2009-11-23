@@ -533,7 +533,6 @@ if [ -n "$(lsmod | grep -e '^ipv6')" ]; 			then ip6tables -t filter -S > /var/tm
 if [ -n "$(lsmod | grep -e '^ip6table_mangle')" ];	then ip6tables -t mangle -S > /var/tmp/ip6tmangle.tmp;	else touch /var/tmp/ip6tmangle.tmp;	fi
 if [ -n "$(lsmod | grep -e '^ip6table_raw')" ];		then ip6tables -t raw -S > /var/tmp/ip6traw.tmp;		else touch /var/tmp/ip6traw.tmp;	fi
 
-
   echo "$(awk -v IFCS=$x -v PSTR=$post_string -v QSTR=$QUERY_STRING 'BEGIN { 
 	print "Content-type: text/html"
 	print ""
@@ -656,7 +655,7 @@ function AdminIFC () {
 	if (myConf["LOGTARGET"] == "syslog") {logsyslog=" checked";} else {loginternal=" checked";}
 	if (myConf["DSLDOFF"] == "1") {dsldoff=" checked";}
 	if (myConf["ADMINIP"] > "") {adminr="adming";} else {adminr="adminr";}
-	myStr = "<TABLE cellspacing=\"0\" WIDTH=100%><TR><TH COLSPAN=3>INTERFACE SETTINGS " myConf["BOOT"] "</TH></TR>";
+	myStr = "<TABLE cellspacing=\"0\" WIDTH=100%><TR><TH COLSPAN=3>INTERFACE SETTINGS </TH></TR>";
 	myStr = myStr "<FORM METHOD=POST ACTION=" myURL "><TR><TH class=right>" ipStr "ADMIN IP : </TH><TD COLSPAN=2><INPUT CLASS=" adminr " TYPE=TEXT NAME=ADMIP VALUE=\"" ifcIP "\"></TD><TD><INPUT TYPE=SUBMIT NAME=SETIP VALUE=set></TD></TR></FORM>";
 	myStr = myStr "<FORM METHOD=POST ACTION=" myURL ">";
 	myStr = myStr "<TR><TH class=right>SET BACKUP DIRECTORY : </TH><TD COLSPAN=2><INPUT CLASS=admin TYPE=TEXT NAME=BACDIR VALUE=\"" myConf["BACK"] "\"></TD></TR>";
@@ -846,7 +845,15 @@ function myTBHL (chain) {
 		inSubTable=1;
 		print "<FORM METHOD=POST ACTION=" myURL "?J=" JumpMark "#P" table ipv6 JumpMark "><TR><TD COLSPAN=2><INPUT TYPE=HIDDEN NAME=TABLE VALUE=" table "><INPUT TYPE=HIDDEN NAME=IPV6 VALUE=" ipv6 "><INPUT TYPE=TEXT NAME=CHAIN></TD><TD COLSPAN=2><INPUT TYPE=SUBMIT NAME=MODE VALUE=New></TD></TR></FORM>";
 		}
-	if (inSubTable ==1) {inSubTable=0; print "</TABLE><P></TD><TD CLASS=noborder COLSPAN=9></TD></TR>"}
+	if (inSubTable ==1) {
+		 inSubTable=0; 
+			if (settingsPrinted == 0) {settingsPrinted=1;
+				print "</TABLE><P></TD><TD COLSPAN=6 class=noborder>" AdminIFC() "</TD><TD class=noborder></TD><TD COLSPAN=2 class=noborder>" AdminButtons() "</TD></TR>"; 
+				inSubTable=0;
+				print "<FORM METHOD=POST ACTION=" myURL ">";
+				print "<TR><TH COLSPAN=\"2\">Experts only: /var/mod/root # </TH><TD COLSPAN=\"9\"><INPUT TYPE=TEXT NAME=EXPERT class=expert></TD><TD><INPUT TYPE=SUBMIT NAME=EXEC VALUE=execute></TD></TR></FORM>";			
+				} else {inSubTable=0; print "</TABLE><P></TD><TD CLASS=noborder COLSPAN=9></TD></TR>"}
+		 }
 	if (formPrinted == 1){
 		CurrentChain = myArray["Chain"];
 		for (y=1;y<=nTables;y++) { if (Chains[y,1]==CurrentChain) {Chains[y,2] = 1;}}

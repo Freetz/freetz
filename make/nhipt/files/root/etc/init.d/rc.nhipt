@@ -17,6 +17,7 @@ start() {
          echo "configuring nhipt gui...$NHIPT_ROOT" 
 		# Save settings to RAM-parameter file
 
+		if [ -z "$(lsmod | grep x_tables)" ]; then modprobe ip_tables; modprobe iptable_filter; modprobe x_tables; modprobe ip_conntrack; modprobe ip_conntrack_ftp; modprobe ipt_LOG; modprobe ipt_REJECT; modprobe xt_multiport; modprobe xt_state; modprobe xt_tcpudp; fi
 		if [ -n "$(ps | grep -v grep | grep iptlogger)" ]; then log_run='yes'; else log_run='no'; fi
 		if [ -n "$(ps | grep -v grep | grep nhipd.pid)" ]; then cgi_run='yes'; else cgi_run='no'; fi
 
@@ -79,20 +80,18 @@ case "$1" in
                 start
                 ;;
         status)
-				echo 'running'
+		echo 'running'
                 ;;
      ""|load)
                 # CGI registrieren
                 touch /var/tmp/flash/nhipt.diff
-				if [ ! -r "/var/tmp/nhipt.par" ]
-				then
-        			chmod 777 /tmp/flash/nhiptboot.cfg
-			        chmod +x /tmp/flash/nhiptboot.cfg
-			        . /tmp/flash/nhiptboot.cfg
-				fi
+		if [ ! -r "/var/tmp/nhipt.par" ]; then
+		        chmod  644 /tmp/flash/nhiptboot.cfg
+		        . /tmp/flash/nhiptboot.cfg
+		fi
                 modreg cgi $DAEMON NHIPT
-				echo "done."
-				exit 0
+		echo "done."
+		exit 0
                 ;;
         unload)
                 stop

@@ -3,26 +3,12 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; 
-log_sys=''; log_int='';
-cgi_auto=''; cgi_man='';
-log_auto=''; log_man='';
-boot_flash=''; boot_usb='';
-boot_freetz=''; boot_debug='';
-
+auto_chk=''; man_chk=''; log_sys=''; log_int=''; cgi_auto=''; cgi_man=''; log_auto=''; log_man=''; boot_flash=''; boot_usb=''; boot_freetz=''; boot_debug='';
 if [ -r /var/tmp/nhipt.par ]; then
-	export NHIPT_$(grep "ADMINIP=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "BACK=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "BOOT=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "BOOTDIR=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "DELAY=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "DSLDOFF=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "LOGD=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "LOGTARGET=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "PORT=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "ROOT=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "SERVERIP=" /var/tmp/nhipt.par)
-	export NHIPT_$(grep "BOOTSTRAP=" /var/tmp/nhipt.par)
+	variable=$(cat /var/tmp/nhipt.par)
+	for var1 in $variable; do
+		export NHIPT_$var1
+	done
 fi
 export cb$NHIPT_DELAY=' selected';
 export dsld$NHIPT_DSLDOFF=' checked';
