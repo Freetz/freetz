@@ -102,25 +102,25 @@ generate_graph() {
 				DEF:cached=$FILE:cached:AVERAGE					\
 				DEF:free=$FILE:free:AVERAGE					\
 												\
-				AREA:used$RED:"Used memory   (max/avg/cur)[bytes]\:"		\
+				AREA:used$RED:"Used memory   (avg/max/cur)[bytes]\:"		\
 				LINE1:used$RED_D						\
-				GPRINT:used:MAX:"%3.0lf%s /"					\
-				GPRINT:used:AVERAGE:"%3.0lf%s /"				\
+				GPRINT:used:AVERAGE:"%3.0lf%s /"					\
+				GPRINT:used:MAX:"%3.0lf%s /"				\
 				GPRINT:used:LAST:"%3.0lf%s\n"					\
 												\
-				AREA:buff$BLUE:"Buffer memory (max/avg/cur)[bytes]\:":STACK	\
-				GPRINT:buff:MAX:"%3.0lf%s /"					\
-				GPRINT:buff:AVERAGE:"%3.0lf%s /"				\
+				AREA:buff$BLUE:"Buffer memory (avg/max/cur)[bytes]\:":STACK	\
+				GPRINT:buff:AVERAGE:"%3.0lf%s /"					\
+				GPRINT:buff:MAX:"%3.0lf%s /"				\
 				GPRINT:buff:LAST:"%3.0lf%s\n"					\
 												\
-				AREA:cached$YELLOW:"Cache memory  (max/avg/cur)[bytes]\:":STACK	\
-				GPRINT:cached:MAX:"%3.0lf%s /"					\
-				GPRINT:cached:AVERAGE:"%3.0lf%s /"				\
+				AREA:cached$YELLOW:"Cache memory  (avg/max/cur)[bytes]\:":STACK	\
+				GPRINT:cached:AVERAGE:"%3.0lf%s /"					\
+				GPRINT:cached:MAX:"%3.0lf%s /"				\
 				GPRINT:cached:LAST:"%3.0lf%s\n"					\
 												\
-				AREA:free$GREEN:"Free memory   (max/avg/cur)[bytes]\:":STACK	\
-				GPRINT:free:MAX:"%3.0lf%s /"					\
-				GPRINT:free:AVERAGE:"%3.0lf%s /"				\
+				AREA:free$GREEN:"Free memory   (avg/max/cur)[bytes]\:":STACK	\
+				GPRINT:free:AVERAGE:"%3.0lf%s /"					\
+				GPRINT:free:MAX:"%3.0lf%s /"				\
 				GPRINT:free:LAST:"%3.0lf%s\n"				> /dev/null
 
 			fi
@@ -282,15 +282,16 @@ generate_graph() {
 				CDEF:used=total,free,-						\
 				CDEF:usedpct=100,used,total,/,*					\
 				CDEF:freepct=100,free,total,/,*					\
-				AREA:usedpct#0000FF:"Used swap"					\
-				GPRINT:usedpct:MAX:"%3.2lf%% maximal used swap"			\
-				GPRINT:usedpct:AVERAGE:"%3.2lf%% average used swap"		\
-				GPRINT:usedpct:LAST:"%3.2lf%% current used swap\j"		\
 												\
-				AREA:freepct#00FF00:"Free swap":STACK				\
-				GPRINT:freepct:MAX:"%3.2lf%% maximal free swap"			\
-				GPRINT:freepct:AVERAGE:"%3.2lf%% average free swap"		\
-				GPRINT:freepct:LAST:"%3.2lf%% current free swap\j"	> /dev/null
+				AREA:usedpct#0000FF:"Used swap     (avg/max/cur)\:    "		\
+				GPRINT:usedpct:AVERAGE:"%3.1lf%% /"					\
+				GPRINT:usedpct:MAX:"%3.1lf%% /"				\
+				GPRINT:usedpct:LAST:"%3.1lf%%\n"				\
+												\
+				AREA:freepct#00FF00:"Free swap     (avg/max/cur)\:    ":STACK	\
+				GPRINT:freepct:AVERAGE:"%3.1lf%% /"					\
+				GPRINT:freepct:MAX:"%3.1lf%% /"				\
+				GPRINT:freepct:LAST:"%3.1lf%%\n"			> /dev/null
 			fi
 			;;
 		diskio1|diskio2|diskio3|diskio4)
@@ -347,14 +348,14 @@ generate_graph() {
 				DEF:read=$FILE:read:AVERAGE					\
 				DEF:write=$FILE:write:AVERAGE					\
 												\
-				AREA:read$GREEN:"Read        (max/avg/cur)[bytes/s]\:"		\
-				GPRINT:read:MAX:"%3.0lf%s /"					\
-				GPRINT:read:AVERAGE:"%3.0lf%s /"				\
+				AREA:read$GREEN:"Read        (avg/max/cur)[bytes/s]\:"		\
+				GPRINT:read:AVERAGE:"%3.0lf%s /"					\
+				GPRINT:read:MAX:"%3.0lf%s /"				\
 				GPRINT:read:LAST:"%3.0lf%s\n"					\
 												\
-				AREA:write#0000FF80:"Write       (max/avg/cur)[bytes/s]\:"	\
-				GPRINT:write:MAX:"%3.0lf%s /"					\
-				GPRINT:write:AVERAGE:"%3.0lf%s /"				\
+				AREA:write#0000FF80:"Write       (avg/max/cur)[bytes/s]\:"	\
+				GPRINT:write:AVERAGE:"%3.0lf%s /"					\
+				GPRINT:write:MAX:"%3.0lf%s /"				\
 				GPRINT:write:LAST:"%3.0lf%s\n"				> /dev/null
 			fi
 			;;
@@ -424,14 +425,14 @@ generate_graph() {
 				DEF:in=$FILE:$NET_RX:AVERAGE					\
 				DEF:out=$FILE:$NET_TX:AVERAGE					\
 												\
-				AREA:in$GREEN:"Incoming    (max/avg/cur)[bytes/s]\:"		\
-				GPRINT:in:MAX:"%3.0lf%s /"					\
+				AREA:in$GREEN:"Incoming    (avg/max/cur)[bytes/s]\:"		\
 				GPRINT:in:AVERAGE:"%3.0lf%s /"					\
+				GPRINT:in:MAX:"%3.0lf%s /"					\
 				GPRINT:in:LAST:"%3.0lf%s\n"					\
 												\
-				AREA:out#0000FF80:"Outgoing    (max/avg/cur)[bytes/s]\:"	\
-				GPRINT:out:MAX:"%3.0lf%s /"					\
+				AREA:out#0000FF80:"Outgoing    (avg/max/cur)[bytes/s]\:"	\
 				GPRINT:out:AVERAGE:"%3.0lf%s /"					\
+				GPRINT:out:MAX:"%3.0lf%s /"					\
 				GPRINT:out:LAST:"%3.0lf%s"				> /dev/null
 			fi
 			;;
