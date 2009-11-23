@@ -83,10 +83,8 @@ case "$1" in
                 ;;
      ""|load)
                 # CGI registrieren
-				if [ ! -r "/var/tmp/nhipt.par" ]
-				then
-        			chmod 777 /tmp/flash/nhiptboot.cfg
-			        chmod +x /tmp/flash/nhiptboot.cfg
+				if [ ! -r "/var/tmp/nhipt.par" ]; then
+        			chmod 644 /tmp/flash/nhiptboot.cfg
 			        . /tmp/flash/nhiptboot.cfg
 				fi
                 modreg cgi $DAEMON NHIPT
