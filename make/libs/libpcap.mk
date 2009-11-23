@@ -42,9 +42,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBPCAP_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/pcap* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man3/pcap.3
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcap* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcap-config \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/pcap*
 
 $(pkg)-uninstall:
 	$(RM) $(LIBPCAP_TARGET_DIR)/libpcap*.so*
