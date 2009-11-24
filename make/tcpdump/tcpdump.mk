@@ -7,8 +7,6 @@ $(PKG)_SOURCE_MD5:=b22ca72890df2301d922c9f2d17867f9
 
 $(PKG)_DEPENDS_ON := libpcap
 
-$(PKG)_CONFIGURE_ENV += BUILD_CC="$(TARGET_CC)"
-$(PKG)_CONFIGURE_ENV += HOSTCC="$(HOSTCC)"
 $(PKG)_CONFIGURE_ENV += td_cv_buggygetaddrinfo="no"
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
