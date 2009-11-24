@@ -10,7 +10,7 @@ case "$1" in
 		[ -r /tmp/flash/$DAEMON.def ] && deffile="/tmp/flash/$DAEMON.def"
 		modreg file "ssh_$DAEMON" 'SSH: authorized_keys' 0 "$deffile"
 
-		echo -n "Setting up SSH authorized_keys for root ..."
+		echo -n "Setting up SSH authorized_keys for root..."
 		dir="/tmp/flash/authorized_keys_root"
 		if [ -e ~root/.ssh ]; then
 			tmp="existent."

@@ -6,7 +6,7 @@ PPPD=pppd
 . /etc/init.d/modlibrc
 
 start() {
-	echo -n 'Starting pptpd ...'
+	echo -n 'Starting pptpd...'
 	set -o noglob
 
 	rm -f /mod/etc/ppp/ip-up
@@ -36,7 +36,7 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping pptpd ...'
+	echo -n 'Stopping pptpd...'
 
 	kill $(ps|grep pptpd|grep -v grep|grep -v "rc.pp"|grep -v "pppd"|sed 's/^ //g'|cut -f1 -d" ")
 	exitval=$?
