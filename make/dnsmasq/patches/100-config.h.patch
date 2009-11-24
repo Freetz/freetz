@@ -1,5 +1,5 @@
---- src/config.h.orig	2009-06-10 15:03:45.000000000 +0200
-+++ src/config.h	2009-06-12 01:06:43.000000000 +0200
+--- src/config.h.orig	2009-11-20 18:14:42.000000000 +0100
++++ src/config.h	2009-11-20 18:15:57.000000000 +0100
 @@ -37,7 +37,7 @@
  #else
  #  define RESOLVFILE "/etc/resolv.conf"
@@ -40,38 +40,3 @@
  #if defined(__UCLIBC_HAS_IPV6__)
  #  ifndef IPV6_V6ONLY
  #    define IPV6_V6ONLY 26
-@@ -257,19 +257,19 @@
- /* We assume that systems which don't have IPv6
-    headers don't have ntop and pton either */
- 
--#if defined(INET6_ADDRSTRLEN) && defined(IPV6_V6ONLY) && !defined(NO_IPV6)
--#  define HAVE_IPV6
--#  define ADDRSTRLEN INET6_ADDRSTRLEN
--#  if defined(SOL_IPV6)
--#    define IPV6_LEVEL SOL_IPV6
--#  else
--#    define IPV6_LEVEL IPPROTO_IPV6
--#  endif
--#elif defined(INET_ADDRSTRLEN)
--#  undef HAVE_IPV6
--#  define ADDRSTRLEN INET_ADDRSTRLEN
--#else
--#  undef HAVE_IPV6
--#  define ADDRSTRLEN 16 /* 4*3 + 3 dots + NULL */
--#endif
-+//#if defined(INET6_ADDRSTRLEN) && defined(IPV6_V6ONLY) && !defined(NO_IPV6)
-+//#  define HAVE_IPV6
-+//#  define ADDRSTRLEN INET6_ADDRSTRLEN
-+//#  if defined(SOL_IPV6)
-+//#    define IPV6_LEVEL SOL_IPV6
-+//#  else
-+//#    define IPV6_LEVEL IPPROTO_IPV6
-+//#  endif
-+//#elif defined(INET_ADDRSTRLEN)
-+//#  undef HAVE_IPV6
-+//#  define ADDRSTRLEN INET_ADDRSTRLEN
-+//#else
-+#undef HAVE_IPV6
-+#define ADDRSTRLEN 16 /* 4*3 + 3 dots + NULL */
-+//#endif
- 
