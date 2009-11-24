@@ -1,12 +1,12 @@
 ##########################################################
 #
-# Default-CGI Output template for Privoxy.
+# Forwarding-failed template for Privoxy.
 #
 #
 # USING HTML TEMPLATES:
 # ---------------------
 #
-# Template files are written win plain HTML, with a few
+# Template files are written in plain HTML, with a few
 # additions:
 # 
 # - Lines that start with a '#' character like this one
@@ -47,6 +47,19 @@
 #    The URL of the SourceForge ijbswa project, who maintains this
 #    software.
 #
+#  gateway
+#    The IP or hostname of the forwarding server
+#  hostport:
+#    The host and port part of the request that lead to this problem
+#  path:
+#    The path part of the request that lead to this problem
+#  error-message:
+#    The failure reason.
+#  forwarding-type:
+#    The type of the forwarding request: "socks4-", "socks4a-"
+#    or (in the future) "" for direct connections to the forwarder.
+#
+#
 # CONDITIONAL SYMBOLS FOR THIS TEMPLATE AND THEIR DEPANDANT SYMBOLS:
 # ------------------------------------------------------------------
 #
@@ -69,20 +82,25 @@
 <html>
 
 <head>
-  <title>Privoxy@@my-hostname@</title>
+  <title>503 - Forwarding failure (Privoxy@@my-hostname@)</title>
   <meta http-equiv="Content-Style-Type" content="text/css">
   <meta http-equiv="Content-Script-Type" content="text/javascript">
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <meta name="robots" content="noindex,nofollow">
-  <link rel="stylesheet" type="text/css" href="@default-cgi@send-stylesheet">
-  <link rel="shortcut icon" href="@default-cgi@favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="@default-cgi@error-favicon.ico">
+  <style type="text/css">
+#include cgi-style.css
+  </style>
 </head>
 
 <body>
 
-  <table cellpadding="20" cellspacing="10" border="0" width="100%">
+  <table summary="" cellpadding="20" cellspacing="10" border="0" width="100%">
     <tr>
-      <td class="title">
+      <td class="status">
+        503
+      </td>     
+      <td class="title" style="width: 100%">
 
 #include mod-title
 
@@ -92,7 +110,7 @@
 <!-- @if-unstable-start -->
 # This will only appear if CODE_STATUS is "alpha" or "beta". See configure.in
     <tr>
-      <td class="warning">
+      <td class="warning" colspan="2">
 
 #include mod-unstable-warning
 
@@ -101,14 +119,32 @@
 <!-- if-unstable-end@ -->
 
     <tr>
-      <td class="box">
-        <h2>Privoxy Menu:</h2>
+      <td class="warning" colspan=2>
+        <h2>Forwarding failure</h2>
+          <p>Privoxy was unable to <b>@forwarding-type@forward</b> your request
+             <a  title="Repeat the request"
+              href="@protocol@@hostport@@path@"><b>@protocol@@hostport@@path@</b></a>
+             through <b>@gateway@</b>:
+            <strong>@error-message@</strong></p>
+          </p>
+          <p>Just <a title="Repeat the request" href="@protocol@@hostport@@path@">try again</a> to
+             see if this is a temporary problem, or check your <a title="Privoxy's show-status page"
+              href="@default-cgi@show-status">forwarding settings</a>
+             and make sure that all forwarding servers are working correctly and
+             listening where they are supposed to be listening.
+         </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="box" colspan="2">
+        <h2>More Privoxy:</h2>
         <ul>@menu@<li><a href="@user-manual@">Documentation</a></li></ul>
       </td>
     </tr>
 
     <tr>
-      <td class="info">
+      <td class="info" colspan="2">
 
 #include mod-support-and-service
 
@@ -117,14 +153,14 @@
 
 <!-- @if-have-help-info-start -->
     <tr>
-      <td class="info">
+      <td class="info" colspan="2">
 
 #include mod-local-help
 
       </td>
     </tr>
 <!-- if-have-help-info-end@ -->
-    
+
   </table>
 
 </body>
