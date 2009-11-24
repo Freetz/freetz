@@ -1174,6 +1174,18 @@ config FREETZ_PATCH_SIGNED
 	help
 		Hides the "unsupported changes" message from the web interface.
 
+config FREETZ_PATCH_ALARMCLOCK
+	bool "Patch third alarm-clock"
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7270 || \
+		FREETZ_TYPE_FON_WLAN_3270 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3
+	default n
+	help
+		Adds a third alarm-clock to AVM-Webinterface
+
 config FREETZ_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
 	depends on FREETZ_HAS_USB_HOST
