@@ -9,7 +9,12 @@
 [ -e "$PPP_SCRIPT_DIAL" ] && . $PPP_SCRIPT_DIAL
 while [ 1 ]; do
 	echo -e "\n##\n`date "+%Y-%m-%d %H:%M,%S"`" >> $PPP_LOGFILE
+	if [ "$$PPP_GMODE" != xXG ] && [ -n "$PPP_DIAGTTY" ]; then
+		[ $PPP_GMODE = "o3G" ] && echo -en "AT^SYSCFG=14,2,3FFFFFFF,2,4\r" > $PPP_DIAGTTY
+		[ $PPP_GMODE = "p3G" ] && echo -en "AT^SYSCFG=2,2,3FFFFFFF,2,4\r"  > $PPP_DIAGTTY
+		[ $PPP_GMODE = "p2G" ] && echo -en "AT^SYSCFG=2,1,3FFFFFFF,2,4\r"  > $PPP_DIAGTTY
+		[ $PPP_GMODE = "o2G" ] && echo -en "AT^SYSCFG=13,1,3FFFFFFF,2,4\r" > $PPP_DIAGTTY
+	fi
 	pppd call dun 2>&1 >> $PPP_LOGFILE
-	sleep 1
+	sleep 3
 done
-

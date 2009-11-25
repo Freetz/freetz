@@ -8,7 +8,7 @@
 
 willkommen() {
 	[ "$PPP_FALLBACK" != 'yes' ] || echo -e "\n`date`: DIALIN" >> $PPP_FABALOG
-	start-stop-daemon -n ppp -a /etc/default.ppp/ppp_dialer -b -q -S
+	start-stop-daemon -n ppp_dialer -a /etc/default.ppp/ppp_dialer -b -q -S
 }
 
 bisbald () {
@@ -23,7 +23,7 @@ bisbald () {
 reanimiert () {
 	[ -n "$ALIVEIP" ] && route del $ALIVEIP 2>/dev/null
 	if [ -z "$ALIVEIP" -a -z "$CURRENT_ROUTE" ]; then
-		echo "############################# CHECK NICHT MÖGLICH: Verbindung wird nicht automatisch getrennet!" >> $PPP_FABALOG
+		echo "############################# CHECK NICHT MÃ–GLICH: Verbindung wird nicht automatisch getrennet!" >> $PPP_FABALOG
 		exit 1
 	fi
 	$CURRENT_ROUTE
@@ -92,4 +92,3 @@ else
 		fi
 	done
 fi
-

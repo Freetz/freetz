@@ -1,0 +1,52 @@
+#!/bin/sh
+#by cuma
+
+[ ! -r /var/mod/etc/conf/ppp.cfg ] && exit 1
+. /var/mod/etc/conf/ppp.cfg
+
+[ -z "$PPP_DIAGTTY" ] && exit 1
+
+logger () {
+kill `cat /var/run/ppp_loggerCAT.pid 2>/dev/null` 2>/dev/null
+nohup cat $PPP_DIAGTTY >/tmp/ppp_logger.tmp &
+echo $! >/var/run/ppp_loggerCAT.pid
+}
+
+logger
+while [ 1 ]; do
+	sleep 1
+	[ `ls -l /tmp/ppp_logger.tmp  |awk '{print $5}'` -gt 131072 2>/dev/null ] && logger
+	sleep 1
+	kill -0 `cat /var/run/ppp_loggerCAT.pid 2>/dev/null` 2>/dev/null || logger
+	sleep 1; echo -en "AT+CPIN?\r"  >$PPP_DIAGTTY
+	sleep 1; echo -en "AT+CSQ\r"    >$PPP_DIAGTTY
+	sleep 1; echo -en "at+COPS?\r"  >$PPP_DIAGTTY
+	sleep 1; echo -en "at+COPS=?\r" >$PPP_DIAGTTY
+	sleep 20
+done
+#!/bin/sh
+#by cuma
+
+[ ! -r /var/mod/etc/conf/ppp.cfg ] && exit 1
+. /var/mod/etc/conf/ppp.cfg
+
+[ -z "$PPP_DIAGTTY" ] && exit 1
+
+logger () {
+kill `cat /var/run/ppp_loggerCAT.pid 2>/dev/null` 2>/dev/null
+nohup cat $PPP_DIAGTTY >/tmp/ppp_logger.tmp &
+echo $! >/var/run/ppp_loggerCAT.pid
+}
+
+logger
+while [ 1 ]; do
+	sleep 1
+	[ `ls -l /tmp/ppp_logger.tmp  |awk '{print $5}'` -gt 131072 2>/dev/null ] && logger
+	sleep 1
+	kill -0 `cat /var/run/ppp_loggerCAT.pid 2>/dev/null` 2>/dev/null || logger
+	sleep 1; echo -en "AT+CPIN?\r"  >$PPP_DIAGTTY
+	sleep 1; echo -en "AT+CSQ\r"    >$PPP_DIAGTTY
+	sleep 1; echo -en "at+COPS?\r"  >$PPP_DIAGTTY
+	sleep 1; echo -en "at+COPS=?\r" >$PPP_DIAGTTY
+	sleep 20
+done
