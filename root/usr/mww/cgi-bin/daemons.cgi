@@ -10,65 +10,84 @@ stat_begin() {
 }
 
 stat_button() {
-	if [ "$3" -eq 0 ]; then disabled=" disabled"; else disabled=""; fi
+	if ! $3 ; then disabled=" disabled"; else disabled=""; fi
 	echo '<td><form class="btn" action="/cgi-bin/exec.cgi" method="post"><input type="hidden" name="pkg" value="'"$1"'"><input type="hidden" name="cmd" value="'"$2"'"><input type="submit" value="'"$2"'"'"$disabled"'></form></td>'
 }
 
 stat_packagelink() {
 	if [ "$1" = "crond" -o "$1" = "swap" -o "$1" = "telnetd" -o "$1" = "webcfg" ]; then
-		echo '<a href="'"$SETTINGSURL"'">'"$1"'</a>'
+		echo '<a href="'"$SETTINGSURL"'">'"$2"'</a>'
 	else
- 		echo '<a href="'"$PACKAGEURL$1"'">'"$1"'</a>'
+ 		echo '<a href="'"$PACKAGEURL$1"'">'"$2"'</a>'
 	fi
 }
+
+set_var_def() {
+	if [ -n "$2" ]; then
+		echo "$2"
+	else
+		echo "$1"
+	fi
+}
+
 stat_line() {
-	status="$(/mod/etc/init.d/rc.$1 status 2> /dev/null)"
-	if [ -n "$2" ]; then name="$2"; else name="$1"; fi
-	case "$status" in
-		running)
-			color="#008000"
-			start=0; stop=1
-			;;
-		stopped)
-			color="#800000"
-			start=1; stop=0
-			;;
-		inetd)
-			case "$inetd_status" in
-				running)
-					color="#008000"
-					;;
-				stopped)
-					color="#800000"
-					;;
-				none)
-					color="#808080"
-					inetd_status='<i>none</i>'
-					;;
-				*)	color="#000000"
-					;;
-			esac
-			status="$inetd_status ($status)"
-			start=0; stop=0;
-			;;
-		none)
-			status='<i>none</i>'
-			color="#808080"
-			start=1; stop=0
-			;;
-		*)
-			color="#000000"
-			start=1; stop=1
-			;;
-	esac
-	echo '<tr>'
-	echo '<td width="180">'$(stat_packagelink $name)'</td><td style="color: '"$color"';" width="120">'"$status"'</td>'
+	pkg=$1
+	name=$(set_var_def "$pkg" "$2")
+	rcfile="/mod/etc/init.d/$(set_var_def "rc.$pkg" "$3")"
+	disable=$(set_var_def false "$4")
+	hide=$(set_var_def false "$5")
+	config_pkg=$(set_var_def "$pkg" "$6")
+	if ! $hide ; then
+		status="$("$rcfile" status 2> /dev/null)"
+		case "$status" in
+			running)
+				color="#008000"
+				start=false; stop=true
+				;;
+			stopped)
+				color="#800000"
+				start=true; stop=false
+				;;
+			inetd)
+				case "$inetd_status" in
+					running)
+						color="#008000"
+						;;
+					stopped)
+						color="#800000"
+						;;
+					none)
+						color="#808080"
+						inetd_status='<i>none</i>'
+						;;
+					*)	color="#000000"
+						;;
+				esac
+				status="$inetd_status ($status)"
+				start=false; stop=false
+				;;
+			none)
+				status='<i>none</i>'
+				color="#808080"
+				start=true; stop=false
+				;;
+			*)
+				color="#000000"
+				start=true; stop=true
+				;;
+		esac
+		echo '<tr>'
+		echo '<td width="180">'$(stat_packagelink $config_pkg $name)'</td><td style="color: '"$color"';" width="120">'"$status"'</td>'
 
-	stat_button $1 start $start
-	stat_button $1 stop $stop
-	stat_button $1 restart $stop
+		if $disable ; then
+			start=false; stop=false;
+		fi
+		stat_button $pkg start $start
+		stat_button $pkg stop $stop
+		stat_button $pkg restart $stop
 
-	echo '</tr>'
+		echo '</tr>'
+	fi
 }
 
 stat_end() {
@@ -92,31 +111,12 @@ stat_static() {
 	sec_begin '$(lang de:"Statische Pakete" en:"Static packages")'
 	stat_begin
 
-	no_packages=true
-	if [ -e /etc/static.pkg ]; then
-		for pkg in $(cat /etc/static.pkg); do
-			if [ -x "/mod/etc/init.d/rc.$pkg" ] && [ ! -e "/mod/etc/${pkg}_multid.pkg" ]; then
-				no_packages=false
-				stat_line "$pkg"
-			else
-				if [ -e "/mod/etc/${pkg}_multid.pkg" ]; then
-					no_packages=false
-					echo "<tr><td><b>Daemons <i>${pkg}</i>:</b></td></tr>"
-					for pkgline in $(cat /mod/etc/${pkg}_multid.pkg); do
-						if [ -n "$(echo $pkgline | grep \#)" ]; then
-							mpkg=${pkgline%%#*};
-							name=${pkgline#*#};
-						else
-							mpkg=$pkgline
-							name=$pkgline
-						fi
-						stat_line "$mpkg" "&nbsp;&nbsp;&nbsp;&nbsp;$name"
-					done
-				fi
-			fi
+        if [ -r /mod/etc/reg/daemon.reg ]; then
+		cat /mod/etc/reg/daemon.reg | while IFS='|' read -r pkg name rcscript disable hide parentpkg; do
+			stat_line "$pkg" "$name" "$rcscript" $disable $hide "$parentpkg"
 		done
 	fi
-	if $no_packages; then
+	if [ ! -s /mod/etc/reg/daemon.reg ]; then
 		echo '<p><i>$(lang de:"keine statischen Pakete" en:"no static packages")</i></p>'
 	fi
 

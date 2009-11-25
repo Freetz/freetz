@@ -1,8 +1,12 @@
 #!/bin/sh
 #
+# Register scripts/files/options for the freetz web interface
+#
 # Usage: modreg cgi <pkg> <title>
 #        modreg extra <pkg> <title> <sec-level> <cgi-name>
 #        modreg file <id> <title> <sec-level> <desc-file>
+#        modreg status <pkg> <title> [<cgi-name>]
+#        modreg daemon [--disable] [--hide] [--rc-script <script>] [--name <name>] [--parent <pkg>] <pkg>
 
 replace() {
 	local regexp=$1 file=$2 data=$3
@@ -10,6 +14,15 @@ replace() {
 
 	local content=$(grep -v "$regexp" "$file")
 	( echo "$data"; echo -n "$content" ) | sort > "$file"
+}
+
+usage() {
+	echo "Usage: $1 cgi <pkg> <title>" 1>&2
+	echo "       $1 extra <pkg> <title> <sec-level> <cgi-name>" 1>&2
+	echo "       $1 file <id> <title> <sec-level> <desc-file>" 1>&2
+	echo "       $1 status <pkg> <title> [<cgi-name>]" 1>&2
+	echo "       $1 daemon [-d|--disable] [-h|--hide] [-r|--rc-script=<script>] [-n|--name=<name>] [-p|--parent=<parent_pkg>] <pkg>" 1>&2
+	exit 1
 }
 
 case "$1" in
@@ -30,13 +43,40 @@ case "$1" in
 		replace "^$2|.*|$cgi\$" /mod/etc/reg/status.reg "$2|$3|$cgi"
 		rm -f /mod/var/cache/menu_status
 		;;
+	daemon)
+		filename=$0
+		shift
+		TEMP=$(getopt -o dhn:r:p: --long disable,hide,name:,rc-script:parent: -n "$(basename $filename)" -- "$@")
 		
+		disable=false
+		hide=false
+		name=
+		parent=
+		[ $? == 0 ] || usage $filename
+		eval set -- "$TEMP"
+
+		while true ; do
+			case $1 in
+				-d|--disable) disable=true; shift ;;
+				-h|--hide)	hide=true; shift ;;
+				-n|--name) name=$2; shift 2 ;;
+				-r|--rc-script) rcscript=$2; shift 2 ;;
+				-p|--parent) parent=$2; shift 2 ;;
+				--) shift ; break ;;
+				*) echo "Internal error!" ; exit 1 ;;
+			esac
+		done
+
+		[ -n "$1" ] || usage $filename
+		pkg=$1
+		[ -n "$name" ] || name=$pkg
+		[ -n "$rcscript" ] || rcscript="rc.$pkg"
+		[ -n "$parent" ] || parent=$pkg
+
+		replace "^$pkg|$name|" /mod/etc/reg/daemon.reg "$pkg|$name|$rcscript|$disable|$hide|$parent"
+		;;
 	*)
-		echo "Usage: $0 cgi <pkg> <title>" 1>&2
-		echo "       $0 extra <pkg> <title> <sec-level> <cgi-name>" 1>&2
-		echo "       $0 file <id> <title> <sec-level> <desc-file>" 1>&2
-		echo "       $0 status <pkg> <title> [<cgi-name>]" 1>&2
-		exit 1
+		usage $0
 		;;
 esac
 
