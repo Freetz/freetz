@@ -48,7 +48,8 @@ stop() {
 	fi
 	killall -9 ppp_observer 2>/dev/null
 	killall -9 ppp_logger 2>/dev/null
-	kill `cat /var/run/ppp_logger.pid 2>/dev/null` 2>/dev/null	
+	kill `cat /var/run/ppp_logger.pid 2>/dev/null` 2>/dev/null
+	rm -rf /tmp/ppp_logger.tmp 2>/dev/null	
 	disconnect
 	if [ $? -ne 0 ]; then
 		echo 'failed.'
@@ -120,5 +121,3 @@ case "$1" in
 		exit 1
 		;;
 esac
-
-exit 0

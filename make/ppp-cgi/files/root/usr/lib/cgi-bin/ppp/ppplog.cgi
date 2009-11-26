@@ -6,12 +6,19 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /mod/etc/conf/ppp.cfg
 
 if [ -n "$PPP_DIAGTTY" ]; then
-sec_begin '$(lang de:"Status" en:"State")'
 
-(sleep 1; echo -en "AT+CPIN?\r"  >$PPP_DIAGTTY;)&
-(sleep 2; echo -en "AT+CSQ\r"    >$PPP_DIAGTTY;)&
-(sleep 3; echo -en "at+COPS?\r"  >$PPP_DIAGTTY;)&
-(sleep 4; echo -en "at+COPS=?\r" >$PPP_DIAGTTY;)&
+eval "$(modcgi branding:pkg:cmd mod_cgi)"
+if [ ! -z "$MOD_CGI_CMD" ]; then
+	sec_begin '$(lang de:"Hinweis" en:"Remark")'
+        echo "<font size=-2 color=red><br>$(lang de:"Aktualisierung wurde angefordert. Dies kann bis zu einer Minute dauern." en:"Refresh initiated. This max take up to one minute.")<br></font>"
+        sec_end
+        (sleep 1; echo -en "AT+CPIN?\r"  >$PPP_DIAGTTY;)&
+        (sleep 2; echo -en "AT+CSQ\r"    >$PPP_DIAGTTY;)&
+        (sleep 3; echo -en "at+COPS?\r"  >$PPP_DIAGTTY;)&
+        (sleep 4; echo -en "at+COPS=?\r" >$PPP_DIAGTTY;)&
+fi
+
+sec_begin '$(lang de:"Status" en:"State")'
 
 local_ALL="<UL>"
 RECVALL=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^+COPS: (" |tail -n1 |sed 's/.*: (//; s/)$//;s/ /_/g;s/),*(/ /g'`
@@ -27,7 +34,7 @@ local_ALL="${local_ALL}</UL>"
 local_PIN=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^+CPIN: "      |tail -n1 |sed 's/^+CPIN: //'`
 local_NET=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^+COPS: [0-9]" |tail -n1 |sed 's/.*,"//;s/",/ (/;s/2$/3G)/;s/0$/2G)/'`
 local_SIG=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^+CSQ:"        |tail -n1 |sed 's/,.*//;s/.* //'`
-local_MOD=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^\^MODE:"      |tail -n1 |sed 's/.*MODE://; s/5,4/UMTS/;s/5,5/HSDPA/;s/0,0/NONE/;s/3,2/GPRS/'`
+local_MOD=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^\^MODE:"      |tail -n1 |sed 's/.*MODE://; s/5,4/UMTS/;s/5,5/HSDPA/;s/0,0/NONE/;s/3,3/EDGE/;s/3,2/GPRS/'`
 local_FLW=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^^DSFLOWRPT:"  |tail -n1 |sed 's/.*DSFLOWRPT://;'`
 
 let dH=0x0`echo $local_FLW|cut -d "," -f 1`/3600
@@ -40,7 +47,7 @@ let xH=0x0`echo $local_FLW|cut -d "," -f 4`/1048576
 let xL=0x0`echo $local_FLW|cut -d "," -f 4`-1048576*xH
 let xL=xL/1024
 [ $xL -le 99 ] && xL=0$xL
-[ $xL -le 9 ]  && xL=00$xL
+[ $xL -le 9 ]  && xL=0$xL
 [ $xL -le 0 ]  && xL=000
 TXsumMB=$xH,$xL
 
@@ -50,7 +57,7 @@ let xH=TXcurMB/1024
 let xL=TXcurMB-1024*xH
 let xL=xL*1000/1024
 [ $xL -le 99 ] && xL=0$xL
-[ $xL -le 9 ]  && xL=00$xL
+[ $xL -le 9 ]  && xL=0$xL
 [ $xL -le 0 ]  && xL=000
 TXcurMB=$xH,$xL
 
@@ -58,7 +65,7 @@ let xH=0x0`echo $local_FLW|cut -d "," -f 5`/1048576
 let xL=0x0`echo $local_FLW|cut -d "," -f 5`-1048576*xH
 let xL=xL/1024
 [ $xL -le 99 ] && xL=0$xL
-[ $xL -le 9 ]  && xL=00$xL
+[ $xL -le 9 ]  && xL=0$xL
 [ $xL -le 0 ]  && xL=000
 RXsumMB=$xH,$xL
 
@@ -68,7 +75,7 @@ let xH=RXcurMB/1024
 let xL=RXcurMB-1024*xH
 let xL=xL*1000/1024
 [ $xL -le 99 ] && xL=0$xL
-[ $xL -le 9 ]  && xL=00$xL
+[ $xL -le 9 ]  && xL=0$xL
 [ $xL -le 0 ]  && xL=000
 RXcurMB=$xH,$xL
 
@@ -99,17 +106,20 @@ cat << EOF
 </table>
 
 </td>
-EOF
 
-if [ "$local_ALL" != "<UL></UL> " ]; then
-cat << EOF
 <td>
-$(lang de:"Verf&uuml;gbare Netze" en:"Detected networks"):<br>$local_ALL
-</td>
+<form class="btn" action="/cgi-bin/pkgstatus.cgi?pkg=ppp&cgi=ppp/ppplog" method="post" style="display:inline;">
+<input type="hidden" name="cmd" value="refresh">
+<input type="submit" value="$(lang de:"aktualisieren" en:"refresh")">
+</form>
+<br><br>
 EOF
-fi
+
+[ "$local_ALL" != "<UL></UL> " ] && echo "$(lang de:"Verf&uuml;gbare Netze" en:"Detected networks"):<br>$local_ALL"
 
 cat << EOF
+</td>
+
 </tr>
 </tbody></table>
 EOF

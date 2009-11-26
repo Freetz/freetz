@@ -6,8 +6,11 @@
 
 [ -z "$PPP_LOGFILE" ] && PPP_LOGFILE='/dev/null'
 
+MODEM=`cat /tmp/flash/ppp/peers/dun |grep "^\/dev\/"`
+
 [ -e "$PPP_SCRIPT_DIAL" ] && . $PPP_SCRIPT_DIAL
 while [ 1 ]; do
+	[ -c "$MODEM" ] || continue
 	echo -e "\n##\n`date "+%Y-%m-%d %H:%M,%S"`" >> $PPP_LOGFILE
 	if [ "$$PPP_GMODE" != xXG ] && [ -n "$PPP_DIAGTTY" ]; then
 		[ $PPP_GMODE = "o3G" ] && echo -en "AT^SYSCFG=14,2,3FFFFFFF,2,4\r" > $PPP_DIAGTTY
