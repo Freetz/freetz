@@ -1,0 +1,142 @@
+--- usr/www/all/html/de/fon/wecker.js	Mon Jul 27 17:04:15 2009
++++ usr/www/all/html/de/fon/wecker.js	Sat Jan  1 01:22:46 2000
+@@ -18,8 +18,9 @@
+ function uiDoOnLoad() {
+ document.title = "FRITZ!Box Weckruf";
+ var nr = jslGetValue("uiPostWeckernr");
+-jslDisplay("uiView0", nr != "1");
++jslDisplay("uiView0", nr == "0");
+ jslDisplay("uiView1", nr == "1");
++jslDisplay("uiView2", nr == "2");
+ jslSetChecked("uiViewActive", jslGetValue("uiPostActive") == "1");
+ var zeit = jslGetValue("uiPostZeit");
+ if (zeit.length == 4) {
+--- usr/www/all/html/de/fon/wecker.html	Mon Jul 27 17:04:36 2009
++++ usr/www/all/html/de/fon/wecker.html	Sat Jan  1 01:12:13 2000
+@@ -3,14 +3,25 @@
+ Weckruf
+ </div></div></div></div></div></div>
+ <div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
++
+ <ul class="tabs" id="uiView0">
+ <li class="tabs_on"><div class="activtab">Weckruf 1</div></li>
+ <li><a href="javascript:DoTabs(1)">Weckruf 2</a></li>
++<li><a href="javascript:DoTabs(2)">Weckruf 3</a></li>
+ </ul>
++
+ <ul class="tabs" id="uiView1" style="display:none">
+ <li><a href="javascript:DoTabs(0)">Weckruf 1</a></li>
+ <li class="tabs_on"><div class="activtab">Weckruf 2</div></li>
++<li><a href="javascript:DoTabs(2)">Weckruf 3</a></li>
+ </ul>
++
++<ul class="tabs" id="uiView2" style="display:none">
++<li><a href="javascript:DoTabs(0)">Weckruf 1</a></li>
++<li><a href="javascript:DoTabs(1)">Weckruf 2</a></li>
++<li class="tabs_on"><div class="activtab">Weckruf 3</div></li>
++</ul>
++
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p class="mb10">Die an die FRITZ!Box angeschlossenen Telefone können für einen Weckruf genutzt werden.</p>
+ <p class="mb10">Hier stellen Sie ein, wann und von welchem Telefon Sie geweckt werden möchten.</p>
+--- usr/www/all/html/de/home/home.html	Mon Jul 27 17:04:36 2009
++++ usr/www/all/html/de/home/home.html	Sat Jan  1 01:26:05 2000
+@@ -99,16 +99,25 @@
+ <td class="tdLed">&nbsp;</td>
+ <td><script type="text/javascript">document.write(NachtDisplay());</script></td>
+ </tr>
++
+ <tr id="trWecker1" style="display: none">
+ <td class="tdName"><a href="javascript:jslGoToWecker(0)">Weckruf 1 </a></td>
+ <td class="tdLed">&nbsp;</td>
+ <td><script type="text/javascript">document.write(WeckerDisplay(1));</script></td>
+ </tr>
++
+ <tr id="trWecker2" style="display: none">
+ <td class="tdName"><a href="javascript:jslGoToWecker(1)">Weckruf 2 </a></td>
+ <td class="tdLed">&nbsp;</td>
+ <td><script type="text/javascript">document.write(WeckerDisplay(2));</script></td>
+ </tr>
++
++<tr id="trWecker3" style="display: none">
++<td class="tdName"><a href="javascript:jslGoToWecker(2)">Weckruf 3 </a></td>
++<td class="tdLed">&nbsp;</td>
++<td><script type="text/javascript">document.write(WeckerDisplay(3));</script></td>
++</tr>
++
+ <tr id="trEmail" style="display: none">
+ <td class="tdName"><a href="javascript:jslGoTo('system','email')">Push Service</a></td>
+ <td class="tdLed">&nbsp;</td>
+--- usr/www/all/html/de/home/home.js	Mon Jul 27 17:04:36 2009
++++ usr/www/all/html/de/home/home.js	Sat Jan  1 01:29:03 2000
+@@ -156,6 +156,7 @@
+ var NachtEnabled = "<? query box:settings/night_time_control_enabled ?>";
+ var Wecker1 = "<? query telcfg:settings/AlarmClock0/Active ?>";
+ var Wecker2 = "<? query telcfg:settings/AlarmClock1/Active ?>";
++var Wecker3 = "<? query telcfg:settings/AlarmClock2/Active ?>";
+ <? if eq $var:showPortfreigabe 1 `
+ var showPortfreigabeInfo = "0";
+ <? multiquery forwardrules:settings/rule/list(activated) `
+@@ -221,7 +221,7 @@
+ <? if eq $var:showPortfreigabe 1 `
+ || showPortfreigabeInfo == "1"
+ ` ?>
+-|| g_tamActive > 0 || g_intFaxActive == "1" || Wecker1 == "1" || Wecker2 == "1" || RufsperreAktiv == true || g_RufumleitungAktiv == true
++|| g_tamActive > 0 || g_intFaxActive == "1" || Wecker1 == "1" || Wecker2 == "1" || Wecker3 == "1" || RufsperreAktiv == true || g_RufumleitungAktiv == true
+ || showRemoteHttps == true
+ || showDynDns == true
+ || showOnlineCnt == "1") {
+@@ -230,6 +230,7 @@
+ }
+ jslDisplay("trWecker1",Wecker1 == "1");
+ jslDisplay("trWecker2",Wecker2 == "1");
++jslDisplay("trWecker3",Wecker3 == "1");
+ jslDisplay("trTam",g_tamActive > 0);
+ jslDisplay("trIntFax", g_intFaxActive == "1");
+ jslDisplay("trSperre",RufsperreAktiv == true);
+@@ -1019,6 +1019,7 @@
+ }
+ function WeckerDisplay(Wecker)
+ {
++
+ <? setvariable var:wnr '0' ?>
+ var Active = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Active ?>";
+ var Time = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Time ?>";
+@@ -1028,13 +1028,28 @@
+ {
+ return WeckerString(Active,Time,Num,Weekdays);
+ }
++
+ <? setvariable var:wnr '1' ?>
+ Active = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Active ?>";
+ Time = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Time ?>";
+ Num = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Number ?>";
+ Weekdays = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Weekdays ?>";
++if (Wecker == 2)
++{
+ return WeckerString(Active,Time,Num,Weekdays);
+ }
++
++<? setvariable var:wnr '2' ?>
++Active = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Active ?>";
++Time = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Time ?>";
++Num = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Number ?>";
++Weekdays = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Weekdays ?>";
++if (Wecker == 3)
++{
++return WeckerString(Active,Time,Num,Weekdays);
++}
++
++}
+ <? if eq $var:showPortfreigabe `1` `
+ function PortfwDisplay(){
+ var infotext="";
+@@ -1244,6 +1244,8 @@
+ jslSetValue("uiPostWeckernr",0);break;
+ case 1:
+ jslSetValue("uiPostWeckernr",1);break;
++case 2:
++jslSetValue("uiPostWeckernr",2);break;
+ }
+ jslGoTo('fon','wecker');
+ }
