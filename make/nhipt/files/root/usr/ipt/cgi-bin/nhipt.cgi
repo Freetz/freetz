@@ -58,8 +58,8 @@
 					Param["LOGDIR"] = ENVIRON["NHIPT_LOGD"]
 					Param["PORT"] = ENVIRON["NHIPT_PORT"]
 					Param["ROOT"] = ENVIRON["NHIPT_ROOT"]
-					Param["SERVERIP"] = ENVIRON["SERVERIP"]
-					Param["ADMIP"] = ENVIRON["ADMINIP"]
+					Param["SERVERIP"] = ENVIRON["NHIPT_SERVERIP"]
+					Param["ADMIP"] = ENVIRON["NHIPT_ADMINIP"]
 					Param["LOGTO"] = ENVIRON["NHIPT_LOGTARGET"]
 					Param["BOOT"] = ENVIRON["NHIPT_BOOT"]
 					Param["DELAY"] = ENVIRON["NHIPT_DELAY"]
@@ -67,7 +67,7 @@
 					Param["BOOTDIR"] = ENVIRON["NHIPT_BOOTDIR"]
 					Param["BOOTSTRAP"] = ENVIRON["NHIPT_BOOTSTRAP"]
 					Param["SESAV"] = "save"
-					Param["SETIP"] = "save"
+					Param["SETIP"] = "set"
 					myConf["PORT"] = Param["PORT"]	
 					if (ENVIRON["NHIPT_START_LOG"] == "start") {Param["STRTLOG"] = "start";}
 					noloadmodules=1;
@@ -827,10 +827,10 @@ function myTBHL (chain) {
 			if (ipv6 == 1) {myCmd = "ip6tables ";} else {myCmd = "iptables ";}
 			print "<TR><TD>" i "</TD><TD><B>/var/mod/root #</B></TD><TD COLSPAN=9><INPUT TYPE=TEXT NAME=EXPERT class=expert VALUE=\"" myCmd myRule "\"></TD><TD><INPUT TYPE=SUBMIT NAME=EXEC VALUE=execute></TD></TR></FORM>";
 		} else {
-			print "<TR><TD>" i "</TD><TD>" \
-			myArray["SourceIP"] "</TD><TD>" myArray["DestIP"] "</TD><TD>" myArray["InIF"] "</TD><TD>" \
-			myArray["OutIF"] "</TD><TD>" myArray["Prot"] "</TD><TD>" myArray["Module"] "</TD><TD>" \
-			myArray["Sport"] "</TD><TD>" myArray["Dport"] "</TD><TD>" myArray["Target"] "</TD><TD>" \
+			print "<TR><TD>&nbsp;" i "</TD><TD>&nbsp;" \
+			myArray["SourceIP"] "</TD><TD>&nbsp;" myArray["DestIP"] "</TD><TD>&nbsp;" myArray["InIF"] "</TD><TD>&nbsp;" \
+			myArray["OutIF"] "</TD><TD>&nbsp;" myArray["Prot"] "</TD><TD>&nbsp;" myArray["Module"] "</TD><TD>&nbsp;" \
+			myArray["Sport"] "</TD><TD>&nbsp;" myArray["Dport"] "</TD><TD>&nbsp;" myArray["Target"] "</TD><TD>&nbsp;" \
 			myArray["Rej"] myArray["Log"] myArray["State"] myArray["Extra"] myArray["Comment"] "</TD><TD nowrap><A HREF=" myURL "?MODE=UP&IPV6=" ipv6 "&TABLE=" table "&CHAIN=" myArray["Chain"] "&IDX=" i "&J=" JumpMark "#" table ipv6 myArray["Chain"] JumpMark ">[UP]</A> <A HREF=" myURL "?MODE=DN&IPV6=" ipv6 "&TABLE=" table "&CHAIN=" myArray["Chain"] "&IDX=" i "&J=" JumpMark "#" table ipv6 myArray["Chain"] JumpMark ">[DN]</A> <A HREF=" myURL "?MODE=DEL&IPV6=" ipv6 "&TABLE=" table "&CHAIN=" myArray["Chain"] "&IDX=" i "&J=" JumpMark "#" table ipv6 myArray["Chain"] JumpMark ">[Del]</A> <A HREF=" myURL "?MODE=EDT&IPV6=" ipv6 "&TABLE=" table "&CHAIN=" myArray["Chain"] "&IDX=" i "&J=" JumpMark "#" table ipv6 myArray["Chain"] JumpMark ">[Edit]</A></TD></TR>"
 		}
 		i++;
