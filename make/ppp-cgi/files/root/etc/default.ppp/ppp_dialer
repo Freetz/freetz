@@ -10,7 +10,10 @@ MODEM=`cat /tmp/flash/ppp/peers/dun |grep "^\/dev\/"`
 
 [ -e "$PPP_SCRIPT_DIAL" ] && . $PPP_SCRIPT_DIAL
 while [ 1 ]; do
-	[ -c "$MODEM" ] || continue
+	if [ ! -c "$MODEM" ]; then
+		sleep 9
+		continue
+	fi
 	echo -e "\n##\n`date "+%Y-%m-%d %H:%M,%S"`" >> $PPP_LOGFILE
 	if [ "$$PPP_GMODE" != xXG ] && [ -n "$PPP_DIAGTTY" ]; then
 		[ $PPP_GMODE = "o3G" ] && echo -en "AT^SYSCFG=14,2,3FFFFFFF,2,4\r" > $PPP_DIAGTTY
@@ -19,5 +22,6 @@ while [ 1 ]; do
 		[ $PPP_GMODE = "o2G" ] && echo -en "AT^SYSCFG=13,1,3FFFFFFF,2,4\r" > $PPP_DIAGTTY
 	fi
 	pppd call dun 2>&1 >> $PPP_LOGFILE
+	echo "#" > /etc/ppp/resolv.conf
 	sleep 3
 done

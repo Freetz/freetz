@@ -26,6 +26,7 @@ disconnect () {
 	fi
 	[ -z "$PPP_LOGFILE" ] || echo -e "TERMINATED\n`date "+%Y-%m-%d %H:%M,%S"`\n##\n" >> $PPP_LOGFILE
 	[ -e "$PPP_SCRIPT_HUP" ] && . $PPP_SCRIPT_HUP
+	echo "#" > /etc/ppp/resolv.conf
 	[ -n "$(pidof pppd)" ] && return 1
 	return 0
 }
