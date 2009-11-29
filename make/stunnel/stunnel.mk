@@ -8,7 +8,7 @@ $(PKG)_SOURCE_MD5:=5bf753a042047f40a938e82ec7ece569
 
 $(PKG)_DEPENDS_ON := openssl zlib
 
-$(PKG)_LIBS := -lutil -lssl -lcrypto -lz -ldl
+$(PKG)_LIBS := -lutil -lssl -lcrypto -lz -ldl -lpthread
 
 ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_STATIC)),y)
 $(PKG)_LDFLAGS := -all-static
