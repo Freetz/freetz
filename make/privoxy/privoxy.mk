@@ -1,11 +1,11 @@
-$(call PKG_INIT_BIN, 3.0.15)
-$(PKG)_SOURCE:=privoxy-$($(PKG)_VERSION)-beta-src.tar.gz
+$(call PKG_INIT_BIN, 3.0.12)
+$(PKG)_SOURCE:=privoxy-$($(PKG)_VERSION)-stable-src.tar.gz
 $(PKG)_SITE:=@SF/ijbswa
-$(PKG)_DIR:=$(SOURCE_DIR)/privoxy-$($(PKG)_VERSION)-beta
+$(PKG)_DIR:=$(SOURCE_DIR)/privoxy-$($(PKG)_VERSION)-stable
 $(PKG)_BINARY:=$($(PKG)_DIR)/privoxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/privoxy
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=6571dc9524e945e79c2af62fefe7b107
+$(PKG)_SOURCE_MD5:=c973e608d27b248ef567b47664308da1
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoheader;
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf;
@@ -44,7 +44,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 		d=$$(basename $$s); \
 		egrep -v "^#\ " $$s | egrep -v "^#*$$" >$(PRIVOXY_DEST_DIR)/etc/privoxy/templates/$$d; \
 	done
-	for s in $(PRIVOXY_DIR)/default.filter $(PRIVOXY_DIR)/default.action \
+	for s in $(PRIVOXY_DIR)/default.filter $(PRIVOXY_DIR)/default.action $(PRIVOXY_DIR)/standard.action \
 		$(PRIVOXY_DIR)/user.action $(PRIVOXY_DIR)/user.filter; do \
 		d=$$(basename $$s); \
 		egrep -v "^#" $$s | egrep -v "^$$" >$(PRIVOXY_DEST_DIR)/etc/privoxy/$$d; \

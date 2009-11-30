@@ -8,6 +8,7 @@ start() {
 	[ ! -d "/mod/etc/$DAEMON" ] && mkdir -p /mod/etc/$DAEMON
 	[ ! -r "/mod/etc/privoxy/default.filter" ] && ln -s /etc/privoxy/default.filter /mod/etc/privoxy/default.filter
 	[ ! -r "/mod/etc/privoxy/default.action" ] && ln -s /etc/privoxy/default.action /mod/etc/privoxy/default.action
+	[ ! -r "/mod/etc/privoxy/standard.action" ] && ln -s /etc/privoxy/standard.action /mod/etc/privoxy/standard.action
 	[ ! -d "/mod/etc/privoxy/templates" ] && ln -s /etc/privoxy/templates /mod/etc/privoxy/templates
 	(
 		if [ -x "/tmp/flash/privoxy/${DAEMON}_conf" ]; then
