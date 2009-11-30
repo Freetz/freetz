@@ -1,11 +1,11 @@
-$(call PKG_INIT_BIN, 0.99.14)
+$(call PKG_INIT_BIN, 0.99.15)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.quagga.net/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/zebra/.libs/zebra
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/zebra
 $(PKG)_TARGET_LIBDIR:=$($(PKG)_DEST_DIR)/usr/lib
 $(PKG)_STARTLEVEL=80
-$(PKG)_SOURCE_MD5:=3a075fd5e26ec6d52f4a51b14a2d3c2c
+$(PKG)_SOURCE_MD5:=8975414c76a295f4855a417af0b5ddce
 
 $(PKG)_DEPENDS_ON := ncurses readline
 

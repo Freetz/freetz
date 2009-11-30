@@ -1,6 +1,6 @@
---- bgpd/bgp_network.c
-+++ bgpd/bgp_network.c
-@@ -185,8 +185,7 @@ bgp_accept (struct thread *thread)
+--- bgpd/bgp_network.c.orig	2009-08-28 15:58:11.000000000 +0200
++++ bgpd/bgp_network.c	2009-11-30 14:10:03.000000000 +0100
+@@ -188,8 +188,7 @@
      peer->fd = bgp_sock;
      peer->status = Active;
      peer->local_id = peer1->local_id;
@@ -10,9 +10,9 @@
  
      /* Make peer's address string. */
      sockunion2str (&su, buf, SU_ADDRSTRLEN);
---- bgpd/bgpd.h
-+++ bgpd/bgpd.h
-@@ -709,6 +709,7 @@ struct bgp_nlri
+--- bgpd/bgpd.h.orig	2009-08-19 18:02:34.000000000 +0200
++++ bgpd/bgpd.h	2009-11-30 14:10:03.000000000 +0100
+@@ -709,6 +709,7 @@
  /* BGP timers default value.  */
  #define BGP_INIT_START_TIMER                     5
  #define BGP_ERROR_START_TIMER                   30
