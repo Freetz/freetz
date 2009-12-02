@@ -1,5 +1,5 @@
---- buffer.c	2009-10-01 20:02:18.000000000 +0200
-+++ buffer.c	2009-11-12 13:19:30.000000000 +0100
+--- buffer.c	2009-10-01 11:02:18.000000000 -0700
++++ buffer.c	2009-11-22 21:57:44.000000000 -0800
 @@ -215,6 +215,23 @@
    return ret;
  }
@@ -24,8 +24,8 @@
  /*
   * This is necessary due to certain buggy implementations of snprintf,
   * that don't guarantee null termination for size > 0.
---- buffer.h	2009-10-01 20:02:18.000000000 +0200
-+++ buffer.h	2009-11-12 13:19:30.000000000 +0100
+--- buffer.h	2009-10-01 11:02:18.000000000 -0700
++++ buffer.h	2009-11-22 21:57:44.000000000 -0800
 @@ -278,6 +278,11 @@
      ;
  
@@ -38,8 +38,8 @@
   * Like snprintf but guarantees null termination for size > 0
   */
  int openvpn_snprintf(char *str, size_t size, const char *format, ...)
---- config.h.in	2009-11-12 10:27:48.000000000 +0100
-+++ config.h.in	2009-11-12 13:19:37.000000000 +0100
+--- config.h.in	2009-11-20 05:18:53.000000000 -0800
++++ config.h.in	2009-11-22 21:57:52.000000000 -0800
 @@ -529,6 +529,9 @@
  /* Use LZO compression library */
  #undef USE_LZO
@@ -50,8 +50,8 @@
  /* Enable PKCS11 capability */
  #undef USE_PKCS11
  
---- configure	2009-11-12 10:27:48.000000000 +0100
-+++ configure	2009-11-12 13:19:37.000000000 +0100
+--- configure	2009-11-20 05:18:53.000000000 -0800
++++ configure	2009-11-22 21:57:52.000000000 -0800
 @@ -1323,6 +1323,7 @@
    --disable-http          Disable HTTP proxy support
    --disable-fragment      Disable internal fragmentation support (--fragment)
@@ -150,8 +150,8 @@
  
  if test "$MEMCHECK" = "valgrind"; then
     { echo "$as_me:$LINENO: checking for valgrind tool and Header files..." >&5
---- configure.ac	2009-10-01 20:02:18.000000000 +0200
-+++ configure.ac	2009-11-12 13:19:30.000000000 +0100
+--- configure.ac	2009-10-01 11:02:18.000000000 -0700
++++ configure.ac	2009-11-22 21:57:44.000000000 -0800
 @@ -135,6 +135,12 @@
     [MULTIHOME="yes"]
  )
@@ -182,8 +182,8 @@
  dnl
  dnl check for valgrind tool
  dnl
---- init.c	2009-10-01 20:02:18.000000000 +0200
-+++ init.c	2009-11-12 13:19:30.000000000 +0100
+--- init.c	2009-10-01 11:02:18.000000000 -0700
++++ init.c	2009-11-22 21:57:44.000000000 -0800
 @@ -94,7 +94,7 @@
     */
    if (options->pull
@@ -290,8 +290,8 @@
      do_event_set_init (dest, false);
  }
  
---- manage.c	2009-10-01 22:30:21.000000000 +0200
-+++ manage.c	2009-11-12 13:19:30.000000000 +0100
+--- manage.c	2009-10-01 13:30:21.000000000 -0700
++++ manage.c	2009-11-22 21:57:44.000000000 -0800
 @@ -1877,9 +1877,9 @@
  	  /*
  	   * Initialize socket address
@@ -323,8 +323,8 @@
        man_connection_init (man);
      }
  
---- mroute.c	2009-10-01 20:02:18.000000000 +0200
-+++ mroute.c	2009-11-12 13:19:30.000000000 +0100
+--- mroute.c	2009-10-01 11:02:18.000000000 -0700
++++ mroute.c	2009-11-22 21:57:44.000000000 -0800
 @@ -226,25 +226,47 @@
  				      const struct openvpn_sockaddr *osaddr,
  				      bool use_port)
@@ -415,8 +415,8 @@
  	  break;
  	default:
  	  buf_printf (&out, "UNKNOWN"); 
---- mtcp.c	2009-10-01 20:02:18.000000000 +0200
-+++ mtcp.c	2009-11-12 13:19:30.000000000 +0100
+--- mtcp.c	2009-10-01 11:02:18.000000000 -0700
++++ mtcp.c	2009-11-22 21:57:44.000000000 -0800
 @@ -153,6 +153,11 @@
    ASSERT (mi->context.c2.link_socket);
    ASSERT (mi->context.c2.link_socket->info.lsa);
@@ -429,8 +429,8 @@
    if (!mroute_extract_openvpn_sockaddr (&mi->real, &mi->context.c2.link_socket->info.lsa->actual.dest, true))
      {
        msg (D_MULTI_ERRORS, "MULTI TCP: TCP client address is undefined");
---- multi.c	2009-10-25 01:17:29.000000000 +0200
-+++ multi.c	2009-11-12 13:19:30.000000000 +0100
+--- multi.c	2009-10-24 16:17:29.000000000 -0700
++++ multi.c	2009-11-22 21:57:44.000000000 -0800
 @@ -1066,8 +1066,8 @@
    struct mroute_addr addr;
  
@@ -490,8 +490,8 @@
  }
  
  #else
---- occ.c	2009-10-01 20:02:18.000000000 +0200
-+++ occ.c	2009-11-12 13:19:30.000000000 +0100
+--- occ.c	2009-10-01 11:02:18.000000000 -0700
++++ occ.c	2009-11-22 21:57:44.000000000 -0800
 @@ -369,7 +369,7 @@
  	       c->c2.max_send_size_remote,
  	       c->c2.max_recv_size_local);
@@ -501,8 +501,8 @@
  	      && c->c2.max_send_size_local > TUN_MTU_MIN
  	      && (c->c2.max_recv_size_remote < c->c2.max_send_size_local
  		  || c->c2.max_recv_size_local < c->c2.max_send_size_remote))
---- options.c	2009-10-15 21:55:33.000000000 +0200
-+++ options.c	2009-11-12 13:19:30.000000000 +0100
+--- options.c	2009-11-20 05:09:14.000000000 -0800
++++ options.c	2009-11-22 21:57:44.000000000 -0800
 @@ -73,6 +73,12 @@
  #ifdef ENABLE_PKCS11
    " [PKCS11]"
@@ -690,8 +690,8 @@
      }
  #endif
  
---- ps.c	2009-10-01 20:02:18.000000000 +0200
-+++ ps.c	2009-11-12 13:19:30.000000000 +0100
+--- ps.c	2009-10-01 11:02:18.000000000 -0700
++++ ps.c	2009-11-22 21:57:44.000000000 -0800
 @@ -332,9 +332,9 @@
  	       const int port)
  {
@@ -705,12 +705,12 @@
  }
  
  static inline void
---- README.ipv6	1970-01-01 01:00:00.000000000 +0100
-+++ README.ipv6	2009-11-12 13:19:30.000000000 +0100
-@@ -0,0 +1,79 @@
-+[ Last updated: 11-Nov-2009. ]
+--- README.ipv6	1969-12-31 16:00:00.000000000 -0800
++++ README.ipv6	2009-11-22 21:57:44.000000000 -0800
+@@ -0,0 +1,81 @@
++[ Last updated: 16-Nov-2009. ]
 +
-+OpenVPN-2.1 over UDP6/TCP6 README for v0.4.x patch releases:
++OpenVPN-2.1 over UDP6/TCP6 README for ipv6-0.4.x patch releases:
 +( --udp6 and --tcp6-{client,server} )
 +
 +* Availability
@@ -723,6 +723,8 @@
 +    - https://bugs.gentoo.org/show_bug.cgi?id=287896
 +  o Ubuntu package, by Bernhard Schmidt:
 +    - https://launchpad.net/~berni/+archive/ipv6/+packages
++  o Freetz.org, milestone freetz-1.2
++    - http://trac.freetz.org/milestone/freetz-1.2
 +
 +* Status:
 +  o OK:
@@ -787,8 +789,8 @@
 +.   Modular algo (AES et all) support for FreeSWAN/OpenSWAN author .
 +.                                        OpenVPN over IPv6 support .
 +:......     plus other scattered free software bits in the wild ...:
---- route.c	2009-10-01 20:02:18.000000000 +0200
-+++ route.c	2009-11-12 13:19:30.000000000 +0100
+--- route.c	2009-10-01 11:02:18.000000000 -0700
++++ route.c	2009-11-22 21:57:44.000000000 -0800
 @@ -572,13 +572,23 @@
  	  if (!local)
  	    {
@@ -820,8 +822,8 @@
  	    }
  
  	  /* route DHCP/DNS server traffic through original default gateway */
---- socket.c	2009-10-01 20:02:18.000000000 +0200
-+++ socket.c	2009-11-12 13:19:30.000000000 +0100
+--- socket.c	2009-10-01 11:02:18.000000000 -0700
++++ socket.c	2009-11-22 21:57:44.000000000 -0800
 @@ -37,23 +37,28 @@
  #include "memdbg.h"
  
@@ -2182,8 +2184,8 @@
      }
    
    if (buf)
---- socket.h	2009-10-01 20:02:18.000000000 +0200
-+++ socket.h	2009-11-12 13:19:30.000000000 +0100
+--- socket.h	2009-10-01 11:02:18.000000000 -0700
++++ socket.h	2009-11-22 21:57:44.000000000 -0800
 @@ -70,7 +70,13 @@
  struct openvpn_sockaddr
  {
@@ -2560,8 +2562,8 @@
      {
        return link_socket_write_tcp (sock, buf, to);
      }
---- socks.c	2009-10-01 20:02:18.000000000 +0200
-+++ socks.c	2009-11-12 13:19:30.000000000 +0100
+--- socks.c	2009-10-01 11:02:18.000000000 -0700
++++ socks.c	2009-11-22 21:57:44.000000000 -0800
 @@ -174,9 +174,9 @@
  
    if (addr != NULL)
@@ -2608,8 +2610,8 @@
  
    return 10;
  }
---- syshead.h	2009-10-01 20:02:18.000000000 +0200
-+++ syshead.h	2009-11-12 13:19:30.000000000 +0100
+--- syshead.h	2009-10-01 11:02:18.000000000 -0700
++++ syshead.h	2009-11-22 21:57:44.000000000 -0800
 @@ -28,6 +28,10 @@
  /*
   * Only include if not during configure
@@ -2631,8 +2633,8 @@
  #endif
  
  #ifdef HAVE_SYS_MMAN_H
---- TODO.ipv6	1970-01-01 01:00:00.000000000 +0100
-+++ TODO.ipv6	2009-11-12 13:19:30.000000000 +0100
+--- TODO.ipv6	1969-12-31 16:00:00.000000000 -0800
++++ TODO.ipv6	2009-11-22 21:57:44.000000000 -0800
 @@ -0,0 +1,30 @@
 +[ Last updated: 11-Nov-2009. ]
 +
@@ -2664,8 +2666,8 @@
 +* N/A:
 +  o this is ipv6 *endpoint* support, so don't expect "ifconfig6"-like
 +    support in this patch 
---- tun.c	2009-10-01 20:02:18.000000000 +0200
-+++ tun.c	2009-11-12 13:19:30.000000000 +0100
+--- tun.c	2009-11-20 05:09:14.000000000 -0800
++++ tun.c	2009-11-22 21:57:44.000000000 -0800
 @@ -1605,7 +1605,9 @@
  	  strerror(errno));
        }
@@ -2676,8 +2678,8 @@
  
        if (ioctl (tt->fd, TUNSIFINFO, &info) < 0) {
  	msg (M_WARN | M_ERRNO, "Can't set interface info: %s",
---- win32.h	2009-10-01 20:02:18.000000000 +0200
-+++ win32.h	2009-11-12 13:19:30.000000000 +0100
+--- win32.h	2009-11-20 05:09:14.000000000 -0800
++++ win32.h	2009-11-22 21:57:44.000000000 -0800
 @@ -193,7 +193,10 @@
    DWORD flags;
    int status;

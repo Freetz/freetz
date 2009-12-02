@@ -1,22 +1,22 @@
-$(call PKG_INIT_BIN, 2.1_rc21)
-$(PKG)_SOURCE:=openvpn-$(OPENVPN_VERSION).tar.gz
+$(call PKG_INIT_BIN, 2.1_rc22)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://openvpn.net/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/openvpn
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
 $(PKG)_STARTLEVEL=50
-$(PKG)_SOURCE_MD5:=c9124abda3aa140172eefc7b31f1a100
+$(PKG)_SOURCE_MD5:=a4ca5d79f7467fc537b216bff1c744f2
 
 $(PKG)_DEPENDS_ON := openssl
 
-OPENVPN_LIBS := -lssl -lcrypto -ldl
+$(PKG)_LIBS := -lssl -lcrypto -ldl
 
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_LZO)),y)
 $(PKG)_DEPENDS_ON += lzo
-OPENVPN_LIBS += -llzo2
+$(PKG)_LIBS += -llzo2
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_STATIC)),y)
-OPENVPN_LDFLAGS := -static
+$(PKG)_LDFLAGS := -static
 endif
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_OPENVPN_WITH_LZO
