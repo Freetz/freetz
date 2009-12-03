@@ -31,6 +31,8 @@ endif
 
 $(PKG)_DEPENDS_ON:= libusb
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 # include selected backends
 include $($(PKG)_MAKE_DIR)/sane-backends.in
 
