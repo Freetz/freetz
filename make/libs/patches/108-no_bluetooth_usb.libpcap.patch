@@ -1,0 +1,244 @@
+--- configure.in.orig	2009-11-23 10:56:27.000000000 +0100
++++ configure.in	2009-11-23 10:58:43.000000000 +0100
+@@ -1015,46 +1015,6 @@
+ AC_SUBST(MAN_FILE_FORMATS)
+ AC_SUBST(MAN_MISC_INFO)
+ 
+-dnl check for USB sniffing support
+-AC_MSG_CHECKING(for USB sniffing support)
+-case "$host_os" in
+-linux*)
+-       AC_DEFINE(PCAP_SUPPORT_USB, 1, [target host supports USB sniffing])
+-       USB_SRC=pcap-usb-linux.c
+-       AC_MSG_RESULT(yes)
+-       ac_usb_dev_name=`udevinfo -q name -p /sys/class/usb_device/usbmon 2>/dev/null`
+-       if test $? -ne 0 ; then
+-               ac_usb_dev_name="usbmon"
+-       fi
+-       AC_DEFINE_UNQUOTED(LINUX_USB_MON_DEV, "/dev/$ac_usb_dev_name", [path for device for USB sniffing])
+-       AC_MSG_NOTICE(Device for USB sniffing is /dev/$ac_usb_dev_name)
+-       ;;
+-*)
+-       AC_MSG_RESULT(no)
+-       ;;
+-esac
+-AC_SUBST(PCAP_SUPPORT_USB)
+-AC_SUBST(USB_SRC)
+-
+-dnl check for bluetooth sniffing support
+-case "$host_os" in
+-linux*)
+-       AC_CHECK_HEADER(bluetooth/bluetooth.h,
+-       	[
+-	  AC_DEFINE(PCAP_SUPPORT_BT, 1, [target host supports Bluetooth sniffing])
+-          BT_SRC=pcap-bt-linux.c
+-          AC_MSG_NOTICE(Bluetooth sniffing is supported)
+-	],
+-	AC_MSG_NOTICE(Bluetooth sniffing is not supported; install bluez-lib devel to enable it)
+-       )
+-       ;;
+-*)
+-       AC_MSG_NOTICE(no Bluetooth sniffing support)
+-       ;;
+-esac
+-AC_SUBST(PCAP_SUPPORT_BT)
+-AC_SUBST(BT_SRC)
+-
+ AC_PROG_INSTALL
+ 
+ AC_CONFIG_HEADER(config.h)
+--- configure.orig	2009-11-23 10:56:18.000000000 +0100
++++ configure	2009-11-23 10:57:59.000000000 +0100
+@@ -9188,192 +9188,6 @@
+ 
+ 
+ 
+-{ echo "$as_me:$LINENO: checking for USB sniffing support" >&5
+-echo $ECHO_N "checking for USB sniffing support... $ECHO_C" >&6; }
+-case "$host_os" in
+-linux*)
+-
+-cat >>confdefs.h <<\_ACEOF
+-#define PCAP_SUPPORT_USB 1
+-_ACEOF
+-
+-       USB_SRC=pcap-usb-linux.c
+-       { echo "$as_me:$LINENO: result: yes" >&5
+-echo "${ECHO_T}yes" >&6; }
+-       ac_usb_dev_name=`udevinfo -q name -p /sys/class/usb_device/usbmon 2>/dev/null`
+-       if test $? -ne 0 ; then
+-               ac_usb_dev_name="usbmon"
+-       fi
+-
+-cat >>confdefs.h <<_ACEOF
+-#define LINUX_USB_MON_DEV "/dev/$ac_usb_dev_name"
+-_ACEOF
+-
+-       { echo "$as_me:$LINENO: Device for USB sniffing is /dev/$ac_usb_dev_name" >&5
+-echo "$as_me: Device for USB sniffing is /dev/$ac_usb_dev_name" >&6;}
+-       ;;
+-*)
+-       { echo "$as_me:$LINENO: result: no" >&5
+-echo "${ECHO_T}no" >&6; }
+-       ;;
+-esac
+-
+-
+-
+-case "$host_os" in
+-linux*)
+-       if test "${ac_cv_header_bluetooth_bluetooth_h+set}" = set; then
+-  { echo "$as_me:$LINENO: checking for bluetooth/bluetooth.h" >&5
+-echo $ECHO_N "checking for bluetooth/bluetooth.h... $ECHO_C" >&6; }
+-if test "${ac_cv_header_bluetooth_bluetooth_h+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-fi
+-{ echo "$as_me:$LINENO: result: $ac_cv_header_bluetooth_bluetooth_h" >&5
+-echo "${ECHO_T}$ac_cv_header_bluetooth_bluetooth_h" >&6; }
+-else
+-  # Is the header compilable?
+-{ echo "$as_me:$LINENO: checking bluetooth/bluetooth.h usability" >&5
+-echo $ECHO_N "checking bluetooth/bluetooth.h usability... $ECHO_C" >&6; }
+-cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
+-_ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
+-/* end confdefs.h.  */
+-$ac_includes_default
+-#include <bluetooth/bluetooth.h>
+-_ACEOF
+-rm -f conftest.$ac_objext
+-if { (ac_try="$ac_compile"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_compile") 2>conftest.er1
+-  ac_status=$?
+-  grep -v '^ *+' conftest.er1 >conftest.err
+-  rm -f conftest.er1
+-  cat conftest.err >&5
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } && {
+-	 test -z "$ac_c_werror_flag" ||
+-	 test ! -s conftest.err
+-       } && test -s conftest.$ac_objext; then
+-  ac_header_compiler=yes
+-else
+-  echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-	ac_header_compiler=no
+-fi
+-
+-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+-{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+-echo "${ECHO_T}$ac_header_compiler" >&6; }
+-
+-# Is the header present?
+-{ echo "$as_me:$LINENO: checking bluetooth/bluetooth.h presence" >&5
+-echo $ECHO_N "checking bluetooth/bluetooth.h presence... $ECHO_C" >&6; }
+-cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
+-_ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
+-/* end confdefs.h.  */
+-#include <bluetooth/bluetooth.h>
+-_ACEOF
+-if { (ac_try="$ac_cpp conftest.$ac_ext"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+-  ac_status=$?
+-  grep -v '^ *+' conftest.er1 >conftest.err
+-  rm -f conftest.er1
+-  cat conftest.err >&5
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } >/dev/null && {
+-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+-	 test ! -s conftest.err
+-       }; then
+-  ac_header_preproc=yes
+-else
+-  echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-  ac_header_preproc=no
+-fi
+-
+-rm -f conftest.err conftest.$ac_ext
+-{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+-echo "${ECHO_T}$ac_header_preproc" >&6; }
+-
+-# So?  What about this header?
+-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+-  yes:no: )
+-    { echo "$as_me:$LINENO: WARNING: bluetooth/bluetooth.h: accepted by the compiler, rejected by the preprocessor!" >&5
+-echo "$as_me: WARNING: bluetooth/bluetooth.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: bluetooth/bluetooth.h: proceeding with the compiler's result" >&5
+-echo "$as_me: WARNING: bluetooth/bluetooth.h: proceeding with the compiler's result" >&2;}
+-    ac_header_preproc=yes
+-    ;;
+-  no:yes:* )
+-    { echo "$as_me:$LINENO: WARNING: bluetooth/bluetooth.h: present but cannot be compiled" >&5
+-echo "$as_me: WARNING: bluetooth/bluetooth.h: present but cannot be compiled" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: bluetooth/bluetooth.h:     check for missing prerequisite headers?" >&5
+-echo "$as_me: WARNING: bluetooth/bluetooth.h:     check for missing prerequisite headers?" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: bluetooth/bluetooth.h: see the Autoconf documentation" >&5
+-echo "$as_me: WARNING: bluetooth/bluetooth.h: see the Autoconf documentation" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: bluetooth/bluetooth.h:     section \"Present But Cannot Be Compiled\"" >&5
+-echo "$as_me: WARNING: bluetooth/bluetooth.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: bluetooth/bluetooth.h: proceeding with the preprocessor's result" >&5
+-echo "$as_me: WARNING: bluetooth/bluetooth.h: proceeding with the preprocessor's result" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: bluetooth/bluetooth.h: in the future, the compiler will take precedence" >&5
+-echo "$as_me: WARNING: bluetooth/bluetooth.h: in the future, the compiler will take precedence" >&2;}
+-
+-    ;;
+-esac
+-{ echo "$as_me:$LINENO: checking for bluetooth/bluetooth.h" >&5
+-echo $ECHO_N "checking for bluetooth/bluetooth.h... $ECHO_C" >&6; }
+-if test "${ac_cv_header_bluetooth_bluetooth_h+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  ac_cv_header_bluetooth_bluetooth_h=$ac_header_preproc
+-fi
+-{ echo "$as_me:$LINENO: result: $ac_cv_header_bluetooth_bluetooth_h" >&5
+-echo "${ECHO_T}$ac_cv_header_bluetooth_bluetooth_h" >&6; }
+-
+-fi
+-if test $ac_cv_header_bluetooth_bluetooth_h = yes; then
+-
+-
+-cat >>confdefs.h <<\_ACEOF
+-#define PCAP_SUPPORT_BT 1
+-_ACEOF
+-
+-          BT_SRC=pcap-bt-linux.c
+-          { echo "$as_me:$LINENO: Bluetooth sniffing is supported" >&5
+-echo "$as_me: Bluetooth sniffing is supported" >&6;}
+-
+-else
+-  { echo "$as_me:$LINENO: Bluetooth sniffing is not supported; install bluez-lib devel to enable it" >&5
+-echo "$as_me: Bluetooth sniffing is not supported; install bluez-lib devel to enable it" >&6;}
+-
+-fi
+-
+-
+-       ;;
+-*)
+-       { echo "$as_me:$LINENO: no Bluetooth sniffing support" >&5
+-echo "$as_me: no Bluetooth sniffing support" >&6;}
+-       ;;
+-esac
+-
+-
+-
+ # Find a good install program.  We prefer a C program (faster),
+ # so one script is as good as another.  But avoid the broken or
+ # incompatible versions:

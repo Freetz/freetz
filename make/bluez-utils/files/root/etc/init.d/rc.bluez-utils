@@ -7,21 +7,21 @@ DAEMON=bluez-utils
 start() {
 	echo -n "Starting bluetooth ..."
 
-        # create PIN-File
-        echo $BLUEZ_UTILS_PIN >/tmp/bluetooth/pin
+	# create PIN-File
+	echo $BLUEZ_UTILS_PIN >/tmp/bluetooth/pin
 
-        # create PIN-Helper
-        echo -e '#!/bin/sh'"\nPIN:$BLUEZ_UTILS_PIN" >/tmp/bluetooth/bluepin
-        chmod 755 /tmp/bluetooth/bluepin
+	# create PIN-Helper
+	echo -e '#!/bin/sh'"\nPIN:$BLUEZ_UTILS_PIN" >/tmp/bluetooth/bluepin
+	chmod 755 /tmp/bluetooth/bluepin
 
-        # create Linkkeys for prepaired devices
-        if [ "$BLUEZ_UTILS_USE_LINKKEYS" = "yes" ]; then
-                [ ! -d "/var/lib/bluetooth/$BLUEZ_UTILS_MAC" ] && mkdir -p /var/lib/bluetooth/$BLUEZ_UTILS_MAC
-                ln -sf /tmp/flash/bluez/linkkeys /var/lib/bluetooth/$BLUEZ_UTILS_MAC/linkkeys
-        fi
+	# create Linkkeys for prepaired devices
+	if [ "$BLUEZ_UTILS_USE_LINKKEYS" = "yes" ]; then
+		[ ! -d "/var/lib/bluetooth/$BLUEZ_UTILS_MAC" ] && mkdir -p /var/lib/bluetooth/$BLUEZ_UTILS_MAC
+		ln -sf /tmp/flash/bluez/linkkeys /var/lib/bluetooth/$BLUEZ_UTILS_MAC/linkkeys
+	fi
 
-        # /wtc/hotplug/net.pandu Rechte setzen
-        [ -e /tmp/flash/bluez/netpandu ] && chmod 755 /tmp/flash/bluez/netpandu
+	# /wtc/hotplug/net.pandu set rights
+	[ -e /tmp/flash/bluez/netpandu ] && chmod 755 /tmp/flash/bluez/netpandu
 
 	# Insert bfusb (bluefritz driver), hci_usb and rfcomm module
 	modprobe -q bfusb >/dev/null 2>&1

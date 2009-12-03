@@ -1,0 +1,22 @@
+--- pcap-config.in.orig	2009-11-23 10:32:12.000000000 +0100
++++ pcap-config.in	2009-11-23 10:34:13.000000000 +0100
+@@ -4,13 +4,17 @@
+ # Script to give the appropriate compiler flags and linker flags
+ # to use when building code that uses libpcap.
+ #
++
++libdir=@libdir@
++includedir=@includedir@
++
+ case "$1" in
+ 
+ --cflags)
+-	echo "-I @includedir@"
++	echo "-I $includedir"
+ 	;;
+ 
+ --libs)
+-	echo "-L @libdir@ -lpcap @DEPLIBS@"
++	echo "-L $libdir -lpcap @DEPLIBS@"
+ 	;;
+ esac

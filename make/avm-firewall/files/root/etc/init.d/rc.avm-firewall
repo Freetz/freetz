@@ -133,10 +133,12 @@ case "$1" in
                 ;;
         ""|load)
                 modreg cgi $DAEMON AVM-Firewall
+		modreg daemon --disable avm-firewall
                 ;;
         unload)
                 stop
                 modunreg cgi $DAEMON
+		modunreg daemon avm-firewall
                 ;;
         *)
                 echo "Usage: $0 [start|stop|restart|status]" 1>&2

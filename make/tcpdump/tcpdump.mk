@@ -1,21 +1,15 @@
-$(call PKG_INIT_BIN, 3.9.8)
+$(call PKG_INIT_BIN, 4.0.0)
 $(PKG)_SOURCE:=tcpdump-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.tcpdump.org/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpdump
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tcpdump
-$(PKG)_SOURCE_MD5:=c491a78c52fe73f1f7271aa5d8c6ab2e
+$(PKG)_SOURCE_MD5:=b22ca72890df2301d922c9f2d17867f9
 
 $(PKG)_DEPENDS_ON := libpcap
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
-
-$(PKG)_CONFIGURE_ENV += BUILD_CC="$(TARGET_CC)"
-$(PKG)_CONFIGURE_ENV += HOSTCC="$(HOSTCC)"
 $(PKG)_CONFIGURE_ENV += td_cv_buggygetaddrinfo="no"
 
-ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
-$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
-endif
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --without-crypto
 
 $(PKG_SOURCE_DOWNLOAD)

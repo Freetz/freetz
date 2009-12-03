@@ -27,8 +27,8 @@ sec_begin 'Start type'
 
 cat << EOF
 <p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> "Automatic"</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> "Manual"</label>
+<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> Automatic</label>
+<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> Manual</label>
 </p>
 EOF
 

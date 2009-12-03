@@ -7,6 +7,8 @@ $(PKG)_SOURCE_MD5:=ae3729ab5592be06ed01b973d4b3e9fe
 
 $(PKG)_DEPENDS_ON := bluez-libs
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG)_CONFIGURE_OPTIONS +=--disable-dbus
 $(PKG)_CONFIGURE_OPTIONS +=--disable-fuse
 $(PKG)_CONFIGURE_OPTIONS +=--disable-obex

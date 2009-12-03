@@ -4,9 +4,17 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 auto_chk=''; man_chk=''; fallback_chk='';
+xXG_chk=''; o3G_chk=''; p3G_chk=''; p2G_chk=''; o2G_chk='';
 
+[ "$PPP_GMODE" = "o3G" ] && o3G_chk=' checked'
+[ "$PPP_GMODE" = "p3G" ] && p3G_chk=' checked'
+[ "$PPP_GMODE" = "p2G" ] && p2G_chk=' checked'
+[ "$PPP_GMODE" = "o2G" ] && o2G_chk=' checked'
+[ "$PPP_GMODE" = "xXG" ] && xXG_chk=' checked'
 if [ "$PPP_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$PPP_FALLBACK" = "yes" ]; then fallback_chk=' checked'; fi
+[ "$PPP_FALLBACK" = "yes" ] && fallback_chk=' checked'
+
+eval "$(modcgi branding:pkg:cmd mod_cgi)"
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
@@ -35,15 +43,57 @@ $(lang de:"Allgemeine Logdatei" en:"Global logfile"):&nbsp;<input type="text" na
 &nbsp;<a href="/cgi-bin/pkgstatus.cgi?pkg=ppp&cgi=ppp/ppplog">$(lang de:"(anzeigen)" en:"(show)")</a>
 </p>
 <p>
-$(lang de:"Dieses Skript vor Verbindungsaufbau ausf&uuml;hren" en:"Execute this script before dialin"):&nbsp;
+$(lang de:"Dieses Skript vor Verbindungsaufbau ausf&uuml;hren" en:"Execute this script before dialin"):&nbsp;&nbsp;
 <input type="text" name="checktimeout" size="45" maxlength="255" value="$(html "$PPP_SCRIPT_DIAL")">
 </p>
 <p>
 $(lang de:"Dieses Skript nach Verbindungsabbau ausf&uuml;hren" en:"Execute this script after hangup"):&nbsp;
 <input type="text" name="checktimeout" size="45" maxlength="255" value="$(html "$PPP_SCRIPT_HUP")">
 </p>
+<p>
+$(lang de:"Befehls-TTY (zB /dev/ttyUSB1)" en:"Command-TTY (eg /dev/ttyUSB1)"):&nbsp;<input type="text" name="diagtty" size="45" maxlength="255" value="$(html "$PPP_DIAGTTY")">
+</p>
 EOF
 sec_end
+
+if [ -n "$PPP_DIAGTTY" ]; then
+sec_begin '$(lang de:"Modus" en:"Mode")'
+if [ -n "$MOD_CGI_CMD" ] && [ -n "$PPP_DIAGTTY" ]; then
+	outMOD=$MOD_CGI_CMD
+	if [ "$MOD_CGI_CMD" = "o3G" ]; then
+		outMOD="3G (ausschliesslich)"
+		sysMOD="14,2"
+	fi
+	if [ "$MOD_CGI_CMD" = "p3G" ]; then
+		outMOD="3G (bevorzugt)"
+		sysMOD="2,2"
+	fi
+	if [ "$MOD_CGI_CMD" = "p2G" ]; then
+		outMOD="2G (bevorzugt)"
+		sysMOD="2,1"
+	fi
+	if [ "$MOD_CGI_CMD" = "o2G" ]; then
+		outMOD="2G (ausschliesslich)"
+		sysMOD=13,1
+	fi
+	[ -n "$sysMOD"] && echo -en "AT^SYSCFG=$sysMOD,3FFFFFFF,2,4\r" > $PPP_DIAGTTY &
+	echo "<font color=red size=-1>Modus $outMOD gesetzt.</font>"
+fi
+cat << EOF
+<p>
+<input id="m2" type="radio" name="gmode" value="p3G"$p3G_chk><label for="m2"><a href="/cgi-bin/pkgconf.cgi?pkg=ppp&cmd=p3G">3G $(lang de:"bevorzugt" en:"preferred")</a></label>
+&nbsp;
+<input id="m1" type="radio" name="gmode" value="o3G"$o3G_chk><label for="m1"><a href="/cgi-bin/pkgconf.cgi?pkg=ppp&cmd=o3G">3G $(lang de:"ausschliesslich" en:"only")</a></label>
+&nbsp;
+<input id="m3" type="radio" name="gmode" value="p2G"$p2G_chk><label for="m3"><a href="/cgi-bin/pkgconf.cgi?pkg=ppp&cmd=p2G">2G $(lang de:"bevorzugt" en:"preferred")</a></label>
+&nbsp;
+<input id="m4" type="radio" name="gmode" value="o2G"$o2G_chk><label for="m4"><a href="/cgi-bin/pkgconf.cgi?pkg=ppp&cmd=o2G">2G $(lang de:"ausschliesslich" en:"only")</a></label>
+&nbsp;
+<input id="m0" type="radio" name="gmode" value="xXG"$xXG_chk><label for="m0">$(lang de:"nicht gesetzt" en:"not selected")</label>
+</p>
+EOF
+sec_end
+fi
 
 sec_begin '$(lang de:"Fallback" en:"Fallback")'
 cat << EOF
@@ -76,4 +126,3 @@ $(lang de:"Host zum pr&uuml;fen auf Wiederherstellung (nicht erreichbar w&auml;h
 </p>
 EOF
 sec_end
-

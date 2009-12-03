@@ -1,21 +1,26 @@
-$(call PKG_INIT_BIN, 2.50)
+$(call PKG_INIT_BIN, 2.51)
 $(PKG)_SOURCE:=dnsmasq-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
 $(PKG)_DIR:=$(SOURCE_DIR)/dnsmasq-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$(DNSMASQ_DIR)/src/dnsmasq
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/dnsmasq
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=f7b1e17c590e493039537434c57c9de7
+$(PKG)_SOURCE_MD5:=97465261a6de5258a3c3edfe51ca16a4
+
+ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y) 
+$(PKG)_COPTS := -DNO_IPV6
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) CC="$(TARGET_CC)" \
+	$(SUBMAKE) -C $(DNSMASQ_DIR) \
+		CC="$(TARGET_CC)" \
+		COPTS="$(DNSMASQ_COPTS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="" \
-		-C $(DNSMASQ_DIR)
+		LDFLAGS=""
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

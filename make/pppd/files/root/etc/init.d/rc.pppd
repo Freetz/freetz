@@ -20,6 +20,7 @@ case "$1" in
 		deffile='/mod/etc/default.pppd/chap_secrets.def'
 		[ -r "/tmp/flash/chap_secrets.def" ] && deffile='/tmp/flash/chap_secrets.def'
 		modreg file 'chap_secrets' 'PPPD: chap-secrets' 0 "$deffile"
+		modreg daemon --hide pppd
 
 		#deffile='/mod/etc/default.pppd/pap_secrets.def'
 		#[ -r "/tmp/flash/pap_secrets.def" ] && deffile='/tmp/flash/pap_secrets.def'
@@ -31,6 +32,7 @@ case "$1" in
 		;;
 	unload)
 		modunreg file 'chap_secrets'
+		modunreg daemon pppd
 		#modunreg file 'pap_secrets'
 		#modunreg file 'pppd_options'
 		;;

@@ -142,8 +142,8 @@ sec_begin '$(lang de:"Sicherheit" en:"Security")'
 cat << EOF
 <p>$(lang de:"Authentifizierungsmethode" en:"Authentification Type"): <input id="id_act_static" type="radio" name="my_auth_type" onclick='(local_auth_type[act_conf]="static"); changeval()'; ><label for="id_static"> $(lang de:"statischer Schl&uuml;ssel" en:"static key")</label>
 &nbsp;<input id="id_act_certs" type="radio" name="my_auth_type" onclick='(local_auth_type[act_conf]="certs"); changeval()';><label for="id_certs"> $(lang de:"Zertifikate" en:"Certificates")</label></p>
-Cipher: <select id="id_act_cipher" name="my_cipher" onchange="changeval()"><option value="BF-CBC">Blowfish</option><option value="AES-128-CBC">AES 128</option>
-<option value="AES-256-CBC">AES 256</option><option value="DES-EDE3-CBC">Triple-DES</option></select>
+Cipher: <select id="id_act_cipher" name="my_cipher" onchange='if (this.value=="none") (alert($(lang de:"\"Achtung, Verkehr durch das VPN ist so vollkommen unverschl&uuml;sselt!\"" en:"\"Caution: All traffic will be totally unencrypted!\""))); changeval()'><option value="BF-CBC">Blowfish</option><option value="AES-128-CBC">AES 128</option>
+<option value="AES-256-CBC">AES 256</option><option value="DES-EDE3-CBC">Triple-DES</option><option value="none">$(lang de:"unverschl&uuml;sselt" en:"unencrypted")</option></select>
 <div id="div_tls"  style="display:inline">   &nbsp; &nbsp; &nbsp; &nbsp; $(lang de:"bei Zertifikaten" en:"with certificates"): 
 <input id="id_act_tls_auth" type="checkbox" name="my_tls_auth" onclick='if (this.checked) (local_tls_auth[act_conf]="yes"); else (local_tls_auth[act_conf]=""); changeval()'>
 <label for="id_act_tls_auth">TLS-$(lang de:"Authentifizierung" en:"Authentication") </label>
@@ -406,12 +406,9 @@ else {
 };
 if ( local_expert == "yes" ) { document.getElementById("id_is_expert").checked=true }else { document.getElementById("id_is_expert").checked=false };
 
-switch (local_cipher[act_conf]) {
-	case "BF-CBC":  document.getElementById("id_act_cipher").selectedIndex = 0; break;
-	case "AES-128-CBC": document.getElementById("id_act_cipher").selectedIndex = 1; break;
-	case "AES-256-CBC": document.getElementById("id_act_cipher").selectedIndex = 2; break;
-	case "DES-EDE3-CBC": document.getElementById("id_act_cipher").selectedIndex = 3; break;
-	}
+document.getElementById("id_act_cipher").value = local_cipher[act_conf];
+if (document.getElementById("id_act_cipher").value != local_cipher[act_conf])
+  alert ('Unsupported value in cipher');
 
 document.getElementById("id_act_verbose").value=local_verbose[act_conf]  ;
 //document.getElementById("id_act_debug_time").value=local_debug_time[act_conf];

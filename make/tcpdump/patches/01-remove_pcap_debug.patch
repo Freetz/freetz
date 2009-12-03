@@ -1,6 +1,6 @@
---- tcpdump.c.orig	2006-02-01 15:39:56.000000000 +0100
-+++ tcpdump.c	2007-07-29 04:30:14.000000000 +0200
-@@ -765,20 +765,6 @@
+--- tcpdump.c
++++ tcpdump.c
+@@ -826,20 +826,6 @@ main(int argc, char **argv)
  				error("invalid data link type %s", gndo->ndo_dltname);
  			break;
  
@@ -18,6 +18,6 @@
 -			}
 -			break;
 -#endif
- 		case 'Z':
+ 		case 'z':
  			if (optarg) {
- 				username = strdup(optarg);
+ 				zflag = strdup(optarg);

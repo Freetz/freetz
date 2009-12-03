@@ -4,6 +4,7 @@
 #        modunreg extra <pkg> [<cgi-name>]
 #        modunreg file <id>
 #        modunreg status <pkg> [<cgi-name>]
+#	 modunreg daemon <pkg> [<name>]
 
 char=$(echo -ne '\01')
 
@@ -31,11 +32,15 @@ case "$1" in
 		delete "^$2|.*|${3:-.*}\$" /mod/etc/reg/status.reg
 		rm -f /mod/var/cache/menu_status
 		;;
+	daemon)
+		delete "^$2|${3:-.*}|.*|.*|.*\$" /mod/etc/reg/daemon.reg
+		;;
 	*)
 		echo "Usage: $0 cgi <pkg>" 1>&2
 		echo "       $0 extra <pkg> [<cgi-name>]" 1>&2
 		echo "       $0 file <id>" 1>&2
 		echo "       $0 status <pkg> [<cgi-name>]" 1>&2
+		echo "       $0 daemon <pkg> [<name>]" 1>&2
 		exit 1
 		;;
 esac

@@ -8,7 +8,7 @@
 
 willkommen() {
 	[ "$PPP_FALLBACK" != 'yes' ] || echo -e "\n`date`: DIALIN" >> $PPP_FABALOG
-	start-stop-daemon -n ppp -a /etc/default.ppp/ppp_dialer -b -q -S
+	start-stop-daemon -n ppp_dialer -a /etc/default.ppp/ppp_dialer -b -q -S
 }
 
 bisbald () {
@@ -92,4 +92,3 @@ else
 		fi
 	done
 fi
-

@@ -1,5 +1,5 @@
---- pppd/ipcp.c.orig	2009-11-06 15:01:46.000000000 +0100
-+++ pppd/ipcp.c	2009-11-06 15:01:47.000000000 +0100
+--- pppd/ipcp.c.orig	2009-11-22 19:52:23.000000000 +0100
++++ pppd/ipcp.c	2009-11-22 19:52:24.000000000 +0100
 @@ -198,6 +198,14 @@
        "disable defaultroute option", OPT_ALIAS | OPT_A2CLR,
        &ipcp_wantoptions[0].default_route },
@@ -24,7 +24,7 @@
  static void ipcp_script __P((char *, int));	/* Run an up/down script */
  static void ipcp_script_done __P((void *));
  
-@@ -1686,7 +1694,8 @@
+@@ -1742,7 +1750,8 @@
      if (!sifnpmode(u, PPP_IP, NPMODE_QUEUE))
  	return 0;
      if (wo->default_route)
@@ -34,7 +34,7 @@
  	    default_route_set[u] = 1;
      if (wo->proxy_arp)
  	if (sifproxyarp(u, wo->hisaddr))
-@@ -1774,7 +1783,8 @@
+@@ -1830,7 +1839,8 @@
       */
      if (demand) {
  	if (go->ouraddr != wo->ouraddr || ho->hisaddr != wo->hisaddr) {
@@ -44,7 +44,7 @@
  	    if (go->ouraddr != wo->ouraddr) {
  		warn("Local IP address changed to %I", go->ouraddr);
  		script_setenv("OLDIPLOCAL", ip_ntoa(wo->ouraddr), 0);
-@@ -1799,7 +1809,8 @@
+@@ -1855,7 +1865,8 @@
  
  	    /* assign a default route through the interface if required */
  	    if (ipcp_wantoptions[f->unit].default_route) 
@@ -54,7 +54,7 @@
  		    default_route_set[f->unit] = 1;
  
  	    /* Make a proxy ARP entry if requested. */
-@@ -1849,7 +1860,8 @@
+@@ -1905,7 +1916,8 @@
  
  	/* assign a default route through the interface if required */
  	if (ipcp_wantoptions[f->unit].default_route) 
@@ -64,7 +64,7 @@
  		default_route_set[f->unit] = 1;
  
  	/* Make a proxy ARP entry if requested. */
-@@ -1927,7 +1939,7 @@
+@@ -1983,7 +1995,7 @@
  	sifnpmode(f->unit, PPP_IP, NPMODE_DROP);
  	sifdown(f->unit);
  	ipcp_clear_addrs(f->unit, ipcp_gotoptions[f->unit].ouraddr,
@@ -73,7 +73,7 @@
      }
  
      /* Execute the ip-down script */
-@@ -1943,16 +1955,25 @@
+@@ -1999,16 +2011,25 @@
   * proxy arp entries, etc.
   */
  static void
@@ -101,8 +101,8 @@
  	cifdefaultroute(unit, ouraddr, hisaddr);
  	default_route_set[unit] = 0;
      }
---- pppd/ipcp.h.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/ipcp.h	2009-11-06 15:01:47.000000000 +0100
+--- pppd/ipcp.h.orig	2009-11-16 23:26:07.000000000 +0100
++++ pppd/ipcp.h	2009-11-22 19:52:24.000000000 +0100
 @@ -70,6 +70,7 @@
      bool old_addrs;		/* Use old (IP-Addresses) option? */
      bool req_addr;		/* Ask peer to send IP address? */
@@ -111,8 +111,8 @@
      bool proxy_arp;		/* Make proxy ARP entry for peer? */
      bool neg_vj;		/* Van Jacobson Compression? */
      bool old_vj;		/* use old (short) form of VJ option? */
---- pppd/pppd.8.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/pppd.8	2009-11-06 15:01:47.000000000 +0100
+--- pppd/pppd.8.orig	2009-11-16 23:26:07.000000000 +0100
++++ pppd/pppd.8	2009-11-22 19:52:24.000000000 +0100
 @@ -121,6 +121,11 @@
  This entry is removed when the PPP connection is broken.  This option
  is privileged if the \fInodefaultroute\fR option has been specified.
@@ -139,8 +139,8 @@
  can do so by placing this option in the /etc/ppp/options file.
  .TP
  .B nodeflate
---- pppd/pppd.h.orig	2009-11-06 15:01:46.000000000 +0100
-+++ pppd/pppd.h	2009-11-06 15:01:47.000000000 +0100
+--- pppd/pppd.h.orig	2009-11-22 19:52:23.000000000 +0100
++++ pppd/pppd.h	2009-11-22 19:52:24.000000000 +0100
 @@ -645,7 +645,7 @@
  int  cif6addr __P((int, eui64_t, eui64_t));
  				/* Remove an IPv6 address from i/f */
@@ -150,8 +150,8 @@
  				/* Create default route through i/f */
  int  cifdefaultroute __P((int, u_int32_t, u_int32_t));
  				/* Delete default route through i/f */
---- pppd/sys-linux.c.orig	2009-11-06 15:01:46.000000000 +0100
-+++ pppd/sys-linux.c	2009-11-06 15:01:47.000000000 +0100
+--- pppd/sys-linux.c.orig	2009-11-22 19:52:23.000000000 +0100
++++ pppd/sys-linux.c	2009-11-22 19:52:24.000000000 +0100
 @@ -206,6 +206,8 @@
  
  static int	if_is_up;	/* Interface has been marked up */
@@ -254,7 +254,7 @@
  
      have_default_route = 1;
      return 1;
-@@ -1673,11 +1715,21 @@
+@@ -1675,11 +1717,21 @@
      rt.rt_flags = RTF_UP;
      if (ioctl(sock_fd, SIOCDELRT, &rt) < 0 && errno != ESRCH) {
  	if (still_ppp()) {
@@ -277,8 +277,8 @@
  
      return 1;
  }
---- pppd/sys-solaris.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/sys-solaris.c	2009-11-06 15:01:47.000000000 +0100
+--- pppd/sys-solaris.c.orig	2009-11-16 23:26:07.000000000 +0100
++++ pppd/sys-solaris.c	2009-11-22 19:52:24.000000000 +0100
 @@ -2036,12 +2036,18 @@
   * sifdefaultroute - assign a default route through the address given.
   */

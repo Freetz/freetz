@@ -38,11 +38,12 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
+	mkdir -p $(PRIVOXY_DEST_DIR)/etc/privoxy/templates
 	for s in `find $(PRIVOXY_DIR)/templates/ -type f`; do \
 		d=$$(basename $$s); \
 		egrep -v "^#\ " $$s | egrep -v "^#*$$" >$(PRIVOXY_DEST_DIR)/etc/privoxy/templates/$$d; \
 	done
-	for s in $(PRIVOXY_DIR)/default.filter $(PRIVOXY_DIR)/default.action $(PRIVOXY_DIR)/standard.action \
+	for s in $(PRIVOXY_DIR)/default.filter $(PRIVOXY_DIR)/default.action \
 		$(PRIVOXY_DIR)/user.action $(PRIVOXY_DIR)/user.filter; do \
 		d=$$(basename $$s); \
 		egrep -v "^#" $$s | egrep -v "^$$" >$(PRIVOXY_DEST_DIR)/etc/privoxy/$$d; \

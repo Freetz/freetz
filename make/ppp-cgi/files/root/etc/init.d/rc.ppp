@@ -5,11 +5,11 @@ DAEMON=ppp
 . /etc/init.d/modlibrc
 
 initial() {
-		modprobe option
-		modprobe ppp_generic
-		modprobe ppp_async
-		modprobe ppp-deflate
-		modprobe slhc
+	modprobe option
+	modprobe ppp_generic
+	modprobe ppp_async
+	modprobe ppp-deflate
+	modprobe slhc
 }
 
 disconnect () {
@@ -20,23 +20,25 @@ disconnect () {
 	if [ -n "$(pidof pppd)" ]; then
 		while [ -n  "`pidof pppd`" ] && [ $cnt -gt 0 ]; do
 			killall -9 pppd 2>/dev/null
-			sleep 1
 			let cnt=cnt-1
+			sleep 1
 		done
 	fi
 	[ -z "$PPP_LOGFILE" ] || echo -e "TERMINATED\n`date "+%Y-%m-%d %H:%M,%S"`\n##\n" >> $PPP_LOGFILE
 	[ -e "$PPP_SCRIPT_HUP" ] && . $PPP_SCRIPT_HUP
+	echo "#" > /etc/ppp/resolv.conf
 	[ -n "$(pidof pppd)" ] && return 1
 	return 0
 }
 
 start() {
 	echo -n 'Starting ppp-cgi...'
-	if [ -n "$(pidof ppp_observer)" ] || [ -n "$(pidof ppp_dialer)" ] && [ -z "$(pidof pppd)" ]; then
+	if [ -n "$(pidof ppp_observer)" ] || [ -n "$(pidof ppp_dialer)" ] || [ -n "$(pidof pppd)" ]; then
 		echo 'failed.'
 		exit 1
 	fi
-	start-stop-daemon -n ppp -a /etc/default.ppp/ppp_observer -b -q -S
+	start-stop-daemon -n ppp_observer -a /etc/default.ppp/ppp_observer -b -q -S
+	[ -n "$PPP_DIAGTTY" ] && start-stop-daemon -n ppp_logger -a /etc/default.ppp/ppp_logger -b -q -S
 	echo 'done.'
 }
 
@@ -46,6 +48,9 @@ stop() {
 		echo 'failed.'
 	fi
 	killall -9 ppp_observer 2>/dev/null
+	killall -9 ppp_logger 2>/dev/null
+	kill `cat /var/run/ppp_logger.pid 2>/dev/null` 2>/dev/null
+	rm -rf /tmp/ppp_logger.tmp 2>/dev/null	
 	disconnect
 	if [ $? -ne 0 ]; then
 		echo 'failed.'
@@ -87,6 +92,7 @@ case "$1" in
 		modunreg status ppp ppp/ppplog
 		modunreg file 'peers_options'
 		modunreg file 'peers_chat'
+		stop
 		;;
 	start)
 		initial
@@ -116,5 +122,3 @@ case "$1" in
 		exit 1
 		;;
 esac
-
-exit 0

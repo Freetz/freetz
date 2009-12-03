@@ -1,0 +1,48 @@
+menu "e2fsprogs libraries"
+depends on ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+
+config FREETZ_LIB_libblkid
+	bool "libblkid.so"
+	default n
+	select FREETZ_LIB_libuuid
+	help
+		The libblkid library is used to identify block devices (disks)
+		as to their content (e.g. filesystem type) as well as extracting
+		additional information such as filesystem labels/volume names,
+		unique identifiers/serial numbers, etc.
+
+config FREETZ_LIB_libcom_err
+	bool "libcom_err.so"
+	default n
+	select FREETZ_LIB_libpthread
+	help
+		libcomerr is a library used by e2fsprogs for error-handling.
+
+config FREETZ_LIB_libe2p
+	bool "libe2p.so"
+	default n
+	help
+		e2fsprogs use this library to directly access extended file systems (ext2, ext3).
+
+config FREETZ_LIB_libext2fs
+	bool "libext2fs.so"
+	default n
+	select FREETZ_LIB_libcom_err
+	help
+		e2fsprogs use this library to directly access extended file systems (ext2, ext3).
+
+config FREETZ_LIB_libss
+	bool "libss.so"
+	default n
+	select FREETZ_LIB_libcom_err
+	help
+		e2fsprogs' subsystem command parsing library.
+
+config FREETZ_LIB_libuuid
+	bool "libuuid.so"
+	default n
+	help
+		The libuuid library is used to generate unique identifiers
+		for objects that may be accessible beyond the local system.
+
+endmenu

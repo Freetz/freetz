@@ -1,6 +1,6 @@
---- src/config.h.orig	2009-06-10 15:03:45.000000000 +0200
-+++ src/config.h	2009-06-12 01:06:43.000000000 +0200
-@@ -37,7 +37,7 @@
+--- src/config.h.orig	2009-10-09 15:13:11.000000000 +0200
++++ src/config.h	2009-11-26 15:12:36.000000000 +0100
+@@ -39,7 +39,7 @@
  #else
  #  define RESOLVFILE "/etc/resolv.conf"
  #endif
@@ -9,7 +9,7 @@
  
  #ifndef LEASEFILE
  #   if defined(__FreeBSD__) || defined (__OpenBSD__) || defined(__DragonFly__) || defined(__NetBSD__)
-@@ -45,7 +45,7 @@
+@@ -47,7 +47,7 @@
  #   elif defined(__sun__) || defined (__sun)
  #      define LEASEFILE "/var/cache/dnsmasq.leases"
  #   else
@@ -18,7 +18,7 @@
  #   endif
  #endif
  
-@@ -53,7 +53,7 @@
+@@ -55,7 +55,7 @@
  #   if defined(__FreeBSD__)
  #      define CONFFILE "/usr/local/etc/dnsmasq.conf"
  #   else
@@ -27,7 +27,7 @@
  #   endif
  #endif
  
-@@ -197,9 +197,9 @@
+@@ -210,9 +210,9 @@
  #endif
  #undef HAVE_ARC4RANDOM
  #undef HAVE_SOCKADDR_SA_LEN
@@ -40,38 +40,21 @@
  #if defined(__UCLIBC_HAS_IPV6__)
  #  ifndef IPV6_V6ONLY
  #    define IPV6_V6ONLY 26
-@@ -257,19 +257,19 @@
- /* We assume that systems which don't have IPv6
-    headers don't have ntop and pton either */
- 
--#if defined(INET6_ADDRSTRLEN) && defined(IPV6_V6ONLY) && !defined(NO_IPV6)
--#  define HAVE_IPV6
--#  define ADDRSTRLEN INET6_ADDRSTRLEN
--#  if defined(SOL_IPV6)
--#    define IPV6_LEVEL SOL_IPV6
--#  else
--#    define IPV6_LEVEL IPPROTO_IPV6
--#  endif
--#elif defined(INET_ADDRSTRLEN)
--#  undef HAVE_IPV6
--#  define ADDRSTRLEN INET_ADDRSTRLEN
--#else
--#  undef HAVE_IPV6
--#  define ADDRSTRLEN 16 /* 4*3 + 3 dots + NULL */
--#endif
-+//#if defined(INET6_ADDRSTRLEN) && defined(IPV6_V6ONLY) && !defined(NO_IPV6)
-+//#  define HAVE_IPV6
-+//#  define ADDRSTRLEN INET6_ADDRSTRLEN
-+//#  if defined(SOL_IPV6)
-+//#    define IPV6_LEVEL SOL_IPV6
-+//#  else
-+//#    define IPV6_LEVEL IPPROTO_IPV6
-+//#  endif
-+//#elif defined(INET_ADDRSTRLEN)
-+//#  undef HAVE_IPV6
-+//#  define ADDRSTRLEN INET_ADDRSTRLEN
-+//#else
-+#undef HAVE_IPV6
-+#define ADDRSTRLEN 16 /* 4*3 + 3 dots + NULL */
-+//#endif
- 
+@@ -278,6 +278,17 @@
+ #  else
+ #    define IPV6_LEVEL IPPROTO_IPV6
+ #  endif
++#  if defined(IPV6_RECVPKTINFO)
++#    include <linux/version.h>
++#    if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
++#      if defined IPV6_RECVPKTINFO && defined IPV6_2292PKTINFO
++#        undef IPV6_RECVPKTINFO
++#        undef IPV6_PKTINFO
++#        define IPV6_RECVPKTINFO IPV6_2292PKTINFO
++#        define IPV6_PKTINFO IPV6_2292PKTINFO
++#      endif
++#    endif
++#  endif
+ #elif defined(INET_ADDRSTRLEN)
+ #  undef HAVE_IPV6
+ #  define ADDRSTRLEN INET_ADDRSTRLEN

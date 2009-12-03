@@ -25,7 +25,10 @@ start() {
 	# Static Packages
 	if [ -e /etc/static.pkg ]; then
 		for pkg in $(cat /etc/static.pkg); do
-			[ -x "/etc/init.d/rc.$pkg" ] && "/etc/init.d/rc.$pkg"
+			if [ -x "/etc/init.d/rc.$pkg" ]; then
+				modreg daemon $pkg
+				"/etc/init.d/rc.$pkg"
+			fi
 		done
 	fi
 

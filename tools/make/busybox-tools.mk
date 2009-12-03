@@ -48,7 +48,9 @@ busybox-tools-clean:
 
 busybox-tools-dirclean:
 	$(RM) -r $(BUSYBOX_TOOLS_DIR)
-	$(RM)  $(BUSYBOX_TOOLS_TARGET_BINARY)
+
+busybox-tools-distclean: busybox-tools-dirclean
+	$(RM) $(BUSYBOX_TOOLS_TARGET_BINARY)
 	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/makedevs
 	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/md5sum
 	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/tar

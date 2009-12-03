@@ -131,10 +131,13 @@ busybox-clean: busybox-uninstall
 	-$(SUBMAKE) -C $(BUSYBOX_DIR) clean
 
 busybox-uninstall:
-	rm -rf $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF) \
+	$(RM) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF) \
 		$(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
 
-busybox-dirclean:
-	rm -rf $(BUSYBOX_DIR)
+busybox-dirclean: 
+	$(RM) -r $(BUSYBOX_DIR)
+
+busybox-distclean: busybox-dirclean
+	$(RM) $(BUSYBOX_TARGET_DIR)/busybox-*
 
 .PHONY: busybox-menuconfig busybox-oldconfig

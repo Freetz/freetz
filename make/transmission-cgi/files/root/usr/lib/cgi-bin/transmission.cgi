@@ -61,31 +61,55 @@ cat << EOF
 <input type='text' id='downloaddir' name='downloaddir' size='40' maxlength='255' value="$(html "$TRANSMISSION_DOWNLOADDIR")"><br />
 </p>
 
+<p>
 <small>$(lang
-de:"Verschiebe fertige Dateien in folgendes Seed-Verzeichnis (Leer lassen falls die Dateien nicht verschoben werden sollen):"
-en:"Finished downloads will be moved to seed-directory and start seeding there (no action if empty):"
+de:"Alle folgenden Verzeichnisse sind optional"
+en:"Following directories can be empty"
 )</small>
+</p>
+
+<p>
+<small>$(lang
+de:"Starte Torrents in diesem Verzeichnis automatisch:"
+en:"Directory to watch for new torrents and to automatically start them:"
+)</small>
+</p>
+
+<p>
+<label for='watchdir'>$(lang de:"Autostart-Verzeichnis" en:"Watch-Directory"): </label>
+<input type='text' id='watchdir' name='watchdir' size='40' maxlength='255' value="$(html "$TRANSMISSION_WATCHDIR")">
+</p>
+
+<p>
+<small>$(lang
+de:"Verschiebe fertige Dateien in folgendes Seed-Verzeichnis:"
+en:"Finished downloads will be moved to seed-directory and start seeding there:"
+)</small>
+</p>
 
 <p>
 <label for='seeddir'>$(lang de:"Seed-Verzeichnis" en:"Seed-Directory"): </label>
 <input type='text' id='seeddir' name='seeddir' size='40' maxlength='255' value="$(html "$TRANSMISSION_SEEDDIR")"><br />
 </p>
 
+<p>
 <small>$(lang
-de:"Verschiebe komplett fertige Dateien (gedownloaded und geseedet) in das unten stehen Verzeichnis:"
-en:"Completely seeded downloads will be moved to seed-directory (no action if empty):"
+de:"Verschiebe komplett fertige Dateien (gedownloaded und geseedet) in folgendes Verzeichnis:"
+en:"Completely seeded downloads will be moved to the following directory:"
 )</small>
+</p>
 
 <p>
 <label for='finishdir'>$(lang de:"End-Verzeichnis" en:"Finish-Directory"): </label>
 <input type='text' id='finishdir' name='finishdir' size='40' maxlength='255' value="$(html "$TRANSMISSION_FINISHDIR")"><br />
 </p>
 
+<p>
 <small>$(lang
-de:"Auﬂer beim Basisverzeichnis d&uuml;rfen auch relative Pfade angegeben werden. Die relativen Pfade werden dabei als relativ zum Basisverzeichnis verstanden."
+de:"Au&szlig;er beim Basisverzeichnis d&uuml;rfen auch relative Pfade angegeben werden. Die relativen Pfade werden dabei als relativ zum Basisverzeichnis verstanden."
 en:"Both absolute and relative paths are allowed for directories except for the base-directory. The relative ones will be interpreted as being relative to the base-directory."
 )</small>
-<br />
+</p>
 EOF
 
 sec_end
@@ -105,31 +129,26 @@ en:"Don't forget to open this port. Use the freetz' package AVM-Firewall for thi
 
 <small>$(lang
 de:"Beim Erreichen der Ratio werden Uploads automatisch gestoppt und in das End-Verzeichnis verschoben (falls angegeben)"
-en:"Seeding torrents will be stopped when they reach the ratio and moved into the seed-directory (if not empty)"
+en:"Seeding torrents will be stopped when they reach this ratio and moved into the seed-directory (if not empty)"
 )</small>
 
 <p>
-<label for='ratio'>$(lang de:"Ratio" en:"Ratio") </label>
+<label for='ratio'>$(lang de:"Ratio:" en:"Ratio:") </label>
 <input type='text' id='ratio' name='ratio' value="$(html "$TRANSMISSION_RATIO")">
 </p>
 
 <p>
-<label for='globalpeerlimit'>$(lang de:"Maximale Gesamtanzahl der Peers" en:"Maximum overall number of peers") </label>
+<label for='globalpeerlimit'>$(lang de:"Maximale Gesamtanzahl an Peers:" en:"Maximum overall number of peers:") </label>
 <input type='text' id='globalpeerlimit' name='globalpeerlimit' value="$(html "$TRANSMISSION_GLOBALPEERLIMIT")">
 </p>
 
 <p>
-<label for='torrentpeerlimit'>$(lang de:"Maximale Anzahl der Peers pro Torrent" en:"Maximum number of peers per torrent") </label>
+<label for='torrentpeerlimit'>$(lang de:"Maximale Anzahl an Peers pro Torrent:" en:"Maximum number of peers per torrent:") </label>
 <input type='text' id='torrentpeerlimit' name='torrentpeerlimit' value="$(html "$TRANSMISSION_TORRENTPEERLIMIT")">
 </p>
 
 <p>
-<label for='msglevel'>$(lang de:"Debug-Level (zur Zeit ohne Wikung)" en:"Log-Verbosity (currently not used)") </label>
-<input type='text' id='msglevel' name='meglevel' value="$(html "$TRANSMISSION_MSGLEVEL")">
-</p>
-
-<p>
-<label for='peerencryptionmode'>$(lang de:"Verschl&uuml;sselungsmodus" en:"Encryption Mode")</label>
+<label for='peerencryptionmode'>$(lang de:"Verschl&uuml;sselungsmodus:" en:"Encryption mode:")</label>
 <select name='peerencryptionmode' id='peerencryptionmode'>
 <option value='NO_ENCRYPTION'$noencryption_sel>$(lang de:"Keine Verschl&uuml;sselung" en:"No encryption")</option>
 <option value='ENCRYPTION_PREFERRED'$preferencryption_sel>$(lang de:"Verschl&uuml;sselte Peer-Verbindungen bevorzugen" en:"Prefer encrypted peer connections")</option>
@@ -138,7 +157,7 @@ en:"Seeding torrents will be stopped when they reach the ratio and moved into th
 </p>
 
 <p>
-<label for='useblocklist'>$(lang de:"Peer-Blockliste verwenden" en:"Use peer-blocklist") </label>
+<label for='useblocklist'>$(lang de:"Peer-Blockliste verwenden:" en:"Use peer-blocklist:") </label>
 <input type='checkbox' id='useblocklist' name='useblocklist' value='yes'$blocklist_chk>
 </p>
 

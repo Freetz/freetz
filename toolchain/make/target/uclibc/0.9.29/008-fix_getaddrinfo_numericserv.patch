@@ -1,0 +1,41 @@
+--- libc/inet/getaddrinfo.c	2008-03-05 14:13:34 UTC (rev 21166)
++++ libc/inet/getaddrinfo.c	2008-03-05 14:29:49 UTC (rev 21167)
+@@ -90,15 +90,6 @@
+ libc_hidden_proto(in6addr_loopback)
+ #endif
+ 
+-/* The following declarations and definitions have been removed from
+- *    the public header since we don't want people to use them.  */
+-#define AI_V4MAPPED     0x0008  /* IPv4-mapped addresses are acceptable.  */
+-#define AI_ALL          0x0010  /* Return both IPv4 and IPv6 addresses.  */
+-#define AI_ADDRCONFIG   0x0020  /* Use configuration of this host to choose 
+-				    returned address type.  */
+-#define AI_DEFAULT    (AI_V4MAPPED | AI_ADDRCONFIG)
+-
+-
+ #define GAIH_OKIFUNSPEC 0x0100
+ #define GAIH_EAI        ~(GAIH_OKIFUNSPEC)
+ 
+@@ -823,7 +814,7 @@
+ 	hints = &default_hints;
+ 
+     if (hints->ai_flags & ~(AI_PASSIVE|AI_CANONNAME|AI_NUMERICHOST|
+-			    AI_ADDRCONFIG|AI_V4MAPPED|AI_ALL))
++			    AI_ADDRCONFIG|AI_V4MAPPED|AI_NUMERICSERV|AI_ALL))
+ 	return EAI_BADFLAGS;
+ 
+     if ((hints->ai_flags & AI_CANONNAME) && name == NULL)
+@@ -834,8 +825,12 @@
+ 	char *c;
+ 	gaih_service.name = service;
+ 	gaih_service.num = strtoul (gaih_service.name, &c, 10);
+-	if (*c)
++	if (*c != '\0') {
++		if (hints->ai_flags & AI_NUMERICSERV)
++			return EAI_NONAME;
++
+ 	    gaih_service.num = -1;
++	}
+ 	else
+ 	    /*
+ 	     * Can't specify a numerical socket unless a protocol

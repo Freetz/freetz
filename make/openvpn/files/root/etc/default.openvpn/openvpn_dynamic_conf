@@ -20,11 +20,6 @@ wert (){
 count=2;
 
 . /mod/etc/conf/openvpn.cfg
-if [ "$OPENVPN_CONFIG_COUNT" -gt 1 ]; then 
-	echo "openvpn#default-Config" > /mod/etc/openvpn_multid.pkg ;
-else
-	rm  -f /mod/etc/openvpn_multid.pkg ;
-fi
 while [ $count -le $OPENVPN_CONFIG_COUNT ]
 do
 	IFS='';
@@ -58,9 +53,6 @@ do
 	fi
 
 
-
-	echo ${act} >> /mod/etc/openvpn_multid.pkg ;
-	
 	unset IFS=;
 	for deffile in `ls /mod/etc/default.openvpn/*.def`
 	do
@@ -71,7 +63,7 @@ do
 			tmptitle=${tmptitle##*=\'}
 			tmptitle=${tmptitle%%(*}
 			if [ "$LOKAL_OWN_KEYS" == "yes" ]; then
-				 sed "s/openvpn/${act}/g"  $deffile | sed "s/\/flash/\/flash\/${act}/g" | sed "s/VPN/VPN Config ${LOKAL_CONFIG_NAMES}/g" > /mod/etc/default.${act}/$name
+				 sed "s/openvpn/${act}/g"  $deffile | sed "s/\/flash/\/flash\/${act}/g" | sed "/CAPTION/ s/VPN/VPN Config ${LOKAL_CONFIG_NAMES}/g" > /mod/etc/default.${act}/$name
 				if [ ! -d /tmp/flash/${act} ]; then mkdir /tmp/flash/${act} ; fi
 				modreg file "$tmpid" "${LOKAL_CONFIG_NAMES}: $tmptitle" 0 "/mod/etc/default.${act}/$name"
 			else
@@ -94,20 +86,19 @@ for config in `ls /mod/etc/init.d/rc.openvpn*`; do
 			echo -n "Stop daemon of deleted config: "
 			"$config" stop;
 		fi
+		modunreg daemon "$confname"
 		rm $config
 		if [ -d /mod/etc/default.$confname ]; then
 			rm -rf /mod/etc/default.$confname;
 			rm -rf /tmp/flash/$confname;
-		fi
-		if [ -e /mod/etc/static.pkg ]; then
-			grep -v $confname /mod/etc/static.pkg > /mod/etc/static.pkg.tmp
-			mv /mod/etc/static.pkg.tmp /mod/etc/static.pkg
 		fi
 		if [ -e /mod/etc/reg/file.reg ]; then
 			for fn in `grep  "/mod/etc/default.$confname" /mod/etc/reg/file.reg | cut -d "|" -f 1`; do
 				modunreg file $fn
 			done
 		fi
-	fi		
+	else
+		`grep -q "$confname" /mod/etc/reg/daemon.reg` || modreg daemon -p openvpn "$confname"
+	fi	
 done
 

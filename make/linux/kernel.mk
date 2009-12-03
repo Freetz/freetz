@@ -171,6 +171,12 @@ kernel-clean:
 		clean
 
 kernel-dirclean:
-	rm -rf $(KERNEL_DIR)
+	$(RM) -r $(KERNEL_DIR)
+
+kernel-distclean: kernel-dirclean
+	$(RM) $(KERNEL_TARGET_DIR)/.version-*
+	$(RM) $(KERNEL_TARGET_DIR)/System*
+	$(RM) $(KERNEL_TARGET_DIR)/kernel-*
+	$(RM) -r $(KERNEL_TARGET_DIR)/modules-*
 
 .PHONY: kernel-configured kernel-modules kernel-menuconfig kernel-oldconfig

@@ -22,28 +22,28 @@ ipv4bcast () {
 
 
 start() {
-    echo -n 'Setting up virtual network interface ...'
+    echo -n 'Setting up virtual network interface...'
     
     VIRTUALIP_BROADCAST="`ipv4bcast $VIRTUALIP_IP $VIRTUALIP_NETMASK`"
 
     ifconfig $VIRTUALIP_INTERFACE $VIRTUALIP_IP netmask $VIRTUALIP_NETMASK broadcast $VIRTUALIP_BROADCAST up > /dev/null 2>&1
     exitval=$?
     if [ "$exitval" -eq 0 ]; then
-        echo ' done.'
+        echo 'done.'
     else
-        echo ' failed.'
+        echo 'failed.'
         exit $exitval
     fi
 }
 
 stop() {
-    echo -n 'Deactivating virtual network interface ...'
+    echo -n 'Deactivating virtual network interface...'
     ifconfig $VIRTUALIP_INTERFACE down > /dev/null 2>&1 > /dev/null 2>&1
     exitval=$?
     if [ "$exitval" -eq 0 ]; then
-        echo ' done.'
+        echo 'done.'
     else
-        echo ' failed.'
+        echo 'failed.'
         exit $exitval
     fi
 }

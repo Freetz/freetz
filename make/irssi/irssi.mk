@@ -1,9 +1,19 @@
-$(call PKG_INIT_BIN, 0.8.12)
+$(call PKG_INIT_BIN, 0.8.14)
 $(PKG)_SOURCE:=irssi-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://irssi.org/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/fe-text/irssi
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/irssi
-$(PKG)_SOURCE_MD5:=ddf717a430e1c13a272f528c4f529430
+$(PKG)_SOURCE_MD5:=7d9437f53209a61af4fe4c9c5528ffa7
+
+ifeq ($(strip $(FREETZ_PACKAGE_IRSSI_WITH_BOT)),y)
+$(PKG)_BOT_BINARY:=$($(PKG)_DIR)/src/fe-none/botti
+$(PKG)_BOT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/botti
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_IRSSI_WITH_PROXY)),y)
+$(PKG)_LIBPROXY_BINARY:=$($(PKG)_DIR)/src/irc/proxy/.libs/libirc_proxy.so
+$(PKG)_LIBPROXY_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/irssi/modules/libirc_proxy.so
+endif
 
 $(PKG)_DEPENDS_ON := glib2 ncurses
 
@@ -15,9 +25,12 @@ $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_IRSSI_WITH_BOT
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_IRSSI_WITH_PROXY
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_IRSSI_WITH_OPENSSL
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG)_CONFIGURE_OPTIONS += --with-textui
 $(PKG)_CONFIGURE_OPTIONS += --with-perl=no
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
+$(PKG)_CONFIGURE_OPTIONS += --disable-glibtest
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_IRSSI_WITH_BOT),--with-bot,)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_IRSSI_WITH_PROXY),--with-proxy,)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_IRSSI_WITH_OPENSSL),,--disable-ssl)
@@ -36,9 +49,19 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+ifeq ($(strip $(FREETZ_PACKAGE_IRSSI_WITH_BOT)),y)
+$($(PKG)_BOT_TARGET_BINARY): $($(PKG)_BOT_BINARY)
+	$(INSTALL_BINARY_STRIP)
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_IRSSI_WITH_PROXY)),y)
+$($(PKG)_LIBPROXY_TARGET_BINARY): $($(PKG)_LIBPROXY_BINARY)
+	$(INSTALL_LIBRARY_STRIP)
+endif
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_BOT_TARGET_BINARY) $($(PKG)_LIBPROXY_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(IRSSI_DIR) clean
