@@ -7,7 +7,7 @@ $(PKG)_SITE:=@SF/netpbm/super_stable/$($(PKG)_VERSION)
 $(PKG)_LIBNAME := libnetpbm.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_BUILD_DIR := $($(PKG)_DIR)/lib/$($(PKG)_LIBNAME)
 $(PKG)_LIB_STAGING_DIR := $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
-$(PKG)_LIB_TARGET_DIR := root/usr/lib/$($(PKG)_LIBNAME)
+$(PKG)_LIB_TARGET_DIR := $($(PKG)_TARGET_LIBDIR)/$($(PKG)_LIBNAME)
 
 # see INTERFACE_HEADERS variable in lib/Makefile
 $(PKG)_INTERFACE_HEADERS = \
@@ -83,6 +83,6 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) \
 		$(NETPBM_BINARIES_TARGET_DIR) \
-		root/usr/lib/libnetpbm*
+		$(NETPBM_TARGET_LIBDIR)/libnetpbm*
 
 $(PKG_FINISH)
