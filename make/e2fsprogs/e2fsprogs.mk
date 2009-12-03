@@ -36,7 +36,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 $(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT_ALL:%=lib%.a)
 else
 $(PKG)_LIBNAMES_LONG := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS))
-$(PKG)_LIBS_TARGET_DIR  := $($(PKG)_LIBNAMES_LONG:%=root/usr/lib/freetz%)
+$(PKG)_LIBS_TARGET_DIR  := $($(PKG)_LIBNAMES_LONG:%=root/usr/lib/freetz/%)
 endif
 $(PKG)_LIBS_BUILD_DIR   := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/lib/%)
 $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
@@ -110,7 +110,7 @@ endif
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/$${LIBSUBDIR}.pc
 
 ifneq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
-$($(PKG)_LIBS_TARGET_DIR): root/usr/lib/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
+$($(PKG)_LIBS_TARGET_DIR): root/usr/lib/freetz/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
 	$(INSTALL_LIBRARY_STRIP)
 endif
 
@@ -137,7 +137,7 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) \
-		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=root/usr/lib/freetz/lib%*.so*) \
+		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=root/usr/lib/freetz/lib/%*.so*) \
 		$(E2FSPROGS_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)
