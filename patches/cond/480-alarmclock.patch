@@ -1,6 +1,6 @@
---- usr/www/all/html/de/home/home.html.orig	2009-12-04 21:09:04.341935533 +0100
-+++ usr/www/all/html/de/home/home.html	2009-12-04 21:09:04.731937823 +0100
-@@ -111,16 +111,25 @@
+--- usr/www/all/html/de/home/home.html	Wed Jun 24 17:54:33 2009
++++ usr/www/all/html/de/home/home.html	Tue Nov 24 16:58:26 2009
+@@ -119,16 +119,25 @@
  <td class="tdLed">&nbsp;</td>
  <td><script type="text/javascript">document.write(NachtDisplay());</script></td>
  </tr>
@@ -26,9 +26,9 @@
  <tr id="trEmail" style="display: none">
  <td class="tdName"><a href="javascript:jslGoTo('system','email')">{?de.home.home.html:110?}</a></td>
  <td class="tdLed">&nbsp;</td>
---- usr/www/all/html/de/home/home.js.orig	2009-12-04 21:09:00.401936478 +0100
-+++ usr/www/all/html/de/home/home.js	2009-12-04 21:09:04.731937823 +0100
-@@ -224,6 +224,7 @@
+--- usr/www/all/html/de/home/home.js	Fri Nov 20 01:02:46 2009
++++ usr/www/all/html/de/home/home.js	Tue Nov 24 17:00:36 2009
+@@ -213,6 +213,7 @@
  var NachtEnabled = "<? query box:settings/night_time_control_enabled ?>";
  var Wecker1 = "<? query telcfg:settings/AlarmClock0/Active ?>";
  var Wecker2 = "<? query telcfg:settings/AlarmClock1/Active ?>";
@@ -36,7 +36,7 @@
  <? if eq $var:showPortfreigabe 1 `
  var showPortfreigabeInfo = "0";
  <? multiquery forwardrules:settings/rule/list(activated) `
-@@ -299,7 +300,7 @@
+@@ -291,7 +292,7 @@
  <? if eq $var:showPortfreigabe 1 `
  || showPortfreigabeInfo == "1"
  ` ?>
@@ -45,7 +45,7 @@
  || showRemoteHttps == true
  || showDynDns == true
  || showOnlineCnt == "1") {
-@@ -308,6 +309,7 @@
+@@ -300,6 +301,7 @@
  }
  jslDisplay("trWecker1",Wecker1 == "1");
  jslDisplay("trWecker2",Wecker2 == "1");
@@ -53,7 +53,7 @@
  jslDisplay("trTam",g_tamActive > 0 || g_tamDisplay > 0);
  jslDisplay("trIntFax", g_intFaxActive == "1");
  jslDisplay("trSperre",RufsperreAktiv == true);
-@@ -1388,8 +1390,10 @@
+@@ -1363,8 +1365,10 @@
  }
  return DisplayString;
  }
@@ -64,7 +64,7 @@
  <? setvariable var:wnr '0' ?>
  var Active = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Active ?>";
  var Time = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Time ?>";
-@@ -1399,13 +1403,29 @@
+@@ -1374,13 +1378,29 @@
  {
  return WeckerString(Active,Time,Num,Weekdays);
  }
@@ -94,7 +94,7 @@
  <? if eq $var:showPortfreigabe `1` `
  function PortfwDisplay(){
  var infotext="";
-@@ -1624,6 +1644,8 @@
+@@ -1599,6 +1619,8 @@
  jslSetValue("uiPostWeckernr",0);break;
  case 1:
  jslSetValue("uiPostWeckernr",1);break;
@@ -103,8 +103,8 @@
  }
  jslGoTo('fon','wecker');
  }
---- usr/www/all/html/de/fon/wecker.html.orig	2009-12-04 21:08:54.420685501 +0100
-+++ usr/www/all/html/de/fon/wecker.html	2009-12-04 21:09:04.731937823 +0100
+--- usr/www/all/html/de/fon/wecker.html	Wed Jun 24 17:54:47 2009
++++ usr/www/all/html/de/fon/wecker.html	Tue Nov 24 16:57:36 2009
 @@ -3,14 +3,25 @@
  {?txtWakeupCall?}
  </div></div></div></div></div></div>
@@ -131,8 +131,8 @@
  <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
  <p class="mb10">{?de.fon.wecker.html:30?}</p>
  <p class="mb10">{?de.fon.wecker.html:35?}</p>
---- usr/www/all/html/de/fon/wecker.js.orig	2009-12-04 21:09:01.141936053 +0100
-+++ usr/www/all/html/de/fon/wecker.js	2009-12-04 21:09:04.731937823 +0100
+--- usr/www/all/html/de/fon/wecker.js	Wed Jun 24 17:54:27 2009
++++ usr/www/all/html/de/fon/wecker.js	Tue Nov 24 16:56:31 2009
 @@ -23,8 +23,9 @@
  var mCount = "<? query telcfg:settings/Foncontrol ?>";
  ` ?>
