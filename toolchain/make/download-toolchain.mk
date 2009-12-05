@@ -1,6 +1,7 @@
 include $(TOOLCHAIN_DIR)/make/kernel/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
+include $(TOOLCHAIN_DIR)/make/target/libtool-host/libtool-host.mk
 include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 
@@ -36,7 +37,7 @@ $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE): | $(DL_DIR)
 download-toolchain: $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc kernel-configured \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc \
 			$(ROOT_DIR)/lib/libc.so.0 $(ROOT_DIR)/lib/libgcc_s.so.1 \
-			$(CCACHE)
+			$(CCACHE) libtool-host
 
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc: $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | \
 		$(KERNEL_TOOLCHAIN_SYMLINK) $(TOOLS_DIR)/busybox

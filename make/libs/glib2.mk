@@ -48,6 +48,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc
 $(PKG)_CONFIGURE_OPTIONS += --disable-man
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre=system
 
+$(call REPLACE_LIBTOOL)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
