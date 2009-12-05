@@ -1,0 +1,11 @@
+--- Makefile.in.orig	2008-01-07 23:35:55.000000000 +0100
++++ Makefile.in	2009-12-05 17:32:29.000000000 +0100
+@@ -58,7 +58,7 @@
+ 	$(CC) $(CFLAGS) $(DEFS) -c $<
+ 
+ vtund: $(OBJS)
+-	$(CC) $(CFLAGS) -o vtund $(OBJS) $(LFD_OBJS) $(LDFLAGS)
++	$(CC) $(CFLAGS) -o vtund $(OBJS) $(LFD_OBJS) $(LDFLAGS) $(EXTRA_LDFLAGS)
+ 
+ cfg_file.tab.c: cfg_file.y cfg_kwords.h config.h
+ 	$(YACC) $(YACCFLAGS) -b cfg_file cfg_file.y
