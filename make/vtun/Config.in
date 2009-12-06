@@ -1,0 +1,49 @@
+config FREETZ_PACKAGE_VTUN
+	bool "VTUN"
+	default n
+	help
+		Virtual tunnel client and  server
+
+config FREETZ_PACKAGE_VTUN_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_VTUN
+	default n
+	help
+		VTUN needs the following shared libraries which can be linked in statically
+		by activating this switch:
+		- libc.so
+		- libgcc_s.so
+		(- libcrypto.so)
+		(- liblzo2.so)
+		(- libz.so)
+
+config FREETZ_PACKAGE_VTUN_WITH_LZO
+	bool "With lzo Compression"
+	depends on FREETZ_PACKAGE_VTUN 
+	select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_VTUN_STATIC
+	default y
+	help
+		Build with LZO2 compression for tunnel traffic
+
+config FREETZ_PACKAGE_VTUN_WITH_ZLIB
+	bool "With libz Compression"
+	depends on FREETZ_PACKAGE_VTUN
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_VTUN_STATIC
+	default y
+	help
+		Build with LIBZ compression for tunnel traffic
+
+config FREETZ_PACKAGE_VTUN_WITH_SSL
+	bool "With SSL Encryption"
+	depends on FREETZ_PACKAGE_VTUN
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_VTUN_STATIC
+	default y
+	help
+		Build with SSL encryption for tunnel traffic
+
+config FREETZ_PACKAGE_VTUN_WITH_SHAPER
+	bool "With traffic shaper"
+	depends on FREETZ_PACKAGE_VTUN
+	default y
+	help
+		Build with shaper
