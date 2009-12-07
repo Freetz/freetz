@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.0.2)
-$(PKG)_SOURCE:=vtun-$(VTUN_VERSION).tar.gz
-$(PKG)_SITE:=http://prdownloads.sourceforge.net/vtun
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=@SF/vtun
 $(PKG)_BINARY:=$($(PKG)_DIR)/vtund
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/vtund
 $(PKG)_STARTLEVEL=50
