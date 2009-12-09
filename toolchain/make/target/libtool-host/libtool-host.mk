@@ -48,9 +48,10 @@ $(LIBTOOL_HOST_SCRIPT): $(LIBTOOL_HOST_DIR)/.configured
 
 $(LIBTOOL_HOST_TARGET_SCRIPT): $(LIBTOOL_HOST_SCRIPT)
 	$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
+		MAKEINFO=true \
 		-C $(LIBTOOL_HOST_DIR) \
 		install
-	$(SED) -i -e 's,\(hardcode_into_libs\)=yes,\1=no,g' $(LIBTOOL_HOST_TARGET_SCRIPT)
+	$(SED) -i -r -e 's,(hardcode_into_libs)=yes,\1=no,g' $(LIBTOOL_HOST_TARGET_SCRIPT)
 
 libtool-host: $(LIBTOOL_HOST_TARGET_SCRIPT)
 
@@ -60,5 +61,11 @@ libtool-host-clean:
 	-$(MAKE) -C $(LIBTOOL_HOST_DIR) clean
 
 libtool-host-dirclean:
-	$(RM) -r $(LIBTOOL_HOST_DIR)
-	$(RM) $(LIBTOOL_HOST_TARGET_SCRIPT)
+	$(RM) -r \
+		$(LIBTOOL_HOST_DIR) \
+		$(LIBTOOL_HOST_TARGET_SCRIPT) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libtoolize \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/libtool.m4 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/ltdl.m4 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/libtool/ \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/info/libtool.info
