@@ -529,9 +529,8 @@ $($(PKG)_DIR)/.configured: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-
 		$($(PKG)_CONFIGURE_ENV) \
 		./configure \
 		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
-		$($(PKG)_CONFIGURE_OPTIONS) && { \
-			$($(PKG)_CONFIGURE_POST_CMDS) \
-		} \
+		$($(PKG)_CONFIGURE_OPTIONS) \
+		$(if $($(PKG)_CONFIGURE_POST_CMDS),&& { $($(PKG)_CONFIGURE_POST_CMDS) },) \
 	)
 	touch $$@
 endef
