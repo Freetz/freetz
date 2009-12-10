@@ -26,6 +26,9 @@ $(LIBTOOL_HOST_DIR)/.patched: $(LIBTOOL_HOST_DIR)/.unpacked
 
 $(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.patched
 	(cd $(LIBTOOL_HOST_DIR); rm -rf config.cache; \
+		CC=$(TARGET_CC) \
+		CXX=$(TARGET_CXX) \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		PATH=$(TARGET_PATH) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
