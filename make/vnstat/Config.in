@@ -1,0 +1,17 @@
+config FREETZ_PACKAGE_VNSTAT
+	bool "vnstat 1.9 (binary only)"
+	select FREETZ_LIB_libm
+	default n
+	help
+		vnStat is a console-based network traffic monitor. It keeps a log of
+		hourly, daily and monthly network traffic for the selected interface(s).
+		However, it isn't a packet sniffer. The traffic information is analyzed
+		from the proc(5) filesystem. That way vnStat can be used even
+		without root permissions.
+		WWW: http://humdi.net/vnstat/
+
+config FREETZ_PACKAGE_VNSTAT_DAEMON
+	bool "vnstat 1.9 daemon"
+	depends on FREETZ_PACKAGE_VNSTAT
+	default n
+
