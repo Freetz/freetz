@@ -5,9 +5,7 @@ $(PKG)_SITE:=http://oss.oetiker.ch/rrdtool/pub/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/rrdtool
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/rrdtool
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/src/.libs/librrd.so.$($(PKG)_LIB_VERSION)
-$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/librrd.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/librrd.so.$($(PKG)_LIB_VERSION)
-$(PKG)_STARTLEVEL=40
 $(PKG)_SOURCE_MD5:=19b24f7184a8dbf7b48c1bbb565ad9fb
 
 $(PKG)_DEPENDS_ON := libpng freetype libart_lgpl zlib
@@ -29,8 +27,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-tcl
 $(PKG)_CONFIGURE_OPTIONS += --disable-ruby
 $(PKG)_CONFIGURE_OPTIONS += --without-x
 
-LIBART_CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libart-2.0"
-FREETYPE_CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/freetype2"
+$(PKG)_LIBART_CPPFLAGS:="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libart-2.0"
+$(PKG)_FREETYPE_CPPFLAGS:="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/freetype2"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -39,17 +37,13 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(RRDTOOL_DIR) all \
-		CPPFLAGS="$(TARGET_CPPFLAGS) $(LIBART_CPPFLAGS) $(FREETYPE_CPPFLAGS)"
+		CPPFLAGS="$(TARGET_CPPFLAGS) $(RRDTOOL_LIBART_CPPFLAGS) $(RRDTOOL_FREETYPE_CPPFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	cp -a $(RRDTOOL_DIR)/src/.libs/librrd.so* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
-
-$($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/librrd.so* $(RRDTOOL_DEST_DIR)/usr/lib
-	$(TARGET_STRIP) $@
+$($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_BINARY)
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg):
 
@@ -57,7 +51,6 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(RRDTOOL_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/librrd.so*
 
 $(pkg)-uninstall:
 	$(RM) $(RRDTOOL_TARGET_BINARY)
