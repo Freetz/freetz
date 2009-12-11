@@ -8,9 +8,9 @@ disk_logarithm1_chk=''; disk_logarithm2_chk=''; disk_logarithm3_chk='';
 disk_logarithm4_chk=''; logarithm1_chk=''; logarithm2_chk='';
 logarithm3_chk=''; logarithm4_chk=''; xchg_rxtx1_chk=''; xchg_rxtx2_chk='';
 xchg_rxtx3_chk=''; xchg_rxtx4_chk=''; uptime_enb_chk=''; savebackup_chk='';
-thomsonthg_chk=''; thomsonadv_chk=''; webenabled_chk=''; digitemp1w_chk='';
-digitemp_c_chk=''; digitemp_f_chk=''; digitemp85_chk=''; digitemp_a_chk='';
-digitemp_http_chk=''; delbackup_chk=''
+thomsonthg_chk=''; thomsonadv_chk=''; webenabled_chk=''; web_auth_chk='';
+digitemp1w_chk=''; digitemp_c_chk=''; digitemp_f_chk=''; digitemp85_chk='';
+digitemp_a_chk=''; digitemp_http_chk=''; digitemp_auth_chk=''; delbackup_chk=''
 
 if [ "$RRDSTATS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
 if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then xchgupdown_chk=' checked'; fi
@@ -33,6 +33,7 @@ if [ "$RRDSTATS_DELBACKUP" = "yes" ]; then delbackup_chk=' checked'; fi
 if [ "$RRDSTATS_CPU100PERC" = "yes" ]; then cpu100perc_chk=' checked'; fi
 if [ "$RRDSTATS_UPTIME_ENB" = "yes" ]; then uptime_enb_chk=' checked'; fi
 if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then webenabled_chk=' checked'; fi
+if [ "$RRDSTATS_WEB_AUTH"   = "yes" ]; then web_auth_chk=' checked'; fi
 if [ "$RRDSTATS_THOMSONTHG" = "yes" ]; then thomsonthg_chk=' checked'; fi
 if [ "$RRDSTATS_THOMSONADV" = "yes" ]; then thomsonadv_chk=' checked'; fi
 if [ "$RRDSTATS_DIGITEMP1W" = "yes" ]; then digitemp1w_chk=' checked'; fi
@@ -40,6 +41,7 @@ if [ "$RRDSTATS_DIGITEMP_C" = "yes" ]; then digitemp_c_chk=' checked'; else digi
 if [ "$RRDSTATS_DIGITEMP85" = "yes" ]; then digitemp85_chk=' checked'; fi
 if [ "$RRDSTATS_DIGITEMP_A" = "yes" ]; then digitemp_a_chk=' checked'; fi
 if [ "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then digitemp_http_chk=' checked'; fi
+if [ "$RRDSTATS_DIGITEMP_AUTH" = "yes" ]; then digitemp_auth_chk=' checked'; fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -68,14 +70,28 @@ sec_end
 sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
 cat << EOF
-
 <p>
 <input type="hidden" name="webenabled" value="no">
 <input id="w1" type="checkbox" name="webenabled" value="yes"$webenabled_chk><label for="w1"></label>
 $(lang de:"Zus&auml;tzlichen Webserver aktiveren auf Port" en:"Activate additional webserver on port")&nbsp;
 <input type="text" name="webtcpport" size="4" maxlength="5" value="$(html "$RRDSTATS_WEBTCPPORT")">
 </p>
+EOF
 
+if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then
+cat << EOF
+<p>
+<input type="hidden" name="web_auth" value="no">
+<input id="a1" type="checkbox" name="web_auth" value="yes"$web_auth_chk><label for="a1">$(lang de:"Authentifizierung" en:"Authentication").</label>
+$(lang de:"Benutzer" en:"User"):
+<input type="text" name="web_user" size="15" maxlength="15" value="$(html "$RRDSTATS_WEB_USER")">
+$(lang de:"Passwort" en:"Password"):
+<input type="password" name="web_pass" size="15" maxlength="15" value="$(html "$RRDSTATS_WEB_PASS")">
+</p>
+EOF
+fi
+
+cat << EOF
 <p>$(lang de:"Tempor&auml;res Verzeichnis" en:"Temporary folder"):&nbsp;<input type="text" name="rrdtemp" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDTEMP")"></p>
 <p>$(lang de:"Persistentes Verzeichnis" en:"Persistent folder"):&nbsp;<input type="text" name="rrddata" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDDATA")"></p>
 <p>$(lang de:"Aufzeichnungsintervall in Sekunden" en:"Log interval in seconds"):&nbsp;<input type="text" name="interval" size="3" maxlength="9" value="$(html "$RRDSTATS_INTERVAL")"></p>
@@ -269,8 +285,25 @@ $(lang de:"Webserver aktiveren auf Port" en:"Activate webserver on port")&nbsp;
 <input type="text" name="digitemp_port" size="4" maxlength="5" value="$(html "$RRDSTATS_DIGITEMP_PORT")">
 </p>
 
+EOF
+
+if [ "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then
+cat << EOF
 <p>
-$(lang de:"Maﬂeinheit" en:"Unit of measure"):
+<input type="hidden" name="digitemp_auth" value="no">
+<input id="a2" type="checkbox" name="digitemp_auth" value="yes"$digitemp_auth_chk><label for="a2">$(lang de:"Authentifizierung" en:"Authentication").</label>
+$(lang de:"Benutzer" en:"User"):
+<input type="text" name="digitemp_user" size="15" maxlength="15" value="$(html "$RRDSTATS_DIGITEMP_USER")">
+$(lang de:"Passwort" en:"Password"):
+<input type="password" name="digitemp_pass" size="15" maxlength="15" value="$(html "$RRDSTATS_DIGITEMP_PASS")">
+</p>
+EOF
+fi
+
+cat << EOF
+
+<p>
+$(lang de:"Ma&szlig;einheit" en:"Unit of measure"):
 <input id="m1" type="radio" name="digitemp_c" value="yes"$digitemp_c_chk><label for="m1">Celsius</label>
 <input id="m2" type="radio" name="digitemp_c" value="no"$digitemp_f_chk><label for="m2">Fahrenheit</label>
 </p>
@@ -291,7 +324,7 @@ max:<input type="text" name="digitemp_u" size="3" maxlength="4" value="$(html "$
 <p>
 <input type="hidden" name="digitemp85" value="no">
 <input id="d2" type="checkbox" name="digitemp85" value="yes"$digitemp85_chk><label for="d2"></label>
-$(lang de:"Unterdr&uuml;cke 85,0000∞C (Fehler und Werte)" en:"Ignore 185.0000∞F (errors and values)")
+$(lang de:"Unterdr&uuml;cke 85,000000&deg;C (Fehler und Werte)" en:"Ignore 185.000000&deg;F (errors and values)")
 </p>
 
 <p>
@@ -322,4 +355,3 @@ EOF
 
 sec_end
 fi
-
