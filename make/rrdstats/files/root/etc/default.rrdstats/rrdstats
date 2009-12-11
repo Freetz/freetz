@@ -235,20 +235,22 @@ one_alert() {
 
 		_ALERT_FILE=/tmp/rrdstats/digitemp_alert.$_ALERT_NUM
 		if [ -f $_ALERT_FILE ]; then
-			[ $(( `cat $_ALERT_FILE`+$_ALERT_SEC )) -gt `date +%s` ] && return
+			[ $(( `cat $_ALERT_FILE`+$_ALERT_SEC )) -gt `date +%s` ] && continue
 		fi
 
+		_ALERT_2DO=no
+		_ALERT_RND=`printf %.1f $1|sed 's/\.//'`
 		_ALERT_VAL=`echo $_ALERT| cut -d " " -f2`
 		case "`echo $_ALERT| cut -d " " -f3`" in
 			MAX|Max|max)
-				[ $1 -gt $_ALERT_VAL ] && _ALERT_2DO=yes
+				[ "$_ALERT_RND" -gt ${_ALERT_VAL}0 ] && _ALERT_2DO=yes
 			;;
 			MIN|Min|min)
-				[ $1 -lt $_ALERT_VAL ] && _ALERT_2DO=yes
+				[ "$_ALERT_RND" -lt ${_ALERT_VAL}0 ] && _ALERT_2DO=yes
 			;;
 		esac
 
-		[ "$_ALERT_2DO" != yes ] && return
+		[ "$_ALERT_2DO" != yes ] && continue
 		echo `date +%s` > $_ALERT_FILE
 		echo "`echo $_ALERT| cut -d " " -f5-`" > $_ALERT_FILE.run
 		chmod +x $_ALERT_FILE.run
