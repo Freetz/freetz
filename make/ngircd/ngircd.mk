@@ -10,55 +10,25 @@ $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_ZLIB
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_SSL
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NGIRCD_STATIC
 
-$(PKG)_LDFLAGS = ""
-$(PKG)_LIBS = ""
-
 ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS)),y)
-$(PKG)_DEPENDS_ON := tcp_wrappers
-$(PKG)_CONFIGURE_OPTIONS += --with-tcp-wrappers=$(TARGET_TOOLCHAIN_STAGING_DIR)
-$(PKG)_LDFLAGS += -lwrap
-else
-$(PKG)_CONFIGURE_OPTIONS += --without-tcp-wrappers
+$(PKG)_DEPENDS_ON += tcp_wrappers
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_ZLIB)),y)
-$(PKG)_DEPENDS_ON := zlib
-NGIRCD_LDFLAGS += -lz
-$(PKG)_CONFIGURE_OPTIONS += --with-zlib
-else
-$(PKG)_CONFIGURE_OPTIONS += --without-zlib
+$(PKG)_DEPENDS_ON += zlib
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_SSL)),y)
-$(PKG)_DEPENDS_ON := openssl
-$(PKG)_CONFIGURE_OPTIONS += --with-openssl
-
-ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS)),y)
-NGIRCD_LIBS := -lssl -lcrypto -ldl -lwrap
-else
-NGIRCD_LIBS := -lssl -lcrypto -ldl
-endif
-ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_ZLIB)),y)
-NGIRCD_LIBS := -lssl -lcrypto -ldl -lz
-else
-NGIRCD_LIBS := -lssl -lcrypto -ldl
+$(PKG)_DEPENDS_ON += openssl
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_STATIC)),y)
-NGIRCD_LDFLAGS += -static
-ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_ZLIB)),y)
-ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS)),y)
-NGIRCD_LIBS := -lssl -lcrypto -ldl -lwrap -lz
-endif
-endif
-else
-NGIRCD_LIBS := -lssl -lcrypto -ldl
-endif
-else
-$(PKG)_CONFIGURE_OPTIONS += --without-openssl
-NGIRCD_LDFLAGS += -ldl
+$(PKG)_LDFLAGS += -static
 endif
 
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS),--with-tcp-wrappers,--without-tcp-wrappers)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_ZLIB),--with-zlib,--without-zlib)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_SSL),--with-openssl,--without-openssl)
 $(PKG)_CONFIGURE_OPTIONS += --with-syslog
 $(PKG)_CONFIGURE_OPTIONS += --without-ident
 $(PKG)_CONFIGURE_OPTIONS += --without-zeroconf
@@ -71,10 +41,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(NGIRCD_DIR) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS) $(NGIRCD_LDFLAGS)" \
-		LIBS="$(NGIRCD_LIBS)"
+		LDFLAGS="$(TARGET_LDFLAGS) $(NGIRCD_LDFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
