@@ -194,5 +194,5 @@ static_addons()
 pkg_name() 
 {
 	local name=$1
-	echo "$name" | sed -e 's/-BETA$//' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//'
+	echo "$name" | sed -e 's/-ALPHA$//I' -e 's/-BETA$//I' -e 's/-[0-9][^-]*$//' -e 's/-cgi$//'
 }
