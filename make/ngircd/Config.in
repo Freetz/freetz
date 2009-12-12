@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_NGIRCD
-	bool "ngircd 14.1 (binary only)"
+	bool "ngircd 15 (binary only)"
 	default n
 	help
 		ngIRCd is an Open Source server for the Internet Relay Chat (IRC), which
@@ -16,3 +16,31 @@ config FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS
 	default n
 	help
 		This option adds TCP WRAPPERS support to ngircd
+
+config FREETZ_PACKAGE_NGIRCD_WITH_ZLIB
+	bool "With zlib Compression"
+	depends on FREETZ_PACKAGE_NGIRCD
+	select FREETZ_LIB_libz
+	default n
+	help
+		ZLIB Compression for IRC Traffic
+
+config FREETZ_PACKAGE_NGIRCD_WITH_SSL
+	bool "build with SSL support"
+	depends on FREETZ_PACKAGE_NGIRCD
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_NGIRCD_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_NGIRCD_STATIC
+	select FREETZ_LIB_libdl if ! FREETZ_PACKAGE_NGIRCD_STATIC
+	default n
+	help
+		This option enables SSL support for ngircd.
+
+config FREETZ_PACKAGE_NGIRCD_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_NGIRCD_WITH_SSL
+	default n
+	help
+		ngircd with SSL support needs the following shared libraries which
+		can be linked in statically by activating this switch:
+		- libcrypto
+		- libssl
