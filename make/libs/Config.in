@@ -468,6 +468,15 @@ config FREETZ_LIB_libglib_2
 
 		GLib2 is needed by Irssi
 
+config FREETZ_LIB_libgio_2
+	bool "libgio-2.0.so"
+	select FREETZ_LIB_libglib_2
+	select FREETZ_LIB_libgmodule_2
+	select FREETZ_LIB_libgobject_2
+	default n
+	help
+		Input, output and streaming API of GLib.
+
 config FREETZ_LIB_libgobject_2
 	bool "libgobject-2.0.so"
 	select FREETZ_LIB_libglib_2
