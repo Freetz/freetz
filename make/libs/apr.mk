@@ -56,7 +56,6 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-$(APR_MAJOR_VERSION)-config
 	sed -i -r $(foreach key,apr_builddir apr_builders,$(call PKG_FIX_LIBTOOL_LA__INT,$(key))) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/$(APR_BUILD_DIR)/apr_rules.mk
-
 	# fixes taken from openwrt
 	sed -i -e 's|-[LR][$$]libdir||g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-$(APR_MAJOR_VERSION)-config
 

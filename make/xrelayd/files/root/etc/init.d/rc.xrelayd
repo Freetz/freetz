@@ -89,7 +89,11 @@ case "$1" in
 		start
 		;;
 	status)
-		modlib_status
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

@@ -2,6 +2,7 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
+. /usr/bin/lighttpd_has
 
 let _width=$_cgi_width-230
 
@@ -13,7 +14,7 @@ if [ -n "$CHROOT" ]; then
 	LOGE="$CHROOT/$LOGE"
 fi
 
-if [ -f /usr/lib/lighttpd/mod_accesslog.so ]; then
+if [ "$(has_mod accesslog)" = "yes" ]; then
 	if [ -r "$LOGA" ]; then
         	echo "<h1>lighttpd access log $LOGA</h1>"
 	        echo -n '<pre style="height: 480px; width: '$_width'px; overflow: auto;">'
@@ -34,4 +35,3 @@ if [ -r "$LOGE" ]; then
 else
 	echo "<h1>lighttpd error log unavailable</h1>"
 fi
-

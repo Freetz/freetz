@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 0.2.1.20)
+$(call PKG_INIT_BIN, 0.2.2.6-alpha)
 $(PKG)_SOURCE:=tor-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.torproject.org/dist
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tor
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=0d62ee2332fdd95de43debac7435df19
+$(PKG)_SOURCE_MD5:=359c1e1abcbd1ec5a4d851c5b389b58f
 
 $(PKG)_DEPENDS_ON := zlib openssl libevent
 

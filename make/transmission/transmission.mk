@@ -62,6 +62,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
 	# remove all non-min.js files, these are not needed
 	for f in $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)/javascript/jquery/*.js; do if ! (echo "$$f" | grep -q '\.min\.js$$' >/dev/null 2>&1); then $(RM) "$$f"; fi; done
 	chmod 644 $(TRANSMISSION_TARGET_WEBINTERFACE_INDEX_HTML)
+	touch $@
 endif
 
 $(pkg):

@@ -1,12 +1,12 @@
-$(call PKG_INIT_BIN, 1.4.24)
+$(call PKG_INIT_BIN, 1.4.25)
 $(PKG)_SOURCE:=lighttpd-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://www.lighttpd.net/download
+$(PKG)_SOURCE_MD5:=2027c49fb46530e45338c5e2da13c02f
+$(PKG)_SITE:=http://download.lighttpd.net/lighttpd/releases-1.4.x/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lighttpd
 $(PKG)_MODULE_BINARY:=$($(PKG)_DIR)/src/.libs/mod_access.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lighttpd
 $(PKG)_LIB_DIR:=$($(PKG)_DEST_DIR)/usr/lib/lighttpd
 $(PKG)_MODULE_TARGET_BINARY:=$($(PKG)_LIB_DIR)/mod_access.so
-$(PKG)_SOURCE_MD5:=e2324a24e4a5bce74663c21c58ddd200
 
 # include selected modules to remove
 include $($(PKG)_MAKE_DIR)/lighttpd.in

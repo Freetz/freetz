@@ -4,6 +4,7 @@ DAEMON=lighttpd
 DAEMON_LONG_NAME="lighttpd web server"
 
 . /etc/init.d/modlibrc
+. /usr/bin/lighttpd_has
 
 pre_config() {
 	modlib_addgroup wwwrun
@@ -22,7 +23,7 @@ cleanup() {
 
 status_log() {
 	if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
-		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ -f /usr/lib/lighttpd/mod_accesslog.so -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
+		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ "$(has_mod accesslog)" = "yes" -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
 			modreg status lighttpd lighttpd-log lighttpd/lighttpd-log
 		fi
 	fi
@@ -45,10 +46,9 @@ configure() {
 	) > /mod/etc/$DAEMON/$DAEMON.conf
 
 	status_log
-	
 }
 
-stop () {
+stop() {
 	echo -n "Stopping $DAEMON_LONG_NAME..."
 	exitval=255
 	if [ -s /var/run/rc.lighttpd.pid ]; then
@@ -115,7 +115,7 @@ case "$1" in
 
 		modreg cgi 'lighttpd' 'lighttpd'
 
-		if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
+		if has_ssl_support >/dev/null; then
 			deffile='/mod/etc/default.lighttpd/lighttpd_crt.def'
 			[ -r /tmp/flash/lighttpd_crt.def ] && deffile='/tmp/flash/lighttpd_crt.def'
 			modreg file 'lighttpd_crt' 'lighttpd: Cert/Key' 0 "$deffile"
@@ -124,7 +124,7 @@ case "$1" in
 			modreg file 'lighttpd_ca' 'lighttpd: CA Cert' 0 "$deffile"
 		fi
 
-		if [ -f /usr/lib/lighttpd/mod_auth.so ]; then
+		if has_mod auth >/dev/null; then
 			deffile='/mod/etc/default.lighttpd/lighttpd_user.def'
 			[ -r /tmp/flash/lighttpd_user.def ] && deffile='/tmp/flash/lighttpd_user.def'
 			modreg file 'lighttpd_user' 'lighttpd: Accounts' 0 "$deffile"
@@ -147,11 +147,11 @@ case "$1" in
 		;;
 	unload)
 		modlib_stop
-		if strings /usr/bin/lighttpd | grep -q "+ SSL Support"; then
+		if has_ssl_support >/dev/null; then
 			modunreg file 'lighttpd_crt'
 			modunreg file 'lighttpd_ca'
 		fi
-		if [ -f /usr/lib/lighttpd/mod_auth.so ]; then
+		if has_mod auth >/dev/null; then
 			modunreg file 'lighttpd_user'
 			modunreg file 'lighttpd_rights'
 		fi

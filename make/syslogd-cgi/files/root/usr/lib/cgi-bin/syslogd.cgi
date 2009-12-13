@@ -64,7 +64,7 @@ cat << EOF
 <li style="list-style-type: none">
 <h2>
 <input id="r3" type="radio" name="logging" value="log_to_file"$log_to_file_chk>
-<label for="r3">$(lang de:"in Logfile" en:"in logfile")</label>
+<label for="r3">$(lang de:"in Logfile" en:"in logfile") (/var/log/messages)</label>
 </h2>
 <ul>
 <li style="list-style-type: none">

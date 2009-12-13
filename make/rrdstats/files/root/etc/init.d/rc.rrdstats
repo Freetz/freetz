@@ -39,8 +39,20 @@ start() {
 	rm -f /tmp/rrdstats/digitemp_alert*
 
 	stop_webserver
-	[ "$RRDSTATS_WEBENABLED" = "yes" ] && httpd -P $HTTPD_PID_RRD -p $RRDSTATS_WEBTCPPORT -h /mod/pkg/rrdstats/usr/mww-rrd
-	[ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" ] && httpd -P $HTTPD_PID_ONE -p $RRDSTATS_DIGITEMP_PORT -h /mod/pkg/rrdstats/usr/mww-one
+	if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then
+		if [ "$RRDSTATS_WEB_AUTH" = yes ]; then
+			echo "/:$RRDSTATS_WEB_USER:`httpd -m $RRDSTATS_WEB_PASS`" >/mod/etc/httpd-rrd.conf
+			RRD_CONF="-c /mod/etc/httpd-rrd.conf"
+		fi
+		httpd -P $HTTPD_PID_RRD -p $RRDSTATS_WEBTCPPORT $RRD_CONF -h /mod/pkg/rrdstats/usr/mww-rrd
+	fi
+	if [ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then
+		if [ "$RRDSTATS_DIGITEMP_AUTH" = yes ]; then
+			echo "/:$RRDSTATS_DIGITEMP_USER:`httpd -m $RRDSTATS_DIGITEMP_PASS`" >/mod/etc/httpd-one.conf
+			ONE_CONF="-c /mod/etc/httpd-one.conf"
+		fi
+		httpd -P $HTTPD_PID_ONE -p $RRDSTATS_DIGITEMP_PORT $ONE_CONF -h /mod/pkg/rrdstats/usr/mww-one
+	fi
 
 	start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
 	exitval=$?

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.0.2)
-$(PKG)_SOURCE:=vtun-$(VTUN_VERSION).tar.gz
-$(PKG)_SITE:=http://prdownloads.sourceforge.net/vtun
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=@SF/vtun
 $(PKG)_BINARY:=$($(PKG)_DIR)/vtund
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/vtund
 $(PKG)_STARTLEVEL=50
@@ -37,8 +37,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(VTUN_DIR) \
+	$(SUBMAKE) -C $(VTUN_DIR) \
 		EXTRA_LDFLAGS="$(VTUN_LDFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -49,7 +48,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(VTUN_DIR) clean
+	-$(SUBMAKE) -C $(VTUN_DIR) clean
 	$(RM) $(VTUN_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:

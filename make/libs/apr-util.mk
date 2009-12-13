@@ -45,7 +45,6 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	# additional fixes not (yet?) covered by $(PKG_FIX_LIBTOOL_LA)
 	sed -i -r $(foreach key,bindir datarootdir datadir,$(call PKG_FIX_LIBTOOL_LA__INT,$(key))) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apu-$(APR_UTIL_MAJOR_VERSION)-config
-
 	# fixes taken from openwrt
 	sed -i -e 's|-[LR][$$]libdir||g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apu-$(APR_UTIL_MAJOR_VERSION)-config
 

@@ -1,0 +1,11 @@
+--- src/ngircd/ngircd.c.orig	2009-10-31 19:50:20.000000000 +0100
++++ src/ngircd/ngircd.c		2009-10-31 19:27:09.000000000 +0100
+@@ -105,7 +105,7 @@
+ #ifdef SNIFFER
+ 	NGIRCd_Sniffer = false;
+ #endif
+-	strlcpy( NGIRCd_ConfFile, SYSCONFDIR, sizeof( NGIRCd_ConfFile ));
++	/* strlcpy( NGIRCd_ConfFile, SYSCONFDIR, sizeof( NGIRCd_ConfFile )); */
+ 	strlcat( NGIRCd_ConfFile, CONFIG_FILE, sizeof( NGIRCd_ConfFile ));
+ 
+ 	Fill_Version( );

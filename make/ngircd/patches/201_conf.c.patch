@@ -1,0 +1,10 @@
+--- src/ngircd/conf.c.orig	2009-11-21 20:05:51.000000000 +0100
++++ src/ngircd/conf.c		2009-11-21 20:06:37.000000000 +0100
+@@ -536,7 +536,7 @@
+ 	strcpy(Conf_ServerAdmin2, "");
+ 	strcpy(Conf_ServerAdminMail, "");
+ 
+-	strlcpy(Conf_MotdFile, SYSCONFDIR, sizeof(Conf_MotdFile));
++	/* strlcpy(Conf_MotdFile, SYSCONFDIR, sizeof(Conf_MotdFile)); */
+ 	strlcat(Conf_MotdFile, MOTD_FILE, sizeof(Conf_MotdFile));
+ 	strlcpy(Conf_MotdPhrase, MOTD_PHRASE, sizeof(Conf_MotdPhrase));

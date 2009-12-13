@@ -1,20 +1,35 @@
-$(call PKG_INIT_BIN, 14.1)
+$(call PKG_INIT_BIN, 15)
 $(PKG)_SOURCE:=ngircd-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.berlios.de/pub/ngircd
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ngircd/ngircd
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ngircd
-$(PKG)_SOURCE_MD5:=eef90855414c35bfb6590d17e24ee06f
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ngircd
+$(PKG)_SOURCE_MD5:=c183a85eba6fe51255983848f099c8ae
+
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_ZLIB
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_SSL
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NGIRCD_STATIC
 
 ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS)),y)
 $(PKG)_DEPENDS_ON += tcp_wrappers
 endif
 
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS
+ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_ZLIB)),y)
+$(PKG)_DEPENDS_ON += zlib
+endif
 
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS),--with-tcp-wrappers=$(TARGET_TOOLCHAIN_STAGING_DIR),--without-tcp-wrappers)
+ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_SSL)),y)
+$(PKG)_DEPENDS_ON += openssl
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_STATIC)),y)
+$(PKG)_LDFLAGS += -static
+endif
+
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS),--with-tcp-wrappers,--without-tcp-wrappers)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_ZLIB),--with-zlib,--without-zlib)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_SSL),--with-openssl,--without-openssl)
 $(PKG)_CONFIGURE_OPTIONS += --with-syslog
-$(PKG)_CONFIGURE_OPTIONS += --without-zlib
-$(PKG)_CONFIGURE_OPTIONS += --without-openssl
 $(PKG)_CONFIGURE_OPTIONS += --without-ident
 $(PKG)_CONFIGURE_OPTIONS += --without-zeroconf
 $(PKG)_CONFIGURE_OPTIONS += --without-kqueue
@@ -25,6 +40,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(NGIRCD_DIR)
+		LDFLAGS="$(TARGET_LDFLAGS) $(NGIRCD_LDFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

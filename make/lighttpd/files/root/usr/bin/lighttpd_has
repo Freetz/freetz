@@ -1,0 +1,57 @@
+#!/bin/sh
+
+has_ssl_support() {
+	if [ -x /usr/bin/lighttpd ]; then # could be external'ed and thus not (yet) available
+		(/usr/bin/lighttpd -V | grep -q "+ SSL Support" >/dev/null 2>&1) && ret="true" || ret="false"
+	elif [ -f /etc/.config ]; then # could be removed from the image
+		grep -q "FREETZ_PACKAGE_LIGHTTPD_WITH_SSL=y" /etc/.config >/dev/null 2>&1 && ret="true" || ret="false"
+	else
+		# we cannot determine it, fallback to yes
+		ret="true"
+	fi
+	$ret && echo "yes" || echo "no"
+	$ret
+}
+
+has_mod() {
+	local module=$1
+	if [ -z "$module" ]; then
+		ret="false"
+	elif [ -f "/usr/lib/lighttpd/mod_$module.so" ]; then # could be external'ed and thus not (yet) available
+		ret="true"
+	elif [ -f "/usr/lib/lighttpd/mod_access.so" ]; then
+		# mod_access is always included in the image
+		# its availability means that the media containing
+		# external'ed files could be accessed
+		# => requested module doesn't exist (otherwise the previous elif would be true)
+		ret="false"
+	elif [ -f /etc/.config ]; then # .config could be removed from the image
+		# note the inverted logic, if module is removed from the image
+		# the corresponding entry is contained in .config
+		grep -q "FREETZ_PACKAGE_LIGHTTPD_NO_MOD_$(echo -n $module | tr [[:lower:]] [[:upper:]])=y" /etc/.config >/dev/null 2>&1 && ret="false" || ret="true"
+	else
+		# we cannot determine it, fallback to no
+		ret="false"
+	fi
+	$ret && echo "yes" || echo "no"
+	$ret
+}
+
+case "$1" in
+	ssl-support|ssl_support)
+		has_ssl_support
+		;;
+	mod)
+		has_mod $2
+		;;
+	*)
+		bsname="$(basename "$0")"
+		if [ "$bsname" = "lighttpd_has" ]; then
+			echo "Usage: $bsname [ssl-support|mod modulename]" 1>&2
+			exit 1
+		else
+			# lighttpd_has has been dot included, do nothing
+			true
+		fi
+		;;
+esac
