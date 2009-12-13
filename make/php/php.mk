@@ -15,13 +15,14 @@ $(PKG)_DEPENDS_ON := pcre
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_GD)),y)
 $(PKG)_DEPENDS_ON += jpeg libpng
 endif
-ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SQLITE)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SQLITE3)),y)
 $(PKG)_DEPENDS_ON += sqlite
 endif
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_STATIC
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_GD
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_SQLITE
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_SQLITE2
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_SQLITE3
 
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ssize_t=4
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ptrdiff_t=4
@@ -51,9 +52,13 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-xml
 $(PKG)_CONFIGURE_OPTIONS += --disable-xmlreader
 $(PKG)_CONFIGURE_OPTIONS += --disable-xmlwriter
 $(PKG)_CONFIGURE_OPTIONS += --without-pear
-$(PKG)_CONFIGURE_OPTIONS += --without-sqlite #sqlite-v2
-ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SQLITE)),y)
-$(PKG)_CONFIGURE_OPTIONS += --with-pdo-sqlite="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" #sqlite-v3
+ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SQLITE2)),y)
+$(PKG)_CONFIGURE_OPTIONS += --with-sqlite
+else
+$(PKG)_CONFIGURE_OPTIONS += --without-sqlite
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SQLITE3)),y)
+$(PKG)_CONFIGURE_OPTIONS += --with-pdo-sqlite="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 else
 $(PKG)_CONFIGURE_OPTIONS += --without-pdo-sqlite
 endif

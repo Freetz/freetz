@@ -20,7 +20,16 @@ config FREETZ_PACKAGE_PHP_WITH_GD
 	help
 		This option enables the GD support for PHP
 
-config FREETZ_PACKAGE_PHP_WITH_SQLITE
+config FREETZ_PACKAGE_PHP_WITH_SQLITE2
+	bool "build with SQLite (v2) support"
+	depends on FREETZ_PACKAGE_PHP
+	default n
+	help
+		This option enables the SQLite (v2) support for PHP
+		NB: SQLite v2 is somewhat deprecated. If you're developing
+		a new application you probably don't want to activate this option.
+
+config FREETZ_PACKAGE_PHP_WITH_SQLITE3
 	bool "build with SQLite (v3) support"
 	depends on FREETZ_PACKAGE_PHP
 	select FREETZ_LIB_libsqlite3 if ! FREETZ_PACKAGE_PHP_STATIC
