@@ -12,7 +12,7 @@ config FREETZ_PACKAGE_NGIRCD
 config FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS
 	bool "Add TCP_WRAPPERS support"
 	depends on FREETZ_PACKAGE_NGIRCD
-	select FREETZ_PACKAGE_TCP_WRAPPERS
+	select FREETZ_PACKAGE_TCP_WRAPPERS if ! FREETZ_PACKAGE_NGIRCD_STATIC
 	default n
 	help
 		This option adds TCP WRAPPERS support to ngircd
@@ -20,7 +20,7 @@ config FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS
 config FREETZ_PACKAGE_NGIRCD_WITH_ZLIB
 	bool "With zlib Compression"
 	depends on FREETZ_PACKAGE_NGIRCD
-	select FREETZ_LIB_libz
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_NGIRCD_STATIC
 	default n
 	help
 		ZLIB Compression for IRC Traffic
