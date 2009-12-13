@@ -1,0 +1,15 @@
+config EXTERNAL_FREETZ_PACKAGE_VNSTAT
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_VNSTAT
+	bool "vnstat"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/vnstat
+
+config EXTERNAL_FREETZ_PACKAGE_VNSTAT_DAEMON
+	depends on EXTERNAL_FREETZ_PACKAGE_VNSTAT && FREETZ_PACKAGE_VNSTAT_DAEMON && FREETZ_SHOW_ADVANCED 
+	bool "vnstat daemon"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/vnstatd

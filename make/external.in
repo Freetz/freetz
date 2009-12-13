@@ -53,7 +53,7 @@ source make/vim/external.in
 source make/wol/external.in
 source make/wput/external.in
 comment "services"
-	depends on EXTERNAL_ENABLED
+	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
 source make/checkmaild/external.in
 source make/knock/external.in
 source make/openssh/external.in
@@ -65,6 +65,7 @@ source make/subversion/external.in
 source make/tinc/external.in
 source make/tor/external.in
 source make/vsftpd/external.in
+source make/vnstat/external.in
 source make/vtun/external.in
 comment "libraries"
 	depends on EXTERNAL_ENABLED
