@@ -176,9 +176,12 @@ PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODIN
 # Use $< (first prerequisite) rather than $^ (all prerequisites), because
 # otherwise there will be errors when make tries to copy multiple source files
 # into one target binary.
-define INSTALL_BINARY_STRIP
+define INSTALL_BINARY
 mkdir -p $(dir $@)
 cp $< $@
+endef
+define INSTALL_BINARY_STRIP
+$(INSTALL_BINARY)
 $(TARGET_STRIP) $@
 endef
 define INSTALL_LIBRARY_STRIP__INT
