@@ -1,5 +1,5 @@
---- etc/hotplug/run_mount.orig	2009-06-24 07:37:50.000000000 +0000
-+++ etc/hotplug/run_mount	2009-06-24 07:37:51.000000000 +0000
+--- etc/hotplug/run_mount.orig	2009-06-27 17:13:01.810087361 +0200
++++ etc/hotplug/run_mount	2009-06-27 17:13:08.118083969 +0200
 @@ -22,19 +22,9 @@
  
  ## Generate a frontend'able 'nice name' to be used as mount point:
@@ -47,7 +47,7 @@
 +		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +		;;
 +	ntfs)
-+		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o $READMODE -o force -o locale=de_DE.ISO-8859-1
++		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
 +		;;
 +	reiserfs)
 +		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
@@ -61,54 +61,12 @@
  ## Actually perform the mount operation...
  ## (TODO Checking the partition for known filesystem types)
  do_mount () {
-@@ -79,41 +100,7 @@
- ## run mount with umask 0 so everyone is allowed to rwx everywhere
+@@ -80,7 +101,7 @@
  local OLD_UMASK=`umask`
  umask 0
--local new_filesystem=false
+ local new_filesystem=false
 -if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
--new_filesystem=true
--else
--if test -x /bin/ntfs-3g ; then
--ntfs-3g $DEVNODE $MNTPATH -o $READMODE -o locale=de_DE.ISO-8859-1
--local NTFS_RET=$?
--case "$NTFS_RET" in
--0 )
--new_filesystem=true
--;;
--12 ) # NTFS_VOLUME_NOT_NTFS
--## ignore - not formatted with NTFS
--;;
--15 ) # NTFS_VOLUME_UNCLEAN_UNMOUNT
--## need option -o force, but we don't do this, because its not safe!
--eventadd 144 $MNTNAME
--## no fail event later on
--FAIL_EVENT=0
--led-ctrl filesystem_mount_failure
--;;
--* )
--## NTFS mount error
--eventadd 145 $MNTNAME $NTFS_RET
--## no fail event later on
--FAIL_EVENT=0
--led-ctrl filesystem_mount_failure
--;;
--esac
--else
--echo "ntfs not yet ready -> mount later" > /dev/ttyS0
--FAIL_EVENT=0
--fi
--fi
--if [ $new_filesystem = true ] ; then
 +if mount_fs; then
- FAIL_EVENT=0
- umask $OLD_UMASK
- eventadd 140 $MNTNAME
-@@ -155,6 +142,7 @@
+ new_filesystem=true
  else
- umask $OLD_UMASK
- rmdir $MNTPATH
-+eventadd 142 $MNTNAME NOTMOUNTABLE
- fi
- if grep $MNTPATH /proc/mounts > /dev/null; then
- if test -f $1; then
+ if test -x /bin/ntfs-3g ; then
