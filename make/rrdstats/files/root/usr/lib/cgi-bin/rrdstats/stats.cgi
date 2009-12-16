@@ -461,7 +461,7 @@ generate_graph() {
 					[ -z "$_COLOR" ] && _COLOR="#999999"
 					_SENSOR_GEN=" $_SENSOR_GEN				\
 					 DEF:temp$_SENSOR_CUR=$FILE:temp:AVERAGE		\
-					 LINE3:temp$_SENSOR_CUR$_COLOR:$_ALIAS(min/avg/max/cur)[Â°${_SENSOR_UOM:0:1}]	\
+					 LINE3:temp$_SENSOR_CUR$_COLOR:$_ALIAS(min/avg/max/cur)[°${_SENSOR_UOM:0:1}]	\
 					 GPRINT:temp$_SENSOR_CUR:MIN:\t%8.3lf			\
 					 GPRINT:temp$_SENSOR_CUR:AVERAGE:%8.3lf			\
 					 GPRINT:temp$_SENSOR_CUR:MAX:%8.3lf			\
