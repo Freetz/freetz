@@ -13,3 +13,11 @@ config EXTERNAL_FREETZ_PACKAGE_VNSTAT_DAEMON
 	help
 		externals these file(s):
 		 /usr/bin/vnstatd
+
+config EXTERNAL_FREETZ_PACKAGE_VNSTAT_IMAGE
+	depends on EXTERNAL_FREETZ_PACKAGE_VNSTAT && FREETZ_PACKAGE_VNSTAT_IMAGE 
+	bool "vnstat image"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/vnstati
