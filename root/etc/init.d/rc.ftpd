@@ -1,0 +1,140 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+
+DAEMON=ftpd
+DAEMON_LONG_NAME="$DAEMON AVM FTP Server"
+PIDFILE=/var/run/ftpd.pid
+BINARY=$(which $DAEMON)
+
+INETDCTL=$(which inetdctl)
+
+pid() {
+	cat "$PIDFILE"
+}
+
+start() {
+	exitval=1
+	local ftp_timeout=30
+	local ftp_sessions=15
+	local ftp_host="$CONFIG_PRODUKT_NAME"
+	local ftp_options="-D -q --pidfile=$PIDFILE -t $ftp_timeout -m $ftp_sessions"
+	AVM_FTP_ENABLED=$(echo usbhost.ftp_server_enabled|usbcfgctl -s)
+	echo -n "Starting $DAEMON_LONG_NAME..."
+	if [ "$AVM_FTP_ENABLED" != "no" ]
+	then	
+		if [ -n "$BINARY" ]
+		then
+			if [ -n "$INETDCTL" ]
+			then
+				$INETDCTL enable $DAEMON
+				exitval=$?
+			else
+				AVM_FTP_USER=$(echo usbhost.users_enabled|usbcfgctl -s)
+				if [ "$AVM_FTP_USER" = "yes" ]
+				then
+					local ftp_options="$ftp_options -U"
+				else
+					AVM_FTP_RO=$(echo usbhost.readonly|usbcfgctl -s)
+					if [ "$READFLAG" != "no" ]
+					then
+						local ftp_options="$ftp_options -r"
+					fi
+				fi
+				${BINARY} ${ftp_options} -h "${ftp_host}"
+				exitval=$?
+			fi
+		else
+			echo 'not found.'
+			return 1
+		fi
+	else
+		echo 'disabled.'
+		return 1
+	fi
+	if [ "$exitval" -eq 0 ]; then
+		echo "done."
+	else
+		echo "failed."
+		return $exitval
+	fi
+}
+
+stop() {
+	local status=1
+	echo -n "Stopping ${DAEMON_LONG_NAME-$DAEMON}..."
+	if [ -n "$BINARY" ]
+	then
+		if [ -n "$INETDCTL" ]
+		then
+			$INETDCTL disable $DAEMON
+			local status=$?
+		else
+			local fn=${PID_FILE-/var/run/$DAEMON.pid}
+			if ! modlib_check_running
+			then
+				echo 'not running.'
+				return 0
+			fi
+			kill $(cat "$fn") 2> /dev/null
+			local status=$?
+			rm -f "$fn"
+		fi
+	else
+		echo 'not found.'
+		return 1
+	fi
+	if [ "$status" -eq 0 ]
+	then
+		echo 'done.'
+		return 0
+	else
+		echo 'failed.'
+		return 1
+    fi
+}
+
+case $1 in
+	start)
+		if modlib_check_running
+		then
+			modlib_reload
+		else
+			start
+		fi
+		;;
+	stop)
+		stop
+		;;
+	kill)
+		kill -kill $(pid) 2> /dev/null
+		;;
+	restart)
+		if modlib_check_running
+		then
+			stop
+			sleep 1
+		fi
+		start
+		;;
+	status)
+		modlib_status
+		;;
+	pid)
+		pid
+		;;
+	reload)
+		if modlib_check_running
+		then
+			modlib_reload
+		else
+			start
+		fi
+		;;
+	*)
+		echo "Usage: $0 [start|stop|kill|restart|status|pid|reload]" 1>&2
+		exit 1
+		;;
+esac
+
+exit $?

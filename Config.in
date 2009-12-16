@@ -1179,9 +1179,22 @@ config FREETZ_PATCH_ALARMCLOCK
 	help
 		Adds a third alarm-clock to AVM-Webinterface
 
+config FREETZ_PATCH_RCFTPD
+	bool "Add rc.ftpd start script for better handling of AVM's ftpd"
+	depends on FREETZ_HAS_USB_HOST
+	default n
+	help
+		Adds rc.ftpd start script for better handling of AVM's ftpd
+
+		This patch allows to start / stop AVM's ftpd as service like
+		other FREETZ services. 
+
+		rc.ftpd checks during the start the existence of ftpd binary
+		and absorbs all calls correctly, also if ftpd binary was patched
+
 config FREETZ_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
-	depends on FREETZ_HAS_USB_HOST
+	depends on FREETZ_HAS_USB_HOST && ! FREETZ_PATCH_FREETZMOUNT
 	default y
 	help
 		1. Change the name of USB storage dir to uStorXY
@@ -1195,10 +1208,37 @@ config FREETZ_PATCH_USBSTORAGE
 
 		It is highly recommended to select this patch.
 
+config FREETZ_PATCH_FREETZMOUNT
+	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
+	depends on FREETZ_HAS_USB_HOST
+	select FREETZ_PATCH_RCFTPD
+	select FREETZ_USBSTORAGE_AUTOMOUNT
+	select FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_PACKAGE_E2FSPROGS_BLKID
+	default n
+	help
+		1. Replace old usbstorage patch and autorun.sh / autoend.sh patch
+		2. The name of USB storage dir can be defined in WebIF (default uStorXY)
+		3. USB storage dir can be automatically defined by volume LABEL
+		4. Auto-mounted USB storage devices will be fully accessible, i.e. it
+		   is now possible to put user home directories for (e.g. for FTP) on a
+		   FAT32-formatted partition and permit shell and FTP users to actually
+		   write to their own home directories.
+		5. Avoid deleting whole filesystem on usb devices.
+		6. Old autorun.sh / autoend.sh patch is a part of this patch.
+		   autorun / autoend behaviour can be activated / deactivated via WebIF
+		   autorun / autoend are useful to start/terminate applications located on USB devices,
+		   eg apache, samba or even swapfiles, after connecting or before disconnecting of USB device
+		7. Enhanced behaviour during mounting and unmounting
+
+		It is highly recommended to select this patch.
+
+		WARNING: This patch deselects automatically old usbstorage and automount patches!
+
 config FREETZ_USBSTORAGE_AUTOMOUNT
 	bool "Automount filesystems"
-	depends on FREETZ_PATCH_USBSTORAGE
-	select FREETZ_PACKAGE_FSTYP
+	depends on FREETZ_PATCH_USBSTORAGE || FREETZ_PATCH_FREETZMOUNT
+	select FREETZ_PACKAGE_FSTYP if ! FREETZ_PATCH_FREETZMOUNT
 	default y
 	help
 		ext2, ext3, fat and ntfs filesystems are mounted automatically. Detection is done
@@ -1239,7 +1279,7 @@ config FREETZ_AUTOMOUNT_REISER_FS
 
 config FREETZ_AUTORUN_AUTOEND
 	bool "Execute autorun.sh/autoend.sh script on (un)mount"
-	depends on FREETZ_HAS_USB_HOST
+	depends on FREETZ_HAS_USB_HOST && ! FREETZ_PATCH_FREETZMOUNT
 	default n
 	help
 		Useful to start/terminate applications located on USB devices, eg apache,

@@ -937,6 +937,54 @@ if [ "$DO_MOD" -gt 0 ]; then
 		rm -f ${FILESYSTEM_MOD_DIR}/mklibs-progs
 	fi
 
+	# Remove /etc/init.d/rc.ftpd
+	if [ "$FREETZ_PATCH_RCFTPD" == "y" ]; then
+		if [ -e "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" ]; then
+			echo "Starter script rc.ftpd for AVM-FTPD was integrated into image"
+		fi
+	else
+		if [ -w "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" ]; then
+			rm "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" && echo "Starter script rc.ftpd for AVM-FTPD was not integrated into image"
+		fi
+	fi
+	
+	# Remove /usr/lib/libmodmount.sh
+	if [ "$FREETZ_PATCH_FREETZMOUNT" == "y" ]; then
+		if [ -e "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" ]; then
+			echo "libmodmount.sh was integrated into image"
+		fi
+	else
+		if [ -w "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" ]; then
+			rm "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" && echo "libmodmount.sh was not integrated into image"
+		fi
+	fi
+	
+	# Remove BOX-Info
+	if [ "$FREETZ_REMOVE_BOX_INFO" == "y" ]; then
+		echo "removing BOX-Info cgis from image"
+		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/box_info.cgi"
+	else
+		echo "BOX-Info cgi is integrated into image"
+	fi
+	
+	# Remove FREETZ-Info
+	if [ "$FREETZ_REMOVE_FREETZ_INFO" == "y" ]; then
+		echo "removing FREETZ-Info cgis from image"
+		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/info.cgi"
+		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/do_download_config.cgi"
+	else
+		echo "FREETZ-Info cgis are integrated into image"
+	fi
+	
+	# Packing .config into image
+	if [ "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
+		echo ".config file was not integrated into image"
+	else
+		echo "integrating stripped .config file into image"
+		dot_config_file="$MOD_DIR/filesystem/etc/.config"
+		cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
+	fi
+	
 	echo0 "stripping unstripped AVM binaries"
 	for i in `find ${FILESYSTEM_MOD_DIR} ! -name "*.ko" ! -path "*/usr/www/*" ! -path "*/etc/default*" -perm +100 -type f`; do
 		if [ ! -z `file $i | sed -ne "/.*MIPS32.*not stripped$/p" | sed -e "s/^\(.*\):.*/\1/g"` ]; then
@@ -1012,32 +1060,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 		echo "${L1}root filesystem: $FILESYSTEM_BLOCKSIZE"
 	fi
 
-	# Remove BOX-Info
-	if [ "$FREETZ_REMOVE_BOX_INFO" == "y" ]; then
-		echo "removing BOX-Info cgis from image"
-		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/box_info.cgi"
-	else
-		echo "BOX-Info cgi is integrated into image"
-	fi
-	
-	# Remove FREETZ-Info
-	if [ "$FREETZ_REMOVE_FREETZ_INFO" == "y" ]; then
-		echo "removing FREETZ-Info cgis from image"
-		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/info.cgi"
-		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/do_download_config.cgi"
-	else
-		echo "FREETZ-Info cgis are integrated into image"
-	fi
-	
-	# Packing .config into image
-	if [ "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
-		echo ".config file was not integrated into image"
-	else
-		echo "integrating stripped .config file into image"
-		dot_config_file="$MOD_DIR/filesystem/etc/.config"
-		cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
-	fi
-	
 	modmakedate=$(date +%Y%m%d-%H%M%S)
 	modbaseimagename="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}"
 	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then

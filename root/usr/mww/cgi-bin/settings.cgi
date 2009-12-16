@@ -15,7 +15,9 @@ telnetd_auto_chk=''; telnetd_man_chk=''; telnet_inetd_chk='';
 httpd_auto_chk=''; httpd_man_chk=''; httpd_inetd_chk='';
 mounted_main_chk='';mounted_sub_chk=''; mounted_umount_chk='';
 show_box_info_chk='';show_freetz_info_chk='';
+stor_uselabel_chk='';
 
+if [ "$MOD_STOR_USELABEL" = "yes" ]; then stor_uselabel_chk=' checked'; fi
 if [ "$MOD_SHOW_BOX_INFO" = "yes" ]; then show_box_info_chk=' checked'; fi
 if [ "$MOD_SHOW_FREETZ_INFO" = "yes" ]; then show_freetz_info_chk=' checked'; fi
 if [ "$MOD_MOUNTED_MAIN" = "yes" ]; then mounted_main_chk=' checked'; fi
@@ -121,5 +123,23 @@ cat << EOF
 EOF
 
 sec_end
+sec_begin 'automount'
+if [ -x /usr/sbin/blkid ]
+then
+cat << EOF
+<p>
+<input type="hidden" name="stor_uselabel" value="no">
+<input id="m1" type="checkbox" name="stor_uselabel" value="yes"$stor_uselabel_chk><label for="m1">$(lang de:"Partitionname (falls vorhanden) als Mountpoint" en:"Use partition label (if defined) as mount point")</label>
+</p>
+EOF
+fi
+cat << EOF
+<p>
+$(lang de:"Pr&auml;fix für Mountpoints" en:"Prefix for mountpoints") (uStor) : <input type="text" name="stor_prefix" size="20" maxlength="20" value="$(html "$MOD_STOR_PREFIX")"></p>
+</p>
+EOF
+sec_end
 frm_end 'mod'
 cgi_end
+
+
