@@ -9,6 +9,9 @@ $(PKG)_SOURCE_MD5:=6c6c3dbb7bf079e0bb5fbbfd3bb8a71c
 
 $(PKG)_DEPENDS_ON := jpeg libpng freetype
 
+# fix libgd packaging errors (configure.ac has a later date than configure & aclocal.m4 has a later date than config.hin)
+# prevents configure & config.hin from being regenerated, which in turn allows PKG_PREVENT_RPATH_HARDCODING macro to do its job
+$(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.ac ./aclocal.m4; touch ./config.hin ./configure;
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
