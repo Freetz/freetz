@@ -31,7 +31,7 @@ sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
 cat << EOF
 <p>
-$(lang de:"Datanbankberzeichnis" en:"Databse directory"):&nbsp;
+$(lang de:"Datenbanvberzeichnis" en:"Databse directory"):&nbsp;
 <input type="text" name="dbdir" size="42" maxlength="255" value="$(html "$VNSTAT_DBDIR")">
 </p>
 <p>
@@ -39,7 +39,9 @@ $(lang de:"Zu &uuml;berwachende Interfaces" en:"Interfaces for monitoring"):&nbs
 <input type="text" name="interfaces" size="45" maxlength="255" value="$(html "$VNSTAT_INTERFACES")">
 <br>
 <font size=-2>
-$(lang de:"Verf&uuml;gbare Interfaces" en:"Available interfaces"):&nbsp;`ifconfig |grep "^\w"|sed 's/ .*//g'`
+$(lang de:"Verf&uuml;gbare Interfaces" en:"Available interfaces")
+:&nbsp;`ifconfig |grep "^\w"|sed 's/ .*//g'`
+$(lang de:" - leer lassen f&uuml;r alle" en:" - leave empty for all")
 </font>
 </p>
 EOF

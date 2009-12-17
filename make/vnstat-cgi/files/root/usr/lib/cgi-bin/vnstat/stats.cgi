@@ -45,7 +45,7 @@ if [ -n "$netif" ]; then
                 gen_pic $netif $period
 		[ $ifcnt -ne 1 ] && echo "</a>"
         done
-        echo "<br><input type=\"button\" value=\"Back\" onclick=\"history.go(-1)\" />"
+        [ $ifcnt -ne 1 ] && echo "<br><input type=\"button\" value=\"Back\" onclick=\"history.go(-1)\" />"
 else
 	#mainpage
         echo "<p><font size=+1><b>vnstat</b></font></p>"
