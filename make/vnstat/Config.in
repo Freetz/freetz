@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_VNSTAT
 	bool "vnstat 1.9 (binary only)"
-	select FREETZ_LIB_libm
 	default n
+	select FREETZ_LIB_libm
 	help
 		vnStat is a console-based network traffic monitor. It keeps a log of
 		hourly, daily and monthly network traffic for the selected interface(s).
@@ -22,6 +22,5 @@ config FREETZ_PACKAGE_VNSTAT_IMAGE
 	depends on FREETZ_PACKAGE_VNSTAT
 	default n
 	select FREETZ_LIB_libgd
-	select FREETZ_LIB_libfreetype
 	help
 		This component is for creating images

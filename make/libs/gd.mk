@@ -7,8 +7,17 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.so.$($(PKG)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgd.so.$($(PKG)_LIB_VERSION)
 $(PKG)_SOURCE_MD5:=6c6c3dbb7bf079e0bb5fbbfd3bb8a71c
 
+$(PKG)_DEPENDS_ON := jpeg libpng freetype
+
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PKG)_CONFIGURE_OPTIONS += --with-x=no
+$(PKG)_CONFIGURE_OPTIONS += --with-xpm=no
+$(PKG)_CONFIGURE_OPTIONS += --with-fontconfig=no
 #$(PKG)_CONFIGURE_OPTIONS += --disable-pthreads?
 
 $(PKG_SOURCE_DOWNLOAD)
