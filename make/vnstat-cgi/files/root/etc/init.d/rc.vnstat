@@ -30,17 +30,23 @@ start() {
 		exit 0
 	fi
 
-	#delete unused databases
-	for dbfile in `ls -A /var/lib/vnstat/ 2>/dev/null`; do
-		useif=no
-		for ifname in $VNSTAT_INTERFACES; do
-			[ "$ifname" = "$dbfile" -o ".$ifname" = "$dbfile" ] && useif=yes
+	if [ -z "$VNSTAT_INTERFACES" ]; then
+		VNSTAT_INTERFACES="`ifconfig |grep "^\w" |sed 's/ .*//g'`"
+	else
+		#delete unused databases
+		for dbfile in `ls -A /var/lib/vnstat/ 2>/dev/null`; do
+			useif=no
+			for ifname in $VNSTAT_INTERFACES; do
+				[ "$ifname" = "$dbfile" -o ".$ifname" = "$dbfile" ] && useif=yes
+			done
+			if [ "$useif" = no ]; then
+				rm -rf /var/lib/vnstat/$dbfile
+				rm -rf /var/lib/vnstat/.$dbfile
+			fi
 		done
-		[ "$useif" = no ] && rm -rf /var/lib/vnstat/$dbfile
-	done
+	fi
 
 	#create new databeses
-	[ -z "$VNSTAT_INTERFACES" ] && VNSTAT_INTERFACES="`ifconfig |grep "^\w" |sed 's/ .*//g'`"
 	for ifname in $VNSTAT_INTERFACES; do
 		vnstat -u -i $ifname >/dev/null
 	done
@@ -68,8 +74,20 @@ start() {
 }
 
 stop() {
+	echo -n "Stopping vnstat..."
 	kill -9 "`cat $HTTPD_PID_VNS 2>/dev/null`" 2>/dev/null
-	modlib_stop
+	if [ -z "$(pidof vnstatd)" ]; then
+		echo 'not running.'
+		return 1
+	fi
+	killall vnstatd 2>/dev/null
+        retval=$?
+        if [ "$retval" -eq 0 ]; then
+                echo 'done.'
+        else
+                echo 'failed.'
+                return 1
+        fi
 }
 
 case "$1" in
@@ -105,7 +123,11 @@ case "$1" in
 		start
 		;;
 	status)
-		modlib_status
+		if [ -z "$(pidof vnstatd)" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2

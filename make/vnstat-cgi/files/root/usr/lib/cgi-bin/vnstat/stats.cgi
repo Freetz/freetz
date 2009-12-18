@@ -33,15 +33,15 @@ netif=$(echo "$QUERY_STRING" | grep "[&?]netif=")
 #count ifs
 ifcnt=0
 for ifname in $VNSTAT_INTERFACES; do
-	ifcnt=$(( _ifcnt+1 ))
+	ifcnt=$(( ifcnt+1 ))
 done
-[ $ifcnt -eq 1 ] && netif=$VNSTAT_INTERFACES
+[ $ifcnt -eq 1 ] && netif="$VNSTAT_INTERFACES"
 #show pix
 if [ -n "$netif" ]; then
 	#subpages
         echo "<p><font size=+1><b>vnstat: $netif</b></font></p>"
         for period in summary hours days months top10; do
-		[ $ifcnt -ne 1 ] && echo "<a href=\"javascript:history.go(-1)\">"
+		[ $ifcnt -ne 1 ] && echo "<a href=\"$URL_EXTENDED\">"
                 gen_pic $netif $period
 		[ $ifcnt -ne 1 ] && echo "</a>"
         done
@@ -49,7 +49,8 @@ if [ -n "$netif" ]; then
 else
 	#mainpage
         echo "<p><font size=+1><b>vnstat</b></font></p>"
-        for dbfile in `ls /var/lib/vnstat/ 2>/dev/null`; do
+	[ -z "$VNSTAT_INTERFACES" ] && VNSTAT_INTERFACES="`ls /var/lib/vnstat/ 2>/dev/null`"
+        for dbfile in $VNSTAT_INTERFACES; do
                 echo "<a href=\"$URL_EXTENDED&netif=$dbfile\">"
                 gen_pic $dbfile summary
                 echo "</a>"

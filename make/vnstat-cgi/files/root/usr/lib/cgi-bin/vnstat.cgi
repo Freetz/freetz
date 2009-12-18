@@ -31,12 +31,12 @@ sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
 cat << EOF
 <p>
-$(lang de:"Datenbanvberzeichnis" en:"Databse directory"):&nbsp;
+$(lang de:"Datenbankverzeichnis" en:"Databse directory"):&nbsp;
 <input type="text" name="dbdir" size="42" maxlength="255" value="$(html "$VNSTAT_DBDIR")">
 </p>
 <p>
 $(lang de:"Zu &uuml;berwachende Interfaces" en:"Interfaces for monitoring"):&nbsp;
-<input type="text" name="interfaces" size="45" maxlength="255" value="$(html "$VNSTAT_INTERFACES")">
+<input type="text" name="interfaces" size="55" maxlength="255" value="$(html "$VNSTAT_INTERFACES")">
 <br>
 <font size=-2>
 $(lang de:"Verf&uuml;gbare Interfaces" en:"Available interfaces")
