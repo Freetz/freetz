@@ -13,6 +13,8 @@ $(PKG)_LIBS := -lneon
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 $(PKG)_LIBS += -liconv
+else
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
