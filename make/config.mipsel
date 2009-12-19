@@ -18,6 +18,7 @@ export ac_cv_sizeof_pid_t=4
 export ac_cv_sizeof_ptrdiff_t=4
 export ac_cv_sizeof_size_t=4
 export ac_cv_sizeof_ssize_t=4
+export ac_cv_sizeof_socklen_t=4
 if [ "$FREETZ_TARGET_LFS" = "y" ]; then
 	export ac_cv_sizeof_fpos_t=24
 	export ac_cv_sizeof_off_t=8
@@ -42,8 +43,7 @@ export ac_cv_func_memcmp_working=yes
 export ac_cv_func_posix_getpwuid_r=yes
 export ac_cv_func_posix_getgrgid_r=yes
 export ac_cv_func_setpgrp_void=yes
-export ac_cv_func_dlopen=yes
-for name in bcopy bzero rename fchmod fchown index rindex strerror lstat _exit utimes vsnprintf getcwd strftime; do
+for name in bcopy bzero rename fchmod fchown index rindex strerror lstat _exit utimes vsnprintf getcwd strftime dlopen fork fork_works vfork vfork_works; do
 	export ac_cv_func_$name=yes
 done
 # Other Libraries
