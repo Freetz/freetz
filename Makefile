@@ -226,7 +226,7 @@ ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
 else
 	@echo -e "\033[1mSTEP 0: DOWNLOAD\033[0m"
 	@echo "downloading firmware image"
-	@if ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE) $(DL_SITE); then \
+	@if ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE) $(DL_SITE) $(DL_SOURCE_MD5); then \
 		echo "ERROR: Could not download Firmwareimage."; \
 		exit 3; \
 	fi
@@ -238,14 +238,14 @@ DL_IMAGE+=$(IMAGE2)
 
 $(DL_FW_DIR)/$(DL_SOURCE2):
 	@if [ -n "$(DL_SOURCE2_CONTAINER)" ]; then \
-		[ -r $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) ] || $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2_CONTAINER) $(DL_SITE2) > /dev/null; \
+		[ -r $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) ] || $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2_CONTAINER) $(DL_SITE2) $(DL_SOURCE2_CONTAINER_MD5) > /dev/null; \
 		case "$(DL_SOURCE2_CONTAINER_SUFFIX)" in \
 			.zip) \
 				unzip $(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_DIR); \
 				;; \
 		esac \
 	else \
-		$(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2) $(DL_SITE2) > /dev/null; \
+		$(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2) $(DL_SITE2) $(DL_SOURCE2_MD5) > /dev/null; \
 	fi
 	@echo "done."
 	@echo

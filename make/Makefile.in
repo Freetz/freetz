@@ -122,14 +122,17 @@ TARGET_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
 
 DL_SITE:=$(strip $(subst ",, $(FREETZ_DL_SITE)))
 DL_SOURCE:=$(strip $(subst ",, $(FREETZ_DL_SOURCE)))
+DL_SOURCE_MD5:=$(strip $(subst ",, $(FREETZ_DL_SOURCE_MD5)))
 
 ifneq ($(strip $(FREETZ_DL_SOURCE2)),)
 DL_SITE2:=$(strip $(subst ",, $(FREETZ_DL_SITE2)))
 DL_SOURCE2:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2)))
+DL_SOURCE2_MD5:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2_MD5)))
 endif
 
 ifneq ($(strip $(FREETZ_DL_SOURCE2_CONTAINER)),)
 DL_SOURCE2_CONTAINER:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2_CONTAINER)))
+DL_SOURCE2_CONTAINER_MD5:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2_CONTAINER_MD5)))
 DL_SOURCE2_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE2_CONTAINER))
 endif
 
