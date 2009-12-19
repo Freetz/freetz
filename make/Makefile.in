@@ -225,6 +225,7 @@ $(PKG)_STARTLEVEL=99
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
 $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_DEST_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root
+$(PKG)_CLEAN_TARGET_DIR__INT := $(RM) -r $($(PKG)_TARGET_DIR); $(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION);
 endef
 
 # Stage 2b: initialise other package-specific variables for library packages
@@ -275,8 +276,7 @@ define PKG_FINISH_BIN__INT
 # Binary dirclean
 $(pkg)-dirclean--int:
 	$(RM) -r $($(PKG)_DIR)
-	$(RM) -r $($(PKG)_TARGET_DIR)
-	$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+	$($(PKG)_CLEAN_TARGET_DIR__INT)
 $(PKG_LIST)
 endef
 
@@ -430,7 +430,6 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked $(pkg) $(pkg)-precompiled
 endef
 
-## only used for BIN packages.
 define PKG_UNPACKED__INT
 $(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.$(pkg)_config
 $(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.$(pkg)_config.temp
@@ -443,10 +442,12 @@ $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 	@($(foreach OPT,$($(PKG)_CONFIG_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_TEMP)
 	@if ! diff -q $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null; then \
 		mv $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE); \
+		$($(PKG)_CLEAN_TARGET_DIR__INT) \
 	else \
 		$(RM) $($(PKG)_FREETZ_CONFIG_TEMP); \
 	fi
 $($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $($(PKG)_FREETZ_CONFIG_FILE)
 endef
 
 PKG_BIN_UNPACKED=$(eval $(PKG_UNPACKED_BIN__INT))
