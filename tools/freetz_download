@@ -101,6 +101,11 @@ if [ -n "$MAIN_URL" ]; then
       sites[$num_sites]=http://downloads.sourceforge.net/$MAIN_URL
       (( num_sites++ ))
     done
+  elif [ ${MAIN_URL:0:4} == "@AVM" ]; then
+    MAIN_URL=${MAIN_URL/@AVM\//}
+    sites[0]=ftp://ftp.avm.de/$MAIN_URL
+    sites[1]=http://download.avm.de/$MAIN_URL
+    num_sites=2
   else
     sites[$num_sites]=$MAIN_URL
     (( num_sites++ ))
