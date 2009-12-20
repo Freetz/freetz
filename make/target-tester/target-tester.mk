@@ -31,6 +31,14 @@ $($(PKG)_TARGET_BINARY_LFS): $($(PKG)_BINARY_LFS)
 $($(PKG)_TARGET_BINARY_NOLFS): $($(PKG)_BINARY_NOLFS)
 	$(INSTALL_BINARY_STRIP)
 
+$(pkg)-math-functions: $($(PKG)_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(TARGET_TESTER_DIR) \
+		CC="$(TARGET_CXX)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib" \
+		math-functions
+
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY_LFS) $($(PKG)_TARGET_BINARY_NOLFS)
