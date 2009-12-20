@@ -400,8 +400,8 @@ config FREETZ_TYPE_STRING
 config FREETZ_TYPE_STRING2
 	string
 	default "W500V_"					if FREETZ_TYPE_SINUS_W500V_7150
-	default "W701V_"                                        if FREETZ_TYPE_SPEEDPORT_W701V_7170
-	default "W900V_"                                        if FREETZ_TYPE_SPEEDPORT_W900V_7170
+	default "W701V_"					if FREETZ_TYPE_SPEEDPORT_W701V_7170
+	default "W900V_"					if FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "3170_"						if FREETZ_TYPE_3170_7170
 	default "7113_"						if FREETZ_TYPE_7113_7170
 	default "7140_"						if FREETZ_TYPE_7140_7170
@@ -928,10 +928,10 @@ config FREETZ_REMOVE_BRANDING_avme
 		echo $(cat /proc/sys/urlader/firmware_version)
 
 config FREETZ_REMOVE_BRANDING_otwo
-        bool "otwo"
-        depends on FREETZ_TYPE_FON_WLAN_7270_V3
-        default n
-        help
+	bool "otwo"
+	depends on FREETZ_TYPE_FON_WLAN_7270_V3
+	default n
+	help
 		O2 branding
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
@@ -1378,15 +1378,15 @@ config FREETZ_REMOVE_UMTSD
 		saves about 12K compressed space in kernel.image
 
 config FREETZ_REMOVE_NTFS
-        bool "Remove NTFS-support"
-        depends on \
-                FREETZ_TYPE_FON_WLAN_7270_V3 || FREETZ_TYPE_FON_WLAN_7240
-        default n
-        help
-                Remove NTFS-Support
+	bool "Remove NTFS-support"
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7270_V3 || FREETZ_TYPE_FON_WLAN_7240
+	default n
+	help
+		Remove NTFS-Support
 		this patch will remove ntfs-3g dependen files from the firmware
 		Be careful, mounting volumes with this filesystem will not work
-                saves about 118K compressed space in kernel.image
+		saves about 118K compressed space in kernel.image
 
 config FREETZ_REMOVE_UPNP
 	bool "Remove UPnP daemon (igdd/upnpd)"
@@ -1952,10 +1952,10 @@ config FREETZ_DL_SITE2
 												(FREETZ_TYPE_FON_WLAN_7270 && \
 												FREETZ_ADD_ANNEX_A_FIRMWARE)
 	default "@AVM/fritz.box/fritzbox.wlan_3170/firmware/deutsch"			if	FREETZ_TYPE_3170_7170
+	default "@AVM/fritz.box/fritzbox.fon_wlan_7113/firmware/deutsch"		if	FREETZ_TYPE_7113_7170
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7140/firmware/deutsch"		if	FREETZ_TYPE_7140_7170
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"		if	FREETZ_TYPE_7141_7170
 	default "http://www.t-home.de/dlp/eki/downloads/Sinus%20W%20500%20V"		if	FREETZ_TYPE_SINUS_W500V_7150
-	default "@AVM/fritz.box/fritzbox.fon_wlan_7141/firmware/deutsch"		if	FREETZ_TYPE_SPEEDPORT_W501V
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20701%20V" if	FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20900V"	if	FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch_a-ch"		if	FREETZ_TYPE_FON_WLAN_7270
@@ -1975,11 +1975,11 @@ config FREETZ_DL_SOURCE2
 	default "fritz.box_wlan_3170.49.04.58.image"			if	FREETZ_TYPE_3170_7170
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"		if	FREETZ_TYPE_7140_7170
 	default "FRITZ.Box_Fon_WLAN_7113.60.04.68.image"		if	FREETZ_TYPE_7113_7170
-	default "FRITZ.Box_Fon_WLAN_7141.40.04.76.image"		if	FREETZ_TYPE_7141_7170 || \
-										FREETZ_TYPE_SPEEDPORT_W501V
+	default "FRITZ.Box_Fon_WLAN_7141.40.04.76.image"		if	FREETZ_TYPE_7141_7170
+	default "Sinus_W_500V.27.04.27.image"				if	FREETZ_TYPE_SINUS_W500V_7150
+	default "fritz.box_fon_wlan_7141.40.04.37.image"		if	FREETZ_TYPE_SPEEDPORT_W501V
 	default "fw_Speedport_W701V_v33.04.57.image"			if	FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default "fw_Speedport_W900V_v34.04.57.image"			if	FREETZ_TYPE_SPEEDPORT_W900V_7170
-	default "Sinus_W_500V.27.04.27.image"				if	FREETZ_TYPE_SINUS_W500V_7150
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it-fr.54.04.76.image"	if	FREETZ_TYPE_FON_WLAN_7270
 
 config FREETZ_DL_SOURCE2_MD5
@@ -1997,7 +1997,8 @@ config FREETZ_DL_SOURCE2_MD5
 	default "f08942a9679002e21c29bb2cad9ded3e"	if	FREETZ_TYPE_3170_7170
 	default "08eeaf5239709d8582d730de2bcb10bf"	if	FREETZ_TYPE_7140_7170
 	default "f5d91a5ce4d9e65a3c526211e4e5f01b"	if	FREETZ_TYPE_7113_7170
-	default "b612f315216adf3b230e4d99430194a8"	if	FREETZ_TYPE_7141_7170 || FREETZ_TYPE_SPEEDPORT_W501V
+	default "b612f315216adf3b230e4d99430194a8"	if	FREETZ_TYPE_7141_7170
+	default ""					if	FREETZ_TYPE_SPEEDPORT_W501V
 	default "e34713bd989c3e266a4650c133582510"	if	FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default "dd6f7461976c64b9808d2cf74ab4532f"	if	FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "918be39b287b87892fb6f6a1e07f98e2"	if	FREETZ_TYPE_FON_WLAN_7270
@@ -2209,20 +2210,20 @@ config FREETZ_USER_DEFINED_COMMENT
 		User defined comment for generated image.
 
 config FREETZ_CUSTOM_IMAGE_NAME
-        bool "Add user defined comment to image name"
-        depends on FREETZ_SHOW_ADVANCED
-        default n
-        help
-               Add the user defined comment to the file name of the created image
+	bool "Add user defined comment to image name"
+	depends on FREETZ_SHOW_ADVANCED
+	default n
+	help
+		Add the user defined comment to the file name of the created image
 
 config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
-        bool "Add custom string as prefix"
-        depends on FREETZ_SHOW_ADVANCED && FREETZ_CUSTOM_IMAGE_NAME
-        default n
-        help
-               Add the user defined comment as a prefix in front of the image file name.
-               Otherwise the user defined comment will be added between the language setting
-               and the build date
+	bool "Add custom string as prefix"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_CUSTOM_IMAGE_NAME
+	default n
+	help
+		Add the user defined comment as a prefix in front of the image file name.
+		Otherwise the user defined comment will be added between the language setting
+		and the build date
 
 menu "Info pages"
 	depends on FREETZ_SHOW_ADVANCED

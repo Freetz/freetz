@@ -7,6 +7,10 @@ KERNEL_MODULES_DIR:=$(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)
 KERNEL_SOURCE_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel/linux
 KERNEL_HEADERS_DIR:=$(KERNEL_SOURCE_DIR)/include
 
+KERNEL_OTHER_FILES = \
+	drivers/dsl/Kconfig \
+	drivers/video/davinci/Kconfig
+
 KERNEL_DUMMY_MAKE_FILES = \
 	drivers/atm/avm_atm \
 	drivers/block/virtual_fat \

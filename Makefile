@@ -237,6 +237,13 @@ IMAGE2:=$(DL_FW_DIR)/$(DL_SOURCE2)
 DL_IMAGE+=$(IMAGE2)
 
 $(DL_FW_DIR)/$(DL_SOURCE2):
+ifeq ($(strip $(DL_SITE2)),)
+	@echo
+	@echo "Please copy the following file into the '$(DL_FW_DIR)' sub-directory manually:"
+	@echo "$(DL_SOURCE2)"
+	@echo
+	@exit 3
+else
 	@if [ -n "$(DL_SOURCE2_CONTAINER)" ]; then \
 		[ -r $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) ] || $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2_CONTAINER) $(DL_SITE2) $(DL_SOURCE2_CONTAINER_MD5) > /dev/null; \
 		case "$(DL_SOURCE2_CONTAINER_SUFFIX)" in \
@@ -249,6 +256,7 @@ $(DL_FW_DIR)/$(DL_SOURCE2):
 	fi
 	@echo "done."
 	@echo
+endif
 endif
 
 package-list: package-list-clean $(PACKAGES_LIST)
