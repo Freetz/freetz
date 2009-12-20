@@ -2146,6 +2146,15 @@ choice
 		bool "han-solo's favicons"
 endchoice
 
+config FREETZ_BACKUP_CONFIG_CACHE
+	bool "Backup config.cache"
+	default n
+	help
+		This is a developer only option.
+		It causes config.cache to be backed up before calling package configure script.
+		This might simplify searching for a missing/wrong config.cache entry.
+
+
 config FREETZ_FAVICON_STRING
 	string
 	default "none"			if FREETZ_FAVICON_NONE
