@@ -11,10 +11,8 @@ $(PKG)_SHOWMOUNT_BINARY:=$($(PKG)_DIR)/utils/showmount/showmount
 $(PKG)_SHOWMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/showmount
 $(PKG)_SOURCE_MD5:=779cf81044e92cb51ad590960e7b3671
 
-$(PKG)_DEPENDS_ON := e2fsprogs tcp_wrappers
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
+$(PKG)_DEPENDS_ON := tcp_wrappers
 
-$(PKG)_CONFIGURE_ENV += libblkid_cv_is_recent=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_type_getgroups=gid_t
 $(PKG)_CONFIGURE_ENV += ac_cv_func_getgroups_works=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_func_stat_empty_string_bug=no
@@ -24,6 +22,7 @@ $(PKG)_CONFIGURE_ENV += ac_cv_func_lstat_dereferences_slashed_symlink=no
 $(PKG)_CONFIGURE_OPTIONS += --disable-nfsv4
 $(PKG)_CONFIGURE_OPTIONS += --disable-mount
 $(PKG)_CONFIGURE_OPTIONS += --disable-gss
+$(PKG)_CONFIGURE_OPTIONS += --disable-uuid
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
