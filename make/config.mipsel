@@ -46,6 +46,60 @@ export ac_cv_func_setpgrp_void=yes
 for name in bcopy bzero rename fchmod fchown index rindex strerror lstat _exit utimes vsnprintf getcwd strftime dlopen fork fork_works vfork vfork_works; do
 	export ac_cv_func_$name=yes
 done
+
+# Math Library functions (the values below could be generated/verified using make target-tester-math-functions)
+# Some packages incorrectly expect these functions to be in libc. This causes the corresponding test to fail
+# and the corresponding variable to be set to no. This in turn breaks the compilation of other packages (e.g. rrdtool)
+# that do really require these functions.
+# In case the compilation of some package stops with undefined reference to one of the functions below
+# add libm to its dependency list and -lm to its link options.
+export ac_cv_func_isnan=yes
+export ac_cv_func_isinf=yes
+export ac_cv_func_finite=yes
+export ac_cv_func_exp2l=no
+export ac_cv_func_log2l=no
+export ac_cv_func_exp10l=no
+export ac_cv_func_log10l=no
+export ac_cv_func_sinl=no
+export ac_cv_func_cosl=no
+export ac_cv_func_tanl=no
+export ac_cv_func_asinl=no
+export ac_cv_func_acosl=no
+export ac_cv_func_atanl=no
+export ac_cv_func_atan2l=no
+export ac_cv_func_powl=no
+export ac_cv_func_sqrtl=no
+export ac_cv_func_rintl=no
+export ac_cv_func_expl=no
+export ac_cv_func_logl=no
+export ac_cv_func_remainderl=no
+export ac_cv_func_fmodl=no
+export ac_cv_func_roundl=no
+export ac_cv_func_truncl=no
+export ac_cv_func_floorl=no
+export ac_cv_func_ceill=no
+export ac_cv_func_exp2=no
+export ac_cv_func_log2=no
+export ac_cv_func_exp10=no
+export ac_cv_func_log10=yes
+export ac_cv_func_sin=yes
+export ac_cv_func_cos=yes
+export ac_cv_func_tan=yes
+export ac_cv_func_asin=yes
+export ac_cv_func_acos=yes
+export ac_cv_func_atan=yes
+export ac_cv_func_atan2=yes
+export ac_cv_func_pow=yes
+export ac_cv_func_rint=yes
+export ac_cv_func_exp=yes
+export ac_cv_func_log=yes
+export ac_cv_func_remainder=yes
+export ac_cv_func_fmod=yes
+export ac_cv_func_round=yes
+export ac_cv_func_trunc=yes
+export ac_cv_func_floor=yes
+export ac_cv_func_ceil=yes
+
 # Other Libraries
 export ac_cv_file__usr_X11R6_lib64=no
 export ac_cv_file__usr_X11R6_lib=no
