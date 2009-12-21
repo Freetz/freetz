@@ -486,6 +486,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 		./configure \
 		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
 		$($(PKG)_CONFIGURE_OPTIONS) \
+		$(if $(strip $(FREETZ_BACKUP_CONFIG_CACHE)),&& { $(call BACKUP_CONFIG_CACHE,after-$(pkg)) },) \
 	)
 	touch $$@
 endef
