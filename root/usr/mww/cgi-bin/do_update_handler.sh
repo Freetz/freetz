@@ -15,6 +15,13 @@ if [ "$NAME" = "stop_avm" ]; then
 	echo "</pre><pre>"
 fi
 
+if [ "$NAME" = "semistop_avm" ]; then
+	echo "$(lang de:"AVM-Dienste teilweise anhalten, Teil 1" en:"Stopping AVM services partially, part 1") (prepare_fwupgrade start_from_internet) ..."
+	prepare_fwupgrade start_from_internet 2>&1 | indent
+	echo "$(lang de:"ERLEDIGT" en:"DONE")"
+	echo "</pre><pre>"
+fi
+
 echo "$(lang de:"Firmware-Archiv extrahieren" en:"Extracting firmware archive") ..."
 tar_log="$(cat "$1" | tar -C / -xv 2>&1)"
 result=$?
@@ -25,12 +32,14 @@ if [ $result -ne 0 ]; then
 fi
 echo "DONE"
 
-if [ "$NAME" = "stop_avm" ]; then
+if [ "$NAME" != "nostop_avm" ]; then
 	echo "</pre><pre>"
 	echo "$(lang de:"AVM-Dienste anhalten, Teil 2" en:"Stopping AVM services, part 2") (prepare_fwupgrade end) ..."
 	prepare_fwupgrade end 2>&1 | indent
 	echo "$(lang de:"ERLEDIGT" en:"DONE")"
 fi
+
+[ "$NAME" = "semistop_avm" ] && (sleep 30;reboot)&
 
 echo "</pre><pre>"
 echo "$(lang de:"Ausführen des Firmware-Installationsskripts" en:"Executing firmware installation script") /var/install ..."
