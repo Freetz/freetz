@@ -1,0 +1,137 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+
+HTTPD_PID_VNS=/var/run/httpd_vns.pid
+
+case "$1" in
+	""|load|start|restart|config)
+		if [ ! -r "/mod/etc/conf/vnstat.cfg" ]; then
+			echo "Error[vnstat]: not configured" 1>&2
+			exit 1
+		fi
+		. /mod/etc/conf/vnstat.cfg
+		;;
+esac
+
+config() {
+	#create links n dirs
+	mkdir $VNSTAT_DBDIR 2>/dev/null
+	mkdir -p /var/lib
+	rm -rf /var/lib/vnstat 2>/dev/null
+	ln -s $VNSTAT_DBDIR /var/lib/vnstat
+}
+
+start() {
+	echo -n 'Starting vnstat...'
+
+	if [ ! -z "$(pidof vnstatd)" ]; then
+		echo 'already running'
+		exit 0
+	fi
+
+	if [ -z "$VNSTAT_INTERFACES" ]; then
+		VNSTAT_INTERFACES="`ifconfig |grep "^\w" |sed 's/ .*//g'`"
+	else
+		#delete unused databases
+		for dbfile in `ls -A /var/lib/vnstat/ 2>/dev/null`; do
+			useif=no
+			for ifname in $VNSTAT_INTERFACES; do
+				[ "$ifname" = "$dbfile" -o ".$ifname" = "$dbfile" ] && useif=yes
+			done
+			if [ "$useif" = no ]; then
+				rm -rf /var/lib/vnstat/$dbfile
+				rm -rf /var/lib/vnstat/.$dbfile
+			fi
+		done
+	fi
+
+	#create new databeses
+	for ifname in $VNSTAT_INTERFACES; do
+		vnstat -u -i $ifname >/dev/null
+	done
+
+	
+	#webserver
+	kill -9 "`cat $HTTPD_PID_VNS 2>/dev/null`" 2>/dev/null
+	if [ "$VNSTAT_WEBENABLED" = "yes" ]; then
+		if [ "$VNSTAT_WEB_AUTH" = yes ]; then
+			echo "/:$VNSTAT_WEB_USER:`httpd -m $VNSTAT_WEB_PASS`" >/mod/etc/httpd-vns.conf
+			VNS_CONF="-c /mod/etc/httpd-vns.conf"
+		fi
+		httpd -P $HTTPD_PID_VNS -p $VNSTAT_WEB_PORT $VNS_CONF -h /mod/pkg/vnstat/usr/mww-vns
+	fi
+
+	#daemon
+	vnstatd -s -d
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n "Stopping vnstat..."
+	kill -9 "`cat $HTTPD_PID_VNS 2>/dev/null`" 2>/dev/null
+	if [ -z "$(pidof vnstatd)" ]; then
+		echo 'not running.'
+		return 1
+	fi
+	killall vnstatd 2>/dev/null
+        retval=$?
+        if [ "$retval" -eq 0 ]; then
+                echo 'done.'
+        else
+                echo 'failed.'
+                return 1
+        fi
+}
+
+case "$1" in
+	config)
+		config
+		;;
+	""|load)
+		modreg cgi vnstat vnstat
+		modreg status vnstat vnstat vnstat/stats
+		config
+		if [ "$VNSTAT_ENABLED" != yes ]; then
+			echo "vnstat is disabled" 1>&2
+			exit 1
+		fi
+		start
+		;;
+	unload)
+		stop
+		modunreg status vnstat vnstat/stats
+		modunreg cgi vnstat
+		;;
+	start)
+		config
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		config
+		start
+		;;
+	status)
+		if [ -z "$(pidof vnstatd)" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
+		exit 1
+		;;
+esac
+

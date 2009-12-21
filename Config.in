@@ -20,7 +20,9 @@ config FREETZ_AVM_VERSION_04_70
 	bool
 config FREETZ_AVM_VERSION_04_76
 	bool
-config FREETZ_AVM_VERSION_7270_04_76
+config FREETZ_AVM_VERSION_3270_04_76
+	bool
+config FREETZ_AVM_VERSION_7270_04_80
 	bool
 config FREETZ_AVM_VERSION_r7203
 	bool
@@ -88,23 +90,34 @@ choice
 		bool "Fon 7150"
 
 	config FREETZ_TYPE_FON_WLAN_7170
-		select FREETZ_AVM_VERSION_04_76 if FREETZ_TYPE_LANG_DE && ! FREETZ_TYPE_LABOR_DSL
-		select FREETZ_AVM_VERSION_04_70 if FREETZ_TYPE_LANG_DE && FREETZ_TYPE_LABOR_DSL
-		select FREETZ_AVM_VERSION_04_76 if FREETZ_TYPE_LANG_EN
-		select FREETZ_AVM_VERSION_04_76 if FREETZ_TYPE_LANG_A_CH
+		select FREETZ_AVM_VERSION_04_76 if ! FREETZ_TYPE_LABOR
+		select FREETZ_AVM_VERSION_04_70 if FREETZ_TYPE_LABOR
 		bool "Fon WLAN 7170"
 	
 	config FREETZ_TYPE_FON_WLAN_7240
-		select FREETZ_AVM_VERSION_7270_04_76
+		select FREETZ_AVM_VERSION_7270_04_80
 		bool "Fon WLAN 7240"
 
 	config FREETZ_TYPE_FON_WLAN_7270
-		select FREETZ_AVM_VERSION_7270_04_76
+		select FREETZ_AVM_VERSION_7270_04_80 if \
+			(FREETZ_TYPE_LANG_DE && ! FREETZ_TYPE_LABOR) || \
+			FREETZ_TYPE_LABOR_PHONE
+		select FREETZ_AVM_VERSION_3270_04_76 if \
+			! FREETZ_TYPE_LANG_DE || \
+			FREETZ_TYPE_LABOR_CORE || \
+			FREETZ_TYPE_LABOR_DSL || \
+			FREETZ_TYPE_LABOR_IPV6
 		select FREETZ_TYPE_FON_WLAN_7270_16MB if ! FREETZ_TYPE_LANG_DE
 		bool "Fon WLAN 7270 (v1 and v2 only)"
 
 	config FREETZ_TYPE_FON_WLAN_7270_V3
-		select FREETZ_AVM_VERSION_7270_04_76
+		select FREETZ_AVM_VERSION_7270_04_80 if \
+			! FREETZ_TYPE_LABOR || \
+			FREETZ_TYPE_LABOR_PHONE
+		select FREETZ_AVM_VERSION_3270_04_76 if \
+			FREETZ_TYPE_LABOR_CORE || \
+			FREETZ_TYPE_LABOR_DSL || \
+			FREETZ_TYPE_LABOR_IPV6
 		bool "Fon WLAN 7270 (v3 only)"
 
 	config FREETZ_TYPE_WLAN_3020
@@ -128,11 +141,11 @@ choice
 		bool "WLAN 3170"
 	
 	config FREETZ_TYPE_WLAN_3270
-		select FREETZ_AVM_VERSION_7270_04_76
+		select FREETZ_AVM_VERSION_3270_04_76
 		bool "WLAN 3270 (v1 and v2 only)"
 
 	config FREETZ_TYPE_WLAN_3270_V3
-		select FREETZ_AVM_VERSION_7270_04_76
+		select FREETZ_AVM_VERSION_3270_04_76
 		bool "WLAN 3270 (v3 only)"
 
 	config FREETZ_TYPE_SPEEDPORT_W501V
@@ -159,7 +172,6 @@ config FREETZ_TYPE_LABOR
 	bool "Beta/Labor"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7170 || \
-		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3
 	default n
@@ -171,6 +183,13 @@ choice
 	prompt "Labor version"
 		depends on FREETZ_TYPE_LABOR
 		default FREETZ_TYPE_LABOR_DSL
+
+	config FREETZ_TYPE_LABOR_CORE
+		bool "Streaming Stick"
+		depends on \
+			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
+		help
+			Labor Streaming Stick
 
 	config FREETZ_TYPE_LABOR_DSL
 		bool "DSL"
@@ -187,28 +206,18 @@ choice
 	config FREETZ_TYPE_LABOR_IPV6
 		bool "IPv6"
 		depends on \
-			FREETZ_TYPE_FON_WLAN_7270 || \
-			FREETZ_TYPE_FON_WLAN_7270_V3
+			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
 		select FREETZ_TARGET_IPV6_SUPPORT
 		help
 			FRITZ!Lab IPV6: This release adds native IPv6 over PPP 
 			(Internet Protocol Version 6) and 6to4 tunnels.
 
-	config FREETZ_TYPE_LABOR_BETA
-		bool "Beta"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270 || \
-			FREETZ_TYPE_FON_WLAN_7240 || \
-			FREETZ_TYPE_FON_WLAN_7270_V3
-		help
-			Beta preview
-
-	config FREETZ_TYPE_LABOR_CORE
-		bool "Streaming Stick"
+	config FREETZ_TYPE_LABOR_PHONE
+		bool "Phone"
 		depends on \
 			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
 		help
-			Labor Streaming Stick
+			Labor Phone
 
 endchoice
 
@@ -287,7 +296,8 @@ config FREETZ_AVM_VERSION_STRING
 	default "04.67"			if FREETZ_AVM_VERSION_04_67
 	default "04.70"			if FREETZ_AVM_VERSION_04_70
 	default "04.76"			if FREETZ_AVM_VERSION_04_76
-	default "7270_04.76"		if FREETZ_AVM_VERSION_7270_04_76
+	default "3270_04.76"		if FREETZ_AVM_VERSION_3270_04_76
+	default "7270_04.80"		if FREETZ_AVM_VERSION_7270_04_80
 	default "r7203"			if FREETZ_AVM_VERSION_r7203
 
 choice
@@ -352,7 +362,7 @@ endchoice
 config FREETZ_TYPE_STRING
 	string
 	default "300ip_as_fon"					if FREETZ_TYPE_300IP_AS_FON
-	default "2170"						if FREETZ_TYPE_2170 && ! FREETZ_TYPE_LABOR
+	default "2170"						if FREETZ_TYPE_2170
 	default "3020"						if FREETZ_TYPE_WLAN_3020
 	default "3030"						if FREETZ_TYPE_WLAN_3030
 	default "3130"						if FREETZ_TYPE_WLAN_3130
@@ -373,18 +383,17 @@ config FREETZ_TYPE_STRING
 	default "7150"						if FREETZ_TYPE_FON_7150
 	default "7170"						if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR
 	default "7170_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
-	default "7240"						if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
-	default "7240_labor_beta"				if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_BETA
+	default "7240"						if FREETZ_TYPE_FON_WLAN_7240
 	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "7270_v3"					if FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR
-	default "7270_labor_beta"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
 	default "7270_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "7270_labor_ipv6"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_IPV6
 	default "7270_labor_core"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_CORE
+	default "7270_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
 	default "7270_v3_labor_core"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_CORE
 	default "7270_v3_labor_ipv6"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_IPV6
 	default "7270_v3_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_DSL
-	default "7270_v3_labor_beta"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_BETA
+	default "7270_v3_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_PHONE
 	default "W501V"						if FREETZ_TYPE_SPEEDPORT_W501V
 	default "custom"					if FREETZ_TYPE_CUSTOM
 
@@ -426,7 +435,7 @@ config FREETZ_REPLACE_BUSYBOX
 config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
-		! ((FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3) && (FREETZ_TYPE_LABOR_BETA || FREETZ_TYPE_LABOR_CORE || FREETZ_TYPE_LABOR_DSL)) && \
+		! FREETZ_TYPE_LABOR_CORE && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) 
 	default y
 
@@ -435,7 +444,7 @@ config FREETZ_REPLACE_KERNEL
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		FREETZ_REPLACE_KERNEL_AVAILABLE
-	select FREETZ_MODULE_fuse if ((FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3) && FREETZ_AVM_VERSION_7270_04_76)
+	select FREETZ_MODULE_fuse if (FREETZ_AVM_VERSION_3270_04_76 || FREETZ_AVM_VERSION_7270_04_80)
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
@@ -920,7 +929,7 @@ config FREETZ_REMOVE_BRANDING_avme
 
 config FREETZ_REMOVE_BRANDING_otwo
         bool "otwo"
-        depends on FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_BETA
+        depends on FREETZ_TYPE_FON_WLAN_7270_V3
         default n
         help
 		O2 branding
@@ -1190,9 +1199,22 @@ config FREETZ_PATCH_ALARMCLOCK
 	help
 		Adds a third alarm-clock to AVM-Webinterface
 
+config FREETZ_PATCH_RCFTPD
+	bool "Add rc.ftpd start script for better handling of AVM's ftpd"
+	depends on FREETZ_HAS_USB_HOST
+	default n
+	help
+		Adds rc.ftpd start script for better handling of AVM's ftpd
+
+		This patch allows to start / stop AVM's ftpd as service like
+		other FREETZ services. 
+
+		rc.ftpd checks during the start the existence of ftpd binary
+		and absorbs all calls correctly, also if ftpd binary was patched
+
 config FREETZ_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
-	depends on FREETZ_HAS_USB_HOST
+	depends on FREETZ_HAS_USB_HOST && ! FREETZ_PATCH_FREETZMOUNT
 	default y
 	help
 		1. Change the name of USB storage dir to uStorXY
@@ -1206,10 +1228,37 @@ config FREETZ_PATCH_USBSTORAGE
 
 		It is highly recommended to select this patch.
 
+config FREETZ_PATCH_FREETZMOUNT
+	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
+	depends on FREETZ_HAS_USB_HOST
+	select FREETZ_PATCH_RCFTPD
+	select FREETZ_USBSTORAGE_AUTOMOUNT
+	select FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_PACKAGE_E2FSPROGS_BLKID
+	default n
+	help
+		1. Replace old usbstorage patch and autorun.sh / autoend.sh patch
+		2. The name of USB storage dir can be defined in WebIF (default uStorXY)
+		3. USB storage dir can be automatically defined by volume LABEL
+		4. Auto-mounted USB storage devices will be fully accessible, i.e. it
+		   is now possible to put user home directories for (e.g. for FTP) on a
+		   FAT32-formatted partition and permit shell and FTP users to actually
+		   write to their own home directories.
+		5. Avoid deleting whole filesystem on usb devices.
+		6. Old autorun.sh / autoend.sh patch is a part of this patch.
+		   autorun / autoend behaviour can be activated / deactivated via WebIF
+		   autorun / autoend are useful to start/terminate applications located on USB devices,
+		   eg apache, samba or even swapfiles, after connecting or before disconnecting of USB device
+		7. Enhanced behaviour during mounting and unmounting
+
+		It is highly recommended to select this patch.
+
+		WARNING: This patch deselects automatically old usbstorage and automount patches!
+
 config FREETZ_USBSTORAGE_AUTOMOUNT
 	bool "Automount filesystems"
-	depends on FREETZ_PATCH_USBSTORAGE
-	select FREETZ_PACKAGE_FSTYP
+	depends on FREETZ_PATCH_USBSTORAGE || FREETZ_PATCH_FREETZMOUNT
+	select FREETZ_PACKAGE_FSTYP if ! FREETZ_PATCH_FREETZMOUNT
 	default y
 	help
 		ext2, ext3, fat and ntfs filesystems are mounted automatically. Detection is done
@@ -1250,7 +1299,7 @@ config FREETZ_AUTOMOUNT_REISER_FS
 
 config FREETZ_AUTORUN_AUTOEND
 	bool "Execute autorun.sh/autoend.sh script on (un)mount"
-	depends on FREETZ_HAS_USB_HOST
+	depends on FREETZ_HAS_USB_HOST && ! FREETZ_PATCH_FREETZMOUNT
 	default n
 	help
 		Useful to start/terminate applications located on USB devices, eg apache,
@@ -1272,9 +1321,7 @@ config FREETZ_PATCH_MULTIPLE_PRINTERS
 		FREETZ_TYPE_WLAN_3170 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
-		FREETZ_TYPE_FON_WLAN_7170 || \
-		(FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR_BETA) || \
-		(FREETZ_TYPE_FON_WLAN_7270 && ! (FREETZ_TYPE_LABOR_CORE || FREETZ_TYPE_LABOR_BETA)) \
+		FREETZ_TYPE_FON_WLAN_7170 \
 		)
 	default n
 	help
@@ -1748,20 +1795,19 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.76.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.76.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.99-14119.image"			if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7240.73.04.76.image"				if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
-	default "FRITZ.Box_Fon_WLAN_7240.Labor.73.04.78-15892.image"			if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_BETA
-	default "FRITZ.Box_Fon_WLAN_7270.54.04.76.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
-	default "FRITZ.Box_Fon_WLAN_7270_v3.74.04.76.image"				if FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7240.73.04.80.image"				if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
+	default "FRITZ.Box_Fon_WLAN_7270.54.04.80.image"				if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7270_v3.74.04.80.image"				if FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it-fr.54.04.76.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7270.en-de-es-it-fr.54.04.76.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_EN
-	default "FRITZ.Box_Fon_WLAN_7270.Labor.54.04.78-15892.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_BETA
 	default "FRITZ.Box_Fon_WLAN_7270_LabDSL.AnnexB.54.04.99-15852.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
 	default "FRITZ.Box_Fon_WLAN_7270_LabIPV6.AnnexB.54.04.94-15316.image" 		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_IPV6
 	default "FRITZ.Box_Fon_WLAN_7270_LabCORE.AnnexB.54.04.98-15627.image"		if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_CORE
+	default "FRITZ.Box_Fon_WLAN_7270_Labor_54.04.80-15992.image"			if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7270_v3_LabCORE.AnnexB.74.04.98-15627.image"	if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_CORE
 	default "FRITZ.Box_Fon_WLAN_7270_v3_LabIPV6.AnnexB.74.04.94-15316.image" 	if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_IPV6
 	default "FRITZ.Box_Fon_WLAN_7270_v3_LabDSL.AnnexB.74.04.99-15852.image"		if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_v3.Labor.74.04.78-15892.image"			if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_BETA
+	default "FRITZ.Box_Fon_WLAN_7270_v3_Labor_74.04.80-15992.image"			if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_PHONE
 	default "fritz.box_sl_wlan.09.04.34.image"					if FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"					if FREETZ_TYPE_WLAN_3030
 	default "fritz.box_wlan_3130.44.04.34.image"					if FREETZ_TYPE_WLAN_3130

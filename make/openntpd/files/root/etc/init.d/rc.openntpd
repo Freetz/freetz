@@ -27,10 +27,10 @@ start() {
 		fi
 	) > /mod/etc/$DAEMON.conf
 
-	echo 'Starting ntp server...'
+	echo -n 'Starting ntp server...'
 
 	if [ "$OPENNTPD_MULTID" = "no" ]; then
-		echo ' * Restarting multid without ntp client...'
+		echo -n 'restarting multid without ntp client...'
 		multid -s > /dev/null 2>&1
 		
 		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
@@ -45,7 +45,7 @@ start() {
 	fi
 
 	if [ ! -e "/mod/etc/ntpd.conf" ]; then
-		echo "Creating needed ntpd.conf links"
+		echo -n "creating ntpd.conf link..."
 		ln -s /tmp/flash/ntpd.conf /mod/etc/ntpd.conf
 	fi
 	

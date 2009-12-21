@@ -202,7 +202,7 @@ config FREETZ_LIB_libfreetype
 		font conversion tools, text image generation tools, and many other products
 		as well.
 
-		In Freetz, rrdtool depends on freetype.
+		In Freetz, rrdtool and vnstati depends on freetype.
 
 config FREETZ_LIB_libart_lgpl_2
 	bool "Libart 2D graphics (libart.so)"
@@ -238,6 +238,17 @@ config FREETZ_LIB_libpng12
 
 		In Freetz, rrdtool depends on libpng.
 
+config FREETZ_LIB_libgd
+	bool "libgd (libgd.so)"
+	default n
+	select FREETZ_LIB_libjpeg
+	select FREETZ_LIB_libfreetype
+	select FREETZ_LIB_libpng12
+	help
+		GD is an open source code library for the dynamic creation of images
+		by programmers. GD creates PNG, JPEG and GIF images, among other
+		formats. GD is commonly used to generate charts, graphics, thumbnails,
+		and most anything else, on the fly.
 endmenu
 
 menu "uClibc"

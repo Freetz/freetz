@@ -80,13 +80,21 @@ config EXTERNAL_FREETZ_LIB_libfreetype
 		externals these file(s):
 		 /usr/lib/freetz/libfreetype.so.6.3.22
 
+config EXTERNAL_FREETZ_LIB_libgd
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgd
+	bool "libgd"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libgd.so.2.0.0
+
 config EXTERNAL_FREETZ_LIB_libgio_2
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgio_2
 	bool "libgio2"
 	default n
 	help
 		externals these file(s):
-		 /usr/lib/libgio-2.0.so.0.2000.5
+		 /usr/lib/freetz/libgio-2.0.so.0.2000.5
 
 config EXTERNAL_FREETZ_LIB_libglib_1
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libglib_1
@@ -142,7 +150,7 @@ config EXTERNAL_FREETZ_LIB_libiconv
 	default n
 	help
 		externals these file(s):
-		 /usr/lib/freetz/libiconv.so.2.2.0
+		 /usr/lib/freetz/libiconv.so.2.5.0
 
 config EXTERNAL_FREETZ_LIB_libid3tag
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libid3tag

@@ -14,8 +14,7 @@ config FREETZ_PACKAGE_PHP
 config FREETZ_PACKAGE_PHP_WITH_GD
 	bool "build with GD support"
 	depends on FREETZ_PACKAGE_PHP
-	select FREETZ_LIB_libpng12 if ! FREETZ_PACKAGE_PHP_STATIC
-	select FREETZ_LIB_libjpeg if ! FREETZ_PACKAGE_PHP_STATIC
+	select FREETZ_LIB_libgd if ! FREETZ_PACKAGE_PHP_STATIC
 	default n
 	help
 		This option enables the GD support for PHP
@@ -49,4 +48,5 @@ config FREETZ_PACKAGE_PHP_STATIC
 		  - libgcc_s.so.1
 		  - libm.so.0
 		  - libpcre.so.0
+		  - libgd.so.2
 		  - libsqlite3.so.0

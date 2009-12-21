@@ -7,9 +7,17 @@ config EXTERNAL_FREETZ_PACKAGE_VNSTAT
 		 /usr/bin/vnstat
 
 config EXTERNAL_FREETZ_PACKAGE_VNSTAT_DAEMON
-	depends on EXTERNAL_FREETZ_PACKAGE_VNSTAT && FREETZ_PACKAGE_VNSTAT_DAEMON && FREETZ_SHOW_ADVANCED 
+	depends on EXTERNAL_FREETZ_PACKAGE_VNSTAT && FREETZ_PACKAGE_VNSTAT_DAEMON && FREETZ_SHOW_ADVANCED
 	bool "vnstat daemon"
 	default n
 	help
 		externals these file(s):
 		 /usr/bin/vnstatd
+
+config EXTERNAL_FREETZ_PACKAGE_VNSTAT_IMAGE
+	depends on EXTERNAL_FREETZ_PACKAGE_VNSTAT && FREETZ_PACKAGE_VNSTAT_IMAGE
+	bool "vnstat image"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/vnstati

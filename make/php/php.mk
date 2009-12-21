@@ -13,7 +13,7 @@ endif
 
 $(PKG)_DEPENDS_ON := pcre
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_GD)),y)
-$(PKG)_DEPENDS_ON += jpeg libpng
+$(PKG)_DEPENDS_ON += gd
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SQLITE3)),y)
 $(PKG)_DEPENDS_ON += sqlite
@@ -73,9 +73,8 @@ $(PKG)_CONFIGURE_OPTIONS += --with-config-file-path=/tmp/flash
 $(PKG)_CONFIGURE_OPTIONS += --with-config-file-scan-dir=/tmp/flash/php
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre-regex="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_GD)),y)
-$(PKG)_CONFIGURE_OPTIONS += --with-gd
-$(PKG)_CONFIGURE_OPTIONS += --with-png-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
-$(PKG)_CONFIGURE_OPTIONS += --with-jpeg-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-gd="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --enable-gd-native-ttf
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
