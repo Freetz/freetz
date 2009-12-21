@@ -8,7 +8,6 @@ $(PKG)_SOURCE_MD5:=68a8d622bb6ef900b8bb64cdffad48f8
 
 $(PKG)_DEPENDS_ON := fuse
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-library
