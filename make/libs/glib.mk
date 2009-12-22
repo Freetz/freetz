@@ -81,7 +81,17 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(GLIB_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-1.2*
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-1.2* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/glib-config \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-1.2 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/glib \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/glib.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gmodule.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gthread.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/glib.m4 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/info/glib.info \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man?/glib-config*
 
 $(pkg)-uninstall:
 	$(RM) $(GLIB_TARGET_DIR)/libglib-1.2.so*
