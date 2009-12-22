@@ -2,13 +2,13 @@ config FREETZ_PACKAGE_MC
 	bool "Midnight Commander (mc) 4.6.1"
 	depends on FREETZ_LANG_DE || FREETZ_LANG_EN || ! FREETZ_SELECTED_LANG_ONLY
 	select FREETZ_SHARE_terminfo
-	select FREETZ_LIB_libglib_1
+	select FREETZ_LIB_libglib_2 if ! FREETZ_PACKAGE_MC_FORCE_GLIB12
 	default n
 	help
 		GNU Midnight Commander (MC) is probably the best known Norton Commander
 		clone for free operating systems and definitely one of the most
 		powerful. If you are looking for something smaller, feel free to give
-		Deco a try, but don't expect as much comfort and power there as you 
+		Deco a try, but don't expect as much comfort and power there as you
 		will get here.
 
 config FREETZ_PACKAGE_MC_INTERNAL_EDITOR
@@ -52,3 +52,15 @@ config FREETZ_PACKAGE_MC_WITH_NCURSES
 		other package, those 50 KB are a good investment in order to remove
 		libncurses from the firmware image and save (200 - 50) KB = 150 KB.
 
+config FREETZ_PACKAGE_MC_FORCE_GLIB12
+	bool "Use glib-1.2 instead of glib-2"
+	depends on FREETZ_PACKAGE_MC
+	select FREETZ_LIB_libglib_1
+	default n
+	help
+		Activating this option forces mc to use the old glib-1.2 library.
+		This was the default freetz behaviour until version 1.2.
+
+		Activating the option might save space/RAM on "small" boxes.
+		But if you already have some other package requiring glib-2
+		it's probably better not to activate it.

@@ -7,8 +7,12 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc.bin
 $(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
 $(PKG)_SOURCE_MD5:=18b20db6e40480a53bac2870c56fc3c4
 
-$(PKG)_DEPENDS_ON := glib ncurses-terminfo
-
+$(PKG)_DEPENDS_ON := ncurses-terminfo
+ifeq ($(strip $(FREETZ_PACKAGE_MC_FORCE_GLIB12)),y)
+$(PKG)_DEPENDS_ON += glib
+else
+$(PKG)_DEPENDS_ON += glib2
+endif
 ifeq ($(strip $(FREETZ_PACKAGE_MC_WITH_NCURSES)),y)
 $(PKG)_DEPENDS_ON += ncurses
 endif
@@ -22,7 +26,7 @@ $(PKG)_CONFIGURE_OPTIONS:=\
 		--disable-background \
 		--disable-gcc-warnings \
 		--disable-glibtest \
-		--with-glib12 \
+		$(if $(FREETZ_PACKAGE_MC_FORCE_GLIB12),--with-glib12,--without-glib12) \
 		--without-libiconv-prefix \
 		--without-x \
 		--with-vfs \
@@ -37,6 +41,7 @@ $(PKG)_CONFIGURE_OPTIONS:=\
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_MC_INTERNAL_EDITOR
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_MC_SUBSHELL
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_MC_WITH_NCURSES
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_MC_FORCE_GLIB12
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -45,8 +50,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(MC_DIR) \
-		GLIB_CFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-1.2" \
-		GLIB_LIBS="-lglib"
+		$(if $(FREETZ_PACKAGE_MC_FORCE_GLIB12),GLIB_CFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-1.2" GLIB_LIBS="-lglib",)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
