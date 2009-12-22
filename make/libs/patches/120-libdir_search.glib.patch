@@ -1,0 +1,32 @@
+--- ltmain.sh	2009-12-22 00:00:00.000000000 +0100
++++ ltmain.sh	2009-12-22 00:00:00.000000000 +0100
+@@ -1643,8 +1643,9 @@
+ 	    absdir="$abs_ladir"
+ 	    libdir="$abs_ladir"
+ 	  else
+-	    dir="$libdir"
+-	    absdir="$libdir"
++	    dir="$abs_ladir"
++	    absdir="$abs_ladir"
++	    libdir="$abs_ladir"
+ 	  fi
+ 	else
+ 	  dir="$ladir/$objdir"
+@@ -1856,7 +1857,7 @@
+ 	      if test "$hardcode_direct" = yes; then
+ 		add="$dir/$linklib"
+ 	      elif test "$hardcode_minus_L" = yes; then
+-		add_dir="-L$dir"
++		#add_dir="-L$dir"
+ 		# Try looking first in the location we're being installed to.
+ 		if test -n "$inst_prefix_dir"; then
+ 		  case "$libdir" in
+@@ -1922,7 +1923,7 @@
+ 	      add="-l$name"
+ 	    else
+ 	      # We cannot seem to hardcode it, guess we'll fake it.
+-	      add_dir="-L$libdir"
++	      #add_dir="-L$libdir"
+ 	      # Try looking first in the location we're being installed to.
+ 	      if test -n "$inst_prefix_dir"; then
+ 		case "$libdir" in

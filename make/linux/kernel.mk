@@ -50,30 +50,41 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL
 	@for i in $(KERNEL_LINKING_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; then \
-			echo "Linking  .../include/linux/$${i##*\/linux_}"; \
+			echo Linking  .../include/linux/$${i##*\/linux_}; \
 			ln -sf ../../$$i $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; \
 		fi \
 	done
 	@if test -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/avm_net_trace.h -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; then \
-			echo "Linking  .../include/linux/avm_net_trace.h"; \
+			echo Linking  .../include/linux/avm_net_trace.h; \
 			ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
 				$(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; \
 	fi
-	@for i in $(KERNEL_DUMMY_DIRS); do \
-		echo Creating .../$$i/Makefile; \
-		mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$$i; \
-		touch $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
-	done
 	@for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile.26 -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
-			echo "Linking  .../$$i/Makefile"; \
+			echo Linking  .../$$i/Makefile; \
 			ln -sf Makefile.26 $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
 		fi \
 	done
-	touch $(KERNEL_BUILD_ROOT_DIR)/drivers/dsl/Kconfig
-	touch $(KERNEL_BUILD_ROOT_DIR)/drivers/video/davinci/Kconfig
+	@for i in $(KERNEL_DUMMY_DIRS); do \
+		if test ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
+			echo Creating .../$$i/Makefile; \
+			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$$i; \
+			test -h $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile && \
+				rm $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
+			touch $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
+		fi \
+	done
+	@for i in $(KERNEL_OTHER_FILES); do \
+		if test ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i ; then \
+			echo Creating  .../$$i; \
+			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$${i%\/*}; \
+			test -h $(KERNEL_BUILD_ROOT_DIR)/$$i && \
+				rm $(KERNEL_BUILD_ROOT_DIR)/$$i; \
+			touch $(KERNEL_BUILD_ROOT_DIR)/$$i; \
+		fi \
+	done
 	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-$(KERNEL_VERSION) $(KERNEL_DIR)/linux
 	touch $@
 

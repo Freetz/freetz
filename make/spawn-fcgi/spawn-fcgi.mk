@@ -5,8 +5,6 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/spawn-fcgi
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/spawn-fcgi
 $(PKG)_SOURCE_MD5:=787ed2f88d2204bf1fe4fbd6e509d1d7
 
-$(PKG)_CONFIGURE_ENV += $(foreach flag,fork_works vfork_works,ac_cv_func_$(flag)=yes)
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

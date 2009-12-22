@@ -24,7 +24,8 @@ $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_OPENVPN_STATIC
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoreconf -f -i ;
+# ipv6 patch modifies both files, touch them to prevent configure from being regenerated
+$(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.ac; touch ./configure;
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc/openvpn
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_WITH_LZO),,--disable-lzo)

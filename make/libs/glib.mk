@@ -8,12 +8,9 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libglib-1.2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_SOURCE_MD5:=6fe30dad87c77b91b632def29dd69ef9
 
 $(PKG)_CONFIGURE_DEFOPTS := n
+
 $(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
-$(PKG)_CONFIGURE_OPTIONS += --cache-file=$(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache
-$(PKG)_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
-$(PKG)_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
-$(PKG)_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
 $(PKG)_CONFIGURE_ENV += glib_cv_prog_cc_ansi_proto=no
 $(PKG)_CONFIGURE_ENV += glib_cv_has__inline=yes
 $(PKG)_CONFIGURE_ENV += glib_cv_has__inline__=yes
@@ -28,6 +25,13 @@ $(PKG)_CONFIGURE_ENV += glib_cv_func_pthread_mutex_trylock_posix=yes
 $(PKG)_CONFIGURE_ENV += glib_cv_func_pthread_cond_timedwait_posix=yes
 $(PKG)_CONFIGURE_ENV += glib_cv_sizeof_gmutex=24
 $(PKG)_CONFIGURE_ENV += glib_cv_byte_contents_gmutex="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+$(PKG)_CONFIGURE_ENV += lt_cv_deplibs_check_method=pass_all
+$(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm -B"
+
+$(PKG)_CONFIGURE_OPTIONS += --cache-file=$(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache
+$(PKG)_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
 $(PKG)_CONFIGURE_OPTIONS += --program-prefix=""
 $(PKG)_CONFIGURE_OPTIONS += --program-suffix=""
 $(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
@@ -75,7 +79,17 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(GLIB_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-1.2*
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libglib-1.2* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/glib-config \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-1.2 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/glib \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/glib.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gmodule.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gthread.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/glib.m4 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/info/glib.info \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man?/glib-config*
 
 $(pkg)-uninstall:
 	$(RM) $(GLIB_TARGET_DIR)/libglib-1.2.so*

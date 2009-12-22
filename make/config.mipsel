@@ -18,6 +18,7 @@ export ac_cv_sizeof_pid_t=4
 export ac_cv_sizeof_ptrdiff_t=4
 export ac_cv_sizeof_size_t=4
 export ac_cv_sizeof_ssize_t=4
+export ac_cv_sizeof_socklen_t=4
 if [ "$FREETZ_TARGET_LFS" = "y" ]; then
 	export ac_cv_sizeof_fpos_t=24
 	export ac_cv_sizeof_off_t=8
@@ -39,13 +40,25 @@ export ac_cv_func_malloc_0_nonnull=yes
 export ac_cv_func_realloc_0_nonnull=yes
 export ac_cv_func_epoll_ctl=no
 export ac_cv_func_memcmp_working=yes
+export ac_cv_func_getpwuid_r=yes
 export ac_cv_func_posix_getpwuid_r=yes
+export ac_cv_func_getgrgid_r=yes
 export ac_cv_func_posix_getgrgid_r=yes
 export ac_cv_func_setpgrp_void=yes
-export ac_cv_func_dlopen=yes
-for name in bcopy bzero rename fchmod fchown index rindex strerror lstat _exit utimes vsnprintf getcwd strftime; do
+for name in bcopy bzero rename fchmod fchown index rindex strerror lstat _exit utimes vsnprintf getcwd strftime dlopen fork fork_works vfork vfork_works; do
 	export ac_cv_func_$name=yes
 done
+
+# Math Library functions (the values below could be generated/verified using make target-tester-math-functions)
+# Some packages incorrectly expect these functions to be in libc. This causes the corresponding test to fail
+# and the corresponding variable to be set to no. This in turn breaks the compilation of other packages (e.g. rrdtool)
+# that do really require these functions.
+# In case the compilation of some package stops with undefined reference to one of the functions below
+# add libm to its dependency list and -lm to its link options.
+export ac_cv_func_isnan=yes
+export ac_cv_func_isinf=yes
+export ac_cv_func_finite=yes
+
 # Other Libraries
 export ac_cv_file__usr_X11R6_lib64=no
 export ac_cv_file__usr_X11R6_lib=no
@@ -63,3 +76,10 @@ export ac_cv_linux_vers=2.6.13.1
 export ac_cv_CAN_USE_SYSCTL=no
 
 # Other
+
+# silence "using cross tools not prefixed with host triplet"-warning
+export ac_tool_warned=yes
+
+# Fool configure scripts calling config.rpath script and messing up config.cache with host linker options.
+# Search for "checking for shared library run path origin" in configure script to understand what is meant.
+export acl_cv_rpath=done
