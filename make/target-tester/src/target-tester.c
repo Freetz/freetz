@@ -30,6 +30,9 @@
 #include <arpa/nameser.h>
 #include <resolv.h>
 
+#include <pwd.h>
+#include <errno.h>
+
 struct cookiedata {
     __off64_t pos;
 };
@@ -226,5 +229,14 @@ int main(int argc, char** argv) {
 	    struct stat sbuf;
 	    int code = (lstat("conftest.sym/", &sbuf) == 0);
 	    printf("ac_cv_func_lstat_dereferences_slashed_symlink=%s (you should do 'echo > conftest.file && ln -s conftest.file conftest.sym' before running this test)\n", code ? "yes" : "no");
+	}
+
+	{
+	    char buffer[10000];
+	    struct passwd pwd;
+	    struct passwd* pwdp = &pwd;
+	    int error = getpwuid_r(0, &pwd, (char*)&buffer, sizeof(buffer), &pwdp);
+	    int code = (errno != ENOSYS);
+	    printf("ac_cv_func_getpwuid_r=%s\n", code ? "yes" : "no");
 	}
 }
