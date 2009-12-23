@@ -1,11 +1,12 @@
 TARGET=target-tester
+PREREQUISITE=target-tester
 
 all: $(TARGET)
 
 $(TARGET): $(TARGET).o
 	$(CC) -o $@ $^
 
-$(TARGET).o: target-tester.c
+$(TARGET).o: $(PREREQUISITE).c
 	$(CC) -c -o $@ $^ $(CFLAGS)
 
 define AC_FUNC_TEST
