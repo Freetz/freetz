@@ -1,0 +1,10 @@
+--- networking/httpd.c.orig	2009-12-13 22:57:09.000000000 +0000
++++ networking/httpd.c	2009-12-13 22:57:09.000000000 +0000
+@@ -1800,6 +1800,7 @@
+ 	char *header_ptr = header_ptr;
+ 	Htaccess_Proxy *proxy_entry;
+ #endif
++	xchdir(home_httpd);
+ 
+ 	/* Allocation of iobuf is postponed until now
+ 	 * (IOW, server process doesn't need to waste 8k) */

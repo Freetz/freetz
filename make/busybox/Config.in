@@ -25,6 +25,15 @@ config FREETZ_BUSYBOX_DIFF
 		This feature adds about 14.2 KB to BusyBox.
 		All sub-features in BusyBox are selected.
 
+config FREETZ_BUSYBOX_ETHER_WAKE
+	bool "ether-wake"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Send a magic packet to wake up sleeping machines.
+
+		This feature adds about 4 KB to BusyBox.
+
 config FREETZ_BUSYBOX_INETD
 	bool "inetd"
 	depends on FREETZ_REPLACE_BUSYBOX
@@ -120,6 +129,11 @@ config FREETZ_BUSYBOX_LESS
 		(The features CONFIG_FEATURE_LESS_BRACKETS and 
 		CONFIG_FEATURE_LESS_REGEXP are set automatically)
 
+config FREETZ_BUSYBOX_LONG_OPTS
+	bool
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+
 config FREETZ_BUSYBOX_NICE
 	bool "nice"
 	depends on FREETZ_REPLACE_BUSYBOX
@@ -134,6 +148,7 @@ config FREETZ_BUSYBOX_NICE
 config FREETZ_BUSYBOX_LS_COLOR
 	bool "color"
 	depends on FREETZ_REPLACE_BUSYBOX
+	select FREETZ_BUSYBOX_LONG_OPTS
 	default n
 	help
 		Adds the colorful output to the ls-command. 
@@ -141,16 +156,6 @@ config FREETZ_BUSYBOX_LS_COLOR
 		This is a nice but nearly useless feature for your busybox, it 
 		only colors you dirictory-listings.
 		(this feature sets "ls --color" by default, too)
-
-config FREETZ_BUSYBOX_FASTPROC
-	bool "fastproc"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Changes the behavior of scanning the proc-filesystem
-
-		With this patch commands like ps or top (even mount or other stuff that
-		uses the /proc/ filesystem) should run a bit faster
 
 config FREETZ_BUSYBOX_KEYS
 	bool "fancykeys"
@@ -218,19 +223,43 @@ config FREETZ_BUSYBOX_TAC
 	help
 		Reverse cat.
 
-config FREETZ_BUSYBOX_MDEV_RENAME
-	bool "mdev rename"
+config FREETZ_BUSYBOX_MDEV
+	bool "mdev"
 	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		mdev is a mini-udev implementation for dynamically creating
+		device nodes in the /dev directory.
+
+config FREETZ_BUSYBOX_MDEV_CONF
+	bool "Support /etc/mdev.conf"
+	depends on FREETZ_BUSYBOX_MDEV
+	default n
+	help
+		Add support for the mdev config file to control ownership and
+		permissions of the device nodes.
+
+config FREETZ_BUSYBOX_MDEV_RENAME
+	bool " Support subdirs/symlinks"
+	depends on FREETZ_BUSYBOX_MDEV_CONF
 	default n
 	help
 		Enables the renaming destination devices as they are created.
 
 config FREETZ_BUSYBOX_MDEV_RENAME_REGEXP
-	bool "mdev rename regexp"
+	bool "Support regular expressions substitutions when renaming device"
 	depends on FREETZ_BUSYBOX_MDEV_RENAME
 	default n
 	help
 		Enables the rename destination devices using regular expressions.
+
+config FREETZ_BUSYBOX_MDEV_EXEC
+	bool "Support command execution at device addition/removal"
+	depends on FREETZ_BUSYBOX_MDEV_CONF
+	default n
+	help
+		This adds support for an optional field to /etc/mdev.conf for
+		executing commands when devices are created/removed.
 
 config FREETZ_BUSYBOX_MOUNT_HELPERS
 	bool "mount helpers"
