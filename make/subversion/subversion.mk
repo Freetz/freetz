@@ -21,31 +21,13 @@ $(PKG)_LIBS_STAGING_DIR := $(SUBVERSION_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGI
 $(PKG)_LIBS_TARGET_DIR := $(SUBVERSION_LIBNAMES_LONG:%=$($(PKG)_DEST_DIR)/usr/lib/%.$(SUBVERSION_LIB_SUFFIX))
 
 # Executables
-$(PKG)_BINARIES :=
-ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_SVN)),y)
-$(PKG)_BINARIES += svn
-endif
-ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_SVNADMIN)),y)
-$(PKG)_BINARIES += svnadmin
-endif
-ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER)),y)
-$(PKG)_BINARIES += svndumpfilter
-endif
-ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_SVNLOOK)),y)
-$(PKG)_BINARIES += svnlook
-endif
-ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_SVNSERVE)),y)
-$(PKG)_BINARIES += svnserve
-endif
-ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_SVNSYNC)),y)
-$(PKG)_BINARIES += svnsync
-endif
-ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_SVNVERSION)),y)
-$(PKG)_BINARIES += svnversion
-endif
+$(PKG)_BINARIES_ALL := svn svnadmin svndumpfilter svnlook svnserve svnsync svnversion
+$(PKG)_BINARIES := $(strip $(foreach binary,$($(PKG)_BINARIES_ALL),$(if $(FREETZ_PACKAGE_$(PKG)_$(shell echo $(binary) | tr [a-z] [A-Z])),$(binary))))
 $(PKG)_BINARIES_BUILD_DIR := $(join $(SUBVERSION_BINARIES:%=$($(PKG)_DIR)/subversion/%/$(SUBVERSION_BINARY_BUILD_SUBDIR)/),$(SUBVERSION_BINARIES))
 $(PKG)_BINARIES_STAGING_DIR := $(SUBVERSION_BINARIES:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/%)
 $(PKG)_BINARIES_TARGET_DIR := $(SUBVERSION_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
+
+$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG)_DEPENDS_ON := apr
 $(PKG)_DEPENDS_ON += apr-util
@@ -54,13 +36,6 @@ $(PKG)_DEPENDS_ON += sqlite
 $(PKG)_DEPENDS_ON += zlib
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_WITH_SSL
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_SVN
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_SVNADMIN
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_SVNLOOK
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_SVNSERVE
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_SVNSYNC
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_SVNVERSION
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_STATIC
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
@@ -131,7 +106,7 @@ $($(PKG)_BINARIES_TARGET_DIR): \
 	$(INSTALL_BINARY_STRIP)
 
 .PHONY: subversion-keep-required-files-only
-$(pkg)-keep-required-files-only: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR)
+$(pkg)-keep-required-files-only: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR) | $(pkg)-clean-not-included--int
 ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	@#compute transitive closure of all required svn-libraries
 	@getlibs() { $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/mipsel-linux-uclibc-readelf -d "$$@" | grep -i "Shared library" | sed -r -e 's|^.*\[(.+)\].*$$|\1|g' | sort -u; }; \

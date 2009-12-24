@@ -1,14 +1,15 @@
 config FREETZ_PACKAGE_XPDF
 	bool "Xpdf 3.02 (binary only)"
+	select FREETZ_LIB_libm
 	select FREETZ_LIB_libuClibc__
 	default n
 	help
 		Xpdf is an open source viewer for Portable Document Format
 		(PDF) files. (These are also sometimes also called 'Acrobat'
 		files, from the name of Adobe's PDF software.) The Xpdf
-		project also includes a PDF text extractor, PDF-to-PostScript 
+		project also includes a PDF text extractor, PDF-to-PostScript
 		converter, and various other utilities.
-		
+
 		This packages includes only the non-X utilities.
 
 menu "Xpdf options"

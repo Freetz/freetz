@@ -1,16 +1,20 @@
 $(call PKG_INIT_BIN, 1.76)
 $(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=ac44511ba4c203998be3079626126ede
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
-$(PKG)_CLIENT_BINARY:=$($(PKG)_DIR)/cli/transmissioncli
-$(PKG)_TARGET_CLIENT_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/transmissioncli
-$(PKG)_DAEMON_BINARY:=$($(PKG)_DIR)/daemon/transmission-daemon
-$(PKG)_TARGET_DAEMON_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/transmission-daemon
-$(PKG)_REMOTE_BINARY:=$($(PKG)_DIR)/daemon/transmission-remote
-$(PKG)_TARGET_REMOTE_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/transmission-remote
+
+$(PKG)_BINARIES_ALL := transmissioncli transmission-daemon transmission-remote
+$(PKG)_BINARIES := $(if $(FREETZ_PACKAGE_TRANSMISSION_CLIENT),transmissioncli,) $(if $(FREETZ_PACKAGE_TRANSMISSION_DAEMON),transmission-daemon,) $(if $(FREETZ_PACKAGE_TRANSMISSION_REMOTE),transmission-remote,)
+$(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/daemon/%)
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_WEBINTERFACE_DIR:=$($(PKG)_DIR)/web
 $(PKG)_TARGET_WEBINTERFACE_DIR:=$($(PKG)_DEST_DIR)/usr/share/transmission-web-home
 $(PKG)_TARGET_WEBINTERFACE_INDEX_HTML:=$($(PKG)_TARGET_WEBINTERFACE_DIR)/index.html
-$(PKG)_SOURCE_MD5:=ac44511ba4c203998be3079626126ede
+
+$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+ifneq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
+$(PKG)_NOT_INCLUDED += $($(PKG)_TARGET_WEBINTERFACE_DIR)
+endif
 
 $(PKG)_DEPENDS_ON := zlib openssl curl libevent
 
@@ -31,28 +35,17 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_CLIENT_BINARY) $($(PKG)_DAEMON_BINARY) $($(PKG)_REMOTE_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(TRANSMISSION_DIR) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CXXFLAGS="$(TARGET_CXXFLAGS)" \
 		CPPFLAGS="$(TARGET_CXXFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS) $(TRANSMISSION_LDFLAGS)"
+		LDFLAGS="$(TARGET_LDFLAGS) $(TRANSMISSION_LDFLAGS)" \
+		&& cp $(TRANSMISSION_DIR)/cli/transmissioncli $(TRANSMISSION_DIR)/daemon/
 
-$($(PKG)_TARGET_CLIENT_BINARY): $($(PKG)_CLIENT_BINARY)
-ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_CLIENT)),y)
+$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/daemon/%
 	$(INSTALL_BINARY_STRIP)
-endif
-
-$($(PKG)_TARGET_DAEMON_BINARY): $($(PKG)_DAEMON_BINARY)
-ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_DAEMON)),y)
-	$(INSTALL_BINARY_STRIP)
-endif
-
-$($(PKG)_TARGET_REMOTE_BINARY): $($(PKG)_REMOTE_BINARY)
-ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_REMOTE)),y)
-	$(INSTALL_BINARY_STRIP)
-endif
 
 $($(PKG)_TARGET_WEBINTERFACE_INDEX_HTML): $($(PKG)_DIR)/.unpacked
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
@@ -68,16 +61,14 @@ endif
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_CLIENT_BINARY) $($(PKG)_TARGET_DAEMON_BINARY) \
-			$($(PKG)_TARGET_REMOTE_BINARY) $($(PKG)_TARGET_WEBINTERFACE_INDEX_HTML)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_TARGET_WEBINTERFACE_INDEX_HTML)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(TRANSMISSION_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) -r $(TRANSMISSION_TARGET_CLIENT_BINARY) \
-		$(TRANSMISSION_TARGET_DAEMON_BINARY) \
-		$(TRANSMISSION_TARGET_REMOTE_BINARY) \
+	$(RM) -r \
+		$(TRANSMISSION_BINARIES_ALL:%=$(TRANSMISSION_DEST_DIR)/usr/bin/%) \
 		$(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
 
 $(PKG_FINISH)

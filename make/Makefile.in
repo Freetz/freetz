@@ -220,9 +220,8 @@ ALL_PACKAGES+=$(pkg)
 $(PKG)_VERSION:=$(strip $1)
 $(PKG)_CONFIGURE_DEFOPTS:=y
 # $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
-$(pkg)-precompiled : $(pkg)-precompiled--int $(pkg)
-.PHONY: $(pkg)-precompiled $(pkg)-precompiled--int $(pkg)
-
+$(pkg)-precompiled : $(pkg)-precompiled--int $(pkg) $(pkg)-clean-not-included--int
+.PHONY: $(pkg)-precompiled $(pkg)-precompiled--int $(pkg) $(pkg)-clean-not-included--int
 endef
 
 # Stage 2a: initialise other package-specific variables for binary packages
@@ -301,6 +300,8 @@ define PKG_FINISH__INT
 $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int
 $(pkg)-precompiled--int : uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+$(pkg)-clean-not-included--int:
+	@$(if $($(PKG)_NOT_INCLUDED),$(RM) -r $($(PKG)_NOT_INCLUDED),)
 PKG:=
 pkg:=
 PKG_TYPE:=
