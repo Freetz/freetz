@@ -1,0 +1,94 @@
+#!/bin/sh
+
+PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
+. /usr/lib/libmodcgi.sh
+
+auto_chk=''; man_chk=''; smtp_chk=''; ssmtp_chk=''; pop3_chk=''; pop3s_chk=''; ctrl_chk=''; ctrls_chk=''; smtplog_chk=''; pop3log_chk=''; systemlog_chk=''; unpriv_chk=''
+
+case "$XMAIL_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
+if [ "$XMAIL_UNPRIV" = "yes" ]; then unpriv_chk=' checked'; fi
+if [ "$XMAIL_SMTP" = "yes" ]; then smtp_chk=' checked'; fi
+if [ "$XMAIL_SSMTP" = "yes" ]; then ssmtp_chk=' checked'; fi
+if [ "$XMAIL_POP3" = "yes" ]; then pop3_chk=' checked'; fi
+if [ "$XMAIL_POP3S" = "yes" ]; then pop3s_chk=' checked'; fi
+if [ "$XMAIL_CTRL" = "yes" ]; then ctrl_chk=' checked'; fi
+if [ "$XMAIL_CTRLS" = "yes" ]; then ctrls_chk=' checked'; fi
+if [ "$XMAIL_SMTPLOG" = "yes" ]; then smtplog_chk=' checked'; fi
+if [ "$XMAIL_POP3LOG" = "yes" ]; then pop3log_chk=' checked'; fi
+if [ "$XMAIL_SYSTEMLOG" = "yes" ]; then systemlog_chk=' checked'; fi
+
+sec_begin '$(lang de:"Starttyp" en:"Start type")'
+cat << EOF
+<p>
+<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
+<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
+</p>
+EOF
+sec_end
+
+sec_begin '$(lang de:"Zentrale Serverkonfiguration" en:"Core server configuration")'
+cat << EOF
+<p><input type="hidden" name="unpriv" value="no">
+<input id="u1" type="checkbox" name="unpriv" value="yes"$unpriv_chk><label for="u1"> $(lang de:"XMail mit unpriviligierter Benutzer ID starten" en:"Start XMail with unprivileged user ID")</label></p>
+<hr>
+<p style="font-size:10px;">$(lang de:"Bitte gib hier den Speicherort f&uuml;r XMail an (enth&auml;lt alle Email-Boxen, Spool Verzeichnisse, Konfigurationsdateien). Dieses Verzeichnis muss schreibbar sein und sollte kein FAT Dateisystem enthalten. Falls das Verzeichnis leer ist, wird automatisch die richtige Dateistruktur erstellt. Dieses Verzeichnis wird alle Konfigurationsdateien von XMail enthalten, welche manuell (oder via einem Webfrontend) bearbeitet werden m&uuml;ssen." en:"Please provide the storage location for XMail (this location contains all email boxes, spool storage, configuration files). This directory must be writeable and should be no FAT file system. In case the directory is empty, the proper directory structure will be created. This directory will contain all configuration files for XMail which must be modified directly or via a web frontend.")</p>
+<p> $(lang de:"Verzeichnis f&uuml;r XMail" en:"Directory for XMail"): <input type="text" name="maillocation" size="30" maxlength="255" value="$(html "$XMAIL_MAILLOCATION")"></p>
+EOF
+sec_end
+
+sec_begin '$(lang de:"Angebotene Dienste" en:"Offered services")'
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Bitte beachte: Wenn XMail mit einer unpriviligierten Benutzer-ID gestartet wird, m&uuml;ssen alle hier angegebenen Ports gr&ouml;sser oder gleich 1024 sein, da ansonsten der Dienst nicht startet. Um Dienste aus dem Internet zug&auml;nglich zu machen, musst du eine Port-Weiterleitung mit der Fritz!Box Firewall einrichten (z.B. von Port 25 auf der Internet-Seite zum Port 10025 auf der lokalen Seite)." en:"Please note: If XMail is started with an unprivileged user ID, all ports must be above or equal to 1024 as otherwise the service will not be started. To make services available from the Internet, please use the port forwarding with the Fritz!Box firewall (e.g. from port 25 on the Internet side to port 10025 on the local side.")</p>
+<hr>
+<p><input type="hidden" name="smtp" value="no">
+<input id="a1" type="checkbox" name="smtp" value="yes"$smtp_chk><label for="a1"> $(lang de:"SMTP aktivieren" en:"Activate SMTP")</label></p>
+<p> $(lang de:"SMTP Port" en:"SMTP port"): <input type="text" name="smtpport" size="5" maxlength="5" value="$(html "$XMAIL_SMTPPORT")"></p>
+<hr>
+<p style="font-size:10px;">$(lang de:"Soll ein weiterer Port f&uuml;r SSL/TLS gesch&uuml;tztes SMTP aktiviert werden (SSL/TLS ist auch am normalen Port verf&uuml;gbar)?" en:"Shall another port for SSL/TLS protected SMTP be activated (SSL/TLS is also available using the regular port)?")</p>
+<p><input type="hidden" name="ssmtp" value="no">
+<input id="a2" type="checkbox" name="ssmtp" value="yes"$ssmtp_chk><label for="a2"> $(lang de:"SSMTP aktivieren" en:"Activate SSMTP")</label></p>
+<p> $(lang de:"SSMTP Port" en:"SSMTP port"): <input type="text" name="ssmtpport" size="5" maxlength="5" value="$(html "$XMAIL_SSMTPPORT")"></p>
+<hr>
+<p><input type="hidden" name="pop3" value="no">
+<input id="a3" type="checkbox" name="pop3" value="yes"$pop3_chk><label for="a3"> $(lang de:"POP3 aktivieren" en:"Activate POP3")</label></p>
+<p> $(lang de:"POP3 Port" en:"POP3 port"): <input type="text" name="pop3port" size="5" maxlength="5" value="$(html "$XMAIL_POP3PORT")"></p>
+<hr>
+<p style="font-size:10px;">$(lang de:"Soll ein weiterer Port f&uuml;r SSL/TLS gesch&uuml;tztes POP3 aktiviert werden (SSL/TLS ist auch am normalen Port verf&uuml;gbar)?" en:"Shall another port for SSL/TLS protected POP3 be activated (SSL/TLS is also available using the regular port)?")</p>
+<p><input type="hidden" name="pop3s" value="no">
+<input id="a4" type="checkbox" name="pop3s" value="yes"$pop3s_chk><label for="a3"> $(lang de:"POP3S aktivieren" en:"Activate POP3S")</label></p>
+<p> $(lang de:"POP3S Port" en:"POP3S port"): <input type="text" name="pop3sport" size="5" maxlength="5" value="$(html "$XMAIL_POP3SPORT")"></p>
+<hr>
+<p style="font-size:10px;">$(lang de:"Bitte beachte: Der SSL-gesch&uuml;tzte Admin Zugang ist aus allen Netzen zug&auml;nglich (port 6018). Der ungesch&uuml;tzte Admin Zugang (6017) ist nur via localhost erreichbar." en:"Please note: The SSL protected admin access is available from all networks (port 6018). The unprotected admin access is available via localhost only (port 6017).")</p>
+<p><input type="hidden" name="ctrl" value="no">
+<input id="a5" type="checkbox" name="ctrl" value="yes"$ctrl_chk><label for="a5"> $(lang de:"Admin Zugang aktivieren" en:"Activate admin access")</label></p>
+<p style="font-size:10px;">$(lang de:"Soll SSL/TLS gesch&uuml;tzter Admin Zugang aktiviert werden?" en:"Shall SSL/TLS protected admin access be activated?")</p>
+<p><input type="hidden" name="ctrls" value="no">
+<input id="a6" type="checkbox" name="ctrls" value="yes"$ctrls_chk><label for="a6"> $(lang de:"SSL Admin Zugang aktivieren" en:"Activate SSL admin access")</label></p>
+EOF
+sec_end
+
+sec_begin '$(lang de:"Server Logging" en:"Server logging")'
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Bitte beachte, dass XMail die Logdaten in logs/ speichert." en:"Please note that XMail saves the log data in logs/.")</p>
+<p>
+<input type="hidden" name="smtplog" value="no">
+<input id="l1" type="checkbox" name="smtplog" value="yes"$smtplog_chk><label for="l1"> $(lang de:"SMTP Log aktivieren" en:"Activate SMTP logging")</label>
+</p>
+<p>
+<input type="hidden" name="pop3log" value="no">
+<input id="l2" type="checkbox" name="pop3log" value="yes"$pop3log_chk><label for="l2"> $(lang de:"POP3 Log aktivieren" en:"Activate POP3 logging")</label>
+</p>
+<p>
+<input type="hidden" name="systemlog" value="no">
+<input id="l3" type="checkbox" name="systemlog" value="yes"$systemlog_chk><label for="l2"> $(lang de:"XMail-internes Log aktivieren" en:"Activate XMail internal logging")</label>
+</p>
+EOF
+sec_end
+
+sec_begin '$(lang de:"Tipps zur Konfiguration" en:"Hints for configuration")'
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Zur Aktivierung von SSL musst du das SSL Zertifikat und den entsprechenden privaten SSL Schl&uuml;ssel in das oben angegebene Verzeichnis f&uuml;r XMail kopieren: Das Zertifikat muss als Datei server.cert und der private Schl&uuml;ssen als Datei server.key gespeichert werden. Beachte bitte, dass XMail das Recht haben muss, diese Dateien zu lesen (wenn du oben ausgew&auml;hlt hast, dass XMail mit einer unpriviligierten Benutzer-ID startet, m&uuml;ssen die Dateien lesbar f&uuml;r den Benutzer xmail oder die Gruppe xmail sein)." en:"To activate SSL you have to provide the SSL certificate and the corresponding private key which have to be copied into the above given XMail directory. The certificate must be saved in the file server.cert and the key in the file server.key. Please ensure that XMail has the permissions to read those files (if you selected to start XMail with an unprivileged ID, these files must be readable by the user xmail or group xmail).")</p>
+<hr>
+<p style="font-size:10px;">$(lang de:"F&uuml;r XMail existiert ein PHP Webfrontend welches all Konfigurationsparameter, die Administration von Email-Domains und Benutzern beherrscht: <a href=http://phpxmail.sourceforge.net>PHPXmail</a>. Um dieses Frontend auf der Fritz!Box zu verwenden, musst du folgende Schritte durchf&uuml;hren:<br/>1. Installiere XMail (wenn du diese Seite liest, dann hast du diesen Punkt bereits geschafft).<br/>2. Aktiviere im XMail Freetz-Webfrontend den unverschl&uuml;sselten Admin-Zugang.<br/>3. In der crtlaccounts.tab XMail Konfigurationsdatei einen Account eintragen (siehe XMail readme.txt).<br/>4. Installiere PHP und lighttpd (es muss mod_fastcgi f&uuml;r lighttpd gew&auml;hlt werden, damit PHP funktioniert).<br/>5. Konfiguriere lighttpd und aktiviere PHP mittels dem Freetz-Webfrontend.<br/>6. Kopiere den Inhalt des PHPXmail Zip-Archivs in ein Verzeichnis innerhalb des lighttpd Dokumentenverzeichnisses.<br/>7. Starte einen Webbrowser und lade die URL deines lighttpd Servers, Verzeichnis des PHPXmail Frontends.<br/>8. Trage im erscheinenden Webfrontend im Namen localhost, als IP \"127.0.0.1\", und im Benutzernamen- und Passwordfeld die Benutzerdaten ein, welche du f&uuml;r die ctrlaccounts.tab Datei verwendet hast und best&auml;tige diese Konfiguration.<br/>9. Nun klicke auf login im PHPXmail Webfrontend und Benutze die gleichen Benutzerdaten wieder.<br/>10. Zugang zu allen XMail Konfigurationsparametern ist nun m&ouml;glich - es ist kein Neustart von XMail nach &Auml;nderungen notwendig." en:"TBD - see German part")</p>
+EOF
+sec_end

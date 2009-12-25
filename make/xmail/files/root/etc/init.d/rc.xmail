@@ -1,0 +1,190 @@
+#!/bin/sh
+
+DAEMON=xmail
+DAEMON_LONG_NAME="XMail SMTP/POP3 server"
+PID_FILE=/var/run/XMail.pid
+
+CMDOPTS="-F- -MM -Ms /mod/etc/$DAEMON/ -Qn 1 -PX 1 -SX 1 -Ln 1 -Yt 1 -CX 1 -Yi 600"
+
+. /etc/init.d/modlibrc
+
+cleanup() {
+	rm -rf /mod/etc/$DAEMON
+	rm -rf /var/run/$DAEMON
+}
+
+configure() {
+	cleanup
+
+	mkdir -p /mod/etc/$DAEMON
+
+	if [ "$XMAIL_UNPRIV" = "yes" ]; then
+		modlib_addgroup xmail
+		modlib_adduser xmail -G xmail -s /bin/false -H -D -g "XMail account"
+		chmod 750 $XMAIL_MAILLOCATION
+		chmod 770 /mod/etc/$DAEMON
+		chown xmail:xmail /mod/etc/$DAEMON
+
+
+		mkdir /var/run/$DAEMON
+		chown xmail:xmail /var/run/$DAEMON
+		ln -s xmail/XMail.pid /var/run/XMail.pid
+	fi
+
+	for i in /etc/default.$DAEMON/default_config/*; do
+		i=$(basename $i)
+		[ -e "$XMAIL_MAILLOCATION/$i" ] || cp -rf /etc/default.$DAEMON/default_config/$i $XMAIL_MAILLOCATION/
+		ln -s $XMAIL_MAILLOCATION/$i /mod/etc/$DAEMON/
+	done
+	for i in server.cert server.key; do
+		ln -s $XMAIL_MAILLOCATION/$i /mod/etc/$DAEMON/$i
+	done
+	ln -s /usr/lib/MailRoot/bin /mod/etc/$DAEMON/
+	ln -s /usr/lib/MailRoot/dnsroots /mod/etc/$DAEMON/
+	[ "$XMAIL_UNPRIV" = "yes" ] && chown -R xmail:xmail $XMAIL_MAILLOCATION
+
+	if [ "$XMAIL_POP3" = "yes" ]; then
+		[ -n "$XMAIL_POP3PORT" ] && CMDOPTS="$CMDOPTS -Pp $XMAIL_POP3PORT"
+		[ "$XMAIL_POP3LOG" = "yes" ] && CMDOPTS="$CMDOPTS -Pl"
+	else
+		CMDOPTS="$CMDOPTS -P-"
+	fi
+	if [ "$XMAIL_POP3S" = "yes" ]; then
+		[ -n "$XMAIL_POP3SPORT" ] && CMDOPTS="$CMDOPTS -Bp $XMAIL_POP3SPORT"
+	else
+		CMDOPTS="$CMDOPTS -B-"
+	fi
+	if [ "$XMAIL_SMTP" = "yes" ]; then
+		[ -n "$XMAIL_SMTPPORT" ] && CMDOPTS="$CMDOPTS -Sp $XMAIL_SMTPPORT"
+		[ "$XMAIL_SMTPLOG" = "yes" ] && CMDOPTS="$CMDOPTS -Sl"
+	else
+		CMDOPTS="$CMDOPTS -S-"
+	fi
+	if [ "$XMAIL_SSMTP" = "yes" ]; then
+		[ -n "$XMAIL_SSMTPPORT" ] && CMDOPTS="$CMDOPTS -Xp $XMAIL_SSMTPPORT"
+	else
+		CMDOPTS="$CMDOPTS -X-"
+	fi
+	[ "$XMAIL_SYSTEMLOG" = "yes" ] && CMDOPTS="$CMDOPTS -Ql -Qg -Ll -Yl"
+	if [ "$XMAIL_CTRL" = "yes" ]; then
+		CMDOPTS="$CMDOPTS -CI 127.0.0.1"
+		[ "$XMAIL_SYSTEMLOG" = "yes" ] && CMDOPTS="$CMDOPTS -Cl"
+	else
+		CMDOPTS="$CMDOPTS -C-"
+	fi
+	if [ "$XMAIL_CTRLS" = "yes" ]; then
+		[ "$XMAIL_SYSTEMLOG" = "yes" -a "$XMAIL_CTRL" = "no" ] && CMDOPTS="$CMDOPTS -Cl"
+	else
+		CMDOPTS="$CMDOPTS -W-"
+	fi
+
+}
+
+stop () {
+	echo -n "Stopping $DAEMON_LONG_NAME..."
+	if [ -s /var/run/rc.$DAEMON.pid ]; then
+		exitval=255
+		kill $(cat /var/run/rc.$DAEMON.pid) > /dev/null 2>&1
+		exitval=$?
+		[ "$XMAIL_UNPRIV" = "yes" ] && rm -f /var/run/rc.$DAEMON.pid
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+			exit $exitval
+		fi
+	else
+		modlib_stop
+	fi
+
+	cleanup
+
+}
+
+checkdir() {
+	i=60
+	[ -z "$1" ] && return
+	while [ ! -d "$1" ]; do
+		echo -n "Directory $1 not available at round $i"
+		let i=$i-1
+		if [ $i -eq 0 ]; then
+			echo " - not starting $DAEMON"
+			exit 1
+		fi
+		echo " - sleeping"
+		sleep 10
+	done
+}
+
+start() {
+	trap "rm -f /var/run/rc.$DAEMON.pid; exit 255" 0 1 2 3 15
+	echo -n "Starting $DAEMON_LONG_NAME ..."
+	if modlib_check_running; then
+		echo "$DAEMON already running."
+		exit 0
+	fi
+
+	if [ -z "$XMAIL_MAILLOCATION" ]; then
+		echo "set up mail location."
+		exit 1
+	fi
+	checkdir "$XMAIL_MAILLOCATION"
+	configure
+
+	compartment=""
+	[ "$XMAIL_UNPRIV" = "yes" ] && compartment="/usr/lib/MailRoot/bin/compartment --user xmail --group xmail"
+	modlib_startdaemon $compartment /usr/lib/MailRoot/bin/XMail $CMDOPTS
+	exitval=$?
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'daemon failed.'
+		exit $exitval
+	fi
+}
+
+trap "rm -f /var/run/rc.$DAEMON.pid; exit 255" 1 2 3 15
+case "$1" in
+	""|load)
+		modreg cgi 'xmail' 'xmail'
+
+		if [ "$XMAIL_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		( start ) &
+		echo $! > /var/run/rc.$DAEMON.pid
+		;;
+	unload)
+		modlib_stop
+		;;
+	start)
+		if [ -s /var/run/rc.$DAEMON.pid ]; then
+			kill -0 $(cat /var/run/rc.$DAEMON.pid)
+			if [ $? -eq 0 ]; then
+				echo "Startup of $DAEMON already performed."
+				exit 0
+			fi
+			rm -f /var/run/rc.$DAEMON.pid
+		fi
+		( start ) &
+		echo $! > /var/run/rc.$DAEMON.pid
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

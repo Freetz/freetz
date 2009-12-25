@@ -1,0 +1,84 @@
+--- SMTPUtils.cpp.orig	2009-12-16 22:38:33.000000000 +0100
++++ SMTPUtils.cpp	2009-12-16 22:33:32.000000000 +0100
+@@ -28,8 +28,10 @@
+ #include "StrUtils.h"
+ #include "SList.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "MailConfig.h"
+ #include "UsrUtils.h"
+ #include "UsrAuth.h"
+@@ -139,8 +141,10 @@
+ static int USmtpServerAuthenticate(SmtpChannel *pSmtpCh, char const *pszServer,
+ 				   SMTPError *pSMTPE);
+ static int USmtpParseEhloResponse(SmtpChannel *pSmtpCh, char const *pszResponse);
++#ifdef WITH_SSL
+ static int USmtpSslEnvCB(void *pPrivate, int iID, void const *pData);
+ static int USmtpSwitchToSSL(SmtpChannel *pSmtpCh, SMTPGateway const *pGw, SMTPError *pSMTPE);
++#endif
+ static void USmtpCleanEHLO(SmtpChannel *pSmtpCh);
+ static void USmtpFreeChannel(SmtpChannel *pSmtpCh);
+ static SMTPGateway *USmtpGetDefaultGateway(SVRCFG_HANDLE hSvrConfig, const char *pszServer);
+@@ -195,6 +199,7 @@
+ {
+ 	SMTPGateway *pGw = (SMTPGateway *) pPrivate;
+ 
++#ifdef WITH_SSL
+ 	if (strcmp(pszName, "NeedTLS") == 0) {
+ 		if (pszValue != NULL) {
+ 			int iNeedTLS = atoi(pszValue);
+@@ -206,6 +211,9 @@
+ 				pGw->ulFlags |= SMTP_GWF_FORCE_TLS;
+ 		}
+ 	} else if (strcmp(pszName, "OutBind") == 0) {
++#else
++	if (strcmp(pszName, "OutBind") == 0) {
++#endif
+ 		if (pszValue != NULL) {
+ 			SysFree(pGw->pszIFace);
+ 			pGw->pszIFace = SysStrDup(pszValue);
+@@ -1156,14 +1164,17 @@
+ 
+ 			if (pszLine[4] == ' ' && isdigit(pszLine[5]))
+ 				pSmtpCh->ulMaxMsgSize = (unsigned long) atol(pszLine + 5);
++#ifdef WITH_SSL
+ 		} else if (StrCmdMatch(pszLine, "STARTTLS")) {
+ 			pSmtpCh->ulFlags |= SMTPCH_SUPPORT_TLS;
++#endif
+ 		}
+ 	}
+ 
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int USmtpSslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
+@@ -1226,6 +1237,7 @@
+ 
+ 	return iError;
+ }
++#endif
+ 
+ SMTPCH_HANDLE USmtpCreateChannel(SMTPGateway const *pGw, const char *pszDomain, SMTPError *pSMTPE)
+ {
+@@ -1347,6 +1359,7 @@
+ 			return INVALID_SMTPCH_HANDLE;
+ 		}
+ 	}
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need SSL?
+ 	 */
+@@ -1365,6 +1378,7 @@
+ 			goto SendHELO;
+ 		}
+ 	}
++#endif
+ 
+ 	/* Check if We need authentication */
+ 	if (USmtpServerAuthenticate(pSmtpCh, szAddress, pSMTPE) < 0) {

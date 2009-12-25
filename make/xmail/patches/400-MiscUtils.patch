@@ -1,0 +1,28 @@
+--- MiscUtils.cpp.orig	2009-12-16 22:37:47.000000000 +0100
++++ MiscUtils.cpp	2009-12-16 22:12:22.000000000 +0100
+@@ -29,7 +29,9 @@
+ #include "MD5.h"
+ #include "Base64Enc.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
++#endif
+ #include "MailConfig.h"
+ #include "UsrUtils.h"
+ #include "SvrUtils.h"
+@@ -1483,6 +1485,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ int MscSslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
+@@ -1490,6 +1493,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ int MscParseOptions(const char *pszOpts, int (*pfAssign)(void *, const char *, const char *),
+ 		    void *pPrivate)

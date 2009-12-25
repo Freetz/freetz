@@ -1,0 +1,16 @@
+--- SSLConfig.cpp.orig	2009-12-16 22:38:53.000000000 +0100
++++ SSLConfig.cpp	2009-12-16 22:35:18.000000000 +0100
+@@ -19,6 +19,7 @@
+  *  Davide Libenzi <davidel@xmailserver.org>
+  *
+  */
++#ifdef WITH_SSL
+ 
+ #include "SysInclude.h"
+ #include "SysDep.h"
+@@ -91,4 +92,4 @@
+ 	SysFree(pSSLB->pszCAFile);
+ 	SysFree(pSSLB->pszCAPath);
+ }
+-
++#endif

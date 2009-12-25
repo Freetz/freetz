@@ -1,0 +1,315 @@
+diff -urN docs.orig/compartment.c docs/compartment.c
+--- docs.orig/compartment.c	1970-01-01 01:00:00.000000000 +0100
++++ docs/compartment.c	2009-12-14 21:52:30.000000000 +0100
+@@ -0,0 +1,311 @@
++/* Compartment 1.2 (c) 2002 by Stephan Müller <smueller@chronox.de>
++ * 
++ * based on work by: 
++ * SuSE secure compartment v1.1 (c) 2000 by Marc Heuse <marc@suse.de>
++ *
++ * Description:
++ * Compartment provides all possibilities to securely run insecure and/or
++ * untrusted programs. It provides you with all necessary options to fine
++ * grain the tightening process as you need it.
++ *
++ * Please note that you need a Linux kernel 2.2.12 or later!
++ *
++ * Official releases and updates can be found on the SuSE Linux distribution
++ * from version 7.0 on and ftp.suse.com plus mirror sites.
++ *
++ * This is a patched version from Stephan Müller <smueller@chronox.de>
++ * The main author above and SuSE did not respond to patches I send to them.
++ *
++ * Updates and betas can be found at http://www.chronox.de
++ *
++ * Please contact me directly at smueller@chronox.de for bugs, comments, ideas.
++ *
++ * Thanks go to Solar Designer for comments & critics ...
++ *
++ * $Id: compartment.c,v 1.4 2002/08/24 17:49:27 smueller Exp $
++ *
++ */
++
++#include <stdio.h>
++#include <unistd.h>
++#include <grp.h>
++#include <pwd.h>
++#include <grp.h>
++#define _LINUX_STRING_H_
++#include <sys/types.h>
++#include <fcntl.h>
++#include <string.h>
++#include <stdlib.h>
++#include <sys/stat.h>
++#include <linux/capability.h>
++#include <stdarg.h>
++#include <sys/time.h>
++#include <sys/resource.h>
++
++#define PROGRAM_NAME	"SuSE secure compartment"
++#define VERSION		"v1.2"
++#define AUTHOR		"Marc Heuse <marc@suse.de>"
++#define AUTHOR2		"Stephan Müller <smueller@chronox.de>"
++#define POINTER		"http://www.chronox.de"
++
++char *_env[] = { "HOME=/", "COMPARTMENT=YES", "PATH=/bin:/usr/bin:/", "" };
++
++extern char **environ;
++int program_params, fd;
++int do_chroot, do_group, do_user, do_init, verbose, quiet;
++char *chroot_path, *init_program, *prg, *user, **_argv;
++long tmp;
++__u32 temp, caps = 0;
++uid_t set_user;
++gid_t set_group;
++struct passwd *pw;
++struct group *gr;
++
++void help() {
++    fprintf(stderr, "%s %s %s %s %s\n\n", PROGRAM_NAME, VERSION, AUTHOR, AUTHOR2, POINTER);
++    fprintf(stderr, "Syntax: %s [options] /full/path/to/program\n", prg);
++    fprintf(stderr, "Options \n--chroot path\t chroot to path\n\t --user user\t change uid to this user\n\t --group group\t change gid to this group\n\t --init program\t execute this program/script before doing anything\n\t --verbose\t be verbose\n\t --fork\t\t fork (if everything is fine)\n\nHints: always try to chroot; use --user&group if possible; chroot and chown all\nfiles to another user than root if you use capabilties. Read the README file!\n\nKnown capset names: none");
++    tmp = 0;
++    exit(-1);
++}
++
++void print_msg(const char *format, ...) {
++    va_list arg;
++    if (quiet == 0) {
++        va_start(arg, format);
++        vfprintf(stderr, format, arg);
++        va_end(arg);
++    }
++}
++
++void my_secure() {
++    char file[10] = "/dev/null";
++    int mode = O_RDWR;
++
++    alarm(0);
++    if (verbose)
++        print_msg("Turned possible alarm(2)s off\n");
++
++    environ = _env;             // set a safe and clean environment
++    if (verbose)
++        print_msg("Safe environment set\n");
++
++    if ((fd = open(file, mode)) < 0) {
++	file[1] = '\0';
++	mode = O_RDONLY;
++	if ((fd = open(file, mode)) < 0) {
++	    print_msg("Can not open /dev/null nor /, no more fd's?\n");
++	    exit(-1);
++	}
++	close(fd);
++    }
++
++    /* We want to have no stdout or stderr open */
++    /* And we want to ensure that '/' is not opened */
++    strcpy(file,"/dev/null");
++    while (fd < 2)
++        fd = open(file, mode);
++    close(fd);
++    if (verbose)
++        print_msg("Ensured that fd 0-2 are open\n");
++
++    /* FIXME: should limits be reset or signals be blocked or ignored? */
++
++    return;
++}
++
++int main (int argc, char *argv[]) {
++    struct stat st;
++    int do_fork = 0;
++    unsigned long int uidrange = 65535;
++/* process the parameters */
++    prg = argv[0];
++    if (argc < 2)
++        help();
++    if (strcmp(argv[1],"-h") == 0 || strcmp(argv[1],"--help") == 0)
++        help();
++
++    my_secure();
++
++    program_params = 1;
++    while((argc - 1) > program_params && strncmp(argv[program_params], "--", 2) == 0) {
++        if (strcmp(argv[program_params], "--chroot") == 0) {
++            chroot_path = argv[++program_params];
++            do_chroot = 1;
++        } else if (strcmp(argv[program_params], "--user") == 0) {
++            if ((pw = (struct passwd *) getpwnam(argv[++program_params])) != NULL) {
++                user = argv[program_params];
++                set_user = pw->pw_uid;
++            } else {
++                tmp = strtol(argv[program_params], (char **)NULL, 10);
++                if (tmp < 0 || tmp > uidrange) {
++                    print_msg("--user is out of bounds (username or a value between 0 and %lu): %ld\n", uidrange, tmp);
++                    exit(-1);
++                }
++                set_user = (uid_t) tmp;
++            }
++            if (verbose)
++                print_msg("UID will be set to %d\n", set_user);
++            do_user = 1;
++        } else if (strcmp(argv[program_params], "--group") == 0) {
++            if ((gr = (struct group *) getgrnam(argv[++program_params])) != NULL) {
++                set_group = gr->gr_gid;
++            } else {
++                tmp = strtol(argv[program_params], (char **)NULL, 10);
++                if (tmp < 0 || tmp > uidrange) {
++                    print_msg("--group is out of bounds (groupname or a value between 0 and %lu): %ld\n", uidrange, tmp);
++                    exit(-1);
++                }
++                set_group = (gid_t) tmp;
++            }
++            if (verbose)
++                print_msg("GID will be set to %d\n", set_group);
++            do_group = 1;
++        } else if (strcmp(argv[program_params], "--init") == 0) {
++            init_program = argv[++program_params];
++            if (verbose)
++                print_msg("Initial program will be %s\n", init_program);
++            do_init = 1;
++        } else if (strcmp(argv[program_params], "--fork") == 0) {
++             if (verbose)
++                 print_msg("Will fork if everything is fine\n");
++             do_fork = 1;
++        } else if (strcmp(argv[program_params], "--verbose") == 0) {
++                 print_msg("I am in verbose mode now\n");
++                 verbose = 1;
++        } else if (strcmp(argv[program_params], "--quiet") == 0) {
++                  quiet = 1;
++        } else if (strcmp(argv[program_params], "--help") == 0) {
++                   help();
++        } else {
++                   print_msg("Unknown parameter: %s\n\n",argv[program_params]);
++                   help();
++        }
++        program_params++;
++    }
++
++    if ((getuid() != geteuid()) || (getgid() != getegid()))
++        print_msg("Warning: euid/egid and uid/gid are different, are we running suid/sgid??\nDo not do that!\n");
++
++/* the first parameter without an -- has to be the program plus options to execute */
++    if (program_params == argc) {
++        print_msg("No program given to execute.\n\n");
++        help();    
++    }
++    _argv = argv;
++    _argv += program_params;
++
++/* some further insightful deductions */
++    if (do_user == 0)
++        set_user = geteuid();
++    if (do_group == 0)
++        set_group = getegid();
++    if (user == NULL) {
++        if ((pw = (struct passwd *) getpwuid(set_user)) == NULL) {
++            print_msg("Warning: username for uid %u is not found in /etc/passwd.\n", set_user);
++        } else {
++            user = (char *) pw->pw_name;
++        }
++    }
++
++    if (do_init) {
++        if (system(init_program)) {
++            print_msg("Error executing init program %s\n", init_program);
++            exit(1);
++        } else {
++            if (verbose)
++                print_msg("Init program %s run successfully\n", init_program);
++        }
++    }
++
++    if (do_chroot) {
++        if (chroot(chroot_path)) {
++            print_msg("Error chrooting to %s\n", chroot_path); 
++            exit(1);
++        }
++        if (chdir("/") != 0) {
++            print_msg("chdir to / in chroot failed\n");
++            exit(1);
++        }
++        if (verbose)
++            print_msg("Chrooted sucessfully to %s\n", chroot_path);
++    }
++
++    if (do_user || do_group) {
++//        if (user != NULL) {
++            if (setgroups(0, NULL)) {
++                print_msg("Error removing supplementary groups via setgroups().\n");
++                exit(1);
++            } else {
++                if (verbose)
++                    print_msg("setgroups() successfully set\n");
++            }
++//        } else {
++//            print_msg("Can not do setgroups() because username for uid %u is not found in /etc/passwd.\n", set_user);
++//        }
++    }
++
++    if (do_group) {
++        if (setgid(set_group)) {
++            print_msg("Error setting gid to %u\n", set_group);
++            exit(1);
++        } else {
++            if (verbose)
++                print_msg("GID successfully set to %d\n",set_group);
++        }
++    }
++
++    if (do_user) {
++        if (setuid(set_user)) {
++            print_msg("Error setting uid to %u\n", set_user);
++            exit(1);
++        } else {
++            if (verbose)
++                print_msg("UID successfully set to %d\n", set_user);
++          }
++    }
++
++    for (fd = 3; fd <= 1023; fd++) // set close_on_exec on all open fds > 2
++	 (void) fcntl(fd, F_SETFD, FD_CLOEXEC);
++    if (verbose)
++        print_msg("FD_CLOEXEC successfully set on all filedescriptors > 2\n");
++
++    if (stat(_argv[0], &st) < 0) {
++        if (do_chroot || _argv[0][0] == '/' || _argv[0][0] == '.')
++	    print_msg("Warning: Can not find %s\n", _argv[0]);
++    } else {
++        if (do_fork) {
++	    do_fork = fork();
++	    if (do_fork < 0) {
++	        print_msg("Could not fork\n");
++	        exit(1);
++	    }
++	    if (do_fork > 0)
++	        return 0;	// this is the parent process
++	    if (verbose)
++	        print_msg("Successfully forked\n");
++	}
++        //just close STDIN, STDOUT and STDERR
++	//otherwise if compartment is scripted
++	//the script may not return
++	close(0);
++	close(1);
++	close(2);
++    }
++    
++    execvp(_argv[0], _argv);
++
++    if (do_chroot == 0)
++	print_msg("Could not execute %s\n", _argv[0]);
++    else {
++        if (stat(_argv[0], &st) < 0)
++	    print_msg("Could not find file: %s\n", _argv[0]);
++        else
++	    if (access(_argv[0], X_OK) < 0)
++		print_msg("Execute bit missing, or no permissions to execute %s\n", _argv[0]);
++	    else
++	        print_msg("Could not properly execute %s - the chroot environment might not be set up correctly: Create the directories /etc and /lib in chroot_dir and run \"ldd %s\" to see which libraries are needed. Copy these to chroot_dir/lib, then chdir to chroot_dir and execute \"ldconfig -X -r .\"\n", _argv[0], _argv[0]);
++    }
++
++    return 1;
++}
