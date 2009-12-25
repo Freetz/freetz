@@ -327,6 +327,14 @@ server.document-root = "$docroot"
 EOF
 fi
 
+#just to be on the safe side
+if [ "$LIGHTTPD_CHROOT" = "yes" ]; then
+	mkdir -p $LIGHTTPD_DOCROOT/tmp
+	chmod 1777 $LIGHTTPD_DOCROOT/tmp
+	mkdir -p $LIGHTTPD_DOCROOT/etc
+	cp /etc/hosts $LIGHTTPD_DOCROOT/etc
+fi
+
 if [ -f /tmp/flash/lighttpd_add ]; then
 	cat /tmp/flash/lighttpd_add
 fi
