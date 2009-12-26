@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.xmailserver.org
 $(PKG)_BINARY:=$($(PKG)_DIR)/bin/XMail
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/XMail
+$(PKG)_SOURCE_MD5:=26d35c2fc104d79ebb6397c7dece5b15
 
 $(PKG)_DEPENDS_ON := uclibcxx
 $(PKG)_LDFLAGS := -ldl -lpthread
