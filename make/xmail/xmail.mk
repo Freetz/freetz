@@ -40,22 +40,12 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	rm -rf $(XMAIL_DEST_DIR)/usr/lib/MailRoot
-	mkdir -p $(XMAIL_DEST_DIR)/usr/lib/
-	cp -r $(XMAIL_DIR)/MailRoot $(XMAIL_DEST_DIR)/usr/lib/
 	mkdir -p $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin/
 	cp $(XMAIL_DIR)/bin/* $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin/
 	rm -rf $(XMAIL_DEST_DIR)/etc/default.xmail/default_config/
 	mkdir -p $(XMAIL_DEST_DIR)/etc/default.xmail/default_config/
-	for i in $$(find $(XMAIL_DEST_DIR)/usr/lib/MailRoot/*.tab); do \
-		mv $$i $(XMAIL_DEST_DIR)/etc/default.xmail/default_config/; \
-	done
 
-	# Crazy: we need to create that dir as xmail creates it on the fly
-	# and will not log anything if it cannot create it
-	mkdir -p $(XMAIL_DEST_DIR)/usr/lib/MailRoot/tmp/
-	for i in tmp cmdaliases dnscache domains logs message.id pop3locks spool tabindex custdomains filters msgsync pop3linklocks pop3links userauth; do \
-		mv $(XMAIL_DEST_DIR)/usr/lib/MailRoot/$$i $(XMAIL_DEST_DIR)/etc/default.xmail/default_config/; \
-	done
+	tar --exclude='./bin' -C $(XMAIL_DIR)/MailRoot -cvf $(XMAIL_DEST_DIR)/etc/default.xmail/default_config/default_config.tar .
 
 	for i in $$(find $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin -type f); do \
 		$(TARGET_STRIP) $$i; \

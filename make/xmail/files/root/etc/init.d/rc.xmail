@@ -4,7 +4,7 @@ DAEMON=xmail
 DAEMON_LONG_NAME="XMail SMTP/POP3 server"
 PID_FILE=/var/run/XMail.pid
 
-CMDOPTS="-F- -MM -Ms /mod/etc/$DAEMON/ -Qn 1 -PX 1 -SX 1 -Ln 1 -Yt 1 -CX 1 -Yi 600"
+CMDOPTS="-F- -MM -Ms /mod/etc/$DAEMON/"
 
 . /etc/init.d/modlibrc
 
@@ -25,31 +25,37 @@ configure() {
 		chmod 770 /mod/etc/$DAEMON
 		chown xmail:xmail /mod/etc/$DAEMON
 
-
 		mkdir /var/run/$DAEMON
 		chown xmail:xmail /var/run/$DAEMON
 		ln -s xmail/XMail.pid /var/run/XMail.pid
 	fi
-
-	for i in /etc/default.$DAEMON/default_config/*; do
-		i=$(basename $i)
-		[ -e "$XMAIL_MAILLOCATION/$i" ] || cp -rf /etc/default.$DAEMON/default_config/$i $XMAIL_MAILLOCATION/
-		ln -s $XMAIL_MAILLOCATION/$i /mod/etc/$DAEMON/
-	done
-	for i in server.cert server.key; do
-		ln -s $XMAIL_MAILLOCATION/$i /mod/etc/$DAEMON/$i
-	done
-	ln -s /usr/lib/MailRoot/bin /mod/etc/$DAEMON/
-	ln -s /usr/lib/MailRoot/dnsroots /mod/etc/$DAEMON/
+	if [ ! -e "$XMAIL_MAILLOCATION/server.tab" ]; then
+		echo -n 'initialzing mail location folder with default values...'
+		tar -C $XMAIL_MAILLOCATION -xf /etc/default.$DAEMON/default_config/default_config.tar
+		echo 'done.'
+	else
+		echo ./bin/* >/tmp/tar.nofiles
+		echo ./domains/* >>/tmp/tar.nofiles
+		for i in $(tar -tf /etc/default.$DAEMON/default_config/default_config.tar); do
+			[ "${i:0:2}" == "./" ] && ii=${i:2}
+			[ ! -z "$ii" ] && [ ! -e "$XMAIL_MAILLOCATION/$ii" ] && tar -C $XMAIL_MAILLOCATION -X \
+				/tmp/tar.nofiles -xf /etc/default.$DAEMON/default_config/default_config.tar $i
+		done
+		rm /tmp/tar.nofiles
+	fi
+	[ -e "$XMAIL_MAILLOCATION/tmp" ] || mkdir $XMAIL_MAILLOCATION/tmp
+	ln -s $XMAIL_MAILLOCATION/* /mod/etc/$DAEMON/
+	ln -sf /usr/lib/MailRoot/bin /mod/etc/$DAEMON/
 	[ "$XMAIL_UNPRIV" = "yes" ] && chown -R xmail:xmail $XMAIL_MAILLOCATION
 
+	[ ! -z "$XMAIL_SPECIAL" ] && CMDOPTS="$CMDOPTS $XMAIL_SPECIAL"
 	if [ "$XMAIL_POP3" = "yes" ]; then
 		[ -n "$XMAIL_POP3PORT" ] && CMDOPTS="$CMDOPTS -Pp $XMAIL_POP3PORT"
 		[ "$XMAIL_POP3LOG" = "yes" ] && CMDOPTS="$CMDOPTS -Pl"
 	else
 		CMDOPTS="$CMDOPTS -P-"
 	fi
-	if [ "$XMAIL_POP3S" = "yes" ]; then
+	if [ "$XMAIL_POP3S" = "yes" -a "$XMAIL_SSLSUPPORT" = 1 ]; then
 		[ -n "$XMAIL_POP3SPORT" ] && CMDOPTS="$CMDOPTS -Bp $XMAIL_POP3SPORT"
 	else
 		CMDOPTS="$CMDOPTS -B-"
@@ -60,7 +66,7 @@ configure() {
 	else
 		CMDOPTS="$CMDOPTS -S-"
 	fi
-	if [ "$XMAIL_SSMTP" = "yes" ]; then
+	if [ "$XMAIL_SSMTP" = "yes" -a "$XMAIL_SSLSUPPORT" = 1 ]; then
 		[ -n "$XMAIL_SSMTPPORT" ] && CMDOPTS="$CMDOPTS -Xp $XMAIL_SSMTPPORT"
 	else
 		CMDOPTS="$CMDOPTS -X-"
@@ -72,12 +78,11 @@ configure() {
 	else
 		CMDOPTS="$CMDOPTS -C-"
 	fi
-	if [ "$XMAIL_CTRLS" = "yes" ]; then
+	if [ "$XMAIL_CTRLS" = "yes" -a "$XMAIL_SSLSUPPORT" = 1 ]; then
 		[ "$XMAIL_SYSTEMLOG" = "yes" -a "$XMAIL_CTRL" = "no" ] && CMDOPTS="$CMDOPTS -Cl"
 	else
 		CMDOPTS="$CMDOPTS -W-"
 	fi
-
 }
 
 stop () {
@@ -129,6 +134,10 @@ start() {
 		exit 1
 	fi
 	checkdir "$XMAIL_MAILLOCATION"
+
+	# Check for SSL support
+	/usr/lib/MailRoot/bin/CtrlClnt 2>&1|grep -qe ' -S ' && XMAIL_SSLSUPPORT=1
+
 	configure
 
 	compartment=""

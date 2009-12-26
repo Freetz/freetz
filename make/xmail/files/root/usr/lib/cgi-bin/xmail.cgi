@@ -3,16 +3,19 @@
 PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; smtp_chk=''; ssmtp_chk=''; pop3_chk=''; pop3s_chk=''; ctrl_chk=''; ctrls_chk=''; smtplog_chk=''; pop3log_chk=''; systemlog_chk=''; unpriv_chk=''
+auto_chk=''; man_chk=''; smtp_chk=''; ssmtp_chk=''; pop3_chk=''; pop3s_chk=''; ctrl_chk=''; ctrls_chk=''; smtplog_chk=''; pop3log_chk=''; systemlog_chk=''; unpriv_chk=''; XMAIL_SSLSUPPORT=''; XMAIL_SSLVISIBLE=''
+
+# Check for SSL support
+/usr/lib/MailRoot/bin/CtrlClnt 2>&1|grep -qe ' -S ' || XMAIL_SSLSUPPORT=' disabled' XMAIL_SSLVISIBLE='display: none;'
 
 case "$XMAIL_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
 if [ "$XMAIL_UNPRIV" = "yes" ]; then unpriv_chk=' checked'; fi
 if [ "$XMAIL_SMTP" = "yes" ]; then smtp_chk=' checked'; fi
-if [ "$XMAIL_SSMTP" = "yes" ]; then ssmtp_chk=' checked'; fi
+if [ "$XMAIL_SSMTP" = "yes" -a -z "$XMAIL_SSLSUPPORT" ]; then ssmtp_chk=' checked'; fi
 if [ "$XMAIL_POP3" = "yes" ]; then pop3_chk=' checked'; fi
-if [ "$XMAIL_POP3S" = "yes" ]; then pop3s_chk=' checked'; fi
+if [ "$XMAIL_POP3S" = "yes" -a -z "$XMAIL_SSLSUPPORT" ]; then pop3s_chk=' checked'; fi
 if [ "$XMAIL_CTRL" = "yes" ]; then ctrl_chk=' checked'; fi
-if [ "$XMAIL_CTRLS" = "yes" ]; then ctrls_chk=' checked'; fi
+if [ "$XMAIL_CTRLS" = "yes" -a -z "$XMAIL_SSLSUPPORT" ]; then ctrls_chk=' checked'; fi
 if [ "$XMAIL_SMTPLOG" = "yes" ]; then smtplog_chk=' checked'; fi
 if [ "$XMAIL_POP3LOG" = "yes" ]; then pop3log_chk=' checked'; fi
 if [ "$XMAIL_SYSTEMLOG" = "yes" ]; then systemlog_chk=' checked'; fi
@@ -33,6 +36,9 @@ cat << EOF
 <hr>
 <p style="font-size:10px;">$(lang de:"Bitte gib hier den Speicherort f&uuml;r XMail an (enth&auml;lt alle Email-Boxen, Spool Verzeichnisse, Konfigurationsdateien). Dieses Verzeichnis muss schreibbar sein und sollte kein FAT Dateisystem enthalten. Falls das Verzeichnis leer ist, wird automatisch die richtige Dateistruktur erstellt. Dieses Verzeichnis wird alle Konfigurationsdateien von XMail enthalten, welche manuell (oder via einem Webfrontend) bearbeitet werden m&uuml;ssen." en:"Please provide the storage location for XMail (this location contains all email boxes, spool storage, configuration files). This directory must be writeable and should be no FAT file system. In case the directory is empty, the proper directory structure will be created. This directory will contain all configuration files for XMail which must be modified directly or via a web frontend.")</p>
 <p> $(lang de:"Verzeichnis f&uuml;r XMail" en:"Directory for XMail"): <input type="text" name="maillocation" size="30" maxlength="255" value="$(html "$XMAIL_MAILLOCATION")"></p>
+<hr>
+<p style="font-size:10px;">$(lang de:"Bitte &auml;ndern Sie diese Werte nur wenn Sie wissen was Sie tun." en:"Please change these values only if you know what you are doing.")</p>
+<p> $(lang de:"Startparameter" en:"Start parameters"): <input type="text" name="special" size="30" maxlength="255" value="$(html "$XMAIL_SPECIAL")"></p>
 EOF
 sec_end
 
@@ -43,27 +49,33 @@ cat << EOF
 <p><input type="hidden" name="smtp" value="no">
 <input id="a1" type="checkbox" name="smtp" value="yes"$smtp_chk><label for="a1"> $(lang de:"SMTP aktivieren" en:"Activate SMTP")</label></p>
 <p> $(lang de:"SMTP Port" en:"SMTP port"): <input type="text" name="smtpport" size="5" maxlength="5" value="$(html "$XMAIL_SMTPPORT")"></p>
+<span style="$XMAIL_SSLVISIBLE">
 <hr>
 <p style="font-size:10px;">$(lang de:"Soll ein weiterer Port f&uuml;r SSL/TLS gesch&uuml;tztes SMTP aktiviert werden (SSL/TLS ist auch am normalen Port verf&uuml;gbar)?" en:"Shall another port for SSL/TLS protected SMTP be activated (SSL/TLS is also available using the regular port)?")</p>
 <p><input type="hidden" name="ssmtp" value="no">
-<input id="a2" type="checkbox" name="ssmtp" value="yes"$ssmtp_chk><label for="a2"> $(lang de:"SSMTP aktivieren" en:"Activate SSMTP")</label></p>
-<p> $(lang de:"SSMTP Port" en:"SSMTP port"): <input type="text" name="ssmtpport" size="5" maxlength="5" value="$(html "$XMAIL_SSMTPPORT")"></p>
+<input id="a2" type="checkbox" name="ssmtp" value="yes"$XMAIL_SSLSUPPORT$ssmtp_chk><label for="a2"> $(lang de:"SSMTP aktivieren" en:"Activate SSMTP")</label></p>
+<p> $(lang de:"SSMTP Port" en:"SSMTP port"): <input type="text" name="ssmtpport" size="5" maxlength="5" value="$(html "$XMAIL_SSMTPPORT")"$XMAIL_SSLSUPPORT></p>
+</span>
 <hr>
 <p><input type="hidden" name="pop3" value="no">
 <input id="a3" type="checkbox" name="pop3" value="yes"$pop3_chk><label for="a3"> $(lang de:"POP3 aktivieren" en:"Activate POP3")</label></p>
 <p> $(lang de:"POP3 Port" en:"POP3 port"): <input type="text" name="pop3port" size="5" maxlength="5" value="$(html "$XMAIL_POP3PORT")"></p>
+<span style="$XMAIL_SSLVISIBLE">
 <hr>
 <p style="font-size:10px;">$(lang de:"Soll ein weiterer Port f&uuml;r SSL/TLS gesch&uuml;tztes POP3 aktiviert werden (SSL/TLS ist auch am normalen Port verf&uuml;gbar)?" en:"Shall another port for SSL/TLS protected POP3 be activated (SSL/TLS is also available using the regular port)?")</p>
 <p><input type="hidden" name="pop3s" value="no">
-<input id="a4" type="checkbox" name="pop3s" value="yes"$pop3s_chk><label for="a3"> $(lang de:"POP3S aktivieren" en:"Activate POP3S")</label></p>
-<p> $(lang de:"POP3S Port" en:"POP3S port"): <input type="text" name="pop3sport" size="5" maxlength="5" value="$(html "$XMAIL_POP3SPORT")"></p>
+<input id="a4" type="checkbox" name="pop3s" value="yes"$XMAIL_SSLSUPPORT$pop3s_chk><label for="a3"> $(lang de:"POP3S aktivieren" en:"Activate POP3S")</label></p>
+<p> $(lang de:"POP3S Port" en:"POP3S port"): <input type="text" name="pop3sport" size="5" maxlength="5" value="$(html "$XMAIL_POP3SPORT")"$XMAIL_SSLSUPPORT></p>
+</span>
 <hr>
 <p style="font-size:10px;">$(lang de:"Bitte beachte: Der SSL-gesch&uuml;tzte Admin Zugang ist aus allen Netzen zug&auml;nglich (port 6018). Der ungesch&uuml;tzte Admin Zugang (6017) ist nur via localhost erreichbar." en:"Please note: The SSL protected admin access is available from all networks (port 6018). The unprotected admin access is available via localhost only (port 6017).")</p>
 <p><input type="hidden" name="ctrl" value="no">
 <input id="a5" type="checkbox" name="ctrl" value="yes"$ctrl_chk><label for="a5"> $(lang de:"Admin Zugang aktivieren" en:"Activate admin access")</label></p>
+<span style="$XMAIL_SSLVISIBLE">
 <p style="font-size:10px;">$(lang de:"Soll SSL/TLS gesch&uuml;tzter Admin Zugang aktiviert werden?" en:"Shall SSL/TLS protected admin access be activated?")</p>
 <p><input type="hidden" name="ctrls" value="no">
-<input id="a6" type="checkbox" name="ctrls" value="yes"$ctrls_chk><label for="a6"> $(lang de:"SSL Admin Zugang aktivieren" en:"Activate SSL admin access")</label></p>
+<input id="a6" type="checkbox" name="ctrls" value="yes"$XMAIL_SSLSUPPORT$ctrls_chk><label for="a6"> $(lang de:"SSL Admin Zugang aktivieren" en:"Activate SSL admin access")</label></p>
+</span>
 EOF
 sec_end
 
