@@ -19,11 +19,11 @@ $(PKG_SOURCE_DOWNLOAD)
 
 $(IPTABLES_DIR)/.unpacked: $(DL_DIR)/$(IPTABLES_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(IPTABLES_SOURCE)
-	for i in $(IPTABLES_MAKE_DIR)/patches/*.patch; do \
-		patch -d $(IPTABLES_DIR) -p0 < $$i; \
+	set -e; shopt -s nullglob; for i in $(IPTABLES_MAKE_DIR)/patches/*.patch; do \
+		$(PATCH_TOOL) -d $(IPTABLES_DIR) -p0 < $$i; \
 	done
 ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
-	patch -d $(IPTABLES_DIR) -p0 < $(IPTABLES_MAKE_DIR)/patches/cond/009-remove_ipv6.patch
+	set -e; shopt -s nullglob; $(PATCH_TOOL) -d $(IPTABLES_DIR) -p0 < $(IPTABLES_MAKE_DIR)/patches/cond/009-remove_ipv6.patch
 endif
 	touch $@
 

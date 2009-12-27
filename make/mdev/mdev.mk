@@ -35,7 +35,7 @@ $($(PKG)_TARGET_DIR)/.patch_model: $($(PKG)_TARGET_DIR)/.patch_tables
 	@freetz_type=$$(echo $(FREETZ_TYPE_STRING) | $(SED) 's/_.*//'); \
 	for f in $(MDEV_MAKE_DIR)/patches/hardware/$${freetz_type}_*.patch; do \
 		if [ -r $$f ]; then \
-			$(PATCH_TOOL) $(MDEV_TARGET_DIR) $$f; \
+			set -e; $(PATCH_TOOL) $(MDEV_TARGET_DIR) $$f; \
 		else \
 			echo unsupported model $(FREETZ_TYPE_STRING) 2>&1; \
 			exit 1; \
