@@ -36,7 +36,7 @@ start() {
 					local ftp_options="$ftp_options -U"
 				else
 					AVM_FTP_RO=$(echo usbhost.readonly|usbcfgctl -s)
-					if [ "$READFLAG" != "no" ]
+					if [ "$AVM_FTP_RO" != "no" ]
 					then
 						local ftp_options="$ftp_options -r"
 					fi
