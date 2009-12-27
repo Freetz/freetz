@@ -1,0 +1,138 @@
+--- include/libbb.h.orig	2009-12-12 21:13:28.000000000 +0000
++++ include/libbb.h	2009-12-19 22:06:06.000000000 +0000
+@@ -507,6 +507,7 @@
+  * If there is no suffix, port argument is used */
+ int create_and_connect_stream_or_die(const char *peer, int port) FAST_FUNC;
+ /* Connect to peer identified by lsa */
++int xconnect_stream_with_tc_index(const len_and_sockaddr *lsa, unsigned long tc_index) FAST_FUNC; /* AVM */
+ int xconnect_stream(const len_and_sockaddr *lsa) FAST_FUNC;
+ /* Get local address of bound or accepted socket */
+ len_and_sockaddr *get_sock_lsa(int fd) FAST_FUNC;
+--- include/usage.h.orig	2009-12-19 22:06:05.000000000 +0000
++++ include/usage.h	2009-12-19 22:06:06.000000000 +0000
+@@ -4952,10 +4952,10 @@
+ 	IF_FEATURE_WGET_LONG_OPTIONS( \
+        "[-c|--continue] [-s|--spider] [-q|--quiet] [-O|--output-document file]\n" \
+        "	[--header 'header: value'] [-Y|--proxy on/off] [-P DIR]\n" \
+-       "	[-U|--user-agent agent] url" \
++       "	[-U|--user-agent agent] [-t|--traffic-class class] url" \
+ 	) \
+ 	IF_NOT_FEATURE_WGET_LONG_OPTIONS( \
+-       "[-csq] [-O file] [-Y on/off] [-P DIR] [-U agent] url" \
++       "[-csq] [-O file] [-Y on/off] [-P DIR] [-U agent] [-t class] url" \
+ 	)
+ #define wget_full_usage "\n\n" \
+        "Retrieve files via HTTP or FTP\n" \
+@@ -4967,6 +4967,7 @@
+      "\n	-O	Save to filename ('-' for stdout)" \
+      "\n	-U	Adjust 'User-Agent' field" \
+      "\n	-Y	Use proxy ('on' or 'off')" \
++     "\n	-t	Traffic class" \
+ 
+ #define which_trivial_usage \
+        "[COMMAND]..."
+--- libbb/xconnect.c.orig	2009-12-12 21:13:28.000000000 +0000
++++ libbb/xconnect.c	2009-12-19 22:06:06.000000000 +0000
+@@ -448,3 +448,32 @@
+ {
+ 	return sockaddr2str(sa, NI_NUMERICHOST | IGNORE_PORT);
+ }
++
++#if 1 /* AVM */
++/* #include <linux\sockios.h> */ /*  SIOCSET_TC_INDEX */
++#include <sys/ioctl.h>
++#define SIOCSET_TC_INDEX	0x89d0
++
++int FAST_FUNC xconnect_stream_with_tc_index(const len_and_sockaddr *lsa, unsigned long tc_index)
++{
++	int fd = xsocket(lsa->u.sa.sa_family, SOCK_STREAM, 0);
++	ioctl(fd, SIOCSET_TC_INDEX, &tc_index);
++	xconnect(fd, &lsa->u.sa, lsa->len);
++	return fd;
++}
++
++int xconnect_with_tc_index(struct sockaddr_in *s_addr, unsigned long tc_index)
++{
++	int s = socket(AF_INET, SOCK_STREAM, 0);
++
++	ioctl(s, SIOCSET_TC_INDEX, &tc_index);
++
++	if (connect(s, (struct sockaddr *)s_addr, sizeof(struct sockaddr_in)) < 0)
++	{
++		if (ENABLE_FEATURE_CLEAN_UP) close(s);
++		bb_perror_msg_and_die("Unable to connect to remote host (%s)",
++				inet_ntoa(s_addr->sin_addr));
++	}
++	return s;
++}
++#endif /* AVM */
+--- networking/wget.c.orig	2009-12-19 22:06:05.000000000 +0000
++++ networking/wget.c	2009-12-19 22:06:06.000000000 +0000
+@@ -475,7 +475,13 @@
+ 	if (!target->user)
+ 		target->user = xstrdup("anonymous:busybox@");
+ 
+-	sfp = open_socket(lsa);
++	tc_index = 0;                                       /* AVM */
++	if (opt & WGET_OPT_TRAFFICCLASS) {                  /* AVM */
++		tc_index = atoi(settcclass);                /* AVM */
++	}                                                   /* AVM */
++	sfp = open_socket_with_tc_index(lsa, tc_index);     /* AVM */
++	/*sfp = open_socket(lsa); AVM */
++
+ 	if (ftpcmd(NULL, NULL, sfp, buf) != 220)
+ 		bb_error_msg_and_die("%s", sanitize_string(buf+4));
+ 
+@@ -531,7 +537,13 @@
+ 	port += xatou_range(str+1, 0, 255) * 256;
+ 	set_nport(lsa, htons(port));
+ 
+-	*dfpp = open_socket(lsa);
++	tc_index = 0;                                       /* AVM */
++	if (opt & WGET_OPT_TRAFFICCLASS) {                  /* AVM */   
++		tc_index = atoi(settcclass);                /* AVM */   
++	}                                                   /* AVM */
++	*dfpp = open_socket_with_tc_index(lsa, tc_index);   /* AVM */
++	/* *dfpp = open_socket(lsa); AVM */
++
+ 
+ 	if (beg_range) {
+ 		sprintf(buf, "REST %"OFF_FMT"d", beg_range);
+@@ -556,9 +568,10 @@
+ 	WGET_OPT_USER_AGENT = (1 << 6),
+ 	WGET_OPT_RETRIES    = (1 << 7),
+ 	WGET_OPT_NETWORK_READ_TIMEOUT = (1 << 8),
+-	WGET_OPT_PASSIVE    = (1 << 9),
+-	WGET_OPT_HEADER     = (1 << 10) * ENABLE_FEATURE_WGET_LONG_OPTIONS,
+-	WGET_OPT_POST_DATA  = (1 << 11) * ENABLE_FEATURE_WGET_LONG_OPTIONS,
++	WGET_OPT_TRAFFICCLASS = (1 << 9),
++	WGET_OPT_PASSIVE    = (1 << 10),
++	WGET_OPT_HEADER     = (1 << 11) * ENABLE_FEATURE_WGET_LONG_OPTIONS,
++	WGET_OPT_POST_DATA  = (1 << 12) * ENABLE_FEATURE_WGET_LONG_OPTIONS,
+ };
+ 
+ static void NOINLINE retrieve_file_data(FILE *dfp, int output_fd)
+@@ -653,7 +666,8 @@
+ 		// "tries\0"            Required_argument "t"
+ 		// "timeout\0"          Required_argument "T"
+ 		/* Ignored (we always use PASV): */
+-		"passive-ftp\0"      No_argument       "\xfd"
++		"traffic-class\0"    Required_argument  "t" /* AVM */
++		"passive-ftp\0"      No_argument       "\xff"
+ 		"header\0"           Required_argument "\xfe"
+ 		"post-data\0"        Required_argument "\xfd"
+ 		;
+@@ -768,7 +782,12 @@
+ 		int status;
+ 
+ 		/* Open socket to http server */
+-		sfp = open_socket(lsa);
++		tc_index = 0;                                       /* AVM */
++		if (opt & WGET_OPT_TRAFFICCLASS) {                  /* AVM */   
++			tc_index = atoi(settcclass);                    /* AVM */   
++		}                                                   /* AVM */
++		sfp = open_socket_with_tc_index(lsa, tc_index);     /* AVM */
++		/*sfp = open_socket(lsa); AVM */
+ 
+ 		/* Send HTTP request */
+ 		if (use_proxy) {

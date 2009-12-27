@@ -1,10 +1,8 @@
-Index: util-linux/getopt.c
-===================================================================
---- util-linux/getopt.c	(revision 23733)
-+++ util-linux/getopt.c	(working copy)
-@@ -157,6 +157,14 @@
- 	if (quiet_errors) /* No error reporting from getopt(3) */
- 		opterr = 0;
+--- util-linux/getopt.c.orig	2009-12-12 01:45:09.000000000 +0000
++++ util-linux/getopt.c	2009-12-13 21:57:28.000000000 +0000
+@@ -166,6 +166,14 @@
+ 	/* optreset = 1; */
+ #endif
  
 +	/* We used it already in getopt32(), we *must* reset getopt(3) */
 +#ifdef __GLIBC__
@@ -16,4 +14,4 @@ Index: util-linux/getopt.c
 +
  	while (1) {
  		opt =
- #if ENABLE_GETOPT_LONG
+ #if ENABLE_FEATURE_GETOPT_LONG

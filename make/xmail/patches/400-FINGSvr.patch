@@ -1,0 +1,29 @@
+--- FINGSvr.cpp.orig	2009-12-16 22:37:10.000000000 +0100
++++ FINGSvr.cpp	2009-12-16 22:03:15.000000000 +0100
+@@ -26,8 +26,10 @@
+ #include "ShBlocks.h"
+ #include "SList.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "StrUtils.h"
+ #include "ResLocks.h"
+ #include "MiscUtils.h"
+@@ -136,6 +138,7 @@
+ 		return ErrorPop();
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to TLS?
+ 	 */
+@@ -168,6 +171,7 @@
+ 		SysFree(SslE.pszIssuer);
+ 		SysFree(SslE.pszSubject);
+ 	}
++#endif
+ 	/* Increase threads count */
+ 	FINGConfig *pFINGCfg = (FINGConfig *) ShbLock(pThCtx->pThCfg->hThShb);
+ 

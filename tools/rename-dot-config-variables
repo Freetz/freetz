@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Some of the menuconfig variables have recently been renamed.
 # This script converts .config-file containing old named variables
@@ -13,3 +13,35 @@ for pkg in APACHE E2FSPROGS DAVFS2 HPLIP MC NANO PHP WGET; do
 	sed -i -r -e 's|FREETZ_('"${pkg}"'[ _])|FREETZ_PACKAGE_\1|g' "$1"
 done
 sed -i -r -e 's|FREETZ_COMPILE_TINYPROXY|FREETZ_PACKAGE_TINYPROXY|g' "$1"
+
+# is lighttpd selected
+if grep -q "FREETZ_PACKAGE_LIGHTTPD=y" "$1" >/dev/null 2>&1; then
+	# does .config contain no_mod or zlib entries - if yes this is a .config in old format
+	if egrep -q "(FREETZ_PACKAGE_LIGHTTPD_NO_MOD|FREETZ_PACKAGE_LIGHTTPD_WITH_ZLIB)" "$1" >/dev/null 2>&1; then
+		# get modules excluded in the old .config
+		excluded_mods="$(egrep "FREETZ_PACKAGE_LIGHTTPD_NO_MOD_[A-Z_]+=y" "$1")"
+		# add modules not excluded in the old .config
+		# note the three required modules could not be excluded in the old .config, so there is no need to handle them separately
+		entries_to_add=""
+		for mod in \
+			ACCESS INDEXFILE STATICFILE \
+			ACCESSLOG ALIAS AUTH CGI CML COMPRESS DIRLISTING EVASIVE EVHOST \
+			EXPIRE EXTFORWARD FASTCGI FLV_STREAMING MAGNET MYSQL_VHOST \
+			PROXY REDIRECT REWRITE RRDTOOL SCGI SECDOWNLOAD SETENV SIMPLE_VHOST \
+			SSI STATUS TRIGGER_B4_DL USERDIR USERTRACK WEBDAV; \
+		do
+			if echo "${excluded_mods}" | grep -q "FREETZ_PACKAGE_LIGHTTPD_NO_MOD_${mod}=y" >/dev/null 2>&1; then
+				entries_to_add+="# FREETZ_PACKAGE_LIGHTTPD_MOD_${mod} is not set\n"
+			else
+				entries_to_add+="FREETZ_PACKAGE_LIGHTTPD_MOD_${mod}=y\n"
+			fi
+		done
+
+		# convert .config, add modules calculated above, remove zlib/no_mod entries
+		sed -i -r \
+			-e 's,(FREETZ_PACKAGE_LIGHTTPD=y.*)$,\1\n'"${entries_to_add}"',g' \
+			-e 's,^.*FREETZ_PACKAGE_LIGHTTPD_WITH_ZLIB.*$,,g' \
+			-e 's,^.*FREETZ_PACKAGE_LIGHTTPD_NO_MOD.*$,,g' \
+			"$1"
+	fi
+fi

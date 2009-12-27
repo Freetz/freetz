@@ -1,0 +1,85 @@
+--- POP3Svr.cpp.orig	2009-12-16 22:37:57.000000000 +0100
++++ POP3Svr.cpp	2009-12-16 22:16:46.000000000 +0100
+@@ -26,12 +26,16 @@
+ #include "ShBlocks.h"
+ #include "SList.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
++#endif
+ #include "ResLocks.h"
+ #include "MiscUtils.h"
+ #include "StrUtils.h"
+ #include "MD5.h"
++#ifdef WITH_SSL
+ #include "SSLConfig.h"
++#endif
+ #include "SvrUtils.h"
+ #include "UsrUtils.h"
+ #include "UsrAuth.h"
+@@ -86,8 +90,10 @@
+ static int POP3HandleCmd_PASS(const char *pszCommand, BSOCK_HANDLE hBSock, POP3Session &POP3S);
+ static int POP3HandleCmd_APOP(const char *pszCommand, BSOCK_HANDLE hBSock, POP3Session &POP3S);
+ static int POP3HandleCmd_CAPA(const char *pszCommand, BSOCK_HANDLE hBSock, POP3Session &POP3S);
++#ifdef WITH_SSL
+ static int POP3SslEnvCB(void *pPrivate, int iID, void const *pData);
+ static int POP3HandleCmd_STLS(const char *pszCommand, BSOCK_HANDLE hBSock, POP3Session &POP3S);
++#endif
+ static int POP3HandleCmd_STAT(const char *pszCommand, BSOCK_HANDLE hBSock, POP3Session &POP3S);
+ static int POP3HandleCmd_LIST(const char *pszCommand, BSOCK_HANDLE hBSock, POP3Session &POP3S);
+ static int POP3HandleCmd_UIDL(const char *pszCommand, BSOCK_HANDLE hBSock, POP3Session &POP3S);
+@@ -188,6 +194,7 @@
+ 		return ErrorPop();
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to TLS?
+ 	 */
+@@ -220,6 +227,7 @@
+ 		SysFree(SslE.pszIssuer);
+ 		SysFree(SslE.pszSubject);
+ 	}
++#endif
+ 
+ 	/* Check IP permission */
+ 	if (POP3CheckPeerIP(pThCtx->SockFD) < 0) {
+@@ -449,8 +457,10 @@
+ 		iCmdResult = POP3HandleCmd_APOP(pszCommand, hBSock, POP3S);
+ 	else if (StrCmdMatch(pszCommand, "CAPA"))
+ 		iCmdResult = POP3HandleCmd_CAPA(pszCommand, hBSock, POP3S);
++#ifdef WITH_SSL
+ 	else if (StrCmdMatch(pszCommand, "STLS"))
+ 		iCmdResult = POP3HandleCmd_STLS(pszCommand, hBSock, POP3S);
++#endif
+ 	else if (StrCmdMatch(pszCommand, "STAT"))
+ 		iCmdResult = POP3HandleCmd_STAT(pszCommand, hBSock, POP3S);
+ 	else if (StrCmdMatch(pszCommand, "LIST"))
+@@ -711,9 +721,11 @@
+ {
+ 	char const *pszSTLS = "";
+ 
++#ifdef WITH_SSL
+ 	if (SvrTestConfigFlag("EnablePOP3-TLS", true, POP3S.hSvrConfig) &&
+ 	    strcmp(BSckBioName(hBSock), BSSL_BIO_NAME) != 0)
+ 		pszSTLS = "STLS\r\n";
++#endif
+ 
+ 	BSckVSendString(hBSock, POP3S.pPOP3Cfg->iTimeout,
+ 			"+OK Capability list follows\r\n"
+@@ -728,6 +740,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int POP3SslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	POP3Session *pPOP3S = (POP3Session *) pPrivate;
+@@ -794,6 +807,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static int POP3HandleCmd_STAT(const char *pszCommand, BSOCK_HANDLE hBSock, POP3Session &POP3S)
+ {

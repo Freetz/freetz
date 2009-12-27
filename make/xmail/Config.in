@@ -1,0 +1,31 @@
+config FREETZ_PACKAGE_XMAIL
+	bool "xmail 1.26"
+	select FREETZ_LIB_libuClibc__
+	default n
+	help
+		XMail is an Internet and Intranet mail server featuring an SMTP server,
+		POP3 server, finger server, multiple domains, no need for users to have
+		a real system account, SMTP relay checking, RBL/RSS/ORBS/DUL and custom
+		(IP based and address based) spam protection, SMTP authentication (PLAIN
+		LOGIN CRAM-MD5 POP3-before-SMTP and custom), a POP3 account synchronizer
+		with external POP3 accounts, account aliases, domain aliases, custom
+		mail processing, direct mail files delivery, custom mail filters,
+		mailing lists, remote administration, custom mail exchangers, logging,
+		and multi-platform code.
+
+config FREETZ_PACKAGE_XMAIL_WITH_SSL
+        bool "build with SSL support"
+        depends on FREETZ_PACKAGE_XMAIL
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_XMAIL_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_XMAIL_STATIC
+        default n
+        help
+                This option enables SSL support for XMail.
+
+config FREETZ_PACKAGE_XMAIL_STATIC
+        bool "Statically link libraries"
+        depends on FREETZ_PACKAGE_XMAIL_WITH_SSL
+        default n
+        help
+                Build XMail with staticly linked Libs.
+

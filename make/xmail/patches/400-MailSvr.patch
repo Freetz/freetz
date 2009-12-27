@@ -1,0 +1,155 @@
+--- MailSvr.cpp.orig	2009-12-16 22:37:34.000000000 +0100
++++ MailSvr.cpp	2009-12-16 22:11:39.000000000 +0100
+@@ -29,7 +29,9 @@
+ #include "BuffSock.h"
+ #include "MailConfig.h"
+ #include "MiscUtils.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
++#endif
+ #include "ResLocks.h"
+ #include "POP3Svr.h"
+ #include "SMTPSvr.h"
+@@ -110,21 +112,27 @@
+ static int SvrSetupCTRL(int iArgCount, char *pszArgs[]);
+ static long SvrThreadCntCTRL(ThreadConfig const *pThCfg);
+ static void SvrCleanupCTRL(void);
++#ifdef WITH_SSL
+ static int SvrSetupCTRLS(int iArgCount, char *pszArgs[]);
+ static void SvrCleanupCTRLS(void);
++#endif
+ static int SvrSetupFING(int iArgCount, char *pszArgs[]);
+ static long SvrThreadCntFING(ThreadConfig const *pThCfg);
+ static void SvrCleanupFING(void);
+ static int SvrSetupPOP3(int iArgCount, char *pszArgs[]);
+ static long SvrThreadCntPOP3(ThreadConfig const *pThCfg);
+ static void SvrCleanupPOP3(void);
++#ifdef WITH_SSL
+ static int SvrSetupPOP3S(int iArgCount, char *pszArgs[]);
+ static void SvrCleanupPOP3S(void);
++#endif
+ static int SvrSetupSMTP(int iArgCount, char *pszArgs[]);
+ static long SvrThreadCntSMTP(ThreadConfig const *pThCfg);
+ static void SvrCleanupSMTP(void);
++#ifdef WITH_SSL
+ static int SvrSetupSMTPS(int iArgCount, char *pszArgs[]);
+ static void SvrCleanupSMTPS(void);
++#endif
+ static int SvrSetupSMAIL(int iArgCount, char *pszArgs[]);
+ static void SvrCleanupSMAIL(void);
+ static int SvrSetupPSYNC(int iArgCount, char *pszArgs[]);
+@@ -393,6 +401,7 @@
+ 		SysCloseSocket(ThCfgCTRL.SockFDs[ThCfgCTRL.iNumSockFDs - 1]);
+ }
+ 
++#ifdef WITH_SSL
+ static int SvrSetupCTRLS(int iArgCount, char *pszArgs[])
+ {
+ 	int iPort = STD_CTRLS_PORT, iFamily = AF_INET;
+@@ -468,6 +477,7 @@
+ 	for (; ThCfgCTRLS.iNumSockFDs > 0; ThCfgCTRLS.iNumSockFDs--)
+ 		SysCloseSocket(ThCfgCTRLS.SockFDs[ThCfgCTRLS.iNumSockFDs - 1]);
+ }
++#endif
+ 
+ static int SvrSetupFING(int iArgCount, char *pszArgs[])
+ {
+@@ -737,6 +747,7 @@
+ 		SysCloseSocket(ThCfgPOP3.SockFDs[ThCfgPOP3.iNumSockFDs - 1]);
+ }
+ 
++#ifdef WITH_SSL
+ static int SvrSetupPOP3S(int iArgCount, char *pszArgs[])
+ {
+ 	int iPort = STD_POP3S_PORT, iFamily = AF_INET;
+@@ -813,6 +824,7 @@
+ 	for (; ThCfgPOP3S.iNumSockFDs > 0; ThCfgPOP3S.iNumSockFDs--)
+ 		SysCloseSocket(ThCfgPOP3S.SockFDs[ThCfgPOP3S.iNumSockFDs - 1]);
+ }
++#endif
+ 
+ static int SvrSetupSMTP(int iArgCount, char *pszArgs[])
+ {
+@@ -962,6 +974,7 @@
+ 		SysCloseSocket(ThCfgSMTP.SockFDs[ThCfgSMTP.iNumSockFDs - 1]);
+ }
+ 
++#ifdef WITH_SSL
+ static int SvrSetupSMTPS(int iArgCount, char *pszArgs[])
+ {
+ 	int iPort = STD_SMTPS_PORT, iFamily = AF_INET;
+@@ -1038,6 +1051,7 @@
+ 	for (; ThCfgSMTPS.iNumSockFDs > 0; ThCfgSMTPS.iNumSockFDs--)
+ 		SysCloseSocket(ThCfgSMTPS.SockFDs[ThCfgSMTPS.iNumSockFDs - 1]);
+ }
++#endif
+ 
+ static void SvrShutdown__SMAIL(void *pPrivate)
+ {
+@@ -1492,8 +1506,12 @@
+ 		return ErrorPop();
+ 	}
+ 	/* Initialize DNS cache */
+-	if (CDNS_Initialize(iDnsCacheDirs) < 0 ||
+-	    BSslInit() < 0) {
++	if (CDNS_Initialize(iDnsCacheDirs) < 0
++#ifdef WITH_SSL
++	    ||
++	    BSslInit() < 0
++#endif
++		) {
+ 		ErrorPush();
+ 		RLckCleanupLockers();
+ 
+@@ -1505,8 +1523,10 @@
+ 
+ static void SvrCleanup(void)
+ {
++#ifdef WITH_SSL
+ 	/* Cleanup SSL support */
+ 	BSslCleanup();
++#endif
+ 
+ 	/* Cleanup resource lockers */
+ 	RLckCleanupLockers();
+@@ -1590,11 +1610,17 @@
+ 	ArrayInit(iSvcI, -1);
+ 	if ((iSvcI[SVC_SMAIL] = SvrSetupSMAIL(iMergeArgsCount, ppszMergeArgs)) < 0 ||
+ 	    (iSvcI[SVC_CTRL] = SvrSetupCTRL(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#ifdef WITH_SSL
+ 	    (iSvcI[SVC_CTRLS] = SvrSetupCTRLS(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#endif
+ 	    (iSvcI[SVC_POP3] = SvrSetupPOP3(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#ifdef WITH_SSL
+ 	    (iSvcI[SVC_POP3S] = SvrSetupPOP3S(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#endif
+ 	    (iSvcI[SVC_SMTP] = SvrSetupSMTP(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#ifdef WITH_SSL
+ 	    (iSvcI[SVC_SMTPS] = SvrSetupSMTPS(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#endif
+ 	    (iSvcI[SVC_PSYNC] = SvrSetupPSYNC(iMergeArgsCount, ppszMergeArgs)) < 0 ||
+ 	    (iSvcI[SVC_FING] = SvrSetupFING(iMergeArgsCount, ppszMergeArgs)) < 0 ||
+ 	    (iSvcI[SVC_LMAIL] = SvrSetupLMAIL(iMergeArgsCount, ppszMergeArgs)) < 0) {
+@@ -1628,16 +1654,22 @@
+ 		SvrCleanupFING();
+ 	if (iSvcI[SVC_PSYNC] == 0)
+ 		SvrCleanupPSYNC();
++#ifdef WITH_SSL
+ 	if (iSvcI[SVC_SMTPS] == 0)
+ 		SvrCleanupSMTPS();
++#endif
+ 	if (iSvcI[SVC_SMTP] == 0)
+ 		SvrCleanupSMTP();
++#ifdef WITH_SSL
+ 	if (iSvcI[SVC_POP3S] == 0)
+ 		SvrCleanupPOP3S();
++#endif
+ 	if (iSvcI[SVC_POP3] == 0)
+ 		SvrCleanupPOP3();
++#ifdef WITH_SSL
+ 	if (iSvcI[SVC_CTRLS] == 0)
+ 		SvrCleanupCTRLS();
++#endif
+ 	if (iSvcI[SVC_CTRL] == 0)
+ 		SvrCleanupCTRL();
+ 	if (iSvcI[SVC_SMAIL] == 0)

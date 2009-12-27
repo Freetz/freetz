@@ -1,0 +1,93 @@
+--- include/usage.h.orig	2009-12-13 22:25:19.000000000 +0000
++++ include/usage.h	2009-12-13 22:25:19.000000000 +0000
+@@ -1693,6 +1693,7 @@
+ 	IF_FEATURE_HTTPD_BASIC_AUTH(" [-r REALM]") \
+        " [-h HOME]\n" \
+        "or httpd -d/-e" IF_FEATURE_HTTPD_AUTH_MD5("/-m") " STRING"
++       " [-R <path> [-H <host>]]"
+ #define httpd_full_usage "\n\n" \
+        "Listen for incoming HTTP requests\n" \
+      "\nOptions:" \
+@@ -1710,6 +1711,8 @@
+      "\n	-m STRING	MD5 crypt STRING") \
+      "\n	-e STRING	HTML encode STRING" \
+      "\n	-d STRING	URL decode STRING" \
++     "\n	-R PATH 	Redirect target path" \
++     "\n	-H HOST 	Redirect target host" \
+ 
+ #define hwclock_trivial_usage \
+ 	IF_FEATURE_HWCLOCK_LONG_OPTIONS( \
+--- networking/httpd.c.orig	2009-12-13 22:25:19.000000000 +0000
++++ networking/httpd.c	2009-12-13 22:25:19.000000000 +0000
+@@ -249,6 +249,8 @@
+ 
+ 	const char *found_mime_type;
+ 	const char *found_moved_temporarily;
++	const char *redirect_path;
++	const char *redirect_host;
+ 	Htaccess_IP *ip_a_d;    /* config allow/deny lines */
+ 
+ 	IF_FEATURE_HTTPD_BASIC_AUTH(const char *g_realm;)
+@@ -295,6 +297,8 @@
+ #define index_page        (G.index_page       )
+ #define found_mime_type   (G.found_mime_type  )
+ #define found_moved_temporarily (G.found_moved_temporarily)
++#define redirect_path     (G.redirect_path    )
++#define redirect_host     (G.redirect_host    )
+ #define last_mod          (G.last_mod         )
+ #define ip_a_d            (G.ip_a_d           )
+ #define g_realm           (G.g_realm          )
+@@ -994,8 +998,11 @@
+ 	}
+ #endif
+ 	if (responseNum == HTTP_MOVED_TEMPORARILY) {
+-		len += sprintf(iobuf + len, "Location: %s/%s%s\r\n",
++		len += sprintf(iobuf + len, "Location: %s%s%s%s%s%s\r\n",
++				(redirect_host ? "http://" : ""),
++				(redirect_host ? redirect_host : ""),
+ 				found_moved_temporarily,
++				(redirect_host ? "" : "/"),
+ 				(g_query ? "?" : ""),
+ 				(g_query ? g_query : ""));
+ 	}
+@@ -1914,8 +1922,12 @@
+ 	} while (*++tptr);
+ 	*++urlp = '\0';       /* terminate after last character */
+ 
++	/* redirect active */
++	if (redirect_path && (strncmp(urlcopy, redirect_path, strlen(redirect_path)) != 0))
++		found_moved_temporarily = redirect_path;
++
+ 	/* If URL is a directory, add '/' */
+-	if (urlp[-1] != '/') {
++	if (!redirect_path && (urlp[-1] != '/')) {
+ 		if (is_directory(urlcopy + 1, 1, &sb)) {
+ 			found_moved_temporarily = urlcopy;
+ 		}
+@@ -2256,7 +2268,9 @@
+ }
+ 
+ enum {
+-	c_opt_config_file = 0,
++	R_opt_redirect_path = 0,
++	H_opt_redirect_host,
++	c_opt_config_file,
+ 	d_opt_decode_url,
+ 	h_opt_home_httpd,
+ 	IF_FEATURE_HTTPD_ENCODE_URL_STR(e_opt_encode_url,)
+@@ -2308,13 +2322,14 @@
+ 	/* We do not "absolutize" path given by -h (home) opt.
+ 	 * If user gives relative path in -h,
+ 	 * $SCRIPT_FILENAME will not be set. */
+-	opt = getopt32(argv, "c:d:h:"
++	opt = getopt32(argv, "R:H:c:d:h:"
+ 			IF_FEATURE_HTTPD_ENCODE_URL_STR("e:")
+ 			IF_FEATURE_HTTPD_BASIC_AUTH("r:")
+ 			IF_FEATURE_HTTPD_AUTH_MD5("m:")
+ 			IF_FEATURE_HTTPD_SETUID("u:")
+ 			"P:"
+ 			"p:ifv",
++			&redirect_path, &redirect_host,
+ 			&opt_c_configFile, &url_for_decode, &home_httpd
+ 			IF_FEATURE_HTTPD_ENCODE_URL_STR(, &url_for_encode)
+ 			IF_FEATURE_HTTPD_BASIC_AUTH(, &g_realm)

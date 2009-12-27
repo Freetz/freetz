@@ -26,9 +26,7 @@ has_mod() {
 		# => requested module doesn't exist (otherwise the previous elif would be true)
 		ret="false"
 	elif [ -f /etc/.config ]; then # .config could be removed from the image
-		# note the inverted logic, if module is removed from the image
-		# the corresponding entry is contained in .config
-		grep -q "FREETZ_PACKAGE_LIGHTTPD_NO_MOD_$(echo -n $module | tr [[:lower:]] [[:upper:]])=y" /etc/.config >/dev/null 2>&1 && ret="false" || ret="true"
+		grep -q "FREETZ_PACKAGE_LIGHTTPD_MOD_$(echo -n $module | tr [[:lower:]] [[:upper:]])=y" /etc/.config >/dev/null 2>&1 && ret="true" || ret="false"
 	else
 		# we cannot determine it, fallback to no
 		ret="false"

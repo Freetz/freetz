@@ -6,9 +6,7 @@ $(PKG)_BINARIES_ALL := vnstat vnstatd vnstati
 $(PKG)_BINARIES := $(filter-out $(if $(FREETZ_PACKAGE_VNSTAT_DAEMON),,vnstatd) $(if $(FREETZ_PACKAGE_VNSTAT_IMAGE),,vnstati),$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
-
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_VNSTAT_DAEMON
-$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_VNSTAT_IMAGE
+$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 ifeq ($(strip $(FREETZ_PACKAGE_VNSTAT_IMAGE)),y)
 $(PKG)_DEPENDS_ON += gd

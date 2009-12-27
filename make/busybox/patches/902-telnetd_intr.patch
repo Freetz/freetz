@@ -1,0 +1,10 @@
+--- networking/telnetd.c.orig	2009-12-19 22:35:01.000000000 +0000
++++ networking/telnetd.c	2009-12-19 22:35:02.000000000 +0000
+@@ -354,6 +354,7 @@
+ 
+ 	/* Restore default signal handling ASAP */
+ 	bb_signals((1 << SIGCHLD) + (1 << SIGPIPE), SIG_DFL);
++	signal(SIGINT, SIG_DFL);
+ 
+ 	/* Make new session and process group */
+ 	setsid();

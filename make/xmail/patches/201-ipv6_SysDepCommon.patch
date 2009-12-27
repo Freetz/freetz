@@ -1,0 +1,118 @@
+--- SysDepCommon.cpp.orig	2009-12-15 08:59:37.000000000 +0100
++++ SysDepCommon.cpp	2009-12-15 08:57:40.000000000 +0100
+@@ -43,6 +43,7 @@
+ 		AddrInfo.iSize = sizeof(struct sockaddr_in);
+ 		break;
+ 
++#ifdef IPV6
+ 	case AF_INET6:
+ 		ZeroData(AddrInfo);
+ 		SYS_IN6(&AddrInfo)->sin6_family = iFamily;
+@@ -50,6 +51,7 @@
+ 		SYS_IN6(&AddrInfo)->sin6_addr = in6addr_any;
+ 		AddrInfo.iSize = sizeof(struct sockaddr_in6);
+ 		break;
++#endif
+ 
+ 	default:
+ 		ErrSetErrorCode(ERR_INVALID_INET_ADDR);
+@@ -70,8 +72,10 @@
+ 	case AF_INET:
+ 		return ntohs(SYS_IN4(&AddrInfo)->sin_port);
+ 
++#ifdef IPV6
+ 	case AF_INET6:
+ 		return ntohs(SYS_IN6(&AddrInfo)->sin6_port);
++#endif
+ 	}
+ 
+ 	ErrSetErrorCode(ERR_INVALID_INET_ADDR);
+@@ -85,9 +89,11 @@
+ 		SYS_IN4(&AddrInfo)->sin_port = htons((short) iPortNo);
+ 		break;
+ 
++#ifdef IPV6
+ 	case AF_INET6:
+ 		SYS_IN6(&AddrInfo)->sin6_port = htons((short) iPortNo);
+ 		break;
++#endif
+ 
+ 	default:
+ 		ErrSetErrorCode(ERR_INVALID_INET_ADDR);
+@@ -136,16 +142,20 @@
+ 	     pCRes = pCRes->ai_next) {
+ 		if (pCRes->ai_addr->sa_family == AF_INET)
+ 			pRes4 = pCRes;
++#ifdef IPV6
+ 		else if (pCRes->ai_addr->sa_family == AF_INET6)
+ 			pRes6 = pCRes;
++#endif
+ 	}
+ 	switch (iFamily) {
+ 	case AF_INET:
+ 		pCRes = pRes4;
+ 		break;
++#ifdef IPV6
+ 	case AF_INET6:
+ 		pCRes = pRes6;
+ 		break;
++#endif
+ 	case SYS_INET46:
+ 		if ((pCRes = pRes4) == NULL)
+ 			pCRes = pRes6;
+@@ -239,6 +249,7 @@
+ 			    pAddr[3], pAddr[2], pAddr[1], pAddr[0]);
+ 		break;
+ 
++#ifdef IPV6
+ 	case AF_INET6:
+ 		pAddr = (SYS_UINT8 const *) &SYS_IN6(&AddrInfo)->sin6_addr;
+ 		for (i = 15, pszCur = pszRevIP; i >= 0 && iSize > 4;
+@@ -246,6 +257,7 @@
+ 			SysSNPrintf(pszCur, iSize, "%x.%x.", pAddr[i] & 0xf,
+ 				    pAddr[i] >> 4);
+ 		break;
++#endif
+ 
+ 	default:
+ 		ErrSetErrorCode(ERR_INVALID_INET_ADDR);
+@@ -261,9 +273,11 @@
+ 		*piSize = (int) sizeof(SYS_IN4(&AddrInfo)->sin_addr);
+ 		return &SYS_IN4(&AddrInfo)->sin_addr;
+ 
++#ifdef IPV6
+ 	case AF_INET6:
+ 		*piSize = (int) sizeof(SYS_IN6(&AddrInfo)->sin6_addr);
+ 		return &SYS_IN6(&AddrInfo)->sin6_addr;
++#endif
+ 	}
+ 
+ 	ErrSetErrorCode(ERR_INVALID_INET_ADDR);
+@@ -281,7 +295,11 @@
+ 	int i, iASize;
+ 	SYS_UINT8 const *pAData;
+ 
++#ifdef IPV6
+ 	if (SysGetAddrFamily(Addr) != AF_INET6 ||
++#else
++	if (
++#endif
+ 	    (pAData = (SYS_UINT8 const *) SysInetAddrData(Addr, &iASize)) == NULL)
+ 		return 0;
+ 	/*
+@@ -330,6 +348,7 @@
+ 		 * Need some marshaling here, since families are different.
+ 		 * We only support IPV4 and IPV6, so it does not look that bad.
+ 		 */
++#ifdef IPV6
+ 		if (iAFamily == AF_INET) {
+ 			if (iTAFamily == AF_INET6) {
+ 				if (!SysInetIPV6CompatIPV4(TestAddr))
+@@ -347,6 +366,7 @@
+ 			} else
+ 				return 0;
+ 		} else
++#endif
+ 			return 0;
+ 	}
+ 	for (i = 0; i < iASize; i++)

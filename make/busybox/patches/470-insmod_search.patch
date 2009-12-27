@@ -1,0 +1,130 @@
+--- modutils/insmod.c
++++ modutils/insmod.c
+@@ -9,6 +9,99 @@
+ 
+ #include "libbb.h"
+ #include "modutils.h"
++#include <sys/utsname.h>
++#ifndef CONFIG_FEATURE_2_4_MODULES
++#include <sys/mman.h>
++#include <asm/unistd.h>
++#include <sys/syscall.h>
++#endif
++
++static char *g_filename = NULL;
++
++static int FAST_FUNC check_module_name_match(const char *filename, struct stat *statbuf,
++				   void *userdata, int depth)
++{
++	char *fullname = (char *) userdata;
++	char *tmp;
++
++	if (fullname[0] == '\0')
++		return FALSE;
++
++	tmp = bb_get_last_path_component_nostrip(filename);
++	if (strcmp(tmp, fullname) == 0) {
++		/* Stop searching if we find a match */
++		g_filename = xstrdup(filename);
++		return FALSE;
++	}
++
++	return TRUE;
++}
++
++static int find_module(char *filename)
++{
++	char *module_dir, real_module_dir[FILENAME_MAX];
++	int len, slen, ret = ENOENT, k_version;
++	struct utsname myuname;
++	const char *suffix;
++	struct stat st;
++
++	/* check the kernel version */
++	if ((uname(&myuname) != 0) || (myuname.release[0] != '2'))
++		return EINVAL;
++
++	k_version = myuname.release[2] - '0';
++#if ENABLE_FEATURE_2_4_MODULES
++	if (k_version <= 4)
++		suffix = ".o";
++	else
++#endif
++		suffix = ".ko";
++
++	len = strlen(filename);
++	slen = strlen(suffix);
++
++	/* check for suffix and absolute path first */
++	if ((len < slen + 2) || (strcmp(filename + len - slen, suffix) != 0)) {
++		filename = xasprintf("%s%s", filename, suffix);
++	} else {
++		filename = strdup(filename);
++		if ((stat(filename, &st) == 0) && S_ISREG(st.st_mode)) {
++			g_filename = filename;
++			return 0;
++		}
++		free(filename);
++		return ENOENT;
++	}
++
++	/* next: scan /lib/modules/<release> */
++	/* Jump through hoops in case /lib/modules/`uname -r`
++	* is a symlink.  We do not want recursive_action to
++	* follow symlinks, but we do want to follow the
++	* /lib/modules/`uname -r` dir, So resolve it ourselves
++	* if it is a link... */
++	module_dir = concat_path_file(CONFIG_DEFAULT_MODULES_DIR, myuname.release);
++	if (realpath(module_dir, real_module_dir) != NULL) {
++		free(module_dir);
++		module_dir = real_module_dir;
++	}
++
++	recursive_action(module_dir, ACTION_RECURSE,
++		check_module_name_match, 0, filename, 0);
++
++	/* Check if we have a complete path */
++	if (g_filename == NULL)
++		goto done;
++
++	if ((stat(g_filename, &st) == 0) && S_ISREG(st.st_mode))
++		ret = 0;
++	else
++		free(g_filename);
++
++done:
++	free(filename);
++
++	return ret;
++}
+ 
+ int insmod_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+ int insmod_main(int argc UNUSED_PARAM, char **argv)
+@@ -33,9 +126,15 @@ int insmod_main(int argc UNUSED_PARAM, c
+ 	if (!filename)
+ 		bb_show_usage();
+ 
+-	rc = bb_init_module(filename, parse_cmdline_module_options(argv));
++	rc = find_module(filename);
++	if (rc || (g_filename == NULL))
++			goto done;
++
++	rc = bb_init_module(g_filename, parse_cmdline_module_options(argv));
+ 	if (rc)
+ 		bb_error_msg("can't insert '%s': %s", filename, moderror(rc));
++	free (g_filename);
+ 
++done:
+ 	return rc;
+ }
+--- modutils/Config.in
++++ modutils/Config.in
+@@ -210,7 +210,7 @@ config FEATURE_MODUTILS_SYMBOLS
+ config DEFAULT_MODULES_DIR
+ 	string "Default directory containing modules"
+ 	default "/lib/modules"
+-	depends on DEPMOD || MODPROBE || MODPROBE_SMALL
++	depends on DEPMOD || INSMOD || MODPROBE || MODPROBE_SMALL
+ 	help
+ 	  Directory that contains kernel modules.
+ 	  Defaults to "/lib/modules"

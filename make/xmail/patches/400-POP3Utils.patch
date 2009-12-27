@@ -1,0 +1,89 @@
+--- POP3Utils.cpp.orig	2009-12-16 22:38:09.000000000 +0100
++++ POP3Utils.cpp	2009-12-16 22:19:12.000000000 +0100
+@@ -29,8 +29,10 @@
+ #include "SList.h"
+ #include "BuffSock.h"
+ #include "Hash.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "MD5.h"
+ #include "MailConfig.h"
+ #include "UsrUtils.h"
+@@ -131,10 +133,12 @@
+ static int UPopDoAPOPAuth(BSOCK_HANDLE hBSock, const char *pszUsername,
+ 			  const char *pszPassword, const char *pszTimeStamp,
+ 			  char *pszRespBuffer, int iMaxRespChars);
++#ifdef WITH_SSL
+ static int UPopSwitchToTLS(BSOCK_HANDLE hBSock, const char *pszServer,
+ 			   POP3ChannelCfg const *pChCfg);
+ static int UPopInitiateTLS(BSOCK_HANDLE hBSock, const char *pszServer, char *pszRespBuffer,
+ 			   int iMaxRespChars, POP3ChannelCfg const *pChCfg);
++#endif
+ static BSOCK_HANDLE UPopCreateChannel(const char *pszServer, const char *pszUsername,
+ 				      const char *pszPassword, POP3ChannelCfg const *pChCfg);
+ static int UPopCloseChannel(BSOCK_HANDLE hBSock, int iHardClose = 0);
+@@ -887,6 +891,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int UPopSwitchToTLS(BSOCK_HANDLE hBSock, const char *pszServer,
+ 			   POP3ChannelCfg const *pChCfg)
+ {
+@@ -922,6 +927,7 @@
+ 
+ 	return UPopSwitchToTLS(hBSock, pszServer, pChCfg);
+ }
++#endif
+ 
+ static BSOCK_HANDLE UPopCreateChannel(const char *pszServer, const char *pszUsername,
+ 				      const char *pszPassword, POP3ChannelCfg const *pChCfg)
+@@ -959,6 +965,7 @@
+ 		SysCloseSocket(SockFD);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#ifdef WITH_SSL
+ 	/*
+ 	 * Is this a full POP3S connection?
+ 	 */
+@@ -967,6 +974,7 @@
+ 		SysCloseSocket(SockFD);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#endif
+ 
+ 	/* Read welcome message */
+ 	char szRTXBuffer[2048] = "";
+@@ -976,6 +984,7 @@
+ 		UPopCloseChannel(hBSock);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#ifdef WITH_SSL
+ 	/*
+ 	 * Non TLS mode active and STLS required?
+ 	 */
+@@ -986,6 +995,7 @@
+ 		UPopCloseChannel(hBSock);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#endif
+ 
+ 	/* Extract TimeStamp from server respose ( if any ) */
+ 	char szTimeStamp[256] = "";
+@@ -1129,12 +1139,14 @@
+ 		pChCfg->ulFlags |= POPCHF_USE_APOP;
+ 	else if (strcmp(pszName, "FAPOP") == 0)
+ 		pChCfg->ulFlags |= POPCHF_USE_APOP | POPCHF_FORCE_APOP;
++#ifdef WITH_SSL
+ 	else if (strcmp(pszName, "STLS") == 0)
+ 		pChCfg->ulFlags |= POPCHF_USE_STLS;
+ 	else if (strcmp(pszName, "FSTLS") == 0)
+ 		pChCfg->ulFlags |= POPCHF_USE_STLS | POPCHF_FORCE_STLS;
+ 	else if (strcmp(pszName, "POP3S") == 0)
+ 		pChCfg->ulFlags |= POPCHF_USE_POP3S;
++#endif
+ 	else if (strcmp(pszName, "Leave") == 0) {
+ 		if (pszValue == NULL || atoi(pszValue) > 0)
+ 			pChCfg->ulFlags |= POPCHF_LEAVE_MSGS;

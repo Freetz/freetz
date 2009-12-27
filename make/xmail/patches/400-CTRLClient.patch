@@ -1,0 +1,180 @@
+--- CTRLClient.cpp.orig	2009-12-16 22:36:30.000000000 +0100
++++ CTRLClient.cpp	2009-12-16 22:00:36.000000000 +0100
+@@ -25,8 +25,10 @@
+ #include "SvrDefines.h"
+ #include "ShBlocks.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "MiscUtils.h"
+ #include "StrUtils.h"
+ #include "MD5.h"
+@@ -46,7 +48,9 @@
+ #define CCLN_CHF_USESSL (1 << 2)
+ 
+ struct CClnChannelCfg {
++#ifdef WITH_SSL
+ 	SslServerBind SSLB;
++#endif
+ 	unsigned long ulFlags;
+ };
+ 
+@@ -184,6 +188,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int CClnSslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
+@@ -208,6 +213,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ BSOCK_HANDLE CClnConnectServer(char const *pszServer, int iPortNo,
+ 			       char const *pszUsername, char const *pszPassword,
+@@ -240,11 +246,13 @@
+ 	int iErrorCode = 0;
+ 	char szRTXBuffer[2048] = "";
+ 
++#ifdef WITH_SSL
+ 	if ((pChCfg->ulFlags & CCLN_CHF_USESSL) &&
+ 	    CClnSslBind(pChCfg, hBSock) < 0) {
+ 		BSckDetach(hBSock, 1);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#endif
+ 
+ 	/* Read welcome message */
+ 	if (CClnGetResponse(hBSock, szRTXBuffer, sizeof(szRTXBuffer), &iErrorCode, iTimeout) < 0) {
+@@ -257,6 +265,7 @@
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to SSL?
+ 	 */
+@@ -277,6 +286,7 @@
+ 			return INVALID_BSOCK_HANDLE;
+ 		}
+ 	}
++#endif
+ 
+ 	/* Prepare login */
+ 	char szTimeStamp[256] = "";
+@@ -359,12 +369,14 @@
+ 		"       -p pass          = set password\n"
+ 		"       -t timeout       = set timeout [%d]\n"
+ 		"       -f filename      = set I/O filename [stdin/stdout]\n"
++#ifdef WITH_SSL
+ 		"       -S               = enable SSL link negotiation\n"
+ 		"       -L               = use native SSL link\n"
+ 		"       -K filename      = set the SSL private key file\n"
+ 		"       -C filename      = set the SSL certificate file\n"
+ 		"       -X filename      = set the SSL certificate-list file\n"
+ 		"       -H dir           = set the SSL certificate-store directory\n"
++#endif
+ 		"       -c               = disable MD5 authentication\n"
+ 		"       -D               = enable debug\n",
+ 		pszProgName, STD_CTRL_PORT, STD_CTRL_TIMEOUT);
+@@ -383,10 +395,12 @@
+ 
+ 	ZeroData(ChCfg);
+ 	ChCfg.ulFlags = CCLN_CHF_USEMD5;
++#ifdef WITH_SSL
+ 	ChCfg.SSLB.pszKeyFile = SysGetEnv("CTRL_KEY_FILE");
+ 	ChCfg.SSLB.pszCertFile = SysGetEnv("CTRL_CERT_FILE");
+ 	ChCfg.SSLB.pszCAFile = SysGetEnv("CTRL_CA_FILE");
+ 	ChCfg.SSLB.pszCAPath = SysGetEnv("CTRL_CA_PATH");
++#endif
+ 
+ 	for (i = 1; i < iArgCount; i++) {
+ 		if (pszArgs[i][0] != '-')
+@@ -427,6 +441,7 @@
+ 			ChCfg.ulFlags &= ~CCLN_CHF_USEMD5;
+ 			break;
+ 
++#ifdef WITH_SSL
+ 		case ('S'):
+ 			ChCfg.ulFlags &= ~CCLN_CHF_USESSL;
+ 			ChCfg.ulFlags |= CCLN_CHF_SSLSWITCH;
+@@ -464,6 +479,7 @@
+ 				ChCfg.SSLB.pszCAPath = SysStrDup(pszArgs[i]);
+ 			}
+ 			break;
++#endif
+ 
+ 		case ('D'):
+ 			bServerDebug = true;
+@@ -475,15 +491,19 @@
+ 	}
+ 	if (strlen(szServer) == 0 || strlen(szUsername) == 0 ||
+ 	    strlen(szPassword) == 0 || i == iArgCount) {
++#ifdef WITH_SSL
+ 		SysFree(ChCfg.SSLB.pszKeyFile);
+ 		SysFree(ChCfg.SSLB.pszCertFile);
++#endif
+ 		return CCLN_ERR_BAD_USAGE;
+ 	}
++#ifdef WITH_SSL
+ 	if ((ChCfg.SSLB.pszKeyFile != NULL) != (ChCfg.SSLB.pszCertFile != NULL)) {
+ 		SysFree(ChCfg.SSLB.pszKeyFile);
+ 		SysFree(ChCfg.SSLB.pszCertFile);
+ 		return CCLN_ERR_SSL_KEYCERT;
+ 	}
++#endif
+ 
+ 	int iFirstParam = i;
+ 	int iCmdLength = 0;
+@@ -506,10 +526,12 @@
+ 	BSOCK_HANDLE hBSock = CClnConnectServer(szServer, iPortNo, szUsername, szPassword,
+ 						&ChCfg, iTimeout);
+ 
++#ifdef WITH_SSL
+ 	SysFree(ChCfg.SSLB.pszKeyFile);
+ 	SysFree(ChCfg.SSLB.pszCertFile);
+ 	SysFree(ChCfg.SSLB.pszCAFile);
+ 	SysFree(ChCfg.SSLB.pszCAPath);
++#endif
+ 	if (hBSock == INVALID_BSOCK_HANDLE) {
+ 		ErrorPush();
+ 		SysFree(pszCommand);
+@@ -540,25 +562,33 @@
+ 		CClnLogError(ErrGetErrorCode());
+ 		return 1;
+ 	}
++#ifdef WITH_SSL
+ 	if (BSslInit() < 0) {
+ 		CClnLogError(ErrGetErrorCode());
+ 		SysCleanupLibrary();
+ 		return 2;
+ 	}
++#endif
+ 	int iExecResult = CClnExec(iArgCount, pszArgs);
+ 
+ 	if (iExecResult == CCLN_ERR_BAD_USAGE) {
+ 		CClnShowUsage(pszArgs[0]);
++#ifdef WITH_SSL
+ 		BSslCleanup();
++#endif
+ 		SysCleanupLibrary();
+ 		return 3;
+ 	} else if (iExecResult < 0) {
+ 		CClnLogError(iExecResult);
++#ifdef WITH_SSL
+ 		BSslCleanup();
++#endif
+ 		SysCleanupLibrary();
+ 		return 4;
+ 	}
++#ifdef WITH_SSL
+ 	BSslCleanup();
++#endif
+ 	SysCleanupLibrary();
+ 
+ 	return 0;

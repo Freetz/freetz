@@ -1,0 +1,71 @@
+--- CTRLSvr.cpp.orig	2009-12-16 22:36:54.000000000 +0100
++++ CTRLSvr.cpp	2009-12-16 22:02:39.000000000 +0100
+@@ -26,8 +26,10 @@
+ #include "ShBlocks.h"
+ #include "SList.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "ResLocks.h"
+ #include "MiscUtils.h"
+ #include "MD5.h"
+@@ -85,7 +87,9 @@
+ static char *CTRLGetAccountsFilePath(char *pszAccFilePath, int iMaxPath);
+ static int CTRLAccountCheck(CTRLConfig *pCTRLCfg, char const *pszUsername,
+ 			    char const *pszPassword, char const *pszTimeStamp);
++#ifdef WITH_SSL
+ static int CTRLSslEnvCB(void *pPrivate, int iID, void const *pData);
++#endif
+ static int CTRLLogin(CTRLConfig *pCTRLCfg, BSOCK_HANDLE hBSock,
+ 		     char const *pszTimeStamp, SYS_INET_ADDR const &PeerInfo);
+ static int CTRLHandleSession(ThreadConfig const *pThCfg, BSOCK_HANDLE hBSock,
+@@ -299,6 +303,7 @@
+ 		return ErrorPop();
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to TLS?
+ 	 */
+@@ -331,6 +336,7 @@
+ 		SysFree(SslE.pszIssuer);
+ 		SysFree(SslE.pszSubject);
+ 	}
++#endif
+ 	/* Check IP permission */
+ 	if (CTRLCheckPeerIP(pThCtx->SockFD) < 0) {
+ 		ErrorPush();
+@@ -506,6 +512,7 @@
+ 	return ERR_BAD_CTRL_LOGIN;
+ }
+ 
++#ifdef WITH_SSL
+ static int CTRLSslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
+@@ -517,6 +524,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static int CTRLLogin(CTRLConfig *pCTRLCfg, BSOCK_HANDLE hBSock,
+ 		     char const *pszTimeStamp, SYS_INET_ADDR const &PeerInfo)
+@@ -527,6 +535,7 @@
+ 	    MscCmdStringCheck(szLogin) < 0)
+ 		return ErrGetErrorCode();
+ 
++#ifdef WITH_SSL
+ 	if (strcmp(szLogin, CTRL_TLS_INIT_STR) == 0) {
+ 		int iError;
+ 		SslServerBind SSLB;
+@@ -563,6 +572,7 @@
+ 		    MscCmdStringCheck(szLogin) < 0)
+ 			return ErrGetErrorCode();
+ 	}
++#endif
+ 
+ 	char **ppszTokens = StrGetTabLineStrings(szLogin);
+ 
