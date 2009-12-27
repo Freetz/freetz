@@ -88,6 +88,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
+	cp $(PHP_MAKE_DIR)/files/php-wrapper $(PHP_DEST_DIR)/usr/bin/php-wrapper
 
 $(pkg):
 
