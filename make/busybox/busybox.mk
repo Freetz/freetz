@@ -19,6 +19,7 @@ $(DL_DIR)/$(BUSYBOX_SOURCE): | $(DL_DIR)
 $(BUSYBOX_DIR)/.unpacked: $(DL_DIR)/$(BUSYBOX_SOURCE)
 	mkdir -p $(BUSYBOX_REF_DIR)
 	tar -C $(BUSYBOX_REF_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(BUSYBOX_SOURCE)
+	set -e; \
 	for i in $(BUSYBOX_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(BUSYBOX_DIR) $$i; \
 	done
