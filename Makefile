@@ -61,6 +61,7 @@ CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 
 export FW_IMAGES_DIR
+export FREETZ_BASE_DIR
 
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)

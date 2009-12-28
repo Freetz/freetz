@@ -1,6 +1,6 @@
 --- linux-2.6.13.1/Makefile.orig	2007-07-29 03:52:01.000000000 +0200
 +++ linux-2.6.13.1/Makefile	2007-07-29 03:52:02.000000000 +0200
-@@ -504,6 +504,33 @@
+@@ -504,6 +504,25 @@
  # Defaults vmlinux but it is usually overriden in the arch makefile
  all: vmlinux
  
@@ -10,23 +10,15 @@
 +	$(CROSS_COMPILE)objcopy -S -O binary $(TOPDIR)/vmlinux vmlinux.bin
 +
 +vmlinux.lzma: vmlinux.bin
-+	if [ -x ../../../../../../tools/lzma ]; then \
-+	  ../../../../../../tools/lzma e -lc1 -lp2 -pb2 \
-+	    vmlinux.bin vmlinux.lzma; \
-+	else \
-+	  lzma e -lc1 -lp2 -pb2 vmlinux.bin vmlinux.lzma; \
-+	fi
++	$$FREETZ_BASE_DIR/tools/lzma e -lc1 -lp2 -pb2 \
++		vmlinux.bin vmlinux.lzma
 +
 +vmlinux.eva: vmlinux.lzma
 +	loadaddr=$$($(AWK) '/A _text/ { print "0x"$$1; }' < System.map); \
 +	entry=$$($(AWK) '/T kernel_entry/ { print "0x"$$1; }' < System.map); \
 +	echo $$loadaddr $$entry; \
-+	if [ -x ../../../../../../tools/lzma2eva ]; then \
-+	  ../../../../../../tools/lzma2eva $$loadaddr $$entry \
-+	    vmlinux.lzma vmlinux.eva; \
-+	else \
-+	  lzma2eva $$loadaddr $$entry vmlinux.lzma vmlinux.eva; \
-+	fi
++	$$FREETZ_BASE_DIR/tools/lzma2eva $$loadaddr $$entry \
++		vmlinux.lzma vmlinux.eva
 +
 +vmlinux.eva_pad: vmlinux.eva
 +	$(DD) if=vmlinux.eva of=vmlinux.eva_pad bs=256 conv=sync
