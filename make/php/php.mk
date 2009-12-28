@@ -19,6 +19,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SQLITE3)),y)
 $(PKG)_DEPENDS_ON += sqlite
 endif
 
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_WRAPPER_SCRIPT
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_STATIC
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_GD
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_SQLITE2
@@ -87,8 +88,9 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		PHP_STATIC="$(PHP_STATIC)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
+	mkdir -p $(PHP_DEST_DIR)/usr/bin
+	[ "$(FREETZ_PACKAGE_PHP_WRAPPER_SCRIPT)" == "y" ] && cp $(PHP_MAKE_DIR)/files/php-wrapper $(PHP_DEST_DIR)/usr/bin/ || exit 0
 	$(INSTALL_BINARY_STRIP)
-	cp $(PHP_MAKE_DIR)/files/php-wrapper $(PHP_DEST_DIR)/usr/bin/php-wrapper
 
 $(pkg):
 

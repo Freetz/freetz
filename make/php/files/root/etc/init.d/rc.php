@@ -5,15 +5,18 @@ DAEMON=php
 . /etc/init.d/modlibrc
 
 start() {
-	[ ! -d /tmp/flash/php ] && mkdir /tmp/flash/php
+	[ ! -d /tmp/flash/php ] && mkdir /tmp/flash/php && mod_save=true
 	if [ ! -f /tmp/flash/php.ini ]; then
 		echo -n 'Setting up PHP ...'
-		cp /etc/default.php/php.ini /tmp/flash/php.ini
+		cp /etc/default.php/php.ini /tmp/flash/php.ini && mod_save=true
 		if [ -n "$(ps w | grep lighttpd | grep -v grep)" ]; then
 			/etc/init.d/rc.lighttpd restart
 		fi
 		echo 'done.'
+	else
+		echo 'Nothing to do here.'
 	fi
+	[ "$mod_save" == "true" ] && modsave flash >/dev/null
 }
 
 case "$1" in
