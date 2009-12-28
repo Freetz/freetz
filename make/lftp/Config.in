@@ -5,6 +5,7 @@ config FREETZ_PACKAGE_LFTP
 	select FREETZ_LIB_libreadline if ! FREETZ_PACKAGE_LFTP_STATIC
 	select FREETZ_LIB_libuClibc__ if ! FREETZ_PACKAGE_LFTP_STATIC
 	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_LFTP_STATIC
+	select FREETZ_LIB_libexpat if ! FREETZ_PACKAGE_LFTP_STATIC
 	default n
 	help
 		LFTP is sophisticated file transfer program with command line interface.

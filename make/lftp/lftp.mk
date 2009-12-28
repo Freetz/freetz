@@ -1,12 +1,11 @@
 $(call PKG_INIT_BIN, 4.0.5)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=5400cad5f91e131ac2ded7c24aea594c
 $(PKG)_SITE:=http://ftp.yars.free.net/pub/source/lftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lftp
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lftp
-$(PKG)_SOURCE_MD5:=73ea519c9e9cdfa47b714c5c91093a0d
 
-$(PKG)_DEPENDS_ON := ncurses readline uclibcxx
-
+$(PKG)_DEPENDS_ON := ncurses readline uclibcxx expat
 
 ifeq ($(strip $(FREETZ_PACKAGE_LFTP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
@@ -15,6 +14,8 @@ endif
 ifeq ($(strip $(FREETZ_PACKAGE_LFTP_STATIC)),y)
 $(PKG)_LDFLAGS := -all-static
 endif
+
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
