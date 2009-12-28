@@ -1,0 +1,63 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+
+DAEMON=phpxmail
+DAEMON_LONG_NAME="PHPXmail webinterface"
+
+config() {
+	mod_save=
+	[ ! -d /mod/etc/${DAEMON} ] && mkdir -p /mod/etc/${DAEMON}/
+	[ ! -d /tmp/flash/${DAEMON} ] && mkdir /tmp/flash/${DAEMON}/ && mod_save=true
+	[ ! -e /tmp/flash/${DAEMON}/config.php ] && cp /mod/etc/default.${DAEMON}/config.php.default \
+		/tmp/flash/${DAEMON}/config.php && mod_save=true
+	if [ -d /tmp/flash/php/ -a ! -e /tmp/flash/php/$DAEMON.ini ]; then
+		echo '[PHP]' >/tmp/flash/php/$DAEMON.ini
+		echo 'cgi.force_redirect = 0' >>/tmp/flash/php/$DAEMON.ini
+		modsave=true
+	fi
+	[ "$mod_save" = "true" ] && modsave flash >/dev/null
+}
+
+start() {
+	if [ ! $(grep -se '^\*\.php\:' /mod/etc/httpd.conf) ]; then
+		echo "Error[$DAEMON]: php ist not configured in /mod/etc/httpd.conf"
+		exit 1
+	fi
+	echo "Starting $DAEMON_LONG_NAME...done."
+}
+
+stop() {
+	echo "Stopping $DAEMON_LONG_NAME is not possible, because its integratet into the freetz configuration web site."
+	ecit 1
+}
+
+case "$1" in
+	""|load)
+		config
+		modreg cgi $DAEMON 'PHPXmail'
+		modreg daemon --disable $DAEMON
+		;;
+	unload)
+		modunreg cgi $DAEMON
+		modunreg daemon $DAEMON
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		start
+		;;
+	status)
+		echo 'running'
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

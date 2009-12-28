@@ -1,0 +1,68 @@
+--- config.inc	2006-11-20 05:18:46.000000000 +0100
++++ config.inc	2009-12-27 19:33:26.000000000 +0100
+@@ -21,7 +21,13 @@
+                         }
+                 }
+ 
+-                $msg = "<img src=gfx/ico_check.gif> Configuration was updated successfully.<br>";
++		$ret_val = 0;
++		exec ('modsave flash',$tmp = array(),$ret_val);
++		if ($ret_val == 0) {
++			$msg = "<img src=gfx/ico_check.gif> Configuration was updated successfully, <b>modsave flash</b> was successfully executed.<br>";
++		} else {
++			$msg = "<img src=gfx/ico_warn.gif> Configuration was updated successfully, but an error ocurred during the execution of <b>modsave flash</b>.<br>";
++		}
+         }
+ 
+ ?>
+--- server/serveradd.inc	2005-09-13 14:29:50.000000000 +0200
++++ server/serveradd.inc	2009-12-27 19:22:20.000000000 +0100
+@@ -15,7 +15,13 @@ if (!empty($_POST)){
+ 				if (!isset($_POST['use_ssh'])) $_POST['use_ssh'] = 0;
+ 				$servers[$_POST['ctrl_svr']] = array($_POST['ctrl_addr'], $_POST['ctrl_prt'], $_POST['ctrl_user'], $ctrl_pass, $_POST['use_ssh']);
+ 				if (serverwrite($servers)) {
+-					$msg .= "<img src=gfx/ico_check.gif>&nbsp;Server <b>$_POST[ctrl_svr]</b> was added successfully.<br>";
++					$ret_val=0;
++					exec ('modsave flash',$tmp = array(),$ret_val);
++					if ($ret_val == 0) {
++						$msg .= "<img src=gfx/ico_check.gif>&nbsp;Server <b>$_POST[ctrl_svr]</b> was added successfully, <b>modsave flash</b> was successfully executed.<br>";
++					} else {
++						$msg .= "<img src=gfx/ico_warn.gif>&nbsp;Server <b>$_POST[ctrl_svr]</b> was added successfully, but an error ocurred during the execution of <b>modsave flash</b>.<br>";
++					}
+ 					// if was the first server that is added notice user about the Login
+ 					if (count(serverlist($cfg_servers)) == 1){
+ 						$msg .= "<img src=gfx/ico_info.gif>&nbsp;Providing that the setup was correct, it's possible now to access to Xmail server by selecting Login.<br><hr>";
+--- server/servercfg.inc	2005-09-25 00:09:30.000000000 +0200
++++ server/servercfg.inc	2009-12-27 19:29:23.000000000 +0100
+@@ -20,7 +20,13 @@ if (isset($_POST['address']) && isset($_
+ 		} else {
+ 			$servers[$svr] = array($_POST['address'], $_POST['prt'], $_POST['ctrl_user'], $ctrl_pass, $use_ssh);
+ 			if (serverwrite($servers)) {
+-				$msg = "<img src=gfx/ico_check.gif> Server <b>$svr</b> changed successfully.<br>";
++				$ret_val=0;
++				exec ('modsave flash',$tmp = array(),$ret_val);
++				if ($ret_val == 0) {
++					$msg .= "<img src=gfx/ico_check.gif> Server <b>$svr</b> changed successfully, <b>modsave flash</b> was successfully executed.<br>";
++				} else {
++					$msg .= "<img src=gfx/ico_warn.gif> Server <b>$svr</b> changed successfully, but an error ocurred during the execution of <b>modsave flash</b>.<br>";
++				}
+ 			} else {
+ 				$msg = "<img src=gfx/ico_warn.gif> Error saving server: " . $mail_server->xm_err_msg .'<br>';
+ 			}
+--- server/serverdel.inc	2005-06-29 18:00:36.000000000 +0200
++++ server/serverdel.inc	2009-12-27 19:26:18.000000000 +0100
+@@ -10,7 +10,13 @@ if (!empty($_POST)) {
+ 		$servers = serverlist();
+ 		unset($servers[$svr]); //remove unwanted server
+ 		if (serverwrite($servers)) {
+-			$msg = "<img src=gfx/ico_check.gif> Server <b>$svr</b> deleted successfully.";
++			$ret_val=0;
++			exec ('modsave flash',$tmp = array(),$ret_val);
++			if ($ret_val == 0) {
++				$msg .= "<img src=gfx/ico_check.gif> Server <b>$svr</b> deleted successfully, <b>modsave flash</b> was successfully executed.<br>";
++			} else {
++				$msg .= "<img src=gfx/ico_warn.gif> Server <b>$svr</b> deleted successfully, but an error ocurred during the execution of <b>modsave flash</b>.<br>";
++			}
+ 			// if there are no more servers then refresh the left menu pane
+ 			if (count(serverlist($cfg_servers)) == 0){
+ 				?>
