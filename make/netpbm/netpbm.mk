@@ -35,7 +35,7 @@ $($(PKG)_DIR)/buildtools/.compiled: $($(PKG)_DIR)/.configured
 
 $($(PKG)_DIR)/Makefile.depend: $($(PKG)_DIR)/buildtools/.compiled
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(NETPBM_DIR) \
+		$(SUBMAKE) -C $(NETPBM_DIR) \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -43,7 +43,7 @@ $($(PKG)_DIR)/Makefile.depend: $($(PKG)_DIR)/buildtools/.compiled
 
 $($(PKG)_LIB_BUILD_DIR): $($(PKG)_DIR)/Makefile.depend
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(NETPBM_DIR)/lib \
+		$(SUBMAKE) -C $(NETPBM_DIR)/lib \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -51,7 +51,7 @@ $($(PKG)_LIB_BUILD_DIR): $($(PKG)_DIR)/Makefile.depend
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/converter/other/%: $($(PKG)_DIR)/Makefile.depend $($(PKG)_LIB_BUILD_DIR)
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(NETPBM_DIR)/converter/other \
+		$(SUBMAKE) -C $(NETPBM_DIR)/converter/other \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -74,8 +74,8 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_LIB_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(NETPBM_DIR)/lib clean
-	-$(MAKE) -C $(NETPBM_DIR)/converter/other clean
+	-$(SUBMAKE) -C $(NETPBM_DIR)/lib clean
+	-$(SUBMAKE) -C $(NETPBM_DIR)/converter/other clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/netpbm/ \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libnetpbm*

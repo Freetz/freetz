@@ -31,7 +31,7 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(XMAIL_DIR) -f Makefile.lnx \
+		$(SUBMAKE) -C $(XMAIL_DIR) -f Makefile.lnx \
 	                CC="$(TARGET_CXX)" \
 			LD="$(TARGET_CXX)" \
 	                CFLAGS="$(TARGET_CFLAGS) $(XMAIL_CFLAGS)" \
@@ -57,7 +57,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(XMAIL_DIR) clean
+	-$(SUBMAKE) -C $(XMAIL_DIR) clean
 	$(RM) $(XMAIL_DIR)/.configured
 
 $(pkg)-uninstall:
