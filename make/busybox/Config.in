@@ -30,6 +30,8 @@ config FREETZ_BUSYBOX_ETHER_WAKE
 	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
+		Include 'ether-wake' tool in busybox
+
 		Send a magic packet to wake up sleeping machines.
 
 		This feature adds about 4 KB to BusyBox.
@@ -133,6 +135,17 @@ config FREETZ_BUSYBOX_LONG_OPTS
 	bool
 	depends on FREETZ_REPLACE_BUSYBOX
 	default n
+
+config FREETZ_BUSYBOX_MD5SUM
+	bool "md5sum"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Includes the 'md5sum' tool in busybox
+
+		md5sum is used to print or check MD5 checksums.
+
+		This feature adds about 0.7 KB to BusyBox.
 
 config FREETZ_BUSYBOX_NICE
 	bool "nice"
