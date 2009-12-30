@@ -1,5 +1,5 @@
 AVM_SITE__AVM:=ftp://ftp.avm.de/develper/opensrc
-AVM_SITE__AVM_7170:=ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/x_misc/opensrc
+AVM_SITE__AVM_3270:=ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3270/x_misc/opensrc
 AVM_SITE__AVM_7270:=ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/x_misc/opensrc
 AVM_SITE__TCOM:=http://www.t-home.de/dlp/eki/downloads/Speedport
 
@@ -10,7 +10,8 @@ AVM_SOURCE__04.57:=$(AVM_SITE__AVM)/fritzbox-source-files.04.57.tar.gz
 AVM_SOURCE__04.67:=$(AVM_SITE__AVM)/fritzbox-source-files.04.67.tar.gz
 AVM_SOURCE__04.70:=$(AVM_SITE__AVM)/fritzbox-source-files-04.70.tar.gz
 AVM_SOURCE__04.76:=$(AVM_SITE__AVM_7170)/fritzbox7170-source-files-04.76.tar.gz
-AVM_SOURCE__7270_04.76:=$(AVM_SITE__AVM_7270)/fritzbox7270-source-files-04.76.tar.gz
+AVM_SOURCE__3270_04.76:=$(AVM_SITE__AVM_3270)/GPL-Fritz_Box_3270.tar.gz
+AVM_SOURCE__7270_04.80:=$(AVM_SITE__AVM_7270)/fritzbox7270-source-files-04.80.tar.gz
 AVM_SOURCE__r7203:=$(AVM_SITE__TCOM)/Speedport_W501V/GPL-r7203-4mb_26-tar.bz2
 
 AVM_URL:=$(AVM_SOURCE__$(AVM_VERSION))

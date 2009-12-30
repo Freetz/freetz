@@ -128,7 +128,7 @@ $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 		ARCH=$(KERNEL_ARCH) \
 		INSTALL_MOD_PATH="$(shell pwd)/$(KERNEL_BUILD_DIR)/modules/" \
 		modules
-	PATH=$(KERNEL_MAKE_PATH):$(PATH); \
+	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
@@ -179,6 +179,12 @@ kernel-clean:
 		clean
 
 kernel-dirclean:
-	rm -rf $(KERNEL_DIR)
+	$(RM) -r $(KERNEL_DIR)
+
+kernel-distclean: kernel-dirclean
+	$(RM) $(KERNEL_TARGET_DIR)/.version-*
+	$(RM) $(KERNEL_TARGET_DIR)/System*
+	$(RM) $(KERNEL_TARGET_DIR)/kernel-*
+	$(RM) -r $(KERNEL_TARGET_DIR)/modules-*
 
 .PHONY: kernel-configured kernel-modules kernel-menuconfig kernel-oldconfig

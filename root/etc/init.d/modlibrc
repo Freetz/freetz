@@ -19,10 +19,11 @@ modlib_addgroup()
 {
 	local group="$1"
 	shift
-	echo -n "Looking for group '$group' ... "
 	if grep -q "^$group:" /etc/group; then
-		echo "found"
-	elif addgroup "$@" $group; then
+		return 0
+	fi
+	echo -n "Looking for group '$group' ... "
+	if addgroup "$@" $group; then
 		echo -n "created - now saving to data buffer ... "
 		modusers save && echo "done" || echo "failed"
 	else
@@ -39,11 +40,10 @@ modlib_adduser()
 {
 	local user="$1"
 	shift
-	echo -n "Looking for user '$user' ... "
 	if grep -q "^$user:" /etc/passwd; then
-		echo "found"
 		return 0
 	fi
+	echo -n "Looking for user '$user' ... "
 	local msg=$(adduser "$@" $user 2>&1)
 	if [ "$?" = 0 ]; then
 		echo -n "created - now saving to data buffer ... "

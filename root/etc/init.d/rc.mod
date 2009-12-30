@@ -31,7 +31,7 @@ start() {
 	plugins="`ls /var/plugin-*/control 2>/dev/null`"
 	if [ -n "$plugins" ]; then
 		echo -n "Starting AVM-Plugins"
-		for plugin in "$plugins"; do
+		for plugin in $plugins; do
 			echo -n "...`echo $plugin|sed 's/.*plugin-//;s/\/.*//'`"
 			$plugin start 2>&1 >/dev/null
 			[ $? -ne 0 ] && echo -n "(failed)"

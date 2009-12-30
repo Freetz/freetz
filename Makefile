@@ -313,6 +313,7 @@ distclean: $(TOOLS_DISTCLEAN) common-distclean
 endif
 
 tools: $(DL_DIR) $(SOURCE_DIR) $(TOOLS)
+tools-distclean: $(TOOLS_DISTCLEAN)
 
 push-firmware:
 	@if [ ! -f "build/modified/firmware/var/tmp/kernel.image" ]; then \

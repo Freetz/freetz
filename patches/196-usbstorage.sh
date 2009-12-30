@@ -8,7 +8,7 @@ elif isFreetzType 7170 && isFreetzType LANG_A_CH; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/a-ch/usbstorage_7170_a_ch.patch"
 elif isFreetzType 7170 && isFreetzType LANG_EN; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/en/usbstorage_7170_en.patch"
-elif isFreetzType 2170 3130 3131 3170 3270 7140 7141 7150 7170 7240 7270 7270_V3; then
+elif isFreetzType 2170 3130 3131 3170 3270 3270_V3 7140 7141 7150 7170 7240 7270 7270_V3; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/usbstorage_${FREETZ_TYPE_STRING}.patch"
 else
 	error 1 "Missing usbstorage patch for $FREETZ_TYPE_STRING - $FREETZ_TYPE_LANG_STRING"
