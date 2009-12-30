@@ -1,0 +1,30 @@
+config FREETZ_PACKAGE_LFTP
+	bool "lftp 4.0.5"
+	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_LFTP_STATIC
+	select FREETZ_LIB_libncurses if ! FREETZ_PACKAGE_LFTP_STATIC
+	select FREETZ_LIB_libreadline if ! FREETZ_PACKAGE_LFTP_STATIC
+	select FREETZ_LIB_libuClibc__ if ! FREETZ_PACKAGE_LFTP_STATIC
+	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_LFTP_STATIC
+	select FREETZ_LIB_libexpat if ! FREETZ_PACKAGE_LFTP_STATIC
+	default n
+	help
+		LFTP is sophisticated file transfer program with command line interface.
+		It supports FTP, HTTP, FISH, SFTP, HTTPS and FTPS protocols.
+		GNU Readline library is used for input.
+
+config FREETZ_PACKAGE_LFTP_WITH_SSL
+	bool "build with SSL support"
+	depends on FREETZ_PACKAGE_LFTP
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_LFTP_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_LFTP_STATIC
+	default n
+	help
+		This option enables SSL support.
+
+config FREETZ_PACKAGE_LFTP_STATIC
+	#bool "Statically link libraries"
+	bool
+	depends on FREETZ_PACKAGE_LFTP
+	default n
+	help
+		Build lftp binary with statically linked libraries.

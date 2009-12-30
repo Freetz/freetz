@@ -1,20 +1,10 @@
 #!/bin/sh
 
-. /etc/init.d/modlibrc
-
 DAEMON=httpd-hp-utils
+CONF_NAME=hp-utils
 PID_FILE=/var/run/$DAEMON.pid
 
-case "$1" in
-	""|load|start|restart|status)
-		if [ ! -r /mod/etc/conf/hp-utils.cfg ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/hp-utils.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 config() {
 	(

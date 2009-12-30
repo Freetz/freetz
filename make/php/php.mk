@@ -1,9 +1,15 @@
 $(call PKG_INIT_BIN, 5.2.11)
 $(PKG)_SOURCE:=php-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=286bf34630f5643c25ebcedfec5e0a09
 $(PKG)_SITE:=http://de.php.net/distributions
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/php-cgi
-$(PKG)_SOURCE_MD5:=286bf34630f5643c25ebcedfec5e0a09
+$(PKG)_WRAPPER_SCRIPT:=$($(PKG)_MAKE_DIR)/files/php-wrapper
+$(PKG)_TARGET_WRAPPER_SCRIPT:=$($(PKG)_DEST_DIR)/usr/bin/php-wrapper
+ifneq ($(strip $(FREETZ_PACKAGE_PHP_WRAPPER_SCRIPT)),y)
+$(PKG)_NOT_INCLUDED:=$($(PKG)_TARGET_WRAPPER_SCRIPT)
+endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_STATIC)),y)
 $(PKG)_STATIC := -all-static
@@ -88,15 +94,20 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_TARGET_WRAPPER_SCRIPT): $($(PKG)_WRAPPER_SCRIPT)
+ifeq ($(strip $(FREETZ_PACKAGE_PHP_WRAPPER_SCRIPT)),y)
+	$(INSTALL_BINARY)
+endif
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_WRAPPER_SCRIPT)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PHP_DIR) clean
 	$(RM) $(PHP_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
-	$(RM) $(PHP_TARGET_BINARY)
+	$(RM) $(PHP_TARGET_BINARY) $(PHP_TARGET_WRAPPER_SCRIPT)
 
 $(PKG_FINISH)

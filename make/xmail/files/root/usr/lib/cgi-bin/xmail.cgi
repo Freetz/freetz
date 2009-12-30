@@ -3,22 +3,33 @@
 PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; smtp_chk=''; ssmtp_chk=''; pop3_chk=''; pop3s_chk=''; ctrl_chk=''; ctrls_chk=''; smtplog_chk=''; pop3log_chk=''; systemlog_chk=''; unpriv_chk=''; XMAIL_SSLSUPPORT=''; XMAIL_SSLVISIBLE=''
+auto_chk= man_chk= smtp_chk= ssmtp_chk= pop3_chk= pop3s_chk= ctrl_chk= ctrls_chk= smtplog_chk= pop3log_chk= systemlog_chk= unpriv_chk= XMAIL_SSLSUPPORT= XMAIL_SSLVISIBLE=
 
 # Check for SSL support
-/usr/lib/MailRoot/bin/CtrlClnt 2>&1|grep -qe ' -S ' || XMAIL_SSLSUPPORT=' disabled' XMAIL_SSLVISIBLE='display: none;'
+/usr/lib/MailRoot/bin/CtrlClnt 2>&1|grep -qe ' -S ' && XMAIL_SSLSUPPORT=1
+# Check for installed and running PHPXmail
+[ -e /etc/init.d/rc.phpxmail ] && [ "$(/etc/init.d/rc.phpxmail status)" == 'running' ] && XMAIL_PHPXMAIL=1
 
 case "$XMAIL_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
-if [ "$XMAIL_UNPRIV" = "yes" ]; then unpriv_chk=' checked'; fi
-if [ "$XMAIL_SMTP" = "yes" ]; then smtp_chk=' checked'; fi
-if [ "$XMAIL_SSMTP" = "yes" -a -z "$XMAIL_SSLSUPPORT" ]; then ssmtp_chk=' checked'; fi
-if [ "$XMAIL_POP3" = "yes" ]; then pop3_chk=' checked'; fi
-if [ "$XMAIL_POP3S" = "yes" -a -z "$XMAIL_SSLSUPPORT" ]; then pop3s_chk=' checked'; fi
-if [ "$XMAIL_CTRL" = "yes" ]; then ctrl_chk=' checked'; fi
-if [ "$XMAIL_CTRLS" = "yes" -a -z "$XMAIL_SSLSUPPORT" ]; then ctrls_chk=' checked'; fi
-if [ "$XMAIL_SMTPLOG" = "yes" ]; then smtplog_chk=' checked'; fi
-if [ "$XMAIL_POP3LOG" = "yes" ]; then pop3log_chk=' checked'; fi
-if [ "$XMAIL_SYSTEMLOG" = "yes" ]; then systemlog_chk=' checked'; fi
+if [ "$XMAIL_UNPRIV" = 'yes' ]; then unpriv_chk=' checked'; fi
+if [ "$XMAIL_SMTP" = 'yes' ]; then smtp_chk=' checked'; fi
+if [ "$XMAIL_SSMTP" = 'yes' -a -z "$XMAIL_SSLSUPPORT" ]; then ssmtp_chk=' checked'; fi
+if [ "$XMAIL_POP3" = 'yes' ]; then pop3_chk=' checked'; fi
+if [ "$XMAIL_POP3S" = 'yes' -a -z "$XMAIL_SSLSUPPORT" ]; then pop3s_chk=' checked'; fi
+if [ "$XMAIL_CTRL" = 'yes' ]; then ctrl_chk=' checked'; fi
+if [ "$XMAIL_CTRLS" = 'yes' -a -z "$XMAIL_SSLSUPPORT" ]; then ctrls_chk=' checked'; fi
+if [ "$XMAIL_SMTPLOG" = 'yes' ]; then smtplog_chk=' checked'; fi
+if [ "$XMAIL_POP3LOG" = 'yes' ]; then pop3log_chk=' checked'; fi
+if [ "$XMAIL_SYSTEMLOG" = 'yes' ]; then systemlog_chk=' checked'; fi
+
+[ "$XMAIL_PHPXMAIL" == 1 ] && (
+. /usr/lib/libmodredir.sh
+sec_begin '$(lang de:"PHPXmail" en:"PHPXmail")'
+cat << EOF
+<p>$(lang de:"Auf dieser Fritz!Box ist das PHPXMail Webfrontend installiert, klicken sie" en:"On this Fritz!Box is the PHPXMail webfrontend installed, so you can klick") <b><a style='font-size:14px;' target='_blank' href=/phpxmail/index.html>$(lang de:"hier" en:"here")</a></b>$(lang de:", um es zu starten." en:" to start it.")<p>
+EOF
+sec_end
+)
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
@@ -49,33 +60,40 @@ cat << EOF
 <p><input type="hidden" name="smtp" value="no">
 <input id="a1" type="checkbox" name="smtp" value="yes"$smtp_chk><label for="a1"> $(lang de:"SMTP aktivieren" en:"Activate SMTP")</label></p>
 <p> $(lang de:"SMTP Port" en:"SMTP port"): <input type="text" name="smtpport" size="5" maxlength="5" value="$(html "$XMAIL_SMTPPORT")"></p>
-<span style="$XMAIL_SSLVISIBLE">
+EOF
+[ "$XMAIL_SSLSUPPORT" == 1 ] &&
+cat << EOF
 <hr>
 <p style="font-size:10px;">$(lang de:"Soll ein weiterer Port f&uuml;r SSL/TLS gesch&uuml;tztes SMTP aktiviert werden (SSL/TLS ist auch am normalen Port verf&uuml;gbar)?" en:"Shall another port for SSL/TLS protected SMTP be activated (SSL/TLS is also available using the regular port)?")</p>
 <p><input type="hidden" name="ssmtp" value="no">
-<input id="a2" type="checkbox" name="ssmtp" value="yes"$XMAIL_SSLSUPPORT$ssmtp_chk><label for="a2"> $(lang de:"SSMTP aktivieren" en:"Activate SSMTP")</label></p>
-<p> $(lang de:"SSMTP Port" en:"SSMTP port"): <input type="text" name="ssmtpport" size="5" maxlength="5" value="$(html "$XMAIL_SSMTPPORT")"$XMAIL_SSLSUPPORT></p>
-</span>
+<input id="a2" type="checkbox" name="ssmtp" value="yes"$ssmtp_chk><label for="a2"> $(lang de:"SSMTP aktivieren" en:"Activate SSMTP")</label></p>
+<p> $(lang de:"SSMTP Port" en:"SSMTP port"): <input type="text" name="ssmtpport" size="5" maxlength="5" value="$(html "$XMAIL_SSMTPPORT")"></p>
+EOF
+cat << EOF
 <hr>
 <p><input type="hidden" name="pop3" value="no">
 <input id="a3" type="checkbox" name="pop3" value="yes"$pop3_chk><label for="a3"> $(lang de:"POP3 aktivieren" en:"Activate POP3")</label></p>
 <p> $(lang de:"POP3 Port" en:"POP3 port"): <input type="text" name="pop3port" size="5" maxlength="5" value="$(html "$XMAIL_POP3PORT")"></p>
-<span style="$XMAIL_SSLVISIBLE">
+EOF
+[ "$XMAIL_SSLSUPPORT" == 1 ] &&
+cat << EOF
 <hr>
 <p style="font-size:10px;">$(lang de:"Soll ein weiterer Port f&uuml;r SSL/TLS gesch&uuml;tztes POP3 aktiviert werden (SSL/TLS ist auch am normalen Port verf&uuml;gbar)?" en:"Shall another port for SSL/TLS protected POP3 be activated (SSL/TLS is also available using the regular port)?")</p>
 <p><input type="hidden" name="pop3s" value="no">
-<input id="a4" type="checkbox" name="pop3s" value="yes"$XMAIL_SSLSUPPORT$pop3s_chk><label for="a3"> $(lang de:"POP3S aktivieren" en:"Activate POP3S")</label></p>
-<p> $(lang de:"POP3S Port" en:"POP3S port"): <input type="text" name="pop3sport" size="5" maxlength="5" value="$(html "$XMAIL_POP3SPORT")"$XMAIL_SSLSUPPORT></p>
-</span>
+<input id="a4" type="checkbox" name="pop3s" value="yes"$pop3s_chk><label for="a3"> $(lang de:"POP3S aktivieren" en:"Activate POP3S")</label></p>
+<p> $(lang de:"POP3S Port" en:"POP3S port"): <input type="text" name="pop3sport" size="5" maxlength="5" value="$(html "$XMAIL_POP3SPORT")"></p>
+EOF
+cat << EOF
 <hr>
 <p style="font-size:10px;">$(lang de:"Bitte beachte: Der SSL-gesch&uuml;tzte Admin Zugang ist aus allen Netzen zug&auml;nglich (port 6018). Der ungesch&uuml;tzte Admin Zugang (6017) ist nur via localhost erreichbar." en:"Please note: The SSL protected admin access is available from all networks (port 6018). The unprotected admin access is available via localhost only (port 6017).")</p>
 <p><input type="hidden" name="ctrl" value="no">
-<input id="a5" type="checkbox" name="ctrl" value="yes"$ctrl_chk><label for="a5"> $(lang de:"Admin Zugang aktivieren" en:"Activate admin access")</label></p>
-<span style="$XMAIL_SSLVISIBLE">
+<input id="a5" type="checkbox" name="ctrl" value="yes"$ctrl_chk><label for="a5"> $(lang de:"Unverschl&uuml;sselten Admin Zugang aktivieren" en:"Activate unencrypted admin access")</label></p>
+EOF
+[ "$XMAIL_SSLSUPPORT" == 1 ] &&
+cat << EOF
 <p style="font-size:10px;">$(lang de:"Soll SSL/TLS gesch&uuml;tzter Admin Zugang aktiviert werden?" en:"Shall SSL/TLS protected admin access be activated?")</p>
 <p><input type="hidden" name="ctrls" value="no">
-<input id="a6" type="checkbox" name="ctrls" value="yes"$XMAIL_SSLSUPPORT$ctrls_chk><label for="a6"> $(lang de:"SSL Admin Zugang aktivieren" en:"Activate SSL admin access")</label></p>
-</span>
+<input id="a6" type="checkbox" name="ctrls" value="yes"$ctrls_chk><label for="a6"> $(lang de:"SSL Admin Zugang aktivieren" en:"Activate SSL admin access")</label></p>
 EOF
 sec_end
 
@@ -97,10 +115,16 @@ cat << EOF
 EOF
 sec_end
 
+[ "$XMAIL_SSLSUPPORT" == 1 -o "$XMAIL_PHPXMAIL" != 1 ] && (
 sec_begin '$(lang de:"Tipps zur Konfiguration" en:"Hints for configuration")'
+[ "$XMAIL_SSLSUPPORT" == 1 ] &&
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Zur Aktivierung von SSL musst du das SSL Zertifikat und den entsprechenden privaten SSL Schl&uuml;ssel in das oben angegebene Verzeichnis f&uuml;r XMail kopieren: Das Zertifikat muss als Datei server.cert und der private Schl&uuml;ssen als Datei server.key gespeichert werden. Beachte bitte, dass XMail das Recht haben muss, diese Dateien zu lesen (wenn du oben ausgew&auml;hlt hast, dass XMail mit einer unpriviligierten Benutzer-ID startet, m&uuml;ssen die Dateien lesbar f&uuml;r den Benutzer xmail oder die Gruppe xmail sein)." en:"To activate SSL you have to provide the SSL certificate and the corresponding private key which have to be copied into the above given XMail directory. The certificate must be saved in the file server.cert and the key in the file server.key. Please ensure that XMail has the permissions to read those files (if you selected to start XMail with an unprivileged ID, these files must be readable by the user xmail or group xmail).")</p>
 <hr>
-<p style="font-size:10px;">$(lang de:"F&uuml;r XMail existiert ein PHP Webfrontend welches all Konfigurationsparameter, die Administration von Email-Domains und Benutzern beherrscht: <a href=http://phpxmail.sourceforge.net>PHPXmail</a>. Um dieses Frontend auf der Fritz!Box zu verwenden, musst du folgende Schritte durchf&uuml;hren:<br/>1. Installiere XMail (wenn du diese Seite liest, dann hast du diesen Punkt bereits geschafft).<br/>2. Aktiviere im XMail Freetz-Webfrontend den unverschl&uuml;sselten Admin-Zugang.<br/>3. In der crtlaccounts.tab XMail Konfigurationsdatei einen Account eintragen (siehe XMail readme.txt).<br/>4. Installiere PHP und lighttpd (es muss mod_fastcgi f&uuml;r lighttpd gew&auml;hlt werden, damit PHP funktioniert).<br/>5. Konfiguriere lighttpd und aktiviere PHP mittels dem Freetz-Webfrontend.<br/>6. Kopiere den Inhalt des PHPXmail Zip-Archivs in ein Verzeichnis innerhalb des lighttpd Dokumentenverzeichnisses.<br/>7. Starte einen Webbrowser und lade die URL deines lighttpd Servers, Verzeichnis des PHPXmail Frontends.<br/>8. Trage im erscheinenden Webfrontend im Namen localhost, als IP \"127.0.0.1\", und im Benutzernamen- und Passwordfeld die Benutzerdaten ein, welche du f&uuml;r die ctrlaccounts.tab Datei verwendet hast und best&auml;tige diese Konfiguration.<br/>9. Nun klicke auf login im PHPXmail Webfrontend und Benutze die gleichen Benutzerdaten wieder.<br/>10. Zugang zu allen XMail Konfigurationsparametern ist nun m&ouml;glich - es ist kein Neustart von XMail nach &Auml;nderungen notwendig." en:"TBD - see German part")</p>
+EOF
+[ "$XMAIL_PHPXMAIL" != 1 ] &&
+cat << EOF
+<p style="font-size:10px;">$(lang de:"F&uuml;r XMail existiert ein PHP Webfrontend, welches alle Konfigurationsparameter, die Administration von Email-Domains und Benutzern beherrscht: <a href=http://phpxmail.sourceforge.net>PHPXmail</a>. Um dieses Frontend auf der Fritz!Box zu verwenden, musst du folgende Schritte durchf&uuml;hren:<br/>1. Installiere XMail (wenn du diese Seite liest, dann hast du diesen Punkt bereits geschafft).<br/>2. Aktiviere im XMail Freetz-Webfrontend den unverschl&uuml;sselten Admin-Zugang.<br/>3. In der crtlaccounts.tab XMail Konfigurationsdatei einen Account eintragen (siehe XMail readme.txt).<br/>4. Installiere PHP und lighttpd (es muss mod_fastcgi f&uuml;r lighttpd gew&auml;hlt werden, damit PHP funktioniert).<br/>5. Konfiguriere lighttpd und aktiviere PHP mittels dem Freetz-Webfrontend.<br/>6. Kopiere den Inhalt des PHPXmail Zip-Archivs in ein Verzeichnis innerhalb des lighttpd Dokumentenverzeichnisses.<br/>7. Starte einen Webbrowser und lade die URL deines lighttpd Servers, Verzeichnis des PHPXmail Frontends.<br/>8. Trage im erscheinenden Webfrontend im Namen localhost, als IP \"127.0.0.1\", und im Benutzernamen- und Passwordfeld die Benutzerdaten ein, welche du f&uuml;r die ctrlaccounts.tab Datei verwendet hast und best&auml;tige diese Konfiguration.<br/>9. Nun klicke auf login im PHPXmail Webfrontend und Benutze die gleichen Benutzerdaten wieder.<br/>10. Zugang zu allen XMail Konfigurationsparametern ist nun m&ouml;glich - es ist kein Neustart von XMail nach &Auml;nderungen notwendig." en:"TBD - see German part")</p>
 EOF
 sec_end
+)

@@ -1,0 +1,10 @@
+config FREETZ_PACKAGE_PHPXMAIL
+	bool "PHPXmail 1.5"
+	default n
+	select FREETZ_PACKAGE_PHP
+	select FREETZ_PACKAGE_PHP_WRAPPER_SCRIPT
+	help
+		Web configuration interface for XMail from the phpxmail team. Accessible
+		via the URL http://fritz.box:84, it enables you to configure your XMail
+		server locally on the fritz.box or any other remote host. This GUI needs
+		PHP, so it is automaticaly selected. Used web server is busybox httpd.

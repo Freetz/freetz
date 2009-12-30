@@ -39,7 +39,7 @@ if grep -q "FREETZ_PACKAGE_LIGHTTPD=y" "$1" >/dev/null 2>&1; then
 
 		# convert .config, add modules calculated above, remove zlib/no_mod entries
 		sed -i -r \
-			-e 's,(FREETZ_PACKAGE_LIGHTTPD=y.*)$,\1\n'"${entries_to_add}"',g' \
+			-e 's,^(FREETZ_PACKAGE_LIGHTTPD=y.*)$,\1\n'"${entries_to_add}"',g' \
 			-e 's,^.*FREETZ_PACKAGE_LIGHTTPD_WITH_ZLIB.*$,,g' \
 			-e 's,^.*FREETZ_PACKAGE_LIGHTTPD_NO_MOD.*$,,g' \
 			"$1"

@@ -11,6 +11,14 @@ config FREETZ_PACKAGE_PHP
 		thrown in. The goal of the language is to allow web developers to write
 		dynamically generated pages quickly.
 
+config FREETZ_PACKAGE_PHP_WRAPPER_SCRIPT
+	bool "wrapper script needed for use with busybox httpd"
+	depends on FREETZ_PACKAGE_PHP
+	default n
+	help
+		This option enables the use of PHP for busybox httpd, which is already
+		included in freetz
+
 config FREETZ_PACKAGE_PHP_WITH_GD
 	bool "build with GD support"
 	depends on FREETZ_PACKAGE_PHP
