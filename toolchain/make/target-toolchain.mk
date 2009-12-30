@@ -23,9 +23,10 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@/usr/lib/pkgconfig
 	@mkdir -p $@/target-utils
 
-target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) $(TARGET_TOOLCHAIN_SYMLINK) \
-					kernel-configured uclibc-configured \
-					$(TARGET_TOOLCHAIN)
+target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
+			$(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE) \
+			kernel-configured uclibc-configured \
+			$(TARGET_TOOLCHAIN)
 	
 target-toolchain-source: $(TARGET_TOOLCHAIN_DIR) \
 	$(UCLIBC_DIR)/.unpacked \
