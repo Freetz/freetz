@@ -26,12 +26,12 @@ for i in bin/pause bin/reinit_jffs2 bin/usbhostchanged etc/hotplug \
 done
 
 echo2 "patching webmenu"
-#if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
-#	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170_labor_dsl.patch"
-#else
-#	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
-#fi
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
+if [ "$FREETZ_TYPE_LABOR_DSL" == "y" ];then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170_labor_dsl.patch"
+else
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
+fi
+#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
 
 echo2 "moving default config dir, creating tcom and congstar symlinks"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
