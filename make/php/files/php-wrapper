@@ -1,7 +1,7 @@
 #!/bin/sh
-#busybox nhttpd needs that "Content-type: text/html" is at first line,
-#so we make a trick. If anyone has a better idea -> feel free to edit.
+#busybox nhttpd needs this, i can't explain why. Maybe DOS linefeed or,
+#something like this. If anyone has a better idea -> feel free to edit.
 
-content="$(/usr/bin/php-cgi $*)"
-echo "$content"|grep -e "^Content-type: .*"
-echo "$content"|grep -ve "^Content-type: .*"
+cat << _EOF_
+$(php-cgi $*)
+_EOF_
