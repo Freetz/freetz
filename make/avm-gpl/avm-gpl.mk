@@ -1,6 +1,6 @@
 AVM_SITE__AVM:=ftp://ftp.avm.de/develper/opensrc
 AVM_SITE__AVM_3270:=ftp://ftp.avm.de/fritz.box/fritzbox.wlan_3270/x_misc/opensrc
-AVM_SITE__AVM_7170:=ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/x_misc/opensrc 
+AVM_SITE__AVM_7170:=ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/x_misc/opensrc
 AVM_SITE__AVM_7270:=ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/x_misc/opensrc
 AVM_SITE__TCOM:=http://www.t-home.de/dlp/eki/downloads/Speedport
 
