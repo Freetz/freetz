@@ -16,9 +16,9 @@ fi
 
 # load ext2 and ext3 modules
 modsed '/modprobe vfat/a \
-\t\tmodprobe ext2 \
-\t\tmodprobe ext3 \
-\t\treiserfs' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
+modprobe ext2 \
+modprobe ext3 \
+modprobe reiserfs' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 
 # replace rm -rf $dir with rmdir $dir
 sed -i 's/rm -rf /rmdir /g' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage" \
