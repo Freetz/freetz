@@ -522,6 +522,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	for i in $oems; do
 		if [ "$(eval "echo \"\$FREETZ_REMOVE_BRANDING_${i}\"")" == "y" ]; then
 			[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo -n " $i"
+			# delete webinterface symlinks otherwise user can choose branding in status.cgi
+			rm -rf "${FILESYSTEM_MOD_DIR}/usr/www/${i}"
 			find ${FILESYSTEM_MOD_DIR}/etc/default.* -name "*${i}*" | xargs rm -rf
 			oem_removed=1
 		else
