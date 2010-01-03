@@ -108,6 +108,17 @@ config FREETZ_BUSYBOX_START_STOP_DAEMON
 		This feature adds about 1.9 KB to BusyBox.
 		The 'Support additional arguments' sub-feature is automatically selected.
 
+config FREETZ_BUSYBOX_REALPATH
+	bool "realpath"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default y
+	help
+		Include the 'realpath' tool in busybox
+
+		Return the canonicalized absolute pathname. Used by Freetz script wrap_editors.
+
+		This feature adds about 2 KB to BusyBox.
+
 config FREETZ_BUSYBOX_WGET
 	bool "wget"
 	depends on FREETZ_REPLACE_BUSYBOX

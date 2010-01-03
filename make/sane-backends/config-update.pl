@@ -83,7 +83,7 @@ EOF
 	foreach my $backend (@backends) {
 		print $out <<EOF;
 
-\$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend
+\$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend
 ifeq (\$(strip \$(FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend)),y)
 SANE_BACKENDS+=$backend
 EOF
