@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <sys/socket.h>
 //#include <sys/uio.h>
+#include <sys/un.h>
 #include <wchar.h>
 
 #include <stddef.h>
@@ -27,11 +28,15 @@
 #define TEXT "This is the test message -- "
 
 #include <netinet/in.h>
+#include <netdb.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
 
 #include <pwd.h>
-#include <errno.h>
+
+#include <string.h>
+#include <strings.h>
+//#include <snprintf.h>
 
 struct cookiedata {
     __off64_t pos;
@@ -238,5 +243,50 @@ int main(int argc, char** argv) {
 	    int error = getpwuid_r(0, &pwd, (char*)&buffer, sizeof(buffer), &pwdp);
 	    int code = (errno != ENOSYS);
 	    printf("ac_cv_func_getpwuid_r=%s\n", code ? "yes" : "no");
+	}
+
+	{
+	    int sfd = socket(AF_UNIX, SOCK_STREAM, 0);
+	    int code = (sfd >= 0);
+	    if (code)
+		close(sfd);
+	    printf("wi_cv_unix_domain_sockets=%s\n", code ? "yes" : "no");
+	}
+
+	{
+	    struct hostent *hp1, *hp2;
+	    int code = 0;
+	    hp1 = gethostbyname("ftp.ncftp.com");
+	    if (hp1 == (struct hostent *)0) {
+		hp2 = gethostbyname("www.ibm.com");
+		if (hp2 == (struct hostent *)0)
+		    code = 1;
+	    }
+	    printf("wi_cv_look_for_resolv=%s\n", code ? "yes" : "no");
+	}
+
+	{
+	    char s[16];
+	    int i, result, code;
+	
+	    for (i=0; i<(int)(sizeof(s)/sizeof(char)); i++)
+		s[i] = 'x';
+	    result = (int)snprintf(s + 1, 10, "%s %s!", "hello", "world");
+	    if (s[10] != '\0')
+		code = 1; /* did not force termination! */
+	    else if (s[11] != 'x')
+		code = 2; /* overflow! */
+	    else if (s[0] != 'x')
+		code = 3; /* underflow! */
+	    else
+		code = 0;
+
+	    printf("wi_cv_snprintf_terminates=%s\n", (code==0) ? "yes" : "no");
+	}
+
+	{
+	    char s[8];
+	    int result = (int)snprintf(s, sizeof(s) - 1, "%d", 22);
+	    printf("wi_cv_snprintf_returns_ptr=%s\n", (result == 2) ? "no" : "yes");
 	}
 }
