@@ -4,6 +4,26 @@ DAEMON=authorized-keys
 
 . /etc/init.d/modlibrc
 
+# BEGIN compat  
+# TODO: remove in one of the next releases, because it is obsolete  
+# and only needed for auto-conversion
+convert_compat()  
+{
+	obs_auth_file=/tmp/flash/dropbear/authorized_keys
+	if [ ! -e $obs_auth_file ]; then
+		return
+	fi
+	
+	echo "Obsolete authorized keys file detected, converting..." 
+	
+	mkdir -p $dir
+	chown root $dir
+	chmod 700 $dir
+	mv -f $obs_auth_file $dir
+	modsave flash
+}
+# END compat
+
 case "$1" in
 	""|load)
 		deffile="/mod/etc/default.$DAEMON/$DAEMON.def"
@@ -13,23 +33,13 @@ case "$1" in
 
 		echo -n "Setting up SSH authorized_keys for root..."
 		dir="/tmp/flash/authorized_keys_root"
-		if [ -e ~root/.ssh ]; then
-			tmp="existent."
-			if [ $(basename $(realpath ~root/.ssh)) != $(basename $dir) ]; then
-				mv ~root/.ssh ~root/.ssh.orig
-		                mkdir -p $dir
-		                chown root $dir
-	        	        chmod 700 $dir
-				cp -f ~root/.ssh.orig/authorized_keys $dir
-				modsave flash
-				ln -s $dir ~root/.ssh
-				tmp="initialized."
-			fi
-			echo $tmp
-		else
-			ln -s $dir ~root/.ssh
-			echo "initialized."
-		fi
+
+		# BEGIN compat
+		convert_compat
+		# END compat
+
+		[ ! -e ~root/.ssh ] && ln -s $dir ~root/.ssh
+		echo "initialized."
 		;;
 	unload)
 		modunreg file "ssh_$DAEMON"

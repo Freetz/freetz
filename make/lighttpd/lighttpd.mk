@@ -21,7 +21,7 @@ $(PKG)_MODULES_ALL := \
 	trigger_b4_dl \
 	userdir usertrack \
 	webdav
-$(PKG)_MODULES := $(strip $(foreach module,$($(PKG)_MODULES_ALL),$(if $(FREETZ_PACKAGE_$(PKG)_MOD_$(shell echo $(module) | tr [a-z] [A-Z])),$(module))))
+$(PKG)_MODULES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL),MOD)
 $(PKG)_MODULES_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_DIR)/src/.libs/mod_%.so)
 $(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/mod_%.so)
 

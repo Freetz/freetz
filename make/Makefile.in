@@ -150,6 +150,25 @@ endif
 # macro names containing _INT are for internal use only and should not be called outside of this file
 # For details of the required targets, see the documentation in README.Makefiles
 
+TO_UPPER_CASE__INT = tr '[a-z\-]' '[A-Z_]'
+
+# For each SUFFIX from a given list of menuconfig-option-suffixes evaluates FREETZ_PACKAGE_$(PKG)_$(OPTIONAL_INFIX)_$(SUFFIX) variable
+# and it case it evaluates to non-empty value (i.e. selected) appends the suffix to the list being returned.
+# $(1) - list of package suboptions (suffixes) to be evaluated
+# $(2) - optional infix
+define PKG_SELECTED_SUBOPTIONS
+$(strip \
+	$(foreach suboption, $(1), \
+		$(if \
+			$(or \
+				$(FREETZ_PACKAGE_$(PKG)_$(if $(2),$(2)_,)$(suboption)), \
+				$(FREETZ_PACKAGE_$(PKG)_$(if $(2),$(2)_,)$(shell echo $(suboption) | $(TO_UPPER_CASE__INT))) \
+			), \
+			$(suboption) \
+		) \
+	) \
+)
+endef
 
 # PKG_EDIT_CONFIG
 # update a config file
@@ -245,7 +264,7 @@ PKG_MAKEFILE:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 PKG_BASENAME:=$(basename $(notdir $(PKG_MAKEFILE)))
 $(if $(strip $1),,$(error Undefined version for PKG_INIT in $(PKG_MAKEFILE)))
 pkg:=$(if $(strip $2),$(strip $2),$(PKG_BASENAME))
-PKG:=$(if $(strip $3),$(strip $3),$(shell echo "$(pkg)" | tr '[a-z\-]' '[A-Z_]'))
+PKG:=$(if $(strip $3),$(strip $3),$(shell echo "$(pkg)" | $(TO_UPPER_CASE__INT)))
 ALL_PACKAGES+=$(pkg)
 #
 $(PKG)_VERSION:=$(strip $1)

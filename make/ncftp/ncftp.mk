@@ -5,7 +5,7 @@ $(PKG)_SITE:=ftp://ftp.ncftp.com/ncftp/
 
 $(PKG)_BINARIES_ALL := ncftp ncftpget ncftpput ncftpbatch ncftpls
 # ncftp is always included
-$(PKG)_BINARIES := ncftp $(strip $(foreach binary,$($(PKG)_BINARIES_ALL),$(if $(FREETZ_PACKAGE_$(PKG)_WITH_$(shell echo $(binary) | tr [a-z] [A-Z])),$(binary))))
+$(PKG)_BINARIES := ncftp $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL),WITH)
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/bin/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
