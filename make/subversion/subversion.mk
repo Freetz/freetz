@@ -22,7 +22,7 @@ $(PKG)_LIBS_TARGET_DIR := $(SUBVERSION_LIBNAMES_LONG:%=$($(PKG)_DEST_DIR)/usr/li
 
 # Executables
 $(PKG)_BINARIES_ALL := svn svnadmin svndumpfilter svnlook svnserve svnsync svnversion
-$(PKG)_BINARIES := $(strip $(foreach binary,$($(PKG)_BINARIES_ALL),$(if $(FREETZ_PACKAGE_$(PKG)_$(shell echo $(binary) | tr [a-z] [A-Z])),$(binary))))
+$(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $(join $(SUBVERSION_BINARIES:%=$($(PKG)_DIR)/subversion/%/$(SUBVERSION_BINARY_BUILD_SUBDIR)/),$(SUBVERSION_BINARIES))
 $(PKG)_BINARIES_STAGING_DIR := $(SUBVERSION_BINARIES:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/%)
 $(PKG)_BINARIES_TARGET_DIR := $(SUBVERSION_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)

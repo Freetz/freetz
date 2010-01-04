@@ -4,7 +4,7 @@ $(PKG)_SOURCE_MD5:=599dc4cc65a07ee868cf92a667a913d2
 $(PKG)_SITE:=ftp://ftp.foolabs.com/pub/xpdf/
 
 $(PKG)_BINARIES_ALL := pdftops pdftotext pdfinfo pdffonts pdfimages
-$(PKG)_BINARIES := $(foreach binary,$($(PKG)_BINARIES_ALL),$(if $(FREETZ_$(PKG)_$(binary)),$(binary)))
+$(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $(addprefix $($(PKG)_DIR)/xpdf/,$($(PKG)_BINARIES))
 $(PKG)_BINARIES_TARGET_DIR := $(addprefix $($(PKG)_DEST_DIR)/usr/bin/,$($(PKG)_BINARIES))
 $(PKG)_LIBS_BUILD_DIR := $($(PKG)_DIR)/xpdf/libxpdf.so.1
