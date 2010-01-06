@@ -21,8 +21,8 @@ configure() {
 	if [ "$XMAIL_UNPRIV" = "yes" ]; then
 		modlib_addgroup xmail
 		modlib_adduser xmail -G xmail -s /bin/false -H -D -g "XMail account"
-		chmod 750 $XMAIL_MAILLOCATION
-		chmod 770 /mod/etc/$DAEMON
+		chmod 700 $XMAIL_MAILLOCATION
+		chmod 700 /mod/etc/$DAEMON
 		chown xmail:xmail /mod/etc/$DAEMON
 
 		mkdir /var/run/$DAEMON
@@ -34,19 +34,16 @@ configure() {
 		tar -C $XMAIL_MAILLOCATION -xf /etc/default.$DAEMON/default_config/default_config.tar
 		echo 'done.'
 	else
-		echo ./bin/* >/tmp/tar.nofiles
-		echo ./domains/* >>/tmp/tar.nofiles
 		for i in $(tar -tf /etc/default.$DAEMON/default_config/default_config.tar); do
 			[ "${i:0:2}" == "./" ] && ii=${i:2}
-			[ ! -z "$ii" ] && [ ! -e "$XMAIL_MAILLOCATION/$ii" ] && tar -C $XMAIL_MAILLOCATION -X \
-				/tmp/tar.nofiles -xf /etc/default.$DAEMON/default_config/default_config.tar $i
+			[ ! -z "$ii" ] && [ ! -e "$XMAIL_MAILLOCATION/$ii" ] && tar -C $XMAIL_MAILLOCATION \
+				-xf /etc/default.$DAEMON/default_config/default_config.tar $i
 		done
-		rm /tmp/tar.nofiles
 	fi
 	[ -e "$XMAIL_MAILLOCATION/tmp" ] || mkdir $XMAIL_MAILLOCATION/tmp
 	ln -s $XMAIL_MAILLOCATION/* /mod/etc/$DAEMON/
 	ln -sf /usr/lib/MailRoot/bin /mod/etc/$DAEMON/
-	[ "$XMAIL_UNPRIV" = "yes" ] && chown -R xmail:xmail $XMAIL_MAILLOCATION
+	[ "$XMAIL_UNPRIV" = "yes" ] && chown -hR xmail:xmail $XMAIL_MAILLOCATION
 
 	[ ! -z "$XMAIL_SPECIAL" ] && CMDOPTS="$CMDOPTS $XMAIL_SPECIAL"
 	if [ "$XMAIL_POP3" = "yes" ]; then
