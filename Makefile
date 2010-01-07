@@ -60,6 +60,7 @@ CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 
 export FW_IMAGES_DIR
+export FREETZ_BASE_DIR
 
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)
@@ -72,6 +73,16 @@ ifeq ($(shell MWW=root/usr/mww; \
 	&& echo y\
 ),y)
 $(error File permissions or links are wrong! Please unpack Freetz on a filesystem with Unix-like permissions)
+endif
+
+# Folder root/ needs 755 permissions
+ifneq ($(shell stat -c %a root),755)
+$(error Please unpack again with umask set to 0022)
+endif
+
+# We need umask 0022
+ifneq ($(shell umask),0022)
+$(error Please run "umask 0022", it is now $(shell umask))
 endif
 
 # We don't like cygwin
@@ -460,7 +471,8 @@ check-builddir-version:
 	@if [ 	-e .config -a \
 		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
 		.svn -nt .config ]; then \
-		echo "ERROR: You have updated to newer svn version since last modifying your config. You have to run 'make oldconfig' or 'make menuconfig' once before building again."; \
+		echo "ERROR: You have updated to newer svn version since last modifying your config. You"; \
+		echo "       have to run 'make oldconfig' or 'make menuconfig' once before building again."; \
 		exit 3; \
 	fi; 
 	@echo "$(BUILD_DIR_VERSION)" > .lastbuild-version

@@ -326,7 +326,7 @@ endef
 # $2: directory to apply the patches to
 # $3: optional name for library patches
 define PKG_PATCH__INT
-	shopt -s nullglob; for i in $(strip $1)/*$(strip $3).patch; do \
+	set -e; shopt -s nullglob; for i in $(strip $1)/*$(strip $3).patch; do \
 		$(PATCH_TOOL) $(strip $2) $$$$i; \
 	done
 endef

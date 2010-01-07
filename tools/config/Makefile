@@ -24,7 +24,7 @@
 
 # Select the compiler needed to build binaries for your development system
 HOSTCC    = gcc
-HOSTCFLAGS= -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
+HOSTCFLAGS= -w -Wstrict-prototypes -O2 -fomit-frame-pointer
 # Ensure consistent sort order, 'gcc -print-search-dirs' behavior, etc.
 LC_ALL:= C
 

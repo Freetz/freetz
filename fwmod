@@ -520,7 +520,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	ln -sf /usr/www/cgi-bin/freetz_status "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_status"
-	ln -sf /usr/www/cgi-bin/freetz_wol "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_wol"
+	[ "$FREETZ_PACKAGE_WOL_CGI" == "y" ] && ln -sf /usr/www/cgi-bin/freetz_wol "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_wol"
 	
 	for i in $oems; do
 		if [ "$(eval "echo \"\$FREETZ_REMOVE_BRANDING_${i}\"")" == "y" ]; then
