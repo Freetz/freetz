@@ -49,8 +49,12 @@ start() {
 	#create new databeses
 	for ifname in $VNSTAT_INTERFACES; do
 		vnstat -u -i $ifname >/dev/null
+		if [ $? -ne 0 ]; then
+			echo 'failed creating database-file:'
+			vnstat -u -i $ifname
+			exit $?
+        fi
 	done
-
 	
 	#webserver
 	kill -9 "`cat $HTTPD_PID_VNS 2>/dev/null`" 2>/dev/null
