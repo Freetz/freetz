@@ -15,24 +15,22 @@ OPENSSL_NO_CIPHERS:= no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime \
 OPENSSL_OPTIONS:= shared no-ec no-err no-fips no-hw no-engines \
 	no-sse2 no-perlasm
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -e 's/FREETZ_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' Configure;
+$(PKG)_CONFIGURE_PRE_CMDS += ln -s Configure configure;
+
+$(PKG)_CONFIGURE_DEFOPTS := n
+$(PKG)_CONFIGURE_ENV += $(TARGET_CONFIGURE_ENV)
+$(PKG)_CONFIGURE_OPTIONS += linux-freetz
+$(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
+$(PKG)_CONFIGURE_OPTIONS += --openssldir=/mod/etc/ssl
+$(PKG)_CONFIGURE_OPTIONS += -DOPENSSL_SMALL_FOOTPRINT
+$(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_NO_CIPHERS)
+$(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_OPTIONS)
+#$(PKG)_CONFIGURE_OPTIONS += -ldl
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	$(SED) -i -e 's/FREETZ_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
-	( cd $(OPENSSL_DIR); \
-		$(TARGET_CONFIGURE_ENV) \
-		./Configure linux-freetz \
-		--prefix=/usr \
-		--openssldir=/mod/etc/ssl \
-		-I$(TARGET_TOOLCHAIN_STAGING_DIR)/include \
-		-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib \
-		-ldl \
-		-DOPENSSL_SMALL_FOOTPRINT \
-		$(OPENSSL_NO_CIPHERS) \
-		$(OPENSSL_OPTIONS) \
-	);
-	touch $@
+$(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(OPENSSL_DIR) \
