@@ -95,6 +95,10 @@ cat << EOF
 <p><input type="hidden" name="ctrls" value="no">
 <input id="a6" type="checkbox" name="ctrls" value="yes"$ctrls_chk><label for="a6"> $(lang de:"SSL Admin Zugang aktivieren" en:"Activate SSL admin access")</label></p>
 EOF
+[ -e $XMAIL_MAILLOCATION/ctrlaccounts.tab ] && [ -z "$(sed -ne 's/ *//g;/\".*\"\t\".*\"/p' $XMAIL_MAILLOCATION/ctrlaccounts.tab)" ] &&
+cat << EOF
+<p style="font-size:10px;">$(lang de:"Momentan sind keine XMail Administratoren angelegt. Wenn Sie jetzt den Standard-Administrator" en:"In the moment there are no XMail administrators configured. If you want to create the standard administrator") <b>admin</b> $(lang de:"anlegen wollen, m&uuml;ssen Sie das Passwort f&uuml;r die freetz Konfigurations-Webseite neu setzten. Klicken Sie" en:"now, than you must set the password for the freetz web configuration interface again. Click") <b><a style='font-size:14px;' href=/cgi-bin/passwd.cgi>$(lang de:"hier" en:"here")</a></b> $(lang de:"um das Passwort jetzt neu zu setzen." en:"to set the password now.")</p>
+EOF
 sec_end
 
 sec_begin '$(lang de:"Server Logging" en:"Server logging")'

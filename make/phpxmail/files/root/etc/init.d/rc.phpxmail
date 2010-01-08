@@ -11,11 +11,6 @@ config() {
 	[ ! -d /tmp/flash/${DAEMON} ] && mkdir /tmp/flash/${DAEMON}/ && mod_save=true
 	[ ! -e /tmp/flash/${DAEMON}/config.php ] && cp /mod/etc/default.${DAEMON}/config.php.default \
 		/tmp/flash/${DAEMON}/config.php && mod_save=true
-	if [ -d /tmp/flash/php/ -a ! -e /tmp/flash/php/$DAEMON.ini ]; then
-		echo '[PHP]' >/tmp/flash/php/$DAEMON.ini
-		echo 'cgi.force_redirect = 0' >>/tmp/flash/php/$DAEMON.ini
-		modsave=true
-	fi
 	[ "$mod_save" = "true" ] && modsave flash >/dev/null
 }
 

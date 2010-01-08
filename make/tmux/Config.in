@@ -1,0 +1,17 @@
+config FREETZ_PACKAGE_TMUX
+	bool "tmux 1.1 (binary only)"
+	select FREETZ_LIB_libcrypt if ! FREETZ_PACKAGE_TMUX_STATIC
+	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_TMUX_STATIC
+	select FREETZ_LIB_libncurses if ! FREETZ_PACKAGE_TMUX_STATIC
+	default n
+	help
+		tmux, a BSD-licensed alternative to GNU screen.
+		Uses ncurses.
+
+config FREETZ_PACKAGE_TMUX_STATIC
+	bool "Statically link tmux binary"
+	depends on FREETZ_PACKAGE_TMUX
+	default n
+	help
+		TMUX will be linked statically to run without libraries
+

@@ -1,5 +1,7 @@
 #!/bin/sh
 
 echo "/:$MOD_HTTPD_USER:$MOD_HTTPD_PASSWD"
-[ -x "$(which php-wrapper)" -a -x "$(which php-cgi)" ] && \
-	echo '*.php:/usr/bin/php-wrapper'
+local php_cgi="$(which php-cgi)"
+if [ -x "${php_cgi}" ]; then
+	echo "*.php:${php_cgi}"
+fi
