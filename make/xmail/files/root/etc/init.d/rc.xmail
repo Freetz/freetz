@@ -83,12 +83,11 @@ configure() {
 }
 
 stop () {
-	echo -n "Stopping $DAEMON_LONG_NAME..."
 	if [ -s /var/run/rc.$DAEMON.pid ]; then
-		exitval=255
 		kill $(cat /var/run/rc.$DAEMON.pid) > /dev/null 2>&1
 		exitval=$?
-		[ "$XMAIL_UNPRIV" = "yes" ] && rm -f /var/run/rc.$DAEMON.pid
+		rm -f /var/run/rc.$DAEMON.pid
+		rm -f /var/run/XMail.pid
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
 		else
