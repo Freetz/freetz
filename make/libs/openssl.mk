@@ -19,7 +19,6 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -e 's/FREETZ_MOD_OPTIMIZATION_FLAGS/$(TAR
 $(PKG)_CONFIGURE_PRE_CMDS += ln -s Configure configure;
 
 $(PKG)_CONFIGURE_DEFOPTS := n
-$(PKG)_CONFIGURE_ENV += $(TARGET_CONFIGURE_ENV)
 $(PKG)_CONFIGURE_OPTIONS += linux-freetz
 $(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
 $(PKG)_CONFIGURE_OPTIONS += --openssldir=/mod/etc/ssl

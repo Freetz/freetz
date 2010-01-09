@@ -1,0 +1,13 @@
+--- Configure.orig	2010-01-09 21:53:41.000000000 +0000
++++ Configure	2010-01-09 21:57:25.000000000 +0000
+@@ -846,6 +846,10 @@
+ 				{
+ 				$baseaddr="$1";
+ 				}
++			elsif (/^--quiet$/)
++				{
++				$quiet=1
++				}
+ 			else
+ 				{
+ 				print STDERR $usage;

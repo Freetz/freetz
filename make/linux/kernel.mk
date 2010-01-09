@@ -29,16 +29,17 @@ endif
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL_FREETZ_CONFIG_FILE) \
+$(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/kernel/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL_FREETZ_CONFIG_FILE) \
 				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
+	@echo -n "preparing... "
 	rm -rf $(KERNEL_DIR)
 	mkdir -p $(KERNEL_DIR)
-	@KERNEL_SOURCE_PATH=`find $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION) -maxdepth 6 -wholename "*kernel/linux-2.6.??.?" -type d`/../..; \
+	@KERNEL_SOURCE_PATH=`find $(SOURCE_DIR)/kernel/avm-gpl-$(AVM_VERSION) -maxdepth 6 -wholename "*kernel/linux-2.6.??.?" -type d`; \
 	if test -z $$KERNEL_SOURCE_PATH; then \
-		echo KERNEL_SOURCE_PATH is empty, stop; \
-		exit 1; \
+		$(call ERROR,1,KERNEL_SOURCE_PATH is empty) \
 	fi; \
-	echo Copying $$KERNEL_SOURCE_PATH $(KERNEL_BUILD_DIR); \
+	KERNEL_SOURCE_PATH+="/../.."; \
+	$(ECHO) Copying $$KERNEL_SOURCE_PATH to $(KERNEL_BUILD_DIR); \
 	cp -a $$KERNEL_SOURCE_PATH $(KERNEL_BUILD_DIR)
 	@set -e; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
@@ -50,26 +51,26 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL
 	@for i in $(KERNEL_LINKING_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; then \
-			echo Linking  .../include/linux/$${i##*\/linux_}; \
+			$(ECHO) Linking  .../include/linux/$${i##*\/linux_}; \
 			ln -sf ../../$$i $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; \
 		fi \
 	done
 	@if test -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/avm_net_trace.h -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; then \
-			echo Linking  .../include/linux/avm_net_trace.h; \
+			$(ECHO) Linking  .../include/linux/avm_net_trace.h; \
 			ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
 				$(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; \
 	fi
 	@for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile.26 -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
-			echo Linking  .../$$i/Makefile; \
+			$(ECHO) Linking  .../$$i/Makefile; \
 			ln -sf Makefile.26 $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
 		fi \
 	done
 	@for i in $(KERNEL_DUMMY_DIRS); do \
 		if test ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
-			echo Creating .../$$i/Makefile; \
+			$(ECHO) Creating .../$$i/Makefile; \
 			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$$i; \
 			test -h $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile && \
 				rm $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
@@ -78,7 +79,7 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL
 	done
 	@for i in $(KERNEL_OTHER_FILES); do \
 		if test ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i ; then \
-			echo Creating  .../$$i; \
+			$(ECHO) Creating  .../$$i; \
 			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$${i%\/*}; \
 			test -h $(KERNEL_BUILD_ROOT_DIR)/$$i && \
 				rm $(KERNEL_BUILD_ROOT_DIR)/$$i; \
@@ -108,6 +109,7 @@ $(KERNEL_DIR)/.depend_done:  $(KERNEL_DIR)/.configured
 	touch $@
 
 $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma2eva
+	@echo -n "building kernel image... "
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		ARCH=$(KERNEL_ARCH) \
@@ -127,6 +129,7 @@ $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE
 	touch -c $@
 
 $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
+	@echo -n "building modules... "
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
@@ -152,7 +155,13 @@ $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_DIR)/.modules-$(KERNEL
 		. | tar -xf - -C $(KERNEL_MODULES_DIR)
 	touch $@
 
-kernel-precompiled: $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT)
+kernel-pre-echo:
+	@echo -n "---> kernel: "
+
+kernel-post-echo:
+	@echo "done."
+
+kernel-precompiled: kernel-pre-echo $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT) kernel-post-echo
 
 kernel-configured: $(KERNEL_DIR)/.depend_done
 

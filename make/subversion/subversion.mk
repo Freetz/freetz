@@ -112,15 +112,15 @@ ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	getsvnlibslist() { local ret=""; for l in `getsvnlibs $$bins \`[ -n "$$libs" ] && (echo "$$libs" | sed -e 's| | '"$(SUBVERSION_DEST_LIBDIR)/"'|g')\``; do ret="$$ret $$l"; done; echo -n "$$ret"; }; \
 	\
 	bins="$(SUBVERSION_BINARIES_TARGET_DIR)"; libs=""; \
-	echo -n "Determining required svn-libraries: "; \
+	$(ECHO) -n "Determining required svn-libraries: "; \
 	libs=`getsvnlibslist`; previouslibs=""; \
 	while [ "$$libs" != "$$previouslibs" ]; do \
 		previouslibs="$$libs"; libs=`getsvnlibslist`; \
 	done; \
-	echo $$libs; \
+	$(ECHO) $$libs; \
 	for l in $(SUBVERSION_DEST_LIBDIR)/libsvn*; do \
 		lbasename=`echo "$$l" | sed -r -e 's|'"$(SUBVERSION_DEST_LIBDIR)/"'(libsvn[^.]+)[.]so.*|\1|g'`; \
-		(echo $$libs | grep -q "$$lbasename" >/dev/null 2>&1) || (echo "Removing unneeded svn-library: $$l"; rm -f $$l) \
+		($(ECHO) $$libs | grep -q "$$lbasename" >/dev/null 2>&1) || ($(ECHO) "Removing unneeded svn-library: $$l"; rm -f $$l) \
 	done
 endif
 
