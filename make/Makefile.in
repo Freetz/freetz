@@ -1,9 +1,17 @@
 MAKE1=make
 MAKE=make -j$(FREETZ_JLEVEL)
-HOSTCC:=gcc
+MAKE_VARS=PATH=$(TARGET_PATH) $(FREETZ_LD_RUN_PATH)
 
-SUBMAKE1=PATH=$(TARGET_PATH) $(FREETZ_LD_RUN_PATH) $(MAKE1)
-SUBMAKE=PATH=$(TARGET_PATH) $(FREETZ_LD_RUN_PATH) $(MAKE)
+BUILD_FAIL_MSG := Build failed.
+ifneq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
+BUILD_FAIL_MSG += Please re-run make with verbose level set to 2 to see what's going on.
+endif
+
+SUBMAKE1=cmd() { $(SILENT) $(MAKE_VARS) $(MAKE1) $(QUIET) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; cmd
+SUBMAKE=cmd() { $(SILENT) $(MAKE_VARS) $(MAKE) $(QUIET) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; cmd
+CONFIGURE=conf_cmd() { $(SILENT) ./configure $(QUIET) "$$$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } };
+
+HOSTCC:=gcc
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	-e 's/sparc.*/sparc/' \
@@ -288,6 +296,8 @@ $(PKG)_TARGET_LIBDIR:=root$(FREETZ_LIBRARY_PATH)
 $(PKG)_DEST_DIR:=$($(PKG)_TARGET_DIR)/root
 $(PKG)_DEST_LIBDIR:=$($(PKG)_TARGET_DIR)/root$(FREETZ_LIBRARY_PATH)
 $(PKG)_CLEAN_TARGET_DIR__INT := $(RM) -r $($(PKG)_TARGET_DIR); $(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION);
+
+$(pkg)-precompiled: $(pkg)-bin-pre-echo
 endef
 
 # Stage 2b: initialise other package-specific variables for library packages
@@ -298,6 +308,8 @@ $(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
 $(PKG)_TARGET_DIR:=root$(FREETZ_LIBRARY_PATH)
 $(PKG)_TARGET_LIBDIR:=$($(PKG)_TARGET_DIR)
 $(PKG)_DEST_DIR:=root
+
+$(pkg): $(pkg)-lib-pre-echo
 endef
 
 # Stage 3: Common definitions after BIN/LIB specific definitions
@@ -358,6 +370,13 @@ define PKG_FINISH__INT
 $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-build-prereq
 $(pkg)-precompiled--int : $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+$(pkg)-bin-pre-echo:
+	@echo -n "---> package/$(pkg): "
+$(pkg)-lib-pre-echo:
+	@echo -n "---> library/$(pkg): "
+$(pkg)-post-echo:
+	@echo "done."
+$(pkg)-precompiled: $(pkg)-post-echo
 $(pkg)-build-prereq: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
 $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked:
 ifneq ($($(PKG)_BUILD_PREREQ),)
@@ -366,16 +385,19 @@ ifneq ($($(PKG)_BUILD_PREREQ),)
 		if ! which $$$$f >/dev/null 2>&1; then $(PKG)_MISSING_PREREQ="$$$${$(PKG)_MISSING_PREREQ} $$$$f"; fi; \
 	done; \
 	if [ -n "$$$${$(PKG)_MISSING_PREREQ}" ]; then \
+		echo -n -e "$(_Y)"; \
 		echo -e \
-			"[Error] The following commands required for building of $(pkg)-package are missing on your system:" \
+			"ERROR: The following commands required for building of $(pkg)-package are missing on your system:" \
 			`echo $$$${$(PKG)_MISSING_PREREQ} | sed -e 's| |, |g'`; \
 		if [ -n "$(strip $($(PKG)_BUILD_PREREQ_HINT))" ]; then \
 			echo "$($(PKG)_BUILD_PREREQ_HINT)"; \
 		fi; \
+		echo -n -e "$(_N)"; \
 		exit 1 >/dev/null 2>&1; \
 	fi;
 endif
-	touch $$@
+	@touch $$@
+
 $(pkg)-clean-not-included--int:
 	@$(if $($(PKG)_NOT_INCLUDED),$(RM) -r $($(PKG)_NOT_INCLUDED),)
 PKG:=
@@ -389,11 +411,12 @@ PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))$(eval $(PKG_FINISH__INT))
 
 define PKG_SOURCE_DOWNLOAD__INT
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
+	@echo -n "downloading... "
 	@if [ -e $(MIRROR_DIR)/$($(PKG)_SOURCE) ]; then \
 		echo "Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link"; \
 		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
 	else \
-		$(DL_TOOL) $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5); \
+		$(DL_TOOL) $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5) $(SILENT); \
 	fi
 
 $(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
@@ -403,7 +426,7 @@ $(MIRROR_DIR)/$($(PKG)_SOURCE): | $(MIRROR_DIR)
 		echo "Found $($(PKG)_SOURCE) in $(DL_DIR), creating hard link"; \
 		ln $(DL_DIR)/$($(PKG)_SOURCE) $(MIRROR_DIR); \
 	else \
-		$(DL_TOOL) $(MIRROR_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5); \
+		$(DL_TOOL) $(MIRROR_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5) $(SILENT); \
 	fi
 
 $(pkg)-download-mirror: $(MIRROR_DIR)/$($(PKG)_SOURCE)
@@ -473,10 +496,11 @@ endef
 ## Unpack and patch binary package
 define PKG_UNPACKED_BIN__INT
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(SOURCE_DIR)
+	@echo -n "preparing... "
 	$(RM) -r $($(PKG)_DIR)
 	$(call PKG_UNPACK)
 	$(call PKG_BIN_PATCH)
-	touch $$@
+	@touch $$@
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked
@@ -496,10 +520,11 @@ endef
 ## Unpack and patch library package
 define PKG_UNPACKED_LIB__INT
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(SOURCE_DIR)
+	@echo -n "preparing... "
 	$(RM) -r $($(PKG)_DIR)
 	$(call PKG_UNPACK)
 	$(call PKG_LIB_PATCH)
-	touch $$@
+	@touch $$@
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked
@@ -507,10 +532,11 @@ endef
 
 define PKG_LOCALSOURCE_PACKAGE__INT
 $($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $(SOURCE_DIR)
+	@echo -n "preparing... "
 	$(RM) -r $($(PKG)_DIR)
 	mkdir -p $($(PKG)_DIR)
 	cp -a $$^ $($(PKG)_DIR)
-	touch $$@
+	@touch $$@
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked $(pkg) $(pkg)-precompiled
@@ -526,7 +552,7 @@ endef
 define PKG_UNPACKED_CHECK_SUBOPTS__INT
 $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_TEMP)
-	@if ! diff -q $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null; then \
+	@if ! diff -q $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null $(SILENT); then \
 		mv $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE); \
 		$($(PKG)_CLEAN_TARGET_DIR__INT) \
 	else \
@@ -553,20 +579,25 @@ define PKG_CONFIGURED_CONFIGURE__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
 $($(PKG)_DIR)/.configured: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
-	( cd $($(PKG)_DIR); \
+	@echo -n "configuring... "
+	($(CONFIGURE) \
+		cd $($(PKG)_DIR); \
 		$(if $(strip $(FREETZ_BACKUP_CONFIG_CACHE)),$(call BACKUP_CONFIG_CACHE,before-$(pkg)),) \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
 		$($(PKG)_CONFIGURE_PRE_CMDS) \
 		FREETZ_TARGET_LFS="$(strip $(FREETZ_TARGET_LFS))" source $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
 		$(TARGET_CONFIGURE_ENV) \
 		$($(PKG)_CONFIGURE_ENV) \
-		./configure \
+		conf_cmd \
 		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
 		$($(PKG)_CONFIGURE_OPTIONS) \
 		$(if $($(PKG)_CONFIGURE_POST_CMDS),&& { $($(PKG)_CONFIGURE_POST_CMDS) },) \
 		$(if $(strip $(FREETZ_BACKUP_CONFIG_CACHE)),&& { $(call BACKUP_CONFIG_CACHE,after-$(pkg)) },) \
 	)
-	touch $$@
+	@touch $$@
+# TODO: Find a better place for that
+	@echo -n "building... "
+
 endef
 PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
 
@@ -575,7 +606,9 @@ define PKG_CONFIGURED_NOP__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
 $($(PKG)_DIR)/.configured: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
-	touch $$@
+	@touch $$@
+# TODO: Find a better place for that
+	@echo -n "building... "
 endef
 PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
 
