@@ -774,9 +774,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 			then
 					echo2 "${bn}"
 					dn="$(dirname "$i")"
-					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
-					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
+					[ -d "${MODULES_DIR}/kernel/${dn}" ] || mkdir -p "${MODULES_DIR}/kernel/${dn}"
+					cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${MODULES_DIR}/kernel/${dn}/"
 		fi
 	done
 

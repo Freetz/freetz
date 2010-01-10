@@ -1,19 +1,13 @@
 KERNEL_SUBVERSION:=iln6
 KERNEL_BOARD_REF:=$(KERNEL_REF)
-KERNEL_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel
+KERNEL_DIR:=$(SOURCE_DIR)/kernel/ref-$(KERNEL_REF)-$(AVM_VERSION)
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 
-ifeq ($(AVM_VERSION),r7203)
-KERNEL_BUILD_DIR_N:=kernel_4mb_26_build
-else
-KERNEL_BUILD_DIR_N:=kernel_8mb_26_build
-endif
-
-KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
-KERNEL_IMAGE:=kernel/linux-$(KERNEL_VERSION)/vmlinux.eva_pad
+KERNEL_BUILD_DIR:=$(KERNEL_DIR)
+KERNEL_IMAGE:=linux-$(KERNEL_VERSION)/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT)-$(KERNEL_REF).$(AVM_VERSION)
-KERNEL_BUILD_ROOT_DIR:=$(KERNEL_BUILD_DIR)/kernel/linux-$(KERNEL_VERSION)
+KERNEL_BUILD_ROOT_DIR:=$(KERNEL_BUILD_DIR)/linux-$(KERNEL_VERSION)
 
 ifeq ($(KERNEL_REF),4mb_26)
 KERNEL_FREETZ_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/.freetz_config
@@ -38,15 +32,15 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/kernel/avm-gpl-$(AVM_VERSION)/.unpacked $
 	if test -z $$KERNEL_SOURCE_PATH; then \
 		$(call ERROR,1,KERNEL_SOURCE_PATH is empty) \
 	fi; \
-	KERNEL_SOURCE_PATH+="/../.."; \
+	KERNEL_SOURCE_PATH+="/.."; \
 	$(ECHO) Copying $$KERNEL_SOURCE_PATH to $(KERNEL_BUILD_DIR); \
 	cp -a $$KERNEL_SOURCE_PATH $(KERNEL_BUILD_DIR)
 	@set -e; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/*.patch; do \
-		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
+		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
 	done
 	#Version specific patches
 	@set -e; shopt -s nullglob; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/$(AVM_VERSION)/*.patch; do \
-		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
+		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
 	done
 	@for i in $(KERNEL_LINKING_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
@@ -86,7 +80,7 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/kernel/avm-gpl-$(AVM_VERSION)/.unpacked $
 			touch $(KERNEL_BUILD_ROOT_DIR)/$$i; \
 		fi \
 	done
-	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-$(KERNEL_VERSION) $(KERNEL_DIR)/linux
+	ln -s linux-$(KERNEL_VERSION) $(KERNEL_BUILD_DIR)/linux
 	touch $@
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
@@ -135,23 +129,24 @@ $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		ARCH=$(KERNEL_ARCH) \
-		INSTALL_MOD_PATH="$(shell pwd)/$(KERNEL_BUILD_DIR)/modules/" \
+		INSTALL_MOD_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_BUILD_DIR)" \
 		modules
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		ARCH=$(KERNEL_ARCH) \
-		INSTALL_MOD_PATH="$(shell pwd)/$(KERNEL_BUILD_DIR)/modules/" \
+		INSTALL_MOD_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_BUILD_DIR)" \
 		modules_install
 	touch $@
 
 $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT)
 	rm -rf $(KERNEL_MODULES_DIR)/lib
 	mkdir -p $(KERNEL_MODULES_DIR)
-	tar -cf - -C $(KERNEL_BUILD_DIR)/modules \
-		--exclude=lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/build \
-		--exclude=lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/pcmcia \
+	KERNEL_MODULES_SOURCE_DIR=$(KERNEL_BUILD_DIR)/lib/modules/$(KERNEL_VERSION)/kernel; \
+	[ ! -e $$KERNEL_MODULES_SOURCE_DIR ] && \
+		KERNEL_MODULES_SOURCE_DIR=$(KERNEL_BUILD_DIR)/lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/kernel; \
+	tar -cf - -C $$KERNEL_MODULES_SOURCE_DIR \
 		. | tar -xf - -C $(KERNEL_MODULES_DIR)
 	touch $@
 

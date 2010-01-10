@@ -4,7 +4,7 @@ $(PKG)_SITE:=@SF/usbip
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cmd/usbipd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/usbipd
 $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/drivers/2.6.21/usbip.ko
-$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/kernel/drivers/usb/usbip
+$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/usb/usbip
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/usbip.ko
 $(PKG)_SOURCE_MD5:=d1094b6d4449787864f8be001639232c
 

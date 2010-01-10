@@ -31,7 +31,7 @@ AVM_SOURCE:=$(notdir $(AVM_URL))
 AVM_SITE:=$(dir $(AVM_URL))
 AVM_MD5:=$(AVM_SOURCE_MD5__$(AVM_VERSION))
 
-AVM_DIR:=$(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
+AVM_DIR:=$(SOURCE_DIR)/kernel/avm-gpl-$(AVM_VERSION)
 
 AVM_UNPACK__INT_.gz:=z
 AVM_UNPACK__INT_.bz2:=j
