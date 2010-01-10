@@ -46,7 +46,7 @@ $($(PKG)_LIB_BUILD_DIR): $($(PKG)_DIR)/Makefile.depend
 		$(MAKE) -C $(NETPBM_DIR)/lib \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS) $(FPIC)" \
 		all
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/converter/other/%: $($(PKG)_DIR)/Makefile.depend $($(PKG)_LIB_BUILD_DIR)
