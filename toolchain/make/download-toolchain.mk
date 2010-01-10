@@ -42,17 +42,15 @@ download-toolchain: $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc: $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | \
 		$(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE) $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
-	$(RM) $(TOOLCHAIN_DIR)/kernel
+	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)
 	$(TOOLS_DIR)/busybox tar $(VERBOSE) -xaf $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) -C $(TOOLCHAIN_DIR)/build
-	-@ln -s $(BUILD_DIR)/gcc-$(KERNEL_TOOLCHAIN_GCC_VERSION)/mipsel-unknown-linux-gnu $(TOOLCHAIN_DIR)/kernel
 	@touch $@
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) | \
 		$(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE) $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
-	$(RM) $(TOOLCHAIN_DIR)/target
+	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
 	$(TOOLS_DIR)/busybox tar $(VERBOSE) -xaf $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) -C $(TOOLCHAIN_DIR)/build
-	-@ln -s $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TOOLCHAIN_DIR)/target
 	@touch $@
 
 download-toolchain-clean:
@@ -62,14 +60,15 @@ download-toolchain-dirclean: kernel-toolchain-dirclean target-toolchain-dirclean
 download-toolchain-distclean: kernel-toolchain-distclean target-toolchain-distclean
 
 kernel-toolchain-dirclean:
-	rm -rf $(TOOLCHAIN_BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)
-	rm -f $(TOOLCHAIN_DIR)/kernel
+	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)
+	$(RM) $(TOOLCHAIN_DIR)/kernel
+	$(RM) $(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE)
 
 target-toolchain-dirclean:
-	rm -rf $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
-	rm -f $(TOOLCHAIN_DIR)/target
+	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
+	$(RM) $(TOOLCHAIN_DIR)/target
+	$(RM) $(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE)
 
 kernel-toolchain-distclean: kernel-toolchain-dirclean
 
 target-toolchain-distclean: target-toolchain-dirclean
-
