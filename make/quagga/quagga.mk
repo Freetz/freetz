@@ -45,8 +45,8 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-		LD="$(TARGET_LD)" \
-	$(SUBMAKE) -C $(QUAGGA_DIR)
+	$(SUBMAKE) -C $(QUAGGA_DIR) \
+		LD="$(TARGET_LD)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	# copy, strip and chmod base libs

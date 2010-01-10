@@ -34,24 +34,21 @@ $($(PKG)_DIR)/buildtools/.compiled: $($(PKG)_DIR)/.configured
 	$(MAKE) -C $(NETPBM_DIR)/buildtools all && touch $@
 
 $($(PKG)_DIR)/Makefile.depend: $($(PKG)_DIR)/buildtools/.compiled
-	PATH="$(TARGET_PATH)" \
-		$(SUBMAKE) -C $(NETPBM_DIR) \
+	$(SUBMAKE) -C $(NETPBM_DIR) \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		dep
 
 $($(PKG)_LIB_BUILD_DIR): $($(PKG)_DIR)/Makefile.depend
-	PATH="$(TARGET_PATH)" \
-		$(SUBMAKE) -C $(NETPBM_DIR)/lib \
+	$(SUBMAKE) -C $(NETPBM_DIR)/lib \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		all
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/converter/other/%: $($(PKG)_DIR)/Makefile.depend $($(PKG)_LIB_BUILD_DIR)
-	PATH="$(TARGET_PATH)" \
-		$(SUBMAKE) -C $(NETPBM_DIR)/converter/other \
+	$(SUBMAKE) -C $(NETPBM_DIR)/converter/other \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \

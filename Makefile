@@ -165,8 +165,11 @@ VERBOSE:=-v
 QUIET:=
 endif
 
+ECHO:=$(SILENT) echo
+
 export FREETZ_VERBOSITY_LEVEL
 export VERBOSE
+export ECHO
 
 TOOLS_CLEAN:=$(patsubst %,%-clean,$(TOOLS))
 TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))

@@ -30,13 +30,12 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(SUBMAKE) -C $(XMAIL_DIR) -f Makefile.lnx \
-	                CC="$(TARGET_CXX)" \
-			LD="$(TARGET_CXX)" \
-	                CFLAGS="$(TARGET_CFLAGS) $(XMAIL_CFLAGS)" \
-			LDFLAGS="$(TARGED_LDFLAGS) $(XMAIL_LDFLAGS)" \
-			STRIP="$(TARGET_STRIP)"
+	$(SUBMAKE) -C $(XMAIL_DIR) -f Makefile.lnx \
+		CC="$(TARGET_CXX)" \
+		LD="$(TARGET_CXX)" \
+		CFLAGS="$(TARGET_CFLAGS) $(XMAIL_CFLAGS)" \
+		LDFLAGS="$(TARGED_LDFLAGS) $(XMAIL_LDFLAGS)" \
+		STRIP="$(TARGET_STRIP)"
 	$(TARGET_CC) -Wall -O2 -o $(XMAIL_DIR)/bin/compartment $(XMAIL_DIR)/docs/compartment.c
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)

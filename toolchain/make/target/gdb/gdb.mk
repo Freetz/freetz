@@ -85,7 +85,7 @@ $(GDB_TARGET_DIR)/gdb/gdb: $(GDB_TARGET_DIR)/.configured
 $(GDB_STAGING_DIR)/gdb: $(GDB_TARGET_DIR)/gdb/gdb | $(GDB_STAGING_DIR)
 	$(INSTALL_BINARY_STRIP)
 	
-gdb_target: ncurses $(GDB_STAGING_DIR)/gdb
+gdb_target: ncurses-precompiled $(GDB_STAGING_DIR)/gdb
 
 gdb_target-source: $(DL_DIR)/$(GDB_SOURCE)
 

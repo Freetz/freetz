@@ -222,7 +222,7 @@ PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODIN
 # NB: all libtool-related macros are heavily based on the openwrt macros provided in autotools.mk
 define REPLACE_FILE_WITH_SYMLINK
 if [ -f "$(abspath $($(PKG)_DIR)/$(3)/$(1))" -a -e "$(2)/$(if $(4),$(4),$(1))" ]; then \
-	echo "Replacing $(3)/$(if $(4),$(4),$(1)) with symlink to $(2)/$(if $(4),$(4),$(1))"; \
+	$(ECHO) "Replacing $(3)/$(if $(4),$(4),$(1)) with symlink to $(2)/$(if $(4),$(4),$(1))"; \
 	rm -f "$(abspath $($(PKG)_DIR)/$(3)/$(1))"; \
 	ln -s "$(2)/$(if $(4),$(4),$(1))" "$(abspath $($(PKG)_DIR)/$(3)/$(1))"; \
 fi;
@@ -413,7 +413,7 @@ define PKG_SOURCE_DOWNLOAD__INT
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	@echo -n "downloading... "
 	@if [ -e $(MIRROR_DIR)/$($(PKG)_SOURCE) ]; then \
-		echo "Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link"; \
+		$(ECHO) "Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link"; \
 		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
 	else \
 		$(DL_TOOL) $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5) $(SILENT); \
@@ -423,7 +423,7 @@ $(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
 
 $(MIRROR_DIR)/$($(PKG)_SOURCE): | $(MIRROR_DIR)
 	@if [ -e $(DL_DIR)/$($(PKG)_SOURCE) ]; then \
-		echo "Found $($(PKG)_SOURCE) in $(DL_DIR), creating hard link"; \
+		$(ECHO) "Found $($(PKG)_SOURCE) in $(DL_DIR), creating hard link"; \
 		ln $(DL_DIR)/$($(PKG)_SOURCE) $(MIRROR_DIR); \
 	else \
 		$(DL_TOOL) $(MIRROR_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5) $(SILENT); \
