@@ -67,7 +67,7 @@ start() {
 	fi
 
 	#daemon
-	vnstatd -s -d
+	vnstatd -s -d --config /tmp/flash/vnstat/vnstat.conf
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -85,13 +85,13 @@ stop() {
 		return 1
 	fi
 	killall vnstatd 2>/dev/null
-        retval=$?
-        if [ "$retval" -eq 0 ]; then
-                echo 'done.'
-        else
-                echo 'failed.'
-                return 1
-        fi
+	retval=$?
+	if [ "$retval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		return 1
+	fi
 }
 
 case "$1" in
@@ -99,8 +99,15 @@ case "$1" in
 		config
 		;;
 	""|load)
+		[ ! -d "/tmp/flash/vnstat" ] && mkdir -p /tmp/flash/vnstat
+		[ ! -e "/tmp/flash/vnstat/vnstat.conf" ] && /etc/default.vnstat/vnstat_conf > /tmp/flash/vnstat/vnstat.conf
+
+		deffile=/mod/etc/default.vnstat/vnstat_conf.def
+		[ -r /tmp/flash/vnstat/vnstat_conf.def ] && deffile=/tmp/flash/vnstat/vnstat_conf.def
+		modreg file "vnstat_conf" 'vnstat: vnstat.conf' 1 $deffile
 		modreg cgi vnstat vnstat
 		modreg status vnstat vnstat vnstat/stats
+
 		config
 		if [ "$VNSTAT_ENABLED" != yes ]; then
 			echo "vnstat is disabled" 1>&2
@@ -112,6 +119,7 @@ case "$1" in
 		stop
 		modunreg status vnstat vnstat/stats
 		modunreg cgi vnstat
+		modunreg file "vnstat_conf"
 		;;
 	start)
 		config
@@ -122,7 +130,8 @@ case "$1" in
 		;;
 	restart)
 		stop
-		sleep 1
+		#vnstatd needs more time to write dbs:
+		sleep 3
 		config
 		start
 		;;

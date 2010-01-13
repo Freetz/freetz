@@ -21,7 +21,7 @@ TEMPDIR=/tmp/vnstat
 mkdir -p $TEMPDIR
 
 gen_pic() {
-        $_NICE vnstati -i $1 --$2 -o $TEMPDIR/$1-$2.png
+        $_NICE vnstati -i $1 --$2 -o $TEMPDIR/$1-$2.png --config /tmp/flash/vnstat/vnstat.conf
         echo "<p><img src=\"/vnspix/$1-$2.png$NOCACHE\" alt=\"vnstat: $2 of $1\" border=\"0\"/></p>"
 }
 
