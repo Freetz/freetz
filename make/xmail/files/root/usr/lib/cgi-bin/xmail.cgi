@@ -49,7 +49,7 @@ cat << EOF
 <p> $(lang de:"Verzeichnis f&uuml;r XMail" en:"Directory for XMail"): <input type="text" name="maillocation" size="30" maxlength="255" value="$(html "$XMAIL_MAILLOCATION")"></p>
 <hr>
 <p style="font-size:10px;">$(lang de:"Bitte &auml;ndern Sie diese Werte nur wenn Sie wissen was Sie tun." en:"Please change these values only if you know what you are doing.")</p>
-<p> $(lang de:"Startparameter" en:"Start parameters"): <input type="text" name="special" size="30" maxlength="255" value="$(html "$XMAIL_SPECIAL")"></p>
+<p> $(lang de:"Startparameter" en:"Start parameters"): <input type="text" name="special" size="55" maxlength="255" value="$(html "$XMAIL_SPECIAL")"></p>
 EOF
 sec_end
 
