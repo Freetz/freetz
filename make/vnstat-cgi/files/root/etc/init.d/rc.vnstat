@@ -48,7 +48,7 @@ start() {
 
 	#create new databeses
 	for ifname in $VNSTAT_INTERFACES; do
-		vnstat -u -i $ifname >/dev/null
+		vnstat -u -i $ifname --config /tmp/flash/vnstat/vnstat.conf >/dev/null
 		if [ $? -ne 0 ]; then
 			echo 'failed creating database-file:'
 			vnstat -u -i $ifname
