@@ -20,7 +20,7 @@ if [ ! -z "$MOD_CGI_CMD" ]; then
 	fi
 fi
 
-securityl=`cat /tmp/flash/mod/security`
+securityl="$sec_level"
 if [ "$0" = "pkgstatus.cgi" ]
 then
 	formact="/cgi-bin/pkgstatus.cgi?pkg=mod&cgi=mod/mounted"
