@@ -42,10 +42,10 @@ start() {
 	fi
 
 	echo -n "Starting $DAEMON_LONG_NAME..."
-        if modlib_check_running; then
-                echo 'already running.'
-                exit 0
-        fi
+	if modlib_check_running; then
+		echo 'already running.'
+		exit 0
+	fi
 
 	set -o noglob
 	modlib_startdaemon $DAEMON -p "$DROPBEAR_PORT" $DROPBEAR_OPTIONS
@@ -56,10 +56,6 @@ start() {
 		echo 'failed.'
 		exit $exitval
 	fi
-}
-
-stop() {
-	modlib_stop
 }
 
 case "$1" in
@@ -80,19 +76,17 @@ case "$1" in
 		start
 		;;
 	unload)
-		stop
+		modlib_stop
 		modunreg cgi 'dropbear'
 		;;
 	start)
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
 		if [ "$DROPBEAR_ENABLED" == "inetd" ]; then

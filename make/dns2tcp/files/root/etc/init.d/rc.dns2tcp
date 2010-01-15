@@ -11,41 +11,16 @@ pre_config() {
 	modlib_adduser $DAEMON -G $DAEMON -s /bin/false -H -D -g "dns2tcp account"
 }
 
-cleanup() {
-	modunreg status $DAEMON
-	rm -f /mod/etc/$DAEMON.conf
-	rm -f /var/run/$DAEMON.pid
-	rm -rf /tmp/$DAEMON
-}
-
 configure() {
-	cleanup
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
 
-        (
-                if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-                        /tmp/flash/${DAEMON}_conf
-                else
-                        /mod/etc/default.$DAEMON/${DAEMON}_conf
-                fi
-
-        ) > /mod/etc/$DAEMON.conf
+	) > /mod/etc/$DAEMON.conf
 
 	mkdir -p /tmp/$DAEMON
-}
-
-stop () {
-        echo -n "Stopping $DAEMON_LONG_NAME..."
-        killall $APP > /dev/null 2>&1
-        exitval=$?
-
-        cleanup
-
-        if [ "$exitval" -eq 0 ]; then
-                echo 'done.'
-        else
-                echo 'failed.'
-                exit $exitval
-        fi
 }
 
 start() {
@@ -64,7 +39,6 @@ start() {
 		echo 'done.'
 	else
 		echo 'daemon failed.'
-		cleanup
 		exit $exitval
 	fi
 
@@ -92,7 +66,8 @@ case "$1" in
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
+		rm -rf /tmp/$DAEMON
 		;;
 	restart)
 		modlib_restart

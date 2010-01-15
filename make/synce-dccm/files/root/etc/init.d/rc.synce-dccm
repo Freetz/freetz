@@ -29,11 +29,6 @@ start() {
 	fi
 }
 
-stop() {
-	echo -n 'Stopping SynCE dccm daemon...'
-	modlib_stop
-}
-
 case "$1" in
 	""|load)
 		modreg cgi 'synce-dccm' 'SynCE DCCM'
@@ -47,21 +42,19 @@ case "$1" in
 		;;
 	unload)
 		modunreg cgi 'synce-dccm'
-		stop
+		modlib_stop
 		;;
 	start)
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-                modlib_status
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
