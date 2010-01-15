@@ -17,6 +17,11 @@ endif
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
+# rename lftp's xmalloc/xrealloc/... functions to avoid name clashing with the same-named functions provided by readline
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r \
+	-e 's,^(.*[^a-zA-Z_0-9]|[ \t]*)(xmalloc|xmalloc_register_block|xrealloc|x2realloc|xzalloc|xcalloc|xfree|xmemdup|xstrdup|xstrset)([ \t]*[(]),\1lftp_\2\3,g' \
+	lib/*.h lib/*.c src/*.h src/*.c src/*.cc;
+
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
