@@ -678,6 +678,7 @@ config FREETZ_HAS_TAM
 config FREETZ_HAS_WLAN
 	bool "Has WLAN"		if FREETZ_TYPE_CUSTOM
 	default y			if \
+		FREETZ_TYPE_WLAN_3020 || \
 		FREETZ_TYPE_WLAN_3131 || \
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3170 || \
@@ -1070,11 +1071,16 @@ config FREETZ_REMOVE_TR069
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7140 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 \
+		FREETZ_TYPE_WLAN_3020 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
 		)
 	default n
 	help
@@ -1084,7 +1090,18 @@ config FREETZ_REMOVE_TR069
 
 config FREETZ_REMOVE_TR069_FWUPDATE
 	bool "Remove fwupdate"
-	depends on FREETZ_REMOVE_TR069
+	depends on \
+		FREETZ_REMOVE_TR069 && \
+	( \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3 \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
+	)
 	default n
 	help 
 		Removes the file /usr/bin/tr069fwupdate, needed for 
@@ -1499,7 +1516,7 @@ config FREETZ_REMOVE_MINID
 		and delete all Mini users with the Gini! software to avoid complications.
 
 config FREETZ_REMOVE_AURA_USB
-	bool "Remove aura usb - EXPERIMENTAL"
+	bool "Remove aura usb"
 	default n
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
@@ -1570,15 +1587,14 @@ config FREETZ_REMOVE_DSLD
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
 config FREETZ_REMOVE_CAPIOVERTCP
-	bool "Remove CAPIoverTCP (used for Fritz!Fax) - EXPERIMENTAL"
+	bool "Remove CAPIoverTCP (used for Fritz!Fax)"
+	depends on ! FREETZ_TYPE_WLAN_3020
 	default n
 	help
 		Remove CAPIoverTCP (capiotcp_server). Use this if you don't wat to use
 		Fritz!Fax or any other program that uses AVM's CAPIoverTCP. This is similar
 		to rcapid, but independant.
 		This will save about 15kB uncompressed size.
-
-		EXPERIMENTAL FEATURE, USE AT OWN RISK!
 
 config FREETZ_REMOVE_DECT 
 	bool "Remove DECT files"
