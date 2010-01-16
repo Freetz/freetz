@@ -15,6 +15,7 @@ configure() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
+		else
 			/mod/etc/default.$DAEMON/${DAEMON}_conf
 		fi
 
