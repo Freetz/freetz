@@ -53,6 +53,7 @@ $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE) | $(TARGET_TOOLCHAIN_DIR
 
 binutils-patched: $(BINUTILS_DIR)/.patched
 $(BINUTILS_DIR)/.patched: $(BINUTILS_DIR)/.unpacked
+	set -e; \
 	for i in $(BINUTILS_MAKE_DIR)/$(BINUTILS_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(BINUTILS_DIR) $$i; \
 	done

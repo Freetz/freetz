@@ -24,6 +24,7 @@ $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE)
 
 gdb-patched: $(GDB_DIR)/.patched
 $(GDB_DIR)/.patched: $(GDB_DIR)/.unpacked
+	set -e; \
 	for i in $(GDB_MAKE_DIR)/$(GDB_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GDB_DIR) $$i; \
 	done
