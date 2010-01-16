@@ -174,7 +174,7 @@ sec_begin '$(lang de:"VPN IP-Adressen und Routing im VPN" en:"VPN IP-Addresses a
 cat << EOF
 <small style="font-size:0.8em"> <i>$(lang de:"Hier werden die IP-Adressen und das Routing vom VPN konfiguriert." en:"You configure VPN IP addresses and routing inside the VPN here")</i></small>
 <p><div id="div_configure_ip">
-$(lang de:"Lokale IP" en:"local IP"): <input id="id_act_box_ip" size="16" title=$(lang de:"\'IP des lokelen VPN Interfaces ( tun / tun ). Z.B. \"192.168.1.1\" \'" en:"\'IP of local VPN interface (tap / tun ) e.g.\"192.168.1.1\" \'")
+$(lang de:"Lokale IP" en:"local IP"): <input id="id_act_box_ip" size="16" title=$(lang de:"\'IP des lokalen VPN Interfaces ( tun / tun ). Z.B. \"192.168.1.1\" \'" en:"\'IP of local VPN interface (tap / tun ) e.g.\"192.168.1.1\" \'")
 maxlength="16" type="text"  onblur='(local_box_ip[act_conf]=this.value); Consolidate_Vars();' >
 <div id="div_ip_and_net"> &nbsp; &nbsp; $(lang de:"Netzmaske" en:"netmask"): <input id="id_act_box_mask"  
 title=$(lang de:"\'Netzmaske f&uuml;r das lokele VPN Interface ( tun / tun ). Z.B. \"255.255.255.0\" \'" en:"\'netmask for local VPN interface (tap / tun ) e.g. \"255.255.255.0\" \'") size="14" maxlength="16" type="text" 
