@@ -8,7 +8,7 @@ ifeq ($(strip $(FREETZ_TARGET_TOOLCHAIN)),y)
 	TARGETT:=binutils_target gcc_target uclibc_target
 endif
 
-TARGET_TOOLCHAIN:=binutils gcc $(CCACHE) $(TARGETT) libtool-host gdb
+TARGET_TOOLCHAIN:=binutils gcc $(CCACHE) $(TARGETT) uclibcxx libtool-host gdb
 
 $(TARGET_TOOLCHAIN_DIR):
 	@mkdir -p $@

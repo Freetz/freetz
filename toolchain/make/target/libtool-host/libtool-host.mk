@@ -56,9 +56,11 @@ $(LIBTOOL_HOST_TARGET_SCRIPT): $(LIBTOOL_HOST_SCRIPT)
 		install
 	$(SED) -i -r -e 's,(hardcode_into_libs)=yes,\1=no,g' $(LIBTOOL_HOST_TARGET_SCRIPT)
 
-libtool-host: $(LIBTOOL_HOST_TARGET_SCRIPT)
+libtool-host: uclibcxx $(LIBTOOL_HOST_TARGET_SCRIPT)
 
 libtool-host-source: $(LIBTOOL_HOST_DIR)/.unpacked
+
+libtool-host-configured: $(LIBTOOL_HOST_DIR)/.configured
 
 libtool-host-clean:
 	-$(MAKE) -C $(LIBTOOL_HOST_DIR) clean
