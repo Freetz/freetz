@@ -1,5 +1,18 @@
+AVM_VERSION:=$(strip $(subst ",, $(FREETZ_AVM_VERSION_STRING)))
+AVM_SOURCE:=$(strip $(subst ",, $(FREETZ_DL_KERNEL_SOURCE)))
+
+AVM_UNPACK__INT_.gz:=z
+AVM_UNPACK__INT_.bz2:=j
+
+KERNEL_ARCH:=mips
 KERNEL_SUBVERSION:=iln6
+KERNEL_REF:=$(strip $(subst ",, $(FREETZ_KERNEL_REF)))
 KERNEL_BOARD_REF:=$(KERNEL_REF)
+KERNEL_VERSION:=$(strip $(subst ",, $(FREETZ_KERNEL_VERSION)))
+KERNEL_TARGET_DIR:=kernel
+KERNEL_SOURCE_DIR:=$(KERNEL_DIR)/linux
+KERNEL_HEADERS_DIR:=$(KERNEL_SOURCE_DIR)/include
+KERNEL_LAYOUT:=$(strip $(subst ",, $(FREETZ_KERNEL_LAYOUT)))
 KERNEL_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 
@@ -10,6 +23,7 @@ KERNEL_BUILD_DIR_N:=kernel_8mb_26_build
 endif
 
 KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
+KERNEL_MODULES_DIR:=$(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)
 KERNEL_IMAGE:=kernel/linux-$(KERNEL_VERSION)/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT)-$(KERNEL_REF).$(AVM_VERSION)
@@ -26,20 +40,45 @@ $(KERNEL_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 	@rm -f $(KERNEL_FREETZ_CONFIG_TEMP)
 endif
 
+$(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
+	$(DL_TOOL) $(DL_FW_DIR) .config $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_MD5)
+
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL_FREETZ_CONFIG_FILE) \
+$(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) kernel-dirclean $(KERNEL_FREETZ_CONFIG_FILE) \
 				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
-	rm -rf $(KERNEL_DIR)
-	mkdir -p $(KERNEL_DIR)
-	@KERNEL_SOURCE_PATH=`find $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION) -maxdepth 6 -wholename "*kernel/linux-2.6.??.?" -type d`/../..; \
-	if test -z $$KERNEL_SOURCE_PATH; then \
-		echo KERNEL_SOURCE_PATH is empty, stop; \
-		exit 1; \
-	fi; \
-	echo Copying $$KERNEL_SOURCE_PATH $(KERNEL_BUILD_DIR); \
-	cp -a $$KERNEL_SOURCE_PATH $(KERNEL_BUILD_DIR)
+	mkdir -p $(KERNEL_BUILD_DIR)/kernel
+	@echo -n Checking Kernel image structure ...; \
+	KERNEL_SOURCE_CONTENT=` \
+		tar \
+			-t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
+			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE)| \
+		grep -e '^.*\(\/GPL-release_kernel\.tar\.gz\|\/linux-2\.6\...\..\/\)$$'| \
+		head -n 1`; \
+		echo done; \
+		echo -n Decompressing kernel source files ...; \
+	if [ "$${KERNEL_SOURCE_CONTENT##*/}" == "GPL-release_kernel.tar.gz" ]; then \
+		tar	-O $(VERBOSE) \
+			-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
+			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
+			--wildcards '*/GPL-release_kernel.tar.gz' | \
+		tar	-C $(KERNEL_BUILD_DIR)/kernel $(VERBOSE) \
+			-xz \
+			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed; \
+	elif [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
+		echo error: KERNEL_SOURCE_CONTENT is empty; exit 1; \
+	else \
+		tar	-C $(KERNEL_BUILD_DIR)/kernel $(VERBOSE) \
+			-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
+			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
+			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed \
+			"$$KERNEL_SOURCE_CONTENT"; \
+	fi
+	echo done
+	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
+		echo error: KERNEL_BUILD_ROOT_DIR has wrong structure; exit 1; \
+	fi
 	@set -e; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
@@ -99,7 +138,7 @@ $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 		oldconfig
 	touch $@
 
-$(KERNEL_DIR)/.depend_done:  $(KERNEL_DIR)/.configured
+$(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.configured
 	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
@@ -191,6 +230,7 @@ kernel-clean:
 
 kernel-dirclean:
 	$(RM) -r $(KERNEL_DIR)
+	$(RM) -r $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
 
 kernel-distclean: kernel-dirclean
 	$(RM) $(KERNEL_TARGET_DIR)/.version-*
