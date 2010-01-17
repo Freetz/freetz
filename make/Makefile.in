@@ -6,8 +6,8 @@ ifneq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
 BUILD_FAIL_MSG += Please re-run make with verbose level set to 2 to see what's going on.
 endif
 
-SUBMAKE1=cmd() { $(SILENT) $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; cmd
-SUBMAKE=cmd() { $(SILENT) $(MAKE_ENV) $(MAKE) $(QUIET) $(JLEVEL) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; cmd
+SUBMAKE1=cmd() { $(SILENT) $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
+SUBMAKE=cmd() { $(SILENT) $(MAKE_ENV) $(MAKE) $(QUIET) $(JLEVEL) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
 CONFIGURE=conf_cmd() { $(SILENT) ./configure $(QUIET) "$$$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } };
 
 HOSTCC:=gcc
@@ -259,25 +259,45 @@ endef
 INSTALL_LIBRARY_STRIP = $(call INSTALL_LIBRARY_STRIP__INT)
 INSTALL_LIBRARY_STRIP_WILDCARD_BEFORE_SO = $(call INSTALL_LIBRARY_STRIP__INT,*)
 
-define ECHO_ITEM_START
+# We want build output like:
+# "---> package/lynx: downloading... preparing... configuring... building... done."
+# Actually there are two problems:
+# 1. We can't use _ECHO_START in $(SUBMAKE) context.
+# 2. Dot files are deleted within every package. But once at start would be enough.
+# Usage:
+# $(call _ECHO,text)
+# $(call _ECHO_BUILD)
+ECHO_ITEM_START:=$(SOURCE_DIR)/.echo_item_start
+ECHO_ITEM_BUILD:=$(SOURCE_DIR)/.echo_item_build
+
+define _ECHO_START
 	echo -n "---> "; \
 	$(if $(findstring $(PKG_TYPE),BIN),echo -n "package/$(pkg): ";) \
 	$(if $(findstring $(PKG_TYPE),LIB),echo -n "library/$(pkg): ";) \
 	$(if $(findstring $(PKG_TYPE),TOOL),echo -n "tool/$(pkg): ";) \
-	touch $($(PKG)_ECHO_ITEM_START);
+	rm -f $(ECHO_ITEM_BUILD); \
+	touch $(ECHO_ITEM_START);
 endef
 
 define _ECHO
-	if [ ! -e $($(PKG)_ECHO_ITEM_START) ]; then \
-		$(call ECHO_ITEM_START) \
-	fi
-	echo -n "$(1)"
+	if [ ! -e $(ECHO_ITEM_START) ]; then \
+		$(call _ECHO_START) \
+	fi; \
+	echo -n "$(1)";
+endef
+
+define _ECHO_BUILD
+	if [ -e $(ECHO_ITEM_START) -a ! -e $(ECHO_ITEM_BUILD) ]; then \
+		echo -n "building... "; \
+		touch $(ECHO_ITEM_BUILD); \
+	fi;
 endef
 
 define _ECHO_DONE
-	if [ -e $($(PKG)_ECHO_ITEM_START) ]; then \
+	if [ -e $(ECHO_ITEM_START) ]; then \
 		echo "done."; \
-		rm -f $($(PKG)_ECHO_ITEM_START); \
+		rm -f $(ECHO_ITEM_START); \
+		rm -f $(ECHO_ITEM_BUILD); \
 	fi
 endef
 
@@ -331,7 +351,6 @@ endef
 
 # Stage 3: Common definitions after BIN/LIB specific definitions
 define PKG_INIT__INT3
-$(PKG)_ECHO_ITEM_START:=$(SOURCE_DIR)/.$(pkg)_echo_item_start
 $(PKG)_DEST_BIN:=$($(PKG)_DEST_DIR)/bin
 $(PKG)_DEST_SBIN:=$($(PKG)_DEST_DIR)/sbin
 $(PKG)_DEST_LIB:=$($(PKG)_DEST_DIR)/lib
@@ -389,7 +408,8 @@ $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-build-prereq
 $(pkg)-precompiled--int : $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON)) $(pkg)-clean-echo-item
 $(pkg)-clean-echo-item:
-	rm -f $($(PKG)_ECHO_ITEM_START)
+	rm -f $(ECHO_ITEM_START)
+	rm -f $(ECHO_ITEM_BUILD)
 $(pkg)-precompiled: 
 	@$(call _ECHO_DONE)
 $(pkg)-build-prereq: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
@@ -426,7 +446,7 @@ PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))$(eval $(PKG_FINISH__INT))
 
 define PKG_SOURCE_DOWNLOAD__INT
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	@echo -n "downloading... "
+	$(call _ECHO,downloading... )
 	@if [ -e $(MIRROR_DIR)/$($(PKG)_SOURCE) ]; then \
 		$(ECHO) "Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link"; \
 		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
@@ -511,7 +531,7 @@ endef
 ## Unpack and patch binary package
 define PKG_UNPACKED_BIN__INT
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(SOURCE_DIR)
-	@$(call _ECHO,preparing...)
+	@$(call _ECHO,preparing... )
 	$(RM) -r $($(PKG)_DIR)
 	$(call PKG_UNPACK)
 	$(call PKG_BIN_PATCH)
@@ -610,9 +630,6 @@ $($(PKG)_DIR)/.configured: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-
 		$(if $(strip $(FREETZ_BACKUP_CONFIG_CACHE)),&& { $(call BACKUP_CONFIG_CACHE,after-$(pkg)) },) \
 	)
 	@touch $$@
-# TODO: Find a better place for that
-	@$(call _ECHO,building... )
-
 endef
 PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
 
@@ -622,8 +639,6 @@ define PKG_CONFIGURED_NOP__INT
 $(PKG_CONFIGURED_COMMON__INT)
 $($(PKG)_DIR)/.configured: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
 	@touch $$@
-# TODO: Find a better place for that
-	@$(call _ECHO, building... )
 endef
 PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
 
