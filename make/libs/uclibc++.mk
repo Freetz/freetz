@@ -32,8 +32,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		install
 	$(SED) -i -e 's|-I/include/uClibc++|-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/uClibc++|g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/g++-uc
 	$(SED) -i -e 's|-L/lib/|-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/|g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/g++-uc
-	mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/g++-uc \
-	   $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
+	mv	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/g++-uc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
 	ln -sf $(REAL_GNU_TARGET_NAME)-g++-uc $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(GNU_TARGET_NAME)-g++-uc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)

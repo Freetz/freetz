@@ -14,18 +14,17 @@ config FREETZ_PACKAGE_XMAIL
 		and multi-platform code.
 
 config FREETZ_PACKAGE_XMAIL_WITH_SSL
-        bool "build with SSL support"
-        depends on FREETZ_PACKAGE_XMAIL
+	bool "build with SSL support"
+	depends on FREETZ_PACKAGE_XMAIL
 	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_XMAIL_STATIC
 	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_XMAIL_STATIC
-        default n
-        help
-                This option enables SSL support for XMail.
+	default n
+	help
+		This option enables SSL support for XMail.
 
 config FREETZ_PACKAGE_XMAIL_STATIC
-        bool "Statically link libraries"
-        depends on FREETZ_PACKAGE_XMAIL_WITH_SSL
-        default n
-        help
-                Build XMail with staticly linked Libs.
-
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_XMAIL_WITH_SSL
+	default n
+	help
+		Build XMail with staticly linked Libs.

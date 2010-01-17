@@ -33,8 +33,8 @@ config FREETZ_PACKAGE_USBROOT_E2FSCK
 	bool "Include e2fsck support"
 	depends on FREETZ_PACKAGE_USBROOT
 	select FREETZ_PACKAGE_E2FSPROGS
-        select FREETZ_PACKAGE_E2FSPROGS_E2FSCK
-        default n
-        help
-                This option includes the /usr/sbin/e2fsck application which is used
+	select FREETZ_PACKAGE_E2FSPROGS_E2FSCK
+	default n
+	help
+		This option includes the /usr/sbin/e2fsck application which is used
 		to fix filesystem errors automatically prior to mounting usbroot.

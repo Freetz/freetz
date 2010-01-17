@@ -13,13 +13,13 @@ $(PKG)_DEPENDS_ON := kernel
 $(PKG)_MODULES:=ndas_block.ko ndas_core.ko ndas_sal.ko
 
 NDAS_OPTIONS:= \
-  NDAS_KERNEL_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
-  NDAS_KERNEL_VERSION=$(strip $(FREETZ_KERNEL_VERSION)) \
-  NDAS_KERNEL_ARCH=mipsel \
-  NDAS_CROSS_COMPILE=mipsel-unknown-linux-gnu- \
-  NDAS_CROSS_COMPILE_UM=mipsel-linux-uclibc- \
-  NDAS_EXTRA_CFLAGS="-mlong-calls" \
-  I_agree_the_XIMETA_EULA=true
+	NDAS_KERNEL_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
+	NDAS_KERNEL_VERSION=$(strip $(FREETZ_KERNEL_VERSION)) \
+	NDAS_KERNEL_ARCH=mipsel \
+	NDAS_CROSS_COMPILE=mipsel-unknown-linux-gnu- \
+	NDAS_CROSS_COMPILE_UM=mipsel-linux-uclibc- \
+	NDAS_EXTRA_CFLAGS="-mlong-calls" \
+	I_agree_the_XIMETA_EULA=true
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

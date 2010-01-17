@@ -9,52 +9,52 @@ $(PKG)_STARTLEVEL=40
 $(PKG)_SOURCE_MD5:=8080555ab3f90011f25d5122042d9a8d
 
 NETSNMP_MIB_MODULES_INCLUDED:=\
-  host/hr_device \
-  host/hr_disk \
-  host/hr_filesys \
-  host/hr_network \
-  host/hr_partition \
-  host/hr_proc \
-  host/hr_storage \
-  host/hr_system \
-  mibII/at \
-  mibII/icmp \
-  mibII/interfaces \
-  mibII/ip \
-  mibII/snmp_mib \
-  mibII/sysORTable \
-  mibII/system_mib \
-  mibII/tcp \
-  mibII/udp \
-  mibII/vacm_context \
-  mibII/vacm_vars \
-  snmpv3/snmpEngine \
-  snmpv3/snmpMPDStats \
-  snmpv3/usmStats \
-  snmpv3/usmUser \
-  snmpv3mibs \
-  tunnel \
-  ucd-snmp/disk \
-  ucd-snmp/extensible \
-  ucd-snmp/loadave \
-  ucd-snmp/memory \
-  ucd-snmp/pass \
-  ucd-snmp/proc \
-  ucd-snmp/vmstat \
-  util_funcs \
-  utilities/execute
+	host/hr_device \
+	host/hr_disk \
+	host/hr_filesys \
+	host/hr_network \
+	host/hr_partition \
+	host/hr_proc \
+	host/hr_storage \
+	host/hr_system \
+	mibII/at \
+	mibII/icmp \
+	mibII/interfaces \
+	mibII/ip \
+	mibII/snmp_mib \
+	mibII/sysORTable \
+	mibII/system_mib \
+	mibII/tcp \
+	mibII/udp \
+	mibII/vacm_context \
+	mibII/vacm_vars \
+	snmpv3/snmpEngine \
+	snmpv3/snmpMPDStats \
+	snmpv3/usmStats \
+	snmpv3/usmUser \
+	snmpv3mibs \
+	tunnel \
+	ucd-snmp/disk \
+	ucd-snmp/extensible \
+	ucd-snmp/loadave \
+	ucd-snmp/memory \
+	ucd-snmp/pass \
+	ucd-snmp/proc \
+	ucd-snmp/vmstat \
+	util_funcs \
+	utilities/execute
 
 NETSNMP_MIB_MODULES_EXCLUDED:=\
-  agent_mibs \
-  agentx \
-  host \
-  ieee802dot11 \
-  mibII \
-  notification \
-  snmpv3mibs \
-  target \
-  ucd_snmp \
-  utilities
+	agent_mibs \
+	agentx \
+	host \
+	ieee802dot11 \
+	mibII \
+	notification \
+	snmpv3mibs \
+	target \
+	ucd_snmp \
+	utilities
 
 NETSNMP_TRANSPORTS_INCLUDED:=UDP
 

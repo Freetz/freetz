@@ -34,15 +34,15 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
 	cd $(PJPROJECT_DIR)
 	rm -f $(PJPROJECT_CONFIG_SIZE)
-	echo "#undef PJ_OS_HAS_CHECK_STACK"  		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_OS_HAS_CHECK_STACK 0"  	>> $(PJPROJECT_CONFIG_SITE)
+	echo "#undef PJ_OS_HAS_CHECK_STACK"		>> $(PJPROJECT_CONFIG_SITE)
+	echo "#define PJ_OS_HAS_CHECK_STACK 0"		>> $(PJPROJECT_CONFIG_SITE)
 	echo "#define PJ_TERM_HAS_COLOR 0"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_ENABLE_EXTRA_CHECK 0"  	>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_DEBUG 0"  			>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define NDEBUG 0"  			>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_LOG_LEVEL_MAX 4"  		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_HAS_ERROR_STRING 0"  		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJSIP_SAFE_MODULE 0"  		>> $(PJPROJECT_CONFIG_SITE)
+	echo "#define PJ_ENABLE_EXTRA_CHECK 0"		>> $(PJPROJECT_CONFIG_SITE)
+	echo "#define PJ_DEBUG 0"			>> $(PJPROJECT_CONFIG_SITE)
+	echo "#define NDEBUG 0"				>> $(PJPROJECT_CONFIG_SITE)
+	echo "#define PJ_LOG_LEVEL_MAX 4"		>> $(PJPROJECT_CONFIG_SITE)
+	echo "#define PJ_HAS_ERROR_STRING 0"		>> $(PJPROJECT_CONFIG_SITE)
+	echo "#define PJSIP_SAFE_MODULE 0"		>> $(PJPROJECT_CONFIG_SITE)
 	echo "#define PJMEDIA_HAS_SRTP 0" 		>> $(PJPROJECT_CONFIG_SITE)
 	echo "#define PJ_HAS_FLOATING_POINT 0"		>> $(PJPROJECT_CONFIG_SITE)
 	echo "#define SIOCGIFCONF 1"			>> $(PJPROJECT_CONFIG_SITE)	
@@ -50,22 +50,22 @@ $($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
 	echo "#undef PJ_HAS_IFADDR_H"			>> $(PJPROJECT_CONFIG_SITE)	
 	echo "#define PJMEDIA_SOUND_IMPLEMENTATION PJMEDIA_SOUND_NULL_SOUND" >> $(PJPROJECT_CONFIG_SITE)
 	PATH=$(TARGET_PATH) \
-	    LDFLAGS="-lm" \
-	    $(MAKE) -C $(PJPROJECT_DIR) dep
+		LDFLAGS="-lm" \
+		$(MAKE) -C $(PJPROJECT_DIR) dep
 	touch $@
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_DIR)/.depend
 	cd $(PJPROJECT_DIR)
 	PATH=$(TARGET_PATH) \
-	    LDFLAGS="-lm" \
-	    $(MAKE1) -C $(PJPROJECT_DIR)
+		LDFLAGS="-lm" \
+		$(MAKE1) -C $(PJPROJECT_DIR)
 	touch $@
 
 #$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 #	cd $(PJPROJECT_DIR)
 #	PATH=$(TARGET_PATH) \
-#	    $(MAKE1) -C $(PJPROJECT_DIR) LDFLAGS="-lm" \
-#	    DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+#		$(MAKE1) -C $(PJPROJECT_DIR) LDFLAGS="-lm" \
+#		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 #	install
 #	touch $@
 

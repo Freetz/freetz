@@ -8,7 +8,7 @@ $(PKG)_STARTLEVEL=30
 $(PKG)_SOURCE_MD5:=0055ab7774b871461b31334464edecd5
 
 CALLMONITOR_FEATURES:=$(foreach feat,webif actions monitor phonebook,\
-    	$(if $(FREETZ_PACKAGE_CALLMONITOR_$(feat)),$(feat)))
+	$(if $(FREETZ_PACKAGE_CALLMONITOR_$(feat)),$(feat)))
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -41,7 +41,7 @@ $($(PKG)_TARGET_DIR)/.packaged: $(CALLMONITOR_DIR)/.configured $($(PKG)_TARGET_B
 	rm -rf $(CALLMONITOR_TARGET_DIR)
 	mkdir -p $(CALLMONITOR_TARGET_DIR)/root
 	tar -c -C $(CALLMONITOR_DIR)/root --files-from=$(CALLMONITOR_DIR)/.files | \
-	    tar -x -C $(CALLMONITOR_DEST_DIR)
+		tar -x -C $(CALLMONITOR_DEST_DIR)
 	cp $(CALLMONITOR_DIR)/.language $(CALLMONITOR_TARGET_DIR)/
 	@touch $@
 

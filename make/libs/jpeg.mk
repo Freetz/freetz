@@ -16,11 +16,11 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH=$(TARGET_PATH) \
-	   $(MAKE) -C $(JPEG_DIR)  all
+		$(MAKE) -C $(JPEG_DIR) all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	PATH=$(TARGET_PATH) \
-	   $(MAKE) -C $(JPEG_DIR) \
+		$(MAKE) -C $(JPEG_DIR) \
 		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		install-headers install-lib
