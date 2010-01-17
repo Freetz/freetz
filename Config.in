@@ -1335,9 +1335,9 @@ config FREETZ_PATCH_MAXDEVCOUNT
 
 config FREETZ_PATCH_MULTIPLE_PRINTERS
 	bool "Add support for multiple printers"
-	depends on  FREETZ_TYPE_LANG_DE && \
+	depends on FREETZ_TYPE_LANG_DE && \
 		( \
-		FREETZ_TYPE_2170  || \
+		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_WLAN_3131 || \
 		FREETZ_TYPE_WLAN_3170 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -1751,6 +1751,45 @@ config FREETZ_DL_OVERRIDE
 	default n
 	help
 		Enable this to override automatically generated entries.
+
+config FREETZ_DL_KERNEL_SITE
+	string "Kernel site"								if	FREETZ_DL_OVERRIDE
+	default "@AVM/develper/opensrc"							if	FREETZ_AVM_VERSION_04_33 || \
+												FREETZ_AVM_VERSION_04_40 || \
+												FREETZ_AVM_VERSION_04_49 || \
+												FREETZ_AVM_VERSION_04_57 || \
+												FREETZ_AVM_VERSION_04_67 || \
+												FREETZ_AVM_VERSION_04_70
+	default "@AVM/fritz.box/fritzbox.fon_wlan_7170/x_misc/opensrc"			if	FREETZ_AVM_VERSION_04_76
+	default "@AVM/fritz.box/fritzbox.wlan_3270/x_misc/opensrc/"			if	FREETZ_AVM_VERSION_3270_04_76
+	default "@AVM/fritz.box/fritzbox.fon_wlan_7270/x_misc/opensrc"			if	FREETZ_AVM_VERSION_7270_04_80
+	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport_W501V"	if	FREETZ_AVM_VERSION_r7203
+
+config FREETZ_DL_KERNEL_SOURCE
+	string "Kernel source"					if	FREETZ_DL_OVERRIDE
+	default "fritzbox-source-files-04.33.tar.bz2"		if	FREETZ_AVM_VERSION_04_33
+	default "fritzbox-source-files-04.40.tar.bz2"		if	FREETZ_AVM_VERSION_04_40
+	default "fritzbox-source-files-04.49.tar.bz2"		if	FREETZ_AVM_VERSION_04_49
+	default "fritzbox-source-files-04.57.tar.bz2"		if	FREETZ_AVM_VERSION_04_57
+	default "fritzbox-source-files-04.67.tar.bz2"		if	FREETZ_AVM_VERSION_04_67
+	default "fritzbox-source-files-04.70.tar.bz2"		if	FREETZ_AVM_VERSION_04_70
+	default "fritzbox7170-source-files-04.76.tar.gz"	if	FREETZ_AVM_VERSION_04_76
+	default "GPL-Fritz_Box_3270.tar.gz"			if	FREETZ_AVM_VERSION_3270_04_76
+	default "fritzbox7270-source-files-04.80.tar.gz"	if	FREETZ_AVM_VERSION_7270_04_80
+	default "GPL-r7203-4mb_26-tar.bz2"			if	FREETZ_AVM_VERSION_r7203
+
+config FREETZ_DL_KERNEL_SOURCE_MD5
+	string "MD5 checksum for downloaded Kernel source file" if	FREETZ_DL_OVERRIDE
+	default "99b6a701f9cd09319086c8655fced242"		if	FREETZ_AVM_VERSION_04_33
+	default "008ecd257e584fc5bbf5e276d4b03ff1"		if	FREETZ_AVM_VERSION_04_40
+	default "e6889745b437bde0f5bdb5ada93c913d"		if	FREETZ_AVM_VERSION_04_49
+	default "702f4adf12638bfa34a6b10c0ede4b55"		if	FREETZ_AVM_VERSION_04_57
+	default "ec2c233bb836e822d9018fd41e123a91"		if	FREETZ_AVM_VERSION_04_67
+	default "855d4ad80fc894d9dff52fcaf55d3c12"		if	FREETZ_AVM_VERSION_04_70
+	default "4ffc088502c896c11931ba81536fa0e6"		if	FREETZ_AVM_VERSION_04_76
+	default "13c932630682bb427c8fc9f6931775d7"		if	FREETZ_AVM_VERSION_3270_04_76
+	default "bcd49b28a54293e1481b8170b07245e0"		if	FREETZ_AVM_VERSION_7270_04_80
+	default "582c74f0959a687c41c1bcfa599ace9c"		if	FREETZ_AVM_VERSION_r7203
 
 config FREETZ_DL_SITE
 	string "Firmware site"							if	FREETZ_DL_OVERRIDE
