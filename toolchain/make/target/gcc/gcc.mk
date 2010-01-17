@@ -77,6 +77,7 @@ $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE)
 
 gcc-patched: $(GCC_DIR)/.patched
 $(GCC_DIR)/.patched: $(GCC_DIR)/.unpacked
+	set -e; \
 	for i in $(GCC_MAKE_DIR)/$(GCC_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GCC_DIR) $$i; \
 	done

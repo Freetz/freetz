@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.76)
+$(call PKG_INIT_BIN, 1.77)
 $(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=ac44511ba4c203998be3079626126ede
+$(PKG)_SOURCE_MD5:=d9457ac827faebb515062975d45835e9
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 
 $(PKG)_BINARIES_ALL := transmissioncli transmission-daemon transmission-remote

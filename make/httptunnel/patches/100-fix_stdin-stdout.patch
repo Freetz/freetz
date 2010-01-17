@@ -1,0 +1,11 @@
+--- common.c.orig
++++ common.c
+@@ -314,7 +314,7 @@
+ 
+       /* If fd == 0, then we are using --stdin-stdout so write to stdout,
+        * not fd. */
+-      m = write_all (fd ? fd : 0, buf, (size_t)n);
++      m = write_all (fd ? fd : 1, buf, (size_t)n);
+       log_annoying ("write_all (%d, %p, %d) = %d", fd ? fd : 1, buf, n, m);
+       return m;
+     }

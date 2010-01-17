@@ -11,10 +11,10 @@ $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$(
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_SOURCE_MD5:=4879f06570d2225667534c37fea04213
 
-$(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.freetz_config
-$(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.freetz_config.temp
 
 $(PKG)_DEPENDS_ON := kernel
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -29,24 +29,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-mtab
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
 
 $(PKG_SOURCE_DOWNLOAD)
-
-$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
-	@echo "FREETZ_KERNEL_LAYOUT=$(FREETZ_KERNEL_LAYOUT)" > $(FUSE_FREETZ_CONFIG_TEMP)
-	@diff -q $(FUSE_FREETZ_CONFIG_TEMP) $(FUSE_FREETZ_CONFIG_FILE) || \
-		cp $(FUSE_FREETZ_CONFIG_TEMP) $(FUSE_FREETZ_CONFIG_FILE)
-	@rm -f $(FUSE_FREETZ_CONFIG_TEMP)
-
-# Make sure that a perfectly clean build is performed whenever Freetz package
-# options have changed. The safest way to achieve this is by starting over
-# with the source directory.
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $($(PKG)_FREETZ_CONFIG_FILE)
-	rm -rf $(FUSE_DIR)
-	tar -C $(SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(FUSE_SOURCE)
-	for i in $(FUSE_MAKE_DIR)/patches/*.patch; do \
-	$(PATCH_TOOL) $(FUSE_DIR) $$i; \
-	done
-	touch $@
-
+$(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_MOD_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured

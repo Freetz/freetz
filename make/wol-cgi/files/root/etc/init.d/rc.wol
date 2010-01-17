@@ -45,10 +45,6 @@ start() {
 	fi
 }
 
-stop() {
-	modlib_stop
-}
-
 case "$1" in
 	""|load)
 		modreg cgi 'wol' 'Wake on LAN'
@@ -66,18 +62,17 @@ case "$1" in
 		start
 		;;
 	unload)
-		stop
+		modunreg cgi 'wol'
+		modlib_stop
 		;;
 	start)
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
 		if [ "$WOL_ENABLED" = "inetd" ]; then

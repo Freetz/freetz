@@ -7,4 +7,7 @@ sed -i \
 	-e 's/urlader_size=65536/urlader_size=131072/' \
 	"${FIRMWARE_MOD_DIR}/var/install"
 
+# Don't allow flashing 8 MB boxes with this image
+sed -i -e 's/ur8_8MB_xilinx/disabled_ur8_8MB_xilinx/g' "${FIRMWARE_MOD_DIR}/var/install"
+
 [ -x "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7270_16" ] || ln -sf default.Fritz_Box_7270 "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7270_16"

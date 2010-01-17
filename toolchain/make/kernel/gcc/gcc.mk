@@ -40,6 +40,7 @@ $(DL_DIR)/$(GCC_KERNEL_SOURCE): | $(DL_DIR)
 $(GCC_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 	mkdir -p $(KERNEL_TOOLCHAIN_DIR)
 	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GCC_KERNEL_SOURCE)
+	set -e; \
 	for i in $(GCC_KERNEL_MAKE_DIR)/$(GCC_KERNEL_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GCC_KERNEL_DIR) $$i; \
 	done
