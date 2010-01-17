@@ -1,19 +1,10 @@
-AVM_VERSION:=$(strip $(subst ",, $(FREETZ_AVM_VERSION_STRING)))
 AVM_SOURCE:=$(strip $(subst ",, $(FREETZ_DL_KERNEL_SOURCE)))
 
 AVM_UNPACK__INT_.gz:=z
 AVM_UNPACK__INT_.bz2:=j
 
-KERNEL_ARCH:=mips
 KERNEL_SUBVERSION:=iln6
-KERNEL_REF:=$(strip $(subst ",, $(FREETZ_KERNEL_REF)))
 KERNEL_BOARD_REF:=$(KERNEL_REF)
-KERNEL_VERSION:=$(strip $(subst ",, $(FREETZ_KERNEL_VERSION)))
-KERNEL_TARGET_DIR:=kernel
-KERNEL_SOURCE_DIR:=$(KERNEL_DIR)/linux
-KERNEL_HEADERS_DIR:=$(KERNEL_SOURCE_DIR)/include
-KERNEL_LAYOUT:=$(strip $(subst ",, $(FREETZ_KERNEL_LAYOUT)))
-KERNEL_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 
 ifeq ($(AVM_VERSION),r7203)
@@ -23,7 +14,6 @@ KERNEL_BUILD_DIR_N:=kernel_8mb_26_build
 endif
 
 KERNEL_BUILD_DIR:=$(KERNEL_DIR)/$(KERNEL_BUILD_DIR_N)
-KERNEL_MODULES_DIR:=$(KERNEL_TARGET_DIR)/modules-$(KERNEL_REF)-$(AVM_VERSION)
 KERNEL_IMAGE:=kernel/linux-$(KERNEL_VERSION)/vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT)-$(KERNEL_REF).$(AVM_VERSION)
@@ -46,8 +36,10 @@ $(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) kernel-dirclean $(KERNEL_FREETZ_CONFIG_FILE) \
+$(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE) \
 				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
+	$(RM) -r $(KERNEL_DIR)
+	$(RM) -r $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
 	mkdir -p $(KERNEL_BUILD_DIR)/kernel
 	@echo -n Checking Kernel image structure ...; \
 	KERNEL_SOURCE_CONTENT=` \
