@@ -18,7 +18,7 @@ disconnect () {
 	sleep 2
 	cnt=17
 	if [ -n "$(pidof pppd)" ]; then
-		while [ -n  "`pidof pppd`" ] && [ $cnt -gt 0 ]; do
+		while [ -n "`pidof pppd`" ] && [ $cnt -gt 0 ]; do
 			killall -9 pppd 2>/dev/null
 			let cnt=cnt-1
 			sleep 1
@@ -85,7 +85,7 @@ case "$1" in
 			echo "ppp-cgi is disabled" 1>&2
 			exit 1;
 		fi
-                start
+		start
 		;;
 	unload)
 		modunreg cgi 'ppp'
@@ -107,11 +107,11 @@ case "$1" in
 		start
 		;;
 	status)
-                if [ -n "$(pidof ppp_observer)" ] || [ -n "$(pidof ppp_dialer)" ] || [ -n "$(pidof pppd)" ]; then
-                        echo 'running'
-                else
-                        echo 'stopped'
-                fi
+		if [ -n "$(pidof ppp_observer)" ] || [ -n "$(pidof ppp_dialer)" ] || [ -n "$(pidof pppd)" ]; then
+			echo 'running'
+		else
+			echo 'stopped'
+		fi
 		;;
 	disconnect)
 		disconnect

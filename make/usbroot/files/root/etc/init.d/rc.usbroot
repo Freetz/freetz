@@ -200,7 +200,7 @@ mount_usbroot() {
 				fi
 				# now mount the partition
 				mount $DEVICE $MNTPOINT \
-				    ${FSTYPE:+-t} $FSTYPE ${MNTOPTIONS:+-o} $MNTOPTIONS
+					${FSTYPE:+-t} $FSTYPE ${MNTOPTIONS:+-o} $MNTOPTIONS
 				# reenable hotplug
 				hotplugging enable
 				# return with success
@@ -341,11 +341,11 @@ get_fstype() {
 	# result matrix (only handle some special cases, thread all other cases as ext2)
 	case "$ext2:$ext3:$mediafs" in
 		n:y:*)
-			FSTYPE="ext3" ;;             # only ext3 available
+			FSTYPE="ext3" ;;		# only ext3 available
 		y:y:*)
-			FSTYPE="${mediafs:-ext2}" ;; # use fs type from media or ext2 as default
+			FSTYPE="${mediafs:-ext2}" ;;	# use fs type from media or ext2 as default
 		*)
-			FSTYPE="ext2" ;;             # defaults to ext2
+			FSTYPE="ext2" ;;		# defaults to ext2
 	esac
 
 	# user can force a fs type if kernel module is available

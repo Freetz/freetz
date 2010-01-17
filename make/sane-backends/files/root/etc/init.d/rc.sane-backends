@@ -32,34 +32,34 @@ config() {
 }
 
 start() {
-        echo -n 'Starting saned...'
-        config
+	echo -n 'Starting saned...'
+	config
 
-        start-stop-daemon -q -p /var/run/$DAEMON.pid -m -b -x $DAEMON -S -- -d
-        exitval=$?
-        if [ "$exitval" -eq 0 ]; then
-                echo 'done.'
-        else
-                echo 'failed.'
-                rm -f $CONFDIR/$DAEMON.conf
-                exit $exitval
-        fi
+	start-stop-daemon -q -p /var/run/$DAEMON.pid -m -b -x $DAEMON -S -- -d
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		rm -f $CONFDIR/$DAEMON.conf
+		exit $exitval
+	fi
 }
 
 stop () {
-        echo -n 'Stopping saned...'
+	echo -n 'Stopping saned...'
 
-        start-stop-daemon -q -p /var/run/$DAEMON.pid -K
-        exitval=$?
+	start-stop-daemon -q -p /var/run/$DAEMON.pid -K
+	exitval=$?
 
-        rm -f $CONFDIR/$DAEMON.conf
+	rm -f $CONFDIR/$DAEMON.conf
 
-        if [ "$exitval" -eq 0 ]; then
-                echo 'done.'
-        else
-                echo 'failed.'
-                exit $exitval
-        fi
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
 }
 
 case "$1" in

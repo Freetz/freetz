@@ -5,86 +5,86 @@ DAEMON=virtualip
 . /etc/init.d/modlibrc
 
 ipv4bcast () {
-    local IP1=${1%%.*.*.*}
-    local IP2=${1#*.};    IP2=${IP2%%.*.*}
-    local IP3=${1#*.*.};  IP3=${IP3%%.*}
-    local IP4=${1#*.*.*.}
-    local NM1=${2%%.*.*.*}
-    local NM2=${2#*.};    NM2=${NM2%%.*.*}
-    local NM3=${2#*.*.};  NM3=${NM3%%.*}
-    local NM4=${2#*.*.*.}
-    local IIP=$(($IP1 << 24 | $IP2 << 16 | $IP3 << 8 | $IP4))
-    local INM=$(($NM1 << 24 | $NM2 << 16 | $NM3 << 8 | $NM4))
-    local IBC=$((${IIP} | ~${INM}))
-    printf "%u.%u.%u.%u" $((${IBC} >> 24 & 0xFF)) $((${IBC} >> 16 & 0xFF)) \
-                         $((${IBC} >> 8 & 0xFF)) $((${IBC} & 0xFF))
+	local IP1=${1%%.*.*.*}
+	local IP2=${1#*.};	IP2=${IP2%%.*.*}
+	local IP3=${1#*.*.};	IP3=${IP3%%.*}
+	local IP4=${1#*.*.*.}
+	local NM1=${2%%.*.*.*}
+	local NM2=${2#*.};	NM2=${NM2%%.*.*}
+	local NM3=${2#*.*.};	NM3=${NM3%%.*}
+	local NM4=${2#*.*.*.}
+	local IIP=$(($IP1 << 24 | $IP2 << 16 | $IP3 << 8 | $IP4))
+	local INM=$(($NM1 << 24 | $NM2 << 16 | $NM3 << 8 | $NM4))
+	local IBC=$((${IIP} | ~${INM}))
+	printf "%u.%u.%u.%u" $((${IBC} >> 24 & 0xFF)) $((${IBC} >> 16 & 0xFF)) \
+		$((${IBC} >> 8 & 0xFF)) $((${IBC} & 0xFF))
 }
 
 
 start() {
-    echo -n 'Setting up virtual network interface...'
-    
-    VIRTUALIP_BROADCAST="`ipv4bcast $VIRTUALIP_IP $VIRTUALIP_NETMASK`"
+	echo -n 'Setting up virtual network interface...'
+	
+	VIRTUALIP_BROADCAST="`ipv4bcast $VIRTUALIP_IP $VIRTUALIP_NETMASK`"
 
-    ifconfig $VIRTUALIP_INTERFACE $VIRTUALIP_IP netmask $VIRTUALIP_NETMASK broadcast $VIRTUALIP_BROADCAST up > /dev/null 2>&1
-    exitval=$?
-    if [ "$exitval" -eq 0 ]; then
-        echo 'done.'
-    else
-        echo 'failed.'
-        exit $exitval
-    fi
+	ifconfig $VIRTUALIP_INTERFACE $VIRTUALIP_IP netmask $VIRTUALIP_NETMASK broadcast $VIRTUALIP_BROADCAST up > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
 }
 
 stop() {
-    echo -n 'Deactivating virtual network interface...'
-    ifconfig $VIRTUALIP_INTERFACE down > /dev/null 2>&1 > /dev/null 2>&1
-    exitval=$?
-    if [ "$exitval" -eq 0 ]; then
-        echo 'done.'
-    else
-        echo 'failed.'
-        exit $exitval
-    fi
+	echo -n 'Deactivating virtual network interface...'
+	ifconfig $VIRTUALIP_INTERFACE down > /dev/null 2>&1 > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
 }
 
 case "$1" in
-    ""|load)
-        modreg cgi 'virtualip' 'Virtual IP'
+	""|load)
+		modreg cgi 'virtualip' 'Virtual IP'
 
-        if [ "$VIRTUALIP_ENABLED" != "yes" ]; then
-            echo "$DAEMON is disabled" 1>&2
-            exit 1;
-        fi
+		if [ "$VIRTUALIP_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
 
-        start
-        ;;
-    start)
-        start
-        ;;
+		start
+		;;
+	start)
+		start
+		;;
 
-    stop)
-        stop
-        ;;
-    unload)
-        stop
-        modunreg cgi 'virtualip'
-        ;;
-    restart)
-        stop
-        start
-        ;;
-    status)
-        if [ -z "`ifconfig | grep "$VIRTUALIP_INTERFACE"`" ]; then
-            echo 'stopped'
-        else
-            echo 'running'
-        fi
-        ;;
-    *)
-        echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
-        exit 1
-        ;;
+	stop)
+		stop
+		;;
+	unload)
+		stop
+		modunreg cgi 'virtualip'
+		;;
+	restart)
+		stop
+		start
+		;;
+	status)
+		if [ -z "`ifconfig | grep "$VIRTUALIP_INTERFACE"`" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
 esac
 
 exit 0

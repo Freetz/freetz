@@ -8,7 +8,7 @@ DAEMON=nhipt
 
 # Liest Paketkonfiguration ein und definiert einige Hilsfunktionen
 . /etc/init.d/modlibrc
-#         echo "MAIN ENTERING ---$1" >> /var/tmp/log.log
+#	echo "MAIN ENTERING ---$1" >> /var/tmp/log.log
 
 start() {
 	config
@@ -55,8 +55,8 @@ start() {
 }
 
 stop() {
-         # HIER KOMMEN DIE VERARBEITUNGEN REIN
-         echo "Configuring services..."
+	# HIER KOMMEN DIE VERARBEITUNGEN REIN
+	echo "Configuring services..."
 }
 config() {
 	(
@@ -90,7 +90,7 @@ case "$1" in
 		# CGI registrieren
 		touch /var/tmp/flash/nhipt.diff
 		if [ ! -r "/var/tmp/nhipt.par" ]; then
-			chmod  644 /tmp/flash/nhiptboot.cfg
+			chmod 644 /tmp/flash/nhiptboot.cfg
 			. /tmp/flash/nhiptboot.cfg
 		fi
 		modreg cgi $DAEMON NHIPT

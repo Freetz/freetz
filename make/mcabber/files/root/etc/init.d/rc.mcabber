@@ -16,7 +16,7 @@ start() {
 
 	) > /var/mod/root/.mcabberrc
 
-	if [ -r  "/var/mod/root/.mcabberrc" ]; then
+	if [ -r "/var/mod/root/.mcabberrc" ]; then
 		echo ' done.'
 	else
 		echo ' failed.'
@@ -42,42 +42,41 @@ stop() {
 }
 
 case "$1" in
-    ""|load)
-        modreg cgi 'mcabber' 'Mcabber-Config'
+	""|load)
+		modreg cgi 'mcabber' 'Mcabber-Config'
 
-        if [ "$MCABBER_ENABLED" != "yes" ]; then
-            echo "Mcabber-Config is disabled" 1>&2
-            exit 1;
-        fi
+		if [ "$MCABBER_ENABLED" != "yes" ]; then
+			echo "Mcabber-Config is disabled" 1>&2
+			exit 1;
+		fi
 
-        start
-        ;;
-    start)
-        start
-        ;;
-
-    stop)
-        stop
-        ;;
-    unload)
-        stop
-        modunreg cgi 'mcabber'
-        ;;
-    restart)
-        stop
-        start
-        ;;
-    status)
-        if [ -r  "/var/mod/root/.mcabberrc" ]; then
-            echo 'running'
-        else
-            echo 'stopped'
-        fi
-        ;;
-    *)
-        echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
-        exit 1
-        ;;
+		start
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	unload)
+		stop
+		modunreg cgi 'mcabber'
+		;;
+	restart)
+		stop
+		start
+		;;
+	status)
+		if [ -r  "/var/mod/root/.mcabberrc" ]; then
+			echo 'running'
+		else
+			echo 'stopped'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
 esac
 
 exit 0

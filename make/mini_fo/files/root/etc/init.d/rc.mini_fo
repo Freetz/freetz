@@ -149,8 +149,8 @@ start() {
 bootstatus()
 {
 	grep "kernel_args" /proc/sys/urlader/environment | grep -q "init\=/etc/init\.d/rc\.mini_fo" \
-                        && echo 'enabled' \
-                        || echo 'disabled'
+			&& echo 'enabled' \
+			|| echo 'disabled'
 }
 
 if [ "$PPID" == "0" ]; then
@@ -177,7 +177,7 @@ case "$1" in
 		;;
 	bootstatus)
 		bootstatus
-                ;;
+		;;
 	on)
 		. kernel_args
 		newval=$(ka_getArgs | sed -r 's/(.*[^ ])?( *init=[^ ]*)(.*)/\1\3/ ; s/^ +(.*)/\1/')

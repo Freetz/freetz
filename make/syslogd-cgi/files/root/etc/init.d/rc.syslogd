@@ -6,7 +6,7 @@ DAEMON=syslogd
 
 start() {
 
-	if [ "$SYSLOGD_NETWORK" = "no" -a "$SYSLOGD_LOCAL" = "no" ] || [ "$SYSLOGD_NETWORK" = "yes" -a -z "$SYSLOGD_HOST" ]; then  
+	if [ "$SYSLOGD_NETWORK" = "no" -a "$SYSLOGD_LOCAL" = "no" ] || [ "$SYSLOGD_NETWORK" = "yes" -a -z "$SYSLOGD_HOST" ]; then
 		echo -n 'Syslogd misconfigured. Please correct your settings!'
 		echo -n 'Starting with default options.'
 		$DAEMON -C > /dev/null 2>&1
@@ -44,7 +44,7 @@ start() {
 		esac
 	fi
 
-	if [ "$SYSLOGD_NETWORK" = "yes" ]; then  
+	if [ "$SYSLOGD_NETWORK" = "yes" ]; then
 		if [ ! -z "$SYSLOGD_PORT" -a "$SYSLOGD_PORT" -ne "514" ]; then
 			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -R $SYSLOGD_HOST:$SYSLOGD_PORT" 
 		else

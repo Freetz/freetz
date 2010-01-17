@@ -85,7 +85,7 @@ remove() {
 }
 
 case "$1" in
-        ""|load)
+	""|load)
 		modreg cgi $DAEMON 'Downloader'
 		modreg extra $DAEMON '$(lang de:"Heruntergeladene Dateien löschen" en:"Remove downloaded files")' 1 'downremover'
 		modreg extra $DAEMON '$(lang de:"Protokoll ansehen" en:"View log file")' 1 'downlog'
