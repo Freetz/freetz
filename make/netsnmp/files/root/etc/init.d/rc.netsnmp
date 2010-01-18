@@ -1,13 +1,11 @@
 #!/bin/sh
 
-. /etc/init.d/modlibrc
-
 DAEMON=snmpd
 DAEMON_LONG_NAME="Net-SNMP daemon"
 PID_FILE=/var/run/$DAEMON.pid
 CONF_NAME=netsnmp
 
-modlib_loadconfig
+. /etc/init.d/modlibrc
 
 SNMPDOPTS="-Lf /dev/null"
 
@@ -73,7 +71,7 @@ case "$1" in
 		;;
 	unload)
 		modlib_stop
-
+		modunreg cgi 'netsnmp'
 		[ "$CFGFILE" != "/etc/snmpd/snmpd.conf" ] && modunreg file 'snmpd_conf'
 		;;
 	start)

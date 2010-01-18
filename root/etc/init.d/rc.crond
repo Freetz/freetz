@@ -1,19 +1,9 @@
 #!/bin/sh
 
-. /etc/init.d/modlibrc
-
 DAEMON=crond
+CONF_NAME=mod
 
-case "$1" in
-	""|load|start|restart)
-		if [ ! -r /mod/etc/conf/mod.cfg ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/mod.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 start() {
 	if [ -r /tmp/flash/mod/crontab ]; then
@@ -49,7 +39,7 @@ stop() {
 }
 
 case "$1" in
-        ""|load)
+	""|load)
 		[ -r /tmp/flash/crontab.save ] && mv /tmp/flash/crontab.save /tmp/flash/mod/crontab
 		deffile='/etc/default.mod/crontab.def'
 		[ -r "/tmp/flash/mod/crontab.def" ] && deffile='/tmp/flash/mod/crontab.def'

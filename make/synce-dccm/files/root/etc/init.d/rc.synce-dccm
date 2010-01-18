@@ -1,23 +1,11 @@
 #!/bin/sh
 
-. /etc/init.d/modlibrc
-
 DAEMON=synce-dccm
 PID_FILE=/mod/root/.synce/dccm.pid
 
-case "$1" in
-	""|load|start|restart|status)
-		if [ ! -r /mod/etc/conf/synce-dccm.cfg ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/synce-dccm.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 start() {
-
 	echo -n 'Starting SynCE dccm daemon...'
 	dccm -r
 	exitval=$?

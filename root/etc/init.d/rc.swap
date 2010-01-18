@@ -1,20 +1,9 @@
 #!/bin/sh
 
-. /etc/init.d/modlibrc
-
 DAEMON=swap
+CONF_NAME=mod
 
-case "$1" in
-	""|load|unload|start|stop|restart)
-		if [ ! -r /mod/etc/conf/mod.cfg ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/mod.cfg
-		;;
-esac
-
+. /etc/init.d/modlibrc
 
 has_swap () {
 	sed '1d' /proc/swaps | grep -q ''

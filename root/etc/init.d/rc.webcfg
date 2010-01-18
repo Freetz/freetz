@@ -1,21 +1,11 @@
 #!/bin/sh
 
-. /etc/init.d/modlibrc
-
 DAEMON=httpd
 DAEMON_LONG_NAME="Freetz webinterface"
 PID_FILE=/var/run/webcfg.pid
+CONF_NAME=mod
 
-case $1 in
-	""|load|start|restart|status)
-		if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/mod.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 config() {
 	(
