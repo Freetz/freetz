@@ -712,7 +712,6 @@ config FREETZ_HAS_USB_CLIENT
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_WLAN_3020 || \
 		FREETZ_TYPE_WLAN_3030 || \
-		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3131 || \
 		FREETZ_TYPE_WLAN_3170 || \
 		FREETZ_TYPE_FON || \
@@ -732,6 +731,7 @@ config FREETZ_HAS_USB_CLIENT
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
+		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
@@ -1112,29 +1112,33 @@ config FREETZ_REMOVE_USB_MODULE
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		( \
+		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_300IP_AS_FON || \
 		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_FON_5050 || \
 		FREETZ_TYPE_FON_WLAN || \
-		FREETZ_TYPE_FON_WLAN_7050 \
+		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_WLAN_3020 || \
+		FREETZ_TYPE_WLAN_3030 || \
+		FREETZ_TYPE_WLAN_3031 || \
+		FREETZ_TYPE_WLAN_3170 \
 		)
 	default n
 	help
-		Removes avalanche_usb.ko to save space.
+		Removes avalanche_usb.ko to save 60kB uncompressed space.
 
 config FREETZ_REMOVE_CDROM_ISO
 	bool "Remove cdrom.iso"
 	depends on \
-			FREETZ_HAS_USB_CLIENT && \
-			( \
-			! FREETZ_TYPE_2170 && \
-			! FREETZ_TYPE_FON_WLAN_7050 && \
-			! FREETZ_TYPE_WLAN_3130 && \
-			! FREETZ_TYPE_WLAN_3131 && \
-			! FREETZ_TYPE_WLAN_3170 \
-			)
+		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_WLAN || \
+		FREETZ_TYPE_WLAN_3020 || \
+		FREETZ_TYPE_WLAN_3030
 	default n
 	help
-		Removes the file /lib/modules/cdrom.iso.
+		Removes the file /lib/modules/cdrom.iso to save 270kB uncompressed space.
 
 config FREETZ_REMOVE_CHRONYD
 	bool "Remove chronyd"
