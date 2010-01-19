@@ -3,7 +3,6 @@
 echo1 "removing tr069 stuff"
 rm_files "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr064.so" \
 	 "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr069.so" \
-	 "${FILESYSTEM_MOD_DIR}/bin/tr069starter" \
 	 "${FILESYSTEM_MOD_DIR}/sbin/tr069discover"
 
 if [ "$FREETZ_REMOVE_TR069_FWUPDATE" == "y" ]; then 
@@ -17,3 +16,6 @@ if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" ]; then
 	sed -i -e "s/CONFIG_TR069=.*$/CONFIG_TR069=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 	sed -i -e "s/CONFIG_TR064=.*$/CONFIG_TR064=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 fi
+
+# delete tr069 config
+echo "echo -n > /var/flash/tr069.cfg" > "${FILESYSTEM_MOD_DIR}/bin/tr069starter"
