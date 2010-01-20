@@ -444,7 +444,8 @@ common-clean:
 common-dirclean:
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	rm -f make/config.cache .new-uclibc .old-uclibc
-	find $(ROOT_DIR)/lib $(ROOT_DIR)/usr/lib \
+	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
+		`[ -d $(ROOT_DIR)/usr/lib ] && echo $(ROOT_DIR)/usr/lib` \
 		-type d -name .svn -prune -false , -name "*.so*" -exec rm {} \;
 	find $(MAKE_DIR) -name ".*_config" -exec rm {} \;
 	-cp .defstatic $(ADDON_DIR)/static.pkg
@@ -455,7 +456,8 @@ common-distclean: common-clean
 	rm -rf $(TOOLCHAIN_BUILD_DIR)
 	rm -rf $(DL_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	rm -f make/config.cache .new-uclibc .old-uclibc
-	find $(ROOT_DIR)/lib $(ROOT_DIR)/usr/lib \
+	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
+		`[ -d $(ROOT_DIR)/usr/lib && echo $(ROOT_DIR)/usr/lib` \
 		-type d -name .svn -prune -false , -name "*.so*" -exec rm {} \;
 	find $(MAKE_DIR) -name ".*_config" -exec rm {} \;
 	-rm -rf $(ADDON_DIR)/*
