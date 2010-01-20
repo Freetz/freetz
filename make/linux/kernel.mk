@@ -67,7 +67,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed \
 			"$$KERNEL_SOURCE_CONTENT"; \
 	fi
-	echo done
+	@echo done
 	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
 		echo error: KERNEL_BUILD_ROOT_DIR has wrong structure; exit 1; \
 	fi
@@ -81,20 +81,20 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 	@for i in $(KERNEL_LINKING_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; then \
-			echo Linking  .../include/linux/$${i##*\/linux_}; \
+			echo "Linking  .../include/linux/$${i##*\/linux_}"; \
 			ln -sf ../../$$i $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; \
 		fi \
 	done
 	@if test -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/avm_net_trace.h -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; then \
-			echo Linking  .../include/linux/avm_net_trace.h; \
+			echo "Linking  .../include/linux/avm_net_trace.h"; \
 			ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
 				$(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; \
 	fi
 	@for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile.26 -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
-			echo Linking  .../$$i/Makefile; \
+			echo "Linking  .../$$i/Makefile"; \
 			ln -sf Makefile.26 $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
 		fi \
 	done

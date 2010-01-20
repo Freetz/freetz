@@ -6,6 +6,8 @@ config FREETZ_HAVE_DOT_CONFIG
 
 comment "General --------------------------------"
 
+config FREETZ_AVM_VERSION_04_29
+	bool
 config FREETZ_AVM_VERSION_04_33
 	bool
 config FREETZ_AVM_VERSION_04_40
@@ -51,7 +53,7 @@ choice
 		bool "Fon 5010"
 
 	config FREETZ_TYPE_FON_5050
-		select FREETZ_AVM_VERSION_04_33
+		select FREETZ_AVM_VERSION_04_29
 		bool "Fon 5050"
 
 	config FREETZ_TYPE_FON_5140
@@ -289,6 +291,7 @@ endchoice
 
 config FREETZ_AVM_VERSION_STRING
 	string
+	default "04.29"			if FREETZ_AVM_VERSION_04_29
 	default "04.33"			if FREETZ_AVM_VERSION_04_33
 	default "04.40"			if FREETZ_AVM_VERSION_04_40
 	default "04.49"			if FREETZ_AVM_VERSION_04_49
@@ -1759,7 +1762,8 @@ config FREETZ_DL_OVERRIDE
 
 config FREETZ_DL_KERNEL_SITE
 	string "Kernel site"								if	FREETZ_DL_OVERRIDE
-	default "@AVM/develper/opensrc"							if	FREETZ_AVM_VERSION_04_33 || \
+	default "@AVM/develper/opensrc"							if	FREETZ_AVM_VERSION_04_29 || \
+												FREETZ_AVM_VERSION_04_33 || \
 												FREETZ_AVM_VERSION_04_40 || \
 												FREETZ_AVM_VERSION_04_49 || \
 												FREETZ_AVM_VERSION_04_57 || \
@@ -1772,6 +1776,7 @@ config FREETZ_DL_KERNEL_SITE
 
 config FREETZ_DL_KERNEL_SOURCE
 	string "Kernel source"					if	FREETZ_DL_OVERRIDE
+	default "fritzbox-source-files-04.29.tar.bz2"		if	FREETZ_AVM_VERSION_04_29
 	default "fritzbox-source-files-04.33.tar.bz2"		if	FREETZ_AVM_VERSION_04_33
 	default "fritzbox-source-files-04.40.tar.bz2"		if	FREETZ_AVM_VERSION_04_40
 	default "fritzbox-source-files-04.49.tar.gz"		if	FREETZ_AVM_VERSION_04_49
@@ -1785,6 +1790,7 @@ config FREETZ_DL_KERNEL_SOURCE
 
 config FREETZ_DL_KERNEL_SOURCE_MD5
 	string "MD5 checksum for downloaded Kernel source file" if	FREETZ_DL_OVERRIDE
+	default "fe1a34d7266eae9620c00e4692f1654b"		if	FREETZ_AVM_VERSION_04_29
 	default "99b6a701f9cd09319086c8655fced242"		if	FREETZ_AVM_VERSION_04_33
 	default "008ecd257e584fc5bbf5e276d4b03ff1"		if	FREETZ_AVM_VERSION_04_40
 	default "e6889745b437bde0f5bdb5ada93c913d"		if	FREETZ_AVM_VERSION_04_49
