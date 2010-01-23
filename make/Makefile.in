@@ -408,8 +408,8 @@ $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-build-prereq
 $(pkg)-precompiled--int : $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON)) $(pkg)-clean-echo-item
 $(pkg)-clean-echo-item:
-	rm -f $(ECHO_ITEM_START)
-	rm -f $(ECHO_ITEM_BUILD)
+	@rm -f $(ECHO_ITEM_START)
+	@rm -f $(ECHO_ITEM_BUILD)
 $(pkg)-precompiled: 
 	@$(call _ECHO_DONE)
 $(pkg)-build-prereq: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked

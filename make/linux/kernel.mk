@@ -5,14 +5,14 @@ AVM_UNPACK__INT_.bz2:=j
 
 KERNEL_SUBVERSION:=iln6
 KERNEL_BOARD_REF:=$(KERNEL_REF)
-KERNEL_DIR:=$(SOURCE_DIR)/kernel/ref-$(KERNEL_REF)-$(AVM_VERSION)
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
+KERNEL_DIR:=$(SOURCE_DIR)/kernel/ref-$(KERNEL_REF)-$(AVM_VERSION)
+KERNEL_BUILD_DIR:=$(KERNEL_DIR)/kernel
+KERNEL_BUILD_ROOT_DIR:=$(KERNEL_BUILD_DIR)/linux-$(KERNEL_VERSION)
 
-KERNEL_BUILD_DIR:=$(KERNEL_DIR)
-KERNEL_IMAGE:=linux-$(KERNEL_VERSION)/vmlinux.eva_pad
+KERNEL_IMAGE:=vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_REF)-$(AVM_VERSION).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT)-$(KERNEL_REF).$(AVM_VERSION)
-KERNEL_BUILD_ROOT_DIR:=$(KERNEL_BUILD_DIR)/linux-$(KERNEL_VERSION)
 
 ifeq ($(KERNEL_REF),4mb_26)
 KERNEL_FREETZ_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/.freetz_config
@@ -26,7 +26,8 @@ $(KERNEL_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 endif
 
 $(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
-	$(DL_TOOL) $(DL_FW_DIR) .config $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_MD5)
+	@echo -n "downloading... "
+	$(DL_TOOL) $(DL_FW_DIR) .config $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_MD5) $(SILENT)
 
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
@@ -35,42 +36,41 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
 	$(RM) -r $(KERNEL_DIR)
 	$(RM) -r $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
-	mkdir -p $(KERNEL_BUILD_DIR)/kernel
-	$(ECHO) -n Checking Kernel image structure ...; \
-	KERNEL_SOURCE_CONTENT=` \
+	mkdir -p $(KERNEL_BUILD_DIR)
+	@echo -n "checking structure... "
+	@KERNEL_SOURCE_CONTENT=` \
 		tar \
 			-t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE)| \
 		grep -e '^.*\(\/GPL-release_kernel\.tar\.gz\|\/linux-2\.6\...\..\/\)$$'| \
 		head -n 1`; \
-		$(ECHO) done; \
-		$(ECHO) -n Decompressing kernel source files ...; \
+		echo -n "unpacking... "; \
 	if [ "$${KERNEL_SOURCE_CONTENT##*/}" == "GPL-release_kernel.tar.gz" ]; then \
 		tar	-O $(VERBOSE) \
 			-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
 			--wildcards '*/GPL-release_kernel.tar.gz' | \
-		tar	-C $(KERNEL_BUILD_DIR)/kernel $(VERBOSE) \
+		tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
 			-xz \
 			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed; \
 	elif [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
 		$(call ERROR,1,KERNEL_SOURCE_CONTENT is empty) \
 	else \
-		tar	-C $(KERNEL_BUILD_DIR)/kernel $(VERBOSE) \
+		tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
 			-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
 			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed \
 			"$$KERNEL_SOURCE_CONTENT"; \
 	fi
-	$(ECHO) done
 	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
 		$(call ERROR,1,KERNEL_BUILD_ROOT_DIR has wrong structure) \
 	fi
-	@set -e; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/*.patch; do \
+	@echo -n "preparing... "
+	set -e; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
 	done
 	#Version specific patches
-	@set -e; shopt -s nullglob; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/$(AVM_VERSION)/*.patch; do \
+	set -e; shopt -s nullglob; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/$(AVM_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
 	done
 	@for i in $(KERNEL_LINKING_FILES); do \
@@ -111,10 +111,11 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 			touch $(KERNEL_BUILD_ROOT_DIR)/$$i; \
 		fi \
 	done
-	ln -s linux-$(KERNEL_VERSION) $(KERNEL_BUILD_DIR)/linux
+	ln -s kernel/linux-$(KERNEL_VERSION) $(KERNEL_DIR)/linux
 	touch $@
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
+	@echo -n "configuring... "
 	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_ROOT_DIR)/.config
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
@@ -133,50 +134,50 @@ $(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.configured
 		prepare
 	touch $@
 
-$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma2eva
+$(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma2eva
 	@echo -n "building kernel image... "
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		ARCH=$(KERNEL_ARCH) \
-		$(notdir $(KERNEL_IMAGE))
+		$(KERNEL_IMAGE)
 	touch -c $@
 
 kernel-force:
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		ARCH=$(KERNEL_ARCH) \
-		$(notdir $(KERNEL_IMAGE))
+		$(KERNEL_IMAGE)
 
-$(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
-	cp $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
+$(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE)
+	cp $(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
 	cp $(KERNEL_BUILD_ROOT_DIR)/System.map $(KERNEL_TARGET_DIR)/System-$(KERNEL_REF)-$(AVM_VERSION).map
 	echo "$(KERNEL_SUBVERSION)" > $(KERNEL_TARGET_DIR)/.version-$(KERNEL_REF)-$(AVM_VERSION)
 	touch -c $@
 
-$(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE)
+$(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE)
 	@echo -n "building modules... "
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		ARCH=$(KERNEL_ARCH) \
-		INSTALL_MOD_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_BUILD_DIR)" \
+		INSTALL_MOD_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_DIR)" \
 		modules
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		ARCH=$(KERNEL_ARCH) \
-		INSTALL_MOD_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_BUILD_DIR)" \
+		INSTALL_MOD_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_DIR)" \
 		modules_install
 	touch $@
 
 $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT)
 	rm -rf $(KERNEL_MODULES_DIR)/lib
 	mkdir -p $(KERNEL_MODULES_DIR)
-	KERNEL_MODULES_SOURCE_DIR=$(KERNEL_BUILD_DIR)/lib/modules/$(KERNEL_VERSION)/kernel; \
+	KERNEL_MODULES_SOURCE_DIR=$(KERNEL_DIR)/lib/modules/$(KERNEL_VERSION)/kernel; \
 	[ ! -e $$KERNEL_MODULES_SOURCE_DIR ] && \
-		KERNEL_MODULES_SOURCE_DIR=$(KERNEL_BUILD_DIR)/lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/kernel; \
+		KERNEL_MODULES_SOURCE_DIR=$(KERNEL_DIR)/lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/kernel; \
 	tar -cf - -C $$KERNEL_MODULES_SOURCE_DIR \
 		. | tar -xf - -C $(KERNEL_MODULES_DIR)
 	touch $@
