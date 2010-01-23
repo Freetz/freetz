@@ -186,6 +186,7 @@ mount_usbroot() {
 					echo "*** Checking filesystem on $DEVICE. ***"
 					e2fsck -p $DEVICE
 					FSCKCODE=$?
+					echo "*** e2fsck returned with exit code: $FSCKCODE ***"
 					if [ "$FSCKCODE" -gt 3 ]; then
 						echo "*** USB root rejected: filesystem contains errors. ***"
 						# discard hotplug cache
