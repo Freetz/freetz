@@ -1,28 +1,16 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
-
-PACKAGE=vtun
 DAEMON=vtund
+CONF_NAME=vtun
 
-case "$1" in
-	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/$PACKAGE.cfg" ]; then
-			echo "Error[$PACKAGE]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/$PACKAGE.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 start() {
 	echo $VTUN_CONFIG > /mod/etc/vtun.conf
 
 	echo -n 'Starting vtund ...'
 
-	$DAEMON  -f /mod/etc/vtun.conf  $VTUN_STARTPARAMS
+	$DAEMON -f /mod/etc/vtun.conf $VTUN_STARTPARAMS
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -48,7 +36,7 @@ case "$1" in
 	""|load)
 		modreg cgi 'vtun' 'vtun'
 
-		if [ "$vtun_ENABLED" != "yes" ]; then
+		if [ "$VTUN_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1;
 		fi

@@ -1,17 +1,19 @@
 #!/bin/sh
 
+DAEMON=rrdstats
+
 . /etc/init.d/modlibrc
 
 HTTPD_PID_RRD=/var/run/httpd_rrd.pid
 HTTPD_PID_ONE=/var/run/httpd_one.pid
 
 case "$1" in
-	""|load|start|backup|restore|restart|config)
-		if [ ! -r "/mod/etc/conf/rrdstats.cfg" ]; then
-			echo "Error[rrdstats]: not configured" 1>&2
+	backup|restore)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
 		fi
-		. /mod/etc/conf/rrdstats.cfg
+		modlib_loadconfig
 		;;
 esac
 

@@ -3,20 +3,9 @@
 DAEMON=transmission
 DAEMON_BIN="$DAEMON-daemon"
 USERNAME=bittorrent
-PIDFILE=/var/run/transmission.pid
+PIDFILE=/var/run/$DAEMON.pid
 
 . /etc/init.d/modlibrc
-
-case $1 in
-	""|load|start|restart|status)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/$DAEMON.cfg;
-		;;
-esac
 
 echoFailedAndExit() {
 	echo 'failed.'
@@ -154,20 +143,20 @@ start() {
 }
 
 stop () {
-        echo -n 'Stopping transmission daemon... '
-        # As transmission takes care of killing its child processes by itself
-        # do send the signal to its parent process only. Sending the signal
-        # to all processes leads sometimes to a wrong "stopping failed" message.
-        local DAEMON_PID=$(pidof $DAEMON_BIN | tr " " "\n" | sort | head -1)
-        if [ -z "$DAEMON_PID" ]; then
-                echo -e "\nSeems $DAEMON_BIN is not running."
-                echoFailedAndExit 1
-        fi
+	echo -n 'Stopping transmission daemon... '
+	# As transmission takes care of killing its child processes by itself
+	# do send the signal to its parent process only. Sending the signal
+	# to all processes leads sometimes to a wrong "stopping failed" message.
+	local DAEMON_PID=$(pidof $DAEMON_BIN | tr " " "\n" | sort | head -1)
+	if [ -z "$DAEMON_PID" ]; then
+		echo -e "\nSeems $DAEMON_BIN is not running."
+		echoFailedAndExit 1
+	fi
 
-#        start-stop-daemon -K -q -o -p "$PIDFILE" >/dev/null 2>&1
-        kill -SIGINT $DAEMON_PID >/dev/null 2>&1
-        exitval=$?
-        [ "$exitval" -eq 0 ] && echo 'done.' || echoFailedAndExit "$exitval"
+#	start-stop-daemon -K -q -o -p "$PIDFILE" >/dev/null 2>&1
+	kill -SIGINT $DAEMON_PID >/dev/null 2>&1
+	exitval=$?
+	[ "$exitval" -eq 0 ] && echo 'done.' || echoFailedAndExit "$exitval"
 }
 
 

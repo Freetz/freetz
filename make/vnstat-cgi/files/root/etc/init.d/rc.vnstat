@@ -1,18 +1,10 @@
 #!/bin/sh
 
+DAEMON=vnstat
+
 . /etc/init.d/modlibrc
 
 HTTPD_PID_VNS=/var/run/httpd_vns.pid
-
-case "$1" in
-	""|load|start|restart|config)
-		if [ ! -r "/mod/etc/conf/vnstat.cfg" ]; then
-			echo "Error[vnstat]: not configured" 1>&2
-			exit 1
-		fi
-		. /mod/etc/conf/vnstat.cfg
-		;;
-esac
 
 config() {
 	#create links n dirs
@@ -53,7 +45,7 @@ start() {
 			echo 'failed creating database-file:'
 			vnstat -u -i $ifname
 			exit $?
-        fi
+		fi
 	done
 	
 	#webserver

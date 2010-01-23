@@ -5,23 +5,23 @@ DAEMON=quagga
 . /etc/init.d/modlibrc
 
 case "$1" in
-        ""|load|start|restart)
+	""|load|start|restart)
 
-	    RUN_MODSAVE=0
+	RUN_MODSAVE=0
 
-	    for daemon in zebra bgpd ripd ripngd ospfd ospf6d isisd; do
-		    CFGFILE="/tmp/flash/$daemon.conf"
-		    [ -x /usr/sbin/$daemon ] || continue
-		    daemonlist="$daemonlist $daemon"
-		    if [ ! -e $CFGFILE ]; then
-			    echo "Creating empty $CFGFILE"
-			    : > $CFGFILE
-			    RUN_MODSAVE=1
-		    fi
-	    done
+	for daemon in zebra bgpd ripd ripngd ospfd ospf6d isisd; do
+		CFGFILE="/tmp/flash/$daemon.conf"
+		[ -x /usr/sbin/$daemon ] || continue
+		daemonlist="$daemonlist $daemon"
+		if [ ! -e $CFGFILE ]; then
+			echo "Creating empty $CFGFILE"
+			: > $CFGFILE
+			RUN_MODSAVE=1
+		fi
+	done
 
-	    [ $RUN_MODSAVE = 1 ] && /usr/bin/modsave flash
-        ;;
+	[ $RUN_MODSAVE = 1 ] && /usr/bin/modsave flash
+	;;
 esac
 
 start() {
@@ -53,7 +53,7 @@ stop() {
 
 
 case "$1" in
-        ""|load)
+	""|load)
 		modreg cgi 'quagga' 'Quagga'
 		for daemon in $daemonlist; do
 			deffile="/mod/etc/default.quagga/${daemon}_conf.def"

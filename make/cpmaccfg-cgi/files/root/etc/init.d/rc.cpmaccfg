@@ -123,12 +123,12 @@ wlan () {
 
 ipv4bcast () {
 	local IP1=${1%%.*.*.*}
-	local IP2=${1#*.};    IP2=${IP2%%.*.*}
-	local IP3=${1#*.*.};  IP3=${IP3%%.*}
+	local IP2=${1#*.};	IP2=${IP2%%.*.*}
+	local IP3=${1#*.*.};	IP3=${IP3%%.*}
 	local IP4=${1#*.*.*.}
 	local NM1=${2%%.*.*.*}
-	local NM2=${2#*.};    NM2=${NM2%%.*.*}
-	local NM3=${2#*.*.};  NM3=${NM3%%.*}
+	local NM2=${2#*.};	NM2=${NM2%%.*.*}
+	local NM3=${2#*.*.};	NM3=${NM3%%.*}
 	local NM4=${2#*.*.*.}
 	local IIP=$(($IP1 << 24 | $IP2 << 16 | $IP3 << 8 | $IP4))
 	local INM=$(($NM1 << 24 | $NM2 << 16 | $NM3 << 8 | $NM4))

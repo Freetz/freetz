@@ -1,3 +1,3 @@
 #!/bin/sh
-echo -e "Content-type: text/html; charset=iso-8859-1\n\n"
+echo -en "Content-Type: text/html; charset=ISO-8859-1\r\n\r\n"
 uudecode /usr/share/about.txt -o - | bzcat

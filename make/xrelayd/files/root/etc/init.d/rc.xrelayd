@@ -9,40 +9,40 @@ pre_config() {
 }
 
 start() {
-  echo "Starting xrelayd services..."
-  if [ -r "/tmp/flash/.xrelayd/xrelayd_svcs" ]; then
-    cat /tmp/flash/.xrelayd/xrelayd_svcs | grep -v "^#" | while read -r remote local comment; do
-	if [ -n "$remote" -a -n "$local" ]; then
-          echo -n "Starting xrelayd($remote>$local $comment)..."  		
-	  $DAEMON -D$XRELAYD_VERBOSE -d $remote -r $local -p $XRELAYD_KEY -A $XRELAYD_CERTCHAIN
-	  exitval=$?
-	  if [ "$exitval" -eq 0 ]; then
-	    echo 'done.'
-	  else
-	    echo 'failed.'
-	  fi
+	echo "Starting xrelayd services..."
+	if [ -r "/tmp/flash/.xrelayd/xrelayd_svcs" ]; then
+		cat /tmp/flash/.xrelayd/xrelayd_svcs | grep -v "^#" | while read -r remote local comment; do
+			if [ -n "$remote" -a -n "$local" ]; then
+				echo -n "Starting xrelayd($remote>$local $comment)..."
+				$DAEMON -D$XRELAYD_VERBOSE -d $remote -r $local -p $XRELAYD_KEY -A $XRELAYD_CERTCHAIN
+				exitval=$?
+				if [ "$exitval" -eq 0 ]; then
+					echo 'done.'
+				else
+					echo 'failed.'
+				fi
+			fi
+		done
+		echo 'done.'
+	else 
+		echo 'Error: services not found'
 	fi
-    done
-    echo 'done.'
-  else 
-    echo 'Error: services not found'  
-  fi
 }
 
 stop() {
-  echo -n "Stopping xrelayd services..."
-  if [ ! -z "$(pidof "$DAEMON")" ]; then
-    killall -15 $DAEMON > /dev/null 2>&1
-    exitval=$?
-    if [ "$exitval" -eq 0 ]; then
-	echo 'done.'
-    else
-	echo 'failed.'
-	exit $exitval
-    fi
-  else
-    echo 'not running'
-  fi
+	echo -n "Stopping xrelayd services..."
+	if [ ! -z "$(pidof "$DAEMON")" ]; then
+		killall -15 $DAEMON > /dev/null 2>&1
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+			exit $exitval
+		fi
+	else
+		echo 'not running'
+	fi
 }
 
 case "$1" in

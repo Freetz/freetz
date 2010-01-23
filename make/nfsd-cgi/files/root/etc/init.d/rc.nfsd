@@ -10,15 +10,15 @@ start() {
 	echo -n 'Starting nfsd...'
 	
 	# portmap needs this
-	modlib_addgroup nobody  
-	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'  
+	modlib_addgroup nobody
+	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
 	
 	[ -e /etc/exports ] || ( echo "can't open /etc/exports"; exit 1 )
 
 	modprobe nfsd > /dev/null 2>&1
 	mkdir -p $NFS_DIR
 	for file in etab rmtab xtab; do
-	    touch $NFS_DIR/$file
+		touch $NFS_DIR/$file
 	done
 	/usr/sbin/portmap
  	exitval1=$?

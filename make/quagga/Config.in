@@ -7,26 +7,26 @@ config FREETZ_PACKAGE_QUAGGA
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	select FREETZ_BUSYBOX_SEQ
 	help
-	    The Quagga Software Routing Suite
+		The Quagga Software Routing Suite
 
-	    A routing software package that provides TCP/IP based routing services
-	    with routing protocols support such as RIPv1, RIPv2, RIPng, OSPFv2,
-	    OSPFv3, BGP-4, and BGP-4+.
+		A routing software package that provides TCP/IP based routing services
+		with routing protocols support such as RIPv1, RIPv2, RIPng, OSPFv2,
+		OSPFv3, BGP-4, and BGP-4+.
 
-	    This package does not provide any configuration help yet, though you
-	    can edit the configuration file(s) via the web interface. You can
-	    find the documentation at http://www.quagga.net/.
-	    YOU SHOULD NOT SELECT THIS PACKAGE (I.E. YOU DO NOT NEED IT)
-	    IF YOU DON'T KNOW HOW TO CONFIGURE THE ROUTING DAEMONS!
-	    (However: a guided/safe config interface is on the todo list ;-)
+		This package does not provide any configuration help yet, though you
+		can edit the configuration file(s) via the web interface. You can
+		find the documentation at http://www.quagga.net/.
+		YOU SHOULD NOT SELECT THIS PACKAGE (I.E. YOU DO NOT NEED IT)
+		IF YOU DON'T KNOW HOW TO CONFIGURE THE ROUTING DAEMONS!
+		(However: a guided/safe config interface is on the todo list ;-)
 
 config FREETZ_PACKAGE_QUAGGA_BGPD
-        bool "bgpd"
+	bool "bgpd"
 	depends on FREETZ_PACKAGE_QUAGGA
 	default n
 
 config FREETZ_PACKAGE_QUAGGA_RIPD
-        bool "ripd"
+	bool "ripd"
 	depends on FREETZ_PACKAGE_QUAGGA
 	default n
 
@@ -36,7 +36,7 @@ config FREETZ_PACKAGE_QUAGGA_RIPNGD
 	default n
 
 config FREETZ_PACKAGE_QUAGGA_OSPFD
-        bool "ospfd"
+	bool "ospfd"
 	depends on FREETZ_PACKAGE_QUAGGA
 	default n
 
@@ -46,6 +46,6 @@ config FREETZ_PACKAGE_QUAGGA_OSPF6D
 	default n
 
 config FREETZ_PACKAGE_QUAGGA_ISISD
-        bool "isisd"
+	bool "isisd"
 	depends on FREETZ_PACKAGE_QUAGGA
 	default n

@@ -115,13 +115,13 @@ menu "Select kernel modules (IPv4)"
 config FREETZ_MODULE_ip_conntrack
 	bool "ip_conntrack.ko"
 	default n
-    help
+	help
 		Connection tracking keeps a record of what packets have passed
 		through your machine, in order to figure out how they are related
 		into connections.
 
 		This is required to do Masquerading or other kinds of Network
-		Address Translation (except for Fast NAT).  It can also be used to
+		Address Translation (except for Fast NAT). It can also be used to
 		enhance packet filtering (see `Connection state match support'
 		below).
 
@@ -159,12 +159,12 @@ config FREETZ_MODULE_ip_conntrack_irc
 	default n
 	help
 		There is a commonly-used extension to IRC called
-		Direct Client-to-Client Protocol (DCC).  This enables users to send
+		Direct Client-to-Client Protocol (DCC). This enables users to send
 		files to each other, and also chat to each other without the need
-		of a server.  DCC Sending is used anywhere you send files over IRC,
-		and DCC Chat is most commonly used by Eggdrop bots.  If you are
+		of a server. DCC Sending is used anywhere you send files over IRC,
+		and DCC Chat is most commonly used by Eggdrop bots. If you are
 		using NAT, this extension will enable you to send files and initiate
-		chats.  Note that you do NOT need this extension to get files or
+		chats. Note that you do NOT need this extension to get files or
 		have others initiate chats, or everything else in IRC.
 
 config FREETZ_MODULE_ip_conntrack_pptp
@@ -177,12 +177,12 @@ config FREETZ_MODULE_ip_conntrack_pptp
 		Protocol, RFC2637) connection tracking and NAT. 
 
 		If you are running PPTP sessions over a stateful firewall or NAT
-		box, you may want to enable this feature.  
+		box, you may want to enable this feature.
 
 		Please note that not all PPTP modes of operation are supported yet.
 		For more info, read top of the file
 		net/ipv4/netfilter/ip_conntrack_pptp.c
-    
+
 config FREETZ_MODULE_ip_conntrack_tftp
 	bool "ip_conntrack_tftp.ko"
 	select FREETZ_MODULE_ip_conntrack
@@ -209,7 +209,7 @@ config FREETZ_MODULE_ip_nat
 	default n
 	help
 		The Full NAT option allows masquerading, port forwarding and other
-		forms of full Network Address Port Translation.  It is controlled by
+		forms of full Network Address Port Translation. It is controlled by
 		the `nat' table in iptables: see the man page for iptables(8).
 
 config FREETZ_MODULE_ip_nat_ftp
@@ -250,7 +250,7 @@ config FREETZ_MODULE_iptable_filter
 	help
 		Packet filtering defines a table `filter', which has a series of
 		rules for simple packet filtering at local input, forwarding and
-		local output.  See the man page for iptables(8).
+		local output. See the man page for iptables(8).
 
 config FREETZ_MODULE_iptable_mangle
 	bool "iptable_mangle.ko"
@@ -258,7 +258,7 @@ config FREETZ_MODULE_iptable_mangle
 	default n
 	help
 		This option adds a `mangle' table to iptables: see the man page for
-		iptables(8).  This table is used for various packet alterations
+		iptables(8). This table is used for various packet alterations
 		which can effect how the packet is routed.
 
 config FREETZ_MODULE_iptable_nat
@@ -330,7 +330,7 @@ config FREETZ_MODULE_ipt_layer7
 	help
 		Say Y if you want to be able to classify connections (and their 
 		packets) based on regular expression matching of their application 
-		layer data.   This is one way to classify applications such as 
+		layer data. This is one way to classify applications such as 
 		peer-to-peer filesharing systems that do not always use the same 
 		port.
 
@@ -394,7 +394,7 @@ config FREETZ_MODULE_ipt_mark
 	default n
 	help
 		Netfilter mark matching allows you to match packets based on the
-		`nfmark' value in the packet.  This can be set by the MARK target
+		`nfmark' value in the packet. This can be set by the MARK target
 		(see below).
 
 config FREETZ_MODULE_ipt_MARK
@@ -419,7 +419,7 @@ config FREETZ_MODULE_ipt_MASQUERADE
 	help
 		Masquerading is a special case of NAT: all outgoing connections are
 		changed to seem to come from a particular interface's address, and
-		if the interface goes down, those connections are lost.  This is
+		if the interface goes down, those connections are lost. This is
 		only useful for dialup accounts with dynamic IP address (ie. your IP
 		address will be different on next dialup).
 
@@ -442,7 +442,7 @@ config FREETZ_MODULE_ipt_REDIRECT
 	help
 		REDIRECT is a special case of NAT: all incoming connections are
 		mapped onto the incoming interface's address, causing the packets to
-		come to the local machine instead of passing through.  This is
+		come to the local machine instead of passing through. This is
 		useful for transparent proxies.
 
 config FREETZ_MODULE_ipt_REJECT
@@ -463,7 +463,7 @@ config FREETZ_MODULE_ipt_state
 	default n
 	help
 		Connection state matching allows you to match packets based on their
-		relationship to a tracked connection (ie. previous packets).  This
+		relationship to a tracked connection (ie. previous packets). This
 		is a powerful tool for packet classification.
 
 config FREETZ_MODULE_ipt_tcpmss
@@ -488,19 +488,19 @@ config FREETZ_MODULE_ipt_TCPMSS
 		minus 40).
 
 		This is used to overcome criminally braindead ISPs or servers which
-		block ICMP Fragmentation Needed packets.  The symptoms of this
+		block ICMP Fragmentation Needed packets. The symptoms of this
 		problem are that everything works fine from your Linux
 		firewall/router, but machines behind it can never exchange large
 		packets:
-		    1) Web browsers connect, then hang with no data received.
-		    2) Small mail works fine, but large emails hang.
-		    3) ssh works fine, but scp hangs after initial handshaking.
+			1) Web browsers connect, then hang with no data received.
+			2) Small mail works fine, but large emails hang.
+			3) ssh works fine, but scp hangs after initial handshaking.
 
 		Workaround: activate this option and add a rule to your firewall
 		configuration like:
 
-		    iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN \
-		             -j TCPMSS --clamp-mss-to-pmtu
+			iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN \
+				 -j TCPMSS --clamp-mss-to-pmtu
 
 config FREETZ_MODULE_ipt_tos
 	bool "ipt_tos.ko"
@@ -626,7 +626,7 @@ config FREETZ_MODULE_xt_mark
 	default n
 	help
 		Netfilter mark matching allows you to match packets based on the
-		`nfmark' value in the packet.  This can be set by the MARK target
+		`nfmark' value in the packet. This can be set by the MARK target
 		(see below).
 
 config FREETZ_MODULE_xt_MARK
@@ -671,7 +671,7 @@ config FREETZ_MODULE_xt_pkttype
 		its "class", eg. BROADCAST, MULTICAST, ...
 
 		Typical usage:
-		    iptables -A INPUT -m pkttype --pkt-type broadcast -j LOG
+			iptables -A INPUT -m pkttype --pkt-type broadcast -j LOG
 
 config FREETZ_MODULE_xt_physdev
 	bool "xt_physdev.ko"
@@ -707,7 +707,7 @@ config FREETZ_MODULE_xt_state
 	default n
 	help
 		Connection state matching allows you to match packets based on their
-		relationship to a tracked connection (ie. previous packets).  This
+		relationship to a tracked connection (ie. previous packets). This
 		is a powerful tool for packet classification.
 
 config FREETZ_MODULE_xt_statistic
@@ -781,7 +781,7 @@ config FREETZ_MODULE_ip6table_filter
 
 		Packet filtering defines a table `filter', which has a series of
 		rules for simple packet filtering at local input, forwarding and
-		local output.  See the man page for iptables(8).
+		local output. See the man page for iptables(8).
 
 config FREETZ_MODULE_ip6table_raw
 	depends on FREETZ_MODULE_ip6_tables
@@ -922,7 +922,7 @@ config FREETZ_MODULE_ip6t_mark
 		netfilter MARK match support
 
 		Netfilter mark matching allows you to match packets based on the
-		`nfmark' value in the packet.  This can be set by the MARK target
+		`nfmark' value in the packet. This can be set by the MARK target
 		(see below).
 
 config FREETZ_MODULE_ip6t_multiport
@@ -964,7 +964,7 @@ config FREETZ_MODULE_ip6table_mangle
 		Packet mangling
 
 		This option adds a `mangle' table to iptables: see the man page for
-		iptables(8).  This table is used for various packet alterations
+		iptables(8). This table is used for various packet alterations
 		which can effect how the packet is routed.
 
 config FREETZ_MODULE_ip6t_MARK
@@ -1029,7 +1029,7 @@ config FREETZ_LIB_libipt_DNAT
 	help
 		This target is only valid in the nat table, in the PREROUTING
 		and OUTPUT chains, and user-defined chains which are only called from
-		those chains.  It specifies that the destination address of the packet
+		those chains. It specifies that the destination address of the packet
 		should be modified (and all future packets in this connection will
 		also be mangled), and rules should cease being examined.
 
@@ -1056,7 +1056,7 @@ config FREETZ_LIB_libipt_icmp
 
 config FREETZ_LIB_libipt_ipp2p
 	bool "libipt_ipp2p.so"
-	select  FREETZ_MODULE_ipt_ipp2p
+	select FREETZ_MODULE_ipt_ipp2p
 	default n
 	help
 		This extension can be used to match p2p protocols such as
@@ -1066,7 +1066,7 @@ config FREETZ_LIB_libipt_LOG
 	bool "libipt_LOG.so"
 	default n
 	help
-		Turn on kernel logging of matching packets.  When this option is set
+		Turn on kernel logging of matching packets. When this option is set
 		for a rule, the Linux kernel will print some information on all
 		matching packets (like most IP header fields) via the kernel log
 		(where it can be read with dmesg or syslogd (8)).
@@ -1105,7 +1105,7 @@ config FREETZ_LIB_libipt_realm
 	select FREETZ_MODULE_xt_realm if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 	help
-		This matches the routing realm.  Routing realms are used in complex
+		This matches the routing realm. Routing realms are used in complex
 		routing setups involving dynamic routing protocols like BGP.
 
 config FREETZ_LIB_libipt_REDIRECT
@@ -1163,7 +1163,7 @@ config FREETZ_LIB_libipt_TTL
 	bool "libipt_TTL.so"
 	default n
 	help
-		This is used to modify the IPv4 TTL header field.  The TTL field
+		This is used to modify the IPv4 TTL header field. The TTL field
 		determines how many hops (routers) a packet can traverse until it's
 		time to live is exceeded.
 
@@ -1171,7 +1171,7 @@ config FREETZ_LIB_libipt_ULOG
 	bool "libipt_ULOG.so"
 	default n
 	help
-		This target provides userspace logging of matching packets.  When this
+		This target provides userspace logging of matching packets. When this
 		target is set for a rule, the Linux kernel will multicast this packet
 		through a netlink socket. One or more userspace processes may then
 		subscribe to various multicast groups and receive the packets.
@@ -1181,7 +1181,7 @@ config FREETZ_LIB_libipt_unclean
 	default n
 	help
 		This module takes no options, but attempts to match packets which seem
-		malformed or unusual.  This is regarded as experimental.
+		malformed or unusual. This is regarded as experimental.
 endmenu
 menu "Select shared libraries (both IPv4 and IPv6)"
 	requires FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
@@ -1235,7 +1235,7 @@ config FREETZ_LIB_libxt_CONNSECMARK
 	help
 		This module copies security markings from packets to connections
 		(if unlabeled), and from connections back to packets (also only
-		if unlabeled).  Typically used in conjunction with SECMARK, it is
+		if unlabeled). Typically used in conjunction with SECMARK, it is
 		only valid in the mangle table.
 
 config FREETZ_LIB_libxt_conntrack
@@ -1251,14 +1251,14 @@ config FREETZ_LIB_libxt_dscp
 	default n
 	help
 		This module matches the 6 bit DSCP field within the TOS field in the
-		IP header.  DSCP has superseded TOS within the IETF.
+		IP header. DSCP has superseded TOS within the IETF.
 
 config FREETZ_LIB_libxt_DSCP
 	bool "libxt_DSCP.so"
 	default n
 	help
 		This target allows to alter the value of the DSCP bits within the TOS
-		header of the IPv4 packet.  As this manipulates a packet, it can only
+		header of the IPv4 packet. As this manipulates a packet, it can only
 		be used in the mangle table.
 
 config FREETZ_LIB_libxt_esp
@@ -1303,7 +1303,7 @@ config FREETZ_LIB_libxt_limit
 	help
 		This module matches at a limited rate using a token bucket filter.
 		A rule using this extension will match until this limit is reached
-		(unless the `!' flag is used).  It can be used in combination with the
+		(unless the `!' flag is used). It can be used in combination with the
 		LOG target to give limited logging, for example.
 
 config FREETZ_LIB_libxt_mac
@@ -1336,8 +1336,8 @@ config FREETZ_LIB_libxt_multiport
 	select FREETZ_MODULE_xt_multiport if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 	help
-		This module matches a set of source or destination ports.  Up to 15
-		ports can be specified.  A port range (port:port) counts as two
+		This module matches a set of source or destination ports. Up to 15
+		ports can be specified. A port range (port:port) counts as two
 		ports.
 
 config FREETZ_LIB_xt_NFLOG
@@ -1354,7 +1354,7 @@ config FREETZ_LIB_libxt_NFQUEUE
 	help
 		This target is an extension of the QUEUE target. As opposed to QUEUE,
 		it allows you to put a packet into any specific queue, identified by
-		its 16-bit queue number.  
+		its 16-bit queue number.
 
 config FREETZ_LIB_libxt_NOTRACK
 	bool "libxt_NOTRACK.so"
@@ -1575,7 +1575,7 @@ config FREETZ_LIB_libip6t_LOG
 	bool "libip6t_LOG.so"
 	default n
 	help
-		Turn on kernel logging of matching packets.  When this option is set
+		Turn on kernel logging of matching packets. When this option is set
 		for a rule, the Linux kernel will print some information on all
 		matching packets (like most IPv6 IPv6-header fields) via the kernel log
 		(where it can be read with dmesg or syslogd (8)).

@@ -33,15 +33,15 @@ $(PKG)_LIBVERSIONS += 1.2
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
-$(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT_ALL:%=lib%.a)
+$(PKG)_LIBNAMES_LONG	:= $($(PKG)_LIBNAMES_SHORT_ALL:%=lib%.a)
 else
 $(PKG)_LIBNAMES_LONG := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS))
 $(PKG)_LIBS_TARGET_DIR  := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 endif
-$(PKG)_LIBS_BUILD_DIR   := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/lib/%)
-$(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
+$(PKG)_LIBS_BUILD_DIR	:= $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/lib/%)
+$(PKG)_LIBS_STAGING_DIR	:= $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
 
-$(PKG)_MAKE_ALL_EXTRAS := && ln -fsT et $($(PKG)_DIR)/lib/com_err
+$(PKG)_MAKE_ALL_EXTRAS	:= && ln -fsT et $($(PKG)_DIR)/lib/com_err
 
 $(PKG)_BINARIES_ALL := \
 	e2fsck \

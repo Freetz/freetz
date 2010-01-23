@@ -60,7 +60,7 @@ start() {
 			/mod/etc/default.davfs2/webdav_umount
 		fi
 	) > /mod/etc/webdav_umount
-		  	
+
 	echo -n 'mount WebDAV...'
 	
 	chmod +x $DAEMON_MOUNT
@@ -142,9 +142,9 @@ case "$1" in
 		;;
 	status)
 		if [ -z "$(pidof "mount.davfs")" ]; then
-		    echo 'stopped'
+			echo 'stopped'
 		else
-		    echo 'running'
+			echo 'running'
 		fi
 		;;
 	*)

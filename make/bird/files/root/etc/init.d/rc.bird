@@ -37,8 +37,8 @@ start() {
 	if [ ! -e "$CFGFILE" ]; then
 		echo "Creating $CFGFILE"
 		{
-		  echo "router id $(getipaddr);"
-		  cat <<"EOF"
+			echo "router id $(getipaddr);"
+			cat <<"EOF"
 protocol device {
   scan time 10;
 }

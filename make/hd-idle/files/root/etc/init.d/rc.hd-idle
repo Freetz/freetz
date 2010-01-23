@@ -48,7 +48,7 @@ start() {
 stop() {
 	echo -n "Stopping $DAEMON...("
 	for I in $(pidof hd-idle); do
-		kill $I  > /dev/null 2>&1
+		kill $I > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo -n 'v'

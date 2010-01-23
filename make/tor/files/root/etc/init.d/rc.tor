@@ -1,10 +1,10 @@
 #!/bin/sh
 
 DAEMON=tor
-DAEMON_LONG_NAME="Tor Onion Router"  
-DAEMON_USER=tor  
-DAEMON_GROUP=tor  
-PID_FILE=/var/run/$DAEMON/$DAEMON.pid  
+DAEMON_LONG_NAME="Tor Onion Router"
+DAEMON_USER=tor
+DAEMON_GROUP=tor
+PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 
 . /etc/init.d/modlibrc
 
@@ -59,7 +59,7 @@ start() {
 				[ $count -gt 99 ] && break;
 			done
 			if [ $count -le 99 ]; then
-  				cp $TOR_DATADIRECTORY/keys/secret_id_key $DAEMON_STORAGE/secret_id_key
+				cp $TOR_DATADIRECTORY/keys/secret_id_key $DAEMON_STORAGE/secret_id_key
 				echo -n "secret id_key saved..."
 				modsave flash >/dev/null
 			else

@@ -1,21 +1,11 @@
 #!/bin/sh
 
-. /etc/init.d/modlibrc
-
 DAEMON=httpd-wol
 DAEMON_LONG_NAME="wol webinterface"
 PID_FILE=/var/run/webcfg-wol.pid
+CONF_NAME=wol
 
-case "$1" in
-	""|load|start|restart|status)
-		if [ ! -r /mod/etc/conf/wol.cfg ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
-		. /mod/etc/conf/wol.cfg
-		;;
-esac
+. /etc/init.d/modlibrc
 
 config() {
 	(

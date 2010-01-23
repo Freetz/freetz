@@ -27,7 +27,7 @@ setup_ipv6_interface() {
 		echo ' already set.'
 	else
 		ip -6 addr add $RADVD_ADDRESS dev $RADVD_INTERFACE
-		echo  ' done.'
+		echo ' done.'
 	fi
 	
 	echo -n 'Enable IPv6 forwarding...'
@@ -41,7 +41,7 @@ shut_ipv6_interface() {
 	ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
 	if [ $? -eq 0 ]; then
 		ip -6 addr del $RADVD_ADDRESS dev $RADVD_INTERFACE
-		echo  ' done.'
+		echo ' done.'
 	else
 		echo ' already unset.'
 	fi
