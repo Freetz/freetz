@@ -1,6 +1,6 @@
---- linux-2.6.19.2/drivers/net/Kconfig.orig	2009-09-08 10:16:30.000000000 +0200
-+++ linux-2.6.19.2/drivers/net/Kconfig	2009-09-08 10:16:31.000000000 +0200
-@@ -2756,18 +2756,31 @@
+--- linux-2.6.19.2/drivers/net/Kconfig.orig	2009-07-22 15:44:09.000000000 +0200
++++ linux-2.6.19.2/drivers/net/Kconfig	2010-01-24 20:14:13.000000000 +0100
+@@ -2758,18 +2758,31 @@
  	  module; it is called bsd_comp and will show up in the directory
  	  modules once you have said "make modules". If unsure, say N.
  
@@ -43,8 +43,8 @@
  
  config PPPOE
  	tristate "PPP over Ethernet (EXPERIMENTAL)"
---- linux-2.6.19.2/drivers/net/Makefile.orig	2007-09-25 09:29:15.000000000 +0200
-+++ linux-2.6.19.2/drivers/net/Makefile	2009-09-08 10:16:31.000000000 +0200
+--- linux-2.6.19.2/drivers/net/Makefile.orig	2009-07-22 15:44:09.000000000 +0200
++++ linux-2.6.19.2/drivers/net/Makefile	2010-01-24 20:14:13.000000000 +0100
 @@ -122,7 +122,7 @@
  obj-$(CONFIG_PPP_SYNC_TTY) += ppp_synctty.o
  obj-$(CONFIG_PPP_DEFLATE) += ppp_deflate.o
@@ -54,8 +54,8 @@
  obj-$(CONFIG_PPPOE) += pppox.o pppoe.o
  
  obj-$(CONFIG_SLIP) += slip.o
---- linux-2.6.19.2/drivers/net/ppp_generic.c.orig	2008-09-02 11:49:50.000000000 +0200
-+++ linux-2.6.19.2/drivers/net/ppp_generic.c	2009-09-08 10:16:31.000000000 +0200
+--- linux-2.6.19.2/drivers/net/ppp_generic.c.orig	2010-01-24 20:14:12.000000000 +0100
++++ linux-2.6.19.2/drivers/net/ppp_generic.c	2010-01-24 20:14:13.000000000 +0100
 @@ -19,7 +19,7 @@
   * PPP driver, written by Michael Callahan and Al Longyear, and
   * subsequently hacked by Paul Mackerras.
@@ -65,7 +65,7 @@
   */
  
  #include <linux/module.h>
-@@ -109,6 +109,7 @@
+@@ -104,6 +104,7 @@
  	spinlock_t	rlock;		/* lock for receive side 58 */
  	spinlock_t	wlock;		/* lock for transmit side 5c */
  	int		mru;		/* max receive unit 60 */
@@ -73,7 +73,7 @@
  	unsigned int	flags;		/* control bits 64 */
  	unsigned int	xstate;		/* transmit state bits 68 */
  	unsigned int	rstate;		/* receive state bits 6c */
-@@ -141,14 +142,13 @@
+@@ -136,14 +137,13 @@
  
  /*
   * Bits in flags: SC_NO_TCP_CCID, SC_CCP_OPEN, SC_CCP_UP, SC_LOOP_TRAFFIC,
@@ -90,7 +90,7 @@
  
  /*
   * Private data structure for each channel.
-@@ -634,7 +634,9 @@
+@@ -629,7 +629,9 @@
  	case PPPIOCSMRU:
  		if (get_user(val, p))
  			break;
@@ -101,7 +101,7 @@
  		err = 0;
  		break;
  
-@@ -1022,56 +1024,6 @@
+@@ -1017,56 +1019,6 @@
  	ppp_xmit_unlock(ppp);
  }
  
@@ -158,7 +158,7 @@
  /*
   * Compress and send a frame.
   * The caller should have locked the xmit path,
-@@ -1152,20 +1104,70 @@
+@@ -1147,20 +1099,70 @@
  	case PPP_CCP:
  		/* peek at outbound CCP frames */
  		ppp_ccp_peek(ppp, skb, 0);
@@ -234,7 +234,7 @@
  	}
  
  	/*
-@@ -1185,8 +1187,7 @@
+@@ -1180,8 +1182,7 @@
  	return;
  
   drop:
@@ -244,7 +244,7 @@
  	++ppp->stats.tx_errors;
  }
  
-@@ -1588,9 +1589,6 @@
+@@ -1578,9 +1579,6 @@
  	    && (ppp->rstate & (SC_DC_FERROR | SC_DC_ERROR)) == 0)
  		skb = ppp_decompress_frame(ppp, skb);
  
@@ -254,7 +254,7 @@
  	proto = PPP_PROTO(skb);
  	switch (proto) {
  	case PPP_VJC_COMP:
-@@ -1736,14 +1734,15 @@
+@@ -1711,14 +1709,15 @@
  		goto err;
  
  	if (proto == PPP_COMP) {
@@ -272,7 +272,7 @@
  		if (len < 0) {
  			/* Pass the compressed frame to pppd as an
  			   error indication. */
-@@ -1769,7 +1768,14 @@
+@@ -1744,7 +1743,14 @@
  	return skb;
  
   err:
@@ -288,7 +288,7 @@
  	ppp_receive_error(ppp);
  	return skb;
  }
-@@ -2440,6 +2446,7 @@
+@@ -2415,6 +2421,7 @@
  		goto out1;
  
  	ppp->mru = PPP_MRU;
@@ -1128,7 +1128,7 @@
 -           opts |= MPPE_OPT_UNKNOWN;           \
 -    } while (/* CONSTCOND */ 0)
 --- linux-2.6.19.2/drivers/net/ppp_mppe_mppc.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/drivers/net/ppp_mppe_mppc.c	2009-09-08 10:16:31.000000000 +0200
++++ linux-2.6.19.2/drivers/net/ppp_mppe_mppc.c	2010-01-24 20:14:13.000000000 +0100
 @@ -0,0 +1,1299 @@
 +/*
 + * ppp_mppe_mppc.c - MPPC/MPPE "compressor/decompressor" module.
@@ -2430,7 +2430,7 @@
 +MODULE_LICENSE("Dual BSD/GPL");
 +MODULE_ALIAS("ppp-compress-" __stringify(CI_MPPE));
 --- linux-2.6.19.2/include/linux/if_ppp.h.orig	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2/include/linux/if_ppp.h	2009-09-08 10:16:31.000000000 +0200
++++ linux-2.6.19.2/include/linux/if_ppp.h	2010-01-24 20:14:13.000000000 +0100
 @@ -21,7 +21,7 @@
   */
  
@@ -2451,7 +2451,7 @@
  /* state bits */
  #define SC_XMIT_BUSY	0x10000000	/* (used by isdn_ppp?) */
 --- linux-2.6.19.2/include/linux/ppp-comp.h.orig	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2/include/linux/ppp-comp.h	2009-09-08 10:16:31.000000000 +0200
++++ linux-2.6.19.2/include/linux/ppp-comp.h	2010-01-24 20:14:13.000000000 +0100
 @@ -28,7 +28,7 @@
   */
  
