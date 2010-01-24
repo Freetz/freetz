@@ -16,8 +16,8 @@ $(PKG)_LIBS_BUILD_DIR:=$(join $(CLASSPATH_LIBS_BUILD_DIR_SHORT:%=$($(PKG)_DIR)/n
 $(PKG)_LIBS_STAGING_DIR:=$(CLASSPATH_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)$(CLASSPATH_LIBRARY_DIR)/%)
 $(PKG)_LIBS_TARGET_DIR:=$(CLASSPATH_LIBNAMES_LONG:%=$($(PKG)_DEST_DIR)$(CLASSPATH_LIBRARY_DIR)/%)
 
-$(PKG)_BUILD_PREREQ += fastjar
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the package of the same name
+$(PKG)_BUILD_PREREQ += fastjar ecj
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binaries are provided by packages of the same name
 
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON := libiconv
