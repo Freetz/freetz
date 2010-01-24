@@ -65,20 +65,11 @@ stop () {
 case "$1" in
 	""|load)
 		pre_config
+		config
 
 		modreg cgi 'sane-backends' 'SANE'
-		
-		if [ "$SANE_BACKENDS_SANED_ENABLED" != yes ]; then		
-			if [ "$SANE_BACKENDS_SANED_ENABLED" != inetd ]; then
-				echo "$DAEMON is disabled" 1>&2
-			else
-				echo "$DAEMON is started via inetd" 1>&2
-				config
-			fi
-			exit 1;
-		fi
 
-		start
+		modlib_start $SANE_BACKENDS_SANED_ENABLED
 		;;
 	unload)
 		stop

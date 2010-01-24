@@ -118,18 +118,10 @@ case $1 in
 			[ -r "/tmp/flash/vsftpd_crt.def" ] && deffile='/tmp/flash/vsftpd_crt.def'
 			modreg file 'vsftpd_crt' 'VSFTPD:Cert+Key' 0 "$deffile"
 		fi
+		
+		config
 
-		if [ "$VSFTPD_ENABLED" != "yes" ]; then
-			if [ "$VSFTPD_ENABLED" != "inetd" ]; then
-				echo "$DAEMON is disabled" 1>&2
-			else
-				echo "$DAEMON is started via inetd" 1>&2
-				config
-			fi
-			exit 1;
-		fi
-
-		start
+		modlib_start $VSFTPD_ENABLED
 		;;
 	unload)
 		stop

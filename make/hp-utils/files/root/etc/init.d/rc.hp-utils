@@ -39,16 +39,8 @@ case "$1" in
 		modreg cgi 'hp-utils' 'hp-utils'
 
 		config
-		if [ "$HP_UTILS_ENABLED" != "yes" ]; then
-			if [ "$HP_UTILS_ENABLED" != "inetd" ]; then
-				echo "$DAEMON is disabled" 1>&2
-			else
-				echo "$DAEMON is started via inetd" 1>&2
-			fi
-			exit 1
-		fi
 
-		start
+		modlib_start $HP_UTILS_ENABLED
 		;;
 	unload)
 		modunreg cgi 'hp-utils'

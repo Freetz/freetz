@@ -18,11 +18,7 @@ case "$1" in
 	""|load)
 		modreg cgi 'rcapid' 'Rcapid'
 
-		if [ "$RCAPID_ENABLED" != "inetd" ]; then
-			echo "$DAEMON is disabled" 1>&2
-		else
-			echo "$DAEMON is started via inetd" 1>&2
-		fi
+		modlib_start $RCAPID_ENABLED
 		;;
 	unload)
 		modunreg cgi 'rcapid'

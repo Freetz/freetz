@@ -44,16 +44,8 @@ stop() {
 case "$1" in
 	""|load)
 		config
-		if [ "$MOD_HTTPD" != "yes" ]; then
-			if [ "$MOD_HTTPD" != "inetd" ]; then
-				echo "$DAEMON is disabled" 1>&2
-			else
-				echo "$DAEMON is started via inetd" 1>&2
-			fi
-			exit 1
-		fi
 
-		start
+		modlib_start $MOD_HTTPD
 		;;
 	unload)
 		stop

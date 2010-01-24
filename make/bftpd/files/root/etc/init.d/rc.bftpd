@@ -65,17 +65,8 @@ case "$1" in
 		pre_config
 
 		modreg cgi 'bftpd' 'Bftpd'
-		
-		if [ "$BFTPD_ENABLED" != "yes" ]; then
-			if [ "$BFTPD_ENABLED" != "inetd" ]; then
-				echo "$DAEMON is disabled" 1>&2
-			else
-				echo "$DAEMON is started via inetd" 1>&2
-			fi
-			exit 1;
-		fi
 
-		start
+		modlib_start $BFTPD_ENABLED
 		;;
 	unload)
 		stop
