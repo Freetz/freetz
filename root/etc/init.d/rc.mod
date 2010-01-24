@@ -31,6 +31,11 @@ start() {
 			fi
 		done
 	fi
+	
+	## Store 'clean' environment for later use (skipping IFS)
+	if [ ! -e /var/env.cache ]
+		set | grep -v "IFS="|grep "^[A-Z]"|sed "s/\(.*\)/export \1/" > /var/env.cache
+	fi
 
 	# AVM-Plugins
 	plugins="`ls /var/plugin-*/control 2>/dev/null`"

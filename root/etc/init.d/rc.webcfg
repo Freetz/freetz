@@ -26,7 +26,7 @@ start() {
 
 	echo -n "Starting $DAEMON_LONG_NAME..."
 	homedir=/usr/mww/
-	httpd -P "$PID_FILE" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "Freetz"
+	modlib_startdaemon httpd -P "$PID_FILE" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "Freetz"
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
