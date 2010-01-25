@@ -33,7 +33,7 @@ start() {
 	fi
 	
 	## Store 'clean' environment for later use (skipping IFS)
-	if [ ! -e /var/env.cache ]
+	if [ ! -e /var/env.cache ]; then
 		set | grep -v "IFS="|grep "^[A-Z]"|sed "s/\(.*\)/export \1/" > /var/env.cache
 	fi
 
