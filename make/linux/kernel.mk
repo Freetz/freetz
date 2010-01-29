@@ -140,7 +140,7 @@ $(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.configured
 		prepare
 	touch $@
 
-$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma2eva
+$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
 	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
