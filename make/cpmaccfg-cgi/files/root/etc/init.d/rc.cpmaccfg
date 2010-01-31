@@ -44,11 +44,6 @@ start() {
 	fi
 }
 
-stop() {
-	echo -n 'nothing to stop...'
-	echo ''
-}
-
 vlan() {
 	d_eth0=32
 	d_eth1=32
@@ -168,24 +163,21 @@ ethernet() {
 case "$1" in
 	""|load)
 		modreg cgi 'cpmaccfg' 'Cpmaccfg'
+		modreg daemon --hide cpmaccfg
 		;;
 	unload)
-		stop
 		modunreg cgi 'cpmaccfg'
+		modunreg daemon cpmaccfg
 		;;
 	start)
 		start
 		;;
 	stop)
-		stop
 		;;
 	restart)
-		stop
-		sleep 1
 		start
 		;;
 	status)
-		echo 'running'
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
