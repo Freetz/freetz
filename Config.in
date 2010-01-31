@@ -1173,7 +1173,7 @@ config FREETZ_PATCH_ATA
 		Patches the ATA mode configuration pages into the web menu.
 
 config FREETZ_PATCH_DSL_EXPERT
-	bool "Patch extended DSL-Settings"
+	bool "Patch extended DSL settings"
 	depends on \
 		! FREETZ_TYPE_LABOR_DSL && \
 		! FREETZ_REMOVE_DSLD && \
@@ -1184,13 +1184,13 @@ config FREETZ_PATCH_DSL_EXPERT
 		Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares. 
 
 config FREETZ_PATCH_VCC
-	bool "Patch 2. VCC"
+	bool "Patch 2nd VCC"
 	depends on FREETZ_HAS_PHONE && \
 		! FREETZ_TYPE_LABOR && \
 		(FREETZ_TYPE_FON_WLAN_7141 || FREETZ_TYPE_FON_WLAN_7170)
 	default n
 	help
-		Patches the setting for 2. VCC into web menu. This patch also replaces
+		Patches the setting for 2nd VCC into web menu. This patch also replaces
 		and activates "Patch enum" feature for brandings 1und1 and tcom.
 		
 		Be aware that enum section is not displayed if you switch to avm
@@ -1410,20 +1410,20 @@ config FREETZ_REMOVE_UMTSD
 		FREETZ_TYPE_FON_WLAN_7270_V3 || FREETZ_TYPE_FON_WLAN_7240
 	default n
 	help
-		Remove UMTS-Support
-		this patch will remove umts-dependend files from firmware
-		saves about 12K compressed space in kernel.image
+		Remove UMTS support
+		This patch will remove UMTS-dependent files from firmware.
+		It saves about 12K compressed space in kernel.image.
 
 config FREETZ_REMOVE_NTFS
-	bool "Remove NTFS-support"
+	bool "Remove NTFS support"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || FREETZ_TYPE_FON_WLAN_7240
 	default n
 	help
-		Remove NTFS-Support
-		this patch will remove ntfs-3g dependen files from the firmware
-		Be careful, mounting volumes with this filesystem will not work
-		saves about 118K compressed space in kernel.image
+		Remove NTFS support
+		This patch will remove ntfs-3g dependent files from the firmware.
+		Be careful, mounting volumes with this filesystem will not work.
+		It saves about 118K compressed space in kernel.image.
 
 config FREETZ_REMOVE_UPNP
 	bool "Remove UPnP daemon (igdd/upnpd)"
@@ -1626,7 +1626,7 @@ config FREETZ_REMOVE_DECT
 
 
 config FREETZ_REMOVE_DECT_UPDATE
-	bool"Remove dect_update"
+	bool "Remove dect_update"
 	depends on \
 		FREETZ_TYPE_FON_7150
 	default n
@@ -1636,7 +1636,7 @@ config FREETZ_REMOVE_DECT_UPDATE
 		This will save about 32kB uncompressed size.
 
 config FREETZ_REMOVE_DTRACE
-	bool"Remove dtrace"
+	bool "Remove dtrace"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -1739,10 +1739,10 @@ config FREETZ_ADD_ANNEX_A_FIRMWARE
 config FREETZ_ADD_REGEXT_GUI
 	bool "Patch GUI to enable external SIP connections"
 	depends on \
-		((FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3) && FREETZ_TYPE_LANG_DE)
+		((FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3 || (FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PREVIEW)) && FREETZ_TYPE_LANG_DE)
 	default n
 	help
-		Patches the WebUI and add a checkbox to enable setting "reg_from_outside" in the voip.conf of LABOR firmwares. 
+		Patches the WebUI and add a checkbox to enable setting "reg_from_outside" in the voip.conf.
 
 
 endmenu
