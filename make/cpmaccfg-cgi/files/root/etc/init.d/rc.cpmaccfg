@@ -5,9 +5,13 @@ DAEMON=cpmaccfg
 . /etc/init.d/modlibrc
 
 start() {
+	# include environment
+	[ -r /var/env.cache ] && . /var/env.cache
+	BOXTYPE=${CONFIG_PRODUKT#Fritz_Box_}
 	
-	BOXTYPE=$(set|grep "Fritz_Box"|sed -e "s/.*_//g"|sed -e "s/'//g")
-	if [ $BOXTYPE = "7170" ];then
+	[ -z "$BOXTYPE" ] && echo "Warning: boxtype not recognized"
+ 
+	if [ "$BOXTYPE" = "7170" ];then
 	
 	echo -n 'Setting Ports...'
 	echo ''
