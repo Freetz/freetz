@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.13.1
-# Wed May 23 11:11:06 2007
+# Tue Feb  2 20:42:32 2010
 #
 CONFIG_MIPS=y
 # CONFIG_MIPS64 is not set
@@ -34,7 +34,7 @@ CONFIG_KALLSYMS=y
 # CONFIG_KALLSYMS_ALL is not set
 CONFIG_KALLSYMS_EXTRA_PASS=y
 CONFIG_PRINTK=y
-# CONFIG_BUG is not set
+CONFIG_BUG=y
 # CONFIG_BASE_FULL is not set
 # CONFIG_FUTEX is not set
 # CONFIG_EPOLL is not set
@@ -385,20 +385,7 @@ CONFIG_NET_CLS_U32=m
 # CONFIG_NET_PKTGEN is not set
 # CONFIG_HAMRADIO is not set
 # CONFIG_IRDA is not set
-CONFIG_BT=m
-CONFIG_BT_L2CAP=m
-# CONFIG_BT_SCO is not set
-CONFIG_BT_RFCOMM=m
-CONFIG_BT_RFCOMM_TTY=y
-# CONFIG_BT_BNEP is not set
-# CONFIG_BT_CMTP is not set
-# CONFIG_BT_HIDP is not set
-
-#
-# Bluetooth device drivers
-#
-# CONFIG_BT_HCIUART is not set
-# CONFIG_BT_HCIVHCI is not set
+# CONFIG_BT is not set
 
 #
 # Device Drivers
@@ -1000,6 +987,7 @@ CONFIG_ISO9660_FS=m
 CONFIG_JOLIET=y
 # CONFIG_ZISOFS is not set
 CONFIG_UDF_FS=m
+CONFIG_UDF_NLS=y
 
 #
 # DOS/FAT/NT Filesystems
@@ -1010,8 +998,6 @@ CONFIG_VFAT_FS=m
 CONFIG_FAT_DEFAULT_CODEPAGE=437
 CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"
 # CONFIG_NTFS_FS is not set
-# CONFIG_NTFS_DEBUG is not set
-# CONFIG_NTFS_RW is not set
 
 #
 # Pseudo filesystems
@@ -1182,16 +1168,16 @@ CONFIG_CMDLINE=""
 # Cryptographic options
 #
 CONFIG_CRYPTO=y
-# CONFIG_CRYPTO_HMAC is not set
+CONFIG_CRYPTO_HMAC=y
 # CONFIG_CRYPTO_NULL is not set
 # CONFIG_CRYPTO_MD4 is not set
-# CONFIG_CRYPTO_MD5 is not set
+CONFIG_CRYPTO_MD5=m
 CONFIG_CRYPTO_SHA1=m
 CONFIG_CRYPTO_SHA256=m
 # CONFIG_CRYPTO_SHA512 is not set
 # CONFIG_CRYPTO_WP512 is not set
 # CONFIG_CRYPTO_TGR192 is not set
-# CONFIG_CRYPTO_DES is not set
+CONFIG_CRYPTO_DES=m
 # CONFIG_CRYPTO_BLOWFISH is not set
 # CONFIG_CRYPTO_TWOFISH is not set
 # CONFIG_CRYPTO_SERPENT is not set
@@ -1202,7 +1188,7 @@ CONFIG_CRYPTO_AES=m
 CONFIG_CRYPTO_ARC4=m
 # CONFIG_CRYPTO_KHAZAD is not set
 # CONFIG_CRYPTO_ANUBIS is not set
-# CONFIG_CRYPTO_DEFLATE is not set
+CONFIG_CRYPTO_DEFLATE=m
 # CONFIG_CRYPTO_MICHAEL_MIC is not set
 # CONFIG_CRYPTO_CRC32C is not set
 # CONFIG_CRYPTO_TEST is not set
