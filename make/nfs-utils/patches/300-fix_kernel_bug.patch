@@ -1,0 +1,20 @@
+--- support/nfs/nfssvc.c.orig	2009-06-02 14:43:05.000000000 +0000
++++ support/nfs/nfssvc.c	2010-02-01 10:49:18.000000000 +0000
+@@ -93,7 +93,7 @@
+ 	}
+ 	if (udpfd >= 0) {
+ 		snprintf(buf, BUFSIZ,"%d\n", udpfd); 
+-		if (write(fd, buf, strlen(buf)) != strlen(buf)) {
++		if (write(fd, buf, strlen(buf)) < 0) {
+ 			syslog(LOG_ERR, 
+ 			       "nfssvc: writing fds to kernel failed: errno %d (%s)", 
+ 			       errno, strerror(errno));
+@@ -105,7 +105,7 @@
+ 		if (fd < 0)
+ 			fd = open(NFSD_PORTS_FILE, O_WRONLY);
+ 		snprintf(buf, BUFSIZ,"%d\n", tcpfd); 
+-		if (write(fd, buf, strlen(buf)) != strlen(buf)) {
++		if (write(fd, buf, strlen(buf)) < 0) {
+ 			syslog(LOG_ERR, 
+ 			       "nfssvc: writing fds to kernel failed: errno %d (%s)", 
+ 			       errno, strerror(errno));
