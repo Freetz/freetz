@@ -1,6 +1,7 @@
 config FREETZ_PACKAGE_USBROOT
 	bool "USB root 0.2"
 	depends on FREETZ_HAS_USB_HOST
+	select FREETZ_PACKAGE_FSTYP
 	default n
 	help
 		Mount an ext{2,3} filesystem (fs) from an USB stick and use it
