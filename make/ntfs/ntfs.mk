@@ -1,10 +1,11 @@
-$(call PKG_INIT_BIN, 2009.11.14)
+$(call PKG_INIT_BIN, 2010.1.16)
 $(PKG)_SOURCE:=ntfs-3g-$($(PKG)_VERSION).tgz
-$(PKG)_SITE:=http://www.ntfs-3g.org
+$(PKG)_SOURCE_MD5:=e104c914e8d7d29ee83e63d46afbba25
+$(PKG)_SITE:=http://tuxera.com/opensource
+
 $(PKG)_DIR:=$(SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ntfs-3g
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ntfs-3g
-$(PKG)_SOURCE_MD5:=68a8d622bb6ef900b8bb64cdffad48f8
 
 $(PKG)_DEPENDS_ON := fuse
 
