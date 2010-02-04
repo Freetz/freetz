@@ -14,7 +14,10 @@ start() {
 	modlib_addgroup nobody
 	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
 	
-	[ -e /etc/exports ] || ( echo "can't open /etc/exports"; exit 1 )
+	if [ ! -e /etc/exports ]; then
+		echo "can't open /etc/exports"
+		exit 1
+	fi
 
 	modprobe nfsd > /dev/null 2>&1
 
@@ -50,6 +53,8 @@ start() {
 }
 
 reload() {
+	echo -n 'Re-exporting directories...'
+
 	/usr/sbin/exportfs -r > /dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
@@ -64,14 +69,18 @@ stop() {
 	echo -n 'Stopping nfsd...'
 
 	killall mountd >/dev/null 2>&1
+	exitval1=$?
 	killall -9 nfsd > /dev/null 2>&1
+	exitval2=$?
 	/usr/sbin/exportfs -au
+	exitval3=$?
 	killall portmap > /dev/null 2>&1
-	exitval=$?
+	exitval4=$?
 	
 	umount $PROCNFSD_DIR > /dev/null 2>&1
 	
-	if [ "$exitval" -eq 0 ]; then
+	if [ "$exitval1" -eq 0 ] && [ "$exitval2" -eq 0 ] \
+		&& [ "$exitval3" -eq 0 ] && [ "$exitval4" -eq 0 ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
