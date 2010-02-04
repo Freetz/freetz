@@ -169,6 +169,15 @@ config FREETZ_BUSYBOX_NICE
 		can handle the system-ressources more porperly if you want
 		(note: no freetz-service uses this yet)
 
+config FREETZ_BUSYBOX_FUSER
+	bool "fuser"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Includes the 'fuser' tool in busybox
+
+		This command helps to identify processes using files or sockets
+
 config FREETZ_BUSYBOX_LS_COLOR
 	bool "color"
 	depends on FREETZ_REPLACE_BUSYBOX

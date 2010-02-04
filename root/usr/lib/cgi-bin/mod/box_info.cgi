@@ -2,6 +2,9 @@
 
 PATH=/mod/bin:/mod/usr/bin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 
+# include environment variables
+[ -r /var/env.cache ] && . /var/env.cache
+
 let _width=$_cgi_width-236
 notdefined='$(lang de:"unbekannt" en:"unknown")'
 divstyle="style='margin-top:6px;'"

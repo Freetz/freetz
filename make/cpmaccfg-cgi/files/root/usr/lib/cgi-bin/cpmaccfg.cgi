@@ -97,8 +97,9 @@ cat << EOF
 EOF
 
 # Dropdown für Einstellungen anzeigen
-BOXTYPE=$(set|grep "Fritz_Box"|sed -e "s/.*_//g"|sed -e "s/'//g")
-if [ $BOXTYPE != "7170" ];then drop="disabled"; fi
+[ -r /var/env.cache ] && . /var/env.cache
+BOXTYPE=${CONFIG_PRODUKT#Fritz_Box_}
+if [ "$BOXTYPE" != "7170" ];then drop="disabled"; fi
 
 row=1
 while [ $row -le $EXTPORTS ]; do

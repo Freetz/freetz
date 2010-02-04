@@ -40,16 +40,8 @@ case "$1" in
 		modreg cgi 'wol' 'Wake on LAN'
 
 		config
-		if [ "$WOL_ENABLED" != "yes" ]; then
-			if [ "$WOL_ENABLED" != "inetd" ]; then
-				echo "$DAEMON is disabled" 1>&2
-			else
-				echo "$DAEMON is started via inetd" 1>&2
-			fi
-			exit 1
-		fi
 
-		start
+		modlib_start $WOL_ENABLED 
 		;;
 	unload)
 		modunreg cgi 'wol'

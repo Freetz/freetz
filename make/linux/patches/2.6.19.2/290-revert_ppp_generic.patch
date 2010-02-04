@@ -1,5 +1,5 @@
---- linux-2.6.19.2/drivers/net/ppp_generic.c.orig	2009-09-08 10:16:31.000000000 +0200
-+++ linux-2.6.19.2/drivers/net/ppp_generic.c	2009-09-08 10:16:32.000000000 +0200
+--- linux-2.6.19.2/drivers/net/ppp_generic.c.orig	2008-09-02 11:49:50.000000000 +0200
++++ linux-2.6.19.2/drivers/net/ppp_generic.c	2010-01-24 20:14:12.000000000 +0100
 @@ -47,11 +47,6 @@
  #include <linux/mutex.h>
  #include <net/slhc_vj.h>
@@ -12,7 +12,7 @@
  
  #define PPP_VERSION	"2.4.2"
  
-@@ -1574,11 +1569,6 @@
+@@ -1573,11 +1568,6 @@
  {
  	struct sk_buff *ns;
  	int proto, len, npi;
@@ -24,7 +24,7 @@
  
  	/*
  	 * Decompress the frame, if compressed.
-@@ -1648,14 +1638,6 @@
+@@ -1650,14 +1640,6 @@
  
  	++ppp->stats.rx_packets;
  	ppp->stats.rx_bytes += skb->len - 2;
@@ -39,7 +39,7 @@
  
  	npi = proto_to_npindex(proto);
  	if (npi < 0) {
-@@ -1697,15 +1679,8 @@
+@@ -1699,15 +1681,8 @@
  		    || ppp->npmode[npi] != NPMODE_PASS) {
  			kfree_skb(skb);
  		} else {
@@ -56,7 +56,7 @@
  			skb->dev = ppp->dev;
  			skb->protocol = htons(npindex_to_ethertype[npi]);
  			skb->mac.raw = skb->data;
-@@ -2824,140 +2799,11 @@
+@@ -2817,140 +2792,11 @@
  	*pmap = NULL;
  }
  

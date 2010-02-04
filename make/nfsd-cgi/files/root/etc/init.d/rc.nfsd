@@ -2,6 +2,7 @@
 
 DAEMON=nfsd
 NFS_DIR=/var/lib/nfs
+PROCNFSD_DIR=/proc/fs/nfsd
 
 . /etc/init.d/modlibrc 
 
@@ -16,10 +17,20 @@ start() {
 	[ -e /etc/exports ] || ( echo "can't open /etc/exports"; exit 1 )
 
 	modprobe nfsd > /dev/null 2>&1
+
+	# Fill /proc/fs/nfsd
+	mount -t nfsd nfsd $PROCNFSD_DIR > /dev/null 2>&1
+
+	
+	# set max rsize/wsize supported by server to 64kb
+	[ -e $PROCNFSD_DIR/max_block_size ] && \
+		echo 65536 > $PROCNFSD_DIR/max_block_size
+
 	mkdir -p $NFS_DIR
 	for file in etab rmtab xtab; do
 		touch $NFS_DIR/$file
 	done
+
 	/usr/sbin/portmap
  	exitval1=$?
 	/usr/sbin/exportfs -r > /dev/null 2>&1
@@ -30,7 +41,7 @@ start() {
 	exitval4=$?
 
 	if [ "$exitval1" -eq 0 ] && [ "$exitval2" -eq 0 ] \
-	    && [ "$exitval3" -eq 0 ] && [ "$exitval4" -eq 0 ]; then
+		&& [ "$exitval3" -eq 0 ] && [ "$exitval4" -eq 0 ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
@@ -56,8 +67,10 @@ stop() {
 	killall -9 nfsd > /dev/null 2>&1
 	/usr/sbin/exportfs -au
 	killall portmap > /dev/null 2>&1
-	
 	exitval=$?
+	
+	umount $PROCNFSD_DIR > /dev/null 2>&1
+	
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else

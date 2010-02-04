@@ -7,7 +7,7 @@ KERNEL_SUBVERSION:=iln6
 KERNEL_BOARD_REF:=$(KERNEL_REF)
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 KERNEL_DIR:=$(SOURCE_DIR)/kernel/ref-$(KERNEL_REF)-$(AVM_VERSION)
-KERNEL_BUILD_DIR:=$(KERNEL_DIR)/kernel
+KERNEL_BUILD_DIR:=$(KERNEL_DIR)
 KERNEL_BUILD_ROOT_DIR:=$(KERNEL_BUILD_DIR)/linux-$(KERNEL_VERSION)
 
 KERNEL_IMAGE:=vmlinux.eva_pad
@@ -76,20 +76,20 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 	@for i in $(KERNEL_LINKING_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; then \
-			$(ECHO) Linking  .../include/linux/$${i##*\/linux_}; \
+			$(ECHO) "Linking  .../include/linux/$${i##*\/linux_}"; \
 			ln -sf ../../$$i $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; \
 		fi \
 	done
 	@if test -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/avm_net_trace.h -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; then \
-			$(ECHO) Linking  .../include/linux/avm_net_trace.h; \
+			$(ECHO) "Linking  .../include/linux/avm_net_trace.h"; \
 			ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
 				$(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; \
 	fi
 	@for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile.26 -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
-			$(ECHO) Linking  .../$$i/Makefile; \
+			$(ECHO) "Linking  .../$$i/Makefile"; \
 			ln -sf Makefile.26 $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
 		fi \
 	done
@@ -134,7 +134,7 @@ $(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.configured
 		prepare
 	touch $@
 
-$(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma2eva
+$(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
 	@echo -n "building kernel image... "
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \

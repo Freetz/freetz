@@ -965,7 +965,7 @@ int main(int ac, char **av)
 		conf_write(NULL);
 		printf("\n\n"
 			"*** End of Freetz configuration.\n"
-			"*** Check the top-level Makefile for additional configuration options.\n\n");
+			"*** Execute 'make' to build the Freetz image.\n\n");
 	} else
 		printf("\n\nYour Freetz configuration changes were NOT saved.\n\n");
 
