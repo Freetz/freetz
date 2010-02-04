@@ -760,6 +760,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi	
 
 	echo1 "installing modules"
+	# 7270 modules dir is 2.6.19.2 not 2.6.19.2-ur8
+	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
 	for i in \
 	$( \
 		cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}" && \
@@ -780,8 +782,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	done
 
 	echo1 "generating modules.dep"
-	# 7270 modules dir is 2.6.19.2 not 2.6.19.2-ur8
-	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
 	${TOOLS_SUBDIR}/depmod.pl -b "$MODULES_DIR" \
 		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map 2> /dev/null
 
