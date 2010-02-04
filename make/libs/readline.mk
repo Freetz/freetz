@@ -1,18 +1,19 @@
-$(call PKG_INIT_LIB, 6.0)
+$(call PKG_INIT_LIB, 6.1)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=fc2f7e714fe792db1ce6ddc4c9fb4ef3
 $(PKG)_SITE:=ftp://ftp.gnu.org/gnu/readline
+
 $(PKG)_$(PKG)_BINARY:=$($(PKG)_DIR)/shlib/libreadline.so.$($(PKG)_LIB_VERSION)
 $(PKG)_HISTORY_BINARY:=$($(PKG)_DIR)/shlib/libhistory.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_$(PKG)_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_HISTORY_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_$(PKG)_BINARY:=$($(PKG)_TARGET_DIR)/libreadline.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_HISTORY_BINARY:=$($(PKG)_TARGET_DIR)/libhistory.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=b7f65a48add447693be6e86f04a63019
 
 $(PKG)_DEPENDS_ON := ncurses
 
-$(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=yes
+$(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=present
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -40,7 +41,7 @@ $(pkg): $($(PKG)_STAGING_READLINE_BINARY) $($(PKG)_STAGING_HISTORY_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_READLINE_BINARY) $($(PKG)_TARGET_HISTORY_BINARY)
 
 $(pkg)-clean:
-	$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" -C $(READLINE_DIR) uninstall
+	-$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" -C $(READLINE_DIR) uninstall
 	-$(MAKE) -C $(READLINE_DIR) clean
 
 $(pkg)-uninstall:
