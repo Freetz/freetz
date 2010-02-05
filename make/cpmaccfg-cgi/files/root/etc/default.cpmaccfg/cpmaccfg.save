@@ -1,0 +1,8 @@
+pkg_post_save()
+{
+	[ -f /mod/etc/conf/cpmaccfg.cfg ] && . /mod/etc/conf/cpmaccfg.cfg
+
+	if [ "$CPMACCFG_ENABLED" == "yes" ]; then
+		/mod/etc/init.d/rc.cpmaccfg restart
+	fi
+}

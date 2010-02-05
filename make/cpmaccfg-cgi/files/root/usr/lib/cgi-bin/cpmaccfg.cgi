@@ -8,12 +8,12 @@ pwdauth_yes_chk=''; pwdauth_no_chk=''
 
 case "$CPMACCFG_ENABLED" in yes) auto_chk=' checked';; inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
 
-sec_begin 'Starttyp'
+sec_begin 'Enable/Disable cpmaccfg'
 
 cat << EOF
 <p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> Auto</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> Manual</label>
+<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1">Activated</label>
+<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2">Deactivated</label>
 EOF
 cat << EOF
 </p>
