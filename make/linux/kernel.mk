@@ -32,7 +32,6 @@ $(KERNEL_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 endif
 
 $(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
-	echo $(AVM_SOURCE)
 	$(DL_TOOL) $(DL_FW_DIR) .config $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_MD5)
 
 # Make sure that a perfectly clean build is performed whenever Freetz package
