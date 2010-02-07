@@ -1,36 +1,39 @@
 #!/bin/sh
 
 DAEMON=cifsmount
-DAEMON_MOUNT=/mod/etc/cifs_mount
-DAEMON_UMOUNT=/mod/etc/cifs_umount
 
 . /etc/init.d/modlibrc
 
+# works only with applet seq enabled:
+#CIFSMOUNT_LIST="$(seq 1 $CIFSMOUNT_COUNT)"
+CIFSMOUNT_LIST="1"
+i=1
+while [ "$i" -lt "$CIFSMOUNT_COUNT" ]; do
+    i=$((i + 1))
+    CIFSMOUNT_LIST="$CIFSMOUNT_LIST $i"
+done
+
 start() {
 
-	(
-		if [ -x /tmp/flash/cifs_mount ]; then
-			/tmp/flash/cifs_mount
-		else
-			/mod/etc/default.cifsmount/cifs_mount
-		fi
-
-	) > /mod/etc/cifs_mount
-
-	(
-		if [ -x /tmp/flash/cifs_umount ]; then
-			/tmp/flash/cifs_umount
-		else
-			/mod/etc/default.cifsmount/cifs_umount
-		fi
-	) > /mod/etc/cifs_umount
-
 	echo -n 'mount cifs...'
+	exitval=0
+	CIFSMNT_PATH=/usr/sbin
 
-	chmod +x $DAEMON_MOUNT $DAEMON_UMOUNT
-	$DAEMON_MOUNT > /dev/null 2>&1
-
-	exitval=$?
+	modprobe cifs
+	[ "$?" -gt 0 ] && exitval=1
+	
+	for i in $CIFSMOUNT_LIST; do
+		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
+		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
+		eval CIFSMOUNT_USER=\$CIFSMOUNT_USER$i
+		eval CIFSMOUNT_PASS=\$CIFSMOUNT_PASS$i
+		if [ "$CIFSMOUNT_MOUNTPOINT" != "" ]; then
+			echo "mount $CIFSMOUNT_SHARE..."
+			mkdir -p "$CIFSMOUNT_MOUNTPOINT"
+			$CIFSMNT_PATH/mount.cifs $CIFSMOUNT_SHARE $CIFSMOUNT_MOUNTPOINT -o user="$CIFSMOUNT_USER",pass="$CIFSMOUNT_PASS"
+			[ "$?" -gt 0 ] && exitval=1
+		fi
+	done
 
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -42,18 +45,30 @@ start() {
 
 stop() {
 	echo -n 'unmount cifs...'
+	exitval=0
 
-	$DAEMON_UMOUNT
+	for i in $CIFSMOUNT_LIST; do
+		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
+		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
+		eval CIFSMOUNT_USER=\$CIFSMOUNT_USER$i
+		eval CIFSMOUNT_PASS=\$CIFSMOUNT_PASS$i
+		if [ "$CIFSMOUNT_MOUNTPOINT" != "" ]; then
+			echo "unmount $CIFSMOUNT_SHARE..."
+			umount $CIFSMOUNT_MOUNTPOINT
+			[ "$?" -gt 0 ] && exitval=1
+			#rmdir $CIFSMOUNT_MOUNTPOINT
+		fi
+	done
+	rmmod cifs
 
 	sleep 1
 
-	if [ -z "$(pidof cifsoplockd)" -a -z "$(pidof cifsdnotifyd)" ]; then
+	if [ "$exitval" -eq 0 -a -z "$(pidof cifsoplockd)" -a -z "$(pidof cifsdnotifyd)" ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
 		exit 1
 	fi
-
 }
 
 case "$1" in
