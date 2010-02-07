@@ -1,31 +1,22 @@
-BUSYBOX_MAKE_DIR:=$(MAKE_DIR)/busybox
-BUSYBOX_REF_DIR:=$(SOURCE_DIR)/ref-$(BUSYBOX_REF)
+$(call PKG_INIT_BIN, 1.15.3)
+$(PKG)_SOURCE:=busybox-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=6059ac9456de6fb18dc8ee4cd0ec9240
+$(PKG)_SITE:=http://www.busybox.net/downloads
 
-BUSYBOX_VERSION:=1.15.3
-BUSYBOX_DIR:=$(BUSYBOX_REF_DIR)/busybox-$(BUSYBOX_VERSION)
-BUSYBOX_CONFIG_FILE:=$(BUSYBOX_MAKE_DIR)/Config.$(BUSYBOX_REF)
-BUSYBOX_CUSTOM_CONFIG_FILE:=$(BUSYBOX_MAKE_DIR)/Config.custom
-BUSYBOX_CUSTOM_CONFIG_TEMP:=$(BUSYBOX_MAKE_DIR)/Config.temp
+$(PKG)_SOURCE_DIR:=$(SOURCE_DIR)/ref-$($(PKG)_REF)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/busybox-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
+$(PKG)_TARGET_DIR:=$(pkg)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg)-$($(PKG)_REF)
 
-BUSYBOX_SOURCE:=busybox-$(BUSYBOX_VERSION).tar.bz2
-BUSYBOX_SITE:=http://www.busybox.net/downloads
-BUSYBOX_TARGET_DIR:=busybox
-BUSYBOX_TARGET_BINARY:=busybox
-BUSYBOX_SOURCE_MD5:=6059ac9456de6fb18dc8ee4cd0ec9240
+$(PKG)_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/Config.$($(PKG)_REF)
+$(PKG)_CUSTOM_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/Config.custom
+$(PKG)_CUSTOM_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/Config.temp
 
-$(DL_DIR)/$(BUSYBOX_SOURCE): | $(DL_DIR)
-	wget -P $(DL_DIR) $(BUSYBOX_SITE)/$(BUSYBOX_SOURCE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
 
-$(BUSYBOX_DIR)/.unpacked: $(DL_DIR)/$(BUSYBOX_SOURCE)
-	mkdir -p $(BUSYBOX_REF_DIR)
-	tar -C $(BUSYBOX_REF_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(BUSYBOX_SOURCE)
-	set -e; \
-	for i in $(BUSYBOX_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(BUSYBOX_DIR) $$i; \
-	done
-	touch $@
-
-$(BUSYBOX_CUSTOM_CONFIG_FILE): $(TOPDIR)/.config $(BUSYBOX_CONFIG_FILE)
+$($(PKG)_CUSTOM_CONFIG_FILE): $(TOPDIR)/.config $($(PKG)_CONFIG_FILE)
 	@cp -p $(BUSYBOX_CONFIG_FILE) $(BUSYBOX_CUSTOM_CONFIG_TEMP)
 	@$(call PKG_EDIT_CONFIG, \
 		CONFIG_LONG_OPTS=$(FREETZ_BUSYBOX_LONG_OPTS) \
@@ -90,7 +81,7 @@ $(BUSYBOX_CUSTOM_CONFIG_FILE): $(TOPDIR)/.config $(BUSYBOX_CONFIG_FILE)
 		cp $(BUSYBOX_CUSTOM_CONFIG_TEMP) $(BUSYBOX_CUSTOM_CONFIG_FILE)
 	@rm -f $(BUSYBOX_CUSTOM_CONFIG_TEMP)
 
-$(BUSYBOX_DIR)/.configured: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CUSTOM_CONFIG_FILE)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_CUSTOM_CONFIG_FILE)
 	cp $(BUSYBOX_CUSTOM_CONFIG_FILE) $(BUSYBOX_DIR)/.config
 	$(call PKG_EDIT_CONFIG, CONFIG_LFS=$(FREETZ_TARGET_LFS)) $(BUSYBOX_DIR)/.config
 	$(MAKE) CC="$(TARGET_CC)" \
@@ -99,30 +90,29 @@ $(BUSYBOX_DIR)/.configured: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CUSTOM_CONFIG_FIL
 		-C $(BUSYBOX_DIR) oldconfig
 	touch $@
 
-$(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY): $(BUSYBOX_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
 		ARCH="mipsel" \
 		-C $(BUSYBOX_DIR)
 
-$(BUSYBOX_DIR)/busybox.links: $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
+$($(PKG)_BINARY).links: $($(PKG)_BINARY)
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(BUSYBOX_DIR) busybox.links
 	touch $@
 
-$(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF): $(BUSYBOX_DIR)/$(BUSYBOX_TARGET_BINARY)
-	mkdir -p $(BUSYBOX_TARGET_DIR)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links: $(BUSYBOX_DIR)/busybox.links
-	cp $(BUSYBOX_DIR)/busybox.links $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
+$($(PKG)_TARGET_BINARY).links: $($(PKG)_BINARY).links
+	cp $(BUSYBOX_BINARY).links $(BUSYBOX_TARGET_BINARY).links
 
-busybox-source: $(BUSYBOX_DIR)/.unpacked
+$(pkg)-source: $($(PKG)_DIR)/.unpacked
 
-busybox-menuconfig: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
+$(pkg)-menuconfig: $($(PKG)_DIR)/.unpacked $($(PKG)_CONFIG_FILE)
 	cp $(BUSYBOX_CONFIG_FILE) $(BUSYBOX_DIR)/.config
 	$(MAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
@@ -130,21 +120,20 @@ busybox-menuconfig: $(BUSYBOX_DIR)/.unpacked $(BUSYBOX_CONFIG_FILE)
 		-C $(BUSYBOX_DIR) menuconfig
 	cp $(BUSYBOX_DIR)/.config $(BUSYBOX_CONFIG_FILE)
 
-busybox-oldconfig: $(BUSYBOX_DIR)/.configured
+$(pkg)-oldconfig: $($(PKG)_DIR)/.configured
 
-busybox-precompiled: uclibc $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
+$(pkg)-precompiled: uclibc $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_BINARY).links
 
-busybox-clean: busybox-uninstall
+$(pkg)-clean: busybox-uninstall
 	-$(MAKE) -C $(BUSYBOX_DIR) clean
 
-busybox-uninstall:
-	$(RM) $(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF) \
-		$(BUSYBOX_TARGET_DIR)/busybox-$(BUSYBOX_REF).links
+$(pkg)-uninstall:
+	$(RM) $(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TARGET_BINARY).links
 
-busybox-dirclean: 
+$(pkg)-dirclean: 
 	$(RM) -r $(BUSYBOX_DIR)
 
-busybox-distclean: busybox-dirclean
+$(pkg)-distclean: busybox-dirclean
 	$(RM) $(BUSYBOX_TARGET_DIR)/busybox-*
 
 .PHONY: busybox-menuconfig busybox-oldconfig

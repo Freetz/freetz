@@ -246,7 +246,8 @@ endef
 # Stage 2a: initialise other package-specific variables for binary packages
 define PKG_INIT_BIN__INT
 PKG_TYPE:=BIN
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 # level 99 for packages that are not actually started
 $(PKG)_STARTLEVEL=99
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
@@ -258,7 +259,8 @@ endef
 # Stage 2b: initialise other package-specific variables for library packages
 define PKG_INIT_LIB__INT
 PKG_TYPE:=LIB
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
 $(PKG)_TARGET_DIR:=root/usr/lib
 $(PKG)_DEST_DIR:=root
@@ -381,8 +383,8 @@ PKG_UNPACK__INT_.zip:=dummy
 define PKG_UNPACK__INT
 	$(if $(PKG_UNPACK__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
 	$(if $(patsubst %.zip,%,$(suffix $(strip $1))),
-		tar -C $(SOURCE_DIR) $(VERBOSE) -x$(PKG_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
-		unzip -u $(strip $1) -d $(SOURCE_DIR)
+		tar -C $($(PKG)_SOURCE_DIR) $(VERBOSE) -x$(PKG_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
+		unzip -u $(strip $1) -d $($(PKG)_SOURCE_DIR)
 	)
 endef
 
@@ -415,7 +417,9 @@ endef
 
 ## Unpack and patch binary package
 define PKG_UNPACKED_BIN__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(SOURCE_DIR)
+$(PKG)_SOURCE_DIR:
+	@mkdir -p $($(PKG)_SOURCE_DIR)
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(PKG)_SOURCE_DIR
 	$(RM) -r $($(PKG)_DIR)
 	$(call PKG_UNPACK)
 	$(call PKG_BIN_PATCH)
@@ -438,7 +442,9 @@ endef
 
 ## Unpack and patch library package
 define PKG_UNPACKED_LIB__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(SOURCE_DIR)
+$(PKG)_SOURCE_DIR:
+	@mkdir -p $($(PKG)_SOURCE_DIR)
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(PKG)_SOURCE_DIR
 	$(RM) -r $($(PKG)_DIR)
 	$(call PKG_UNPACK)
 	$(call PKG_LIB_PATCH)
@@ -449,7 +455,7 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 endef
 
 define PKG_LOCALSOURCE_PACKAGE__INT
-$($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $(SOURCE_DIR)
+$($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $(PKG)_SOURCE_DIR
 	$(RM) -r $($(PKG)_DIR)
 	mkdir -p $($(PKG)_DIR)
 	cp -a $$^ $($(PKG)_DIR)
