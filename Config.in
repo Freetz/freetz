@@ -2223,6 +2223,12 @@ config FREETZ_BACKUP_CONFIG_CACHE
 		It causes config.cache to be backed up before calling package configure script and after that.
 		This might simplify searching for a missing/wrong config.cache entry.
 
+config FREETZ_CHECK_CHANGED
+	bool "Force package clean if it has changed"
+	default y
+	help
+		If this is activated, all packages are checked for changes in make/<pkg>/files
+		and make/<pkg>/patches. If so, the package will be recreated.
 
 config FREETZ_FAVICON_STRING
 	string
