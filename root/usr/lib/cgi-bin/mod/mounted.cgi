@@ -40,14 +40,14 @@ then
 	do
 		echo "$dfout" | grep -m 1 $path | sed -e "s/\(% [^ ]*\) /\1\n/g" | while read -r device total used free percent path
 		do
-			if [ "$fstyp"="fuse" ]
+			if [ "$fstyp" = "fuse" ]
 			then
 				if [ $(echo "$device" | grep "http") ]
 				then
 					fstyp="davfs"
 				fi
 			else
-				if [ "$fstyp"="fuseblk" ]
+				if [ "$fstyp" = "fuseblk" ]
 				then
 					fstyp="ntfs"
 				fi
