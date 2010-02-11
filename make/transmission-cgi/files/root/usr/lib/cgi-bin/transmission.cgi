@@ -12,7 +12,8 @@ elif [ "$TRANSMISSION_PEERENCRYPTIONMODE" = "ENCRYPTION_PREFERRED" ]; then
 else
 	noencryption_sel=' selected'
 fi
-blocklist_chk=''; if [ "$TRANSMISSION_USEBLOCKLIST" = "yes" ]; then blocklist_chk=' checked'; fi
+useblocklist_chk=''; if [ "$TRANSMISSION_USEBLOCKLIST" = "yes" ]; then useblocklist_chk=' checked'; fi
+usedht_chk=''; if [ "$TRANSMISSION_USEDHT" = "yes" ]; then usedht_chk=' checked'; fi
 
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
@@ -82,14 +83,14 @@ en:"Directory to watch for new torrents and to automatically start them:"
 
 <p>
 <small>$(lang
-de:"Verschiebe fertige Dateien in folgendes Seed-Verzeichnis:"
-en:"Finished downloads will be moved to seed-directory and start seeding there:"
+de:"Noch nicht fertig geladene Dateien werden in diesem Verzeichnis abgelegt:"
+en:"Directory to store new torrents until they're complete:"
 )</small>
 </p>
 
 <p>
-<label for='seeddir'>$(lang de:"Seed-Verzeichnis" en:"Seed-Directory"): </label>
-<input type='text' id='seeddir' name='seeddir' size='40' maxlength='255' value="$(html "$TRANSMISSION_SEEDDIR")"><br />
+<label for='incompletedir'>$(lang de:"Incomplete-Verzeichnis" en:"Incomplete-Directory"): </label>
+<input type='text' id='incompletedir' name='incompletedir' size='40' maxlength='255' value="$(html "$TRANSMISSION_INCOMPLETEDIR")"><br />
 </p>
 
 <p>
@@ -129,7 +130,7 @@ en:"Don't forget to open this port. Use the freetz' package AVM-Firewall for thi
 
 <small>$(lang
 de:"Beim Erreichen der Ratio werden Uploads automatisch gestoppt und in das End-Verzeichnis verschoben (falls angegeben)"
-en:"Seeding torrents will be stopped when they reach this ratio and moved into the seed-directory (if not empty)"
+en:"Seeding torrents will be stopped when they reach this ratio and moved to the finish-directory (if not empty)"
 )</small>
 
 <p>
@@ -158,9 +159,15 @@ en:"Seeding torrents will be stopped when they reach this ratio and moved into t
 
 <p>
 <label for='useblocklist'>$(lang de:"Peer-Blockliste verwenden:" en:"Use peer-blocklist:") </label>
-<input type='checkbox' id='useblocklist' name='useblocklist' value='yes'$blocklist_chk>
+<input type="hidden" name="useblocklist" value="no">
+<input type='checkbox' id='useblocklist' name='useblocklist' value='yes'$useblocklist_chk>
 </p>
 
+<p>
+<label for='usedht'>$(lang de:"DHT verwenden:" en:"Use DHT:") </label>
+<input type="hidden" name="usedht" value="no">
+<input type='checkbox' id='usedht' name='usedht' value='yes'$usedht_chk>
+</p>
 EOF
 
 sec_end

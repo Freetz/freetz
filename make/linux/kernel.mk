@@ -1,4 +1,5 @@
-AVM_SOURCE:=$(strip $(subst ",, $(FREETZ_DL_KERNEL_SOURCE)))
+space:=$(empty) $(empty)
+AVM_SOURCE:=$(strip $(subst ",, $(subst $(space),\ ,$(FREETZ_DL_KERNEL_SOURCE))))
 
 AVM_UNPACK__INT_.gz:=z
 AVM_UNPACK__INT_.bz2:=j
@@ -42,14 +43,14 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 		tar \
 			-t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE)| \
-		grep -e '^.*\(\/GPL-release_kernel\.tar\.gz\|\/linux-2\.6\...\..\/\)$$'| \
+		grep -e '^.*\/\(GPL-\(release_\|\)kernel\.tar\.gz\|linux-2\.6\...\..\/\)$$'| \
 		head -n 1`; \
 		echo -n "unpacking... "; \
-	if [ "$${KERNEL_SOURCE_CONTENT##*/}" == "GPL-release_kernel.tar.gz" ]; then \
+	if [ ! -z $$(echo "$$KERNEL_SOURCE_CONTENT"|grep -e '.*\/GPL-\(release_\|\)kernel\.tar\.gz') ]; then \
 		tar	-O $(VERBOSE) \
 			-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
-			--wildcards '*/GPL-release_kernel.tar.gz' | \
+			--wildcards "*/$${KERNEL_SOURCE_CONTENT##*/}" | \
 		tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
 			-xz \
 			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed; \

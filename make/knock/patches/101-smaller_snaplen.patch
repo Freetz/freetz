@@ -1,0 +1,11 @@
+--- src/knockd.c.orig	2005-06-27 05:11:34.000000000 +0000
++++ src/knockd.c	2010-01-09 10:43:08.000000000 +0000
+@@ -193,7 +193,7 @@
+ 		}
+ 	}
+ 
+-	cap = pcap_open_live(o_int, 65535, 0, 0, pcapErr);
++	cap = pcap_open_live(o_int, BUFSIZ, 0, 0, pcapErr);
+ 	if(strlen(pcapErr)) {
+ 		fprintf(stderr, "could not open %s: %s\n", o_int, pcapErr);
+ 	}

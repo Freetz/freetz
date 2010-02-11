@@ -17,3 +17,9 @@ config FREETZ_PACKAGE_IPTRAF
 		Flag statuses on TCP packets
 		LAN station statistics
 
+config FREETZ_PACKAGE_IPTRAF_RVNAMED
+	bool "rvnamed"
+	depends on FREETZ_PACKAGE_IPTRAF
+	default n
+	help
+		reverse name resolution daemon for iptraf

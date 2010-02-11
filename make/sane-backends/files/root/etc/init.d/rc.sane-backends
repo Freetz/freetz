@@ -31,70 +31,32 @@ config() {
 	) > $CONFDIR/$DAEMON.conf
 }
 
-start() {
-	echo -n 'Starting saned...'
-	config
-
-	start-stop-daemon -q -p /var/run/$DAEMON.pid -m -b -x $DAEMON -S -- -d
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		rm -f $CONFDIR/$DAEMON.conf
-		exit $exitval
-	fi
-}
-
-stop () {
-	echo -n 'Stopping saned...'
-
-	start-stop-daemon -q -p /var/run/$DAEMON.pid -K
-	exitval=$?
-
-	rm -f $CONFDIR/$DAEMON.conf
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
-}
-
 case "$1" in
 	""|load)
 		pre_config
 		config
 
 		modreg cgi 'sane-backends' 'SANE'
+		modreg daemon --disable sane-backends
 
 		modlib_start $SANE_BACKENDS_SANED_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi 'sane-backends'
+		modunreg daemon sane-backends
 		;;
 	start)
-		start
 		;;
 	stop)
-		stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
 		;;
 	status)
 		if [ "$SANE_BACKENDS_SANED_ENABLED" == "inetd" ]; then
 			echo 'inetd'
  		else
-			modlib_status
+			echo 'stopped'
 		fi
-		;;
-	config)
-		config
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

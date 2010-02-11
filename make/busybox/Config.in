@@ -356,6 +356,10 @@ config FREETZ_BUSYBOX_VOLUMEID_LINUXRAID
 	help
 		linuxraid filesystem.
 
+config FREETZ_BUSYBOX_PSCAN
+	bool "pscan command, simple port scanner"
+	default n
+
 menu "IPv6 Options"
 	requires FREETZ_TARGET_IPV6_SUPPORT
 
@@ -365,9 +369,5 @@ config FREETZ_BUSYBOX_FEATURE_PREFER_IPV4_ADDRESS
 
 config FREETZ_BUSYBOX_PING6
 	bool "ping6 command"
-	default n
-
-config FREETZ_BUSYBOX_PSCAN
-	bool "pscan command, simple port scanner"
 	default n
 endmenu

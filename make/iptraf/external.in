@@ -5,3 +5,12 @@ config EXTERNAL_FREETZ_PACKAGE_IPTRAF
 	help
 		externals these file(s):
 		 /usr/bin/iptraf
+
+config EXTERNAL_FREETZ_PACKAGE_IPTRAF_RVNAMED
+	depends on EXTERNAL_FREETZ_PACKAGE_IPTRAF && FREETZ_PACKAGE_IPTRAF_RVNAMED
+	bool "rvnamed"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/rvnamed
+		 

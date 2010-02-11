@@ -1,0 +1,14 @@
+--- src/knockd.c.orig	2005-06-27 07:11:34.000000000 +0200
++++ src/knockd.c	2006-11-07 21:07:46.000000000 +0100
+@@ -352,8 +352,9 @@
+ 
+ void child_exit(int signum)
+ {
+-	/* child wants to exit, let em die */
+-	wait(NULL);
++	int status;
++
++	while ( waitpid( (pid_t)-1, &status, WNOHANG ) > 0 ) continue;
+ 	return;
+ }
+ 

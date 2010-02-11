@@ -1,0 +1,16 @@
+--- libbb/copy_file.c
++++ libbb/copy_file.c
+@@ -276,7 +276,12 @@
+			new_mode = 0666;
+
+		// POSIX way is a security problem versus (sym)link attacks
+-		if (!ENABLE_FEATURE_NON_POSIX_CP) {
++		if (!ENABLE_FEATURE_NON_POSIX_CP
++			|| (dest_exists
++				&& !(flags & (FILEUTILS_RECUR|FILEUTILS_INTERACTIVE))
++				&& !S_ISLNK(dest_stat.st_mode)
++			)
++		) {
+			dst_fd = open(dest, O_WRONLY|O_CREAT|O_TRUNC, new_mode);
+		} else { /* safe way: */
+			dst_fd = open(dest, O_WRONLY|O_CREAT|O_EXCL, new_mode);

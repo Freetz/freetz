@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.77)
-$(PKG)_SOURCE:=transmission-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=d9457ac827faebb515062975d45835e9
+$(call PKG_INIT_BIN, 1.83)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=fbdc151040ec64f55c3f28be60a21060
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 
 $(PKG)_BINARIES_ALL := transmissioncli transmission-daemon transmission-remote
@@ -26,6 +26,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-beos
 $(PKG)_CONFIGURE_OPTIONS += --disable-mac
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk
 $(PKG)_CONFIGURE_OPTIONS += --disable-wx
+$(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
 
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_STATIC)),y)
 $(PKG)_LDFLAGS := -all-static
@@ -49,9 +50,7 @@ $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/daemo
 $($(PKG)_TARGET_WEBINTERFACE_INDEX_HTML): $($(PKG)_DIR)/.unpacked
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
 	mkdir -p $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
-	tar -c -C $(TRANSMISSION_WEBINTERFACE_DIR) --exclude=.svn . | tar -x -C $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
-	# we do respect the license, but delete it as it just takes place in the firmware
-	$(RM) $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)/LICENSE
+	tar -c -C $(TRANSMISSION_WEBINTERFACE_DIR) --exclude=.svn --exclude=LICENSE --exclude='Makefile*' . | tar -x -C $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
 	# remove all non-min.js files, these are not needed
 	for f in $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)/javascript/jquery/*.js; do if ! (echo "$$f" | grep -q '\.min\.js$$' >/dev/null 2>&1); then $(RM) "$$f"; fi; done
 	chmod 644 $(TRANSMISSION_TARGET_WEBINTERFACE_INDEX_HTML)
