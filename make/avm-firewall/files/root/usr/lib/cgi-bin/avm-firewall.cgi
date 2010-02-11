@@ -417,21 +417,21 @@ tmp.firstChild.nodeValue=act.toUpperCase();
 
 function build_new_rule(){
   elem_proto=document.getElementById("id_proto");
-  tmp=document.getElementById("id_action").value + " " + elem_proto.value + " ";
+  tmp=document.getElementById("id_action").value + " " + elem_proto.value.replace(/\s+/g,"") + " ";
   switch ( document.getElementById("source_type").value ){
-    case "host": tmp += "host " + document.getElementById("id_source").value + " "; break;
-    case "net": tmp += document.getElementById("id_source").value + " "+ document.getElementById("id_ssubnet").value + " "; break;
+    case "host": tmp += "host " + document.getElementById("id_source").value.replace(/\s+/g,"") + " "; break;
+    case "net": tmp += document.getElementById("id_source").value.replace(/\s+/g,"") + " "+ document.getElementById("id_ssubnet").value + " "; break;
     case "any": tmp += "any " ; break;
   }
   switch ( document.getElementById("dest_type").value ){
-        case "host": tmp += "host " + document.getElementById("id_dest").value; break;
-        case "net": tmp += document.getElementById("id_dest").value + " "+ document.getElementById("id_dsubnet").value; break;
+        case "host": tmp += "host " + document.getElementById("id_dest").value.replace(/\s+/g,""); break;
+        case "net": tmp += document.getElementById("id_dest").value.replace(/\s+/g,"") + " "+ document.getElementById("id_dsubnet").value; break;
         case "any": tmp += "any" ; break;
   }
   if ( elem_proto.value.charAt(0) != "i" ){
-    eport = document.getElementById("id_eport").value ;
+    eport = document.getElementById("id_eport").value.replace(/\s+/g,"") ;
     if ( eport != "" ) { tmp += " range "} else { tmp += " eq "} ;
-    tmp += document.getElementById("id_sport").value ;
+    tmp += document.getElementById("id_sport").value.replace(/\s+/g,"") ;
     if ( eport !="" ) { tmp += " " + eport } ;
   }
   else {
