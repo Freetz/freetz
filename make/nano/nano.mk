@@ -54,7 +54,7 @@ $(pkg)-clean:
 	-$(MAKE) -C $(NANO_DIR) clean
 	$(RM) $(NANO_FREETZ_CONFIG_FILE)
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(NANO_TARGET_BINARY)
 
 $(PKG_FINISH)

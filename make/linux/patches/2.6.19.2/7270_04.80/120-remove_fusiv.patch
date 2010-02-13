@@ -1,5 +1,5 @@
 --- linux-2.6.19.2/arch/mips/Kconfig.orig	2008-10-08 14:15:02.000000000 +0200
-+++ linux-2.6.19.2/arch/mips/Kconfig	2008-12-22 21:48:31.000000000 +0100
++++ linux-2.6.19.2/arch/mips/Kconfig	2010-01-17 15:41:18.000000000 +0100
 @@ -1024,8 +1024,6 @@
  	depends on MACH_IKAN_MIPS
  endchoice
@@ -9,8 +9,8 @@
  config RWSEM_GENERIC_SPINLOCK
  	bool
  	default y
---- linux-2.6.19.2/Makefile.orig	2008-12-22 21:48:30.000000000 +0100
-+++ linux-2.6.19.2/Makefile	2008-12-22 21:48:31.000000000 +0100
+--- linux-2.6.19.2/Makefile.orig	2010-01-17 15:41:16.000000000 +0100
++++ linux-2.6.19.2/Makefile	2010-01-17 15:41:18.000000000 +0100
 @@ -145,14 +145,8 @@
  
  srctree		:= $(if $(KBUILD_SRC),$(KBUILD_SRC),$(CURDIR))
@@ -55,7 +55,7 @@
  endif # KBUILD_EXTMOD
  
  ifeq ($(dot-config),1)
-@@ -617,18 +599,17 @@
+@@ -609,18 +591,17 @@
  
  vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
  		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
@@ -76,7 +76,7 @@
  libs-y1		:= $(patsubst %/, %/lib.a, $(libs-y))
  libs-y2		:= $(patsubst %/, %/built-in.o, $(libs-y))
  libs-y		:= $(libs-y1) $(libs-y2)
-@@ -661,7 +642,7 @@
+@@ -653,7 +634,7 @@
  # System.map is generated to document addresses of all kernel symbols
  
  vmlinux-init := $(head-y) $(init-y)

@@ -6,7 +6,6 @@ $(PKG)_DIR:=$(SOURCE_DIR)/lsof_$($(PKG)_VERSION)_src
 $(PKG)_BINARY:=$($(PKG)_DIR)/lsof
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lsof
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 
@@ -20,17 +19,17 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(MAKE) -C $(LSOF_DIR) \
 		DEBUG="$(TARGET_CFLAGS)"
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) 
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) 
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LSOF_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(LSOF_TARGET_BINARY)
 
 $(PKG_FINISH)

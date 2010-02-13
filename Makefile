@@ -54,6 +54,7 @@ TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 
 SED:=sed
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
+FAKEROOT_TOOL:=$(TOOLS_DIR)/fakeroot/bin/fakeroot
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
@@ -224,7 +225,9 @@ ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
 	@echo
 	@exit 3
 else
-	@if ! ./fwmod_download -C $(DL_FW_DIR) $(DL_SITE) $(DL_SOURCE); then \
+	@echo -e "\033[1mSTEP 0: DOWNLOAD\033[0m"
+	@echo "downloading firmware image"
+	@if ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE) $(DL_SITE) $(DL_SOURCE_MD5); then \
 		echo "ERROR: Could not download Firmwareimage."; \
 		exit 3; \
 	fi
@@ -236,14 +239,14 @@ DL_IMAGE+=$(IMAGE2)
 
 $(DL_FW_DIR)/$(DL_SOURCE2):
 	@if [ -n "$(DL_SOURCE2_CONTAINER)" ]; then \
-		[ -r $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) ] || ./fwmod_download -C $(DL_FW_DIR) $(DL_SITE2) $(DL_SOURCE2_CONTAINER) > /dev/null; \
+		[ -r $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) ] || $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2_CONTAINER) $(DL_SITE2) $(DL_SOURCE2_CONTAINER_MD5) > /dev/null; \
 		case "$(DL_SOURCE2_CONTAINER_SUFFIX)" in \
 			.zip) \
 				unzip $(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_DIR); \
 				;; \
 		esac \
 	else \
-		./fwmod_download -C $(DL_FW_DIR) $(DL_SITE2) $(DL_SOURCE2) > /dev/null; \
+		$(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2) $(DL_SITE2) $(DL_SOURCE2_MD5) > /dev/null; \
 	fi
 	@echo "done."
 	@echo
@@ -429,7 +432,8 @@ common-clean:
 common-dirclean:
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	rm -f make/config.cache .new-uclibc .old-uclibc
-	find $(ROOT_DIR)/lib $(ROOT_DIR)/usr/lib \
+	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
+		`[ -d $(ROOT_DIR)/usr/lib ] && echo $(ROOT_DIR)/usr/lib` \
 		-type d -name .svn -prune -false , -name "*.so*" -exec rm {} \;
 	find $(MAKE_DIR) -name ".*_config" -exec rm {} \;
 	-cp .defstatic $(ADDON_DIR)/static.pkg
@@ -440,7 +444,8 @@ common-distclean: common-clean
 	rm -rf $(TOOLCHAIN_BUILD_DIR)
 	rm -rf $(DL_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	rm -f make/config.cache .new-uclibc .old-uclibc
-	find $(ROOT_DIR)/lib $(ROOT_DIR)/usr/lib \
+	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
+		`[ -d $(ROOT_DIR)/usr/lib ] && echo $(ROOT_DIR)/usr/lib` \
 		-type d -name .svn -prune -false , -name "*.so*" -exec rm {} \;
 	find $(MAKE_DIR) -name ".*_config" -exec rm {} \;
 	-rm -rf $(ADDON_DIR)/*

@@ -34,11 +34,9 @@ $(PKG)_CONFIGURE_OPTIONS:=\
 		$(if $(FREETZ_MC_WITH_NCURSES),--with-screen=ncurses,--with-screen=mcslang) \
 		$(if $(FREETZ_MC_INTERNAL_EDITOR),--with-edit,--without-edit)
 
-
 $(PKG)_CONFIG_SUBOPTS += FREETZ_MC_INTERNAL_EDITOR
 $(PKG)_CONFIG_SUBOPTS += FREETZ_MC_SUBSHELL
 $(PKG)_CONFIG_SUBOPTS += FREETZ_MC_WITH_NCURSES
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -65,13 +63,13 @@ else
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(pkg)-clean-help
 endif
 
-$(pkg)-clean-help: 
+$(pkg)-clean-help:
 	@$(RM) $(MC_TARGET_HELP)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(MC_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(MC_TARGET_BINARY)
 
 $(PKG_FINISH)

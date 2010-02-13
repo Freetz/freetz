@@ -23,7 +23,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) 
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(PINGTUNNEL_DIR) clean

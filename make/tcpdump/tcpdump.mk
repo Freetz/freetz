@@ -15,7 +15,6 @@ $(PKG)_CONFIGURE_ENV += td_cv_buggygetaddrinfo="no"
 $(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
 $(PKG)_CONFIGURE_OPTIONS += --without-crypto
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -24,7 +23,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(TCPDUMP_DIR) all \
 		CCOPT="$(TARGET_CFLAGS)" \
-		INCLS="-I." 
+		INCLS="-I."
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

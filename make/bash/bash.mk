@@ -5,7 +5,7 @@ $(PKG)_BINARY:=$(BASH_DIR)/bash
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/bash
 
 ifeq ($(strip $(FREETZ_PACKAGE_BASH_READLINE)),y)
-$(PKG)_DEPENDS_ON := ncurses readline 
+$(PKG)_DEPENDS_ON := ncurses readline
 endif
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_BASH_MINIMAL
@@ -32,11 +32,9 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-hist
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-bang-history)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),--with-installed-readline,)
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
-
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \

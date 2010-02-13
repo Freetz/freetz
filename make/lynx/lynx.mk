@@ -26,7 +26,6 @@ $(PKG)_CONFIGURE_OPTIONS=\
 
 $(PKG)_DEPENDS_ON := ncurses
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 
@@ -71,7 +70,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_CFG): $($(PKG)_CFG)
-	mkdir -p $(dir $@) 
+	mkdir -p $(dir $@)
 	cp $(LYNX_CFG) $(LYNX_TARGET_CFG)
 
 $(pkg):
@@ -81,7 +80,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CFG)
 $(pkg)-clean:
 	-$(MAKE) -C $(LYNX_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(LYNX_TARGET_BINARY)
 	$(RM) $(LYNX_TARGET_CFG)
 

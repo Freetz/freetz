@@ -15,7 +15,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CC="mipsel-linux-gcc" \
 		STRIP="mipsel-linux-strip" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="" 
+		LDFLAGS=""
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

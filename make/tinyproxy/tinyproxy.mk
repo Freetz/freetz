@@ -27,7 +27,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(MAKE) CPPFLAGS="-I$(TARGET_MAKE_PATH)/../usr/include" \
 		CFLAGS="-DNDEBUG $(TARGET_CFLAGS)" \
 		LDFLAGS="-L$(TARGET_MAKE_PATH)/../usr/lib" \
-		-C $(TINYPROXY_DIR) 
+		-C $(TINYPROXY_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

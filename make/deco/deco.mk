@@ -9,7 +9,6 @@ $(PKG)_DEPENDS_ON := ncurses
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

@@ -20,7 +20,6 @@ $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/backend/.libs/libsane.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=root/usr/lib/libsane.so.$($(PKG)_LIB_VERSION)
 
-
 $(PKG)_TARGET_BINARIES:=$($(PKG)_TARGET_saned)
 ifeq ($(strip $(FREETZ_SANE_sane_find_scanner)),y)
 $(PKG)_TARGET_BINARIES+=$($(PKG)_TARGET_sane_find_scanner)

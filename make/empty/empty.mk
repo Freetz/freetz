@@ -4,7 +4,6 @@ $(PKG)_SITE:=@SF/empty
 $(PKG)_BINARY:=$($(PKG)_DIR)/empty
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/empty
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)

@@ -1,6 +1,11 @@
+space:=$(empty) $(empty)
+AVM_SOURCE:=$(strip $(subst ",, $(subst $(space),\ ,$(FREETZ_DL_KERNEL_SOURCE))))
+
+AVM_UNPACK__INT_.gz:=z
+AVM_UNPACK__INT_.bz2:=j
+
 KERNEL_SUBVERSION:=iln6
 KERNEL_BOARD_REF:=$(KERNEL_REF)
-KERNEL_DIR:=$(SOURCE_DIR)/ref-$(KERNEL_REF)-$(AVM_VERSION)/kernel
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 
 ifeq ($(AVM_VERSION),r7203)
@@ -26,20 +31,47 @@ $(KERNEL_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 	@rm -f $(KERNEL_FREETZ_CONFIG_TEMP)
 endif
 
+$(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
+	$(DL_TOOL) $(DL_FW_DIR) .config $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_MD5)
+
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL_FREETZ_CONFIG_FILE) \
+$(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE) \
 				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
-	rm -rf $(KERNEL_DIR)
-	mkdir -p $(KERNEL_DIR)
-	@KERNEL_SOURCE_PATH=`find $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION) -maxdepth 6 -wholename "*kernel/linux-2.6.??.?" -type d`/../..; \
-	if test -z $$KERNEL_SOURCE_PATH; then \
-		echo KERNEL_SOURCE_PATH is empty, stop; \
-		exit 1; \
-	fi; \
-	echo Copying $$KERNEL_SOURCE_PATH $(KERNEL_BUILD_DIR); \
-	cp -a $$KERNEL_SOURCE_PATH $(KERNEL_BUILD_DIR)
+	$(RM) -r $(KERNEL_DIR)
+	$(RM) -r $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
+	mkdir -p $(KERNEL_BUILD_DIR)/kernel
+	@echo -n Checking Kernel image structure ...; \
+	KERNEL_SOURCE_CONTENT=` \
+		tar \
+			-t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
+			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE)| \
+		grep -e '^.*\/\(GPL-\(release_\|\)kernel\.tar\.gz\|linux-2\.6\...\..\/\)$$'| \
+		head -n 1`; \
+		echo done; \
+		echo -n Decompressing kernel source files ...; \
+	if [ ! -z $$(echo "$$KERNEL_SOURCE_CONTENT"|grep -e '.*\/GPL-\(release_\|\)kernel\.tar\.gz') ]; then \
+		tar	-O $(VERBOSE) \
+			-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
+			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
+			--wildcards "*/$${KERNEL_SOURCE_CONTENT##*/}" | \
+		tar	-C $(KERNEL_BUILD_DIR)/kernel $(VERBOSE) \
+			-xz \
+			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed; \
+	elif [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
+		echo error: KERNEL_SOURCE_CONTENT is empty; exit 1; \
+	else \
+		tar	-C $(KERNEL_BUILD_DIR)/kernel $(VERBOSE) \
+			-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
+			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
+			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed \
+			"$$KERNEL_SOURCE_CONTENT"; \
+	fi
+	@echo done
+	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
+		echo error: KERNEL_BUILD_ROOT_DIR has wrong structure; exit 1; \
+	fi
 	@set -e; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR)/kernel $$i; \
 	done
@@ -60,11 +92,6 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL
 			ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
 				$(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; \
 	fi
-	@for i in $(KERNEL_DUMMY_DIRS); do \
-		echo Creating .../$$i/Makefile; \
-		mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$$i; \
-		touch $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
-	done
 	@for i in $(KERNEL_DUMMY_MAKE_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile.26 -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
@@ -72,8 +99,24 @@ $(KERNEL_DIR)/.unpacked: $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)/.unpacked $(KERNEL
 			ln -sf Makefile.26 $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
 		fi \
 	done
-	touch $(KERNEL_BUILD_ROOT_DIR)/drivers/dsl/Kconfig
-	touch $(KERNEL_BUILD_ROOT_DIR)/drivers/video/davinci/Kconfig
+	@for i in $(KERNEL_DUMMY_DIRS); do \
+		if test ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
+			echo Creating .../$$i/Makefile; \
+			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$$i; \
+			test -h $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile && \
+				rm $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
+			touch $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
+		fi \
+	done
+	@for i in $(KERNEL_OTHER_FILES); do \
+		if test ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i ; then \
+			echo Creating  .../$$i; \
+			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$${i%\/*}; \
+			test -h $(KERNEL_BUILD_ROOT_DIR)/$$i && \
+				rm $(KERNEL_BUILD_ROOT_DIR)/$$i; \
+			touch $(KERNEL_BUILD_ROOT_DIR)/$$i; \
+		fi \
+	done
 	ln -s $(KERNEL_BUILD_DIR_N)/kernel/linux-$(KERNEL_VERSION) $(KERNEL_DIR)/linux
 	touch $@
 
@@ -88,7 +131,7 @@ $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 		oldconfig
 	touch $@
 
-$(KERNEL_DIR)/.depend_done:  $(KERNEL_DIR)/.configured
+$(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.configured
 	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
@@ -98,7 +141,7 @@ $(KERNEL_DIR)/.depend_done:  $(KERNEL_DIR)/.configured
 		prepare
 	touch $@
 
-$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma2eva
+$(KERNEL_BUILD_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
 	PATH=$(KERNEL_MAKE_PATH):$(PATH) \
 	$(MAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
@@ -180,6 +223,7 @@ kernel-clean:
 
 kernel-dirclean:
 	$(RM) -r $(KERNEL_DIR)
+	$(RM) -r $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
 
 kernel-distclean: kernel-dirclean
 	$(RM) $(KERNEL_TARGET_DIR)/.version-*

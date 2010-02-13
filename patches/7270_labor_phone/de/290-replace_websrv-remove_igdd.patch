@@ -1,6 +1,6 @@
---- etc/init.d/rc.net.orig	2008-12-17 22:22:17.000000000 +0100
-+++ etc/init.d/rc.net	2008-12-17 22:22:17.000000000 +0100
-@@ -57,9 +57,25 @@
+--- etc/init.d/rc.net.orig	2010-02-11 10:39:37.455951817 +0100
++++ etc/init.d/rc.net	2010-02-11 10:39:37.615956598 +0100
+@@ -59,9 +59,25 @@
     WLAN_TEST=0
  fi
  
@@ -13,7 +13,7 @@
 +# Set multid "no UPnP" option, if
 +#   a) it has the parameter at all AND
 +#   b) upnpd binary does *not* exist
-+[ "$_multid_upnp" ] && [ ! "$_upnpd" ] && MULTIDPARAM="$MULTIDPARAM -U"
++[ "$_multid_upnp" ] && [ ! "$_upnpd" ] && MULTIDPARAM="$MULTIDPARAM -U -P"
 +# Set dsld "no igd" option, if
 +#   a) it has the parameter at all AND
 +#   b) upnpd binary does *not* exist
@@ -26,7 +26,7 @@
     if [ "`pidof upnpd`" = "" ] ; then
        upnpd $VERBOSEPARAM
        sleep 1
-@@ -285,9 +301,9 @@
+@@ -290,9 +306,9 @@
     if [ "$CONFIG_DSL" ] ; then
       if [ "`pidof dsld`" = "" ] ; then
         if [ "$CONFIG_RAMSIZE" = 8 ] ; then

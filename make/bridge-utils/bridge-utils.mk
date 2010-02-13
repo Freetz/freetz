@@ -12,7 +12,6 @@ $(PKG)_CONFIGURE_PRE_CMDS += autoheader --force ;
 $(PKG)_CONFIGURE_OPTIONS += --with-randomdev=/dev/random
 $(PKG)_CONFIGURE_OPTIONS += --with-linux-headers=$(KERNEL_HEADERS_DIR)
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

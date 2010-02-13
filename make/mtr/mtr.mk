@@ -21,7 +21,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(MTR_DIR)
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) 
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
@@ -31,7 +31,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 	-$(MAKE) -C $(MTR_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(MTR_TARGET_BINARY)
 
 $(PKG_FINISH)

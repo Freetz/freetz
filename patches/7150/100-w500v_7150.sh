@@ -1,6 +1,6 @@
 # Partially copied from sp-to-fritz by spirou & jpascher
 
-isFreetzType W500V_7150 || return 0 
+isFreetzType W500V_7150 || return 0
 
 if [ -z "$FIRMWARE2" ]; then
 	echo "ERROR: no tk firmware" 1>&2
@@ -23,8 +23,8 @@ for i in bin/pause bin/usbhostchanged etc/hotplug \
 		etc/usb* usr/share/ctlmgr/libctlusb.so sbin/hotplug; do
 	rm -rf ${FILESYSTEM_MOD_DIR}/$i
 done
-echo2 "Add dect sites to webmenu" 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz_W500V_7150.patch" 
+echo2 "Add dect sites to webmenu"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz_W500V_7150.patch"
 
 echo2 "moving default config dir, creating tcom symlinks"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"

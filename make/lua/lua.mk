@@ -30,7 +30,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		PKG_VERSION="$(LUA_VERSION)" \
 		$(LUA_MAKE_TARGET)
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) 
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
@@ -40,7 +40,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 	-$(MAKE) -C $(LUA_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(LUA_TARGET_BINARY)
 
 $(PKG_FINISH)

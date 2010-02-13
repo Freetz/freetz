@@ -16,7 +16,6 @@ $(PKG)_CONFIGURE_OPTIONS += --prefix=./apache-1.3.41/
 $(PKG)_CONFIGURE_OPTIONS += --enable-module=rewrite=yes
 $(PKG)_CONFIGURE_OPTIONS += --enable-module=speling=yes
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -28,7 +27,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$(pkg): 
+$(pkg):
 
 $(pkg)-precompiled: $(APACHE_TARGET_BINARY)
 

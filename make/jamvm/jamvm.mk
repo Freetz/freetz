@@ -13,7 +13,6 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-ffi
 $(PKG)_CONFIGURE_OPTIONS += --disable-int-threading
 $(PKG)_CONFIGURE_OPTIONS += --with-classpath-install-dir="/usr"
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

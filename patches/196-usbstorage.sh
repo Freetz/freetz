@@ -15,7 +15,7 @@ else
 fi
 
 # load ext2 and ext3 modules
-sed -i -e '/modprobe vfat/a \
+modsed '/modprobe vfat/a \
 \t\tmodprobe ext2 \
 \t\tmodprobe ext3 \
 \t\treiserfs' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
@@ -25,7 +25,7 @@ sed -i 's/rm -rf /rmdir /g' "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage" \
 	"${FILESYSTEM_MOD_DIR}/etc/hotplug/run_mount"
 
 # remove all lines with "chmod 000"
-sed -i -e "/chmod 000.*$/d" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
+modsed "/chmod 000.*$/d" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 
 # fix AVM typo, lsmod output is usb_storage
-sed -i -e "s/lsmod | grep usb-storage/lsmod | grep usb_storage/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
+modsed "s/lsmod | grep usb-storage/lsmod | grep usb_storage/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"

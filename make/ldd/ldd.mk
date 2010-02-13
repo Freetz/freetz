@@ -14,7 +14,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(TARGET_CC) \
 		$(TARGET_CFLAGS) \
 		-DUCLIBC_RUNTIME_PREFIX=\ \
-		$(LDD_SOURCE_FILE) -o $@ 
+		$(LDD_SOURCE_FILE) -o $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

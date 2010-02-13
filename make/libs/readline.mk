@@ -13,7 +13,6 @@ $(PKG)_DEPENDS_ON := ncurses
 
 $(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=yes
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

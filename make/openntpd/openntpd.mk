@@ -30,7 +30,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 	-$(MAKE) -C $(OPENNTPD_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(OPENNTPD_TARGET_BINARY)
 
 $(PKG_FINISH)

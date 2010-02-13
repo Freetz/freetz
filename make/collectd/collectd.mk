@@ -46,7 +46,6 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-vserver
 $(PKG)_CONFIGURE_OPTIONS += --disable-wireless
 $(PKG)_CONFIGURE_OPTIONS += --with-nan-emulation
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

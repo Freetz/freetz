@@ -20,8 +20,8 @@ $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured | kernel-source
 		$(MAKE) -C $(IPTABLES_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/  
-	cp $< $@  
+	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
+	cp $< $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

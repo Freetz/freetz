@@ -21,7 +21,6 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-cp-tools
 $(PKG)_CONFIGURE_OPTIONS += --disable-gjdoc
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -43,7 +42,7 @@ $($(PKG)_DIR)/sablevm/.configured: $($(PKG)_DIR)/.unpacked
 		--with-internal-libffi=yes \
 		--with-internal-libpopt=no \
 	);
-	touch $@ 
+	touch $@
 
 $($(PKG)_DIR)/sablevm-classpath/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(SABLEVM_SDK_DIR)/sablevm-classpath; rm -rf config.cache; \
@@ -63,7 +62,7 @@ $($(PKG)_DIR)/sablevm-classpath/.configured: $($(PKG)_DIR)/.unpacked
 		--disable-gtk-cairo \
 		--without-x \
 	);
-	touch $@ 
+	touch $@
 
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured \
 	$($(PKG)_DIR)/sablevm/.configured $($(PKG)_DIR)/sablevm-classpath/.configured
@@ -100,7 +99,7 @@ $($(PKG)_LIB_TARGET_CLASSPATH_BINARY): $($(PKG)_LIB_STAGING_CLASSPATH_BINARY)
 	cp $(SABLEVM_SDK_DIR)/sablevm-classpath/lib/resources.jar $(SABLEVM_SDK_DEST_DIR)/usr/share/sablevm-classpath/
 ifeq ($(strip $(FREETZ_PACKAGE_SABLEVM_SDK_MINI)),y)
 	cp $(SABLEVM_SDK_LIB_CLASSPATH_MINI) $(SABLEVM_SDK_LIB_TARGET_CLASSPATH)
-else 
+else
 	cp $(SABLEVM_SDK_LIB_CLASSPATH_ORIG) $(SABLEVM_SDK_LIB_TARGET_CLASSPATH)
 endif
 	touch $@

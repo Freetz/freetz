@@ -4,7 +4,6 @@ $(PKG)_SITE:=http://www.heimpold.de/freetz
 $(PKG)_BINARY:=$($(PKG)_DIR)/cpmaccfg
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/cpmaccfg
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

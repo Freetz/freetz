@@ -36,7 +36,7 @@ $(PKG)_DAEMONS:=zebra \
 		$(if $(FREETZ_PACKAGE_QUAGGA_RIPD),ripd,) \
 		$(if $(FREETZ_PACKAGE_QUAGGA_RIPNGD),ripngd,) \
 		$(if $(FREETZ_PACKAGE_QUAGGA_OSPFD),ospfd,) \
-	        $(if $(FREETZ_PACKAGE_QUAGGA_OSPF6D),ospf6d,) \
+		$(if $(FREETZ_PACKAGE_QUAGGA_OSPF6D),ospf6d,) \
 		$(if $(FREETZ_PACKAGE_QUAGGA_ISISD),isisd,)
 
 $(PKG_SOURCE_DOWNLOAD)

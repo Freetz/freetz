@@ -16,7 +16,6 @@ $(PKG)_CONFIGURE_OPTIONS += --without-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-profiling
 $(PKG)_CONFIGURE_OPTIONS += --disable-debugging
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

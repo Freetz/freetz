@@ -27,7 +27,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 	-$(MAKE) -C $(NETCAT_DIR) clean
 
-$(pkg)-uninstall: 
+$(pkg)-uninstall:
 	$(RM) $(NETCAT_TARGET_BINARY)
 
 $(PKG_FINISH)

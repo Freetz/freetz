@@ -11,7 +11,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libuClibc++-$($(PKG)_LIB_VERSION).so
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 
-
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	cp $(UCLIBCXX_MAKE_DIR)/Config.uclibc++ $(UCLIBCXX_DIR)/.config
 	$(call PKG_EDIT_CONFIG, UCLIBCXX_HAS_LFS=$(FREETZ_TARGET_LFS)) $(UCLIBCXX_DIR)/.config

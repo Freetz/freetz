@@ -15,7 +15,6 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared-library
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
 
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

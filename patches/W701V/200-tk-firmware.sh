@@ -15,12 +15,12 @@ ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/congstar"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/avm"
 ln -s /usr/bin/system_status "${FILESYSTEM_MOD_DIR}/usr/www/cgi-bin/system_status"
 
-"$TAR" -c -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7141/avm" --exclude=*.cfg . | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/tcom" 
+"$TAR" -c -C "${DIR}/.tk/original/filesystem/etc/default.Fritz_Box_7141/avm" --exclude=*.cfg . | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/tcom"
 ln -sf tcom "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/avm"
 ln -sf tcom "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_SpeedportW701V/congstar"
 
 # Activate backup-/restore menu
-sed -i -e 's,CONFIG_STOREUSRCFG="n",CONFIG_STOREUSRCFG="y",g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+modsed 's,CONFIG_STOREUSRCFG="n",CONFIG_STOREUSRCFG="y",g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
 echo1 "copying mailer"
 cp -a "${DIR}/.tk/original/filesystem/sbin/mailer" "${FILESYSTEM_MOD_DIR}/sbin"
