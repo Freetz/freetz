@@ -22,7 +22,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-expat=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
 $(PKG)_CONFIGURE_OPTIONS += --with-gssapi
 $(PKG)_CONFIGURE_OPTIONS += --disable-nls
 $(PKG)_CONFIGURE_OPTIONS += --without-egd
-$(PKG)_CONFIGURE_OPTIONS += --without-socks
+$(PKG)_CONFIGURE_OPTIONS += --without-libproxy
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libneon_WITH_SSL),--with-ssl=openssl,--without-ssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libneon_WITH_ZLIB),,--without-zlib)
 
