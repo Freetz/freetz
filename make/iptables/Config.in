@@ -21,12 +21,13 @@ config FREETZ_PACKAGE_IPTABLES
 		and NAT, as well as the tool itself. iptables is a standard part of all
 		modern Linux distributions.
 
-comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
-depends on FREETZ_MODULE_ip_conntrack && \
-		FREETZ_KERNEL_VERSION_2_6_13_1
-
 # Include here for a cleaner menu structure (list packages before modules/libs)
 source make/iptables-cgi/Config.in
+
+comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
+	depends on FREETZ_PACKAGE_IPTABLES && \
+		FREETZ_MODULE_ip_conntrack && \
+		FREETZ_KERNEL_VERSION_2_6_13_1
 
 config FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 	bool "Iptables kernel modules"
@@ -41,6 +42,7 @@ config FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 
 menu "Select kernel modules (IPv4)"
 	requires FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+
 config FREETZ_MODULE_ip_conntrack
 	bool "ip_conntrack.ko"
 	default n
@@ -147,24 +149,28 @@ config FREETZ_MODULE_ip_nat_ftp
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack_ftp
 	default n
+
 config FREETZ_MODULE_ip_nat_h323
 	bool "ip_nat_h323.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack_h323
 	default n
+
 config FREETZ_MODULE_ip_nat_irc
 	bool "ip_nat_irc.ko"
 	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack_irc if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
+
 config FREETZ_MODULE_ip_nat_pptp
 	bool "ip_nat_pptp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_nat
 	select FREETZ_MODULE_ip_conntrack_pptp
 	default n
+
 config FREETZ_MODULE_ip_nat_tftp
 	bool "ip_nat_tftp.ko"
 	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
@@ -459,12 +465,15 @@ config FREETZ_MODULE_ipt_ttl
 		This adds CONFIG_IP_NF_MATCH_TTL option, which enabled the user
 		to match packets by their TTL value.
 endmenu
+
 menu "x_tables (both IPv4 and IPv6)"
 	requires FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+
 config FREETZ_MODULE_x_tables
 	bool "x_tables.ko"
 	default n
+
 config FREETZ_MODULE_xt_helper
 	bool "xt_helper.ko"
 	select FREETZ_MODULE_x_tables
@@ -668,9 +677,11 @@ config FREETZ_MODULE_xt_tcpmss
 		MSS value of TCP SYN packets, which control the maximum packet size
 		for that connection.
 endmenu
+
 menu "Select kernel modules (IPv6)"
 	requires FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 	depends on FREETZ_TARGET_IPV6_SUPPORT
+
 config FREETZ_MODULE_ip6_queue
 	bool "ip6_queue.ko"
 	default n
@@ -922,6 +933,7 @@ config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 
 menu "Select shared libraries (IPv4)"
 	requires FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
+
 config FREETZ_LIB_libipt_addrtype
 	bool "libipt_addrtype.so"
 	default n
@@ -1107,8 +1119,10 @@ config FREETZ_LIB_libipt_unclean
 		This module takes no options, but attempts to match packets which seem
 		malformed or unusual. This is regarded as experimental.
 endmenu
+
 menu "Select shared libraries (both IPv4 and IPv6)"
 	requires FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
+
 config FREETZ_LIB_libxt_CLASSIFY
 	bool "libxt_CLASSIFY.so"
 	default n
@@ -1431,9 +1445,11 @@ config FREETZ_LIB_libxt_udp
 	help
 		These extensions can be used if `--protocol udp' is specified.
 endmenu
+
 menu "Select shared libraries (IPv6)"
 	requires FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 	depends on FREETZ_TARGET_IPV6_SUPPORT
+
 config FREETZ_LIB_libip6t_ah
 	bool "libip6t_ah.so"
 	default n
