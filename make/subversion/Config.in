@@ -28,6 +28,14 @@ config FREETZ_PACKAGE_SUBVERSION_WITH_SSL
 	help
 		Enables ssl support in subversion.
 
+config FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB
+	bool "build with Berkeley-DB support"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	select FREETZ_LIB_libaprutil_WITH_LIBDB
+	default n
+	help
+		Enables Berkeley-DB support in subversion.
+
 config FREETZ_PACKAGE_SUBVERSION_SVN
 	bool "Include svn"
 	depends on FREETZ_PACKAGE_SUBVERSION

@@ -15,6 +15,9 @@ endif
 
 # Libraries
 $(PKG)_LIBNAMES_SHORT := client delta diff fs fs_fs fs_util ra ra_local ra_neon ra_svn repos subr wc
+ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB)),y)
+$(PKG)_LIBNAMES_SHORT += fs_base
+endif
 $(PKG)_LIBNAMES_LONG := $(SUBVERSION_LIBNAMES_SHORT:%=libsvn_%-$(SUBVERSION_MAJOR_VERSION))
 $(PKG)_LIBS_BUILD_DIR := $(join $(SUBVERSION_LIBNAMES_SHORT:%=$($(PKG)_DIR)/subversion/libsvn_%/.libs/),$(SUBVERSION_LIBNAMES_LONG:%=%.$(SUBVERSION_LIB_SUFFIX)))
 $(PKG)_LIBS_STAGING_DIR := $(SUBVERSION_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%.$(SUBVERSION_LIB_SUFFIX))
@@ -31,11 +34,15 @@ $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $(
 
 $(PKG)_DEPENDS_ON := apr
 $(PKG)_DEPENDS_ON += apr-util
+ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB)),y)
+$(PKG)_DEPENDS_ON += db
+endif
 $(PKG)_DEPENDS_ON += neon
 $(PKG)_DEPENDS_ON += sqlite
 $(PKG)_DEPENDS_ON += zlib
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_WITH_SSL
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_STATIC
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
@@ -69,7 +76,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-mod-activation
 $(PKG)_CONFIGURE_OPTIONS += --disable-javahl
 $(PKG)_CONFIGURE_OPTIONS += --disable-keychain # MacOS keychain
 $(PKG)_CONFIGURE_OPTIONS += --with-apxs=no
-$(PKG)_CONFIGURE_OPTIONS += --with-berkeley-db=no
+$(PKG)_CONFIGURE_OPTIONS += --with-berkeley-db=$(if $(FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB),yes,no)
 $(PKG)_CONFIGURE_OPTIONS += --with-ctypesgen=no
 $(PKG)_CONFIGURE_OPTIONS += --with-gnome-keyring=no
 $(PKG)_CONFIGURE_OPTIONS += --with-jdk=no
@@ -87,7 +94,7 @@ $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 
 $($(PKG)_LIBS_STAGING_DIR) $($(PKG)_BINARIES_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR)
 	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(SUBVERSION_DIR) \
+		$(MAKE1) -C $(SUBVERSION_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
