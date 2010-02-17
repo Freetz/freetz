@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 7.19.7)
-$(PKG)_LIB_VERSION:=4.1.1
+$(call PKG_INIT_BIN, 7.20.0)
+$(PKG)_LIB_VERSION:=4.2.0
 $(PKG)_SOURCE:=curl-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://curl.haxx.se/download
-$(PKG)_SOURCE_MD5:=79a8fbb2eed5464b97bdf94bee109380
+$(PKG)_SOURCE_MD5:=3dda78c4a808d9a779dc3a2ae81b47d8
 
 ifeq ($(strip $(FREETZ_PACKAGE_CURL_STATIC)),y)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/curl
@@ -21,6 +21,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
 $(PKG)_DEPENDS_ON := openssl
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CURL_STATIC
+
+$(PKG)_CONFIGURE_ENV += curl_cv_writable_argv=yes
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CURL_STATIC),--disable-shared,--enable-shared)
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
