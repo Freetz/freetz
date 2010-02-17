@@ -112,7 +112,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 			touch $(KERNEL_BUILD_ROOT_DIR)/$$i; \
 		fi \
 	done
-	ln -s kernel/linux-$(KERNEL_VERSION) $(KERNEL_DIR)/linux
+	ln -s linux-$(KERNEL_VERSION) $(KERNEL_DIR)/linux
 	touch $@
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
