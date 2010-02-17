@@ -85,10 +85,9 @@ start() {
 		checkDirectoryExists "$FINISHDIR"
 		chown -R "$USERNAME":users "$FINISHDIR"
 		chmod -R 0755 "$FINISHDIR"
-# TODO: comment out as soon as it's implemented
-#		OPTIONS="$OPTIONS --finish-dir $FINISHDIR"
-#	else
-#		OPTIONS="$OPTIONS --no-finish-dir"
+		OPTIONS="$OPTIONS --finish-dir $FINISHDIR"
+	else
+		OPTIONS="$OPTIONS --no-finish-dir"
 	fi
 
 	# Setting permissions
