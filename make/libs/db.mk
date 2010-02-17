@@ -13,7 +13,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 $(PKG)_CONFIGURE_PRE_CMDS := ln -sf ../dist/configure $(DB_BUILD_SUBDIR)/ ;
 $(PKG)_CONFIGURE_OPTIONS += --srcdir=../dist/
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-cxx
 $(PKG)_CONFIGURE_OPTIONS += --disable-compat185
 $(PKG)_CONFIGURE_OPTIONS += --disable-tcl
@@ -46,6 +46,7 @@ $(pkg)-clean:
 	-$(MAKE) -C $(DB_DIR)/$(DB_BUILD_SUBDIR) clean
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdb*.so* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdb-$(DB_LIB_VERSION).a \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdb-$(DB_LIB_VERSION).la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{db.h,db_cxx.h,db_int.h}
 
