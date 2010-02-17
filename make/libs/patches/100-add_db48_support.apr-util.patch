@@ -1,0 +1,178 @@
+--- configure
++++ configure
+@@ -1455,7 +1455,7 @@
+   --with-ldap-lib=path    path to ldap lib file
+   --with-ldap=library     ldap library to use
+   --with-dbm=DBM          choose the DBM type to use.
+-                          DBM={sdbm,gdbm,ndbm,db,db1,db185,db2,db3,db4,db41,db42,db43,db44,db45,db46,db47}
++                          DBM={sdbm,gdbm,ndbm,db,db1,db185,db2,db3,db4,db41,db42,db43,db44,db45,db46,db48}
+   --with-gdbm=DIR         enable GDBM support
+   --with-ndbm=PATH        Find the NDBM header and library in `PATH/include'
+                           and `PATH/lib'. If PATH is of the form `HEADER:LIB',
+@@ -14727,9 +14727,9 @@
+   withval=$with_dbm;
+     if test "$withval" = "yes"; then
+       { { $as_echo "$as_me:$LINENO: error: --with-dbm needs to specify a DBM type to use.
+-        One of: sdbm, gdbm, ndbm, db, db1, db185, db2, db3, db4, db41, db42, db43, db44, db45, db46, db47" >&5
++        One of: sdbm, gdbm, ndbm, db, db1, db185, db2, db3, db4, db41, db42, db43, db44, db45, db46, db48" >&5
+ $as_echo "$as_me: error: --with-dbm needs to specify a DBM type to use.
+-        One of: sdbm, gdbm, ndbm, db, db1, db185, db2, db3, db4, db41, db42, db43, db44, db45, db46, db47" >&2;}
++        One of: sdbm, gdbm, ndbm, db, db1, db185, db2, db3, db4, db41, db42, db43, db44, db45, db46, db48" >&2;}
+    { (exit 1); exit 1; }; }
+     fi
+     requested="$withval"
+@@ -15752,19 +15752,19 @@
+ 
+   places="$all_places"
+   if test -z "$places"; then
+-    places="std /usr/local/BerkeleyDB.4.7 /boot/home/config"
++    places="std /usr/local/BerkeleyDB.4.8 /boot/home/config"
+   fi
+ 
+   bdb_version="4"
+-  if test ""7"" != "-1"; then
+-    bdb_version="$bdb_version."7""
++  if test ""8"" != "-1"; then
++    bdb_version="$bdb_version."8""
+     if test ""-1"" != "-1"; then
+       bdb_version="$bdb_version."-1""
+     fi
+   fi
+   bdb_places="$places"
+-  bdb_default_search_headers="db47/db.h db4/db.h db.h"
+-  bdb_default_search_lib_names="db-4.7 db4-4.7 db47 db4 db"
++  bdb_default_search_headers="db48/db.h db4/db.h db.h"
++  bdb_default_search_lib_names="db-4.8 db4-4.8 db48 db4 db"
+ 
+ 
+   apu_have_db=0
+@@ -15964,7 +15964,7 @@
+             # changes if the user runs `configure' with a different set of
+             # switches.
+ 
+-            cache_id="`echo apu_cv_check_berkeley_db_"4"_"7"_"-1"_${bdb_header}_${bdb_libname}_in_${bdb_place} \
++            cache_id="`echo apu_cv_check_berkeley_db_"4"_"8"_"-1"_${bdb_header}_${bdb_libname}_in_${bdb_place} \
+                      | sed -e 's/[^a-zA-Z0-9_]/_/g'`"
+ 
+ 
+@@ -15978,7 +15978,7 @@
+     apu_try_berkeley_db_save_libs="$LIBS"
+ 
+     apu_check_berkeley_db_major="4"
+-    apu_check_berkeley_db_minor="7"
++    apu_check_berkeley_db_minor="8"
+     apu_check_berkeley_db_patch="-1"
+     apu_try_berkeley_db_header=$bdb_header
+     apu_try_berkeley_db_libname=$bdb_libname
+@@ -30193,23 +30193,23 @@
+    { (exit 1); exit 1; }; }
+     fi
+     ;;
+-  db47)
++  db48)
+ 
+   places="$check_places"
+   if test -z "$places"; then
+-    places="std /usr/local/BerkeleyDB.4.7 /boot/home/config"
++    places="std /usr/local/BerkeleyDB.4.8 /boot/home/config"
+   fi
+ 
+   bdb_version="4"
+-  if test ""7"" != "-1"; then
+-    bdb_version="$bdb_version."7""
++  if test ""8"" != "-1"; then
++    bdb_version="$bdb_version."8""
+     if test ""-1"" != "-1"; then
+       bdb_version="$bdb_version."-1""
+     fi
+   fi
+   bdb_places="$places"
+-  bdb_default_search_headers="db47/db.h db4/db.h db.h"
+-  bdb_default_search_lib_names="db-4.7 db4-4.7 db47 db4 db"
++  bdb_default_search_headers="db48/db.h db4/db.h db.h"
++  bdb_default_search_lib_names="db-4.8 db4-4.8 db48 db4 db"
+ 
+ 
+   apu_have_db=0
+@@ -30409,7 +30409,7 @@
+             # changes if the user runs `configure' with a different set of
+             # switches.
+ 
+-            cache_id="`echo apu_cv_check_berkeley_db_"4"_"7"_"-1"_${bdb_header}_${bdb_libname}_in_${bdb_place} \
++            cache_id="`echo apu_cv_check_berkeley_db_"4"_"8"_"-1"_${bdb_header}_${bdb_libname}_in_${bdb_place} \
+                      | sed -e 's/[^a-zA-Z0-9_]/_/g'`"
+ 
+ 
+@@ -30423,7 +30423,7 @@
+     apu_try_berkeley_db_save_libs="$LIBS"
+ 
+     apu_check_berkeley_db_major="4"
+-    apu_check_berkeley_db_minor="7"
++    apu_check_berkeley_db_minor="8"
+     apu_check_berkeley_db_patch="-1"
+     apu_try_berkeley_db_header=$bdb_header
+     apu_try_berkeley_db_libname=$bdb_libname
+@@ -30830,19 +30830,19 @@
+ 
+   places="$all_places"
+   if test -z "$places"; then
+-    places="std /usr/local/BerkeleyDB.4.7 /boot/home/config"
++    places="std /usr/local/BerkeleyDB.4.8 /boot/home/config"
+   fi
+ 
+   bdb_version="4"
+-  if test ""7"" != "-1"; then
+-    bdb_version="$bdb_version."7""
++  if test ""8"" != "-1"; then
++    bdb_version="$bdb_version."8""
+     if test ""-1"" != "-1"; then
+       bdb_version="$bdb_version."-1""
+     fi
+   fi
+   bdb_places="$places"
+-  bdb_default_search_headers="db47/db.h db4/db.h db.h"
+-  bdb_default_search_lib_names="db-4.7 db4-4.7 db47 db4 db"
++  bdb_default_search_headers="db48/db.h db4/db.h db.h"
++  bdb_default_search_lib_names="db-4.8 db4-4.8 db48 db4 db"
+ 
+ 
+   apu_have_db=0
+@@ -31042,7 +31042,7 @@
+             # changes if the user runs `configure' with a different set of
+             # switches.
+ 
+-            cache_id="`echo apu_cv_check_berkeley_db_"4"_"7"_"-1"_${bdb_header}_${bdb_libname}_in_${bdb_place} \
++            cache_id="`echo apu_cv_check_berkeley_db_"4"_"8"_"-1"_${bdb_header}_${bdb_libname}_in_${bdb_place} \
+                      | sed -e 's/[^a-zA-Z0-9_]/_/g'`"
+ 
+ 
+@@ -31056,7 +31056,7 @@
+     apu_try_berkeley_db_save_libs="$LIBS"
+ 
+     apu_check_berkeley_db_major="4"
+-    apu_check_berkeley_db_minor="7"
++    apu_check_berkeley_db_minor="8"
+     apu_check_berkeley_db_patch="-1"
+     apu_try_berkeley_db_header=$bdb_header
+     apu_try_berkeley_db_libname=$bdb_libname
+@@ -38413,7 +38413,7 @@
+       apu_use_db=1
+       apu_default_dbm=db4
+       ;;
+-    db47)
++    db48)
+       apu_use_db=1
+       apu_default_dbm=db4
+       ;;
+@@ -38423,9 +38423,9 @@
+       ;;
+     *)
+       { { $as_echo "$as_me:$LINENO: error: --with-dbm=$look_for is an unknown DBM type.
+-        Use one of: sdbm, gdbm, ndbm, db, db1, db185, db2, db3, db4, db41, db42, db43, db44, db45, db46, db47" >&5
++        Use one of: sdbm, gdbm, ndbm, db, db1, db185, db2, db3, db4, db41, db42, db43, db44, db45, db46, db48" >&5
+ $as_echo "$as_me: error: --with-dbm=$look_for is an unknown DBM type.
+-        Use one of: sdbm, gdbm, ndbm, db, db1, db185, db2, db3, db4, db41, db42, db43, db44, db45, db46, db47" >&2;}
++        Use one of: sdbm, gdbm, ndbm, db, db1, db185, db2, db3, db4, db41, db42, db43, db44, db45, db46, db48" >&2;}
+    { (exit 1); exit 1; }; }
+       ;;
+   esac

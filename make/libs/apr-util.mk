@@ -11,7 +11,12 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 $(PKG)_INCLUDE_DIR:=/usr/include/apr-util-$(APR_UTIL_MAJOR_VERSION)
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libaprutil_WITH_LIBDB
+
 $(PKG)_DEPENDS_ON := apr
+ifeq ($(strip $(FREETZ_LIB_libaprutil_WITH_LIBDB)),y)
+$(PKG)_DEPENDS_ON += db
+endif
 $(PKG)_DEPENDS_ON += expat
 $(PKG)_DEPENDS_ON += sqlite
 
@@ -21,6 +26,7 @@ $(PKG)_CONFIGURE_ENV += ac_cv_file_dbd_apr_dbd_mysql_c=no
 $(PKG)_CONFIGURE_ENV += APR_BUILD_DIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/apr-$(APR_UTIL_MAJOR_VERSION)/build"
 
 $(PKG)_CONFIGURE_OPTIONS += --with-apr="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-$(APR_UTIL_MAJOR_VERSION)-config"
+$(PKG)_CONFIGURE_OPTIONS += --with-berkeley-db=$(if $(FREETZ_LIB_libaprutil_WITH_LIBDB),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
 $(PKG)_CONFIGURE_OPTIONS += --with-expat="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-pgsql=no
 $(PKG)_CONFIGURE_OPTIONS += --without-sqlite2

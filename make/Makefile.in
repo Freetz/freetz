@@ -548,12 +548,14 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 		$(if $(strip $(FREETZ_BACKUP_CONFIG_CACHE)),$(call BACKUP_CONFIG_CACHE,before-$(pkg)),) \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
 		$($(PKG)_CONFIGURE_PRE_CMDS) \
+		$(if $(strip $($(PKG)_BUILD_SUBDIR)),cd $(strip $($(PKG)_BUILD_SUBDIR));,) \
 		FREETZ_TARGET_LFS="$(strip $(FREETZ_TARGET_LFS))" source $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
 		$(TARGET_CONFIGURE_ENV) \
 		$($(PKG)_CONFIGURE_ENV) \
 		./configure \
 		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
 		$($(PKG)_CONFIGURE_OPTIONS) \
+		$(if $(strip $($(PKG)_BUILD_SUBDIR)),&& { cd $(abspath $($(PKG)_DIR)); },) \
 		$(if $(strip $(FREETZ_BACKUP_CONFIG_CACHE)),&& { $(call BACKUP_CONFIG_CACHE,after-$(pkg)) },) \
 	)
 	touch $$@

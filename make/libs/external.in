@@ -40,6 +40,14 @@ config EXTERNAL_FREETZ_LIB_libcurl
 		externals these file(s):
 		 /usr/lib/libcurl.so.4.2.0
 
+config EXTERNAL_FREETZ_LIB_libdb
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdb
+	bool "libdb"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/libdb-4.8.so
+
 config EXTERNAL_FREETZ_LIB_libdevmapper
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdevmapper
 	bool "libdevmapper"

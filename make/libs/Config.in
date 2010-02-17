@@ -18,12 +18,27 @@ config FREETZ_LIB_libaprutil
 		APR Util is a utilities library implemented on top of APR,
 		providing database access, xml parsing, and other useful functionality.
 
+config FREETZ_LIB_libaprutil_WITH_LIBDB
+	depends FREETZ_LIB_libaprutil
+	select FREETZ_LIB_libdb
+	bool "Build with Berkeley-DB support"
+	default n
+	help
+		This option enables Berkeley-DB support in libaprutil.
+
 config FREETZ_LIB_libatm
 	bool "linux-atm (libatm.so)"
 	select FREETZ_LIB_libresolv
 	default n
 	help
 		Libatm is a library for accessing the Linux ATM subsystem.
+
+config FREETZ_LIB_libdb
+        bool "Berkeley DB library (libdb.so)"
+        select FREETZ_LIB_libpthread
+        default n
+        help
+                The Berkeley database library.
 
 config FREETZ_LIB_libbluetooth
 	bool "bluez-libs (libbluetooth.so)"
