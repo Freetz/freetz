@@ -84,7 +84,7 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) \
-		$(NETPBM_BINARIES_TARGET_DIR) \
+		$(NETPBM_BINARIES_ALL:%=$(NETPBM_DEST_DIR)/usr/bin/%) \
 		root/usr/lib/libnetpbm*
 
 $(PKG_FINISH)
