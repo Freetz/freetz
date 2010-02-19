@@ -40,6 +40,7 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--d
 $(PKG)_CONFIGURE_OPTIONS += --without-gphoto2
 $(PKG)_CONFIGURE_OPTIONS += --disable-fork-process
 $(PKG)_CONFIGURE_OPTIONS += --disable-avahi
+$(PKG)_CONFIGURE_OPTIONS += --enable-libusb
 $(PKG)_CONFIGURE_OPTIONS += --disable-libusb_1_0
 $(PKG)_CONFIGURE_OPTIONS += --disable-translations
 $(PKG)_CONFIGURE_OPTIONS += --disable-latex
@@ -76,9 +77,7 @@ $($(PKG)_TARGET_scanimage): $($(PKG)_scanimage)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
-	mkdir -p $(dir $@)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane*.so* root/usr/lib
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(PKG)_LIB_TARGET_BACKENDS_BINARIES:
 	mkdir -p $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane
