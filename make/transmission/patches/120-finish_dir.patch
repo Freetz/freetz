@@ -78,6 +78,24 @@
  .It Fl gsr Fl -global-seedratio Ar ratio
  All torrents, unless overridden by a per-torrent setting, should seed until a specific
  .Ar ratio
+--- doc/rpc-spec.txt	2010-02-16 17:00:57.000000000 +0100
++++ doc/rpc-spec.txt	2010-02-16 22:37:29.000000000 +0100
+@@ -402,6 +402,8 @@
+    "encryption"               | string     "required", "preferred", "tolerated"
+    "incomplete-dir"           | string     path for incomplete torrents, when enabled
+    "incomplete-dir-enabled"   | boolean    true means keep torrents in incomplete-dir until done
++   "finish-dir"               | string     path for torrents reached their seed limit, when enabled
++   "finish-dir-enabled"       | boolean    true means move torrents reached their seed ratio to finish-dir
+    "peer-limit-global"        | number     maximum global number of peers
+    "peer-limit-per-torrent"   | number     maximum global number of peers
+    "pex-enabled"              | boolean    true means allow pex in public torrents
+@@ -582,3 +584,6 @@
+          |         | yes       | session-get    | new arg "config-dir"
+          |         | yes       | torrent-add    | new arg "bandwidthPriority"
+          |         | yes       | torrent-get    | new trackerStats arg "lastAnnounceTimedOut"
++   ------+---------+-----------+----------------+-------------------------------
++   9     | 1.91    | yes       | session-set    | new arg "finish-dir"
++         |         | yes       | session-set    | new arg "finish-dir-enabled"
 --- libtransmission/rpcimpl.c	2010-02-16 17:00:50.000000000 +0100
 +++ libtransmission/rpcimpl.c	2010-02-16 22:37:29.000000000 +0100
 @@ -1175,6 +1175,10 @@
@@ -225,10 +243,11 @@
      char *                       proxy;
 --- libtransmission/torrent.c	2010-02-16 17:00:50.000000000 +0100
 +++ libtransmission/torrent.c	2010-02-16 22:37:29.000000000 +0100
-@@ -2576,6 +2576,9 @@
+@@ -2576,6 +2576,10 @@
              /* set to no ratio limit to allow easy restarting */
              tr_torrentSetRatioMode( tor, TR_RATIOLIMIT_UNLIMITED );
  
++            /* move torrent to finish-dir if enabled */
 +            if( tr_sessionIsFinishDirEnabled( tor->session ) )
 +                tr_torrentSetLocation(tor, tr_sessionGetFinishDir( tor->session ), TRUE, NULL, NULL);
 +
@@ -246,14 +265,31 @@
  #define TR_PREFS_KEY_LAZY_BITFIELD              "lazy-bitfield-enabled"
  #define TR_PREFS_KEY_MSGLEVEL                   "message-level"
  #define TR_PREFS_KEY_OPEN_FILE_LIMIT            "open-file-limit"
-@@ -381,6 +383,10 @@
- /** @brief get whether or not the incomplete download folder is enabled */
- tr_bool tr_sessionIsIncompleteDirEnabled( const tr_session * session );
+@@ -383,6 +385,27 @@
  
-+void tr_sessionSetFinishDir( tr_session * session, const char * dir );
-+const char* tr_sessionGetFinishDir( const tr_session * session );
-+void tr_sessionSetFinishDirEnabled( tr_session * session, tr_bool );
-+tr_bool tr_sessionIsFinishDirEnabled( const tr_session * session );
  
  /**
++ * @brief set the per-session finish folder.
++ *
++ * When enabled (s. tr_sessionGetFinishDirEnabled()), torrents reached
++ * their seed ratio will be moved to that directory.
++ *
++ * @see tr_sessionGetFinishDir()
++ * @see tr_sessionSetFinishDirEnabled()
++ * @see tr_sessionGetFinishDirEnabled()
++ */
++void tr_sessionSetFinishDir( tr_session * session, const char * dir );
++
++/** @brief get the per-session finish folder */
++const char* tr_sessionGetFinishDir( const tr_session * session );
++
++/** @brief enable or disable use of the finish folder */
++void tr_sessionSetFinishDirEnabled( tr_session * session, tr_bool );
++
++/** @brief get whether or not the finish folder is enabled */
++tr_bool tr_sessionIsFinishDirEnabled( const tr_session * session );
++
++/**
   * @brief When enabled, newly-created files will have ".part" appended
+  *        to their filename until the file is fully downloaded
+  *
