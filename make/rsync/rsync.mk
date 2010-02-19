@@ -8,6 +8,10 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/rsync
 
 $(PKG)_DEPENDS_ON := popt
 
+# rsync sets some C99 related options, not all packages are C99 compliant, so make the following values rsync specific
+$(PKG)_AC_VARIABLES := prog_cc_c89 prog_cc_c99 prog_cc_stdc
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES),./configure.sh)
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-iconv
 $(PKG)_CONFIGURE_OPTIONS += --disable-locale
 $(PKG)_CONFIGURE_OPTIONS += --without-included-popt
@@ -19,8 +23,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(RSYNC_DIR) \
-		CC="$(TARGET_CC)"
+		$(MAKE) -C $(RSYNC_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
