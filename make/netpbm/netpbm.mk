@@ -17,9 +17,11 @@ $(PKG)_INTERFACE_HEADERS = \
 	lib/pnm.h lib/pam.h lib/pammap.h lib/pm_system.h lib/pm_gamma.h \
 	lib/util/shhopt.h lib/util/nstring.h lib/util/mallocvar.h
 
-$(PKG)_BINARIES := bmptopnm giftopnm jpegtopnm pngtopnm
-$(PKG)_BINARIES_BUILD_DIR := $(NETPBM_BINARIES:%=$($(PKG)_DIR)/converter/other/%)
-$(PKG)_BINARIES_TARGET_DIR := $(NETPBM_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
+$(PKG)_BINARIES_ALL := bmptopnm giftopnm jpegtopnm pngtopnm pnmtojpeg pnmtopng
+$(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
+$(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/converter/other/%)
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
+$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG)_DEPENDS_ON := jpeg
 $(PKG)_DEPENDS_ON += libpng
