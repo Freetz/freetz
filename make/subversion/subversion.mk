@@ -51,10 +51,9 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 # uses the values we set (the values are cached in config.cache).
 # Not doing so might break the compilation of other packages that do require perl/python/ruby at build-time.
 # Setting them to "none" is the simplest way to prevent subversion from building perl/python/ruby-bindings.
-$(PKG)_CONFIGURE_PRE_CMDS += sed -i -r -e 's/ac(_cv_path_(PERL|PYTHON|RUBY))/subversion\1/g' ./configure ;
-$(PKG)_CONFIGURE_ENV += subversion_cv_path_PERL="none"
-$(PKG)_CONFIGURE_ENV += subversion_cv_path_PYTHON="none"
-$(PKG)_CONFIGURE_ENV += subversion_cv_path_RUBY="none"
+$(PKG)_AC_VARIABLES := path_PERL path_PYTHON path_RUBY
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
+$(PKG)_CONFIGURE_ENV += $(foreach ac_variable,$($(PKG)_AC_VARIABLES),subversion_cv_$(ac_variable)=none)
 
 $(PKG)_CONFIGURE_OPTIONS += --with-apr="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-1-config"
 $(PKG)_CONFIGURE_OPTIONS += --with-apr-util="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apu-1-config"
