@@ -1,0 +1,11 @@
+--- Makefile.in
++++ Makefile.in
+@@ -132,7 +132,7 @@
+ 	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+ 	$(AM_CFLAGS) $(CFLAGS)
+ CCLD = $(CC)
+-LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
++LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+ 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+ SOURCES = $(mad123_SOURCES) $(madmix_SOURCES) $(EXTRA_madmix_SOURCES) \
+ 	$(madplay_SOURCES) $(EXTRA_madplay_SOURCES) $(madtag_SOURCES) \
