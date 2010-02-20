@@ -14,8 +14,10 @@ echo "<font size='1'>$(lang en:"This firewall is for router mode only and is bas
 
 sec_begin '$(lang en:"Mode" de:"Ansicht") Firewall / Port Forwarding'
 cat << EOF
-Firewall <input id="id_FW" type="radio" name="fwmode" value="firewall"checked onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[1].style.display = "block"; fieldsets[2].style.display = "block"; fieldsets[3].style.display = "none"; fieldsets[4].style.display = "none";'>
-Forwarding <input id="id_FWD" type="radio" name="fwmode" value="fwd" onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[3].style.display = "block"; fieldsets[4].style.display = "block"; fieldsets[1].style.display = "none"; fieldsets[2].style.display = "none";'>
+<input id="e1" type="radio" name="fwmode" value="firewall"checked onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[1].style.display = "block"; fieldsets[2].style.display = "block"; fieldsets[3].style.display = "none"; fieldsets[4].style.display = "none";'>
+<label for="e1">Firewall</label>
+<input id="e2" type="radio" name="fwmode" value="fwd" onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[3].style.display = "block"; fieldsets[4].style.display = "block"; fieldsets[1].style.display = "none"; fieldsets[2].style.display = "none";'>
+<label for="e2">Port Forwarding</label>
 
 EOF
 
@@ -122,7 +124,7 @@ cat << EOF
     <tr border="0"><td style="border-right:0" align="left" id="id_table_title" colspan="3"><font color="red">dslifaces rules lowinput</font></td><td style="border-left:0" align="right" colspan="4" >$(lang en:"<b>Default</b> policy" de:"Implizite <b>Standard</b>-Regel"):
  &nbsp; <b>Permit</b> <input type="radio" name="default_policy" value="permit" id="id_permit" onclick="policyclick()"> &nbsp; <b>Deny</b> <input type="radio" name="default_policy" value="deny" id="id_deny" onclick="policyclick()"> </td></tr> 
     <tr> <th bgcolor="#bae3ff">#</th> <th bgcolor="#bae3ff">$(lang en:"Source" de:"Quelle")</th> <th bgcolor="#bae3ff">$(lang en:"Destination" de:"Ziel")</th> <th bgcolor="#bae3ff">$(lang en:"Protocol" de:"Protokoll")</th>
-    <th bgcolor="#bae3ff">Service/Port</th> <th bgcolor="#bae3ff">A$(lang en:"c" de:"k")tion</th> <th bgcolor="#bae3ff">$(lang en:"Configure" de:"Bearbeiten")</th> </tr>
+    <th bgcolor="#bae3ff">Service/Port</th> <th bgcolor="#bae3ff">A$(lang en:"c" de:"k")tion</th> <th bgcolor="#bae3ff">$(lang en:"&nbsp;&nbsp;Configure&nbsp;&nbsp;" de:"&nbsp;&nbsp;Bearbeiten&nbsp;&nbsp;")</th> </tr>
 EOF
 row=0
 while [ $row -lt 50 ]; do
@@ -564,6 +566,30 @@ sec_end
 cat << EOF
 <font size="1">$(lang en:"\"Defaults\" will load AVM default firewall rules (only loads into this GUI, use \"Apply\" to save them)" de:"\"Standard\" l&auml;dt AVM Default-Regeln in die GUI. Zum Speichern \"&Uuml;bernehmen\"-Knopf dr&uuml;cken").</font><br />
 <input type="hidden" name="do_activate" value=""></font>
-$(lang en:"Saving will <b>not</b> activate new rules by default! <b>Check to activate rules when saving:</b>" de:"Regeln werden beim Speichern standardm&auml;&szlig;ig <b>nicht</b> aktiviert! <b>Zum Aktivieren hier klicken:</b>") <input type="checkbox" value="yes" name="do_activate" >
-<img src="../images/blink!.gif" title="Attention!" valign="center"> &nbsp; <font size="1">$(lang en:"(Sometimes box will reboot!)" de:"(Kann zum Reboot f&uuml;hren!)")</font>
+$(lang en:"Saving will <b>not</b> activate rules or new dsld switches by default! <b>To do so, some daemoms have to be restarted:</b>" de:"Regelwerk und dsld Schalter werden standardm&auml;&szlig;ig <b>nicht</b> aktiviert!  Dazu m&uuml;ssen AVM-Dienste neu gestartet werden:") <br />
+<img src="../images/blink!.gif" title="Attention!" valign="center"> &nbsp; <b>$(lang en:"This might crash your box or even restore factory defaults!" de:"Das kann zum Absturz oder sogar zum Werksreset f&uuml;hren!")</b>
+<table width="100%" border=0>
+<colgroup>
+    <col width="25%">
+    <col width="25%">
+    <col width="25%">
+    <col width="25%">
+</colgroup>
+<tr  align=center>
+<td><input type="radio" value="y" name="do_activate" > </td>
+<td><input type="radio" value="dsld" name="do_activate" > </td>
+<td><input type="radio" value="ctlmgr" name="do_activate" > </td>
+<td><input type="radio" value="dsld_ctlmgr" name="do_activate" > </td></tr>
+<tr align=center>
+<td>$(lang en:"Activate forwardings" de:"Forwardings aktivieren")</td>
+<td>$(lang en:"Firewall and dsld-Switches" de:"Firewall und dsld-Schalter ")</td>
+<td>$(lang en:"Upate AVM GUI" de:"AVM-GUI aktualisieren")</td>
+<td>$(lang en:"both" de:"Beides")</td></tr>
+<tr  align=center>
+<td><font size=1>(SIGHUP dsld)</font></td>
+<td><font size=1>(Restart dsld)</font></td>
+<td><font size=1>(SIGHUP dsld $(lang en:"and" de:"und") restart ctlmgr)</font></td>
+<td><font size=1>(Restart dsld $(lang en:"and" de:"und") ctlmgr)</font></td></tr>
+</table>
 EOF
+

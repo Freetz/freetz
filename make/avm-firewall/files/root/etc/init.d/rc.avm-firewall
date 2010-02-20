@@ -67,15 +67,12 @@ case "$1" in
 		;;
 esac
 
-start() {
-	if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-		echo "Error[$DAEMON]: not configured" 1>&2
-		exit 1
-	fi
-
+save() {
+	modlib_loadconfig
+	
 	if ` grep "*gui*" /mod/etc/conf/avm-firewall.cfg `; then
 		echo "`sed -e "s/\*gui\*//g" $CONFIG`" > $CONFIG
-		echo "Saving new firewall rules..."
+		echo -n "Saving new firewall rules... "
 
 		# Die LI-Accesslist (vorne "Spaces", dann die "Rules" ans Ende ", letzte Zeile "; )
 		TMPACCL="" && [ -n "$AVM_FIREWALL_RULESTABLE_LI" ] && TMPACCL="$RET$ACCL$RET"`echo "$AVM_FIREWALL_RULESTABLE_LI" | sed "s/^/$SPACES\"/ ; s%\(..\)[ ]*\(/\*.*\*/\)*[ ]*$%\1\", \2 % ; $ s/, /;/"`
@@ -90,56 +87,35 @@ start() {
 
 		# echte ar7.cfg schreiben
 		cat $REALCOPY > $REAL
-		if [ "$AVM_FIREWALL_DO_ACTIVATE" == "yes" ]; then
-			echo "Requested activation of rule set. Restarting dsld ..."
-			eval dsld -s
-			eval ctlmgr -s
-			sleep 1
-			killall -9 dsld 2> /dev/null
-			killall -9 ctlmgr 2> /dev/null
-			ctlmgr
-			[ "$AVM_FIREWALL_LOG_DROPPED" != "yes" ] && LOGG="-n" || LOGG=""
-			if [ "$AVM_FIREWALL_LOG" == "yes" ]; then
-				dsld $LOGG -D AVM_FW 
-			else 
-				dsld $LOGG
-			fi
-			echo "done";
-		fi
+		echo "done."
 	else
-		echo "ERROR: Can only used by GUI."
+		echo "ERROR: Can only be used by GUI."
 	fi
 }
 
-stop () {
-	echo "Stoping firewall is not possible. Firewall is running by AVM per default."
-	exit 1
-}
-
 case "$1" in
-	start)
-		start
-		;;
-	stop)
-		stop
-		;;
-	restart)
-		start
-		;;
-	status)
-		echo 'running'
-		;;
 	""|load)
 		modreg cgi $DAEMON AVM-Firewall
-		modreg daemon --disable avm-firewall
+		modreg daemon --hide avm-firewall
 		;;
 	unload)
 		stop
 		modunreg cgi $DAEMON
 		modunreg daemon avm-firewall
 		;;
+	start)
+		;;
+	stop)
+		;;
+	restart)
+		;;
+	status)
+		;;
+	save)
+		save
+		;;
 	*)
-		echo "Usage: $0 [start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|save|status]" 1>&2
 		exit 1
 		;;
 esac
