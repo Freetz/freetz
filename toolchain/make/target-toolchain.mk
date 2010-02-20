@@ -50,8 +50,3 @@ endif
 
 target-toolchain-dirclean:
 	rm -rf $(TARGET_TOOLCHAIN_DIR)
-	rm -rf $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
-	rm -f $(TOOLCHAIN_DIR)/target
-
-target-toolchain-distclean: target-toolchain-dirclean
-
