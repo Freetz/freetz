@@ -183,9 +183,9 @@ sec_end
 sec_begin '$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")'
 
 cat << EOF
-
+<p><iframe name="dummy" id="id_iframe" style="width: 700px ; height: 45px ; border: 0" src="/cgi-bin/avm_fw_helper.cgi"> </iframe> </p>
 $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln anzeigen"): <input type="checkbox" onclick='document.getElementById("forwardingrules").style.display=(this.checked)? "block" : "none"' >
-<p><div align="center"><textarea id="forwardingrules" style="width: 600px; display:none;" name="forwardingrules" rows="15" cols="80" wrap="off" ></textarea></div></p>
+<p><div align="center"><textarea id="forwardingrules" style="width: 600px; display:none;" name="forwardingrules" rows="15" cols="80" wrap="off" onblur="FWD_textarea_to_rules()" ></textarea></div></p>
 
 <p><table width="100%" border="1" cellpadding="4" cellspacing="0" align="center" id="id_table_forwardrules">
         <tr><td align="left" colspan="8">dslifaces forwardrules</td></tr>
@@ -336,6 +336,13 @@ function Init_FWDTable(){
   showfwdrules();
 }
 
+function FWD_textarea_to_rules(){
+	allfwdrules=document.getElementById("forwardingrules").value.split("\n");
+	split_fwdrules();
+	Init_FWDTable();
+	build_new_fwdrule();
+}
+
 Init_FW_Table();
 
 function my_tmp(elem){
@@ -417,21 +424,21 @@ tmp.firstChild.nodeValue=act.toUpperCase();
 
 function build_new_rule(){
   elem_proto=document.getElementById("id_proto");
-  tmp=document.getElementById("id_action").value + " " + elem_proto.value + " ";
+  tmp=document.getElementById("id_action").value + " " + elem_proto.value.replace(/\s+/g,"") + " ";
   switch ( document.getElementById("source_type").value ){
-    case "host": tmp += "host " + document.getElementById("id_source").value + " "; break;
-    case "net": tmp += document.getElementById("id_source").value + " "+ document.getElementById("id_ssubnet").value + " "; break;
+    case "host": tmp += "host " + document.getElementById("id_source").value.replace(/\s+/g,"") + " "; break;
+    case "net": tmp += document.getElementById("id_source").value.replace(/\s+/g,"") + " "+ document.getElementById("id_ssubnet").value + " "; break;
     case "any": tmp += "any " ; break;
   }
   switch ( document.getElementById("dest_type").value ){
-        case "host": tmp += "host " + document.getElementById("id_dest").value; break;
-        case "net": tmp += document.getElementById("id_dest").value + " "+ document.getElementById("id_dsubnet").value; break;
+        case "host": tmp += "host " + document.getElementById("id_dest").value.replace(/\s+/g,""); break;
+        case "net": tmp += document.getElementById("id_dest").value.replace(/\s+/g,"") + " "+ document.getElementById("id_dsubnet").value; break;
         case "any": tmp += "any" ; break;
   }
   if ( elem_proto.value.charAt(0) != "i" ){
-    eport = document.getElementById("id_eport").value ;
+    eport = document.getElementById("id_eport").value.replace(/\s+/g,"") ;
     if ( eport != "" ) { tmp += " range "} else { tmp += " eq "} ;
-    tmp += document.getElementById("id_sport").value ;
+    tmp += document.getElementById("id_sport").value.replace(/\s+/g,"") ;
     if ( eport !="" ) { tmp += " " + eport } ;
   }
   else {

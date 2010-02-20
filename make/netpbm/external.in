@@ -3,8 +3,57 @@ config EXTERNAL_FREETZ_PACKAGE_NETPBM
 	bool "netpbm"
 	default n
 	help
-		externals these file(s):
+		external netpbm tools
+
+menu netpbm
+depends on EXTERNAL_FREETZ_PACKAGE_NETPBM
+
+config EXTERNAL_FREETZ_PACKAGE_NETPBM_BMPTOPNM
+	boolean "bmptopnm"
+	depends on FREETZ_PACKAGE_NETPBM_BMPTOPNM
+	default n
+	help
+		externals these file(s)
 		 /usr/bin/bmptopnm
+
+config EXTERNAL_FREETZ_PACKAGE_NETPBM_GIFTOPNM
+	boolean "giftopnm"
+	depends on FREETZ_PACKAGE_NETPBM_GIFTOPNM
+	default n
+	help
+		externals these file(s)
 		 /usr/bin/giftopnm
+
+config EXTERNAL_FREETZ_PACKAGE_NETPBM_JPEGTOPNM
+	boolean "jpegtopnm"
+	depends on FREETZ_PACKAGE_NETPBM_JPEGTOPNM
+	default n
+	help
+		externals these file(s)
 		 /usr/bin/jpegtopnm
+
+config EXTERNAL_FREETZ_PACKAGE_NETPBM_PNGTOPNM
+	boolean "pngtopnm"
+	depends on FREETZ_PACKAGE_NETPBM_PNGTOPNM
+	default n
+	help
+		externals these file(s)
 		 /usr/bin/pngtopnm
+
+config EXTERNAL_FREETZ_PACKAGE_NETPBM_PNMTOJPEG
+	boolean "pnmtojpeg"
+	depends on FREETZ_PACKAGE_NETPBM_PNMTOJPEG
+	default n
+	help
+		externals these file(s)
+		 /usr/bin/pnmtojpeg
+
+config EXTERNAL_FREETZ_PACKAGE_NETPBM_PNMTOPNG
+	boolean "pnmtopng"
+	depends on FREETZ_PACKAGE_NETPBM_PNMTOPNG
+	default n
+	help
+		externals these file(s)
+		 /usr/bin/pnmtopng
+
+endmenu

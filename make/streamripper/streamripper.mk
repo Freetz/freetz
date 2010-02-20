@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 1.64.0)
+$(call PKG_INIT_BIN, 1.64.6)
 $(PKG)_SOURCE:=streamripper-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/streamripper
 $(PKG)_BINARY:=$($(PKG)_DIR)/streamripper
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/streamripper
-$(PKG)_SOURCE_MD5:=f8754813ddc2bc96c4c3440e25aca8b6
+$(PKG)_SOURCE_MD5:=a37a1a8b8f9228522196a122a1c2dd32
 
 $(PKG)_DEPENDS_ON := glib2 libmad
 

@@ -1,13 +1,18 @@
 $(call PKG_INIT_LIB, 1.3)
 $(PKG)_LIB_VERSION:=1.3.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=feaa5dfe5151c0e70e8f868fa4648a43
 $(PKG)_SITE:=@SF/openobex
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libopenobex.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libopenobex.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libopenobex.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=feaa5dfe5151c0e70e8f868fa4648a43
 
 $(PKG)_DEPENDS_ON := bluez-libs
+
+# as we (want to) build the package with no libusb support, change prefix of libusb related variables to ensure that no libusb dependent package is affected
+$(PKG)_AC_VARIABLES := header_usb_h lib_usb_usb_open lib_usb_usb_get_busses lib_usb_usb_interrupt_read
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
+$(PKG)_CONFIGURE_ENV += $(foreach ac_variable,$($(PKG)_AC_VARIABLES),openobex_cv_$(ac_variable)=no)
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-irda
 $(PKG)_CONFIGURE_OPTIONS += --disable-usb

@@ -1,7 +1,14 @@
 config FREETZ_PACKAGE_STREAMRIPPER
-	bool "Streamripper 1.63.4 (binary only)"
+	bool "Streamripper 1.64.6 (binary only)"
 	select FREETZ_LIB_libglib_2
 	select FREETZ_LIB_libmad
 	default n
 	help
-		Record mp3 streams
+		Streamripper records mp3 streams.
+		For shoutcast style streams it finds the "meta data"
+		or track separation data, and uses that as a marker
+		for where the track should be separated. Ogg support
+		is currently disabled.
+
+		The streamripper binary adds 122kB to the image.
+		Additional space may be needed for shared libraries.

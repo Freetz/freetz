@@ -49,11 +49,11 @@ source make/vpnc/Config.in
 source make/vsftpd/Config.in
 endmenu
 
-menu "Web interface"
-source make/authorized-keys/Config.in
+menu "Web interfaces"
 source make/avm-firewall/Config.in
 source make/cpmaccfg-cgi/Config.in
 source make/downloader/Config.in
+source make/authorized-keys/Config.in
 source make/nfsd-cgi/Config.in
 source make/nhipt/Config.in
 source make/onlinechanged-cgi/Config.in
@@ -179,18 +179,16 @@ config FREETZ_SHOW_UNSTABLE_PACKAGES
 		These packages may not work at all. They are currently under development or have known issues which make them not work correctly.
 		Do not use them if you don't know what you are doing.
 
-menu "Unstable"
+menu "Unstable packages"
 	depends on FREETZ_SHOW_UNSTABLE_PACKAGES
 source make/collectd/Config.in
-source make/hplip/Config.in
 source make/hp-utils/Config.in
+source make/hplip/Config.in
 source make/iptables/Config.in
 source make/mdev/Config.in
 source make/sane-backends/Config.in
 source make/tinc/Config.in
 source make/usbip/Config.in
-# Included by iptables for a cleaner menu structure
-# source make/firewall-cgi/Config.in
 source make/iputils/Config.in
 source make/aiccu/Config.in
 source make/radvd/Config.in
