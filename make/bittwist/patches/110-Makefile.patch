@@ -1,0 +1,19 @@
+--- Makefile
++++ Makefile
+@@ -19,13 +19,13 @@
+ all: bittwist bittwistb bittwiste
+ 
+ bittwist:
+-	$(CC) $(CFLAGS) $(SRC)/bittwist.c -o $(SRC)/bittwist -I/usr/local/include -L/usr/local/lib -lpcap
++	$(CC) $(CFLAGS) $(SRC)/bittwist.c -o $(SRC)/bittwist -lpcap
+ 
+ bittwistb:
+-	$(CC) $(CFLAGS) $(SRC)/bittwistb.c -o $(SRC)/bittwistb -I/usr/local/include -L/usr/local/lib -lpcap
++	$(CC) $(CFLAGS) $(SRC)/bittwistb.c -o $(SRC)/bittwistb -lpcap
+ 
+ bittwiste:
+-	$(CC) $(CFLAGS) $(SRC)/bittwiste.c -o $(SRC)/bittwiste -I/usr/local/include -L/usr/local/lib -lpcap
++	$(CC) $(CFLAGS) $(SRC)/bittwiste.c -o $(SRC)/bittwiste -lpcap
+ 
+ clean:
+ 	rm -f $(SRC)/bittwist $(SRC)/bittwistb $(SRC)/bittwiste
