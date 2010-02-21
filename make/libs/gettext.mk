@@ -7,6 +7,10 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl.so.$($(PK
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libintl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_SOURCE_MD5:=3d9ad24301c6d6b17ec30704a13fe127
 
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+$(PKG)_DEPENDS_ON += libiconv
+endif
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
