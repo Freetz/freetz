@@ -2,6 +2,7 @@ config FREETZ_PACKAGE_MC
 	bool "Midnight Commander (mc) 4.6.1"
 	depends on FREETZ_LANG_DE || FREETZ_LANG_EN || ! FREETZ_SELECTED_LANG_ONLY
 	select FREETZ_SHARE_terminfo
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
 	select FREETZ_LIB_libglib_2 if ! FREETZ_PACKAGE_MC_FORCE_GLIB12
 	default n
 	help

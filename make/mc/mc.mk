@@ -8,6 +8,11 @@ $(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
 $(PKG)_SOURCE_MD5:=18b20db6e40480a53bac2870c56fc3c4
 
 $(PKG)_DEPENDS_ON := ncurses-terminfo
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+$(PKG)_DEPENDS_ON += libiconv
+else
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+endif
 ifeq ($(strip $(FREETZ_PACKAGE_MC_FORCE_GLIB12)),y)
 $(PKG)_DEPENDS_ON += glib
 else
@@ -17,17 +22,14 @@ ifeq ($(strip $(FREETZ_PACKAGE_MC_WITH_NCURSES)),y)
 $(PKG)_DEPENDS_ON += ncurses
 endif
 
-$(PKG)_CONFIGURE_ENV += am_cv_func_iconv=no
-$(PKG)_CONFIGURE_ENV += am_cv_lib_iconv=no
 $(PKG)_CONFIGURE_ENV += mc_cv_have_zipinfo=yes
 
-$(PKG)_CONFIGURE_OPTIONS:=\
+$(PKG)_CONFIGURE_OPTIONS += \
 		--disable-charset \
 		--disable-background \
 		--disable-gcc-warnings \
 		--disable-glibtest \
 		$(if $(FREETZ_PACKAGE_MC_FORCE_GLIB12),--with-glib12,--without-glib12) \
-		--without-libiconv-prefix \
 		--without-x \
 		--with-vfs \
 		--without-mcfs \
