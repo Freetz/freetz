@@ -29,11 +29,11 @@ cat << EOF
 Content-Type: text/html; charset=ISO-8859-1
 
 <html><body>
-<form id="id_form" enctype="multipart/form-data" method="post" action="helper.cgi?doload" > 
-<input type="button" value="Export" onclick='location.href="/cgi-bin/avm_fw_helper.cgi?dosave&"+escape(parent.document.getElementById("forwardingrules").value);'>
+<form id="id_form" enctype="multipart/form-data" method="post" action="avm_fw_helper.cgi?doload" > 
+<input type="button" value="Export Forwardings" onclick='location.href="/cgi-bin/avm_fw_helper.cgi?dosave&"+escape(parent.document.getElementById("forwardingrules").value);'>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 <input type="file" name="source" id="text_source"> 
-<input type=submit value="Import">
+<input type=submit value="Import Forwardings">
 </form>
 </body></html>
 EOF
