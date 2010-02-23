@@ -1,0 +1,13 @@
+--- etc/hotplug/storage.orig	2010-02-23 20:03:42.000000000 +0100
++++ etc/hotplug/storage	2010-02-23 20:04:15.000000000 +0100
+@@ -210,6 +210,10 @@
+ local DEVICE=$1
+ local MPOINT=$2
+ local MPNAME="${MPOINT##*/}"
++AUTOEND=$MPOINT/autoend.sh
++if [ -x $AUTOEND ]; then
++$AUTOEND
++fi
+ test -x $MSTOP && $MSTOP
+ for MP in /var/media/ftp/* ; do
+ rmdir "$MP" > /dev/null
