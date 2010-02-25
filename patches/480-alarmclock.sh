@@ -9,6 +9,8 @@ elif isFreetzType 3270_V3; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/480-alarmclock_3020v3.patch"
 elif isFreetzType 7270 7270_V3 && isFreetzType LABOR_PHONE LABOR_NAS; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/480-alarmclock_7270_labor_phone_nas.patch"
+elif isFreetzType 7270 7270_V3 && isFreetzType LABOR_PHONE LABOR_CORE; then
+        modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/480-alarmclock_7270_labor_phone_core.patch"
 elif isFreetzType 3270 7240 7270 7270_V3; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/480-alarmclock.patch"
 fi
