@@ -7,6 +7,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/squid
 
 $(PKG)_DEPENDS_ON := uclibcxx
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SQUID_TRANSPARENT
+
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_SQUID_TRANSPARENT),--enable-linux-netfilter,--disable-linux-netfilter)
 
 $(PKG_SOURCE_DOWNLOAD)
