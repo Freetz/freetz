@@ -215,13 +215,6 @@ choice
 		help
 			Labor Phone
 
-	config FREETZ_TYPE_LABOR_PREVIEW
-		bool "Preview"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7170
-		help
-			Labor Preview
-
 endchoice
 
 config FREETZ_TYPE_ALIEN_HARDWARE
@@ -387,7 +380,6 @@ config FREETZ_TYPE_STRING
 	default "7150"						if FREETZ_TYPE_FON_7150
 	default "7170"						if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR
 	default "7170_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
-	default "7170_labor_preview"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PREVIEW
 	default "7240"						if FREETZ_TYPE_FON_WLAN_7240
 	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
 	default "7270_labor_core"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_CORE
@@ -1947,8 +1939,6 @@ config FREETZ_DL_SOURCE
 											FREETZ_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.99-14119.image"		if	FREETZ_TYPE_FON_WLAN_7170 && \
 											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7170.Laobr.29.04.80-16352.image"		if	FREETZ_TYPE_FON_WLAN_7170 && \
-											FREETZ_TYPE_LABOR_PREVIEW
 	default "FRITZ.Box_Fon_WLAN_7240.73.04.80.image"			if	FREETZ_TYPE_FON_WLAN_7240
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.80.image"			if	FREETZ_TYPE_FON_WLAN_7270 && \
 											! FREETZ_TYPE_LABOR && \
