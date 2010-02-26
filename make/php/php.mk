@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.2.12)
+$(call PKG_INIT_BIN, 5.2.13)
 $(PKG)_SOURCE:=php-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=5b7077e366c7eeab34da31dd860a1923
+$(PKG)_SOURCE_MD5:=eb4d0766dc4fb9667f05a68b6041e7d1
 $(PKG)_SITE:=http://de.php.net/distributions
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi
@@ -8,8 +8,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/php-cgi
 
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_STATIC)),y)
 $(PKG)_STATIC := -all-static
-else
-$(PKG)_STATIC :=
 endif
 
 $(PKG)_DEPENDS_ON := pcre
@@ -38,6 +36,7 @@ $(PKG)_CONFIGURE_ENV += ac_cv_func_utime_null=no
 $(PKG)_CONFIGURE_ENV += ac_cv_time_r_type=POSIX
 $(PKG)_CONFIGURE_ENV += ac_cv_what_readdir_r=POSIX
 $(PKG)_CONFIGURE_ENV += ac_cv_write_stdout=yes
+$(PKG)_CONFIGURE_ENV += ac_cv_lib_png_png_write_image=yes
 $(PKG)_CONFIGURE_ENV += cookie_io_functions_use_off64_t=yes
 $(PKG)_CONFIGURE_ENV += lt_cv_prog_gnu_ldcxx=yes
 $(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm -B"
