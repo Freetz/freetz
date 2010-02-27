@@ -38,14 +38,14 @@ config FREETZ_PACKAGE_LIGHTTPD_LDD
 		into the chroot in case a chroot is configured for with the
 		lighttpd frontend and php-cgi is configured to be used.
 
-#config FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
-#	bool "build mod_cml and mod_magnet with LUA support"
-#	depends on FREETZ_PACKAGE_LIGHTTPD
-#	select FREETZ_PACKAGE_LUA
-#	default n
-#	help
-#		This option enables LUA support for the mod_cml and mod_magnet
-#		modules.
+config FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
+	bool "build with LUA support"
+	depends on FREETZ_PACKAGE_LIGHTTPD
+	select FREETZ_LIB_liblua
+	default n
+	help
+		This option enables LUA support for lighttpd.
+		mod_cml and mod_magnet modules depend on it.
 
 menu "lighttpd Modules"
 depends on FREETZ_PACKAGE_LIGHTTPD
@@ -121,7 +121,7 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_CGI
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_CML
 	bool "include mod_cml (adds about 58kb)"
-	depends on FREETZ_PACKAGE_LIGHTTPD
+	depends on FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
 	default y
 	help
 		This option adds mod_cml.so to the image.
@@ -203,21 +203,22 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_FLV_STREAMING
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_MAGNET
 	bool "include mod_magnet (adds about 58kb)"
-	depends on FREETZ_PACKAGE_LIGHTTPD
+	depends on FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
 	default y
 	help
 		This option adds mod_magnet.so to the image.
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModMagnet
 		for more information on this module.
 
-config FREETZ_PACKAGE_LIGHTTPD_MOD_MYSQL_VHOST
-	bool "include mod_mysql_vhost (adds about 5kb)"
-	depends on FREETZ_PACKAGE_LIGHTTPD
-	default y
-	help
-		This option adds mod_mysql_vhost.so to the image.
-		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModMySQLVhost
-		for more information on this module.
+#requires mysql not (yet) available in freetz
+#config FREETZ_PACKAGE_LIGHTTPD_MOD_MYSQL_VHOST
+#	bool "include mod_mysql_vhost (adds about 5kb)"
+#	depends on FREETZ_PACKAGE_LIGHTTPD
+#	default y
+#	help
+#		This option adds mod_mysql_vhost.so to the image.
+#		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModMySQLVhost
+#		for more information on this module.
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_PROXY
 	bool "include mod_proxy (adds about 24kb)"
@@ -344,5 +345,22 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV
 		This option adds mod_webdav.so to the image.
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModWebDav
 		for more information on this module.
+
+config FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV_WITH_PROPS
+	bool "enable properties support in mod_webdav"
+	depends on FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV
+	select FREETZ_LIB_libxml2
+	select FREETZ_LIB_libsqlite3
+	default n
+	help
+		This option enables properties support in mod_webdav.
+
+config FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV_WITH_LOCKS
+	bool "enable locks in mod_webdav"
+	depends on FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV_WITH_PROPS
+	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	default n
+	help
+		This option enables locks in mod_webdav.
 
 endmenu
