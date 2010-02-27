@@ -17,11 +17,15 @@ endif
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SQLITE3)),y)
 $(PKG)_DEPENDS_ON += sqlite
 endif
+ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_LIBXML)),y)
+$(PKG)_DEPENDS_ON += libxml2
+endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PHP_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_GD
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_SQLITE2
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_SQLITE3
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_LIBXML
 
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ssize_t=4
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ptrdiff_t=4
@@ -44,14 +48,21 @@ $(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm -B"
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-libxml
-$(PKG)_CONFIGURE_OPTIONS += --disable-dom
 $(PKG)_CONFIGURE_OPTIONS += --without-iconv
-$(PKG)_CONFIGURE_OPTIONS += --disable-simplexml
-$(PKG)_CONFIGURE_OPTIONS += --disable-xml
-$(PKG)_CONFIGURE_OPTIONS += --disable-xmlreader
-$(PKG)_CONFIGURE_OPTIONS += --disable-xmlwriter
 $(PKG)_CONFIGURE_OPTIONS += --without-pear
+
+$(PKG)_CONFIGURE_OPTIONS += --without-libexpat-dir #we only want libxml-based XML support to be enabled
+ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_LIBXML)),y)
+$(PKG)_CONFIGURE_OPTIONS += --with-libxml-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+endif
+$(PKG)_XML_SUPPORT:=$(if $(FREETZ_PACKAGE_PHP_WITH_LIBXML),enable,disable)
+$(PKG)_CONFIGURE_OPTIONS += --$($(PKG)_XML_SUPPORT)-xml
+$(PKG)_CONFIGURE_OPTIONS += --$($(PKG)_XML_SUPPORT)-libxml
+$(PKG)_CONFIGURE_OPTIONS += --$($(PKG)_XML_SUPPORT)-dom
+$(PKG)_CONFIGURE_OPTIONS += --$($(PKG)_XML_SUPPORT)-simplexml
+$(PKG)_CONFIGURE_OPTIONS += --$($(PKG)_XML_SUPPORT)-xmlreader
+$(PKG)_CONFIGURE_OPTIONS += --$($(PKG)_XML_SUPPORT)-xmlwriter
+
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SQLITE2)),y)
 $(PKG)_CONFIGURE_OPTIONS += --with-sqlite
 else
