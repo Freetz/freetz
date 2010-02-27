@@ -660,12 +660,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		if [ "$FREETZ_FAVICON_STRING" != "none" ]; then
-			echo1 "adding favicons (${FREETZ_FAVICON_STRING})"
+			echo1 "adding favicon(s) (${FREETZ_FAVICON_STRING})"
 			cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/freetz.ico" "${FILESYSTEM_MOD_DIR}/usr/share/favicon.ico"
 			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/mww/favicon.ico"
 
-			cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
-			ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
+			if [ -e "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" ]; then
+				cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
+				ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
+			fi
 		fi
 
 		if [ "$FREETZ_STATUS_STYLE" == "y" ]; then

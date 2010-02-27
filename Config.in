@@ -2018,11 +2018,14 @@ choice
 	config FREETZ_FAVICON_NONE
 		bool "none"
 
-	config FREETZ_FAVICON_DSL123
-		bool "dsl123's favicons"
+	config FREETZ_FAVICON_ATOMPHIL
+		bool "atomphil's favicon"
 
 	config FREETZ_FAVICON_CUMA
 		bool "cuma's favicons"
+
+	config FREETZ_FAVICON_DSL123
+		bool "dsl123's favicons"
 
 	config FREETZ_FAVICON_HANSOLO
 		bool "han-solo's favicons"
@@ -2031,8 +2034,9 @@ endchoice
 config FREETZ_FAVICON_STRING
 	string
 	default "none"			if FREETZ_FAVICON_NONE
-	default "dsl123"		if FREETZ_FAVICON_DSL123
+	default "atomphil"		if FREETZ_FAVICON_ATOMPHIL
 	default "cuma"			if FREETZ_FAVICON_CUMA
+	default "dsl123"		if FREETZ_FAVICON_DSL123
 	default "hansolo"		if FREETZ_FAVICON_HANSOLO
 
 config FREETZ_SUBVERSION_STRING
