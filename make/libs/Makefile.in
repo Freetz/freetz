@@ -165,6 +165,10 @@ ifeq ($(strip $(FREETZ_LIB_libltdl)),y)
 LIBS+=libtool
 endif
 
+ifeq ($(strip $(FREETZ_LIB_liblua)),y)
+LIBS+=lua
+endif
+
 ifeq ($(strip $(FREETZ_LIB_libpcre)),y)
 LIBS+=pcre
 endif

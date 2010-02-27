@@ -1,15 +1,19 @@
-$(call PKG_INIT_BIN, 5.1.3)
-$(PKG)_SOURCE:=lua-$($(PKG)_VERSION).tar.gz
+$(call PKG_INIT_BIN, 5.1.4)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=d0870f2de55d59c1c8419f36e8fac150
 $(PKG)_SITE:=http://www.lua.org/ftp
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lua
-$(PKG)_SOURCE_MD5:=a70a8dfaa150e047866dc01a46272599
+
+$(PKG)_INCLUDE_DIR:=/usr/include/$(pkg)
+$(PKG)_LIBNAME:=liblua.so.$($(PKG)_VERSION)
+$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/src/$($(PKG)_LIBNAME)
+$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
+$(PKG)_LIB_TARGET_BINARY:=root/usr/lib/$($(PKG)_LIBNAME)
 
 ifeq ($(strip $(FREETZ_PACKAGE_LUA_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline
-LUA_MAKE_TARGET := linux
-else
-LUA_MAKE_TARGET := linux_wo_readline
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LUA_READLINE
@@ -27,21 +31,46 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		AR="$(TARGET_CROSS)ar rcu" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		MYLDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
-		INSTALL_ROOT=/usr \
-		PKG_VERSION="$(LUA_VERSION)" \
-		$(LUA_MAKE_TARGET)
+		USE_READLINE="$(strip $(FREETZ_PACKAGE_LUA_READLINE))" \
+		linux
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
+	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)$(LUA_INCLUDE_DIR) \
+	&& cp $(LUA_DIR)/src/{lua.h,luaconf.h,lualib.h,lauxlib.h} $(TARGET_TOOLCHAIN_STAGING_DIR)$(LUA_INCLUDE_DIR)
+	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig && \
+	echo -ne \
+	"prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr\n"\
+	"exec_prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr\n"\
+	"libdir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib\n"\
+	"includedir=$(TARGET_TOOLCHAIN_STAGING_DIR)$(LUA_INCLUDE_DIR)\n"\
+	"\n"\
+	"Name: lua\n"\
+	"Description: LUA Library\n"\
+	"Version: $(LUA_VERSION)\n"\
+	"Libs: -L\$${libdir} -llua\n"\
+	"Cflags: -I\$${includedir}\n"\
+	>$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/lua.pc
+	$(INSTALL_LIBRARY)
+
+$($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
+	$(INSTALL_LIBRARY_STRIP)
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LUA_DIR) clean
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblua* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)$(LUA_INCLUDE_DIR) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/lua.pc
 
 $(pkg)-uninstall:
 	$(RM) $(LUA_TARGET_BINARY)
+	$(RM) root/usr/lib/liblua*.so*
 
 $(PKG_FINISH)
