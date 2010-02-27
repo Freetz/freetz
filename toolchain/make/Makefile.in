@@ -28,6 +28,13 @@ TARGET_UTILS_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils
 
 TARGET_TOOLCHAIN_GDB_VERSION:=$(strip $(subst ",, $(FREETZ_GDB_VERSION)))
 
+ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
+TOOLCHAIN+=kernel-toolchain
+TOOLCHAIN+=target-toolchain
+else
+TOOLCHAIN:=download-toolchain
+endif
+
 $(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE): $(TOPDIR)/.config
 	@$(RM) $(KERNEL_TOOLCHAIN_SYMLINK)
 	@ln -fs $(BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)/$(REAL_GNU_KERNEL_NAME) $(KERNEL_TOOLCHAIN_SYMLINK)
@@ -38,9 +45,12 @@ $(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE): $(TOPDIR)/.config
 	@ln -fs $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TARGET_TOOLCHAIN_SYMLINK)
 	@touch $@
 
-ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
-TOOLCHAIN+=kernel-toolchain
-TOOLCHAIN+=target-toolchain
-else
-TOOLCHAIN:=download-toolchain
-endif
+kernel-toolchain-distclean: kernel-toolchain-dirclean
+	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)
+	$(RM) $(TOOLCHAIN_DIR)/kernel
+	$(RM) $(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE)
+
+target-toolchain-distclean: target-toolchain-dirclean
+	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
+	$(RM) $(TOOLCHAIN_DIR)/target
+	$(RM) $(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE)

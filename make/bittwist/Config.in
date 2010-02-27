@@ -1,0 +1,16 @@
+config FREETZ_PACKAGE_BITTWIST
+	bool "bittwist 1.1 (binary only)"
+	select FREETZ_LIB_libpcap
+	default n
+	help
+		bittwist is designed to complement tcpdump, which
+		by itself has done a great job in capturing network
+		traffic. bittwist can regenerate the captured traffic
+		onto a live network (the packets are generated from
+		tcpdump trace file, generating a .pcap file).
+		bittwist also comes with a comprehensive trace file
+		editor to allow to change the contents of a trace file
+		on the fly. Generally, a packet generator is useful in
+		simulating networking traffic or scenario, testing firewall,
+		IDS, and IPS, and troubleshooting various network problems.
+		http://bittwist.sourceforge.net/doc.html

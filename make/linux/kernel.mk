@@ -221,11 +221,11 @@ kernel-clean:
 kernel-dirclean:
 	$(RM) -r $(KERNEL_DIR)
 	$(RM) -r $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
-
-kernel-distclean: kernel-dirclean
 	$(RM) $(KERNEL_TARGET_DIR)/.version-*
 	$(RM) $(KERNEL_TARGET_DIR)/System*
 	$(RM) $(KERNEL_TARGET_DIR)/kernel-*
 	$(RM) -r $(KERNEL_TARGET_DIR)/modules-*
+
+kernel-distclean: kernel-dirclean
 
 .PHONY: kernel-configured kernel-modules kernel-menuconfig kernel-oldconfig

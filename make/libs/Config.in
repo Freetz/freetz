@@ -748,6 +748,7 @@ config FREETZ_LIB_libelf
 
 config FREETZ_LIB_libintl
 	bool "libintl (libintl.so)"
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
 	default n
 	help
 		GNU Internationalization library

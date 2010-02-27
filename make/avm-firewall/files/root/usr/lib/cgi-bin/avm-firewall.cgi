@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="2.0.4_rc2"
+VERSION="2.0.4_rc3"
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 CONFIG=/mod/etc/conf/avm-firewall.cfg
 . /usr/lib/libmodcgi.sh
@@ -14,16 +14,17 @@ echo "<font size='1'>$(lang en:"This firewall is for router mode only and is bas
 
 sec_begin '$(lang en:"Mode" de:"Ansicht") Firewall / Port Forwarding'
 cat << EOF
-Firewall <input id="id_FW" type="radio" name="fwmode" value="firewall"checked onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[1].style.display = "block"; fieldsets[2].style.display = "block"; fieldsets[3].style.display = "none"; fieldsets[4].style.display = "none";'>
-Forwarding <input id="id_FWD" type="radio" name="fwmode" value="fwd" onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[3].style.display = "block"; fieldsets[4].style.display = "block"; fieldsets[1].style.display = "none"; fieldsets[2].style.display = "none";'>
-
+<input id="e1" type="radio" name="fwmode" value="firewall"checked onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[1].style.display = "block"; fieldsets[2].style.display = "block"; fieldsets[3].style.display = "none"; fieldsets[4].style.display = "none";'>
+<label for="e1">Firewall</label>
+<input id="e2" type="radio" name="fwmode" value="fwd" onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[3].style.display = "block"; fieldsets[4].style.display = "block"; fieldsets[1].style.display = "none"; fieldsets[2].style.display = "none";'>
+<label for="e2">Port Forwarding</label>
+<div style="float: right;"><font size="1">Version: $VERSION</font></div>
 EOF
 
 sec_end
 
 sec_begin '$(lang en:"Firewall add new rule" de:"Neue Firewall-Regel")'
 cat << EOF
-<div style="float: right;"><font size="1">Version: $VERSION</font></div>
 <p>
 <input type="hidden" name="gui" value="*gui*">
 <table border="0">
@@ -34,7 +35,7 @@ cat << EOF
 <td><select id="source_type" onchange='change_iptype(this.value, "id_ssubnet", "id_source"); build_new_rule()' > <option value="any">any</option>
     <option value="net">net</option> <option value="host">host</option>
 </select></td>
-<td><input type="text" name="source" id="id_source" size="18" maxlength="18" value="any" disabled onblur="build_new_rule()"></td>
+<td><input type="text" name="source" id="id_source" size="18" maxlength="18" value="any" disabled onblur="onlynumpoint(this);build_new_rule()"></td>
 <td>
 
 EOF
@@ -52,7 +53,7 @@ cat << EOF
 <td><select id="dest_type" onchange='change_iptype(this.value, "id_dsubnet", "id_dest"); build_new_rule()'> <option value="any">any</option>
     <option value="net">net</option> <option value="host">host</option>
 </select></td>
-<td><input type="text" name="dest" id="id_dest" size="18" maxlength="18" value="any" disabled onblur="build_new_rule()"></td>
+<td><input type="text" name="dest" id="id_dest" size="18" maxlength="18" value="any" disabled onblur="onlynumpoint(this);build_new_rule()"></td>
 <td>
 
 EOF
@@ -75,8 +76,8 @@ cat << EOF
 </select> </td>
 <td colspan=2>
   <div id="div_port" style="display:none">
-    (Start-)Port: <input size="5" id="id_sport" title="startport" value="" onblur="build_new_rule()">
-     &nbsp; &nbsp; (End-)Port: <input size="5" id="id_eport" title="endport" value="" onblur="build_new_rule()">
+    (Start-)Port: <input size="5" id="id_sport" title="startport" value="" onblur="onlynum(this);build_new_rule()">
+     &nbsp; &nbsp; (End-)Port: <input size="5" id="id_eport" title="endport" value="" onblur="onlynum(this);build_new_rule()">
   </div>
 </td>
 </tr>
@@ -89,9 +90,9 @@ cat << EOF
 </select></td> </tr>
 </table>
 <hr>
-<p>$(lang en:"Rule" de:"Regel"): <input id="id_new_rule" size="90" value=""></p>
+<p>$(lang en:"Rule" de:"Regel"): <input id="id_new_rule" size="85" value=""></p>
 <p>$(lang en:"Insert as #" de:"Einf&uuml;gen an Platz"): <select id="id_where" size="1"> <option value=1>1</option> </select>
-&nbsp; &nbsp; <input type="button" value=$(lang en:"Add rule" de:"Hinzuf&uuml;gen") onclick='allrules.splice(document.getElementById("id_where").value -1, 0, document.getElementById("id_new_rule").value);rulescount += 1; Init_FW_Table();' />
+&nbsp; &nbsp; <input type="button" value="$(lang en:"Add rule" de:"Hinzuf&uuml;gen")" onclick='allrules.splice(document.getElementById("id_where").value -1, 0, document.getElementById("id_new_rule").value);rulescount += 1; Init_FW_Table();' />
 </p>
 
 EOF
@@ -122,7 +123,7 @@ cat << EOF
     <tr border="0"><td style="border-right:0" align="left" id="id_table_title" colspan="3"><font color="red">dslifaces rules lowinput</font></td><td style="border-left:0" align="right" colspan="4" >$(lang en:"<b>Default</b> policy" de:"Implizite <b>Standard</b>-Regel"):
  &nbsp; <b>Permit</b> <input type="radio" name="default_policy" value="permit" id="id_permit" onclick="policyclick()"> &nbsp; <b>Deny</b> <input type="radio" name="default_policy" value="deny" id="id_deny" onclick="policyclick()"> </td></tr> 
     <tr> <th bgcolor="#bae3ff">#</th> <th bgcolor="#bae3ff">$(lang en:"Source" de:"Quelle")</th> <th bgcolor="#bae3ff">$(lang en:"Destination" de:"Ziel")</th> <th bgcolor="#bae3ff">$(lang en:"Protocol" de:"Protokoll")</th>
-    <th bgcolor="#bae3ff">Service/Port</th> <th bgcolor="#bae3ff">A$(lang en:"c" de:"k")tion</th> <th bgcolor="#bae3ff">$(lang en:"Configure" de:"Bearbeiten")</th> </tr>
+    <th bgcolor="#bae3ff">Service/Port</th> <th bgcolor="#bae3ff">A$(lang en:"c" de:"k")tion</th> <th bgcolor="#bae3ff">$(lang en:"&nbsp;&nbsp;&nbsp;Configure&nbsp;&nbsp;&nbsp;" de:"&nbsp;&nbsp;Bearbeiten&nbsp;&nbsp;")</th> </tr>
 EOF
 row=0
 while [ $row -lt 50 ]; do
@@ -155,18 +156,18 @@ cat << EOF
 </select> </td> 
 <td></td>
 <td><div id="div_fwdsport">
-&nbsp; &nbsp; (Start-)Port: <input size="5" id="id_fwd_in_sport" title="startport" value="22" onblur="(fdsport=this.value);build_new_fwdrule()">
-&nbsp; &nbsp; (End-)Port: <input type="text" size="5" id="id_fwd_in_eport" title="endport" value="" onblur="fdeport=this.value;build_new_fwdrule()" >
+&nbsp; &nbsp; (Start-)Port: <input size="5" id="id_fwd_in_sport" title="startport" value="22" onblur="onlynum(this);(fdsport=this.value);build_new_fwdrule()">
+&nbsp; &nbsp; (End-)Port: <input type="text" size="5" id="id_fwd_in_eport" title="endport" value="" onblur="onlynum(this);fdeport=this.value;build_new_fwdrule()" >
 </div></td>
 </tr>
 <tr><td>$(lang en:"Destination" de:"Ziel"): </td><td>
 <select id="id_fwddest_type" onchange='(fddtype=this.value); build_new_fwdrule()'> 
         <option value="fritz">Fritz!Box</option> <option value="host">host</option>
 </select></td>
-<td>&nbsp; <input type="text" disabled="disabled" id="id_fwddest" size="15" maxlength="15" value="0.0.0.0" onblur="fddest=this.value;build_new_fwdrule()">
+<td>&nbsp; <input type="text" disabled="disabled" id="id_fwddest" size="15" maxlength="15" value="0.0.0.0" onblur="onlynumpoint(this); fddest=this.value;build_new_fwdrule()">
 </div></td>
 <td>
-<div id="div_fwddport" style="display:inline"> &nbsp; &nbsp; (Start-)Port: <input type="text" size="5" id='id_fwd_out_sport' value='22' onblur='fdoport=this.value;build_new_fwdrule()'>
+<div id="div_fwddport" style="display:inline"> &nbsp; &nbsp; (Start-)Port: <input type="text" size="5" id='id_fwd_out_sport' value='22' onblur='onlynum(this);fdoport=this.value;build_new_fwdrule()'>
 </div>
 </td> 
 </tr>
@@ -174,7 +175,7 @@ cat << EOF
 </p>
 </table>
 <hr>
-<p>$(lang en:"Rule" de:"Regel"): <input id="id_new_fwdrule" size="90" value=""> &nbsp; &nbsp; <input type="button" value=$(lang en:"Add" de:"Hinzuf&uuml;gen") onclick='allfwdrules.push(document.getElementById("id_new_fwdrule").value);fwdrulescount += 1; Init_FWDTable();' />
+<p>$(lang en:"Rule" de:"Regel"): <input id="id_new_fwdrule" size="65" value=""> &nbsp; &nbsp; <input type="button" value="$(lang en:"Add rule" de:"Hinzuf&uuml;gen")" onclick='allfwdrules.push(document.getElementById("id_new_fwdrule").value);fwdrulescount += 1; Init_FWDTable();' />
 </p>
 
 EOF
@@ -183,7 +184,7 @@ sec_end
 sec_begin '$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")'
 
 cat << EOF
-<p><iframe name="dummy" id="id_iframe" style="width: 700px ; height: 45px ; border: 0" src="/cgi-bin/avm_fw_helper.cgi"> </iframe> </p>
+<p><iframe name="dummy" id="id_iframe" style="width: 800px ; height: 55px ; border: 0" src="/cgi-bin/avm_fw_helper.cgi"> </iframe> </p>
 $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln anzeigen"): <input type="checkbox" onclick='document.getElementById("forwardingrules").style.display=(this.checked)? "block" : "none"' >
 <p><div align="center"><textarea id="forwardingrules" style="width: 600px; display:none;" name="forwardingrules" rows="15" cols="80" wrap="off" onblur="FWD_textarea_to_rules()" ></textarea></div></p>
 
@@ -255,6 +256,14 @@ fdname='';
 split_fwdrules();
 Init_FWDTable();
 build_new_fwdrule();
+
+function onlynum(elem){
+        elem.value=elem.value.replace(/[^0-9]+/g,'');
+}
+                                                                                                                                                       
+function onlynumpoint(elem){
+        elem.value=elem.value.replace(/[^0-9\.]+/g,'');
+}
 
 function split_fwdrules(){
   count=0;
@@ -424,21 +433,21 @@ tmp.firstChild.nodeValue=act.toUpperCase();
 
 function build_new_rule(){
   elem_proto=document.getElementById("id_proto");
-  tmp=document.getElementById("id_action").value + " " + elem_proto.value.replace(/\s+/g,"") + " ";
+  tmp=document.getElementById("id_action").value + " " + elem_proto.value + " ";
   switch ( document.getElementById("source_type").value ){
-    case "host": tmp += "host " + document.getElementById("id_source").value.replace(/\s+/g,"") + " "; break;
-    case "net": tmp += document.getElementById("id_source").value.replace(/\s+/g,"") + " "+ document.getElementById("id_ssubnet").value + " "; break;
+    case "host": tmp += "host " + document.getElementById("id_source").value + " "; break;
+    case "net": tmp += document.getElementById("id_source").value + " "+ document.getElementById("id_ssubnet").value + " "; break;
     case "any": tmp += "any " ; break;
   }
   switch ( document.getElementById("dest_type").value ){
-        case "host": tmp += "host " + document.getElementById("id_dest").value.replace(/\s+/g,""); break;
-        case "net": tmp += document.getElementById("id_dest").value.replace(/\s+/g,"") + " "+ document.getElementById("id_dsubnet").value; break;
+        case "host": tmp += "host " + document.getElementById("id_dest").value; break;
+        case "net": tmp += document.getElementById("id_dest").value + " "+ document.getElementById("id_dsubnet").value; break;
         case "any": tmp += "any" ; break;
   }
   if ( elem_proto.value.charAt(0) != "i" ){
-    eport = document.getElementById("id_eport").value.replace(/\s+/g,"") ;
+    eport = document.getElementById("id_eport").value ;
     if ( eport != "" ) { tmp += " range "} else { tmp += " eq "} ;
-    tmp += document.getElementById("id_sport").value.replace(/\s+/g,"") ;
+    tmp += document.getElementById("id_sport").value ;
     if ( eport !="" ) { tmp += " " + eport } ;
   }
   else {
@@ -564,6 +573,30 @@ sec_end
 cat << EOF
 <font size="1">$(lang en:"\"Defaults\" will load AVM default firewall rules (only loads into this GUI, use \"Apply\" to save them)" de:"\"Standard\" l&auml;dt AVM Default-Regeln in die GUI. Zum Speichern \"&Uuml;bernehmen\"-Knopf dr&uuml;cken").</font><br />
 <input type="hidden" name="do_activate" value=""></font>
-$(lang en:"Saving will <b>not</b> activate new rules by default! <b>Check to activate rules when saving:</b>" de:"Regeln werden beim Speichern standardm&auml;&szlig;ig <b>nicht</b> aktiviert! <b>Zum Aktivieren hier klicken:</b>") <input type="checkbox" value="yes" name="do_activate" >
-<img src="../images/blink!.gif" title="Attention!" valign="center"> &nbsp; <font size="1">$(lang en:"(Sometimes box will reboot!)" de:"(Kann zum Reboot f&uuml;hren!)")</font>
+$(lang en:"Saving will <b>not</b> activate rules or new dsld switches by default! <b>To do so, some daemoms have to be restarted:</b>" de:"Regelwerk und dsld Schalter werden standardm&auml;&szlig;ig <b>nicht</b> aktiviert!  Dazu m&uuml;ssen AVM-Dienste neu gestartet werden:") <br />
+<img src="../images/blink!.gif" title="Attention!" valign="center"> &nbsp; <b>$(lang en:"This might crash your box or even restore factory defaults!" de:"Das kann zum Absturz oder sogar zum Werksreset f&uuml;hren!")</b>
+<table width="100%" border=0>
+<colgroup>
+    <col width="25%">
+    <col width="25%">
+    <col width="25%">
+    <col width="25%">
+</colgroup>
+<tr  align=center>
+<td><input type="radio" value="y" name="do_activate" > </td>
+<td><input type="radio" value="dsld" name="do_activate" > </td>
+<td><input type="radio" value="ctlmgr" name="do_activate" > </td>
+<td><input type="radio" value="dsld_ctlmgr" name="do_activate" > </td></tr>
+<tr align=center>
+<td>$(lang en:"Activate forwardings" de:"Forwardings aktivieren")</td>
+<td>$(lang en:"Firewall and dsld-Switches" de:"Firewall und dsld-Schalter ")</td>
+<td>$(lang en:"Upate AVM GUI" de:"AVM-GUI aktualisieren")</td>
+<td>$(lang en:"both" de:"Beides")</td></tr>
+<tr  align=center>
+<td><font size=1>(SIGHUP dsld)</font></td>
+<td><font size=1>(Restart dsld)</font></td>
+<td><font size=1>(SIGHUP dsld $(lang en:"and" de:"und") restart ctlmgr)</font></td>
+<td><font size=1>(Restart dsld $(lang en:"and" de:"und") ctlmgr)</font></td></tr>
+</table>
 EOF
+

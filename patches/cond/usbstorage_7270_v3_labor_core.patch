@@ -1,7 +1,7 @@
---- etc/hotplug/run_mount.orig	2009-11-06 16:41:57.000000000 +0100
-+++ etc/hotplug/run_mount	2009-11-11 22:06:05.000000000 +0100
-@@ -10,19 +10,9 @@
- MORPHSTICK_PARTITION_FILE=/var/tmp/MORPHSTICK_PARTITION_NAME
+--- etc/hotplug/run_mount.orig	2010-02-23 09:49:12.000000000 +0100
++++ etc/hotplug/run_mount	2010-02-23 20:03:42.000000000 +0100
+@@ -10,22 +10,43 @@
+ SYSFS=/var/sysfs
  ## Generate a frontend'able 'nice name' to be used as mount point:
  nicename () {
 -## Find device's strings, remove/translate evil chars...
@@ -21,10 +21,6 @@
 +NICE="uStor`echo $1|sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/'`$3"
 +echo $NICE
  }
- ## Simple semaphore stuff:
- ## includes /etc/hotplug/rc.usbsema
-@@ -33,6 +23,37 @@
- ## atomic_touch (Filename)
  USBLOCKFILE=/var/USBLOCK_storage
  test -f /etc/hotplug/rc.usbsema && . /etc/hotplug/rc.usbsema
 +
@@ -61,12 +57,12 @@
  ## Actually perform the mount operation...
  ## (TODO Checking the partition for known filesystem types)
  do_mount () {
-@@ -68,7 +89,7 @@
+@@ -63,7 +84,7 @@
  local OLD_UMASK=`umask`
  umask 0
  local new_filesystem=false
--if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID $DEVNODE $MNTPATH; then
+-if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID,$FMASK,$DMASK $DEVNODE $MNTPATH; then
 +if mount_fs; then
  new_filesystem=true
- /etc/hotplug/morphstick reload
  else
+ modprobe ext2

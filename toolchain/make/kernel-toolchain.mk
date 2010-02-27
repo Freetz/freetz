@@ -36,8 +36,3 @@ endif
 
 kernel-toolchain-dirclean:
 	$(RM) -r $(KERNEL_TOOLCHAIN_DIR)
-	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)
-	$(RM) $(TOOLCHAIN_DIR)/kernel
-	$(RM) $(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE)
-
-kernel-toolchain-distclean: kernel-toolchain-dirclean

@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_SQUID
-	bool "Squid 3.0.STABLE9"
+	bool "Squid 3.0.STABLE9 (binary only)"
 	default n
 	select FREETZ_LIB_libuClibc__
 	select FREETZ_LIB_libresolv
@@ -10,3 +10,10 @@ config FREETZ_PACKAGE_SQUID
 		Squid has extensive access controls and makes a great server
 		accelerator.
 
+config FREETZ_PACKAGE_SQUID_TRANSPARENT
+	bool "build with transparent proxy support (iptables)"
+	depends on FREETZ_PACKAGE_SQUID
+	default n
+	help
+		This option enables transparent Proxy support for SQUID
+		and IPTables. Increases size of squid binary aprox. 192KB.

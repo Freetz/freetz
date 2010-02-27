@@ -6,6 +6,8 @@ config FREETZ_PACKAGE_QUAGGA
 	select FREETZ_LIB_libhistory
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	select FREETZ_BUSYBOX_SEQ
+	select FREETZ_PACKAGE_QUAGGA_ZEBRA
+	select FREETZ_PACKAGE_QUAGGA_VTYSH
 	help
 		The Quagga Software Routing Suite
 
@@ -19,6 +21,14 @@ config FREETZ_PACKAGE_QUAGGA
 		YOU SHOULD NOT SELECT THIS PACKAGE (I.E. YOU DO NOT NEED IT)
 		IF YOU DON'T KNOW HOW TO CONFIGURE THE ROUTING DAEMONS!
 		(However: a guided/safe config interface is on the todo list ;-)
+
+config FREETZ_PACKAGE_QUAGGA_ZEBRA
+	bool
+	depends on FREETZ_PACKAGE_QUAGGA
+
+config FREETZ_PACKAGE_QUAGGA_VTYSH
+	bool
+	depends on FREETZ_PACKAGE_QUAGGA
 
 config FREETZ_PACKAGE_QUAGGA_BGPD
 	bool "bgpd"

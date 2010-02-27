@@ -50,9 +50,3 @@ endif
 
 target-toolchain-dirclean:
 	$(RM) -r $(TARGET_TOOLCHAIN_DIR)
-	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
-	$(RM) $(TOOLCHAIN_DIR)/target
-	$(RM) $(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE)
-
-target-toolchain-distclean: target-toolchain-dirclean
-

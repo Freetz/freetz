@@ -60,15 +60,5 @@ download-toolchain-dirclean: kernel-toolchain-dirclean target-toolchain-dirclean
 download-toolchain-distclean: kernel-toolchain-distclean target-toolchain-distclean
 
 kernel-toolchain-dirclean:
-	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)
-	$(RM) $(TOOLCHAIN_DIR)/kernel
-	$(RM) $(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE)
 
 target-toolchain-dirclean:
-	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
-	$(RM) $(TOOLCHAIN_DIR)/target
-	$(RM) $(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE)
-
-kernel-toolchain-distclean: kernel-toolchain-dirclean
-
-target-toolchain-distclean: target-toolchain-dirclean

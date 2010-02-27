@@ -1,11 +1,24 @@
 $(call PKG_INIT_BIN, 0.99.15)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www.quagga.net/download
-$(PKG)_BINARY:=$($(PKG)_DIR)/zebra/.libs/zebra
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/zebra
-$(PKG)_TARGET_LIBDIR:=$($(PKG)_DEST_DIR)/usr/lib
-$(PKG)_STARTLEVEL=80
 $(PKG)_SOURCE_MD5:=8975414c76a295f4855a417af0b5ddce
+$(PKG)_SITE:=http://www.quagga.net/download
+$(PKG)_STARTLEVEL=80
+
+# Libraries
+$(PKG)_LIB_VERSION:=0.0.0
+$(PKG)_LIB_SUFFIX:=so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY_BUILD_SUBDIR:=.libs
+$(PKG)_LIBNAMES := libzebra
+$(PKG)_LIBS_BUILD_DIR := $(QUAGGA_LIBNAMES:%=$($(PKG)_DIR)/lib/$($(PKG)_BINARY_BUILD_SUBDIR)/%.$(QUAGGA_LIB_SUFFIX))
+$(PKG)_LIBS_TARGET_DIR := $(QUAGGA_LIBNAMES:%=$($(PKG)_DEST_DIR)/usr/lib/%.$(QUAGGA_LIB_SUFFIX))
+
+# Executables
+$(PKG)_BINARIES_ALL := zebra bgpd ripd ripngd ospfd ospf6d isisd vtysh
+$(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
+$(PKG)_BINARIES_BUILD_DIR := $(join $(QUAGGA_BINARIES:%=$($(PKG)_DIR)/%/.libs),$(QUAGGA_BINARIES:%=/%))
+$(PKG)_BINARIES_TARGET_DIR := $(QUAGGA_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
+
+$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/sbin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG)_DEPENDS_ON := ncurses readline
 
@@ -15,6 +28,9 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_QUAGGA_RIPNGD
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_QUAGGA_OSPFD
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_QUAGGA_OSPF6D
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_QUAGGA_ISISD
+
+# touch configure.ac to prevent aclocal.m4 & configure from being regenerated
+$(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.ac;
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/etc/quagga
 $(PKG)_CONFIGURE_OPTIONS += --localstatedir=/var/run/quagga
@@ -32,55 +48,36 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_QUAGGA_OSPFD),--enable-ospfd,-
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_QUAGGA_OSPF6D),--enable-ospf6d,--disable-ospf6d)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_QUAGGA_ISISD),--enable-isisd,--disable-isisd)
 
-$(PKG)_DAEMONS:=zebra \
-		$(if $(FREETZ_PACKAGE_QUAGGA_BGPD),bgpd,) \
-		$(if $(FREETZ_PACKAGE_QUAGGA_RIPD),ripd,) \
-		$(if $(FREETZ_PACKAGE_QUAGGA_RIPNGD),ripngd,) \
-		$(if $(FREETZ_PACKAGE_QUAGGA_OSPFD),ospfd,) \
-		$(if $(FREETZ_PACKAGE_QUAGGA_OSPF6D),ospf6d,) \
-		$(if $(FREETZ_PACKAGE_QUAGGA_ISISD),isisd,)
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(QUAGGA_DIR) \
 		LD="$(TARGET_LD)"
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	# copy, strip and chmod base libs
-	cp -d $(QUAGGA_DIR)/lib/.libs/lib*.so* $(QUAGGA_TARGET_LIBDIR)
-	$(TARGET_STRIP) $(QUAGGA_TARGET_LIBDIR)/lib*.so*
-	chmod -x $(QUAGGA_TARGET_LIBDIR)/lib*.so*
-	# vtysh
-	cp $(QUAGGA_DIR)/vtysh/.libs/vtysh $(QUAGGA_DEST_DIR)/usr/bin
-	$(TARGET_STRIP) $(QUAGGA_DEST_DIR)/usr/bin/vtysh
-	# install routing routing daemons and libs
-	mkdir -p $(QUAGGA_DEST_DIR)/usr/sbin $(QUAGGA_TARGET_LIBDIR)
-	for d in $(QUAGGA_DAEMONS); do \
-		if [ -f $(QUAGGA_DIR)/$$d/.libs/$$d ]; then \
-			cp $(QUAGGA_DIR)/$$d/.libs/$$d $(QUAGGA_DEST_DIR)/usr/sbin; \
-			$(TARGET_STRIP) $(QUAGGA_DEST_DIR)/usr/sbin/$$d; \
-		fi; \
-		(shopt -s nullglob; for f in $(QUAGGA_DIR)/$$d/.libs/lib*.so*; do \
-			cp -d $$f $(QUAGGA_TARGET_LIBDIR); \
-		done;) \
-	done
-	# install supervisor daemon
-	$(INSTALL_BINARY_STRIP)
+$($(PKG)_LIBS_TARGET_DIR): \
+	$($(PKG)_DEST_DIR)/usr/lib/%: \
+	$($(PKG)_DIR)/lib/.libs/%
+	$(INSTALL_LIBRARY_STRIP)
+
+define QUAGGA_INSTALL_BINARY_STRIP
+$($(PKG)_DEST_DIR)$(strip $(2))/$(notdir $(strip $(1))): $(strip $(1))
+	$(value INSTALL_BINARY_STRIP)
+endef
+$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call QUAGGA_INSTALL_BINARY_STRIP,$(binary),/usr/sbin)))
+
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(QUAGGA_DIR) clean
 	$(RM) $(QUAGGA_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
-	$(RM) $(QUAGGA_TARGET_LIBDIR)/lib*.so*	
-	$(RM) $(QUAGGA_DEST_DIR)/usr/sbin/*
-	$(RM) $(QUAGGA_DEST_DIR)/usr/bin/vtysh
+	$(RM) $(QUAGGA_LIBS_TARGET_DIR)
+	$(RM) $(QUAGGA_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)

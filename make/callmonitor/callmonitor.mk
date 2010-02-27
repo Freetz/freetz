@@ -1,11 +1,11 @@
-$(call PKG_INIT_BIN, 1.16)
+$(call PKG_INIT_BIN, 1.17)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-freetz.tar.bz2
 $(PKG)_SITE:=http://download.berlios.de/callmonitor
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/recode
 $(PKG)_TARGET_BINARY:=$($(PKG)_DIR)/root/usr/lib/callmonitor/bin/recode
 $(PKG)_STARTLEVEL=30
-$(PKG)_SOURCE_MD5:=0055ab7774b871461b31334464edecd5
+$(PKG)_SOURCE_MD5:=50c1c34d9bedb6f036f3c4e373109cb4
 
 CALLMONITOR_FEATURES:=$(foreach feat,webif actions monitor phonebook,\
 	$(if $(FREETZ_PACKAGE_CALLMONITOR_$(feat)),$(feat)))
@@ -19,7 +19,7 @@ $(CALLMONITOR_DIR)/.features.new: FORCE
 	@echo $(CALLMONITOR_FEATURES) > $@
 
 $(CALLMONITOR_DIR)/.features: $(CALLMONITOR_DIR)/.features.new
-	@if ! diff -q $< $@; then cp $< $@; fi
+	@if [ ! -e $@ ] || ! diff -q $< $@; then cp $< $@; fi
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_DIR)/.features
 	$(SUBMAKE) -C $(CALLMONITOR_DIR) configure

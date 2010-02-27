@@ -1,0 +1,132 @@
+--- usr/www/all/html/de/home/home.html.orig	2010-02-25 13:47:15.694778457 +0100
++++ usr/www/all/html/de/home/home.html	2010-02-25 13:47:16.194779086 +0100
+@@ -164,6 +164,11 @@
+ <td class="tdLed">&nbsp;</td>
+ <td><script type="text/javascript">document.write(WeckerDisplay(2));</script></td>
+ </tr>
++<tr id="trWecker3" style="display: none">
++<td class="tdName"><a href="javascript:jslGoToWecker(2)">Weckruf 3 </a></td>
++<td class="tdLed">&nbsp;</td>
++<td><script type="text/javascript">document.write(WeckerDisplay(3));</script></td>
++</tr>
+ </table>
+ </div></div></div></div></div></div>
+ <? include ../html/de/home/rbb_refresh.html ?>
+--- usr/www/all/html/de/home/home.js.orig	2010-02-25 13:47:10.724774046 +0100
++++ usr/www/all/html/de/home/home.js	2010-02-25 13:47:16.194779086 +0100
+@@ -224,6 +224,7 @@
+ var NachtEnabled = "<? query box:settings/night_time_control_enabled ?>";
+ var Wecker1 = "<? query telcfg:settings/AlarmClock0/Active ?>";
+ var Wecker2 = "<? query telcfg:settings/AlarmClock1/Active ?>";
++var Wecker3 = "<? query telcfg:settings/AlarmClock2/Active ?>";
+ <? if eq $var:showPortfreigabe 1 `
+ var showPortfreigabeInfo = "0";
+ <? multiquery forwardrules:settings/rule/list(activated) `
+@@ -299,7 +300,7 @@
+ <? if eq $var:showPortfreigabe 1 `
+ || showPortfreigabeInfo == "1"
+ ` ?>
+-|| g_callthroughActive == true || g_tamActive > 0 || g_tamDisplay > 0 || g_intFaxActive == "1" || Wecker1 == "1" || Wecker2 == "1" || RufsperreAktiv == true || g_RufumleitungAktiv == true
++|| g_callthroughActive == true || g_tamActive > 0 || g_tamDisplay > 0 || g_intFaxActive == "1" || Wecker1 == "1" || Wecker2 == "1" || Wecker3 == "1" || RufsperreAktiv == true || g_RufumleitungAktiv == true
+ || showRemoteHttps == true
+ || showDynDns == true
+ || showOnlineCnt == "1"
+@@ -309,6 +310,7 @@
+ }
+ jslDisplay("trWecker1",Wecker1 == "1");
+ jslDisplay("trWecker2",Wecker2 == "1");
++jslDisplay("trWecker3",Wecker3 == "1");
+ jslDisplay("trTam",g_tamActive > 0 || g_tamDisplay > 0);
+ jslDisplay("trIntFax", g_intFaxActive == "1");
+ jslDisplay("trSperre",RufsperreAktiv == true);
+@@ -1354,8 +1356,10 @@
+ }
+ return DisplayString;
+ }
++
+ function WeckerDisplay(Wecker)
+ {
++
+ <? setvariable var:wnr '0' ?>
+ var Active = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Active ?>";
+ var Time = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Time ?>";
+@@ -1365,13 +1369,29 @@
+ {
+ return WeckerString(Active,Time,Num,Weekdays);
+ }
++
+ <? setvariable var:wnr '1' ?>
+ Active = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Active ?>";
+ Time = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Time ?>";
+ Num = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Number ?>";
+ Weekdays = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Weekdays ?>";
++if (Wecker == 2)
++{
+ return WeckerString(Active,Time,Num,Weekdays);
+ }
++
++<? setvariable var:wnr '2' ?>
++Active = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Active ?>";
++Time = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Time ?>";
++Num = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Number ?>";
++Weekdays = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Weekdays ?>";
++if (Wecker == 3)
++{
++return WeckerString(Active,Time,Num,Weekdays);
++}
++
++}
++
+ <? if eq $var:showPortfreigabe `1` `
+ function PortfwDisplay(){
+ var infotext="";
+@@ -1590,6 +1610,8 @@
+ jslSetValue("uiPostWeckernr",0);break;
+ case 1:
+ jslSetValue("uiPostWeckernr",1);break;
++case 2:
++jslSetValue("uiPostWeckernr",2);break;
+ }
+ jslGoTo('fon','wecker');
+ }
+--- usr/www/all/html/de/fon/wecker.html.orig	2010-02-25 13:47:03.984777877 +0100
++++ usr/www/all/html/de/fon/wecker.html	2010-02-25 13:47:16.194779086 +0100
+@@ -3,14 +3,25 @@
+ {?txtWakeupCall?}
+ </div></div></div></div></div></div>
+ <div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
++
+ <ul class="tabs" id="uiView0">
+ <li class="tabs_on"><div class="activtab">{?de.fon.wecker.html:10?}</div></li>
+ <li><a href="javascript:DoTabs(1)">{?de.fon.wecker.html:15?}</a></li>
++<li><a href="javascript:DoTabs(2)">Weckruf 3</a></li>
+ </ul>
++
+ <ul class="tabs" id="uiView1" style="display:none">
+ <li><a href="javascript:DoTabs(0)">{?de.fon.wecker.html:20?}</a></li>
+ <li class="tabs_on"><div class="activtab">{?de.fon.wecker.html:25?}</div></li>
++<li><a href="javascript:DoTabs(2)">Weckruf 3</a></li>
+ </ul>
++
++<ul class="tabs" id="uiView2" style="display:none">
++<li><a href="javascript:DoTabs(0)">{?de.fon.wecker.html:20?}</a></li>
++<li><a href="javascript:DoTabs(1)">{?de.fon.wecker.html:15?}</a></li>
++<li class="tabs_on"><div class="activtab">Weckruf 3</div></li>
++</ul>
++
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
+ <p class="mb10">{?de.fon.wecker.html:30?}</p>
+ <p class="mb10">{?de.fon.wecker.html:35?}</p>
+--- usr/www/all/html/de/fon/wecker.js.orig	2010-02-25 13:47:09.094779082 +0100
++++ usr/www/all/html/de/fon/wecker.js	2010-02-25 13:47:16.194779086 +0100
+@@ -23,8 +23,9 @@
+ var mCount = "<? query telcfg:settings/Foncontrol ?>";
+ ` ?>
+ var nr = jslGetValue("uiPostWeckernr");
+-jslDisplay("uiView0", nr != "1");
++jslDisplay("uiView0", nr == "0");
+ jslDisplay("uiView1", nr == "1");
++jslDisplay("uiView2", nr == "2");
+ jslSetChecked("uiViewActive", jslGetValue("uiPostActive") == "1");
+ var zeit = jslGetValue("uiPostZeit");
+ if (zeit.length == 4) {
