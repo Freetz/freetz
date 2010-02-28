@@ -679,6 +679,50 @@ config FREETZ_LIB_libnetpbm
 	help
 		netpbm is a toolkit for manipulation of graphic images.
 
+menu Ogg/Vorbis
+
+config FREETZ_LIB_libogg
+	bool "libogg (libogg.so)"
+	default n
+	help
+		Libogg is a library for manipulating ogg bitstreams.  It handles
+		both making ogg bitstreams and getting packets from ogg bitstreams.
+
+config FREETZ_LIB_libvorbis
+	bool "libvorbis (libvorbis.so)"
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libogg
+	default n
+	help
+		Vorbis is the name of a specific audio compression scheme
+		that's designed to be contained in Ogg.
+		libvorbis is a BSD-style license software implementation of
+		the Vorbis specification by the Xiph.Org Foundation.
+
+config FREETZ_LIB_libvorbisenc
+	bool "libvorbisenc (libvorbisenc.so)"
+	select FREETZ_LIB_libvorbis
+	default n
+	help
+		Libvorbisenc is an encoding convenience library intended to 
+		encapsulate the elaborate setup that libvorbis requires for encoding. 
+		Libvorbisenc gives easy access to all high-level adjustments an 
+		application may require when encoding and also exposes some low-level 
+		tuning parameters to allow applications to make detailed adjustments 
+		to the encoding process.
+
+config FREETZ_LIB_libvorbisfile
+	bool "libvorbisfile (libvorbisfile.so)"
+	select FREETZ_LIB_libvorbis
+	default n
+	help
+		The Vorbisfile library provides a convenient high-level API for decoding 
+		and basic manipulation of all Vorbis I audio streams. 
+		Libvorbisfile is implemented as a layer on top of Xiph.org's reference 
+		libogg and libvorbis libraries.
+
+endmenu
+
 #config FREETZ_LIB_libpjsip
 #	bool "libpjsip (libpjsip.so)
 #	default n
