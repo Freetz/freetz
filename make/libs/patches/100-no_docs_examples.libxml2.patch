@@ -1,0 +1,23 @@
+--- Makefile.in	2009-10-06 18:39:59.000000000 +0200
++++ Makefile.in	2010-01-13 14:40:04.000000000 +0100
+@@ -559,8 +559,8 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-SUBDIRS = include . doc example xstc @PYTHON_SUBDIR@
+-DIST_SUBDIRS = include . doc example python xstc
++SUBDIRS = include . xstc @PYTHON_SUBDIR@
++DIST_SUBDIRS = include . python xstc
+ INCLUDES = -I$(top_builddir)/include -I@srcdir@/include @THREAD_CFLAGS@ @Z_CFLAGS@ 
+ bin_SCRIPTS = xml2-config
+ lib_LTLIBRARIES = libxml2.la
+@@ -1602,8 +1602,7 @@
+ 
+ info-am:
+ 
+-install-data-am: install-data-local install-m4dataDATA install-man \
+-	install-pkgconfigDATA
++install-data-am: install-pkgconfigDATA
+ 
+ install-dvi: install-dvi-recursive
+ 

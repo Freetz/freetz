@@ -1,0 +1,42 @@
+--- Makefile.in.orig	2010-02-22 19:38:09.000000000 +0100
++++ Makefile.in	2010-02-22 19:39:09.000000000 +0100
+@@ -324,7 +324,7 @@
+ 	-rm -f libtool
+ install-m4dataDATA: $(m4data_DATA)
+ 	@$(NORMAL_INSTALL)
+-	test -z "$(m4datadir)" || $(MKDIR_P) "$(DESTDIR)$(m4datadir)"
++	test -z "$(DESTDIR)$(m4datadir)" || $(MKDIR_P) "$(DESTDIR)$(m4datadir)"
+ 	@list='$(m4data_DATA)'; for p in $$list; do \
+ 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+ 	  f=$(am__strip_dir) \
+@@ -341,7 +341,7 @@
+ 	done
+ install-pkgconfigDATA: $(pkgconfig_DATA)
+ 	@$(NORMAL_INSTALL)
+-	test -z "$(pkgconfigdir)" || $(MKDIR_P) "$(DESTDIR)$(pkgconfigdir)"
++	test -z "$(DESTDIR)$(pkgconfigdir)" || $(MKDIR_P) "$(DESTDIR)$(pkgconfigdir)"
+ 	@list='$(pkgconfig_DATA)'; for p in $$list; do \
+ 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+ 	  f=$(am__strip_dir) \
+--- lib/Makefile.in.orig	2010-02-22 19:35:22.000000000 +0100
++++ lib/Makefile.in	2010-02-22 19:35:39.000000000 +0100
+@@ -337,7 +337,7 @@
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+-	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
++	test -z "$(DESTDIR)$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
+ 	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+ 	  if test -f $$p; then \
+ 	    f=$(am__strip_dir) \
+--- include/vorbis/Makefile.in.orig	2010-02-22 19:36:21.000000000 +0100
++++ include/vorbis/Makefile.in	2010-02-22 19:37:19.000000000 +0100
+@@ -236,7 +236,7 @@
+ 	-rm -rf .libs _libs
+ install-vorbisincludeHEADERS: $(vorbisinclude_HEADERS)
+ 	@$(NORMAL_INSTALL)
+-	test -z "$(vorbisincludedir)" || $(MKDIR_P) "$(DESTDIR)$(vorbisincludedir)"
++	test -z "$(DESTDIR)$(vorbisincludedir)" || $(MKDIR_P) "$(DESTDIR)$(vorbisincludedir)"
+ 	@list='$(vorbisinclude_HEADERS)'; for p in $$list; do \
+ 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+ 	  f=$(am__strip_dir) \

@@ -36,6 +36,14 @@ config FREETZ_PACKAGE_PHP_WITH_SQLITE3
 	help
 		This option enables the SQLite (v3) support for PHP
 
+config FREETZ_PACKAGE_PHP_WITH_LIBXML
+	bool "build with XML support"
+	depends on FREETZ_PACKAGE_PHP
+	select FREETZ_LIB_libxml2 if ! FREETZ_PACKAGE_PHP_STATIC
+	default n
+	help
+		This option enables the XML support for PHP
+
 config FREETZ_PACKAGE_PHP_STATIC
 	bool "Create statically linked binary"
 	depends on FREETZ_PACKAGE_PHP
@@ -50,3 +58,4 @@ config FREETZ_PACKAGE_PHP_STATIC
 		  - libpcre.so.0
 		  - libgd.so.2
 		  - libsqlite3.so.0
+		  - libxml2.so.2

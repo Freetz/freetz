@@ -16,3 +16,19 @@ config FREETZ_PACKAGE_NMAP
 		use, and dozens of other characteristics. It was designed to rapidly scan large
 		networks, but works fine against single hosts. Nmap runs on all major computer
 		operating systems, and both console and graphical versions are available.
+
+config FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA
+	bool "Use system (shared) liblua"
+	depends on FREETZ_PACKAGE_NMAP
+	select FREETZ_LIB_liblua
+	default y
+	help
+		Causes system (dynamic) liblua to be used instead of bundled one.
+
+config FREETZ_PACKAGE_NMAP_WITH_SHARED_PCRE
+	bool "Use system (shared) libpcre"
+	depends on FREETZ_PACKAGE_NMAP
+	select FREETZ_LIB_libpcre
+	default y
+	help
+		Causes system (dynamic) libpcre to be used instead of bundled one.

@@ -184,6 +184,14 @@ config EXTERNAL_FREETZ_LIB_libjpeg
 		externals these file(s):
 		 /usr/lib/freetz/libjpeg.so.62.0.0
 
+config EXTERNAL_FREETZ_LIB_liblua
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_liblua
+	bool "liblua"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/liblua.so.5.1.4
+
 config EXTERNAL_FREETZ_LIB_liblzo2
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_liblzo2
 	bool "liblzo2"
@@ -223,6 +231,14 @@ config EXTERNAL_FREETZ_LIB_libnetpbm
 	help
 		externals these file(s):
 		 /usr/lib/freetz/libnetpbm.so.10.35
+
+config EXTERNAL_FREETZ_LIB_libogg
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libogg
+	bool "libogg"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libogg.so.0.6.0
 
 config EXTERNAL_FREETZ_LIB_libpanel
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpanel
@@ -296,10 +312,42 @@ config EXTERNAL_FREETZ_LIB_libsqlite3
 		externals these file(s):
 		 /usr/lib/freetz/libsqlite3.so.0.8.6
 
+config EXTERNAL_FREETZ_LIB_libvorbis
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libvorbis
+	bool "libvorbis"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libvorbis.so.0.4.3
+
+config EXTERNAL_FREETZ_LIB_libvorbisenc
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libvorbisenc
+	bool "libvorbisenc"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libvorbisenc.so.2.0.6
+
+config EXTERNAL_FREETZ_LIB_libvorbisfile
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libvorbisfile
+	bool "libvorbisfile"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libvorbisfile.so.3.3.2
+
 config EXTERNAL_FREETZ_LIB_libuClibc__
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libuClibc__
 	bool "libuClibc++"
 	default n
 	help
 		externals these file(s):
-		 /usr/lib/freetz/libuClibc++-0.2.2.so
+		 /usr/lib/libuClibc++-0.2.2.so
+
+config EXTERNAL_FREETZ_LIB_libxml2
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libxml2
+	bool "libxml2"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libxml2.so.2.7.6

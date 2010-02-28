@@ -5,14 +5,29 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/streamripper
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/streamripper
 $(PKG)_SOURCE_MD5:=a37a1a8b8f9228522196a122a1c2dd32
 
-$(PKG)_DEPENDS_ON := glib2 libmad
+$(PKG)_DEPENDS_ON := pcre glib2 libmad
 
 $(PKG)_CONFIGURE_OPTIONS += --with-included-argv
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
-$(PKG)_CONFIGURE_OPTIONS += --with-included-tre
+$(PKG)_CONFIGURE_OPTIONS += --with-curses=no
+$(PKG)_CONFIGURE_OPTIONS += --disable-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-shared
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --disable-oggtest
+$(PKG)_CONFIGURE_OPTIONS += --disable-vorbistest
+
+ifeq ($(strip $(FREETZ_PACKAGE_STREAMRIPPER_WITH_OGGVORBIS)),y)
+$(PKG)_DEPENDS_ON += libogg libvorbis
+
+$(PKG)_CONFIGURE_OPTIONS += --with-ogg-libraries="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
+$(PKG)_CONFIGURE_OPTIONS += --with-ogg-includes="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include"
+$(PKG)_CONFIGURE_OPTIONS += --with-vorbis-libraries="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
+$(PKG)_CONFIGURE_OPTIONS += --with-vorbis-includes="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include"
+else
+$(PKG)_CONFIGURE_ENV += sr_disable_oggvorbis_support=yes
 $(PKG)_CONFIGURE_OPTIONS += --without-ogg
 $(PKG)_CONFIGURE_OPTIONS += --without-vorbis
-$(PKG)_CONFIGURE_OPTIONS += --disable-shared
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
