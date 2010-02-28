@@ -9,21 +9,30 @@
  
  
  
-@@ -8764,7 +8764,7 @@
+@@ -8764,8 +8764,11 @@
  
    { $as_echo "$as_me:$LINENO: checking for Ogg" >&5
  $as_echo_n "checking for Ogg... " >&6; }
 -  no_ogg=""
-+  no_ogg="yes"
- 
+-
++  if test "x$sr_disable_oggvorbis_support" = "xyes" ; then
++    no_ogg="yes"
++  else
++    no_ogg=""
++  fi
  
    if test "x$enable_oggtest" = "xyes" ; then
-@@ -8894,7 +8894,7 @@
+     ac_save_CFLAGS="$CFLAGS"
+@@ -8895,7 +8898,11 @@
  
    { $as_echo "$as_me:$LINENO: checking for Vorbis" >&5
  $as_echo_n "checking for Vorbis... " >&6; }
 -  no_vorbis=""
-+  no_vorbis="yes"
++  if test "x$sr_disable_oggvorbis_support" = "xyes" ; then
++    no_vorbis="yes"
++  else
++    no_vorbis=""
++  fi
  
  
    if test "x$enable_vorbistest" = "xyes" ; then
