@@ -1,0 +1,20 @@
+--- ./backend/qcam.c.orig	2009-12-01 06:11:04.000000000 +0000
++++ ./backend/qcam.c	2009-12-01 15:12:40.000000000 +0000
+@@ -105,6 +105,17 @@
+ 
+ #include "qcam.h"
+ 
++#ifndef __i386__
++static inline unsigned char inb(unsigned int port)
++{
++	return 0;
++}
++
++static inline void outb(unsigned char value, unsigned int port)
++{
++}
++#endif
++
+ /* status bits */
+ #define NeedRamTable		(1 << 1)
+ #define BlackBalanceInProgress	(1 << 6)
