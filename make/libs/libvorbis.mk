@@ -57,7 +57,7 @@ $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_DIR)/%: $(TARGET_TOOLCHAIN_STAGING_DI
 
 $(pkg): $($(PKG)_LIBS_STAGING_DIR)
 
-$(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR
+$(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(MAKE) -C $(LIBVORBIS_DIR) \
