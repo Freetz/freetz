@@ -77,6 +77,11 @@ endif
 export __Y
 export __N
 
+define MESSAGE
+printf "%s\n" "$(1)" $(SILENT)
+endef
+
+
 # Print yellow error message and exit
 define ERROR
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
@@ -156,7 +161,7 @@ ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),0)
 .SILENT:
 # Don't be silent when a menuconfig target is called
 ifneq ($(findstring menuconfig,$(MAKECMDGOALS)),menuconfig)
-SILENT:=>/dev/null 2>&1
+SILENT:= >>build.log 2>&1
 endif
 endif
 
@@ -165,11 +170,8 @@ VERBOSE:=-v
 QUIET:=
 endif
 
-ECHO:=$(SILENT) echo
-
 export FREETZ_VERBOSITY_LEVEL
 export VERBOSE
-export ECHO
 
 TOOLS_CLEAN:=$(patsubst %,%-clean,$(TOOLS))
 TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))

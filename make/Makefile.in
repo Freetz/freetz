@@ -226,7 +226,7 @@ PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC = $(SED) -i -r -e 's/ac(_cv_('"$(shell ec
 # NB: all libtool-related macros are heavily based on the openwrt macros provided in autotools.mk
 define REPLACE_FILE_WITH_SYMLINK
 if [ -f "$(abspath $($(PKG)_DIR)/$(3)/$(1))" -a -e "$(2)/$(if $(4),$(4),$(1))" ]; then \
-	$(ECHO) "Replacing $(3)/$(if $(4),$(4),$(1)) with symlink to $(2)/$(if $(4),$(4),$(1))"; \
+	$(call MESSAGE, Replacing $(3)/$(if $(4),$(4),$(1)) with symlink to $(2)/$(if $(4),$(4),$(1))); \
 	rm -f "$(abspath $($(PKG)_DIR)/$(3)/$(1))"; \
 	ln -s "$(2)/$(if $(4),$(4),$(1))" "$(abspath $($(PKG)_DIR)/$(3)/$(1))"; \
 fi;
@@ -285,6 +285,7 @@ ECHO_ITEM_BUILD:=$(SOURCE_DIR)/.echo_item_build
 define _ECHO_START
 	echo -n "---> "; \
 	$(if $(findstring $(PKG_TYPE),BIN),echo -n "package/$(pkg): ";) \
+	$(if $(findstring $(PKG_TYPE),KERNEL),echo -n "kernel: ";) \
 	$(if $(findstring $(PKG_TYPE),LIB),echo -n "library/$(pkg): ";) \
 	$(if $(findstring $(PKG_TYPE),TOOL),echo -n "tool/$(pkg): ";) \
 	rm -f $(ECHO_ITEM_BUILD); \
@@ -424,7 +425,7 @@ $(pkg)-precompiled--int : $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,
 $(pkg)-clean-echo-item:
 	@rm -f $(ECHO_ITEM_START)
 	@rm -f $(ECHO_ITEM_BUILD)
-$(pkg)-precompiled: 
+$(pkg)-precompiled:
 	@$(call _ECHO_DONE)
 $(pkg)-build-prereq: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
 $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked:
@@ -462,7 +463,7 @@ define PKG_SOURCE_DOWNLOAD__INT
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(call _ECHO,downloading... )
 	@if [ -e $(MIRROR_DIR)/$($(PKG)_SOURCE) ]; then \
-		$(ECHO) "Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link"; \
+		$(call MESSAGE, Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link); \
 		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
 	else \
 		$(DL_TOOL) $(DL_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5) $(SILENT); \
@@ -472,7 +473,7 @@ $(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
 
 $(MIRROR_DIR)/$($(PKG)_SOURCE): | $(MIRROR_DIR)
 	@if [ -e $(DL_DIR)/$($(PKG)_SOURCE) ]; then \
-		$(ECHO) "Found $($(PKG)_SOURCE) in $(DL_DIR), creating hard link"; \
+		$(call MESSAGE, Found $($(PKG)_SOURCE) in $(DL_DIR), creating hard link); \
 		ln $(DL_DIR)/$($(PKG)_SOURCE) $(MIRROR_DIR); \
 	else \
 		$(DL_TOOL) $(MIRROR_DIR) .config $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5) $(SILENT); \

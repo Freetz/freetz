@@ -118,15 +118,15 @@ ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	getsvnlibslist() { local ret=""; for l in `getsvnlibs $$bins \`[ -n "$$libs" ] && (echo "$$libs" | sed -e 's| | '"$(SUBVERSION_DEST_LIBDIR)/"'|g')\``; do ret="$$ret $$l"; done; echo -n "$$ret"; }; \
 	\
 	bins="$(SUBVERSION_BINARIES_TARGET_DIR)"; libs=""; \
-	$(ECHO) -n "Determining required svn-libraries: "; \
+	$(call MESSAGE, Determining required svn-libraries: ); \
 	libs=`getsvnlibslist`; previouslibs=""; \
 	while [ "$$libs" != "$$previouslibs" ]; do \
 		previouslibs="$$libs"; libs=`getsvnlibslist`; \
 	done; \
-	$(ECHO) $$libs; \
+	$(call MESSAGE, $$libs); \
 	for l in $(SUBVERSION_DEST_LIBDIR)/libsvn*; do \
 		lbasename=`echo "$$l" | sed -r -e 's|'"$(SUBVERSION_DEST_LIBDIR)/"'(libsvn[^.]+)[.]so.*|\1|g'`; \
-		($(ECHO) $$libs | grep -q "$$lbasename" >/dev/null 2>&1) || ($(ECHO) "Removing unneeded svn-library: $$l"; rm -f $$l) \
+		(echo $$libs | grep -q "$$lbasename" >/dev/null 2>&1) || ($(call MESSAGE, Removing unneeded svn-library: $$l); rm -f $$l) \
 	done
 endif
 
@@ -135,7 +135,7 @@ $(pkg):
 $(pkg)-precompiled: $(pkg)-keep-required-files-only
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(SUBVERSION_DIR) clean
+	-$(SUBMAKE1) -C $(SUBVERSION_DIR) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/svn* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsvn*-$(SUBVERSION_MAJOR_VERSION)* \
