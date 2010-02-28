@@ -467,6 +467,8 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 endef
 
 define PKG_LOCALSOURCE_PACKAGE__INT
+$(PKG)_SOURCE_DIR:
+	@mkdir -p $($(PKG)_SOURCE_DIR)
 $($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $(PKG)_SOURCE_DIR
 	$(RM) -r $($(PKG)_DIR)
 	mkdir -p $($(PKG)_DIR)
