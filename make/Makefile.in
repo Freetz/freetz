@@ -7,7 +7,7 @@ BUILD_FAIL_MSG += Please re-run make with verbose level set to 2 to see what's g
 endif
 
 SUBMAKE1=cmd() { $(SILENT) $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
-SUBMAKE=cmd() { $(SILENT) $(MAKE_ENV) $(MAKE) $(QUIET) $(JLEVEL) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
+SUBMAKE=cmd() { $(SILENT) $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
 CONFIGURE=conf_cmd() { $(SILENT) ./configure $(QUIET) "$$$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } };
 
 HOSTCC:=gcc

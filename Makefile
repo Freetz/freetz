@@ -53,6 +53,9 @@ BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 
 SED:=sed
+MAKE1=make
+MAKE=make -j$(FREETZ_JLEVEL)
+
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 FAKEROOT_TOOL:=$(TOOLS_DIR)/fakeroot/bin/fakeroot
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
