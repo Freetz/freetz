@@ -12,8 +12,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(HTTPRY_DIR) \
+	$(SUBMAKE) -C $(HTTPRY_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDOPTS="-lpcap"

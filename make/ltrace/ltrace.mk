@@ -36,8 +36,7 @@ $($(PKG)_TARGET_CONF): $($(PKG)_CONF)
 	cp $< $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(LTRACE_DIR) ARCH=mipsel
+	$(SUBMAKE) -C $(LTRACE_DIR) ARCH=mipsel
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -47,7 +46,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CONF)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LTRACE_DIR) clean ARCH=mipsel
+	-$(SUBMAKE) -C $(LTRACE_DIR) clean ARCH=mipsel
 
 $(pkg)-uninstall:
 	$(RM) $(LTRACE_TARGET_BINARY)

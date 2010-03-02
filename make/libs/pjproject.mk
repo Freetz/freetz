@@ -49,22 +49,19 @@ $($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
 	echo "#undef PJ_HAS_NET_IF_H"			>> $(PJPROJECT_CONFIG_SITE)	
 	echo "#undef PJ_HAS_IFADDR_H"			>> $(PJPROJECT_CONFIG_SITE)	
 	echo "#define PJMEDIA_SOUND_IMPLEMENTATION PJMEDIA_SOUND_NULL_SOUND" >> $(PJPROJECT_CONFIG_SITE)
-	PATH=$(TARGET_PATH) \
-		LDFLAGS="-lm" \
-		$(MAKE) -C $(PJPROJECT_DIR) dep
+	$(SUBMAKE) -C $(PJPROJECT_DIR) dep \
+		LDFLAGS="-lm"
 	touch $@
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_DIR)/.depend
-	cd $(PJPROJECT_DIR)
-	PATH=$(TARGET_PATH) \
-		LDFLAGS="-lm" \
-		$(MAKE1) -C $(PJPROJECT_DIR)
+	cd $(PJPROJECT_DIR);
+	$(SUBMAKE1) -C $(PJPROJECT_DIR) \
+		LDFLAGS="-lm"
 	touch $@
 
 #$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 #	cd $(PJPROJECT_DIR)
-#	PATH=$(TARGET_PATH) \
-#		$(MAKE1) -C $(PJPROJECT_DIR) LDFLAGS="-lm" \
+#	$(SUBMAKE1) -C $(PJPROJECT_DIR) LDFLAGS="-lm" \
 #		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 #	install
 #	touch $@
@@ -78,7 +75,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled:
 
 $(pkg)-clean:
-	-$(MAKE) -C $(PJPROJECT_DIR) \
+	-$(SUBMAKE) -C $(PJPROJECT_DIR) \
 		TARGET_NAME="$(REAL_GNU_TARGET_NAME)" \
 		clean
 #		rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/local/lib/libpj*.a \

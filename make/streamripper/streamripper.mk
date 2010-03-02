@@ -36,8 +36,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(STREAMRIPPER_DIR) all
+	$(SUBMAKE) -C $(STREAMRIPPER_DIR) all
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -47,7 +46,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(STREAMRIPPER_DIR) clean
+	-$(SUBMAKE) -C $(STREAMRIPPER_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(STREAMRIPPER_TARGET_BINARY)

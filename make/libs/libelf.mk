@@ -23,13 +23,12 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBELF_DIR)
+	$(SUBMAKE) -C $(LIBELF_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE1) \
+	$(SUBMAKE1) -C $(LIBELF_DIR) \
 		instroot="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		-C $(LIBELF_DIR) install
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libelf.pc
 
@@ -41,7 +40,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LIBELF_DIR) clean
+	-$(SUBMAKE) -C $(LIBELF_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libelf*
 
 $(pkg)-uninstall:

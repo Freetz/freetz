@@ -21,7 +21,7 @@ endif
 $(PKG)_LIBNAMES_LONG := $(SUBVERSION_LIBNAMES_SHORT:%=libsvn_%-$(SUBVERSION_MAJOR_VERSION))
 $(PKG)_LIBS_BUILD_DIR := $(join $(SUBVERSION_LIBNAMES_SHORT:%=$($(PKG)_DIR)/subversion/libsvn_%/.libs/),$(SUBVERSION_LIBNAMES_LONG:%=%.$(SUBVERSION_LIB_SUFFIX)))
 $(PKG)_LIBS_STAGING_DIR := $(SUBVERSION_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%.$(SUBVERSION_LIB_SUFFIX))
-$(PKG)_LIBS_TARGET_DIR := $(SUBVERSION_LIBNAMES_LONG:%=$($(PKG)_DEST_DIR)/usr/lib/%.$(SUBVERSION_LIB_SUFFIX))
+$(PKG)_LIBS_TARGET_DIR := $(SUBVERSION_LIBNAMES_LONG:%=$($(PKG)_DEST_LIBDIR)/%.$(SUBVERSION_LIB_SUFFIX))
 
 # Executables
 $(PKG)_BINARIES_ALL := svn svnadmin svndumpfilter svnlook svnserve svnsync svnversion
@@ -88,19 +88,17 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SUBVERSION_DIR)
+	$(SUBMAKE) -C $(SUBVERSION_DIR)
 
 $($(PKG)_LIBS_STAGING_DIR) $($(PKG)_BINARIES_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR)
-	PATH=$(TARGET_PATH) \
-		$(MAKE1) -C $(SUBVERSION_DIR) \
+	$(SUBMAKE1) -C $(SUBVERSION_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(SUBVERSION_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%.la)
 
 $($(PKG)_LIBS_TARGET_DIR): \
-	$($(PKG)_DEST_DIR)/usr/lib/libsvn_%-$(SUBVERSION_MAJOR_VERSION).$(SUBVERSION_LIB_SUFFIX): \
+	$($(PKG)_DEST_LIBDIR)/libsvn_%-$(SUBVERSION_MAJOR_VERSION).$(SUBVERSION_LIB_SUFFIX): \
 	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsvn_%-$(SUBVERSION_MAJOR_VERSION).$(SUBVERSION_LIB_SUFFIX)
 ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	$(INSTALL_LIBRARY_STRIP)
@@ -117,18 +115,18 @@ ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	@#compute transitive closure of all required svn-libraries
 	@getlibs() { $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/mipsel-linux-uclibc-readelf -d "$$@" | grep -i "Shared library" | sed -r -e 's|^.*\[(.+)\].*$$|\1|g' | sort -u; }; \
 	getsvnlibs() { getlibs "$$@" | grep "libsvn"; }; \
-	getsvnlibslist() { local ret=""; for l in `getsvnlibs $$bins \`[ -n "$$libs" ] && (echo "$$libs" | sed -e 's| | '"$(SUBVERSION_DEST_DIR)/usr/lib/"'|g')\``; do ret="$$ret $$l"; done; echo -n "$$ret"; }; \
+	getsvnlibslist() { local ret=""; for l in `getsvnlibs $$bins \`[ -n "$$libs" ] && (echo "$$libs" | sed -e 's| | '"$(SUBVERSION_DEST_LIBDIR)/"'|g')\``; do ret="$$ret $$l"; done; echo -n "$$ret"; }; \
 	\
 	bins="$(SUBVERSION_BINARIES_TARGET_DIR)"; libs=""; \
-	echo -n "Determining required svn-libraries: "; \
+	$(call MESSAGE, Determining required svn-libraries: ); \
 	libs=`getsvnlibslist`; previouslibs=""; \
 	while [ "$$libs" != "$$previouslibs" ]; do \
 		previouslibs="$$libs"; libs=`getsvnlibslist`; \
 	done; \
-	echo $$libs; \
-	for l in $(SUBVERSION_DEST_DIR)/usr/lib/libsvn*; do \
-		lbasename=`echo "$$l" | sed -r -e 's|'"$(SUBVERSION_DEST_DIR)/usr/lib/"'(libsvn[^.]+)[.]so.*|\1|g'`; \
-		(echo $$libs | grep -q "$$lbasename" >/dev/null 2>&1) || (echo "Removing unneeded svn-library: $$l"; rm -f $$l) \
+	$(call MESSAGE, $$libs); \
+	for l in $(SUBVERSION_DEST_LIBDIR)/libsvn*; do \
+		lbasename=`echo "$$l" | sed -r -e 's|'"$(SUBVERSION_DEST_LIBDIR)/"'(libsvn[^.]+)[.]so.*|\1|g'`; \
+		(echo $$libs | grep -q "$$lbasename" >/dev/null 2>&1) || ($(call MESSAGE, Removing unneeded svn-library: $$l); rm -f $$l) \
 	done
 endif
 
@@ -137,7 +135,7 @@ $(pkg):
 $(pkg)-precompiled: $(pkg)-keep-required-files-only
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SUBVERSION_DIR) clean
+	-$(SUBMAKE1) -C $(SUBVERSION_DIR) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/svn* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsvn*-$(SUBVERSION_MAJOR_VERSION)* \
@@ -146,6 +144,6 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) \
 		$(SUBVERSION_DEST_DIR)/usr/bin/svn* \
-		$(SUBVERSION_DEST_DIR)/usr/lib/libsvn*-$(SUBVERSION_MAJOR_VERSION)*
+		$(SUBVERSION_DEST_LIBDIR)/libsvn*-$(SUBVERSION_MAJOR_VERSION)*
 
 $(PKG_FINISH)

@@ -37,8 +37,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(TRANSMISSION_DIR) \
+	$(SUBMAKE) -C $(TRANSMISSION_DIR) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CXXFLAGS="$(TARGET_CXXFLAGS)" \
 		CPPFLAGS="$(TARGET_CXXFLAGS)" \
@@ -63,7 +62,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_TARGET_WEBINTERFACE_INDEX_HTML)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(TRANSMISSION_DIR) clean
+	-$(SUBMAKE) -C $(TRANSMISSION_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) -r \

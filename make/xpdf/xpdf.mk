@@ -25,8 +25,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -j 1 -C $(XPDF_DIR) $(XPDF_PROGRAMS)
+	$(SUBMAKE1) -C $(XPDF_DIR) $(XPDF_PROGRAMS)
 # -j 1 because my ad-hoc 'shared' patch does not specify all depencies properly
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/xpdf/%
@@ -40,7 +39,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_LIBS_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(XPDF_DIR) clean
+	-$(SUBMAKE) -C $(XPDF_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(XPDF_BINARIES_ALL:%=$(XPDF_DEST_DIR)/usr/bin/%) $(XPDF_DEST_DIR)/usr/lib/libxpdf*

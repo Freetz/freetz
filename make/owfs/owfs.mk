@@ -28,12 +28,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $(OWFS_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(OWFS_DIR)
+	$(SUBMAKE) -C $(OWFS_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(OWFS_DIR) \
+	$(SUBMAKE) -C $(OWFS_DIR) \
 		DESTDIR="$(FREETZ_BASE_DIR)/$(OWFS_DEST_DIR)" \
 		install-strip
 	$(RM) -r $(OWFS_DEST_DIR)/usr/include \
@@ -45,7 +43,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(OWFS_DIR) clean
+	-$(SUBMAKE) -C $(OWFS_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(OWFS_DEST_DIR)/usr/bin/ow* \

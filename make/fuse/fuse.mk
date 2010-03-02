@@ -4,11 +4,11 @@ $(PKG)_SITE:=@SF/fuse
 $(PKG)_BINARY:=$($(PKG)_DIR)/util/fusermount
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/fusermount
 $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/kernel/fuse.ko
-$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/kernel/fs/fuse
+$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/fs/fuse
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/fuse.ko
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
-$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_SOURCE_MD5:=4879f06570d2225667534c37fea04213
 
 
@@ -33,16 +33,14 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_MOD_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH):$(KERNEL_MAKE_PATH) \
-		$(MAKE) -C $(FUSE_DIR) \
+	$(SUBMAKE) -C $(FUSE_DIR) \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		all
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	cp $(FUSE_DIR)/fuse.pc $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse.pc
-	PATH=$(TARGET_PATH):$(KERNEL_MAKE_PATH) \
-		$(MAKE) -C $(FUSE_DIR)/lib \
+	$(SUBMAKE) -C $(FUSE_DIR)/lib \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -51,8 +49,7 @@ $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libulockmgr.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse.pc
-	PATH=$(TARGET_PATH):$(KERNEL_MAKE_PATH) \
-		$(MAKE) -C $(FUSE_DIR)/include \
+	$(SUBMAKE) -C $(FUSE_DIR)/include \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
@@ -66,17 +63,16 @@ $($(PKG)_MOD_TARGET_BINARY): $($(PKG)_MOD_BINARY)
 	cp $^ $@
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
-	mkdir -p $(dir $@)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*.so* $(FUSE_TARGET_DIR)/root/usr/lib
-	$(TARGET_STRIP) $@
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(FUSE_DIR) clean
-	rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
+	-$(SUBMAKE) -C $(FUSE_DIR) clean
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
@@ -84,6 +80,6 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) $(FUSE_TARGET_BINARY)
 	$(RM) $(FUSE_MOD_TARGET_BINARY)
-	$(RM) $(FUSE_TARGET_DIR)/root/usr/lib/libfuse*.so*
+	$(RM) $(FUSE_DEST_LIBDIR)/libfuse*.so*
 
 $(PKG_FINISH)

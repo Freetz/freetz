@@ -18,10 +18,9 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-	$(MAKE) $(VNSTAT_MAKE_TARGET) -C $(VNSTAT_DIR) \
-	CC="$(TARGET_CC)" \
-	CFLAGS="$(TARGET_CFLAGS)"
+	$(SUBMAKE) $(VNSTAT_MAKE_TARGET) -C $(VNSTAT_DIR) \
+		CC="$(TARGET_CC)" \
+		CFLAGS="$(TARGET_CFLAGS)"
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/src/%
 	$(INSTALL_BINARY_STRIP)
@@ -31,7 +30,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(VNSTAT_DIR) clean
+	-$(SUBMAKE) -C $(VNSTAT_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(VNSTAT_BINARIES_ALL:%=$(VNSTAT_DEST_DIR)/usr/bin/%)

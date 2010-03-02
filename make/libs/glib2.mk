@@ -12,6 +12,9 @@ $(PKG)_LIBS_BUILD_DIR := $(join $($(PKG)_LIBNAMES_SHORT:%=$($(PKG)_DIR)/%/.libs/
 $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
 $(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_DIR)/%)
 
+$(PKG)_BUILD_PREREQ += glib-genmarshal
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the libglib2.0-dev package
+
 $(PKG)_DEPENDS_ON := gettext pcre
 
 # NB: glib2 does require iconv-functions, see glib/gconvert.c
@@ -45,18 +48,18 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc
 $(PKG)_CONFIGURE_OPTIONS += --disable-man
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre=system
 
+$(call REPLACE_LIBTOOL)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(GLIB2_DIR) \
+	$(SUBMAKE) -C $(GLIB2_DIR) \
 		all
 
 $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(GLIB2_DIR) \
+	$(SUBMAKE) -C $(GLIB2_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -73,10 +76,10 @@ $(pkg): $($(PKG)_LIBS_STAGING_DIR)
 $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(GLIB2_DIR) \
+	-$(SUBMAKE) -C $(GLIB2_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		uninstall
-	-$(MAKE) -C $(GLIB2_DIR) clean
+	-$(SUBMAKE) -C $(GLIB2_DIR) clean
 	$(RM) -r \
 		$(GLIB2_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%-$(GLIB2_MAJOR_VERSION)*) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-$(GLIB2_MAJOR_VERSION) \

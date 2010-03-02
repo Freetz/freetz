@@ -19,8 +19,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(NTFS_DIR) all \
+	$(SUBMAKE) -C $(NTFS_DIR) all \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(TARGET_CROSS)"
 
@@ -32,7 +31,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(NTFS_DIR) clean
+	-$(SUBMAKE) -C $(NTFS_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(NTFS_TARGET_BINARY)

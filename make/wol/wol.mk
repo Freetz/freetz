@@ -13,8 +13,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(WOL_DIR) \
+	$(SUBMAKE) -C $(WOL_DIR) \
 		CROSS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -23,7 +22,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(WOL_DIR) clean
+	-$(SUBMAKE) -C $(WOL_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(WOL_TARGET_BINARY)

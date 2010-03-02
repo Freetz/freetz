@@ -17,12 +17,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBEVENT_DIR)
+	$(SUBMAKE) -C $(LIBEVENT_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBEVENT_DIR) \
+	$(SUBMAKE) -C $(LIBEVENT_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install-strip
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -43,7 +41,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LIBEVENT_DIR) clean
+	-$(SUBMAKE) -C $(LIBEVENT_DIR) clean
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/event-config.h \

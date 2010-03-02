@@ -12,13 +12,12 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(MAKE) -C $(LIBART_LGPL_DIR) gen_art_config \
+	$(SUBMAKE) -C $(LIBART_LGPL_DIR) gen_art_config \
 		HOSTCC="$(HOSTCC)"
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBART_LGPL_DIR) all
+	$(SUBMAKE) -C $(LIBART_LGPL_DIR) all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE) -C $(LIBART_LGPL_DIR) \
+	$(SUBMAKE) -C $(LIBART_LGPL_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -33,7 +32,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LIBART_LGPL_DIR) clean
+	-$(SUBMAKE) -C $(LIBART_LGPL_DIR) clean
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libart* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libart2-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libart-2.0.pc \

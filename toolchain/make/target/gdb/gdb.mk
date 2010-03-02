@@ -54,7 +54,7 @@ $(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.patched
 	mkdir -p $(GDB_TARGET_DIR)
 	(cd $(GDB_TARGET_DIR); PATH=$(TARGET_PATH) \
 		gdb_cv_func_sigsetjmp=yes \
-		$(TARGET_CONFIGURE_OPTS) \
+		$(TARGET_CONFIGURE_ENV) \
 		CFLAGS_FOR_TARGET="$(TARGET_CFLAGS)" \
 		CPPFLAGS_FOR_TARGET="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS_FOR_TARGET="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
@@ -86,7 +86,7 @@ $(GDB_TARGET_DIR)/gdb/gdb: $(GDB_TARGET_DIR)/.configured
 $(GDB_STAGING_DIR)/gdb: $(GDB_TARGET_DIR)/gdb/gdb | $(GDB_STAGING_DIR)
 	$(INSTALL_BINARY_STRIP)
 	
-gdb_target: ncurses $(GDB_STAGING_DIR)/gdb
+gdb_target: ncurses-precompiled $(GDB_STAGING_DIR)/gdb
 
 gdb_target-source: $(DL_DIR)/$(GDB_SOURCE)
 
@@ -107,7 +107,7 @@ GDB_SERVER_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdbserver-$(GDB_VERSION)
 $(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.patched
 	mkdir -p $(GDB_SERVER_DIR)
 	(cd $(GDB_SERVER_DIR); PATH=$(TARGET_PATH) \
-		$(TARGET_CONFIGURE_OPTS) \
+		$(TARGET_CONFIGURE_ENV) \
 		gdb_cv_func_sigsetjmp=yes \
 		bash_cv_have_mbstate_t=yes \
 		$(GDB_DIR)/gdb/gdbserver/configure \

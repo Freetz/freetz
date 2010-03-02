@@ -15,8 +15,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(ESPEAK_DIR)/src \
+	$(SUBMAKE) -C $(ESPEAK_DIR)/src \
 		CXX="$(TARGET_CXX)" \
 		CXXFLAGS="$(TARGET_CFLAGS)" \
 		LIBS1="-lm"
@@ -35,7 +34,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(ESPEAK_DIR) clean
+	-$(SUBMAKE) -C $(ESPEAK_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(ESPEAK_TARGET_BINARY)

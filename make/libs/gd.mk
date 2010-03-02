@@ -23,16 +23,17 @@ $(PKG)_CONFIGURE_OPTIONS += --with-xpm=no
 $(PKG)_CONFIGURE_OPTIONS += --with-fontconfig=no
 #$(PKG)_CONFIGURE_OPTIONS += --disable-pthreads?
 
+$(call REPLACE_LIBTOOL)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(GD_DIR)
+	$(SUBMAKE) -C $(GD_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE) \
+	$(SUBMAKE) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		-C $(GD_DIR) install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -47,7 +48,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(GD_DIR) clean
+	-$(SUBMAKE) -C $(GD_DIR) clean
 	$(RM) $(LIBGD_FREETZ_CONFIG_FILE)
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/gd \

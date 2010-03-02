@@ -10,8 +10,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(IPUTILS_DIR) traceroute6 tracepath6 tracepath ping ping6 \
+	$(SUBMAKE) -C $(IPUTILS_DIR) traceroute6 tracepath6 tracepath ping ping6 \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)"
 		
@@ -24,7 +23,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(IPUTILS_DIR) clean
+	-$(SUBMAKE) -C $(IPUTILS_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $($(PKG)_TARGET_BINARY)

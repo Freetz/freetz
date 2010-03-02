@@ -26,8 +26,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(MCABBER_DIR) \
+	$(SUBMAKE) -C $(MCABBER_DIR) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(MCABBER_LDFLAGS)"
 
@@ -39,7 +38,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(MCABBER_DIR) clean
+	-$(SUBMAKE) -C $(MCABBER_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(MCABBER_TARGET_BINARY)

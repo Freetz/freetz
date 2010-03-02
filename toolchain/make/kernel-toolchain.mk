@@ -1,7 +1,7 @@
 include $(TOOLCHAIN_DIR)/make/kernel/*/*.mk
 
 ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
-        CCACHE:=ccache-kernel
+	CCACHE:=ccache-kernel
 endif
 
 KERNEL_TOOLCHAIN:=binutils-kernel gcc-kernel $(CCACHE)
@@ -25,14 +25,14 @@ kernel-toolchain-source: $(KERNEL_TOOLCHAIN_DIR) \
 	$(CCACHE_KERNEL_DIR)./unpacked
 
 kernel-toolchain-clean:
-	rm -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)*
+	$(RM) $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)*
 	-$(MAKE) -C $(BINUTILS_KERNEL_DIR) clean
-	rm -rf $(GCC_KERNELBUILD_DIR1)
-	rm -rf $(GCC_KERNELBUILD_DIR2)
+	$(RM) -r $(GCC_KERNELBUILD_DIR1)
+	$(RM) -r $(GCC_KERNELBUILD_DIR2)
 ifeq ($(strip $(FREETZ_KERNEL_CCACHE)),y)
-	rm -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_TARGET_NAME)*
+	$(RM) $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_TARGET_NAME)*
 	-$(MAKE) -C $(CCACHE_KERNEL_DIR) clean
 endif
 
 kernel-toolchain-dirclean:
-	rm -rf $(KERNEL_TOOLCHAIN_DIR)
+	$(RM) -r $(KERNEL_TOOLCHAIN_DIR)

@@ -15,13 +15,12 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(EXPAT_DIR)
+	$(SUBMAKE) -C $(EXPAT_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE) \
+	$(SUBMAKE) -C $(EXPAT_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		-C $(EXPAT_DIR) install
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.la
 
@@ -33,7 +32,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(EXPAT_DIR) clean
+	-$(SUBMAKE) -C $(EXPAT_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/expat*.h
 

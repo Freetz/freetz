@@ -38,16 +38,14 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_LIB_IP_BINARY) \
 	$($(PKG)_LIB_MUD_BINARY) \
 	$($(PKG)_LIB_HPAIO_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(HPLIP_DIR)
+	$(SUBMAKE) -C $(HPLIP_DIR)
 
 $($(PKG)_LIB_IP_STAGING_BINARY) \
 	$($(PKG)_LIB_MUD_STAGING_BINARY) \
 	$($(PKG)_LIB_HPAIO_STAGING_BINARY): $($(PKG)_LIB_IP_BINARY) \
 						$($(PKG)_LIB_MUD_BINARY) \
 						$($(PKG)_LIB_HPAIO_BINARY)
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(HPLIP_DIR) \
+	$(SUBMAKE) -C $(HPLIP_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -74,7 +72,7 @@ $($(PKG)_LIB_HPAIO_TARGET_BINARY): $($(PKG)_LIB_HPAIO_STAGING_BINARY)
 	$(TARGET_STRIP) $@
 
 $(PKG)_TARGET_CONF:
-	@echo "HPLIP: Strip down models.dat to $(FREETZ_PACKAGE_HPLIP_PRINTER_TYPE)"
+	$(call MESSAGE,HPLIP: Strip down models.dat to $(FREETZ_PACKAGE_HPLIP_PRINTER_TYPE))
 	@awk 'BEGIN { found=0 } /^\[.*\]/ || /^$$/ { found=0 } /^\['$(FREETZ_PACKAGE_HPLIP_PRINTER_TYPE)'\]/ { found=1 } \
 		{ if (found) { print $$0 } }' < $(HPLIP_DIR)/data/models/models.dat \
 		> $(HPLIP_DEST_DIR)/usr/share/hplip/data/models/models.dat	
@@ -89,7 +87,7 @@ $(pkg)-precompiled: $($(PKG)_LIB_IP_TARGET_BINARY) \
 			$(PKG)_TARGET_CONF
 
 $(pkg)-clean:
-	-$(MAKE) -C $(HPLIP_DIR) clean
+	-$(SUBMAKE) -C $(HPLIP_DIR) clean
 
 $(pkg)-config-update:
 	$(HPLIP_MAKE_DIR)/hplip-config-update.pl $(HPLIP_VERSION) \

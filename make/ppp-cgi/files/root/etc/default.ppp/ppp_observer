@@ -23,7 +23,7 @@ bisbald () {
 reanimiert () {
 	[ -n "$ALIVEIP" ] && route del $ALIVEIP 2>/dev/null
 	if [ -z "$ALIVEIP" -a -z "$CURRENT_ROUTE" ]; then
-		echo "############################# CHECK NICHT MÃ–GLICH: Verbindung wird nicht automatisch getrennet!" >> $PPP_FABALOG
+		echo "############################# CHECK NICHT MÖGLICH: Verbindung wird nicht automatisch getrennet!" >> $PPP_FABALOG
 		exit 1
 	fi
 	$CURRENT_ROUTE

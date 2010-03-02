@@ -38,13 +38,11 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBVORBIS_DIR) \
+	$(SUBMAKE) -C $(LIBVORBIS_DIR) \
 		all
 
 $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBVORBIS_DIR) \
+	$(SUBMAKE) -C $(LIBVORBIS_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -60,10 +58,10 @@ $(pkg): $($(PKG)_LIBS_STAGING_DIR)
 $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LIBVORBIS_DIR) \
+	-$(SUBMAKE) -C $(LIBVORBIS_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		uninstall
-	-$(MAKE) -C $(LIBVORBIS_DIR) clean
+	-$(SUBMAKE) -C $(LIBVORBIS_DIR) clean
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/vorbis
 
 $(pkg)-uninstall:

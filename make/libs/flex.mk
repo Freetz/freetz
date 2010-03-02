@@ -12,12 +12,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $(FLEX_BINARY): $(FLEX_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(FLEX_DIR)
+	$(SUBMAKE) -C $(FLEX_DIR)
 
 $(FLEX_STAGING_BINARY): $(FLEX_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(FLEX_DIR) \
+	$(SUBMAKE) -C $(FLEX_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	# Don't try to run mipsel flex on host
@@ -26,7 +24,7 @@ $(FLEX_STAGING_BINARY): $(FLEX_BINARY)
 $(pkg)-precompiled: $(FLEX_STAGING_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(FLEX_DIR) clean
+	-$(SUBMAKE) -C $(FLEX_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfl* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fl* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man1/flex.1

@@ -15,44 +15,38 @@ OPENSSL_NO_CIPHERS:= no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime \
 OPENSSL_OPTIONS:= shared no-ec no-err no-fips no-hw no-engines \
 	no-sse2 no-perlasm
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -e 's/FREETZ_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' Configure;
+$(PKG)_CONFIGURE_PRE_CMDS += ln -s Configure configure;
+
+$(PKG)_CONFIGURE_DEFOPTS := n
+$(PKG)_CONFIGURE_OPTIONS += linux-freetz
+$(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
+$(PKG)_CONFIGURE_OPTIONS += --openssldir=/mod/etc/ssl
+$(PKG)_CONFIGURE_OPTIONS += -DOPENSSL_SMALL_FOOTPRINT
+$(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_NO_CIPHERS)
+$(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_OPTIONS)
+#$(PKG)_CONFIGURE_OPTIONS += -ldl
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	$(SED) -i -e 's/FREETZ_MOD_OPTIMIZATION_FLAGS/$(TARGET_CFLAGS)/g' $(OPENSSL_DIR)/Configure
-	( cd $(OPENSSL_DIR); \
-		PATH="$(TARGET_PATH)" \
-		./Configure linux-freetz \
-		--prefix=/usr \
-		--openssldir=/mod/etc/ssl \
-		-I$(TARGET_TOOLCHAIN_STAGING_DIR)/include \
-		-L$(TARGET_TOOLCHAIN_STAGING_DIR)/lib \
-		-ldl \
-		-DOPENSSL_SMALL_FOOTPRINT \
-		$(OPENSSL_NO_CIPHERS) \
-		$(OPENSSL_OPTIONS) \
-	);
-	touch $@
+$(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
+	$(SUBMAKE) -C $(OPENSSL_DIR) \
 		SHARED_LDFLAGS="" \
-		$(MAKE) -C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \
 		AR="$(TARGET_CROSS)ar r" \
 		RANLIB="$(TARGET_CROSS)ranlib" \
 		all
 	# Work around openssl build bug to link libssl.so with libcrypto.so.
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(OPENSSL_DIR) \
+	$(SUBMAKE) -C $(OPENSSL_DIR) \
 		CC="$(TARGET_CC)" \
 		CCOPTS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		do_linux-shared
 
 $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): \
 		$($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY)
-	PATH=$(TARGET_PATH) $(MAKE) \
-		-C $(OPENSSL_DIR) \
+	$(SUBMAKE) -C $(OPENSSL_DIR) \
 		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -71,7 +65,7 @@ $(pkg): $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(OPENSSL_DIR) clean
+	-$(SUBMAKE) -C $(OPENSSL_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/openssl
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*

@@ -593,7 +593,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		mkdir -p "${MOD_ROOT}/bin" "${MOD_ROOT}/sbin"
 		mkdir -p "${MOD_ROOT}/var/cache"
 		mkdir -p "${MOD_ROOT}/usr/bin" "${MOD_ROOT}/usr/sbin" "${MOD_ROOT}/usr/share" \
-			"${MOD_ROOT}/usr/lib" "${MOD_ROOT}/usr/lib/cgi-bin"
+			"${MOD_ROOT}/usr/lib" "${MOD_ROOT}/usr/lib/cgi-bin" "${MOD_ROOT}/usr/lib/freetz"
 		mkdir -p "${MOD_ROOT}/etc/conf" "${MOD_ROOT}/etc/init.d" "${MOD_ROOT}/etc/reg"
 		ln -s /tmp/flash/mod/.profile "${MOD_ROOT}/root/.profile"
 		# AVM compatibility symlink
@@ -633,7 +633,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			bn=${conf#FREETZ_LIB_}
 			fn=${bn//_/[-+._]}
 			echo2 "$bn"
-			for dn in lib usr/lib usr/lib/xtables; do
+			for dn in lib usr/lib usr/lib/freetz usr/lib/xtables; do
 				files=$(shopt -s nullglob; echo ${ROOT_DIR}/$dn/$fn[-.]*so*)
 				if [ -z "$files" ]; then
 					continue;
@@ -762,6 +762,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi	
 
 	echo1 "installing modules"
+	# 7270 modules dir is 2.6.19.2 not 2.6.19.2-ur8
+	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
 	for i in \
 	$( \
 		cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}" && \
@@ -776,15 +778,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 			then
 					echo2 "${bn}"
 					dn="$(dirname "$i")"
-					[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
-					cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${FILESYSTEM_MOD_DIR}/${dn}/"
-					chmod +x "${FILESYSTEM_MOD_DIR}/${i}"
+					[ -d "${MODULES_DIR}/kernel/${dn}" ] || mkdir -p "${MODULES_DIR}/kernel/${dn}"
+					cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${MODULES_DIR}/kernel/${dn}/"
 		fi
 	done
 
 	echo1 "generating modules.dep"
-	# 7270 modules dir is 2.6.19.2 not 2.6.19.2-ur8
-	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
 	${TOOLS_SUBDIR}/depmod.pl -b "$MODULES_DIR" \
 		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map 2> /dev/null
 
@@ -1195,7 +1194,9 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 	if [ -s "${DIR}/${modimage}" ]; then
 		echo "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
-		[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://trac.freetz.org/wiki/FAQ#NachdemFlashenistdasAVM-Webinterfacenichtmehrerreichbar for details."
+		if [ "$FREETZ_REPLACE_SSL_LIBS" == "y" ]; then
+			[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://trac.freetz.org/wiki/FAQ#NachdemFlashenistdasAVM-Webinterfacenichtmehrerreichbar for details."
+		fi
 	fi
 	echo "done."
 	echo

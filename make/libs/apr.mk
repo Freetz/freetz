@@ -41,12 +41,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(APR_DIR)
+	$(SUBMAKE) -C $(APR_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(APR_DIR)\
+	$(SUBMAKE) -C $(APR_DIR)\
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -69,7 +67,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(APR_DIR) clean
+	-$(SUBMAKE) -C $(APR_DIR) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(APR_MAJOR_LIBNAME)* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/apr-$(APR_MAJOR_VERSION).pc \

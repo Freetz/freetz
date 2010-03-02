@@ -13,8 +13,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(PORTMAP_DIR) \
+	$(SUBMAKE) -C $(PORTMAP_DIR) \
 		CC="$(TARGET_CROSS)gcc" \
 		CFLAGS="$(TARGET_CFLAGS) -DHOSTS_ACCESS -DFACILITY=LOG_DAEMON -DIGNORE_SIGCHLD" \
 		RPCUSER="nobody" \
@@ -29,7 +28,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(PORTMAP_DIR) clean
+	-$(SUBMAKE) -C $(PORTMAP_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(PORTMAP_TARGET_BINARY)

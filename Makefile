@@ -53,6 +53,9 @@ BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 
 SED:=sed
+MAKE1=make
+MAKE=make -j$(FREETZ_JLEVEL)
+
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 FAKEROOT_TOOL:=$(TOOLS_DIR)/fakeroot/bin/fakeroot
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
@@ -62,6 +65,30 @@ CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 
 export FW_IMAGES_DIR
 export FREETZ_BASE_DIR
+
+
+# Use echo -e "$(_Y)message$(_N)" if you want to print a yellow message
+IS_TTY=$(shell tty -s && echo 1 || echo 0)
+
+ifeq ($(IS_TTY),1)
+_Y:=\\033[33m
+__Y:=\033[33m
+_N:=\\033[m
+__N:=\033[m
+endif
+
+export __Y
+export __N
+
+define MESSAGE
+printf "%s\n" "$(1)" $(SILENT)
+endef
+
+
+# Print yellow error message and exit
+define ERROR
+printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
+endef
 
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)
@@ -130,10 +157,21 @@ endif
 
 endif
 
-ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),0)
 VERBOSE:=
-else
+QUIET:=--quiet
+
+ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),0)
+.SILENT:
+# Don't be silent when a menuconfig target is called
+ifneq ($(findstring menuconfig,$(MAKECMDGOALS)),menuconfig)
+#SILENT:= >>build.log 2>&1
+SILENT:= > /dev/null 2>&1
+endif
+endif
+
+ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
 VERBOSE:=-v
+QUIET:=
 endif
 
 export FREETZ_VERBOSITY_LEVEL
@@ -227,9 +265,8 @@ ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
 else
 	@echo -e "\033[1mSTEP 0: DOWNLOAD\033[0m"
 	@echo "downloading firmware image"
-	@if ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE) $(DL_SITE) $(DL_SOURCE_MD5); then \
-		echo "ERROR: Could not download Firmwareimage."; \
-		exit 3; \
+	@if ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE) $(DL_SITE) $(DL_SOURCE_MD5) $(SILENT); then \
+		$(call ERROR,3,Could not download Firmwareimage.) \
 	fi
 endif
 
@@ -389,13 +426,13 @@ recover:
 	fi
 
 $(CONFIG)/conf:
-	$(MAKE) -C $(CONFIG) conf
+	$(MAKE) $(QUIET) -C $(CONFIG) conf
 	-@if [ ! -f .config ] ; then \
 		cp $(CONFIG_DEFCONFIG) .config; \
 	fi
 
 $(CONFIG)/mconf:
-	$(MAKE) -C $(CONFIG) ncurses conf mconf
+	$(MAKE) $(QUIET) -C $(CONFIG) ncurses conf mconf
 	-@if [ ! -f .config ] ; then \
 		cp $(CONFIG_DEFCONFIG) .config; \
 	fi
@@ -445,7 +482,7 @@ common-dirclean:
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	rm -f make/config.cache .new-uclibc .old-uclibc
 	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
-		`[ -d $(ROOT_DIR)/usr/lib ] && echo $(ROOT_DIR)/usr/lib` \
+		`[ -d $(ROOT_DIR)/usr/lib/freetz ] && echo $(ROOT_DIR)/usr/lib/freetz` \
 		-name "*.so*" ! \( -type d -name .svn \) -delete
 	find $(MAKE_DIR) \( -name ".*_config" -o -name ".*_changes" \) -delete
 	-cp .defstatic $(ADDON_DIR)/static.pkg
@@ -457,7 +494,7 @@ common-distclean: common-clean
 	rm -rf $(DL_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	rm -f make/config.cache .new-uclibc .old-uclibc
 	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
-		`[ -d $(ROOT_DIR)/usr/lib ] && echo $(ROOT_DIR)/usr/lib` \
+		`[ -d $(ROOT_DIR)/usr/lib/freetz ] && echo $(ROOT_DIR)/usr/lib/freetz` \
 		-type d -name .svn -prune -false , -name "*.so*" -exec rm {} \;
 	find $(MAKE_DIR) -name ".*_config" -exec rm {} \;
 	-rm -rf $(ADDON_DIR)/*
@@ -488,8 +525,10 @@ check-builddir-version:
 	@if [ 	-e .config -a \
 		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
 		.svn -nt .config ]; then \
-		echo "ERROR: You have updated to newer svn version since last modifying your config. You"; \
-		echo "       have to run 'make oldconfig' or 'make menuconfig' once before building again."; \
+		echo -n -e $(_Y); \
+		echo -e "ERROR: You have updated to newer svn version since last modifying your config. You"; \
+		echo -e "       have to run 'make oldconfig' or 'make menuconfig' once before building again."; \
+		echo -n -e $(_N); \
 		exit 3; \
 	fi; 
 	@echo "$(BUILD_DIR_VERSION)" > .lastbuild-version

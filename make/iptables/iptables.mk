@@ -30,8 +30,7 @@ endif
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_IP6_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured | kernel-source
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(IPTABLES_DIR)
+	$(SUBMAKE) -C $(IPTABLES_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
@@ -52,7 +51,7 @@ $($(PKG)_TARGET_EXTENSIONS): $($(PKG)_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_IP6_TARGET_BINARY) $($(PKG)_TARGET_EXTENSIONS) $($(PKG)_LIB_STAGING_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(IPTABLES_DIR) clean
+	-$(SUBMAKE) -C $(IPTABLES_DIR) clean
 	$(RM) $(IPTABLES_LIB_STAGING_BINARY)
 
 $(pkg)-uninstall:

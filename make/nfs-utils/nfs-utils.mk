@@ -31,8 +31,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_EXPORTFS_BINARY) $($(PKG)_MOUNTD_BINARY) \
 		$($(PKG)_NFSD_BINARY) $($(PKG)_SHOWMOUNT_BINARY)) : \
 		$($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(NFS_UTILS_DIR) \
+	$(SUBMAKE) -C $(NFS_UTILS_DIR) \
 		OPT="$(TARGET_CFLAGS)" \
 		CC="$(TARGET_CROSS)gcc" \
 		all
@@ -55,7 +54,7 @@ $(pkg)-precompiled: $($(PKG)_EXPORTFS_TARGET_BINARY) $($(PKG)_MOUNTD_TARGET_BINA
 			$($(PKG)_NFSD_TARGET_BINARY) $($(PKG)_SHOWMOUNT_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(NFS_UTILS_DIR) clean
+	-$(SUBMAKE) -C $(NFS_UTILS_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(NFS_UTILS_EXPORTFS_TARGET_BINARY) \

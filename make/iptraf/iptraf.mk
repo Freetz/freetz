@@ -21,8 +21,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(IPTRAF_DIR)/src \
+	$(SUBMAKE) -C $(IPTRAF_DIR)/src \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		INCLUDEDIR="-I../support"
@@ -35,7 +34,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(IPTRAF_DIR)/src clean
+	-$(SUBMAKE) -C $(IPTRAF_DIR)/src clean
 	$(RM) $(IPTRAF_DIR)/.configured
 
 $(pkg)-uninstall:

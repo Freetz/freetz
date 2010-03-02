@@ -22,8 +22,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBICONV_DIR)
+	$(SUBMAKE) -C $(LIBICONV_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)$(LIBICONV_PREFIX)/{include,lib}
@@ -44,7 +43,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LIBICONV_DIR) clean
+	-$(SUBMAKE) -C $(LIBICONV_DIR) clean
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)$(LIBICONV_PREFIX)/lib/libiconv* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)$(LIBICONV_PREFIX)/include/iconv.h

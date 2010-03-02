@@ -19,8 +19,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(JAMVM_DIR)/src
+	$(SUBMAKE) -C $(JAMVM_DIR)/src
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -34,7 +33,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_LIB_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(JAMVM_DIR) clean
+	-$(SUBMAKE) -C $(JAMVM_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(JAMVM_TARGET_BINARY)

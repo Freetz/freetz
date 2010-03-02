@@ -11,8 +11,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(HASERL_DIR) \
+	$(SUBMAKE) -C $(HASERL_DIR) \
 		CROSS="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)"
 
@@ -22,7 +21,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(HASERL_DIR) clean
+	-$(SUBMAKE) -C $(HASERL_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(HASERL_TARGET_BINARY)

@@ -4,7 +4,7 @@ $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/ndasadmin
 $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/ndas_block.ko
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ndasadmin
-$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/kernel/fs/ndas
+$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/fs/ndas
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/ndas_block.ko
 $(PKG)_SOURCE_MD5:=f6b5d28b638ac074f54d404e4c136d5e
 
@@ -26,8 +26,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_MOD_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
-		$(MAKE1) -C $(NDAS_DIR) \
+	$(SUBMAKE1) -C $(NDAS_DIR) \
 		$(NDAS_OPTIONS) \
 		ARCH="$(KERNEL_ARCH)" \
 		CC="$(KERNEL_CROSS)gcc" \
@@ -36,8 +35,7 @@ $($(PKG)_MOD_BINARY): $($(PKG)_DIR)/.configured
 		ndas-kernel
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(NDAS_DIR) \
+	$(SUBMAKE) -C $(NDAS_DIR) \
 		$(NDAS_OPTIONS) ndas-admin
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -54,7 +52,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(NDAS_DIR) \
+	-$(SUBMAKE) -C $(NDAS_DIR) \
 		$(NDAS_OPTIONS) \
 		clean
 	$(RM) $(NDAS_DIR)/.configured

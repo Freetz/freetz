@@ -14,8 +14,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(GOCR_DIR)
+	$(SUBMAKE) -C $(GOCR_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -25,7 +24,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(GOCR_DIR) clean
+	-$(SUBMAKE) -C $(GOCR_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(GOCR_TARGET_BINARY)

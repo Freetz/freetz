@@ -19,8 +19,7 @@ BR2684CTL_OPTS := -DCONFIG_MIPS_UR8
 endif
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(BR2684CTL_DIR) \
+	$(SUBMAKE) -C $(BR2684CTL_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		OPTS="$(BR2684CTL_OPTS)"
@@ -33,7 +32,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(BR2684CTL_DIR) clean
+	-$(SUBMAKE) -C $(BR2684CTL_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(BR2684CTL_TARGET_BINARY)

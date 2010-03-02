@@ -15,9 +15,8 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-	$(MAKE) -C $(OPENNTPD_DIR) \
-		$(TARGET_CONFIGURE_OPTS) \
+	$(SUBMAKE) -C $(OPENNTPD_DIR) \
+		$(TARGET_CONFIGURE_ENV) \
 		CFLAGS="$(TARGET_CFLAGS) -DUSE_ADJTIMEX" \
 		LDFLAGS=""
 
@@ -29,7 +28,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(OPENNTPD_DIR) clean
+	-$(SUBMAKE) -C $(OPENNTPD_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(OPENNTPD_TARGET_BINARY)

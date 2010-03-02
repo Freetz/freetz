@@ -12,8 +12,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(PINGTUNNEL_DIR) \
+	$(SUBMAKE) -C $(PINGTUNNEL_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDOPTS="-lpthread -lpcap"
@@ -26,7 +25,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(PINGTUNNEL_DIR) clean
+	-$(SUBMAKE) -C $(PINGTUNNEL_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(PINGTUNNEL_TARGET_BINARY)

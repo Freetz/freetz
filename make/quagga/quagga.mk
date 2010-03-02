@@ -53,9 +53,8 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		LD="$(TARGET_LD)" \
-		$(MAKE) -C $(QUAGGA_DIR)
+	$(SUBMAKE) -C $(QUAGGA_DIR) \
+		LD="$(TARGET_LD)"
 
 $($(PKG)_LIBS_TARGET_DIR): \
 	$($(PKG)_DEST_DIR)/usr/lib/%: \
@@ -74,7 +73,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(QUAGGA_DIR) clean
+	-$(SUBMAKE) -C $(QUAGGA_DIR) clean
 	$(RM) $(QUAGGA_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:

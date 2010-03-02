@@ -16,8 +16,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $(SYNCE_SERIAL_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SYNCE_SERIAL_DIR)
+	$(SUBMAKE) -C $(SYNCE_SERIAL_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -30,7 +29,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_SCRIPTS_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SYNCE_SERIAL_DIR) clean
+	-$(SUBMAKE) -C $(SYNCE_SERIAL_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(SYNCE_SERIAL_TARGET_BINARY)

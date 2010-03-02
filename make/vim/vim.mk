@@ -24,8 +24,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) $(VIM_MAKE_OPTIONS) -C $(VIM_DIR)
+	$(SUBMAKE) $(VIM_MAKE_OPTIONS) -C $(VIM_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -35,7 +34,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(VIM_DIR) clean
+	-$(SUBMAKE) -C $(VIM_DIR) clean
 	$(RM) $(VIM_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:

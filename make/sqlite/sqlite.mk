@@ -8,7 +8,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/sqlite3
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sqlite3
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/.libs/libsqlite3.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsqlite3.so.$($(PKG)_LIB_VERSION)
-$(PKG)_LIB_TARGET_BINARY:=root/usr/lib/libsqlite3.so.$($(PKG)_LIB_VERSION)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libsqlite3.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -19,12 +19,10 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SQLITE_DIR)
+	$(SUBMAKE) -C $(SQLITE_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(SQLITE_DIR) \
+	$(SUBMAKE) -C $(SQLITE_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		all install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -42,7 +40,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SQLITE_DIR) clean
+	-$(SUBMAKE) -C $(SQLITE_DIR) clean
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsqlite3* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/sqlite3.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/sqlite \
@@ -50,6 +48,6 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(SQLITE_TARGET_BINARY)
-	$(RM) root/usr/lib/libsqlite3*.so*
+	$(RM) $(SQLITE_TARGET_LIBDIR)/libsqlite3*.so*
 
 $(PKG_FINISH)

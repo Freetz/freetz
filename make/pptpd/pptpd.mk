@@ -16,8 +16,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(PPTPD_DIR) \
+	$(SUBMAKE) -C $(PPTPD_DIR) \
 		CC="$(TARGET_CC)" \
 		PLUGINS_CFLAGS="-I$(FREETZ_BASE_DIR)/$(PPPD_DIR)"
 
@@ -35,7 +34,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(PPTPD_DIR) clean
+	-$(SUBMAKE) -C $(PPTPD_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(PPTPD_TARGET_BINARY)

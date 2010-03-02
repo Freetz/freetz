@@ -12,8 +12,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH) $(MAKE) \
-		-C $(LIBFREETZ_DIR) \
+	$(SUBMAKE) -C $(LIBFREETZ_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -22,8 +21,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBFREETZ_DIR) \
+	$(SUBMAKE) -C $(LIBFREETZ_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -39,7 +37,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LIBFREETZ_DIR) clean
+	-$(SUBMAKE) -C $(LIBFREETZ_DIR) clean
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libfreetz*
 
 $(pkg)-uninstall:

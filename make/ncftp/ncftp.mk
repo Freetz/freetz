@@ -25,8 +25,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-	$(MAKE) -C $(NCFTP_DIR)
+	$(SUBMAKE) -C $(NCFTP_DIR)
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/bin/%
 	$(INSTALL_BINARY_STRIP)
@@ -36,7 +35,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(NCFTP_DIR) clean
+	-$(SUBMAKE) -C $(NCFTP_DIR) clean
 	$(RM) $(NCFTP_DIR)/.configured
 
 $(pkg)-uninstall:

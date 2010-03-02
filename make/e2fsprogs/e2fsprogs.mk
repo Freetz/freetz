@@ -35,8 +35,8 @@ endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 $(PKG)_LIBNAMES_LONG	:= $($(PKG)_LIBNAMES_SHORT_ALL:%=lib%.a)
 else
-$(PKG)_LIBNAMES_LONG	:= $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS))
-$(PKG)_LIBS_TARGET_DIR	:= $($(PKG)_LIBNAMES_LONG:%=root/usr/lib/%)
+$(PKG)_LIBNAMES_LONG := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS))
+$(PKG)_LIBS_TARGET_DIR  := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 endif
 $(PKG)_LIBS_BUILD_DIR	:= $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/lib/%)
 $(PKG)_LIBS_STAGING_DIR	:= $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
@@ -90,8 +90,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(E2FSPROGS_DIR) \
+	$(SUBMAKE) -C $(E2FSPROGS_DIR) \
 		INFO=true \
 		all \
 		$(E2FSPROGS_MAKE_ALL_EXTRAS)
@@ -103,8 +102,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 endif
 	LIBSUBDIR=`echo $(notdir $@) | $(SED) -r -e 's|^lib||g' -e 's|[.]so[.].*$$||g' -e 's|[.]a$$||g'` \
 	&& \
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(E2FSPROGS_DIR)/lib/$${LIBSUBDIR} \
+	$(SUBMAKE) -C $(E2FSPROGS_DIR)/lib/$${LIBSUBDIR} \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		STRIP=true \
 		LDCONFIG=true \
@@ -115,7 +113,7 @@ endif
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/$${LIBSUBDIR}.pc
 
 ifneq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
-$($(PKG)_LIBS_TARGET_DIR): root/usr/lib/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
+$($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_LIBDIR)/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
 	$(INSTALL_LIBRARY_STRIP)
 endif
 
@@ -131,7 +129,7 @@ $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR)
 endif
 
 $(pkg)-clean:
-	-$(MAKE) -C $(E2FSPROGS_DIR) clean
+	-$(SUBMAKE) -C $(E2FSPROGS_DIR) clean
 	$(RM) $(E2FSPROGS_DIR)/lib/com_err $(E2FSPROGS_DIR)/misc/e2fsck $(E2FSPROGS_DIR)/misc/debugfs
 	$(RM) \
 		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%*.so*) \
@@ -142,7 +140,7 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) \
-		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=root/usr/lib/lib%*.so*) \
+		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(E2FSPROGS_TARGET_LIBDIR)/lib%*.so*) \
 		$(E2FSPROGS_BINARIES_ALL:%=$(E2FSPROGS_DEST_DIR)/usr/sbin/%)
 
 $(PKG_FINISH)

@@ -14,8 +14,8 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $(SYNCE_DCCM_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(SYNCE_DCCM_DIR)
+	$(SUBMAKE) -C $(SYNCE_DCCM_DIR) \
+		CC="$(TARGET_CC)" \
 
 $(SYNCE_DCCM_TARGET_BINARY): $(SYNCE_DCCM_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -25,7 +25,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(SYNCE_DCCM_DIR) clean
+	-$(SUBMAKE) -C $(SYNCE_DCCM_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(SYNCE_DCCM_TARGET_BINARY)

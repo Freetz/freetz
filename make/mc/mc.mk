@@ -50,8 +50,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(MC_DIR) \
+	$(SUBMAKE) -C $(MC_DIR) \
 		$(if $(FREETZ_PACKAGE_MC_FORCE_GLIB12),GLIB_CFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/glib-1.2" GLIB_LIBS="-lglib",)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -73,7 +72,7 @@ $(pkg)-clean-help:
 	@$(RM) $(MC_TARGET_HELP)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(MC_DIR) clean
+	-$(SUBMAKE) -C $(MC_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(MC_TARGET_BINARY)

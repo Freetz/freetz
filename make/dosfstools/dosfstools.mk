@@ -17,8 +17,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(DOSFSTOOLS_DIR) \
+	$(SUBMAKE) -C $(DOSFSTOOLS_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(DOSFSTOOLS_CFLAGS)" \
 		all
@@ -31,7 +30,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(DOSFSTOOLS_DIR) clean
+	-$(SUBMAKE) -C $(DOSFSTOOLS_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(DOSFSTOOLS_BINARIES_ALL:%=$(DOSFSTOOLS_DEST_DIR)/usr/sbin/%)

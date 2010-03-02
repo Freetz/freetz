@@ -10,7 +10,7 @@ $(PKG)_INCLUDE_DIR:=/usr/include/$(pkg)
 $(PKG)_LIBNAME:=liblua.so.$($(PKG)_VERSION)
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/src/$($(PKG)_LIBNAME)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
-$(PKG)_LIB_TARGET_BINARY:=root/usr/lib/$($(PKG)_LIBNAME)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/$($(PKG)_LIBNAME)
 
 ifeq ($(strip $(FREETZ_PACKAGE_LUA_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline
@@ -23,8 +23,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(LUA_DIR) \
+	$(SUBMAKE) -C $(LUA_DIR) \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		MYCFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include $(TARGET_CFLAGS)" \
@@ -63,7 +62,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(LUA_DIR) clean
+	-$(SUBMAKE) -C $(LUA_DIR) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblua* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)$(LUA_INCLUDE_DIR) \
@@ -71,6 +70,6 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(LUA_TARGET_BINARY)
-	$(RM) root/usr/lib/liblua*.so*
+	$(RM) $(LUA_DEST_LIBDIR)/liblua*.so*
 
 $(PKG_FINISH)

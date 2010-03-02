@@ -4,7 +4,7 @@ $(PKG)_SITE:=@SF/usbip
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cmd/usbipd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/usbipd
 $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/drivers/2.6.21/usbip.ko
-$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/lib/modules/$(KERNEL_VERSION)-$(KERNEL_LAYOUT)/kernel/drivers/usb/usbip
+$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/usb/usbip
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/usbip.ko
 $(PKG)_SOURCE_MD5:=d1094b6d4449787864f8be001639232c
 
@@ -21,13 +21,11 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(USBIP_DIR)/src \
+	$(SUBMAKE) -C $(USBIP_DIR)/src \
 		CPPFLAGS="-std=gnu99 -fgnu89-inline"
 
 $($(PKG)_MOD_BINARY): $($(PKG)_DIR)/.configured
-	PATH=$(TARGET_PATH):$(KERNEL_MAKE_PATH) \
-		$(MAKE) -C $(USBIP_DIR)/drivers/2.6.21 \
+	$(SUBMAKE) -C $(USBIP_DIR)/drivers/2.6.21 \
 		KSOURCE="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
 		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)"
@@ -51,7 +49,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(USBIP_DIR)/src clean
+	-$(SUBMAKE) -C $(USBIP_DIR)/src clean
 
 $(pkg)-uninstall:
 	$(RM) $(USBIP_DEST_DIR)/usr/bin/usbipd

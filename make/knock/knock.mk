@@ -15,8 +15,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_KNOCK_BINARY) $($(PKG)_KNOCKD_BINARY): $($(PKG)_DIR)/.configured
-	PATH="$(TARGET_PATH)" \
-		$(MAKE) -C $(KNOCK_DIR)
+	$(SUBMAKE) -C $(KNOCK_DIR)
 
 $($(PKG)_TARGET_KNOCK_BINARY): $($(PKG)_KNOCK_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -29,7 +28,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_KNOCK_BINARY) $($(PKG)_TARGET_KNOCKD_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(KNOCK_DIR) clean
+	-$(SUBMAKE) -C $(KNOCK_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(KNOCK_TARGET_KNOCK_BINARY)

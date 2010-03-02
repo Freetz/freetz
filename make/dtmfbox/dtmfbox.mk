@@ -34,6 +34,8 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_$(PKG)_WITH_CAPI),,--disable-c
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_$(PKG)_WITH_VOIP),,--disable-sip)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_$(PKG)_WITH_ICE),,--disable-ice)
 
+$(call REPLACE_LIBTOOL)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -43,10 +45,7 @@ $(DTMFBOX_DIR)/.forcesvn:
 	if [ -f .unpacked ]; then rm .unpacked; fi
 
 $($(PKG)_BINARY): $(if $(FREETZ_PACKAGE_DTMFBOX_SVN_FORCE_LATEST_REV),$(DTMFBOX_DIR)/.forcesvn,) $($(PKG)_DIR)/.configured
-	cd $(DTMFBOX_DIR)
-	PATH="$(TARGET_PATH)" \
-		$(TARGET_CONFIGURE_OPTS) \
-		$(MAKE1) -C $(DTMFBOX_DIR)
+	$(SUBMAKE1) -C $(DTMFBOX_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(DTMFBOX_TARGET_DIR)/root/etc/init.d
@@ -73,7 +72,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(DTMFBOX_DIR) clean
+	-$(SUBMAKE) -C $(DTMFBOX_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(DTMFBOX_TARGET_BINARY)
