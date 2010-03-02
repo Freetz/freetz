@@ -988,12 +988,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 		cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
 	fi
 	
-	echo0 "stripping unstripped AVM binaries"
-	for i in `find ${FILESYSTEM_MOD_DIR} ! -name "*.ko" ! -path "*/usr/www/*" ! -path "*/etc/default*" -perm +100 -type f`; do
-		if [ ! -z `file $i | sed -ne "/.*MIPS32.*not stripped$/p" | sed -e "s/^\(.*\):.*/\1/g"` ]; then
-			echo1 $i
- 			${ABS_BASE_DIR}/toolchain/target/bin/mipsel-linux-uclibc-strip --remove-section={.comment,.note,.pdr} $i
-		fi
+	echo0 "stripping leftover unstripped binaries"
+	for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' \) \
+		\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS32.*not stripped.*|\1|p'`; do
+		echo1 $i
+ 		${ABS_BASE_DIR}/toolchain/target/bin/mipsel-linux-uclibc-strip --remove-section={.comment,.note,.pdr} $i
 	done
 
 	# external should run after modifying and stripping and so on
