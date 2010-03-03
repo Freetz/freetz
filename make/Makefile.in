@@ -1,13 +1,13 @@
 MAKE_ENV=PATH=$(TARGET_PATH) $(FREETZ_LD_RUN_PATH)
 
-BUILD_FAIL_MSG := Build failed.
+BUILD_FAIL_MSG:= Build failed.
 ifneq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
 BUILD_FAIL_MSG += Please re-run make with verbose level set to 2 to see what's going on.
 endif
 
-SUBMAKE1=cmd() { $(SILENT) $(MAKE_ENV) $(MAKE1) $(QUIET) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
-SUBMAKE=cmd() { $(SILENT) $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
-CONFIGURE=conf_cmd() { $(SILENT) ./configure $(QUIET) "$$$$@" || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } };
+SUBMAKE1=cmd() { $(MAKE_ENV) $(MAKE1) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
+SUBMAKE=cmd() { $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
+CONFIGURE=conf_cmd() { ./configure $(QUIET) "$$$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } };
 
 HOSTCC:=gcc
 
@@ -104,7 +104,7 @@ TARGET_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../lib/pkgconfig"
 #TARGET_CONFIGURE_ENV += CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++"
 #TARGET_CONFIGURE_ENV += RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
 
-CONFIG_CACHE_PATH := $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache
+CONFIG_CACHE_PATH:= $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache
 # $1 optional suffix
 define BACKUP_CONFIG_CACHE
 if [ -e $(CONFIG_CACHE_PATH) ]; then cp -a $(CONFIG_CACHE_PATH) $(CONFIG_CACHE_PATH)-`date +%Y%m%d-%H%M%S`$(if $1,-$1,); fi;
@@ -226,7 +226,7 @@ PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC = $(SED) -i -r -e 's/ac(_cv_('"$(shell ec
 define REPLACE_FILE_WITH_SYMLINK
 if [ -f "$(abspath $($(PKG)_DIR)/$(3)/$(1))" -a -e "$(2)/$(if $(4),$(4),$(1))" ]; then \
 	$(call MESSAGE, Replacing $(3)/$(if $(4),$(4),$(1)) with symlink to $(2)/$(if $(4),$(4),$(1))); \
-	rm -f "$(abspath $($(PKG)_DIR)/$(3)/$(1))"; \
+	$(RM) "$(abspath $($(PKG)_DIR)/$(3)/$(1))"; \
 	ln -s "$(2)/$(if $(4),$(4),$(1))" "$(abspath $($(PKG)_DIR)/$(3)/$(1))"; \
 fi;
 endef
@@ -283,11 +283,13 @@ ECHO_ITEM_BUILD:=$(SOURCE_DIR)/.echo_item_build
 
 define _ECHO_START
 	echo -n "---> "; \
-	$(if $(findstring $(PKG_TYPE),BIN),echo -n "package/$(pkg): ";) \
-	$(if $(findstring $(PKG_TYPE),KERNEL),echo -n "kernel: ";) \
-	$(if $(findstring $(PKG_TYPE),LIB),echo -n "library/$(pkg): ";) \
-	$(if $(findstring $(PKG_TYPE),TOOL),echo -n "tool/$(pkg): ";) \
-	rm -f $(ECHO_ITEM_BUILD); \
+	case "$(PKG_TYPE)" in \
+		BIN)	echo -n "package/$(pkg): " ;; \
+		LIB)	echo -n "library/$(pkg): " ;; \
+		TOOL)	echo -n "tool/$(pkg): " ;; \
+		*)	echo -n "kernel: " ;; \
+	esac; \
+	$(RM) $(ECHO_ITEM_BUILD); \
 	touch $(ECHO_ITEM_START);
 endef
 
@@ -308,9 +310,8 @@ endef
 define _ECHO_DONE
 	if [ -e $(ECHO_ITEM_START) ]; then \
 		echo "done."; \
-		rm -f $(ECHO_ITEM_START); \
-		rm -f $(ECHO_ITEM_BUILD); \
-	fi
+	fi; \
+	$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD);
 endef
 
 ### PKG_INIT - initialise package. See also PKG_FINISH.
@@ -333,8 +334,10 @@ $(PKG)_BUILD_PREREQ:=
 $(PKG)_BUILD_PREREQ_HINT:=
 $(PKG)_CONFIGURE_DEFOPTS:=y
 # $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
-$(pkg)-precompiled : $(pkg)-precompiled--int $(pkg) $(pkg)-clean-not-included--int
-.PHONY: $(pkg)-precompiled $(pkg)-precompiled--int $(pkg) $(pkg)-clean-not-included--int
+$(pkg)-precompiled: $(pkg)-precompiled--int $(pkg)-clean-echo-item $(pkg) $(pkg)-clean-not-included--int
+$(pkg)-clean-echo-item:
+	$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD)
+.PHONY: $(pkg)-clean-echo-item $(pkg)-precompiled $(pkg)-precompiled--int $(pkg) $(pkg)-clean-not-included--int
 endef
 
 # Stage 2a: initialise other package-specific variables for binary packages
@@ -349,7 +352,7 @@ $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_TARGET_LIBDIR:=root$(FREETZ_LIBRARY_PATH)
 $(PKG)_DEST_DIR:=$($(PKG)_TARGET_DIR)/root
 $(PKG)_DEST_LIBDIR:=$($(PKG)_TARGET_DIR)/root$(FREETZ_LIBRARY_PATH)
-$(PKG)_CLEAN_TARGET_DIR__INT := $(RM) -r $($(PKG)_TARGET_DIR); $(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION);
+$(PKG)_CLEAN_TARGET_DIR__INT:= $(RM) -r $($(PKG)_TARGET_DIR); $(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION);
 endef
 
 # Stage 2b: initialise other package-specific variables for library packages
@@ -420,10 +423,7 @@ endef
 define PKG_FINISH__INT
 $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-build-prereq
-$(pkg)-precompiled--int : $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON)) $(pkg)-clean-echo-item
-$(pkg)-clean-echo-item:
-	@rm -f $(ECHO_ITEM_START)
-	@rm -f $(ECHO_ITEM_BUILD)
+$(pkg)-precompiled--int: $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
 $(pkg)-precompiled:
 	@$(call _ECHO_DONE)
 $(pkg)-build-prereq: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
@@ -450,8 +450,10 @@ endif
 $(pkg)-clean-not-included--int:
 	@$(if $($(PKG)_NOT_INCLUDED),$(RM) -r $($(PKG)_NOT_INCLUDED),)
 PKG:=
-pkg:=
 PKG_TYPE:=
+PKG_MAKEFILE:=
+PKG_BASENAME:=
+pkg:=
 endef
 PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))$(eval $(PKG_FINISH__INT))
 
@@ -511,7 +513,7 @@ define PKG_UNPACK__INT
 	$(if $(PKG_UNPACK__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
 	$(if $(patsubst %.zip,%,$(suffix $(strip $1))),
 		tar -C $($(PKG)_SOURCE_DIR) $(VERBOSE) -x$(PKG_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
-		unzip -u $(strip $1) -d $($(PKG)_SOURCE_DIR)
+		unzip $(QUIETSHORT) -u $(strip $1) -d $($(PKG)_SOURCE_DIR)
 	)
 endef
 
@@ -648,7 +650,8 @@ $(PKG)_FREETZ_CHANGES_CHECK:
 		mv $($(PKG)_FREETZ_CHANGES_TEMP) $($(PKG)_FREETZ_CHANGES_FILE); \
 	fi
 	@$(RM) $($(PKG)_FREETZ_CHANGES_TEMP)
-$(pkg) $(pkg)-precompiled: $(PKG)_FREETZ_CHANGES_CHECK
+$(pkg)-precompiled: $(PKG)_FREETZ_CHANGES_CHECK
+.PHONY: $(PKG)_FREETZ_CHANGES_CHECK
 endef
 
 PKG_BIN_UNPACKED=$(eval $(PKG_UNPACKED_BIN__INT))
@@ -660,8 +663,8 @@ PKG_LOCALSOURCE_PACKAGE=$(eval $(PKG_LOCALSOURCE_PACKAGE__INT))
 
 ### Configure package
 define PKG_CONFIGURED_COMMON__INT
-#$($(PKG)_DIR)/.configured : $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
-$(pkg)-configured : $($(PKG)_DIR)/.configured
+#$($(PKG)_DIR)/.configured: $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+$(pkg)-configured: $($(PKG)_DIR)/.configured
 .PHONY: $(pkg)-configured
 endef
 ## Configure package, using ./configure

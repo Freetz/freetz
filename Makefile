@@ -164,6 +164,7 @@ endif
 
 VERBOSE:=
 QUIET:=--quiet
+QUIETSHORT:=-q
 
 ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),0)
 .SILENT:
@@ -177,6 +178,7 @@ endif
 ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
 VERBOSE:=-v
 QUIET:=
+QUIETSHORT:=
 endif
 
 export FREETZ_VERBOSITY_LEVEL

@@ -183,7 +183,7 @@ $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_DIR)/.modules-$(KERNEL
 		. | tar -xf - -C $(KERNEL_MODULES_DIR)
 	touch $@
 
-kernel-precompiled: $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT) pkg-echo-done
+kernel-precompiled: pkg-echo-start $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT) pkg-echo-done
 
 kernel-configured: $(KERNEL_DIR)/.depend_done
 
@@ -221,6 +221,9 @@ kernel-dirclean:
 	$(RM) -r $(KERNEL_TARGET_DIR)/modules-*
 
 kernel-distclean: kernel-dirclean
+
+pkg-echo-start:
+	@$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD)
 
 pkg-echo-done:
 	@$(call _ECHO_DONE)
