@@ -1,7 +1,8 @@
 CAPTION='Samba: $(lang de:"Freigaben" en:"Shares")'
-DESCRIPTION='Syntax: &lt;path&gt; &lt;name&gt; &lt;guest-ok&gt; &lt;read-only&gt; [&lt;comment&gt;]<br>
-($(lang de:"Leerzeichen in &lt;name&gt; sollten durch '%20' ersetzt werden." en:"Spaces in &lt;name%gt; have to be replaced with '%20'."))<br>
-($(lang de:"z.B.: /var/tmp/share freigabe 1 0 Meine Freigabe" en:"for example: /var/tmp/share share 1 0 My share"))'
+DESCRIPTION='Syntax: &lt;path&gt; &lt;name&gt; &lt;guest-ok&gt; &lt;read-only&gt; &lt;options&gt; [&lt;comment&gt;]<br>
+($(lang de:"Leerzeichen in &lt;name&gt; und &lt;options&gt; sollten durch '%20' ersetzt werden." en:"Spaces in &lt;name&gt; and &lt;options&gt; have to be replaced with '%20'."))<br>
+($(lang de:"Beispiel 1: /var/media/ftp/uStor01 Meine%20Daten 1 0 - Eigene Dateien" en:"Example 1: /var/media/ftp/uStor01 My%20Data 1 0 - Personal files"))<br>
+($(lang de:"Beispiel 2: /var/media/ftp/uStor02 Arbeitsgruppe 1 0 group=1005,file%20umask=770" en:"Example 2: /var/media/ftp/uStor02 Workgroup 1 0 group=1005,file%20umask=770"))'
 
 CONFIG_FILE='/tmp/flash/samba/shares'
 CONFIG_SAVE='modsave flash; if pidof smbd > /dev/null; then echo ""; /mod/etc/init.d/rc.samba restart; fi'

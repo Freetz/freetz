@@ -64,7 +64,7 @@ fi
 echo "### shares"
 
 if [ -r "/tmp/flash/samba/shares" ]; then
-	cat /tmp/flash/samba/shares | grep -v "^#" | while read -r path name gk ro comment; do
+	cat /tmp/flash/samba/shares | grep -v "^#" | while read -r path name gk ro options comment; do
 		if [ -n "$path" -a -n "$name" -a -d "$path" ]; then
 			case "$gk" in
 				1|y|yes|Y|YES)  gk="yes" ;;
@@ -74,14 +74,26 @@ if [ -r "/tmp/flash/samba/shares" ]; then
 				1|y|yes|Y|YES)  ro="yes" ;;
 				0|n|no|N|NO|"") ro="no"  ;;
 			esac
+			if  [ "$options" != "-" ]; then
+				options=${options//\%20/ }
+				options=${options//=/ = }
+			else
+				options=""
+			fi
+			if [[ ! $options =~ "user =" ]]; then
+				options="$options,user = ftpuser"
+			fi
+			if [[ ! $options =~ "write cache size =" ]]; then
+				options="$options,write cache size = 65536"
+			fi
+			options=$(echo -e ${options//,/\\n })
 cat << EOF
 [${name/%20/ }]
  comment = $comment
  path = $path
  guest ok = $gk
  read only = $ro
- user = ftpuser
- write cache size = 65536
+ $options
 EOF
 		fi
 	done
