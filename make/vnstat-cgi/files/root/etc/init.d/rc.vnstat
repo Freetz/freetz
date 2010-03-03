@@ -42,8 +42,9 @@ start() {
 	for ifname in $VNSTAT_INTERFACES; do
 		vnstat -u -i $ifname --config /tmp/flash/vnstat/vnstat.conf >/dev/null
 		if [ $? -ne 0 ]; then
-			echo 'failed creating database-file:'
-			vnstat -u -i $ifname
+			echo 'failed creating database-file(s):'
+			vnstat -u -i $ifname --config /tmp/flash/vnstat/vnstat.conf
+			echo 'Is your USB-device yet available?'
 			exit $?
 		fi
 	done
