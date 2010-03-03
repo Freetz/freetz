@@ -38,7 +38,11 @@ start() {
 					ln -sf "$SYSLOGD_ALTERNATIVE_LOGFILE" /var/log/
 			fi
 			if [ "$SYSLOGD_MAXFILES" -ge "1" ]; then
-				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -b $SYSLOGD_MAXFILES -s $SYSLOGD_MAXSIZE "
+				if [ ! -z "$SYSLOGD_MAXSIZE" ]; then
+					SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -b $SYSLOGD_MAXFILES -s $SYSLOGD_MAXSIZE "
+				else
+					SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -b $SYSLOGD_MAXFILES"
+				fi
 			fi
 		;;
 		esac
