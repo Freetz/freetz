@@ -27,10 +27,7 @@ start() {
 		fi
 	) > /mod/etc/$DAEMON.conf
 
-	echo -n 'Starting ntp server...'
-
 	if [ "$OPENNTPD_MULTID" = "no" ]; then
-		echo -n 'restarting multid without ntp client...'
 		multid -s > /dev/null 2>&1
 		
 		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
@@ -45,11 +42,15 @@ start() {
 	fi
 
 	if [ ! -e "/mod/etc/ntpd.conf" ]; then
-		echo -n "creating ntpd.conf link..."
 		ln -s /tmp/flash/ntpd.conf /mod/etc/ntpd.conf
 	fi
-	
-	ntpd -s -f /mod/etc/ntpd.conf
+
+	start_daemon
+}
+
+start_daemon () {
+	echo -n 'Starting ntp server...'
+	modlib_startdaemon ntpd -s -f /mod/etc/ntpd.conf
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -57,13 +58,12 @@ start() {
 		echo 'failed.'
 		exit $exitval
 	fi
+	pidof -s ntpd > /var/run/$DAEMON.pid
 }
 
 stop () {
-	echo -n 'Stopping ntp server...'
-	kill -USR1 $(pidof -s ntpd) > /dev/null 2>&1
-	exitval=$?
-	
+	modlib_stop
+
 	# Restart multid without "-t" option
 	multid -s > /dev/null 2>&1
 	if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
@@ -73,13 +73,6 @@ stop () {
 	fi
 
 	rm -f /mod/etc/$DAEMON.conf
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 case "$1" in
@@ -108,20 +101,19 @@ case "$1" in
 	stop)
 		stop
 		;;
-	restart)
-		stop
+	reload)
+		modlib_stop
 		sleep 1
-		start
+		start_daemon
+		;;
+	restart)
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof ntpd)" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
 		exit 1
 		;;
 esac
