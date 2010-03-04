@@ -936,23 +936,20 @@ config FREETZ_PATCH_FREETZMOUNT
 	select FREETZ_PACKAGE_E2FSPROGS_BLKID
 	default n
 	help
-		1. Replace old usbstorage patch and autorun.sh / autoend.sh patch
-		2. The name of USB storage dir can be defined in WebIF (default uStorXY)
-		3. USB storage dir can be automatically defined by volume LABEL
-		4. Auto-mounted USB storage devices will be fully accessible, i.e. it
-		   is now possible to put user home directories for (e.g. for FTP) on a
-		   FAT32-formatted partition and permit shell and FTP users to actually
-		   write to their own home directories.
-		5. Avoid deleting whole filesystem on usb devices.
-		6. Old autorun.sh / autoend.sh patch is a part of this patch.
-		   autorun / autoend behaviour can be activated / deactivated via WebIF
-		   autorun / autoend are useful to start/terminate applications located on USB devices,
-		   eg apache, samba or even swapfiles, after connecting or before disconnecting of USB device
-		7. Enhanced behaviour during mounting and unmounting
-
+		1. Replaces and deselects usb-storage patch.
+		   - The names of USB storage directories can be defined by WebIF (default uStorXY) or by volume LABEL.
+		2. Replaces and deselects autorun.sh/autoend.sh patch.
+		   - autorun/autoend behaviour can be activated/deactivated via WebIF.
+		   - autorun/autoend are useful to start/terminate applications located on USB devices, eg
+		     apache, samba or even swapfiles, after connecting or before disconnecting of USB devices.
+		3. Auto-mounted USB storage devices will be fully accessible, eg it is now possible to put
+		   user home directories for (e.g. for FTP) on a FAT32-formatted partition and permit shell
+		   and FTP users to actually write to their own home directories.
+		4. Avoid deleting whole filesystems on USB devices.
+		5. Enhanced behaviour during mounting and unmounting.
+		6. NOTE: fstyp is not needed and could be deselected in Package-Selection->Testing. 
+		
 		It is highly recommended to select this patch.
-
-		WARNING: This patch deselects automatically old usbstorage and automount patches!
 
 config FREETZ_PATCH_RCFTPD
 	bool "Add rc.ftpd start script for better handling of AVM's ftpd"
