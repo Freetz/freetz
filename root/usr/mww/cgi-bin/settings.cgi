@@ -123,6 +123,7 @@ cat << EOF
 EOF
 
 sec_end
+if [ -r /usr/lib/libmodmount.sh ]; then 
 sec_begin 'automount'
 if [ -x /usr/sbin/blkid ]
 then
@@ -139,6 +140,7 @@ $(lang de:"Pr&auml;fix für Mountpoints" en:"Prefix for mountpoints") (uStor) : <
 </p>
 EOF
 sec_end
+fi
 frm_end 'mod'
 cgi_end
 
