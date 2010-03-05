@@ -10,7 +10,7 @@ $(PKG)_INCLUDE_DIR:=/usr/include/$(pkg)
 $(PKG)_LIBNAME:=liblua.so.$($(PKG)_VERSION)
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/src/$($(PKG)_LIBNAME)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
-$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/$($(PKG)_LIBNAME)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/$($(PKG)_LIBNAME)
 
 ifeq ($(strip $(FREETZ_PACKAGE_LUA_READLINE)),y)
 $(PKG)_DEPENDS_ON := ncurses readline
@@ -70,6 +70,6 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(LUA_TARGET_BINARY)
-	$(RM) $(LUA_DEST_LIBDIR)/liblua*.so*
+	$(RM) $(LUA_TARGET_LIBDIR)/liblua*.so*
 
 $(PKG_FINISH)
