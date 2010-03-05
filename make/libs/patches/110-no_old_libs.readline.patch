@@ -1,0 +1,40 @@
+--- Makefile.in	2009-04-19 18:14:24.000000000 +0200
++++ Makefile.in	2010-03-05 15:21:25.000000000 +0100
+@@ -222,10 +222,8 @@
+ maybe-uninstall-headers: uninstall-headers
+ 
+ install-static: installdirs $(STATIC_LIBS) install-headers install-doc install-examples
+-	-$(MV) $(DESTDIR)$(libdir)/libreadline.a $(DESTDIR)$(libdir)/libreadline.old
+ 	$(INSTALL_DATA) libreadline.a $(DESTDIR)$(libdir)/libreadline.a
+ 	-test -n "$(RANLIB)" && $(RANLIB) $(DESTDIR)$(libdir)/libreadline.a
+-	-$(MV) $(DESTDIR)$(libdir)/libhistory.a $(DESTDIR)$(libdir)/libhistory.old
+ 	$(INSTALL_DATA) libhistory.a $(DESTDIR)$(libdir)/libhistory.a
+ 	-test -n "$(RANLIB)" && $(RANLIB) $(DESTDIR)$(libdir)/libhistory.a
+ 
+@@ -236,7 +234,7 @@
+ 
+ uninstall: uninstall-headers uninstall-doc uninstall-examples
+ 	-test -n "$(DESTDIR)$(libdir)" && cd $(DESTDIR)$(libdir) && \
+-		${RM} libreadline.a libreadline.old libhistory.a libhistory.old $(SHARED_LIBS)
++		${RM} libreadline.a libhistory.a $(SHARED_LIBS)
+ 	-( cd shlib; ${MAKE} ${MFLAGS} DESTDIR=${DESTDIR} uninstall )
+ 
+ install-shared: installdirs install-headers shared install-doc
+--- support/shlib-install	2009-10-28 14:30:18.000000000 +0100
++++ support/shlib-install	2010-03-05 15:22:32.000000000 +0100
+@@ -46,15 +46,6 @@
+ RM="rm -f"
+ LN="ln -s"
+ 
+-# pre-install
+-
+-if [ -z "$uninstall" ]; then
+-	${echo} $RM ${INSTALLDIR}/${LIBNAME}.${OLDSUFF}
+-	if [ -f "$INSTALLDIR/$LIBNAME" ]; then
+-		${echo} $MV $INSTALLDIR/$LIBNAME ${INSTALLDIR}/${LIBNAME}.${OLDSUFF}
+-	fi
+-fi
+-
+ # install/uninstall
+ 
+ if [ -z "$uninstall" ] ; then
