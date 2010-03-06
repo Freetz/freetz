@@ -9,7 +9,7 @@
      { 'd', "dump-settings", "Dump the settings and exit", "d", 0, NULL },
      { 'e', "logfile", "Dump the log messages to this filename", "e", 1, "<filename>" },
      { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", 0, NULL },
-@@ -320,6 +322,11 @@
+@@ -322,6 +324,11 @@
  	    case 942:
  		      tr_bencDictAddBool( &settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, FALSE );
  		      break;
@@ -94,11 +94,11 @@
           |         | yes       | torrent-add    | new arg "bandwidthPriority"
           |         | yes       | torrent-get    | new trackerStats arg "lastAnnounceTimedOut"
 +   ------+---------+-----------+----------------+-------------------------------
-+   9     | 1.91    | yes       | session-set    | new arg "finish-dir"
++   8     | 1.92    | yes       | session-set    | new arg "finish-dir"
 +         |         | yes       | session-set    | new arg "finish-dir-enabled"
 --- libtransmission/rpcimpl.c	2010-02-16 17:00:50.000000000 +0100
 +++ libtransmission/rpcimpl.c	2010-02-16 22:37:29.000000000 +0100
-@@ -1175,6 +1175,10 @@
+@@ -1181,6 +1181,10 @@
          tr_sessionSetIncompleteDir( session, str );
      if( tr_bencDictFindBool( args_in, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
          tr_sessionSetIncompleteDirEnabled( session, boolVal );
@@ -109,7 +109,7 @@
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_GLOBAL, &i ) )
          tr_sessionSetPeerLimit( session, i );
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_TORRENT, &i ) )
-@@ -1289,6 +1293,8 @@
+@@ -1295,6 +1299,8 @@
      tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT, tr_sessionGetPeerLimitPerTorrent( s ) );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR, tr_sessionGetIncompleteDir( s ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, tr_sessionIsIncompleteDirEnabled( s ) );
@@ -215,7 +215,7 @@
  void
  tr_sessionLock( tr_session * session )
  {
-@@ -1581,6 +1634,7 @@
+@@ -1579,6 +1632,7 @@
      tr_free( session->torrentDir );
      tr_free( session->downloadDir );
      tr_free( session->incompleteDir );

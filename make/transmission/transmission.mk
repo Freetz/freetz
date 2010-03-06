@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.90)
+$(call PKG_INIT_BIN, 1.91)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=91cc216807745a7d287150a6947e9bac
+$(PKG)_SOURCE_MD5:=2c6993300988d5aa2e3fc24a439d3633
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 
 $(PKG)_BINARIES_ALL := transmissioncli transmission-daemon transmission-remote
@@ -21,6 +21,8 @@ $(PKG)_DEPENDS_ON := zlib openssl curl libevent
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TRANSMISSION_STATIC
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+# remove optimization & debug flags
+$(PKG)_CONFIGURE_PRE_CMDS += $(foreach flag,-O[0-9] -g -ggdb3,$(SED) -i -r -e 's,(C(XX)?FLAGS="[^"]*)$(flag)(( [^"]*)?"),\1\3,g' ./configure;)
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-beos
 $(PKG)_CONFIGURE_OPTIONS += --disable-mac
@@ -38,9 +40,6 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(TRANSMISSION_DIR) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CXXFLAGS)" \
-		CPPFLAGS="$(TARGET_CXXFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS) $(TRANSMISSION_LDFLAGS)" \
 		&& cp $(TRANSMISSION_DIR)/cli/transmissioncli $(TRANSMISSION_DIR)/daemon/
 

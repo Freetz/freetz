@@ -1,6 +1,17 @@
 config FREETZ_PACKAGE_TRANSMISSION
-	bool "Transmission 1.90 (binary and optionally web interface)"
+	bool "Transmission 1.91 (binary and optionally web interface)"
 	default n
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libdl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libevent if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libm if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libnsl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libpthread if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
 	help
 		If needed, remember to change the base directory as well
 		as the installation directory on the webif.
@@ -8,29 +19,19 @@ config FREETZ_PACKAGE_TRANSMISSION
 config FREETZ_PACKAGE_TRANSMISSION_CLIENT
 	bool "Transmission interactive client"
 	depends FREETZ_PACKAGE_TRANSMISSION
-	default y
-	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libevent if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	default n
 	help
 		Torrent client (interactive)
 		Adds ~380KB to the firmware (uncompressed)
 
+		Note: transmission client is deprecated (see http://trac.transmissionbt.com/ticket/2983)
+		and will be removed in one of the next releases. Consider using web-interface controlled
+		daemon instead.
+
 config FREETZ_PACKAGE_TRANSMISSION_DAEMON
 	bool "Transmission daemon"
 	depends FREETZ_PACKAGE_TRANSMISSION
-	default n
-	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
-	select FREETZ_LIB_libevent if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
+	default y
 	help
 		Torrent client (daemon)
 		Adds ~374KB to the firmware (uncompressed).
@@ -54,7 +55,7 @@ config FREETZ_PACKAGE_TRANSMISSION_STATIC
 config FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE
 	bool "Transmission web interface"
 	depends FREETZ_PACKAGE_TRANSMISSION_DAEMON
-	default n
+	default y
 	help
 		An official web interface for transmission called clutch
 		Adds ~289KB(uncompressed)/~130KB(compressed) to the firmware
