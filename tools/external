@@ -197,7 +197,7 @@ fi
 [ "$EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSYNC" == "y" ] && EXTERNAL_FILES+=" /usr/bin/svnsync"
 [ "$EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNVERSION" == "y" ] && EXTERNAL_FILES+=" /usr/bin/svnversion"
 if [ "$EXTERNAL_FREETZ_PACKAGE_SUBVERSION_LIBRARIES" == "y" ]; then
-	for SVNLIBSHORT in client delta diff fs fs_fs fs_util ra ra_local ra_neon ra_svn repos subr wc; do
+	for SVNLIBSHORT in client delta diff fs fs_base fs_fs fs_util ra ra_local ra_neon ra_svn repos subr wc; do
 		SVNLIBFULL="/usr/lib/freetz/libsvn_${SVNLIBSHORT}-1.so.0.0.0"
 		[ -e "${FILESYSTEM_MOD_DIR}${SVNLIBFULL}" ] && EXTERNAL_FILES+=" ${SVNLIBFULL}"
 	done
