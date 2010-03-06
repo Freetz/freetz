@@ -20,7 +20,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(IGMPPROXY_DIR) clean
+	-$(SUBMAKE) -C $(IGMPPROXY_DIR) clean
 	$(RM) $(IGMPPROXY_DIR)/.configured
 
 $(pkg)-uninstall:

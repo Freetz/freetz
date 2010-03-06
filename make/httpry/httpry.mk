@@ -25,7 +25,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(HTTPRY_DIR) clean
+	-$(SUBMAKE) -C $(HTTPRY_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(HTTPRY_TARGET_BINARY)

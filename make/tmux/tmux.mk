@@ -33,7 +33,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(TMUX_DIR) clean
+	-$(SUBMAKE) -C $(TMUX_DIR) clean
 	$(RM) $(TMUX_DIR)/.configured
 
 $(pkg)-uninstall:

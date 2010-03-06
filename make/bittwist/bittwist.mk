@@ -26,7 +26,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(BITTWIST_DIR) clean
+	-$(SUBMAKE) -C $(BITTWIST_DIR) clean
 	$(RM) $(BITTWIST_DIR)/.configured
 
 $(pkg)-uninstall:
