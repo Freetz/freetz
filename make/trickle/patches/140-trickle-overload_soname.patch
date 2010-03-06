@@ -1,0 +1,19 @@
+--- Makefile.in
++++ Makefile.in
+@@ -616,12 +616,12 @@
+ mostlyclean distclean maintainer-clean
+ 
+ trickle-overload.so: $(TRICKLEOVERLOADFILES)
+-	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o libtmp$@.la                \
++	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o trickle-overload.la        \
+ 		-rpath $(libdir)/trickle $(TRICKLEOVERLOADFILES) $(LIBS)     \
+ 		$(LDFLAGS) -module -avoid-version -nostdlib @LIBDL@
+-	@rm -f libtmp$@.la tmp$@.so* $@
+-	@cp .libs/libtmp$@.so $@
+-	@rm -f .libs/libtmp$@.*
++	@rm -f *trickle-overload.la *trickle-overload.so* $@
++	@cp .libs/$@ $@
++	@rm -f .libs/$@.*
+ 
+ libtrickle.so: trickle-overload.c atomicio.c
+ $(overload_DATA):

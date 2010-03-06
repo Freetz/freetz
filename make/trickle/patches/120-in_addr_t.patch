@@ -1,0 +1,118 @@
+--- config.h.in	2004-12-13 01:28:05.000000000 +0100
++++ config.h.in	2010-02-28 14:29:47.000000000 +0100
+@@ -5,8 +5,6 @@
+ #undef u_int64_t
+ #undef u_int8_t
+ 
+-#undef in_addr_t
+-
+ #undef SYSCONFDIR
+ #undef LIBDIR
+ 
+@@ -128,9 +126,6 @@
+ /* Define to empty if `const' does not conform to ANSI C. */
+ #undef const
+ 
+-/* Define to `unsigned long' if <sys/types.h> does not define. */
+-#undef in_addr_t
+-
+ /* Define to `int' if <sys/types.h> does not define. */
+ #undef pid_t
+ 
+--- acconfig.h	2004-12-13 01:27:56.000000000 +0100
++++ acconfig.h	2010-02-28 14:28:23.000000000 +0100
+@@ -4,8 +4,6 @@
+ #undef u_int64_t
+ #undef u_int8_t
+ 
+-#undef in_addr_t
+-
+ #undef SYSCONFDIR
+ #undef LIBDIR
+ 
+--- configure.in	2005-01-08 21:19:38.000000000 +0100
++++ configure.in	2010-02-28 14:28:35.000000000 +0100
+@@ -67,7 +67,6 @@
+ AC_CHECK_TYPE(u_int32_t, unsigned int)
+ AC_CHECK_TYPE(u_int16_t, unsigned short)
+ AC_CHECK_TYPE(u_int8_t, unsigned char)
+-AC_CHECK_TYPE(in_addr_t, unsigned long)
+ 
+ dnl Checks for library functions.
+ AC_PROG_GCC_TRADITIONAL
+--- configure	2005-01-08 21:20:06.000000000 +0100
++++ configure	2010-02-28 14:30:45.000000000 +0100
+@@ -20237,73 +20237,6 @@
+ 
+ fi
+ 
+-echo "$as_me:$LINENO: checking for in_addr_t" >&5
+-echo $ECHO_N "checking for in_addr_t... $ECHO_C" >&6
+-if test "${ac_cv_type_in_addr_t+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
+-_ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
+-/* end confdefs.h.  */
+-$ac_includes_default
+-int
+-main ()
+-{
+-if ((in_addr_t *) 0)
+-  return 0;
+-if (sizeof (in_addr_t))
+-  return 0;
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-rm -f conftest.$ac_objext
+-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+-  (eval $ac_compile) 2>conftest.er1
+-  ac_status=$?
+-  grep -v '^ *+' conftest.er1 >conftest.err
+-  rm -f conftest.er1
+-  cat conftest.err >&5
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } &&
+-	 { ac_try='test -z "$ac_c_werror_flag"
+-			 || test ! -s conftest.err'
+-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+-  (eval $ac_try) 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); }; } &&
+-	 { ac_try='test -s conftest.$ac_objext'
+-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+-  (eval $ac_try) 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); }; }; then
+-  ac_cv_type_in_addr_t=yes
+-else
+-  echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-ac_cv_type_in_addr_t=no
+-fi
+-rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+-fi
+-echo "$as_me:$LINENO: result: $ac_cv_type_in_addr_t" >&5
+-echo "${ECHO_T}$ac_cv_type_in_addr_t" >&6
+-if test $ac_cv_type_in_addr_t = yes; then
+-  :
+-else
+-
+-cat >>confdefs.h <<_ACEOF
+-#define in_addr_t unsigned long
+-_ACEOF
+-
+-fi
+-
+-
+ if test $ac_cv_c_compiler_gnu = yes; then
+     echo "$as_me:$LINENO: checking whether $CC needs -traditional" >&5
+ echo $ECHO_N "checking whether $CC needs -traditional... $ECHO_C" >&6

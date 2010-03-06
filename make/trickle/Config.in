@@ -1,0 +1,21 @@
+config FREETZ_PACKAGE_TRICKLE
+	bool "trickle 1.07 (binary only)"
+	select FREETZ_LIB_libevent
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libnsl
+	select FREETZ_LIB_libresolv
+	select FREETZ_LIB_librt
+	default n
+	help
+		trickle is a simple and portable lightweight userspace bandwidth
+		shaper, to rate limit the TCP connections of a given process or
+		group of processes. It can run in collaborative mode (together with
+		trickled) or in stand alone mode. trickle works by taking
+		advantage of the unix loader preloading. Essentially it
+		provides to the application, a new version of the functionality
+		that is required to send and receive data through sockets. It
+		then limits traffic based on delaying the sending and receiving
+		of data over a socket. trickle runs entirely in userspace and does
+		not require root privileges.
+		*** Does NOT support statically linked executables!!
+		WWW: http://monkey.org/~marius/trickle/

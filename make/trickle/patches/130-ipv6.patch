@@ -1,0 +1,11 @@
+--- trickle-overload.c
++++ trickle-overload.c
+@@ -302,7 +302,7 @@
+ 	    domain, type, protocol, sock);
+ #endif /* DEBUG */
+ 
+-	if (sock != -1 && domain == AF_INET && type == SOCK_STREAM) {
++	if (sock != -1 && (domain == AF_INET || domain == AF_INET6) && type == SOCK_STREAM) {
+ 		if ((sd = calloc(1, sizeof(*sd))) == NULL)
+ 			return (-1);
+ 		if ((sd->stat = bwstat_new()) == NULL) {

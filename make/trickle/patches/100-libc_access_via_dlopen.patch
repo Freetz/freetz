@@ -1,0 +1,36 @@
+--- configure
++++ configure
+@@ -20918,24 +20918,19 @@
+ fi
+ 
+ if test "$HAVEMETHOD" = "no"; then
+-        LIBCGUESS=`echo /lib/libc.so.*`
+-    USRLIBCGUESS=`echo /usr/lib/libc.so*`
+-
+-    if test "$USRLIBCGUESS" = "/usr/lib/libc.so.*"; then
+-       USRLIBCGUESS=""
+-    fi
+-
+-    if test "$LIBCGUESS" = "/lib/libc.so.*"; then
+-       LIBCGUESS=""
+-    fi
+-
+-    for TESTLIB in libc.so `echo $USRLIBCGUESS` `echo $LIBCGUESS`
++    for TESTLIB in /lib/libc.so.0
+     do
+         echo "$as_me:$LINENO: checking if we can access libc with $TESTLIB" >&5
+ echo $ECHO_N "checking if we can access libc with $TESTLIB... $ECHO_C" >&6
+         if test "$cross_compiling" = yes; then
+-  echo "$as_me:$LINENO: result: no" >&5
+-echo "${ECHO_T}no" >&6
++# evaluated by running the test below on target platform
++echo "$as_me:$LINENO: result: yes" >&5
++echo "${ECHO_T}yes" >&6
++cat >>confdefs.h <<_ACEOF
++#define DLOPENLIBC "$TESTLIB"
++_ACEOF
++HAVEMETHOD=yes
++break
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */

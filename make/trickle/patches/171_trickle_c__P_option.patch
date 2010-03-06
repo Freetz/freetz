@@ -1,0 +1,60 @@
+--- trickle.c
++++ trickle.c
+@@ -46,18 +46,14 @@
+ 	    *uplim = "10", *downlim = "10", *tsmooth = "3.0", *lsmooth = "20",
+ 	    *latency = "0";
+ 	int opt, verbose = 0, standalone = 0;
+-	char buf[MAXPATHLEN], sockname[MAXPATHLEN], *path, **pathp;
++	char buf[MAXPATHLEN], sockname[MAXPATHLEN];
+ 	struct stat sb;
+-	char *trypaths[]  = {
+-		LIBNAME,
+-		LIBDIR "/" LIBNAME,
+-		NULL
+-	};
++	char *path = LIBDIR "/" LIBNAME;
+ 
+ 	__progname = get_progname(argv[0]);
+ 	sockname[0] = '\0';
+ 
+-	while ((opt = getopt(argc, argv, "hvVsw:n:u:d:t:l:L:")) != -1)
++	while ((opt = getopt(argc, argv, "hvVsw:n:u:d:t:l:L:P:")) != -1)
+                 switch (opt) {
+ 		case 'v':
+ 			verbose++;
+@@ -86,6 +82,9 @@
+ 		case 's':
+ 			standalone = 1;
+ 			break;
++		case 'P':
++			path = optarg;
++			break;
+ 		case 'L':
+ 			latency = optarg;
+ 			break;
+@@ -100,13 +99,9 @@
+ 	if (argc == 0)
+ 		usage();
+ 
+-	for (pathp = trypaths; *pathp != NULL; pathp++)
+-		if (lstat(*pathp, &sb) == 0)
+-			break;
+-
+-	path = *pathp;
+-	if (path == NULL)
++	if (stat(path, &sb) != 0) {
+ 		errx(1, "Could not find overload object");
++	}
+ 
+ 	if (path[0] != '/') {
+ 		if (getcwd(buf, sizeof(buf)) == NULL)
+@@ -167,7 +162,8 @@
+ 	    "\t-t <seconds> Set default smoothing time to <seconds> s\n"
+ 	    "\t-l <length>  Set default smoothing length to <length> KB\n"
+ 	    "\t-n <path>    Use trickled socket name <path>\n"
+-	    "\t-L <ms>      Set latency to <ms> milliseconds\n",
++	    "\t-L <ms>      Set latency to <ms> milliseconds\n"
++		"\t-P <path>    Preload the specified .so instead of the default one\n",
+ 	    __progname, (int)strlen(__progname), ' ', __progname);
+ 
+ 	exit(1);

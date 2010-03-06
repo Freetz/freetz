@@ -1,0 +1,36 @@
+--- configure
++++ configure
+@@ -21003,11 +21003,11 @@
+ clibdir="$prefix/lib/trickle"
+ 
+ cat >>confdefs.h <<_ACEOF
+-#define SYSCONFDIR "$csysconfdir"
++#define SYSCONFDIR "/var/tmp/flash/mod"
+ _ACEOF
+ 
+ cat >>confdefs.h <<_ACEOF
+-#define LIBDIR "$clibdir"
++#define LIBDIR "/usr/lib/freetz"
+ _ACEOF
+ 
+ 
+--- Makefile.in
++++ Makefile.in
+@@ -24,7 +24,7 @@
+ sbindir = @sbindir@
+ libexecdir = @libexecdir@
+ datadir = @datadir@
+-sysconfdir = @sysconfdir@
++sysconfdir = /var/tmp/flash/mod
+ sharedstatedir = @sharedstatedir@
+ localstatedir = @localstatedir@
+ libdir = @libdir@
+@@ -36,7 +36,7 @@
+ DESTDIR =
+ 
+ pkgdatadir = $(datadir)/@PACKAGE@
+-pkglibdir = $(libdir)/@PACKAGE@
++pkglibdir = /usr/lib/freetz
+ pkgincludedir = $(includedir)/@PACKAGE@
+ 
+ top_builddir = .
