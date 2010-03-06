@@ -27,8 +27,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(DB_DIR)/$(DB_BUILD_SUBDIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(DB_DIR)/$(DB_BUILD_SUBDIR) \
+	$(SUBMAKE) -C $(DB_DIR)/$(DB_BUILD_SUBDIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		library_install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -42,7 +41,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(MAKE) -C $(DB_DIR)/$(DB_BUILD_SUBDIR) clean
+	-$(SUBMAKE) -C $(DB_DIR)/$(DB_BUILD_SUBDIR) clean
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdb*.so* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdb-$(DB_LIB_VERSION).a \
