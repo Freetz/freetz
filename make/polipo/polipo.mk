@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 1.0.4)
+$(call PKG_INIT_BIN, 1.0.4.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www.pps.jussieu.fr/~jch/software/files/polipo/
+$(PKG)_SITE:=http://freehaven.net/~chrisd/$(pkg)
+$(PKG)_SOURCE_MD5:=bfc5c85289519658280e093a270d6703
 $(PKG)_BINARY:=$($(PKG)_DIR)/polipo
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/polipo
-$(PKG)_SOURCE_MD5:=defdce7f8002ca68705b6c2c36c4d096
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
