@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CFGCTL=`which usbcfgctl`
+CFGCTL="$(which usbcfgctl)"
 [ -z "$CFGCTL" ] && CFGCTL=ar7cfgctl
 
 echo "### global"
@@ -37,27 +37,26 @@ fi
 
 echo "### default"
 
-if [ "`echo usbhost.samba_server_enabled | $CFGCTL -s`" = "yes" ]; then
-#if [ "$SAMBA_DEFAULT_SHARE" = "yes" ]; then
-	for SHARE in /var/media/ftp/* ; do
-	  if test -d $SHARE ; then
-		SHORTNAME=`basename $SHARE | sed s/-Partition-/-/`
-      		echo "[$SHORTNAME]"
-		echo " path = $SHARE"
-		echo " user = ftpuser"
+if [ "$(echo usbhost.samba_server_enabled | $CFGCTL -s)" = "yes" ]; then
+	for SHARE in /var/media/ftp/*; do
+		if [ -d "$SHARE" ]; then
+			SHORTNAME="$(basename "$SHARE" | sed s/-Partition-/-/)"
+			echo "[$SHORTNAME]"
+			echo " path = $SHARE"
+			echo " user = ftpuser"
 
-		if [ "$(echo usbhost.readonly | $CFGCTL -s)" != "yes" ] ; then  
-			echo " read only = no"
-		else
-			echo " read only = yes"
+			if [ "$(echo usbhost.readonly | $CFGCTL -s)" = "yes" ]; then
+				echo " read only = yes"
+			else
+				echo " read only = no"
+			fi
+
+			if [ "$(echo usbhost.password | $CFGCTL -s)" = "\"\"" ]; then
+				echo " guest ok = yes"
+			fi
+
+			echo " write cache size = 65536"
 		fi
-
-		if [ "$(echo usbhost.password | $CFGCTL -s)" = "\"\"" ] ; then
-			echo " guest ok = yes"
-		fi
-
-		echo " write cache size = 65536"
-	fi
 	done
 fi
 
@@ -75,20 +74,15 @@ if [ -r "/tmp/flash/samba/shares" ]; then
 				0|n|no|N|NO|"") ro="no"  ;;
 			esac
 			if  [ "$options" != "-" ]; then
-				options=${options//\%20/ }
-				options=${options//=/ = }
+				options="$(echo "$options" | sed -r -e 's,=, = ,g;s,(%20| )+, ,g;')"
 			else
 				options=""
 			fi
-			if [[ ! $options =~ "user =" ]]; then
-				options="$options,user = ftpuser"
-			fi
-			if [[ ! $options =~ "write cache size =" ]]; then
-				options="$options,write cache size = 65536"
-			fi
-			options=$(echo -e ${options//,/\\n })
+			echo "$options" | grep -q "user =" >/dev/null 2>&1 || options="$options,user = ftpuser"
+			echo "$options" | grep -q "write cache size =" >/dev/null 2>&1 || options="$options,write cache size = 65536"
+			options="$(echo -e "${options//,/\\n }")"
 cat << EOF
-[${name/%20/ }]
+[${name//%20/ }]
  comment = $comment
  path = $path
  guest ok = $gk
@@ -100,4 +94,3 @@ EOF
 fi
 
 echo "### fin"
-
