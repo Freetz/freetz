@@ -51,6 +51,9 @@ if [ -r /proc/sys/urlader/environment ]; then
 else
 	flash_size=$CONFIG_ROMSIZE
 fi
+if [ -x $(which run_clock) ]; then
+	run_clock=$(run_clock | sed 's/.*: //')
+fi
 
 sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware"):'
  echo '<div '$divstyle'><b>$(lang de:"Boxname" en:"Box name"):</b> '$CONFIG_PRODUKT_NAME'&nbsp;&nbsp;&nbsp;<b>ANNEX:</b> '$CONFIG_ANNEX'</div>'
@@ -65,7 +68,8 @@ sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware"):'
  fi
  echo "</div>"
  echo -n '<div '$divstyle'><b>$(lang de:"CPU-Frequenz" en:"CPU frequency"):</b> '$cpu_frequency' MHz&nbsp;&nbsp;&nbsp;'
- echo '<b>$(lang de:"Systemfrequenz" en:"System frequency"): </b> '$sys_frequency' MHz</div>'
+ echo '<b>$(lang de:"Systemfrequenz" en:"System frequency"):</b> '$sys_frequency' MHz</div>'
+ echo '<div '$divstyle'><b>Uptime:</b> '$run_clock'</div>'
 sec_end
 
 sec_begin '$(lang de:"Netzwerk" en:"Network"):'
