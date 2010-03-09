@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.41.9)
+$(call PKG_INIT_BIN, 1.41.10)
 $(PKG)_SOURCE:=e2fsprogs-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=52f60a9e19a02f142f5546f1b5681927
+$(PKG)_SOURCE_MD5:=f9c7bb5c036a119453ce02fa871038da
 $(PKG)_SITE:=@SF/e2fsprogs
 $(PKG)_DIR:=$(SOURCE_DIR)/e2fsprogs-$($(PKG)_VERSION)
 
@@ -79,6 +79,15 @@ $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/sbin/%,$(filter-out $
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 
 $(PKG)_CONFIGURE_ENV += ac_cv_path_LDCONFIG=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ldconfig
+$(PKG)_CONFIGURE_ENV += gt_cv_func_printf_posix=yes
+
+# uClibc-0.9.29 yields yes, 0.9.28 to be evaluated, it's however absolutely safe to say no
+$(PKG)_CONFIGURE_ENV += gt_cv_int_divbyzero_sigfpe=no
+
+# silence some warnings
+$(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -type f -name "*.c" \
+	-exec $(SED) -i -r -e 's|(\#define (_LARGEFILE(64)?_SOURCE))|\#ifndef \2\n\1\n\#endif|g' \{\} \+ ;
+
 
 ifneq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath

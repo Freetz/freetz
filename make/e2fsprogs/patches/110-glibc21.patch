@@ -1,0 +1,77 @@
+--- configure	2010-02-06 14:10:14.000000000 +0100
++++ configure	2010-03-09 00:00:00.000000000 +0100
+@@ -648,7 +648,6 @@
+ HAVE_SNPRINTF
+ HAVE_ASPRINTF
+ HAVE_POSIX_PRINTF
+-GLIBC21
+ ALLOCA
+ RANLIB
+ MSGMERGE
+@@ -6926,37 +6925,6 @@
+ rm -f conftest.mmap
+ 
+ 
+-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether we are using the GNU C Library 2.1 or newer" >&5
+-$as_echo_n "checking whether we are using the GNU C Library 2.1 or newer... " >&6; }
+-if test "${ac_cv_gnu_library_2_1+set}" = set; then :
+-  $as_echo_n "(cached) " >&6
+-else
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-#include <features.h>
+-#ifdef __GNU_LIBRARY__
+- #if (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 1) || (__GLIBC__ > 2)
+-  Lucky GNU user
+- #endif
+-#endif
+-
+-_ACEOF
+-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-  $EGREP "Lucky GNU user" >/dev/null 2>&1; then :
+-  ac_cv_gnu_library_2_1=yes
+-else
+-  ac_cv_gnu_library_2_1=no
+-fi
+-rm -f conftest*
+-
+-
+-
+-fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_gnu_library_2_1" >&5
+-$as_echo "$ac_cv_gnu_library_2_1" >&6; }
+-
+-    GLIBC21="$ac_cv_gnu_library_2_1"
+ 
+ 
+ 
+--- intl/Makefile.in	2009-08-13 03:39:57.000000000 +0200
++++ intl/Makefile.in	2010-03-09 00:00:00.000000000 +0100
+@@ -308,7 +308,7 @@
+ 	  : ; \
+ 	fi
+ 	if test '@USE_INCLUDED_LIBINTL@' = yes; then \
+-	  test @GLIBC21@ != no || $(mkinstalldirs) $(DESTDIR)$(libdir); \
++	  $(mkinstalldirs) $(DESTDIR)$(libdir); \
+ 	  temp=$(DESTDIR)$(libdir)/t-charset.alias; \
+ 	  dest=$(DESTDIR)$(libdir)/charset.alias; \
+ 	  if test -f $(DESTDIR)$(libdir)/charset.alias; then \
+@@ -317,7 +317,7 @@
+ 	    $(INSTALL_DATA) $$temp $$dest; \
+ 	    rm -f $$temp; \
+ 	  else \
+-	    if test @GLIBC21@ = no; then \
++	    if test yes = no; then \
+ 	      orig=charset.alias; \
+ 	      sed -f ref-add.sed $$orig > $$temp; \
+ 	      $(INSTALL_DATA) $$temp $$dest; \
+@@ -377,7 +377,7 @@
+ 	  : ; \
+ 	fi
+ 	if test '@USE_INCLUDED_LIBINTL@' = yes; then \
+-	  test @GLIBC21@ != no || $(mkinstalldirs) $(DESTDIR)$(libdir); \
++	  $(mkinstalldirs) $(DESTDIR)$(libdir); \
+ 	  $(mkinstalldirs) $(DESTDIR)$(localedir); \
+ 	else \
+ 	  : ; \
