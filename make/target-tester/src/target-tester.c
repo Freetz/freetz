@@ -38,6 +38,9 @@
 #include <strings.h>
 //#include <snprintf.h>
 
+#include <sys/syscall.h>
+#include <unistd.h>
+
 struct cookiedata {
     __off64_t pos;
 };
@@ -121,6 +124,7 @@ int main(int argc, char** argv) {
 	printf("sizeof(mbstate_t)=%d\n", sizeof(mbstate_t));
 	printf("sizeof(__off64_t)=%d\n", sizeof(__off64_t));
 
+#ifdef __cplusplus
 	{
 	    printf("cv_type_of_bool=");
     	    bool x = true;
@@ -135,6 +139,7 @@ int main(int argc, char** argv) {
 	    else if (sizeof(x) == sizeof(long))
 		printf("long\n");
 	}
+#endif
 
 	{
 	    struct pollfd myfds;
@@ -162,12 +167,14 @@ int main(int argc, char** argv) {
 	    printf("\nac_cv_write_stdout=%s\n", (n == sizeof(TEXT)-1) ? "yes" : "no");
 	}
 
+#ifdef __cplusplus
 	{
 	    cookie_io_functions_t funcs = {reader, writer, seeker, closer};
 	    struct cookiedata g = { 0 };
 	    FILE *fp = fopencookie(&g, "r", funcs);
 	    printf("cookie_io_functions_use_off64_t=%s\n", (fp && fseek(fp, 8192, SEEK_SET) == 0 && g.pos == 8192) ? "yes" : "no");
 	}
+#endif
 
 	{
 	    struct stat s, t;
@@ -268,7 +275,7 @@ int main(int argc, char** argv) {
 	{
 	    char s[16];
 	    int i, result, code;
-	
+
 	    for (i=0; i<(int)(sizeof(s)/sizeof(char)); i++)
 		s[i] = 'x';
 	    result = (int)snprintf(s + 1, 10, "%s %s!", "hello", "world");
@@ -288,5 +295,25 @@ int main(int argc, char** argv) {
 	    char s[8];
 	    int result = (int)snprintf(s, sizeof(s) - 1, "%d", 22);
 	    printf("wi_cv_snprintf_returns_ptr=%s\n", (result == 2) ? "no" : "yes");
+	}
+
+#if 0
+	{
+	    //doesn't compile -> no
+	    int test_SYS = SYS_ioprio_set;
+	    int test_NR = _NR_ioprio_set;
+	}
+#endif
+
+	{
+	    /* The string "%2$d %1$d", with dollar characters protected from the shell's
+	    dollar expansion (possibly an autoconf bug). */
+	    static char format[] = { '%', '2', '$', 'd', ' ', '%', '1', '$', 'd', '\0' };
+	    static char buf[100];
+	    int code;
+
+	    sprintf(buf, format, 33, 55);
+	    code = (strcmp (buf, "55 33") == 0);
+	    printf("gt_cv_func_printf_posix=%s\n", code ? "yes" : "no");
 	}
 }
