@@ -640,6 +640,7 @@ $(PKG)_FREETZ_CHANGES_CHECK:
 			if [ ! -z $$$$PATTERN ]; then \
 				if [ "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE)`" != "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_TEMP)`" ]; then \
 					mv $($(PKG)_FREETZ_CHANGES_TEMP) $($(PKG)_FREETZ_CHANGES_FILE); \
+					echo "CHANGES FOUND: DELETING NOW"; \
 					[ $$$$i = 1 ] && $(RM) -r $($(PKG)_DIR); \
 					$($(PKG)_CLEAN_TARGET_DIR__INT) \
 					break; \
@@ -651,6 +652,7 @@ $(PKG)_FREETZ_CHANGES_CHECK:
 	fi
 	@$(RM) $($(PKG)_FREETZ_CHANGES_TEMP)
 $(pkg)-precompiled: $(PKG)_FREETZ_CHANGES_CHECK
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(PKG)_FREETZ_CHANGES_CHECK
 .PHONY: $(PKG)_FREETZ_CHANGES_CHECK
 endef
 
