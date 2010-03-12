@@ -35,7 +35,7 @@ dfout=$(df -h | sed -e '1d' | sed -n ':a;$!N;$!ba;s/\n  */ /g;p')
 mfilt=$(mount|grep -E "^/dev/sd|^/dev/mapper/|^https://|^http://|^.* on .* type jffs|^.* on .* type fuse|^.* on .* type cifs|^.*:/.* on .* type nfs")
 if [ ! -z "$mfilt" ]
 then
-	echo '<table border="0" colspacing="0" colpadding="0" style="border-spacing:0px; table-layout:fixed; padding-right:5px;">'
+	echo '<table border="0" colspacing="0" colpadding="0" style="border-spacing:0px; table-layout:fixed; width: 100%;">'
 	echo "$mfilt" | while read -r device null1 path null2 fstyp mountopts
 	do
 		echo "$dfout" | grep -m 1 $path | sed -e "s/\(% [^ ]*\) /\1\n/g" | while read -r device total used free percent path
