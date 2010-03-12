@@ -347,7 +347,7 @@ $(PKG)_CONFIGURE_DEFOPTS:=y
 # $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
 $(pkg)-precompiled: $(pkg)-precompiled--int $(pkg)-clean-echo-item $(pkg) $(pkg)-clean-not-included--int
 $(pkg)-clean-echo-item:
-	$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD)
+	@$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD)
 .PHONY: $(pkg)-clean-echo-item $(pkg)-precompiled $(pkg)-precompiled--int $(pkg) $(pkg)-clean-not-included--int
 endef
 
@@ -651,7 +651,7 @@ $(PKG)_FREETZ_CHANGES_CHECK:
 			if [ ! -z $$$$PATTERN ]; then \
 				if [ "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE)`" != "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_TEMP)`" ]; then \
 					mv $($(PKG)_FREETZ_CHANGES_TEMP) $($(PKG)_FREETZ_CHANGES_FILE); \
-					[ $$$$i = 1 ] && $(RM) -r $($(PKG)_DIR); \
+					[ $$$$i = 1 ] && echo Delete Sources ... && $(RM) -r $($(PKG)_DIR); \
 					$($(PKG)_CLEAN_TARGET_DIR__INT) \
 					break; \
 				fi \
@@ -661,8 +661,7 @@ $(PKG)_FREETZ_CHANGES_CHECK:
 		mv $($(PKG)_FREETZ_CHANGES_TEMP) $($(PKG)_FREETZ_CHANGES_FILE); \
 	fi
 	@$(RM) $($(PKG)_FREETZ_CHANGES_TEMP)
-$(pkg)-precompiled: $(PKG)_FREETZ_CHANGES_CHECK
-$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(PKG)_FREETZ_CHANGES_CHECK
+$(pkg) $(pkg)-precompiled: $(PKG)_FREETZ_CHANGES_CHECK
 .PHONY: $(PKG)_FREETZ_CHANGES_CHECK
 endef
 
