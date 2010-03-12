@@ -10,17 +10,18 @@ notdefined='$(lang de:"unbekannt" en:"unknown")'
 divstyle="style='margin-top:6px;'"
 
 if [ -r /var/env ]; then
-	var_env=$(cat /var/env)
-	loaderversion=$(echo "$var_env" | grep bootloaderVersion | sed -e "s/bootloaderVersion\t//")
-	cpu_frequency=$(($(echo "$var_env" | grep cpufrequency | sed -e "s/cpufrequency\t//")/1000000))
-	sys_frequency=$(($(echo "$var_env" | grep sysfrequency | sed -e "s/sysfrequency\t//")/1000000))
-	ip_init_address=$(echo "$var_env" | grep my_ipaddress | sed -e "s/my_ipaddress\t//")
-	mac_addresses=$(echo "$var_env" | grep -E "(^mac)" | sed -e "s/\(^mac[^\t]*\)\t\(.*\)/\1: \2/g")
-	mac_lan=$(echo "$mac_addresses" | grep "maca" | sed -e 's/maca: //')
-	mac_dsl=$(echo "$mac_addresses" | grep "macdsl" | sed -e 's/macdsl: //')
-	mac_wlan=$(echo "$mac_addresses" | grep "macwlan" | sed -e 's/macwlan: //')
+	while read -r key value; do
+		case $key in
+			bootloaderVersion) loaderversion=$value ;;
+			cpufrequency)	let cpu_frequency=value/1000000 ;;	
+			sysfrequency)	let sys_frequency=value/1000000 ;;
+			my_ipaddress)	ip_init_address=$value ;;
+			maca)		mac_lan=$value ;;
+			macdsl)		mac_dsl=$value ;;
+			macwlan)	mac_wlan=$value ;;
+		esac
+	done < /var/env
 else
-	var_env=""
 	loaderversion=$notdefined
 	cpu_frequency=$notdefined
 	sys_frequency=$notdefined
@@ -30,14 +31,14 @@ else
 	mac_wlan=$notdefined
 fi
 if [ -r /proc/cpuinfo ]; then
-	cpu_family="$(grep 'system type' /proc/cpuinfo | sed -e 's/.*: //')"
-	cpu_model="$(grep 'cpu model' /proc/cpuinfo | sed -e 's/.*: //')"
+	cpu_family="$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo)"
+	cpu_model="$(sed -ne '/cpu model/ s/.*: //p' /proc/cpuinfo)"
 else
 	cpu_family=""
 	cpu_model=""
 fi
 if [ -r /etc/version ]; then
-	avm_date=$(grep "export FIRMWARE_DATE" /etc/version | sed -e 's/export FIRMWARE_DATE\="\(.*\)"/\1/')
+	avm_date=$(sed -ne 's/^export FIRMWARE_DATE\="\(.*\)"/\1/p' /etc/version)
 else
 	avm_date=$notdefined
 fi
@@ -47,7 +48,7 @@ else
 	avm_revision=$notdefined
 fi
 if [ -r /proc/sys/urlader/environment ]; then
-	flash_size=$(($(grep flashsize /proc/sys/urlader/environment | sed -e "s/flashsize.\([0-9x].*\)/\1/") / 1048576))
+	flash_size=$(($(sed -ne "s/^flashsize.\([0-9x].*\)/\1/p" /proc/sys/urlader/environment) / 0x100000))
 else
 	flash_size=$CONFIG_ROMSIZE
 fi
@@ -99,7 +100,7 @@ sec_end
 if [ -r /var/env.cache ]; then
 	sec_begin '$(lang de:"Umgebungsvariablen" en:"Environment variables"):'
 		echo -n '<textarea style="margin-top:6px; width: '$_width'px;" name="content" rows="5" cols="10" wrap="off" readonly>'
-		cat /var/env.cache | sed -e "s/^export //g"
+		sed -e "s/^export //g" /var/env.cache | html
 		echo -n '</textarea>'
 	sec_end
 fi

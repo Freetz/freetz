@@ -79,7 +79,7 @@ if [ "$editor_base" == "wrap_editors" ]; then
 	echo "error: don't call 'wrap_editors' directly, but via symlink" >&2
 	exit 1
 fi
-editor_base=$(echo "$editor_base" | sed 's/^.//')
+editor_base=${editor_base#?}
 local editor=$(which $editor_base)
 if [ ! -x "$editor" ]; then
 	echo "error: editor '$editor_base' not found or not executable" >&2
