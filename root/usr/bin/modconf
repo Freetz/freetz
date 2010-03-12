@@ -12,7 +12,7 @@ TMPFILE=$TMP/.conf.tmp.$$
 trap "rm -f $TMPFILE" EXIT
 
 case "$1" in
-	set|load|save|default|vars)
+	set|load|save|default|vars|show)
 		cfg=/mod/etc/conf/$2.cfg
 		diff=$FLASH/$2.diff
 		default=/mod/etc/default.$2/$2.cfg
@@ -133,8 +133,11 @@ EOF
 		alias export=list
 		. "$default"
 		;;
+	show)
+		cat "$cfg"
+		;;
 	*)
-		echo "Usage: $0 {load|save|default|set|vars} <package-name>" 1>&2
+		echo "Usage: $0 {load|save|default|set|vars|show} <package-name>" 1>&2
 		echo "       $0 {merge|diff} <conf-file>" 1>&2
 		exit 1
 esac
