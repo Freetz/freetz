@@ -162,52 +162,39 @@ EOF
 }
 
 show_perc() {
-	if [ $# -ge 1 ]
-	then
-       	if [ $1 -gt 3 ]
-		then
-        	echo "<small>$1%</small>"
-        else
-        	echo ""
-        fi
+	if [ $# -ge 1 -a "$1" -gt 3 ]; then
+		echo "<small>$1%</small>"
 	else
 		echo ""
 	fi
 }
 
 stat_bar() {
-	barwidth=`expr $_cgi_width - 230 - 10`
-	divwidth=`expr $barwidth + 1`
-	narg=$#
-	outhtml=$(echo -n '<div class="bar" style="width:'$divwidth'px;">')
-	if [ $narg -gt 1 ]
-	then
-		barstyle=$1
-		nperc=`expr $narg - 1`
-		iperc=1
-		sumpercent=0
-		sumbar=0
-		while ! [ $iperc -gt $nperc ]
-		do
-        	ipercnew=`expr $iperc + 1`
-        	percent=$(eval echo '$'$ipercnew)
-			let actbar="$percent*$barwidth/100"
-			outhtml=$(echo -n $outhtml'<div class="'$barstyle$iperc'" style="left:'"$sumbar"'px; width:'"$actbar"'px;">'$(show_perc $percent)'</div>')
-			sumpercent=`expr $sumpercent + $percent`
-			sumbar=`expr $sumbar + $actbar`
-        	iperc=$ipercnew
-		done
+	let barwidth="_cgi_width - 230 - 10"
+	let divwidth="barwidth + 1"
+	outhtml="<div class='bar' style='width: ${divwidth}px;'>"
+
+	if [ $# -gt 1 ]; then
+		barstyle=$1; shift
 	else
-		barstyle="br"; percent=$1; sumpercent=$percent
-		let actbar="$percent*$barwidth/100"; sumbar=$actbar
-		outhtml=$(echo -n $outhtml'<div class="'$barstyle'1" style="width:'"$actbar"'px;">'$(show_perc $percent)'</div>')
+	    	barstyle="br"
 	fi
-	if [ $sumpercent -le 100 ]
-	then
-		echo $outhtml
-		inactpercent=`expr 100 - $sumpercent`
- 		inactbar=`expr $barwidth - $sumbar`
-		echo -n '<div class="'$barstyle'0" style="left:'"$sumbar"'px; width:'"$inactbar"'px;">'$(show_perc $inactpercent)'</div>'
+
+	iperc=1
+	sumpercent=0
+	sumbar=0
+	for percent; do
+		let actbar="percent*barwidth/100"
+		outhtml="$outhtml<div class='$barstyle$iperc' style='left: ${sumbar}px; width: ${actbar}px;'>$(show_perc $percent)</div>"
+		let sumpercent+=percent
+		let sumbar+=actbar
+		let iperc++
+	done
+	if let "sumpercent < 100"; then
+		echo "$outhtml"
+		let inactpercent="100 - sumpercent"
+ 		let inactbar="barwidth - sumbar"
+		echo -n "<div class='${barstyle}0' style='left: ${sumbar}px; width: ${inactbar}px;'>$(show_perc $inactpercent)</div>"
 		echo '</div>'
 	else
 		echo 'ERROR stat_bar: SUM > 100%'
