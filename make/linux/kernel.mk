@@ -77,35 +77,40 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 	@for i in $(KERNEL_LINKING_FILES); do \
 		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; then \
-			$(call MESSAGE, Linking  .../include/linux/$${i##*\/linux_}); \
+			$(call MESSAGE, Linking  $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}); \
 			ln -sf ../../$$i $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; \
 		fi \
 	done
 	@if test -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/avm_net_trace.h -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; then \
-			$(call MESSAGE, Linking  .../include/linux/avm_net_trace.h); \
+			$(call MESSAGE, Linking  $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h); \
 			ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
 				$(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; \
 	fi
-	@for i in $(KERNEL_DUMMY_MAKE_FILES); do \
-		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile.26 -a \
-		! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
-			$(call MESSAGE, Linking  .../$$i/Makefile); \
-			ln -sf Makefile.26 $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
+	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Makefile.26 -printf '%h\n'); do \
+		if test ! -e $$i/Makefile ; then \
+			$(call MESSAGE, Linking  $$i/Makefile); \
+			ln -sf Makefile.26 $$i/Makefile; \
 		fi \
 	done
-	@for i in $(KERNEL_DUMMY_DIRS); do \
-		if test ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile ; then \
-			$(call MESSAGE, Creating .../$$i/Makefile); \
-			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$$i; \
-			test -h $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile && \
-				rm $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
-			touch $(KERNEL_BUILD_ROOT_DIR)/$$i/Makefile; \
-		fi \
+	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Makefile -exec grep -oe '.*obj-$$(.*).*=.*/' {} '+'| \
+		sed 's/\(.*\)#.*/\1/g;s/\(.*:\).*[:+]=\(.*\)/\1\2/g;s/[ \t]/|/g'|sort -u); do \
+		paths=$$(echo "$${i##*:}"|sed -e "s/|/ /g"); folder=$${i%%:*}; folder=$${folder%/*}; \
+		for f in $$paths ; do \
+			if [[ $$f == */* ]]; then \
+				if test ! -e $$folder/$${f}Makefile; then \
+					$(call MESSAGE, Creating $$folder/$${f}Makefile); \
+					mkdir -p $$folder/$$f; \
+					[ -h $$folder/$${f}Makefile ] && rm $$folder/$${f}Makefile; \
+					touch $$folder/$${f}Makefile; \
+				fi \
+			fi \
+		done \
 	done
-	@for i in $(KERNEL_OTHER_FILES); do \
+	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Kconfig -exec grep -hs "source.*Kconfig" {}a '+'| \
+		sed -e 's/\(.*\)#.*/\1/g;s/.*source //g;s/"//g'|sort -u); do \
 		if test ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i ; then \
-			$(call MESSAGE, Creating  .../$$i); \
+			$(call MESSAGE, Creating $(KERNEL_BUILD_ROOT_DIR)/$$i); \
 			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$${i%\/*}; \
 			test -h $(KERNEL_BUILD_ROOT_DIR)/$$i && \
 				rm $(KERNEL_BUILD_ROOT_DIR)/$$i; \
