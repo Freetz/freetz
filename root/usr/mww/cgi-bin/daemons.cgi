@@ -15,79 +15,72 @@ stat_button() {
 }
 
 stat_packagelink() {
-	if [ "$1" = "crond" -o "$1" = "swap" -o "$1" = "telnetd" -o "$1" = "webcfg" ]; then
-		echo '<a href="'"$SETTINGSURL"'">'"$2"'</a>'
-	else
- 		echo '<a href="'"$PACKAGEURL$1"'">'"$2"'</a>'
-	fi
-}
-
-set_var_def() {
-	if [ -n "$2" ]; then
-		echo "$2"
-	else
-		echo "$1"
-	fi
+	local url
+	case $1 in
+		crond|swap|telnetd|webcfg) url="$SETTINGSURL" ;;
+		*) url="$PACKAGEURL$1" ;;
+	esac
+	echo "<a href='$url'>$2</a>"
 }
 
 stat_line() {
 	pkg=$1
-	name=$(set_var_def "$pkg" "$2")
-	rcfile="/mod/etc/init.d/$(set_var_def "rc.$pkg" "$3")"
-	disable=$(set_var_def false "$4")
-	hide=$(set_var_def false "$5")
-	config_pkg=$(set_var_def "$pkg" "$6")
-	if ! $hide ; then
-		status="$("$rcfile" status 2> /dev/null)"
-		case "$status" in
-			running)
-				color="#008000"
-				start=false; stop=true
-				;;
-			stopped)
-				color="#800000"
-				start=true; stop=false
-				;;
-			inetd)
-				case "$inetd_status" in
-					running)
-						color="#008000"
-						;;
-					stopped)
-						color="#800000"
-						;;
-					none)
-						color="#808080"
-						inetd_status='<i>none</i>'
-						;;
-					*)	color="#000000"
-						;;
-				esac
-				status="$inetd_status ($status)"
-				start=false; stop=false
-				;;
-			none)
-				status='<i>none</i>'
-				color="#808080"
-				start=true; stop=false
-				;;
-			*)
-				color="#000000"
-				start=true; stop=true
-				;;
-		esac
-		echo '<tr>'
-		echo '<td width="180">'$(stat_packagelink $config_pkg $name)'</td><td style="color: '"$color"';" width="120">'"$status"'</td>'
+	name=${2:-$pkg}
+	rcfile=/mod/etc/init.d/${3:-rc.$pkg}
+	disable=${4:-false}
+	hide=${5:-false}
+	config_pkg=${6:-$pkg}
+	if $hide; then return; fi
 
-		if $disable ; then
-			start=false; stop=false;
-		fi
-		stat_button $pkg start $start
-		stat_button $pkg stop $stop
-		stat_button $pkg restart $stop
+	status=$("$rcfile" status 2> /dev/null)
+	case $status in
+		running)
+			color="#008000"
+			start=false; stop=true
+			;;
+		stopped)
+			color="#800000"
+			start=true; stop=false
+			;;
+		inetd)
+			case $inetd_status in
+				running)
+					color="#008000"
+					;;
+				stopped)
+					color="#800000"
+					;;
+				none)
+					color="#808080"
+					inetd_status='<i>none</i>'
+					;;
+				*)	color="#000000"
+					;;
+			esac
+			status="$inetd_status ($status)"
+			start=false; stop=false
+			;;
+		none)
+			status='<i>none</i>'
+			color="#808080"
+			start=true; stop=false
+			;;
+		*)
+			color="#000000"
+			start=true; stop=true
+			;;
+	esac
+	echo '<tr>'
+	echo '<td width="180">'$(stat_packagelink $config_pkg $name)'</td><td style="color: '"$color"';" width="120">'"$status"'</td>'
 
-		echo '</tr>'
+	if $disable ; then
+		start=false; stop=false;
 	fi
+	stat_button $pkg start $start
+	stat_button $pkg stop $stop
+	stat_button $pkg restart $stop
+
+	echo '</tr>'
 }
 
 stat_end() {
@@ -112,9 +105,9 @@ stat_static() {
 	stat_begin
 
         if [ -r /mod/etc/reg/daemon.reg ]; then
-		cat /mod/etc/reg/daemon.reg | while IFS='|' read -r pkg name rcscript disable hide parentpkg; do
+		while IFS='|' read -r pkg name rcscript disable hide parentpkg; do
 			stat_line "$pkg" "$name" "$rcscript" $disable $hide "$parentpkg"
-		done
+		done < /mod/etc/reg/daemon.reg
 	fi
 	if [ ! -s /mod/etc/reg/daemon.reg ]; then
 		echo '<p><i>$(lang de:"keine statischen Pakete" en:"no static packages")</i></p>'
@@ -134,20 +127,20 @@ stat_dynamic() {
 
 cgi_begin '$(lang de:"Dienste" en:"Services")' 'daemons'
 
-view="$(echo "$QUERY_STRING" | sed -e 's/^.*view=//' -e 's/&.*$//' -e 's/\.//g')"
+view=$(echo "$QUERY_STRING" | sed -e 's/^.*view=//' -e 's/&.*$//' -e 's/\.//g')
 
 if [ -e /etc/default.inetd/inetd.cfg ]; then
 	inetd=true
 else
 	inetd=false
 fi
-if [ "true" == "$inetd" ]; then
-	inetd_status="$(/etc/init.d/rc.inetd status 2> /dev/null)"
+if $inetd; then
+	inetd_status=$(/etc/init.d/rc.inetd status 2> /dev/null)
 fi
 
 # comment out dynamic packages until we implemented it
 
-case "$view" in
+case $view in
 	"")
 		stat_builtin
 		stat_static
