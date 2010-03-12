@@ -163,40 +163,34 @@ EOF
 
 show_perc() {
 	if [ $# -ge 1 -a "$1" -gt 3 ]; then
-		echo "<small>$1%</small>"
-	else
-		echo ""
+		echo "$1%"
 	fi
 }
 
 stat_bar() {
-	let barwidth="_cgi_width - 230 - 10"
-	let divwidth="barwidth + 1"
-	outhtml="<div class='bar' style='width: ${divwidth}px;'>"
-
+    	local barstyle="br"
 	if [ $# -gt 1 ]; then
 		barstyle=$1; shift
-	else
-	    	barstyle="br"
 	fi
 
-	iperc=1
-	sumpercent=0
-	sumbar=0
+	outhtml="<ul class='bar $barstyle'>"
+
+	local i=1
+	local sum=0
 	for percent; do
-		let actbar="percent*barwidth/100"
-		outhtml="$outhtml<div class='$barstyle$iperc' style='left: ${sumbar}px; width: ${actbar}px;'>$(show_perc $percent)</div>"
-		let sumpercent+=percent
-		let sumbar+=actbar
-		let iperc++
+	    	stat_bar_add_part $i $percent
+		let i++
 	done
-	if let "sumpercent < 100"; then
-		echo "$outhtml"
-		let inactpercent="100 - sumpercent"
- 		let inactbar="barwidth - sumbar"
-		echo -n "<div class='${barstyle}0' style='left: ${sumbar}px; width: ${inactbar}px;'>$(show_perc $inactpercent)</div>"
-		echo '</div>'
+	if let "sum < 100"; then
+	    	stat_bar_add_part 0 $((100 - sum))
+		echo "$outhtml</ul>'
 	else
 		echo 'ERROR stat_bar: SUM > 100%'
 	fi
 }
+stat_bar_add_part() {
+    	local n=$1 percent=$2
+	outhtml="$outhtml<li class='part$n' style='width: ${percent}%;'>$(show_perc $percent)</li>"
+	let sum+=percent
+}
+
