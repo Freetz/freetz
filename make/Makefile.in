@@ -651,7 +651,7 @@ $(PKG)_FREETZ_CHANGES_CHECK:
 			if [ ! -z $$$$PATTERN ]; then \
 				if [ "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE)`" != "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_TEMP)`" ]; then \
 					mv $($(PKG)_FREETZ_CHANGES_TEMP) $($(PKG)_FREETZ_CHANGES_FILE); \
-					[ $$$$i = 1 ] && echo Delete Sources ... && $(RM) -r $($(PKG)_DIR); \
+					[ $$$$i = 1 ] $(RM) -r $($(PKG)_DIR); \
 					$($(PKG)_CLEAN_TARGET_DIR__INT) \
 					break; \
 				fi \
