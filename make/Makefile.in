@@ -202,10 +202,21 @@ PKG_FIX_LIBTOOL_LA = sed -i -r $(foreach key,libdir includedir prefix exec_prefi
 #     $(PKG)_CONFIGURE_PRE_CMDS += $(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC) ./configure ;
 #  3. Fix both 1 and 2 at the same time - the most commonly used case
 #     $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+#
+#
+# Replace hardcode_into_libs=something with hardcode_into_libs=no
 PKG_FIX_HARDCODE_INTO_LIBS = $(SED) -i -r -e "s|(hardcode_into_libs)=.+$$$$|\1=no|g"
-PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC = $(SED) -i -r \
-    -e "s|(hardcode_libdir_flag_spec[_A-Za-z0-9]*)='[^']*--rpath[^']*'|\1=' -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__ '|g" \
-    -e 's|[$$$$][{]wl[}]-rpath [$$$$][{]wl[}][$$$$]libdir| -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__ |g'
+#
+# In all lines matching the pattern hardcode_libdir_flag_spec[_A-Za-z0-9]*=
+# replace
+#   ${wl}-rpath,$libdir
+#   ${wl}--rpath,$libdir
+#   ${wl}-rpath ${wl}$libdir
+#   ${wl}--rpath ${wl}$libdir
+# with
+#   -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__
+PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC = $(SED) -i -r -e '/hardcode_libdir_flag_spec[_A-Za-z0-9]*=/s/[$$$$][{]wl[}]-?-rpath(,| [$$$$][{]wl[}])[$$$$]libdir/ -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__ /g'
+#
 PKG_PREVENT_RPATH_HARDCODING__INT = cp -a $1 $1.no_rpath_fix; $(PKG_FIX_HARDCODE_INTO_LIBS) $1 ; $(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC) $1 ;
 PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODING__INT,$(f)))
 
