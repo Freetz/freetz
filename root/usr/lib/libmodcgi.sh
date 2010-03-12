@@ -80,6 +80,7 @@ Content-type: text/html; charset=iso-8859-1
 <meta http-equiv="Pragma" content="no-cache">
 <title>Freetz - $1</title>
 <link rel="stylesheet" type="text/css" href="/style.css">
+<link rel="stylesheet" type="text/css" href="/style-colorscheme.css">
 EOF
 
 # custom style for fieldset and div.body
@@ -183,7 +184,7 @@ stat_bar() {
 	done
 	if let "sum < 100"; then
 	    	stat_bar_add_part 0 $((100 - sum))
-		echo "$outhtml</ul>'
+		echo "$outhtml</ul>"
 	else
 		echo 'ERROR stat_bar: SUM > 100%'
 	fi
