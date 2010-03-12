@@ -20,6 +20,7 @@ if [ "$DAVFS2_MOUNTPOINT1" != "" ]; then
   if [ "$DAVFS2_SERVERCERT1" == "yes" ]; then
     echo "servercert /var/tmp/flash/davfs_servercrt1.pem" >> /var/davfs2/davfs2_1.conf
   fi
+  echo "askauth 0" >> /var/davfs2/davfs2_1.conf
   chmod 0600 /var/davfs2/secrets_1
   echo "mount $DAVFS2_HOST1..."
   mkdir -p $DAVFS2_MOUNTPOINT1 2>/dev/null
@@ -31,6 +32,7 @@ if [ "$DAVFS2_MOUNTPOINT2" != "" ]; then
   if [ "$DAVFS2_SERVERCERT2" == "yes" ]; then
     echo "servercert /var/tmp/flash/davfs_servercrt2.pem" >> /var/davfs2/davfs2_2.conf
   fi
+  echo "askauth 0" >> /var/davfs2/davfs2_2.conf
   chmod 0600 /var/davfs2/secrets_2
   echo "mount $DAVFS2_HOST2..."
   mkdir -p $DAVFS2_MOUNTPOINT2 2>/dev/null
@@ -42,6 +44,7 @@ if [ "$DAVFS2_MOUNTPOINT3" != "" ]; then
   if [ "$DAVFS2_SERVERCERT3" == "yes" ]; then
     echo "servercert /var/tmp/flash/davfs_servercrt3.pem" >> /var/davfs2/davfs2_3.conf
   fi
+  echo "askauth 0" >> /var/davfs2/davfs2_3.conf
   chmod 0600 /var/davfs2/secrets_3
   echo "mount $DAVFS2_HOST3..."
   mkdir -p $DAVFS2_MOUNTPOINT3 2>/dev/null
