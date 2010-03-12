@@ -132,12 +132,12 @@ replace_section() # replaces sections (functions, subroutines)
 VERSION="1.0"
 FILTSTRING='/tmp/filtered_string'
 OUTSTRING='/tmp/patcher_outstring'
-local input_file
-local output_file
-local section_name
-local new_string
-local operation
-local search_function
+unset input_file
+unset output_file
+unset section_name
+unset new_string
+unset operation
+unset search_function
 
 [ $# -lt 4 -a "$1" != "-h" -a "$1" != "--help" ] && { echo "ERROR: Not enoug arguments!\n" ; usage ; exit 1 ; }
 
