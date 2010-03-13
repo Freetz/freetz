@@ -92,7 +92,7 @@ cached=$(meminfo Cached)
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
 let perc_buff="100*cached/total"
-echo '<div>'$usedwc' KB (+ '$cached' KB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") '$total' KB $(lang de:"belegt" en:"used"), '$free' KB $(lang de:"frei" en:"free")</div>'
+echo '<div>'$usedwc' kB (+ '$cached' kB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") '$total' kB $(lang de:"belegt" en:"used"), '$free' kB $(lang de:"frei" en:"free")</div>'
 stat_bar "br" $percent $perc_buff
 
 sec_end
@@ -104,7 +104,7 @@ percent=${percent#fill=}
 let tffs_size="0x$(awk '/tffs/ { print $2; exit }' /proc/mtd)/1024"
 let tffs_used="tffs_size*percent/100"
 tffs_free=`expr $tffs_size - $tffs_used`
-echo '<div>'$tffs_used' KB $(lang de:"von" en:"of") '$tffs_size' KB $(lang de:"belegt" en:"used"), '$tffs_free' KB $(lang de:"frei" en:"free")</div>'
+echo '<div>'$tffs_used' kB $(lang de:"von" en:"of") '$tffs_size' kB $(lang de:"belegt" en:"used"), '$tffs_free' kB $(lang de:"frei" en:"free")</div>'
 stat_bar $percent
 
 sec_end
@@ -117,7 +117,7 @@ cached=$(meminfo SwapCached)
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
 let perc_buff="100*cached/total"
-echo '<div>'$usedwc' KB (+ '$cached' KB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") '$total' KB $(lang de:"belegt" en:"used"), '$free' KB $(lang de:"frei" en:"free")</div>'
+echo '<div>'$usedwc' kB (+ '$cached' kB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") '$total' kB $(lang de:"belegt" en:"used"), '$free' kB $(lang de:"frei" en:"free")</div>'
 stat_bar "br" $percent $perc_buff
 sec_end
 fi
