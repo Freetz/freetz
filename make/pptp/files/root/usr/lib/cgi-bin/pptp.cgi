@@ -23,9 +23,10 @@ sec_end
 sec_begin '$(lang de:"Konfigurationsdateien" en:"Configuration files")'
 
 cat << EOF
-<br>
+<ul>
 <li><a href="/cgi-bin/file.cgi?id=chap_secrets">PPPD: $(lang de:"chap-secrets bearbeiten" en:"edit chap-secrets")</a></li>
 <li><a href="/cgi-bin/file.cgi?id=pptp_options">PPTP: $(lang de:"options.pptp bearbeiten" en:"edit options.pptp")</a></li>
+</ul>
 EOF
 #<li><a href="/cgi-bin/file.cgi?id=pap_secrets">PPP: pap-secrets bearbeiten</a></li>
 #<li><a href="/cgi-bin/file.cgi?id=options">PPP: options bearbeiten</a></li>
