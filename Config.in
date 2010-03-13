@@ -1702,6 +1702,9 @@ config FREETZ_REMOVE_VOIP_ISDN
 		FREETZ_HAS_PHONE
 	select FREETZ_REMOVE_DECT if FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
 	select FREETZ_REMOVE_VOIPD
+	select FREETZ_REMOVE_DTRACE
+	select FREETZ_REMOVE_CAPIOVERTCP
+	select FREETZ_REMOVE_MINID
 	default n
 	help
 		Radically remove a lot of telephony-related files. This patch saves about
