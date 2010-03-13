@@ -168,6 +168,12 @@ case "$1" in
 	""|load)
 		modreg cgi 'cpmaccfg' 'Cpmaccfg'
 		modreg daemon --hide cpmaccfg
+		
+		if [ "$CPMACCFG_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+		start
 		;;
 	unload)
 		modunreg cgi 'cpmaccfg'
