@@ -127,7 +127,7 @@ stat_dynamic() {
 
 cgi_begin '$(lang de:"Dienste" en:"Services")' 'daemons'
 
-view=$(echo "$QUERY_STRING" | sed -e 's/^.*view=//' -e 's/&.*$//' -e 's/\.//g')
+view=$(cgi_param view | tr -d .)
 
 if [ -e /etc/default.inetd/inetd.cfg ]; then
 	inetd=true

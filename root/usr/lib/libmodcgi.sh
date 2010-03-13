@@ -17,10 +17,17 @@ html() {
 		'
 	else
 		case $* in
-			*[\&\<\>\'\"]*) httpd -e "$*" ;;
+			*[\&\<\>\'\"]*) httpd -e "$*" ;; #'
 			*) echo "$*" ;;
 		esac
 	fi
+}
+
+_cgi_id() {
+	case $1 in
+		*[/]*) echo "$1" | sed "s#/#__#g" ;;
+		*) echo "$1" ;;
+	esac
 }
 
 _cgi_menu() {
@@ -32,7 +39,7 @@ EOF
 if [ "$1" = "status" ]; then
 	if [ -r /mod/etc/reg/status.reg ]; then
 		cat /mod/etc/reg/status.reg | while IFS='|' read -r pkg title cgi; do
-			echo "<div id=\"status_$(echo $cgi | sed -e "s/\//__/")\" class=\"su\"><a href=\"/cgi-bin/pkgstatus.cgi?pkg=$pkg&amp;cgi=$cgi\">$(html "$title")</a></div>"
+			echo "<div id='$(_cgi_id "status_$cgi")' class='su'><a href='/cgi-bin/pkgstatus.cgi?pkg=$pkg&amp;cgi=$cgi'>$(html "$title")</a></div>"
 		done
 	fi
 fi
@@ -44,7 +51,7 @@ EOF
 
 if [ "$1" = "settings" -a -r /mod/etc/reg/file.reg ]; then
 	cat /mod/etc/reg/file.reg | while IFS='|' read -r id title sec def; do
-		echo "<div id=\"file_$id\" class=\"su\"><a href=\"/cgi-bin/file.cgi?id=$id\">$(html "$title")</a></div>"
+		echo "<div id='$(_cgi_id "file_$id")' class='su'><a href='/cgi-bin/file.cgi?id=$id'>$(html "$title")</a></div>"
 	done
 fi
 
@@ -54,7 +61,7 @@ EOF
 
 if [ "$1" != "settings" -a "$1" != "status" -a -r /mod/etc/reg/cgi.reg ]; then
 	cat /mod/etc/reg/cgi.reg | while IFS='|' read -r pkg title; do
-		echo "<div id=\"pkg_$pkg\" class=\"su\"><a href=\"/cgi-bin/pkgconf.cgi?pkg=$pkg\">$(html "$title")</a></div>"
+		echo "<div id='$(_cgi_id "pkg_$pkg")' class='su'><a href='/cgi-bin/pkgconf.cgi?pkg=$pkg'>$(html "$title")</a></div>"
 	done
 fi
 
@@ -67,6 +74,7 @@ EOF
 }
 
 cgi_begin() {
+local title=$(html "$1") id=${2:+$(_cgi_id "$2")}
 cat << EOF
 Content-type: text/html; charset=iso-8859-1
 
@@ -78,7 +86,7 @@ Content-type: text/html; charset=iso-8859-1
 <meta http-equiv="Content-Language" content="$(lang de:"de" en:"en")">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
-<title>Freetz - $1</title>
+<title>Freetz - $title</title>
 <link rel="stylesheet" type="text/css" href="/style.css">
 <link rel="stylesheet" type="text/css" href="/style-colorscheme.css">
 EOF
@@ -95,11 +103,11 @@ echo "fieldset { margin: 0px; margin-top: 10px; margin-bottom: 10px; padding: 10
 echo "div.body { width: "$_usr_style"px; }"
 echo "</style>"
 
-if [ -n "$2" ]; then
+if [ -n "$id" ]; then
 cat << EOF
 <style type="text/css">
 <!--
-#$2 $(cat /usr/share/style.sel)
+#$id $(cat /usr/share/style.sel)
 -->
 </style>
 EOF
@@ -111,7 +119,7 @@ cat << EOF
 <table border="0" cellspacing="0" cellpadding="0" align="center" width="$_cgi_total_width">
 <tr>
 <td width="20"><img src="/images/edge_lt.png" width="20" height="40" border="0" alt=""></td>
-<td width="$_cgi_width" id="edgetop"><div class="version">$(cat /etc/.freetz-version)</div><div class="title"><a href="/cgi-bin/index.cgi">Freetz</a> <a href="/cgi-bin/about.cgi" target="_blank">-</a> <span style="font-style: italic;">$1</span></div></td>
+<td width="$_cgi_width" id="edgetop"><div class="version">$(html < /etc/.freetz-version)</div><div class="title"><a href="/cgi-bin/index.cgi">Freetz</a> <a href="/cgi-bin/about.cgi" target="_blank">-</a> <span style="font-style: italic;">$title</span></div></td>
 <td width="20"><img src="/images/edge_rt.png" width="20" height="40" border="0" alt=""></td>
 </tr>
 <tr>
@@ -119,8 +127,9 @@ cat << EOF
 <td width="$_cgi_width" id="content">
 EOF
 
-if [ -n "$2" ]; then
-	case "$2" in
+local sub
+if [ -n "$id" ]; then
+	case $id in
 		settings|file_*) sub='settings' ;;
 		status*) sub='status' ;;
 		*) sub='packages' ;;
@@ -195,3 +204,10 @@ stat_bar_add_part() {
 	let sum+=percent
 }
 
+# get a single query parameter (unescaped)
+cgi_param() {
+	local key=$1
+	local value=${QUERY_STRING##*$key=}
+	value=${value%%&*}
+	httpd -d "$value"
+}

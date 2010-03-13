@@ -4,7 +4,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 . /usr/lib/libmodfrm.sh
 
-package="$(echo "$QUERY_STRING" | sed -e 's/^.*pkg=//' -e 's/&.*$//' -e 's/\.//g')"
+package=$(cgi_param pkg | tr -d .)
 
 if [ -r "/mod/etc/default.$package/$package.cfg" -o -r "/mod/etc/default.$package/$package.save" ]; then
 	if [ -r "/mod/etc/default.$package/$package.cfg" ]; then

@@ -5,7 +5,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 [ -e /mod/etc/reg/file.reg ] || touch /mod/etc/reg/file.reg
 
-id="$(echo "$QUERY_STRING" | sed -e 's/^.*id=//' -e 's/&.*$//' -e 's/\.//g')"
+id=$(cgi_param id | tr -d .)
 
 cgi_begin "$id" "file_$id"
 

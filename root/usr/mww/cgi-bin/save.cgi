@@ -73,7 +73,7 @@ cgi_begin "$(lang de:"Speichern" en:"Saving")..."
 echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings"):</p>"
 echo -n "<pre>"
 
-form=$(echo "$QUERY_STRING" | sed -e 's/^.*form=//' -e 's/&.*$//' -e 's/\.//g')
+form=$(cgi_param form | tr -d .)
 
 script=status.cgi;
 package=''

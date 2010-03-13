@@ -3,8 +3,8 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-swap_file=$(httpd -d "$(echo "$QUERY_STRING" | sed -e 's/^.*swap_file=//' -e 's/&.*$//' -e 's/\.//g')")
-swap_size=$(httpd -d "$(echo "$QUERY_STRING" | sed -e 's/^.*swap_size=//' -e 's/&.*$//' -e 's/\.//g')")
+swap_file=$(cgi_param swap_file | tr -d .)
+swap_size=$(cgi_param swap_size | tr -d .)
 size=$(echo "$swap_size" | sed -re "s/^ *([0-9]+) $/\1/")
 error=true
 

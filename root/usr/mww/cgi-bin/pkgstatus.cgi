@@ -3,10 +3,10 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-package="$(echo "$QUERY_STRING" | sed -e 's/^.*pkg=//' -e 's/&.*$//' -e 's/\.//g')"
-cgi="$(echo "$QUERY_STRING" | sed -e 's/^.*cgi=//' -e 's/&.*$//' -e 's/\.//g')"
+package=$(cgi_param pkg)
+cgi=$(cgi_param cgi | tr -d .)
 
-cgi_begin "$package" "status_$(echo $cgi | sed -e "s/\//__/")"
+cgi_begin "$package" "status_$cgi"
 
 
 if [ -x "/mod/usr/lib/cgi-bin/$cgi.cgi" ]; then
