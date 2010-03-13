@@ -364,8 +364,8 @@ check-downloads: $(PACKAGES_CHECK_DOWNLOADS)
 mirror: $(MIRROR_DIR) $(PACKAGES_MIRROR)
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN) $(LIBS_CLEAN) $(TOOLCHAIN_CLEAN) $(TOOLS_CLEAN) common-clean
-dirclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN_DIRCLEAN) $(TOOLS_DIRCLEAN) common-dirclean
-distclean: $(TARGETS_DIRCLEAN) $(PACKAGES_DIRCLEAN) $(LIBS_DIRCLEAN) $(TOOLCHAIN_DISTCLEAN) $(TOOLS_DISTCLEAN) common-distclean
+dirclean: $(TOOLCHAIN_DIRCLEAN) $(TOOLS_DISTCLEAN) common-dirclean
+distclean: $(TOOLCHAIN_DISTCLEAN) $(TOOLS_DISTCLEAN) common-distclean
 
 .PHONY: firmware package-list package-list-clean sources precompiled toolchain toolchain-depend libs mirror check-downloads \
 	$(TARGETS) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) $(TARGETS_PRECOMPILED) \
@@ -472,14 +472,14 @@ config-clean-deps:
 
 common-clean:
 	./fwmod_custom clean
-	rm -f .static .dynamic
-	rm -f .exclude .exclude-dist-tmp
+	rm -f .static .dynamic .exclude-dist-tmp
 	rm -f $(FW_IMAGES_DIR)/*
 	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean:
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
+	rm -f .static .dynamic .exclude-dist-tmp
 	rm -f make/config.cache .new-uclibc .old-uclibc
 	find $(ROOT_DIR) -name '*.so*' ! -type d ! -name .svn \( -path "$(ROOT_DIR)/lib/*" -o \
 		-path "$(ROOT_DIR)/usr/lib/freetz/*" \) -delete
@@ -487,18 +487,11 @@ common-dirclean:
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
-common-distclean: common-clean
+common-distclean: common-dirclean
 	rm -f .config .config.old .config.cmd .tmpconfig.h
 	rm -rf $(TOOLCHAIN_BUILD_DIR)
-	rm -rf $(DL_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
-	rm -f make/config.cache .new-uclibc .old-uclibc
-	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
-		`[ -d $(ROOT_DIR)/usr/lib/freetz ] && echo $(ROOT_DIR)/usr/lib/freetz` \
-		-type d -name .svn -prune -false , -name "*.so*" -exec rm {} \;
-	find $(MAKE_DIR) -name ".*_config" -exec rm {} \;
+	rm -rf $(DL_DIR)
 	-rm -rf $(ADDON_DIR)/*
-	-cp .defstatic $(ADDON_DIR)/static.pkg
-	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 dist: distclean
 	version="$$(cat .version)"; \
