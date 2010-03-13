@@ -70,7 +70,7 @@ sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware"):'
  echo "</div>"
  echo -n '<div '$divstyle'><b>$(lang de:"CPU-Frequenz" en:"CPU frequency"):</b> '$cpu_frequency' MHz&nbsp;&nbsp;&nbsp;'
  echo '<b>$(lang de:"Systemfrequenz" en:"System frequency"):</b> '$sys_frequency' MHz</div>'
- echo '<div '$divstyle'><b>Uptime:</b> '$run_clock'</div>'
+ echo '<div '$divstyle'><b>$(lang de:"Betriebsstundenz&auml;hler" en:"Operating hours counter"):</b> '$run_clock'</div>'
 sec_end
 
 sec_begin '$(lang de:"Netzwerk" en:"Network"):'
