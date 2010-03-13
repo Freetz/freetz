@@ -1,0 +1,132 @@
+--- Makefile
++++ Makefile
+@@ -1,7 +1,7 @@
+ # $Id: Makefile 2 2007-09-01 10:00:28Z lo $
+ # 
+-# if you want to compile against a compiled but not installed xyssl sourcetree
+-# XYSSL_SOURCE=/path/to/xyssl-src
++# if you want to compile against a compiled but not installed polarssl sourcetree
++# POLARSSL_SOURCE=/path/to/polarssl-src
+ 
+ DSTROOT=/usr/local
+ BINDIR=$(DSTROOT)/bin
+@@ -10,11 +10,11 @@
+ LD=gcc
+ 
+ CFLAGS=-g -Wall
+-LIBS=-lxyssl
++LIBS=-lpolarssl
+ 
+-ifneq ($(XYSSL_SOURCE),)
+-	CPPFLAGS+=-I$(XYSSL_SOURCE)/include
+-	LDFLAGS+=-L$(XYSSL_SOURCE)/library
++ifneq ($(POLARSSL_SOURCE),)
++	CPPFLAGS+=-I$(POLARSSL_SOURCE)/include
++	LDFLAGS+=-L$(POLARSSL_SOURCE)/library
+ endif
+ 
+ # source files
+--- xrelayd.c
++++ xrelayd.c
+@@ -55,13 +55,13 @@
+ #define SYSLOG_NAMES
+ #include <syslog.h>
+ 
+-/* xassl includes */
+-#include <xyssl/config.h>
+-#include <xyssl/havege.h>
+-#include <xyssl/certs.h>
+-#include <xyssl/x509.h>
+-#include <xyssl/ssl.h>
+-#include <xyssl/net.h>
++/* polarssl includes */
++#include <polarssl/config.h>
++#include <polarssl/havege.h>
++#include <polarssl/certs.h>
++#include <polarssl/x509.h>
++#include <polarssl/ssl.h>
++#include <polarssl/net.h>
+ 
+ // FIXME. implement some sort of DDOS prevention
+ #define MAXCONNCOUNT 16
+@@ -91,14 +91,14 @@
+  */
+ int xrly_ciphers[] =
+ {
+-#if defined(XYSSL_AES_C)
++#if defined(POLARSSL_AES_C)
+     SSL_RSA_AES_128_SHA,
+     SSL_RSA_AES_256_SHA,
+ #endif
+-#if defined(XYSSL_DES_C)
++#if defined(POLARSSL_DES_C)
+     SSL_RSA_DES_168_SHA,
+ #endif
+-#if defined(XYSSL_ARC4_C)
++#if defined(POLARSSL_ARC4_C)
+     SSL_RSA_RC4_128_SHA,
+     SSL_RSA_RC4_128_MD5,
+ #endif
+@@ -240,16 +240,16 @@
+     if(res>0) return 0;
+     
+     switch( res ) {
+-        case XYSSL_ERR_NET_TRY_AGAIN:
++        case POLARSSL_ERR_NET_TRY_AGAIN:
+             DLOG( "%s operation on %s connection would block",op,conn);
+         case 0:
+             return 0;
+             
+-        case XYSSL_ERR_SSL_PEER_CLOSE_NOTIFY:
++        case POLARSSL_ERR_SSL_PEER_CLOSE_NOTIFY:
+             ILOG( "%s connection closed by peer during %s operation",conn,op);
+             break;
+ 
+-        case XYSSL_ERR_NET_CONN_RESET:
++        case POLARSSL_ERR_NET_CONN_RESET:
+             ILOG( "%s connection was reset by peer during %s operation",conn,op);
+             break;
+             
+@@ -340,13 +340,13 @@
+     int     ret=0;
+     while(len) {
+         if ((ret = f_send(ctx,buf,len)) <= 0) {
+-            if( ret == XYSSL_ERR_NET_TRY_AGAIN ) continue;
++            if( ret == POLARSSL_ERR_NET_TRY_AGAIN ) continue;
+             break;
+         }
+         len-=ret;
+         buf+=ret;
+     }
+-    *eof |= (ret == XYSSL_ERR_NET_CONN_RESET);
++    *eof |= (ret == POLARSSL_ERR_NET_CONN_RESET);
+     return ret;
+ }
+ 
+@@ -355,7 +355,7 @@
+ {
+     int     ret=0;
+     ret = f_recv(ctx,buf,len);
+-    *eof |= (ret == XYSSL_ERR_NET_CONN_RESET);
++    *eof |= (ret == POLARSSL_ERR_NET_CONN_RESET);
+     return ret;
+ }
+ 
+@@ -406,7 +406,7 @@
+     ssl_set_ciphers( &ssl, xrly_ciphers );
+     
+     if(cert && key) {
+-        ssl_set_ca_chain( &ssl, cert->next, NULL );
++        ssl_set_ca_chain( &ssl, cert->next, NULL, NULL );
+         ssl_set_own_cert( &ssl, cert, key );
+     }
+     
+@@ -432,7 +432,7 @@
+     if(sslserver) {
+         ILOG("Performing ssl handshake");
+         while( ( ret = ssl_handshake( &ssl ) ) != 0 ) {
+-            if( ret != XYSSL_ERR_NET_TRY_AGAIN ) {
++            if( ret != POLARSSL_ERR_NET_TRY_AGAIN ) {
+                 ELOG("SSL handshake failed: %08x", ret);
+                 return;
+             }
