@@ -1,0 +1,37 @@
+--- library/Makefile
++++ library/Makefile
+@@ -17,6 +17,11 @@
+ # OSX shared library extension:
+ # DLEXT=dylib
+ 
++VERSION=0.12.1
++LIB_SO=libpolarssl.$(DLEXT)
++LIB_SO_VERSION=$(LIB_SO).$(VERSION)
++LIB_SO_MAJOR=$(LIB_SO).$(firstword $(subst ., ,$(VERSION)))
++
+ OBJS=	aes.o		arc4.o		base64.o	\
+ 	bignum.o	certs.o		debug.o		\
+ 	des.o		dhm.o		havege.o	\
+@@ -33,7 +38,7 @@
+ 
+ static: libpolarssl.a
+ 
+-shared: libpolarssl.$(DLEXT)
++shared: $(LIB_SO_VERSION)
+ 
+ libpolarssl.a: $(OBJS)
+ 	echo "  AR    $@"
+@@ -41,9 +46,11 @@
+ 	echo "  RL    $@"
+ 	ranlib $@
+ 
+-libpolarssl.so: libpolarssl.a
++$(LIB_SO_VERSION): $(OBJS)
+ 	echo "  LD    $@"
+-	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS)
++	$(CC) -shared -Wl,-soname,$(LIB_SO_MAJOR) -o $@ $(OBJS) \
++	&& ln -fs $@ $(LIB_SO_MAJOR) \
++	&& ln -fs $(LIB_SO_MAJOR) $(LIB_SO)
+ 
+ libpolarssl.dylib: libpolarssl.a
+ 	echo "  LD    $@"
