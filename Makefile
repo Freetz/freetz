@@ -320,13 +320,13 @@ FWMOD_OPTS:=-u -m
 endif
 
 ifeq ($(strip $(PACKAGES)),)
-firmware-nocompile: tools $(DL_IMAGE) package-list exclude-lists
+firmware-nocompile: tools $(DL_IMAGE) package-list
 	@echo
 	@echo "WARNING: There are no packages selected. To install packages type"
 	@echo "         'make menuconfig' and change to the 'Package selection' submenu."
 	@echo
 else
-firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list exclude-lists
+firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list
 endif
 	@$(FAKEROOT_TOOL) -- ./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
 ifneq ($(FWMOD_PATCH_TEST),y)
@@ -470,13 +470,6 @@ config-clean-deps:
 	rm -f .config_tmp; \
 	}
 
-exclude-lists:
-	@for i in root; do \
-	( \
-		cd $$i; find . -type d -name .svn -prune \
-	) > "$$(dirname "$$i")"/.exclude; \
-	done
-
 common-clean:
 	./fwmod_custom clean
 	rm -f .static .dynamic
@@ -488,9 +481,8 @@ common-clean:
 common-dirclean:
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
 	rm -f make/config.cache .new-uclibc .old-uclibc
-	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
-		`[ -d $(ROOT_DIR)/usr/lib/freetz ] && echo $(ROOT_DIR)/usr/lib/freetz` \
-		-name "*.so*" ! \( -type d -name .svn \) -delete
+	find $(ROOT_DIR) -name '*.so*' ! -type d ! -name .svn \( -path "$(ROOT_DIR)/lib/*" -o \
+		-path "$(ROOT_DIR)/usr/lib/freetz/*" \) -delete
 	find $(MAKE_DIR) \( -name ".*_config" -o -name ".*_changes" \) -delete
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
@@ -540,7 +532,7 @@ check-builddir-version:
 	fi; 
 	@echo "$(BUILD_DIR_VERSION)" > .lastbuild-version
 
-.PHONY: all world step menuconfig config oldconfig defconfig exclude-lists tools recover \
+.PHONY: all world step menuconfig config oldconfig defconfig tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
 	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
 	$(CHECK_BUILD_DIR_VERSION)
