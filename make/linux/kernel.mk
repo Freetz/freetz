@@ -23,7 +23,7 @@ $(KERNEL_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 	@echo "FREETZ_KERNEL_LAYOUT=$(KERNEL_LAYOUT)" > $(KERNEL_FREETZ_CONFIG_TEMP)
 	@diff -q $(KERNEL_FREETZ_CONFIG_TEMP) $(KERNEL_FREETZ_CONFIG_FILE) || \
 		cp $(KERNEL_FREETZ_CONFIG_TEMP) $(KERNEL_FREETZ_CONFIG_FILE)
-	@rm -f $(KERNEL_FREETZ_CONFIG_TEMP)
+	@$(RM) $(KERNEL_FREETZ_CONFIG_TEMP)
 endif
 
 $(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
@@ -43,25 +43,26 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 		tar \
 			-t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE)| \
-		grep -e '^.*\/\(GPL-\(release_\|\)kernel\.tar\.gz\|linux-2\.6\...\..\/\)$$'| \
-		head -n 1`; \
-		$(call _ECHO, unpacking... ) \
-	if [ ! -z $$(echo "$$KERNEL_SOURCE_CONTENT"|grep -e '.*\/GPL-\(release_\|\)kernel\.tar\.gz') ]; then \
-		tar	-O $(VERBOSE) \
-			-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
-			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
-			--wildcards "*/$${KERNEL_SOURCE_CONTENT##*/}" | \
-		tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
-			-xz \
-			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed; \
-	elif [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
+		grep -m 1 -e '^.*\/\(GPL-\(release_\|\)kernel\.tar\.gz\|linux-2\.6\...\..\/\)$$'`; \
+	if [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
 		$(call ERROR,1,KERNEL_SOURCE_CONTENT is empty) \
 	else \
-		tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
-			-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
-			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
-			--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed \
-			"$$KERNEL_SOURCE_CONTENT"; \
+		$(call _ECHO, unpacking... ) \
+		if [ ! -z $$(echo "$$KERNEL_SOURCE_CONTENT"|grep -e '.*\/GPL-\(release_\|\)kernel\.tar\.gz') ]; then \
+			tar	-O $(VERBOSE) \
+				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
+				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
+				--wildcards "*/$${KERNEL_SOURCE_CONTENT##*/}" | \
+			tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
+				-xz \
+				--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed; \
+		else \
+			tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
+				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
+				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
+				--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed \
+				"$$KERNEL_SOURCE_CONTENT"; \
+		fi
 	fi
 	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
 		$(call ERROR,1,KERNEL_BUILD_ROOT_DIR has wrong structure) \
@@ -75,20 +76,20 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
 	done
 	@for i in $(KERNEL_LINKING_FILES); do \
-		if test -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
-		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; then \
+		if [ -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
+		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_} ]; then \
 			$(call MESSAGE, Linking  $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}); \
 			ln -sf ../../$$i $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; \
 		fi \
 	done
-	@if test -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/avm_net_trace.h -a \
-		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; then \
+	@if [ -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/avm_net_trace.h -a \
+		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h ]; then \
 			$(call MESSAGE, Linking  $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h); \
 			ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
 				$(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; \
 	fi
 	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Makefile.26 -printf '%h\n'); do \
-		if test ! -e $$i/Makefile ; then \
+		if [ ! -e $$i/Makefile ] ; then \
 			$(call MESSAGE, Linking  $$i/Makefile); \
 			ln -sf Makefile.26 $$i/Makefile; \
 		fi \
@@ -98,10 +99,10 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 		paths=$$(echo "$${i##*:}"|sed -e "s/|/ /g"); folder=$${i%%:*}; folder=$${folder%/*}; \
 		for f in $$paths ; do \
 			if [[ $$f == */* ]]; then \
-				if test ! -e $$folder/$${f}Makefile; then \
+				if [ ! -e $$folder/$${f}Makefile ]; then \
 					$(call MESSAGE, Creating $$folder/$${f}Makefile); \
 					mkdir -p $$folder/$$f; \
-					[ -h $$folder/$${f}Makefile ] && rm $$folder/$${f}Makefile; \
+					[ -h $$folder/$${f}Makefile ] && $(RM) $$folder/$${f}Makefile; \
 					touch $$folder/$${f}Makefile; \
 				fi \
 			fi \
@@ -109,11 +110,11 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 	done
 	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Kconfig -exec grep -hs "source.*Kconfig" {}a '+'| \
 		sed -e 's/\(.*\)#.*/\1/g;s/.*source //g;s/"//g'|sort -u); do \
-		if test ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i ; then \
+		if [ ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i ]; then \
 			$(call MESSAGE, Creating $(KERNEL_BUILD_ROOT_DIR)/$$i); \
 			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$${i%\/*}; \
-			test -h $(KERNEL_BUILD_ROOT_DIR)/$$i && \
-				rm $(KERNEL_BUILD_ROOT_DIR)/$$i; \
+			[ -h $(KERNEL_BUILD_ROOT_DIR)/$$i ] && \
+				$(RM) $(KERNEL_BUILD_ROOT_DIR)/$$i; \
 			touch $(KERNEL_BUILD_ROOT_DIR)/$$i; \
 		fi \
 	done
@@ -179,7 +180,7 @@ $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE
 	touch $@
 
 $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT)
-	rm -rf $(KERNEL_MODULES_DIR)/lib
+	$(RM) -r $(KERNEL_MODULES_DIR)/lib
 	mkdir -p $(KERNEL_MODULES_DIR)
 	KERNEL_MODULES_SOURCE_DIR=$(KERNEL_DIR)/lib/modules/$(KERNEL_VERSION)/kernel; \
 	[ ! -e $$KERNEL_MODULES_SOURCE_DIR ] && \
