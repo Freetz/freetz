@@ -1,6 +1,6 @@
 --- daemon/daemon.c	2010-02-16 17:00:57.000000000 +0100
 +++ daemon/daemon.c	2010-02-16 22:37:29.000000000 +0100
-@@ -70,6 +70,8 @@
+@@ -71,6 +71,8 @@
      { 'C', "no-watch-dir", "Disable the watch-dir", "C", 0, NULL },
      { 941, "incomplete-dir", "Where to store new torrents until they're complete", NULL, 1, "<directory>" },
      { 942, "no-incomplete-dir", "Don't store incomplete torrents in a different location", NULL, 0, NULL },
@@ -9,7 +9,7 @@
      { 'd', "dump-settings", "Dump the settings and exit", "d", 0, NULL },
      { 'e', "logfile", "Dump the log messages to this filename", "e", 1, "<filename>" },
      { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", 0, NULL },
-@@ -322,6 +324,11 @@
+@@ -323,6 +325,11 @@
  	    case 942:
  		      tr_bencDictAddBool( &settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, FALSE );
  		      break;
@@ -80,7 +80,7 @@
  .Ar ratio
 --- doc/rpc-spec.txt	2010-02-16 17:00:57.000000000 +0100
 +++ doc/rpc-spec.txt	2010-02-16 22:37:29.000000000 +0100
-@@ -402,6 +402,8 @@
+@@ -403,6 +403,8 @@
     "encryption"               | string     "required", "preferred", "tolerated"
     "incomplete-dir"           | string     path for incomplete torrents, when enabled
     "incomplete-dir-enabled"   | boolean    true means keep torrents in incomplete-dir until done
@@ -89,16 +89,15 @@
     "peer-limit-global"        | number     maximum global number of peers
     "peer-limit-per-torrent"   | number     maximum global number of peers
     "pex-enabled"              | boolean    true means allow pex in public torrents
-@@ -582,3 +584,6 @@
-          |         | yes       | session-get    | new arg "config-dir"
-          |         | yes       | torrent-add    | new arg "bandwidthPriority"
+@@ -585,3 +587,5 @@
           |         | yes       | torrent-get    | new trackerStats arg "lastAnnounceTimedOut"
-+   ------+---------+-----------+----------------+-------------------------------
-+   8     | 1.92    | yes       | session-set    | new arg "finish-dir"
+    ------+---------+-----------+----------------+-------------------------------
+    8     | 1.92    | yes       | torrent-get    | new trackerStats arg "lastScrapeTimedOut"
++         |         | yes       | session-set    | new arg "finish-dir"
 +         |         | yes       | session-set    | new arg "finish-dir-enabled"
 --- libtransmission/rpcimpl.c	2010-02-16 17:00:50.000000000 +0100
 +++ libtransmission/rpcimpl.c	2010-02-16 22:37:29.000000000 +0100
-@@ -1181,6 +1181,10 @@
+@@ -1182,6 +1182,10 @@
          tr_sessionSetIncompleteDir( session, str );
      if( tr_bencDictFindBool( args_in, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
          tr_sessionSetIncompleteDirEnabled( session, boolVal );
@@ -109,7 +108,7 @@
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_GLOBAL, &i ) )
          tr_sessionSetPeerLimit( session, i );
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_TORRENT, &i ) )
-@@ -1295,6 +1299,8 @@
+@@ -1296,6 +1300,8 @@
      tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT, tr_sessionGetPeerLimitPerTorrent( s ) );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR, tr_sessionGetIncompleteDir( s ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, tr_sessionIsIncompleteDirEnabled( s ) );
@@ -154,7 +153,7 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_LAZY_BITFIELD,            s->useLazyBitfield );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_MSGLEVEL,                 tr_getMessageLevel( ) );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_OPEN_FILE_LIMIT,          tr_fdGetFileLimit( s ) );
-@@ -678,6 +684,10 @@
+@@ -679,6 +685,10 @@
          tr_sessionSetIncompleteDir( session, str );
      if( tr_bencDictFindBool( settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
          tr_sessionSetIncompleteDirEnabled( session, boolVal );
@@ -165,7 +164,7 @@
      if( tr_bencDictFindBool( settings, TR_PREFS_KEY_RENAME_PARTIAL_FILES, &boolVal ) )
          tr_sessionSetIncompleteFileNamingEnabled( session, boolVal );
  
-@@ -891,6 +901,49 @@
+@@ -892,6 +902,49 @@
  ****
  ***/
  
@@ -212,10 +211,10 @@
 +****
 +***/
 +
- void
- tr_sessionLock( tr_session * session )
+ void*
+ tr_sessionGetBuffer( tr_session * session )
  {
-@@ -1579,6 +1632,7 @@
+@@ -1604,6 +1657,7 @@
      tr_free( session->torrentDir );
      tr_free( session->downloadDir );
      tr_free( session->incompleteDir );
@@ -243,7 +242,7 @@
      char *                       proxy;
 --- libtransmission/torrent.c	2010-02-16 17:00:50.000000000 +0100
 +++ libtransmission/torrent.c	2010-02-16 22:37:29.000000000 +0100
-@@ -2576,6 +2576,10 @@
+@@ -2616,6 +2616,10 @@
              /* set to no ratio limit to allow easy restarting */
              tr_torrentSetRatioMode( tor, TR_RATIOLIMIT_UNLIMITED );
  
