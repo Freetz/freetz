@@ -62,7 +62,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE)
 				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
 				--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed \
 				"$$KERNEL_SOURCE_CONTENT"; \
-		fi
+		fi \
 	fi
 	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
 		$(call ERROR,1,KERNEL_BUILD_ROOT_DIR has wrong structure) \
