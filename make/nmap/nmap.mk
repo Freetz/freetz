@@ -11,7 +11,7 @@ $(PKG)_TARGET_SERVICES_LIST:=$($(PKG)_DEST_DIR)/usr/share/nmap/nmap-services
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NMAP_WITH_SHARED_PCRE
 
-$(PKG)_DEPENDS_ON := uclibcxx libpcap
+$(PKG)_DEPENDS_ON := uclibcxx libpcap libdnet
 ifeq ($(strip $(FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA)),y)
 $(PKG)_DEPENDS_ON += lua
 $(PKG)_CONFIGURE_ENV += LUAINCLUDE=-I"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/lua"
@@ -22,9 +22,9 @@ $(PKG)_DEPENDS_ON += pcre
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += --with-libpcap="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-libdnet="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-liblua=$(if $(FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",included)
 $(PKG)_CONFIGURE_OPTIONS += --with-libpcre=$(if $(FREETZ_PACKAGE_NMAP_WITH_SHARED_PCRE),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",included)
-$(PKG)_CONFIGURE_OPTIONS += --with-libdnet=included
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-nmapfe=no
 $(PKG)_CONFIGURE_OPTIONS += --without-zenmap
