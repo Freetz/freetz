@@ -87,8 +87,8 @@ Content-type: text/html; charset=iso-8859-1
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
 <title>Freetz - $title</title>
-<link rel="stylesheet" type="text/css" href="/style.css">
-<link rel="stylesheet" type="text/css" href="/style-colorscheme.css">
+<link rel="stylesheet" type="text/css" href="/style/base.css">
+<link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
 
 # custom style for fieldset and div.body
