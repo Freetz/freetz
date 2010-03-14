@@ -1,0 +1,24 @@
+--- dnet-config.in
++++ dnet-config.in
+@@ -4,6 +4,8 @@
+ 
+ prefix=@prefix@
+ exec_prefix=@prefix@
++includedir=@includedir@
++libdir=@libdir@
+ 
+ usage()
+ {
+@@ -45,10 +47,10 @@
+ done
+ 
+ if test "$echo_cflags" = "yes"; then
+-      echo -I@includedir@
++      echo -I${includedir}
+ fi
+ 
+ if test "$echo_libs" = "yes"; then
+-      echo -L@libdir@ -ldnet @LIBS@
++      echo -L${libdir} -ldnet @LIBS@
+ fi      
+ 

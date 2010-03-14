@@ -56,6 +56,14 @@ config EXTERNAL_FREETZ_LIB_libdevmapper
 		externals these file(s):
 		 /usr/lib/freetz/libdevmapper.so.1.02
 
+config EXTERNAL_FREETZ_LIB_libdnet
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdnet
+	bool "libdnet"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libdnet.so.1.0.1
+
 config EXTERNAL_FREETZ_LIB_libelf
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libelf
 	bool "libelf"
