@@ -483,7 +483,7 @@ common-dirclean:
 	rm -f make/config.cache .new-uclibc .old-uclibc
 	find $(ROOT_DIR) -name '*.so*' ! -type d ! -name .svn \( -path "$(ROOT_DIR)/lib/*" -o \
 		-path "$(ROOT_DIR)/usr/lib/freetz/*" \) -delete
-	find $(MAKE_DIR) \( -name ".*_config" -o -name ".*_changes" \) -delete
+	find $(MAKE_DIR) -maxdepth 2 \( -name ".*_config" -o -name ".*_changes" \) -delete
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
