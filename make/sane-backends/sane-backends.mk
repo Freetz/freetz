@@ -19,7 +19,7 @@ $(PKG)_scanimage:=$($(PKG)_DIR)/frontend/.libs/scanimage
 # libsane
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/backend/.libs/libsane.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane.so.$($(PKG)_LIB_VERSION)
-$(PKG)_LIB_TARGET_BINARY:=root/usr/lib/freetz/libsane.so.$($(PKG)_LIB_VERSION)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libsane.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_TARGET_BINARIES:=$($(PKG)_TARGET_saned)
 ifeq ($(strip $(FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner)),y)
@@ -77,11 +77,11 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
 
 $(PKG)_LIB_TARGET_BACKENDS_BINARIES:
-	mkdir -p $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane
+	mkdir -p $(SANE_BACKENDS_DEST_LIBDIR)/sane
 	for backend in $(SANE_BACKENDS); do \
-		cp -a $(SANE_BACKENDS_DIR)/backend/.libs/libsane-$${backend}.so* $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane; \
+		cp -a $(SANE_BACKENDS_DIR)/backend/.libs/libsane-$${backend}.so* $(SANE_BACKENDS_DEST_LIBDIR)/sane; \
 	done
-	$(TARGET_STRIP) $(SANE_BACKENDS_DEST_DIR)/usr/lib/sane/*
+	$(TARGET_STRIP) $(SANE_BACKENDS_DEST_LIBDIR)/sane/*
 .PHONY: $(PKG)_LIB_TARGET_BACKENDS_BINARIES
 
 $(PKG)_TARGET_CONF:

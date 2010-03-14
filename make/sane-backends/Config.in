@@ -3,20 +3,14 @@ menu SANE
 config FREETZ_PACKAGE_SANE_BACKENDS
 	bool "SANE 1.0.20"
 	select FREETZ_PACKAGE_INETD
+	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_libsane
 	select FREETZ_LIB_libusb
 	default n
 	help
 		SANE - Scanner support
 		(initial Freetz package by Michael Denk, tehron @ http://www.ip-phone-forum.de/)
-
-config FREETZ_LIB_libsane
-	bool "SANE (libsane.so)"
-	depends FREETZ_PACKAGE_SANE_BACKENDS
-	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
-	default n
 
 config FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner
 	bool "sane-find-scanner"
@@ -331,6 +325,12 @@ config FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_plustek
 
 config FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_plustek_pp
 	bool "plustek_pp backend"
+	depends FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
+	default n
+
+config FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_qcam
+	bool "qcam backend"
 	depends FREETZ_PACKAGE_SANE_BACKENDS
 	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
 	default n

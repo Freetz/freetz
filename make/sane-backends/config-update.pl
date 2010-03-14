@@ -11,22 +11,15 @@ menu SANE
 
 config FREETZ_PACKAGE_SANE_BACKENDS
 	bool "SANE $version"
-	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	select FREETZ_PACKAGE_INETD
+	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_libsane
 	select FREETZ_LIB_libusb
 	default n
 	help
 		SANE - Scanner support
 		(initial Freetz package by Michael Denk, tehron @ http://www.ip-phone-forum.de/)
-
-config FREETZ_LIB_libsane
-	bool "SANE (libsane.so)"
-	depends FREETZ_PACKAGE_SANE_BACKENDS
-	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
-	default n
 
 config FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner
 	bool "sane-find-scanner"
@@ -138,7 +131,6 @@ foreach (@backends) {
 		|| /dell1600n_net/			# these backends require TIFF library
 		|| /gphoto2/				# these backends require gphoto2 library
 		|| /pint/				# these backends require sys/scanio.h
-		|| /qcam/				# these backends require ioperm, inb, outb from (sys|asm)/io.h which aren't defined'
 		|| /v4l/				# these backends require v4l library
 	) {
 		splice(@backends, $i, 1);

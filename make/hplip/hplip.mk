@@ -12,7 +12,7 @@ $(PKG)_LIB_MUD_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libhpmud.so.$($(PKG)_LIB_MUD
 $(PKG)_LIB_HPAIO_VERSION=1.0.0
 $(PKG)_LIB_HPAIO_BINARY:=$($(PKG)_DIR)/.libs/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
 $(PKG)_LIB_HPAIO_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
-$(PKG)_LIB_HPAIO_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sane/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
+$(PKG)_LIB_HPAIO_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/sane/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
 $(PKG)_SOURCE_MD5:=cb1cf49c5f062993b78fc2768f531ed8
 
 $(PKG)_DEPENDS_ON := sane-backends
@@ -61,10 +61,10 @@ $($(PKG)_LIB_MUD_TARGET_BINARY): $($(PKG)_LIB_MUD_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
 
 $($(PKG)_LIB_HPAIO_TARGET_BINARY): $($(PKG)_LIB_HPAIO_STAGING_BINARY)
-	mkdir -p $(HPLIP_DEST_DIR)/usr/lib/sane
+	mkdir -p $(HPLIP_DEST_LIBDIR)/sane
 	mkdir -p $(HPLIP_DEST_DIR)/etc
 	mkdir -p $(HPLIP_DEST_DIR)/usr/share/hplip/data/models
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio.so* $(HPLIP_DEST_DIR)/usr/lib/sane
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio.so* $(HPLIP_DEST_LIBDIR)/sane
 	cp -R $(TARGET_TOOLCHAIN_STAGING_DIR)/etc/default.hplip $(HPLIP_DEST_DIR)/etc
 	$(TARGET_STRIP) $@
 
