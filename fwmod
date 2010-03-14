@@ -570,11 +570,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "installing mod base"
 
 		echo1 "copying files"
-		"$TAR" -c -C "$ROOT_DIR" --exclude=lib --exclude=usr/lib --exclude=usr/share/terminfo \
-			$([ -r "${BASE_DIR}/.exclude" ] && echo "--exclude-from=${BASE_DIR}/.exclude") \
-			. | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-		"$TAR" -c -C "$ROOT_DIR" \
-			$([ -r "${BASE_DIR}/.exclude" ] && echo "--exclude-from=${BASE_DIR}/.exclude") \
+		"$TAR" -c -C "$ROOT_DIR" --exclude=./lib --exclude=./usr/lib --exclude=.svn \
+			--exclude=usr/share/terminfo . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		"$TAR" -c -C "$ROOT_DIR" --exclude=.svn \
 			./usr/lib/cgi-bin | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 		mkdir -p "${FILESYSTEM_MOD_DIR}/usr/lib"
