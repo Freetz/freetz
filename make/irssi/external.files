@@ -1,0 +1,7 @@
+if [ "$EXTERNAL_FREETZ_PACKAGE_IRSSI" == "y" ]; then
+	EXTERNAL_FILES+=" /usr/bin/irssi"
+	[ "$FREETZ_PACKAGE_IRSSI_WITH_BOT" == "y" ] && EXTERNAL_FILES+=" /usr/bin/botti"
+	if [ "$FREETZ_PACKAGE_IRSSI_WITH_PROXY" == "y" ]; then
+		[ "$EXTERNAL_SUBDIRS" == "y" ] && EXTERNAL_FILES+=" /usr/lib/irssi" || EXTERNAL_FILES+=" /usr/lib/irssi/modules/libirc_proxy.so"
+	fi
+fi

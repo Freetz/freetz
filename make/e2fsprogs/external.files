@@ -1,0 +1,21 @@
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2fsck" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/e2fsck"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_mke2fs" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/mke2fs"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_mklost_found" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/mklost+found"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_tune2fs" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/tune2fs"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_dumpe2fs" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/dumpe2fs"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_chattr" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/chattr"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_lsattr" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/lsattr"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2image" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/e2image"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2undo" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/e2undo"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_debugfs" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/debugfs"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_logsave" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/logsave"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_badblocks" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/badblocks"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_filefrag" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/filefrag"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/blkid"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_uuidd" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/uuidd"
+[ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_uuidgen" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/uuidgen"
+if [ "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_libraries" == "y" ]; then
+	for f in libblkid.so.1.0 libcom_err.so.2.1 libe2p.so.2.3 libext2fs.so.2.4 libss.so.2.0 libuuid.so.1.2; do
+		[ -e "${FILESYSTEM_MOD_DIR}/usr/lib/freetz/$f" ] && EXTERNAL_FILES+=" /usr/lib/freetz/$f"
+	done
+fi
