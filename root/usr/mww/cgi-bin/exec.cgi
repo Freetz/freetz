@@ -38,7 +38,7 @@ case "$MOD_CGI_CMD" in
 		else
 			echo 'failed.</pre>'
 		fi
-		echo '<form action="/cgi-bin/status.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+		back_button /cgi-bin/status.cgi
 		cgi_end
 		;;
 	cleanup)
@@ -46,7 +46,7 @@ case "$MOD_CGI_CMD" in
 		echo -n '<pre>tffs cleanup...'
 		echo 'cleanup' > /proc/tffs
 		echo 'done.</pre>'
-		echo '<form action="/cgi-bin/status.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+		back_button /cgi-bin/status.cgi
 		cgi_end
 		;;
 	downgrade)
@@ -61,7 +61,7 @@ case "$MOD_CGI_CMD" in
 			mount -o bind /var/tmp/version /etc/version
 			echo 'done.</pre>'
 		fi
-		echo '<form action="/cgi-bin/status.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+		back_button /cgi-bin/status.cgi
 		cgi_end
 		;;
 	firmware_update)
@@ -85,7 +85,7 @@ case "$MOD_CGI_CMD" in
 		echo -n "" > /var/flash/fw_attrib
 		rm -f /var/flash/fw_attrib
 		echo ' $(lang de:"fertig" en:"done").</pre>'
-		echo '<form action="/cgi-bin/status.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+		back_button /cgi-bin/status.cgi
 		cgi_end
 		;;
 	restart_dsld)
@@ -96,7 +96,7 @@ case "$MOD_CGI_CMD" in
 		echo -n 'Restarting dsld...<br>'
 		dsld -n
 		echo -n 'done.</pre>'
-		echo '<form action="/cgi-bin/status.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+		back_button /cgi-bin/status.cgi
 		cgi_end
 		;;
 	reboot)
@@ -112,7 +112,7 @@ case "$MOD_CGI_CMD" in
 		echo -n '<pre>'
 		/mod/etc/init.d/rc.$MOD_CGI_PKG start | html
 		echo '</pre>'
-		echo '<form action="/cgi-bin/daemons.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+		back_button /cgi-bin/daemons.cgi
 		cgi_end
 		;;
 	stop)
@@ -121,7 +121,7 @@ case "$MOD_CGI_CMD" in
 		echo -n '<pre>'
 		/mod/etc/init.d/rc.$MOD_CGI_PKG stop | html
 		echo '</pre>'
-		echo '<form action="/cgi-bin/daemons.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+		back_button /cgi-bin/daemons.cgi
 		cgi_end
 		;;
 	restart)
@@ -130,7 +130,7 @@ case "$MOD_CGI_CMD" in
 		echo -n '<pre>'
 		/mod/etc/init.d/rc.$MOD_CGI_PKG restart | html
 		echo '</pre>'
-		echo '<form action="/cgi-bin/daemons.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+		back_button /cgi-bin/daemons.cgi
 		cgi_end
 		;;
 	*)

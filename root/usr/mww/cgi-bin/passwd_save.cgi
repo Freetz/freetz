@@ -49,10 +49,6 @@ else
 	fi
 fi
 
-cat << EOF
-<form action="/cgi-bin/status.cgi" method=POST>
-<input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")">
-</form>
-EOF
+back_button /cgi-bin/status.cgi
 	
 cgi_end

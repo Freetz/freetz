@@ -14,7 +14,5 @@ rm -f /tmp/fw_update.log;
 %></pre>
 
 <p>
-<form action="/cgi-bin/status.cgi" method=GET>
-	<input type=submit value="$(lang de:"Zurück zur Übersicht" en:"Back to main page")">
-</form>
+<% back_button /cgi-bin/status.cgi "$(lang de:"Zurück zur Übersicht" en:"Back to main page")" %>
 <% cgi_end %>

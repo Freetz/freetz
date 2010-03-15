@@ -57,8 +57,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
 <? fi ?>
 
 <p>
-<form action="/cgi-bin/status.cgi" method=GET>
-  <input type=submit value="$(lang de:"Zurück zur Übersicht" en:"Back to main page")">
-</form><p>
+<% back_button /cgi-bin/status.cgi "$(lang de:"Zurück zur Übersicht" en:"Back to main page")" %>
+<p>
 
 <? cgi_end ?>

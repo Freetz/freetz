@@ -7,9 +7,10 @@ get_env() {
 	sed -n "s/^$1	//p" /proc/sys/urlader/environment
 }
 
-meminfo() {
-	sed -n "/^$1:/ s/[^0-9]//gp" /proc/meminfo
+read_meminfo() {
+	eval "$(sed -rne "/^((Mem|Swap)(Total|Free)|(|Swap)Cached):/ s/^([^:]*):[[:space:]]*([0-9]*).*$/mem_\1=\2/p" /proc/meminfo)"
 }
+read_meminfo
 
 btn_count=0
 stat_button() {
@@ -30,7 +31,12 @@ default_password_set() {
 cgi_begin '$(lang de:"Status" en:"Status")' 'status'
 
 if default_password_set; then
-echo '<div style="color: #800000;"><p>$(lang de:"Standard-Passwort gesetzt. Bitte <a href=\"/cgi-bin/passwd.cgi\"><u>hier</u></a> ändern." en:"Default password set. Please change <a href=\"/cgi-bin/passwd.cgi\"><u>here</u></a>.")</p>'
+	echo '<div style="color: #800000;"><p>$(lang
+		de:"Standard-Passwort gesetzt. Bitte
+		<a href=\"/cgi-bin/passwd.cgi\"><u>hier</u></a> ändern."
+		en:"Default password set. Please change
+		<a href=\"/cgi-bin/passwd.cgi\"><u>here</u></a>."
+	)</p>'
 fi
 
 sec_begin '$(lang de:"Box" en:"Box")'
@@ -44,7 +50,7 @@ EOF
 
 brands_cnt=0
 for i in $(ls /usr/www/); do
-	case "$i" in
+	case $i in
 		all|cgi-bin|html|kids)
 			;;
 		*)
@@ -86,14 +92,14 @@ EOF
 sec_end
 sec_begin '$(lang de:"Physikalischer Speicher (RAM)" en:"Main memory (RAM)")'
 
-total=$(meminfo MemTotal)
-free=$(meminfo MemFree)
-cached=$(meminfo Cached)
+total=$mem_MemTotal
+free=$mem_MemFree
+cached=$mem_Cached
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
 let perc_buff="100*cached/total"
-echo '<div>'$usedwc' kB (+ '$cached' kB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") '$total' kB $(lang de:"belegt" en:"used"), '$free' kB $(lang de:"frei" en:"free")</div>'
-stat_bar "br" $percent $perc_buff
+echo "<div>$usedwc kB (+ $cached kB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") $total kB $(lang de:"belegt" en:"used"), $free kB $(lang de:"frei" en:"free")</div>"
+stat_bar br $percent $perc_buff
 
 sec_end
 sec_begin '$(lang de:"Flash-Speicher (TFFS) für Konfigurationsdaten" en:"Flash memory (TFFS) for configuration data")'
@@ -103,32 +109,32 @@ percent=$(grep '^fill=' /proc/tffs)
 percent=${percent#fill=}
 let tffs_size="0x$(awk '/tffs/ { print $2; exit }' /proc/mtd)/1024"
 let tffs_used="tffs_size*percent/100"
-tffs_free=`expr $tffs_size - $tffs_used`
-echo '<div>'$tffs_used' kB $(lang de:"von" en:"of") '$tffs_size' kB $(lang de:"belegt" en:"used"), '$tffs_free' kB $(lang de:"frei" en:"free")</div>'
+let tffs_free="tffs_size - tffs_used"
+echo "<div>$tffs_used kB $(lang de:"von" en:"of") $tffs_size kB $(lang de:"belegt" en:"used"), $tffs_free kB $(lang de:"frei" en:"free")</div>"
 stat_bar $percent
 
 sec_end
 
 if has_swap; then
-sec_begin '$(lang de:"Swap-Speicher" en:"Swap") (RAM)'
-total=$(meminfo SwapTotal)
-free=$(meminfo SwapFree)
-cached=$(meminfo SwapCached)
-let usedwc="total-cached-free"
-let percent="100*usedwc/total"
-let perc_buff="100*cached/total"
-echo '<div>'$usedwc' kB (+ '$cached' kB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") '$total' kB $(lang de:"belegt" en:"used"), '$free' kB $(lang de:"frei" en:"free")</div>'
-stat_bar "br" $percent $perc_buff
-sec_end
+	sec_begin '$(lang de:"Swap-Speicher" en:"Swap") (RAM)'
+	total=$mem_SwapTotal
+	free=$mem_SwapFree
+	cached=$mem_SwapCached
+	let usedwc="total-cached-free"
+	let percent="100*usedwc/total"
+	let perc_buff="100*cached/total"
+	echo "<div>$usedwc kB (+ $cached kB $(lang de:"Cache" en:"cache")) $(lang de:"von" en:"of") $total kB $(lang de:"belegt" en:"used"), $free kB $(lang de:"frei" en:"free")</div>"
+	stat_bar br $percent $perc_buff
+	sec_end
 fi
 
 [ "$MOD_MOUNTED_MAIN" = yes ] && . /usr/lib/cgi-bin/mod/mounted.cgi
 
-stat_button 'restart_dsld' '$(lang de:"DSL-Reconnect" en:"Reconnect DSL")'
-stat_button 'cleanup' '$(lang de:"TFFS aufräumen" en:"Clean up TFFS")'
-stat_button 'fw_attrib' '$(lang de:"Attribute bereinigen" en:"Clean up attributes")'
-stat_button 'downgrade' '$(lang de:"Downgrade-Mod" en:"Downgrade mod")'
-stat_button 'firmware_update' '$(lang de:"Firmware-Update" en:"Update firmware")'
-stat_button 'reboot' '$(lang de:"Reboot" en:"Reboot")'
+stat_button restart_dsld '$(lang de:"DSL-Reconnect" en:"Reconnect DSL")'
+stat_button cleanup '$(lang de:"TFFS aufräumen" en:"Clean up TFFS")'
+stat_button fw_attrib '$(lang de:"Attribute bereinigen" en:"Clean up attributes")'
+stat_button downgrade '$(lang de:"Downgrade-Mod" en:"Downgrade mod")'
+stat_button firmware_update '$(lang de:"Firmware-Update" en:"Update firmware")'
+stat_button reboot '$(lang de:"Reboot" en:"Reboot")'
 
 cgi_end

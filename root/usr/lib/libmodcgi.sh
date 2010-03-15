@@ -31,17 +31,17 @@ _cgi_id() {
 }
 
 _cgi_menu() {
+local sub=$1
 cat << EOF
 <div class="menu">
 <div id="status"><a href="/cgi-bin/status.cgi">Status</a></div>
 EOF
 
-if [ "$1" = "status" ]; then
-	if [ -r /mod/etc/reg/status.reg ]; then
-		cat /mod/etc/reg/status.reg | while IFS='|' read -r pkg title cgi; do
-			echo "<div id='$(_cgi_id "status_$cgi")' class='su'><a href='/cgi-bin/pkgstatus.cgi?pkg=$pkg&amp;cgi=$cgi'>$(html "$title")</a></div>"
-		done
-	fi
+if [ "$sub" = "status" -a -r /mod/etc/reg/status.reg ]; then
+    	local pkg title cgi
+	while IFS='|' read -r pkg title cgi; do
+		echo "<div id='$(_cgi_id "status_$cgi")' class='su'><a href='/cgi-bin/pkgstatus.cgi?pkg=$pkg&amp;cgi=$cgi'>$(html "$title")</a></div>"
+	done < /mod/etc/reg/status.reg 
 fi
 
 cat << EOF
@@ -49,20 +49,22 @@ cat << EOF
 <div id="settings"><a href="/cgi-bin/settings.cgi">$(lang de:"Einstellungen" en:"Settings")</a></div>
 EOF
 
-if [ "$1" = "settings" -a -r /mod/etc/reg/file.reg ]; then
-	cat /mod/etc/reg/file.reg | while IFS='|' read -r id title sec def; do
+if [ "$sub" = "settings" -a -r /mod/etc/reg/file.reg ]; then
+    	local id title sec def
+	while IFS='|' read -r id title sec def; do
 		echo "<div id='$(_cgi_id "file_$id")' class='su'><a href='/cgi-bin/file.cgi?id=$id'>$(html "$title")</a></div>"
-	done
+	done < /mod/etc/reg/file.reg 
 fi
 
 cat << EOF
 <div id="packages"><a href="/cgi-bin/packages.cgi">$(lang de:"Pakete" en:"Packages")</a></div>
 EOF
 
-if [ "$1" != "settings" -a "$1" != "status" -a -r /mod/etc/reg/cgi.reg ]; then
-	cat /mod/etc/reg/cgi.reg | while IFS='|' read -r pkg title; do
+if [ "$sub" = "packages" -a -r /mod/etc/reg/cgi.reg ]; then
+    	local pkg title
+	while IFS='|' read -r pkg title; do
 		echo "<div id='$(_cgi_id "pkg_$pkg")' class='su'><a href='/cgi-bin/pkgconf.cgi?pkg=$pkg'>$(html "$title")</a></div>"
-	done
+	done < /mod/etc/reg/cgi.reg 
 fi
 
 cat << EOF
@@ -207,7 +209,17 @@ stat_bar_add_part() {
 # get a single query parameter (unescaped)
 cgi_param() {
 	local key=$1
-	local value=${QUERY_STRING##*$key=}
-	value=${value%%&*}
-	httpd -d "$value"
+	case "&$QUERY_STRING" in
+		*"&$key="*)
+			local value=${QUERY_STRING##*$key=}
+			value=${value%%&*}
+			httpd -d "$value"
+			;;
+	esac
+
+}
+
+back_button() {
+    	local where=$1 title=${2:-$(lang de:"Zur&uuml;ck" en:"Back")}
+	echo "<form action='$where'><input type='submit' value='$title'></form>"
 }
