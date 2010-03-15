@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN,0.5.2)
+$(call PKG_INIT_BIN,0.6.0-rc1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://code.kryo.se/iodine
 $(PKG)_BINARY:=$($(PKG)_DIR)/bin/iodined
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/iodined
-$(PKG)_SOURCE_MD5:=6952343cc4614857f83dbb81247871e7
+$(PKG)_SOURCE_MD5:=a15bb4faba020d217016fde6e231074a
 
 $(PKG)_DEPENDS_ON := zlib
 
@@ -13,7 +13,9 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(IODINE_DIR) \
-		CC="$(TARGET_CC)"
+		CC="$(TARGET_CC)" \
+		CFLAGS="$(TARGET_CFLAGS) -c -DLINUX" \
+		LDFLAGS="$(TARGET_LDFLAGS) -lz"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
