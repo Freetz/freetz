@@ -20,7 +20,7 @@ sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware"):'
  fi
  echo '<div '$divstyle'><b>FREETZ$(lang de:"-Version" en:" version"):</b> '$FREETZ_INFO_SUBVERSION'</div>'
 date_de_format=$(echo "$FREETZ_INFO_MAKEDATE" \
-		| sed -e 's/\([0-9][0-9][0-9][0-9]\)\([0-9][0-9]\)\([0-9][0-9]\)\-\([0-9][0-9]\)\([0-9][0-9]\)\([0-9][0-9]\)\(.*\)/\3.\2.\1 \4\:\5\:\6/')
+		| sed -re 's/([0-9]{4})([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})([0-9]{2})(.*)/\3.\2.\1 \4\:\5\:\6/')
  echo '<div '$divstyle'><b>$(lang de:"Erstellungsdatum" en:"Creation date"):</b> '$date_de_format'</div>'
  echo '<div '$divstyle'><b>$(lang de:"Urspr&uuml;nglicher Dateiname" en:"Initial file name"):</b><br>'$FREETZ_INFO_IMAGE_NAME'</div>'
  if [ ! -z "$FREETZ_INFO_COMMENT" ]; then
@@ -29,54 +29,125 @@ date_de_format=$(echo "$FREETZ_INFO_MAKEDATE" \
  fi
 sec_end
 
-if [ -r /etc/.config ]; then
-	_dot_config=$(cat /etc/.config | sed -e "s/\=y/\<br\>/g;s/FREETZ_//g" | sort)
-	_patches=$(echo "$_dot_config" | grep -E "(PATCH_|USBSTORAGE_|AUTOMOUNT_|AUTORUN_)" \
-	| sed -e "s/USBSTORAGE_//g;s/PATCH_//g" | sort | sed -e "s/AUTOMOUNT_\(.*\)/\<small\>\> \1\<\/small>/g")
-	_removes=$(echo "$_dot_config" | grep "REMOVE_" | sed -e "s/REMOVE_//g")
-	_libs=$(echo "$_dot_config" | grep "LIB_" | sed -e "/EXTERNAL/d" | sed -e "s/LIB_//g")
-	_modules=$(echo "$_dot_config" | grep "MODULE_" | sed -e "s/MODULE_//g")
-	_packages=$(echo "$_dot_config" | grep "PACKAGE_" | sed -e "/EXTERNAL/d" \
-	| sed -e "s/PACKAGE_//g;s/AUTHORIZED_KEYS/AUTHORIZED-KEYS/g;s/AVM_FIREWALL/AVM-FIREWALL/g;s/INADYN_MT/INADYN-MT/g;s/SANE_BACKENDS/SANE-BACKENDS/g;/_CGI/d;s/\([^_]*\)\(_\)\(.*\)/\<small\>\> \3\<\/small>/g")
-	_cgis=$(echo "$_dot_config" | grep -E "(PACKAGE_.*_CGI)" | sed -e "/EXTERNAL/d" | sed -e "s/PACKAGE_//g;s/_CGI//g;/_/d")
-	_td_th_style='vertical-align:top; text-align: left; font-weight: normal; padding-right:10px;'
-	_lowercase=' text-transform: lowercase;'
-	_td='<td style="'$_td_th_style'">'
-	_td_lowercase='<td style="'$_td_th_style$_lowercase'">'
-	_th3_lowercase='<th rowspan="3" style="'$_td_th_style$_lowercase'">'
-	_th3='<th rowspan="3" style="'$_td_th_style'">'
+print_entry() {
+	local type=$1 name=$2 sub=$3
+	if [ -n "$sub" ]; then
+		echo "<small>&gt; $sub</small><br>"
+	else
+		echo "$name<br>"
+	fi
+}
+#
+# Read (and print) all following entries with the desired type.
+# Leave the last line read for the next invocation.
+# Types START and END are used as markers.
+#
+read_entries() {
+	local sel=$1
+	while [ "$type" = "$sel" -o "$type" = START ]; do
+		if [ "$type" = "$sel" ]; then
+			print_entry "$type" "$entry" "$subentry"
+		fi
+		read -r sort type entry subentry || type=END
+	done
+}
+# 
+# Preprocess, classify and sort configuration variables
+# Output format: "$sortkey $type $entry [$sub_entry]"
+# Examples:      "20 pkg dropbear disable_host_lookup"
+#                "50 rem assistant"
+# Entries with the same $type shall have the same $sortkey.
+#
+preprocess_conf() {
+    	local file=$1
+	sed -nr '
+		s/=y$//
+		s/^FREETZ_//
+		/^EXTERNAL/ d
+		/^(PATCH|USBSTORAGE|AUTOMOUNT|AUTORUN)_/ {
+			s/^(USBSTORAGE|PATCH)_//
+			s/_/ / # separate sub-option
+			s/^/10 pat /; p; d
+		}
+		/^REMOVE_/ {
+			s/^REMOVE_//
+			s/^/50 rem /; p; d
+		}
+		/^MODULE_/ {
+			s/^MODULE_//
+			s/^/30 mod/; p; d
+		}
+		/^LIB_/ {
+			s/LIB_//
+			s/^/40 lib /; p; d
+		}
+		/^PACKAGE_.*_CGI$/ {
+			s/^PACKAGE_(.*)_CGI$/\1/
+			/_/ d # why?
+			s/^/60 cgi /; p; d
+		}
+		/^PACKAGE/ {
+			s/^PACKAGE_//
+			s/AUTHORIZED_KEYS/AUTHORIZED-KEYS/g
+			s/AVM_FIREWALL/AVM-FIREWALL/g
+			s/INADYN_MT/INADYN-MT/g
+			s/SANE_BACKENDS/SANE-BACKENDS/g
+			s/_/ /
+			s/^/20 pkg /; p; d
+		}
+	' "$file" | tr "A-Z" "a-z" | sort
+}
+#
+# Format output
+#
+format_conf() {
+	type=START
 	sec_begin '$(lang de:"FREETZ-Konfiguration" en:"FREETZ configuration"):'
-		echo '<table border="0" style="border-spacing:0pt;"><tr>'
-		echo -n '<td><b>$(lang de:"Patches" en:"Patches"):</b></td>'
-		echo -n '<td><b>$(lang de:"Pakete" en:"Packages"):</b></td>'
-		echo -n '<td><b>$(lang de:"Module" en:"Modules"):</b></td>'
-		echo '<td><b>$(lang de:"Libraries" en:"Libraries"):</b></td></tr>'
-		echo -n '<tr>'$_td_lowercase
-		echo -n $_patches
-		echo -n '</td>'$_th3_lowercase
-		echo -n $_packages
-		echo -n '</th>'$_td
-		echo -n $_modules
-		echo -n '</td>'$_th3
-		echo -n $_libs
-		echo '</th></tr>'
-		echo '<tr><td><b>$(lang de:"Entfernt" en:"Removes"):</b></td><td><b>$(lang de:"CGI-Pakete" en:"CGI Packages"):</b></td></tr>'
-		echo -n '<tr>'$_td_lowercase
-		echo -n $_removes
-		echo -n '</td>'$_td_lowercase
-		echo -n $_cgis
-		echo '</td></tr></table>'
-		echo '<div $divstyle><br><a href="/cgi-bin/extras.cgi/mod/do_download_config"><b>.config:</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/cgi-bin/extras.cgi/mod/do_download_config">$(lang de:"Herunterladen als Textdatei" en:"Download as text file")</a></div>'
-		echo -n '<textarea style="width: '$_width'px;" name="content" rows="5" cols="10" wrap="off" readonly>'
-		html < /etc/.config
-		echo '</textarea>'
+	cat <<- 'EOF'
+	<table id="freetz-conf" border="0">
+	<tr>
+		<th>$(lang de:"Patches" en:"Patches"):</th>
+		<th>$(lang de:"Pakete" en:"Packages"):</th>
+		<th>$(lang de:"Module" en:"Modules"):</th>
+		<th>$(lang de:"Libraries" en:"Libraries"):</th>
+	</tr>
+	<tr>
+	EOF
+	echo '<td>'; read_entries pat; echo '</td>'
+	echo '<td rowspan="3">'; read_entries pkg; echo '</td>'
+	echo '<td>'; read_entries mod; echo '</td>'
+	echo '<td rowspan="3">'; read_entries lib; echo '</td>'
+	cat <<- 'EOF'
+	</tr>
+	<tr>
+		<th>$(lang de:"Entfernt" en:"Removes"):</th>
+		<th>$(lang de:"CGI-Pakete" en:"CGI Packages"):</th>
+	</tr>
+	<tr>
+	EOF
+	echo '<td>'; read_entries rem; echo '</td>'
+	echo '<td>'; read_entries cgi; echo '</td>'
+	cat <<- EOF
+	</tr>
+	</table>
+	<div $divstyle><br><a href="/cgi-bin/extras.cgi/mod/do_download_config"><b>.config:</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/cgi-bin/extras.cgi/mod/do_download_config">$(lang de:"Herunterladen als Textdatei" en:"Download as text file")</a></div>
+	EOF
+	echo -n '<pre style="overflow: auto; max-height: 100px;">'
+	html < /etc/.config
+	echo '</pre>'
 	sec_end
+}
+#
+# Put everything together
+#
+if [ -r /etc/.config ]; then
+	preprocess_conf /etc/.config | format_conf
 fi
 
 if [ ! -z "$FREETZ_INFO_EXTERNAL_FILES" ]; then
 	sec_begin '$(lang de:"Ausgelagerte Dateien:" en:"Externalised files:")'
-		echo -n '<textarea style="width: '$_width'px;" name="content" rows="5" cols="10" wrap="off" readonly>'
+		echo -n '<pre style="overflow: auto; max-height: 100px;">'
 		echo -n "$FREETZ_INFO_EXTERNAL_FILES"
-		echo '</textarea>'
+		echo '</pre>'
 	sec_end
 fi
