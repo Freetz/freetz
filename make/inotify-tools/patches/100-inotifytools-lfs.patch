@@ -1,6 +1,6 @@
---- libinotifytools/src/inotifytools.c	2007-11-22 01:54:41.000000000 +0100
-+++ libinotifytools/src/inotifytools.c	2007-11-24 18:16:44.000000000 +0100
-@@ -1311,14 +1311,14 @@
+--- libinotifytools/src/inotifytools.c.orig	2010-03-12 14:53:46.000000000 +0100
++++ libinotifytools/src/inotifytools.c	2010-03-16 20:07:07.000000000 +0100
+@@ -1309,14 +1309,14 @@
  
  	static struct dirent * ent;
  	char * next_file;
@@ -17,7 +17,7 @@
  				error = errno;
  				free( next_file );
  				if ( errno != EACCES ) {
-@@ -1597,9 +1597,9 @@
+@@ -1595,9 +1595,9 @@
   * @internal
   */
  int isdir( char const * path ) {
@@ -29,9 +29,9 @@
  		if (errno == ENOENT) return 0;
  		fprintf(stderr, "Stat failed on %s: %s\n", path, strerror(errno));
  		return 0;
---- src/common.c	2007-11-22 01:54:41.000000000 +0100
-+++ src/common.c	2007-11-24 18:16:44.000000000 +0100
-@@ -42,9 +42,9 @@
+--- src/common.c.orig	2010-03-12 14:53:46.000000000 +0100
++++ src/common.c	2010-03-16 20:07:07.000000000 +0100
+@@ -41,9 +41,9 @@
  }
  
  int isdir( char const * path ) {
