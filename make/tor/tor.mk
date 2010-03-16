@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.2.2.9-alpha)
+$(call PKG_INIT_BIN, 0.2.2.10-alpha)
 $(PKG)_SOURCE:=tor-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a59e6855ed670cfa7d0eb584469b777c
+$(PKG)_SOURCE_MD5:=e2576c3c355b1c6830c91fb0643f06be
 $(PKG)_SITE:=http://www.torproject.org/dist
 $(PKG)_STARTLEVEL=40
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
@@ -21,6 +21,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --with-openssl-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
 $(PKG)_CONFIGURE_OPTIONS += --with-libevent-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
+$(PKG)_CONFIGURE_OPTIONS += --disable-asciidoc
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TOR_STATIC
 
