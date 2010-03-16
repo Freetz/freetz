@@ -14,21 +14,22 @@ update_inetd() {
 
 start_stop() {
 	oldstatus=$2
-	if [ -x "/mod/etc/init.d/rc.$1" ]; then
-		status=$("/mod/etc/init.d/rc.$1" status)
+	local rc="/mod/etc/init.d/rc.$1"
+	if [ -x "$rc" ]; then
+		status=$("$rc" status)
 		if [ running = "$oldstatus" -a inetd = "$status" ]; then
-			"/mod/etc/init.d/rc.$1" stop
+			"$rc" stop
 			update_inetd "$1"
 			echo
 		elif [ inetd = "$oldstatus" -a inetd != "$status" ]; then
 			update_inetd "$1"
-			"/mod/etc/init.d/rc.$1" start
+			"$rc" start
 			echo
 		elif [ inetd = "$oldstatus" -o inetd = "$status" ]; then
 			update_inetd "$1"
 			echo
 		elif [ running = "$oldstatus" ]; then
-			"/mod/etc/init.d/rc.$1" restart
+			"$rc" restart
 			echo
 		fi
 	fi
@@ -53,10 +54,9 @@ apply_changes() {
 }
 
 rc_status() {
-	if [ -x "/mod/etc/init.d/rc.$1" ]; then
-		"/mod/etc/init.d/rc.$1" status
-	else
-		echo ""
+	local rc="/mod/etc/init.d/rc.$1"
+	if [ -x "$rc" ]; then
+		"$rc" status
 	fi
 }
 
@@ -75,14 +75,14 @@ echo -n "<pre>"
 
 form=$(cgi_param form | tr -d .)
 
-script=status.cgi;
+script=status.cgi
 package=''
 file_id=''
 oldstatus1=''
 oldstatus2=''
 oldstatus3=''
 
-case "$form" in
+case $form in
 	pkg_*)
 		package=${form#pkg_}
 		[ -r "/mod/etc/default.$package/$package.save" ] && . "/mod/etc/default.$package/$package.save"
@@ -95,7 +95,7 @@ case "$form" in
 				oldstatus3=$(rc_status swap)
 			else
 				script=pkgconf.cgi
-				oldstatus1=$("/mod/etc/init.d/rc.$package" status)
+				oldstatus1=$(rc_status "$package")
 			fi
 			prefix="$(echo "$package" | tr 'a-z\-' 'A-Z_')_"
 			
@@ -141,7 +141,7 @@ case "$form" in
 				oldstatus3=$(rc_status swap)
 			else 
 				script=pkgconf.cgi
-                                oldstatus1=$("/mod/etc/init.d/rc.$package" status)
+                                oldstatus1=$(rc_status "$package")
                         fi
 			
 			echo -n 'Restoring defaults...'
@@ -165,15 +165,15 @@ case "$form" in
 
 		OIFS=$IFS
 		IFS='|'
-		set -- $(cat /mod/etc/reg/file.reg | grep "^$file_id|")
-		IFS="$OIFS"
+		set -- $(grep "^$file_id|" /mod/etc/reg/file.reg)
+		IFS=$OIFS
 
 		[ -r "$4" ] && . "$4"
 
 		if [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$3" ]; then
 			echo "Configuration file not available at the current security level!"
 		else
-			case "$CONFIG_TYPE" in
+			case $CONFIG_TYPE in
 				text)
 					eval "$(modcgi content mod_cgi)"
 					echo -n "Saving $file_id..."

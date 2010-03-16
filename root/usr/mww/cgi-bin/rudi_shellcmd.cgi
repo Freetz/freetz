@@ -26,7 +26,7 @@ else
 	fi
 	echo '>'
 	echo -n '<pre id="cmd_output">'
-	echo "$FORM_script" | sed "s/$(echo -ne '\r')//g" | sh | sed -e 's/&/\&amp;/g ; s/</\&lt;/g ; s/>/\&gt;/g' | head -c 64000
+	echo "$FORM_script" | sed "s/"$'\r'"//g" | sh | sed -e 's/&/\&amp;/g ; s/</\&lt;/g ; s/>/\&gt;/g' | head -c 64000
 	echo '</pre>'
 	echo '<script type="text/javascript">'
 	echo '    var child = document.getElementById("cmd_output").firstChild'

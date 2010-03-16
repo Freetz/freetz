@@ -40,7 +40,7 @@ EOF
 if [ "$sub" = "status" -a -r /mod/etc/reg/status.reg ]; then
     	local pkg title cgi
 	while IFS='|' read -r pkg title cgi; do
-		echo "<div id='$(_cgi_id "status_$cgi")' class='su'><a href='/cgi-bin/pkgstatus.cgi?pkg=$pkg&amp;cgi=$cgi'>$(html "$title")</a></div>"
+		echo "<div id='$(_cgi_id "status_$cgi")' class='su'><a href='/cgi-bin/pkgstatus.cgi?cgi=$cgi'>$(html "$title")</a></div>"
 	done < /mod/etc/reg/status.reg 
 fi
 
@@ -88,7 +88,7 @@ Content-type: text/html; charset=iso-8859-1
 <meta http-equiv="Content-Language" content="$(lang de:"de" en:"en")">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
-<title>Freetz - $title</title>
+<title>Freetz&nbsp;&ndash; $title</title>
 <link rel="stylesheet" type="text/css" href="/style/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
@@ -121,7 +121,7 @@ cat << EOF
 <table border="0" cellspacing="0" cellpadding="0" align="center" width="$_cgi_total_width">
 <tr>
 <td width="20"><img src="/images/edge_lt.png" width="20" height="40" border="0" alt=""></td>
-<td width="$_cgi_width" id="edgetop"><div class="version">$(html < /etc/.freetz-version)</div><div class="title"><a href="/cgi-bin/index.cgi">Freetz</a> <a href="/cgi-bin/about.cgi" target="_blank">-</a> <span style="font-style: italic;">$title</span></div></td>
+<td width="$_cgi_width" id="edgetop"><div class="version">$(html < /etc/.freetz-version)</div><div class="title"><a href="/cgi-bin/index.cgi">Freetz</a>&nbsp;<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a> <span style="font-style: italic;">$title</span></div></td>
 <td width="20"><img src="/images/edge_rt.png" width="20" height="40" border="0" alt=""></td>
 </tr>
 <tr>

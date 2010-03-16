@@ -82,10 +82,10 @@ sec_begin '$(lang de:"Netzwerk" en:"Network"):'
  echo '<b>DSL:</b> <small>'$mac_dsl'</small>&nbsp;&nbsp;&nbsp;<b>LAN:</b> <small>'$mac_lan'</small>&nbsp;&nbsp;&nbsp;<b>WLAN:</b> <small>'$mac_wlan'</small></div>'
 sec_end
 
-if [ -r /proc/avalanche/avsar_ver ]; then
-	dsl_infos="$(cat /proc/avalanche/avsar_ver)"
+avsar_ver=/proc/avalanche/avsar_ver
+if [ -r "$avsar_ver" ]; then
 	sec_begin '$(lang de:"DSL-Treiber und Hardware" en:"DSL drivers and hardware"):'
- 		echo "<pre>$dsl_infos</pre>"
+ 		echo "<pre class='plain'>$(cat "$avsar_ver")</pre>"
 	sec_end
 fi
 
