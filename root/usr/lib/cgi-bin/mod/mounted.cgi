@@ -41,7 +41,7 @@ formact=$(html "$SCRIPT_NAME${QUERY_STRING:+?$QUERY_STRING}")
 sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'
 
 format_size() {
-	echo "$1" | sed -e 's/[kMG]/ &/'
+	echo "$1B" | sed -e 's/[kMGT]\?B/ &/'
 }
 format_path() {
 	echo "$1" | sed -e 's/\//\/\&shy;/g'
@@ -89,7 +89,7 @@ print_mp() {
 	echo -n '<td class='actions'>'
 	$actions && echo -n '<small>$(lang de:"Mountoptionen" en:"Mount options"):</small>'
 	echo '</td></tr>'
-	echo -n "<tr><td colspan='3' class='free'>${used}B $(lang de:"von" en:"of") ${total}B $(lang de:"belegt" en:"used"), ${free}B $(lang de:"frei" en:"free")</td>"
+	echo -n "<tr><td colspan='3' class='free'>${used} $(lang de:"von" en:"of") ${total} $(lang de:"belegt" en:"used"), ${free} $(lang de:"frei" en:"free")</td>"
 	echo '<td colspan="1" class="actions">'
 	echo "<form class='btn' action='$formact' method='post'>"
 	echo "<input type='hidden' name='path' value='$(html "$path")'>"

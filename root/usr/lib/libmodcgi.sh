@@ -195,14 +195,18 @@ stat_bar() {
 	done
 	if let "sum < 100"; then
 	    	stat_bar_add_part 0 $((100 - sum))
-		echo "$outhtml</tr></table>"
-	else
+	fi
+	if let "sum > 100"; then
 		echo 'ERROR stat_bar: SUM > 100%'
+	else
+		echo "$outhtml</tr></table>"
 	fi
 }
 stat_bar_add_part() {
     	local n=$1 percent=$2
-	outhtml="$outhtml<td class='part$n' style='width: ${percent}%;'>$(show_perc $percent)</td>"
+	if let "percent > 0"; then
+	    outhtml="$outhtml<td class='part$n' style='width: ${percent}%;'>$(show_perc $percent)</td>"
+	fi
 	let sum+=percent
 }
 
