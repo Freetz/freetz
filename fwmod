@@ -573,7 +573,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		"$TAR" -c -C "$ROOT_DIR" --exclude=./lib --exclude=./usr/lib --exclude=.svn \
 			--exclude=usr/share/terminfo . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 		"$TAR" -c -C "$ROOT_DIR" --exclude=.svn \
-			./usr/lib/cgi-bin | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+			./usr/lib/{cgi-bin,mww} | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 		mkdir -p "${FILESYSTEM_MOD_DIR}/usr/lib"
 		cp "${ROOT_DIR}/usr/lib/lib"*.sh "${FILESYSTEM_MOD_DIR}/usr/lib/"

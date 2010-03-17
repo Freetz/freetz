@@ -66,12 +66,12 @@ case "$MOD_CGI_CMD" in
 		;;
 	firmware_update)
 		cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
-		/usr/mww/cgi-bin/firmware_update.cgi
+		/usr/lib/mww/firmware_update.cgi
 		cgi_end
 		;;
 	external_update)
 		cgi_begin '$(lang de:"external-Update" en:"external update")'
-		/usr/mww/cgi-bin/external_update.cgi
+		/usr/lib/mww/external_update.cgi
 		cgi_end
 		;;
 	fw_attrib)
