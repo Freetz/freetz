@@ -9,7 +9,7 @@ cat << EOF
 <h1>$(lang de:"Sicherung (Backup)" en:"Backup")</h1>
 
 $(lang de:"Sichern s‰mtlicher Einstellungen aus dem Flash-Speicher <i>/var/flash</i>. Dies" en:"Save all settings from flash memory <i>/var/flash</i>. This includes original")
-$(lang de:"umfaﬂt sowohl die Einstellungen der Original-Firmware als auch die des" en:"firmware settings as well as Freetz and other installed extensions")
+$(lang de:"umfaﬂt sowohl die Einstellungen der Original-Firmware als auch die von" en:"firmware settings as well as Freetz and other installed extensions")
 $(lang de:"Freetz sowie s‰mtlicher sonstiger beim Start geladener Erweiterungen" en:"(e.g. LCR Updater).")
 $(lang de:"(z.B. LCR-Updater)." en:"")
 <p>

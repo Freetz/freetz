@@ -6,9 +6,9 @@ PATH=/mod/bin:/mod/usr/bin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 let _width=$_cgi_width-236
 divstyle="style='margin-top:6px;'"
 
-sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware"):'
+sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
  echo -n '<div '$divstyle'><b>$(lang de:"Boxtyp" en:"Box type"):</b> '$FREETZ_INFO_BOXTYPE'&nbsp;&nbsp;'
- echo -n '<b>$(lang de:"AVM Firmwareversion:" en:"AVM firmware version:")</b> '$FREETZ_INFO_FIRMWAREVERSION'&nbsp;&nbsp;'
+ echo -n '<b>$(lang de:"AVM-Firmwareversion:" en:"AVM firmware version:")</b> '$FREETZ_INFO_FIRMWAREVERSION'&nbsp;&nbsp;'
  echo '<b>$(lang de:"Sprache:" en:"Language:")</b> '$FREETZ_INFO_LANG'</div>'
  if [ -r /proc/version ]; then
 	_kernelversion="$(cat /proc/version | sed -e 's/Linux version //;s/#.*//')"
@@ -102,7 +102,7 @@ preprocess_conf() {
 #
 format_conf() {
 	type=START
-	sec_begin '$(lang de:"FREETZ-Konfiguration" en:"FREETZ configuration"):'
+	sec_begin '$(lang de:"FREETZ-Konfiguration" en:"FREETZ configuration")'
 	cat <<- 'EOF'
 	<table id="freetz-conf" border="0">
 	<tr>
@@ -145,7 +145,7 @@ if [ -r /etc/.config ]; then
 fi
 
 if [ ! -z "$FREETZ_INFO_EXTERNAL_FILES" ]; then
-	sec_begin '$(lang de:"Ausgelagerte Dateien:" en:"Externalised files:")'
+	sec_begin '$(lang de:"Ausgelagerte Dateien" en:"Externalised files")'
 		echo -n '<pre style="overflow: auto; max-height: 100px;">'
 		echo -n "$FREETZ_INFO_EXTERNAL_FILES"
 		echo '</pre>'

@@ -91,7 +91,7 @@ cat << EOF
 <p>$(lang de:"Port der Weboberfl&auml;che" en:"Port of webinterface"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(html "$MOD_HTTPD_PORT")"></p>
 <h1>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h1>
 <p>
-$(lang de:"Gemountete Partitionen auf" en:"Mounted partitions on"):
+$(lang de:"Eingeh&auml;ngte Partitionen auf" en:"Mounted partitions on"):
 <input type="hidden" name="mounted_sub" value="no">
 <input id="a2" type="checkbox" name="mounted_sub" value="yes"$mounted_sub_chk><label for="a2">$(lang de:"Untermen&uuml;" en:"Submenu")</label>
 <input type="hidden" name="mounted_main" value="no">
@@ -119,7 +119,7 @@ if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi
 	echo "</p>"
 fi
 cat << EOF
-<p>$(lang de:"Breite des Freetz-Webinterfaces" en:"Width of the Freetz webinterface"): <input type="text" name="cgi_width" size="4" maxlength="4" value="$(html "$MOD_CGI_WIDTH")"></p>
+<p>$(lang de:"Breite der Freetz-Weboberfläche" en:"Width of the Freetz webinterface"): <input type="text" name="cgi_width" size="4" maxlength="4" value="$(html "$MOD_CGI_WIDTH")"></p>
 EOF
 
 sec_end

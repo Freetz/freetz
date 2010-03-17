@@ -56,7 +56,7 @@ if [ -x $(which run_clock) ]; then
 	run_clock=$(run_clock | sed 's/.*: //')
 fi
 
-sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware"):'
+sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware")'
  echo '<div '$divstyle'><b>$(lang de:"Boxname" en:"Box name"):</b> '$CONFIG_PRODUKT_NAME'&nbsp;&nbsp;&nbsp;<b>ANNEX:</b> '$CONFIG_ANNEX'</div>'
  echo -n "<div $divstyle><b>HWRevision:</b> $HWRevision.$(($HWRevision_ATA)).$((HWRevision_BitFileCount)).$(($HWRevision_Reserved1))&nbsp;&nbsp;&nbsp;"
  echo "<b>Flash(ROM):</b> $flash_size MB&nbsp;&nbsp;&nbsp;<b>RAM:</b> $CONFIG_RAMSIZE MB</div>"
@@ -73,23 +73,23 @@ sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware"):'
  echo '<div '$divstyle'><b>$(lang de:"Betriebsstundenz&auml;hler" en:"Operating hours counter"):</b> '$run_clock'</div>'
 sec_end
 
-sec_begin '$(lang de:"Netzwerk" en:"Network"):'
+sec_begin '$(lang de:"Netzwerk" en:"Network")'
  host_name="$(hostname)"
  act_ip="$(hostname -i)"
  echo '<div '$divstyle'><b>$(lang de:"Aktuelle IP-Adresse" en:"Current IP address"):</b> '$act_ip'&nbsp;&nbsp;&nbsp;<b>Hostname:</b> '$host_name'</div>'
- echo '<div '$divstyle'><b>Urloader IP$(lang de:"-Adresse" en:" address"):</b> '$ip_init_address'<br></div>'
+ echo '<div '$divstyle'><b>Urloader-IP$(lang de:"-Adresse" en:" address"):</b> '$ip_init_address'<br></div>'
  echo '<div '$divstyle'><b>MAC$(lang de:"-Adressen" en:" address"):</b><br>'
  echo '<b>DSL:</b> <small>'$mac_dsl'</small>&nbsp;&nbsp;&nbsp;<b>LAN:</b> <small>'$mac_lan'</small>&nbsp;&nbsp;&nbsp;<b>WLAN:</b> <small>'$mac_wlan'</small></div>'
 sec_end
 
 avsar_ver=/proc/avalanche/avsar_ver
 if [ -r "$avsar_ver" ]; then
-	sec_begin '$(lang de:"DSL-Treiber und Hardware" en:"DSL drivers and hardware"):'
+	sec_begin '$(lang de:"DSL-Treiber und Hardware" en:"DSL drivers and hardware")'
  		echo "<pre class='plain'>$(cat "$avsar_ver")</pre>"
 	sec_end
 fi
 
-sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware"):'
+sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
  echo -n '<div '$divstyle'><b>Firmware$(lang de:"" en:" ")version:</b> '$CONFIG_VERSION_MAJOR'.'$CONFIG_VERSION'&nbsp;&nbsp;'
  echo -n '<b>AVM-Revision:</b> '$avm_revision'&nbsp;&nbsp;&nbsp;'
  echo -n '<b>$(lang de:"Sprache" en:"Language"):</b> '$Language'</div>'
@@ -98,7 +98,7 @@ sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware"):'
 sec_end
 
 if [ -r /var/env.cache ]; then
-	sec_begin '$(lang de:"Umgebungsvariablen" en:"Environment variables"):'
+	sec_begin '$(lang de:"Umgebungsvariablen" en:"Environment variables")'
 		echo -n '<textarea style="margin-top:6px; width: '$_width'px;" name="content" rows="5" cols="10" wrap="off" readonly>'
 		sed -e "s/^export //g" /var/env.cache | html
 		echo -n '</textarea>'

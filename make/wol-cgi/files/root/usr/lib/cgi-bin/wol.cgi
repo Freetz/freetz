@@ -33,14 +33,14 @@ cat << EOF
 <ul>
 <li><a href="/cgi-bin/file.cgi?id=Freetz__hosts">$(lang de:"Hosts bearbeiten" en:"Edit hosts")</a></li>
 </ul>
-<p style="font-size:10px;">($(lang de:"alle Eintr&auml;ge, die eine g&uuml;ltige MAC Adresse aufweisen" en:"all items with a valid MAC address"))</p>
+<p style="font-size:10px;">($(lang de:"alle Eintr&auml;ge, die eine g&uuml;ltige MAC-Adresse aufweisen" en:"all items with a valid MAC address"))</p>
 EOF
 
 sec_end
 sec_begin '$(lang de:"WOL Interface" en:"WOL interface")'
 
 cat << EOF
-<h2>$(lang de:"Port des WOL Webservers" en:"Port of WOL webserver"):</h2>
+<h2>$(lang de:"Port des WOL-Webservers" en:"Port of WOL webserver"):</h2>
 <p>Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$WOL_PORT")"></p>
 EOF
 

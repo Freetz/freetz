@@ -102,7 +102,7 @@ cat << EOF
 <input type="hidden" name="klogd" value="no">
 <h2>
 <input id="r12" type="checkbox" name="klogd" value="yes"$klogd_chk>
-<label for="r12">$(lang de:"Kernel-Log D&auml;mon aktivieren" en:"Activate Kernel-Log daemon")</label>
+<label for="r12">$(lang de:"Kernel-Log-D&auml;mon aktivieren" en:"Activate kernel-log daemon")</label>
 </h2>
 <ul>
 <li style="list-style-type: none">
