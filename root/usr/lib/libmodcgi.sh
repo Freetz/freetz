@@ -149,10 +149,15 @@ cat << EOF
 </tr>
 <tr>
 <td width="20"><img src="/images/edge_lb.png" width="20" height="20" border="0" alt=""></td>
-<td width="$_cgi_width" id="edgebottom"><div class="opt">$(lang de:"optimiert f&uuml;r" en:"optimised for") Mozilla Firefox</div></td>
+<td width="$_cgi_width" id="edgebottom"></td>
 <td width="20"><img src="/images/edge_rb.png" width="20" height="20" border="0" alt=""></td>
 </tr>
 </table>
+<div id="footer">
+<span class="datetime" title="$(lang de:"System-Zeit des Routers" en:"Router's system time")">$(date +'$(lang de:"%d.%m.%Y" en:"%m/%d/%Y") %H:%M')</span>&nbsp;&ndash;
+<span class="uptime" title="Uptime">$(uptime | sed -r 's/.*(up.*), load.*/\1/')</span>&nbsp;&ndash;
+<span class="opt">$(lang de:"optimiert f&uuml;r" en:"optimised for") Mozilla Firefox</span>
+</div>
 </body>
 </html>
 EOF
