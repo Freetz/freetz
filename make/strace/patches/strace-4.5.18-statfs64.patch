@@ -1,6 +1,5 @@
-diff -u acinclude.m4 acinclude.m4
---- acinclude.m4	2004-04-14 04:21:01.000000000 +0200
-+++ acinclude.m4	2008-10-28 14:24:30.000000000 +0100
+--- acinclude.m4.orig	2004-04-14 04:45:53.000000000 +0200
++++ acinclude.m4	2010-03-17 23:42:12.000000000 +0100
 @@ -210,6 +210,23 @@
  fi
  ])
@@ -25,10 +24,9 @@ diff -u acinclude.m4 acinclude.m4
  dnl ### A macro to determine if off_t is a long long
  AC_DEFUN([AC_OFF_T_IS_LONG_LONG],
  [AC_MSG_CHECKING(for long long off_t)
-diff -u configure.ac configure.ac
---- configure.ac	2008-08-28 23:15:56.000000000 +0200
-+++ configure.ac	2008-10-28 14:24:41.000000000 +0100
-@@ -170,6 +170,7 @@
+--- configure.ac.orig	2009-10-12 21:54:43.000000000 +0200
++++ configure.ac	2010-03-17 23:42:12.000000000 +0100
+@@ -187,6 +187,7 @@
  		  struct stat.st_level,
  		  struct stat.st_rdev])
  AC_STAT64
@@ -36,19 +34,16 @@ diff -u configure.ac configure.ac
  
  AC_TYPE_SIGNAL
  AC_TYPE_UID_T
-diff -u file.c file.c
---- file.c	2008-08-01 03:13:10.000000000 +0200
-+++ file.c	2008-10-28 14:27:03.000000000 +0100
-@@ -1704,13 +1704,17 @@
+--- file.c.orig	2009-10-21 15:44:04.000000000 +0200
++++ file.c	2010-03-17 23:42:12.000000000 +0100
+@@ -1688,11 +1688,15 @@
  	return 0;
  }
  
 -#ifdef LINUX
 +#if defined LINUX && defined HAVE_STATFS64
  static void
- printstatfs64(tcp, addr)
- struct tcb *tcp;
- long addr;
+ printstatfs64(struct tcb *tcp, long addr)
  {
 +#ifdef HAVE_STAT64
  	struct statfs64 statbuf;
