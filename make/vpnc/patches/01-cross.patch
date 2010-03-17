@@ -20,7 +20,7 @@
  CPPFLAGS += -DVERSION=\"$(VERSION)\" $(OPENSSL_GPL_VIOLATION)
 -LDFLAGS ?= -g
 -LDFLAGS += $(shell libgcrypt-config --libs) $(OPENSSLLIBS)
-+LDFLAGS = $(EXTRA_LDFLAGS) -lgcrypt -lgpg-error
++LDFLAGS = $(EXTRA_LDFLAGS) -lgcrypt -lgpg-error $(OPENSSLLIBS)
  
 -ifeq ($(shell uname -s), SunOS)
 +ifeq ($(OS), SunOS)
