@@ -143,7 +143,7 @@ config FREETZ_LIB_libpolarssl
 
 config FREETZ_LIB_libcrypto
 	bool "OpenSSL cryptographic library (libcrypto.so)"
-	select FREETZ_LIB_libssl if FREETZ_HAS_LIBSSL
+	select FREETZ_LIB_libssl if FREETZ_REPLACE_SSL_LIBS && FREETZ_HAS_LIBSSL
 	default n
 	help
 		crypto - OpenSSL cryptographic library
@@ -162,7 +162,7 @@ config FREETZ_LIB_libcrypto
 
 config FREETZ_LIB_libssl
 	bool "OpenSSL SSL/TLS library (libssl.so)"
-	requires FREETZ_LIB_libcrypto
+	depends on FREETZ_LIB_libcrypto
 	default n
 	help
 		SSL - OpenSSL SSL/TLS library
@@ -174,7 +174,7 @@ config FREETZ_LIB_libssl
 
 config FREETZ_LIB_libavmhmac
 	bool "Replace libavmhmac - EXPERIMENTAL"
-	requires FREETZ_LIB_libcrypto
+	depends on FREETZ_REPLACE_SSL_LIBS
 	default n
 	help
 		Our libavmhmac only forwards functions to openssl's libcrypto where AVM
