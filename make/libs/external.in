@@ -23,14 +23,12 @@ config EXTERNAL_FREETZ_LIB_libart_lgpl_2
 		 /usr/lib/freetz/libart_lgpl_2.so.2.3.20
 
 config EXTERNAL_FREETZ_LIB_libcrypto
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcrypto && FREETZ_SHOW_ADVANCED
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcrypto
 	bool "libcrypto"
 	default n
 	help
 		externals these file(s):
 		 /usr/lib/freetz/libcrypto.so.0.9.8
-		WARNING: when this file is external'ed, wlan-encryption
-		is not possible at boot time any more.
 
 config EXTERNAL_FREETZ_LIB_libcurl
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcurl
@@ -330,6 +328,14 @@ config EXTERNAL_FREETZ_LIB_libsqlite3
 	help
 		externals these file(s):
 		 /usr/lib/freetz/libsqlite3.so.0.8.6
+
+config EXTERNAL_FREETZ_LIB_libssl
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libssl
+	bool "libssl"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libssl.so.0.9.8
 
 config EXTERNAL_FREETZ_LIB_libvorbis
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libvorbis
