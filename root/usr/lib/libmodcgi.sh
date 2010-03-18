@@ -33,45 +33,54 @@ _cgi_id() {
 _cgi_menu() {
 local sub=$1
 cat << EOF
-<div class="menu">
-<div id="status"><a href="/cgi-bin/status.cgi">Status</a></div>
+<ul class="menu">
+<li><a id="status" href="/cgi-bin/status.cgi">Status</a>
 EOF
 
 if [ "$sub" = "status" -a -r /mod/etc/reg/status.reg ]; then
     	local pkg title cgi
+	echo "<ul>"
 	while IFS='|' read -r pkg title cgi; do
-		echo "<div id='$(_cgi_id "status_$cgi")' class='su'><a href='/cgi-bin/pkgstatus.cgi?cgi=$cgi'>$(html "$title")</a></div>"
+		echo "<li><a id='$(_cgi_id "status_$cgi")' href='/cgi-bin/pkgstatus.cgi?cgi=$cgi'>$(html "$title")</a></li>"
 	done < /mod/etc/reg/status.reg 
+	echo "</ul>"
 fi
 
 cat << EOF
-<div id="daemons"><a href="/cgi-bin/daemons.cgi">$(lang de:"Dienste" en:"Services")</a></div>
-<div id="settings"><a href="/cgi-bin/settings.cgi">$(lang de:"Einstellungen" en:"Settings")</a></div>
+</li>
+<li><a id="daemons" href="/cgi-bin/daemons.cgi">$(lang de:"Dienste" en:"Services")</a></li>
+<li><a id="settings" href="/cgi-bin/settings.cgi">$(lang de:"Einstellungen" en:"Settings")</a>
 EOF
 
 if [ "$sub" = "settings" -a -r /mod/etc/reg/file.reg ]; then
     	local id title sec def
+	echo "<ul>"
 	while IFS='|' read -r id title sec def; do
-		echo "<div id='$(_cgi_id "file_$id")' class='su'><a href='/cgi-bin/file.cgi?id=$id'>$(html "$title")</a></div>"
+		echo "<li><a id='$(_cgi_id "file_$id")' href='/cgi-bin/file.cgi?id=$id'>$(html "$title")</a></li>"
 	done < /mod/etc/reg/file.reg 
+	echo "</ul>"
 fi
 
 cat << EOF
-<div id="packages"><a href="/cgi-bin/packages.cgi">$(lang de:"Pakete" en:"Packages")</a></div>
+</li>
+<li><a id="packages" href="/cgi-bin/packages.cgi">$(lang de:"Pakete" en:"Packages")</a>
 EOF
 
 if [ "$sub" = "packages" -a -r /mod/etc/reg/cgi.reg ]; then
     	local pkg title
+	echo "<ul>"
 	while IFS='|' read -r pkg title; do
-		echo "<div id='$(_cgi_id "pkg_$pkg")' class='su'><a href='/cgi-bin/pkgconf.cgi?pkg=$pkg'>$(html "$title")</a></div>"
+		echo "<li><a id='$(_cgi_id "pkg_$pkg")' href='/cgi-bin/pkgconf.cgi?pkg=$pkg'>$(html "$title")</a></li>"
 	done < /mod/etc/reg/cgi.reg 
+	echo "</ul>"
 fi
 
 cat << EOF
-<div id="extras"><a href="/cgi-bin/extras.cgi">Extras</a></div>
-<div id="backup_restore"><a href="/cgi-bin/backup_restore.cgi">$(lang de:"Sichern/Wiederherstellen" en:"Backup/restore")</a></div>
-<div id="rudi_shell"><a href="/cgi-bin/rudi_shell.cgi" target="_blank">$(lang de:"Rudi-Shell" en:"Rudi shell")</a></div>
-</div>
+</li>
+<li><a id="extras" href="/cgi-bin/extras.cgi">Extras</a></li>
+<li><a id="backup_restore" href="/cgi-bin/backup_restore.cgi">$(lang de:"Sichern/Wiederherstellen" en:"Backup/restore")</a></li>
+<li><a id="rudi_shell" href="/cgi-bin/rudi_shell.cgi" target="_blank">$(lang de:"Rudi-Shell" en:"Rudi shell")</a></li>
+</ul>
 EOF
 }
 
