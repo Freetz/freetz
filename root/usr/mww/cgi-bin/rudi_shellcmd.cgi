@@ -1,25 +1,25 @@
 #!/usr/bin/haserl -u 10000 -U /var/tmp
 
 <?
-pid1=`echo ${QUERY_STRING} | sed -n 's/.*pid=\(.*\)/\1/p' | sed -e 's/&.*//g'`
-pid2=`cat /var/run/rudi_shell.pid`
+pid1=$(echo ${QUERY_STRING} | sed -n 's/.*pid=\(.*\)/\1/p' | sed -e 's/&.*//g')
+pid2=$(cat /var/run/rudi_shell.pid)
 if [ "$pid1" != "$pid2" ] || [ ! -f /var/run/rudi_shell.pid ]; then
-	echo -e 'Content-Type: text/html; charset=ISO-8859-1\n'
-	echo -n '<html><body>$(lang de:"Sicherheitsabfrage fehlgeschlagen! Falsche PID!" en:"Security check failed! Wrong PID!")</body></html>'
+	echo -n 'Content-Type: text/html; charset=ISO-8859-1'$'\r\n\r\n'
+	echo -n '<html><body><script type="text/javascript">alert("$(lang de:"Sicherheitsabfrage fehlgeschlagen! Falsche PID!" en:"Security check failed! Wrong PID!")");</script></body></html>'
 	exit 1
 fi 
 ?>
 
 <? if [ "$FORM_display_mode" = "binary" ]; then
 	[ -z $FORM_download_name ] && FORM_download_name=rudi_download
-	echo 'Content-Type: application/octet-stream'
+	echo -n 'Content-Type: application/octet-stream'$'\r\n'
 	echo -n "Content-Disposition: attachment; filename=\"$FORM_download_name"
 	if [ "$FORM_tar" = "true" ]; then echo -n '.tar'; fi
 	if [ "$FORM_gz" = "true" ]; then echo -n '.gz'; fi
-	echo -e '"\n'
-	echo "$FORM_script" | sed "s/$(echo -ne '\r')//g" | sh
+	echo -n $'"\r\n\r\n'
+	echo "$FORM_script" | sed "s/"$'\r'"//g" | sh
 else
-	echo -e 'Content-Type: text/html; charset=ISO-8859-1\n'
+	echo -n 'Content-Type: text/html; charset=ISO-8859-1'$'\r\n\r\n'
 	echo -n '<html> <body'
 	if [ -n "$FORM_onload" ]; then
 	 	echo -n " onLoad=\"$FORM_onload\""
