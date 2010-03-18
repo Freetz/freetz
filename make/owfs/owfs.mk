@@ -1,14 +1,11 @@
-$(call PKG_INIT_BIN, 2.7p7)
+$(call PKG_INIT_BIN, 2.7p32)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4c189f64a1a6110bef19639a36c3b0e1
+$(PKG)_SOURCE_MD5:=be75552a4f9908d5196331571d7b6ce6
 $(PKG)_SITE:=@SF/owfs
-
-$(PKG)_BINARY:=$($(PKG)_DIR)/module/owhttpd/src/c/.libs/owhttpd
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/owhttpd
 
 # Library
 $(PKG)_SHORT_VERSION:=2.7
-$(PKG)_LIB_VERSION:=7.0.0
+$(PKG)_LIB_VERSION:=32.0.0
 $(PKG)_LIB_SUFFIX := $($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_BUILD_SUBDIR := src/c/.libs
 $(PKG)_LIBNAMES := libow
@@ -44,6 +41,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-owside
 $(PKG)_CONFIGURE_OPTIONS += --disable-owcapi
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-zero
+$(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-libusb-config="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libusb-config"
 
 $(PKG_SOURCE_DOWNLOAD)
