@@ -1,18 +1,18 @@
 #!/usr/bin/haserl -u 200 -U /var/tmp
-<?
+<%
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore configuration")' 'do_restore'
-?>
+%>
 <h1>$(lang de:"Wiederherstellung (Restore)" en:"Restore configuration")</h1>
 
-<? if test -n "$FORM_uploadfile_name"; then ?>
-  $(lang de:"Sie haben gerade die Datei" en:"You just uploaded the file") <b><? echo -n $FORM_uploadfile_name ?></b>$(lang de:" hochgeladen." en:".")<br>
-  $(lang de:"Sie ist unter dem temporären Namen" en:"It is stored on the Fritz!Box under the temporary name") <i><? echo $FORM_uploadfile ?></i>$(lang de:" auf der Fritz!Box gespeichert." en:".")<br>
-  $(lang de:"Die Dateigröße beträgt" en:"The file size is") <? cat $FORM_uploadfile | wc -c ?> $(lang de:"Bytes." en:"bytes.")
+<% if test -n "$FORM_uploadfile_name"; then %>
+  $(lang de:"Sie haben gerade die Datei" en:"You just uploaded the file") <b><% echo -n $FORM_uploadfile_name %></b>$(lang de:" hochgeladen." en:".")<br>
+  $(lang de:"Sie ist unter dem temporären Namen" en:"It is stored on the Fritz!Box under the temporary name") <i><% echo $FORM_uploadfile %></i>$(lang de:" auf der Fritz!Box gespeichert." en:".")<br>
+  $(lang de:"Die Dateigröße beträgt" en:"The file size is") <% cat $FORM_uploadfile | wc -c %> $(lang de:"Bytes." en:"bytes.")
   </p>
   <b>$(lang de:"Installationsverlauf:" en:"Installation log:")</b>
-  <pre><?
+  <pre><%
   {
     cd /var/tmp
     export BACKUP_DIR='var_flash'
@@ -50,14 +50,14 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
       (sleep 5; reboot)&
     fi
   } | html
-  ?></pre>
-<? else ?>
+  %></pre>
+<% else %>
   $(lang de:"Sie haben keine Sicherungs-Datei zum Hochladen ausgewählt. Der Zustand" en:"You have not selected any backup file to upload. The Fritz!Box's")
   $(lang de:"der Fritz!Box wurde nicht verändert." en:"configuration was not changed.")
-<? fi ?>
+<% fi %>
 
 <p>
 <% back_button /cgi-bin/status.cgi "$(lang de:"Zurück zur Übersicht" en:"Back to main page")" %>
-<p>
+</p>
 
-<? cgi_end ?>
+<% cgi_end %>
