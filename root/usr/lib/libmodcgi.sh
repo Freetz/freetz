@@ -127,7 +127,7 @@ fi
 cat << EOF
 </head>
 <body>
-<table id="edge" border="0" cellspacing="0" cellpadding="0" align="center" width="$_cgi_total_width">
+<table id="edge" border="0" cellspacing="0" cellpadding="0" width="$_cgi_total_width">
 <colgroup><col width="20"><col width="*"><col width="20"></colgroup>
 <tr>
 <td id="edge-top-left"></td>

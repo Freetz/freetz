@@ -45,7 +45,7 @@ cat << EOF
 <p>
 $(lang de:"Firmware" en:"Firmware"): $(get_env firmware_info)$(cat /etc/.freetz-version)
 </p>
-<table width="100%" border=0 cellpadding=0 cellspacing=0><tr><td>
+<table width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
 EOF
 
 brands_cnt=0
