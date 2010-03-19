@@ -31,6 +31,6 @@ $(lang de:"geflasht werden." en:"flash the expected firmware")
 	<input type=submit value="$(lang de:"Datei hochladen" en:"upload data")" style="width:150px">
 </form>
 <form action="/cgi-bin/status.cgi" method=GET>
-	<input type="submit" value="$(lang de:"Abrechen" en:"Abort")" style="width:150px">
+	<input type="submit" value="$(lang de:"Abbrechen" en:"Abort")" style="width:150px">
 </form>
 EOF
