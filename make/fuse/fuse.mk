@@ -1,6 +1,8 @@
 $(call PKG_INIT_BIN, 2.7.4)
 $(PKG)_SOURCE:=fuse-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=4879f06570d2225667534c37fea04213
 $(PKG)_SITE:=@SF/fuse
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/util/fusermount
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/fusermount
 $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/kernel/fuse.ko
@@ -9,12 +11,12 @@ $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/fuse.ko
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libfuse.so.$($(PKG)_VERSION)
-$(PKG)_SOURCE_MD5:=4879f06570d2225667534c37fea04213
-
 
 $(PKG)_DEPENDS_ON := kernel
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_LAYOUT
+
+$(PKG)_CONFIGURE_ENV += acl_cv_libext=a
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -59,8 +61,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_MOD_TARGET_BINARY): $($(PKG)_MOD_BINARY)
-	mkdir -p $(dir $@)
-	cp $^ $@
+	$(INSTALL_BINARY)
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -78,8 +79,9 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
 
 $(pkg)-uninstall:
-	$(RM) $(FUSE_TARGET_BINARY)
-	$(RM) $(FUSE_MOD_TARGET_BINARY)
-	$(RM) $(FUSE_DEST_LIBDIR)/libfuse*.so*
+	$(RM) \
+		$(FUSE_TARGET_BINARY) \
+		$(FUSE_MOD_TARGET_BINARY) \
+		$(FUSE_DEST_LIBDIR)/libfuse*.so*
 
 $(PKG_FINISH)
