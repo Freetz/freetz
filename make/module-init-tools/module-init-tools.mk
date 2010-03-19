@@ -1,28 +1,33 @@
-$(call PKG_INIT_BIN,3.4)
+$(call PKG_INIT_BIN,3.11.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=28dfcb9e24cdbeb12b99ac1eb8af7dea
 $(PKG)_SITE:=http://www.kernel.org/pub/linux/utils/kernel/module-init-tools
-$(PKG)_BINARY:=$($(PKG)_DIR)/modinfo
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/modinfo
-$(PKG)_SOURCE_MD5:=db6ac059e80e8dd4389dbe81ee61f3c6
+
+$(PKG)_BINARIES_ALL := depmod insmod lsmod modindex modinfo modprobe rmmod
+$(PKG)_BINARIES := $(strip $(foreach binary,$($(PKG)_BINARIES_ALL),$(if $(FREETZ_PACKAGE_$(PKG)_$(binary)),$(binary))))
+$(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/build/%)
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
+$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/sbin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MODULE_INIT_TOOLS_DIR)
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
+$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/build/%
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(MODULE_INIT_TOOLS_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(MODULE_INIT_TOOLS_TARGET_BINARY)
+	$(RM) $(MODULE_INIT_TOOLS_BINARIES_ALL:%=$(MODULE_INIT_TOOLS_DEST_DIR)/usr/sbin/%)
 
 $(PKG_FINISH)
