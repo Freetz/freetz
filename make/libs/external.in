@@ -86,6 +86,14 @@ config EXTERNAL_FREETZ_LIB_libexpat
 		externals these file(s):
 		 /usr/lib/freetz/libexpat.so.1.5.2
 
+config EXTERNAL_FREETZ_LIB_libform
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libform
+	bool "libform"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libform.so.5.7
+
 config EXTERNAL_FREETZ_LIB_libfreetype
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libfreetype
 	bool "libfreetype"
@@ -222,6 +230,14 @@ config EXTERNAL_FREETZ_LIB_libmad
 		externals these file(s):
 		 /usr/lib/freetz/libmad.so.0.2.1
 
+config EXTERNAL_FREETZ_LIB_libmenu
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libmenu
+	bool "libmenu"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libmenu.so.5.7
+
 config EXTERNAL_FREETZ_LIB_libncurses
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libncurses && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
 	bool "libncurses"
@@ -229,9 +245,6 @@ config EXTERNAL_FREETZ_LIB_libncurses
 	help
 		externals these file(s):
 		 /usr/lib/freetz/libncurses.so.5.7
-		 /usr/lib/freetz/libform.so.5.7
-		 /usr/lib/freetz/libmenu.so.5.7
-		 /usr/lib/freetz/libpanel.so.5.7
 
 config EXTERNAL_FREETZ_LIB_libneon
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libneon
