@@ -16,6 +16,9 @@ ifneq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
 $(PKG)_NOT_INCLUDED += $($(PKG)_TARGET_WEBINTERFACE_DIR)
 endif
 
+$(PKG)_BUILD_PREREQ += intltool-update
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by a package with the same intltool
+
 $(PKG)_DEPENDS_ON := zlib openssl curl libevent
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TRANSMISSION_STATIC
