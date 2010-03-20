@@ -1,5 +1,33 @@
---- Makefile.am.orig	2009-12-01 17:53:43.000000000 +0100
-+++ Makefile.am	2009-12-01 18:00:48.000000000 +0100
+--- libltdl/Makefile.am	2008-02-01 17:28:07.000000000 +0100
++++ libltdl/Makefile.am	2010-03-20 17:10:00.000000000 +0100
+@@ -29,4 +29,4 @@
+ 
+ $(libltdl_la_OBJECTS) $(libltdlc_la_OBJECTS): libtool
+ libtool: $(LIBTOOL_DEPS)
+-	$(SHELL) ./config.status --recheck
++#	$(SHELL) ./config.status --recheck
+--- libltdl/Makefile.in	2008-02-01 17:38:48.000000000 +0100
++++ libltdl/Makefile.in	2010-03-20 17:10:00.000000000 +0100
+@@ -257,7 +257,7 @@
+ 	esac;
+ 
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+-	$(SHELL) ./config.status --recheck
++#	$(SHELL) ./config.status --recheck
+ 
+ $(top_srcdir)/configure:  $(am__configure_deps)
+ 	cd $(srcdir) && $(AUTOCONF)
+@@ -657,7 +657,7 @@
+ 
+ $(libltdl_la_OBJECTS) $(libltdlc_la_OBJECTS): libtool
+ libtool: $(LIBTOOL_DEPS)
+-	$(SHELL) ./config.status --recheck
++#	$(SHELL) ./config.status --recheck
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
+--- Makefile.am	2008-02-01 17:11:59.000000000 +0100
++++ Makefile.am	2010-03-20 17:10:00.000000000 +0100
 @@ -56,7 +56,7 @@
  	libltdl/config-h.in
  
@@ -9,8 +37,8 @@
  	chmod +x $@
  
  libtoolize: $(srcdir)/libtoolize.in $(top_builddir)/config.status
---- Makefile.in.orig	2009-12-01 17:54:11.000000000 +0100
-+++ Makefile.in	2009-12-01 18:01:03.000000000 +0100
+--- Makefile.in	2008-02-01 17:38:41.000000000 +0100
++++ Makefile.in	2010-03-20 17:10:00.000000000 +0100
 @@ -303,7 +303,7 @@
  	esac;
  

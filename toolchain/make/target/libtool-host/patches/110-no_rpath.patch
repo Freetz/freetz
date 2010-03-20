@@ -1,5 +1,5 @@
---- libtool.m4.orig	2008-02-01 16:26:47.000000000 +0000
-+++ libtool.m4	2009-10-26 11:52:52.000000000 +0000
+--- acinclude.m4	2008-02-01 17:38:35.000000000 +0100
++++ acinclude.m4	2010-03-20 17:51:42.000000000 +0100
 @@ -4655,7 +4655,7 @@
  global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
  
@@ -29,3 +29,1783 @@
  
  # Whether we need a single -rpath flag with a separated argument.
  hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- cdemo/acinclude.m4	2008-02-01 17:38:49.000000000 +0100
++++ cdemo/acinclude.m4	2010-03-20 18:07:31.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- cdemo/configure	2008-02-01 17:38:55.000000000 +0100
++++ cdemo/configure	2010-03-20 18:07:31.000000000 +0100
+@@ -10765,7 +10765,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -10777,16 +10777,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -13840,7 +13840,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -13852,16 +13852,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -16461,7 +16461,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -16473,16 +16473,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -19086,7 +19086,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19098,16 +19098,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -19572,7 +19572,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19584,16 +19584,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
+--- configure	2008-02-01 17:38:42.000000000 +0100
++++ configure	2010-03-20 17:51:42.000000000 +0100
+@@ -11388,7 +11388,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -11400,16 +11400,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -14463,7 +14463,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -14475,16 +14475,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -17084,7 +17084,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -17096,16 +17096,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -19709,7 +19709,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19721,16 +19721,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -20195,7 +20195,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -20207,16 +20207,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
+--- demo/acinclude.m4	2008-02-01 17:38:55.000000000 +0100
++++ demo/acinclude.m4	2010-03-20 18:07:30.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- demo/configure	2008-02-01 17:39:01.000000000 +0100
++++ demo/configure	2010-03-20 18:07:30.000000000 +0100
+@@ -11171,7 +11171,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -11183,16 +11183,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -14246,7 +14246,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -14258,16 +14258,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -16867,7 +16867,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -16879,16 +16879,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -19492,7 +19492,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19504,16 +19504,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -19978,7 +19978,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19990,16 +19990,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
+--- depdemo/acinclude.m4	2008-02-01 17:39:01.000000000 +0100
++++ depdemo/acinclude.m4	2010-03-20 18:07:32.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- depdemo/configure	2008-02-01 17:39:07.000000000 +0100
++++ depdemo/configure	2010-03-20 18:07:32.000000000 +0100
+@@ -11060,7 +11060,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -11072,16 +11072,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -14135,7 +14135,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -14147,16 +14147,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -16756,7 +16756,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -16768,16 +16768,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -19381,7 +19381,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19393,16 +19393,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -19867,7 +19867,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19879,16 +19879,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
+--- f77demo/acinclude.m4	2008-02-01 17:39:31.000000000 +0100
++++ f77demo/acinclude.m4	2010-03-20 18:07:31.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- f77demo/configure	2008-02-01 17:39:38.000000000 +0100
++++ f77demo/configure	2010-03-20 18:07:31.000000000 +0100
+@@ -11741,7 +11741,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -11753,16 +11753,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -14832,7 +14832,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -14844,16 +14844,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -17453,7 +17453,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -17465,16 +17465,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -20094,7 +20094,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -20106,16 +20106,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -20580,7 +20580,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -20592,16 +20592,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
+--- libltdl/acinclude.m4	2008-02-01 17:38:42.000000000 +0100
++++ libltdl/acinclude.m4	2010-03-20 17:51:42.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- libltdl/configure	2008-02-01 17:38:49.000000000 +0100
++++ libltdl/configure	2010-03-20 17:51:42.000000000 +0100
+@@ -11255,7 +11255,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -11267,16 +11267,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -14330,7 +14330,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -14342,16 +14342,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -16951,7 +16951,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -16963,16 +16963,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -19576,7 +19576,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19588,16 +19588,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -20062,7 +20062,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -20074,16 +20074,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
+--- libtool.m4	2008-02-01 17:26:47.000000000 +0100
++++ libtool.m4	2010-03-20 17:51:42.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- mdemo/acinclude.m4	2008-02-01 17:39:07.000000000 +0100
++++ mdemo/acinclude.m4	2010-03-20 17:53:01.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- mdemo/configure	2008-02-01 17:39:13.000000000 +0100
++++ mdemo/configure	2010-03-20 17:55:39.000000000 +0100
+@@ -11186,7 +11186,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -11198,16 +11198,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -14261,7 +14261,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -14273,16 +14273,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -16882,7 +16882,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -16894,16 +16894,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -19507,7 +19507,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19519,16 +19519,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -19993,7 +19993,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -20005,16 +20005,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
+--- mdemo2/acinclude.m4	2008-02-01 17:39:13.000000000 +0100
++++ mdemo2/acinclude.m4	2010-03-20 18:07:32.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- mdemo2/configure	2008-02-01 17:39:19.000000000 +0100
++++ mdemo2/configure	2010-03-20 18:07:32.000000000 +0100
+@@ -10873,7 +10873,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -10885,16 +10885,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -13948,7 +13948,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -13960,16 +13960,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -16569,7 +16569,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -16581,16 +16581,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -19194,7 +19194,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19206,16 +19206,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -19680,7 +19680,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19692,16 +19692,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
+--- pdemo/acinclude.m4	2008-02-01 17:39:19.000000000 +0100
++++ pdemo/acinclude.m4	2010-03-20 18:07:30.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- pdemo/configure	2008-02-01 17:39:25.000000000 +0100
++++ pdemo/configure	2010-03-20 18:07:31.000000000 +0100
+@@ -10876,7 +10876,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -10888,16 +10888,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -13951,7 +13951,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -13963,16 +13963,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -16572,7 +16572,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -16584,16 +16584,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -19197,7 +19197,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19209,16 +19209,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -19683,7 +19683,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19695,16 +19695,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC
+--- tagdemo/acinclude.m4	2008-02-01 17:39:25.000000000 +0100
++++ tagdemo/acinclude.m4	2010-03-20 18:07:31.000000000 +0100
+@@ -4655,7 +4655,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -4667,16 +4667,16 @@
+ hardcode_action=$_LT_AC_TAGVAR(hardcode_action, $1)
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec_ld, $1)
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+--- tagdemo/configure	2008-02-01 17:39:31.000000000 +0100
++++ tagdemo/configure	2010-03-20 18:07:32.000000000 +0100
+@@ -11299,7 +11299,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -11311,16 +11311,16 @@
+ hardcode_action=$hardcode_action
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator
+@@ -14374,7 +14374,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -14386,16 +14386,16 @@
+ hardcode_action=$hardcode_action_CXX
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_CXX
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_CXX
+@@ -16995,7 +16995,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -17007,16 +17007,16 @@
+ hardcode_action=$hardcode_action_F77
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_F77
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_F77
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_F77
+@@ -19620,7 +19620,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -19632,16 +19632,16 @@
+ hardcode_action=$hardcode_action_GCJ
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_GCJ
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_GCJ
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_GCJ
+@@ -20106,7 +20106,7 @@
+ global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+ 
+ # This is the shared library runtime path variable.
+-runpath_var=$runpath_var
++runpath_var=
+ 
+ # This is the shared library path variable.
+ shlibpath_var=$shlibpath_var
+@@ -20118,16 +20118,16 @@
+ hardcode_action=$hardcode_action_RC
+ 
+ # Whether we should hardcode library paths into libraries.
+-hardcode_into_libs=$hardcode_into_libs
++hardcode_into_libs=no
+ 
+ # Flag to hardcode \$libdir into a binary during linking.
+ # This must work even if \$libdir does not exist.
+-hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_RC
++hardcode_libdir_flag_spec=
+ 
+ # If ld is used when linking, flag to hardcode \$libdir into
+ # a binary during linking. This must work even if \$libdir does
+ # not exist.
+-hardcode_libdir_flag_spec_ld=$lt_hardcode_libdir_flag_spec_ld_RC
++hardcode_libdir_flag_spec_ld=
+ 
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_hardcode_libdir_separator_RC

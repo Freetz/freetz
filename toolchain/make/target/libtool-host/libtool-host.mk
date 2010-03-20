@@ -23,6 +23,10 @@ $(LIBTOOL_HOST_DIR)/.patched: $(LIBTOOL_HOST_DIR)/.unpacked
 	for i in $(LIBTOOL_HOST_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(LIBTOOL_HOST_DIR) $$i; \
 	done
+# touch some patched files to ensure no file except for ltmain.sh gets regenerated
+	for i in $$(find $(LIBTOOL_HOST_DIR) -type f \( \( -name "*.m4" -o -name "*.am" \) -a ! -name "aclocal.m4" \)); do \
+		touch -t 200001010000.00 $$i; \
+	done; \
 	touch $@
 
 $(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.patched
@@ -55,9 +59,6 @@ $(LIBTOOL_HOST_TARGET_SCRIPT): $(LIBTOOL_HOST_SCRIPT)
 		MAKEINFO=true \
 		-C $(LIBTOOL_HOST_DIR) \
 		install
-	$(SED) -i -r -e 's,(hardcode_into_libs)=yes,\1=no,g' \
-		-e 's,(hardcode_libdir_flag_spec)=.*,\1=,g' \
-		$(LIBTOOL_HOST_TARGET_SCRIPT)
 
 libtool-host: uclibcxx $(LIBTOOL_HOST_TARGET_SCRIPT)
 
