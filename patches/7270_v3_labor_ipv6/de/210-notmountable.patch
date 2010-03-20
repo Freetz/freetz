@@ -1,16 +1,18 @@
---- usr/www/all/html/de/home/home.js.orig	2009-09-29 16:31:44.000000000 +0200
-+++ usr/www/all/html/de/home/home.js	2009-10-09 12:56:50.000000000 +0200
-@@ -802,15 +802,13 @@
- var nPartTotal = Number("<? query ctlusb:settings/storage-part-total ?>");
+--- usr/www/all/html/de/home/home.js.orig	2010-02-26 13:37:31.000000000 +0100
++++ usr/www/all/html/de/home/home.js	2010-03-20 00:39:18.000000000 +0100
+@@ -806,7 +806,7 @@
+ var nPartTotal = Number(g_usbhost_data.part_count_total);
  if (isNaN(nPartTotal)) nPartTotal = 0;
- var unplugOk = parseInt("<? query ctlusb:settings/unplug-ok ?>", 10) == 1;
--if (nPartTotal > nStor) {
-+if (nPartTotal > 0) {
- var strStor = "";
- if (unplugOk) {
- strStor = "{?de.home.home.js:912?}";
+ var unplugOk = parseInt(g_usbhost_data.unplug_ok, 10) == 1;
+-if (nPartTotal > nStor)
++if (nPartTotal > 0)
+ {
+ if (unplugOk)
+ {
+@@ -814,9 +814,7 @@
  }
- else {
+ else
+ {
 -strStor = "{?de.home.home.js:5308?} ";
 -strStor += "<a href=\"javascript:jslGoTo('home', 'syslog');\">{?de.home.home.js:3744?}</a>";
 -strStor = strStor.fontcolor("#cc0000");
