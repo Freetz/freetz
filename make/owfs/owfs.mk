@@ -10,7 +10,7 @@ $(PKG)_LIB_SUFFIX := $($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_BUILD_SUBDIR := src/c/.libs
 $(PKG)_LIBNAMES := libow
 $(PKG)_LIBS_BUILD_DIR := $(OWFS_LIBNAMES:%=$($(PKG)_DIR)/module/owlib/$(OWFS_LIB_BUILD_SUBDIR)/%-$(OWFS_LIB_SUFFIX))
-$(PKG)_LIBS_TARGET_DIR := $(OWFS_LIBNAMES:%=$($(PKG)_DEST_DIR)/usr/lib/%-$(OWFS_LIB_SUFFIX))
+$(PKG)_LIBS_TARGET_DIR := $(OWFS_LIBNAMES:%=$($(PKG)_DEST_LIBDIR)/%-$(OWFS_LIB_SUFFIX))
 
 # Binaries
 $(PKG)_BINARIES_ALL := owdir owfs owftpd owhttpd owpresent owread owwrite
@@ -21,12 +21,15 @@ $(PKG)_BINARIES := $($(PKG)_BINARIES_ALL)
 $(PKG)_BINARIES_BUILD_DIR := $(join $(OWFS_BINARIES_SUBDIRS:%=$($(PKG)_DIR)/module/%/$(OWFS_BINARY_BUILD_SUBDIR)/),$(OWFS_BINARIES_ALL_PATH:%=%))
 $(PKG)_BINARIES_TARGET_DIR := $(OWFS_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
-#$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+$(PKG)_DEPENDS_ON := libusb fuse
 
-$(PKG)_DEPENDS_ON := libusb
-
-$(call REPLACE_LIBTOOL,,./src/scripts/install/,)
-
+$(call REPLACE_LIBTOOL,,src/scripts/install,)
+# Note: Replacing libtool and specifying "--disable-shared" at the same time
+# doesn't make any sense as replaced libtool is built with shared libraries enabled.
+# If you really want only static libraries to be created and linked in
+# then you have to make a local copy of replaced libtool and modify it
+# so that it doesn't create shared libraries (i.e. set build_libtool_libs to no).
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-usb
 $(PKG)_CONFIGURE_OPTIONS += --disable-tai8570
 $(PKG)_CONFIGURE_OPTIONS += --disable-thermocouple
@@ -36,32 +39,30 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-ownet
 $(PKG)_CONFIGURE_OPTIONS += --disable-owtap
 $(PKG)_CONFIGURE_OPTIONS += --disable-owmon
 $(PKG)_CONFIGURE_OPTIONS += --disable-swig
+$(PKG)_CONFIGURE_OPTIONS += --disable-owperl
+$(PKG)_CONFIGURE_OPTIONS += --disable-owphp
+$(PKG)_CONFIGURE_OPTIONS += --disable-owpython
+$(PKG)_CONFIGURE_OPTIONS += --disable-owtcl
 $(PKG)_CONFIGURE_OPTIONS += --disable-parport
 $(PKG)_CONFIGURE_OPTIONS += --disable-owside
 $(PKG)_CONFIGURE_OPTIONS += --disable-owcapi
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-zero
-$(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-libusb-config="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libusb-config"
+$(PKG)_CONFIGURE_OPTIONS += --with-fuseinclude="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include"
+$(PKG)_CONFIGURE_OPTIONS += --with-fuselib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(OWFS_DIR) \
-	LD_EXTRALIBS=""
+	$(SUBMAKE) -C $(OWFS_DIR)
 
-$($(PKG)_LIBS_TARGET_DIR): \
-	$($(PKG)_DEST_DIR)/usr/lib/%: \
-	$($(PKG)_DIR)/module/owlib/$(OWFS_LIB_BUILD_SUBDIR)/%
+$($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/module/owlib/$(OWFS_LIB_BUILD_SUBDIR)/%
 	$(INSTALL_LIBRARY_STRIP)
 
-define OWFS_INSTALL_BINARY_STRIP
-$($(PKG)_DEST_DIR)$(strip $(2))/$(notdir $(strip $(1))): $(strip $(1))
-	$(value INSTALL_BINARY_STRIP)
-endef
-$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call OWFS_INSTALL_BINARY_STRIP,$(binary),/usr/bin)))
+$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
 
 $(pkg):
 
@@ -71,7 +72,6 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(OWFS_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(OWFS_LIBS_TARGET_DIR)
-	$(RM) $(OWFS_BINARIES_TARGET_DIR)
+	$(RM) $(OWFS_LIBS_TARGET_DIR) $(OWFS_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)
