@@ -25,7 +25,7 @@ $(PKG)_BINARIES_TARGET_DIR := $(OWFS_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
 $(PKG)_DEPENDS_ON := libusb
 
-$(call REPLACE_LIBTOOL)
+$(call REPLACE_LIBTOOL,,./src/scripts/install/,)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-usb
 $(PKG)_CONFIGURE_OPTIONS += --disable-tai8570
@@ -49,7 +49,8 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(OWFS_DIR)
+	$(SUBMAKE) -C $(OWFS_DIR) \
+	LD_EXTRALIBS=""
 
 $($(PKG)_LIBS_TARGET_DIR): \
 	$($(PKG)_DEST_DIR)/usr/lib/%: \
