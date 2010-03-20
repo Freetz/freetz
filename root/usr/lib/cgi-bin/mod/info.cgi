@@ -60,22 +60,25 @@ read_entries() {
 #
 preprocess_conf() {
     	local file=$1
-	sed -nr '
+	local lowercase="y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/;"
+	sed -nr "
 		s/=y$//
 		s/^FREETZ_//
 		/^EXTERNAL/ d
 		/^(PATCH|USBSTORAGE|AUTOMOUNT|AUTORUN)_/ {
 			s/^(USBSTORAGE|PATCH)_//
 			s/_/ / # separate sub-option
+			$lowercase
 			s/^/10 pat /; p; d
 		}
 		/^REMOVE_/ {
 			s/^REMOVE_//
+			$lowercase
 			s/^/50 rem /; p; d
 		}
 		/^MODULE_/ {
 			s/^MODULE_//
-			s/^/30 mod/; p; d
+			s/^/30 mod /; p; d
 		}
 		/^LIB_/ {
 			s/LIB_//
@@ -84,6 +87,7 @@ preprocess_conf() {
 		/^PACKAGE_.*_CGI$/ {
 			s/^PACKAGE_(.*)_CGI$/\1/
 			/_/ d # why?
+			$lowercase
 			s/^/60 cgi /; p; d
 		}
 		/^PACKAGE/ {
@@ -93,9 +97,10 @@ preprocess_conf() {
 			s/INADYN_MT/INADYN-MT/g
 			s/SANE_BACKENDS/SANE-BACKENDS/g
 			s/_/ /
+			$lowercase
 			s/^/20 pkg /; p; d
 		}
-	' "$file" | tr "A-Z" "a-z" | sort
+	" "$file" | sort
 }
 #
 # Format output
@@ -141,6 +146,7 @@ format_conf() {
 # Put everything together
 #
 if [ -r /etc/.config ]; then
+#    	echo "<pre>"; preprocess_conf /etc/.config | html; echo "</pre>"
 	preprocess_conf /etc/.config | format_conf
 fi
 
