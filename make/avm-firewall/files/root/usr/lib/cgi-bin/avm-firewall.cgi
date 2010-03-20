@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="2.0.4_rc3"
+VERSION="2.0.4_rc4"
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 CONFIG=/mod/etc/conf/avm-firewall.cfg
 . /usr/lib/libmodcgi.sh
@@ -10,7 +10,7 @@ SUBNET="255.255.255.252 255.255.255.248 255.255.255.240 255.255.255.224 \
         255.255.192.0 255.255.128.0 255.255.0.0 255.254.0.0 255.252.0.0 255.248.0.0 255.240.0.0 255.224.0.0 \
         255.192.0.0 255.128.0.0 255.0.0.0 240.0.0.0"
 
-echo "<font size='1'>$(lang en:"This firewall is for router mode only and is based on the ar7.cfg file of AVM. New rule settings will be active after next reboot or after clicking the \"Activate Button\" below." de:"Oberfl&auml;che zur AVM-Firewall (nur im Routermodus) bearbeitet die ar7.cfg. &Auml;nderungen werden durch Reboot oder durch Auswahl am Ende der Seite aktiviert.")</font>"
+echo "<font size='1'>$(lang en:"This GUI is for router mode only and is based on the ar7.cfg file. Changes will be active after next reboot \(or after checking the box at the bottom of the page\)." de:"Oberfl&auml;che zur AVM-Firewall (nur im Routermodus) bearbeitet die ar7.cfg. &Auml;nderungen werden durch Reboot oder durch Auswahl am Ende der Seite aktiviert.")</font>"
 
 sec_begin '$(lang en:"Mode" de:"Ansicht") Firewall / Port Forwarding'
 cat << EOF
@@ -574,29 +574,7 @@ cat << EOF
 <font size="1">$(lang en:"\"Defaults\" will load AVM default firewall rules (only loads into this GUI, use \"Apply\" to save them)" de:"\"Standard\" l&auml;dt AVM Default-Regeln in die GUI. Zum Speichern \"&Uuml;bernehmen\"-Knopf dr&uuml;cken").</font><br />
 <input type="hidden" name="do_activate" value=""></font>
 $(lang en:"Saving will <b>not</b> activate rules or new dsld switches by default! <b>To do so, some daemoms have to be restarted:</b>" de:"Regelwerk und dsld Schalter werden standardm&auml;&szlig;ig <b>nicht</b> aktiviert!  Dazu m&uuml;ssen AVM-Dienste neu gestartet werden:") <br />
-<img src="../images/blink!.gif" title="Attention!" valign="center"> &nbsp; <b>$(lang en:"This might crash your box or even restore factory defaults!" de:"Das kann zum Absturz oder sogar zum Werksreset f&uuml;hren!")</b>
-<table width="100%" border=0>
-<colgroup>
-    <col width="25%">
-    <col width="25%">
-    <col width="25%">
-    <col width="25%">
-</colgroup>
-<tr  align=center>
-<td><input type="radio" value="y" name="do_activate" > </td>
-<td><input type="radio" value="dsld" name="do_activate" > </td>
-<td><input type="radio" value="ctlmgr" name="do_activate" > </td>
-<td><input type="radio" value="dsld_ctlmgr" name="do_activate" > </td></tr>
-<tr align=center>
-<td>$(lang en:"Activate forwardings" de:"Forwardings aktivieren")</td>
-<td>$(lang en:"Firewall and dsld-Switches" de:"Firewall und dsld-Schalter ")</td>
-<td>$(lang en:"Upate AVM GUI" de:"AVM-GUI aktualisieren")</td>
-<td>$(lang en:"both" de:"Beides")</td></tr>
-<tr  align=center>
-<td><font size=1>(SIGHUP dsld)</font></td>
-<td><font size=1>(Restart dsld)</font></td>
-<td><font size=1>(SIGHUP dsld $(lang en:"and" de:"und") restart ctlmgr)</font></td>
-<td><font size=1>(Restart dsld $(lang en:"and" de:"und") ctlmgr)</font></td></tr>
-</table>
+<img src="../images/blink!.gif" title="Attention!" valign="center"> &nbsp; <b>$(lang en:"This might crash your box or even restore factory defaults!" de:"Das kann zum Absturz oder sogar zum Werksreset f&uuml;hren!") </b> &nbsp;&nbsp;&nbsp; $(lang en:"Activate rules directly after saving" de:"Regeln gleich nach Speichern aktivieren") <input type="checkbox" value="dsld_ctlmgr" name="do_activate" ><br />
+<font size="1">($(lang en:"Safe way to activate the settings is only save them here and then restart the box" de:"Um die &Auml;derungen \"sicher\" zu aktivieren, hier nur \"&Uuml;bernehmen\" w&auml;hlen und dann die Box neu starten"))</font><br />
 EOF
 
