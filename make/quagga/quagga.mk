@@ -56,17 +56,10 @@ $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(QUAGGA_DIR) \
 		LD="$(TARGET_LD)"
 
-$($(PKG)_LIBS_TARGET_DIR): \
-	$($(PKG)_DEST_DIR)/usr/lib/%: \
-	$($(PKG)_DIR)/lib/.libs/%
+$($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/%: $($(PKG)_DIR)/lib/.libs/%
 	$(INSTALL_LIBRARY_STRIP)
 
-define QUAGGA_INSTALL_BINARY_STRIP
-$($(PKG)_DEST_DIR)$(strip $(2))/$(notdir $(strip $(1))): $(strip $(1))
-	$(value INSTALL_BINARY_STRIP)
-endef
-$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call QUAGGA_INSTALL_BINARY_STRIP,$(binary),/usr/sbin)))
-
+$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
 
 $(pkg):
 
@@ -77,7 +70,6 @@ $(pkg)-clean:
 	$(RM) $(QUAGGA_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
-	$(RM) $(QUAGGA_LIBS_TARGET_DIR)
-	$(RM) $(QUAGGA_BINARIES_TARGET_DIR)
+	$(RM) $(QUAGGA_LIBS_TARGET_DIR) $(QUAGGA_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)
