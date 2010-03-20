@@ -55,7 +55,9 @@ $(LIBTOOL_HOST_TARGET_SCRIPT): $(LIBTOOL_HOST_SCRIPT)
 		MAKEINFO=true \
 		-C $(LIBTOOL_HOST_DIR) \
 		install
-	$(SED) -i -r -e 's,(hardcode_into_libs)=yes,\1=no,g' $(LIBTOOL_HOST_TARGET_SCRIPT)
+	$(SED) -i -r -e 's,(hardcode_into_libs)=yes,\1=no,g' \
+		-e 's,(hardcode_libdir_flag_spec)=.*,\1=,g' \
+		-e 's,LD_RUN_PATH,NO_RPATH,g' $(LIBTOOL_HOST_TARGET_SCRIPT)
 
 libtool-host: uclibcxx $(LIBTOOL_HOST_TARGET_SCRIPT)
 
