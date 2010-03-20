@@ -17,7 +17,7 @@ $(PKG)_NOT_INCLUDED += $($(PKG)_TARGET_WEBINTERFACE_DIR)
 endif
 
 $(PKG)_BUILD_PREREQ += intltool-update
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by a package with the same intltool
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the intltool package
 
 $(PKG)_DEPENDS_ON := zlib openssl curl libevent
 
