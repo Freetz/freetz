@@ -10,7 +10,7 @@ $(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/fs/fuse
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/fuse.ko
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse.so.$($(PKG)_VERSION)
-$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libfuse.so.$($(PKG)_VERSION)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libfuse.so.$($(PKG)_VERSION)
 
 $(PKG)_DEPENDS_ON := kernel
 
@@ -82,6 +82,6 @@ $(pkg)-uninstall:
 	$(RM) \
 		$(FUSE_TARGET_BINARY) \
 		$(FUSE_MOD_TARGET_BINARY) \
-		$(FUSE_DEST_LIBDIR)/libfuse*.so*
+		$(FUSE_TARGET_LIBDIR)/libfuse*.so*
 
 $(PKG_FINISH)

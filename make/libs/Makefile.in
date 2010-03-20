@@ -210,6 +210,10 @@ ifneq (,$(strip $(filter y,$(FREETZ_LIB_libblkid) $(FREETZ_LIB_libcom_err) $(FRE
 LIBS+=e2fsprogs
 endif
 
+ifeq ($(strip $(FREETZ_LIB_libfuse)),y)
+LIBS+=fuse
+endif
+
 ifeq ($(strip $(FREETZ_LIB_libgd)),y)
 LIBS+=gd
 endif
