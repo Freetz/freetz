@@ -49,12 +49,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BIN_BINARIES_BUILD_DIR) $($(PKG)_SBIN_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(BLUEZ_UTILS_DIR)
 
-define BLUEZ_UTILS_INSTALL_BINARY_STRIP
-$($(PKG)_DEST_DIR)$(strip $(2))/$(notdir $(strip $(1))): $(strip $(1))
-	$(value INSTALL_BINARY_STRIP)
-endef
-$(foreach binary,$($(PKG)_BIN_BINARIES_BUILD_DIR),$(eval $(call BLUEZ_UTILS_INSTALL_BINARY_STRIP,$(binary),/usr/bin)))
-$(foreach binary,$($(PKG)_SBIN_BINARIES_BUILD_DIR),$(eval $(call BLUEZ_UTILS_INSTALL_BINARY_STRIP,$(binary),/usr/sbin)))
+$(foreach binary,$($(PKG)_BIN_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
+$(foreach binary,$($(PKG)_SBIN_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
 
 $(pkg):
 
