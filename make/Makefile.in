@@ -274,11 +274,19 @@ INSTALL_LIBRARY = $(call INSTALL_LIBRARY__INT)
 INSTALL_LIBRARY_WILDCARD_BEFORE_SO = $(call INSTALL_LIBRARY__INT,*)
 define INSTALL_LIBRARY_STRIP
 $(INSTALL_LIBRARY) \
-$(TARGET_STRIP) $@
+$(TARGET_STRIP) $@;
 endef
 define INSTALL_LIBRARY_STRIP_WILDCARD_BEFORE_SO
 $(INSTALL_LIBRARY_WILDCARD_BEFORE_SO) \
-$(TARGET_STRIP) $@
+$(TARGET_STRIP) $@;
+endef
+
+# $1 - binary to be installed
+# $2 - directory binary to be installed in
+# $3 (optional) - DESTDIR binary to be installed in, defaults to $(PKG)_DEST_DIR if omitted
+define INSTALL_BINARY_STRIP_RULE
+$(if $(strip $(3)),$(strip $(3)),$($(PKG)_DEST_DIR))$(strip $(2))/$(notdir $(strip $(1))): $(strip $(1))
+	$(value INSTALL_BINARY_STRIP)
 endef
 
 # We want build output like:
