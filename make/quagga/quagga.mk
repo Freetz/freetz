@@ -54,7 +54,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(QUAGGA_DIR) \
-		LD="$(TARGET_LD)"
+		MAKEINFO=true
 
 $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/%: $($(PKG)_DIR)/lib/.libs/%
 	$(INSTALL_LIBRARY_STRIP)
