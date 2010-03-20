@@ -243,5 +243,5 @@ cgi_param() {
 
 back_button() {
     	local where=$1 title=${2:-$(lang de:"Zur&uuml;ck" en:"Back")}
-	echo "<form action='$where'><input type='submit' value='$title'></form>"
+	echo "<form action='$where'><div class='btn'><input type='submit' value='$title'></div></form>"
 }
