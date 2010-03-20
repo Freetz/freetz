@@ -71,15 +71,24 @@ modlib_check_running()
 modlib_stop()
 {
 	local fn=${PID_FILE-/var/run/$DAEMON.pid}
+	local id=$(cat "$fn" 2>/dev/null)
 	echo -n "Stopping ${DAEMON_LONG_NAME-$DAEMON}..."
 	if ! modlib_check_running; then
 		echo 'not running.'
 		return 0
 	fi
-	kill $(cat "$fn") 2> /dev/null
-	local status=$?
-	rm -f "$fn"
-	if [ "$status" -eq 0 ]; then
+	local cnt=9 
+	while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do 
+		kill $id 2>/dev/null 
+		sleep 1 
+		let cnt=cnt-1 
+	done 
+	if kill -0 $id 2>/dev/null; then 
+		kill -9 $id 2>/dev/null 
+		sleep 1
+	fi 
+	if ! kill -0 $id 2>/dev/null; then 
+		rm -f "$fn" 
 		echo 'done.'
 		return 0
 	else
@@ -115,9 +124,7 @@ modlib_reload()
 #   function "start" must be defined in the calling script
 modlib_restart()
 {
-	modlib_stop
-	sleep 1
-	start
+	modlib_stop && start
 }
 
 # modlib_status
