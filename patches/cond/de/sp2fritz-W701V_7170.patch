@@ -1,5 +1,5 @@
---- usr/www/all/html/capture_frame.html.orig	2009-07-27 17:04:48.000000000 +0200
-+++ usr/www/all/html/capture_frame.html	2009-07-30 15:35:27.472242471 +0200
+--- usr/www/all/html/capture_frame.html.orig	2010-02-23 12:08:06.000000000 +0100
++++ usr/www/all/html/capture_frame.html	2010-03-03 19:42:08.000000000 +0100
 @@ -112,7 +112,7 @@
  <input type="hidden" name="sid" value="<? echo $var:sid ?>">
  <table>
@@ -9,9 +9,9 @@
  </tr>
  <tr>
  <br>mit Länge/with length:&nbsp;<input type="text" size=4 value="1600" name="snaplen" > bytes
---- usr/www/all/html/de/home/sitemap.html.orig	2009-07-27 17:04:47.000000000 +0200
-+++ usr/www/all/html/de/home/sitemap.html	2009-07-30 15:35:27.508238284 +0200
-@@ -157,22 +157,6 @@
+--- usr/www/all/html/de/home/sitemap.html.orig	2010-02-23 12:08:18.000000000 +0100
++++ usr/www/all/html/de/home/sitemap.html	2010-03-03 19:42:08.000000000 +0100
+@@ -200,22 +200,6 @@
  </td>
  <td class="gelb">
  <div class="gelb">
@@ -34,18 +34,8 @@
  <!-- wlan:settings/ap_enabled = '<? query wlan:settings/ap_enabled ?>' -->
  <? setvariable var:showWlan 0 ?>
  <? if eq <? query wlan:settings/ap_enabled ?> 1 '<? setvariable var:showWlan 1 ?>' ?>
---- usr/www/all/html/de/js/basis.js.orig	2009-07-27 17:04:43.000000000 +0200
-+++ usr/www/all/html/de/js/basis.js	2009-07-30 15:35:27.520241836 +0200
-@@ -132,7 +132,6 @@
- else if(m=="enhsettings") { jslGoTo('enhsettings', 'sitemap');}
- else if(m=="software") {jslGoTo('software', 'sitemap');}
- else if(m=="wlan") {jslGoTo('wlan', 'sitemap');}
--else if(m=="usb") {jslGoTo('usb', 'sitemap');}
- else{ jslGoTo('home', 'sitemap');}
- }
- function AddFavoritesLink(breite, titel) {
---- usr/www/all/html/de/menus/menu2_homehome.html.orig	2009-07-30 15:35:26.576738473 +0200
-+++ usr/www/all/html/de/menus/menu2_homehome.html	2009-07-30 15:35:27.524240757 +0200
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2010-03-03 19:42:07.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_homehome.html	2010-03-03 19:42:08.000000000 +0100
 @@ -3,7 +3,6 @@
  <li class="LMenutop">&nbsp;</li>
  <? setvariable var:classname 'LMenuitemTop' ?>
@@ -54,9 +44,9 @@
  <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','home')">Übersicht</a><span class="PTextOnly">Übersicht</span></li>
  <!--CONFIG_isIsdnTE==1 || CONFIG_isPots==1 -->
  <? setvariable var:classname 'LMenuitemTop' ?>
---- usr/www/all/html/de/menus/menu2_konfig.html.orig	2009-07-30 15:35:26.576738473 +0200
-+++ usr/www/all/html/de/menus/menu2_konfig.html	2009-07-30 15:35:27.528243660 +0200
-@@ -42,11 +42,6 @@
+--- usr/www/all/html/de/menus/menu2_konfig.html.orig	2010-03-03 19:42:07.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_konfig.html	2010-03-03 19:42:08.000000000 +0100
+@@ -41,11 +41,6 @@
  ` `
  <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('fon','foncalls')">Telefonie</a><span class="PTextOnly">Telefonie</span></li>
  ` ?>
@@ -68,7 +58,7 @@
  <? if eq `$var:menu` 'wlan' `
  <? include ../html/de/menus/menu2_wlan.html ?>
  ` `
---- usr/www/all/html/de/menus/menu2_usb.html.orig	2009-07-27 17:04:44.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_usb.html.orig	2010-02-23 12:07:45.000000000 +0100
 +++ usr/www/all/html/de/menus/menu2_usb.html	1970-01-01 01:00:00.000000000 +0100
 @@ -1,17 +0,0 @@
 -<? setvariable var:expmode '<? query box:settings/expertmode/activated ?>' ?>
@@ -88,9 +78,9 @@
 -<li id="miUsbaura" class="<? echo '$var:class1' ?>"><img class="LMenuPfeil" src="<? echo '$var:subpfeil' ?>"><a href="javascript:jslGoTo('usb','aura')">USB-Fernanschluss</a><span class="PTextOnly">USB-Fernanschluss</span></li>
 -` ?>
 -` ?>
---- usr/www/all/html/de/system/energy.html.orig	2009-07-27 17:04:33.000000000 +0200
-+++ usr/www/all/html/de/system/energy.html	2009-07-30 15:35:27.532241480 +0200
-@@ -73,15 +73,6 @@
+--- usr/www/all/html/de/system/energy.html.orig	2010-02-23 12:08:00.000000000 +0100
++++ usr/www/all/html/de/system/energy.html	2010-03-03 19:42:08.000000000 +0100
+@@ -77,15 +77,6 @@
  </tr></table>
  </div></div></div></div></div></div>
  <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
@@ -106,9 +96,9 @@
  <p class="mb10"><b>LAN-Schnittstellen</b></p>
  <p>
  <img src="../html/de/images/led_<? if eq `<? query eth0:status/carrier ?>` 1 `green` `gray` ?>.gif" /> LAN 1
---- usr/www/all/html/de/system/infoled.html.orig	2009-07-27 17:04:42.000000000 +0200
-+++ usr/www/all/html/de/system/infoled.html	2009-07-30 15:35:27.532241480 +0200
-@@ -12,20 +12,12 @@
+--- usr/www/all/html/de/system/infoled.html.orig	2010-02-23 12:08:19.000000000 +0100
++++ usr/www/all/html/de/system/infoled.html	2010-03-03 19:42:08.000000000 +0100
+@@ -14,20 +14,12 @@
  <option value="3">leuchtet bei aktivem WLAN</option>
  <option value="4">leuchtet bei bestehender Internetverbindung</option>
  <option value="5">leuchtet bei Anschluss eines Gerätes über LAN</option>
@@ -129,9 +119,9 @@
  </div></div></div></div></div></div>
  <? include ../html/de/home/rbb_applycancel.html ?>
  </div>
---- usr/www/all/html/de/system/netipadr.js.orig	2009-07-27 17:04:39.000000000 +0200
-+++ usr/www/all/html/de/system/netipadr.js	2009-07-30 15:35:27.536242617 +0200
-@@ -54,10 +54,6 @@
+--- usr/www/all/html/de/system/netipadr.js.orig	2010-02-23 12:07:56.000000000 +0100
++++ usr/www/all/html/de/system/netipadr.js	2010-03-03 19:42:08.000000000 +0100
+@@ -55,10 +55,6 @@
  var g_mldNetMask_Lan = "Netzmaske (LAN)";
  var g_mldVon_Lan = "Von (LAN)";
  var g_mldBis_Lan = "Bis (LAN)";
@@ -142,8 +132,8 @@
  var g_mldIpAdr_Wlan = "IP-Adresse (WLAN)";
  var g_mldNetMask_Wlan = "Netzmaske (WLAN)";
  function uiDoOnLoad() {
---- usr/www/all/html/de/system/syslog.html.orig	2009-07-27 17:04:28.000000000 +0200
-+++ usr/www/all/html/de/system/syslog.html	2009-07-30 15:35:27.540242875 +0200
+--- usr/www/all/html/de/system/syslog.html.orig	2010-02-23 12:08:06.000000000 +0100
++++ usr/www/all/html/de/system/syslog.html	2010-03-03 19:42:08.000000000 +0100
 @@ -12,7 +12,6 @@
  <li class="tabs_on"><div class="activtab">Alle</div></li>
  <li><a href="javascript:Tabs(1)">Telefonie</a></li>

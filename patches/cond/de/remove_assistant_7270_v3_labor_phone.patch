@@ -20,27 +20,6 @@
  }
  }
  function GoToSitemap()
---- usr/www/all/html/de/home/sitemap.html.orig	2010-02-04 16:51:23.000000000 +0100
-+++ usr/www/all/html/de/home/sitemap.html	2010-02-05 20:39:36.000000000 +0100
-@@ -24,18 +24,6 @@
- <p class="ml10"><a href="javascript:jslGoTo('home', 'syslog');">{?de.home.sitemap.html:9348?}</a></p>
- <p class="ml10"><a href="javascript:jslGoTo('home', 'energy');">{?de.home.sitemap.html:65Systemtxt13?}</a></p>
- </div>
--<div class="gelb">
--<p class="mb5 fett"><a href="javascript:jslGoTo('konfig', 'home');">{?txtAssi?}</a></p>
--<? if eq $var:showFonLotse 1 `
--<p id="SitemapFonItem" class="ml10"><a href="javascript:DoFonLotse();">{?de.home.sitemap.html:90SitemapText7?}</a></p>
--` ?>
--<p id="SitemapFonVoipItem" class="ml10"><a href="javascript:DoVoipFonLotse();">{?de.home.sitemap.html:6343?}</a></p>
--<? if eq $var:showInternetLotse 1 `
--<p class="ml10"><a href="javascript:DoInternetLotse();">{?de.home.sitemap.html:2799?}</a></p>
--` ?>
--<p class="ml10"><a href="javascript:DoSaveLotse();">{?txtSaveSettings?}</a></p>
--<p class="ml10"><a href="javascript:DoFirmwareLotse();">{?txtFWUpdate?}</a></p>
--</div>
- <? setvariable var:title "{?txtINet?}" ?>
- <? setvariable var:showsubmenu 1 ?>
- <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `
 --- usr/www/all/html/de/menus/menu2_konfig.html.orig	2010-02-05 20:39:36.000000000 +0100
 +++ usr/www/all/html/de/menus/menu2_konfig.html	2010-02-05 20:39:36.000000000 +0100
 @@ -14,18 +14,6 @@
@@ -95,3 +74,24 @@
  return true;
  }
  }
+--- usr/www/all/html/de/home/sitemap.html.orig	2010-03-02 10:42:18.040779791 +0100
++++ usr/www/all/html/de/home/sitemap.html	2010-03-02 10:42:28.360742097 +0100
+@@ -24,18 +24,6 @@
+ <p class="ml10"><a href="javascript:jslGoTo('home', 'syslog');">{?de.home.sitemap.html:9348?}</a></p>
+ <p class="ml10"><a href="javascript:jslGoTo('home', 'energy');">{?de.home.sitemap.html:65Systemtxt13?}</a></p>
+ </div>
+-<div class="gelb">
+-<p class="mb5 fett"><a href="javascript:jslGoTo('konfig', 'home');">{?txtAssi?}</a></p>
+-<? if eq $var:showFonLotse 1 `
+-<p id="SitemapFonItem" class="ml10"><a href="javascript:DoFonLotse();">{?g_txt_CfgFonDevices?}</a></p>
+-` ?>
+-<p id="SitemapFonVoipItem" class="ml10"><a href="javascript:DoVoipFonLotse();">{?g_txt_ManageOwnNumbers?}</a></p>
+-<? if eq $var:showInternetLotse 1 `
+-<p class="ml10"><a href="javascript:DoInternetLotse();">{?g_txt_TestInternetConn?}</a></p>
+-` ?>
+-<p class="ml10"><a href="javascript:DoSaveLotse();">{?txtSaveSettings?}</a></p>
+-<p class="ml10"><a href="javascript:DoFirmwareLotse();">{?txtFWUpdate?}</a></p>
+-</div>
+ <? setvariable var:title "{?txtINet?}" ?>
+ <? setvariable var:showsubmenu 1 ?>
+ <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `

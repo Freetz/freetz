@@ -1,16 +1,18 @@
 --- usr/www/all/html/de/home/home.js.orig	2009-07-27 17:04:43.000000000 +0200
 +++ usr/www/all/html/de/home/home.js	2009-07-29 05:07:53.597591904 +0200
-@@ -733,14 +733,13 @@
- var nPartTotal = Number("<? query ctlusb:settings/storage-part-total ?>");
+@@ -743,7 +743,7 @@ if (isNaN(nStor)) nStor = 0;
+ var nPartTotal = Number(g_usbhost_data.part_count_total);
  if (isNaN(nPartTotal)) nPartTotal = 0;
- var unplugOk = parseInt("<? query ctlusb:settings/unplug-ok ?>", 10) == 1;
--if (nPartTotal > nStor) {
-+if (nPartTotal > 0) {
- var strStor = "";
- if (unplugOk) {
- strStor = "Alle USB-Speicher wurden \"sicher entfernt\" und können jetzt abgezogen werden.";
+ var unplugOk = parseInt(g_usbhost_data.unplug_ok, 10) == 1;
+-if (nPartTotal > nStor)
++if (nPartTotal > 0)
+ {
+ if (unplugOk)
+ {
+@@ -751,8 +751,7 @@ strStor = "Alle USB-Speicher wurden \"si
  }
- else {
+ else
+ {
 -strStor = "Mindestens ein USB-Speicher oder Teile davon sind nicht eingebunden. ";
 -strStor += "<a href=\"javascript:jslGoTo('home', 'syslog');\">Weitere Informationen.</a>";
 +strStor = "Es wurden " + nStor + " von " + nPartTotal + " Partitionen eingebunden.";

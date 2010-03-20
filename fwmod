@@ -769,6 +769,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
 	${TOOLS_SUBDIR}/depmod.pl -b "$MODULES_DIR" \
 		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map 2> /dev/null
+	# add plugin kernel modules for 7270 if plugins are not enabled
+	if [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
+		echo -e "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko\nkernel/drivers/char/audio/avm_audio.ko:\n" >> $MODULES_DIR/modules.dep
+	fi
 
 	echo "installing packages"
 	
@@ -907,6 +911,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 		rm -rf libs_to_reduce
 		rm -f ${FILESYSTEM_MOD_DIR}/mklibs-progs
 	fi
+
+	echo0 "stripping leftover unstripped binaries"
+	for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' \) \
+		\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS32.*not stripped.*|\1|p'`; do
+		echo1 $i
+ 		${ABS_BASE_DIR}/toolchain/target/bin/mipsel-linux-uclibc-strip --remove-section={.comment,.note,.pdr} $i
+	done
 
 	# external should run after modifying and stripping and so on
 	# only run, if packaging is enabled

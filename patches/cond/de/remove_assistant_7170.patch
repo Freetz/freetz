@@ -1,81 +1,87 @@
---- usr/www/all/html/de/home/sitemap.html.orig	2009-07-27 17:04:47.000000000 +0200
-+++ usr/www/all/html/de/home/sitemap.html	2009-07-29 05:18:55.873591995 +0200
-@@ -20,19 +20,6 @@
+--- usr/www/all/html/de/home/sitemap.html.orig	2010-02-23 12:08:18.000000000 +0100
++++ usr/www/all/html/de/home/sitemap.html	2010-03-03 19:42:54.000000000 +0100
+@@ -20,18 +20,6 @@
  <p class="ml10"><a href="javascript:jslGoTo('home', 'syslog');">Ereignisse</a></p>
  <p class="ml10"><a href="javascript:jslGoTo('home', 'energy');">Energiemonitor</a></p>
  </div>
 -<div class="gelb">
 -<p class="mb5 fett"><a href="javascript:jslGoTo('konfig', 'home');">Assistenten</a></p>
--<p class="ml10"><a href="javascript:DoFirstLotse();">Grundeinstellungen</a></p>
--<? if eq $var:showInternetLotse 1 `
--<p class="ml10"><a href="javascript:DoInternetLotse();">Internetzugang einrichten</a></p>
--` ?>
--<p id="SitemapFonVoipItem" class="ml10"><a href="javascript:DoVoipFonLotse();">Eigene Rufnummer eingeben</a></p>
 -<? if eq $var:showFonLotse 1 `
--<p id="SitemapFonItem" class="ml10"><a href="javascript:DoFonLotse();">Telefoniegeräte einrichten</a></p>
+-<p id="SitemapFonItem" class="ml10"><a href="javascript:DoFonLotse();">Telefoniegeräte verwalten</a></p>
 -` ?>
--<p class="ml10"><a href="javascript:DoFirmwareLotse();">Firmware aktualisieren</a></p>
+-<p id="SitemapFonVoipItem" class="ml10"><a href="javascript:DoVoipFonLotse();">Eigene Rufnummern verwalten</a></p>
+-<? if eq $var:showInternetLotse 1 `
+-<p class="ml10"><a href="javascript:DoInternetLotse();">Internetzugang prüfen</a></p>
+-` ?>
 -<p class="ml10"><a href="javascript:DoSaveLotse();">Einstellungen sichern</a></p>
+-<p class="ml10"><a href="javascript:DoFirmwareLotse();">Firmware aktualisieren</a></p>
 -</div>
  <? setvariable var:title "Internet" ?>
  <? setvariable var:showsubmenu 1 ?>
  <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `
---- usr/www/all/html/de/js/basis.js.orig	2009-07-27 17:04:43.000000000 +0200
-+++ usr/www/all/html/de/js/basis.js	2009-07-29 05:18:55.877595587 +0200
-@@ -109,11 +109,11 @@
- else
- page = myCookie.substring(myCookie.search('=')+1);
- if ((menu == "konfig" || menu == "software" || menu =="enhsettings") && (page =="enhsettings" || page == "home" || page == "extern")) {
--jslGoTo(menu, page);
-+jslGoTo("enhsettings", "enhsettings");
- return;
+--- usr/www/all/html/de/js/basis.js.orig	2010-02-23 12:07:56.000000000 +0100
++++ usr/www/all/html/de/js/basis.js	2010-03-03 19:42:54.000000000 +0100
+@@ -101,21 +101,8 @@
+ if (isLotse(m,p)) {
+ if (!AskAssiCancel()) return;
  }
- }
+-var menu = readCookie("menu");
+-var page = readCookie("page");
+-if (menu == "konfig") {
 -jslGoTo("konfig", "home");
-+jslGoTo("enhsettings", "enhsettings");
+-}
+-else if (menu == "software") {
+-jslGoTo("software", "extern");
+-}
+-else if (menu == "enhsettings") {
+ jslGoTo("enhsettings", "enhsettings");
  }
+-else {
+-jslGoTo("konfig", "home");
+-}
+-}
  function GoToSitemap()
  {
---- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2009-07-29 05:18:55.789594022 +0200
-+++ usr/www/avm/html/de/menus/menu2_konfig.html	2009-07-29 05:18:55.881597258 +0200
-@@ -10,23 +10,9 @@
+ var m = jslGetValue("uiPostMenu");
+--- usr/www/avm/html/de/menus/menu2_konfig.html.orig	2010-03-03 19:42:54.000000000 +0100
++++ usr/www/avm/html/de/menus/menu2_konfig.html	2010-03-03 19:42:54.000000000 +0100
+@@ -10,22 +10,9 @@
  <? setvariable var:showmoremenu 0 ?>
  <? if neq $var:menu 'software' `<? setvariable var:showmoremenu 1 ?>` ?>
  <? if eq '$var:ShowAssiMenu' 1 `
 -<li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">Assistenten</a><span class="PTextOnly">Assistenten</span></li>
--<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoFirstLotse();">Grundeinstellungen</a><span class="PTextOnly">Grundeinstellungen</span></li>
--<? if eq $var:showInternetLotse 1 `
--<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoInternetLotse();">Internetzugang</a><span class="PTextOnly">Internetzugang</span></li>
--` ?>
--<li class="LMenuitem" id="VoipFonLotseMenuItem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoVoipFonLotse();">Rufnummern</a><span class="PTextOnly">Rufnummern</span></li>
 -<? if eq $var:showFonLotse 1 `
 -<li class="LMenuitem" id="FonLotseMenuItem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoFonLotse();">Telefoniegeräte</a><span class="PTextOnly">Telefoniegeräte</span></li>
 -` ?>
--<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoFirmwareLotse();">Firmware aktualisieren</a><span class="PTextOnly">Firmware aktualisieren</span></li>
+-<li class="LMenuitem" id="VoipFonLotseMenuItem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoVoipFonLotse();">Rufnummern</a><span class="PTextOnly">Rufnummern</span></li>
+-<? if eq $var:showInternetLotse 1 `
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoInternetLotse();">Internetzugang</a><span class="PTextOnly">Internetzugang</span></li>
+-` ?>
 -<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoSaveLotse();">Einstellungen sichern</a><span class="PTextOnly">Einstellungen sichern</span></li>
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:subpfeil ?>"><a href="javascript:DoFirmwareLotse();">Firmware aktualisieren</a><span class="PTextOnly">Firmware aktualisieren</span></li>
 -<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">Erweiterte Einstellungen</a><span class="PTextOnly">Erweiterte Einstellungen</span></li>
 -<li class="LMenuitemTop"><img class="LMenuPfeil" src="../html/de/images/leer.gif" style="width:7px;"><a href="javascript:jslGoTo('software','extern')">Programme</a><span class="PTextOnly">Programme</span></li>
  ` `
  <? if eq '$var:showmoremenu' '1' `
- <script type="text/javascript">javascript:jslSetMenuPage("enhsettings","enhsettings",100);</script>
+ <script type="text/javascript">setMenuPageCookie("enhsettings","enhsettings");</script>
 -<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">Assistenten</a><span class="PTextOnly">Assistenten</span></li>
  <? if eq `$var:menu` 'enhsettings' `
  <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">Erweiterte Einstellungen</a><span class="PTextOnly">Erweiterte Einstellungen</span></li>
  ` `
-@@ -61,7 +47,6 @@
+@@ -60,7 +47,6 @@
  ` ?>
  <? if eq '$var:menu' 'software' `
- <script type="text/javascript">javascript:jslSetMenuPage("software","extern",100);</script>
+ <script type="text/javascript">setMenuPageCookie("software","extern");</script>
 -<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">Assistenten</a><span class="PTextOnly">Assistenten</span></li>
  <li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">Erweiterte Einstellungen</a><span class="PTextOnly">Erweiterte Einstellungen</span></li>
  <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="../html/de/images/leer.gif" style="width:7px;"><a href="javascript:jslGoTo('software','extern')">Programme</a><span class="PTextOnly">Programme</span></li>
  ` ?>
---- usr/www/all/html/logincheck.html.orig	2009-07-27 17:04:19.000000000 +0200
-+++ usr/www/all/html/logincheck.html	2009-07-29 05:18:55.889595795 +0200
-@@ -224,8 +224,8 @@
+--- usr/www/all/html/logincheck.html.orig	2010-02-23 12:07:59.000000000 +0100
++++ usr/www/all/html/logincheck.html	2010-03-03 19:42:54.000000000 +0100
+@@ -235,8 +235,8 @@
+ }
+ }
  if (user=="" && pass=="" && type=="bridge") {
- var pagename = "<? echo $var:pagename ?>";
- if (pagename != "sitemap" && pagename != "mini" && pagename != "enhsettings" && pagename != "foncalls") {
 -jslSetValue("uiPostPageName", "first_Start_ISP");
 -jslSetValue("uiPostMenu", "first");
 +jslSetValue("uiPostPageName", "home");

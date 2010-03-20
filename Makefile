@@ -78,7 +78,7 @@ endif
 
 # Folder root/ needs 755 permissions
 ifneq ($(shell stat -c %a root),755)
-$(error Please unpack again with umask set to 0022)
+$(error Please unpack/checkout again with umask set to 0022)
 endif
 
 # We need umask 0022
@@ -89,6 +89,11 @@ endif
 # We don't like cygwin
 ifeq ($(shell uname -o),Cygwin)
 $(error Cygwin is not supported! Please use a real Linux environment.)
+endif
+
+# git-svn removes empty directories, check for one of them
+ifneq (OK,$(shell [ -d $(ROOT_DIR)/sys ] && echo OK ))
+$(error The empty directory root/sys is missing! Please do a clean checkout.)
 endif
 
 # Run svn version update if building in working copy
