@@ -38,7 +38,7 @@ fi
 
 case $CONFIG_TYPE in
 	text)
-		echo "<form action='/cgi-bin/save.cgi?form=file_$id' method='post'>"
+		echo "<form action='/cgi-bin/file_save.cgi?id=$id' method='post'>"
 		echo -n "<textarea style='width: ${_width}px;' name='content' rows='$TEXT_ROWS' cols='60' wrap='off' $($readonly && echo "readonly")>"
 		[ -r "$CONFIG_FILE" ] && html < "$CONFIG_FILE"
 		echo '</textarea>'
