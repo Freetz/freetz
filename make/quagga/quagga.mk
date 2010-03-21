@@ -10,7 +10,7 @@ $(PKG)_LIB_SUFFIX:=so.$($(PKG)_LIB_VERSION)
 $(PKG)_BINARY_BUILD_SUBDIR:=.libs
 $(PKG)_LIBNAMES := libzebra
 $(PKG)_LIBS_BUILD_DIR := $(QUAGGA_LIBNAMES:%=$($(PKG)_DIR)/lib/$($(PKG)_BINARY_BUILD_SUBDIR)/%.$(QUAGGA_LIB_SUFFIX))
-$(PKG)_LIBS_TARGET_DIR := $(QUAGGA_LIBNAMES:%=$($(PKG)_DEST_DIR)/usr/lib/%.$(QUAGGA_LIB_SUFFIX))
+$(PKG)_LIBS_TARGET_DIR := $(QUAGGA_LIBNAMES:%=$($(PKG)_DEST_LIBDIR)/%.$(QUAGGA_LIB_SUFFIX))
 
 # Executables
 $(PKG)_BINARIES_ALL := zebra bgpd ripd ripngd ospfd ospf6d isisd vtysh
@@ -56,7 +56,7 @@ $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(QUAGGA_DIR) \
 		MAKEINFO=true
 
-$($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/%: $($(PKG)_DIR)/lib/.libs/%
+$($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/lib/.libs/%
 	$(INSTALL_LIBRARY_STRIP)
 
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
