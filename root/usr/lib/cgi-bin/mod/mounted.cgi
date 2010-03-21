@@ -1,5 +1,7 @@
 #!/bin/sh
 ERRORFILE=/tmp/mounted.err
+DEBUG_PATH=
+# DEBUG_PATH=/mod/root/
 
 eval "$(modcgi cmd:path mounted)"
 
@@ -33,7 +35,8 @@ if [ "$sec_level" -eq 0 ]; then
 else
 	actions=false
 fi
-if [ "$SCRIPT_NAME" = /cgi-bin/status.cgi ]; then
+# The status page is called both as /cgi-bin/status.cgi and /cgi-bin/index.cgi
+if [ "$SCRIPT_NAME" != /cgi-bin/pkgstatus.cgi ]; then
 	[ "$MOD_MOUNTED_UMOUNT" != "yes" ] && actions=false
 fi
 formact=$(html "$SCRIPT_NAME${QUERY_STRING:+?$QUERY_STRING}")
@@ -41,10 +44,10 @@ formact=$(html "$SCRIPT_NAME${QUERY_STRING:+?$QUERY_STRING}")
 sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'
 
 format_size() {
-	echo "$1B" | sed -e 's/[kMGT]\?B/ &/'
+	echo "$1B" | sed -e 's/[KMGT]\?B/ &/; s/KB$/kB/'
 }
 format_path() {
-	echo "$1" | sed -e 's/\//\/\&shy;/g'
+	echo "$1" | sed -e 's#/#/\&shy;#g'
 }
 
 print_mountpoints() {
@@ -114,8 +117,8 @@ print_mp() {
 }
 
 disabledbtn="disabled='disabled' "
-DFOUT=$(df -h | sed -n '1d; :a; $!N; $!ba; s/\n  */ /g;p')
-mfilt=$(mount |
+DFOUT=$("$DEBUG_PATH"df -h | sed -n '1d; :a; $!N; $!ba; s/\n  */ /g;p')
+mfilt=$("$DEBUG_PATH"mount |
 	sed -rn '
 		\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (jffs|fuse|cifs)|^.*:/.* on .* type nfs# {
 			s/^([^ ]+) on (.*) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/; p
