@@ -1,13 +1,13 @@
-$(call PKG_INIT_BIN, 1.1)
+$(call PKG_INIT_BIN, 1.2)
 $(PKG)_SOURCE:=tmux-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=faf2fc52ac3ae63d899f6fece2c112cd
+$(PKG)_SOURCE_MD5:=748fbe7bb5f86812e19bd6005ff21a5a
 $(PKG)_SITE:=@SF/tmux
 $(PKG)_BINARY:=$($(PKG)_DIR)/tmux
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tmux
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_TMUX_STATIC
 
-$(PKG)_DEPENDS_ON := ncurses
+$(PKG)_DEPENDS_ON := ncurses libevent
 
 $(PKG)_CFLAGS := -DLLONG_MIN=LONG_MIN -DLLONG_MAX=LONG_MAX -DIOV_MAX=1024 -DBUILD="\\\"$($(PKG)_VERSION)\\\""
 

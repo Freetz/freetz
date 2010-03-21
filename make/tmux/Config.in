@@ -1,8 +1,10 @@
 config FREETZ_PACKAGE_TMUX
-	bool "tmux 1.1 (binary only)"
+	bool "tmux 1.2 (binary only)"
 	select FREETZ_LIB_libcrypt if ! FREETZ_PACKAGE_TMUX_STATIC
 	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_TMUX_STATIC
 	select FREETZ_LIB_libncurses if ! FREETZ_PACKAGE_TMUX_STATIC
+	select FREETZ_LIB_libevent if ! FREETZ_PACKAGE_TMUX_STATIC
+	select FREETZ_SHARE_terminfo
 	default n
 	help
 		tmux, a BSD-licensed alternative to GNU screen.
