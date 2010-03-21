@@ -33,6 +33,15 @@ config FREETZ_LIB_libatm
 	help
 		Libatm is a library for accessing the Linux ATM subsystem.
 
+config FREETZ_LIB_libconfig
+	bool "libconfig (libconfig.so)"
+	default n
+	help
+		Libconfig is a simple library for processing structured
+		configuration files. Libconfig is very compact - just
+		46K for the stripped C shared library. This makes it
+		well-suited for memory-constrained systems.
+
 config FREETZ_LIB_libdb
 	bool "Berkeley DB library (libdb.so)"
 	select FREETZ_LIB_libpthread

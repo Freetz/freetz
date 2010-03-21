@@ -24,6 +24,10 @@ ifeq ($(strip $(FREETZ_LIB_libbluetooth)),y)
 LIBS+=bluez-libs
 endif
 
+ifeq ($(strip $(FREETZ_LIB_libconfig)),y)
+LIBS+=libconfig
+endif
+
 ifeq ($(strip $(FREETZ_LIB_libopenobex)),y)
 LIBS+=openobex
 endif
