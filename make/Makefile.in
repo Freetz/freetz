@@ -195,17 +195,14 @@ PKG_FIX_LIBTOOL_LA = sed -i -r $(foreach key,libdir includedir prefix exec_prefi
 # Whether RPATH has been hardcoded or not could be tested using the following command:
 #   readelf -d <binary/library> | grep RPATH
 #
-# The macros are intended to be used in $(PKG)_CONFIGURE_PRE_CMDS variable in one of the following ways:
-#  1. Fix hardcode_into_libs value
-#     $(PKG)_CONFIGURE_PRE_CMDS += $(PKG_FIX_HARDCODE_INTO_LIBS) ./configure ;
-#  2. Fix hardcode_libdir_flag_spec* value
-#     $(PKG)_CONFIGURE_PRE_CMDS += $(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC) ./configure ;
-#  3. Fix both 1 and 2 at the same time - the most commonly used case
-#     $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+# The macro is intended to be used in $(PKG)_CONFIGURE_PRE_CMDS variable in the following way:
+# $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 #
+# Replace runpath_var=$runpath_var with runpath_var=
+PKG_FIX_RUNPATH_VAR__INT = -e "s|(runpath_var=)[$$$$]runpath_var|\1|g"
 #
 # Replace hardcode_into_libs=something with hardcode_into_libs=no
-PKG_FIX_HARDCODE_INTO_LIBS = $(SED) -i -r -e "s|(hardcode_into_libs)=.+$$$$|\1=no|g"
+PKG_FIX_HARDCODE_INTO_LIBS__INT = -e "s|(hardcode_into_libs)=.+$$$$|\1=no|g"
 #
 # In all lines matching the pattern hardcode_libdir_flag_spec[_A-Za-z0-9]*=
 # replace
@@ -215,9 +212,9 @@ PKG_FIX_HARDCODE_INTO_LIBS = $(SED) -i -r -e "s|(hardcode_into_libs)=.+$$$$|\1=n
 #   ${wl}--rpath ${wl}$libdir
 # with
 #   -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__
-PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC = $(SED) -i -r -e '/hardcode_libdir_flag_spec[_A-Za-z0-9]*=/s/[$$$$][{]wl[}]-?-rpath(,| [$$$$][{]wl[}])[$$$$]libdir/ -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__ /g'
+PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT = -e '/hardcode_libdir_flag_spec[_A-Za-z0-9]*=/s/[$$$$][{]wl[}]-?-rpath(,| [$$$$][{]wl[}])[$$$$]libdir/ -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__ /g'
 #
-PKG_PREVENT_RPATH_HARDCODING__INT = cp -a $1 $1.no_rpath_fix; $(PKG_FIX_HARDCODE_INTO_LIBS) $1 ; $(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC) $1 ;
+PKG_PREVENT_RPATH_HARDCODING__INT = cp -a $1 $1.before_rpath_fix; $(SED) -i -r $(PKG_FIX_RUNPATH_VAR__INT) $(PKG_FIX_HARDCODE_INTO_LIBS__INT) $(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT) $1;
 PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODING__INT,$(f)))
 
 # Change prefix of all ac_cv_* variables in $1 to $(pkg).
