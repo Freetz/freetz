@@ -1,0 +1,22 @@
+--- src/ssl.c	2010-02-17 17:09:05.000000000 +0100
++++ src/ssl.c	2010-03-21 16:00:00.000000000 +0100
+@@ -137,6 +137,11 @@
+ 	rc = x509parse_crtfile(&certificate, ca_file);
+ 	if (rc != 0) { /* No CA certifiacte found. Assume self-signed. */
+ 		Log_info("CA certificate file %s not found. Assuming self-signed certificate.", ca_file);
++#if 0
++		/*
++		 * No need to do this in freetz as we have a fix (030-do_not_omit_last_cert_in_chain.polarssl.patch)
++		 * for the corresponding bug in polarssl.
++		 */
+ 		/*
+ 		 * Apparently PolarSSL needs to read something more into certificate chain.
+ 		 * Doesn't seem to matter what. Read own certificate again.
+@@ -144,6 +149,7 @@
+ 		rc = x509parse_crtfile(&certificate, crtfile);
+ 		if (rc != 0)
+ 			Log_fatal("Could not read certificate file %s", crtfile);
++#endif
+ 	}
+ 	free(ca_file);
+ }

@@ -1,0 +1,16 @@
+config FREETZ_PACKAGE_UMURMUR
+	bool "umurmur 0.2.2"
+	select FREETZ_LIB_libconfig
+	select FREETZ_LIB_libpolarssl
+	default n
+	help
+		umurmur is a minimalistic Mumble server primarily
+		targeted to run on routers using less resources.
+		It targets to fill the needs of a pretty small group
+		of users communicating, which in part originates from
+		the other goal of working well on a small system with
+		a limited CPU and limited amount of disk space. It also
+		aims to minimize writing to the disk since these kinds
+		of systems usually only has a flash memory for disk.
+		umurmur supports a subset of the features of Murmur.
+		http://code.google.com/p/umurmur/
