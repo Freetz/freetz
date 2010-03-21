@@ -29,8 +29,6 @@ else
 $(PKG)_CONFIGURE_OPTIONS += --with-libiconv=no
 endif
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
-
 $(PKG)_CONFIGURE_ENV += glib_cv_stack_grows=no
 $(PKG)_CONFIGURE_ENV += glib_cv_uscore=no
 $(PKG)_CONFIGURE_ENV += glib_cv_long_long_format=11
