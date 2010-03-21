@@ -3,10 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_c_chk=''; man_c_chk=''
-auto_s_chk=''; man_s_chk=''
-
-if [ "$XRELAYD_ENABLED" = "yes" ]; then auto_c_chk=' checked'; else man_c_chk=' checked'; fi
+check "$XRELAYD_ENABLED" yes:auto_c "*":man_c
 
 case "$XRELAYD_VERBOSE" in 
 		0) verbose_sel0=' selected' ;; 

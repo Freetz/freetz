@@ -16,27 +16,25 @@ EOF
 fi
 }
 
-auto_chk=''; man_chk=''; dirlista_chk=''; dirlistd_chk=''; sslenaba_chk=''; sslenabd_chk=''; log_chk=''; modcgi_chk=''; modcompress_chk=''; error_chk=''; auth_chk=''; authbasic_chk=''; authdigest_chk=''; modstatus_chk=''; modstatussort_chk=''; chrooten_chk=''; chrootdi_chk=''; modfastcgiphp_chk=''; modfastcgiruby_chk=''; accesslog_syslog=''; accesslog_file=''; errorlog_syslog=''; errorlog_file=''; virthost_chk=''; ssladdly_chk=''; ssladdln_chk=''; sslredirect_chk=''
-
-case "$LIGHTTPD_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
-case "$LIGHTTPD_CHROOT" in yes) chrooten_chk=' checked';; *) chrootdi_chk=' checked';;esac
-case "$LIGHTTPD_DIRLISTING" in enable) dirlista_chk=' checked';; *) dirlistd_chk=' checked';;esac
-case "$LIGHTTPD_SSLENABLE" in enable) sslenaba_chk=' checked';; *) sslenabd_chk=' checked';;esac
-case "$LIGHTTPD_SSLADDITIONAL" in "yes") ssladdly_chk=' checked';; "no") ssladdln_chk=' checked';;esac
-if [ "$LIGHTTPD_SSLREDIRECT" = "yes" ]; then sslredirect_chk=' checked'; fi
-if [ "$LIGHTTPD_LOGGING" = "yes" ]; then log_chk=' checked'; fi
-if [ "$LIGHTTPD_MODCGI" = "yes" ]; then modcgi_chk=' checked'; fi
-if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" ]; then modfastcgiphp_chk=' checked'; fi
-if [ "$LIGHTTPD_MODFASTCGIRUBY" = "yes" ]; then modfastcgiruby_chk=' checked'; fi
-if [ "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then modcompress_chk=' checked'; fi
-if [ "$LIGHTTPD_ERROR" = "yes" ]; then error_chk=' checked'; fi
-if [ "$LIGHTTPD_AUTH" = "yes" ]; then auth_chk=' checked'; fi
-if [ "$LIGHTTPD_MODSTATUS" = "yes" ]; then modstatus_chk=' checked'; fi
-if [ "$LIGHTTPD_MODSTATUSSORT" = "enable" ]; then modstatussort_chk=' checked'; fi
-case "$LIGHTTPD_AUTHMETH" in basic) authbasic_chk=' checked';; digest) authdigest_chk=' checked';;esac
-case "$LIGHTTPD_LOGGING_ACCESS_FILE" in yes) accesslog_file=' checked';; *) accesslog_syslog=' checked';;esac
-case "$LIGHTTPD_LOGGING_ERROR_FILE" in yes) errorlog_file=' checked';; *) errorlog_syslog=' checked';;esac
-if [ "$LIGHTTPD_VIRTHOST" = "yes" ]; then virthost_chk=' checked'; fi
+check "$LIGHTTPD_ENABLED" yes:auto "*":man
+check "$LIGHTTPD_CHROOT" yes:chrooten "*":chrootdi
+check "$LIGHTTPD_DIRLISTING" enable:dirlista "*":dirlistd
+check "$LIGHTTPD_SSLENABLE" enable:sslenaba "*":sslenabd
+check "$LIGHTTPD_SSLADDITIONAL" yes:ssladdly no:ssladdln
+check "$LIGHTTPD_SSLREDIRECT" yes:sslredirect
+check "$LIGHTTPD_LOGGING" yes:log
+check "$LIGHTTPD_MODCGI" yes:modcgi
+check "$LIGHTTPD_MODFASTCGIPHP" yes:modfastcgiphp
+check "$LIGHTTPD_MODFASTCGIRUBY" yes:modfastcgiruby
+check "$LIGHTTPD_MODCOMPRESS" yes:modcompress
+check "$LIGHTTPD_ERROR" yes:error
+check "$LIGHTTPD_AUTH" yes:auth
+check "$LIGHTTPD_MODSTATUS" yes:modstatus
+check "$LIGHTTPD_MODSTATUSSORT" enable:modstatussort
+check "$LIGHTTPD_AUTHMETH" basic:authbasic digest:authdigest
+check "$LIGHTTPD_LOGGING_ACCESS_FILE" yes:accesslog_file "*":accesslog_syslog
+check "$LIGHTTPD_LOGGING_ERROR_FILE" yes:errorlog_file "*":errorlog_syslog
+check "$LIGHTTPD_VIRTHOST" yes:virthost
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
@@ -291,8 +289,8 @@ EOF
 if [ "$(has_mod accesslog)" = "yes" ]; then
 cat << EOF
 <p>$(lang de:"Speicherart des Zugriffs-Logs (Access Log)" en:"Save type of access log")
-<input id="e3" type="radio" name="logging_access_file" value="yes"$accesslog_file><label for="e3"> $(lang de:"Datei" en:"File")</label>
-<input id="e4" type="radio" name="logging_access_file" value="no"$accesslog_syslog><label for="e4"> $(lang de:"Syslog" en:"Syslog")</label>
+<input id="e3" type="radio" name="logging_access_file" value="yes"$accesslog_file_chk><label for="e3"> $(lang de:"Datei" en:"File")</label>
+<input id="e4" type="radio" name="logging_access_file" value="no"$accesslog_syslog_chk><label for="e4"> $(lang de:"Syslog" en:"Syslog")</label>
 </p>
 EOF
 else
@@ -302,8 +300,8 @@ EOF
 fi
 cat << EOF
 <p>$(lang de:"Speicherart des Fehler-Logs (Error Log)" en:"Save type of error log")
-<input id="e5" type="radio" name="logging_error_file" value="yes"$errorlog_file><label for="e5"> $(lang de:"Datei" en:"File")</label>
-<input id="e6" type="radio" name="logging_error_file" value="no"$errorlog_syslog><label for="e6"> $(lang de:"Syslog" en:"Syslog")</label>
+<input id="e5" type="radio" name="logging_error_file" value="yes"$errorlog_file_chk><label for="e5"> $(lang de:"Datei" en:"File")</label>
+<input id="e6" type="radio" name="logging_error_file" value="no"$errorlog_syslog_chk><label for="e6"> $(lang de:"Syslog" en:"Syslog")</label>
 </p>
 <p style="font-size:10px;">$(lang de:"In den folgenden Boxen k&ouml;nnen die absoluten Pfade zu den Logdateien ge&auml;ndert werden. Beachte, dass lighttpd mit der Benutzer ID wwwrun l&auml;uft und die Datei und das Verzeichnis f&uuml;r wwwrun schreibbar sein muss. Das Standardverzeichnis /var/log/lighttpd/ ist immer f&uuml;r den Benutzer wwwrun schreibbar. Falls ein anderes Verzeichnis als das Standardverzeichnis verwendet wird, erfolgt keine automatische L&ouml;schung der Logdateien, wenn logging deaktiviert wird. Wenn der Pfadname mit einem '|' beginnt, wird der im Anschluss folgende Pfadname als Prozess ausgef&uuml;hrt und erh&auml;lt die Logdaten als Eingabe via STDIN." en:"In the following boxes, you can alter the absolute path names to the log files. Please note, the lighttpd web server runs with the user ID of wwwrun. The provided file/path must be writeable for this user ID. The default directory /var/log/lighttpd/ is always writeable for wwwrun. If you use a different directory than the default directory, the log files will not be automatically removed in case you deactivate logging. If the path name starts with a '|' the rest of the name is taken as the name of a process which will be spawned and will get the output via STDIN.")</p>
 EOF

@@ -3,11 +3,8 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-anonym_chk=''
-
-if [ "$OPENNTPD_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$OPENNTPD_MULTID" = "yes" ]; then multid_chk=' checked'; else nomultid_chk=' checked'; fi
+check "$OPENNTPD_ENABLED" yes:auto "*":man
+check "$OPENNTPD_MULTID" yes:multid "*":nomultid
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

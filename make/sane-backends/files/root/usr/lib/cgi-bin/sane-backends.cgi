@@ -3,9 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; inetd_chk=''
-
-case "$SANE_BACKENDS_SANED_ENABLED" in inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
+check "$SANE_BACKENDS_SANED_ENABLED" inetd "*":man
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

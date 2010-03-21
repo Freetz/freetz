@@ -3,12 +3,9 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-routing_yes_chk=''; routing_no_chk=''; restart_chk=''
-
-if [ "$PPTP_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$PPTP_ROUTING" = "yes" ]; then routing_yes_chk=' checked'; else routing_no_chk=' checked'; fi
-if [ "$PPTP_RESTART" = "yes" ]; then restart_chk=' checked'; fi
+check "$PPTP_ENABLED" yes:auto "*":man
+check "$PPTP_ROUTING" yes:routing_yes "*":routing_no
+check "$PPTP_RESTART" yes:restart
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

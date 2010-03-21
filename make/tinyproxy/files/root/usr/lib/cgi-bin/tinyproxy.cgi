@@ -3,13 +3,9 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-catchall_chk='';
-confserver_chk='';
-
-if [ "$TINYPROXY_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$TINYPROXY_CATCHALL" = "yes" ]; then catchall_chk=' checked'; fi
-if [ "$TINYPROXY_CONFSERVER" = "yes" ]; then confserver_chk=' checked'; fi
+check "$TINYPROXY_ENABLED" yes:auto "*":man
+check "$TINYPROXY_CATCHALL" yes:catchall
+check "$TINYPROXY_CONFSERVER" yes:confserver
 
 
 sec_begin 'Starttyp'

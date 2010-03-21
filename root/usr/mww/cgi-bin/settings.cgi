@@ -9,24 +9,16 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 inetd=''
 [ -e /etc/default.inetd/inetd.cfg ] && inetd='true'
 
-crond_auto_chk=''; crond_man_chk=''
-swap_auto_chk=''; swap_man_chk=''
-telnetd_auto_chk=''; telnetd_man_chk=''; telnet_inetd_chk='';
-httpd_auto_chk=''; httpd_man_chk=''; httpd_inetd_chk='';
-mounted_main_chk='';mounted_sub_chk=''; mounted_umount_chk='';
-show_box_info_chk='';show_freetz_info_chk='';
-stor_uselabel_chk='';
-
-if [ "$MOD_STOR_USELABEL" = "yes" ]; then stor_uselabel_chk=' checked'; fi
-if [ "$MOD_SHOW_BOX_INFO" = "yes" ]; then show_box_info_chk=' checked'; fi
-if [ "$MOD_SHOW_FREETZ_INFO" = "yes" ]; then show_freetz_info_chk=' checked'; fi
-if [ "$MOD_MOUNTED_MAIN" = "yes" ]; then mounted_main_chk=' checked'; fi
-if [ "$MOD_MOUNTED_SUB" = "yes" ]; then mounted_sub_chk=' checked'; fi
-if [ "$MOD_MOUNTED_UMOUNT" = "yes" ]; then mounted_umount_chk=' checked'; fi
-if [ "$MOD_CROND" = "yes" ]; then crond_auto_chk=' checked'; else crond_man_chk=' checked'; fi
-if [ "$MOD_SWAP" = "yes" ]; then swap_auto_chk=' checked'; else swap_man_chk=' checked'; fi
-case "$MOD_TELNETD" in yes) telnetd_auto_chk=' checked';; inetd) telnetd_inetd_chk=' checked';; *) telnetd_man_chk=' checked';; esac
-case "$MOD_HTTPD" in yes) httpd_auto_chk=' checked';; inetd) httpd_inetd_chk=' checked';; *) httpd_man_chk=' checked';; esac
+check "$MOD_STOR_USELABEL" yes:stor_uselabel
+check "$MOD_SHOW_BOX_INFO" yes:show_box_info
+check "$MOD_SHOW_FREETZ_INFO" yes:show_freetz_info
+check "$MOD_MOUNTED_MAIN" yes:mounted_main
+check "$MOD_MOUNTED_SUB" yes:mounted_sub
+check "$MOD_MOUNTED_UMOUNT" yes:mounted_umount
+check "$MOD_CROND" yes:crond_auto "*":crond_man
+check "$MOD_SWAP" yes:swap_auto "*":swap_man
+check "$MOD_TELNETD" yes:telnetd_auto inetd:telnetd_inetd "*":telnetd_man
+check "$MOD_HTTPD" yes:httpd_auto inetd:httpd_inetd "*":httpd_man
 
 cgi_begin '$(lang de:"Einstellungen" en:"Settings")' 'settings'
 frm_begin 'mod'
@@ -143,5 +135,3 @@ sec_end
 fi
 frm_end 'mod'
 cgi_end
-
-

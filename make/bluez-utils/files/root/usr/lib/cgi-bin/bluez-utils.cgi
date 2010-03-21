@@ -3,25 +3,15 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk= man_chk= inetd_chk=
-use_linkkeys_yes_chk=''; use_linkkeys_no_chk=''
-bnep_start_yes_chk=''; bnep_start_no_chk=''
-rfcomm_start_yes_chk=''; rfcomm_start_no_chk=''
-sdpd_start_yes_chk=''; sdpd_start_no_chk=''
-sdptool_start_yes_chk=''; sdptool_start_no_chk=''
-rfcommprg_start_yes_chk=''; rfcommprg_start_no_chk=''
-pand_start_yes_chk=''; pand_start_no_chk=''
-dund_start_yes_chk=''; dund_start_no_chk=''
-
-case $BLUEZ_UTILS_ENABLED in yes) auto_chk=' checked' ;; *)	man_chk=' checked';; esac
-case $BLUEZ_UTILS_USE_LINKKEYS in yes) use_linkkeys_yes_chk=' checked' ;; no) use_linkkeys_no_chk=' checked';; esac
-case $BLUEZ_UTILS_BNEP_START in yes) bnep_start_yes_chk=' checked' ;; no) bnep_start_no_chk=' checked' ;; esac
-case $BLUEZ_UTILS_RFCOMM_START in yes) rfcomm_start_yes_chk=' checked' ;; no) rfcomm_start_no_chk=' checked' ;; esac
-case $BLUEZ_UTILS_RFCOMMPRG_START in yes) rfcommprg_start_yes_chk=' checked' ;; no) rfcommprg_start_no_chk=' checked' ;; esac
-case $BLUEZ_UTILS_SDPD_START in yes) sdpd_start_yes_chk=' checked' ;; no) sdpd_start_no_chk=' checked' ;; esac
-case $BLUEZ_UTILS_SDPTOOL_START in yes) sdptool_start_yes_chk=' checked' ;; no) sdptool_start_no_chk=' checked' ;; esac
-case $BLUEZ_UTILS_PAND_START in yes) pand_start_yes_chk=' checked' ;; no) pand_start_no_chk=' checked' ;; esac
-case $BLUEZ_UTILS_DUND_START in yes) dund_start_yes_chk=' checked' ;; no)	dund_start_no_chk=' checked' ;; esac
+check "$BLUEZ_UTILS_ENABLED" yes:auto "*":man
+check "$BLUEZ_UTILS_USE_LINKKEYS" yes:use_linkkeys_yes no:use_linkkeys_no
+check "$BLUEZ_UTILS_BNEP_START" yes:bnep_start_yes no:bnep_start_no
+check "$BLUEZ_UTILS_RFCOMM_START" yes:rfcomm_start_yes no:rfcomm_start_no
+check "$BLUEZ_UTILS_RFCOMMPRG_START" yes:rfcommprg_start_yes no:rfcommprg_start_no
+check "$BLUEZ_UTILS_SDPD_START" yes:sdpd_start_yes no:sdpd_start_no
+check "$BLUEZ_UTILS_SDPTOOL_START" yes:sdptool_start_yes no:sdptool_start_no
+check "$BLUEZ_UTILS_PAND_START" yes:pand_start_yes no:pand_start_no
+check "$BLUEZ_UTILS_DUND_START" yes:dund_start_yes no:dund_start_no
 
 sec_begin 'Start type'
 

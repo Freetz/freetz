@@ -3,11 +3,8 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; inetd_chk=''
-anonym_chk=''
-
-case "$BFTPD_ENABLED" in yes) auto_chk=' checked';; inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
-if [ "$BFTPD_ANONYMOUS" = "yes" ]; then anonym_chk=' checked'; fi
+check "$BFTPD_ENABLED" yes:auto inetd "*":man
+check "$BFTPD_ANONYMOUS" yes:anonym
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

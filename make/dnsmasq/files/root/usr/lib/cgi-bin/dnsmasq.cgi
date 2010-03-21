@@ -3,19 +3,12 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-dhcp_yes_chk=''; dhcp_no_chk=''
-boguspriv_chk=''
-ethers_chk=''
-dhcp_boot_yes_chk=''; dhcp_boot_no_chk=''
-tftp_yes_chk=''; tftp_no_chk=''
-
-if [ "$DNSMASQ_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$DNSMASQ_DHCP" = "yes" ]; then dhcp_yes_chk=' checked'; else dhcp_no_chk=' checked'; fi
-if [ "$DNSMASQ_BOGUSPRIV" = "yes" ]; then boguspriv_chk=' checked'; fi
-if [ "$DNSMASQ_ETHERS" = "yes" ]; then ethers_chk=' checked'; fi
-if [ "$DNSMASQ_DHCP_BOOT" = "yes" ]; then dhcp_boot_yes_chk=' checked'; else dhcp_boot_no_chk=' checked'; fi
-if [ "$DNSMASQ_TFTP" = "yes" ]; then tftp_yes_chk=' checked'; else tftp_no_chk=' checked'; fi
+check "$DNSMASQ_ENABLED" yes:auto "*":man
+check "$DNSMASQ_DHCP" yes:dhcp_yes "*":dhcp_no
+check "$DNSMASQ_BOGUSPRIV" yes:boguspriv
+check "$DNSMASQ_ETHERS" yes:ethers
+check "$DNSMASQ_DHCP_BOOT" yes:dhcp_boot_yes "*":dhcp_boot_no
+check "$DNSMASQ_TFTP" yes:tftp_yes "*":tftp_no
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF

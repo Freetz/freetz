@@ -8,8 +8,7 @@ for daemon in $daemonlist; do
 [ -x /usr/sbin/$daemon ] && daemons="$daemons $daemon"
 done
 
-auto_chk=''; man_chk=''
-if [ "$QUAGGA_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+check "$QUAGGA_ENABLED" yes:auto "*":man
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
  

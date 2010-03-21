@@ -3,12 +3,9 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-pwdauth_yes_chk=''; pwdauth_no_chk=''; root_yes_chk=''; root_no_chk=''
-
-case "$OPENSSH_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
-if [ "$OPENSSH_PWDAUTH" = "yes" ]; then pwdauth_yes_chk=' checked'; else pwdauth_no_chk=' checked'; fi
-if [ "$OPENSSH_ROOT" = "yes" ]; then root_yes_chk=' checked'; else root_no_chk=' checked'; fi
+check "$OPENSSH_ENABLED" yes:auto "*":man
+check "$OPENSSH_PWDAUTH" yes:pwdauth_yes "*":pwdauth_no
+check "$OPENSSH_ROOT" yes:root_yes "*":root_no
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

@@ -3,10 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_c_chk=''; man_c_chk=''
-auto_s_chk=''; man_s_chk=''
-
-if [ "$STUNNEL_ENABLED" = "yes" ]; then auto_c_chk=' checked'; else man_c_chk=' checked'; fi
+check "$STUNNEL_ENABLED" yes:auto_c "*":man_c
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

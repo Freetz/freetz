@@ -3,12 +3,9 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-pwdauth_yes_chk=''; pwdauth_no_chk=''; rootonly_yes_chk=''; rootonly_no_chk=''
-
-case "$DROPBEAR_ENABLED" in yes) auto_chk=' checked';; inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
-if [ "$DROPBEAR_PWDAUTH" = "yes" ]; then pwdauth_yes_chk=' checked'; else pwdauth_no_chk=' checked'; fi
-if [ "$DROPBEAR_ROOTONLY" = "yes" ]; then rootonly_yes_chk=' checked'; else rootonly_no_chk=' checked'; fi
+check "$DROPBEAR_ENABLED" yes:auto inetd "*":man
+check "$DROPBEAR_PWDAUTH" yes:pwdauth_yes "*":pwdauth_no
+check "$DROPBEAR_ROOTONLY" yes:rootonly_yes "*":rootonly_no
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

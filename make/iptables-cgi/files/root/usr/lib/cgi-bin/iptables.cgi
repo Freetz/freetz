@@ -18,8 +18,7 @@ if [ $IPTABLES_DELETE_CHAIN ] && [ $IPTABLES_DELETE_RULE ]; then
 	/var/mod/etc/init.d/rc.iptables save	
 fi
 
-auto_chk=''; man_chk='';
-if [ "$IPTABLES_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+check "$IPTABLES_ENABLED" yes:auto "*":man
 
 sec_begin 'Activation'
 cat << EOF

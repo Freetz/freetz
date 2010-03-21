@@ -3,11 +3,8 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-master_chk=''
-
-if [ "$SAMBA_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$SAMBA_MASTER" = "yes" ]; then master_chk=' checked'; fi
+check "$SAMBA_ENABLED" yes:auto "*":man
+check "$SAMBA_MASTER" yes:master
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

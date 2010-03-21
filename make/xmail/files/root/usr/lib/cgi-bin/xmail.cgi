@@ -3,24 +3,24 @@
 PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk= man_chk= smtp_chk= ssmtp_chk= pop3_chk= pop3s_chk= ctrl_chk= ctrls_chk= smtplog_chk= pop3log_chk= systemlog_chk= unpriv_chk= XMAIL_SSLSUPPORT= XMAIL_SSLVISIBLE=
+XMAIL_SSLSUPPORT= XMAIL_SSLVISIBLE=
 
 # Check for SSL support
 /usr/lib/MailRoot/bin/CtrlClnt 2>&1|grep -qe ' -S ' && XMAIL_SSLSUPPORT=1
 # Check for installed and running PHPXmail
 [ -e /etc/init.d/rc.phpxmail ] && [ "$(/etc/init.d/rc.phpxmail status)" == 'running' ] && XMAIL_PHPXMAIL=1
 
-case "$XMAIL_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
-if [ "$XMAIL_UNPRIV" = 'yes' ]; then unpriv_chk=' checked'; fi
-if [ "$XMAIL_SMTP" = 'yes' ]; then smtp_chk=' checked'; fi
-if [ "$XMAIL_SSMTP" = 'yes' -a -z "$XMAIL_SSLSUPPORT" ]; then ssmtp_chk=' checked'; fi
-if [ "$XMAIL_POP3" = 'yes' ]; then pop3_chk=' checked'; fi
-if [ "$XMAIL_POP3S" = 'yes' -a -z "$XMAIL_SSLSUPPORT" ]; then pop3s_chk=' checked'; fi
-if [ "$XMAIL_CTRL" = 'yes' ]; then ctrl_chk=' checked'; fi
-if [ "$XMAIL_CTRLS" = 'yes' -a -z "$XMAIL_SSLSUPPORT" ]; then ctrls_chk=' checked'; fi
-if [ "$XMAIL_SMTPLOG" = 'yes' ]; then smtplog_chk=' checked'; fi
-if [ "$XMAIL_POP3LOG" = 'yes' ]; then pop3log_chk=' checked'; fi
-if [ "$XMAIL_SYSTEMLOG" = 'yes' ]; then systemlog_chk=' checked'; fi
+check "$XMAIL_ENABLED" yes:auto "*":man
+check "$XMAIL_UNPRIV" yes:unpriv
+check "$XMAIL_SMTP" yes:smtp
+check "$XMAIL_SSMTP-$XMAIL_SSLSUPPORT" yes-:ssmtp
+check "$XMAIL_POP3" yes:pop3
+check "$XMAIL_POP3S-$XMAIL_SSLSUPPORT" yes-:pop3s
+check "$XMAIL_CTRL" yes:ctrl
+check "$XMAIL_CTRLS-$XMAIL_SSLSUPPORT" yes-:ctrls
+check "$XMAIL_SMTPLOG" yes:smtplog
+check "$XMAIL_POP3LOG" yes:pop3log
+check "$XMAIL_SYSTEMLOG" yes:systemlog
 
 [ "$XMAIL_PHPXMAIL" == 1 ] && (
 . /usr/lib/libmodredir.sh

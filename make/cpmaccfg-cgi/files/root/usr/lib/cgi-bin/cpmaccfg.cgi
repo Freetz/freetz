@@ -3,10 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-pwdauth_yes_chk=''; pwdauth_no_chk=''
-
-case "$CPMACCFG_ENABLED" in yes) auto_chk=' checked';; inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
+check "$CPMACCFG_ENABLED" yes:auto "*":man
 
 sec_begin 'Enable/Disable cpmaccfg'
 

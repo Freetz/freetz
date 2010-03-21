@@ -3,9 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-
-case "$AICCU_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';; esac
+check "$AICCU_ENABLED" yes:auto "*":man
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

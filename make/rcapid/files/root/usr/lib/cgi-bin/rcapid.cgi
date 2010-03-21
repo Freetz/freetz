@@ -3,9 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-disabled_chk=''; inetd_chk=''
-
-case "$RCAPID_ENABLED" in inetd) inetd_chk=' checked';; *) disabled_chk=' checked';;esac
+check "$RCAPID_ENABLED" inetd "*":disabled
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

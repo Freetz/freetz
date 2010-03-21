@@ -3,30 +3,24 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; inetd_chk=''
-anonym_chk='';users_enabled_chk='';chroot_chk='';root_chk='';ftpuser_chk=''
-log_enable_chk='';log_protoc_chk='';log_syslog_yes='';log_syslog_no=''
-promiscuous_chk='';ssl_chk='';sslv2_chk='';sslv3_chk='';tlsv1_chk=''
-data_ssl_chk='';login_ssl_chk=''
-
-case "$VSFTPD_ENABLED" in yes) auto_chk=' checked';; inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
-if [ "$VSFTPD_ANONYMOUS" = "yes" ]; then anonym_chk=' checked'; fi
-if [ "$VSFTPD_USERS_ENABLED" = "yes" ]; then users_enabled_chk=' checked'; fi
-if [ "$VSFTPD_CHROOT" = "yes" ]; then chroot_chk=' checked'; fi
-if [ "$VSFTPD_ALLOW_ROOT" = "yes" ]; then root_chk=' checked'; fi
-if [ "$VSFTPD_ALLOW_FTPUSER" = "yes" ]; then ftpuser_chk=' checked'; fi
-if [ "$VSFTPD_PROMISCUOUS" = "yes" ]; then promiscuous_chk=' checked'; fi
-if [ "$VSFTPD_LOG_ENABLE" = "yes" ]; then log_enable_chk=' checked'; fi
-if [ "$VSFTPD_LOG_PROTOC" = "yes" ]; then log_protoc_chk=' checked'; fi
-if [ "$VSFTPD_LOG_SYSLOG" = "yes" ]; then log_syslog_yes=' checked'; else log_syslog_no=' checked'; fi
-if [ "$VSFTPD_ENABLE_SSL" = "yes" ]; then ssl_chk=' checked'; fi
-if [ "$VSFTPD_ENABLE_SSLV2" = "yes" ]; then sslv2_chk=' checked'; fi
-if [ "$VSFTPD_ENABLE_SSLV3" = "yes" ]; then sslv3_chk=' checked'; fi
-if [ "$VSFTPD_ENABLE_TLSV1" = "yes" ]; then tlsv1_chk=' checked'; fi
-if [ "$VSFTPD_FORCE_DATA_SSL" = "yes" ]; then data_ssl_chk=' checked'; fi
-if [ "$VSFTPD_FORCE_LOGIN_SSL" = "yes" ]; then login_ssl_chk=' checked'; fi
-if [ "$VSFTPD_ENABLE_RELOAD_SCRIPT" = "yes" ]; then reload_script_chk=' checked'; fi
-if [ "$VSFTPD_PASV_ADDRESS" = "yes" ]; then pasv_add_chk=' checked'; fi
+check "$VSFTPD_ENABLED" yes:auto inetd "*":man
+check "$VSFTPD_ANONYMOUS" yes:anonym
+check "$VSFTPD_USERS_ENABLED" yes:users_enabled
+check "$VSFTPD_CHROOT" yes:chroot
+check "$VSFTPD_ALLOW_ROOT" yes:root
+check "$VSFTPD_ALLOW_FTPUSER" yes:ftpuser
+check "$VSFTPD_PROMISCUOUS" yes:promiscuous
+check "$VSFTPD_LOG_ENABLE" yes:log_enable
+check "$VSFTPD_LOG_PROTOC" yes:log_protoc
+check "$VSFTPD_LOG_SYSLOG" yes:log_syslog_yes "*":log_syslog_no
+check "$VSFTPD_ENABLE_SSL" yes:ssl
+check "$VSFTPD_ENABLE_SSLV2" yes:sslv2
+check "$VSFTPD_ENABLE_SSLV3" yes:sslv3
+check "$VSFTPD_ENABLE_TLSV1" yes:tlsv1
+check "$VSFTPD_FORCE_DATA_SSL" yes:data_ssl
+check "$VSFTPD_FORCE_LOGIN_SSL" yes:login_ssl
+check "$VSFTPD_ENABLE_RELOAD_SCRIPT" yes:reload_script
+check "$VSFTPD_PASV_ADDRESS" yes:pasv_add
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -169,8 +163,8 @@ cat << EOF
 </p>
 
 <p>
-<input id="p1" type="radio" name="log_syslog" value="yes"$log_syslog_yes><label for="x1">$(lang de:"Syslog" en:"Syslog")</label><br>
-<input id="p2" type="radio" name="log_syslog" value="no"$log_syslog_no><label for="x2">$(lang de:"Datei:&nbsp;" en:"File:&nbsp;&nbsp;")
+<input id="p1" type="radio" name="log_syslog" value="yes"$log_syslog_yes_chk><label for="x1">$(lang de:"Syslog" en:"Syslog")</label><br>
+<input id="p2" type="radio" name="log_syslog" value="no"$log_syslog_no_chk><label for="x2">$(lang de:"Datei:&nbsp;" en:"File:&nbsp;&nbsp;")
 <input type="text" name="log_file" size="45" maxlength="255" value="$(html "$VSFTPD_LOG_FILE")"></label>
 </p>
 

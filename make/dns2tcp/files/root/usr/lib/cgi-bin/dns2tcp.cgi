@@ -3,9 +3,7 @@
 PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk='';
-
-case "$DNS2TCP_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';;esac
+check "$DNS2TCP_ENABLED" yes:auto "*":man
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF

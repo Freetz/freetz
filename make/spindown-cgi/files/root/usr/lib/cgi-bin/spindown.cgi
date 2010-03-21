@@ -3,11 +3,8 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-mode3_chk=''; mode5_chk=''
-
-if [ "$SPINDOWN_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$SPINDOWN_MODE" = "3" ]; then mode3_chk=' checked'; else mode5_chk=' checked'; fi
+check "$SPINDOWN_ENABLED" yes:auto "*":man
+check "$SPINDOWN_MODE" 3:mode3 "*":mode5
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

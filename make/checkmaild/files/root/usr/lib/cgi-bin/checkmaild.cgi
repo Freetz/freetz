@@ -4,66 +4,16 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
+check "$CHECKMAILD_ENABLED" yes:auto "*":man
+check "$CHECKMAILD_TELNOT" Y:tel_not
+check "$CHECKMAILD_LEDNOTIFY" Y:led_not
+check "$CHECKMAILD_CFGNOTIFY" Y:cfg_not
+check "$CHECKMAILD_RECVMSG" Y:msg_recv
 
-if [ "$CHECKMAILD_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+select "$CHECKMAILD_LEDMAJOR" 1:pow 2:dsl 3:lan 4:wlan 7:info 13:fest \
+	14:int "*":info
 
-tel_not=''
-if [ "$CHECKMAILD_TELNOT" = "Y" ]; then tel_not=' checked'; fi
-
-led_not=''
-if [ "$CHECKMAILD_LEDNOTIFY" = "Y" ]; then led_not=' checked'; fi
-
-cfg_not=''
-if [ "$CHECKMAILD_CFGNOTIFY" = "Y" ]; then cfg_not=' checked'; fi
-
-msg_recv=''
-if [ "$CHECKMAILD_RECVMSG" = "Y" ]; then msg_recv=' checked'; fi
-
-
-pow_sel=''; dsl_sel=''; lan_sel=''; wlan_sel=''; info_sel=''; fest_sel=''; int_sel=''; always_sel=''; slow_sel=''; fast_sel=''
-
-case "$CHECKMAILD_LEDMAJOR" in
-1)
-pow_sel=' selected'
-;;
-2)
-dsl_sel=' selected'
-;;
-3) 
-lan_sel=' selected'
-;;
-4) 
-wlan_sel=' selected'
-;; 
-7) 
-info_sel=' selected'
-;;
-13) 
-fest_sel=' selected'
-;;
-14) 
-int_sel=' selected'
-;;
-*) 
-info_sel=' selected'
-;;
-esac
-
-case $CHECKMAILD_LEDMINOR in
-2) 
-alw_sel=' selected'
-;;
-3) 
-fast_sel=' selected'
-;;
-4) 
-slow_sel=' selected'
-;;
-*) 
-alw_sel=' selected'
-;;
-esac
+select "$CHECKMAILD_LEDMINOR" 2:alw 3:fast 4:slow "*":alw
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -138,7 +88,7 @@ sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
 cat << EOF
 <input type='hidden' name='lednotify' value='N'>
 <p><label for='r31'>$(lang de:"Postfach alle" en:"Check mailbox every")  </label><input id='r31' type='text' name='intervall' size='3' maxlength='255' value='$(html "$CHECKMAILD_INTERVALL")'> $(lang de:"Minuten auf neue Mails &uuml;berpr&uuml;fen" en:"minutes")</p>
-<p><label for='r32'>$(lang de:"Signalisierung" en:"Notification by"): </label> <input id='r32' type='checkbox' name='lednotify' value='Y'$led_not>
+<p><label for='r32'>$(lang de:"Signalisierung" en:"Notification by"): </label> <input id='r32' type='checkbox' name='lednotify' value='Y'$led_not_chk>
 <SELECT ID='r32' NAME='ledmajor'>
 <OPTION VALUE='1'$pow_sel>Power-LED</OPTION>
 <OPTION VALUE='2'$dsl_sel>DSL-LED</OPTION>
@@ -160,7 +110,7 @@ sec_begin '$(lang de:"Telefonbenachrichtigung" en:"Telephone notification")'
 
 cat << EOF
 <input type='hidden' name='telnot' value='N'>
-<p><label for='r7'>$(lang de:"Telefonbenachrichtigung einschalten" en:"Enable telephone notification")  </label><input id='r7' type='checkbox' name='telnot' value='Y'$tel_not></p>
+<p><label for='r7'>$(lang de:"Telefonbenachrichtigung einschalten" en:"Enable telephone notification")  </label><input id='r7' type='checkbox' name='telnot' value='Y'$tel_not_chk></p>
 <p><label for='r8'>$(lang de:"Sip-Account" en:"Sip account"):  </label><input id='r8' type='text' name='sipaccount' size='3' maxlength='3' value='$(html "$CHECKMAILD_SIPACCOUNT")'></p>
 <p><label for='r9'>$(lang de:"Telefonnummer" en:"Telephone number"): </label><input id='r9' type='text' name='phonenumber' size='15' maxlength='15' value='$(html "$CHECKMAILD_PHONENUMBER")'></p>
 <p><label for='r9'>$(lang de:"Nebenstellen-Nummer" en:"Substation"): </label><input id='r9' type='text' name='substation' size='1' maxlength='2' value='$(html "$CHECKMAILD_SUBSTATION")'></p>
@@ -174,8 +124,8 @@ sec_begin '$(lang de:"Skript" en:"Script")'
 cat << EOF
 <input type='hidden' name='cfgnotify' value='N'>
 <input type='hidden' name='recvmsg' value='N'>
-<p><label for='r34'>$(lang de:"Skriptaufruf einschalten" en:"Enable script execution")  </label><input id='r34' type='checkbox' name='cfgnotify' value='Y'$cfg_not> (/mod/etc/maillog.cfg)</p>
-<p><label for='r35'>$(lang de:"Header und Body empfangen" en:"Download header and body") </label><input id='r35' type='checkbox' name='recvmsg' value='Y'$msg_recv></p>
+<p><label for='r34'>$(lang de:"Skriptaufruf einschalten" en:"Enable script execution")  </label><input id='r34' type='checkbox' name='cfgnotify' value='Y'$cfg_not_chk> (/mod/etc/maillog.cfg)</p>
+<p><label for='r35'>$(lang de:"Header und Body empfangen" en:"Download header and body") </label><input id='r35' type='checkbox' name='recvmsg' value='Y'$msg_recv_chk></p>
 EOF
 
 sec_end

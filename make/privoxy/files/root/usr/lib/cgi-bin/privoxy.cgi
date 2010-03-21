@@ -3,13 +3,10 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-toggle_chk=''; neutral_chk='';
-
-if [ "$PRIVOXY_ENABLED" == "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$PRIVOXY_TOGGLE" == "1" ]; then toggle_chk=' checked'; else neutral_chk=' checked'; fi
-if [ "$PRIVOXY_ENABLE_REMOTE_TOGGLE" == "1" ]; then remote_toggle_yes_chk=' checked'; else remote_toggle_no_chk=' checked'; fi
-if [ "$PRIVOXY_ENFORCE_BLOCKS" == "1" ]; then enforce_blocks_yes_chk=' checked'; else enforce_blocks_no_chk=' checked'; fi
+check "$PRIVOXY_ENABLED" yes:auto "*":man
+check "$PRIVOXY_TOGGLE" 1:toggle "*":neutral
+check "$PRIVOXY_ENABLE_REMOTE_TOGGLE" 1:remote_toggle_yes "*":remote_toggle_no
+check "$PRIVOXY_ENFORCE_BLOCKS" 1:enforce_blocks_yes "*":enforce_blocks_no
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

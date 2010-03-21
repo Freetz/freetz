@@ -3,11 +3,11 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; ftp_chk='' ; http_chk=''; debug_chk=''
+ftp_chk=''; http_chk=''
 
-if [ "$DOWNLOADER_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+check "$DOWNLOADER_ENABLED" yes:auto "*":man
 if [ "$DOWNLOADER_SRVPRFX" = "ftp://" ]; then ftp_chk=' selected'; else http_chk=' selected'; fi
-if [ "$DOWNLOADER_DEBUG" = "yes" ]; then debug_chk=' checked'; fi
+check "$DOWNLOADER_DEBUG" yes:debug
 
 sec_begin '$(lang de:"Aktivierung" en:"Activation")'
 

@@ -3,17 +3,13 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; if [ "$TRANSMISSION_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-noencryption_sel=''; preferencryption_sel=''; requireencryption_sel='';
-if [ "$TRANSMISSION_PEERENCRYPTIONMODE" = "ENCRYPTION_REQUIRED" ]; then
-	requireencryption_sel=' selected'
-elif [ "$TRANSMISSION_PEERENCRYPTIONMODE" = "ENCRYPTION_PREFERRED" ]; then
-	preferencryption_sel=' selected'
-else
-	noencryption_sel=' selected'
-fi
-useblocklist_chk=''; if [ "$TRANSMISSION_USEBLOCKLIST" = "yes" ]; then useblocklist_chk=' checked'; fi
-usedht_chk=''; if [ "$TRANSMISSION_USEDHT" = "yes" ]; then usedht_chk=' checked'; fi
+check "$TRANSMISSION_ENABLED" yes:auto "*":man
+select "$TRANSMISSION_PEERENCRYPTIONMODE" \
+	ENCRYPTION_REQUIRED:requireencryption \
+	ENCRYPTION_PREFERRED:preferencryption \
+	"*":noencryption
+check "$TRANSMISSION_USEBLOCKLIST" yes:useblocklist
+check "$TRANSMISSION_USEDHT" yes:usedht
 
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'

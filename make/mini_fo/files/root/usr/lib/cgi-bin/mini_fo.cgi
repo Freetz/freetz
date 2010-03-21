@@ -5,25 +5,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 storage=$(/mod/etc/init.d/rc.mini_fo store | grep "mini_fo=" | sed -e "s/mini_fo=//")
 boot=$(/mod/etc/init.d/rc.mini_fo bootstatus)
 
-auto_chk=''; man_chk=''
-
-if [ "$storage" = "" ]; then 
-  none_chk=' checked="checked"'; 
-else 
-  if [ "$storage" = "ram" ]; then
-    ram_chk=' checked="checked"';
-  else
-    jffs2_chk=' checked="checked"';
-  fi
-fi
-
-boot_chk=''; noboot_chk='';
-
-if [ "$boot" = "enabled" ]; then
-  boot_chk=' checked="checked"';
-else
-  noboot_chk=' checked="checked"';
-fi
+check "$storage" "":none ram "*":jffs2
+check "$boot" enabled:boot "*":noboot
 
 sec_begin '$(lang de:"Speicherort" en:"Storage location")'
 

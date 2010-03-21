@@ -3,13 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk= man_chk= inetd_chk=
-
-case $WOL_ENABLED in
-	yes)	auto_chk=' checked' ;;
-	inetd)	inetd_chk=' checked' ;;
-	*)	man_chk=' checked' ;;
-esac
+check "$WOL_ENABLED" yes:auto inetd man
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

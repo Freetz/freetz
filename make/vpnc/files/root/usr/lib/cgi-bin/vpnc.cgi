@@ -3,27 +3,20 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-ike1_chk=''; ike2_chk=''; ike5_chk=''
-pfs_nopfs=''; pfs_dh1=''; pfs_dh2=''; pfs_dh5=''; pfs_server=''
-udpenc_on_chk=''; udpenc_off_chk=''
-en_single_des_on_chk=''; en_single_des_off_chk=''
-dis_nat_trav_on_chk=''; dis_nat_trav_off_chk=''
-
-if [ "$VPNC_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$VPNC_IKEDHGROUP" = "dh1" ]; then ike1_chk=' checked'; fi
-if [ "$VPNC_IKEDHGROUP" = "dh2" ]; then ike2_chk=' checked'; fi
-if [ "$VPNC_IKEDHGROUP" = "dh5" ]; then ike5_chk=' checked'; fi
-if [ "$VPNC_NETWORK" = "" ]; then VPNC_NETWORK='0.0.0.0'; fi
-if [ "$VPNC_MASK" = "" ]; then VPNC_MASK='0.0.0.0'; fi
-if [ "$VPNC_PERFECTFORWARDSECRECY" = "nopfs" ]; then pfs_nopfs=' checked'; fi
-if [ "$VPNC_PERFECTFORWARDSECRECY" = "dh1" ]; then pfs_dh1=' checked'; fi
-if [ "$VPNC_PERFECTFORWARDSECRECY" = "dh2" ]; then pfs_dh2=' checked'; fi
-if [ "$VPNC_PERFECTFORWARDSECRECY" = "dh5" ]; then pdf_dh5=' checked'; fi
-if [ "$VPNC_PERFECTFORWARDSECRECY" = "server" ]; then pfs_server=' checked'; fi
-if [ "$VPNC_UDPENCAPSULATE" = "yes" ]; then udpenc_on_chk=' checked'; else udpenc_off_chk=' checked'; fi
-if [ "$VPNC_ENABLESINGLEDES" = "yes" ]; then en_single_des_on_chk=' checked'; else en_single_des_off_chk=' checked'; fi
-if [ "$VPNC_DISABLENATTRAVERSAL" = "yes" ]; then dis_nat_trav_on_chk=' checked'; else dis_nat_trav_off_chk=' checked'; fi
+check "$VPNC_ENABLED" yes:auto "*":man
+check "$VPNC_IKEDHGROUP" dh1:ike1
+check "$VPNC_IKEDHGROUP" dh2:ike2
+check "$VPNC_IKEDHGROUP" dh5:ike5
+if [ -z "$VPNC_NETWORK" ]; then VPNC_NETWORK='0.0.0.0'; fi
+if [ -z "$VPNC_MASK" ]; then VPNC_MASK='0.0.0.0'; fi
+check "$VPNC_PERFECTFORWARDSECRECY" nopfs:pfs_nopfs
+check "$VPNC_PERFECTFORWARDSECRECY" dh1:pfs_dh1
+check "$VPNC_PERFECTFORWARDSECRECY" dh2:pfs_dh2
+check "$VPNC_PERFECTFORWARDSECRECY" dh5:pfs_dh5
+check "$VPNC_PERFECTFORWARDSECRECY" server:pfs_server
+check "$VPNC_UDPENCAPSULATE" yes:udpenc_on "*":udpenc_off
+check "$VPNC_ENABLESINGLEDES" yes:en_single_des_on "*":en_single_des_off
+check "$VPNC_DISABLENATTRAVERSAL" yes:dis_nat_trav_on "*":dis_nat_trav_off
 
 sec_begin 'Starttyp'
 
@@ -54,11 +47,11 @@ IKE DH Group:
 </p>
 <p>Diffie-Hellman Gruppe f&uuml;r PFS<br>
 Perfect Forward Secrecy:  
-<input id="pfs1" type="radio" name="perfectforwardsecrecy" value="nopfs"$pfs_nopfs><label for="pfs1"> nopfs</label>
-<input id="pfs2" type="radio" name="perfectforwardsecrecy" value="dh1"$pfs_dh1><label for="pfs2"> dh1</label>
-<input id="pfs3" type="radio" name="perfectforwardsecrecy" value="dh2"$pfs_dh2><label for="pfs3"> dh2</label>
-<input id="pfs4" type="radio" name="perfectforwardsecrecy" value="dh5"$pfs_dh5><label for="pfs4"> dh5</label>
-<input id="pfs5" type="radio" name="perfectforwardsecrecy" value="server"$pfs_server><label for="pfs5"> server</label>
+<input id="pfs1" type="radio" name="perfectforwardsecrecy" value="nopfs"$pfs_nopfs_chk><label for="pfs1"> nopfs</label>
+<input id="pfs2" type="radio" name="perfectforwardsecrecy" value="dh1"$pfs_dh1_chk><label for="pfs2"> dh1</label>
+<input id="pfs3" type="radio" name="perfectforwardsecrecy" value="dh2"$pfs_dh2_chk><label for="pfs3"> dh2</label>
+<input id="pfs4" type="radio" name="perfectforwardsecrecy" value="dh5"$pfs_dh5_chk><label for="pfs4"> dh5</label>
+<input id="pfs5" type="radio" name="perfectforwardsecrecy" value="server"$pfs_server_chk><label for="pfs5"> server</label>
 </p>
 <p>Lokale ISAKMP Portnummer (0 == zuf&auml;llig)<br>
 Local Port: <input type="text" name="localport" size="15" maxlength="15" value="$(html "$VPNC_LOCALPORT")"> &lt;0-65535&gt;</p>

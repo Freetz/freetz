@@ -3,8 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-if [ "$INADYN_MT_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+check "$INADYN_MT_ENABLED" yes:auto "*":man
 
 for i in 0 1 2 3 4
 do

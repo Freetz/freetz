@@ -3,10 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-
-auto_chk=''; man_chk=''
-
-if [ "$VIRTUALIP_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+check "$VIRTUALIP_ENABLED" yes:auto "*":man
 
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'

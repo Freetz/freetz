@@ -2,12 +2,9 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk='';
-webenabled_chk=''; web_auth_chk='';
-
-if [ "$VNSTAT_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$VNSTAT_WEBENABLED" = "yes" ]; then webenabled_chk=' checked'; fi
-if [ "$VNSTAT_WEB_AUTH"   = "yes" ]; then web_auth_chk=' checked'; fi
+check "$VNSTAT_ENABLED" yes:auto "*":man
+check "$VNSTAT_WEBENABLED" yes:webenabled
+check "$VNSTAT_WEB_AUTH" yes:web_auth
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

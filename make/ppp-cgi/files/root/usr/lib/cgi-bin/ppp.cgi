@@ -3,16 +3,9 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; fallback_chk='';
-xXG_chk=''; o3G_chk=''; p3G_chk=''; p2G_chk=''; o2G_chk='';
-
-[ "$PPP_GMODE" = "o3G" ] && o3G_chk=' checked'
-[ "$PPP_GMODE" = "p3G" ] && p3G_chk=' checked'
-[ "$PPP_GMODE" = "p2G" ] && p2G_chk=' checked'
-[ "$PPP_GMODE" = "o2G" ] && o2G_chk=' checked'
-[ "$PPP_GMODE" = "xXG" ] && xXG_chk=' checked'
-if [ "$PPP_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-[ "$PPP_FALLBACK" = "yes" ] && fallback_chk=' checked'
+check "$PPP_GMODE" o3G p3G p2G o2G xXG
+check "$PPP_ENABLED" yes:auto "*":man
+check "$PPP_FALLBACK" yes:fallback
 
 eval "$(modcgi branding:pkg:cmd mod_cgi)"
 

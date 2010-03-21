@@ -2,46 +2,36 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; log_protoc_chk=''
-notlazym_chk=''; notlazys_chk=''; cpu100perc_chk=''
-disk_logarithm1_chk=''; disk_logarithm2_chk=''; disk_logarithm3_chk='';
-disk_logarithm4_chk=''; logarithm1_chk=''; logarithm2_chk='';
-logarithm3_chk=''; logarithm4_chk=''; xchg_rxtx1_chk=''; xchg_rxtx2_chk='';
-xchg_rxtx3_chk=''; xchg_rxtx4_chk=''; uptime_enb_chk=''; savebackup_chk='';
-thomsonthg_chk=''; thomsonadv_chk=''; webenabled_chk=''; web_auth_chk='';
-digitemp1w_chk=''; digitemp_c_chk=''; digitemp_f_chk=''; digitemp85_chk='';
-digitemp_a_chk=''; digitemp_http_chk=''; digitemp_auth_chk=''; delbackup_chk=''
-
-if [ "$RRDSTATS_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-if [ "$RRDSTATS_XCHGUPDOWN" = "yes" ]; then xchgupdown_chk=' checked'; fi
-if [ "$RRDSTATS_NOTLAZYM" = "yes" ]; then notlazym_chk=' checked'; fi
-if [ "$RRDSTATS_NOTLAZYS" = "yes" ]; then notlazys_chk=' checked'; fi
-if [ "$RRDSTATS_DISK_LOGARITHM1" = "yes" ]; then disk_logarithm1_chk=' checked'; fi
-if [ "$RRDSTATS_DISK_LOGARITHM2" = "yes" ]; then disk_logarithm2_chk=' checked'; fi
-if [ "$RRDSTATS_DISK_LOGARITHM3" = "yes" ]; then disk_logarithm3_chk=' checked'; fi
-if [ "$RRDSTATS_DISK_LOGARITHM4" = "yes" ]; then disk_logarithm4_chk=' checked'; fi
-if [ "$RRDSTATS_LOGARITHM1" = "yes" ]; then logarithm1_chk=' checked'; fi
-if [ "$RRDSTATS_LOGARITHM2" = "yes" ]; then logarithm2_chk=' checked'; fi
-if [ "$RRDSTATS_LOGARITHM3" = "yes" ]; then logarithm3_chk=' checked'; fi
-if [ "$RRDSTATS_LOGARITHM4" = "yes" ]; then logarithm4_chk=' checked'; fi
-if [ "$RRDSTATS_XCHG_RXTX1" = "yes" ]; then xchg_rxtx1_chk=' checked'; fi
-if [ "$RRDSTATS_XCHG_RXTX2" = "yes" ]; then xchg_rxtx2_chk=' checked'; fi
-if [ "$RRDSTATS_XCHG_RXTX3" = "yes" ]; then xchg_rxtx3_chk=' checked'; fi
-if [ "$RRDSTATS_XCHG_RXTX4" = "yes" ]; then xchg_rxtx4_chk=' checked'; fi
-if [ "$RRDSTATS_SAVEBACKUP" = "yes" ]; then savebackup_chk=' checked'; fi
-if [ "$RRDSTATS_DELBACKUP" = "yes" ]; then delbackup_chk=' checked'; fi
-if [ "$RRDSTATS_CPU100PERC" = "yes" ]; then cpu100perc_chk=' checked'; fi
-if [ "$RRDSTATS_UPTIME_ENB" = "yes" ]; then uptime_enb_chk=' checked'; fi
-if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then webenabled_chk=' checked'; fi
-if [ "$RRDSTATS_WEB_AUTH"   = "yes" ]; then web_auth_chk=' checked'; fi
-if [ "$RRDSTATS_THOMSONTHG" = "yes" ]; then thomsonthg_chk=' checked'; fi
-if [ "$RRDSTATS_THOMSONADV" = "yes" ]; then thomsonadv_chk=' checked'; fi
-if [ "$RRDSTATS_DIGITEMP1W" = "yes" ]; then digitemp1w_chk=' checked'; fi
-if [ "$RRDSTATS_DIGITEMP_C" = "yes" ]; then digitemp_c_chk=' checked'; else digitemp_f_chk=' checked'; fi
-if [ "$RRDSTATS_DIGITEMP85" = "yes" ]; then digitemp85_chk=' checked'; fi
-if [ "$RRDSTATS_DIGITEMP_A" = "yes" ]; then digitemp_a_chk=' checked'; fi
-if [ "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then digitemp_http_chk=' checked'; fi
-if [ "$RRDSTATS_DIGITEMP_AUTH" = "yes" ]; then digitemp_auth_chk=' checked'; fi
+check "$RRDSTATS_ENABLED" yes:auto "*":man
+check "$RRDSTATS_XCHGUPDOWN" yes:xchgupdown
+check "$RRDSTATS_NOTLAZYM" yes:notlazym
+check "$RRDSTATS_NOTLAZYS" yes:notlazys
+check "$RRDSTATS_DISK_LOGARITHM1" yes:disk_logarithm1
+check "$RRDSTATS_DISK_LOGARITHM2" yes:disk_logarithm2
+check "$RRDSTATS_DISK_LOGARITHM3" yes:disk_logarithm3
+check "$RRDSTATS_DISK_LOGARITHM4" yes:disk_logarithm4
+check "$RRDSTATS_LOGARITHM1" yes:logarithm1
+check "$RRDSTATS_LOGARITHM2" yes:logarithm2
+check "$RRDSTATS_LOGARITHM3" yes:logarithm3
+check "$RRDSTATS_LOGARITHM4" yes:logarithm4
+check "$RRDSTATS_XCHG_RXTX1" yes:xchg_rxtx1
+check "$RRDSTATS_XCHG_RXTX2" yes:xchg_rxtx2
+check "$RRDSTATS_XCHG_RXTX3" yes:xchg_rxtx3
+check "$RRDSTATS_XCHG_RXTX4" yes:xchg_rxtx4
+check "$RRDSTATS_SAVEBACKUP" yes:savebackup
+check "$RRDSTATS_DELBACKUP" yes:delbackup
+check "$RRDSTATS_CPU100PERC" yes:cpu100perc
+check "$RRDSTATS_UPTIME_ENB" yes:uptime_enb
+check "$RRDSTATS_WEBENABLED" yes:webenabled
+check "$RRDSTATS_WEB_AUTH"   yes:web_auth
+check "$RRDSTATS_THOMSONTHG" yes:thomsonthg
+check "$RRDSTATS_THOMSONADV" yes:thomsonadv
+check "$RRDSTATS_DIGITEMP1W" yes:digitemp1w
+check "$RRDSTATS_DIGITEMP_C" yes:digitemp_c "*":digitemp_f
+check "$RRDSTATS_DIGITEMP85" yes:digitemp85
+check "$RRDSTATS_DIGITEMP_A" yes:digitemp_a
+check "$RRDSTATS_DIGITEMP_HTTP" yes:digitemp_http
+check "$RRDSTATS_DIGITEMP_AUTH" yes:digitemp_auth
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

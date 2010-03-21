@@ -3,12 +3,8 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-
-case "$GW6_ENABLED" in yes) auto_chk=' checked';; *) man_chk=' checked';; esac
-
-log_chk=''
-[ "$GW6_LOGGING" = "yes" ] && log_chk=' checked'
+check "$GW6_ENABLED" yes:auto "*":man
+check "$GW6_LOGGING" yes:log
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 

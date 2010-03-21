@@ -4,11 +4,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 # radio group dis-/enable
-if [ "$USBROOT_ENABLED" == "yes" ]; then
-	e1_chk=' checked="checked"'; e2_chk=''
-else
-	e1_chk=''; e2_chk=' checked="checked"'
-fi
+check "$USBROOT_ENABLED" yes:e1 "*":e2
 # current state
 if [ "$(/etc/init.d/rc.usbroot status)" == "running" ]; then
 	cur_state="$(lang de:"Aktiviert" en:"Active")"
@@ -16,11 +12,7 @@ else
 	cur_state="$(lang de:"Inaktiv" en:"Inactive")"
 fi
 # radio group unmound old root
-if [ "$USBROOT_UNMOUNTOLDROOT" == 'yes' ]; then
-	y1_chk=' checked="checked"'; n1_chk=''
-else
-	y1_chk=''; n1_chk=' checked="checked"'
-fi
+check "$USBROOT_UNMOUNTOLDROOT" yes:y1 "*":n1
 
 # check if kernel modules are available
 for i in ext2 ext3; do

@@ -4,9 +4,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-
-if [ "$CIFSMOUNT_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+check "$CIFSMOUNT_ENABLED" yes:auto "*":man
 
 sec_begin 'Starttyp'
 

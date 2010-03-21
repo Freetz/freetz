@@ -3,19 +3,11 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk='' man_chk=''
-if [ "$SYSLOGD_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
-
-network_chk='' local_chk='' klogd_chk=''
-if [ "$SYSLOGD_NETWORK" = "yes" ]; then network_chk=' checked'; fi
-if [ "$SYSLOGD_LOCAL" = "yes" ]; then local_chk=' checked'; fi
-if [ "$SYSLOGD_KLOGD" = "yes" ]; then klogd_chk=' checked'; fi
-
-log_to_file_chk='' circular_buffer_chk='' 
-case "$SYSLOGD_LOGGING" in
-	log_to_file) log_to_file_chk=' checked' ;;
-	circular_buffer) circular_buffer_chk=' checked' ;;
-esac
+check "$SYSLOGD_ENABLED" yes:auto "*":man
+check "$SYSLOGD_NETWORK" yes:network
+check "$SYSLOGD_LOCAL" yes:local
+check "$SYSLOGD_KLOGD" yes:klogd
+check "$SYSLOGD_LOGGING" log_to_file circular_buffer
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
