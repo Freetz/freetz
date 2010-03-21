@@ -3,7 +3,7 @@
 PATH=/mod/bin:/mod/usr/bin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /etc/freetz_info.cfg
 
-let _width=$_cgi_width-236
+let _width=$_cgi_width-254
 divstyle="style='margin-top:6px;'"
 
 sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
@@ -137,7 +137,7 @@ format_conf() {
 	</table>
 	<div $divstyle><br><a href="/cgi-bin/extras.cgi/mod/do_download_config"><b>.config:</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/cgi-bin/extras.cgi/mod/do_download_config">$(lang de:"Herunterladen als Textdatei" en:"Download as text file")</a></div>
 	EOF
-	echo -n '<pre style="overflow: auto; max-height: 100px;">'
+	echo -n "<pre style='overflow: auto; width: ${_width}px; max-height: 100px;'>"
 	html < /etc/.config
 	echo '</pre>'
 	sec_end
@@ -152,7 +152,7 @@ fi
 
 if [ ! -z "$FREETZ_INFO_EXTERNAL_FILES" ]; then
 	sec_begin '$(lang de:"Ausgelagerte Dateien" en:"Externalised files")'
-		echo -n '<pre style="overflow: auto; max-height: 100px;">'
+		echo -n "<pre style='overflow: auto; width: ${_width}px; max-height: 100px;'>"
 		echo -n "$FREETZ_INFO_EXTERNAL_FILES"
 		echo '</pre>'
 	sec_end
