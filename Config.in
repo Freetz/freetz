@@ -851,15 +851,12 @@ comment "Web menu patches ------------------------"
 config FREETZ_PATCH_VCC
 	bool "Patch 2nd VCC"
 	depends on FREETZ_HAS_PHONE && \
+		FREETZ_TYPE_LANG_DE && \
 		! FREETZ_TYPE_LABOR && \
 		(FREETZ_TYPE_FON_WLAN_7141 || FREETZ_TYPE_FON_WLAN_7170)
 	default n
 	help
-		Patches the setting for 2nd VCC into web menu. This patch also replaces
-		and activates "Patch enum" feature for brandings 1und1 and tcom.
-
-		Be aware that enum section is not displayed if you switch to avm
-		branding!
+		Patches the setting for 2nd VCC into web menu.
 
 config FREETZ_PATCH_ATA
 	bool "Patch ATA"
@@ -869,14 +866,19 @@ config FREETZ_PATCH_ATA
 	help
 		Patches the ATA mode configuration pages into the web menu.
 
-config FREETZ_PATCH_ENUM
-	bool "Patch enum"
-	depends on FREETZ_HAS_PHONE && ! FREETZ_PATCH_VCC
-	default n
-	help
-		Patches the enum configuration pages into the web menu.
-		
-		Works only for OEM avm.
+#config FREETZ_PATCH_ENUM
+#	bool "Patch enum"
+#	depends on \
+#		FREETZ_HAS_PHONE && \
+#		FREETZ_TYPE_LANG_DE && \
+#		! FREETZ_PATCH_VCC && \
+#		! FREETZ_TYPE_LABOR && \
+#		! FREETZ_TYPE_FON_WLAN_7170
+#	default n
+#	help
+#		Patches the enum configuration pages into the web menu.
+#		
+#		Works only for OEM avm.
 
 config FREETZ_PATCH_DSL_EXPERT
 	bool "Patch extended DSL settings"
