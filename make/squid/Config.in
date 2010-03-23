@@ -12,8 +12,30 @@ config FREETZ_PACKAGE_SQUID
 
 config FREETZ_PACKAGE_SQUID_TRANSPARENT
 	bool "build with transparent proxy support (iptables)"
-	depends on FREETZ_PACKAGE_SQUID
+	depends on FREETZ_PACKAGE_SQUID && \
+		FREETZ_KERNEL_VERSION_2_6_19_2 && \
+		FREETZ_SHOW_ADVANCED
 	default n
+
+	# Activate group menus for modules and libs before selecting sub-entries
+	select FREETZ_SHOW_UNSTABLE_PACKAGES
+	select FREETZ_PACKAGE_IPTABLES
+	select FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+	select FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
+
+	# Kernel modules
+	select FREETZ_MODULE_ip_conntrack
+	select FREETZ_MODULE_x_tables
+	select FREETZ_MODULE_ip_nat
+	select FREETZ_MODULE_ipt_REDIRECT
+
+        # Shared libs
+	select FREETZ_LIB_libxt_standard
+	select FREETZ_LIB_libxt_tcp
+	select FREETZ_LIB_libxt_udp
+	select FREETZ_LIB_libxt_conntrack
+	select FREETZ_LIB_libipt_REDIRECT
+
 	help
 		This option enables transparent Proxy support for SQUID
 		and IPTables. Increases size of squid binary aprox. 192KB.
