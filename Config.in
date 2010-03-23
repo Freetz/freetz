@@ -72,7 +72,7 @@ choice
 		bool "Fon WLAN 7050"
 
 	config FREETZ_TYPE_FON_WLAN_7112
-		select FREETZ_AVM_VERSION_04_76
+		select FREETZ_AVM_VERSION_04_80
 		bool "Fon WLAN 7112"
 
 	config FREETZ_TYPE_FON_WLAN_7113
@@ -97,7 +97,7 @@ choice
 		select FREETZ_AVM_VERSION_04_70 if FREETZ_TYPE_LABOR_DSL
 		select FREETZ_AVM_VERSION_04_80 if ! FREETZ_TYPE_LABOR_DSL
 		bool "Fon WLAN 7170"
-	
+
 	config FREETZ_TYPE_FON_WLAN_7240
 		select FREETZ_AVM_VERSION_7270_04_80
 		bool "Fon WLAN 7240"
@@ -130,7 +130,7 @@ choice
 	config FREETZ_TYPE_WLAN_3170
 		select FREETZ_AVM_VERSION_04_57
 		bool "WLAN 3170"
-	
+
 	config FREETZ_TYPE_WLAN_3270
 		select FREETZ_AVM_VERSION_3270_04_80
 		bool "WLAN 3270 (v1 and v2 only)"
@@ -201,7 +201,7 @@ choice
 #			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
 #		select FREETZ_TARGET_IPV6_SUPPORT
 #		help
-#			FRITZ!Lab IPV6: This release adds native IPv6 over PPP 
+#			FRITZ!Lab IPV6: This release adds native IPv6 over PPP
 #			(Internet Protocol Version 6) and 6to4 tunnels.
 
 	config FREETZ_TYPE_LABOR_NAS
@@ -406,7 +406,7 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
 		! ((FREETZ_TYPE_LABOR_DSL || FREETZ_TYPE_LABOR_CORE || FREETZ_TYPE_LABOR_IPV6 || FREETZ_TYPE_LABOR_PHONE) && (FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3)) && \
-		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) 
+		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN)
 	default y
 
 config FREETZ_REPLACE_KERNEL
@@ -717,7 +717,7 @@ config FREETZ_HAS_USB_HOST
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
-		FREETZ_TYPE_SPEEDPORT_W701V_7170 
+		FREETZ_TYPE_SPEEDPORT_W701V_7170
 	help
 		Select this if your USB port is a host adapter.
 
@@ -731,7 +731,7 @@ config FREETZ_HAS_AVM_INETD
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3
 	default n
-	
+
 	help
 		Select this if your original firmware has inetd support.
 
@@ -831,7 +831,7 @@ config FREETZ_REMOVE_BRANDING_1und1
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		NOTE: Make sure not to remove the branding corresponding to the one defined
 		in your box's boot loader environment. It can be determined by calling the
 		following command from the box's shell prompt:
 
@@ -852,7 +852,7 @@ config FREETZ_REMOVE_BRANDING_avm
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		NOTE: Make sure not to remove the branding corresponding to the one defined
 		in your box's boot loader environment. It can be determined by calling the
 		following command from the box's shell prompt:
 
@@ -871,7 +871,7 @@ config FREETZ_REMOVE_BRANDING_avme
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		NOTE: Make sure not to remove the branding corresponding to the one defined
 		in your box's boot loader environment. It can be determined by calling the
 		following command from the box's shell prompt:
 
@@ -908,7 +908,7 @@ config FREETZ_REMOVE_BRANDING_aol
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		NOTE: Make sure not to remove the branding corresponding to the one defined
 		in your box's boot loader environment. It can be determined by calling the
 		following command from the box's shell prompt:
 
@@ -923,7 +923,7 @@ config FREETZ_REMOVE_BRANDING_arcor
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		NOTE: Make sure not to remove the branding corresponding to the one defined
 		in your box's boot loader environment. It can be determined by calling the
 		following command from the box's shell prompt:
 
@@ -949,7 +949,7 @@ config FREETZ_REMOVE_BRANDING_freenet
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		NOTE: Make sure not to remove the branding corresponding to the one defined
 		in your box's boot loader environment. It can be determined by calling the
 		following command from the box's shell prompt:
 
@@ -970,7 +970,7 @@ config FREETZ_REMOVE_BRANDING_freenet
 #
 #		Each branding provides the web UI templates for a certain manufacturer or OEM.
 #
-#		NOTE: Make sure not to remove the branding corresponding to the one defined 
+#		NOTE: Make sure not to remove the branding corresponding to the one defined
 #		in your box's boot loader environment. It can be determined by calling the
 #		following command from the box's shell prompt:
 #
@@ -986,7 +986,7 @@ config FREETZ_REMOVE_BRANDING_versatel
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
-		NOTE: Make sure not to remove the branding corresponding to the one defined 
+		NOTE: Make sure not to remove the branding corresponding to the one defined
 		in your box's boot loader environment. It can be determined by calling the
 		following command from the box's shell prompt:
 
@@ -1051,8 +1051,8 @@ config FREETZ_REMOVE_TR069_FWUPDATE
 		FREETZ_TYPE_WLAN_3270_V3 \
 	)
 	default n
-	help 
-		Removes the file /usr/bin/tr069fwupdate, needed for 
+	help
+		Removes the file /usr/bin/tr069fwupdate, needed for
 		updating the firmware in MT-D devices.
 
 config FREETZ_REMOVE_USB_MODULE
@@ -1105,7 +1105,7 @@ config FREETZ_PATCH_DSL_EXPERT
 		(FREETZ_TYPE_FON_WLAN_7170 || FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3)
 	default n
 	help
-		Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares. 
+		Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares.
 
 config FREETZ_PATCH_VCC
 	bool "Patch 2nd VCC"
@@ -1116,7 +1116,7 @@ config FREETZ_PATCH_VCC
 	help
 		Patches the setting for 2nd VCC into web menu. This patch also replaces
 		and activates "Patch enum" feature for brandings 1und1 and tcom.
-		
+
 		Be aware that enum section is not displayed if you switch to avm
 		branding!
 
@@ -1225,6 +1225,7 @@ config FREETZ_REMOVE_WEBSRV
 	depends on \
 		! FREETZ_TYPE_2170 \
 		&& ! FREETZ_TYPE_FON_5140 \
+		&& ! FREETZ_TYPE_FON_WLAN_7112 \
 		&& ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN ) \
 		&& ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH ) \
 		&& ! ( FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN ) \
@@ -1279,7 +1280,7 @@ config FREETZ_REMOVE_UPNP
 		        Statusinformationen über UPnP übertragen (empfohlen)
 
 config FREETZ_REMOVE_UPNP_LIBS
-	bool 
+	bool
 	depends on FREETZ_REMOVE_UPNP
 	default n
 
@@ -1302,7 +1303,7 @@ config FREETZ_REMOVE_FTPD
 	help
 		Remove FTP daemon (ftpd)
 		This patch removes AVM's ftp daemon. The regular options in AVM's Webinterface
-		are still present. If you select this item your USB drives won't be accessible 
+		are still present. If you select this item your USB drives won't be accessible
 		through ftp anymore. But you can use Freetz bftpd/vsftpd package to grant ftp
 		access to the devices.
 
@@ -1327,7 +1328,7 @@ config FREETZ_REMOVE_SMBD
 	default n
 	help
 		Remove Samba daemon (smbd)
-		This patch removes only the daemon. The regular options in AVM's webinterface 
+		This patch removes only the daemon. The regular options in AVM's webinterface
 		are still present.
 
 config FREETZ_REMOVE_MINID
@@ -1369,7 +1370,7 @@ config FREETZ_REMOVE_AURA_USB
 		) && \
 		! FREETZ_TYPE_SPEEDPORT_W701V_7170
 	help
-		Remove the aura-usb-daemon (USB-Fernanschluss) and some related files. 
+		Remove the aura-usb-daemon (USB-Fernanschluss) and some related files.
 		This patch only removes the files, not the settings in AVM's webinterface
 
 config FREETZ_REMOVE_AVM_VPN
@@ -1393,7 +1394,7 @@ config FREETZ_REMOVE_AVM_VPN
 		vpn settings. This will save about 120kB compressed size.
 
 config FREETZ_REMOVE_DSLD
-	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"	
+	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"
 	default n
 	depends on FREETZ_SHOW_ADVANCED
 	select FREETZ_REMOVE_UPNP
@@ -1410,7 +1411,7 @@ config FREETZ_REMOVE_DSLD
 		ATTENTION: You won't be able to use your box as a modem nor a router anymore.
 		As well do *not* use this option if your ATA mode box uses PPoE passthrough,
 		because in this case dsld is still needed! Furthermore, selecting this patch
-		also selects the UPnP patch, because UPnP must be deactivated anyway for 
+		also selects the UPnP patch, because UPnP must be deactivated anyway for
 		IP clients, otherwise dsld will be used again.
 		You can find the UPnP settings in the German web UI under
 		  Einstellungen
@@ -1433,7 +1434,7 @@ config FREETZ_REMOVE_CAPIOVERTCP
 		to rcapid, but independant.
 		This will save about 15kB uncompressed size.
 
-config FREETZ_REMOVE_DECT 
+config FREETZ_REMOVE_DECT
 	bool "Remove DECT files"
 	depends on \
 		FREETZ_TYPE_FON_7150 || \
@@ -1453,7 +1454,7 @@ config FREETZ_REMOVE_DECT_UPDATE
 		FREETZ_TYPE_FON_7150
 	default n
 	help
-		Remove /usr/bin/dect_update. This utility is only needed to 
+		Remove /usr/bin/dect_update. This utility is only needed to
 		update the dect firmware.
 		This will save about 32kB uncompressed size.
 
@@ -1470,7 +1471,7 @@ config FREETZ_REMOVE_DTRACE
 	default y if FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
-		Remove /usr/bin/dtrace. This utility is only needed to 
+		Remove /usr/bin/dtrace. This utility is only needed to
 		trace ISDN D-channel.
 		This will save about 87kB uncompressed size.
 
@@ -1496,6 +1497,9 @@ config FREETZ_REMOVE_VOIP_ISDN
 		FREETZ_HAS_PHONE
 	select FREETZ_REMOVE_DECT if FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
 	select FREETZ_REMOVE_VOIPD
+	select FREETZ_REMOVE_DTRACE
+	select FREETZ_REMOVE_CAPIOVERTCP
+	select FREETZ_REMOVE_MINID
 	default n
 	help
 		Radically remove a lot of telephony-related files. This patch saves about
@@ -1543,7 +1547,7 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3
-	
+
 	default n
 	help
 		Remove lib/modules/dsp_ur8/ur8-B-dsl.bin. This saves about 400 KB of
@@ -1722,7 +1726,7 @@ config FREETZ_DL_SOURCE
 											FREETZ_TYPE_LANG_EN && \
 											FREETZ_TYPE_ANNEX_B
 	default "fritz.box_fon_wlan_7050.14.04.33.image"			if	FREETZ_TYPE_FON_WLAN_7050
-	default "FRITZ.Box_Fon_WLAN_7112.87.04.76.image"			if	FREETZ_TYPE_FON_WLAN_7112
+	default "FRITZ.Box_Fon_WLAN_7112.87.04.80.image"			if	FREETZ_TYPE_FON_WLAN_7112
 	default "FRITZ.Box_Fon_WLAN_7113.60.04.68.image"			if	FREETZ_TYPE_FON_WLAN_7113
 	default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"			if	FREETZ_TYPE_FON_WLAN_7140 && \
 											FREETZ_TYPE_LANG_DE
@@ -1759,7 +1763,7 @@ config FREETZ_DL_SOURCE
 											FREETZ_TYPE_LABOR_CORE
 	default "FRITZ.Box_Fon_WLAN_7270_LabDSL.AnnexB.54.04.99-15852.image"	if	FREETZ_TYPE_FON_WLAN_7270 && \
 											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_LabIPV6.AnnexB.54.04.94-15316.image" 	if	FREETZ_TYPE_FON_WLAN_7270 && \
+	default "FRITZ.Box_Fon_WLAN_7270_16_LabIPV6.54.04.80-16608.image" 	if	FREETZ_TYPE_FON_WLAN_7270 && \
 											FREETZ_TYPE_LABOR_IPV6
 	default "FRITZ.Box_Fon_WLAN_7270_16_LabNAS.AnnexB.54.04.80-16561.image"	if	FREETZ_TYPE_FON_WLAN_7270_16MB && \
 											FREETZ_TYPE_LABOR_NAS
@@ -1772,7 +1776,7 @@ config FREETZ_DL_SOURCE
 											FREETZ_TYPE_LABOR_CORE
 	default "FRITZ.Box_Fon_WLAN_7270_v3_LabDSL.AnnexB.74.04.99-15852.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabIPV6.AnnexB.74.04.94-15316.image" if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
+	default "FRITZ.Box_Fon_WLAN_7270_v3_LabIPV6.74.04.80-16608.image" if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											FREETZ_TYPE_LABOR_IPV6
 	default "FRITZ.Box_Fon_WLAN_7270_v3_LabNAS.AnnexB.74.04.80-16561.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											FREETZ_TYPE_LABOR_NAS
@@ -1806,7 +1810,7 @@ config FREETZ_DL_SOURCE_MD5
 	default "9880d790edde44b3a75886c30f57df3e"	if	FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && \
 								FREETZ_TYPE_ANNEX_B
 	default "7fabbf13889cf66b6f2dd47fe472a265"	if	FREETZ_TYPE_FON_WLAN_7050
-	default "ca3ec6946d5e71979fc8d4e92914cb33"	if	FREETZ_TYPE_FON_WLAN_7112
+	default "98eb5eed394922c93a2a3c0d2452d941"	if	FREETZ_TYPE_FON_WLAN_7112
 	default "f5d91a5ce4d9e65a3c526211e4e5f01b"	if	FREETZ_TYPE_FON_WLAN_7113
 	default "08eeaf5239709d8582d730de2bcb10bf"	if	FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_DE
 	default "0f11ac77750c9360c249d9c1705e765e"	if	FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_A_CH
@@ -2054,14 +2058,14 @@ config FREETZ_SUBVERSION_STRING
 	help
 		Add Freetz version to subversion string, e.g. -11945-freetz-devel-2417.
 		Disable this if you have trouble with your isp or plugin downloads from
-		AVM don't work. 
-		
+		AVM don't work.
+
 		Please only disable this option if you really need to!
 
 config FREETZ_DEVELOPER_VERSION_STRING
 	bool "Developer version string"
 	depends on FREETZ_SUBVERSION_STRING
-	default n 
+	default n
 	help
 		Add SVN (Subversion) repository revision number to firmware image name
 		and to /etc/.subversion, /etc/version within firmware itself.
@@ -2097,7 +2101,7 @@ config FREETZ_AVMPLUGINS_ENABLED
 
 menu "Plugin selection"
 	depends on FREETZ_AVMPLUGINS_ENABLED
-	
+
 	comment "Select plugin(s) for insertion"
 
 	config FREETZ_AVMPLUGINS_MEDIASRV
@@ -2164,10 +2168,10 @@ config EXTERNAL_ENABLED
 		-------------------------- WARNING ----------------------------------
 		Move all the files from build/modified/external to your choosen
 		directory on the box BEFORE you flash the reduced image!
-		
+
 		-------------------------- WARNING ----------------------------------
 		Do NOT external files needed to boot up Freetz!
-		
+
 		------------------------- ADVANCED ----------------------------------
 		You could external services (like Samba) too. First set the service
 		startup to "manual". Then enable the autorun/autoend feature of
@@ -2182,7 +2186,7 @@ config EXTERNAL_DOWNLOADER
 	default n
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_DOWNLOADER
 	help
-		Prepare files for Downloader package. 
+		Prepare files for Downloader package.
 		Downloader loads usualy files from a http or ftp server into the RAM of the box.
 
 config EXTERNAL_SUBDIRS
@@ -2360,9 +2364,9 @@ menu "Shared libraries"
 		help
 			Recompiles all the shared libraries to only include the
 			symbols actually needed to run the binaries on the target.
-			
+
 			Caution: Because symbols are different in every AVM image
-			you have to update the list of missing symbols in fwmod 
+			you have to update the list of missing symbols in fwmod
 			by hand.
 
 			EXPERIMENTAL FEATURE, USE AT OWN RISK!
