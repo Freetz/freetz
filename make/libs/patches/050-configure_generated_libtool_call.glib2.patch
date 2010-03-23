@@ -1,0 +1,22 @@
+--- configure
++++ configure
+@@ -34655,9 +34655,6 @@
+ 	LDFLAGS_orig="$LDFLAGS"
+ 	LIBS="$G_MODULE_LIBS $LIBS"
+ 	LDFLAGS="$LDFLAGS $G_MODULE_LDFLAGS"
+-	echo "void glib_plugin_test(void) { }" > plugin.c
+-	${SHELL} ./libtool --mode=compile ${CC} -shared \
+-		-export-dynamic -o plugin.o plugin.c 2>&1 >/dev/null
+ 	{ $as_echo "$as_me:$LINENO: checking for RTLD_GLOBAL brokenness" >&5
+ $as_echo_n "checking for RTLD_GLOBAL brokenness... " >&6; }
+ if test "${glib_cv_rtldglobal_broken+set}" = set; then
+@@ -34667,6 +34664,9 @@
+ 		if test "$cross_compiling" = yes; then
+   glib_cv_rtldglobal_broken=no
+ else
++	echo "void glib_plugin_test(void) { }" > plugin.c
++	${SHELL} ./libtool --mode=compile ${CC} -shared \
++		-export-dynamic -o plugin.o plugin.c 2>&1 >/dev/null
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+ _ACEOF
