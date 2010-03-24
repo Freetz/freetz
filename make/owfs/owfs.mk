@@ -13,10 +13,10 @@ $(PKG)_LIBS_BUILD_DIR := $(OWFS_LIBNAMES:%=$($(PKG)_DIR)/module/owlib/$(OWFS_LIB
 $(PKG)_LIBS_TARGET_DIR := $(OWFS_LIBNAMES:%=$($(PKG)_DEST_LIBDIR)/%-$(OWFS_LIB_SUFFIX))
 
 # Binaries
-$(PKG)_BINARIES_ALL := owdir owfs owftpd owhttpd owpresent owread owwrite
-$(PKG)_BINARIES_ALL_PATH := owdir .libs/owfs .libs/owftpd .libs/owhttpd owpresent owread owwrite
+$(PKG)_BINARIES_ALL := owserver owfs owftpd owhttpd owpresent owdir owread owwrite
+$(PKG)_BINARIES_ALL_PATH := .libs/owserver .libs/owfs .libs/owftpd .libs/owhttpd owpresent owdir owread owwrite
 $(PKG)_BINARY_BUILD_SUBDIR := src/c
-$(PKG)_BINARIES_SUBDIRS := owshell owfs owftpd owhttpd owshell owshell owshell
+$(PKG)_BINARIES_SUBDIRS := owserver owfs owftpd owhttpd owshell owshell owshell owshell
 $(PKG)_BINARIES := $($(PKG)_BINARIES_ALL)
 $(PKG)_BINARIES_BUILD_DIR := $(join $(OWFS_BINARIES_SUBDIRS:%=$($(PKG)_DIR)/module/%/$(OWFS_BINARY_BUILD_SUBDIR)/),$(OWFS_BINARIES_ALL_PATH:%=%))
 $(PKG)_BINARIES_TARGET_DIR := $(OWFS_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
