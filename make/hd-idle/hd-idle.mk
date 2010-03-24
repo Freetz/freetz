@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.99)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://freetz.falkenhain.info
+$(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_SOURCE_FILE:=$($(PKG)_DIR)/hd-idle.c
 $(PKG)_BINARY:=$($(PKG)_DIR)/hd-idle
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/hd-idle
