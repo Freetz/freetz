@@ -1,5 +1,5 @@
 
-echo1 "Patching /bin/onlinechanged"
+echo1 "patching /bin/onlinechanged"
 
 rm -f "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 

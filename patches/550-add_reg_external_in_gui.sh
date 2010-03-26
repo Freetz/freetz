@@ -4,7 +4,6 @@ echo1 "adding GUI switch to set reg_from_outside"
 DIRSS2PATCH=$(find ${FILESYSTEM_MOD_DIR}/usr/www/ -name fon_config)
 if  [ $DIRSS2PATCH ]; then
 	for dir in $DIRSS2PATCH; do
-	 	echo1 " -- Patching settings in $dir:"
 		modsed  '/id="uiPostIPPhoneExtNumber"/ a<Input type="hidden" name="voipextension:settings/extension<? echo $var:DeviceIsdnPort ?>/reg_from_outside" value="" id="uiPostIPPhoneExtRegFromOutside" disabled>' ${dir}/fon_config_End.frm
 		modsed  '/jslEnable("uiPostIPPhoneExtNumber")/ ajslCopyValue( "uiPostIPPhoneExtRegFromOutside", "uiIPPhoneExtRegFromOutside"); jslEnable("uiPostIPPhoneExtRegFromOutside");' ${dir}/fon_config_End.js
 		modsed  '/id="uiShowOutgoingMsn"/ i<? if eq "$var:TechType" "IPPHONE" ` \n<tr><td class="c1"><span >reg_from_outside</span></td>\n<td class="c2">\n<? if eq "$var:IPPhoneExtRegFromOutside" "1"\n`\nyes\n` `\nno\n` ?>\n</td></tr>\n` ?>' ${dir}/fon_config_End.html

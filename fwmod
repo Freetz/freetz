@@ -298,14 +298,14 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	find "${FILESYSTEM_DIR}" -maxdepth 1 -type d -exec chmod +rx {} ';'
 
 	if [ -r "$AVMPLUGINS" ]; then
-		echo "unpacking AVM plugins"
+		echo0 "unpacking AVM plugins"
 		mkdir -p "$AVMPLUGINS_DIR"
 		"$UNTAR" -xf "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
 
 		for i in "${AVMPLUGINS_DIR}/var/"*.image; do
 			AVMPLUGIN="${i##*/plugin-}"
 			AVMPLUGIN="${AVMPLUGIN%\.image}"
-			echo1 "$AVMPLUGIN image"
+			echo2 "$AVMPLUGIN image"
 			modunsqfs "$AVMPLUGINS_DIR/plugin-${AVMPLUGIN}" "$i" > /dev/null
 		done
 		chmod -R +w "$AVMPLUGINS_DIR"
@@ -325,7 +325,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	# Unpacking second firmware image
 	if [ -n "$FIRMWARE2" ]; then
-		echo "unpacking tk image"
+		echo0 "unpacking tk image"
 		rm -rf "${DIR}/.tk"
 		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" > /dev/null
 	fi
@@ -376,7 +376,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	"$TAR" -c -C "$ORG_DIR" --exclude=./filesystem/dev . | "$TAR" -x -C "$MOD_DIR" || exit 1
 
 	if [ -d "${FILESYSTEM_MOD_DIR}/usr/www/avm" ]; then
-		echo1 "Applying symlinks, deleting additional webinterfaces"
+		echo0 "applying symlinks, deleting additional webinterfaces"
 		mv ${FILESYSTEM_MOD_DIR}/usr/www/avm ${FILESYSTEM_MOD_DIR}/usr/www/all
 		oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
 		for i in $oems; do
@@ -385,7 +385,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 	fi
 
-	echo "applying patches"
+	echo0 "applying patches"
 
 	echo1 "applying patches (${FREETZ_TYPE_STRING}-${FREETZ_TYPE_LANG_STRING})"
 
@@ -548,14 +548,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Copy selected avmplugins into the firmware
 	if [ "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
-		echo "installing AVM plugins"
+		echo0 "installing AVM plugins"
 		echo "#" > ${FILESYSTEM_MOD_DIR}/sbin/start_plugin.sh
 		rm -rf ${FIRMWARE_MOD_DIR}/${AVMPLUGINS_FILE}
 		mkdir "${AVMPLUGINS_FILESYSTEM_MOD_DIR}"
 		for i in `find "${AVMPLUGINS_MOD_DIR}" -maxdepth 1 -type d -name var -prune -false , -type d -name "plugin-*"`; do
 			AVMPLUGIN="${i##*plugin-}"
 			if [ "$(eval "echo \"\$FREETZ_AVMPLUGINS_$(echo "$AVMPLUGIN" | tr [:lower:] [:upper:])\"")" == "y" ]; then
-				echo1 "$AVMPLUGIN plugin"
+				echo2 "$AVMPLUGIN plugin"
 				cp -a "${AVMPLUGINS_MOD_DIR}/plugin-${AVMPLUGIN}" "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}"
 				ln -s "/usr/share/avmplugins/plugin-${AVMPLUGIN}" "${VARTAR_MOD_DIR}/var/plugin-${AVMPLUGIN}"
 				for module in `cd "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}";find -type f -name "*.ko"`; do
@@ -696,7 +696,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	if [ "$FREETZ_REPLACE_BUSYBOX" == "y" ]; then
-		echo "replacing busybox"
+		echo0 "replacing busybox"
 
 		echo1 "replacing busybox-${FREETZ_TARGET_REF}"
 
@@ -748,7 +748,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" ]; then
-		echo "replacing kernel"
+		echo0 "replacing kernel"
 
 		if [ ! -r "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" ]; then
 			error 1 "can't find kernel for ref ${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
@@ -758,7 +758,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
 	fi	
 
-	echo1 "installing modules"
+	echo0 "installing modules"
 	# 7270 modules dir is 2.6.19.2 not 2.6.19.2-ur8
 	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
 	for i in \
@@ -788,7 +788,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo -e "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko\nkernel/drivers/char/audio/avm_audio.ko:\n" >> $MODULES_DIR/modules.dep
 	fi
 
-	echo "installing packages"
+	echo0 "installing packages"
 	
 	for pkg in $(static_packages); do
 		echo1 "${pkg}"
@@ -943,47 +943,47 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Remove /etc/init.d/rc.ftpd
 	if [ "$FREETZ_PATCH_RCFTPD" == "y" ]; then
 		if [ -e "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" ]; then
-			echo "Starter script rc.ftpd for AVM-FTPD was integrated into image"
+			echo1 "starter script rc.ftpd for AVM-FTPD was integrated into image"
 		fi
 	else
 		if [ -w "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" ]; then
-			rm "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" && echo "Starter script rc.ftpd for AVM-FTPD was not integrated into image"
+			rm "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" && echo1 "Starter script rc.ftpd for AVM-FTPD was not integrated into image"
 		fi
 	fi
 	
 	# Remove /usr/lib/libmodmount.sh
 	if [ "$FREETZ_PATCH_FREETZMOUNT" == "y" ]; then
 		if [ -e "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" ]; then
-			echo "libmodmount.sh was integrated into image"
+			echo1 "libmodmount.sh was integrated into image"
 		fi
 	else
 		if [ -w "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" ]; then
-			rm "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" && echo "libmodmount.sh was not integrated into image"
+			rm "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" && echo1 "libmodmount.sh was not integrated into image"
 		fi
 	fi
 	
 	# Remove BOX-Info
 	if [ "$FREETZ_REMOVE_BOX_INFO" == "y" ]; then
-		echo "removing BOX-Info cgis from image"
+		echo1 "removing BOX-Info cgis from image"
 		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/box_info.cgi"
 	else
-		echo "BOX-Info cgi is integrated into image"
+		echo1 "BOX-Info cgi is integrated into image"
 	fi
 	
 	# Remove FREETZ-Info
 	if [ "$FREETZ_REMOVE_FREETZ_INFO" == "y" ]; then
-		echo "removing FREETZ-Info cgis from image"
+		echo1 "removing FREETZ-Info cgis from image"
 		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/info.cgi"
 		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/do_download_config.cgi"
 	else
-		echo "FREETZ-Info cgis are integrated into image"
+		echo1 "FREETZ-Info cgis are integrated into image"
 	fi
 	
 	# Packing .config into image
 	if [ "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
-		echo ".config file was not integrated into image"
+		echo1 ".config file was not integrated into image"
 	else
-		echo "integrating stripped .config file into image"
+		echo1 "integrating stripped .config file into image"
 		dot_config_file="$MOD_DIR/filesystem/etc/.config"
 		cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
 	fi
@@ -991,7 +991,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo0 "stripping leftover unstripped binaries"
 	for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' \) \
 		\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS32.*not stripped.*|\1|p'`; do
-		echo1 $i
+		echo2 $i
  		${ABS_BASE_DIR}/toolchain/target/bin/mipsel-linux-uclibc-strip --remove-section={.comment,.note,.pdr} $i
 	done
 
@@ -1000,7 +1000,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	if [ "$DO_PACK" -gt 0 ]; then
 		if [ "$EXTERNAL_ENABLED" == "y" ]; then
-			echo "processing external"
+			echo0 "processing external"
 			[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
 			. "${EXTERNAL}"
 		fi
@@ -1042,7 +1042,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	# Remove left over Subversion directories
-	echo1 "Checking for left over Subversion directories"
+	echo1 "checking for left over Subversion directories"
 	find "$MOD_DIR" -type d -name .svn | xargs rm -rf
 
 	# Delete all files that we are going to re-create now
@@ -1084,7 +1084,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	modimage="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.image"
 	
 	# Create freetz-info
-	echo "integrate freetz info file into image"
+	echo1 "integrate freetz info file into image"
 	freetz_info_file="$MOD_DIR/filesystem/etc/freetz_info.cfg"
 	echo "export FREETZ_INFO_BOXTYPE='${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}'" > "$freetz_info_file"
 	echo "export FREETZ_INFO_FIRMWAREVERSION='${FIRMWAREVERSION}'" >> "$freetz_info_file"
@@ -1101,7 +1101,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo "export FREETZ_INFO_EXTERNAL_FILES='${externalised_files}'" >> "$freetz_info_file"
 
 	# Pack var.tar (use old tar for compatibility)
-	echo "packing var.tar"
+	echo0 "packing var.tar"
 	"$TAR" -c -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
 
 	if [ ! -s "$VARTAR_MOD" ]; then
@@ -1112,7 +1112,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "cannot find $MKSQUASHFS_TOOL"
 	fi
 
-	echo "creating filesystem image"
+	echo0 "creating filesystem image"
 	$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
 	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
@@ -1120,7 +1120,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "creation of filesystem failed"
 	fi
 
-	echo "merging kernel image"
+	echo0 "merging kernel image"
 	dd if="$RAW_KERNEL_MOD" of="$KERNEL_MOD" bs=256 conv=sync 2> /dev/null
 	cat "$FILESYSTEM_MOD" >> "$KERNEL_MOD"
 
@@ -1175,7 +1175,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
 	# Pack firmware image (use old tar for compatibility)
-	echo "packing ${modimage}"
+	echo0 "packing ${modimage}"
 	"$TAR" -c -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
 
 	if [ ! -s "${DIR}/${modimage}" ]; then
@@ -1194,12 +1194,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 	fi
 	if [ -s "${DIR}/${modimage}" ]; then
-		echo "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
+		echo0 "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
 		if [ "$FREETZ_REPLACE_SSL_LIBS" == "y" ]; then
 			[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://trac.freetz.org/wiki/FAQ#NachdemFlashenistdasAVM-Webinterfacenichtmehrerreichbar for details."
 		fi
 	fi
-	echo "done."
+	echo0 "done."
 	echo
 
 	echo "${BOLD}FINISHED${NORM}"
