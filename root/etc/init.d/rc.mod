@@ -57,10 +57,8 @@ start() {
 
 modreg_file() {
 	local file=$1 sec_level=$2 
-	local basename=${file//./_} flash=/tmp/flash/mod
-    	local deffile="/etc/default.mod/$basename.def"
-	[ -r "$flash/$basename.def" ] && deffile="$flash/$basename.def"
-	modreg file "Freetz__$basename" "Freetz: $file" "$sec_level" "$deffile"
+	local basename=${file//./_}
+	modreg file mod "$basename" "Freetz: $file" "$sec_level" "$basename"
 }
 
 register() {

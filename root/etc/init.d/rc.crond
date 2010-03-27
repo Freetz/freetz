@@ -41,9 +41,7 @@ stop() {
 case "$1" in
 	""|load)
 		[ -r /tmp/flash/crontab.save ] && mv /tmp/flash/crontab.save /tmp/flash/mod/crontab
-		deffile='/etc/default.mod/crontab.def'
-		[ -r "/tmp/flash/mod/crontab.def" ] && deffile='/tmp/flash/mod/crontab.def'
-		modreg file 'Freetz__crontab' 'Freetz: crontab' 0 "$deffile"
+		modreg file mod crontab 'Freetz: crontab' 0 "crontab"
 
 		if [ "$MOD_CROND" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -54,7 +52,7 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'Freetz__crontab'
+		modunreg file mod crontab
 		;;
 	start)
 		start

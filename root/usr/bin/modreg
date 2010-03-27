@@ -4,7 +4,8 @@
 #
 # Usage: modreg cgi <pkg> <title>
 #        modreg extra <pkg> <title> <sec-level> <cgi-name>
-#        modreg file <id> <title> <sec-level> <desc-file>
+#        modreg file <pkg> <id> <title> <sec-level> <desc-file>
+#        DEPRECATED: modreg file <id> <title> <sec-level> <desc-file>
 #        modreg status <pkg> <title> [<cgi-name>]
 #        modreg daemon [--disable] [--hide] [--rc-script <script>] [--name <name>] [--parent <pkg>] <pkg>
 
@@ -19,13 +20,14 @@ replace() {
 usage() {
 	echo "Usage: $1 cgi <pkg> <title>" 1>&2
 	echo "       $1 extra <pkg> <title> <sec-level> <cgi-name>" 1>&2
-	echo "       $1 file <id> <title> <sec-level> <desc-file>" 1>&2
+	echo "       $1 file <pkg> <id> <title> <sec-level> <desc-file>" 1>&2
+	echo "       DEPRECATED: $1 file <id> <title> <sec-level> <desc-file>" 1>&2
 	echo "       $1 status <pkg> <title> [<cgi-name>]" 1>&2
 	echo "       $1 daemon [-d|--disable] [-h|--hide] [-r|--rc-script=<script>] [-n|--name=<name>] [-p|--parent=<parent_pkg>] <pkg>" 1>&2
 	exit 1
 }
 
-case "$1" in
+case $1 in
 	cgi)
 		replace "^$2|" /mod/etc/reg/cgi.reg "$2|$3"
 		rm -f /mod/var/cache/menu_packages
@@ -35,7 +37,44 @@ case "$1" in
 		rm -f /mod/var/cache/extras
 		;;
 	file)
-		replace "^$2|" /mod/etc/reg/file.reg "$2|$3|$4|$5"
+		if [ $# -lt 6 ]; then
+			echo "$0 file $2: Registration without <pkg> argument is deprecated. Please switch to the new style. See /usr/bin/modreg for more details." >&2
+			replace "^$2|" /mod/etc/reg/file.reg "$2|$3|$4|$5"
+		else
+			pkg=$2 id=$3 title=$4 sec_level=$5 desc=$6
+#
+# With the new style of registering files, each file is associated with a
+# package explicitly. Hence, $id needs only be unique within a package. 
+#
+# This style has the following advantages:
+#  1. All files of a package can be unregistered at once: modunreg $pkg
+#  2. Files may be grouped/associated with a package in the Web interface
+#     (not done yet)
+#  3. We can derive the default locations of the description files:
+#     /mod/etc/default.$pkg/ and /tmp/flash/$pkg/
+#
+# For the time being, we keep the old storage format. That's why we synthesize
+# an oldstyle ID from $pkg and $id and store that.
+# 
+# If $desc is an absolute path it is taken as it is (previous behaviour).
+# A relative path chooses from the default description file or the
+# overriding version at the standard locations. The resulting path is stored.
+#
+# For the time being, $title may include a human-readable package name. Later,
+# this information ought to be retrieved from a package registration file.
+#
+			oldstyle_id="${pkg}__$id"
+			case $desc in
+			    /*) deffile=$desc ;;
+			    *)
+				deffile="/tmp/flash/$pkg/$desc.def"
+				if [ ! -r "$deffile" ]; then
+				    deffile="/mod/etc/default.$pkg/$desc.def"
+				fi
+				;;
+			esac
+			replace "^$oldstyle_id|" /mod/etc/reg/file.reg "$oldstyle_id|$title|$sec_level|$deffile"
+		fi
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
