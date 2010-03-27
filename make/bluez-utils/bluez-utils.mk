@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN,2.25)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=ae3729ab5592be06ed01b973d4b3e9fe
-$(PKG)_SITE:=http://bluez.sourceforge.net/download
+$(PKG)_SITE:=@SF/bluez
 
 $(PKG)_BIN_BINARIES:=dund pand rfcomm l2ping sdptool
 $(PKG)_BIN_BINARIES_BUILD_DIR:=$(addprefix $($(PKG)_DIR)/,$(join dund/ pand/ rfcomm/ tools/ tools/,$($(PKG)_BIN_BINARIES)))

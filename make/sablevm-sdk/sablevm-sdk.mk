@@ -1,6 +1,8 @@
 $(call PKG_INIT_BIN, 1.13)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/sablevm
+$(PKG)_SOURCE_MD5:=18a7c1a92b0748a206f9767a76a6b3bb
+$(PKG)_SITE:=@SF/sablevm
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/sablevm/src/sablevm/.libs/sablevm
 $(PKG)_LIB_CLASSPATH_MINI:=$($(PKG)_DIR)/sablevm-classpath/lib/mini.jar
 $(PKG)_LIB_CLASSPATH_ORIG:=$($(PKG)_DIR)/sablevm-classpath/lib/mini.jar
@@ -11,7 +13,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sablevm
 $(PKG)_LIB_TARGET_CLASSPATH:=$($(PKG)_DEST_DIR)/usr/share/sablevm-classpath/libclasspath.jar
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libsablevm-$($(PKG)_VERSION).so
 $(PKG)_LIB_TARGET_CLASSPATH_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sablevm-classpath/libjavaio-$($(PKG)_VERSION).so
-$(PKG)_SOURCE_MD5:=18a7c1a92b0748a206f9767a76a6b3bb
 
 $(PKG)_DEPENDS_ON := libtool popt zlib
 
