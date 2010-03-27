@@ -27,7 +27,7 @@ case "$1" in
 		;;
 	file)
 		delete "^$2|" /mod/etc/reg/file.reg # deprecated
-		delete "^${2}_${3:-[^|]*}|" /mod/etc/reg/file.reg
+		delete "^${2}__${3:-[^|]*}|" /mod/etc/reg/file.reg
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
