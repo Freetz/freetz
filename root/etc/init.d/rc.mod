@@ -16,7 +16,7 @@ start() {
 
 	[ -d /tmp/flash ] || /usr/bin/modload
 
-	[ -r /tmp/flash/mod/resolv.conf ] || cat /var/tmp/resolv.conf>/tmp/flash/mod/resolv.conf
+	[ -r /tmp/flash/mod/resolv.conf ] || cat /var/tmp/resolv.conf > /tmp/flash/mod/resolv.conf
 
 	/etc/init.d/rc.crond
 	/etc/init.d/rc.telnetd
@@ -34,15 +34,15 @@ start() {
 	
 	## Store 'clean' environment for later use (skipping IFS)
 	if [ ! -e /var/env.cache ]; then
-		set | grep -v "IFS="|grep "^[A-Z]"|sed "s/\(.*\)/export \1/" > /var/env.cache
+		set | sed -n "/^IFS=/ d; /^[A-Z]/ s/.*/export &/p" > /var/env.cache
 	fi
 
 	# AVM-Plugins
-	plugins="`ls /var/plugin-*/control 2>/dev/null`"
+	plugins=$(ls /var/plugin-*/control 2>/dev/null)
 	if [ -n "$plugins" ]; then
 		echo -n "Starting AVM-Plugins"
 		for plugin in $plugins; do
-			echo -n "...`echo $plugin|sed 's/.*plugin-//;s/\/.*//'`"
+			echo -n "...$(echo $plugin|sed 's/.*plugin-//;s/\/.*//')"
 			$plugin start >/dev/null 2>&1
 			[ $? -ne 0 ] && echo -n "(failed)"
 		done
@@ -55,35 +55,31 @@ start() {
 	/etc/init.d/rc.swap
 }
 
-case "$1" in
+modreg_file() {
+	local file=$1 sec_level=$2 
+	local basename=${file//./_} flash=/tmp/flash/mod
+    	local deffile="/etc/default.mod/$basename.def"
+	[ -r "$flash/$basename.def" ] && deffile="$flash/$basename.def"
+	modreg file "Freetz__$basename" "Freetz: $file" "$sec_level" "$deffile"
+}
+
+register() {
+	modreg_file  .profile    0
+	modreg_file  hosts       1
+	modreg_file  modules     0
+	modreg_file  resolv.conf 0
+	modreg_file  rc.custom   0
+
+	[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
+	modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' mod/logs
+	[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
+	[ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ] && modreg status BOXinfo 'BOX$(lang de:"-Info" en:" info")' mod/box_info
+	[ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ] && modreg status FREETZinfo 'FREETZ$(lang de:"-Info" en:" info")' mod/info
+}
+
+case $1 in
 	"")
-
-		deffile='/etc/default.mod/_profile.def'
-		[ -r /tmp/flash/mod/_profile.def ] && deffile='/tmp/flash/mod/_profile.def'
-		modreg file 'Freetz___profile' 'Freetz: .profile' 0 "$deffile"
-
-		deffile='/etc/default.mod/hosts.def'
-		[ -r /tmp/flash/mod/hosts.def ] && deffile='/tmp/flash/mod/hosts.def'
-		modreg file 'Freetz__hosts' 'Freetz: hosts' 1 "$deffile"
-
-		deffile='/etc/default.mod/modules.def'
-		[ -r /tmp/flash/mod/modules.def ] && deffile='/tmp/flash/mod/modules.def'
-		modreg file 'Freetz__modules' 'Freetz: modules' 0 "$deffile"
-
-		deffile='/etc/default.mod/resolv_conf.def'
-		[ -r /tmp/flash/mod/resolv_conf.def ] && deffile='/tmp/flash/mod/resolv_conf.def'
-		modreg file 'Freetz__resolv_conf' 'Freetz: resolv.conf' 0 "$deffile"
-
-		deffile='/etc/default.mod/rc_custom.def'
-		[ -r /tmp/flash/mod/rc_custom.def ] && deffile='/tmp/flash/mod/rc_custom.def'
-		modreg file 'Freetz__rc_custom' 'Freetz: rc.custom' 0 "$deffile"
-
-		[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
-		modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' mod/logs
-		[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
-		[ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ] && modreg status BOXinfo 'BOX$(lang de:"-Info" en:" info")' mod/box_info
-		[ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ] && modreg status FREETZinfo 'FREETZ$(lang de:"-Info" en:" info")' mod/info
-
+		register
 		start
 		;;
 	start)
