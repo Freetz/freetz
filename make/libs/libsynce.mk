@@ -1,7 +1,9 @@
 $(call PKG_INIT_LIB, 0.10.0)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=synce-$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=e46c72219bff559f4bb1615613671942
 $(PKG)_SITE:=@SF/synce
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
