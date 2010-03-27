@@ -202,7 +202,7 @@ PKG_FIX_LIBTOOL_LA = sed -i -r $(foreach key,libdir includedir prefix exec_prefi
 PKG_FIX_RUNPATH_VAR__INT = -e "s|(runpath_var=)[$$$$]runpath_var|\1|g"
 #
 # Replace hardcode_into_libs=something with hardcode_into_libs=no
-PKG_FIX_HARDCODE_INTO_LIBS__INT = -e "s|(hardcode_into_libs)=.+$$$$|\1=no|g"
+PKG_FIX_HARDCODE_INTO_LIBS__INT = -e "s|(hardcode_into_libs=).+$$$$|\1no|g"
 #
 # In all lines matching the pattern hardcode_libdir_flag_spec[_A-Za-z0-9]*=
 # replace
@@ -212,9 +212,23 @@ PKG_FIX_HARDCODE_INTO_LIBS__INT = -e "s|(hardcode_into_libs)=.+$$$$|\1=no|g"
 #   ${wl}--rpath ${wl}$libdir
 # with
 #   -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__
-PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT = -e '/hardcode_libdir_flag_spec[_A-Za-z0-9]*=/s/[$$$$][{]wl[}]-?-rpath(,| [$$$$][{]wl[}])[$$$$]libdir/ -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__ /g'
+PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT1 = -e '/hardcode_libdir_flag_spec[_A-Za-z0-9]*=/s/[$$$$][{]wl[}]-?-rpath(,| [$$$$][{]wl[}])[$$$$]libdir/-D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__/g'
+# Replace
+#   hardcode_libdir_flag_spec(_ld)?=$lt_hardcode_libdir_flag_spec...
+#   or
+#   hardcode_libdir_flag_spec(_ld)?=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec..., $1)
+# with
+#   hardcode_libdir_flag_spec(_ld)?=
+PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT2 = -e 's/(hardcode_libdir_flag_spec(_ld)?=)[$$$$]lt_([[][]]_LT_AC_TAGVAR[(])?hardcode_libdir_flag_spec[_A-Za-z0-9]*(, *[$$$$]1[)])?/\1/g'
 #
-PKG_PREVENT_RPATH_HARDCODING__INT = cp -a $1 $1.before_rpath_fix; $(SED) -i -r $(PKG_FIX_RUNPATH_VAR__INT) $(PKG_FIX_HARDCODE_INTO_LIBS__INT) $(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT) $1;
+PKG_PREVENT_RPATH_HARDCODING__INT = \
+	cp -a $1 $1.before_rpath_fix; \
+	$(SED) -i -r \
+		$(PKG_FIX_RUNPATH_VAR__INT) \
+		$(PKG_FIX_HARDCODE_INTO_LIBS__INT) \
+		$(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT1) \
+		$(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT2) \
+	$1;
 PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODING__INT,$(f)))
 
 # Change prefix of all ac_cv_* variables in $1 to $(pkg).
