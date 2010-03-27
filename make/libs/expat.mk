@@ -1,11 +1,12 @@
 $(call PKG_INIT_LIB, 2.0.1)
 $(PKG)_LIB_VERSION:=1.5.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://mesh.dl.sourceforge.net/sourceforge/expat
+$(PKG)_SOURCE_MD5:=ee8b492592568805593f81f8cdf2a04c
+$(PKG)_SITE:=@SF/expat
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libexpat.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libexpat.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=ee8b492592568805593f81f8cdf2a04c
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

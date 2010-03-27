@@ -1,11 +1,12 @@
 $(call PKG_INIT_LIB, 2.25)
 $(PKG)_LIB_VERSION:=1.0.25
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://bluez.sourceforge.net/download
+$(PKG)_SOURCE_MD5:=ebc8408c9a74c785786a2ef7185fe628
+$(PKG)_SITE:=@SF/bluez
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libbluetooth.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libbluetooth.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libbluetooth.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=ebc8408c9a74c785786a2ef7185fe628
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

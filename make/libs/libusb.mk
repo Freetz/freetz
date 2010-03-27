@@ -2,11 +2,12 @@ $(call PKG_INIT_LIB, 0.1.12)
 $(PKG)_SHORT_VERSION:=0.1
 $(PKG)_LIB_VERSION:=4.4.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://prdownloads.sourceforge.net/libusb
+$(PKG)_SOURCE_MD5:=caf182cbc7565dac0fd72155919672e6
+$(PKG)_SITE:=@SF/$(pkg)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$(pkg)-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg)-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg)-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=caf182cbc7565dac0fd72155919672e6
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -20,7 +21,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(LIBUSB_DIR) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb.la \
@@ -36,7 +37,8 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBUSB_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config \
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/includes/usb*.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.pc
