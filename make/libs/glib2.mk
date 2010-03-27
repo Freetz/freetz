@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 2.20.5)
-$(PKG)_LIB_VERSION:=0.2000.5
+$(call PKG_INIT_LIB, 2.22.5)
+$(PKG)_LIB_VERSION:=0.2200.5
 $(PKG)_MAJOR_VERSION:=2.0
 $(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=4c178b91d82ef80a2da3c26b772569c0
-$(PKG)_SITE:=ftp://ftp.gtk.org/pub/glib/2.20
+$(PKG)_SOURCE_MD5:=63413f704c2b07d6e81469b25cff5e60
+$(PKG)_SITE:=ftp://ftp.gtk.org/pub/glib/2.22
 $(PKG)_DIR:=$(SOURCE_DIR)/glib-$($(PKG)_VERSION)
 
 $(PKG)_LIBNAMES_SHORT := glib gobject gmodule gthread gio
@@ -43,7 +43,10 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-mem-pools
 $(PKG)_CONFIGURE_OPTIONS += --disable-rebuilds
 $(PKG)_CONFIGURE_OPTIONS += --with-threads=posix
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc
+$(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc-html
+$(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc-pdf
 $(PKG)_CONFIGURE_OPTIONS += --disable-man
+$(PKG)_CONFIGURE_OPTIONS += --disable-fam
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre=system
 
 $(call REPLACE_LIBTOOL)
@@ -64,7 +67,8 @@ $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 		$(GLIB2_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%-$(GLIB2_MAJOR_VERSION).la) \
 		$(GLIB2_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/%-$(GLIB2_MAJOR_VERSION).pc) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gmodule-no-export-$(GLIB2_MAJOR_VERSION).pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gmodule-export-$(GLIB2_MAJOR_VERSION).pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gmodule-export-$(GLIB2_MAJOR_VERSION).pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gio-unix-$(GLIB2_MAJOR_VERSION).pc
 
 $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_DIR)/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
 	$(INSTALL_LIBRARY_STRIP)
