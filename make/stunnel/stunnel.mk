@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN,4.28)
+$(call PKG_INIT_BIN,4.32)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.stunnel.org/download/stunnel/src
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 $(PKG)_STARTLEVEL=30
-$(PKG)_SOURCE_MD5:=5bf753a042047f40a938e82ec7ece569
+$(PKG)_SOURCE_MD5:=72379c615c5a4986c7981d0941ed2e6b
 
 $(PKG)_DEPENDS_ON := openssl zlib
 

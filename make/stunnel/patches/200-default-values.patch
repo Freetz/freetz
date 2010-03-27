@@ -1,24 +1,24 @@
---- src/options.c.orig	2009-04-16 08:49:20.000000000 +0000
-+++ src/options.c	2009-06-06 14:46:30.000000000 +0000
-@@ -285,7 +285,7 @@
+--- src/options.c.orig	2010-03-23 15:58:34.000000000 +0100
++++ src/options.c	2010-03-27 23:56:30.000000000 +0100
+@@ -290,7 +290,7 @@
  #ifndef USE_WIN32
      switch(cmd) {
      case CMD_INIT:
--        options.pidfile=PIDFILE;
-+        options.pidfile="/var/run/stunnel.pid";
+-        new_global_options.pidfile=PIDFILE;
++        new_global_options.pidfile="/var/run/stunnel.pid";
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "pid"))
-@@ -296,7 +296,7 @@
-             options.pidfile=NULL; /* empty -> do not create a pid file */
+@@ -301,7 +301,7 @@
+             new_global_options.pidfile=NULL; /* empty -> do not create a pid file */
          return NULL; /* OK */
      case CMD_DEFAULT:
--        s_log(LOG_RAW, "%-15s = %s", "pid", PIDFILE);
-+        s_log(LOG_RAW, "%-15s = %s", "pid", "/var/run/stunnel.pid");
+-        s_log(LOG_NOTICE, "%-15s = %s", "pid", PIDFILE);
++        s_log(LOG_NOTICE, "%-15s = %s", "pid", "/var/run/stunnel.pid");
          break;
      case CMD_HELP:
-         s_log(LOG_RAW, "%-15s = pid file (empty to disable creating)", "pid");
-@@ -606,7 +606,7 @@
+         s_log(LOG_NOTICE, "%-15s = pid file (empty to disable creating)", "pid");
+@@ -613,7 +613,7 @@
      switch(cmd) {
      case CMD_INIT:
  #ifdef CONFDIR
@@ -27,7 +27,7 @@
  #else
          section->cert="stunnel.pem";
  #endif
-@@ -866,7 +866,7 @@
+@@ -882,7 +882,7 @@
      /* key */
      switch(cmd) {
      case CMD_INIT:
@@ -36,12 +36,12 @@
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "key"))
-@@ -1396,7 +1396,7 @@
- 
- void parse_config(char *name, char *parameter) {
+@@ -1409,7 +1409,7 @@
+ void parse_commandline(char *name, char *parameter) {
+     if(!name)
  #ifdef CONFDIR
--    char *default_config_file=CONFDIR CONFSEPARATOR "stunnel.conf";
-+    char *default_config_file="/mod/etc/stunnel.conf";
+-        name=CONFDIR CONFSEPARATOR "stunnel.conf";
++        name="/mod/etc/stunnel.conf";
  #else
-     char *default_config_file="stunnel.conf";
+         name="stunnel.conf";
  #endif
