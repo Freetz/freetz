@@ -59,15 +59,19 @@
  
 --- src/ctx.c	2010-01-29 11:38:40.000000000 +0100
 +++ src/ctx.c	2010-03-28 01:16:11.000000000 +0100
-@@ -399,14 +399,19 @@
-         return 1;
-     i2d_SSL_SESSION(sess, &val_tmp);
+@@ -390,6 +390,7 @@
+ #define CACHE_RESP_OK     0x81
  
+ static int sess_new_cb(SSL *ssl, SSL_SESSION *sess) {
 +#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+     unsigned char *val, *val_tmp;
+     int val_len;
+ 
+@@ -402,11 +403,15 @@
      cache_transfer(ssl->ctx, CACHE_CMD_NEW, SSL_SESSION_get_timeout(sess),
          sess->session_id, sess->session_id_length, val, val_len, NULL, NULL);
-+#endif
      free(val);
++#endif
      return 1; /* leave the session in local cache for reuse */
  }
  
