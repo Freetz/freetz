@@ -3,9 +3,10 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=72379c615c5a4986c7981d0941ed2e6b
 $(PKG)_SITE:=http://www.stunnel.org/download/stunnel/src
 
+$(PKG)_STARTLEVEL=30
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
-$(PKG)_STARTLEVEL=30
 
 $(PKG)_DEPENDS_ON := zlib
 ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_USE_CYASSL)),y)
@@ -20,6 +21,10 @@ endif
 ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_STATIC)),y)
 $(PKG)_LDFLAGS := -all-static
 endif
+
+$(PKG)_CONFIGURE_ENV += ac_cv_file___dev_ptmx_=yes
+$(PKG)_CONFIGURE_ENV += ac_cv_file___dev_ptc_=no
+$(PKG)_CONFIGURE_ENV += ac_cv_file___dev_urandom_=yes
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-libwrap
 #$(PKG)_CONFIGURE_OPTIONS += --with-threads=fork
