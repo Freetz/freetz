@@ -135,7 +135,7 @@ format_conf() {
 	cat <<- EOF
 	</tr>
 	</table>
-	<div $divstyle><br><a href="/cgi-bin/extras.cgi/mod/do_download_config"><b>.config:</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/cgi-bin/extras.cgi/mod/do_download_config">$(lang de:"Herunterladen als Textdatei" en:"Download as text file")</a></div>
+	<div $divstyle><br><a href="$(href extra mod do_download_config)"><b>.config:</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="$(href extra mod do_download_config)">$(lang de:"Herunterladen als Textdatei" en:"Download as text file")</a></div>
 	EOF
 	echo -n "<pre style='overflow: auto; width: ${_width}px; max-height: 100px;'>"
 	html < /etc/.config

@@ -20,7 +20,7 @@ sec_begin '$(lang de:"Anzeigen" en:"Show statistics")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/pkgstatus.cgi?pkg=vnstat&cgi=vnstat/stats">$(lang de:"Statistiken anzeigen" en:"Show statistics")</a></li>
+<li><a href="$(href status vnstat stats)">$(lang de:"Statistiken anzeigen" en:"Show statistics")</a></li>
 EOF
 
 sec_end

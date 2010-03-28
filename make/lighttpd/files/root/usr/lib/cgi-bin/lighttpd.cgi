@@ -277,7 +277,7 @@ sec_end
 sec_begin '$(lang de:"Server Logdateien" en:"Server log files")'
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Bitte beachte, dass die Logdateien wertvollen RAM Speicher belegen falls das Standardverzeichnis f&uuml;r die Logdateien verwendet wird (siehe unten). Nutze das Logging nur f&uuml;r Fehlersuche und schalten es f&uuml;r den normalen Betrieb ab." en:"Please note that the log files use precious RAM memory if the standard directory for the log files is used (see below). Use logging only for debugging and disable it for regular operation.")</p>
-<p style="font-size:10px;"><a href="/cgi-bin/pkgstatus.cgi?pkg=lighttpd&cgi=lighttpd/lighttpd-log">$(lang de:"Logdateien anzeigen" en:"Show logfiles")</a></p>
+<p style="font-size:10px;"><a href="$(href status lighttpd lighttpd-log)">$(lang de:"Logdateien anzeigen" en:"Show logfiles")</a></p>
 EOF
 
 cat << EOF

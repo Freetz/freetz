@@ -24,7 +24,7 @@ sec_begin '$(lang de:"Anzeigen" en:"Extra")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/pkgstatus.cgi?pkg=syslogd&cgi=syslogd/log">$(lang de:"Logdatei/Ringpuffer" en:"Log viewer")</a></li>
+<li><a href="$(href status syslogd log)">$(lang de:"Logdatei/Ringpuffer" en:"Log viewer")</a></li>
 </ul>
 EOF
 sec_end

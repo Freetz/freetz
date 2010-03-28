@@ -47,12 +47,12 @@ sec_begin '$(lang de:"Anzeigen" en:"Show statistics")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/pkgstatus.cgi?pkg=rrdstats&cgi=rrdstats/stats">$(lang de:"Statistiken anzeigen" en:"Show statistics")</a></li>
+<li><a href="$(href status rrdstats stats)">$(lang de:"Statistiken anzeigen" en:"Show statistics")</a></li>
 EOF
 
 if [ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
 cat << EOF
-<li><a href="/cgi-bin/pkgstatus.cgi?pkg=rrdstats&cgi=rrdstats/rrddt">$(lang de:"DigiTemp anzeigen" en:"Show DigiTemp")</a></li>
+<li><a href="$(href status rrdstats rrddt)">$(lang de:"DigiTemp anzeigen" en:"Show DigiTemp")</a></li>
 EOF
 fi
 
@@ -324,7 +324,7 @@ $(lang de:"Aktiviere Alarmierungs&uuml;berwachung" en:"Activate alert observer")
 </p>
 
 <p>
-<input type="button" value="DigiTemp initialisieren" onclick="if (confirm('$(lang de:"Fortfahren?" en:"Proceed?")')==true) window.open('/cgi-bin/pkgstatus.cgi?pkg=rrdstats&cgi=rrdstats/dt-init','Initialisieren_von_DigiTemp','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes');" /> &nbsp;&nbsp;
+<input type="button" value="DigiTemp initialisieren" onclick="if (confirm('$(lang de:"Fortfahren?" en:"Proceed?")')==true) window.open('$(href status rrdstats dt-init)','Initialisieren_von_DigiTemp','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes');" /> &nbsp;&nbsp;
 <br><font size="-2">$(lang de:"Vor dem ersten Aktivieren oder nach Ver&auml;nderungen der Ger&auml;te ausf&uuml;hren" en:"Run this before the first start of if you change your devices")</font>
 
 EOF

@@ -69,10 +69,10 @@ register() {
 	modreg_file  rc.custom   0
 
 	[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
-	modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' mod/logs
-	[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
-	[ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ] && modreg status BOXinfo 'BOX$(lang de:"-Info" en:" info")' mod/box_info
-	[ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ] && modreg status FREETZinfo 'FREETZ$(lang de:"-Info" en:" info")' mod/info
+	modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' logs
+	[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mounted
+	[ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ] && modreg status mod 'BOX$(lang de:"-Info" en:" info")' box_info
+	[ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ] && modreg status mod 'FREETZ$(lang de:"-Info" en:" info")' info
 }
 
 case $1 in

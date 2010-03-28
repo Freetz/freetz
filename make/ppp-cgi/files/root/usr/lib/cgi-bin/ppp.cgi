@@ -33,7 +33,7 @@ sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 cat << EOF
 <p>
 $(lang de:"Allgemeine Logdatei" en:"Global logfile"):&nbsp;<input type="text" name="logfile" size="45" maxlength="255" value="$(html "$PPP_LOGFILE")">
-&nbsp;<a href="/cgi-bin/pkgstatus.cgi?pkg=ppp&cgi=ppp/ppplog">$(lang de:"(anzeigen)" en:"(show)")</a>
+&nbsp;<a href="$(href status ppp ppplog)">$(lang de:"(anzeigen)" en:"(show)")</a>
 </p>
 <p>
 $(lang de:"Dieses Skript vor Verbindungsaufbau ausf&uuml;hren" en:"Execute this script before dialin"):&nbsp;&nbsp;
@@ -99,7 +99,7 @@ Vorsicht! Dieses Feature ist experimentell und darf nur nach sorgf&auml;ltiger P
 </p>
 <p>
 $(lang de:"Logdatei von Fallback" en:"Fallback-logfile"):&nbsp;<input type="text" name="fabalog" size="45" maxlength="255" value="$(html "$PPP_FABALOG")">
-&nbsp;<a href="/cgi-bin/pkgstatus.cgi?pkg=ppp&cgi=ppp/ppplog">$(lang de:"(anzeigen)" en:"(show)")</a>
+&nbsp;<a href="$(href status ppp ppplog)">$(lang de:"(anzeigen)" en:"(show)")</a>
 </p>
 <p>
 $(lang de:"Internetverbindung in diesem Intervall pr&uuml;fen" en:"Check connection in this intervall"):&nbsp;

@@ -65,6 +65,6 @@ cat << EOF
 <input type="text" id="logfile" name="logfile" size="55" maxlength="255" value="$(html "$SUBVERSION_LOGFILE")">
 </p>
 <br/>
-<p style="font-size:10px;"><a href="/cgi-bin/pkgstatus.cgi?pkg=subversion&cgi=subversion/subversion-log">$(lang de:"Logdatei anzeigen" en:"Show log-file")</a></p>
+<p style="font-size:10px;"><a href="$(href status subversion subversion-log)">$(lang de:"Logdatei anzeigen" en:"Show log-file")</a></p>
 EOF
 sec_end

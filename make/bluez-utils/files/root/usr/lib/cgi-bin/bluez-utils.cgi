@@ -29,11 +29,11 @@ sec_begin 'General'
 
 cat << EOF
 <p>
-<a href="extras.cgi/bluez-utils/bluez-utils-help">Show Bluez-Utils Help</a>
+<a href="$(href extra bluez-utils bluez-utils-help)">Show Bluez-Utils Help</a>
 </p>
 <p>
 MAC: <input type="text" name="mac" size="20" maxlength="20" value="$(html "$BLUEZ_UTILS_MAC")"> 
-<a href="extras.cgi/bluez-utils/bluez-utils-help#macaddr">Show MAC</a>
+<a href="$(href extra bluez-utils bluez-utils-help)#macaddr">Show MAC</a>
 </p>
 <p>
 PIN: <input type="text" name="pin" size="20" maxlength="20" value="$(html "$BLUEZ_UTILS_PIN")">
@@ -42,7 +42,7 @@ PIN: <input type="text" name="pin" size="20" maxlength="20" value="$(html "$BLUE
 Use linkkeys-files to save pairing:
 <input id="use_linkkeys_1" type="radio" name="use_linkkeys" value="yes"$use_linkkeys_yes_chk><label for="use_linkkeys_1"> yes</label>
 <input id="use_linkkeys_2" type="radio" name="use_linkkeys" value="no"$use_linkkeys_no_chk><label for="use_linkkeys_2"> no</label>
-<a href="extras.cgi/bluez-utils/bluez-utils-help#linkkeys"> - Show pairings</a><br>
+<a href="$(href extra bluez-utils bluez-utils-help)#linkkeys"> - Show pairings</a><br>
 </p>
 EOF
 sec_end

@@ -16,7 +16,7 @@ start() {
 	echo -n 'Starting syslogd...'
 
 	if [ "$SYSLOGD_LOCAL" = "yes" ]; then
-		modreg status $DAEMON 'Syslog' syslogd/log
+		modreg status $DAEMON 'Syslog' log
 
 		SYSLOGD_OPTIONS="-L"
 
@@ -86,7 +86,7 @@ stop () {
 	echo -n 'Stopping syslogd...'
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
-	modunreg status $DAEMON syslogd/log
+	modunreg status $DAEMON log
 
 	rm -f /mod/etc/$DAEMON.conf
 	

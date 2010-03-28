@@ -25,7 +25,7 @@ sec_begin '$(lang de:"Bekannte Hosts" en:"Known hosts")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=Freetz__hosts">$(lang de:"Hosts bearbeiten" en:"Edit hosts")</a></li>
+<li><a href="$(href file mod hosts)">$(lang de:"Hosts bearbeiten" en:"Edit hosts")</a></li>
 </ul>
 <p style="font-size:10px;">($(lang de:"alle Eintr&auml;ge, die eine g&uuml;ltige MAC-Adresse aufweisen" en:"all items with a valid MAC address"))</p>
 EOF

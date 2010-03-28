@@ -108,7 +108,7 @@ cat << EOF
 </td>
 
 <td>
-<form class="btn" action="/cgi-bin/pkgstatus.cgi?pkg=ppp&cgi=ppp/ppplog" method="post" style="display:inline;">
+<form class="btn" action="$(href status ppp ppplog)" method="post" style="display:inline;">
 <input type="hidden" name="cmd" value="refresh">
 <input type="submit" value="$(lang de:"aktualisieren" en:"refresh")">
 </form>

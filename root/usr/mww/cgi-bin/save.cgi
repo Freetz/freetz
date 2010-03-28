@@ -42,12 +42,12 @@ apply_changes() {
 		start_stop webcfg "$3"
 		start_stop swap "$4"
 		. /mod/etc/conf/mod.cfg
-		modunreg status mod mod/mounted
-		modunreg status BOXinfo mod/box_info
-		modunreg status FREETZinfo mod/info
-		[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mod/mounted
-		[ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ] && modreg status BOXinfo 'BOX$(lang de:"-Info" en:" info")' mod/box_info
-		[ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ] && modreg status FREETZinfo 'FREETZ$(lang de:"-Info" en:" info")' mod/info
+		modunreg status mod mounted
+		modunreg status mod box_info
+		modunreg status mod info
+		[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mounted
+		[ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ] && modreg status mod 'BOX$(lang de:"-Info" en:" info")' box_info
+		[ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ] && modreg status mod 'FREETZ$(lang de:"-Info" en:" info")' info
 	else
 		start_stop "$1" "$2"
 	fi

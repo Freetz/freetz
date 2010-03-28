@@ -24,7 +24,7 @@ cleanup() {
 status_log() {
 	if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
 		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ "$(has_mod accesslog)" = "yes" -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
-			modreg status lighttpd lighttpd-log lighttpd/lighttpd-log
+			modreg status lighttpd lighttpd-log lighttpd-log
 		fi
 	fi
 }

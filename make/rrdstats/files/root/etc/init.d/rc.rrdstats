@@ -86,13 +86,13 @@ stop_webserver() {
 }
 
 show_digitemp() {
-	modunreg status rrdstats rrdstats/rrddt
+	modunreg status rrdstats rrddt
 	modunreg file 'rrdstats_dt-conf'
 	modunreg file 'rrdstats_dt-alias'
 	modunreg file 'rrdstats_dt-group'
 	modunreg file 'rrdstats_dt-alert'
 	if [ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP1W" = yes ]; then
-		modreg status rrdstats DigiTemp rrdstats/rrddt
+		modreg status rrdstats DigiTemp rrddt
 		deffile='/mod/etc/default.rrdstats/dt-conf.def'
 		[ -r "/tmp/flash/rrdstats/dt-conf.def" ] && deffile='/tmp/flash/rrdstats/dt-conf.def'
 		modreg file 'rrdstats_dt-conf' 'RRDstats: dt-conf' 0 "$deffile"
@@ -158,7 +158,7 @@ case "$1" in
 		;;
 	""|load)
 		modreg cgi rrdstats RRDstats
-		modreg status rrdstats RRDstats rrdstats/stats
+		modreg status rrdstats RRDstats stats
 		config
 		if [ "$RRDSTATS_ENABLED" != yes ]; then
 			echo "rrdstats is disabled" 1>&2
@@ -168,8 +168,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg status rrdstats rrdstats/rrddt
-		modunreg status rrdstats rrdstats/stats
+		modunreg status rrdstats rrddt
+		modunreg status rrdstats stats
 		modunreg cgi rrdstats
 		modunreg file 'rrdstats_dt-alias'
 		modunreg file 'rrdstats_dt-conf'

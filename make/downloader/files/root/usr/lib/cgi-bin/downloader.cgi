@@ -20,7 +20,7 @@ cat << EOF
 <p>
 <input type="hidden" name="debug" value="no">
 <input id="s1" type="checkbox" name="debug" value="yes"$debug_chk><label for="s1"> $(lang de:"mit Debug-Ausgaben" en:"with debug output")</label>
-&nbsp;&nbsp; ( in <a href="/cgi-bin/extras.cgi/downloader/downlog">/var/log/downloader.log</a> )
+&nbsp;&nbsp; ( in <a href="$(href extra downloader downlog)">/var/log/downloader.log</a> )
 </p>
 EOF
 
@@ -91,10 +91,10 @@ sec_begin 'Extras'
 cat << EOF
 <ul>
 <li>
-<a href="/cgi-bin/extras.cgi/downloader/downremover">$(lang de:"Heruntergeladene Dateien löschen" en:"Remove downloaded files")</a>
+<a href="$(href extra downloader downremover)">$(lang de:"Heruntergeladene Dateien löschen" en:"Remove downloaded files")</a>
 </li>
 <li>
-<a href="/cgi-bin/extras.cgi/downloader/downlog">$(lang de:"Protokoll ansehen" en:"View log file")</a>
+<a href="$(href extra downloader downlog)">$(lang de:"Protokoll ansehen" en:"View log file")</a>
 </li>
 </ul>
 EOF

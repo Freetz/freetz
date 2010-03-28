@@ -62,6 +62,26 @@ _cgi_id() {
 	esac
 }
 
+#
+# Generate Freetz-internal links to registered components; returns an
+# absolute-path reference, which has already been HTML-escaped
+#
+# href file <pkg> <id>
+# href extra <pkg> <cgi-name>
+# href status <pkg> [<cgi-name>]
+# href cgi <pkg>
+#
+href() {
+    	local type=$1
+	case $type in
+	    file)	echo "/cgi-bin/file.cgi?id=${2}__${3}" ;;
+	    extra)	echo "/cgi-bin/extras.cgi/${2}/${3}" ;;
+	    status)	echo "/cgi-bin/pkgstatus.cgi?cgi=${2}/${3:-status}" ;;
+	    cgi)	echo "/cgi-bin/pkgconf.cgi?pkg=$2" ;;
+	    *)		echo "/error/unknown-type?$type" ;;
+	esac
+}
+
 _cgi_menu() {
 local sub=$1
 cat << EOF
@@ -73,7 +93,7 @@ if [ "$sub" = "status" -a -r /mod/etc/reg/status.reg ]; then
     	local pkg title cgi
 	echo "<ul>"
 	while IFS='|' read -r pkg title cgi; do
-		echo "<li><a id='$(_cgi_id "status_$cgi")' href='/cgi-bin/pkgstatus.cgi?cgi=$cgi'>$(html "$title")</a></li>"
+		echo "<li><a id='$(_cgi_id "status_$pkg/$cgi")' href='$(href status "$pkg" "$cgi")'>$(html "$title")</a></li>"
 	done < /mod/etc/reg/status.reg 
 	echo "</ul>"
 fi
@@ -102,7 +122,7 @@ if [ "$sub" = "packages" -a -r /mod/etc/reg/cgi.reg ]; then
     	local pkg title
 	echo "<ul>"
 	while IFS='|' read -r pkg title; do
-		echo "<li><a id='$(_cgi_id "pkg_$pkg")' href='/cgi-bin/pkgconf.cgi?pkg=$pkg'>$(html "$title")</a></li>"
+		echo "<li><a id='$(_cgi_id "pkg_$pkg")' href='$(href cgi "$pkg")'>$(html "$title")</a></li>"
 	done < /mod/etc/reg/cgi.reg 
 	echo "</ul>"
 fi

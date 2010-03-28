@@ -26,7 +26,7 @@ logfileOptions() {
 	if [ "$SUBVERSION_LOGGING" = "yes" -a -n "$SUBVERSION_LOGFILE" ]; then
 		[ ! -f "$SUBVERSION_LOGFILE" ] && touch "$SUBVERSION_LOGFILE" >/dev/null 2>&1
 		if [ -f "$SUBVERSION_LOGFILE" ] && chown $DAEMON_USER:$DAEMON_GROUP "$SUBVERSION_LOGFILE" >/dev/null 2>&1; then
-			modreg status subversion Subversion-Log subversion/subversion-log >/dev/null 2>&1
+			modreg status subversion Subversion-Log subversion-log >/dev/null 2>&1
 			echo -n "--log-file $SUBVERSION_LOGFILE"
 		fi
 	fi

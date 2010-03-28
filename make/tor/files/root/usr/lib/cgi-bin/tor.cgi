@@ -87,7 +87,7 @@ cat << EOF
 EOF
 if [ -x /etc/init.d/rc.avm-firewall ]; then
 cat << EOF
-<li>$(lang de:"Lokale Portfreigaben einrichten" en:"Edit local port-forwarding"): <a href="/cgi-bin/pkgconf.cgi?pkg=avm-firewall">$(lang de:"hier klicken" en:"click here")</a></li>
+<li>$(lang de:"Lokale Portfreigaben einrichten" en:"Edit local port-forwarding"): <a href="$(href cgi avm-firewall)">$(lang de:"hier klicken" en:"click here")</a></li>
 EOF
 fi
 sec_end

@@ -44,7 +44,7 @@ sec_begin '$(lang de:"Anzeigen" en:"Show")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/pkgstatus.cgi?pkg=vsftpd&cgi=vsftpd/vsftpd_log">$(lang de:"Logdatei anzeigen" en:"Show logfile")</a></li>
+<li><a href="$(href status vsftpd vsftpd_log)">$(lang de:"Logdatei anzeigen" en:"Show logfile")</a></li>
 </ul>
 EOF
 

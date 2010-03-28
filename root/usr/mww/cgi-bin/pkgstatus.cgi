@@ -3,19 +3,21 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-cgi=$(cgi_param cgi | tr -d .)
+_cgi=$(cgi_param cgi | tr -d .)
+pkg=${_cgi%%/*}
+cgi=${_cgi#*/}
 
 OIFS=$IFS; IFS='|'
-set -- $(grep "|$cgi\$" /mod/etc/reg/status.reg)
+set -- $(grep "^$pkg|.*|$cgi\$" /mod/etc/reg/status.reg)
 IFS=$OIFS
-package=$1
+title=$2
 
-cgi_begin "$package" "status_$cgi"
+cgi_begin "$title" "status_$pkg/$cgi"
 
-if [ -x "/mod/usr/lib/cgi-bin/$cgi.cgi" ]; then
-	. "/mod/usr/lib/cgi-bin/$cgi.cgi"
+if [ -x "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi" ]; then
+	. "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi"
 else
-	echo "<p><b>$(lang de:"Fehler" en:"Error"):</b> $(lang de:"Kein Skript f&uuml;r die Statusanzeige" en:"no script for status display") '$cgi'.</p>"
+	echo "<p><b>$(lang de:"Fehler" en:"Error"):</b> $(lang de:"Kein Skript f&uuml;r die Statusanzeige" en:"no script for status display") '$pkg/$cgi'.</p>"
 fi
 
 cgi_end

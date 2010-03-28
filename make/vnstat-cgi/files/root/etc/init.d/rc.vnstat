@@ -99,7 +99,7 @@ case "$1" in
 		[ -r /tmp/flash/vnstat/vnstat_conf.def ] && deffile=/tmp/flash/vnstat/vnstat_conf.def
 		modreg file "vnstat_conf" 'vnstat: vnstat.conf' 1 $deffile
 		modreg cgi vnstat vnstat
-		modreg status vnstat vnstat vnstat/stats
+		modreg status vnstat vnstat stats
 
 		config
 		if [ "$VNSTAT_ENABLED" != yes ]; then
@@ -110,7 +110,7 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg status vnstat vnstat/stats
+		modunreg status vnstat stats
 		modunreg cgi vnstat
 		modunreg file "vnstat_conf"
 		;;

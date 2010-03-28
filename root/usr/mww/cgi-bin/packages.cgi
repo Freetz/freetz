@@ -14,7 +14,7 @@ echo '<ul>'
 
 if [ -r /mod/etc/reg/cgi.reg ]; then
 	cat /mod/etc/reg/cgi.reg | while IFS='|' read -r pkg title; do
-		echo "<li><a href=\"/cgi-bin/pkgconf.cgi?pkg=$pkg\">$title</a></li>"
+		echo "<li><a href=\"$(href cgi "$pkg")\">$title</a></li>"
 	done
 fi
 

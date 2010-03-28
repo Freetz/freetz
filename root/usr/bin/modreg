@@ -27,6 +27,11 @@ usage() {
 	exit 1
 }
 
+#
+# For 'extra' and 'status', <cgi-name> is relative to
+# /mod/usr/lib/cgi-bin/$pkg/ and without the .cgi extension!
+#
+
 case $1 in
 	cgi)
 		replace "^$2|" /mod/etc/reg/cgi.reg "$2|$3"
@@ -78,7 +83,7 @@ case $1 in
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
-		cgi=${4:-$2-status.cgi}
+		cgi=${4:-status}
 		replace "^$2|.*|$cgi\$" /mod/etc/reg/status.reg "$2|$3|$cgi"
 		rm -f /mod/var/cache/menu_status
 		;;
