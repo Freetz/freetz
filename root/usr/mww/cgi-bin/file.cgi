@@ -8,12 +8,13 @@ file_reg=/mod/etc/reg/file.reg
 
 id=$(cgi_param id | tr -d .)
 
-cgi_begin "$id" "file_$id"
-
 OIFS=$IFS
 IFS='|'
 set -- $(grep "^$id|" "$file_reg")
 IFS=$OIFS
+
+cgi_begin "$2" "file_$id"
+
 
 # Defaults
 TEXT_ROWS=18
