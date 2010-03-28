@@ -107,6 +107,7 @@ comment "SSL ------------------------------------"
 
 config FREETZ_LIB_libcyassl
 	bool "CyaSSL (libcyassl.so)"
+	select FREETZ_LIB_libm
 	select FREETZ_LIB_libz
 	default n
 	help
@@ -115,12 +116,6 @@ config FREETZ_LIB_libcyassl
 		and an SSL server implementation. yaSSL supports multiple API's, including
 		those defined by SSL and TLS. yaSSL also supports an OpenSSL compatibility
 		interface.
-
-		In Freetz, currently no package depends on CyaSSL, but the OpenSSL
-		compatibility interface might one day enable us to port applications like
-		Stunnel or even OpenVPN (maybe a bit too ambitious, but who knows?) to this
-		lightweight SSL library. The testsuite runs fine on the target system,
-		I (kriegaex) tried it.
 
 config FREETZ_LIB_libmatrixssl
 	bool "MatrixSSL (libmatrixssl.so)"
