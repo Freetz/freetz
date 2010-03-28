@@ -21,11 +21,19 @@ config FREETZ_PACKAGE_LIGHTTPD
 config FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_LIGHTTPD
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_LIGHTTPD_USE_CYASSL
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_LIGHTTPD_USE_CYASSL
 	default n
 	help
 		This option enables SSL support for lighttpd.
+
+config FREETZ_PACKAGE_LIGHTTPD_USE_CYASSL
+	bool "Use cyassl instead of openssl"
+	depends on FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
+	select FREETZ_LIB_libcyassl
+	default n
+	help
+		Use lightweight cyassl as SSL library.
 
 config FREETZ_PACKAGE_LIGHTTPD_LDD
 	bool "Include LDD support"

@@ -1,0 +1,147 @@
+--- configure	2010-02-07 21:05:45.000000000 +0100
++++ configure	2010-03-28 15:52:13.000000000 +0200
+@@ -12818,51 +12818,24 @@
+ done
+ 
+     OLDLIBS="$LIBS"
+-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BIO_f_base64 in -lcrypto" >&5
+-$as_echo_n "checking for BIO_f_base64 in -lcrypto... " >&6; }
+-if test "${ac_cv_lib_crypto_BIO_f_base64+set}" = set; then :
+-  $as_echo_n "(cached) " >&6
+-else
+-  ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lcrypto  $LIBS"
+-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-/* Override any GCC internal prototype to avoid an error.
+-   Use char because int might match the return type of a GCC
+-   builtin and then its argument prototype would still apply.  */
+-#ifdef __cplusplus
+-extern "C"
+-#endif
+-char BIO_f_base64 ();
+-int
+-main ()
+-{
+-return BIO_f_base64 ();
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_crypto_BIO_f_base64=yes
+-else
+-  ac_cv_lib_crypto_BIO_f_base64=no
+-fi
+-rm -f core conftest.err conftest.$ac_objext \
+-    conftest$ac_exeext conftest.$ac_ext
+-LIBS=$ac_check_lib_save_LIBS
+-fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_BIO_f_base64" >&5
+-$as_echo "$ac_cv_lib_crypto_BIO_f_base64" >&6; }
+-if test "x$ac_cv_lib_crypto_BIO_f_base64" = x""yes; then :
+-
+-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -lssl" >&5
+-$as_echo_n "checking for SSL_new in -lssl... " >&6; }
+-if test "${ac_cv_lib_ssl_SSL_new+set}" = set; then :
++    if [ -n "$OPENSSL_ALTERNATIVE" ]; then
++	SSL_NEW_LIB="$OPENSSL_ALTERNATIVE"
++	SSL_NEW_EXTRALIBS="$OPENSSL_ALTERNATIVE_EXTRALIBS"
++	CPPFLAGS="$CPPFLAGS -DUSE_OPENSSL_ALTERNATIVE=$OPENSSL_ALTERNATIVE"
++    else
++	SSL_NEW_LIB="ssl"
++	SSL_NEW_EXTRALIBS="-lcrypto"
++    fi
++# NB: Lighttpd doesn't call the BIO_f_base64 function at all. So the test for it is actually unnecessary.
++#     That's the reason we removed it. This also makes it possible to use alternative ssl implementations
++#     which do not provide this function.
++      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -l${SSL_NEW_LIB}" >&5
++$as_echo_n "checking for SSL_new in -l${SSL_NEW_LIB}... " >&6; }
++if test "$(eval echo \${ac_cv_lib_${SSL_NEW_LIB}_SSL_new+set})" = set; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lssl  -lcrypto "$DL_LIB"  $LIBS"
++LIBS="-l${SSL_NEW_LIB} ${SSL_NEW_EXTRALIBS} "$DL_LIB"  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -12882,25 +12855,24 @@
+ }
+ _ACEOF
+ if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_ssl_SSL_new=yes
++  eval ac_cv_lib_${SSL_NEW_LIB}_SSL_new=yes
+ else
+-  ac_cv_lib_ssl_SSL_new=no
++  eval ac_cv_lib_${SSL_NEW_LIB}_SSL_new=no
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ LIBS=$ac_check_lib_save_LIBS
+ fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_new" >&5
+-$as_echo "$ac_cv_lib_ssl_SSL_new" >&6; }
+-if test "x$ac_cv_lib_ssl_SSL_new" = x""yes; then :
+-   SSL_LIB="-lssl -lcrypto"
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $(eval echo \$ac_cv_lib_${SSL_NEW_LIB}_SSL_new)" >&5
++$as_echo "$(eval echo \$ac_cv_lib_${SSL_NEW_LIB}_SSL_new)" >&6; }
++if test "x$(eval echo \$ac_cv_lib_${SSL_NEW_LIB}_SSL_new)" = x""yes; then :
++   SSL_LIB="-l${SSL_NEW_LIB} ${SSL_NEW_EXTRALIBS}"
+ 
+ $as_echo "#define HAVE_LIBSSL /**/" >>confdefs.h
+ 
+ fi
+ 
+ 
+-fi
+ 
+     LIBS="$OLDLIBS"
+ 
+--- src/network.c	2010-02-02 00:28:20.000000000 +0100
++++ src/network.c	2010-03-28 15:58:21.000000000 +0200
+@@ -541,6 +541,15 @@
+ 			}
+ 		}
+ 
++#if (defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
++#	warning client verification is not available when linking against cyassl
++		if (s->ssl_verifyclient) {
++			log_error_write(
++				srv, __FILE__, __LINE__, "s",
++				"SSL: ssl.verifyclient feature is not available when lighttpd is linked against cyassl"
++			);
++		}
++#else
+ 		if (!buffer_is_empty(s->ssl_ca_file)) {
+ 			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
+ 				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
+@@ -572,6 +581,7 @@
+ 				"SSL: You specified ssl.verifyclient.activate but no ca_file"
+ 			);
+ 		}
++#endif
+ 
+ 		if (SSL_CTX_use_certificate_file(s->ssl_ctx, s->ssl_pemfile->ptr, SSL_FILETYPE_PEM) < 0) {
+ 			log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
+--- src/response.c	2010-02-02 00:28:20.000000000 +0100
++++ src/response.c	2010-03-28 15:57:26.000000000 +0200
+@@ -133,6 +133,9 @@
+ 
+ #ifdef USE_OPENSSL
+ static void https_add_ssl_entries(connection *con) {
++#if (defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
++#	warning client verification is not available when linking against cyassl
++#else
+ 	X509 *xs;
+ 	X509_NAME *xn;
+ 	X509_NAME_ENTRY *xe;
+@@ -198,6 +201,7 @@
+ 		}
+ 	}
+ 	X509_free(xs);
++#endif
+ }
+ #endif
+ 
