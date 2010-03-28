@@ -11,6 +11,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 $(PKG)_DEPENDS_ON := zlib
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-opensslExtra
+$(PKG)_CONFIGURE_OPTIONS += --enable-fastmath
+$(PKG)_CONFIGURE_OPTIONS += --enable-bigcache
 $(PKG)_CONFIGURE_OPTIONS += --with-libz="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -21,8 +23,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(CYASSL_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl; \
-	cp -a $(CYASSL_DIR)/include/openssl/*.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl; \
+	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
+	cp -a $(CYASSL_DIR)/include/openssl/*.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
 	$(INSTALL_LIBRARY)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
