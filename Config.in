@@ -866,19 +866,24 @@ config FREETZ_PATCH_ATA
 	help
 		Patches the ATA mode configuration pages into the web menu.
 
-#config FREETZ_PATCH_ENUM
-#	bool "Patch enum"
-#	depends on \
-#		FREETZ_HAS_PHONE && \
-#		FREETZ_TYPE_LANG_DE && \
-#		! FREETZ_PATCH_VCC && \
-#		! FREETZ_TYPE_LABOR && \
-#		! FREETZ_TYPE_FON_WLAN_7170
-#	default n
-#	help
-#		Patches the enum configuration pages into the web menu.
-#		
-#		Works only for OEM avm.
+config FREETZ_PATCH_ENUM
+	bool "Patch enum"
+	depends on \
+		FREETZ_TYPE_LANG_DE && \
+		! FREETZ_PATCH_VCC && \
+		( \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_WLAN || \
+		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7140 \
+		)
+	default n
+	help
+		Patches the enum configuration pages into the web menu.
+		
+		Works only for OEM avm.
 
 config FREETZ_PATCH_DSL_EXPERT
 	bool "Patch extended DSL settings"
