@@ -15,6 +15,9 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-fastmath
 $(PKG)_CONFIGURE_OPTIONS += --enable-bigcache
 $(PKG)_CONFIGURE_OPTIONS += --with-libz="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
+# remove optimization & debug flags
+$(PKG)_CONFIGURE_PRE_CMDS += $(foreach flag,-O[0-9] -g -ggdb3,$(SED) -i -r -e 's,(C(XX)?FLAGS="[^"]*)$(flag)(( [^"]*)?"),\1\3,g' ./configure;)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -25,7 +28,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
 	cp -a $(CYASSL_DIR)/include/openssl/*.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
-	$(INSTALL_LIBRARY)
+	$(INSTALL_LIBRARY_INCLUDE_STATIC)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
