@@ -1,0 +1,29 @@
+--- src/options.c	2010-03-23 15:58:34.000000000 +0100
++++ src/options.c	2010-03-27 23:31:53.000000000 +0100
+@@ -57,8 +57,10 @@
+ static int print_socket_options(void);
+ static void print_option(char *, int, OPT_UNION *);
+ static int parse_socket_option(char *);
++#if SSLEAY_VERSION_NUMBER >= 0x00907000L
+ static char *parse_ocsp_url(SERVICE_OPTIONS *, char *);
+ static unsigned long parse_ocsp_flag(char *);
++#endif
+ 
+ static void syntax(void);
+ static void config_error(int, char *);
+@@ -1954,6 +1956,7 @@
+ 
+ /**************************************** OCSP */
+ 
++#if SSLEAY_VERSION_NUMBER >= 0x00907000L
+ static char *parse_ocsp_url(SERVICE_OPTIONS *section, char *arg) {
+     char *host, *port, *path;
+     int ssl;
+@@ -2000,6 +2003,7 @@
+             return option->value;
+     return 0; /* FAILED */
+ }
++#endif
+ 
+ /**************************************** print syntax */
+ 

@@ -1,0 +1,126 @@
+--- configure	2010-02-03 23:35:51.000000000 +0100
++++ configure	2010-03-28 00:59:09.000000000 +0100
+@@ -23977,7 +23977,7 @@
+ { echo "$as_me:$LINENO: **************************************** SSL" >&5
+ echo "$as_me: **************************************** SSL" >&6;}
+ checkssldir() { :
+-    if test -f "$1/include/openssl/ssl.h"
++    if test -f "$1/include${OPENSSL_ALTERNATIVE_WITH_LEADING_SLASH}/openssl/ssl.h"
+     then cat >>confdefs.h <<\_ACEOF
+ #define HAVE_OPENSSL 1
+ _ACEOF
+@@ -23985,13 +23985,15 @@
+         ssldir="$1"
+         return 0
+     fi
+-    if test -f "$1/include/ssl.h"
++    if test -f "$1/include${OPENSSL_ALTERNATIVE_WITH_LEADING_SLASH}/ssl.h"
+     then ssldir="$1"
+         return 0
+     fi
+     return 1
+ }
+ 
++[ -n "$OPENSSL_ALTERNATIVE" ] && OPENSSL_ALTERNATIVE_WITH_LEADING_SLASH="/$OPENSSL_ALTERNATIVE"
++
+ # Check for SSL directory
+ { echo "$as_me:$LINENO: checking for SSL directory" >&5
+ echo $ECHO_N "checking for SSL directory... $ECHO_C" >&6; }
+@@ -24033,8 +24035,13 @@
+ 
+ 
+ # Add SSL includes and libraries
+-CFLAGS="$CFLAGS -I$ssldir/include"
++CFLAGS="$CFLAGS -I$ssldir/include${OPENSSL_ALTERNATIVE_WITH_LEADING_SLASH}"
++if [ -z "$OPENSSL_ALTERNATIVE" ]; then
+ LIBS="$LIBS -L$ssldir/lib -lssl -lcrypto"
++else
++CFLAGS="$CFLAGS -DUSE_OPENSSL_ALTERNATIVE=$OPENSSL_ALTERNATIVE"
++LIBS="$LIBS -L$ssldir/lib -l$OPENSSL_ALTERNATIVE"
++fi
+ 
+ # Check for obsolete RSAref library
+ { echo "$as_me:$LINENO: checking for obsolete RSAref library" >&5
+@@ -24088,6 +24095,7 @@
+ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+       conftest$ac_exeext conftest.$ac_ext
+ 
++if [ -z "$OPENSSL_ALTERNATIVE" ]; then
+ as_ac_Header=`echo "ac_cv_header_$ssldir/include/openssl/engine.h" | $as_tr_sh`
+ if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+   { echo "$as_me:$LINENO: checking for $ssldir/include/openssl/engine.h" >&5
+@@ -24225,6 +24233,7 @@
+   { echo "$as_me:$LINENO: WARNING: Openssl engine header not found" >&5
+ echo "$as_me: WARNING: Openssl engine header not found" >&2;}
+ fi
++fi
+ 
+ 
+ 
+--- src/ctx.c	2010-01-29 11:38:40.000000000 +0100
++++ src/ctx.c	2010-03-28 01:16:11.000000000 +0100
+@@ -399,14 +399,19 @@
+         return 1;
+     i2d_SSL_SESSION(sess, &val_tmp);
+ 
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+     cache_transfer(ssl->ctx, CACHE_CMD_NEW, SSL_SESSION_get_timeout(sess),
+         sess->session_id, sess->session_id_length, val, val_len, NULL, NULL);
++#endif
+     free(val);
+     return 1; /* leave the session in local cache for reuse */
+ }
+ 
+ static SSL_SESSION *sess_get_cb(SSL *ssl,
+         unsigned char *key, int key_len, int *do_copy) {
++#if (defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
++    return NULL;
++#else
+     unsigned char *val, *val_tmp=NULL;
+     unsigned int val_len=0;
+     SSL_SESSION *sess;
+@@ -420,11 +425,14 @@
+     sess=d2i_SSL_SESSION(NULL, (const unsigned char **)&val_tmp, val_len);
+     free(val);
+     return sess;
++#endif
+ }
+ 
+ static void sess_remove_cb(SSL_CTX *ctx, SSL_SESSION *sess) {
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+     cache_transfer(ctx, CACHE_CMD_REMOVE, 0,
+         sess->session_id, sess->session_id_length, NULL, 0, NULL, NULL);
++#endif
+ }
+ 
+ #define MAX_VAL_LEN 512
+@@ -440,6 +448,10 @@
+         const unsigned char *key, const unsigned int key_len,
+         const unsigned char *val, const unsigned int val_len,
+         unsigned char **ret, unsigned int *ret_len) {
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
++/*
++* according to http://sourceforge.net/projects/yassl/forums/forum/439591/topic/3563952 cyassl handles it internally
++*/
+     char session_id_txt[2*SSL_MAX_SSL_SESSION_ID_LENGTH+1];
+     const char hex[16]="0123456789ABCDEF";
+     const char *type_description[]={"new", "get", "remove"};
+@@ -556,6 +568,7 @@
+     s_log(LOG_INFO, "cache_transfer: session found");
+     memcpy(*ret, packet->val, *ret_len);
+     free(packet);
++#endif
+ }
+ 
+ /**************************************** informational callback */
+@@ -575,8 +588,10 @@
+             where & SSL_CB_READ ? "read" : "write",
+             SSL_alert_type_string_long(ret),
+             SSL_alert_desc_string_long(ret));
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+     else if(where==SSL_CB_HANDSHAKE_DONE)
+         print_stats(ssl->ctx);
++#endif
+ }
+ 
+ static void print_stats(SSL_CTX *ctx) { /* print statistics */

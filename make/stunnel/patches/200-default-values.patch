@@ -1,23 +1,16 @@
---- src/options.c.orig	2010-03-23 15:58:34.000000000 +0100
-+++ src/options.c	2010-03-27 23:56:30.000000000 +0100
-@@ -290,7 +290,7 @@
- #ifndef USE_WIN32
-     switch(cmd) {
-     case CMD_INIT:
--        new_global_options.pidfile=PIDFILE;
-+        new_global_options.pidfile="/var/run/stunnel.pid";
-         break;
-     case CMD_EXEC:
-         if(strcasecmp(opt, "pid"))
-@@ -301,7 +301,7 @@
-             new_global_options.pidfile=NULL; /* empty -> do not create a pid file */
-         return NULL; /* OK */
-     case CMD_DEFAULT:
--        s_log(LOG_NOTICE, "%-15s = %s", "pid", PIDFILE);
-+        s_log(LOG_NOTICE, "%-15s = %s", "pid", "/var/run/stunnel.pid");
-         break;
-     case CMD_HELP:
-         s_log(LOG_NOTICE, "%-15s = pid file (empty to disable creating)", "pid");
+--- src/Makefile.in	2010-03-01 17:55:59.000000000 +0100
++++ src/Makefile.in	2010-03-27 23:17:03.000000000 +0100
+@@ -227,7 +227,7 @@
+ INCLUDES = -I/usr/kerberos/include
+ 
+ # Additional compiler flags
+-AM_CPPFLAGS = -DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"' -DPIDFILE='"$(localstatedir)/run/stunnel/stunnel.pid"'
++AM_CPPFLAGS = -DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"/mod/etc"' -DPIDFILE='"/var/run/stunnel.pid"'
+ 
+ # Win32 executable
+ EXTRA_DIST = stunnel.exe make.bat mingw.mak makece.bat evc.mak vc.mak nogui.c os2.mak
+--- src/options.c	2010-03-23 15:58:34.000000000 +0100
++++ src/options.c	2010-03-27 23:14:44.000000000 +0100
 @@ -613,7 +613,7 @@
      switch(cmd) {
      case CMD_INIT:
@@ -26,6 +19,15 @@
 +        section->cert="/tmp/flash/.stunnel/certs.pem";
  #else
          section->cert="stunnel.pem";
+ #endif
+@@ -626,7 +626,7 @@
+         return NULL; /* OK */
+     case CMD_DEFAULT:
+ #ifdef CONFDIR
+-        s_log(LOG_NOTICE, "%-15s = %s", "cert", CONFDIR CONFSEPARATOR "stunnel.pem");
++        s_log(LOG_NOTICE, "%-15s = %s", "cert", "/tmp/flash/.stunnel/certs.pem");
+ #else
+         s_log(LOG_NOTICE, "%-15s = %s", "cert", "stunnel.pem");
  #endif
 @@ -882,7 +882,7 @@
      /* key */
@@ -36,12 +38,3 @@
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "key"))
-@@ -1409,7 +1409,7 @@
- void parse_commandline(char *name, char *parameter) {
-     if(!name)
- #ifdef CONFDIR
--        name=CONFDIR CONFSEPARATOR "stunnel.conf";
-+        name="/mod/etc/stunnel.conf";
- #else
-         name="stunnel.conf";
- #endif

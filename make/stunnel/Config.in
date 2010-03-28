@@ -1,7 +1,8 @@
 config FREETZ_PACKAGE_STUNNEL
 	bool "Stunnel 4.32"
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_STUNNEL_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_STUNNEL_STATIC
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_STUNNEL_USE_CYASSL && ! FREETZ_PACKAGE_STUNNEL_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_STUNNEL_USE_CYASSL && ! FREETZ_PACKAGE_STUNNEL_STATIC
+	select FREETZ_LIB_libcyassl if FREETZ_PACKAGE_STUNNEL_USE_CYASSL && ! FREETZ_PACKAGE_STUNNEL_STATIC
 	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_STUNNEL_STATIC
 	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_STUNNEL_STATIC
 	default n
@@ -15,3 +16,10 @@ config FREETZ_PACKAGE_STUNNEL_STATIC
 	help
 		Build stunnel binary with statically linked libraries.
 
+config FREETZ_PACKAGE_STUNNEL_USE_CYASSL
+	bool "Use cyassl instead of openssl"
+	depends on FREETZ_PACKAGE_STUNNEL
+	default n
+	help
+		Use lightweight cyassl as an ssl library.
+		WARNING: experimental, very slow & errors in syslog
