@@ -76,7 +76,8 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/fuse.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ulockmgr.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/fuse* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse*
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfuse* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libulockmgr*
 
 $(pkg)-uninstall:
 	$(RM) \
