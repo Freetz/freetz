@@ -1,26 +1,54 @@
---- pcre-config.in	2009-09-01 18:21:54.000000000 +0200
-+++ pcre-config.in	2009-11-17 21:31:08.000000000 +0100
-@@ -21,6 +21,10 @@
-   libR=" -Wl,-R@libdir@"
-   ;;
- esac
-+libS=
-+if test @libdir@ != /usr/lib ; then
-+  libS=-L@libdir@
-+fi
+--- pcre-config.in	2010-03-02 12:08:45.000000000 +0100
++++ pcre-config.in	2010-03-29 00:00:00.000000000 +0200
+@@ -3,6 +3,8 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ exec_prefix_set=no
++includedir=@includedir@
++libdir=@libdir@
  
+ if test @enable_cpp@ = yes ; then
+   usage="Usage: pcre-config [--prefix] [--exec-prefix] [--version] [--libs] [--libs-posix] [--libs-cpp] [--cflags] [--cflags-posix]"
+@@ -15,16 +17,6 @@
+       exit 1
+ fi
+ 
+-libR=
+-case `uname -s` in
+-  *SunOS*)
+-  libR=" -R@libdir@"
+-  ;;
+-  *BSD*)
+-  libR=" -Wl,-R@libdir@"
+-  ;;
+-esac
+-
  while test $# -gt 0; do
    case "$1" in
-@@ -55,10 +59,10 @@
+   -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+@@ -52,20 +44,20 @@
+       echo @PACKAGE_VERSION@
+       ;;
+     --cflags | --cflags-posix)
+-      if test @includedir@ != /usr/include ; then
+-        includes=-I@includedir@
++      if test ${includedir} != /usr/include ; then
++        includes=-I${includedir}
+       fi
        echo $includes @PCRE_STATIC_CFLAG@
        ;;
      --libs-posix)
 -      echo -L@libdir@$libR -lpcreposix -lpcre
-+      echo $libS$libR -lpcreposix -lpcre
++      echo -L${libdir} -lpcreposix -lpcre
        ;;
      --libs)
 -      echo -L@libdir@$libR -lpcre
-+      echo $libS$libR -lpcre
++      echo -L${libdir} -lpcre
        ;;
-     *)
-       echo "${usage}" 1>&2
+     --libs-cpp)
+       if test @enable_cpp@ = yes ; then
+-        echo -L@libdir@$libR -lpcrecpp -lpcre
++        echo -L${libdir} -lpcrecpp -lpcre
+       else
+         echo "${usage}" 1>&2
+       fi
