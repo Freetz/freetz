@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 10.35.73)
+$(call PKG_INIT_BIN, 10.35.74)
 $(PKG)_LIB_VERSION:=10.35
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=1152bca0695f75f88e8b062236d0379a
+$(PKG)_SOURCE_MD5:=86b74489f59708aa4a43119a47f751ea
 $(PKG)_SITE:=@SF/netpbm/super_stable/$($(PKG)_VERSION)
 
 $(PKG)_LIBNAME := libnetpbm.so.$($(PKG)_LIB_VERSION)
@@ -59,8 +59,7 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/converter/other/%: $($(PKG)_DIR)/Mak
 $($(PKG)_LIB_STAGING_DIR): $($(PKG)_LIB_BUILD_DIR)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/netpbm/ \
 	&& cp -a $(NETPBM_INTERFACE_HEADERS:%=$(NETPBM_DIR)/%) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/netpbm/
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/ \
-	&& cp -a $(NETPBM_DIR)/lib/libnetpbm*.{a,so}* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
+	$(INSTALL_LIBRARY_INCLUDE_STATIC)
 
 $($(PKG)_LIB_TARGET_DIR): $($(PKG)_LIB_STAGING_DIR)
 	$(INSTALL_LIBRARY_STRIP)
