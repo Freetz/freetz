@@ -1,13 +1,12 @@
-$(call PKG_INIT_LIB, 1.1)
-$(PKG)_LIB_VERSION:=0.1.4
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(call PKG_INIT_LIB, 1.7)
+$(PKG)_LIB_VERSION:=0.5.0
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=62c0d09d1e76c5b6da8fff92314c4665
 $(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgpg-error
-# If gnupg site does not work...
-#$(PKG)_SITE:=http://www.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/libgpg-error
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=ee23cdd5fbbb1483676647a8e091ff8e
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -24,7 +23,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.la
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/gpg-error-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -35,7 +35,12 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBGPG_ERROR_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error*
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgpg-error* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/gpg-error* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/gpg-error* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/gpg-error* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/common-lisp/source/gpg-error*
 
 $(pkg)-uninstall:
 	$(RM) $(LIBGPG_ERROR_TARGET_DIR)/libgpg-error*.so*

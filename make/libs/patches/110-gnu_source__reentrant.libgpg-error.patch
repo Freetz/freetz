@@ -1,0 +1,26 @@
+--- configure
++++ configure
+@@ -1970,6 +1970,23 @@
+ 
+ 
+ 
++cppflags_to_add="-D_REENTRANT -D_GNU_SOURCE"
++if test "x$CPPFLAGS" = "x"; then
++	CPPFLAGS="$cppflags_to_add"
++else
++	for i in $cppflags_to_add; do
++		flag_found="0"
++		for j in $CPPFLAGS; do
++			if test "x$i" = "x$j"; then
++				flag_found="1"
++				break
++			fi
++		done
++		if test "$flag_found" = "0"; then
++			CPPFLAGS="$CPPFLAGS $i"
++		fi
++	done
++fi
+ 
+ ac_ext=c
+ ac_cpp='$CPP $CPPFLAGS'

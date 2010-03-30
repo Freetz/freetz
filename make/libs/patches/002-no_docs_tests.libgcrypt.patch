@@ -1,0 +1,26 @@
+--- Makefile.am	2008-08-19 17:20:08.000000000 +0200
++++ Makefile.am	2009-03-18 00:13:06.000000000 +0100
+@@ -22,8 +22,8 @@
+ DISTCHECK_CONFIGURE_FLAGS = --enable-random-daemon \
+   --enable-ciphers=arcfour:blowfish:cast5:des:aes:twofish:serpent:rfc2268:seed:camellia
+ 
+-DIST_SUBDIRS = m4 mpi cipher random src doc tests
+-SUBDIRS = mpi cipher random src doc tests
++DIST_SUBDIRS = m4 mpi cipher random src
++SUBDIRS = mpi cipher random src
+ EXTRA_DIST = autogen.sh README.SVN
+ DISTCLEANFILES = 
+ 
+--- Makefile.in	2009-01-22 19:16:51.000000000 +0100
++++ Makefile.in	2009-03-18 00:13:18.000000000 +0100
+@@ -239,8 +239,8 @@
+ DISTCHECK_CONFIGURE_FLAGS = --enable-random-daemon \
+   --enable-ciphers=arcfour:blowfish:cast5:des:aes:twofish:serpent:rfc2268:seed:camellia
+ 
+-DIST_SUBDIRS = m4 mpi cipher random src doc tests
+-SUBDIRS = mpi cipher random src doc tests
++DIST_SUBDIRS = m4 mpi cipher random src
++SUBDIRS = mpi cipher random src
+ EXTRA_DIST = autogen.sh README.SVN
+ DISTCLEANFILES = 
+ all: config.h
