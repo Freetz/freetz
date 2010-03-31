@@ -30,6 +30,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(ZLIB_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/zlib.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -43,7 +45,8 @@ $(pkg)-clean:
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zlib.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zconf.h
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/zconf.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/zlib.pc
 
 $(pkg)-uninstall:
 	$(RM) $(ZLIB_TARGET_DIR)/libz*.so*
