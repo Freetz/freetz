@@ -4,20 +4,32 @@ config FREETZ_PACKAGE_WGET
 	help
 		GNU Wget is a free software package for retrieving files using
 		HTTP, HTTPS and FTP, the most widely-used Internet protocols. It
-		is a non-interactive commandline tool, so it may easily be 
+		is a non-interactive commandline tool, so it may easily be
 		called from scripts, cron jobs, terminals, etc.
-		
+
 		This package replaces busybox's wget applet. But this one adds
 		about 240 KB.
 
 config FREETZ_PACKAGE_WGET_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_WGET
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_WGET_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_WGET_STATIC
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_WGET_USE_GNUTLS && ! FREETZ_PACKAGE_WGET_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_WGET_USE_GNUTLS && ! FREETZ_PACKAGE_WGET_STATIC
 	default n
 	help
 		This option enables SSL support for Wget.
+
+config FREETZ_PACKAGE_WGET_USE_GNUTLS
+	bool "use GnuTLS instead of openssl"
+	depends on FREETZ_PACKAGE_WGET_WITH_SSL
+	select FREETZ_LIB_libgnutls if ! FREETZ_PACKAGE_WGET_STATIC
+	default n
+	help
+		This option causes GnuTLS to be used as SSL library.
+		Warning: doesn't seem to be a real openssl alternative
+		(resulting binaries are bigger than those linked against openssl).
+		Use this option only if you link GnuTLS dynamically and have other
+		packages linked against it.
 
 config FREETZ_PACKAGE_WGET_STATIC
 	bool "Statically link libraries"
@@ -28,3 +40,4 @@ config FREETZ_PACKAGE_WGET_STATIC
 		can be linked in statically by activating this switch:
 		- libcrypto
 		- libssl
+		- libgnutls
