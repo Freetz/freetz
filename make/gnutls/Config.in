@@ -1,0 +1,24 @@
+config FREETZ_PACKAGE_GNUTLS
+	bool "gnutls 2.8.6"
+	select FREETZ_LIB_libgnutls
+	default n
+	help
+		GnuTLS is a project that aims to develop a library which provides a
+		secure layer, over a reliable transport layer. Currently the GnuTLS
+		library implements the SSL 3.0, TLS 1.0, and TLS 1.1 protocols.
+
+config FREETZ_PACKAGE_GNUTLS_CERTTOOL
+	bool "certtool"
+	depends on FREETZ_PACKAGE_GNUTLS
+	select FREETZ_LIB_libgnutls_extra
+	default n
+	help
+		Provides GnuTLS certtool utility.
+
+config FREETZ_PACKAGE_GNUTLS_UTILS
+	bool "utils"
+	depends on FREETZ_PACKAGE_GNUTLS
+	select FREETZ_LIB_libgnutls_extra
+	default n
+	help
+		Provides gnutls-cli, gnutls-serv, psktool and srptool utilities.

@@ -1,0 +1,20 @@
+--- Makefile.in
++++ Makefile.in
+@@ -147,7 +147,7 @@
+ 	distdir dist dist-all distcheck
+ ETAGS = etags
+ CTAGS = ctags
+-DIST_SUBDIRS = lib libextra gl src doc tests guile
++DIST_SUBDIRS = lib libextra gl src guile
+ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+ distdir = $(PACKAGE)-$(VERSION)
+ top_distdir = $(distdir)
+@@ -707,7 +707,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+-SUBDIRS = lib libextra gl src doc tests $(am__append_1)
++SUBDIRS = lib libextra gl src $(am__append_1)
+ ACLOCAL_AMFLAGS = -I m4 -I gl/m4 -I lib/gl/m4 -I libextra/gl/m4 -I lib/m4 -I libextra/m4
+ EXTRA_DIST = cfg.mk maint.mk .clcopying
+ all: config.h

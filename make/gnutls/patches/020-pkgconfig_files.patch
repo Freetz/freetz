@@ -1,0 +1,20 @@
+--- lib/gnutls.pc.in
++++ lib/gnutls.pc.in
+@@ -20,6 +20,5 @@
+ Description: Transport Security Layer implementation for the GNU system
+ URL: http://www.gnu.org/software/gnutls/
+ Version: @VERSION@
+-Libs: -L${libdir} -lgnutls
+-Libs.private: @LIBGNUTLS_LIBS@ @LTLIBTASN1@
++Libs: -L${libdir} -lgnutls @LTLIBTASN1@
+ Cflags: -I${includedir}
+--- libextra/gnutls-extra.pc.in
++++ libextra/gnutls-extra.pc.in
+@@ -20,6 +20,5 @@
+ URL: http://www.gnu.org/software/gnutls/
+ Requires: gnutls
+ Version: @VERSION@
+-Libs: -L${libdir} -lgnutls-extra
+-Libs.private: @LIBGNUTLS_EXTRA_LIBS@
++Libs: -L${libdir} -lgnutls-extra -lgnutls @LTLIBTASN1@
+ Cflags: -I${includedir}
