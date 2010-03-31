@@ -31,6 +31,9 @@ $(PKG)_DEPENDS_ON += libgpg-error libgcrypt libtasn1 zlib
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure ./lib/configure ./libextra/configure)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_readline_readline_h)
 
+# rename all *read_file* functions to avoid name clashing
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,(f?read_file|read_binary_file),gnutls_\1,g' gl/*.{h,c} gl/tests/*.{h,c} lib/gl/*.{h,c} lib/gl/tests/*.{h,c} src/*.{h,c} lib/*.{h,c} lib/openpgp/*.{h,c};
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
