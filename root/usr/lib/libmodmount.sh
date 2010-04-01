@@ -12,7 +12,7 @@ find_mnt_name ()
 	[ -z "$storage_prefix" ] && storage_prefix="uStor"
 	if [ "$MOD_STOR_USELABEL" == "yes" ]
 	then
-		[ -x $blkid_bin ] && mnt_name=$($blkid_bin -s LABEL $mnt_device | sed -e 's/.*LABEL="\([^"]*\)"/\1/')
+		[ -x $blkid_bin ] && mnt_name=$($blkid_bin -s LABEL $mnt_device | sed -e 's/.*LABEL="\([^"]*\)" /\1/' -e 's/ /_/g')
 	fi
 	[ -z "$mnt_name" ] && mnt_name="$storage_prefix$(echo $1|sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/')$3"
 	echo $mnt_name
