@@ -89,7 +89,7 @@ cat << EOF
 <li><a id="status" href="/cgi-bin/status.cgi">Status</a>
 EOF
 
-if [ "$sub" = "status" -a -r /mod/etc/reg/status.reg ]; then
+if [ "$sub" = status -a -r /mod/etc/reg/status.reg ]; then
     	local pkg title cgi
 	echo "<ul>"
 	while IFS='|' read -r pkg title cgi; do
@@ -104,7 +104,7 @@ cat << EOF
 <li><a id="settings" href="/cgi-bin/settings.cgi">$(lang de:"Einstellungen" en:"Settings")</a>
 EOF
 
-if [ "$sub" = "settings" -a -r /mod/etc/reg/file.reg ]; then
+if [ "$sub" = settings -a -r /mod/etc/reg/file.reg ]; then
     	local id title sec def
 	echo "<ul>"
 	while IFS='|' read -r id title sec def; do
@@ -118,7 +118,7 @@ cat << EOF
 <li><a id="packages" href="/cgi-bin/packages.cgi">$(lang de:"Pakete" en:"Packages")</a>
 EOF
 
-if [ "$sub" = "packages" -a -r /mod/etc/reg/cgi.reg ]; then
+if [ "$sub" = packages -a -r /mod/etc/reg/cgi.reg ]; then
     	local pkg title
 	echo "<ul>"
 	while IFS='|' read -r pkg title; do
@@ -210,10 +210,10 @@ EOF
 local sub
 if [ -n "$id" ]; then
 	case $id in
-		settings|file_*) sub='settings' ;;
-		status*) sub='status' ;;
+		settings|file_*) sub=settings ;;
+		status*) sub=status ;;
 	    	system|rudi_*|firmware_*|backup_*) sub=system ;;
-		*) sub='packages' ;;
+		*) sub=packages ;;
 	esac
 
 	[ -e "/mod/var/cache/menu_$sub" ] || _cgi_menu "$sub" > "/mod/var/cache/menu_$sub"
