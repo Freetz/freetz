@@ -64,16 +64,6 @@ case "$MOD_CGI_CMD" in
 		back_button /cgi-bin/status.cgi
 		cgi_end
 		;;
-	firmware_update)
-		cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
-		/usr/lib/mww/firmware_update.cgi
-		cgi_end
-		;;
-	external_update)
-		cgi_begin '$(lang de:"external-Update" en:"external update")'
-		/usr/lib/mww/external_update.cgi
-		cgi_end
-		;;
 	fw_attrib)
 		cgi_begin '$(lang de:"Attribute bereinigen" en:"Clean up attributes")'
 		echo '<p>$(lang de:"Entfernt Merker f&uuml;r \"nicht unterst&uuml;tzte &Auml;nderungen\"" en:"Cleans up marker for \"unauthorized changes\"")</p>'

@@ -1,6 +1,9 @@
 #! /bin/sh
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
+. /usr/lib/libmodcgi.sh
+
+cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")' firmware_update
 
 cat << EOF
 <script type=text/javascript>
@@ -56,9 +59,10 @@ $(lang de:"30 Sekunden automatisch neu gestartet." en:"")
 <br>
 <br>
 
-<form class="btn" action="/cgi-bin/exec.cgi" method="post">
-	<input type="hidden" name="cmd" value="external_update">
+<form class="btn" action="/cgi-bin/external_update.cgi" method="GET">
 	<input type="submit" value="external (optional)" style="width:150px">
 </form>
 
 EOF
+
+cgi_end

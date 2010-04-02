@@ -1,6 +1,9 @@
 #! /bin/sh
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
+. /usr/lib/libmodcgi.sh
+
+cgi_begin '$(lang de:"external-Update" en:"external update")' firmware_update
 
 cat << EOF
 <script type=text/javascript>
@@ -34,3 +37,5 @@ $(lang de:"geflasht werden." en:"flash the expected firmware")
 	<input type="submit" value="$(lang de:"Abbrechen" en:"Abort")" style="width:150px">
 </form>
 EOF
+
+cgi_end

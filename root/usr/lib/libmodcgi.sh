@@ -137,7 +137,7 @@ if [ "$sub" = system ]; then
 	cat <<- EOF
 	<ul>
 	<li><a id="backup_restore" href="/cgi-bin/backup_restore.cgi">$(lang de:"Sichern &amp; Wiederherstellen" en:"Backup &amp; restore")</a></li>
-	<li><a id="firmware_update" href="/cgi-bin/exec.cgi?cmd=firmware_update">$(lang de:"Firmware-Update" en:"Firmware update")</a></li>
+	<li><a id="firmware_update" href="/cgi-bin/firmware_update.cgi">$(lang de:"Firmware-Update" en:"Firmware update")</a></li>
 	<li><a id="rudi_shell" href="/cgi-bin/rudi_shell.cgi" target="_blank">$(lang de:"Rudi-Shell" en:"Rudi shell")</a></li>
 	</ul>
 	EOF
