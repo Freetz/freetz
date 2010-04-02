@@ -1,6 +1,8 @@
 config FREETZ_PACKAGE_QUAGGA
-	bool "quagga 0.99.15"
+	bool "quagga 0.99.16"
 	default n
+	select FREETZ_LIB_libcrypt
+	select FREETZ_LIB_librt
 	select FREETZ_LIB_libncurses
 	select FREETZ_LIB_libreadline
 	select FREETZ_LIB_libhistory

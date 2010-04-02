@@ -1,5 +1,5 @@
---- config.h.in	2009-08-28 20:05:30.000000000 +0200
-+++ config.h.in	2010-03-20 22:00:00.000000000 +0100
+--- config.h.in.orig	2010-03-09 11:56:14.000000000 +0100
++++ config.h.in	2010-04-02 17:25:23.000000000 +0200
 @@ -808,3 +808,6 @@
  /* Define to empty if the keyword `volatile' does not work. Warning: valid
     code using `volatile' can become incorrect without. Disable with care. */
@@ -7,8 +7,8 @@
 +
 +/* Define to 1 if multipath algorithm is supported */
 +#undef HAVE_RT_MP_ALGO
---- configure.ac.orig	2009-08-28 20:03:38.000000000 +0200
-+++ configure.ac	2009-11-30 14:10:03.000000000 +0100
+--- configure.ac.orig	2010-03-09 11:49:46.000000000 +0100
++++ configure.ac	2010-04-02 17:25:23.000000000 +0200
 @@ -397,7 +397,7 @@
  AC_CHECK_HEADERS([stropts.h sys/ksym.h sys/times.h sys/select.h \
  	sys/types.h linux/version.h netdb.h asm/types.h \
@@ -36,18 +36,18 @@
  dnl --------------------------
  dnl Determine IS-IS I/O method
  dnl --------------------------
---- configure	2009-08-28 20:03:38.000000000 +0200
-+++ configure	2010-03-20 22:00:00.000000000 +0100
-@@ -13460,7 +13460,7 @@
+--- configure.orig	2010-03-09 11:55:56.000000000 +0100
++++ configure	2010-04-02 17:25:23.000000000 +0200
+@@ -23839,7 +23839,7 @@
  for ac_header in stropts.h sys/ksym.h sys/times.h sys/select.h \
  	sys/types.h linux/version.h netdb.h asm/types.h \
  	sys/param.h limits.h signal.h libutil.h \
 -	sys/socket.h netinet/in.h time.h sys/time.h
 +	sys/socket.h netinet/in.h time.h sys/time.h linux/ip_mp_alg.h
- do
- as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
- if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-@@ -20430,6 +20430,21 @@
+ do :
+   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+@@ -26879,6 +26879,21 @@
  
  
  
@@ -66,11 +66,11 @@
 +$as_echo "no" >&6; }
 +  fi
 +
- if test "${ac_cv_header_net_bpf_h+set}" = set; then
-   { $as_echo "$as_me:$LINENO: checking for net/bpf.h" >&5
- $as_echo_n "checking for net/bpf.h... " >&6; }
---- lib/command.h.orig	2009-08-13 10:46:18.000000000 +0200
-+++ lib/command.h	2009-11-30 14:10:03.000000000 +0100
+ ac_fn_c_check_header_mongrel "$LINENO" "net/bpf.h" "ac_cv_header_net_bpf_h" "$ac_includes_default"
+ if test "x$ac_cv_header_net_bpf_h" = x""yes; then :
+ 
+--- lib/command.h.orig	2009-12-09 13:37:12.000000000 +0100
++++ lib/command.h	2010-04-02 17:25:23.000000000 +0200
 @@ -101,6 +101,7 @@
    DUMP_NODE,			/* Packet dump node. */
    FORWARDING_NODE,		/* IP forwarding node. */
@@ -87,8 +87,8 @@
  #define IPV6_STR "IPv6 information\n"
  #define NO_STR "Negate a command or set its defaults\n"
  #define REDIST_STR "Redistribute information from another routing protocol\n"
---- lib/zebra.h.orig	2009-08-28 19:52:19.000000000 +0200
-+++ lib/zebra.h	2009-11-30 14:10:03.000000000 +0100
+--- lib/zebra.h.orig	2009-12-09 13:37:12.000000000 +0100
++++ lib/zebra.h	2010-04-02 17:25:23.000000000 +0200
 @@ -176,6 +176,10 @@
  #define RT_TABLE_MAIN		0
  #endif /* HAVE_NETLINK */
@@ -100,8 +100,8 @@
  #ifdef HAVE_NETDB_H
  #include <netdb.h>
  #endif /* HAVE_NETDB_H */
---- zebra/main.c.orig	2009-08-28 13:29:10.000000000 +0200
-+++ zebra/main.c	2009-11-30 14:10:03.000000000 +0100
+--- zebra/main.c.orig	2009-12-09 13:37:12.000000000 +0100
++++ zebra/main.c	2010-04-02 17:25:23.000000000 +0200
 @@ -44,6 +44,7 @@
  struct zebra_t zebrad =
  {
@@ -111,7 +111,7 @@
  
  /* process id. */
 --- zebra/multipath.h.orig	1970-01-01 01:00:00.000000000 +0100
-+++ zebra/multipath.h	2009-11-30 14:10:03.000000000 +0100
++++ zebra/multipath.h	2010-04-02 17:25:23.000000000 +0200
 @@ -0,0 +1,37 @@
 +/*
 + * multipath policy names.
@@ -150,8 +150,8 @@
 +#endif
 +#endif
 +
---- zebra/rt_netlink.c.orig	2009-08-28 19:52:19.000000000 +0200
-+++ zebra/rt_netlink.c	2009-11-30 14:10:03.000000000 +0100
+--- zebra/rt_netlink.c.orig	2009-12-09 13:37:12.000000000 +0100
++++ zebra/rt_netlink.c	2010-04-02 17:25:23.000000000 +0200
 @@ -36,6 +36,7 @@
  #include "thread.h"
  #include "privs.h"
@@ -177,8 +177,8 @@
        if (rta->rta_len > RTA_LENGTH (0))
          addattr_l (&req.n, 1024, RTA_MULTIPATH, RTA_DATA (rta),
                     RTA_PAYLOAD (rta));
---- zebra/zserv.c.orig	2009-08-28 19:52:19.000000000 +0200
-+++ zebra/zserv.c	2009-11-30 14:10:03.000000000 +0100
+--- zebra/zserv.c.orig	2009-12-09 13:37:12.000000000 +0100
++++ zebra/zserv.c	2010-04-02 17:25:23.000000000 +0200
 @@ -36,6 +36,7 @@
  #include "privs.h"
  #include "network.h"
@@ -315,8 +315,8 @@
  #endif /* HAVE_NETLINK */
  
  #ifdef HAVE_IPV6
---- zebra/zserv.h.orig	2009-08-05 20:57:30.000000000 +0200
-+++ zebra/zserv.h	2009-11-30 14:10:03.000000000 +0100
+--- zebra/zserv.h.orig	2009-12-09 13:37:12.000000000 +0100
++++ zebra/zserv.h	2010-04-02 17:25:23.000000000 +0200
 @@ -55,6 +55,9 @@
    /* default routing table this client munges */
    int rtm_table;
