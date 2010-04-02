@@ -1,17 +1,20 @@
 #!/bin/sh
 
-PACKAGEURL=/cgi-bin/pkgconf.cgi?pkg=
+PACKAGEURL="/cgi-bin/pkgconf.cgi?pkg="
 SETTINGSURL=/cgi-bin/settings.cgi
+REG=/mod/etc/reg/daemon.reg
+
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 stat_begin() {
-	echo '<table border="0" cellspacing="1" cellpadding="0">'
+	echo '<table class="daemons" border="0" cellspacing="1" cellpadding="0">'
 }
 
 stat_button() {
-	if ! $3 ; then disabled=" disabled"; else disabled=""; fi
-	echo '<td><form class="btn" action="/cgi-bin/exec.cgi" method="post"><input type="hidden" name="pkg" value="'"$1"'"><input type="hidden" name="cmd" value="'"$2"'"><input type="submit" value="'"$2"'"'"$disabled"'></form></td>'
+    	local pkg=$1 cmd=$2 active=$3
+	if ! $active ; then disabled=" disabled"; else disabled=""; fi
+	echo "<td><form class='btn' action='/cgi-bin/exec.cgi' method='post'><input type='hidden' name='pkg' value='$pkg'><input type='hidden' name='cmd' value='$cmd'><input type='submit' value='$cmd'$disabled></form></td>"
 }
 
 stat_packagelink() {
@@ -24,54 +27,55 @@ stat_packagelink() {
 }
 
 stat_line() {
-	pkg=$1
-	name=${2:-$pkg}
-	rcfile=/mod/etc/init.d/${3:-rc.$pkg}
-	disable=${4:-false}
-	hide=${5:-false}
-	config_pkg=${6:-$pkg}
-	if $hide; then return; fi
+	local pkg=$1
+	local name=${2:-$pkg}
+	local rcfile=/mod/etc/init.d/${3:-rc.$pkg}
+	local disable=${4:-false}
+	local hide=${5:-false}
+	local config_pkg=${6:-$pkg}
 
+	$hide && return
+
+	local start=false stop=false
 	status=$("$rcfile" status 2> /dev/null)
 	case $status in
 		running)
-			color="#008000"
-			start=false; stop=true
+			class=running
+			stop=true
 			;;
 		stopped)
-			color="#800000"
-			start=true; stop=false
+			class=stopped
+			start=true
 			;;
 		inetd)
 			case $inetd_status in
 				running)
-					color="#008000"
+					class=running
 					;;
 				stopped)
-					color="#800000"
+					class=stopped
 					;;
 				none)
-					color="#808080"
+					class=none
 					inetd_status='<i>none</i>'
 					;;
-				*)	color="#000000"
+				*)	class=
 					;;
 			esac
 			status="$inetd_status ($status)"
-			start=false; stop=false
 			;;
 		none)
 			status='<i>none</i>'
-			color="#808080"
-			start=true; stop=false
+			class=none
+			start=true
 			;;
 		*)
-			color="#000000"
+			class=
 			start=true; stop=true
 			;;
 	esac
-	echo '<tr>'
-	echo '<td width="180">'$(stat_packagelink $config_pkg $name)'</td><td style="color: '"$color"';" width="120">'"$status"'</td>'
+	echo "<tr${class:+ class='$class'}>"
+	echo "<td width='180'>$(stat_packagelink $config_pkg $name)</td><td class='status' width='120'>$status</td>"
 
 	if $disable ; then
 		start=false; stop=false;
@@ -91,10 +95,10 @@ stat_builtin() {
 	sec_begin '$(lang de:"Basis-Pakete" en:"Built-in packages")'
 	stat_begin
 
-	stat_line 'crond'
-	stat_line 'swap'
-	stat_line 'telnetd'
-	stat_line 'webcfg'
+	stat_line crond
+	stat_line swap
+	stat_line telnetd
+	stat_line webcfg
 
 	stat_end
 	sec_end
@@ -104,12 +108,12 @@ stat_static() {
 	sec_begin '$(lang de:"Statische Pakete" en:"Static packages")'
 	stat_begin
 
-        if [ -r /mod/etc/reg/daemon.reg ]; then
+        if [ -r "$REG" ]; then
 		while IFS='|' read -r pkg name rcscript disable hide parentpkg; do
 			stat_line "$pkg" "$name" "$rcscript" $disable $hide "$parentpkg"
-		done < /mod/etc/reg/daemon.reg
+		done < "$REG"
 	fi
-	if [ ! -s /mod/etc/reg/daemon.reg ]; then
+	if [ ! -s "$REG" ]; then
 		echo '<p><i>$(lang de:"keine statischen Pakete" en:"no static packages")</i></p>'
 	fi
 
@@ -130,11 +134,6 @@ cgi_begin '$(lang de:"Dienste" en:"Services")' 'daemons'
 view=$(cgi_param view | tr -d .)
 
 if [ -e /etc/default.inetd/inetd.cfg ]; then
-	inetd=true
-else
-	inetd=false
-fi
-if $inetd; then
 	inetd_status=$(/etc/init.d/rc.inetd status 2> /dev/null)
 fi
 
