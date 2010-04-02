@@ -1,6 +1,6 @@
---- networking/telnetd.c.orig	2009-12-12 21:13:28.000000000 +0000
-+++ networking/telnetd.c	2009-12-13 22:01:07.000000000 +0000
-@@ -498,7 +498,7 @@
+--- networking/telnetd.c.orig	2010-03-28 19:43:36.000000000 +0200
++++ networking/telnetd.c	2010-04-02 23:03:27.000000000 +0200
+@@ -503,7 +503,7 @@
  	/* We don't want to die if just one session is broken */
  	signal(SIGPIPE, SIG_IGN);
  
@@ -9,16 +9,16 @@
  		signal(SIGCHLD, handle_sigchld);
  	else /* prevent dead children from becoming zombies */
  		signal(SIGCHLD, SIG_IGN);
---- include/usage.h.orig	2009-12-12 21:13:28.000000000 +0000
-+++ include/usage.h	2009-12-13 22:01:07.000000000 +0000
-@@ -4418,8 +4418,8 @@
+--- include/usage.h.orig	2010-03-28 19:44:04.000000000 +0200
++++ include/usage.h	2010-04-02 23:03:27.000000000 +0200
+@@ -4516,8 +4516,8 @@
       "\nOptions:" \
       "\n	-l LOGIN	Exec LOGIN on connect" \
-      "\n	-f issue_file	Display issue_file instead of /etc/issue" \
+      "\n	-f ISSUE_FILE	Display ISSUE_FILE instead of /etc/issue" \
 -     "\n	-K		Close connection as soon as login exits" \
 -     "\n			(normally wait until all programs close slave pty)" \
 +     "\n	-K		Do not close connection as soon as login exits," \
 +     "\n			but wait until all programs close slave pty" \
  	IF_FEATURE_TELNETD_STANDALONE( \
       "\n	-p PORT		Port to listen on" \
-      "\n	-b ADDR		Address to bind to" \
+      "\n	-b ADDR[:PORT]	Address to bind to" \

@@ -1,6 +1,6 @@
---- networking/wget.c
-+++ networking/wget.c
-@@ -653,7 +653,7 @@ int wget_main(int argc UNUSED_PARAM, cha
+--- networking/wget.c.orig	2010-03-28 19:44:04.000000000 +0200
++++ networking/wget.c	2010-04-02 23:03:27.000000000 +0200
+@@ -543,7 +543,7 @@
  		// "tries\0"            Required_argument "t"
  		// "timeout\0"          Required_argument "T"
  		/* Ignored (we always use PASV): */
@@ -8,4 +8,4 @@
 +		"passive-ftp\0"      No_argument       "\xfd"
  		"header\0"           Required_argument "\xfe"
  		"post-data\0"        Required_argument "\xfd"
- 		;
+ 		/* Ignored (we don't do ssl) */
