@@ -94,8 +94,8 @@ warn()
 modunsqfs()
 {
 	local STATUS
-	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		"$FAKEROOT" "$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L1}/g"
+	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ]; then
+		"$FAKEROOT" "$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L2}/g"
 		STATUS=${PIPESTATUS[0]}
 	else
 		"$FAKEROOT" "$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" > /dev/null
