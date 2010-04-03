@@ -370,4 +370,9 @@ config FREETZ_BUSYBOX_FEATURE_PREFER_IPV4_ADDRESS
 config FREETZ_BUSYBOX_PING6
 	bool "ping6 command"
 	default n
+
+config FREETZ_BUSYBOX_TRACEROUTE6
+	bool "traceroute6 command"
+	depends on ! FREETZ_PACKAGE_IPUTILS
+	default n
 endmenu
