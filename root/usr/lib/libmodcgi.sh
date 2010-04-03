@@ -105,11 +105,15 @@ cat << EOF
 EOF
 
 if [ "$sub" = settings -a -r /mod/etc/reg/file.reg ]; then
-    	local id title sec def
+    	local id title sec def _
 	echo "<ul>"
-	while IFS='|' read -r id title sec def; do
+	# sort by title
+	while IFS='|' read -r id _; do
+		echo "$_|$id"
+	done  < /mod/etc/reg/file.reg | sort |
+	while IFS='|' read -r title sec def id; do
 		echo "<li><a id='$(_cgi_id "file_$id")' href='/cgi-bin/file.cgi?id=$id'>$(html "$title")</a></li>"
-	done < /mod/etc/reg/file.reg 
+	done
 	echo "</ul>"
 fi
 
