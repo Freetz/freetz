@@ -28,7 +28,7 @@ sec_begin '$(lang de:"Public Key Authentication" en:"Public key authentication")
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=ssh_authorized-keys">$(lang de:"authorized_keys bearbeiten" en:"Edit authorized_keys")</a></li>
+<li><a href="$(href file authorized-keys conf)">$(lang de:"authorized_keys bearbeiten" en:"Edit authorized_keys")</a></li>
 </ul>
 EOF
 
