@@ -27,7 +27,7 @@ case "$1" in
 	""|load)
 		deffile="/mod/etc/default.$DAEMON/$DAEMON.def"
 		[ -r /tmp/flash/$DAEMON.def ] && deffile="/tmp/flash/$DAEMON.def"
-		modreg file "ssh_$DAEMON" 'SSH: authorized_keys' 0 "$deffile"
+		modreg file $DAEMON "ssh_$DAEMON" 'SSH: authorized_keys' 0 "$deffile"
 		modreg daemon --hide authorized-keys
 
 		echo -n "Setting up SSH authorized_keys for root..."
@@ -42,7 +42,7 @@ case "$1" in
 		echo "initialized."
 		;;
 	unload)
-		modunreg file "ssh_$DAEMON"
+		modunreg file $DAEMON "ssh_$DAEMON"
 		modunreg daemon authorized-keys
 		;;
 	start)

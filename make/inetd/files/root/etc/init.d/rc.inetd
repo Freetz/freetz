@@ -49,7 +49,7 @@ case "$1" in
 
 		deffile='/mod/etc/default.inetd/inetd_conf.def'
 		[ -r "/tmp/flash/inetd_conf.def" ] && deffile='/tmp/flash/inetd_conf.def'
-		modreg file 'inetd_conf' 'Inetd config' 0 "$deffile"
+		modreg file inetd 'inetd_conf' 'Inetd config' 0 "$deffile"
 		
 		if [ "$INETD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -62,7 +62,7 @@ case "$1" in
 		stop
 
 		modunreg cgi 'inetd'
-		modunreg file 'inetd_conf'
+		modunreg file inetd 'inetd_conf'
 		;;
 	start)
 		start
