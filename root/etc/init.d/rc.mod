@@ -68,11 +68,7 @@ register() {
 	modreg_file  resolv.conf 0
 	modreg_file  rc.custom   0
 
-	[ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg
-	modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' logs
-	[ "$MOD_MOUNTED_SUB" = yes ] && modreg status mod '$(lang de:"Partitionen" en:"Partitions")' mounted
-	[ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ] && modreg status mod 'BOX$(lang de:"-Info" en:" info")' box_info
-	[ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ] && modreg status mod 'FREETZ$(lang de:"-Info" en:" info")' info
+	/usr/lib/mod/reg-status start
 }
 
 case $1 in
