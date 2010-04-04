@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.41.10)
-$(PKG)_SOURCE:=e2fsprogs-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=f9c7bb5c036a119453ce02fa871038da
+$(call PKG_INIT_BIN, 1.41.11)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=fb507a40c2706bc38306f150d069e345
 $(PKG)_SITE:=@SF/e2fsprogs
 $(PKG)_DIR:=$(SOURCE_DIR)/e2fsprogs-$($(PKG)_VERSION)
 
