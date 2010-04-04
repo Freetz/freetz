@@ -1,0 +1,69 @@
+#!/bin/sh
+
+DAEMON=umurmurd
+CONF_NAME=umurmur
+
+. /etc/init.d/modlibrc
+
+start() {
+	echo -n "Starting $DAEMON..."
+	if modlib_check_running; then
+		echo 'already running.'
+		exit 0
+	fi
+
+	echo "$UMURMUR_CONFIG" > /mod/etc/$CONF_NAME.conf
+	$DAEMON -c /mod/etc/$CONF_NAME.conf -p /var/run/$DAEMON.pid $([ "$UMURMUR_REALTIME" = "yes" ] && echo -r)
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		rm -f /mod/etc/$CONF_NAME.conf
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+		modreg cgi 'umurmur' 'uMurmur'
+		for i in umurmur_key umurmur_crt; do
+			modreg file umurmur "$i" "uMurmur: $i" 0 "$i"
+		done
+
+		mkdir -p /tmp/flash/umurmur
+
+		if [ "$UMURMUR_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1
+		fi
+
+		start
+		;;
+	unload)
+		modlib_stop
+		modunreg cgi 'umurmur'
+		modunreg file umurmur
+		;;
+	start)
+		start
+		;;
+	stop)
+		modlib_stop
+		;;
+	reload)
+		modlib_reload
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit $?
