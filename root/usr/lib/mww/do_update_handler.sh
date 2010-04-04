@@ -5,54 +5,81 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 
 exec 1> /tmp/fw_update.log 2>&1
 indent() {
-    sed 's/^/  /' | html
+	sed 's/^/  /' | html
 }
+pre_exit() {
+	echo "</pre>"
+	exit "$@"
+}
+echo "<pre>"
 
-if [ "$NAME" = "stop_avm" ]; then
-	echo "$(lang de:"AVM-Dienste anhalten, Teil 1" en:"Stopping AVM services, part 1") (prepare_fwupgrade start) ..."
+if [ "$NAME" = stop_avm ]; then
+	echo "$(lang 
+	    de:"AVM-Dienste anhalten, Teil 1"
+	    en:"Stopping AVM services, part 1"
+	) (prepare_fwupgrade start) ..."
 	prepare_fwupgrade start 2>&1 | indent
 	echo "$(lang de:"ERLEDIGT" en:"DONE")"
 	echo "</pre><pre>"
 fi
 
-if [ "$NAME" = "semistop_avm" ]; then
-	echo "$(lang de:"AVM-Dienste teilweise anhalten, Teil 1" en:"Stopping AVM services partially, part 1") (prepare_fwupgrade start_from_internet) ..."
+if [ "$NAME" = semistop_avm ]; then
+	echo "$(lang 
+	    de:"AVM-Dienste teilweise anhalten, Teil 1"
+	    en:"Stopping AVM services partially, part 1"
+	) (prepare_fwupgrade start_from_internet) ..."
 	prepare_fwupgrade start_from_internet 2>&1 | indent
 	echo "$(lang de:"ERLEDIGT" en:"DONE")"
 	echo "</pre><pre>"
 fi
 
 echo "$(lang de:"Firmware-Archiv extrahieren" en:"Extracting firmware archive") ..."
-tar_log="$(cat "$1" | tar -C / -xv 2>&1)"
+tar_log=$(tar -f "$1" -C / -xv 2>&1)
 result=$?
 echo "$tar_log" | indent
 if [ $result -ne 0 ]; then
 	echo "$(lang de:"FEHLGESCHLAGEN" en:"FAILED")"
-	exit 1
+	pre_exit 1
 fi
 echo "DONE"
 
-if [ "$NAME" != "nostop_avm" ]; then
+if [ "$NAME" != nostop_avm ]; then
 	echo "</pre><pre>"
-	echo "$(lang de:"AVM-Dienste anhalten, Teil 2" en:"Stopping AVM services, part 2") (prepare_fwupgrade end) ..."
+	echo "$(lang
+	    de:"AVM-Dienste anhalten, Teil 2"
+	    en:"Stopping AVM services, part 2"
+	) (prepare_fwupgrade end) ..."
 	prepare_fwupgrade end 2>&1 | indent
 	echo "$(lang de:"ERLEDIGT" en:"DONE")"
 fi
 
-[ "$NAME" = "semistop_avm" ] && (sleep 30;reboot)&
+[ "$NAME" = semistop_avm ] && ( sleep 30; reboot )&
 
-echo "</pre><pre>"
-echo "$(lang de:"Ausführen des Firmware-Installationsskripts" en:"Executing firmware installation script") /var/install ..."
+cat << EOF
+</pre><pre>
+$(lang
+    de:"Ausführen des Firmware-Installationsskripts"
+    en:"Executing firmware installation script"
+) /var/install ...
+EOF
 if [ ! -x /var/install ]; then
-	echo "$(lang de:"FEHLGESCHLAGEN - Installationsskript nicht gefunden oder nicht ausführbar." en:"FAILED - installation script not found or not executable.")"
-	echo
-	echo "$(lang de:"Weiter ohne Neustart." en:"Resuming without reboot.")"
-	echo "$(lang de:"Sie sollten bei Bedarf noch die extrahierten Dateien löschen." en:"You may want to clean up the extracted files.")"
-	exit 1
+    	cat << EOF
+$(lang
+    de:"FEHLGESCHLAGEN - Installationsskript nicht gefunden oder nicht ausführbar.
+
+Weiter ohne Neustart.
+Sie sollten bei Bedarf noch die extrahierten Dateien löschen."
+    en:"FAILED - installation script not found or not executable.
+
+Resuming without reboot.
+You may want to clean up the extracted files."
+)
+EOF
+	pre_exit 1
 fi
 # Remove no-op original from var.tar
 rm -f /var/post_install
-inst_log="$(/var/install 2>&1)"
+inst_log=$(/var/install 2>&1)
 result=$?
 echo "$inst_log" | indent
 unset inst_log
@@ -68,18 +95,30 @@ case $result in
 	8) result_txt="INSTALL_DOWNGRADE_NEEDED" ;;
 	*) result_txt="$(lang de:"unbekannter Fehlercode" en:"unknown error code")" ;;
 esac
-echo "$(lang de:"ERLEDIGT - Rückgabewert des Installationsskripts" en:"DONE - installation script return code") = $result ($result_txt)"
+echo "$(lang
+    de:"ERLEDIGT - Rückgabewert des Installationsskripts"
+    en:"DONE - installation script return code"
+) = $result ($result_txt)"
 
 echo "</pre><pre>"
 echo "$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")"
 if [ ! -x /var/post_install ]; then
 	echo "$(lang de:"KEINER - Nach-Installationsskript nicht gefunden oder nicht ausführbar." en:"NONE - post-installation script not found or not executable.")"
-	exit 1
+	pre_exit 1
 fi
-cat /var/post_install | indent
-echo "$(lang de:"ENDE DER DATEI" en:"END OF FILE")"
-echo
-echo "$(lang de:"Das Nach-Installationsskript läuft beim Neutart (reboot) und führt die" en:"The post-installation script will be executed upon reboot and perform")"
-echo "$(lang de:"darin definiterten Aktionen aus, z.B. das tatsächliche Flashen der Firmware." en:"the actions specified therein, e.g. the actual firmware flashing.")"
-echo "$(lang de:"Sie können immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie" en:"You may still choose to interrupt this process by removing the script")"
-echo "$(lang de:"das Skript und den Rest der extrahierten Firmware-Komponenten löschen." en:"along with the rest of the extracted firmware components.")"
+indent < /var/post_install
+cat << EOF
+$(lang de:"ENDE DER DATEI" en:"END OF FILE")
+
+$(lang 
+    de:"Das Nach-Installationsskript läuft beim Neutart (reboot) und führt die 
+darin definiterten Aktionen aus, z.B. das tatsächliche Flashen der Firmware.
+Sie können immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie
+das Skript und den Rest der extrahierten Firmware-Komponenten löschen."
+    en:"The post-installation script will be executed upon reboot and perform
+the actions specified therein, e.g. the actual firmware flashing.
+You may still choose to interrupt this process by removing the script
+along with the rest of the extracted firmware components."
+)
+</pre>
+EOF

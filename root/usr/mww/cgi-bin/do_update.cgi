@@ -8,12 +8,13 @@ cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
 
 <h1>2. $(lang de:"Firmware extrahieren, Update vorbereiten" en:"Extract firmware, prepare update")</h1>
 
-<pre><%
-cat /tmp/fw_update.log;
-rm -f /tmp/fw_update.log;
-%></pre>
+<%
+cat /tmp/fw_update.log
+rm -f /tmp/fw_update.log
+%>
 
 <p>
 <% back_button /cgi-bin/status.cgi "$(lang de:"Zurück zur Übersicht" en:"Back to main page")" %>
 <form action="/cgi-bin/exec.cgi" method="post"><div class="btn"><input type="hidden" name="cmd" value="reboot"><input type="submit" value="Reboot"></div></form>
+</p>
 <% cgi_end %>

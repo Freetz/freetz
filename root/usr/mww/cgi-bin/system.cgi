@@ -9,7 +9,16 @@ stat_button() {
 
 cgi_begin 'System' system
 
+cat << EOF
+<h1>"$(lang de:"Nicht unterstützte Änderungen" en:"Unauthorized changes")"</h1>
+
+<p>$(lang
+    de:"Diese Warnung lässt sich hier zurücksetzen."
+    en:"This warning can be reset here."
+)</p>
+EOF
+
 # stat_button cleanup '$(lang de:"TFFS aufräumen" en:"Clean up TFFS")'
-stat_button fw_attrib '$(lang de:"Attribute bereinigen" en:"Clean up attributes")'
+stat_button fw_attrib '$(lang de:"Warnung zurücksetzen" en:"Reset warning")'
 
 cgi_end
