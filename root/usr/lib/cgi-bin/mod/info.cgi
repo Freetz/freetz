@@ -97,10 +97,6 @@ preprocess_conf() {
 		}
 		/^PACKAGE/ {
 			s/^PACKAGE_//
-			s/AUTHORIZED_KEYS/AUTHORIZED-KEYS/g
-			s/AVM_FIREWALL/AVM-FIREWALL/g
-			s/INADYN_MT/INADYN-MT/g
-			s/SANE_BACKENDS/SANE-BACKENDS/g
 			s/_/ /
 			$lowercase
 			s/^/20 pkg /; p; d
@@ -108,7 +104,8 @@ preprocess_conf() {
 	" "$file" | sort
 }
 #
-# Format output
+# Format output; the order in which read_entries is called must match the sort
+# order above
 #
 format_conf() {
 	type=START
