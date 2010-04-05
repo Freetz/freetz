@@ -155,17 +155,17 @@ EOF
 
 cgi_begin() {
 local title=$(html "$1") id=${2:+$(_cgi_id "$2")}
+local CR=$'\r'
 cat << EOF
-Content-type: text/html; charset=iso-8859-1
-
+Content-Type: text/html; charset=ISO-8859-1${CR}
+Content-Language: $(lang de:"de" en:"en")${CR}
+Expires: 0${CR}
+Pragma: no-cache${CR}
+${CR}
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<meta http-equiv="Content-Language" content="$(lang de:"de" en:"en")">
-<meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache">
 <title>Freetz&nbsp;&ndash; $title</title>
 <link rel="stylesheet" type="text/css" href="/style/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">

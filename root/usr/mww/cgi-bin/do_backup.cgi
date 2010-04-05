@@ -3,9 +3,10 @@
 [ -r /var/env.cache ] && . /var/env.cache
 
 fname=$(echo ${CONFIG_PRODUKT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}${CONFIG_SUBVERSION}$(date '+_%Y-%m-%d_%H%M.freetz') | tr ' !' '_.')
-echo "Content-Type: application/x-gzip"
-echo "Content-Disposition: attachment; filename=\"$fname\""
-echo
+CR=$'\r'
+echo "Content-Type: application/x-gzip${CR}"
+echo "Content-Disposition: attachment; filename=\"$fname\"${CR}"
+echo "${CR}"
 
 # Create backup of all config files in /var/flash
 #

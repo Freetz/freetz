@@ -24,11 +24,12 @@ self_host() {
 # contents.
 redirect() {
 	local location=$1 title=${2:-Redirect} body_func=${3:-true}
+	local CR=$'\r'
 	cat << EOF
-Status: 301 Moved Permanently
-Location: $location
-Content-type: text/html; charset=iso-8859-1
-
+Status: 301 Moved Permanently${CR}
+Location: $location${CR}
+Content-type: text/html; charset=iso-8859-1${CR}
+${CR}
 <html>
 <head>
 <title>$title</title>

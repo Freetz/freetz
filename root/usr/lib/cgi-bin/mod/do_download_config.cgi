@@ -1,5 +1,6 @@
 #!/bin/sh
-echo "Content-Type: text/plain"
-echo "Content-Disposition: attachment; filename=config.txt"
-echo
+CR=$'\r'
+echo "Content-Type: text/plain${CR}"
+echo "Content-Disposition: attachment; filename=config.txt${CR}"
+echo "${CR}"
 cat /etc/.config
