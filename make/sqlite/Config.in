@@ -5,3 +5,12 @@ config FREETZ_PACKAGE_SQLITE
 	help
 		SQLite is a small C library that implements a self-contained, embeddable,
 		zero-configuration SQL database engine.
+
+config FREETZ_PACKAGE_SQLITE_WITH_READLINE
+	bool "build with readline support"
+	depends on FREETZ_PACKAGE_SQLITE
+	select FREETZ_LIB_libreadline
+	select FREETZ_LIB_libncurses
+	default n
+	help
+		This option causes command line client to be built with readline and history support.
