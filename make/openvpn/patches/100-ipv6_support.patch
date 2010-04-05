@@ -1,5 +1,122 @@
---- buffer.c	2009-10-01 11:02:18.000000000 -0700
-+++ buffer.c	2009-11-22 21:57:44.000000000 -0800
+--- README.ipv6	1970-01-01 01:00:00.000000000 +0100
++++ README.ipv6	2010-02-22 00:35:18.000000000 +0100
+@@ -0,0 +1,81 @@
++[ Last updated: 16-Nov-2009. ]
++
++OpenVPN-2.1 over UDP6/TCP6 README for ipv6-0.4.x patch releases:
++( --udp6 and --tcp6-{client,server} )
++
++* Availability
++  Source code under GPLv2 from http://github.com/jjo/openvpn-ipv6
++
++  Distro ready repos/packages:
++  o Debian sid official repo, by Alberto Gonzalez Iniesta,
++    starting from openvpn_2.1~rc20-2
++  o Gentoo official portage tree, by Marcel Pennewiss:
++    - https://bugs.gentoo.org/show_bug.cgi?id=287896
++  o Ubuntu package, by Bernhard Schmidt:
++    - https://launchpad.net/~berni/+archive/ipv6/+packages
++  o Freetz.org, milestone freetz-1.2
++    - http://trac.freetz.org/milestone/freetz-1.2
++
++* Status:
++  o OK:
++    - upd6,tcp6: GNU/Linux, win32, openbsd-4.6
++    - udp4->upd6,tcp4->tcp6 (ipv4/6 mapped): GNU/Linux
++      (gives a warning on local!=remote proto matching)
++  o NOT:
++    - win32: tcp4->tcp6 (ipv4/6 mapped) fails w/connection refused
++  o NOT tested:
++    - mgmt console
++
++* Build setup:
++  ./configure --enable-ipv6        (by default)
++
++* Usage:
++  For IPv6 just specify "-p upd6" an proper IPv6 hostnames, adapting the example
++  from man page ...
++
++  On may:
++    openvpn --proto udp6 --remote <june_IPv6_addr> --dev tun1 \
++      --ifconfig 10.4.0.1 10.4.0.2 --verb 5 --secret key
++
++  On june:
++    openvpn --proto udp6 --remote <may_IPv6_addr>  --dev tun1 \
++      --ifconfig 10.4.0.2 10.4.0.1 --verb 5 --secret key
++
++  Same for --proto tcp6-client, tcp6-server.
++
++* Main code changes summary:
++  - socket.h: New struct openvpn_sockaddr type that holds sockaddrs and pktinfo,
++    (here I omitted #ifdef USE_PF_xxxx, see socket.h )
++
++    struct openvpn_sockaddr {
++    	union {
++    		struct sockaddr sa;
++    		struct sockaddr_in in;
++    		struct sockaddr_in6 in6;
++    	} addr;
++    };
++
++    struct link_socket_addr
++    {
++            struct openvpn_sockaddr local;
++            struct openvpn_sockaddr remote;
++            struct openvpn_sockaddr actual;
++    };
++
++    PRO: allows simple type overloading: local.addr.sa, local.addr.in, local.addr.in6 ... etc
++    (also local.pi.in and local.pi.in6)
++
++  - several function prototypes moved from sockaddr_in to openvpn_sockaddr
++  - several new sockaddr functions needed to "generalize" AF_xxxx operations:
++    addr_copy(), addr_zero(), ...etc
++    proto_is_udp(), proto_is_dgram(), proto_is_net()
++
++* TODO: See TODO.ipv6
++
++--
++JuanJo Ciarlante   jjo () google () com ............................
++:                                                                  :
++.                                         Linux IP Aliasing author .
++.   Modular algo (AES et all) support for FreeSWAN/OpenSWAN author .
++.                                        OpenVPN over IPv6 support .
++:......     plus other scattered free software bits in the wild ...:
+--- TODO.ipv6	1970-01-01 01:00:00.000000000 +0100
++++ TODO.ipv6	2010-02-22 00:35:18.000000000 +0100
+@@ -0,0 +1,30 @@
++[ Last updated: 11-Nov-2009. ]
++
++* All platforms:
++  o mgmt console: as currently passes straight in_addr_t bits around
++
++  o make possible to get AF from getaddrinfo() answer, ie allow openvpn to
++    use ipv4/6 if DNS returns A/AAAA without specifying protocol.
++    Hard: requires deep changes in initialization/calling logic
++
++  o use AI_PASSIVE
++
++  o the getaddr()/getaddr6() interface is not prepared for handling socktype
++    "tagging", currently I abuse the sockflags bits for getting the ai_socktype
++    downstream.
++
++  o implement comparison for mapped addesses: server in dual stack
++    listening IPv6 must permit incoming streams from allowed IPv4 peer,
++    currently you need to pass eg:  --remote ffff::1.2.3.4
++
++  o do something with multi mode learn routes, for now just ignoring
++    ipv6 addresses seems the most sensible thing to do, because there's
++    no support for intra-tunnel ipv6 stuff.
++
++* win32:
++  o find out about mapped addresses, as I can't make it work
++    with bound at ::1 and connect to 127.0.0.1
++
++* N/A:
++  o this is ipv6 *endpoint* support, so don't expect "ifconfig6"-like
++    support in this patch 
+--- buffer.c	2009-10-01 20:02:18.000000000 +0200
++++ buffer.c	2010-02-22 00:35:18.000000000 +0100
 @@ -215,6 +215,23 @@
    return ret;
  }
@@ -24,8 +141,8 @@
  /*
   * This is necessary due to certain buggy implementations of snprintf,
   * that don't guarantee null termination for size > 0.
---- buffer.h	2009-10-01 11:02:18.000000000 -0700
-+++ buffer.h	2009-11-22 21:57:44.000000000 -0800
+--- buffer.h	2009-10-01 20:02:18.000000000 +0200
++++ buffer.h	2010-02-22 00:35:18.000000000 +0100
 @@ -278,6 +278,11 @@
      ;
  
@@ -38,8 +155,8 @@
   * Like snprintf but guarantees null termination for size > 0
   */
  int openvpn_snprintf(char *str, size_t size, const char *format, ...)
---- config.h.in	2009-11-20 05:18:53.000000000 -0800
-+++ config.h.in	2009-11-22 21:57:52.000000000 -0800
+--- config.h.in	2009-12-12 00:27:04.000000000 +0100
++++ config.h.in	2010-02-22 00:35:26.000000000 +0100
 @@ -529,6 +529,9 @@
  /* Use LZO compression library */
  #undef USE_LZO
@@ -50,8 +167,8 @@
  /* Enable PKCS11 capability */
  #undef USE_PKCS11
  
---- configure	2009-11-20 05:18:53.000000000 -0800
-+++ configure	2009-11-22 21:57:52.000000000 -0800
+--- configure	2009-12-12 00:27:03.000000000 +0100
++++ configure	2010-02-22 00:35:26.000000000 +0100
 @@ -1323,6 +1323,7 @@
    --disable-http          Disable HTTP proxy support
    --disable-fragment      Disable internal fragmentation support (--fragment)
@@ -150,8 +267,8 @@
  
  if test "$MEMCHECK" = "valgrind"; then
     { echo "$as_me:$LINENO: checking for valgrind tool and Header files..." >&5
---- configure.ac	2009-10-01 11:02:18.000000000 -0700
-+++ configure.ac	2009-11-22 21:57:44.000000000 -0800
+--- configure.ac	2009-10-01 20:02:18.000000000 +0200
++++ configure.ac	2010-02-22 00:35:18.000000000 +0100
 @@ -135,6 +135,12 @@
     [MULTIHOME="yes"]
  )
@@ -182,8 +299,8 @@
  dnl
  dnl check for valgrind tool
  dnl
---- init.c	2009-10-01 11:02:18.000000000 -0700
-+++ init.c	2009-11-22 21:57:44.000000000 -0800
+--- init.c	2009-10-01 20:02:18.000000000 +0200
++++ init.c	2010-02-22 00:35:18.000000000 +0100
 @@ -94,7 +94,7 @@
     */
    if (options->pull
@@ -290,8 +407,8 @@
      do_event_set_init (dest, false);
  }
  
---- manage.c	2009-10-01 13:30:21.000000000 -0700
-+++ manage.c	2009-11-22 21:57:44.000000000 -0800
+--- manage.c	2009-10-01 22:30:21.000000000 +0200
++++ manage.c	2010-02-22 00:35:18.000000000 +0100
 @@ -1877,9 +1877,9 @@
  	  /*
  	   * Initialize socket address
@@ -323,8 +440,8 @@
        man_connection_init (man);
      }
  
---- mroute.c	2009-10-01 11:02:18.000000000 -0700
-+++ mroute.c	2009-11-22 21:57:44.000000000 -0800
+--- mroute.c	2009-10-01 20:02:18.000000000 +0200
++++ mroute.c	2010-02-22 00:35:18.000000000 +0100
 @@ -226,25 +226,47 @@
  				      const struct openvpn_sockaddr *osaddr,
  				      bool use_port)
@@ -377,46 +494,8 @@
    return false;
  }
  
-@@ -337,7 +359,37 @@
- 	  }
- 	  break;
- 	case MR_ADDR_IPV6:
-+#ifdef USE_PF_INET6
-+          {
-+	    struct buffer buf;
-+	    struct sockaddr_in6 sin6;
-+	    int port;
-+	    char buf6[INET6_ADDRSTRLEN] = "";
-+	    CLEAR(sin6);
-+	    sin6.sin6_family = AF_INET6;
-+	    buf_set_read (&buf, maddr.addr, maddr.len);
-+            if (buf_read(&buf, &sin6.sin6_addr, sizeof (sin6.sin6_addr)))
-+            {
-+              if (getnameinfo((struct sockaddr *)&sin6, sizeof (struct sockaddr_in6),
-+                                      buf6, sizeof (buf6), NULL, 0, NI_NUMERICHOST) != 0)
-+                {
-+                  buf_printf (&out, "MR_ADDR_IPV6 getnameinfo() err");
-+                  break;
-+		}
-+              buf_puts (&out, buf6);
-+	      if (maddr.type & MR_WITH_NETBITS)
-+	        buf_printf (&out, "/%d", maddr.netbits);
-+              if (maddr.type & MR_WITH_PORT)
-+                {
-+                  port = buf_read_u16 (&buf);
-+                  if (port >= 0)
-+                    buf_printf (&out, ":%d", port);
-+                }
-+	    }
-+          }
-+#else /* old, pre USE_PF_INET6 code */
- 	  buf_printf (&out, "IPV6"); 
-+#endif
- 	  break;
- 	default:
- 	  buf_printf (&out, "UNKNOWN"); 
---- mtcp.c	2009-10-01 11:02:18.000000000 -0700
-+++ mtcp.c	2009-11-22 21:57:44.000000000 -0800
+--- mtcp.c	2009-10-01 20:02:18.000000000 +0200
++++ mtcp.c	2010-02-22 00:35:18.000000000 +0100
 @@ -153,6 +153,11 @@
    ASSERT (mi->context.c2.link_socket);
    ASSERT (mi->context.c2.link_socket->info.lsa);
@@ -429,8 +508,8 @@
    if (!mroute_extract_openvpn_sockaddr (&mi->real, &mi->context.c2.link_socket->info.lsa->actual.dest, true))
      {
        msg (D_MULTI_ERRORS, "MULTI TCP: TCP client address is undefined");
---- multi.c	2009-10-24 16:17:29.000000000 -0700
-+++ multi.c	2009-11-22 21:57:44.000000000 -0800
+--- multi.c	2009-10-25 01:17:29.000000000 +0200
++++ multi.c	2010-02-22 00:35:18.000000000 +0100
 @@ -1066,8 +1066,8 @@
    struct mroute_addr addr;
  
@@ -490,8 +569,8 @@
  }
  
  #else
---- occ.c	2009-10-01 11:02:18.000000000 -0700
-+++ occ.c	2009-11-22 21:57:44.000000000 -0800
+--- occ.c	2009-10-01 20:02:18.000000000 +0200
++++ occ.c	2010-02-22 00:35:18.000000000 +0100
 @@ -369,7 +369,7 @@
  	       c->c2.max_send_size_remote,
  	       c->c2.max_recv_size_local);
@@ -501,8 +580,47 @@
  	      && c->c2.max_send_size_local > TUN_MTU_MIN
  	      && (c->c2.max_recv_size_remote < c->c2.max_send_size_local
  		  || c->c2.max_recv_size_local < c->c2.max_send_size_remote))
---- options.c	2009-11-20 05:09:14.000000000 -0800
-+++ options.c	2009-11-22 21:57:44.000000000 -0800
+--- openvpn.8	2009-12-11 09:04:24.000000000 +0100
++++ openvpn.8	2010-02-22 00:35:18.000000000 +0100
+@@ -5333,13 +5333,16 @@
+ script execution.
+ .\"*********************************************************
+ .TP
+-.B trusted_ip
++.B trusted_ip (or trusted_ip6)
+ Actual IP address of connecting client or peer which has been authenticated.
+ Set prior to execution of
+ .B --ipchange, --client-connect,
+ and
+ .B --client-disconnect
+ scripts.
++If using ipv6 endpoints (udp6, tcp6),
++.B trusted_ip6
++will be set instead.
+ .\"*********************************************************
+ .TP
+ .B trusted_port
+@@ -5351,7 +5354,7 @@
+ scripts.
+ .\"*********************************************************
+ .TP
+-.B untrusted_ip
++.B untrusted_ip (or untrusted_ip6)
+ Actual IP address of connecting client or peer which has not been authenticated
+ yet.  Sometimes used to
+ .B nmap
+@@ -5363,6 +5366,9 @@
+ and
+ .B --auth-user-pass-verify
+ scripts.
++If using ipv6 endpoints (udp6, tcp6),
++.B untrusted_ip6
++will be set instead.
+ .\"*********************************************************
+ .TP
+ .B untrusted_port
+--- options.c	2009-12-11 09:09:39.000000000 +0100
++++ options.c	2010-02-22 00:35:18.000000000 +0100
 @@ -73,6 +73,12 @@
  #ifdef ENABLE_PKCS11
    " [PKCS11]"
@@ -690,8 +808,8 @@
      }
  #endif
  
---- ps.c	2009-10-01 11:02:18.000000000 -0700
-+++ ps.c	2009-11-22 21:57:44.000000000 -0800
+--- ps.c	2009-10-01 20:02:18.000000000 +0200
++++ ps.c	2010-02-22 00:35:18.000000000 +0100
 @@ -332,9 +332,9 @@
  	       const int port)
  {
@@ -705,92 +823,8 @@
  }
  
  static inline void
---- README.ipv6	1969-12-31 16:00:00.000000000 -0800
-+++ README.ipv6	2009-11-22 21:57:44.000000000 -0800
-@@ -0,0 +1,81 @@
-+[ Last updated: 16-Nov-2009. ]
-+
-+OpenVPN-2.1 over UDP6/TCP6 README for ipv6-0.4.x patch releases:
-+( --udp6 and --tcp6-{client,server} )
-+
-+* Availability
-+  Source code under GPLv2 from http://github.com/jjo/openvpn-ipv6
-+
-+  Distro ready repos/packages:
-+  o Debian sid official repo, by Alberto Gonzalez Iniesta,
-+    starting from openvpn_2.1~rc20-2
-+  o Gentoo official portage tree, by Marcel Pennewiss:
-+    - https://bugs.gentoo.org/show_bug.cgi?id=287896
-+  o Ubuntu package, by Bernhard Schmidt:
-+    - https://launchpad.net/~berni/+archive/ipv6/+packages
-+  o Freetz.org, milestone freetz-1.2
-+    - http://trac.freetz.org/milestone/freetz-1.2
-+
-+* Status:
-+  o OK:
-+    - upd6,tcp6: GNU/Linux, win32, openbsd-4.6
-+    - udp4->upd6,tcp4->tcp6 (ipv4/6 mapped): GNU/Linux
-+      (gives a warning on local!=remote proto matching)
-+  o NOT:
-+    - win32: tcp4->tcp6 (ipv4/6 mapped) fails w/connection refused
-+  o NOT tested:
-+    - mgmt console
-+
-+* Build setup:
-+  ./configure --enable-ipv6        (by default)
-+
-+* Usage:
-+  For IPv6 just specify "-p upd6" an proper IPv6 hostnames, adapting the example
-+  from man page ...
-+
-+  On may:
-+    openvpn --proto udp6 --remote <june_IPv6_addr> --dev tun1 \
-+      --ifconfig 10.4.0.1 10.4.0.2 --verb 5 --secret key
-+
-+  On june:
-+    openvpn --proto udp6 --remote <may_IPv6_addr>  --dev tun1 \
-+      --ifconfig 10.4.0.2 10.4.0.1 --verb 5 --secret key
-+
-+  Same for --proto tcp6-client, tcp6-server.
-+
-+* Main code changes summary:
-+  - socket.h: New struct openvpn_sockaddr type that holds sockaddrs and pktinfo,
-+    (here I omitted #ifdef USE_PF_xxxx, see socket.h )
-+
-+    struct openvpn_sockaddr {
-+    	union {
-+    		struct sockaddr sa;
-+    		struct sockaddr_in in;
-+    		struct sockaddr_in6 in6;
-+    	} addr;
-+    };
-+
-+    struct link_socket_addr
-+    {
-+            struct openvpn_sockaddr local;
-+            struct openvpn_sockaddr remote;
-+            struct openvpn_sockaddr actual;
-+    };
-+
-+    PRO: allows simple type overloading: local.addr.sa, local.addr.in, local.addr.in6 ... etc
-+    (also local.pi.in and local.pi.in6)
-+
-+  - several function prototypes moved from sockaddr_in to openvpn_sockaddr
-+  - several new sockaddr functions needed to "generalize" AF_xxxx operations:
-+    addr_copy(), addr_zero(), ...etc
-+    proto_is_udp(), proto_is_dgram(), proto_is_net()
-+
-+* TODO: See TODO.ipv6
-+
-+--
-+JuanJo Ciarlante   jjo () google () com ............................
-+:                                                                  :
-+.                                         Linux IP Aliasing author .
-+.   Modular algo (AES et all) support for FreeSWAN/OpenSWAN author .
-+.                                        OpenVPN over IPv6 support .
-+:......     plus other scattered free software bits in the wild ...:
---- route.c	2009-10-01 11:02:18.000000000 -0700
-+++ route.c	2009-11-22 21:57:44.000000000 -0800
+--- route.c	2009-10-01 20:02:18.000000000 +0200
++++ route.c	2010-02-22 00:35:18.000000000 +0100
 @@ -572,13 +572,23 @@
  	  if (!local)
  	    {
@@ -822,8 +856,8 @@
  	    }
  
  	  /* route DHCP/DNS server traffic through original default gateway */
---- socket.c	2009-10-01 11:02:18.000000000 -0700
-+++ socket.c	2009-11-22 21:57:44.000000000 -0800
+--- socket.c	2009-12-11 05:59:45.000000000 +0100
++++ socket.c	2010-02-22 00:35:18.000000000 +0100
 @@ -37,23 +37,28 @@
  #include "memdbg.h"
  
@@ -2184,8 +2218,8 @@
      }
    
    if (buf)
---- socket.h	2009-10-01 11:02:18.000000000 -0700
-+++ socket.h	2009-11-22 21:57:44.000000000 -0800
+--- socket.h	2009-10-01 20:02:18.000000000 +0200
++++ socket.h	2010-02-22 00:35:18.000000000 +0100
 @@ -70,7 +70,13 @@
  struct openvpn_sockaddr
  {
@@ -2562,8 +2596,8 @@
      {
        return link_socket_write_tcp (sock, buf, to);
      }
---- socks.c	2009-10-01 11:02:18.000000000 -0700
-+++ socks.c	2009-11-22 21:57:44.000000000 -0800
+--- socks.c	2009-10-01 20:02:18.000000000 +0200
++++ socks.c	2010-02-22 00:35:18.000000000 +0100
 @@ -174,9 +174,9 @@
  
    if (addr != NULL)
@@ -2610,8 +2644,8 @@
  
    return 10;
  }
---- syshead.h	2009-10-01 11:02:18.000000000 -0700
-+++ syshead.h	2009-11-22 21:57:44.000000000 -0800
+--- syshead.h	2009-10-01 20:02:18.000000000 +0200
++++ syshead.h	2010-02-22 00:35:18.000000000 +0100
 @@ -28,6 +28,10 @@
  /*
   * Only include if not during configure
@@ -2633,41 +2667,8 @@
  #endif
  
  #ifdef HAVE_SYS_MMAN_H
---- TODO.ipv6	1969-12-31 16:00:00.000000000 -0800
-+++ TODO.ipv6	2009-11-22 21:57:44.000000000 -0800
-@@ -0,0 +1,30 @@
-+[ Last updated: 11-Nov-2009. ]
-+
-+* All platforms:
-+  o mgmt console: as currently passes straight in_addr_t bits around
-+
-+  o make possible to get AF from getaddrinfo() answer, ie allow openvpn to
-+    use ipv4/6 if DNS returns A/AAAA without specifying protocol.
-+    Hard: requires deep changes in initialization/calling logic
-+
-+  o use AI_PASSIVE
-+
-+  o the getaddr()/getaddr6() interface is not prepared for handling socktype
-+    "tagging", currently I abuse the sockflags bits for getting the ai_socktype
-+    downstream.
-+
-+  o implement comparison for mapped addesses: server in dual stack
-+    listening IPv6 must permit incoming streams from allowed IPv4 peer,
-+    currently you need to pass eg:  --remote ffff::1.2.3.4
-+
-+  o do something with multi mode learn routes, for now just ignoring
-+    ipv6 addresses seems the most sensible thing to do, because there's
-+    no support for intra-tunnel ipv6 stuff.
-+
-+* win32:
-+  o find out about mapped addresses, as I can't make it work
-+    with bound at ::1 and connect to 127.0.0.1
-+
-+* N/A:
-+  o this is ipv6 *endpoint* support, so don't expect "ifconfig6"-like
-+    support in this patch 
---- tun.c	2009-11-20 05:09:14.000000000 -0800
-+++ tun.c	2009-11-22 21:57:44.000000000 -0800
+--- tun.c	2009-11-20 14:09:14.000000000 +0100
++++ tun.c	2010-02-22 00:35:18.000000000 +0100
 @@ -1605,7 +1605,9 @@
  	  strerror(errno));
        }
@@ -2678,8 +2679,8 @@
  
        if (ioctl (tt->fd, TUNSIFINFO, &info) < 0) {
  	msg (M_WARN | M_ERRNO, "Can't set interface info: %s",
---- win32.h	2009-11-20 05:09:14.000000000 -0800
-+++ win32.h	2009-11-22 21:57:44.000000000 -0800
+--- win32.h	2009-11-20 14:09:14.000000000 +0100
++++ win32.h	2010-02-22 00:35:18.000000000 +0100
 @@ -193,7 +193,10 @@
    DWORD flags;
    int status;
