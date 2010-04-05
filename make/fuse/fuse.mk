@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.7.4)
-$(PKG)_SOURCE:=fuse-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4879f06570d2225667534c37fea04213
+$(call PKG_INIT_BIN, 2.7.5)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=b428c526d86cf004cca0f8c83270445b
 $(PKG)_SITE:=@SF/fuse
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/util/fusermount
@@ -15,6 +15,9 @@ $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libfuse.so.$($(PKG)_VERSION)
 $(PKG)_DEPENDS_ON := kernel
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_LAYOUT
+
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's|-D_FILE_OFFSET_BITS=64||g;' fuse.pc.in {example,lib,util}/Makefile.{am,in};
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's|^([ \t]*\#error .*-D_FILE_OFFSET_BITS=64.*)$$$$|/*\1*/|g;' include/fuse_common.h;
 
 $(PKG)_CONFIGURE_ENV += acl_cv_libext=a
 
