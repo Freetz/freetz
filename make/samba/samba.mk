@@ -16,6 +16,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
+	for target in proto all; do \
 	$(SUBMAKE) -C $(SAMBA_DIR)/source \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
@@ -23,7 +24,8 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 		TARGETFS="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		SAMBA_CFLAGS="$(TARGET_CFLAGS)" \
 		CODEPAGEDIR="/mod/usr/share/samba" \
-		proto all
+		$$target; \
+	done
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/sbin/%: $($(PKG)_DIR)/source/bin/%
 	$(INSTALL_BINARY_STRIP)
