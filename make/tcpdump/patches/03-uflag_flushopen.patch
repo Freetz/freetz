@@ -1,0 +1,13 @@
+--- tcpdump.c.orig	2010-04-07 12:36:49.000000000 +0200
++++ tcpdump.c	2010-04-07 12:36:49.000000000 +0200
+@@ -1191,6 +1191,10 @@
+ 			callback = dump_packet;
+ 			pcap_userdata = (u_char *)p;
+ 		}
++#ifdef HAVE_PCAP_DUMP_FLUSH
++		if (Uflag)
++			pcap_dump_flush(p);
++#endif
+ 	} else {
+ 		type = pcap_datalink(pd);
+                 printinfo.ndo_type = 1;

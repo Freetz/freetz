@@ -1,6 +1,6 @@
---- pcap-config.in.orig	2009-11-23 10:32:12.000000000 +0100
-+++ pcap-config.in	2009-11-23 10:34:13.000000000 +0100
-@@ -4,13 +4,17 @@
+--- pcap-config.in.orig	2010-03-12 02:56:54.000000000 +0100
++++ pcap-config.in	2010-04-07 10:43:10.000000000 +0200
+@@ -4,6 +4,10 @@
  # Script to give the appropriate compiler flags and linker flags
  # to use when building code that uses libpcap.
  #
@@ -8,15 +8,59 @@
 +libdir=@libdir@
 +includedir=@includedir@
 +
- case "$1" in
- 
- --cflags)
--	echo "-I @includedir@"
-+	echo "-I $includedir"
- 	;;
- 
- --libs)
--	echo "-L @libdir@ -lpcap @DEPLIBS@"
-+	echo "-L $libdir -lpcap @DEPLIBS@"
- 	;;
- esac
+ static=0
+ show_cflags=0
+ show_libs=0
+@@ -34,9 +38,9 @@
+ 	#
+ 	# If libdir isn't /usr/lib, add it to the run-time linker path.
+ 	#
+-	if [ "@libdir@" != "/usr/lib" ]
++	if [ "$libdir" != "/usr/lib" ]
+ 	then
+-		RPATH=@V_RPATH_OPT@@libdir@
++		RPATH=@V_RPATH_OPT@$libdir
+ 	fi
+ fi
+ if [ "$static" = 1 ]
+@@ -47,16 +51,16 @@
+ 	#
+ 	if [ "$show_cflags" = 1 -a "$show_libs" = 1 ]
+ 	then
+-		echo "-I@includedir@ -L@libdir@ -lpcap @LIBS@"
++		echo "-I$includedir -L$libdir -lpcap @LIBS@"
+ 	elif [ "$show_cflags" = 1 -a "$show_additional_libs" = 1 ]
+ 	then
+-		echo "-I@includedir@ -L@libdir@ @LIBS@"
++		echo "-I$includedir -L$libdir @LIBS@"
+ 	elif [ "$show_cflags" = 1 ]
+ 	then
+-		echo "-I@includedir@"
++		echo "-I$includedir"
+ 	elif [ "$show_libs" = 1 ]
+ 	then
+-		echo "-L@libdir@ -lpcap @LIBS@"
++		echo "-L$libdir -lpcap @LIBS@"
+ 	elif [ "$show_additional_libs" = 1 ]
+ 	then
+ 		echo "@LIBS@"
+@@ -68,15 +72,15 @@
+ 	#
+ 	if [ "$show_cflags" = 1 -a "$show_libs" = 1 ]
+ 	then
+-		echo "-I@includedir@ -L@libdir@ $RPATH -lpcap"
++		echo "-I$includedir -L$libdir -lpcap"
+ 	elif [ "$show_cflags" = 1 -a "$show_additional_libs" = 1 ]
+ 	then
+-		echo "-I@includedir@"
++		echo "-I$includedir"
+ 	elif [ "$show_cflags" = 1 ]
+ 	then
+-		echo "-I@includedir@"
++		echo "-I$includedir"
+ 	elif [ "$show_libs" = 1 ]
+ 	then
+-		echo "-L@libdir@ $RPATH -lpcap"
++		echo "-L$libdir -lpcap"
+ 	fi
+ fi

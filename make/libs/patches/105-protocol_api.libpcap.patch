@@ -1,6 +1,6 @@
---- pcap-int.h
-+++ pcap-int.h
-@@ -187,6 +187,7 @@ struct pcap_opt {
+--- pcap-int.h.orig	2010-03-12 02:56:54.000000000 +0100
++++ pcap-int.h	2010-04-07 10:37:10.000000000 +0200
+@@ -209,6 +209,7 @@
  	char	*source;
  	int	promisc;
  	int	rfmon;
@@ -8,27 +8,27 @@
  };
  
  /*
---- pcap-linux.c
-+++ pcap-linux.c
-@@ -273,7 +273,7 @@ static int	iface_get_id(int fd, const ch
+--- pcap-linux.c.orig	2010-04-07 10:37:10.000000000 +0200
++++ pcap-linux.c	2010-04-07 10:37:10.000000000 +0200
+@@ -335,7 +335,7 @@
  static int	iface_get_mtu(int fd, const char *device, char *ebuf);
  static int 	iface_get_arptype(int fd, const char *device, char *ebuf);
  #ifdef HAVE_PF_PACKET_SOCKETS
 -static int 	iface_bind(int fd, int ifindex, char *ebuf);
 +static int 	iface_bind(int fd, int ifindex, char *ebuf, unsigned short proto);
+ #ifdef IW_MODE_MONITOR
  static int	has_wext(int sock_fd, const char *device, char *ebuf);
- static int	enter_rfmon_mode_wext(pcap_t *handle, int sock_fd,
-     const char *device);
-@@ -362,7 +362,7 @@ pcap_can_set_rfmon_linux(pcap_t *p)
+ #endif /* IW_MODE_MONITOR */
+@@ -881,7 +881,7 @@
  	 * (We assume that if we have Wireless Extensions support
  	 * we also have PF_PACKET support.)
  	 */
 -	sock_fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-+	sock_fd = socket(PF_PACKET, SOCK_RAW, p->opt.proto);
++	sock_fd = socket(PF_PACKET, SOCK_RAW, handle->opt.proto);
  	if (sock_fd == -1) {
- 		(void)snprintf(p->errbuf, PCAP_ERRBUF_SIZE,
+ 		(void)snprintf(handle->errbuf, PCAP_ERRBUF_SIZE,
  		    "socket: %s", pcap_strerror(errno));
-@@ -522,6 +522,9 @@ pcap_activate_linux(pcap_t *handle)
+@@ -1128,6 +1128,9 @@
  	handle->read_op = pcap_read_linux;
  	handle->stats_op = pcap_stats_linux;
  
@@ -38,7 +38,7 @@
  	/*
  	 * The "any" device is a special device which causes us not
  	 * to bind to a particular device and thus to look at all
-@@ -1673,8 +1676,8 @@ activate_new(pcap_t *handle)
+@@ -2684,8 +2687,8 @@
  	 * try a SOCK_RAW socket for the raw interface.
  	 */
  	sock_fd = is_any_device ?
@@ -49,7 +49,7 @@
  
  	if (sock_fd == -1) {
  		snprintf(handle->errbuf, PCAP_ERRBUF_SIZE, "socket: %s",
-@@ -1763,7 +1766,7 @@ activate_new(pcap_t *handle)
+@@ -2783,7 +2786,7 @@
  				return PCAP_ERROR;
  			}
  			sock_fd = socket(PF_PACKET, SOCK_DGRAM,
@@ -58,7 +58,7 @@
  			if (sock_fd == -1) {
  				snprintf(handle->errbuf, PCAP_ERRBUF_SIZE,
  				    "socket: %s", pcap_strerror(errno));
-@@ -1815,7 +1818,7 @@ activate_new(pcap_t *handle)
+@@ -2835,7 +2838,7 @@
  		}
  
  		if ((err = iface_bind(sock_fd, handle->md.ifindex,
@@ -67,7 +67,7 @@
  		    	close(sock_fd);
  			if (err < 0)
  				return err;
-@@ -2440,7 +2443,7 @@ iface_get_id(int fd, const char *device,
+@@ -3640,7 +3643,7 @@
   *  or a PCAP_ERROR_ value on a hard error.
   */
  static int
@@ -76,7 +76,7 @@
  {
  	struct sockaddr_ll	sll;
  	int			err;
-@@ -2449,7 +2452,7 @@ iface_bind(int fd, int ifindex, char *eb
+@@ -3649,7 +3652,7 @@
  	memset(&sll, 0, sizeof(sll));
  	sll.sll_family		= AF_PACKET;
  	sll.sll_ifindex		= ifindex;
@@ -85,7 +85,7 @@
  
  	if (bind(fd, (struct sockaddr *) &sll, sizeof(sll)) == -1) {
  		if (errno == ENETDOWN) {
-@@ -3119,7 +3122,7 @@ activate_old(pcap_t *handle)
+@@ -4359,7 +4362,7 @@
  
  	/* Open the socket */
  
@@ -94,9 +94,9 @@
  	if (handle->fd == -1) {
  		snprintf(handle->errbuf, PCAP_ERRBUF_SIZE,
  			 "socket: %s", pcap_strerror(errno));
---- pcap.c
-+++ pcap.c
-@@ -152,6 +152,8 @@ pcap_create_common(const char *source, c
+--- pcap.c.orig	2010-04-07 10:37:10.000000000 +0200
++++ pcap.c	2010-04-07 10:37:10.000000000 +0200
+@@ -258,6 +258,8 @@
  	pcap_set_snaplen(p, 65535);	/* max packet size */
  	p->opt.promisc = 0;
  	p->opt.buffer_size = 0;
@@ -105,7 +105,7 @@
  	return (p);
  }
  
-@@ -212,6 +214,15 @@ pcap_set_buffer_size(pcap_t *p, int buff
+@@ -318,6 +320,15 @@
  }
  
  int
@@ -121,9 +121,9 @@
  pcap_activate(pcap_t *p)
  {
  	int status;
---- pcap/pcap.h
-+++ pcap/pcap.h
-@@ -61,6 +61,7 @@ extern "C" {
+--- pcap/pcap.h.orig	2010-03-12 02:56:54.000000000 +0100
++++ pcap/pcap.h	2010-04-07 10:37:10.000000000 +0200
+@@ -68,6 +68,7 @@
  #define PCAP_VERSION_MINOR 4
  
  #define PCAP_ERRBUF_SIZE 256
@@ -131,7 +131,7 @@
  
  /*
   * Compatibility for systems that have a bpf.h that
-@@ -263,6 +264,7 @@ int	pcap_can_set_rfmon(pcap_t *);
+@@ -276,6 +277,7 @@
  int	pcap_set_rfmon(pcap_t *, int);
  int	pcap_set_timeout(pcap_t *, int);
  int	pcap_set_buffer_size(pcap_t *, int);

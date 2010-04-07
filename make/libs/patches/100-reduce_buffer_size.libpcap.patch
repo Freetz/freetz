@@ -1,7 +1,7 @@
---- pcap-linux.c.orig	2008-10-28 02:52:19.000000000 +0100
-+++ pcap-linux.c	2010-02-10 20:30:20.000000000 +0100
-@@ -1921,8 +1921,8 @@
- 	int ret;
+--- pcap-linux.c.orig	2010-03-12 02:56:54.000000000 +0100
++++ pcap-linux.c	2010-04-07 10:18:37.000000000 +0200
+@@ -2969,8 +2969,8 @@
+ 	}
  
  	if (handle->opt.buffer_size == 0) {
 -		/* by default request 2M for the ring buffer */
@@ -10,4 +10,4 @@
 +		handle->opt.buffer_size = 1*1024*1024;
  	}
  	ret = prepare_tpacket_socket(handle);
- 	if (ret == 0)
+ 	if (ret != 1) {

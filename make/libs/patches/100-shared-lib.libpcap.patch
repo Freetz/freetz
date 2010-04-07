@@ -1,12 +1,12 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -40,6 +40,14 @@ mandir = @mandir@
+@@ -40,6 +40,14 @@
  srcdir = @srcdir@
  VPATH = @srcdir@
  
 +# some defines for shared library compilation
-+MAJ=1.0
-+LIBVERSION=$(MAJ).0
++MAJ=1.1
++LIBVERSION=$(MAJ).1
 +LIBNAME=pcap
 +LIBRARY=lib$(LIBNAME).a
 +SOLIBRARY=lib$(LIBNAME).so
@@ -15,7 +15,7 @@
  #
  # You shouldn't need to edit anything below.
  #
-@@ -56,6 +64,7 @@ PROG=libpcap
+@@ -59,6 +67,7 @@
  
  # Standard CFLAGS
  CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
@@ -23,7 +23,7 @@
  
  INSTALL = @INSTALL@
  INSTALL_PROGRAM = @INSTALL_PROGRAM@
-@@ -75,7 +84,11 @@ YACC = @V_YACC@
+@@ -78,7 +87,11 @@
  # problem if you don't own the file but can write to the directory.
  .c.o:
  	@rm -f $@
@@ -34,38 +34,37 @@
 +	@rm -f $@
 +	$(CC) -fPIC $(CFLAGS) -c -o $@ $(srcdir)/$*.c
  
- PSRC =	pcap-@V_PCAP@.c @USB_SRC@ @BT_SRC@
+ PSRC =	pcap-@V_PCAP@.c @USB_SRC@ @BT_SRC@ @CAN_SRC@
  FSRC =  fad-@V_FINDALLDEVS@.c
-@@ -90,6 +103,7 @@ SRC =	$(PSRC) $(FSRC) $(CSRC) $(SSRC) $(
+@@ -94,6 +107,7 @@
  # We would like to say "OBJ = $(SRC:.c=.o)" but Ultrix's make cannot
  # hack the extra indirection
  OBJ =	$(PSRC:.c=.o) $(FSRC:.c=.o) $(CSRC:.c=.o) $(SSRC:.c=.o) $(GENSRC:.c=.o) $(LIBOBJS)
 +OBJ_PIC = $(PSRC:.c=_pic.o) $(FSRC:.c=_pic.o) $(CSRC:.c=_pic.o) $(SSRC:.c=_pic.o) $(GENSRC:.c=_pic.o)
- HDR = \
- 	acconfig.h \
- 	arcnet.h \
-@@ -122,7 +136,8 @@ TAGHDR = \
- TAGFILES = \
- 	$(SRC) $(HDR) $(TAGHDR)
+ PUBHDR = \
+ 	pcap.h \
+ 	pcap-bpf.h \
+@@ -131,7 +145,7 @@
  
--CLEANFILES = $(OBJ) libpcap.a $(GENSRC) $(GENHDR) lex.yy.c
-+CLEANFILES = $(OBJ) libpcap.a $(GENSRC) $(GENHDR) lex.yy.c \
-+	$(OBJ_PIC) libpcap.so*
+ CLEANFILES = $(OBJ) libpcap.* filtertest findalldevstest selpolltest \
+ 	opentest $(PROG)-`cat $(srcdir)/VERSION`.tar.gz $(GENSRC) $(GENHDR) \
+-	lex.yy.c pcap-config
++	lex.yy.c pcap-config $(OBJ_PIC)
  
  MAN1 = pcap-config.1
  
-@@ -311,7 +326,7 @@ EXTRA_DIST = \
- 	Win32/Src/inet_net.c \
- 	Win32/Src/inet_pton.c
+@@ -331,7 +345,7 @@
+ 	ar rc $@ $(OBJ) $(ADDLARCHIVEOBJS)
+ 	$(RANLIB) $@
  
--all: libpcap.a pcap-config
-+all: libpcap.a pcap-config $(SHAREDLIB)
+-shared: libpcap.$(DYEXT)
++shared: $(SHAREDLIB)
  
- libpcap.a: $(OBJ)
+ libpcap.so: $(OBJ)
  	@rm -f $@
-@@ -344,6 +359,13 @@ libpcap.dylib: $(OBJ)
- 		-compatibility_version 1 \
- 		-current_version `sed 's/[^0-9.].*$$//' $(srcdir)/VERSION`
+@@ -409,6 +423,13 @@
+ #
+ libpcap.none:
  
 +$(SHAREDLIB): $(OBJ_PIC)
 +	-@rm -f $@
@@ -76,8 +75,8 @@
 +
  scanner.c: $(srcdir)/scanner.l
  	@rm -f $@
- 	./runlex.sh $(LEX) -o$@ $<
-@@ -351,6 +373,9 @@ scanner.c: $(srcdir)/scanner.l
+ 	$(srcdir)/runlex.sh $(LEX) -o$@ $<
+@@ -416,6 +437,9 @@
  scanner.o: scanner.c tokdefs.h
  	$(CC) $(CFLAGS) -c scanner.c
  
@@ -87,13 +86,13 @@
  pcap.o: version.h
  
  tokdefs.h: grammar.c
-@@ -364,9 +389,17 @@ grammar.o: grammar.c
+@@ -429,9 +453,17 @@
  	@rm -f $@
  	$(CC) $(CFLAGS) -Dyylval=pcap_lval -c grammar.c
  
 +grammar_pic.o: grammar.c
 +	@rm -f $@
-+	$(CC) -fPIC $(CFLAGS) -Dyylval=pcap_lval -o $@ -c grammar.c
++	$(CC) -fPIC $(CFLAGS) -Dyylval=pcap_lval -o $@ -c grammar.c 
 +
  version.o: version.c
  	$(CC) $(CFLAGS) -c version.c
@@ -105,7 +104,7 @@
  snprintf.o: $(srcdir)/missing/snprintf.c
  	$(CC) $(CFLAGS) -o $@ -c $(srcdir)/missing/snprintf.c
  
-@@ -392,6 +425,9 @@ bpf_filter.c: $(srcdir)/bpf/net/bpf_filt
+@@ -469,6 +501,9 @@
  bpf_filter.o: bpf_filter.c
  	$(CC) $(CFLAGS) -c bpf_filter.c
  
@@ -115,35 +114,58 @@
  #
  # Generate the pcap-config script.
  #
-@@ -418,6 +454,9 @@ install: libpcap.a pcap-config
+@@ -565,11 +600,9 @@
+ install-shared-so: libpcap.so
+ 	[ -d $(DESTDIR)$(libdir) ] || \
  	    (mkdir -p $(DESTDIR)$(libdir); chmod 755 $(DESTDIR)$(libdir))
- 	$(INSTALL_DATA) libpcap.a $(DESTDIR)$(libdir)/libpcap.a
- 	$(RANLIB) $(DESTDIR)$(libdir)/libpcap.a
+-	VER=`cat $(srcdir)/VERSION`; \
+-	MAJOR_VER=`sed 's/\([0-9][0-9]*\)\..*/\1/' $(srcdir)/VERSION`; \
+-	$(INSTALL_PROGRAM) libpcap.so.$$VER $(DESTDIR)$(libdir)/libpcap.so.$$VER; \
+-	ln -sf libpcap.so.$$VER $(DESTDIR)$(libdir)/libpcap.so.$$MAJOR_VER; \
+-	ln -sf libpcap.so.$$MAJOR_VER $(DESTDIR)$(libdir)/libpcap.so
 +	$(INSTALL_DATA) $(SHAREDLIB) $(DESTDIR)$(libdir)/
 +	ln -sf $(SHAREDLIB) $(DESTDIR)$(libdir)/$(SOLIBRARY).$(MAJ)
 +	ln -sf $(SOLIBRARY).$(MAJ) $(DESTDIR)$(libdir)/$(SOLIBRARY)
- 	[ -d $(DESTDIR)$(includedir) ] || \
- 	    (mkdir -p $(DESTDIR)$(includedir); chmod 755 $(DESTDIR)$(includedir))
- 	[ -d $(DESTDIR)$(includedir)/pcap ] || \
+ install-shared-dylib: libpcap.dylib
+ 	[ -d $(DESTDIR)$(libdir) ] || \
+ 	    (mkdir -p $(DESTDIR)$(libdir); chmod 755 $(DESTDIR)$(libdir))
+--- aclocal.m4
++++ aclocal.m4
+@@ -245,7 +245,7 @@
+ 		    # or accepts command-line arguments like
+ 		    # those the GNU linker accepts.
+ 		    #
+-		    V_CCOPT="$V_CCOPT -fpic"
++		    V_CCOPT="$V_CCOPT"
+ 		    V_SONAME_OPT="-Wl,-soname,"
+ 		    V_RPATH_OPT="-Wl,-rpath,"
+ 		    ;;
+@@ -308,7 +308,7 @@
+ 		    #
+ 		    # "cc" is GCC.
+ 		    #
+-		    V_CCOPT="$V_CCOPT -fpic"
++		    V_CCOPT="$V_CCOPT"
+ 		    V_SHLIB_CMD="\$(CC)"
+ 		    V_SHLIB_OPT="-shared"
+ 		    V_SONAME_OPT="-Wl,-soname,"
 --- configure
 +++ configure
-@@ -8658,7 +8658,7 @@ irix*)
- 	;;
- 
- linux*)
--	V_CCOPT="$V_CCOPT -fPIC"
-+	V_CCOPT="$V_CCOPT"
- 	;;
- 
- osf*)
---- configure.in
-+++ configure.in
-@@ -943,7 +943,7 @@ irix*)
- 	;;
- 
- linux*)
--	V_CCOPT="$V_CCOPT -fPIC"
-+	V_CCOPT="$V_CCOPT"
- 	;;
- 
- osf*)
+@@ -3229,7 +3229,7 @@
+ 		    # or accepts command-line arguments like
+ 		    # those the GNU linker accepts.
+ 		    #
+-		    V_CCOPT="$V_CCOPT -fpic"
++		    V_CCOPT="$V_CCOPT"
+ 		    V_SONAME_OPT="-Wl,-soname,"
+ 		    V_RPATH_OPT="-Wl,-rpath,"
+ 		    ;;
+@@ -3292,7 +3292,7 @@
+ 		    #
+ 		    # "cc" is GCC.
+ 		    #
+-		    V_CCOPT="$V_CCOPT -fpic"
++		    V_CCOPT="$V_CCOPT"
+ 		    V_SHLIB_CMD="\$(CC)"
+ 		    V_SHLIB_OPT="-shared"
+ 		    V_SONAME_OPT="-Wl,-soname,"

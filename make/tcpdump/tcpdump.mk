@@ -1,13 +1,14 @@
-$(call PKG_INIT_BIN, 4.0.0)
+$(call PKG_INIT_BIN, 4.1.1)
 $(PKG)_SOURCE:=tcpdump-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.tcpdump.org/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpdump
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tcpdump
-$(PKG)_SOURCE_MD5:=b22ca72890df2301d922c9f2d17867f9
+$(PKG)_SOURCE_MD5:=d0dd58bbd6cd36795e05c6f1f74420b0
 
 $(PKG)_DEPENDS_ON := libpcap
 
 $(PKG)_CONFIGURE_ENV += td_cv_buggygetaddrinfo="no"
+$(PKG)_CONFIGURE_ENV += ac_cv_path_PCAP_CONFIG=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcap-config
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --without-crypto

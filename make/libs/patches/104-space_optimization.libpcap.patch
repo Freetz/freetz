@@ -1,6 +1,6 @@
---- gencode.c
-+++ gencode.c
-@@ -439,20 +439,6 @@ pcap_compile_nopcap(int snaplen_arg, int
+--- gencode.c.orig	2010-03-12 02:56:54.000000000 +0100
++++ gencode.c	2010-04-07 10:33:23.000000000 +0200
+@@ -491,20 +491,6 @@
  }
  
  /*
@@ -21,9 +21,9 @@
   * Backpatch the blocks in 'list' to 'target'.  The 'sense' field indicates
   * which of the jt and jf fields has been resolved and which is a pointer
   * back to another unresolved block (or nil).  At least one of the fields
---- pcap.c
-+++ pcap.c
-@@ -698,6 +698,59 @@ static const u_char charmap[] = {
+--- pcap.c.orig	2010-03-12 02:56:54.000000000 +0100
++++ pcap.c	2010-04-07 10:33:23.000000000 +0200
+@@ -748,6 +748,59 @@
  	(u_char)'\374', (u_char)'\375', (u_char)'\376', (u_char)'\377',
  };
  
@@ -83,9 +83,9 @@
  int
  pcap_strcasecmp(const char *s1, const char *s2)
  {
---- optimize.c
-+++ optimize.c
-@@ -2278,45 +2278,6 @@ icode_to_fcode(root, lenp)
+--- optimize.c.orig	2010-03-12 02:56:54.000000000 +0100
++++ optimize.c	2010-04-07 10:33:23.000000000 +0200
+@@ -2292,45 +2292,6 @@
  	return fp;
  }
  
