@@ -92,8 +92,24 @@ _cgi_print_menu() {
 	esac
 
 	local cache="/mod/var/cache/menu_$sub"
-	[ -e "$cache" ] || _cgi_menu "$sub" > "$cache"
-	cat "$cache"
+	#
+	# First, try to output cache. This does not depend on an existence 
+	# check to avoid race conditions (the file might have been deleted
+	# in the meantime).
+	#	
+	if ! cat "$cache" 2> /dev/null; then 
+		#
+		# Regenerate cache in a private file. Hence, incomplete
+		# states of the cache are invisible to others (though they 
+		# might be generating their own versions concurrently)
+		#
+		_cgi_menu "$sub" | tee "$cache.$$"
+		#
+		# Atomically replace global cache, making our changes visible
+		# (last writer wins)
+		#
+		mv "$cache.$$" "$cache"
+	fi
 }
 
 _cgi_menu() {
