@@ -26,6 +26,8 @@ function change(value) {
   document.getElementById("Acc1").style.display = "none";
   document.getElementById("Acc2").style.display = "none";
   document.getElementById("Acc3").style.display = "none";
+  document.getElementById("Acc4").style.display = "none";
+  document.getElementById("Acc5").style.display = "none";
 
   switch (value) {
     case "0":
@@ -37,6 +39,12 @@ function change(value) {
     case "2":
       document.getElementById("Acc3").style.display = "block";
       break;
+    case "3":
+      document.getElementById("Acc4").style.display = "block";
+      break;
+    case "4":
+      document.getElementById("Acc5").style.display = "block";
+      break;
     }
 
 }
@@ -45,6 +53,8 @@ document.write("<p><SELECT NAME='account' onChange='change(value)'>" +
 "<OPTION SELECTED VALUE='0'>Share 1</OPTION>" +
 "<OPTION VALUE='1'>Share 2</OPTION>" +
 "<OPTION VALUE='2'>Share 3</OPTION>" +
+"<OPTION VALUE='3'>Share 4</OPTION>" +
+"<OPTION VALUE='4'>Share 5</OPTION>" +
 "</SELECT></p>");
 
 document.write("<div id='Acc1' style='display:block'><p><label id='acc1' for='r06'>Share: </label><input id='r06' type='text' name='share1' size='50' maxlength='255' value='$(html "$CIFSMOUNT_SHARE1")'></p>" +
@@ -66,6 +76,20 @@ document.write("<div id='Acc3' style='display:none'><p><label id='acc3' for='r26
 "<p><label for='r24'>Pass: </label><input id='r24' type='password' name='pass3' size='50' maxlength='255' value='$(html "$CIFSMOUNT_PASS3")'></p>" +
 "<hr color='silver'>" +
 "<p><label for='r25'>Mountpoint: </label><input id='r25' type='text' name='mountpoint3' size='50' maxlength='255' value='$(html "$CIFSMOUNT_MOUNTPOINT3")'></p>" +
+"</div>");
+
+document.write("<div id='Acc4' style='display:none'><p><label id='acc4' for='r36'>Share: </label><input id='r36' type='text' name='share4' size='50' maxlength='255' value='$(html "$CIFSMOUNT_SHARE4")'></p>" +
+"<p><label for='r33'>User: </label><input id='r33' type='text' name='user4' size='50' maxlength='255' value='$(html "$CIFSMOUNT_USER4")'></p>" +
+"<p><label for='r34'>Pass: </label><input id='r34' type='password' name='pass4' size='50' maxlength='255' value='$(html "$CIFSMOUNT_PASS4")'></p>" +
+"<hr color='silver'>" +
+"<p><label for='r35'>Mountpoint: </label><input id='r35' type='text' name='mountpoint4' size='50' maxlength='255' value='$(html "$CIFSMOUNT_MOUNTPOINT4")'></p>" +
+"</div>");
+
+document.write("<div id='Acc3' style='display:none'><p><label id='acc5' for='r46'>Share: </label><input id='r46' type='text' name='share5' size='50' maxlength='255' value='$(html "$CIFSMOUNT_SHARE5")'></p>" +
+"<p><label for='r43'>User: </label><input id='r43' type='text' name='user5' size='50' maxlength='255' value='$(html "$CIFSMOUNT_USER5")'></p>" +
+"<p><label for='r44'>Pass: </label><input id='r44' type='password' name='pass5' size='50' maxlength='255' value='$(html "$CIFSMOUNT_PASS5")'></p>" +
+"<hr color='silver'>" +
+"<p><label for='r45'>Mountpoint: </label><input id='r45' type='text' name='mountpoint5' size='50' maxlength='255' value='$(html "$CIFSMOUNT_MOUNTPOINT5")'></p>" +
 "</div>");
 </script>
 
