@@ -85,7 +85,7 @@ document.write("<div id='Acc4' style='display:none'><p><label id='acc4' for='r36
 "<p><label for='r35'>Mountpoint: </label><input id='r35' type='text' name='mountpoint4' size='50' maxlength='255' value='$(html "$CIFSMOUNT_MOUNTPOINT4")'></p>" +
 "</div>");
 
-document.write("<div id='Acc3' style='display:none'><p><label id='acc5' for='r46'>Share: </label><input id='r46' type='text' name='share5' size='50' maxlength='255' value='$(html "$CIFSMOUNT_SHARE5")'></p>" +
+document.write("<div id='Acc5' style='display:none'><p><label id='acc5' for='r46'>Share: </label><input id='r46' type='text' name='share5' size='50' maxlength='255' value='$(html "$CIFSMOUNT_SHARE5")'></p>" +
 "<p><label for='r43'>User: </label><input id='r43' type='text' name='user5' size='50' maxlength='255' value='$(html "$CIFSMOUNT_USER5")'></p>" +
 "<p><label for='r44'>Pass: </label><input id='r44' type='password' name='pass5' size='50' maxlength='255' value='$(html "$CIFSMOUNT_PASS5")'></p>" +
 "<hr color='silver'>" +
