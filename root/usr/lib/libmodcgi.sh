@@ -82,6 +82,10 @@ href() {
 	esac
 }
 
+_cgi_mark_active() {
+    	sed -r "s# id=(['\"])$1\1# class='active'&#"
+}
+
 _cgi_print_menu() {
 	local id=$1 sub
 	case $id in
@@ -109,7 +113,7 @@ _cgi_print_menu() {
 		# (last writer wins)
 		#
 		mv "$cache.$$" "$cache"
-	fi
+	fi | _cgi_mark_active "$id"
 }
 
 _cgi_menu() {

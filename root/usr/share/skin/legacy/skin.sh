@@ -26,9 +26,6 @@ fieldset {
 div.body {
 	width: ${_usr_style}px;
 }
-EOF
-[ -n "$id" ] && echo "#$id $(cat /usr/share/style.sel)"
-cat << EOF
 -->
 </style>
 EOF
