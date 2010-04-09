@@ -86,16 +86,8 @@ _cgi_mark_active() {
     	sed -r "s# id=(['\"])$1\1# class='active'&#"
 }
 
-_cgi_print_menu() {
-	local id=$1 sub
-	case $id in
-		settings|file_*) sub=settings ;;
-		status*) sub=status ;;
-	    	system|rudi_*|firmware_*|backup_*) sub=system ;;
-		*) sub=packages ;;
-	esac
-
-	local cache="/mod/var/cache/menu_$sub"
+_cgi_cached() {
+    	local cache="/mod/var/cache/$1"; shift
 	#
 	# First, try to output cache. This does not depend on an existence 
 	# check to avoid race conditions (the file might have been deleted
@@ -107,13 +99,25 @@ _cgi_print_menu() {
 		# states of the cache are invisible to others (though they 
 		# might be generating their own versions concurrently)
 		#
-		_cgi_menu "$sub" | tee "$cache.$$"
+		"$@" | tee "$cache.$$"
 		#
 		# Atomically replace global cache, making our changes visible
 		# (last writer wins)
 		#
 		mv "$cache.$$" "$cache"
-	fi | _cgi_mark_active "$id"
+	fi
+}
+
+_cgi_print_menu() {
+	local id=$1 sub
+	case $id in
+		settings|file_*) sub=settings ;;
+		status*) sub=status ;;
+	    	system|rudi_*|firmware_*|backup_*) sub=system ;;
+		*) sub=packages ;;
+	esac
+
+	_cgi_cached "menu_$sub" _cgi_menu "$sub" | _cgi_mark_active "$id"
 }
 
 _cgi_menu() {
