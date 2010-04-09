@@ -11,12 +11,13 @@ if [ "$OPENVPN_CONFIG_COUNT" -gt 1 ]; then
 	done;
 else
 	rm  -f /mod/etc/openvpn_multid.pkg ;
+	[ $(ls /mod/etc/init.d/rc.openvpn* | wc -l) -eq 1 ]  ||  /mod/etc/default.openvpn/openvpn_dynamic_conf
 	start_stop openvpn "$oldstatus1" ;
 fi ;
 }
 
 pkg_apply_def() {
-	if [ ` ls /mod/etc/init.d/rc.openvpn | wc -l` -gt 1 ]; then /mod/etc/default.openvpn/openvpn_dynamic_conf ; fi;
+	[ $(ls /mod/etc/init.d/rc.openvpn* | wc -l) -eq 1 ]  ||  /mod/etc/default.openvpn/openvpn_dynamic_conf
 	start_stop openvpn "$oldstatus1" ;
 }
 

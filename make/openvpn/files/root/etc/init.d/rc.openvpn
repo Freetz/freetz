@@ -4,7 +4,9 @@
 
 scriptname=$0;
 DAEMON=${scriptname##*/rc.}
-
+mypidof() {
+ps | grep $1 | grep -v grep | grep /mod/etc/${1}.conf | sed 's/^[ ]*//; s/\([0-9]*\)[ ].*/\1/' 
+}
 if [ ! -e /var/tmp/.openvpnfirstrun ]; then
 	touch /var/tmp/.openvpnfirstrun
 	/mod/etc/default.openvpn/openvpn_dynamic_conf
@@ -63,7 +65,7 @@ start() {
 
 stop() {
 	
-	if [ ! -z "$(pidof $DAEMON)" ];then
+	if [ ! -z "$(mypidof $DAEMON)" ];then
 
 		echo -n "Stopping ${DAEMON} ... "
 		killall $DAEMON > /dev/null 2>&1
@@ -131,12 +133,12 @@ case "$1" in
 		start
 		;;
 	reload)
-		if [ -r "/var/run/openvpn.pid" ]; then
-			kill -HUP `cat /var/run/openvpn.pid`
+		if [ -r "/var/run/${DAEMON}.pid" ]; then
+			kill -HUP `cat /var/run/${DAEMON}.pid`
 		fi
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
+		if [ -z "$(mypidof $DAEMON)" ]; then
 			echo 'stopped'
 		else
 			echo 'running'
