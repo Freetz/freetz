@@ -69,7 +69,7 @@ _cgi_id() {
 # href file <pkg> <id>
 # href extra <pkg> <cgi-name>
 # href status <pkg> [<cgi-name>]
-# href cgi <pkg>
+# href cgi <pkg> [<parameters>]
 #
 href() {
     	local type=$1
@@ -77,7 +77,7 @@ href() {
 	    file)	echo "/cgi-bin/file.cgi?id=${2}__${3}" ;;
 	    extra)	echo "/cgi-bin/extras.cgi/${2}/${3}" ;;
 	    status)	echo "/cgi-bin/pkgstatus.cgi?cgi=${2}/${3:-status}" ;;
-	    cgi)	echo "/cgi-bin/pkgconf.cgi?pkg=$2" ;;
+	    cgi)	echo "/cgi-bin/pkgconf.cgi?pkg=$2${3:+&amp;$3}" ;;
 	    *)		echo "/error/unknown-type?$type" ;;
 	esac
 }
