@@ -1,0 +1,30 @@
+#!/bin/sh
+
+DAEMON=fortune
+
+. /etc/init.d/modlibrc
+
+case "$1" in
+	""|load)
+		modreg cgi 'fortune' 'Fortune'
+		modreg daemon --hide fortune
+		;;
+	unload)
+		modunreg cgi 'fortune'
+		modunreg daemon 'fortune'
+		;;
+	start)
+		;;
+	stop)
+		;;
+	restart)
+		;;
+	status)
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,9 +1,9 @@
 $(call PKG_INIT_BIN, 1.2)
-$(PKG)_SOURCE:=fortune.fb-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://homepages.tu-darmstadt.de/~pkrueger
+$(PKG)_SOURCE:=fortune-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SITE:=http://dl.fefe.de
 $(PKG)_BINARY:=$($(PKG)_DIR)/fortune
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/fortune
-$(PKG)_SOURCE_MD5:=b5b5ced7e488c567d234a235870705f6
+$(PKG)_SOURCE_MD5:=d71df18a04625addfv53743b978ec184
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
