@@ -51,17 +51,9 @@ case "$1" in
 
 		modreg cgi 'xrelayd' 'XRelayd'
 
-		deffile="/mod/etc/default.$DAEMON/xrelayd_certchain.def"
-		[ -r "/tmp/flash/xrelayd_certchain.def" ] && deffile='/tmp/flash/xrelayd_certchain.def'
-		modreg file 'xrelayd_certchain' 'XRelayd: Certificate' 0 "$deffile"
-
-		deffile="/mod/etc/default.$DAEMON/xrelayd_key.def"
-		[ -r "/tmp/flash/xrelayd_key.def" ] && deffile='/tmp/flash/xrelayd_key.def'
-		modreg file 'xrelayd_key' 'XRelayd: Private Key' 0 "$deffile"
-
-		deffile="/mod/etc/default.$DAEMON/xrelayd_svcs.def"
-		[ -r "/tmp/flash/xrelayd_svcs.def" ] && deffile='/tmp/flash/xrelayd_svcs.def'
-		modreg file 'xrelayd_svcs' 'XRelayd: services' 0 "$deffile"
+		modreg file xrelayd certchain 'XRelayd: Certificate' 0 "xrelayd_certchain"
+		modreg file xrelayd key 'XRelayd: Private Key' 0 "xrelayd_key"
+		modreg file xrelayd svcs 'XRelayd: services' 0 "xrelayd_svcs"
 
 		if [ "$XRELAYD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -72,10 +64,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'xrelayd_certchain'
-		modunreg file 'xrelayd_key'
-		modunreg file 'xrelayd_svcs'
-		modunreg cgi 'xrelayd'
+		modunreg file xrelayd
+		modunreg cgi xrelayd
 		;;
 	start)
 		start

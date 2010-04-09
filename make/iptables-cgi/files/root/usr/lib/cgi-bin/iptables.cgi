@@ -183,7 +183,7 @@ else
 				echo "<td align='center'><img src='../images/"$IMAGE".gif' title='"$IMAGE"'></td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $7}')</td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $8}')</td>"
-				echo "<td align='center'><a href='pkgconf.cgi?pkg=iptables&chain="$CHAIN"&remove="$(echo ${IPTABLES_LINE} | awk '{print $1}')"'>remove</a></td>"
+				echo "<td align='center'><a href='$(href cgi iptables "chain=${CHAIN}&amp;remove=$(echo ${IPTABLES_LINE} | awk '{print $1}')"'>remove</a></td>"
 				echo "</tr>"
 			fi
 		fi

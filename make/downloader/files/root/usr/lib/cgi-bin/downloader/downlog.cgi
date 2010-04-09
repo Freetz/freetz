@@ -42,7 +42,7 @@ cat << EOF
 EOF
 	fi
 fi
-echo "<div class="btn"><form class="btn" action="/cgi-bin/pkgconf.cgi"><input type="hidden" name="pkg" value="downloader"><input type="submit" value='$(lang de:"Zurück" en:"Back")'></form></div>"
+back_button "$(href cgi downloader)"
 sec_end
 
 cgi_end

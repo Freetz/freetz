@@ -45,10 +45,7 @@ case "$1" in
 		[ -r /tmp/flash/knockd.conf ] && mv /tmp/flash/knockd.conf /tmp/flash/knock/knockd.conf
 
 		modreg cgi 'knock' 'Knock'
-
-		deffile='/mod/etc/default.knock/knockd_conf.def'
-		[ -r "/tmp/flash/knock/knock_conf.def" ] && deffile='/tmp/flash/knock/knockd_conf.def'
-		modreg file 'knockd_conf' 'Knockd: config' 0 "$deffile"
+		modreg file knock conf 'Knockd: config' 0 "knockd_conf"
 
 		if [ "$KNOCK_ENABLED" != "yes" ]; then
 			echo "knockd is disabled" 1>&2
@@ -59,8 +56,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'knockd_conf'
-		modunreg cgi 'knock'
+		modunreg file knock
+		modunreg cgi knock
 		;;
 	start)
 		start

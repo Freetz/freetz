@@ -59,9 +59,7 @@ start() {
 case "$1" in
 	""|load)
 		modreg cgi 'netsnmp' 'Net-SNMP'
-		deffile='/mod/etc/default.netsnmp/snmpd_conf.def'
-		[ -r "/tmp/flash/snmpd_conf.def" ] && deffile="/tmp/flash/snmpd_conf.def"
-		[ "$CFGFILE" != "/etc/snmp/snmpd.conf" ] && modreg file 'snmpd_conf' 'Net-SNMP: snmpd.conf' 0 "$deffile"
+		[ "$CFGFILE" != "/etc/snmp/snmpd.conf" ] && modreg file netsnmp conf 'Net-SNMP: snmpd.conf' 0 "snmpd_conf"
 		if [ "$NETSNMP_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1
@@ -71,8 +69,8 @@ case "$1" in
 		;;
 	unload)
 		modlib_stop
-		modunreg cgi 'netsnmp'
-		[ "$CFGFILE" != "/etc/snmpd/snmpd.conf" ] && modunreg file 'snmpd_conf'
+		modunreg cgi netsnmp
+		modunreg file netsnmp
 		;;
 	start)
 		start

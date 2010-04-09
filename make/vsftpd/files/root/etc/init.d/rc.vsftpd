@@ -114,9 +114,7 @@ case $1 in
 		modreg cgi 'vsftpd' 'Vsftpd'
 
 		if ! strings /usr/sbin/vsftpd | grep -q "SSL support not compiled in"; then
-			deffile='/mod/etc/default.vsftpd/vsftpd_crt.def'
-			[ -r "/tmp/flash/vsftpd_crt.def" ] && deffile='/tmp/flash/vsftpd_crt.def'
-			modreg file 'vsftpd_crt' 'VSFTPD:Cert+Key' 0 "$deffile"
+			modreg file vsftpd crt 'VSFTPD:Cert+Key' 0 "vsftpd_crt"
 		fi
 		
 		config
@@ -125,7 +123,8 @@ case $1 in
 		;;
 	unload)
 		stop
-		modunreg cgi 'vsftpd'
+		modunreg cgi vsftpd
+		modunreg file vsftpd
 		;;
 	start)
 		start

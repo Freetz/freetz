@@ -27,9 +27,9 @@ sec_begin '$(lang de:"Dienste" en:"Services")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=stunnel_svcs">$(lang de:"Dienste bearbeiten" en:"Edit services file")</a></li>
-<li><a href="/cgi-bin/file.cgi?id=stunnel_certchain">$(lang de:"Zertifikats-Kette bearbeiten" en:"Edit certificate chain")</a></li>
-<li><a href="/cgi-bin/file.cgi?id=stunnel_key">$(lang de:"Privaten Schlüssel bearbeiten" en:"Edit private key")</a></li>
+<li><a href="$(href file stunnel svcs)">$(lang de:"Dienste bearbeiten" en:"Edit services file")</a></li>
+<li><a href="$(href file stunnel certchain)">$(lang de:"Zertifikats-Kette bearbeiten" en:"Edit certificate chain")</a></li>
+<li><a href="$(href file stunnel key)">$(lang de:"Privaten Schlüssel bearbeiten" en:"Edit private key")</a></li>
 </ul>
 EOF
 sec_end

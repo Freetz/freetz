@@ -95,14 +95,9 @@ case "$1" in
 		
 		modreg cgi 'nfsd' 'NFS-Server'
 
-		deffile='/mod/etc/default.nfsd/hosts_allow.def'
-		modreg file 'nfsd__hosts_allow' 'NFSD: hosts.allow' 1 "$deffile"
-
-		deffile='/mod/etc/default.nfsd/hosts_deny.def'
-		modreg file 'nfsd__hosts_deny' 'NFSD: hosts.deny' 1 "$deffile"
-		
-		deffile='/mod/etc/default.nfsd/exports.def'
-		modreg file 'nfsd__exports' 'NFSD: exports' 1 "$deffile"
+		modreg file nfsd hosts_allow 'NFSD: hosts.allow' 1 "hosts_allow"
+		modreg file nfsd hosts_deny 'NFSD: hosts.deny' 1 "hosts_deny"
+		modreg file nfsd exports 'NFSD: exports' 1 "exports"
 
 		if [ "$NFSD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -113,10 +108,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'nfsd__exports'
-		modunreg file 'nfsd__hosts_allow'
-		modunreg file 'nfsd__hosts_deny'
-		modunreg cgi 'nfsd'
+		modunreg file nfsd
+		modunreg cgi nfsd
 		
 		rmmod nfsd lock sunrpc exportfs > /dev/null 2>&1
 		;;

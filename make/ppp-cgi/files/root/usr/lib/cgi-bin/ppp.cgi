@@ -22,8 +22,8 @@ sec_begin '$(lang de:"Konfigurationsdateien" en:"Configuration files")'
 cat << EOF
 <p>
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=peers_options">PEERS: options</a></li>
-<li><a href="/cgi-bin/file.cgi?id=peers_chat">PEERS: chat</a></li>
+<li><a href="$(href file ppp peers_options)">PEERS: options</a></li>
+<li><a href="$(href file ppp peers_chat)">PEERS: chat</a></li>
 </ul>
 </p>
 EOF
@@ -74,13 +74,13 @@ if [ -n "$MOD_CGI_CMD" ] && [ -n "$PPP_DIAGTTY" ]; then
 fi
 cat << EOF
 <p>
-<input id="m2" type="radio" name="gmode" value="p3G"$p3G_chk><label for="m2"><a href="/cgi-bin/pkgconf.cgi?pkg=ppp&cmd=p3G">3G $(lang de:"bevorzugt" en:"preferred")</a></label>
+<input id="m2" type="radio" name="gmode" value="p3G"$p3G_chk><label for="m2"><a href="$(href cgi ppp cmd=p3G)">3G $(lang de:"bevorzugt" en:"preferred")</a></label>
 &nbsp;
-<input id="m1" type="radio" name="gmode" value="o3G"$o3G_chk><label for="m1"><a href="/cgi-bin/pkgconf.cgi?pkg=ppp&cmd=o3G">3G $(lang de:"ausschliesslich" en:"only")</a></label>
+<input id="m1" type="radio" name="gmode" value="o3G"$o3G_chk><label for="m1"><a href="$(href cgi ppp cmd=o3G)">3G $(lang de:"ausschliesslich" en:"only")</a></label>
 &nbsp;
-<input id="m3" type="radio" name="gmode" value="p2G"$p2G_chk><label for="m3"><a href="/cgi-bin/pkgconf.cgi?pkg=ppp&cmd=p2G">2G $(lang de:"bevorzugt" en:"preferred")</a></label>
+<input id="m3" type="radio" name="gmode" value="p2G"$p2G_chk><label for="m3"><a href="$(href cgi ppp cmd=p2G)">2G $(lang de:"bevorzugt" en:"preferred")</a></label>
 &nbsp;
-<input id="m4" type="radio" name="gmode" value="o2G"$o2G_chk><label for="m4"><a href="/cgi-bin/pkgconf.cgi?pkg=ppp&cmd=o2G">2G $(lang de:"ausschliesslich" en:"only")</a></label>
+<input id="m4" type="radio" name="gmode" value="o2G"$o2G_chk><label for="m4"><a href="$(href cgi ppp cmd=o2G)">2G $(lang de:"ausschliesslich" en:"only")</a></label>
 &nbsp;
 <input id="m0" type="radio" name="gmode" value="xXG"$xXG_chk><label for="m0">$(lang de:"nicht gesetzt" en:"not selected")</label>
 </p>

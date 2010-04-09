@@ -72,13 +72,9 @@ case "$1" in
 		modreg cgi 'ppp' 'PPP'
 		modreg status ppp ppp-cgi ppplog
 
-		deffile='/mod/etc/default.ppp/peers_options.def'
-		[ -r "/tmp/flash/peers_options.def" ] && deffile='/tmp/flash/peers_options.def'
-		modreg file 'peers_options' 'PEERS: options' 0 "$deffile"
+		modreg file ppp 'peers_options' 'PEERS: options' 0 "peers_options"
 
-		deffile='/mod/etc/default.ppp/peers_chat.def'
-		[ -r "/tmp/flash/peers_chat.def" ] && deffile='/tmp/flash/peers_chat.def'
-		modreg file 'peers_chat' 'PEERS: chat' 0 "$deffile"
+		modreg file ppp 'peers_chat' 'PEERS: chat' 0 "peers_chat"
 
 		initial
 		if [ "$PPP_ENABLED" != "yes" ]; then
@@ -90,8 +86,7 @@ case "$1" in
 	unload)
 		modunreg cgi 'ppp'
 		modunreg status ppp ppplog
-		modunreg file 'peers_options'
-		modunreg file 'peers_chat'
+		modunreg file ppp
 		stop
 		;;
 	start)

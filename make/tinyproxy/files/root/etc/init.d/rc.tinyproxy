@@ -83,13 +83,8 @@ case "$1" in
 	""|load)
 		modreg cgi 'tinyproxy' 'tinyproxy'
 
-		deffile='/mod/etc/default.tinyproxy/tinyproxy_conf.def'
-		[ -r /tmp/flash/tinyproxy_conf.def ] && deffile='/tmp/flash/tinyproxy_conf.def'
-		modreg file 'tinyproxy_conf' 'tinyproxy conf' 0 "$deffile"
-
-		deffile='/mod/etc/default.tinyproxy/tinyproxy_filter.def'
-		[ -r /tmp/flash/tinyproxy_filter.def ] && deffile='/tmp/flash/tinyproxy_filter.def'
-		modreg file 'tinyproxy_filter' 'tinyproxy filter' 0 "$deffile"
+		modreg file tinyproxy conf 'tinyproxy conf' 0 "tinyproxy_conf"
+		modreg file tinyproxy filter 'tinyproxy filter' 0 "tinyproxy_filter"
 		
 		if [ "$TINYPROXY_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -100,9 +95,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'tinyproxy_conf'
-		modunreg file 'tinyproxy_filter'
-		modunreg cgi 'tinyproxy'
+		modunreg file tinyproxy
+		modunreg cgi tinyproxy
 		;;
 	start)
 		start

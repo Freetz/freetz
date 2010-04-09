@@ -84,7 +84,7 @@ cat << EOF
 <p>
 <input type="hidden" name="enable_ssl" value="no">
 <input id="s1" type="checkbox" name="enable_ssl" value="yes"$ssl_chk><label for="s1"> $(lang de:"SSL aktivieren" en:"enable SSL")</label>
-<p style="font-size:10px;">$(lang de:"Damit VSFTPD mit SSL-Unterst&uuml;tzung gestartet werden kann, m&uuml;ssen Zertifikat&amp;Schl&uuml;ssel <a href=\"/cgi-bin/file.cgi?id=vsftpd_crt\">hier</a> eingetragen sein." en:"To start VSFTPD with SSL-Support you have to setup Certifikat&amp;Key <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=vsftpd_crt\">hier</a>.")</p>
+<p style="font-size:10px;">$(lang de:"Damit VSFTPD mit SSL-Unterst&uuml;tzung gestartet werden kann, m&uuml;ssen Zertifikat&amp;Schl&uuml;ssel <a href=\"$(href file vsftpd crt)\">hier</a> eingetragen sein." en:"To start VSFTPD with SSL-Support you have to setup Certifikat&amp;Key <a TARGET=\"_blank\" href=\"$(href file vsftpd crt)\">hier</a>.")</p>
 </p>
 <p>
 <input type="hidden" name="enable_sslv2" value="no">

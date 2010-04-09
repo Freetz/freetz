@@ -54,13 +54,9 @@ case "$1" in
 		[ -r "/tmp/flash/privoxy/user.filter" ] || cp -f /etc/privoxy/user.filter /tmp/flash/privoxy/user.filter
 		[ -r "/tmp/flash/privoxy/user.action" ] || cp -f /etc/privoxy/user.action /tmp/flash/privoxy/user.action
 
-		deffile='/mod/etc/default.privoxy/filter.def'
-		[ -r "/tmp/flash/privoxy/filter.def" ] && deffile='/tmp/flash/privoxy/filter.def'
-		modreg file 'privoxy__user_filter' 'Privoxy: user.filter' 0 "$deffile"
+		modreg file privoxy user_filter 'Privoxy: user.filter' 0 "filter"
 
-		deffile='/mod/etc/default.privoxy/action.def'
-		[ -r "/tmp/flash/privoxy/action.def" ] && deffile='/tmp/flash/privoxy/action.def'
-		modreg file 'privoxy__user_action' 'Privoxy: user.actions' 0 "$deffile"
+		modreg file privoxy user_action 'Privoxy: user.actions' 0 "action"
 
 		modreg cgi 'privoxy' 'Privoxy'
 
@@ -78,9 +74,8 @@ case "$1" in
 	unload)
 		stop
 
-		modunreg file 'privoxy__user_filter'
-		modunreg file 'privoxy__user_action'
-		modunreg cgi 'privoxy'
+		modunreg file privoxy
+		modunreg cgi privoxy
 		;;
 	start)
 		start

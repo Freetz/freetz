@@ -24,7 +24,7 @@ if [ ! -f /etc/bird.conf ]; then
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
 cat << EOF
-<ul><li><a href="/cgi-bin/file.cgi?id=bird_conf">$(lang de:"bird.conf bearbeiten" en:"Edit bird.conf")</a></li></ul>
+<ul><li><a href="$(href file bird conf)">$(lang de:"bird.conf bearbeiten" en:"Edit bird.conf")</a></li></ul>
 EOF
 
 sec_end

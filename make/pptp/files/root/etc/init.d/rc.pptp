@@ -97,9 +97,7 @@ case "$1" in
 
 		modreg cgi 'pptp' 'PPTP'
 
-		deffile='/mod/etc/default.pptp/pptp_options.def'
-		[ -r /tmp/flash/pptp_options.def ] && deffile='/tmp/flash/pptp_options.def'
-		modreg file 'pptp_options' 'PPTP: options.pptp' 0 "$deffile"
+		modreg file pptp options 'PPTP: options.pptp' 0 "pptp_options"
 
 		if [ "$PPTP_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -110,8 +108,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg cgi 'pptp'
-		modunreg file 'pptp_options'
+		modunreg cgi pptp
+		modunreg file pptp
 		;;
 	start)
 		start

@@ -228,8 +228,8 @@ stop () {
 case "$1" in
 	""|load)
 		modreg cgi 'iptables' 'Iptables'
-		modreg file 'iptables_rules' 'Iptables: Rules' 0 "/mod/etc/default.iptables/iptables.def"
-		modreg file 'iptables_services' 'Iptables: Services' 0 "/mod/etc/default.iptables/services.def"
+		modreg file iptables rules 'Iptables: Rules' 0 "iptables"
+		modreg file iptables services 'Iptables: Services' 0 "services"
 
 		if [ ! -r "/var/tmp/flash/iptables_services" ]; then
 			cp /mod/etc/default.iptables/iptables_services /var/tmp/flash/iptables_services
@@ -270,7 +270,8 @@ case "$1" in
 
 	unload)
 		stop
-		modunreg cgi 'iptables'
+		modunreg cgi iptables
+		modunreg file iptables
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

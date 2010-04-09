@@ -18,7 +18,7 @@ sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=snmpd_conf">$(lang de:"snmpd.conf bearbeiten" en:"Edit snmpd.conf")</a></li>
+<li><a href="$(href file netsnmp conf)">$(lang de:"snmpd.conf bearbeiten" en:"Edit snmpd.conf")</a></li>
 </ul>
 EOF
 

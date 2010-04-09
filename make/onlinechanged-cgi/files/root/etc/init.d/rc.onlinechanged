@@ -6,9 +6,7 @@ DAEMON=onlinechanged
 
 case "$1" in
 	""|load)
-		deffile="/mod/etc/default.$DAEMON/$DAEMON.def"
-		[ -r /tmp/flash/$DAEMON.def ] && deffile="/tmp/flash/$DAEMON.def"
-		modreg file 'onlinechanged' 'Onlinechanged' 0 "$deffile"
+		modreg file onlinechanged conf 'Onlinechanged' 0 "onlinechanged"
 		modreg daemon --hide onlinechanged
 		
 		echo -n 'Setting up onlinechanged scripting ...'
@@ -17,7 +15,7 @@ case "$1" in
 		echo 'done.'
 		;;
 	unload)
-		modunreg file 'onlinechanged'
+		modunreg file onlinechanged
 		modunreg daemon onlinechanged
 		;;
 	start)

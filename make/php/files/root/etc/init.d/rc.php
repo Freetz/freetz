@@ -21,13 +21,11 @@ start() {
 
 case "$1" in
 	""|load)
-		deffile='/mod/etc/default.php/php_config.def'
-		[ -r /tmp/flash/php_config.def ] && deffile='/tmp/flash/php_config.def'
-		modreg file 'php_config' 'PHP: php.ini' 0 "$deffile"
+		modreg file php config 'PHP: php.ini' 0 "php_config"
 		;;
 	unload)
 		modlib_stop
-		modunreg file 'php_config'
+		modunreg file php
 		;;
 	start)
 		start

@@ -62,13 +62,8 @@ case "$1" in
 
 		modreg cgi 'pptpd' 'PPTPD'
 
-		deffile='/mod/etc/default.pptpd/pptpd_options.def'
-		[ -r "/tmp/flash/pptpd_options.def" ] && deffile='/tmp/flash/pptpd_options.def'
-		modreg file 'pptpd_options' 'PPTPD: options.pptpd' 0 "$deffile"
-
-		deffile='/mod/etc/default.pptpd/pptpd_conf.def'
-		[ -r "/tmp/flash/pptpd_conf.def" ] && deffile='/tmp/flash/pptpd_conf.def'
-		modreg file 'pptpd_conf' 'PPTPD: pptpd.conf' 0 "$deffile"
+		modreg file pptpd options 'PPTPD: options.pptpd' 0 "pptpd_options"
+		modreg file pptpd conf 'PPTPD: pptpd.conf' 0 "pptpd_conf"
 
 		if [ "$PPTPD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -79,9 +74,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg cgi 'pptpd'
-		modunreg file 'pptpd_options'
-		modunreg file 'pptpd_conf'
+		modunreg cgi pptpd
+		modunreg file pptpd
 		;;
 	start)
 		start

@@ -5,9 +5,6 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 SELF='downremover'
 TITLE='$(lang de:"Downloader - Aufräumen" en:"Downloader - Removing")'
-PKGCGI='/cgi-bin/pkgconf.cgi'
-DOWNCGI='downloader'
-BACK_BTN='$(lang de:"Zurück" en:"Back")'
 NM_REMOVE='$(lang de:"Aufräumen" en:"Removing")'
 
 cmd_button() {
@@ -40,7 +37,7 @@ if [ "$QUERY_STRING" ]; then
 			echo -n "<pre>"
 			/etc/init.d/rc.downloader remove
 			echo "</pre>"
-			cmd_button "pkg" "$PKGCGI" "$DOWNCGI" "$BACK_BTN"
+			back_button "$(href cgi downloader)"
 			;;
 		*)
 			cat << EOF
@@ -57,7 +54,7 @@ $(lang de:"Alle vom Downloader heruntergeladenen Dateien vom Zielort löschen.<br
 </p>
 EOF
 	cmd_button "" $SELF "remove" "$NM_REMOVE"
-	cmd_button "pkg" "$PKGCGI" "$DOWNCGI" "$BACK_BTN"
+	back_button "$(href cgi downloader)"
 fi
 sec_end
 

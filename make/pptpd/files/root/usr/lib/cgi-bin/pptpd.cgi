@@ -20,13 +20,11 @@ sec_begin '$(lang de:"Konfigurationsdateien" en:"Configuration files")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=chap_secrets">PPPD: $(lang de:"chap-secrets bearbeiten" en:"edit chap-secrets")</a></li>
-<li><a href="/cgi-bin/file.cgi?id=pptpd_options">PPTPD: $(lang de:"options.pptpd bearbeiten" en:"edit options.pptpd")</a></li>
-<li><a href="/cgi-bin/file.cgi?id=pptpd_conf">PPTPD: $(lang de:"pptpd.conf bearbeiten" en:"edit pptpd.conf")</a></li>
+<li><a href="$(href file pppd chap_secrets)">PPPD: $(lang de:"chap-secrets bearbeiten" en:"edit chap-secrets")</a></li>
+<li><a href="$(href file pptpd options)">PPTPD: $(lang de:"options.pptpd bearbeiten" en:"edit options.pptpd")</a></li>
+<li><a href="$(href file pptpd conf)">PPTPD: $(lang de:"pptpd.conf bearbeiten" en:"edit pptpd.conf")</a></li>
 </ul>
 EOF
-#<li><a href="/cgi-bin/file.cgi?id=pap_secrets">PPP: pap-secrets bearbeiten</a></li>
-#<li><a href="/cgi-bin/file.cgi?id=options">PPP: options bearbeiten</a></li>
 
 sec_end
 sec_begin '$(lang de:"IP-Routing" en:"IP routing")'

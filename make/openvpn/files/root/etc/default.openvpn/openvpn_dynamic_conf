@@ -65,9 +65,9 @@ do
 			if [ "$LOKAL_OWN_KEYS" == "yes" ]; then
 				 sed "s/openvpn/${act}/g"  $deffile | sed "s/\/flash/\/flash\/${act}/g" | sed "/CAPTION/ s/VPN/VPN Config ${LOKAL_CONFIG_NAMES}/g" > /mod/etc/default.${act}/$name
 				if [ ! -d /tmp/flash/${act} ]; then mkdir /tmp/flash/${act} ; fi
-				modreg file "$tmpid" "${LOKAL_CONFIG_NAMES}: $tmptitle" 0 "/mod/etc/default.${act}/$name"
+				modreg file "$act" "$tmpid" "${LOKAL_CONFIG_NAMES}: $tmptitle" 0 "/mod/etc/default.${act}/$name"
 			else
-				modunreg file $tmpid
+				modunreg file "$act" "$tmpid"
 			fi
 		done
 
@@ -92,11 +92,7 @@ for config in `ls /mod/etc/init.d/rc.openvpn*`; do
 			rm -rf /mod/etc/default.$confname;
 			rm -rf /tmp/flash/$confname;
 		fi
-		if [ -e /mod/etc/reg/file.reg ]; then
-			for fn in `grep  "/mod/etc/default.$confname" /mod/etc/reg/file.reg | cut -d "|" -f 1`; do
-				modunreg file $fn
-			done
-		fi
+		modunreg file "$confname"
 	else
 		`grep -q "$confname" /mod/etc/reg/daemon.reg` || modreg daemon -p openvpn "$confname"
 	fi	

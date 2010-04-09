@@ -18,7 +18,7 @@ sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=ser2net_conf">$(lang de:"ser2net.conf bearbeiten" en:"Edit ser2net.conf")</a></li>
+<li><a href="$(href file ser2net conf)">$(lang de:"ser2net.conf bearbeiten" en:"Edit ser2net.conf")</a></li>
 </ul>
 EOF
 

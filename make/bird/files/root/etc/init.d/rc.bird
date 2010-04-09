@@ -105,9 +105,7 @@ case "$1" in
 	''|load)
 		modreg cgi 'bird' 'BIRD'
 
-		deffile='/mod/etc/default.bird/bird_conf.def'
-		[ -r '/tmp/flash/bird_conf.def' ] && deffile='/tmp/flash/bird_conf.def'
-		[ "$CFGFILE" != '/etc/bird.conf' ] && modreg file 'bird_conf' 'BIRD: bird.conf' 0 "$deffile"
+		[ "$CFGFILE" != '/etc/bird.conf' ] && modreg file bird conf 'BIRD: bird.conf' 0 "bird_conf"
 
 		if [ "$BIRD_ENABLED" = 'no' ]; then
 			echo 'BIRD is disabled' 1>&2
@@ -119,8 +117,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		[ "$CFGFILE" != '/etc/bird.conf' ] && modunreg file 'bird_conf'
-		modunreg cgi 'bird'
+		[ "$CFGFILE" != '/etc/bird.conf' ] && modunreg file bird
+		modunreg cgi bird
 		;;
 	start)
 		start

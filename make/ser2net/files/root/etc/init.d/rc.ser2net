@@ -45,9 +45,7 @@ start() {
 case "$1" in
 	""|load)
 		modreg cgi 'ser2net' 'ser2net'
-		deffile='/mod/etc/default.ser2net/ser2net_conf.def'
-		[ -r "/tmp/flash/ser2net_conf.def" ] && deffile="/tmp/flash/ser2net_conf.def"
-		[ "$CFGFILE" != "/etc/ser2net.conf" ] && modreg file 'ser2net_conf' 'ser2net.conf' 0 "$deffile"
+		[ "$CFGFILE" != "/etc/ser2net.conf" ] && modreg file ser2net conf 'ser2net.conf' 0 "ser2net_conf"
 		if [ "$SER2NET_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1
@@ -58,7 +56,8 @@ case "$1" in
 	unload)
 		modlib_stop
 
-		[ "$CFGFILE" != "/etc/ser2net.conf" ] && modunreg file 'ser2net_conf'
+		modunreg cgi ser2net
+		modunreg file ser2net
 		;;
 	start)
 		start

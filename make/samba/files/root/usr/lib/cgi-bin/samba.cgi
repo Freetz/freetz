@@ -20,8 +20,8 @@ sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=shares">$(lang de:"Eigene Freigaben" en:"Shares")</a></li>
-<li><a href="/cgi-bin/file.cgi?id=sharesx">$(lang de:"Experten Optionen" en:"Advanced options")</a></li>
+<li><a href="$(href file samba shares)">$(lang de:"Eigene Freigaben" en:"Shares")</a></li>
+<li><a href="$(href file samba sharesx)">$(lang de:"Experten Optionen" en:"Advanced options")</a></li>
 </ul>
 EOF
 if [ -d /var/media/ftp ]; then

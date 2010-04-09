@@ -103,9 +103,7 @@ stop() {
 
 reg_files() {
 	for i in $@; do
-		deffile="/mod/etc/default.openssh/$i.def"
-		[ -r /tmp/flash/openssh/$i.def ] && deffile="/tmp/flash/openssh/$i.def"
-		modreg file "openssh__$i" "OpenSSH: $i" 0 "$deffile"
+		modreg file openssh "$i" "OpenSSH: $i" 0 "$i"
 	done
 }
 
@@ -125,9 +123,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'openssh__rsa_key'
-		modunreg file 'openssh__dsa_key'
-		modunreg cgi 'sshd'
+		modunreg file openssh
+		modunreg cgi openssh
 		;;
 	start)
 		start

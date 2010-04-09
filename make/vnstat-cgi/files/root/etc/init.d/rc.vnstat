@@ -95,9 +95,7 @@ case "$1" in
 		[ ! -d "/tmp/flash/vnstat" ] && mkdir -p /tmp/flash/vnstat
 		[ ! -e "/tmp/flash/vnstat/vnstat.conf" ] && /etc/default.vnstat/vnstat_conf > /tmp/flash/vnstat/vnstat.conf
 
-		deffile=/mod/etc/default.vnstat/vnstat_conf.def
-		[ -r /tmp/flash/vnstat/vnstat_conf.def ] && deffile=/tmp/flash/vnstat/vnstat_conf.def
-		modreg file "vnstat_conf" 'vnstat: vnstat.conf' 1 $deffile
+		modreg file vnstat conf 'vnstat: vnstat.conf' 1 "vnstat_conf"
 		modreg cgi vnstat vnstat
 		modreg status vnstat vnstat stats
 
@@ -112,7 +110,7 @@ case "$1" in
 		stop
 		modunreg status vnstat stats
 		modunreg cgi vnstat
-		modunreg file "vnstat_conf"
+		modunreg file vnstat
 		;;
 	start)
 		config

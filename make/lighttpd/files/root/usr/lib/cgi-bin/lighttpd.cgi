@@ -103,8 +103,8 @@ sec_end
 sec_begin '$(lang de:"SSL Unterst&uuml;tzung" en:"SSL support")'
 if has_ssl_support >/dev/null; then
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Damit lighttpd mit SSL-Unterst&uuml;tzung gestartet werden kann, m&uuml;ssen Zertifikat &amp; Schl&uuml;ssel <a href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">hier</a> eingetragen sein." en:"To start lighttpd with SSL-Support you have to setup Certifikat&amp;Key <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_crt\">here</a>.")</p>
-<p style="font-size:10px;">$(lang de:"Falls das Zertifikat mit einer CA signiert wurde, trage bitte das CA Zertifikat <a href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">hier</a> ein." en:"In case the certificate was signed with a CA, please provide the CA certificate <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_ca\">here</a>.")</p>
+<p style="font-size:10px;">$(lang de:"Damit lighttpd mit SSL-Unterst&uuml;tzung gestartet werden kann, m&uuml;ssen Zertifikat &amp; Schl&uuml;ssel <a href=\"$(href file lighttpd crt)\">hier</a> eingetragen sein." en:"To start lighttpd with SSL-Support you have to setup Certifikat&amp;Key <a TARGET=\"_blank\" href=\"$(href file lighttpd crt)\">here</a>.")</p>
+<p style="font-size:10px;">$(lang de:"Falls das Zertifikat mit einer CA signiert wurde, trage bitte das CA Zertifikat <a href=\"$(href file lighttpd ca)\">hier</a> ein." en:"In case the certificate was signed with a CA, please provide the CA certificate <a TARGET=\"_blank\" href=\"$(href file lighttpd ca)\">here</a>.")</p>
 <p><input id="d1" type="radio" name="sslenable" value="enable"$sslenaba_chk><label for="d1"> $(lang de:"Aktiviert" en:"Activated")</label>
 <input id="d2" type="radio" name="sslenable" value="disable"$sslenabd_chk><label for="d2"> $(lang de:"Deaktiviert" en:"Deactivate")</label>
 </p>
@@ -139,8 +139,8 @@ sec_end
 sec_begin '$(lang de:"Zugriffskontrolle" en:"Access control")'
 if [ "$(has_mod auth)" = "yes" ]; then
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Damit lighttpd Benutzer authentisieren kann, m&uuml;ssen Benutzer <a href=\"/cgi-bin/file.cgi?id=lighttpd_user\">hier</a> eingetragen sein." en:"To allow lighttpd to authenticate users, you have to add users <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_user\">here</a>.")</p>
-<p style="font-size:10px;">$(lang de:"Zugriffsrechte k&ouml;nnen <a href=\"/cgi-bin/file.cgi?id=lighttpd_rights\">hier</a> eingetragen werden." en:"Access rights can be added <a href=\"/cgi-bin/file.cgi?id=lighttpd_rights\">here</a>.")</p>
+<p style="font-size:10px;">$(lang de:"Damit lighttpd Benutzer authentisieren kann, m&uuml;ssen Benutzer <a href=\"$(href file lighttpd user)\">hier</a> eingetragen sein." en:"To allow lighttpd to authenticate users, you have to add users <a TARGET=\"_blank\" href=\"$(href file lighttpd user)\">here</a>.")</p>
+<p style="font-size:10px;">$(lang de:"Zugriffsrechte k&ouml;nnen <a href=\"$(href file lighttpd rights)\">hier</a> eingetragen werden." en:"Access rights can be added <a href=\"$(href file lighttpd rights)\">here</a>.")</p>
 <p><input type="hidden" name="auth" value="no">
 <input id="z1" type="checkbox" name="auth" value="yes"$auth_chk><label for="z1"> $(lang de:"Zugriffskontrolle und Benutzerkonten aktivieren" en:"Activate access control and user accounts")</label></p>
 <p>
@@ -270,7 +270,7 @@ sec_end
 sec_begin '$(lang de:"Zus&auml;tzliche Konfigurationsoptionen (f&uuml;r Experten)" en:"Additional config options (for experts)")'
 
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Zus&auml;tzliche Konfigurationsoptionen k&ouml;nnen <a href=\"/cgi-bin/file.cgi?id=lighttpd_add\">hier</a> eingetragen werden." en:"Additional configuration options can be added <a TARGET=\"_blank\" href=\"/cgi-bin/file.cgi?id=lighttpd_add\">here</a>.")</p>
+<p style="font-size:10px;">$(lang de:"Zus&auml;tzliche Konfigurationsoptionen k&ouml;nnen <a href=\"$(href file lighttpd add)\">hier</a> eingetragen werden." en:"Additional configuration options can be added <a TARGET=\"_blank\" href=\"$(href file lighttpd add)\">here</a>.")</p>
 EOF
 sec_end
 

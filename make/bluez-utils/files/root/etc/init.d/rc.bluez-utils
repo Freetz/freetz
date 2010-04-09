@@ -116,11 +116,11 @@ case "$1" in
 		modreg cgi 'bluez-utils' 'Bluez-Utils'
 
 		modreg extra bluez-utils bluez-utils-help 2 bluez-utils-help
-		modreg file 'bluez_dun' 'Bluez-Dun' 0 "/mod/etc/default.bluez-utils/dun.def"
-		modreg file 'bluez_rfcomm' 'Bluez-Rfcomm' 0 "/mod/etc/default.bluez-utils/rfcomm.def"
-		modreg file 'bluez_linkkeys' 'Bluez-Linkkeys' 0 "/mod/etc/default.bluez-utils/linkkeys.def"
-		modreg file 'bluez_netpandu' 'Bluez-Netpandu' 0 "/mod/etc/default.bluez-utils/netpandu.def"
-		modreg file 'bluez_hcidconf' 'Bluez-Hcidconf' 0 "/mod/etc/default.bluez-utils/hcidconf.def"
+		modreg file bluez-utils dun 'Bluez-Dun' 0 "dun"
+		modreg file bluez-utils rfcomm 'Bluez-Rfcomm' 0 "rfcomm"
+		modreg file bluez-utils linkkeys 'Bluez-Linkkeys' 0 "linkkeys"
+		modreg file bluez-utils netpandu 'Bluez-Netpandu' 0 "netpandu"
+		modreg file bluez-utils hcidconf 'Bluez-Hcidconf' 0 "hcidconf"
 
 		if [ "$BLUEZ_UTILS_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2

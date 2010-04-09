@@ -67,17 +67,9 @@ case "$1" in
 		export STUNNEL_CONFIGURED="1"
 		modreg cgi 'stunnel' 'Stunnel'
 
-		deffile="/mod/etc/default.$DAEMON/stunnel_svcs.def"
-		[ -r "/tmp/flash/stunnel_svcs.def" ] && deffile='/tmp/flash/stunnel_svcs.def'
-		modreg file 'stunnel_svcs' 'Stunnel: services' 0 "$deffile"
-
-		deffile="/mod/etc/default.$DAEMON/stunnel_key.def"
-		[ -r "/tmp/flash/stunnel_key.def" ] && deffile='/tmp/flash/stunnel_key.def'
-		modreg file 'stunnel_key' 'Stunnel: Private Key' 0 "$deffile"
-
-		deffile="/mod/etc/default.$DAEMON/stunnel_certchain.def"
-		[ -r "/tmp/flash/stunnel_certchain.def" ] && deffile='/tmp/flash/stunnel_certchain.def'
-		modreg file 'stunnel_certchain' 'Stunnel: Certificate Chain' 0 "$deffile"
+		modreg file stunnel svcs 'Stunnel: services' 0 "stunnel_svcs"
+		modreg file stunnel key 'Stunnel: Private Key' 0 "stunnel_key"
+		modreg file stunnel certchain 'Stunnel: Certificate Chain' 0 "stunnel_certchain"
 
 		if [ "$STUNNEL_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -88,10 +80,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'stunnel_key'
-		modunreg file 'stunnel_certchain'
-		modunreg file 'stunnel_svcs'
-		modunreg cgi 'stunnel'
+		modunreg file stunnel
+		modunreg cgi stunnel
 		;;
 	start)
 		start

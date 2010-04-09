@@ -89,8 +89,7 @@ case "$1" in
 		chown $DAEMON_USER:$DAEMON_GROUP ${PID_FILE%/*}
 
 		modreg cgi "$DAEMON" "$DAEMON_LONG_NAME"
-		deffile='/mod/etc/default.tor/secret_id_key.def'
-		modreg file 'secret_id_key' 'Tor: Secret ID Key' 0 "$deffile"
+		modreg file tor secret_id_key 'Tor: Secret ID Key' 0 "secret_id_key"
 		
 		if [ "$TOR_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -100,7 +99,7 @@ case "$1" in
 		start
 		;;
 	unload)
-		modunreg file 'secret_id_key'
+		modunreg file tor
 		modunreg cgi "$DAEMON"
 		modlib_stop
 		;;

@@ -94,15 +94,11 @@ case "$1" in
 	""|load)
 		[ -d /tmp/flash/samba ] || mkdir /tmp/flash/samba
 
-		modreg cgi "samba" "Samba"
+		modreg cgi samba "Samba"
 
-		deffile=/mod/etc/default.samba/shares.def
-		[ -r /tmp/flash/samba/shares.def ] && deffile=/tmp/flash/samba/shares.def
-		modreg file "shares" '$(lang de:"Samba: Freigaben" en:"Samba: Shares")' 1 $deffile
+		modreg file samba shares '$(lang de:"Samba: Freigaben" en:"Samba: Shares")' 1 "shares"
 
-		deffile=/mod/etc/default.samba/sharesx.def
-		[ -r /tmp/flash/samba/sharesx.def ] && deffile=/tmp/flash/samba/sharesx.def
-		modreg file "sharesx" '$(lang de:"Samba: Erweitert" en:"Samba: Options")' 1 $deffile
+		modreg file samba sharesx '$(lang de:"Samba: Erweitert" en:"Samba: Options")' 1 "sharesx"
 
 		if [ "$SAMBA_ENABLED" != yes ]; then
 			echo "samba is disabled" 1>&2
@@ -113,9 +109,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file "sharesx"
-		modunreg file "shares"
-		modunreg cgi "samba"
+		modunreg file samba
+		modunreg cgi samba
 		;;
 	start)
 		start

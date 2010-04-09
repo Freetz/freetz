@@ -88,29 +88,12 @@ case "$1" in
 	""|load)
 		if [ "$DAEMON" = "openvpn" ]; then
 			modreg cgi 'openvpn' 'OpenVPN'
-			deffile='/mod/etc/default.openvpn/box_crt.def'
-			[ -r "/tmp/flash/box_crt.def" ] && deffile='/tmp/flash/box_crt.def'
-			modreg file 'box_crt' 'OpenVPN: Box Cert' 0 "$deffile"
-
-			deffile='/mod/etc/default.openvpn/box_key.def'
-			[ -r "/tmp/flash/box_key.def" ] && deffile='/tmp/flash/box_key.def'
-			modreg file 'box_key' 'OpenVPN: Private Key' 0 "$deffile"
-
-			deffile='/mod/etc/default.openvpn/ca_crt.def'	
-			[ -r "/tmp/flash/ca_crt.def" ] && deffile='/tmp/flash/ca_crt.def'
-			modreg file 'ca_crt' 'OpenVPN: CA Cert' 0 "$deffile"
-
-			deffile='/mod/etc/default.openvpn/crl_pem.def'
-			[ -r "/tmp/flash/crl_pem.def" ] && deffile='/tmp/flash/crl_pem.def'
-			modreg file 'crl_pem' 'OpenVPN: CRL' 0 "$deffile"
-		
-			deffile='/mod/etc/default.openvpn/dh_pem.def'
-			[ -r "/tmp/flash/dh_pem.def" ] && deffile='/tmp/flash/dh_pem.def'
-			modreg file 'dh_pem' 'OpenVPN: DH Param' 0 "$deffile"
-
-			deffile='/mod/etc/default.openvpn/static_key.def'
-			[ -r "/tmp/flash/static_key.def" ] && deffile='/tmp/flash/static_key.def'
-			modreg file 'static_key' 'OpenVPN: Static Key' 0 "$deffile"
+			modreg file openvpn 'box_crt' 'OpenVPN: Box Cert' 0 "box_crt"
+			modreg file openvpn 'box_key' 'OpenVPN: Private Key' 0 "box_key"
+			modreg file openvpn 'ca_crt' 'OpenVPN: CA Cert' 0 "ca_crt"
+			modreg file openvpn 'crl_pem' 'OpenVPN: CRL' 0 "crl_pem"
+			modreg file openvpn 'dh_pem' 'OpenVPN: DH Param' 0 "dh_pem"
+			modreg file openvpn 'static_key' 'OpenVPN: Static Key' 0 "static_key"
 		fi
 		d_BU="$DAEMON"
 		as="${OPENVPN_AUTOSTART#*#}" ;
@@ -132,13 +115,8 @@ case "$1" in
 	unload)
 		stop
 		if [ "$DAEMON" = "openvpn" ]; then
-			modunreg file 'box_crt'
-			modunreg file 'box_key'
-			modunreg file 'ca_crt'
-			modunreg file 'crl_pem'
-			modunreg file 'dh_pem'
-			modunreg file 'static_key'
-			modunreg cgi 'openvpn'
+			modunreg file openvpn
+			modunreg cgi openvpn
 		fi
 		;;
 	start)

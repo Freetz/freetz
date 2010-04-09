@@ -331,10 +331,10 @@ EOF
 if [ "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
 cat << EOF
 <br><br>$(lang de:"Bearbeite Datei:" en:"Edit file:")
-&nbsp;<a href="/cgi-bin/file.cgi?id=rrdstats_dt-conf">conf</a>
-&nbsp;-&nbsp;<a href="/cgi-bin/file.cgi?id=rrdstats_dt-alias">alias</a>
-&nbsp;-&nbsp;<a href="/cgi-bin/file.cgi?id=rrdstats_dt-group">group</a>
-&nbsp;-&nbsp;<a href="/cgi-bin/file.cgi?id=rrdstats_dt-alert">alert</a>
+&nbsp;<a href="$(href file rrdstats dt-conf)">conf</a>
+&nbsp;-&nbsp;<a href="$(href file rrdstats dt-alias)">alias</a>
+&nbsp;-&nbsp;<a href="$(href file rrdstats dt-group)">group</a>
+&nbsp;-&nbsp;<a href="$(href file rrdstats dt-alert)">alert</a>
 EOF
 fi
 cat << EOF

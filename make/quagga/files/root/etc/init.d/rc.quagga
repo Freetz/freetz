@@ -56,9 +56,7 @@ case "$1" in
 	""|load)
 		modreg cgi 'quagga' 'Quagga'
 		for daemon in $daemonlist; do
-			deffile="/mod/etc/default.quagga/${daemon}_conf.def"
-			[ -r "/tmp/flash/${daemon}_conf.def" ] && deffile="/tmp/flash/${daemon}_conf.def"
-			modreg file "${daemon}_conf" "Quagga - $daemon.conf" 0 "$deffile"
+			modreg file quagga "${daemon}_conf" "Quagga - $daemon.conf" 0 "${daemon}_conf"
 		done
 
 		if [ "$QUAGGA_ENABLED" = "no" ]; then
@@ -71,10 +69,8 @@ case "$1" in
 	unload)
 		stop
 
-		for daemon in $daemonlist; do
-			modunreg file "${daemon}_conf"
-		done
-		modunreg cgi 'quagga'
+		modunreg file quagga
+		modunreg cgi quagga
 		;;
 	start)
 		start

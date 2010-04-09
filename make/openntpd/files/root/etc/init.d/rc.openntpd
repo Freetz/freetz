@@ -79,9 +79,7 @@ case "$1" in
 	""|load)
 		modreg cgi 'openntpd' 'Openntpd'
 
-		deffile='/mod/etc/default.openntpd/openntpd_conf.def'
-		[ -r '/tmp/flash/openntpd_conf.def' ] && deffile='/tmp/flash/openntpd_conf.def'
-		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file 'openntpd_conf' 'Openntpd config' 0 "$deffile"
+		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file openntpd conf 'Openntpd config' 0 "openntpd_conf"
 		
 		if [ "$OPENNTPD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -92,8 +90,8 @@ case "$1" in
 		;;
 	unload)
 		stop
-		modunreg file 'openntpd_conf'
-		modunreg cgi 'openntpd'
+		modunreg file openntpd
+		modunreg cgi openntpd
 		;;
 	start)
 		start

@@ -28,7 +28,7 @@ sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
 cat << EOF
 <p>
-<a href="/cgi-bin/file.cgi?id=vnstat_conf">$(lang de:"Zum Bearbeiten der vnstat.conf hier klicken." en:"To edit the vnstat.conf click here.")</a>
+<a href="$(href file vnstat conf)">$(lang de:"Zum Bearbeiten der vnstat.conf hier klicken." en:"To edit the vnstat.conf click here.")</a>
 </p>
 <p>
 $(lang de:"Datenbankverzeichnis" en:"Databse directory"):&nbsp;

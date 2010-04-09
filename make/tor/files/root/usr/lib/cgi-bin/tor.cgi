@@ -83,7 +83,7 @@ if [ "$TOR_RELAY_ENABLED" == "yes" ]; then
 sec_begin '$(lang de:"Erweiterte Relay-Konfiguration" en:"Advanced relay options")'
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=secret_id_key">$(lang de:"Secret ID Key bearbeiten" en:"Edit secret id key")</a></li>
+<li><a href="$(href file tor secret_id_key)">$(lang de:"Secret ID Key bearbeiten" en:"Edit secret id key")</a></li>
 EOF
 if [ -x /etc/init.d/rc.avm-firewall ]; then
 cat << EOF

@@ -87,24 +87,13 @@ stop_webserver() {
 
 show_digitemp() {
 	modunreg status rrdstats rrddt
-	modunreg file 'rrdstats_dt-conf'
-	modunreg file 'rrdstats_dt-alias'
-	modunreg file 'rrdstats_dt-group'
-	modunreg file 'rrdstats_dt-alert'
+	modunreg file rrdstats
 	if [ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP1W" = yes ]; then
 		modreg status rrdstats DigiTemp rrddt
-		deffile='/mod/etc/default.rrdstats/dt-conf.def'
-		[ -r "/tmp/flash/rrdstats/dt-conf.def" ] && deffile='/tmp/flash/rrdstats/dt-conf.def'
-		modreg file 'rrdstats_dt-conf' 'RRDstats: dt-conf' 0 "$deffile"
-		deffile='/mod/etc/default.rrdstats/dt-alias.def'
-		[ -r "/tmp/flash/rrdstats/dt-alias.def" ] && deffile='/tmp/flash/rrdstats/dt-alias.def'
-		modreg file 'rrdstats_dt-alias' 'RRDstats: dt-alias' 1 "$deffile"
-		deffile='/mod/etc/default.rrdstats/dt-group.def'
-		[ -r "/tmp/flash/rrdstats/dt-group.def" ] && deffile='/tmp/flash/rrdstats/dt-group.def'
-		modreg file 'rrdstats_dt-group' 'RRDstats: dt-group' 1 "$deffile"
-		deffile='/mod/etc/default.rrdstats/dt-alert.def'
-		[ -r "/tmp/flash/rrdstats/dt-alert.def" ] && deffile='/tmp/flash/rrdstats/dt-alert.def'
-		modreg file 'rrdstats_dt-alert' 'RRDstats: dt-alert' 1 "$deffile"
+		modreg file rrdstats dt-conf 'RRDstats: dt-conf' 0 "dt-conf"
+		modreg file rrdstats dt-alias 'RRDstats: dt-alias' 1 "dt-alias"
+		modreg file rrdstats dt-group 'RRDstats: dt-group' 1 "dt-group"
+		modreg file rrdstats dt-alert 'RRDstats: dt-alert' 1 "dt-alert"
 	fi
 }
 
@@ -171,10 +160,7 @@ case "$1" in
 		modunreg status rrdstats rrddt
 		modunreg status rrdstats stats
 		modunreg cgi rrdstats
-		modunreg file 'rrdstats_dt-alias'
-		modunreg file 'rrdstats_dt-conf'
-		modunreg file 'rrdstats_dt-group'
-		modunreg file 'rrdstats_dt-alert'
+		modunreg file rrdstats
 		;;
 	start)
 		config

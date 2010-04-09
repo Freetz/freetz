@@ -42,12 +42,12 @@ sec_begin '$(lang de:"Konfigurationsdatei(en)" en:"Configuration file(s)")'
 
 cat << EOF
 <ul>
-<li><a href="/cgi-bin/file.cgi?id=zebra_conf">$(lang de:"zebra.conf bearbeiten" en:"Edit zebra.conf")</a></li>
+<li><a href="$(href file quagga zebra_conf)">$(lang de:"zebra.conf bearbeiten" en:"Edit zebra.conf")</a></li>
 EOF
 
 for daemon in $daemons; do
 cat << EOF
-<li><a href="/cgi-bin/file.cgi?id=${daemon}_conf">$(lang de:"${daemon}.conf bearbeiten" en:"Edit ${daemon}.conf")</a></li>
+<li><a href="$(href file quagga "${daemon}_conf")">$(lang de:"${daemon}.conf bearbeiten" en:"Edit ${daemon}.conf")</a></li>
 EOF
 done
 
