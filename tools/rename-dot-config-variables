@@ -12,7 +12,7 @@ fi
 for pkg in APACHE E2FSPROGS DAVFS2 HPLIP MC NANO PHP WGET XPDF; do
 	sed -i -r -e 's|FREETZ_('"${pkg}"'[ _])|FREETZ_PACKAGE_\1|g' "$1"
 done
-sed -i -r -e 's|FREETZ_COMPILE_TINYPROXY|FREETZ_PACKAGE_TINYPROXY|g' "$1"
+sed -i -r -e 's|FREETZ_COMPILE_TINYPROXY|FREETZ_PACKAGE_TINYPROXY|g;s|FREETZ_BUSYBOX_KEYS|FREETZ_BUSYBOX_FANCY_KEYS|g' "$1"
 
 # is lighttpd selected
 if grep -q "FREETZ_PACKAGE_LIGHTTPD=y" "$1" >/dev/null 2>&1; then

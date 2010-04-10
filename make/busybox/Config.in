@@ -12,6 +12,23 @@ config FREETZ_BUSYBOX_AR
 		This feature adds about 1.9 KB to BusyBox.
 		All sub-features in BusyBox are selected.
 
+config FREETZ_BUSYBOX_BRCTL
+	bool "brctl"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Adds bridge utilities from busybox
+
+config FREETZ_BUSYBOX_BRCTL_FANCY
+	bool "add brctl fancy options"
+	depends on FREETZ_BUSYBOX_BRCTL
+	default n
+	help
+		Add support for extended brctl option like:
+		setageing, setfd, sethello, setmaxage,
+		setpathcost, setportprio, setbridgeprio, stp
+		This adds about 600 bytes.
+
 config FREETZ_BUSYBOX_DIFF
 	bool "diff"
 	depends on FREETZ_REPLACE_BUSYBOX
@@ -35,6 +52,22 @@ config FREETZ_BUSYBOX_ETHER_WAKE
 		Send a magic packet to wake up sleeping machines.
 
 		This feature adds about 4 KB to BusyBox.
+
+config FREETZ_BUSYBOX_FANCY_KEYS
+	bool "fancykeys"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Adds some useful keyboard-features to the shell
+
+config FREETZ_BUSYBOX_FUSER
+	bool "fuser"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Includes the 'fuser' tool in busybox
+
+		This command helps to identify processes using files or sockets
 
 config FREETZ_BUSYBOX_INETD
 	bool "inetd"
@@ -81,71 +114,34 @@ config FREETZ_BUSYBOX_FEATURE_IP_TUNNEL
 	depends on FREETZ_BUSYBOX_IP
 	default n
 
-config FREETZ_BUSYBOX_PATCH
-	bool "patch"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Include the 'patch' tool in busybox
-
-		This feature is currently not required by any Freetz package.
-		If you need it or not is totally your decision.
-
-		This feature adds about 2.7 KB to BusyBox.
-		All sub-features in BusyBox are selected.
-
-config FREETZ_BUSYBOX_START_STOP_DAEMON
-	bool "start-stop-daemon"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Include the 'start-stop-daemon' tool in busybox
-
-		This feature is required by the Quagga Freetz package, otherwise you
-		may deactivate it. ATTENTION, this feature is NOT deactivated
-		automatically if the Quagga Freetz package is unselected.
-
-		This feature adds about 1.9 KB to BusyBox.
-		The 'Support additional arguments' sub-feature is automatically selected.
-
-config FREETZ_BUSYBOX_REALPATH
-	bool "realpath"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default y
-	help
-		Include the 'realpath' tool in busybox
-
-		Return the canonicalized absolute pathname. Used by Freetz script wrap_editors.
-
-		This feature adds about 2 KB to BusyBox.
-
-config FREETZ_BUSYBOX_WGET
-	bool "wget"
-	depends on FREETZ_REPLACE_BUSYBOX
-	depends on ! FREETZ_PACKAGE_WGET
-	default y
-	help
-		Include the 'wget' tool in busybox
-
-		This feature is required by any Freetz package.
-		But it is deselected when the wget package is selected.
-
 config FREETZ_BUSYBOX_LESS
 	bool "less"
 	depends on FREETZ_REPLACE_BUSYBOX
 	default n
 	help
 		Include the 'less' tools in busybox
-		
-		This feature isn't really used by Freetz, but it is more 
+
+		This feature isn't really used by Freetz, but it is more
 		comfortable than 'more'
-		(The features CONFIG_FEATURE_LESS_BRACKETS and 
+		(The features CONFIG_FEATURE_LESS_BRACKETS and
 		CONFIG_FEATURE_LESS_REGEXP are set automatically)
 
 config FREETZ_BUSYBOX_LONG_OPTS
 	bool
 	depends on FREETZ_REPLACE_BUSYBOX
 	default n
+
+config FREETZ_BUSYBOX_LS_COLOR
+	bool "colored ls"
+	depends on FREETZ_REPLACE_BUSYBOX
+	select FREETZ_BUSYBOX_LONG_OPTS
+	default n
+	help
+		Adds the colorful output to the ls-command.
+
+		This is a nice but nearly useless feature for your busybox, it
+		only colors you directory-listings.
+		(this feature sets "ls --color" by default, too)
 
 config FREETZ_BUSYBOX_MD5SUM
 	bool "md5sum"
@@ -157,104 +153,6 @@ config FREETZ_BUSYBOX_MD5SUM
 		md5sum is used to print or check MD5 checksums.
 
 		This feature adds about 0.7 KB to BusyBox.
-
-config FREETZ_BUSYBOX_NICE
-	bool "nice"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Includes the 'nice' tool in busybox
-
-		This command helps to use the niceness-levels on the box so you
-		can handle the system-ressources more porperly if you want
-		(note: no freetz-service uses this yet)
-
-config FREETZ_BUSYBOX_FUSER
-	bool "fuser"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Includes the 'fuser' tool in busybox
-
-		This command helps to identify processes using files or sockets
-
-config FREETZ_BUSYBOX_LS_COLOR
-	bool "color"
-	depends on FREETZ_REPLACE_BUSYBOX
-	select FREETZ_BUSYBOX_LONG_OPTS
-	default n
-	help
-		Adds the colorful output to the ls-command. 
-
-		This is a nice but nearly useless feature for your busybox, it 
-		only colors you dirictory-listings.
-		(this feature sets "ls --color" by default, too)
-
-config FREETZ_BUSYBOX_KEYS
-	bool "fancykeys"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Adds some useful keyboard-features to the shell
-
-config FREETZ_BUSYBOX_BRCTL
-	bool "brctl"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Adds bridge utilities from busybox
-
-config FREETZ_BUSYBOX_BRCTL_FANCY
-	bool "add brctl fancy options"
-	depends on FREETZ_BUSYBOX_BRCTL
-	default n
-	help
-		Add support for extended brctl option like:
-		setageing, setfd, sethello, setmaxage, 
-		setpathcost, setportprio, setbridgeprio, stp
-		This adds about 600 bytes.
-
-config FREETZ_BUSYBOX_UDHCPD
-	bool "udhcpd"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Add udhcpd, a simple DHCP daemon
-
-config FREETZ_BUSYBOX_UDHCPD_LEASES_FILE
-	string "Default path to leases file from udhcpd"
-	depends on FREETZ_BUSYBOX_UDHCPD
-	default "/var/tmp/udhcpd.leases"
-	help
-		Set default path to udhcpd leases file
-
-config FREETZ_BUSYBOX_UDHCPC
-	bool "udhcpc"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Add udhcpc, a simple DHCP client
-
-config FREETZ_BUSYBOX_SLACK_FOR_BUGGY_SERVERS
-	int "DHCP options slack buffer size"
-	depends on FREETZ_BUSYBOX_UDHCPC
-	default 80
-	help
-		DHCP options slack buffer size
-
-config FREETZ_BUSYBOX_SEQ
-	bool "seq"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Print a sequence of numbers.
-
-config FREETZ_BUSYBOX_TAC
-	bool "tac"
-	depends on FREETZ_REPLACE_BUSYBOX
-	default n
-	help
-		Reverse cat.
 
 config FREETZ_BUSYBOX_MDEV
 	bool "mdev"
@@ -314,6 +212,101 @@ config FREETZ_BUSYBOX_MOUNT_LABEL
 		This allows for specifying a device by label or uuid, rather than by
 		name. This feature utilizes the same functionality as findfs.
 
+config FREETZ_BUSYBOX_NICE
+	bool "nice"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Includes the 'nice' tool in busybox
+
+		This command helps to use the niceness-levels on the box so you
+		can handle the system-ressources more porperly if you want
+		(note: no freetz-service uses this yet)
+
+config FREETZ_BUSYBOX_PATCH
+	bool "patch"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'patch' tool in busybox
+
+		This feature is currently not required by any Freetz package.
+		If you need it or not is totally your decision.
+
+		This feature adds about 2.7 KB to BusyBox.
+		All sub-features in BusyBox are selected.
+
+config FREETZ_BUSYBOX_PSCAN
+	bool "pscan command, simple port scanner"
+	default n
+
+config FREETZ_BUSYBOX_REALPATH
+	bool "realpath"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default y
+	help
+		Include the 'realpath' tool in busybox
+
+		Return the canonicalized absolute pathname. Used by Freetz script wrap_editors.
+
+		This feature adds about 2 KB to BusyBox.
+
+config FREETZ_BUSYBOX_SEQ
+	bool "seq"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Print a sequence of numbers.
+
+config FREETZ_BUSYBOX_START_STOP_DAEMON
+	bool "start-stop-daemon"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'start-stop-daemon' tool in busybox
+
+		This feature is required by the Quagga Freetz package, otherwise you
+		may deactivate it. ATTENTION, this feature is NOT deactivated
+		automatically if the Quagga Freetz package is unselected.
+
+		This feature adds about 1.9 KB to BusyBox.
+		The 'Support additional arguments' sub-feature is automatically selected.
+
+config FREETZ_BUSYBOX_TAC
+	bool "tac"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Reverse cat.
+
+config FREETZ_BUSYBOX_UDHCPC
+	bool "udhcpc"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Add udhcpc, a simple DHCP client
+
+config FREETZ_BUSYBOX_SLACK_FOR_BUGGY_SERVERS
+	int "DHCP options slack buffer size"
+	depends on FREETZ_BUSYBOX_UDHCPC
+	default 80
+	help
+		DHCP options slack buffer size
+
+config FREETZ_BUSYBOX_UDHCPD
+	bool "udhcpd"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Add udhcpd, a simple DHCP daemon
+
+config FREETZ_BUSYBOX_UDHCPD_LEASES_FILE
+	string "Default path to leases file from udhcpd"
+	depends on FREETZ_BUSYBOX_UDHCPD
+	default "/var/tmp/udhcpd.leases"
+	help
+		Set default path to udhcpd leases file
+
 config FREETZ_BUSYBOX_VOLUMEID
 	bool "volumeid"
 	depends on FREETZ_REPLACE_BUSYBOX
@@ -335,12 +328,12 @@ config FREETZ_BUSYBOX_VOLUMEID_FAT
 	help
 		fat filesystem.
 
-config FREETZ_BUSYBOX_VOLUMEID_NTFS
-	bool "volumeid ntfs"
+config FREETZ_BUSYBOX_VOLUMEID_LINUXRAID
+	bool "volumeid linuxraid"
 	depends on FREETZ_BUSYBOX_VOLUMEID && FREETZ_BUSYBOX_MOUNT_HELPERS
 	default n
 	help
-		ntfs filesystem.
+		linuxraid filesystem.
 
 config FREETZ_BUSYBOX_VOLUMEID_LUKS
 	bool "volumeid luks"
@@ -349,16 +342,23 @@ config FREETZ_BUSYBOX_VOLUMEID_LUKS
 	help
 		luks filesystem.
 
-config FREETZ_BUSYBOX_VOLUMEID_LINUXRAID
-	bool "volumeid linuxraid"
+config FREETZ_BUSYBOX_VOLUMEID_NTFS
+	bool "volumeid ntfs"
 	depends on FREETZ_BUSYBOX_VOLUMEID && FREETZ_BUSYBOX_MOUNT_HELPERS
 	default n
 	help
-		linuxraid filesystem.
+		ntfs filesystem.
 
-config FREETZ_BUSYBOX_PSCAN
-	bool "pscan command, simple port scanner"
-	default n
+config FREETZ_BUSYBOX_WGET
+	bool "wget"
+	depends on FREETZ_REPLACE_BUSYBOX
+	depends on ! FREETZ_PACKAGE_WGET
+	default y
+	help
+		Include the 'wget' tool in busybox
+
+		This feature is required by any Freetz package.
+		But it is deselected when the wget package is selected.
 
 menu "IPv6 Options"
 	requires FREETZ_TARGET_IPV6_SUPPORT
