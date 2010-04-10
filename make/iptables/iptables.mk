@@ -18,7 +18,7 @@ $(PKG)_SOURCE_MD5:=723fa88d8a0915e184f99e03e9bf06cb
 $(PKG_SOURCE_DOWNLOAD)
 
 $(IPTABLES_DIR)/.unpacked: $(DL_DIR)/$(IPTABLES_SOURCE)
-	tar -C $($(PKG)_SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(IPTABLES_SOURCE)
+	tar -C $(IPTABLES_SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(IPTABLES_SOURCE)
 	set -e; shopt -s nullglob; for i in $(IPTABLES_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(IPTABLES_DIR) $$i; \
 	done
