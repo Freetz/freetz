@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN,6.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
 $(PKG)_SITE:=http://neil.brown.name/portmap
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/portmap
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/portmap
 $(PKG)_SOURCE_MD5:=ac108ab68bf0f34477f8317791aaf1ff

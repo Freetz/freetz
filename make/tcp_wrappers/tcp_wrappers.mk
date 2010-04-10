@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN,7.6)
 $(PKG)_LIB_VERSION:=0.7.6
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.porcupine.org/pub/security
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/tcpd
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/shared/libwrap.so.$($(PKG)_LIB_VERSION)

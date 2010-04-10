@@ -1,8 +1,7 @@
 $(call PKG_INIT_BIN, 1.5)
 $(PKG)_SOURCE:=$(pkg)$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)
 $(PKG)_SITE:=@SF/$(pkg)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/index.php
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/etc/default.$(pkg)/config.php.default
 $(PKG)_SOURCE_MD5:=97ca3f2f9805dbc54d6ad763435cd9fd

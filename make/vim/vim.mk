@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 7.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=ftp://ftp.vim.org/pub/vim/unix
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)71
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)71
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 #$(PKG)_STARTLEVEL=99

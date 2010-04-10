@@ -39,7 +39,7 @@ $(pkg)-uninstall:
 $(PKG_FINISH)
 
 # host version
-GMP_DIR2:=$(SOURCE_DIR)/gmp-$(GMP_VERSION)-host
+GMP_DIR2:=$(TOOLS_SOURCE_DIR)/gmp-$(GMP_VERSION)
 GMP_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build
 GMP_HOST_BINARY:=$(GMP_HOST_DIR)/lib/libgmp.a
 

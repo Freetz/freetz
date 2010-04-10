@@ -40,7 +40,7 @@ $(pkg)-uninstall:
 $(PKG_FINISH)
 
 # host version
-MPFR_DIR2:=$(SOURCE_DIR)/mpfr-$(MPFR_VERSION)-host
+MPFR_DIR2:=$(TOOLS_SOURCE_DIR)/mpfr-$(MPFR_VERSION)
 MPFR_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build
 MPFR_HOST_BINARY:=$(MPFR_HOST_DIR)/lib/libmpfr.a
 

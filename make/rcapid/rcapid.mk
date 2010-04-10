@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 0.1)
 $(PKG)_SOURCE:=rcapid-cm.tar.gz
 $(PKG)_SITE:=ftp://ftp.melware.de/capi-utils
-$(PKG)_DIR:=$(SOURCE_DIR)/rcapid-cm
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/rcapid-cm
 $(PKG)_BINARY:=$($(PKG)_DIR)/rcapid
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/rcapid
 $(PKG)_STARTLEVEL=40

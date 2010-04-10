@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 2.8.5)
 $(PKG)_SOURCE:=$(pkg)$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://lynx.isc.org/lynx$($(PKG)_VERSION)
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)2-8-5
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)2-8-5
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_CFG:=$($(PKG)_DIR)/lynx.cfg
 $(PKG)_TARGET_CFG:=$($(PKG)_TARGET_DIR)/root/etc/lynx.cfg

@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=ntfs-3g-$($(PKG)_VERSION).tgz
 $(PKG)_SOURCE_MD5:=12ce21aa044c6068a4df6e8cbd3c5cfa
 $(PKG)_SITE:=http://tuxera.com/opensource
 
-$(PKG)_DIR:=$(SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ntfs-3g
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ntfs-3g
 

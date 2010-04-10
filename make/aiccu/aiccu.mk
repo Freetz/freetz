@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 20070115)
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://noc.sixxs.net/archive/sixxs/aiccu/unix
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/unix-console/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 $(PKG)_SOURCE_MD5:=c9bcc83644ed788e22a7c3f3d4021350

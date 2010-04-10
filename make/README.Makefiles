@@ -13,15 +13,15 @@ packages are in make/libs/*, while binary packages are in make/*.
 
 Each package must define the following targets:
 
-
-${pkg}-source
+$(pkg)-download
 	Download source for the package
 
-${pkg}-precompiled
-	Compile package and prepare for firmware generation or ${pkg}-package
+${pkg}-source
+${pkg}-unpacked
+	Unpack source for the package
 
-${pkg}-package
-	Create a precompiled binary package
+${pkg}-precompiled
+	Compile package and prepare for firmware generation
 
 ${pkg}-clean
 ${pkg}-dirclean
@@ -29,6 +29,9 @@ ${pkg}-dirclean
 
 ${pkg}-list
 	add package to the list of static or dynamic patches
+
+${pkg}-uninstall
+	remove binary files from package or library files from root/usr/lib/freetz
 
 
 To use the convenience macros, you need some more defines:
@@ -53,16 +56,16 @@ $(PKG)_SOURCE:=package-name-$($(PKG)_VERSION).tar.gz
 # It should not be necessary to override this value.
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
 
-# directory for sourcefile, "$(SOURCE_DIR)/" and the directory created by extracting the tar-file
+# directory for sourcefile, "$($(PKG)_SOURCE_DIR)/" and the directory created by extracting the tar-file
 # This value is the default from PKG_INIT.
-$(PKG)_DIR:=$(SOURCE_DIR)/package-name-$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/package-name-$($(PKG)_VERSION)
 
 # target directory for the package. The default value depends on BIN/LIB,
 # It should not be necessary to override this value.
 BIN:
 $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
 LIB:
-$(PKG)_TARGET_DIR:=root/usr/freetz/lib
+$(PKG)_TARGET_DIR:=root/usr/lib/freetz
 
 # root directory for installation. The default value depends on BIN/LIB,
 # It should not be necessary to override this value.
@@ -82,9 +85,10 @@ $(PKG)_STARTLEVEL=40
 # defines $(pkg)-download
 $(PKG_SOURCE_DOWNLOAD)
 
-# Unpack binary or library package von dl/$($(PKG)_SOURCE) and apply patches
+# Unpack binary or library package from dl/$($(PKG)_SOURCE) and apply patches
+# defines $(pkg)-unpacked and $(pkg)-source
 #
-# Some packages contain suboptions. If $(PKG)_REBUILD_SUBOPTS is defined, the packages is
+# Some packages contain suboptions. If $(PKG)_REBUILD_SUBOPTS is defined, the package is
 # rebuild from scratch if one of the named options are changed in .config.
 $(PKG_UNPACKED)
 

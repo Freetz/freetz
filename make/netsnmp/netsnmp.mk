@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 5.1.2)
 $(PKG)_SOURCE:=net-snmp-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/net-snmp
-$(PKG)_DIR:=$(SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/snmpd
 $(PKG)_TARGET_LIBS:=$($(PKG)_DEST_DIR)/usr/lib/*.so*

@@ -50,6 +50,9 @@ else
 FPIC:=
 endif
 
+TARGET_ARCH:=$(strip $(subst ",, $(FREETZ_TARGET_ARCH)))
+# FIXME: declared twice (make/toolchain/Makefile.in)
+TARGET_UCLIBC_VERSION:=$(strip $(subst ",, $(FREETZ_TARGET_UCLIBC_VERSION)))
 TARGET_CROSS:=$(strip $(subst ",, $(FREETZ_TARGET_CROSS)))
 TARGET_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_TARGET_MAKE_PATH)))
 KERNEL_CROSS:=$(strip $(subst ",, $(FREETZ_KERNEL_CROSS)))
@@ -62,6 +65,8 @@ endif
 ifneq ($(patsubst /%,/,$(KERNEL_MAKE_PATH)),/)
 KERNEL_MAKE_PATH:=$(FREETZ_BASE_DIR)/$(KERNEL_MAKE_PATH)
 endif
+
+SOURCE_DIR:=$(SOURCE_DIR_ROOT)/target-$(TARGET_ARCH)_uClibc-$(TARGET_UCLIBC_VERSION)
 
 TARGET_CC:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc
 TARGET_CXX:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++-uc
@@ -104,7 +109,7 @@ TARGET_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../lib/pkgconfig"
 #TARGET_CONFIGURE_ENV += CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++"
 #TARGET_CONFIGURE_ENV += RANLIB="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib"
 
-CONFIG_CACHE_PATH:= $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache
+CONFIG_CACHE_PATH:= $(FREETZ_BASE_DIR)/$(SOURCE_DIR)/config.cache
 # $1 optional suffix
 define BACKUP_CONFIG_CACHE
 if [ -e $(CONFIG_CACHE_PATH) ]; then cp -a $(CONFIG_CACHE_PATH) $(CONFIG_CACHE_PATH)-`date +%Y%m%d-%H%M%S`$(if $1,-$1,); fi;
@@ -310,8 +315,8 @@ endef
 # Usage:
 # $(call _ECHO,text)
 # $(call _ECHO_BUILD)
-ECHO_ITEM_START:=$(SOURCE_DIR)/.echo_item_start
-ECHO_ITEM_BUILD:=$(SOURCE_DIR)/.echo_item_build
+ECHO_ITEM_START:=$(SOURCE_DIR_ROOT)/.echo_item_start
+ECHO_ITEM_BUILD:=$(SOURCE_DIR_ROOT)/.echo_item_build
 
 define _ECHO_START
 	echo -n "---> "; \
@@ -458,8 +463,8 @@ $(pkg)-dirclean: $(pkg)-dirclean--int
 $(pkg)-precompiled--int: $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
 $(pkg)-precompiled:
 	@$(call _ECHO_DONE)
-$(pkg)-build-prereq: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
-$(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked:
+$(pkg)-build-prereq: $(SOURCE_DIR_ROOT)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
+$(SOURCE_DIR_ROOT)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked:
 ifneq ($($(PKG)_BUILD_PREREQ),)
 	@$(PKG)_MISSING_PREREQ=""; \
 	for f in $($(PKG)_BUILD_PREREQ); do \
@@ -705,7 +710,7 @@ endef
 define PKG_CONFIGURED_CONFIGURE__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
-$($(PKG)_DIR)/.configured: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $(SOURCE_DIR_ROOT)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
 	@$(call _ECHO,configuring... )
 	($(CONFIGURE) \
 		cd $($(PKG)_DIR); \
@@ -731,7 +736,7 @@ PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
 define PKG_CONFIGURED_NOP__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
-$($(PKG)_DIR)/.configured: $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $(SOURCE_DIR_ROOT)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
 	@touch $$@
 endef
 PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))

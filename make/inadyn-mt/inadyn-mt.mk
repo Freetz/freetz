@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN,02.12.24)
 $(PKG)_SOURCE:=$(pkg).v.$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/inadyn-mt
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/bin/linux/inadyn-mt
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/inadyn-mt
 $(PKG)_SOURCE_MD5:=9e7a8a8841a6b3fe0c6f9412e581324b

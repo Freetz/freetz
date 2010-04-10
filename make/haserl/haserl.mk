@@ -1,7 +1,6 @@
 $(call PKG_INIT_BIN, 0.9.26)
 $(PKG)_SOURCE:=haserl-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/haserl
-$(PKG)_DIR:=$(SOURCE_DIR)/haserl-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/haserl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/haserl
 $(PKG)_SOURCE_MD5:=8cd64e591209751a062ad4e08f1d10dd

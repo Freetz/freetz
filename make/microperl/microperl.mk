@@ -2,7 +2,7 @@
 $(call PKG_INIT_BIN, 5.10.1)
 $(PKG)_SOURCE:=perl-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=ftp://ftp.mpi-sb.mpg.de/pub/perl/CPAN/src/5.0
-$(PKG)_DIR:=$(SOURCE_DIR)/perl-$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/perl-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/microperl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/microperl
 $(PKG)_TARGET_SYMLINK:=$($(PKG)_DEST_DIR)/usr/bin/perl

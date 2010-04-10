@@ -7,7 +7,7 @@ AVM_UNPACK__INT_.bz2:=j
 KERNEL_SUBVERSION:=iln6
 KERNEL_BOARD_REF:=$(KERNEL_REF)
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
-KERNEL_DIR:=$(SOURCE_DIR)/kernel/ref-$(KERNEL_REF)-$(AVM_VERSION)
+KERNEL_DIR:=$(SOURCE_DIR_ROOT)/kernel/ref-$(KERNEL_REF)-$(AVM_VERSION)
 KERNEL_BUILD_DIR:=$(KERNEL_DIR)
 KERNEL_BUILD_ROOT_DIR:=$(KERNEL_BUILD_DIR)/linux-$(KERNEL_VERSION)
 
@@ -36,7 +36,7 @@ $(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
 $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) $(KERNEL_FREETZ_CONFIG_FILE) \
 				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
 	$(RM) -r $(KERNEL_DIR)
-	$(RM) -r $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
+	$(RM) -r $(SOURCE_DIR_ROOT)/avm-gpl-$(AVM_VERSION)
 	mkdir -p $(KERNEL_BUILD_DIR)
 	@$(call _ECHO, checking structure... )
 	@KERNEL_SOURCE_CONTENT=` \
@@ -220,7 +220,7 @@ kernel-clean:
 
 kernel-dirclean:
 	$(RM) -r $(KERNEL_DIR)
-	$(RM) -r $(SOURCE_DIR)/avm-gpl-$(AVM_VERSION)
+	$(RM) -r $(SOURCE_DIR_ROOT)/avm-gpl-$(AVM_VERSION)
 	$(RM) $(KERNEL_TARGET_DIR)/.version-*
 	$(RM) $(KERNEL_TARGET_DIR)/System*
 	$(RM) $(KERNEL_TARGET_DIR)/kernel-*

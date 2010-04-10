@@ -41,7 +41,7 @@ DL_DIR:=dl
 MAKE_DIR:=make
 PACKAGES_DIR:=packages
 ROOT_DIR:=root
-SOURCE_DIR:=source
+SOURCE_DIR_ROOT:=source
 TOOLCHAIN_DIR:=toolchain
 TOOLS_DIR:=tools
 DL_FW_DIR:=$(DL_DIR)/fw
@@ -141,7 +141,7 @@ endif
 
 all: step
 world: $(CHECK_BUILD_DIR_VERSION) $(DL_DIR) $(BUILD_DIR) \
-	$(PACKAGES_DIR) $(SOURCE_DIR) $(TOOLCHAIN_BUILD_DIR)
+	$(PACKAGES_DIR) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
@@ -206,8 +206,8 @@ $(BUILD_DIR):
 $(PACKAGES_DIR):
 	@mkdir -p $(PACKAGES_DIR)
 
-$(SOURCE_DIR):
-	@mkdir -p $(SOURCE_DIR)
+$(SOURCE_DIR_ROOT):
+	@mkdir -p $(SOURCE_DIR_ROOT)
 
 $(TOOLCHAIN_BUILD_DIR):
 	@mkdir -p $(TOOLCHAIN_BUILD_DIR)
@@ -345,18 +345,18 @@ test: $(BUILD_DIR)/modified
 	@echo "no tests defined"
 
 toolchain-depend: | $(TOOLCHAIN)
-toolchain: $(DL_DIR) $(SOURCE_DIR) $(TOOLCHAIN)
+toolchain: $(DL_DIR) $(SOURCE_DIR_ROOT) $(TOOLCHAIN)
 	@echo
 	@echo "FINISHED: $(TOOLCHAIN_DIR)/kernel/ - glibc compiler for the kernel"
 	@echo "          $(TOOLCHAIN_DIR)/target/ - uClibc compiler for the userspace"
 	@echo
 
-libs: $(DL_DIR) $(SOURCE_DIR) $(LIBS_PRECOMPILED)
+libs: $(DL_DIR) $(SOURCE_DIR_ROOT) $(LIBS_PRECOMPILED)
 
-sources: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) $(DL_IMAGE) \
+sources: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR_ROOT) $(PACKAGES_DIR) $(DL_IMAGE) \
 	$(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(LIBS_SOURCE) $(TOOLCHAIN_SOURCE) $(TOOLS_SOURCE)
 
-precompiled: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR) $(PACKAGES_DIR) toolchain-depend \
+precompiled: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR_ROOT) $(PACKAGES_DIR) toolchain-depend \
 	$(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
 check-downloads: $(PACKAGES_CHECK_DOWNLOADS)
@@ -382,7 +382,7 @@ distclean: $(TOOLS_DISTCLEAN) common-distclean
 
 endif
 
-tools: $(DL_DIR) $(SOURCE_DIR) $(TOOLS)
+tools: $(DL_DIR) $(SOURCE_DIR_ROOT) $(TOOLS)
 tools-distclean: $(TOOLS_DISTCLEAN)
 
 push-firmware:
@@ -489,6 +489,7 @@ common-dirclean:
 
 common-distclean: common-dirclean
 	rm -f .config .config.old .config.cmd .tmpconfig.h
+	rm -rf $(SOURCE_DIR_ROOT)
 	rm -rf $(TOOLCHAIN_BUILD_DIR)
 	rm -rf $(DL_DIR)
 	-rm -rf $(ADDON_DIR)/*

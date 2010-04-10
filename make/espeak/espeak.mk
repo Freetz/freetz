@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 1.40.02)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-source.zip
 $(PKG)_SOURCE_MD5:=708954b44c526e8174df8b88a6382738
 $(PKG)_SITE:=@SF/espeak
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/speak
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/speak
 

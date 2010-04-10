@@ -4,7 +4,7 @@ $(PKG)_SOURCE_MD5:=4621bc56167b6953ec4071043fe0ec57
 $(PKG)_SITE:=ftp://ftp.samba.org/pub/ppp
 $(PKG)_STARTLEVEL=40
 
-$(PKG)_DIR:=$(SOURCE_DIR)/ppp-$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/ppp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/pppd/pppd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/pppd
 $(PKG)_CHAT_BINARY:=$(PPPD_DIR)/chat/chat

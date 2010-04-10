@@ -3,7 +3,7 @@ $(call PKG_INIT_LIB, 1.7.3)
 #$(PKG)_SOURCE:=matrixssl-$($(PKG)_VERSION)-open.tar.gz
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://downloads.openwrt.org/sources
-$(PKG)_DIR:=$(SOURCE_DIR)/matrixssl
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/matrixssl
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libmatrixssl.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmatrixssl.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmatrixssl.so
