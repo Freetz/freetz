@@ -1,11 +1,11 @@
-$(call PKG_INIT_BIN, 1.17.1)
+$(call PKG_INIT_BIN, 1.17.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-freetz.tar.bz2
 $(PKG)_SITE:=http://download.berlios.de/callmonitor
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/recode
 $(PKG)_TARGET_BINARY:=$($(PKG)_DIR)/root/usr/lib/callmonitor/bin/recode
 $(PKG)_STARTLEVEL=30
-$(PKG)_SOURCE_MD5:=55713aecd77790d61b2b1dd8b6770e47
+$(PKG)_SOURCE_MD5:=4399413cdb480d343510525247625c35
 
 CALLMONITOR_FEATURES:=$(foreach feat,webif actions monitor phonebook,\
 	$(if $(FREETZ_PACKAGE_CALLMONITOR_$(feat)),$(feat)))
