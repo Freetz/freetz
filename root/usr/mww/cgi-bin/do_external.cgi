@@ -9,8 +9,8 @@ cgi_begin '$(lang de:"external-Update" en:"external-update")'
 <h1>2. $(lang de:"Dateien extrahieren" en:"Extract files")</h1>
 
 <pre><%
-cat /tmp/ex_update.log;
-rm -f /tmp/ex_update.log;
+cat /tmp/ex_update.log
+rm -f /tmp/ex_update.log
 %></pre>
 
 <p>

@@ -42,7 +42,7 @@ EOF
 }
 
 # if we are called as hotplug helper we must not filter these env vars
-case "$1" in
+case $1 in
 	scsi|scsi_device|scsi_host|block|usb)
 		;;
 	*)
@@ -78,7 +78,7 @@ serialize_env() {
 }
 
 hotplugging() {
-	case "$1" in
+	case $1 in
 		enable)
 			echo "$HOTPLUG" > /proc/sys/kernel/hotplug
 			;;
@@ -120,23 +120,23 @@ hotplugging() {
 
 		# hotplug actions
 		scsi_device)
-			ENV="$(serialize_env ACTION DEVPATH PHYSDEVBUS PHYSDEVDRIVER PHYSDEVPATH SEQNUM SUBSYSTEM)"
+			ENV=$(serialize_env ACTION DEVPATH PHYSDEVBUS PHYSDEVDRIVER PHYSDEVPATH SEQNUM SUBSYSTEM)
 			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
 			;;
 		scsi_host)
-			ENV="$(serialize_env ACTION DEVPATH PHYSDEVPATH SEQNUM SUBSYSTEM)"
+			ENV=$(serialize_env ACTION DEVPATH PHYSDEVPATH SEQNUM SUBSYSTEM)
 			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
 			;;
 		scsi)
-			ENV="$(serialize_env ACTION DEVPATH PHYSDEVBUS SEQNUM SUBSYSTEM)"
+			ENV=$(serialize_env ACTION DEVPATH PHYSDEVBUS SEQNUM SUBSYSTEM)
 			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
 			;;
 		block)
-			ENV="$(serialize_env ACTION DEVPATH MAJOR MINOR PHYSDEVBUS PHYSDEVDRIVER PHYSDEVPATH SEQNUM SUBSYSTEM)"
+			ENV=$(serialize_env ACTION DEVPATH MAJOR MINOR PHYSDEVBUS PHYSDEVDRIVER PHYSDEVPATH SEQNUM SUBSYSTEM)
 			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
 			;;
 		usb)
-			ENV="$(serialize_env ACTION DEVICE DEVPATH INTERFACE MODALIAS PHYSDEVBUS PHYSDEVDRIVER PRODUCT SEQNUM SUBSYSTEM TYPE)"
+			ENV=$(serialize_env ACTION DEVICE DEVPATH INTERFACE MODALIAS PHYSDEVBUS PHYSDEVDRIVER PRODUCT SEQNUM SUBSYSTEM TYPE)
 			echo "$1 $ENV" >> "/oldroot/$HOTPLUGCACHE"
 			;;
 		*)
@@ -169,7 +169,7 @@ mount_usbroot() {
 
 	for US in /proc/scsi/usb-storage/*; do
 		if grep "Path: $DEVPATH" $US > /dev/null 2>&1; then
-			HOST=`cat $US|sed -n "s/.* scsi\([0-9]*\): usb.*/\1/p"`
+			HOST=$(cat $US | sed -n "s/.* scsi\([0-9]*\): usb.*/\1/p")
 		fi
 	done
 
@@ -262,7 +262,7 @@ load_usb_modules() {
 	if [ $HWRevision = 102 ]; then
 		mount -t proc proc /proc > /dev/null 2>&1
 		mount -t tmpfs tmpfs /var > /dev/null 2>&1
-		echo firmware_info `/etc/version` > /proc/sys/urlader/environment
+		echo firmware_info $(/etc/version) > /proc/sys/urlader/environment
 		modprobe tiatm firmware_load_file=/lib/modules/microvoip-dsl.bin annex=$ANNEX
 		modprobe isdn_fbox_fon4
 	fi
@@ -336,7 +336,7 @@ get_fstype() {
 
 	# check fs type on media if fstyp is available
 	if [ -x /usr/bin/fstyp ]; then
-		mediafs="$(/usr/bin/fstyp $DEVICE)"
+		mediafs=$(/usr/bin/fstyp $DEVICE)
 	fi
 
 	# result matrix (only handle some special cases, thread all other cases as ext2)
@@ -344,14 +344,14 @@ get_fstype() {
 		n:y:*)
 			FSTYPE="ext3" ;;		# only ext3 available
 		y:y:*)
-			FSTYPE="${mediafs:-ext2}" ;;	# use fs type from media or ext2 as default
+			FSTYPE=${mediafs:-ext2} ;;	# use fs type from media or ext2 as default
 		*)
 			FSTYPE="ext2" ;;		# defaults to ext2
 	esac
 
 	# user can force a fs type if kernel module is available
 	if [ -n "$1" -a "$(eval echo \$$1)" == "y" ]; then
-		FSTYPE="$1"
+		FSTYPE=$1
 	fi
 }
 
@@ -360,10 +360,10 @@ get_env_var() {
 	# garbage can be part of the value if the user defines the variable via
 	# Putty directly at the Eva console prompt via copy & paste.
 	usbroot=$(sed -rn "s/^$USBROOT_ENV_VAR[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
-	usbroot="${usbroot#usbroot=}"
-	DEVICE="${usbroot%%:*}"
-	USBPATH="${usbroot##*:}"
-	fstype="${usbroot#*:}"; fstype="${fstype%:*}"
+	usbroot=${usbroot#usbroot=}
+	DEVICE=${usbroot%%:*}
+	USBPATH=${usbroot##*:}
+	fstype=${usbroot#*:}; fstype=${fstype%:*}
 	if [ "$fstype" == "$USBPATH" ]; then
 		fstype=""
 	fi
@@ -385,7 +385,7 @@ get_env_var() {
 
 	# Get HWRevision and HWRevision_BitFileCount from environment
 	item_count=0
-	for i in `grep HWRevision /proc/sys/urlader/environment | tr '.' ' '` ; do
+	for i in $(grep HWRevision /proc/sys/urlader/environment | tr '.' ' '); do
 		case $item_count in
 		1)
 			HWRevision=$i
@@ -397,7 +397,7 @@ get_env_var() {
 			fi
 		;;
 		esac
-		item_count=$((item_count + 1))
+		let item_count++
 	done
 }
 
@@ -470,7 +470,7 @@ if [ "$PPID" == "0" ]; then
 	exec init >/dev/console 2>&1 <&1
 fi
 
-case "$1" in
+case $1 in
 	""|load)
 		# flush hotplug cache
 		hotplugging flush

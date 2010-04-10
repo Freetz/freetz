@@ -55,8 +55,8 @@ start() {
 			while [ ! -f $TOR_DATADIRECTORY/keys/secret_id_key ]; do
 				sleep 1
 				echo -n "."
-				count=$(( $count+1 ))
-				[ $count -gt 99 ] && break;
+				let count++
+				[ $count -gt 99 ] && break
 			done
 			if [ $count -le 99 ]; then
 				cp $TOR_DATADIRECTORY/keys/secret_id_key $DAEMON_STORAGE/secret_id_key
@@ -78,7 +78,7 @@ stop_post() {
 	[ "$TOR_DATADIRPERSISTENT" == "no" ] && rm -rf $TOR_DATADIRECTORY 2>/dev/null
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		#For compatiblity!
 		[ -d /tmp/flash/.tor ] && mv /tmp/flash/.tor $DAEMON_STORAGE
@@ -93,7 +93,7 @@ case "$1" in
 		
 		if [ "$TOR_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start

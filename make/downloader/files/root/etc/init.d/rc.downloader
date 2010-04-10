@@ -7,7 +7,7 @@ ERRFILE=/var/tmp/downerr
 
 if [ "$DOWNLOADER_DEBUG" = "yes" ]; then
 	LOGFILE=/var/log/downloader.log
-	if test -e $LOGFILE ; then
+	if [ -e $LOGFILE ]; then
 		rm -f $LOGFILE > /dev/null 2>&1 
 	fi
 else
@@ -16,7 +16,7 @@ fi
 
 
 start() {
-	if test -e $ERRFILE ; then
+	if [ -e $ERRFILE ]; then
 		rm -f $ERRFILE > /dev/null 2>&1 
 	fi
 	if [ "$DOWNLOADER_ENABLED" = "yes" ]; then
@@ -33,7 +33,7 @@ start() {
 				echo $ERRORVAL > $ERRFILE
 			fi
 		done 
-		if test -e $ERRFILE ; then
+		if [ -e $ERRFILE ]; then
 			rm $ERRFILE > /dev/null 2>&1 
 			echo "Download failed."
 			exit $ERRORVAL
@@ -59,7 +59,7 @@ stop() {
 }
 
 remove() {
-	if test -e $ERRFILE ; then
+	if [ -e $ERRFILE ]; then
 		rm -f $ERRFILE > /dev/null 2>&1 
 	fi
 	echo "$DAEMON: Remove all downloaded files..."
@@ -75,7 +75,7 @@ remove() {
 			echo $ERRORVAL > $ERRFILE
 		fi
 	done 
-	if test -e $ERRFILE ; then
+	if [ -e $ERRFILE ]; then
 		rm $ERRFILE > /dev/null 2>&1 
 		echo "Remove failed."
 		exit $ERRORVAL
@@ -84,7 +84,7 @@ remove() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi $DAEMON 'Downloader'
 		modreg extra $DAEMON '$(lang de:"Heruntergeladene Dateien löschen" en:"Remove downloaded files")' 1 'downremover'
@@ -92,7 +92,7 @@ case "$1" in
 
 		if [ "$DOWNLOADER_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		if [ -e "/var/run/downloader.pid" ]; then

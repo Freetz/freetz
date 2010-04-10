@@ -8,7 +8,7 @@ fi
 . /lib/mdev/common/log
 . /lib/mdev/common/ar7value
 
-case "$1" in
+case $1 in
 	start)
 		if [ no = "$(ar7value 'usbhost.ftp_server_enabled')" ]; then
 			log_info "ftp server is not enabled"

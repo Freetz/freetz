@@ -52,18 +52,18 @@ i=1
 
 awk '/^   8 +.*sd[a-z][0-9]/ { print $4, int($3/1024) }' /proc/partitions | while read DEVPART SIZE; do
 	# filter partition number, get vendor and model string from sysfs, guess filesystem type
-	dev="$(echo $DEVPART | sed 's/[0-9]//g')"
-	vendor="$(cat /sys/block/$dev/device/vendor)"
-	model="$(cat /sys/block/$dev/device/model)"
-	fs="$([ -x /usr/bin/fstyp ] && fstyp "/dev/$DEVPART" || echo "$(lang de:"unbekannt" en:"unknown")")"
-	mountastyp="$fs"
-        html_devpart="$(html "$DEVPART")"
+	dev=$(echo $DEVPART | sed 's/[0-9]//g')
+	vendor=$(cat /sys/block/$dev/device/vendor)
+	model=$(cat /sys/block/$dev/device/model)
+	fs=$([ -x /usr/bin/fstyp ] && fstyp "/dev/$DEVPART" || echo "$(lang de:"unbekannt" en:"unknown")")
+	mountastyp=$fs
+        html_devpart=$(html "$DEVPART")
 
 	# set radio button states
-	checked=''; disabled=''; 
+	checked=''; disabled=''
 	if [ "$USBROOT_DEVICE" == "/dev/$DEVPART" ]; then
 		checked=' checked="checked"'
-		mediafs="$fs"
+		mediafs=$fs
 	fi
 	# only allow filesystems with kernel module support
 	[ "$(eval echo \$$fs)" != 'y' ] && disabled=' disabled="disabled"'
@@ -82,7 +82,7 @@ awk '/^   8 +.*sd[a-z][0-9]/ { print $4, int($3/1024) }' /proc/partitions | whil
   </tr>
 EOF
 
-	i=$((i + 1))
+	let i++
 done
 
 cat << EOF

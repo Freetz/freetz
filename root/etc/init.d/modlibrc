@@ -171,14 +171,14 @@ modlib_start()
 		else
 			echo "$DAEMON is started via inetd" 1>&2
 		fi
-		exit 1;
+		exit 1
 	fi
 	
 	start
 }
 
 # load config
-[ -n "$DAEMON" ] && case "$1" in
+[ -n "$DAEMON" ] && case $1 in
 	""|config|load|reload|restart|start|status|stop)
 		if [ ! -r "/mod/etc/conf/${CONF_NAME-$DAEMON}.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2

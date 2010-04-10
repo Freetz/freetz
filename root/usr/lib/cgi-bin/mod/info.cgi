@@ -11,7 +11,7 @@ sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
  echo -n '<b>$(lang de:"AVM-Firmwareversion:" en:"AVM firmware version:")</b> '$FREETZ_INFO_FIRMWAREVERSION'&nbsp;&nbsp;'
  echo '<b>$(lang de:"Sprache:" en:"Language:")</b> '$FREETZ_INFO_LANG'</div>'
  if [ -r /proc/version ]; then
-	_kernelversion="$(cat /proc/version | sed -e 's/Linux version //;s/#.*//')"
+	_kernelversion=$(cat /proc/version | sed -e 's/Linux version //;s/#.*//')
  else
 	_kernelversion=""
  fi

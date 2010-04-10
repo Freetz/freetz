@@ -16,7 +16,7 @@ delete() {
 	sed -i "\\${char}$regexp${char}d" "$file"
 }
 
-case "$1" in
+case $1 in
 	cgi)
 		delete "^$2|" /mod/etc/reg/cgi.reg
 		rm -f /mod/var/cache/menu_packages

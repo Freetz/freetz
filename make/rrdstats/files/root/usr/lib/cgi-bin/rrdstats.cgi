@@ -50,7 +50,7 @@ cat << EOF
 <li><a href="$(href status rrdstats stats)">$(lang de:"Statistiken anzeigen" en:"Show statistics")</a></li>
 EOF
 
-if [ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
+if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
 cat << EOF
 <li><a href="$(href status rrdstats rrddt)">$(lang de:"DigiTemp anzeigen" en:"Show DigiTemp")</a></li>
 EOF
@@ -257,7 +257,7 @@ EOF
 
 sec_end
 
-if [ -x "`which digitemp`" ]; then
+if [ -x "$(which digitemp)" ]; then
 sec_begin 'DigiTemp'
 
 cat << EOF

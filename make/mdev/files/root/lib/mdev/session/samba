@@ -123,7 +123,7 @@ reload () {
 	return $?
 }
 
-case "$1" in
+case $1 in
 	start)
 		pidof -s -o $$ smbd >/dev/null ||
 			/etc/init.d/rc.samba start | log_info

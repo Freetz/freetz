@@ -31,7 +31,7 @@ configure () {
 		if [ yes = "$(ivalueof INADYN_MT_ACTIVE $ii)" ]; then
 
 			value=$(ivalueof INADYN_MT_URL $ii | sed 's,\([^/]*\)\(.*\),\1 \2,')
-			case "$(ivalueof INADYN_MT_SERVICE $ii)" in
+			case $(ivalueof INADYN_MT_SERVICE $ii) in
 				dyndns.org)
 					echo -e '\ndyndns_system dyndns@dyndns.org'
 					;;
@@ -65,7 +65,7 @@ configure () {
 			done
 			value=$(ivalueof INADYN_MT_USER $ii)
 			[ -n "$value" ] && echo "username $value"
-			value="$(ivalueof INADYN_MT_PASS $ii)"
+			value=$(ivalueof INADYN_MT_PASS $ii)
 			[ -n "$value" ] && echo "password $(escvalue $value)"
 			value=$(ivalueof INADYN_MT_OPTIONS $ii)
 			[ -n "$value" ] && echo "$value"
@@ -78,7 +78,7 @@ start() {
 	echo -n 'Starting Inadyn Client...'
 
 	configure >/mod/etc/$DAEMON.conf
-	if [ 5 -gt `cat /mod/etc/$DAEMON.conf | wc -l` ]; then
+	if [ 5 -gt $(cat /mod/etc/$DAEMON.conf | wc -l) ]; then
 		echo -n 'failed: not configured.' >&2
 		exit 1
 	fi
@@ -93,7 +93,7 @@ start() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 
 		if type modreg > /dev/null; then
@@ -102,7 +102,7 @@ case "$1" in
 
 		if [ "$INADYN_MT_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		if [ -s "/var/run/$DAEMON.pid" ]; then

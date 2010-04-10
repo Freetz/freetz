@@ -73,7 +73,6 @@ cat << EOF
 <input type="hidden" id="id_param_2"   name="param_2" value="$OPENVPN_PARAM_2">
 <input type="hidden" id="id_param_3"   name="param_2" value="$OPENVPN_PARAM_3">
 
-
 <p><b>$(lang de:"Starttyp" en:"Start type"): &nbsp; &nbsp;</b><input id="id_act_start_auto" type="radio" name="my_enabled"  onclick='(local_autostart[act_conf]="yes"); changeval()'><label for="start_auto"> $(lang de:"Automatisch" en:"Automatic")</label> 
 <input id="id_act_start_man" type="radio" name="my_enabled" onclick='(local_autostart[act_conf]=""); changeval()'><label for="start_man"> $(lang de:"Manuell" en:"Manual")</label>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <input  id="id_act_debug" type="checkbox" onclick='if (this.checked) (local_debug[act_conf]="yes"); else (local_debug[act_conf]=""); changeval()' ><label for="debug"> Debug-Mode</label> <br />
@@ -96,8 +95,8 @@ cat << EOF
 <table><tr>
 <td><input id="id_act_server" type="radio" name="my_mode" onclick='(local_mode[act_conf]="server"); changeval()'; > Server </td><td> </td>
 <td><input id="id_act_client" type="radio" name="my_mode" onclick='(local_mode[act_conf]="client"); changeval()'; > Client </td><td>  &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;</td>
-<td><input id="id_act_tun" type="radio" name="my_type" value="tun" onclick='(local_type[act_conf]="tun"); `[ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "none" : "block";'` changeval()' > Tunnel (TUN) </td><td> </td>
-<td><input id="id_act_tap" type="radio" name="my_type" value="tap" onclick='(local_type[act_conf]="tap"); `[ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "block" : "none";'` changeval()'; > $(lang de:"Br&uuml;cke" en:"Bridge") (TAP)</td><td> </td>
+<td><input id="id_act_tun" type="radio" name="my_type" value="tun" onclick='(local_type[act_conf]="tun"); $([ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "none" : "block";') changeval()' > Tunnel (TUN) </td><td> </td>
+<td><input id="id_act_tap" type="radio" name="my_type" value="tap" onclick='(local_type[act_conf]="tap"); $([ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "block" : "none";') changeval()'; > $(lang de:"Br&uuml;cke" en:"Bridge") (TAP)</td><td> </td>
 </tr>
 <tr>
 <td><input id="id_act_udp" type="radio" name="my_proto" value="udp" onclick='(local_proto[act_conf]="udp"); Consolidate_Vars()'> UDP </td><td> </td>
@@ -377,7 +376,7 @@ function Init_Checkbox(){
 if ( local_autostart[act_conf] == "yes" ) { document.getElementById("id_act_start_auto").checked=true  } else {document.getElementById("id_act_start_man").checked=true };
 if ( local_mode[act_conf] == "server" ) { document.getElementById("id_act_server").checked=true  } else {document.getElementById("id_act_client").checked=true };
 if ( local_proto[act_conf] == "tcp" ) { document.getElementById("id_act_tcp").checked=true } else {document.getElementById("id_act_udp").checked=true };
-`[ $HASIPV6 ] && echo 'document.getElementById("id_act_ipv6").checked= ( local_ipv6[act_conf] == "yes" )? "checked" : ""'`
+$([ $HASIPV6 ] && echo 'document.getElementById("id_act_ipv6").checked= ( local_ipv6[act_conf] == "yes" )? "checked" : ""')
 if ( local_keepalive[act_conf] == "yes" ) { document.getElementById("id_act_keepalive").checked=true } else { document.getElementById("id_act_keepalive").checked=false };
 if ( local_complzo[act_conf] == "yes" ) { document.getElementById("id_act_comp_lzo").checked=true } else { document.getElementById("id_act_comp_lzo").checked=false };
 if ( local_type[act_conf] == "tap" ) { document.getElementById("id_act_tap").checked=true } else {document.getElementById("id_act_tun").checked=true };
@@ -392,7 +391,7 @@ if ( local_pull[act_conf] == "yes" ) { document.getElementById("id_act_pull").ch
 if ( local_tls_auth[act_conf] == "yes" ) { document.getElementById("id_act_tls_auth").checked=true } else{ document.getElementById("id_act_tls_auth").checked = false };
 if ( local_debug[act_conf] == "yes" ) { document.getElementById("id_act_debug").checked=true }else { document.getElementById("id_act_debug").checked=false };
 document.getElementById("id_act_no_certtype").checked= ( local_no_certtype[act_conf] == "yes" )? "checked" : ""
-`[ $HASBRCTL ] && echo 'document.getElementById("id_act_tap2lan").checked= ( local_tap2lan[act_conf] == "yes" )? "checked" : ""'` 
+$([ $HASBRCTL ] && echo 'document.getElementById("id_act_tap2lan").checked= ( local_tap2lan[act_conf] == "yes" )? "checked" : ""') 
 if ( local_client_info[act_conf] == "yes" ) { document.getElementById("id_act_client_info").checked=true }else { document.getElementById("id_act_client_info").checked=false };
 if ( local_own_keys[act_conf] != "" ) { 
 	document.getElementById("id_act_own_keys").checked=true
@@ -470,7 +469,6 @@ function add_config(){
  changeconf();
 
 }
-
 
 function del_config(){
   if (local_config_count >1){

@@ -38,7 +38,7 @@ start() {
 stop() {
 	echo -n 'Stopping pptpd...'
 
-	kill $(ps|grep pptpd|grep -v grep|grep -v "rc.pp"|grep -v "pppd"|sed 's/^ //g'|cut -f1 -d" ")
+	kill $(ps | grep pptpd | grep -v grep | grep -v "rc.pp" | grep -v "pppd" | sed 's/^ //g' | cut -f1 -d" ")
 	exitval=$?
 	
 	if [ "$exitval" -eq 0 ]; then
@@ -49,7 +49,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/ppp" ] && mkdir -p /tmp/flash/ppp
 		[ ! -d "/mod/etc/ppp" ] && mkdir -p /mod/etc/ppp
@@ -67,7 +67,7 @@ case "$1" in
 
 		if [ "$PPTPD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start

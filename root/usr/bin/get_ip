@@ -17,7 +17,7 @@ local queryfile="/usr/www/all/html/query.txt"
 local querystring=""
 local retval=0
 
-case "$1" in
+case $1 in
   -d|--dsld)
 	ip=$(/sbin/showdsldstat | grep "0: ip" | cut -d\/ -f1 | cut -d ' ' -f3)
 	retval=$?

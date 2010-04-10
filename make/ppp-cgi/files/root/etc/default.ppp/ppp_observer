@@ -7,14 +7,14 @@
 [ -z "$PPP_FABALOG" ] && PPP_FABALOG='/dev/null'
 
 willkommen() {
-	[ "$PPP_FALLBACK" != 'yes' ] || echo -e "\n`date`: DIALIN" >> $PPP_FABALOG
+	[ "$PPP_FALLBACK" != 'yes' ] || echo -e "\n$(date): DIALIN" >> $PPP_FABALOG
 	start-stop-daemon -n ppp_dialer -a /etc/default.ppp/ppp_dialer -b -q -S
 }
 
 bisbald () {
 	HURET=1
 		while [ $HURET -ne 0 ]; do
-		[ "$PPP_FALLBACK" != 'yes' ] || echo -e "\n`date`: HANGUP" >> $PPP_FABALOG
+		[ "$PPP_FALLBACK" != 'yes' ] || echo -e "\n$(date): HANGUP" >> $PPP_FABALOG
 		/etc/init.d/rc.ppp disconnect
 		HURET=$?
 	done
@@ -27,15 +27,15 @@ reanimiert () {
 		exit 1
 	fi
 	$CURRENT_ROUTE
-	NEXTCHK=$(( `date +%s`+$PPP_CHECKINTERVAL ))
+	NEXTCHK=$(( $(date +%s)+$PPP_CHECKINTERVAL ))
 	BACKONLINE=0
 	while [ "$BACKONLINE" != "1" ]; do
-		SLEEPTIME=$(( $NEXTCHK-`date +%s` ))
+		SLEEPTIME=$(( $NEXTCHK-$(date +%s) ))
 		if [ $SLEEPTIME -gt 0 ]; then
-			echo "`date`: sleeping" >> $PPP_FABALOG
+			echo "$(date): sleeping" >> $PPP_FABALOG
 			sleep $SLEEPTIME
 		fi
-		NEXTCHK=$(( `date +%s`+$PPP_CHECKINTERVAL ))
+		NEXTCHK=$(( $(date +%s)+$PPP_CHECKINTERVAL ))
 		ping -c 1 -W 2 -w 2 -q $ALIVEIP 2>&1 >/dev/null
 		[ $? -eq 0 ] && BACKONLINE=1
 	done
@@ -45,23 +45,23 @@ reanimiert () {
 
 pinger() {
 for SINGLEHOST in $PPP_CHECKHOSTS; do
-	echo -n "`date`: checking $SINGLEHOST" >> $PPP_FABALOG
+	echo -n "$(date): checking $SINGLEHOST" >> $PPP_FABALOG
 	ping -c 1 -W 2 -w 2 -q $SINGLEHOST 2>&1 >/dev/null
 	if [ $? -eq 0 ]; then
 		echo " OKAY" >> $PPP_FABALOG
 		if [ -z "$ALIVEIP" ]; then
-			ALIVEIP=`nslookup $PPP_ALIVECHECK |tail -n1 |tr -s " " |cut -d" " -f3`
+			ALIVEIP=$(nslookup $PPP_ALIVECHECK | tail -n1 | tr -s " " | cut -d" " -f3)
 			if [ $? -ne 0 ]; then
 				ALIVEIP=
 			else
-				CURRENT_IF=`route -n | grep "^0.0.0.0" | tail -n1 | tr -s " " | cut -d " " -f8`
-				CURRENT_GW=`route -n | grep "^0.0.0.0" | tail -n1 | tr -s " " | cut -d " " -f2`
+				CURRENT_IF=$(route -n | grep "^0.0.0.0" | tail -n1 | tr -s " " | cut -d " " -f8)
+				CURRENT_GW=$(route -n | grep "^0.0.0.0" | tail -n1 | tr -s " " | cut -d " " -f2)
 				if [ "$CURRENT_GW" != "0.0.0.0" ]; then
 					CURRENT_ROUTE="route add $ALIVEIP gw $CURRENT_GW"
 				else
 					[ -n "$CURRENT_IF" ] && CURRENT_ROUTE="route add $ALIVEIP $CURRENT_IF"
 				fi
-				echo -e "\n`date`: CURRENT_ROUTE: $CURRENT_ROUTE\n"  >> $PPP_FABALOG
+				echo -e "\n$(date): CURRENT_ROUTE: $CURRENT_ROUTE\n"  >> $PPP_FABALOG
 			fi
 		fi
 		return 0
@@ -75,17 +75,17 @@ for SINGLEHOST in $PPP_CHECKHOSTS; do
 if [ "$PPP_FALLBACK" != 'yes' ]; then
 	willkommen
 else
-	NEXTRUN=$(( `date +%s`+$PPP_CHECKTIMEOUT ))
+	NEXTRUN=$(( $(date +%s)+$PPP_CHECKTIMEOUT ))
 	LASTSUCCESS=$(( $NEXTRUN+$PPP_CHECKTIMEOUT ))
 	while [ 1 ]; do
-		SLEEPTIME=$(( $NEXTRUN-`date +%s` ))
+		SLEEPTIME=$(( $NEXTRUN-$(date +%s) ))
 		[ $SLEEPTIME -gt 0 ] && sleep $SLEEPTIME
-		NEXTRUN=$(( `date +%s`+$PPP_CHECKINTERVAL ))
+		NEXTRUN=$(( $(date +%s)+$PPP_CHECKINTERVAL ))
 		pinger
 			if [ $? -eq 0 ]; then
-			LASTSUCCESS=`date +%s`
+			LASTSUCCESS=$(date +%s)
 		else
-			if [ $(( $LASTSUCCESS+$PPP_CHECKTIMEOUT )) -lt `date +%s` ]; then
+			if [ $(( $LASTSUCCESS+$PPP_CHECKTIMEOUT )) -lt $(date +%s) ]; then
 				willkommen
 				reanimiert
 			fi

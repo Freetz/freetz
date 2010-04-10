@@ -109,7 +109,7 @@ start() {
 }
 
 trap "rm -f /var/run/rc.lighttpd.pid; exit 255" 1 2 3 15
-case "$1" in
+case $1 in
 	""|load)
 		pre_config
 
@@ -129,7 +129,7 @@ case "$1" in
 
 		if [ "$LIGHTTPD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		( start ) &

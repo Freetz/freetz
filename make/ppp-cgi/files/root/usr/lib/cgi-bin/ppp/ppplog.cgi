@@ -21,37 +21,37 @@ fi
 sec_begin '$(lang de:"Status" en:"State")'
 
 local_ALL="<UL>"
-RECVALL=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^+COPS: (" |tail -n1 |sed 's/.*: (//; s/)$//;s/ /_/g;s/),*(/ /g'`
+RECVALL=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^+COPS: (" | tail -n1 | sed 's/.*: (//; s/)$//;s/ /_/g;s/),*(/ /g')
 for RECVONE in $RECVALL; do
-	if ! echo "$RECVONE"|grep -q ^0; then
-		NAME=`echo -n "$RECVONE"|cut -d "," -f2 |sed 's/\"//g;s/_/ /g'`
-		RECV=`echo -n "$RECVONE"|cut -d "," -f5 |sed 's/2$/3G/;s/0$/2G/'`
+	if ! echo "$RECVONE" | grep -q ^0; then
+		NAME=$(echo -n "$RECVONE" | cut -d "," -f2 | sed 's/\"//g;s/_/ /g')
+		RECV=$(echo -n "$RECVONE" | cut -d "," -f5 | sed 's/2$/3G/;s/0$/2G/')
 		local_ALL="${local_ALL}<LI>${RECV}: ${NAME}"
 	fi
 done
 local_ALL="${local_ALL}</UL>"
 
-local_PIN=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^+CPIN: "      |tail -n1 |sed 's/^+CPIN: //'`
-local_NET=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^+COPS: [0-9]" |tail -n1 |sed 's/.*,"//;s/",/ (/;s/2$/3G)/;s/0$/2G)/'`
-local_SIG=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^+CSQ:"        |tail -n1 |sed 's/,.*//;s/.* //'`
-local_MOD=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^\^MODE:"      |tail -n1 |sed 's/.*MODE://; s/5,4/UMTS/;s/5,5/HSDPA/;s/0,0/NONE/;s/3,3/EDGE/;s/3,2/GPRS/'`
-local_FLW=`cat /tmp/ppp_logger.tmp 2>/dev/null |grep "^^DSFLOWRPT:"  |tail -n1 |sed 's/.*DSFLOWRPT://;'`
+local_PIN=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^+CPIN: "      | tail -n1 | sed 's/^+CPIN: //')
+local_NET=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^+COPS: [0-9]" | tail -n1 | sed 's/.*,"//;s/",/ (/;s/2$/3G)/;s/0$/2G)/')
+local_SIG=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^+CSQ:"        | tail -n1 | sed 's/,.*//;s/.* //')
+local_MOD=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^\^MODE:"      | tail -n1 | sed 's/.*MODE://; s/5,4/UMTS/;s/5,5/HSDPA/;s/0,0/NONE/;s/3,3/EDGE/;s/3,2/GPRS/')
+local_FLW=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^^DSFLOWRPT:"  | tail -n1 | sed 's/.*DSFLOWRPT://;')
 
-let dH=0x0`echo $local_FLW|cut -d "," -f 1`/3600
-let dM=0x0`echo $local_FLW|cut -d "," -f 1`-3600*dH
+let dH=0x0$(echo $local_FLW | cut -d "," -f 1)/3600
+let dM=0x0$(echo $local_FLW | cut -d "," -f 1)-3600*dH
 let dM=dM/60
 [ $dM -le 9 ] && dM=0$dM
 conntime=$dH:$dM
 
-let xH=0x0`echo $local_FLW|cut -d "," -f 4`/1048576
-let xL=0x0`echo $local_FLW|cut -d "," -f 4`-1048576*xH
+let xH=0x0$(echo $local_FLW | cut -d "," -f 4)/1048576
+let xL=0x0$(echo $local_FLW | cut -d "," -f 4)-1048576*xH
 let xL=xL/1024
 [ $xL -le 99 ] && xL=0$xL
 [ $xL -le 9 ]  && xL=0$xL
 [ $xL -le 0 ]  && xL=000
 TXsumMB=$xH,$xL
 
-let TXcurMB=0x0`echo $local_FLW|cut -d "," -f 2`/128
+let TXcurMB=0x0$(echo $local_FLW | cut -d "," -f 2)/128
 let TXcurKB=TXcurMB/8
 let xH=TXcurMB/1024
 let xL=TXcurMB-1024*xH
@@ -61,15 +61,15 @@ let xL=xL*1000/1024
 [ $xL -le 0 ]  && xL=000
 TXcurMB=$xH,$xL
 
-let xH=0x0`echo $local_FLW|cut -d "," -f 5`/1048576
-let xL=0x0`echo $local_FLW|cut -d "," -f 5`-1048576*xH
+let xH=0x0$(echo $local_FLW | cut -d "," -f 5)/1048576
+let xL=0x0$(echo $local_FLW | cut -d "," -f 5)-1048576*xH
 let xL=xL/1024
 [ $xL -le 99 ] && xL=0$xL
 [ $xL -le 9 ]  && xL=0$xL
 [ $xL -le 0 ]  && xL=000
 RXsumMB=$xH,$xL
 
-let RXcurMB=0x0`echo $local_FLW|cut -d "," -f 3`/128
+let RXcurMB=0x0$(echo $local_FLW | cut -d "," -f 3)/128
 let RXcurKB=RXcurMB/8
 let xH=RXcurMB/1024
 let xL=RXcurMB-1024*xH

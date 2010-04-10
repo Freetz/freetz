@@ -2,7 +2,7 @@
 
 sec_level=1
 [ -r /tmp/flash/security ] && mv /tmp/flash/security /tmp/flash/mod/security
-[ -r /tmp/flash/mod/security ] && let sec_level="$(cat /tmp/flash/mod/security)"
+[ -r /tmp/flash/mod/security ] && let sec_level=$(cat /tmp/flash/mod/security)
 
 # HTML-escape pieces of texts, large ones in a streaming manner
 # (large_text | html; html "$small_value")

@@ -24,7 +24,7 @@ ipv4bcast () {
 start() {
 	echo -n 'Setting up virtual network interface...'
 	
-	VIRTUALIP_BROADCAST="`ipv4bcast $VIRTUALIP_IP $VIRTUALIP_NETMASK`"
+	VIRTUALIP_BROADCAST=$(ipv4bcast $VIRTUALIP_IP $VIRTUALIP_NETMASK)
 
 	ifconfig $VIRTUALIP_INTERFACE $VIRTUALIP_IP netmask $VIRTUALIP_NETMASK broadcast $VIRTUALIP_BROADCAST up > /dev/null 2>&1
 	exitval=$?
@@ -48,13 +48,13 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'virtualip' 'Virtual IP'
 
 		if [ "$VIRTUALIP_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start
@@ -75,7 +75,7 @@ case "$1" in
 		start
 		;;
 	status)
-		if [ -z "`ifconfig | grep "$VIRTUALIP_INTERFACE"`" ]; then
+		if [ -z "$(ifconfig | grep "$VIRTUALIP_INTERFACE")" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

@@ -1,44 +1,44 @@
 #!/bin/sh
 
-scriptname=$0;
+scriptname=$0
 scriptname=${scriptname##*/}
 prefix=${scriptname%%_conf} 
 
 CCD_REL=/clients_$prefix
-CCD=/var/tmp/openvpn$CCD_REL;
+CCD=/var/tmp/openvpn$CCD_REL
 
 . /mod/etc/conf/openvpn.cfg
 
-uebergabe="";
+uebergabe=""
 
 wert (){
-IFS=$2;
-local number=$3;
-local c=0;
-uebergabe="";
+IFS=$2
+local number=$3
+local c=0
+uebergabe=""
 for inhalt in $1; do
-	if [ "$c" -eq "$number" ] ; then uebergabe=$inhalt; fi
-	c=$((c+1));
+	if [ "$c" -eq "$number" ]; then uebergabe=$inhalt; fi
+	let c++
 done
-unset IFS;
+unset IFS
 }
 
 delimiter="#"
-vars="DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES UDP_FRAGMENT ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN PARAM_1 PARAM_2 PARAM_3" ;
-count=1;
+vars="DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES UDP_FRAGMENT ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN PARAM_1 PARAM_2 PARAM_3" 
+count=1
 
 while [ $count -le $OPENVPN_CONFIG_COUNT ]; do
 
 for var in $vars; do
-	tmp="$var";
-	configvar='OPENVPN_';
-	eval configvar=\$$configvar$var;
-	IFS='';
-	wert "$configvar" "$delimiter" "$count";
-	eval $tmp=\$uebergabe;
+	tmp=$var
+	configvar='OPENVPN_'
+	eval configvar=\$$configvar$var
+	IFS=''
+	wert "$configvar" "$delimiter" "$count"
+	eval $tmp=\$uebergabe
 done
 
-if [ "openvpn_$CONFIG_NAMES" == "$prefix" ] || [ "$prefix" == "openvpn" -a  $count -eq 1 ] ; then
+if [ "openvpn_$CONFIG_NAMES" == "$prefix" ] || [ "$prefix" == "openvpn" -a  $count -eq 1 ]; then
 
 if [ $1 ]; then
 	CONFFILE=$1
@@ -143,7 +143,7 @@ if [ "$MODE" == "server" ]; then
 		echo 'push "topology subnet"' >> $CONFFILE
 		echo "max-clients  $MAXCLIENTS" >> $CONFFILE
 		if [ "$LOCAL_NET" ]; then
-			tmp="`echo $LOCAL_NET | sed 's/[[:space:]]*;[[:space:]]*/;/g'`"
+			tmp=$(echo $LOCAL_NET | sed 's/[[:space:]]*;[[:space:]]*/;/g')
 			IFS=";"
 			for i in $tmp; do
 				echo "push \"route $i $BOX_IP\"" >> $CONFFILE
@@ -155,21 +155,21 @@ if [ "$MODE" == "server" ]; then
 		restip=${CLIENT_IPS#*:}
 		actcname=${CLIENT_NAMES%%:*}
 		restname=${CLIENT_NAMES#*:}
-		actcnet="${CLIENT_NETS%%:*}"
-		restnet="${CLIENT_NETS#*:}"
+		actcnet=${CLIENT_NETS%%:*}
+		restnet=${CLIENT_NETS#*:}
 
 		while [ $client -le "$CLIENTS_DEFINED" ]
 		do	
-			eval C_IP$client=$actcip;
-			eval C_NAME$client=$actcname;
-			eval C_NET$client=\"$actcnet\";
+			eval C_IP$client=$actcip
+			eval C_NAME$client=$actcname
+			eval C_NET$client=\"$actcnet\"
 			actcip=${restip%%:*}
 			restip=${restip#*:}
 			actcname=${restname%%:*}
 			restname=${restname#*:}
-			actcnet="${restnet%%:*}"
-			restnet="${restnet#*:}"
-			client=$((client+1))
+			actcnet=${restnet%%:*}
+			restnet=${restnet#*:}
+			let client++
 		done
 
 		client=1
@@ -180,7 +180,7 @@ if [ "$MODE" == "server" ]; then
 			eval name=\$C_NAME$client
 			eval ip=\$C_IP$client
 			echo "ifconfig-push $ip $BOX_MASK"  > $CCD/$name
-			if [ "$net" != "-" ] ; then
+			if [ "$net" != "-" ]; then
 				#echo "route $net $mask $ip" >> $CONFFILE
 				echo -e "route $net $ip" | sed "s/[[:space:]]*;[[:space:]]*/ ${ip}\nroute /g" >> $CONFFILE
 				#echo "iroute  $net $mask" >> $CCD/$name
@@ -192,7 +192,7 @@ if [ "$MODE" == "server" ]; then
 					if [ $i -ne $client ]; then
 						eval cnet=\$C_NET$i 
 						eval cip=\$C_IP$i
-						if [ "$cnet" != "-"  ]  ; then
+						if [ "$cnet" != "-"  ]; then
 							#echo "push \"route $cnet $cip \"" >> $CCD/$name
 							echo -e "push \"route $cnet $cip\"" | sed "s/[[:space:]]*;[[:space:]]*/ ${cip}\"\npush \"route /g" >> $CCD/$name
 						fi
@@ -200,7 +200,7 @@ if [ "$MODE" == "server" ]; then
 					i=$((1+$i))
 				done
 			fi
-			client=$(($client+1))
+			let client++
 		done
 	fi
 
@@ -219,7 +219,7 @@ if [ "$MODE" == "server" ]; then
 			echo "max-clients $MAXCLIENTS" >> $CONFFILE
 		fi
 	else 
-		if [ "$CLIENT_INFO" != "yes" ] || [ "$AUTH_TYPE" == "static" ] ; then 
+		if [ "$CLIENT_INFO" != "yes" ] || [ "$AUTH_TYPE" == "static" ]; then 
 			echo "ifconfig $BOX_IP $REMOTE_IP" >> $CONFFILE
 			if [ "$REMOTE_NET" ]; then
 				#echo "route $REMOTE_NET" >> $CONFFILE
@@ -306,7 +306,7 @@ fi
 
 
 fi
-count=$((count+1));
+let count++
 
 done
 

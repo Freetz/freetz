@@ -9,7 +9,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 URL_CGINAME=$(echo "$SCRIPT_NAME" | sed -e 's/^.*\/cgi-bin\///g' -e 's/\.cgi$//g')
 if [ "$URL_CGINAME" != "pkgstatus" ]; then
 	#. /mod/etc/conf/mod.cfg; _cgi_width=$(( $MOD_CGI_WIDTH-210))   #uncomment for reduced width
-	case "$URL_CGINAME" in
+	case $URL_CGINAME in
 		rrddt)
 			cgi_begin 'RRDstats for DigiTemp'
 			;;
@@ -25,7 +25,7 @@ fi
 
 URL_STATUS=$(echo "$QUERY_STRING" | sed -e 's/^.*cgi=rrdstats\///' -e 's/&.*$//' -e 's/\.//g')
 URL_EXTENDED="$SCRIPT_NAME?pkg=rrdstats&cgi=rrdstats/$URL_STATUS"
-DATESTRING=`date +'%d/%m/%y %X'`
+DATESTRING=$(date +'%d/%m/%y %X')
 let WIDTH="$_cgi_width-230-100"
 let HEIGHT=$WIDTH*$RRDSTATS_DIMENSIONY/$RRDSTATS_DIMENSIONX
 PERIODE='24h'
@@ -36,15 +36,15 @@ BLUE=#48C4EC
 RED_D=#CC3118
 ORANGE_D=#CC7016
 BLACK=#000000
-NOCACHE="?nocache=$(date -Iseconds|sed 's/T/_/g;s/+.*$//g;s/:/-/g')"
+NOCACHE="?nocache=$(date -Iseconds | sed 's/T/_/g;s/+.*$//g;s/:/-/g')"
 _NICE=$(which nice)
 
 generate_graph() {
 	TITLE=""
-	[ $# -ge 4 ] && TITLE="$4"
-	IMAGENAME="$3"
+	[ $# -ge 4 ] && TITLE=$4
+	IMAGENAME=$3
 	[ $# -ge 5 ] && IMAGENAME="$3$5"
-	PERIODE="$2"
+	PERIODE=$2
 	case $1 in
 		cpu)
 			FILE=$RRDSTATS_RRDDATA/cpu_$RRDSTATS_INTERVAL.rrd
@@ -84,7 +84,7 @@ generate_graph() {
 		mem)
 			FILE=$RRDSTATS_RRDDATA/mem_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
-				let RAM=`grep MemTotal /proc/meminfo | tr -s [:blank:] " " |cut -d " " -f 2`*1024
+				let RAM=$(grep MemTotal /proc/meminfo | tr -s [:blank:] " " | cut -d " " -f 2)*1024
 				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png		\
 				--title "$TITLE"						\
 				--start now-$PERIODE -u $RAM -r -l 0 $LAZY			\
@@ -408,7 +408,7 @@ generate_graph() {
 				MAXIMALBW=" -r -u $MAXIMALBW "
 			fi
 
-			FILE=$RRDSTATS_RRDDATA/$1_$RRDSTATS_INTERVAL-$(echo $IF|sed 's/\:/_/g').rrd
+			FILE=$RRDSTATS_RRDDATA/$1_$RRDSTATS_INTERVAL-$(echo $IF | sed 's/\:/_/g').rrd
 			if [ -e $FILE ]; then
 				$_NICE rrdtool graph  $RRDSTATS_RRDTEMP/$IMAGENAME.png		\
 				--title "$TITLE"						\
@@ -446,18 +446,18 @@ generate_graph() {
 			[ -n "$RRDSTATS_DIGITEMP_U" ] && _SENSOR_LOW="$_SENSOR_LOW -u $RRDSTATS_DIGITEMP_U"
 
 			if [ $# -ge 5 ]; then
-				_SENSOR_ALI=`grep -vE "^#|^ |^$|^//" /tmp/flash/rrdstats/digitemp.group |tr -s " "| cut -d" " -f1-2 |grep $5$ |cut -d " " -f1`
-				_SENSOR_HEX=`grep -vE "^#|^ |^$|^//" /tmp/flash/rrdstats/digitemp.alias |tr -s " "| cut -d" " -f 1,3 |grep -E "$(echo $_SENSOR_ALI|sed 's/ /\$|/g')$" |cut -d " " -f1`
+				_SENSOR_ALI=$(grep -vE "^#|^ |^$|^//" /tmp/flash/rrdstats/digitemp.group | tr -s " " | cut -d" " -f1-2 | grep $5$ | cut -d " " -f1)
+				_SENSOR_HEX=$(grep -vE "^#|^ |^$|^//" /tmp/flash/rrdstats/digitemp.alias | tr -s " " | cut -d" " -f 1,3 | grep -E "$(echo $_SENSOR_ALI | sed 's/ /\$|/g')$" | cut -d " " -f1)
 			else
-				_SENSOR_HEX=`grep "^ROM " /tmp/flash/rrdstats/digitemp.conf 2>/dev/null | sed 's/^ROM .//g;s/ 0x//g'`
+				_SENSOR_HEX=$(grep "^ROM " /tmp/flash/rrdstats/digitemp.conf 2>/dev/null | sed 's/^ROM .//g;s/ 0x//g')
 			fi
 			
 			for _CURRENT_HEX in $_SENSOR_HEX; do
 				FILE=$RRDSTATS_RRDDATA/one_${RRDSTATS_INTERVAL}-${_CURRENT_HEX}_${_SENSOR_UOM:0:1}.rrd
 				if [ -e $FILE ]; then
-					_ALIAS=`grep ^$_CURRENT_HEX /tmp/flash/rrdstats/digitemp.alias |tr -s " "|cut -d " " -f3`
+					_ALIAS=$(grep ^$_CURRENT_HEX /tmp/flash/rrdstats/digitemp.alias | tr -s " " | cut -d " " -f3)
 					[ -z "$_ALIAS" ] && _ALIAS=$_CURRENT_HEX
-					_COLOR=`grep ^$_CURRENT_HEX /tmp/flash/rrdstats/digitemp.alias |tr -s " "|cut -d " " -f2`
+					_COLOR=$(grep ^$_CURRENT_HEX /tmp/flash/rrdstats/digitemp.alias | tr -s " " | cut -d " " -f2)
 					[ -z "$_COLOR" ] && _COLOR="#999999"
 					_SENSOR_GEN=" $_SENSOR_GEN				\
 					 DEF:temp$_SENSOR_CUR=$FILE:temp:AVERAGE		\
@@ -498,8 +498,8 @@ set_lazy() {
 }
 
 set_period() {
-	periodA=$(echo $1|sed 's/[0-9]\+h$/hour/g;s/[0-9]\+d$/day/g;s/[0-9]\+w$/week/g;s/[0-9]\+m$/month/g;s/[0-9]\+y$/year/g')
-	period0=$(echo $1|sed 's/[a-zA-Z]//g')
+	periodA=$(echo $1 | sed 's/[0-9]\+h$/hour/g;s/[0-9]\+d$/day/g;s/[0-9]\+w$/week/g;s/[0-9]\+m$/month/g;s/[0-9]\+y$/year/g')
+	period0=$(echo $1 | sed 's/[a-zA-Z]//g')
 	periodG=${period0}${periodA}s
 	if [ $period0 -gt 1 ]; then
 		periodA=" $periodA"s
@@ -521,16 +521,16 @@ gen_main() {
 	sec_end
 }
 
-graph="$(echo "$QUERY_STRING" | sed -e 's/^.*graph=//' -e 's/&.*$//' -e 's/\.//g')"
-case "$graph" in
+graph=$(echo "$QUERY_STRING" | sed -e 's/^.*graph=//' -e 's/&.*$//' -e 's/\.//g')
+case $graph in
 	cpu|mem|swap|upt|tt0|tt1|tt2|tt3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
-		heading=$(echo $graph|sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^diskio1$/$RRDSTATS_DISK_NAME1/g;s/^diskio2$/$RRDSTATS_DISK_NAME2/g;s/^diskio3$/$RRDSTATS_DISK_NAME3/g;s/^diskio4$/$RRDSTATS_DISK_NAME4/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
-		GROUP_PERIOD=$(echo "$QUERY_STRING" |grep "&group="| sed -e 's/^.*&group=//' -e 's/&.*$//' -e 's/\.//g')
+		heading=$(echo $graph | sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^diskio1$/$RRDSTATS_DISK_NAME1/g;s/^diskio2$/$RRDSTATS_DISK_NAME2/g;s/^diskio3$/$RRDSTATS_DISK_NAME3/g;s/^diskio4$/$RRDSTATS_DISK_NAME4/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
+		GROUP_PERIOD=$(echo "$QUERY_STRING" | grep "&group=" | sed -e 's/^.*&group=//' -e 's/&.*$//' -e 's/\.//g')
                 [ -n "$GROUP_PERIOD" ] && heading="$heading [$GROUP_PERIOD]"
 		echo "<center><font size=+1><b>$heading stats</b></font></center>"
 		
-		if [ `echo "$graph"|sed 's/^tt./yes/'` = yes -a "$RRDSTATS_THOMSONADV" = yes ]; then
+		if [ $(echo "$graph" | sed 's/^tt./yes/') = yes -a "$RRDSTATS_THOMSONADV" = yes ]; then
 			echo "<br><center> \
 			<input type=\"button\" value=\"THG basics\" onclick=\"window.location=('$URL_EXTENDED&graph=tt0')\" /> \
 			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$URL_EXTENDED&graph=tt1')\" /> \
@@ -552,9 +552,9 @@ case "$graph" in
 		set_lazy "$RRDSTATS_NOTLAZYM"
 		set_period "$RRDSTATS_PERIODMAIN"
 		echo "<center><font size=+1><b>Stats for last $periodnn</b></font></center>"
-		case "$URL_STATUS" in
+		case $URL_STATUS in
 			rrddt)
-				ALL_GROUPS=`grep -vE "^#|^$|^ " /var/tmp/flash/rrdstats/digitemp.group |tr -s " "|cut -d " " -f2|uniq`
+				ALL_GROUPS=$(grep -vE "^#|^$|^ " /var/tmp/flash/rrdstats/digitemp.group | tr -s " " | cut -d " " -f2 | uniq)
 				[ -z "$ALL_GROUPS" ] && gen_main "one" "$curgroup" "$periodnn" 
 				for curgroup in $ALL_GROUPS; do
 					gen_main "one" "$curgroup" "$periodnn" "$curgroup"

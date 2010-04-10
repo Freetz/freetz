@@ -11,7 +11,7 @@ TMPFILE=$TMP/.conf.tmp.$$
 
 trap "rm -f $TMPFILE" EXIT
 
-case "$1" in
+case $1 in
 	set|load|save|default|vars|show)
 		cfg=/mod/etc/conf/$2.cfg
 		diff=$FLASH/$2.diff
@@ -26,13 +26,13 @@ case "$1" in
 		cat > $TMPFILE
 
 		# . accepts relative filenames only if they start with .
-		default="$2"
-		case "$default" in
+		default=$2
+		case $default in
 			[^/]*) default="./$default"
 		esac
 		;;
 esac
-case "$1" in
+case $1 in
 	load)
 		if [ -r "$diff" ]; then
 			cat $diff | $0 merge $default > $cfg
@@ -81,7 +81,7 @@ EOF
 		. "$1"
 		unalias export
 		diff() {
-			name="${1%%=*}" value="${1#*=}"
+			name=${1%%=*} value=${1#*=}
 			if eval '[ "${'$name'+set}" != "" -a "$'$name'" != "$value" -o "${'$name'+set}" = "" ]'; then
 				unalias export
 				eval "export $name"
@@ -100,22 +100,20 @@ EOF
 		cp $cfg $TMPFILE
 		shift 2
 		for assignment; do
-			case "$assignment" in
+			case $assignment in
 				-)
 					cat
 					;;
 				*=*) 
-					name="${assignment%%=*}"
-					value="${assignment#*=}"
-					case "$name" in
+					name=${assignment%%=*}
+					value=${assignment#*=}
+					case $name in
 						""|[^A-Za-z_]*|*[^A-Za-z0-9_]*)
 							echo "Invalid name '$name'" 1>&2
 							continue
 						;;
 					esac
-					value="$(echo "${value}_" | sed "s/'/'\"'\"'/g")"
-					value="'${value%_}'"
-					echo "export $name=$value"
+					echo "export $name='${value//'/'\"'\"'}'"
 					;;
 				*)
 					echo "Invalid assignment '$assignment'" 1>&2
@@ -127,7 +125,7 @@ EOF
 		;;
 	vars)
 		list() {
-			name="${1%=*}"
+			name=${1%=*}
 			echo "$name"
 		}
 		alias export=list

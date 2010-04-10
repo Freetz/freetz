@@ -15,7 +15,7 @@ read_meminfo
 btn_count=0
 stat_button() {
 	let _btn_width="($_cgi_width-230+16)/3"
-	btn_count=$((btn_count + 1))
+	let btn_count++
 	echo '<div class="btn"><form class="btn" action="/cgi-bin/exec.cgi" method="post"><input type="hidden" name="cmd" value="'"$1"'"><input type="submit" value="'"$2"'" style="width: '$_btn_width'px"></form></div>'
 	[ $btn_count -eq 3 ] && ( btn_count=0; echo '<br style="clear:left">' )
 }

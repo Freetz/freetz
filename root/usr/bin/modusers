@@ -44,8 +44,8 @@ save()
 init_passwd()
 {
 	return 0
-#	WEBUI_PASSWD=$( allcfgconv -c -o - ar7 | sed -n -e '1,/webui/d' -e '/}/,$d' -e '/password/s/^.*"\(.*\)".*$/\1/p' )
-#	CRYPT_PASSWD=$( httpd -m "$WEBUI_PASSWD" )
+#	WEBUI_PASSWD=$(allcfgconv -c -o - ar7 | sed -n -e '1,/webui/d' -e '/}/,$d' -e '/password/s/^.*"\(.*\)".*$/\1/p')
+#	CRYPT_PASSWD=$(httpd -m "$WEBUI_PASSWD")
 #	sed -i -e "s,^\(root:\)[^:]*\(.*\)$,\1${CRYPT_PASSWD}\2,g" $TMP_DIR/shadow
 #	/usr/bin/modconf set mod MOD_HTTPD_PASSWD=$(/usr/sbin/httpd -m "$WEBUI_PASSWD")
 }
@@ -68,7 +68,7 @@ load()
 	done
 }
 
-case "$1" in
+case $1 in
 	save)
 		save
 		;;

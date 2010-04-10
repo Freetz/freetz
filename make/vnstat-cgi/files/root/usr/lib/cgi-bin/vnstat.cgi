@@ -40,7 +40,7 @@ $(lang de:"Zu &uuml;berwachende Interfaces" en:"Interfaces for monitoring"):&nbs
 <br>
 <font size=-2>
 $(lang de:"Verf&uuml;gbare Interfaces" en:"Available interfaces")
-:&nbsp;`ifconfig |grep "^\w"|sed 's/ .*//g'`
+:&nbsp;$(ifconfig | grep "^\w" | sed 's/ .*//g')
 $(lang de:" - leer lassen f&uuml;r alle" en:" - leave empty for all")
 </font>
 </p>

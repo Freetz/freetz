@@ -40,12 +40,12 @@ EOF
 MINI_FO_ENV_VAR=kernel_args1
 
 jffs2_mount() {
-	xx=`cat /proc/mtd | grep \"jffs2\"`
+	xx=$(cat /proc/mtd | grep \"jffs2\")
 	jffs2_pat=""
 	jffs2_size=0
 	jffs2_found=0
 	echo "[jffs2] xx=$xx"
-	for i in $xx ; do
+	for i in $xx; do
 		echo "[jffs2] i=$i"
 		case $i in
 			*:)
@@ -54,7 +54,7 @@ jffs2_mount() {
 				echo "[jffs2] jffs2_pat=$jffs2_pat"
 				;;
 			00*)
-				if [ $jffs2_found -eq 0 ] ; then
+				if [ $jffs2_found -eq 0 ]; then
 					jffs2_size=$((0x$i / (2**16)))
 					echo "[jffs2] jffs2_size=$jffs2_size"
 				fi
@@ -63,13 +63,13 @@ jffs2_mount() {
 		esac
 	done
 	if [ $jffs2_size -gt 0 ]; then
-		echo "[jffs2] load jffs2 module" ; 
+		echo "[jffs2] load jffs2 module" 
 		if modprobe jffs2; then
-			echo "[jffs2] mount jffs "; 
+			echo "[jffs2] mount jffs "
 			mount -t jffs2 /dev/mtdblock${jffs2_pat} /sto
 			jffs2_ok=$?
 			if [ $jffs2_ok -ne 0 ]; then
-				/bin/reinit_jffs2 -c /dev/mtdblock${jffs2_pat} -a -o /var/jffs2.image ;
+				/bin/reinit_jffs2 -c /dev/mtdblock${jffs2_pat} -a -o /var/jffs2.image 
 				cp /var/jffs2.image /dev/mtdblock${jffs2_pat}
 				echo "copying image..."
 				rm /var/jffs2.image
@@ -78,7 +78,7 @@ jffs2_mount() {
 				jffs2_ok=$?
 			fi
 			if [ $jffs2_ok -eq 0 ]; then
-				echo "[jffs2] write env variable jffs2_size to $jffs2_size" ;
+				echo "[jffs2] write env variable jffs2_size to $jffs2_size" 
 				echo "jffs2_size $jffs2_size" >/proc/sys/urlader/environment
 			fi
 		fi
@@ -160,7 +160,7 @@ if [ "$PPID" == "0" ]; then
 	exec init >/dev/console 2>&1 <&1
 fi
 
-case "$1" in
+case $1 in
 	start|stop)
 		;;
 	""|load)

@@ -26,8 +26,8 @@ start() {
 	echo -n 'Starting vpnc...'
 	
 	# find remote network for tunneling
-	NETWORK="$(grep network /var/mod/etc/vpnc.conf | sed -e 's/#network //g')"
-	MASK="$(grep mask /var/mod/etc/vpnc.conf | sed -e 's/#mask //g')"
+	NETWORK=$(grep network /var/mod/etc/vpnc.conf | sed -e 's/#network //g')
+	MASK=$(grep mask /var/mod/etc/vpnc.conf | sed -e 's/#mask //g')
 	
 	if [ $NETWORK != "0.0.0.0" ]; then
 		sed -e 's/#set -x/INTERNAL_IP4_DNS=\nCISCO_SPLIT_INC=1\nCISCO_SPLIT_INC_0_ADDR='$NETWORK'\nCISCO_SPLIT_INC_0_MASK='$MASK'\nCISCO_SPLIT_INC_0_MASKLEN=22\nCISCO_SPLIT_INC_0_PROTOCOL=0\nCISCO_SPLIT_INC_0_SPORT=0\nCISCO_SPLIT_INC_0_DPORT=0\n\n#set -x\n/g' /etc/default.vpnc/vpnc-script > /var/tmp/vpnc-script
@@ -63,13 +63,13 @@ stop () {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'vpnc' 'Vpnc'
 
 		if [ "$VPNC_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start

@@ -2,7 +2,7 @@
 
 . /etc/init.d/modlibrc
 
-scriptname=$0;
+scriptname=$0
 DAEMON=${scriptname##*/rc.}
 mypidof() {
 ps | grep $1 | grep -v grep | grep /mod/etc/${1}.conf | sed 's/^[ ]*//; s/\([0-9]*\)[ ].*/\1/' 
@@ -15,7 +15,7 @@ if [ ! -x /mod/sbin/$DAEMON ]; then
 	ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
 fi
 
-case "$1" in
+case $1 in
 	""|load|start|restart)
 		if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
@@ -58,7 +58,7 @@ start() {
 		exit $exitval
 	fi
 	# if we have brctl, then try to add tap to "lan" if requestet (ignore errors)
-	if [ $(which brctl) ] && TAP=`grep "#Helperline" /mod/etc/${DAEMON}.conf | grep -o tap[0-9] `; then
+	if [ $(which brctl) ] && TAP=$(grep "#Helperline" /mod/etc/${DAEMON}.conf | grep -o tap[0-9] ); then
 	brctl addif lan $TAP 2> /dev/null 
 	fi
 }
@@ -86,7 +86,7 @@ stop() {
 }
 
 
-case "$1" in
+case $1 in
 	""|load)
 		if [ "$DAEMON" = "openvpn" ]; then
 			modreg cgi 'openvpn' 'OpenVPN'
@@ -98,8 +98,8 @@ case "$1" in
 			modreg file openvpn 'static_key' 'OpenVPN: Static Key' 0 "static_key"
 		fi
 		d_BU="$DAEMON"
-		as="${OPENVPN_AUTOSTART#*#}" ;
-		for d in `echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' `; do
+		as="${OPENVPN_AUTOSTART#*#}"
+		for d in $(echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' ); do
 			if [ "${as%%#*}" != "yes" ]; then
 				echo "$d is disabled" 1>&2
 			else 
@@ -110,7 +110,7 @@ case "$1" in
 					start
 				fi
 			fi
-			as=${as#*#};
+			as=${as#*#}
 		done
 		DAEMON="$d_BU"
 		;;
@@ -134,7 +134,7 @@ case "$1" in
 		;;
 	reload)
 		if [ -r "/var/run/${DAEMON}.pid" ]; then
-			kill -HUP `cat /var/run/${DAEMON}.pid`
+			kill -HUP $(cat /var/run/${DAEMON}.pid)
 		fi
 		;;
 	status)

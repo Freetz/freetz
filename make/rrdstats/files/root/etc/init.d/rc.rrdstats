@@ -7,7 +7,7 @@ DAEMON=rrdstats
 HTTPD_PID_RRD=/var/run/httpd_rrd.pid
 HTTPD_PID_ONE=/var/run/httpd_one.pid
 
-case "$1" in
+case $1 in
 	backup|restore)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
@@ -43,14 +43,14 @@ start() {
 	stop_webserver
 	if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then
 		if [ "$RRDSTATS_WEB_AUTH" = yes ]; then
-			echo "/:$RRDSTATS_WEB_USER:`httpd -m $RRDSTATS_WEB_PASS`" >/mod/etc/httpd-rrd.conf
+			echo "/:$RRDSTATS_WEB_USER:$(httpd -m $RRDSTATS_WEB_PASS)" >/mod/etc/httpd-rrd.conf
 			RRD_CONF="-c /mod/etc/httpd-rrd.conf"
 		fi
 		httpd -P $HTTPD_PID_RRD -p $RRDSTATS_WEBTCPPORT $RRD_CONF -h /mod/pkg/rrdstats/usr/mww-rrd
 	fi
-	if [ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then
+	if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then
 		if [ "$RRDSTATS_DIGITEMP_AUTH" = yes ]; then
-			echo "/:$RRDSTATS_DIGITEMP_USER:`httpd -m $RRDSTATS_DIGITEMP_PASS`" >/mod/etc/httpd-one.conf
+			echo "/:$RRDSTATS_DIGITEMP_USER:$(httpd -m $RRDSTATS_DIGITEMP_PASS)" >/mod/etc/httpd-one.conf
 			ONE_CONF="-c /mod/etc/httpd-one.conf"
 		fi
 		httpd -P $HTTPD_PID_ONE -p $RRDSTATS_DIGITEMP_PORT $ONE_CONF -h /mod/pkg/rrdstats/usr/mww-one
@@ -81,14 +81,14 @@ stop() {
 }
 
 stop_webserver() {
-	kill -9 "`cat $HTTPD_PID_RRD 2>/dev/null`" 2>/dev/null
-	kill -9 "`cat $HTTPD_PID_ONE 2>/dev/null`" 2>/dev/null
+	kill -9 "$(cat $HTTPD_PID_RRD 2>/dev/null)" 2>/dev/null
+	kill -9 "$(cat $HTTPD_PID_ONE 2>/dev/null)" 2>/dev/null
 }
 
 show_digitemp() {
 	modunreg status rrdstats rrddt
 	modunreg file rrdstats
-	if [ -x "`which digitemp`" -a "$RRDSTATS_DIGITEMP1W" = yes ]; then
+	if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP1W" = yes ]; then
 		modreg status rrdstats DigiTemp rrddt
 		modreg file rrdstats dt-conf 'RRDstats: dt-conf' 0 "dt-conf"
 		modreg file rrdstats dt-alias 'RRDstats: dt-alias' 1 "dt-alias"
@@ -98,9 +98,9 @@ show_digitemp() {
 }
 
 backup() {
-	_TIMESTRING=`echo $(date -Iseconds|sed 's/\:/-/g;s/\+.*//g;s/T/_/g')`
+	_TIMESTRING=$(echo $(date -Iseconds | sed 's/\:/-/g;s/\+.*//g;s/T/_/g'))
 	_BACKUPNAME=$RRDSTATS_RRDBACKUP/$_TIMESTRING
-	if [ `ls $RRDSTATS_RRDDATA/*.rrd 2>/dev/null |wc -w` -le 0 ]; then
+	if [ $(ls $RRDSTATS_RRDDATA/*.rrd 2>/dev/null | wc -w) -le 0 ]; then
 		echo -n 'Backup skipped, no files found...'
 		return
 	fi
@@ -115,10 +115,10 @@ backup() {
 	_BACKUPLOG=$RRDSTATS_RRDBACKUP/backup.log
 	echo $_TIMESTRING >> $_BACKUPLOG
 	if [ "$RRDSTATS_DELBACKUP" = yes ]; then
-		countbackup=`cat $_BACKUPLOG | wc -l`
+		countbackup=$(cat $_BACKUPLOG | wc -l)
 		countdelete=$(($countbackup-$RRDSTATS_MAXIMUMBACKUPS))
 		if [ $countdelete -gt 0 ]; then
-			for delname in `head $_BACKUPLOG -n $countdelete`; do
+			for delname in $(head $_BACKUPLOG -n $countdelete); do
 				rm -rf $RRDSTATS_RRDBACKUP/$delname
 			done
 			tail $_BACKUPLOG -n $(($countbackup-$countdelete)) > $_BACKUPLOG.temp
@@ -128,12 +128,12 @@ backup() {
 }
 
 restore() {
-	if [ `ls $RRDSTATS_RRDBACKUP/* 2>/dev/null |wc -w` -le 0 ]; then
+	if [ $(ls $RRDSTATS_RRDBACKUP/* 2>/dev/null | wc -w) -le 0 ]; then
 		echo 'Restore skipped, no files found...'
 		return
 	fi
 	[ ! -d "$RRDSTATS_RRDDATA" ] && mkdir -p $RRDSTATS_RRDDATA 2>/dev/null
-	cp -p $RRDSTATS_RRDBACKUP/`echo $(tail -n1 $RRDSTATS_RRDBACKUP/backup.log)`/*.rrd $RRDSTATS_RRDDATA/ 2>/dev/null
+	cp -p $RRDSTATS_RRDBACKUP/$(echo $(tail -n1 $RRDSTATS_RRDBACKUP/backup.log))/*.rrd $RRDSTATS_RRDDATA/ 2>/dev/null
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
 		echo 'Restore failed, abort.'
@@ -141,7 +141,7 @@ restore() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	config)
 		config
 		;;

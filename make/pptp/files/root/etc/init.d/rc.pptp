@@ -59,7 +59,7 @@ start() {
 				echo 'failed.'
 				exit $exitval
 			fi
-		fi;
+		fi
 	fi
 }
 
@@ -87,7 +87,7 @@ stop() {
 	rm -f /mod/etc/ppp/peers/pptp
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		[ ! -d /tmp/flash/ppp ] && mkdir -p /tmp/flash/ppp
 		[ ! -d /mod/etc/ppp/peers ] && mkdir -p /mod/etc/ppp/peers
@@ -101,7 +101,7 @@ case "$1" in
 
 		if [ "$PPTP_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start

@@ -87,18 +87,18 @@ if [ ! -x "$editor" ]; then
 fi
 
 # Verify name of file to be edited
-if [ -z "$1" ] ; then
+if [ -z "$1" ]; then
 	echo "usage: $0 <config-filename>" >&2
 	exit 1
 fi
-if [ ! -w "$1" ] ; then
+if [ ! -w "$1" ]; then
 	echo "error: file '$1' must exist and be writeable" >&2
 	exit 1
 fi
 
 # Determine editing mode (TFFS file or Freetz config)
-local dir="$(dirname "$1")"
-local base="$(basename "$1")"
+local dir=$(dirname "$1")
+local base=$(basename "$1")
 case "$(realpath "$dir")/" in
 	/var/flash/)
 		edit_file $editor_base $1
@@ -109,7 +109,7 @@ case "$(realpath "$dir")/" in
 		fi
 		;;
 	/var/mod/etc/conf/*)
-		local pkg="${base%.cfg}"
+		local pkg=${base%.cfg}
 		local cfg="/mod/etc/default.$pkg/$pkg.cfg"
 		if [ ! -r $cfg ]; then
 			echo "error: file '$cfg' not found or not readable" >&2

@@ -87,7 +87,7 @@ stop () {
 	fi
 }
 
-case "$1" in
+case $1 in
 	config)
 		config $2
 		;;
@@ -102,7 +102,7 @@ case "$1" in
 
 		if [ "$SAMBA_ENABLED" != yes ]; then
 			echo "samba is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start
@@ -133,7 +133,7 @@ case "$1" in
 			PID_NMBD=$(pidof "$NMBD")
 		fi
 		if [ -r /var/run/$SMBD.pid ]; then
-			for PIDS in $(pidof "$SMBD") ; do
+			for PIDS in $(pidof "$SMBD"); do
 				if [ $PIDS == "$(cat /var/run/$SMBD.pid)" ]; then
 					PID_SMBD=$PIDS
 				fi

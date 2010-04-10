@@ -132,7 +132,7 @@ start() {
 	checkdir "$XMAIL_MAILLOCATION"
 
 	# Check for SSL support
-	/usr/lib/MailRoot/bin/CtrlClnt 2>&1|grep -qe ' -S ' && XMAIL_SSLSUPPORT=1
+	/usr/lib/MailRoot/bin/CtrlClnt 2>&1 | grep -qe ' -S ' && XMAIL_SSLSUPPORT=1
 
 	configure
 
@@ -150,13 +150,13 @@ start() {
 }
 
 trap "rm -f /var/run/rc.$DAEMON.pid; exit 255" 1 2 3 15
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'xmail' 'XMail'
 
 		if [ "$XMAIL_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		( start ) &

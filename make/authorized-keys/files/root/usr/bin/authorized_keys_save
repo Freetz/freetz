@@ -1,7 +1,7 @@
 #!/bin/sh
 ids=$(authorized_keys_getuser)
 if [ -z "$1" ]; then echo "execute $0 file"; exit 1; fi
-while read -r line ; do
+while read -r line; do
 	[ -z "$line" ] && continue
 	$(echo $line | grep -q "^#") && continue
 	if [ $(echo $line | grep "\-\-\-[a-zA-Z]") ]; then

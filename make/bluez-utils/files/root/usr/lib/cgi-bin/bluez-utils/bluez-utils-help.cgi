@@ -9,9 +9,9 @@ echo "<html>"
 echo "<body><h1>Bluez Utils Help</h1>"
 
 if [ -f "/etc/bluetooth/help.html" ]; then 
-	cat /etc/bluetooth/help.html;
+	cat /etc/bluetooth/help.html
 else
-	echo "<p>Help not installed</p>";
+	echo "<p>Help not installed</p>"
 fi
 
 echo "<p><h1>System-Informations</h1></p>"

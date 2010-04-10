@@ -21,17 +21,17 @@ checkNotEmpty() {
 
 checkDirectoryExists() {
 	if [ ! -d "$1" ]; then
-		echo -e "\n'""$1""' doesn't exist. Creating directory."
+		echo -e "\n'$1' doesn't exist. Creating directory."
 		mkdir -p "$1" || echoFailedAndExit 255
 	fi
 }
 
 trim() {
-	echo "$1" | sed 's|^[ ]*||;s|[ ]*$||';
+	echo "$1" | sed 's|^[ ]*||;s|[ ]*$||'
 }
 
 stripAllSpaces() {
-	echo "$1" | sed 's| ||g;';
+	echo "${1// /}"
 }
 
 start() {
@@ -165,14 +165,14 @@ stop () {
 }
 
 
-case "$1" in
+case $1 in
 	""|load)
 		modlib_adduser bittorrent -G users -D -S -g "Torrent server"
 		modreg cgi 'transmission' 'Transmission'
 
 		if [ "$TRANSMISSION_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start

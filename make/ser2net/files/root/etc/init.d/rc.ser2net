@@ -11,9 +11,9 @@ modlib_loadconfig
 CFGFILE="/tmp/flash/ser2net.conf"
 [ -e /etc/ser2net.conf ] && CFGFILE="/etc/ser2net.conf"
 
-case "$1" in
+case $1 in
 	""|load|start|restart)
-		if [ ! -e "$CFGFILE" ] ; then
+		if [ ! -e "$CFGFILE" ]; then
 			echo -n "Creating $CFGFILE..."
 			cat <<"EOF" > $CFGFILE
 # This is the configuration file for ser2net.  It has the following format:
@@ -42,7 +42,7 @@ start() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'ser2net' 'ser2net'
 		[ "$CFGFILE" != "/etc/ser2net.conf" ] && modreg file ser2net conf 'ser2net.conf' 0 "ser2net_conf"

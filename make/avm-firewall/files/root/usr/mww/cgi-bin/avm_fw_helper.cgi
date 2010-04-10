@@ -1,16 +1,16 @@
 #!/usr/bin/haserl -u 10000 -U /var/tmp
 
 <?
-if $(echo "$QUERY_STRING" | grep -q dosave) ; then
+if $(echo "$QUERY_STRING" | grep -q dosave); then
 	echo 'Content-Type: application/octet-stream'
 	echo 'Content-Disposition: attachment; filename="AVM_FWD_rules.txt"'
 	echo
-	httpd -d "$(echo "$QUERY_STRING" | sed 's/^.*dosave\&//' )"
+	httpd -d "${QUERY_STRING##*dosave&}"
 	echo
 	exit
 fi
 
-if $(echo "$QUERY_STRING" | grep -q doload) ; then
+if $(echo "$QUERY_STRING" | grep -q doload); then
 	echo -e 'Content-Type: text/html; charset=ISO-8859-1\n'
 	echo '<html><body>'
 	echo '<textarea id="txt" style="width: 0px;">'

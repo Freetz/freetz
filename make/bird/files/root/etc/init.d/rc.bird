@@ -16,7 +16,7 @@ getipaddr () {
 	local ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
 	local devname=lan
 	local section=ethinterfaces
-	case "$ethmode" in
+	case $ethmode in
 		ethmode_bridge)
 			section=brinterfaces
 			break
@@ -101,7 +101,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	''|load)
 		modreg cgi 'bird' 'BIRD'
 

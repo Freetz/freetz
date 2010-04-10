@@ -86,7 +86,7 @@ stop() {
 
 	killall -9 dund pand rfcomm >/dev/null 2>&1
 
-	if [ "$(ps|grep -v grep|grep sdpd)" ]; then
+	if [ "$(ps | grep -v grep | grep sdpd)" ]; then
 		killall -9 sdpd >/dev/null 2>&1
 		exitval2=$? 
 	else
@@ -106,7 +106,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		# create directories
 		[ ! -d "/tmp/flash/bluez " ] && mkdir -p /tmp/flash/bluez

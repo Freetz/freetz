@@ -105,10 +105,10 @@ cat << EOF
 <table width="100%"> <tr> <td><font color="red">$(lang en:"Incoming" de:"Eingehende Regeln")</font> (lowinput)<input type="radio" name="selectrules" id="id_li_rules" checked onclick='if (selrules=="ho"){allrules_ho=allrules}; selrules="li" ; allrules=allrules_li; Init_FW_Table()'> 
  &nbsp; &nbsp; <font color="blue">$(lang en:"Outgoing" de:"Ausgehende Regeln")</font> (highoutput)<input type="radio" name="selectrules" id="id_ho_rules" 
  	onclick='if (selrules=="li") {allrules_li=allrules}; selrules="ho" ; allrules=allrules_ho; Init_FW_Table()'></td> 
- 	<td align=right> $(lang en:"Enable logging" de:"Logging einschalten") (<i>dsld -D</i>) <input type="hidden" name="log" value=""><input type="checkbox" name="log" value="yes" `[ "$AVM_FIREWALL_LOG" = yes ] && echo checked`> </td> </tr> 
+ 	<td align=right> $(lang en:"Enable logging" de:"Logging einschalten") (<i>dsld -D</i>) <input type="hidden" name="log" value=""><input type="checkbox" name="log" value="yes" $([ "$AVM_FIREWALL_LOG" = yes ] && echo checked)> </td> </tr> 
 <tr><td> $(lang en:"For debugging show rules window" de:"Zum Debuggen Firewall-Regeln anzeigen"): &nbsp; LowInput <input type="checkbox" onclick='document.getElementById("id_rules_li").style.display=(this.checked)? "block" : "none"' >
  &nbsp; HighOutput <input type="checkbox" onclick='document.getElementById("id_rules_ho").style.display=(this.checked)? "block" : "none"' ></td>
- <td align=right> $(lang en:"Log all dropped packets" de:"Verworfene Pakete loggen") (<b>no</b> <i>dsld -n</i>) <input type="hidden" name="log_dropped" value=""><input type="checkbox" name="log_dropped" value="yes" `[ "$AVM_FIREWALL_LOG_DROPPED" = yes ] && echo checked`> </td></tr>
+ <td align=right> $(lang en:"Log all dropped packets" de:"Verworfene Pakete loggen") (<b>no</b> <i>dsld -n</i>) <input type="hidden" name="log_dropped" value=""><input type="checkbox" name="log_dropped" value="yes" $([ "$AVM_FIREWALL_LOG_DROPPED" = yes ] && echo checked)> </td></tr>
 </table>
 
 <p><div align="center"><textarea id="id_rules_li" style="width: 600px; display:none" name="rulestable_li" rows="15" cols="80" wrap="off" ></textarea></div></p>
@@ -138,7 +138,7 @@ while [ $row -lt 50 ]; do
     echo -n "&nbsp;<img src='../images/clone.jpg' title='clone rule' onclick='cloneerule(this)'>"
     echo -n "&nbsp;<img src='../images/up.jpg' align='top' title='move rule up' onclick='moverule(this, allrules, -1 );Init_FW_Table(); build_where_select();'>"
     echo "&nbsp;<img src='../images/down.jpg' title='move rule down' onclick='moverule(this, allrules, 1 );Init_FW_Table(); build_where_select();'></td></tr>"
-row=$(($row+1))
+let row++
 done
 echo '</table>'
 
@@ -218,11 +218,11 @@ param=new Array();
 remark=new Array();
 rulescount=0;
 EOF
-tmp="('""`echo "$AVM_FIREWALL_RULESTABLE_LI"| sed "s/$/', '/" | tr -d '\n'| sed "s/, '$//"`"')'
+tmp="('$(echo "$AVM_FIREWALL_RULESTABLE_LI" | sed "s/$/', '/" | tr -d '\n' | sed "s/, '$//"))"
 echo "allrules_li=new Array$tmp"
-tmp="('""`echo "$AVM_FIREWALL_RULESTABLE_HO"| sed "s/$/', '/" | tr -d '\n'| sed "s/, '$//"`"')'
+tmp="('$(echo "$AVM_FIREWALL_RULESTABLE_HO" | sed "s/$/', '/" | tr -d '\n' | sed "s/, '$//"))"
 echo "allrules_ho=new Array$tmp"
-echo "allfwdrules=new Array (`sed -n '/dslifaces/,/} {/p' /var/flash/ar7.cfg | sed -n '/forwardrules/,/;/ {/shaper/ q; s/^[^"]*\(".*"\)[,;][ ]*/\1 , /gp}'| tr -d '\n' | sed 's/" ,[ ]*$/"/'`)";
+echo "allfwdrules=new Array ($(sed -n '/dslifaces/,/} {/p' /var/flash/ar7.cfg | sed -n '/forwardrules/,/;/ {/shaper/ q; s/^[^"]*\(".*"\)[,;][ ]*/\1 , /gp}' | tr -d '\n' | sed 's/" ,[ ]*$/"/'))";
 cat << EOF
 
 policy_li="$AVM_FIREWALL_POLICY_LI";

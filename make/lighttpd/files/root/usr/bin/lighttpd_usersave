@@ -2,7 +2,7 @@
 if [ -z "$1" ]; then echo "execute $0 file"; exit 1; fi
 realm="lighttpd"
 out=""
-while read -r line ; do
+while read -r line; do
 	user=$(echo $line | awk '{print $1}')
 	pass=$(echo $line | awk '{print $2}')
 	if [ -z "$pass" ]; then out="$out$user\n"; continue; fi

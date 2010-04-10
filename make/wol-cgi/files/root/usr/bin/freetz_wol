@@ -5,7 +5,7 @@
 . /mod/etc/conf/mod.cfg
 . /mod/etc/conf/wol.cfg
 
-if [ "$(/mod/etc/init.d/rc.wol status)" = "stopped" ] ; then 
+if [ "$(/mod/etc/init.d/rc.wol status)" = "stopped" ]; then 
 	location="http://$(self_host):$MOD_HTTPD_PORT$(href cgi wol)"
 else
 	location="http://$(self_host):$WOL_PORT/"

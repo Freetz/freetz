@@ -19,7 +19,7 @@ save() {
 
 	tar -cf $TMPFILE flash -C /tmp/
 
-	let size="$(wc -c < $TMPFILE)"
+	let size=$(wc -c < $TMPFILE)
 
 	if [ "$size" -gt "$MOD_LIMIT" ]; then
 		rm -f $TMPFILE
@@ -35,7 +35,7 @@ save() {
 	echo "$size bytes written."
 }
 
-case "$1" in
+case $1 in
 	""|all)
 		echo -n 'Saving users, groups and passwords...'
 		/usr/bin/modusers save

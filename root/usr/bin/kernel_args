@@ -360,7 +360,7 @@ ka_decreaseValue() {
 		return 0
 	fi
 	old_val="$val"
-	[ $((--val > 0)) == 0 ] && val="n";
+	[ $((--val > 0)) == 0 ] && val="n"
 	if [ "$val" != "$old_val" ] && ! ka_setValue "$1" "$val"; then
 		[ "$KERNEL_ARGS_VERBOSE" ] && \
 			echo "ka_decreaseValue - error: could not update variable \"$1\" with value \"$val\"" >&2

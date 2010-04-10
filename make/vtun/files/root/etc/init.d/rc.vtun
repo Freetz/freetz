@@ -32,13 +32,13 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'vtun' 'vtun'
 
 		if [ "$VTUN_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start

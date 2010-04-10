@@ -18,13 +18,13 @@ disconnect () {
 	sleep 2
 	cnt=17
 	if [ -n "$(pidof pppd)" ]; then
-		while [ -n "`pidof pppd`" ] && [ $cnt -gt 0 ]; do
+		while [ -n "$(pidof pppd)" ] && [ $cnt -gt 0 ]; do
 			killall -9 pppd 2>/dev/null
 			let cnt=cnt-1
 			sleep 1
 		done
 	fi
-	[ -z "$PPP_LOGFILE" ] || echo -e "TERMINATED\n`date "+%Y-%m-%d %H:%M,%S"`\n##\n" >> $PPP_LOGFILE
+	[ -z "$PPP_LOGFILE" ] || echo -e "TERMINATED\n$(date "+%Y-%m-%d %H:%M,%S")\n##\n" >> $PPP_LOGFILE
 	[ -e "$PPP_SCRIPT_HUP" ] && . $PPP_SCRIPT_HUP
 	echo "#" > /etc/ppp/resolv.conf
 	[ -n "$(pidof pppd)" ] && return 1
@@ -49,7 +49,7 @@ stop() {
 	fi
 	killall -9 ppp_observer 2>/dev/null
 	killall -9 ppp_logger 2>/dev/null
-	kill `cat /var/run/ppp_logger.pid 2>/dev/null` 2>/dev/null
+	kill $(cat /var/run/ppp_logger.pid 2>/dev/null) 2>/dev/null
 	rm -rf /tmp/ppp_logger.tmp 2>/dev/null	
 	disconnect
 	if [ $? -ne 0 ]; then
@@ -60,7 +60,7 @@ stop() {
 
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		[ ! -d "/mod/etc/ppp" ] && mkdir -p /mod/etc/ppp
 		[ ! -d "/tmp/flash/ppp/peers" ] && mkdir -p /tmp/flash/ppp/peers
@@ -79,7 +79,7 @@ case "$1" in
 		initial
 		if [ "$PPP_ENABLED" != "yes" ]; then
 			echo "ppp-cgi is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 		start
 		;;

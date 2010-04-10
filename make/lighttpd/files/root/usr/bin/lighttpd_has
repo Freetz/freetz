@@ -35,7 +35,7 @@ has_mod() {
 	$ret
 }
 
-case "$1" in
+case $1 in
 	ssl-support|ssl_support)
 		has_ssl_support
 		;;
@@ -43,7 +43,7 @@ case "$1" in
 		has_mod $2
 		;;
 	*)
-		bsname="$(basename "$0")"
+		bsname=$(basename "$0")
 		if [ "$bsname" = "lighttpd_has" ]; then
 			echo "Usage: $bsname [ssl-support|mod modulename]" 1>&2
 			exit 1

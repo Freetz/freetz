@@ -45,8 +45,8 @@ Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$OPEN
 <i>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen " en:"Additional command-line options "):</i>
 <p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="50" maxlength="255" value="$(html "$OPENSSH_OPTIONS")"></p>
 <p><input type="hidden" name="expert" value=""> $(lang de:"Standard Optionen \(nur &auml;ndern wenn man genau wei&szlig;, was man tut\)" en:"Standard options \(don't change unless you really know, what you are doing\)"): 
-<input type="checkbox" name="expert" value="yes" `[ "$OPENSSH_EXPERT" = yes ] && echo checked` onclick='document.getElementById("id_settings").style.display=(this.checked)? "block" : "none"'></p>
-<div align="center"><textarea id="id_settings" style="width: 500px; `[ "$OPENSSH_EXPERT" = yes ] || echo display:none`" name="settings" rows="15" cols="80" wrap="off" >$OPENSSH_SETTINGS</textarea></div>
+<input type="checkbox" name="expert" value="yes" $([ "$OPENSSH_EXPERT" = yes ] && echo checked) onclick='document.getElementById("id_settings").style.display=(this.checked)? "block" : "none"'></p>
+<div align="center"><textarea id="id_settings" style="width: 500px; $([ "$OPENSSH_EXPERT" = yes ] || echo display:none)" name="settings" rows="15" cols="80" wrap="off" >$OPENSSH_SETTINGS</textarea></div>
 EOF
 
 sec_end

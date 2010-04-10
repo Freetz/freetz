@@ -5,7 +5,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 eval "$(modcgi branding:pkg:cmd mod_cgi)"
 
-case "$MOD_CGI_CMD" in
+case $MOD_CGI_CMD in
 	start|stop|restart)
 		if [ ! -x "/mod/etc/init.d/rc.$MOD_CGI_PKG" ]; then
 			cgi_begin '$(lang de:"Fehler" en:"Error")'
@@ -15,14 +15,14 @@ case "$MOD_CGI_CMD" in
 		fi
 		;;
 esac
-case "$MOD_CGI_CMD" in
+case $MOD_CGI_CMD in
 	branding)
 		cgi_begin '$(lang de:"Branding &auml;ndern" en:"Change branding")...'
 		echo '<p>$(lang de:"Um die &Auml;nderungen wirksam zu machen, ist ein Neustart erforderlich." en:"You must reboot the device for the changes to take effect.")</p>'
 		echo -n '<pre>set branding to '"'$MOD_CGI_BRANDING'"'...'
 		success=0
 		for i in $(ls /usr/www/); do
-			case "$i" in
+			case $i in
 				all|cgi-bin|html|kids)
 					;;
 				*)

@@ -3,7 +3,7 @@
 . /mod/etc/conf/vsftpd.cfg
 
 if [ "$VSFTPD_ENABLE_RELOAD_SCRIPT" = "yes" ]; then
-	if [ "$1" = "online" ] ; then
+	if [ "$1" = "online" ]; then
 		logger -t info Reload VSFTPD due IP-change
 		(sleep 5; /etc/init.d/rc.vsftpd reload)&
 	fi

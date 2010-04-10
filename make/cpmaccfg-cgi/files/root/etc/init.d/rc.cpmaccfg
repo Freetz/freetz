@@ -54,30 +54,30 @@ vlan() {
 	d_eth2=32
 	d_eth3=32
 
-	if [ $CPMACCFG_VLAN1 = "eth0" ]; then d_eth0=`expr $d_eth0 + 1`; fi
-	if [ $CPMACCFG_VLAN1 = "eth1" ]; then d_eth1=`expr $d_eth1 + 1`; fi
-	if [ $CPMACCFG_VLAN1 = "eth2" ]; then d_eth2=`expr $d_eth2 + 1`; fi
-	if [ $CPMACCFG_VLAN1 = "eth3" ]; then d_eth3=`expr $d_eth3 + 1`; fi
+	if [ $CPMACCFG_VLAN1 = "eth0" ]; then let d_eth0++; fi
+	if [ $CPMACCFG_VLAN1 = "eth1" ]; then let d_eth1++; fi
+	if [ $CPMACCFG_VLAN1 = "eth2" ]; then let d_eth2++; fi
+	if [ $CPMACCFG_VLAN1 = "eth3" ]; then let d_eth3++; fi
 
-	if [ $CPMACCFG_VLAN2 = "eth0" ]; then d_eth0=`expr $d_eth0 + 2`; fi
-	if [ $CPMACCFG_VLAN2 = "eth1" ]; then d_eth1=`expr $d_eth1 + 2`; fi
-	if [ $CPMACCFG_VLAN2 = "eth2" ]; then d_eth2=`expr $d_eth2 + 2`; fi
-	if [ $CPMACCFG_VLAN2 = "eth3" ]; then d_eth3=`expr $d_eth3 + 2`; fi
+	if [ $CPMACCFG_VLAN2 = "eth0" ]; then let d_eth0+=2; fi
+	if [ $CPMACCFG_VLAN2 = "eth1" ]; then let d_eth1+=2; fi
+	if [ $CPMACCFG_VLAN2 = "eth2" ]; then let d_eth2+=2; fi
+	if [ $CPMACCFG_VLAN2 = "eth3" ]; then let d_eth3+=2; fi
 
-	if [ $CPMACCFG_VLAN3 = "eth0" ]; then d_eth0=`expr $d_eth0 + 4`; fi
-	if [ $CPMACCFG_VLAN3 = "eth1" ]; then d_eth1=`expr $d_eth1 + 4`; fi
-	if [ $CPMACCFG_VLAN3 = "eth2" ]; then d_eth2=`expr $d_eth2 + 4`; fi
-	if [ $CPMACCFG_VLAN3 = "eth3" ]; then d_eth3=`expr $d_eth3 + 4`; fi
+	if [ $CPMACCFG_VLAN3 = "eth0" ]; then let d_eth0+=4; fi
+	if [ $CPMACCFG_VLAN3 = "eth1" ]; then let d_eth1+=4; fi
+	if [ $CPMACCFG_VLAN3 = "eth2" ]; then let d_eth2+=4; fi
+	if [ $CPMACCFG_VLAN3 = "eth3" ]; then let d_eth3+=4; fi
 
-	if [ $CPMACCFG_VLAN4 = "eth0" ]; then d_eth0=`expr $d_eth0 + 8`; fi
-	if [ $CPMACCFG_VLAN4 = "eth1" ]; then d_eth1=`expr $d_eth1 + 8`; fi
-	if [ $CPMACCFG_VLAN4 = "eth2" ]; then d_eth2=`expr $d_eth2 + 8`; fi
-	if [ $CPMACCFG_VLAN4 = "eth3" ]; then d_eth3=`expr $d_eth3 + 8`; fi
+	if [ $CPMACCFG_VLAN4 = "eth0" ]; then let d_eth0+=8; fi
+	if [ $CPMACCFG_VLAN4 = "eth1" ]; then let d_eth1+=8; fi
+	if [ $CPMACCFG_VLAN4 = "eth2" ]; then let d_eth2+=8; fi
+	if [ $CPMACCFG_VLAN4 = "eth3" ]; then let d_eth3+=8; fi
 
-	h_eth0='0x'`printf "%X" $d_eth0`;
-	h_eth1='0x'`printf "%X" $d_eth1`;
-	h_eth2='0x'`printf "%X" $d_eth2`;
-	h_eth3='0x'`printf "%X" $d_eth3`;
+	h_eth0='0x'$(printf "%X" $d_eth0)
+	h_eth1='0x'$(printf "%X" $d_eth1)
+	h_eth2='0x'$(printf "%X" $d_eth2)
+	h_eth3='0x'$(printf "%X" $d_eth3)
 
 	if [ "$h_eth0" != "0x20" ]; then
 		SpecialMode='eth0 '$h_eth0
@@ -109,7 +109,7 @@ vlan() {
 }
 
 wlan () {
-	ETHERMODE="$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)"
+	ETHERMODE=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
 	if [ $ETHERMODE = "ethmode_router" ]; then
 		echo -n 'Setting WLAN to '$CPMACCFG_WLAN
 		echo ''
@@ -139,7 +139,7 @@ ipv4bcast () {
 ethernet() {
 	if [ "$CPMACCFG_ETH1_IP" != "" ]; then
 		if [ "$h_eth1" != "0x20" ]; then
-			BROADCAST="`ipv4bcast $CPMACCFG_ETH1_IP $CPMACCFG_ETH1_SUBNET`"
+			BROADCAST=$(ipv4bcast $CPMACCFG_ETH1_IP $CPMACCFG_ETH1_SUBNET)
 			echo "ifconfig eth1 $CPMACCFG_ETH1_IP netmask $CPMACCFG_ETH1_SUBNET broadcast $BROADCAST up"
 			ifconfig eth1 $CPMACCFG_ETH1_IP netmask $CPMACCFG_ETH1_SUBNET broadcast $BROADCAST up
 		fi
@@ -147,7 +147,7 @@ ethernet() {
 
 	if [ "$CPMACCFG_ETH2_IP" != "" ]; then
 		if [ "$h_eth2" != "0x20" ]; then
-			BROADCAST="`ipv4bcast $CPMACCFG_ETH2_IP $CPMACCFG_ETH2_SUBNET`"
+			BROADCAST=$(ipv4bcast $CPMACCFG_ETH2_IP $CPMACCFG_ETH2_SUBNET)
 			echo "ifconfig eth2 $CPMACCFG_ETH2_IP netmask $CPMACCFG_ETH2_SUBNET broadcast $BROADCAST up"
 			ifconfig eth2 $CPMACCFG_ETH2_IP netmask $CPMACCFG_ETH2_SUBNET broadcast $BROADCAST up
 		fi
@@ -155,7 +155,7 @@ ethernet() {
 
 	if [ "$CPMACCFG_ETH3_IP" != "" ]; then
 		if [ "$h_eth3" != "0x20" ]; then
-			BROADCAST="`ipv4bcast $CPMACCFG_ETH3_IP $CPMACCFG_ETH3_SUBNET`"
+			BROADCAST=$(ipv4bcast $CPMACCFG_ETH3_IP $CPMACCFG_ETH3_SUBNET)
 			echo "ifconfig eth3 $CPMACCFG_ETH3_IP netmask $CPMACCFG_ETH3_SUBNET broadcast $BROADCAST up"
 			ifconfig eth3 $CPMACCFG_ETH3_IP netmask $CPMACCFG_ETH3_SUBNET broadcast $BROADCAST up
 		fi
@@ -164,14 +164,14 @@ ethernet() {
 
 
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'cpmaccfg' 'Cpmaccfg'
 		modreg daemon --hide cpmaccfg
 		
 		if [ "$CPMACCFG_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 		start
 		;;

@@ -13,7 +13,7 @@ pkg_post_save()
 		echo 'Saving settings...'
 		/mod/etc/init.d/rc.usbroot store \
 			"$USBROOT_DEVICE:$USBROOT_FSTYPE${USBROOT_FSTYPE:+:}${USBROOT_USBPATH:-/}" \
-			"$(echo "$USBROOT_MNTOPTIONS" | sed -e 's/ //g')"
+			"${USBROOT_MNTOPTIONS// /}"
 		echo 'done.'
 
 		echo 'Activating USB root...'

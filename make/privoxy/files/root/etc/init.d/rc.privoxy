@@ -45,7 +45,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		mkdir -p /tmp/flash/privoxy
 		[ -r /tmp/flash/user.filter ] && mv /tmp/flash/user.filter /tmp/flash/privoxy/user.filter
@@ -62,7 +62,7 @@ case "$1" in
 
 		if [ "$PRIVOXY_ENABLED" != "yes" ]; then
 			echo "Privoxy is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		if [ -e "/var/run/$DAEMON.pid" ]; then

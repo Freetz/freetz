@@ -19,7 +19,7 @@ start() {
 	[ "$mod_save" == "true" ] && modsave flash >/dev/null
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg file php config 'PHP: php.ini' 0 "php_config"
 		;;

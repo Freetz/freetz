@@ -19,7 +19,7 @@ start() {
 	local ftp_sessions=15
 	local ftp_host="$CONFIG_PRODUKT_NAME"
 	local ftp_options="-D -q --pidfile=$PIDFILE -t $ftp_timeout -m $ftp_sessions"
-	AVM_FTP_ENABLED=$(echo usbhost.ftp_server_enabled|usbcfgctl -s)
+	AVM_FTP_ENABLED=$(echo usbhost.ftp_server_enabled | usbcfgctl -s)
 	echo -n "Starting $DAEMON_LONG_NAME..."
 	if [ "$AVM_FTP_ENABLED" != "no" ]
 	then	
@@ -30,12 +30,12 @@ start() {
 				$INETDCTL enable $DAEMON
 				exitval=$?
 			else
-				AVM_FTP_USER=$(echo usbhost.users_enabled|usbcfgctl -s)
+				AVM_FTP_USER=$(echo usbhost.users_enabled | usbcfgctl -s)
 				if [ "$AVM_FTP_USER" = "yes" ]
 				then
 					local ftp_options="$ftp_options -U"
 				else
-					AVM_FTP_RO=$(echo usbhost.readonly|usbcfgctl -s)
+					AVM_FTP_RO=$(echo usbhost.readonly | usbcfgctl -s)
 					if [ "$AVM_FTP_RO" != "no" ]
 					then
 						local ftp_options="$ftp_options -r"

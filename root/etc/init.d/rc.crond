@@ -38,7 +38,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		[ -r /tmp/flash/crontab.save ] && mv /tmp/flash/crontab.save /tmp/flash/mod/crontab
 		modreg file mod crontab 'Freetz: crontab' 0 "crontab"

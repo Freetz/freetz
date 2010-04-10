@@ -3,15 +3,15 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''; log_sys=''; log_int=''; cgi_auto=''; cgi_man=''; log_auto=''; log_man=''; boot_flash=''; boot_usb=''; boot_freetz=''; boot_debug='';
+auto_chk=''; man_chk=''; log_sys=''; log_int=''; cgi_auto=''; cgi_man=''; log_auto=''; log_man=''; boot_flash=''; boot_usb=''; boot_freetz=''; boot_debug=''
 if [ -r /var/tmp/nhipt.par ]; then
 	variable=$(cat /var/tmp/nhipt.par)
 	for var1 in $variable; do
 		export NHIPT_$var1
 	done
 fi
-export cb$NHIPT_DELAY=' selected';
-export dsld$NHIPT_DSLDOFF=' checked';
+export cb$NHIPT_DELAY=' selected'
+export dsld$NHIPT_DSLDOFF=' checked'
 
 if [ "$NHIPT_LOGTARGET" = "syslog" ]; then log_off=' disabled'; log_dr=' disabled'; log_sys=' checked'; else log_off=''; log_int=' checked'; fi
 if [ -n "$(ps | grep -v grep | grep iptlogger)" ]; then log_auto=' checked'; else log_man=' checked'; fi

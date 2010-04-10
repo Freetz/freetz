@@ -12,9 +12,9 @@ ar7ipaddr () {
 }
 
 ar7hostname () {
-  HOSTNAME=`echo servercfg.hostname | ar7cfgctl -s`
-  HOSTNAME=`eval echo $HOSTNAME`
-  if [ "$HOSTNAME" != "(none)" ] ; then
+  HOSTNAME=$(echo servercfg.hostname | ar7cfgctl -s)
+  HOSTNAME=$(eval echo $HOSTNAME)
+  if [ "$HOSTNAME" != "(none)" ]; then
 	echo $HOSTNAME
   else	
 	echo $CONFIG_HOSTNAME
@@ -28,7 +28,7 @@ ismac () {
 	echo $1 | egrep '^[[:xdigit:]]{2}(:[[:xdigit:]]{2}){5}$' >/dev/null
 }
 
-case "$1" in
+case $1 in
 	"")
 		mvi /tmp/flash/mod/hosts
 		$0 load
@@ -43,7 +43,7 @@ case "$1" in
 		touch /var/tmp/ethers
 
 		# ATA fix
-		mode="$(echo 'ar7cfg.mode' | ar7cfgctl -s)"
+		mode=$(echo 'ar7cfg.mode' | ar7cfgctl -s)
 		if [ "$mode" = "dsldmode_bridge" -o \
 		     "$mode" = "dsldmode_full_bridge" ]; then
 			if [ "$(echo 'ar7cfg.wan_bridge_with_dhcpc' | ar7cfgctl -s)" = "no" -a \
@@ -71,7 +71,7 @@ case "$1" in
 
 		ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
 		devname=lan
-		case "$ethmode" in
+		case $ethmode in
 			ethmode_bridge)
 				section=brinterfaces
 				break
@@ -84,11 +84,11 @@ case "$1" in
 				section=ethinterfaces
 		esac
 		ipaddr=$(ar7ipaddr $section $devname)
-		if [ -z "$ipaddr" ] ; then
+		if [ -z "$ipaddr" ]; then
 		  devname=eth0
 		  ipaddr=$(ar7ipaddr $section $devname)
 		fi
-		if [ -z "$ipaddr" ] ; then
+		if [ -z "$ipaddr" ]; then
 		  ipaddr=169.254.1.1
 		fi
 		echo -e "$ipaddr\tfritz.box\t$(ar7hostname)" >> /var/tmp/hosts

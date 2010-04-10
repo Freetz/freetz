@@ -4,7 +4,7 @@
 	if [ "$REQUEST_METHOD" = "POST" ]; then
 		read post_string
 	fi
-	for INPUT_INTERFACE in $(ifconfig | grep ^[a-z]|cut -f1 -d ' '); do
+	for INPUT_INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
 		x=$x+"$INPUT_INTERFACE"
 	done
 	lanip="$(ifconfig | grep -v lan:0 | grep -A 2 lan | awk -F'[ :]+' '/inet addr/{print $4}')"
@@ -269,7 +269,7 @@ myexit=0\nwhile [ \\$myexit -eq 0 ]\ndo\nsleep 15\nrunning=\\$(ps | grep -v grep
 if [ -z \\$running ]\nthen\necho \"terminating log deamon\"\nmyexit=1\
 else\ngrep -E -v \"<4>|DECT|DCT|^$\" /var/tmp/system.log | sed \"s/^/\\$(date +\47%Y-%m-%d %H:%M:%S\47) /\" >> " myConf["LOGD"] "/system.log\
 grep \"<4>\" /var/tmp/system.log | sed \"s/^/\\$(date +\47%Y-%m-%d %H:%M:%S\47) /\" >> " myConf["LOGD"] "/fw.log\
-echo \"\" > /var/tmp/system.log\nmyexit=0\nfi\ndone\nelse\necho \"already running, giving up\"\nfi\nEOF\n\n)");
+echo \"\" > /var/tmp/system.log\ nmyexit=0\nfi\ndone\nelse\necho \"already running, giving up\"\nfi\nEOF\n\n)");
 ret += system("chmod +x /var/tmp/logfw.sh");
 	return ret;
 }

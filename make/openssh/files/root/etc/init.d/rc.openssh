@@ -107,7 +107,7 @@ reg_files() {
 	done
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'openssh' 'OpenSSH sshd'
 		reg_files rsa_key dsa_key
@@ -116,7 +116,7 @@ case "$1" in
 
 		if [ "$OPENSSH_ENABLED" != "yes" ]; then
 			echo "OpenSSH $DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start

@@ -62,7 +62,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 
 		if type modreg > /dev/null; then
@@ -71,7 +71,7 @@ case "$1" in
 
 		if [ "$CHECKMAILD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		if [ ! -z "$(pidof $DAEMON)" ]; then

@@ -7,7 +7,7 @@
 [ -z "$PPP_DIAGTTY" ] && exit 1
 
 logger () {
-	kill `cat /var/run/ppp_loggerCAT.pid 2>/dev/null` 2>/dev/null
+	kill $(cat /var/run/ppp_loggerCAT.pid 2>/dev/null) 2>/dev/null
 	if [ -c "$PPP_DIAGTTY" ]; then
 		nohup cat $PPP_DIAGTTY >/tmp/ppp_logger.tmp &
 		echo $! >/var/run/ppp_loggerCAT.pid
@@ -21,6 +21,6 @@ logger () {
 logger
 while [ 1 ]; do
 	sleep 20
-	[ `ls -l /tmp/ppp_logger.tmp  |awk '{print $5}'` -gt 131072 2>/dev/null ] && logger
-	kill -0 `cat /var/run/ppp_loggerCAT.pid 2>/dev/null` 2>/dev/null || logger
+	[ $(ls -l /tmp/ppp_logger.tmp | awk '{print $5}') -gt 131072 2>/dev/null ] && logger
+	kill -0 $(cat /var/run/ppp_loggerCAT.pid 2>/dev/null) 2>/dev/null || logger
 done

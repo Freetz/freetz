@@ -5,7 +5,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 check "$XRELAYD_ENABLED" yes:auto_c "*":man_c
 
-case "$XRELAYD_VERBOSE" in 
+case $XRELAYD_VERBOSE in 
 		0) verbose_sel0=' selected' ;; 
 		1) verbose_sel1=' selected' ;; 
 		2) verbose_sel2=' selected' ;; 

@@ -23,7 +23,7 @@ if [ -n "$1" ]; then
 fi
 }
 
-has_mod_evhost="$(has_mod evhost)" #cache the value
+has_mod_evhost=$(has_mod evhost) #cache the value
 virthost_conf() {
 #$1, $2 and $3 are the same as in encloseWithHTTPHost
 if [ -n "$1" -a "$has_mod_evhost" = "yes" -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
@@ -136,7 +136,7 @@ if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 	if [ "$LIGHTTPD_SSLADDITIONAL" = "yes" ]; then
 		virtsrv=""
 		if [ "$has_mod_evhost" = "yes" -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
-			virtsrv=$(echo $LIGHTTPD_SSLVIRT | sed 's/ /|/g')
+			virtsrv=${LIGHTTPD_SSLVIRT// /|}
 		fi
 		echo "\$SERVER[\"socket\"] == \":$LIGHTTPD_SSLPORT\" {"
 		enable_ssl
@@ -165,7 +165,7 @@ fi
 fi
 
 gendir() {
-	dir="$1"
+	dir=$1
 	[ "$LIGHTTPD_CHROOT" = "yes" ] && dir="$LIGHTTPD_DOCROOT/$dir"
 	mkdir -p "$dir"
 	chown wwwrun:wwwrun "$dir"
@@ -283,7 +283,7 @@ genchroot() {
 	[ -x "$(which ldd)" ] || return
 	[ -f "$1" ] || return
 	[ -d "$2" ] || return
-	dir="$(dirname $1)"
+	dir=$(dirname $1)
 	mkdir -p "$2/$dir"
 	cp -pf "/$1" "$2/$dir"
 	ldd $1 2>/dev/null | while read -r ln; do
@@ -310,7 +310,7 @@ virthost_conf "$LIGHTTPD_MODFASTCGIRUBYVIRT" "$out"
 genchroot "$LIGHTTPD_MODFASTCGIRUBYPATH" "$LIGHTTPD_DOCROOT"
 fi
 
-docroot="$LIGHTTPD_DOCROOT"
+docroot=$LIGHTTPD_DOCROOT
 if [ "$LIGHTTPD_CHROOT" = "yes" ]; then
 	docroot="/websites"
 	[ "$LIGHTTPD_VIRTHOST" = "yes" ] && mkdir -p "$LIGHTTPD_DOCROOT/websites/default"

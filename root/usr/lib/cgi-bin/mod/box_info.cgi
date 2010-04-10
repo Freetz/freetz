@@ -31,8 +31,8 @@ else
 	mac_wlan=$notdefined
 fi
 if [ -r /proc/cpuinfo ]; then
-	cpu_family="$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo)"
-	cpu_model="$(sed -ne '/cpu model/ s/.*: //p' /proc/cpuinfo)"
+	cpu_family=$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo)
+	cpu_model=$(sed -ne '/cpu model/ s/.*: //p' /proc/cpuinfo)
 else
 	cpu_family=""
 	cpu_model=""
@@ -74,8 +74,8 @@ sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware")'
 sec_end
 
 sec_begin '$(lang de:"Netzwerk" en:"Network")'
- host_name="$(hostname)"
- act_ip="$(hostname -i)"
+ host_name=$(hostname)
+ act_ip=$(hostname -i)
  echo '<div '$divstyle'><b>$(lang de:"Aktuelle IP-Adresse" en:"Current IP address"):</b> '$act_ip'&nbsp;&nbsp;&nbsp;<b>Hostname:</b> '$host_name'</div>'
  echo '<div '$divstyle'><b>Urloader-IP$(lang de:"-Adresse" en:" address"):</b> '$ip_init_address'<br></div>'
  echo '<div '$divstyle'><b>MAC$(lang de:"-Adressen" en:" address"):</b><br>'

@@ -12,7 +12,7 @@ stat_begin() {
 
 stat_button() {
     	local pkg=$1 cmd=$2 active=$3
-	if ! $active ; then disabled=" disabled"; else disabled=""; fi
+	if ! $active; then disabled=" disabled"; else disabled=""; fi
 	echo "<td><form class='btn' action='/cgi-bin/exec.cgi' method='post'><input type='hidden' name='pkg' value='$pkg'><input type='hidden' name='cmd' value='$cmd'><input type='submit' value='$cmd'$disabled></form></td>"
 }
 
@@ -76,8 +76,8 @@ stat_line() {
 	echo "<tr${class:+ class='$class'}>"
 	echo "<td width='180'>$(stat_packagelink $config_pkg $name)</td><td class='status' width='120'>$status</td>"
 
-	if $disable ; then
-		start=false; stop=false;
+	if $disable; then
+		start=false; stop=false
 	fi
 	stat_button $pkg start $start
 	stat_button $pkg stop $stop

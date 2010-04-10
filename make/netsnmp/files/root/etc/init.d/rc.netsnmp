@@ -12,9 +12,9 @@ SNMPDOPTS="-Lf /dev/null"
 CFGFILE="/tmp/flash/snmpd.conf"
 [ -e /etc/snmp/snmpd.conf ] && CFGFILE="/etc/snmp/snmpd.conf"
 
-case "$1" in
+case $1 in
 	""|load|start|restart)
-		if [ ! -e "$CFGFILE" ] ; then
+		if [ ! -e "$CFGFILE" ]; then
 			echo "Creating $CFGFILE"
 			{
 			echo "com2sec readonly  192.168.0.0/16  public"
@@ -56,7 +56,7 @@ start() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'netsnmp' 'Net-SNMP'
 		[ "$CFGFILE" != "/etc/snmp/snmpd.conf" ] && modreg file netsnmp conf 'Net-SNMP: snmpd.conf' 0 "snmpd_conf"

@@ -6,7 +6,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
 %>
 <h1>$(lang de:"Wiederherstellung (Restore)" en:"Restore configuration")</h1>
 
-<% if test -n "$FORM_uploadfile_name"; then %>
+<% if [ -n "$FORM_uploadfile_name" ]; then %>
   $(lang de:"Sie haben gerade die Datei" en:"You just uploaded the file") <b><% echo -n $FORM_uploadfile_name %></b>$(lang de:" hochgeladen." en:".")<br>
   $(lang de:"Sie ist unter dem temporären Namen" en:"It is stored on the Fritz!Box under the temporary name") <i><% echo $FORM_uploadfile %></i>$(lang de:" auf der Fritz!Box gespeichert." en:".")<br>
   $(lang de:"Die Dateigröße beträgt" en:"The file size is") <% cat $FORM_uploadfile | wc -c %> $(lang de:"Bytes." en:"bytes.")

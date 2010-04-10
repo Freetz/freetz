@@ -50,7 +50,7 @@ cat << EOF
 <p> $(lang de:"Server binden an Port" en:"Listen on port"): <input type="text" name="port" size="5" maxlength="5" value="$(html "$LIGHTTPD_PORT")"></p>
 EOF
 
-dirs="$LIGHTTPD_DOCROOT"
+dirs=$LIGHTTPD_DOCROOT
 [ "$LIGHTTPD_CHROOT" = "yes" ] && dirs="$dirs/websites"
 [ "$LIGHTTPD_VIRTHOST" = "yes" ] && dirs="$dirs/default</li><li>$dirs/$LIGHTTPD_VIRTHOSTTYPE"
 dirs="<ul><li>$dirs</li></ul>"
@@ -172,7 +172,7 @@ cat << EOF
 <p><input type="hidden" name="modfastcgiphp" value="no">
 <input id="b6" type="checkbox" name="modfastcgiphp" value="yes"$modfastcgiphp_chk><label for="b6"> $(lang de:"mod_fastcgi f&uuml;r PHP aktivieren (Dateien *.php ausf&uuml;hrbar)" en:"Activate mod_fastcgi for PHP (files *.php executable)")</label></p>
 EOF
-	foundphp=`which php-cgi`
+	foundphp=$(which php-cgi)
 	if [ ! -x "$foundphp" ]; then
 		foundphp=""
 cat << EOF
@@ -194,7 +194,7 @@ cat << EOF
 <p><input type="hidden" name="modfastcgiruby" value="no">
 <input id="b8" type="checkbox" name="modfastcgiruby" value="yes"$modfastcgiruby_chk><label for="b8"> $(lang de:"mod_fastcgi f&uuml;r RUBY aktivieren (Dateien *.rb ausf&uuml;hrbar)" en:"Activate mod_fastcgi for RUBY (files *.rb executable)")</label></p>
 EOF
-	foundruby=`which ruby-cgi`
+	foundruby=$(which ruby-cgi)
 	if [ ! -x "$foundruby" ]; then
 		foundruby=""
 cat << EOF

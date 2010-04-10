@@ -34,7 +34,7 @@ start() {
 			iptables $LINE
 		done < $SAVEFILE
 	else
-		if ` grep "*gui*" /mod/etc/conf/iptables.cfg `; then
+		if grep -q "*gui*" /mod/etc/conf/iptables.cfg; then
 			sed -e "s/\*gui\*//g" /mod/etc/conf/iptables.cfg > /var/tmp/iptables_tmp
 			cat /var/tmp/iptables_tmp > /mod/etc/conf/iptables.cfg
 			rm /var/tmp/iptables_tmp
@@ -67,7 +67,7 @@ start() {
 			if [ $IPTABLES_DPORT = "ANY" ]; then
 				IPTABLES_DPORT=''
 			else
-				IPTABLES_DPORT=`grep "^"$IPTABLES_DPORT: /tmp/flash/iptables_services | sed -e "s/.*://g"`
+				IPTABLES_DPORT=$(grep "^"$IPTABLES_DPORT: /tmp/flash/iptables_services | sed -e "s/.*://g")
 				IPTABLES_DPORT='--dport '$IPTABLES_DPORT
 			fi
 
@@ -96,10 +96,10 @@ start() {
 			if [ $IPTABLES_NAT != "None" ]; then
 				IPTABLES_RULE="-t nat "$IPTABLES_RULE
 				IPTABLES_ACTION=$IPTABLES_NAT
-				IPTABLES_INPUT_INTERFACE='-o '$(echo $IPTABLES_INPUT_INTERFACE|sed -e "s/-i //g")
+				IPTABLES_INPUT_INTERFACE="-o ${IPTABLES_INPUT_INTERFACE//-i /}"
 				if [ $IPTABLES_NAT != "Normal" ]; then
-					$SPECIAL="--to "$(echo $IPTABLES_DESTINATION|sed -e "s/-d //g")
-					$IPTABLES_DESTINATION=''
+					SPECIAL="--to ${IPTABLES_DESTINATION//-d /}"
+					IPTABLES_DESTINATION=''
 				fi
 			fi
 
@@ -144,50 +144,50 @@ save () {
 	rm /var/tmp/test
 	i=0
 	while read LINE; do
-		if [[ $(echo $LINE |grep -c "Chain") = 1 ]]; then
-			CHAIN=$(echo $LINE|sed -e "s/Chain //g" | sed -e "s/ (policy.*//g")
+		if [[ $(echo $LINE | grep -c "Chain") = 1 ]]; then
+			CHAIN=$(echo $LINE | sed -e "s/Chain //g" | sed -e "s/ (policy.*//g")
 			if [ $CHAIN = "PREROUTING" ] || [ $CHAIN = "POSTROUTING" ]; then
 				N="-t nat "
 			fi
 			i=i+1
 		else
-			echo ${LINE}|grep "^[1-9]" > /dev/null
+			echo ${LINE} | grep "^[1-9]" > /dev/null
 			if [ $? = 0 ]; then
-				SPORT='';DPORT='';
-				A=$(echo $LINE|awk '{print $4}')
-				P="-p $(echo $LINE|awk '{print $5}')"
-				PORT1="$(echo $LINE|awk '{print $12}')"
-				echo $PORT1|grep "spt:" > /dev/null
+				SPORT=''; DPORT=''
+				A=$(echo $LINE | awk '{print $4}')
+				P="-p $(echo $LINE | awk '{print $5}')"
+				PORT1=$(echo $LINE | awk '{print $12}')
+				echo $PORT1 | grep "spt:" > /dev/null
 				if [ $? -eq 0 ]; then
-					SPORT="--sport $(echo $PORT1|sed -e 's/spt://g')"
+					SPORT="--sport ${PORT1//spt:/}"
 				fi
-				echo $PORT1|grep "dpt:" > /dev/null
+				echo $PORT1 | grep "dpt:" > /dev/null
 				if [ $? -eq 0 ]; then
-					DPORT="--dport $(echo $PORT1|sed -e 's/dpt://g')"
+					DPORT="--dport ${PORT1//dpt:/}"
 				fi
-				PORT2="$(echo $LINE|awk '{print $13}')"
-				echo $PORT2|grep "spt:" > /dev/null
+				PORT2=$(echo $LINE | awk '{print $13}')
+				echo $PORT2 | grep "spt:" > /dev/null
 				if [ $? -eq 0 ]; then
-					SPORT="--sport $(echo $PORT2|sed -e 's/spt://g')"
+					SPORT="--sport ${PORT2//spt:/}"
 				fi
-				echo $PORT2|grep "dpt:" > /dev/null
+				echo $PORT2 | grep "dpt:" > /dev/null
 				if [ $? -eq 0 ]; then
-					DPORT="--dport $(echo $PORT2|sed -e 's/dpt://g')"
+					DPORT="--dport ${PORT2//dpt:/}"
 				fi
 
-				S="-s $(echo $LINE|awk '{print $9}')"
-				D="-d $(echo $LINE|awk '{print $10}')"
-				I="-i $(echo $LINE|awk '{print $7}')"
-				O="-o $(echo $LINE|awk '{print $8}')"
+				S="-s $(echo $LINE | awk '{print $9}')"
+				D="-d $(echo $LINE | awk '{print $10}')"
+				I="-i $(echo $LINE | awk '{print $7}')"
+				O="-o $(echo $LINE | awk '{print $8}')"
 
 				# Check if input interface is available
-				echo $I|grep x > /dev/null
+				echo $I | grep x > /dev/null
 				if [ $? -eq 0 ]; then
 					I=""
 				fi
 				
 				# Check if output interface is available
-				echo $O|grep x > /dev/null
+				echo $O | grep x > /dev/null
 				if [ $? -eq 0 ]; then
 					O=""
 				fi
@@ -204,7 +204,7 @@ save () {
 
 stop () {
 
-	cat /mod/etc/conf/iptables.cfg|grep "*gui*" > /dev/null
+	cat /mod/etc/conf/iptables.cfg | grep "*gui*" > /dev/null
 	if [ $? -eq 1 ]; then
 		lsmod | grep ip_tables > /dev/null
 		if [ $? -eq 0 ]; then
@@ -225,7 +225,7 @@ stop () {
 	exitval=0
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'iptables' 'Iptables'
 		modreg file iptables rules 'Iptables: Rules' 0 "iptables"

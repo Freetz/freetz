@@ -15,7 +15,7 @@ if [ "$URL_CGINAME" != "pkgstatus" ]; then
 fi
 
 _NICE=$(which nice)
-NOCACHE="?nocache=$(date -Iseconds|sed 's/T/_/g;s/+.*$//g;s/:/-/g')"
+NOCACHE="?nocache=$(date -Iseconds | sed 's/T/_/g;s/+.*$//g;s/:/-/g')"
 URL_EXTENDED="$SCRIPT_NAME?pkg=vnstat&cgi=vnstat/$(echo "$QUERY_STRING" | sed -e 's/^.*cgi=vnstat\///' -e 's/&.*$//' -e 's/\.//g')"
 TEMPDIR=/tmp/vnstat
 mkdir -p $TEMPDIR
@@ -29,13 +29,13 @@ gen_pic() {
 sec_begin ""
 echo "<center>"
 netif=$(echo "$QUERY_STRING" | grep "[&?]netif=")
-[ -n "$netif" ] && netif=`echo $netif|sed 's/^.*[\&\?]netif=//;s/\&.*$//' 2>/dev/null`
+[ -n "$netif" ] && netif=$(echo $netif | sed 's/^.*[\&\?]netif=//;s/\&.*$//' 2>/dev/null)
 #count ifs
 ifcnt=0
 for ifname in $VNSTAT_INTERFACES; do
-	ifcnt=$(( ifcnt+1 ))
+	let ifcnt++
 done
-[ $ifcnt -eq 1 ] && netif="$VNSTAT_INTERFACES"
+[ $ifcnt -eq 1 ] && netif=$VNSTAT_INTERFACES
 #show pix
 if [ -n "$netif" ]; then
 	#subpages
@@ -49,7 +49,7 @@ if [ -n "$netif" ]; then
 else
 	#mainpage
         echo "<p><font size=+1><b>vnstat</b></font></p>"
-	[ -z "$VNSTAT_INTERFACES" ] && VNSTAT_INTERFACES="`ls /var/lib/vnstat/ 2>/dev/null`"
+	[ -z "$VNSTAT_INTERFACES" ] && VNSTAT_INTERFACES=$(ls /var/lib/vnstat/ 2>/dev/null)
         for dbfile in $VNSTAT_INTERFACES; do
                 echo "<a href=\"$URL_EXTENDED&netif=$dbfile\">"
                 gen_pic $dbfile summary

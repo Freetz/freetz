@@ -20,7 +20,7 @@ start() {
 
 		SYSLOGD_OPTIONS="-L"
 
-		case "$SYSLOGD_LOGGING" in
+		case $SYSLOGD_LOGGING in
 		circular_buffer) 
 			if [ ! -z "$SYSLOGD_BUFFER_MAXSIZE" ]; then
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C$SYSLOGD_BUFFER_MAXSIZE"
@@ -33,8 +33,8 @@ start() {
 			if [ ! -z "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -O $SYSLOGD_ALTERNATIVE_LOGFILE "
 				#create a symbolic link to /var/log but only if path to alternative logfile is not /var/log
-				[ `dirname $SYSLOGD_ALTERNATIVE_LOGFILE` != /var/log ] && \
-					[ ! -e "/var/log/`basename "$SYSLOGD_ALTERNATIVE_LOGFILE"`" ] && \
+				[ $(dirname $SYSLOGD_ALTERNATIVE_LOGFILE) != /var/log ] && \
+					[ ! -e "/var/log/$(basename "$SYSLOGD_ALTERNATIVE_LOGFILE")" ] && \
 					ln -sf "$SYSLOGD_ALTERNATIVE_LOGFILE" /var/log/
 			fi
 			if [ "$SYSLOGD_MAXFILES" -ge "1" ]; then
@@ -111,7 +111,7 @@ stop () {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		if type modreg > /dev/null; then
 			modreg cgi $DAEMON 'Syslogd'
@@ -119,7 +119,7 @@ case "$1" in
 
 		if [ "$SYSLOGD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		if [ ! -z "$(pidof $DAEMON)" ]; then

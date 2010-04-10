@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CFGCTL="$(which usbcfgctl)"
+CFGCTL=$(which usbcfgctl)
 [ -z "$CFGCTL" ] && CFGCTL=ar7cfgctl
 
 echo "### global"
@@ -40,7 +40,7 @@ echo "### default"
 if [ "$(echo usbhost.samba_server_enabled | $CFGCTL -s)" = "yes" ]; then
 	for SHARE in /var/media/ftp/*; do
 		if [ -d "$SHARE" ]; then
-			SHORTNAME="$(basename "$SHARE" | sed s/-Partition-/-/)"
+			SHORTNAME=$(basename "$SHARE" | sed s/-Partition-/-/)
 			echo "[$SHORTNAME]"
 			echo " path = $SHARE"
 			echo " user = ftpuser"
@@ -65,22 +65,22 @@ echo "### shares"
 if [ -r "/tmp/flash/samba/shares" ]; then
 	cat /tmp/flash/samba/shares | grep -v "^#" | while read -r path name gk ro options comment; do
 		if [ -n "$path" -a -n "$name" -a -d "$path" ]; then
-			case "$gk" in
+			case $gk in
 				1|y|yes|Y|YES)  gk="yes" ;;
 				0|n|no|N|NO|"") gk="no"  ;;
 			esac
-			case "$ro" in
+			case $ro in
 				1|y|yes|Y|YES)  ro="yes" ;;
 				0|n|no|N|NO|"") ro="no"  ;;
 			esac
 			if  [ "$options" != "-" ]; then
-				options="$(echo "$options" | sed -r -e 's,=, = ,g;s,(%20| )+, ,g;')"
+				options=$(echo "$options" | sed -r -e 's,=, = ,g;s,(%20| )+, ,g;')
 			else
 				options=""
 			fi
 			echo "$options" | grep -q "user =" >/dev/null 2>&1 || options="$options,user = ftpuser"
 			echo "$options" | grep -q "write cache size =" >/dev/null 2>&1 || options="$options,write cache size = 65536"
-			options="$(echo -e "${options//,/\\n }")"
+			options=$(echo -e "${options//,/\\n }")
 cat << EOF
 [${name//%20/ }]
  comment = $comment

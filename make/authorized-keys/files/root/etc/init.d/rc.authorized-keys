@@ -23,7 +23,7 @@ convert_compat()
 }
 # END compat
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg file $DAEMON conf 'SSH: authorized_keys' 0 $DAEMON
 		modreg daemon --hide authorized-keys

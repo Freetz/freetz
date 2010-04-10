@@ -68,7 +68,7 @@ stop() {
 
 	if [ "$TINYPROXY_CONFSERVER" == "yes" ]; then
 		echo -n "Stopping the webserver for the proxy config file ... "
-		pid="$(ps aux | egrep "httpd\ -p.*tinyproxy" | cut -d ' ' -f 2)"
+		pid=$(ps aux | egrep "httpd\ -p.*tinyproxy" | cut -d ' ' -f 2)
 		kill -9 $pid > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
@@ -79,7 +79,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'tinyproxy' 'tinyproxy'
 
@@ -88,7 +88,7 @@ case "$1" in
 		
 		if [ "$TINYPROXY_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start

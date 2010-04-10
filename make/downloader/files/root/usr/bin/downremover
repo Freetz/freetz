@@ -1,10 +1,10 @@
 #!/bin/sh
 
-LOADFILE="$1"
-FILEPERM="$2"
-LOCALDR="$3"
+LOADFILE=$1
+FILEPERM=$2
+LOCALDR=$3
 
-if test -e $LOCALDR/$LOADFILE ; then
+if [ -e $LOCALDR/$LOADFILE ]; then
    echo -n "$LOCALDR/$LOADFILE is deleting... "
    chmod "777" $LOCALDR/$LOADFILE
    rm -f $LOCALDR/$LOADFILE

@@ -20,7 +20,7 @@ log_info "${ACTION} $channel ${manufacturer:-$idVendor} ${product:-$idProduct}"
 
 # http://en.wikipedia.org/wiki/Universal_Serial_Bus#Device_classes
 [ 0 -eq "${TYPE%%/*}" ] && TYPE=$INTERFACE
-case "$TYPE" in
+case $TYPE in
 	8/2/*)
 		# wlan sticks and mini fon
 		if [ 57c = ${PRODUCT%%/*} -o 7001 = ${PRODUCT%%/*} ]; then

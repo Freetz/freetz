@@ -5,11 +5,11 @@ DAEMON=cifsmount
 . /etc/init.d/modlibrc
 
 # works only with applet seq enabled:
-#CIFSMOUNT_LIST="$(seq 1 $CIFSMOUNT_COUNT)"
+#CIFSMOUNT_LIST=$(seq 1 $CIFSMOUNT_COUNT)
 CIFSMOUNT_LIST="1"
 i=1
 while [ "$i" -lt "$CIFSMOUNT_COUNT" ]; do
-    i=$((i + 1))
+    let i++
     CIFSMOUNT_LIST="$CIFSMOUNT_LIST $i"
 done
 
@@ -71,7 +71,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 
 		if type modreg > /dev/null; then
@@ -80,7 +80,7 @@ case "$1" in
 
 		if [ "$CIFSMOUNT_ENABLED" != "yes" ]; then
 			echo "cifsmount is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		if [ ! -z "$(pidof "cifsoplockd")" -a ! -z "$(pidof "cifsdnotifyd")" ]; then

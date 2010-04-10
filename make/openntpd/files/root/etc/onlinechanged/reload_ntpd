@@ -2,7 +2,7 @@
 
 [ -z "$(pidof ntpd)" ] && exit 0
 
-if [ "$1" = "online" ] ; then
+if [ "$1" = "online" ]; then
 	logger -t info Restart NTPD due to online status change
 	(sleep 5; /etc/init.d/rc.openntpd reload)&
 fi

@@ -14,7 +14,7 @@ find_mnt_name ()
 	then
 		[ -x $blkid_bin ] && mnt_name=$($blkid_bin -s LABEL $mnt_device | sed -e 's/.*LABEL="\([^"]*\)" /\1/' -e 's/ /_/g')
 	fi
-	[ -z "$mnt_name" ] && mnt_name="$storage_prefix$(echo $1|sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/')$3"
+	[ -z "$mnt_name" ] && mnt_name="$storage_prefix$(echo $1 | sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/')$3"
 	echo $mnt_name
 }
 
@@ -101,7 +101,7 @@ do_mount ()
 			mkdir -p $mnt_path
 			break
 		else
-			mnt_med_num=$((mnt_med_num + 1))
+			let mnt_med_num++
 		fi
 	done
 	chmod 755 $FTPDIR # chmod for ftp top directory
@@ -126,7 +126,7 @@ do_mount ()
 	else
 		if [ "$fs_type" == "ntfs" ]
 		then
-			case "$err_fs_mount" in
+			case $err_fs_mount in
 			15 ) # NTFS unclean unmount
 				eventadd 144 $mnt_name # NTFS Volume was unclean unmount. Please unmount
 				mnt_failure=0
@@ -197,7 +197,7 @@ do_umount ()
 				then
 					for pid in $(pidof $kill_daemon)
 					do
-						ls -l /proc/$pid/cwd /proc/$pid/fd |grep $mnt_path > /dev/null 2>&1 && kill $pid
+						ls -l /proc/$pid/cwd /proc/$pid/fd | grep $mnt_path > /dev/null 2>&1 && kill $pid
 					done
 					sleep 1
 				fi
@@ -244,8 +244,8 @@ hd_spindown_control ()
 			if [ "$1" = "loadconfig" ]
 			then
 				local idle_time=0
-				local spindown_allowed="$(echo usbhost.spindown_enabled|usbcfgctl -s)"
-				[ "$spindown_allowed" = "yes" ] && idle_time="$(echo usbhost.spindown_time|usbcfgctl -s)"
+				local spindown_allowed=$(echo usbhost.spindown_enabled | usbcfgctl -s)
+				[ "$spindown_allowed" = "yes" ] && idle_time=$(echo usbhost.spindown_time | usbcfgctl -s)
 			else
 				local idle_time=$1
 			fi

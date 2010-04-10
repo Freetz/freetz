@@ -4,7 +4,7 @@ DAEMON=quagga
 
 . /etc/init.d/modlibrc
 
-case "$1" in
+case $1 in
 	""|load|start|restart)
 
 	RUN_MODSAVE=0
@@ -52,7 +52,7 @@ stop() {
 }
 
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'quagga' 'Quagga'
 		for daemon in $daemonlist; do

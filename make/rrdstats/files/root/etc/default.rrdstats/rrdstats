@@ -7,7 +7,7 @@
 
 _NICE=$(which nice)
 _SENSOR_CNF=/tmp/flash/rrdstats/digitemp.conf
-_SENSOR_HEX=`grep "^ROM " $_SENSOR_CNF 2>/dev/null | sed 's/^ROM [0-9]*//g;s/ 0x//g'`
+_SENSOR_HEX=$(grep "^ROM " $_SENSOR_CNF 2>/dev/null | sed 's/^ROM [0-9]*//g;s/ 0x//g')
 [ "$RRDSTATS_DIGITEMP_C" = yes ] && _SENSOR_UOM=C || _SENSOR_UOM=F
 
 collect_cpu() {
@@ -71,10 +71,10 @@ collect_upt() {
 			RRA:MAX:0.1:24:732 \
 			RRA:MAX:0.1:144:1460
 	fi
-	uX=$(( `cat /proc/uptime |sed 's/ .*$//;s/\..*//'`/60 ))
+	uX=$(( $(cat /proc/uptime | sed 's/ .*$//;s/\..*//')/60 ))
 	uH=$(( $uX/60 ))
 	uM=$(( ($uX-$uH*60)*100/60 ))
-	[ -z "$(echo $uM|sed 's/^.//')" ] && uM=0$uM
+	case $uM in ?) uM=0$uM ;; esac
 	uptdata=N:$uH.$uM
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdata --template uptime
 }
@@ -111,9 +111,9 @@ collect_diskio() {
 				RRA:AVERAGE:0.5:144:1460
 		fi
 		if ( echo $DISK | grep -E 'sd[a-z][0-9]' >/dev/null 2>&1 ); then
-			io="$(cat /proc/diskstats | sed -n 's/^.*'$DISK' \([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.*$/\2:\4/p')"
+			io=$(cat /proc/diskstats | sed -n 's/^.*'$DISK' \([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.*$/\2:\4/p')
 		else
-			io="$(cat /proc/diskstats | sed -n 's/^.*'$DISK' \([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.*$/\3:\7/p')"
+			io=$(cat /proc/diskstats | sed -n 's/^.*'$DISK' \([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.*$/\3:\7/p')
 		fi
 			[ -z "$io" ] && return
 			rB=$(($(echo $io | cut -d : -f1) * 512))
@@ -143,15 +143,15 @@ collect_thg() {
 			RRA:LAST:0.1:24:732 \
 			RRA:LAST:0.1:144:1460
 	fi
-	uptdatBL=N`wget http://192.168.100.1/BasicLan.htm -O - -q | grep -E "Power|Ratio|Computers" |sed 's/ dB.*//g;s/<\/td><\/tr>$//;s/^.*>/:/'|tr -d "\n"`
+	uptdatBL=N$(wget http://192.168.100.1/BasicLan.htm -O - -q | grep -E "Power|Ratio|Computers" | sed 's/ dB.*//g;s/<\/td><\/tr>$//;s/^.*>/:/' | tr -d "\n")
 	[ $uptdatBL = N ] && return
 	if [ "$RRDSTATS_THOMSONADV" = yes ]; then
-		tX=`wget http://192.168.100.1/BasicLan.htm -O - -q |grep "System uptime"`
-		tH=$(( `echo $tX |sed 's/.*<td>//;s/ .*//'` *24+ `echo $tX |sed -r 's/.* 0{0,1}//;s/h.*//'` ))
-		tM=$(( ( `echo $tX |sed -r 's/.*h:0{0,1}//;s/m:.*//'` *100)/60 ))
-		[ -z "$(echo $tM|sed 's/^.//')" ] && tM=0$tM
+		tX=$(wget http://192.168.100.1/BasicLan.htm -O - -q | grep "System uptime")
+		tH=$(( $(echo $tX | sed 's/.*<td>//;s/ .*//') *24+ $(echo $tX | sed -r 's/.* 0{0,1}//;s/h.*//') ))
+		tM=$(( ( $(echo $tX | sed -r 's/.*h:0{0,1}//;s/m:.*//') *100)/60 ))
+		case $tM in ?) tM=0$tM ;; esac
 		uptdatUP=:$tH.$tM
-		uptdatIS=:`wget http://192.168.100.1/InitialScan.htm -O - -q |grep -E "mCmInfoDsFreq1|mCmInfoUsId1" |sed 's/.*ue="//;s/".*//;s/000000/:/'|tr -d "\n"`
+		uptdatIS=:$(wget http://192.168.100.1/InitialScan.htm -O - -q | grep -E "mCmInfoDsFreq1|mCmInfoUsId1" | sed 's/.*ue="//;s/".*//;s/000000/:/' | tr -d "\n")
 		templateADD=:up:if:uc
 	fi
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdatBL$uptdatUP$uptdatIS --template rx:sn:tx:ip$templateADD
@@ -176,7 +176,7 @@ collect_net() {
 			return
 			;;
 	esac
-	NAMEPREFIX=if$1_$RRDSTATS_INTERVAL-$(echo $IF|sed 's/\:/_/g')
+	NAMEPREFIX=if$1_$RRDSTATS_INTERVAL-$(echo $IF | sed 's/\:/_/g')
 	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
 		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
 			--step $RRDSTATS_INTERVAL \
@@ -194,7 +194,7 @@ collect_net() {
 
 collect_one() {
 	[ -n "$RRDSTATS_DIGITEMPRS" ] && rs_param=" -s $RRDSTATS_DIGITEMPRS "
-	_CURRENT=`date +"%d.%m.%Y %T"`
+	_CURRENT=$(date +"%d.%m.%Y %T")
 	_SENSOR_CUR=0
 	for _CURRENT_HEX in $_SENSOR_HEX; do
 		collect_one_sub $_SENSOR_CUR $_CURRENT_HEX
@@ -213,7 +213,7 @@ collect_one_sub() {
 			RRA:MIN:0.5:24:732   RRA:AVERAGE:0.5:24:732   RRA:MAX:0.5:24:732   \
 			RRA:MIN:0.5:144:1460 RRA:AVERAGE:0.5:144:1460 RRA:MAX:0.5:144:1460
 	fi
-	onedata=`$_NICE digitemp $rs_param -t$1 -q -o%$_SENSOR_UOM -c$_SENSOR_CNF`
+	onedata=$($_NICE digitemp $rs_param -t$1 -q -o%$_SENSOR_UOM -c$_SENSOR_CNF)
 	oneretv=$?
 	if [ -n "$onedata" -a "$oneretv" -eq 0 ]; then
 		echo "$_CURRENT;$onedata;" >> $RRDSTATS_RRDDATA/one_00-$2_$_SENSOR_UOM.cvs
@@ -226,22 +226,22 @@ collect_one_sub() {
 one_alert() {
 	[ $# -lt 2 ] && return
 	_ALERT_NUM=0
-	_SENSOR_ALI=`grep "^\$2 " /tmp/flash/rrdstats/digitemp.alias |tr -s " "| cut -d" " -f3`
-	_ALERT_COUNT=`grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert |wc -l`
+	_SENSOR_ALI=$(grep "^\$2 " /tmp/flash/rrdstats/digitemp.alias | tr -s " " | cut -d" " -f3)
+	_ALERT_COUNT=$(grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert | wc -l)
 	while [ $_ALERT_NUM -lt $_ALERT_COUNT ]; do
-		_ALERT_NUM=$(( $_ALERT_NUM+1 ))
-		_ALERT=`grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert | head -n $_ALERT_NUM |tail -n1 |tr -s " "`
-		_ALERT_SEC=`echo $_ALERT| cut -d " " -f4`
+		let _ALERT_NUM++
+		_ALERT=$(grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert | head -n $_ALERT_NUM | tail -n1 | tr -s " ")
+		_ALERT_SEC=$(echo $_ALERT | cut -d " " -f4)
 
 		_ALERT_FILE=/tmp/rrdstats/digitemp_alert.$_ALERT_NUM
 		if [ -f $_ALERT_FILE ]; then
-			[ $(( `cat $_ALERT_FILE`+$_ALERT_SEC )) -gt `date +%s` ] && continue
+			[ $(( $(cat $_ALERT_FILE)+$_ALERT_SEC )) -gt $(date +%s) ] && continue
 		fi
 
 		_ALERT_2DO=no
-		_ALERT_RND=`printf %.1f $1|sed 's/\.//'`
-		_ALERT_VAL=`echo $_ALERT| cut -d " " -f2`
-		case "`echo $_ALERT| cut -d " " -f3`" in
+		_ALERT_RND=$(printf %.1f $1 | sed 's/\.//')
+		_ALERT_VAL=$(echo $_ALERT | cut -d " " -f2)
+		case "$(echo $_ALERT | cut -d " " -f3)" in
 			MAX|Max|max)
 				[ "$_ALERT_RND" -gt ${_ALERT_VAL}0 ] && _ALERT_2DO=yes
 			;;
@@ -251,8 +251,8 @@ one_alert() {
 		esac
 
 		[ "$_ALERT_2DO" != yes ] && continue
-		echo `date +%s` > $_ALERT_FILE
-		echo "`echo $_ALERT| cut -d " " -f5-`" > $_ALERT_FILE.run
+		echo $(date +%s) > $_ALERT_FILE
+		echo "$(echo $_ALERT | cut -d " " -f5-)" > $_ALERT_FILE.run
 		chmod +x $_ALERT_FILE.run
 		$_ALERT_FILE.run $1 &
 	done
@@ -261,7 +261,7 @@ one_alert() {
 
 [ "$RRDSTATS_DIGITEMP_C" = yes ] && _SENSOR_ERR="85.000000" || _SENSOR_ERR="185.000000"
 while true; do
-	[ $# -eq 0 ] || _NEXTRUN=$(( `date +%s`+$1 ))
+	[ $# -eq 0 ] || _NEXTRUN=$(( $(date +%s)+$1 ))
 	collect_cpu
 	collect_mem
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
@@ -276,7 +276,7 @@ while true; do
 	[ ! -z "$RRDSTATS_INTERFACE4" ] && collect_net 4
 	[ "$RRDSTATS_DIGITEMP1W" = yes ] && collect_one
 	[ $# -eq 0 ] && exit
-	_SLEEPER=$(( $_NEXTRUN-`date +%s` ))
+	_SLEEPER=$(( $_NEXTRUN-$(date +%s) ))
 	[ $_SLEEPER -gt 0 ] && sleep $_SLEEPER 
 done
 

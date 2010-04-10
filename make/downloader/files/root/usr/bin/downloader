@@ -1,8 +1,8 @@
 #!/bin/sh
 
-LOADFILE="$1"
-FILEPERM="$2"
-LOCALDR="$3"
+LOADFILE=$1
+FILEPERM=$2
+LOCALDR=$3
 
 CONFFILE="downloader.cfg"
 CONFPATH="/mod/etc/conf/"
@@ -14,9 +14,9 @@ fi
 . $CONFPATH$CONFFILE
 
 ISFTP=$(echo $DOWNLOADER_SRVPRFX | grep -c ftp://)
-if [ $ISFTP -eq 1 ] ; then 
-   if [ "$DOWNLOADER_SRVUSR" ] ; then
-      if [ "$DOWNLOADER_SRVPWD" ] ; then
+if [ $ISFTP -eq 1 ]; then 
+   if [ "$DOWNLOADER_SRVUSR" ]; then
+      if [ "$DOWNLOADER_SRVPWD" ]; then
          SERVERSTR=ftp://$DOWNLOADER_SRVUSR:$DOWNLOADER_SRVPWD@$DOWNLOADER_SRVURL$DOWNLOADER_SRVDIR/
       else
          SERVERSTR=ftp://$DOWNLOADER_SRVUSR@$DOWNLOADER_SRVURL$DOWNLOADER_SRVDIR/
@@ -26,7 +26,7 @@ if [ $ISFTP -eq 1 ] ; then
    fi
 else
    ISHTTP=$(echo $DOWNLOADER_SRVPRFX | grep -c http://)
-   if [ $ISHTTP -eq 1 ] ; then 
+   if [ $ISHTTP -eq 1 ]; then 
       SERVERSTR=http://$DOWNLOADER_SRVURL$DOWNLOADER_SRVDIR/
    else
 	  echo "$DOWNLOADER_SRVPRFX is wrong server prefix in $CONFPATH$CONFFILE"
@@ -37,10 +37,10 @@ echo "Downloading of $LOADFILE from $SERVERSTR:"
 
 LOADERROR=1 # define false
 II=1
-while test $II -le $DOWNLOADER_NREP
+while [ $II -le $DOWNLOADER_NREP ]
 do
    echo -n "1. Ping test $II of $DOWNLOADER_NREP for $DOWNLOADER_SRVURL... "
-   if (ping -c 1 $DOWNLOADER_SRVURL > /dev/null 2>&1) ; then
+   if (ping -c 1 $DOWNLOADER_SRVURL > /dev/null 2>&1); then
 	echo "done"
 	echo -n "1.1. $LOCALDR is being created... "
 	mkdir -p $LOCALDR
@@ -51,7 +51,7 @@ do
    else
 	echo "failed"
    fi
-   II=`expr $II + 1`
+   let II++
    echo -n "1a. Waiting $DOWNLOADER_TWAIT secs... "
    sleep $DOWNLOADER_TWAIT
    echo "done"	
@@ -64,7 +64,7 @@ if [ $LOADERROR -eq 1 ]; then
    exit $LOADERROR
 fi
 echo "done"
-if test -e $LOCALDR/$LOADFILE ; then
+if [ -e $LOCALDR/$LOADFILE ]; then
    echo -n "2a. $LOCALDR/$LOADFILE exists already. deleting $LOADFILE... "
    chmod "777" $LOCALDR/$LOADFILE
    rm -f $LOCALDR/$LOADFILE

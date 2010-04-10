@@ -19,7 +19,7 @@ if [ -r /tmp/flash/mod/hosts ]; then
 		while read -r ip mac interface host desc; do
 			if [ dhcp-host = "$mac" ]; then
 				if [ -n "$host" -a -r /var/tmp/multid.leases ]; then
-					mac=`sed "/${host}/!d;s/^lease //;s/ .*//" /var/tmp/multid.leases`
+					mac=$(sed "/${host}/!d;s/^lease //;s/ .*//" /var/tmp/multid.leases)
 				else
 					continue
 				fi
@@ -57,7 +57,7 @@ cat << EOF
 EOF
 echo '<option title="tcp" value="tcp">'$interface'</option>'
 
-for INTERFACE in $(ifconfig |grep ^[a-z]|cut -f1 -d ' '); do
+for INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
 	echo '<option title="'$INTERFACE'" value="'$INTERFACE'">'$INTERFACE'</option>'
 done
 

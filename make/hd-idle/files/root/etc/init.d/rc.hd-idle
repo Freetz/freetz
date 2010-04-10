@@ -8,7 +8,7 @@ checksysfs() {
 
 ## hd-idle needs sysfs to do what it should
 
-	SYSFS="$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')"
+	SYSFS=$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')
 	if [ -z "$SYSFS" ]; then
 		echo -n "Trying to mount sysfs..."
 		mkdir -p /var/sys
@@ -60,7 +60,7 @@ stop() {
 }
 
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'hd-idle' 'HD-Idle'
 		if [ $HD_IDLE_ENABLED != yes ]; then

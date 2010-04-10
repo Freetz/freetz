@@ -163,7 +163,7 @@ else
 	}
 	
 	del_network_route() {
-		case "$OS" in
+		case $OS in
 		Linux|NetBSD) # and probably others...
 			# routes are deleted automatically on device shutdown
 			return
@@ -186,7 +186,7 @@ write_resolvconf() {
 	INTERNAL_IP4_DNS_TEMP="$INTERNAL_IP4_DNS"
 	exec 6< /etc/resolv.conf
 	while read LINE <&6 ; do
-		case "$LINE" in
+		case $LINE in
 			nameserver*)
 				if [ -n "$INTERNAL_IP4_DNS_TEMP" ]; then
 					read ONE_NAMESERVER INTERNAL_IP4_DNS_TEMP <<-EOF
@@ -315,7 +315,7 @@ if [ -z "$reason" ]; then
 	exit 1
 fi
 
-case "$reason" in
+case $reason in
 	pre-init)
 		do_pre_init
 		;;

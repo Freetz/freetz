@@ -5,7 +5,7 @@ DAEMON=spindown
 . /etc/init.d/modlibrc
 
 checksysfs() {
-	SYSFS="$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')"
+	SYSFS=$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')
 	if [ -z "$SYSFS" ]; then
 		echo -n "Trying to mount sysfs..."
 		mkdir -p /var/sys
@@ -57,7 +57,7 @@ stop() {
 }
 
 
-case "$1" in
+case $1 in
 	""|load)
 		modreg cgi 'spindown' 'Disk Spindown'
 		if [ "$SPINDOWN_ENABLED" != "yes" ]; then

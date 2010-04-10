@@ -25,7 +25,7 @@ if [ "$INADYN_MT_ACTIVE3" = "yes" ]; then active_chk3=' checked'; fi
 if [ "$INADYN_MT_ACTIVE4" = "yes" ]; then active_chk4=' checked'; fi
 
 
-case "$INADYN_MT_SERVICE0" in
+case $INADYN_MT_SERVICE0 in
 	dyndns.org) dyndns_sel0=' selected' ;;
 	dyndns.org-statdns) dstatdns_sel0=' selected' ;;
 	dyndns.org-custom) dcustom_sel0=' selected' ;;
@@ -35,7 +35,7 @@ case "$INADYN_MT_SERVICE0" in
 	benutzerdefiniert) userdef_sel0=' selected' ;;
 esac
 
-case "$INADYN_MT_SERVICE1" in
+case $INADYN_MT_SERVICE1 in
 	dyndns.org) dyndns_sel1=' selected' ;;
 	dyndns.org-statdns) dstatdns_sel1=' selected' ;;
 	dyndns.org-custom) dcustom_sel1=' selected' ;;
@@ -45,7 +45,7 @@ case "$INADYN_MT_SERVICE1" in
 	benutzerdefiniert) userdef_sel1=' selected' ;;
 esac
 
-case "$INADYN_MT_SERVICE2" in
+case $INADYN_MT_SERVICE2 in
 	dyndns.org) dyndns_sel2=' selected' ;;
 	dyndns.org-statdns) dstatdns_sel2=' selected' ;;
 	dyndns.org-custom) dcustom_sel2=' selected' ;;
@@ -55,7 +55,7 @@ case "$INADYN_MT_SERVICE2" in
 	benutzerdefiniert) userdef_sel2=' selected' ;;
 esac
 
-case "$INADYN_MT_SERVICE3" in
+case $INADYN_MT_SERVICE3 in
 	dyndns.org) dyndns_sel3=' selected' ;;
 	dyndns.org-statdns) dstatdns_sel3=' selected' ;;
 	dyndns.org-custom) dcustom_sel3=' selected' ;;
@@ -65,7 +65,7 @@ case "$INADYN_MT_SERVICE3" in
 	benutzerdefiniert) userdef_sel3=' selected' ;;
 esac
 
-case "$INADYN_MT_SERVICE4" in
+case $INADYN_MT_SERVICE4 in
 	dyndns.org) dyndns_sel4=' selected' ;;
 	dyndns.org-statdns) dstatdns_sel4=' selected' ;;
 	dyndns.org-custom) dcustom_sel4=' selected' ;;
@@ -75,7 +75,7 @@ case "$INADYN_MT_SERVICE4" in
 	benutzerdefiniert) userdef_sel4=' selected' ;;
 esac
 
-case "$INADYN_MT_VERBOSE" in 
+case $INADYN_MT_VERBOSE in 
 		0) verbose_sel0=' selected' ;; 
 		1) verbose_sel1=' selected' ;; 
 		2) verbose_sel2=' selected' ;; 

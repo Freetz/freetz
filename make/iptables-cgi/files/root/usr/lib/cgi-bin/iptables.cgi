@@ -6,8 +6,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 VERSION="1.0.5"
 
 # HTML QUERY STRING for remove option
-IPTABLES_DELETE_CHAIN="$(echo "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*chain=//g' | sed -e 's/&.*//g')"
-IPTABLES_DELETE_RULE="$(echo "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*remove=//g')"
+IPTABLES_DELETE_CHAIN=$(echo "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*chain=//g' | sed -e 's/&.*//g')
+IPTABLES_DELETE_RULE=$(echo "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*remove=//g')
 
 # Deleting Rule
 if [ $IPTABLES_DELETE_CHAIN ] && [ $IPTABLES_DELETE_RULE ]; then
@@ -41,8 +41,8 @@ cat << EOF
 <tr><td>Chain</td><td colspan="2"><select name="chain">
 EOF
 
-CHAINTABLE="$(iptables --list |grep "Chain"|sed -e "s/Chain //g"|sed -e "s/ .*//g")"
-CHAINTABLE=$CHAINTABLE" $(iptables -t nat --list |grep "Chain"|sed -e "s/Chain //g"|sed -e "s/ .*//g"|sed -e "s/OUTPUT//g")"
+CHAINTABLE=$(iptables --list | grep "Chain" | sed -e "s/Chain //g" | sed -e "s/ .*//g")
+CHAINTABLE=$CHAINTABLE" $(iptables -t nat --list | grep "Chain" | sed -e "s/Chain //g" | sed -e "s/ .*//g" | sed -e "s/OUTPUT//g")"
 echo "###"$CHAINTABLE"###"
 for CHAIN in $CHAINTABLE; do
 	echo '<option title="'$CHAIN'" value="'$CHAIN'">'$CHAIN'</option>' 
@@ -58,7 +58,7 @@ cat << EOF
 EOF
 
 while read DPORT; do
-	DPORT="$(echo $DPORT|sed -e "s/:.*//g")"
+	DPORT=$(echo $DPORT | sed -e "s/:.*//g")
 	echo '<option title="dport" value="'$DPORT'">'$DPORT'</option>'
 done < /tmp/flash/iptables_services
 
@@ -74,7 +74,7 @@ cat << EOF
 <option title="ANY" value="ANY">ANY</option>
 EOF
 
-for INPUT_INTERFACE in $(ifconfig |grep ^[a-z]|cut -f1 -d ' '); do
+for INPUT_INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
 	echo '<option title="'$INPUT_INTERFACE'" value="'$INPUT_INTERFACE'">'$INPUT_INTERFACE'</option>'
 done
 
@@ -84,7 +84,7 @@ cat << EOF
 
 EOF
 
-for OUTPUT_INTERFACE in $(ifconfig |grep ^[a-z]|cut -f1 -d ' '); do
+for OUTPUT_INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
 	echo '<option title="'$OUTPUT_INTERFACE'" value="'$OUTPUT_INTERFACE'">'$OUTPUT_INTERFACE'</option>'
 done
 
@@ -127,9 +127,9 @@ else
 
 	while read IPTABLES_LINE
 	do
-		if [[ $(echo ${IPTABLES_LINE} |grep -c "Chain") = 1 ]]; then
+		if [[ $(echo ${IPTABLES_LINE} | grep -c "Chain") = 1 ]]; then
 			# not first dataset, so close table
-			CHAIN="$(echo ${IPTABLES_LINE}|grep "Chain"|sed -e "s/Chain //g"|sed -e "s/ .*//g")"
+			CHAIN=$(echo ${IPTABLES_LINE} | grep "Chain" | sed -e "s/Chain //g" | sed -e "s/ .*//g")
 			if (( i > 0 )); then
 				echo "</table>"
 			fi
@@ -161,25 +161,25 @@ else
 				if [ ! $(echo ${IPTABLES_LINE} | awk '{print $12}') ]; then
 					echo "<td align='center'>ANY</td>"
 				else
-					PORT="$(echo ${IPTABLES_LINE} | awk '{print $12}' | sed -e "s/.*://g")"
-					SERVICE="$(cat /tmp/flash/iptables_services | grep :$PORT$ | sed -e "s/:.*//g")"
+					PORT=$(echo ${IPTABLES_LINE} | awk '{print $12}' | sed -e "s/.*://g")
+					SERVICE=$(cat /tmp/flash/iptables_services | grep :$PORT$ | sed -e "s/:.*//g")
 					echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $12}' | sed -e "s/:.*//g"):$SERVICE</td>"
 				fi
 
 				if [ ! $(echo ${IPTABLES_LINE} | awk '{print $13}') ]; then
 					echo "<td align='center'>ANY</td>"
 				else
-					echo ${IPTABLES_LINE} | awk '{print $13}'|grep '^to:' > /dev/null
+					echo ${IPTABLES_LINE} | awk '{print $13}' | grep '^to:' > /dev/null
 					if [ $? -eq 1 ]; then
-						PORT="$(echo ${IPTABLES_LINE} | awk '{print $13}' | sed -e "s/.*://g")"
-						SERVICE="$(cat /tmp/flash/iptables_services | grep :$PORT$ | sed -e "s/:.*//g")"
+						PORT=$(echo ${IPTABLES_LINE} | awk '{print $13}' | sed -e "s/.*://g")
+						SERVICE=$(cat /tmp/flash/iptables_services | grep :$PORT$ | sed -e "s/:.*//g")
 						echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $13}' | sed -e "s/:.*//g"):$SERVICE</td>"
 					else
 						echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $13}')</td>"
 					fi
 				fi
 
-				IMAGE="$(echo ${IPTABLES_LINE} | awk '{print $4}')"
+				IMAGE=$(echo ${IPTABLES_LINE} | awk '{print $4}')
 				echo "<td align='center'><img src='../images/"$IMAGE".gif' title='"$IMAGE"'></td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $7}')</td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $8}')</td>"

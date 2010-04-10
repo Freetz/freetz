@@ -91,7 +91,7 @@ stop() {
 	rm -f /mod/etc/$DAEMON.conf
 
 	if [ -L "/var/flash/multid.leases" ]; then
-		major="$(grep tffs /proc/devices)"
+		major=$(grep tffs /proc/devices)
 		rm -f /var/flash/multid.leases
 		mknod /var/flash/multid.leases c ${major%%tffs} $((0x70))
 	fi
@@ -104,7 +104,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		mkdir -p "/tmp/flash/${DAEMON}"
 		[ -r "/tmp/flash/${DAEMON}.extra" ] && mv "/tmp/flash/${DAEMON}.extra" "/tmp/flash/${DAEMON}/${DAEMON}.extra"
@@ -114,7 +114,7 @@ case "$1" in
 
 		if [ "$DNSMASQ_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		if modlib_check_running; then

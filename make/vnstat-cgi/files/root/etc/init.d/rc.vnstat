@@ -23,10 +23,10 @@ start() {
 	fi
 
 	if [ -z "$VNSTAT_INTERFACES" ]; then
-		VNSTAT_INTERFACES="`ifconfig |grep "^\w" |sed 's/ .*//g'`"
+		VNSTAT_INTERFACES=$(ifconfig | grep "^\w" | sed 's/ .*//g')
 	else
 		#delete unused databases
-		for dbfile in `ls -A /var/lib/vnstat/ 2>/dev/null`; do
+		for dbfile in $(ls -A /var/lib/vnstat/ 2>/dev/null); do
 			useif=no
 			for ifname in $VNSTAT_INTERFACES; do
 				[ "$ifname" = "$dbfile" -o ".$ifname" = "$dbfile" ] && useif=yes
@@ -50,10 +50,10 @@ start() {
 	done
 	
 	#webserver
-	kill -9 "`cat $HTTPD_PID_VNS 2>/dev/null`" 2>/dev/null
+	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
 	if [ "$VNSTAT_WEBENABLED" = "yes" ]; then
 		if [ "$VNSTAT_WEB_AUTH" = yes ]; then
-			echo "/:$VNSTAT_WEB_USER:`httpd -m $VNSTAT_WEB_PASS`" >/mod/etc/httpd-vns.conf
+			echo "/:$VNSTAT_WEB_USER:$(httpd -m $VNSTAT_WEB_PASS)" >/mod/etc/httpd-vns.conf
 			VNS_CONF="-c /mod/etc/httpd-vns.conf"
 		fi
 		httpd -P $HTTPD_PID_VNS -p $VNSTAT_WEB_PORT $VNS_CONF -h /mod/pkg/vnstat/usr/mww-vns
@@ -72,7 +72,7 @@ start() {
 
 stop() {
 	echo -n "Stopping vnstat..."
-	kill -9 "`cat $HTTPD_PID_VNS 2>/dev/null`" 2>/dev/null
+	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
 	if [ -z "$(pidof vnstatd)" ]; then
 		echo 'not running.'
 		return 1
@@ -87,7 +87,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	config)
 		config
 		;;

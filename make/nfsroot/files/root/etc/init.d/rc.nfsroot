@@ -62,7 +62,7 @@ start()
 	# Prepare filesystem stuff neded by multid
 	mount /var
 	tar xf /var.tar -C /
-	major=`grep tffs /proc/devices`
+	major=$(grep tffs /proc/devices)
 	tffs_major=${major%%tffs}
 	mkdir -p /var/flash
 	mknod /var/flash/multid.leases	 c $tffs_major $((0x70))
@@ -130,7 +130,7 @@ if [ "$PPID" == "0" ]; then
 	exec init >/dev/console 2>&1 <&1
 fi
 
-case "$1" in
+case $1 in
 	""|load|start|stop)
 		;;
 	status)

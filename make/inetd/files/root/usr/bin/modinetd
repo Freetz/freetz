@@ -53,7 +53,7 @@ TEMP=$(getopt -o hn --long help,nosave -n "$(basename $0)" -- "$@")
 [ $? == 0 ] || usage 1
 eval set -- "$TEMP"
 
-while true ; do
+while true; do
 	case $1 in
 		-h|--help) usage 0; shift ;;
 		-n|--nosave) save=false; shift ;;

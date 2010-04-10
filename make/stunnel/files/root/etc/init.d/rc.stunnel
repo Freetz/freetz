@@ -60,7 +60,7 @@ stop() {
 	fi
 }
 
-case "$1" in
+case $1 in
 	""|load)
 		pre_config
 
@@ -73,7 +73,7 @@ case "$1" in
 
 		if [ "$STUNNEL_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
-			exit 1;
+			exit 1
 		fi
 
 		start
