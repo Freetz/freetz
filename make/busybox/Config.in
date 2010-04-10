@@ -29,6 +29,27 @@ config FREETZ_BUSYBOX_BRCTL_FANCY
 		setpathcost, setportprio, setbridgeprio, stp
 		This adds about 600 bytes.
 
+config FREETZ_BUSYBOX_BZIP2
+	bool "bzip2"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'bzip2' tool in busybox
+
+config FREETZ_BUSYBOX_CHGRP
+	bool "chgrp"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'chgrp' tool in busybox
+
+config FREETZ_BUSYBOX_FEATURE_DD_IBS_OBS
+	bool "dd ibs, obs & conv options"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Enables ibs, obs and conv options in busybox dd
+
 config FREETZ_BUSYBOX_DIFF
 	bool "diff"
 	depends on FREETZ_REPLACE_BUSYBOX
@@ -41,6 +62,13 @@ config FREETZ_BUSYBOX_DIFF
 
 		This feature adds about 14.2 KB to BusyBox.
 		All sub-features in BusyBox are selected.
+
+config FREETZ_BUSYBOX_DOS2UNIX
+	bool "dos2unix"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'dos2unix' tool in busybox
 
 config FREETZ_BUSYBOX_ETHER_WAKE
 	bool "ether-wake"
@@ -258,6 +286,20 @@ config FREETZ_BUSYBOX_SEQ
 	help
 		Print a sequence of numbers.
 
+config FREETZ_BUSYBOX_SHA1SUM
+	bool "sha1sum"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Includes the 'sha1sum' tool in busybox
+
+config FREETZ_BUSYBOX_SPLIT
+	bool "split"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Includes the 'split' tool in busybox
+
 config FREETZ_BUSYBOX_START_STOP_DAEMON
 	bool "start-stop-daemon"
 	depends on FREETZ_REPLACE_BUSYBOX
@@ -306,6 +348,20 @@ config FREETZ_BUSYBOX_UDHCPD_LEASES_FILE
 	default "/var/tmp/udhcpd.leases"
 	help
 		Set default path to udhcpd leases file
+
+config FREETZ_BUSYBOX_UNIX2DOS
+	bool "unix2dos"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'unix2dos' tool in busybox
+
+config FREETZ_BUSYBOX_UNZIP
+	bool "unzip"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'unzip' tool in busybox
 
 config FREETZ_BUSYBOX_VOLUMEID
 	bool "volumeid"
@@ -359,6 +415,13 @@ config FREETZ_BUSYBOX_WGET
 
 		This feature is required by any Freetz package.
 		But it is deselected when the wget package is selected.
+
+config FREETZ_BUSYBOX_WHOAMI
+	bool "whoami"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'whoami' tool in busybox
 
 menu "IPv6 Options"
 	requires FREETZ_TARGET_IPV6_SUPPORT
