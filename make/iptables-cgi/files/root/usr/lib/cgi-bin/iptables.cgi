@@ -6,8 +6,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 VERSION="1.0.5"
 
 # HTML QUERY STRING for remove option
-IPTABLES_DELETE_CHAIN=$(echo "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*chain=//g' | sed -e 's/&.*//g')
-IPTABLES_DELETE_RULE=$(echo "$QUERY_STRING" | sed -e 's/^.*iptables//g' | sed -e 's/^.*remove=//g')
+IPTABLES_DELETE_CHAIN=$(cgi_param chain)
+IPTABLES_DELETE_RULE=$(cgi_param remove)
 
 # Deleting Rule
 if [ $IPTABLES_DELETE_CHAIN ] && [ $IPTABLES_DELETE_RULE ]; then

@@ -7,7 +7,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 cgi_begin 'hp-utils'
 
-action=${QUERY_STRING#action=}
+action=$(cgi_param action)
 sel=' style="background-color: #bae3ff;"'
 maint_sel=''
 maint_clean_sel=''

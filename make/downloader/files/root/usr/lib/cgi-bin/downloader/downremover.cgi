@@ -8,10 +8,7 @@ TITLE='$(lang de:"Downloader - Aufräumen" en:"Downloader - Removing")'
 NM_REMOVE='$(lang de:"Aufräumen" en:"Removing")'
 
 cmd_button() {
-local name=$1 act=$2 cmd=$3 label=$4 method=get
-if [ -z $name ]; then
-name="cmd"
-fi
+local name=${1:-cmd} act=$2 cmd=$3 label=$4 method=get
 cat << EOF
 <div class="btn">
 <form class="btn" action="$act" method="$method">
@@ -30,8 +27,8 @@ EOF
 
 cgi_begin "$TITLE" extras
 sec_begin "$NM_REMOVE"
-if [ "$QUERY_STRING" ]; then
-	eval "$QUERY_STRING"
+if [ -n "$QUERY_STRING" ]; then
+	cmd=$(cgi_param cmd)
 	case $cmd in
 		remove)
 			echo -n "<pre>"

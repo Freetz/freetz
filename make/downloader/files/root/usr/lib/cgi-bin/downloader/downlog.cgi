@@ -10,8 +10,8 @@ DOWNLOGFILE='/var/log/downloader.log'
 cgi_begin "$TITLE" extras
 sec_begin "$DOWNLOGFILE"
 
-if [ "$QUERY_STRING" ]; then
-	eval "$QUERY_STRING"
+if [ -n "$QUERY_STRING" ]; then
+	cmd=$(cgi_param cmd)
 	case $cmd in
 		remove)
 			echo "<pre>"

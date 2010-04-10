@@ -5,16 +5,9 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 check "$XRELAYD_ENABLED" yes:auto_c "*":man_c
 
-case $XRELAYD_VERBOSE in 
-		0) verbose_sel0=' selected' ;; 
-		1) verbose_sel1=' selected' ;; 
-		2) verbose_sel2=' selected' ;; 
-		3) verbose_sel3=' selected' ;; 
-		4) verbose_sel4=' selected' ;; 
-		5) verbose_sel5=' selected' ;; 
-		6) verbose_sel6=' selected' ;; 
-		7) verbose_sel7=' selected' ;; 
-esac 
+for i in 0 1 2 3 4 5 6 7; do
+	select "$XRELAYD_VERBOSE" ${i}:verbose${i}_sel
+done
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -32,14 +25,14 @@ cat << EOF
 <h2>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings"):</h2>
 <p>$(lang de:"Log-Level" en:"Verbose level"):
 <select name='verbose'>
-<OPTION value="0"$verbose_sel0>0</OPTION>
-<OPTION value="1"$verbose_sel1>1</OPTION>
-<OPTION value="2"$verbose_sel2>2</OPTION>
-<OPTION value="3"$verbose_sel3>3</OPTION>
-<OPTION value="4"$verbose_sel4>4</OPTION>
-<OPTION value="5"$verbose_sel5>5</OPTION>
-<OPTION value="6"$verbose_sel6>6</OPTION>
-<OPTION value="7"$verbose_sel7>7</OPTION>
+<OPTION value="0"$verbose0_sel>0</OPTION>
+<OPTION value="1"$verbose1_sel>1</OPTION>
+<OPTION value="2"$verbose2_sel>2</OPTION>
+<OPTION value="3"$verbose3_sel>3</OPTION>
+<OPTION value="4"$verbose4_sel>4</OPTION>
+<OPTION value="5"$verbose5_sel>5</OPTION>
+<OPTION value="6"$verbose6_sel>6</OPTION>
+<OPTION value="7"$verbose7_sel>7</OPTION>
 </SELECT></p>
 EOF
 sec_end

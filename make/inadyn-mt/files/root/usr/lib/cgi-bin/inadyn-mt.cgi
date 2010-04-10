@@ -5,85 +5,24 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 check "$INADYN_MT_ENABLED" yes:auto "*":man
 
-for i in 0 1 2 3 4
-do
-	set active_chk$i = ''
-	set dyndns_sel$i = ''
-	set dstatdns_sel$i = ''
-	set dcustom_sel$i = ''
-	set afraid_sel$i = ''
-	set zoneedit_sel$i = ''
-	set noip_sel$i = ''
-	set userdef_sel$i = ''
-	set verbose_sel$i = ''
+for i in 0 1 2 3 4; do
+	eval "mt_service=\$INADYN_MT_SERVICE$i"
+	eval "mt_active=\$INADYN_MT_ACTIVE$i"
+
+	check "$mt_active" yes:active$i
+	select "$mt_service" \
+		dyndns.org:dyndns$i \
+		dyndns.org-statdns:dstatdns$i \
+		dyndns.org-custom:dcustom$i \
+		afraid.org:afraid$i \
+		zoneedit.com:zoneedit$i \
+		no-ip.com:noip$i \
+		benutzerdefiniert:userdef$i
 done
 
-if [ "$INADYN_MT_ACTIVE0" = "yes" ]; then active_chk0=' checked'; fi
-if [ "$INADYN_MT_ACTIVE1" = "yes" ]; then active_chk1=' checked'; fi
-if [ "$INADYN_MT_ACTIVE2" = "yes" ]; then active_chk2=' checked'; fi
-if [ "$INADYN_MT_ACTIVE3" = "yes" ]; then active_chk3=' checked'; fi
-if [ "$INADYN_MT_ACTIVE4" = "yes" ]; then active_chk4=' checked'; fi
-
-
-case $INADYN_MT_SERVICE0 in
-	dyndns.org) dyndns_sel0=' selected' ;;
-	dyndns.org-statdns) dstatdns_sel0=' selected' ;;
-	dyndns.org-custom) dcustom_sel0=' selected' ;;
-	afraid.org) afraid_sel0=' selected' ;;
-	zoneedit.com) zoneedit_sel0=' selected' ;;
-	no-ip.com) noip_sel0=' selected' ;;
-	benutzerdefiniert) userdef_sel0=' selected' ;;
-esac
-
-case $INADYN_MT_SERVICE1 in
-	dyndns.org) dyndns_sel1=' selected' ;;
-	dyndns.org-statdns) dstatdns_sel1=' selected' ;;
-	dyndns.org-custom) dcustom_sel1=' selected' ;;
-	afraid.org) afraid_sel1=' selected' ;;
-	zoneedit.com) zoneedit_sel1=' selected' ;;
-	no-ip.com) noip_sel1=' selected' ;;
-	benutzerdefiniert) userdef_sel1=' selected' ;;
-esac
-
-case $INADYN_MT_SERVICE2 in
-	dyndns.org) dyndns_sel2=' selected' ;;
-	dyndns.org-statdns) dstatdns_sel2=' selected' ;;
-	dyndns.org-custom) dcustom_sel2=' selected' ;;
-	afraid.org) afraid_sel2=' selected' ;;
-	zoneedit.com) zoneedit_sel2=' selected' ;;
-	no-ip.com) noip_sel2=' selected' ;;
-	benutzerdefiniert) userdef_sel2=' selected' ;;
-esac
-
-case $INADYN_MT_SERVICE3 in
-	dyndns.org) dyndns_sel3=' selected' ;;
-	dyndns.org-statdns) dstatdns_sel3=' selected' ;;
-	dyndns.org-custom) dcustom_sel3=' selected' ;;
-	afraid.org) afraid_sel3=' selected' ;;
-	zoneedit.com) zoneedit_sel3=' selected' ;;
-	no-ip.com) noip_sel3=' selected' ;;
-	benutzerdefiniert) userdef_sel3=' selected' ;;
-esac
-
-case $INADYN_MT_SERVICE4 in
-	dyndns.org) dyndns_sel4=' selected' ;;
-	dyndns.org-statdns) dstatdns_sel4=' selected' ;;
-	dyndns.org-custom) dcustom_sel4=' selected' ;;
-	afraid.org) afraid_sel4=' selected' ;;
-	zoneedit.com) zoneedit_sel4=' selected' ;;
-	no-ip.com) noip_sel4=' selected' ;;
-	benutzerdefiniert) userdef_sel4=' selected' ;;
-esac
-
-case $INADYN_MT_VERBOSE in 
-		0) verbose_sel0=' selected' ;; 
-		1) verbose_sel1=' selected' ;; 
-		2) verbose_sel2=' selected' ;; 
-		3) verbose_sel3=' selected' ;; 
-		4) verbose_sel4=' selected' ;; 
-		5) verbose_sel5=' selected' ;; 
-esac 
-
+for i in 0 1 2 3 4 5; do
+    	select "$INADYN_MT_VERBOSE" "$i":verbose${i}_sel
+done
 
 sec_begin 'Starttyp'
 
@@ -101,12 +40,12 @@ sec_begin 'Inadyn-Daemon'
 cat << EOF
 <p>Verbose Level : 
 <select name='verbose'>
-<OPTION value="0"$verbose_sel0>0</OPTION>
-<OPTION value="1"$verbose_sel1>1</OPTION>
-<OPTION value="2"$verbose_sel2>2</OPTION>
-<OPTION value="3"$verbose_sel3>3</OPTION>
-<OPTION value="4"$verbose_sel4>4</OPTION>
-<OPTION value="5"$verbose_sel5>5</OPTION>
+<OPTION value="0"$verbose0_sel>0</OPTION>
+<OPTION value="1"$verbose1_sel>1</OPTION>
+<OPTION value="2"$verbose2_sel>2</OPTION>
+<OPTION value="3"$verbose3_sel>3</OPTION>
+<OPTION value="4"$verbose4_sel>4</OPTION>
+<OPTION value="5"$verbose5_sel>5</OPTION>
 </SELECT></p>
 
 <script>
@@ -185,13 +124,13 @@ document.write("<div id='Acount0' style='display:block'>" +
   "<tr>" +
     "<td>DNS Service : </td>" +
     "<td><SELECT NAME='service0' onChange='changeservice(value1)'>" +
-      "<OPTION VALUE1$dyndns_sel0='0'>dyndns.org</OPTION>" +
-      "<OPTION VALUE1$dstatdns_sel0='1'>dyndns.org-statdns</OPTION>" +
-      "<OPTION VALUE1$dcustom_sel0='2'>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE1$afraid_sel0='3'>afraid.org</OPTION>" +
-      "<OPTION VALUE1$zoneedit_sel0='4'>zoneedit.com</OPTION>" +
-      "<OPTION VALUE1$noip_sel0='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef_sel0='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$dyndns0_sel='0'>dyndns.org</OPTION>" +
+      "<OPTION VALUE1$dstatdns0_sel='1'>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE1$dcustom0_sel='2'>dyndns.org-custom</OPTION>" +
+      "<OPTION VALUE1$afraid0_sel='3'>afraid.org</OPTION>" +
+      "<OPTION VALUE1$zoneedit0_sel='4'>zoneedit.com</OPTION>" +
+      "<OPTION VALUE1$noip0_sel='5'>no-ip.com</OPTION>" +
+      "<OPTION VALUE1$userdef0_sel='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r05'>Custom URL : </label></td>" +
@@ -210,7 +149,7 @@ document.write("<div id='Acount0' style='display:block'>" +
     "<td><input id='r04' type='text' name='options0' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS0")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active0' value='no'><input id='a0' type='checkbox' name='active0' value='yes'$active_chk0><label for='a0'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active0' value='no'><input id='a0' type='checkbox' name='active0' value='yes'$active0_chk><label for='a0'> Account aktiv</label></p>" +
 "</div>");
 
 document.write("<div id='Acount1' style='display:none'>" +
@@ -218,13 +157,13 @@ document.write("<div id='Acount1' style='display:none'>" +
   "<tr>" +
     "<td>DNS Service : </td>" +
     "<td><SELECT NAME='service1' onChange='changeservice(value1)'>" +
-      "<OPTION VALUE1$dyndns_sel1='0'>dyndns.org</OPTION>" +
-      "<OPTION VALUE1$dstatdns_sel1='1'>dyndns.org-statdns</OPTION>" +
-      "<OPTION VALUE1$dcustom_sel1='2'>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE1$afraid_sel1='3'>afraid.org</OPTION>" +
-      "<OPTION VALUE1$zoneedit_sel1='4'>zoneedit.com</OPTION>" +
-      "<OPTION VALUE1$noip_sel1='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef_sel1='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$dyndns1_sel='0'>dyndns.org</OPTION>" +
+      "<OPTION VALUE1$dstatdns1_sel='1'>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE1$dcustom1_sel='2'>dyndns.org-custom</OPTION>" +
+      "<OPTION VALUE1$afraid1_sel='3'>afraid.org</OPTION>" +
+      "<OPTION VALUE1$zoneedit1_sel='4'>zoneedit.com</OPTION>" +
+      "<OPTION VALUE1$noip1_sel='5'>no-ip.com</OPTION>" +
+      "<OPTION VALUE1$userdef1_sel='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r15'>Custom URL : </label></td>" +
@@ -243,7 +182,7 @@ document.write("<div id='Acount1' style='display:none'>" +
     "<td><input id='r14' type='text' name='options1' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS1")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active1' value='no'><input id='a1' type='checkbox' name='active1' value='yes'$active_chk1><label for='a1'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active1' value='no'><input id='a1' type='checkbox' name='active1' value='yes'$active1_chk><label for='a1'> Account aktiv</label></p>" +
 "</div>");
 
 document.write("<div id='Acount2' style='display:none'>" +
@@ -251,13 +190,13 @@ document.write("<div id='Acount2' style='display:none'>" +
   "<tr>" +
     "<td>DNS Service : </td>" +
     "<td><SELECT NAME='service2' onChange='changeservice(value1)'>" +
-      "<OPTION VALUE1$dyndns_sel2='0'>dyndns.org</OPTION>" +
-      "<OPTION VALUE1$dstatdns_sel2='1'>dyndns.org-statdns</OPTION>" +
-      "<OPTION VALUE1$dcustom_sel2='2'>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE1$afraid_sel2='3'>afraid.org</OPTION>" +
-      "<OPTION VALUE1$zoneedit_sel2='4'>zoneedit.com</OPTION>" +
-      "<OPTION VALUE1$noip_sel2='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef_sel2='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$dyndns2_sel='0'>dyndns.org</OPTION>" +
+      "<OPTION VALUE1$dstatdns2_sel='1'>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE1$dcustom2_sel='2'>dyndns.org-custom</OPTION>" +
+      "<OPTION VALUE1$afraid2_sel='3'>afraid.org</OPTION>" +
+      "<OPTION VALUE1$zoneedit2_sel='4'>zoneedit.com</OPTION>" +
+      "<OPTION VALUE1$noip2_sel='5'>no-ip.com</OPTION>" +
+      "<OPTION VALUE1$userdef2_sel='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r25'>Custom URL : </label></td>" +
@@ -276,7 +215,7 @@ document.write("<div id='Acount2' style='display:none'>" +
     "<td><input id='r24' type='text' name='options2' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS2")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active2' value='no'><input id='a2' type='checkbox' name='active2' value='yes'$active_chk2><label for='a2'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active2' value='no'><input id='a2' type='checkbox' name='active2' value='yes'$active2_chk><label for='a2'> Account aktiv</label></p>" +
 "</div>");
 
 
@@ -285,13 +224,13 @@ document.write("<div id='Acount3' style='display:none'>" +
   "<tr>" +
     "<td>DNS Service : </td>" +
     "<td><SELECT NAME='service3' onChange='changeservice(value1)'>" +
-      "<OPTION VALUE1$dyndns_sel3='0'>dyndns.org</OPTION>" +
-      "<OPTION VALUE1$dstatdns_sel3='1'>dyndns.org-statdns</OPTION>" +
-      "<OPTION VALUE1$dcustom_sel3='2'>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE1$afraid_sel3='3'>afraid.org</OPTION>" +
-      "<OPTION VALUE1$zoneedit_sel3='4'>zoneedit.com</OPTION>" +
-      "<OPTION VALUE1$noip_sel3='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef_sel3='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$dyndns3_sel='0'>dyndns.org</OPTION>" +
+      "<OPTION VALUE1$dstatdns3_sel='1'>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE1$dcustom3_sel='2'>dyndns.org-custom</OPTION>" +
+      "<OPTION VALUE1$afraid3_sel='3'>afraid.org</OPTION>" +
+      "<OPTION VALUE1$zoneedit3_sel='4'>zoneedit.com</OPTION>" +
+      "<OPTION VALUE1$noip3_sel='5'>no-ip.com</OPTION>" +
+      "<OPTION VALUE1$userdef3_sel='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r35'>Custom URL : </label></td>" +
@@ -310,7 +249,7 @@ document.write("<div id='Acount3' style='display:none'>" +
     "<td><input id='r34' type='text' name='options3' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS3")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active3' value='no'><input id='a3' type='checkbox' name='active3' value='yes'$active_chk3><label for='a3'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active3' value='no'><input id='a3' type='checkbox' name='active3' value='yes'$active3_chk><label for='a3'> Account aktiv</label></p>" +
 "</div>");
 
 
@@ -319,13 +258,13 @@ document.write("<div id='Acount4' style='display:none'>" +
   "<tr>" +
     "<td>DNS Service : </td>" +
     "<td><SELECT NAME='service4' onChange='changeservice(value1)'>" +
-      "<OPTION VALUE1$dyndns_sel4='0'>dyndns.org</OPTION>" +
-      "<OPTION VALUE1$dstatdns_sel4='1'>dyndns.org-statdns</OPTION>" +
-      "<OPTION VALUE1$dcustom_sel4='2'>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE1$afraid_sel4='3'>afraid.org</OPTION>" +
-      "<OPTION VALUE1$zoneedit_sel4='4'>zoneedit.com</OPTION>" +
-      "<OPTION VALUE1$noip_sel4='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef_sel4='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$dyndns4_sel='0'>dyndns.org</OPTION>" +
+      "<OPTION VALUE1$dstatdns4_sel='1'>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE1$dcustom4_sel='2'>dyndns.org-custom</OPTION>" +
+      "<OPTION VALUE1$afraid4_sel='3'>afraid.org</OPTION>" +
+      "<OPTION VALUE1$zoneedit4_sel='4'>zoneedit.com</OPTION>" +
+      "<OPTION VALUE1$noip4_sel='5'>no-ip.com</OPTION>" +
+      "<OPTION VALUE1$userdef4_sel='6'>benutzerdefiniert</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
     "<td><label for='r45'>Custom URL : </label></td>" +
@@ -344,7 +283,7 @@ document.write("<div id='Acount4' style='display:none'>" +
     "<td><input id='r44' type='text' name='options4' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS4")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active4' value='no'><input id='a4' type='checkbox' name='active4' value='yes'$active_chk4><label for='a4'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active4' value='no'><input id='a4' type='checkbox' name='active4' value='yes'$active4_chk><label for='a4'> Account aktiv</label></p>" +
 "</div>");
 
 </script>

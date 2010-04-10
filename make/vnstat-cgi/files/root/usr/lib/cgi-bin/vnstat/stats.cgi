@@ -16,7 +16,9 @@ fi
 
 _NICE=$(which nice)
 NOCACHE="?nocache=$(date -Iseconds | sed 's/T/_/g;s/+.*$//g;s/:/-/g')"
-URL_EXTENDED="$SCRIPT_NAME?pkg=vnstat&cgi=vnstat/$(echo "$QUERY_STRING" | sed -e 's/^.*cgi=vnstat\///' -e 's/&.*$//' -e 's/\.//g')"
+cgi=$(cgi_param cgi | tr -d .)
+cgi=${cgi#vnstat/}
+URL_EXTENDED="$SCRIPT_NAME?pkg=vnstat&cgi=vnstat/$cgi"
 TEMPDIR=/tmp/vnstat
 mkdir -p $TEMPDIR
 
@@ -28,8 +30,7 @@ gen_pic() {
 #main
 sec_begin ""
 echo "<center>"
-netif=$(echo "$QUERY_STRING" | grep "[&?]netif=")
-[ -n "$netif" ] && netif=$(echo $netif | sed 's/^.*[\&\?]netif=//;s/\&.*$//' 2>/dev/null)
+netif=$(cgi_param netif)
 #count ifs
 ifcnt=0
 for ifname in $VNSTAT_INTERFACES; do

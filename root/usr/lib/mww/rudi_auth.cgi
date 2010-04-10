@@ -1,6 +1,6 @@
 <%
 . /usr/lib/libmodcgi.sh
-pid1=$(echo ${QUERY_STRING} | sed -n 's/.*pid=\(.*\)/\1/p' | sed -e 's/&.*//g')
+pid1=$(cgi_param pid)
 pid2=$(cat /var/run/rudi_shell.pid)
 unset error
 if [ "$pid1" != "$pid2" ] || [ ! -f /var/run/rudi_shell.pid ]; then

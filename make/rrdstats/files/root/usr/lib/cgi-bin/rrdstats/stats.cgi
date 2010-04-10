@@ -23,7 +23,8 @@ if [ "$URL_CGINAME" != "pkgstatus" ]; then
 	_cgi_width=$(( _cgi_width+210 ))
 fi
 
-URL_STATUS=$(echo "$QUERY_STRING" | sed -e 's/^.*cgi=rrdstats\///' -e 's/&.*$//' -e 's/\.//g')
+URL_STATUS=$(cgi_param cgi | tr -d .)
+URL_STATUS=${URL_STATUS#rrdstats/}
 URL_EXTENDED="$SCRIPT_NAME?pkg=rrdstats&cgi=rrdstats/$URL_STATUS"
 DATESTRING=$(date +'%d/%m/%y %X')
 let WIDTH="$_cgi_width-230-100"
@@ -521,12 +522,12 @@ gen_main() {
 	sec_end
 }
 
-graph=$(echo "$QUERY_STRING" | sed -e 's/^.*graph=//' -e 's/&.*$//' -e 's/\.//g')
+graph=$(cgi_param graph | tr -d .)
 case $graph in
 	cpu|mem|swap|upt|tt0|tt1|tt2|tt3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
 		heading=$(echo $graph | sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^diskio1$/$RRDSTATS_DISK_NAME1/g;s/^diskio2$/$RRDSTATS_DISK_NAME2/g;s/^diskio3$/$RRDSTATS_DISK_NAME3/g;s/^diskio4$/$RRDSTATS_DISK_NAME4/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
-		GROUP_PERIOD=$(echo "$QUERY_STRING" | grep "&group=" | sed -e 's/^.*&group=//' -e 's/&.*$//' -e 's/\.//g')
+		GROUP_PERIOD=$(cgi_param group | tr -d .)
                 [ -n "$GROUP_PERIOD" ] && heading="$heading [$GROUP_PERIOD]"
 		echo "<center><font size=+1><b>$heading stats</b></font></center>"
 		
