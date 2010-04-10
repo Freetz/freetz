@@ -6,21 +6,22 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 file_reg=/mod/etc/reg/file.reg
 [ -e "$file_reg" ] || touch "$file_reg"
 
+pkg=$(cgi_param pkg | tr -d .)
 id=$(cgi_param id | tr -d .)
 
 OIFS=$IFS
 IFS='|'
-set -- $(grep "^$id|" "$file_reg")
+set -- $(grep "^$pkg|$id|" "$file_reg")
 IFS=$OIFS
+title=$3 sec=$4 def=$5
 
-cgi_begin "$2" "file_$id"
-
+cgi_begin "$title" "file:$pkg/$id"
 
 # Defaults
 TEXT_ROWS=18
 
 # Load config
-[ -r "$4" ] && . "$4"
+[ -r "$def" ] && . "$def"
 
 # Set width
 let _width=_cgi_width-230
@@ -29,7 +30,7 @@ echo "<h1>$CAPTION</h1>"
 [ -n "$DESCRIPTION" ] && echo "<p>$DESCRIPTION</p>"
 
 readonly=false
-if [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$3" ]; then
+if [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$sec" ]; then
 	readonly=true
 	echo '<div style="color: #800000;">$(lang 
 		de:"Konfiguration in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" 
@@ -39,7 +40,7 @@ fi
 
 case $CONFIG_TYPE in
 	text)
-		echo "<form action='/cgi-bin/file_save.cgi?id=$id' method='post'>"
+		echo "<form action='/cgi-bin/file_save.cgi?pkg=$pkg&amp;id=$id' method='post'>"
 		echo -n "<textarea style='width: ${_width}px;' name='content' rows='$TEXT_ROWS' cols='60' wrap='off' $($readonly && echo "readonly")>"
 		[ -r "$CONFIG_FILE" ] && html < "$CONFIG_FILE"
 		echo '</textarea>'

@@ -42,7 +42,7 @@ cat << EOF
 EOF
 	fi
 fi
-back_button "$(href cgi downloader)"
+back_button cgi downloader
 sec_end
 
 cgi_end

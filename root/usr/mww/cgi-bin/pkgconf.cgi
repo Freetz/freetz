@@ -11,7 +11,7 @@ if [ -r "/mod/etc/default.$package/$package.cfg" -o -r "/mod/etc/default.$packag
 		. /mod/etc/conf/$package.cfg
 	fi
 
-	cgi_begin "$package" "pkg_$package"
+	cgi_begin "$package" "pkg:$package"
 	
 
 	if [ -x "/mod/usr/lib/cgi-bin/$package.cgi" ]; then
@@ -24,7 +24,7 @@ if [ -r "/mod/etc/default.$package/$package.cfg" -o -r "/mod/etc/default.$packag
 
 	cgi_end
 else
-	cgi_begin "$(lang de:"Fehler" en:"Error")" "pkg_$package"
+	cgi_begin "$(lang de:"Fehler" en:"Error")" "pkg:$package"
 	echo "<p><b>$(lang de:"Fehler" en:"Error"):</b> $(lang de:"Das Paket '$package' ist nicht konfigurierbar." en:"the package '$package' is not configurable.")</p>"
 	cgi_end
 fi

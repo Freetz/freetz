@@ -56,7 +56,7 @@ else
 		echo '<h1>$(lang de:"Zusatz-Skript" en:"Additional script")</h1>'
 		echo '<div style="color: #800000;">$(lang de:"Dieses Zusatz-Skript in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" en:"This script is not available at the current security level!")</div>'
 		echo '<p>'
-		back_button /cgi-bin/extras.cgi "$(lang de:"Zu den Extras" en:"Goto extras")"
+		back_button --title="$(lang de:"Zu den Extras" en:"Goto extras")" mod extras
 		cgi_end
 	else
 		if [ -x "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi" ]; then

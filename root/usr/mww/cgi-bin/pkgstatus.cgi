@@ -12,7 +12,7 @@ set -- $(grep "^$pkg|.*|$cgi\$" /mod/etc/reg/status.reg)
 IFS=$OIFS
 title=$2
 
-cgi_begin "$title" "status_$pkg/$cgi"
+cgi_begin "$title" "status:$pkg/$cgi"
 
 if [ -x "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi" ]; then
 	. "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi"

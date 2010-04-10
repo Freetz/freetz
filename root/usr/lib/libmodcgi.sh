@@ -57,7 +57,7 @@ select() suffix=_sel checked=" selected" _check "$@"
 
 _cgi_id() {
 	case $1 in
-		*[/]*) echo "$1" | sed "s#/#__#g" ;;
+		*[/]*) echo "$1" | sed "s#/#:#g" ;;
 		*) echo "$1" ;;
 	esac
 }
@@ -74,12 +74,42 @@ _cgi_id() {
 href() {
     	local type=$1
 	case $type in
-	    file)	echo "/cgi-bin/file.cgi?id=${2}__${3}" ;;
+	    file)	echo "/cgi-bin/file.cgi?pkg=${2}&amp;id=${3}" ;;
 	    extra)	echo "/cgi-bin/extras.cgi/${2}/${3}" ;;
 	    status)	echo "/cgi-bin/pkgstatus.cgi?cgi=${2}/${3:-status}" ;;
 	    cgi)	echo "/cgi-bin/pkgconf.cgi?pkg=$2${3:+&amp;$3}" ;;
 	    *)		echo "/error/unknown-type?$type" ;;
 	esac
+}
+
+back_button() {
+    	local title="$(lang de:"Zur&uuml;ck" en:"Back")"
+    	case $1 in
+	    --title=*) title=${1#--title=}; shift ;;
+	esac
+    	local type=$1 where=
+	case $type in
+	    file)	where="/cgi-bin/file.cgi" ;;
+	    extra)	where="/cgi-bin/extras.cgi/${2}/${3}" ;;
+	    status)	where="/cgi-bin/pkgstatus.cgi" ;;
+	    cgi)	where="/cgi-bin/pkgconf.cgi" ;;
+	    url)	where=$2 ;;
+	    mod)	case $2 in
+			    status) where="/cgi-bin/status.cgi" ;;
+			    extras) where="/cgi-bin/extras.cgi" ;;
+			    daemons) where="/cgi-bin/daemons.cgi" ;;
+			esac
+			;;
+	esac
+	echo -n "<form action='$where'>"
+	case $type in
+	    cgi|file)	echo "<input type='hidden' name='pkg' value='$2'>" ;;
+	    status)	echo "<input type='hidden' name='cgi' value='${2}/${3:-status}'>" ;;
+	esac
+	case $type in
+	    file)	echo "<input type='hidden' name='id' value='$3'>" ;;
+	esac
+	echo "<div class='btn'><input type='submit' value='$title'></div></form>"
 }
 
 _cgi_mark_active() {
@@ -111,7 +141,7 @@ _cgi_cached() {
 _cgi_print_menu() {
 	local id=$1 sub
 	case $id in
-		settings|file_*) sub=settings ;;
+		settings|file:*) sub=settings ;;
 		status*) sub=status ;;
 	    	system|rudi_*|firmware_*|backup_*) sub=system ;;
 		*) sub=packages ;;
@@ -131,7 +161,7 @@ if [ "$sub" = status -a -r /mod/etc/reg/status.reg ]; then
     	local pkg title cgi
 	echo "<ul>"
 	while IFS='|' read -r pkg title cgi; do
-		echo "<li><a id='$(_cgi_id "status_$pkg/$cgi")' href='$(href status "$pkg" "$cgi")'>$(html "$title")</a></li>"
+		echo "<li><a id='$(_cgi_id "status:$pkg/$cgi")' href='$(href status "$pkg" "$cgi")'>$(html "$title")</a></li>"
 	done < /mod/etc/reg/status.reg 
 	echo "</ul>"
 fi
@@ -143,14 +173,14 @@ cat << EOF
 EOF
 
 if [ "$sub" = settings -a -r /mod/etc/reg/file.reg ]; then
-    	local id title sec def _
+    	local pkg id title sec def _
 	echo "<ul>"
 	# sort by title
-	while IFS='|' read -r id _; do
-		echo "$_|$id"
+	while IFS='|' read -r pkg id _; do
+		echo "$_|$pkg|$id"
 	done  < /mod/etc/reg/file.reg | sort |
-	while IFS='|' read -r title sec def id; do
-		echo "<li><a id='$(_cgi_id "file_$id")' href='/cgi-bin/file.cgi?id=$id'>$(html "$title")</a></li>"
+	while IFS='|' read -r title sec def pkg id; do
+	    echo "<li><a id='$(_cgi_id "file:${pkg}/${id}")' href='$(href file "$pkg" "$id")'>$(html "$title")</a></li>"
 	done
 	echo "</ul>"
 fi
@@ -164,7 +194,7 @@ if [ "$sub" = packages -a -r /mod/etc/reg/cgi.reg ]; then
     	local pkg title
 	echo "<ul>"
 	while IFS='|' read -r pkg title; do
-		echo "<li><a id='$(_cgi_id "pkg_$pkg")' href='$(href cgi "$pkg")'>$(html "$title")</a></li>"
+		echo "<li><a id='$(_cgi_id "pkg:$pkg")' href='$(href cgi "$pkg")'>$(html "$title")</a></li>"
 	done < /mod/etc/reg/cgi.reg 
 	echo "</ul>"
 fi
@@ -301,9 +331,4 @@ cgi_param() {
 			;;
 	esac
 
-}
-
-back_button() {
-    	local where=$1 title=${2:-$(lang de:"Zur&uuml;ck" en:"Back")}
-	echo "<form action='$where'><div class='btn'><input type='submit' value='$title'></div></form>"
 }

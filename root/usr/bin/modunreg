@@ -26,8 +26,7 @@ case $1 in
 		rm -f /mod/var/cache/extras
 		;;
 	file)
-		delete "^$2|" /mod/etc/reg/file.reg # deprecated
-		delete "^${2}__${3:-[^|]*}|" /mod/etc/reg/file.reg
+		delete "^${2}|${3:-[^|]*}|" /mod/etc/reg/file.reg
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
@@ -41,7 +40,6 @@ case $1 in
 		echo "Usage: $0 cgi <pkg>" 1>&2
 		echo "       $0 extra <pkg> [<cgi-name>]" 1>&2
 		echo "       $0 file <pkg> [<id>]" 1>&2
-		echo "       DEPRECATED: $0 file <id>" 1>&2
 		echo "       $0 status <pkg> [<cgi-name>]" 1>&2
 		echo "       $0 daemon <pkg> [<name>]" 1>&2
 		exit 1

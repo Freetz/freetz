@@ -49,6 +49,6 @@ else
 	fi
 fi
 
-back_button /cgi-bin/status.cgi
+back_button mod status
 	
 cgi_end

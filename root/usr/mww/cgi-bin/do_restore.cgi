@@ -57,7 +57,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
 <% fi %>
 
 <p>
-<% back_button /cgi-bin/status.cgi "$(lang de:"Zurück zur Übersicht" en:"Back to main page")" %>
+<% back_button --title="$(lang de:"Zurück zur Übersicht" en:"Back to main page")" mod status %>
 </p>
 
 <% cgi_end %>

@@ -34,7 +34,7 @@ if [ -n "$QUERY_STRING" ]; then
 			echo -n "<pre>"
 			/etc/init.d/rc.downloader remove
 			echo "</pre>"
-			back_button "$(href cgi downloader)"
+			back_button cgi downloader
 			;;
 		*)
 			cat << EOF
@@ -51,7 +51,7 @@ $(lang de:"Alle vom Downloader heruntergeladenen Dateien vom Zielort löschen.<br
 </p>
 EOF
 	cmd_button "" $SELF "remove" "$NM_REMOVE"
-	back_button "$(href cgi downloader)"
+	back_button cgi downloader
 fi
 sec_end
 
