@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 1.11)
+$(call PKG_INIT_LIB, 1.12)
 $(PKG)_LIB_VERSION:=1.0.1
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=04c394ed8e1e7fc455456e79e908916d
-$(PKG)_SITE:=@SF/$(pkg)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
+$(PKG)_SOURCE_MD5:=9253ef6de1b5e28e9c9a62b882e44cc9
+$(PKG)_SITE:=http://libdnet.googlecode.com/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
