@@ -1,6 +1,6 @@
 --- Configure.orig	2009-11-24 14:43:38.000000000 +0100
 +++ Configure	2009-11-24 14:45:37.000000000 +0100
-@@ -2542,7 +2542,6 @@
+@@ -2647,7 +2647,6 @@
  # Configure for Linux.
  
    linux)
@@ -8,12 +8,12 @@
      LSOF_TSTKMEM=0
      if test "X$LSOF_CC" = "X"	# {
      then
-@@ -2626,9 +2625,12 @@
+@@ -2731,9 +2730,12 @@
  
      # Test for IPv6 support.
  
 -    if test -r ${LSOF_INCLUDE}/netinet/ip6.h	# {
-+    if test "X$LINUX_HASIPV6" = "XY" -o "X$LINUX_HASIPV6" = "xY" # {
++    if test "X$LINUX_HASIPV6" = "XY" -o "X$LINUX_HASIPV6" = "Xy" # {
      then
 -      LSOF_CFGF="$LSOF_CFGF -DHASIPv6"
 +      if test -r ${LSOF_INCLUDE}/netinet/ip6.h	# {
