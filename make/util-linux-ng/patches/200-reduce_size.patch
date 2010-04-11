@@ -1,0 +1,251 @@
+--- shlibs/blkid/src/superblocks/Makefile.am	2010-02-22 09:41:12.000000000 +0100
++++ shlibs/blkid/src/superblocks/Makefile.am	2010-03-21 00:44:06.000000000 +0100
+@@ -8,21 +8,10 @@
+ 			superblocks.c \
+ 			cramfs.c \
+ 			swap.c \
+-			adaptec_raid.c \
+-			ddf_raid.c \
+-			isw_raid.c \
+-			jmicron_raid.c \
+-			lsi_raid.c \
+-			nvidia_raid.c \
+-			promise_raid.c \
+-			silicon_raid.c \
+-			via_raid.c \
+-			linux_raid.c \
+ 			jfs.c \
+ 			xfs.c \
+ 			ext.c \
+ 			gfs.c \
+-			ocfs.c \
+ 			reiserfs.c \
+ 			romfs.c \
+ 			ntfs.c \
+@@ -30,8 +19,6 @@
+ 			iso9660.c \
+ 			udf.c \
+ 			vfat.c \
+-			luks.c \
+-			highpoint_raid.c \
+ 			vxfs.c \
+ 			minix.c \
+ 			ufs.c \
+@@ -40,9 +27,6 @@
+ 			netware.c \
+ 			sysv.c \
+ 			btrfs.c \
+-			lvm.c \
+ 			zfs.c \
+ 			ubifs.c \
+-			bfs.c \
+-			drbd.c \
+-			vmfs.c
++			bfs.c
+--- shlibs/blkid/src/superblocks/Makefile.in	2010-02-22 11:06:22.000000000 +0100
++++ shlibs/blkid/src/superblocks/Makefile.in	2010-03-21 00:44:22.000000000 +0100
+@@ -57,13 +57,11 @@
+ LTLIBRARIES = $(noinst_LTLIBRARIES)
+ libblkid_superblocks_la_LIBADD =
+ am_libblkid_superblocks_la_OBJECTS = superblocks.lo cramfs.lo swap.lo \
+-	adaptec_raid.lo ddf_raid.lo isw_raid.lo jmicron_raid.lo \
+-	lsi_raid.lo nvidia_raid.lo promise_raid.lo silicon_raid.lo \
+-	via_raid.lo linux_raid.lo jfs.lo xfs.lo ext.lo gfs.lo ocfs.lo \
++	jfs.lo xfs.lo ext.lo gfs.lo \
+ 	reiserfs.lo romfs.lo ntfs.lo hfs.lo iso9660.lo udf.lo vfat.lo \
+-	luks.lo highpoint_raid.lo vxfs.lo minix.lo ufs.lo hpfs.lo \
+-	squashfs.lo netware.lo sysv.lo btrfs.lo lvm.lo zfs.lo ubifs.lo \
+-	bfs.lo drbd.lo vmfs.lo
++	vxfs.lo minix.lo ufs.lo hpfs.lo \
++	squashfs.lo netware.lo sysv.lo btrfs.lo zfs.lo ubifs.lo \
++	bfs.lo
+ libblkid_superblocks_la_OBJECTS =  \
+ 	$(am_libblkid_superblocks_la_OBJECTS)
+ AM_V_lt = $(am__v_lt_$(V))
+@@ -280,21 +278,10 @@
+ 			superblocks.c \
+ 			cramfs.c \
+ 			swap.c \
+-			adaptec_raid.c \
+-			ddf_raid.c \
+-			isw_raid.c \
+-			jmicron_raid.c \
+-			lsi_raid.c \
+-			nvidia_raid.c \
+-			promise_raid.c \
+-			silicon_raid.c \
+-			via_raid.c \
+-			linux_raid.c \
+ 			jfs.c \
+ 			xfs.c \
+ 			ext.c \
+ 			gfs.c \
+-			ocfs.c \
+ 			reiserfs.c \
+ 			romfs.c \
+ 			ntfs.c \
+@@ -302,8 +289,6 @@
+ 			iso9660.c \
+ 			udf.c \
+ 			vfat.c \
+-			luks.c \
+-			highpoint_raid.c \
+ 			vxfs.c \
+ 			minix.c \
+ 			ufs.c \
+@@ -312,12 +297,9 @@
+ 			netware.c \
+ 			sysv.c \
+ 			btrfs.c \
+-			lvm.c \
+ 			zfs.c \
+ 			ubifs.c \
+-			bfs.c \
+-			drbd.c \
+-			vmfs.c
++			bfs.c
+ 
+ all: all-am
+ 
+@@ -371,34 +353,20 @@
+ distclean-compile:
+ 	-rm -f *.tab.c
+ 
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/adaptec_raid.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/btrfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cramfs.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ddf_raid.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drbd.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ext.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hfs.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/highpoint_raid.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hpfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso9660.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isw_raid.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jfs.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jmicron_raid.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linux_raid.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lsi_raid.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/luks.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lvm.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minix.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/netware.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ntfs.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nvidia_raid.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ocfs.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/promise_raid.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reiserfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/romfs.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/silicon_raid.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/squashfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/superblocks.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/swap.Plo@am__quote@
+@@ -407,8 +375,6 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/udf.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ufs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vfat.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/via_raid.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vmfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vxfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zfs.Plo@am__quote@
+--- shlibs/blkid/src/superblocks/superblocks.c	2010-02-22 09:41:12.000000000 +0100
++++ shlibs/blkid/src/superblocks/superblocks.c	2010-03-21 00:44:05.000000000 +0100
+@@ -80,6 +80,7 @@
+  */
+ static const struct blkid_idinfo *idinfos[] =
+ {
++#if 0
+ 	/* RAIDs */
+ 	&linuxraid_idinfo,
+ 	&ddfraid_idinfo,
+@@ -100,6 +101,7 @@
+ 	&snapcow_idinfo,
+ 	&luks_idinfo,
+ 	&vmfs_volume_idinfo,
++#endif
+ 
+ 	/* Filesystems */
+ 	&vfat_idinfo,
+@@ -129,16 +131,20 @@
+ 	&minix_idinfo,
+ 	&gfs_idinfo,
+ 	&gfs2_idinfo,
++#if 0
+ 	&ocfs_idinfo,
+ 	&ocfs2_idinfo,
+ 	&oracleasm_idinfo,
++#endif
+ 	&vxfs_idinfo,
+ 	&squashfs_idinfo,
+ 	&netware_idinfo,
+ 	&btrfs_idinfo,
+ 	&ubifs_idinfo,
+-	&bfs_idinfo,
+-	&vmfs_fs_idinfo
++	&bfs_idinfo
++#if 0
++	,&vmfs_fs_idinfo
++#endif
+ };
+ 
+ /*
+--- shlibs/blkid/src/superblocks/superblocks.h	2010-02-22 09:41:12.000000000 +0100
++++ shlibs/blkid/src/superblocks/superblocks.h	2010-03-21 00:44:51.000000000 +0100
+@@ -12,6 +12,7 @@
+ extern const struct blkid_idinfo cramfs_idinfo;
+ extern const struct blkid_idinfo swap_idinfo;
+ extern const struct blkid_idinfo swsuspend_idinfo;
++#if 0
+ extern const struct blkid_idinfo adraid_idinfo;
+ extern const struct blkid_idinfo ddfraid_idinfo;
+ extern const struct blkid_idinfo iswraid_idinfo;
+@@ -22,6 +23,7 @@
+ extern const struct blkid_idinfo silraid_idinfo;
+ extern const struct blkid_idinfo viaraid_idinfo;
+ extern const struct blkid_idinfo linuxraid_idinfo;
++#endif
+ extern const struct blkid_idinfo ext4dev_idinfo;
+ extern const struct blkid_idinfo ext4_idinfo;
+ extern const struct blkid_idinfo ext3_idinfo;
+@@ -32,9 +34,11 @@
+ extern const struct blkid_idinfo gfs_idinfo;
+ extern const struct blkid_idinfo gfs2_idinfo;
+ extern const struct blkid_idinfo romfs_idinfo;
++#if 0
+ extern const struct blkid_idinfo ocfs_idinfo;
+ extern const struct blkid_idinfo ocfs2_idinfo;
+ extern const struct blkid_idinfo oracleasm_idinfo;
++#endif
+ extern const struct blkid_idinfo reiser_idinfo;
+ extern const struct blkid_idinfo reiser4_idinfo;
+ extern const struct blkid_idinfo hfs_idinfo;
+@@ -47,12 +51,14 @@
+ extern const struct blkid_idinfo vfat_idinfo;
+ extern const struct blkid_idinfo ufs_idinfo;
+ extern const struct blkid_idinfo hpfs_idinfo;
++#if 0
+ extern const struct blkid_idinfo lvm2_idinfo;
+ extern const struct blkid_idinfo lvm1_idinfo;
+ extern const struct blkid_idinfo snapcow_idinfo;
+ extern const struct blkid_idinfo luks_idinfo;
+ extern const struct blkid_idinfo highpoint37x_idinfo;
+ extern const struct blkid_idinfo highpoint45x_idinfo;
++#endif
+ extern const struct blkid_idinfo squashfs_idinfo;
+ extern const struct blkid_idinfo netware_idinfo;
+ extern const struct blkid_idinfo sysv_idinfo;
+@@ -61,9 +67,11 @@
+ extern const struct blkid_idinfo ubifs_idinfo;
+ extern const struct blkid_idinfo zfs_idinfo;
+ extern const struct blkid_idinfo bfs_idinfo;
++#if 0
+ extern const struct blkid_idinfo vmfs_volume_idinfo;
+ extern const struct blkid_idinfo vmfs_fs_idinfo;
+ extern const struct blkid_idinfo drbd_idinfo;
++#endif
+ 
+ /*
+  * superblock functions

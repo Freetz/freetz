@@ -1,0 +1,451 @@
+--- misc-utils/findfs.c	2010-02-04 12:53:56.000000000 +0100
++++ misc-utils/findfs.c	2010-04-11 23:55:00.000000000 +0200
+@@ -14,9 +14,9 @@
+ 
+ #include "nls.h"
+ 
+-static void __attribute__((__noreturn__)) usage(int rc)
++static void __attribute__((__noreturn__)) usage(int rc, char *argv[])
+ {
+-	const char *p = program_invocation_short_name;
++	const char *p = ((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]);
+ 
+ 	if (!p)
+ 		p = "findfs";
+@@ -36,7 +36,7 @@
+ 	if (argc != 2)
+ 		/* we return '2' for backward compatibility
+ 		 * with version from e2fsprogs */
+-		usage(2);
++		usage(2, argv);
+ 
+ 	if (!strncmp(argv[1], "LABEL=", 6)) {
+ 		tk = "LABEL";
+@@ -46,9 +46,9 @@
+ 		vl = argv[1] + 5;
+ 	} else if (!strcmp(argv[1], "-h") == 0 ||
+ 		   !strcmp(argv[1], "--help") == 0) {
+-		usage(EXIT_SUCCESS);
++		usage(EXIT_SUCCESS, argv);
+ 	} else
+-		usage(2);
++		usage(2, argv);
+ 
+ 	dev = blkid_evaluate_tag(tk, vl, NULL);
+ 	if (!dev)
+--- misc-utils/namei.c	2010-03-18 23:11:23.000000000 +0100
++++ misc-utils/namei.c	2010-04-11 23:55:00.000000000 +0200
+@@ -439,9 +439,9 @@
+ }
+ 
+ static void
+-usage(int rc)
++usage(int rc, char *argv[])
+ {
+-	const char *p = program_invocation_short_name;
++	const char *p = ((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]);
+ 
+ 	if (!*p)
+ 		p = "namei";
+@@ -485,13 +485,13 @@
+ 	textdomain(PACKAGE);
+ 
+ 	if (argc < 2)
+-		usage(EXIT_FAILURE);
++		usage(EXIT_FAILURE, argv);
+ 
+ 	while ((c = getopt_long(argc, argv, "+h?lmnovx", longopts, NULL)) != -1) {
+ 		switch(c) {
+ 		case 'h':
+ 		case '?':
+-			usage(EXIT_SUCCESS);
++			usage(EXIT_SUCCESS, argv);
+ 			break;
+ 		case 'l':
+ 			flags |= (NAMEI_OWNERS | NAMEI_MODES | NAMEI_VERTICAL);
+--- misc-utils/scriptreplay.c	2010-02-04 12:53:56.000000000 +0100
++++ misc-utils/scriptreplay.c	2010-04-11 23:55:00.000000000 +0200
+@@ -33,10 +33,10 @@
+ #define SCRIPT_MIN_DELAY 0.0001		/* from original sripreplay.pl */
+ 
+ void __attribute__((__noreturn__))
+-usage(int rc)
++usage(int rc, char *argv[])
+ {
+ 	printf(_("%s <timingfile> [<typescript> [<divisor>]]\n"),
+-			program_invocation_short_name);
++			((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 	exit(rc);
+ }
+ 
+@@ -134,7 +134,7 @@
+ 	textdomain(PACKAGE);
+ 
+ 	if (argc < 2 && argc > 4)
+-		usage(EXIT_FAILURE);
++		usage(EXIT_FAILURE, argv);
+ 
+ 	tname = argv[1];
+ 	sname = argc > 2 ? argv[2] : "typescript";
+--- misc-utils/wipefs.c	2010-03-22 09:16:23.000000000 +0100
++++ misc-utils/wipefs.c	2010-04-11 23:55:00.000000000 +0200
+@@ -321,10 +321,10 @@
+ }
+ 
+ static void __attribute__((__noreturn__))
+-usage(FILE *out)
++usage(FILE *out, char *argv[])
+ {
+ 	fprintf(out, _("Usage: %s [options] <device>\n\nOptions:\n"),
+-			program_invocation_short_name);
++			((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 
+ 	fprintf(out, _(
+ 	" -a, --all           wipe all magic strings (BE CAREFUL!)\n"
+@@ -365,7 +365,7 @@
+ 			all++;
+ 			break;
+ 		case 'h':
+-			usage(stdout);
++			usage(stdout, argv);
+ 			break;
+ 		case 'n':
+ 			noact++;
+@@ -378,7 +378,7 @@
+ 			mode = WP_MODE_PARSABLE;
+ 			break;
+ 		default:
+-			usage(stderr);
++			usage(stderr, argv);
+ 			break;
+ 		}
+ 	}
+@@ -386,7 +386,7 @@
+ 	if (wp && all)
+ 		errx(EXIT_FAILURE, _("--offset and --all are mutually exclusive"));
+ 	if (optind == argc)
+-		usage(stderr);
++		usage(stderr, argv);
+ 
+ 	fname = argv[optind++];
+ 
+--- mount/swapon.c	2010-03-22 09:09:12.000000000 +0100
++++ mount/swapon.c	2010-04-11 23:55:00.000000000 +0200
+@@ -797,7 +797,7 @@
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+ 	textdomain(PACKAGE);
+ 
+-	progname = program_invocation_short_name;
++	progname = ((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]);
+ 	if (!progname) {
+ 		char *p = strrchr(argv[0], '/');
+ 		progname = p ? p+1 : argv[0];
+--- shlibs/blkid/samples/mkfs.c	2010-03-18 23:11:23.000000000 +0100
++++ shlibs/blkid/samples/mkfs.c	2010-04-11 23:55:00.000000000 +0200
+@@ -7,6 +7,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -27,7 +28,7 @@
+ 	if (argc < 2) {
+ 		fprintf(stderr, "usage: %s <device>  "
+ 			"-- checks based on libblkid for mkfs-like programs.\n",
+-			program_invocation_short_name);
++			((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 		return EXIT_FAILURE;
+ 	}
+ 
+--- shlibs/blkid/samples/partitions.c	2010-03-18 23:11:23.000000000 +0100
++++ shlibs/blkid/samples/partitions.c	2010-04-11 23:55:00.000000000 +0200
+@@ -7,6 +7,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -26,7 +27,7 @@
+ 	if (argc < 2) {
+ 		fprintf(stderr, "usage: %s <device|file>  "
+ 				"-- prints partitions\n",
+-				program_invocation_short_name);
++				((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 		return EXIT_FAILURE;
+ 	}
+ 
+--- shlibs/blkid/samples/superblocks.c	2010-03-18 23:11:23.000000000 +0100
++++ shlibs/blkid/samples/superblocks.c	2010-04-11 23:55:00.000000000 +0200
+@@ -7,6 +7,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -26,7 +27,7 @@
+ 	if (argc < 2) {
+ 		fprintf(stderr, "usage: %s <device>  "
+ 				"-- prints superblocks details about the device\n",
+-				program_invocation_short_name);
++				((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 		return EXIT_FAILURE;
+ 	}
+ 
+--- shlibs/blkid/samples/topology.c	2010-03-18 23:11:23.000000000 +0100
++++ shlibs/blkid/samples/topology.c	2010-04-11 23:55:00.000000000 +0200
+@@ -7,6 +7,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -27,7 +28,7 @@
+ 	if (argc < 2) {
+ 		fprintf(stderr, "usage: %s <device>  "
+ 				"-- prints topology details about the device\n",
+-				program_invocation_short_name);
++				((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 		return EXIT_FAILURE;
+ 	}
+ 
+--- sys-utils/fallocate.c	2010-03-18 23:11:23.000000000 +0100
++++ sys-utils/fallocate.c	2010-04-11 23:55:00.000000000 +0200
+@@ -42,10 +42,10 @@
+ #include "nls.h"
+ 
+ 
+-static void __attribute__((__noreturn__)) usage(FILE *out)
++static void __attribute__((__noreturn__)) usage(FILE *out, char *argv[])
+ {
+ 	fprintf(out, _("Usage: %s [options] <filename>\n\nOptions:\n"),
+-			program_invocation_short_name);
++			((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 
+ 	fprintf(out, _(
+ 		" -h, --help          this help\n"
+@@ -126,7 +126,7 @@
+ 	while ((c = getopt_long(argc, argv, "hnl:o:", longopts, NULL)) != -1) {
+ 		switch(c) {
+ 		case 'h':
+-			usage(stdout);
++			usage(stdout, argv);
+ 			break;
+ 		case 'n':
+ 			mode |= FALLOC_FL_KEEP_SIZE;
+@@ -138,7 +138,7 @@
+ 			offset = cvtnum(optarg);
+ 			break;
+ 		default:
+-			usage(stderr);
++			usage(stderr, argv);
+ 			break;
+ 		}
+ 	}
+--- sys-utils/ipcmk.c	2010-02-04 12:53:59.000000000 +0100
++++ sys-utils/ipcmk.c	2010-04-11 23:55:00.000000000 +0200
+@@ -100,7 +100,7 @@
+ 	int nsems = 0;
+ 	int doShm = 0, doMsg = 0, doSem = 0;
+ 
+-	progname = program_invocation_short_name;
++	progname = ((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]);
+ 	if (!progname)
+ 		progname = "ipcmk";
+ 
+--- sys-utils/ldattach.c	2010-03-22 09:05:43.000000000 +0100
++++ sys-utils/ldattach.c	2010-04-11 23:55:00.000000000 +0200
+@@ -148,7 +148,7 @@
+     textdomain(PACKAGE);
+ 
+     /* parse options */
+-    progname = program_invocation_short_name;
++    progname = ((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]);
+ 
+     if (argc == 0)
+ 	usage(EXIT_SUCCESS);
+--- sys-utils/lscpu.c	2010-03-18 23:11:23.000000000 +0100
++++ sys-utils/lscpu.c	2010-04-11 23:55:00.000000000 +0200
+@@ -661,10 +661,10 @@
+ 	}
+ }
+ 
+-void usage(int rc)
++void usage(int rc, char *argv[])
+ {
+ 	printf(_("Usage: %s [option]\n"),
+-			program_invocation_short_name);
++			((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 
+ 	puts(_(	"CPU architecture information helper\n\n"
+ 		"  -h, --help     usage information\n"
+@@ -701,7 +701,7 @@
+ 	while((c = getopt_long(argc, argv, "hps:", longopts, NULL)) != -1) {
+ 		switch (c) {
+ 		case 'h':
+-			usage(EXIT_SUCCESS);
++			usage(EXIT_SUCCESS, argv);
+ 		case 'p':
+ 			parsable = 1;
+ 			break;
+@@ -709,7 +709,7 @@
+ 			strncpy(pathbuf, optarg, sizeof(pathbuf));
+ 			break;
+ 		default:
+-			usage(EXIT_FAILURE);
++			usage(EXIT_FAILURE, argv);
+ 		}
+ 	}
+ 
+--- sys-utils/setarch.c	2010-02-04 12:53:59.000000000 +0100
++++ sys-utils/setarch.c	2010-04-11 23:55:00.000000000 +0200
+@@ -103,9 +103,9 @@
+ };
+ 
+ static void __attribute__((__noreturn__))
+-show_help(void)
++show_help(char *argv[])
+ {
+-  const char *p = program_invocation_short_name;
++  const char *p = ((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]);
+ 
+   if (!*p)
+     p = "setarch";
+@@ -133,9 +133,9 @@
+ }
+ 
+ static void __attribute__((__noreturn__))
+-show_usage(const char *s)
++show_usage(const char *s, char *argv[])
+ {
+-  const char *p = program_invocation_short_name;
++  const char *p = ((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]);
+ 
+   if (!*p)
+     p = "setarch";
+@@ -246,18 +246,18 @@
+   textdomain(PACKAGE);
+ 
+   if (argc < 1)
+-    show_usage(_("Not enough arguments"));
++    show_usage(_("Not enough arguments"), argv);
+ 
+-  p = program_invocation_short_name;
++  p = ((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]);
+   if (!strcmp(p, "setarch")) {
+     argv++;
+     argc--;
+     if (argc < 1)
+-      show_usage(_("Not enough arguments"));
++      show_usage(_("Not enough arguments"), argv);
+     p = argv[0];
+     argv[0] = argv[-1];      /* for getopt_long() to get the program name */
+     if (!strcmp(p, "-h") || !strcmp(p, "--help"))
+-      show_help();
++      show_help(argv);
+   }
+   #if defined(__sparc64__) || defined(__sparc__)
+    if (!strcmp(p, "sparc32bash")) {
+@@ -271,7 +271,7 @@
+   while ((c = getopt_long(argc, argv, "+hv3BFILRSTXZ", longopts, NULL)) != -1) {
+     switch (c) {
+     case 'h':
+-      show_help();
++      show_help(argv);
+       break;
+     case 'v':
+       verbose = 1;
+--- sys-utils/switch_root.c	2010-03-18 23:11:23.000000000 +0100
++++ sys-utils/switch_root.c	2010-04-11 23:55:00.000000000 +0200
+@@ -158,16 +158,16 @@
+ 	return 0;
+ }
+ 
+-static void usage(FILE *output)
++static void usage(FILE *output, char *argv[])
+ {
+ 	fprintf(output, "usage: %s <newrootdir> <init> <args to init>\n",
+-			program_invocation_short_name);
++			((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 	exit(output == stderr ? EXIT_FAILURE : EXIT_SUCCESS);
+ }
+ 
+-static void version(void)
++static void version(char *argv[])
+ {
+-	fprintf(stdout,  "%s from %s\n", program_invocation_short_name,
++	fprintf(stdout,  "%s from %s\n", ((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]),
+ 			PACKAGE_STRING);
+ 	exit(EXIT_SUCCESS);
+ }
+@@ -177,18 +177,18 @@
+ 	char *newroot, *init, **initargs;
+ 
+ 	if (argv[1] && (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-h")))
+-		usage(stdout);
++		usage(stdout, argv);
+ 	if (argv[1] && (!strcmp(argv[1], "--version") || !strcmp(argv[1], "-V")))
+-		version();
++		version(argv);
+ 	if (argc < 3)
+-		usage(stderr);
++		usage(stderr, argv);
+ 
+ 	newroot = argv[1];
+ 	init = argv[2];
+ 	initargs = &argv[2];
+ 
+ 	if (!*newroot || !*init)
+-		usage(stderr);
++		usage(stderr, argv);
+ 
+ 	if (switchroot(newroot))
+ 		errx(EXIT_FAILURE, "failed. Sorry.");
+--- sys-utils/unshare.c	2010-03-18 23:11:23.000000000 +0100
++++ sys-utils/unshare.c	2010-04-11 23:55:00.000000000 +0200
+@@ -50,12 +50,12 @@
+ }
+ #endif
+ 
+-static void usage(int status)
++static void usage(int status, char *argv[])
+ {
+ 	FILE *out = status == EXIT_SUCCESS ? stdout : stderr;
+ 
+ 	fprintf(out, _("Usage: %s [options] <program> [args...]\n"),
+-		program_invocation_short_name);
++		((strrchr(argv[0], '/') != NULL) ? (strrchr(argv[0], '/')+1) : argv[0]));
+ 
+ 	fputs(_("Run program with some namespaces unshared from parent\n\n"
+ 		"  -h, --help        usage information (this)\n"
+@@ -89,7 +89,7 @@
+ 	while((c = getopt_long(argc, argv, "hmuin", longopts, NULL)) != -1) {
+ 		switch(c) {
+ 		case 'h':
+-			usage(EXIT_SUCCESS);
++			usage(EXIT_SUCCESS, argv);
+ 		case 'm':
+ 			unshare_flags |= CLONE_NEWNS;
+ 			break;
+@@ -103,12 +103,12 @@
+ 			unshare_flags |= CLONE_NEWNET;
+ 			break;
+ 		default:
+-			usage(EXIT_FAILURE);
++			usage(EXIT_FAILURE, argv);
+ 		}
+ 	}
+ 
+ 	if(optind >= argc)
+-		usage(EXIT_FAILURE);
++		usage(EXIT_FAILURE, argv);
+ 
+ 	if(-1 == unshare(unshare_flags))
+ 		err(EXIT_FAILURE, _("unshare failed"));
