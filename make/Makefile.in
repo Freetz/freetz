@@ -561,24 +561,34 @@ endef
 
 ### PKG_PATCH - apply patches
 
-# $1: directory containing the patches
+# $1: list of directories containing the patches
 # $2: directory to apply the patches to
 # $3: optional name for library patches
 define PKG_PATCH__INT
-	set -e; shopt -s nullglob; for i in $(strip $1)/*$(strip $3).patch; do \
+	set -e; shopt -s nullglob; for i in $(strip $(foreach dir,$(strip $1),$(dir)/*$(strip $3).patch)); do \
 		$(PATCH_TOOL) $(strip $2) $$$$i; \
 	done
 endef
 
 # Patch binary package
 define PKG_BIN_PATCH
-	$(call PKG_PATCH__INT, $($(strip $(PKG))_MAKE_DIR)/patches, $($(strip $(PKG))_DIR), )
+	$(call \
+		PKG_PATCH__INT, \
+		$($(PKG)_MAKE_DIR)/patches \
+		$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
+		$($(PKG)_DIR), \
+	)
 endef
 
 # Patch library package
 define PKG_LIB_PATCH
-	$(call PKG_LIB_PATCH__INT, $(PKG), .$(strip $(pkg)))
-	$(call PKG_PATCH__INT, $($(strip $(PKG))_MAKE_DIR)/patches, $($(strip $(PKG))_DIR), .$(strip $(pkg)))
+	$(call \
+		PKG_PATCH__INT, \
+		$($(PKG)_MAKE_DIR)/patches \
+		$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
+		$($(PKG)_DIR), \
+		.$(strip $(pkg)) \
+	)
 endef
 
 ## Unpack and patch binary package
