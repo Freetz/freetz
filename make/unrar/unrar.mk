@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 3.9.9)
+$(call PKG_INIT_BIN, 3.9.10)
 $(PKG)_DIR:=$(subst -$($(PKG)_VERSION),,$($(PKG)_DIR))
 $(PKG)_SOURCE:=unrarsrc-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.rarlab.com/rar/
 $(PKG)_BINARY:=$($(PKG)_DIR)/unrar
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/unrar
-$(PKG)_SOURCE_MD5:=4271fc8710d299341c969666492b305c
+$(PKG)_SOURCE_MD5:=3c130ae52ff9fece50af988c343e396d
 
 $(PKG)_DEPENDS_ON := uclibcxx
 
