@@ -1,6 +1,14 @@
 #!/bin/sh
 
 . /usr/lib/libmodredir.sh
+
+if [ ! -r "/mod/etc/conf/mod.cfg" -o ! -r "/mod/etc/init.d/rc.webcfg" ]; then
+    	CRLF=$'\r\n'
+	echo -n "Content-Type: text/plain${CRLF}${CRLF}"
+	echo "Error[webcfg]: not configured"
+	exit 1
+fi
+
 . /mod/etc/conf/mod.cfg
 
 log=
