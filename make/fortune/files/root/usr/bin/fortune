@@ -1,0 +1,4 @@
+#!/bin/sh
+conf=/mod/etc/conf/fortune.cfg
+[ -z "${FORTUNE_DIR+set}" -a -r "$conf" ] && . "$conf"
+exec /usr/bin/fortune.bin "$@"

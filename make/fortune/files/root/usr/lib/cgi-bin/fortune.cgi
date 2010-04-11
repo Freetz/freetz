@@ -3,7 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Fortune Einstellungen" en:"Fortune settings")'
+sec_begin '$(lang de:"Fortune-Einstellungen" en:"Fortune settings")'
 
 cat << EOF
 <h2>$(lang de:"Verzeichnis mit fortune-Dateien" en:"Directory with fortune-files"):</h2>
@@ -13,3 +13,11 @@ cat << EOF
 EOF
 
 sec_end
+
+if fortune=$(/usr/bin/fortune); then
+    	sec_begin "$(lang de:"Übrigens ..." en:"By the way ...")"
+	echo "<pre class='plain'>"
+	echo "$fortune" | html
+	echo "</pre>"
+	sec_end
+fi
