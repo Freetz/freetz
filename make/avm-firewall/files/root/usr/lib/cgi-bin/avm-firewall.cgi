@@ -184,9 +184,9 @@ sec_end
 sec_begin '$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")'
 
 cat << EOF
-<p><iframe name="dummy" id="id_iframe" style="width: 800px ; height: 55px ; border: 0" src="/cgi-bin/avm_fw_helper.cgi"> </iframe> </p>
+
 $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln anzeigen"): <input type="checkbox" onclick='document.getElementById("forwardingrules").style.display=(this.checked)? "block" : "none"' >
-<p><div align="center"><textarea id="forwardingrules" style="width: 600px; display:none;" name="forwardingrules" rows="15" cols="80" wrap="off" onblur="FWD_textarea_to_rules()" ></textarea></div></p>
+<p><div align="center"><textarea id="forwardingrules" style="width: 600px; display:none;" name="forwardingrules" rows="15" cols="80" wrap="off" ></textarea></div></p>
 
 <p><table width="100%" border="1" cellpadding="4" cellspacing="0" align="center" id="id_table_forwardrules">
         <tr><td align="left" colspan="8">dslifaces forwardrules</td></tr>
@@ -343,13 +343,6 @@ function Init_FWDTable(){
   	tbl.rows[j].style.display="none";
   }
   showfwdrules();
-}
-
-function FWD_textarea_to_rules(){
-	allfwdrules=document.getElementById("forwardingrules").value.split("\n");
-	split_fwdrules();
-	Init_FWDTable();
-	build_new_fwdrule();
 }
 
 Init_FW_Table();
