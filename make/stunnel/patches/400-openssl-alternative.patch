@@ -1,37 +1,29 @@
---- configure	2010-02-03 23:35:51.000000000 +0100
-+++ configure	2010-03-28 00:59:09.000000000 +0100
-@@ -23977,7 +23977,7 @@
+--- configure	2010-03-26 21:56:26.000000000 +0100
++++ configure	2010-04-12 01:00:00.000000000 +0200
+@@ -23993,7 +23993,7 @@
  { echo "$as_me:$LINENO: **************************************** SSL" >&5
  echo "$as_me: **************************************** SSL" >&6;}
  checkssldir() { :
 -    if test -f "$1/include/openssl/ssl.h"
-+    if test -f "$1/include${OPENSSL_ALTERNATIVE_WITH_LEADING_SLASH}/openssl/ssl.h"
++    if test -f "$1/include${OPENSSL_ALTERNATIVE+/${OPENSSL_ALTERNATIVE}}/openssl/ssl.h"
      then cat >>confdefs.h <<\_ACEOF
  #define HAVE_OPENSSL 1
  _ACEOF
-@@ -23985,13 +23985,15 @@
+@@ -24001,7 +24001,7 @@
          ssldir="$1"
          return 0
      fi
 -    if test -f "$1/include/ssl.h"
-+    if test -f "$1/include${OPENSSL_ALTERNATIVE_WITH_LEADING_SLASH}/ssl.h"
++    if test -f "$1/include${OPENSSL_ALTERNATIVE+/${OPENSSL_ALTERNATIVE}}/ssl.h"
      then ssldir="$1"
          return 0
      fi
-     return 1
- }
- 
-+[ -n "$OPENSSL_ALTERNATIVE" ] && OPENSSL_ALTERNATIVE_WITH_LEADING_SLASH="/$OPENSSL_ALTERNATIVE"
-+
- # Check for SSL directory
- { echo "$as_me:$LINENO: checking for SSL directory" >&5
- echo $ECHO_N "checking for SSL directory... $ECHO_C" >&6; }
-@@ -24033,8 +24035,13 @@
+@@ -24049,8 +24049,13 @@
  
  
  # Add SSL includes and libraries
 -CFLAGS="$CFLAGS -I$ssldir/include"
-+CFLAGS="$CFLAGS -I$ssldir/include${OPENSSL_ALTERNATIVE_WITH_LEADING_SLASH}"
++CFLAGS="$CFLAGS -I$ssldir/include${OPENSSL_ALTERNATIVE+/${OPENSSL_ALTERNATIVE}}"
 +if [ -z "$OPENSSL_ALTERNATIVE" ]; then
  LIBS="$LIBS -L$ssldir/lib -lssl -lcrypto"
 +else
@@ -41,7 +33,7 @@
  
  # Check for obsolete RSAref library
  { echo "$as_me:$LINENO: checking for obsolete RSAref library" >&5
-@@ -24088,6 +24095,7 @@
+@@ -24104,6 +24109,7 @@
  rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
        conftest$ac_exeext conftest.$ac_ext
  
@@ -49,7 +41,7 @@
  as_ac_Header=`echo "ac_cv_header_$ssldir/include/openssl/engine.h" | $as_tr_sh`
  if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
    { echo "$as_me:$LINENO: checking for $ssldir/include/openssl/engine.h" >&5
-@@ -24225,6 +24233,7 @@
+@@ -24241,6 +24247,7 @@
    { echo "$as_me:$LINENO: WARNING: Openssl engine header not found" >&5
  echo "$as_me: WARNING: Openssl engine header not found" >&2;}
  fi
@@ -58,7 +50,7 @@
  
  
 --- src/ctx.c	2010-01-29 11:38:40.000000000 +0100
-+++ src/ctx.c	2010-03-28 01:16:11.000000000 +0100
++++ src/ctx.c	2010-04-12 00:00:00.000000000 +0200
 @@ -390,6 +390,7 @@
  #define CACHE_RESP_OK     0x81
  
@@ -98,18 +90,15 @@
  }
  
  #define MAX_VAL_LEN 512
-@@ -440,6 +448,10 @@
+@@ -440,6 +448,7 @@
          const unsigned char *key, const unsigned int key_len,
          const unsigned char *val, const unsigned int val_len,
          unsigned char **ret, unsigned int *ret_len) {
 +#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
-+/*
-+* according to http://sourceforge.net/projects/yassl/forums/forum/439591/topic/3563952 cyassl handles it internally
-+*/
      char session_id_txt[2*SSL_MAX_SSL_SESSION_ID_LENGTH+1];
      const char hex[16]="0123456789ABCDEF";
      const char *type_description[]={"new", "get", "remove"};
-@@ -556,6 +568,7 @@
+@@ -556,6 +565,7 @@
      s_log(LOG_INFO, "cache_transfer: session found");
      memcpy(*ret, packet->val, *ret_len);
      free(packet);
@@ -117,7 +106,7 @@
  }
  
  /**************************************** informational callback */
-@@ -575,8 +588,10 @@
+@@ -575,8 +585,10 @@
              where & SSL_CB_READ ? "read" : "write",
              SSL_alert_type_string_long(ret),
              SSL_alert_desc_string_long(ret));
