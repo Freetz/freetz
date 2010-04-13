@@ -1,67 +1,6 @@
-diff -burN src/cache.c src/cache.c
---- src/cache.c	2008-06-24 21:32:50.000000000 +0200
-+++ src/cache.c	2008-09-22 23:31:58.000000000 +0200
-@@ -23,7 +23,7 @@
- 
- #include "config.h"
- 
--#include <argz.h>
-+//#include <argz.h>
- #include <dirent.h>
- #include <errno.h>
- #include <error.h>
-diff -burN src/dav_coda2.c src/dav_coda2.c
---- src/dav_coda2.c	2008-02-02 23:23:45.000000000 +0100
-+++ src/dav_coda2.c	2008-09-22 23:32:03.000000000 +0200
-@@ -23,7 +23,7 @@
- 
- #include "config.h"
- 
--#include <argz.h>
-+//#include <argz.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <limits.h>
-diff -burN src/dav_coda3.c src/dav_coda3.c
---- src/dav_coda3.c	2008-02-02 23:24:10.000000000 +0100
-+++ src/dav_coda3.c	2008-09-22 23:32:07.000000000 +0200
-@@ -23,7 +23,7 @@
- 
- #include "config.h"
- 
--#include <argz.h>
-+//#include <argz.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <limits.h>
-diff -burN src/dav_fuse5.c src/dav_fuse5.c
---- src/dav_fuse5.c	2008-04-05 20:36:06.000000000 +0200
-+++ src/dav_fuse5.c	2008-09-22 23:32:10.000000000 +0200
-@@ -23,7 +23,7 @@
- 
- #include "config.h"
- 
--#include <argz.h>
-+//#include <argz.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <stddef.h>
-diff -burN src/dav_fuse7.c src/dav_fuse7.c
---- src/dav_fuse7.c	2008-04-09 21:43:34.000000000 +0200
-+++ src/dav_fuse7.c	2008-09-22 23:32:13.000000000 +0200
-@@ -23,7 +23,7 @@
- 
- #include "config.h"
- 
--#include <argz.h>
-+//#include <argz.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <stddef.h>
-diff -burN src/defaults.h src/defaults.h
---- src/defaults.h	2008-05-23 18:47:40.000000000 +0200
-+++ src/defaults.h	2008-09-23 00:31:07.000000000 +0200
-@@ -78,7 +78,8 @@
+--- src/defaults.h	2009-06-12 11:57:08.000000000 +0200
++++ src/defaults.h	2009-12-21 00:00:00.000000000 +0100
+@@ -73,7 +73,8 @@
  /* Cache size in MiByte.
     May be overridden by system config file and user config file.
     (1 MiByte = 1,048,576 Byte; Mi = Mebi = Mega Binary according to IEC) */
@@ -71,69 +10,56 @@ diff -burN src/defaults.h src/defaults.h
  
  /* Size of the hash table to store nodes. Should be a power of 2.
     May be overridden by system config file and user config file. */
-diff -burN src/kernel_interface.c src/kernel_interface.c
---- src/kernel_interface.c	2008-04-05 20:43:04.000000000 +0200
-+++ src/kernel_interface.c	2008-09-22 23:32:15.000000000 +0200
-@@ -23,7 +23,7 @@
- 
- #include "config.h"
- 
--#include <argz.h>
-+//#include <argz.h>
- #include <errno.h>
- #include <error.h>
+--- src/mount_davfs.c	2009-10-18 17:34:19.000000000 +0200
++++ src/mount_davfs.c	2009-12-21 00:00:00.000000000 +0100
+@@ -29,7 +29,7 @@
+ #ifdef HAVE_FCNTL_H
  #include <fcntl.h>
-diff -burN src/mount_davfs.c src/mount_davfs.c
---- src/mount_davfs.c	2008-06-30 20:29:42.000000000 +0200
-+++ src/mount_davfs.c	2008-09-23 00:33:08.000000000 +0200
-@@ -23,12 +23,12 @@
- 
- #include "config.h"
- 
--#include <argz.h>
-+//#include <argz.h>
- #include <ctype.h>
- #include <errno.h>
- #include <error.h>
- #include <fcntl.h>
+ #endif
 -#include <fstab.h>
 +//#include <fstab.h>
  #include <getopt.h>
  #include <grp.h>
- #include <limits.h>
-@@ -104,9 +104,9 @@
- static void check_dirs(dav_args *args);
+ #ifdef HAVE_LIBINTL_H
+@@ -98,6 +98,7 @@
  
- static char *check_double_mounts(dav_args *args);
--
+ /* The mointpoint as taken from the command line. */
+ static char *mpoint;
++static char mpoint_canonicalized_buf[PATH_MAX+1];
+ 
+ /* The type of the kernel file system used. */
+ static char *kernel_fs;
+@@ -132,8 +133,10 @@
+ static char *
+ check_double_mounts(dav_args *args);
+ 
 +/*
- static void check_fstab(const dav_args *args);
--
+ static void
+ check_fstab(const dav_args *args);
 +*/
- static void check_mountpoint(dav_args *args);
  
- static void check_permissions(dav_args *args);
-@@ -182,9 +182,9 @@
+ static void
+ check_mountpoint(dav_args *args);
+@@ -244,8 +247,10 @@
      if (seteuid(getuid()) != 0)
          error(EXIT_FAILURE, errno, _("can't change effective user id"));
  
--    if (getuid() != 0)
-+/*    if (getuid() != 0)
++/*
+     if (getuid() != 0)
          check_fstab(args);
--
 +*/
+ 
      parse_config(argv, args);
  
-     check_mountpoint(args);
-@@ -600,6 +600,7 @@
-    values differ, an error message is printed and the program terminates.
-    Option useproxy, askauth and locks are not checked. The mounting user is
-    free to choose them. They should be configured in davfs2.conf anyway. */
+@@ -674,6 +679,7 @@
+    and compares the values in args with the values in fstab.
+    If there is no such entry, or this entry does not allow user-mount, or the
+    values differ, an error message is printed and the program terminates. */
 +/*
- static void check_fstab(const dav_args *args) {
- 
-     dav_args *n_args = new_args();
-@@ -643,7 +644,7 @@
+ static void
+ check_fstab(const dav_args *args)
+ {
+@@ -734,7 +740,7 @@
      endfsent();
      delete_args(n_args);
  }
@@ -142,76 +68,63 @@ diff -burN src/mount_davfs.c src/mount_davfs.c
  
  /* Checks if a valid mountpoint is specified.
     For non root users this must meet the additional conditions:
-@@ -661,7 +662,7 @@
+@@ -754,7 +760,7 @@
      struct passwd *pw;
  
      if (*mpoint != '/') {
 -        char *mp = canonicalize_file_name(mpoint);
-+        char *mp = realpath(mpoint,NULL);
-         if (mp == NULL)
++        char *mp = realpath(mpoint, mpoint_canonicalized_buf);
+         if (!mp)
              error(EXIT_FAILURE, 0,
                    _("can't evaluate path of mount point %s"), mpoint);
-@@ -1730,11 +1731,16 @@
+@@ -1799,11 +1805,14 @@
      args->header = NULL;
  
      args->sys_cache = ne_strdup(DAV_SYS_CACHE);
-+
-+/* 
++/*
      if (getuid() != 0) {
          args->cache_dir = ne_concat(user_dir, "/", DAV_CACHE, NULL);
      } else {
          args->cache_dir = NULL;
      }
 +*/
-+
 +    args->cache_dir = NULL;
      args->backup_dir = ne_strdup(DAV_BACKUP_DIR);
      args->cache_size = DAV_CACHE_SIZE;
      args->table_size = DAV_TABLE_SIZE;
-@@ -1756,11 +1762,14 @@
- 
+@@ -1826,11 +1835,13 @@
+ {
      size_t len;
-     char * cmdline;
-+
-+/* 
+     char *cmdline;
++/*
      if (argz_create(argv, &cmdline, &len) == 0) {
          argz_stringify(cmdline, len, ' ');
          syslog(LOG_MAKEPRI(LOG_DAEMON, LOG_DEBUG), cmdline);
          free(cmdline);
      }
 +*/
-     
-     syslog(LOG_MAKEPRI(LOG_DAEMON, LOG_DEBUG),
-            "Configuration:");
-@@ -2453,7 +2462,6 @@
-     }
  }
  
--
- /* Prints version und help text. */
- static void usage(void) {
  
-diff -burN src/umount_davfs.c src/umount_davfs.c
---- src/umount_davfs.c	2008-01-11 22:40:18.000000000 +0100
-+++ src/umount_davfs.c	2008-09-23 00:12:29.000000000 +0200
-@@ -114,7 +114,7 @@
+--- src/umount_davfs.c	2009-06-04 20:30:32.000000000 +0200
++++ src/umount_davfs.c	2009-12-21 00:00:00.000000000 +0100
+@@ -50,6 +50,9 @@
+ #define bindtextdomain(Domainname, Dirname)
+ #endif
+ 
++#ifdef HAVE_LIMITS_H
++#include <limits.h>
++#endif
+ 
+ /* This is lazy programming. All the dirty work is left to the real umount
+    program, while we just sit and wait for mount.davfs to terminate.
+@@ -120,7 +123,8 @@
      if (optind < (argc - 1))
          error(EXIT_FAILURE, 0, _("too many arguments"));
  
 -    char *mpoint = canonicalize_file_name(argv[optind]);
-+    char *mpoint = realpath(argv[optind],NULL);
-     if (mpoint == NULL)
++    char mpoint_canonicalized_buf[PATH_MAX+1];
++    char *mpoint = realpath(argv[optind], mpoint_canonicalized_buf);
+     if (!mpoint)
          mpoint = argv[optind];
-     if (mpoint == NULL || *mpoint != '/')
-diff -burN src/webdav.c src/webdav.c
---- src/webdav.c	2008-06-28 19:20:07.000000000 +0200
-+++ src/webdav.c	2008-09-22 23:32:21.000000000 +0200
-@@ -23,7 +23,7 @@
- 
- #include "config.h"
- 
--#include <argz.h>
-+//#include <argz.h>
- #include <errno.h>
- #include <error.h>
- #include <fcntl.h>
+     if (!mpoint || *mpoint != '/')

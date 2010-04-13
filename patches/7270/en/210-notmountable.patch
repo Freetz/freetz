@@ -1,20 +1,22 @@
---- usr/www/avme/html/de/home/home.js.orig	2009-09-15 15:26:15.000000000 +0200
-+++ usr/www/avme/html/de/home/home.js	2009-09-16 19:26:35.000000000 +0200
-@@ -802,15 +802,13 @@
- var nPartTotal = Number("<? query ctlusb:settings/storage-part-total ?>");
+--- usr/www/avme/html/de/home/home.js.orig	2010-03-26 12:46:42.000000000 +0100
++++ usr/www/avme/html/de/home/home.js	2010-04-08 22:35:44.000000000 +0200
+@@ -806,7 +806,7 @@
+ var nPartTotal = Number(g_usbhost_data.part_count_total);
  if (isNaN(nPartTotal)) nPartTotal = 0;
- var unplugOk = parseInt("<? query ctlusb:settings/unplug-ok ?>", 10) == 1;
--if (nPartTotal > nStor) {
-+if (nPartTotal > 0) {
- var strStor = "";
- if (unplugOk) {
- strStor = "{?de.home.home.js:912?}";
+ var unplugOk = parseInt(g_usbhost_data.unplug_ok, 10) == 1;
+-if (nPartTotal > nStor)
++if (nPartTotal > 0)
+ {
+ if (unplugOk)
+ {
+@@ -814,9 +814,7 @@
  }
- else {
+ else
+ {
 -strStor = "{?de.home.home.js:5308?} ";
 -strStor += "<a href=\"javascript:jslGoTo('home', 'syslog');\">{?de.home.home.js:3744?}</a>";
 -strStor = strStor.fontcolor("#cc0000");
-+strStor = nStor + " of " + nPartTotal + " partitions mounted.";
++strStor = "Mounted " + nStor + " of " + nPartTotal + " partitions.";
  }
  strArr.push(strStor);
  }
