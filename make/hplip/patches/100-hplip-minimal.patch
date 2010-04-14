@@ -1,5 +1,5 @@
---- configure.in.orig	2009-09-07 11:08:25.000000000 +0200
-+++ configure.in	2009-09-07 11:09:59.000000000 +0200
+--- configure.in.orig	2010-02-25 00:08:31.000000000 +0100
++++ configure.in	2010-04-14 23:41:50.000000000 +0200
 @@ -37,15 +37,13 @@
  AC_PROG_CC
  AC_PROG_INSTALL
@@ -17,7 +17,7 @@
  
  # Checks for typedefs, structures, and compiler characteristics.
  AC_C_BIGENDIAN(,[APDK_ENDIAN_FLAG="-DAPDK_LITTLE_ENDIAN"])
-@@ -437,8 +435,6 @@
+@@ -494,8 +492,6 @@
  fi
  
  if test "$hpijs_only_build" = "no"; then
@@ -26,8 +26,8 @@
     AC_CHECK_LIB([usb], [usb_init], [LIBS="$LIBS"], [AC_MSG_ERROR([cannot find libusb support], 2)])
     AC_CHECK_HEADERS(usb.h, ,[AC_MSG_ERROR([cannot find libusb-devel support], 11)])
  fi
---- hplip.conf.in	2008-12-17 21:41:18.000000000 +0100
-+++ hplip.conf.in	2009-01-04 21:09:59.000000000 +0100
+--- hplip.conf.in.orig	2010-02-25 00:07:55.000000000 +0100
++++ hplip.conf.in	2010-04-14 23:41:50.000000000 +0200
 @@ -5,14 +5,6 @@
  
  [dirs]
@@ -43,8 +43,8 @@
  
  # Following values are determined at configure time and cannot be changed.
  [configure]
---- scan/sane/hpaio.c	2008-12-17 21:40:16.000000000 +0100
-+++ scan/sane/hpaio.c	2009-01-04 21:09:59.000000000 +0100
+--- scan/sane/hpaio.c.orig	2010-02-25 00:05:59.000000000 +0100
++++ scan/sane/hpaio.c	2010-04-14 23:41:50.000000000 +0200
 @@ -39,7 +39,6 @@
  #include <sys/stat.h>
  #include <fcntl.h>
@@ -193,8 +193,8 @@
  bugout:
     return total;
  }
---- Makefile.am.orig	2009-09-07 11:17:08.000000000 +0200
-+++ Makefile.am	2009-09-07 12:05:37.000000000 +0200
+--- Makefile.am.orig	2010-02-25 00:07:55.000000000 +0100
++++ Makefile.am	2010-04-14 23:52:03.000000000 +0200
 @@ -8,10 +8,6 @@
  
  hplipdir = $(datadir)/hplip
@@ -224,12 +224,12 @@
  libsane_hpaio_la_LDFLAGS = -version-info 1:0:0
  endif
  # The following is a interlibrary dependency that must be compiled first.
--libsane_hpaio_la_LIBADD = libhpip.la libhpmud.la $(DBUS_LIBS) -lcups -ldl -lsane
-+libsane_hpaio_la_LIBADD = libhpip.la libhpmud.la $(DBUS_LIBS) -ldl -lsane
+-libsane_hpaio_la_LIBADD = libhpip.la libhpmud.la $(DBUS_LIBS) -lcups -ldl
++libsane_hpaio_la_LIBADD = libhpip.la libhpmud.la $(DBUS_LIBS) -ldl
  #libsane_hpaio_la_CFLAGS = -DWITH_NONAMESPACES -DSOAP_DEBUG
  libsane_hpaio_la_CFLAGS = $(DBUS_CFLAGS)
  endif # SCAN_BUILD
-@@ -82,31 +71,10 @@
+@@ -82,36 +71,10 @@
  	ip/xbi2gray.c ip/xcolrspc.c ip/xfakemono.c ip/xgray2bi.c ip/xinvert.c ip/xjpg_enc.c ip/xmatrix.c ip/xpnm.c ip/xscale.c ip/xthumb.c ip/xyxtract.c \
  	ip/hpip.h ip/ipdefs.h ip/xform.h ip/xjpg_dct.h ip/xjpg_huf.h ip/xjpg_mrk.h
  
@@ -238,6 +238,7 @@
 -hp_mkuri_PROGRAMS = hp-mkuri
 -hp_mkuri_SOURCES = io/hpmud/hp-mkuri.c
 -hp_mkuri_LDADD = -ldl libhpmud.la
+-hp_mkuri_CFLAGS = -DCONFDIR=\"$(hplip_confdir)\"
 -
 -# hpmud.rules
 -rulesdir = /etc/udev/rules.d
@@ -255,6 +256,10 @@
 +hplip_confdir = /etc/default.hplip
  hplip_conf_DATA = hplip.conf
  
+-#pstotiff filter
+-pstotiffdir = $(cupsfilterdir)
+-pstotiff_SCRIPTS = fax/filters/pstotiff
+-
 -# hplip.state
 -hplip_statedir = /var/lib/hp
 -dist_hplip_state_DATA = hplip.state
@@ -262,7 +267,7 @@
  if FULL_BUILD
  
  dist_hplip_SCRIPTS = hpssd.py __init__.py hpdio.py
-@@ -317,13 +285,6 @@
+@@ -325,13 +288,6 @@
  dist_policykit_policy_DATA = data/policykit/com.hp.hplip.policy
  endif
  
@@ -276,7 +281,7 @@
  # hplip.desktop
  hplip_desktopdir = $(icondir)
  hplip_desktop_DATA = hplip.desktop
-@@ -350,45 +311,6 @@
+@@ -358,45 +314,6 @@
  dist_rip_SCRIPTS = prnt/hpijs/foomatic-rip-hplip
  endif
  
@@ -322,8 +327,8 @@
  if HPIJS_INSTALL
  # hpijs
  bin_PROGRAMS = hpijs
-@@ -443,37 +365,8 @@
- endif # FAX_BUILD
+@@ -473,37 +390,8 @@
+ endif # HPCUPS ONLY
  endif # HPCUPS_INSTALL
  
 -# PPDs

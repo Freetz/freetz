@@ -1,6 +1,7 @@
-$(call PKG_INIT_BIN, 3.9.8)
+$(call PKG_INIT_BIN, 3.10.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/hplip
+$(PKG)_SOURCE_MD5:=4df6f16c47ae7edd015bf2cf5155f26f
 $(PKG)_LIB_IP_VERSION=0.0.1
 $(PKG)_LIB_IP_BINARY:=$($(PKG)_DIR)/.libs/libhpip.so.$($(PKG)_LIB_IP_VERSION)
 $(PKG)_LIB_IP_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhpip.so.$($(PKG)_LIB_IP_VERSION)
@@ -13,7 +14,6 @@ $(PKG)_LIB_HPAIO_VERSION=1.0.0
 $(PKG)_LIB_HPAIO_BINARY:=$($(PKG)_DIR)/.libs/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
 $(PKG)_LIB_HPAIO_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
 $(PKG)_LIB_HPAIO_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/sane/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
-$(PKG)_SOURCE_MD5:=cb1cf49c5f062993b78fc2768f531ed8
 
 $(PKG)_DEPENDS_ON := sane-backends
 
