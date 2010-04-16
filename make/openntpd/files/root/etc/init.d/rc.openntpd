@@ -7,6 +7,9 @@ MULTIDNTPPARAM=$(multid -? 2>&1 | grep "NTP" | sed 's/^[ \t]*//' | cut -c 1-3)
 
 . /etc/init.d/modlibrc
 
+# include environment required for multid restart
+. /var/env.cache
+
 start() {
 	modlib_adduser ntp -G users -D -S -g "NTP daemon"
 	mkdir -p /mod/home/ntp
