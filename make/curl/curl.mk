@@ -19,7 +19,11 @@ endif
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
 
 $(PKG)_DEPENDS_ON := openssl
+ifeq ($(strip $(FREETZ_PACKAGE_CURL_WITH_ZLIB)),y)
+$(PKG)_DEPENDS_ON += zlib
+endif
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CURL_WITH_ZLIB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CURL_STATIC
 
 $(PKG)_CONFIGURE_ENV += curl_cv_writable_argv=yes
@@ -50,7 +54,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-ca-bundle
 $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
 $(PKG)_CONFIGURE_OPTIONS += --without-libidn
-$(PKG)_CONFIGURE_OPTIONS += --without-zlib
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CURL_WITH_ZLIB),--with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-zlib)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

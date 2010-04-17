@@ -10,6 +10,14 @@ config FREETZ_PACKAGE_CURL
 		authentication, file transfer resume, http proxy tunneling and a
 		busload of other useful tricks.
 
+config FREETZ_PACKAGE_CURL_WITH_ZLIB
+	bool "build with zlib support"
+	depends on FREETZ_PACKAGE_CURL
+	default n
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_CURL_STATIC
+	help
+		This option enables zlib support in curl.
+
 config FREETZ_PACKAGE_CURL_STATIC
 	bool "Statically link libraries"
 	depends on FREETZ_PACKAGE_CURL
