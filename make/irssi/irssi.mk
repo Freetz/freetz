@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 0.8.14)
+$(call PKG_INIT_BIN, 0.8.15)
 $(PKG)_SOURCE:=irssi-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=870db8e319f640c2bf446c30d0c24ef6
 $(PKG)_SITE:=http://irssi.org/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/fe-text/irssi
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/irssi
-$(PKG)_SOURCE_MD5:=7d9437f53209a61af4fe4c9c5528ffa7
 
 ifeq ($(strip $(FREETZ_PACKAGE_IRSSI_WITH_BOT)),y)
 $(PKG)_BOT_BINARY:=$($(PKG)_DIR)/src/fe-none/botti
