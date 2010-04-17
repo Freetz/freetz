@@ -151,14 +151,14 @@ noconfig_targets:=menuconfig config oldconfig defconfig tools \
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
 
-ifeq ($(filter dirclean,$(MAKECMDGOALS)),)
+#ifeq ($(filter dirclean,$(MAKECMDGOALS)),)
 #Simple test if wrong uclibc is used
-ifneq ($(NO_UCLIBC_CHECK),y)
-ifneq ($(shell $(CHECK_UCLIBC_VERSION) && echo OK), OK)
-$(error Error: uClibc-version changed. Please type "make dirclean")
-endif
-endif
-endif
+#ifneq ($(NO_UCLIBC_CHECK),y)
+#ifneq ($(shell $(CHECK_UCLIBC_VERSION) && echo OK), OK)
+#$(error Error: uClibc-version changed. Please type "make dirclean")
+#endif
+#endif
+#endif
 
 endif
 
