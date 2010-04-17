@@ -19,7 +19,7 @@ if [ -z $1 ]; then
 	cgi_begin "$(lang de:"Fehler" en:"Error")"
 	echo "<p>$(lang
 	    de:"Datei '$id' des Pakets '$pkg' ist unbekannt."
-	    en:"File '$id' of packages '$pkg' is unknown."
+	    en:"File '$id' of package '$pkg' is unknown."
 	)</p>"
 	cgi_end
 	exit
