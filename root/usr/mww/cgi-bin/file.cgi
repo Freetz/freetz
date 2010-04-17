@@ -15,6 +15,16 @@ set -- $(grep "^$pkg|$id|" "$file_reg")
 IFS=$OIFS
 title=$3 sec=$4 def=$5
 
+if [ -z $1 ]; then
+	cgi_begin "$(lang de:"Fehler" en:"Error")"
+	echo "<p>$(lang
+	    de:"Datei '$id' des Pakets '$pkg' ist unbekannt."
+	    en:"File '$id' of packages '$pkg' is unknown."
+	)</p>"
+	cgi_end
+	exit
+fi
+
 cgi_begin "$title" "file:$pkg/$id"
 
 # Defaults
