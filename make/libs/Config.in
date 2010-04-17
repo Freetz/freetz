@@ -931,6 +931,7 @@ config FREETZ_LIB_libpcreposix
 	help
 		A POSIX wrapper interface to the Perl Compatible Regular Expression library
 
+menu "XML/XSLT"
 config FREETZ_LIB_libxml2
 	bool "libxml2 (libxml2.so)"
 	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
@@ -940,3 +941,34 @@ config FREETZ_LIB_libxml2
 	default n
 	help
 		XML toolkit from the GNOME project
+
+config FREETZ_LIB_libxml2_WITH_HTML
+	bool "build libxml2 with html support"
+	depends on FREETZ_LIB_libxml2
+	default n
+	help
+		Adds html parsing capability to libxml2. This increases the size of
+		libxml2 by 120kB. Html parsing is required to build libxslt.
+
+config FREETZ_LIB_libxslt
+	bool "libxslt (libxslt.so)"
+	select FREETZ_LIB_libxml2
+	select FREETZ_LIB_libxml2_WITH_HTML
+	default n
+	help
+		Libxslt is the XSLT C library developed for the GNOME project.
+
+		XSLT itself is a an XML language to define transformation for XML. Libxslt is
+		based on libxml2 the XML C library developed for the GNOME project. It also
+		implements most of the EXSLT set of processor-portable extensions functions and
+		some of Saxon's evaluate and expressions extensions.
+
+config FREETZ_LIB_libexslt
+	bool "libexslt (libexslt.so)"
+	select FREETZ_LIB_libxslt
+	default n
+	help
+		Libexslt is the EXSLT C library developed for libxslt (a part of the Gnome project).
+		Much of the initial work on the library was done by Thomas Broyer. EXSLT itself is
+		a community initiative to provide extensions to XSLT.
+endmenu

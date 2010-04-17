@@ -230,6 +230,10 @@ ifeq ($(strip $(FREETZ_LIB_libxml2)),y)
 LIBS+=libxml2
 endif
 
+ifeq ($(strip $(FREETZ_LIB_libxslt)),y)
+LIBS+=xsltproc
+endif
+
 ifeq ($(strip $(FREETZ_LIB_ogg)),y)
 LIBS+=libogg
 endif

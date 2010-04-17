@@ -1,0 +1,55 @@
+--- libexslt/Makefile.in
++++ libexslt/Makefile.in
+@@ -625,7 +625,7 @@
+ 
+ info-am:
+ 
+-install-data-am: install-exsltincHEADERS install-man
++install-data-am: install-exsltincHEADERS
+ 
+ install-dvi: install-dvi-am
+ 
+--- libxslt/Makefile.in
++++ libxslt/Makefile.in
+@@ -670,7 +670,7 @@
+ 
+ info-am:
+ 
+-install-data-am: install-man install-xsltincHEADERS
++install-data-am: install-xsltincHEADERS
+ 
+ install-dvi: install-dvi-am
+ 
+--- Makefile.in
++++ Makefile.in
+@@ -306,12 +306,9 @@
+ SUBDIRS = \
+ 	libxslt \
+ 	libexslt \
+-	xsltproc \
+-	doc \
+-	@PYTHON_SUBDIR@ \
+-	tests
++	xsltproc
+ 
+-DIST_SUBDIRS = libxslt libexslt xsltproc python doc tests
++DIST_SUBDIRS = libxslt libexslt xsltproc
+ confexecdir = $(libdir)
+ confexec_DATA = xsltConf.sh
+ bin_SCRIPTS = xslt-config
+@@ -863,13 +860,13 @@
+ 
+ info-am:
+ 
+-install-data-am: install-m4dataDATA install-pkgconfigDATA
++install-data-am: install-pkgconfigDATA
+ 
+ install-dvi: install-dvi-recursive
+ 
+ install-dvi-am:
+ 
+-install-exec-am: install-binSCRIPTS install-confexecDATA
++install-exec-am: install-binSCRIPTS
+ 
+ install-html: install-html-recursive
+ 

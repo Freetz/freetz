@@ -8,6 +8,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libxml2_WITH_HTML
+
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 endif
@@ -34,7 +36,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ftp=yes
 $(PKG)_CONFIGURE_OPTIONS += --with-c14n=yes
 $(PKG)_CONFIGURE_OPTIONS += --with-catalog=no
 $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
-$(PKG)_CONFIGURE_OPTIONS += --with-html=no
+$(PKG)_CONFIGURE_OPTIONS += --with-html=$(if $(FREETZ_LIB_libxml2_WITH_HTML),yes,no)
 $(PKG)_CONFIGURE_OPTIONS += --with-legacy=no		#deprecated APIs for compatibility
 $(PKG)_CONFIGURE_OPTIONS += --with-output=yes		#serialization support
 $(PKG)_CONFIGURE_OPTIONS += --with-pattern=yes		#xmlPattern selection interface
