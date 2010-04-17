@@ -1,6 +1,6 @@
---- Makefile.am.orig	2009-04-27 14:26:41.000000000 +0200
-+++ Makefile.am	2009-05-22 12:38:18.000000000 +0200
-@@ -38,7 +38,7 @@
+--- Makefile.am
++++ Makefile.am
+@@ -37,7 +37,7 @@
  bin_SCRIPTS = curl-config
  
  SUBDIRS = lib src
@@ -9,7 +9,7 @@
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
-@@ -53,10 +53,10 @@
+@@ -52,10 +52,10 @@
  	done)
  
  html:
@@ -22,7 +22,7 @@
  
  check: test examples
  
-@@ -81,7 +81,7 @@
+@@ -80,7 +80,7 @@
  endif
  
  examples:
@@ -31,7 +31,7 @@
  
  clean-local:
  	@(cd tests; $(MAKE) clean)
-@@ -138,12 +138,12 @@
+@@ -137,12 +137,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
@@ -46,9 +46,9 @@
  
  ca-bundle: lib/mk-ca-bundle.pl
  	@echo "generate a fresh ca-bundle.crt"
---- Makefile.in.orig	2009-05-18 09:07:46.000000000 +0200
-+++ Makefile.in	2009-05-22 12:38:18.000000000 +0200
-@@ -303,7 +303,7 @@
+--- Makefile.in
++++ Makefile.in
+@@ -302,7 +302,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src

@@ -4,22 +4,22 @@
  ## Main body of script. ##
  ## -------------------- ##
  
++cppflags_to_add="-D_REENTRANT -D_GNU_SOURCE"
 +if test "x$CPPFLAGS" = "x"; then
-+    CPPFLAGS="-D_REENTRANT -D_GNU_SOURCE"
++	CPPFLAGS="$cppflags_to_add"
 +else
-+    curl_addto_bugger="-D_REENTRANT -D_GNU_SOURCE"
-+    for i in $curl_addto_bugger; do
-+	apr_addto_duplicate="0"
-+	for j in $CPPFLAGS; do
-+	    if test "x$i" = "x$j"; then
-+		apr_addto_duplicate="1"
-+		break
-+	    fi
++	for i in $cppflags_to_add; do
++		flag_found="0"
++		for j in $CPPFLAGS; do
++			if test "x$i" = "x$j"; then
++				flag_found="1"
++				break
++			fi
++		done
++		if test "$flag_found" = "0"; then
++			CPPFLAGS="$CPPFLAGS $i"
++		fi
 +	done
-+	if test $apr_addto_duplicate = "0"; then
-+	    CPPFLAGS="$CPPFLAGS $i"
-+	fi
-+    done
 +fi
 +
  ac_ext=c
