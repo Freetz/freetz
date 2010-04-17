@@ -72,7 +72,7 @@
     sleep 3
     for i in $DAEMONS $AVMDAEMONS ; do
       killall -15 $i
-@@ -274,9 +293,14 @@
+@@ -274,9 +293,15 @@
       ctlmgr $NICEPARAM $VERBOSEPARAM
     fi
  
@@ -84,10 +84,11 @@
 +     if [ "$(/etc/init.d/rc.websrv status)" == "stopped" ]; then
 +       /etc/init.d/rc.websrv start
 +     fi
++   fi
     fi 
  
     igddstart
-@@ -285,9 +309,9 @@
+@@ -285,9 +310,9 @@
     if [ "$CONFIG_DSL" ] ; then
       if [ "`pidof dsld`" = "" ] ; then
         if [ "$CONFIG_RAMSIZE" = 8 ] ; then
@@ -99,7 +100,7 @@
         fi
       fi
     fi
-@@ -336,9 +360,9 @@
+@@ -336,9 +361,9 @@
        if [ "$1" ] ; then
           AVMDAEMONS="$*"
        elif [ "$CONFIG_DSL" ] ; then
