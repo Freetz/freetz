@@ -114,6 +114,13 @@ config FREETZ_MODULE_ip_conntrack_pptp
 		For more info, read top of the file
 		net/ipv4/netfilter/ip_conntrack_pptp.c
 
+config FREETZ_MODULE_ip_conntrack_rtsp
+	bool "ip_conntrack_rtsp.ko"
+	select FREETZ_MODULE_ip_conntrack
+	default n
+	help
+		Tracking RTSP Connections
+
 config FREETZ_MODULE_ip_conntrack_tftp
 	bool "ip_conntrack_tftp.ko"
 	select FREETZ_MODULE_ip_conntrack
@@ -169,6 +176,13 @@ config FREETZ_MODULE_ip_nat_pptp
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_nat
 	select FREETZ_MODULE_ip_conntrack_pptp
+	default n
+
+config FREETZ_MODULE_ip_nat_rtsp
+	bool "ip_nat_rtsp.ko"
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_conntrack_rtsp
 	default n
 
 config FREETZ_MODULE_ip_nat_tftp
