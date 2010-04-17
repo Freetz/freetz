@@ -11,17 +11,39 @@ config FREETZ_PACKAGE_PHP
 		thrown in. The goal of the language is to allow web developers to write
 		dynamically generated pages quickly.
 
+menu "PHP features"
+depends on FREETZ_PACKAGE_PHP
+
+config FREETZ_PACKAGE_PHP_WITH_CURL
+	bool "build with CURL support"
+	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_PHP_STATIC
+	default n
+	help
+		This option enables the CURL support for PHP
+
 config FREETZ_PACKAGE_PHP_WITH_GD
 	bool "build with GD support"
-	depends on FREETZ_PACKAGE_PHP
 	select FREETZ_LIB_libgd if ! FREETZ_PACKAGE_PHP_STATIC
 	default n
 	help
 		This option enables the GD support for PHP
 
+config FREETZ_PACKAGE_PHP_WITH_ICONV
+	bool "build with ICONV support"
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28 && ! FREETZ_PACKAGE_PHP_STATIC
+	default n
+	help
+		This option enables the ICONV support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_LIBXML
+	bool "build with XML support"
+	select FREETZ_LIB_libxml2 if ! FREETZ_PACKAGE_PHP_STATIC
+	default n
+	help
+		This option enables the XML support for PHP
+
 config FREETZ_PACKAGE_PHP_WITH_SQLITE2
 	bool "build with SQLite (v2) support"
-	depends on FREETZ_PACKAGE_PHP
 	default n
 	help
 		This option enables the SQLite (v2) support for PHP
@@ -30,19 +52,27 @@ config FREETZ_PACKAGE_PHP_WITH_SQLITE2
 
 config FREETZ_PACKAGE_PHP_WITH_SQLITE3
 	bool "build with SQLite (v3) support"
-	depends on FREETZ_PACKAGE_PHP
 	select FREETZ_LIB_libsqlite3 if ! FREETZ_PACKAGE_PHP_STATIC
 	default n
 	help
 		This option enables the SQLite (v3) support for PHP
 
-config FREETZ_PACKAGE_PHP_WITH_LIBXML
-	bool "build with XML support"
-	depends on FREETZ_PACKAGE_PHP
-	select FREETZ_LIB_libxml2 if ! FREETZ_PACKAGE_PHP_STATIC
+config FREETZ_PACKAGE_PHP_WITH_SSL
+	bool "build with SSL support"
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_PHP_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_PHP_STATIC
 	default n
 	help
-		This option enables the XML support for PHP
+		This option enables the SSL support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_ZLIB
+	bool "build with ZLIB support"
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_PHP_STATIC
+	default n
+	help
+		This option enables the ZLIB support for PHP
+
+endmenu
 
 config FREETZ_PACKAGE_PHP_STATIC
 	bool "Create statically linked binary"
@@ -54,8 +84,12 @@ config FREETZ_PACKAGE_PHP_STATIC
 		  - libcrypt.so.0
 		  - libc.so.0
 		  - libgcc_s.so.1
+		  - libcurl.so.4
+		  - libgd.so.2
 		  - libm.so.0
 		  - libpcre.so.0
-		  - libgd.so.2
 		  - libsqlite3.so.0
+		  - libssl.so.0.9.8
+		  - libcrypto.so.0.9.8
 		  - libxml2.so.2
+		  - libz.so.1
