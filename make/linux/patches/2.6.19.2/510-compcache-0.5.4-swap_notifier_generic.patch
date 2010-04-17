@@ -1,0 +1,137 @@
+diff -uprN linux-orig/include/linux/swap.h linux-new/include/linux/swap.h
+--- linux-2.6.19.2/include/linux/swap.h	2009-10-07 20:56:46.000000000 +0530
++++ linux-2.6.19.2/include/linux/swap.h	2009-10-07 20:57:17.000000000 +0530
+@@ -124,6 +124,12 @@ enum {
+ 	SWP_SCANNING	= (1 << 8),	/* refcount in scan_swap_map */
+ };
+ 
++enum swap_event {
++	SWAP_EVENT_SWAPON,
++	SWAP_EVENT_SWAPOFF,
++	SWAP_EVENT_SLOT_FREE,
++};
++
+ #define SWAP_CLUSTER_MAX 32
+ 
+ #define SWAP_MAP_MAX	0x7fff
+@@ -139,6 +145,7 @@ struct swap_info_struct {
+ 	struct block_device *bdev;
+ 	struct list_head extent_list;
+ 	struct swap_extent *curr_swap_extent;
++	struct atomic_notifier_head slot_free_notify_list;
+ 	unsigned old_block_size;
+ 	unsigned short * swap_map;
+ 	unsigned int lowest_bit;
+@@ -252,6 +259,10 @@ extern sector_t swapdev_block(int, pgoff
+ extern struct swap_info_struct *get_swap_info_struct(unsigned);
+ extern int can_share_swap_page(struct page *);
+ extern int remove_exclusive_swap_page(struct page *);
++extern int register_swap_event_notifier(struct notifier_block *nb,
++			enum swap_event event, unsigned long val);
++extern int unregister_swap_event_notifier(struct notifier_block *nb,
++			enum swap_event event, unsigned long val);
+ struct backing_dev_info;
+ 
+ extern spinlock_t swap_lock;
+diff -uprN linux-orig/mm/swapfile.c linux-new/mm/swapfile.c
+--- linux-2.6.19.2/mm/swapfile.c	2009-10-07 20:56:08.000000000 +0530
++++ linux-2.6.19.2/mm/swapfile.c	2009-10-07 20:57:27.000000000 +0530
+@@ -48,6 +48,8 @@ struct swap_list_t swap_list = {-1, -1};
+ static struct swap_info_struct swap_info[MAX_SWAPFILES];
+ 
+ static DEFINE_MUTEX(swapon_mutex);
++static BLOCKING_NOTIFIER_HEAD(swapon_notify_list);
++static BLOCKING_NOTIFIER_HEAD(swapoff_notify_list);
+ 
+ /*
+  * We need this because the bdev->unplug_fn can sleep and we cannot
+@@ -285,6 +287,9 @@ static int swap_entry_free(struct swap_i
+ 				swap_list.next = p - swap_info;
+ 			nr_swap_pages++;
+ 			p->inuse_pages--;
++			atomic_notifier_call_chain(&p->slot_free_notify_list,
++						offset, p->swap_file);
++
+ 		}
+ 	}
+ 	return count;
+@@ -1311,6 +1316,7 @@ asmlinkage long sys_swapoff(const char _
+ 	p->swap_map = NULL;
+ 	p->flags = 0;
+ 	spin_unlock(&swap_lock);
++	blocking_notifier_call_chain(&swapoff_notify_list, type, swap_file);
+ 	mutex_unlock(&swapon_mutex);
+ 	vfree(swap_map);
+ 	inode = mapping->host;
+@@ -1691,7 +1697,9 @@ asmlinkage long sys_swapon(const char __
+ 	} else {
+ 		swap_info[prev].next = p - swap_info;
+ 	}
++	ATOMIC_INIT_NOTIFIER_HEAD(&p->slot_free_notify_list);
+ 	spin_unlock(&swap_lock);
++	blocking_notifier_call_chain(&swapon_notify_list, type, swap_file);
+ 	mutex_unlock(&swapon_mutex);
+ 	error = 0;
+ 	goto out;
+@@ -1844,3 +1852,61 @@ int valid_swaphandles(swp_entry_t entry,
+ 	*offset = ++toff;
+ 	return nr_pages? ++nr_pages: 0;
+ }
++
++int register_swap_event_notifier(struct notifier_block *nb,
++				enum swap_event event, unsigned long val)
++{
++	switch (event) {
++	case SWAP_EVENT_SWAPON:
++		return blocking_notifier_chain_register(
++					&swapon_notify_list, nb);
++	case SWAP_EVENT_SWAPOFF:
++		return blocking_notifier_chain_register(
++					&swapoff_notify_list, nb);
++	case SWAP_EVENT_SLOT_FREE:
++		{
++		struct swap_info_struct *sis;
++
++		if (val > nr_swapfiles)
++			goto out;
++		sis = get_swap_info_struct(val);
++		return atomic_notifier_chain_register(
++				&sis->slot_free_notify_list, nb);
++		}
++	default:
++		printk(KERN_ERR "Invalid swap event: %d\n", event);
++	};
++
++out:
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(register_swap_event_notifier);
++
++int unregister_swap_event_notifier(struct notifier_block *nb,
++				enum swap_event event, unsigned long val)
++{
++	switch (event) {
++	case SWAP_EVENT_SWAPON:
++		return blocking_notifier_chain_unregister(
++					&swapon_notify_list, nb);
++	case SWAP_EVENT_SWAPOFF:
++		return blocking_notifier_chain_unregister(
++					&swapoff_notify_list, nb);
++	case SWAP_EVENT_SLOT_FREE:
++		{
++		struct swap_info_struct *sis;
++
++		if (val > nr_swapfiles)
++			goto out;
++		sis = get_swap_info_struct(val);
++		return atomic_notifier_chain_unregister(
++				&sis->slot_free_notify_list, nb);
++		}
++	default:
++		printk(KERN_ERR "Invalid swap event: %d\n", event);
++	};
++
++out:
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(unregister_swap_event_notifier);

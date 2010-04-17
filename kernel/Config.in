@@ -3,6 +3,22 @@ config FREETZ_MODULES_ALL
 	depends on FREETZ_REPLACE_KERNEL
 	default n
 
+menu "block"
+
+config FREETZ_MODULE_ramzswap
+	bool "ramzswap.ko"
+	depends on FREETZ_REPLACE_KERNEL
+	select FREETZ_MODULE_xvmalloc
+	select FREETZ_MODULE_lzo_compress
+	select FREETZ_MODULE_lzo_decompress
+	default n
+
+config FREETZ_MODULE_xvmalloc
+	bool "xvmalloc.ko"
+	default n
+
+endmenu
+
 menu "crypto"
 
 config FREETZ_MODULE_crypto_algapi
@@ -373,6 +389,15 @@ menu "lib"
 config FREETZ_MODULE_crc_ccitt
 	bool "crc_ccitt.ko"
 	default n
+
+config FREETZ_MODULE_lzo_compress
+	bool "lzo_compress.ko"
+	default n
+
+config FREETZ_MODULE_lzo_decompress
+	bool "lzo_decompress.ko"
+	default n
+
 endmenu
 
 menu "net"

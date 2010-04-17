@@ -1,0 +1,2069 @@
+diff -uaNr a/block/Kconfig linux-2.6.19.2/block/Kconfig
+--- linux-2.6.19.2/block/Kconfig	2010-04-16 18:55:25.000000000 +0200
++++ linux-2.6.19.2/block/Kconfig	2010-04-16 18:50:06.000000000 +0200
+@@ -54,3 +54,14 @@
+ endif
+ 
+ source block/Kconfig.iosched
++
++
++config XVMALLOC
++	tristate "XVMalloc"
++	default m
++
++config RAMZSWAP
++	tristate "Compressed Swap Device"
++	depends on XVMALLOC && LZO_COMPRESS && LZO_DECOMPRESS
++	default m
++
+diff -uaNr a/block/Makefile linux-2.6.19.2/block/Makefile
+--- linux-2.6.19.2/block/Makefile	2010-04-16 18:55:25.000000000 +0200
++++ linux-2.6.19.2/block/Makefile	2010-04-16 18:52:11.000000000 +0200
+@@ -10,3 +10,7 @@
+ obj-$(CONFIG_IOSCHED_CFQ)	+= cfq-iosched.o
+ 
+ obj-$(CONFIG_BLK_DEV_IO_TRACE)	+= blktrace.o
++
++obj-$(CONFIG_XVMALLOC)	+= ramzswap/
++obj-$(CONFIG_RAMZSWAP)	+= ramzswap/
++
+diff -uaNr a/block/ramzswap/compat.h linux-2.6.19.2/block/ramzswap/compat.h
+--- linux-2.6.19.2/block/ramzswap/compat.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/block/ramzswap/compat.h	2010-04-16 18:53:01.000000000 +0200
+@@ -0,0 +1,36 @@
++#ifndef _RAMZSWAP_COMPAT_H_
++#define _RAMZSWAP_COMPAT_H_
++
++#include <linux/version.h>
++#include <asm/kmap_types.h>
++
++/* Uncomment this if you are using swap free notify patch */
++#define CONFIG_SWAP_NOTIFIERS
++
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,23)
++#define BIO_IO_ERROR(bio)	bio_io_error(bio, PAGE_SIZE)
++#define BIO_ENDIO(bio, error)	bio_endio(bio, PAGE_SIZE, error)
++#else
++#define BIO_IO_ERROR(bio)	bio_io_error(bio)
++#define BIO_ENDIO(bio, error)	bio_endio(bio, error)
++#endif
++
++#ifndef pr_err
++#define pr_err(fmt, arg...) \
++	printk(KERN_ERR fmt, ##arg)
++#endif
++
++#ifndef pr_warning
++#define pr_warning(fmt, arg...) \
++	printk(KERN_WARNING fmt, ##arg)
++#endif
++
++#ifndef pr_info
++#define pr_info(fmt, arg...) \
++	printk(KERN_ERR fmt, ##arg)
++#endif
++
++#undef BIT
++#define BIT(x)  (1UL << (x))
++
++#endif
+diff -uaNr a/block/ramzswap/Makefile linux-2.6.19.2/block/ramzswap/Makefile
+--- linux-2.6.19.2/block/ramzswap/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/block/ramzswap/Makefile	2010-04-16 18:51:59.000000000 +0200
+@@ -0,0 +1,8 @@
++
++EXTRA_CFLAGS	:=	-DCONFIG_BLK_DEV_RAMZSWAP_STATS	\
++			-I../xvmalloc \
++			-g -Wall
++
++obj-m	+= xvmalloc.o
++obj-m	+= ramzswap.o
++
+diff -uaNr a/block/ramzswap/ramzswap.c linux-2.6.19.2/block/ramzswap/ramzswap.c
+--- linux-2.6.19.2/block/ramzswap/ramzswap.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/block/ramzswap/ramzswap.c	2009-10-17 08:50:06.000000000 +0200
+@@ -0,0 +1,1135 @@
++/*
++ * Compressed RAM based swap device
++ *
++ * Copyright (C) 2008, 2009  Nitin Gupta
++ *
++ * This RAM based block device acts as swap disk.
++ * Pages swapped to this device are compressed and
++ * stored in memory.
++ *
++ * Released under the terms of GNU General Public License Version 2.0
++ *
++ * Project home: http://compcache.googlecode.com
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/bitops.h>
++#include <linux/blkdev.h>
++#include <linux/buffer_head.h>
++#include <linux/device.h>
++#include <linux/genhd.h>
++#include <linux/highmem.h>
++#include <linux/lzo.h>
++#include <linux/mutex.h>
++#include <linux/proc_fs.h>
++#include <linux/string.h>
++#include <linux/swap.h>
++#include <linux/swapops.h>
++#include <linux/vmalloc.h>
++
++#include "compat.h"
++#include "ramzswap.h"
++
++/* Globals */
++static struct ramzswap rzs;
++static struct ramzswap_stats stats;
++/*
++ * Pages that compress to larger than this size are
++ * forwarded to backing swap, if present or stored
++ * uncompressed in memory otherwise.
++ */
++static unsigned int MAX_CPAGE_SIZE;
++
++/* Module params (documentation at end) */
++static unsigned long disksize_kb;
++static unsigned long memlimit_kb;
++static char *backing_swap;
++
++static int __init ramzswap_init(void);
++static struct block_device_operations ramzswap_devops = {
++	.owner = THIS_MODULE,
++};
++
++static int test_flag(u32 index, enum rzs_pageflags flag)
++{
++	return rzs.table[index].flags & BIT(flag);
++}
++
++static void set_flag(u32 index, enum rzs_pageflags flag)
++{
++	rzs.table[index].flags |= BIT(flag);
++}
++
++static void clear_flag(u32 index, enum rzs_pageflags flag)
++{
++	rzs.table[index].flags &= ~BIT(flag);
++}
++
++static int page_zero_filled(void *ptr)
++{
++	u32 pos;
++	u64 *page;
++
++	page = (u64 *)ptr;
++
++	for (pos = 0; pos != PAGE_SIZE / sizeof(*page); pos++) {
++		if (page[pos])
++			return 0;
++	}
++
++	return 1;
++}
++
++/*
++ * Given <pagenum, offset> pair, provide a dereferencable pointer.
++ */
++static void *get_ptr_atomic(u32 pagenum, u16 offset, enum km_type type)
++{
++	unsigned char *page;
++
++	page = kmap_atomic(pfn_to_page(pagenum), type);
++	return page + offset;
++}
++
++static void put_ptr_atomic(void *ptr, enum km_type type)
++{
++	kunmap_atomic(ptr, type);
++}
++
++static void ramzswap_flush_dcache_page(struct page *page)
++{
++#ifdef CONFIG_ARM
++	int flag = 0;
++	/*
++	 * Ugly hack to get flush_dcache_page() work on ARM.
++	 * page_mapping(page) == NULL after clearing this swap cache flag.
++	 * Without clearing this flag, flush_dcache_page() will simply set
++	 * "PG_dcache_dirty" bit and return.
++	 */
++	if (PageSwapCache(page)) {
++		flag = 1;
++		ClearPageSwapCache(page);
++	}
++#endif
++	flush_dcache_page(page);
++#ifdef CONFIG_ARM
++	if (flag)
++		SetPageSwapCache(page);
++#endif
++}
++
++#if defined(STATS)
++static struct proc_dir_entry *proc;
++
++static int proc_ramzswap_read(char *page, char **start, off_t off,
++				int count, int *eof, void *data)
++{
++	int len;
++	size_t succ_writes, mem_used;
++	unsigned int good_compress_perc = 0, no_compress_perc = 0;
++
++	mem_used = xv_get_total_size_bytes(rzs.mem_pool)
++			+ (stats.pages_expand << PAGE_SHIFT);
++
++	if (off > 0) {
++		*eof = 1;
++		return 0;
++	}
++
++#define K(x)	((x) >> 10)
++	/* Basic stats */
++	len = sprintf(page,
++		"DiskSize:	%8zu kB\n",
++		(size_t)(K(rzs.disksize)));
++
++	if (rzs.backing_swap) {
++		/* This must always be less than ComprDataSize */
++		len += sprintf(page + len,
++			"MemLimit:	%8zu kB\n",
++			K(rzs.memlimit));
++	}
++
++	succ_writes = stats.num_writes - stats.failed_writes;
++
++	if (succ_writes && stats.pages_stored) {
++		good_compress_perc = stats.good_compress * 100
++					/ stats.pages_stored;
++		no_compress_perc = stats.pages_expand * 100
++					/ stats.pages_stored;
++	}
++
++	/* Extended stats */
++	len += sprintf(page + len,
++		"NumReads:	%8llu\n"
++		"NumWrites:	%8llu\n"
++		"FailedReads:	%8llu\n"
++		"FailedWrites:	%8llu\n"
++		"InvalidIO:	%8llu\n"
++		"NotifyFree:	%8llu\n"
++		"ZeroPages:	%8u\n"
++		"GoodCompress:	%8u %%\n"
++		"NoCompress:	%8u %%\n"
++		"PagesStored:	%8u\n"
++		"PagesUsed:	%8zu\n"
++		"OrigDataSize:	%8zu kB\n"
++		"ComprDataSize:	%8zu kB\n"
++		"MemUsedTotal:	%8zu kB\n",
++		stats.num_reads,
++		stats.num_writes,
++		stats.failed_reads,
++		stats.failed_writes,
++		stats.invalid_io,
++		stats.notify_free,
++		stats.pages_zero,
++		good_compress_perc,
++		no_compress_perc,
++		stats.pages_stored,
++		mem_used >> PAGE_SHIFT,
++		(size_t)(K(stats.pages_stored << PAGE_SHIFT)),
++		(size_t)(K(stats.compr_size)),
++		(size_t)(K(mem_used)));
++
++	if (rzs.backing_swap) {
++		/* This must always be less than ComprDataSize */
++		len += sprintf(page + len,
++			"BDevNumReads:	%8llu\n"
++			"BDevNumWrites:	%8llu\n",
++			stats.bdev_num_reads,
++			stats.bdev_num_writes);
++	}
++
++	return len;
++}
++#endif	/* STATS */
++
++/*
++ * Check if value of backing_swap module param is sane.
++ * Claim this device and set ramzswap size equal to
++ * size of this block device.
++ */
++static int setup_backing_swap(void)
++{
++	int error = 0;
++	struct inode *inode;
++	struct file *swap_file;
++	struct address_space *mapping;
++	struct block_device *bdev = NULL;
++
++	if (backing_swap == NULL) {
++		pr_debug(C "backing_swap param not given\n");
++		goto out;
++	}
++
++	pr_info(C "Using backing swap device: %s\n", backing_swap);
++
++	swap_file = filp_open(backing_swap, O_RDWR | O_LARGEFILE, 0);
++	if (IS_ERR(swap_file)) {
++		pr_err(C "Error opening backing device: %s\n", backing_swap);
++		error = -EINVAL;
++		goto out;
++	}
++
++	mapping = swap_file->f_mapping;
++	inode = mapping->host;
++
++	if (S_ISBLK(inode->i_mode)) {
++		bdev = I_BDEV(inode);
++		error = bd_claim(bdev, ramzswap_init);
++		if (error < 0) {
++			bdev = NULL;
++			goto bad_param;
++		}
++		rzs.old_block_size = block_size(bdev);
++		error = set_blocksize(bdev, PAGE_SIZE);
++		if (error < 0)
++			goto bad_param;
++	} else {
++		/* TODO: support for regular file as backing swap */
++		pr_info(C "%s is not a block device.\n", backing_swap);
++		error = -EINVAL;
++		goto out;
++	}
++
++	rzs.swap_file = swap_file;
++	rzs.backing_swap = bdev;
++	rzs.disksize = i_size_read(inode);
++	BUG_ON(!rzs.disksize);
++
++	return 0;
++
++bad_param:
++	if (bdev) {
++		set_blocksize(bdev, rzs.old_block_size);
++		bd_release(bdev);
++	}
++	filp_close(swap_file, NULL);
++
++out:
++	rzs.backing_swap = NULL;
++	return error;
++}
++
++/*
++ * Check if request is within bounds and page aligned.
++ */
++static inline int valid_swap_request(struct bio *bio)
++{
++	if (unlikely(
++		(bio->bi_sector >= (rzs.disksize >> SECTOR_SHIFT)) ||
++		(bio->bi_sector & (SECTORS_PER_PAGE - 1)) ||
++		(bio->bi_vcnt != 1) ||
++		(bio->bi_size != PAGE_SIZE) ||
++		(bio->bi_io_vec[0].bv_offset != 0))) {
++
++		return 0;
++	}
++
++	/* swap request is valid */
++	return 1;
++}
++
++static void ramzswap_free_page(size_t index)
++{
++	u32 clen;
++	void *obj;
++
++	u32 pagenum = rzs.table[index].pagenum;
++	u32 offset = rzs.table[index].offset;
++
++	if (unlikely(!pagenum)) {
++		if (test_flag(index, RZS_ZERO)) {
++			clear_flag(index, RZS_ZERO);
++			stat_dec(stats.pages_zero);
++		}
++		return;
++	}
++
++	if (unlikely(test_flag(index, RZS_UNCOMPRESSED))) {
++		clen = PAGE_SIZE;
++		__free_page(pfn_to_page(pagenum));
++		clear_flag(index, RZS_UNCOMPRESSED);
++		stat_dec(stats.pages_expand);
++		goto out;
++	}
++
++	obj = get_ptr_atomic(pagenum, offset, KM_USER0);
++	clen = xv_get_object_size(obj) - sizeof(struct zobj_header);
++	put_ptr_atomic(obj, KM_USER0);
++
++	xv_free(rzs.mem_pool, pagenum, offset);
++	stat_dec_if_less(stats.good_compress, clen, PAGE_SIZE / 2 + 1);
++
++out:
++	stats.compr_size -= clen;
++	stat_dec(stats.pages_stored);
++
++	rzs.table[index].pagenum = 0;
++	rzs.table[index].offset = 0;
++}
++
++#ifdef CONFIG_SWAP_FREE_NOTIFY
++/*
++ * callback function called when swap_map[offset] == 0
++ * i.e page at this swap offset is no longer used
++ */
++static void ramzswap_free_notify(unsigned long index)
++{
++	if (rzs.table[index].pagenum) {
++		ramzswap_free_page(index);
++		stat_inc(rzs.stats.notify_free);
++	}
++}
++#endif
++
++int handle_zero_page(struct bio *bio)
++{
++	void *user_mem;
++	struct page *page = bio->bi_io_vec[0].bv_page;
++
++	user_mem = get_ptr_atomic(page_to_pfn(page), 0, KM_USER0);
++	memset(user_mem, 0, PAGE_SIZE);
++	put_ptr_atomic(user_mem, KM_USER0);
++
++	ramzswap_flush_dcache_page(page);
++
++	set_bit(BIO_UPTODATE, &bio->bi_flags);
++	BIO_ENDIO(bio, 0);
++	return 0;
++}
++
++int handle_uncompressed_page(struct bio *bio)
++{
++	u32 index;
++	struct page *page;
++	unsigned char *user_mem, *cmem;
++
++	page = bio->bi_io_vec[0].bv_page;
++	index = bio->bi_sector >>SECTORS_PER_PAGE_SHIFT;
++
++	user_mem = get_ptr_atomic(page_to_pfn(page), 0, KM_USER0);
++	cmem = get_ptr_atomic(rzs.table[index].pagenum,
++			rzs.table[index].offset, KM_USER1);
++
++	memcpy(user_mem, cmem, PAGE_SIZE);
++	put_ptr_atomic(user_mem, KM_USER0);
++	put_ptr_atomic(cmem, KM_USER1);
++
++	ramzswap_flush_dcache_page(page);
++
++	set_bit(BIO_UPTODATE, &bio->bi_flags);
++	BIO_ENDIO(bio, 0);
++	return 0;
++}
++
++
++/*
++ * Called when request page is not present in ramzswap.
++ * Its either in backing swap device (if present) or
++ * this is an attempt to read before any previous write
++ * to this location - this happens due to readahead when
++ * swap device is read from user-space (e.g. during swapon)
++ */
++int handle_ramzswap_fault(struct bio *bio)
++{
++	void *user_mem;
++	struct page *page = bio->bi_io_vec[0].bv_page;
++
++	/*
++	 * Always forward such requests to backing swap
++	 * device (if present)
++	 */
++	if (rzs.backing_swap) {
++		stat_dec(stats.num_reads);
++		stat_inc(stats.bdev_num_reads);
++		bio->bi_bdev = rzs.backing_swap;
++		return 1;
++	}
++
++	/*
++	 * Its unlikely event in case backing dev is
++	 * not present
++	 */
++	pr_debug(C "Read before write on swap device: "
++		"sector=%lu, size=%u, offset=%u\n",
++		(ulong)(bio->bi_sector), bio->bi_size,
++		bio->bi_io_vec[0].bv_offset);
++	user_mem = kmap(page);
++	memset(user_mem, 0, PAGE_SIZE);
++	kunmap(page);
++
++	set_bit(BIO_UPTODATE, &bio->bi_flags);
++	BIO_ENDIO(bio, 0);
++	return 0;
++}
++
++#ifdef CONFIG_SWAP_NOTIFIERS
++static int ramzswap_slot_free_notify(struct notifier_block *self,
++			unsigned long index, void *swap_file)
++{
++	ramzswap_free_page(index);
++	stat_inc(stats.notify_free);
++	return 0;
++}
++
++static struct notifier_block ramzswap_slot_free_nb = {
++	.notifier_call = ramzswap_slot_free_notify
++};
++
++static int ramzswap_swapon_notify(struct notifier_block *self,
++			unsigned long swap_id, void *swap_file)
++{
++	int ret;
++	struct block_device *bdev;
++	struct inode *inode;
++
++	inode = ((struct file *)swap_file)->f_mapping->host;
++	bdev = I_BDEV(inode);
++	if ((struct ramzswap *)(bdev->bd_disk->private_data) != &rzs)
++		return 0;
++
++	ret = register_swap_event_notifier(&ramzswap_slot_free_nb,
++				SWAP_EVENT_SLOT_FREE, swap_id);
++	if (ret)
++		pr_err("Error registering swap free notifier\n");
++	return ret;
++}
++
++static int ramzswap_swapoff_notify(struct notifier_block *self,
++			unsigned long swap_id, void *swap_file)
++{
++	struct block_device *bdev;
++	struct inode *inode;
++
++	inode = ((struct file *)swap_file)->f_mapping->host;
++	bdev = I_BDEV(inode);
++	if ((struct ramzswap *)(bdev->bd_disk->private_data) != &rzs)
++		return 0;
++
++	unregister_swap_event_notifier(&ramzswap_slot_free_nb,
++				SWAP_EVENT_SLOT_FREE, swap_id);
++	return 0;
++}
++
++static struct notifier_block ramzswap_swapon_nb = {
++	.notifier_call = ramzswap_swapon_notify
++};
++
++static struct notifier_block ramzswap_swapoff_nb = {
++	.notifier_call = ramzswap_swapoff_notify
++};
++#endif
++
++int ramzswap_read(struct bio *bio)
++{
++	int ret;
++	u32 index;
++	size_t clen;
++	struct page *page;
++	struct zobj_header *zheader;
++	unsigned char *user_mem, *cmem;
++
++	stat_inc(stats.num_reads);
++
++	page = bio->bi_io_vec[0].bv_page;
++	index = bio->bi_sector >> SECTORS_PER_PAGE_SHIFT;
++
++	if (test_flag(index, RZS_ZERO))
++		return handle_zero_page(bio);
++
++	/* Requested page is not present in compressed area */
++	if (!rzs.table[index].pagenum)
++		return handle_ramzswap_fault(bio);
++
++	/* Page is stored uncompressed since its incompressible */
++	if (unlikely(test_flag(index, RZS_UNCOMPRESSED)))
++		return handle_uncompressed_page(bio);
++
++	user_mem = get_ptr_atomic(page_to_pfn(page), 0, KM_USER0);
++	clen = PAGE_SIZE;
++
++	cmem = get_ptr_atomic(rzs.table[index].pagenum,
++			rzs.table[index].offset, KM_USER1);
++
++	ret = lzo1x_decompress_safe(
++		cmem + sizeof(*zheader),
++		xv_get_object_size(cmem) - sizeof(*zheader),
++		user_mem, &clen);
++
++	put_ptr_atomic(user_mem, KM_USER0);
++	put_ptr_atomic(cmem, KM_USER1);
++
++	/* should NEVER happen */
++	if (unlikely(ret != LZO_E_OK)) {
++		pr_err(C "Decompression failed! err=%d, page=%u\n",
++			ret, index);
++		stat_inc(stats.failed_reads);
++		goto out;
++	}
++
++	ramzswap_flush_dcache_page(page);
++
++	set_bit(BIO_UPTODATE, &bio->bi_flags);
++	BIO_ENDIO(bio, 0);
++	return 0;
++
++out:
++	BIO_IO_ERROR(bio);
++	return 0;
++}
++
++int ramzswap_write(struct bio *bio)
++{
++	int ret, fwd_write_request = 0;
++	u32 offset;
++	size_t clen, index;
++	struct zobj_header *zheader;
++	struct page *page, *page_store;
++	unsigned char *user_mem, *cmem, *src;
++
++	stat_inc(stats.num_writes);
++
++	page = bio->bi_io_vec[0].bv_page;
++	index = bio->bi_sector >> SECTORS_PER_PAGE_SHIFT;
++
++	src = rzs.compress_buffer;
++
++	/*
++	 * System swaps to same sector again when the stored page
++	 * is no longer referenced by any process. So, its now safe
++	 * to free the memory that was allocated for this page.
++	 */
++	if (rzs.table[index].pagenum)
++		ramzswap_free_page(index);
++
++	/*
++	 * No memory ia allocated for zero filled pages.
++	 * Simply clear zero page flag.
++	 */
++	if (test_flag(index, RZS_ZERO)) {
++		stat_dec(stats.pages_zero);
++		clear_flag(index, RZS_ZERO);
++	}
++
++	mutex_lock(&rzs.lock);
++
++	user_mem = get_ptr_atomic(page_to_pfn(page), 0, KM_USER0);
++	if (page_zero_filled(user_mem)) {
++		put_ptr_atomic(user_mem, KM_USER0);
++		mutex_unlock(&rzs.lock);
++		stat_inc(stats.pages_zero);
++		set_flag(index, RZS_ZERO);
++
++		set_bit(BIO_UPTODATE, &bio->bi_flags);
++		BIO_ENDIO(bio, 0);
++		return 0;
++	}
++
++	if (rzs.backing_swap &&
++		(stats.compr_size > rzs.memlimit - PAGE_SIZE)) {
++		put_ptr_atomic(user_mem, KM_USER0);
++		mutex_unlock(&rzs.lock);
++		fwd_write_request = 1;
++		goto out;
++	}
++
++	ret = lzo1x_1_compress(user_mem, PAGE_SIZE, src, &clen,
++				rzs.compress_workmem);
++
++	put_ptr_atomic(user_mem, KM_USER0);
++
++	if (unlikely(ret != LZO_E_OK)) {
++		mutex_unlock(&rzs.lock);
++		pr_err(C "Compression failed! err=%d\n", ret);
++		stat_inc(stats.failed_writes);
++		goto out;
++	}
++
++	/*
++	 * Page is incompressible. Forward it to backing swap
++	 * if present. Otherwise, store it as-is (uncompressed)
++	 * since we do not want to return too many swap write
++	 * errors which has side effect of hanging the system.
++	 */
++	if (unlikely(clen > MAX_CPAGE_SIZE)) {
++		if (rzs.backing_swap) {
++			mutex_unlock(&rzs.lock);
++			fwd_write_request = 1;
++			goto out;
++		}
++
++		clen = PAGE_SIZE;
++		page_store = alloc_page(GFP_NOIO | __GFP_HIGHMEM);
++		if (unlikely(!page_store)) {
++			mutex_unlock(&rzs.lock);
++			stat_inc(stats.failed_writes);
++			goto out;
++		}
++
++		offset = 0;
++		set_flag(index, RZS_UNCOMPRESSED);
++		stat_inc(stats.pages_expand);
++		rzs.table[index].pagenum = page_to_pfn(page_store);
++		src = get_ptr_atomic(page_to_pfn(page), 0, KM_USER0);
++		goto memstore;
++	}
++
++	if (xv_malloc(rzs.mem_pool, clen + sizeof(*zheader),
++			&rzs.table[index].pagenum, &offset,
++			GFP_NOIO | __GFP_HIGHMEM)) {
++		mutex_unlock(&rzs.lock);
++		pr_info(C "Error allocating memory for compressed "
++			"page: %zu, size=%zu\n", index, clen);
++		stat_inc(stats.failed_writes);
++		if (rzs.backing_swap)
++			fwd_write_request = 1;
++		goto out;
++	}
++
++memstore:
++	rzs.table[index].offset = offset;
++
++	cmem = get_ptr_atomic(rzs.table[index].pagenum,
++			rzs.table[index].offset, KM_USER1);
++
++#if 0
++	/* Back-reference needed for memory defragmentation */
++	if (!test_flag(index, RZS_UNCOMPRESSED)) {
++		zheader = (struct zobj_header *)cmem;
++		zheader->table_idx = index;
++		cmem += sizeof(*zheader);
++	}
++#endif
++
++	memcpy(cmem, src, clen);
++
++	put_ptr_atomic(cmem, KM_USER1);
++	if (unlikely(test_flag(index, RZS_UNCOMPRESSED)))
++		put_ptr_atomic(src, KM_USER0);
++
++	/* Update stats */
++	stats.compr_size += clen;
++	stat_inc(stats.pages_stored);
++	stat_inc_if_less(stats.good_compress, clen, PAGE_SIZE / 2 + 1);
++
++	mutex_unlock(&rzs.lock);
++
++	set_bit(BIO_UPTODATE, &bio->bi_flags);
++	BIO_ENDIO(bio, 0);
++	return 0;
++
++out:
++	if (fwd_write_request) {
++		stat_inc(stats.bdev_num_writes);
++		bio->bi_bdev = rzs.backing_swap;
++		return 1;
++	}
++
++	BIO_IO_ERROR(bio);
++	return 0;
++}
++
++/*
++ * Handler function for all ramzswap I/O requests.
++ */
++static int ramzswap_make_request(struct request_queue *queue, struct bio *bio)
++{
++	int ret = 0;
++
++	if (!valid_swap_request(bio)) {
++		stat_inc(stats.invalid_io);
++		BIO_IO_ERROR(bio);
++		return 0;
++	}
++
++	switch (bio_data_dir(bio)) {
++	case READ:
++		ret = ramzswap_read(bio);
++		break;
++
++	case WRITE:
++		ret = ramzswap_write(bio);
++		break;
++	}
++
++	return ret;
++}
++
++/*
++ * Swap header (1st page of swap device) contains information
++ * to indentify it as a swap partition. Prepare such a header
++ * for ramzswap device (ramzswap0) so that swapon can identify
++ * it as swap partition. In case backing swap device is provided,
++ * copy its swap header.
++ */
++static int setup_swap_header(union swap_header *s)
++{
++	int ret = 0;
++	struct page *page;
++	struct address_space *mapping;
++	union swap_header *backing_swap_header;
++
++	/*
++	 * There is no backing swap device. Create a swap header
++	 * that is acceptable by swapon.
++	 */
++	if (rzs.backing_swap == NULL) {
++		s->info.version = 1;
++		s->info.last_page = (rzs.disksize >> PAGE_SHIFT) - 1;
++		s->info.nr_badpages = 0;
++		memcpy(s->magic.magic, "SWAPSPACE2", 10);
++		return 0;
++	}
++
++	/*
++	 * We have a backing swap device. Copy its swap header
++	 * to ramzswap device header. If this header contains
++	 * invalid information (backing device not a swap
++	 * partition, etc.), swapon will fail for ramzswap
++	 * which is correct behavior - we don't want to swap
++	 * over filesystem partition!
++	 */
++
++	/* Read the backing swap header (code from sys_swapon) */
++	mapping = rzs.swap_file->f_mapping;
++	if (!mapping->a_ops->readpage) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	page = read_mapping_page(mapping, 0, rzs.swap_file);
++	if (IS_ERR(page)) {
++		ret = PTR_ERR(page);
++		goto out;
++	}
++
++	backing_swap_header = kmap(page);
++	memcpy(s, backing_swap_header, sizeof(*s));
++	if (s->info.nr_badpages) {
++		pr_info("Cannot use backing swap with bad pages (%u)\n",
++			s->info.nr_badpages);
++		ret = -EINVAL;
++	}
++	/*
++	 * ramzswap disksize equals number of usable pages in backing
++	 * swap. Set last_page in swap header to match this disksize
++	 * ('last_page' means 0-based index of last usable swap page).
++	 */
++	s->info.last_page = (rzs.disksize >> PAGE_SHIFT) - 1; 
++	kunmap(page);
++
++out:
++	return ret;
++}
++
++static void ramzswap_set_disksize(size_t totalram_bytes)
++{
++	rzs.disksize = disksize_kb << 10;
++
++	if (!disksize_kb) {
++		pr_info(C
++		"disk size not provided. You can use disksize_kb module "
++		"param to specify size.\nUsing default: (%u%% of RAM).\n",
++		DEFAULT_DISKSIZE_PERC_RAM
++		);
++		rzs.disksize = DEFAULT_DISKSIZE_PERC_RAM *
++					(totalram_bytes / 100);
++	}
++
++	if (disksize_kb > 2 * (totalram_bytes >> 10)) {
++		pr_info(C
++		"There is little point creating a ramzswap of greater than "
++		"twice the size of memory since we expect a 2:1 compression "
++		"ratio. Note that ramzswap uses about 0.1%% of the size of "
++		"the swap device when not in use so a huge ramzswap is "
++		"wasteful.\n"
++		"\tMemory Size: %zu kB\n"
++		"\tSize you selected: %lu kB\n"
++		"Continuing anyway ...\n",
++		totalram_bytes >> 10, disksize_kb
++		);
++	}
++
++	rzs.disksize &= PAGE_MASK;
++	pr_info(C "disk size set to %zu kB\n", rzs.disksize >> 10);
++}
++
++/*
++ * memlimit cannot be greater than backing disk size.
++ */
++static void ramzswap_set_memlimit(size_t totalram_bytes)
++{
++	int memlimit_valid = 1;
++	rzs.memlimit = memlimit_kb << 10;
++
++	if (!rzs.memlimit) {
++		pr_info(C "memory limit not set. You can use "
++			"memlimit_kb module param to specify limit.");
++		memlimit_valid = 0;
++	}
++
++	if (rzs.memlimit > rzs.disksize) {
++		pr_info(C "memory limit cannot be greater than "
++			"disksize: limit=%zu, disksize=%zu",
++			rzs.memlimit, rzs.disksize);
++		memlimit_valid = 0;
++	}
++
++	if (!memlimit_valid) {
++		size_t mempart, disksize;
++		pr_info(C "\nUsing default: MIN[(%u%% of RAM), "
++			"(backing disk size)].\n",
++			DEFAULT_MEMLIMIT_PERC_RAM);
++		mempart = DEFAULT_MEMLIMIT_PERC_RAM * (totalram_bytes / 100);
++		disksize = rzs.disksize;
++		rzs.memlimit = mempart > disksize ? disksize : mempart;
++	}
++
++	if (rzs.memlimit > totalram_bytes / 2) {
++		pr_info(C
++		"Its not advisable setting limit more than half of "
++		"size of memory since we expect a 2:1 compression ratio. "
++		"Limit represents amount of *compressed* data we can keep "
++		"in memory!\n"
++		"\tMemory Size: %zu kB\n"
++		"\tLimit you selected: %lu kB\n"
++		"Continuing anyway ...\n",
++		totalram_bytes >> 10, memlimit_kb
++		);
++	}
++
++	rzs.memlimit &= PAGE_MASK;
++	BUG_ON(!rzs.memlimit);
++
++	pr_info(C "memory limit set to %zu kB\n", rzs.memlimit >> 10);
++}
++
++static int __init ramzswap_init(void)
++{
++	int ret;
++	size_t num_pages, totalram_bytes;
++	struct page *page;
++	void *swap_header;
++
++	mutex_init(&rzs.lock);
++
++	ret = setup_backing_swap();
++	if (ret)
++		goto fail;
++
++	totalram_bytes = totalram_pages << PAGE_SHIFT;
++
++	if (rzs.backing_swap)
++		ramzswap_set_memlimit(totalram_bytes);
++	else
++		ramzswap_set_disksize(totalram_bytes);
++
++	rzs.compress_workmem = kmalloc(LZO1X_MEM_COMPRESS, GFP_KERNEL);
++	if (rzs.compress_workmem == NULL) {
++		pr_err(C "Error allocating compressor working memory\n");
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++	rzs.compress_buffer = kmalloc(2 * PAGE_SIZE, GFP_KERNEL);
++	if (rzs.compress_buffer == NULL) {
++		pr_err(C "Error allocating compressor buffer space\n");
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++	num_pages = rzs.disksize >> PAGE_SHIFT;
++	rzs.table = vmalloc(num_pages * sizeof(*rzs.table));
++	if (rzs.table == NULL) {
++		pr_err(C "Error allocating ramzswap address table\n");
++		ret = -ENOMEM;
++		goto fail;
++	}
++	memset(rzs.table, 0, num_pages * sizeof(*rzs.table));
++
++	page = alloc_page(__GFP_ZERO);
++	if (page == NULL) {
++		pr_err(C "Error allocating swap header page\n");
++		ret = -ENOMEM;
++		goto fail;
++	}
++	rzs.table[0].pagenum = page_to_pfn(page);
++	set_flag(0, RZS_UNCOMPRESSED);
++
++	swap_header = kmap(page);
++	ret = setup_swap_header((union swap_header *)(swap_header));
++	kunmap(page);
++	if (ret) {
++		pr_err(C "Error setting swap header\n");
++		goto fail;
++	}
++
++	rzs.disk = alloc_disk(1);
++	if (rzs.disk == NULL) {
++		pr_err(C "Error allocating disk structure\n");
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++	rzs.disk->first_minor = 0;
++	rzs.disk->fops = &ramzswap_devops;
++	/*
++	 * It is named like this to prevent distro installers
++	 * from offering ramzswap as installation target. They
++	 * seem to ignore all devices beginning with 'ram'
++	 */
++	strcpy(rzs.disk->disk_name, "ramzswap0");
++
++	rzs.disk->major = register_blkdev(0, rzs.disk->disk_name);
++	if (rzs.disk->major < 0) {
++		pr_err(C "Cannot register block device\n");
++		ret = -EFAULT;
++		goto fail;
++	}
++
++	rzs.disk->queue = blk_alloc_queue(GFP_KERNEL);
++	if (rzs.disk->queue == NULL) {
++		pr_err(C "Cannot register disk queue\n");
++		ret = -EFAULT;
++		goto fail;
++	}
++
++	rzs.disk->private_data = &rzs;
++	set_capacity(rzs.disk, rzs.disksize >> SECTOR_SHIFT);
++	blk_queue_make_request(rzs.disk->queue, ramzswap_make_request);
++
++	add_disk(rzs.disk);
++
++	rzs.mem_pool = xv_create_pool();
++	if (!rzs.mem_pool) {
++		pr_err(C "Error creating memory pool\n");
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++#if defined(STATS)
++	proc = create_proc_entry("ramzswap", S_IRUGO, NULL);
++	if (proc)
++		proc->read_proc = &proc_ramzswap_read;
++	else {
++		ret = -ENOMEM;
++		pr_warning(C "Error creating proc entry\n");
++		goto fail;
++	}
++#endif
++
++	/*
++	 * Pages that compress to size greater than this are forwarded
++	 * to physical swap disk (if backing dev is provided)
++	 */
++	if (rzs.backing_swap)
++		MAX_CPAGE_SIZE = MAX_CPAGE_SIZE_BDEV;
++	else
++		MAX_CPAGE_SIZE = MAX_CPAGE_SIZE_NOBDEV;
++
++	pr_debug(C "Max compressed page size: %u bytes\n", MAX_CPAGE_SIZE);
++
++#ifdef CONFIG_SWAP_NOTIFIERS
++	ret = register_swap_event_notifier(&ramzswap_swapon_nb,
++				SWAP_EVENT_SWAPON, 0);
++	if (ret) {
++		pr_err("Error registering swapon notifier\n");
++		goto fail;
++	}
++
++	ret = register_swap_event_notifier(&ramzswap_swapoff_nb,
++				SWAP_EVENT_SWAPOFF, 0);
++	if (ret) {
++		unregister_swap_event_notifier(&ramzswap_swapoff_nb,
++					SWAP_EVENT_SWAPON, 0);
++		pr_err("Error registering swapoff notifier\n");
++		goto fail;
++	}
++#endif
++
++	pr_debug(C "Initialization done!\n");
++	return 0;
++
++fail:
++	if (rzs.disk != NULL) {
++		if (rzs.disk->major > 0)
++			unregister_blkdev(rzs.disk->major, rzs.disk->disk_name);
++		del_gendisk(rzs.disk);
++	}
++
++	if (rzs.table && rzs.table[0].pagenum)
++		__free_page(pfn_to_page(rzs.table[0].pagenum));
++	kfree(rzs.compress_workmem);
++	kfree(rzs.compress_buffer);
++	vfree(rzs.table);
++	xv_destroy_pool(rzs.mem_pool);
++#if defined(STATS)
++	if (proc)
++		remove_proc_entry("ramzswap", proc->parent);
++#endif
++	pr_err(C "Initialization failed: err=%d\n", ret);
++	return ret;
++}
++
++static void __exit ramzswap_exit(void)
++{
++	size_t index, num_pages;
++	num_pages = rzs.disksize >> PAGE_SHIFT;
++
++#ifdef CONFIG_SWAP_NOTIFIERS
++	unregister_swap_event_notifier(&ramzswap_swapon_nb,
++				SWAP_EVENT_SWAPON, 0);
++	unregister_swap_event_notifier(&ramzswap_swapoff_nb,
++				SWAP_EVENT_SWAPOFF, 0);
++#endif
++
++	unregister_blkdev(rzs.disk->major, rzs.disk->disk_name);
++	del_gendisk(rzs.disk);
++
++	/* Close backing swap device (if present) */
++	if (rzs.backing_swap) {
++		set_blocksize(rzs.backing_swap, rzs.old_block_size);
++		bd_release(rzs.backing_swap);
++		filp_close(rzs.swap_file, NULL);
++	}
++
++	__free_page(pfn_to_page(rzs.table[0].pagenum));
++	kfree(rzs.compress_workmem);
++	kfree(rzs.compress_buffer);
++
++	/* Free all pages that are still in ramzswap */
++	for (index = 1; index < num_pages; index++) {
++		u32 pagenum, offset;
++
++		pagenum = rzs.table[index].pagenum;
++		offset = rzs.table[index].offset;
++
++		if (!pagenum)
++			continue;
++
++		if (unlikely(test_flag(index, RZS_UNCOMPRESSED)))
++			__free_page(pfn_to_page(pagenum));
++		else
++			xv_free(rzs.mem_pool, pagenum, offset);
++	}
++
++	vfree(rzs.table);
++	xv_destroy_pool(rzs.mem_pool);
++
++#if defined(STATS)
++	remove_proc_entry("ramzswap", proc->parent);
++#endif
++	pr_debug(C "cleanup done!\n");
++}
++
++/*
++ * This param is applicable only when there is no backing swap device.
++ * We ignore this param in case backing dev is provided since then its
++ * always equal to size of the backing swap device.
++ *
++ * This size refers to amount of (uncompressed) data it can hold.
++ * For e.g. disksize_kb=1024 means it can hold 1024kb worth of
++ * uncompressed data even if this data compresses to just, say, 100kb.
++ *
++ * Default value is used if this param is missing or 0 (if its applicable).
++ * Default: [DEFAULT_DISKSIZE_PERC_RAM]% of RAM
++ */
++module_param(disksize_kb, ulong, 0);
++MODULE_PARM_DESC(disksize_kb, "ramzswap device size (kB)");
++
++/*
++ * This param is applicable only when backing swap device is provided.
++ * This refers to limit on amount of (compressed) data it can hold in
++ * memory. Note that total amount of memory used (MemUsedTotal) can
++ * exceed this memlimit since that includes memory wastage due to
++ * fragmentation and metadata overhead.
++ *
++ * Any additional data beyond this limit is forwarded to backing
++ * swap device. TODO: allow changing memlimit at runtime.
++ *
++ * Default value is used if this param is missing or 0 (if its applicable).
++ * Default: MIN([DEFAULT_MEMLIMIT_PERC_RAM]% of RAM, Backing Device Size)
++ */
++module_param(memlimit_kb, ulong, 0);
++MODULE_PARM_DESC(memlimit_kb, "ramzswap memory limit (kB)");
++
++/*
++ * This is block device to be used as backing store for ramzswap.
++ * When pages more than memlimit_kb as swapped to ramzswap, we store
++ * any additional pages in this device. We may also move some pages
++ * from ramzswap to this device in case system is really low on
++ * memory (TODO).
++ *
++ * This device is not directly visible to kernel as a swap device
++ * (/proc/swaps will only show /dev/ramzswap0 and not this device).
++ * Managing this backing device is the job of ramzswap module.
++ */
++module_param(backing_swap, charp, 0);
++MODULE_PARM_DESC(backing_swap, "Backing swap partition");
++
++module_init(ramzswap_init);
++module_exit(ramzswap_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Nitin Gupta <ngupta@vflare.org>");
++MODULE_DESCRIPTION("Compressed RAM Based Swap Device");
+diff -uaNr a/block/ramzswap/ramzswap.h linux-2.6.19.2/block/ramzswap/ramzswap.h
+--- linux-2.6.19.2/block/ramzswap/ramzswap.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/block/ramzswap/ramzswap.h	2009-10-17 08:50:06.000000000 +0200
+@@ -0,0 +1,160 @@
++/*
++ * Compressed RAM based swap device
++ *
++ * Copyright (C) 2008, 2009  Nitin Gupta
++ *
++ * This RAM based block device acts as swap disk.
++ * Pages swapped to this device are compressed and
++ * stored in memory.
++ *
++ * Released under the terms of GNU General Public License Version 2.0
++ *
++ * Project home: http://compcache.googlecode.com
++ */
++
++#ifndef _RAMZSWAP_H_
++#define _RAMZSWAP_H_
++
++#include "xvmalloc.h"
++
++/*
++ * Stored at beginning of each compressed object.
++ *
++ * It stores back-reference to table entry which points to this
++ * object. This is required to support memory defragmentation or
++ * migrating compressed pages to backing swap disk.
++ */
++struct zobj_header {
++#if 0
++	u32 table_idx;
++#endif
++};
++
++/*-- Configurable parameters */
++
++/* Default ramzswap disk size: 25% of total RAM */
++#define DEFAULT_DISKSIZE_PERC_RAM	25
++#define DEFAULT_MEMLIMIT_PERC_RAM	15
++
++/*
++ * Max compressed page size when backing device is provided.
++ * Pages that compress to size greater than this are sent to
++ * physical swap disk.
++ */
++#define MAX_CPAGE_SIZE_BDEV	(PAGE_SIZE / 2)
++
++/*
++ * Max compressed page size when there is no backing dev.
++ * Pages that compress to size greater than this are stored
++ * uncompressed in memory.
++ */
++#define MAX_CPAGE_SIZE_NOBDEV	(PAGE_SIZE / 4 * 3)
++
++/*
++ * NOTE: MAX_CPAGE_SIZE_{BDEV,NOBDEV} sizes must be
++ * less than or equal to:
++ *   XV_MAX_ALLOC_SIZE - sizeof(struct zobj_header)
++ * since otherwise xvMalloc would always return failure.
++ */
++
++/*-- End of configurable params */
++
++#define SECTOR_SHIFT		9
++#define SECTOR_SIZE		(1 << SECTOR_SHIFT)
++#define SECTORS_PER_PAGE_SHIFT	(PAGE_SHIFT - SECTOR_SHIFT)
++#define SECTORS_PER_PAGE	(1 << SECTORS_PER_PAGE_SHIFT)
++
++/* Message prefix */
++#define C "ramzswap: "
++
++/* Debugging and Stats */
++#define NOP	do { } while (0)
++
++#if defined(CONFIG_BLK_DEV_RAMZSWAP_STATS)
++#define STATS
++#endif
++
++#if defined(STATS)
++#define stat_inc(stat)			((stat)++)
++#define stat_dec(stat)			((stat)--)
++#define stat_inc_if_less(stat, val1, val2) \
++				((stat) += ((val1) < (val2) ? 1 : 0))
++#define stat_dec_if_less(stat, val1, val2) \
++				((stat) -= ((val1) < (val2) ? 1 : 0))
++#else	/* STATS */
++#define stat_inc(x)			NOP
++#define stat_dec(x)			NOP
++#define stat_inc_if_less(x, v1, v2)	NOP
++#define stat_dec_if_less(x, v1, v2)	NOP
++#endif	/* STATS */
++
++/* Flags for ramzswap pages (table[page_no].flags) */
++enum rzs_pageflags {
++	/* Page is stored uncompressed */
++	RZS_UNCOMPRESSED,
++
++	/* Page consists entirely of zeros */
++	RZS_ZERO,
++
++	__NR_RZS_PAGEFLAGS,
++};
++
++/*-- Data structures */
++
++/* Indexed by page no. */
++struct table {
++	u32 pagenum;
++	u16 offset;
++	u8 count;	/* object ref count (not yet used) */
++	u8 flags;
++};
++
++struct ramzswap {
++	struct xv_pool *mem_pool;
++	void *compress_workmem;
++	void *compress_buffer;
++	struct table *table;
++	struct mutex lock;
++	struct gendisk *disk;
++	/*
++	 * This is limit on compressed data size (stats.compr_size)
++	 * Its applicable only when backing swap device is present.
++	 */
++	size_t memlimit;	/* bytes */
++	/*
++	 * This is limit on amount of *uncompressed* worth of data
++	 * we can hold. When backing swap device is provided, it is
++	 * set equal to device size.
++	 */
++	size_t disksize;	/* bytes */
++
++	/* backing swap device info */
++	struct block_device *backing_swap;
++	struct file *swap_file;
++	int old_block_size;
++	int init_notify_callback;
++};
++
++struct ramzswap_stats {
++	/* basic stats */
++	size_t compr_size;	/* compressed size of pages stored -
++				 * needed to enforce memlimit */
++	/* more stats */
++#if defined(STATS)
++	u64 num_reads;		/* failed + successful */
++	u64 num_writes;		/* --do-- */
++	u64 failed_reads;	/* can happen when memory is too low */
++	u64 failed_writes;	/* should NEVER! happen */
++	u64 invalid_io;		/* non-swap I/O requests */
++	u64 notify_free;	/* no. of pages freed by swap free notifier */
++	u32 pages_zero;		/* no. of zero filled pages */
++	u32 pages_stored;	/* no. of pages currently stored */
++	u32 good_compress;	/* no. of pages with compression ratio<=50% */
++	u32 pages_expand;	/* no. of incompressible pages */
++	u64 bdev_num_reads;	/* no. of reads on backing dev */
++	u64 bdev_num_writes;	/* no. of writes on backing dev */
++#endif
++};
++/*-- */
++
++#endif
+diff -uaNr a/block/ramzswap/xvmalloc.c linux-2.6.19.2/block/ramzswap/xvmalloc.c
+--- linux-2.6.19.2/block/ramzswap/xvmalloc.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/block/ramzswap/xvmalloc.c	2010-04-16 18:52:53.000000000 +0200
+@@ -0,0 +1,557 @@
++/*
++ * xvmalloc memory allocator
++ *
++ * Copyright (C) 2008, 2009  Nitin Gupta
++ *
++ * This code is released using a dual license strategy: BSD/GPL
++ * You can choose the licence that better fits your requirements.
++ *
++ * Released under the terms of 3-clause BSD License
++ * Released under the terms of GNU General Public License Version 2.0
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/bitops.h>
++#include <linux/errno.h>
++#include <linux/highmem.h>
++#include <linux/init.h>
++#include <linux/string.h>
++#include <linux/slab.h>
++
++#include "compat.h"
++#include "xvmalloc.h"
++#include "xvmalloc_int.h"
++
++static void stat_inc(u64 *value)
++{
++	*value = *value + 1;
++}
++
++static void stat_dec(u64 *value)
++{
++	*value = *value - 1;
++}
++
++static int test_flag(struct block_header *block, enum blockflags flag)
++{
++	return block->prev & BIT(flag);
++}
++
++static void set_flag(struct block_header *block, enum blockflags flag)
++{
++	block->prev |= BIT(flag);
++}
++
++static void clear_flag(struct block_header *block, enum blockflags flag)
++{
++	block->prev &= ~BIT(flag);
++}
++
++/*
++ * Given <pagenum, offset> pair, provide a derefrencable pointer.
++ * This is called from xv_malloc/xv_free path, so it needs to be fast.
++ */
++static void *get_ptr_atomic(u32 pagenum, u16 offset, enum km_type type)
++{
++	unsigned char *base;
++
++	base = kmap_atomic(pfn_to_page(pagenum), type);
++	return base + offset;
++}
++
++static void put_ptr_atomic(void *ptr, enum km_type type)
++{
++	kunmap_atomic(ptr, type);
++}
++
++static u32 get_blockprev(struct block_header *block)
++{
++	return block->prev & PREV_MASK;
++}
++
++static void set_blockprev(struct block_header *block, u16 new_offset)
++{
++	block->prev = new_offset | (block->prev & FLAGS_MASK);
++}
++
++static struct block_header *BLOCK_NEXT(struct block_header *block)
++{
++	return (struct block_header *)((char *)block + block->size + XV_ALIGN);
++}
++
++/*
++ * Get index of free list containing blocks of maximum size
++ * which is less than or equal to given size.
++ */
++static u32 get_index_for_insert(u32 size)
++{
++	if (unlikely(size > XV_MAX_ALLOC_SIZE))
++		size = XV_MAX_ALLOC_SIZE;
++	size &= ~FL_DELTA_MASK;
++	return (size - XV_MIN_ALLOC_SIZE) >> FL_DELTA_SHIFT;
++}
++
++/*
++ * Get index of free list having blocks of size greater than
++ * or equal to requested size.
++ */
++static u32 get_index(u32 size)
++{
++	if (unlikely(size < XV_MIN_ALLOC_SIZE))
++		size = XV_MIN_ALLOC_SIZE;
++	size = ALIGN(size, FL_DELTA);
++	return (size - XV_MIN_ALLOC_SIZE) >> FL_DELTA_SHIFT;
++}
++
++/*
++ * Allocate a memory page. Called when a pool needs to grow.
++ */
++static u32 xv_alloc_page(gfp_t flags)
++{
++	struct page *page;
++
++	page = alloc_page(flags);
++	if (unlikely(!page))
++		return 0;
++
++	return page_to_pfn(page);
++}
++
++/*
++ * Called when all objects in a page are freed.
++ */
++static void xv_free_page(u32 pagenum)
++{
++	__free_page(pfn_to_page(pagenum));
++}
++
++/**
++ * find_block - find block of at least given size
++ * @pool: memory pool to search from
++ * @size: size of block required
++ * @pagenum: page no. containing required block
++ * @offset: offset within the page where block is located.
++ *
++ * Searches two level bitmap to locate block of at least
++ * the given size. If such a block is found, it provides
++ * <pagenum, offset> to identify this block and returns index
++ * in freelist where we found this block.
++ * Otherwise, returns 0 and <pagenum, offset> params are not touched.
++ */
++static u32 find_block(struct xv_pool *pool, u32 size,
++			u32 *pagenum, u32 *offset)
++{
++	ulong flbitmap, slbitmap;
++	u32 flindex, slindex, slbitstart;
++
++	/* There are no free blocks in this pool */
++	if (!pool->flbitmap)
++		return 0;
++
++	/* Get freelist index correspoding to this size */
++	slindex = get_index(size);
++	slbitmap = pool->slbitmap[slindex / BITS_PER_LONG];
++	slbitstart = slindex % BITS_PER_LONG;
++
++	/*
++	 * If freelist is not empty at this index, we found the
++	 * block - head of this list. This is approximate best-fit match.
++	 */
++	if (test_bit(slbitstart, &slbitmap)) {
++		*pagenum = pool->freelist[slindex].pagenum;
++		*offset = pool->freelist[slindex].offset;
++		return slindex;
++	}
++
++	/*
++	 * No best-fit found. Search a bit further in bitmap for a free block.
++	 * Second level bitmap consists of series of 32-bit chunks. Search
++	 * further in the chunk where we expected a best-fit, starting from
++	 * index location found above.
++	 */
++	slbitstart++;
++	slbitmap >>= slbitstart;
++
++	/* Skip this search if we were already at end of this bitmap chunk */
++	if ((slbitstart != BITS_PER_LONG) && slbitmap) {
++		slindex += __ffs(slbitmap) + 1;
++		*pagenum = pool->freelist[slindex].pagenum;
++		*offset = pool->freelist[slindex].offset;
++		return slindex;
++	}
++
++	/* Now do a full two-level bitmap search to find next nearest fit */
++	flindex = slindex / BITS_PER_LONG;
++
++	flbitmap = (pool->flbitmap) >> (flindex + 1);
++	if (!flbitmap)
++		return 0;
++
++	flindex += __ffs(flbitmap) + 1;
++	slbitmap = pool->slbitmap[flindex];
++	slindex = (flindex * BITS_PER_LONG) + __ffs(slbitmap);
++	*pagenum = pool->freelist[slindex].pagenum;
++	*offset = pool->freelist[slindex].offset;
++
++	return slindex;
++}
++
++/*
++ * Insert block at <pagenum, offset> in freelist of given pool.
++ * freelist used depends on block size.
++ */
++static void insert_block(struct xv_pool *pool, u32 pagenum, u32 offset,
++			struct block_header *block)
++{
++	u32 flindex, slindex;
++	struct block_header *nextblock;
++
++	slindex = get_index_for_insert(block->size);
++	flindex = slindex / BITS_PER_LONG;
++
++	block->link.prev_pagenum = 0;
++	block->link.prev_offset = 0;
++	block->link.next_pagenum = pool->freelist[slindex].pagenum;
++	block->link.next_offset = pool->freelist[slindex].offset;
++	pool->freelist[slindex].pagenum = pagenum;
++	pool->freelist[slindex].offset = offset;
++
++	if (block->link.next_pagenum) {
++		nextblock = get_ptr_atomic(block->link.next_pagenum,
++					block->link.next_offset, KM_USER1);
++		nextblock->link.prev_pagenum = pagenum;
++		nextblock->link.prev_offset = offset;
++		put_ptr_atomic(nextblock, KM_USER1);
++	}
++
++	__set_bit(slindex % BITS_PER_LONG, &pool->slbitmap[flindex]);
++	__set_bit(flindex, &pool->flbitmap);
++}
++
++/*
++ * Remove block from head of freelist. Index 'slindex' identifies the freelist.
++ */
++static void remove_block_head(struct xv_pool *pool,
++			struct block_header *block, u32 slindex)
++{
++	struct block_header *tmpblock;
++	u32 flindex = slindex / BITS_PER_LONG;
++
++	pool->freelist[slindex].pagenum = block->link.next_pagenum;
++	pool->freelist[slindex].offset = block->link.next_offset;
++	block->link.prev_pagenum = 0;
++	block->link.prev_offset = 0;
++
++	if (!pool->freelist[slindex].pagenum) {
++		__clear_bit(slindex % BITS_PER_LONG, &pool->slbitmap[flindex]);
++		if (!pool->slbitmap[flindex])
++			__clear_bit(flindex, &pool->flbitmap);
++	} else {
++		/*
++		 * DEBUG ONLY: We need not reinitialize freelist head previous
++		 * pointer to 0 - we never depend on its value. But just for
++		 * sanity, lets do it.
++		 */
++		tmpblock = get_ptr_atomic(pool->freelist[slindex].pagenum,
++				pool->freelist[slindex].offset, KM_USER1);
++		tmpblock->link.prev_pagenum = 0;
++		tmpblock->link.prev_offset = 0;
++		put_ptr_atomic(tmpblock, KM_USER1);
++	}
++}
++
++/*
++ * Remove block from freelist. Index 'slindex' identifies the freelist.
++ */
++static void remove_block(struct xv_pool *pool, u32 pagenum, u32 offset,
++			struct block_header *block, u32 slindex)
++{
++	u32 flindex;
++	struct block_header *tmpblock;
++
++	if (pool->freelist[slindex].pagenum == pagenum
++	   && pool->freelist[slindex].offset == offset) {
++		remove_block_head(pool, block, slindex);
++		return;
++	}
++
++	flindex = slindex / BITS_PER_LONG;
++
++	if (block->link.prev_pagenum) {
++		tmpblock = get_ptr_atomic(block->link.prev_pagenum,
++				block->link.prev_offset, KM_USER1);
++		tmpblock->link.next_pagenum = block->link.next_pagenum;
++		tmpblock->link.next_offset = block->link.next_offset;
++		put_ptr_atomic(tmpblock, KM_USER1);
++	}
++
++	if (block->link.next_pagenum) {
++		tmpblock = get_ptr_atomic(block->link.next_pagenum,
++				block->link.next_offset, KM_USER1);
++		tmpblock->link.prev_pagenum = block->link.prev_pagenum;
++		tmpblock->link.prev_offset = block->link.prev_offset;
++		put_ptr_atomic(tmpblock, KM_USER1);
++	}
++
++	return;
++}
++
++/*
++ * Allocate a page and add it freelist of given pool.
++ */
++static int grow_pool(struct xv_pool *pool, gfp_t flags)
++{
++	u32 pagenum;
++	struct block_header *block;
++
++	pagenum = xv_alloc_page(flags);
++	if (unlikely(!pagenum))
++		return -ENOMEM;
++
++	stat_inc(&pool->total_pages);
++
++	spin_lock(&pool->lock);
++	block = get_ptr_atomic(pagenum, 0, KM_USER0);
++
++	block->size = PAGE_SIZE - XV_ALIGN;
++	set_flag(block, BLOCK_FREE);
++	clear_flag(block, PREV_FREE);
++	set_blockprev(block, 0);
++
++	insert_block(pool, pagenum, 0, block);
++
++	put_ptr_atomic(block, KM_USER0);
++	spin_unlock(&pool->lock);
++
++	return 0;
++}
++
++/*
++ * Create a memory pool. Allocates freelist, bitmaps and other
++ * per-pool metadata.
++ */
++struct xv_pool *xv_create_pool(void)
++{
++	u32 ovhd_size;
++	struct xv_pool *pool;
++
++	ovhd_size = roundup(sizeof(*pool), PAGE_SIZE);
++	pool = kzalloc(ovhd_size, GFP_KERNEL);
++	if (!pool)
++		return NULL;
++
++	spin_lock_init(&pool->lock);
++
++	return pool;
++}
++EXPORT_SYMBOL_GPL(xv_create_pool);
++
++void xv_destroy_pool(struct xv_pool *pool)
++{
++	kfree(pool);
++}
++EXPORT_SYMBOL_GPL(xv_destroy_pool);
++
++/**
++ * xv_malloc - Allocate block of given size from pool.
++ * @pool: pool to allocate from
++ * @size: size of block to allocate
++ * @pagenum: page no. that holds the object
++ * @offset: location of object within pagenum
++ *
++ * On success, <pagenum, offset> identifies block allocated
++ * and 0 is returned. On failure, <pagenum, offset> is set to
++ * 0 and -ENOMEM is returned.
++ *
++ * Allocation requests with size > XV_MAX_ALLOC_SIZE will fail.
++ */
++int xv_malloc(struct xv_pool *pool, u32 size, u32 *pagenum, u32 *offset,
++							gfp_t flags)
++{
++	int error;
++	u32 index, tmpsize, origsize, tmpoffset;
++	struct block_header *block, *tmpblock;
++
++	*pagenum = 0;
++	*offset = 0;
++	origsize = size;
++
++	if (unlikely(!size || size > XV_MAX_ALLOC_SIZE))
++		return -ENOMEM;
++
++	size = ALIGN(size, XV_ALIGN);
++
++	spin_lock(&pool->lock);
++
++	index = find_block(pool, size, pagenum, offset);
++
++	if (!*pagenum) {
++		spin_unlock(&pool->lock);
++		if (flags & GFP_NOWAIT)
++			return -ENOMEM;
++		error = grow_pool(pool, flags);
++		if (unlikely(error))
++			return -ENOMEM;
++
++		spin_lock(&pool->lock);
++		index = find_block(pool, size, pagenum, offset);
++	}
++
++	if (!*pagenum) {
++		spin_unlock(&pool->lock);
++		return -ENOMEM;
++	}
++
++	block = get_ptr_atomic(*pagenum, *offset, KM_USER0);
++
++	remove_block_head(pool, block, index);
++
++	/* Split the block if required */
++	tmpoffset = *offset + size + XV_ALIGN;
++	tmpsize = block->size - size;
++	tmpblock = (struct block_header *)((char *)block + size + XV_ALIGN);
++	if (tmpsize) {
++		tmpblock->size = tmpsize - XV_ALIGN;
++		set_flag(tmpblock, BLOCK_FREE);
++		clear_flag(tmpblock, PREV_FREE);
++
++		set_blockprev(tmpblock, *offset);
++		if (tmpblock->size >= XV_MIN_ALLOC_SIZE)
++			insert_block(pool, *pagenum, tmpoffset, tmpblock);
++
++		if (tmpoffset + XV_ALIGN + tmpblock->size != PAGE_SIZE) {
++			tmpblock = BLOCK_NEXT(tmpblock);
++			set_blockprev(tmpblock, tmpoffset);
++		}
++	} else {
++		/* This block is exact fit */
++		if (tmpoffset != PAGE_SIZE)
++			clear_flag(tmpblock, PREV_FREE);
++	}
++
++	block->size = origsize;
++	clear_flag(block, BLOCK_FREE);
++
++	put_ptr_atomic(block, KM_USER0);
++	spin_unlock(&pool->lock);
++
++	*offset += XV_ALIGN;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(xv_malloc);
++
++/*
++ * Free block identified with <pagenum, offset>
++ */
++void xv_free(struct xv_pool *pool, u32 pagenum, u32 offset)
++{
++	void *page;
++	struct block_header *block, *tmpblock;
++
++	offset -= XV_ALIGN;
++
++	spin_lock(&pool->lock);
++
++	page = get_ptr_atomic(pagenum, 0, KM_USER0);
++	block = (struct block_header *)((char *)page + offset);
++
++	/* Catch double free bugs */
++	BUG_ON(test_flag(block, BLOCK_FREE));
++
++	block->size = ALIGN(block->size, XV_ALIGN);
++
++	tmpblock = BLOCK_NEXT(block);
++	if (offset + block->size + XV_ALIGN == PAGE_SIZE)
++		tmpblock = NULL;
++
++	/* Merge next block if its free */
++	if (tmpblock && test_flag(tmpblock, BLOCK_FREE)) {
++		/*
++		 * Blocks smaller than XV_MIN_ALLOC_SIZE
++		 * are not inserted in any free list.
++		 */
++		if (tmpblock->size >= XV_MIN_ALLOC_SIZE) {
++			remove_block(pool, pagenum,
++				    offset + block->size + XV_ALIGN, tmpblock,
++				    get_index_for_insert(tmpblock->size));
++		}
++		block->size += tmpblock->size + XV_ALIGN;
++	}
++
++	/* Merge previous block if its free */
++	if (test_flag(block, PREV_FREE)) {
++		tmpblock = (struct block_header *)((char *)(page) +
++						get_blockprev(block));
++		offset = offset - tmpblock->size - XV_ALIGN;
++
++		if (tmpblock->size >= XV_MIN_ALLOC_SIZE)
++			remove_block(pool, pagenum, offset, tmpblock,
++				    get_index_for_insert(tmpblock->size));
++
++		tmpblock->size += block->size + XV_ALIGN;
++		block = tmpblock;
++	}
++
++	/* No used objects in this page. Free it. */
++	if (block->size == PAGE_SIZE - XV_ALIGN) {
++		put_ptr_atomic(page, KM_USER0);
++		spin_unlock(&pool->lock);
++
++		xv_free_page(pagenum);
++		stat_dec(&pool->total_pages);
++		return;
++	}
++
++	set_flag(block, BLOCK_FREE);
++	if (block->size >= XV_MIN_ALLOC_SIZE)
++		insert_block(pool, pagenum, offset, block);
++
++	if (offset + block->size + XV_ALIGN != PAGE_SIZE) {
++		tmpblock = BLOCK_NEXT(block);
++		set_flag(tmpblock, PREV_FREE);
++		set_blockprev(tmpblock, offset);
++	}
++
++	put_ptr_atomic(page, KM_USER0);
++	spin_unlock(&pool->lock);
++
++	return;
++}
++EXPORT_SYMBOL_GPL(xv_free);
++
++u32 xv_get_object_size(void *obj)
++{
++	struct block_header *blk;
++
++	blk = (struct block_header *)((char *)(obj) - XV_ALIGN);
++	return blk->size;
++}
++EXPORT_SYMBOL_GPL(xv_get_object_size);
++
++/*
++ * Returns total memory used by allocator (userdata + metadata)
++ */
++u64 xv_get_total_size_bytes(struct xv_pool *pool)
++{
++	return pool->total_pages << PAGE_SHIFT;
++}
++EXPORT_SYMBOL_GPL(xv_get_total_size_bytes);
++
++static int __init xv_malloc_init(void)
++{
++	return 0;
++}
++
++static void __exit xv_malloc_exit(void)
++{
++	return;
++}
++
++module_init(xv_malloc_init);
++module_exit(xv_malloc_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Nitin Gupta <ngupta@vflare.org>");
++MODULE_DESCRIPTION("xvmalloc memory allocator");
+diff -uaNr a/block/ramzswap/xvmalloc.h linux-2.6.19.2/block/ramzswap/xvmalloc.h
+--- linux-2.6.19.2/block/ramzswap/xvmalloc.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/block/ramzswap/xvmalloc.h	2010-04-16 18:32:10.000000000 +0200
+@@ -0,0 +1,30 @@
++/*
++ * xvmalloc memory allocator
++ *
++ * Copyright (C) 2008, 2009  Nitin Gupta
++ *
++ * This code is released using a dual license strategy: BSD/GPL
++ * You can choose the licence that better fits your requirements.
++ *
++ * Released under the terms of 3-clause BSD License
++ * Released under the terms of GNU General Public License Version 2.0
++ */
++
++#ifndef _XVMALLOC_H_
++#define _XVMALLOC_H_
++
++#include <linux/types.h>
++
++struct xv_pool;
++
++struct xv_pool *xv_create_pool(void);
++void xv_destroy_pool(struct xv_pool *pool);
++
++int xv_malloc(struct xv_pool *pool, u32 size, u32 *pagenum, u32 *offset,
++							gfp_t flags);
++void xv_free(struct xv_pool *pool, u32 pagenum, u32 offset);
++
++u32 xv_get_object_size(void *obj);
++u64 xv_get_total_size_bytes(struct xv_pool *pool);
++
++#endif
+diff -uaNr a/block/ramzswap/xvmalloc_int.h linux-2.6.19.2/block/ramzswap/xvmalloc_int.h
+--- linux-2.6.19.2/block/ramzswap/xvmalloc_int.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/block/ramzswap/xvmalloc_int.h	2010-04-16 18:32:10.000000000 +0200
+@@ -0,0 +1,86 @@
++/*
++ * xvmalloc memory allocator
++ *
++ * Copyright (C) 2008, 2009  Nitin Gupta
++ *
++ * This code is released using a dual license strategy: BSD/GPL
++ * You can choose the licence that better fits your requirements.
++ *
++ * Released under the terms of 3-clause BSD License
++ * Released under the terms of GNU General Public License Version 2.0
++ */
++
++#ifndef _XVMALLOC_INT_H_
++#define _XVMALLOC_INT_H_
++
++#include <linux/kernel.h>
++#include <linux/types.h>
++
++/* User configurable params */
++
++/* This must be greater than sizeof(LinkFree) */
++#define XV_MIN_ALLOC_SIZE       32
++#define XV_MAX_ALLOC_SIZE       (PAGE_SIZE - XV_ALIGN)
++
++/* Must be power of two */
++#define XV_ALIGN_SHIFT	2
++#define XV_ALIGN	(1 << XV_ALIGN_SHIFT)
++#define XV_ALIGN_MASK	(XV_ALIGN - 1)
++
++/* Free lists are separated by FL_DELTA bytes */
++#define FL_DELTA_SHIFT	3
++#define FL_DELTA	(1 << FL_DELTA_SHIFT)
++#define FL_DELTA_MASK	(FL_DELTA - 1)
++#define NUM_FREE_LISTS	((XV_MAX_ALLOC_SIZE - XV_MIN_ALLOC_SIZE) \
++				/ FL_DELTA + 1)
++
++#define MAX_FLI		DIV_ROUND_UP(NUM_FREE_LISTS, BITS_PER_LONG)
++
++/* End of user params */
++
++enum blockflags {
++	BLOCK_FREE,
++	PREV_FREE,
++	__NR_BLOCKFLAGS,
++};
++
++#define FLAGS_MASK	XV_ALIGN_MASK
++#define PREV_MASK	(~FLAGS_MASK)
++
++struct freelist_entry {
++	u32 pagenum;
++	u16 offset;
++	u16 pad;
++};
++
++struct link_free {
++	u32 prev_pagenum;
++	u32 next_pagenum;
++	u16 prev_offset;
++	u16 next_offset;
++};
++
++struct block_header {
++	union {
++		/* This common header must be ALIGN bytes */
++		u8 common[XV_ALIGN];
++		struct {
++			u16 size;
++			u16 prev;
++		};
++	};
++	struct link_free link;
++};
++
++struct xv_pool {
++	ulong flbitmap;
++	ulong slbitmap[MAX_FLI];
++	spinlock_t lock;
++
++	struct freelist_entry freelist[NUM_FREE_LISTS];
++
++	/* stats */
++	u64 total_pages;
++};
++
++#endif
