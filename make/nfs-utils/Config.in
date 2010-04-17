@@ -2,7 +2,7 @@ config FREETZ_PACKAGE_NFS_UTILS
 	bool "nfs-utils 1.2.0"
 	default n
 	select FREETZ_PACKAGE_TCP_WRAPPERS
-	select FREETZ_MODULE_nfsd
+	select FREETZ_MODULE_nfsd if FREETZ_KERNEL_VERSION_2_6_13_1
 	help
 		Linux NFS utility package
 
