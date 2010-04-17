@@ -66,7 +66,8 @@ $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libcurl.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.la
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/curl-config
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
