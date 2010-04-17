@@ -31,6 +31,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-rebuilds
 $(PKG)_CONFIGURE_OPTIONS += --with-libiconv=gnu
 $(PKG)_CONFIGURE_OPTIONS += --with-threads=posix
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc
+$(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc-html
+$(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc-pdf
 $(PKG)_CONFIGURE_OPTIONS += --disable-man
 
 $(PKG_SOURCE_DOWNLOAD)

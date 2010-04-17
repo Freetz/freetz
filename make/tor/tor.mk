@@ -1,9 +1,10 @@
-$(call PKG_INIT_BIN, 0.2.0.34)
+$(call PKG_INIT_BIN, 0.2.2.10-alpha)
 $(PKG)_SOURCE:=tor-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=e2576c3c355b1c6830c91fb0643f06be
 $(PKG)_SITE:=http://www.torproject.org/dist
+$(PKG)_STARTLEVEL=40
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tor
-$(PKG)_STARTLEVEL=40
 
 $(PKG)_DEPENDS_ON := zlib openssl libevent
 
@@ -20,12 +21,12 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl-dir="$(TARGET_MAKE_PATH)/../usr/lib"
 $(PKG)_CONFIGURE_OPTIONS += --with-libevent-dir="$(TARGET_MAKE_PATH)/../usr/lib"
+$(PKG)_CONFIGURE_OPTIONS += --disable-asciidoc
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_TOR_STATIC
 
-MYLDFLAGS:= ""
 ifeq ($(strip $(FREETZ_PACKAGE_TOR_STATIC)),y)
-MYLDFLAGS:= "-static"
+$(PKG)_LDFLAGS := -static
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -36,7 +37,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	PATH="$(TARGET_PATH)" \
 		$(MAKE) -C $(TOR_DIR) \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(MYLDFLAGS)"
+		LDFLAGS="$(TOR_LDFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

@@ -1,6 +1,44 @@
 --- Makefile.orig	2009-01-07 12:57:01.000000000 +0100
 +++ Makefile	2009-01-08 15:37:02.000000000 +0100
-@@ -162,7 +162,7 @@
+@@ -163,7 +163,7 @@
+ 
+ TOP=    .
+ ONEDIRS=out tmp
+-EDIRS=  times doc bugs util include certs ms shlib mt demos perl sf dep VMS
++EDIRS=  times bugs util include certs ms shlib mt demos perl sf dep VMS
+ WDIRS=  windows
+ LIBS=   libcrypto.a libssl.a
+ SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
+@@ -323,7 +323,7 @@
+ 	../crypto/uid.o
+ 
+ sub_all: build_all
+-build_all: build_libs build_apps build_tests build_tools
++build_all: build_libs build_apps build_tools
+ 
+ build_libs: build_crypto build_fips build_ssl build_shared build_engines
+ 
+@@ -617,7 +617,7 @@
+ dist_pem_h:
+ 	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
+ 
+-install: all install_docs install_sw
++install: all install_sw
+ 
+ install_sw:
+ 	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
+--- Makefile.org.orig	2009-01-08 15:37:02.000000000 +0100
++++ Makefile.org	2009-01-08 15:37:03.000000000 +0100
+@@ -149,7 +149,7 @@
+ 
+ # tests to perform.  "alltests" is a special word indicating that all tests
+ # should be performed.
+-TESTS = alltests
++TESTS =
+ 
+ MAKEFILE= Makefile
+ 
+@@ -161,7 +161,7 @@
  
  TOP=    .
  ONEDIRS=out tmp
@@ -18,46 +56,8 @@
  
  build_libs: build_crypto build_fips build_ssl build_shared build_engines
  
-@@ -613,7 +613,7 @@
- dist_pem_h:
- 	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
- 
--install: all install_docs install_sw
-+install: all install_sw
- 
- install_sw:
- 	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
---- Makefile.org.orig	2009-01-08 15:37:02.000000000 +0100
-+++ Makefile.org	2009-01-08 15:37:03.000000000 +0100
-@@ -148,7 +148,7 @@
- 
- # tests to perform.  "alltests" is a special word indicating that all tests
- # should be performed.
--TESTS = alltests
-+TESTS =
- 
- MAKEFILE= Makefile
- 
-@@ -160,7 +160,7 @@
- 
- TOP=    .
- ONEDIRS=out tmp
--EDIRS=  times doc bugs util include certs ms shlib mt demos perl sf dep VMS
-+EDIRS=  times bugs util include certs ms shlib mt demos perl sf dep VMS
- WDIRS=  windows
- LIBS=   libcrypto.a libssl.a
- SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
-@@ -319,7 +319,7 @@
- 	../crypto/uid.o
- 
- sub_all: build_all
--build_all: build_libs build_apps build_tests build_tools
-+build_all: build_libs build_apps build_tools
- 
- build_libs: build_crypto build_fips build_ssl build_shared build_engines
- 
-@@ -344,7 +344,7 @@
- build_tools:
+@@ -346,7 +346,7 @@
+ build_tools: build_libs
  	@dir=tools; target=all; $(BUILD_ONE_CMD)
  
 -all_testapps: build_libs build_testapps
@@ -65,7 +65,7 @@
  build_testapps:
  	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
  
-@@ -611,7 +611,7 @@
+@@ -615,7 +615,7 @@
  dist_pem_h:
  	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
  

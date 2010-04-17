@@ -1,10 +1,17 @@
 config FREETZ_PACKAGE_STUNNEL
-	bool "Stunnel 4.26"
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
-	select FREETZ_LIB_libz
-	select FREETZ_LIB_libutil
+	bool "Stunnel 4.33"
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_STUNNEL_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_STUNNEL_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_STUNNEL_STATIC
+	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_STUNNEL_STATIC
 	default n
 	help
 		Stunnel universal SSL proxy
+
+config FREETZ_PACKAGE_STUNNEL_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_STUNNEL
+	default n
+	help
+		Build stunnel binary with statically linked libraries.
 

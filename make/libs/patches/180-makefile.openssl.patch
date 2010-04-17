@@ -1,6 +1,6 @@
---- Makefile.org.orig	2009-01-13 17:44:06.000000000 +0100
-+++ Makefile.org	2009-01-13 17:42:39.000000000 +0100
-@@ -321,7 +321,7 @@
+--- Makefile.org.orig	2009-12-03 15:10:41.000000000 +0100
++++ Makefile.org	2009-12-03 15:10:41.000000000 +0100
+@@ -323,10 +323,10 @@
  sub_all: build_all
  build_all: build_libs build_apps build_tools
  
@@ -8,25 +8,89 @@
 +build_libs: build_crypto build_fips build_ssl build_engines
  
  build_crypto:
- 	if [ -n "$(FIPSCANLIB)" ]; then \
-@@ -333,15 +333,15 @@
+-	if [ -n "$(FIPSCANLIB)" ]; then \
++	+if [ -n "$(FIPSCANLIB)" ]; then \
+ 		EXCL_OBJ='$(AES_ASM_OBJ) $(BN_ASM) $(DES_ENC) $(CPUID_OBJ) $(SHA1_ASM_OBJ) $(FIPS_EX_OBJ)' ; export EXCL_OBJ ; \
+ 		ARX='$(PERL) $${TOP}/util/arx.pl $(AR)' ; \
+ 	else \
+@@ -334,17 +334,17 @@
+ 	fi ; export ARX ; \
  		dir=crypto; target=all; $(BUILD_ONE_CMD)
  build_fips:
- 	@dir=fips; target=all; [ -z "$(FIPSCANLIB)" ] || $(BUILD_ONE_CMD)
--build_ssl:
+-	@dir=fips; target=all; [ -z "$(FIPSCANLIB)" ] || $(BUILD_ONE_CMD)
+-build_ssl: build_crypto
+-	@dir=ssl; target=all; $(BUILD_ONE_CMD)
+-build_engines: build_crypto
+-	@dir=engines; target=all; $(BUILD_ONE_CMD)
+-build_apps: build_libs
+-	@dir=apps; target=all; $(BUILD_ONE_CMD)
+-build_tests: build_libs
+-	@dir=test; target=all; $(BUILD_ONE_CMD)
+-build_tools: build_libs
+-	@dir=tools; target=all; $(BUILD_ONE_CMD)
++	@+dir=fips; target=all; [ -z "$(FIPSCANLIB)" ] || $(BUILD_ONE_CMD)
 +build_ssl: build_crypto
- 	@dir=ssl; target=all; $(BUILD_ONE_CMD)
--build_engines:
++	@+dir=ssl; target=all; $(BUILD_ONE_CMD)
 +build_engines: build_crypto
- 	@dir=engines; target=all; $(BUILD_ONE_CMD)
--build_apps:
++	@+dir=engines; target=all; $(BUILD_ONE_CMD)
 +build_apps: build_libs
- 	@dir=apps; target=all; $(BUILD_ONE_CMD)
--build_tests:
++	@+dir=apps; target=all; $(BUILD_ONE_CMD)
 +build_tests: build_libs
- 	@dir=test; target=all; $(BUILD_ONE_CMD)
--build_tools:
++	@+dir=test; target=all; $(BUILD_ONE_CMD)
 +build_tools: build_libs
- 	@dir=tools; target=all; $(BUILD_ONE_CMD)
++	@+dir=tools; target=all; $(BUILD_ONE_CMD)
  
  all_testapps: build_libs
+ build_testapps:
+@@ -500,7 +500,7 @@
+ 
+ files:
+ 	$(PERL) $(TOP)/util/files.pl Makefile > $(TOP)/MINFO
+-	@set -e; target=files; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=files; $(RECURSIVE_BUILD_CMD)
+ 
+ links:
+ 	@$(PERL) $(TOP)/util/mkdir-p.pl include/openssl
+@@ -631,7 +631,7 @@
+ 	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
+ 	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
+ 	done;
+-	@set -e; target=install; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=install; $(RECURSIVE_BUILD_CMD)
+ 	@set -e; for i in $(LIBS) ;\
+ 	do \
+ 		if [ -f "$$i" ]; then \
+--- crypto/Makefile.orig	2009-11-05 14:53:07.000000000 +0100
++++ crypto/Makefile	2009-12-03 15:10:41.000000000 +0100
+@@ -82,11 +82,11 @@
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+ 
+ subdirs:
+-	@target=all; $(RECURSIVE_MAKE)
++	@+target=all; $(RECURSIVE_MAKE)
+ 
+ files:
+ 	$(PERL) $(TOP)/util/files.pl Makefile >> $(TOP)/MINFO
+-	@target=files; $(RECURSIVE_MAKE)
++	@+target=files; $(RECURSIVE_MAKE)
+ 
+ links:
+ 	@$(PERL) $(TOP)/util/mklink.pl ../include/openssl $(EXHEADER)
+@@ -107,7 +107,7 @@
+ 	fi
+ 
+ libs:
+-	@target=lib; $(RECURSIVE_MAKE)
++	@+target=lib; $(RECURSIVE_MAKE)
+ 
+ install:
+ 	@[ -n "$(INSTALLTOP)" ] # should be set by top Makefile...
+@@ -116,7 +116,7 @@
+ 	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
+ 	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
+ 	done;
+-	@target=install; $(RECURSIVE_MAKE)
++	@+target=install; $(RECURSIVE_MAKE)
+ 
+ lint:
+ 	@target=lint; $(RECURSIVE_MAKE)
