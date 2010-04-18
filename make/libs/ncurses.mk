@@ -1,29 +1,29 @@
 $(call PKG_INIT_LIB, 5.7)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/ncurses
-$(PKG)_$(PKG)_BINARY:=$($(PKG)_DIR)/lib/libncurses.so.$($(PKG)_LIB_VERSION)
-$(PKG)_$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses.so.$($(PKG)_LIB_VERSION)
-$(PKG)_$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libncurses.so.$($(PKG)_LIB_VERSION)
-$(PKG)_FORM_BINARY:=$($(PKG)_DIR)/lib/libform.so.$($(PKG)_LIB_VERSION)
-$(PKG)_FORM_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform.so.$($(PKG)_LIB_VERSION)
-$(PKG)_FORM_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libform.so.$($(PKG)_LIB_VERSION)
-$(PKG)_MENU_BINARY:=$($(PKG)_DIR)/lib/libmenu.so.$($(PKG)_LIB_VERSION)
-$(PKG)_MENU_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmenu.so.$($(PKG)_LIB_VERSION)
-$(PKG)_MENU_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmenu.so.$($(PKG)_LIB_VERSION)
-$(PKG)_PANEL_BINARY:=$($(PKG)_DIR)/lib/libpanel.so.$($(PKG)_LIB_VERSION)
-$(PKG)_PANEL_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel.so.$($(PKG)_LIB_VERSION)
-$(PKG)_PANEL_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpanel.so.$($(PKG)_LIB_VERSION)
-$(PKG)_TERMINFO_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo
-$(PKG)_TERMINFO_TARGET_DIR:=$($(PKG)_DEST_DIR)/usr/share/terminfo
 $(PKG)_SOURCE_MD5:=cce05daf61a64501ef6cd8da1f727ec6
+$(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/ncurses
+
+$(PKG)_LIBNAMES_SHORT := ncurses form menu panel
+$(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT:%=lib%.so.$($(PKG)_LIB_VERSION))
+$(PKG)_LIBS_BUILD_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/lib/%)
+$(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
+$(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_DIR)/%)
+
+$(PKG)_TABSET_MARKER_FILE := std
+$(PKG)_TABSET_DIR := /usr/share/tabset
+$(PKG)_TABSET_STAGING_DIR := $(TARGET_TOOLCHAIN_STAGING_DIR)$($(PKG)_TABSET_DIR)
+$(PKG)_TABSET_TARGET_DIR := $($(PKG)_DEST_DIR)$($(PKG)_TABSET_DIR)
+
+$(PKG)_TERMINFO_MARKER_FILE := .installed
+$(PKG)_TERMINFO_DIR := /usr/share/terminfo
+$(PKG)_TERMINFO_STAGING_DIR := $(TARGET_TOOLCHAIN_STAGING_DIR)$($(PKG)_TERMINFO_DIR)
+$(PKG)_TERMINFO_TARGET_DIR := $($(PKG)_DEST_DIR)$($(PKG)_TERMINFO_DIR)
 
 $(PKG)_CONFIGURE_ENV += cf_cv_func_nanosleep=yes
 $(PKG)_CONFIGURE_ENV += cf_cv_link_dataonly=yes
-
 #evaluated by running test program on target platform
 $(PKG)_CONFIGURE_ENV += cf_cv_type_of_bool='unsigned char'
-
 # NB: The test actually says that poll()-function works.
 # Setting cf_cv_working_poll to 'yes' would however activate
 # a code branch that has not been extensively tested in
@@ -44,96 +44,65 @@ $(PKG)_CONFIGURE_OPTIONS += --without-profile
 $(PKG)_CONFIGURE_OPTIONS += --without-progs
 $(PKG)_CONFIGURE_OPTIONS += --with-normal
 $(PKG)_CONFIGURE_OPTIONS += --with-shared
-$(PKG)_CONFIGURE_OPTIONS += --with-terminfo-dirs="/usr/share/terminfo"
-$(PKG)_CONFIGURE_OPTIONS += --with-default-terminfo-dir="/usr/share/terminfo"
+$(PKG)_CONFIGURE_OPTIONS += --with-terminfo-dirs="$($(PKG)_TERMINFO_DIR)"
+$(PKG)_CONFIGURE_OPTIONS += --with-default-terminfo-dir="$($(PKG)_TERMINFO_DIR)"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_NCURSES_BINARY) \
-$($(PKG)_FORM_BINARY) \
-$($(PKG)_MENU_BINARY) \
-$($(PKG)_PANEL_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(NCURSES_DIR) \
 		libs panel menu form headers
 
-$($(PKG)_NCURSES_STAGING_BINARY) \
-$($(PKG)_FORM_STAGING_BINARY) \
-$($(PKG)_MENU_STAGING_BINARY) \
-$($(PKG)_PANEL_STAGING_BINARY): \
-		$($(PKG)_NCURSES_BINARY) \
-		$($(PKG)_FORM_BINARY) \
-		$($(PKG)_MENU_BINARY) \
-		$($(PKG)_PANEL_BINARY)
+$($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 	$(SUBMAKE) -C $(NCURSES_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		install.libs install.data
+		install.libs
+	$(PKG_FIX_LIBTOOL_LA) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/ncurses5-config
+	$(SED) -i -r $(foreach key,bindir datadir mandir,$(call PKG_FIX_LIBTOOL_LA__INT,$(key))) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/ncurses5-config
 
-$($(PKG)_TERMINFO_STAGING_DIR)/.installed: $($(PKG)_DIR)/.configured
+$($(PKG)_TABSET_STAGING_DIR)/$($(PKG)_TABSET_MARKER_FILE) $($(PKG)_TERMINFO_STAGING_DIR)/$($(PKG)_TERMINFO_MARKER_FILE): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(NCURSES_DIR)/misc \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		all install
+		all install.data
 	touch $@
 
-$($(PKG)_TERMINFO_TARGET_DIR)/.installed: $($(PKG)_TERMINFO_STAGING_DIR)/.installed
-	rm -rf $(NCURSES_DEST_DIR)/usr/share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
-	mkdir -p $(NCURSES_TERMINFO_TARGET_DIR) $(NCURSES_DEST_DIR)/usr/share
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo/* $(NCURSES_TERMINFO_TARGET_DIR)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset $(NCURSES_DEST_DIR)/usr/share
-	touch $@
-
-$($(PKG)_NCURSES_TARGET_BINARY): $($(PKG)_NCURSES_STAGING_BINARY)
-	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset \
-		$(NCURSES_DEST_DIR)/usr/share/
+$($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_DIR)/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
 	$(INSTALL_LIBRARY_STRIP)
 
-$($(PKG)_FORM_TARGET_BINARY): $($(PKG)_FORM_STAGING_BINARY)
-	$(INSTALL_LIBRARY_STRIP)
+define $(PKG)_INSTALL_T_RULE
+$(1): $(2)
+	$(RM) -r $$(dir $$@); \
+	mkdir -p $$(dir $$@); \
+	cp -a $$(dir $$<)/* $$(dir $$@); \
+	touch $$@
+endef
 
-$($(PKG)_MENU_TARGET_BINARY): $($(PKG)_MENU_STAGING_BINARY)
-	$(INSTALL_LIBRARY_STRIP)
+$(eval $(call $(PKG)_INSTALL_T_RULE,$($(PKG)_TABSET_TARGET_DIR)/$($(PKG)_TABSET_MARKER_FILE),$($(PKG)_TABSET_STAGING_DIR)/$($(PKG)_TABSET_MARKER_FILE)))
+$(eval $(call $(PKG)_INSTALL_T_RULE,$($(PKG)_TERMINFO_TARGET_DIR)/$($(PKG)_TERMINFO_MARKER_FILE),$($(PKG)_TERMINFO_STAGING_DIR)/$($(PKG)_TERMINFO_MARKER_FILE)))
 
-$($(PKG)_PANEL_TARGET_BINARY): $($(PKG)_PANEL_STAGING_BINARY)
-	$(INSTALL_LIBRARY_STRIP)
-
-$(pkg)-ncurses: $($(PKG)_NCURSES_STAGING_BINARY)
-$(pkg)-ncurses-precompiled: $($(PKG)_NCURSES_TARGET_BINARY) $(pkg)-terminfo
-
-$(pkg)-form: $($(PKG)_FORM_STAGING_BINARY)
-$(pkg)-form-precompiled: $($(PKG)_FORM_TARGET_BINARY)
-
-$(pkg)-menu: $($(PKG)_MENU_STAGING_BINARY)
-$(pkg)-menu-precompiled: $($(PKG)_MENU_TARGET_BINARY)
-
-$(pkg)-panel: $($(PKG)_PANEL_STAGING_BINARY)
-$(pkg)-panel-precompiled: $($(PKG)_PANEL_TARGET_BINARY)
-
-$(pkg): $(pkg)-ncurses $(pkg)-form $(pkg)-menu $(pkg)-panel
-$(pkg)-precompiled: $(pkg)-ncurses-precompiled $(pkg)-form-precompiled $(pkg)-menu-precompiled $(pkg)-panel-precompiled
-
-$(pkg)-terminfo: $($(PKG)_TERMINFO_TARGET_DIR)/.installed
-
+$(pkg)-terminfo: $($(PKG)_TABSET_TARGET_DIR)/$($(PKG)_TABSET_MARKER_FILE) $($(PKG)_TERMINFO_TARGET_DIR)/$($(PKG)_TERMINFO_MARKER_FILE)
 $(pkg)-terminfo-precompiled: $(pkg)-terminfo
 
+$(pkg): $($(PKG)_LIBS_STAGING_DIR)
+$(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $(pkg)-terminfo-precompiled
+
 $(pkg)-terminfo-clean:
-	rm -rf $(NCURSES_DEST_DIR)/usr/share/tabset $(NCURSES_TERMINFO_TARGET_DIR)
+	$(RM) -r $(NCURSES_TABSET_STAGING_DIR) $(NCURSES_TERMINFO_STAGING_DIR)
 
 $(pkg)-clean: $(pkg)-terminfo-clean
 	-$(SUBMAKE) -C $(NCURSES_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses*
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libform*
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmenu*
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpanel*
-	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/tabset
-	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/terminfo
+	$(RM) \
+		$(NCURSES_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%*) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurses* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{ncurses,ncurses_dll,term,curses,unctrl,termcap,eti,menu,form,panel}.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/ncurses5-config
 
-$(pkg)-uninstall:
-	$(RM) $(NCURSES_TARGET_DIR)/libncurses*.so*
-	$(RM) $(NCURSES_TARGET_DIR)/libform*.so*
-	$(RM) $(NCURSES_TARGET_DIR)/libmenu*.so*
-	$(RM) $(NCURSES_TARGET_DIR)/libpanel*.so*
-	$(RM) -r $(NCURSES_DEST_DIR)/usr/share/tabset
-	$(RM) -r $(NCURSES_DEST_DIR)/usr/share/terminfo
+$(pkg)-terminfo-uninstall:
+	$(RM) -r $(NCURSES_TABSET_TARGET_DIR) $(NCURSES_TERMINFO_TARGET_DIR)
+
+$(pkg)-uninstall: $(pkg)-terminfo-uninstall
+	$(RM) $(NCURSES_LIBNAMES_SHORT:%=$(NCURSES_TARGET_DIR)/lib%*)
 
 $(PKG_FINISH)
