@@ -9,7 +9,7 @@ PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 . /etc/init.d/modlibrc
 
 # include environment required for multid restart
-. /var/env.cache
+[ -r /var/env.cache ] && . /var/env.cache
 
 PID_MULTID=$(pidof -s multid)
 if [ ! -z "$PID_MULTID" ]; then
