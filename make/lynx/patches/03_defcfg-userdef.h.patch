@@ -1,6 +1,6 @@
---- userdefs.h	2004-02-02 21:02:28.000000000 +0100
-+++ userdefs.h	2007-03-02 13:15:19.054353410 +0100
-@@ -100,7 +100,8 @@
+--- userdefs.h.orig	2009-06-07 02:30:35.000000000 +0200
++++ userdefs.h	2010-04-18 12:39:38.000000000 +0200
+@@ -105,7 +105,8 @@
   * mailcap files (see the examples in the samples directory).
   */
  #ifndef LYNX_CFG_FILE
@@ -10,7 +10,7 @@
  #endif /* LYNX_CFG_FILE */
  
  /**************************
-@@ -110,8 +111,10 @@
+@@ -115,8 +116,10 @@
   * Mappings in these global and personal files override any SUFFIX
   * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
   */
@@ -23,7 +23,7 @@
  
  /**************************
   * The MAILCAP file allows you to map file MIME types to
-@@ -120,7 +123,8 @@
+@@ -125,7 +128,8 @@
   * Mappings in these global and personal files override any VIEWER
   * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
   */
@@ -33,7 +33,7 @@
  #define PERSONAL_MAILCAP ".mailcap"
  
  /**************************
-@@ -137,7 +141,8 @@
+@@ -142,7 +146,8 @@
   * Make this NULL if you don't have such a viewer or don't want to
   * use any default viewers for image types.
   */
@@ -43,7 +43,7 @@
  
  /**************************
   * SYSTEM_MAIL must be defined here to your mail sending command,
-@@ -284,7 +289,8 @@
+@@ -289,7 +294,8 @@
  #ifdef DOSPATH
  #define LYNX_CFG_FILE "./lynx.cfg"
  #else
@@ -53,23 +53,23 @@
  #endif /* DOSPATH */
  #endif /* LYNX_CFG_FILE */
  #endif /* HAVE_CONFIG_H */
-@@ -296,7 +302,8 @@
+@@ -305,7 +311,8 @@
   * Mappings in these global and personal files override any SUFFIX
   * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
   */
--#define GLOBAL_EXTENSION_MAP "/usr/local/lib/mosaic/mime.types"
-+/* #define GLOBAL_EXTENSION_MAP "/usr/local/lib/mosaic/mime.types" */
+-#define GLOBAL_EXTENSION_MAP MIME_LIBDIR "mime.types"
++/* #define GLOBAL_EXTENSION_MAP MIME_LIBDIR "mime.types" */
 +#define GLOBAL_EXTENSION_MAP "/etc/mime.types"
- #define PERSONAL_EXTENSION_MAP ".mime.types"
+ #define PERSONAL_EXTENSION_MAP "~/.mime.types"
  
  /**************************
-@@ -306,7 +313,8 @@
+@@ -315,7 +322,8 @@
   * Mappings in these global and personal files override any VIEWER
   * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
   */
--#define GLOBAL_MAILCAP "/usr/local/lib/mosaic/mailcap"
-+/* #define GLOBAL_MAILCAP "/usr/local/lib/mosaic/mailcap" */
+-#define GLOBAL_MAILCAP MIME_LIBDIR "mailcap"
++/* #define GLOBAL_MAILCAP MIME_LIBDIR "mailcap" */
 +#define GLOBAL_MAILCAP "/etc/mailcap"
- #define PERSONAL_MAILCAP ".mailcap"
+ #define PERSONAL_MAILCAP "~/.mailcap"
  
  /**************************

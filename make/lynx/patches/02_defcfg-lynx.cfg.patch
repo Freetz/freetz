@@ -1,6 +1,6 @@
---- lynx.cfg	2004-01-28 20:30:38.000000000 +0100
-+++ lynx.cfg	2007-03-02 10:06:18.462020063 +0100
-@@ -92,7 +92,7 @@
+--- lynx.cfg.orig	2009-06-24 01:53:58.000000000 +0200
++++ lynx.cfg	2010-04-18 12:29:40.000000000 +0200
+@@ -93,7 +93,7 @@
  #
  # Normally we expect you will connect to a remote site, e.g., the Lynx starting
  # site:
@@ -9,7 +9,7 @@
  #
  # As an alternative, you may want to use a local URL.  A good choice for this is
  # the user's home directory:
-@@ -490,7 +490,7 @@
+@@ -540,7 +540,7 @@
  # Note that the prepending is not done for -source dumps.
  #
  #PREPEND_CHARSET_TO_SOURCE:TRUE
@@ -18,7 +18,7 @@
  
  .h2 NCR_IN_BOOKMARKS
  # NCR_IN_BOOKMARKS:TRUE allows you to save 8-bit characters in bookmark titles
-@@ -982,6 +982,7 @@
+@@ -1037,6 +1037,7 @@
  # URLs which meet any ALWAYS_TRUSTED_EXEC rules).
  #
  #TRUSTED_EXEC:none
@@ -26,7 +26,7 @@
  
  
  .h2 ALWAYS_TRUSTED_EXEC
-@@ -1004,6 +1005,7 @@
+@@ -1059,6 +1060,7 @@
  # The default ALWAYS_TRUSTED_EXEC rule is "none".
  #
  #ALWAYS_TRUSTED_EXEC:none
@@ -34,7 +34,7 @@
  
  
  .h2 TRUSTED_LYNXCGI
-@@ -1582,6 +1584,7 @@
+@@ -1652,6 +1654,7 @@
  # users can easily define their own editor in the Options Menu.
  #
  #DEFAULT_EDITOR:
@@ -42,7 +42,7 @@
  
  
  .h2 SYSTEM_EDITOR
-@@ -1773,6 +1776,7 @@
+@@ -1870,6 +1873,7 @@
  # may save the preference in the RC file).
  #
  #NO_DOT_FILES:TRUE
@@ -50,7 +50,7 @@
  
  
  .h1 Internal Behavior
-@@ -2020,6 +2024,7 @@
+@@ -2117,6 +2121,7 @@
  # PREPEND_BASE_TO_SOURCE configuration variable.
  #
  #PREPEND_BASE_TO_SOURCE:TRUE
@@ -58,7 +58,7 @@
  
  
  # MIME types and viewers!
-@@ -2064,6 +2069,8 @@
+@@ -2161,6 +2166,8 @@
  #PERSONAL_EXTENSION_MAP:.mime.types
  #	VMS (sought in user's sys$login directory):
  #PERSONAL_EXTENSION_MAP:mime.types
@@ -67,7 +67,7 @@
  
  
  .h2 SUFFIX_ORDER
-@@ -2238,6 +2245,7 @@
+@@ -2336,6 +2343,7 @@
  # If you use xli, you may want to add the -quiet flag.
  #
  #XLOADIMAGE_COMMAND:xli %s &
@@ -75,11 +75,11 @@
  
  .h2 VIEWER
  # MIME types may be assigned to external viewers using
-@@ -2308,6 +2316,7 @@
+@@ -2406,6 +2414,7 @@
  #
  # 	Sought in user's home (Unix) or sys$login (VMS) directory.
  #PERSONAL_MAILCAP:.mailcap
 +GLOBAL_MAILCAP:/etc/mailcap
  
- 
- .h1 Keyboard Input
+ .h2 PREFERRED_MEDIA_TYPES
+ # When doing a GET, lynx lists the MIME types which it knows how to present

@@ -1,31 +1,26 @@
---- src/chrtrans/makefile.in	2004-01-08 03:03:09.000000000 +0100
-+++ src/chrtrans/makefile.in	2007-03-02 13:00:37.721024805 +0100
-@@ -15,7 +15,9 @@
- top_builddir	= ../..
+--- src/chrtrans/makefile.in	2007-08-03 01:24:27.000000000 +0200
++++ src/chrtrans/makefile.in	2010-04-18 12:28:14.000000000 +0200
+@@ -20,9 +20,17 @@
+ CFLAGS		= @CFLAGS@
+ EXTRA_CPPFLAGS	= @EXTRA_CPPFLAGS@
+ CPPFLAGS	= @CPPFLAGS@
++HOSTCC		= gcc
++HOSTCPP	= gcc -E
++HOSTLD		= ld
++HOSTCFLAGS	= -Os -W -Wall -pipe -Wbad-function-cast -Wcast-align -Wcast-qual -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wshadow -Wstrict-prototypes -Wundef
++HOSTDEFS	= -DHAVE_CONFIG_H
++HOSTCPPFLAGS	= -DLINUX -D_GNU_SOURCE
  
- LIBS		= @LIBS@ $(SITE_LIBS)
+ LIBS		= @LIBS@
 +HOSTLIBS	= #
  LDFLAGS		= @LDFLAGS@
 +HOSTLDFLAGS	= #
  
  INTLLIB		= @INTLDIR_MAKE@@INTLLIBS@
  
-@@ -27,6 +29,12 @@
- CC		= @CC@
- CPP		= @CPP@
- CFLAGS		= @CFLAGS@
-+HOSTCC		= gcc
-+HOSTCPP		= gcc -E
-+HOSTLD		= ld
-+HOSTCFLAGS	= -Os -W -Wall -pipe -Wbad-function-cast -Wcast-align -Wcast-qual -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wshadow -Wstrict-prototypes -Wundef
-+HOSTDEFS	= -DHAVE_CONFIG_H
-+HOSTCPPFLAGS	= -DLINUX -D_GNU_SOURCE
- 
- x		= @EXEEXT@
- o		= .@OBJEXT@
-@@ -40,6 +48,15 @@
- 		$(INTLDIR_CPPFLAGS) $(SITE_DEFS)
- CC_OPTS		= $(CPP_OPTS) $(CFLAGS)
+@@ -52,6 +60,15 @@
+ 		$(INTLDIR_CPPFLAGS) $(SITE_DEFS) $(BUILD_CPPFLAGS)
+ CC_OPTS		= $(CPP_OPTS) $(BUILD_CFLAGS)
  
 +HOSTCPP_OPTS	= $(HOSTDEFS) $(HOSTCPPFLAGS) \
 +		-I$(top_builddir) \
@@ -39,26 +34,26 @@
  #
  # This file contains the font map for the default (hardware) font
  #
-@@ -97,7 +114,7 @@
+@@ -114,7 +131,7 @@
  tables: $(TABLES)
  
- makeuctb$x: makeuctb$o
--	$(CC) $(CC_OPTS) $(LDFLAGS) -o $@ makeuctb$o $(INTLLIB) $(LIBS)
+ $(MAKEUCTB) : makeuctb$o
+-	$(BUILD_CC) $(CC_OPTS) $(BUILD_LDFLAGS) -o $@ makeuctb$o $(INTLLIB) $(BUILD_LIBS)
 +	$(HOSTCC) $(HOSTCC_OPTS) $(HOSTLDFLAGS) -o $@ makeuctb$o $(INTLLIB) $(HOSTLIBS)
  
- makeuctb$o: $(srcdir)/UCkd.h $(srcdir)/makeuctb.c
+ makeuctb$o : $(srcdir)/UCkd.h $(srcdir)/makeuctb.c
  
-@@ -105,11 +122,11 @@
+@@ -122,11 +139,11 @@
  
  .c$o:
  @RULE_CC@
--	@ECHO_CC@$(CC) $(CC_OPTS) -c $(srcdir)/$*.c
+-	@ECHO_CC@$(BUILD_CC) $(CC_OPTS) -c $(srcdir)/$*.c
 +	@ECHO_CC@$(HOSTCC) $(HOSTCC_OPTS) -c $(srcdir)/$*.c
  
  .c.i:
  @RULE_CC@
--	@ECHO_CC@$(CPP) -C $(CPP_OPTS) $(srcdir)/$*.c >$@
+-	@ECHO_CC@$(BUILD_CPP) -C $(CPP_OPTS) $(srcdir)/$*.c >$@
 +	@ECHO_CC@$(HOSTCPP) -C $(HOSTCPP_OPTS) $(srcdir)/$*.c >$@
  
  .tbl.h:
- 	./makeuctb$x $(srcdir)/$*.tbl $*.h
+ 	./$(MAKEUCTB) $(srcdir)/$*.tbl $*.h
