@@ -41,7 +41,7 @@ $($(PKG)_BINARY) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 	( cd $(CLASSPATH_DIR)/lib; fastjar -Mcf mini.jar -@ < mini.classlist );
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	$(INSTALL_BINARY)
+	$(INSTALL_FILE)
 
 $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 	$(SUBMAKE) -C $(CLASSPATH_DIR)/native/jni \
