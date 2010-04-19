@@ -1,9 +1,16 @@
 config FREETZ_PACKAGE_DNS2TCP
-	bool "dns2tcp 0.4.3 (binary only)"
+	bool "dns2tcp 0.5 (binary only)"
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_DNS2TCP_STATIC
 	default n
 	help
 		Dns2tcp is a network tool designed to relay TCP connections
-		through DNS traffic. Encapsulation is done on the TCP level, thus
-		no specific driver is needed (i.e: TUN/TAP). Dns2tcp client
-		doesn't need to be run with specific privileges.
+		through DNS traffic. Encapsulation is done on the TCP level,
+		thus no specific driver is needed (i.e: TUN/TAP).
+
+config FREETZ_PACKAGE_DNS2TCP_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_DNS2TCP
+	default n
+	help
+		Build dns2tcp binary with statically linked libraries.
 
