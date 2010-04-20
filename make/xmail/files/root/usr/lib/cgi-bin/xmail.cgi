@@ -13,11 +13,11 @@ XMAIL_SSLSUPPORT= XMAIL_SSLVISIBLE=
 check "$XMAIL_ENABLED" yes:auto "*":man
 check "$XMAIL_UNPRIV" yes:unpriv
 check "$XMAIL_SMTP" yes:smtp
-check "$XMAIL_SSMTP-$XMAIL_SSLSUPPORT" yes-:ssmtp
+check "$XMAIL_SSMTP" yes:ssmtp
 check "$XMAIL_POP3" yes:pop3
-check "$XMAIL_POP3S-$XMAIL_SSLSUPPORT" yes-:pop3s
+check "$XMAIL_POP3S" yes:pop3s
 check "$XMAIL_CTRL" yes:ctrl
-check "$XMAIL_CTRLS-$XMAIL_SSLSUPPORT" yes-:ctrls
+check "$XMAIL_CTRLS" yes:ctrls
 check "$XMAIL_SMTPLOG" yes:smtplog
 check "$XMAIL_POP3LOG" yes:pop3log
 check "$XMAIL_SYSTEMLOG" yes:systemlog
