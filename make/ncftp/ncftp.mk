@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.2.3)
+$(call PKG_INIT_BIN, 3.2.4)
 $(PKG)_SOURCE:=ncftp-$($(PKG)_VERSION)-src.tar.gz
-$(PKG)_SOURCE_MD5:=f08238032ab247aa78f935edfc4db9fb
+$(PKG)_SOURCE_MD5:=31cf9c221ff97a0da480590f751850b2
 $(PKG)_SITE:=ftp://ftp.ncftp.com/ncftp/
 
 $(PKG)_BINARIES_ALL := ncftp ncftpget ncftpput ncftpbatch ncftpls
