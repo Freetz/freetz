@@ -40,7 +40,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-socks
 $(PKG)_CONFIGURE_OPTIONS += --disable-http
 $(PKG)_CONFIGURE_OPTIONS += --enable-password-save
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL),--enable-small,--disable-small)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
+$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

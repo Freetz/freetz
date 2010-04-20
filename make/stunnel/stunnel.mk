@@ -24,7 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-libwrap
 $(PKG)_CONFIGURE_OPTIONS += --with-threads=fork
 #$(PKG)_CONFIGURE_OPTIONS += --with-threads=pthread
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_MAKE_PATH)/../usr"
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
+$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
 
 $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_STUNNEL_STATIC
 
