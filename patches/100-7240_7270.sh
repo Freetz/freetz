@@ -8,7 +8,8 @@ fi
 echo1 "adapt firmware for 7240"
 
 echo2 "copying 7240 files"
-for i in bitfile_isdn.bit bitfile_pots.bit c55fw.hex dectfw_firstlevel_488.hex dectfw_secondlevel_488.hex wlan_eeprom_hw0.bin; do
+for i in bitfile_isdn.bit bitfile_pots.bit c55fw.hex dectfw_firstlevel_488.hex dectfw_secondlevel_488.hex wlan_eeprom_hw0.bin \
+		2.6.19.2/kernel/drivers/char/led_module.ko; do
 	cp "${DIR}/.tk/original/filesystem/lib/modules/$i" "${FILESYSTEM_MOD_DIR}/lib/modules"
 done
 
@@ -45,6 +46,7 @@ modsed "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ur8_16MB_xilinx_4eth_2ab
 echo2 "applying install patch"
 modsed "s/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_61056/ur8_16MB_xilinx_4eth_2ab_dect_isdn_pots_wlan_33906/g" "${FIRMWARE_MOD_DIR}/var/install"
 # set OEM to avme for international firmware
-if ! isFreetzType LANG_DE
+if ! isFreetzType LANG_DE; then
 	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-7240_7270.patch" || exit 2
 fi
+
