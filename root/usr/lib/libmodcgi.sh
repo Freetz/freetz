@@ -87,7 +87,7 @@ href() {
 			    about)	echo "/cgi-bin/about.cgi" ;;
 			    packages)	echo "/cgi-bin/packages.cgi" ;;
 			    system)	echo "/cgi-bin/system.cgi" ;;
-			    conf)	echo "/cgi-bin/settings.cgi" ;;
+			    conf)	href cgi mod ;;
 			    update)	echo "/cgi-bin/firmware_update.cgi" ;;
 			esac
 	    		;;
@@ -107,12 +107,17 @@ back_button() {
 	    status)	where="/cgi-bin/pkgstatus.cgi" ;;
 	    cgi)	where="/cgi-bin/pkgconf.cgi" ;;
 	    url)	where=$2 ;;
-	    mod)	where=$(href "$@") ;;
+	    mod)	if [ "$2" = conf ]; then
+			    where="/cgi-bin/pkgconf.cgi"
+			else
+			    where=$(href "$@")
+			fi ;;
 	esac
 	echo -n "<form action='$where'>"
 	case $type in
 	    cgi|file)	echo "<input type='hidden' name='pkg' value='$2'>" ;;
 	    status)	echo "<input type='hidden' name='cgi' value='${2}/${3:-status}'>" ;;
+	    mod) 	[ "$2" = conf ] && echo "<input type='hidden' name='pkg' value='mod'>" ;;
 	esac
 	case $type in
 	    file)	echo "<input type='hidden' name='id' value='$3'>" ;;

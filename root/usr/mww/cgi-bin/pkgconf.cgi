@@ -11,8 +11,11 @@ if [ -r "/mod/etc/default.$package/$package.cfg" -o -r "/mod/etc/default.$packag
 		. /mod/etc/conf/$package.cfg
 	fi
 
-	cgi_begin "$package" "pkg:$package"
-	
+	if [ "$package" = mod ]; then
+		cgi_begin '$(lang de:"Einstellungen" en:"Settings")' 'settings'
+	else
+		cgi_begin "$package" "pkg:$package"
+	fi
 
 	if [ -x "/mod/usr/lib/cgi-bin/$package.cgi" ]; then
 		frm_begin "$package"

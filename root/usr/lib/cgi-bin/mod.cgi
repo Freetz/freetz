@@ -2,12 +2,9 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
-. /usr/lib/libmodfrm.sh
 
-[ -r /mod/etc/conf/mod.cfg ] && . /mod/etc/conf/mod.cfg
-
-inetd=''
-[ -e /etc/default.inetd/inetd.cfg ] && inetd='true'
+inetd=false
+[ -e /etc/default.inetd/inetd.cfg ] && inetd=true
 
 check "$MOD_STOR_USELABEL" yes:stor_uselabel
 check "$MOD_SHOW_BOX_INFO" yes:show_box_info
@@ -20,8 +17,6 @@ check "$MOD_SWAP" yes:swap_auto "*":swap_man
 check "$MOD_TELNETD" yes:telnetd_auto inetd:telnetd_inetd "*":telnetd_man
 check "$MOD_HTTPD" yes:httpd_auto inetd:httpd_inetd "*":httpd_man
 
-cgi_begin '$(lang de:"Einstellungen" en:"Settings")' 'settings'
-frm_begin 'mod'
 sec_begin 'crond'
 
 cat << EOF
@@ -54,7 +49,7 @@ cat << EOF
 <input id="t1" type="radio" name="telnetd" value="yes"$telnetd_auto_chk><label for="t1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="t2" type="radio" name="telnetd" value="no"$telnetd_man_chk><label for="t2"> $(lang de:"Manuell" en:"Manual")</label>
 EOF
-if [ "true" == $inetd ]; then
+if $inetd; then
 cat << EOF
 <input id="t3" type="radio" name="telnetd" value="inetd"$telnetd_inetd_chk><label for="t3"> $(lang de:"Inetd" en:"Inetd")</label>
 EOF
@@ -72,7 +67,7 @@ cat << EOF
 <input id="w1" type="radio" name="httpd" value="yes"$httpd_auto_chk><label for="w1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="w2" type="radio" name="httpd" value="no"$httpd_man_chk><label for="w2"> $(lang de:"Manuell" en:"Manual")</label>
 EOF
-if [ "true" == $inetd ]; then
+if $inetd; then
 cat << EOF
 <input id="w3" type="radio" name="httpd" value="inetd"$httpd_inetd_chk><label for="w3"> $(lang de:"Inetd" en:"Inetd")</label>
 EOF
@@ -133,5 +128,3 @@ $(lang de:"Pr&auml;fix für Mountpoints" en:"Prefix for mountpoints") (uStor) : <
 EOF
 sec_end
 fi
-frm_end 'mod'
-cgi_end

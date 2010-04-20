@@ -1,6 +1,5 @@
 #!/bin/sh
 
-SETTINGSURL=/cgi-bin/settings.cgi
 REG=/mod/etc/reg/daemon.reg
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
@@ -19,7 +18,7 @@ stat_button() {
 stat_packagelink() {
 	local url
 	case $1 in
-		crond|swap|telnetd|webcfg) url="$SETTINGSURL" ;;
+		crond|swap|telnetd|webcfg) url=$(href mod conf) ;;
 		*) url=$(href cgi "$1") ;;
 	esac
 	echo "<a href='$url'>$2</a>"
