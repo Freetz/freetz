@@ -1,0 +1,31 @@
+--- etc/init.d/rc.S.orig	2009-12-10 11:06:09.000000000 +0100
++++ etc/init.d/rc.S	2010-04-19 11:41:02.000000000 +0200
+@@ -1096,17 +1096,21 @@
+ ## Fritz_Box_7270
+ ## DECT-Anlage braucht den 96 MHz Takt NICHT (250E): 'piglet_use_pll3_clk=1' entfällt, da fpga den 96 MHz Takt aus dem DECT Takt selbst erzeugt.
+ ##########################################################################################
+-piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
+-dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
+-dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
++dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
++dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
++piglet_bitfile=/lib/modules/bitfile_isdn.bit${HWRevision_BitFileCount}
++piglet_potsbitfile=/lib/modules/bitfile_pots.bit${HWRevision_BitFileCount}
++piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`
++if [ -z $piglet_bitfilemode ] ; then piglet_bitfilemode=0 ; fi
++echo PigletMode: $piglet_bitfilemode
+ piglet_load_params="\
+-"
+-modprobe Piglet_noemif \
+-piglet_bitfile=$piglet_bitfile \
+ piglet_enable_button=2 \
++piglet_bitfilemode=$piglet_bitfilemode \
++piglet_use_pll3_clk=1 \
+ dect_firstlevelfile=$dect_firstlevelfile \
+ dect_secondlevelfile=$dect_secondlevelfile \
+-$piglet_load_params
++"
++modprobe Piglet_noemif piglet_bitfile=$piglet_bitfile piglet_potsbitfile=$piglet_potsbitfile $piglet_load_params
+ ## be sure only root is allowed to write to /var/media/ftp (per default)
+ mkdir -p "/var/media/ftp"
+ chmod 755 /var/media/ftp
