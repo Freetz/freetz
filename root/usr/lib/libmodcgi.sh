@@ -69,30 +69,20 @@ _cgi_id() {
 # href file <pkg> <id>
 # href extra <pkg> <cgi-name>
 # href status <pkg> [<cgi-name>]
-# href cgi <pkg> [<parameters>]
+# href cgi <pkg> [<key-value>]...
 #
 # href mod [<name>] # link to special Freetz pages
 #
 href() {
-    	local type=$1
-	case $type in
-	    file)	echo "/cgi-bin/file.cgi?pkg=${2}&amp;id=${3}" ;;
-	    extra)	echo "/cgi-bin/extras.cgi/${2}/${3}" ;;
-	    status)	echo "/cgi-bin/pkgstatus.cgi?cgi=${2}/${3:-status}" ;;
-	    cgi)	echo "/cgi-bin/pkgconf.cgi?pkg=$2${3:+&amp;$3}" ;;
-	    mod)	case $2 in
-			    ""|status)	echo "/cgi-bin/status.cgi" ;;
-			    extras)	echo "/cgi-bin/extras.cgi" ;;
-			    daemons)	echo "/cgi-bin/daemons.cgi" ;;
-			    about)	echo "/cgi-bin/about.cgi" ;;
-			    packages)	echo "/cgi-bin/packages.cgi" ;;
-			    system)	echo "/cgi-bin/system.cgi" ;;
-			    conf)	href cgi mod ;;
-			    update)	echo "/cgi-bin/firmware_update.cgi" ;;
-			esac
-	    		;;
-	    *)		echo "/error/unknown-type?$type" ;;
-	esac
+    	_cgi_location _href "$@"
+}
+_href() {
+    	local path=$1; shift
+	local arg query=
+	for arg; do 
+	    query="${query:+${query}&amp;}${arg}"
+	done
+	echo "${path}${query:+?$query}"
 }
 
 back_button() {
@@ -100,30 +90,43 @@ back_button() {
     	case $1 in
 	    --title=*) title=${1#--title=}; shift ;;
 	esac
-    	local type=$1 where=
-	case $type in
-	    file)	where="/cgi-bin/file.cgi" ;;
-	    extra)	where="/cgi-bin/extras.cgi/${2}/${3}" ;;
-	    status)	where="/cgi-bin/pkgstatus.cgi" ;;
-	    cgi)	where="/cgi-bin/pkgconf.cgi" ;;
-	    url)	where=$2 ;;
-	    mod)	if [ "$2" = conf ]; then
-			    where="/cgi-bin/pkgconf.cgi"
-			else
-			    where=$(href "$@")
-			fi ;;
-	esac
-	echo -n "<form action='$where'>"
-	case $type in
-	    cgi|file)	echo "<input type='hidden' name='pkg' value='$2'>" ;;
-	    status)	echo "<input type='hidden' name='cgi' value='${2}/${3:-status}'>" ;;
-	    mod) 	[ "$2" = conf ] && echo "<input type='hidden' name='pkg' value='mod'>" ;;
-	esac
-	case $type in
-	    file)	echo "<input type='hidden' name='id' value='$3'>" ;;
-	esac
+	_cgi_location _back_button "$@"
+}
+_back_button() {
+	local path=$1 arg key value; shift
+	echo -n "<form action='$path'>"
+	for arg; do
+	    key=${arg%%=*}
+	    value=${arg#*=}
+	    echo "<input type='hidden' name='$key' value='$value'>"
+	done
 	echo "<div class='btn'><input type='submit' value='$title'></div></form>"
 }
+
+_cgi_location() {
+    	local out=$1; shift
+    	local type=$1
+	case $type in
+	    file)   "$out" "/cgi-bin/file.cgi" "pkg=${2}" "id=${3}" ;;
+	    extra)  "$out" "/cgi-bin/extras.cgi/${2}/${3}" ;;
+	    status) "$out" "/cgi-bin/pkgstatus.cgi" "cgi=${2}/${3:-status}" ;;
+	    cgi)    local pkg=$2; shift 2
+		    "$out" "/cgi-bin/pkgconf.cgi" "pkg=$pkg" "$@" ;;
+	    mod)    case $2 in
+			""|status) "$out" "/cgi-bin/status.cgi" ;;
+			extras)	   "$out" "/cgi-bin/extras.cgi" ;;
+			daemons)   "$out" "/cgi-bin/daemons.cgi" ;;
+			about)	   "$out" "/cgi-bin/about.cgi" ;;
+			packages)  "$out" "/cgi-bin/packages.cgi" ;;
+			system)    "$out" "/cgi-bin/system.cgi" ;;
+			conf)      _cgi_location "$out" cgi mod ;;
+			update)    "$out" "/cgi-bin/firmware_update.cgi" ;;
+		    esac
+		    ;;
+	    *)	    "$out" "/error/unknown-type" "$type" ;;
+	esac
+}
+
 
 _cgi_mark_active() {
     	sed -r "s# id=(['\"])$1\1# class='active'&#"
