@@ -5,9 +5,9 @@
  local MPOINT=$2
  local MPNAME=$3
 +AUTOEND=$MPOINT/autoend.sh
-+if [ -x $AUTOEND ]; then
-+$AUTOEND
-+fi
++[ -x $AUTOEND ] && $AUTOEND 
++
++[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $MPOINT
  passeeren
  if [ -p "/var/tam/mount" ]; then
  echo "u$MPOINT" > /var/tam/mount

@@ -5,9 +5,9 @@
  local MPNAME="${MPOINT##*/}"
  /etc/hotplug/morphstick lost_all_partitions
 +AUTOEND=$MPOINT/autoend.sh
-+if [ -x $AUTOEND ]; then
-+$AUTOEND
-+fi
++[ -x $AUTOEND ] && $AUTOEND
++
++[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $MPOINT
  test -x $MSTOP && $MSTOP
  for MP in /var/media/ftp/* ; do
  rmdir "$MP" > /dev/null

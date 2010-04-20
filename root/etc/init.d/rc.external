@@ -1,0 +1,74 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+. /etc/external.conf
+
+usage() {
+		echo "Usage: $0 [start|stop] [mountpoint]" 1>&2
+		echo "Output is stored here: /var/log/external.log" 
+		exit 1
+}
+
+sleeper() {
+	echo -n "Waiting for time-synchronisation: " >> /var/log/external.log
+	counter=225
+	while [ `date +%Y` -lt 2010 -a $counter -ne 0 ]; do
+		echo -n "." >> /var/log/external.log
+		let counter=$counter-1
+		sleep 4
+	done
+	if [ `date +%Y` -lt 2010 ]; then
+		echo "timeout." >> /var/log/external.log
+		exit
+	fi
+	if [ "$EXTERNAL_SERVICES_YEAR_MAX" == "y" -a `date +%Y` -gt 2015 ]; then
+		echo "error." >> /var/log/external.log
+		[ -f /tmp/flash/mod/external.year ] && . /tmp/flash/mod/external.year
+		exit
+	fi
+	echo "successfully." >> /var/log/external.log
+}
+
+start() {
+	modreg daemon $1
+	/etc/init.d/rc.$1 load >> /var/log/external.log 2>&1
+}
+
+stop() {
+	/etc/init.d/rc.$1 unload >> /var/log/external.log 2>&1
+	modunreg daemon $1
+}
+
+helper() {
+	[ "$1" == "start" -a "$EXTERNAL_SERVICES_YEAR_MIN" == "y" ] && sleeper
+	echo -e "\n### $3 $2 @ `date "+%d.%m.%Y - %H:%M,%S"`" >> /var/log/external.log
+	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
+		if [ -x "/etc/init.d/rc.$pkg" -a `echo " $EXTERNAL_SERVICES " |grep " $pkg "|wc -l` -gt 0 ]; then
+			[ "$1" == "start" ] && start $pkg
+			[ "$1" == "stop" ] && stop $pkg
+		fi
+	done
+	[ -f /tmp/flash/mod/rc.external ] && . /tmp/flash/mod/rc.external $1 >> /var/log/external.log 2>&1
+}
+
+[ $# -ne 2 ] && usage
+[ `echo $EXTERNAL_DIRECTORY | grep $2|wc -l` -ne 1 ] && exit
+if [ ! -r /etc/external.pkg ]; then
+	echo "File not found: /etc/external.pkg" >> /var/log/external.log
+	exit 1
+fi
+EXTERNAL_SERVICES="`cat /etc/external.pkg`"
+
+case $1 in
+	start)
+		helper start $2 mounting
+		;;
+	stop)
+		helper stop $2 unmounting
+		;;
+	*)
+		usage
+		;;
+esac
+
+#exit 0

@@ -33,7 +33,7 @@ cgi_begin '$(lang de:"Status" en:"Status")' 'status'
 if default_password_set; then
 	echo '<div style="color: #800000;"><p>$(lang
 		de:"Standard-Passwort gesetzt. Bitte
-		<a href=\"/cgi-bin/passwd.cgi\"><u>hier</u></a> ändern."
+		<a href=\"/cgi-bin/passwd.cgi\"><u>hier</u></a> &auml;ndern."
 		en:"Default password set. Please change
 		<a href=\"/cgi-bin/passwd.cgi\"><u>here</u></a>."
 	)</p>'
@@ -102,7 +102,7 @@ echo "<div>$usedwc kB (+ $cached kB $(lang de:"Cache" en:"cache")) $(lang de:"vo
 stat_bar br $percent $perc_buff
 
 sec_end
-sec_begin '$(lang de:"Flash-Speicher (TFFS) für Konfigurationsdaten" en:"Flash memory (TFFS) for configuration data")'
+sec_begin '$(lang de:"Flash-Speicher (TFFS) f&uuml;r Konfigurationsdaten" en:"Flash memory (TFFS) for configuration data")'
 
 echo info > /proc/tffs
 percent=$(grep '^fill=' /proc/tffs)

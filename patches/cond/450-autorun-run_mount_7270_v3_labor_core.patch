@@ -5,9 +5,9 @@
  fi
  test -x $TR069START && $TR069START $MNTNAME
 +AUTORUN=$MNTPATH/autorun.sh
-+if [ -x $AUTORUN ]; then
-+$AUTORUN &
-+fi
++[ -x $AUTORUN ] && $AUTORUN &
++
++[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $MNTPATH
  if test -x /etc/samba_control ; then
  /etc/samba_control reconfig
  fi

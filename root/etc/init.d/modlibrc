@@ -167,9 +167,9 @@ modlib_start()
 	local DAEMON_ENABLED="$1"
 	if [ "$DAEMON_ENABLED" == "no" ] || [ "$DAEMON_ENABLED" == "inetd" -a -x /etc/init.d/rc.inetd ]; then
 		if [ "$DAEMON_ENABLED" != "inetd" ]; then
-			echo "$DAEMON is disabled" 1>&2
+			echo "$DAEMON is disabled." 1>&2
 		else
-			echo "$DAEMON is started via inetd" 1>&2
+			echo "$DAEMON is started via inetd." 1>&2
 		fi
 		exit 1
 	fi

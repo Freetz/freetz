@@ -5,9 +5,9 @@
  local MPOINT=$2
  local MPNAME="${MPOINT##*/}"
 +AUTOEND=$MPOINT/autoend.sh
-+if [ -x $AUTOEND ]; then
-+$AUTOEND
-+fi
++[ -x $AUTOEND ] && $AUTOEND
++
++[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $MPOINT
  test -x $MSTOP && $MSTOP
  if test -x /bin/inetdctl ; then
  inetdctl disable ftpd

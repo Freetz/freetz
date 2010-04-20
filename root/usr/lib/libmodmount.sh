@@ -117,6 +117,7 @@ do_mount ()
 		[ -x $rcftpd ] && [ "$($rcftpd status)" != "running" ] && $rcftpd start # start ftpd, if not started
 		local autorun="$mnt_path/autorun.sh"
 		[ -x $autorun ] && $autorun & # run autostart shell script
+		[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path
 		[ -x $TR069START ] && $TR069START $mnt_name # run tr069
 		[ -x /etc/samba_control ] && /etc/samba_control reconfig # SAMBA reconfiguration
 		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt
@@ -180,6 +181,7 @@ do_umount ()
 	local autoend="$mnt_path/autoend.sh"
 	passeeren # semaphore on
 	[ -x $autoend ] && $autoend
+	[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path
 	[ -p "/var/tam/mount" ] && echo "u$mnt_path" > /var/tam/mount # TAM
 	if ! $(umount $mnt_path > /dev/null 2>&1)
 	then # 2

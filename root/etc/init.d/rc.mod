@@ -23,14 +23,17 @@ start() {
 	/etc/init.d/rc.webcfg
 
 	# Static Packages
-	if [ -e /etc/static.pkg ]; then
-		for pkg in $(cat /etc/static.pkg); do
-			if [ -x "/etc/init.d/rc.$pkg" ]; then
+	EXTERNAL_SERVICES="`cat /etc/external.pkg 2>/dev/null`"
+	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
+		if [ -x "/etc/init.d/rc.$pkg" ]; then
+			if [ `echo " $EXTERNAL_SERVICES " |grep " $pkg "|wc -l` -le 0 ]; then 
 				modreg daemon $pkg
 				"/etc/init.d/rc.$pkg"
+			else
+				echo "$pkg will be started by external."
 			fi
-		done
-	fi
+		fi
+	done
 	
 	## Store 'clean' environment for later use (skipping IFS)
 	if [ ! -e /var/env.cache ]; then
