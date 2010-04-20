@@ -7,7 +7,7 @@
 +AUTORUN=$MNTPATH/autorun.sh
 +[ -x $AUTORUN ] && $AUTORUN & 
 +
-+[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $MNTPATH
++[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $MNTPATH &
  if [ -p "/var/tam/mount" ]; then
  echo "m$MNTPATH" > /var/tam/mount
  fi

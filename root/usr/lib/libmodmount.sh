@@ -117,7 +117,7 @@ do_mount ()
 		[ -x $rcftpd ] && [ "$($rcftpd status)" != "running" ] && $rcftpd start # start ftpd, if not started
 		local autorun="$mnt_path/autorun.sh"
 		[ -x $autorun ] && $autorun & # run autostart shell script
-		[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path
+		[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path &
 		[ -x $TR069START ] && $TR069START $mnt_name # run tr069
 		[ -x /etc/samba_control ] && /etc/samba_control reconfig # SAMBA reconfiguration
 		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt

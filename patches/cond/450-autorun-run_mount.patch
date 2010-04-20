@@ -8,7 +8,7 @@
 +		AUTORUN=$MNTPATH/autorun.sh
 +		[ -x $AUTORUN ] && $AUTORUN & 
 +
-+		[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $MNTPATH
++		[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $MNTPATH &
 +		
  		if test -x /etc/samba_control ; then 
  			/etc/samba_control reconfig
