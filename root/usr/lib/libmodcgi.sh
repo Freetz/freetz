@@ -88,6 +88,7 @@ href() {
 			    packages)	echo "/cgi-bin/packages.cgi" ;;
 			    system)	echo "/cgi-bin/system.cgi" ;;
 			    conf)	echo "/cgi-bin/settings.cgi" ;;
+			    update)	echo "/cgi-bin/firmware_update.cgi" ;;
 			esac
 	    		;;
 	    *)		echo "/error/unknown-type?$type" ;;

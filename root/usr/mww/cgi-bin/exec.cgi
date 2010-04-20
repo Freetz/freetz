@@ -92,7 +92,7 @@ case $MOD_CGI_CMD in
 	reboot)
 		cgi_begin '$(lang de:"Neustart" en:"Reboot")...'
 		echo '<p>$(lang de:"Starte neu" en:"Rebooting")...</p>'
-		echo '<p>$(lang de:"Nach dem Neustart <a href=\"/\" target=\"topframe\"><u>hier</u></a> wieder einloggen." en:"Login <a href=\"/\" target=\"topframe\"><u>here</u></a> after reboot.")</p>'
+		echo '<p>$(lang de:"Nach dem Neustart <a href=\"/\" target=\"_top\"><u>hier</u></a> wieder einloggen." en:"Login <a href=\"/\" target=\"_top\"><u>here</u></a> after reboot.")</p>'
 		cgi_end
 		reboot
 		;;
