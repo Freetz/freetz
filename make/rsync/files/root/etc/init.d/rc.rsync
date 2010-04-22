@@ -34,8 +34,8 @@ case "$1" in
 		mkdir -p /tmp/flash/rsync
 
 		modreg cgi 'rsync' 'RSync-Server'
-		modreg file rsync shares 'RSync: Freigaben' 1 "shares"
-		modreg file rsync sharesx 'RSync: Erweitert' 1 "sharesx"
+		modreg file rsync shares '$(lang de:"RSync: Freigaben" en:"RSync: Shares")' 1 "shares"
+		modreg file rsync sharesx '$(lang de:"RSync: Erweitert" en:"RSync: Options")' 1 "sharesx"
 
 		if [ "$RSYNC_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
