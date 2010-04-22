@@ -1091,7 +1091,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo "export FREETZ_INFO_MAKEDATE='$modmakedate'" >> "$freetz_info_file"
 	echo "export FREETZ_INFO_IMAGE_NAME='$modimage'" >> "$freetz_info_file"
 	echo "export FREETZ_INFO_COMMENT='${FREETZ_USER_DEFINED_COMMENT}'" >> "$freetz_info_file"
-	externalised_files=$(find build/modified/external/ -type f 2>/dev/null| sed -e "/\.external/d;s/build\/modified\/external\///")
+	externalised_files=$(find build/modified/external/ -type f 2>/dev/null | sed -e '/\.external/d;s,build/modified/external/,,')
 	echo "export FREETZ_INFO_EXTERNAL_FILES='${externalised_files}'" >> "$freetz_info_file"
 
 	# Pack var.tar (use old tar for compatibility)
@@ -1178,7 +1178,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "packing of firmware image failed"
 	fi
 	
-	if [ "$EXTERNAL_CREATEPAK" == "y" ] && [ $(find build/modified/external/ -type f |wc -l) -gt 1 ]; then
+	if [ "$EXTERNAL_CREATEPAK" == "y" ] && [ -n "$externalised_files" ]; then
 		modexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.external"
 		echo "packing ${modexternal}"
 		"$TAR" -c -C "$EXTERNAL_MOD_DIR" . > "${DIR}/${modexternal}" || exit 1

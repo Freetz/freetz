@@ -23,18 +23,18 @@ start() {
 	/etc/init.d/rc.webcfg
 
 	# Static Packages
-	EXTERNAL_SERVICES="`cat /etc/external.pkg 2>/dev/null`"
+	EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null)"
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
 		if [ -x "/etc/init.d/rc.$pkg" ]; then
-			if [ `echo " $EXTERNAL_SERVICES " |grep " $pkg "|wc -l` -le 0 ]; then 
+			if echo " $EXTERNAL_SERVICES " | grep -q " $pkg " >/dev/null 2>&1; then
+				echo "$pkg will be started by external."
+			else
 				modreg daemon $pkg
 				"/etc/init.d/rc.$pkg"
-			else
-				echo "$pkg will be started by external."
 			fi
 		fi
 	done
-	
+
 	## Store 'clean' environment for later use (skipping IFS)
 	if [ ! -e /var/env.cache ]; then
 		set | sed -n "/^IFS=/ d; /^[A-Z]/ s/.*/export &/p" > /var/env.cache
@@ -59,7 +59,7 @@ start() {
 }
 
 modreg_file() {
-	local file=$1 sec_level=$2 
+	local file=$1 sec_level=$2
 	local basename=${file//./_}
 	modreg file mod "$basename" "Freetz: $file" "$sec_level" "$basename"
 }

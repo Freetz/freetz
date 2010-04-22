@@ -4,9 +4,9 @@
 . /etc/external.conf
 
 usage() {
-		echo "Usage: $0 [start|stop] [mountpoint]" 1>&2
-		echo "Output is stored here: /var/log/external.log" 
-		exit 1
+	echo "Usage: $0 [start|stop] [mountpoint]" 1>&2
+	echo "Output is stored here: /var/log/external.log"
+	exit 1
 }
 
 sleeper() {
@@ -43,7 +43,7 @@ helper() {
 	[ "$1" == "start" -a "$EXTERNAL_SERVICES_YEAR_MIN" == "y" ] && sleeper
 	echo -e "\n### $3 $2 @ `date "+%d.%m.%Y - %H:%M,%S"`" >> /var/log/external.log
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
-		if [ -x "/etc/init.d/rc.$pkg" -a `echo " $EXTERNAL_SERVICES " |grep " $pkg "|wc -l` -gt 0 ]; then
+		if [ -x "/etc/init.d/rc.$pkg" ] && (echo " $EXTERNAL_SERVICES " | grep -q " $pkg " >/dev/null 2>&1); then
 			[ "$1" == "start" ] && start $pkg
 			[ "$1" == "stop" ] && stop $pkg
 		fi
@@ -51,24 +51,22 @@ helper() {
 	[ -f /tmp/flash/mod/rc.external ] && . /tmp/flash/mod/rc.external $1 >> /var/log/external.log 2>&1
 }
 
-[ $# -ne 2 ] && usage
-[ `echo $EXTERNAL_DIRECTORY | grep $2|wc -l` -ne 1 ] && exit
+[ -z "$2" ] && usage
+echo $EXTERNAL_DIRECTORY | grep -q "$2" >/dev/null 2>&1 || exit
 if [ ! -r /etc/external.pkg ]; then
 	echo "File not found: /etc/external.pkg" >> /var/log/external.log
 	exit 1
 fi
-EXTERNAL_SERVICES="`cat /etc/external.pkg`"
+EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null)"
 
 case $1 in
 	start)
-		helper start $2 mounting
+		helper start "$2" mounting
 		;;
 	stop)
-		helper stop $2 unmounting
+		helper stop "$2" unmounting
 		;;
 	*)
 		usage
 		;;
 esac
-
-#exit 0
