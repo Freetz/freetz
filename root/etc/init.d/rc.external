@@ -51,7 +51,7 @@ helper() {
 	[ -f /tmp/flash/mod/rc.external ] && . /tmp/flash/mod/rc.external $1 >> /var/log/external.log 2>&1
 }
 
-[ -z "$2" ] && usage
+[ $# -ne 2 ] && usage
 echo $EXTERNAL_DIRECTORY | grep -q "$2" >/dev/null 2>&1 || exit
 if [ ! -r /etc/external.pkg ]; then
 	echo "File not found: /etc/external.pkg" >> /var/log/external.log
