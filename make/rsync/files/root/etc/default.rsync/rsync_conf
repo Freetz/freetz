@@ -1,0 +1,48 @@
+#!/bin/sh
+
+echo "### global"
+
+cat << EOF
+max connections = $RSYNC_MAXCON
+uid = ftpuser
+gid = root
+EOF
+
+if [ -n "$RSYNC_ADDRESS" ]; then
+cat << EOF
+address = $RSYNC_ADDRESS
+EOF
+fi
+
+if [ ! "$RSYNC_LOG_SYSLOG" = "yes" -a -n "$RSYNC_LOG_FILE" ]; then
+cat << EOF
+log file = $RSYNC_LOG_FILE
+EOF
+fi
+
+echo "### expert"
+
+if [ -r "/tmp/flash/rsync/sharesx" ]; then
+	cat /tmp/flash/rsync/sharesx
+fi
+
+echo "### shares"
+
+if [ -r "/tmp/flash/rsync/shares" ]; then
+	cat /tmp/flash/rsync/shares | grep -v "^#" | while read -r path name ro comment; do
+		if [ -n "$path" -a -n "$name" -a -d "$path" ]; then
+			case $ro in
+				1|y|yes|Y|YES)  ro="yes" ;;
+				0|n|no|N|NO|"") ro="no"  ;;
+			esac
+cat << EOF
+[${name//%20/ }]
+ comment = $comment
+ path = $path
+ read only = $ro
+EOF
+		fi
+	done
+fi
+
+echo "### fin"

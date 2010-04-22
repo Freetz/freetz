@@ -1,0 +1,70 @@
+#!/bin/sh
+
+DAEMON=rsync
+MODPATH=/mod/etc
+CONF=$MODPATH/rsync.conf
+PID_FILE=/var/run/rsync.pid
+
+. /etc/init.d/modlibrc 
+
+start() {
+	echo -n 'Starting rsync...'
+
+	/mod/etc/default.rsync/rsync_conf > $CONF
+
+	if [ $(modlib_status) == "running" ]; then
+		echo "already running"
+		exit 0
+	fi
+
+	$DAEMON --daemon --config=$CONF --ipv4 > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else 
+		echo 'failed.'
+		exit $exitval
+	fi
+
+	pidof -s rsync > $PID_FILE
+}
+
+case "$1" in 
+	""|load)
+		mkdir -p /tmp/flash/rsync
+
+		modreg cgi 'rsync' 'RSync-Server'
+		modreg file rsync shares 'RSync: Freigaben' 1 "shares"
+		modreg file rsync sharesx 'RSync: Erweitert' 1 "sharesx"
+
+		if [ "$RSYNC_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+		
+		start
+		;;
+	unload)
+		modlib_stop
+		modunreg file rsync
+		modunreg cgi rsync
+		;;
+	start)
+		start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
