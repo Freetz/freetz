@@ -5,7 +5,9 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 cgi_width=560
 . /usr/lib/libmodcgi.sh
 
-eval "$(modcgi mac:interf wol)"
+eval "$(modcgi mac:interf:prog wol)"
+
+[ -z "$WOL_PROG" ] && WOL_PROG=ether-wake
 
 if [ -z "$WOL_MAC" ]; then
 	cgi_begin '$(lang de:"Fehler" en:"Error")'
@@ -18,13 +20,18 @@ cgi_begin '$(lang de:"Wecke '\"$WOL_MAC\"' auf..." en:"Wake up '\"$WOL_MAC\"'...
 
 echo -n '<pre>sending magic frame...'
 
-if [ -z "$WOL_INTERF" ]; then
-	ether-wake "$WOL_MAC" 2>&1
+if [ -z "$WOL_INTERF" -o "$WOL_PROG" == "wol" ]; then
+	$WOL_PROG "$WOL_MAC" >/dev/null 2>&1
 else
-	ether-wake -i "$WOL_INTERF" "$WOL_MAC" 2>&1
+	$WOL_PROG -i "$WOL_INTERF" "$WOL_MAC" >/dev/null 2>&1
 fi
-
-echo 'done.</pre>'
+exitval=$?
+if [ "$exitval" -eq 0 ]; then
+	echo 'done.'
+else
+	echo 'failed.'
+fi
+echo '</pre>'
 echo '<form action="/cgi-bin/index.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
 
 cgi_end

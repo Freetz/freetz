@@ -52,18 +52,27 @@ cat << EOF
 <form style="padding-top: 10px; padding-bottom: 10px;" name="wake" action="/cgi-bin/wake.cgi" method="post">
 <table border="0" cellspacing="1" cellpadding="0">
 <tr>
-<td width="230">MAC: <input type="text" name="mac" size="17" maxlength="17" value=""></td>
-<td width="210">Interface: <select name="interf">
+<td width="200">MAC: <input type="text" name="mac" size="17" maxlength="17" value=""></td>
+<td width="180">Interface: <select name="interf">
 EOF
-echo '<option title="tcp" value="tcp">'$interface'</option>'
+echo '<option title="" value=""></option>'
 
 for INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
 	echo '<option title="'$INTERFACE'" value="'$INTERFACE'">'$INTERFACE'</option>'
 done
 
-cat << EOF
+echo '</select></td>' 
 
+foundwol=$(which wol)
+if [ -x "$foundwol" ]; then
+cat << EOF
+<td width="180">$(lang de:"Methode:" en:"Method:")<select name="prog">
+<option selected value='ether-wake'>ether-wake</option>
+<option value='wol'>wol</option>
 </select></td>
+EOF
+fi
+cat << EOF
 <td width="100"><input type="submit" value="WakeUp"></td>
 </tr>
 </table>
