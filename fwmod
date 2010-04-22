@@ -279,7 +279,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ ! -x "$FINDSQUASHFS" ]; then
 		error 1 "cannot find the very useful tool $FINDSQUASHFS_TOOL"
 	fi
-	
+
 	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${KERNEL_IMAGE}" > /dev/null
 
 	echo "splitting kernel image"
@@ -393,8 +393,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ ! -d "${PATCHES_DIR}/${FREETZ_TYPE_STRING}" ]; then
 		error 1 "missing ${PATCHES_DIR}/${FREETZ_TYPE_STRING}"
 	fi
-	
-	# Execute version specific patch scripts 
+
+	# Execute version specific patch scripts
 	for i in "${PATCHES_DIR}/${FREETZ_TYPE_STRING}/"*.sh; do
 		[ -r "$i" ] || continue
 		echo2 "applying patch file $i"
@@ -418,7 +418,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	do
 		modpatch "$FILESYSTEM_MOD_DIR" "$i"
 	done
-	
+
 	echo1 "creating symlinks /tmp, /mod and /home"
 	[ -e "$FILESYSTEM_MOD_DIR"/tmp ] && rm -rf "$FILESYSTEM_MOD_DIR"/tmp
 	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
@@ -448,7 +448,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	for i in $(set|grep -i "^FREETZ_REMOVE_.*=y$"|sed -e "s/^.\{14\}//;s/=.*//"|tr [A-Z] [a-z]|sort); do
 		OPTIONS+=" -$i"
 	done
-	
+
 	OPTIONS_ADD=" +busybox"
 	for i in $(set|grep -i "^FREETZ_PATCH_.*=y$"|sed -e "s/^.\{13\}//;s/=.*//"|tr [A-Z] [a-z]); do
 		OPTIONS_ADD+=" +$i"
@@ -458,7 +458,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		OPTIONS_ADD+=" +$pkg"
 		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
 	done
-	
+
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
 		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
 
@@ -490,7 +490,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	sed -i -e "s/<subversion>/${SUBVERSION}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 	sed -i -e "s/<options>/${OPTIONS}/g" "${FILESYSTEM_MOD_DIR}/usr/bin/system_status"
 
-	# Execute general patch scripts 
+	# Execute general patch scripts
 	for i in "${PATCHES_DIR}/"*.sh; do
 		[ -r "$i" ] || continue
 		echo2 "applying patch file $i"
@@ -508,17 +508,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oem_removed=0
 	oem_kept=0
 	oem_list=
-	
+
 	oems=$(grep -E 'for i in  (avm|tcom)' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')
-	
+
 	if [ -z "$oems" ]; then
 		error 1 "no oems found"
 	fi
 
-	
+
 	ln -sf /usr/www/cgi-bin/freetz_status "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_status"
 	[ "$FREETZ_PACKAGE_WOL_CGI" == "y" ] && ln -sf /usr/www/cgi-bin/freetz_wol "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_wol"
-	
+
 	for i in $oems; do
 		if [ "$(eval "echo \"\$FREETZ_REMOVE_BRANDING_${i}\"")" == "y" ]; then
 			[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo -n " $i"
@@ -645,7 +645,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			fi
 		done
 		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
-		
+
 		if [ "$FREETZ_SHARE_terminfo" == "y" ]; then
 			echo1 "installing terminfos"
 			for i in $(set | grep ^FREETZ_SHARE_terminfo_.*=y |grep -v '^FREETZ_SHARE_terminfo_showall=' ); do
@@ -662,7 +662,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				fi
 				dest="${FILESYSTEM_MOD_DIR}/$dn/${fn:0:1}"
 				[ -d "$dest" ] || mkdir -p "$dest"
-				cp -a $file "$dest/"		
+				cp -a $file "$dest/"
 			done
 		fi
 
@@ -756,7 +756,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		echo1 "replacing kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING} (${KERNEL_SUBVERSION})"
 		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
-	fi	
+	fi
 
 	echo0 "installing modules"
 	# 7270 modules dir is 2.6.19.2 not 2.6.19.2-ur8
@@ -769,7 +769,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	do
 		bn="$(basename "$i")"
 		mod="${bn%\.ko}"
-		
+
 		if [ "$FREETZ_MODULES_ALL" = "y" -o \
 					"$(eval "echo \"\$FREETZ_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]
 			then
@@ -789,7 +789,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	echo0 "installing packages"
-	
+
 	for pkg in $(static_packages); do
 		echo1 "${pkg}"
 		pkg_name=$(pkg_name "$pkg")
@@ -809,7 +809,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
 			modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
-		
+
 		grep -q "^$pkg_name$" "${FILESYSTEM_MOD_DIR}/etc/static.pkg" >/dev/null 2>&1 || ( echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg" )
 	done
 	for pkg in $(static_addons); do
@@ -839,7 +839,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		grep -q "^$pkg_name$" "${FILESYSTEM_MOD_DIR}/etc/static.pkg" >/dev/null 2>&1 || ( echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg" )
 	done
-	
+
 	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
 		echo "invoking custom script"
 
@@ -884,7 +884,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		cd $CUR
 
 		# when mklibs.py breaks with errors like "X unresolved non weak symbols: ...."
-		# you should search with grep, mc, readelf -s which binary needs this symbols 
+		# you should search with grep, mc, readelf -s which binary needs this symbols
 		# and which lib provides this symbol ... you get some debug output when you "
 		# add some -v -v -v to mklibs.py call
 
@@ -892,14 +892,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 		# any shared lib or binary
 		# __cxa_pure_virtual is referenced at some places..
 		UNNEEDED_SYMBOLS="-u get_UserAgentTransport -u __cxa_pure_virtual"
-		
+
 		# some more referenced symbols not provided on 3170, this box does not have tr069
 		# but this should not break compatibility for other boxes
 		UNNEEDED_SYMBOLS+=" -u __cxa_atexit -u add_node -u add_object -u get_ctlmgr_value -u set_ctlmgr_value"
 
 		if [ "$FREETZ_REMOVE_TR069" == "y" ]; then
 			# ignore some symbols provided by libtr069.so and referenced at
-			# some places e.g. in libfon.so libwlan.so 
+			# some places e.g. in libfon.so libwlan.so
 			UNNEEDED_SYMBOLS+=" -u get_ctlmgr_value -u _ZN14ModuleRegistry12ApplyChangesEv \
 				-u get_UIModule -u getNode -u cm_create_node -u GetContext \
 				-u _Z23TR069_SOAPEnvelope_FreeP18TR069_SOAPEnvelope -u findRefNodeOfName \
@@ -909,7 +909,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				-u _Z20Get_g_pParamRegistryv -u _ZN14ModuleRegistry17SetParameterValueEPcS0_ \
 				-u get_ExternalIPAddress -u _ZN14ModuleRegistry16TransactionBeginEv"
 		else
-			# set_PPPoEServiceName is referenced by libtr069.so but not 
+			# set_PPPoEServiceName is referenced by libtr069.so but not
 			# provided by and shared lib or binary
 			UNNEEDED_SYMBOLS+=" -u set_PPPoEServiceName"
 		fi
@@ -953,7 +953,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			rm "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" && echo1 "Starter script rc.ftpd for AVM-FTPD was not integrated into image"
 		fi
 	fi
-	
+
 	# Remove /usr/lib/libmodmount.sh
 	if [ "$FREETZ_PATCH_FREETZMOUNT" == "y" ]; then
 		if [ -e "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" ]; then
@@ -964,7 +964,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			rm "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" && echo1 "libmodmount.sh was not integrated into image"
 		fi
 	fi
-	
+
 	# Remove BOX-Info
 	if [ "$FREETZ_REMOVE_BOX_INFO" == "y" ]; then
 		echo1 "removing BOX-Info cgis from image"
@@ -972,7 +972,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	else
 		echo1 "BOX-Info cgi is integrated into image"
 	fi
-	
+
 	# Remove FREETZ-Info
 	if [ "$FREETZ_REMOVE_FREETZ_INFO" == "y" ]; then
 		echo1 "removing FREETZ-Info cgis from image"
@@ -981,7 +981,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	else
 		echo1 "FREETZ-Info cgis are integrated into image"
 	fi
-	
+
 	# Packing .config into image
 	if [ "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
 		echo1 ".config file was not integrated into image"
@@ -990,7 +990,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		dot_config_file="$MOD_DIR/filesystem/etc/.config"
 		cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
 	fi
-	
+
 	echo0 "stripping leftover unstripped binaries"
 	for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' \) \
 		\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS32.*not stripped.*|\1|p'`; do
@@ -1074,13 +1074,13 @@ if [ "$DO_PACK" -gt 0 ]; then
 		else
 			modimagenameprefix=""
 			modimagenamesuffix="_${modcustomimagestring}"
-		fi	
+		fi
 	else
 		modimagenameprefix=""
 		modimagenamesuffix=""
 	fi
 	modimage="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.image"
-	
+
 	# Create freetz-info
 	echo1 "integrate freetz info file into image"
 	freetz_info_file="$MOD_DIR/filesystem/etc/freetz_info.cfg"
@@ -1122,7 +1122,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ ! -s "$KERNEL_MOD" ]; then
 		error 1 "kernel merging failed"
 	fi
-	
+
 	# Check size of kernel image
 	let KERNEL_LIMIT="$FREETZ_KERNEL_MTD_SIZE*65536"
 	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
@@ -1177,7 +1177,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		rm -f "${DIR}/${modimage}"
 		error 1 "packing of firmware image failed"
 	fi
-	
+
 	if [ "$EXTERNAL_CREATEPAK" == "y" ] && [ -n "$externalised_files" ]; then
 		modexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.external"
 		echo "packing ${modexternal}"
