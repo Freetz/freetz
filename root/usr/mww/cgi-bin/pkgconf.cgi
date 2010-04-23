@@ -5,6 +5,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodfrm.sh
 
 package=$(cgi_param pkg | tr -d .)
+cgi_reg=/mod/etc/reg/cgi.reg
+[ -e "$cgi_reg" ] || touch "$cgi_reg"
 
 if [ -r "/mod/etc/default.$package/$package.cfg" -o -r "/mod/etc/default.$package/$package.save" ]; then
 	if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
@@ -14,7 +16,10 @@ if [ -r "/mod/etc/default.$package/$package.cfg" -o -r "/mod/etc/default.$packag
 	if [ "$package" = mod ]; then
 		cgi_begin '$(lang de:"Einstellungen" en:"Settings")' 'settings'
 	else
-		cgi_begin "$package" "pkg:$package"
+	    	OIFS=$IFS; IFS="|"
+		set -- $(grep "^$package|" "$cgi_reg")
+		IFS=$OIFS
+		cgi_begin "${2:-$package}" "pkg:$package"
 	fi
 
 	if [ -x "/mod/usr/lib/cgi-bin/$package.cgi" ]; then
