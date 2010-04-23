@@ -5,7 +5,7 @@ show_log() {
 	local log=$1
 	if [ -r "$log" ]; then
 		echo "<h1>$log</h1>"
-		echo '<pre style="width: '$_width'px; overflow: auto; max-height: 200px;">'
+		echo '<pre style="width: '$_width'px; overflow: auto; max-height: 350px;">'
 		html < "$log"
 		echo '</pre>'
 	fi
