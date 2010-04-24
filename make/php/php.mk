@@ -101,7 +101,7 @@ $(PKG)_CONFIGURE_ENV += ac_cv_write_stdout=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_lib_png_png_write_image=yes
 $(PKG)_CONFIGURE_ENV += cookie_io_functions_use_off64_t=yes
 $(PKG)_CONFIGURE_ENV += lt_cv_prog_gnu_ldcxx=yes
-$(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm -B"
+$(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_NM) -B"
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath

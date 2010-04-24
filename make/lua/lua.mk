@@ -27,8 +27,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
 		MYCFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include $(TARGET_CFLAGS)" \
-		AR="$(TARGET_CROSS)ar rcu" \
-		RANLIB="$(TARGET_CROSS)ranlib" \
+		AR="$(TARGET_AR) rcu" \
+		RANLIB="$(TARGET_RANLIB)" \
 		MYLDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		USE_READLINE="$(strip $(FREETZ_PACKAGE_LUA_READLINE))" \
 		linux

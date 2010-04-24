@@ -12,8 +12,8 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(INADYN_MT_DIR) \
-		CC="mipsel-linux-gcc" \
-		STRIP="mipsel-linux-strip" \
+		CC="$(TARGET_CC)" \
+		STRIP="$(TARGET_STRIP)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS=""
 

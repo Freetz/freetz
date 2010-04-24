@@ -18,9 +18,9 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) $(FPIC) -I../include" \
 		OFLAGS="" \
-		AR="$(TARGET_CROSS)ar" \
-		RANLIB="$(TARGET_CROSS)ranlib" \
-		STRIP="$(TARGET_CROSS)strip" \
+		AR="$(TARGET_AR)" \
+		RANLIB="$(TARGET_RANLIB)" \
+		STRIP="$(TARGET_STRIP)" \
 		shared
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)

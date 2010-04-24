@@ -26,7 +26,7 @@ $(PKG)_CONFIGURE_ENV += glib_cv_func_pthread_cond_timedwait_posix=yes
 $(PKG)_CONFIGURE_ENV += glib_cv_sizeof_gmutex=24
 $(PKG)_CONFIGURE_ENV += glib_cv_byte_contents_gmutex="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
 $(PKG)_CONFIGURE_ENV += lt_cv_deplibs_check_method=pass_all
-$(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm -B"
+$(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_NM) -B"
 
 $(PKG)_CONFIGURE_OPTIONS += --cache-file=$(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache
 $(PKG)_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)

@@ -12,8 +12,8 @@ GW6C_OPTS:= \
 	COMPILER="$(TARGET_CROSS)g++ -c -DNO_STDLIBCXX" \
 	CPP_FLAGS="$(TARGET_CFLAGS) -fno-builtin -nostdinc++ -I. -Wall -DNDEBUG \
 		-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/uClibc++" \
-	RANLIB="$(TARGET_CROSS)ranlib" \
-	ARCHIVER="$(TARGET_CROSS)ar" \
+	RANLIB="$(TARGET_RANLIB)" \
+	ARCHIVER="$(TARGET_AR)" \
 	C_LINKER="$(TARGET_CC)" \
 	LINKER="$(TARGET_CROSS)g++"
 

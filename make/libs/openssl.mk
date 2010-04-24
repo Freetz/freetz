@@ -36,8 +36,8 @@ $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(OPENSSL_DIR) \
 		SHARED_LDFLAGS="" \
 		CC="$(TARGET_CC)" \
-		AR="$(TARGET_CROSS)ar r" \
-		RANLIB="$(TARGET_CROSS)ranlib" \
+		AR="$(TARGET_AR) r" \
+		RANLIB="$(TARGET_RANLIB)" \
 		all
 	# Work around openssl build bug to link libssl.so with libcrypto.so.
 	$(SUBMAKE) -C $(OPENSSL_DIR) \

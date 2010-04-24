@@ -11,8 +11,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libz.so.$($(PKG)_LIB_VERSION)
 $(PKG)_CONFIGURE_DEFOPTS := n
 $(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
-$(PKG)_CONFIGURE_ENV += AR="$(TARGET_CROSS)ar"
-$(PKG)_CONFIGURE_ENV += RANLIB="$(TARGET_CROSS)ranlib"
+$(PKG)_CONFIGURE_ENV += AR="$(TARGET_AR)"
+$(PKG)_CONFIGURE_ENV += RANLIB="$(TARGET_RANLIB)"
 $(PKG)_CONFIGURE_ENV += prefix=/usr
 
 # we could make a patch for it, but as all changes are absolutely identical it's simpler to do it per sed

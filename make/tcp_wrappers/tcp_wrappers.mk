@@ -18,7 +18,7 @@ $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) \
 		config-check
 	$(SUBMAKE) -C $(TCP_WRAPPERS_DIR) \
-		CC="$(TARGET_CROSS)gcc" \
+		CC="$(TARGET_CC)" \
 		OPT_CFLAGS="$(TARGET_CFLAGS)" \
 		LIBS=-lnsl \
 		NETGROUP= \

@@ -20,7 +20,7 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(SAMBA_DIR)/source \
 		CC="$(TARGET_CC)" \
 		LD="$(TARGET_LD)" \
-		AR="$(TARGET_CROSS)ar" \
+		AR="$(TARGET_AR)" \
 		TARGETFS="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		SAMBA_CFLAGS="$(TARGET_CFLAGS)" \
 		CODEPAGEDIR="/mod/usr/share/samba" \

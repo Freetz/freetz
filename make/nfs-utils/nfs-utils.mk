@@ -33,7 +33,7 @@ $($(PKG)_EXPORTFS_BINARY) $($(PKG)_MOUNTD_BINARY) \
 		$($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(NFS_UTILS_DIR) \
 		OPT="$(TARGET_CFLAGS)" \
-		CC="$(TARGET_CROSS)gcc" \
+		CC="$(TARGET_CC)" \
 		all
 
 $($(PKG)_EXPORTFS_TARGET_BINARY): $($(PKG)_EXPORTFS_BINARY)

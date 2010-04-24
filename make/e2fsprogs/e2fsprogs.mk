@@ -77,7 +77,7 @@ $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/sbin/%,$(filter-out $
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 
-$(PKG)_CONFIGURE_ENV += ac_cv_path_LDCONFIG=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ldconfig
+$(PKG)_CONFIGURE_ENV += ac_cv_path_LDCONFIG=$(TARGET_LDCONFIG)
 $(PKG)_CONFIGURE_ENV += gt_cv_func_printf_posix=yes
 
 # uClibc-0.9.29 yields yes, 0.9.28 to be evaluated, it's however absolutely safe to say no
