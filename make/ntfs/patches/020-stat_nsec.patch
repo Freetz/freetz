@@ -37,7 +37,7 @@
  #define ST_CTIM_NSEC(stbuf) 0
 --- src/ntfs-3g.c
 +++ src/ntfs-3g.c
-@@ -870,6 +870,18 @@
+@@ -870,6 +870,28 @@
   	stbuf->st_atim = ntfs2timespec(ni->last_access_time);
   	stbuf->st_ctim = ntfs2timespec(ni->last_mft_change_time);
   	stbuf->st_mtim = ntfs2timespec(ni->last_data_change_time);
@@ -52,6 +52,16 @@
 +		stbuf->st_ctimensec = l_st_ctim.tv_nsec;
 +		stbuf->st_mtime = l_st_mtim.tv_sec;
 +		stbuf->st_mtimensec = l_st_mtim.tv_nsec;
++	}
++#elif defined(__UCLIBC__) && __UCLIBC_MAJOR__==0 && __UCLIBC_MINOR__==9 && __UCLIBC_SUBLEVEL__==28
++	{
++		// uClibc-0.9.28 doesn't support nanoseconds
++		struct timespec l_st_tim = ntfs2timespec(ni->last_access_time);
++		stbuf->st_atime = l_st_tim.tv_sec;
++		l_st_tim = ntfs2timespec(ni->last_mft_change_time);
++		stbuf->st_ctime = l_st_tim.tv_sec;
++		l_st_tim = ntfs2timespec(ni->last_data_change_time);
++		stbuf->st_mtime = l_st_tim.tv_sec;
 +	}
  #else
  	#error "No known timespec member in struct stat!"
