@@ -972,3 +972,16 @@ config FREETZ_LIB_libexslt
 		Much of the initial work on the library was done by Thomas Broyer. EXSLT itself is
 		a community initiative to provide extensions to XSLT.
 endmenu
+
+config FREETZ_LIB_libosip2
+	bool "libosip2 (libosip2.so)"
+	select FREETZ_LIB_libosipparser2
+	default n
+	help
+		GNU oSIP library, a Session Initiation Protocol (SIP) implementation.
+
+config FREETZ_LIB_libosipparser2
+	bool "libosipparser2 (libosipparser2.so)"
+	default n
+	help
+		GNU oSIP library, a Session Initiation Protocol (SIP) implementation.
