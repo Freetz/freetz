@@ -1,0 +1,28 @@
+--- src/siproxd.h
++++ src/siproxd.h
+@@ -271,14 +271,14 @@
+ /*
+  * some constant definitions
+  */
+-#define SIP_PORT	5060	/* default port to listen */
++#define SIP_PORT	5065	/* default port to listen */
+ #define DEFAULT_MAXFWD	70	/* default Max-Forward count */
+ #define DEFAULT_EXPIRES	3600	/* default Expires timeout */
+ 
+ #define TCP_IDLE_TO	300	/* TCP connection idle timeout in seconds */
+ #define TCP_CONNECT_TO	500	/* TCP connect() timeout in msec */
+ 
+-#define URLMAP_SIZE	128	/* number of URL mapping table entries	*/
++#define URLMAP_SIZE	32	/* number of URL mapping table entries	*/
+ 				/* this limits the number of clients!	*/
+ 
+ #define SOURCECACHE_SIZE 256	/* number of return addresses		*/
+@@ -294,7 +294,7 @@
+ #define PATH_STRING_SIZE 256	/* max size of an file path		*/
+ #define URL_STRING_SIZE	128	/* max size of an URL/URI string	*/
+ #define STATUSCODE_SIZE	5	/* size of string representation of status */
+-#define DNS_CACHE_SIZE	256	/* number of entries in internal DNS cache */
++#define DNS_CACHE_SIZE	64	/* number of entries in internal DNS cache */
+ #define DNS_ATTEMPTS	3	/* number of attempts to resolve a name
+ 				   before it is marked as bad */
+ #define DNS_GOOD_AGE	60	/* maximum age of a good cache entry (sec) */
