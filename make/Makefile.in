@@ -453,7 +453,6 @@ define PKG_FINISH_BIN__INT
 # Binary dirclean
 $(pkg)-dirclean--int:
 	$(RM) -r $($(PKG)_DIR)
-	$(RM) $(SOURCE_DIR)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
 	$(RM) -r $($(PKG)_TARGET_DIR)
 	$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 	$($(PKG)_CLEAN_TARGET_DIR__INT)
@@ -474,26 +473,26 @@ $(pkg)-dirclean: $(pkg)-dirclean--int
 $(pkg)-precompiled--int: $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
 $(pkg)-precompiled:
 	@$(call _ECHO_DONE)
-$(pkg)-build-prereq: $(SOURCE_DIR_ROOT)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked
-$(SOURCE_DIR_ROOT)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked:
+$(pkg)-build-prereq: $($(PKG)_DIR)/.build-prereq-checked
+$($(PKG)_DIR)/.build-prereq-checked:
 ifneq ($($(PKG)_BUILD_PREREQ),)
-	@$(PKG)_MISSING_PREREQ=""; \
+	@MISSING_PREREQ=""; \
 	for f in $($(PKG)_BUILD_PREREQ); do \
-		if ! which $$$$f >/dev/null 2>&1; then $(PKG)_MISSING_PREREQ="$$$${$(PKG)_MISSING_PREREQ} $$$$f"; fi; \
+		if ! which $$$$f >/dev/null 2>&1; then MISSING_PREREQ="$$$$MISSING_PREREQ $$$$f"; fi; \
 	done; \
-	if [ -n "$$$${$(PKG)_MISSING_PREREQ}" ]; then \
+	if [ -n "$$$$MISSING_PREREQ" ]; then \
 		echo -n -e "$(_Y)"; \
 		echo -e \
 			"ERROR: The following commands required for building of $(pkg)-package are missing on your system:" \
-			`echo $$$${$(PKG)_MISSING_PREREQ} | sed -e 's| |, |g'`; \
+			`echo $$$$MISSING_PREREQ | sed -e 's| |, |g'`; \
 		if [ -n "$(strip $($(PKG)_BUILD_PREREQ_HINT))" ]; then \
 			echo "$($(PKG)_BUILD_PREREQ_HINT)"; \
 		fi; \
 		echo -n -e "$(_N)"; \
-		exit 1 >/dev/null 2>&1; \
+		exit 1; \
 	fi;
 endif
-	@touch $$@
+	@mkdir -p $$(dir $$@); touch $$@;
 
 $(pkg)-clean-not-included--int:
 	@$(if $($(PKG)_NOT_INCLUDED),$(RM) -r $($(PKG)_NOT_INCLUDED),)
@@ -602,13 +601,20 @@ define PKG_LIB_PATCH
 	)
 endef
 
+# Removes all files under $1 except for those in $2
+define RMDIR_KEEP_FILES__INT
+	$(if $2,if [ -d "$1" ]; then TMPFILE=`mktemp`; tar -C $1 -cf $$$$TMPFILE $2; fi;) \
+	$(RM) -r $1; \
+	$(if $2,if [ -n "$$$$TMPFILE" ]; then mkdir -p $1; tar -C $1 -xf $$$$TMPFILE; rm -f $$$$TMPFILE; fi;)
+endef
+
 ## Unpack and patch binary package
 define PKG_UNPACKED_BIN__INT
 $(PKG)_SOURCE_DIR:
 	@mkdir -p $($(PKG)_SOURCE_DIR)
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(PKG)_SOURCE_DIR
 	@$(call _ECHO,preparing... )
-	$(RM) -r $($(PKG)_DIR)
+	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
 	$(call PKG_BIN_PATCH)
 	@touch $$@
@@ -634,7 +640,7 @@ $(PKG)_SOURCE_DIR:
 	@mkdir -p $($(PKG)_SOURCE_DIR)
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(PKG)_SOURCE_DIR
 	@$(call _ECHO,preparing... )
-	$(RM) -r $($(PKG)_DIR)
+	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
 	$(call PKG_LIB_PATCH)
 	@touch $$@
@@ -648,7 +654,7 @@ $(PKG)_SOURCE_DIR:
 	@mkdir -p $($(PKG)_SOURCE_DIR)
 $($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $(PKG)_SOURCE_DIR
 	@$(call _ECHO,preparing... )
-	$(RM) -r $($(PKG)_DIR)
+	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	mkdir -p $($(PKG)_DIR)
 	cp -a $$^ $($(PKG)_DIR)
 	@touch $$@
@@ -708,7 +714,7 @@ $(PKG)_FREETZ_CHANGES_CHECK:
 		mv $($(PKG)_FREETZ_CHANGES_TEMP) $($(PKG)_FREETZ_CHANGES_FILE); \
 	fi
 	@$(RM) $($(PKG)_FREETZ_CHANGES_TEMP)
-$(pkg) $(pkg)-precompiled: $(PKG)_FREETZ_CHANGES_CHECK
+$(pkg) $(pkg)-precompiled $(pkg)-build-prereq: $(PKG)_FREETZ_CHANGES_CHECK
 .PHONY: $(PKG)_FREETZ_CHANGES_CHECK
 endef
 
@@ -731,7 +737,7 @@ endef
 define PKG_CONFIGURED_CONFIGURE__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
-$($(PKG)_DIR)/.configured: $(SOURCE_DIR_ROOT)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.unpacked
 	@$(call _ECHO,configuring... )
 	($(CONFIGURE) \
 		cd $($(PKG)_DIR); \
@@ -757,7 +763,7 @@ PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
 define PKG_CONFIGURED_NOP__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
-$($(PKG)_DIR)/.configured: $(SOURCE_DIR_ROOT)/.$(pkg)-$($(PKG)_VERSION)-build-prereq-checked $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.unpacked
 	@touch $$@
 endef
 PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
