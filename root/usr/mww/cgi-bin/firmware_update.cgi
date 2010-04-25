@@ -12,6 +12,7 @@ function CheckInput(form) {
 	radio_stop=form.elements[1];
 	radio_semistop=form.elements[2];
 	radio_nostop=form.elements[3];
+	downgrade=form.elements[4];
 	
 	if (file_selector.value=="") {
 		alert("$(lang de:"Keine Firmware-Datei angegeben!" en:"No firmware file selected!")");
@@ -26,6 +27,10 @@ function CheckInput(form) {
 	else {
 		file_selector.name="nostop_avm";
 	}
+	if (downgrade.checked) {
+	    	file_selector.name += "/downgrade";
+	}
+
 	return true;
 }
 </script>
@@ -58,6 +63,10 @@ seconds."
 	$(lang de:"teilweise stoppen (bei Remote-Update)" en:"Stop AVM services partially (remote firmware update)")<br>
 	<input type="radio" name="do_prepare" value="nostop_avm" checked>
 	$(lang de:"nicht stoppen (bei genug Speicher bzw. Pseudo-Update ohne Reboot)" en:"Do not stop AVM services (enough available memory or pseudo update without reboot)")
+	</p>
+	<p>
+	<input type="checkbox" name="downgrade" value="yes">
+	$(lang de:"Downgrade auf niedrigere Version zulassen" en:"Allow downgrade to lower version")
 	</p>
 	<div class="btn"><input type=submit value="$(lang de:"Firmware hochladen" en:"Upload firmware")" style="width:150px"></div>
 </form>

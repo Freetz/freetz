@@ -13,7 +13,23 @@ pre_exit() {
 }
 echo "<pre>"
 
-if [ "$NAME" = stop_avm ]; then
+stop=${NAME%/*}
+downgrade=false
+case $NAME in
+    */downgrade) downgrade=true ;;
+esac
+
+if $downgrade; then
+	echo "$(lang
+	    de:"Downgrade vorbereiten"
+	    en:"Prepare downgrade"
+	) ..."
+    	/usr/bin/prepare-downgrade | indent
+	echo "$(lang de:"ERLEDIGT" en:"DONE")"
+    	echo "</pre><pre>"
+fi
+
+if [ "$stop" = stop_avm ]; then
 	echo "$(lang 
 	    de:"AVM-Dienste anhalten, Teil 1"
 	    en:"Stopping AVM services, part 1"
@@ -23,7 +39,7 @@ if [ "$NAME" = stop_avm ]; then
 	echo "</pre><pre>"
 fi
 
-if [ "$NAME" = semistop_avm ]; then
+if [ "$stop" = semistop_avm ]; then
 	echo "$(lang 
 	    de:"AVM-Dienste teilweise anhalten, Teil 1"
 	    en:"Stopping AVM services partially, part 1"
@@ -43,7 +59,7 @@ if [ $result -ne 0 ]; then
 fi
 echo "DONE"
 
-if [ "$NAME" != nostop_avm ]; then
+if [ "$stop" != nostop_avm ]; then
 	echo "</pre><pre>"
 	echo "$(lang
 	    de:"AVM-Dienste anhalten, Teil 2"
@@ -53,7 +69,7 @@ if [ "$NAME" != nostop_avm ]; then
 	echo "$(lang de:"ERLEDIGT" en:"DONE")"
 fi
 
-[ "$NAME" = semistop_avm ] && ( sleep 30; reboot )&
+[ "$stop" = semistop_avm ] && ( sleep 30; reboot )&
 
 cat << EOF
 </pre><pre>

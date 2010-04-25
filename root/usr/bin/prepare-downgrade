@@ -1,0 +1,14 @@
+#!/bin/sh
+# Downgrade mod by supamicha
+# Changes the firmware version to xx.01.01 until next reboot
+#
+echo -n 'Downgrading ... '
+if [ -e /var/tmp/version ]; then
+	echo 'already done.'
+else
+	sed 's/\({CONFIG_VERSION_MAJOR}\).*/\1.01.01/' /etc/version > /var/tmp/version
+	chmod +x /var/tmp/version
+	mount -o bind /var/tmp/version /etc/version
+	echo 'done.'
+fi
+echo "Fake firmware version: $(/etc/version -v)"

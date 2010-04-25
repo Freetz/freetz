@@ -52,15 +52,9 @@ case $MOD_CGI_CMD in
 	downgrade)
 		cgi_begin 'Downgrade mod...'
 		echo '<p>$(lang de:"Downgrade mod von supamicha" en:"Downgrade mod by supamicha"):<br>$(lang de:"&Auml;ndert die Firmware Version bis zum n&auml;chsten Neustart auf xx.01.01" en:"Changes the firmware version to xx.01.01 until next reboot")</p>'
-		echo -n '<pre>Downgrading...'
-		if [ -e /var/tmp/version ]; then
-			echo 'already done.</pre>'
-		else
-			sed 's/{CONFIG_VERSION_MAJOR}.*/{CONFIG_VERSION_MAJOR}.01.01/1' /etc/version > /var/tmp/version
-			chmod +x /var/tmp/version
-			mount -o bind /var/tmp/version /etc/version
-			echo 'done.</pre>'
-		fi
+		echo -n '<pre>'
+		/usr/bin/prepare-downgrade | html
+		echo '</pre>'
 		back_button mod status
 		cgi_end
 		;;
