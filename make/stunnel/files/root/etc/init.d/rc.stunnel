@@ -1,13 +1,13 @@
 #!/bin/sh
 
 DAEMON=stunnel
-PIDFILE="/var/run/$DAEMON.pid"
+PID_FILE="/var/run/$DAEMON.pid"
 
 . /etc/init.d/modlibrc
 
 is_running() {
 	local pid
-	[ -e "$PIDFILE" ] && read pid < "$PIDFILE" && 
+	[ -e "$PID_FILE" ] && read pid < "$PID_FILE" &&
 	kill -EXIT "$pid" 2> /dev/null
 }
 
@@ -47,12 +47,12 @@ start() {
 
 stop() {
 	echo -n 'Stopping stunnel...'
-	read pid < "$PIDFILE" &&
+	read pid < "$PID_FILE" &&
 	kill -USR1 "$pid" > /dev/null 2>&1
 
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
-		rm -f $PIDFILE > /dev/null 2>&1
+		rm -f $PID_FILE > /dev/null 2>&1
 		echo 'done.'
 	else
 		echo 'failed.'

@@ -3,7 +3,7 @@
 DAEMON=transmission
 DAEMON_BIN="$DAEMON-daemon"
 USERNAME=bittorrent
-PIDFILE=/var/run/$DAEMON.pid
+PID_FILE=/var/run/$DAEMON.pid
 
 . /etc/init.d/modlibrc
 
@@ -136,7 +136,7 @@ start() {
 	start-stop-daemon \
 		-S \
 		-N "$TRANSMISSION_NICE" \
-		-p "$PIDFILE" \
+		-p "$PID_FILE" \
 		-x "$DAEMON_BIN" \
 		-c "$USERNAME" \
 		-- \
@@ -158,7 +158,7 @@ stop () {
 		echoFailedAndExit 1
 	fi
 
-#	start-stop-daemon -K -q -o -p "$PIDFILE" >/dev/null 2>&1
+#	start-stop-daemon -K -q -o -p "$PID_FILE" >/dev/null 2>&1
 	kill -SIGINT $DAEMON_PID >/dev/null 2>&1
 	exitval=$?
 	[ "$exitval" -eq 0 ] && echo 'done.' || echoFailedAndExit "$exitval"

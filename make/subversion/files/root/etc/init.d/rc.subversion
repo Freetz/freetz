@@ -6,7 +6,7 @@ DAEMON=subversion # causes modlibrc' modlib_loadconfig to be called
 DAEMON=svnserve # real daemon name
 DAEMON_USER=svn
 DAEMON_GROUP=svn
-PIDFILE=/var/run/$DAEMON.pid
+PID_FILE=/var/run/$DAEMON.pid
 
 echoDone() { echo 'done.'; }
 echoFailed() { echo 'failed.'; }
@@ -62,10 +62,10 @@ start() {
 
 	chown -R $DAEMON_USER:$DAEMON_GROUP "$SUBVERSION_ROOT"
 
-	[ ! -e $PIDFILE ] && echo -n > $PIDFILE
-	chown $DAEMON_USER:$DAEMON_GROUP $PIDFILE
+	[ ! -e $PID_FILE ] && echo -n > $PID_FILE
+	chown $DAEMON_USER:$DAEMON_GROUP $PID_FILE
 
-	local OPTIONS="--daemon --pid-file $PIDFILE"
+	local OPTIONS="--daemon --pid-file $PID_FILE"
 	[ -n "$SUBVERSION_BINDADDRESS" ] && OPTIONS="$OPTIONS --listen-host $SUBVERSION_BINDADDRESS"
 	[ -n "$SUBVERSION_PORT" ] && OPTIONS="$OPTIONS --listen-port $SUBVERSION_PORT"
 
