@@ -154,11 +154,12 @@ mount_usbroot() {
 	# cache hotplug events
 	hotplugging defer
 
-	if [ $HWRevision -eq 122 -o $HWRevision -eq 139 ]; then
-		load_usb_modules_7270
-	else
-		load_usb_modules
-	fi
+	case "$HWRevision" in
+		122 | 135 | 139 )
+			load_usb_modules_7270 ;;
+		* )
+			load_usb_modules ;;
+	esac
 
 	for i in $FSTYPE usb-storage sd_mod; do
 		modprobe $i
