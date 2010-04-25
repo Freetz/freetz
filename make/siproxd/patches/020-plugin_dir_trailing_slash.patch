@@ -1,0 +1,21 @@
+--- src/siproxd.c
++++ src/siproxd.c
+@@ -236,6 +236,18 @@
+    if (read_config(configfile, config_search, main_cfg_opts, "") == STS_FAILURE) {
+       exit(1);
+    }
++   /* add trailing slash to configuration.plugin_dir if missing */
++   if (configuration.plugin_dir) {
++      int len = strlen(configuration.plugin_dir);
++      if (len && configuration.plugin_dir[len-1] != '/') {
++         char *tmp = (char*)malloc(len+2);
++         memcpy(tmp, configuration.plugin_dir, len);
++         tmp[len] = '/';
++         tmp[len+1] = '\0';
++         free(configuration.plugin_dir);
++	 configuration.plugin_dir = tmp;
++      }
++   }
+    /* remember where config file is located, so the plugins
+     * can load it as well - if required */
+    configuration.configfile = strdup(configfile);

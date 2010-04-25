@@ -1,0 +1,21 @@
+#!/bin/sh
+
+cat << EOF
+#	Have a look at:
+#	http://siproxd.sourceforge.net/index.php?op=odoc
+#	and
+#	http://siproxd.sourceforge.net/index.php?op=faq
+#	for more information!
+#
+#	below is a minimal set of parameters for siproxd
+#	you must change/add parameters to fit your needs
+#
+if_inbound  = lan
+if_outbound = lan
+sip_listen_port = 5065
+user = siproxd
+silence_log = 1
+registration_file = /tmp/flash/siproxd/siproxd.reg
+plugindir=/usr/lib/freetz/siproxd
+load_plugin=plugin_logcall.la
+EOF

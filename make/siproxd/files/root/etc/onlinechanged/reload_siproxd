@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if [ "$1" = "online" ] && [ "$(/etc/init.d/rc.siproxd status)" = "running" ]; then
+	logger -t info Restarting SIPROXD due to online status change
+	(sleep 5; /etc/init.d/rc.siproxd reload)&
+fi

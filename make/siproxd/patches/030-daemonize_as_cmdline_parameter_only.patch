@@ -1,0 +1,79 @@
+--- src/siproxd.c
++++ src/siproxd.c
+@@ -49,7 +49,6 @@
+    { "debug_level",         TYP_INT4,   &configuration.debuglevel,		{0, NULL} },
+    { "debug_port",          TYP_INT4,   &configuration.debugport,		{0, NULL} },
+    { "sip_listen_port",     TYP_INT4,   &configuration.sip_listen_port,		{SIP_PORT, NULL} },
+-   { "daemonize",           TYP_INT4,   &configuration.daemonize,		{0, NULL} },
+    { "silence_log",         TYP_INT4,   &configuration.silence_log,		{1, NULL} },
+    { "if_inbound",          TYP_STRING, &configuration.inbound_if,		{0, NULL} },
+    { "if_outbound",         TYP_STRING, &configuration.outbound_if,		{0, NULL} },
+@@ -106,11 +105,13 @@
+ "       -d, --debug <pattern>      set debug-pattern\n"
+ "       -c, --config <cfgfile>     use the specified config file\n"
+ "       -p, --pid-file <pidfile>   create pid file <pidfile>\n"
++"       -f, --foreground           do not daemonize, run in foreground\n"
+ #else
+ "       -h              help\n"
+ "       -d <pattern>    set debug-pattern\n"
+ "       -c <cfgfile>    use the specified config file\n"
+ "       -p <pidfile>    create pid file <pidfile>\n"
++"       -f              do not daemonize, run in foreground\n"
+ #endif
+ "";
+ 
+@@ -144,6 +145,7 @@
+    int  config_search=1;                /* search the config file */
+    int  cmdline_debuglevel=0;
+    char *pidfilename=NULL;
++   int  run_in_foreground=0;
+    struct sigaction act;
+ 
+    log_init();
+@@ -187,13 +189,14 @@
+       {"config", required_argument, NULL, 'c'},
+       {"debug", required_argument, NULL, 'd'},
+       {"pid-file", required_argument, NULL,'p'},
++      {"foreground", no_argument, NULL, 'f'},
+       {0,0,0,0}
+    };
+ 
+-    while ((ch1 = getopt_long(argc, argv, "hc:d:p:",
++    while ((ch1 = getopt_long(argc, argv, "hc:d:p:f",
+                   long_options, &option_index)) != -1) {
+ #else   /* ! HAVE_GETOPT_LONG */
+-    while ((ch1 = getopt(argc, argv, "hc:d:p:")) != -1) {
++    while ((ch1 = getopt(argc, argv, "hc:d:p:f")) != -1) {
+ #endif
+       switch (ch1) {
+       case 'h': /* help */
+@@ -220,6 +223,10 @@
+          pidfilename = optarg;
+          break;
+ 
++      case 'f':
++         run_in_foreground = 1;
++         break;
++
+       default:
+          DEBUGC(DBCLASS_CONFIG,"no command line options");
+          break; 
+@@ -275,7 +282,7 @@
+ 
+ 
+    /* daemonize if requested to */
+-   if (configuration.daemonize) {
++   if (!run_in_foreground) {
+       DEBUGC(DBCLASS_CONFIG,"daemonizing");
+       if (fork()!=0) exit(0);
+       setsid();
+--- src/siproxd.h
++++ src/siproxd.h
+@@ -66,7 +66,6 @@
+    char *outbound_if;
+    char *outbound_host;
+    int sip_listen_port;
+-   int daemonize;
+    int silence_log;
+    int rtp_port_low;
+    int rtp_port_high;
