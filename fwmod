@@ -460,7 +460,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	done
 
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" ] && [ "$FWMOD_PATCH_TEST" != "y" ]; then
-		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
+		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
 
 		if [ ! -r "$KERNEL_SUBVERSION_FILE" ]; then
 			error 1 "cannot determine kernel version"
@@ -750,12 +750,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 		echo0 "replacing kernel"
 
-		if [ ! -r "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" ]; then
-			error 1 "can't find kernel for ref ${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
+		if [ ! -r "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" ]; then
+			error 1 "can't find kernel for ref ${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}"
 		fi
 
-		echo1 "replacing kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING} (${KERNEL_SUBVERSION})"
-		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
+		echo1 "replacing kernel-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING} (${KERNEL_SUBVERSION})"
+		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
 	fi
 
 	echo0 "installing modules"
@@ -763,26 +763,24 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
 	for i in \
 	$( \
-		cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}" && \
+		cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}" && \
 		find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
 	)
 	do
 		bn="$(basename "$i")"
 		mod="${bn%\.ko}"
 
-		if [ "$FREETZ_MODULES_ALL" = "y" -o \
-					"$(eval "echo \"\$FREETZ_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]
-			then
-					echo2 "${bn}"
-					dn="$(dirname "$i")"
-					[ -d "${MODULES_DIR}/kernel/${dn}" ] || mkdir -p "${MODULES_DIR}/kernel/${dn}"
-					cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${MODULES_DIR}/kernel/${dn}/"
+		if [ "$FREETZ_MODULES_ALL" = "y" -o "$(eval "echo \"\$FREETZ_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]; then
+			echo2 "${bn}"
+			dn="$(dirname "$i")"
+			[ -d "${MODULES_DIR}/kernel/${dn}" ] || mkdir -p "${MODULES_DIR}/kernel/${dn}"
+			cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${MODULES_DIR}/kernel/${dn}/"
 		fi
 	done
 
 	echo1 "generating modules.dep"
 	${TOOLS_SUBDIR}/depmod.pl -b "$MODULES_DIR" \
-		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map 2> /dev/null
+		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map 2> /dev/null
 	# add plugin kernel modules for 7270 if plugins are not enabled
 	if [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
 		echo -e "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko\nkernel/drivers/char/audio/avm_audio.ko:\n" >> $MODULES_DIR/modules.dep
