@@ -24,7 +24,6 @@ $(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
 $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) \
 				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
 	$(RM) -r $(KERNEL_DIR)
-	$(RM) -r $(SOURCE_DIR_ROOT)/avm-gpl-$(AVM_VERSION)
 	mkdir -p $(KERNEL_BUILD_DIR)
 	@$(call _ECHO, checking structure... )
 	@KERNEL_SOURCE_CONTENT=` \
@@ -207,8 +206,7 @@ kernel-clean:
 		clean
 
 kernel-dirclean:
-	$(RM) -r $(KERNEL_DIR)
-	$(RM) -r $(SOURCE_DIR_ROOT)/avm-gpl-$(AVM_VERSION)
+	$(RM) -r $(SOURCE_DIR_ROOT)/kernel
 	$(RM) $(KERNEL_TARGET_DIR)/.version-*
 	$(RM) $(KERNEL_TARGET_DIR)/System*
 	$(RM) $(KERNEL_TARGET_DIR)/kernel-*
