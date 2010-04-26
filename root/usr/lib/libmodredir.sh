@@ -1,4 +1,7 @@
-# Try to determine hostname used in the HTTP request; guess if necessary.
+#
+# Try to determine hostname (without port!) used in the HTTP request; guess if
+# necessary.
+#
 self_host() {
 	local TARGET_HOST
 
@@ -8,7 +11,7 @@ self_host() {
 
 	# Try HTTP_HOST
 	if [ -z "$TARGET_HOST" ]; then
-		TARGET_HOST=$HTTP_HOST
+		TARGET_HOST=${HTTP_HOST%:*}
 	fi
 
 	# Use fritz.box as fallback
@@ -19,9 +22,11 @@ self_host() {
 	echo "$TARGET_HOST"
 }
 
+#
 # Redirect: Header 'Status' works with busybox's httpd; for AVM's websrv, we
 # send a small HTML page. $3 is a function that may produce additional BODY
 # contents.
+#
 redirect() {
 	local location=$1 title=${2:-Redirect} body_func=${3:-true}
 	local CR=$'\r'
