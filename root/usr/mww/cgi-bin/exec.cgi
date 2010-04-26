@@ -49,15 +49,6 @@ case $MOD_CGI_CMD in
 		back_button mod status
 		cgi_end
 		;;
-	downgrade)
-		cgi_begin 'Downgrade mod...'
-		echo '<p>$(lang de:"Downgrade mod von supamicha" en:"Downgrade mod by supamicha"):<br>$(lang de:"&Auml;ndert die Firmware Version bis zum n&auml;chsten Neustart auf xx.01.01" en:"Changes the firmware version to xx.01.01 until next reboot")</p>'
-		echo -n '<pre>'
-		/usr/bin/prepare-downgrade | html
-		echo '</pre>'
-		back_button mod status
-		cgi_end
-		;;
 	fw_attrib)
 		cgi_begin '$(lang de:"Attribute bereinigen" en:"Clean up attributes")'
 		echo '<p>$(lang de:"Entfernt Merker f&uuml;r \"nicht unterst&uuml;tzte &Auml;nderungen\"" en:"Cleans up marker for \"unauthorized changes\"")</p>'
