@@ -159,7 +159,7 @@ _cgi_print_menu() {
 	case $id in
 		settings|file:*) sub=settings ;;
 		status*) sub=status ;;
-    	system|avmwif_*|rudi_*|firmware_*|backup_*) sub=system ;;
+		system|avmwif_*|rudi_*|firmware_*|backup_*) sub=system ;;
 		*) sub=packages ;;
 	esac
 
