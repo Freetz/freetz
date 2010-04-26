@@ -57,7 +57,7 @@ if [ $result -ne 0 ]; then
 	echo "$(lang de:"FEHLGESCHLAGEN" en:"FAILED")"
 	pre_exit 1
 fi
-echo "DONE"
+echo "$(lang de:"ERLEDIGT" en:"DONE")"
 
 if [ "$stop" != nostop_avm ]; then
 	echo "</pre><pre>"
@@ -125,10 +125,12 @@ fi
 indent < /var/post_install
 cat << EOF
 $(lang de:"ENDE DER DATEI" en:"END OF FILE")
+</pre>
 
+<p>
 $(lang 
-    de:"Das Nach-Installationsskript läuft beim Neutart (reboot) und führt die 
-darin definiterten Aktionen aus, z.B. das tatsächliche Flashen der Firmware.
+    de:"Das Nach-Installationsskript läuft beim Neustart (reboot) und führt die 
+darin definierten Aktionen aus, z.B. das tatsächliche Flashen der Firmware.
 Sie können immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie
 das Skript und den Rest der extrahierten Firmware-Komponenten löschen."
     en:"The post-installation script will be executed upon reboot and perform
@@ -136,5 +138,5 @@ the actions specified therein, e.g. the actual firmware flashing.
 You may still choose to interrupt this process by removing the script
 along with the rest of the extracted firmware components."
 )
-</pre>
+</p>
 EOF
