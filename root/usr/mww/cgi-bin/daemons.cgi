@@ -18,7 +18,7 @@ stat_button() {
 stat_packagelink() {
 	local url
 	case $1 in
-		crond|swap|telnetd|webcfg) url=$(href mod conf) ;;
+		crond|swap|telnetd|webcfg|dsld) url=$(href mod conf) ;;
 		*) url=$(href cgi "$1") ;;
 	esac
 	echo "<a href='$url'>$2</a>"
@@ -97,6 +97,7 @@ stat_builtin() {
 	stat_line swap
 	stat_line telnetd
 	stat_line webcfg
+	stat_line dsld
 
 	stat_end
 	sec_end

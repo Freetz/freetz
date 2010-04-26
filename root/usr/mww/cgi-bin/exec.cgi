@@ -63,17 +63,6 @@ case $MOD_CGI_CMD in
 		back_button mod status
 		cgi_end
 		;;
-	restart_dsld)
-		cgi_begin '$(lang de:"Starte dsld neu" en:"Restart dsld")...'
-		echo -n '<pre>Stopping dsld...<br>'
-		dsld -s
-		sleep 3
-		echo -n 'Restarting dsld...<br>'
-		dsld -n
-		echo -n 'done.</pre>'
-		back_button mod status
-		cgi_end
-		;;
 	reboot)
 		cgi_begin '$(lang de:"Neustart" en:"Reboot")...'
 		echo '<p>$(lang de:"Starte neu" en:"Rebooting")...</p>'

@@ -1,0 +1,52 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+
+DAEMON=dsld
+
+start() {
+	echo -n "Starting $DAEMON..."
+	$DAEMON -n
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n "Stopping $DAEMON..."
+	$DAEMON -s
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case $1 in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+	    	modlib_status
+		;;
+	*)
+		echo "Usage: $0 [start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

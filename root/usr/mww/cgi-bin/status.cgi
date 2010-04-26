@@ -130,6 +130,4 @@ fi
 
 [ "$MOD_MOUNTED_MAIN" = yes ] && . /usr/lib/cgi-bin/mod/mounted.cgi
 
-stat_button restart_dsld '$(lang de:"DSL-Reconnect" en:"Reconnect DSL")'
-
 cgi_end
