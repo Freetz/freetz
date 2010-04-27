@@ -94,10 +94,10 @@ stat_builtin() {
 	stat_begin
 
 	stat_line crond
+	stat_line dsld
 	stat_line swap
 	stat_line telnetd
 	stat_line webcfg
-	stat_line dsld
 
 	stat_end
 	sec_end
