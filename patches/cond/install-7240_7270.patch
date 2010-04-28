@@ -1,14 +1,21 @@
---- var/install.orig	2010-04-19 23:09:16.000000000 +0200
-+++ var/install	2010-04-19 23:13:52.000000000 +0200
-@@ -207,6 +207,11 @@
+--- var/install.orig	2010-04-28 08:44:04.000000000 +0200
++++ var/install	2010-04-28 08:44:04.000000000 +0200
+@@ -207,6 +207,10 @@
  ################################
  # list of accepted installtypes:
  ################################
 +if [ "${OEM}" != "avme" ]; then
 +	echo "setting OEM to avme"
-+	echo "firmware_version avme" > /proc/sys/urlader/environment
 +	OEM=avme
 +fi
  echo OEM=$OEM
  # get annex from Kernel dep env path
  if [ "${kversion}" = 24 ] ; then
+@@ -239,6 +243,7 @@
+            fi
+            echo OK - accept this update for device Fritz_Box_7270_16 ...
+            korrekt_version=1
++           echo "firmware_version avme" > /proc/sys/urlader/environment
+    fi
+    echo testing acceptance for device Fritz_Box_7270_16 done
+ fi
