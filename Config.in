@@ -58,6 +58,10 @@ choice
 		select FREETZ_AVM_VERSION_04_30
 		bool "Fon 5050"
 
+	config FREETZ_TYPE_FON_5124
+		select FREETZ_AVM_VERSION_04_67
+		bool "Fon 5124"
+
 	config FREETZ_TYPE_FON_5140
 		select FREETZ_AVM_VERSION_04_67
 		bool "Fon 5140"
@@ -331,6 +335,7 @@ choice
 		bool "de - deutsch"
 		depends on \
 			! FREETZ_TYPE_FON_5010 && \
+			! FREETZ_TYPE_FON_5124 && \
 			! FREETZ_TYPE_FON_WLAN_7570
 
 	config FREETZ_TYPE_LANG_A_CH
@@ -351,6 +356,7 @@ choice
 			( \
 			FREETZ_TYPE_FON || \
 			FREETZ_TYPE_300IP_AS_FON || \
+			FREETZ_TYPE_FON_5124 || \
 			FREETZ_TYPE_FON_WLAN || \
 			FREETZ_TYPE_FON_WLAN_7140 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
@@ -396,6 +402,7 @@ config FREETZ_TYPE_STRING
 	default "fon"						if FREETZ_TYPE_FON
 	default "5010"						if FREETZ_TYPE_FON_5010
 	default "5050"						if FREETZ_TYPE_FON_5050
+	default "5124"						if FREETZ_TYPE_FON_5124
 	default "5140"						if FREETZ_TYPE_FON_5140
 	default "fon_wlan"					if FREETZ_TYPE_FON_WLAN
 	default "7050"						if FREETZ_TYPE_FON_WLAN_7050
@@ -514,6 +521,7 @@ config FREETZ_TARGET_IPV6_SUPPORT
 config FREETZ_TARGET_REF
 	string "Target ref"		if FREETZ_TYPE_CUSTOM
 	default "8mb_26"		if \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
@@ -545,6 +553,7 @@ config FREETZ_TARGET_REF
 config FREETZ_KERNEL_REF
 	string "Kernel ref"		if FREETZ_TYPE_CUSTOM
 	default "8mb_26"		if \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
@@ -577,6 +586,7 @@ config FREETZ_KERNEL_LAYOUT
 	string "Kernel ref"		if FREETZ_TYPE_CUSTOM
 	default "ohio"			if \
 		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
@@ -624,6 +634,7 @@ config FREETZ_KERNEL_MTD_SIZE
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050
 	default 119					if \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
@@ -656,6 +667,7 @@ config FREETZ_HAS_PHONE
 		FREETZ_TYPE_300IP_AS_FON || \
 		FREETZ_TYPE_FON_5010 || \
 		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
@@ -700,6 +712,7 @@ config FREETZ_HAS_TAM
 		FREETZ_TYPE_300IP_AS_FON || \
 		FREETZ_TYPE_FON_5010 || \
 		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
@@ -737,6 +750,7 @@ config FREETZ_HAS_WLAN
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_FON_5010 || \
 		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_300IP_AS_FON
 	help
@@ -757,6 +771,7 @@ config FREETZ_HAS_USB_CLIENT
 		FREETZ_TYPE_FON_WLAN_7050
 	default n				if \
 		FREETZ_TYPE_FON_5010 || \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
@@ -780,6 +795,7 @@ config FREETZ_HAS_USB_HOST
 	bool "USB host"		if FREETZ_TYPE_CUSTOM
 	default y			if \
 		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		(FREETZ_TYPE_FON_7150 && ! FREETZ_TYPE_SINUS_W500V_7150) || \
@@ -830,6 +846,7 @@ config FREETZ_HAS_LIBSSL
 	bool "Has libssl"	if FREETZ_TYPE_CUSTOM
 	default y			if \
 		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_WLAN_7112 || \
 		FREETZ_TYPE_FON_WLAN_7113 || \
 		FREETZ_TYPE_FON_WLAN_7140 || \
@@ -1133,6 +1150,7 @@ config FREETZ_REMOVE_ASSISTANT
 	bool "Remove assistant"
 	default n
 	depends on \
+	! FREETZ_TYPE_FON_5124  && \
 	( ! ( FREETZ_TYPE_FON_WLAN_7140 && FREETZ_TYPE_LANG_EN ) ) && \
 	( ! ( FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN ) )
 	help
@@ -1926,6 +1944,12 @@ config FREETZ_DL_SITE
 											FREETZ_TYPE_ANNEX_B
 	default "@AVM/fritz.box/fritzbox.fon_5010/firmware/deutsch_a-ch"	if	FREETZ_TYPE_FON_5010
 	default "@AVM/fritz.box/fritzbox.fon_5050/firmware"			if	FREETZ_TYPE_FON_5050
+	default "@AVM/fritz.box/fritzbox.fon_5124/firmware/english/annex_a"	if	FREETZ_TYPE_FON_5124 && \
+											FREETZ_TYPE_LANG_EN && \
+											FREETZ_TYPE_ANNEX_A
+	default "@AVM/fritz.box/fritzbox.fon_5124/firmware/english/annex_b"	if	FREETZ_TYPE_FON_5124 && \
+											FREETZ_TYPE_LANG_EN && \
+											FREETZ_TYPE_ANNEX_B
 	default "@AVM/fritz.box/fritzbox.fon_5140/firmware"			if	FREETZ_TYPE_FON_5140
 	default "@AVM/fritz.box/fritzbox.fon_wlan/firmware/deutsch"		if	FREETZ_TYPE_FON_WLAN && \
 											FREETZ_TYPE_LANG_DE
@@ -1996,6 +2020,12 @@ config FREETZ_DL_SOURCE
 											FREETZ_TYPE_ANNEX_B
 	default "fritz.box_fon_5010.annexa.48.04.43.image"			if	FREETZ_TYPE_FON_5010
 	default "fritz.box_fon_5050.12.04.31.image"				if	FREETZ_TYPE_FON_5050
+	default "FRITZ.Box_Fon_5124.AnnexA.en.57.04.67.image"			if	FREETZ_TYPE_FON_5124 && \
+											FREETZ_TYPE_LANG_EN && \
+											FREETZ_TYPE_ANNEX_A
+	default "FRITZ.Box_Fon_5124.AnnexB.en.56.04.67.image"			if	FREETZ_TYPE_FON_5124 && \
+											FREETZ_TYPE_LANG_EN && \
+											FREETZ_TYPE_ANNEX_B
 	default "FRITZ.Box_Fon_5140.AnnexB.43.04.67.image"			if	FREETZ_TYPE_FON_5140
 	default "fritz.box_fon_wlan.08.04.34.image"				if	FREETZ_TYPE_FON_WLAN && \
 											FREETZ_TYPE_LANG_DE
@@ -2084,6 +2114,10 @@ config FREETZ_DL_SOURCE_MD5
 								FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 	default "cdea5c36f629ce85e1a1613342cfc9f3"	if	FREETZ_TYPE_FON_5010
 	default "8961ba722c8e0be5ece061d75a07cf65"	if	FREETZ_TYPE_FON_5050
+	default "756e491fb2e2deb4fe4faa36fca3db15"	if	FREETZ_TYPE_FON_5124 && FREETZ_TYPE_LANG_EN && \
+								FREETZ_TYPE_ANNEX_A
+	default "d36907ca423faeae62c7010085027272"	if	FREETZ_TYPE_FON_5124 && FREETZ_TYPE_LANG_EN && \
+								FREETZ_TYPE_ANNEX_B
 	default "1eda8531cceea471e04985fa635ba146"	if	FREETZ_TYPE_FON_5140
 	default "240ec5c8484f8fee97cd122297bee186"	if	FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_DE
 	default "7b08d49af5bfd00bee1ce6593b033630"	if	FREETZ_TYPE_FON_WLAN && FREETZ_TYPE_LANG_EN && \
