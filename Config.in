@@ -2683,6 +2683,13 @@ source make/external.in
 
 endmenu
 
+comment "CAUTION: SQUASHFS blocksizes greater than 64 KB can cause extensive memory usage and lead to an unstable box."
+depends on \
+	FREETZ_SQUASHFS_BLOCKSIZE_131072 || \
+	FREETZ_SQUASHFS_BLOCKSIZE_262144 || \
+	FREETZ_SQUASHFS_BLOCKSIZE_524288 || \
+	FREETZ_SQUASHFS_BLOCKSIZE_1048576
+
 choice
 
 	prompt "SquashFS block size"
@@ -2696,39 +2703,13 @@ choice
 			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
 			compression ratios than smaller ones.
 
-			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
-			anything smaller because your firmware image will grow unnecessarily.
+			64 KB is the default for kernel 2.6 firmwares.
 
-			Note: Currently anything above 128 KB will result in a kernel panic, thus
-			we do not allow it.
+#	config FREETZ_SQUASHFS_BLOCKSIZE_16384
+#		bool "16 KB"
 
-	config FREETZ_SQUASHFS_BLOCKSIZE_16384
-		bool "16 KB"
-		help
-			Block size of the root filesystem. SquashFS 2.x can use block sizes
-			up to 64 KB, SquashFS 3.x (only available for 7270 firmware or with
-			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
-			compression ratios than smaller ones.
-
-			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
-			anything smaller because your firmware image will grow unnecessarily.
-
-			Note: Currently anything above 128 KB will result in a kernel panic, thus
-			we do not allow it.
-
-	config FREETZ_SQUASHFS_BLOCKSIZE_32768
-		bool "32 KB"
-		help
-			Block size of the root filesystem. SquashFS 2.x can use block sizes
-			up to 64 KB, SquashFS 3.x (only available for 7270 firmware or with
-			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
-			compression ratios than smaller ones.
-
-			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
-			anything smaller because your firmware image will grow unnecessarily.
-
-			Note: Currently anything above 128 KB will result in a kernel panic, thus
-			we do not allow it.
+#	config FREETZ_SQUASHFS_BLOCKSIZE_32768
+#		bool "32 KB"
 
 	config FREETZ_SQUASHFS_BLOCKSIZE_65536
 		bool "64 KB"
@@ -2738,38 +2719,23 @@ choice
 			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
 			compression ratios than smaller ones.
 
-			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
-			anything smaller because your firmware image will grow unnecessarily.
-
-			Note: Currently anything above 128 KB will result in a kernel panic, thus
-			we do not allow it.
+			64 KB is the default for kernel 2.6 firmwares.
 
 	config FREETZ_SQUASHFS_BLOCKSIZE_131072
 		bool "128 KB (EXPERIMENTAL)"
-		depends on FREETZ_REPLACE_KERNEL
-		help
-			Block size of the root filesystem. SquashFS 2.x can use block sizes
-			up to 64 KB, SquashFS 3.x (only available for 7270 firmware or with
-			"replace kernel") up to 1024 KB. Bigger block sizes achieve better
-			compression ratios than smaller ones.
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_REPLACE_KERNEL
 
-			64 KB is the default for kernel 2.6 firmwares, we recommend not to use
-			anything smaller because your firmware image will grow unnecessarily.
+	config FREETZ_SQUASHFS_BLOCKSIZE_262144
+		bool "256 KB (EXPERIMENTAL)"
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_REPLACE_KERNEL
 
-			Note: Currently anything above 128 KB will result in a kernel panic, thus
-			we do not allow it.
+	config FREETZ_SQUASHFS_BLOCKSIZE_524288
+		bool "512 KB (EXPERIMENTAL)"
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_REPLACE_KERNEL
 
-#	config FREETZ_SQUASHFS_BLOCKSIZE_262144
-#		bool "256 KB"
-#		depends on FREETZ_REPLACE_KERNEL
-
-#	config FREETZ_SQUASHFS_BLOCKSIZE_524288
-#		bool "512 KB"
-#		depends on FREETZ_REPLACE_KERNEL
-
-#	config FREETZ_SQUASHFS_BLOCKSIZE_1048576
-#		bool "1024 KB"
-#		depends on FREETZ_REPLACE_KERNEL
+	config FREETZ_SQUASHFS_BLOCKSIZE_1048576
+		bool "1024 KB (EXPERIMENTAL)"
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_REPLACE_KERNEL
 
 endchoice
 
