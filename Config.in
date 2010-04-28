@@ -1795,6 +1795,43 @@ config FREETZ_ADD_ANNEX_A_FIRMWARE
 		uncompressed data size. But you can remove Annex B file if you
 		plan to use Annex A.
 
+config FREETZ_ENFORCE_URLADER_SETTINGS
+	bool "Enforce urlader environment"
+	depends on FREETZ_SHOW_ADVANCED
+	default n
+	help
+		Enforce some urlader (Adam2/EVA) environment variables.
+		 * useful for tcom boxes having non-AVM standard settings in bootloader 
+		   (my_ipaddress, firmware_version, ProductID)
+		 * useful for people that do clear mtd3/mtd4 often.
+		This settings are enforce at the beginnig of the boot process.
+
+config FREETZ_ENFORCE_URLADER_SETTING_MY_IPADDRESS
+	depends on FREETZ_ENFORCE_URLADER_SETTINGS
+	string "Enforce my_ipaddress variable"
+	default "192.168.178.1"
+	help
+		This is the AVM default, enforce to also to reseller boxes, eg. from T-Com
+		If this is empty, urlader setting won't be touched.
+
+config FREETZ_ENFORCE_URLADER_SETTING_FIRMWARE_VERSION
+	depends on FREETZ_ENFORCE_URLADER_SETTINGS
+	string "Enforce firmware_version variable"
+	default ""
+	help
+		Choose wisely. Your image beeing built must support this.
+		Typical settings are eg.: avm, avme, tcom, 1und1, ...
+		If this is empty, urlader setting won't be touched.
+
+config FREETZ_ENFORCE_URLADER_SETTING_PRODUCTID
+	depends on FREETZ_ENFORCE_URLADER_SETTINGS
+	string "Enforce ProductID variable"
+	default ""
+	help
+		Choose wisely. Your image beeing built must support this.
+		Typical settings are eg.: Fritz_Box_DECT_7270, Fritz_Box_DECT_W920V
+		If this is empty, urlader setting won't be touched.
+
 comment "Other stuff -----------------------------"
 
 config FREETZ_PATCH_GETCONS
