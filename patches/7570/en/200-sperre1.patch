@@ -1,0 +1,20 @@
+--- usr/www/avme/html/de/fon/sperre1.js.orig	2009-09-15 15:26:16.000000000 +0200
++++ usr/www/avme/html/de/fon/sperre1.js	2009-09-16 19:22:16.000000000 +0200
+@@ -68,7 +68,7 @@
+ var nummer="";
+ if (jslGetValue("uiViewBereichIncoming") == "")
+ nummer = jslGetValue("uiViewNummer");
+-if (!isZahlRaute(nummer)) {alert(g_mldNonDigits); return;}
++//if (!isZahlRaute(nummer)) {alert(g_mldNonDigits); return;}
+ var x = IstActionVorhanden(nummer);
+ if (x != "") {
+ if (jslGetValue("uiPostInAction"+x) == "1") {
+@@ -161,7 +161,7 @@
+ }
+ } else {
+ var nummer = jslGetValue("uiViewNummer");
+-if (!isZahlRaute(nummer)) {alert(g_mldNonDigits); return;}
++//if (!isZahlRaute(nummer)) {alert(g_mldNonDigits); return;}
+ var x = IstActionVorhanden(nummer);
+ if (x != "") {
+ if (jslGetValue("uiPostInAction"+x) == "1") {alert(g_txtAlert_1); return;}
