@@ -1,5 +1,5 @@
 if [ "$FREETZ_ENFORCE_URLADER_SETTINGS" = y ]; then
-	echo enforce urlader settings
+	echo1 "enforce urlader settings"
 
 	mv "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S.orig"
 

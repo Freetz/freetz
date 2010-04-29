@@ -1819,10 +1819,10 @@ config FREETZ_ENFORCE_URLADER_SETTINGS
 	default n
 	help
 		Enforce some urlader (Adam2/EVA) environment variables.
-		 * useful for tcom boxes having non-AVM standard settings in bootloader 
+		 * useful for tcom boxes having non-AVM standard settings in bootloader
 		   (my_ipaddress, firmware_version, ProductID)
 		 * useful for people that do clear mtd3/mtd4 often.
-		This settings are enforce at the beginnig of the boot process.
+		This settings are enforced at the beginnig of the boot process.
 
 config FREETZ_ENFORCE_URLADER_SETTING_MY_IPADDRESS
 	depends on FREETZ_ENFORCE_URLADER_SETTINGS
@@ -1830,7 +1830,7 @@ config FREETZ_ENFORCE_URLADER_SETTING_MY_IPADDRESS
 	default "192.168.178.1"
 	help
 		This is the AVM default, enforce to also to reseller boxes, eg. from T-Com
-		If this is empty, urlader setting won't be touched.
+		If this is empty the urlader setting won't be touched.
 
 config FREETZ_ENFORCE_URLADER_SETTING_FIRMWARE_VERSION
 	depends on FREETZ_ENFORCE_URLADER_SETTINGS
@@ -1839,7 +1839,7 @@ config FREETZ_ENFORCE_URLADER_SETTING_FIRMWARE_VERSION
 	help
 		Choose wisely. Your image beeing built must support this.
 		Typical settings are eg.: avm, avme, tcom, 1und1, ...
-		If this is empty, urlader setting won't be touched.
+		If this is empty the urlader setting won't be touched.
 
 config FREETZ_ENFORCE_URLADER_SETTING_PRODUCTID
 	depends on FREETZ_ENFORCE_URLADER_SETTINGS
@@ -1848,9 +1848,17 @@ config FREETZ_ENFORCE_URLADER_SETTING_PRODUCTID
 	help
 		Choose wisely. Your image beeing built must support this.
 		Typical settings are eg.: Fritz_Box_DECT_7270, Fritz_Box_DECT_W920V
-		If this is empty, urlader setting won't be touched.
+		If this is empty the urlader setting won't be touched.
 
 comment "Other stuff -----------------------------"
+
+config FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE
+	bool "Change LED semantics to W920V"
+	default n
+	depends on FREETZ_TYPE_SPEEDPORT_W920V_7570 || FREETZ_TYPE_FON_WLAN_7570
+	help
+		If Y is choosen, this changes the semantics of the LEDs on the front
+		panel of your 7570/W920V box fitting the descriptions of the W920V.
 
 config FREETZ_PATCH_GETCONS
 	bool "Don't redirect console messages"
@@ -2169,7 +2177,7 @@ config FREETZ_DL_SITE2
 												FREETZ_TYPE_SPEEDPORT_W501V || \
 												FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
 												FREETZ_TYPE_SPEEDPORT_W900V_7170 || \
-												FREETZ_TYPE_SPEEDPORT_W920V_7570 || \
+												FREETZ_TYPE_SPEEDPORT_W920V_7570 || FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE || \
 												(FREETZ_TYPE_FON_WLAN_7270 && \
 												FREETZ_ADD_ANNEX_A_FIRMWARE)
 	default "@AVM/fritz.box/fritzbox.wlan_3170/firmware/deutsch"			if	FREETZ_TYPE_3170_7170
@@ -2181,7 +2189,7 @@ config FREETZ_DL_SITE2
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport%20W%20900V"	if	FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7240/firmware/deutsch"		if	FREETZ_TYPE_7240_7270
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch_a-ch"		if	FREETZ_TYPE_FON_WLAN_7270
-	default "http://hilfe.telekom.de/dlp/eki/downloads/Speedport/Speedport%20W%20920V/" if FREETZ_TYPE_SPEEDPORT_W920V_7570
+	default "http://hilfe.telekom.de/dlp/eki/downloads/Speedport/Speedport%20W%20920V/" if FREETZ_TYPE_SPEEDPORT_W920V_7570 || FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE
 
 
 config FREETZ_DL_SOURCE2
@@ -2194,7 +2202,7 @@ config FREETZ_DL_SOURCE2
 										FREETZ_TYPE_SINUS_W500V_7150 || \
 										FREETZ_TYPE_SPEEDPORT_W501V || \
 										FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
-										FREETZ_TYPE_SPEEDPORT_W900V_7170 || \
+										FREETZ_TYPE_SPEEDPORT_W900V_7170 || FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE || \
 										FREETZ_TYPE_SPEEDPORT_W920V_7570 || \
 										(FREETZ_TYPE_FON_WLAN_7270 && \
 										FREETZ_ADD_ANNEX_A_FIRMWARE)
@@ -2208,7 +2216,7 @@ config FREETZ_DL_SOURCE2
 	default "fw_Speedport_W900V_v34.04.57.image"			if	FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "FRITZ.Box_Fon_WLAN_7240.73.04.80.image"		if	FREETZ_TYPE_7240_7270
 	default "FRITZ.Box_Fon_WLAN_7270_16.AnnexB.en-de-es-it-fr.54.04.81.image"	if	FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_7240_7270
-	default "Speedport_W_920V.AnnexB.65.04.78.image"		if FREETZ_TYPE_SPEEDPORT_W920V_7570
+	default "Speedport_W_920V.AnnexB.65.04.78.image"		if FREETZ_TYPE_SPEEDPORT_W920V_7570 || FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE
 
 config FREETZ_DL_SOURCE2_MD5
 	string "AVM web interface MD5"			if	FREETZ_DL_OVERRIDE
