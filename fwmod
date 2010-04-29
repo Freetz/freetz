@@ -423,6 +423,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ -e "$FILESYSTEM_MOD_DIR"/tmp ] && rm -rf "$FILESYSTEM_MOD_DIR"/tmp
 	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
 	ln -s var/mod/home "$FILESYSTEM_MOD_DIR"/
+
+	echo1 "creating /mnt and /opt"
+	mkdir -p "$FILESYSTEM_MOD_DIR"/mnt
+	mkdir -p "$FILESYSTEM_MOD_DIR"/opt
+
 	# Set version and options
 	SUBVERSION_FILE="${BASE_DIR}/.version"
 	FIRMWAREVERSION_FILE="${FILESYSTEM_MOD_DIR}/etc/.version"
