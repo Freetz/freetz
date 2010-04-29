@@ -1621,6 +1621,13 @@ config FREETZ_REMOVE_NTFS
 		Be careful, mounting volumes with this filesystem will not work.
 		It saves about 118K compressed space in kernel.image.
 
+config FREETZ_REMOVE_RUNCLOCK
+	bool "Remove run_clock"
+	default n
+	help
+		Remove /bin/run_clock daemon.
+		This saves about 5K compressed space in kernel.image.
+
 config FREETZ_REMOVE_SMBD
 	bool "Remove smbd"
 	depends on \
