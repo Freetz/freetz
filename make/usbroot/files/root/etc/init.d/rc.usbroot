@@ -155,8 +155,9 @@ mount_usbroot() {
 	hotplugging defer
 
 	case "$HWRevision" in
-		122 | 135 | 139 )
-			load_usb_modules_7270 ;;
+		105 | 122 | 135 | 137 | 139 | 144 | 145 | 146 | 153 | 165 | 168 )
+		# 7540,7270,W920V,3270,5125,7240,7270v3,7570,IAD,7541,3270v3
+			load_usb_modules_2_6_19_2 ;;
 		* )
 			load_usb_modules ;;
 	esac
@@ -280,17 +281,44 @@ load_usb_modules() {
 	fi
 }
 
-load_usb_modules_7270() {
+load_usb_modules_2_6_19_2() {
 	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
 	dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
 	dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
+	piglet_enable_button=2
 	piglet_load_params=""
+
+	case "$HWRevision" in
+		135 | 146 | 153 ) # W920V, IAD, 7570
+			piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}
+			piglet_enable_button=3
+			;;
+		144 )# 7240
+			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
+			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
+			piglet_bitfile=/lib/modules/bitfile_isdn.bit${HWRevision_BitFileCount}
+			#piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`
+			if [ -z $piglet_bitfilemode ] ; then piglet_bitfilemode=0 ; fi
+			piglet_load_params=" \
+				piglet_potsbitfile=/lib/modules/bitfile_pots.bit${HWRevision_BitFileCount} \
+				piglet_bitfilemode=$piglet_bitfilemode \
+				piglet_use_pll3_clk=1 \
+			"
+			;;
+		145 ) # 7270v3
+			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
+			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
+			piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}
+			;;
+	esac
+
 	modprobe Piglet_noemif \
 		piglet_bitfile=$piglet_bitfile \
-		piglet_enable_button=2 \
+		piglet_enable_button=$piglet_enable_button \
 		dect_firstlevelfile=$dect_firstlevelfile \
 		dect_secondlevelfile=$dect_secondlevelfile \
 		$piglet_load_params
+
 	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
 		modprobe musb_hdrc
