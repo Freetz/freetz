@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN,1.0.20)
-$(PKG)_LIB_VERSION:=1.0.20
+$(call PKG_INIT_BIN,1.0.21)
+$(PKG)_LIB_VERSION:=1.0.21
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp2.sane-project.org/pub/sane/$(pkg)-$($(PKG)_VERSION)
-$(PKG)_SOURCE_MD5:=a0cfdfdebca2feb4f2ba5d3418b15a42
+$(PKG)_SOURCE_MD5:=be586a23633949cf2ecf0c9c6d769130
 
 # saned
 $(PKG)_TARGET_saned:=$($(PKG)_DEST_DIR)/usr/sbin/saned
@@ -31,19 +31,18 @@ endif
 
 $(PKG)_DEPENDS_ON:= libusb
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
-
 # include selected backends
 include $($(PKG)_MAKE_DIR)/sane-backends.in
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
-$(PKG)_CONFIGURE_OPTIONS += --without-gphoto2
-$(PKG)_CONFIGURE_OPTIONS += --disable-fork-process
-$(PKG)_CONFIGURE_OPTIONS += --disable-avahi
 $(PKG)_CONFIGURE_OPTIONS += --enable-libusb
-$(PKG)_CONFIGURE_OPTIONS += --disable-libusb_1_0
-$(PKG)_CONFIGURE_OPTIONS += --disable-translations
+$(PKG)_CONFIGURE_OPTIONS += --disable-avahi
+$(PKG)_CONFIGURE_OPTIONS += --disable-fork-process
 $(PKG)_CONFIGURE_OPTIONS += --disable-latex
+$(PKG)_CONFIGURE_OPTIONS += --disable-libusb_1_0
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --disable-translations
+$(PKG)_CONFIGURE_OPTIONS += --without-gphoto2
 
 $(PKG)_CONFIGURE_ENV+=BACKENDS="$(SANE_BACKENDS)"
 
