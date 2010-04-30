@@ -477,10 +477,9 @@ common-clean:
 	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
-common-dirclean:
+common-dirclean: common-clean
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
-	rm -f .static .dynamic .exclude-dist-tmp
-	rm -f make/config.cache .new-uclibc .old-uclibc
+	rm -f .new-uclibc .old-uclibc
 	find $(ROOT_DIR) -name '*.so*' ! -type d ! -name .svn \( -path "$(ROOT_DIR)/lib/*" -o \
 		-path "$(ROOT_DIR)/usr/lib/freetz/*" \) -delete
 	find $(MAKE_DIR) -maxdepth 2 \( -name ".*_config" -o -name ".*_changes" \) -delete
