@@ -14,7 +14,8 @@ config FREETZ_BUSYBOX_AR
 
 config FREETZ_BUSYBOX_BRCTL
 	bool "brctl"
-	depends on FREETZ_REPLACE_BUSYBOX
+	depends on FREETZ_REPLACE_BUSYBOX && \
+		! FREETZ_PACKAGE_BRIDGE_UTILS
 	default n
 	help
 		Adds bridge utilities from busybox
