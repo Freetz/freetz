@@ -7,13 +7,7 @@ $(PKG)_STARTLEVEL=40
 $(PKG)_SOURCE_MD5:=5ed49f23c642a29848cb2dbcfa96dfce
 
 $(PKG)_DEPENDS_ON := libxml2 zlib openssl
-
-#$(PKG)_SSL_CFLAGS := -I$(TARGET_TOOLCHAIN_STAGING_DIR)/include/openssl
-
 $(PKG)_LIBS := -lcrypto -lssl
-#$(PKG)_SSL_LDFLAGS := -lcrypto -lssl
-
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENCONNECT_NAT_SUPPORT
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -27,12 +21,6 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
-
-#$(PKG)_NAT_SUPPORT: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
-#ifeq ($(strip $(FREETZ_PACKAGE_OPENCONNECT_NAT_SUPPORT)),y)
-#	@$(SED) -i -e 's/#start_vpn_nat/start_vpn_nat/g' $(OPENCONNECT_DEST_DIR)/etc/default.openconnect/openconnect-script
-#	@$(SED) -i -e 's/#stop_vpn_nat/stop_vpn_nat/g' $(OPENCONNECT_DEST_DIR)/etc/default.openconnect/openconnect-script
-#endif
 
 $(pkg):
 
