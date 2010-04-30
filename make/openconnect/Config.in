@@ -1,0 +1,17 @@
+config FREETZ_PACKAGE_OPENCONNECT
+	bool "Openconnect 2.23"
+	select FREETZ_LIB_libxml2
+	select FREETZ_LIB_libz
+        select FREETZ_LIB_libcrypto
+        select FREETZ_LIB_libssl
+	default n
+	help
+		Cisco AnyConnect VPN Client
+
+config FREETZ_PACKAGE_OPENCONNECT_NAT_SUPPORT
+	bool "NAT support"
+	depends on FREETZ_PACKAGE_OPENCONNECT
+	select FREETZ_PACKAGE_IPTABLES
+	default n
+	help
+		Enable NAT support for Openconnect. This requires iptables!
