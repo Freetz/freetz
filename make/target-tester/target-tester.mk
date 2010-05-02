@@ -12,7 +12,12 @@ $(PKG)_BINARIES:=ac_cv_func_mmap_fixed_mapped gt_cv_int_divbyzero_sigfpe
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
+$(PKG)_BINARY_NAME_excepttest:=excepttest
+$(PKG)_BINARY_excepttest:=$($(PKG)_DIR)/$($(PKG)_BINARY_NAME_excepttest)
+$(PKG)_TARGET_BINARY_excepttest:=$($(PKG)_DEST_DIR)/usr/bin/$($(PKG)_BINARY_NAME_excepttest)
+
 TARGET_CFLAGS_WITHOUT_LARGEFILE_FLAGS:=$(strip $(subst $(CFLAGS_LARGEFILE),,$(TARGET_CFLAGS)))
+TARGET_CFLAGS_WITHOUT_OPTIMIZATION_FLAGS:=$(strip $(subst -Os,,$(TARGET_CFLAGS)))
 
 $(PKG_LOCALSOURCE_PACKAGE)
 $(PKG_CONFIGURED_NOP)
@@ -32,10 +37,15 @@ $(eval $(call TARGET_TESTER_COMPILE_BINARY,$($(PKG)_BINARY_NOLFS),target-tester,
 $(foreach binary,$($(PKG)_BINARIES), \
 	$(eval $(call TARGET_TESTER_COMPILE_BINARY,$($(PKG)_DIR)/$(binary),$(binary),$(TARGET_CC),$(CFLAGS_LFS_ENABLED))) \
 )
+$(eval $(call TARGET_TESTER_COMPILE_BINARY,$($(PKG)_BINARY_excepttest),$($(PKG)_BINARY_NAME_excepttest),$(TARGET_CXX),-g -ggdb3 $(TARGET_CFLAGS_WITHOUT_OPTIMIZATION_FLAGS)))
 
 
 $($(PKG)_TARGET_BINARY_LFS) $($(PKG)_TARGET_BINARY_NOLFS) $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/%
 	$(INSTALL_BINARY_STRIP)
+
+#do not strip we wanna be able to gdb it
+$($(PKG)_TARGET_BINARY_excepttest): $($(PKG)_BINARY_excepttest)
+	$(INSTALL_FILE)
 
 $(pkg)-math-functions: $($(PKG)_DIR)/.configured
 	$(MAKE_ENV) \
@@ -47,7 +57,7 @@ $(pkg)-math-functions: $($(PKG)_DIR)/.configured
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY_LFS) $($(PKG)_TARGET_BINARY_NOLFS) $($(PKG)_BINARIES_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY_LFS) $($(PKG)_TARGET_BINARY_NOLFS) $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_TARGET_BINARY_excepttest)
 
 $(pkg)-clean:
 	-$(MAKE_ENV) $(MAKE) -C $(TARGET_TESTER_DIR) TARGET=$(TARGET_TESTER_BINARY_NAME_LFS) clean
