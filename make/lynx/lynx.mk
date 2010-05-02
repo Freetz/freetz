@@ -8,6 +8,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 $(PKG)_CFG:=$($(PKG)_DIR)/$(pkg).cfg
 $(PKG)_TARGET_CFG:=$($(PKG)_DEST_DIR)/etc/$(pkg).cfg
+$(PKG)_LSS:=$($(PKG)_DIR)/samples/$(pkg).lss
+$(PKG)_TARGET_LSS:=$($(PKG)_DEST_DIR)/etc/$(pkg).lss
 
 $(PKG)_CONFIGURE_OPTIONS += \
 	--enable-warnings \
@@ -33,7 +35,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY) $($(PKG)_CFG): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY) $($(PKG)_CFG) $($(PKG)_LSS): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(LYNX_DIR) \
 		LD="$(TARGET_LD)"
 	touch $@
@@ -44,14 +46,17 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $($(PKG)_TARGET_CFG): $($(PKG)_CFG)
 	$(INSTALL_FILE)
 
+$($(PKG)_TARGET_LSS): $($(PKG)_LSS)
+	$(INSTALL_FILE)
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CFG)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_CFG) $($(PKG)_TARGET_LSS)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LYNX_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(LYNX_TARGET_BINARY) $(LYNX_TARGET_CFG)
+	$(RM) $(LYNX_TARGET_BINARY) $(LYNX_TARGET_CFG) $(LYNX_TARGET_LSS)
 
 $(PKG_FINISH)
