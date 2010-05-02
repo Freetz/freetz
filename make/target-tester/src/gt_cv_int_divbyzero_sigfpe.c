@@ -21,7 +21,7 @@ sigfpe_handler (sig) int sig;
 int x = 1;
 int y = 0;
 int z;
-int nan;
+int nan_;
 
 int main ()
 {
@@ -36,6 +36,6 @@ int main ()
 #endif
 
   z = x / y;
-  nan = y / y;
+  nan_ = y / y;
   exit (1);
 }
