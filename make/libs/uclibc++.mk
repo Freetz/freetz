@@ -1,8 +1,10 @@
-$(call PKG_INIT_LIB, 0.2.2, uclibcxx)
-$(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
+$(call PKG_INIT_LIB, 5976d7536d8c7a8d5a7f60fd2a3c34876a224f30, uclibcxx)
+$(PKG)_LIB_VERSION:=0.2.3
 $(PKG)_SOURCE:=uClibc++-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://cxx.uclibc.org/src/
+#release URL: $(PKG)_SITE:=http://cxx.uclibc.org/src/
+$(PKG)_SITE:=http://git.uclibc.org/uClibc++/snapshot
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/uClibc++-$($(PKG)_VERSION)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libuClibc++-$($(PKG)_LIB_VERSION).so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuClibc++-$($(PKG)_LIB_VERSION).so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libuClibc++-$($(PKG)_LIB_VERSION).so
