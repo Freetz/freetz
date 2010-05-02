@@ -37,6 +37,6 @@ $(pkg)-clean:
 	$(RM) $(TMUX_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $($(PKG)_TARGET_BINARY)
+	$(RM) $(TMUX_TARGET_BINARY)
 
 $(PKG_FINISH)
