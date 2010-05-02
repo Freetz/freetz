@@ -1,9 +1,10 @@
 $(call PKG_INIT_BIN,0.8.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=76fe2800efdfbe54bf72540e40a91150
 $(PKG)_SITE:=http://bip.t1r.net/downloads
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/bip
-$(PKG)_SOURCE_MD5:=76fe2800efdfbe54bf72540e40a91150
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON := openssl
@@ -27,6 +28,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(BIP_DIR) \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(BIP_LDFLAGS)" \
 		LIBS="$(BIP_LIBS)"
 
