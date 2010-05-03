@@ -26,11 +26,14 @@ done
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/3170_7170.patch"
 
 echo2 "moving default config dir"
-mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_3170"
+mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_3170
 
 echo2 "patching rc.S and rc.conf"
-
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170.patch" || exit 2
+if isFreetzType ANNEX_B; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170.patch" || exit 2
+else
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170_a_ch.patch" || exit 2
+fi
 
 modsed "s/piglet_bitfile_offset=0/piglet_bitfile_offset=0x4b/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
@@ -68,4 +71,9 @@ modsed "s/HWRevision_ATA=0$/HWRevision_ATA=1/" "${FILESYSTEM_MOD_DIR}/etc/init.d
 
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-3170_7170.patch" || exit 2
+if isFreetzType ANNEX_B; then
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-3170_7170.patch" || exit 2
+else
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-3170_7170_a_ch.patch" || exit 2
+fi
+

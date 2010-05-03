@@ -1,0 +1,124 @@
+--- etc/init.d/rc.S.orig	2010-05-01 10:09:49.000000000 +0200
++++ etc/init.d/rc.S	2010-05-01 10:09:55.000000000 +0200
+@@ -13,60 +13,6 @@
+ export PATH runlevel prevlevel
+ ###########################################################################################
+ ###########################################################################################
+-copy_telefonie_defaults() {
+-tmp_file_name=$1
+-tmp_oem=$2
+-tmp_country=$3
+-tmp_index=$4
+-if /usr/bin/checkempty /var/flash/${tmp_file_name}; then
+-if [ -f /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem}.${tmp_index} ] ; then
+-echo "cp /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem}.${tmp_index} /var/flash/${tmp_file_name}"
+-cp /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem}.${tmp_index} /var/flash/${tmp_file_name}
+-return
+-fi
+-if [ -f /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem} ] ; then
+-echo "cp /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem} /var/flash/${tmp_file_name}"
+-cp /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem} /var/flash/${tmp_file_name}
+-return
+-fi
+-if [ -f /etc/default.${tmp_country}/${tmp_file_name}.default.${tmp_index} ] ; then
+-echo "cp /etc/default.${tmp_country}/${tmp_file_name}.default.${tmp_index} /var/flash/${tmp_file_name}"
+-cp /etc/default.${tmp_country}/${tmp_file_name}.default.${tmp_index} /var/flash/${tmp_file_name}
+-return
+-fi
+-if [ -f /etc/default.${tmp_country}/${tmp_file_name}.default ] ; then
+-echo "cp /etc/default.${tmp_country}/${tmp_file_name}.default /var/flash/${tmp_file_name}"
+-cp /etc/default.${tmp_country}/${tmp_file_name}.default /var/flash/${tmp_file_name}
+-return
+-fi
+-fi
+-}
+-###########################################################################################
+-###########################################################################################
+-link_telefonie_defaults() {
+-tmp_file_name=$1
+-tmp_oem=$2
+-tmp_country=$3
+-tmp_index=$4
+-if [ -f /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem}.${tmp_index} ] ; then
+-ln -s /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem}.${tmp_index} /var/${tmp_file_name}
+-return
+-fi
+-if [ -f /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem} ] ; then
+-ln -s /etc/default.${tmp_country}/${tmp_file_name}.${tmp_oem} /var/${tmp_file_name}
+-return
+-fi
+-if [ -f /etc/default.${tmp_country}/${tmp_file_name}.default.${tmp_index} ] ; then
+-ln -s /etc/default.${tmp_country}/${tmp_file_name}.default.${tmp_index} /var/${tmp_file_name}
+-return
+-fi
+-if [ -f /etc/default.${tmp_country}/${tmp_file_name}.default ] ; then
+-ln -s /etc/default.${tmp_country}/${tmp_file_name}.default /var/${tmp_file_name}
+-return
+-fi
+-}
+-###########################################################################################
+-###########################################################################################
+ error_led() {
+ if [ -n "$2" ] ; then
+ echo "*** ERROR: $2 ***"
+@@ -1061,26 +1007,6 @@
+ ##########################################################################################
+ echo 1 > /proc/sys/net/ipv4/ip_forward
+ ##########################################################################################
+-## Defaults fuellen
+-##########################################################################################
+-##########################################################################################
+-## telephony
+-##########################################################################################
+-copy_telefonie_defaults telefon_misc ${OEM} ${Country} ${OEM_DEFAULT_INDEX}
+-copy_telefonie_defaults fx_lcr ${OEM} ${Country} ${OEM_DEFAULT_INDEX}
+-copy_telefonie_defaults fx_conf ${OEM} ${Country} ${OEM_DEFAULT_INDEX}
+-copy_telefonie_defaults fx_moh ${OEM} ${Country} ${OEM_DEFAULT_INDEX}
+-link_telefonie_defaults fx_moh ${OEM} ${Country} ${OEM_DEFAULT_INDEX}
+-if [ -f /usr/bin/calllog ] ; then
+-if [ ! -f /var/calllog ] ; then
+-ln -s /usr/bin/calllog /var/calllog
+-fi
+-fi
+-##########################################################################################
+-## Foncontrol
+-##########################################################################################
+-copy_telefonie_defaults fonctrl ${OEM} ${Country} ${OEM_DEFAULT_INDEX}
+-##########################################################################################
+ ## Module init (phase 1)
+ ##########################################################################################
+ ##########################################################################################
+@@ -1332,33 +1258,6 @@
+ modprobe ubik2 takeover_printk=1 $ubik2_params
+ cat /dev/debug &
+ fi
+-#! /bin/sh
+-#delete_shell_comment
+-## modprobe capifs # module sind im kernel einkompiliert
+-## modprobe capiutil # module sind im kernel einkompiliert
+-## modprobe kernelcapi # module sind im kernel einkompiliert
+-## modprobe capi # module sind im kernel einkompiliert
+-isdn_fbox=`ls -R /lib/modules/ | grep 'isdn_fbox.*ko'`
+-isdn_fbox=${isdn_fbox%.ko}
+-## VAG2 + VAG3
+-isdn_params=""
+-## ########### Annex A DTMF/EC settings ###########
+-## MIPS-DTMF und MIPS-EC fuer VAG3 Devices mit Annex A
+-isdn_params="${isdn_params} local_ec=3"
+-## ########### done ###########
+-## ########### optional pcmlink settings ###########
+-## Default: ggfs. notweniger pcmlink-Treiber wird von modprobe automatisch
+-## über kernel-dependencys ermittelt und vor dem isdn-treiber gestartet
+-modprobe $isdn_fbox $isdn_params
+-## ########### done ###########
+-sleep 2
+-## wegen mehrfacher abhangigkeiten zu den isdn_fonx-treibern per insmod
+-capi_codec=`ls -R /lib/modules/ | grep 'lib.*capi_codec'`
+-capi_codec=${capi_codec%:}/capi_codec.ko
+-if [ -f ${capi_codec} ]; then
+-insmod ${capi_codec}
+-fi
+-sleep 2
+ ##########################################################################################
+ ## USB-Target-Funktion und Host Controller wg DECT nach CAPI starten
+ ##########################################################################################
