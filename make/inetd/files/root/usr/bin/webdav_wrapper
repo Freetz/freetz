@@ -1,0 +1,5 @@
+#!/bin/sh
+WEBDAVCONTROL=/etc/webdav_control
+test -x $WEBDAVCONTROL && $WEBDAVCONTROL start 1> /dev/null 2> /dev/null &
+"$@"
+test -x $WEBDAVCONTROL && $WEBDAVCONTROL stop_last 1> /dev/null 2> /dev/null &

@@ -18,7 +18,7 @@ stat_button() {
 stat_packagelink() {
 	local url
 	case $1 in
-		crond|swap|telnetd|webcfg|dsld) url=$(href mod conf) ;;
+		crond|swap|telnetd|webcfg|dsld|ftpd) url=$(href mod conf) ;;
 		*) url=$(href cgi "$1") ;;
 	esac
 	echo "<a href='$url'>$2</a>"
@@ -35,13 +35,21 @@ stat_line() {
 	$hide && return
 
 	local start=false stop=false
-	status=$("$rcfile" status 2> /dev/null)
-	case $status in
+	status="$("$rcfile" status 2> /dev/null)"
+	case "$status" in
 		running)
 			class=running
 			stop=true
 			;;
 		stopped)
+			class=stopped
+			start=true
+			;;
+		'running (inetd)')
+			class=running
+			stop=true
+			;;
+		'stopped (inetd)')
 			class=stopped
 			start=true
 			;;
@@ -89,14 +97,24 @@ stat_end() {
 	echo '</table>'
 }
 
+stat_avm() {
+	sec_begin '$(lang de:"AVM-Dienste" en:"AVM services")'
+	stat_begin
+
+	stat_line dsld
+	stat_line telnetd
+	[ -x /etc/init.d/rc.ftpd ] && [ "$(echo usbhost.ftp_server_enabled | usbcfgctl -s)" != "no" ] && stat_line ftpd
+
+	stat_end
+	sec_end
+}
+
 stat_builtin() {
 	sec_begin '$(lang de:"Basis-Pakete" en:"Built-in packages")'
 	stat_begin
 
 	stat_line crond
-	stat_line dsld
 	stat_line swap
-	stat_line telnetd
 	stat_line webcfg
 
 	stat_end
@@ -140,6 +158,7 @@ fi
 
 case $view in
 	"")
+		stat_avm
 		stat_builtin
 		stat_static
 #		stat_dynamic

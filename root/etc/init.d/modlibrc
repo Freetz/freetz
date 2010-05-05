@@ -54,6 +54,114 @@ modlib_adduser()
 	fi
 }
 
+# modlib_reload_inetd
+# check whether /etc/init.d/rc.inetd exists.
+# reloads inetd. return status
+modlib_reload_inetd()
+{
+	local inetd_rc_script="/etc/init.d/rc.inetd"
+	if [ -x ${inetd_rc_script} ]
+	then
+		${inetd_rc_script} reload
+	else
+		killall -HUP inetd
+	fi
+	return $?
+}
+
+# modlib_check_port
+#   check whether a port is busy and by which daemon. return status
+#	$1: port number
+#	$2: daemon name
+#	$3: [optional] command: check(default), stop, kill
+#	$4: [optional] socket: t: TCP(default) u: UDP w: RAW
+#   returns: 0 free; 1 oneself; 2 inetd; 3 other daemon; 4 stop command failed; 5 kill command failed 
+modlib_check_port()
+{
+	[ -z "$1" ] && local netport=21 || local netport="$1"
+	[ -z "$2" ] && local daemonname="daemon" || local daemonname="$2"
+	[ -z "$3" ] && local docommand="check" || local docommand="$3"
+	[ -z "$4" ] && local sockettype="t" || local sockettype="$4"
+	local pidname="$(netstat -lnp"$sockettype" | sed -nre "s/^.*:$netport .* ([^ ]+) *\$/\\1/p")"
+	local inetdconf="/var/mod/etc/inetd.conf"
+	if [ -z "$pidname" ]
+	then
+		return 0 # port is free
+	else
+		local myname=${pidname#*/}
+		local mypid=${pidname%/*}
+		if [ "$myname" == "inetd" ]
+		then
+			local inetddaemon=""
+			[ -e "$inetdconf" ] && inetddaemon="$(cat $inetdconf | grep ^$netport | sed -e '/^#/d;s/\t/ /g;s/  */ /g;s/^[^ ]*\ [^ ]* [^ ]* [^ ]* [^ ]* [^ ]* \([^ ]*\) .*/\1/;s/.*\///g')"
+			[ -z "$inetddaemon" ] && inetddaemon="inetd"
+		fi
+		case $docommand in
+			stop)
+				[ "$myname" != "inetd" ] && inetddaemon="$myname"
+				if [ "$inetddaemon" == "inetd" ]
+				then
+					echo "$inetddaemon"
+					return 4 # stopping of inetd permitted
+				fi
+				if [ -x "/etc/init.d/rc.$inetddaemon" ]
+				then
+					/etc/init.d/rc.${inetddaemon} stop
+					local status=$?
+					if [ "$status" -eq 0 ]
+					then
+						return 0 # stopping successful
+					else
+						echo "$inetddaemon"
+						return 4 # stopping failed	
+					fi
+				fi
+			;;
+			kill)
+				if [ "$myname" == "inetd" ]
+				then
+					echo "$myname"
+					return 5 # killing of inetd permitted	
+				fi
+				local cnt=9 
+				while [ $cnt -ge 0 ] && kill -0 $mypid 2>/dev/null
+				do 
+					kill $mypid 2>/dev/null 
+					sleep 1 
+					let cnt=cnt-1 
+				done 
+				if kill -0 $mypid 2>/dev/null
+				then 
+					kill -9 $mypid 2>/dev/null 
+					sleep 1
+				fi 
+				if kill -0 $mypid 2>/dev/null
+				then
+					echo "$myname"
+					return 5 # killing failed
+				else
+					return 0 # killing successful
+				fi
+			;;
+			*)
+				if [ "$myname" == "$daemonname" ]
+				then
+					echo "$myname"
+					return 1 # port is already used by this DAEMON
+				fi
+				if [ "$myname" == "inetd" ]
+				then
+					echo "$inetddaemon"
+					return 2 # port is already used by inetd
+				else
+					echo "$myname"
+					return 3 # port is already used by other DAEMON
+				fi
+			;;
+		esac
+	fi
+}
+
 # modlib_check_running
 #   check whether daemon is running. return status
 modlib_check_running()
@@ -167,9 +275,9 @@ modlib_start()
 	local DAEMON_ENABLED="$1"
 	if [ "$DAEMON_ENABLED" == "no" ] || [ "$DAEMON_ENABLED" == "inetd" -a -x /etc/init.d/rc.inetd ]; then
 		if [ "$DAEMON_ENABLED" != "inetd" ]; then
-			echo "$DAEMON is disabled." 1>&2
+			echo "$DAEMON is disabled" 1>&2
 		else
-			echo "$DAEMON is started via inetd." 1>&2
+			echo "$DAEMON is started via inetd" 1>&2
 		fi
 		exit 1
 	fi

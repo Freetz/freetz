@@ -1,27 +1,55 @@
 #!/bin/sh
 
 DAEMON=inetd
+CONFFLASH=/tmp/flash/inetd.conf
+CONFMODETC=/var/mod/etc/inetd.conf
+CONFMODDIR=/var/mod/etc/inetd
 
 . /etc/init.d/modlibrc
 
 config() {
-	[ -e /tmp/flash/inetd.conf ] ||
+	[ -e ${CONFFLASH} ] ||
 	{
 		echo -n "Creating inetd.conf "
-		cp /mod/etc/default.inetd/inetd.conf /tmp/flash/inetd.conf
+		cp /mod/etc/default.inetd/inetd.conf ${CONFFLASH}
 		echo "ok."
 	}
 
 	/usr/bin/modinetd 
 }
 
+load_config()
+{
+	local retval=0
+	local disabled_string="# !! disabled !! "
+	[ -e $CONFMODETC ] || touch ${CONFMODETC}
+	[ -e $CONFFLASH ] && cat ${CONFFLASH} | sed -e '/^#.*/d;/^$/d;/^:space:[:space:]*$/d;s/#[^#]*//' > ${CONFMODETC}
+	if [ -d ${CONFMODDIR} ]
+	then
+		ls -1 ${CONFMODDIR}/*.inetd 2>/dev/null | while read conffile
+		do
+			cat ${conffile} | while read confline 
+			do
+				local portnmb=$(echo "$confline" | sed -e 's/\(^[^:space:]*\)[:space:].*/\1/g')
+				[ -n "$portnmb" ] && portinuse="$(cat ${CONFMODETC} | grep $portnmb)"
+				[ -n "$portinuse" ] && confline="$disabled_string$confline"
+				echo "$confline" >> ${CONFMODETC}
+			done
+		done
+	fi
+	local disabled_ports="$(cat ${CONFMODETC} | grep "$disabled_string")"
+	[ -n "$disabled_ports" ] && retval=22
+	return $retval
+}
+
 start() {
 	echo -n 'Starting inetd...'
 	if [ -s "/var/run/$DAEMON.pid" ]; then
 		echo 'already running.'
-		exit 0
+		return 0
 	fi
 
+	load_config
 	$DAEMON $INETD_OPTIONS
 	exitval=$?
 	echo "$(pidof "$DAEMON")" > /var/run/$DAEMON.pid
@@ -29,22 +57,30 @@ start() {
 		echo 'done.'
 	else
 		echo 'failed.'
-		exit $exitval
+		return $exitval
 	fi
 }
 
 stop() {
-	modlib_stop || exit 1
+	modlib_stop || return 1
 }
 
-reload() {
-	modlib_reload || exit 1
+reload()
+{
+	load_config
+	retval=$?
+	[ "$retval" -eq 22 ] && echo "WARNING: double port using was prohibited by rc.inetd. Show ${CONFMODETC} for details"
+	modlib_reload && return $retval || return 1
 }
 
 case $1 in
 	""|load)
 		config
-
+		
+		rm -f /var/tmp/inetd.conf > /dev/null 2>&1
+		ln -s ${CONFMODETC} /var/tmp/inetd.conf
+		[ -d ${CONFMODDIR} ] || mkdir ${CONFMODDIR}
+		
 		modreg cgi 'inetd' 'Inetd'
 		modreg file inetd conf 'Inetd config' 0 "inetd_conf"
 		
@@ -81,3 +117,4 @@ case $1 in
 		exit 1
 		;;
 esac
+exit $?
