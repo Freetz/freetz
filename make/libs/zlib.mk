@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.4)
+$(call PKG_INIT_LIB, 1.2.5)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=763c6a0b4ad1cdf5549e3ab3f140f4cb
+$(PKG)_SOURCE_MD5:=be1e89810e66150f5b0327984d8625a0
 $(PKG)_SITE:=@SF/libpng
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libz.so.$($(PKG)_LIB_VERSION)
@@ -13,6 +13,8 @@ $(PKG)_CONFIGURE_ENV += CC="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
 $(PKG)_CONFIGURE_ENV += AR="$(TARGET_AR)"
 $(PKG)_CONFIGURE_ENV += RANLIB="$(TARGET_RANLIB)"
+$(PKG)_CONFIGURE_ENV += NM="$(TARGET_NM)"
+$(PKG)_CONFIGURE_ENV += CROSS_PREFIX="$(TARGET_CROSS)"
 $(PKG)_CONFIGURE_ENV += prefix=/usr
 
 # we could make a patch for it, but as all changes are absolutely identical it's simpler to do it per sed
