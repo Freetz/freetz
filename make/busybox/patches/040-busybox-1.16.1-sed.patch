@@ -1,6 +1,6 @@
 diff -urpN editors/sed.c editors/sed.c
---- editors/sed.c	2010-03-28 13:43:35.000000000 -0400
-+++ editors/sed.c	2010-04-20 13:33:26.301975462 -0400
+--- editors/sed.c	2010-03-28 19:43:35.000000000 +0200
++++ editors/sed.c	2010-04-20 19:33:26.000000000 +0200
 @@ -936,7 +936,15 @@ static void process_files(void)
  		/* Skip blocks of commands we didn't match */
  		if (sed_cmd->cmd == '{') {
@@ -28,8 +28,8 @@ diff -urpN editors/sed.c editors/sed.c
  
  		/* Read file, append contents to output */
 diff -urpN testsuite/sed.tests testsuite/sed.tests
---- testsuite/sed.tests	2010-03-19 22:58:07.000000000 -0400
-+++ testsuite/sed.tests	2010-04-20 13:33:26.301975462 -0400
+--- testsuite/sed.tests	2010-03-20 03:58:07.000000000 +0100
++++ testsuite/sed.tests	2010-04-20 19:33:26.000000000 +0200
 @@ -248,4 +248,14 @@ testing "sed beginning (^) matches only 
  	">/usr</>lib<\n" "" \
  	"/usr/lib\n"
