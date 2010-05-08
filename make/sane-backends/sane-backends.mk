@@ -36,6 +36,7 @@ include $($(PKG)_MAKE_DIR)/sane-backends.in
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --enable-libusb
+$(PKG)_CONFIGURE_OPTIONS += --enable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-avahi
 $(PKG)_CONFIGURE_OPTIONS += --disable-fork-process
 $(PKG)_CONFIGURE_OPTIONS += --disable-latex
