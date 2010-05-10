@@ -176,7 +176,7 @@ endif
 endif
 
 ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
-VERBOSE:=-v
+#VERBOSE:=-v # Show files on untar
 QUIET:=
 QUIETSHORT:=
 endif
