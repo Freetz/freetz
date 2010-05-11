@@ -1,5 +1,5 @@
---- POP3Utils.cpp.orig	2009-12-16 22:38:09.000000000 +0100
-+++ POP3Utils.cpp	2009-12-16 22:19:12.000000000 +0100
+--- POP3Utils.cpp.orig	2010-05-01 08:35:13.000000000 +0200
++++ POP3Utils.cpp	2010-05-01 08:38:50.000000000 +0200
 @@ -29,8 +29,10 @@
  #include "SList.h"
  #include "BuffSock.h"
@@ -11,36 +11,23 @@
  #include "MD5.h"
  #include "MailConfig.h"
  #include "UsrUtils.h"
-@@ -131,10 +133,12 @@
- static int UPopDoAPOPAuth(BSOCK_HANDLE hBSock, const char *pszUsername,
- 			  const char *pszPassword, const char *pszTimeStamp,
- 			  char *pszRespBuffer, int iMaxRespChars);
-+#ifdef WITH_SSL
- static int UPopSwitchToTLS(BSOCK_HANDLE hBSock, const char *pszServer,
- 			   POP3ChannelCfg const *pChCfg);
- static int UPopInitiateTLS(BSOCK_HANDLE hBSock, const char *pszServer, char *pszRespBuffer,
- 			   int iMaxRespChars, POP3ChannelCfg const *pChCfg);
-+#endif
- static BSOCK_HANDLE UPopCreateChannel(const char *pszServer, const char *pszUsername,
- 				      const char *pszPassword, POP3ChannelCfg const *pChCfg);
- static int UPopCloseChannel(BSOCK_HANDLE hBSock, int iHardClose = 0);
-@@ -887,6 +891,7 @@
+@@ -840,6 +842,7 @@
  	return 0;
  }
  
 +#ifdef WITH_SSL
- static int UPopSwitchToTLS(BSOCK_HANDLE hBSock, const char *pszServer,
+ static int UPopSwitchToTLS(BSOCK_HANDLE hBSock, char const *pszServer,
  			   POP3ChannelCfg const *pChCfg)
  {
-@@ -922,6 +927,7 @@
+@@ -874,6 +877,7 @@
  
  	return UPopSwitchToTLS(hBSock, pszServer, pChCfg);
  }
 +#endif
  
- static BSOCK_HANDLE UPopCreateChannel(const char *pszServer, const char *pszUsername,
- 				      const char *pszPassword, POP3ChannelCfg const *pChCfg)
-@@ -959,6 +965,7 @@
+ static BSOCK_HANDLE UPopCreateChannel(char const *pszServer, char const *pszUsername,
+ 				      char const *pszPassword, POP3ChannelCfg const *pChCfg)
+@@ -908,6 +912,7 @@
  		SysCloseSocket(SockFD);
  		return INVALID_BSOCK_HANDLE;
  	}
@@ -48,15 +35,15 @@
  	/*
  	 * Is this a full POP3S connection?
  	 */
-@@ -967,6 +974,7 @@
+@@ -916,6 +921,7 @@
  		SysCloseSocket(SockFD);
  		return INVALID_BSOCK_HANDLE;
  	}
 +#endif
  
  	/* Read welcome message */
- 	char szRTXBuffer[2048] = "";
-@@ -976,6 +984,7 @@
+ 	char szRTXBuffer[2048];
+@@ -925,6 +931,7 @@
  		UPopCloseChannel(hBSock);
  		return INVALID_BSOCK_HANDLE;
  	}
@@ -64,15 +51,15 @@
  	/*
  	 * Non TLS mode active and STLS required?
  	 */
-@@ -986,6 +995,7 @@
+@@ -935,6 +942,7 @@
  		UPopCloseChannel(hBSock);
  		return INVALID_BSOCK_HANDLE;
  	}
 +#endif
  
- 	/* Extract TimeStamp from server respose ( if any ) */
+ 	/* Extract TimeStamp from server respose (if any) */
  	char szTimeStamp[256] = "";
-@@ -1129,12 +1139,14 @@
+@@ -1075,12 +1083,14 @@
  		pChCfg->ulFlags |= POPCHF_USE_APOP;
  	else if (strcmp(pszName, "FAPOP") == 0)
  		pChCfg->ulFlags |= POPCHF_USE_APOP | POPCHF_FORCE_APOP;

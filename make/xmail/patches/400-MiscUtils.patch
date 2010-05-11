@@ -1,6 +1,6 @@
---- MiscUtils.cpp.orig	2009-12-16 22:37:47.000000000 +0100
-+++ MiscUtils.cpp	2009-12-16 22:12:22.000000000 +0100
-@@ -29,7 +29,9 @@
+--- MiscUtils.cpp.orig	2010-05-01 09:37:39.000000000 +0200
++++ MiscUtils.cpp	2010-05-01 19:26:23.000000000 +0200
+@@ -30,12 +30,16 @@
  #include "MD5.h"
  #include "Base64Enc.h"
  #include "BuffSock.h"
@@ -10,7 +10,34 @@
  #include "MailConfig.h"
  #include "UsrUtils.h"
  #include "SvrUtils.h"
-@@ -1483,6 +1485,7 @@
+ #include "MessQueue.h"
++#ifdef WITH_SSL
+ #include "SSLMisc.h"
++#endif
+ #include "MailSvr.h"
+ #include "MiscUtils.h"
+ 
+@@ -130,6 +134,7 @@
+ 
+ void MscSafeGetTmpFile(char *pszPath, int iMaxPath)
+ {
++#ifdef WITH_SSL
+ 	time_t tmNow;
+ 	unsigned long ulID;
+ 	SYS_INT64 MsTime;
+@@ -158,6 +163,11 @@
+ 
+ 	SysGetTempDir(szTempDir, sizeof(szTempDir));
+ 	SysSNPrintf(pszPath, iMaxPath, "%s%s.xtmp", szTempDir, szMD5);
++#else
++	char szTempDir[SYS_MAX_PATH], szMD5[12];
++	strcpy(szMD5, "xmailXXXXXX");
++	mkstemp(szMD5);
++#endif
+ }
+ 
+ int MscRecvTextFile(char const *pszFileName, BSOCK_HANDLE hBSock, int iTimeout,
+@@ -1520,12 +1530,14 @@
  	return 0;
  }
  
@@ -18,11 +45,10 @@
  int MscSslEnvCB(void *pPrivate, int iID, void const *pData)
  {
  	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
-@@ -1490,6 +1493,7 @@
  
  	return 0;
  }
 +#endif
  
- int MscParseOptions(const char *pszOpts, int (*pfAssign)(void *, const char *, const char *),
+ int MscParseOptions(char const *pszOpts, int (*pfAssign)(void *, char const *, char const *),
  		    void *pPrivate)

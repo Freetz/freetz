@@ -1,5 +1,5 @@
---- SysDepCommon.cpp.orig	2009-12-15 08:59:37.000000000 +0100
-+++ SysDepCommon.cpp	2009-12-15 08:57:40.000000000 +0100
+--- SysDepCommon.cpp.orig	2010-02-26 04:33:44.000000000 +0100
++++ SysDepCommon.cpp	2010-05-01 07:52:17.000000000 +0200
 @@ -43,6 +43,7 @@
  		AddrInfo.iSize = sizeof(struct sockaddr_in);
  		break;
@@ -88,7 +88,7 @@
  	}
  
  	ErrSetErrorCode(ERR_INVALID_INET_ADDR);
-@@ -281,7 +295,11 @@
+@@ -275,7 +289,11 @@
  	int i, iASize;
  	SYS_UINT8 const *pAData;
  
@@ -100,7 +100,7 @@
  	    (pAData = (SYS_UINT8 const *) SysInetAddrData(Addr, &iASize)) == NULL)
  		return 0;
  	/*
-@@ -330,6 +348,7 @@
+@@ -324,6 +342,7 @@
  		 * Need some marshaling here, since families are different.
  		 * We only support IPV4 and IPV6, so it does not look that bad.
  		 */
@@ -108,7 +108,7 @@
  		if (iAFamily == AF_INET) {
  			if (iTAFamily == AF_INET6) {
  				if (!SysInetIPV6CompatIPV4(TestAddr))
-@@ -347,6 +366,7 @@
+@@ -341,6 +360,7 @@
  			} else
  				return 0;
  		} else

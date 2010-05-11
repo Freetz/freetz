@@ -1,5 +1,5 @@
---- CTRLClient.cpp.orig	2009-12-16 22:36:30.000000000 +0100
-+++ CTRLClient.cpp	2009-12-16 22:00:36.000000000 +0100
+--- CTRLClient.cpp.orig	2010-05-01 07:54:29.000000000 +0200
++++ CTRLClient.cpp	2010-05-01 08:06:09.000000000 +0200
 @@ -25,8 +25,10 @@
  #include "SvrDefines.h"
  #include "ShBlocks.h"
@@ -29,7 +29,7 @@
  static int CClnSslEnvCB(void *pPrivate, int iID, void const *pData)
  {
  	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
-@@ -208,6 +213,7 @@
+@@ -207,6 +212,7 @@
  
  	return 0;
  }
@@ -37,7 +37,7 @@
  
  BSOCK_HANDLE CClnConnectServer(char const *pszServer, int iPortNo,
  			       char const *pszUsername, char const *pszPassword,
-@@ -240,11 +246,13 @@
+@@ -239,11 +245,13 @@
  	int iErrorCode = 0;
  	char szRTXBuffer[2048] = "";
  
@@ -51,7 +51,7 @@
  
  	/* Read welcome message */
  	if (CClnGetResponse(hBSock, szRTXBuffer, sizeof(szRTXBuffer), &iErrorCode, iTimeout) < 0) {
-@@ -257,6 +265,7 @@
+@@ -256,6 +264,7 @@
  		return INVALID_BSOCK_HANDLE;
  	}
  
@@ -59,7 +59,7 @@
  	/*
  	 * Do we need to switch to SSL?
  	 */
-@@ -277,6 +286,7 @@
+@@ -276,6 +285,7 @@
  			return INVALID_BSOCK_HANDLE;
  		}
  	}
@@ -67,7 +67,7 @@
  
  	/* Prepare login */
  	char szTimeStamp[256] = "";
-@@ -359,12 +369,14 @@
+@@ -357,12 +367,14 @@
  		"       -p pass          = set password\n"
  		"       -t timeout       = set timeout [%d]\n"
  		"       -f filename      = set I/O filename [stdin/stdout]\n"
@@ -82,7 +82,7 @@
  		"       -c               = disable MD5 authentication\n"
  		"       -D               = enable debug\n",
  		pszProgName, STD_CTRL_PORT, STD_CTRL_TIMEOUT);
-@@ -383,10 +395,12 @@
+@@ -381,10 +393,12 @@
  
  	ZeroData(ChCfg);
  	ChCfg.ulFlags = CCLN_CHF_USEMD5;
@@ -95,7 +95,7 @@
  
  	for (i = 1; i < iArgCount; i++) {
  		if (pszArgs[i][0] != '-')
-@@ -427,6 +441,7 @@
+@@ -425,6 +439,7 @@
  			ChCfg.ulFlags &= ~CCLN_CHF_USEMD5;
  			break;
  
@@ -103,7 +103,7 @@
  		case ('S'):
  			ChCfg.ulFlags &= ~CCLN_CHF_USESSL;
  			ChCfg.ulFlags |= CCLN_CHF_SSLSWITCH;
-@@ -464,6 +479,7 @@
+@@ -462,6 +477,7 @@
  				ChCfg.SSLB.pszCAPath = SysStrDup(pszArgs[i]);
  			}
  			break;
@@ -111,7 +111,7 @@
  
  		case ('D'):
  			bServerDebug = true;
-@@ -475,15 +491,19 @@
+@@ -473,15 +489,19 @@
  	}
  	if (strlen(szServer) == 0 || strlen(szUsername) == 0 ||
  	    strlen(szPassword) == 0 || i == iArgCount) {
@@ -129,9 +129,9 @@
  	}
 +#endif
  
- 	int iFirstParam = i;
- 	int iCmdLength = 0;
-@@ -506,10 +526,12 @@
+ 	int iFirstParam = i, iCmdLength = 0;
+ 
+@@ -503,10 +523,12 @@
  	BSOCK_HANDLE hBSock = CClnConnectServer(szServer, iPortNo, szUsername, szPassword,
  						&ChCfg, iTimeout);
  
@@ -144,7 +144,7 @@
  	if (hBSock == INVALID_BSOCK_HANDLE) {
  		ErrorPush();
  		SysFree(pszCommand);
-@@ -540,25 +562,33 @@
+@@ -537,26 +559,34 @@
  		CClnLogError(ErrGetErrorCode());
  		return 1;
  	}
@@ -155,6 +155,7 @@
  		return 2;
  	}
 +#endif
+ 
  	int iExecResult = CClnExec(iArgCount, pszArgs);
  
  	if (iExecResult == CCLN_ERR_BAD_USAGE) {

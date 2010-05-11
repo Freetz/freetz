@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 1.26)
+$(call PKG_INIT_BIN, 1.27)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.xmailserver.org
 $(PKG)_BINARY:=$($(PKG)_DIR)/bin/XMail
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/XMail
-$(PKG)_SOURCE_MD5:=26d35c2fc104d79ebb6397c7dece5b15
+$(PKG)_SOURCE_MD5:=73c9d95012709d7b11511dfb6dd6ab3d
 
 $(PKG)_DEPENDS_ON := uclibcxx
 $(PKG)_LDFLAGS := -ldl -lpthread

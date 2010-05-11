@@ -1,5 +1,5 @@
---- SMTPSvr.cpp.orig	2009-12-16 22:38:23.000000000 +0100
-+++ SMTPSvr.cpp	2009-12-16 22:30:58.000000000 +0100
+--- SMTPSvr.cpp.orig	2010-05-01 08:39:22.000000000 +0200
++++ SMTPSvr.cpp	2010-05-01 08:50:20.000000000 +0200
 @@ -26,7 +26,9 @@
  #include "SList.h"
  #include "ShBlocks.h"
@@ -20,34 +20,7 @@
  #include "Base64Enc.h"
  #include "MD5.h"
  #include "UsrMailList.h"
-@@ -209,8 +213,10 @@
- static int SMTPSubmitPackedFile(SMTPSession &SMTPS, const char *pszPkgFile);
- static int SMTPHandleCmd_HELO(const char *pszCommand, BSOCK_HANDLE hBSock, SMTPSession &SMTPS);
- static int SMTPHandleCmd_EHLO(const char *pszCommand, BSOCK_HANDLE hBSock, SMTPSession &SMTPS);
-+#ifdef WITH_SSL
- static int SMTPSslEnvCB(void *pPrivate, int iID, void const *pData);
- static int SMTPHandleCmd_STARTTLS(const char *pszCommand, BSOCK_HANDLE hBSock, SMTPSession &SMTPS);
-+#endif
- static int SMTPAddAuth(char **ppszAuths, int iNumAuths, int *piAuthCnt, char const *pszAuth,
- 		       char const *pszNoTLSAuths, int iLinkSSL);
- static int SMTPListAuths(DynString *pDS, SMTPSession &SMTPS, int iLinkSSL);
-@@ -358,6 +364,7 @@
- 		return ErrorPop();
- 	}
- 
-+#ifdef WITH_SSL
- 	/*
- 	 * Do we need to switch to TLS?
- 	 */
-@@ -390,6 +397,7 @@
- 		SysFree(SslE.pszIssuer);
- 		SysFree(SslE.pszSubject);
- 	}
-+#endif
- 
- 	/* Increase threads count */
- 	if (SMTPThreadCountAdd(+1, pThCtx->pThCfg->hThShb) < 0) {
-@@ -485,9 +493,11 @@
+@@ -278,9 +282,11 @@
  	} else if (strcmp(pszName, "SenderDomainCheck") == 0) {
  		if (pszVal != NULL && !atoi(pszVal))
  			pSMTPS->ulFlags |= SMTPF_SNDRCHECK_BYPASS;
@@ -59,7 +32,7 @@
  	} else if (strcmp(pszName, "EnableVRFY") == 0) {
  		if (pszVal == NULL || atoi(pszVal))
  			pSMTPS->ulFlags |= SMTPF_VRFY_ENABLED;
-@@ -753,9 +763,11 @@
+@@ -492,9 +498,11 @@
  	    strcmp(pszName, "MailAuth") == 0) {
  		if (pszValue == NULL || atoi(pszValue))
  			pSMTPS->ulSetupFlags |= SMTPF_MAIL_LOCKED;
@@ -71,7 +44,7 @@
  	}
  
  	return 0;
-@@ -790,9 +802,11 @@
+@@ -529,9 +537,11 @@
  			SMTPS.ulMaxMsgSize = 0;
  			break;
  
@@ -83,18 +56,7 @@
  		}
  	}
  
-@@ -1047,8 +1061,10 @@
- 		iError = SMTPHandleCmd_HELO(pszCommand, hBSock, SMTPS);
- 	else if (StrCmdMatch(pszCommand, "EHLO"))
- 		iError = SMTPHandleCmd_EHLO(pszCommand, hBSock, SMTPS);
-+#ifdef WITH_SSL
- 	else if (StrCmdMatch(pszCommand, "STARTTLS"))
- 		iError = SMTPHandleCmd_STARTTLS(pszCommand, hBSock, SMTPS);
-+#endif
- 	else if (StrCmdMatch(pszCommand, "AUTH"))
- 		iError = SMTPHandleCmd_AUTH(pszCommand, hBSock, SMTPS);
- 	else if (StrCmdMatch(pszCommand, "RSET"))
-@@ -1225,6 +1241,7 @@
+@@ -977,6 +987,7 @@
  		ErrSetErrorCode(ERR_SMTP_BAD_CMD_SEQUENCE);
  		return ERR_SMTP_BAD_CMD_SEQUENCE;
  	}
@@ -102,7 +64,7 @@
  	/* Do we need to be in TLS mode for this session? */
  	if ((SMTPS.ulFlags & SMTPF_WANT_TLS) && !(SMTPS.ulFlags & SMTPF_EASE_TLS) &&
  	    strcmp(BSckBioName(hBSock), BSSL_BIO_NAME) != 0) {
-@@ -1235,6 +1252,7 @@
+@@ -987,6 +998,7 @@
  		ErrSetErrorCode(ERR_TLS_MODE_REQUIRED);
  		return ERR_TLS_MODE_REQUIRED;
  	}
@@ -110,7 +72,7 @@
  
  	/* Split the RETURN PATH */
  	char **ppszRetDomains = USmtpGetPathStrings(pszCommand);
-@@ -2373,7 +2391,11 @@
+@@ -2253,7 +2265,11 @@
  	SysFree(pszDomain);
  
  	/* Emit extended SMTP command and internal auths */
@@ -122,7 +84,7 @@
  
  	StrDynAdd(&DynS,
  		  "250 VRFY\r\n"
-@@ -2389,8 +2411,10 @@
+@@ -2269,8 +2285,10 @@
  		StrDynPrint(&DynS, "250 SIZE %lu\r\n", SMTPS.ulMaxMsgSize);
  	else
  		StrDynAdd(&DynS, "250 SIZE\r\n");
@@ -133,7 +95,7 @@
  
  	/* Send EHLO response file */
  	if (SMTPSendMultilineResponse(hBSock, SMTPS.pSMTPCfg->iTimeout,
-@@ -2411,6 +2435,7 @@
+@@ -2291,6 +2309,7 @@
  	return 0;
  }
  
@@ -141,15 +103,25 @@
  static int SMTPSslEnvCB(void *pPrivate, int iID, void const *pData)
  {
  	SMTPSession *pSMTPS = (SMTPSession *) pPrivate;
-@@ -2482,6 +2507,7 @@
+@@ -2302,7 +2321,9 @@
  
  	return 0;
  }
 +#endif
  
- static int SMTPAddAuth(char **ppszAuths, int iNumAuths, int *piAuthCnt, char const *pszAuth,
- 		       char const *pszNoTLSAuths, int iLinkSSL)
-@@ -3168,6 +3194,7 @@
++#ifdef WITH_SSL
+ static int SMTPHandleCmd_STARTTLS(char const *pszCommand, BSOCK_HANDLE hBSock, SMTPSession &SMTPS)
+ {
+ 
+@@ -2362,6 +2383,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static char *SMTPExtAuthMacroLkupProc(void *pPrivate, char const *pszName, int iSize)
+ {
+@@ -2931,6 +2953,7 @@
  		StrSNCpy(szAuthParam, ppszTokens[2]);
  	StrFreeStrings(ppszTokens);
  
@@ -157,7 +129,7 @@
  	/*
  	 * Check if the client sent an AUTH type that is not allowed in non-TLS
  	 * mode.
-@@ -3179,6 +3206,7 @@
+@@ -2942,6 +2965,7 @@
  		ErrSetErrorCode(ERR_UNKNOWN_SMTP_AUTH);
  		return ERR_UNKNOWN_SMTP_AUTH;
  	}
@@ -165,7 +137,7 @@
  
  	/* Handle authentication methods */
  	if (stricmp(szAuthType, "PLAIN") == 0) {
-@@ -3256,9 +3284,11 @@
+@@ -3000,9 +3024,11 @@
  {
  	char const *pszSTLS = "";
  
@@ -176,4 +148,31 @@
 +#endif
  
  	BSckVSendString(hBSock, SMTPS.pSMTPCfg->iTimeout,
- 			"250-HELO EHLO MAIL RCPT DATA AUTH%s\r\n"
+ 			"214-HELO EHLO MAIL RCPT DATA AUTH%s\r\n"
+@@ -3140,8 +3166,10 @@
+ 		iError = SMTPHandleCmd_HELO(pszCommand, hBSock, SMTPS);
+ 	else if (StrCmdMatch(pszCommand, "EHLO"))
+ 		iError = SMTPHandleCmd_EHLO(pszCommand, hBSock, SMTPS);
++#ifdef WITH_SSL
+ 	else if (StrCmdMatch(pszCommand, "STARTTLS"))
+ 		iError = SMTPHandleCmd_STARTTLS(pszCommand, hBSock, SMTPS);
++#endif
+ 	else if (StrCmdMatch(pszCommand, "AUTH"))
+ 		iError = SMTPHandleCmd_AUTH(pszCommand, hBSock, SMTPS);
+ 	else if (StrCmdMatch(pszCommand, "RSET"))
+@@ -3235,6 +3263,7 @@
+ 		return ErrorPop();
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to TLS?
+ 	 */
+@@ -3267,6 +3296,7 @@
+ 		SysFree(SslE.pszIssuer);
+ 		SysFree(SslE.pszSubject);
+ 	}
++#endif
+ 
+ 	/* Increase threads count */
+ 	if (SMTPThreadCountAdd(+1, pThCtx->pThCfg->hThShb) < 0) {
