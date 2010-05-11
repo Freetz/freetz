@@ -1,0 +1,82 @@
+--- source/Makefile.in.orig	2010-04-05 19:25:34.000000000 +0200
++++ source/Makefile.in	2010-04-05 19:25:34.000000000 +0200
+@@ -131,7 +131,7 @@
+ FLAGS3 =
+ FLAGS4 =
+ FLAGS5 = $(FLAGS1) $(FLAGS2) $(FLAGS3) $(FLAGS4)
+-FLAGS  = $(ISA) $(FLAGS5) -I$(srcdir)/lib -D_SAMBA_BUILD_=3
++FLAGS  = $(ISA) $(FLAGS5)
+ 
+ PASSWD_FLAGS = -DSMB_PASSWD_FILE=\"$(SMB_PASSWD_FILE)\" -DPRIVATE_DIR=\"$(PRIVATE_DIR)\"
+ PATH_FLAGS1 = -DCONFIGFILE=\"$(CONFIGFILE)\"  -DSBINDIR=\"$(SBINDIR)\"
+@@ -831,8 +831,7 @@
+ ######################################################################
+ # now the rules...
+ ######################################################################
+-all : SHOWFLAGS $(SBIN_PROGS) $(BIN_PROGS) $(ROOT_SBIN_PROGS) \
+-	$(SHLIBS) $(MODULES) $(NSS_MODULES) $(PAM_MODULES) @EXTRA_ALL_TARGETS@
++all : SHOWFLAGS proto_exists bin/smbd bin/nmbd bin/smbpasswd
+ 
+ nss_modules : $(NSS_MODULES)
+ 
+@@ -964,15 +963,23 @@
+ 	  dir=bin $(MAKEDIR); fi
+ 	@: >> $@ || : > $@ # what a fancy emoticon!
+ 
+-bin/smbd@EXEEXT@: proto_exists $(SMBD_OBJ) @BUILD_POPT@ bin/.dummy
++bin/smbd: proto_exists bin/libsmbd.a $(SMBD_OBJ_MAIN) bin/.dummy
+ 	@echo Linking $@
+-	@$(CC) $(FLAGS) -o $@ $(SMBD_OBJ) $(LDFLAGS) $(LDAP_LIBS) \
+-		$(KRB5LIBS) $(DYNEXP) $(PRINT_LIBS) $(AUTH_LIBS) \
+-		$(ACL_LIBS) $(PASSDB_LIBS) $(LIBS) @POPTLIBS@ @SMBD_LIBS@
+-
+-bin/nmbd@EXEEXT@: proto_exists $(NMBD_OBJ) @BUILD_POPT@ bin/.dummy
+-	@echo Linking $@
+-	@$(CC) $(FLAGS) -o $@ $(NMBD_OBJ) $(LDFLAGS) $(DYNEXP) $(LIBS) @POPTLIBS@ $(KRB5LIBS) $(LDAP_LIBS)
++	@$(CC) $(FLAGS) -o $@ $(SMBD_OBJ_MAIN) $(LDFLAGS) \
++		$(AUTH_LIBS) \
++		-Lbin -lsmbd \
++		$(LIBS) @POPTLIBS@
++
++bin/libsmbd.a: proto_exists $(SMBD_OBJ_BASE)
++	@echo Building $@
++	@$(AR) cru bin/libsmbd.a $(SMBD_OBJ_BASE)
++	@$(RANLIB) bin/libsmbd.a
++
++bin/nmbd: proto_exists bin/libsmbd.a $(NMBD_OBJ) bin/.dummy
++	@echo Linking $@
++	@$(CC) $(FLAGS) -o $@ $(NMBD_OBJ) $(LDFLAGS) $(DYNEXP) \
++		-Lbin -lsmbd \
++		$(LIBS) @POPTLIBS@
+ 
+ bin/swat@EXEEXT@: proto_exists $(SWAT_OBJ) @BUILD_POPT@ bin/.dummy
+ 	@echo Linking $@
+@@ -1049,10 +1056,16 @@
+ 	@echo Linking $@
+ 	@$(CC) $(FLAGS) -o $@ $(SMBTREE_OBJ) $(LDFLAGS) $(DYNEXP) $(LIBS) @POPTLIBS@ $(KRB5LIBS) $(LDAP_LIBS)
+ 
+-bin/smbpasswd@EXEEXT@: proto_exists $(SMBPASSWD_OBJ) @BUILD_POPT@ bin/.dummy
++#bin/smbpasswd@EXEEXT@: proto_exists $(SMBPASSWD_OBJ) @BUILD_POPT@ bin/.dummy
++#	@echo Linking $@
++#	@$(CC) $(FLAGS) -o $@ $(SMBPASSWD_OBJ) $(LDFLAGS) $(PASSDB_LIBS) \
++#		$(DYNEXP) $(LIBS) @POPTLIBS@ $(KRB5LIBS) $(LDAP_LIBS)
++
++MY_PASS_OBJ = libsmb/smbdes.o lib/md4.o lib/arc4.o lib/replace/snprintf.o
++
++bin/smbpasswd: utils/avm_smbpasswd.o $(MY_PASS_OBJ)
+ 	@echo Linking $@
+-	@$(CC) $(FLAGS) -o $@ $(SMBPASSWD_OBJ) $(LDFLAGS) $(PASSDB_LIBS) \
+-		$(DYNEXP) $(LIBS) @POPTLIBS@ $(KRB5LIBS) $(LDAP_LIBS)
++	$(CC) $(FLAGS) -o $@ utils/avm_smbpasswd.o $(MY_PASS_OBJ)
+ 
+ bin/pdbedit@EXEEXT@: proto_exists $(PDBEDIT_OBJ) @BUILD_POPT@ bin/.dummy
+ 	@echo Linking $@
+@@ -1812,7 +1825,7 @@
+ 
+ MKPROTO_SH = $(srcdir)/script/mkproto.sh
+ 
+-include/proto.h: smbd/build_options.c
++include/proto.h:
+ 	@echo Building include/proto.h
+ 	@cd $(srcdir) && $(SHELL) $(MKPROTO_SH) $(AWK) \
+ 	  -h _PROTO_H_ $(builddir)/include/proto.h \

@@ -1,0 +1,11 @@
+--- source/modules/vfs_default.c.orig	2010-04-03 12:32:32.000000000 +0200
++++ source/modules/vfs_default.c	2010-04-03 12:32:32.000000000 +0200
+@@ -977,7 +977,7 @@
+ 
+ 	START_PROFILE(syscall_linux_setlease);
+ 
+-#ifdef LINUX
++#ifdef HAVE_KERNEL_OPLOCKS_LINUX
+ 	/* first set the signal handler */
+ 	if(linux_set_lease_sighandler(fd) == -1)
+ 		return -1;

@@ -1,0 +1,1595 @@
+--- source/auth/auth_util.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/auth/auth_util.c	2010-04-05 18:02:26.000000000 +0200
+@@ -2284,18 +2284,20 @@
+ 		/* The only other possible result is that winbind is not up
+ 		   and running. We need to update the trustdom_cache
+ 		   ourselves */
+-		
++#ifndef AVM_SMALLER		
+ 		update_trustdom_cache();
++#endif
+ 	}
+ 
+ 	/* now the trustdom cache should be available a DC could still
+ 	 * have a transitive trust so fall back to the cache of trusted
+ 	 * domains (like a domain member would use  */
+ 
++#ifndef AVM_SMALLER
+ 	if ( trustdom_cache_fetch(dom_name, &trustdom_sid) ) {
+ 		return True;
+ 	}
+-
++#endif
+ 	return False;
+ }
+ 
+--- source/include/local.h.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/include/local.h	2010-04-05 18:02:26.000000000 +0200
+@@ -49,7 +49,8 @@
+ #define MAX_DIRECTORY_HANDLES 2048
+ 
+ /* maximum number of file caches per smbd */
+-#define MAX_WRITE_CACHES 10
++/* #define MAX_WRITE_CACHES 10 */
++#define MAX_WRITE_CACHES 2 /* AVM */
+ 
+ /* define what facility to use for syslog */
+ #ifndef SYSLOG_FACILITY
+--- source/lib/iconv.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/lib/iconv.c	2010-04-05 18:02:26.000000000 +0200
+@@ -385,7 +385,10 @@
+ 
+ 	while (*inbytesleft >= 2 && *outbytesleft >= 1) {
+ 		(*outbuf)[0] = (*inbuf)[0];
+-		if ((*inbuf)[1]) ir_count++;
++		if ((*inbuf)[1]) {
++			ir_count++;
++			(*outbuf)[0] = '_'; // AVM
++		}
+ 		(*inbytesleft)  -= 2;
+ 		(*outbytesleft) -= 1;
+ 		(*inbuf)  += 2;
+--- source/lib/pidfile.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/lib/pidfile.c	2010-04-05 18:02:26.000000000 +0200
+@@ -87,6 +87,7 @@
+ 	pstring pidFile;
+ 	pid_t pid;
+ 
++#if 0 /* AVM */
+ 	/* Add a suffix to the program name if this is a process with a
+ 	 * none default configuration file name. */
+ 	if (strcmp( CONFIGFILE, dyn_CONFIGFILE) == 0) {
+@@ -103,6 +104,9 @@
+ 		slprintf( name, sizeof( name)-1, "%s-%s", program_name,
+ 			  short_configfile );
+ 	}
++#else
++	strncpy( name, program_name, sizeof( name)-1);
++#endif
+ 
+ 	slprintf(pidFile, sizeof(pidFile)-1, "%s/%s.pid", lp_piddir(), name);
+ 
+--- source/lib/system.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/lib/system.c	2010-04-05 18:02:26.000000000 +0200
+@@ -1499,7 +1499,11 @@
+ void *sys_dlopen(const char *name, int flags)
+ {
+ #if defined(HAVE_DLOPEN)
++#if 1 /* FRITZBOX */
++	return NULL;
++#else
+ 	return dlopen(name, flags);
++#endif
+ #else
+ 	return NULL;
+ #endif
+--- source/lib/util.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/lib/util.c	2010-04-05 18:02:26.000000000 +0200
+@@ -301,7 +301,11 @@
+ 	char *p;
+ 	if ((p = getenv("TMPDIR")))
+ 		return p;
++#if 1 /* AVM */
++	return "/var/tmp";
++#else
+ 	return "/tmp";
++#endif
+ }
+ 
+ /****************************************************************************
+--- source/libsmb/clifile.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/libsmb/clifile.c	2010-04-05 18:02:26.000000000 +0200
+@@ -21,6 +21,8 @@
+ 
+ #include "includes.h"
+ 
++#ifndef AVM_SMALLER
++
+ /****************************************************************************
+  Hard/Symlink a file (UNIX extensions).
+  Creates new name (sym)linked to oldname.
+@@ -71,6 +73,9 @@
+ 	return True;
+ }
+ 
++#endif /* AVM_SMALLER */
++
++
+ /****************************************************************************
+  Map standard UNIX permissions onto wire representations.
+ ****************************************************************************/
+@@ -165,6 +170,9 @@
+ 	}
+ }
+ 
++
++#ifndef AVM_SMALLER
++
+ /****************************************************************************
+  Do a POSIX getfacl (UNIX extensions).
+ ****************************************************************************/
+@@ -647,6 +655,7 @@
+ 
+ 	return True;
+ }
++#endif /* AVM_SMALLER */
+ 
+ /****************************************************************************
+  Open a file - exposing the full horror of the NT API :-).
+@@ -718,6 +727,7 @@
+ 				FILE_SHARE_READ|FILE_SHARE_WRITE, FILE_OPEN, 0x0, 0x0);
+ }
+ 
++#ifndef AVM_SMALLER
+ /****************************************************************************
+  Open a file
+  WARNING: if you open with O_WRONLY then getattrE won't work!
+@@ -796,6 +806,7 @@
+ 
+ 	return SVAL(cli->inbuf,smb_vwv2);
+ }
++#endif /* AVM_SMALLER */
+ 
+ /****************************************************************************
+  Close a file.
+@@ -823,6 +834,7 @@
+ 	return !cli_is_error(cli);
+ }
+ 
++#ifndef AVM_SMALLER
+ 
+ /****************************************************************************
+  send a lock with a specified locktype 
+@@ -1972,3 +1984,6 @@
+ {
+ 	return cli_posix_unlink_internal(cli, fname, True);
+ }
++
++#endif /* AVM_SMALLER */
++
+--- source/libsmb/namequery.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/libsmb/namequery.c	2010-04-05 18:02:26.000000000 +0200
+@@ -1114,6 +1114,7 @@
+ 			const char *sitename,
+                          struct ip_service **return_iplist, int *return_count)
+ {
++#ifdef HAVE_ADS
+ 	int 			i, j;
+ 	NTSTATUS  		status;
+ 	TALLOC_CTX		*ctx;
+@@ -1194,6 +1195,9 @@
+ 		
+ 	talloc_destroy(ctx);
+ 	return True;
++#else 	/* HAVE_ADS */
++	return False;
++#endif
+ }
+ 
+ /*******************************************************************
+--- source/libsmb/namequery_dc.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/libsmb/namequery_dc.c	2010-04-05 18:02:26.000000000 +0200
+@@ -52,6 +52,9 @@
+ 			struct in_addr *dc_ip,
+ 			fstring srv_name)
+ {
++#if 1 /* AVM */
++	return False;
++#else 
+ 	ADS_STRUCT *ads;
+ 	char *sitename;
+ 	int i;
+@@ -139,6 +142,7 @@
+ 		 srv_name, inet_ntoa(*dc_ip)));
+ 	
+ 	return True;
++#endif /* AVM */
+ }
+ 
+ /****************************************************************************
+--- source/modules/vfs_default.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/modules/vfs_default.c	2010-04-05 18:02:26.000000000 +0200
+@@ -24,6 +24,78 @@
+ #undef DBGC_CLASS
+ #define DBGC_CLASS DBGC_VFS
+ 
++// AVM_SEC - avoid following NTFS symbolic links to "not allowed places"
++// #define AVM_SEC
++
++
++#ifdef AVM_SEC
++static int IsAllowed(const char *pa)
++{
++	// only allow access below /var/media/ftp/
++
++	if (!pa) return 0;
++
++Log(("IsAllowed: checking %s", pa));
++
++	char *path = strdup(pa);
++	if (!path) goto no;
++
++	char buf[4096];
++	int ret;
++	char *p = &path[strlen(path)];
++	char c = *p;
++	do {
++		if (path[0] == '\0') {
++			if (0 == getcwd(buf, sizeof(buf))) {
++				*p = c;
++				goto no; // failed - not allowed
++			}
++			ret = 0;
++		} else {
++			if (0 == realpath(path, buf)) ret = -1;
++			else ret = 0;
++		}
++		if (ret) {
++			// realpath failed - remove prev path component	
++			*p = c;
++			while(p > path && *(p-1) != '/') p--;
++			if (p <= path) {
++				p = path;
++			} else {
++				p--;
++			}
++			c = *p;
++			*p = '\0';
++		}
++	} while(ret);
++
++	*p = c;
++
++#if 0 // TODO
++	// weitere pfadkompontenen // /./ und /../ auswerten
++	// assert (*p ist '\0' oder '/')
++	while(*p != '\0') {
++		xxx
++	}
++#endif
++
++	if (buf != strstr(buf, "/var/media/ftp")) goto no;
++	c = buf[strlen("/var/media/ftp")];
++	if (c != '/' && c != '\0') goto no;
++
++Log(("IsAllowed: %s ok", pa));
++	if (path) free(path);
++	return 1;
++
++no:
++	Log(("IsAllowed: %s not allowed", pa ? pa : "(null)"));
++	if (path) free(path);
++	return 0;
++}
++#endif
++
++
++
+ /* Check for NULL pointer parameters in vfswrap_* functions */
+ 
+ /* We don't want to have NULL function pointers lying around.  Someone
+@@ -88,6 +160,10 @@
+ 
+ static int vfswrap_statvfs(struct vfs_handle_struct *handle,  const char *path, vfs_statvfs_struct *statbuf)
+ {
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	return sys_statvfs(path, statbuf);
+ }
+ 
+@@ -97,6 +173,10 @@
+ {
+ 	SMB_STRUCT_DIR *result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(fname)) { errno = EACCES; return 0; }
++#endif
++
+ 	START_PROFILE(syscall_opendir);
+ 	result = sys_opendir(fname);
+ 	END_PROFILE(syscall_opendir);
+@@ -141,6 +221,10 @@
+ 	int result;
+ 	BOOL has_dacl = False;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_mkdir);
+ 
+ 	if (lp_inherit_acls(SNUM(handle->conn)) && (has_dacl = directory_has_default_acl(handle->conn, parent_dirname(path))))
+@@ -169,6 +253,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_rmdir);
+ 	result = rmdir(path);
+ 	END_PROFILE(syscall_rmdir);
+@@ -192,6 +280,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(fname)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_open);
+ 	result = sys_open(fname, flags, mode);
+ 	END_PROFILE(syscall_open);
+@@ -361,6 +453,11 @@
+ 	int ifd = -1;
+ 	int ofd = -1;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(source)) { errno = EACCES; return -1; }
++	if (!IsAllowed(dest)) { errno = EACCES; return -1; }
++#endif
++
+ 	if (sys_lstat (source, &source_stats) == -1)
+ 		return -1;
+ 
+@@ -442,6 +539,11 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(oldname)) { errno = EACCES; return -1; }
++	if (!IsAllowed(newname)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_rename);
+ 	result = rename(oldname, newname);
+ 	if ((result == -1) && (errno == EXDEV)) {
+@@ -471,6 +573,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(fname)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_stat);
+ 	result = sys_stat(fname, sbuf);
+ 	END_PROFILE(syscall_stat);
+@@ -491,6 +597,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_lstat);
+ 	result = sys_lstat(path, sbuf);
+ 	END_PROFILE(syscall_lstat);
+@@ -501,6 +611,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_unlink);
+ 	result = unlink(path);
+ 	END_PROFILE(syscall_unlink);
+@@ -511,6 +625,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_chmod);
+ 
+ 	/*
+@@ -572,6 +690,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_chown);
+ 	result = sys_chown(path, uid, gid);
+ 	END_PROFILE(syscall_chown);
+@@ -597,6 +719,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_chdir);
+ 	result = chdir(path);
+ 	END_PROFILE(syscall_chdir);
+@@ -717,6 +843,44 @@
+ 		return result;
+ 	}
+ 
++#if 1 // AVM patch - don't growth the file  (too much time and RAM for copy of large files to USB1.1 FAT filesystem)
++	{ 
++	SMB_BIG_UINT big_len = len;
++
++	result = SMB_VFS_FSTAT(fsp,fsp->fh->fd,&st);
++	if (result == -1) {
++		goto done;
++	}
++
++	if (big_len == (SMB_BIG_UINT)st.st_size) {
++		result = 0;
++		goto done;
++	}
++
++	if (big_len > (SMB_BIG_UINT)st.st_size) {
++		SMB_BIG_UINT space_avail;
++		SMB_BIG_UINT bsize,dfree,dsize;
++		big_len -= st.st_size;
++		big_len /= 1024; /* Len is now number of 1k blocks needed. */
++		space_avail = SMB_VFS_DISK_FREE(fsp->conn ,fsp->fsp_name,False,&bsize,&dfree,&dsize);
++		if (space_avail == (SMB_BIG_UINT)-1) {
++			result = -1;
++			goto done;
++		}
++
++		if (big_len > space_avail) {
++			errno = ENOSPC;
++			result = -1;
++			goto done;
++		}
++
++		// do nothing to be fast!
++		result = 0;
++		goto done;
++	}
++	} // block
++#endif // AVM Patch
++
+ 	/* we used to just check HAVE_FTRUNCATE_EXTEND and only use
+ 	   sys_ftruncate if the system supports it. Then I discovered that
+ 	   you can have some filesystems that support ftruncate
+@@ -830,6 +994,11 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(oldpath)) { errno = EACCES; return -1; }
++	if (!IsAllowed(newpath)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_symlink);
+ 	result = sys_symlink(oldpath, newpath);
+ 	END_PROFILE(syscall_symlink);
+@@ -840,6 +1009,10 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_readlink);
+ 	result = sys_readlink(path, buf, bufsiz);
+ 	END_PROFILE(syscall_readlink);
+@@ -850,6 +1023,11 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(oldpath)) { errno = EACCES; return -1; }
++	if (!IsAllowed(newpath)) { errno = EACCES; return -1; }
++#endif
++
+ 	START_PROFILE(syscall_link);
+ 	result = sys_link(oldpath, newpath);
+ 	END_PROFILE(syscall_link);
+@@ -860,6 +1038,9 @@
+ {
+ 	int result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(pathname)) { errno = EACCES; return -1; }
++#endif
+ 	START_PROFILE(syscall_mknod);
+ 	result = sys_mknod(pathname, mode, dev);
+ 	END_PROFILE(syscall_mknod);
+@@ -870,6 +1051,9 @@
+ {
+ 	char *result;
+ 
++#ifdef AVM_SEC
++	if (!IsAllowed(path)) { errno = EACCES; return 0; }
++#endif
+ 	START_PROFILE(syscall_realpath);
+ 	result = sys_realpath(path, resolved_path);
+ 	END_PROFILE(syscall_realpath);
+--- source/param/loadparm.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/param/loadparm.c	2010-04-05 18:02:26.000000000 +0200
+@@ -2713,8 +2713,11 @@
+ 
+ 	slprintf(comment, sizeof(comment) - 1,
+ 		 "IPC Service (%s)", Globals.szServerString);
+-
++#if 1 /* AVM */
++	string_set(&ServicePtrs[i]->szPath, "/var/media/ftp");
++#else
+ 	string_set(&ServicePtrs[i]->szPath, tmpdir());
++#endif
+ 	string_set(&ServicePtrs[i]->szUsername, "");
+ 	string_set(&ServicePtrs[i]->comment, comment);
+ 	string_set(&ServicePtrs[i]->fstype, "IPC");
+--- source/registry/reg_frontend.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/registry/reg_frontend.c	2010-04-05 18:02:26.000000000 +0200
+@@ -35,9 +35,11 @@
+ 
+ REGISTRY_HOOK reg_hooks[] = {
+ #ifndef REG_TDB_ONLY 
++#ifndef AVM_NO_PRINTING
+   { KEY_PRINTING,    		&printing_ops },
+   { KEY_PRINTING_2K, 		&printing_ops },
+   { KEY_PRINTING_PORTS, 	&printing_ops },
++#endif
+   { KEY_SHARES,      		&shares_reg_ops },
+ #endif
+   { NULL, NULL }
+--- source/rpc_client/cli_pipe.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/rpc_client/cli_pipe.c	2010-04-05 18:02:26.000000000 +0200
+@@ -619,7 +619,11 @@
+ 
+ 			DEBUG(1, ("cli_pipe_validate_current_pdu: RPC fault code %s received from remote machine %s "
+ 				"pipe %s fnum 0x%x!\n",
++#if 1 /* AVM */
++				"ERRSTR-REPLACEMENT",
++#else
+ 				dcerpc_errstr(NT_STATUS_V(fault_resp.status)),
++#endif
+ 				cli->cli->desthost,
+ 				cli->pipe_name,
+ 				(unsigned int)cli->fnum));
+--- source/rpc_parse/parse_prs.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/rpc_parse/parse_prs.c	2010-04-05 18:02:26.000000000 +0200
+@@ -796,7 +796,12 @@
+ 	}
+ 
+ 	DEBUG(5,("%s%04x %s: %s\n", tab_depth(depth), ps->data_offset, name, 
+-		 dcerpc_errstr(NT_STATUS_V(*status))));
++#if 1 /* AVM */
++				"ERRSTR-REPLACEMENT"
++#else
++		 dcerpc_errstr(NT_STATUS_V(*status))
++#endif
++		 ));
+ 
+ 	ps->data_offset += sizeof(uint32);
+ 
+--- source/rpc_parse/parse_sec.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/rpc_parse/parse_sec.c	2010-04-05 18:02:26.000000000 +0200
+@@ -104,7 +104,7 @@
+  for you as it reads them.
+ ********************************************************************/
+ 
+-BOOL sec_io_acl(const char *desc, SEC_ACL **ppsa, prs_struct *ps, int depth)
++static BOOL sec_io_acl(const char *desc, SEC_ACL **ppsa, prs_struct *ps, int depth)
+ {
+ 	unsigned int i;
+ 	uint32 old_offset;
+--- source/rpc_parse/parse_spoolss.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/rpc_parse/parse_spoolss.c	2010-04-05 18:02:26.000000000 +0200
+@@ -227,8 +227,13 @@
+ 	if(!prs_uint32("count2", ps, depth, &type->count2))
+ 		return False;
+ 	
+-	if (type->count2 != type->count)
++	if (type->count2 != type->count) {
+ 		DEBUG(4,("What a mess, count was %x now is %x !\n", type->count, type->count2));
++		return False;
++	}
++	if (type->count2 > MAX_NOTIFY_TYPE_FOR_NOW) {
++		return False;
++	}
+ 
+ 	if (type->count2 > MAX_NOTIFY_TYPE_FOR_NOW) {
+ 		return False;
+--- source/rpc_server/srv_pipe.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/rpc_server/srv_pipe.c	2010-04-05 18:02:26.000000000 +0200
+@@ -2335,6 +2335,7 @@
+ 	int               n_cmds = 0;
+ 
+ 	switch ( idx ) {
++#ifndef AVM_SMALLER
+ 		case PI_LSARPC:
+ 			lsa_get_pipe_fns( &cmds, &n_cmds );
+ 			break;
+@@ -2347,12 +2348,14 @@
+ 		case PI_NETLOGON:
+ 			netlog_get_pipe_fns( &cmds, &n_cmds );
+ 			break;
++#endif /* AVM_SMALLER */
+ 		case PI_SRVSVC:
+ 			srvsvc_get_pipe_fns( &cmds, &n_cmds );
+ 			break;
+ 		case PI_WKSSVC:
+ 			wkssvc_get_pipe_fns( &cmds, &n_cmds );
+ 			break;
++#ifndef AVM_SMALLER
+ 		case PI_WINREG:
+ 			reg_get_pipe_fns( &cmds, &n_cmds );
+ 			break;
+@@ -2371,6 +2374,8 @@
+ 		case PI_NTSVCS:
+ 			ntsvcs_get_pipe_fns( &cmds, &n_cmds );
+ 			break;
++#endif /* AVM_SMALLER */
++
+ #ifdef DEVELOPER
+ 		case PI_ECHO:
+ 			echo_get_pipe_fns( &cmds, &n_cmds );
+--- source/smbd/change_trust_pw.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/change_trust_pw.c	2010-04-05 18:02:26.000000000 +0200
+@@ -30,6 +30,10 @@
+ 
+ NTSTATUS change_trust_account_password( const char *domain, const char *remote_machine)
+ {
++#ifdef AVM_SMALLER
++       return NT_STATUS_UNSUCCESSFUL;
++#else
++
+ 	NTSTATUS nt_status = NT_STATUS_UNSUCCESSFUL;
+ 	struct in_addr pdc_ip;
+ 	fstring dc_name;
+@@ -97,4 +101,5 @@
+ 		DEBUG(5,("change_trust_account_password: sucess!\n"));
+   
+ 	return nt_status;
++#endif /* AVM_SMALLER */
+ }
+--- source/smbd/close.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/close.c	2010-04-05 18:02:26.000000000 +0200
+@@ -353,7 +353,9 @@
+ 	saved_status2 = close_filestruct(fsp);
+ 
+ 	if (fsp->print_file) {
++#ifndef AVM_NO_PRINTING
+ 		print_fsp_end(fsp, close_type);
++#endif
+ 		file_free(fsp);
+ 		return NT_STATUS_OK;
+ 	}
+--- source/smbd/conn.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/conn.c	2010-04-05 18:02:26.000000000 +0200
+@@ -216,9 +216,12 @@
+ 	 * idle with a handle open.
+ 	 */
+ 
++
++#ifndef AVM_SMALLER
+ 	for (plist = get_first_internal_pipe(); plist; plist = get_next_internal_pipe(plist))
+ 		if (plist->pipe_handles && plist->pipe_handles->count)
+ 			allidle = False;
++#endif	
+ 	
+ 	return allidle;
+ }
+--- source/smbd/dfree.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/dfree.c	2010-04-05 18:02:26.000000000 +0200
+@@ -130,11 +130,13 @@
+ 		}
+ 	}
+ 
++#if 0 /* AVM */
+ 	if (disk_quotas(path, &bsize_q, &dfree_q, &dsize_q)) {
+ 		(*bsize) = bsize_q;
+ 		(*dfree) = MIN(*dfree,dfree_q);
+ 		(*dsize) = MIN(*dsize,dsize_q);
+ 	}
++#endif
+ 
+ 	/* FIXME : Any reason for this assumption ? */
+ 	if (*bsize < 256) {
+--- source/smbd/dosmode.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/dosmode.c	2010-04-05 18:02:26.000000000 +0200
+@@ -40,12 +40,15 @@
+ 	if (ISDOT(path) || ISDOTDOT(path)) {
+ 		return 0;
+ 	}
+-
++#ifdef AVM_SMALLER
++	return 0;
++#else
+ 	if (!lp_dmapi_support(SNUM(conn)) || !dmapi_have_session()) {
+ 		return 0;
+ 	}
+ 
+ 	return dmapi_file_flags(path);
++#endif
+ }
+ 
+ /****************************************************************************
+--- source/smbd/fileio.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/fileio.c	2010-04-05 18:02:26.000000000 +0200
+@@ -176,6 +176,8 @@
+ 
+ static int wcp_file_size_change(files_struct *fsp)
+ {
++/* AVM: Fuer Pruefung des freien Speichers auf dem Datentraeger wird 
++   SMB_VFS_FTRUNCATE aufgerufen, auch falls es langsam sein sollte */
+ 	int ret;
+ 	write_cache *wcp = fsp->wcp;
+ 
+@@ -199,6 +201,10 @@
+ 	int write_path = -1; 
+ 
+ 	if (fsp->print_file) {
++#ifdef AVM_NO_PRINTING
++			errno = EBADF;
++			return -1;
++#else
+ 		fstring sharename;
+ 		uint32 jobid;
+ 
+@@ -210,6 +216,7 @@
+ 		}
+ 
+ 		return print_job_write(SNUM(fsp->conn), jobid, data, pos, n);
++#endif /* AVM_NO_PRINTING */
+ 	}
+ 
+ 	if (!fsp->can_write) {
+--- source/smbd/files.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/files.c	2010-04-05 18:02:26.000000000 +0200
+@@ -203,10 +203,12 @@
+ 		exit_server("out of memory in file_init");
+ 	}
+ 	
++#ifndef AVM_SMALLER
+ 	/*
+ 	 * Ensure that pipe_handle_oppset is set correctly.
+ 	 */
+ 	set_pipe_handle_offset(real_max_open_files);
++#endif
+ }
+ 
+ /****************************************************************************
+--- source/smbd/lanman.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/lanman.c	2010-04-05 18:02:26.000000000 +0200
+@@ -400,6 +400,7 @@
+ 	PACK(desc,t,v);
+ }
+ 
++#ifndef AVM_NO_PRINTING
+ /****************************************************************************
+  Get a print queue.
+ ****************************************************************************/
+@@ -781,6 +782,7 @@
+ 
+ 	return result;
+ }
++#endif /* AVM_NO_PRINTING */
+ 
+ static BOOL api_DosPrintQGetInfo(connection_struct *conn, uint16 vuid,
+ 				char *param, int tpscnt,
+@@ -789,6 +791,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+ 	char *p = skip_string(param,tpscnt,str2);
+@@ -901,6 +906,7 @@
+ 	SAFE_FREE(tmpdata);
+ 
+ 	return(True);
++#endif /* AVM_NO_PRINTING */
+ }
+ 
+ /****************************************************************************
+@@ -914,6 +920,9 @@
+ 				char **rdata, char** rparam,
+ 				int *rdata_len, int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	char *param_format = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *output_format1 = skip_string(param,tpscnt,param_format);
+ 	char *p = skip_string(param,tpscnt,output_format1);
+@@ -1046,6 +1055,7 @@
+ 	SAFE_FREE(status);
+ 
+ 	return False;
++#endif /* AVM_NO_PRINTING */
+ }
+ 
+ /****************************************************************************
+@@ -2539,6 +2549,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	int function = get_safe_SVAL(param,tpscnt,param,0,0);
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+@@ -2609,6 +2622,7 @@
+ 	SSVAL(*rparam,2,0);		/* converter word */
+ 
+ 	return(True);
++#endif
+ }
+ 
+ /****************************************************************************
+@@ -2622,6 +2636,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	int function = get_safe_SVAL(param,tpscnt,param,0,0);
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+@@ -2674,6 +2691,7 @@
+ 	SSVAL(*rparam,2,0);		/* converter word */
+ 
+ 	return(True);
++#endif
+ }
+ 
+ /****************************************************************************
+@@ -2714,6 +2732,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	struct pack_desc desc;
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+@@ -2788,6 +2809,7 @@
+ 	SSVAL(*rparam,2,0);		/* converter word */
+ 	
+ 	return(True);
++#endif
+ }
+ 
+ 
+@@ -3579,6 +3601,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+ 	char *p = skip_string(param,tpscnt,str2);
+@@ -3669,6 +3694,7 @@
+ 	DEBUG(4,("WPrintJobGetInfo: errorcode %d\n",desc.errcode));
+ 
+ 	return True;
++#endif
+ }
+ 
+ static BOOL api_WPrintJobEnumerate(connection_struct *conn, uint16 vuid,
+@@ -3678,6 +3704,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+ 	char *p = skip_string(param,tpscnt,str2);
+@@ -3760,6 +3789,7 @@
+ 	DEBUG(4,("WPrintJobEnumerate: errorcode %d\n",desc.errcode));
+ 
+ 	return True;
++#endif
+ }
+ 
+ static int check_printdest_info(struct pack_desc* desc,
+@@ -3835,6 +3865,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+ 	char *p = skip_string(param,tpscnt,str2);
+@@ -3906,6 +3939,7 @@
+ 	SAFE_FREE(tmpdata);
+ 
+ 	return True;
++#endif
+ }
+ 
+ static BOOL api_WPrintDestEnum(connection_struct *conn, uint16 vuid,
+@@ -3915,6 +3949,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+ 	char *p = skip_string(param,tpscnt,str2);
+@@ -3987,6 +4024,7 @@
+ 	DEBUG(4,("WPrintDestEnumerate: errorcode %d\n",desc.errcode));
+ 
+ 	return True;
++#endif
+ }
+ 
+ static BOOL api_WPrintDriverEnum(connection_struct *conn, uint16 vuid,
+@@ -3996,6 +4034,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+ 	char *p = skip_string(param,tpscnt,str2);
+@@ -4050,6 +4091,7 @@
+ 	DEBUG(4,("WPrintDriverEnum: errorcode %d\n",desc.errcode));
+ 
+ 	return True;
++#endif
+ }
+ 
+ static BOOL api_WPrintQProcEnum(connection_struct *conn, uint16 vuid,
+@@ -4059,6 +4101,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+ 	char *p = skip_string(param,tpscnt,str2);
+@@ -4113,6 +4158,7 @@
+ 	DEBUG(4,("WPrintQProcEnum: errorcode %d\n",desc.errcode));
+ 
+ 	return True;
++#endif
+ }
+ 
+ static BOOL api_WPrintPortEnum(connection_struct *conn, uint16 vuid,
+@@ -4122,6 +4168,9 @@
+ 				char **rdata,char **rparam,
+ 				int *rdata_len,int *rparam_len)
+ {
++#ifdef AVM_NO_PRINTING
++return False;
++#else
+ 	char *str1 = get_safe_str_ptr(param,tpscnt,param,2);
+ 	char *str2 = skip_string(param,tpscnt,str1);
+ 	char *p = skip_string(param,tpscnt,str2);
+@@ -4178,6 +4227,7 @@
+ 	DEBUG(4,("WPrintPortEnum: errorcode %d\n",desc.errcode));
+ 
+ 	return True;
++#endif
+ }
+ 
+ /****************************************************************************
+--- source/smbd/open.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/open.c	2010-04-05 18:02:26.000000000 +0200
+@@ -1155,8 +1155,11 @@
+ 		}
+ 
+ 		DEBUG(10, ("open_file_ntcreate: printer open fname=%s\n", fname));
+-
++#ifdef AVM_NO_PRINTING
++		return NT_STATUS_OK;
++#else
+ 		return print_fsp_open(conn, fname, result);
++#endif
+ 	}
+ 
+ 	if (!parent_dirname_talloc(tmp_talloc_ctx(), fname, &parent_dir,
+--- source/smbd/process.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/process.c	2010-04-05 18:02:26.000000000 +0200
+@@ -1028,7 +1028,9 @@
+ 
+ 	chain_size = 0;
+ 	file_chain_reset();
++#ifndef AVM_SMALLER
+ 	reset_chain_p();
++#endif
+ 
+ 	if (msg_type != 0)
+ 		return(reply_special(inbuf,outbuf));  
+@@ -1268,9 +1270,11 @@
+ 
+ 	select_timeout = blocking_locks_timeout_ms(SMBD_SELECT_TIMEOUT*1000);
+ 
++#ifndef AVM_NO_PRINTING
+ 	if (print_notify_messages_pending()) {
+ 		select_timeout = MIN(select_timeout, 1000);
+ 	}
++#endif
+ 
+ 	return select_timeout;
+ }
+@@ -1461,9 +1465,10 @@
+ 	 */
+ 	process_blocking_lock_queue();
+ 
++#ifndef AVM_NO_PRINTING
+ 	/* update printer queue caches if necessary */
+-  
+ 	update_monitored_printq_cache();
++#endif
+   
+ 	/*
+ 	 * Now we are root, check if the log files need pruning.
+@@ -1472,9 +1477,10 @@
+ 	force_check_log_size();
+ 	check_log_size();
+ 
++#ifndef AVM_NO_PRINTING
+ 	/* Send any queued printer notify message to interested smbd's. */
+-
+ 	print_notify_send_messages(0);
++#endif
+ 
+ 	/*
+ 	 * Modify the select timeout depending upon
+--- source/smbd/reply.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/reply.c	2010-04-05 18:02:26.000000000 +0200
+@@ -3606,7 +3606,10 @@
+ 	NTSTATUS status;
+ 	
+ 	START_PROFILE(SMBsplopen);
+-	
++#ifdef AVM_NO_PRINTING
++		END_PROFILE(SMBsplopen);
++		return ERROR_DOS(ERRDOS,ERRnoaccess);
++#else
+ 	if (!CAN_PRINT(conn)) {
+ 		END_PROFILE(SMBsplopen);
+ 		return ERROR_DOS(ERRDOS,ERRnoaccess);
+@@ -3628,6 +3631,7 @@
+ 
+ 	END_PROFILE(SMBsplopen);
+ 	return(outsize);
++#endif
+ }
+ 
+ /****************************************************************************
+@@ -3644,6 +3648,10 @@
+ 
+ 	CHECK_FSP(fsp,conn);
+ 
++#ifdef AVM_NO_PRINTING
++		END_PROFILE(SMBsplretq);
++		return ERROR_DOS(ERRDOS,ERRnoaccess);
++#else
+ 	if (!CAN_PRINT(conn)) {
+ 		END_PROFILE(SMBsplclose);
+ 		return ERROR_NT(NT_STATUS_DOS(ERRSRV, ERRerror));
+@@ -3661,6 +3669,7 @@
+ 
+ 	END_PROFILE(SMBsplclose);
+ 	return(outsize);
++#endif
+ }
+ 
+ /****************************************************************************
+@@ -3670,6 +3679,10 @@
+ int reply_printqueue(connection_struct *conn,
+ 		     char *inbuf,char *outbuf, int dum_size, int dum_buffsize)
+ {
++#ifdef AVM_NO_PRINTING
++		END_PROFILE(SMBsplretq);
++		return ERROR_DOS(ERRDOS,ERRnoaccess);
++#else
+ 	int outsize = set_message(outbuf,2,3,True);
+ 	int max_count = SVAL(inbuf,smb_vwv0);
+ 	int start_index = SVAL(inbuf,smb_vwv1);
+@@ -3732,6 +3745,7 @@
+   
+ 	END_PROFILE(SMBsplretq);
+ 	return(outsize);
++#endif
+ }
+ 
+ /****************************************************************************
+--- source/smbd/server.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/server.c	2010-04-05 18:02:26.000000000 +0200
+@@ -22,7 +22,7 @@
+ 
+ #include "includes.h"
+ 
+-static_decl_rpc;
++/* AVM ???? static_decl_rpc; */
+ 
+ static int am_parent = 1;
+ 
+@@ -617,6 +617,7 @@
+ **************************************************************************/
+ void reload_printers(void)
+ {
++#ifndef AVM_NO_PRINTING
+ 	int snum;
+ 	int n_services = lp_numservices();
+ 	int pnum = lp_servicenumber(PRINTERS_NAME);
+@@ -643,6 +644,7 @@
+ 	}
+ 
+ 	load_printers();
++#endif /* AVM_NO_PRINTING */
+ }
+ 
+ /****************************************************************************
+@@ -725,7 +727,9 @@
+ 
+ 	invalidate_all_vuids();
+ 
++#ifndef AVM_NO_PRINTING
+ 	print_notify_send_messages(3); /* 3 second timeout. */
++#endif
+ 
+ 	/* delete our entry in the connections database. */
+ 	yield_connection(NULL,"");
+@@ -739,7 +743,9 @@
+ #endif
+ 
+ 	locking_end();
++#ifndef AVM_NO_PRINTING
+ 	printing_end();
++#endif
+ 
+ 	if (how != SERVER_EXIT_NORMAL) {
+ 		int oldlevel = DEBUGLEVEL;
+@@ -820,7 +826,9 @@
+    mkproto.h.  Mixing $(builddir) and $(srcdir) source files in the current
+    prototype generation system is too complicated. */
+ 
++#if 0 /* AVM */
+ extern void build_options(BOOL screen);
++#endif
+ 
+  int main(int argc,const char *argv[])
+ {
+@@ -833,6 +841,13 @@
+ 	static char *ports = NULL;
+ 	static char *profile_level = NULL;
+ 	int opt;
++
++#if 0 // AVM DEBUG
++	extern void crashdump_init(char*);
++	crashdump_init("smbd");
++#endif
++
++#ifndef AVM_NO_POPT
+ 	poptContext pc;
+ 
+ 	struct poptOption long_options[] = {
+@@ -842,7 +857,9 @@
+ 	{"foreground", 'F', POPT_ARG_VAL, &Fork, False, "Run daemon in foreground (for daemontools, etc.)" },
+ 	{"no-process-group", '\0', POPT_ARG_VAL, &no_process_group, True, "Don't create a new process group" },
+ 	{"log-stdout", 'S', POPT_ARG_VAL, &log_stdout, True, "Log to stdout" },
++#if 0 /* AVM */
+ 	{"build-options", 'b', POPT_ARG_NONE, NULL, 'b', "Print build options" },
++#endif
+ 	{"port", 'p', POPT_ARG_STRING, &ports, 0, "Listen on the specified ports"},
+ 	{"profiling-level", 'P', POPT_ARG_STRING, &profile_level, 0, "Set profiling level","PROFILE_LEVEL"},
+ 	POPT_COMMON_SAMBA
+@@ -861,21 +878,31 @@
+ 	pc = poptGetContext("smbd", argc, argv, long_options, 0);
+ 	
+ 	while((opt = poptGetNextOpt(pc)) != -1) {
++#if 0 /* AVM */
+ 		switch (opt)  {
+ 		case 'b':
+ 			build_options(True); /* Display output to screen as well as debug */ 
+ 			exit(0);
+ 			break;
+ 		}
++#endif
+ 	}
+ 
+ 	poptFreeContext(pc);
++#else
++	load_case_tables();
++#endif /* AVM_NO_POPT */
++
+ 
+ #ifdef HAVE_SETLUID
+ 	/* needed for SecureWare on SCO */
+ 	setluid(0);
+ #endif
+ 
++#if 1 /* AVM */
++	setpriority(PRIO_PROCESS, 0, 19); /* be nice */
++#endif
++
+ 	sec_init();
+ 
+ 	set_remote_machine_name("smbd", False);
+@@ -903,6 +930,16 @@
+ 	/* make absolutely sure we run as root - to handle cases where people
+ 	   are crazy enough to have it setuid */
+ 
++	generate_random_buffer(NULL, 0);
++
++	/* make absolutely sure we run as root - to handle cases where people
++	   are crazy enough to have it setuid */
++
++	gain_root_privilege();
++	gain_root_group_privilege();
++
++	fault_setup((void (*)(void *))exit_server_fault);
++	dump_core_setup("smbd");
+ 	gain_root_privilege();
+ 	gain_root_group_privilege();
+ 
+@@ -945,8 +982,10 @@
+ 	DEBUG(2,("uid=%d gid=%d euid=%d egid=%d\n",
+ 		 (int)getuid(),(int)getgid(),(int)geteuid(),(int)getegid()));
+ 
++#if 0 /* AVM */
+ 	/* Output the build options to the debug log */ 
+ 	build_options(False);
++#endif
+ 
+ 	if (sizeof(uint16) < 2 || sizeof(uint32) < 4) {
+ 		DEBUG(0,("ERROR: Samba is not configured correctly for the word size on your machine\n"));
+@@ -1042,16 +1081,20 @@
+ 
+ 	namecache_enable();
+ 
++#ifndef AVM_SMALLER
+ 	if (!init_registry())
+ 		exit(1);
++#endif
+ 
+ #if 0
+ 	if (!init_svcctl_db())
+                 exit(1);
+ #endif
+ 
++#ifndef AVM_NO_PRINTING
+ 	if (!print_backend_init())
+ 		exit(1);
++#endif
+ 
+ 	if (!init_guest_info()) {
+ 		DEBUG(0,("ERROR: failed to setup guest info.\n"));
+@@ -1068,14 +1111,18 @@
+ 	   smbd is launched via inetd and we fork a copy of 
+ 	   ourselves here */
+ 
++#ifndef AVM_NO_PRINTING
+ 	if ( is_daemon && !interactive )
+ 		start_background_queue(); 
++#endif
+ 
++#if 0 /* AVM */
+ 	/* Always attempt to initialize DMAPI. We will only use it later if
+ 	 * lp_dmapi_support is set on the share, but we need a single global
+ 	 * session to work with.
+ 	 */
+ 	dmapi_init_session();
++#endif
+ 
+ 	if (!open_sockets_smbd(is_daemon, interactive, ports))
+ 		exit(1);
+@@ -1084,7 +1131,12 @@
+ 	 * everything after this point is run after the fork()
+ 	 */ 
+ 
++#if 0 /* AVM */
+ 	static_init_rpc;
++#else
++	rpc_wkssvc_init();
++	rpc_srv_init();
++#endif
+ 
+ 	init_modules();
+ 
+--- source/smbd/service.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/service.c	2010-04-05 18:02:26.000000000 +0200
+@@ -288,6 +288,7 @@
+ 		iService = add_home_service(service,service /* 'username' */, phome_dir);
+ 	}
+ 
++#ifndef AVM_NO_PRINTING
+ 	/* If we still don't have a service, attempt to add it as a printer. */
+ 	if (iService < 0) {
+ 		int iPrinterService;
+@@ -307,6 +308,7 @@
+ 			}
+ 		}
+ 	}
++#endif /* AVM_NO_PRINTING */
+ 
+ 	/* Check for default vfs service?  Unsure whether to implement this */
+ 	if (iService < 0) {
+@@ -1225,7 +1227,9 @@
+ void close_cnum(connection_struct *conn, uint16 vuid)
+ {
+ 	if (IS_IPC(conn)) {
++#ifndef AVM_SMALLER
+ 		pipe_close_conn(conn);
++#endif
+ 	} else {
+ 		file_close_conn(conn);
+ 		dptr_closecnum(conn);
+--- source/smbd/trans2.c.orig	2009-09-30 14:21:56.000000000 +0200
++++ source/smbd/trans2.c	2010-04-05 18:02:26.000000000 +0200
+@@ -2878,11 +2878,14 @@
+ 				/* unknown_2 6 NULL bytes follow*/
+ 		
+ 				/* now set the quotas */
++#if 1 /* AVM */
++					return ERROR_DOS(ERRSRV,ERRerror);
++#else
+ 				if (vfs_set_ntquota(fsp, SMB_USER_FS_QUOTA_TYPE, NULL, &quotas)!=0) {
+ 					DEBUG(0,("vfs_set_ntquota() failed for service [%s]\n",lp_servicename(SNUM(conn))));
+ 					return ERROR_DOS(ERRSRV,ERRerror);
+ 				}
+-			
++#endif			
+ 				break;
+ 			}
+ 		default:
+--- source/utils/avm_smbpasswd.c.orig	1970-01-01 01:00:00.000000000 +0100
++++ source/utils/avm_smbpasswd.c	2010-04-05 18:02:26.000000000 +0200
+@@ -0,0 +1,213 @@
++/*
++ * Unix SMB/CIFS implementation. 
++ * Copyright (C) Jeremy Allison 1995-1998
++ * Copyright (C) Tim Potter     2001
++ * 
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation; either version 2 of the License, or (at your
++ * option) any later version.
++ * 
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ * 
++ * You should have received a copy of the GNU General Public License along with
++ * this program; if not, write to the Free Software Foundation, Inc., 675
++ * Mass Ave, Cambridge, MA 02139, USA.  */
++
++#include "includes.h"
++
++
++void E_md4hash(const char *passwd, uchar p16[16])
++{
++	int len;
++	smb_ucs2_t wpwd[129];
++	int i;
++
++	
++	/* Password must be converted to NT unicode - null terminated. */
++	len = strlen(passwd);
++#if 0
++	push_ucs2(NULL, wpwd, (const char *)passwd, 256, STR_UNICODE|STR_NOALIGN|STR_TERMINATE);
++#else
++	for (i = 0; i < len; i++) {
++		wpwd[i] = (unsigned char)passwd[i];
++	}
++	wpwd[i] = 0; // termination
++#endif
++	/* Calculate length in bytes */
++	len = len /*strlen_w(wpwd)*/ * sizeof(int16);
++
++	mdfour(p16, (unsigned char *)wpwd, len);
++	ZERO_STRUCT(wpwd);	
++}
++
++/**
++ * Creates the DES forward-only Hash of the users password in DOS ASCII charset
++ * @param passwd password in 'unix' charset.
++ * @param p16 return password hashed with DES, caller allocated 16 byte buffer
++ * @return False if password was > 14 characters, and therefore may be incorrect, otherwise True
++ * @note p16 is filled in regardless
++ */
++ 
++BOOL E_deshash(const char *passwd, uchar p16[16])
++{
++	BOOL ret = True;
++	char dospwd[256+2];
++	int i;
++	int len;
++	
++	/* Password must be converted to DOS charset - null terminated, uppercase. */
++//	push_ascii(dospwd, passwd, sizeof(dospwd), STR_UPPER|STR_TERMINATE);
++	len = strlen(passwd);
++	for (i = 0; i < len; i++) {
++		char c = passwd[i];
++		if (islower(c)) c = toupper(c);
++		dospwd[i] = c;
++	}
++	dospwd[i] = 0;
++       
++	/* Only the fisrt 14 chars are considered, password need not be null terminated. */
++	E_P16((const unsigned char *)dospwd, p16);
++
++	if (strlen(dospwd) > 14) {
++		ret = False;
++	}
++
++	memset(dospwd, 0, sizeof(dospwd));
++	// ZERO_STRUCT(dospwd);	
++
++	return ret;
++}
++
++static void my_pdb_sethexpwd(char *p, const unsigned char *pwd)
++{
++	if (pwd != NULL) {
++		int i;
++		for (i = 0; i < 16; i++)
++			slprintf(&p[i*2], 3, "%02X", pwd[i]);
++	} else {
++		strncpy(p, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 32);
++	}
++}
++
++static void crypt_password (const char *user_name,
++			   const char *new_passwd, char *new_lanman_p16, char *new_nt_p16)
++{
++	/* Calculate the MD4 hash (NT compatible) of the password */
++	E_md4hash(new_passwd, new_nt_p16);
++
++	if (!E_deshash(new_passwd, new_lanman_p16)) {
++		/* E_deshash returns false for 'long' passwords (> 14
++		   DOS chars).  This allows us to match Win2k, which
++		   does not store a LM hash for these passwords (which
++		   would reduce the effective password length to 14 */
++
++		memset(new_lanman_p16, 0, LM_HASH_LEN);
++	}
++}
++
++/*
++ftpuser:1000:8C6F5D02DEB21501AAD3B435B51404EE:E0FBA38268D0EC66EF1CB452D5885E53:[UX         ]:LCT-00000000:
++*/
++
++/*********************************************************
++ Start here.
++**********************************************************/
++int main(int argc, char **argv)
++{	
++// not for freetz: char *passwd_filename = "/var/samba/private/smbpasswd";
++	char *passwd_filename = "/mod/etc/smbpasswd";
++	char *cleartext_filename = "/var/tmp/smbpasswd.cleartext";
++
++	if (argc != 1) {
++		fprintf(stderr, "use: smbpasswd\n");
++		fprintf(stderr, "  file %s will be encrypted to %s\n", cleartext_filename, passwd_filename);
++		return -9;
++	}
++
++	FILE *fp = fopen(passwd_filename, "w");
++
++	if (fp == NULL) {
++		fprintf(stderr, "can't write %s\n", passwd_filename);
++		return -10;
++	}
++	/* Make sure it is only rw by the owner */
++	chmod(passwd_filename, 0600);
++
++
++	FILE *fp_in = fopen(cleartext_filename, "r");
++	if (!fp_in) {
++		fprintf(stderr, "can't read %s\n", cleartext_filename);
++		fclose(fp);
++		return -11;
++	}
++
++
++	char line[512];
++
++	unsigned nusers = 0;
++	while(line == fgets(line, sizeof(line)-1, fp_in)) {
++		char *username, *passwd, *extra;
++		unsigned uid;
++		uchar new_lanman_p16[LM_HASH_LEN];
++		uchar new_nt_p16[NT_HASH_LEN];
++		char ascii_p16[32+1];
++		char *p;
++			
++		line[sizeof(line)-1] = '\0';
++		if (strlen(line)) {
++			p = &line[strlen(line)-1];
++			while(p >= line) {
++				if (*p != '\n' && *p != '\r') break;
++				*p = '\0';
++				p--;
++			}
++		}
++
++		p = line;
++		char *p2 = strchr(p, ':');
++		if (!p2) goto err;
++		*p2 = 0;
++		username = p;
++
++		p = p2 + 1;
++		p2 = strchr(p, ':');
++		if (!p2) goto err;
++		*p2 = 0;
++		uid = atoi(p);
++
++		p = p2 + 1;
++		p2 = strchr(p, ':');
++		if (!p2) goto err;
++		*p2 = 0;
++		passwd = p;
++
++		extra = p2 + 1;
++
++		crypt_password(username, passwd, new_lanman_p16, new_nt_p16);
++
++		fprintf(fp, "%s:%u:", username, uid);
++
++		my_pdb_sethexpwd(ascii_p16, new_lanman_p16);
++		ascii_p16[32] = '\0';
++		fprintf(fp, "%s:", ascii_p16);
++
++		my_pdb_sethexpwd(ascii_p16, new_nt_p16);
++		ascii_p16[32] = '\0';
++		fprintf(fp, "%s:", ascii_p16);
++
++		fprintf(fp, "%s\n", extra);
++
++		nusers++;
++	} // while
++
++err:
++	fclose(fp_in);
++	fclose(fp);
++
++fprintf(stderr, "%u samba users written to %s\n", nusers, passwd_filename);
++	return 0;
++}
