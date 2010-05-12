@@ -1,0 +1,20 @@
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -499,7 +499,7 @@
+ CCDEPMODE = @CCDEPMODE@
+ CFLAGS = @CFLAGS@
+ CPP = @CPP@
+-CPPFLAGS = @CPPFLAGS@
++CPPFLAGS = @CPPFLAGS@ $(if $(strip $(filter -lpthread,@FAM_LIBS@ @LUA_LIBS@ @MYSQL_LIBS@ @SQLITE_LIBS@ @UUID_LIBS@ @XML_LIBS@)),-D_REENTRANT)
+ CRYPT_LIB = @CRYPT_LIB@
+ CYGPATH_W = @CYGPATH_W@
+ DEFS = @DEFS@ -DHAVE_VERSION_H -DLIBRARY_DIR="\"$(libdir)\"" -DSBIN_DIR="\"$(sbindir)\""
+@@ -792,7 +792,7 @@
+       version.h
+ 
+ lighttpd_SOURCES = $(src)
+-lighttpd_LDADD = $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(SSL_LIB) $(FAM_LIBS)
++lighttpd_LDADD = $(strip $(filter -lpthread,$(FAM_LIBS) $(LUA_LIBS) $(MYSQL_LIBS) $(SQLITE_LIBS) $(UUID_LIBS) $(XML_LIBS))) $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(SSL_LIB) $(FAM_LIBS)
+ lighttpd_LDFLAGS = -export-dynamic
+ lighttpd_CCPFLAGS = $(FAM_CFLAGS)
+ proc_open_SOURCES = proc_open.c buffer.c
