@@ -25,7 +25,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) \
 				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
 	$(RM) -r $(KERNEL_DIR)
 	mkdir -p $(KERNEL_BUILD_DIR)
-	@$(call _ECHO, checking structure... )
+	@$(call _ECHO,checking structure... )
 	@KERNEL_SOURCE_CONTENT=` \
 		tar \
 			-t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
@@ -81,21 +81,32 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) \
 			ln -sf Makefile.26 $$i/Makefile; \
 		fi \
 	done
-	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Makefile -exec grep -oe '.*obj-$$(.*).*=.*/' {} '+'| \
-		sed 's/\(.*\)#.*/\1/g;s/\(.*:\).*[:+]=\(.*\)/\1\2/g;s/[ \t]/|/g'|sort -u); do \
-		paths=$$(echo "$${i##*:}"|sed -e "s/|/ /g"); folder=$${i%%:*}; folder=$${folder%/*}; \
-		for f in $$paths ; do \
-			if [[ $$f == */* ]]; then \
-				if [ ! -e $$folder/$${f}Makefile ]; then \
-					$(call MESSAGE, Creating $$folder/$${f}Makefile); \
-					mkdir -p $$folder/$$f; \
-					[ -h $$folder/$${f}Makefile ] && $(RM) $$folder/$${f}Makefile; \
-					touch $$folder/$${f}Makefile; \
-				fi \
-			fi \
-		done \
+	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Makefile -exec \
+		awk '/(obj|subdir)-.*=/{ \
+		while (match ($$0,/\\/)) {sub(/\\/," "); getline l;$$0=$$0""l} \
+		gsub(/(#.*|.*=)/,""); \
+		if (! match ($$0,/,/)) { \
+			dirname=substr(FILENAME,1,length(FILENAME)-8); \
+			for (i=1;i<=NF;i++) { \
+				if (match ($$i,/\.o$$|\$$/)) { \
+					$$i=""; \
+				} else if (substr($$i,length($$i))!="/") { \
+					$$i=$$i"/"; \
+				} \
+				if ($$i!="") { \
+					if (system("test -e "dirname""$$i"Makefile")) { \
+						print dirname""$$i"Makefile"; \
+					} \
+				} \
+			} \
+		} \
+	}' {} '+'|sort -u); do \
+		$(call MESSAGE, Creating $$i); \
+		mkdir -p $$(dirname "$$i"); \
+		[ -h $$i ] && $(RM) $$i; \
+		touch $$i; \
 	done
-	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Kconfig -exec grep -hs "source.*Kconfig" {}a '+'| \
+	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Kconfig -exec grep -hs "source.*Kconfig" {} '+'| \
 		sed -e 's/\(.*\)#.*/\1/g;s/.*source //g;s/"//g'|sort -u); do \
 		if [ ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i ]; then \
 			$(call MESSAGE, Creating $(KERNEL_BUILD_ROOT_DIR)/$$i); \
