@@ -33,3 +33,52 @@
  #endif /* linux */
  #endif /* __GNUC__ */
  #endif /* HAVE_PTHREAD_H */
+--- libxml-2.0.pc.in
++++ libxml-2.0.pc.in
+@@ -8,6 +8,5 @@
+ Version: @VERSION@
+ Description: libXML library version2.
+ Requires:
+-Libs: -L${libdir} -lxml2
+-Libs.private: @THREAD_LIBS@ @Z_LIBS@ @ICONV_LIBS@ @M_LIBS@ @WIN32_EXTRA_LIBADD@ @LIBS@
+-Cflags: @XML_INCLUDEDIR@ @XML_CFLAGS@
++Libs: -L${libdir} @THREAD_LIBS@ @Z_LIBS@ @ICONV_LIBS@ @M_LIBS@ @WIN32_EXTRA_LIBADD@ @LIBS@ -lxml2
++Cflags: @THREAD_CFLAGS@ @XML_INCLUDEDIR@ @XML_CFLAGS@
+--- libxml-2.0-uninstalled.pc.in
++++ libxml-2.0-uninstalled.pc.in
+@@ -9,4 +9,4 @@
+ Description: libXML library version2.
+ Requires:
+ Libs: -L${libdir} -lxml2 @THREAD_LIBS@ @Z_LIBS@ @ICONV_LIBS@ @M_LIBS@ @LIBS@
+-Cflags: -I${includedir} @XML_INCLUDEDIR@ @XML_CFLAGS@
++Cflags: -I${includedir} @THREAD_CFLAGS@ @XML_INCLUDEDIR@ @XML_CFLAGS@
+--- xml2-config.in
++++ xml2-config.in
+@@ -67,7 +67,7 @@
+ 	;;
+ 
+     --cflags)
+-       	echo @XML_INCLUDEDIR@ @XML_CFLAGS@
++       	echo @THREAD_CFLAGS@ @XML_INCLUDEDIR@ @XML_CFLAGS@
+        	;;
+ 
+     --libtool-libs)
+@@ -82,17 +82,7 @@
+        	;;
+ 
+     --libs)
+-        if [ "`uname`" = "Linux" ]
+-	then
+-	    if [ "@XML_LIBDIR@" = "-L/usr/lib" -o "@XML_LIBDIR@" = "-L/usr/lib64" ]
+-	    then
+-		echo @XML_LIBS@ 
+-	    else
+-		echo @XML_LIBDIR@ @XML_LIBS@ 
+-	    fi
+-	else
+-	    echo @XML_LIBDIR@ @XML_LIBS@ @WIN32_EXTRA_LIBADD@
+-	fi
++	echo $([ "@XML_LIBDIR@" = "-L/usr/lib" -o "@XML_LIBDIR@" = "-L/usr/lib64" ] && echo @XML_LIBDIR@) @THREAD_LIBS@ @Z_LIBS@ @ICONV_LIBS@ @M_LIBS@ @WIN32_EXTRA_LIBADD@ @LIBS@ @XML_LIBS@
+        	;;
+ 
+     *)
