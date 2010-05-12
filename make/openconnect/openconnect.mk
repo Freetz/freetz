@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 2.23)
+$(call PKG_INIT_BIN, 2.24)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.infradead.org/pub/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/$(pkg)
 $(PKG)_STARTLEVEL=40
-$(PKG)_SOURCE_MD5:=5ed49f23c642a29848cb2dbcfa96dfce
+$(PKG)_SOURCE_MD5:=6242c12550c1cb76b7e27f85b87ad598
 
 $(PKG)_DEPENDS_ON := libxml2 zlib openssl
 $(PKG)_LIBS := -lcrypto -lssl
@@ -24,7 +24,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) #$(PKG)_NAT_SUPPORT
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(OPENCONNECT_DIR) clean
