@@ -162,7 +162,10 @@ config FREETZ_TYPE_FON_WLAN_7270_16MB
 	bool "16 MB flash"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_AVMPLUGINS_ENABLED if FREETZ_TYPE_LANG_DE && ! FREETZ_TYPE_LABOR_NAS
+	select FREETZ_AVMPLUGINS_ENABLED if FREETZ_TYPE_LANG_DE && \
+						! FREETZ_TYPE_LABOR_CORE && \
+						! FREETZ_TYPE_LABOR_IPV6 && \
+						! FREETZ_TYPE_PREVIEW
 	default n
 	help
 		Enable this to build an image for boxes with 16 MB flash.
@@ -186,7 +189,7 @@ choice
 	config FREETZ_TYPE_LABOR_CORE
 		bool "Streaming Stick"
 		depends on \
-			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
+			FREETZ_TYPE_FON_WLAN_7270_16MB || FREETZ_TYPE_FON_WLAN_7270_V3
 		help
 			Labor Streaming Stick
 
@@ -205,23 +208,23 @@ choice
 	config FREETZ_TYPE_LABOR_IPV6
 		bool "IPv6"
 		depends on \
-			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
+			FREETZ_TYPE_FON_WLAN_7270_16MB || FREETZ_TYPE_FON_WLAN_7270_V3
 		select FREETZ_TARGET_IPV6_SUPPORT
 		help
 			FRITZ!Lab IPV6: This release adds native IPv6 over PPP
 			(Internet Protocol Version 6) and 6to4 tunnels.
 
-	config FREETZ_TYPE_LABOR_NAS
-		bool "NAS"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270_16MB || FREETZ_TYPE_FON_WLAN_7270_V3
-		help
-			Labor NAS
+#	config FREETZ_TYPE_LABOR_NAS
+#		bool "NAS"
+#		depends on \
+#			FREETZ_TYPE_FON_WLAN_7270_16MB || FREETZ_TYPE_FON_WLAN_7270_V3
+#		help
+#			Labor NAS
 
 	config FREETZ_TYPE_PREVIEW
 		bool "Preview"
 		depends on \
-			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
+			FREETZ_TYPE_FON_WLAN_7270_16MB || FREETZ_TYPE_FON_WLAN_7270_V3
 		select FREETZ_TARGET_IPV6_SUPPORT
 		help
 			Preview Firmware, for v2 and v3 only
@@ -1578,7 +1581,7 @@ config FREETZ_REMOVE_MEDIASRV
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
 		FREETZ_HAS_USB_HOST && \
-		( ! FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR_NAS )
+		( ! FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR )
 	default n
 	help
 		Remove the MediaServer-daemon (mediasrv) and some other related files.
@@ -1595,7 +1598,7 @@ config FREETZ_REMOVE_MINID
 			FREETZ_TYPE_FON_WLAN_7141 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_FON_WLAN_7240 || \
-			(FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR_NAS) || \
+			( FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR ) || \
 			FREETZ_TYPE_FON_WLAN_7270_V3 || \
 			FREETZ_TYPE_WLAN_3270 || \
 			FREETZ_TYPE_WLAN_3270_V3 \
@@ -1613,7 +1616,7 @@ config FREETZ_REMOVE_NTFS
 	bool "Remove NTFS support"
 	depends on \
 			FREETZ_TYPE_FON_WLAN_7240 || \
-			(FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR_NAS) || \
+			( FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR ) || \
 			FREETZ_TYPE_FON_WLAN_7270_V3
 	default n
 	help
@@ -1636,7 +1639,7 @@ config FREETZ_REMOVE_SMBD
 		! FREETZ_PACKAGE_SAMBA && \
 		FREETZ_HAS_USB_HOST && \
 		! FREETZ_TYPE_FON_7150 && \
-		( ! FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR_NAS )
+		! ( FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR )
 	default n
 	help
 		Remove Samba daemon (smbd)
@@ -1701,7 +1704,7 @@ config FREETZ_REMOVE_UMTSD
 	bool "Remove UMTS support (USB GSM)"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7240 || \
-		(FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR_NAS) || \
+		( FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR ) || \
 		FREETZ_TYPE_FON_WLAN_7270_V3
 	default n
 	help
@@ -2089,7 +2092,7 @@ config FREETZ_DL_SOURCE
 											FREETZ_TYPE_LABOR_CORE
 	default "FRITZ.Box_Fon_WLAN_7270_LabDSL.AnnexB.54.04.80-16750.image"	if	FREETZ_TYPE_FON_WLAN_7270 && \
 											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_16_LabIPV6.54.04.80-16608.image"	if	FREETZ_TYPE_FON_WLAN_7270 && \
+	default "FRITZ.Box_Fon_WLAN_7270_16_LabIPV6.54.04.80-17230.image"	if	FREETZ_TYPE_FON_WLAN_7270 && \
 											FREETZ_TYPE_LABOR_IPV6
 	default "FRITZ.Box_Fon_WLAN_7270_16_LabNAS.AnnexB.54.04.80-16561.image"	if	FREETZ_TYPE_FON_WLAN_7270_16MB && \
 											FREETZ_TYPE_LABOR_NAS
@@ -2102,7 +2105,7 @@ config FREETZ_DL_SOURCE
 											FREETZ_TYPE_LABOR_CORE
 	default "FRITZ.Box_Fon_WLAN_7270_v3_LabDSL.AnnexB.74.04.80-16750.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabIPV6.74.04.80-16608.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
+	default "FRITZ.Box_Fon_WLAN_7270_v3_LabIPV6.74.04.80-17230.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											FREETZ_TYPE_LABOR_IPV6
 	default "FRITZ.Box_Fon_WLAN_7270_v3_LabNAS.AnnexB.74.04.80-16561.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											FREETZ_TYPE_LABOR_NAS
@@ -2537,7 +2540,12 @@ endmenu
 
 config FREETZ_AVMPLUGINS_ENABLED
 	bool "Integrate AVM Plugins into image"
-	depends on FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE && ! FREETZ_TYPE_LABOR_NAS
+	depends on FREETZ_TYPE_FON_WLAN_7270 && \
+			FREETZ_TYPE_LANG_DE && \
+			! FREETZ_TYPE_LABOR_CORE && \
+			! FREETZ_TYPE_LABOR_IPV6 && \
+			! FREETZ_TYPE_PREVIEW
+
 	default n
 	help
 		This feature disables AVM's plugin download and handling.
