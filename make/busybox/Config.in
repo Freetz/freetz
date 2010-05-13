@@ -30,6 +30,14 @@ config FREETZ_BUSYBOX_BRCTL_FANCY
 		setpathcost, setportprio, setbridgeprio, stp
 		This adds about 600 bytes.
 
+config FREETZ_BUSYBOX_BRCTL_SHOW
+	bool "add brctl show options"
+	depends on FREETZ_BUSYBOX_BRCTL_FANCY
+	default n
+	help
+		Add support for extended brctl options like:
+		show, showmacs, and showstp.
+
 config FREETZ_BUSYBOX_BZIP2
 	bool "bzip2"
 	depends on FREETZ_REPLACE_BUSYBOX
