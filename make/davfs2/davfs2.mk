@@ -1,11 +1,12 @@
-$(call PKG_INIT_BIN,1.4.5)
+$(call PKG_INIT_BIN,1.4.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=c9e8aeb15daeba4b6283b40bb640e908
 $(PKG)_SITE:=http://mirrors.zerg.biz/nongnu/davfs2
+
 $(PKG)_MOUNT_BINARY:=$($(PKG)_DIR)/src/mount.davfs
 $(PKG)_MOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mount.davfs
 $(PKG)_UMOUNT_BINARY:=$($(PKG)_DIR)/src/umount.davfs
 $(PKG)_UMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/umount.davfs
-$(PKG)_SOURCE_MD5:=e209a7e663c20671afea309178eae734
 
 $(PKG)_DEPENDS_ON := neon
 $(PKG)_LIBS := \$$(NEON_LIBS)
@@ -44,7 +45,6 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(DAVFS2_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(DAVFS2_MOUNT_TARGET_BINARY)
-	$(RM) $(DAVFS2_UMOUNT_TARGET_BINARY)
+	$(RM) $(DAVFS2_MOUNT_TARGET_BINARY) $(DAVFS2_UMOUNT_TARGET_BINARY)
 
 $(PKG_FINISH)
