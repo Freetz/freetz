@@ -51,10 +51,10 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(APR_MAJOR_LIBNAME).la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/apr-$(APR_MAJOR_VERSION).pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-$(APR_MAJOR_VERSION)-config
-	# additional fixes not (yet?) covered by $(PKG_FIX_LIBTOOL_LA)
-	sed -i -r $(foreach key,bindir datarootdir datadir installbuilddir,$(call PKG_FIX_LIBTOOL_LA__INT,$(key))) \
+	# additional fixes not covered by default version of $(PKG_FIX_LIBTOOL_LA)
+	$(call PKG_FIX_LIBTOOL_LA,bindir datarootdir datadir installbuilddir) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-$(APR_MAJOR_VERSION)-config
-	sed -i -r $(foreach key,apr_builddir apr_builders,$(call PKG_FIX_LIBTOOL_LA__INT,$(key))) \
+	$(call PKG_FIX_LIBTOOL_LA,apr_builddir apr_builders) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/$(APR_BUILD_DIR)/apr_rules.mk
 	# fixes taken from openwrt
 	sed -i -e 's|-[LR][$$]libdir||g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-$(APR_MAJOR_VERSION)-config

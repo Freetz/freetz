@@ -60,7 +60,7 @@ $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install.libs
 	$(PKG_FIX_LIBTOOL_LA) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/ncurses5-config
-	$(SED) -i -r $(foreach key,bindir datadir mandir,$(call PKG_FIX_LIBTOOL_LA__INT,$(key))) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/ncurses5-config
+	$(call PKG_FIX_LIBTOOL_LA,bindir datadir mandir) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/ncurses5-config
 
 $($(PKG)_TABSET_STAGING_DIR)/$($(PKG)_TABSET_MARKER_FILE) $($(PKG)_TERMINFO_STAGING_DIR)/$($(PKG)_TERMINFO_MARKER_FILE): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(NCURSES_DIR)/misc \
