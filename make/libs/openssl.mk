@@ -26,7 +26,6 @@ $(PKG)_CONFIGURE_OPTIONS += --openssldir=/mod/etc/ssl
 $(PKG)_CONFIGURE_OPTIONS += -DOPENSSL_SMALL_FOOTPRINT
 $(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_NO_CIPHERS)
 $(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_OPTIONS)
-#$(PKG)_CONFIGURE_OPTIONS += -ldl
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -45,15 +44,12 @@ $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
 		CCOPTS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		do_linux-shared
 
-$($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): \
-		$($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY)
+$($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY)
 	$(SUBMAKE) -C $(OPENSSL_DIR) \
 		INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libcrypto.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libssl.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/openssl.pc
+	$(call PKG_FIX_LIBTOOL_LA,prefix) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/{libcrypto,libssl,openssl}.pc
 
 $($(PKG)_TARGET_SSL_BINARY): $($(PKG)_STAGING_SSL_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -67,13 +63,13 @@ $(pkg)-precompiled: $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(OPENSSL_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/openssl
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl*
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto*
-	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/openssl
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/openssl* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libssl,libcrypto}* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/{libssl,libcrypto,openssl}* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/openssl
 
 $(pkg)-uninstall:
-	$(RM) $(OPENSSL_TARGET_DIR)/libssl*.so*
-	$(RM) $(OPENSSL_TARGET_DIR)/libcrypto*.so*
+	$(RM) $(OPENSSL_TARGET_DIR)/{libssl,libcrypto}*.so*
 
 $(PKG_FINISH)
