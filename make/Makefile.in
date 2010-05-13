@@ -195,7 +195,7 @@ PKG_FIX_LIBTOOL_LA__INT = -e "s,^($1=)(['$(_DQ)]?)([^'$(_DQ)]*)(\2)$$,\1\2$(TARG
 PKG_FIX_LIBTOOL_LA__INT_DEPENDENCY_LIBS = -e "/^dependency_libs/s,[ \t],  ,g;s,([ '])((/usr)?/lib/[^ /]+[.]la)([ ']),\1$(TARGET_TOOLCHAIN_STAGING_DIR)\2\4,g;s, +, ,g"
 PKG_FIX_LIBTOOL_LA = $(SED) -i -r \
 	$(foreach key,$(if $(strip $1),$(strip $1),libdir includedir prefix exec_prefix),$(call PKG_FIX_LIBTOOL_LA__INT,$(key))) \
-	$(if $(strip $1),,PKG_FIX_LIBTOOL_LA__INT_DEPENDENCY_LIBS)
+	$(if $(strip $1),,$(PKG_FIX_LIBTOOL_LA__INT_DEPENDENCY_LIBS))
 
 # Fix configure and/or libtool scripts to prevent RPATH from being hardcoded.
 # Based on ideas provided on http://wiki.debian.org/RpathIssue.
