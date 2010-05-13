@@ -138,6 +138,12 @@ DL_SITE:=$(strip $(subst ",, $(FREETZ_DL_SITE)))
 DL_SOURCE:=$(strip $(subst ",, $(FREETZ_DL_SOURCE)))
 DL_SOURCE_MD5:=$(strip $(subst ",, $(FREETZ_DL_SOURCE_MD5)))
 
+ifneq ($(strip $(FREETZ_DL_SOURCE_CONTAINER)),)
+DL_SOURCE_CONTAINER:=$(strip $(subst ",, $(FREETZ_DL_SOURCE_CONTAINER)))
+DL_SOURCE_CONTAINER_MD5:=$(strip $(subst ",, $(FREETZ_DL_SOURCE_CONTAINER_MD5)))
+DL_SOURCE_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE_CONTAINER))
+endif
+
 ifneq ($(strip $(FREETZ_DL_SOURCE2)),)
 DL_SITE2:=$(strip $(subst ",, $(FREETZ_DL_SITE2)))
 DL_SOURCE2:=$(strip $(subst ",, $(FREETZ_DL_SOURCE2)))

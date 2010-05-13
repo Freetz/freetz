@@ -272,7 +272,17 @@ ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
 else
 	@echo -e "\033[1mSTEP 0: DOWNLOAD\033[0m"
 	@echo "downloading firmware image"
-	@if ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE) $(DL_SITE) $(DL_SOURCE_MD5) $(SILENT); then \
+	@if [ -n "$(DL_SOURCE_CONTAINER)" ]; then \
+		[ -r $(DL_DIR)/$(DL_SOURCE_CONTAINER) ] || \
+			$(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE_CONTAINER) $(DL_SITE) $(DL_SOURCE_CONTAINER_MD5) $(SILENT) || \
+			( $(call ERROR,3,Could not download Firmwareimage.) ); \
+		case "$(DL_SOURCE_CONTAINER_SUFFIX)" in \
+			.zip) \
+				unzip $(DL_FW_DIR)/$(DL_SOURCE_CONTAINER) $(DL_SOURCE) -d $(DL_FW_DIR) || \
+					( $(call ERROR,3,Could not unzip Firmwareimage.) ) \
+				;; \
+		esac \
+	elif ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE) $(DL_SITE) $(DL_SOURCE_MD5) $(SILENT); then \
 		$(call ERROR,3,Could not download Firmwareimage.) \
 	fi
 endif
@@ -290,14 +300,17 @@ ifeq ($(strip $(DL_SITE2)),)
 	@exit 3
 else
 	@if [ -n "$(DL_SOURCE2_CONTAINER)" ]; then \
-		[ -r $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) ] || $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2_CONTAINER) $(DL_SITE2) $(DL_SOURCE2_CONTAINER_MD5) > /dev/null; \
+		[ -r $(DL_DIR)/$(DL_SOURCE2_CONTAINER) ] || \
+			$(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2_CONTAINER) $(DL_SITE2) $(DL_SOURCE2_CONTAINER_MD5) $(SILENT) || \
+			( $(call ERROR,3,Could not download Firmwareimage.) ); \
 		case "$(DL_SOURCE2_CONTAINER_SUFFIX)" in \
 			.zip) \
-				unzip $(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_DIR); \
+				unzip $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_FW_DIR) || \
+					( $(call ERROR,3,Could not unzip Firmwareimage.) ) \
 				;; \
 		esac \
-	else \
-		$(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2) $(DL_SITE2) $(DL_SOURCE2_MD5) > /dev/null; \
+	elif ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2) $(DL_SITE2) $(DL_SOURCE2_MD5) $(SILENT); then \
+		$(call ERROR,3,Could not download Firmwareimage.) \
 	fi
 	@echo "done."
 	@echo
@@ -518,9 +531,8 @@ check-builddir-version:
 		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
 		.svn -nt .config ]; then \
 		echo -n -e $(_Y); \
-		echo -e "ERROR: You have updated to newer svn version since last modifying your config."; \
-		echo -e "       You have to run 'make oldconfig' or 'make menuconfig' once before"; \
-		echo -e "       building again."; \
+		echo -e "ERROR: You have updated to newer svn version since last modifying your config. You"; \
+		echo -e "       have to run 'make oldconfig' or 'make menuconfig' once before building again."; \
 		echo -n -e $(_N); \
 		exit 3; \
 	fi; 
