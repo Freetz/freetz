@@ -61,7 +61,6 @@ GCC_EXTRA_MAKE_OPTIONS:=
 endif
 
 GCC_STRIP_HOST_BINARIES:=true
-GCC_USE_SJLJ_EXCEPTIONS:=--enable-sjlj-exceptions
 GCC_SHARED_LIBGCC:=--enable-shared
 EXTRA_GCC_CONFIG_OPTIONS:=--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp
 
@@ -72,7 +71,6 @@ gcc-unpacked: $(GCC_DIR)/.unpacked
 $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE)
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GCC_SOURCE)
-
 	touch $@
 
 gcc-patched: $(GCC_DIR)/.patched
@@ -178,7 +176,6 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.patched $(GCC_STAGING_PREREQ)
 		$(GCC_DECIMAL_FLOAT) \
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
-		$(GCC_USE_SJLJ_EXCEPTIONS) \
 		$(EXTRA_GCC_CONFIG_OPTIONS) \
 	);
 	touch $@
@@ -254,7 +251,6 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 		$(GCC_WITH_TARGET_MPFR) \
 		$(GCC_DECIMAL_FLOAT) \
 		$(DISABLE_NLS) \
-		$(GCC_USE_SJLJ_EXCEPTIONS) \
 		$(DISABLE_LARGEFILE) \
 		$(EXTRA_GCC_CONFIG_OPTIONS) \
 	);
