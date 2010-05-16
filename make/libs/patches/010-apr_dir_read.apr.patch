@@ -1,0 +1,26 @@
+--- file_io/unix/dir.c
++++ file_io/unix/dir.c
+@@ -140,6 +140,7 @@
+ #if APR_HAS_THREADS && defined(_POSIX_THREAD_SAFE_FUNCTIONS) \
+                     && !defined(READDIR_IS_THREAD_SAFE)
+ #ifdef APR_USE_READDIR64_R
++#warning "apr_dir_read: using readdir64_r-branch"
+     struct dirent64 *retent;
+ 
+     /* If LFS is enabled and readdir64_r is available, readdir64_r is
+@@ -156,6 +157,7 @@
+ 
+     ret = readdir64_r(thedir->dirstruct, thedir->entry, &retent);
+ #else
++#warning "apr_dir_read: using readdir_r-branch"
+ 
+     struct dirent *retent;
+ 
+@@ -179,6 +181,7 @@
+         ret = APR_ENOENT;
+     }
+ #else
++#warning "apr_dir_read: using readdir-branch"
+     /* We're about to call a non-thread-safe readdir() that may
+        possibly set `errno', and the logic below actually cares about
+        errno after the call.  Therefore we need to clear errno first. */
