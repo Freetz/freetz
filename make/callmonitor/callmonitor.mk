@@ -4,7 +4,7 @@ $(PKG)_SITE:=http://download.berlios.de/callmonitor
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/recode
 $(PKG)_TARGET_BINARY:=$($(PKG)_DIR)/root/usr/lib/callmonitor/bin/recode
 $(PKG)_STARTLEVEL=30
-$(PKG)_SOURCE_MD5:=4399413cdb480d343510525247625c35
+$(PKG)_SOURCE_MD5:=08118cad0bab6a609ab19dee60c438eb
 
 CALLMONITOR_FEATURES:=$(foreach feat,webif actions monitor phonebook,\
 	$(if $(FREETZ_PACKAGE_CALLMONITOR_$(feat)),$(feat)))
