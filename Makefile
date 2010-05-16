@@ -248,9 +248,11 @@ TOOLCHAIN_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLCHAIN))
 TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
 
 ALL_PACKAGES:=
+LOCALSOURCE_PACKAGES:=
 include $(MAKE_DIR)/*/*.mk
-PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(ALL_PACKAGES))
-PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(ALL_PACKAGES))
+NON_LOCALSOURCE_PACKAGES:=$(filter-out $(LOCALSOURCE_PACKAGES),$(ALL_PACKAGES))
+PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(NON_LOCALSOURCE_PACKAGES))
+PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(NON_LOCALSOURCE_PACKAGES))
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
