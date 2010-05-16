@@ -2674,6 +2674,13 @@ config EXTERNAL_SERVICES_YEAR_MAX
 	help
 		Doesn't start services if the year is greater 2015! 
 		
+config EXTERNAL_LINKS
+	bool	"Do not ignore symbolic links"
+	default n
+	depends on EXTERNAL_ENABLED
+	help
+		Allows externalisation of symbolic links.
+
 config EXTERNAL_SUBDIRS
 	bool "Keep subdirectories"
 	default n if ! EXTERNAL_DOWNLOADER

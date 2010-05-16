@@ -51,8 +51,8 @@ EXTERNAL_FILES="`echo $EXTERNAL_FILES|sed 's/ / \//g;s/\/\/*/\//g'`"
 
 for EXTERNAL_FILE in $EXTERNAL_FILES; do
 	FILENAME=$(basename $EXTERNAL_FILE)
-	if [ -L "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE" ]; then
-		warn "$MESSAGE ${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE is a symbolic link. It will not be outsourced"
+	if [ -L "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE" -a "$EXTERNAL_LINKS" != "y" ]; then
+		warn "$MESSAGE ${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE is a symbolic link. It will not be processed"
 	else
 		EXTERNAL_LINKSUBDIR=""
 		EXTERNAL_TARGETDIR="${EXTERNAL_MOD_DIR}"
