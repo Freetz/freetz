@@ -1,0 +1,100 @@
+--- configure
++++ configure
+@@ -19678,6 +19678,8 @@
+ { echo "$as_me:$LINENO: checking machine endianess" >&5
+ echo $ECHO_N "checking machine endianess... $ECHO_C" >&6; }
+ 
++[ "$ac_cv_libnet_endianess" != "big" -a "$ac_cv_libnet_endianess" != "lil" ] && { echo "Error: no value for ac_cv_libnet_endianess provided"; exit 1; }
++if false; then
+     cat > conftest.c << EOF
+ #       include <stdio.h>
+ #       include <stdlib.h>
+@@ -19728,6 +19730,7 @@
+             fi
+         fi
+         rm -f conftest* core core.conftest
++fi
+ 
+         { echo "$as_me:$LINENO: result: $ac_cv_libnet_endianess" >&5
+ echo "${ECHO_T}$ac_cv_libnet_endianess" >&6; }
+@@ -19836,7 +19839,7 @@
+ { echo "$as_me:$LINENO: checking link-layer packet interface type" >&5
+ echo $ECHO_N "checking link-layer packet interface type... $ECHO_C" >&6; }
+ 
+-if test -r /dev/bpf0 ; then
++if false && test -r /dev/bpf0 ; then
+     case " $LIBOBJS " in
+   *" libnet_link_bpf.$ac_objext "* ) ;;
+   *) LIBOBJS="$LIBOBJS libnet_link_bpf.$ac_objext"
+@@ -19845,7 +19848,7 @@
+ 
+     { echo "$as_me:$LINENO: result: found bpf" >&5
+ echo "${ECHO_T}found bpf" >&6; }
+-elif test -r /usr/include/net/pfilt.h ; then
++elif test -r ${CROSS_TOOLCHAIN_STAGING_DIR}/usr/include/net/pfilt.h ; then
+     case " $LIBOBJS " in
+   *" libnet_link_pf.$ac_objext "* ) ;;
+   *) LIBOBJS="$LIBOBJS libnet_link_pf.$ac_objext"
+@@ -19854,7 +19857,7 @@
+ 
+     { echo "$as_me:$LINENO: result: found pf" >&5
+ echo "${ECHO_T}found pf" >&6; }
+-elif test -r /dev/nit ; then
++elif false && test -r /dev/nit ; then
+     case " $LIBOBJS " in
+   *" libnet_link_snit.$ac_objext "* ) ;;
+   *) LIBOBJS="$LIBOBJS libnet_link_snit.$ac_objext"
+@@ -19863,7 +19866,7 @@
+ 
+     { echo "$as_me:$LINENO: result: found snit" >&5
+ echo "${ECHO_T}found snit" >&6; }
+-elif test -r /usr/include/sys/net/nit.h ; then
++elif test -r ${CROSS_TOOLCHAIN_STAGING_DIR}/usr/include/sys/net/nit.h ; then
+     case " $LIBOBJS " in
+   *" libnet_link_nit.$ac_objext "* ) ;;
+   *) LIBOBJS="$LIBOBJS libnet_link_nit.$ac_objext"
+@@ -19872,7 +19875,7 @@
+ 
+     { echo "$as_me:$LINENO: result: found nit" >&5
+ echo "${ECHO_T}found nit" >&6; }
+-elif test -r /usr/include/net/raw.h ; then
++elif test -r ${CROSS_TOOLCHAIN_STAGING_DIR}/usr/include/net/raw.h ; then
+     case " $LIBOBJS " in
+   *" libnet_link_snoop.$ac_objext "* ) ;;
+   *) LIBOBJS="$LIBOBJS libnet_link_snoop.$ac_objext"
+@@ -19881,7 +19884,7 @@
+ 
+     { echo "$as_me:$LINENO: result: found snoop" >&5
+ echo "${ECHO_T}found snoop" >&6; }
+-elif test -r /usr/include/sys/dlpi.h ; then
++elif test -r ${CROSS_TOOLCHAIN_STAGING_DIR}/usr/include/sys/dlpi.h ; then
+     case " $LIBOBJS " in
+   *" libnet_link_dlpi.$ac_objext "* ) ;;
+   *) LIBOBJS="$LIBOBJS libnet_link_dlpi.$ac_objext"
+@@ -19895,7 +19898,7 @@
+ #define HAVE_DLPI 1
+ _ACEOF
+ 
+-elif test -r /usr/include/linux/socket.h ; then
++elif test -r ${CROSS_TOOLCHAIN_STAGING_DIR}/usr/include/linux/socket.h ; then
+     case " $LIBOBJS " in
+   *" libnet_link_linux.$ac_objext "* ) ;;
+   *) LIBOBJS="$LIBOBJS libnet_link_linux.$ac_objext"
+@@ -20015,7 +20018,7 @@
+ _ACEOF
+ 
+     fi
+-elif test -c /dev/bpf0 ; then           # check again in case not readable
++elif false && test -c /dev/bpf0 ; then           # check again in case not readable
+     case " $LIBOBJS " in
+   *" libnet_link_bpf.$ac_objext "* ) ;;
+   *) LIBOBJS="$LIBOBJS libnet_link_bpf.$ac_objext"
+@@ -20024,7 +20027,7 @@
+ 
+     { echo "$as_me:$LINENO: result: found bpf" >&5
+ echo "${ECHO_T}found bpf" >&6; }
+-elif test -c /dev/nit ; then            # check again in case not readable
++elif false && test -c /dev/nit ; then            # check again in case not readable
+     case " $LIBOBJS " in
+   *" libnet_link_snit.$ac_objext "* ) ;;
+   *) LIBOBJS="$LIBOBJS libnet_link_snit.$ac_objext"

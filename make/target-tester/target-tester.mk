@@ -8,7 +8,7 @@ $(PKG)_BINARY_NAME_NOLFS:=target-tester-nolfs
 $(PKG)_BINARY_NOLFS:=$($(PKG)_DIR)/$($(PKG)_BINARY_NAME_NOLFS)
 $(PKG)_TARGET_BINARY_NOLFS:=$($(PKG)_DEST_DIR)/usr/bin/$($(PKG)_BINARY_NAME_NOLFS)
 
-$(PKG)_BINARIES:=ac_cv_func_mmap_fixed_mapped gt_cv_int_divbyzero_sigfpe
+$(PKG)_BINARIES:=ac_cv_func_mmap_fixed_mapped gt_cv_int_divbyzero_sigfpe ac_cv_libnet_endianess ac_cv_lbl_unaligned_fail libnet_cv_have_packet_socket ettercap-nsget32
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
