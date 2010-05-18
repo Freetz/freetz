@@ -28,7 +28,7 @@ elif [ "$WOL_PROG" == "wol" ]; then
 		WOL_BCAST=$( set -- $( ifconfig lan | grep Bcast: ); echo ${3#*:} )
 	[ -z $WOL_BCAST ] && \
 		WOL_BCAST=$( set -- $( ifconfig eth0 | grep Bcast: ); echo ${3#*:} )
-	$WOL_PROG -p "$WOL_BCAST" "$WOL_MAC" >/dev/null 2>&1
+	$WOL_PROG -h "$WOL_BCAST" "$WOL_MAC" >/dev/null 2>&1
 else
 	$WOL_PROG -i "$WOL_INTERF" "$WOL_MAC" >/dev/null 2>&1
 fi
