@@ -1,0 +1,15 @@
+--- include/ntfs-3g/cache.h	2009-10-23 11:35:23.000000000 +0200
++++ include/ntfs-3g/cache.h	2010-05-18 08:45:24.000000000 +0200
+@@ -29,7 +29,11 @@
+ 	struct CACHED_GENERIC *previous;
+ 	void *variable;
+ 	size_t varsize;
+-	void *fixed[0];
++	union {
++		/* force alignment for pointers and u64 */
++		u64 u64align;
++		void *ptralign;
++	} fixed[0];
+ } ;
+ 
+ struct CACHED_INODE {
