@@ -38,7 +38,6 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--d
 $(PKG)_CONFIGURE_OPTIONS += --enable-libusb
 $(PKG)_CONFIGURE_OPTIONS += --enable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-avahi
-$(PKG)_CONFIGURE_OPTIONS += --disable-fork-process
 $(PKG)_CONFIGURE_OPTIONS += --disable-latex
 $(PKG)_CONFIGURE_OPTIONS += --disable-libusb_1_0
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
@@ -46,6 +45,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-translations
 $(PKG)_CONFIGURE_OPTIONS += --without-gphoto2
 
 $(PKG)_CONFIGURE_ENV+=BACKENDS="$(SANE_BACKENDS)"
+
+$(call REPLACE_LIBTOOL)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
