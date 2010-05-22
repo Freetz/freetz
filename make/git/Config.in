@@ -1,0 +1,13 @@
+config FREETZ_PACKAGE_GIT
+	bool "git 1.7.1 (binary only)"
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libcurl
+	select FREETZ_LIB_libexpat
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libz
+	default n
+	help
+		Git is a fast, scalable, distributed revision control system with an
+		unusually rich command set that provides both high-level operations
+		and full access to internals.

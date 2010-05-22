@@ -1,0 +1,90 @@
+--- configure
++++ configure
+@@ -3095,6 +3095,7 @@
+ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ 
++if false; then
+ # which switch to pass runtime path to dynamic libraries to the linker
+ 
+ { $as_echo "$as_me:$LINENO: checking if linker supports -R" >&5
+@@ -3294,6 +3295,7 @@
+       fi
+    fi
+ fi
++fi
+ #AC_PROG_INSTALL		# needs install-sh or install.sh in sources
+ if test -n "$ac_tool_prefix"; then
+   for ac_prog in gar ar
+--- Makefile
++++ Makefile
+@@ -881,7 +881,7 @@
+ 		NEEDS_LIBICONV = YesPlease
+ 	endif
+ 	BASIC_CFLAGS += -I/usr/pkg/include
+-	BASIC_LDFLAGS += -L/usr/pkg/lib $(CC_LD_DYNPATH)/usr/pkg/lib
++	BASIC_LDFLAGS += -L/usr/pkg/lib
+ 	USE_ST_TIMESPEC = YesPlease
+ 	NO_MKSTEMPS = YesPlease
+ endif
+@@ -1094,15 +1094,6 @@
+ 	PTHREAD_LIBS =
+ endif
+ 
+-ifndef CC_LD_DYNPATH
+-	ifdef NO_R_TO_GCC_LINKER
+-		# Some gcc does not accept and pass -R to the linker to specify
+-		# the runtime dynamic library path.
+-		CC_LD_DYNPATH = -Wl,-rpath,
+-	else
+-		CC_LD_DYNPATH = -R
+-	endif
+-endif
+ 
+ ifdef NO_LIBGEN_H
+ 	COMPAT_CFLAGS += -DNO_LIBGEN_H
+@@ -1118,7 +1109,7 @@
+ 	ifdef CURLDIR
+ 		# Try "-Wl,-rpath=$(CURLDIR)/$(lib)" in such a case.
+ 		BASIC_CFLAGS += -I$(CURLDIR)/include
+-		CURL_LIBCURL = -L$(CURLDIR)/$(lib) $(CC_LD_DYNPATH)$(CURLDIR)/$(lib) -lcurl
++		CURL_LIBCURL = -L$(CURLDIR)/$(lib) -lcurl
+ 	else
+ 		CURL_LIBCURL = -lcurl
+ 	endif
+@@ -1136,7 +1127,7 @@
+ 	ifndef NO_EXPAT
+ 		ifdef EXPATDIR
+ 			BASIC_CFLAGS += -I$(EXPATDIR)/include
+-			EXPAT_LIBEXPAT = -L$(EXPATDIR)/$(lib) $(CC_LD_DYNPATH)$(EXPATDIR)/$(lib) -lexpat
++			EXPAT_LIBEXPAT = -L$(EXPATDIR)/$(lib) -lexpat
+ 		else
+ 			EXPAT_LIBEXPAT = -lexpat
+ 		endif
+@@ -1145,7 +1136,7 @@
+ 
+ ifdef ZLIB_PATH
+ 	BASIC_CFLAGS += -I$(ZLIB_PATH)/include
+-	EXTLIBS += -L$(ZLIB_PATH)/$(lib) $(CC_LD_DYNPATH)$(ZLIB_PATH)/$(lib)
++	EXTLIBS += -L$(ZLIB_PATH)/$(lib)
+ endif
+ EXTLIBS += -lz
+ 
+@@ -1156,7 +1147,7 @@
+ 	OPENSSL_LIBSSL = -lssl
+ 	ifdef OPENSSLDIR
+ 		BASIC_CFLAGS += -I$(OPENSSLDIR)/include
+-		OPENSSL_LINK = -L$(OPENSSLDIR)/$(lib) $(CC_LD_DYNPATH)$(OPENSSLDIR)/$(lib)
++		OPENSSL_LINK = -L$(OPENSSLDIR)/$(lib)
+ 	else
+ 		OPENSSL_LINK =
+ 	endif
+@@ -1176,7 +1167,7 @@
+ ifdef NEEDS_LIBICONV
+ 	ifdef ICONVDIR
+ 		BASIC_CFLAGS += -I$(ICONVDIR)/include
+-		ICONV_LINK = -L$(ICONVDIR)/$(lib) $(CC_LD_DYNPATH)$(ICONVDIR)/$(lib)
++		ICONV_LINK = -L$(ICONVDIR)/$(lib)
+ 	else
+ 		ICONV_LINK =
+ 	endif
