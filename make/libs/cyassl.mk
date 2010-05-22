@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 1.4.0)
+$(call PKG_INIT_LIB, 1.5.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_MD5:=037397c7df84b9a12e614bf46135df1c
+$(PKG)_SOURCE_MD5:=a971b206b5b42d6464a8ec4130d430f4
 $(PKG)_SITE:=http://yassl.com
 
 $(PKG)_LIBNAME:=libcyassl.so.0.0.0
