@@ -1,0 +1,15 @@
+#!/bin/sh
+
+DAEMON=rrdstats
+. /etc/init.d/modlibrc
+
+SUBDAEMON=one
+. /mod/etc/conf/rrdstats.cfg
+homedir=/mod/pkg/rrdstats/usr/mww-$SUBDAEMON/
+
+if [ "$RRDSTATS_DIGITEMP_AUTH" = yes ]; then
+	echo "/:$RRDSTATS_DIGITEMP_USER:$(httpd -m $RRDSTATS_DIGITEMP_PASS)" >/mod/etc/httpd-$SUBDAEMON.conf
+	ONE_CONF="-c /mod/etc/httpd-$SUBDAEMON.conf"
+fi
+		
+exec httpd "$@" -p "$RRDSTATS_DIGITEMP_PORT" $ONE_CONF -h "$homedir" -r "DigiTemp"

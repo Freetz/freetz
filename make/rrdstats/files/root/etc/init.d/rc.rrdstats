@@ -41,19 +41,19 @@ start() {
 	rm -f /tmp/rrdstats/digitemp_alert*
 
 	stop_webserver
-	if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then
+	if [ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" != "yes" ]; then
 		if [ "$RRDSTATS_WEB_AUTH" = yes ]; then
 			echo "/:$RRDSTATS_WEB_USER:$(httpd -m $RRDSTATS_WEB_PASS)" >/mod/etc/httpd-rrd.conf
 			RRD_CONF="-c /mod/etc/httpd-rrd.conf"
 		fi
-		httpd -P $HTTPD_PID_RRD -p $RRDSTATS_WEBTCPPORT $RRD_CONF -h /mod/pkg/rrdstats/usr/mww-rrd
+		httpd -P $HTTPD_PID_RRD -p $RRDSTATS_WEBTCPPORT $RRD_CONF -h /mod/pkg/rrdstats/usr/mww-rrd -r "RRDstats"
 	fi
-	if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then
+	if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" -a "$RRDSTATS_DIGITEMP_INETD" != "yes" ]; then
 		if [ "$RRDSTATS_DIGITEMP_AUTH" = yes ]; then
 			echo "/:$RRDSTATS_DIGITEMP_USER:$(httpd -m $RRDSTATS_DIGITEMP_PASS)" >/mod/etc/httpd-one.conf
 			ONE_CONF="-c /mod/etc/httpd-one.conf"
 		fi
-		httpd -P $HTTPD_PID_ONE -p $RRDSTATS_DIGITEMP_PORT $ONE_CONF -h /mod/pkg/rrdstats/usr/mww-one
+		httpd -P $HTTPD_PID_ONE -p $RRDSTATS_DIGITEMP_PORT $ONE_CONF -h /mod/pkg/rrdstats/usr/mww-one -r "DigiTemp"
 	fi
 
 	start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
@@ -83,6 +83,7 @@ stop() {
 stop_webserver() {
 	kill -9 "$(cat $HTTPD_PID_RRD 2>/dev/null)" 2>/dev/null
 	kill -9 "$(cat $HTTPD_PID_ONE 2>/dev/null)" 2>/dev/null
+	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd -n rrdstats >/dev/null
 }
 
 show_digitemp() {
@@ -141,6 +142,14 @@ restore() {
 	fi
 }
 
+status() {
+	if [ -z "$(pidof rrdstats)" ]; then
+		echo 'stopped'
+	else
+		echo 'running'
+	fi
+}
+
 case $1 in
 	config)
 		config
@@ -192,11 +201,13 @@ case $1 in
 		start
 		;;
 	status)
-		if [ -z "$(pidof rrdstats)" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		status
+		;;
+	status_webcfg-one)
+		[ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" -a "$RRDSTATS_DIGITEMP_INETD" = "yes" ] && echo 'inetd' || status
+		;;
+	status_webcfg-rrd)
+		[ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" = "yes" ] && echo 'inetd' || status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status|config|backup|restore]" 1>&2

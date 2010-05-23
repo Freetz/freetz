@@ -1,0 +1,15 @@
+#!/bin/sh
+
+DAEMON=rrdstats
+. /etc/init.d/modlibrc
+
+SUBDAEMON=rrd
+. /mod/etc/conf/rrdstats.cfg
+homedir=/mod/pkg/rrdstats/usr/mww-$SUBDAEMON/
+
+if [ "$RRDSTATS_WEB_AUTH" = yes ]; then
+	echo "/:$RRDSTATS_WEB_USER:$(httpd -m $RRDSTATS_WEB_PASS)" >/mod/etc/httpd-$SUBDAEMON.conf
+	RRD_CONF="-c /mod/etc/httpd-$SUBDAEMON.conf"
+fi
+
+exec httpd "$@" -p "$RRDSTATS_WEBTCPPORT" $RRD_CONF -h "$homedir" -r "RRDstats"

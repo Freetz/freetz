@@ -20,25 +20,37 @@ inetd_conf_line() {
 }
 
 update_inetd() {
-	local pkg=$1
-	if [ ! -e "/etc/init.d/rc.$pkg" ]; then
-		error "package $pkg has no rc script"
+	local pkg_path=$1
+	local pkg_subd=$(echo $pkg_path | sed -e 's@^/etc/default\.[^/]*/\([^/]*\)\.inetd$@\1@')
+	local pkg_name=$(echo $pkg_path | sed -e 's@^/etc/default\.\([^/]*\)/[^/]*\.inetd$@\1@')
+	if [ ! -e "/etc/init.d/rc.$pkg_name" ]; then
+		error "package $pkg_name has no rc script"
 		exit 1
 	fi
-	echo -n "Updating inetd config for $pkg: "
+	echo -n "Updating inetd config for $pkg_name"
 	local icnf="/var/tmp/flash/inetd.conf"
-	. /etc/default.$pkg/$pkg.inetd
-	if ! grep -q "#:$pkg:" $icnf; then
+	. $pkg_path
+	
+	if [ "$pkg_name" != "$pkg_subd" ]; then
+		sub_status=$(/etc/init.d/rc.$pkg_name status_$pkg_subd)
+		echo -n " ($pkg_subd)"
+		pkg_inetd=${pkg_name}_$pkg_subd
+	else
+		pkg_inetd=$pkg_name
+	fi
+	echo -n ": "
+	
+	if ! grep -q "#:$pkg_inetd:" $icnf; then
 		echo >> $icnf
-		echo "#:$pkg: $inetdcfg_desc" >> $icnf
+		echo "#:$pkg_inetd: $inetdcfg_desc" >> $icnf
 		echo "$(inetd_conf_line)" >> $icnf
 	fi
 
-	if [ "inetd" == "$(/etc/init.d/rc.$pkg status)" ]; then
-		sed -i -e "/#:$pkg:/ { n; s/^.*/$(inetd_conf_line escape)/ }" $icnf
+	if [ "inetd" == "$(/etc/init.d/rc.$pkg_name status)" -o "inetd" == "$sub_status" ]; then
+		sed -i -e "/#:$pkg_inetd:/ { n; s/^.*/$(inetd_conf_line escape)/ }" $icnf
 		echo "active."
 	else
-		sed -i -e "/#:$pkg:/ { n; s/^[^#].*/#<off>#$(inetd_conf_line escape)/ }" $icnf
+		sed -i -e "/#:$pkg_inetd:/ { n; s/^[^#].*/#<off>#$(inetd_conf_line escape)/ }" $icnf
 		echo "inactive."
 	fi
 }
@@ -63,13 +75,16 @@ while true; do
 done
 
 if [ $# -eq 0 ]; then
-	for package in $(ls /etc/default.*/*.inetd | sed -e 's@^/etc/default\.\([^/]*\)/[^/]*\.inetd$@\1@'); do
+	for package in $(ls /etc/default.*/*.inetd); do
 		update_inetd $package
 	done
 else
 	for package; do
-		if [ -e "/etc/default.$package/$package.inetd" ]; then
-			update_inetd $package
+		package_main=$(ls /etc/default.$package/*.inetd)
+		if [ -n "$package_main" ]; then
+			for package_sub in $package_main; do
+				update_inetd "$package_sub"
+			done
 		else
 			error "package $package has no default inetd file"
 		fi

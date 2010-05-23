@@ -1,0 +1,10 @@
+. /mod/etc/conf/rrdstats.cfg
+inetdcfg_desc="RRDstats web interface"
+inetdcfg_port=$RRDSTATS_WEBTCPPORT
+inetdcfg_sock=stream
+inetdcfg_proto=tcp
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/bin/webcfg-rrd
+inetdcfg_arg0=webcfg-rrd
+inetdcfg_args="-i"

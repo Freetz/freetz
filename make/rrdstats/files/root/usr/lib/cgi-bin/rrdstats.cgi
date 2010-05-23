@@ -19,10 +19,11 @@ check "$RRDSTATS_XCHG_RXTX2" yes:xchg_rxtx2
 check "$RRDSTATS_XCHG_RXTX3" yes:xchg_rxtx3
 check "$RRDSTATS_XCHG_RXTX4" yes:xchg_rxtx4
 check "$RRDSTATS_SAVEBACKUP" yes:savebackup
-check "$RRDSTATS_DELBACKUP" yes:delbackup
+check "$RRDSTATS_DELBACKUP"  yes:delbackup
 check "$RRDSTATS_CPU100PERC" yes:cpu100perc
 check "$RRDSTATS_UPTIME_ENB" yes:uptime_enb
 check "$RRDSTATS_WEBENABLED" yes:webenabled
+check "$RRDSTATS_WEB_INETD"  yes:web_inetd
 check "$RRDSTATS_WEB_AUTH"   yes:web_auth
 check "$RRDSTATS_THOMSONTHG" yes:thomsonthg
 check "$RRDSTATS_THOMSONADV" yes:thomsonadv
@@ -30,8 +31,9 @@ check "$RRDSTATS_DIGITEMP1W" yes:digitemp1w
 check "$RRDSTATS_DIGITEMP_C" yes:digitemp_c "*":digitemp_f
 check "$RRDSTATS_DIGITEMP85" yes:digitemp85
 check "$RRDSTATS_DIGITEMP_A" yes:digitemp_a
-check "$RRDSTATS_DIGITEMP_HTTP" yes:digitemp_http
-check "$RRDSTATS_DIGITEMP_AUTH" yes:digitemp_auth
+check "$RRDSTATS_DIGITEMP_HTTP"  yes:digitemp_http
+check "$RRDSTATS_DIGITEMP_INETD" yes:digitemp_inetd
+check "$RRDSTATS_DIGITEMP_AUTH"  yes:digitemp_auth
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -69,10 +71,18 @@ $(lang de:"Zus&auml;tzlichen Webserver aktiveren auf Port" en:"Activate addition
 EOF
 
 if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then
+if [ -x /etc/init.d/rc.inetd ]; then
+cat << EOF
+<p>
+<input type="hidden" name="web_inetd" value="no">
+<input id="a3" type="checkbox" name="web_inetd" value="yes"$web_inetd_chk><label for="a3">$(lang de:"Aktivieren inetd Nutzung" en:"Activate inetd support")</label>
+</p>
+EOF
+fi
 cat << EOF
 <p>
 <input type="hidden" name="web_auth" value="no">
-<input id="a1" type="checkbox" name="web_auth" value="yes"$web_auth_chk><label for="a1">$(lang de:"Authentifizierung" en:"Authentication").</label>
+<input id="a1" type="checkbox" name="web_auth" value="yes"$web_auth_chk><label for="a1">$(lang de:"Authentifizierung" en:"Authentication"):&nbsp;</label>
 $(lang de:"Benutzer" en:"User"):
 <input type="text" name="web_user" size="15" maxlength="15" value="$(html "$RRDSTATS_WEB_USER")">
 $(lang de:"Passwort" en:"Password"):
@@ -278,6 +288,14 @@ $(lang de:"Webserver aktiveren auf Port" en:"Activate webserver on port")&nbsp;
 EOF
 
 if [ "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then
+if [ -x /etc/init.d/rc.inetd ]; then
+cat << EOF
+<p>
+<input type="hidden" name="digitemp_inetd" value="no">
+<input id="a4" type="checkbox" name="digitemp_inetd" value="yes"$digitemp_inetd_chk><label for="a4">$(lang de:"Aktivieren inetd Nutzung" en:"Activate inetd support")</label>
+</p>
+EOF
+fi
 cat << EOF
 <p>
 <input type="hidden" name="digitemp_auth" value="no">
