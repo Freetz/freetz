@@ -8,3 +8,8 @@ config FREETZ_PACKAGE_PPP_CGI
 	help
 		Use this package to establish a dun connection
 
+config FREETZ_PACKAGE_PPP_CGI_COMGT
+	bool "select comgt package"
+	depends on FREETZ_PACKAGE_PPP_CGI
+	select FREETZ_PACKAGE_COMGT
+	default n
