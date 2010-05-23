@@ -1,0 +1,15 @@
+#!/bin/sh
+
+DAEMON=vnstat-cgi
+. /etc/init.d/modlibrc
+
+SUBDAEMON=vns
+. /mod/etc/conf/vnstat.cfg
+homedir=/mod/pkg/vnstat/usr/mww-$SUBDAEMON/
+
+if [ "$VNSTAT_WEB_AUTH" = yes ]; then
+	echo "/:$VNSTAT_WEB_USER:$(httpd -m $VNSTAT_WEB_PASS)" >/mod/etc/httpd-$SUBDAEMON.conf
+	VNS_CONF="-c /mod/etc/httpd-$SUBDAEMON.conf"
+fi
+		
+exec httpd "$@" -p "$VNSTAT_WEB_PORT" $VNS_CONF -h "$homedir" -r "vnstat"

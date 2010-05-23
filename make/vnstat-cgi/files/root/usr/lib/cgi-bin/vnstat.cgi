@@ -5,6 +5,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 check "$VNSTAT_ENABLED" yes:auto "*":man
 check "$VNSTAT_WEBENABLED" yes:webenabled
 check "$VNSTAT_WEB_AUTH" yes:web_auth
+check "$VNSTAT_WEB_INETD" yes:web_inetd
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -59,6 +60,14 @@ $(lang de:"Zus&auml;tzlichen Webserver aktiveren auf Port" en:"Activate addition
 EOF
 
 if [ "$VNSTAT_WEBENABLED" = "yes" ]; then
+if [ -x /etc/init.d/rc.inetd ]; then
+cat << EOF
+<p>
+<input type="hidden" name="web_inetd" value="no">
+<input id="a3" type="checkbox" name="web_inetd" value="yes"$web_inetd_chk><label for="a3">$(lang de:"Aktiviere inetd Nutzung" en:"Activate inetd support")</label> 
+</p> 
+EOF
+fi 	
 cat << EOF
 <p>
 <input type="hidden" name="web_auth" value="no">

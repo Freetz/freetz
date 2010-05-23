@@ -14,6 +14,12 @@ config() {
 	ln -s $VNSTAT_DBDIR /var/lib/vnstat
 }
 
+stop_webserver() {
+	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
+	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd -n vnstat >/dev/null 
+}
+
+
 start() {
 	echo -n 'Starting vnstat...'
 
@@ -50,13 +56,13 @@ start() {
 	done
 	
 	#webserver
-	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
-	if [ "$VNSTAT_WEBENABLED" = "yes" ]; then
+	stop_webserver
+	if [ "$VNSTAT_WEBENABLED" = "yes" -a "$VNSTAT_WEB_INETD" != "yes" ]; then
 		if [ "$VNSTAT_WEB_AUTH" = yes ]; then
 			echo "/:$VNSTAT_WEB_USER:$(httpd -m $VNSTAT_WEB_PASS)" >/mod/etc/httpd-vns.conf
 			VNS_CONF="-c /mod/etc/httpd-vns.conf"
 		fi
-		httpd -P $HTTPD_PID_VNS -p $VNSTAT_WEB_PORT $VNS_CONF -h /mod/pkg/vnstat/usr/mww-vns
+		httpd -P $HTTPD_PID_VNS -p $VNSTAT_WEB_PORT $VNS_CONF -h /mod/pkg/vnstat/usr/mww-vns -r "vnstat"
 	fi
 
 	#daemon
@@ -72,7 +78,7 @@ start() {
 
 stop() {
 	echo -n "Stopping vnstat..."
-	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
+	stop_webserver
 	if [ -z "$(pidof vnstatd)" ]; then
 		echo 'not running.'
 		return 1
@@ -84,6 +90,14 @@ stop() {
 	else
 		echo 'failed.'
 		return 1
+	fi
+}
+
+status() {
+	if [ -z "$(pidof vnstatd)" ]; then
+		echo 'stopped'
+	else
+		echo 'running'
 	fi
 }
 
@@ -127,11 +141,10 @@ case $1 in
 		start
 		;;
 	status)
-		if [ -z "$(pidof vnstatd)" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		status
+		;;
+	status_webcfg-vns) 
+		[ "$VNSTAT_WEBENABLED" = "yes" -a "$VNSTAT_WEB_INETD" = "yes" ] && echo 'inetd' || status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
