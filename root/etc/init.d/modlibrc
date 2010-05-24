@@ -93,7 +93,7 @@ modlib_check_port()
 		if [ "$myname" == "inetd" ]
 		then
 			local inetddaemon=""
-			[ -e "$inetdconf" ] && inetddaemon="$(cat $inetdconf | grep ^$netport | sed -e '/^#/d;s/\t/ /g;s/  */ /g;s/^[^ ]*\ [^ ]* [^ ]* [^ ]* [^ ]* [^ ]* \([^ ]*\) .*/\1/;s/.*\///g')"
+			[ -e "$inetdconf" ] && inetddaemon="$(cat $inetdconf | grep ^[:0-9.]*$netport[[:blank:]] | sed -e '/^#/d;s/\t/ /g;s/  */ /g;s/^[^ ]*\ [^ ]* [^ ]* [^ ]* [^ ]* [^ ]* \([^ ]*\) .*/\1/;s/.*\///g')"
 			[ -z "$inetddaemon" ] && inetddaemon="inetd"
 		fi
 		case $docommand in
