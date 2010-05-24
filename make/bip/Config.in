@@ -33,3 +33,9 @@ config FREETZ_PACKAGE_BIP_WITH_OIDENTD
 	help
 		This option enables oidentd spoofing support for bip.
 
+config FREETZ_PACKAGE_BIP_OIDENTD 
+	bool "select oidentd package" 
+ 	depends on FREETZ_PACKAGE_BIP_WITH_OIDENTD
+	select FREETZ_PACKAGE_OIDENTD 
+	default n
+
