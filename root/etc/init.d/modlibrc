@@ -283,6 +283,11 @@ modlib_start()
 		exit 1
 	fi
 	
+	if [ modlib_check_running ]; then
+		echo "Starting $DAEMON...already running"
+		exit 1
+	fi
+	
 	start
 }
 
