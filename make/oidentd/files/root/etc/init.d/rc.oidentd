@@ -1,6 +1,8 @@
 #!/bin/sh
 
 DAEMON=oidentd
+CONF_FILE=/tmp/flash/$DAEMON/oidentd.conf
+PID_FILE=/var/run/$DAEMON.pid
 
 . /etc/init.d/modlibrc
 
@@ -8,14 +10,14 @@ DAEMON=oidentd
 start() {
 	echo -n "Starting $DAEMON..."
 	
-	if modlib_status; then
+	if modlib_check_running; then
 		echo "already running" 
 		exit 1 
 	fi
 	
-	oidentd -C /tmp/flash/$DAEMON/oidentd.conf $OIDENTD_CMDLINE
+	oidentd -C $CONF_FILE $OIDENTD_CMDLINE
 	exitval=$?
-	pidof oidentd > /var/run/$DAEMON.pid
+	pidof oidentd > $PID_FILE
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
@@ -27,7 +29,7 @@ start() {
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "/tmp/flash/$DAEMON/oidentd.conf" ] && /etc/default.$DAEMON/oidentd_conf > /tmp/flash/$DAEMON/oidentd.conf
+		[ ! -e "$CONF_FILE" ] && /etc/default.$DAEMON/oidentd_conf > $CONF_FILE
 
 		modreg file $DAEMON conf 'oidentd: oidentd.conf' 1 "oidentd_conf"
 		modreg cgi $DAEMON oidentd
