@@ -1,0 +1,7 @@
+#!/bin/sh
+
+DAEMON=oidentd
+. /etc/init.d/modlibrc
+. /mod/etc/conf/$DAEMON.cfg
+
+exec oidentd "$@" $OIDENTD_CMDLINE

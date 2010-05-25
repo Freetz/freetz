@@ -1,0 +1,64 @@
+#!/bin/sh
+
+DAEMON=oidentd
+
+. /etc/init.d/modlibrc
+
+
+start() {
+	echo -n "Starting $DAEMON..."
+	
+	if modlib_status; then
+		echo "already running" 
+		exit 1 
+	fi
+	
+	oidentd -C /tmp/flash/$DAEMON/oidentd.conf $OIDENTD_CMDLINE
+	exitval=$?
+	pidof oidentd > /var/run/$DAEMON.pid
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case $1 in
+	""|load)
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e "/tmp/flash/$DAEMON/oidentd.conf" ] && /etc/default.$DAEMON/oidentd_conf > /tmp/flash/$DAEMON/oidentd.conf
+
+		modreg file $DAEMON conf 'oidentd: oidentd.conf' 1 "oidentd_conf"
+		modreg cgi $DAEMON oidentd
+
+		modlib_start $OIDENTD_ENABLED 
+		;;
+	unload)
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		if [ "$OIDENTD_ENABLED" = "inetd" ]; then
+			echo 'inetd'
+		else
+			modlib_status
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

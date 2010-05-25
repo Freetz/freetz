@@ -1,0 +1,10 @@
+. /mod/etc/conf/oidentd.cfg
+inetdcfg_desc="oidentd - ident daemon"
+inetdcfg_port=113
+inetdcfg_sock=stream
+inetdcfg_proto=tcp
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/bin/oidentdx
+inetdcfg_arg0=oidentdx
+inetdcfg_args="-I -C /tmp/flash/oidentd/oidentd.conf"
