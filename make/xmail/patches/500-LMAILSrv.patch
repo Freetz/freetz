@@ -1,0 +1,57 @@
+--- LMAILSvr.cpp.orig	2010-05-26 08:49:02.000000000 +0200
++++ LMAILSvr.cpp	2010-05-26 17:09:08.000000000 +0200
+@@ -116,6 +116,7 @@
+ 				 int iMaxSSFileName)
+ {
+ 	char szSpoolDir[SYS_MAX_PATH];
++	FILE *pSSFile = NULL;
+ 
+ 	LMAILGetSpoolDir(szSpoolDir, sizeof(szSpoolDir));
+ 
+@@ -129,14 +130,6 @@
+ 
+ 	UsrGetTmpFile(NULL, pszSSFileName, iMaxSSFileName);
+ 
+-	FILE *pSSFile = fopen(pszSSFileName, "wb");
+-
+-	if (pSSFile == NULL) {
+-		ErrorPush();
+-		RLckUnlockSH(hResLock);
+-		return ErrorPop();
+-	}
+-
+ 	int iFileCount = 0;
+ 	char szSpoolFileName[SYS_MAX_PATH];
+ 	FSCAN_HANDLE hFileScan = MscFirstFile(szSpoolDir, 0, szSpoolFileName,
+@@ -149,17 +142,29 @@
+ 
+ 			if ((ulHashValue % (unsigned long) pLMAILCfg->lNumThreads) ==
+ 			    (unsigned long) lThreadId) {
++				if(pSSFile == NULL) {
++					pSSFile = fopen(pszSSFileName, "wb");
++
++					if (pSSFile == NULL) {
++						ErrorPush();
++						MscCloseFindFile(hFileScan);
++						RLckUnlockSH(hResLock);
++						return ErrorPop();
++					}
++				}
++
+ 				fprintf(pSSFile, "%s\r\n", szSpoolFileName);
+ 				++iFileCount;
+ 			}
+ 		} while (MscNextFile(hFileScan, szSpoolFileName, sizeof(szSpoolFileName)));
+ 		MscCloseFindFile(hFileScan);
+ 	}
+-	fclose(pSSFile);
++
++	if(pSSFile != NULL)
++		fclose(pSSFile);
+ 	RLckUnlockSH(hResLock);
+ 
+ 	if (iFileCount == 0) {
+-		SysRemove(pszSSFileName);
+ 		SetEmptyString(pszSSFileName);
+ 
+ 		ErrSetErrorCode(ERR_NO_LOCAL_SPOOL_FILES);

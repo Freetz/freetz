@@ -1,5 +1,5 @@
 --- MiscUtils.cpp.orig	2010-05-01 09:37:39.000000000 +0200
-+++ MiscUtils.cpp	2010-05-01 19:26:23.000000000 +0200
++++ MiscUtils.cpp	2010-05-26 16:28:43.000000000 +0200
 @@ -30,12 +30,16 @@
  #include "MD5.h"
  #include "Base64Enc.h"
@@ -25,18 +25,18 @@
  	time_t tmNow;
  	unsigned long ulID;
  	SYS_INT64 MsTime;
-@@ -158,6 +163,11 @@
- 
- 	SysGetTempDir(szTempDir, sizeof(szTempDir));
- 	SysSNPrintf(pszPath, iMaxPath, "%s%s.xtmp", szTempDir, szMD5);
+@@ -155,6 +160,11 @@
+ 	md5_update(&MCtx, RndBytes, sizeof(RndBytes));
+ 	md5_final(&MCtx);
+ 	md5_hex(MCtx.digest, szMD5);
 +#else
 +	char szTempDir[SYS_MAX_PATH], szMD5[12];
 +	strcpy(szMD5, "xmailXXXXXX");
-+	mkstemp(szMD5);
++	mktemp(szMD5);
 +#endif
- }
  
- int MscRecvTextFile(char const *pszFileName, BSOCK_HANDLE hBSock, int iTimeout,
+ 	SysGetTempDir(szTempDir, sizeof(szTempDir));
+ 	SysSNPrintf(pszPath, iMaxPath, "%s%s.xtmp", szTempDir, szMD5);
 @@ -1520,12 +1530,14 @@
  	return 0;
  }
