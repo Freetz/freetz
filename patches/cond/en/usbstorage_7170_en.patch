@@ -1,5 +1,5 @@
---- etc/hotplug/run_mount.orig	2008-09-03 10:52:22.000000000 +0200
-+++ etc/hotplug/run_mount	2008-09-03 10:52:29.000000000 +0200
+--- etc/hotplug/run_mount.orig	2010-05-27 08:31:07.015518647 +0200
++++ etc/hotplug/run_mount	2010-05-27 08:31:07.563015884 +0200
 @@ -21,19 +21,9 @@
  
  ## Generate a frontend'able 'nice name' to be used as mount point:
@@ -61,7 +61,7 @@
  ## Actually perform the mount operation...
  ## (TODO Checking the partition for known filesystem types)
  do_mount () {
-@@ -75,7 +95,7 @@
+@@ -79,7 +100,7 @@
  local OLD_UMASK=`umask`
  umask 0
  local new_filesystem=false
@@ -70,8 +70,8 @@
  new_filesystem=true
  fi
  if [ $new_filesystem = true ] ; then
-@@ -118,6 +118,7 @@
- led-ctrl filesystem_mount_failure
+@@ -123,6 +144,7 @@
+ else
  umask $OLD_UMASK
  rmdir $MNTPATH
 +eventadd 142 $MNTNAME NOTMOUNTABLE
