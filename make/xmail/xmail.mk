@@ -41,14 +41,16 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	rm -rf $(XMAIL_DEST_DIR)/usr/lib/MailRoot
 	mkdir -p $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin/
-	cp $(XMAIL_DIR)/bin/* $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin/
+	for i in $$(find $(XMAIL_DIR)/bin/ -type f -executable); do \
+		cp $$i $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin/; \
+	done
 	rm -rf $(XMAIL_DEST_DIR)/etc/default.xmail/default_config/
 	mkdir -p $(XMAIL_DEST_DIR)/etc/default.xmail/default_config/
 
 	tar --exclude='./bin' --exclude='./domains/*' -C $(XMAIL_DIR)/MailRoot -cf \
 		$(XMAIL_DEST_DIR)/etc/default.xmail/default_config/default_config.tar .
 
-	for i in $$(find $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin -type f); do \
+	for i in $$(find $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin -type f -executable); do \
 		$(TARGET_STRIP) $$i; \
 	done
 
