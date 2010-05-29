@@ -133,7 +133,7 @@ case $form in
                                 oldstatus2=$(rc_status webcfg)
 				oldstatus3=$(rc_status swap)
 			else 
-				back="cgi $packages"
+				back="cgi $package"
                                 oldstatus1=$(rc_status "$package")
                         fi
 			
