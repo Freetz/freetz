@@ -1,0 +1,60 @@
+#!/bin/sh
+
+DAEMON=bip
+CONF_FILE=/tmp/flash/$DAEMON/bip.conf
+PID_FILE=/var/run/$DAEMON.pid
+
+. /etc/init.d/modlibrc
+
+
+start() {
+	echo -n "Starting $DAEMON..."
+	
+	if modlib_check_running; then
+		echo "already running" 
+		exit 1 
+	fi
+	
+	bip -f $CONF_FILE $BIP_CMDLINE
+	if [ "$?" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case $1 in
+	""|load)
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e "$CONF_FILE" ] && /etc/default.$DAEMON/bip_conf > $CONF_FILE
+
+		modreg file $DAEMON conf 'bip: bip.conf' 1 "bip_conf"
+		modreg cgi $DAEMON bip
+
+		modlib_start $BIP_ENABLED 
+		;;
+	unload)
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
