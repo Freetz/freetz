@@ -1,25 +1,12 @@
 #!/bin/sh
 
 DAEMON=vsftpd
-LOGLINK=/var/log/mod_vsftpd.log
+LOG_LINK=/var/log/mod_vsftpd.log
+PID_FILE=/var/run/$DAEMON.pid
 
 . /etc/init.d/modlibrc
 
-pre_config() {
-	modlib_adduser ftp -G users -D -S -g "FTP account"
-	mkdir -p /mod/home/ftp
-	
-	# Setting permissions
-	chown ftp:users /mod/home/ftp -R
-
-	mkdir -p /var/run/vsftpd
-
-	if [ ! -e "/var/tmp/ftp" ]; then
-		ln -s /mod/home/ftp /var/tmp/ftp
-	fi
-}
-
-write_config() {
+config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -40,64 +27,29 @@ write_config() {
 	echo "$VSFTPD_CHROOT_JAIL_LIST" | grep -v "^#" | while read -r line; do
 	[ -n "$line" ] && echo "$line" >> /mod/etc/vsftpd.chroot_list
 	done
-}
-
-status_log() {
-	remove_status_log
+	
+	rm -f $LOG_LINK 2>/dev/null
 	if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
-		ln -sf $VSFTPD_LOG_FILE $LOGLINK
+		ln -sf $VSFTPD_LOG_FILE $LOG_LINK
 		modreg status vsftpd Vsftpd vsftpd_log
-	fi
-}
-
-remove_status_log() {
-	modunreg status vsftpd vsftpd_log
-	rm -f $LOGLINK
-}
-
-config() {
-	write_config
-	status_log
-}
-
-reload() {
-	echo -n 'Reloading ftp server...'
-
-	write_config	
-
-	killall -HUP $DAEMON > /dev/null 2>&1
-	exitval=$?
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
 	else
-		echo 'failed.'
-		exit $exitval
-	fi
+		modunreg status vsftpd vsftpd_log
+	fi	
 }
 
 start() {
-	echo -n 'Starting ftp server...'
+	echo -n "Starting $DAEMON..."
+
+	if modlib_check_running; then
+		echo "already running" 
+		exit 1 
+	fi
+	
 	config
 
-	$DAEMON 
+	$DAEMON
 	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		rm -f /mod/etc/$DAEMON.conf
-		exit $exitval
-	fi
-}
-
-stop () {
-	echo -n 'Stopping ftp server...'
-	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-
-	remove_status_log
-	rm -f /mod/etc/$DAEMON.conf
+	pidof $DAEMON > $PID_FILE
 
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -109,44 +61,49 @@ stop () {
 
 case $1 in
 	""|load)
-		pre_config
+		modlib_adduser ftp -G users -D -S -g "FTP account"
+		mkdir -p /mod/home/ftp
+		chown ftp:users /mod/home/ftp -R
+		mkdir -p /var/run/vsftpd
+		[ -e "/var/tmp/ftp" ] || ln -s /mod/home/ftp /var/tmp/ftp
 
 		modreg cgi 'vsftpd' 'Vsftpd'
-
 		if ! strings /usr/sbin/vsftpd | grep -q "SSL support not compiled in"; then
 			modreg file vsftpd crt 'VSFTPD:Cert+Key' 0 "vsftpd_crt"
 		fi
 		
+		if [ "$VSFTPD_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1
+		fi
+		
 		config
-
 		modlib_start $VSFTPD_ENABLED
 		;;
 	unload)
-		stop
-		modunreg cgi vsftpd
 		modunreg file vsftpd
+		modunreg status vsftpd vsftpd_log
+		modunreg cgi vsftpd
+		modlib_stop
 		;;
 	start)
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	reload)
-		reload
+		config
+		modlib_reload
 		;;
 	status)
 		if [ "$VSFTPD_ENABLED" == "inetd" ]; then
 			echo 'inetd'
-		elif [ ! -z "$(pidof "$DAEMON")" ]; then
-			echo 'running'
 		else
-			echo 'stopped'
+			modlib_status
 		fi
 		;;
 	config)
