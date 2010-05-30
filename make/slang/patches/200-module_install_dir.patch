@@ -1,0 +1,33 @@
+--- mkfiles/install.sl
++++ mkfiles/install.sl
+@@ -110,7 +110,7 @@
+ 
+ private define install_modules (prefix)
+ {
+-   variable dir = "$prefix/lib/slang/v2/modules"$;
++   variable dir = "$prefix/lib/freetz/slang"$;
+    () = mkdir_p (dir);
+    install_files ("modules/*.dll", dir);
+ 
+--- src/mkfiles/makefile.all
++++ src/mkfiles/makefile.all
+@@ -295,7 +295,7 @@
+ OBJDIR = gw32objs# Location of objects
+ TGTBASE=$(OBJDIR)/libslang
+ prefix=/mingw/local
+-module_install_dir = $(prefix)/lib/slang/v2/modules#
++module_install_dir = $(prefix)/lib/freetz/slang#
+ install_doc_dir = $(prefix)/share/doc/slang/v2
+ slstd_C_FLAGS = -DSLANG_DOC_DIR='"$(install_doc_dir)"' -DSLANG_INSTALL_PREFIX='"$(prefix)"'
+ slimport_C_FLAGS = -DMODULE_INSTALL_DIR='"$(module_install_dir)"'
+--- src/slimport.c
++++ src/slimport.c
+@@ -53,7 +53,7 @@
+ # define MODULE_PATH_ENV_NAME "SLANG_MODULE_PATH"
+ #endif
+ #ifndef MODULE_INSTALL_DIR
+-# define MODULE_INSTALL_DIR "/usr/local/lib/slang/v2/modules"
++# define MODULE_INSTALL_DIR "/usr/lib/freetz/slang"
+ #endif
+ 
+ #define MAX_MODULE_NAME_SIZE 256

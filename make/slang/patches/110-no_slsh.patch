@@ -1,0 +1,26 @@
+--- autoconf/Makefile.in
++++ autoconf/Makefile.in
+@@ -47,10 +47,10 @@
+ 	@echo "make check : Build the library and run the regression tests"
+ static: makefiles
+ 	cd src; $(MAKE) static
+-	cd slsh; $(MAKE) all
++#	cd slsh; $(MAKE) all
+ elf: makefiles
+ 	cd src; $(MAKE) elf
+-	cd slsh; $(MAKE) all
++#	cd slsh; $(MAKE) all
+ 	cd modules; $(MAKE) all
+ 	@echo Use make install to install it.
+ runtests:
+@@ -73,8 +73,8 @@
+ 	$(INSTALL_DATA) slang.pc $(DEST_PKGCONFIGDIR)/
+ install-elf:
+ 	cd src; $(MAKE) install-elf
+-	@echo Now installing slsh
+-	cd slsh; $(MAKE) install
++#	@echo Now installing slsh
++#	cd slsh; $(MAKE) install
+ 	@echo Now installing the modules
+ 	cd modules; $(MAKE) install
+ 	@echo ""

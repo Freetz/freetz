@@ -1,0 +1,33 @@
+--- modules/Makefile.in
++++ modules/Makefile.in
+@@ -123,24 +123,30 @@
+ 		echo $(INSTALL_MODULE) $$i $(DEST_MODULEDIR); \
+ 		$(INSTALL_MODULE) $$i $(DEST_MODULEDIR); \
+ 	done
++ifdef INSTALL_MODULES_SHELL_RELATED_FILES
+ 	-$(MKINSDIR) $(DEST_SLSH_DIR)
+ 	@for i in $(SLFILES); \
+ 	do \
+ 		echo $(INSTALL_DATA) $$i.sl $(DEST_SLSH_DIR); \
+ 		$(INSTALL_DATA) $$i.sl $(DEST_SLSH_DIR); \
+ 	done
++endif
++ifdef INSTALL_MODULES_MAP_FILES
+ 	-$(MKINSDIR) $(DEST_CMAPSDIR)
+ 	@for i in cmaps/*.map; \
+ 	do \
+ 		echo $(INSTALL_DATA) $$i $(DEST_CMAPSDIR); \
+ 		$(INSTALL_DATA) $$i $(DEST_CMAPSDIR); \
+ 	done
++endif
++ifdef INSTALL_MODULES_HELP_FILES
+ 	-$(MKINSDIR) $(DEST_HELPDIR)
+ 	@for i in help/*.hlp; \
+ 	do \
+ 		echo $(INSTALL_DATA) $$i $(DEST_HELPDIR); \
+ 		$(INSTALL_DATA) $$i $(DEST_HELPDIR); \
+ 	done
++endif
+ clean:
+ 	-/bin/rm -f $(MODULES) *~
+ distclean: clean

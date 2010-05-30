@@ -1,0 +1,38 @@
+diff -ruN src/slang.h src/slang.h
+--- src/slang.h	2009-08-30 09:42:09.000000000 +0100
++++ src/slang.h	2009-09-01 06:47:30.000000000 +0100
+@@ -1697,6 +1697,9 @@
+ SL_EXTERN char *SLtt_tigetent (SLFUTURE_CONST char *);
+ SL_EXTERN char *SLtt_tigetstr (SLFUTURE_CONST char *, char **);
+ SL_EXTERN int SLtt_tigetnum (SLFUTURE_CONST char *, char **);
++SL_EXTERN int SLtt_tgetent(char *name);
++SL_EXTERN char *SLtt_tgoto(char *cap, int col, int row);
++SL_EXTERN int SLtt_tputs(char *str, int affcnt, int (*putc)(int));
+ # endif
+ #endif
+ 
+diff -ruN src/sldisply.c src/sldisply.c
+--- src/sldisply.c	2009-08-01 19:25:46.000000000 +0100
++++ src/sldisply.c	2009-09-01 06:47:30.000000000 +0100
+@@ -2289,8 +2289,7 @@
+    return tt_tgetflag (s);
+ }
+ 
+-#if 0
+-int SLtt_tgetent(char *term)
++int Sltt_tgetent(char *term)
+ {
+    return SLtt_initialize(term) == 0;
+ }
+@@ -2310,10 +2308,9 @@
+   if (strlen(cap) > 23)
+ 	strcpy(buf, "capability too long");
+   else
+-	tt_sprintf(buf, cap, row, col);
++	tt_sprintf(buf, sizeof(buf), cap, row, col);
+   return buf;
+ }
+-#endif
+ 
+ static int Vt100_Like = 0;
+ 

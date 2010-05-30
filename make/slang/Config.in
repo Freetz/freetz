@@ -1,0 +1,20 @@
+config FREETZ_PACKAGE_SLANG
+	bool "S-Lang"
+	select FREETZ_LIB_libslang
+	default n
+	help
+		S-Lang is a powerful interpreted language that may be embedded
+		into an application to make the application extensible.
+
+		Note: at the moment this options causes only libslang to be included
+		in the image, i.e. S-Lang shell support is disabled.
+
+config FREETZ_PACKAGE_SLANG_MODULES
+	bool "include shared modules"
+	depends on FREETZ_PACKAGE_SLANG
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	select FREETZ_LIB_libpcre
+	select FREETZ_LIB_libz
+	default n
+	help
+		This option causes shared modules to be included in the image.

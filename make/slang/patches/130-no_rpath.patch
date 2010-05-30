@@ -1,0 +1,22 @@
+--- modules/Makefile.in
++++ modules/Makefile.in
+@@ -73,7 +73,7 @@
+ DEST_CMAPSDIR	= $(DESTDIR)$(CMAPS_DIR)
+ DEST_HELPDIR	= $(DESTDIR)$(HELP_DIR)
+ #---------------------------------------------------------------------------
+-RPATH = @RPATH@
++#RPATH = @RPATH@
+ 
+ LIBS = $(LDFLAGS) $(RPATH) $(SLANG_LIB) $(DL_LIB) @M_LIB@
+ #LIBS = $(RPATH) $(DL_LIB) @M_LIB@
+--- slsh/Makefile.in
++++ slsh/Makefile.in
+@@ -15,7 +15,7 @@
+ SLANG_SRCLIB	= -L@ELFDIR@
+ #---------------------------------------------------------------------------
+ OTHER_LIBS	= @TERMCAP@ @DYNAMIC_LINK_LIB@ @LIBS@ @M_LIB@
+-RPATH		= @RPATH@
++#RPATH		= @RPATH@
+ #----------------------------------------------------------------------------
+ INSTALL		= @INSTALL@
+ INSTALL_DATA	= @INSTALL_DATA@

@@ -1,0 +1,15 @@
+# As of glibc 2.9, struct hostent no longer defines h_addr, which was a backward-compatability
+# alias for h_addr_list[0]
+# See Bug #491798. -- amck, 2009-03-27
+diff -ruN modules/socket-module.c modules/socket-module.c
+--- modules/socket-module.c	2008-02-25 05:28:07.000000000 +0000
++++ modules/socket-module.c	2009-03-28 15:01:24.000000000 +0000
+@@ -454,7 +454,7 @@
+ #ifndef h_addr
+    /* Older interface.  There is only one address, so fake a list */
+    h_addr_list = fake_h_addr_list;
+-   h_addr_list [0] = hp->h_addr;
++   h_addr_list [0] = hp->h_addr_list[0];
+    h_addr_list [1] = NULL;
+ #else
+    h_addr_list = hp->h_addr_list;
