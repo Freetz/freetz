@@ -69,7 +69,7 @@ esac
 save() {
 	modlib_loadconfig
 
-	if grep -q "*gui*" /mod/etc/conf/avm-firewall.cfg; then
+	if grep -q "*gui*" /mod/etc/conf/avm-firewall.cfg || [ "$1" = defaults_restored ]; then
 		echo "$(sed -e "s/\*gui\*//g" $CONFIG)" > $CONFIG
 		echo -n "Saving new firewall rules... "
 
@@ -111,7 +111,7 @@ case $1 in
 	status)
 		;;
 	save)
-		save
+		save "$2"
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|save|status]" 1>&2
