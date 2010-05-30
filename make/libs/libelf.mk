@@ -1,19 +1,23 @@
-$(call PKG_INIT_LIB, 0.8.10)
+$(call PKG_INIT_LIB, 0.8.13)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=4136d7b4c04df68b686570afa26988ac
 $(PKG)_SITE:=http://www.mr511.de/software
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=9db4d36c283d9790d8fa7df1f4d7b4d9
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
-$(PKG)_CONFIGURE_ENV += mr_cv_working_memmove=yes
+# recreate configure with a version of autoconf greater than 2.13 (we assume it's installed on build system)
+$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force;
+
 $(PKG)_CONFIGURE_ENV += mr_cv_target_elf=yes
+$(PKG)_CONFIGURE_ENV += libelf_cv_working_memmove=yes
 $(PKG)_CONFIGURE_ENV += libelf_64bit=yes
 $(PKG)_CONFIGURE_ENV += libelf_cv_struct_elf64_ehdr=yes
 $(PKG)_CONFIGURE_ENV += libelf_cv_type_elf64_addr=no
 $(PKG)_CONFIGURE_ENV += libelf_cv_struct_elf64_rel=yes
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-elf64=yes
