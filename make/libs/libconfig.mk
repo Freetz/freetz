@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.4.3)
-$(PKG)_LIB_VERSION:=8.1.2
+$(call PKG_INIT_LIB, 1.4.5)
+$(PKG)_LIB_VERSION:=9.0.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=295f580a7bc3a03a44d520d6ace55ee6
+$(PKG)_SOURCE_MD5:=f2219e1b2501e7296a7d3e971c63666a
 $(PKG)_SITE:=http://www.hyperrealm.com/libconfig
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
