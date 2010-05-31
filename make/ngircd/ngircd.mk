@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 15)
+$(call PKG_INIT_BIN,16)
 $(PKG)_SOURCE:=ngircd-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.berlios.de/pub/ngircd
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ngircd/ngircd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ngircd
-$(PKG)_SOURCE_MD5:=c183a85eba6fe51255983848f099c8ae
+$(PKG)_SOURCE_MD5:=8c9e0382cd982b0ca77c05528ebe28eb
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_ZLIB
@@ -33,6 +33,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-syslog
 $(PKG)_CONFIGURE_OPTIONS += --without-ident
 $(PKG)_CONFIGURE_OPTIONS += --without-zeroconf
 $(PKG)_CONFIGURE_OPTIONS += --without-kqueue
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
