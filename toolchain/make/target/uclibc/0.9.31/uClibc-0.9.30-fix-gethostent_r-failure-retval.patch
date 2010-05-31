@@ -1,0 +1,11 @@
+--- libc/inet/resolv.c.orig	2010-04-02 17:34:27.000000000 +0200
++++ libc/inet/resolv.c	2010-04-11 16:34:43.000000000 +0200
+@@ -2546,7 +2546,7 @@
+ int gethostent_r(struct hostent *result_buf, char *buf, size_t buflen,
+ 	struct hostent **result, int *h_errnop)
+ {
+-	int ret;
++	int ret = HOST_NOT_FOUND;
+ 
+ 	__UCLIBC_MUTEX_LOCK(mylock);
+ 	if (__gethostent_fp == NULL) {

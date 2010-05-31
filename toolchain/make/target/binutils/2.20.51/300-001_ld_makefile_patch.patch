@@ -1,0 +1,22 @@
+--- ld/Makefile.am.orig	2010-04-27 18:05:54.000000000 +0200
++++ ld/Makefile.am	2010-05-03 23:49:14.725736713 +0200
+@@ -24,7 +24,7 @@
+ # We put the scripts in the directory $(scriptdir)/ldscripts.
+ # We can't put the scripts in $(datadir) because the SEARCH_DIR
+ # directives need to be different for native and cross linkers.
+-scriptdir = $(tooldir)/lib
++scriptdir = $(libdir)
+ 
+ EMUL = @EMUL@
+ EMULATION_OFILES = @EMULATION_OFILES@
+--- ld/Makefile.in.orig	2010-04-27 18:05:54.000000000 +0200
++++ ld/Makefile.in	2010-05-03 23:49:14.725736713 +0200
+@@ -337,7 +337,7 @@
+ # We put the scripts in the directory $(scriptdir)/ldscripts.
+ # We can't put the scripts in $(datadir) because the SEARCH_DIR
+ # directives need to be different for native and cross linkers.
+-scriptdir = $(tooldir)/lib
++scriptdir = $(libdir)
+ BASEDIR = $(srcdir)/..
+ BFDDIR = $(BASEDIR)/bfd
+ INCDIR = $(BASEDIR)/include

@@ -1,0 +1,22 @@
+--- configure.orig	2010-04-27 16:24:37.000000000 +0200
++++ configure	2010-05-03 23:49:14.485736162 +0200
+@@ -3375,7 +3375,7 @@
+     noconfigdirs="$noconfigdirs target-libffi target-qthreads"
+     libgloss_dir=arm
+     ;;
+-  arm*-*-linux-gnueabi)
++  arm*-*-linux-*gnueabi)
+     noconfigdirs="$noconfigdirs target-qthreads"
+     case ${with_newlib} in
+       no) noconfigdirs="$noconfigdirs target-newlib target-libgloss"
+--- configure.ac.orig	2010-05-03 07:41:58.000000000 +0200
++++ configure.ac	2010-05-03 23:49:14.485736162 +0200
+@@ -612,7 +612,7 @@
+     noconfigdirs="$noconfigdirs target-libffi target-qthreads"
+     libgloss_dir=arm
+     ;;
+-  arm*-*-linux-gnueabi)
++  arm*-*-linux-*gnueabi)
+     noconfigdirs="$noconfigdirs target-qthreads"
+     case ${with_newlib} in
+       no) noconfigdirs="$noconfigdirs target-newlib target-libgloss"
