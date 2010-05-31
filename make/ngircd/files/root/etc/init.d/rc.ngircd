@@ -1,0 +1,61 @@
+#!/bin/sh
+
+DAEMON=ngircd
+CONF_FILE=/tmp/flash/$DAEMON/ngircd.conf
+PID_FILE=/var/run/$DAEMON.pid
+
+. /etc/init.d/modlibrc
+
+start() {
+	echo -n "Starting $DAEMON..."
+	
+	if modlib_check_running; then
+		echo "already running" 
+		exit 1 
+	fi
+	
+	$DAEMON -p -f $CONF_FILE $NGIRCD_CMDLINE
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+	pidof $DAEMON > $PID_FILE
+}
+
+case $1 in
+	""|load)
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e "$CONF_FILE" ] && /etc/default.$DAEMON/ngircd_conf > $CONF_FILE
+
+		modreg cgi 'ngircd' 'ngIRCd'
+		modreg file ngircd conf 'ngIRCd: config' 1 "ngircd_conf"
+
+		modlib_start $NGIRCD_ENABLED 
+		;;
+	unload)
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+			modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

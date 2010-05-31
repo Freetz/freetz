@@ -1,0 +1,69 @@
+#!/bin/sh
+
+cat <<EOF
+[Global]
+	Name = irc.the.net
+	Info = IRC on Fritz!Box
+	;Password = abc
+	;WebircPassword = xyz
+	;AdminInfo1 = Description
+	;AdminInfo2 = Location
+	;AdminEMail = admin@irc.server
+	Ports = 6667
+	;SSLPorts = 6699
+    ;SSLKeyFile = /usr/local/etc/ngircd/ssl/server-key.pem
+	;SSLKeyFilePassword = secret
+	;SSLCertFile = /usr/local/etc/ngircd/ssl/server-cert.pem
+	;SSLDHFile = /usr/local/etc/ngircd/ssl/dhparams.pem
+	Listen = 0.0.0.0
+	;MotdFile = /usr/local/etc/ngircd.motd
+	;MotdPhrase = "Hello world!"
+	;ServerUID = 65534
+	;ServerGID = 65534
+	;ChrootDir = /var/empty
+	PidFile = /var/run/ngircd/ngircd.pid
+	;PingTimeout = 120
+	;PongTimeout = 20
+	;ConnectRetry = 60
+	;OperCanUseMode = no
+	;OperServerMode = no
+	;AllowRemoteOper = no
+	;PredefChannelsOnly = no
+	;NoDNS = no
+	;NoIdent = no
+	;ConnectIPv6 = yes
+	;ConnectIPv4 = yes
+	;MaxConnections = 0
+	;MaxConnectionsIP = 5
+	;MaxJoins = 10
+	;MaxNickLength = 9
+[Operator]
+	Name = TheOper
+	Password = ThePwd
+	;Mask = *!ident@somewhere.example.com
+[Operator]
+	# More [Operator] sections, if you like ...
+[Server]
+	Name = irc.fritz.box
+	;Host = connect-to-host.the.net
+	Bind = 0.0.0.0
+	Port = 6667
+	;MyPassword = MySecret
+	;PeerPassword = PeerSecret
+	;Group = 123
+	;Passive = no
+	;SSLConnect = yes
+	;ServiceMask = *Serv
+[Server]
+	# More [Server] sections, if you like ...
+[Channel]
+	Name = #TheName
+	Topic = a great topic
+	Modes = tnk
+	;Key = Secret
+	;KeyFile = /etc/ngircd/#chan.key
+	;MaxUsers = 23
+[Channel]
+	# More [Channel] sections, if you like ...
+# -eof-
+EOF
