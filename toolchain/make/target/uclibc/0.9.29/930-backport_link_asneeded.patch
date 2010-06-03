@@ -1,0 +1,74 @@
+--- Rules.mak.orig	2010-06-03 14:31:45.425746388 +0200
++++ Rules.mak	2010-06-03 14:31:45.505740216 +0200
+@@ -333,13 +333,33 @@
+ endif
+ endif
+ 
++# Check for --as-needed support in linker
++ifndef LD_FLAG_ASNEEDED
++_LD_FLAG_ASNEEDED:=$(shell $(LD) --help 2>/dev/null | grep -- --as-needed)
++ifneq ($(_LD_FLAG_ASNEEDED),)
++export LD_FLAG_ASNEEDED:=--as-needed
++endif
++endif
++ifndef LD_FLAG_NO_ASNEEDED
++ifdef LD_FLAG_ASNEEDED
++export LD_FLAG_NO_ASNEEDED:=--no-as-needed
++endif
++endif
++ifndef CC_FLAG_ASNEEDED
++ifdef LD_FLAG_ASNEEDED
++export CC_FLAG_ASNEEDED:=-Wl,$(LD_FLAG_ASNEEDED)
++endif
++endif
++ifndef CC_FLAG_NO_ASNEEDED
++ifdef LD_FLAG_NO_ASNEEDED
++export CC_FLAG_NO_ASNEEDED:=-Wl,$(LD_FLAG_NO_ASNEEDED)
++endif
++endif
++link.asneeded = $(if $(and $(LD_FLAG_ASNEEDED),$(LD_FLAG_NO_ASNEEDED)),$(LD_FLAG_ASNEEDED) $(1) $(LD_FLAG_NO_ASNEEDED))
++
+ # Check for AS_NEEDED support in linker script (binutils>=2.16.1 has it)
+ ifndef ASNEEDED
+-ifneq ($(UCLIBC_HAS_SSP),y)
+-export ASNEEDED:=
+-else
+-export ASNEEDED:=$(shell (LD_TMP=$(mktemp LD_XXXXXX) ; echo "GROUP ( AS_NEEDED ( /usr/lib/libc.so ) )" > $LD_TMP && if $(LD) -T $LD_TMP -o /dev/null > /dev/null 2>&1; then echo "AS_NEEDED ( $(UCLIBC_LDSO) )"; else echo "$(UCLIBC_LDSO)"; fi; rm -f $LD_TMP ) )
+-endif
++export ASNEEDED:=$(shell $(LD) --help 2>/dev/null | grep -q -- --as-needed && echo "AS_NEEDED ( $(UCLIBC_LDSO) )" || echo "$(UCLIBC_LDSO)")
+ endif
+ 
+ # Add a bunch of extra pedantic annoyingly strict checks
+--- libnsl/Makefile.in.orig	2007-03-19 10:49:04.000000000 +0100
++++ libnsl/Makefile.in	2010-06-03 14:31:45.505740216 +0200
+@@ -7,7 +7,7 @@
+ 
+ CFLAGS-libnsl := -DNOT_IN_libc -DIS_IN_libnsl $(SSP_ALL_CFLAGS)
+ 
+-LDFLAGS-libnsl.so := $(LDFLAGS)
++LDFLAGS-libnsl.so := $(LDFLAGS) $(call link.asneeded,-lc)
+ 
+ LIBS-libnsl.so := $(LIBS)
+ 
+--- libresolv/Makefile.in.orig	2007-03-19 10:49:04.000000000 +0100
++++ libresolv/Makefile.in	2010-06-03 14:31:45.505740216 +0200
+@@ -7,7 +7,7 @@
+ 
+ CFLAGS-libresolv := -DNOT_IN_libc -DIS_IN_libresolv $(SSP_ALL_CFLAGS)
+ 
+-LDFLAGS-libresolv.so := $(LDFLAGS)
++LDFLAGS-libresolv.so := $(LDFLAGS) $(call link.asneeded,-lc)
+ 
+ LIBS-libresolv.so := $(LIBS)
+ 
+--- librt/Makefile.in.orig	2007-03-19 10:49:04.000000000 +0100
++++ librt/Makefile.in	2010-06-03 14:31:45.505740216 +0200
+@@ -7,7 +7,7 @@
+ 
+ CFLAGS-librt := -DNOT_IN_libc -DIS_IN_librt $(SSP_ALL_CFLAGS)
+ 
+-LDFLAGS-librt.so := $(LDFLAGS)
++LDFLAGS-librt.so := $(LDFLAGS) $(call link.asneeded,-lc)
+ 
+ LIBS-librt.so := $(LIBS)
+ 

@@ -1,0 +1,61 @@
+--- Makefile.in.orig	2007-03-19 10:49:04.000000000 +0100
++++ Makefile.in	2010-06-02 16:03:47.458372450 +0200
+@@ -215,6 +215,7 @@
+ 		$(LN) -sf $(RUNTIME_PREFIX_LIB_FROM_DEVEL_PREFIX_LIB)$$i.$(MAJOR_VERSION) \
+ 		$(PREFIX)$(DEVEL_PREFIX)lib/$$i; \
+ 	done
++ifeq ($(HARDWIRED_ABSPATH),y)
+ 	if [ -f $(top_builddir)lib/libc.so -a -f $(PREFIX)$(RUNTIME_PREFIX)lib/$(SHARED_MAJORNAME) ] ; then \
+ 		$(RM) $(PREFIX)$(DEVEL_PREFIX)lib/libc.so; \
+ 		sed -e 's:$(NONSHARED_LIBNAME):$(DEVEL_PREFIX)lib/$(NONSHARED_LIBNAME):' \
+@@ -222,14 +223,21 @@
+ 		    -e 's:$(UCLIBC_LDSO):$(RUNTIME_PREFIX)lib/$(UCLIBC_LDSO):' \
+ 		    $(top_builddir)lib/libc.so > $(PREFIX)$(DEVEL_PREFIX)lib/libc.so; \
+ 	fi
++else
++	-$(INSTALL) -m 644 lib/libc.so $(PREFIX)$(DEVEL_PREFIX)lib/
++endif
+ ifeq ($(UCLIBC_HAS_THREADS),y)
+ ifneq ($(LINUXTHREADS_OLD),y)
++ifeq ($(HARDWIRED_ABSPATH),y)
+ 	if [ -f $(top_builddir)lib/libpthread.so -a -f $(PREFIX)$(RUNTIME_PREFIX)lib/libpthread.so.$(MAJOR_VERSION) ] ; then \
+ 		$(RM) $(PREFIX)$(DEVEL_PREFIX)lib/libpthread.so; \
+ 		cp $(top_srcdir)extra/scripts/format.lds $(PREFIX)$(DEVEL_PREFIX)lib/libpthread.so; \
+ 		echo "GROUP ( $(RUNTIME_PREFIX)lib/libpthread.so.$(MAJOR_VERSION) $(DEVEL_PREFIX)lib/libpthread_nonshared.a )" \
+ 			>> $(PREFIX)$(DEVEL_PREFIX)lib/libpthread.so; \
+ 	fi
++else
++	-$(INSTALL) -m 644 lib/libpthread.so $(PREFIX)$(DEVEL_PREFIX)lib/
++endif
+ endif
+ endif
+ ifeq ($(PTHREADS_DEBUG_SUPPORT),y)
+--- extra/Configs/Config.in.orig	2007-04-17 19:24:29.000000000 +0200
++++ extra/Configs/Config.in	2010-06-02 16:03:47.458372450 +0200
+@@ -1313,6 +1313,26 @@
+ 	  For a typical target system this should be set to "/usr", such that
+ 	  'make install' will install /usr/include/<header files>.
+ 
++config HARDWIRED_ABSPATH
++	string "Hardwire absolute paths into linker scripts"
++	default y
++	help
++	  This prepends absolute paths to the libraries mentioned in linker
++	  scripts such as libc.so.
++
++	  This is a build time optimization.  It has no impact on dynamic
++	  linking at runtime, which doesn't use linker scripts.
++
++	  You must disable this to use uClibc with a relocatable toolchain,
++	  such as the prebuilt binary cross compilers at
++	  http://uclibc.org/downloads/binaries which may be installed at an
++	  arbitrary location (such as in a user's home directory).
++
++	  The amount of time saved by this optimization is actually too small to
++	  measure. The linker just had to search the library path to find the
++	  linker script, so the dentries are cache hot if it has to search the
++	  same path again.  But it's what glibc does, so we do it too.
++
+ endmenu
+ 
+ 

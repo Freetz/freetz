@@ -68,6 +68,7 @@ $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.patched
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
+		--with-sysroot=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
 		--disable-multilib \
 		--disable-libssp \
 		$(DISABLE_NLS) \
