@@ -28,10 +28,10 @@ BINUTILS_HOST_PREREQ:=$(GMP_HOST_LIBRARY) $(MPFR_HOST_LIBRARY)
 
 BINUTILS_TARGET_PREREQ:=$(GMP_TARGET_LIBRARY) $(MPFR_TARGET_LIBRARY)
 
-EXTRA_BINUTILS_CONFIG_OPTIONS+=--with-gmp="$(GMP_HOST_DIR)"	
+EXTRA_BINUTILS_CONFIG_OPTIONS+=--with-gmp="$(GMP_HOST_DIR)"
 EXTRA_BINUTILS_CONFIG_OPTIONS+=--with-mpfr="$(MPFR_HOST_DIR)"
 
-BINUTILS_TARGET_CONFIG_OPTIONS+=--with-gmp="$(GMP_TARGET_DIR)"	
+BINUTILS_TARGET_CONFIG_OPTIONS+=--with-gmp="$(GMP_TARGET_DIR)"
 BINUTILS_TARGET_CONFIG_OPTIONS+=--with-mpfr="$(MPFR_TARGET_DIR)"
 endif
 
@@ -61,7 +61,7 @@ $(BINUTILS_DIR)/.patched: $(BINUTILS_DIR)/.unpacked
 
 $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.patched
 	mkdir -p $(BINUTILS_DIR1)
-	( cd $(BINUTILS_DIR1); rm -rf config.cache; \
+	(cd $(BINUTILS_DIR1); rm -rf config.cache; \
 		CC="$(HOSTCC)" \
 		$(BINUTILS_DIR)/configure \
 		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
@@ -84,7 +84,7 @@ $(BINUTILS_DIR1)/binutils/objdump: $(BINUTILS_DIR1)/.configured
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/binutils/objdump
 	$(MAKE) -C $(BINUTILS_DIR1) install
 
-binutils-dependancies:
+binutils-dependencies:
 	@if ! which bison > /dev/null ; then \
 		echo -e "\n\nYou must install 'bison' on your build machine\n"; \
 		exit 1; \
@@ -106,14 +106,14 @@ binutils-clean:
 	-$(MAKE) -C $(BINUTILS_DIR1) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		tooldir=/usr build_tooldir=/usr uninstall
 	-$(MAKE) -C $(BINUTILS_DIR1) clean
-			    
+
 
 binutils-dirclean:
 	rm -rf $(BINUTILS_DIR1)
 
-binutils: uclibc-configured binutils-dependancies $(BINUTILS_HOST_PREREQ) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld
+binutils: uclibc-configured binutils-dependencies $(BINUTILS_HOST_PREREQ) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld
 
-.PHONY: binutils binutils-dependancies
+.PHONY: binutils binutils-dependencies
 
 #############################################################
 #
@@ -155,8 +155,7 @@ binutils_target: $(BINUTILS_TARGET_PREREQ) $(TARGET_UTILS_DIR)/usr/bin/ld
 
 binutils_target-clean:
 	(cd $(TARGET_UTILS_DIR)/usr/bin; \
-		rm -f addr2line ar as gprof ld nm objcopy \
-		      objdump ranlib readelf size strings strip; \
+		rm -f addr2line ar as gprof ld nm objcopy objdump ranlib readelf size strings strip; \
 	)
 	rm -f $(TARGET_UTILS_DIR)/bin/$(REAL_GNU_TARGET_NAME)*
 	-$(MAKE) -C $(BINUTILS_DIR2) clean

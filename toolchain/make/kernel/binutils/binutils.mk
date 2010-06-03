@@ -28,7 +28,7 @@ $(BINUTILS_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 
 $(BINUTILS_KERNEL_DIR1)/.configured: $(BINUTILS_KERNEL_DIR)/.unpacked
 	mkdir -p $(BINUTILS_KERNEL_DIR1)
-	( cd $(BINUTILS_KERNEL_DIR1); \
+	(cd $(BINUTILS_KERNEL_DIR1); \
 		CC="$(HOSTCC)" \
 		$(BINUTILS_KERNEL_DIR)/configure \
 		--prefix=$(KERNEL_TOOLCHAIN_STAGING_DIR) \
@@ -48,7 +48,7 @@ $(BINUTILS_KERNEL_DIR1)/binutils/objdump: $(BINUTILS_KERNEL_DIR1)/.configured
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld: $(BINUTILS_KERNEL_DIR1)/binutils/objdump
 	$(MAKE) -C $(BINUTILS_KERNEL_DIR1) install
 
-binutils-kernel-dependancies:
+binutils-kernel-dependencies:
 	@if ! which bison > /dev/null ; then \
 		echo -e "\n\nYou must install 'bison' on your build machine\n"; \
 		exit 1; \
@@ -70,11 +70,10 @@ binutils-kernel-clean:
 	-$(MAKE) -C $(BINUTILS_KERNEL_DIR1) DESTDIR=$(KERNEL_TOOLCHAIN_STAGING_DIR) \
 		tooldir=/usr build_tooldir=/usr uninstall
 	-$(MAKE) -C $(BINUTILS_KERNEL_DIR1) clean
-			    
 
 binutils-kernel-dirclean:
 	rm -rf $(BINUTILS_KERNEL_DIR1)
 
-binutils-kernel: binutils-kernel-dependancies $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld
+binutils-kernel: binutils-kernel-dependencies $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld
 
-.PHONY: binutils binutils-kernel-dependancies
+.PHONY: binutils binutils-kernel-dependencies
