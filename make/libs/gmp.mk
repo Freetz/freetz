@@ -1,11 +1,11 @@
-$(call PKG_INIT_LIB, 4.2.4)
-$(PKG)_LIB_VERSION:=3.4.4
+$(call PKG_INIT_LIB, 5.0.1)
+$(PKG)_LIB_VERSION:=3.6.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://ftp.gnu.org/gnu/gmp
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgmp.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=fc1e3b3a2a5038d4d74138d0b9cf8dbe
+$(PKG)_SOURCE_MD5:=6bac6df75c192a13419dfd71d19240a7
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -1,0 +1,75 @@
+diff -Naurd PATCHES PATCHES
+--- PATCHES	2010-01-11 15:27:18.000000000 +0000
++++ PATCHES	2010-01-11 15:30:31.000000000 +0000
+@@ -0,0 +1 @@
++gmp5
+diff -Naurd VERSION VERSION
+--- VERSION	2009-12-18 12:05:09.000000000 +0000
++++ VERSION	2010-01-11 15:29:40.000000000 +0000
+@@ -1 +1 @@
+-2.4.2-p2
++2.4.2-p3
+diff -Naurd configure configure
+--- configure	2009-11-30 02:44:35.000000000 +0000
++++ configure	2010-01-11 15:28:56.000000000 +0000
+@@ -20449,6 +20449,9 @@
+ main ()
+ {
+ 
++#ifndef BITS_PER_MP_LIMB
++#define BITS_PER_MP_LIMB GMP_LIMB_BITS
++#endif
+   return BITS_PER_MP_LIMB == BYTES_PER_MP_LIMB * CHAR_BIT
+          && sizeof(mp_limb_t) == BYTES_PER_MP_LIMB ? 0 : 1;
+ 
+diff -Naurd configure.in configure.in
+--- configure.in	2009-11-30 02:43:08.000000000 +0000
++++ configure.in	2009-11-30 02:43:08.000000000 +0000
+@@ -424,6 +424,9 @@
+ #include "gmp.h"
+ #include "gmp-impl.h"
+ ]], [[
++#ifndef BITS_PER_MP_LIMB
++#define BITS_PER_MP_LIMB GMP_LIMB_BITS
++#endif
+   return BITS_PER_MP_LIMB == BYTES_PER_MP_LIMB * CHAR_BIT
+          && sizeof(mp_limb_t) == BYTES_PER_MP_LIMB ? 0 : 1;
+ ]])], [AC_MSG_RESULT(yes)], [
+diff -Naurd mpfr-impl.h mpfr-impl.h
+--- mpfr-impl.h	2009-11-30 02:43:08.000000000 +0000
++++ mpfr-impl.h	2010-01-11 15:28:01.000000000 +0000
+@@ -65,6 +65,12 @@
+ # ifndef __GMP_IMPL_H__
+ #  include "gmp-impl.h"
+ # endif
++# ifndef BITS_PER_MP_LIMB
++#  define BITS_PER_MP_LIMB GMP_LIMB_BITS
++# endif
++#ifndef mpn_sqr_n
++# define mpn_sqr_n mpn_sqr
++#endif
+ # ifdef MPFR_NEED_LONGLONG_H
+ #  include "longlong.h"
+ # endif
+diff -Naurd mpfr.h mpfr.h
+--- mpfr.h	2009-12-18 12:05:09.000000000 +0000
++++ mpfr.h	2010-01-11 15:29:40.000000000 +0000
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 2
+ #define MPFR_VERSION_MINOR 4
+ #define MPFR_VERSION_PATCHLEVEL 2
+-#define MPFR_VERSION_STRING "2.4.2-p2"
++#define MPFR_VERSION_STRING "2.4.2-p3"
+ 
+ /* Macros dealing with MPFR VERSION */
+ #define MPFR_VERSION_NUM(a,b,c) (((a) << 16L) | ((b) << 8) | (c))
+diff -Naurd version.c version.c
+--- version.c	2009-12-18 12:05:09.000000000 +0000
++++ version.c	2010-01-11 15:29:40.000000000 +0000
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "2.4.2-p2";
++  return "2.4.2-p3";
+ }
