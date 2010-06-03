@@ -72,7 +72,7 @@ $(GCC_KERNEL_BUILD_DIR)/.compiled: $(GCC_KERNEL_BUILD_DIR)/.configured
 	touch $@
 
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc: $(GCC_KERNEL_BUILD_DIR)/.compiled
-	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE) -C $(GCC_KERNEL_BUILD_DIR) install
+	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE1) -C $(GCC_KERNEL_BUILD_DIR) install
 	# Strip the host binaries
 ifeq ($(GCC_KERNEL_STRIP_HOST_BINARIES),true)
 	-strip --strip-all -R .note -R .comment $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-*
