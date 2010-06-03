@@ -118,7 +118,7 @@
  Wfloat-equal
  C ObjC C++ ObjC++ Var(warn_float_equal) Warning
  Warn if testing floating point numbers for equality
-@@ -609,6 +613,9 @@
+@@ -613,6 +617,9 @@
  fhonor-std
  C++ ObjC++
  
@@ -153,7 +153,7 @@
  ; On SVR4 targets, it also controls whether or not to emit a
 --- gcc/opts.c
 +++ gcc/opts.c
-@@ -896,9 +896,6 @@
+@@ -898,9 +898,6 @@
    flag_schedule_insns_after_reload = opt2;
  #endif
    flag_regmove = opt2;
@@ -163,7 +163,7 @@
    flag_reorder_blocks = opt2;
    flag_reorder_functions = opt2;
    flag_tree_vrp = opt2;
-@@ -922,6 +919,9 @@
+@@ -924,6 +921,9 @@
  
    /* -O3 optimizations.  */
    opt3 = (optimize >= 3);
@@ -173,7 +173,7 @@
    flag_predictive_commoning = opt3;
    flag_inline_functions = opt3;
    flag_unswitch_loops = opt3;
-@@ -1601,6 +1601,17 @@
+@@ -1603,6 +1603,17 @@
        enable_warning_as_error (arg, value, lang_mask);
        break;
  
@@ -216,7 +216,7 @@
  -Wfatal-errors  -Wfloat-equal  -Wformat  -Wformat=2 @gol
  -Wno-format-contains-nul -Wno-format-extra-args -Wformat-nonliteral @gol
  -Wformat-security  -Wformat-y2k @gol
-@@ -4161,6 +4161,22 @@
+@@ -4182,6 +4182,22 @@
  @option{-Wall} and by @option{-pedantic}, which can be disabled with
  @option{-Wno-pointer-sign}.
  
@@ -239,7 +239,7 @@
  @item -Wstack-protector
  @opindex Wstack-protector
  @opindex Wno-stack-protector
-@@ -5699,7 +5715,7 @@
+@@ -5720,7 +5736,7 @@
  second branch or a point immediately following it, depending on whether
  the condition is known to be true or false.
  
@@ -248,7 +248,7 @@
  
  @item -fsplit-wide-types
  @opindex fsplit-wide-types
-@@ -5844,7 +5860,7 @@
+@@ -5865,7 +5881,7 @@
  @option{-fno-delete-null-pointer-checks} to disable this optimization
  for programs which depend on that behavior.
  
