@@ -27,8 +27,7 @@ kernel-toolchain-source: $(KERNEL_TOOLCHAIN_DIR) \
 kernel-toolchain-clean:
 	$(RM) $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)*
 	-$(MAKE) -C $(BINUTILS_KERNEL_DIR) clean
-	$(RM) -r $(GCC_KERNELBUILD_DIR1)
-	$(RM) -r $(GCC_KERNELBUILD_DIR2)
+	$(RM) -r $(GCC_KERNELBUILD_DIR)
 ifeq ($(strip $(FREETZ_KERNEL_CCACHE)),y)
 	$(RM) $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_TARGET_NAME)*
 	-$(MAKE) -C $(CCACHE_KERNEL_DIR) clean
