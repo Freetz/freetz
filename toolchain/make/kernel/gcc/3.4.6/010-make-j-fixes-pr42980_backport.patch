@@ -1,0 +1,216 @@
+diff -x CVS -x .svn -urN boehm-gc/Makefile.in boehm-gc/Makefile.in
+--- boehm-gc/Makefile.in	2006-03-06 04:55:49.000000000 +0100
++++ boehm-gc/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+@@ -561,6 +561,7 @@
+ 
+ install-am: all-am
+ 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
++	@$(MAKE) $(AM_MAKEFLAGS) install-multi
+ install: install-recursive
+ uninstall-am:
+ uninstall: uninstall-recursive
+@@ -648,16 +649,16 @@
+ 	maintainer-clean-multi
+ 
+ all-am: all-multi
+-install-am: install-multi
++install-am:
+ mostlyclean-am: mostlyclean-multi
+ clean-am: clean-multi
+ distclean-am: distclean-multi
+ maintainer-clean-am: maintainer-clean-multi
+ 
+ all-multi:
+-	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
+ install-multi:
+-	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
+ mostlyclean-multi:
+ 	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
+ clean-multi:
+diff -x CVS -x .svn -urN libf2c/Makefile.in libf2c/Makefile.in
+--- libf2c/Makefile.in	2004-02-08 02:37:29.000000000 +0100
++++ libf2c/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+@@ -125,7 +125,7 @@
+ # the dependency) and then (perhaps) builds multilibs.
+ 
+ all: all-unilib
+-	: $(MAKE) ; exec $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="all-unilib"
++	: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="all-unilib"
+ 
+ # `all-unilib' is the overall target in the absence of multilibs,
+ # meant to be invoked via multi-do for multilibs.
+@@ -220,7 +220,7 @@
+ 	$(INSTALL_DATA) libfrtbegin.a $(DESTDIR)$(glibcpp_toolexeclibdir)
+ 	$(RANLIB) $(DESTDIR)$(glibcpp_toolexeclibdir)/libfrtbegin.a
+ 	$(INSTALL_DATA) g2c.h $(DESTDIR)$(libsubdir)/include/g2c.h
+-	$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
++	: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
+ 	@-$(LIBTOOL) --mode=finish $(DESTDIR)$(glibcpp_toolexeclibdir)
+ 
+ install-strip:
+@@ -230,7 +230,7 @@
+ 	rm -f $(DESTDIR)$(libsubdir)/include/g2c.h
+ 	rm -f $(DESTDIR)$(glibcpp_toolexeclibdir)/libfrtbegin.a
+ 	$(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(glibcpp_toolexeclibdir)$(LIBG2C_BASE).la
+-	$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
++	: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
+ 
+ mostlyclean:
+ 	rm -f $(LIBG2C) objlist
+diff -x CVS -x .svn -urN libffi/Makefile.in libffi/Makefile.in
+--- libffi/Makefile.in	2003-11-22 14:41:33.000000000 +0100
++++ libffi/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+@@ -762,9 +763,9 @@
+ maintainer-clean-recursive: maintainer-clean-multi
+ 
+ all-multi:
+-	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
+ install-multi:
+-	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
+ mostlyclean-multi:
+ 	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
+ clean-multi:
+diff -x CVS -x .svn -urN libiberty/Makefile.in libiberty/Makefile.in
+--- libiberty/Makefile.in	2004-01-14 22:27:28.000000000 +0100
++++ libiberty/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+@@ -107,7 +107,7 @@
+ 
+ # FIXME: add @BUILD_INFO@ once we're sure it works for everyone.
+ all: stamp-picdir $(TARGETLIB) needed-list required-list all-subdir
+-	@: $(MAKE) ; exec $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
+ 
+ .PHONY: check installcheck
+ check: check-subdir
+@@ -284,7 +284,7 @@
+ 	    ${INSTALL_DATA} $$h $(DESTDIR)$${thd}; \
+ 	  done; \
+ 	fi
+-	@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
+ 
+ # This is tricky.  Even though CC in the Makefile contains
+ # multilib-specific flags, it's overridden by FLAGS_TO_PASS from the
+@@ -296,7 +296,7 @@
+ 	$(INSTALL_DATA) $(TARGETLIB) $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)/$(TARGETLIB)n
+ 	( cd $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR) ; $(RANLIB) $(TARGETLIB)n )
+ 	mv -f $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)/$(TARGETLIB)n $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)/$(TARGETLIB)
+-	@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
+ 
+ # needed-list is used by libstdc++.  NEEDED is the list of functions
+ # to include there.  Do not add anything LGPL to this list; libstdc++
+diff -x CVS -x .svn -urN libjava/Makefile.in libjava/Makefile.in
+--- libjava/Makefile.in	2006-03-06 04:55:49.000000000 +0100
++++ libjava/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+@@ -5520,9 +5521,9 @@
+ maintainer-clean-recursive: maintainer-clean-multi
+ 
+ all-multi:
+-	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
+ install-multi:
+-	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
+ mostlyclean-multi:
+ 	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
+ clean-multi:
+diff -x CVS -x .svn -urN libobjc/Makefile.in libobjc/Makefile.in
+--- libobjc/Makefile.in	2004-03-01 16:33:48.000000000 +0100
++++ libobjc/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+@@ -131,7 +131,7 @@
+ 	"tooldir=$(tooldir)"
+ 
+ all: libobjc.la $(OBJC_BOEHM_GC)
+-	: $(MAKE) ; exec $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
++	: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
+ 
+ # User-visible header files.
+ 
+@@ -318,7 +318,7 @@
+ 	  $(LIBTOOL_INSTALL) $(INSTALL) libobjc_gc.la \
+ 				$(DESTDIR)$(glibcpp_toolexeclibdir);\
+ 	fi
+-	$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
++	: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
+ 	@-$(LIBTOOL) --mode=finish $(DESTDIR)$(glibcpp_toolexeclibdir)
+ 
+ # Copy Objective C headers to installation include directory.
+diff -x CVS -x .svn -urN libstdc++-v3/Makefile.in libstdc++-v3/Makefile.in
+--- libstdc++-v3/Makefile.in	2004-03-18 18:38:22.000000000 +0100
++++ libstdc++-v3/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+@@ -589,6 +589,7 @@
+ 
+ install-am: all-am
+ 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
++	@$(MAKE) $(AM_MAKEFLAGS) install-multi
+ 
+ installcheck: installcheck-recursive
+ install-strip:
+@@ -626,7 +627,7 @@
+ 
+ install-data-am:
+ 
+-install-exec-am: install-multi
++install-exec-am:
+ 
+ install-info: install-info-recursive
+ 
+@@ -715,9 +716,9 @@
+ maintainer-clean-recursive: maintainer-clean-multi
+ 
+ all-multi:
+-	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
+ install-multi:
+-	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
+ mostlyclean-multi:
+ 	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
+ clean-multi:
+diff -x CVS -x .svn -urN Makefile.in Makefile.in
+--- Makefile.in	2004-09-24 02:43:53.000000000 +0200
++++ Makefile.in	2010-06-02 00:00:00.000000000 +0200
+@@ -23615,6 +23615,7 @@
+ all-target-libobjc: maybe-all-target-libiberty
+ configure-target-libstdc++-v3: $(ALL_GCC_C)
+ all-target-libstdc++-v3: maybe-all-target-libiberty
++install-target-libiberty: maybe-install-libiberty
+ configure-target-zlib: $(ALL_GCC_C)
+ 
+ # Target modules in the 'src' repository.
+diff -x CVS -x .svn -urN zlib/Makefile.in zlib/Makefile.in
+--- zlib/Makefile.in	2003-01-28 02:48:38.000000000 +0100
++++ zlib/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+@@ -400,6 +400,7 @@
+ 
+ install-am: all-am
+ 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
++	@$(MAKE) $(AM_MAKEFLAGS) install-multi
+ install: install-am
+ uninstall-am: uninstall-toolexeclibLIBRARIES
+ uninstall: uninstall-am
+@@ -472,16 +473,16 @@
+ 	maintainer-clean-multi
+ 
+ all-am: all-multi
+-install-am: install-multi
++install-am:
+ mostlyclean-am: mostlyclean-multi
+ clean-am: clean-multi
+ distclean-am: distclean-multi
+ maintainer-clean-am: maintainer-clean-multi
+ 
+ all-multi:
+-	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
+ install-multi:
+-	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
+ mostlyclean-multi:
+ 	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
+ clean-multi:
