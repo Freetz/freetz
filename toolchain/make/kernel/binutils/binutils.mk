@@ -46,7 +46,7 @@ $(BINUTILS_KERNEL_DIR1)/binutils/objdump: $(BINUTILS_KERNEL_DIR1)/.configured
 	$(MAKE) $(BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_KERNEL_DIR1) all
 
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld: $(BINUTILS_KERNEL_DIR1)/binutils/objdump
-	$(MAKE) -C $(BINUTILS_KERNEL_DIR1) install
+	$(MAKE1) -C $(BINUTILS_KERNEL_DIR1) install
 
 binutils-kernel-dependencies:
 	@if ! which bison > /dev/null ; then \
@@ -67,7 +67,7 @@ binutils-kernel-source: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 binutils-kernel-clean:
 	rm -rf $(KERNEL_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
 	$(KERNEL_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
-	-$(MAKE) -C $(BINUTILS_KERNEL_DIR1) DESTDIR=$(KERNEL_TOOLCHAIN_STAGING_DIR) \
+	-$(MAKE1) -C $(BINUTILS_KERNEL_DIR1) DESTDIR=$(KERNEL_TOOLCHAIN_STAGING_DIR) \
 		tooldir=/usr build_tooldir=/usr uninstall
 	-$(MAKE) -C $(BINUTILS_KERNEL_DIR1) clean
 

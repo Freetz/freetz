@@ -82,7 +82,7 @@ $(BINUTILS_DIR1)/binutils/objdump: $(BINUTILS_DIR1)/.configured
 	$(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) all
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/binutils/objdump
-	$(MAKE) -C $(BINUTILS_DIR1) install
+	$(MAKE1) -C $(BINUTILS_DIR1) install
 
 binutils-dependencies:
 	@if ! which bison > /dev/null ; then \
@@ -103,7 +103,7 @@ binutils-source: $(DL_DIR)/$(BINUTILS_SOURCE)
 binutils-clean:
 	rm -rf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
 	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
-	-$(MAKE) -C $(BINUTILS_DIR1) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) \
+	-$(MAKE1) -C $(BINUTILS_DIR1) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		tooldir=/usr build_tooldir=/usr uninstall
 	-$(MAKE) -C $(BINUTILS_DIR1) clean
 
@@ -144,7 +144,7 @@ $(BINUTILS_DIR2)/binutils/objdump: $(BINUTILS_DIR2)/.configured
 
 $(TARGET_UTILS_DIR)/usr/bin/ld: $(BINUTILS_DIR2)/binutils/objdump
 	PATH=$(TARGET_PATH) \
-	$(MAKE) DESTDIR=$(TARGET_UTILS_DIR) \
+	$(MAKE1) DESTDIR=$(TARGET_UTILS_DIR) \
 		tooldir=/usr build_tooldir=/usr \
 		-C $(BINUTILS_DIR2) install
 	rm -rf $(TARGET_UTILS_DIR)/share/locale $(TARGET_UTILS_DIR)/usr/info \
