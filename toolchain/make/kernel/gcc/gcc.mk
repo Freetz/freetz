@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2002-2003 Erik Andersen <andersen@uclibc.org>
 # Copyright (C) 2004 Manuel Novoa III <mjn3@uclibc.org>
-# Copyright (C) 2006 Daniel Eiband <eiband@online.de> 
+# Copyright (C) 2006 Daniel Eiband <eiband@online.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ $(GCC_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 
 $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked
 	mkdir -p $(GCC_KERNEL_BUILD_DIR)
-	( cd $(GCC_KERNEL_BUILD_DIR); PATH=$(KERNEL_TOOLCHAIN_PATH) \
+	(cd $(GCC_KERNEL_BUILD_DIR); PATH=$(KERNEL_TOOLCHAIN_PATH) \
 		CC="$(HOSTCC)" \
 		$(GCC_KERNEL_DIR)/configure \
 		--prefix=$(KERNEL_TOOLCHAIN_STAGING_DIR) \
@@ -85,11 +85,11 @@ gcc-kernel-source: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 gcc-kernel-clean:
 	rm -rf $(GCC_KERNEL_BUILD_DIR)
 	for prog in cpp gcc gcc-kernel-[0-9]* protoize unprotoize gcov gccbug cc; do \
-	    rm -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-$$prog \
-	    rm -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_KERNEL_NAME)-$$prog; \
+		rm -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-$$prog; \
+		rm -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_KERNEL_NAME)-$$prog; \
 	done
 
 gcc-kernel-dirclean:
-	rm -rf $(GCC_KERNEL_BUILD_DIR)  $(GCC_KERNEL_DIR)
+	rm -rf $(GCC_KERNEL_BUILD_DIR) $(GCC_KERNEL_DIR)
 
 .PHONY: gcc-kernel
