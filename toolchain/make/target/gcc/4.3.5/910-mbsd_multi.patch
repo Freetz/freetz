@@ -1,5 +1,5 @@
---- gcc/c-opts.c.orig	2008-01-22 15:11:44.000000000 +0100
-+++ gcc/c-opts.c	2009-04-09 05:07:46.000000000 +0200
+--- gcc/c-opts.c.orig	2008-01-22 14:11:44.000000000 +0000
++++ gcc/c-opts.c	2010-06-02 16:31:02.368360192 +0000
 @@ -108,6 +108,9 @@
  /* Number of deferred options scanned for -include.  */
  static size_t include_cursor;
@@ -86,8 +86,8 @@
    return true;
  }
  
---- gcc/c.opt.orig	2008-01-13 01:22:38.000000000 +0100
-+++ gcc/c.opt	2009-04-09 05:07:46.000000000 +0200
+--- gcc/c.opt.orig	2008-01-13 00:22:38.000000000 +0000
++++ gcc/c.opt	2010-06-02 16:31:02.368360192 +0000
 @@ -207,6 +207,10 @@
  C ObjC RejectNegative Warning
  This switch is deprecated; use -Werror=implicit-function-declaration instead
@@ -109,8 +109,8 @@
  fhosted
  C ObjC
  Assume normal C execution environment
---- gcc/common.opt.orig	2008-01-22 15:11:44.000000000 +0100
-+++ gcc/common.opt	2009-04-09 05:07:46.000000000 +0200
+--- gcc/common.opt.orig	2008-01-22 14:11:44.000000000 +0000
++++ gcc/common.opt	2010-06-02 16:31:02.368360192 +0000
 @@ -102,6 +102,10 @@
  Common Joined
  Treat specified warning as error
@@ -132,8 +132,8 @@
  ; Nonzero means ignore `#ident' directives.  0 means handle them.
  ; Generate position-independent code for executables if possible
  ; On SVR4 targets, it also controls whether or not to emit a
---- gcc/opts.c.orig	2008-06-11 11:16:09.000000000 +0200
-+++ gcc/opts.c	2009-04-09 05:07:46.000000000 +0200
+--- gcc/opts.c.orig	2008-06-11 09:16:09.000000000 +0000
++++ gcc/opts.c	2010-06-02 16:31:02.378367051 +0000
 @@ -830,9 +830,6 @@
        flag_schedule_insns_after_reload = 1;
  #endif
@@ -173,8 +173,8 @@
      case OPT_Wextra:
        set_Wextra (value);
        break;
---- gcc/doc/cppopts.texi.orig	2007-07-30 20:29:20.000000000 +0200
-+++ gcc/doc/cppopts.texi	2009-04-09 05:07:46.000000000 +0200
+--- gcc/doc/cppopts.texi.orig	2007-07-30 18:29:20.000000000 +0000
++++ gcc/doc/cppopts.texi	2010-06-02 16:31:02.378367051 +0000
 @@ -168,6 +168,11 @@
  Make all warnings into hard errors.  Source code which triggers warnings
  will be rejected.
@@ -187,8 +187,8 @@
  @item -Wsystem-headers
  @opindex Wsystem-headers
  Issue warnings for code in system headers.  These are normally unhelpful
---- gcc/doc/invoke.texi.orig	2008-11-21 17:21:50.000000000 +0100
-+++ gcc/doc/invoke.texi	2009-04-09 05:07:46.000000000 +0200
+--- gcc/doc/invoke.texi.orig	2009-01-27 18:45:49.000000000 +0000
++++ gcc/doc/invoke.texi	2010-06-02 16:31:02.388360570 +0000
 @@ -233,7 +233,7 @@
  -Wconversion  -Wcoverage-mismatch  -Wno-deprecated-declarations @gol
  -Wdisabled-optimization  -Wno-div-by-zero  @gol
@@ -221,7 +221,7 @@
  @item -Wstack-protector
  @opindex Wstack-protector
  @opindex Wno-stack-protector
-@@ -5492,7 +5508,7 @@
+@@ -5493,7 +5509,7 @@
  second branch or a point immediately following it, depending on whether
  the condition is known to be true or false.
  
@@ -230,7 +230,7 @@
  
  @item -fsplit-wide-types
  @opindex fsplit-wide-types
-@@ -5637,7 +5653,7 @@
+@@ -5638,7 +5654,7 @@
  @option{-fno-delete-null-pointer-checks} to disable this optimization
  for programs which depend on that behavior.
  
@@ -239,8 +239,8 @@
  
  @item -fexpensive-optimizations
  @opindex fexpensive-optimizations
---- gcc/java/jvspec.c.orig	2007-07-31 18:19:49.000000000 +0200
-+++ gcc/java/jvspec.c	2009-04-09 05:07:46.000000000 +0200
+--- gcc/java/jvspec.c.orig	2007-07-31 16:19:49.000000000 +0000
++++ gcc/java/jvspec.c	2010-06-02 16:31:02.408364858 +0000
 @@ -670,6 +670,7 @@
       class name.  Append dummy `.c' that can be stripped by set_input so %b
       is correct.  */ 
