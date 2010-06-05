@@ -3,7 +3,7 @@ UCLIBC_DIR:=$(TARGET_TOOLCHAIN_DIR)/uClibc-$(UCLIBC_VERSION)
 UCLIBC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/uclibc
 UCLIBC_SOURCE:=uClibc-$(UCLIBC_VERSION).tar.bz2
 UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
-UCLIBC_SOURCE_SITE2:=http://www.uclibc.org/downloads/old-releases 
+UCLIBC_SOURCE_SITE2:=http://www.uclibc.org/downloads/old-releases
 
 UCLIBC_KERNEL_SOURCE_DIR:=$(KERNEL_SOURCE_DIR)
 UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DIR)
@@ -11,6 +11,10 @@ UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DIR)
 # uClibc pregenerated locale data
 UCLIBC_SITE_LOCALE:=http://www.uclibc.org/downloads
 UCLIBC_SOURCE_LOCALE:=uClibc-locale-030818.tgz
+
+ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
+UCLIBC_VERBOSE_BUILD_FLAGS := V=1
+endif
 
 $(DL_DIR)/$(UCLIBC_SOURCE_LOCALE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(UCLIBC_SOURCE_LOCALE) $(UCLIBC_SITE_LOCALE)
@@ -61,6 +65,7 @@ endif
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/lib
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/lib
 	$(MAKE1) -C $(UCLIBC_DIR) \
+		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
@@ -70,6 +75,7 @@ endif
 
 $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 	$(MAKE1) -C $(UCLIBC_DIR) \
+		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
@@ -83,11 +89,12 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
 		$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
 	    fi; \
-	fi;			
+	fi;
 	touch $@
 
 uclibc-menuconfig: $(UCLIBC_DIR)/.config
 	$(MAKE1) -C $(UCLIBC_DIR) \
+		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
@@ -98,6 +105,7 @@ uclibc-menuconfig: $(UCLIBC_DIR)/.config
 
 $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(gcc_initial)
 	$(MAKE1) -C $(UCLIBC_DIR) \
+		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
 		PREFIX= \
 		DEVEL_PREFIX=/ \
 		RUNTIME_PREFIX=/ \
@@ -108,6 +116,7 @@ $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(gcc_initial)
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
+		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
 		PREFIX=/ \
 		DEVEL_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
@@ -120,9 +129,10 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
 		    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
 	    fi; \
-	fi;								    
-	# Build the host utils. 
+	fi;
+	# Build the host utils.
 	$(MAKE1) -C $(UCLIBC_DIR)/utils \
+		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		HOSTCC="$(HOSTCC)" \
 		hostutils
@@ -134,6 +144,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
+		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
 		PREFIX="$(FREETZ_BASE_DIR)/$(ROOT_DIR)" \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=/ \
@@ -182,6 +193,7 @@ uclibc-dirclean:
 
 $(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
+		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
 		PREFIX=$(TARGET_UTILS_DIR) \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=/ \
