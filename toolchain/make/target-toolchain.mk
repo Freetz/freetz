@@ -1,3 +1,11 @@
+TARGET_TOOLCHAIN_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
+TARGET_TOOLCHAIN_DEVEL_SYSROOT=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/
+
+TARGET_TOOLCHAIN_PREFIX-gcc-final-phase=$(TARGET_TOOLCHAIN_STAGING_DIR)
+# NB: in order the toolchain to be relocatable this must be a subdir of TARGET_TOOLCHAIN_PREFIX-gcc-final-phase
+# TODO: modify gcc, so that we don't need this hack
+TARGET_TOOLCHAIN_SYSROOT=$(TARGET_TOOLCHAIN_PREFIX-gcc-final-phase)/usr/
+
 include $(TOOLCHAIN_DIR)/make/target/*/*.mk
 
 ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
@@ -17,9 +25,10 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@
 	@mkdir -p $@/bin
 	@mkdir -p $@/lib
-	@ln -snf . $(TARGET_TOOLCHAIN_STAGING_DIR)/usr
-	@mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)
-	@ln -snf ../lib $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/lib
+	@ln -snf . $@/usr
+	@mkdir -p $@/usr/$(REAL_GNU_TARGET_NAME)
+	@ln -snf ../lib $@/usr/$(REAL_GNU_TARGET_NAME)/lib
+	@ln -snf ../include $@/usr/$(REAL_GNU_TARGET_NAME)/include
 	@mkdir -p $@/usr/lib/pkgconfig
 	@mkdir -p $@/target-utils
 

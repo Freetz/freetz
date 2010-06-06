@@ -20,15 +20,7 @@ config FREETZ_KERNEL_VERSION
 	default "2.6.13.1" if FREETZ_KERNEL_VERSION_2_6_13_1
 	default "2.6.19.2" if FREETZ_KERNEL_VERSION_2_6_19_2
 
-config FREETZ_TARGET_UCLIBC_VERSION_0_9_28
-	bool
-	default y if \
-		! FREETZ_TARGET_UCLIBC_VERSION_0_9_29 && \
-		! FREETZ_TARGET_UCLIBC_VERSION_0_9_30 && \
-		! FREETZ_TARGET_UCLIBC_VERSION_0_9_31
-	default n
-
-config FREETZ_TARGET_UCLIBC_VERSION_0_9_29
+config FREETZ_UCLIBC_0_9_29_BASED_BOX
 	bool
 	default y if \
 		FREETZ_TYPE_WLAN_3270 || \
@@ -45,13 +37,29 @@ config FREETZ_TARGET_UCLIBC_VERSION_0_9_29
 		FREETZ_TYPE_FON_WLAN_7570
 	default n
 
-config FREETZ_TARGET_UCLIBC_VERSION_0_9_30
-	bool
-	default n
+choice
 
-config FREETZ_TARGET_UCLIBC_VERSION_0_9_31
-	bool
-	default n
+	prompt "Target uClibc version"
+	default FREETZ_TARGET_UCLIBC_VERSION_0_9_29 if FREETZ_UCLIBC_0_9_29_BASED_BOX
+	default FREETZ_TARGET_UCLIBC_VERSION_0_9_28 if !FREETZ_UCLIBC_0_9_29_BASED_BOX
+
+	config FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	bool "0.9.28"
+	depends on !FREETZ_UCLIBC_0_9_29_BASED_BOX
+
+	config FREETZ_TARGET_UCLIBC_VERSION_0_9_29
+	bool "0.9.29"
+	depends on FREETZ_UCLIBC_0_9_29_BASED_BOX
+
+	config FREETZ_TARGET_UCLIBC_VERSION_0_9_30
+	bool "0.9.30"
+	depends on FREETZ_UCLIBC_0_9_29_BASED_BOX
+
+	config FREETZ_TARGET_UCLIBC_VERSION_0_9_31
+	bool "0.9.31"
+	depends on FREETZ_UCLIBC_0_9_29_BASED_BOX
+
+endchoice
 
 choice
 
@@ -62,25 +70,30 @@ choice
 	config FREETZ_TARGET_COMPILER_GCC_4_2_4_UCLIBC_0_9_28
 		bool "gcc-4.2.4-uClibc-0.9.28"
 		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_28
-	
+
 	config FREETZ_TARGET_COMPILER_GCC_4_2_4_UCLIBC_0_9_29
 		bool "gcc-4.2.4-uClibc-0.9.29"
 		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_29
 
 	config FREETZ_TARGET_COMPILER_GCC_4_3_5_UCLIBC_0_9_29
 		bool "gcc-4.3.5-uClibc-0.9.29"
-		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_29 && \
-				FREETZ_BUILD_TOOLCHAIN
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_29 && FREETZ_BUILD_TOOLCHAIN
+
+	config FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_29
+		bool "gcc-4.4.4-uClibc-0.9.29"
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_29 && FREETZ_BUILD_TOOLCHAIN
 
 	config FREETZ_TARGET_COMPILER_GCC_4_3_5_UCLIBC_0_9_30
 		bool "gcc-4.3.5-uClibc-0.9.30.3"
-		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_30 && \
-				FREETZ_BUILD_TOOLCHAIN
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_30 && FREETZ_BUILD_TOOLCHAIN
+
+	config FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_30
+		bool "gcc-4.4.4-uClibc-0.9.30.3"
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_30 && FREETZ_BUILD_TOOLCHAIN
 
 	config FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_31
 		bool "gcc-4.4.4-uClibc-0.9.31"
-		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_31 && \
-				FREETZ_BUILD_TOOLCHAIN
+		depends on FREETZ_TARGET_UCLIBC_VERSION_0_9_31 && FREETZ_BUILD_TOOLCHAIN
 
 endchoice
 
@@ -90,13 +103,9 @@ config FREETZ_TARGET_GCC_VERSION
 	default "4.2.4"		if FREETZ_TARGET_COMPILER_GCC_4_2_4_UCLIBC_0_9_29
 	default "4.3.5"		if FREETZ_TARGET_COMPILER_GCC_4_3_5_UCLIBC_0_9_29
 	default "4.3.5"		if FREETZ_TARGET_COMPILER_GCC_4_3_5_UCLIBC_0_9_30
+	default "4.4.4"		if FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_29
+	default "4.4.4"		if FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_30
 	default "4.4.4"		if FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_31
-
-config FREETZ_TARGET_GCC_VERSION_4_3
-	bool
-	default y		if FREETZ_TARGET_COMPILER_GCC_4_3_5_UCLIBC_0_9_29 || \
-						FREETZ_TARGET_COMPILER_GCC_4_3_5_UCLIBC_0_9_30 || \
-						FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_31
 
 config FREETZ_TARGET_UCLIBC_VERSION
 	string
@@ -111,6 +120,8 @@ config FREETZ_TARGET_BINUTILS_VERSION
 	default "2.18"		if FREETZ_TARGET_COMPILER_GCC_4_2_4_UCLIBC_0_9_29
 	default "2.19.1"	if FREETZ_TARGET_COMPILER_GCC_4_3_5_UCLIBC_0_9_29
 	default "2.19.1"	if FREETZ_TARGET_COMPILER_GCC_4_3_5_UCLIBC_0_9_30
+	default "2.20.51.0.9"	if FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_29
+	default "2.20.51.0.9"	if FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_30
 	default "2.20.51.0.9"	if FREETZ_TARGET_COMPILER_GCC_4_4_4_UCLIBC_0_9_31
 
 choice
@@ -123,7 +134,7 @@ choice
 
 	config FREETZ_TARGET_UCLIBC_CONFIG_8MB
 		bool "8MB"
-	
+
 	config FREETZ_TARGET_UCLIBC_CONFIG_4MB
 		bool "4MB" if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
 
@@ -147,7 +158,7 @@ config FREETZ_TARGET_GXX
 	help
 		g++ is the traditional nickname of GNU C++, a freely redistributable
 		C++ compiler. It is part of gcc, the GNU compiler suite, and is
-		currently part of that distribution. 
+		currently part of that distribution.
 
 config FREETZ_TARGET_CCACHE
 	bool "Build ccache for target toolchains"
@@ -157,7 +168,7 @@ config FREETZ_TARGET_CCACHE
 		compilers, using the -E compiler switch and a hash to detect when a
 		compilation can be satisfied from cache. This often results in a 5 to 10
 		times speedup in common compilations.
-		
+
 		The idea came from Erik Thiele wrote the original compilercache program
 		as a bourne shell script. ccache is a re-implementation of Erik's idea
 		in C with more features and better performance.
@@ -168,7 +179,7 @@ config FREETZ_TARGET_NLS
 	default n
 	help
 		Support NLS-enabled programs and Linux tools on target system.
-		
+
 		Example:
 			$ ls /foo/bar
 			ls: /foo/bar: No such file or directory
@@ -181,7 +192,7 @@ config FREETZ_TARGET_LFS
 	default y
 	help
 		Support files > 2 GB on target system. This is desirable for Torrent
-		clients, for example. This option is enabled by default and should not 
+		clients, for example. This option is enabled by default and should not
 		be changed unless you know what you are doing, as it can easily cause
 		problems.
 
@@ -192,7 +203,7 @@ choice
 
 	config FREETZ_KERNEL_COMPILER_GCC_3_4_6
 		bool "gcc-3.4.6"
-	
+
 endchoice
 
 config FREETZ_KERNEL_GCC_VERSION
@@ -225,7 +236,7 @@ config FREETZ_PACKAGE_GDB_SERVER
 	bool "Build gdb server for target"
 	default n
 	help
-		Build the gdbserver stub to run on the target. 
+		Build the gdbserver stub to run on the target.
 		Files are installed into toolchain/target/target-utils.
 		A full gdb is needed to debug the progam.
 

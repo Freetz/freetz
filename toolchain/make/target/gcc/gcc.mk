@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2002-2003 Erik Andersen <andersen@uclibc.org>
 # Copyright (C) 2004 Manuel Novoa III <mjn3@uclibc.org>
-# Copyright (C) 2006 Daniel Eiband <eiband@online.de> 
+# Copyright (C) 2006 Daniel Eiband <eiband@online.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ GCC_INITIAL_PREREQ=
 GCC_STAGING_PREREQ=
 GCC_TARGET_PREREQ=
 
-ifeq ($(strip $(FREETZ_TARGET_GCC_VERSION_4_3)),y)
+ifndef TARGET_TOOLCHAIN_NO_MPFR
 GCC_BUILD_TARGET_LIBGCC:=y
 GCC_DECIMAL_FLOAT:=--disable-decimal-float
 
@@ -39,25 +39,19 @@ GCC_WITH_HOST_GMP=--with-gmp=$(GMP_HOST_DIR)
 GCC_WITH_HOST_MPFR=--with-mpfr=$(MPFR_HOST_DIR)
 GCC_WITH_TARGET_GMP=--with-gmp=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
 GCC_WITH_TARGET_MPFR=--with-mpfr=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
-endif
 
 GCC_STAGING_PREREQ+=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
-
-GCC_TARGET_LANGUAGES:=c
+endif
 
 GCC_CROSS_LANGUAGES:=c
+GCC_TARGET_LANGUAGES:=c
 ifeq ($(strip $(FREETZ_TARGET_GXX)),y)
 GCC_CROSS_LANGUAGES:=$(GCC_CROSS_LANGUAGES),c++
 GCC_TARGET_LANGUAGES:=$(GCC_TARGET_LANGUAGES),c++
-else
-GCC_CROSS_LANGUAGES:=$(GCC_CROSS_LANGUAGES)
-GCC_TARGET_LANGUAGES:=$(GCC_TARGET_LANGUAGES)
 endif
 
 ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 GCC_EXTRA_MAKE_OPTIONS:="LDFLAGS=-static"
-else
-GCC_EXTRA_MAKE_OPTIONS:=
 endif
 
 GCC_STRIP_HOST_BINARIES:=true
@@ -81,7 +75,6 @@ $(GCC_DIR)/.patched: $(GCC_DIR)/.unpacked
 	done
 	touch $@
 
-
 ##############################################################################
 #
 #   build the first pass gcc compiler
@@ -91,17 +84,17 @@ GCC_BUILD_DIR1:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-initial
 
 $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.patched $(GCC_INITIAL_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR1)
-	( cd $(GCC_BUILD_DIR1); rm -rf config.cache; \
+	(cd $(GCC_BUILD_DIR1); $(RM) config.cache; \
 		PATH=$(TARGET_PATH) \
 		CC="$(HOSTCC)" \
 		$(GCC_DIR)/configure \
-		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
+		--prefix=$(TARGET_TOOLCHAIN_PREFIX) \
+		--with-sysroot=$(TARGET_TOOLCHAIN_DEVEL_SYSROOT) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
 		--enable-languages=c \
 		--disable-shared \
-		--with-sysroot=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
 		--disable-__cxa_atexit \
 		--enable-target-optspace \
 		--with-gnu-ld \
@@ -117,9 +110,7 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.patched $(GCC_INITIAL_PREREQ)
 	);
 	touch $@
 
-
 $(GCC_BUILD_DIR1)/.compiled: $(GCC_BUILD_DIR1)/.configured
-# gcc >= 4.3.0 have to also build all-target-libgcc
 	PATH=$(TARGET_PATH) \
 		$(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR1) \
 		all-gcc \
@@ -128,20 +119,19 @@ $(GCC_BUILD_DIR1)/.compiled: $(GCC_BUILD_DIR1)/.configured
 
 gcc_initial=$(GCC_BUILD_DIR1)/.installed
 $(gcc_initial) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(GCC_BUILD_DIR1)/.compiled
-# gcc >= 4.3.0 have to also install install-target-libgcc
 	PATH=$(TARGET_PATH) \
-		 $(MAKE) -C $(GCC_BUILD_DIR1) \
+		$(MAKE) -C $(GCC_BUILD_DIR1) \
 		install-gcc \
-	 	$(if $(GCC_BUILD_TARGET_LIBGCC),install-target-libgcc)
+		$(if $(GCC_BUILD_TARGET_LIBGCC),install-target-libgcc)
 	touch $(gcc_initial)
 
 gcc_initial: uclibc-configured binutils $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
 
-gcc_initial-clean:
-	rm -rf $(GCC_BUILD_DIR1)
+gcc_initial-clean: gcc_initial-dirclean
+	$(RM) -r $(GCC_DIR)
 
 gcc_initial-dirclean:
-	rm -rf $(GCC_BUILD_DIR1) $(GCC_DIR)
+	$(RM) -r $(GCC_BUILD_DIR1)
 
 ##############################################################################
 #
@@ -155,11 +145,12 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.patched $(GCC_STAGING_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR2)
 	# Important!  Required for limits.h to be fixed.
 	ln -sf ../include $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/sys-include
-	( cd $(GCC_BUILD_DIR2); rm -rf config.cache; \
+	(cd $(GCC_BUILD_DIR2); $(RM) config.cache; \
 		PATH=$(TARGET_PATH) \
 		CC="$(HOSTCC)" \
 		$(GCC_DIR)/configure \
-		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr \
+		--prefix=$(TARGET_TOOLCHAIN_PREFIX-gcc-final-phase) \
+		--with-sysroot=$(TARGET_TOOLCHAIN_SYSROOT) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
@@ -192,12 +183,11 @@ ifeq ($(GCC_STRIP_HOST_BINARIES),true)
 endif
 	# Set up the symlinks to enable lying about target name.
 	set -e; \
-	( cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr; \
+	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr; \
 		ln -sf $(REAL_GNU_TARGET_NAME) $(GNU_TARGET_NAME); \
 		cd bin; \
 		for app in $(REAL_GNU_TARGET_NAME)-* ; do \
-			ln -sf $${app} \
-		   	$(GNU_TARGET_NAME)$${app##$(REAL_GNU_TARGET_NAME)}; \
+			ln -sf $${app} $(GNU_TARGET_NAME)$${app##$(REAL_GNU_TARGET_NAME)}; \
 		done; \
 	);
 	touch $@
@@ -208,15 +198,13 @@ cross_compiler gcc: uclibc-configured binutils gcc_initial uclibc \
 
 gcc-source: $(DL_DIR)/$(GCC_SOURCE)
 
-gcc-clean:
-	rm -rf $(GCC_BUILD_DIR2)
+gcc-clean: gcc-dirclean
 	for prog in cpp gcc gcc-[0-9]* protoize unprotoize gcov gccbug cc; do \
-	    rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-$$prog \
-	    rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-$$prog; \
+		$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/{$(REAL_GNU_TARGET_NAME),$(GNU_TARGET_NAME)}-$$prog; \
 	done
 
-gcc-dirclean: gcc_initial-dirclean
-	rm -rf $(GCC_BUILD_DIR2)
+gcc-dirclean:
+	$(RM) -r $(GCC_BUILD_DIR2)
 
 .PHONY: gcc gcc_initial
 
@@ -229,7 +217,7 @@ GCC_BUILD_DIR3:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-target
 
 $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR3)
-	( cd $(GCC_BUILD_DIR3); rm -rf config.cache; \
+	(cd $(GCC_BUILD_DIR3); $(RM) config.cache; \
 		GCC="$(TARGET_CC)" \
 		CFLAGS_FOR_BUILD="-g -O2 $(HOST_CFLAGS)" \
 		$(TARGET_CONFIGURE_ENV) \
@@ -258,7 +246,7 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 
 $(GCC_BUILD_DIR3)/.compiled: $(GCC_BUILD_DIR3)/.configured
 	PATH=$(TARGET_PATH) \
-		$(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C$(GCC_BUILD_DIR3) all
+		$(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR3) all
 	touch $@
 
 #
@@ -266,7 +254,8 @@ $(GCC_BUILD_DIR3)/.compiled: $(GCC_BUILD_DIR3)/.configured
 #
 GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
 GCC_INCLUDE_DIR:=include
-ifeq ($(findstring 4.3.3,$(FREETZ_TARGET_GCC_VERSION)),4.3.3)
+# TODO: what is this for?
+ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.3)
 GCC_INCLUDE_DIR:=include-fixed
 endif
 
@@ -274,15 +263,15 @@ $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
 	PATH=$(TARGET_PATH) DESTDIR=$(TARGET_UTILS_DIR) \
 		$(MAKE1) -C $(GCC_BUILD_DIR3) install
 
-	# Remove broken specs file (cross compile flag is set).
-	rm -f $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/specs
+	# Remove broken specs file (cross compile flag is set)
+	$(RM) $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/specs
 
-	-(cd $(TARGET_UTILS_DIR)/usr/bin && find -type f | xargs $(TARGET_STRIP) > /dev/null 2>&1)
-	-(cd $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR) && $(TARGET_STRIP) cc1 cc1plus collect2 > /dev/null 2>&1)
-	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* > /dev/null 2>&1)
-	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libgcc_s.so.*.*.* > /dev/null 2>&1)
-	rm -f $(TARGET_UTILS_DIR)/usr/lib/*.la*
-	rm -rf $(TARGET_UTILS_DIR)/share/locale $(TARGET_UTILS_DIR)/usr/info \
+	-(cd $(TARGET_UTILS_DIR)/usr/bin && find -type f | xargs $(TARGET_STRIP) >/dev/null 2>&1)
+	-(cd $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR) && $(TARGET_STRIP) cc1 cc1plus collect2 >/dev/null 2>&1)
+	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* >/dev/null 2>&1)
+	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libgcc_s.so.*.*.* >/dev/null 2>&1)
+	$(RM) $(TARGET_UTILS_DIR)/usr/lib/*.la*
+	$(RM) -r $(TARGET_UTILS_DIR)/share/locale $(TARGET_UTILS_DIR)/usr/info \
 		$(TARGET_UTILS_DIR)/usr/man $(TARGET_UTILS_DIR)/usr/share/doc
 	# Work around problem of missing syslimits.h
 	if [ ! -f $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/$(GCC_INCLUDE_DIR)/syslimits.h ]; then \
@@ -295,14 +284,13 @@ $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
 		ln -snf gcc $(TARGET_UTILS_DIR)/usr/bin/cc; \
 	fi
 	# These are in /lib, so...
-	#rm -rf $(TARGET_UTILS_DIR)/usr/lib/libgcc_s*.so*
+	#$(RM) $(TARGET_UTILS_DIR)/usr/lib/libgcc_s*.so*
 	touch -c $@
 
 gcc_target: uclibc_target binutils_target $(TARGET_UTILS_DIR)/usr/bin/gcc
 
-gcc_target-clean:
-	rm -rf $(GCC_BUILD_DIR3)
-	rm -f $(TARGET_UTILS_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)*
+gcc_target-clean: gcc_target-dirclean
+	$(RM) $(TARGET_UTILS_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)*
 
 gcc_target-dirclean:
-	rm -rf $(GCC_BUILD_DIR3)
+	$(RM) -r $(GCC_BUILD_DIR3)

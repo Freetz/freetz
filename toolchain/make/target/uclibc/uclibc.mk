@@ -8,6 +8,8 @@ UCLIBC_SOURCE_SITE2:=http://www.uclibc.org/downloads/old-releases
 UCLIBC_KERNEL_SOURCE_DIR:=$(KERNEL_SOURCE_DIR)
 UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DIR)
 
+UCLIBC_DEVEL_SUBDIR:=uClibc_dev
+
 # uClibc pregenerated locale data
 UCLIBC_SITE_LOCALE:=http://www.uclibc.org/downloads
 UCLIBC_SOURCE_LOCALE:=uClibc-locale-030818.tgz
@@ -38,6 +40,8 @@ $(UCLIBC_DIR)/.patched: $(UCLIBC_DIR)/.unpacked
 		$(PATCH_TOOL) $(UCLIBC_DIR) $$i; \
 	done
 	cp -dpf $(UCLIBC_LOCALE_DATA) $(UCLIBC_DIR)/extra/locale/
+# TODO: uClibc-0.9.30x tries to download this file, it is however not available on uClibc' website
+	cp -dpf $(UCLIBC_LOCALE_DATA) $(UCLIBC_DIR)/extra/locale/uClibc-locale-20081111-32-el.tgz
 	touch $@
 
 $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.patched
@@ -61,14 +65,14 @@ endif
 	$(SED) -i -e '/.*UCLIBC_HAS_FOPEN_LARGEFILE_MODE.*/d' $(UCLIBC_DIR)/.config
 	echo "# UCLIBC_HAS_FOPEN_LARGEFILE_MODE is not set" >> $(UCLIBC_DIR)/.config
 	$(SED) 's,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y,g' $(UCLIBC_DIR)/.config
-	mkdir -p $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include
-	mkdir -p $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/lib
-	mkdir -p $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/lib
+	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include
+	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/lib
+	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/lib
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
-		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
-		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(HOSTCC)" \
 		oldconfig
 	touch $@
@@ -76,28 +80,28 @@ endif
 $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
-		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
-		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(HOSTCC)" headers \
 		$(if $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28),install_dev,install_headers)
 	# Install the kernel headers to the first stage gcc include dir if necessary
 	if [ ! -f $(TARGET_TOOLCHAIN_STAGING_DIR)/include/linux/version.h ] ; then \
-	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
-	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
-	    if [ -d $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic ] ; then \
-		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
-		$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/usr/include/ ; \
-	    fi; \
+		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include/ ; \
+		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include/ ; \
+		if [ -d $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic ] ; then \
+			cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
+			$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include/ ; \
+		fi; \
 	fi;
 	touch $@
 
 uclibc-menuconfig: $(UCLIBC_DIR)/.config
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
-		PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
-		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/uClibc_dev/ \
+		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(HOSTCC)" \
 		menuconfig && \
 	cp -f $^ $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(UCLIBC_VERSION) && \
@@ -123,12 +127,12 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		install_runtime install_dev
 	# Install the kernel headers to the staging dir if necessary
 	if [ ! -f $(TARGET_TOOLCHAIN_STAGING_DIR)/include/linux/version.h ] ; then \
-	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
-	    cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
-	    if [ -d $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic ] ; then \
-		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
-		    $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
-	    fi; \
+		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
+		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
+		if [ -d $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic ] ; then \
+			cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
+		fi; \
 	fi;
 	# Build the host utils.
 	$(MAKE1) -C $(UCLIBC_DIR)/utils \
@@ -156,7 +160,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(cross_compiler)
 	touch -c $@
 
 $(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
-	@rm -rf $(ROOT_DIR)/lib
+	@$(RM) -r $(ROOT_DIR)/lib
 	@mkdir -p $(ROOT_DIR)/lib
 	for i in $(UCLIBC_FILES); do \
 		cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$$i $(ROOT_DIR)/lib/$$i; \
@@ -178,10 +182,10 @@ uclibc-configured-source: uclibc-source
 
 uclibc-clean:
 	-$(MAKE1) -C $(UCLIBC_DIR) clean
-	rm -f $(UCLIBC_DIR)/.config
+	$(RM) $(UCLIBC_DIR)/.config
 
 uclibc-dirclean:
-	rm -rf $(UCLIBC_DIR)
+	$(RM) -r $(UCLIBC_DIR)
 
 .PHONY: uclibc-configured uclibc
 
@@ -210,7 +214,7 @@ $(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/li
 uclibc_target: cross_compiler uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a
 
 uclibc_target-clean:
-	rm -rf $(TARGET_UTILS_DIR)/usr/include $(TARGET_UTILS_DIR)/lib/libc.a
+	$(RM) -r $(TARGET_UTILS_DIR)/usr/include $(TARGET_UTILS_DIR)/lib/libc.a
 
 uclibc_target-dirclean:
-	rm -rf $(TARGET_UTILS_DIR)/usr/include
+	$(RM) -r $(TARGET_UTILS_DIR)/usr/include
