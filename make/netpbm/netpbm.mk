@@ -33,24 +33,24 @@ $(PKG_CONFIGURED_NOP)
 
 #NB: we do want to compile buildtools for the system netpbm is being built on, not for the target
 $($(PKG)_DIR)/buildtools/.compiled: $($(PKG)_DIR)/.configured
-	$(MAKE) -C $(NETPBM_DIR)/buildtools all && touch $@
+	$(MAKE1) -C $(NETPBM_DIR)/buildtools all && touch $@
 
 $($(PKG)_DIR)/Makefile.depend: $($(PKG)_DIR)/buildtools/.compiled
-	$(SUBMAKE) -C $(NETPBM_DIR) \
+	$(SUBMAKE1) -C $(NETPBM_DIR) \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		dep
 
 $($(PKG)_LIB_BUILD_DIR): $($(PKG)_DIR)/Makefile.depend
-	$(SUBMAKE) -C $(NETPBM_DIR)/lib \
+	$(SUBMAKE1) -C $(NETPBM_DIR)/lib \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS) $(FPIC)" \
 		all
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/converter/other/%: $($(PKG)_DIR)/Makefile.depend $($(PKG)_LIB_BUILD_DIR)
-	$(SUBMAKE) -C $(NETPBM_DIR)/converter/other \
+	$(SUBMAKE1) -C $(NETPBM_DIR)/converter/other \
 		FAKEROOTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		TARGET_CROSS_PREFIX="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -72,8 +72,8 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_LIB_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(NETPBM_DIR)/lib clean
-	-$(SUBMAKE) -C $(NETPBM_DIR)/converter/other clean
+	-$(SUBMAKE1) -C $(NETPBM_DIR)/lib clean
+	-$(SUBMAKE1) -C $(NETPBM_DIR)/converter/other clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/netpbm/ \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libnetpbm*
