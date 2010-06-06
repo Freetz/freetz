@@ -11,6 +11,12 @@ $(PKG)_DEPENDS_ON:= gmp
 
 $(PKG)_CONFIGURE_OPTIONS += --with-gmp-build=$(TARGET_TOOLCHAIN_STAGING_DIR)
 
+# Patch #3 modifies configure.in which in turn causes autoconf-1.11 & automake-2.64
+# to be called which could be missed on build system. As the patch also modifies
+# configure it's safe simply to touch configure.in
+$(PKG)_PREVENT_AUTOCONF_CALL := touch -t 200001010000.00 $(MPFR_DIR)/configure.in;
+$(PKG)_CONFIGURE_PRE_CMDS += $($(PKG)_PREVENT_AUTOCONF_CALL)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -35,7 +41,7 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/mpfr*.h
 
 $(pkg)-uninstall:
-#	$(RM) $(MPFR_TARGET_DIR)/libmpfr*.so*
+	$(RM) $(MPFR_TARGET_DIR)/libmpfr*.so*
 
 $(PKG_FINISH)
 
@@ -45,8 +51,9 @@ MPFR_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build
 MPFR_HOST_BINARY:=$(MPFR_HOST_DIR)/lib/libmpfr.a
 
 $(MPFR_DIR2)/.configured: $(MPFR_DIR)/.unpacked $(GMP_HOST_BINARY)
+	$(MPFR_PREVENT_AUTOCONF_CALL)
 	mkdir -p $(MPFR_DIR2)
-	(cd $(MPFR_DIR2); rm -rf config.cache; \
+	(cd $(MPFR_DIR2); $(RM) config.cache; \
 		CC="$(TOOLS_CC)" \
 		$(FREETZ_BASE_DIR)/$(MPFR_DIR)/configure \
 		--prefix=/ \
@@ -63,9 +70,10 @@ $(MPFR_HOST_BINARY): $(MPFR_DIR2)/.configured
 	$(SUBMAKE) DESTDIR=$(MPFR_HOST_DIR) -C $(MPFR_DIR2) install
 
 host-libmpfr: $(MPFR_HOST_BINARY)
+
 host-libmpfr-clean:
-	rm -rf $(MPFR_HOST_DIR)
+	$(RM) -r $(MPFR_HOST_DIR)
 	-$(SUBMAKE) -C $(MPFR_DIR2) clean
+
 host-libmpfr-dirclean:
-	#rm -rf $(MPFR_HOST_DIR) $(MPFR_DIR2)
-	rm -rf $(MPFR_DIR2)
+	$(RM) -r $(MPFR_DIR2)
