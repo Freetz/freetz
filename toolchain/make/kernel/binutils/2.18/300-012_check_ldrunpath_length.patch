@@ -1,6 +1,6 @@
---- ld/emultempl/elf32.em.orig	2007-06-18 19:31:40.000000000 +0200
-+++ ld/emultempl/elf32.em	2007-07-29 03:47:53.000000000 +0200
-@@ -1007,6 +1007,8 @@
+--- ld/emultempl/elf32.em.orig	2007-08-24 16:01:56.000000000 +0200
++++ ld/emultempl/elf32.em	2009-04-16 00:23:38.000000000 +0200
+@@ -1216,6 +1216,8 @@
  	      && command_line.rpath == NULL)
  	    {
  	      lib_path = (const char *) getenv ("LD_RUN_PATH");
@@ -9,7 +9,7 @@
  	      if (gld${EMULATION_NAME}_search_needed (lib_path, &n,
  						      force))
  		break;
-@@ -1191,6 +1193,8 @@
+@@ -1400,6 +1402,8 @@
    rpath = command_line.rpath;
    if (rpath == NULL)
      rpath = (const char *) getenv ("LD_RUN_PATH");
