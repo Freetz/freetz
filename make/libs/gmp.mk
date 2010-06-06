@@ -1,5 +1,5 @@
 $(call PKG_INIT_LIB, 5.0.1)
-$(PKG)_LIB_VERSION:=3.6.0
+$(PKG)_LIB_VERSION:=10.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://ftp.gnu.org/gnu/gmp
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgmp.so.$($(PKG)_LIB_VERSION)
