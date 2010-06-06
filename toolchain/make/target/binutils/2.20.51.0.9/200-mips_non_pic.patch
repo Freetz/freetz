@@ -35,7 +35,7 @@
  #include "elf32-target.h"
 --- bfd/elfxx-mips.c
 +++ bfd/elfxx-mips.c
-@@ -694,6 +694,11 @@ static bfd *reldyn_sorting_bfd;
+@@ -707,6 +707,11 @@ static bfd *reldyn_sorting_bfd;
  /* Nonzero if ABFD is using NewABI conventions.  */
  #define NEWABI_P(abfd) (ABI_N32_P (abfd) || ABI_64_P (abfd))
  
@@ -47,7 +47,7 @@
  /* The IRIX compatibility level we are striving for.  */
  #define IRIX_COMPAT(abfd) \
    (get_elf_backend_data (abfd)->elf_backend_mips_irix_compat (abfd))
-@@ -706,6 +711,9 @@ static bfd *reldyn_sorting_bfd;
+@@ -719,6 +724,9 @@ static bfd *reldyn_sorting_bfd;
  #define MIPS_ELF_OPTIONS_SECTION_NAME(abfd) \
    (NEWABI_P (abfd) ? ".MIPS.options" : ".options")
  
@@ -57,7 +57,7 @@
  /* True if NAME is the recognized name of any SHT_MIPS_OPTIONS section.
     Some IRIX system files do not use MIPS_ELF_OPTIONS_SECTION_NAME.  */
  #define MIPS_ELF_OPTIONS_SECTION_NAME_P(NAME) \
-@@ -7619,7 +7627,9 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7688,7 +7696,9 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  
  	      /* We need a stub, not a plt entry for the undefined
  		 function.  But we record it as if it needs plt.  See
@@ -68,7 +68,7 @@
  	      h->needs_plt = 1;
  	      h->type = STT_FUNC;
  	    }
-@@ -7725,6 +7735,8 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7794,6 +7804,8 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  	case R_MIPS_32:
  	case R_MIPS_REL32:
  	case R_MIPS_64:
@@ -77,7 +77,7 @@
  	  /* In VxWorks executables, references to external symbols
  	     are handled using copy relocs or PLT stubs, so there's
  	     no need to add a .rela.dyn entry for this relocation.  */
-@@ -7780,11 +7792,21 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7849,11 +7861,21 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  	case R_MIPS_GPREL16:
  	case R_MIPS_LITERAL:
  	case R_MIPS_GPREL32:
@@ -99,7 +99,7 @@
  	  /* This relocation describes the C++ object vtable hierarchy.
  	     Reconstruct it for later use during GC.  */
  	case R_MIPS_GNU_VTINHERIT:
-@@ -7807,20 +7829,20 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7876,20 +7898,20 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  
        /* We must not create a stub for a symbol that has relocations
  	 related to taking the function's address.  This doesn't apply to
@@ -125,7 +125,7 @@
  	  }
  
        /* See if this reloc would need to refer to a MIPS16 hard-float stub,
-@@ -12514,7 +12536,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
+@@ -12605,7 +12627,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
  	  break;
  	}
      }
@@ -166,7 +166,7 @@
    _bfd_mips_elf_name_local_section_symbols
 --- gas/config/tc-mips.c
 +++ gas/config/tc-mips.c
-@@ -1891,6 +1891,12 @@ md_begin (void)
+@@ -1897,6 +1897,12 @@ md_begin (void)
  	as_bad (_("-G may not be used in position-independent code"));
        g_switch_value = 0;
      }
@@ -179,7 +179,7 @@
  
    if (! bfd_set_arch_mach (stdoutput, bfd_arch_mips, file_mips_arch))
      as_warn (_("Could not set architecture and machine"));
-@@ -11264,6 +11264,7 @@
+@@ -11317,6 +11323,7 @@
      OPTION_PDR,
      OPTION_NO_PDR,
      OPTION_MVXWORKS_PIC,
@@ -187,7 +187,7 @@
  #endif /* OBJ_ELF */
      OPTION_END_OF_ENUM    
    };
-@@ -11365,6 +11372,7 @@ struct option md_longopts[] =
+@@ -11422,6 +11429,7 @@ struct option md_longopts[] =
    {"mpdr", no_argument, NULL, OPTION_PDR},
    {"mno-pdr", no_argument, NULL, OPTION_NO_PDR},
    {"mvxworks-pic", no_argument, NULL, OPTION_MVXWORKS_PIC},
@@ -195,7 +195,7 @@
  #endif /* OBJ_ELF */
  
    {NULL, no_argument, NULL, 0}
-@@ -11783,6 +11791,11 @@ md_parse_option (int c, char *arg)
+@@ -11862,6 +11870,11 @@ md_parse_option (int c, char *arg)
      case OPTION_MVXWORKS_PIC:
        mips_pic = VXWORKS_PIC;
        break;
