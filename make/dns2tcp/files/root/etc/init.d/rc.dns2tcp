@@ -1,17 +1,11 @@
 #!/bin/sh
 
 DAEMON=dns2tcp
-APP=dns2tcpd
 DAEMON_LONG_NAME="TCP over DNS tunnel"
 
 . /etc/init.d/modlibrc
 
-pre_config() {
-	modlib_addgroup $DAEMON
-	modlib_adduser $DAEMON -G $DAEMON -s /bin/false -H -D -g "dns2tcp account"
-}
-
-configure() {
+config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -25,44 +19,24 @@ configure() {
 }
 
 start() {
-	echo -n "Starting $DAEMON_LONG_NAME ..."
-	if modlib_check_running; then
-		echo "$APP already running."
-		exit 0
-	fi
-
-	configure
-
-	modlib_startdaemon $APP -f /mod/etc/$DAEMON.conf
-	exitval=$?
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'daemon failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON -f /mod/etc/$DAEMON.conf
 }
 
 case $1 in
 	""|load)
-		pre_config
+		modlib_addgroup $DAEMON
+		modlib_adduser $DAEMON -G $DAEMON -s /bin/false -H -D -g "dns2tcp account"
 
 		modreg cgi 'dns2tcp' 'DNS2TCP'
 
-		if [ "$DNS2TCP_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $DNS2TCP_ENABLED
 		;;
 	unload)
-		modlib_stop
 		modunreg cgi 'dns2tcp'
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop

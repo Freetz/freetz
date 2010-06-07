@@ -10,15 +10,7 @@ PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 
 DAEMON_STORAGE=/tmp/flash/$DAEMON
 
-start() {
-	
-	echo -n "Starting ${DAEMON_LONG_NAME}..."
-
-	if modlib_check_running; then
-		echo "already running."
-		exit 0
-	fi
-
+config() {
 	[ -d "$DAEMON_STORAGE" ] || mkdir -p $DAEMON_STORAGE
 	chown $DAEMON_USER:$DAEMON_GROUP "$DAEMON_STORAGE"
 
@@ -45,6 +37,13 @@ start() {
 			/mod/etc/default.$DAEMON/${DAEMON}_conf
 		fi
 	) > /mod/etc/$DAEMON/torrc
+}
+
+start() {
+	
+	echo -n "Starting ${DAEMON_LONG_NAME}..."
+
+	config
 
 	[ -f $DAEMON_STORAGE/secret_id_key ] && savetimer=no
 	$DAEMON --runasdaemon 1 --log "notice syslog" --pidfile $PID_FILE > /dev/null 2>&1
@@ -74,9 +73,10 @@ start() {
 
 }
 
-stop_post() {
-	[ "$TOR_DATADIRPERSISTENT" == "no" ] && rm -rf $TOR_DATADIRECTORY 2>/dev/null
-}
+# unused?!?
+#stop_post() {
+#	[ "$TOR_DATADIRPERSISTENT" == "no" ] && rm -rf $TOR_DATADIRECTORY 2>/dev/null
+#}
 
 case $1 in
 	""|load)
@@ -91,12 +91,7 @@ case $1 in
 		modreg cgi "$DAEMON" "$DAEMON_LONG_NAME"
 		modreg file tor secret_id_key 'Tor: Secret ID Key' 0 "secret_id_key"
 		
-		if [ "$TOR_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $TOR_ENABLED
 		;;
 	unload)
 		modunreg file tor
@@ -104,7 +99,7 @@ case $1 in
 		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop

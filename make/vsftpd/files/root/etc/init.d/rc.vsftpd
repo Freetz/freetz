@@ -38,25 +38,7 @@ config() {
 }
 
 start() {
-	echo -n "Starting $DAEMON..."
-
-	if modlib_check_running; then
-		echo "already running" 
-		exit 1 
-	fi
-	
-	config
-
-	$DAEMON
-	exitval=$?
-	pidof $DAEMON > $PID_FILE
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON
 }
 
 case $1 in
@@ -72,12 +54,6 @@ case $1 in
 			modreg file vsftpd crt 'VSFTPD:Cert+Key' 0 "vsftpd_crt"
 		fi
 		
-		if [ "$VSFTPD_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-		
-		config
 		modlib_start $VSFTPD_ENABLED
 		;;
 	unload)
@@ -87,7 +63,7 @@ case $1 in
 		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop
@@ -96,15 +72,10 @@ case $1 in
 		modlib_restart
 		;;
 	reload)
-		config
 		modlib_reload
 		;;
 	status)
-		if [ "$VSFTPD_ENABLED" == "inetd" ]; then
-			echo 'inetd'
-		else
-			modlib_status
-		fi
+		modlib_status
 		;;
 	config)
 		config	

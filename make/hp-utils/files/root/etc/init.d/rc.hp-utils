@@ -14,24 +14,12 @@ config() {
 			/mod/etc/default.hp-utils/${DAEMON}_conf
 		fi
 
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
+		[ -r "/tmp/flash/${DAEMON}.extra" ] && cat /tmp/flash/${DAEMON}.extra
 	) > /mod/etc/$DAEMON.conf
 }
 
 start() {
-	config
-
-	echo -n 'Starting hp-utils webinterface...'
-	webcfg-hp-utils -P "$PID_FILE"
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon webcfg-hp-utils -P "$PID_FILE"
 }
 
 case $1 in
@@ -47,7 +35,7 @@ case $1 in
 		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop
@@ -56,11 +44,7 @@ case $1 in
 		modlib_restart
 		;;
 	status)
-		if [ "$HP_UTILS_ENABLED" = "inetd" ]; then
-			echo 'inetd'
-		else
-			modlib_status
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

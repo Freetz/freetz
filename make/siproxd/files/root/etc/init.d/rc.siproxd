@@ -19,56 +19,40 @@ _chown() {
 	chown -R $DAEMON_USER:$DAEMON_GROUP "$@"
 }
 
-pre_config() {
-	modlib_adduser $DAEMON_USER -G $DAEMON_GROUP -D -S -g "Siproxd daemon"
-	mkdir -p "$PERSISTENT_CONF_DIR" "$HOME_DIR"
-	chmod -R 0700 "$PERSISTENT_CONF_DIR" "$HOME_DIR"
-	create_conffile siproxd.conf siproxd_conf
-	create_conffile siproxd.reg siproxdreg_conf
-	create_conffile siproxd.pwd siproxdpwd_conf
-
-	_chown "$PERSISTENT_CONF_DIR" "$HOME_DIR"
+config() {
+	mkdir -p "$VARRUN_DIR"
+	_chown "$VARRUN_DIR" "$PERSISTENT_CONF_DIR"
 }
 
 start() {
-	echo -n 'Starting siproxd server...'
-
-	mkdir -p "$VARRUN_DIR"
-	_chown "$VARRUN_DIR" "$PERSISTENT_CONF_DIR"
-
 	modlib_startdaemon siproxd -c /mod/etc/siproxd.conf -p $PID_FILE
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 case "$1" in
 	""|load)
-		pre_config
+		modlib_adduser $DAEMON_USER -G $DAEMON_GROUP -D -S -g "Siproxd daemon"
+		mkdir -p "$PERSISTENT_CONF_DIR" "$HOME_DIR"
+		chmod -R 0700 "$PERSISTENT_CONF_DIR" "$HOME_DIR"
+		create_conffile siproxd.conf siproxd_conf
+		create_conffile siproxd.reg siproxdreg_conf
+		create_conffile siproxd.pwd siproxdpwd_conf
+
+		_chown "$PERSISTENT_CONF_DIR" "$HOME_DIR"
 
 		modreg cgi 'siproxd' 'Siproxd'
 		modreg file siproxd conf 'Siproxd: conf' 0 "siproxd_conf"
 		modreg file siproxd reg 'Siproxd: reg' 0 "siproxdreg_conf"
 		modreg file siproxd pwd 'Siproxd: pwd' 0 "siproxdpwd_conf"
 
-		if [ "$SIPROXD_ENABLED" != "yes" ]; then
-			echo "siproxd is disabled" 1>&2
-			exit 1;
-		fi
-
-		start
+		modlib_start $SIPROXD_ENABLED
 		;;
 	unload)
-		modlib_stop
 		modunreg file siproxd
 		modunreg cgi siproxd
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop
@@ -85,4 +69,4 @@ case "$1" in
 		;;
 esac
 
-exit $?
+exit 0

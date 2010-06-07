@@ -7,16 +7,6 @@ PKG=sane-backends
 DAEMON=saned
 CONFDIR=/mod/etc/sane.d
 
-pre_config() {
-	[ ! -d $CONFDIR/dll.d ] && mkdir -p $CONFDIR/dll.d
-	for conf in /etc/default.$PKG/*.conf; do
-		[ -e $conf ] && ln -s $conf $CONFDIR/$(basename $conf)
-	done
-	for conf in /etc/default.$PKG/dll.d/*; do
-		[ -e $conf ] && cp $conf $CONFDIR/dll.d/
-	done
-}
-
 config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
@@ -33,7 +23,14 @@ config() {
 
 case $1 in
 	""|load)
-		pre_config
+		[ ! -d $CONFDIR/dll.d ] && mkdir -p $CONFDIR/dll.d
+		for conf in /etc/default.$PKG/*.conf; do
+			[ -e $conf ] && ln -s $conf $CONFDIR/$(basename $conf)
+		done
+		for conf in /etc/default.$PKG/dll.d/*; do
+			[ -e $conf ] && cp $conf $CONFDIR/dll.d/
+		done
+
 		config
 
 		modreg cgi 'sane-backends' 'SANE'
@@ -52,11 +49,7 @@ case $1 in
 	restart)
 		;;
 	status)
-		if [ "$SANE_BACKENDS_SANED_ENABLED" == "inetd" ]; then
-			echo 'inetd'
- 		else
-			echo 'stopped'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

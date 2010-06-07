@@ -37,25 +37,10 @@ start() {
 	else
 		DROPBEAR_OPTIONS="-s $DROPBEAR_OPTIONS"
 	fi
-	if [ "$DROPBEAR_ROOTONLY" = "yes" ]; then
-		DROPBEAR_OPTIONS="-R $DROPBEAR_OPTIONS"
-	fi
-
-	echo -n "Starting $DAEMON_LONG_NAME..."
-	if modlib_check_running; then
-		echo 'already running.'
-		exit 0
-	fi
+	[ "$DROPBEAR_ROOTONLY" = "yes" ] && DROPBEAR_OPTIONS="-R $DROPBEAR_OPTIONS"
 
 	set -o noglob
 	modlib_startdaemon $DAEMON -p "$DROPBEAR_PORT" $DROPBEAR_OPTIONS
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 case $1 in
@@ -67,11 +52,11 @@ case $1 in
 		modlib_start $DROPBEAR_ENABLED
 		;;
 	unload)
-		modlib_stop
 		modunreg cgi 'dropbear'
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop
@@ -80,11 +65,7 @@ case $1 in
 		modlib_restart
 		;;
 	status)
-		if [ "$DROPBEAR_ENABLED" == "inetd" ]; then
-			echo 'inetd'
- 		else
-			modlib_status
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

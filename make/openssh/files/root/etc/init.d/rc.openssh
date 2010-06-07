@@ -6,13 +6,6 @@ CONFFILE=/mod/etc/sshd_conf
 
 . /etc/init.d/modlibrc
 
-pre_config() {
-	mkdir /tmp/openssh
-	modlib_addgroup sshd
-	modlib_adduser sshd -G sshd -s /bin/false -H -D -h /tmp/openssh -g "sshd account"
-	config
-}
-
 gen_key() {
 	rm -f "$1"
 	rm -f "$1.pub"
@@ -49,10 +42,6 @@ config() {
 		ln -s /tmp/flash/openssh/rsa_host_key /mod/etc/ssh/rsa_host_key
 		ln -s /tmp/flash/openssh/dsa_host_key /mod/etc/ssh/dsa_host_key
 	fi
-}
-
-start() {
-	config
 
 	echo "$OPENSSH_SETTINGS" > $CONFFILE
 	if [ "$OPENSSH_PWDAUTH" = "yes" ]; then
@@ -69,26 +58,16 @@ start() {
 	else
 		echo "PermitRootLogin no" >> $CONFFILE
 	fi
-
-	echo -n "Starting $DAEMON_LONG_NAME..."
-	if modlib_check_running; then
-		echo 'already running.'
-		exit 0
-	fi
-
-	set -o noglob
-	modlib_startdaemon /usr/sbin/sshd -p "$OPENSSH_PORT" -f $CONFFILE $OPENSSH_OPTIONS
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
+start() {
+	set -o noglob
+	modlib_startdaemon /usr/sbin/sshd -p "$OPENSSH_PORT" -f $CONFFILE $OPENSSH_OPTIONS
+}
+
+#really needed? modlib_check_running and inherits will fail if .pid is not correct...
 stop() {
-	if [ ! -z "$(pidof sshd)" ];then
+	if [ -n "$(pidof sshd)" ];then
 		echo -n "Stopping ${DAEMON} ... "
 		killall sshd > /dev/null 2>&1
 		exitval=$?
@@ -101,33 +80,25 @@ stop() {
 	fi
 }
 
-reg_files() {
-	for i in $@; do
-		modreg file openssh "$i" "OpenSSH: $i" 0 "$i"
-	done
-}
-
 case $1 in
 	""|load)
 		modreg cgi 'openssh' 'OpenSSH sshd'
-		reg_files rsa_key dsa_key
+		modreg file openssh "dsa_key" "OpenSSH: dsa_key" 0 "dsa_key"
+		modreg file openssh "rsa_key" "OpenSSH: rsa_key" 0 "rsa_key"
 
-		pre_config
+		mkdir /tmp/openssh
+		modlib_addgroup sshd
+		modlib_adduser sshd -G sshd -s /bin/false -H -D -h /tmp/openssh -g "sshd account"
 
-		if [ "$OPENSSH_ENABLED" != "yes" ]; then
-			echo "OpenSSH $DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $OPENSSH_ENABLED
 		;;
 	unload)
-		stop
 		modunreg file openssh
 		modunreg cgi openssh
+		stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		stop
@@ -135,14 +106,10 @@ case $1 in
 	restart)
 		stop
 		sleep 1
-		start
+		modlib_start
 		;;
 	status)
-		if [ -z "$(pidof sshd)" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

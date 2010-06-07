@@ -11,8 +11,7 @@ modlib_loadconfig
 CFGFILE="/tmp/flash/ser2net.conf"
 [ -e /etc/ser2net.conf ] && CFGFILE="/etc/ser2net.conf"
 
-case $1 in
-	""|load|start|restart)
+config() {
 		if [ ! -e "$CFGFILE" ]; then
 			echo -n "Creating $CFGFILE..."
 			cat <<"EOF" > $CFGFILE
@@ -26,41 +25,27 @@ EOF
 			echo "done."
 			/usr/bin/modsave flash
 		fi
-		;;
-esac
+}
 
 start() {
-	echo -n "Starting $DAEMON..."
-	
-	$DAEMON -c $CFGFILE -P $PID_FILE
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON -c $CFGFILE -P $PID_FILE
 }
 
 case $1 in
 	""|load)
-		modreg cgi 'ser2net' 'ser2net'
 		[ "$CFGFILE" != "/etc/ser2net.conf" ] && modreg file ser2net conf 'ser2net.conf' 0 "ser2net_conf"
-		if [ "$SER2NET_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
 
-		start
+		modreg cgi 'ser2net' 'ser2net'
+
+		modlib_start $SER2NET_ENABLED
 		;;
 	unload)
-		modlib_stop
-
 		modunreg cgi ser2net
 		modunreg file ser2net
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop

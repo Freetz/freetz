@@ -7,25 +7,13 @@ CONFMODDIR=/var/mod/etc/inetd
 
 . /etc/init.d/modlibrc
 
-config() {
-	[ -e ${CONFFLASH} ] ||
-	{
-		echo -n "Creating inetd.conf "
-		cp /mod/etc/default.inetd/inetd.conf ${CONFFLASH}
-		echo "ok."
-	}
-
-	/usr/bin/modinetd 
-}
-
-load_config()
+config()
 {
 	local retval=0
 	local disabled_string="# !! disabled !! "
 	[ -e $CONFMODETC ] || touch ${CONFMODETC}
 	[ -e $CONFFLASH ] && cat ${CONFFLASH} | sed -e '/^#.*/d;/^$/d;/^:space:[:space:]*$/d;s/#[^#]*//' > ${CONFMODETC}
-	if [ -d ${CONFMODDIR} ]
-	then
+	if [ -d ${CONFMODDIR} ]; then
 		ls -1 ${CONFMODDIR}/*.inetd 2>/dev/null | while read conffile
 		do
 			cat ${conffile} | while read confline 
@@ -43,31 +31,12 @@ load_config()
 }
 
 start() {
-	echo -n 'Starting inetd...'
-	if [ -s "/var/run/$DAEMON.pid" ]; then
-		echo 'already running.'
-		return 0
-	fi
-
-	load_config
-	$DAEMON $INETD_OPTIONS
-	exitval=$?
-	echo "$(pidof "$DAEMON")" > /var/run/$DAEMON.pid
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		return $exitval
-	fi
-}
-
-stop() {
-	modlib_stop || return 1
+	modlib_startdaemon $DAEMON $INETD_OPTIONS
 }
 
 reload()
 {
-	load_config
+	config
 	retval=$?
 	[ "$retval" -eq 22 ] && echo "WARNING: double port using was prohibited by rc.inetd. Show ${CONFMODETC} for details"
 	modlib_reload && return $retval || return 1
@@ -75,7 +44,12 @@ reload()
 
 case $1 in
 	""|load)
-		config
+		if [ ! -e ${CONFFLASH} ]; then
+			echo -n "Creating inetd.conf "
+			cp /mod/etc/default.inetd/inetd.conf ${CONFFLASH}
+			echo "ok."
+		fi
+		/usr/bin/modinetd 
 		
 		rm -f /var/tmp/inetd.conf > /dev/null 2>&1
 		ln -s ${CONFMODETC} /var/tmp/inetd.conf
@@ -84,24 +58,18 @@ case $1 in
 		modreg cgi 'inetd' 'Inetd'
 		modreg file inetd conf 'Inetd config' 0 "inetd_conf"
 		
-		if [ "$INETD_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $INETD_ENABLED
 		;;
 	unload)
-		stop
-
 		modunreg cgi inetd
 		modunreg file inetd
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	reload)
 		reload
@@ -117,4 +85,5 @@ case $1 in
 		exit 1
 		;;
 esac
+
 exit $?

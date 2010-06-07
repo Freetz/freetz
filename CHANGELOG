@@ -36,6 +36,12 @@ Latest changes:
       make/$package/files/root/etc/onlinechanged/$action_$package.
     * New hook to add files/directories to var.tar
      * Put desired files/directories into make/{package}/files/var.tar
+    * modlibrc:
+     * modlib_status now supports "inetd"
+     * modlib_startdaemon takes care of the returnvalue, creates pid-file & writes "Starting..."
+     * modlib_start checks if the daemon is yet started or disabled
+     * modlib_reload & modlib_startdaemon executes "config"-function of parent rc-skript (if available)
+     * modlib_stop kills daemon with "stop" of parent rc.$DAEMON (if available) 
 
 - New patches (read online help for more info):
     * 7270: 

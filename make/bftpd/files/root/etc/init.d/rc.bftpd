@@ -4,21 +4,7 @@ DAEMON=bftpd
 
 . /etc/init.d/modlibrc
 
-pre_config() {
-	modlib_adduser ftp -G users -D -S -g "FTP account"
-	mkdir -p /mod/home/ftp
-
-	# Setting permissions
-	chown ftp:users /mod/home/ftp -R
-
-	mkdir -p /var/run/bftpd
-
-	if [ ! -e "/var/tmp/ftp" ]; then
-		ln -sf /mod/home/ftp /var/tmp/ftp
-	fi
-}
-
-write_config() {
+config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -33,66 +19,36 @@ write_config() {
 }
 
 start() {
-	echo -n 'Starting ftp server...'
-	write_config
-	$DAEMON -d $BFTPD_OPTIONS
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
-}
-
-stop () {
-	echo -n 'Stopping ftp server...'
-	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-
-	rm -f /mod/etc/$DAEMON.conf
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON -d $BFTPD_OPTIONS
 }
 
 case $1 in
 	""|load)
-		pre_config
+		modlib_adduser ftp -G users -D -S -g "FTP account"
+		mkdir -p /var/run/bftpd
+		mkdir -p /mod/home/ftp
+		chown ftp:users /mod/home/ftp -R
+		[ -e "/var/tmp/ftp" ] || ln -sf /mod/home/ftp /var/tmp/ftp
 
 		modreg cgi 'bftpd' 'Bftpd'
 
 		modlib_start $BFTPD_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi 'bftpd'
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ "$BFTPD_ENABLED" == "inetd" ]; then
-			echo 'inetd'
- 		else
-			if [ ! -z "$(pidof $DAEMON)" ]; then
-				echo 'running'
-			else
-				echo 'stopped'
-			fi
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

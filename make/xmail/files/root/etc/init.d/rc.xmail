@@ -138,7 +138,7 @@ start() {
 
 	compartment=""
 	[ "$XMAIL_UNPRIV" = "yes" ] && compartment="/usr/lib/MailRoot/bin/compartment --user xmail --group xmail"
-	modlib_startdaemon $compartment /usr/lib/MailRoot/bin/XMail $CMDOPTS
+	$compartment /usr/lib/MailRoot/bin/XMail $CMDOPTS
 	exitval=$?
 
 	if [ "$exitval" -eq 0 ]; then

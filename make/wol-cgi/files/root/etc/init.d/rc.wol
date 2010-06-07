@@ -22,24 +22,12 @@ config() {
 }
 
 start() {
-	config
-
-	echo -n "Starting $DAEMON_LONG_NAME..."
-	webcfg-wol -P "$PID_FILE"
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon webcfg-wol -P "$PID_FILE"
 }
 
 case $1 in
 	""|load)
 		modreg cgi 'wol' 'Wake on LAN'
-
-		config
 
 		modlib_start $WOL_ENABLED 
 		;;
@@ -48,7 +36,7 @@ case $1 in
 		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop
@@ -57,11 +45,7 @@ case $1 in
 		modlib_restart
 		;;
 	status)
-		if [ "$WOL_ENABLED" = "inetd" ]; then
-			echo 'inetd'
-		else
-			modlib_status
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

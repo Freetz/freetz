@@ -74,49 +74,32 @@ configure () {
 	done
 }
 
-start() {
-	echo -n 'Starting Inadyn Client...'
-
+config() {
 	configure >/mod/etc/$DAEMON.conf
 	if [ 5 -gt $(cat /mod/etc/$DAEMON.conf | wc -l) ]; then
 		echo -n 'failed: not configured.' >&2
 		exit 1
 	fi
+}
 
-	$DAEMON --input_file /mod/etc/$DAEMON.conf >/dev/null 2>&1
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'daemon failed.'
-		exit $exitval
-	fi
+start() {
+	modlib_startdaemon $DAEMON --input_file /mod/etc/$DAEMON.conf >/dev/null 2>&1
 }
 
 case $1 in
 	""|load)
-
 		if type modreg > /dev/null; then
 			modreg cgi $DAEMON 'Inadyn-mt'
 		fi
 
-		if [ "$INADYN_MT_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		if [ -s "/var/run/$DAEMON.pid" ]; then
-			echo "$DAEMON already started."
-		else
-			start
-		fi
+		modlib_start $INADYN_MT_ENABLED
 		;;
 	unload)
-		modlib_stop
 		modunreg cgi $DAEMON
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop

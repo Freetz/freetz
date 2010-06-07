@@ -12,14 +12,15 @@ SNMPDOPTS="-Lf /dev/null"
 CFGFILE="/tmp/flash/snmpd.conf"
 [ -e /etc/snmp/snmpd.conf ] && CFGFILE="/etc/snmp/snmpd.conf"
 
-case $1 in
-	""|load|start|restart)
-		if [ ! -e "$CFGFILE" ]; then
-			echo "Creating $CFGFILE"
-			{
-			echo "com2sec readonly  192.168.0.0/16  public"
-			echo "com2sec readonly  169.254.0.0/16  public"
-			cat <<"EOF"
+
+config() {
+	mkdir -p /var/lib/snmp
+	if [ ! -e "$CFGFILE" ]; then
+		echo "Creating $CFGFILE"
+		{
+		echo "com2sec readonly  192.168.0.0/16  public"
+		echo "com2sec readonly  169.254.0.0/16  public"
+		cat <<"EOF"
 com2sec readonly  127.0.0.0/8     public
 com2sec paranoid  default         public
 
@@ -36,44 +37,29 @@ view system included .1.3.6.1.2.1.1
 access MyROSystem "" any noauth exact system none none
 access MyROGroup  "" any noauth exact all    none none
 EOF
-			} > $CFGFILE
-			/usr/bin/modsave flash
-		fi
-		;;
-esac
+		} > $CFGFILE
+		/usr/bin/modsave flash
+	fi
+}
 
 start() {
-	echo -n "Starting $DAEMON..."
-	
-	mkdir -p /var/lib/snmp
-	$DAEMON -c $CFGFILE -p $PID_FILE $SNMPDOPTS
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON -c $CFGFILE -p $PID_FILE $SNMPDOPTS
 }
 
 case $1 in
 	""|load)
 		modreg cgi 'netsnmp' 'Net-SNMP'
 		[ "$CFGFILE" != "/etc/snmp/snmpd.conf" ] && modreg file netsnmp conf 'Net-SNMP: snmpd.conf' 0 "snmpd_conf"
-		if [ "$NETSNMP_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
 
-		start
+		modlib_start $NETSNMP_ENABLED
 		;;
 	unload)
-		modlib_stop
 		modunreg cgi netsnmp
 		modunreg file netsnmp
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop

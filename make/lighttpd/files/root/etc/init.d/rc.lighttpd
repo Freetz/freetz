@@ -6,11 +6,6 @@ DAEMON_LONG_NAME="lighttpd web server"
 . /etc/init.d/modlibrc
 . /usr/bin/lighttpd_has
 
-pre_config() {
-	modlib_addgroup wwwrun
-	modlib_adduser wwwrun -G wwwrun -s /bin/false -H -D -g "lighttpd account"
-}
-
 cleanup_always() {
 	modunreg status lighttpd lighttpd-log
 }
@@ -96,7 +91,7 @@ start() {
 	configure
 
 	LD_PRELOAD=
-	modlib_startdaemon $DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf
+	$DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf
 	exitval=$?
 
 	if [ "$exitval" -eq 0 ]; then
@@ -111,7 +106,8 @@ start() {
 trap "rm -f /var/run/rc.lighttpd.pid; exit 255" 1 2 3 15
 case $1 in
 	""|load)
-		pre_config
+		modlib_addgroup wwwrun
+		modlib_adduser wwwrun -G wwwrun -s /bin/false -H -D -g "lighttpd account"
 
 		modreg cgi 'lighttpd' 'lighttpd'
 

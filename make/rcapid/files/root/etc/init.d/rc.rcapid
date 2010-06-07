@@ -4,6 +4,7 @@ DAEMON=rcapid
 
 . /etc/init.d/modlibrc
 
+
 case $1 in
 	""|load)
 		modreg cgi 'rcapid' 'Rcapid'
@@ -22,11 +23,7 @@ case $1 in
 	restart)
 		;;
 	status)
-		if [ "$RCAPID_ENABLED" == "inetd" ]; then
-			echo 'inetd'
-		else
-			echo 'stopped'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

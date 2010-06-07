@@ -8,22 +8,7 @@ PID_FILE=/var/run/$DAEMON.pid
 
 
 start() {
-	echo -n "Starting $DAEMON..."
-	
-	if modlib_check_running; then
-		echo "already running" 
-		exit 1 
-	fi
-	
-	oidentd -C $CONF_FILE $OIDENTD_CMDLINE
-	exitval=$?
-	pidof oidentd > $PID_FILE
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon oidentd -C $CONF_FILE $OIDENTD_CMDLINE
 }
 
 case $1 in
@@ -51,11 +36,7 @@ case $1 in
 		modlib_restart
 		;;
 	status)
-		if [ "$OIDENTD_ENABLED" = "inetd" ]; then
-			echo 'inetd'
-		else
-			modlib_status
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

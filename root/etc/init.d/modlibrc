@@ -163,19 +163,25 @@ modlib_check_port()
 }
 
 # modlib_check_running
-#   check whether daemon is running. return status
+#   check whether daemon is running. return status:
+#	0: running
+#	3: stopped
+#	5: inetd
+# use CONF_NAME for other prefix in .cfg-file
 modlib_check_running()
 {
+	[ "`env | grep -i "^${CONF_NAME-$DAEMON}_ENABLED=" | sed 's/.*=//'`" == "inetd" ] && return 5
 	local fn=${PID_FILE-/var/run/$DAEMON.pid}
-	[ ! -s "$fn" ] && return 1
+	[ ! -s "$fn" ] && return 3
 	kill -0 $(cat "$fn") 2> /dev/null
-	local status="$?"
-	[ "$status" != "0" ] && rm -f "$fn"
-	return "$status"
+	[ "$?" == "0" ] && return 0 
+	rm -f "$fn"
+	return 3
 }
 
 # modlib_stop
 #   stop daemon
+# optional: kills daemon with "stop" of rc.$DAEMON if available
 modlib_stop()
 {
 	local fn=${PID_FILE-/var/run/$DAEMON.pid}
@@ -185,21 +191,27 @@ modlib_stop()
 		echo 'not running.'
 		return 0
 	fi
-	local cnt=9 
-	while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do 
-		kill $id 2>/dev/null 
-		sleep 1 
-		let cnt=cnt-1 
-	done 
-	if kill -0 $id 2>/dev/null; then 
-		kill -9 $id 2>/dev/null 
+	stop 2>/dev/null
+	if [ "$?" -ne 127 ]; then
 		sleep 1
+	else
+		local cnt=9 
+		while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do 
+			kill $id 2>/dev/null 
+			sleep 1 
+			let cnt=cnt-1 
+		done 
+		if kill -0 $id 2>/dev/null; then 
+			kill -9 $id 2>/dev/null 
+			sleep 1
+		fi
 	fi 
 	if ! kill -0 $id 2>/dev/null; then 
 		rm -f "$fn" 
 		echo 'done.'
 		return 0
 	else
+	
 		echo 'failed.'
 		return 1
 	fi
@@ -207,6 +219,7 @@ modlib_stop()
 
 # modlib_reload
 #   reload daemon (send signal SIGHUP)
+#   if available runs "config" of rc.$DAEMON
 modlib_reload()
 {
 	local fn=${PID_FILE-/var/run/$DAEMON.pid}
@@ -215,6 +228,7 @@ modlib_reload()
 		echo 'not running.'
 		return 0
 	fi
+	config 2>/dev/null
 	kill -HUP $(cat "$fn") 2> /dev/null
 	local status=$?
 	if [ "$status" -eq 0 ]; then
@@ -233,20 +247,36 @@ modlib_reload()
 modlib_restart()
 {
 	modlib_stop
-	start
+	modlib_start
 }
 
 # modlib_status
 #   check whether daemon is running
+#	returns:
+#	0:			running
+#	3:			stopped
+#	5:			inetd
+#	<other>:	unknown
+
 modlib_status()
 {
-	if modlib_check_running; then
-		echo 'running'
-		return 0
-	else
-		echo 'stopped'
-		return 3
-	fi
+	modlib_check_running
+	retval=$?
+	case $retval in
+		0)
+			echo 'running'
+			;;
+		3)
+			echo 'stopped'
+			;;
+		5)
+			echo 'inetd'
+			;;
+		*)
+			echo 'unknown'
+			;;
+	esac
+	return $retval			
 }
 
 # modlib_loadconfig
@@ -261,16 +291,38 @@ modlib_loadconfig ()
 
 # modlib_startdaemon
 #    clear environment, start daemon
-#    "$@": commandline tu execute
+#    "$@": commandline to execute
+#    if available runs "config" of rc.$DAEMON
+#    use DAEMON_BIN for other binary name	
+#    use DAEMON_ENV for additional environment settings
 modlib_startdaemon()
 {
-	env - PATH="$PATH" "$@"
+	echo -n "Starting $DAEMON..."
+	config 2>/dev/null
+	
+	env - PATH="$PATH" $DAEMON_ENV "$@"
+	local rv=$?
+	
+	if [ "$rv" -ne 0 ]; then
+		echo 'failed.'
+		exit $rv
+	fi
+	
+	# even daemons without pid-support creates a .pid file:
+	local fn=${PID_FILE-/var/run/$DAEMON.pid}
+	if [ ! -s "$fn" ]; then
+		local dp=`pidof -s ${DAEMON_BIN-$DAEMON}`
+		[ -n "$dp" ] && echo "$dp" > $fn
+	fi
+	
+	echo 'done.'
 }
 
 # modlib_start
 #    decide if daemon is started in inetd mode
 #    function "start" must be defined in the calling script
 #    $1: value for DAEMON_ENABLED
+#    returns: 0=success or 1=error
 modlib_start()
 {
 	local DAEMON_ENABLED="$1"
@@ -282,13 +334,24 @@ modlib_start()
 		fi
 		exit 1
 	fi
-	
-	#if modlib_check_running; then
-	#	echo "Starting $DAEMON...already running"
-	#	exit 1
-	#fi
-	
-	start
+
+	modlib_check_running
+	case $? in
+		0)
+			echo "Starting $DAEMON...already running"
+			;;
+		3)
+			start
+			return $?
+			;;
+		5)
+			echo "$DAEMON is started via inetd." 1>&2
+			;;
+		*)
+			echo "$DAEMON start prohibited, status is uncertain!" 1>&2
+			;;
+	esac
+	return 1
 }
 
 # load config

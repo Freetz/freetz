@@ -6,34 +6,21 @@ PID_FILE=/mod/root/.synce/dccm.pid
 . /etc/init.d/modlibrc
 
 start() {
-	echo -n 'Starting SynCE dccm daemon...'
-	dccm -r
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit exitval
-	fi
+	modlib_startdaemon dccm -r
 }
 
 case $1 in
 	""|load)
 		modreg cgi 'synce-dccm' 'SynCE DCCM'
 
-		if [ "$SYNCE_DCCM_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $SYNCE_DCCM_ENABLED
 		;;
 	unload)
 		modunreg cgi 'synce-dccm'
 		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop

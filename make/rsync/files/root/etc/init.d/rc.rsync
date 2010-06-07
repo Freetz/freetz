@@ -7,26 +7,12 @@ PID_FILE=/var/run/rsync.pid
 
 . /etc/init.d/modlibrc 
 
-start() {
-	echo -n 'Starting rsync...'
-
+config() {
 	/mod/etc/default.rsync/rsync_conf > $CONF
+}
 
-	if [ $(modlib_status) == "running" ]; then
-		echo "already running"
-		exit 0
-	fi
-
-	$DAEMON --daemon --config=$CONF --ipv4 > /dev/null 2>&1
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else 
-		echo 'failed.'
-		exit $exitval
-	fi
-
-	pidof -s rsync > $PID_FILE
+start() {
+	modlib_startdaemon $DAEMON --daemon --config=$CONF --ipv4 > /dev/null 2>&1
 }
 
 case "$1" in 
@@ -37,20 +23,15 @@ case "$1" in
 		modreg file rsync shares '$(lang de:"RSync: Freigaben" en:"RSync: Shares")' 1 "shares"
 		modreg file rsync sharesx '$(lang de:"RSync: Erweitert" en:"RSync: Options")' 1 "sharesx"
 
-		if [ "$RSYNC_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1;
-		fi
-		
-		start
+		modlib_start $RSYNC_ENABLED
 		;;
 	unload)
-		modlib_stop
 		modunreg file rsync
 		modunreg cgi rsync
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop
