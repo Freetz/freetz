@@ -4,6 +4,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 check "$AICCU_ENABLED" yes:auto "*":man
+check "$AICCU_RUNSCRIPT"   yes:runscript
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -38,6 +39,18 @@ cat << EOF
 	<td><input type="text" name="interface" size="15" maxlength="16" value="$(html "$AICCU_INTERFACE")"></td>
 </tr>
 </table>
+EOF
+
+sec_end
+sec_begin '$(lang de:"Erweitert" en:"Advanced")'
+
+cat << EOF
+<p>
+<input type="hidden" name="runscript" value="no">
+<input id="a1" type="checkbox" name="runscript" value="yes"$runscript_chk><label for="a1">$(lang de:"Nach Verbindungsaufbau /tmp/flash/aiccu/aiccu.sh ausf&uuml;hren." en:"Run /tmp/flash/aiccu/aiccu.sh after the connection was established.")</label>
+EOF
+cat << EOF
+</p>
 EOF
 
 sec_end
