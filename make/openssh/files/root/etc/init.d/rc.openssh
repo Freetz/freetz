@@ -67,17 +67,7 @@ start() {
 
 #really needed? modlib_check_running and inherits will fail if .pid is not correct...
 stop() {
-	if [ -n "$(pidof sshd)" ];then
-		echo -n "Stopping ${DAEMON} ... "
-		killall sshd > /dev/null 2>&1
-		exitval=$?
-		if [ "$exitval" -eq 0 ]; then
-			echo 'done.'
-		else
-			echo 'failed.'
-			exit $exitval
-		fi
-	fi
+	killall sshd > /dev/null 2>&1
 }
 
 case $1 in
@@ -95,18 +85,16 @@ case $1 in
 	unload)
 		modunreg file openssh
 		modunreg cgi openssh
-		stop
+		modlib_stop
 		;;
 	start)
 		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		modlib_start
+		modlib_restart
 		;;
 	status)
 		modlib_status
