@@ -48,8 +48,7 @@ cat << EOF
 <p>
 <input type="hidden" name="runscript" value="no">
 <input id="a1" type="checkbox" name="runscript" value="yes"$runscript_chk><label for="a1">$(lang de:"Nach Verbindungsaufbau /tmp/flash/aiccu/aiccu.sh ausf&uuml;hren." en:"Run /tmp/flash/aiccu/aiccu.sh after the connection was established.")</label>
-EOF
-cat << EOF
+<FONT SIZE=-2>($(lang de:"Als Parameter wird das Ineterface &uuml;bergeben" en:"Executed with the interface as parameter."))</FONT>
 </p>
 EOF
 

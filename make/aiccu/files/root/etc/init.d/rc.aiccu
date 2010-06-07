@@ -22,7 +22,7 @@ config() {
 start() {
 	modprobe ipv6
 	modlib_startdaemon $DAEMON start /mod/etc/$DAEMON.conf
-	[ "$AICCU_RUNSCRIPT" == "yes" ] && /tmp/flash/aiccu/aiccu.sh
+	[ "$AICCU_RUNSCRIPT" == "yes" ] && /tmp/flash/aiccu/aiccu.sh $AICCU_INTERFACE
 }
 
 stop () {
