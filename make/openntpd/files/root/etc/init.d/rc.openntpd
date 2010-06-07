@@ -50,7 +50,7 @@ start_daemon () {
 	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/ntpd.conf
 }
 
-stop () {
+stop_withmultid() {
 	modlib_stop
 
 	# Restart multid without "-t" option
@@ -75,13 +75,13 @@ case $1 in
 	unload)
 		modunreg file openntpd
 		modunreg cgi openntpd
-		stop
+		stop_withmultid
 		;;
 	start)
 		modlib_start
 		;;
 	stop)
-		stop
+		stop_withmultid
 		;;
 	reload)
 		modlib_stop
