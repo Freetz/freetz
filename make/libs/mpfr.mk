@@ -14,7 +14,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-gmp-build=$(TARGET_TOOLCHAIN_STAGING_DIR)
 # Patch #3 modifies configure.in which in turn causes autoconf-1.11 & automake-2.64
 # to be called which could be missed on build system. As the patch also modifies
 # configure it's safe simply to touch configure.in
-$(PKG)_PREVENT_AUTOCONF_CALL := touch -t 200001010000.00 $(MPFR_DIR)/configure.in;
+$(PKG)_PREVENT_AUTOCONF_CALL := touch -t 200001010000.00 $(abspath $(MPFR_DIR))/configure.in;
 $(PKG)_CONFIGURE_PRE_CMDS += $($(PKG)_PREVENT_AUTOCONF_CALL)
 
 $(PKG_SOURCE_DOWNLOAD)
