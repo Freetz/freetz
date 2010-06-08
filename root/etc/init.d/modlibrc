@@ -326,6 +326,7 @@ modlib_startdaemon()
 #    function "start" must be defined in the calling script
 #    $1: value for DAEMON_ENABLED
 #    returns: 0=success or 1=error
+#    if available runs "config" of rc.$DAEMON
 modlib_start()
 {
 	local DAEMON_ENABLED="$1"
@@ -334,6 +335,7 @@ modlib_start()
 			echo "$DAEMON is disabled." 1>&2
 		else
 			echo "$DAEMON is started via inetd." 1>&2
+			config 2>/dev/null
 		fi
 		exit 1
 	fi
