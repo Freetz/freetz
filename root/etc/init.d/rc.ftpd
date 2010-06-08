@@ -17,8 +17,7 @@ AVM_FTP_ENABLED=$(echo usbhost.ftp_server_enabled | usbcfgctl -s)
 WEBDAVCONTROL="/etc/webdav_control"
 INETD_FTPD_CONFIG="/var/mod/etc/inetd/ftpd.inetd"
 
-if [ -z "$FTPD_INETD" ]
-then
+if [ -z "$FTPD_INETD" ]; then
 	[ -x /bin/inetdctl ] && FTPD_INETD="yes"
 fi
 [ -z "$FTPD_PORT" ] && FTPD_PORT=21
@@ -36,8 +35,7 @@ set_parameters()
 	local ftp_daemon_opts="-D --pidfile=$PIDFILE -m $FTPD_MAX_CLIENTS "
 	local ftp_options="-q -t $FTPD_TIMEOUT"
 	AVM_FTP_USER=$(echo usbhost.users_enabled | usbcfgctl -s)
-	if [ "$AVM_FTP_USER" = "yes" ]
-	then
+	if [ "$AVM_FTP_USER" = "yes" ];	then
 		local ftp_options="$ftp_options -U"
 	else
 		AVM_FTP_RO=$(echo usbhost.readonly | usbcfgctl -s)
@@ -46,12 +44,9 @@ set_parameters()
 			local ftp_options="$ftp_options -r"
 		fi
 	fi
-	if [ -n "$BINARY" ]
-	then
-		if [ -x "$BINARY" ]
-		then
-			if [ "$1" == "daemon" ] 
-			then
+	if [ -n "$BINARY" ]; then
+		if [ -x "$BINARY" ]; then
+			if [ "$1" == "daemon" ]; then
 				${BINARY} ${ftp_daemon_opts}${ftp_options} -h ${ftp_host} > /dev/null 2>&1
 			else
 				[ "$CONFIG_WEBDAV" = "y" ] && local webdav_wrapper="/usr/bin/webdav_wrapper" || local webdav_wrapper=""
@@ -69,16 +64,12 @@ start()
 	local status=1
 	local daemonname=""
 	echo -n "Starting $DAEMON_LONG_NAME..."
-	if [ "$AVM_FTP_ENABLED" != "no" ]
-	then	
-		if [ -n "$BINARY" ]
-		then
+	if [ "$AVM_FTP_ENABLED" != "no" ]; then	
+		if [ -n "$BINARY" ]; then
 			daemonname="$(modlib_check_port $FTPD_PORT $DAEMON $CHECKCMD)"
 			status=$?
-			if [ "$FTPD_INETD" == "yes" ]
-			then
-				if [ "$status" -eq 0 ]
-				then
+			if [ "$FTPD_INETD" == "yes" ]; then
+				if [ "$status" -eq 0 ]; then
 					echo -n "(enabling over inetd)..."
 					set_parameters inetd
 					status=$?
@@ -94,8 +85,7 @@ start()
 					fi
 				fi
 			else
-				if [ "$status" -eq 0 ]
-				then
+				if [ "$status" -eq 0 ]; then
 					set_parameters daemon
 					status=$?
 				else
@@ -110,8 +100,7 @@ start()
 		echo 'disabled.'
 		return 1
 	fi
-	if [ "$status" -eq 0 ]
-	then
+	if [ "$status" -eq 0 ]; then
 		echo "done."
 		return 0
 	else
@@ -124,14 +113,11 @@ stop()
 {
 	local status=1
 	echo -n "Stopping ${DAEMON_LONG_NAME-$DAEMON}..."
-	if [ -n "$BINARY" ]
-	then
+	if [ -n "$BINARY" ]; then
 		daemonname="$(modlib_check_port $FTPD_PORT $DAEMON)"
 		status=$?
-		if [ "$status" -eq 2 ]
-		then
-			if [ "$daemonname" == "$DAEMON" ]
-			then
+		if [ "$status" -eq 2 ]; then
+			if [ "$daemonname" == "$DAEMON" ]; then
 				echo -n "(disabling over inetd)..."
 				rm -f ${INETD_FTPD_CONFIG} > /dev/null 2>&1
 				modlib_reload_inetd > /dev/null 2>&1
@@ -139,8 +125,7 @@ stop()
 			fi
 		else
 			local fn=${PID_FILE-/var/run/$DAEMON.pid}
-			if ! modlib_check_running
-			then
+			if ! modlib_check_running; then
 				echo 'not running.'
 				return 0
 			fi
@@ -152,8 +137,7 @@ stop()
 		echo 'not found.'
 		return 1
 	fi
-	if [ "$status" -eq 0 ]
-	then
+	if [ "$status" -eq 0 ];	then
 		echo 'done.'
 		return 0
 	else
@@ -172,8 +156,7 @@ case $1 in
 		[ -x /usr/lib/cgi-bin/$DAEMON.cgi ] && modunreg cgi $DAEMON
 		;;
 	start)
-		if modlib_check_running
-		then
+		if modlib_check_running; then
 			modlib_reload
 		else
 			start
@@ -188,20 +171,17 @@ case $1 in
 	restart)
 		daemonname="$(modlib_check_port $FTPD_PORT $DAEMON)"
 		local status=$?
-		if [ "$status" -ne 0 ]
-		then
+		if [ "$status" -ne 0 ]; then
 			stop
 			sleep 1
 		fi
 		start
 		;;
 	status)
-		if [ "$AVM_FTP_ENABLED" != "no" ]
-		then
+		if [ "$AVM_FTP_ENABLED" != "no" ]; then
 			daemonname="$(modlib_check_port $FTPD_PORT $DAEMON)"
 			status=$?
-			if [ $status -eq 0 ]
-			then
+			if [ $status -eq 0 ]; then
 				[ "$FTPD_INETD" == "yes" ] && echo 'stopped (inetd)' || echo 'stopped'
 			else
 				case "$daemonname" in
@@ -221,8 +201,7 @@ case $1 in
 		pid
 		;;
 	reload)
-		if modlib_check_running
-		then
+		if modlib_check_running; then
 			modlib_reload
 		else
 			start
@@ -233,4 +212,5 @@ case $1 in
 		exit 1
 		;;
 esac
+
 exit $?
