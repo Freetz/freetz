@@ -5,7 +5,7 @@
 # DAEMON_LONG_NAME	service name to display in start/stop message, default $DAEMON
 # PID_FILE		pid-file for DAEMON, default /var/run/$DAEMON.pid
 # CONF_NAME		config is in /mod/etc/conf/${CONF_NAME}.cfg instead of /mod/etc/conf/${DAEMON}.cfg
-# CONF_PREFIX	other prefix in .cfg-file than $DAEMON
+# CONF_ENABLED	other variablename than ${DAEMON}_ENABLED with manual/automatic/inetd in .cfg-file
 # DAEMON_BIN	for other binary name than $DAEMON (pidof used in modlib_startdaemon)
 # DAEMON_ENV	for additional environment settings (used in modlib_startdaemon)
 
@@ -170,10 +170,10 @@ modlib_check_port()
 #	0: running
 #	3: stopped
 #	5: inetd
-# use CONF_PREFIX for other prefix in .cfg-file
+# use CONF_ENABLED for other variablename with manual/automatic/inetd in .cfg-file
 modlib_check_running()
 {
-	[ "`env | grep -i "^${CONF_PREFIX-$DAEMON}_ENABLED=" | sed 's/.*=//'`" == "inetd" ] && return 5
+	[ "`env | grep -i "^${CONF_ENABLED-${DAEMON}_ENABLED}=" | sed 's/.*=//'`" == "inetd" ] && return 5
 	local fn=${PID_FILE-/var/run/$DAEMON.pid}
 	[ ! -s "$fn" ] && return 3
 	kill -0 $(cat "$fn") 2> /dev/null
