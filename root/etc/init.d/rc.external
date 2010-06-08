@@ -14,7 +14,7 @@ sleeper() {
 	counter=225
 	while [ `date +%Y` -lt 2010 -a $counter -ne 0 ]; do
 		echo -n "." >> /var/log/external.log
-		let counter=$counter-1
+		[ "$EXTERNAL_SERVICES_WAIT_INFINITE" == "y" ] || let counter=$counter-1
 		sleep 4
 	done
 	if [ `date +%Y` -lt 2010 ]; then

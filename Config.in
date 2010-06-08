@@ -2678,13 +2678,20 @@ config EXTERNAL_SERVICES_YEAR_MIN
 	help
 		The year must be at least 2010! 
 
+config EXTERNAL_SERVICES_WAIT_INFINITE
+	bool "Wait infinitely"
+	default n
+	depends on EXTERNAL_ENABLED && EXTERNAL_SERVICES && EXTERNAL_SERVICES_YEAR_MIN && FREETZ_SHOW_ADVANCED
+	help
+		Wait not only 15 minutes for time synchronization
+
 config EXTERNAL_SERVICES_YEAR_MAX
 	bool "Abort if invalid year"
 	default n
 	depends on EXTERNAL_ENABLED && EXTERNAL_SERVICES && EXTERNAL_SERVICES_YEAR_MIN && FREETZ_SHOW_ADVANCED
 	help
 		Doesn't start services if the year is greater 2015! 
-		
+
 config EXTERNAL_LINKS
 	bool	"Do not ignore symbolic links"
 	default n
