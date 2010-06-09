@@ -3,6 +3,7 @@
 cd /
 export TERM=xterm
 
+DAEMON=mod
 . /etc/init.d/modlibrc
 
 start() {
