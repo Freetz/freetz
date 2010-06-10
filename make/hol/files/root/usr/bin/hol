@@ -33,11 +33,9 @@ HOL_TMP="/tmp/hol"
 {
 [ -n "$HOL_PASS" ] && echo "password $HOL_PASS"
 echo "action $HOL_ACTION"
-if [ -n "$HOL_TIME" -a -n "$HOL_MESSAGE" ]
-then
+if [ -n "$HOL_TIME" -a -n "$HOL_MESSAGE" ]; then
 {
-	if [ $HOL_TIME -gt 0 ]
-	then
+	if [ $HOL_TIME -gt 0 ]; then
 	{
 		echo "warning on"
 		echo "warntime $HOL_TIME"
@@ -64,8 +62,7 @@ sleep 1
 } | telnet $HOL_HOST $HOL_PORT > ${HOL_TMP}
 hol_errors="$(cat ${HOL_TMP} | grep 501)"
 rm -f ${HOL_TMP}
-if [ -z "$hol_errors" ]
-then
+if [ -z "$hol_errors" ]; then
 {
 	exit 0
 }
