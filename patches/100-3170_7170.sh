@@ -29,7 +29,7 @@ echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_3170
 
 echo2 "patching rc.S and rc.conf"
-if isFreetzType ANNEX_B; then
+if isFreetzType LANG_DE || isFreetzType ANNEX_B; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170.patch" || exit 2
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170_a_ch.patch" || exit 2
@@ -71,7 +71,7 @@ modsed "s/HWRevision_ATA=0$/HWRevision_ATA=1/" "${FILESYSTEM_MOD_DIR}/etc/init.d
 
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
-if isFreetzType ANNEX_B; then
+if isFreetzType LANG_DE || isFreetzType ANNEX_B; then
 	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-3170_7170.patch" || exit 2
 else
 	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-3170_7170_a_ch.patch" || exit 2
