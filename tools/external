@@ -25,24 +25,12 @@ if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
 	touch "$OUT_DIR/$OUT_CONF"
 fi
 
-#start/stop services
-if [ "$EXTERNAL_SERVICES" == "y" ]; then
-	EXTERNAL_SERVICES="$EXTERNAL_SERVICES_OWN"
-	if [ "$EXTERNAL_SERVICES_FREETZ" == "y" ]; then
-		for EXTERNAL_SERVICE in $(find make -maxdepth 2 -name external.services); do
-			. $EXTERNAL_SERVICE
-		done
-	fi
-	if [ -z "$EXTERNAL_SERVICES" ]; then
-		warn "No services found for automatic start/stop"
-	else
-		echo "$EXTERNAL_SERVICES" > "${FILESYSTEM_MOD_DIR}/etc/external.pkg"
-		echo "export EXTERNAL_DIRECTORY=${EXTERNAL_DIRECTORY}" >> "${FILESYSTEM_MOD_DIR}/etc/external.conf"
-		echo "export EXTERNAL_SERVICES_YEAR_MIN=${EXTERNAL_SERVICES_YEAR_MIN}" >> "${FILESYSTEM_MOD_DIR}/etc/external.conf"
-		echo "export EXTERNAL_SERVICES_WAIT_INFINITE=${EXTERNAL_SERVICES_WAIT_INFINITE}" >> "${FILESYSTEM_MOD_DIR}/etc/external.conf"
-		echo "export EXTERNAL_SERVICES_YEAR_MAX=${EXTERNAL_SERVICES_YEAR_MAX}" >> "${FILESYSTEM_MOD_DIR}/etc/external.conf"
-	fi
-fi
+#start/stop external services
+echo $EXTERNAL_DIRECTORY >> "${FILESYSTEM_MOD_DIR}/etc/external.dir"
+for EXTERNAL_SERVICE in $(find make -maxdepth 2 -name external.services); do
+	. $EXTERNAL_SERVICE
+done
+echo $EXTERNAL_SERVICES > "${FILESYSTEM_MOD_DIR}/etc/external.pkg"
 
 EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 for EXT_FILES in $(find make -maxdepth 2 -name external.files); do

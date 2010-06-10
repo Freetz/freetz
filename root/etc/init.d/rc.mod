@@ -24,10 +24,10 @@ start() {
 	/etc/init.d/rc.webcfg
 
 	# Static Packages
-	EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null)"
+	[ "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" ] && EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null)"
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
 		if [ -x "/etc/init.d/rc.$pkg" ]; then
-			if echo " $EXTERNAL_SERVICES " | grep -q " $pkg " >/dev/null 2>&1; then
+			if echo " $EXTERNAL_SERVICES $MOD_EXTERNAL_OWN_SERVICES " | grep -q " $pkg " >/dev/null 2>&1; then
 				echo "$pkg will be started by external."
 			else
 				modreg daemon $pkg

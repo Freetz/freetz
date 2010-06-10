@@ -1,63 +1,70 @@
 #!/bin/sh
 
+DAEMON=external
+CONF_NAME=mod
 . /etc/init.d/modlibrc
-. /etc/external.conf
+LOG_FILE=/var/log/$DAEMON.log
 
 usage() {
 	echo "Usage: $0 [start|stop] [mountpoint]" 1>&2
-	echo "Output is stored here: /var/log/external.log"
+	echo "Output is stored here: $LOG_FILE"
 	exit 1
 }
 
 sleeper() {
-	echo -n "Waiting for time-synchronisation: " >> /var/log/external.log
+	echo -n "Waiting for time-synchronisation: " >> $LOG_FILE
 	counter=225
 	while [ `date +%Y` -lt 2010 -a $counter -ne 0 ]; do
-		echo -n "." >> /var/log/external.log
-		[ "$EXTERNAL_SERVICES_WAIT_INFINITE" == "y" ] || let counter=$counter-1
+		echo -n "." >> $LOG_FILE
+		[ "$MOD_EXTERNAL_WAIT_INFINITE" == "yes" ] || let counter=$counter-1
 		sleep 4
 	done
 	if [ `date +%Y` -lt 2010 ]; then
-		echo "timeout." >> /var/log/external.log
+		echo "timeout." >> $LOG_FILE
 		exit
 	fi
-	if [ "$EXTERNAL_SERVICES_YEAR_MAX" == "y" -a `date +%Y` -gt 2015 ]; then
-		echo "error." >> /var/log/external.log
+	if [ `date +%Y` -gt $MOD_EXTERNAL_YEAR_MAX ]; then
+		echo "error." >> $LOG_FILE
 		[ -f /tmp/flash/mod/external.year ] && . /tmp/flash/mod/external.year
 		exit
 	fi
-	echo "successfully." >> /var/log/external.log
+	echo "successfully." >> $LOG_FILE
 }
 
 start() {
 	modreg daemon $1
-	/etc/init.d/rc.$1 load >> /var/log/external.log 2>&1
+	/etc/init.d/rc.$1 load >> $LOG_FILE 2>&1
 }
 
 stop() {
-	/etc/init.d/rc.$1 unload >> /var/log/external.log 2>&1
+	/etc/init.d/rc.$1 unload >> $LOG_FILE 2>&1
 	modunreg daemon $1
 }
 
 helper() {
-	[ "$1" == "start" -a "$EXTERNAL_SERVICES_YEAR_MIN" == "y" ] && sleeper
-	echo -e "\n### $3 $2 @ `date "+%d.%m.%Y - %H:%M,%S"`" >> /var/log/external.log
+	[ "$1" == "start" -a "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && sleeper
+	echo -e "\n### $3 $2 @ `date "+%d.%m.%Y - %H:%M,%S"`" >> $LOG_FILE
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
 		if [ -x "/etc/init.d/rc.$pkg" ] && (echo " $EXTERNAL_SERVICES " | grep -q " $pkg " >/dev/null 2>&1); then
 			[ "$1" == "start" ] && start $pkg
 			[ "$1" == "stop" ] && stop $pkg
 		fi
 	done
-	[ -f /tmp/flash/mod/rc.external ] && . /tmp/flash/mod/rc.external $1 >> /var/log/external.log 2>&1
+	[ -f /tmp/flash/mod/rc.external ] && . /tmp/flash/mod/rc.external $1 >> $LOG_FILE 2>&1
 }
 
+
 [ $# -ne 2 ] && usage
-echo $EXTERNAL_DIRECTORY | grep -q "$2" >/dev/null 2>&1 || exit
-if [ ! -r /etc/external.pkg ]; then
-	echo "File not found: /etc/external.pkg" >> /var/log/external.log
-	exit 1
-fi
-EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null)"
+cat /etc/external.dir 2>/dev/null | grep -q "$2" >/dev/null 2>&1 || exit
+if [ "$MOD_EXTERNAL_FREETZ_SERVICES" != "yes" ]; then
+	if [ -z "$MOD_EXTERNAL_OWN_SERVICES" ]; then
+		echo "No services selected." >> $LOG_FILE
+		exit
+	fi
+	EXTERNAL_SERVICES="$MOD_EXTERNAL_OWN_SERVICES"
+else
+	EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES"
+fi 
 
 case $1 in
 	start)

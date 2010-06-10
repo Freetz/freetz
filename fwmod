@@ -944,7 +944,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	# Remove /etc/init.d/rc.external (for running services)
-	[ ! "$EXTERNAL_SERVICES" == "y" ] && rm "$MOD_DIR/filesystem/etc/init.d/rc.external"
+	[ "$EXTERNAL_ENABLED" == "y" ] || rm "$MOD_DIR/filesystem/etc/init.d/rc.external"
 
 	# Remove /etc/init.d/rc.ftpd
 	if [ "$FREETZ_PATCH_RCFTPD" == "y" ]; then

@@ -2646,52 +2646,6 @@ config EXTERNAL_DOWNLOADER
 		Prepare files for Downloader package.
 		Downloader loads usualy files from a http or ftp server into the RAM of the box.
 
-config EXTERNAL_SERVICES
-	bool "Start/Stop external services"
-	default y
-	depends on EXTERNAL_ENABLED && ! EXTERNAL_DOWNLOADER
-	help
-		Enables start/stop processing.
-		
-config EXTERNAL_SERVICES_FREETZ
-	bool "Freetz services"
-	default y
-	depends on EXTERNAL_ENABLED && EXTERNAL_SERVICES
-	help
-		Starts/Stopps all externalised Freetz-services on (un)mounting.
-				
-config EXTERNAL_SERVICES_OWN
-	string "Own services"
-	default ""
-	depends on EXTERNAL_ENABLED && EXTERNAL_SERVICES && FREETZ_SHOW_ADVANCED
-	help
-		Put your own services here (space seperated).
-		They will be started/stopped on (un)mounting.
-		
-		This would be helpful if a service is not externalised, but
-		needs your USB-device for storing data-files, eg "rrdstats"
-
-config EXTERNAL_SERVICES_YEAR_MIN
-	bool "Wait for time synchronization"
-	default n
-	depends on EXTERNAL_ENABLED && EXTERNAL_SERVICES
-	help
-		The year must be at least 2010! 
-
-config EXTERNAL_SERVICES_WAIT_INFINITE
-	bool "Wait infinitely"
-	default n
-	depends on EXTERNAL_ENABLED && EXTERNAL_SERVICES && EXTERNAL_SERVICES_YEAR_MIN && FREETZ_SHOW_ADVANCED
-	help
-		Wait not only 15 minutes for time synchronization
-
-config EXTERNAL_SERVICES_YEAR_MAX
-	bool "Abort if invalid year"
-	default n
-	depends on EXTERNAL_ENABLED && EXTERNAL_SERVICES && EXTERNAL_SERVICES_YEAR_MIN && FREETZ_SHOW_ADVANCED
-	help
-		Doesn't start services if the year is greater 2015! 
-
 config EXTERNAL_LINKS
 	bool	"Do not ignore symbolic links"
 	default n
