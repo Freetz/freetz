@@ -1,0 +1,29 @@
+#!/bin/sh
+
+DAEMON=hol
+
+. /etc/init.d/modlibrc
+
+case "$1" in
+	""|load)
+		modreg cgi $DAEMON 'Halt-On-Lan'
+		modreg daemon --hide hol
+		;;
+	unload)
+		modunreg cgi 'hol'
+		;;
+	start)
+		;;
+	stop)
+		;;
+	restart)
+		;;
+	status)
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

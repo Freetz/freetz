@@ -1,0 +1,80 @@
+#!/bin/sh
+
+usage ()
+{
+	echo >&2 "$(basename $0) v$VERSION Halt-On-Lan script" 	
+	echo >&2 "Author hermann72pb <http://www.ip-phone-forum.de/member.php?u=80424>"
+	echo >&2 ""
+	echo >&2 "Usage: $(basename $0) HOST [ACTION TIME MESSAGE]"
+	echo >&2 "HOST      Hostname or ip address: e.g. my.computer or 192.168.178.20"
+	echo >&2 "ACTION    Actions for poweroff: e.g. shutdown, reboot, logoff, lock, etc."
+	echo >&2 "TIME      time in seconds for warning before the action:"
+	echo >&2 "          e.g. 10 or 0 for no warning"
+	echo >&2 "MESSAGE   Warning message: e.g. Please close all your files"
+	exit 255
+}
+
+CONFFILE="hol.cfg"
+CONFPATH="/mod/etc/conf/"
+if [ ! -r "$CONFPATH$CONFFILE" ]; then
+	echo >&2 "Error [$(basename $0)]: not configured"
+	exit 100
+fi
+. $CONFPATH$CONFFILE
+
+VERSION="1.0"
+HOL_TMP="/tmp/hol"
+
+[ $# -ge 1 -a -n "$1" ] && HOL_HOST="$1" || usage
+[ $# -ge 2 -a -n "$2" ] && HOL_ACTION="$2"
+[ $# -ge 3 -a -n "$3" ] && HOL_TIME=$3
+[ $# -ge 4 -a -n "$4" ] && HOL_MESSAGE="$4"
+
+{
+[ -n "$HOL_PASS" ] && echo "password $HOL_PASS"
+echo "action $HOL_ACTION"
+if [ -n "$HOL_TIME" -a -n "$HOL_MESSAGE" ]
+then
+{
+	if [ $HOL_TIME -gt 0 ]
+	then
+	{
+		echo "warning on"
+		echo "warntime $HOL_TIME"
+		echo "message $(echo "$HOL_MESSAGE" | sed -ne '$!N;${s/\r\|\n/\\n/g;p}')"
+	}
+	else
+	{
+		echo "warning off"
+		echo "warntime 0"
+	}
+	fi
+}
+else
+{
+	echo "warning off"
+	echo "warntime 0"
+}
+fi
+echo "who local"
+echo "when immediate"
+echo "cancel on"
+echo "doit"
+sleep 1
+} | telnet $HOL_HOST $HOL_PORT > ${HOL_TMP}
+hol_errors="$(cat ${HOL_TMP} | grep 501)"
+rm -f ${HOL_TMP}
+if [ -z "$hol_errors" ]
+then
+{
+	exit 0
+}
+else
+{
+	errcode=1
+	echo >&2 "$hol_errors"
+	[ -n "$(echo "$hol_errors" | grep "Invalid value specified")" ] && errcode=3
+	[ -n "$(echo "$hol_errors" | grep "Access is denied")" ] && errcode=2
+	exit $errcode
+}
+fi
