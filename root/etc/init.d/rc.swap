@@ -12,6 +12,11 @@ has_swap () {
 start () {
 	echo -n "Starting $DAEMON..."
 
+	if has_swap; then
+		echo 'already running.'
+		exit 1
+	fi
+	
 	ii=0
 	# wait for
 	# - usb device to settle
@@ -35,6 +40,11 @@ start () {
 stop () {
 	echo -n "Stopping $DAEMON... "
 
+	if ! has_swap; then
+		echo 'not running.'
+		exit 1
+	fi
+	
 	sed '1d' /proc/swaps |
 		while read swap _; do
 			swapoff $swap

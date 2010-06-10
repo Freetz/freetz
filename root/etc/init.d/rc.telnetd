@@ -3,31 +3,16 @@
 
 DAEMON=telnetd
 CONF_NAME=mod
+CONF_ENABLED=MOD_TELNETD
 
 . /etc/init.d/modlibrc
 
 start() {
-	echo -n 'Starting telnetd...'
-	$DAEMON -l /sbin/ar7login
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON -l /sbin/ar7login
 }
 
 stop() {
-	echo -n 'Stopping telnetd...'
 	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 case $1 in
@@ -35,29 +20,19 @@ case $1 in
 		modlib_start $MOD_TELNETD
 		;;
 	unload)
-		stop
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ "$MOD_TELNETD" == "inetd" ]; then
-			echo 'inetd'
-		else
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

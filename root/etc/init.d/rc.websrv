@@ -7,42 +7,28 @@ VERBOSE_RC_CONF=n
 
 DAEMON=websrv
 DAEMON_LONG_NAME="$DAEMON AVM web UI"
-PIDFILE=/var/run/websrv.pid
+PID_FILE=/var/run/websrv.pid
 
 pid() {
-	cat "$PIDFILE"
+	cat "$PID_FILE"
 }
 
 start() {
-	echo -n "Starting $DAEMON_LONG_NAME..."
-	httpd -P "$PIDFILE" -p 80 -h /usr/www/all
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo "done."
-	else
-		echo "failed."
-		exit $exitval
-	fi
-}
-
-stop() {
-	modlib_stop
+	modlib_startdaemon httpd -P "$PID_FILE" -p 80 -h /usr/www/all
 }
 
 case $1 in
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	kill)
 		kill -kill $(pid) 2> /dev/null
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
 		modlib_status

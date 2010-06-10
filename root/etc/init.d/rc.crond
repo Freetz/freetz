@@ -2,40 +2,20 @@
 
 DAEMON=crond
 CONF_NAME=mod
+CONF_ENABLED=MOD_CROND
 
 . /etc/init.d/modlibrc
 
-start() {
+config() {
 	if [ -r /tmp/flash/mod/crontab ]; then
 		cp /tmp/flash/mod/crontab /var/spool/cron/crontabs/root
 	else
 		touch /var/spool/cron/crontabs/root
 	fi
-
-	echo -n 'Starting crond...'
-	$DAEMON -b
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
-stop() {
-	echo -n 'Stopping crond...'
-	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-
-	rm -f /var/spool/cron/crontabs/root
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+start() {
+	modlib_startdaemon $DAEMON -b
 }
 
 case $1 in
@@ -43,34 +23,23 @@ case $1 in
 		[ -r /tmp/flash/crontab.save ] && mv /tmp/flash/crontab.save /tmp/flash/mod/crontab
 		modreg file mod crontab 'Freetz: crontab' 0 "crontab"
 
-		if [ "$MOD_CROND" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $MOD_CROND
 		;;
 	unload)
-		stop
 		modunreg file mod crontab
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo "stopped"
-		else
-			echo "running"
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
