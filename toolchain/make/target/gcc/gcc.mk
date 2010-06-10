@@ -42,8 +42,6 @@ GCC_TARGET_PREREQ+=$(GMP_STAGING_BINARY) $(MPFR_STAGING_BINARY)
 
 GCC_WITH_HOST_GMP=--with-gmp=$(GMP_HOST_DIR)
 GCC_WITH_HOST_MPFR=--with-mpfr=$(MPFR_HOST_DIR)
-GCC_WITH_TARGET_GMP=--with-gmp=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
-GCC_WITH_TARGET_MPFR=--with-mpfr=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
 endif
 
 GCC_CROSS_LANGUAGES:=c
@@ -238,8 +236,6 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 		--disable-libgomp \
 		--disable-multilib \
 		$(GCC_SHARED_LIBGCC) \
-		$(GCC_WITH_TARGET_GMP) \
-		$(GCC_WITH_TARGET_MPFR) \
 		$(GCC_DECIMAL_FLOAT) \
 		$(DISABLE_NLS) \
 		$(DISABLE_LARGEFILE) \
@@ -256,9 +252,9 @@ $(GCC_BUILD_DIR3)/.compiled: $(GCC_BUILD_DIR3)/.configured
 # gcc-lib dir changes names to gcc with 3.4.mumble
 #
 GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
+ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.2)
 GCC_INCLUDE_DIR:=include
-# TODO: what is this for?
-ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.3)
+else
 GCC_INCLUDE_DIR:=include-fixed
 endif
 
