@@ -1,5 +1,5 @@
---- etc/hotplug/storage.orig	2010-02-05 20:27:10.000000000 +0100
-+++ etc/hotplug/storage	2010-02-05 20:27:53.000000000 +0100
+--- etc/hotplug/storage.orig	2010-06-11 10:01:16.400316004 +0200
++++ etc/hotplug/storage	2010-06-11 10:01:16.490309523 +0200
 @@ -210,6 +210,10 @@
  local DEVICE=$1
  local MPOINT=$2
@@ -9,5 +9,5 @@
 +
 +[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $MPOINT
  test -x $MSTOP && $MSTOP
- if test -x /bin/inetdctl ; then
- inetdctl disable ftpd
+ for MP in /var/media/ftp/* ; do
+ rmdir "$MP" > /dev/null
