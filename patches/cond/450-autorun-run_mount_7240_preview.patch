@@ -1,0 +1,13 @@
+--- etc/hotplug/run_mount.orig	2010-02-05 20:21:03.000000000 +0100
++++ etc/hotplug/run_mount	2010-02-05 20:21:48.000000000 +0100
+@@ -126,6 +126,10 @@
+ /etc/ftpd_control reconfig
+ fi
+ test -x $TR069START && $TR069START $MNTNAME
++AUTORUN=$MNTPATH/autorun.sh
++[ -x $AUTORUN ] && $AUTORUN & 
++
++[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $MNTPATH &
+ if test -x /etc/samba_control ; then
+ /etc/samba_control reconfig
+ fi

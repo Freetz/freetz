@@ -1,0 +1,13 @@
+--- etc/hotplug/storage.orig	2010-02-05 20:27:10.000000000 +0100
++++ etc/hotplug/storage	2010-02-05 20:27:53.000000000 +0100
+@@ -210,6 +210,10 @@
+ local DEVICE=$1
+ local MPOINT=$2
+ local MPNAME="${MPOINT##*/}"
++AUTOEND=$MPOINT/autoend.sh
++[ -x $AUTOEND ] && $AUTOEND
++
++[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $MPOINT
+ test -x $MSTOP && $MSTOP
+ if test -x /bin/inetdctl ; then
+ inetdctl disable ftpd
