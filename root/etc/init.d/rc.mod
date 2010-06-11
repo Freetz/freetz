@@ -23,6 +23,8 @@ start() {
 	/etc/init.d/rc.telnetd
 	/etc/init.d/rc.webcfg
 
+	[ "$MOD_SWAP_BEFORE_SERVICES" == "yes" ] && /etc/init.d/rc.swap
+
 	# Static Packages
 	[ "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" ] && EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null)"
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
@@ -56,7 +58,7 @@ start() {
 	[ -r /tmp/flash/rc.custom ] && mv /tmp/flash/rc.custom /tmp/flash/mod/rc.custom
 	[ -r /tmp/flash/mod/rc.custom ] && . /tmp/flash/mod/rc.custom
 
-	/etc/init.d/rc.swap
+	[ "$MOD_SWAP_BEFORE_SERVICES" == "yes" ] || /etc/init.d/rc.swap
 }
 
 modreg_file() {

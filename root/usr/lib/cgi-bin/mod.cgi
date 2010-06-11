@@ -14,6 +14,7 @@ check "$MOD_MOUNTED_SUB" yes:mounted_sub
 check "$MOD_MOUNTED_UMOUNT" yes:mounted_umount
 check "$MOD_CROND" yes:crond_auto "*":crond_man
 check "$MOD_SWAP" yes:swap_auto "*":swap_man
+check "$MOD_SWAP_BEFORE_SERVICES" yes:swap_before_services
 check "$MOD_TELNETD" yes:telnetd_auto inetd:telnetd_inetd "*":telnetd_man
 check "$MOD_HTTPD" yes:httpd_auto inetd:httpd_inetd "*":httpd_man
 check "$MOD_EXTERNAL_FREETZ_SERVICES" yes:external_freetz_services
@@ -41,6 +42,9 @@ cat << EOF
 <h2>Swap ($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)</h2>
 <p>Swap: <input type="text" name="swap_file" size="50" maxlength="50" value="$(html "$MOD_SWAP_FILE")"></p>
 <p><input type="text" name="swap_size" size="3" maxlength="3" value="" /> MB <input type="button" value="$(lang de:"Swap-Datei anlegen" en:"Create swapfile")" onclick="window.open('/cgi-bin/create_swap.cgi?swap_file='+encodeURIComponent(document.forms[0].swap_file.value)+'&swap_size='+encodeURIComponent(document.forms[0].swap_size.value),'swapfilepopup','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes')" /></p>
+<p><input type="hidden" name="swap_before_services" value="no">
+<input id="s3" type="checkbox" name="swap_before_services" value="yes"$swap_before_services_chk><label for="s3">$(lang de:"Swap vor den Diensten starten" en:"Start swap before services")</label>
+</p>
 EOF
 
 sec_end
