@@ -1,14 +1,14 @@
---- Makefile.in.orig	2007-03-19 10:49:04.000000000 +0100
-+++ Makefile.in	2010-06-02 16:03:47.458372450 +0200
-@@ -215,6 +215,7 @@
+--- Makefile.in.orig	2010-03-12 20:32:42.000000000 +0100
++++ Makefile.in	2010-06-11 15:57:18.377380092 +0200
+@@ -379,6 +379,7 @@
  		$(LN) -sf $(RUNTIME_PREFIX_LIB_FROM_DEVEL_PREFIX_LIB)$$i.$(MAJOR_VERSION) \
  		$(PREFIX)$(DEVEL_PREFIX)lib/$$i; \
  	done
 +ifeq ($(HARDWIRED_ABSPATH),y)
  	if [ -f $(top_builddir)lib/libc.so -a -f $(PREFIX)$(RUNTIME_PREFIX)lib/$(SHARED_MAJORNAME) ] ; then \
  		$(RM) $(PREFIX)$(DEVEL_PREFIX)lib/libc.so; \
- 		sed -e 's:$(NONSHARED_LIBNAME):$(DEVEL_PREFIX)lib/$(NONSHARED_LIBNAME):' \
-@@ -222,14 +223,21 @@
+ 		$(SED) -e 's:$(NONSHARED_LIBNAME):$(DEVEL_PREFIX)lib/$(NONSHARED_LIBNAME):' \
+@@ -386,14 +387,21 @@
  		    -e 's:$(UCLIBC_LDSO):$(RUNTIME_PREFIX)lib/$(UCLIBC_LDSO):' \
  		    $(top_builddir)lib/libc.so > $(PREFIX)$(DEVEL_PREFIX)lib/libc.so; \
  	fi
@@ -30,9 +30,9 @@
  endif
  endif
  ifeq ($(PTHREADS_DEBUG_SUPPORT),y)
---- extra/Configs/Config.in.orig	2007-04-17 19:24:29.000000000 +0200
-+++ extra/Configs/Config.in	2010-06-02 16:03:47.458372450 +0200
-@@ -1313,6 +1313,26 @@
+--- extra/Configs/Config.in.orig	2010-03-12 20:32:42.000000000 +0100
++++ extra/Configs/Config.in	2010-06-11 15:57:18.377380092 +0200
+@@ -1720,6 +1720,26 @@
  	  For a typical target system this should be set to "/usr", such that
  	  'make install' will install /usr/include/<header files>.
  

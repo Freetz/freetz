@@ -1,10 +1,10 @@
---- libc/unistd/daemon.c
-+++ libc/unistd/daemon.c
-@@ -54,7 +54,6 @@
+--- libc/unistd/daemon.c.orig	2010-03-12 20:32:42.000000000 +0100
++++ libc/unistd/daemon.c	2010-06-11 15:57:18.584880256 +0200
+@@ -55,7 +55,6 @@
  libc_hidden_proto(dup2)
  libc_hidden_proto(setsid)
  libc_hidden_proto(chdir)
 -libc_hidden_proto(fork)
  
- int daemon( int nochdir, int noclose )
- {
+ #ifndef __ARCH_USE_MMU__
+ #include <sys/syscall.h>

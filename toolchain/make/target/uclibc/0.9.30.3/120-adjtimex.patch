@@ -1,5 +1,5 @@
---- include/sys/timex.h	2007-12-30 17:34:21.983513096 +0100
-+++ include/sys/timex.h	2007-12-30 17:34:32.180094169 +0100
+--- include/sys/timex.h.orig	2010-03-12 20:32:42.000000000 +0100
++++ include/sys/timex.h	2010-06-11 15:57:18.554874229 +0200
 @@ -116,7 +116,8 @@
  
  __BEGIN_DECLS
@@ -9,4 +9,4 @@
 +#define __adjtimex adjtimex
  extern int adjtimex (struct timex *__ntx) __THROW;
  
- extern int ntp_gettime (struct ntptimeval *__ntv) __THROW;
+ #if defined __UCLIBC_NTP_LEGACY__
