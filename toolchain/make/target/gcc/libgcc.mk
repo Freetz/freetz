@@ -6,6 +6,7 @@ else
 	DEPEND:=$(GCC_BUILD_DIR2)/.installed
 endif
 
-$(ROOT_DIR)/lib/libgcc_s.so.1: $(DEPEND)
-	-cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(ROOT_DIR)/lib/
+$(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1: $(DEPEND)
+	mkdir -p $(dir $@)
+	-cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(dir $@)
 	$(TARGET_STRIP) $@

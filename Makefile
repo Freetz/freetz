@@ -39,7 +39,7 @@ ADDON_DIR:=addon
 BUILD_DIR:=build
 DL_DIR:=dl
 MAKE_DIR:=make
-PACKAGES_DIR:=packages
+PACKAGES_DIR_ROOT:=packages
 ROOT_DIR:=root
 SOURCE_DIR_ROOT:=source
 TOOLCHAIN_DIR:=toolchain
@@ -141,7 +141,7 @@ endif
 
 all: step
 world: $(CHECK_BUILD_DIR_VERSION) $(DL_DIR) $(BUILD_DIR) \
-	$(PACKAGES_DIR) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
+	$(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
@@ -203,8 +203,8 @@ $(MIRROR_DIR): $(DL_DIR)
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
-$(PACKAGES_DIR):
-	@mkdir -p $(PACKAGES_DIR)
+$(PACKAGES_DIR_ROOT):
+	@mkdir -p $(PACKAGES_DIR_ROOT)
 
 $(SOURCE_DIR_ROOT):
 	@mkdir -p $(SOURCE_DIR_ROOT)
@@ -374,10 +374,10 @@ toolchain: $(DL_DIR) $(SOURCE_DIR_ROOT) $(TOOLCHAIN)
 
 libs: $(DL_DIR) $(SOURCE_DIR_ROOT) $(LIBS_PRECOMPILED)
 
-sources: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR_ROOT) $(PACKAGES_DIR) $(DL_IMAGE) \
+sources: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR_ROOT) $(PACKAGES_DIR_ROOT) $(DL_IMAGE) \
 	$(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(LIBS_SOURCE) $(TOOLCHAIN_SOURCE) $(TOOLS_SOURCE)
 
-precompiled: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR_ROOT) $(PACKAGES_DIR) toolchain-depend \
+precompiled: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR_ROOT) $(PACKAGES_DIR_ROOT) toolchain-depend \
 	$(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
 check-downloads: $(PACKAGES_CHECK_DOWNLOADS)
@@ -499,10 +499,8 @@ common-clean:
 	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean: common-clean
-	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
+	rm -rf $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
 	rm -f .new-uclibc .old-uclibc
-	find $(ROOT_DIR) -name '*.so*' ! -type d ! -name .svn \( -path "$(ROOT_DIR)/lib/*" -o \
-		-path "$(ROOT_DIR)/usr/lib/freetz/*" \) -delete
 	find $(MAKE_DIR) -maxdepth 2 \( -name ".*_config" -o -name ".*_changes" \) -delete
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg

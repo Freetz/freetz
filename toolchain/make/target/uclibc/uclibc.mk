@@ -146,10 +146,10 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(REAL_GNU_TARGET_NAME)-ldconfig)
 	touch -c $@
 
-$(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
+$(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		$(UCLIBC_VERBOSE_BUILD_FLAGS) \
-		PREFIX="$(FREETZ_BASE_DIR)/$(ROOT_DIR)" \
+		PREFIX="$(FREETZ_BASE_DIR)/$(TARGET_SPECIFIC_ROOT_DIR)" \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=/ \
 		install_runtime
@@ -159,22 +159,19 @@ cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(cross_compiler)
 	touch -c $@
 
-$(ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
-	@$(RM) -r $(ROOT_DIR)/lib
-	@mkdir -p $(ROOT_DIR)/lib
+$(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
+	@$(RM) -r $(TARGET_SPECIFIC_ROOT_DIR)/lib
+	@mkdir -p $(TARGET_SPECIFIC_ROOT_DIR)/lib
 	for i in $(UCLIBC_FILES); do \
-		cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$$i $(ROOT_DIR)/lib/$$i; \
+		cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$$i $(TARGET_SPECIFIC_ROOT_DIR)/lib/$$i; \
 	done
-ifeq ($(strip $(TARGET_TOOLCHAIN_UCLIBC_VERSION)),0.9.29)
-	$(SED) -i -e 's|$$(FREETZ_BASE_DIR)|$(FREETZ_BASE_DIR)|g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.so
-	ln -sf libuClibc-0.9.29.so $(ROOT_DIR)/lib/libc.so
-endif
+	ln -sf libuClibc-$(UCLIBC_VERSION).so $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so
 	touch -c $@
 endif
 
 uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
-uclibc: $(cross_compiler) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(ROOT_DIR)/lib/libc.so.0
+uclibc: $(cross_compiler) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0
 
 uclibc-source: $(DL_DIR)/$(UCLIBC_SOURCE)
 

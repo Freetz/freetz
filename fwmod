@@ -185,7 +185,7 @@ TAR="${TOOLS_DIR}/${TAR_TOOL}"
 #temporarily use system tar to unpack avm images
 UNTAR="$(which tar)"
 
-PACKAGES_DIR="${BASE_DIR}/packages"
+PACKAGES_DIR_ROOT="${BASE_DIR}/packages"
 PATCHES_DIR="${BASE_DIR}/patches"
 ROOT_DIR="${BASE_DIR}/root"
 KERNEL_REP_DIR="${BASE_DIR}/kernel"
@@ -355,6 +355,8 @@ KERNEL_MOD="${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}"
 RAW_KERNEL_MOD="${KERNEL_MOD_DIR}/${RAW_KERNEL_FILE}"
 FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
 VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
+PACKAGES_DIR="${PACKAGES_DIR_ROOT}/target-${FREETZ_TARGET_ARCH}_uClibc-${FREETZ_TARGET_UCLIBC_VERSION}"
+TARGET_SPECIFIC_ROOT_DIR="${PACKAGES_DIR}/root"
 
 HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www"
 # HTML_LANG_MOD_DIR can't be defined here
@@ -575,8 +577,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "installing mod base"
 
 		echo1 "copying files"
-		"$TAR" -c -C "$ROOT_DIR" --exclude=./lib --exclude=./usr/lib --exclude=.svn \
-			--exclude=usr/share/terminfo . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		for rootDir in "${ROOT_DIR}" "${TARGET_SPECIFIC_ROOT_DIR}"; do
+			"$TAR" -c -C "${rootDir}" --exclude=./lib --exclude=./usr/lib --exclude=.svn \
+				--exclude=usr/share/terminfo . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		done
 		"$TAR" -c -C "$ROOT_DIR" --exclude=.svn \
 			./usr/lib/{cgi-bin,mod,mww} | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
@@ -637,7 +641,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			fn=${bn//_/[-+._]}
 			echo2 "$bn"
 			for dn in lib usr/lib usr/lib/freetz usr/lib/xtables; do
-				files=$(shopt -s nullglob; echo ${ROOT_DIR}/$dn/$fn[-.]*so*)
+				files=$(shopt -s nullglob; echo ${TARGET_SPECIFIC_ROOT_DIR}/$dn/$fn[-.]*so*)
 				if [ -z "$files" ]; then
 					continue;
 				fi
@@ -649,7 +653,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				warn "Library $bn selected, but no files found"
 			fi
 		done
-		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
+		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 
 		if [ "$FREETZ_SHARE_terminfo" == "y" ]; then
 			echo1 "installing terminfos"
@@ -660,7 +664,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				fn=$(echo "$bn" | sed 's/MINUS/-/g;s/PLUS/+/g;s/\DOT/./g')
 				echo2 "$fn"
 				fn="${fn:0:1}/$fn"
-				file="${ROOT_DIR}/$dn/$fn"
+				file="${TARGET_SPECIFIC_ROOT_DIR}/$dn/$fn"
 				if [ ! -e "$file" ]; then
 					warn "Terminfo $bn selected, but no file found"
 					continue;
@@ -705,16 +709,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		echo1 "replacing busybox-${FREETZ_TARGET_REF}"
 
-		if [ ! -r "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" ]; then
+		if [ ! -r "${PACKAGES_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" ]; then
 			error 1 "cannot find busybox replacement"
 		fi
 
 		# Replace busybox
-		cp -f "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" "${FILESYSTEM_MOD_DIR}/bin/busybox"
+		cp -f "${PACKAGES_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" "${FILESYSTEM_MOD_DIR}/bin/busybox"
 
 		echo1 "installing symlinks"
 
-		if [ ! -r "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links" ]; then
+		if [ ! -r "${PACKAGES_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links" ]; then
 			error 1 "cannot find busybox links"
 		fi
 
@@ -723,7 +727,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		find "$FILESYSTEM_MOD_DIR" \( -lname "busybox" -or -lname "*/busybox" \) -print0 | xargs -0 rm
 
 		# Install new busybox links
-		for link in $(cat "${BASE_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links"); do
+		for link in $(cat "${PACKAGES_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links"); do
 			LINK_DIR="$(dirname "$link")"
 			LINK_NAME="$(basename "$link")"
 

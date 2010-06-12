@@ -65,14 +65,14 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/package-name-$($(PKG)_VERSION)
 BIN:
 $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
 LIB:
-$(PKG)_TARGET_DIR:=root/usr/lib/freetz
+$(PKG)_TARGET_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)/usr/lib/freetz
 
 # root directory for installation. The default value depends on BIN/LIB,
 # It should not be necessary to override this value.
 BIN:
 $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)/root
 LIB:
-$(PKG)_TARGET_DIR:=root
+$(PKG)_TARGET_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)
 
 # Order for inclusion in list of static or dynamic packages. Only for binary packages.
 # Only necessary if the package contains a run-script

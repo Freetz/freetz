@@ -10,7 +10,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(PHPXMAIL_DEST_DIR)/usr/mww/phpxmail

@@ -195,7 +195,7 @@ endif
 
 cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
 cross_compiler gcc: uclibc-configured binutils gcc_initial uclibc \
-	$(GCC_BUILD_DIR2)/.installed $(ROOT_DIR)/lib/libgcc_s.so.1
+	$(GCC_BUILD_DIR2)/.installed $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1
 
 gcc-source: $(DL_DIR)/$(GCC_SOURCE)
 

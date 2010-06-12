@@ -14,7 +14,7 @@ $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/sbin/%,$(filter-out $
 
 $(PKG)_LIB_BUILD_DIR:=$($(PKG)_DIR)/libiptc/libiptc.a
 $(PKG)_LIB_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiptc.a
-$(PKG)_EXTENSIONS_DIR:=$(ROOT_DIR)/usr/lib/xtables
+$(PKG)_EXTENSIONS_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)/usr/lib/xtables
 $(PKG)_TARGET_EXTENSIONS:=$($(PKG)_EXTENSIONS_DIR)/.installed
 
 $(PKG)_CONFIGURE_ENV += AR="$(TARGET_AR)"
