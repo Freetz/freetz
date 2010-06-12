@@ -2,7 +2,7 @@
 
 DAEMON=dns2tcp
 DAEMON_LONG_NAME="TCP over DNS tunnel"
-
+DAEMON_BIN=dns2tcpd
 . /etc/init.d/modlibrc
 
 config() {
@@ -19,7 +19,7 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON -f /mod/etc/$DAEMON.conf
+	modlib_startdaemon $DAEMON_BIN -f /mod/etc/$DAEMON.conf
 }
 
 case $1 in
