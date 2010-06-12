@@ -33,8 +33,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $(PKG)_NAT_SUPPORT: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 ifeq ($(strip $(FREETZ_PACKAGE_VPNC_NAT_SUPPORT)),y)
-	@$(SED) -i -e 's/#start_vpn_nat/start_vpn_nat/g' $(VPNC_DEST_DIR)/etc/default.vpnc/vpnc-script
-	@$(SED) -i -e 's/#stop_vpn_nat/stop_vpn_nat/g' $(VPNC_DEST_DIR)/etc/default.vpnc/vpnc-script
+	@$(SED) -i -r -e 's/#((start|stop)_vpn_nat)/\1/g' $(VPNC_DEST_DIR)/etc/default.vpnc/vpnc-script
 endif
 
 $(pkg):
