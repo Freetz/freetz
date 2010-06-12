@@ -180,7 +180,7 @@ $(pkg)-uninstall:
 
 $(pkg)-dirclean:
 	$(RM) -r $(BUSYBOX_DIR)
-	$(RM) $(PKG)_CUSTOM_CONFIG_FILE
+	$(RM) $(BUSYBOX_CUSTOM_CONFIG_FILE)
 	$(RM) $(BUSYBOX_TARGET_DIR)/busybox-*
 
 $(pkg)-distclean: busybox-dirclean
