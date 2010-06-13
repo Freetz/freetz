@@ -1,12 +1,12 @@
-$(call PKG_INIT_BIN, 2.52)
-$(PKG)_SOURCE:=dnsmasq-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=1bb32fffdb4f977ead607802b5d701d0
+$(call PKG_INIT_BIN, 2.55)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=b093d7c6bc7f97ae6fd35d048529232a
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
-$(PKG)_BINARY:=$(DNSMASQ_DIR)/src/dnsmasq
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/dnsmasq
 $(PKG)_STARTLEVEL=40
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/dnsmasq
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dnsmasq
 
-ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y) 
+ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_COPTS := -DNO_IPV6
 endif
 

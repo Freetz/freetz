@@ -1,6 +1,6 @@
 --- src/dnsmasq.h.orig	2010-01-15 13:29:22.000000000 +0100
 +++ src/dnsmasq.h	2010-04-02 17:46:54.000000000 +0200
-@@ -420,6 +420,7 @@
+@@ -423,6 +423,7 @@
  #endif
    int hwaddr_len, hwaddr_type;
    unsigned char hwaddr[DHCP_CHADDR_MAX]; 
@@ -8,7 +8,7 @@
    struct in_addr addr, override, giaddr;
    unsigned char *extradata;
    unsigned int extradata_len, extradata_size;
-@@ -830,6 +831,7 @@
+@@ -866,6 +867,7 @@
  void lease_set_hwaddr(struct dhcp_lease *lease, unsigned char *hwaddr,
  		      unsigned char *clid, int hw_len, int hw_type, int clid_len);
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth);
@@ -18,7 +18,7 @@
  struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
 --- src/lease.c.orig	2010-01-15 11:18:35.000000000 +0100
 +++ src/lease.c	2010-04-02 17:46:54.000000000 +0200
-@@ -178,11 +178,16 @@
+@@ -179,11 +179,16 @@
  
    if (file_dirty != 0 && daemon->lease_stream)
      {
@@ -35,7 +35,7 @@
        for (lease = leases; lease; lease = lease->next)
  	{
  #ifdef HAVE_BROKEN_RTC
-@@ -202,14 +207,29 @@
+@@ -203,14 +208,29 @@
  	  ourprintf(&err, " %s ", inet_ntoa(lease->addr));
  	  ourprintf(&err, "%s ", lease->hostname ? lease->hostname : "*");
  	  	  
@@ -65,7 +65,7 @@
  	}
        
        if (fflush(daemon->lease_stream) != 0 ||
-@@ -218,6 +238,9 @@
+@@ -219,6 +239,9 @@
        
        if (!err)
  	file_dirty = 0;
@@ -75,7 +75,7 @@
      }
    
    /* Set alarm for when the first lease expires + slop. */
-@@ -433,6 +456,23 @@
+@@ -434,6 +457,23 @@
    lease->hostname = lease->fqdn = NULL;
  }
  
@@ -101,20 +101,20 @@
    struct dhcp_lease *lease_tmp;
 --- src/rfc2131.c.orig	2010-01-15 11:23:41.000000000 +0100
 +++ src/rfc2131.c	2010-04-02 17:46:54.000000000 +0200
-@@ -518,6 +518,7 @@
+@@ -528,6 +528,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
  	      if (hostname)
  		lease_set_hostname(lease, hostname, 1); 
-+ 		lease_set_ifrname(lease, iface_name);
++	      lease_set_ifrname(lease, iface_name);
  	      /* infinite lease unless nailed in dhcp-host line. */
  	      lease_set_expires(lease,  
  				have_config(config, CONFIG_TIME) ? config->lease_time : 0xffffffff, 
-@@ -1244,7 +1245,7 @@
- 	    }
+@@ -1302,7 +1303,7 @@
+ 
  	  if (hostname)
  	    lease_set_hostname(lease, hostname, hostname_auth);
 -	  
-+	    lease_set_ifrname(lease, iface_name);
++	  lease_set_ifrname(lease, iface_name);
  	  lease_set_expires(lease, time, now);
  	  lease_set_interface(lease, int_index);
  
