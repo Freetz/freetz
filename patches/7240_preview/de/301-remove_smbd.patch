@@ -1,0 +1,19 @@
+--- etc/init.d/rc.net.orig	2010-03-02 10:44:58.133236744 +0100
++++ etc/init.d/rc.net	2010-03-02 10:44:58.173237454 +0100
+@@ -73,6 +73,8 @@
+ #   a) it has the parameter at all AND
+ #   b) upnpd binary does *not* exist
+ [ "$_dsld_upnp" ] && [ ! "$_upnpd" ] && DSLDDPARAM="-g"
++# Do we have a Samba server (smbd) or was ist stripped from the firmware?
++_smbd=$(basename $(which smbd) 2> /dev/null)
+ 
+ 
+ upnpdstart()
+@@ -323,6 +325,7 @@
+ #we have the samba cfg in /var, so crate them there
+ sambastart()
+ {
++   [ "$_smbd" ] || return;
+    cd /
+    tar xf /var.tar
+    /bin/smbd

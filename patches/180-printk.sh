@@ -6,4 +6,4 @@ elif isFreetzType 3270 7240 7270 7270_V3; then
 #	modsed "s/AVM_PRINTK/STD_PRINTK/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"
 fi
 
-modsed "/^cat \/dev\/debug.*$/d" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"
+modsed "/^cat \/dev\/debug.*$/ s/^/: #/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"

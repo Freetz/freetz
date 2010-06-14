@@ -1,5 +1,5 @@
---- etc/hotplug/run_mount.orig	2010-02-04 16:47:25.000000000 +0100
-+++ etc/hotplug/run_mount	2010-02-05 20:09:02.000000000 +0100
+--- etc/hotplug/run_mount.orig	2010-04-28 12:12:01.000000000 +0200
++++ etc/hotplug/run_mount	2010-05-08 15:33:55.474750211 +0200
 @@ -10,22 +10,43 @@
  SYSFS=/var/sysfs
  ## Generate a frontend'able 'nice name' to be used as mount point:
@@ -65,4 +65,4 @@
 +if mount_fs; then
  new_filesystem=true
  else
- if test -x /bin/ntfs-3g ; then
+ modprobe ext2

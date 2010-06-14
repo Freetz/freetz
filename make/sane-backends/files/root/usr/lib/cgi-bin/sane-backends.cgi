@@ -5,20 +5,19 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 auto_chk=''; man_chk=''; inetd_chk=''
 
-case "$SANE_BACKENDS_SANED_ENABLED" in yes) auto_chk=' checked';; inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
+case "$SANE_BACKENDS_SANED_ENABLED" in inetd) inetd_chk=' checked';; *) man_chk=' checked';;esac
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
-cat << EOF
-<p>
-<input id="e1" type="radio" name="saned_enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="saned_enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-EOF
 if [ -e "/etc/default.inetd/inetd.cfg" ]; then
 cat << EOF
-<input id="e3" type="radio" name="saned_enabled" value="inetd"$inetd_chk><label for="e3"> $(lang de:"Inetd" en:"Inetd")</label>
+<input id="e1" type="radio" name="saned_enabled" value="inetd"$inetd_chk><label for="e1"> $(lang de:"Inetd" en:"Inetd")</label>
 EOF
 fi
+cat << EOF
+<p>
+<input id="e2" type="radio" name="saned_enabled" value="no"$man_chk><label for="e2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
+EOF
 cat << EOF
 </p>
 EOF

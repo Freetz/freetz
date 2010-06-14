@@ -138,7 +138,7 @@ endif
 ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),0)
 VERBOSE:=
 else
-VERBOSE:=-v
+#VERBOSE:=-v # Show files on untar
 endif
 
 export FREETZ_VERBOSITY_LEVEL
@@ -434,9 +434,9 @@ common-clean:
 	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
-common-dirclean:
+common-dirclean: common-clean
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
-	rm -f make/config.cache .new-uclibc .old-uclibc
+	rm -f .new-uclibc .old-uclibc
 	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
 		`[ -d $(ROOT_DIR)/usr/lib ] && echo $(ROOT_DIR)/usr/lib` \
 		-type d -name .svn -prune -false , -name "*.so*" -exec rm {} \;
