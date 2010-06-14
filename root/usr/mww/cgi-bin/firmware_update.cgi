@@ -42,7 +42,7 @@ function CheckInput(form) {
 Dieses Image wird auf die Box geladen und dort entpackt. Anschlie&szlig;end
 wird <i>/var/install</i> aufgerufen. Falls das erfolgreich ist, kann das Update
 mit einem Klick auf den Neustart-Button ausgef&uuml;hrt werden. Bei Auswahl des
-Men&uuml;punkts für Remote-Update wird die Box nach 30 Sekunden automatisch neu
+Men&uuml;punkts f&uuml;r Remote-Update wird die Box nach 30 Sekunden automatisch neu
 gestartet."
     en:"In step 1 you are to select a firmware image for upload. This image
 will be uploaded to and unpacked on the box. Subsequently, <i>/var/install</i>

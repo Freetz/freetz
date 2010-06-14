@@ -14,5 +14,5 @@ rm -f /tmp/ex_update.log
 %></pre>
 
 <p>
-<% back_button --title="$(lang de:"Zurück zum Update" en:"Back to update")" mod update %>
+<% back_button --title="$(lang de:"Zur&uuml;ck zum Update" en:"Back to update")" mod update %>
 <% cgi_end %>
