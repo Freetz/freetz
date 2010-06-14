@@ -167,11 +167,24 @@ endif
 # macro names containing _INT are for internal use only and should not be called outside of this file
 # For details of the required targets, see the documentation in README.Makefiles
 
+# SUBST_MAP
+# Substitute according to map src:dst
+#  $(1) - String
+#  $(2) - List of src:dst pairs
+SUBST_MAP = $(strip		\
+	$(eval __tmp := $1)	\
+	$(foreach s,$2,		\
+		$(eval __tmp := $(subst $(word 1,$(subst :, ,$s)),$(word 2,$(subst :, ,$s)),$(__tmp))))	\
+	$(__tmp))
+SUBST_MAP_TOUPPER = a:A b:B c:C d:D e:E f:F g:G h:H i:I j:J k:K l:L m:M n:N o:O p:P q:Q r:R s:S t:T u:U v:V w:W x:X y:Y z:Z
+SUBST_MAP_TOUPPER_NAME = $(SUBST_MAP_TOUPPER) -:_
+
 # TOUPPER_NAME
 # Convert letters to uppercase, minus to underline
 #   $(1) = name to convert
 TO_UPPER_CASE__INT = tr 'a-z\-' 'A-Z_'
-TOUPPER_NAME = $(shell echo $(1) | $(TO_UPPER_CASE__INT))
+TOUPPER_NAME = $(call SUBST_MAP,$1,$(SUBST_MAP_TOUPPER_NAME))
+#TOUPPER_NAME = $(shell echo $(1) | $(TO_UPPER_CASE__INT))
 
 # For each SUFFIX from a given list of menuconfig-option-suffixes evaluates FREETZ_PACKAGE_$(PKG)_$(OPTIONAL_INFIX)_$(SUFFIX) variable
 # and in case it evaluates to non-empty value (i.e. selected) appends the suffix to the list being returned.
