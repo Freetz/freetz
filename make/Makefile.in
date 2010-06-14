@@ -55,6 +55,7 @@ TARGET_ARCH:=$(strip $(subst ",, $(FREETZ_TARGET_ARCH)))
 TARGET_UCLIBC_VERSION:=$(strip $(subst ",, $(FREETZ_TARGET_UCLIBC_VERSION)))
 TARGET_CROSS:=$(strip $(subst ",, $(FREETZ_TARGET_CROSS)))
 TARGET_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_TARGET_MAKE_PATH)))
+KERNEL_ARCH:=$(strip $(subst ",, $(FREETZ_TARGET_ARCH)))
 KERNEL_CROSS:=$(strip $(subst ",, $(FREETZ_KERNEL_CROSS)))
 KERNEL_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_KERNEL_MAKE_PATH)))
 TARGET_CFLAGS:=$(strip $(subst ",, $(FREETZ_TARGET_CFLAGS))) $(CFLAGS_LARGEFILE)
@@ -79,6 +80,7 @@ TARGET_LD:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld
 TARGET_LDCONFIG:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ldconfig
 TARGET_NM:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm
 TARGET_RANLIB:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib
+TARGET_READELF:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)readelf
 TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.comment,.note,.pdr}
 
 # Don't use TARGET_TOOLCHAIN_PATH here because it's not set
@@ -165,7 +167,11 @@ endif
 # macro names containing _INT are for internal use only and should not be called outside of this file
 # For details of the required targets, see the documentation in README.Makefiles
 
-TO_UPPER_CASE__INT = tr '[a-z\-]' '[A-Z_]'
+# TOUPPER_NAME
+# Convert letters to uppercase, minus to underline
+#   $(1) = name to convert
+TO_UPPER_CASE__INT = tr 'a-z\-' 'A-Z_'
+TOUPPER_NAME = $(shell echo $(1) | $(TO_UPPER_CASE__INT))
 
 # For each SUFFIX from a given list of menuconfig-option-suffixes evaluates FREETZ_PACKAGE_$(PKG)_$(OPTIONAL_INFIX)_$(SUFFIX) variable
 # and in case it evaluates to non-empty value (i.e. selected) appends the suffix to the list being returned.
@@ -177,7 +183,7 @@ $(strip \
 		$(if \
 			$(or \
 				$(FREETZ_PACKAGE_$(PKG)_$(if $(2),$(2)_,)$(suboption)), \
-				$(FREETZ_PACKAGE_$(PKG)_$(if $(2),$(2)_,)$(shell echo $(suboption) | $(TO_UPPER_CASE__INT))) \
+				$(FREETZ_PACKAGE_$(PKG)_$(if $(2),$(2)_,)$(call TOUPPER_NAME,$(suboption))) \
 			), \
 			$(suboption) \
 		) \
@@ -375,7 +381,7 @@ PKG_MAKEFILE:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 PKG_BASENAME:=$(basename $(notdir $(PKG_MAKEFILE)))
 $(if $(strip $1),,$(error Undefined version for PKG_INIT in $(PKG_MAKEFILE)))
 pkg:=$(if $(strip $2),$(strip $2),$(PKG_BASENAME))
-PKG:=$(if $(strip $3),$(strip $3),$(shell echo "$(pkg)" | $(TO_UPPER_CASE__INT)))
+PKG:=$(if $(strip $3),$(strip $3),$(call TOUPPER_NAME,$(pkg)))
 ALL_PACKAGES+=$(pkg)
 #
 $(PKG)_VERSION:=$(strip $1)
