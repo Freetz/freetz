@@ -8,7 +8,7 @@
 
 logger () {
 	kill $(cat /var/run/ppp_loggerCAT.pid 2>/dev/null) 2>/dev/null
-	if [ -c "$PPP_DIAGTTY" ]; then
+	if [ /dev -ot "$PPP_DIAGTTY" ]; then
 		nohup cat $PPP_DIAGTTY >/tmp/ppp_logger.tmp &
 		echo $! >/var/run/ppp_loggerCAT.pid
 		sleep 1; echo -en "AT+CPIN?\r"  >$PPP_DIAGTTY
