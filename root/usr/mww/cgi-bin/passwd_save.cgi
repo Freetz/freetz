@@ -18,7 +18,7 @@ if [ "$result" -ne 0 ]; then
 	fi
 else
 	echo '<h1>$(lang de:"Passwort erfolgreich ge&auml;ndert." en:"New password set.")</h1>'
-	echo '<p>$(lang de:"Starte Weboberfläche neu..." en:"Restarting webcfg...")</p>'
+	echo '<p>$(lang de:"Starte Weboberfl&auml;che neu..." en:"Restarting webcfg...")</p>'
 	/etc/init.d/rc.webcfg restart > /dev/null 2>&1
 
 	#XMail admin account

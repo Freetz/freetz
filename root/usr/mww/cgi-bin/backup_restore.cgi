@@ -9,9 +9,9 @@ cat << EOF
 <h1>$(lang de:"Sicherung" en:"Backup")</h1>
 
 <p>$(lang 
-    de:"Sichern sämtlicher Einstellungen aus dem Flash-Speicher
-<i>/var/flash</i>. Dies umfaßt sowohl die Einstellungen der Original-Firmware
-als auch die von Freetz sowie sämtlicher sonstiger beim Start geladener
+    de:"Sichern s&auml;mtlicher Einstellungen aus dem Flash-Speicher
+<i>/var/flash</i>. Dies umfa&szlig;t sowohl die Einstellungen der Original-Firmware
+als auch die von Freetz sowie s&auml;mtlicher sonstiger beim Start geladener
 Erweiterungen (z.B. LCR-Updater)."
     en:"Save all settings from flash memory <i>/var/flash</i>. This includes
 original firmware settings as well as Freetz and other installed extensions
@@ -34,8 +34,8 @@ backup."
 )</p>
 
 <p><b><i>$(lang
-    de:"Nach der Wiederherstellung sollte das Gerät neu gestartet werden, um
-alle Einstellungen zu aktivieren. Bitte danach die Einstellungen überprüfen!"
+    de:"Nach der Wiederherstellung sollte das Ger&auml;t neu gestartet werden, um
+alle Einstellungen zu aktivieren. Bitte danach die Einstellungen &uuml;berpr&uuml;fen!"
     en:"After restore you should reboot the device in order to activate the
 configuration. Please remember to double-check all settings afterwards!"
 )</i></b></p>

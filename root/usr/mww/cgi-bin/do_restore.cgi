@@ -8,8 +8,8 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
 
 <% if [ -n "$FORM_uploadfile_name" ]; then %>
   $(lang de:"Sie haben gerade die Datei" en:"You just uploaded the file") <b><% echo -n $FORM_uploadfile_name %></b>$(lang de:" hochgeladen." en:".")<br>
-  $(lang de:"Sie ist unter dem temporären Namen" en:"It is stored on the Fritz!Box under the temporary name") <i><% echo $FORM_uploadfile %></i>$(lang de:" auf der Fritz!Box gespeichert." en:".")<br>
-  $(lang de:"Die Dateigröße beträgt" en:"The file size is") <% cat $FORM_uploadfile | wc -c %> $(lang de:"Bytes." en:"bytes.")
+  $(lang de:"Sie ist unter dem tempor&auml;ren Namen" en:"It is stored on the Fritz!Box under the temporary name") <i><% echo $FORM_uploadfile %></i>$(lang de:" auf der Fritz!Box gespeichert." en:".")<br>
+  $(lang de:"Die Dateigr&ouml;&szlig;e betr&auml;gt" en:"The file size is") <% cat $FORM_uploadfile | wc -c %> $(lang de:"Bytes." en:"bytes.")
   </p>
   <b>$(lang de:"Installationsverlauf:" en:"Installation log:")</b>
   <pre><%
@@ -41,7 +41,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
        fi
       echo "$(lang de:"ERLEDIGT" en:"DONE")"
     fi
-    echo "$(lang de:"Sicherungsdateien löschen" en:"Removing backup")..."
+    echo "$(lang de:"Sicherungsdateien l&ouml;schen" en:"Removing backup")..."
     rm -rf $BACKUP_DIR
     rm -f $FORM_uploadfile
     echo "$(lang de:"ERLEDIGT" en:"DONE")"
@@ -52,12 +52,12 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
   } | html
   %></pre>
 <% else %>
-  $(lang de:"Sie haben keine Sicherungs-Datei zum Hochladen ausgewählt. Der Zustand" en:"You have not selected any backup file to upload. The Fritz!Box's")
-  $(lang de:"der Fritz!Box wurde nicht verändert." en:"configuration was not changed.")
+  $(lang de:"Sie haben keine Sicherungs-Datei zum Hochladen ausgew&auml;hlt. Der Zustand" en:"You have not selected any backup file to upload. The Fritz!Box's")
+  $(lang de:"der Fritz!Box wurde nicht ver&auml;ndert." en:"configuration was not changed.")
 <% fi %>
 
 <p>
-<% back_button --title="$(lang de:"Zurück zur Übersicht" en:"Back to main page")" mod status %>
+<% back_button --title="$(lang de:"Zur&uuml;ck zur &Uuml;bersicht" en:"Back to main page")" mod status %>
 </p>
 
 <% cgi_end %>

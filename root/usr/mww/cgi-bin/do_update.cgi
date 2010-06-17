@@ -14,7 +14,7 @@ rm -f /tmp/fw_update.log
 %>
 
 <p>
-<% back_button --title="$(lang de:"Zurück zur Übersicht" en:"Back to main page")" mod status %>
+<% back_button --title="$(lang de:"Zur&uuml;ck zur &Uuml;bersicht" en:"Back to main page")" mod status %>
 <form action="/cgi-bin/exec.cgi" method="post"><div class="btn"><input type="hidden" name="cmd" value="reboot"><input type="submit" value="Reboot"></div></form>
 </p>
 <% cgi_end %>

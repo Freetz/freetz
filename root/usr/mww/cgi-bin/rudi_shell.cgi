@@ -5,12 +5,12 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 if [ "$sec_level" -gt "0" ]; then
 
-cgi_begin '$(lang de:"Rudi(mentär)-Shell" en:"Rudi(mentary) Shell")' 'rudishell'
+cgi_begin '$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")' 'rudishell'
 echo '<p><div style="color: #800000;">$(lang de:"Rudi-Shell ist in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" en:"Rudi shell is not available at the current security level!")</div></p>'
 
 else
 
-cgi_begin '$(lang de:"Rudi(mentär)-Shell" en:"Rudi(mentary) Shell")'
+cgi_begin '$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")'
 cat << EOF
 	<script type=text/javascript>
 		hist = Array()
@@ -42,7 +42,7 @@ cat << EOF
 			tdata = "cat " + file;
 			tcmd = 'script=' +
 				'echo "%23%23 $(lang de:"Rudi-Editor" en:"Rudi Editor")"' + LF +
-				'echo "%23%23 $(lang de:"Bitte umgebende Zeilen NICHT löschen" en:"Please DO NOT delete surrounding lines") (\'cat > ...\', \'RUDI_EOF\')"' + LF +
+				'echo "%23%23 $(lang de:"Bitte umgebende Zeilen NICHT l&ouml;schen" en:"Please DO NOT delete surrounding lines") (\'cat > ...\', \'RUDI_EOF\')"' + LF +
 				'echo "cat > '+ file + ' << \'RUDI_EOF\'"' + LF +
 				tdata + LF +
 				'echo "RUDI_EOF"';
@@ -52,9 +52,9 @@ cat << EOF
 	</script>
 	<form action="/cgi-bin/rudi_shellcmd.cgi?pid=$$" target="shellcmd" method=POST enctype="multipart/form-data">
 		<textarea id="script_code" name="script" rows="10" cols="80"></textarea><p>
-		<input type=submit value="$(lang de:"Skript ausführen" en:"Run script")">&nbsp;&nbsp;
+		<input type=submit value="$(lang de:"Skript ausf&uuml;hren" en:"Run script")">&nbsp;&nbsp;
 		$(lang de:"Historie" en:"History") <select id="history" onChange="historySelected(this.selectedIndex)"></select>
-		<input type=button value="$(lang de:"Hist. löschen" en:"Delete hist.")" onClick="cleanHistory()">&nbsp;&nbsp;
+		<input type=button value="$(lang de:"Hist. l&ouml;schen" en:"Delete hist.")" onClick="cleanHistory()">&nbsp;&nbsp;
 		<input type="checkbox" name="display_mode" value="binary">Download
 		(<input type="checkbox" name="tar" value="true">.tar
 		<input type="checkbox" name="gz" value="true">.gz )

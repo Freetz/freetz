@@ -6,11 +6,11 @@
 	<pre id="cmd_output"><% if mv "$FORM_source" "$FORM_target"
 		then
 			echo "$(lang de:"Datei erfolgreich nach $FORM_target hochgeladen." en:"File successfully uploaded to $FORM_target.")"
-			echo "$(lang de:"Dateigröße:" en:"File size:") $(cat ""$FORM_target"" | wc -c) $(lang de:"Bytes" en:"bytes")"
+			echo "$(lang de:"Dateigr&ouml;&szlig;e:" en:"File size:") $(cat ""$FORM_target"" | wc -c) $(lang de:"Bytes" en:"bytes")"
 		else
 			echo
 			echo "$(lang de:"FEHLER: Entweder das Hochladen oder das Umbenennen nach" en:"ERROR: Either uploading or renaming to")"
-			echo "$FORM_target $(lang de:"war nicht möglich." en:"has failed.")"
+			echo "$FORM_target $(lang de:"war nicht m&ouml;glich." en:"has failed.")"
 		fi %>
 	</pre>
 	<script type="text/javascript">

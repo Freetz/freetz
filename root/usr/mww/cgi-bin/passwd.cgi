@@ -19,7 +19,7 @@ function CheckInput(form) {
 		replay.focus();
 		return false;
 	} else if (password.value != replay.value) {
-		alert("$(lang de:"Passwörter stimmen nicht überein!" en:"Passwords do not match!")");
+		alert("$(lang de:"Passw&ouml;rter stimmen nicht &uuml;berein!" en:"Passwords do not match!")");
 		password.focus();
 		return false;
 	} else {
@@ -28,7 +28,7 @@ function CheckInput(form) {
 }
 </script>
 
-<h1>$(lang de:"Passwort ändern" en:"Change password")</h1>
+<h1>$(lang de:"Passwort &auml;ndern" en:"Change password")</h1>
 
 <form action="/cgi-bin/passwd_save.cgi" method=POST onsubmit="return CheckInput(document.forms[0])">
 <table border="0" cellspacing="1" cellpadding="0">
