@@ -313,6 +313,10 @@ modlib_startdaemon()
 	local fn=${PID_FILE-/var/run/$DAEMON.pid}
 	if [ ! -s "$fn" ]; then
 		local dp=`pidof -s ${DAEMON_BIN-$DAEMON}`
+		if [ "$?" -ne 0 ]; then
+			echo 'failed.'
+			exit 1
+		fi
 		[ -n "$dp" ] && echo "$dp" > $fn
 	fi
 	
@@ -324,7 +328,6 @@ modlib_startdaemon()
 #    function "start" must be defined in the calling script
 #    $1: value for DAEMON_ENABLED
 #    returns: 0=success or 1=error
-#    if available runs "config" of rc.$DAEMON
 modlib_start()
 {
 	local DAEMON_ENABLED="$1"

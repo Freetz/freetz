@@ -2,11 +2,14 @@
 
 . /etc/init.d/modlibrc
 
+TMPFILE=/tmp/.dsld.cmd
 DAEMON=dsld
 
 start() {
 	echo -n "Starting $DAEMON..."
-	$DAEMON -n
+	local DAEMON_CMD=`cat $TMPFILE 2>/dev/null`
+	[ -z "$DAEMON_CMD" ] && DAEMON_CMD="dsld -n"
+	$DAEMON_CMD
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -17,31 +20,23 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping $DAEMON..."
+	local DAEMON_CMD=$(xargs -0 < /proc/$(pidof dsld)/cmdline)
+	[ -n "$DAEMON_CMD" ] && echo $DAEMON_CMD > $TMPFILE
 	$DAEMON -s
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 case $1 in
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-	    	modlib_status
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [start|stop|restart|status]" 1>&2
