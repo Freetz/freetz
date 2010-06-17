@@ -6,8 +6,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tcpdump
 
 $(PKG)_DEPENDS_ON := libpcap
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
-
 $(PKG)_CONFIGURE_ENV += BUILD_CC="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += HOSTCC="$(HOSTCC)"
 $(PKG)_CONFIGURE_ENV += td_cv_buggygetaddrinfo="no"
