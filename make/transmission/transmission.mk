@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.93)
+$(call PKG_INIT_BIN, 2.00)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=f68358d03e46bec5704bbaa894990152
+$(PKG)_SOURCE_MD5:=9b7c729d71d6c400ffec48a969e95525
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 
 $(PKG)_BINARIES_ALL := transmissioncli transmission-daemon transmission-remote
@@ -56,8 +56,6 @@ $($(PKG)_TARGET_WEBINTERFACE_INDEX_HTML): $($(PKG)_DIR)/.unpacked
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
 	mkdir -p $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
 	tar -c -C $(TRANSMISSION_WEBINTERFACE_DIR) --exclude=.svn --exclude=LICENSE --exclude='Makefile*' . | tar -x -C $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
-	# remove all non-min.js files, these are not needed
-	for f in $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)/javascript/jquery/*.js; do if ! (echo "$$f" | grep -q '\.min\.js$$' >/dev/null 2>&1); then $(RM) "$$f"; fi; done
 	chmod 644 $(TRANSMISSION_TARGET_WEBINTERFACE_INDEX_HTML)
 	touch $@
 endif

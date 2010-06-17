@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_TRANSMISSION
-	bool "Transmission 1.93 (binary and optionally web interface)"
+	bool "Transmission 2.00 (binary and optionally web interface)"
 	default n
 	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
 	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TRANSMISSION_STATIC
@@ -22,7 +22,7 @@ config FREETZ_PACKAGE_TRANSMISSION_CLIENT
 	default n
 	help
 		Torrent client (interactive)
-		Adds ~380KB to the firmware (uncompressed)
+		Adds ~432KB to the firmware (uncompressed)
 
 		Note: transmission client is deprecated (see http://trac.transmissionbt.com/ticket/2983)
 		and will be removed in one of the next releases. Consider using web-interface controlled
@@ -34,7 +34,7 @@ config FREETZ_PACKAGE_TRANSMISSION_DAEMON
 	default y
 	help
 		Torrent client (daemon)
-		Adds ~374KB to the firmware (uncompressed).
+		Adds ~432KB to the firmware (uncompressed).
 		It also selects busybox's start-stop-daemon.
 
 config FREETZ_PACKAGE_TRANSMISSION_REMOTE
@@ -43,7 +43,7 @@ config FREETZ_PACKAGE_TRANSMISSION_REMOTE
 	default n
 	help
 		A remote control utility for transmission-daemon
-		Adds ~384KB to the firmware (uncompressed)
+		Adds ~458KB to the firmware (uncompressed)
 
 config FREETZ_PACKAGE_TRANSMISSION_STATIC
 	bool "Statically link libraries"
@@ -58,4 +58,4 @@ config FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE
 	default y
 	help
 		An official web interface for transmission called clutch
-		Adds ~289KB(uncompressed)/~130KB(compressed) to the firmware
+		Adds ~377KB(uncompressed)/~130KB(compressed) to the firmware

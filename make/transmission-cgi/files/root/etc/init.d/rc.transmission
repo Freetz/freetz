@@ -3,6 +3,7 @@
 DAEMON=transmission
 DAEMON_BIN="$DAEMON-daemon"
 USERNAME=bittorrent
+GROUPNAME=users
 PID_FILE=/var/run/$DAEMON.pid
 
 . /etc/init.d/modlibrc
@@ -36,6 +37,10 @@ stripAllSpaces() {
 
 start() {
 	echo -n 'Starting transmission daemon... '
+	if modlib_check_running; then
+		echo "already running."
+		exit 0
+	fi
 
 	TRANSMISSION_BASEDIR=$(trim "$TRANSMISSION_BASEDIR")
 	TRANSMISSION_CONFIGDIR=$(trim "$TRANSMISSION_CONFIGDIR")
@@ -73,8 +78,7 @@ start() {
 	if [ -n "$TRANSMISSION_INCOMPLETEDIR" ]; then
 		[ ${TRANSMISSION_INCOMPLETEDIR:0:1} = "/" ] && INCOMPLETEDIR="$TRANSMISSION_INCOMPLETEDIR" || INCOMPLETEDIR="$TRANSMISSION_BASEDIR$TRANSMISSION_INCOMPLETEDIR"
 		checkDirectoryExists "$INCOMPLETEDIR"
-		chown -R "$USERNAME":users "$INCOMPLETEDIR"
-		chmod -R 0755 "$INCOMPLETEDIR"
+		chown -R $USERNAME:$GROUPNAME "$INCOMPLETEDIR"
 		OPTIONS="$OPTIONS --incomplete-dir $INCOMPLETEDIR"
 	else
 		OPTIONS="$OPTIONS --no-incomplete-dir"
@@ -83,22 +87,18 @@ start() {
 	if [ -n "$TRANSMISSION_FINISHDIR" ]; then
 		[ ${TRANSMISSION_FINISHDIR:0:1} = "/" ] && FINISHDIR="$TRANSMISSION_FINISHDIR" || FINISHDIR="$TRANSMISSION_BASEDIR$TRANSMISSION_FINISHDIR"
 		checkDirectoryExists "$FINISHDIR"
-		chown -R "$USERNAME":users "$FINISHDIR"
-		chmod -R 0755 "$FINISHDIR"
+		chown -R $USERNAME:$GROUPNAME "$FINISHDIR"
 		OPTIONS="$OPTIONS --finish-dir $FINISHDIR"
 	else
 		OPTIONS="$OPTIONS --no-finish-dir"
 	fi
 
-	# Setting permissions
-	chown -R "$USERNAME":users "$CONFIGDIR" "$DOWNLOADDIR"
-	chmod -R 0755 "$CONFIGDIR" "$DOWNLOADDIR"
+	chown -R $USERNAME:$GROUPNAME "$CONFIGDIR" "$DOWNLOADDIR"
 
 	if [ -n "$TRANSMISSION_WATCHDIR" ]; then
 		[ ${TRANSMISSION_WATCHDIR:0:1} = "/" ] && WATCHDIR="$TRANSMISSION_WATCHDIR" || WATCHDIR="$TRANSMISSION_BASEDIR$TRANSMISSION_WATCHDIR"
 		checkDirectoryExists "$WATCHDIR"
-		chown -R "$USERNAME":users "$WATCHDIR"
-		chmod -R 0755 "$WATCHDIR"
+		chown -R $USERNAME:$GROUPNAME "$WATCHDIR"
 		OPTIONS="$OPTIONS --watch-dir $WATCHDIR"
 	fi
 
@@ -133,41 +133,24 @@ start() {
 		unset TRANSMISSION_WEB_HOME
 	fi
 
+	[ ! -e $PID_FILE ] && echo -n > $PID_FILE
+	chown $USERNAME:$GROUPNAME $PID_FILE
 	start-stop-daemon \
 		-S \
 		-N "$TRANSMISSION_NICE" \
-		-p "$PID_FILE" \
 		-x "$DAEMON_BIN" \
-		-c "$USERNAME" \
+		-c "$USERNAME:$GROUPNAME" \
 		-- \
-		$OPTIONS --config-dir "$CONFIGDIR" --download-dir "$DOWNLOADDIR" \
-		> /dev/null
+		$OPTIONS --config-dir "$CONFIGDIR" --download-dir "$DOWNLOADDIR" --pid-file "$PID_FILE" \
+		>/dev/null
 
 	exitval=$?
 	[ "$exitval" -eq 0 ] && echo 'done.' || echoFailedAndExit "$exitval"
 }
-
-stop () {
-	echo -n 'Stopping transmission daemon... '
-	# As transmission takes care of killing its child processes by itself
-	# do send the signal to its parent process only. Sending the signal
-	# to all processes leads sometimes to a wrong "stopping failed" message.
-	local DAEMON_PID=$(pidof $DAEMON_BIN | tr " " "\n" | sort | head -1)
-	if [ -z "$DAEMON_PID" ]; then
-		echo -e "\nSeems $DAEMON_BIN is not running."
-		echoFailedAndExit 1
-	fi
-
-#	start-stop-daemon -K -q -o -p "$PID_FILE" >/dev/null 2>&1
-	kill -SIGINT $DAEMON_PID >/dev/null 2>&1
-	exitval=$?
-	[ "$exitval" -eq 0 ] && echo 'done.' || echoFailedAndExit "$exitval"
-}
-
 
 case $1 in
 	""|load)
-		modlib_adduser bittorrent -G users -D -S -g "Torrent server"
+		modlib_adduser $USERNAME -G $GROUPNAME -D -S -g "Torrent server"
 		modreg cgi 'transmission' 'Transmission'
 
 		if [ "$TRANSMISSION_ENABLED" != "yes" ]; then
@@ -178,22 +161,20 @@ case $1 in
 		start
 		;;
 	unload)
-		stop
+		modlib_stop
 		modunreg cgi 'transmission'
 		;;
 	start)
 		start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 5
-		start
+		modlib_restart
 		;;
 	status)
-		[ -z "$(pidof $DAEMON_BIN)" ] && echo 'stopped' || echo 'running'
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
