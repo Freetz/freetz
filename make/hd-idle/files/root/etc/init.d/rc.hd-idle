@@ -1,95 +1,69 @@
 #!/bin/sh
 
 DAEMON=hd-idle
-
 . /etc/init.d/modlibrc
 
-checksysfs() {
-
-## hd-idle needs sysfs to do what it should
-
-	SYSFS=$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')
-	if [ -z "$SYSFS" ]; then
-		echo -n "Trying to mount sysfs..."
-		mkdir -p /var/sys
-		mount sysfs /var/sys -t sysfs
+config() {
+	## hd-idle needs sysfs to do what it should
+	[ -n "$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')" ] && return
+		
+	echo -n "Trying to mount sysfs..."
+	mkdir -p /var/sys
+	mount sysfs /var/sys -t sysfs
+	if [ "$?" -eq 0 ]; then
+		echo 'done.'
+	else
+		[ ! -d /sys ] && echo "failed (backup mountpoint not available)." && exit 1
+		mount sysfs /sys -t sysfs
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
 		else
-			[ ! -d /sys ] && echo "failed (backup mountpoint not available)." && exit 1
-			mount sysfs /sys -t sysfs
-			exitval=$?
-			if [ "$exitval" -eq 0 ]; then
-				echo 'done.'
-			else
-				echo 'failed.'
-				exit $exitval
-			fi
+			echo 'failed.'
+			exit $exitval
 		fi
 	fi
 }
 
 start() {
-	checksysfs
-	echo -n "Starting $DAEMON..."
-
-	$DAEMON $HD_IDLE_DEVICE -l $HD_IDLE_IDLETIME &
-	exitval=$?
-	sleep 1
-	if [ "$(pidof hd-idle)" != "" ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON $HD_IDLE_DEVICE -l $HD_IDLE_IDLETIME &
 }
 
 stop() {
-	echo -n "Stopping $DAEMON...("
+	echo -n "...("
 	for I in $(pidof hd-idle); do
 		kill $I > /dev/null 2>&1
-		exitval=$?
-		if [ "$exitval" -eq 0 ]; then
+		if [ "$?" -eq 0 ]; then
 			echo -n 'v'
 		else
 			echo -n 'x'
 		fi
 	done
-	echo ") done."
+	echo ") "
 }
-
 
 case $1 in
 	""|load)
 		modreg cgi 'hd-idle' 'HD-Idle'
-		if [ $HD_IDLE_ENABLED != yes ]; then
-			echo "hd-idle is disabled" 1>&2
-			exit 1
-		fi
-		start
+
+		modlib_start $HD_IDLE_ENABLED
 		;;
 	unload)
 		stop
 		modunreg cgi 'hd-idle'
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ "$(pidof hd-idle)" != "" ]; then
-			echo 'running'
-		else
-			echo 'stopped'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

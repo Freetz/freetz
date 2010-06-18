@@ -10,6 +10,20 @@ DAEMON=nhipt
 . /etc/init.d/modlibrc
 #	echo "MAIN ENTERING ---$1" >> /var/tmp/log.log
 
+config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.nhipt/${DAEMON}.cfg
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+}
+
 start() {
 	config
 	# HIER KOMMEN DIE VERARBEITUNGEN REIN
@@ -21,23 +35,23 @@ start() {
 			modprobe $i
 		done
 	fi
-	if [ -n "$(ps | grep -v grep | grep iptlogger)" ]; then
+	if [ -n "$(ps | grep ip[t]logger)" ]; then
 		log_run='yes'; else log_run='no'
 	fi
-	if [ -n "$(ps | grep -v grep | grep nhipd.pid)" ]; then
+	if [ -n "$(ps | grep nh[i]pd.pid)" ]; then
 		cgi_run='yes'
 	else 
 		cgi_run='no'
 	fi
 	if [ "$NHIPT_START_CGI" = "stopped" ]; then
 		if [ "$cgi_run" = "yes" ]; then
-			ps | grep -v grep | grep nhipd.pid | awk '{print $1}' | xargs kill
+			ps | grep nh[i]pd.pid | awk '{print $1}' | xargs kill
 		fi
 	fi
 	if [ "$NHIPT_START_LOG" = "stopped" ]; then
 		if [ "$log_run" = "yes" ]; then
-			ps | grep -v grep | grep iptlogger | awk '{print $1}' | xargs kill
-			ps | grep -v grep | grep logfw | awk '{print $1}' | xargs kill
+			ps | grep ip[t]logger | awk '{print $1}' | xargs kill
+			ps | grep lo[g]fw | awk '{print $1}' | xargs kill
 		fi
 	fi
 	if [ "$NHIPT_START_CGI" = "running" ]; then
@@ -57,19 +71,6 @@ start() {
 stop() {
 	# HIER KOMMEN DIE VERARBEITUNGEN REIN
 	echo "Configuring services..."
-}
-config() {
-	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.nhipt/${DAEMON}.cfg
-		fi
-
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
-	) > /mod/etc/$DAEMON.conf
 }
 
 case $1 in
@@ -107,5 +108,5 @@ case $1 in
 		exit 1
 		;;
 esac
-exit 0
 
+exit 0

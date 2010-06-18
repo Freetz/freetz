@@ -1,24 +1,21 @@
 #!/bin/sh
 
 DAEMON=downloader
+. /etc/init.d/modlibrc
+
 ERRFILE=/var/tmp/downerr
 
-. /etc/init.d/modlibrc
 
 if [ "$DOWNLOADER_DEBUG" = "yes" ]; then
 	LOGFILE=/var/log/downloader.log
-	if [ -e $LOGFILE ]; then
-		rm -f $LOGFILE > /dev/null 2>&1 
-	fi
+	[ -e $LOGFILE ] && rm -f $LOGFILE > /dev/null 2>&1 
 else
 	LOGFILE=/dev/null
 fi
 
 
 start() {
-	if [ -e $ERRFILE ]; then
-		rm -f $ERRFILE > /dev/null 2>&1 
-	fi
+	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1 
 	if [ "$DOWNLOADER_ENABLED" = "yes" ]; then
 		echo "Starting $DAEMON..."
 		echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
@@ -59,9 +56,7 @@ stop() {
 }
 
 remove() {
-	if [ -e $ERRFILE ]; then
-		rm -f $ERRFILE > /dev/null 2>&1 
-	fi
+	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1 
 	echo "$DAEMON: Remove all downloaded files..."
 	echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
 		[ -n "$downfile" ]
@@ -90,16 +85,7 @@ case $1 in
 		modreg extra $DAEMON '$(lang de:"Heruntergeladene Dateien löschen" en:"Remove downloaded files")' 1 'downremover'
 		modreg extra $DAEMON '$(lang de:"Protokoll ansehen" en:"View log file")' 1 'downlog'
 
-		if [ "$DOWNLOADER_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		if [ -e "/var/run/downloader.pid" ]; then
-			echo "$DAEMON already started."
-		else
-			start
-		fi
+		modlib_start $DOWNLOADER_ENABLED
 		;;
 	unload)
 		stop
@@ -122,10 +108,10 @@ case $1 in
 		remove
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
+		if pidof "$DAEMON" >/dev/null; then
 			echo 'running'
+		else
+			echo 'stopped'
 		fi
 		;;
 	*)
@@ -135,8 +121,3 @@ case $1 in
 esac
 
 exit 0
-
-
-
-
-

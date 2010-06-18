@@ -1,7 +1,6 @@
 #!/bin/sh
 
 DAEMON=authorized-keys
-
 . /etc/init.d/modlibrc
 
 # BEGIN compat
@@ -37,7 +36,7 @@ case $1 in
 		# END compat
 
 		[ ! -e ~root/.ssh ] && ln -s $dir ~root/.ssh
-		echo "initialized."
+		echo "done."
 		;;
 	unload)
 		modunreg file $DAEMON

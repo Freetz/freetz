@@ -1,7 +1,6 @@
 #!/bin/sh
 
 DAEMON=bluez-utils
-
 . /etc/init.d/modlibrc
 
 start() {
@@ -86,7 +85,7 @@ stop() {
 
 	killall -9 dund pand rfcomm >/dev/null 2>&1
 
-	if [ "$(ps | grep -v grep | grep sdpd)" ]; then
+	if [ "$(ps | grep s[d]pd)" ]; then
 		killall -9 sdpd >/dev/null 2>&1
 		exitval2=$? 
 	else
@@ -122,12 +121,7 @@ case $1 in
 		modreg file bluez-utils netpandu 'Bluez-Netpandu' 0 "netpandu"
 		modreg file bluez-utils hcidconf 'Bluez-Hcidconf' 0 "hcidconf"
 
-		if [ "$BLUEZ_UTILS_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $BLUEZ_UTILS_ENABLED
 		;;
 	unload)
 		stop

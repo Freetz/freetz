@@ -1,10 +1,10 @@
 #!/bin/sh
 
 DAEMON=bird
+. /etc/init.d/modlibrc
+
 CFGFILE='/tmp/flash/bird.conf'
 [ -e /etc/bird.conf -a ! -e $CFGFILE ] && CFGFILE='/etc/bird.conf'
-
-. /etc/init.d/modlibrc
 
 ar7ipaddr () {
 	local SEC=$1
@@ -33,7 +33,7 @@ getipaddr () {
 	echo $ipaddr
 }
 
-start() {
+config() {
 	if [ ! -e "$CFGFILE" ]; then
 		echo "Creating $CFGFILE"
 		{
@@ -74,69 +74,40 @@ EOF
 		} > $CFGFILE
 		/usr/bin/modsave flash
 	fi
+}
 
-	echo -n 'Starting bird...'
-	$DAEMON -c $CFGFILE > /dev/null 2>&1
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+start() {
+	modlib_startdaemon $DAEMON -c $CFGFILE > /dev/null 2>&1
 }
 
 stop() {
-	if [ ! -z "$(pidof "$DAEMON")" ]; then
-		echo -n 'Stopping bird...'
-		killall $DAEMON > /dev/null 2>&1
-		exitval=$?
-		
-		if [ "$exitval" -eq 0 ]; then
-			echo 'done.'
-		else
-			echo 'failed.'
-			exit $exitval
-		fi
-	fi
+	killall $DAEMON > /dev/null 2>&1
 }
 
 case $1 in
 	''|load)
 		modreg cgi 'bird' 'BIRD'
-
 		[ "$CFGFILE" != '/etc/bird.conf' ] && modreg file bird conf 'BIRD: bird.conf' 0 "bird_conf"
 
-		if [ "$BIRD_ENABLED" = 'no' ]; then
-			echo 'BIRD is disabled' 1>&2
-			exit 1
-		fi
-
-		[ "$BIRD_AUTOSTARTDELAY" -gt 0 ] && sleep $BIRD_AUTOSTARTDELAY
-		start
+		[ "$BIRD_AUTOSTARTDELAY" -gt 0 -a "$BIRD_ENABLED" = 'yes' ] && sleep $BIRD_AUTOSTARTDELAY
+		modlib_start $BIRD_ENABLED
 		;;
 	unload)
 		stop
-		[ "$CFGFILE" != '/etc/bird.conf' ] && modunreg file bird
+		modunreg file bird
 		modunreg cgi bird
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

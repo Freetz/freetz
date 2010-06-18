@@ -1,10 +1,10 @@
 #!/bin/sh
 
 DAEMON=spindown
-
 . /etc/init.d/modlibrc
+PID_FILE=/var/run/$DAEMON.$SPINDOWN_DEVICE.pid
 
-checksysfs() {
+config() {
 	SYSFS=$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')
 	if [ -z "$SYSFS" ]; then
 		echo -n "Trying to mount sysfs..."
@@ -28,65 +28,43 @@ checksysfs() {
 }
 
 start() {
-	checksysfs
-	echo -n "Starting $DAEMON..."
-
-	$DAEMON $SPINDOWN_DEVICE $SPINDOWN_IDLETIME $SPINDOWN_MODE &
-	exitval=$?
-	sleep 1
-	if [ -f /var/run/$DAEMON.$SPINDOWN_DEVICE.pid ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON $SPINDOWN_DEVICE $SPINDOWN_IDLETIME $SPINDOWN_MODE &
 }
 
 stop() {
-	echo -n "Stopping $DAEMON...("
+	echo -n "("
 	for I in $(ls /var/run/$DAEMON.*.pid); do
-		kill $(cat $I)  > /dev/null 2>&1
-		exitval=$?
-		if [ "$exitval" -eq 0 ]; then
+		kill $(cat $I) > /dev/null 2>&1
+		if [ "$?" -eq 0 ]; then
 			echo -n 'v'
 		else
 			echo -n 'x'
 		fi
 	done
-	echo ") done."
+	echo ") "
 }
-
 
 case $1 in
 	""|load)
 		modreg cgi 'spindown' 'Disk Spindown'
-		if [ "$SPINDOWN_ENABLED" != "yes" ]; then
-			echo "Disk spindown is disabled" 1>&2
-			exit 1
-		fi
-		start
+		
+		modlib_start $SPINDOWN_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi 'spindown'
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -f /var/run/$DAEMON.$SPINDOWN_DEVICE.pid ]; then
-			echo 'running'
-		else
-			echo 'stopped'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

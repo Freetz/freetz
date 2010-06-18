@@ -1,7 +1,6 @@
 #!/bin/sh
 
 DAEMON=cpmaccfg
-
 . /etc/init.d/modlibrc
 
 start() {
@@ -137,7 +136,7 @@ ipv4bcast () {
 }
  
 ethernet() {
-	if [ "$CPMACCFG_ETH1_IP" != "" ]; then
+	if [ -n "$CPMACCFG_ETH1_IP" ]; then
 		if [ "$h_eth1" != "0x20" ]; then
 			BROADCAST=$(ipv4bcast $CPMACCFG_ETH1_IP $CPMACCFG_ETH1_SUBNET)
 			echo "ifconfig eth1 $CPMACCFG_ETH1_IP netmask $CPMACCFG_ETH1_SUBNET broadcast $BROADCAST up"
@@ -145,7 +144,7 @@ ethernet() {
 		fi
 	fi
 
-	if [ "$CPMACCFG_ETH2_IP" != "" ]; then
+	if [ -n "$CPMACCFG_ETH2_IP" ]; then
 		if [ "$h_eth2" != "0x20" ]; then
 			BROADCAST=$(ipv4bcast $CPMACCFG_ETH2_IP $CPMACCFG_ETH2_SUBNET)
 			echo "ifconfig eth2 $CPMACCFG_ETH2_IP netmask $CPMACCFG_ETH2_SUBNET broadcast $BROADCAST up"
@@ -153,7 +152,7 @@ ethernet() {
 		fi
 	fi
 
-	if [ "$CPMACCFG_ETH3_IP" != "" ]; then
+	if [ -n "$CPMACCFG_ETH3_IP" ]; then
 		if [ "$h_eth3" != "0x20" ]; then
 			BROADCAST=$(ipv4bcast $CPMACCFG_ETH3_IP $CPMACCFG_ETH3_SUBNET)
 			echo "ifconfig eth3 $CPMACCFG_ETH3_IP netmask $CPMACCFG_ETH3_SUBNET broadcast $BROADCAST up"
@@ -169,11 +168,7 @@ case $1 in
 		modreg cgi 'cpmaccfg' 'Cpmaccfg'
 		modreg daemon --hide cpmaccfg
 		
-		if [ "$CPMACCFG_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-		start
+		modlib_start $CPMACCFG_ENABLED
 		;;
 	unload)
 		modunreg cgi 'cpmaccfg'

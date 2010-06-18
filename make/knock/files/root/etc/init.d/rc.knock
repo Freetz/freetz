@@ -1,42 +1,29 @@
 #!/bin/sh
 
 DAEMON=knock
-
+DAEMON_BIN=knockd
 . /etc/init.d/modlibrc
 
-start() {
+
+config() {
 	if [ ! -e "/tmp/flash/knock/knockd.conf" ]; then
 		echo "Creating knockd.conf"
 		cat /usr/share/doc/knock/knockd.conf > /tmp/flash/knock/knockd.conf
 		/usr/bin/modsave flash
 	fi
+}
 
-	echo -n 'Starting port-knock server...'
+start() {
 	set -o noglob
 	local countdown=10
 	while [ $((countdown--)) -gt 0 ] && ! ifconfig dsl > /dev/null 2>&1; do
 		sleep 2
 	done
-	knockd -d -c /tmp/flash/knock/knockd.conf -i "$KNOCK_INTERFACE"
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON_BIN -d -c /tmp/flash/knock/knockd.conf -i "$KNOCK_INTERFACE"
 }
 
 stop() {
-	echo -n 'Stopping port-knock server...'
 	killall knockd > /dev/null 2>&1
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 case $1 in
@@ -47,34 +34,24 @@ case $1 in
 		modreg cgi 'knock' 'Knock'
 		modreg file knock conf 'Knockd: config' 0 "knockd_conf"
 
-		if [ "$KNOCK_ENABLED" != "yes" ]; then
-			echo "knockd is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $KNOCK_ENABLED		
 		;;
 	unload)
-		stop
 		modunreg file knock
 		modunreg cgi knock
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "knockd")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
+		modlib_status
 		fi
 		;;
 	*)

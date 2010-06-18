@@ -69,7 +69,7 @@ checkdir() {
 	i=60
 	while [ ! -d "$1" ]; do
 		echo -n "Directory $1 not available at round $i"
-		let i=$i-1
+		let i--
 		if [ $i -eq 0 ]; then
 			echo " - not starting lighttpd"
 			exit 1

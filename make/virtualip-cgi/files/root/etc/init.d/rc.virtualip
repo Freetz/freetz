@@ -1,7 +1,6 @@
 #!/bin/sh
 
 DAEMON=virtualip
-
 . /etc/init.d/modlibrc
 
 ipv4bcast () {
@@ -20,10 +19,14 @@ ipv4bcast () {
 		$((${IBC} >> 8 & 0xFF)) $((${IBC} & 0xFF))
 }
 
-
 start() {
 	echo -n 'Setting up virtual network interface...'
 	
+	if [ -n "$(ifconfig | grep "$VIRTUALIP_INTERFACE")" ]; then
+		echo 'not running.'
+		exit 1
+	fi
+
 	VIRTUALIP_BROADCAST=$(ipv4bcast $VIRTUALIP_IP $VIRTUALIP_NETMASK)
 
 	ifconfig $VIRTUALIP_INTERFACE $VIRTUALIP_IP netmask $VIRTUALIP_NETMASK broadcast $VIRTUALIP_BROADCAST up > /dev/null 2>&1
@@ -38,6 +41,12 @@ start() {
 
 stop() {
 	echo -n 'Deactivating virtual network interface...'
+	
+	if [ -z "$(ifconfig | grep "$VIRTUALIP_INTERFACE")" ]; then
+		echo 'not running.'
+		exit 1
+	fi
+
 	ifconfig $VIRTUALIP_INTERFACE down > /dev/null 2>&1 > /dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then

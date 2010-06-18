@@ -2,8 +2,6 @@
 
 DAEMON=inadyn-mt
 CONF_ENABLED=INADYN_MT_ENABLED
-
-
 . /etc/init.d/modlibrc
 
 ivalueof () {
@@ -90,9 +88,7 @@ start() {
 
 case $1 in
 	""|load)
-		if type modreg > /dev/null; then
-			modreg cgi $DAEMON 'Inadyn-mt'
-		fi
+		modreg cgi $DAEMON 'Inadyn-mt'
 
 		modlib_start $INADYN_MT_ENABLED
 		;;

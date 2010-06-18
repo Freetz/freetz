@@ -9,7 +9,7 @@ start() {
 	if [ ! -f /tmp/flash/php.ini ]; then
 		echo -n 'Setting up PHP ...'
 		cp /etc/default.php/php.ini /tmp/flash/php.ini && mod_save=true
-		[ -n "$(ps w | grep lighttpd | grep -v grep)" ] && /etc/init.d/rc.lighttpd restart
+		pidof lighttpd >/dev/null && /etc/init.d/rc.lighttpd restart
 		echo 'done.'
 	else
 		echo 'Nothing to do here.'

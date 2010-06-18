@@ -1,10 +1,10 @@
 #!/bin/sh
 
 DAEMON=privoxy
-
 . /etc/init.d/modlibrc
 
-start() {
+config() {
+
 	[ ! -d "/mod/etc/$DAEMON" ] && mkdir -p /mod/etc/$DAEMON
 	[ ! -r "/mod/etc/privoxy/default.filter" ] && ln -s /etc/privoxy/default.filter /mod/etc/privoxy/default.filter
 	[ ! -r "/mod/etc/privoxy/default.action" ] && ln -s /etc/privoxy/default.action /mod/etc/privoxy/default.action
@@ -16,33 +16,15 @@ start() {
 			/mod/etc/default.$DAEMON/${DAEMON}_conf
 		fi
 	) > /mod/etc/$DAEMON/config
+}
 
-	echo -n 'Starting Privoxy...'
+start() {
 	$DAEMON --pidfile /var/run/$DAEMON.pid /mod/etc/privoxy/config > /dev/null 2>&1
-	exitval=$?
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 stop() {
-	echo -n 'Stopping Privoxy...'
 	kill -9 "$(cat /var/run/$DAEMON.pid)" > /dev/null 2>&1
-	exitval=$?
-
 	rm -rf /mod/etc/$DAEMON/config
-	rm -f /var/run/$DAEMON.pid
-	
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 case $1 in
@@ -55,21 +37,10 @@ case $1 in
 		[ -r "/tmp/flash/privoxy/user.action" ] || cp -f /etc/privoxy/user.action /tmp/flash/privoxy/user.action
 
 		modreg file privoxy user_filter 'Privoxy: user.filter' 0 "filter"
-
 		modreg file privoxy user_action 'Privoxy: user.actions' 0 "action"
-
 		modreg cgi 'privoxy' 'Privoxy'
 
-		if [ "$PRIVOXY_ENABLED" != "yes" ]; then
-			echo "Privoxy is disabled." 1>&2
-			exit 1
-		fi
-
-		if [ -e "/var/run/$DAEMON.pid" ]; then
-			echo "Privoxy is already started."
-		else
-			start
-		fi
+		modlib_start $PRIVOXY_ENABLED
 		;;
 	unload)
 		stop
@@ -78,22 +49,16 @@ case $1 in
 		modunreg cgi privoxy
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 3
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

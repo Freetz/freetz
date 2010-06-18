@@ -1,10 +1,9 @@
 #!/bin/sh
 
 DAEMON=tinyproxy
-
 . /etc/init.d/modlibrc
 
-start() {
+config() {
 	if [ ! -r /tmp/flash/tinyproxy.conf ]; then
 		echo "Copying /etc/default.tinyproxy/default.conf to flash"
 		cp /mod/etc/default.tinyproxy/default.conf /tmp/flash/tinyproxy.conf
@@ -25,17 +24,11 @@ start() {
 			cat /tmp/flash/${DAEMON}.extra
 		fi
 	} > /mod/etc/$DAEMON.conf
+}
 
+start() {
 
-	echo -n "Starting $DAEMON server ... "
-	$DAEMON -c /mod/etc/$DAEMON.conf
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON -c /mod/etc/$DAEMON.conf
 
 	if [ "$TINYPROXY_CATCHALL" == "yes" ]; then
 		echo -n "Configuring IPTABLES to make all web traffic go through tinyproxy ... "
@@ -51,14 +44,8 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping $DAEMON server..."
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-	fi
 
 	if [ "$TINYPROXY_CATCHALL" == "yes" ]; then
 		echo -n "Removing tinyproxy IPTABLES rules if any ... "
@@ -77,6 +64,8 @@ stop() {
 			echo 'failed.'
 		fi
 	fi
+
+	return $exitval
 }
 
 case $1 in
@@ -86,35 +75,24 @@ case $1 in
 		modreg file tinyproxy conf 'tinyproxy conf' 0 "tinyproxy_conf"
 		modreg file tinyproxy filter 'tinyproxy filter' 0 "tinyproxy_filter"
 		
-		if [ "$TINYPROXY_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $TINYPROXY_ENABLED
 		;;
 	unload)
-		stop
 		modunreg file tinyproxy
 		modunreg cgi tinyproxy
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 esac
 

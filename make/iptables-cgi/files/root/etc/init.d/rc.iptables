@@ -1,6 +1,8 @@
 #!/bin/sh
 
 DAEMON=iptables
+. /etc/init.d/modlibrc
+
 SAVEFILE=/var/tmp/flash/iptables_rules
 MODULES="iptable_nat iptable_filter \
 		ip_tables ip_nat ip_conntrack ip_conntrack_ftp \
@@ -14,7 +16,6 @@ else
   MODULES="$MODULES ipt_state ipt_mac ipt_multiport"
 fi
 
-. /etc/init.d/modlibrc
 
 start() {
 
@@ -203,26 +204,23 @@ save () {
 }
 
 stop () {
-
 	cat /mod/etc/conf/iptables.cfg | grep "*gui*" > /dev/null
-	if [ $? -eq 1 ]; then
-		lsmod | grep ip_tables > /dev/null
-		if [ $? -eq 0 ]; then
-			echo 'Unloading modules ...'
-			iptables -F
-			# remove modules in reverse order
-			reverse_list=
-			for MODUL in $MODULES; do
-				reverse_list="$MODUL $reverse_list"
-			done
-			for MODUL in $reverse_list; do
-				rmmod $MODUL
-			done
-		else
-			echo 'Modules not loaded.'
-		fi
+	[ $? -ne 1 ] && return
+	lsmod | grep ip_tables > /dev/null
+	if [ $? -eq 0 ]; then
+		echo 'Unloading modules ...'
+		iptables -F
+		# remove modules in reverse order
+		reverse_list=
+		for MODUL in $MODULES; do
+			reverse_list="$MODUL $reverse_list"
+		done
+		for MODUL in $reverse_list; do
+			rmmod $MODUL
+		done
+	else
+		echo 'Modules not loaded.'
 	fi
-	exitval=0
 }
 
 case $1 in
@@ -231,24 +229,23 @@ case $1 in
 		modreg file iptables rules 'Iptables: Rules' 0 "iptables"
 		modreg file iptables services 'Iptables: Services' 0 "services"
 
-		if [ ! -r "/var/tmp/flash/iptables_services" ]; then
-			cp /mod/etc/default.iptables/iptables_services /var/tmp/flash/iptables_services
-		fi
+		[ ! -r "/var/tmp/flash/iptables_services" ] && cp /mod/etc/default.iptables/iptables_services /var/tmp/flash/iptables_services
+		[ ! -r "/var/tmp/flash/iptables_rules" ] && touch /var/tmp/flash/iptables_rules
 
-		if [ ! -r "/var/tmp/flash/iptables_rules" ]; then
-			touch /var/tmp/flash/iptables_rules
-		fi
-		if [ "$IPTABLES_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		else
-			start
-		fi
+		modlib_start $IPTABLES_ENABLED
 		;;
 	start)
+		if lsmod | grep ip_tables >/dev/null; then
+			echo "$DAEMON is already running."
+			exit 1
+		fi
 		start
 		;;
 	stop)
+		if ! lsmod | grep ip_tables >/dev/null; then
+			echo "$DAEMON is not running."
+			exit 1
+		fi
 		stop
 		;;
 	restart)
@@ -257,8 +254,7 @@ case $1 in
 		start
 		;;
 	status)
-		lsmod | grep ip_tables > /dev/null
-		if [ $? -eq 0 ]; then
+		if lsmod | grep ip_tables >/dev/null; then
 			echo 'running'
 		else
 			echo 'stopped'

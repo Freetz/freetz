@@ -1,18 +1,13 @@
 #!/bin/sh
 
 DAEMON=davfs2
+. /etc/init.d/modlibrc
+
 DAEMON_MOUNT=/mod/etc/webdav
 DAEMON_UMOUNT=/mod/etc/webdav_umount
 
-. /etc/init.d/modlibrc
-
 start() {
-
-	modlib_addgroup davfs2
-	modlib_adduser davfs2 -s /bin/false -D -S -H -G davfs2 -g 'davfs2'
 	mkdir -p /mod/home/davfs2
-	
-	# Setting permissions
 	chown davfs2:davfs2 /mod/home/davfs2 -R
 	
 	mkdir /var/davfs2 2>/dev/null
@@ -60,6 +55,10 @@ start() {
 			/mod/etc/default.davfs2/webdav_umount
 		fi
 	) > /mod/etc/webdav_umount
+}
+
+start() {
+	config
 
 	echo -n 'mount WebDAV...'
 	
@@ -68,7 +67,6 @@ start() {
 	$DAEMON_MOUNT > /dev/null 2>&1
 		
 	exitval=$?
-	
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
@@ -82,7 +80,7 @@ stop() {
  	
 	sleep 1
 	
-	if [ ! -z "$(pidof "mount.davfs")" ]; then
+	if pidof mount.davfs >/dev/null; then
 		killall -9 mount.davfs > /dev/null 2>&1
 		exitval=$?
 	fi
@@ -97,21 +95,21 @@ stop() {
 
 case $1 in
 	""|load)
+		modlib_addgroup davfs2
+		modlib_adduser davfs2 -s /bin/false -D -S -H -G davfs2 -g 'davfs2'
 
-		if type modreg > /dev/null; then
-			modreg cgi davfs2 'WebDAV'
-			for i in 1 2 3; do 
-				modreg file davfs2 servercrt$i "WebDav Server Cert $i" 0 "davfs_servercrt$i"
-			done
+		modreg cgi davfs2 'WebDAV'
+		for i in 1 2 3; do 
+			modreg file davfs2 servercrt$i "WebDav Server Cert $i" 0 "davfs_servercrt$i"
+		done
 
-		fi
 
 		if [ "$DAVFS2_ENABLED" != "yes" ]; then
 			echo "WebDAV is disabled" 1>&2
 			exit 1
 		fi
 
-		if [ ! -z "$(pidof mount.davfs)" ]; then
+		if pidof mount.davfs >/dev/null; then
 			echo "WebDAV already started."
 		else
 			start
@@ -134,10 +132,10 @@ case $1 in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "mount.davfs")" ]; then
-			echo 'stopped'
-		else
+		if pidof mount.davfs >/dev/null; then
 			echo 'running'
+		else
+			echo 'stopped'
 		fi
 		;;
 	*)

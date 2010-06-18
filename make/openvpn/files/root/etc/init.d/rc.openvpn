@@ -4,16 +4,16 @@
 
 scriptname=$0
 DAEMON=${scriptname##*/rc.}
+
 mypidof() {
-ps | grep $1 | grep -v grep | grep /mod/etc/${1}.conf | sed 's/^[ ]*//; s/\([0-9]*\)[ ].*/\1/' 
+ps | grep $1 | grep /m[o]d/etc/${1}.conf | sed 's/^[ ]*//; s/\([0-9]*\)[ ].*/\1/' 
 }
+
 if [ ! -e /var/tmp/.openvpnfirstrun ]; then
 	touch /var/tmp/.openvpnfirstrun
 	/mod/etc/default.openvpn/openvpn_dynamic_conf
 fi
-if [ ! -x /mod/sbin/$DAEMON ]; then
-	ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
-fi
+[ -x /mod/sbin/$DAEMON ] || ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
 
 case $1 in
 	""|load|start|restart)
@@ -59,13 +59,13 @@ start() {
 	fi
 	# if we have brctl, then try to add tap to "lan" if requestet (ignore errors)
 	if [ $(which brctl) ] && TAP=$(grep "#Helperline" /mod/etc/${DAEMON}.conf | grep -o tap[0-9] ); then
-	brctl addif lan $TAP 2> /dev/null 
+		brctl addif lan $TAP 2> /dev/null 
 	fi
 }
 
 stop() {
 	
-	if [ ! -z "$(mypidof $DAEMON)" ];then
+	if [ -n "$(mypidof $DAEMON)" ];then
 
 		echo -n "Stopping ${DAEMON} ... "
 		killall $DAEMON > /dev/null 2>&1

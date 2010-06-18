@@ -1,14 +1,10 @@
 #!/bin/sh
 
 DAEMON=pptpd
-PPPD=pppd
-
 . /etc/init.d/modlibrc
 
-start() {
-	echo -n 'Starting pptpd...'
+config() {
 	set -o noglob
-
 	rm -f /mod/etc/ppp/ip-up
 	rm -f /mod/etc/ppp/ip-down
 	[ -x "/tmp/flash/ppp/pppd_ip-up" ] && /tmp/flash/ppp/pppd_ip-up > /mod/etc/ppp/ip-up
@@ -17,36 +13,20 @@ start() {
 	[ ! -e "/mod/etc/ppp/ip-down" ] && /etc/default.${PPPD}/pppd_ip-down > /mod/etc/ppp/ip-down
 	chmod 755 /mod/etc/ppp/ip-up
 	chmod 755 /mod/etc/ppp/ip-down
+}
 
+start() {
 	modprobe arc4
 	modprobe sha1
 	modprobe ppp_generic
 	modprobe ppp_async
 	modprobe ppp_deflate
 	modprobe ppp_mppe_mppc
-
-	$DAEMON -c /etc/ppp/$DAEMON.conf
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON -c /etc/ppp/$DAEMON.conf
 }
 
 stop() {
-	echo -n 'Stopping pptpd...'
-
-	kill $(ps | grep pptpd | grep -v grep | grep -v "rc.pp" | grep -v "pppd" | sed 's/^ //g' | cut -f1 -d" ")
-	exitval=$?
-	
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	kill $(ps | grep pp[t]pd | grep -vE "rc.pp|pppd" | sed 's/^ *//g' | cut -f1 -d" ")
 }
 
 case $1 in
@@ -61,39 +41,27 @@ case $1 in
 		[ -e "/tmp/flash/ppp/pptpd.conf" ] && ln -s /tmp/flash/ppp/pptpd.conf /mod/etc/ppp/pptpd.conf
 
 		modreg cgi 'pptpd' 'PPTPD'
-
 		modreg file pptpd options 'PPTPD: options.pptpd' 0 "pptpd_options"
 		modreg file pptpd conf 'PPTPD: pptpd.conf' 0 "pptpd_conf"
 
-		if [ "$PPTPD_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $PPTPD_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi pptpd
 		modunreg file pptpd
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

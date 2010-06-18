@@ -2,68 +2,41 @@
 
 DAEMON=vtund
 CONF_NAME=vtun
-
 . /etc/init.d/modlibrc
 
-start() {
+config() {
 	echo "$VTUN_CONFIG" > /mod/etc/vtun.conf
+}
 
-	echo -n 'Starting vtund ...'
-
-	$DAEMON -f /mod/etc/vtun.conf $VTUN_STARTPARAMS
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+start() {
+	modlib_startdaemon $DAEMON -f /mod/etc/vtun.conf $VTUN_STARTPARAMS
 }
 
 stop() {
-	echo -n 'Stopping vtund ...'
 	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 case $1 in
 	""|load)
 		modreg cgi 'vtun' 'vtun'
 
-		if [ "$VTUN_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $VTUN_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi 'vtun'
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

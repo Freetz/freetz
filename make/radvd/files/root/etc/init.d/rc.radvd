@@ -1,11 +1,9 @@
 #!/bin/sh
 
 DAEMON=radvd
-
 . /etc/init.d/modlibrc
 
-
-write_config() {
+config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -53,66 +51,35 @@ shut_ipv6_interface() {
 
 start() {
 	setup_ipv6_interface
-	echo -n 'Starting radvd...'
-	write_config
-	$DAEMON -C /mod/etc/$DAEMON.conf
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON -C /mod/etc/$DAEMON.conf
 }
 
 stop () {
 	shut_ipv6_interface
-	echo -n 'Stopping radvd...'
-	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-
-	rm -f /mod/etc/$DAEMON.conf
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	return 127
 }
 
 case $1 in
 	""|load)
 		modreg cgi 'radvd' 'radvd'
 
-		if [ "$RADVD_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-		
-		start
+		modlib_start $RADVD_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi 'radvd'
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ ! -z "$(pidof $DAEMON)" ]; then
-			echo 'running'
-		else
-			echo 'stopped'
-		fi
+		modlib_status
 		;;
 	remove)
 		shut_ipv6_interface

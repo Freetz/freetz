@@ -1,10 +1,10 @@
 #!/bin/sh
 
 DAEMON=nfsd
+. /etc/init.d/modlibrc 
+
 NFS_DIR=/var/lib/nfs
 PROCNFSD_DIR=/proc/fs/nfsd
-
-. /etc/init.d/modlibrc 
 
 start() {
 	set -o noglob
@@ -99,12 +99,7 @@ case $1 in
 		modreg file nfsd hosts_deny 'NFSD: hosts.deny' 1 "hosts_deny"
 		modreg file nfsd exports 'NFSD: exports' 1 "exports"
 
-		if [ "$NFSD_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled." 1>&2
-			exit 1
-		fi
-		
-		start
+		modlib_start $NFSD_ENABLED
 		;;
 	unload)
 		stop

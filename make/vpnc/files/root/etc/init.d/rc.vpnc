@@ -1,10 +1,9 @@
 #!/bin/sh
 
 DAEMON=vpnc
-
 . /etc/init.d/modlibrc
 
-start() {
+config() {
 
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
@@ -17,13 +16,10 @@ start() {
 			cat /tmp/flash/${DAEMON}.extra
 		fi
 	) > /mod/etc/$DAEMON.conf
+}
 
-	if [ ! -r "/mod/etc/$DAEMON.conf" ]; then
-		echo "Error[$DAEMON]: not configured" 1>&2
-		exit 1
-	fi
 
-	echo -n 'Starting vpnc...'
+start() {
 	
 	# find remote network for tunneling
 	NETWORK=$(grep network /var/mod/etc/vpnc.conf | sed -e 's/#network //g')
@@ -32,71 +28,39 @@ start() {
 	if [ $NETWORK != "0.0.0.0" ]; then
 		sed -e 's/#set -x/INTERNAL_IP4_DNS=\nCISCO_SPLIT_INC=1\nCISCO_SPLIT_INC_0_ADDR='$NETWORK'\nCISCO_SPLIT_INC_0_MASK='$MASK'\nCISCO_SPLIT_INC_0_MASKLEN=22\nCISCO_SPLIT_INC_0_PROTOCOL=0\nCISCO_SPLIT_INC_0_SPORT=0\nCISCO_SPLIT_INC_0_DPORT=0\n\n#set -x\n/g' /etc/default.vpnc/vpnc-script > /var/tmp/vpnc-script
 		chmod +x /var/tmp/vpnc-script
-		$DAEMON --script /var/tmp/vpnc-script /mod/etc/$DAEMON.conf
+		VPNC_SCRIPT="/var/tmp/vpnc-script"
 	else
-		$DAEMON --script /etc/default.vpnc/vpnc-script /mod/etc/$DAEMON.conf
+		VPNC_SCRIPT="/etc/default.vpnc/vpnc-script"
 	fi
 
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON --script $VPNC_SCRIPT /mod/etc/$DAEMON.conf
 }
 
 stop () {
-	echo -n 'Stopping vpnc...'
-	exitval=0
-	rm -f /mod/etc/$DAEMON.conf
-	if [ -n "$(pidof "$DAEMON")" ]; then
-		#daemon is running at the moment
-		killall -15 $DAEMON > /dev/null 2>&1
-		exitval=$?
-	fi
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	killall -15 $DAEMON > /dev/null 2>&1
 }
 
 case $1 in
 	""|load)
 		modreg cgi 'vpnc' 'Vpnc'
 
-		if [ "$VPNC_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
-		;;
-	start)
-		start
-		;;
-	stop)
-		stop
-		;;
-	restart)
-		stop
-		sleep 1
-		start
-		;;
-	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
-		;;
-	load)
+		modlib_start $VPNC_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi 'vpnc'
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [start|stop|restart|status]" 1>&2
