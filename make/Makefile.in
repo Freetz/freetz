@@ -338,6 +338,14 @@ $(if $(strip $(3)),$(strip $(3)),$($(PKG)_DEST_DIR))$(strip $(2))/$(notdir $(str
 	$(value INSTALL_BINARY_STRIP)
 endef
 
+# $1 - library to be installed
+# $2 - directory library to be installed in
+# $3 (optional) - DESTDIR library to be installed in, defaults to $(PKG)_DEST_DIR if omitted
+define INSTALL_LIBRARY_STRIP_RULE
+$(if $(strip $(3)),$(strip $(3)),$($(PKG)_DEST_DIR))$(strip $(2))/$(notdir $(strip $(1))): $(strip $(1))
+	$(value INSTALL_LIBRARY_STRIP)
+endef
+
 # We want build output like:
 # "---> package/lynx: downloading... preparing... configuring... building... done."
 # Actually there are two problems:

@@ -5,20 +5,31 @@ $(PKG)_SITE:=http://www.quagga.net/download
 $(PKG)_STARTLEVEL=80
 
 # Libraries
-$(PKG)_LIB_VERSION:=0.0.0
-$(PKG)_LIB_SUFFIX:=so.$($(PKG)_LIB_VERSION)
-$(PKG)_BINARY_BUILD_SUBDIR:=.libs
-$(PKG)_LIBNAMES := libzebra
-$(PKG)_LIBS_BUILD_DIR := $(QUAGGA_LIBNAMES:%=$($(PKG)_DIR)/lib/$($(PKG)_BINARY_BUILD_SUBDIR)/%.$(QUAGGA_LIB_SUFFIX))
-$(PKG)_LIBS_TARGET_DIR := $(QUAGGA_LIBNAMES:%=$($(PKG)_DEST_LIBDIR)/%.$(QUAGGA_LIB_SUFFIX))
+$(PKG)_LIBZEBRA      := libzebra.so.0.0.0
+$(PKG)_LIBOSPF_SO    := libospf.so
+$(PKG)_LIBOSPF_MAJOR := $($(PKG)_LIBOSPF_SO).0
+$(PKG)_LIBOSPF       := $($(PKG)_LIBOSPF_MAJOR).0.0
+$(PKG)_LIBS_ALL      := $($(PKG)_LIBZEBRA) $($(PKG)_LIBOSPF)
+
+$(PKG)_LIBS := $($(PKG)_LIBZEBRA)
+$(PKG)_LIBS_SUBDIRS := lib/.libs/
+ifeq ($(strip $(FREETZ_PACKAGE_QUAGGA_OSPFD)),y)
+$(PKG)_LIBS += $($(PKG)_LIBOSPF)
+$(PKG)_LIBS_SUBDIRS += ospfd/.libs/
+endif
+$(PKG)_LIBS_BUILD_DIR := $(addprefix $($(PKG)_DIR)/,$(join $($(PKG)_LIBS_SUBDIRS),$($(PKG)_LIBS)))
+$(PKG)_LIBS_TARGET_DIR := $(addprefix $($(PKG)_DEST_LIBDIR)/,$($(PKG)_LIBS))
 
 # Executables
 $(PKG)_BINARIES_ALL := zebra bgpd ripd ripngd ospfd ospf6d isisd vtysh
 $(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
-$(PKG)_BINARIES_BUILD_DIR := $(join $(QUAGGA_BINARIES:%=$($(PKG)_DIR)/%/.libs),$(QUAGGA_BINARIES:%=/%))
-$(PKG)_BINARIES_TARGET_DIR := $(QUAGGA_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
+$(PKG)_BINARIES_BUILD_DIR := $(join $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%/.libs/),$($(PKG)_BINARIES))
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/sbin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+ifneq ($(strip $(FREETZ_PACKAGE_QUAGGA_OSPFD)),y)
+$(PKG)_NOT_INCLUDED += $(addprefix $($(PKG)_DEST_LIBDIR)/,$($(PKG)_LIBOSPF_SO) $($(PKG)_LIBOSPF_MAJOR) $($(PKG)_LIBOSPF))
+endif
 
 $(PKG)_DEPENDS_ON := ncurses readline
 
@@ -56,10 +67,9 @@ $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(QUAGGA_DIR) \
 		MAKEINFO=true
 
-$($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/lib/.libs/%
-	$(INSTALL_LIBRARY_STRIP)
-
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
+
+$(foreach library,$($(PKG)_LIBS_BUILD_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_PATH))))
 
 $(pkg):
 
@@ -70,6 +80,6 @@ $(pkg)-clean:
 	$(RM) $(QUAGGA_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
-	$(RM) $(QUAGGA_LIBS_TARGET_DIR) $(QUAGGA_BINARIES_TARGET_DIR)
+	$(RM) $(QUAGGA_BINARIES_TARGET_DIR) $(QUAGGA_DEST_LIBDIR)/libzebra* $(QUAGGA_DEST_LIBDIR)/libospf*
 
 $(PKG_FINISH)
