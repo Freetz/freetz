@@ -19,7 +19,7 @@ config() {
 }
 
 start() {
-	$DAEMON --pidfile /var/run/$DAEMON.pid /mod/etc/privoxy/config > /dev/null 2>&1
+	modlib_startdaemon $DAEMON --pidfile /var/run/$DAEMON.pid /mod/etc/privoxy/config > /dev/null 2>&1
 }
 
 stop() {

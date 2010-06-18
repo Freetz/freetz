@@ -7,13 +7,13 @@ case $1 in
 		[ ! -d "/tmp/flash/ppp" ] && mkdir -p /tmp/flash/ppp
 		[ ! -d "/mod/etc/ppp" ] && mkdir -p /mod/etc/ppp
 
-		[ ! -e "/tmp/flash/ppp/chap-secrets" ] && /etc/default.${DAEMON}/chap_secrets > /tmp/flash/ppp/chap-secrets
-		#[ ! -e "/tmp/flash/ppp/pap-secrets" ] && /etc/default.${DAEMON}/pap_secrets > /tmp/flash/ppp/pap-secrets
-		#[ ! -e "/tmp/flash/ppp/options" ] && /etc/default.${DAEMON}/pppd_options > /tmp/flash/ppp/options
+		[ ! -e "/tmp/flash/ppp/chap-secrets" -a ! -e /tmp/flash/ppp/chap-secrets ] && /etc/default.${DAEMON}/chap_secrets > /tmp/flash/ppp/chap-secrets
+		#[ ! -e "/tmp/flash/ppp/pap-secrets" -a ! -e /tmp/flash/ppp/pap-secrets ] && /etc/default.${DAEMON}/pap_secrets > /tmp/flash/ppp/pap-secrets
+		#[ ! -e "/tmp/flash/ppp/options" -a ! -e /tmp/flash/ppp/options ] && /etc/default.${DAEMON}/pppd_options > /tmp/flash/ppp/options
 
-		[ -e "/tmp/flash/ppp/chap-secrets" ] && ln -s /tmp/flash/ppp/chap-secrets /mod/etc/ppp/chap-secrets
-		#[ -e "/tmp/flash/ppp/pap-secrets" ] && ln -s /tmp/flash/ppp/pap_secrets /mod/etc/ppp/pap-secrets
-		#[ -e "/tmp/flash/ppp/options" ] && ln -s /tmp/flash/ppp/options /mod/etc/ppp/options
+		[ -e "/tmp/flash/ppp/chap-secrets" -a ! -e /mod/etc/ppp/chap-secrets ] && ln -s /tmp/flash/ppp/chap-secrets /mod/etc/ppp/chap-secrets
+		#[ -e "/tmp/flash/ppp/pap-secrets" -a ! -e /mod/etc/ppp/pap-secrets ] && ln -s /tmp/flash/ppp/pap_secrets /mod/etc/ppp/pap-secrets
+		#[ -e "/tmp/flash/ppp/options" -a ! -e /mod/etc/ppp/options ] && ln -s /tmp/flash/ppp/options /mod/etc/ppp/options
 
 		modreg file pppd 'chap_secrets' 'PPPD: chap-secrets' 0 "chap_secrets"
 		modreg daemon --hide pppd

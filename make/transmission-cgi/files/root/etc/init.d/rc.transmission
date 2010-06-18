@@ -2,11 +2,11 @@
 
 DAEMON=transmission
 DAEMON_BIN="$DAEMON-daemon"
+PID_FILE=/var/run/$DAEMON.pid
+. /etc/init.d/modlibrc
+
 USERNAME=bittorrent
 GROUPNAME=users
-PID_FILE=/var/run/$DAEMON.pid
-
-. /etc/init.d/modlibrc
 
 echoFailedAndExit() {
 	echo 'failed.'
@@ -37,10 +37,6 @@ stripAllSpaces() {
 
 start() {
 	echo -n 'Starting transmission daemon... '
-	if modlib_check_running; then
-		echo "already running."
-		exit 0
-	fi
 
 	TRANSMISSION_BASEDIR=$(trim "$TRANSMISSION_BASEDIR")
 	TRANSMISSION_CONFIGDIR=$(trim "$TRANSMISSION_CONFIGDIR")
@@ -153,19 +149,14 @@ case $1 in
 		modlib_adduser $USERNAME -G $GROUPNAME -D -S -g "Torrent server"
 		modreg cgi 'transmission' 'Transmission'
 
-		if [ "$TRANSMISSION_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $TRANSMISSION_ENABLED
 		;;
 	unload)
-		modlib_stop
 		modunreg cgi 'transmission'
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		modlib_stop

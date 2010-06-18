@@ -2,8 +2,8 @@
 
 DAEMON=lighttpd
 DAEMON_LONG_NAME="lighttpd web server"
-
 . /etc/init.d/modlibrc
+
 . /usr/bin/lighttpd_has
 
 cleanup_always() {
@@ -43,6 +43,44 @@ configure() {
 	status_log
 }
 
+checkdir() {
+	i=60
+	while [ ! -d "$1" ]; do
+		echo -n "Directory $1 not available at round $i"
+		let i--
+		if [ $i -eq 0 ]; then
+			echo " - not starting lighttpd"
+			exit 1
+		fi
+		echo " - sleeping"
+		sleep 10
+	done
+}
+
+start() {
+	trap "rm -f /var/run/rc.lighttpd.pid; exit 255" 0 1 2 3 15
+	echo -n "Starting $DAEMON_LONG_NAME..."
+	if modlib_check_running; then
+		echo "$DAEMON already running."
+		exit 0
+	fi
+
+	checkdir "$LIGHTTPD_DOCROOT"
+	configure
+
+	LD_PRELOAD=
+	$DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf
+	exitval=$?
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'daemon failed.'
+		cleanup_always
+		exit $exitval
+	fi
+}
+
 stop() {
 	echo -n "Stopping $DAEMON_LONG_NAME..."
 	exitval=255
@@ -61,44 +99,6 @@ stop() {
 		echo 'done.'
 	else
 		echo 'failed.'
-		exit $exitval
-	fi
-}
-
-checkdir() {
-	i=60
-	while [ ! -d "$1" ]; do
-		echo -n "Directory $1 not available at round $i"
-		let i--
-		if [ $i -eq 0 ]; then
-			echo " - not starting lighttpd"
-			exit 1
-		fi
-		echo " - sleeping"
-		sleep 10
-	done
-}
-
-start() {
-	trap "rm -f /var/run/rc.lighttpd.pid; exit 255" 0 1 2 3 15
-	echo -n "Starting $DAEMON_LONG_NAME ..."
-	if modlib_check_running; then
-		echo "$DAEMON already running."
-		exit 0
-	fi
-
-	checkdir "$LIGHTTPD_DOCROOT"
-	configure
-
-	LD_PRELOAD=
-	$DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf
-	exitval=$?
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'daemon failed.'
-		cleanup_always
 		exit $exitval
 	fi
 }
@@ -152,7 +152,9 @@ case $1 in
 		stop
 		;;
 	restart)
-		modlib_restart
+		stop
+		sleep 1
+		start
 		;;
 	status)
 		modlib_status
