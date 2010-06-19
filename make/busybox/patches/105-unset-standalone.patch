@@ -1,0 +1,29 @@
+Backport of http://git.busybox.net/busybox/commit/?id=7df28bbb8fa3ba2878c288401c898ec477e55df1
+
+diff --git a/shell/ash_test/ash-standalone/var_standalone1.right b/shell/ash_test/ash-standalone/var_standalone1.right
+new file mode 100644
+index 0000000..37457fd
+--- a/dev/null
++++ b/shell/ash_test/ash-standalone/var_standalone1.right
+@@ -0,0 +1 @@
++Done: 1
+diff --git a/shell/ash_test/ash-standalone/var_standalone1.tests b/shell/ash_test/ash-standalone/var_standalone1.tests
+new file mode 100755
+index 0000000..1e905ba
+--- a/dev/null
++++ b/shell/ash_test/ash-standalone/var_standalone1.tests
+@@ -0,0 +1,2 @@
++VAR=42 $THIS_SH -c 'unset VAR; env | grep ^VAR'
++echo Done: $?
+--
+cgit v0.8.2.1
+--- shell/ash.c.org	2010-06-12 15:50:30.000000000 +0200
++++ shell/ash.c	2010-06-18 14:51:46.000000000 +0200
+@@ -7184,6 +7184,7 @@
+ #if ENABLE_FEATURE_SH_STANDALONE
+ 	if (applet_no >= 0) {
+ 		if (APPLET_IS_NOEXEC(applet_no)) {
++			clearenv();
+ 			while (*envp)
+ 				putenv(*envp++);
+ 			run_applet_no_and_exit(applet_no, argv);
