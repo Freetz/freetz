@@ -48,7 +48,7 @@
  	@echo "generate a fresh ca-bundle.crt"
 --- Makefile.in
 +++ Makefile.in
-@@ -302,7 +302,7 @@
+@@ -306,7 +306,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src
@@ -57,7 +57,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  all: all-recursive
-@@ -784,10 +784,10 @@
+@@ -788,10 +788,10 @@
  	done)
  
  html:
@@ -70,7 +70,7 @@
  
  check: test examples
  
-@@ -807,7 +807,7 @@
+@@ -811,7 +811,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all torture-test)
  
  examples:
@@ -79,7 +79,7 @@
  
  clean-local:
  	@(cd tests; $(MAKE) clean)
-@@ -864,12 +864,12 @@
+@@ -868,12 +868,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
