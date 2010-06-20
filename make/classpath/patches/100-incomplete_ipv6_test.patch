@@ -1,0 +1,22 @@
+--- configure
++++ configure
+@@ -23810,12 +23810,17 @@
+ 	 test ! -s conftest.err
+        } && test -s conftest.$ac_objext; then
+ 
++if [ -z "$HAVE_INET6_I_KNOW_IT_BETTER" -o "$HAVE_INET6_I_KNOW_IT_BETTER" = "yes" ]; then
++have_inet6_result="yes"
+ cat >>confdefs.h <<\_ACEOF
+ #define HAVE_INET6 1
+ _ACEOF
++else
++have_inet6_result="no (overridden)"
++fi
+ 
+-                     { echo "$as_me:$LINENO: result: yes" >&5
+-echo "${ECHO_T}yes" >&6; }
++                     { echo "$as_me:$LINENO: result: $have_inet6_result" >&5
++echo "${ECHO_T}$have_inet6_result" >&6; }
+ else
+   echo "$as_me: failed program was:" >&5
+ sed 's/^/| /' conftest.$ac_ext >&5

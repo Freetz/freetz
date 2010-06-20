@@ -23,6 +23,8 @@ ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON := libiconv
 endif
 
+$(PKG)_CONFIGURE_ENV += HAVE_INET6_I_KNOW_IT_BETTER=$(if $(FREETZ_TARGET_IPV6_SUPPORT),yes,no)
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-peer
 $(PKG)_CONFIGURE_OPTIONS += --disable-qt-peer
 $(PKG)_CONFIGURE_OPTIONS += --disable-gconf-peer
