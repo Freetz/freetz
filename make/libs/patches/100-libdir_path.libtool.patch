@@ -1,5 +1,5 @@
---- Makefile.in.orig	2008-02-01 17:38:41.000000000 +0100
-+++ Makefile.in	2008-11-08 15:55:06.000000000 +0100
+--- Makefile.in.orig	2008-02-01 16:38:41.000000000 +0000
++++ Makefile.in	2009-10-26 11:52:52.000000000 +0000
 @@ -797,6 +797,7 @@
  	-rm -f ltmain.shT
  	date=`$(SHELL) $(srcdir)/mkstamp < $(srcdir)/ChangeLog` && \
@@ -8,8 +8,8 @@
  	    -e "s%@""TIMESTAMP@%$$date%" $(srcdir)/ltmain.in > ltmain.shT
  	mv -f ltmain.shT $@ || \
  	(rm -f $@ && cp ltmain.shT $@ && rm -f ltmain.shT)
---- ltmain.in.orig	2008-02-01 17:12:00.000000000 +0100
-+++ ltmain.in	2008-11-08 15:55:06.000000000 +0100
+--- ltmain.in.orig	2008-02-01 16:12:00.000000000 +0000
++++ ltmain.in	2009-10-26 11:52:52.000000000 +0000
 @@ -5695,7 +5695,7 @@
  		  $echo "$modename: \`$deplib' is not a valid libtool archive" 1>&2
  		  exit $EXIT_FAILURE
@@ -28,3 +28,13 @@
  	    done
  	    dlprefiles="$newdlprefiles"
  	  else
+--- Makefile.am.orig	2008-02-01 16:11:59.000000000 +0000
++++ Makefile.am	2009-10-26 11:52:52.000000000 +0000
+@@ -67,6 +67,7 @@
+ 	-rm -f ltmain.shT
+ 	date=`$(SHELL) $(srcdir)/mkstamp < $(srcdir)/ChangeLog` && \
+ 	sed -e 's/@''PACKAGE@/@PACKAGE@/' -e 's/@''VERSION@/@VERSION@/' \
++		-e 's#@''GLOBAL_LIBDIR@#$(GLOBAL_LIBDIR)#' \
+ 	    -e "s%@""TIMESTAMP@%$$date%" $(srcdir)/ltmain.in > ltmain.shT
+ 	mv -f ltmain.shT $@ || \
+ 	(rm -f $@ && cp ltmain.shT $@ && rm -f ltmain.shT)
