@@ -3,26 +3,16 @@
 DAEMON=ppp
 . /etc/init.d/modlibrc
 
-initial() {
-	modprobe option
-	modprobe ppp_generic
-	modprobe ppp_async
-	modprobe ppp-deflate
-	modprobe slhc
-}
-
-disconnect () {
+disconnect() {
 	killall -9 ppp_dialer 2>/dev/null
 	killall pppd 2>/dev/null
 	sleep 2
 	cnt=17
-	if [ -n "$(pidof pppd)" ]; then
-		while [ -n "$(pidof pppd)" ] && [ $cnt -gt 0 ]; do
-			killall -9 pppd 2>/dev/null
-			let cnt=cnt-1
-			sleep 1
-		done
-	fi
+	while [ -n "$(pidof pppd)" ] && [ $cnt -gt 0 ]; do
+		killall -9 pppd 2>/dev/null
+		let cnt--
+		sleep 1
+	done
 	[ -z "$PPP_LOGFILE" ] || echo -e "TERMINATED\n$(date "+%Y-%m-%d %H:%M,%S")\n##\n" >> $PPP_LOGFILE
 	[ -e "$PPP_SCRIPT_HUP" ] && . $PPP_SCRIPT_HUP
 	echo "#" > /etc/ppp/resolv.conf
@@ -32,10 +22,17 @@ disconnect () {
 
 start() {
 	echo -n 'Starting ppp-cgi...'
-	if [ -n "$(pidof ppp_observer)" ] || [ -n "$(pidof ppp_dialer)" ] || [ -n "$(pidof pppd)" ]; then
-		echo 'failed.'
+	if [ -n "$(pidof ppp_observer ppp_dialer pppd)" ]; then
+		echo 'already running.'
 		exit 1
 	fi
+	
+	modprobe option
+	modprobe ppp_generic
+	modprobe ppp_async
+	modprobe ppp-deflate
+	modprobe slhc
+	
 	start-stop-daemon -n ppp_observer -a /etc/default.ppp/ppp_observer -b -q -S
 	[ -n "$PPP_DIAGTTY" ] && start-stop-daemon -n ppp_logger -a /etc/default.ppp/ppp_logger -b -q -S
 	echo 'done.'
@@ -43,8 +40,9 @@ start() {
 
 stop() {
 	echo -n 'Stopping ppp-cgi...'
-	if [ -z "$(pidof ppp_observer)" ] && [ -z "$(pidof ppp_dialer)" ] && [ -z "$(pidof pppd)" ]; then
-		echo 'failed.'
+	if [ -z "$(pidof ppp_observer ppp_dialer pppd)" ]; then
+		echo 'not running.'
+		return 1
 	fi
 	killall -9 ppp_observer 2>/dev/null
 	killall -9 ppp_logger 2>/dev/null
@@ -53,10 +51,10 @@ stop() {
 	disconnect
 	if [ $? -ne 0 ]; then
 		echo 'failed.'
-		exit 1
+		return 1
+	else
+		echo 'done.'
 	fi
-	echo 'done.'
-
 }
 
 case $1 in
@@ -70,17 +68,10 @@ case $1 in
 
 		modreg cgi 'ppp' 'PPP'
 		modreg status ppp ppp-cgi ppplog
-
 		modreg file ppp 'peers_options' 'PEERS: options' 0 "peers_options"
-
 		modreg file ppp 'peers_chat' 'PEERS: chat' 0 "peers_chat"
 
-		initial
-		if [ "$PPP_ENABLED" != "yes" ]; then
-			echo "ppp-cgi is disabled." 1>&2
-			exit 1
-		fi
-		start
+		modlib_start $PPP_ENABLED
 		;;
 	unload)
 		modunreg cgi 'ppp'
@@ -89,7 +80,6 @@ case $1 in
 		stop
 		;;
 	start)
-		initial
 		start
 		;;
 	stop)
@@ -101,7 +91,7 @@ case $1 in
 		start
 		;;
 	status)
-		if [ -n "$(pidof ppp_observer)" ] || [ -n "$(pidof ppp_dialer)" ] || [ -n "$(pidof pppd)" ]; then
+		if [ -n "$(pidof ppp_observer ppp_dialer pppd)" ]; then
 			echo 'running'
 		else
 			echo 'stopped'

@@ -2,22 +2,12 @@
 
 DAEMON=openntpd
 DAEMON_BIN=ntpd
-
-MULTIDUPNPPARAM=$(multid -? 2>&1 | grep "upnp" | sed 's/^[ \t]*//' | cut -c 1-3)
-MULTIDNTPPARAM=$(multid -? 2>&1 | grep "NTP" | sed 's/^[ \t]*//' | cut -c 1-3)
-
 . /etc/init.d/modlibrc
 
 # include environment required for multid restart
 [ -r /var/env.cache ] && . /var/env.cache
 
-start() {
-	modlib_adduser ntp -G users -D -S -g "NTP daemon"
-	mkdir -p /mod/home/ntp
-
-	chown root /mod/home/ntp -R
-	chmod 0700 /mod/home/ntp -R
-
+config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -29,45 +19,60 @@ start() {
 			cat /tmp/flash/${DAEMON}.extra
 		fi
 	) > /mod/etc/$DAEMON.conf
-
-	if [ "$OPENNTPD_MULTID" = "no" ]; then
-		multid -s > /dev/null 2>&1
-		
-		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
-			multid $MULTIDUPNPPARAM $MULTIDNTPPARAM > /dev/null 2>&1
-		else
-			multid $MULTIDNTPPARAM > /dev/null 2>&1
-		fi
-	fi
-
 	[ -e "/var/db" ] || mkdir -p /var/db
 	[ -e "/mod/etc/ntpd.conf" ] || ln -s /tmp/flash/ntpd.conf /mod/etc/ntpd.conf
-
-	start_daemon
 }
 
-start_daemon () {
+start() {
+	multid_restart stop-ntp
 	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/ntpd.conf
 }
 
-stop_withmultid() {
-	modlib_stop
+stop() {
+	multid_restart start-ntp
+	return 127
+}
 
-	# Restart multid without "-t" option
-	multid -s > /dev/null 2>&1
-	if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
-		multid $MULTIDUPNPPARAM > /dev/null 2>&1
-	else
-		multid > /dev/null 2>&1
+multid_restart() {
+	# Parameter $1: start-ntp or stop-ntp
+	if [ "$1" != "start-ntp" ] && [ "$1" != "stop-ntp" ]; then
+		exit "multid restart aborted, invalid parameter."
+		return 1
 	fi
 
-	rm -f /mod/etc/$DAEMON.conf
+	local MULTID_PID=$(pidof multid)
+	local MULTID_NTP=$(multid -? 2>&1 | grep "NTP" | sed 's/^[ \t]*//' | cut -c 1-3 | sed 's/ //')
+	local MULTID_CMD=$(xargs -0  < /proc/${MULTID_PID}/cmdline | sed "s/$MULTID_NTP//")
+	if [ -z "$MULTID_CMD" ]; then
+		#generate default xargs:
+		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
+			MULTID_CMD="multid $(multid -? 2>&1 | grep "upnp" | sed 's/^[ \t]*//' | cut -c 1-3)"
+		else
+			MULTID_CMD="multid"
+		fi
+	fi
+
+	MULTID_RUN="$MULTID_CMD"
+	# disable ntp client:
+	# start multid with "-t" option
+	# in webif OPENNTPD_MULTID=no means yes
+	[ "$OPENNTPD_MULTID" == "no" ] && [ "$1" == "stop-ntp" ] && MULTID_RUN="$MULTID_CMD $MULTID_NTP"
+
+	#quick check for changed parameters
+	[ "$MULTID_RUN" == "$(xargs -0  < /proc/${MULTID_PID}/cmdline)" ] && return
+
+	multid -s
+	$MULTID_RUN
 }
 
 case $1 in
 	""|load)
-		modreg cgi 'openntpd' 'Openntpd'
+		modlib_adduser ntp -G users -D -S -g "NTP daemon"
+		mkdir -p /mod/home/ntp
+		chown root /mod/home/ntp -R
+		chmod 0700 /mod/home/ntp -R
 
+		modreg cgi 'openntpd' 'Openntpd'
 		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file openntpd conf 'Openntpd config' 0 "openntpd_conf"
 		
 		modlib_start $OPENNTPD_ENABLED
@@ -75,18 +80,16 @@ case $1 in
 	unload)
 		modunreg file openntpd
 		modunreg cgi openntpd
-		stop_withmultid
+		modlib_stop
 		;;
 	start)
 		modlib_start
 		;;
 	stop)
-		stop_withmultid
+		modlib_stop
 		;;
 	reload)
-		modlib_stop
-		sleep 1
-		start_daemon
+		modlib_reload
 		;;
 	restart)
 		modlib_restart

@@ -1,32 +1,16 @@
 #!/bin/sh
 
 DAEMON=vnstat
-
+DAEMON_BIN=vnstatd
 . /etc/init.d/modlibrc
 
 HTTPD_PID_VNS=/var/run/httpd_vns.pid
 
 config() {
-	#create links n dirs
 	mkdir $VNSTAT_DBDIR 2>/dev/null
 	mkdir -p /var/lib
 	rm -rf /var/lib/vnstat 2>/dev/null
 	ln -s $VNSTAT_DBDIR /var/lib/vnstat
-}
-
-stop_webserver() {
-	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
-	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd -n vnstat >/dev/null 
-}
-
-
-start() {
-	echo -n 'Starting vnstat...'
-
-	if [ ! -z "$(pidof vnstatd)" ]; then
-		echo 'already running'
-		exit 0
-	fi
 
 	if [ -z "$VNSTAT_INTERFACES" ]; then
 		VNSTAT_INTERFACES=$(ifconfig | grep "^\w" | sed 's/ .*//g')
@@ -50,12 +34,18 @@ start() {
 		if [ $? -ne 0 ]; then
 			echo 'failed creating database-file(s):'
 			vnstat -u -i $ifname --config /tmp/flash/vnstat/vnstat.conf
-			echo 'Is your USB-device yet available?'
+			echo 'Is your USB-device yet available? Is the network-interface up?'
 			exit $?
 		fi
 	done
-	
-	#webserver
+}
+
+stop_webserver() {
+	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
+	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd -n vnstat >/dev/null 
+}
+
+start() {
 	stop_webserver
 	if [ "$VNSTAT_WEBENABLED" = "yes" -a "$VNSTAT_WEB_INETD" != "yes" ]; then
 		if [ "$VNSTAT_WEB_AUTH" = yes ]; then
@@ -64,41 +54,12 @@ start() {
 		fi
 		httpd -P $HTTPD_PID_VNS -p $VNSTAT_WEB_PORT $VNS_CONF -h /mod/pkg/vnstat/usr/mww-vns -r "vnstat"
 	fi
-
-	#daemon
-	vnstatd -s -d --config /tmp/flash/vnstat/vnstat.conf
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	modlib_startdaemon $DAEMON_BIN -s -d --config /tmp/flash/vnstat/vnstat.conf
 }
 
 stop() {
-	echo -n "Stopping vnstat..."
 	stop_webserver
-	if [ -z "$(pidof vnstatd)" ]; then
-		echo 'not running.'
-		return 1
-	fi
-	killall vnstatd 2>/dev/null
-	retval=$?
-	if [ "$retval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		return 1
-	fi
-}
-
-status() {
-	if [ -z "$(pidof vnstatd)" ]; then
-		echo 'stopped'
-	else
-		echo 'running'
-	fi
+	killall $DAEMON_BIN 2>/dev/null
 }
 
 case $1 in
@@ -113,38 +74,30 @@ case $1 in
 		modreg cgi vnstat vnstat
 		modreg status vnstat vnstat stats
 
-		config
-		if [ "$VNSTAT_ENABLED" != yes ]; then
-			echo "vnstat is disabled" 1>&2
-			exit 1
-		fi
-		start
+		modlib_start $VNSTAT_ENABLED
 		;;
 	unload)
-		stop
 		modunreg status vnstat stats
 		modunreg cgi vnstat
 		modunreg file vnstat
+		modlib_stop
 		;;
 	start)
-		config
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		#vnstatd needs more time to write dbs:
-		sleep 3
-		config
-		start
+		modlib_stop
+		sleep 3		#vnstatd needs more time to write dbs
+		modlib_start
 		;;
 	status)
-		status
+		modlib_status
 		;;
 	status_webcfg-vns) 
-		[ "$VNSTAT_WEBENABLED" = "yes" -a "$VNSTAT_WEB_INETD" = "yes" ] && echo 'inetd' || status
+		[ "$VNSTAT_WEBENABLED" = "yes" -a "$VNSTAT_WEB_INETD" = "yes" ] && echo 'inetd' || modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
@@ -152,3 +105,4 @@ case $1 in
 		;;
 esac
 
+exit 0

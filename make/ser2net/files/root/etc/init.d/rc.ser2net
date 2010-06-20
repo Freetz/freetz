@@ -1,12 +1,9 @@
 #!/bin/sh
 
-. /etc/init.d/modlibrc
-
 DAEMON=ser2net
 DAEMON_LONG_NAME="Serial to Network Proxy"
 PID_FILE=/var/run/$DAEMON.pid
-
-modlib_loadconfig
+. /etc/init.d/modlibrc
 
 CFGFILE="/tmp/flash/ser2net.conf"
 [ -e /etc/ser2net.conf ] && CFGFILE="/etc/ser2net.conf"

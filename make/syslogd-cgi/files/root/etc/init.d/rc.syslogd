@@ -1,19 +1,15 @@
 #!/bin/sh
 
 DAEMON=syslogd
-
 . /etc/init.d/modlibrc
 
 start() {
 
 	if [ "$SYSLOGD_NETWORK" = "no" -a "$SYSLOGD_LOCAL" = "no" ] || [ "$SYSLOGD_NETWORK" = "yes" -a -z "$SYSLOGD_HOST" ]; then
-		echo -n 'Syslogd misconfigured. Please correct your settings!'
-		echo -n 'Starting with default options.'
-		$DAEMON -C > /dev/null 2>&1
-		exit 1
+		echo 'Syslogd misconfigured. Please correct your settings! Starting with default options.'
+		modlib_startdaemon $DAEMON -C
+		return 1
 	fi
-	
-	echo -n 'Starting syslogd...'
 
 	if [ "$SYSLOGD_LOCAL" = "yes" ]; then
 		modreg status $DAEMON 'Syslog' log
@@ -61,103 +57,59 @@ start() {
 		SYSLOGD_OPTIONS="-b 1 -s 16"
 	fi
 
-	$DAEMON $SYSLOGD_OPTIONS $SYSLOGD_EXPERT_OPTIONS > /dev/null 2>&1
-	exitval1=$?
+	modlib_startdaemon $DAEMON $SYSLOGD_OPTIONS $SYSLOGD_EXPERT_OPTIONS
 	
-	KLOGDOPTIONS=""
-	if [ ! -z "$SYSLOGD_KLOGD_LEVEL" ]; then
-		KLOGDOPTIONS="-c $SYSLOGD_KLOGD_LEVEL"
-	fi
-
 	if [ "$SYSLOGD_KLOGD" = "yes" ]; then
+		KLOGDOPTIONS=""
+		[ -n "$SYSLOGD_KLOGD_LEVEL" ] && KLOGDOPTIONS="-c $SYSLOGD_KLOGD_LEVEL"
+
 		/sbin/klogd $KLOGDOPTIONS > /dev/null 2>&1
-	fi
-	exitval2=$?
-	
-	if [ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit 1
+		if [ "$?" -ne 0 ]; then
+			echo 'Staring klogd...failed.'
+			return 1
+		fi
 	fi
 }
 
 stop () {
-	echo -n 'Stopping syslogd...'
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
+
 	modunreg status $DAEMON log
 
-	rm -f /mod/etc/$DAEMON.conf
-	
-	#stop klogd
-	if [ ! -z "$(pidof klogd)" ]; then
-		killall klogd > /dev/null 2>&1
-	fi
-	
-	#delete logfile
-	if [ -e "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
-		rm $SYSLOGD_ALTERNATIVE_LOGFILE
-	fi
-	if [ -e "/var/log/messages" ]; then
-		rm /var/log/messages
-	fi
+	[ -n "$(pidof klogd)" ] && killall klogd > /dev/null 2>&1
+	[ -e "$SYSLOGD_ALTERNATIVE_LOGFILE" ] && rm $SYSLOGD_ALTERNATIVE_LOGFILE
+	[ -e "/var/log/messages" ] && rm /var/log/messages
 
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	return $exitval
 }
 
 case $1 in
 	""|load)
-		if type modreg > /dev/null; then
-			modreg cgi $DAEMON 'Syslogd'
-		fi
+		modreg cgi $DAEMON 'Syslogd'
 
-		if [ "$SYSLOGD_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		if [ ! -z "$(pidof $DAEMON)" ]; then
-			echo "$DAEMON already started."
-		else
-			start
-		fi
+		modlib_start $SYSLOGD_ENABLED
 		;;
 	unload)
-		stop
-		if type modunreg > /dev/null; then
-			modunreg cgi $DAEMON
-		fi
+		modunreg cgi $DAEMON
+		modlib_stop
 		;;
 	start)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			start
-		else
-			exit 0
-		fi
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac
+
+exit 0
