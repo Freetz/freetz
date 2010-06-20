@@ -27,7 +27,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(APACHE_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	$(SUBMAKE) -C $(APACHE_DIR) install \
+	$(SUBMAKE1) -C $(APACHE_DIR) install \
 		root="$(FREETZ_BASE_DIR)/$(APACHE_TARGET_DIR)"
 	$(INSTALL_BINARY_STRIP)
 
