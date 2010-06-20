@@ -1,0 +1,35 @@
+Index: web/javascript/transmission.js
+===================================================================
+--- web/javascript/transmission.js	(revision 10788)
++++ web/javascript/transmission.js	(revision 10797)
+@@ -1566,8 +1566,13 @@
+ 				var e = torrent.element();
+ 				if( e ) {
+-					var row_index = tr.getTorrentIndex(tr._rows, torrent);
+-					//if torrent is not currently visible then delete a hidden row
+-					//otherwise the row model gets corrupted because no row gets deleted
+-					if( row_index == null ) row_index = tr._rows.length - 1;
++					var row_index;
++					for( var i=0, row; row = tr._rows[i]; ++i ) {
++						if( row._id == torrent._id )
++						{
++							row_index = i;
++							e = tr._rows[row_index];
++							break;
++						}
++					}
+ 					delete e._torrent; //remove circular refernce to help IE garbage collect
+ 					tr._rows.splice(row_index, 1)
+Index: web/javascript/torrent.js
+===================================================================
+--- web/javascript/torrent.js	(revision 10788)
++++ web/javascript/torrent.js	(revision 10797)
+@@ -89,6 +89,7 @@
+ 		top_e._torrent = this;
+ 		var element = $(top_e);
+-                $(element).bind('dblclick', function(e) { transmission.toggleInspector(); });
++		$(element).bind('dblclick', function(e) { transmission.toggleInspector(); });
+ 		element._torrent = this;
++		element._id = this._id;
+ 		this._element = element;
+ 		this._controller = controller;
