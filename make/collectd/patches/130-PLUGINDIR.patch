@@ -1,0 +1,22 @@
+--- src/collectd.h
++++ src/collectd.h
+@@ -260,7 +260,7 @@
+ #endif
+ 
+ #ifndef PLUGINDIR
+-#define PLUGINDIR PREFIX "/lib/" PACKAGE_NAME
++#define PLUGINDIR "/usr/lib/freetz/" PACKAGE_NAME
+ #endif
+ 
+ #ifndef PKGDATADIR
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -1837,7 +1837,7 @@
+ 	-DCONFIGFILE='"${sysconfdir}/${PACKAGE_NAME}.conf"' \
+ 	-DLOCALSTATEDIR='"${localstatedir}"' \
+ 	-DPKGLOCALSTATEDIR='"${localstatedir}/lib/${PACKAGE_NAME}"' \
+-	$(am__append_3) -DPLUGINDIR='"${pkglibdir}"' \
++	$(am__append_3) -DPLUGINDIR='"/usr/lib/freetz/collectd"' \
+ 	-DPKGDATADIR='"${pkgdatadir}"'
+ collectd_SOURCES = collectd.c collectd.h \
+ 		   common.c common.h \

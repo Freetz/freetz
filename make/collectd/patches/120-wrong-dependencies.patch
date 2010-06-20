@@ -1,0 +1,23 @@
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -50,17 +50,17 @@
+ @BUILD_WITH_LIBKSTAT_TRUE@am__append_9 = -lkstat
+ @BUILD_WITH_LIBDEVINFO_TRUE@am__append_10 = -ldevinfo
+ @BUILD_AIX_TRUE@am__append_11 = -Wl,-bexpall,-brtllib
+-@BUILD_AIX_TRUE@am__append_12 = -lm
++am__append_12 = -lm
+ 
+ # The daemon needs to call sg_init, so we need to link it against libstatgrab,
+ # too. -octo
+ @BUILD_WITH_LIBSTATGRAB_TRUE@am__append_13 = $(BUILD_WITH_LIBSTATGRAB_CFLAGS)
+ @BUILD_WITH_LIBSTATGRAB_TRUE@am__append_14 = $(BUILD_WITH_LIBSTATGRAB_LDFLAGS)
+ @BUILD_WITH_OWN_LIBOCONFIG_TRUE@am__append_15 = $(LIBLTDL) liboconfig/liboconfig.la
+-@BUILD_WITH_OWN_LIBOCONFIG_TRUE@am__append_16 = $(LIBLTDL) liboconfig/liboconfig.la
++@BUILD_WITH_OWN_LIBOCONFIG_TRUE@am__append_16 = liboconfig/liboconfig.la
+ @BUILD_WITH_OWN_LIBOCONFIG_FALSE@am__append_17 = -loconfig
+ @BUILD_WITH_LIBSOCKET_TRUE@am__append_18 = -lsocket
+-@BUILD_AIX_TRUE@am__append_19 = -lm
++am__append_19 = -lm
+ @BUILD_PLUGIN_APACHE_TRUE@am__append_20 = apache.la
+ @BUILD_PLUGIN_APACHE_TRUE@am__append_21 = "-dlopen" apache.la
+ @BUILD_PLUGIN_APACHE_TRUE@@BUILD_WITH_LIBCURL_TRUE@am__append_22 = $(BUILD_WITH_LIBCURL_CFLAGS)

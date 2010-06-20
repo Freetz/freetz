@@ -1,51 +1,90 @@
-$(call PKG_INIT_BIN, 4.0.7)
-$(PKG)_VERSION:=4.0.7
+$(call PKG_INIT_BIN, 4.10.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=c473cf8e9f22f5a9f7ef4c5be1b0c436
 $(PKG)_SITE:=http://collectd.org/files
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/collectd
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/collectd
-$(PKG)_SOURCE_MD5:=4ebb6308ff2c8ff0bf26770f38e81943
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-apache
-$(PKG)_CONFIGURE_OPTIONS += --disable-apcups
-$(PKG)_CONFIGURE_OPTIONS += --disable-apple_sensors
-$(PKG)_CONFIGURE_OPTIONS += --disable-battery
-$(PKG)_CONFIGURE_OPTIONS += --disable-cpu
-$(PKG)_CONFIGURE_OPTIONS += --disable-cpufreq
-$(PKG)_CONFIGURE_OPTIONS += --disable-disk
-$(PKG)_CONFIGURE_OPTIONS += --disable-csv
-$(PKG)_CONFIGURE_OPTIONS += --disable-df
-$(PKG)_CONFIGURE_OPTIONS += --disable-dns
-$(PKG)_CONFIGURE_OPTIONS += --disable-email
-$(PKG)_CONFIGURE_OPTIONS += --disable-entropy
-$(PKG)_CONFIGURE_OPTIONS += --disable-exec
-$(PKG)_CONFIGURE_OPTIONS += --disable-hddtemp
-$(PKG)_CONFIGURE_OPTIONS += --disable-interface
-$(PKG)_CONFIGURE_OPTIONS += --disable-iptables
-$(PKG)_CONFIGURE_OPTIONS += --disable-irq
-$(PKG)_CONFIGURE_OPTIONS += --disable-load
-$(PKG)_CONFIGURE_OPTIONS += --disable-mbmon
-$(PKG)_CONFIGURE_OPTIONS += --disable-memory
-$(PKG)_CONFIGURE_OPTIONS += --disable-multimeter
-$(PKG)_CONFIGURE_OPTIONS += --disable-mysql
-$(PKG)_CONFIGURE_OPTIONS += --disable-network
-$(PKG)_CONFIGURE_OPTIONS += --disable-nfs
-$(PKG)_CONFIGURE_OPTIONS += --disable-ntpd
-$(PKG)_CONFIGURE_OPTIONS += --disable-nut
-$(PKG)_CONFIGURE_OPTIONS += --disable-perl
-$(PKG)_CONFIGURE_OPTIONS += --disable-ping
-$(PKG)_CONFIGURE_OPTIONS += --disable-processes
-$(PKG)_CONFIGURE_OPTIONS += --disable-sensors
-$(PKG)_CONFIGURE_OPTIONS += --disable-serial
-$(PKG)_CONFIGURE_OPTIONS += --disable-logfile
-$(PKG)_CONFIGURE_OPTIONS += --disable-swap
-$(PKG)_CONFIGURE_OPTIONS += --disable-syslog
-$(PKG)_CONFIGURE_OPTIONS += --disable-tape
-$(PKG)_CONFIGURE_OPTIONS += --disable-unixsock
-$(PKG)_CONFIGURE_OPTIONS += --disable-users
-$(PKG)_CONFIGURE_OPTIONS += --disable-vserver
-$(PKG)_CONFIGURE_OPTIONS += --disable-wireless
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
+
+$(PKG)_TYPES_DB:=$($(PKG)_DIR)/src/types.db
+$(PKG)_TARGET_TYPES_DB:=$($(PKG)_DEST_DIR)/usr/share/$(pkg)/types.db
+
+# we need libltdl
+$(PKG)_DEPENDS_ON := libtool
+# ensure system libltdl is used and not the included one
+$(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r libltdl; sed -i -r -e '/SUBDIRS/ s/libltdl//g' ./Makefile.in;
+$(PKG)_CONFIGURE_OPTIONS += --with-ltdl-include=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include
+$(PKG)_CONFIGURE_OPTIONS += --with-ltdl-lib=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
+
+# remove -Werror flag
+$(PKG)_CONFIGURE_PRE_CMDS += sed -i -r -e 's,-Werror,,g' ./configure ./src/Makefile.in ./src/libcollectdclient/Makefile.in ./src/owniptc/Makefile.in;
+
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG)_CONFIGURE_OPTIONS += --with-nan-emulation
+$(PKG)_CONFIGURE_OPTIONS += --with-fp-layout=nothing #to be reevaluated for 7390
+
+$(PKG)_PLUGINS_ENABLED :=
+$(PKG)_PLUGINS_DISABLED :=
+
+# TODO: revise disabled plugins & provide menuconfig options if it makes sense
+
+# 'collect data'-plugins
+$(PKG)_PLUGINS_DISABLED := \
+	apache apcups apple_sensors ascent \
+	battery bind \
+	cpu cpufreq conntrack contextswitch curl curl_json curl_xml \
+	dbi disk df dns \
+	email entropy \
+	filecount fscache \
+	gmond \
+	hddtemp \
+	interface ipmi iptables ipvs irq \
+	libvirt load \
+	madwifi mbmon memcachec memcached memory modbus multimeter mysql \
+	netapp netlink network nfs nginx ntpd nut \
+	olsrd onewire openvpn oracle \
+	pinba ping postgresql powerdns processes protocols \
+	routeros \
+	sensors serial snmp swap \
+	table tail tape tcpconns teamspeak2 ted thermal tokyotyrant \
+	uptime users \
+	vmem vserver \
+	wireless \
+	xmms \
+	zfs_arc
+
+# output-plugins
+$(PKG)_PLUGINS_DISABLED += csv network rrdcached rrdtool unixsock write_http
+
+# binding-plugins
+$(PKG)_PLUGINS_DISABLED += exec java perl python
+
+# logging-plugins
+$(PKG)_PLUGINS_DISABLED += logfile
+$(PKG)_PLUGINS_ENABLED += syslog
+
+# notification-plugins
+$(PKG)_PLUGINS_DISABLED += notify_desktop notify_email
+
+# 'filter chain'-plugins
+$(PKG)_PLUGINS_DISABLED += \
+	match_empty_counter match_hashed match_regex match_timediff match_value \
+	target_notification target_replace target_scale target_set
+
+# miscellaneous-plugins
+$(PKG)_PLUGINS_DISABLED += uuid
+
+# some plugins provide multiple features, e.g. they do both collect data & output it
+# ensure disabled-plugins-list doesn't contain any plugin from the enabled-list
+$(PKG)_PLUGINS_DISABLED := $(filter-out $($(PKG)_PLUGINS_ENABLED),$($(PKG)_PLUGINS_DISABLED))
+
+$(PKG)_CONFIGURE_OPTIONS += $(foreach plugin,$($(PKG)_PLUGINS_DISABLED),--disable-$(plugin))
+$(PKG)_CONFIGURE_OPTIONS += $(foreach plugin,$($(PKG)_PLUGINS_ENABLED),--enable-$(plugin))
+
+$(PKG)_PLUGINS_DIR := $(FREETZ_LIBRARY_PATH)/$(pkg)
+$(PKG)_PLUGINS_BUILD_DIR := $($(PKG)_PLUGINS_ENABLED:%=$($(PKG)_DIR)/src/.libs/%.so)
+$(PKG)_PLUGINS_TARGET_DIR := $($(PKG)_PLUGINS_ENABLED:%=$($(PKG)_DEST_DIR)$($(PKG)_PLUGINS_DIR)/%.so)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -57,14 +96,20 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_PLUGINS_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_PLUGINS_DIR)/%: $($(PKG)_DIR)/src/.libs/%
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_TARGET_TYPES_DB): $($(PKG)_TYPES_DB)
+	$(INSTALL_FILE)
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_TYPES_DB) $($(PKG)_PLUGINS_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(COLLECTD_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(COLLECTD_TARGET_BINARY)
+	$(RM) -r $(COLLECTD_TARGET_BINARY) $(COLLECTD_TARGET_TYPES_DB) $(COLLECTD_DEST_DIR)$(COLLECTD_PLUGINS_DIR)
 
 $(PKG_FINISH)
