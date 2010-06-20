@@ -367,4 +367,27 @@ int main(int argc, char** argv) {
 	    int code = ac_cv_snprintf_returns_bogus();
 	    printf("ac_cv_snprintf_returns_bogus=%s\n", code ? "yes" : "no");
 	}
+
+	{
+		uint64_t i0;
+		uint64_t i1;
+		uint8_t c[8];
+		double d;
+
+		d = 8.642135e130;
+		memcpy ((void *) &i0, (void *) &d, 8);
+
+		i1 = i0;
+		memcpy ((void *) c, (void *) &i1, 8);
+
+		int code = (
+			(c[0] == 0x2f) && (c[1] == 0x25)
+			&& (c[2] == 0xc0) && (c[3] == 0xc7)
+			&& (c[4] == 0x43) && (c[5] == 0x2b)
+			&& (c[6] == 0x1f) && (c[7] == 0x5b)
+		);
+
+		printf("c_cv_fp_layout_need_nothing=%s\n", code ? "yes" : "no");
+	}
+
 }
