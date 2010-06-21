@@ -1,12 +1,11 @@
 #!/bin/sh
 
 DAEMON=pptp
-PPPD=pppd
-
+DAEMON_BIN=pppd
 . /etc/init.d/modlibrc
 
 start() {
-	if [ -n "$(pidof pptp)" ]; then
+	if pidof pptp >/dev/null; then
 		echo 'pptp is already running'
 		exit 1
 	fi
@@ -32,16 +31,16 @@ start() {
 	modprobe ppp_deflate
 	modprobe ppp_mppe_mppc
 
-	if [ ! -z "$PPTP_PRECONN" ]; then
+	if [ -n "$PPTP_PRECONN" ]; then
 		echo "$PPTP_PRECONN" > /tmp/pptp_preconn
 		chmod +x /tmp/pptp_preconn
 		/tmp/pptp_preconn
 		rm /tmp/pptp_preconn
 	fi
 
-	$PPPD call pptp $PPTP_OPTIONS
+	$DAEMON_BIN call pptp $PPTP_OPTIONS
 	sleep 3
-	if [ -n "$(pidof pptp)" ]; then
+	if pidof pptp >/dev/null; then
 		echo 'done.'
 	else
 		echo 'failed.'
@@ -74,7 +73,7 @@ stop() {
 		echo 'failed.'
 	fi
 	sleep 3
-	if [ -n "$(pidof pptp_restart)" ]; then
+	if pidof pptp_restart >/dev/null; then
 		echo -n 'Stopping restart script ...'
 		killall pptp_restart > /dev/null 2>&1
 		exitrest=$?
@@ -93,18 +92,12 @@ case $1 in
 		[ ! -d /mod/etc/ppp/peers ] && mkdir -p /mod/etc/ppp/peers
 
 		[ ! -e /tmp/flash/ppp/options.pptp ] && /etc/default.${DAEMON}/pptp_options > /tmp/flash/ppp/options.pptp
-		[ -e /tmp/flash/ppp/options.pptp ] && ln -s /tmp/flash/ppp/options.pptp /mod/etc/ppp/options.pptp
+		[ -e /tmp/flash/ppp/options.pptp -a ! -e /mod/etc/ppp/options.pptp ] && ln -s /tmp/flash/ppp/options.pptp /mod/etc/ppp/options.pptp
 
 		modreg cgi 'pptp' 'PPTP'
-
 		modreg file pptp options 'PPTP: options.pptp' 0 "pptp_options"
 
-		if [ "$PPTP_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $PPTP_ENABLED
 		;;
 	unload)
 		stop
@@ -123,10 +116,10 @@ case $1 in
 		start
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" -a -z "$(pidof pptp_restart)" ]; then
-			echo 'stopped'
-		else
+		if pidof "$DAEMON" pptp_restart >/dev/null; then
 			echo 'running'
+		else
+			echo 'stopped'
 		fi
 		;;
 	*)
