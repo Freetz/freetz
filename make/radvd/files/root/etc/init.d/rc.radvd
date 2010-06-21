@@ -18,35 +18,27 @@ config() {
 }
 
 setup_ipv6_interface() {
-	echo -n 'Set IPv6 address: '
-	echo -n $RADVD_ADDRESS
-	ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
-	if [ $? -eq 0 ]; then
-		echo ' already set.'
-	else
-		ip -6 addr add $RADVD_ADDRESS dev $RADVD_INTERFACE
-		echo ' done.'
+	if [ "$RADVD_SETIPV6" == "yes" ]; then
+		ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			echo 'Set IPv6 address: $RADVD_ADDRESS...already set.'
+		else
+			ip -6 addr add $RADVD_ADDRESS dev $RADVD_INTERFACE
+		fi
 	fi
-	
-	echo -n 'Enable IPv6 forwarding...'
-	echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
-	echo 'done.'
+	[ "$RADVD_FORWARD" == "yes" ] && echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 }
 
 shut_ipv6_interface() {
-	echo -n 'Unset IPv6 address: '
-	echo -n $RADVD_ADDRESS
-	ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
-	if [ $? -eq 0 ]; then
-		ip -6 addr del $RADVD_ADDRESS dev $RADVD_INTERFACE
-		echo ' done.'
-	else
-		echo ' already unset.'
+	if [ "$RADVD_SETIPV6" == "yes" ]; then
+		ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			ip -6 addr del $RADVD_ADDRESS dev $RADVD_INTERFACE
+		else
+			echo -n 'IPv6 address already unset...'
+		fi
 	fi
-	
-	echo -n 'Disable IPv6 forwarding...'
-	echo 0 > /proc/sys/net/ipv6/conf/all/forwarding
-	echo 'done.'
+	[ "$RADVD_FORWARD" == "yes" ] && echo 0 > /proc/sys/net/ipv6/conf/all/forwarding
 }
 
 start() {
@@ -54,7 +46,7 @@ start() {
 	modlib_startdaemon $DAEMON -C /mod/etc/$DAEMON.conf
 }
 
-stop () {
+stop() {
 	shut_ipv6_interface
 	return 127
 }
