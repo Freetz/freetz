@@ -11,7 +11,7 @@ start() {
 		exit 1
 	fi
 	
-	if [ -r "/tmp/flash/.xrelayd/xrelayd_svcs" ]; then
+	if [ ! -r "/tmp/flash/.xrelayd/xrelayd_svcs" ]; then
 		echo 'Error: services not found'
 		exit 1;
 	fi
@@ -58,12 +58,7 @@ case $1 in
 		modreg file xrelayd key 'XRelayd: Private Key' 0 "xrelayd_key"
 		modreg file xrelayd svcs 'XRelayd: services' 0 "xrelayd_svcs"
 
-		if [ "$XRELAYD_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $XRELAYD_ENABLED
 		;;
 	unload)
 		stop
