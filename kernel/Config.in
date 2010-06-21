@@ -446,4 +446,21 @@ config FREETZ_MODULE_sunrpc
 	bool "sunrpc.ko"
 	default n
 
+config FREETZ_MODULE_sch_cbq
+	bool "sch_cbq.ko"
+	default n
+	help
+		Class-based queueing (CBQ) is a network router queueing method that
+		allows traffic to share bandwidth equally, after being grouped by
+		classes. The classes can be based upon a variety of parameters, such
+		as priority, interface, or originating program.
+
+config FREETZ_MODULE_cls_u32
+	bool "cls_u32.ko"
+	default n
+	help
+		The u32 filter allows you to match on any bit field within a
+		packet, so it is in some ways the most powerful filter provided
+		by the Linux traffic control engine.
+
 endmenu
