@@ -184,7 +184,7 @@ modlib_check_port()
 #	use CONF_ENABLED for other variablename with manual/automatic/inetd in .cfg-file
 modlib_check_running()
 {
-	[ "$(env | grep -i "^${CONF_ENABLED}=" | sed 's/.*=//')" == "inetd" ] && return 5
+	[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:] [:upper:] | sed 's/-/_/g'))" == "inetd" ] && return 5
 	local fn=${PID_FILE}
 	[ ! -s "$fn" ] && return 3
 	kill -0 $(cat "$fn") 2> /dev/null
