@@ -1,8 +1,7 @@
 #!/bin/sh
 
-DAEMON=umurmurd
-CONF_NAME=umurmur
-CONF_ENABLED=UMURMUR_ENABLED
+DAEMON=umurmur
+DAEMON_BIN=umurmurd
 . /etc/init.d/modlibrc
 
 config() {
@@ -10,7 +9,7 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON -c /mod/etc/$CONF_NAME.conf -p /var/run/$DAEMON.pid $([ "$UMURMUR_REALTIME" = "yes" ] && echo -r)
+	modlib_startdaemon $DAEMON_BIN -c /mod/etc/$CONF_NAME.conf -p /var/run/$DAEMON.pid $([ "$UMURMUR_REALTIME" = "yes" ] && echo -r)
 }
 
 case $1 in

@@ -1,11 +1,8 @@
 #!/bin/sh
 
-DAEMON=svnserve
-DAEMON_LONG_NAME=subversion
+DAEMON=subversion
 DAEMON_BIN=svnserve
 PID_FILE=/var/run/$DAEMON.pid
-CONF_NAME=subversion
-CONF_ENABLED=SUBVERSION_ENABLED
 . /etc/init.d/modlibrc
 
 DAEMON_USER=svn
@@ -63,7 +60,7 @@ start() {
 	[ -n "$SUBVERSION_BINDADDRESS" ] && OPTIONS="$OPTIONS --listen-host $SUBVERSION_BINDADDRESS"
 	[ -n "$SUBVERSION_PORT" ] && OPTIONS="$OPTIONS --listen-port $SUBVERSION_PORT"
 
-	start-stop-daemon -S -N "$SUBVERSION_NICELEVEL" -x /usr/bin/$DAEMON -c $DAEMON_USER -q -- $OPTIONS --root "$SUBVERSION_ROOT" $(logfileOptions) \
+	start-stop-daemon -S -N "$SUBVERSION_NICELEVEL" -x /usr/bin/$DAEMON_BIN -c $DAEMON_USER -q -- $OPTIONS --root "$SUBVERSION_ROOT" $(logfileOptions) \
 	|| echoFailedAndExit
 
 	sleep 1
