@@ -899,3 +899,125 @@
  void save_string(const char *value)
  {
  	static const char no_quote_chars[] = "_-0123456789"
+--- configure
++++ configure
+@@ -19921,6 +19921,7 @@
+ fi
+ 
+ 
++if false; then
+ if test "${ac_cv_header_netinet_ip6_h+set}" = set; then
+   { echo "$as_me:$LINENO: checking for netinet/ip6.h" >&5
+ echo $ECHO_N "checking for netinet/ip6.h... $ECHO_C" >&6; }
+@@ -20053,6 +20054,7 @@
+ echo "$as_me: error: but we need that for IPv6" >&2;}
+    { (exit 1); exit 1; }; }
+ fi
++fi
+ 
+ 
+ if test "${ac_cv_header_linux_dccp_h+set}" = set; then
+--- extensions/GNUmakefile.in
++++ extensions/GNUmakefile.in
+@@ -36,28 +36,23 @@
+ #
+ pfx_build_mod := $(patsubst ${srcdir}/libxt_%.c,%,$(wildcard ${srcdir}/libxt_*.c))
+ pf4_build_mod := $(patsubst ${srcdir}/libipt_%.c,%,$(wildcard ${srcdir}/libipt_*.c))
+-pf6_build_mod := $(patsubst ${srcdir}/libip6t_%.c,%,$(wildcard ${srcdir}/libip6t_*.c))
+ pfx_build_mod := $(filter-out @blacklist_modules@,${pfx_build_mod})
+ pf4_build_mod := $(filter-out @blacklist_modules@,${pf4_build_mod})
+-pf6_build_mod := $(filter-out @blacklist_modules@,${pf6_build_mod})
+ pfx_objs      := $(patsubst %,libxt_%.o,${pfx_build_mod})
+ pf4_objs      := $(patsubst %,libipt_%.o,${pf4_build_mod})
+-pf6_objs      := $(patsubst %,libip6t_%.o,${pf6_build_mod})
+ pfx_solibs    := $(patsubst %,libxt_%.so,${pfx_build_mod})
+ pf4_solibs    := $(patsubst %,libipt_%.so,${pf4_build_mod})
+-pf6_solibs    := $(patsubst %,libip6t_%.so,${pf6_build_mod})
+ 
+ 
+ #
+ # Building blocks
+ #
+-targets := libext4.a libext6.a matches4.man matches6.man \
+-           targets4.man targets6.man
++targets := libext4.a matches4.man \
++           targets4.man
+ targets_install :=
+ @ENABLE_STATIC_TRUE@ libext4_objs := ${pfx_objs} ${pf4_objs}
+-@ENABLE_STATIC_TRUE@ libext6_objs := ${pfx_objs} ${pf6_objs}
+-@ENABLE_SHARED_TRUE@ targets += ${pfx_solibs} ${pf4_solibs} ${pf6_solibs}
+-@ENABLE_SHARED_TRUE@ targets_install += ${pfx_solibs} ${pf4_solibs} ${pf6_solibs}
++@ENABLE_SHARED_TRUE@ targets += ${pfx_solibs} ${pf4_solibs}
++@ENABLE_SHARED_TRUE@ targets_install += ${pfx_solibs} ${pf4_solibs}
+ 
+ .SECONDARY:
+ 
+@@ -104,22 +99,13 @@
+ libext4.a: initext4.o ${libext4_objs}
+ 	${AM_VERBOSE_AR} ${AR} crs $@ $^;
+ 
+-libext6.a: initext6.o ${libext6_objs}
+-	${AM_VERBOSE_AR} ${AR} crs $@ $^;
+-
+ initext_func  := $(addprefix xt_,${pfx_build_mod}) $(addprefix ipt_,${pf4_build_mod})
+-initext6_func := $(addprefix xt_,${pfx_build_mod}) $(addprefix ip6t_,${pf6_build_mod})
+ 
+ .initext4.dd: FORCE
+ 	@echo "${initext_func}" >$@.tmp; \
+ 	cmp -s $@ $@.tmp || mv $@.tmp $@; \
+ 	rm -f $@.tmp;
+ 
+-.initext6.dd: FORCE
+-	@echo "${initext6_func}" >$@.tmp; \
+-	cmp -s $@ $@.tmp || mv $@.tmp $@; \
+-	rm -f $@.tmp;
+-
+ initext4.c: .initext4.dd
+ 	${AM_VERBOSE_GEN}
+ 	@( \
+@@ -136,22 +122,6 @@
+ 	echo "}" >>$@; \
+ 	);
+ 
+-initext6.c: .initext6.dd
+-	${AM_VERBOSE_GEN}
+-	@( \
+-	echo "" >$@; \
+-	for i in ${initext6_func}; do \
+-		echo "extern void lib$${i}_init(void);" >>$@; \
+-	done; \
+-	echo "void init_extensions(void);" >>$@; \
+-	echo "void init_extensions(void)" >>$@; \
+-	echo "{" >>$@; \
+-	for i in ${initext6_func}; do \
+-		echo " ""lib$${i}_init();" >>$@; \
+-	done; \
+-	echo "}" >>$@; \
+-	);
+-
+ #
+ #	Manual pages
+ #
+@@ -172,22 +142,11 @@
+ 			cat "$$f"; \
+ 			continue; \
+ 		fi; \
+-		f="${srcdir}/libip6t_$$ext.man"; \
+-		if [ -f "$$f" ]; then \
+-			echo ".SS $$ext"; \
+-			cat "$$f"; \
+-			continue; \
+-		fi; \
+ 	done >$@;
+ 
+ matches4.man: .initext4.dd $(wildcard ${srcdir}/lib*.man)
+ 	$(call man_run,$(call ex_matches,${pfx_build_mod} ${pf4_build_mod}))
+ 
+-matches6.man: .initext6.dd $(wildcard ${srcdir}/lib*.man)
+-	$(call man_run,$(call ex_matches,${pfx_build_mod} ${pf6_build_mod}))
+-
+ targets4.man: .initext4.dd $(wildcard ${srcdir}/lib*.man)
+ 	$(call man_run,$(call ex_targets,${pfx_build_mod} ${pf4_build_mod}))
+ 
+-targets6.man: .initext6.dd $(wildcard ${srcdir}/lib*.man)
+-	$(call man_run,$(call ex_targets,${pfx_build_mod} ${pf6_build_mod}))
