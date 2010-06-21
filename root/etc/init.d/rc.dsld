@@ -8,7 +8,12 @@ DAEMON=dsld
 start() {
 	echo -n "Starting $DAEMON..."
 	local DAEMON_CMD=`cat $TMPFILE 2>/dev/null`
-	[ -z "$DAEMON_CMD" ] && DAEMON_CMD="dsld -n"
+	if [ -z "$DAEMON_CMD" ]; then
+		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
+		 	DAEMON_CMD_IGD="$(dsld -? 2>&1 | grep "igd" | sed 's/^[ \t]*//' | cut -c 1-3)"
+		fi
+		DAEMON_CMD="dsld -n $DAEMON_CMD_IGD"
+	fi
 	$DAEMON_CMD
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
