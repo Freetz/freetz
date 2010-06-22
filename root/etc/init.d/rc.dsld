@@ -26,7 +26,8 @@ start() {
 }
 
 stop() {
-	local DAEMON_CMD=$(xargs -0 < /proc/$(pidof dsld)/cmdline)
+	local DAEMON_PID=$(cat $PID_FILE 2>/dev/null)
+	[ -n "$DAEMON_PID" ] && local DAEMON_CMD=$(xargs -0 < /proc/${DAEMON_PID}/cmdline)
 	[ -n "$DAEMON_CMD" ] && echo $DAEMON_CMD > $TMPFILE
 	dsld -s
 }
