@@ -55,7 +55,7 @@ TARGET_ARCH:=$(strip $(subst ",, $(FREETZ_TARGET_ARCH)))
 TARGET_UCLIBC_VERSION:=$(strip $(subst ",, $(FREETZ_TARGET_UCLIBC_VERSION)))
 TARGET_CROSS:=$(strip $(subst ",, $(FREETZ_TARGET_CROSS)))
 TARGET_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_TARGET_MAKE_PATH)))
-KERNEL_ARCH:=$(strip $(subst ",, $(FREETZ_TARGET_ARCH)))
+KERNEL_ARCH:=mips
 KERNEL_CROSS:=$(strip $(subst ",, $(FREETZ_KERNEL_CROSS)))
 KERNEL_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_KERNEL_MAKE_PATH)))
 TARGET_CFLAGS:=$(strip $(subst ",, $(FREETZ_TARGET_CFLAGS))) $(CFLAGS_LARGEFILE)
@@ -182,9 +182,7 @@ SUBST_MAP_TOUPPER_NAME = $(SUBST_MAP_TOUPPER) -:_
 # TOUPPER_NAME
 # Convert letters to uppercase, minus to underline
 #   $(1) = name to convert
-TO_UPPER_CASE__INT = tr 'a-z\-' 'A-Z_'
 TOUPPER_NAME = $(call SUBST_MAP,$1,$(SUBST_MAP_TOUPPER_NAME))
-#TOUPPER_NAME = $(shell echo $(1) | $(TO_UPPER_CASE__INT))
 
 # For each SUFFIX from a given list of menuconfig-option-suffixes evaluates FREETZ_PACKAGE_$(PKG)_$(OPTIONAL_INFIX)_$(SUFFIX) variable
 # and in case it evaluates to non-empty value (i.e. selected) appends the suffix to the list being returned.
