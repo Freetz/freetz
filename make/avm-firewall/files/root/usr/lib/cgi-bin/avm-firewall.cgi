@@ -1,5 +1,6 @@
 #!/bin/sh
-VERSION="2.0.4_rc4"
+VERSION="2.0.4_rc5"
+FWVER=$(sed -n '/FIRMWARE_VERSION=/ s/export.*\.04\.// p' /etc/version)
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 CONFIG=/mod/etc/conf/avm-firewall.cfg
 . /usr/lib/libmodcgi.sh
@@ -105,10 +106,10 @@ cat << EOF
 <table width="100%"> <tr> <td><font color="red">$(lang en:"Incoming" de:"Eingehende Regeln")</font> (lowinput)<input type="radio" name="selectrules" id="id_li_rules" checked onclick='if (selrules=="ho"){allrules_ho=allrules}; selrules="li" ; allrules=allrules_li; Init_FW_Table()'> 
  &nbsp; &nbsp; <font color="blue">$(lang en:"Outgoing" de:"Ausgehende Regeln")</font> (highoutput)<input type="radio" name="selectrules" id="id_ho_rules" 
  	onclick='if (selrules=="li") {allrules_li=allrules}; selrules="ho" ; allrules=allrules_ho; Init_FW_Table()'></td> 
- 	<td align=right> $(lang en:"Enable logging" de:"Logging einschalten") (<i>dsld -D</i>) <input type="hidden" name="log" value=""><input type="checkbox" name="log" value="yes" $([ "$AVM_FIREWALL_LOG" = yes ] && echo checked)> </td> </tr> 
+ 	<td align=right $([ $FWVER -ge 76 ] && echo ' style="display:none"')> $(lang en:"Enable logging" de:"Logging einschalten") (<i>dsld -D</i>) <input type="hidden" name="log" value=""><input type="checkbox" name="log" value="yes" $([ "$AVM_FIREWALL_LOG" = yes ] && echo checked)> </td> </tr> 
 <tr><td> $(lang en:"For debugging show rules window" de:"Zum Debuggen Firewall-Regeln anzeigen"): &nbsp; LowInput <input type="checkbox" onclick='document.getElementById("id_rules_li").style.display=(this.checked)? "block" : "none"' >
  &nbsp; HighOutput <input type="checkbox" onclick='document.getElementById("id_rules_ho").style.display=(this.checked)? "block" : "none"' ></td>
- <td align=right> $(lang en:"Log all dropped packets" de:"Verworfene Pakete loggen") (<b>no</b> <i>dsld -n</i>) <input type="hidden" name="log_dropped" value=""><input type="checkbox" name="log_dropped" value="yes" $([ "$AVM_FIREWALL_LOG_DROPPED" = yes ] && echo checked)> </td></tr>
+ <td align=right $([ $FWVER -ge 76 ] && echo ' style="display:none"')> $(lang en:"Log all dropped packets" de:"Verworfene Pakete loggen") (<b>no</b> <i>dsld -n</i>) <input type="hidden" name="log_dropped" value=""><input type="checkbox" name="log_dropped" value="yes" $([ "$AVM_FIREWALL_LOG_DROPPED" = yes ] && echo checked)> </td></tr>
 </table>
 
 <p><div align="center"><textarea id="id_rules_li" style="width: 600px; display:none" name="rulestable_li" rows="15" cols="80" wrap="off" ></textarea></div></p>
