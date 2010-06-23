@@ -18,6 +18,17 @@ config() {
 }
 
 start() {
+	#aiccu needs correct date, wait for it
+	local counter=$AICCU_WAITTIME
+	while [ `date +%Y` -lt 2010 -a $counter -gt 0 ]; do
+		let counter--
+		sleep 1
+	done
+	if [ `date +%Y` -lt 2010 -a "$AICCU_WAITTIME" -gt 0 ]; then
+		echo "Starting of ${DAEMON} aborted, time is not synchronized."
+		exit 1
+	fi
+	
 	modprobe ipv6
 	modlib_startdaemon $DAEMON start /mod/etc/$DAEMON.conf
 	[ "$AICCU_RUNSCRIPT" == "yes" ] && /tmp/flash/aiccu/aiccu.sh $AICCU_INTERFACE
