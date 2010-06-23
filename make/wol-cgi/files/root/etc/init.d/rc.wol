@@ -7,16 +7,16 @@ PID_FILE=/var/run/webcfg-wol.pid
 
 config() {
 	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
+		if [ -x "/tmp/flash/httpd-${DAEMON}_conf" ]; then
+			/tmp/flash/httpd-${DAEMON}_conf
 		else
-			/mod/etc/default.wol/${DAEMON}_conf
+			/mod/etc/default.wol/httpd-${DAEMON}_conf
 		fi
 
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
+		if [ -r "/tmp/flash/httpd-${DAEMON}.extra" ]; then
+			cat /tmp/flash/httpd-${DAEMON}.extra
 		fi
-	) > /mod/etc/$DAEMON.conf
+	) > /mod/etc/httpd-$DAEMON.conf
 }
 
 start() {
