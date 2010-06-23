@@ -6,38 +6,22 @@ DAEMON=davfs2
 DAEMON_MOUNT=/mod/etc/webdav
 DAEMON_UMOUNT=/mod/etc/webdav_umount
 
-start() {
+config() {
 	mkdir -p /mod/home/davfs2
 	chown davfs2:davfs2 /mod/home/davfs2 -R
 	
 	mkdir /var/davfs2 2>/dev/null
 	
+	for i in 1 2 3; do
 	(
-		if [ -x "/tmp/flash/webdav_secrets_1" ]; then
-			/tmp/flash/webdav_secrets_1
+		if [ -x "/tmp/flash/webdav_secrets_${i}" ]; then
+			/tmp/flash/webdav_secrets_${i}
 		else
-			/mod/etc/default.davfs2/webdav_secrets_1
+			/mod/etc/default.davfs2/webdav_secrets_${i}
 		fi
 
-	) > /var/davfs2/secrets_1
-
-	(
-		if [ -x "/tmp/flash/webdav_secrets_2" ]; then
-			/tmp/flash/webdav_secrets_2
-		else
-			/mod/etc/default.davfs2/webdav_secrets_2
-		fi
-
-	) > /var/davfs2/secrets_2
-
-	(
-		if [ -x "/tmp/flash/webdav_secrets_3" ]; then
-			/tmp/flash/webdav_secrets_3
-		else
-			/mod/etc/default.davfs2/webdav_secrets_3
-		fi
-
-	) > /var/davfs2/secrets_3
+	) > /var/davfs2/secrets_${i}
+	done
 	
 	(
 		if [ -x "/tmp/flash/webdav_mount" ]; then
