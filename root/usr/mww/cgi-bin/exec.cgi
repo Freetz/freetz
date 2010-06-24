@@ -3,13 +3,13 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-eval "$(modcgi branding:pkg:cmd mod_cgi)"
+eval "$(modcgi branding:pkg:name:rcfile:cmd mod_cgi)"
 
 case $MOD_CGI_CMD in
 	start|stop|restart)
-		if [ ! -x "/mod/etc/init.d/rc.$MOD_CGI_PKG" ]; then
+		if [ ! -x "$MOD_CGI_RCFILE" ]; then
 			cgi_begin '$(lang de:"Fehler" en:"Error")'
-			echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Kein Skript f&uuml;r" en:"no script for") '$MOD_CGI_PKG'</p>"
+			echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Kein Skript f&uuml;r" en:"no script for") '$MOD_CGI_NAME'</p>"
 			cgi_end
 			exit 1
 		fi
@@ -71,28 +71,28 @@ case $MOD_CGI_CMD in
 		reboot
 		;;
 	start)
-		cgi_begin "$(lang de:"Starte" en:"Starting") $MOD_CGI_PKG..."
-		echo "<p>$(lang de:"Starte" en:"Starting") $MOD_CGI_PKG:</p>"
+		cgi_begin "$(lang de:"Starte" en:"Starting") $MOD_CGI_NAME..."
+		echo "<p>$(lang de:"Starte" en:"Starting") $MOD_CGI_NAME:</p>"
 		echo -n '<pre>'
-		/mod/etc/init.d/rc.$MOD_CGI_PKG start | html
+		$MOD_CGI_RCFILE start | html
 		echo '</pre>'
 		back_button mod daemons
 		cgi_end
 		;;
 	stop)
-		cgi_begin "$(lang de:"Stoppe" en:"Stopping") $MOD_CGI_PKG..."
-		echo "<p>$(lang de:"Stoppe" en:"Stopping") $MOD_CGI_PKG:</p>"
+		cgi_begin "$(lang de:"Stoppe" en:"Stopping") $MOD_CGI_NAME..."
+		echo "<p>$(lang de:"Stoppe" en:"Stopping") $MOD_CGI_NAME:</p>"
 		echo -n '<pre>'
-		/mod/etc/init.d/rc.$MOD_CGI_PKG stop | html
+		$MOD_CGI_RCFILE stop | html
 		echo '</pre>'
 		back_button mod daemons
 		cgi_end
 		;;
 	restart)
-		cgi_begin "$(lang de:"Starte $MOD_CGI_PKG neu" en:"Restarting $MOD_CGI_PKG")..."
-		echo "<p>$(lang de:"Starte $MOD_CGI_PKG neu" en:"Restarting $MOD_CGI_PKG"):</p>"
+		cgi_begin "$(lang de:"Starte $MOD_CGI_NAME neu" en:"Restarting $MOD_CGI_NAME")..."
+		echo "<p>$(lang de:"Starte $MOD_CGI_NAME neu" en:"Restarting $MOD_CGI_NAME"):</p>"
 		echo -n '<pre>'
-		/mod/etc/init.d/rc.$MOD_CGI_PKG restart | html
+		$MOD_CGI_RCFILE restart | html
 		echo '</pre>'
 		back_button mod daemons
 		cgi_end
