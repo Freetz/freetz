@@ -1,5 +1,5 @@
 . /mod/etc/conf/samba.cfg
-[ -n "$SAMBA_INTERFACES" ] && BINDADDRESS="$(echo $SAMBA_INTERFACES | sed 's/\/.*//'):"
+[ -n "$SAMBA_INTERFACES" ] && local BINDADDRESS="$(echo $SAMBA_INTERFACES | sed 's/\/.*//'):"
 inetdcfg_desc="Samba-smbd_139"
 inetdcfg_port=${BINDADDRESS}139
 inetdcfg_sock=stream
