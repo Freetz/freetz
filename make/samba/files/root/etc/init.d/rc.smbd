@@ -1,0 +1,59 @@
+#!/bin/sh
+
+DAEMON=samba
+DAEMON_LONG_NAME="Samba-smbd"
+DAEMON_BIN=smbd
+. /etc/init.d/modlibrc
+
+CONF_FILE=/mod/etc/smb.conf
+
+config() {
+		/mod/etc/default.samba/samba_conf > $CONF_FILE
+		if [ -r /var/tmp/smbpasswd.cleartext ]; then
+			smbpasswd 2>/dev/null
+			rm /var/tmp/smbpasswd.cleartext
+		fi
+}
+
+start() {
+	modlib_startdaemon $DAEMON_BIN -D -s $CONF_FILE
+}
+
+case $1 in
+	""|load)
+		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
+			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
+		fi
+		modreg daemon -n $DAEMON_LONG_NAME -r rc.$DAEMON_BIN $DAEMON
+		
+		modlib_start $SAMBA_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON $DAEMON_LONG_NAME
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	reload)
+		modlib_reload
+		;;
+	status)
+		modlib_status
+		;;
+	config)
+		config
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status|config]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

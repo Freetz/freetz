@@ -1,0 +1,11 @@
+. /mod/etc/conf/samba.cfg
+[ -n "$SAMBA_INTERFACES" ] && BINDADDRESS="$(echo $SAMBA_INTERFACES | sed 's/\/.*//'):"
+inetdcfg_desc="Samba-smbd_445"
+inetdcfg_port=${BINDADDRESS}445
+inetdcfg_sock=stream
+inetdcfg_proto=tcp
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/sbin/smbd
+inetdcfg_arg0=smbd
+inetdcfg_args="-s /mod/etc/smb.conf"

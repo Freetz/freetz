@@ -3,17 +3,45 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-check "$SAMBA_ENABLED" yes:auto "*":man
+check "$SAMBA_ENABLED" yes:auto inetd "*":man
+check "$SAMBA_NMBD_ENABLED" yes:nmbd_auto "*":nmbd_man
 check "$SAMBA_MASTER" yes:master
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
+NMBD=$(which nmbd)
 cat << EOF
 <p>
+EOF
+if [ -L "$NMBD" -o -x "$NMBD" ]; then
+cat << EOF
+$(lang de:"Dateifreigabe (smbd)" en:"Filesharing (smbd) "):&nbsp;
+EOF
+fi
+cat << EOF
 <input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1">$(lang de:"Automatisch" en:"Automatic")</label>
 <input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2">$(lang de:"Manuell" en:"Manual")</label>
+EOF
+if [ -e /mod/etc/default.inetd/inetd.cfg ]; then
+cat << EOF
+<input id="e3" type="radio" name="enabled" value="inetd"$inetd_chk><label for="e3"> $(lang de:"Inetd" en:"Inetd")</label>
+EOF
+fi
+cat << EOF
 </p>
 EOF
+
+if [ -L "$NMBD" -o -x "$NMBD" ]; then
+cat << EOF
+<p>
+$(lang de:"Namensaufl&ouml;sung (nmbd)" en:"Nameservices (nmbd) "):&nbsp;
+<input id="n1" type="radio" name="nmbd_enabled" value="yes"$nmbd_auto_chk><label for="n1"> $(lang de:"Automatisch" en:"Automatic")</label>
+<input id="n2" type="radio" name="nmbd_enabled" value="no"$nmbd_man_chk><label for="n2"> $(lang de:"Manuell" en:"Manual")</label>
+EOF
+cat << EOF
+</p>
+EOF
+fi
 
 sec_end
 sec_begin '$(lang de:"Einstellungen" en:"Settings")'

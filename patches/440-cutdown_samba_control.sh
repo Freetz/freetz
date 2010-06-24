@@ -6,15 +6,14 @@ rm_files "${FILESYSTEM_MOD_DIR}/etc/samba_config.tar"
 sed -i -e "/killall smbd*$/d" \
 	-e "s/pidof smbd/pidof/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 
+
 cat > "${FILESYSTEM_MOD_DIR}/etc/samba_control" << 'EOF'
 #!/bin/sh
 
 ICKE=$$
 PIDF=/var/run/samba_control.pid
 
-if [ ! -r $PIDF ]; then
-	echo $$ > $PIDF
-fi
+[ -r $PIDF ] || echo $$ > $PIDF
 sleep 1
 if [ $(ps |grep -v $ICKE|sed 's/^ \+//g'|cut -f1 -d" "|grep $(cat $PIDF)|wc -w) -eq 0 ]; then
 	echo $$ > $PIDF
@@ -30,10 +29,9 @@ if [ $# -ge 2 ]; then
 	done
 fi
 
-if [ "$(pidof smbd)" != "" ]; then
-	/etc/init.d/rc.samba restart smbd
-else
-	/etc/init.d/rc.samba config
+/etc/init.d/rc.smbd config
+if [ "$(/etc/init.d/rc.smbd status 2>/dev/null)" != "disabled" ]; then
+	killall -HUP smbd
 fi
 
 rm $PIDF 2>/dev/null

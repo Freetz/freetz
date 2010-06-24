@@ -4,8 +4,6 @@ $(PKG)_SOURCE_MD5:=11ed2bfef4090bd5736b194b43f67289
 $(PKG)_SITE:=http://samba.org/samba/ftp/stable
 $(PKG)_BUILD_SUBDIR:=source
 
-$(PKG)_STARTLEVEL=80
-
 $(PKG)_BINARIES_ALL := smbpasswd smbd nmbd
 $(PKG)_BINARIES := $(filter-out $(if $(FREETZ_PACKAGE_NMBD),,nmbd),$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/source/bin/%)

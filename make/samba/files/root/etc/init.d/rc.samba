@@ -1,154 +1,70 @@
 #!/bin/sh
 
-BDIR=/sbin
-# define DAEMON for compatibility reason (modlibrc)
 DAEMON=samba
-SMBD=smbd
-NMBD=nmbd
-MODPATH=/mod/etc
-CONF=$MODPATH/smb.conf
-
 . /etc/init.d/modlibrc
 
-config() {
+do_smbd() {
+	/etc/init.d/rc.smbd $1
+}
 
+do_nmbd() {
+	[ -x "$(which nmbd)" -o -L "$(which nmbd)" ] && /etc/init.d/rc.nmbd $1
+}
+
+case $1 in
+	""|load)
+		mkdir -p /tmp/flash/samba
 		mkdir -p /var/locks
 		mkdir -p /var/samba/lib
 		mkdir -p /var/samba/private
 
 		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftp user"
-		
-		/mod/etc/default.samba/samba_conf $2 > $CONF
-
-		if [ -r /var/tmp/smbpasswd.cleartext ]; then
-			smbpasswd 2>/dev/null
-			rm /var/tmp/smbpasswd.cleartext
-		fi
-
-}
-
-start() {
-	echo -n "Starting samba..."
-
-	config
-	
-	if pidof smbd > /dev/null; then
-		echo "already running"
-		exit 0
-	fi
-
-	$SMBD -D -s $CONF > /dev/null 2>&1
-	exitvals=$?
-
-	NST=1
-	if [ $# -ge 1 ]; then
-		if [ $1 == smbd ]; then
-			NST=0
-		fi
-	fi
-	exitvaln=0
-	if [ -x $BDIR/$NMBD -a $NST -eq 1 ]; then
-		$NMBD -D -s $CONF
-		exitvaln=$?
-	fi
-
-	if [ $exitvals -eq 0 -a $exitvaln -eq 0 ]; then
-		echo "done."
-		exit 0
-	else
-		killall $NMBD >/dev/null 2>&1
-		killall $SMBD >/dev/null 2>&1
-		echo "failed."
-		exit 1
-	fi
-}
-
-stop () {
-	echo -n "Stopping samba..."
-	killall -TERM $SMBD > /dev/null 2>&1
-	exitvals=$?
-
-	NSP=1
-	if [ $# -ge 1 ]; then
-		if [ $1 == smbd ]; then
-			NSP=0
-		fi
-	fi
-	exitvaln=0
-	if [ -x $BDIR/$NMBD -a $NSP -eq 1 ]; then
-		killall -TERM $NMBD > /dev/null 2>&1
-		exitvaln=$?
-	fi
-
-	if [ $exitvals -eq 0 -a $exitvaln -eq 0 ]; then
-		echo "done."
-	else
-		echo "failed."
-	fi
-}
-
-case $1 in
-	config)
-		config $2
-		;;
-	""|load)
-		[ -d /tmp/flash/samba ] || mkdir /tmp/flash/samba
 
 		modreg cgi samba "Samba"
-
 		modreg file samba shares '$(lang de:"Samba: Freigaben" en:"Samba: Shares")' 1 "shares"
-
 		modreg file samba sharesx '$(lang de:"Samba: Erweitert" en:"Samba: Options")' 1 "sharesx"
-
-		if [ "$SAMBA_ENABLED" != yes ]; then
-			echo "samba is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modreg daemon --hide samba
+		
+		do_nmbd
+		do_smbd
 		;;
 	unload)
-		stop
 		modunreg file samba
 		modunreg cgi samba
+		do_smbd stop
+		do_nmbd stop
 		;;
 	start)
-		start
+		do_nmbd start
+		do_smbd start
 		;;
 	stop)
-		stop
+		do_smbd stop
+		do_nmbd stop
 		;;
 	restart)
-		PARA2=""
-		if [ $# -ge 2 ]; then
-			PARA2=$2
-		fi
-		stop $PARA2
-		sleep 2
-		start $PARA2
+		do_smbd stop
+		do_nmbd stop
+		do_nmbd start
+		do_smbd start
+		;;
+	reload)
+		do_nmbd reload
+		do_smbd reload
 		;;
 	status)
-		PID_NMBD=1
-		if [ -x "$BDIR/$NMBD" ]; then
-			PID_NMBD=$(pidof "$NMBD")
-		fi
-		if [ -r /var/run/$SMBD.pid ]; then
-			for PIDS in $(pidof "$SMBD"); do
-				if [ $PIDS == "$(cat /var/run/$SMBD.pid)" ]; then
-					PID_SMBD=$PIDS
-				fi
-			done
-		fi
-		if [ -z "$PID_SMBD" -o -z "$PID_NMBD" ]; then
-			killall $NMBD >/dev/null 2>&1
-			killall $SMBD >/dev/null 2>&1
-			echo "stopped"
-		else
-			echo "running"
-		fi
+		echo "unavailable"
+		exit 1
+		;;
+	status_smbd-*)
+		do_smbd status
+		;;
+	config)
+		do_smbd config
+		do_nmbd config 
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status|config]" 1>&2
 		exit 1
 		;;
 esac
