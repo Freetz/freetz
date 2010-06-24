@@ -1,0 +1,11 @@
+--- shell/ash.c.orig	2010-06-12 15:50:30.000000000 +0200
++++ shell/ash.c	2010-06-24 09:26:48.000000000 +0200
+@@ -4937,7 +4937,7 @@
+ 		break;
+ 	case NFROMTO:
+ 		fname = redir->nfile.expfname;
+-		f = open(fname, O_RDWR|O_CREAT|O_TRUNC, 0666);
++		f = open(fname, O_RDWR|O_CREAT, 0666);
+ 		if (f < 0)
+ 			goto ecreate;
+ 		break;
