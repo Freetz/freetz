@@ -2,24 +2,24 @@
 
 # optional environment variables:
 #
-# name				default					description
-# =============		=============			=============
-# DAEMON			<empty>					default for some other variables
-# DAEMON_LONG_NAME	${DAEMON}				full name of daemon to display in start/stop messages
-# PID_FILE			/var/run/${DAEMON}.pid	pid-file for DAEMON
-# CONF_NAME			${DAEMON}				config is in /mod/etc/conf/${CONF_NAME}.cfg
-# CONF_ENABLED		${DAEMON}_ENABLED		variablename with starttype of daemon (yes,no,inetd) in .cfg-file
-# DAEMON_BIN		${DAEMON}				other binary name than $DAEMON
-# DAEMON_ENV		<empty>					additional environment settings
+# name				default						description
+# =============		=============				=============
+# DAEMON			<empty>						default for some other variables
+# DAEMON_LONG_NAME	${DAEMON}					full name of daemon to display in start/stop messages
+# CONF_NAME			${DAEMON}					config is in /mod/etc/conf/${CONF_NAME}.cfg
+# CONF_ENABLED		${DAEMON}_ENABLED			variablename with starttype of daemon (yes,no,inetd) in .cfg-file
+# DAEMON_BIN		${DAEMON}					other binary name than $DAEMON
+# DAEMON_ENV		<empty>						additional environment settings
+# PID_FILE			/var/run/${DAEMON_BIN}.pid	pid-file for DAEMON
 
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 
 [ -z "$DAEMON_LONG_NAME" ] && DAEMON_LONG_NAME="$DAEMON"
-[ -z "$PID_FILE" ] && PID_FILE="/var/run/${DAEMON}.pid"
 [ -z "$CONF_NAME" ] && CONF_NAME="${DAEMON}"
 [ -z "$CONF_ENABLED" ] && CONF_ENABLED="${DAEMON}_ENABLED"
 [ -z "$DAEMON_BIN" ] && DAEMON_BIN="${DAEMON}"
+[ -z "$PID_FILE" ] && PID_FILE="/var/run/${DAEMON_BIN}.pid"
 
 
 # modlib_addgroup:
@@ -141,7 +141,7 @@ modlib_check_port()
 				do 
 					kill $mypid 2>/dev/null 
 					sleep 1 
-					let cnt=cnt-1 
+					let cnt-- 
 				done 
 				if kill -0 $mypid 2>/dev/null
 				then 
@@ -213,7 +213,7 @@ modlib_stop()
 		while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do 
 			kill $id 2>/dev/null 
 			sleep 1 
-			let cnt=cnt-1 
+			let cnt-- 
 		done 
 		if kill -0 $id 2>/dev/null; then 
 			kill -9 $id 2>/dev/null 
