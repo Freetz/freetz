@@ -59,6 +59,8 @@ start() {
 	[ -r /tmp/flash/mod/rc.custom ] && . /tmp/flash/mod/rc.custom
 
 	[ "$MOD_SWAP_BEFORE_SERVICES" == "yes" ] || /etc/init.d/rc.swap
+	
+	[ "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" ] && touch /tmp/.modstarted
 }
 
 modreg_file() {

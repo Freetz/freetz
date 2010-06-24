@@ -42,7 +42,17 @@ stop() {
 }
 
 helper() {
-	[ "$1" == "start" -a "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && sleeper
+	if [ "$1" == "start" ]; then
+		if [ ! -e /tmp/.modstarted ]; then
+			echo -n "Waiting for mod-startup: " >> $LOG_FILE
+			while [ ! -e /tmp/.modstarted ]; do
+				echo -n "." >> $LOG_FILE
+				sleep 1
+			done
+			echo "done." >> $LOG_FILE
+		fi
+		[ "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && sleeper
+	fi
 	echo -e "\n### $3 $2 @ `date "+%d.%m.%Y - %H:%M,%S"`" >> $LOG_FILE
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
 		if [ -x "/etc/init.d/rc.$pkg" ] && (echo " $EXTERNAL_SERVICES " | grep -q " $pkg " >/dev/null 2>&1); then
