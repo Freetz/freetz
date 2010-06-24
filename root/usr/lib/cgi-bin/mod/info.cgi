@@ -139,7 +139,7 @@ format_conf() {
 	</table>
 	<div $divstyle><br><a href="$(href extra mod do_download_config)"><b>.config:</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="$(href extra mod do_download_config)">$(lang de:"Herunterladen als Textdatei" en:"Download as text file")</a></div>
 	EOF
-	echo -n "<pre style='overflow: auto; width: ${_width}px; max-height: 100px;'>"
+	echo -n "<pre style='width: ${_width}px; max-height: 100px;'>"
 	html < /etc/.config
 	echo '</pre>'
 	sec_end
@@ -154,7 +154,7 @@ fi
 
 if [ ! -z "$FREETZ_INFO_EXTERNAL_FILES" ]; then
 	sec_begin '$(lang de:"Ausgelagerte Dateien" en:"Externalised files")'
-		echo -n "<pre style='overflow: auto; width: ${_width}px; max-height: 100px;'>"
+		echo -n "<pre style='width: ${_width}px; max-height: 100px;'>"
 		echo -n "$FREETZ_INFO_EXTERNAL_FILES"
 		echo '</pre>'
 	sec_end

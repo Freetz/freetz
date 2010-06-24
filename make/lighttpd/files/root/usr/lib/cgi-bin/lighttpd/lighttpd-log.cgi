@@ -16,10 +16,10 @@ fi
 
 if [ "$(has_mod accesslog)" = "yes" ]; then
 	if [ -r "$LOGA" ]; then
-        	echo "<h1>lighttpd access log $LOGA</h1>"
-	        echo -n '<pre style="height: 480px; width: '$_width'px; overflow: auto;">'
-        	html < $LOGA
-	        echo '</pre>'
+		echo "<h1>lighttpd access log $LOGA</h1>"
+		echo -n '<pre style="height: 480px; width: '$_width'px;">'
+		html < $LOGA
+		echo '</pre>'
 	else
 		echo "<h1>lighttpd access log unavailable</h1>"
 	fi
@@ -28,10 +28,10 @@ else
 fi
 
 if [ -r "$LOGE" ]; then
-        echo "<h1>lighttpd access log $LOGE</h1>"
-        echo -n '<pre style="height: 480px; width: '$_width'px; overflow: auto;">'
-        html < $LOGE
-        echo '</pre>'
+	echo "<h1>lighttpd access log $LOGE</h1>"
+	echo -n '<pre style="height: 480px; width: '$_width'px;">'
+	html < $LOGE
+	echo '</pre>'
 else
 	echo "<h1>lighttpd error log unavailable</h1>"
 fi

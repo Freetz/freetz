@@ -10,7 +10,7 @@ if [ -n "$SUBVERSION_LOGFILE" -a -f "$SUBVERSION_LOGFILE" -a -r "$SUBVERSION_LOG
 
 cat << EOF
 <h1>$(lang de:"Subversion-Logdatei" en:"Subversion log-file") $SUBVERSION_LOGFILE</h1>
-<pre style="height: 480px; width: ${_width}px; overflow: auto;">
+<pre style="height: 480px; width: ${_width}px;">
 EOF
 html < "$SUBVERSION_LOGFILE"
 cat << EOF
