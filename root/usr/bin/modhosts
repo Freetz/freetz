@@ -6,19 +6,19 @@ VERBOSE_RC_CONF=n
 . /etc/init.d/rc.conf
 
 ar7ipaddr () {
-  local SEC=$1
-  local DEV=$2
-  echo $(echo 'ar7cfg.'$SEC'['$DEV'].ipaddr' | ar7cfgctl -s)
+	local SEC=$1
+	local DEV=$2
+	echo $(echo 'ar7cfg.'$SEC'['$DEV'].ipaddr' | ar7cfgctl -s)
 }
 
 ar7hostname () {
-  HOSTNAME=$(echo servercfg.hostname | ar7cfgctl -s)
-  HOSTNAME=$(eval echo $HOSTNAME)
-  if [ "$HOSTNAME" != "(none)" ]; then
-	echo $HOSTNAME
-  else	
-	echo $CONFIG_HOSTNAME
-  fi
+	HOSTNAME=$(echo servercfg.hostname | ar7cfgctl -s)
+	HOSTNAME=$(eval echo $HOSTNAME)
+	if [ "$HOSTNAME" != "(none)" ]; then
+		echo $HOSTNAME
+	else	
+		echo $CONFIG_HOSTNAME
+	fi
 }
 
 isip () {
@@ -45,9 +45,9 @@ case $1 in
 		# ATA fix
 		mode=$(echo 'ar7cfg.mode' | ar7cfgctl -s)
 		if [ "$mode" = "dsldmode_bridge" -o \
-		     "$mode" = "dsldmode_full_bridge" ]; then
+			"$mode" = "dsldmode_full_bridge" ]; then
 			if [ "$(echo 'ar7cfg.wan_bridge_with_dhcpc' | ar7cfgctl -s)" = "no" -a \
-			     "$(echo 'ar7cfg.dhcpc_use_static_dns' | ar7cfgctl -s)" = "yes" ]; then
+				"$(echo 'ar7cfg.dhcpc_use_static_dns' | ar7cfgctl -s)" = "yes" ]; then
 				(
 					echo "nameserver $(echo 'servercfg.dns1' | ar7cfgctl -s)"
 					echo "nameserver $(echo 'servercfg.dns2' | ar7cfgctl -s)"
@@ -70,24 +70,22 @@ case $1 in
 		fi
 
 		ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
-		devname=lan
 		case $ethmode in
 			ethmode_bridge)
+				devname=lan
 				section=brinterfaces
 				break
 				;;
 			ethmode_router)
+				devname=eth0
 				section=ethinterfaces
 				break
 				;;
 			*)
+				devname=eth0
 				section=ethinterfaces
 		esac
 		ipaddr=$(ar7ipaddr $section $devname)
-		if [ -z "$ipaddr" ]; then
-		  devname=eth0
-		  ipaddr=$(ar7ipaddr $section $devname)
-		fi
 		if [ -z "$ipaddr" ]; then
 		  ipaddr=169.254.1.1
 		fi
