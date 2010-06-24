@@ -1,6 +1,7 @@
 . /mod/etc/conf/subversion.cfg
+[ -n "$SUBVERSION_BINDADDRESS" ] && BINDADDRESS="${SUBVERSION_BINDADDRESS}:"
 inetdcfg_desc="subversion server"
-inetdcfg_port=$SUBVERSION_BINDADDRESS:$SUBVERSION_PORT
+inetdcfg_port=${BINDADDRESS}$SUBVERSION_PORT
 inetdcfg_sock=stream
 inetdcfg_proto=tcp
 inetdcfg_flags=nowait
