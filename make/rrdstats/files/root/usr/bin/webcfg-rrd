@@ -6,18 +6,12 @@ export LD_LIBRARY_PATH=/mod/lib
 DAEMON=rrdstats
 SUBDAEMON=rrd
 
-if [ ! -r "/mod/etc/conf/rrdstats.cfg" ]; then
+if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
 	echo "Error[$DAEMON]: not configured" 1>&2
 	exit 1
 fi
+. /mod/etc/conf/${DAEMON}.cfg
 
-. /mod/etc/conf/rrdstats.cfg
+homedir=/mod/pkg/rrdstats/usr/mww-${SUBDAEMON}/
 
-homedir=/mod/pkg/rrdstats/usr/mww-$SUBDAEMON/
-
-if [ "$RRDSTATS_WEB_AUTH" = yes ]; then
-	echo "/:$RRDSTATS_WEB_USER:$(httpd -m $RRDSTATS_WEB_PASS)" > /mod/etc/httpd-$SUBDAEMON.conf
-	RRD_CONF="-c /mod/etc/httpd-$SUBDAEMON.conf"
-fi
-
-exec httpd "$@" -p "$RRDSTATS_WEBTCPPORT" $RRD_CONF -h "$homedir" -r "RRDstats"
+exec httpd "$@" -p "$RRDSTATS_WEBTCPPORT" -c /mod/etc/httpd-${SUBDAEMON}.conf -h "$homedir" -r "RRDstats"

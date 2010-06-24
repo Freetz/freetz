@@ -1,5 +1,2 @@
 #!/bin/sh
-
-if [ ! -z "$WOL_USER" ]; then
-	echo "/:$WOL_USER:$(httpd -m "$WOL_PLAIN_PASSWD")"
-fi
+[ -n "$WOL_USER" ] && echo "/:$WOL_USER:$(httpd -m "$WOL_PLAIN_PASSWD")"

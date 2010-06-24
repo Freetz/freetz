@@ -3,21 +3,15 @@
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 export LD_LIBRARY_PATH=/mod/lib
 
-DAEMON=vnstat-cgi
+DAEMON=vnstat
 SUBDAEMON=vns
 
-if [ ! -r "/mod/etc/conf/vnstat.cfg" ]; then
+if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
 	echo "Error[$DAEMON]: not configured" 1>&2
 	exit 1
 fi
+. /mod/etc/conf/${DAEMON}.cfg
 
-. /mod/etc/conf/vnstat.cfg
+homedir=/mod/pkg/${DAEMON}/usr/mww-${SUBDAEMON}/
 
-homedir=/mod/pkg/vnstat/usr/mww-$SUBDAEMON/
-
-if [ "$VNSTAT_WEB_AUTH" = yes ]; then
-	echo "/:$VNSTAT_WEB_USER:$(httpd -m $VNSTAT_WEB_PASS)" > /mod/etc/httpd-$SUBDAEMON.conf
-	VNS_CONF="-c /mod/etc/httpd-$SUBDAEMON.conf"
-fi
-		
-exec httpd "$@" -p "$VNSTAT_WEB_PORT" $VNS_CONF -h "$homedir" -r "vnstat"
+exec httpd "$@" -p "$VNSTAT_WEB_PORT" -c /mod/etc/httpd-${SUBDAEMON}.conf -h "$homedir" -r "vnstat"

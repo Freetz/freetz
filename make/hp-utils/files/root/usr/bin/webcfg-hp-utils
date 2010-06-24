@@ -5,13 +5,13 @@ export LD_LIBRARY_PATH=/mod/lib
 
 DAEMON=hp-utils
 
-if [ ! -r "/mod/etc/conf/hp-utils.cfg" ]; then
+
+if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
 	echo "Error[$DAEMON]: not configured" 1>&2
 	exit 1
 fi
+. /mod/etc/conf/${DAEMON}.cfg
 
-. /mod/etc/conf/hp-utils.cfg
+homedir=/mod/pkg/${DAEMON}/usr/mww-${DAEMON}/
 
-homedir=/mod/pkg/hp-utils/usr/mww-hp-utils/
-
-exec httpd "$@" -p "$HP_UTILS_PORT" -c /mod/etc/httpd-$DAEMON.conf -h "$homedir" -r "hp-utils"
+exec httpd "$@" -p "$HP_UTILS_PORT" -c /mod/etc/httpd-${DAEMON}.conf -h "$homedir" -r "hp-utils"

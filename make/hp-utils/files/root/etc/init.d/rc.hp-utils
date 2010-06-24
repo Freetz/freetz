@@ -1,21 +1,19 @@
 #!/bin/sh
 
-DAEMON=httpd-hp-utils
-CONF_NAME=hp-utils
-PID_FILE=/var/run/$DAEMON.pid
-
+DAEMON=hp-utils
+DAEMON_LONG_NAME="hp-utils webinterface"
+PID_FILE=/var/run/webcfg-${DAEMON}.pid
 . /etc/init.d/modlibrc
 
 config() {
 	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
+		if [ -x "/tmp/flash/httpd-${DAEMON}_conf" ]; then
+			/tmp/flash/httpd-${DAEMON}_conf
 		else
-			/mod/etc/default.hp-utils/${DAEMON}_conf
+			/mod/etc/default.${DAEMON}/httpd-${DAEMON}_conf
 		fi
-
-		[ -r "/tmp/flash/${DAEMON}.extra" ] && cat /tmp/flash/${DAEMON}.extra
-	) > /mod/etc/$DAEMON.conf
+		[ -r "/tmp/flash/httpd-${DAEMON}.extra" ] && cat /tmp/flash/httpd-${DAEMON}.extra
+	) > /mod/etc/httpd-${DAEMON}.conf
 }
 
 start() {
@@ -25,8 +23,6 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi 'hp-utils' 'hp-utils'
-
-		config
 
 		modlib_start $HP_UTILS_ENABLED
 		;;

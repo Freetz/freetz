@@ -2,7 +2,7 @@
 
 DAEMON=wol
 DAEMON_LONG_NAME="wol webinterface"
-PID_FILE=/var/run/webcfg-wol.pid
+PID_FILE=/var/run/webcfg-${DAEMON}.pid
 . /etc/init.d/modlibrc
 
 config() {
@@ -10,13 +10,10 @@ config() {
 		if [ -x "/tmp/flash/httpd-${DAEMON}_conf" ]; then
 			/tmp/flash/httpd-${DAEMON}_conf
 		else
-			/mod/etc/default.wol/httpd-${DAEMON}_conf
+			/mod/etc/default.${DAEMON}/httpd-${DAEMON}_conf
 		fi
-
-		if [ -r "/tmp/flash/httpd-${DAEMON}.extra" ]; then
-			cat /tmp/flash/httpd-${DAEMON}.extra
-		fi
-	) > /mod/etc/httpd-$DAEMON.conf
+		[ -r "/tmp/flash/httpd-${DAEMON}.extra" ] && cat /tmp/flash/httpd-${DAEMON}.extra
+	) > /mod/etc/httpd-${DAEMON}.conf
 }
 
 start() {

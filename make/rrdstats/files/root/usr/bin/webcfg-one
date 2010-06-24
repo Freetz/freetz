@@ -6,18 +6,12 @@ export LD_LIBRARY_PATH=/mod/lib
 DAEMON=rrdstats
 SUBDAEMON=one
 
-if [ ! -r "/mod/etc/conf/rrdstats.cfg" ]; then
+if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
 	echo "Error[$DAEMON]: not configured" 1>&2
 	exit 1
 fi
+. /mod/etc/conf/${DAEMON}.cfg
 
-. /mod/etc/conf/rrdstats.cfg
-
-homedir=/mod/pkg/rrdstats/usr/mww-$SUBDAEMON/
-
-if [ "$RRDSTATS_DIGITEMP_AUTH" = yes ]; then
-	echo "/:$RRDSTATS_DIGITEMP_USER:$(httpd -m $RRDSTATS_DIGITEMP_PASS)" >/mod/etc/httpd-$SUBDAEMON.conf
-	ONE_CONF="-c /mod/etc/httpd-$SUBDAEMON.conf"
-fi
+homedir=/mod/pkg/rrdstats/usr/mww-${SUBDAEMON}/
 		
-exec httpd "$@" -p "$RRDSTATS_DIGITEMP_PORT" $ONE_CONF -h "$homedir" -r "DigiTemp"
+exec httpd "$@" -p "$RRDSTATS_DIGITEMP_PORT" -c /mod/etc/httpd-${SUBDAEMON}.conf -h "$homedir" -r "DigiTemp"
