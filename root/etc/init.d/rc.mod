@@ -60,7 +60,7 @@ start() {
 
 	[ "$MOD_SWAP_BEFORE_SERVICES" == "yes" ] || /etc/init.d/rc.swap
 	
-	[ -n "$EXTERNAL_SERVICES$MOD_EXTERNAL_OWN_SERVICES" ] && touch /tmp/.modstarted
+	[ -x /etc/init.d/rc.external ] && touch /tmp/.modstarted
 }
 
 modreg_file() {
