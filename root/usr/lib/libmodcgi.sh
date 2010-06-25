@@ -240,7 +240,7 @@ EOF
 }
 
 cgi_begin() {
-local title=$(html "$1") id=${2:+$(_cgi_id "$2")}
+local title=$1 id=${2:+$(_cgi_id "$2")}
 local CR=$'\r'
 cat << EOF
 Content-Type: text/html; charset=ISO-8859-1${CR}
