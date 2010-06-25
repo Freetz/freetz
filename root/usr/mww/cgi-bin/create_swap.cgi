@@ -31,7 +31,7 @@ else
 			sleep 5
 		done
 	} &
-	sleep 1 
+	sleep 1
 	if dd if=/dev/zero of="$swap_file" bs=1M count=$size; then
 		echo "$(lang de:"Bereite Datei f&uuml;r Swap-Benutzung vor..." en:"Preparing file for swap usage...")"
 		if mkswap "$swap_file"; then

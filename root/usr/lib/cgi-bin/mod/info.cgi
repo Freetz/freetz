@@ -56,7 +56,7 @@ read_entries() {
 		read -r sort type entry subentry || type=END
 	done
 }
-# 
+#
 # Preprocess, classify and sort configuration variables
 # Output format: "$sortkey $type $entry [$sub_entry]"
 # Examples:      "20 pkg dropbear disable_host_lookup"

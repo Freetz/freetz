@@ -5,7 +5,7 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 
 exec 1> /tmp/ex_update.log 2>&1
 indent() {
-    sed 's/^/  /' | html
+	sed 's/^/  /' | html
 }
 
 EXTERNAL_FILE=$1
@@ -21,7 +21,7 @@ echo "[external] Target directory: $EXTERNAL_TARGET"
 if [ -d "$EXTERNAL_TARGET" ]; then
 	for FILE in $(find "$EXTERNAL_TARGET" -type f); do
 		FILES="$FILES $(basename $FILE)"
-	done	
+	done
 	echo "[external] killall:$FILES"
 	killall "$FILES" 2>/dev/null
 	sleep 2
@@ -39,4 +39,3 @@ tar_log=$(cat "$EXTERNAL_FILE" | tar -C "$EXTERNAL_TARGET" -xv 2>&1)
 echo
 echo "$tar_log" | indent
 echo "[external] Done."
-

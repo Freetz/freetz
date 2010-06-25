@@ -10,7 +10,7 @@ stat_begin() {
 }
 
 stat_button() {
-    	local pkg=$1 name=$2 rcfile=$3 cmd=$4 active=$5
+	local pkg=$1 name=$2 rcfile=$3 cmd=$4 active=$5
 	if ! $active; then disabled=" disabled"; else disabled=""; fi
 	echo "<td><form class='btn' action='/cgi-bin/exec.cgi' method='post'><input type='hidden' name='pkg' value='$pkg'><input type='hidden' name='name' value='$name'><input type='hidden' name='rcfile' value='$rcfile'><input type='hidden' name='cmd' value='$cmd'><input type='submit' value='$cmd'$disabled></form></td>"
 }
@@ -125,7 +125,7 @@ stat_static() {
 	sec_begin '$(lang de:"Statische Pakete" en:"Static packages")'
 	stat_begin
 
-        if [ -r "$REG" ]; then
+	if [ -r "$REG" ]; then
 		while IFS='|' read -r pkg name rcscript disable hide parentpkg; do
 			stat_line "$pkg" "$name" "$rcscript" $disable $hide "$parentpkg"
 		done < "$REG"

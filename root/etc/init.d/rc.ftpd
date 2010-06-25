@@ -6,7 +6,7 @@
 DAEMON=ftpd
 DAEMON_LONG_NAME="$DAEMON AVM FTP Server"
 
-[ -r "/mod/etc/conf/${CONF_NAME-$DAEMON}.cfg" ] || touch "/mod/etc/conf/${CONF_NAME-$DAEMON}.cfg" > /dev/null 2>&1 
+[ -r "/mod/etc/conf/${CONF_NAME-$DAEMON}.cfg" ] || touch "/mod/etc/conf/${CONF_NAME-$DAEMON}.cfg" > /dev/null 2>&1
 
 . /etc/init.d/modlibrc
 
@@ -64,7 +64,7 @@ start()
 	local status=1
 	local daemonname=""
 	echo -n "Starting $DAEMON_LONG_NAME..."
-	if [ "$AVM_FTP_ENABLED" != "no" ]; then	
+	if [ "$AVM_FTP_ENABLED" != "no" ]; then
 		if [ -n "$BINARY" ]; then
 			daemonname="$(modlib_check_port $FTPD_PORT $DAEMON $CHECKCMD)"
 			status=$?

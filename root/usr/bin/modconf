@@ -65,9 +65,9 @@ case $1 in
 	merge)
 		env -i sh -s "$default" "$TMPFILE" <<'EOF'
 		unset PWD
-		# export all variables: perhaps there are some that are 
+		# export all variables: perhaps there are some that are
 		# not yet prefixed with 'export'
-		set -a 
+		set -a
 		. "$1"
 		. "$2"
 		export -p
@@ -104,7 +104,7 @@ EOF
 				-)
 					cat
 					;;
-				*=*) 
+				*=*)
 					name=${assignment%%=*}
 					value=${assignment#*=}
 					case $name in

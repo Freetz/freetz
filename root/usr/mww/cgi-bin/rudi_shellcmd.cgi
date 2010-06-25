@@ -13,7 +13,7 @@ else
 	echo -n 'Content-Type: text/html; charset=ISO-8859-1'$'\r\n\r\n'
 	echo -n '<html> <body'
 	if [ -n "$FORM_onload" ]; then
-	 	echo -n " onLoad=\"$FORM_onload\""
+		echo -n " onLoad=\"$FORM_onload\""
 	fi
 	echo '>'
 	echo -n '<pre id="cmd_output">'

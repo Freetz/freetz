@@ -16,7 +16,7 @@ ar7hostname () {
 	HOSTNAME=$(eval echo $HOSTNAME)
 	if [ "$HOSTNAME" != "(none)" ]; then
 		echo $HOSTNAME
-	else	
+	else
 		echo $CONFIG_HOSTNAME
 	fi
 }
@@ -87,7 +87,7 @@ case $1 in
 		esac
 		ipaddr=$(ar7ipaddr $section $devname)
 		if [ -z "$ipaddr" ]; then
-		  ipaddr=169.254.1.1
+			ipaddr=169.254.1.1
 		fi
 		echo -e "$ipaddr\tfritz.box\t$(ar7hostname)" >> /var/tmp/hosts
 		;;

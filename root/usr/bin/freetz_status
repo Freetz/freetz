@@ -3,7 +3,7 @@
 . /usr/lib/libmodredir.sh
 
 if [ ! -r "/mod/etc/conf/mod.cfg" -o ! -r "/mod/etc/init.d/rc.webcfg" ]; then
-    	CRLF=$'\r\n'
+	CRLF=$'\r\n'
 	echo -n "Content-Type: text/plain${CRLF}${CRLF}"
 	echo "Error[webcfg]: not configured"
 	exit 1
@@ -15,7 +15,7 @@ log=
 show_log() {
 	[ -n "$log" ] && echo "$log<br>"
 }
-  
+
 status=$(/mod/etc/init.d/rc.webcfg status)
 [ "$status" = "running" -o "$status" = "inetd" ] || \
 	log=$(/mod/etc/init.d/rc.webcfg start 2>&1)

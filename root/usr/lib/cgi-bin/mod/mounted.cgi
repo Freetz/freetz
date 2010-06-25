@@ -52,7 +52,7 @@ format_path() {
 
 print_mountpoints() {
 	while read -r fstyp mountopts device path; do
-		echo "$DFOUT" | sed -ne "\#$path# { s/\(% [^ ]*\) /\1\n/g; p; q}" | 
+		echo "$DFOUT" | sed -ne "\#$path# { s/\(% [^ ]*\) /\1\n/g; p; q}" |
 		while read -r device total used free percent path; do
 			print_mp
 		done

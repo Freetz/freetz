@@ -8,7 +8,7 @@ cgi_begin '$(lang de:"Konfiguration sichern/wiederherstellen" en:"Backup/restore
 cat << EOF
 <h1>$(lang de:"Sicherung" en:"Backup")</h1>
 
-<p>$(lang 
+<p>$(lang
     de:"Sichern s&auml;mtlicher Einstellungen aus dem Flash-Speicher
 <i>/var/flash</i>. Dies umfa&szlig;t sowohl die Einstellungen der Original-Firmware
 als auch die von Freetz sowie s&auml;mtlicher sonstiger beim Start geladener

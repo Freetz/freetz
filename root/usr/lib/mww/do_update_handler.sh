@@ -24,13 +24,13 @@ if $downgrade; then
 	    de:"Downgrade vorbereiten"
 	    en:"Prepare downgrade"
 	) ..."
-    	/usr/bin/prepare-downgrade | indent
+	/usr/bin/prepare-downgrade | indent
 	echo "$(lang de:"ERLEDIGT" en:"DONE")"
-    	echo "</pre><pre>"
+	echo "</pre><pre>"
 fi
 
 if [ "$stop" = stop_avm ]; then
-	echo "$(lang 
+	echo "$(lang
 	    de:"AVM-Dienste anhalten, Teil 1"
 	    en:"Stopping AVM services, part 1"
 	) (prepare_fwupgrade start) ..."
@@ -40,7 +40,7 @@ if [ "$stop" = stop_avm ]; then
 fi
 
 if [ "$stop" = semistop_avm ]; then
-	echo "$(lang 
+	echo "$(lang
 	    de:"AVM-Dienste teilweise anhalten, Teil 1"
 	    en:"Stopping AVM services partially, part 1"
 	) (prepare_fwupgrade start_from_internet) ..."
@@ -79,7 +79,7 @@ $(lang
 ) /var/install ...
 EOF
 if [ ! -x /var/install ]; then
-    	cat << EOF
+	cat << EOF
 $(lang
     de:"FEHLGESCHLAGEN - Installationsskript nicht gefunden oder nicht ausführbar.
 
@@ -128,8 +128,8 @@ $(lang de:"ENDE DER DATEI" en:"END OF FILE")
 </pre>
 
 <p>
-$(lang 
-    de:"Das Nach-Installationsskript läuft beim Neustart (reboot) und führt die 
+$(lang
+    de:"Das Nach-Installationsskript läuft beim Neustart (reboot) und führt die
 darin definierten Aktionen aus, z.B. das tatsächliche Flashen der Firmware.
 Sie können immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie
 das Skript und den Rest der extrahierten Firmware-Komponenten löschen."

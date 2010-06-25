@@ -88,7 +88,7 @@ modlib_reload_inetd()
 #	$2: daemon name (default: "daemon")
 #	$3: [optional] command: check(default), stop, kill
 #	$4: [optional] socket: t: TCP(default) u: UDP w: RAW
-#   returns: 0 free; 1 oneself; 2 inetd; 3 other daemon; 4 stop command failed; 5 kill command failed 
+#   returns: 0 free; 1 oneself; 2 inetd; 3 other daemon; 4 stop command failed; 5 kill command failed
 modlib_check_port()
 {
 	[ -z "$1" ] && local netport=21 || local netport="$1"
@@ -126,7 +126,7 @@ modlib_check_port()
 						return 0 # stopping successful
 					else
 						echo "$inetddaemon"
-						return 4 # stopping failed	
+						return 4 # stopping failed
 					fi
 				fi
 			;;
@@ -134,20 +134,20 @@ modlib_check_port()
 				if [ "$myname" == "inetd" ]
 				then
 					echo "$myname"
-					return 5 # killing of inetd permitted	
+					return 5 # killing of inetd permitted
 				fi
-				local cnt=9 
+				local cnt=9
 				while [ $cnt -ge 0 ] && kill -0 $mypid 2>/dev/null
-				do 
-					kill $mypid 2>/dev/null 
-					sleep 1 
-					let cnt-- 
-				done 
-				if kill -0 $mypid 2>/dev/null
-				then 
-					kill -9 $mypid 2>/dev/null 
+				do
+					kill $mypid 2>/dev/null
 					sleep 1
-				fi 
+					let cnt--
+				done
+				if kill -0 $mypid 2>/dev/null
+				then
+					kill -9 $mypid 2>/dev/null
+					sleep 1
+				fi
 				if kill -0 $mypid 2>/dev/null
 				then
 					echo "$myname"
@@ -188,7 +188,7 @@ modlib_check_running()
 	local fn=${PID_FILE}
 	[ ! -s "$fn" ] && return 3
 	kill -0 $(cat "$fn") 2> /dev/null
-	[ "$?" == "0" ] && return 0 
+	[ "$?" == "0" ] && return 0
 	rm -f "$fn"
 	return 3
 }
@@ -209,23 +209,23 @@ modlib_stop()
 	if [ "$?" -ne 127 ]; then
 		sleep 1
 	else
-		local cnt=9 
-		while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do 
-			kill $id 2>/dev/null 
-			sleep 1 
-			let cnt-- 
-		done 
-		if kill -0 $id 2>/dev/null; then 
-			kill -9 $id 2>/dev/null 
+		local cnt=9
+		while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do
+			kill $id 2>/dev/null
+			sleep 1
+			let cnt--
+		done
+		if kill -0 $id 2>/dev/null; then
+			kill -9 $id 2>/dev/null
 			sleep 1
 		fi
-	fi 
-	if ! kill -0 $id 2>/dev/null; then 
-		rm -f "$fn" 
+	fi
+	if ! kill -0 $id 2>/dev/null; then
+		rm -f "$fn"
 		echo 'done.'
 		return 0
 	else
-	
+
 		echo 'failed.'
 		return 1
 	fi
@@ -288,7 +288,7 @@ modlib_status()
 			echo 'unknown'
 			;;
 	esac
-	return $retval			
+	return $retval
 }
 
 # modlib_loadconfig
@@ -313,15 +313,15 @@ modlib_startdaemon()
 {
 	echo -n "Starting ${DAEMON_LONG_NAME}..."
 	config 2>/dev/null
-	
+
 	env - PATH="$PATH" $DAEMON_ENV "$@"
 	local rv=$?
-	
+
 	if [ "$rv" -ne 0 ]; then
 		echo 'failed.'
 		exit $rv
 	fi
-	
+
 	# even daemons without pid-support creates a .pid file:
 	local fn=${PID_FILE}
 	if [ ! -s "$fn" ]; then
@@ -332,7 +332,7 @@ modlib_startdaemon()
 		fi
 		[ -n "$dp" ] && echo "$dp" > $fn
 	fi
-	
+
 	echo 'done.'
 }
 
@@ -379,4 +379,3 @@ modlib_start()
 		modlib_loadconfig
 		;;
 esac
-

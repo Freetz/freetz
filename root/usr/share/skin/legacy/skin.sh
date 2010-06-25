@@ -50,7 +50,7 @@ cat << EOF
 EOF
 
 if [ -n "$id" ]; then
-    	_cgi_print_menu "$id"
+	_cgi_print_menu "$id"
 fi
 }
 

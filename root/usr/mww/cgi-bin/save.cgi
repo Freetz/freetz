@@ -91,7 +91,7 @@ case $form in
 				oldstatus1=$(rc_status "$package")
 			fi
 			prefix="$(echo "$package" | tr 'a-z\-' 'A-Z_')_"
-			
+
 			vars=''; delim=''
 			for var in $(modconf vars "$package"); do
 				vars="${vars}${delim}${var#$prefix}"
@@ -111,7 +111,7 @@ case $form in
 			echo -n "Saving $package.cfg..."
 			modconf save "$package"
 			echo 'done.'
-			
+
 			{
 			apply_changes "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
 			pkg_apply_save
@@ -127,16 +127,16 @@ case $form in
 		pkg_pre_def | html
 
 		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
-			if [ "$package" = mod ]; then 
-			    	back="mod conf"
+			if [ "$package" = mod ]; then
+				back="mod conf"
 				oldstatus1=$(rc_status telnetd)
-                                oldstatus2=$(rc_status webcfg)
+				oldstatus2=$(rc_status webcfg)
 				oldstatus3=$(rc_status swap)
-			else 
+			else
 				back="cgi $package"
-                                oldstatus1=$(rc_status "$package")
-                        fi
-			
+				oldstatus1=$(rc_status "$package")
+			fi
+
 			echo -n 'Restoring defaults...'
 			modconf default "$package"
 			echo 'done.'

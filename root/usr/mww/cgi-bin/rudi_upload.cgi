@@ -1,5 +1,5 @@
 #!/usr/bin/haserl -u 10000 -U /var/tmp
-<%in /usr/lib/mww/rudi_auth.cgi 
+<%in /usr/lib/mww/rudi_auth.cgi
 %>Content-Type: text/html; charset=ISO-8859-1
 
 <html><body>

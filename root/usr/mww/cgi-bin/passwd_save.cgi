@@ -35,7 +35,7 @@ else
 					sed -e "/\"$MOD_HTTPD_USER\"/d" $XMAIL_MAILLOCATION/ctrlaccounts.tab
 					echo -e "\"$MOD_HTTPD_USER\"\t\"$xmcryptpass\""
 				) > $XMAIL_MAILLOCATION/ctrlaccounts.tab
-			
+
 				#/etc/init.d/rc.xmail restart
 
 				#PHPXmail server.php
@@ -50,5 +50,5 @@ else
 fi
 
 back_button mod status
-	
+
 cgi_end

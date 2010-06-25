@@ -23,7 +23,7 @@ case $1 in
 		salt=${MOD_HTTPD_PASSWD#'$1$'}
 		salt=${salt%%\$*}
 		if [ "$(/usr/bin/mkpasswd -m md5 "$oldpasswd" "$salt")" != "$MOD_HTTPD_PASSWD" ]; then
-		    	echo 'Wrong password.' >&2
+			echo 'Wrong password.' >&2
 			exit 2
 		fi
 

@@ -39,5 +39,5 @@ function CheckInput(form) {
 <input type="submit" value="$(lang de:"Speichern" en:"Save")">
 </form>
 EOF
-	
+
 cgi_end

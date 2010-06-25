@@ -13,7 +13,7 @@ if [ -r /var/env ]; then
 	while read -r key value; do
 		case $key in
 			bootloaderVersion) loaderversion=$value ;;
-			cpufrequency)	let cpu_frequency=value/1000000 ;;	
+			cpufrequency)	let cpu_frequency=value/1000000 ;;
 			sysfrequency)	let sys_frequency=value/1000000 ;;
 			my_ipaddress)	ip_init_address=$value ;;
 			maca)		mac_lan=$value ;;
@@ -85,7 +85,7 @@ sec_end
 avsar_ver=/proc/avalanche/avsar_ver
 if [ -r "$avsar_ver" ]; then
 	sec_begin '$(lang de:"DSL-Treiber und Hardware" en:"DSL drivers and hardware")'
- 		echo "<pre class='plain'>$(cat "$avsar_ver")</pre>"
+		echo "<pre class='plain'>$(cat "$avsar_ver")</pre>"
 	sec_end
 fi
 

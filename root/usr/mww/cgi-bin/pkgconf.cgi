@@ -16,7 +16,7 @@ if [ -r "/mod/etc/default.$package/$package.cfg" -o -r "/mod/etc/default.$packag
 	if [ "$package" = mod ]; then
 		cgi_begin '$(lang de:"Einstellungen" en:"Settings")' 'settings'
 	else
-	    	OIFS=$IFS; IFS="|"
+		OIFS=$IFS; IFS="|"
 		set -- $(grep "^$package|" "$cgi_reg")
 		IFS=$OIFS
 		cgi_begin "${2:-$package}" "pkg:$package"

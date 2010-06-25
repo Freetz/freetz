@@ -117,7 +117,7 @@ cat << EOF
 EOF
 
 sec_end
-if [ -r /usr/lib/libmodmount.sh ]; then 
+if [ -r /usr/lib/libmodmount.sh ]; then
 sec_begin 'automount'
 if [ -x /usr/sbin/blkid ]; then
 cat << EOF
@@ -138,7 +138,7 @@ fi
 if [ -x /etc/init.d/rc.external ]; then
 sec_begin 'external'
 _services=`cat /etc/external.pkg 2>/dev/null`
-[ -z "$_services" ] && _services=$(lang de:"-keine-" en:"-none-") 
+[ -z "$_services" ] && _services=$(lang de:"-keine-" en:"-none-")
 cat << EOF
 
 <p><h1>$(lang de:"Automatisch Dienste starten/stoppen beim ein-/aush&auml;ngen" en:"Automatically start/stop services at (un)mount")</h1></p>
@@ -148,7 +148,7 @@ cat << EOF
 <label for="e1">$(lang de:"Folgende externalisierte Freetz-Dienste behandeln" en:"Manage these externalised services of Freetz")</label>: $_services
 </p>
 <p>
-$(lang de:"Diese selbst definierten Dienste behandeln:" en:"Manage these own services:") 
+$(lang de:"Diese selbst definierten Dienste behandeln:" en:"Manage these own services:")
 <input type="text" name="external_own_services" size="55" maxlength="250" value="$(html "$MOD_EXTERNAL_OWN_SERVICES")">
 <FONT SIZE=-2><br><br>
 $(lang de:"Hinweis: Namen der /etc/init.d/rc.DAEMON Dateien ohne das f&uuml;hrende rc. und mit Leerzeichen getrennt angeben. " en:"Input the names of /etc/init.d/rc.DAEMON files without the rc., seperated by spacebar. ")
@@ -171,4 +171,3 @@ $(lang de:"Abbrechen falls die Jahreszahl gr&ouml;&szlig;er als dieser Wert ist"
 EOF
 sec_end
 fi
-

@@ -16,7 +16,7 @@ start () {
 		echo 'already running.'
 		exit 1
 	fi
-	
+
 	ii=0
 	# wait for
 	# - usb device to settle
@@ -44,7 +44,7 @@ stop () {
 		echo 'not running.'
 		exit 1
 	fi
-	
+
 	sed '1d' /proc/swaps |
 		while read swap _; do
 			swapoff $swap

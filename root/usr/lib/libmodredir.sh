@@ -7,7 +7,7 @@ self_host() {
 
 	# Use HTTP_REFERER to determine target host (could be a name or an IP)
 	TARGET_HOST=$(echo "$HTTP_REFERER" |
-	    sed -n -r 's#^[^:]+://([^/:]+).*$#\1#p')
+		sed -n -r 's#^[^:]+://([^/:]+).*$#\1#p')
 
 	# Try HTTP_HOST
 	if [ -z "$TARGET_HOST" ]; then
@@ -18,7 +18,7 @@ self_host() {
 	if [ -z "$TARGET_HOST" ]; then
 		TARGET_HOST=fritz.box
 	fi
-	
+
 	echo "$TARGET_HOST"
 }
 

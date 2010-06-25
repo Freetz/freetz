@@ -23,8 +23,8 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
     tar xvzf $FORM_uploadfile
     echo "$(lang de:"Konfiguration wiederherstellen" en:"Restoring configuration")..."
     if [ -e "$BACKUP_DIR/$DS_BCK_FILE" ]; then
-    	echo "$(lang de:"Alte Sicherungsdatei gefunden" en:"Found old backup file")"
-	mv $BACKUP_DIR/$DS_BCK_FILE $BACKUP_DIR/$FREETZ_BCK_FILE
+        echo "$(lang de:"Alte Sicherungsdatei gefunden" en:"Found old backup file")"
+        mv $BACKUP_DIR/$DS_BCK_FILE $BACKUP_DIR/$FREETZ_BCK_FILE
     fi
     if [ ! -e "$BACKUP_DIR/$FREETZ_BCK_FILE" ]; then
        FORM_restart=off

@@ -42,8 +42,8 @@ echo "<h1>$CAPTION</h1>"
 readonly=false
 if [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$sec" ]; then
 	readonly=true
-	echo '<div style="color: #800000;">$(lang 
-		de:"Konfiguration in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" 
+	echo '<div style="color: #800000;">$(lang
+		de:"Konfiguration in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!"
 		en:"Settings are not available at current security level!"
 	)</div>'
 fi

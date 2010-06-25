@@ -47,7 +47,7 @@ case $1 in
 			pkg=$2 id=$3 title=$4 sec_level=$5 desc=$6
 #
 # With the new style of registering files, each file is associated with a
-# package explicitly. Hence, $id needs only be unique within a package. 
+# package explicitly. Hence, $id needs only be unique within a package.
 #
 # This style has the following advantages:
 #  1. All files of a package can be unregistered at once: modunreg file "$pkg"
@@ -86,7 +86,7 @@ case $1 in
 		filename=$0
 		shift
 		TEMP=$(getopt -o dhn:r:p: --long disable,hide,name:,rc-script:parent: -n "$(basename $filename)" -- "$@")
-		
+
 		disable=false
 		hide=false
 		name=

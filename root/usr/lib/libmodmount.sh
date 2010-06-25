@@ -20,8 +20,8 @@ find_mnt_name ()
 
 mount_fs ()
 {
- # mount according to type of filesystem 
- # return exit code: true - all went well; other - something went wrong 
+ # mount according to type of filesystem
+ # return exit code: true - all went well; other - something went wrong
 	local dev_node=$1 # device node
 	local mnt_path=$2 # mount path
 	[ $# -ge 3 ] && local rw_mode=$3 || local rw_mode=rw # read/write mode
@@ -151,7 +151,7 @@ do_mount ()
 		umask $old_umask
 		rmdir $mnt_path
 	fi
-			
+
 	if grep $mnt_path /proc/mounts > /dev/null
 	then
 		if [ -f "$1" ]
