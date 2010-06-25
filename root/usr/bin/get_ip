@@ -27,8 +27,12 @@ case $1 in
 	retval=$?
 	;;
   ""|-w|--webcm)
-	ip=$(echo "<? query connection0:pppoe:status/ip ?>" |
-	    /usr/www/html/cgi-bin/webcm "getpage=-")
+	if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
+		querystring="var:n[0]=connection0:pppoe:status/ip"
+	else
+		querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
+	fi
+	ip=$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")
     	retval=$?
 	;;
   -?|--help)
