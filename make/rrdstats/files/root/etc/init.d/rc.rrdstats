@@ -8,7 +8,7 @@ HTTPD_PID_RRD=/var/run/webcfg-rrd.pid
 HTTPD_PID_ONE=/var/run/webcfg-one.pid
 
 case $1 in
-	backup|restore|status_webcfg-rrd|status_webcfg-one)
+	backup|restore|status_webcfg-*)
 		modlib_loadconfig
 		;;
 esac
@@ -46,7 +46,8 @@ config() {
 }
 
 start() {
-	[ "$RRDSTATS_SAVEBACKUP" = yes ] && backup
+	[ "$RRDSTATS_SAVEBACKUP" = yes -a "$RRDSTATS_END_BACKUP" = no ] && backup
+	[ "$RRDSTATS_START_RESTORE" = yes ] && restore silent
 
 	modlib_startdaemon start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
 
@@ -69,7 +70,14 @@ start() {
 
 stop() {
 	stop_webserver
-	return 127
+	local PID=$(cat "$fn" 2>/dev/null)
+	kill "$PID" 2>/dev/null
+	sleep 1
+	if kill -0 "$PID" 2>/dev/null; then
+		kill -9 "$PID" 2>/dev/null
+		sleep 1
+	fi
+	[ "$RRDSTATS_SAVEBACKUP" = yes -a "$RRDSTATS_END_BACKUP" = yes ] && backup silent
 }
 
 stop_webserver() {
@@ -82,7 +90,9 @@ backup() {
 	_TIMESTRING=$(echo $(date -Iseconds | sed 's/\:/-/g;s/\+.*//g;s/T/_/g'))
 	_BACKUPNAME=$RRDSTATS_RRDBACKUP/$_TIMESTRING
 	if [ $(ls $RRDSTATS_RRDDATA/*.rrd 2>/dev/null | wc -w) -le 0 ]; then
-		echo 'RRDstats backup skipped, no files found.'
+		[ "$1" != "silent" ] && echo "RRDstats "
+		echo -n 'backup skipped, no files found...'
+		[ "$1" != "silent" ] && echo
 		return
 	fi
 	mkdir $RRDSTATS_RRDBACKUP 2>/dev/null
@@ -90,7 +100,11 @@ backup() {
 	cp -p $RRDSTATS_RRDDATA/*.rrd $_BACKUPNAME/ 2>/dev/null
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
-		echo 'RRDstats backup failed, abort.'
+		if [ "$1" != "silent" ]; then
+			echo "Starting RRDstats...failed, not able to backup files."
+		else
+			echo 'backup failed, abort.'
+		fi
 		exit $exitval
 	fi
 	_BACKUPLOG=$RRDSTATS_RRDBACKUP/backup.log
@@ -114,9 +128,13 @@ restore() {
 		modlib_stop
 	fi
 
-	echo -n 'RRDstats is restoring files...'
+	[ "$1" != "silent" ] && echo -n 'RRDstats is restoring files...'
 	if [ $(ls $RRDSTATS_RRDBACKUP/* 2>/dev/null | wc -w) -le 0 ]; then
-		echo 'skipped, no files found.'
+		if [ "$1" != "silent" ]; then
+			echo 'skipped, no files found.'
+		else
+			echo 'Starting RRDstats...failed, no files to restore.'
+		fi
 		exit 1
 	fi
 
@@ -124,10 +142,14 @@ restore() {
 	cp -p $RRDSTATS_RRDBACKUP/$(echo $(tail -n1 $RRDSTATS_RRDBACKUP/backup.log))/*.rrd $RRDSTATS_RRDDATA/ 2>/dev/null
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
-		echo 'failed.'
+		if [ "$1" != "silent" ]; then
+			echo 'failed.'
+		else
+			echo "Starting RRDstats...failed, not able to restore files."
+		fi
 		exit $exitval
 	else
-		echo 'done.'
+		[ "$1" != "silent" ] && echo 'done.'
 	fi
 
 	[ "$restart_rrdstats" = yes ] && modlib_start
@@ -170,9 +192,9 @@ case $1 in
 		[ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" = "yes" ] && echo 'inetd' || modlib_status
 		;;
 	backup)
-		echo 'Creating backup of .rrd files'
-		backup
-		echo
+		echo -n 'RRDstats is creating a backup of .rrd files...'
+		backup silent
+		echo "done."
 		;;
 	restore)
 		restore

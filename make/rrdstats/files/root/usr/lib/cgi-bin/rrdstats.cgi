@@ -19,6 +19,8 @@ check "$RRDSTATS_XCHG_RXTX2" yes:xchg_rxtx2
 check "$RRDSTATS_XCHG_RXTX3" yes:xchg_rxtx3
 check "$RRDSTATS_XCHG_RXTX4" yes:xchg_rxtx4
 check "$RRDSTATS_SAVEBACKUP" yes:savebackup
+check "$RRDSTATS_END_BACKUP" yes:b_stop "*":b_start
+check "$RRDSTATS_START_RESTORE" yes:start_restore
 check "$RRDSTATS_DELBACKUP"  yes:delbackup
 check "$RRDSTATS_CPU100PERC" yes:cpu100perc
 check "$RRDSTATS_UPTIME_ENB" yes:uptime_enb
@@ -64,8 +66,8 @@ sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 cat << EOF
 <p>
 <input type="hidden" name="webenabled" value="no">
-<input id="w1" type="checkbox" name="webenabled" value="yes"$webenabled_chk><label for="w1"></label>
-$(lang de:"Zus&auml;tzlichen Webserver aktiveren auf Port" en:"Activate additional webserver on port")&nbsp;
+<input id="w1" type="checkbox" name="webenabled" value="yes"$webenabled_chk>
+<label for="w1">$(lang de:"Zus&auml;tzlichen Webserver aktiveren auf Port" en:"Activate additional webserver on port")</label>&nbsp;
 <input type="text" name="webtcpport" size="4" maxlength="5" value="$(html "$RRDSTATS_WEBTCPPORT")">
 </p>
 EOF
@@ -82,7 +84,7 @@ fi
 cat << EOF
 <p>
 <input type="hidden" name="web_auth" value="no">
-<input id="a1" type="checkbox" name="web_auth" value="yes"$web_auth_chk><label for="a1">$(lang de:"Authentifizierung" en:"Authentication"):&nbsp;</label>
+<input id="a1" type="checkbox" name="web_auth" value="yes"$web_auth_chk><label for="a1">$(lang de:"Authentifizierung" en:"Authentication").&nbsp;</label>
 $(lang de:"Benutzer" en:"User"):
 <input type="text" name="web_user" size="15" maxlength="15" value="$(html "$RRDSTATS_WEB_USER")">
 $(lang de:"Passwort" en:"Password"):
@@ -114,12 +116,12 @@ $(lang de:"Graphen immer neu generieren (not lazy)" en:"Always generate new grap
 </p>
 <p>
 <input type="hidden" name="cpu100perc" value="no">
-<input id="c1" type="checkbox" name="cpu100perc" value="yes"$cpu100perc_chk><label for="c1"></label>
-$(lang de:"Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen" en:"Maximum of the CPU utilization graph always at 100%")</p>
+<input id="c1" type="checkbox" name="cpu100perc" value="yes"$cpu100perc_chk>
+<label for="c1">$(lang de:"Maximum des Graphen der CPU-Nutzung auf 100 Prozent festlegen" en:"Maximum of the CPU utilization graph always at 100%")</label></p>
 <p>
 <input type="hidden" name="uptime_enb" value="no">
-<input id="u1" type="checkbox" name="uptime_enb" value="yes"$uptime_enb_chk><label for="u1"></label>
-$(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs")</p>
+<input id="u1" type="checkbox" name="uptime_enb" value="yes"$uptime_enb_chk>
+<label for="u1">$(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs")</label></p>
 EOF
 
 sec_end
@@ -129,13 +131,22 @@ cat << EOF
 <p>$(lang de:"Backup Verzeichnis" en:"Backup folder"):&nbsp;<input type="text" name="rrdbackup" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDBACKUP")"></p>
 <p>
 <input type="hidden" name="savebackup" value="no">
-<input id="b1" type="checkbox" name="savebackup" value="yes"$savebackup_chk><label for="b1"></label>
-$(lang de:"Backup vor dem Starten anlegen" en:"Backup files before startup")</p>
+<input id="b1" type="checkbox" name="savebackup" value="yes"$savebackup_chk>
+<label for="b1">$(lang de:"Backup anlegen" en:"Backup files")</label>:&nbsp;
+<input id="b3" type="radio" name="end_backup" value="no"$b_start_chk><label for="b4">$(lang de:"beim Starten" en:"during start")</label>
+<input id="b4" type="radio" name="end_backup" value="yes"$b_stop_chk><label for="b4">$(lang de:"beim Beenden" en:"during stop")</label>
+</p>
+<p>
+<input type="hidden" name="start_restore" value="no">
+<input id="b5" type="checkbox" name="start_restore" value="yes"$start_restore_chk>
+<label for="b5">$(lang de:"Backup beim Starten zur&uuml;ckspielen" en:"Restore files during startup")</label>
+</p>
 <p>
 <input type="hidden" name="delbackup" value="no">
-<input id="b2" type="checkbox" name="delbackup" value="yes"$delbackup_chk><label for="b2"></label>
-$(lang de:"Nicht mehr Backups aufbewahren als" en:"Do not keep more backups than"):&nbsp;
-<input type="text" name="maximumbackups" size="2" maxlength="3" value="$(html "$RRDSTATS_MAXIMUMBACKUPS")"></p>
+<input id="b2" type="checkbox" name="delbackup" value="yes"$delbackup_chk>
+<label for="b2">$(lang de:"Nicht mehr Backups aufbewahren als" en:"Do not keep more backups than")</label>:&nbsp;
+<input type="text" name="maximumbackups" size="2" maxlength="3" value="$(html "$RRDSTATS_MAXIMUMBACKUPS")">
+</p>
 EOF
 
 sec_end
@@ -145,13 +156,13 @@ cat << EOF
 <br>
 
 <input type="hidden" name="thomsonthg" value="no">
-<input id="t1" type="checkbox" name="thomsonthg" value="yes"$thomsonthg_chk><label for="t1"></label>
-$(lang de:"&Uuml;berwachung des Kabelmodems aktivieren" en:"Observe the cable-modem")
+<input id="t1" type="checkbox" name="thomsonthg" value="yes"$thomsonthg_chk>
+<label for="t1">$(lang de:"&Uuml;berwachung des Kabelmodems aktivieren" en:"Observe the cable-modem")</label>
 <br>
 
 <input type="hidden" name="thomsonadv" value="no">
-<input id="t2" type="checkbox" name="thomsonadv" value="yes"$thomsonadv_chk><label for="t2"></label>
-$(lang de:"Zus&auml;tzliche Parameter &uuml;berwachen" en:"Observe more parameters")
+<input id="t2" type="checkbox" name="thomsonadv" value="yes"$thomsonadv_chk>
+<label for="t2">$(lang de:"Zus&auml;tzliche Parameter &uuml;berwachen" en:"Observe more parameters")</label>
 <br>
 
 <br>
@@ -274,14 +285,14 @@ cat << EOF
 
 <p>
 <input type="hidden" name="digitemp1w" value="no">
-<input id="d1" type="checkbox" name="digitemp1w" value="yes"$digitemp1w_chk><label for="d1"></label>
-$(lang de:"Temperatur&uuml;berwachung von 1-wire Adaptern mit DigiTemp aktivieren" en:"Observe 1-wire adapters with DigiTemp")
+<input id="d1" type="checkbox" name="digitemp1w" value="yes"$digitemp1w_chk>
+<label for="d1">$(lang de:"Temperatur&uuml;berwachung von 1-wire Adaptern mit DigiTemp aktivieren" en:"Observe 1-wire adapters with DigiTemp")</label>
 </p>
 
 <p>
 <input type="hidden" name="digitemp_http" value="no">
-<input id="d4" type="checkbox" name="digitemp_http" value="yes"$digitemp_http_chk><label for="d4"></label>
-$(lang de:"Webserver aktiveren auf Port" en:"Activate webserver on port")&nbsp;
+<input id="d4" type="checkbox" name="digitemp_http" value="yes"$digitemp_http_chk>
+<label for="d4">$(lang de:"Webserver aktiveren auf Port" en:"Activate webserver on port")</label>&nbsp;
 <input type="text" name="digitemp_port" size="4" maxlength="5" value="$(html "$RRDSTATS_DIGITEMP_PORT")">
 </p>
 
@@ -299,7 +310,7 @@ fi
 cat << EOF
 <p>
 <input type="hidden" name="digitemp_auth" value="no">
-<input id="a2" type="checkbox" name="digitemp_auth" value="yes"$digitemp_auth_chk><label for="a2">$(lang de:"Authentifizierung" en:"Authentication").</label>
+<input id="a2" type="checkbox" name="digitemp_auth" value="yes"$digitemp_auth_chk><label for="a2">$(lang de:"Authentifizierung" en:"Authentication").&nbsp;</label>
 $(lang de:"Benutzer" en:"User"):
 <input type="text" name="digitemp_user" size="15" maxlength="15" value="$(html "$RRDSTATS_DIGITEMP_USER")">
 $(lang de:"Passwort" en:"Password"):
@@ -331,14 +342,14 @@ max:<input type="text" name="digitemp_u" size="3" maxlength="4" value="$(html "$
 
 <p>
 <input type="hidden" name="digitemp85" value="no">
-<input id="d2" type="checkbox" name="digitemp85" value="yes"$digitemp85_chk><label for="d2"></label>
-$(lang de:"Unterdr&uuml;cke 85,000000&deg;C (Fehler und Werte)" en:"Ignore 185.000000&deg;F (errors and values)")
+<input id="d2" type="checkbox" name="digitemp85" value="yes"$digitemp85_chk>
+<label for="d2">$(lang de:"Unterdr&uuml;cke 85,000000&deg;C (Fehler und Werte)" en:"Ignore 185.000000&deg;F (errors and values)")</label>
 </p>
 
 <p>
 <input type="hidden" name="digitemp_a" value="no">
-<input id="d3" type="checkbox" name="digitemp_a" value="yes"$digitemp_a_chk><label for="d3"></label>
-$(lang de:"Aktiviere Alarmierungs&uuml;berwachung" en:"Activate alert observer")
+<input id="d3" type="checkbox" name="digitemp_a" value="yes"$digitemp_a_chk>
+<label for="d3">$(lang de:"Aktiviere Alarmierungs&uuml;berwachung" en:"Activate alert observer")</label>
 </p>
 
 <p>
