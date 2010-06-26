@@ -97,7 +97,7 @@ backup() {
 	fi
 	mkdir $RRDSTATS_RRDBACKUP 2>/dev/null
 	mkdir $_BACKUPNAME 2>/dev/null
-	cp -p $RRDSTATS_RRDDATA/*.rrd $_BACKUPNAME/ 2>/dev/null
+	cp -pP $RRDSTATS_RRDDATA/*.rrd $_BACKUPNAME/ 2>/dev/null
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
 		if [ "$1" != "silent" ]; then
@@ -139,7 +139,7 @@ restore() {
 	fi
 
 	[ ! -d "$RRDSTATS_RRDDATA" ] && mkdir -p $RRDSTATS_RRDDATA 2>/dev/null
-	cp -p $RRDSTATS_RRDBACKUP/$(echo $(tail -n1 $RRDSTATS_RRDBACKUP/backup.log))/*.rrd $RRDSTATS_RRDDATA/ 2>/dev/null
+	cp -pP $RRDSTATS_RRDBACKUP/$(echo $(tail -n1 $RRDSTATS_RRDBACKUP/backup.log))/*.rrd $RRDSTATS_RRDDATA/ 2>/dev/null
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
 		if [ "$1" != "silent" ]; then
