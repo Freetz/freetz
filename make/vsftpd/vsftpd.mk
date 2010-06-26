@@ -3,7 +3,6 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://vsftpd.beasts.org/users/cevans
 $(PKG)_BINARY:=$($(PKG)_DIR)/vsftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/vsftpd
-$(PKG)_STARTLEVEL=40
 $(PKG)_SOURCE_MD5:=6d6bc136af14c23f8fef6f1a51f55418
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VSFTPD_STATIC

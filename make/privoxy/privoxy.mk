@@ -5,7 +5,6 @@ $(PKG)_SOURCE_MD5:=64d3ffcdf8307e04a375773bb4eb255e
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/privoxy-$($(PKG)_VERSION)-stable
 $(PKG)_BINARY:=$($(PKG)_DIR)/privoxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/privoxy
-$(PKG)_STARTLEVEL=40
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoheader;
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf;

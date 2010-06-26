@@ -5,7 +5,6 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/snmpd
 $(PKG)_TARGET_LIBS:=$($(PKG)_DEST_DIR)/usr/lib/*.so*
-$(PKG)_STARTLEVEL=40
 $(PKG)_SOURCE_MD5:=8080555ab3f90011f25d5122042d9a8d
 
 NETSNMP_MIB_MODULES_INCLUDED:=\
