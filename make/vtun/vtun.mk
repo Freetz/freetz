@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/vtun
 $(PKG)_BINARY:=$($(PKG)_DIR)/vtund
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/vtund
-$(PKG)_STARTLEVEL=50
+$(PKG)_STARTLEVEL=81
 
 ifeq ($(strip $(FREETZ_PACKAGE_VTUN_WITH_LZO)),y)
 $(PKG)_DEPENDS_ON += lzo

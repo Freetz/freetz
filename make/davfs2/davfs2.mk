@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN,1.4.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=c9e8aeb15daeba4b6283b40bb640e908
 $(PKG)_SITE:=http://mirrors.zerg.biz/nongnu/davfs2
-
+$(PKG)_STARTLEVEL=50
 $(PKG)_MOUNT_BINARY:=$($(PKG)_DIR)/src/mount.davfs
 $(PKG)_MOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mount.davfs
 $(PKG)_UMOUNT_BINARY:=$($(PKG)_DIR)/src/umount.davfs

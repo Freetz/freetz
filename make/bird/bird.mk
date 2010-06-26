@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 1.1.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=183c0f8d0218230ca07f0a11afd01fc2
 $(PKG)_SITE:=ftp://bird.network.cz/pub/bird
-$(PKG)_STARTLEVEL=80
+$(PKG)_STARTLEVEL=82
 
 $(PKG)_BINARIES_ALL := bird birdc
 ifeq ($(strip $(FREETZ_PACKAGE_BIRDC)),y)

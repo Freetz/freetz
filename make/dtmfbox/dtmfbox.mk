@@ -11,7 +11,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_BINARY_MENU_SO:=$($(PKG)_DIR)/plugins/menu.plugin/.libs/libmenu.plugin.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/$(pkg)
 $(PKG)_TARGET_BINARY_MENU_SO:=$($(PKG)_TARGET_DIR)/root/usr/lib/libmenu.plugin.so
-$(PKG)_STARTLEVEL=40
+$(PKG)_STARTLEVEL=72
 
 ifneq ($(strip $(FREETZ_PACKAGE_DTMFBOX_SVN)),y)
 $(PKG)_SOURCE_MD5:=40dac2970d1048e554e41ca9b5abedbd

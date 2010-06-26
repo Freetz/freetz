@@ -5,8 +5,7 @@ $(PKG)_SITE:=@SF/ojnk
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
-#start oident before bip
-$(PKG)_STARTLEVEL=50
+$(PKG)_STARTLEVEL=60 # before bip, before ngircd
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 

@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 0.99.16)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=350fb150be526cdfc4d2b093cb4d69a7
 $(PKG)_SITE:=http://www.quagga.net/download
-$(PKG)_STARTLEVEL=80
+$(PKG)_STARTLEVEL=82
 
 # Libraries
 $(PKG)_LIBZEBRA      := libzebra.so.0.0.0

@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=559a864066d8cc4afd8a97682c90d41c
 $(PKG)_SITE:=http://www.stunnel.org/download/stunnel/src
 
-$(PKG)_STARTLEVEL=30
+$(PKG)_STARTLEVEL=81
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)

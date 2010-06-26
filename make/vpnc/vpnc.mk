@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.unix-ag.uni-kl.de/~massar/vpnc
 $(PKG)_BINARY:=$($(PKG)_DIR)/vpnc
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/vpnc
-$(PKG)_STARTLEVEL=40
+$(PKG)_STARTLEVEL=81
 $(PKG)_SOURCE_MD5:=4378f9551d5b077e1770bbe09995afb3
 
 $(PKG)_DEPENDS_ON := libgpg-error libgcrypt

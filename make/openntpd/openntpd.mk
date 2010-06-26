@@ -3,8 +3,9 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenNTPD/
 $(PKG)_BINARY:=$($(PKG)_DIR)/ntpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ntpd
-$(PKG)_STARTLEVEL=40
 $(PKG)_SOURCE_MD5:=afc34175f38d08867c1403d9008600b3
+
+$(PKG)_STARTLEVEL=60 # before aiccu
 
 $(PKG)_CONFIGURE_OPTIONS += --with-builtin-arc4random
 $(PKG)_CONFIGURE_OPTIONS += --with-privsep-user=ntp

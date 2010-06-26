@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/mount.cifs
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mount.cifs
-$(PKG)_STARTLEVEL=30
+$(PKG)_STARTLEVEL=50
 $(PKG)_SOURCE_MD5:=0a05fc528aae1c52046c846d990d26ff
 
 $(PKG_SOURCE_DOWNLOAD)

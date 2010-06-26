@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 2.4.5)
 $(PKG)_SOURCE:=ppp-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=4621bc56167b6953ec4071043fe0ec57
 $(PKG)_SITE:=ftp://ftp.samba.org/pub/ppp
-$(PKG)_STARTLEVEL=40
+$(PKG)_STARTLEVEL=81
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/ppp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/pppd/pppd

@@ -4,7 +4,7 @@ $(PKG)_SOURCE_MD5:=b273ed2b5ec8616fb9834cde8634bce7
 $(PKG)_SITE:=http://openvpn.net/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/openvpn
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
-$(PKG)_STARTLEVEL=50
+$(PKG)_STARTLEVEL=81
 
 $(PKG)_DEPENDS_ON := openssl
 
