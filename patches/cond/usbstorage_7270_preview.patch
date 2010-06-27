@@ -1,7 +1,7 @@
---- etc/hotplug/run_mount.orig	2010-04-28 12:12:01.000000000 +0200
-+++ etc/hotplug/run_mount	2010-05-08 15:33:55.474750211 +0200
+--- etc/hotplug/run_mount.orig	2010-06-11 16:24:16.000000000 +0200
++++ etc/hotplug/run_mount	2010-06-11 22:43:53.275404193 +0200
 @@ -10,22 +10,43 @@
- SYSFS=/var/sysfs
+ SYSFS=/sys
  ## Generate a frontend'able 'nice name' to be used as mount point:
  nicename () {
 -## Find device's strings, remove/translate evil chars...
@@ -57,11 +57,11 @@
  ## Actually perform the mount operation...
  ## (TODO Checking the partition for known filesystem types)
  do_mount () {
-@@ -63,7 +84,7 @@
+@@ -64,7 +85,7 @@
  local OLD_UMASK=`umask`
  umask 0
  local new_filesystem=false
--if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID,$FMASK,$DMASK $DEVNODE $MNTPATH; then
+-if mount -t vfat -o $READMODE,shortname=winnt,uid=$FTPUID,gid=$FTPGID,$FMASK,$DMASK $DEVNODE "$MNTPATH"; then
 +if mount_fs; then
  new_filesystem=true
  else
