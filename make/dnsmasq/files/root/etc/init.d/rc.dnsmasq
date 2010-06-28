@@ -108,13 +108,7 @@ case $1 in
 		;;
 	restart)
 		nomultid=y
-		if ! pidof multid >/dev/null; then
-			modlib_restart
-		else
-			multid -s
-			modlib_restart
-			$MULTID_CMD
-		fi
+		modlib_restart
 		;;
 	status)
 		modlib_status
