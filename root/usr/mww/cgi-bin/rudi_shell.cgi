@@ -38,14 +38,14 @@ cat << EOF
 		}
 		function RudiEdit() {
 			file = document.getElementById("file2edit").value;
-			LF="%0A"
+			LF="\n"
 			tdata = "cat " + file;
-			tcmd = 'script=' +
-				'echo "%23%23 $(lang de:"Rudi-Editor" en:"Rudi Editor")"' + LF +
-				'echo "%23%23 $(lang de:"Bitte umgebende Zeilen NICHT l&ouml;schen" en:"Please DO NOT delete surrounding lines") (\'cat > ...\', \'RUDI_EOF\')"' + LF +
+			tcmd = 'script=' + encodeURIComponent(
+				'echo "## $(lang de:"Rudi-Editor" en:"Rudi Editor")"' + LF +
+				'echo "## $(lang de:"Bitte umgebende Zeilen NICHT entfernen" en:"Please DO NOT delete surrounding lines") (\'cat > ...\', \'RUDI_EOF\')"' + LF +
 				'echo "cat > '+ file + ' << \'RUDI_EOF\'"' + LF +
 				tdata + LF +
-				'echo "RUDI_EOF"';
+				'echo "RUDI_EOF"');
 			tmp = '/cgi-bin/rudi_shellcmd.cgi?pid=$$&onload=parent.copyOut2Cmd()&' + tcmd;
 			parent.frames["shellcmd"].location.href = tmp;
 		}
