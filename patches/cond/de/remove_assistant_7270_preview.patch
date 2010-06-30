@@ -1,98 +1,60 @@
---- usr/www/all/html/de/js/basis.js.orig	2010-06-25 14:42:50.000000000 +0200
-+++ usr/www/all/html/de/js/basis.js	2010-06-27 09:59:12.144127309 +0200
-@@ -163,16 +163,16 @@
- var menu = readCookie("menu");
- var page = readCookie("page");
- if (menu == "konfig") {
--jslGoTo("konfig", "home");
-+jslGoTo("enhsettings", "enhsettings");
- }
- else if (menu == "software") {
--jslGoTo("software", "extern");
-+jslGoTo("enhsettings", "enhsettings");
- }
- else if (menu == "enhsettings") {
- jslGoTo("enhsettings", "enhsettings");
- }
- else {
--jslGoTo("konfig", "home");
-+jslGoTo("enhsettings", "enhsettings");
- }
- }
- function GoToSitemap()
---- usr/www/all/html/de/menus/menu2_konfig.html.orig	2010-06-27 09:59:12.074112055 +0200
-+++ usr/www/all/html/de/menus/menu2_konfig.html	2010-06-27 09:59:12.144127309 +0200
-@@ -14,19 +14,6 @@
- <? setvariable var:showmoremenu 0 ?>
- <? if neq $var:menu 'software' `<? setvariable var:showmoremenu 1 ?>` ?>
- <? if eq '$var:ShowAssiMenu' 1 `
--<li class="separator"><div></div></li>
--<li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="<? echo `$var:aktivpfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">{?txtAssi?}</a><span class="PTextOnly">{?txtAssi?}</span></li>
--<? if eq $var:showFonLotse 1 `
--<li class="LMenuitem" id="FonLotseMenuItem"><a href="javascript:DoFonLotse();">{?txtDevices?}</a><span class="PTextOnly">{?txtDevices?}</span></li>
--` ?>
--<li class="LMenuitem" id="VoipFonLotseMenuItem"><a href="javascript:DoVoipFonLotse();">{?txtNumbers?}</a><span class="PTextOnly">{?txtNumbers?}</span></li>
--<? if eq $var:showInternetLotse 1 `
--<li class="LMenuitem"><a href="javascript:DoInternetLotse();">{?918:5943?}</a><span class="PTextOnly">{?918:2406?}</span></li>
--` ?>
--<li class="LMenuitem"><a href="javascript:DoSaveLotse();">{?918:508?}</a><span class="PTextOnly">{?918:4137?}</span></li>
--<li class="LMenuitem"><a href="javascript:DoFirmwareLotse();">{?txtFWUpdate?}</a><span class="PTextOnly">{?txtFWUpdate?}</span></li>
--<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">{?txtAdvancedSettings?}</a><span class="PTextOnly">{?txtAdvancedSettings?}</span></li>
--<li class="LMenuitemTop"><img class="LMenuPfeil" src="../html/de/images/leer.gif" style="width:7px;"><a href="javascript:jslGoTo('software','extern')">{?txtPrograms?}</a><span class="PTextOnly">{?txtPrograms?}</span></li>
- ` `
- <? if eq '$var:showmoremenu' '1' `
- <script type="text/javascript">setMenuPageCookie("enhsettings","enhsettings");</script>
-@@ -75,7 +62,6 @@
- ` ?>
- <? if eq '$var:menu' 'software' `
- <script type="text/javascript">setMenuPageCookie("software","extern");</script>
--<li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('konfig','home')">{?txtAssi?}</a><span class="PTextOnly">{?txtAssi?}</span></li>
- <li class="LMenuitemTop"><img class="LMenuPfeil" src="<? echo `$var:pfeil` ?>"><a href="javascript:jslGoTo('enhsettings','enhsettings')">{?txtAdvancedSettings?}</a><span class="PTextOnly">{?txtAdvancedSettings?}</span></li>
- <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="../html/de/images/leer.gif" style="width:7px;"><a href="javascript:jslGoTo('software','extern')">{?txtPrograms?}</a><span class="PTextOnly">{?txtPrograms?}</span></li>
- ` ?>
---- usr/www/all/html/logincheck.html.orig	2010-06-25 14:42:49.000000000 +0200
-+++ usr/www/all/html/logincheck.html	2010-06-27 09:59:12.144127309 +0200
-@@ -191,20 +191,9 @@
- var user = "<? query connection0:settings/username ?>";
- var pass = "<? query connection0:settings/password ?>";
- var type = "<? query connection0:settings/type ?>";
--if (oem == "otwo") {
--var BSA_ON=jslGetValue("uiPostBSA_ON");
--if (BSA_ON=="1" && user.indexOf("o2@") == 0) {
--jslSetValue("uiPppProvider","o2");
--jslSetValue("uiO2Mode","2");
--jslSetValue("uiPostBSA_ON","0");
--jslSetValue("uiPostPageName", "first_ISP_o2");
--jslSetValue("uiPostMenu", "first");
--return true;
--}
--}
- if (user=="" && pass=="" && type=="bridge") {
--jslSetValue("uiPostPageName", "first_Start_ISP");
--jslSetValue("uiPostMenu", "first");
-+jslSetValue("uiPostPageName", "home");
-+jslSetValue("uiPostMenu", "home");
- return true;
- }
- }
---- usr/www/all/html/de/home/sitemap.html.orig	2010-06-25 14:42:27.000000000 +0200
-+++ usr/www/all/html/de/home/sitemap.html	2010-06-27 09:59:12.144127309 +0200
-@@ -24,18 +24,6 @@
- <p class="ml10"><a href="javascript:jslGoTo('home', 'syslog');">{?739:2327?}</a></p>
- <p class="ml10"><a href="javascript:jslGoTo('home', 'energy');">{?739:7412?}</a></p>
+--- usr/www/all/templates/menu_page_head.html.orig	2010-06-25 12:37:19.000000000 +0200
++++ usr/www/all/templates/menu_page_head.html	2010-06-30 20:17:37.251348598 +0200
+@@ -55,24 +55,6 @@
  </div>
--<div class="gelb">
--<p class="mb5 fett"><a href="javascript:jslGoTo('konfig', 'home');">{?txtAssi?}</a></p>
--<? if eq $var:showFonLotse 1 `
--<p id="SitemapFonItem" class="ml10"><a href="javascript:DoFonLotse();">{?g_txt_CfgFonDevices?}</a></p>
--` ?>
--<p id="SitemapFonVoipItem" class="ml10"><a href="javascript:DoVoipFonLotse();">{?g_txt_ManageOwnNumbers?}</a></p>
--<? if eq $var:showInternetLotse 1 `
--<p class="ml10"><a href="javascript:DoInternetLotse();">{?g_txt_TestInternetConn?}</a></p>
--` ?>
--<p class="ml10"><a href="javascript:DoSaveLotse();">{?txtSaveSettings?}</a></p>
--<p class="ml10"><a href="javascript:DoFirmwareLotse();">{?txtFWUpdate?}</a></p>
+ </div>
+ <div class="clear_float"></div>
+-<div style="position:relative;top:-21px">
+-<div class="small_bar_left_head"></div>
+-<div class="small_bar_right_head"></div>
+-<div class="small_bar_back_head">
+-<div id="MainWizardhead" style="padding-top:2px;">
+-<?lua
+-menu.write_menu('wizards')
+-?>
 -</div>
- <? setvariable var:title "{?txtINet?}" ?>
- <? setvariable var:showsubmenu 1 ?>
- <? if eq '<? query wlan:settings/WDS_enabled ?>' '1' `
+-</div>
+-<div class="small_bar_left_bottom"></div>
+-<div class="small_bar_right_bottom"></div>
+-<div class="small_bar_back_bottom">
+-<div id="MainWizardbottom">
+-</div>
+-</div>
+-</div>
+-<div class="clear_float"></div>
+ <?lua
+ if box.glob.script=="/home/home.lua" then
+ box.out("<div style=\"position:relative;top:-21px\">")
+--- usr/www/all/html/de/menus/menu2.html.orig	2010-06-25 12:37:07.000000000 +0200
++++ usr/www/all/html/de/menus/menu2.html	2010-06-30 20:28:16.351299363 +0200
+@@ -156,29 +156,6 @@
+ </div>
+ </div>
+ <div class="clear_float"></div>
+-<div style="position:relative;top:-21px">
+-<div class="small_bar_left_head"></div>
+-<div class="small_bar_right_head"></div>
+-<div class="small_bar_back_head">
+-<div id="MainWizardhead" style="padding-top:2px;">
+-<ul >
+-<li>
+-<a href="javascript:jslGoTo('konfig','home')">{?txtAssi?}</a>
+-</li>
+-<li class="explain">
+-{?660:146?}
+-</li>
+-</ul>
+-</div>
+-</div>
+-<div class="small_bar_left_bottom"></div>
+-<div class="small_bar_right_bottom"></div>
+-<div class="small_bar_back_bottom">
+-<div id="MainWizardbottom">
+-</div>
+-</div>
+-</div>
+-<div class="clear_float"></div>
+ <div style="position:relative;top:-21px">
+ <div class="small_bar_left_head"></div>
+ <div class="small_bar_right_head"></div>
+

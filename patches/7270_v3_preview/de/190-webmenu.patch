@@ -1,18 +1,99 @@
---- usr/www/all/html/de/menus/menu2_homehome.html.orig	2010-06-25 14:42:33.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homehome.html	2010-06-26 23:56:54.515984990 +0200
-@@ -58,5 +58,6 @@
- <? if eq $var:pagename energy `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
- <? if eq $var:pagename ecosettings `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
- <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','energy')">{?168:456?}</a><span class="PTextOnly">{?168:856?}</span></li>
-+<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank">Freetz</a><span class="PTextOnly">Freetz</span></li>
- <li class="LMenubottom">&nbsp;</li>
- </ul>
---- usr/www/all/html/de/menus/menu2_konfig.html.orig	2010-06-25 14:42:21.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_konfig.html	2010-06-26 23:56:54.515984990 +0200
-@@ -80,5 +80,6 @@
- <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="../html/de/images/leer.gif" style="width:7px;"><a href="javascript:jslGoTo('software','extern')">{?txtPrograms?}</a><span class="PTextOnly">{?txtPrograms?}</span></li>
+--- usr/www/all/templates/menu_page_end.html.orig	2010-06-25 12:37:07.000000000 +0200
++++ usr/www/all/templates/menu_page_end.html	2010-06-30 21:39:37.601307262 +0200
+@@ -10,7 +10,8 @@
+ link=""
+ end
+ box.out("<a href=\""..link.."\" target=\"_blank\">{?22:2?}</a> | ")
+-box.out("<a href=\"http://www.avm.de\" target=\"_blank\" style=\"margin-right:0px;\">www.avm.de</a> ")
++box.out("<a href=\"http://www.avm.de\" target=\"_blank\" >www.avm.de</a> | ")
++box.out("<a href=\"http://www.freetz.org\" target=\"_blank\" style=\"margin-right:0px;\">www.freetz.org</a>")
+ end
+ ?>
+ </div>
+--- usr/www/all/html/de/menus/menu2.html.orig	2010-06-25 12:37:07.000000000 +0200
++++ usr/www/all/html/de/menus/menu2.html	2010-06-30 21:39:37.601307262 +0200
+@@ -179,6 +179,29 @@
+ </div>
+ </div>
+ <div class="clear_float"></div>
++<div style="position:relative;top:-21px">
++<div class="small_bar_left_head"></div>
++<div class="small_bar_right_head"></div>
++<div class="small_bar_back_head">
++<div id="MainWizardhead" style="padding-top:2px;">
++<ul >
++<li>
++<a href="/cgi-bin/freetz_status">Freetz</a>
++</li>
++<li class="explain">
++Freetz Webinterface
++</li>
++</ul>
++</div>
++</div>
++<div class="small_bar_left_bottom"></div>
++<div class="small_bar_right_bottom"></div>
++<div class="small_bar_back_bottom">
++<div id="MainWizardbottom">
++</div>
++</div>
++</div>
++<div class="clear_float"></div>
  ` ?>
+ </div>
+ </td>
+@@ -205,7 +228,8 @@
+ <a href="http://www.avm.de/de/Service/FAQs/index.php3?js=enabled" target="_blank">{?660:2135?}</a> |
+ <a href="http://www.avm.de/de/Service/FRITZ_Clips/index.php" target="_blank">{?660:9525?}</a> |
+ <a href="<? echo `$var:AccessoryUrl` ?>" target="_blank">{?660:7847?}</a> |
+-<a href="http://www.avm.de" target="_blank">www.avm.de</a>
++<a href="http://www.avm.de" target="_blank">www.avm.de</a> |
++<a href="http://www.freetz.org" target="_blank">www.freetz.org</a>
+ </div>
  ` ?>
-+<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank">Freetz</a><span class="PTextOnly">Freetz</span></li>
- <li class="LMenubottom">&nbsp;</li>
- </ul>
+ </td>
+--- usr/www/all/templates/menu_page_head.html.orig	2010-06-25 12:37:19.000000000 +0200
++++ usr/www/all/templates/menu_page_head.html	2010-06-30 21:39:37.601307262 +0200
+@@ -91,4 +91,23 @@
+ box.out("</div>")
+ end
+ ?>
++<div class="clear_float"></div>
++<div style="position:relative;top:-21px">
++<div class="small_bar_left_head"></div>
++<div class="small_bar_right_head"></div>
++<div class="small_bar_back_head">
++<div id="MainWizardhead" style="padding-top:2px;">
++<?lua
++<?include "menus/menu_freetz.lua" ?>
++menu.write_menu('freetz')
++?>
++</div>
++</div>
++<div class="small_bar_left_bottom"></div>
++<div class="small_bar_right_bottom"></div>
++<div class="small_bar_back_bottom">
++<div id="MainWizardbottom">
++</div>
++</div>
++</div>
+ </div>
+--- usr/www/all/menus/menu_freetz.lua.orig	2010-06-30 21:39:37.601307262 +0200
++++ usr/www/all/menus/menu_freetz.lua	2010-06-30 21:39:37.601307262 +0200
+@@ -0,0 +1,16 @@
++menu.add_item{
++page = "/cgi-bin/freetz_status",
++target = "_blank",
++text = "Freetz",
++menu = "freetz",
++explain = "Freetz Webinterface",
++subpages = {}
++}
++menu.add_item{
++page = "/cgi-bin/freetz_wol",
++target = "_blank",
++text = "Freetz WOL",
++menu = "freetz-wol",
++explain = "Freetz WOL Webinterface",
++subpages = {}
++}
