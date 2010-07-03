@@ -2,14 +2,30 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
+REG=/mod/etc/reg/daemon.reg
 
-eval "$(modcgi branding:pkg:name:rcfile:cmd mod_cgi)"
+eval "$(modcgi branding:pkg:cmd mod_cgi)"
 
 case $MOD_CGI_CMD in
 	start|stop|restart)
-		if [ ! -x "$MOD_CGI_RCFILE" ]; then
+		case $MOD_CGI_PKG in
+			*/*|*..*) exit 2 ;;
+		esac
+		# retrieve package information
+		OIFS=$IFS; IFS="|"
+		set -- $(grep "^$MOD_CGI_PKG|" "$REG")
+		IFS=$OIFS
+		if [ $# -gt 0 ]; then
+			name=$2
+			rcfile=${3:+/mod/etc/init.d/$3}
+		else
+			# fallback (for base packages and AVM services)
+			name=$MOD_CGI_PKG
+			rcfile="/mod/etc/init.d/rc.$MOD_CGI_PKG"
+		fi
+		if [ ! -x "$rcfile" ]; then
 			cgi_begin '$(lang de:"Fehler" en:"Error")'
-			echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Kein Skript f&uuml;r" en:"no script for") '$MOD_CGI_NAME'</p>"
+			echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Kein Skript f&uuml;r" en:"no script for") '${name:-$MOD_CGI_PKG}'</p>"
 			cgi_end
 			exit 1
 		fi
@@ -70,29 +86,16 @@ case $MOD_CGI_CMD in
 		cgi_end
 		reboot
 		;;
-	start)
-		cgi_begin "$(lang de:"Starte" en:"Starting") $MOD_CGI_NAME..."
-		echo "<p>$(lang de:"Starte" en:"Starting") $MOD_CGI_NAME:</p>"
-		echo -n '<pre>'
-		$MOD_CGI_RCFILE start | html
-		echo '</pre>'
-		back_button mod daemons
-		cgi_end
-		;;
-	stop)
-		cgi_begin "$(lang de:"Stoppe" en:"Stopping") $MOD_CGI_NAME..."
-		echo "<p>$(lang de:"Stoppe" en:"Stopping") $MOD_CGI_NAME:</p>"
-		echo -n '<pre>'
-		$MOD_CGI_RCFILE stop | html
-		echo '</pre>'
-		back_button mod daemons
-		cgi_end
-		;;
-	restart)
-		cgi_begin "$(lang de:"Starte $MOD_CGI_NAME neu" en:"Restarting $MOD_CGI_NAME")..."
-		echo "<p>$(lang de:"Starte $MOD_CGI_NAME neu" en:"Restarting $MOD_CGI_NAME"):</p>"
-		echo -n '<pre>'
-		$MOD_CGI_RCFILE restart | html
+	start|stop|restart)
+		cmd=$MOD_CGI_CMD
+		case $cmd in
+			start)   message="$(lang de:"Starte" en:"Starting") $name" ;;
+			stop)    message="$(lang de:"Stoppe" en:"Stopping") $name" ;;
+			restart) message="$(lang de:"Starte $name neu" en:"Restarting $name")" ;;
+		esac
+		cgi_begin "$message ..."
+		echo -n "<p>$message:</p><pre>"
+		"$rcfile" "$cmd" | html
 		echo '</pre>'
 		back_button mod daemons
 		cgi_end
