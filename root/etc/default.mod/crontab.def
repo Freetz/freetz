@@ -2,5 +2,5 @@ CAPTION='Freetz: crontab'
 DESCRIPTION='Syntax: $(lang de:"Minute Stunde Tag Monat Wochentag Befehl" en:"minute hour day month day-of-week command")'
 
 CONFIG_FILE='/tmp/flash/mod/crontab'
-CONFIG_SAVE='cp /tmp/flash/mod/crontab /var/spool/cron/crontabs/root; modsave flash; if [ -n "$(pidof crond)" ]; then echo ""; /mod/etc/init.d/rc.crond restart; fi'
+CONFIG_SAVE='/mod/etc/init.d/rc.crond reload; modsave flash'
 CONFIG_TYPE='text'

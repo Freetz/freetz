@@ -8,9 +8,9 @@ CONF_ENABLED=MOD_CROND
 
 config() {
 	if [ -r /tmp/flash/mod/crontab ]; then
-		cp /tmp/flash/mod/crontab /var/spool/cron/crontabs/root
+		crontab -u root /tmp/flash/mod/crontab
 	else
-		touch /var/spool/cron/crontabs/root
+	    	crontab -u root /dev/null
 	fi
 }
 
@@ -38,11 +38,14 @@ case $1 in
 	restart)
 		modlib_restart
 		;;
+	reload)
+		config
+		;;
 	status)
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
 		exit 1
 		;;
 esac
