@@ -21,8 +21,7 @@ $(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-$(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) \
-				| $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
+$(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 	$(RM) -r $(KERNEL_DIR)
 	mkdir -p $(KERNEL_BUILD_DIR)
 	@$(call _ECHO,checking structure... )
