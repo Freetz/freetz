@@ -120,7 +120,7 @@ _cgi_location() {
 				packages)  "$out" "/cgi-bin/packages.cgi" ;;
 				system)    "$out" "/cgi-bin/system.cgi" ;;
 				conf)      _cgi_location "$out" cgi mod ;;
-				update)    "$out" "/cgi-bin/firmware_update.cgi" ;;
+				update)    "$out" "/cgi-bin/update/firmware.cgi" ;;
 			esac
 			;;
 		*)    "$out" "/error/unknown-type" "$type" ;;
@@ -225,9 +225,9 @@ if [ "$sub" = system ]; then
 	. /usr/lib/libmodredir.sh
 	cat <<- EOF
 	<ul>
-	<li><a id="backup_restore" href="/cgi-bin/backup_restore.cgi">$(lang de:"Sichern &amp; Wiederherstellen" en:"Backup &amp; restore")</a></li>
-	<li><a id="firmware_update" href="/cgi-bin/firmware_update.cgi">$(lang de:"Firmware-Update" en:"Firmware update")</a></li>
-	<li><a id="rudi_shell" href="/cgi-bin/rudi_shell.cgi" target="_blank">$(lang de:"Rudi-Shell" en:"Rudi shell")</a></li>
+	<li><a id="backup_restore" href="/cgi-bin/backup/index.cgi">$(lang de:"Sichern &amp; Wiederherstellen" en:"Backup &amp; restore")</a></li>
+	<li><a id="firmware_update" href="$(href mod update)">$(lang de:"Firmware-Update" en:"Firmware update")</a></li>
+	<li><a id="rudi_shell" href="/cgi-bin/shell/index.cgi" target="_blank">$(lang de:"Rudi-Shell" en:"Rudi shell")</a></li>
 	<li><a id="avmwif_link" href="http://$(self_host)/" target="_blank">$(lang de:"AVM-Webinterface" en:"AVM web interface")</a></li>
 	</ul>
 	EOF

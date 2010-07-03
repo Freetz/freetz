@@ -51,7 +51,7 @@ button. If remote update is selected, the box restarts automatically after 30
 seconds."
 )</p>
 
-<form action="/cgi-bin/do_update.cgi" method="POST" enctype="multipart/form-data" onsubmit="return CheckInput(document.forms[0]);">
+<form action="do_firmware.cgi" method="POST" enctype="multipart/form-data" onsubmit="return CheckInput(document.forms[0]);">
 	<p>
 	$(lang de:"Firmware-Image" en:"Firmware image")
 	<input type=file size=50 id="fw_file">
@@ -73,7 +73,7 @@ seconds."
 <br style="clear: both;">
 <br>
 
-<form class="btn" action="/cgi-bin/external_update.cgi" method="GET">
+<form class="btn" action="external.cgi" method="GET">
 	<input type="submit" value="external (optional)" style="width:150px">
 </form>
 

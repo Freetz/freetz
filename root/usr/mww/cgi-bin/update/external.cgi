@@ -26,7 +26,7 @@ $(lang de:"die Box geladen und dort entpackt. Anschlie&szlig;end sollte die ents
 $(lang de:"geflasht werden." en:"flash the expected firmware")
 <p>
 
-<form action="/cgi-bin/do_external.cgi" method=POST enctype="multipart/form-data" onsubmit="return CheckInput(document.forms[0]);">
+<form action="do_external.cgi" method=POST enctype="multipart/form-data" onsubmit="return CheckInput(document.forms[0]);">
 	$(lang de:"external-Datei" en:"external-file") <input type=file size=50 id="ex_file">
 	<p>
 	$(lang de:"Zielverzeichnis" en:"target directory") <input type="textfield" size=50 name="the_target" value="/var/media/ftp/uStor01/external">

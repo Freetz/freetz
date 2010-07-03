@@ -18,7 +18,7 @@ original firmware settings as well as Freetz and other installed extensions
 (e.g. LCR Updater)."
 )</p>
 
-<form action="/cgi-bin/do_backup.cgi" method="GET">
+<form action="do_backup.cgi" method="GET">
 	<p><input type=submit value="$(lang de:"Sichern" en:"Save")"></p>
 </form>
 
@@ -40,7 +40,7 @@ alle Einstellungen zu aktivieren. Bitte danach die Einstellungen &uuml;berpr&uum
 configuration. Please remember to double-check all settings afterwards!"
 )</i></b></p>
 
-<form action="/cgi-bin/do_restore.cgi" method="POST" enctype="multipart/form-data">
+<form action="do_restore.cgi" method="POST" enctype="multipart/form-data">
 	<p><input type=file name="uploadfile"></p>
 	<p><input type=checkbox name="freetz_only">$(lang de:"Nur Freetz-Einstellungen wiederherstellen" en:"Restore Freetz settings only")<br>
 	<input type=checkbox name="restart" checked>$(lang de:"Neustart nach Wiederherstellung" en:"Reboot after restore")</p>
