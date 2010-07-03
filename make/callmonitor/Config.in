@@ -12,7 +12,7 @@ config FREETZ_PACKAGE_CALLMONITOR
 config FREETZ_PACKAGE_CALLMONITOR_webif
 	bool "Web interface"
 	default y
-	depends FREETZ_PACKAGE_CALLMONITOR
+	depends FREETZ_PACKAGE_CALLMONITOR && (FREETZ_PACKAGE_CALLMONITOR_monitor || FREETZ_PACKAGE_CALLMONITOR_phonebook)
 	help
 		This options installs a number of configuration pages in Freetz's Web
 		interface. 
@@ -20,6 +20,9 @@ config FREETZ_PACKAGE_CALLMONITOR_webif
 		Say YES here unless you feel comfortable configuring Callmonitor via
 		text files. Which parts of the configuration pages are actually
 		displayed may depend on the installed features.
+
+comment "Web interface [disabled]"
+	depends FREETZ_PACKAGE_CALLMONITOR && ! (FREETZ_PACKAGE_CALLMONITOR_monitor || FREETZ_PACKAGE_CALLMONITOR_phonebook)
 
 config FREETZ_PACKAGE_CALLMONITOR_actions
 	bool "Actions"
