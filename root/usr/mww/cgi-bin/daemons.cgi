@@ -35,21 +35,13 @@ stat_line() {
 	$hide && return
 
 	local start=false stop=false
-	status="$("$rcfile" status 2> /dev/null)"
-	case "$status" in
-		running)
+	local status=$("$rcfile" status 2> /dev/null)
+	case $status in
+		running | 'running (inetd)')
 			class=running
 			stop=true
 			;;
-		stopped)
-			class=stopped
-			start=true
-			;;
-		'running (inetd)')
-			class=running
-			stop=true
-			;;
-		'stopped (inetd)')
+		stopped | 'stopped (inetd)')
 			class=stopped
 			start=true
 			;;
@@ -127,7 +119,7 @@ stat_static() {
 
 	if [ -r "$REG" ]; then
 		while IFS='|' read -r pkg name rcscript disable hide parentpkg; do
-			stat_line "$pkg" "$name" "$rcscript" $disable $hide "$parentpkg"
+			stat_line "$pkg" "$name" "$rcscript" "$disable" "$hide" "$parentpkg"
 		done < "$REG"
 	fi
 	if [ ! -s "$REG" ]; then
