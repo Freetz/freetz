@@ -7,11 +7,8 @@ CONF_ENABLED=MOD_CROND
 . /etc/init.d/modlibrc
 
 config() {
-	if [ -r /tmp/flash/mod/crontab ]; then
-		crontab -u root /tmp/flash/mod/crontab
-	else
-	    	crontab -u root /dev/null
-	fi
+	cat /tmp/flash/mod/crontab /etc/cron.d/* 2> /dev/null |
+	crontab -u root -
 }
 
 start() {
