@@ -3,7 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-# redirect stderr to stdout so we see ouput in webif
+# redirect stderr to stdout so we see output in webif
 exec 2>&1
 
 update_inetd() {
