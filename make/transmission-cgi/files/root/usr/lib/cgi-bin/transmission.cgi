@@ -4,6 +4,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 check "$TRANSMISSION_ENABLED" yes:auto "*":man
+select "$TRANSMISSION_LOGLEVEL" 2:loginfo 3:logdebug "*":logerror
 select "$TRANSMISSION_PEERENCRYPTIONMODE" \
 	ENCRYPTION_REQUIRED:requireencryption \
 	ENCRYPTION_PREFERRED:preferencryption \
@@ -39,6 +40,21 @@ EOF
 
 sec_end
 
+sec_begin '$(lang de:"Logging" en:"Logging")'
+
+cat << EOF
+<p>
+<label for='loglevel'>Log-Level: </label>
+<select name='loglevel' id='loglevel'>
+<option value='1'$logerror_sel>ERROR</option>
+<option value='2'$loginfo_sel>INFO</option>
+<option value='3'$logdebug_sel>DEBUG</option>
+</select>
+</p>
+
+EOF
+
+sec_end
 
 sec_begin '$(lang de:"Arbeitsverzeichnisse" en:"Working Directories")'
 

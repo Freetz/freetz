@@ -1,0 +1,17 @@
+--- daemon/daemon.c
++++ daemon/daemon.c
+@@ -77,4 +77,5 @@
+     { 'd', "dump-settings", "Dump the settings and exit", "d", 0, NULL },
+     { 'e', "logfile", "Dump the log messages to this filename", "e", 1, "<filename>" },
++    { 811, "log-level", "Log-level (Default: 2 (INFO))", "ll", 1, "<integer>" },
+     { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", 0, NULL },
+     { 'g', "config-dir", "Where to look for configuration files", "g", 1, "<path>" },
+@@ -357,6 +358,8 @@
+                       if( logfile == NULL )
+                           fprintf( stderr, "Couldn't open \"%s\": %s\n", optarg, tr_strerror( errno ) );
+                       break;
++            case 811: tr_bencDictAddInt( &settings, TR_PREFS_KEY_MSGLEVEL, atoi( optarg ) );
++                      break;
+             case 'f': foreground = TRUE;
+                       break;
+             case 'g': /* handled above */
