@@ -1,23 +1,37 @@
 #!/bin/sh
 
 DAEMON=bip
-CONF_FILE=/tmp/flash/$DAEMON/bip.conf
 PID_FILE=/var/run/$DAEMON.pid
+
+USER_CONF=/tmp/flash/$DAEMON/bip_user.conf
+CONFIG_FILE=/mod/etc/bip.conf
 
 . /etc/init.d/modlibrc
 
+config() {
+	(
+		if [ -x "/tmp/flash/$DAEMON/${DAEMON}_conf" ]; then
+			/tmp/flash/$DAEMON/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
+	) > $CONFIG_FILE
+
+	# merge daemon and user config
+	cat $USER_CONF >> $CONFIG_FILE
+}
 
 start() {
 	DAEMON_ENV="HOME=$HOME"
-	modlib_startdaemon bip -f $CONF_FILE $BIP_CMDLINE
+	modlib_startdaemon $DAEMON -f $CONFIG_FILE $BIP_CMDLINE
 }
 
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "$CONF_FILE" ] && /etc/default.$DAEMON/bip_conf > $CONF_FILE
+		[ ! -e "$USER_CONF" ] && cat /etc/default.$DAEMON/bip_user.conf > $USER_CONF
 
-		modreg file $DAEMON conf 'bip: bip.conf' 1 "bip_conf"
+		modreg file $DAEMON user_conf 'Bip: user config' 1 "bip_user_conf"
 		modreg cgi $DAEMON bip
 
 		modlib_start $BIP_ENABLED 
