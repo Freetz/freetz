@@ -21,20 +21,20 @@ sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
 cat << EOF
 <p>
-<a href="$(href file bip conf)">$(lang de:"Zum Bearbeiten der bip.conf hier klicken." en:"To edit the bip.conf click here.")</a>
+<a href="$(href file bip user_conf)">$(lang de:"Zum Bearbeiten der Konfiguration hier klicken." en:"To edit the configuration click here.")</a>
 </p>
 <h2>$(lang de:"Port:" en:"Port:")</h2>
 <p><input type="text" name="port" size="55" maxlength="250" value="$(html "$BIP_PORT")"></p>
 <p>
-<input type="hidden" name="logsystem" value="false">
-<input id="m2" type="checkbox" name="logsystem" value="yes"$LOG_SYSTEM><label for="m2">$(lang de:"Log System (bip internes Logsystem)" en:"Log System (bip's internal message logging)")</label>
+<input type="hidden" name="log_system" value="false">
+<input id="m2" type="checkbox" name="log_system" value="yes"$BIP_LOG_SYSTEM><label for="m2">$(lang de:"Log System (bip internes Logsystem)" en:"Log System (bip's internal message logging)")</label>
 </p>
 <h2>$(lang de:"Loglevel:" en:"Loglevel:")</h2>
-<p><input type="text" name=loglevel" size="55" maxlength="250" value="$(html "$BIP_LOGLEVEL")"></p>
+<p><input type="text" name=log_level" size="55" maxlength="250" value="$(html "$BIP_LOG_LEVEL")"></p>
 <h2>$(lang de:"Log Root:" en:"Log root:")</h2>
-<p><input type="text" name=logroot" size="55" maxlength="250" value="$(html "$BIP_LOG_ROOT")"></p>
+<p><input type="text" name=log_root" size="55" maxlength="250" value="$(html "$BIP_LOG_ROOT")"></p>
 <h2>$(lang de:"Log Format:" en:"Log format:")</h2>
-<p><input type="text" name=logformat" size="55" maxlength="250" value="$(html "$BIP_LOG_FORMAT")"></p>
+<p><input type="text" name=log_format" size="55" maxlength="250" value="$(html "$BIP_LOG_FORMAT")"></p>
 <p>
 <input type="hidden" name="log" value="true">
 <input id="m1" type="checkbox" name="log" value="no"$BIP_LOG><label for="m1">$(lang de:"Log (Aktiviere logging und backlogging)" en:"Log (Enable logging and backlogging)")</label>
