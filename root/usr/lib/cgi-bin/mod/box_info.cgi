@@ -9,12 +9,20 @@ let _width=$_cgi_width-236
 notdefined='$(lang de:"unbekannt" en:"unknown")'
 divstyle="style='margin-top:6px;'"
 
+getNetworkInfo() {
+ifconfig | sed -ne '/^[^ ^\t][a-z0-9:]*[ \t]*Link encap:/N/inet addr:/N/inet addr/s/[ \t]*\n[ \t]*/ /gp'\
+| sed -e 's/ UP .*//;s/[ \t]*Link encap:\([^ ]*\).*inet addr:\([0-9.]*\)/ \1 \2/;s/[ \t]*Mask:[0-9.]*//;s/[ \t]*Bcast:[0-9.]*//;s/[ \t]*Scope:.*//;s/[ \t]*inet6 addr: / /;s/[ \t]*P-t-P:[0-9.]*//'\
+| while read interface itype ipv4 ipv6
+	do
+		hostname="$(sed -ne "/^${ipv4}[ \t][ \t]*/s/[0-9.]*[ \t]*//p" /etc/hosts | sed -e 's/[ \t]/; /g')"
+		echo "$interface $itype $ipv4 $hostname"
+	done
+}
+
 if [ -r /var/env ]; then
 	while read -r key value; do
 		case $key in
 			bootloaderVersion) loaderversion=$value ;;
-			cpufrequency)	let cpu_frequency=value/1000000 ;;
-			sysfrequency)	let sys_frequency=value/1000000 ;;
 			my_ipaddress)	ip_init_address=$value ;;
 			maca)		mac_lan=$value ;;
 			macdsl)		mac_dsl=$value ;;
@@ -23,8 +31,6 @@ if [ -r /var/env ]; then
 	done < /var/env
 else
 	loaderversion=$notdefined
-	cpu_frequency=$notdefined
-	sys_frequency=$notdefined
 	ip_init_address=$notdefined
 	mac_lan=$notdefined
 	mac_dsl=$notdefined
@@ -68,16 +74,40 @@ sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware")'
 	echo '<b>CPU$(lang de:"-Modell" en:" model"):</b> '$cpu_model
  fi
  echo "</div>"
- echo -n '<div '$divstyle'><b>$(lang de:"CPU-Frequenz" en:"CPU frequency"):</b> '$cpu_frequency' MHz&nbsp;&nbsp;&nbsp;'
- echo '<b>$(lang de:"Systemfrequenz" en:"System frequency"):</b> '$sys_frequency' MHz</div>'
+ echo '<div '$divstyle'><b>$(lang de:"Taktfrequenzen" en:"Clock frequencies"):</b><br>'
+ sed 's/^[A-Z0-9 ]*Clock: //;s/\([A-Za-z0-9]*:\)/  <b>\1<\/b> /g;s/DSP:/<br>DSP:/;s/VBUS:/<br>VBUS:/;s/^ *//;s/ /\&nbsp\;/g' /proc/clocks 2>/dev/null
+ echo '</div>' 
  echo '<div '$divstyle'><b>$(lang de:"Betriebsstundenz&auml;hler" en:"Operating hours counter"):</b> '$run_clock'</div>'
 sec_end
 
 sec_begin '$(lang de:"Netzwerk" en:"Network")'
  host_name=$(hostname)
+ ext_name="$(sed 's/.*[ \t]//g' /var/tmp/ddnsstat.txt 2>/dev/null)"
  act_ip=$(hostname -i)
- echo '<div '$divstyle'><b>$(lang de:"Aktuelle IP-Adresse" en:"Current IP address"):</b> '$act_ip'&nbsp;&nbsp;&nbsp;<b>Hostname:</b> '$host_name'</div>'
- echo '<div '$divstyle'><b>Urloader-IP$(lang de:"-Adresse" en:" address"):</b> '$ip_init_address'<br></div>'
+ pubip="$(/usr/bin/get_ip -d)"
+ echo '<table width="100%"><tr><td><b>$(lang de:"Netze" en:"Networks"):</b></td>'
+ echo '<td><b><small>IP-$(lang de:"Adresse" en:"Address")</small></b></td>'
+ echo '<td><b><small>Hostname</small></b></td></tr>'
+ if [ -n "$pubip" ]
+ then
+	echo '<tr><td><b><small>$(lang de:"&Ouml;ffentlich" en:"Public")</small></b></td>'
+	echo "<td>$pubip</td>"
+	[ -n "$ext_name" ] && ping_ip=$(ping -c 1 -W 1 "$ext_name" 2>/dev/null | sed -n 's/^PING .*(\(.*\)).*/\1/p')
+	[ "$pubip" = "$ping_ip" ] && echo "<td>$ext_name</td>"
+	echo '</tr>'
+ fi
+ echo '<tr><td><b><small>$(lang de:"Intern" en:"Internal")</small></b></td>'
+ echo "<td>$act_ip</td><td>$host_name</td></tr>"
+ echo '<tr><td><b><small>$(lang de:"Urloader" en:"Boot loader")</small></b></td>'
+ echo "<td>$ip_init_address</td></tr></table>"
+
+ echo '<table width="100%"><tr><td><b>$(lang de:"Schnittstellen" en:"Interfaces"):&nbsp;&nbsp;</b></td><td><b><small>$(lang de:"Protokoll" en:"Protocol")</small></b></td>'
+ echo '<td><b><small>$(lang de:"IP-Adresse" en:"IP address")</small></b></td><td><b><small>$(lang de:"Namen" en:"Names")</small></b></td></tr>'
+ getNetworkInfo | while read i p a n; do
+	[ -z "$(echo "$a" | grep -E '169.|127.')" ] && echo "<tr><td>$i</td><td>$p</td><td>$a</td><td><small>$n</small></td></tr>"
+ done
+ echo '</table>'
+
  echo '<div '$divstyle'><b>MAC$(lang de:"-Adressen" en:" address"):</b><br>'
  echo '<b>DSL:</b> <small>'$mac_dsl'</small>&nbsp;&nbsp;&nbsp;<b>LAN:</b> <small>'$mac_lan'</small>&nbsp;&nbsp;&nbsp;<b>WLAN:</b> <small>'$mac_wlan'</small></div>'
 sec_end
