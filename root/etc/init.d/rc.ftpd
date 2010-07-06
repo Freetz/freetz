@@ -22,6 +22,8 @@ if [ -z "$FTPD_INETD" ]; then
 fi
 [ -z "$FTPD_PORT" ] && FTPD_PORT=21
 
+_ftpd_users=$(/sbin/ftpd --help 2>&1 | grep "linux users")
+
 pid()
 {
 	cat "$PIDFILE"
@@ -34,14 +36,13 @@ set_parameters()
 	[ -z "$FTPD_HOST_STRING" ] && local ftp_host="$(echo $CONFIG_PRODUKT_NAME |tr -d ' ')" || local ftp_host="$FTPD_HOST_STRING"
 	local ftp_daemon_opts="-D --pidfile=$PIDFILE -m $FTPD_MAX_CLIENTS "
 	local ftp_options="-q -t $FTPD_TIMEOUT"
-	AVM_FTP_USER=$(echo usbhost.users_enabled | usbcfgctl -s)
-	if [ "$AVM_FTP_USER" = "yes" ];	then
-		local ftp_options="$ftp_options -U"
-	else
-		AVM_FTP_RO=$(echo usbhost.readonly | usbcfgctl -s)
-		if [ "$AVM_FTP_RO" != "no" ]
-		then
-			local ftp_options="$ftp_options -r"
+	if  [ "$_ftpd_users" ]; then
+		AVM_FTP_USER=$(echo usbhost.users_enabled | usbcfgctl -s)
+		if [ "$AVM_FTP_USER" = "yes" ];	then
+			local ftp_options="$ftp_options -U"
+		else
+			AVM_FTP_RO=$(echo usbhost.readonly | usbcfgctl -s)
+			[ "$AVM_FTP_RO" != "no" ] && local ftp_options="$ftp_options -r"
 		fi
 	fi
 	if [ -n "$BINARY" ]; then
