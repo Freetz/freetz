@@ -32,7 +32,7 @@ EOF
 	esac
 else
 	if [ -r "$DOWNLOGFILE" ]; then
-		echo -n '<pre style="width: 500px; overflow: auto;">'
+		echo -n '<pre style="width: 500px;">'
 		html < "$DOWNLOGFILE"
 		echo '</pre>'
 		echo -n "<div class="btn"><form class="btn" action="$SELF"><input type="hidden" name="cmd" value="remove"><input type="submit" value='$(lang de:"Protokolldatei löschen" en:"Delete log file")'></form></div>"

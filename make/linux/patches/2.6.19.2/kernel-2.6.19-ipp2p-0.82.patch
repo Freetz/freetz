@@ -1,6 +1,5 @@
-diff -uaNr b/net/ipv4/netfilter/ipt_ipp2p.c linux-2.6.19.2/net/ipv4/netfilter/ipt_ipp2p.c
---- b/net/ipv4/netfilter/ipt_ipp2p.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/net/ipv4/netfilter/ipt_ipp2p.c	2009-02-28 14:41:44.000000000 +0100
+--- linux-2.6.19.2/net/ipv4/netfilter/ipt_ipp2p.c.orig	2010-06-20 14:10:45.886535212 +0200
++++ linux-2.6.19.2/net/ipv4/netfilter/ipt_ipp2p.c	2010-06-20 14:10:45.886535212 +0200
 @@ -0,0 +1,894 @@
 +#if defined(MODVERSIONS)
 +#include <linux/modversions.h>
@@ -896,9 +895,8 @@ diff -uaNr b/net/ipv4/netfilter/ipt_ipp2p.c linux-2.6.19.2/net/ipv4/netfilter/ip
 +module_exit(fini);
 +
 +
-diff -uaNr b/net/ipv4/netfilter/Kconfig linux-2.6.19.2/net/ipv4/netfilter/Kconfig
---- b/net/ipv4/netfilter/Kconfig	2009-02-28 14:34:22.000000000 +0100
-+++ linux-2.6.19.2/net/ipv4/netfilter/Kconfig	2009-02-28 14:40:57.000000000 +0100
+--- linux-2.6.19.2/net/ipv4/netfilter/Kconfig.orig	2010-06-20 14:10:45.816550828 +0200
++++ linux-2.6.19.2/net/ipv4/netfilter/Kconfig	2010-06-20 14:10:45.886535212 +0200
 @@ -248,6 +248,15 @@
  
  	  To compile it as a module, choose M here.  If unsure, say N.
@@ -915,10 +913,9 @@ diff -uaNr b/net/ipv4/netfilter/Kconfig linux-2.6.19.2/net/ipv4/netfilter/Kconfi
  config IP_NF_MATCH_LAYER7
  	tristate "Layer 7 match support (EXPERIMENTAL)"
  	depends on IP_NF_IPTABLES && IP_NF_CT_ACCT && IP_NF_CONNTRACK && EXPERIMENTAL
-diff -uaNr b/net/ipv4/netfilter/Makefile linux-2.6.19.2/net/ipv4/netfilter/Makefile
---- b/net/ipv4/netfilter/Makefile	2009-02-28 14:34:22.000000000 +0100
-+++ linux-2.6.19.2/net/ipv4/netfilter/Makefile	2009-02-28 14:41:10.000000000 +0100
-@@ -65,6 +65,7 @@
+--- linux-2.6.19.2/net/ipv4/netfilter/Makefile.orig	2010-06-20 14:10:45.816550828 +0200
++++ linux-2.6.19.2/net/ipv4/netfilter/Makefile	2010-06-20 14:10:45.886535212 +0200
+@@ -70,6 +70,7 @@
  obj-$(CONFIG_IP_NF_MATCH_STEALTH) += ipt_stealth.o
  
  obj-$(CONFIG_IP_NF_MATCH_LAYER7) += ipt_layer7.o
@@ -926,9 +923,8 @@ diff -uaNr b/net/ipv4/netfilter/Makefile linux-2.6.19.2/net/ipv4/netfilter/Makef
  
  # targets
  obj-$(CONFIG_IP_NF_TARGET_REJECT) += ipt_REJECT.o
-diff -uaNr b/include/linux/netfilter_ipv4/ipt_ipp2p.h linux-2.6.19.2/include/linux/netfilter_ipv4/ipt_ipp2p.h
---- b/include/linux/netfilter_ipv4/ipt_ipp2p.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/include/linux/netfilter_ipv4/ipt_ipp2p.h	2006-09-27 11:59:59.000000000 +0200
+--- linux-2.6.19.2/include/linux/netfilter_ipv4/ipt_ipp2p.h.orig	2010-06-20 14:10:45.886535212 +0200
++++ linux-2.6.19.2/include/linux/netfilter_ipv4/ipt_ipp2p.h	2010-06-20 14:10:45.886535212 +0200
 @@ -0,0 +1,31 @@
 +#ifndef __IPT_IPP2P_H
 +#define __IPT_IPP2P_H

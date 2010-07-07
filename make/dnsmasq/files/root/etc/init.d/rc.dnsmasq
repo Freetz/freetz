@@ -138,11 +138,9 @@ case "$1" in
 		stop
 		;;
 	restart)
-		multid -s > /dev/null 2>&1
 		stop nomultid
 		sleep 1
 		start nomultid
-		$MULTID > /dev/null 2>&1
 		;;
 	status)
 		modlib_status

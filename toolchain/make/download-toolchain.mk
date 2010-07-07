@@ -16,6 +16,9 @@ KERNEL_TOOLCHAIN_MD5SUM:=79395130ec54cb42807fcd79628c8597
 TARGET_TOOLCHAIN_0_9_28_MD5SUM:=c668571014dff59b307c0b7be956d5a6
 TARGET_TOOLCHAIN_0_9_29_MD5SUM:=6d7a0f928d688754879dcc36adc9ae94
 
+cross_compiler_kernel:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
+cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
+
 $(KERNEL_TOOLCHAIN_DIR):
 	@mkdir -p $@
 
@@ -31,12 +34,13 @@ ifeq ($(strip $(TARGET_TOOLCHAIN_UCLIBC_VERSION)),0.9.28)
 else
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TARGET_TOOLCHAIN_SOURCE) "" $(TARGET_TOOLCHAIN_0_9_29_MD5SUM)
 endif
-download-toolchain: $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc kernel-configured \
+download-toolchain: $(cross_compiler_kernel) kernel-configured \
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc \
 			$(ROOT_DIR)/lib/libc.so.0 $(ROOT_DIR)/lib/libgcc_s.so.1 \
 			$(CCACHE)
 
-$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc: $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | \
+gcc-kernel: $(cross_compiler_kernel)
+$(cross_compiler_kernel): $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | \
 		$(KERNEL_TOOLCHAIN_SYMLINK) $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
 	$(RM) $(TOOLCHAIN_DIR)/kernel
@@ -44,7 +48,8 @@ $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc: $(DL_DIR)/$(KER
 	-@ln -s $(BUILD_DIR)/gcc-$(KERNEL_TOOLCHAIN_GCC_VERSION)/mipsel-unknown-linux-gnu $(TOOLCHAIN_DIR)/kernel
 	@touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) | \
+gcc: $(cross_compiler)
+$(cross_compiler): $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) | \
 		$(TARGET_TOOLCHAIN_SYMLINK) $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
 	$(RM) $(TOOLCHAIN_DIR)/target
@@ -63,10 +68,5 @@ kernel-toolchain-dirclean:
 	rm -f $(TOOLCHAIN_DIR)/kernel
 
 target-toolchain-dirclean:
-	rm -rf $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
-	rm -f $(TOOLCHAIN_DIR)/target
 
-kernel-toolchain-distclean: kernel-toolchain-dirclean
-
-target-toolchain-distclean: target-toolchain-dirclean
-
+.PHONY: gcc-kernel gcc

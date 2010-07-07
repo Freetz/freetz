@@ -1,6 +1,6 @@
---- etc/hotplug/storage.orig	2010-02-05 20:27:10.000000000 +0100
-+++ etc/hotplug/storage	2010-02-05 20:27:53.000000000 +0100
-@@ -210,6 +210,10 @@
+--- etc/hotplug/storage.orig	2010-06-27 14:43:14.852098944 +0200
++++ etc/hotplug/storage	2010-06-27 14:43:14.952096498 +0200
+@@ -207,6 +207,10 @@
  local DEVICE=$1
  local MPOINT=$2
  local MPNAME="${MPOINT##*/}"
@@ -9,5 +9,5 @@
 +
 +[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $MPOINT
  test -x $MSTOP && $MSTOP
- if test -x /bin/inetdctl ; then
- inetdctl disable ftpd
+ for MP in $FTPDIR/* ; do
+ grep " $MP " /proc/mounts | grep "^/dev/sd" > /dev/null || continue
