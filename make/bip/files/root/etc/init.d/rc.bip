@@ -29,10 +29,10 @@ start() {
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "$USER_CONF" ] && cat /etc/default.$DAEMON/bip_user.conf > $USER_CONF
+		[ ! -e "$USER_CONF" ] && cat /mod/etc/default.$DAEMON/bip_user.conf > $USER_CONF
 
 		modreg file $DAEMON user_conf 'Bip: user config' 1 "bip_user_conf"
-		modreg cgi $DAEMON bip
+		modreg cgi $DAEMON Bip
 
 		modlib_start $BIP_ENABLED 
 		;;
