@@ -75,7 +75,7 @@ sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware")'
  fi
  echo "</div>"
  echo '<div '$divstyle'><b>$(lang de:"Taktfrequenzen" en:"Clock frequencies"):</b><br>'
- sed 's/^[A-Z0-9 ]*Clock: //;s/\([A-Za-z0-9]*:\)/  <b>\1<\/b> /g;s/DSP:/<br>DSP:/;s/VBUS:/<br>VBUS:/;s/^ *//;s/ /\&nbsp\;/g' /proc/clocks 2>/dev/null
+ sed 's/ [ ]*/ /g;s/^Clocks: //;s/^[A-Z0-9 ]*Clock: //;s/\([A-Za-z0-9]*:\)[ ]*\([0-9,.]*\)[ ]*\([a-zA-Z]*\) */<b>\1<\/b>\&nbsp\;\2\&nbsp\;\3\&nbsp\;\&nbsp\; /g;' /proc/clocks 2>/dev/null
  echo '</div>' 
  echo '<div '$divstyle'><b>$(lang de:"Betriebsstundenz&auml;hler" en:"Operating hours counter"):</b> '$run_clock'</div>'
 sec_end
