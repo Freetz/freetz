@@ -1,8 +1,5 @@
 cgi_begin "$TITLE" "file:$PACKAGE/$FILE_ID"
 
-# Defaults
-TEXT_ROWS=18
-
 # Set width
 let _width=_cgi_width-230
 

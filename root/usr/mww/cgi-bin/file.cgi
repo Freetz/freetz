@@ -25,6 +25,9 @@ if [ $# -eq 0 ]; then
 	exit
 fi
 
+# Defaults
+TEXT_ROWS=18
+
 # Load config
 [ -r "$def" ] && . "$def"
 
