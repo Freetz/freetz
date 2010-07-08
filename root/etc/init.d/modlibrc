@@ -21,6 +21,16 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 [ -z "$DAEMON_BIN" ] && DAEMON_BIN="${DAEMON}"
 [ -z "$PID_FILE" ] && PID_FILE="/var/run/${DAEMON_BIN}.pid"
 
+# config:
+#   dummy function if "config" is not defined in parent-script 
+config() { :; }
+
+# stop:
+#   dummy function if "stop" is not defined in parent-script 
+stop() {
+	return 127
+}
+
 
 # modlib_addgroup:
 #   check for group name, create group if not found.
@@ -205,7 +215,7 @@ modlib_stop()
 		echo 'not running.'
 		return 0
 	fi
-	stop 2>/dev/null
+	stop
 	if [ "$?" -ne 127 ]; then
 		sleep 1
 	else
@@ -242,7 +252,7 @@ modlib_reload()
 		echo 'not running.'
 		return 0
 	fi
-	config 2>/dev/null
+	config
 	kill -HUP $(cat "$fn") 2> /dev/null
 	local status=$?
 	if [ "$status" -eq 0 ]; then
@@ -312,7 +322,7 @@ modlib_loadconfig()
 modlib_startdaemon()
 {
 	echo -n "Starting ${DAEMON_LONG_NAME}..."
-	config 2>/dev/null
+	config
 
 	env - PATH="$PATH" $DAEMON_ENV "$@"
 	local rv=$?
@@ -349,7 +359,7 @@ modlib_start()
 			echo "${DAEMON_LONG_NAME} is disabled." 1>&2
 		else
 			echo "${DAEMON_LONG_NAME} is started via inetd." 1>&2
-			config 2>/dev/null
+			config
 		fi
 		exit 1
 	fi
