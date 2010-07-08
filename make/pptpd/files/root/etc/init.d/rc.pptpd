@@ -8,9 +8,9 @@ config() {
 	rm -f /mod/etc/ppp/ip-up
 	rm -f /mod/etc/ppp/ip-down
 	[ -x "/tmp/flash/ppp/pppd_ip-up" ] && /tmp/flash/ppp/pppd_ip-up > /mod/etc/ppp/ip-up
-	[ ! -e "/mod/etc/ppp/ip-up" ] && /etc/default.${PPPD}/pppd_ip-up > /mod/etc/ppp/ip-up
+	[ ! -e "/mod/etc/ppp/ip-up" ] && /etc/default.pppd/pppd_ip-up > /mod/etc/ppp/ip-up
 	[ -x "/tmp/flash/ppp/pppd_ip-down" ] && /tmp/flash/ppp/pppd_ip-down > /mod/etc/ppp/ip-down
-	[ ! -e "/mod/etc/ppp/ip-down" ] && /etc/default.${PPPD}/pppd_ip-down > /mod/etc/ppp/ip-down
+	[ ! -e "/mod/etc/ppp/ip-down" ] && /etc/default.pppd/pppd_ip-down > /mod/etc/ppp/ip-down
 	chmod 755 /mod/etc/ppp/ip-up
 	chmod 755 /mod/etc/ppp/ip-down
 }
