@@ -1,12 +1,10 @@
 #!/bin/sh
 
 DAEMON=bip
-PID_FILE=/var/run/$DAEMON.pid
-
-USER_CONF=/tmp/flash/$DAEMON/bip_user.conf
-CONFIG_FILE=/mod/etc/bip.conf
-
 . /etc/init.d/modlibrc
+
+CONFIG_USER=/tmp/flash/$DAEMON/bip_user.conf
+CONFIG_FILE=/mod/etc/bip.conf
 
 config() {
 	(
@@ -18,7 +16,7 @@ config() {
 	) > $CONFIG_FILE
 
 	# merge daemon and user config
-	cat $USER_CONF >> $CONFIG_FILE
+	cat $CONFIG_USER >> $CONFIG_FILE
 }
 
 start() {
@@ -29,7 +27,7 @@ start() {
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "$USER_CONF" ] && cat /mod/etc/default.$DAEMON/bip_user.conf > $USER_CONF
+		[ ! -e "$CONFIG_USER" ] && cat /mod/etc/default.$DAEMON/bip_user.conf > $CONFIG_USER
 
 		modreg file $DAEMON user_conf 'Bip: user config' 1 "bip_user_conf"
 		modreg cgi $DAEMON Bip
