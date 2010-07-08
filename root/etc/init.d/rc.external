@@ -55,10 +55,7 @@ helper() {
 	fi
 	echo -e "\n### $3 $2 @ `date "+%d.%m.%Y - %H:%M,%S"`" >> $LOG_FILE
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
-		if [ -x "/etc/init.d/rc.$pkg" ] && (echo " $EXTERNAL_SERVICES " | grep -q " $pkg " >/dev/null 2>&1); then
-			[ "$1" == "start" ] && start $pkg
-			[ "$1" == "stop" ] && stop $pkg
-		fi
+		[ -x "/etc/init.d/rc.$pkg" ] && echo " $EXTERNAL_SERVICES " | grep -q " $pkg " >/dev/null 2>&1 && $1 $pkg
 	done
 	[ -f /tmp/flash/mod/rc.external ] && . /tmp/flash/mod/rc.external $1 >> $LOG_FILE 2>&1
 }
