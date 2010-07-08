@@ -42,7 +42,7 @@ cat << EOF
 <input id="m1" type="checkbox" name="log" value="true"$log_chk><label for="m1">$(lang de:"Log (Aktiviere logging und backlogging)" en:"Log (Enable logging and backlogging)")</label>
 </p>
 <h2>$(lang de:"Log Sync Interval:" en:"Log Sync Interval:")</h2>
-<p><input type="text" name=log_sync_interval" size="55" maxlength="250" value="$(html "$BIP_LOG_SYNC_INTERVAL")"></p>
+<p><input type="text" name="log_sync_interval" size="55" maxlength="250" value="$(html "$BIP_LOG_SYNC_INTERVAL")"></p>
 <h2>$(lang de:"Optionale Parameter (au&szlig;er -f):" en:"Optional parameters (except -f):")</h2>
 <p><input type="text" name="cmdline" size="55" maxlength="250" value="$(html "$BIP_CMDLINE")"></p>
 
