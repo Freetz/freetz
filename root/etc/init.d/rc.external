@@ -20,15 +20,15 @@ sleeper() {
 		sleep 4
 	done
 	if [ `date +%Y` -lt 2010 ]; then
-		echo "timeout." >> $LOG_FILE
+		echo "timeout, failed." >> $LOG_FILE
 		exit
 	fi
 	if [ `date +%Y` -gt $MOD_EXTERNAL_YEAR_MAX ]; then
-		echo "error." >> $LOG_FILE
+		echo "error, failed." >> $LOG_FILE
 		[ -f /tmp/flash/mod/external.year ] && . /tmp/flash/mod/external.year
 		exit
 	fi
-	echo "successfully." >> $LOG_FILE
+	echo "done." >> $LOG_FILE
 }
 
 start() {
