@@ -29,7 +29,6 @@ config FREETZ_MODULE_crypto_algapi
 
 config FREETZ_MODULE_aes
 	bool "aes.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	default n
 
 config FREETZ_MODULE_arc4
@@ -63,6 +62,30 @@ config FREETZ_MODULE_sha1
 config FREETZ_MODULE_sha256
 	bool "sha256.ko"
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2 
+	default n
+
+config FREETZ_MODULE_hmac
+	bool "hmac.ko"
+	default n
+
+config FREETZ_MODULE_crypto_null
+	bool "crypto_null.ko"
+	default n
+
+config FREETZ_MODULE_md5
+	bool "md5.ko"
+	default n
+
+config FREETZ_MODULE_des
+	bool "des.ko"
+	default n
+
+config FREETZ_MODULE_blowfish
+	bool "blowfish.ko"
+	default n
+
+config FREETZ_MODULE_twofish
+	bool "twofish.ko"
 	default n
 
 endmenu
@@ -444,6 +467,65 @@ config FREETZ_MODULE_rfcomm
 	
 config FREETZ_MODULE_sunrpc
 	bool "sunrpc.ko"
+	default n
+
+config FREETZ_MODULE_xfrm_user
+	bool "IPsec user config IF (xfrm_user.ko)"
+	default n
+
+config FREETZ_MODULE_ah4
+	bool "AH transformation"
+	select FREETZ_MODULE_ah6 if FREETZ_MODULE_ipv6
+	select FREETZ_MODULE_aes
+	select FREETZ_MODULE_hmac
+	select FREETZ_MODULE_md5
+	select FREETZ_MODULE_sha1
+	select FREETZ_MODULE_crypto_null
+	select FREETZ_MODULE_des
+	select FREETZ_MODULE_blowfish
+	default n
+
+config FREETZ_MODULE_esp4
+	bool "ESP transformation"
+	select FREETZ_MODULE_esp6 if FREETZ_MODULE_ipv6
+	select FREETZ_MODULE_aes
+	select FREETZ_MODULE_hmac
+	select FREETZ_MODULE_md5
+	select FREETZ_MODULE_sha1
+	select FREETZ_MODULE_crypto_null
+	select FREETZ_MODULE_des
+	select FREETZ_MODULE_blowfish
+	default n
+
+config FREETZ_MODULE_ah6
+	bool
+	default n
+
+config FREETZ_MODULE_esp6
+	bool
+	default n
+
+config FREETZ_MODULE_af_key
+	bool "PF_KEYv2 sockets (af_key.ko)"
+	default n
+
+config FREETZ_MODULE_xfrm4_tunnel
+	bool "generic ip tunnel support (needed e.g by ipcomp)"
+	select FREETZ_MODULE_xfrm6_tunnel if FREETZ_MODULE_ipv6
+	default n
+
+config FREETZ_MODULE_xfrm6_tunnel
+	bool
+	default n
+
+config FREETZ_MODULE_ipcomp
+	bool "IP payload compresseion (ipcomp.ko)"
+	select FREETZ_MODULE_xfrm4_tunnel
+	select FREETZ_MODULE_ipcomp6 if FREETZ_MODULE_ipv6
+	default n
+
+config FREETZ_MODULE_ipcomp6
+	bool
 	default n
 
 config FREETZ_MODULE_sch_cbq

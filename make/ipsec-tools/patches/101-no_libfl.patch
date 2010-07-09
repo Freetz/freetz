@@ -1,0 +1,25 @@
+--- src/setkey/token.l	2008-08-29 20:23:22.000000000 +0200
++++ src/setkey/token.l	2008-08-29 20:23:31.000000000 +0200
+@@ -86,6 +86,10 @@
+ #if defined(SADB_X_EALG_AES) && ! defined(SADB_X_EALG_AESCBC)
+ #define SADB_X_EALG_AESCBC  SADB_X_EALG_AES
+ #endif
++
++#define yywrap() 1
++#define YY_SKIP_YYWRAP
++
+ %}
+ 
+ /* common section */
+--- src/racoon/cftoken.l	2007-08-01 13:52:20.000000000 +0200
++++ src/racoon/cftoken.l	2008-08-29 20:29:29.000000000 +0200
+@@ -93,6 +97,9 @@
+ 
+ #define MAX_INCLUDE_DEPTH 10
+ 
++#define yywrap() 1
++#define YY_SKIP_YYWRAP
++
+ static struct include_stack {
+ 	char *path;
+ 	FILE *fp;

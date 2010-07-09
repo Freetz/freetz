@@ -1,0 +1,20 @@
+--- src/racoon/grabmyaddr.c
++++ src/racoon/grabmyaddr.c
+@@ -80,10 +80,17 @@
+ #ifdef __linux__
+ #include <linux/types.h>
+ #include <linux/rtnetlink.h>
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
++# include <linux/if_addr.h>
++#endif
+ #ifndef HAVE_GETIFADDRS
+ #define HAVE_GETIFADDRS
+ #define NEED_LINUX_GETIFADDRS
+ #endif
++#ifndef IFA_RTA
++# define IFA_RTA(r)  ((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ifaddrmsg))))
++#endif
+ #endif
+ 
+ #ifndef HAVE_GETIFADDRS

@@ -1,0 +1,51 @@
+config FREETZ_PACKAGE_IPSEC_TOOLS
+	bool "IPsec-tools 0.7.2"
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_IPSEC_TOOLS_STATIC
+	select FREETZ_LIB_libresolv if ! FREETZ_PACKAGE_IPSEC_TOOLS_STATIC
+	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_IPSEC_TOOLS_STATIC
+	select FREETZ_MODULE_ah4
+	select FREETZ_MODULE_esp4
+	select FREETZ_MODULE_xfrm_user
+	select FREETZ_MODULE_af_key
+	default n
+	help
+		IPsec-tools (plainrsa-gen racoon racoonctl setkey)
+
+config FREETZ_PACKAGE_IPSEC_TOOLS_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_IPSEC_TOOLS
+	default n
+	help
+		IPsec-tools need the following shared libraries which can be linked in statically
+		by activating this switch:
+		- libipsec
+		- libracoon (for racoonctl only)
+		- libcrypto 
+		- libresolv
+		- libutil
+
+config FREETZ_PACKAGE_IPSEC_TOOLS_WITH_LZO
+	bool "With lzo Compression"
+	depends on FREETZ_PACKAGE_IPSEC_TOOLS
+	select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_IPSEC_TOOLS_STATIC
+	default n
+	help
+		Maybe this target gets useful
+		LZO2 Compression for VPN Traffic
+
+config FREETZ_PACKAGE_IPSEC_TOOLS_WITH_PLAINRSAGEN
+	bool "Include \"plainrsa-gen\" a generator for Plain RSA keys "
+	depends on FREETZ_PACKAGE_IPSEC_TOOLS
+	default n
+	help
+		Includes IPsec-tools plainrsa-gen into the image.
+
+config FREETZ_PACKAGE_IPSEC_TOOLS_WITH_RACOONCTL
+	bool "Include \"racoonctl\", the racoon administrative control tool "
+	depends on FREETZ_PACKAGE_IPSEC_TOOLS
+	default n
+	help
+		Includes IPsec-tools racoonctl into the image.
+		racoonctl is used to control racoon operation, if ipsec-tools was configured with adminport support. 
+		Communication between racoonctl and racoon is done through a UNIX socket. 
+

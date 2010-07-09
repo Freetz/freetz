@@ -1,0 +1,61 @@
+#!/bin/sh
+
+DAEMON=ipsec-tools
+DAEMON_BIN=racoon
+
+. /etc/init.d/modlibrc
+
+config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+}
+
+start() {
+	echo -n 'Loading kernel modules ...'
+	for x in `find /lib/modules/2.6.*/kernel/crypto/*.ko /lib/modules/2.6.*/kernel/net/*/*.ko | sed 's%^.*/\([^/]*\)\.ko%\1%'`; do modprobe $x; done
+	config
+	setkey -f /mod/etc/racoon/setkey.conf
+	modlib_startdaemon $DAEMON_BIN -f /mod/etc/racoon/racoon.conf
+}
+
+case "$1" in
+	""|load)
+		# build dir for control socket (needed for racconctl)
+		mkdir -p /var/run/racoon
+		
+		modreg cgi 'ipsec-tools' 'IPsec-tools'
+		
+		modlib_start $IPSEC_TOOLS_ENABLED
+		;;
+	unload)
+		stop
+		modunreg cgi 'ipsec-tools'
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

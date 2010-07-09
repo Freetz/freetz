@@ -1,0 +1,39 @@
+--- src/setkey/Makefile.in	2007-08-16 14:26:04.000000000 +0200
++++ src/setkey/Makefile.in	2008-08-28 17:45:28.000000000 +0200
+@@ -294,7 +294,7 @@
+ 	else :; fi
+ setkey$(EXEEXT): $(setkey_OBJECTS) $(setkey_DEPENDENCIES) 
+ 	@rm -f setkey$(EXEEXT)
+-	$(setkey_LINK) $(setkey_OBJECTS) $(setkey_LDADD) $(LIBS)
++	$(setkey_LINK) $(setkey_OBJECTS) $(setkey_LDADD) $(LIBS) $(IPSEC_TOOLS_STATIC)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+--- src/racoon/Makefile.in	2007-08-16 14:26:04.000000000 +0200
++++ src/racoon/Makefile.in	2008-08-28 18:01:25.000000000 +0200
+@@ -453,10 +453,10 @@
+ 	done
+ eaytest$(EXEEXT): $(eaytest_OBJECTS) $(eaytest_DEPENDENCIES) 
+ 	@rm -f eaytest$(EXEEXT)
+-	$(LINK) $(eaytest_OBJECTS) $(eaytest_LDADD) $(LIBS)
++	$(LINK) $(eaytest_OBJECTS) $(eaytest_LDADD) $(LIBS) $(IPSEC_TOOLS_STATIC)
+ plainrsa-gen$(EXEEXT): $(plainrsa_gen_OBJECTS) $(plainrsa_gen_DEPENDENCIES) 
+ 	@rm -f plainrsa-gen$(EXEEXT)
+-	$(LINK) $(plainrsa_gen_OBJECTS) $(plainrsa_gen_LDADD) $(LIBS)
++	$(LINK) $(plainrsa_gen_OBJECTS) $(plainrsa_gen_LDADD) $(LIBS) $(IPSEC_TOOLS_STATIC)
+ cfparse.h: cfparse.c
+ 	@if test ! -f $@; then \
+ 	  rm -f cfparse.c; \
+@@ -469,10 +469,10 @@
+ 	else :; fi
+ racoon$(EXEEXT): $(racoon_OBJECTS) $(racoon_DEPENDENCIES) 
+ 	@rm -f racoon$(EXEEXT)
+-	$(LINK) $(racoon_OBJECTS) $(racoon_LDADD) $(LIBS)
++	$(LINK) $(racoon_OBJECTS) $(racoon_LDADD) $(LIBS) $(IPSEC_TOOLS_STATIC)
+ racoonctl$(EXEEXT): $(racoonctl_OBJECTS) $(racoonctl_DEPENDENCIES) 
+ 	@rm -f racoonctl$(EXEEXT)
+-	$(LINK) $(racoonctl_OBJECTS) $(racoonctl_LDADD) $(LIBS)
++	$(LINK) $(racoonctl_OBJECTS) $(racoonctl_LDADD) $(LIBS) $(IPSEC_TOOLS_STATIC)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)

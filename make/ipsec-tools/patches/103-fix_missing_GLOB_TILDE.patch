@@ -1,0 +1,13 @@
+--- src/racoon/cftoken.l	2007-09-03 20:07:29.000000000 +0200
++++ src/racoon/cftoken.l	2009-08-20 04:09:02.000000000 -0500
+@@ -48,6 +48,10 @@
+ #include <limits.h>
+ #include <ctype.h>
+ #include <glob.h>
++/* some uclibc toolchains don't suport GLOB_TILDE */
++#ifndef GLOB_TILDE
++#  define GLOB_TILDE 0
++#endif
+ #ifdef HAVE_STDARG_H
+ #include <stdarg.h>
+ #else
