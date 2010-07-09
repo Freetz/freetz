@@ -37,8 +37,8 @@ case "$1" in
 		modlib_start $IPSEC_TOOLS_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi 'ipsec-tools'
+		modlib_stop
 		;;
 	start)
 		modlib_start
