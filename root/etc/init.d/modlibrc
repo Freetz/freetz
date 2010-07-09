@@ -15,11 +15,11 @@
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 
-[ -z "$DAEMON_LONG_NAME" ] && DAEMON_LONG_NAME="$DAEMON"
-[ -z "$CONF_NAME" ] && CONF_NAME="${DAEMON}"
-[ -z "$CONF_ENABLED" ] && CONF_ENABLED="${DAEMON}_ENABLED"
-[ -z "$DAEMON_BIN" ] && DAEMON_BIN="${DAEMON}"
-[ -z "$PID_FILE" ] && PID_FILE="/var/run/${DAEMON_BIN}.pid"
+: ${DAEMON_LONG_NAME:=$DAEMON}
+: ${CONF_NAME:=$DAEMON}
+: ${CONF_ENABLED:=${DAEMON}_ENABLED}
+: ${DAEMON_BIN:=$DAEMON}
+: ${PID_FILE:=/var/run/${DAEMON_BIN}.pid}
 
 # config:
 #   dummy function if "config" is not defined in parent-script 
@@ -39,13 +39,13 @@ stop() {
 #	$2-n: optional arguments for addgroup
 modlib_addgroup()
 {
-	local group="$1"
+	local group=$1
 	shift
 	if grep -q "^$group:" /etc/group; then
 		return 0
 	fi
 	echo -n "Looking for group '$group' ... "
-	if addgroup "$@" $group; then
+	if addgroup "$@" "$group"; then
 		echo -n "created - now saving to data buffer ... "
 		modusers save && echo "done" || echo "failed"
 	else
@@ -60,14 +60,14 @@ modlib_addgroup()
 #	$2-n: optional arguments for adduser
 modlib_adduser()
 {
-	local user="$1"
+	local user=$1
 	shift
 	if grep -q "^$user:" /etc/passwd; then
 		return 0
 	fi
 	echo -n "Looking for user '$user' ... "
-	local msg=$(adduser "$@" $user 2>&1)
-	if [ "$?" = 0 ]; then
+	local msg=$(adduser "$@" "$user" 2>&1)
+	if [ $? -eq 0 ]; then
 		echo -n "created - now saving to data buffer ... "
 		modusers save && echo "done" || echo "failed"
 	else
@@ -82,9 +82,8 @@ modlib_adduser()
 modlib_reload_inetd()
 {
 	local inetd_rc_script="/etc/init.d/rc.inetd"
-	if [ -x ${inetd_rc_script} ]
-	then
-		${inetd_rc_script} reload
+	if [ -x "$inetd_rc_script" ]; then
+		"$inetd_rc_script" reload
 	else
 		killall -HUP inetd
 	fi
@@ -101,14 +100,13 @@ modlib_reload_inetd()
 #   returns: 0 free; 1 oneself; 2 inetd; 3 other daemon; 4 stop command failed; 5 kill command failed
 modlib_check_port()
 {
-	[ -z "$1" ] && local netport=21 || local netport="$1"
-	[ -z "$2" ] && local daemonname="daemon" || local daemonname="$2"
-	[ -z "$3" ] && local docommand="check" || local docommand="$3"
-	[ -z "$4" ] && local sockettype="t" || local sockettype="$4"
-	local pidname="$(netstat -lnp"$sockettype" | sed -nre "s/^.*:$netport .* ([^ ]+) *\$/\\1/p")"
+	local netport=${1:-21}
+	local daemonname=${2:-daemon}
+	local docommand=${3:-check}
+	local sockettype=${4:-t}
+	local pidname=$(netstat -lnp"$sockettype" | sed -nre "s/^.*:$netport .* ([^ ]+) *\$/\\1/p")
 	local inetdconf="/var/mod/etc/inetd.conf"
-	if [ -z "$pidname" ]
-	then
+	if [ -z "$pidname" ]; then
 		return 0 # port is free
 	else
 		local myname=${pidname#*/}
@@ -122,17 +120,14 @@ modlib_check_port()
 		case $docommand in
 			stop)
 				[ "$myname" != "inetd" ] && inetddaemon="$myname"
-				if [ "$inetddaemon" == "inetd" ]
-				then
+				if [ "$inetddaemon" == "inetd" ]; then
 					echo "$inetddaemon"
 					return 4 # stopping of inetd permitted
 				fi
-				if [ -x "/etc/init.d/rc.$inetddaemon" ]
-				then
-					/etc/init.d/rc.${inetddaemon} stop
+				if [ -x "/etc/init.d/rc.$inetddaemon" ]; then
+					"/etc/init.d/rc.${inetddaemon}" stop
 					local status=$?
-					if [ "$status" -eq 0 ]
-					then
+					if [ "$status" -eq 0 ]; then
 						return 0 # stopping successful
 					else
 						echo "$inetddaemon"
@@ -141,25 +136,21 @@ modlib_check_port()
 				fi
 			;;
 			kill)
-				if [ "$myname" == "inetd" ]
-				then
+				if [ "$myname" == "inetd" ]; then
 					echo "$myname"
 					return 5 # killing of inetd permitted
 				fi
 				local cnt=9
-				while [ $cnt -ge 0 ] && kill -0 $mypid 2>/dev/null
-				do
+				while [ $cnt -ge 0 ] && kill -0 $mypid 2>/dev/null; do
 					kill $mypid 2>/dev/null
 					sleep 1
 					let cnt--
 				done
-				if kill -0 $mypid 2>/dev/null
-				then
+				if kill -0 $mypid 2>/dev/null; then
 					kill -9 $mypid 2>/dev/null
 					sleep 1
 				fi
-				if kill -0 $mypid 2>/dev/null
-				then
+				if kill -0 $mypid 2>/dev/null; then
 					echo "$myname"
 					return 5 # killing failed
 				else
@@ -167,13 +158,11 @@ modlib_check_port()
 				fi
 			;;
 			*)
-				if [ "$myname" == "$daemonname" ]
-				then
+				if [ "$myname" == "$daemonname" ]; then
 					echo "$myname"
 					return 1 # port is already used by this DAEMON
 				fi
-				if [ "$myname" == "inetd" ]
-				then
+				if [ "$myname" == "inetd" ]; then
 					echo "$inetddaemon"
 					return 2 # port is already used by inetd
 				else
@@ -195,10 +184,10 @@ modlib_check_port()
 modlib_check_running()
 {
 	[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:]- [:upper:]_))" == "inetd" ] && return 5
-	local fn=${PID_FILE}
+	local fn=$PID_FILE
 	[ ! -s "$fn" ] && return 3
 	kill -0 $(cat "$fn") 2> /dev/null
-	[ "$?" == "0" ] && return 0
+	[ $? -eq 0 ] && return 0
 	rm -f "$fn"
 	return 3
 }
@@ -208,7 +197,7 @@ modlib_check_running()
 #	kills daemon with "stop" of rc.$DAEMON if available
 modlib_stop()
 {
-	local fn=${PID_FILE}
+	local fn=$PID_FILE
 	local id=$(cat "$fn" 2>/dev/null)
 	echo -n "Stopping ${DAEMON_LONG_NAME}..."
 	if ! modlib_check_running; then
@@ -216,7 +205,7 @@ modlib_stop()
 		return 0
 	fi
 	stop
-	if [ "$?" -ne 127 ]; then
+	if [ $? -ne 127 ]; then
 		sleep 1
 	else
 		local cnt=9
@@ -235,7 +224,6 @@ modlib_stop()
 		echo 'done.'
 		return 0
 	else
-
 		echo 'failed.'
 		return 1
 	fi
@@ -246,7 +234,7 @@ modlib_stop()
 #   if available runs "config" of rc.$DAEMON
 modlib_reload()
 {
-	local fn=${PID_FILE}
+	local fn=$PID_FILE
 	echo -n "Reloading ${DAEMON_LONG_NAME}..."
 	if ! modlib_check_running; then
 		echo 'not running.'
@@ -255,7 +243,7 @@ modlib_reload()
 	config
 	kill -HUP $(cat "$fn") 2> /dev/null
 	local status=$?
-	if [ "$status" -eq 0 ]; then
+	if [ $status -eq 0 ]; then
 		echo 'done.'
 		return 0
 	else
@@ -310,7 +298,7 @@ modlib_loadconfig()
 		echo "Error[${DAEMON_LONG_NAME}]: not configured" 1>&2
 		exit 1
 	fi
-	. $CONF_FILE
+	. "$CONF_FILE"
 }
 
 # modlib_startdaemon
@@ -327,16 +315,16 @@ modlib_startdaemon()
 	env - PATH="$PATH" $DAEMON_ENV "$@"
 	local rv=$?
 
-	if [ "$rv" -ne 0 ]; then
+	if [ $rv -ne 0 ]; then
 		echo 'failed.'
 		exit $rv
 	fi
 
 	# even daemons without pid-support creates a .pid file:
-	local fn=${PID_FILE}
+	local fn=$PID_FILE
 	if [ ! -s "$fn" ]; then
-		local dp=$(pidof -s ${DAEMON_BIN})
-		if [ "$?" -ne 0 ]; then
+		local dp=$(pidof -s "$DAEMON_BIN")
+		if [ $? -ne 0 ]; then
 			echo 'failed.'
 			exit 1
 		fi
@@ -353,8 +341,8 @@ modlib_startdaemon()
 #    returns: 0=success or 1=error
 modlib_start()
 {
-	local DAEMON_ENABLED="$1"
-	if [ "$DAEMON_ENABLED" == "no" ] || [ "$DAEMON_ENABLED" == "inetd" -a -x /etc/init.d/rc.inetd ]; then
+	local DAEMON_ENABLED=$1
+	if [ "$DAEMON_ENABLED" == "no" -o "$DAEMON_ENABLED" == "inetd" -a -x /etc/init.d/rc.inetd ]; then
 		if [ "$DAEMON_ENABLED" != "inetd" ]; then
 			echo "${DAEMON_LONG_NAME} is disabled." 1>&2
 		else
