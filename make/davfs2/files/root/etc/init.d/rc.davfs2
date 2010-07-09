@@ -89,12 +89,12 @@ case $1 in
 
 
 		if [ "$DAVFS2_ENABLED" != "yes" ]; then
-			echo "WebDAV is disabled" 1>&2
+			echo "WebDAV is disabled." 1>&2
 			exit 1
 		fi
 
 		if pidof mount.davfs >/dev/null; then
-			echo "WebDAV already started."
+			echo "WebDAV already running."
 		else
 			start
 		fi
