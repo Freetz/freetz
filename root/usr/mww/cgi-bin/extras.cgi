@@ -62,9 +62,7 @@ else
 		if [ -x "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi" ]; then
 			/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi
 		else
-			cgi_begin 'Extras'
-			echo "<p><b>$(lang de:"Fehler" en:"Error"):</b> $(lang de:"Zusatz-Skript '$cgi.cgi' nicht gefunden." en:"Additional script '$cgi.cgi' not found.")</p>"
-			cgi_end
+			cgi_error "$(lang de:"Zusatz-Skript '$cgi.cgi' nicht gefunden." en:"Additional script '$cgi.cgi' not found.")"
 		fi
 	fi
 fi

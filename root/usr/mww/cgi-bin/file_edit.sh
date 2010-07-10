@@ -26,7 +26,7 @@ case $CONFIG_TYPE in
 	list)
 		;;
 	*)
-		echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Unbekannter Typ" en:"unknown type") '$CONFIG_TYPE'</p>"
+		print_error "$(lang de:"Unbekannter Typ" en:"unknown type") '$CONFIG_TYPE'"
 		;;
 esac
 

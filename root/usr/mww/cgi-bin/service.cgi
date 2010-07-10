@@ -4,19 +4,13 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 REG=/mod/etc/reg/daemon.reg
 
-error() {
-	cgi_begin '$(lang de:"Fehler" en:"Error")'
-	echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $1</p>"
-	cgi_end
-}
-
 eval "$(modcgi cmd service)"
 SERVICE_NAME=${PATH_INFO#/}
 SERVICE_NAME=${SERVICE_NAME%%/*}
 
 case $SERVICE_NAME in
 	*/*|*..*) 
-		error "Invalid service name '$(html "$SERVICE_NAME")'"
+		cgi_error "Invalid service name '$(html "$SERVICE_NAME")'"
 		exit 2
 		;;
 esac
@@ -34,7 +28,7 @@ else
 	rcfile="/mod/etc/init.d/rc.$SERVICE_NAME"
 fi
 if [ ! -x "$rcfile" ]; then
-	error "$(lang de:"Kein Skript f&uuml;r" en:"no script for") '$(html "${name:-$SERVICE_NAME}")'"
+	cgi_error "$(lang de:"Kein Skript f&uuml;r" en:"no script for") '$(html "${name:-$SERVICE_NAME}")'"
 	exit 1
 fi
 
@@ -43,7 +37,7 @@ case $SERVICE_CMD in
 	stop)    message="$(lang de:"Stoppe" en:"Stopping") $name" ;;
 	restart) message="$(lang de:"Starte $name neu" en:"Restarting $name")" ;;
 	*)
-		error "$(lang de:"Unbekannter Befehl" en:"Unknown command") '$(html "$SERVICE_CMD")'"
+		cgi_error "$(lang de:"Unbekannter Befehl" en:"Unknown command") '$(html "$SERVICE_CMD")'"
 		exit 1
 		;;
 esac

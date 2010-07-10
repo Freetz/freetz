@@ -10,9 +10,7 @@ eval "$(modcgi mac:interf:prog wol)"
 [ -z "$WOL_PROG" ] && WOL_PROG=ether-wake
 
 if [ -z "$WOL_MAC" ]; then
-	cgi_begin '$(lang de:"Fehler" en:"Error")'
-	echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Keine MAC Adresse angegeben" en:"no MAC address given")</p>"
-	cgi_end
+    	cgi_error "$(lang de:"Keine MAC Adresse angegeben" en:"no MAC address given")"
 	exit 1
 fi
 

@@ -165,7 +165,7 @@ case $view in
 #		stat_dynamic
 #		;;
 	*)
-		echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Unbekannte Ansicht" en:"unknown view") '$view'</p>"
+		print_error "$(lang de:"Unbekannte Ansicht" en:"unknown view") '$view'"
 		;;
 esac
 

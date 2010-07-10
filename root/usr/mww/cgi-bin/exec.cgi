@@ -61,8 +61,6 @@ case $MOD_CGI_CMD in
 		reboot
 		;;
 	*)
-		cgi_begin '$(lang de:"Fehler" en:"Error")'
-		echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Unbekannter Befehl" en:"unknown command") '$MOD_CGI_CMD'</p>"
-		cgi_end
+		cgi_error "$(lang de:"Unbekannter Befehl" en:"unknown command") '$MOD_CGI_CMD'"
 		;;
 esac

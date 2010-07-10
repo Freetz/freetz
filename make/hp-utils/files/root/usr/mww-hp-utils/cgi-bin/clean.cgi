@@ -10,9 +10,7 @@ cgi_width=560
 eval "$(modcgi level clean)"
 
 if [ -z "$CLEAN_LEVEL" ]; then
-	cgi_begin '$(lang de:"Fehler" en:"Error")'
-	echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Keine Reinigungsstufe angegeben" en:"no clean level")</p>"
-	cgi_end
+	cgi_error "$(lang de:"Keine Reinigungsstufe angegeben" en:"no clean level")"
 	exit 1
 fi
 

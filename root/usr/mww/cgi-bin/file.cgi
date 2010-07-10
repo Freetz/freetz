@@ -16,12 +16,10 @@ IFS=$OIFS
 TITLE=$3 sec=$4 def=$5
 
 if [ $# -eq 0 ]; then
-	cgi_begin "$(lang de:"Fehler" en:"Error")"
-	echo "<p>$(lang
+	cgi_error "$(lang
 	    de:"Datei '$FILE_ID' des Pakets '$PACKAGE' ist unbekannt."
 	    en:"File '$FILE_ID' of package '$PACKAGE' is unknown."
 	)</p>"
-	cgi_end
 	exit
 fi
 

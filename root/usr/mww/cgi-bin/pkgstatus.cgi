@@ -17,7 +17,7 @@ cgi_begin "$title" "status:$pkg/$cgi"
 if [ -x "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi" ]; then
 	. "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi"
 else
-	echo "<p><b>$(lang de:"Fehler" en:"Error"):</b> $(lang de:"Kein Skript f&uuml;r die Statusanzeige" en:"no script for status display") '$pkg/$cgi'.</p>"
+	print_error "$(lang de:"Kein Skript f&uuml;r die Statusanzeige" en:"no script for status display") '$pkg/$cgi'."
 fi
 
 cgi_end
