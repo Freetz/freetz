@@ -12,7 +12,7 @@ stat_begin() {
 stat_button() {
 	local daemon=$1 cmd=$2 active=$3
 	if ! $active; then disabled=" disabled"; else disabled=""; fi
-	echo "<td><form class='btn' action='/cgi-bin/exec.cgi' method='post'><input type='hidden' name='daemon' value='$daemon'><input type='hidden' name='cmd' value='$cmd'><input type='submit' value='$cmd'$disabled></form></td>"
+	echo "<td><form class='btn' action='/cgi-bin/service.cgi/$daemon' method='post'><input type='submit' name='cmd' value='$cmd'$disabled></form></td>"
 }
 
 stat_packagelink() {
