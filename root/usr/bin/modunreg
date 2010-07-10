@@ -5,7 +5,7 @@
 #        modunreg file <pkg> [<id>]
 #        DEPRECATED: modunreg file <id>
 #        modunreg status <pkg> [<cgi-name>]
-#        modunreg daemon <pkg> [<name>]
+#        modunreg daemon <daemon> [<name>]
 
 char=$(echo -ne '\01')
 
@@ -41,7 +41,7 @@ case $1 in
 		echo "       $0 extra <pkg> [<cgi-name>]" 1>&2
 		echo "       $0 file <pkg> [<id>]" 1>&2
 		echo "       $0 status <pkg> [<cgi-name>]" 1>&2
-		echo "       $0 daemon <pkg> [<name>]" 1>&2
+		echo "       $0 daemon <daemon> [<name>]" 1>&2
 		exit 1
 		;;
 esac

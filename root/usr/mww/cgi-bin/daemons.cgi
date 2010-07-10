@@ -10,9 +10,9 @@ stat_begin() {
 }
 
 stat_button() {
-	local pkg=$1 cmd=$2 active=$3
+	local daemon=$1 cmd=$2 active=$3
 	if ! $active; then disabled=" disabled"; else disabled=""; fi
-	echo "<td><form class='btn' action='/cgi-bin/exec.cgi' method='post'><input type='hidden' name='pkg' value='$pkg'><input type='hidden' name='cmd' value='$cmd'><input type='submit' value='$cmd'$disabled></form></td>"
+	echo "<td><form class='btn' action='/cgi-bin/exec.cgi' method='post'><input type='hidden' name='daemon' value='$daemon'><input type='hidden' name='cmd' value='$cmd'><input type='submit' value='$cmd'$disabled></form></td>"
 }
 
 stat_packagelink() {
@@ -25,12 +25,12 @@ stat_packagelink() {
 }
 
 stat_line() {
-	local pkg=$1
-	local name=${2:-$pkg}
-	local rcfile=/mod/etc/init.d/${3:-rc.$pkg}
+	local daemon=$1
+	local name=${2:-$daemon}
+	local rcfile="/mod/etc/init.d/${3:-rc.$daemon}"
 	local disable=${4:-false}
 	local hide=${5:-false}
-	local config_pkg=${6:-$pkg}
+	local pkg=${6:-$daemon}
 
 	$hide && return
 
@@ -73,14 +73,14 @@ stat_line() {
 			;;
 	esac
 	echo "<tr${class:+ class='$class'}>"
-	echo "<td width='180'>$(stat_packagelink $config_pkg $name)</td><td class='status' width='120'>$status</td>"
+	echo "<td width='180'>$(stat_packagelink "$pkg" "$name")</td><td class='status' width='120'>$status</td>"
 
 	if $disable; then
 		start=false; stop=false
 	fi
-	stat_button $pkg start $start
-	stat_button $pkg stop $stop
-	stat_button $pkg restart $stop
+	stat_button "$daemon" start $start
+	stat_button "$daemon" stop $stop
+	stat_button "$daemon" restart $stop
 
 	echo '</tr>'
 }
@@ -118,8 +118,8 @@ stat_static() {
 	stat_begin
 
 	if [ -r "$REG" ]; then
-		while IFS='|' read -r pkg name rcscript disable hide parentpkg; do
-			stat_line "$pkg" "$name" "$rcscript" "$disable" "$hide" "$parentpkg"
+		while IFS='|' read -r daemon name rcscript disable hide pkg; do
+			stat_line "$daemon" "$name" "$rcscript" "$disable" "$hide" "$pkg"
 		done < "$REG"
 	fi
 	if [ ! -s "$REG" ]; then

@@ -4,28 +4,28 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 REG=/mod/etc/reg/daemon.reg
 
-eval "$(modcgi branding:pkg:cmd mod_cgi)"
+eval "$(modcgi branding:daemon:cmd mod_cgi)"
 
 case $MOD_CGI_CMD in
 	start|stop|restart)
-		case $MOD_CGI_PKG in
+		case $MOD_CGI_DAEMON in
 			*/*|*..*) exit 2 ;;
 		esac
 		# retrieve package information
 		OIFS=$IFS; IFS="|"
-		set -- $(grep "^$MOD_CGI_PKG|" "$REG")
+		set -- $(grep "^$MOD_CGI_DAEMON|" "$REG")
 		IFS=$OIFS
 		if [ $# -gt 0 ]; then
 			name=$2
 			rcfile=${3:+/mod/etc/init.d/$3}
 		else
 			# fallback (for base packages and AVM services)
-			name=$MOD_CGI_PKG
-			rcfile="/mod/etc/init.d/rc.$MOD_CGI_PKG"
+			name=$MOD_CGI_DAEMON
+			rcfile="/mod/etc/init.d/rc.$MOD_CGI_DAEMON"
 		fi
 		if [ ! -x "$rcfile" ]; then
 			cgi_begin '$(lang de:"Fehler" en:"Error")'
-			echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Kein Skript f&uuml;r" en:"no script for") '${name:-$MOD_CGI_PKG}'</p>"
+			echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $(lang de:"Kein Skript f&uuml;r" en:"no script for") '${name:-$MOD_CGI_DAEMON}'</p>"
 			cgi_end
 			exit 1
 		fi

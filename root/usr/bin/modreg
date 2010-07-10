@@ -6,7 +6,7 @@
 #        modreg extra <pkg> <title> <sec-level> <cgi-name>
 #        modreg file <pkg> <id> <title> <sec-level> <desc-file>
 #        modreg status <pkg> <title> [<cgi-name>]
-#        modreg daemon [--disable] [--hide] [--rc-script <script>] [--name <name>] [--parent <pkg>] <pkg>
+#        modreg daemon [--disable] [--hide] [--rc-script <script>] [--name <name>] [--parent <pkg>] <daemon>
 
 replace() {
 	local regexp=$1 file=$2 data=$3
@@ -21,7 +21,7 @@ usage() {
 	echo "       $1 extra <pkg> <title> <sec-level> <cgi-name>" 1>&2
 	echo "       $1 file <pkg> <id> <title> <sec-level> <desc-file>" 1>&2
 	echo "       $1 status <pkg> <title> [<cgi-name>]" 1>&2
-	echo "       $1 daemon [-d|--disable] [-h|--hide] [-r|--rc-script=<script>] [-n|--name=<name>] [-p|--parent=<parent_pkg>] <pkg>" 1>&2
+	echo "       $1 daemon [-d|--disable] [-h|--hide] [-r|--rc-script=<script>] [-n|--name=<name>] [-p|--parent=<parent_pkg>] <daemon>" 1>&2
 	exit 1
 }
 
@@ -107,12 +107,12 @@ case $1 in
 		done
 
 		[ -n "$1" ] || usage $filename
-		pkg=$1
-		[ -n "$name" ] || name=$pkg
-		[ -n "$rcscript" ] || rcscript="rc.$pkg"
-		[ -n "$parent" ] || parent=$pkg
+		daemon=$1
+		: ${name:=$daemon}
+		: ${rcscript:=rc.$daemon}
+		: ${parent:=$daemon}
 
-		replace "^$pkg|$name|" /mod/etc/reg/daemon.reg "$pkg|$name|$rcscript|$disable|$hide|$parent"
+		replace "^$daemon|$name|" /mod/etc/reg/daemon.reg "$daemon|$name|$rcscript|$disable|$hide|$parent"
 		;;
 	*)
 		usage $0
