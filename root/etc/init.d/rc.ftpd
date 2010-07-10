@@ -15,7 +15,9 @@ BINARY=$(which $DAEMON)
 CHECKCMD="check"
 AVM_FTP_ENABLED=$(echo usbhost.ftp_server_enabled | usbcfgctl -s)
 WEBDAVCONTROL="/etc/webdav_control"
-INETD_FTPD_CONFIG="/var/mod/etc/inetd/ftpd.inetd"
+INETD_CONFIG_DIR="/var/mod/etc/inetd"
+INETD_FTPD_CONFIG="$INETD_CONFIG_DIR/ftpd.inetd"
+
 
 if [ -z "$FTPD_INETD" ]; then
 	[ -x /bin/inetdctl ] && FTPD_INETD="yes"
@@ -52,6 +54,7 @@ set_parameters()
 			else
 				[ "$CONFIG_WEBDAV" = "y" ] && local webdav_wrapper="/usr/bin/webdav_wrapper" || local webdav_wrapper=""
 				[ "$CONFIG_IPV6" = "y" ] && local ipv46="tcp6" || local ipv46="tcp"
+				[ ! -d $INETD_CONFIG_DIR ] && mkdir -p $INETD_CONFIG_DIR
 				echo "$FTPD_PORT stream $ipv46 nowait root $webdav_wrapper ${BINARY} ${BINARY} ${ftp_options} -h ${ftp_host}" > ${INETD_FTPD_CONFIG}
 				modlib_reload_inetd > /dev/null 2>&1
 			fi
