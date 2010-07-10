@@ -25,7 +25,7 @@ collect_cpu() {
 			RRA:AVERAGE:0.5:24:732 \
 			RRA:AVERAGE:0.5:144:1460	
 	fi
-	cpudata=$(grep '^cpu ' /proc/stat | awk '{print "N:"$2":"$3":"$4":"$6+$7":"$5;}')
+	cpudata=$(grep '^cpu ' /proc/stat 2>/dev/null | awk '{print "N:"$2":"$3":"$4":"$6+$7":"$5;}')
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $cpudata --template user:nice:syst:wait:idle
 }
 
@@ -198,7 +198,7 @@ collect_one() {
 	_SENSOR_CUR=0
 	for _CURRENT_HEX in $_SENSOR_HEX; do
 		collect_one_sub $_SENSOR_CUR $_CURRENT_HEX
-		let _SENSOR_CUR=_SENSOR_CUR+1
+		let _SENSOR_CUR++
 	done
 }
 
@@ -226,11 +226,11 @@ collect_one_sub() {
 one_alert() {
 	[ $# -lt 2 ] && return
 	_ALERT_NUM=0
-	_SENSOR_ALI=$(grep "^\$2 " /tmp/flash/rrdstats/digitemp.alias | tr -s " " | cut -d" " -f3)
-	_ALERT_COUNT=$(grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert | wc -l)
+	_SENSOR_ALI=$(grep "^$2 " /tmp/flash/rrdstats/digitemp.alias 2>/dev/null | tr -s " " | cut -d" " -f3)
+	_ALERT_COUNT=$(grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert 2>/dev/null | wc -l)
 	while [ $_ALERT_NUM -lt $_ALERT_COUNT ]; do
 		let _ALERT_NUM++
-		_ALERT=$(grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert | head -n $_ALERT_NUM | tail -n1 | tr -s " ")
+		_ALERT=$(grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert 2>/dev/null | head -n $_ALERT_NUM | tail -n1 | tr -s " ")
 		_ALERT_SEC=$(echo $_ALERT | cut -d " " -f4)
 
 		_ALERT_FILE=/tmp/rrdstats/digitemp_alert.$_ALERT_NUM
