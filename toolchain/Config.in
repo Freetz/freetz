@@ -61,6 +61,10 @@ choice
 
 endchoice
 
+comment "CAUTION: Usage of an uClibc version higher than 0.9.29 can lead to an unstable box"
+	depends on FREETZ_UCLIBC_0_9_29_BASED_BOX && \
+			! FREETZ_TARGET_UCLIBC_VERSION_0_9_29
+
 choice
 
 	prompt "Target compiler"
