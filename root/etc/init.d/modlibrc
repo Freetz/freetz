@@ -1,5 +1,8 @@
 # Shell functions for the rc-scripts in /etc/init.d/
 
+# Reference material on init scripts:
+#  * Linux Standards Base Core Specification 4.0: http://refspecs.freestandards.org/LSB_4.0.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
+
 # optional environment variables:
 #
 # name				default						description
@@ -125,9 +128,9 @@ modlib_check_port()
 					return 4 # stopping of inetd permitted
 				fi
 				if [ -x "/etc/init.d/rc.$inetddaemon" ]; then
-					"/etc/init.d/rc.${inetddaemon}" stop
+					"/etc/init.d/rc.$inetddaemon" stop
 					local status=$?
-					if [ "$status" -eq 0 ]; then
+					if [ $status -eq 0 ]; then
 						return 0 # stopping successful
 					else
 						echo "$inetddaemon"
@@ -186,10 +189,12 @@ modlib_check_running()
 	[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:]- [:upper:]_))" == "inetd" ] && return 5
 	local fn=$PID_FILE
 	[ ! -s "$fn" ] && return 3
-	kill -0 $(cat "$fn") 2> /dev/null
-	[ $? -eq 0 ] && return 0
-	rm -f "$fn"
-	return 3
+	if kill -0 $(cat "$fn") 2> /dev/null; then
+		return 0
+	else
+		rm -f "$fn"
+		return 3
+	fi
 }
 
 # modlib_stop
@@ -372,8 +377,10 @@ modlib_start()
 }
 
 # load config
-[ -n "$DAEMON" ] && case $1 in
-	""|load|unload|start|stop|restart|reload|status|config)
-		modlib_loadconfig
-		;;
-esac
+if [ -n "$DAEMON" ]; then
+	case $1 in
+		""|load|unload|start|stop|restart|reload|status|config)
+			modlib_loadconfig
+			;;
+	esac
+fi
