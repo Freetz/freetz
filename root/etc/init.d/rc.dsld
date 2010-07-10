@@ -2,12 +2,16 @@
 
 . /etc/init.d/modlibrc
 DAEMON=dsld
+DAEMON_LONG_NAME="AVM dsld"
 PID_FILE=/var/run/${DAEMON}.pid
 
 TMPFILE=/tmp/.dsld.cmd
 
+# include environment required for dsld restart
+[ -r /var/env.cache ] && . /var/env.cache
+
 start() {
-	echo -n "Starting $DAEMON..."
+	echo -n "Starting ${DAEMON_LONG_NAME}..."
 	local DAEMON_CMD=`cat $TMPFILE 2>/dev/null`
 	if [ -z "$DAEMON_CMD" ]; then
 		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
