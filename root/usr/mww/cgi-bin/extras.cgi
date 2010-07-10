@@ -43,10 +43,10 @@ if [ -z "$PATH_INFO" ]; then
 
 	cgi_end
 else
-	OIFS=$IFS
-	IFS='/'
-	set -- $(echo "$PATH_INFO" | tr -d .)
-	pkg=$2; cgi=$3
+	path_info pkg cgi _
+	if ! valid package "$pkg" || ! valid id "$cgi"; then
+		cgi_error "Invalid path"
+	fi
 	IFS='|'
 	set -- $(grep "^$pkg|.*|$cgi\$" "$extra_reg")
 	IFS=$OIFS

@@ -107,11 +107,11 @@ _cgi_location() {
 	local out=$1; shift
 	local type=$1
 	case $type in
-		file)   "$out" "/cgi-bin/file.cgi" "pkg=${2}" "id=${3}" ;;
+		file)   "$out" "/cgi-bin/file.cgi/${2}/${3}" ;;
 		extra)  "$out" "/cgi-bin/extras.cgi/${2}/${3}" ;;
-		status) "$out" "/cgi-bin/pkgstatus.cgi" "cgi=${2}/${3:-status}" ;;
+		status) "$out" "/cgi-bin/pkgstatus.cgi/${2}/${3:-status}" ;;
 		cgi)    local pkg=$2; shift 2
-			"$out" "/cgi-bin/pkgconf.cgi" "pkg=$pkg" "$@" ;;
+			"$out" "/cgi-bin/pkgconf.cgi/$pkg" "$@" ;;
 		mod)    case $2 in
 				""|status) "$out" "/cgi-bin/status.cgi" ;;
 				extras)    "$out" "/cgi-bin/extras.cgi" ;;
@@ -357,8 +357,48 @@ print_error() {
 
 # complete error page
 cgi_error() {
-    	local message=$1 id=$2
+    local message=$1 id=$2
 	cgi_begin '$(lang de:"Fehler" en:"Error")' $id
 	print_error "$message"
 	cgi_end
+}
+
+# Split PATH_INFO into segments at "/"; return the segments in the given
+# variables. If there are not more variables than segments, the final variable
+# will receive the remaining unsplit PATH_INFO.
+
+path_info() {
+	unset "$@"
+	_path_info "$PATH_INFO" "$@"
+}
+
+_path_info() {
+	# $1 is empty or starts with a slash
+	if [ $# -le 1 -o -z "$1" ]; then
+		return
+	elif [ $# -eq 2 ]; then
+		eval "$2=\$1"
+		return
+	else
+		local __rest=${1#/}
+		eval "$2=\${__rest%%/*}"
+		shift 2
+		case $__rest in
+			*/*) _path_info "/${__rest#*/}" "$@" ;;
+		esac
+	fi
+}
+
+# validate various types of data
+valid() {
+	local type=$1 data=$2
+	case $type in
+		package|id)
+			case $data in
+				*[^a-zA-Z0-9-_]*) return 1 ;;
+				*) return 0 ;;
+			esac
+			;;
+	esac
+	return 1
 }

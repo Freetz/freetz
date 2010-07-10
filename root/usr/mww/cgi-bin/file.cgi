@@ -6,8 +6,11 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 file_reg=/mod/etc/reg/file.reg
 [ -e "$file_reg" ] || touch "$file_reg"
 
-PACKAGE=$(cgi_param pkg | tr -d .)
-FILE_ID=$(cgi_param id | tr -d .)
+path_info PACKAGE FILE_ID _
+if ! valid package "$PACKAGE" || ! valid id "$FILE_ID"; then
+	cgi_error "Invalid path"
+	exit 2
+fi
 
 OIFS=$IFS
 IFS='|'

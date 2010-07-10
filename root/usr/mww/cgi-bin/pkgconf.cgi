@@ -4,7 +4,11 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 . /usr/lib/libmodfrm.sh
 
-package=$(cgi_param pkg | tr -d .)
+path_info package _
+if ! valid package "$package"; then
+    	cgi_error "Invalid path"
+fi
+
 cgi_reg=/mod/etc/reg/cgi.reg
 [ -e "$cgi_reg" ] || touch "$cgi_reg"
 
