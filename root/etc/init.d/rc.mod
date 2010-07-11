@@ -1,5 +1,10 @@
 #!/bin/sh
 
+## Store 'clean' environment for later use
+if [ ! -e /var/env.cache ]; then
+	export -p | grep '^export [A-Z]' > /var/env.cache
+fi
+
 cd /
 export TERM=xterm
 
@@ -37,11 +42,6 @@ start() {
 			fi
 		fi
 	done
-
-	## Store 'clean' environment for later use (skipping IFS)
-	if [ ! -e /var/env.cache ]; then
-		set | sed -n "/^IFS=/ d; /^[A-Z]/ s/.*/export &/p" > /var/env.cache
-	fi
 
 	# AVM-Plugins
 	plugins=$(ls /var/plugin-*/control 2>/dev/null)
