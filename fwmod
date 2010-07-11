@@ -293,10 +293,6 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	echo "unpacking filesystem image"
 	modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM"
 
-	chmod -R u+w "$FILESYSTEM_DIR"
-
-	find "${FILESYSTEM_DIR}" -maxdepth 1 -type d -exec chmod +rx {} ';'
-
 	if [ -r "$AVMPLUGINS" ]; then
 		echo0 "unpacking AVM plugins"
 		mkdir -p "$AVMPLUGINS_DIR"
@@ -376,6 +372,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Copy the unpacked directory
 	mkdir -p "$MOD_DIR"
 	"$TAR" -c -C "$ORG_DIR" --exclude=./filesystem/dev . | "$TAR" -x -C "$MOD_DIR" || exit 1
+
+	# Fix some permissions
+	chmod -R u+w "$FILESYSTEM_MOD_DIR"
+	find "${FILESYSTEM_MOD_DIR}" -maxdepth 1 -type d -exec chmod +rx {} ';'
+	# o-users should be allowed to access files in /etc/default.049
+	find "${FILESYSTEM_MOD_DIR}/etc" -maxdepth 1 -type d -name default.0* -exec chmod o+x {} ';'
 
 	if [ -d "${FILESYSTEM_MOD_DIR}/usr/www/avm" ]; then
 		echo0 "applying symlinks, deleting additional webinterfaces"
