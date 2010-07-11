@@ -1,0 +1,80 @@
+# Common options for the mips target that configure can't find out
+# because we are cross-compiling.
+
+# Types and sizes
+ac_cv_type_pid_t=yes
+ac_cv_type_struct_sockaddr_storage=yes
+export ac_cv_sizeof_char=1
+ac_cv_sizeof_short=2
+ac_cv_sizeof_int=4
+ac_cv_sizeof_long=4
+ac_cv_sizeof_long_long=8
+ac_cv_sizeof_void_p=4
+ac_cv_sizeof_pid_t=4
+ac_cv_sizeof_ptrdiff_t=4
+ac_cv_sizeof_size_t=4
+ac_cv_sizeof_ssize_t=4
+ac_cv_sizeof_socklen_t=4
+if [ "$FREETZ_TARGET_LFS" = "y" ]; then
+	ac_cv_sizeof_fpos_t=24
+	ac_cv_sizeof_off_t=8
+	ac_cv_sizeof_stat_st_size=8
+else
+	ac_cv_sizeof_fpos_t=16
+	ac_cv_sizeof_off_t=4
+	ac_cv_sizeof_stat_st_size=4
+fi
+
+# Header files
+ac_cv_header_time=yes
+# C Library function
+ac_cv_have_decl_malloc=yes
+ac_cv_func_calloc_0_nonnull=yes
+ac_cv_func_malloc_0_nonnull=yes
+ac_cv_func_realloc_0_nonnull=yes
+ac_cv_func_epoll_ctl=no
+ac_cv_func_memcmp_working=yes
+ac_cv_func_getpwuid_r=yes
+ac_cv_func_posix_getpwuid_r=yes
+ac_cv_func_getgrgid_r=yes
+ac_cv_func_posix_getgrgid_r=yes
+ac_cv_func_setpgrp_void=yes
+ac_cv_func_mmap_fixed_mapped=yes
+for name in bcopy bzero rename fchmod fchown index rindex strerror lstat _exit utimes vsnprintf getcwd strftime dlopen fork fork_works vfork vfork_works; do
+	eval ac_cv_func_$name=yes
+done
+
+# Math Library functions (the values below could be generated/verified using make target-tester-math-functions)
+# Some packages incorrectly expect these functions to be in libc. This causes the corresponding test to fail
+# and the corresponding variable to be set to no. This in turn breaks the compilation of other packages (e.g. rrdtool)
+# that do really require these functions.
+# In case the compilation of some package stops with undefined reference to one of the functions below
+# add libm to its dependency list and -lm to its link options.
+ac_cv_func_isnan=yes
+ac_cv_func_isinf=yes
+ac_cv_func_finite=yes
+
+# Other Libraries
+ac_cv_file__usr_X11R6_lib64=no
+ac_cv_file__usr_X11R6_lib=no
+#ac_cv_lib_resolv_res_mkquery=yes
+#ac_cv_lib_cups_httpConnect=no
+#ac_cv_lib_intl_tolower=no
+#ac_cv_lib_tiff_TIFFOpen=yes
+#ac_cv_libevent_normal=yes
+#ac_cv_libevent_linker_option='(none)'
+#ac_cv_openssl_linker_option='(none)'
+
+# Linux system
+ac_cv_linux_vers=2.6.13.1
+ac_cv_CAN_USE_SYSCTL=no
+
+# Other
+
+# silence "using cross tools not prefixed with host triplet"-warning
+ac_tool_warned=yes
+
+# Fool configure scripts calling config.rpath script and messing up config.cache with host linker options.
+# Search for "checking for shared library run path origin" in configure script to understand what is meant.
+acl_cv_rpath=done
+

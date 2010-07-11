@@ -38,6 +38,7 @@ FREETZ_BASE_DIR:=$(shell pwd)
 ADDON_DIR:=addon
 BUILD_DIR:=build
 DL_DIR:=dl
+INCLUDE_DIR:=include
 MAKE_DIR:=make
 PACKAGES_DIR_ROOT:=packages
 ROOT_DIR:=root

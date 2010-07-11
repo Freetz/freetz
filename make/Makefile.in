@@ -72,6 +72,8 @@ SOURCE_DIR:=$(SOURCE_DIR_ROOT)/$(TARGET_SPECIFIC_SUBDIR)
 PACKAGES_DIR:=$(PACKAGES_DIR_ROOT)/$(TARGET_SPECIFIC_SUBDIR)
 TARGET_SPECIFIC_ROOT_DIR:=$(PACKAGES_DIR)/root
 
+CONFIG_SITE:=$(FREETZ_BASE_DIR)/$(INCLUDE_DIR)/site/$(TARGET_ARCH)-linux-uclibc
+
 TARGET_AR:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar
 TARGET_AS:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as
 TARGET_CC:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc
@@ -764,16 +766,17 @@ define PKG_CONFIGURED_CONFIGURE__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.unpacked
-	@$(call _ECHO,configuring... )
+	$(call _ECHO,configuring... )
 	($(CONFIGURE) \
 		cd $($(PKG)_DIR); \
 		$(if $(strip $(FREETZ_BACKUP_CONFIG_CACHE)),$(call BACKUP_CONFIG_CACHE,before-$(pkg)),) \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
 		$($(PKG)_CONFIGURE_PRE_CMDS) \
 		$(if $(strip $($(PKG)_BUILD_SUBDIR)),cd $(strip $($(PKG)_BUILD_SUBDIR));,) \
-		FREETZ_TARGET_LFS="$(strip $(FREETZ_TARGET_LFS))" source $(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.mipsel ; \
 		$(TARGET_CONFIGURE_ENV) \
 		$($(PKG)_CONFIGURE_ENV) \
+		FREETZ_TARGET_LFS="$(strip $(FREETZ_TARGET_LFS))" \
+		CONFIG_SITE=$(CONFIG_SITE) \
 		conf_cmd \
 		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
 		$($(PKG)_CONFIGURE_OPTIONS) \
