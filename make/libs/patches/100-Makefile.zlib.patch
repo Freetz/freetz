@@ -1,0 +1,11 @@
+--- Makefile.in~	2010-04-20 06:12:21.000000000 +0200
++++ Makefile.in	2010-07-11 21:43:48.000000000 +0200
+@@ -137,7 +137,7 @@
+ 	-@mv objs/$*.o $@
+ 
+ $(SHAREDLIBV): $(PIC_OBJS)
+-	$(LDSHARED) $(SFLAGS) -o $@ $(PIC_OBJS) $(LDSHAREDLIBC) $(LDFLAGS)
++	$(LDSHARED) $(SFLAGS) -o $@ $(PIC_OBJS) $(LDSHAREDLIBC)
+ 	rm -f $(SHAREDLIB) $(SHAREDLIBM)
+ 	ln -s $@ $(SHAREDLIB)
+ 	ln -s $@ $(SHAREDLIBM)
