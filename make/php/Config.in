@@ -35,12 +35,36 @@ config FREETZ_PACKAGE_PHP_WITH_ICONV
 	help
 		This option enables the ICONV support for PHP
 
+config FREETZ_PACKAGE_PHP_WITH_JSON
+	bool "build with JSON support"
+	default n
+	help
+		This option enables the JSON support for PHP
+
 config FREETZ_PACKAGE_PHP_WITH_LIBXML
 	bool "build with XML support"
 	select FREETZ_LIB_libxml2 if ! FREETZ_PACKAGE_PHP_STATIC
 	default n
 	help
 		This option enables the XML support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_PCNTL
+	bool "build with PCNTL support"
+	default n
+	help
+		This option enables the PCNTL support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_SESSION
+	bool "build with SESSION support"
+	default n
+	help
+		This option enables the SESSION support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_SOCKETS
+	bool "build with SOCKETS support"
+	default n
+	help
+		This option enables the SOCKETS support for PHP
 
 config FREETZ_PACKAGE_PHP_WITH_SQLITE2
 	bool "build with SQLite (v2) support"
@@ -64,6 +88,12 @@ config FREETZ_PACKAGE_PHP_WITH_SSL
 	default n
 	help
 		This option enables the SSL support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_SYSVIPC
+	bool "build with SYSVIPC support"
+	default n
+	help
+		This option enables the SYSVIPC support for PHP
 
 config FREETZ_PACKAGE_PHP_WITH_ZLIB
 	bool "build with ZLIB support"
