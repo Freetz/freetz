@@ -1,7 +1,6 @@
 #!/bin/sh
 
 DAEMON=stunnel
-PID_FILE="/var/run/$DAEMON.pid"
 . /etc/init.d/modlibrc
 
 config() {
@@ -11,24 +10,13 @@ config() {
 		else
 			/mod/etc/default.$DAEMON/stunnel_conf
 		fi
-
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
-
-		if [ -r "/tmp/flash/stunnel_svcs" ]; then
-			cat /tmp/flash/stunnel_svcs
-		fi
+		[ -r "/tmp/flash/${DAEMON}.extra" ] && cat /tmp/flash/${DAEMON}.extra
+		[ -r "/tmp/flash/stunnel_svcs" ] && cat /tmp/flash/stunnel_svcs
 	} > /mod/etc/${DAEMON}.conf
 }
 
 start() {
 	modlib_startdaemon $DAEMON
-}
-
-stop() {
-	read pid < "$PID_FILE" &&
-	kill -USR1 "$pid" > /dev/null 2>&1
 }
 
 case $1 in
