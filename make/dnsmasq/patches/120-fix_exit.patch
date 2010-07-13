@@ -1,0 +1,19 @@
+--- src/log.c	2010-06-06 21:22:30.000000000 +0200
++++ src/log.c	2010-07-12 21:52:29.000000000 +0200
+@@ -398,12 +398,13 @@
+ 
+ void flush_log(void)
+ {
+-  /* write until queue empty */
++  /* write until queue empty, but don't loop forever if there's
++   no connection to the syslog in existance */
+   while (log_fd != -1)
+     {
+       struct timespec waiter;
+       log_write();
+-      if (!entries)
++      if (!entries || !connection_good)
+ 	{
+ 	  close(log_fd);	
+ 	  break;
+
