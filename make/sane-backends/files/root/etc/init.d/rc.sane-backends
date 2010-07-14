@@ -1,42 +1,36 @@
 #!/bin/sh
 
 DAEMON=sane-backends
+DAEMON_BIN=saned
 . /etc/init.d/modlibrc
 
-PKG=sane-backends
-DAEMON=saned
 CONFDIR=/mod/etc/sane.d
 
 config() {
 	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
+		if [ -x "/tmp/flash/${DAEMON_BIN}_conf" ]; then
+			/tmp/flash/${DAEMON_BIN}_conf
 		else
-			/mod/etc/default.$PKG/${DAEMON}_conf
+			/mod/etc/default.$DAEMON/${DAEMON_BIN}_conf
 		fi
-
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
-	) > $CONFDIR/$DAEMON.conf
+		[ -r "/tmp/flash/${DAEMON_BIN}.extra" ] && cat /tmp/flash/${DAEMON_BIN}.extra
+	) > $CONFDIR/$DAEMON_BIN.conf
 }
 
 case $1 in
 	""|load)
 		[ ! -d $CONFDIR/dll.d ] && mkdir -p $CONFDIR/dll.d
-		for conf in /etc/default.$PKG/*.conf; do
+		for conf in /etc/default.$DAEMON/*.conf; do
 			[ -e $conf ] && ln -s $conf $CONFDIR/$(basename $conf)
 		done
-		for conf in /etc/default.$PKG/dll.d/*; do
+		for conf in /etc/default.$DAEMON/dll.d/*; do
 			[ -e $conf ] && cp $conf $CONFDIR/dll.d/
 		done
-
-		config
 
 		modreg cgi 'sane-backends' 'SANE'
 		modreg daemon --disable sane-backends
 
-		modlib_start $SANE_BACKENDS_SANED_ENABLED
+		modlib_start $SANE_BACKENDS_ENABLED
 		;;
 	unload)
 		modunreg cgi 'sane-backends'
