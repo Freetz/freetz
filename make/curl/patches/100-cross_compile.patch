@@ -1,0 +1,82 @@
+--- configure.orig	2010-06-05 00:32:04.000000000 +0200
++++ configure	2010-07-14 22:11:30.315586740 +0200
+@@ -19714,16 +19714,6 @@
+ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+   fi
+ 
+-  if test "$OPENSSL_ENABLED" = "1"; then
+-    if test -n "$LIB_OPENSSL"; then
+-
+-       LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$LIB_OPENSSL"
+-       export LD_LIBRARY_PATH
+-       { $as_echo "$as_me:${as_lineno-$LINENO}: Added $LIB_OPENSSL to LD_LIBRARY_PATH" >&5
+-$as_echo "$as_me: Added $LIB_OPENSSL to LD_LIBRARY_PATH" >&6;}
+-    fi
+-  fi
+-
+ fi
+ 
+ 
+@@ -20179,19 +20169,6 @@
+ fi
+ 
+ 
+-      if test "x$USE_GNUTLS" = "xyes"; then
+-        { $as_echo "$as_me:${as_lineno-$LINENO}: detected GnuTLS version $version" >&5
+-$as_echo "$as_me: detected GnuTLS version $version" >&6;}
+-
+-        if test -n "$gtlslib"; then
+-
+-          LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$gtlslib"
+-          export LD_LIBRARY_PATH
+-          { $as_echo "$as_me:${as_lineno-$LINENO}: Added $gtlslib to LD_LIBRARY_PATH" >&5
+-$as_echo "$as_me: Added $gtlslib to LD_LIBRARY_PATH" >&6;}
+-        fi
+-      fi
+-
+     fi
+ 
+   fi
+--- configure.ac.orig	2010-06-05 00:30:04.000000000 +0200
++++ configure.ac	2010-07-14 22:11:30.315586740 +0200
+@@ -1453,18 +1453,6 @@
+     ])
+   fi
+ 
+-  if test "$OPENSSL_ENABLED" = "1"; then
+-    if test -n "$LIB_OPENSSL"; then
+-       dnl when the ssl shared libs were found in a path that the run-time
+-       dnl linker doesn't search through, we need to add it to LD_LIBRARY_PATH
+-       dnl to prevent further configure tests to fail due to this
+-
+-       LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$LIB_OPENSSL"
+-       export LD_LIBRARY_PATH
+-       AC_MSG_NOTICE([Added $LIB_OPENSSL to LD_LIBRARY_PATH])
+-    fi
+-  fi
+-
+ fi
+ 
+ dnl **********************************************************************
+@@ -1673,21 +1661,6 @@
+          CPPFLAGS="$CLEANCPPFLAGS"
+        ])
+ 
+-      if test "x$USE_GNUTLS" = "xyes"; then
+-        AC_MSG_NOTICE([detected GnuTLS version $version])
+-
+-        if test -n "$gtlslib"; then
+-          dnl when shared libs were found in a path that the run-time
+-          dnl linker doesn't search through, we need to add it to
+-          dnl LD_LIBRARY_PATH to prevent further configure tests to fail
+-          dnl due to this
+-
+-          LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$gtlslib"
+-          export LD_LIBRARY_PATH
+-          AC_MSG_NOTICE([Added $gtlslib to LD_LIBRARY_PATH])
+-        fi
+-      fi
+-
+     fi
+ 
+   fi dnl GNUTLS not disabled
