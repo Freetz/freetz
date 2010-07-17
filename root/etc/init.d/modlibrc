@@ -241,21 +241,32 @@ modlib_reload()
 {
 	local fn=$PID_FILE
 	echo -n "Reloading ${DAEMON_LONG_NAME}..."
-	if ! modlib_check_running; then
-		echo 'not running.'
-		return 0
-	fi
-	config
-	kill -HUP $(cat "$fn") 2> /dev/null
-	local status=$?
-	if [ $status -eq 0 ]; then
-		echo 'done.'
-		return 0
-	else
-		rm -f "$fn"
-		echo 'failed.'
-		return 1
-	fi
+	modlib_check_running
+	case $? in
+		1)
+			config
+			kill -HUP $(cat "$fn") 2> /dev/null
+			local status=$?
+			if [ $status -eq 0 ]; then
+				echo 'done.'
+				return 0
+			else
+				rm -f "$fn"
+				echo 'failed.'
+				return 1
+			fi
+			;;
+		3)
+			echo 'not running.'
+			return 0
+			;;
+		5)
+			config
+			killall -HUP $DAEMON_BIN 2>/dev/null 1>&2
+			echo 'inetd.'
+			return 0
+			;;
+		esac
 }
 
 # modlib_restart
