@@ -1,0 +1,8 @@
+apply_changes()
+{
+        start_stop $1 $2 $nmbd_oldstatus nmbd
+        start_stop $1 $2 $smbd_oldstatus smbd
+}
+
+nmbd_oldstatus=$(/etc/init.d/rc.nmbd status)
+smbd_oldstatus=$(/etc/init.d/rc.smbd status)

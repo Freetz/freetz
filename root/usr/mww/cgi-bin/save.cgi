@@ -13,37 +13,33 @@ update_inetd() {
 }
 
 start_stop() {
-	oldstatus=$2
-	local rc="/mod/etc/init.d/rc.$1"
-	if [ -x "$rc" ]; then
-		status=$("$rc" status)
-		if [ running = "$oldstatus" -a inetd = "$status" ]; then
-			"$rc" stop
-			update_inetd "$1"
-			echo
-		elif [ inetd = "$oldstatus" -a inetd != "$status" ]; then
-			update_inetd "$1"
-			"$rc" start
-			echo
-		elif [ inetd = "$oldstatus" -o inetd = "$status" ]; then
-			update_inetd "$1"
-			echo
-		elif [ running = "$oldstatus" ]; then
-			"$rc" restart
-			echo
-		fi
-	fi
+	local startORstop=$1
+	local package=$2
+	local oldstatus=$3
+	local rc="/mod/etc/init.d/rc.${4-$2}"
+	[ ! -x "$rc" ] && return
+	case "$startORstop" in
+		start)
+			local newstatus=$(rc_status ${4-$2})
+			[ "$oldstatus" == inetd -o "$newstatus" == inetd ] && update_inetd "$package"
+			[ "$oldstatus" != stopped -a "$newstatus" != inetd ] && "$rc" start
+			;;
+		stop)
+			[ "$oldstatus" == running ] && "$rc" stop
+			;;
+	esac
 }
 
 apply_changes() {
-	echo
-	if [ "$1" = mod ]; then
-		start_stop telnetd "$2"
-		start_stop webcfg "$3"
-		start_stop swap "$4"
+	local startORstop=$1
+	local package=$2
+	if [ "$package" = mod ]; then
+		start_stop $startORstop telnetd "$3"
+		start_stop $startORstop webcfg "$4"
+		start_stop $startORstop swap "$5"
 		/usr/lib/mod/reg-status reload
 	else
-		start_stop "$1" "$2"
+		start_stop $startORstop "$package" "$3"
 	fi
 }
 
@@ -104,18 +100,21 @@ case $form in
 		pkg_pre_save | html
 
 		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
+			apply_changes stop "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
+			
+			echo
 			echo -n 'Saving settings...'
 			echo "$settings" | modconf set "$package" -
 			echo 'done.'
-
 			echo -n "Saving $package.cfg..."
 			modconf save "$package"
 			echo 'done.'
+			echo
 
 			{
-			apply_changes "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
+			apply_changes start "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
 			pkg_apply_save
-
+			echo
 			modsave flash
 			} | html
 		fi
@@ -137,12 +136,14 @@ case $form in
 				oldstatus1=$(rc_status "$package")
 			fi
 
+			apply_changes stop "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
+			
 			echo -n 'Restoring defaults...'
 			modconf default "$package"
 			echo 'done.'
 
 			{
-			apply_changes "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
+			apply_changes start "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
 			pkg_apply_def
 
 			modsave flash
