@@ -5,20 +5,23 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 . /mod/etc/conf/vnstat.cfg
 
-URL_CGINAME=$(echo "$SCRIPT_NAME" | sed -e 's/^.*\/cgi-bin\///g' -e 's/\.cgi$//g')
+URL_CGINAME=$(echo "$SCRIPT_NAME" | sed -e 's/^.*\/cgi-bin\///g' -e 's/\.cgi.*$//g')
 if [ "$URL_CGINAME" != "pkgstatus" ]; then
         cgi_begin 'vnstat'
         echo '<style type="text/css">'
         echo "fieldset { margin: 0px; margin-top: 10px; margin-bottom: 10px; padding: 10px; width: $(( _cgi_width-20 ))px;}"
         echo '</style>'
         _cgi_width=$(( _cgi_width+210 ))
+
+	cgi=$(cgi_param cgi | tr -d .)
+	cgi=${cgi#vnstat/}
+	URL_EXTENDED="$SCRIPT_NAME?pkg=vnstat&cgi=vnstat/$cgi"
+else
+    	URL_EXTENDED="$SCRIPT_NAME?"
 fi
 
 _NICE=$(which nice)
 NOCACHE="?nocache=$(date -Iseconds | sed 's/T/_/g;s/+.*$//g;s/:/-/g')"
-cgi=$(cgi_param cgi | tr -d .)
-cgi=${cgi#vnstat/}
-URL_EXTENDED="$SCRIPT_NAME?pkg=vnstat&cgi=vnstat/$cgi"
 TEMPDIR=/tmp/vnstat
 mkdir -p $TEMPDIR
 

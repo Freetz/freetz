@@ -6,7 +6,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 . /mod/etc/conf/rrdstats.cfg
 
-URL_CGINAME=$(echo "$SCRIPT_NAME" | sed -e 's/^.*\/cgi-bin\///g' -e 's/\.cgi$//g')
+URL_CGINAME=$(echo "$SCRIPT_NAME" | sed -e 's/^.*\/cgi-bin\///g' -e 's/\.cgi.*$//g')
 if [ "$URL_CGINAME" != "pkgstatus" ]; then
 	#. /mod/etc/conf/mod.cfg; _cgi_width=$(( $MOD_CGI_WIDTH-210))   #uncomment for reduced width
 	case $URL_CGINAME in
@@ -21,11 +21,16 @@ if [ "$URL_CGINAME" != "pkgstatus" ]; then
 	echo "fieldset { margin: 0px; margin-top: 10px; margin-bottom: 10px; padding: 10px; width: $(( _cgi_width-20 ))px;}" 
 	echo "</style>"
 	_cgi_width=$(( _cgi_width+210 ))
+
+	URL_STATUS=$(cgi_param cgi | tr -d .)
+	URL_STATUS=${URL_STATUS#rrdstats/}
+	URL_EXTENDED="$SCRIPT_NAME?pkg=rrdstats&cgi=rrdstats/$URL_STATUS"
+else # "$URL_CGINAME" == pkgstatus
+	URL_STATUS=${SCRIPT_NAME##*/}
+	URL_EXTENDED="$SCRIPT_NAME?"
 fi
 
-URL_STATUS=$(cgi_param cgi | tr -d .)
-URL_STATUS=${URL_STATUS#rrdstats/}
-URL_EXTENDED="$SCRIPT_NAME?pkg=rrdstats&cgi=rrdstats/$URL_STATUS"
+
 DATESTRING=$(date +'%d/%m/%y %X')
 let WIDTH="$_cgi_width-230-100"
 let HEIGHT=$WIDTH*$RRDSTATS_DIMENSIONY/$RRDSTATS_DIMENSIONX

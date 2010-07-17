@@ -43,7 +43,7 @@ if [ -z "$PATH_INFO" ]; then
 
 	cgi_end
 else
-	path_info pkg cgi _
+	path_info pkg cgi remaining_path
 	if ! valid package "$pkg" || ! valid id "$cgi"; then
 		cgi_error "Invalid path"
 	fi
@@ -60,6 +60,8 @@ else
 		cgi_end
 	else
 		if [ -x "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi" ]; then
+		    	PATH_INFO=$remaining_path
+			SCRIPT_NAME="$SCRIPT_NAME/$pkg/$cgi"
 			/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi
 		else
 			cgi_error "$(lang de:"Zusatz-Skript '$cgi.cgi' nicht gefunden." en:"Additional script '$cgi.cgi' not found.")"
