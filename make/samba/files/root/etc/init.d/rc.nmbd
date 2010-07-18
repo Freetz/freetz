@@ -21,12 +21,12 @@ case $1 in
 		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
 			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi
-		modreg daemon -n $DAEMON_LONG_NAME -r rc.$DAEMON_BIN $DAEMON
+		modreg daemon -n "$DAEMON_LONG_NAME" -r rc.$DAEMON_BIN -p samba nmbd
 		
 		modlib_start $SAMBA_NMBD_ENABLED
 		;;
 	unload)
-		modunreg daemon $DAEMON $DAEMON_LONG_NAME
+		modunreg daemon samba nmbd
 		modlib_stop
 		;;
 	start)

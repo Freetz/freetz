@@ -6,7 +6,7 @@
 #        modreg extra <pkg> <title> <sec-level> <cgi-name>
 #        modreg file <pkg> <id> <title> <sec-level> <desc-file>
 #        modreg status <pkg> <title> [<cgi-name>]
-#        modreg daemon [--disable] [--hide] [--rc-script <script>] [--name <name>] [--parent <pkg>] <daemon>
+#        modreg daemon [--disable] [--hide] [--rc-script <script>] [--name <description>] [--package <pkg>] <daemon>
 
 replace() {
 	local regexp=$1 file=$2 data=$3
@@ -21,7 +21,7 @@ usage() {
 	echo "       $1 extra <pkg> <title> <sec-level> <cgi-name>" 1>&2
 	echo "       $1 file <pkg> <id> <title> <sec-level> <desc-file>" 1>&2
 	echo "       $1 status <pkg> <title> [<cgi-name>]" 1>&2
-	echo "       $1 daemon [-d|--disable] [-h|--hide] [-r|--rc-script=<script>] [-n|--name=<name>] [-p|--parent=<parent_pkg>] <daemon>" 1>&2
+	echo "       $1 daemon [-d|--disable] [-h|--hide] [-r|--rc-script=<script>] [-n|--name=<description>] [-p|--package=<pkg>] <daemon>" 1>&2
 	exit 1
 }
 
@@ -85,12 +85,12 @@ case $1 in
 	daemon)
 		filename=$0
 		shift
-		TEMP=$(getopt -o dhn:r:p: --long disable,hide,name:,rc-script:parent: -n "$(basename $filename)" -- "$@")
+		TEMP=$(getopt -o dhn:r:p: --long disable,hide,name:,rc-script:package: -n "$(basename $filename)" -- "$@")
 
 		disable=false
 		hide=false
-		name=
-		parent=
+		description=
+		package=
 		[ $? == 0 ] || usage $filename
 		eval set -- "$TEMP"
 
@@ -98,9 +98,9 @@ case $1 in
 			case $1 in
 				-d|--disable) disable=true; shift ;;
 				-h|--hide)	hide=true; shift ;;
-				-n|--name) name=$2; shift 2 ;;
+				-n|--name) description=$2; shift 2 ;;
 				-r|--rc-script) rcscript=$2; shift 2 ;;
-				-p|--parent) parent=$2; shift 2 ;;
+				-p|--package) package=$2; shift 2 ;;
 				--) shift ; break ;;
 				*) echo "Internal error!" ; exit 1 ;;
 			esac
@@ -108,11 +108,11 @@ case $1 in
 
 		[ -n "$1" ] || usage $filename
 		daemon=$1
-		: ${name:=$daemon}
+		: ${description:=$daemon}
 		: ${rcscript:=rc.$daemon}
-		: ${parent:=$daemon}
+		: ${package:=$daemon}
 
-		replace "^$daemon|$name|" /mod/etc/reg/daemon.reg "$daemon|$name|$rcscript|$disable|$hide|$parent"
+		replace "^$daemon|.*|$package\$" /mod/etc/reg/daemon.reg "$daemon|$description|$rcscript|$disable|$hide|$package"
 		;;
 	*)
 		usage $0

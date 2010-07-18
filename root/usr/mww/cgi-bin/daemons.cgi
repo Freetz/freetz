@@ -10,27 +10,27 @@ stat_begin() {
 }
 
 stat_button() {
-	local daemon=$1 cmd=$2 active=$3
+	local pkg=$1 daemon=$2 cmd=$3 active=$4
 	if ! $active; then disabled=" disabled"; else disabled=""; fi
-	echo "<td><form class='btn' action='/cgi-bin/service.cgi/$daemon' method='post'><input type='submit' name='cmd' value='$cmd'$disabled></form></td>"
+	echo "<td><form class='btn' action='/cgi-bin/service.cgi/$pkg/$daemon' method='post'><input type='submit' name='cmd' value='$cmd'$disabled></form></td>"
 }
 
 stat_packagelink() {
 	local url
 	case $1 in
-		crond|swap|telnetd|webcfg|dsld|ftpd) url=$(href mod conf) ;;
-		*) url=$(href cgi "$1") ;;
+		mod) url=$(href mod conf) ;;
+		*)   url=$(href cgi "$1") ;;
 	esac
 	echo "<a href='$url'>$2</a>"
 }
 
 stat_line() {
-	local daemon=$1
-	local name=${2:-$daemon}
-	local rcfile="/mod/etc/init.d/${3:-rc.$daemon}"
-	local disable=${4:-false}
-	local hide=${5:-false}
-	local pkg=${6:-$daemon}
+	local pkg=$1
+	local daemon=$2
+	local description=${3:-$daemon}
+	local rcfile="/mod/etc/init.d/${4:-rc.$daemon}"
+	local disable=${5:-false}
+	local hide=${6:-false}
 
 	$hide && return
 
@@ -73,14 +73,14 @@ stat_line() {
 			;;
 	esac
 	echo "<tr${class:+ class='$class'}>"
-	echo "<td width='180'>$(stat_packagelink "$pkg" "$name")</td><td class='status' width='120'>$status</td>"
+	echo "<td width='180'>$(stat_packagelink "$pkg" "$description")</td><td class='status' width='120'>$status</td>"
 
 	if $disable; then
 		start=false; stop=false
 	fi
-	stat_button "$daemon" start $start
-	stat_button "$daemon" stop $stop
-	stat_button "$daemon" restart $stop
+	stat_button "$pkg" "$daemon" start $start
+	stat_button "$pkg" "$daemon" stop $stop
+	stat_button "$pkg" "$daemon" restart $stop
 
 	echo '</tr>'
 }
@@ -93,9 +93,9 @@ stat_avm() {
 	sec_begin '$(lang de:"AVM-Dienste" en:"AVM services")'
 	stat_begin
 
-	stat_line dsld
-	stat_line telnetd
-	[ -x /etc/init.d/rc.ftpd ] && [ "$(echo usbhost.ftp_server_enabled | usbcfgctl -s)" != "no" ] && stat_line ftpd
+	stat_line mod dsld
+	stat_line mod telnetd
+	[ -x /etc/init.d/rc.ftpd ] && [ "$(echo usbhost.ftp_server_enabled | usbcfgctl -s)" != "no" ] && stat_line mod ftpd
 
 	stat_end
 	sec_end
@@ -105,9 +105,9 @@ stat_builtin() {
 	sec_begin '$(lang de:"Basis-Pakete" en:"Built-in packages")'
 	stat_begin
 
-	stat_line crond
-	stat_line swap
-	stat_line webcfg
+	stat_line mod crond
+	stat_line mod swap
+	stat_line mod webcfg
 
 	stat_end
 	sec_end
@@ -118,8 +118,8 @@ stat_static() {
 	stat_begin
 
 	if [ -r "$REG" ]; then
-		while IFS='|' read -r daemon name rcscript disable hide pkg; do
-			stat_line "$daemon" "$name" "$rcscript" "$disable" "$hide" "$pkg"
+		while IFS='|' read -r daemon description rcscript disable hide pkg; do
+			stat_line "$pkg" "$daemon" "$description" "$rcscript" "$disable" "$hide"
 		done < "$REG"
 	fi
 	if [ ! -s "$REG" ]; then

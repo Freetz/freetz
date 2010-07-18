@@ -3,9 +3,8 @@
 # Usage: modunreg cgi <pkg>
 #        modunreg extra <pkg> [<cgi-name>]
 #        modunreg file <pkg> [<id>]
-#        DEPRECATED: modunreg file <id>
 #        modunreg status <pkg> [<cgi-name>]
-#        modunreg daemon <daemon> [<name>]
+#        modunreg daemon <pkg> [<daemon>]
 
 char=$(echo -ne '\01')
 
@@ -22,7 +21,7 @@ case $1 in
 		rm -f /mod/var/cache/menu_packages
 		;;
 	extra)
-		delete "^$2|.*|${3:-.*}\$" /mod/etc/reg/extra.reg
+		delete "^$2|.*|${3:-[^|]*}\$" /mod/etc/reg/extra.reg
 		rm -f /mod/var/cache/extras
 		;;
 	file)
@@ -30,18 +29,18 @@ case $1 in
 		rm -f /mod/var/cache/menu_settings
 		;;
 	status)
-		delete "^$2|.*|${3:-.*}\$" /mod/etc/reg/status.reg
+		delete "^$2|.*|${3:-[^|]*}\$" /mod/etc/reg/status.reg
 		rm -f /mod/var/cache/menu_status
 		;;
 	daemon)
-		delete "^$2|${3:-.*}|.*|.*|.*\$" /mod/etc/reg/daemon.reg
+		delete "^${3:-[^|]*}|.*|$2\$" /mod/etc/reg/daemon.reg
 		;;
 	*)
 		echo "Usage: $0 cgi <pkg>" 1>&2
 		echo "       $0 extra <pkg> [<cgi-name>]" 1>&2
 		echo "       $0 file <pkg> [<id>]" 1>&2
 		echo "       $0 status <pkg> [<cgi-name>]" 1>&2
-		echo "       $0 daemon <daemon> [<name>]" 1>&2
+		echo "       $0 daemon <pkg> [<daemon>]" 1>&2
 		exit 1
 		;;
 esac
