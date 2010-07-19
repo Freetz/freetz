@@ -78,6 +78,14 @@ config EXTERNAL_FREETZ_LIB_libcyassl
 		externals these file(s):
 		 /usr/lib/freetz/libcyassl.so.0.0.0
 
+config EXTERNAL_FREETZ_LIB_libdaemon
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdaemon
+	bool "libdaemon"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libdaemon.so.0.5.0
+
 config EXTERNAL_FREETZ_LIB_libdb
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdb
 	bool "libdb"

@@ -1,15 +1,21 @@
-$(call PKG_INIT_LIB, 0.12)
-$(PKG)_LIB_VERSION:=0.3.1
+$(call PKG_INIT_LIB, 0.14)
+$(PKG)_LIB_VERSION:=0.5.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=76596823cc1a6d1cdf7779b782ff0ee6
+$(PKG)_SOURCE_MD5:=509dc27107c21bcd9fbf2f95f5669563
 $(PKG)_SITE:=http://0pointer.de/lennart/projects/libdaemon/
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/libdaemon/.libs/libdaemon.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libdaemon.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/libdaemon.so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+$(PKG)_CONFIGURE_ENV += ac_cv_func_setpgrp_void=yes
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-lynx
+$(PKG)_CONFIGURE_OPTIONS += --disable-examples
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -34,9 +40,11 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(LIBDAEMON_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdaemon.* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/daemon.h
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdaemon* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/libdaemon \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libdaemon.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/share/doc/libdaemon
 
 $(pkg)-uninstall:
 	$(RM) $(LIBDAEMON_DEST_LIB)/libdaemon*.so*
