@@ -18,7 +18,7 @@ http://gcc.gnu.org/cgi-bin/cvsweb.cgi/gcc/gcc/flow.c.diff?cvsroot=gcc&only_with_
 
 --- gcc/flow.c.old	2004-02-27 19:39:19.000000000 -0800
 +++ gcc/flow.c	2004-08-26 07:29:46.000000000 -0700
-@@ -1878,6 +1878,7 @@
+@@ -1884,6 +1884,7 @@
  	  rtx set_src = SET_SRC (pc_set (BB_END (bb)));
  	  rtx cond_true = XEXP (set_src, 0);
  	  rtx reg = XEXP (cond_true, 0);
@@ -26,7 +26,7 @@ http://gcc.gnu.org/cgi-bin/cvsweb.cgi/gcc/gcc/flow.c.diff?cvsroot=gcc&only_with_
  
  	  if (GET_CODE (reg) == SUBREG)
  	    reg = SUBREG_REG (reg);
-@@ -1886,11 +1887,13 @@
+@@ -1892,11 +1894,13 @@
  	     in the form of a comparison of a register against zero.  
  	     If the condition is more complex than that, then it is safe
  	     not to record any information.  */
