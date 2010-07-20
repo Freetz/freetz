@@ -119,7 +119,11 @@ stat_static() {
 	stat_begin
 
 	if [ -r "$REG" ]; then
-		while IFS='|' read -r daemon description rcscript disable hide pkg; do
+	    	# order by description
+		while IFS='|' read -r daemon description rest; do
+			echo "$description|$daemon|$rest"
+		done | sort |
+		while IFS='|' read -r description daemon rcscript disable hide pkg; do
 			stat_line "$pkg" "$daemon" "$description" "$rcscript" "$disable" "$hide"
 		done < "$REG"
 	fi
