@@ -122,10 +122,10 @@ stat_static() {
 	    	# order by description
 		while IFS='|' read -r daemon description rest; do
 			echo "$description|$daemon|$rest"
-		done | sort |
+		done < "$REG" | sort |
 		while IFS='|' read -r description daemon rcscript disable hide pkg; do
 			stat_line "$pkg" "$daemon" "$description" "$rcscript" "$disable" "$hide"
-		done < "$REG"
+		done
 	fi
 	if [ ! -s "$REG" ]; then
 		echo '<p><i>$(lang de:"keine statischen Pakete" en:"no static packages")</i></p>'
