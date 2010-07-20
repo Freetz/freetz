@@ -134,11 +134,11 @@ while [ $row -lt 50 ]; do
     echo -n "<td><select onchange='rebuild_rule ( this , \"proto\" ,this.value);'>"
     echo -n '<option value="ip">ip</option> <option value="tcp">tcp</option> <option value="udp">udp</option> <option value="icmp">icmp</option> </select>'
     echo -n "</td><td><input type='text' size='13' title='Port' onblur='rebuild_rule ( this, \"param\" ,this.value);'></td><td align='center'>"
-    echo -n "<table><tr><td align='center'><img id='id_act_img_$row' src='../images/deny.gif' onclick='SelAct(this)'></td></tr><tr><td ><font size=1 id='id_act_txt_$row'>DENY</font></td></tr></table>"
-    echo -n "</td><td bgcolor='#CAE7FB'>&nbsp;<img src='../images/del.jpg' title='delete rule' onclick='removerule(this)'>"
-    echo -n "&nbsp;<img src='../images/clone.jpg' title='clone rule' onclick='cloneerule(this)'>"
-    echo -n "&nbsp;<img src='../images/up.jpg' align='top' title='move rule up' onclick='moverule(this, allrules, -1 );Init_FW_Table(); build_where_select();'>"
-    echo "&nbsp;<img src='../images/down.jpg' title='move rule down' onclick='moverule(this, allrules, 1 );Init_FW_Table(); build_where_select();'></td></tr>"
+    echo -n "<table><tr><td align='center'><img id='id_act_img_$row' src='/images/deny.gif' onclick='SelAct(this)'></td></tr><tr><td ><font size=1 id='id_act_txt_$row'>DENY</font></td></tr></table>"
+    echo -n "</td><td bgcolor='#CAE7FB'>&nbsp;<img src='/images/del.jpg' title='delete rule' onclick='removerule(this)'>"
+    echo -n "&nbsp;<img src='/images/clone.jpg' title='clone rule' onclick='cloneerule(this)'>"
+    echo -n "&nbsp;<img src='/images/up.jpg' align='top' title='move rule up' onclick='moverule(this, allrules, -1 );Init_FW_Table(); build_where_select();'>"
+    echo "&nbsp;<img src='/images/down.jpg' title='move rule down' onclick='moverule(this, allrules, 1 );Init_FW_Table(); build_where_select();'></td></tr>"
 let row++
 done
 echo '</table>'
@@ -199,7 +199,7 @@ $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln 
         </td><td><input type="text" size="24" title="Destination" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddest", this.value)'>
         </td><td><input type="text" size="10" title="DPort" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddport", this.value)'>
         </td><td><input type="text" title="Descr" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwdname", this.value)'>
-</td><td><center><img src="../images/del.jpg" title="delete rule" onclick='allfwdrules.splice(this.parentNode.parentNode.parentNode.rowIndex -3 ,1); fwdrulescount -= 1;Init_FWDTable()'>
+</td><td><center><img src="/images/del.jpg" title="delete rule" onclick='allfwdrules.splice(this.parentNode.parentNode.parentNode.rowIndex -3 ,1); fwdrulescount -= 1;Init_FWDTable()'>
         </center></td>
 	</tr>
 </table></p>
@@ -418,7 +418,7 @@ switch (action[index]){
 }
 
 rebuild_rule(elem, "action", act);
-elem.src="../images/"+act+".gif"
+elem.src="/images/"+act+".gif"
 elem.title=act.toUpperCase();
 var tmpid="id_act_txt_"+ (+index +1);
 tmp=document.getElementById(tmpid);
@@ -542,7 +542,7 @@ function Init_FW_Table(){
             cn[3].firstChild.value=proto[j-3];
             cn[4].firstChild.value=param[j-3];
             tmpid="id_act_img_"+(j-2);
-            document.getElementById(tmpid).src="../images/"+action[j-3]+".gif";
+            document.getElementById(tmpid).src="/images/"+action[j-3]+".gif";
             tmpid="id_act_txt_"+(j-2);
             document.getElementById(tmpid).firstChild.nodeValue=action[j-3].toUpperCase();
             var lastel=cn[6].childNodes;
@@ -568,7 +568,7 @@ cat << EOF
 <font size="1">$(lang en:"\"Defaults\" will load AVM default firewall rules (only loads into this GUI, use \"Apply\" to save them)" de:"\"Standard\" l&auml;dt AVM Default-Regeln in die GUI. Zum Speichern \"&Uuml;bernehmen\"-Knopf dr&uuml;cken").</font><br />
 <input type="hidden" name="do_activate" value=""></font>
 $(lang en:"Saving will <b>not</b> activate rules or new dsld switches by default! <b>To do so, some daemoms have to be restarted:</b>" de:"Regelwerk und dsld Schalter werden standardm&auml;&szlig;ig <b>nicht</b> aktiviert!  Dazu m&uuml;ssen AVM-Dienste neu gestartet werden:") <br />
-<img src="../images/blink!.gif" title="Attention!" valign="center"> &nbsp; <b>$(lang en:"This might crash your box or even restore factory defaults!" de:"Das kann zum Absturz oder sogar zum Werksreset f&uuml;hren!") </b> &nbsp;&nbsp;&nbsp; $(lang en:"Activate rules directly after saving" de:"Regeln gleich nach Speichern aktivieren") <input type="checkbox" value="dsld_ctlmgr" name="do_activate" ><br />
+<img src="/images/blink!.gif" title="Attention!" valign="center"> &nbsp; <b>$(lang en:"This might crash your box or even restore factory defaults!" de:"Das kann zum Absturz oder sogar zum Werksreset f&uuml;hren!") </b> &nbsp;&nbsp;&nbsp; $(lang en:"Activate rules directly after saving" de:"Regeln gleich nach Speichern aktivieren") <input type="checkbox" value="dsld_ctlmgr" name="do_activate" ><br />
 <font size="1">($(lang en:"Safe way to activate the settings is only save them here and then restart the box" de:"Um die &Auml;derungen \"sicher\" zu aktivieren, hier nur \"&Uuml;bernehmen\" w&auml;hlen und dann die Box neu starten"))</font><br />
 EOF
 
