@@ -1,0 +1,18 @@
+--- opendd.h.orig	2010-05-08 23:26:30.000000000 +0200
++++ opendd.h		2010-05-09 00:51:46.000000000 +0200
+@@ -26,12 +26,10 @@
+ #define EXIT_DYNDNS_SUCCESS 1
+ #define EXIT_DYNDNS_FAILED 500
+ 
+-#ifdef __Linux__
+-void linux_setproctitle(char *, ...);
+-#define SETPROCTITLE	linux_setproctitle
+-#elif defined __FreeBSD__ || defined __OpenBSD__ || defined __NetBSD__
++
++void setproctitle(char *, ...);
+ #define SETPROCTITLE	setproctitle
+-#endif
++
+ 
+ int check_config_file_mode(const char *);
+ char *get_pidfile_path(void);

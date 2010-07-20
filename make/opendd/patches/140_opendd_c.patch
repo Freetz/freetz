@@ -1,0 +1,11 @@
+--- opendd.c.orig	2010-05-08 23:14:04.000000000 +0200
++++ opendd.c		2010-05-09 00:52:57.000000000 +0200
+@@ -81,7 +81,7 @@
+ static int g_force_update_status = 0;
+ 
+ #ifdef __Linux__
+-void linux_setproctitle(char *fmt, ...) {
++void setproctitle(char *fmt, ...) {
+ /* -----------------------------------------------------------------------------
+  * Linux's setproctitle() version
+  *

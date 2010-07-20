@@ -1,0 +1,64 @@
+--- Makefile.orig	2008-03-15 03:15:51.000000000 +0100
++++ Makefile		2010-05-29 00:19:27.000000000 +0200
+@@ -5,8 +5,9 @@
+ # USE_SOCKET_SSL=y	to enable SSL socket
+ #
+ 
+-CC = cc
+-FLAGS = -ansi -pedantic -Wall -O2 -fno-strict-aliasing
++CC = mipsel-linux-gcc
++FLAGS =
++ARCH = mips
+ 
+ BIN_PROGRAM = opendd
+ 
+@@ -20,7 +21,8 @@
+ ./include/config_option.c\
+ ./include/wrapper.c\
+ ./include/sendmail.c\
+-./include/base64.c
++./include/base64.c \
++./include/setproctitle.c
+ 
+ COMMON_OBJS = ${COMMON_SRCS:.c=.o}
+ 
+@@ -32,33 +34,17 @@
+ 
+ OBJS = ${SRCS:.c=.o}
+ 
+-MACROS = -DUSE_SOCKET_SSL
+-SSL = -lssl -lcrypto
+-
+ all: ${BIN_PROGRAM}
+ ${BIN_PROGRAM}: ${OBJS} ${COMMON_OBJS};
+ 	@echo ""
+-	@if [ -z "${USE_SOCKET_SSL}" ]; then\
+-		echo "===>  Creating OpenDD program ...";\
+-		echo '${CC} -o ${BIN_PROGRAM} ${COMMON_OBJS} ${OBJS}';\
+-		${CC} -o ${BIN_PROGRAM} ${COMMON_OBJS} ${OBJS};\
+-	else\
+-		echo "===>  Creating OpenDD program WITH SSL ...";\
+-		echo '${CC} -o ${BIN_PROGRAM} ${COMMON_OBJS} ${OBJS} ${SSL}';\
+-		${CC} -o ${BIN_PROGRAM} ${COMMON_OBJS} ${OBJS} ${SSL};\
+-	fi
++	echo "===>  Creating OpenDD program ..."
++	echo '${CC} -D${ARCH} -o ${BIN_PROGRAM} ${COMMON_OBJS} ${OBJS} ${LIBS}';\
++	${CC} -D${ARCH} -o ${BIN_PROGRAM} ${COMMON_OBJS} ${OBJS} ${LIBS};
+ 	@echo ""
+ .c.o:
+-	@echo "===>  Compiling `basename $*.o` ..."
+-	@if [ "$*" = "./include/socket" ]\
+-	|| [ "$*" = "./main" ]\
+- 	&& [ "${USE_SOCKET_SSL}" ]; then\
+-		echo '${CC} ${FLAGS} ${MACROS} -c -o $*.o $*.c';\
+-		${CC} ${FLAGS} ${MACROS} -c -o $*.o $*.c;\
+-	else\
+-		echo '${CC} ${FLAGS} -c -o $*.o $*.c';\
+-		${CC} ${FLAGS} -c -o $*.o $*.c;\
+-	fi
++	@echo "===>  Compiling `basename $@` ..."
++	echo '${CC} -D${ARCH} ${FLAGS} ${OPTS} -c -o $@ $<';\
++	${CC} -D${ARCH} ${FLAGS} ${OPTS} -c -o $@ $<;
+ clean:
+ 	if [ -f opendd ];then rm -f opendd; fi
+ 	find ./include -name "*.o" -exec rm -f {} \;

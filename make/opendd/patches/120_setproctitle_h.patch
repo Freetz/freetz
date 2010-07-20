@@ -1,0 +1,9 @@
+--- include/setproctitle.h.orig	1970-01-01 01:00:00.000000000 +0100
++++ include/setproctitle.h	2010-05-09 00:40:19.000000000 +0200
+@@ -0,0 +1,6 @@
++void initproctitle (int argc, char **argv);
++#if 0
++void setproctitle (const char *fmt, ...);
++#else
++void setproctitle (const char *prog, const char *txt);
++#endif
