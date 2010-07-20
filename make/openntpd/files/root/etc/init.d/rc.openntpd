@@ -4,9 +4,6 @@ DAEMON=openntpd
 DAEMON_BIN=ntpd
 . /etc/init.d/modlibrc
 
-# include environment required for multid restart
-[ -r /var/env.cache ] && . /var/env.cache
-
 config() {
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
@@ -24,45 +21,13 @@ config() {
 }
 
 start() {
-	multid_restart stop-ntp
+	[ "$OPENNTPD_MULTID" == "no" ] && /etc/init.d/rc.multid ntp_disable  >/dev/null
 	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/ntpd.conf
 }
 
 stop() {
-	multid_restart start-ntp
+	/etc/init.d/rc.multid ntp_enable >/dev/null
 	return 127
-}
-
-multid_restart() {
-	# Parameter $1: start-ntp or stop-ntp
-	if [ "$1" != "start-ntp" ] && [ "$1" != "stop-ntp" ]; then
-		exit "multid restart aborted, invalid parameter."
-		return 1
-	fi
-
-	local MULTID_PID=$(pidof -s multid)
-	local MULTID_NTP=$(multid -? 2>&1 | grep "NTP" | sed 's/^[ \t]*//' | cut -c 1-3 | sed 's/ //')
-	local MULTID_CMD=$(xargs -0  < /proc/${MULTID_PID}/cmdline | sed "s/$MULTID_NTP//")
-	if [ -z "$MULTID_CMD" ]; then
-		#generate default xargs:
-		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
-			MULTID_CMD="multid $(multid -? 2>&1 | grep "upnp" | sed 's/^[ \t]*//' | cut -c 1-3)"
-		else
-			MULTID_CMD="multid"
-		fi
-	fi
-
-	MULTID_RUN="$MULTID_CMD"
-	# disable ntp client:
-	# start multid with "-t" option
-	# in webif OPENNTPD_MULTID=no means yes
-	[ "$OPENNTPD_MULTID" == "no" ] && [ "$1" == "stop-ntp" ] && MULTID_RUN="$MULTID_CMD $MULTID_NTP"
-
-	#quick check for changed parameters
-	[ "$MULTID_RUN" == "$(xargs -0  < /proc/${MULTID_PID}/cmdline)" ] && return
-
-	multid -s
-	$MULTID_RUN
 }
 
 case $1 in

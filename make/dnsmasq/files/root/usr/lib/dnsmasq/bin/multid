@@ -6,16 +6,18 @@ args=$@
 
 set -- $(getopt s $@ 2> /dev/null)
 while [ $# -gt 0 ]; do
-	[ "$1" == "-s" ] && stop=1
+	[ "$1" == "-s" ] && mode=stop || mode=start
 	shift
 done
 
-if [ "$stop" -eq 0 -a -z "$(pidof dnsmasq)" ]; then
+dnsmasq_status="$(/mod/etc/init.d/rc.dnsmasq status)"
+
+if [ "$mode" != "stop" -a "$dnsmasq_status" == "stopped" ]; then
 	/mod/etc/init.d/rc.dnsmasq >> /var/log/mod_net.log
 fi
 
-multid $args
+/etc/init.d/rc.multid $mode >/dev/null
 
-if [ "$stop" -ne 0 -a ! -z "$(pidof dnsmasq)" ]; then
+if [ "$mode" == "stop" -a "$dnsmasq_status" != "stopped" ]; then
 	/mod/etc/init.d/rc.dnsmasq stop >> /var/log/mod_net.log
 fi
