@@ -13,7 +13,7 @@ cat << EOF
 <input id="manual" type="radio" name="enabled" value="no"$man_chk><label for="manual"> $(lang de:"Deaktiviert" en:"Disabled")</label>
 </p>
 <font size="1">
-$(lang de:"OpenDD aktualisiert die dynamischen DNS-Adressen nach einem IP-Wechsel automatisch und läuft nicht als Daemon." en:"OpenDD updates the dynamic dns addresses automatically after an IP change and doesn't need to run as a daemon.")
+$(lang de:"OpenDD aktualisiert die dynamischen DNS-Adressen nach einem IP-Wechsel automatisch und l&auml;uft nicht als Dienst." en:"OpenDD updates the dynamic dns addresses automatically after an IP change and doesn't need to run as a daemon.")
 </font>
 EOF
 

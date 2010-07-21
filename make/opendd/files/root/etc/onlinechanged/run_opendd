@@ -3,6 +3,6 @@
 . /mod/etc/conf/opendd.cfg
 
 if [ "$1" = "online" -a "$OPENDD_ENABLED" = "yes" ]; then
-	logger -t info Start OpenDD after IP-change
-	(sleep 5; /mod/etc/init.d/rc.opendd start) &
+	logger -t info Run OpenDD after IP-change.
+ 	(sleep 5; /mod/etc/init.d/rc.opendd run)&
 fi

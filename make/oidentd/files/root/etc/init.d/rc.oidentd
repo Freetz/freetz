@@ -1,9 +1,9 @@
 #!/bin/sh
 
 DAEMON=oidentd
-CONF_FILE=/tmp/flash/$DAEMON/oidentd.conf
 . /etc/init.d/modlibrc
 
+CONF_FILE=/tmp/flash/$DAEMON/oidentd.conf
 
 start() {
 	modlib_startdaemon oidentd -C $CONF_FILE $OIDENTD_CMDLINE
