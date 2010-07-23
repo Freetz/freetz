@@ -24,7 +24,7 @@ case $1 in
 		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
 			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi
-		modreg daemon -n "$DAEMON_LONG_NAME" -r rc.$DAEMON_BIN -p samba smbd
+		modreg daemon -n samba-smbd -r rc.$DAEMON_BIN -p samba smbd
 		
 		modlib_start $SAMBA_ENABLED
 		;;
