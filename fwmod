@@ -379,16 +379,18 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# o-users should be allowed to access files in /etc/default.049
 	find "${FILESYSTEM_MOD_DIR}/etc" -maxdepth 1 -type d -name default.0* -exec chmod o+x {} ';'
 
-	if [ -d "${FILESYSTEM_MOD_DIR}/usr/www/avm" ]; then
-		echo0 "applying symlinks, deleting additional webinterfaces"
-		mv ${FILESYSTEM_MOD_DIR}/usr/www/avm ${FILESYSTEM_MOD_DIR}/usr/www/all
-		oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
-		for i in $oems; do
-			rm -rf ${FILESYSTEM_MOD_DIR}/usr/www/$i
-			ln -s all ${FILESYSTEM_MOD_DIR}/usr/www/$i
-		done
-	fi
-
+	oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
+	for webdir in ${FILESYSTEM_MOD_DIR}/usr/www ${FILESYSTEM_MOD_DIR}/usr/www.nas; do
+		if [ -d ${webdir}/avm ]; then
+			echo0 "applying symlinks, deleting additional webinterfaces"
+			mv ${webdir}/avm ${webdir}/all
+			for i in $oems; do
+				rm -rf ${webdir}/$i
+				ln -s all ${webdir}/$i
+			done
+		fi
+	done
+	
 	echo0 "applying patches"
 
 	echo1 "applying patches (${FREETZ_TYPE_STRING}-${FREETZ_TYPE_LANG_STRING})"
@@ -533,6 +535,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo -n " $i"
 			# delete webinterface symlinks otherwise user can choose branding in status.cgi
 			rm -rf "${FILESYSTEM_MOD_DIR}/usr/www/${i}"
+			rm -rf "${FILESYSTEM_MOD_DIR}/usr/www.nas/${i}"
 			find ${FILESYSTEM_MOD_DIR}/etc/default.* -name "*${i}*" | xargs rm -rf
 			oem_removed=1
 		else
