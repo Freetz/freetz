@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.18.1)
+$(call PKG_INIT_BIN, 1.18.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-freetz.tar.bz2
-$(PKG)_SOURCE_MD5:=50b001d200138c113ed9da7c2f968170
+$(PKG)_SOURCE_MD5:=3340f007865fc25c947a6ee79eae9da7
 $(PKG)_SITE:=http://download.berlios.de/callmonitor
 $(PKG)_STARTLEVEL=71
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/recode
