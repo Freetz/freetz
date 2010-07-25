@@ -1,9 +1,12 @@
 $(call PKG_INIT_BIN, 1.27)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.xmailserver.org
-$(PKG)_BINARY:=$($(PKG)_DIR)/bin/XMail
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/XMail
 $(PKG)_SOURCE_MD5:=73c9d95012709d7b11511dfb6dd6ab3d
+
+$(PKG)_BINARIES := compartment sendmail XMail XMCrypt CtrlClnt MkUsers
+$(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/bin/%)
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/XMail/%)
+$(PKG)_TAR_CONFIG := $($(PKG)_DEST_DIR)/etc/default.xmail/default_config/default_config.tar
 
 $(PKG)_DEPENDS_ON := uclibcxx
 $(PKG)_LDFLAGS := -ldl -lpthread
@@ -29,34 +32,25 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(XMAIL_DIR) -f Makefile.lnx \
 		CC="$(TARGET_CXX)" \
 		LD="$(TARGET_CXX)" \
 		CFLAGS="$(TARGET_CFLAGS) $(XMAIL_CFLAGS)" \
 		LDFLAGS="$(TARGED_LDFLAGS) $(XMAIL_LDFLAGS)" \
 		STRIP="$(TARGET_STRIP)"
-	$(TARGET_CC) -Wall -O2 -o $(XMAIL_DIR)/bin/compartment $(XMAIL_DIR)/docs/compartment.c
+	$(TARGET_CC) $(TARGET_CFLAGS) -o $(XMAIL_DIR)/bin/compartment $(XMAIL_DIR)/docs/compartment.c
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	rm -rf $(XMAIL_DEST_DIR)/usr/lib/MailRoot
-	mkdir -p $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin/
-	for i in $$(find $(XMAIL_DIR)/bin/ -type f -executable); do \
-		cp $$i $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin/; \
-	done
-	rm -rf $(XMAIL_DEST_DIR)/etc/default.xmail/default_config/
-	mkdir -p $(XMAIL_DEST_DIR)/etc/default.xmail/default_config/
+$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/XMail/%: $($(PKG)_DIR)/bin/%
+	$(INSTALL_BINARY_STRIP)
 
-	tar --exclude='./bin' --exclude='./domains/*' -C $(XMAIL_DIR)/MailRoot -cf \
-		$(XMAIL_DEST_DIR)/etc/default.xmail/default_config/default_config.tar .
-
-	for i in $$(find $(XMAIL_DEST_DIR)/usr/lib/MailRoot/bin -type f -executable); do \
-		$(TARGET_STRIP) $$i; \
-	done
+$($(PKG)_TAR_CONFIG):
+	mkdir -p $(dir $@)
+	tar --exclude='./bin' --exclude='./domains/*' -C $(XMAIL_DIR)/MailRoot -cf $(XMAIL_TAR_CONFIG) .
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_TAR_CONFIG)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(XMAIL_DIR) clean
