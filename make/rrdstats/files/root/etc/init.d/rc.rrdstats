@@ -36,8 +36,10 @@ config() {
 	# show/hide digitemp
 	modunreg status rrdstats rrddt
 	modunreg file rrdstats
+	modunreg extra rrdstats dt-init
 	if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP1W" = yes ]; then
 		modreg status rrdstats DigiTemp rrddt
+		modreg extra rrdstats "$(lang de:"DigiTemp initialisieren" en:"Initialize DigiTemp")" 2 dt-init
 		modreg file rrdstats dt-conf 'RRDstats: dt-conf' 0 "dt-conf"
 		modreg file rrdstats dt-alias 'RRDstats: dt-alias' 1 "dt-alias"
 		modreg file rrdstats dt-group 'RRDstats: dt-group' 1 "dt-group"
