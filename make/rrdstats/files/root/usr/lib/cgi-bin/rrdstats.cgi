@@ -319,6 +319,8 @@ $(lang de:"Passwort" en:"Password"):
 EOF
 fi
 
+let INIT_WINDOW_WIDTH=$MOD_CGI_WIDTH+78
+
 cat << EOF
 
 <p>
@@ -353,7 +355,7 @@ max:<input type="text" name="digitemp_u" size="3" maxlength="4" value="$(html "$
 </p>
 
 <p>
-<input type="button" value="DigiTemp initialisieren" onclick="if (confirm('$(lang de:"Fortfahren?" en:"Proceed?")')==true) window.open('$(href extra rrdstats dt-init)','Initialisieren_von_DigiTemp','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes');" /> &nbsp;&nbsp;
+<input type="button" value="DigiTemp initialisieren" onclick="if (confirm('$(lang de:"Fortfahren?" en:"Proceed?")')==true) window.open('$(href extra rrdstats dt-init)','Initialisieren_von_DigiTemp','menubar=no,width=$INIT_WINDOW_WIDTH,height=600,toolbar=no,resizable=yes,scrollbars=yes');" /> &nbsp;&nbsp;
 <br><font size="-2">$(lang de:"Vor dem ersten Aktivieren oder nach Ver&auml;nderungen der Ger&auml;te ausf&uuml;hren" en:"Run this before the first start of if you change your devices")</font>
 
 EOF
