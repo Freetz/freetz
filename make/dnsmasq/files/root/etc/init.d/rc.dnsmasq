@@ -30,11 +30,6 @@ start() {
 	modlib_startdaemon $DAEMON $OPTIONS
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 
-	# fix resolv.conf (protect against dnsmasq crash)
-	[ -f /var/tmp/avm-resolv.conf -a ! -L /var/tmp/avm-resolv.conf ] &&
-		mv /var/tmp/avm-resolv.conf /var/tmp/resolv.conf
-	ln -s resolv.conf /var/tmp/avm-resolv.conf 2>/dev/null
-
 	if [ ! -L "/var/flash/multid.leases" -a "$DNSMASQ_DHCP" = "yes" ]; then
 		rm -f /var/flash/multid.leases
 		touch /var/tmp/multid.leases
