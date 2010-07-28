@@ -168,7 +168,7 @@ do_mount ()
 do_umount ()
 {
 	local rcftpd="/etc/init.d/rc.ftpd"
-	local rcsamba="/etc/init.d/rc.samba"
+	local rcsmbd="/etc/init.d/rc.smbd"
 	local kill_daemon=""
 	local kill_ftpd=0
 	local kill_smbd=0
@@ -186,7 +186,7 @@ do_umount ()
 	if ! $(umount $mnt_path > /dev/null 2>&1)
 	then # 2
 		samba_needs_start=1
-		[ -x $rcsamba ] && $rcsamba stop smbd || kill_smbd=1 # stop smbd
+		[ -x $rcsmbd ] && $rcsmbd stop || kill_smbd=1 # stop smbd
 		if ! $(umount $mnt_path > /dev/null 2>&1)
 		then # 3
 			ftpd_needs_start=1
@@ -222,7 +222,7 @@ do_umount ()
 		eventadd 141 $mnt_name
 	fi
 	sleep 1
-	[ $samba_needs_start -eq 1 ] && [ -x $rcsamba ] && $rcsamba start # start samba
+	[ $samba_needs_start -eq 1 ] && [ -x $rcsmbd ] && $rcsmbd start # start smbd
 	[ $ftpd_needs_start -eq 1 ] && [ -x $rcftpd ] && $rcftpd start # start ftpd
 	[ $samba_needs_start -eq 0 ] && [ -x /etc/samba_control ] && /etc/samba_control reconfig $mnt_path
 	vrijgeven # semaphore off
