@@ -6,6 +6,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 # redirect stderr to stdout so we see ouput in webif
 exec 2>&1
 
+cgi_begin '$(lang de:"DigiTemp initialisieren" en:"Initialize DigiTemp")'
+
 sec_begin '$(lang de:"Initialisiere DigiTemp" en:"Initializing DigiTemp")'
 
 echo '<p><font size=+1><b><center>$(lang de:"BITTE WARTEN" en:"PLEASE WAIT")</center></b></font></p>'
@@ -26,3 +28,4 @@ echo -n '<p><input type="button" value="$(lang de:"Fenster Schliessen" en:"Close
 
 sec_end
 
+cgi_end
