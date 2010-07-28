@@ -20,4 +20,8 @@ for file in \
 		echo2 "patching $file"
 	fi
 done
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/dsl-expert-pages.patch"
+if isFreetzType PREVIEW; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/dsl-expert-pages_preview.patch"
+else
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/dsl-expert-pages.patch"
+fi
