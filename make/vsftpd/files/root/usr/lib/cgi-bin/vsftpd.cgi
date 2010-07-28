@@ -129,7 +129,7 @@ $(lang de:"Passive Ports" en:"Passive ports"):
 <p>
 <input type="hidden" name="promiscuous" value="no">
 <input id="b5" type="checkbox" name="promiscuous" value="yes"$promiscuous_chk><label for="b5"> $(lang de:"FXP aktivieren" en:"Enable FXP")</label>
-<input type="hidden" name="show_banner" value="no"
+<input type="hidden" name="show_banner" value="no">
 <input id="b6" type="checkbox" name="show_banner" value="yes"$show_banner_chk><label for="b6"> $(lang de:"Banner anzeigen" en:"Show banner")</label>
 </p>
 <p>
