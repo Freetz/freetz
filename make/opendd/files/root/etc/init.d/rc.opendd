@@ -31,8 +31,6 @@ run() {
 	echo 'done.'
 }
 
-start() { :; }
-
 case $1 in
 	""|load)
 		mkdir -p /tmp/flash/opendd
@@ -42,7 +40,11 @@ case $1 in
 		modreg file opendd opendd_pem 'OpenDD: opendd.pem' 0 "opendd_pem"
 		modreg daemon --hide opendd
 		
-		modlib_start $OPENDD_ENABLED
+		if [ "$OPENDD_ENABLED" != yes ]; then
+			echo "$DAEMON is disabled." 1>&2
+			exit 1
+		fi
+		echo "$DAEMON is enabled." 1>&2
 		;;
 	unload)
 		modunreg cgi 'opendd'
