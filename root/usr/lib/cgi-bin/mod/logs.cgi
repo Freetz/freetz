@@ -4,8 +4,8 @@ let _width=$_cgi_width-230
 highlight() {
 	sed -r '
 		s#(failed|already running)\.$#<span class="failure">\1</span>.#
-		s#(disabled|inactive)\.#<span class="disabled">\1</span>.#
-		s#(done| active).$#<span class="success">\1</span>.#
+		s#(disabled|inactive|not running)\.#<span class="disabled">\1</span>.#
+		s#(enabled| active|done).$#<span class="success">\1</span>.#
 		s#(external|inetd)\.$#<span class="foreign">\1</span>.#
 	'
 }
