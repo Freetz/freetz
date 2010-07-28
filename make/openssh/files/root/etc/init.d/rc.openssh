@@ -2,9 +2,10 @@
 
 DAEMON=openssh
 DAEMON_LONG_NAME="openssh SSH server"
-CONFFILE=/mod/etc/sshd_conf
-
+DAEMON_BIN=sshd
 . /etc/init.d/modlibrc
+
+CONFFILE=/mod/etc/sshd_conf
 
 gen_key() {
 	rm -f "$1"
