@@ -22,7 +22,7 @@ sec_begin '$(lang de:"Konfigurationsdatei" en:"Configuration file")'
 
 cat << EOF
 <p>
-<textarea id="config" style="width: 500px; " name="config" rows="30" cols="80" wrap="off">$(html "$OPENDD_CONFIG")</textarea>
+<textarea id="config" name="config" rows="30" cols="80" wrap="off">$(html "$OPENDD_CONFIG")</textarea>
 </p>
 EOF
 
