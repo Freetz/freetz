@@ -5,7 +5,7 @@ $(PKG)_SOURCE_MD5:=73c9d95012709d7b11511dfb6dd6ab3d
 
 $(PKG)_BINARIES := compartment sendmail XMail XMCrypt CtrlClnt MkUsers
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/bin/%)
-$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/XMail/%)
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/%)
 $(PKG)_TAR_CONFIG := $($(PKG)_DEST_DIR)/etc/default.xmail/default_config/default_config.tar
 
 $(PKG)_DEPENDS_ON := uclibcxx
@@ -41,7 +41,7 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 		STRIP="$(TARGET_STRIP)"
 	$(TARGET_CC) $(TARGET_CFLAGS) -o $(XMAIL_DIR)/bin/compartment $(XMAIL_DIR)/docs/compartment.c
 
-$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/XMail/%: $($(PKG)_DIR)/bin/%
+$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/%: $($(PKG)_DIR)/bin/%
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TAR_CONFIG):
