@@ -16,7 +16,6 @@ local_umask=022
 chroot_local_user=$VSFTPD_CHROOT
 passwd_chroot_enable=$VSFTPD_CHROOT
 write_enable=yes
-banner_file=/etc/motd
 nopriv_user=root
 secure_chroot_dir=/var/run/vsftpd
 listen_port=$VSFTPD_PORT
@@ -41,6 +40,7 @@ ssl_tlsv1=$VSFTPD_ENABLE_TLSV1
 force_local_data_ssl=$VSFTPD_FORCE_DATA_SSL
 force_local_logins_ssl=$VSFTPD_FORCE_LOGIN_SSL
 EOF
+if [ "$VSFTPD_SHOW_BANNER" = "yes" ]; then echo "banner_file=/etc/motd"; fi
 if [ "$VSFTPD_PASV_ADDRESS" = "yes" ]; then echo "pasv_address=$(/usr/bin/get_ip -e)"; fi
 echo "$VSFTPD_ADD_SETTINGS" | grep -v "^#" | while read -r line; do
 	[ -n "$line" ] && echo "$line"

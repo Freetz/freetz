@@ -21,6 +21,7 @@ check "$VSFTPD_FORCE_DATA_SSL" yes:data_ssl
 check "$VSFTPD_FORCE_LOGIN_SSL" yes:login_ssl
 check "$VSFTPD_ENABLE_RELOAD_SCRIPT" yes:reload_script
 check "$VSFTPD_PASV_ADDRESS" yes:pasv_add
+check "$VSFTPD_SHOW_BANNER" yes:show_banner
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -128,6 +129,8 @@ $(lang de:"Passive Ports" en:"Passive ports"):
 <p>
 <input type="hidden" name="promiscuous" value="no">
 <input id="b5" type="checkbox" name="promiscuous" value="yes"$promiscuous_chk><label for="b5"> $(lang de:"FXP aktivieren" en:"Enable FXP")</label>
+<input type="hidden" name="show_banner" value="no"
+<input id="b6" type="checkbox" name="show_banner" value="yes"$show_banner_chk><label for="b6"> $(lang de:"Banner anzeigen" en:"Show banner")</label>
 </p>
 <p>
 $(lang de:"Pause nach fehlerhaftem Login in Sekunden:" en:"Delay after failed login in sec:") <input type="text" name="delay_failed_login" size="5" maxlength="5" value="$(html "$VSFTPD_DELAY_FAILED_LOGIN")">
