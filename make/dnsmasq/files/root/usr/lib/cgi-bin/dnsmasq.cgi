@@ -27,6 +27,8 @@ cat << EOF
 <p>
 <input type="hidden" name="boguspriv" value="no">
 <input id="b1" type="checkbox" name="boguspriv" value="yes"$boguspriv_chk><label for="b1"> $(lang de:"Reverse DNS-Anfragen f&uuml;r private IP-Adressen (RFC1918) nicht an andere DNS-Server (z.B. im VPN) weiterleiten." en:"Do not forward reverse DNS lookups for private IP address ranges (RFC1918).")</label><br>
+<input type="hidden" name="stop_dns_rebind" value="no">
+<input id="c1" type="checkbox" name="stop_dns_rebind" value="yes"$stop_dns_rebind_chk><label for="c1"> $(lang de:"Adressen von Upstream Nameservern ablehen, wenn sie im privaten IP-Bereichen sind." en:"Reject addresses from upstream nameservers which are in the private IP ranges."</label><br>
 </p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
 <p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="55" maxlength="255" value="$(html "$DNSMASQ_OPTIONS")"></p>

@@ -29,6 +29,8 @@ fi
 
 [ "$DNSMASQ_ETHERS" = "yes" ] && echo "read-ethers"
 
+[ "$DNSMASQ_STOP_DNS_REBIND" = "yes" ] && echo "stop-dns-rebind"
+
 isdhcphost () {
 	echo $1 | grep '^dhcp-host$' >/dev/null
 }
