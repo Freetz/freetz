@@ -959,14 +959,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ "$EXTERNAL_ENABLED" == "y" ] || rm "$MOD_DIR/filesystem/etc/init.d/rc.external"
 
 	# Remove /etc/init.d/rc.ftpd
-	if [ "$FREETZ_PATCH_RCFTPD" == "y" ]; then
-		if [ -e "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" ]; then
-			echo1 "starter script rc.ftpd for AVM-FTPD was integrated into image"
-		fi
-	else
-		if [ -w "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" ]; then
-			rm "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" && echo1 "Starter script rc.ftpd for AVM-FTPD was not integrated into image"
-		fi
+	if [ ! "$FREETZ_HAS_USB_HOST" == "y" ] || [ "$FREETZ_REMOVE_FTPD" == "y" ]; then
+		rm -f "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" && echo2 "Starter script rc.ftpd for AVM-FTPD was not integrated into image"
 	fi
 
 	# Remove /usr/lib/libmodmount.sh

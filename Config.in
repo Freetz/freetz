@@ -1017,7 +1017,6 @@ comment "USB mounting ----------------------------"
 config FREETZ_PATCH_FREETZMOUNT
 	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
 	depends on FREETZ_HAS_USB_HOST
-	select FREETZ_PATCH_RCFTPD
 	select FREETZ_USBSTORAGE_AUTOMOUNT
 	select FREETZ_PACKAGE_E2FSPROGS
 	select FREETZ_PACKAGE_E2FSPROGS_BLKID
@@ -1037,19 +1036,6 @@ config FREETZ_PATCH_FREETZMOUNT
 		6. NOTE: fstyp is not needed and could be deselected in Package-Selection->Testing.
 
 		It is highly recommended to select this patch.
-
-config FREETZ_PATCH_RCFTPD
-	bool "Add rc.ftpd start script for better handling of AVM's ftpd"
-	depends on FREETZ_HAS_USB_HOST
-	default n
-	help
-		Adds rc.ftpd start script for better handling of AVM's ftpd
-
-		This patch allows to start / stop AVM's ftpd as service like
-		other FREETZ services.
-
-		rc.ftpd checks during the start the existence of ftpd binary
-		and absorbs all calls correctly, also if ftpd binary was patched
 
 config FREETZ_PATCH_USBSTORAGE
 	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
