@@ -8,6 +8,7 @@ check "$DNSMASQ_DHCP" yes:dhcp_yes "*":dhcp_no
 check "$DNSMASQ_BOGUSPRIV" yes:boguspriv
 check "$DNSMASQ_ETHERS" yes:ethers
 check "$DNSMASQ_DHCP_BOOT" yes:dhcp_boot_yes "*":dhcp_boot_no
+check "$DNSMASQ_STOP_DNS_REBIND" yes:stop_dns_rebind
 check "$DNSMASQ_TFTP" yes:tftp_yes "*":tftp_no
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'

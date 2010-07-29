@@ -49,7 +49,6 @@ start() {
 stop() {
 	if [ "$nomultid" != "y" ]; then
 		/etc/init.d/rc.multid stop >/dev/null
-		rm /var/tmp/avm-resolv.conf
 	fi
 	kill $(cat $PID_FILE) 2> /dev/null
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
