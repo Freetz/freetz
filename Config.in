@@ -1167,22 +1167,6 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 		Remove lib/modules/dsp_ur8/ur8-B-dsl.bin. This saves about 400 KB of
 		uncompressed data size.
 
-config FREETZ_REMOVE_NAS
-	bool "Remove Fritz NAS Webinterface"
-	default n
-	depends on \
-		FREETZ_TYPE_LANG_DE && \
-		( \
-			FREETZ_TYPE_FON_WLAN_7240 || \
-			FREETZ_TYPE_FON_WLAN_7270 || \
-			FREETZ_TYPE_FON_WLAN_7270_V3 \
-		) && \
-		FREETZ_TYPE_PREVIEW
-
-	default n
-	help
-		Removes the Fritz NAS Webinterface (saves about 176KB in compressed image).
-		
 config FREETZ_REMOVE_ASSISTANT
 	bool "Remove assistant"
 	default n
@@ -1232,6 +1216,22 @@ config FREETZ_REMOVE_USB_MODULE
 	default n
 	help
 		Removes avalanche_usb.ko to save 60kB uncompressed space.
+
+config FREETZ_REMOVE_NAS
+	bool "Remove AVM NAS Webinterface"
+	default n
+	depends on \
+		FREETZ_TYPE_LANG_DE && \
+		( \
+			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7270 || \
+			FREETZ_TYPE_FON_WLAN_7270_V3 \
+		) && \
+		FREETZ_TYPE_PREVIEW
+
+	default n
+	help
+		Removes the AVM NAS Webinterface (saves about 176KB in compressed image).
 
 config FREETZ_REMOVE_AVM_VPN
 	bool "Remove AVM vpn"
