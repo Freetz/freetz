@@ -20,7 +20,7 @@ check "$MOD_EXTERNAL_FREETZ_SERVICES" yes:external_freetz_services
 check "$MOD_EXTERNAL_YEAR_MIN" yes:external_year_min
 check "$MOD_EXTERNAL_WAIT_INFINITE" yes:external_wait_infinite_00 "*":external_wait_infinite_15
 
-sec_begin 'crond'
+sec_begin 'Cron'
 
 cat << EOF
 <h2>$(lang de:"Starttyp von crond" en:"crond start type")</h2>
@@ -30,7 +30,7 @@ cat << EOF
 </p>
 EOF
 sec_end
-sec_begin 'swap'
+sec_begin 'Swap'
 
 cat << EOF
 <h2>$(lang de:"Starttyp von swap" en:"swap start type")</h2>
@@ -38,13 +38,13 @@ cat << EOF
 <input id="s1" type="radio" name="swap" value="yes"$swap_auto_chk><label for="s1"> $(lang de:"Aktiviert" en:"Activated")</label>
 <input id="s2" type="radio" name="swap" value="no"$swap_man_chk><label for="s2"> $(lang de:"Deaktiviert" en:"Deactivated")</label>
 </p>
-<h2>Swap ($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)</h2>
-<p>Swap: <input type="text" name="swap_file" size="50" maxlength="255" value="$(html "$MOD_SWAP_FILE")"></p>
-<p><input type="text" name="swap_size" size="3" maxlength="4" value="" /> MB <input type="button" value="$(lang de:"Swap-Datei anlegen" en:"Create swapfile")" onclick="window.open('/cgi-bin/create_swap.cgi?swap_file='+encodeURIComponent(document.forms[0].swap_file.value)+'&swap_size='+encodeURIComponent(document.forms[0].swap_size.value),'swapfilepopup','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes')" /></p>
+<h2>$(lang de:"Swap-Datei" en:"Swap file") ($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)</h2>
+<p>$(lang de:"Pfad" en:"Path"): <input type="text" name="swap_file" size="50" maxlength="255" value="$(html "$MOD_SWAP_FILE")"></p>
+<p>$(lang de:"Größe" en:"Size"): <input type="text" name="swap_size" size="3" maxlength="4" value="" /> MB <input type="button" value="$(lang de:"Swap-Datei anlegen" en:"Create swap file")" onclick="window.open('/cgi-bin/create_swap.cgi?swap_file='+encodeURIComponent(document.forms[0].swap_file.value)+'&swap_size='+encodeURIComponent(document.forms[0].swap_size.value),'swapfilepopup','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes')" /></p>
 EOF
 
 sec_end
-sec_begin 'telnetd'
+sec_begin 'Telnet'
 
 cat << EOF
 <h2>$(lang de:"Starttyp von telnetd" en:"telnetd start type")</h2>
@@ -62,10 +62,10 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin 'webcfg'
+sec_begin '$(lang de:"Weboberfläche" en:"Web interface")'
 
 cat << EOF
-<h2>$(lang de:"Starttyp der Weboberfl&auml;che" en:"webinterface start type")</h2>
+<h2>$(lang de:"Starttyp der Weboberfl&auml;che" en:"Web interface start type")</h2>
 <p>
 <input id="w1" type="radio" name="httpd" value="yes"$httpd_auto_chk><label for="w1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="w2" type="radio" name="httpd" value="no"$httpd_man_chk><label for="w2"> $(lang de:"Manuell" en:"Manual")</label>
@@ -77,9 +77,9 @@ EOF
 fi
 cat << EOF
 </p>
-<p>$(lang de:"Benutzername f&uuml;r Weboberfl&auml;che" en:"username for webinterface"): <input type="text" name="httpd_user" size="15" maxlength="15" value="$(html "$MOD_HTTPD_USER")"> <a href="/cgi-bin/passwd.cgi"><u>$(lang de:"Passwort &auml;ndern" en:"change password")</u></a></p>
-<p>$(lang de:"Port der Weboberfl&auml;che" en:"Port of webinterface"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(html "$MOD_HTTPD_PORT")"></p>
-<h1>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h1>
+<p>$(lang de:"Benutzername" en:"Username"): <input type="text" name="httpd_user" size="15" maxlength="15" value="$(html "$MOD_HTTPD_USER")"> <a href="/cgi-bin/passwd.cgi">$(lang de:"Passwort &auml;ndern" en:"change password")</a></p>
+<p>$(lang de:"Port" en:"Port"): <input type="text" name="httpd_port" size="5" maxlength="5" value="$(html "$MOD_HTTPD_PORT")"></p>
+<h2>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h2>
 <p>
 $(lang de:"Eingeh&auml;ngte Partitionen auf" en:"Mounted partitions on"):
 <input type="hidden" name="mounted_sub" value="no">
@@ -137,7 +137,7 @@ _services=`cat /etc/external.pkg 2>/dev/null`
 [ -z "$_services" ] && _services=$(lang de:"-keine-" en:"-none-")
 cat << EOF
 
-<p><h1>$(lang de:"Automatisch Dienste starten/stoppen beim ein-/aush&auml;ngen" en:"Automatically start/stop services at (un)mount")</h1></p>
+<h1>$(lang de:"Automatisch Dienste starten/stoppen beim ein-/aush&auml;ngen" en:"Automatically start/stop services at (un)mount")</h1>
 <p>
 <input type="hidden" name="external_freetz_services" value="no">
 <input id="e1" type="checkbox" name="external_freetz_services" value="yes"$external_freetz_services_chk>
@@ -152,7 +152,7 @@ $(lang de:"Dies kann dazu genutzt werden um nicht externalisierte Dienste die ei
 </FONT>
 </p>
 
-<p><h1>$(lang de:"Zeitsynchronisation" en:"Time-synchronisation")</h1></p>
+<h1>$(lang de:"Zeitsynchronisation" en:"Time-synchronisation")</h1>
 <p>
 <input type="hidden" name="external_year_min" value="no">
 <input id="e2" type="checkbox" name="external_year_min" value="yes"$external_year_min_chk>
