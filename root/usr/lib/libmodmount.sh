@@ -116,7 +116,7 @@ do_mount ()
 		umask $old_umask
 		eventadd 140 $mnt_name
 		[ -x $rcftpd ] && [ "$($rcftpd status)" != "running" ] && $rcftpd start # start ftpd, if not started
-		/etc/init.d/rc.swap autostart $MNTPATH
+		/etc/init.d/rc.swap autostart $mnt_path
 		local autorun="$mnt_path/autorun.sh"
 		[ -x $autorun ] && $autorun & # run autostart shell script
 		[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path &
@@ -184,7 +184,7 @@ do_umount ()
 	passeeren # semaphore on
 	[ -x $autoend ] && $autoend
 	[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path
-	/etc/init.d/rc.swap autostop $MNTPATH
+	/etc/init.d/rc.swap autostop $mnt_path
 	[ -p "/var/tam/mount" ] && echo "u$mnt_path" > /var/tam/mount # TAM
 	if ! $(umount $mnt_path > /dev/null 2>&1)
 	then # 2
