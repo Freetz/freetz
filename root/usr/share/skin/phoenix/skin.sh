@@ -34,18 +34,20 @@ EOF
 _cgi_body_begin() {
 local title=$1 id=$2
 cat << EOF
-<div class="version">$(html < /etc/.freetz-version)</div>
-<div class="titlebar"><a href="/cgi-bin/index.cgi" class="logo">Freetz</a>&nbsp;<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a> <span class="title">$title</span></div>
-<div id="content">
+<div id="header">
+<span class="version">$(html < /etc/.freetz-version)</span>
+<h1><a href="/cgi-bin/index.cgi" class="logo">Freetz</a>&nbsp;<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a> <span class="title">$title</span></h1>
+</div>
+<div id="container">
 EOF
 
-if [ -n "$id" ]; then
-	_cgi_print_menu "$id"
-fi
+[ -n "$id" ] && _cgi_print_menu "$id"
+echo "<div id='content'>"
 }
 
 _cgi_body_end() {
 cat << EOF
+</div>
 <div id="footer">
 <span class="datetime" title="$(lang de:"Systemzeit des Routers" en:"Router's system time")">$(date +'$(lang de:"%d.%m.%Y" en:"%m/%d/%Y") %H:%M')</span>&nbsp;&ndash;
 <span class="uptime" title="Uptime">$(uptime | sed -r 's/.*(up.*), load.*/\1/')</span>&nbsp;&ndash;

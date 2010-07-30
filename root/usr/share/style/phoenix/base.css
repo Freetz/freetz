@@ -1,8 +1,151 @@
-@import url(../base.css);
+@import url(../common.css);
 
-#content {
-    background: #eee;
+html {
+    font-size: 100.01%;
 }
-div.titlebar, div.titlebar a {
+body {
+    font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;
+    font-size: 0.9em;
+    line-height: 1.33em;
+    background: white;
     color: black;
+    padding: 0;
+    margin: 0;
+}
+#container, #header {
+    padding-left: 2em;
+    padding-right: 2em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+#header {
+    background: #cc0000;
+    color: white;
+    border-bottom: solid 2px #ff6767;
+}
+#footer {
+    font-size: 80%;
+    color: grey;
+    text-align: left;
+    margin: 2em 0px;
+    clear: both;
+}
+#container {
+    max-width: 50em;
+}
+
+#header h1 {
+    color: inherit;
+    border: none;
+    margin: 0;
+}
+#header .version {
+    color: #ff6767;
+    float: right;
+}
+#header a {
+    color: inherit;
+    text-decoration: none;
+}
+h1 {
+    font-size: 120%;
+    font-weight: bold;
+    border-bottom: solid #cc0000 1px;
+    color: #cc0000;
+    padding-bottom: 2px;
+    margin-top: 1.33em;
+    margin-bottom: 0.67em;
+}
+h2 {
+    font-size: 100%;
+}
+
+/* input elements */
+
+input[type="text"], textarea, select {
+    background-color: white;
+    border: solid 1px #aaaaaa;
+}
+input[type="text"]:focus, textarea:focus, select:focus {
+    background-color: #eeeeee;
+    border-color: #cc0000;
+}
+input, select {
+    font: inherit;
+}
+input {
+    padding: 1px 3px;
+}
+input[type="text"], textarea, option {
+    padding: 3px;
+}
+.textwrapper {
+    margin-right: 8px;
+}
+.textwrapper textarea {
+    width: 100%;
+}
+div.btn {
+    display: block;
+    float: left;
+    margin: 0.67em 0.67em 1.33em 0;
+}
+
+/* links */
+
+:link, :visited {
+    text-decoration: none;
+    border-bottom: 1px dotted #cccccc;
+    color: #770000;
+}
+#header :link, #header :visited {
+    border-bottom: 1px dotted #ff6767;
+}
+a:hover {
+    border-bottom-style: solid;
+    border-bottom-color: #770000;
+    background-color: #eeeeee;
+}
+#header a:hover {
+    background-color: inherit;
+}
+
+/* navigation */
+
+ul.menu {
+    display: block;
+    padding: 0;
+    margin: 0;
+    height: 6em;
+}
+ul.menu a {
+    display: block;
+    padding: 3px 6px;
+    border: 1px dotted #cccccc;
+}
+ul.menu a.active {
+    background: #cc0000;
+    color: white;
+    font-weight: bold;
+}
+ul.menu ul a {
+    font-size: 80%;
+}
+ul.menu li {
+    display: block;
+    padding: 0;
+    margin: 0;
+    float: left;
+}
+ul.menu ul {
+    position: absolute;
+    padding: 0;
+    padding-left: 2em;
+    padding-right: 2em;
+    margin: 0;
+    margin-top: 5px;
+    left: 0;
+}
+#content {
+    clear: both;
 }
