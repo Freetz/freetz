@@ -143,10 +143,11 @@ collect_thg() {
 			RRA:LAST:0.1:24:732 \
 			RRA:LAST:0.1:144:1460
 	fi
-	uptdatBL=N$(wget http://192.168.100.1/BasicLan.htm -O - -q -T 2 -t 1 | grep -E "Power|Ratio|Computers" | sed 's/ dB.*//g;s/<\/td><\/tr>$//;s/^.*>/:/' | tr -d "\n")
+	wget --version >/dev/null 2>&1 && SHORTWAIT="-T 2 -t 1"
+	uptdatBL=N$(wget http://192.168.100.1/BasicLan.htm -O - -q $SHORTWAIT | grep -E "Power|Ratio|Computers" | sed 's/ dB.*//g;s/<\/td><\/tr>$//;s/^.*>/:/' | tr -d "\n")
 	[ $uptdatBL = N ] && return
 	if [ "$RRDSTATS_THOMSONADV" = yes ]; then
-		tX=$(wget http://192.168.100.1/BasicLan.htm -O - -q -T 2 -t 1 | grep "System uptime")
+		tX=$(wget http://192.168.100.1/BasicLan.htm -O - -q $SHORTWAIT | grep "System uptime")
 		tH=$(( $(echo $tX | sed 's/.*<td>//;s/ .*//') *24+ $(echo $tX | sed -r 's/.* 0{0,1}//;s/h.*//') ))
 		tM=$(( ( $(echo $tX | sed -r 's/.*h:0{0,1}//;s/m:.*//') *100)/60 ))
 		case $tM in ?) tM=0$tM ;; esac
