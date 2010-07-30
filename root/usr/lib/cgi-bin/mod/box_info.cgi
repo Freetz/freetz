@@ -5,7 +5,6 @@ PATH=/mod/bin:/mod/usr/bin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 # include environment variables
 [ -r /var/env.cache ] && . /var/env.cache
 
-let _width=$_cgi_width-236
 notdefined='$(lang de:"unbekannt" en:"unknown")'
 divstyle="style='margin-top:6px;'"
 
@@ -129,8 +128,8 @@ sec_end
 
 if [ -r /var/env.cache ]; then
 	sec_begin '$(lang de:"Umgebungsvariablen" en:"Environment variables")'
-		echo -n '<textarea style="margin-top:6px; width: '$_width'px;" name="content" rows="5" cols="10" wrap="off" readonly>'
+		echo -n '<div class="textwrapper"><textarea style="margin-top:6px;" name="content" rows="5" cols="10" wrap="off" readonly>'
 		sed -e "s/^export //g" /var/env.cache | html
-		echo -n '</textarea>'
+		echo -n '</textarea></div>'
 	sec_end
 fi

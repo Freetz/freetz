@@ -6,29 +6,10 @@ cat << EOF
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
 
-# custom style for fieldset and div.body
-if [ ! "$_cgi_width" ]; then
-	let _cgi_width=$MOD_CGI_WIDTH
-fi
+# custom width
+: ${_cgi_width:=$MOD_CGI_WIDTH}
 export _cgi_width
-let _cgi_total_width="$_cgi_width+40"
-let _usr_style="$_cgi_width-230"
-cat << EOF
-<style type="text/css">
-<!--
-fieldset {
-	margin: 0px;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	padding: 10px;
-	width: ${_usr_style}px;
-}
-div.body {
-	width: ${_usr_style}px;
-}
--->
-</style>
-EOF
+let _cgi_total_width=_cgi_width+40
 }
 
 _cgi_body_begin() {
@@ -46,16 +27,16 @@ cat << EOF
 </tr>
 <tr>
 <td id="edge-left"></td>
-<td id="content">
+<td id="container">
 EOF
 
-if [ -n "$id" ]; then
-	_cgi_print_menu "$id"
-fi
+[ -n "$id" ] && _cgi_print_menu "$id"
+echo "<div id='content'>"
 }
 
 _cgi_body_end() {
 cat << EOF
+</div>
 </td>
 <td id="edge-right"></td>
 </tr>
@@ -75,7 +56,6 @@ EOF
 
 sec_begin() {
 cat << EOF
-<div class="body">
 <fieldset>
 <legend>$1</legend>
 EOF
@@ -84,6 +64,5 @@ EOF
 sec_end() {
 cat << EOF
 </fieldset>
-</div>
 EOF
 }

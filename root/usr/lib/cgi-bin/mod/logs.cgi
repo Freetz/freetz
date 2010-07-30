@@ -1,6 +1,3 @@
-
-let _width=$_cgi_width-230
-
 highlight() {
 	sed -r '
 		s#(failed|already running)\.$#<span class="failure">\1</span>.#
@@ -14,7 +11,7 @@ show_log() {
 	local log=$1
 	if [ -r "$log" ]; then
 		echo "<h1>$log</h1>"
-		echo '<pre class="log" style="width: '$_width'px; max-height: 350px;">'
+		echo '<pre class="log" style="max-height: 350px;">'
 		html < "$log" | highlight
 		echo '</pre>'
 	fi

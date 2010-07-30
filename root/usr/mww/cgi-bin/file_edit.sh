@@ -1,8 +1,5 @@
 cgi_begin "$TITLE" "file:$PACKAGE/$FILE_ID"
 
-# Set width
-let _width=_cgi_width-230
-
 echo "<h1>$CAPTION</h1>"
 [ -n "$DESCRIPTION" ] && echo "<p>$DESCRIPTION</p>"
 
@@ -15,9 +12,9 @@ fi
 case $CONFIG_TYPE in
 	text)
 		echo "<form method='post'>"
-		echo -n "<textarea style='width: ${_width}px;' name='content' rows='$TEXT_ROWS' cols='60' wrap='off' $($readonly && echo "readonly")>"
+		echo -n "<div class='textwrapper'><textarea name='content' rows='$TEXT_ROWS' cols='60' wrap='off' $($readonly && echo "readonly")>"
 		[ -r "$CONFIG_FILE" ] && html < "$CONFIG_FILE"
-		echo '</textarea>'
+		echo '</textarea></div>'
 		if ! $readonly; then
 			echo '<div class="btn"><input type="submit" value="$(lang de:"&Uuml;bernehmen" en:"Apply")"></div>'
 		fi

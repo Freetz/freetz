@@ -51,7 +51,7 @@ cat << EOF
 		}
 	</script>
 	<form action="/cgi-bin/shell/cmd.cgi?pid=$$" target="shellcmd" method=POST enctype="multipart/form-data">
-		<textarea id="script_code" name="script" rows="10" cols="80"></textarea><p>
+		<div class="textwrapper"><textarea id="script_code" name="script" rows="10" cols="80"></textarea></div><p>
 		<input type=submit value="$(lang de:"Skript ausf&uuml;hren" en:"Run script")">&nbsp;&nbsp;
 		$(lang de:"Historie" en:"History") <select id="history" onChange="historySelected(this.selectedIndex)"></select>
 		<input type=button value="$(lang de:"Hist. l&ouml;schen" en:"Delete hist.")" onClick="cleanHistory()">&nbsp;&nbsp;
