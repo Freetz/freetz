@@ -41,7 +41,7 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
        fi
       echo "$(lang de:"ERLEDIGT" en:"DONE")"
     fi
-    echo "$(lang de:"Sicherungsdateien l&ouml;schen" en:"Removing backup")..."
+    echo "$(lang de:"Sicherungsdateien entfernen" en:"Removing backup")..."
     rm -rf $BACKUP_DIR
     rm -f $FORM_uploadfile
     echo "$(lang de:"ERLEDIGT" en:"DONE")"
