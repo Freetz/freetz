@@ -23,7 +23,7 @@
  }
  ## Simple semaphore stuff:
  ## includes /etc/hotplug/rc.usbsema
-@@ -45,6 +35,37 @@
+@@ -45,6 +35,40 @@
  ## atomic_touch (Filename)
  USBLOCKFILE=/var/USBLOCK_storage
  test -f /etc/hotplug/rc.usbsema && . /etc/hotplug/rc.usbsema
@@ -51,6 +51,9 @@
 +		;;
 +	reiserfs)
 +		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	swap)
++		/etc/init.d/rc.swap autostart $DEVNODE
 +		;;
 +	*) # fs type unknown
 +		mount $DEVNODE $MNTPATH

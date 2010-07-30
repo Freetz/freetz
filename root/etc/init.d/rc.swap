@@ -2,14 +2,19 @@
 
 DAEMON=swap
 CONF_NAME=mod
-
 . /etc/init.d/modlibrc
 
-has_swap () {
+case $1 in
+	autost*)
+		modlib_loadconfig
+		;;
+esac
+
+has_swap() {
 	sed '1d' /proc/swaps | grep -q ''
 }
 
-start () {
+start() {
 	echo -n "Starting $DAEMON..."
 
 	if has_swap; then
@@ -17,17 +22,7 @@ start () {
 		exit 1
 	fi
 
-	ii=0
-	# wait for
-	# - usb device to settle
-	# - filesysem to mount (swapfile)
-	if ! grep -q "^$MOD_SWAP_FILE " /proc/swaps; then
-		while [ 40 -gt $ii ]; do
-			swapon "$MOD_SWAP_FILE" 2>/dev/null && break
-			let ii=$ii+1
-			sleep 1
-		done
-	fi
+	swapon "$MOD_SWAP_FILE" 2>/dev/null
 
 	if has_swap; then
 		echo 'done.'
@@ -37,8 +32,8 @@ start () {
 	fi
 }
 
-stop () {
-	echo -n "Stopping $DAEMON... "
+stop() {
+	echo -n "Stopping $DAEMON..."
 
 	if ! has_swap; then
 		echo 'not running.'
@@ -58,13 +53,23 @@ stop () {
 	fi
 }
 
+autohelper() {
+		if [ $# -ne 2 ]; then
+			echo "Usage: $0 [autostart|autostop] [file or partition]" 1>&2
+			return 1
+		fi
+		echo "$MOD_SWAP_FILE" | grep -q $2 || return
+		[ "$MOD_SWAP" != yes ] && return
+		$1 >> /var/log/mod_swap.log
+}
+
 case $1 in
 	""|load)
 		if [ "$MOD_SWAP" != yes ]; then
 			echo "$DAEMON is disabled." 1>&2
 			exit 1
 		fi
-		start
+		echo "$DAEMON is enabled." 1>&2
 		;;
 	unload)
 		stop
@@ -80,6 +85,12 @@ case $1 in
 		sleep 1
 		start
 		;;
+	autostart)
+		autohelper start $2
+		;;
+	autostop)
+		autohelper stop $2
+		;;
 	status)
 		if has_swap; then
 			echo 'running'
@@ -88,7 +99,7 @@ case $1 in
 		fi
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|autostart|autostop|status]" 1>&2
 		exit 1
 		;;
 esac

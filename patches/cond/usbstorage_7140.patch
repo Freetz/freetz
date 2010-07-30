@@ -33,7 +33,7 @@
  	echo $NICE
  }
  
-@@ -74,6 +52,40 @@
+@@ -74,6 +52,43 @@
  	done
  }
  
@@ -63,6 +63,9 @@
 +		;;
 +	reiserfs)
 +		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	swap)
++		/etc/init.d/rc.swap autostart $DEVNODE
 +		;;
 +	*) # fs type unknown
 +		mount $DEVNODE $MNTPATH

@@ -1,6 +1,6 @@
 --- etc/hotplug/run_mount.orig	2010-02-26 13:37:38.000000000 +0100
 +++ etc/hotplug/run_mount	2010-03-20 00:55:31.000000000 +0100
-@@ -10,22 +10,43 @@
+@@ -10,22 +10,46 @@
  SYSFS=/var/sysfs
  ## Generate a frontend'able 'nice name' to be used as mount point:
  nicename () {
@@ -47,6 +47,9 @@
 +		;;
 +	reiserfs)
 +		mount -t reiserfs $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
++		;;
++	swap)
++		/etc/init.d/rc.swap autostart $DEVNODE
 +		;;
 +	*) # fs type unknown
 +		mount $DEVNODE $MNTPATH

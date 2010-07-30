@@ -27,8 +27,7 @@ start() {
 	/etc/init.d/rc.crond
 	/etc/init.d/rc.telnetd
 	/etc/init.d/rc.webcfg
-
-	[ "$MOD_SWAP_BEFORE_SERVICES" == "yes" ] && /etc/init.d/rc.swap
+	/etc/init.d/rc.swap
 
 	# Static Packages
 	[ "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" ] && EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null)"
@@ -58,8 +57,6 @@ start() {
 	[ -r /tmp/flash/rc.custom ] && mv /tmp/flash/rc.custom /tmp/flash/mod/rc.custom
 	[ -r /tmp/flash/mod/rc.custom ] && . /tmp/flash/mod/rc.custom
 
-	[ "$MOD_SWAP_BEFORE_SERVICES" == "yes" ] || /etc/init.d/rc.swap
-	
 	[ -x /etc/init.d/rc.external ] && touch /tmp/.modstarted
 }
 
