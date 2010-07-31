@@ -60,20 +60,24 @@ case $1 in
 		case $ethmode in
 			ethmode_bridge)
 				devname=lan
+				fallback=eth0
 				section=brinterfaces
 				break
 				;;
 			ethmode_router)
 				devname=eth0
+				fallback=lan
 				section=ethinterfaces
 				break
 				;;
 			*)
 				devname=eth0
+				fallback=lan
 				section=ethinterfaces
 				;;
 		esac
 		ipaddr=$(ar7ipaddr $section $devname)
+		[ -z "$ipaddr" ] && ipaddr=$(ar7ipaddr $section $fallback)
 		[ -z "$ipaddr" ] && ipaddr=169.254.1.1
 		echo -e "$ipaddr\tfritz.box\t$(ar7hostname)" >> /var/tmp/hosts
 		;;
