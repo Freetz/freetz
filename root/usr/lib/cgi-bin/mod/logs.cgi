@@ -10,20 +10,20 @@ highlight() {
 show_log() {
 	local log=$1
 	if [ -r "$log" ]; then
-		echo "<h1><a href="$SCRIPT_NAME$log">$log</a></h1>"
-		echo "<pre class='log' ${style+style='$style'}>"
+		echo "<h1><a href='$SCRIPT_NAME$log'>$log</a></h1>"
+		echo "<pre class='log${class+ $class}'>"
 		html < "$log" | highlight
 		echo '</pre>'
 	fi
 }
 
-style="max-height: 350px;"
+unset class
 do_log() {
 	show_log "$1"
 }
 
 if [ -n "$PATH_INFO" ]; then
-    	unset style
+    	class="full"
     	do_log() {
 	    	if [ "$PATH_INFO" = "$1" ]; then
 		    	show_log "$1"

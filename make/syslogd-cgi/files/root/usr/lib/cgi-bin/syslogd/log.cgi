@@ -8,7 +8,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 log_stream() {
     	local title=$1
 	echo "<h1>$title</h1>"
-	echo '<pre style="max-height: 550px;">'
+	echo '<pre class="log full">'
 	html
 	echo '</pre>'
 }

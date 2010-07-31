@@ -12,16 +12,8 @@ read_meminfo() {
 }
 read_meminfo
 
-btn_count=0
-stat_button() {
-	let _btn_width="($_cgi_width-230+16)/3"
-	let btn_count++
-	echo '<div class="btn"><form class="btn" action="/cgi-bin/exec.cgi" method="post"><input type="hidden" name="cmd" value="'"$1"'"><input type="submit" value="'"$2"'" style="width: '$_btn_width'px"></form></div>'
-	[ $btn_count -eq 3 ] && ( btn_count=0; echo '<br style="clear:left">' )
-}
-
 has_swap() {
-        free | awk '/Swap:/ { if ($2 == 0) exit 1; else exit 0 }'
+	free | awk '/Swap:/ { if ($2 == 0) exit 1; else exit 0 }'
 }
 
 default_password_set() {
@@ -33,9 +25,9 @@ cgi_begin '$(lang de:"Status" en:"Status")' 'status'
 if default_password_set; then
 	echo '<div style="color: #800000;"><p>$(lang
 		de:"Standard-Passwort gesetzt. Bitte
-		<a href=\"/cgi-bin/passwd.cgi\"><u>hier</u></a> &auml;ndern."
+		<a href=\"/cgi-bin/passwd.cgi\">hier</a> &auml;ndern."
 		en:"Default password set. Please change
-		<a href=\"/cgi-bin/passwd.cgi\"><u>here</u></a>."
+		<a href=\"/cgi-bin/passwd.cgi\">here</a>."
 	)</p>'
 fi
 
@@ -67,7 +59,7 @@ if [ $brands_cnt -gt 1 ]; then
 	echo '<select name="branding" size="1">'
 	branding=$(get_env firmware_version)
 	for i in $BRANDS; do
-		echo "<option value=\"$i\"$([ "$i" = "$branding" ] && echo ' selected')>$i</option>"
+		echo "<option value='$i'$([ "$i" = "$branding" ] && echo ' selected')>$i</option>"
 	done
 	echo '</select>'
 	echo '<input type="submit" value="Ok">'
