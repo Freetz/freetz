@@ -7,13 +7,6 @@ inetd=false
 [ -e /etc/default.inetd/inetd.cfg ] && inetd=true
 
 CONF=/usr/lib/cgi-bin/mod/conf
-conf() {
-    	source "$CONF/$1.sh"
-}
-conf cron
-conf swap
-conf telnet
-conf multid
-conf webcfg
-conf mount
-conf external
+for conf in "$CONF"/*.sh; do
+	[ -r "$conf" ] && source "$conf"
+done
