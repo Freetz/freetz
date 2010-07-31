@@ -30,11 +30,11 @@ cat << EOF
 <input type="hidden" name="boguspriv" value="no">
 <input id="b1" type="checkbox" name="boguspriv" value="yes"$boguspriv_chk><label for="b1"> $(lang de:"Reverse DNS-Anfragen f&uuml;r private IP-Adressen (RFC1918) nicht an andere DNS-Server (z.B. im VPN) weiterleiten." en:"Do not forward reverse DNS lookups for private IP address ranges (RFC1918).")</label><br>
 <input type="hidden" name="stop_dns_rebind" value="no">
-<input id="c1" type="checkbox" name="stop_dns_rebind" value="yes"$stop_dns_rebind_chk><label for="c1"> $(lang de:"Adressen von Upstream Nameservern ablehen, wenn sie in einem privaten IP-Bereich sind." en:"Reject addresses from upstream nameservers which are in the private IP ranges.")</label><br>
+<input id="c1" type="checkbox" name="stop_dns_rebind" value="yes"$stop_dns_rebind_chk><label for="c1"> $(lang de:"Adressen von Upstream Nameservern ablehnen, wenn sie in privaten IP-Bereichen sind." en:"Reject addresses from upstream nameservers which are in private IP ranges."</label><br>
 </p>
 <p>
 <input type="hidden" name="avm_dns" value="no">
-<input id="d1" type="checkbox" name="avm_dns" value="yes"$avm_dns_chk><label for="d1"> $(lang de:"Durch AVM/Provider zugewiesene Upstream Nameservern nutzen." en:"Use the upstream nameservers of your provider/AVM.")</label>
+<input id="d1" type="checkbox" name="avm_dns" value="yes"$avm_dns_chk><label for="d1"> $(lang de:"Durch AVM/Provider zugewiesene Upstream Nameserver nutzen." en:"Use the upstream nameservers of your provider/AVM.")</label>
 <br>$(lang de:"momentan: " en:"at the moment: ")
 EOF
 echo 'servercfg.dns1' | ar7cfgctl -s 
@@ -44,7 +44,7 @@ EOF
 echo 'servercfg.dns2' | ar7cfgctl -s
 cat << EOF
 </p>
-<p>$(lang de:"zus&auml;tzlich diese Upstream Nameserver nutzen (mit Leertaste trennen)" en:"Use these upstream nameservers additionally (seperate with spacebar)"): <input type="text" name="upstream" size="55" maxlength="255" value="$(html "$DNSMASQ_UPSTREAM")"></p>
+<p>$(lang de:"zus&auml;tzlich diese Upstream Nameserver nutzen (durch Leerzeichen getrennt)" en:"Use these upstream nameservers additionally (seperated by space)"): <input type="text" name="upstream" size="55" maxlength="255" value="$(html "$DNSMASQ_UPSTREAM")"></p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
 <p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="55" maxlength="255" value="$(html "$DNSMASQ_OPTIONS")"></p>
 EOF
