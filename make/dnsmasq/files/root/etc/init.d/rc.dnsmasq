@@ -47,9 +47,7 @@ start() {
 }
 
 stop() {
-	if [ "$nomultid" != "y" ]; then
-		/etc/init.d/rc.multid stop >/dev/null
-	fi
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
 	kill $(cat $PID_FILE) 2> /dev/null
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 
