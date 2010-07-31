@@ -5,12 +5,28 @@ DAEMON_LONG_NAME=OpenDD
 . /etc/init.d/modlibrc
 
 case $1 in
-	run)
+	run|cron)
 		modlib_loadconfig
 		;;
 esac
 
 PEM=/tmp/flash/opendd/opendd.pem
+
+set_cron() {
+	CRON_OLD="$(cat /tmp/crontab.opendd 2>/dev/null)"
+	[ "$OPENDD_ENABLED" == "yes" -a "$OPENDD_FORCE_UPDATE" == "yes" ] && CRON_NEW="45 5 * * *  /etc/init.d/rc.opendd cron"
+	if [ "$CRON_OLD" != "$CRON_NEW" ] ; then
+		echo "$CRON_NEW" > /tmp/crontab.opendd
+		/etc/init.d/rc.crond reload
+	fi
+}
+
+update_ip() {
+	# create temporary interface dsl:1 with desired ip address
+	ifconfig dsl:1 $1
+	$DAEMON -c /mod/etc/$DAEMON.conf
+	ifconfig dsl:1 down
+}
 
 run() {
 	echo -n "Running $DAEMON_LONG_NAME..."
@@ -22,10 +38,29 @@ run() {
 	echo "$OPENDD_CONFIG" > /mod/etc/$DAEMON.conf
 	chmod 600 /mod/etc/$DAEMON.conf
 	
-	# create temporary interface with public ip address
-	ifconfig dsl:1 $(get_ip)
-	$DAEMON -c /mod/etc/$DAEMON.conf
-	ifconfig dsl:1 down
+	NEW_IP=$(get_ip -e 2>/dev/null)
+	if [ -z "$NEW_IP" ]; then
+		echo 'failed.'
+		exit 1
+	fi
+	
+	if [ "$OPENDD_FORCE_UPDATE" == "yes" ]; then
+		OLD_IP="$(cat /tmp/flash/opendd/opendd.ip 2>/dev/null)"
+		if [ "$OLD_IP" != "$NEW_IP" ]; then
+			rm -rf /tmp/flash/opendd/opendd.ip
+		else
+			find /tmp/flash/opendd/ -name opendd.ip -mtime +25 -exec rm -rf {} ';'
+			if [ ! -e /tmp/flash/opendd/opendd.ip ]; then
+				update_ip 127.168.178.1
+				sleep 90
+			fi
+		fi
+		if [ ! -e /tmp/flash/opendd/opendd.ip ]; then
+			echo "$NEW_IP" >/tmp/flash/opendd/opendd.ip
+			modsave flash >/dev/null
+		fi
+	fi
+	update_ip $NEW_IP
 	
 	# return-value of opendd is always 0
 	echo 'done.'
@@ -40,11 +75,12 @@ case $1 in
 		modreg file opendd opendd_pem 'OpenDD: opendd.pem' 0 "opendd_pem"
 		modreg daemon --hide opendd
 		
-		if [ "$OPENDD_ENABLED" != yes ]; then
+		if [ "$OPENDD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled." 1>&2
 			exit 1
 		fi
 		echo "$DAEMON is enabled." 1>&2
+		set_cron
 		;;
 	unload)
 		modunreg cgi 'opendd'
@@ -54,8 +90,16 @@ case $1 in
 	run)
 		run
 		;;
+	config)
+		set_cron
+		;;
+	cron)
+		[ "$OPENDD_ENABLED" != "yes" ] && exit
+		logger -t info Run OpenDD by cron.
+ 		run 	
+		;;
 	*)
-		echo "Usage: $0 [load|unload|run]" 1>&2
+		echo "Usage: $0 [load|unload|run|config|cron]" 1>&2
 		exit 1
 		;;
 esac

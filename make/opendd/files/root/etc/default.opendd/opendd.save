@@ -1,2 +1,5 @@
-apply_changes() { :; }
+apply_changes() {
+[ "$1" == "start" ] && /etc/init.d/rc.opendd config
+}
+
 rc_status() { :; }
