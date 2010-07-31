@@ -34,7 +34,12 @@ case $1 in
 		$0 load
 		;;
 	load)
-		hostname $(ar7hostname)
+		_hostname=$(ar7hostname)
+		hostname $_hostname
+
+		echo "nameserver 127.0.0.1" > /etc/resolv.conf
+		_domain=$(echo $_hostname |cut -d "." -f2-)
+ 		[ -n "$_domain" ] && echo "domain $_domain" >> /etc/resolv.conf
 
 		rm -f /var/tmp/hosts
 		rm -f /var/tmp/ethers
@@ -84,7 +89,7 @@ case $1 in
 		[ -z "$ipaddr" ] && ipaddr=$(ar7ipaddr $section $fallback)
 		[ -z "$ipaddr" ] && ipaddr=169.254.1.1
 		if ! egrep "^$ipaddr[[:space:]]" /var/tmp/hosts -q 2>/dev/null; then
- 			echo -e "$ipaddr\tfritz.box\t$(ar7hostname)" >> /var/tmp/hosts
+ 			echo -e "$ipaddr\tfritz.box\t$_hostname" >> /var/tmp/hosts
  		fi
 		;;
 	*)
