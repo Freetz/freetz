@@ -10,16 +10,30 @@ highlight() {
 show_log() {
 	local log=$1
 	if [ -r "$log" ]; then
-		echo "<h1>$log</h1>"
-		echo '<pre class="log" style="max-height: 350px;">'
+		echo "<h1><a href="$SCRIPT_NAME$log">$log</a></h1>"
+		echo "<pre class='log' ${style+style='$style'}>"
 		html < "$log" | highlight
 		echo '</pre>'
 	fi
 }
 
-show_log /var/log/mod_load.log
-show_log /var/log/mod_net.log
-show_log /var/log/mod_voip.log
-show_log /var/log/mod.log
-show_log /var/log/mod_swap.log
-[ -r /etc/external.pkg ] && show_log /var/log/external.log
+style="max-height: 350px;"
+do_log() {
+	show_log "$1"
+}
+
+if [ -n "$PATH_INFO" ]; then
+    	unset style
+    	do_log() {
+	    	if [ "$PATH_INFO" = "$1" ]; then
+		    	show_log "$1"
+		fi
+	}
+fi
+
+do_log /var/log/mod_load.log
+do_log /var/log/mod_net.log
+do_log /var/log/mod_voip.log
+do_log /var/log/mod.log
+do_log /var/log/mod_swap.log
+[ -r /etc/external.pkg ] && do_log /var/log/external.log
