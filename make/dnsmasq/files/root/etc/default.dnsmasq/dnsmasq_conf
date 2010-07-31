@@ -5,6 +5,20 @@ domain-needed
 log-async=10
 EOF
 
+#don't read /etc/resolv.conf, it's pointing local
+echo "no-resolv"
+#add avm upstream-servers
+if [ "$DNSMASQ_AVM_DNS" = yes ]; then
+	echo "server=$(echo 'servercfg.dns1' | ar7cfgctl -s)" 
+	echo "server=$(echo 'servercfg.dns2' | ar7cfgctl -s)"
+fi
+#add own upstream-servers
+if [ -n "$DNSMASQ_UPSTREAM" ]; then
+	for dnsserver in $DNSMASQ_UPSTREAM; do
+		echo "server=$dnsserver"
+	done
+fi
+	
 [ "$DNSMASQ_BOGUSPRIV" = "yes" ] && echo "bogus-priv"
 
 if [ "$DNSMASQ_DHCP" = "yes" ]; then
