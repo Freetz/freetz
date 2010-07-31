@@ -1,14 +1,16 @@
---- include/usage.h.orig	2010-04-02 23:03:27.000000000 +0200
-+++ include/usage.h	2010-04-02 23:03:27.000000000 +0200
-@@ -1727,6 +1727,7 @@
+--- include/usage.src.h.orig	2010-07-30 21:53:01.419674011 +0200
++++ include/usage.src.h	2010-07-30 21:53:01.539676138 +0200
+@@ -1718,7 +1718,8 @@
+ 	IF_FEATURE_HTTPD_SETUID(" [-u USER[:GRP]]") \
  	IF_FEATURE_HTTPD_BASIC_AUTH(" [-r REALM]") \
         " [-h HOME]\n" \
-        "or httpd -d/-e" IF_FEATURE_HTTPD_AUTH_MD5("/-m") " STRING"
+-       "or httpd -d/-e" IF_FEATURE_HTTPD_AUTH_MD5("/-m") " STRING"
++       "or httpd -d/-e" IF_FEATURE_HTTPD_AUTH_MD5("/-m") " STRING" \
 +       " [-R <path> [-H <host>]]"
  #define httpd_full_usage "\n\n" \
         "Listen for incoming HTTP requests\n" \
       "\nOptions:" \
-@@ -1744,6 +1745,8 @@
+@@ -1736,6 +1737,8 @@
       "\n	-m STRING	MD5 crypt STRING") \
       "\n	-e STRING	HTML encode STRING" \
       "\n	-d STRING	URL decode STRING" \
@@ -17,8 +19,8 @@
  
  #define hwclock_trivial_usage \
  	IF_FEATURE_HWCLOCK_LONG_OPTIONS( \
---- networking/httpd.c.orig	2010-04-02 23:03:27.000000000 +0200
-+++ networking/httpd.c	2010-04-02 23:03:27.000000000 +0200
+--- networking/httpd.c.orig	2010-07-30 21:53:01.449674751 +0200
++++ networking/httpd.c	2010-07-30 21:53:01.539676138 +0200
 @@ -251,6 +251,8 @@
  
  	const char *found_mime_type;
@@ -50,7 +52,7 @@
  				(g_query ? "?" : ""),
  				(g_query ? g_query : ""));
  	}
-@@ -1931,8 +1938,12 @@
+@@ -1932,8 +1939,12 @@
  	} while (*++tptr);
  	*++urlp = '\0';       /* terminate after last character */
  

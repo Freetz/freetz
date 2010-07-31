@@ -1,5 +1,5 @@
---- modutils/insmod.c.orig	2010-03-20 03:58:07.000000000 +0100
-+++ modutils/insmod.c	2010-04-02 23:03:27.000000000 +0200
+--- modutils/insmod.c.orig	2010-07-06 04:25:54.000000000 +0200
++++ modutils/insmod.c	2010-07-30 21:53:01.669676320 +0200
 @@ -9,6 +9,99 @@
  
  #include "libbb.h"
@@ -98,9 +98,9 @@
 +	return ret;
 +}
  
- int insmod_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
- int insmod_main(int argc UNUSED_PARAM, char **argv)
-@@ -33,9 +126,15 @@
+ /* 2.6 style insmod has no options and required filename
+  * (not module name - .ko can't be omitted) */
+@@ -55,9 +148,15 @@
  	if (!filename)
  		bb_show_usage();
  
@@ -117,14 +117,14 @@
 +done:
  	return rc;
  }
---- modutils/Config.in.orig	2010-03-20 03:58:07.000000000 +0100
-+++ modutils/Config.in	2010-04-02 23:03:27.000000000 +0200
-@@ -226,7 +226,7 @@
+--- modutils/Config.src.orig	2010-07-25 00:12:43.000000000 +0200
++++ modutils/Config.src	2010-07-30 21:53:01.669676320 +0200
+@@ -228,7 +228,7 @@
  config DEFAULT_MODULES_DIR
  	string "Default directory containing modules"
  	default "/lib/modules"
--	depends on DEPMOD || MODPROBE || MODPROBE_SMALL
-+	depends on DEPMOD || INSMOD || MODPROBE || MODPROBE_SMALL
+-	depends on DEPMOD || MODPROBE || MODPROBE_SMALL || MODINFO
++	depends on DEPMOD || INSMOD || MODPROBE || MODPROBE_SMALL || MODINFO
  	help
  	  Directory that contains kernel modules.
  	  Defaults to "/lib/modules"

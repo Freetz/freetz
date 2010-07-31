@@ -1,15 +1,15 @@
---- networking/telnetd.c.orig	2009-12-19 22:13:25.000000000 +0000
-+++ networking/telnetd.c	2009-12-19 22:32:25.000000000 +0000
-@@ -27,7 +27,7 @@
+--- networking/telnetd.c.orig	2010-07-30 21:53:01.419674011 +0200
++++ networking/telnetd.c	2010-07-30 21:53:01.569672759 +0200
+@@ -26,7 +26,7 @@
  #include <syslog.h>
  
  #if DEBUG
--#define TELCMDS
-+#define TELCMDS ""
- #define TELOPTS
+-# define TELCMDS
++# define TELCMDS ""
+ # define TELOPTS
  #endif
  #include <arpa/telnet.h>
-@@ -47,6 +47,9 @@
+@@ -51,6 +51,9 @@
  #define TS_BUF2(ts) (((unsigned char*)(ts + 1)) + BUFSIZE)
  	int rdidx1, wridx1, size1;
  	int rdidx2, wridx2, size2;
@@ -19,7 +19,7 @@
  };
  
  /* Two buffers are directly after tsession in malloced memory.
-@@ -85,6 +88,26 @@
+@@ -89,6 +92,26 @@
     CR-LF ->'s CR mapping is also done here, for convenience.
  
     NB: may fail to remove iacs which wrap around buffer!
@@ -46,7 +46,7 @@
   */
  static unsigned char *
  remove_iacs(struct tsession *ts, int *pnum_totty)
-@@ -93,65 +116,90 @@
+@@ -97,65 +120,90 @@
  	unsigned char *ptr = ptr0;
  	unsigned char *totty = ptr;
  	unsigned char *end = ptr + MIN(BUFSIZE - ts->wridx1, ts->size1);

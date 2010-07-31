@@ -1,10 +1,10 @@
---- networking/telnetd.c.orig	2010-04-02 23:03:27.000000000 +0200
-+++ networking/telnetd.c	2010-04-02 23:03:27.000000000 +0200
-@@ -356,6 +356,7 @@
+--- networking/telnetd.c.orig	2010-07-30 21:53:01.569672759 +0200
++++ networking/telnetd.c	2010-07-30 21:53:01.739678371 +0200
+@@ -361,6 +361,7 @@
  
  	/* Restore default signal handling ASAP */
  	bb_signals((1 << SIGCHLD) + (1 << SIGPIPE), SIG_DFL);
 +	signal(SIGINT, SIG_DFL);
  
- 	/* Make new session and process group */
- 	setsid();
+ 	if (ENABLE_FEATURE_UTMP) {
+ 		len_and_sockaddr *lsa = get_peer_lsa(sock);
