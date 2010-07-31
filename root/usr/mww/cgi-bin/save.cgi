@@ -1,10 +1,7 @@
 #!/bin/sh
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-. /usr/lib/libmodcgi.sh
-
-# redirect stderr to stdout so we see output in webif
-exec 2>&1
+source /usr/lib/libmodcgi.sh
 
 update_inetd() {
 	if [ -x /usr/bin/modinetd ]; then
@@ -34,12 +31,12 @@ apply_changes() {
 	local startORstop=$1
 	local package=$2
 	if [ "$package" = mod ]; then
-		start_stop $startORstop telnetd "$3"
-		start_stop $startORstop webcfg "$4"
-		start_stop $startORstop swap "$5"
+		start_stop $startORstop telnetd "$OLDSTATUS_telnetd"
+		start_stop $startORstop webcfg "$OLDSTATUS_webcfg"
+		start_stop $startORstop swap "$OLDSTATUS_swap"
 		/usr/lib/mod/reg-status reload
 	else
-		start_stop $startORstop "$package" "$3"
+		start_stop $startORstop "$package" "$OLDSTATUS_PACKAGE"
 	fi
 }
 
@@ -50,6 +47,38 @@ rc_status() {
 	fi
 }
 
+path_info package _
+if ! valid package "$package"; then
+	cgi_error "$package: $(lang de:"Unbekanntes Paket" en:"Unknown package")"
+	exit
+fi
+
+default=false
+case $QUERY_STRING in
+    	*default*) default=true ;;
+esac
+
+cgi_begin "$(lang de:"Speichern" en:"Saving")..."
+
+if $default; then
+	echo "<p>$(lang de:"Konfiguration zurücksetzen" en:"Restore default settings") ($package):</p>"
+else
+	echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings") ($package):</p>"
+fi
+echo -n "<pre>"
+
+# redirect stderr to stdout so we see output in webif
+exec 2>&1
+
+back="mod status"
+unset OLDSTATUS_telnetd OLDSTATUS_webcfg OLDSTATUS_swap
+
+if $default; then
+    hook=def
+else
+    hook=save
+fi
+
 # default functions for $package.save
 pkg_pre_save() { :; }
 pkg_apply_save() { :; }
@@ -58,103 +87,60 @@ pkg_pre_def() { :; }
 pkg_apply_def() { :; }
 pkg_post_def() { :; }
 
-cgi_begin "$(lang de:"Speichern" en:"Saving")..."
+# load package's implementation of these functions
+if [ -r "/mod/etc/default.$package/$package.save" ]; then
+	source "/mod/etc/default.$package/$package.save"
+fi
 
-echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings"):</p>"
-echo -n "<pre>"
+if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
+	if [ "$package" = mod ]; then
+		back="mod conf"
+		OLDSTATUS_telnetd=$(rc_status telnetd)
+		OLDSTATUS_webcfg=$(rc_status webcfg)
+		OLDSTATUS_swap=$(rc_status swap)
+	else
+		back="cgi $package"
+		OLDSTATUS_PACKAGE=$(rc_status "$package")
+	fi
+	if ! $default; then
+		prefix="$(echo "$package" | tr 'a-z\-' 'A-Z_')_"
 
-form=$(cgi_param form | tr -d .)
+		unset vars
+		for var in $(modconf vars "$package"); do
+			vars="${vars:+$vars:}${var#$prefix}"
+		done
 
-back="mod status"
-package=''
-oldstatus1=''
-oldstatus2=''
-oldstatus3=''
+		settings=$(modcgi "$vars" "$package")
+	fi
+fi
 
-case $form in
-	pkg_*)
-		package=${form#pkg_}
-		[ -r "/mod/etc/default.$package/$package.save" ] && . "/mod/etc/default.$package/$package.save"
+pkg_pre_$hook | html
 
-		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
-			if [ "$package" = mod ]; then
-			    	back="mod conf"
-				oldstatus1=$(rc_status telnetd)
-				oldstatus2=$(rc_status webcfg)
-				oldstatus3=$(rc_status swap)
-			else
-				back="cgi $package"
-				oldstatus1=$(rc_status "$package")
-			fi
-			prefix="$(echo "$package" | tr 'a-z\-' 'A-Z_')_"
+if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
+	apply_changes stop "$package"
+	echo
+	if ! $default; then
+		echo -n 'Saving settings...'
+		echo "$settings" | modconf set "$package" -
+		echo 'done.'
+		echo -n "Saving $package.cfg..."
+		modconf save "$package"
+		echo 'done.'
+	else
+		echo -n 'Restoring defaults...'
+		modconf default "$package"
+		echo 'done.'
+	fi
+	echo
+	{
+		apply_changes start "$package"
+		pkg_apply_$hook
+		echo
+		modsave flash
+	} | html
+fi
 
-			vars=''; delim=''
-			for var in $(modconf vars "$package"); do
-				vars="${vars}${delim}${var#$prefix}"
-				delim=':'
-			done
-
-			settings=$(modcgi "$vars" "$package")
-		fi
-
-		pkg_pre_save | html
-
-		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
-			apply_changes stop "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
-			
-			echo
-			echo -n 'Saving settings...'
-			echo "$settings" | modconf set "$package" -
-			echo 'done.'
-			echo -n "Saving $package.cfg..."
-			modconf save "$package"
-			echo 'done.'
-			echo
-
-			{
-			apply_changes start "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
-			pkg_apply_save
-			echo
-			modsave flash
-			} | html
-		fi
-		pkg_post_save | html
-		;;
-	def_*)
-		package=${form#def_}
-		[ -r "/mod/etc/default.$package/$package.save" ] && . "/mod/etc/default.$package/$package.save"
-		pkg_pre_def | html
-
-		if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
-			if [ "$package" = mod ]; then
-				back="mod conf"
-				oldstatus1=$(rc_status telnetd)
-				oldstatus2=$(rc_status webcfg)
-				oldstatus3=$(rc_status swap)
-			else
-				back="cgi $package"
-				oldstatus1=$(rc_status "$package")
-			fi
-
-			apply_changes stop "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
-			
-			echo -n 'Restoring defaults...'
-			modconf default "$package"
-			echo 'done.'
-
-			{
-			apply_changes start "$package" "$oldstatus1" "$oldstatus2" "$oldstatus3"
-			pkg_apply_def
-
-			modsave flash
-			} | html
-		fi
-		pkg_post_def | html
-		;;
-	*)
-		echo "$(lang de:"Fehler: Unbekanntes Formular" en:"Error: unknown form") '$form'"
-		;;
-esac
+pkg_post_$hook | html
 
 echo '</pre>'
 back_button $back

@@ -2,7 +2,22 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
-. /usr/lib/libmodfrm.sh
+
+frm_begin() {
+cat << EOF
+<form action="/cgi-bin/save.cgi/$1" method="post">
+EOF
+}
+
+frm_end() {
+cat << EOF
+<div class="btn"><input type="submit" value="$(lang de:"&Uuml;bernehmen" en:"Apply")"></div>
+</form>
+<form class="btn" action="/cgi-bin/save.cgi/$1?default" method="post">
+<div class="btn"><input type="submit" value="$(lang de:"Standard" en:"Defaults")"></div>
+</form>
+EOF
+}
 
 path_info package _
 if ! valid package "$package"; then
