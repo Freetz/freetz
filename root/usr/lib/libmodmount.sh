@@ -60,8 +60,8 @@ mount_fs ()
 		err_mo=$?
 	;;
 	swap)
-		/etc/init.d/rc.swap autostart $mnt_path
-		err_mo=$?
+		/etc/init.d/rc.swap autostart $dev_node
+		err_mo=17
 	;;
 	*) # fs type unknown
 		mount $dev_node $mnt_path
