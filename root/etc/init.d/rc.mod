@@ -22,8 +22,6 @@ start() {
 
 	[ -d /tmp/flash ] || /usr/bin/modload
 
-	[ -r /tmp/flash/mod/resolv.conf ] || cat /var/tmp/resolv.conf > /tmp/flash/mod/resolv.conf
-
 	/etc/init.d/rc.crond
 	/etc/init.d/rc.telnetd
 	/etc/init.d/rc.webcfg
@@ -70,7 +68,6 @@ register() {
 	modreg_file  .profile    0
 	modreg_file  hosts       1
 	modreg_file  modules     0
-	modreg_file  resolv.conf 0
 	modreg_file  rc.custom   0
 
 	/usr/lib/mod/reg-status start

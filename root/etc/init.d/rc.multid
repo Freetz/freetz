@@ -1,9 +1,9 @@
 #!/bin/sh
 
-. /etc/init.d/modlibrc
 DAEMON=multid
 DAEMON_LONG_NAME="AVM multid"
-PID_FILE=/var/run/${DAEMON}.pid
+CONF_NAME=mod
+. /etc/init.d/modlibrc
 
 TMPFILE_IGD=/tmp/.multid.igd
 TMPFILE_NTP=/tmp/.multid.ntp
@@ -34,7 +34,20 @@ start() {
 
 	$DAEMON $DAEMON_CMD_IGD $DAEMON_CMD_NTP
 	exitval=$?
+	sleep 1
 	[ -f /tmp/flash/mod/multid.start ] && . /tmp/flash/mod/multid.start
+
+	# overwrite upstream-dnsserver for avm-daemons like multid, dnsserver and voipd
+	if [ -n "$MOD_MULTID_DNS" ]; then
+		rm -rf /var/tmp/avm-resolv.conf 2>/dev/null
+		for dnsserver in $MOD_MULTID_DNS; do
+			echo "nameserver $dnsserver" >>/var/tmp/avm-resolv.conf
+		done
+	fi
+	
+	# have we another local dns-sever? multid doesn't create avm-resolv.conf it, if port 53 is in use. 
+	[ ! -e /var/tmp/avm-resolv.conf ] && echo "nameserver 127.0.0.1" >/var/tmp/avm-resolv.conf
+
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else

@@ -40,7 +40,7 @@ cat << EOF
 </p>
 <h2>$(lang de:"Swap-Datei" en:"Swap file") ($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)</h2>
 <p>$(lang de:"Pfad" en:"Path"): <input type="text" name="swap_file" size="50" maxlength="255" value="$(html "$MOD_SWAP_FILE")"></p>
-<p>$(lang de:"Größe" en:"Size"): <input type="text" name="swap_size" size="3" maxlength="4" value="" /> MB <input type="button" value="$(lang de:"Swap-Datei anlegen" en:"Create swap file")" onclick="window.open('/cgi-bin/create_swap.cgi?swap_file='+encodeURIComponent(document.forms[0].swap_file.value)+'&swap_size='+encodeURIComponent(document.forms[0].swap_size.value),'swapfilepopup','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes')" /></p>
+<p>$(lang de:"Gr&ouml;&szlig;e" en:"Size"): <input type="text" name="swap_size" size="3" maxlength="4" value="" /> MB <input type="button" value="$(lang de:"Swap-Datei anlegen" en:"Create swap file")" onclick="window.open('/cgi-bin/create_swap.cgi?swap_file='+encodeURIComponent(document.forms[0].swap_file.value)+'&swap_size='+encodeURIComponent(document.forms[0].swap_size.value),'swapfilepopup','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes')" /></p>
 EOF
 
 sec_end
@@ -62,7 +62,15 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Weboberfläche" en:"Web interface")'
+sec_begin 'multid'
+
+cat << EOF
+<p>$(lang de:"Statt den DNS-Servern des Providers diese nutzen (mit Leertaste trennen)" en:"Use these dns-servers instead the automatically assigned (seperate with spacebar)"): </p>
+<p><input type="text" name="multid_dns" size="55" maxlength="255" value="$(html "$MOD_MULTID_DNS")"></p>
+EOF
+
+sec_end
+sec_begin '$(lang de:"Weboberfl&auml;che" en:"Web interface")'
 
 cat << EOF
 <h2>$(lang de:"Starttyp der Weboberfl&auml;che" en:"Web interface start type")</h2>

@@ -42,19 +42,6 @@ case $1 in
 		echo -e "127.0.0.1\tlocalhost" > /var/tmp/hosts
 		touch /var/tmp/ethers
 
-		# ATA fix
-		mode=$(echo 'ar7cfg.mode' | ar7cfgctl -s)
-		if [ "$mode" = "dsldmode_bridge" -o \
-			"$mode" = "dsldmode_full_bridge" ]; then
-			if [ "$(echo 'ar7cfg.wan_bridge_with_dhcpc' | ar7cfgctl -s)" = "no" -a \
-				"$(echo 'ar7cfg.dhcpc_use_static_dns' | ar7cfgctl -s)" = "yes" ]; then
-				(
-					echo "nameserver $(echo 'servercfg.dns1' | ar7cfgctl -s)"
-					echo "nameserver $(echo 'servercfg.dns2' | ar7cfgctl -s)"
-				) > /var/tmp/avm-resolv.conf
-			fi
-		fi
-
 		[ -r /tmp/flash/exhosts ] && mv /tmp/flash/exhosts /tmp/flash/mod/hosts
 		if [ -r /tmp/flash/mod/hosts ]; then
 			egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts |
@@ -87,9 +74,7 @@ case $1 in
 				;;
 		esac
 		ipaddr=$(ar7ipaddr $section $devname)
-		if [ -z "$ipaddr" ]; then
-			ipaddr=169.254.1.1
-		fi
+		[ -z "$ipaddr" ] && ipaddr=169.254.1.1
 		echo -e "$ipaddr\tfritz.box\t$(ar7hostname)" >> /var/tmp/hosts
 		;;
 	*)
