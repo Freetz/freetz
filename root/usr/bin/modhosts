@@ -39,7 +39,7 @@ case $1 in
 		rm -f /var/tmp/hosts
 		rm -f /var/tmp/ethers
 
-		echo -e "127.0.0.1\tlocalhost" > /var/tmp/hosts
+ 		touch /var/tmp/hosts
 		touch /var/tmp/ethers
 
 		[ -r /tmp/flash/exhosts ] && mv /tmp/flash/exhosts /tmp/flash/mod/hosts
@@ -55,6 +55,10 @@ case $1 in
 					ismac $mac && echo -e "${mac}\t${host}" >> /var/tmp/ethers
 				done
 		fi
+
+ 		if ! egrep "^127.0.0.1[[:space:]]" /var/tmp/hosts -q 2>/dev/null; then
+ 			echo -e "127.0.0.1\tlocalhost" >> /var/tmp/hosts
+ 		fi
 
 		ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
 		case $ethmode in
@@ -79,7 +83,9 @@ case $1 in
 		ipaddr=$(ar7ipaddr $section $devname)
 		[ -z "$ipaddr" ] && ipaddr=$(ar7ipaddr $section $fallback)
 		[ -z "$ipaddr" ] && ipaddr=169.254.1.1
-		echo -e "$ipaddr\tfritz.box\t$(ar7hostname)" >> /var/tmp/hosts
+		if ! egrep "^$ipaddr[[:space:]]" /var/tmp/hosts -q 2>/dev/null; then
+ 			echo -e "$ipaddr\tfritz.box\t$(ar7hostname)" >> /var/tmp/hosts
+ 		fi
 		;;
 	*)
 		echo "Usage: $0 [load]" 1>&2
