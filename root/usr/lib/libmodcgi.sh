@@ -127,9 +127,8 @@ _cgi_location() {
 	esac
 }
 
-
 _cgi_mark_active() {
-	sed -r "s# id=(['\"])$1\1# class='active'&#"
+	sed -r "s# id=(['\"])($1)\1# class='active'&#"
 }
 
 _cgi_cached() {

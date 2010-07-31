@@ -68,3 +68,16 @@ cat << EOF
 </div>
 EOF
 }
+
+_cgi_print_menu() {
+	local id=$1 sub= act_sub=
+	case $id in
+		settings|file:*) act_sub=settings ;;
+		status*) act_sub=status ;;
+		system|avmwif_*|rudi_*|firmware_*|backup_*) act_sub=system ;;
+		packages|pkg:*) act_sub=packages ;;
+	esac
+	: ${sub:=$act_sub}
+
+	_cgi_cached "menu_$sub" _cgi_menu "$sub" | _cgi_mark_active "$act_sub|$id"
+}
