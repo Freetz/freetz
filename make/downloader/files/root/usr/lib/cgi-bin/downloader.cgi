@@ -20,7 +20,7 @@ cat << EOF
 <p>
 <input type="hidden" name="debug" value="no">
 <input id="s1" type="checkbox" name="debug" value="yes"$debug_chk><label for="s1"> $(lang de:"mit Debug-Ausgaben" en:"with debug output")</label>
-&nbsp;&nbsp; ( in <a href="$(href extra downloader downlog)">/var/log/downloader.log</a> )
+&nbsp;&nbsp; (in <a href="$(href extra downloader downlog)">/var/log/downloader.log</a>)
 </p>
 EOF
 
@@ -76,10 +76,10 @@ sec_begin '$(lang de:"Dateien zum Downloaden" en:"Download files")'
 cat << EOF
 <table>
 <tr>
-<td style="font-size:10pt;"><b>Syntax:</b></td><td style="font-size:10pt;">&lt;$(lang de:"Datei(ohne.gz)" en:"File(w/o.gz)")&gt;</td><td style="font-size:10pt;">&lt;$(lang de:"Attribute" en:"Permissions")&gt;</td><td style="font-size:10pt;">&lt;$(lang de:"Zielverzeichnis" en:"Destination dir")&gt;</td>
+<th>Syntax:</th><td>&lt;$(lang de:"Datei(ohne.gz)" en:"File(w/o.gz)")&gt;</td><td>&lt;$(lang de:"Attribute" en:"Permissions")&gt;</td><td>&lt;$(lang de:"Zielverzeichnis" en:"Destination dir")&gt;</td>
 </tr>
 <tr>
-<td style="font-size:10pt;"><b>$(lang de:"Beispiel" en:"Example"):</b></td><td style="font-size:10pt;">dropbear</td><td style="font-size:10pt;">755</td><td style="font-size:10pt;">/mod/bin</td>
+<th>$(lang de:"Beispiel" en:"Example"):</th><td>dropbear</td><td>755</td><td>/mod/bin</td>
 </tr>
 </table>
 <p><textarea name="files" rows="4" cols="50">$(html "$DOWNLOADER_FILES")</textarea></p>
