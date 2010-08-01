@@ -32,6 +32,7 @@ start() {
 		echo "$DAEMON_CMD_NTP" > $TMPFILE_NTP
 	fi
 
+	rm -rf /var/tmp/avm-resolv.conf /var/tmp/resolv.conf 2>/dev/null
 	$DAEMON $DAEMON_CMD_IGD $DAEMON_CMD_NTP
 	exitval=$?
 	sleep 1
@@ -39,15 +40,17 @@ start() {
 
 	# overwrite upstream-dnsserver for avm-daemons like multid (dnsserver) or voipd
 	if [ -n "$MOD_MULTID_DNS" ]; then
-		rm -rf /var/tmp/avm-resolv.conf 2>/dev/null
+		echo > /var/tmp/avm-resolv.conf
 		for dnsserver in $MOD_MULTID_DNS; do
 			echo "nameserver $dnsserver" >>/var/tmp/avm-resolv.conf
 		done
+		cat /var/tmp/avm-resolv.conf > /var/tmp/resolv.conf
 	fi
-	# do we have another local dns-sever? multid doesn't create avm-resolv.conf itself if port 53 is in use. 
-	[ ! -e /var/tmp/avm-resolv.conf ] && echo "nameserver 127.0.0.1" >/var/tmp/avm-resolv.conf
+	# do we have another local dns-sever? multid doesn't create /var/tmp/avm-resolv.conf itself if port 53 is in use.
 	# some (older?) boxes uses /var/tmp/resolv.conf for upstream-dnsserver.
-	cat /var/tmp/avm-resolv.conf > /var/tmp/resolv.conf
+	for resolv_file in /var/tmp/avm-resolv.conf /var/tmp/resolv.conf; do 
+		[ ! -e $resolv_file ] && echo "nameserver 127.0.0.1" > $resolv_file
+	done
 	
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
