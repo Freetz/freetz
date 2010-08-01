@@ -24,9 +24,8 @@ for i in $(ls /usr/www/); do
 done
 
 if [ $brands_cnt -gt 1 ]; then
-	echo '<form class="btn" action="/cgi-bin/exec.cgi" method="post">'
+	echo '<form class="btn" action="/cgi-bin/exec.cgi/branding" method="post">'
 	echo '$(lang de:"Branding" en:"Branding"):'
-	echo '<input type="hidden" name="cmd" value="branding">'
 	echo '<select name="branding" size="1">'
 	branding=$(get_env firmware_version)
 	for i in $BRANDS; do

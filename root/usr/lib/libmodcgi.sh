@@ -108,13 +108,13 @@ _cgi_location() {
 	local type=$1
 	case $type in
 		file)   "$out" "/cgi-bin/file.cgi/${2}/${3}" ;;
-		extra)  "$out" "/cgi-bin/extras.cgi/${2}/${3}" ;;
+		extra)  "$out" "/cgi-bin/extra.cgi/${2}/${3}" ;;
 		status) "$out" "/cgi-bin/pkgstatus.cgi/${2}/${3:-status}" ;;
 		cgi)    local pkg=$2; shift 2
 			"$out" "/cgi-bin/conf.cgi/$pkg" "$@" ;;
 		mod)    case $2 in
 				""|status) "$out" "/cgi-bin/status.cgi" ;;
-				extras)    "$out" "/cgi-bin/extras.cgi" ;;
+				extras)    "$out" "/cgi-bin/extra.cgi" ;;
 				daemons)   "$out" "/cgi-bin/service.cgi" ;;
 				about)     "$out" "/cgi-bin/about.cgi" ;;
 				packages)  "$out" "/cgi-bin/packages.cgi" ;;
@@ -216,7 +216,7 @@ fi
 
 cat << EOF
 </li>
-<li><a id="extras" href="/cgi-bin/extras.cgi">Extras</a></li>
+<li><a id="extras" href="$(href mod extras)">Extras</a></li>
 <li><a id="system" href="$(href mod system)">System</a>
 EOF
 

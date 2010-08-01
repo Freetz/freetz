@@ -4,7 +4,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 stat_button() {
-	echo '<form action="/cgi-bin/exec.cgi" method="post"><p><input type="hidden" name="cmd" value="'"$1"'"><input type="submit" value="'"$2"'"></p></form>'
+	echo "<form action='/cgi-bin/exec.cgi/$1' method='post'><p><input type='submit' value='$2'></p></form>"
 }
 
 cgi_begin 'System' system
@@ -21,6 +21,6 @@ cat << EOF
 EOF
 
 # stat_button cleanup '$(lang de:"TFFS aufr&auml;umen" en:"Clean up TFFS")'
-stat_button fw_attrib '$(lang de:"Warnung zur&uuml;cksetzen" en:"Reset warning")'
+stat_button fw-attrib '$(lang de:"Warnung zur&uuml;cksetzen" en:"Reset warning")'
 
 cgi_end
