@@ -8,7 +8,7 @@ frm_end() {
 	cat << EOF
 <div class="btn"><input type="submit" value="$(lang de:"&Uuml;bernehmen" en:"Apply")"></div>
 </form>
-<form class="btn" action=".?default" method="post">
+<form class="btn" action="?default" method="post">
 <div class="btn"><input type="submit" value="$(lang de:"Standard" en:"Defaults")"></div>
 </form>
 EOF
