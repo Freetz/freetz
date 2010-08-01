@@ -10,6 +10,18 @@ config FREETZ_SELECTED_LANG_ONLY
 		supporting your selected language can be installed, but they will be in
 		default language (usually German).
 
+menu "Debug helpers"
+source make/ldd/Config.in
+source make/lsof/Config.in
+source make/ltrace/Config.in
+source make/nano-shell/Config.in
+source make/pciutils/Config.in
+source make/strace/Config.in
+#intentionally commented out as nobody wants to include it in the image
+#source make/target-tester/Config.in
+source make/usbutils/Config.in
+endmenu
+
 menu "Standard packages"
 source make/aiccu/Config.in
 source make/bftpd/Config.in
@@ -44,6 +56,9 @@ source make/openvpn/Config.in
 source make/php/Config.in
 source make/pingtunnel/Config.in
 source make/portmap/Config.in
+source make/pppd/Config.in
+source make/pptp/Config.in
+source make/pptpd/Config.in
 source make/privoxy/Config.in
 source make/radvd/Config.in
 source make/rcapid/Config.in
@@ -57,37 +72,6 @@ source make/vnstat/Config.in
 source make/vpnc/Config.in
 source make/vsftpd/Config.in
 source make/xmail/Config.in
-endmenu
-
-menu "Web interfaces"
-source make/avm-firewall/Config.in
-source make/cpmaccfg-cgi/Config.in
-source make/downloader/Config.in
-source make/authorized-keys/Config.in
-source make/nfsd-cgi/Config.in
-source make/nhipt/Config.in
-source make/onlinechanged-cgi/Config.in
-source make/phpxmail/Config.in
-source make/ppp-cgi/Config.in
-source make/rrdstats/Config.in
-source make/spindown-cgi/Config.in
-source make/syslogd-cgi/Config.in
-source make/transmission-cgi/Config.in
-source make/virtualip-cgi/Config.in
-source make/vnstat-cgi/Config.in
-source make/wol-cgi/Config.in
-endmenu
-
-menu "Debug helpers"
-source make/ldd/Config.in
-source make/lsof/Config.in
-source make/ltrace/Config.in
-source make/nano-shell/Config.in
-source make/pciutils/Config.in
-source make/strace/Config.in
-#intentionally commented out as nobody wants to include it in the image
-#source make/target-tester/Config.in
-source make/usbutils/Config.in
 endmenu
 
 menu "Testing"
@@ -152,9 +136,6 @@ source make/opendd/Config.in
 source make/openssh/Config.in
 source make/owfs/Config.in
 source make/polipo/Config.in
-source make/pppd/Config.in
-source make/pptp/Config.in
-source make/pptpd/Config.in
 source make/quagga/Config.in
 source make/rrdtool/Config.in
 source make/rsync/Config.in
@@ -190,6 +171,25 @@ source make/wput/Config.in
 source make/xpdf/Config.in
 source make/xrelayd/Config.in
 source make/xsltproc/Config.in
+endmenu
+
+menu "Web interfaces"
+source make/authorized-keys/Config.in
+source make/avm-firewall/Config.in
+source make/cpmaccfg-cgi/Config.in
+source make/downloader/Config.in
+source make/nfsd-cgi/Config.in
+source make/nhipt/Config.in
+source make/onlinechanged-cgi/Config.in
+source make/phpxmail/Config.in
+source make/ppp-cgi/Config.in
+source make/rrdstats/Config.in
+source make/spindown-cgi/Config.in
+source make/syslogd-cgi/Config.in
+source make/transmission-cgi/Config.in
+source make/virtualip-cgi/Config.in
+source make/vnstat-cgi/Config.in
+source make/wol-cgi/Config.in
 endmenu
 
 config FREETZ_SHOW_UNSTABLE_PACKAGES
