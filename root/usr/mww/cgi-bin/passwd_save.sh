@@ -1,12 +1,10 @@
-#!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-. /usr/lib/libmodcgi.sh
-
 eval "$(modcgi oldpassword:password:replay mod_cgi)"
 
-(echo "$MOD_CGI_OLDPASSWORD"; echo "$MOD_CGI_PASSWORD"; echo "$MOD_CGI_REPLAY") |
-	modpasswd freetz > /dev/null 2>&1
+{
+	echo "$MOD_CGI_OLDPASSWORD"
+	echo "$MOD_CGI_PASSWORD"
+	echo "$MOD_CGI_REPLAY"
+} | modpasswd freetz > /dev/null 2>&1
 result=$?
 
 cgi_begin 'Passwort' 'password'

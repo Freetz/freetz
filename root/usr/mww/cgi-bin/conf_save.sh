@@ -1,8 +1,3 @@
-#!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-source /usr/lib/libmodcgi.sh
-
 update_inetd() {
 	if [ -x /usr/bin/modinetd ]; then
 		/usr/bin/modinetd --nosave "$1"
@@ -47,23 +42,19 @@ rc_status() {
 	fi
 }
 
-path_info package _
-if ! valid package "$package"; then
-	cgi_error "$package: $(lang de:"Unbekanntes Paket" en:"Unknown package")"
-	exit
-fi
-
 default=false
 case $QUERY_STRING in
     	*default*) default=true ;;
 esac
 
-cgi_begin "$(lang de:"Speichern" en:"Saving")..."
+package=$PACKAGE
+
+cgi_begin "$PACKAGE_TITLE: $(lang de:"Speichern" en:"Saving") ..."
 
 if $default; then
-	echo "<p>$(lang de:"Konfiguration zurücksetzen" en:"Restore default settings") ($package):</p>"
+	echo "<p>$(lang de:"Konfiguration zurücksetzen" en:"Restore default settings") ($PACKAGE_TITLE):</p>"
 else
-	echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings") ($package):</p>"
+	echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings") ($PACKAGE_TITLE):</p>"
 fi
 echo -n "<pre>"
 

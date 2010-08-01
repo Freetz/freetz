@@ -1,10 +1,3 @@
-#!/bin/sh
-
-REG=/mod/etc/reg/daemon.reg
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-. /usr/lib/libmodcgi.sh
-
 stat_begin() {
 	echo '<table class="daemons" border="0" cellspacing="1" cellpadding="0">'
 }

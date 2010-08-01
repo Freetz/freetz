@@ -111,11 +111,11 @@ _cgi_location() {
 		extra)  "$out" "/cgi-bin/extras.cgi/${2}/${3}" ;;
 		status) "$out" "/cgi-bin/pkgstatus.cgi/${2}/${3:-status}" ;;
 		cgi)    local pkg=$2; shift 2
-			"$out" "/cgi-bin/pkgconf.cgi/$pkg" "$@" ;;
+			"$out" "/cgi-bin/conf.cgi/$pkg" "$@" ;;
 		mod)    case $2 in
 				""|status) "$out" "/cgi-bin/status.cgi" ;;
 				extras)    "$out" "/cgi-bin/extras.cgi" ;;
-				daemons)   "$out" "/cgi-bin/daemons.cgi" ;;
+				daemons)   "$out" "/cgi-bin/service.cgi" ;;
 				about)     "$out" "/cgi-bin/about.cgi" ;;
 				packages)  "$out" "/cgi-bin/packages.cgi" ;;
 				system)    "$out" "/cgi-bin/system.cgi" ;;

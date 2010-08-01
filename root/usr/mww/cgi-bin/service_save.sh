@@ -1,9 +1,3 @@
-#!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-. /usr/lib/libmodcgi.sh
-REG=/mod/etc/reg/daemon.reg
-
 eval "$(modcgi cmd service)"
 path_info PACKAGE SERVICE_NAME _
 
