@@ -142,9 +142,13 @@ modlangconf()
 modlang()
 {
 	# modlang <conffile> <dir>
+	case $1 in
+		/*) conffile=$1 ;;
+		*)  conffile="$PWD/$1" ;;
+	esac
 
-	avail="$(modlangconf "languages" "$1")"
-	default="$FREETZ_LANG_STRING $(modlangconf "default" "$1") en de $avail"
+	avail="$(modlangconf "languages" "$conffile")"
+	default="$FREETZ_LANG_STRING $(modlangconf "default" "$conffile") en de $avail"
 	lang=""
 
 	for i in $default; do
@@ -163,13 +167,19 @@ modlang()
 	[ "$lang" == "$FREETZ_LANG_STRING" ] || \
 		echo "NOTICE: language $FREETZ_LANG_STRING not available; $lang chosen." 1>&2
 
-	for i in $(modlangconf "files" "$1"); do
-		if [ -e "${2}/${i}" ]; then
-			modlangsubst "$lang" "${2}/${i}"
-		else
-			warn "${2}/${i} not found"
+	(
+		if ! cd "${2}"; then
+		    	warn "modlang: $2 does not exist"
+			return
 		fi
-	done
+		for i in $(modlangconf "files" "$conffile"); do
+			if [ -e "${i}" ]; then
+				modlangsubst "$lang" "${i}"
+			else
+				warn "modlang: ${2}/${i} not found"
+			fi
+		done
+	)
 }
 
 # list of static packages, sorted by start level
