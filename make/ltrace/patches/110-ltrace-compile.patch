@@ -1,5 +1,3 @@
-Index: ltrace-0.5.3/common.h
-===================================================================
 --- common.h	2009-10-23 23:13:45.700282578 -0700
 +++ common.h	2009-10-23 23:14:13.550371553 -0700
 @@ -1,3 +1,5 @@
@@ -14,8 +12,6 @@ Index: ltrace-0.5.3/common.h
  #endif
 +#endif
 +
-Index: ltrace-0.5.3/configure
-===================================================================
 --- configure	2009-10-23 23:13:45.630316494 -0700
 +++ configure	2009-10-23 23:13:59.672869527 -0700
 @@ -30,7 +30,7 @@ int main () {
@@ -62,8 +58,6 @@ Index: ltrace-0.5.3/configure
  sysconfdir='${prefix}/etc'
  bindir='${prefix}/bin'
  mandir='${prefix}/share/man'
-Index: ltrace-0.5.3/debug.h
-===================================================================
 --- debug.h	2009-10-23 23:13:45.670276809 -0700
 +++ debug.h	2009-10-23 23:14:26.440319785 -0700
 @@ -1,3 +1,5 @@
@@ -78,3 +72,14 @@ Index: ltrace-0.5.3/debug.h
  # define debug(level, expr...) debug_(level, __FILE__, __LINE__, expr)
 -
 +#endif
+--- sysdeps/linux-gnu/events.c.orig	2009-07-25 17:13:02.000000000 +0200
++++ sysdeps/linux-gnu/events.c	2010-08-01 22:40:10.879693289 +0200
+@@ -7,7 +7,7 @@
+ #include <errno.h>
+ #include <signal.h>
+ #include <string.h>
+-#include <sys/ptrace.h>
++#include <linux/ptrace.h>
+ 
+ #include "common.h"
+ 

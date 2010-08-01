@@ -1,5 +1,3 @@
-#LTRACE_SVN_REVISION:=81
-#$(call PKG_INIT_BIN, 0.5_$(LTRACE_SVN_REVISION))
 $(call PKG_INIT_BIN, 0.5.3)
 $(PKG)_SOURCE:=ltrace_$($(PKG)_VERSION).orig.tar.gz
 $(PKG)_SOURCE_MD5:=3fa7fe715ab879db08bd06d1d59fd90f
@@ -12,6 +10,9 @@ $(PKG)_TARGET_CONF:=$($(PKG)_DEST_DIR)/etc/ltrace.conf
 $(PKG)_DEPENDS_ON := libelf	
 
 $(PKG)_CONFIGURE_PRE_CMDS += ln -sf ./mipsel sysdeps/linux-gnu/mips ;
+$(PKG)_CONFIGURE_PRE_CMDS += ( cd sysdeps/linux-gnu/mips; \
+	../mksyscallent_mips $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/asm/unistd.h > syscallent.h; \
+	../mksignalent $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/asm/signal.h > signalent.h; );
 
 $(PKG)_CONFIGURE_ENV += LD="$(TARGET_LD)"
 
@@ -26,7 +27,9 @@ $($(PKG)_TARGET_CONF): $($(PKG)_CONF)
 	cp $< $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(LTRACE_DIR) ARCH=mips
+	$(SUBMAKE) -C $(LTRACE_DIR) \
+		ARCH=mips \
+		CFLAGS="$(TARGET_CFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
