@@ -38,15 +38,13 @@ sec_begin '$(lang de:"SSH-Server" en:"SSH server")'
 cat << EOF
 <h2>$(lang de:"Der SSH-Server ist gebunden an" en:"The SSH server is listening on"):</h2>
 <p>Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$DROPBEAR_PORT")"></p>
-<h2>$(lang de:"Passwort-Login" en:"Password login"):</h2>
+<h2>Login</h2>
 <p>
-<input id="p1" type="radio" name="pwdauth" value="yes"$pwdauth_yes_chk><label for="p1"> $(lang de:"Aktiviert" en:"Enabled")</label>
-<input id="p2" type="radio" name="pwdauth" value="no"$pwdauth_no_chk><label for="p2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
-</p>
-<h2>$(lang de:"Login nur f&uuml;r root erlauben" en:"Allow only root login"):</h2>
-<p>
-<input id="r1" type="radio" name="rootonly" value="yes"$rootonly_yes_chk><label for="r1"> $(lang de:"Aktiviert" en:"Enabled")</label>
-<input id="r2" type="radio" name="rootonly" value="no"$rootonly_no_chk><label for="r2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
+<input id="p2" type="hidden" name="pwdauth" value="no"><input id="p1" type="checkbox" name="pwdauth" value="yes"$pwdauth_yes_chk>
+<label for="p1">$(lang de:"Passwort-Login erlauben" en:"Allow password login")</label>
+<br>
+<input id="r2" type="hidden" name="rootonly" value="no"><input id="r1" type="checkbox" name="rootonly" value="yes"$rootonly_yes_chk>
+<label for="r1">$(lang de:"Login nur f&uuml;r root erlauben" en:"Allow only root login")</label>
 </p>
 <p style="font-size:10px;">$(lang de:"Bitte beachte, dass die FRITZ!Box keine ad&auml;quate Benutzerverwaltung bietet. Die Dateien /etc/passwd und /etc/shadow m&uuml;ssen mit <b>modsave</b> gespeichert werden. Bitte aktiviere die Unterst&uuml;tzung f&uuml;r normale Benutzer nur, wenn Du genau wei&szlig;t, was Du tust." en:"Please note that the FRITZ!Box does not support normal user management. The files /etc/passwd and /etc/shadow have to be saved with <b>modsave</b>. Please activate the support for regular users only if you know what you are doing.")</p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
