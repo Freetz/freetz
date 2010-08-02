@@ -693,20 +693,19 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 endef
 
 define PKG_UNPACKED__INT
-$(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.$(pkg)_config
-$(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.$(pkg)_config.temp
+$(PKG)_FREETZ_CONFIG_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_config
 endef
 
 ## check for changed suboptions
 # should only be called if $(PKG)_REBUILD_SUBOPTS is defined
 define PKG_UNPACKED_CHECK_SUBOPTS__INT
 $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
-	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_TEMP)
-	@if ! diff -q $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null $(SILENT); then \
-		mv $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE); \
+	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_FILE).temp
+	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null $(SILENT); then \
+		mv $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE); \
 		$($(PKG)_CLEAN_TARGET_DIR__INT) \
 	else \
-		$(RM) $($(PKG)_FREETZ_CONFIG_TEMP); \
+		$(RM) $($(PKG)_FREETZ_CONFIG_FILE).temp; \
 	fi
 $($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
 $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $($(PKG)_FREETZ_CONFIG_FILE)
@@ -715,7 +714,6 @@ endef
 ## check for changed files in files and patches folder
 define PKG_UNPACKED_CHECK__INT
 $(PKG)_FREETZ_CHANGES_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_changes
-$(PKG)_FREETZ_CHANGES_TEMP:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_changes.temp
 $(PKG)_FREETZ_PATCHES_BIN_SEARCH:=patches/.*\|$(pkg)\.mk\|Makefile\.in\|Config\.in
 $(PKG)_FREETZ_PATCHES_LIB_SEARCH:=patches/.*\.$(pkg).patch\|$(pkg).mk
 $(PKG)_FREETZ_FILES_BIN_SEARCH:=files/.*
@@ -724,15 +722,15 @@ endef
 define PKG_UNPACKED_CHECK_CHANGES__INT
 $(PKG)_FREETZ_CHANGES_CHECK:
 	@find $($(PKG)_MAKE_DIR) -regex "^$($(PKG)_MAKE_DIR)/\($($(PKG)_FREETZ_PATCHES_$(PKG_TYPE)_SEARCH)\|$($(PKG)_FREETZ_FILES_$(PKG_TYPE)_SEARCH)\)" \
-		! -wholename '*/.svn*' -printf '%P\t%t\n' 2>/dev/null >$($(PKG)_FREETZ_CHANGES_TEMP)
+		! -wholename '*/.svn*' -printf '%P\t%t\n' 2>/dev/null >$($(PKG)_FREETZ_CHANGES_FILE).temp
 	@if [ -e $($(PKG)_FREETZ_CHANGES_FILE) ]; then \
 		for i in 1 2; do \
 			PATTERN=; \
 			[ $$$$i = 1 ] && PATTERN='$($(PKG)_FREETZ_PATCHES_$(PKG_TYPE)_SEARCH)'; \
 			[ $$$$i = 2 ] && PATTERN='$($(PKG)_FREETZ_FILES_$(PKG_TYPE)_SEARCH)'; \
 			if [ ! -z $$$$PATTERN ]; then \
-				if [ "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE)`" != "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_TEMP)`" ]; then \
-					mv $($(PKG)_FREETZ_CHANGES_TEMP) $($(PKG)_FREETZ_CHANGES_FILE); \
+				if [ "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE)`" != "`grep -e "^$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE).temp`" ]; then \
+					mv $($(PKG)_FREETZ_CHANGES_FILE).temp $($(PKG)_FREETZ_CHANGES_FILE); \
 					[ $$$$i = 1 ] && $(RM) -r $($(PKG)_DIR); \
 					$($(PKG)_CLEAN_TARGET_DIR__INT) \
 					break; \
@@ -740,9 +738,9 @@ $(PKG)_FREETZ_CHANGES_CHECK:
 			fi \
 		done \
 	else \
-		mv $($(PKG)_FREETZ_CHANGES_TEMP) $($(PKG)_FREETZ_CHANGES_FILE); \
+		mv $($(PKG)_FREETZ_CHANGES_FILE).temp $($(PKG)_FREETZ_CHANGES_FILE); \
 	fi
-	@$(RM) $($(PKG)_FREETZ_CHANGES_TEMP)
+	@$(RM) $($(PKG)_FREETZ_CHANGES_FILE).temp
 $(pkg) $(pkg)-precompiled $(pkg)-build-prereq: $(PKG)_FREETZ_CHANGES_CHECK
 .PHONY: $(PKG)_FREETZ_CHANGES_CHECK
 endef
