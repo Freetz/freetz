@@ -30,7 +30,7 @@ start() {
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -O $SYSLOGD_ALTERNATIVE_LOGFILE "
 				#create a symbolic link to /var/log but only if path to alternative logfile is not /var/log
 				[ $(dirname $SYSLOGD_ALTERNATIVE_LOGFILE) != /var/log ] && \
-					[ ! -e "/var/log/$(basename "$SYSLOGD_ALTERNATIVE_LOGFILE")" ] && \
+					[ ! -e "/var/log/$(basename $SYSLOGD_ALTERNATIVE_LOGFILE)" ] && \
 					ln -sf "$SYSLOGD_ALTERNATIVE_LOGFILE" /var/log/
 			fi
 			if [ "$SYSLOGD_MAXFILES" -ge "1" ]; then
@@ -78,8 +78,6 @@ stop () {
 	modunreg status $DAEMON log
 
 	[ -n "$(pidof klogd)" ] && killall klogd > /dev/null 2>&1
-	[ -e "$SYSLOGD_ALTERNATIVE_LOGFILE" ] && rm $SYSLOGD_ALTERNATIVE_LOGFILE
-	[ -e "/var/log/messages" ] && rm /var/log/messages
 
 	return $exitval
 }
