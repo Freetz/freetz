@@ -5,7 +5,6 @@ DAEMON_LONG_NAME="Freetz webinterface"
 PID_FILE=/var/run/webcfg.pid
 CONF_NAME=mod
 CONF_ENABLED=MOD_HTTPD
-
 . /etc/init.d/modlibrc
 
 config() {
@@ -23,13 +22,11 @@ config() {
 }
 
 start() {
-	config
 	modlib_startdaemon httpd -P "$PID_FILE" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h /usr/mww/ -r "Freetz"
 }
 
 case $1 in
 	""|load)
-
 		modlib_start $MOD_HTTPD
 		;;
 	unload)
