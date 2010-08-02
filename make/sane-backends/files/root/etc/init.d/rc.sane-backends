@@ -32,6 +32,9 @@ case $1 in
 
 		modlib_start $SANE_BACKENDS_ENABLED
 		;;
+	config)
+		config
+		;;
 	unload)
 		modunreg cgi 'sane-backends'
 		modunreg daemon sane-backends
@@ -46,7 +49,7 @@ case $1 in
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|config|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac
