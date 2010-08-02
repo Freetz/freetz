@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_PHP
-	bool "PHP 5.2.13"
+	bool "PHP 5.3.3"
 	select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_PHP_STATIC
 	default n
 	help
@@ -40,13 +40,6 @@ config FREETZ_PACKAGE_PHP_WITH_JSON
 	default n
 	help
 		This option enables the JSON support for PHP
-
-config FREETZ_PACKAGE_PHP_WITH_LIBXML
-	bool "build with XML support"
-	select FREETZ_LIB_libxml2 if ! FREETZ_PACKAGE_PHP_STATIC
-	default n
-	help
-		This option enables the XML support for PHP
 
 config FREETZ_PACKAGE_PHP_WITH_PCNTL
 	bool "build with PCNTL support"
@@ -94,6 +87,13 @@ config FREETZ_PACKAGE_PHP_WITH_SYSVIPC
 	default n
 	help
 		This option enables the SYSVIPC support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_LIBXML
+	bool "build with XML support"
+	select FREETZ_LIB_libxml2 if ! FREETZ_PACKAGE_PHP_STATIC
+	default n
+	help
+		This option enables the XML support for PHP
 
 config FREETZ_PACKAGE_PHP_WITH_ZLIB
 	bool "build with ZLIB support"
