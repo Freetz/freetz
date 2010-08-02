@@ -25,9 +25,6 @@ HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	)
 GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
 
-REAL_GNU_TARGET_NAME:=mipsel-linux-uclibc
-GNU_TARGET_NAME:=mipsel-linux
-
 ifeq ($(strip $(FREETZ_TARGET_NLS)),y)
 DISABLE_NLS:=
 else
@@ -409,6 +406,8 @@ $(PKG)_VERSION:=$(strip $1)
 $(PKG)_BUILD_PREREQ:=
 $(PKG)_BUILD_PREREQ_HINT:=
 $(PKG)_CONFIGURE_DEFOPTS:=y
+$(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 # $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
 $(pkg)-precompiled: $(pkg)-precompiled--int $(pkg)-clean-echo-item $(pkg) $(pkg)-clean-not-included--int
 $(pkg)-clean-echo-item:
@@ -419,8 +418,6 @@ endef
 # Stage 2a: initialise other package-specific variables for binary packages
 define PKG_INIT_BIN__INT
 PKG_TYPE:=BIN
-$(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 # level 99 for packages that are not actually started
 $(PKG)_STARTLEVEL=99
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
@@ -434,8 +431,6 @@ endef
 # Stage 2b: initialise other package-specific variables for library packages
 define PKG_INIT_LIB__INT
 PKG_TYPE:=LIB
-$(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
 $(PKG)_TARGET_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)$(FREETZ_LIBRARY_PATH)
 $(PKG)_TARGET_LIBDIR:=$($(PKG)_TARGET_DIR)
@@ -638,8 +633,6 @@ endef
 
 ## Unpack and patch binary package
 define PKG_UNPACKED_BIN__INT
-$(PKG)_SOURCE_DIR:
-	@mkdir -p $($(PKG)_SOURCE_DIR)
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(PKG)_SOURCE_DIR
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
@@ -664,8 +657,6 @@ endef
 
 ## Unpack and patch library package
 define PKG_UNPACKED_LIB__INT
-$(PKG)_SOURCE_DIR:
-	@mkdir -p $($(PKG)_SOURCE_DIR)
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(PKG)_SOURCE_DIR
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
@@ -696,6 +687,11 @@ define PKG_UNPACKED__INT
 $(PKG)_FREETZ_CONFIG_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_config
 endef
 
+define PKG_UNPACKED_SOURCE__INT
+$(PKG)_SOURCE_DIR:
+	@mkdir -p $($(PKG)_SOURCE_DIR)
+endef
+
 ## check for changed suboptions
 # should only be called if $(PKG)_REBUILD_SUBOPTS is defined
 define PKG_UNPACKED_CHECK_SUBOPTS__INT
@@ -720,7 +716,7 @@ $(PKG)_FREETZ_FILES_BIN_SEARCH:=files/.*
 endef
 
 define PKG_UNPACKED_CHECK_CHANGES__INT
-$(PKG)_FREETZ_CHANGES_CHECK:
+$(PKG)_FREETZ_CHANGES_CHECK: $(PKG)_SOURCE_DIR
 	@find $($(PKG)_MAKE_DIR) -regex "^$($(PKG)_MAKE_DIR)/\($($(PKG)_FREETZ_PATCHES_$(PKG_TYPE)_SEARCH)\|$($(PKG)_FREETZ_FILES_$(PKG_TYPE)_SEARCH)\)" \
 		! -wholename '*/.svn*' -printf '%P\t%t\n' 2>/dev/null >$($(PKG)_FREETZ_CHANGES_FILE).temp
 	@if [ -e $($(PKG)_FREETZ_CHANGES_FILE) ]; then \
@@ -747,8 +743,9 @@ endef
 
 PKG_BIN_UNPACKED=$(eval $(PKG_UNPACKED_BIN__INT))
 PKG_LIB_UNPACKED=$(eval $(PKG_UNPACKED_LIB__INT))
+PKG_UNPACKED=$(eval $(PKG_UNPACKED_SOURCE__INT))
 ifeq ($(strip $(FREETZ_CHECK_CHANGED)),y)
-PKG_UNPACKED=$(eval $(PKG_UNPACKED_CHECK__INT))$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT))
+PKG_UNPACKED+=$(eval $(PKG_UNPACKED_CHECK__INT))$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT))
 endif
 PKG_UNPACKED+=$(eval $(PKG_UNPACKED_$(PKG_TYPE)__INT))
 PKG_UNPACKED+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED__INT))$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT)))
