@@ -8,7 +8,7 @@ _cgi_extras() {
 	[ -e "$CGI_REG" ] || touch "$CGI_REG"
 
 	unset cur_pkg
-	cat "$EXTRA_REG" | while IFS='|' read -r pkg title sec cgi; do
+	while IFS='|' read -r pkg title sec cgi; do
 		[ -z "$title" ] && continue
 		if [ "$cur_pkg" != "$pkg" ]; then
 			if [ "$pkg" = "mod" ]; then
@@ -19,12 +19,12 @@ _cgi_extras() {
 			fi
 
 			[ -n "$cur_pkg" ] && echo '</ul>'
-			echo "<h1>$heading</h1>"
+			echo "<h1>$(html "$heading")</h1>"
 			echo '<ul>'
 			cur_pkg=$pkg
 		fi
-		echo "<li><a href='$(href extra "$pkg" "$cgi")'>$title</a></li>"
-	done
+		echo "<li><a href='$(href extra "$pkg" "$cgi")'>$(html "$title")</a></li>"
+	done < "$EXTRA_REG"
 	echo '</ul>'
 }
 
