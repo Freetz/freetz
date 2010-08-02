@@ -3,10 +3,9 @@
 DAEMON=xmail
 DAEMON_LONG_NAME="XMail SMTP/POP3 server"
 PID_FILE=/var/run/XMail.pid
+. /etc/init.d/modlibrc
 
 CMDOPTS="-F- -MM -Ms /mod/etc/$DAEMON/"
-
-. /etc/init.d/modlibrc
 
 cleanup() {
 	rm -rf /mod/etc/$DAEMON
@@ -102,34 +101,23 @@ stop () {
 
 }
 
-checkdir() {
-	i=60
-	[ -z "$1" ] && return
-	while [ ! -d "$1" ]; do
-		echo -n "Directory $1 not available at round $i"
-		let i=$i-1
-		if [ $i -eq 0 ]; then
-			echo " - not starting $DAEMON"
-			exit 1
-		fi
-		echo " - sleeping"
-		sleep 10
-	done
-}
-
 start() {
 	trap "rm -f /var/run/rc.$DAEMON.pid; exit 255" 0 1 2 3 15
-	echo -n "Starting $DAEMON_LONG_NAME ..."
+	echo -n "Starting $DAEMON_LONG_NAME..."
 	if modlib_check_running; then
-		echo "$DAEMON already running."
+		echo "already running."
 		exit 0
 	fi
 
 	if [ -z "$XMAIL_MAILLOCATION" ]; then
-		echo "set up mail location."
+		echo "set up mail location....failed."
 		exit 1
 	fi
-	checkdir "$XMAIL_MAILLOCATION"
+	
+	if [ ! -d "$XMAIL_MAILLOCATION" ]; then
+		echo "directory $XMAIL_MAILLOCATION not available...failed."
+		exit 1
+	fi
 
 	# Check for SSL support
 	/usr/lib/MailRoot/bin/CtrlClnt 2>&1 | grep -qe ' -S ' && XMAIL_SSLSUPPORT=1
@@ -144,7 +132,7 @@ start() {
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
-		echo 'daemon failed.'
+		echo 'failed.'
 		exit $exitval
 	fi
 }

@@ -2,13 +2,12 @@
 
 DAEMON=tor
 DAEMON_LONG_NAME="Tor Onion Router"
-DAEMON_USER=tor
-DAEMON_GROUP=tor
 PID_FILE=/var/run/$DAEMON/$DAEMON.pid
-
 . /etc/init.d/modlibrc
 
 DAEMON_STORAGE=/tmp/flash/$DAEMON
+DAEMON_USER=tor
+DAEMON_GROUP=tor
 
 config() {
 	[ -d "$DAEMON_STORAGE" ] || mkdir -p $DAEMON_STORAGE
@@ -40,11 +39,8 @@ config() {
 }
 
 start() {
-	
 	echo -n "Starting ${DAEMON_LONG_NAME}..."
-
 	config
-
 	[ -f $DAEMON_STORAGE/secret_id_key ] && savetimer=no
 	$DAEMON --runasdaemon 1 --log "notice syslog" --pidfile $PID_FILE > /dev/null 2>&1
 	exitval=$?
@@ -117,4 +113,3 @@ case $1 in
 esac
 
 exit 0
-
