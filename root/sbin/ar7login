@@ -3,6 +3,7 @@
 # ar7login wrapper
 #
 # Author: Alexander Kriegisch (user 'kriegaex' at ip-phone-forum.de)
+# update for inetd-compatibility by cuma
 #
 # Wrap original /sbin/ar7login which was renamed to ar7login.bin in order to
 # achieve that telnetd provides normal user/password login instead of AVM web
@@ -13,7 +14,7 @@
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
-if [ "$PPID" == "$(pidof telnetd)" ] && \
+if echo " $(pidof telnetd) " | grep -q " $PPID " && \
 	grep -q '^root:[^*]' /tmp/shadow 2> /dev/null
 then
 	# If wrapper was started by telnetd AND root password is defined,
