@@ -10,7 +10,7 @@ $(PKG)_TARGET_CONF:=$($(PKG)_DEST_DIR)/etc/ltrace.conf
 $(PKG)_DEPENDS_ON := libelf	
 
 $(PKG)_CONFIGURE_PRE_CMDS += ln -sf ./mipsel sysdeps/linux-gnu/mips ;
-$(PKG)_CONFIGURE_PRE_CMDS += ( cd sysdeps/linux-gnu/mips; \
+$(PKG)_CONFIGURE_PRE_CMDS += ( cd sysdeps/linux-gnu/mips; chmod +x ../mksyscallent_mips; \
 	../mksyscallent_mips $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/asm/unistd.h > syscallent.h; \
 	../mksignalent $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/asm/signal.h > signalent.h; );
 
