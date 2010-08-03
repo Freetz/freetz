@@ -11,8 +11,8 @@ $(PKG)_TARGET_DIR:=$(subst -$($(PKG)_VERSION),,$($(PKG)_TARGET_DIR))
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg)-$($(PKG)_REF)
 
 $(PKG)_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/Config.$($(PKG)_REF)
-$(PKG)_CUSTOM_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/Config.custom
-$(PKG)_CUSTOM_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/Config.temp
+$(PKG)_CUSTOM_CONFIG_FILE:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-Config.custom
+$(PKG)_CUSTOM_CONFIG_TEMP:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-Config.temp
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
