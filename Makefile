@@ -501,7 +501,6 @@ common-clean:
 
 common-dirclean: common-clean
 	rm -rf $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
-	find $(MAKE_DIR) -maxdepth 2 \( -name ".*_config" -o -name ".*_changes" \) -delete
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
