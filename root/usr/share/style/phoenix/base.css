@@ -62,11 +62,12 @@ h2 {
 
 /* input elements */
 
-input[type="text"], textarea, select {
+input[type="text"], input[type="password"], textarea, select {
     background-color: white;
     border: solid 1px #aaaaaa;
 }
-input[type="text"]:focus, textarea:focus, select:focus {
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus,
+select:focus {
     background-color: #f2f2f2;
     border-color: #cc0000;
 }
@@ -153,9 +154,17 @@ ul.menu ul {
     clear: both;
 }
 
+/* misc */
+
 pre.log.full {
     max-height: none;
 }
 div.section {
     clear: left;
+}
+table.daemons form.btn {
+    visibility: hidden;
+}
+table.daemons tr:hover form.btn {
+    visibility: visible;
 }
