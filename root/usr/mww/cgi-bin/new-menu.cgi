@@ -43,7 +43,6 @@ if [ -r /mod/etc/reg/extra.reg ]; then
     done < /mod/etc/reg/extra.reg
 fi
 
-
 if false; then
 if [ -r /mod/etc/reg/status.reg ]; then
     local pkg title cgi
@@ -70,6 +69,9 @@ sub=status
 if [ "$sub" = status -a -r /mod/etc/reg/status.reg ]; then
 	local pkg title cgi
 	echo "<ul>"
+	cat << EOF
+<li><a id="daemons" href="$(href mod daemons)">$(lang de:"Dienste" en:"Services")</a></li>
+EOF
 	while IFS='|' read -r pkg title cgi; do
 		echo "<li><a href='$(href status "$pkg" "$cgi")'>$(html "$title")</a></li>"
 	done < /mod/etc/reg/status.reg
@@ -85,7 +87,6 @@ if [ "$sub" = system ]; then
 	. /usr/lib/libmodredir.sh
 	cat <<- EOF
 	<ul>
-<li><a id="daemons" href="$(href mod daemons)">$(lang de:"Dienste" en:"Services")</a></li>
 	<li><a id="backup_restore" href="/cgi-bin/backup/index.cgi">$(lang de:"Sichern &amp; Wiederherstellen" en:"Backup &amp; restore")</a></li>
 	<li><a id="firmware_update" href="$(href mod update)">$(lang de:"Firmware-Update" en:"Firmware update")</a></li>
 	<li><a id="rudi_shell" href="/cgi-bin/shell/index.cgi" target="_blank">$(lang de:"Rudi-Shell" en:"Rudi shell")</a></li>
@@ -120,7 +121,10 @@ for i in "$TMP"/*.items; do
     fi
     echo "$title|$pkg" >> "$TMP/_packages"
 done
+
+package_tree mod
 sort "$TMP/_packages" | while IFS="|" read -r title pkg; do
+    [ "$pkg" = mod ] && continue
     package_tree "$pkg"
 done
 
