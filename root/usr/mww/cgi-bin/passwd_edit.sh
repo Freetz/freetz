@@ -27,9 +27,9 @@ function CheckInput(form) {
 
 <form method=POST onsubmit="return CheckInput(this)">
 <table border="0" cellspacing="1" cellpadding="0">
-<tr><td>$(lang de:"altes Passwort: " en:"old password ")</td><td><input type="password" size=20 name="oldpassword"></td></tr>
-<tr><td>$(lang de:"neues Passwort: " en:"new password ")</td><td><input type="password" size=20 name="password"></td></tr>
-<tr><td>$(lang de:"Wiederholung: " en:"new password ")</td><td><input type="password" size=20 name="replay"></td></tr>
+<tr><td><label for="oldpassword">$(lang de:"Altes Passwort: " en:"Old password ")</label></td><td><input type="password" size=20 name="oldpassword" id="oldpassword"></td></tr>
+<tr><td><label for="password">$(lang de:"Neues Passwort: " en:"New password ")</label></td><td><input type="password" size=20 name="password" id="password"></td></tr>
+<tr><td><label for="replay">$(lang de:"Wiederholung: " en:"new password ")</label></td><td><input type="password" size=20 name="replay" id="replay"></td></tr>
 </table>
 <input type="submit" value="$(lang de:"Speichern" en:"Save")">
 </form>
