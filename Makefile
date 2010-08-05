@@ -335,7 +335,7 @@ package-list: package-list-clean $(PACKAGES_LIST)
 	@mv .dynamic.tmp .dynamic
 
 package-list-clean:
-	@rm -f .static .dynamic
+	@$(RM) .static .dynamic
 
 ifeq ($(FWMOD_NOPACK),y)
 FWMOD_OPTS:=-u -m
@@ -489,27 +489,27 @@ config-clean-deps:
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
 	diff -U 0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
-	rm -f .config_tmp; \
+	$(RM) .config_tmp; \
 	}
 
 common-clean:
 	./fwmod_custom clean
-	rm -f .static .dynamic .exclude-dist-tmp
-	rm -rf $(BUILD_DIR)
+	$(RM) .static .dynamic .exclude-dist-tmp
+	$(RM) -r $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean: common-clean
-	rm -rf $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
+	$(RM) -r $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 common-distclean: common-dirclean
-	rm -f .config .config.old .config.cmd .tmpconfig.h
-	-rm -rf $(ADDON_DIR)/*
-	rm -rf $(DL_DIR)
-	rm -rf $(FW_IMAGES_DIR)
-	rm -rf $(SOURCE_DIR_ROOT)
-	rm -rf $(TOOLCHAIN_BUILD_DIR)
+	$(RM) .config .config.old .config.cmd .tmpconfig.h
+	-$(RM) -r $(ADDON_DIR)/*
+	$(RM) -r $(DL_DIR)
+	$(RM) -r $(FW_IMAGES_DIR)
+	$(RM) -r $(SOURCE_DIR_ROOT)
+	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
 
 dist: distclean
 	version="$$(cat .version)"; \
@@ -528,7 +528,7 @@ dist: distclean
 		[ "$$curdir" == "$$dir" ] || mv "$$dir" "$$curdir"; \
 		cd "$$curdir"; \
 	)
-	rm -f .exclude-dist-tmp
+	$(RM) .exclude-dist-tmp
 
 # Check if last build was with older svn version
 check-builddir-version:
