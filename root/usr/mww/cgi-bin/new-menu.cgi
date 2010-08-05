@@ -17,6 +17,7 @@ if [ -r /mod/etc/reg/cgi.reg ]; then
     while IFS='|' read -r pkg title; do
 	echo "has_conf=yes" >> "$TMP/$pkg.meta"
 	echo "title='${title//'/'\''}'" >> "$TMP/$pkg.meta"
+	touch "$TMP/$pkg.items"
     done < /mod/etc/reg/cgi.reg
 fi
 
@@ -105,12 +106,16 @@ package_tree() {
 	source "$TMP/$pkg.meta"
     fi
     if [ "$has_conf" = yes ]; then
-	echo "<li><a class='conf' href='$(href cgi "$pkg")'>$(html "$title")</a><ul>"
+	echo -n "<li><a class='conf' href='$(href cgi "$pkg")'>$(html "$title")</a>"
     else
-	echo "<li>$(html "$title")<ul>"
+	echo -n "<li>$(html "$title")"
     fi
-    cat "$TMP/$pkg.items"
-    echo "</ul></li>"
+    if [ -s "$TMP/$pkg.items" ]; then
+	echo "<ul>"
+	cat "$TMP/$pkg.items"
+	echo "</ul>"
+    fi
+    echo "</li>"
 }
 
 for i in "$TMP"/*.items; do
