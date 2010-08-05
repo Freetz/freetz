@@ -7,40 +7,69 @@ body {
     font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;
     font-size: 0.9em;
     line-height: 1.33em;
-    background: white;
-    color: black;
     padding: 0;
     margin: 0;
+    background: lightgrey; 
 }
-#container, #header {
+#world {
+    max-width: 55em;
+    margin: 0 auto;
+    position: relative;
+    background: white;
+    color: black;
+
+    -moz-box-shadow: 0 0 2em grey;
+    -webkit-box-shadow: 0 0 2em grey;
+    box-shadow: 0 0 2em grey;
+
+    -moz-border-radius-bottomleft: 0.67em;
+    -moz-border-radius-bottomright: 0.67em;
+    -webkit-border-bottom-left-radius: 0.67em;
+    -webkit-border-bottom-right-radius: 0.67em;
+    border-bottom-left-radius: 0.67em;
+    border-bottom-right-radius: 0.67em;
+}
+
+#footer {
+    -moz-border-radius-bottomleft: inherit;
+    -moz-border-radius-bottomright: inherit;
+    -webkit-border-bottom-left-radius: inherit;
+    -webkit-border-bottom-right-radius: inherit;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+}
+
+#container, #header, #footer {
     padding-left: 2em;
     padding-right: 2em;
     padding-top: 1em;
     padding-bottom: 1em;
 }
-#header {
+#container {
+    padding-bottom: 2em;
+}
+#header, #footer {
     background: #cc0000;
+    color: #ff7777;
+    text-align: left;
+}
+#header {
     color: white;
-    border-bottom: solid 2px #ff6767;
+    border-bottom: solid 2px #ff7777;
 }
 #footer {
     font-size: 80%;
-    color: grey;
-    text-align: left;
-    margin: 2em 0px;
     clear: both;
-}
-#container {
-    max-width: 50em;
+    margin-bottom: 2em;
 }
 
 #header h1 {
-    color: inherit;
+    color: white;
     border: none;
     margin: 0;
 }
 #header .version {
-    color: #ff6767;
+    color: #ff7777;
     float: right;
 }
 #header a {
@@ -50,11 +79,13 @@ body {
 h1 {
     font-size: 120%;
     font-weight: bold;
-    border-bottom: solid #cc0000 1px;
     color: #cc0000;
     padding-bottom: 2px;
     margin-top: 1.33em;
     margin-bottom: 0.67em;
+}
+div.section > h1:first-child {
+    border-bottom: solid #cc0000 1px;
 }
 h2 {
     font-size: 100%;
@@ -100,7 +131,7 @@ div.btn {
     color: #770000;
 }
 #header :link, #header :visited {
-    border-bottom: 1px dotted #ff6767;
+    border-bottom: 1px dotted #ff7777;
 }
 a:hover {
     border-bottom-style: solid;
@@ -156,6 +187,11 @@ ul.menu ul {
 
 /* misc */
 
+pre.log {
+    background: #f2f2f2;
+    border: 1px solid #dddddd;
+    padding: 1ex;
+}
 pre.log.full {
     max-height: none;
 }
