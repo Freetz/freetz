@@ -495,7 +495,6 @@ config-clean-deps:
 common-clean:
 	./fwmod_custom clean
 	rm -f .static .dynamic .exclude-dist-tmp
-	rm -f $(FW_IMAGES_DIR)/*
 	rm -rf $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
@@ -506,10 +505,11 @@ common-dirclean: common-clean
 
 common-distclean: common-dirclean
 	rm -f .config .config.old .config.cmd .tmpconfig.h
+	-rm -rf $(ADDON_DIR)/*
+	rm -rf $(DL_DIR)
+	rm -rf $(FW_IMAGES_DIR)
 	rm -rf $(SOURCE_DIR_ROOT)
 	rm -rf $(TOOLCHAIN_BUILD_DIR)
-	rm -rf $(DL_DIR)
-	-rm -rf $(ADDON_DIR)/*
 
 dist: distclean
 	version="$$(cat .version)"; \
