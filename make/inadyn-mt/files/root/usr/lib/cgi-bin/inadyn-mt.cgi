@@ -24,21 +24,21 @@ for i in 0 1 2 3 4 5; do
     	select "$INADYN_MT_VERBOSE" "$i":verbose${i}_sel
 done
 
-sec_begin 'Starttyp'
+sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
 cat << EOF
 <p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> Automatisch</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> Manuell</label>
+<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
+<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
 </p>
 EOF
 
 sec_end
 
-sec_begin 'Inadyn-Daemon'
+sec_begin '$(lang de:"Inadyn-Daemon" en:"Inadyn-Daemon")'
 
 cat << EOF
-<p>Verbose Level : 
+<p>$(lang de:"Log-Level" en:"Verbosity level") : 
 <select name='verbose'>
 <OPTION value="0"$verbose0_sel>0</OPTION>
 <OPTION value="1"$verbose1_sel>1</OPTION>
@@ -122,7 +122,7 @@ document.write("<p><SELECT NAME='dynaccount' onChange='changeaccount(value)'>" +
 document.write("<div id='Acount0' style='display:block'>" +
 "<table id='mdns0' style='margin: auto'>" +
   "<tr>" +
-    "<td>DNS Service : </td>" +
+    "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
     "<td><SELECT NAME='service0' onChange='changeservice(value1)'>" +
       "<OPTION VALUE1$dyndns0_sel='0'>dyndns.org</OPTION>" +
       "<OPTION VALUE1$dstatdns0_sel='1'>dyndns.org-statdns</OPTION>" +
@@ -130,32 +130,32 @@ document.write("<div id='Acount0' style='display:block'>" +
       "<OPTION VALUE1$afraid0_sel='3'>afraid.org</OPTION>" +
       "<OPTION VALUE1$zoneedit0_sel='4'>zoneedit.com</OPTION>" +
       "<OPTION VALUE1$noip0_sel='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef0_sel='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$userdef0_sel='6'>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
-    "<td><label for='r05'>Custom URL : </label></td>" +
+    "<td><label for='r05'>$(lang de:"Custom URL" en:"Custom URL") : </label></td>" +
     "<td><input id='r05' type='text' name='url0' size='45' maxlength='255' value='$(html "$INADYN_MT_URL0")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r01'>Username : </label></td>" +
+    "<td><label for='r01'>$(lang de:"Benutzername" en:"Username") : </label></td>" +
     "<td><input id='r01' type='text' name='user0' size='45' maxlength='255' value='$(html "$INADYN_MT_USER0")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r02'>Passwort : </label></td>" +
+    "<td><label for='r02'>$(lang de:"Passwort" en:"Password") : </label></td>" +
     "<td><input id='r02' type='password' name='pass0' size='45' maxlength='255' value='$(html "$INADYN_MT_PASS0")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r03'>Alias : </label></td>" +
+    "<td><label for='r03'>$(lang de:"Alias" en:"Alias") : </label></td>" +
     "<td><input id='r03' type='text' name='alias0' size='45' maxlength='255' value='$(html "$INADYN_MT_ALIAS0")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r04'>Optionen : </label></td>" + 
+    "<td><label for='r04'>$(lang de:"Optionen" en:"Options") : </label></td>" + 
     "<td><input id='r04' type='text' name='options0' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS0")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active0' value='no'><input id='a0' type='checkbox' name='active0' value='yes'$active0_chk><label for='a0'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active0' value='no'><input id='a0' type='checkbox' name='active0' value='yes'$active0_chk><label for='a0'> $(lang de:"Account aktiv" en:"Account enabled")</label></p>" +
 "</div>");
 
 document.write("<div id='Acount1' style='display:none'>" +
 "<table id='mdns1' style='margin: auto'>" +
   "<tr>" +
-    "<td>DNS Service : </td>" +
+    "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
     "<td><SELECT NAME='service1' onChange='changeservice(value1)'>" +
       "<OPTION VALUE1$dyndns1_sel='0'>dyndns.org</OPTION>" +
       "<OPTION VALUE1$dstatdns1_sel='1'>dyndns.org-statdns</OPTION>" +
@@ -163,32 +163,32 @@ document.write("<div id='Acount1' style='display:none'>" +
       "<OPTION VALUE1$afraid1_sel='3'>afraid.org</OPTION>" +
       "<OPTION VALUE1$zoneedit1_sel='4'>zoneedit.com</OPTION>" +
       "<OPTION VALUE1$noip1_sel='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef1_sel='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$userdef1_sel='6'>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
-    "<td><label for='r15'>Custom URL : </label></td>" +
+    "<td><label for='r15'>$(lang de:"Custom URL" en:"Custom URL") : </label></td>" +
     "<td><input id='r15' type='text' name='url1' size='45' maxlength='255' value='$(html "$INADYN_MT_URL1")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r11'>Username : </label></td>" +
+    "<td><label for='r11'>$(lang de:"Benutzername" en:"Username") : </label></td>" +
     "<td><input id='r11' type='text' name='user1' size='45' maxlength='255' value='$(html "$INADYN_MT_USER1")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r12'>Passwort : </label></td>" +
+    "<td><label for='r12'>$(lang de:"Passwort" en:"Password") : </label></td>" +
     "<td><input id='r12' type='password' name='pass1' size='45' maxlength='255' value='$(html "$INADYN_MT_PASS1")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r13'>Alias : </label></td>" +
+    "<td><label for='r13'>$(lang de:"Alias" en:"Alias") : </label></td>" +
     "<td><input id='r13' type='text' name='alias1' size='45' maxlength='255' value='$(html "$INADYN_MT_ALIAS1")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r14'>Optionen : </label></td>" + 
+    "<td><label for='r14'>$(lang de:"Optionen" en:"Options") : </label></td>" + 
     "<td><input id='r14' type='text' name='options1' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS1")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active1' value='no'><input id='a1' type='checkbox' name='active1' value='yes'$active1_chk><label for='a1'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active1' value='no'><input id='a1' type='checkbox' name='active1' value='yes'$active1_chk><label for='a1'> $(lang de:"Account aktiv" en:"Account enabled")</label></p>" +
 "</div>");
 
 document.write("<div id='Acount2' style='display:none'>" +
 "<table id='mdns2' style='margin: auto'>" +
   "<tr>" +
-    "<td>DNS Service : </td>" +
+    "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
     "<td><SELECT NAME='service2' onChange='changeservice(value1)'>" +
       "<OPTION VALUE1$dyndns2_sel='0'>dyndns.org</OPTION>" +
       "<OPTION VALUE1$dstatdns2_sel='1'>dyndns.org-statdns</OPTION>" +
@@ -196,33 +196,33 @@ document.write("<div id='Acount2' style='display:none'>" +
       "<OPTION VALUE1$afraid2_sel='3'>afraid.org</OPTION>" +
       "<OPTION VALUE1$zoneedit2_sel='4'>zoneedit.com</OPTION>" +
       "<OPTION VALUE1$noip2_sel='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef2_sel='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$userdef2_sel='6'>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
-    "<td><label for='r25'>Custom URL : </label></td>" +
+    "<td><label for='r25'>$(lang de:"Custom URL" en:"Custom URL") : </label></td>" +
     "<td><input id='r25' type='text' name='url2' size='45' maxlength='255' value='$(html "$INADYN_MT_URL2")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r21'>Username : </label></td>" +
+    "<td><label for='r21'>$(lang de:"Benutzername" en:"Username") : </label></td>" +
     "<td><input id='r21' type='text' name='user2' size='45' maxlength='255' value='$(html "$INADYN_MT_USER2")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r22'>Passwort : </label></td>" +
+    "<td><label for='r22'>$(lang de:"Passwort" en:"Password") : </label></td>" +
     "<td><input id='r22' type='password' name='pass2' size='45' maxlength='255' value='$(html "$INADYN_MT_PASS2")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r23'>Alias : </label></td>" +
+    "<td><label for='r23'>$(lang de:"Alias" en:"Alias") : </label></td>" +
     "<td><input id='r23' type='text' name='alias2' size='45' maxlength='255' value='$(html "$INADYN_MT_ALIAS2")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r24'>Optionen : </label></td>" + 
+    "<td><label for='r24'>$(lang de:"Optionen" en:"Options") : </label></td>" + 
     "<td><input id='r24' type='text' name='options2' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS2")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active2' value='no'><input id='a2' type='checkbox' name='active2' value='yes'$active2_chk><label for='a2'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active2' value='no'><input id='a2' type='checkbox' name='active2' value='yes'$active2_chk><label for='a2'> $(lang de:"Account aktiv" en:"Account enabled")</label></p>" +
 "</div>");
 
 
 document.write("<div id='Acount3' style='display:none'>" +
 "<table id='mdns3' style='margin: auto'>" +
   "<tr>" +
-    "<td>DNS Service : </td>" +
+    "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
     "<td><SELECT NAME='service3' onChange='changeservice(value1)'>" +
       "<OPTION VALUE1$dyndns3_sel='0'>dyndns.org</OPTION>" +
       "<OPTION VALUE1$dstatdns3_sel='1'>dyndns.org-statdns</OPTION>" +
@@ -230,33 +230,33 @@ document.write("<div id='Acount3' style='display:none'>" +
       "<OPTION VALUE1$afraid3_sel='3'>afraid.org</OPTION>" +
       "<OPTION VALUE1$zoneedit3_sel='4'>zoneedit.com</OPTION>" +
       "<OPTION VALUE1$noip3_sel='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef3_sel='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$userdef3_sel='6'>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
-    "<td><label for='r35'>Custom URL : </label></td>" +
+    "<td><label for='r35'>$(lang de:"Custom URL" en:"Custom URL") : </label></td>" +
     "<td><input id='r35' type='text' name='url3' size='45' maxlength='255' value='$(html "$INADYN_MT_URL3")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r31'>Username : </label></td>" +
+    "<td><label for='r31'>$(lang de:"Benutzername" en:"Username") : </label></td>" +
     "<td><input id='r31' type='text' name='user3' size='45' maxlength='255' value='$(html "$INADYN_MT_USER3")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r32'>Passwort : </label></td>" +
+    "<td><label for='r32'>$(lang de:"Passwort" en:"Password") : </label></td>" +
     "<td><input id='r32' type='password' name='pass3' size='45' maxlength='255' value='$(html "$INADYN_MT_PASS3")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r33'>Alias : </label></td>" +
+    "<td><label for='r33'>$(lang de:"Alias" en:"Alias") : </label></td>" +
     "<td><input id='r33' type='text' name='alias3' size='45' maxlength='255' value='$(html "$INADYN_MT_ALIAS3")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r34'>Optionen : </label></td>" + 
+    "<td><label for='r34'>$(lang de:"Optionen" en:"Options") : </label></td>" + 
     "<td><input id='r34' type='text' name='options3' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS3")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active3' value='no'><input id='a3' type='checkbox' name='active3' value='yes'$active3_chk><label for='a3'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active3' value='no'><input id='a3' type='checkbox' name='active3' value='yes'$active3_chk><label for='a3'> $(lang de:"Account aktiv" en:"Account enabled")</label></p>" +
 "</div>");
 
 
 document.write("<div id='Acount4' style='display:none'>" +
 "<table id='mdns4' style='margin: auto'>" +
   "<tr>" +
-    "<td>DNS Service : </td>" +
+    "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
     "<td><SELECT NAME='service4' onChange='changeservice(value1)'>" +
       "<OPTION VALUE1$dyndns4_sel='0'>dyndns.org</OPTION>" +
       "<OPTION VALUE1$dstatdns4_sel='1'>dyndns.org-statdns</OPTION>" +
@@ -264,26 +264,26 @@ document.write("<div id='Acount4' style='display:none'>" +
       "<OPTION VALUE1$afraid4_sel='3'>afraid.org</OPTION>" +
       "<OPTION VALUE1$zoneedit4_sel='4'>zoneedit.com</OPTION>" +
       "<OPTION VALUE1$noip4_sel='5'>no-ip.com</OPTION>" +
-      "<OPTION VALUE1$userdef4_sel='6'>benutzerdefiniert</OPTION>" +
+      "<OPTION VALUE1$userdef4_sel='6'>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
-    "<td><label for='r45'>Custom URL : </label></td>" +
+    "<td><label for='r45'>$(lang de:"Custom URL" en:"Custom URL") : </label></td>" +
     "<td><input id='r45' type='text' name='url4' size='45' maxlength='255' value='$(html "$INADYN_MT_URL4")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r41'>Username : </label></td>" +
+    "<td><label for='r41'>$(lang de:"Benutzername" en:"Username") : </label></td>" +
     "<td><input id='r41' type='text' name='user4' size='45' maxlength='255' value='$(html "$INADYN_MT_USER4")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r42'>Passwort : </label></td>" +
+    "<td><label for='r42'>$(lang de:"Passwort" en:"Password") : </label></td>" +
     "<td><input id='r42' type='password' name='pass4' size='45' maxlength='255' value='$(html "$INADYN_MT_PASS4")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r43'>Alias : </label></td>" +
+    "<td><label for='r43'>$(lang de:"Alias" en:"Alias") : </label></td>" +
     "<td><input id='r43' type='text' name='alias4' size='45' maxlength='255' value='$(html "$INADYN_MT_ALIAS4")'></td>" +
   "</tr><tr>" +
-    "<td><label for='r44'>Optionen : </label></td>" + 
+    "<td><label for='r44'>$(lang de:"Optionen" en:"Options") : </label></td>" + 
     "<td><input id='r44' type='text' name='options4' size='45' maxlength='255' value='$(html "$INADYN_MT_OPTIONS4")'></td>" + 
   "</tr>" + 
 "</table>" + 
-"<p><input type='hidden' name='active4' value='no'><input id='a4' type='checkbox' name='active4' value='yes'$active4_chk><label for='a4'> Account aktiv</label></p>" +
+"<p><input type='hidden' name='active4' value='no'><input id='a4' type='checkbox' name='active4' value='yes'$active4_chk><label for='a4'> $(lang de:"Account aktiv" en:"Account enabled")</label></p>" +
 "</div>");
 
 </script>
