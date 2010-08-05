@@ -1,0 +1,58 @@
+--- networking/libiproute/ipaddress.c	2010-07-25 00:12:43.000000000 +0200
++++ networking/libiproute/ipaddress.c	2010-08-05 11:33:47.000000000 +0200
+@@ -164,6 +164,7 @@
+ 		printf("master %s ", ll_idx_n2a(*(int*)RTA_DATA(tb[IFLA_MASTER]), b1));
+ 	}
+ #endif
++#ifdef IFLA_OPERSTATE
+ 	if (tb[IFLA_OPERSTATE]) {
+ 		static const char operstate_labels[] ALIGN1 =
+ 			"UNKNOWN\0""NOTPRESENT\0""DOWN\0""LOWERLAYERDOWN\0"
+@@ -171,6 +172,7 @@
+ 		printf("state %s ", nth_string(operstate_labels,
+ 					*(uint8_t *)RTA_DATA(tb[IFLA_OPERSTATE])));
+ 	}
++#endif
+ 	if (G_filter.showqueue)
+ 		print_queuelen((char*)RTA_DATA(tb[IFLA_IFNAME]));
+ 
+--- networking/libiproute/iplink.c	2010-07-25 00:12:43.000000000 +0200
++++ networking/libiproute/iplink.c	2010-08-05 11:39:03.000000000 +0200
+@@ -274,6 +274,7 @@
+ 	return ipaddr_list_or_flush(argv, 0);
+ }
+ 
++#ifdef IFLA_LINKINFO
+ #ifndef NLMSG_TAIL
+ #define NLMSG_TAIL(nmsg) \
+ 	((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
+@@ -360,20 +361,29 @@
+ 		return 2;
+ 	return 0;
+ }
++#endif
+ 
+ /* Return value becomes exitcode. It's okay to not return at all */
+ int do_iplink(char **argv)
+ {
+ 	static const char keywords[] ALIGN1 =
++#ifdef IFLA_LINKINFO
+ 		"add\0""delete\0""set\0""show\0""lst\0""list\0";
++#else
++		"set\0""show\0""lst\0""list\0";
++#endif
+ 	if (*argv) {
+ 		smalluint key = index_in_substrings(keywords, *argv);
+ 		if (key > 5) /* invalid argument */
+ 			bb_error_msg_and_die(bb_msg_invalid_arg, *argv, applet_name);
+ 		argv++;
++#ifdef IFLA_LINKINFO
+ 		if (key <= 1) /* add/delete */
+ 			return do_change(argv, key ? RTM_DELLINK : RTM_NEWLINK);
+ 		else if (key == 2) /* set */
++#else
++		if (key == 0) /* set */
++#endif
+ 			return do_set(argv);
+ 	}
+ 	/* show, lst, list */
