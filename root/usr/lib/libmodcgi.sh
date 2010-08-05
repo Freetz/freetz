@@ -352,7 +352,7 @@ cgi_param() {
 
 # print (HTML) error message consistently
 print_error() {
-	echo "<p><b>$(lang de:"Fehler" en:"Error")</b>: $1</p>"
+	echo "<p class='error'><b>$(lang de:"Fehler" en:"Error")</b>: $1</p>"
 }
 
 # complete error page
