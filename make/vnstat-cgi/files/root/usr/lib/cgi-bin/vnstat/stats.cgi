@@ -45,7 +45,7 @@ if [ -n "$netif" ]; then
 	#subpages
         echo "<p><font size=+1><b>vnstat: $netif</b></font></p>"
         for period in summary hours days months top10; do
-		[ $ifcnt -ne 1 ] && echo "<a href=\"$URL_EXTENDED\">"
+		[ $ifcnt -ne 1 ] && echo "<a href=\"$URL_EXTENDED\" class='image'>"
                 gen_pic $netif $period
 		[ $ifcnt -ne 1 ] && echo "</a>"
         done
@@ -55,7 +55,7 @@ else
         echo "<p><font size=+1><b>vnstat</b></font></p>"
 	[ -z "$VNSTAT_INTERFACES" ] && VNSTAT_INTERFACES=$(ls /var/lib/vnstat/ 2>/dev/null)
         for dbfile in $VNSTAT_INTERFACES; do
-                echo "<a href=\"$URL_EXTENDED&netif=$dbfile\">"
+                echo "<a href=\"$URL_EXTENDED&netif=$dbfile\" class='image'>"
                 gen_pic $dbfile summary
                 echo "</a>"
         done

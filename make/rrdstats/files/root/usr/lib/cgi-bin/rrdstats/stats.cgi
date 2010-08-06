@@ -523,7 +523,7 @@ gen_main() {
 	[ $# -ge 4 ] && GROUP_URL="&group=$4"
 	sec_begin "$FNAME "
 	generate_graph "$SNAME" "$RRDSTATS_PERIODMAIN" "$SNAME" "" $GROUP
-	echo "<a href=\"$URL_EXTENDED&graph=$SNAME$GROUP_URL\"><img src=\"/statpix/$SNAME$GROUP.png$NOCACHE\" alt=\"$FNAME stats for last $LAPSE\" border=\"0\"/></a>"
+	echo "<a href=\"$URL_EXTENDED&graph=$SNAME$GROUP_URL\" class='image'><img src=\"/statpix/$SNAME$GROUP.png$NOCACHE\" alt=\"$FNAME stats for last $LAPSE\" border=\"0\"/></a>"
 	sec_end
 }
 
