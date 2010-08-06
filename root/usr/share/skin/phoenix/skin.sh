@@ -13,7 +13,7 @@ cat << EOF
 <div id="world">
 <div id="header">
 <span class="version">$(html < /etc/.freetz-version)</span>
-<h1><a href="/cgi-bin/index.cgi" class="logo">Freetz</a>&nbsp;<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a> <span class="title">$title</span></h1>
+<h1><a href="/cgi-bin/index.cgi" class="logo">Freetz</a>&nbsp;<a id="about" href="/cgi-bin/about.cgi" target="_blank">&ndash;</a> <span class="title">$title</span></h1>
 </div>
 <div id="container">
 EOF
