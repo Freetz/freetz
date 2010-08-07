@@ -523,7 +523,9 @@ gen_main() {
 	[ $# -ge 4 ] && GROUP_URL="&group=$4"
 	sec_begin "$FNAME "
 	generate_graph "$SNAME" "$RRDSTATS_PERIODMAIN" "$SNAME" "" $GROUP
-	echo "<a href=\"$URL_EXTENDED&graph=$SNAME$GROUP_URL\" class='image'><img src=\"/statpix/$SNAME$GROUP.png$NOCACHE\" alt=\"$FNAME stats for last $LAPSE\" border=\"0\"/></a>"
+	echo "<center><a href=\"$URL_EXTENDED&graph=$SNAME$GROUP_URL\" class='image'>"
+	echo "<img src=\"/statpix/$SNAME$GROUP.png$NOCACHE\" alt=\"$FNAME stats for last $LAPSE\" border=\"0\"/>"
+	echo "</a></center>"
 	sec_end
 }
 
@@ -549,7 +551,7 @@ case $graph in
 			set_period $period
 			sec_begin ""
 			generate_graph "$graph" "$periodG" "$graph-$period" "last $periodnn" $GROUP_PERIOD 
-			echo "<img src=\"/statpix/$graph-$period$GROUP_PERIOD.png$NOCACHE\" alt=\"$heading stats for last $periodnn\" />"
+			echo "<center><img src=\"/statpix/$graph-$period$GROUP_PERIOD.png$NOCACHE\" alt=\"$heading stats for last $periodnn\" /></center>"
 			sec_end
 		done
 		echo "<br><input type=\"button\" value=\"Back\" onclick=\"history.go(-1)\" />"
