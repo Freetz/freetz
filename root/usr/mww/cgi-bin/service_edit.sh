@@ -1,5 +1,5 @@
 stat_begin() {
-	echo '<table class="daemons" border="0" cellspacing="1" cellpadding="0">'
+	echo '<table class="daemons">'
 }
 
 stat_button() {

@@ -111,7 +111,7 @@ format_conf() {
 	type=START
 	sec_begin '$(lang de:"FREETZ-Konfiguration" en:"FREETZ configuration")'
 	cat <<- 'EOF'
-	<table id="freetz-conf" border="0">
+	<table id="freetz-conf">
 	<tr>
 		<th>$(lang de:"Patches" en:"Patches"):</th>
 		<th>$(lang de:"Pakete" en:"Packages"):</th>

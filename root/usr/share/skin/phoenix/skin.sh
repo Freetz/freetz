@@ -1,7 +1,7 @@
 _cgi_head() {
 local title=$1 id=$2
 cat << EOF
-<title>Freetz&nbsp;&ndash; $title [phoenix]</title>
+<title>Freetz&nbsp;&ndash; $title</title>
 <link rel="stylesheet" type="text/css" href="/style/phoenix/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
@@ -13,7 +13,6 @@ local title=$1 id=$2
 cat << EOF
 <div id="world">
 <div id="header">
-<span class="version">$(html < /etc/.freetz-version)</span>
 <h1><a href="/cgi-bin/index.cgi" class="logo">Freetz</a>&nbsp;<a id="about" href="/cgi-bin/about.cgi" target="_blank">&ndash;</a> <span class="title">$title</span></h1>
 </div>
 <div id="container">
@@ -30,6 +29,7 @@ cat << EOF
 <div id="footer">
 <span class="datetime" title="$(lang de:"Systemzeit des Routers" en:"Router's system time")">$(date +'$(lang de:"%d.%m.%Y" en:"%m/%d/%Y") %H:%M')</span>&nbsp;&ndash;
 <span class="uptime" title="Uptime">$(uptime | sed -r 's/.*(up.*), load.*/\1/')</span>
+<span class="version">$(html < /etc/.freetz-version)</span>
 </div>
 </div>
 EOF
