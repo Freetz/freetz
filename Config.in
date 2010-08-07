@@ -1302,7 +1302,13 @@ config FREETZ_REMOVE_CHRONYD
 
 config FREETZ_REMOVE_CDROM_ISO
 	bool "Remove cdrom.iso"
-	depends on FREETZ_HAS_USB_CLIENT
+	depends on \
+		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_FON_5050 || \
+		FREETZ_TYPE_FON_WLAN || \
+		FREETZ_TYPE_WLAN_3020 || \
+		FREETZ_TYPE_WLAN_3030
 	default n
 	help
 		Removes the file /lib/modules/cdrom.iso to save 270kB uncompressed space.
