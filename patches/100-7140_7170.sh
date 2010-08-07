@@ -17,7 +17,7 @@ rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit1"
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7140_7170.patch"
 
 echo2 "moving default config dir"
-mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7140"
+mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7140"
 
 echo2 "patching rc.S and rc.conf"
 
@@ -37,5 +37,8 @@ modsed "s/HWRevision_ATA=0$/HWRevision_ATA=1/" "${FILESYSTEM_MOD_DIR}/etc/init.d
 
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-7140_7170.patch" || exit 2
-
+if isFreetzType ANNEX_B; then
+        modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-7140_7170.patch" || exit 2
+else 
+        modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-7140_7170_Annex_A.patch" || exit 2
+fi
