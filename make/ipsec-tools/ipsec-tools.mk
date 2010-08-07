@@ -3,11 +3,15 @@ $(PKG)_SOURCE:=ipsec-tools-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/ipsec-tools
 $(PKG)_SOURCE_MD5:=8a1f3648db1bb06ee7f3d0419508c2fd
 
+ifneq ($(strip $(FREETZ_PACKAGE_IPSEC_TOOLS_STATIC)),y)
+$(PKG)_BINARIES_PATH_SUFFIX:=/.libs
+endif
+
 $(PKG)_BINARIES:=racoon setkey
-$(PKG)_BINARIES_PATH:=racoon/.libs setkey/.libs
+$(PKG)_BINARIES_PATH:=racoon$($(PKG)_BINARIES_PATH_SUFFIX) setkey$($(PKG)_BINARIES_PATH_SUFFIX)
 ifeq ($(strip $(FREETZ_PACKAGE_IPSEC_TOOLS_WITH_RACOONCTL)),y)
 $(PKG)_BINARIES += racoonctl
-$(PKG)_BINARIES_PATH += racoon/.libs
+$(PKG)_BINARIES_PATH += racoon$($(PKG)_BINARIES_PATH_SUFFIX)
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_IPSEC_TOOLS_WITH_PLAINRSAGEN)),y)
 $(PKG)_BINARIES += plainrsa-gen
