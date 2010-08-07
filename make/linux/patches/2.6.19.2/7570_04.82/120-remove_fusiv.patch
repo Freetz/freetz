@@ -1,0 +1,87 @@
+--- linux-2.6.19.2/arch/mips/Kconfig.orig	2008-10-08 14:15:02.000000000 +0200
++++ linux-2.6.19.2/arch/mips/Kconfig	2010-01-17 15:41:18.000000000 +0100
+@@ -1024,8 +1024,6 @@
+ 	depends on MACH_IKAN_MIPS
+ endchoice
+ 
+-source "fusiv_src/kernel/Kconfig"
+-
+ config RWSEM_GENERIC_SPINLOCK
+ 	bool
+ 	default y
+--- linux-2.6.19.2/Makefile.orig	2010-01-17 15:41:16.000000000 +0100
++++ linux-2.6.19.2/Makefile	2010-01-17 15:41:18.000000000 +0100
+@@ -145,14 +145,8 @@
+ 
+ srctree		:= $(if $(KBUILD_SRC),$(KBUILD_SRC),$(CURDIR))
+ TOPDIR		:= $(srctree)
+-FUSIV_TOPDIR    := fusiv_src
+ 
+ HPATH           = $(TOPDIR)/include
+-FUSIV_APCODEPATH       = $(TOPDIR)/fusiv_src/kernel/ap_code
+-FUSIV_APINCPATH        = $(TOPDIR)/fusiv_src/kernel/ap_code/inc
+-FUSIV_DRIVERS_INCPATH  = $(TOPDIR)/fusiv_src/kernel/drivers/inc
+-FUSIV_ATM_INCPATH      = $(TOPDIR)/fusiv_src/kernel/drivers/adsl
+-FUSIV_DRIVERS_VOICE    = $(TOPDIR)/fusiv_src/kernel/drivers/voice/ipvoice
+ # FIXME - TOPDIR is obsolete, use srctree/objtree
+ objtree		:= $(CURDIR)
+ src		:= $(srctree)
+@@ -326,20 +320,9 @@
+ LINUXINCLUDE    := -Iinclude \
+                    $(if $(KBUILD_SRC),-Iinclude2 -I$(srctree)/include) \
+ 		   -include include/linux/autoconf.h
+-
+-ifeq ($(TARGET_CPU),ikanos)
+-CPPFLAGS        := -D__KERNEL__ $(LINUXINCLUDE) -I$(FUSIV_DRIVERS_VOICE)/include -I$(FUSIV_APCODEPATH) -I$(FUSIV_APINCPATH) -I$(FUSIV_DRIVERS_INCPATH) -I$(FUSIV_ATM_INCPATH)
+-else
+ CPPFLAGS        := -D__KERNEL__ $(LINUXINCLUDE)
+-endif
+-
+-# Das will Fusiv an flags haben, ich glaube dass wir das nicht benötigen
+-
+ CFLAGS          := -Wall -W -Wno-unused -Wno-sign-compare -Wundef -Wstrict-prototypes -Wno-trigraphs \
+                    -fno-strict-aliasing -fno-common
+-# Das will Fusiv an flags haben, ich glaube dass wir das nicht benötigen
+-# CFLAGS          := -Wall -Wstrict-prototypes -Wno-trigraphs 
+-#
+ AFLAGS          := -D__ASSEMBLY__
+ 
+ # Read KERNELRELEASE from include/config/kernel.release (if it exists)
+@@ -461,7 +444,6 @@
+ net-y		:= net/
+ libs-y		:= lib/
+ core-y		:= usr/
+-fusiv_src-y     := fusiv_src/
+ endif # KBUILD_EXTMOD
+ 
+ ifeq ($(dot-config),1)
+@@ -609,18 +591,17 @@
+ 
+ vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
+ 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
+-		     $(net-y) $(fusiv_src-y) $(net-m) $(libs-y) $(libs-m)))
++		     $(net-y) $(net-m) $(libs-y) $(libs-m)))
+ 
+ vmlinux-alldirs	:= $(sort $(vmlinux-dirs) $(patsubst %/,%,$(filter %/, \
+ 		     $(init-n) $(init-) \
+ 		     $(core-n) $(core-) $(drivers-n) $(drivers-) \
+-		     $(net-n)  $(net-)  $(fusiv_src-y) $(libs-n)    $(libs-))))
++		     $(net-n)  $(net-) $(libs-n)    $(libs-))))
+ 
+ init-y		:= $(patsubst %/, %/built-in.o, $(init-y))
+ core-y		:= $(patsubst %/, %/built-in.o, $(core-y))
+ drivers-y	:= $(patsubst %/, %/built-in.o, $(drivers-y))
+ net-y		:= $(patsubst %/, %/built-in.o, $(net-y))
+-fusiv_src-y     := $(patsubst %/, %/built-in.o, $(fusiv_src-y))
+ libs-y1		:= $(patsubst %/, %/lib.a, $(libs-y))
+ libs-y2		:= $(patsubst %/, %/built-in.o, $(libs-y))
+ libs-y		:= $(libs-y1) $(libs-y2)
+@@ -653,7 +634,7 @@
+ # System.map is generated to document addresses of all kernel symbols
+ 
+ vmlinux-init := $(head-y) $(init-y)
+-vmlinux-main := $(core-y) $(libs-y) $(drivers-y) $(net-y) $(fusiv_src-y)
++vmlinux-main := $(core-y) $(libs-y) $(drivers-y) $(net-y)
+ vmlinux-all  := $(vmlinux-init) $(vmlinux-main)
+ vmlinux-lds  := arch/$(ARCH)/kernel/vmlinux.lds
+ 

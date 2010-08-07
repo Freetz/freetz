@@ -28,6 +28,8 @@ config FREETZ_AVM_VERSION_3270_04_80
 	bool
 config FREETZ_AVM_VERSION_7270_04_80
 	bool
+config FREETZ_AVM_VERSION_7570_04_82
+	bool
 config FREETZ_AVM_VERSION_r7203
 	bool
 
@@ -117,7 +119,7 @@ choice
 		bool "Fon WLAN 7270 (v3 only)"
 
 	config FREETZ_TYPE_FON_WLAN_7570
-		select FREETZ_AVM_VERSION_7270_04_80
+		select FREETZ_AVM_VERSION_7570_04_82
 		bool "Fon WLAN 7570 VDSL"
 
 	config FREETZ_TYPE_WLAN_3020
@@ -327,6 +329,7 @@ config FREETZ_AVM_VERSION_STRING
 	default "04.80"			if FREETZ_AVM_VERSION_04_80
 	default "3270_04.80"		if FREETZ_AVM_VERSION_3270_04_80
 	default "7270_04.80"		if FREETZ_AVM_VERSION_7270_04_80
+	default "7570_04.82"		if FREETZ_AVM_VERSION_7570_04_82
 	default "r7203"			if FREETZ_AVM_VERSION_r7203
 
 choice
@@ -483,14 +486,17 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
 		! (FREETZ_TYPE_LABOR_CORE || FREETZ_TYPE_LABOR_IPV6 || FREETZ_TYPE_PREVIEW) && \
-		! FREETZ_TYPE_FON_WLAN_7570 && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN)
 	default y
 
 config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
-	select FREETZ_MODULE_fuse if (FREETZ_AVM_VERSION_3270_04_80 || FREETZ_AVM_VERSION_7270_04_80)
+	select FREETZ_MODULE_fuse if ( \
+					FREETZ_AVM_VERSION_3270_04_80 || \
+					FREETZ_AVM_VERSION_7270_04_80 || \
+					FREETZ_AVM_VERSION_7570_04_82 \
+				     )
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
@@ -1712,6 +1718,7 @@ config FREETZ_DL_KERNEL_SITE
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7170/x_misc/opensrc"			if	FREETZ_AVM_VERSION_04_80
 	default "@AVM/fritz.box/fritzbox.wlan_3270/x_misc/opensrc"			if	FREETZ_AVM_VERSION_3270_04_80
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7270/x_misc/opensrc"			if	FREETZ_AVM_VERSION_7270_04_80
+	default "@AVM/fritz.box/fritzbox.fon_wlan_7570/x_misc/opensrc"			if	FREETZ_AVM_VERSION_7570_04_82
 	default "http://www.t-home.de/dlp/eki/downloads/Speedport/Speedport_W501V"	if	FREETZ_AVM_VERSION_r7203
 
 config FREETZ_DL_KERNEL_SOURCE
@@ -1727,6 +1734,7 @@ config FREETZ_DL_KERNEL_SOURCE
 	default "fritzbox7170-source-files-04.80.tar.gz"	if	FREETZ_AVM_VERSION_04_80
 	default "fritz_box_wlan_3270_source _files .04.80.tar.gz" if	FREETZ_AVM_VERSION_3270_04_80
 	default "fritzbox7270-source-files-04.80.tar.gz"	if	FREETZ_AVM_VERSION_7270_04_80
+	default "fritzbox7570-source-files-04.78-82.tar.gz"	if	FREETZ_AVM_VERSION_7570_04_82
 	default "GPL-r7203-4mb_26-tar.bz2"			if	FREETZ_AVM_VERSION_r7203
 
 config FREETZ_DL_KERNEL_SOURCE_MD5
@@ -1742,6 +1750,7 @@ config FREETZ_DL_KERNEL_SOURCE_MD5
 	default "6bf92b81b48a3a05efd3aae6c05fe3e2"		if	FREETZ_AVM_VERSION_04_80
 	default "a7e605a9f27bf514b232ec9976b9ff98"		if	FREETZ_AVM_VERSION_3270_04_80
 	default "bcd49b28a54293e1481b8170b07245e0"		if	FREETZ_AVM_VERSION_7270_04_80
+	default "d5f0320bbc4c86a79870ed87ef3650e4"		if	FREETZ_AVM_VERSION_7570_04_82
 	default "582c74f0959a687c41c1bcfa599ace9c"		if	FREETZ_AVM_VERSION_r7203
 
 config FREETZ_DL_SITE
