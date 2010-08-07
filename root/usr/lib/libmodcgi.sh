@@ -430,7 +430,7 @@ cgi_error() {
 # will receive the remaining unsplit PATH_INFO.
 
 path_info() {
-	unset "$@"
+	unset -v "$@"
 	_path_info "$PATH_INFO" "$@"
 }
 

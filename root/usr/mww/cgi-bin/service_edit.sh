@@ -136,6 +136,7 @@ stat_dynamic() {
 	sec_end
 }
 
+cgi --style=mod/daemons.css
 cgi_begin '$(lang de:"Dienste" en:"Services")' 'daemons'
 
 view=$(cgi_param view | tr -d .)

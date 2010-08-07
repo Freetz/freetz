@@ -15,6 +15,8 @@ IFS=$OIFS
 
 title=$2
 
+# FIXME: Attach meta-data to mounted.cgi
+cgi --style=mod/mounted.css --style=mod/freetz-conf.css
 cgi_begin "$title" "status:$pkg/$cgi"
 
 if [ -n "$1" -a -x "/mod/usr/lib/cgi-bin/$pkg/$cgi.cgi" ]; then
