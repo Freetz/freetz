@@ -1,0 +1,29 @@
+--- configure.orig	2010-08-06 03:01:05.000000000 +0200
++++ configure	2010-08-07 16:28:49.966221396 +0200
+@@ -8179,11 +8179,12 @@
+ 	# now check for the end of word boundary support (/< and />)
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GNU-style word boundary regex support" >&5
+ $as_echo_n "checking for GNU-style word boundary regex support... " >&6; }
+-	if test "$cross_compiling" = yes; then :
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: *** Can't check for GNU-style word boundary support when cross-compiling" >&5
+-$as_echo "$as_me: WARNING: *** Can't check for GNU-style word boundary support when cross-compiling" >&2;}
+-
+-else
++#	if test "$cross_compiling" = yes; then :
++#  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: *** Can't check for GNU-style word boundary support when cross-compiling" >&5
++#$as_echo "$as_me: WARNING: *** Can't check for GNU-style word boundary support when cross-compiling" >&2;}
++#
++#else
++if test true; then
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -8204,7 +8205,7 @@
+     return 0;
+ }
+ _ACEOF
+-if ac_fn_c_try_run "$LINENO"; then :
++if test true; then : #ac_fn_c_try_run "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ $as_echo "yes" >&6; }
+ 

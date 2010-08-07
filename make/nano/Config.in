@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_NANO
-	bool "Nano 2.0.9 text editor"
+	bool "Nano 2.2.5 text editor"
 	select FREETZ_LIB_libncurses
 	default n
 	help
@@ -16,14 +16,15 @@ config FREETZ_PACKAGE_NANO
 
 		IMPORTANT NOTES:
 
-		1.) Selecting any of the additional features (i.e. decativating "tiny
-		binary" and selecting some of the options which then become visible)
-		will make the Nano binary bigger. The range is somewhere between 85
-		and 180 KB, depending on the options chosen.
+		1.) Selecting any option besides "Tiny binary" will make the nano binary
+		bigger. The range is somewhere between 142 KB and 249 KB, depending on
+		the options chosen.
 
 		2.) Please also be aware of the fact that changing any feature options
 		results in an automatic rebuild of the package - just in case you were
 		wondering.
+		
+		3.) Note that UTF8 support and spell checking is disabled by default.
 
 menu "Nano additional features"
 	depends FREETZ_PACKAGE_NANO
@@ -35,19 +36,25 @@ config FREETZ_PACKAGE_NANO_TINY
 		Strip whichever feature possible from the Nano binary and keep
 		everything small and simple, yet powerful and easy to use.
 
-		With this option, Nano's binary has an approximate size of 86 KB.
+		With this option enabled as the only one, Nano's binary has an
+		approximate size of 142 KB. NOTE that deselecting this option
+		already results in a 182 KB binary in size although no other
+		option has been selected. This is because nano compiler option
+		"--enable-tiny" also disables some larger internals like
+		marking and cutting to the end of a line.
 
 config FREETZ_PACKAGE_NANO_HELP
 	bool "Online help"
 	depends ! FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
-		Show a list of available keyboard shortcuts via Ctrl-G or F1. As the
+		Show a list of available keyboard commands via Ctrl-G or F1. As the
 		name suggests, this is quite helpful. ;-)
 
-		This option adds about 39 KB to the minimum 86 KB of Nano's binary.
-		If you are unfamiliar with Nano and Pico and hhhave some space left
-		in the firmware image, we recommend you to choose this option anyway.
+		This option adds about 8.4 KB to the minimum 182 KB of Nano's non-tiny binary.
+
+		If you are unfamiliar with Nano and Pico and have some space left
+		in the firmware image, you are recommended choosing this option anyway.
 
 config FREETZ_PACKAGE_NANO_TABCOMP
 	bool "Tab completion for file names"
@@ -58,28 +65,42 @@ config FREETZ_PACKAGE_NANO_TABCOMP
 		file names. Even with the file browser switched off, this is a
 		powerful tool to help you save time when typing in path names.
 
-		This option adds about 7.5 KB to the minimum 86 KB of Nano's binary.
+		This option adds about 4.7 KB to the minimum 182 KB
+		of Nano's non-tiny binary.
 
 config FREETZ_PACKAGE_NANO_BROWSER
 	bool "File browser"
 	depends ! FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
-		Browse the directory structure in a multi-line area showning
+		Browse the directory structure in a multi-line area showing
 		directories and files between which you can navigate with the
-		keyboard.
+		keyboard. The Browser is invoked by pressing ^T when entering
+		a file name to open/write.
 
-		This option adds about 12.5 KB to the minimum 86 KB of Nano's binary.
+		This option adds about 9.7 KB to the minimum 182 KB
+		of Nano's non-tiny binary.
 
 config FREETZ_PACKAGE_NANO_OPERATINGDIR
 	bool "Set operating directory"
 	depends ! FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
-		Set operating directory.
-		Makes Nano set up something similar to a chroot.
+		Set operating directory. Makes Nano set up something
+		similar to a chroot by using the '-o' command line option.
 
-		This option adds almost nothing to the minimum 86 KB of Nano's binary.
+		This option adds almost nothing to the minimum 182 KB
+		of Nano's non-tiny binary.
+
+config FREETZ_PACKAGE_NANO_JUSTIFY
+	bool "Justify/unjustify functions"
+	depends ! FREETZ_PACKAGE_NANO_TINY
+	default n
+	help
+		Support for (un-)justifying paragraphs of text, e.g. program code.
+
+		This option adds about 9.4 KB to the minimum 182 KB
+		of Nano's non-tiny binary.
 
 config FREETZ_PACKAGE_NANO_WRAPPING
 	depends ! FREETZ_PACKAGE_NANO_TINY
@@ -89,51 +110,30 @@ config FREETZ_PACKAGE_NANO_WRAPPING
 		Enable long line wrapping. This also creates the -w command line
 		option which enables long line wrapping.
 
-		This option adds almost nothing to the minimum 86 KB of Nano's binary.
+		This option adds about 4.4 KB to the minimum 182 KB
+		of Nano's non-tiny binary.
 
-config FREETZ_PACKAGE_NANO_JUSTIFY
-	bool "Justify/unjustify functions"
-	depends ! FREETZ_PACKAGE_NANO_TINY
+config FREETZ_PACKAGE_NANO_WRAPPING_ROOT
+	depends FREETZ_PACKAGE_NANO_WRAPPING
+	bool "Disable long line wrapping for root"
 	default n
 	help
-		Support for (un-)justifying paragraphs of text, e.g. program code.
+		Disable long line wrapping feature if nano is run as root.
 
-		This option adds about 12.5 KB to the minimum 86 KB of Nano's binary.
+		This option adds almost nothing to the minimum 182 KB
+		of Nano's non-tiny binary.
 
 config FREETZ_PACKAGE_NANO_MULTIBUFFER
-	depends ! FREETZ_PACKAGE_NANO_TINY
 	bool "Multiple file buffers"
 	default n
 	help
 		Edit multiple files at once and cycle through the different buffers
 		via simple keyboard commands.
 
-		This option adds about 4 KB to the minimum 86 KB of Nano's binary.
-
-config FREETZ_PACKAGE_NANO_COLOR_SYNTAX
-	depends ! FREETZ_PACKAGE_NANO_TINY
-	bool "Coloured syntax highlighting"
-	default n
-	select FREETZ_PACKAGE_NANO_NANORC
-	help
-		Enable support for syntax coloring of files using the nanorc file.
-		This enables nanorc support, but does NOT automatically copy any
-		syntax files to the target system.
-
-		This option adds about 14.5 KB plus possibly a few KB of your syntax
-		files to the minimum 86 KB of Nano's binary, including nanorc support.
-
-		IMPORTANT: If you want to include any syntax definition files (look
-		for *.nanorc in the nano source package or define or download your own
-		files), you are advised to copy them somewhere inside root/usr/share
-		or packages/nano-x.y.z/root/usr/share. In addition to the syntax files
-		themselves you want to add a nanorc file including them to your user's
-		(probably root) home, possibly by editing /var/flash/debug.cfg or
-		/tmp/flash/rc.custom on the target system. There, the actual '.nanorc'
-		should be created, so Nano finds it upon start-up.
+		This option adds about 4.4 KB to the minimum 182 KB
+		of Nano's non-tiny binary.
 
 config FREETZ_PACKAGE_NANO_NANORC
-	depends ! FREETZ_PACKAGE_NANO_TINY
 	bool "Nanorc startup file support"
 	default n
 	help
@@ -141,12 +141,33 @@ config FREETZ_PACKAGE_NANO_NANORC
 		custom settings in the nanorc file rather than having to pass command
 		line options to get desired behavior.
 
-		This option adds about 9 KB to the minimum 86 KB of Nano's binary.
+		This option adds about 9.6 KB to the minimum 182 KB
+		of Nano's non-tiny binary.
 
 		IMPORTANT: Please read the help text of the "Coloured syntax
 		highlighting" feature in order to learn how to add a '.nanorc' to your
 		target system. Please also refer to the nanorc man page at
-		http://www.nano-editor.org/dist/v2.0/nanorc.5.html for further
+		http://www.nano-editor.org/dist/v2.2/nanorc.5.html for further
 		information about available options.
+
+config FREETZ_PACKAGE_NANO_COLOR_SYNTAX
+	bool "Coloured syntax highlighting support"
+	default n
+	select FREETZ_PACKAGE_NANO_NANORC
+	help
+		Enable support for syntax coloring of files using the nanorc file.
+		This enables nanorc support, but does NOT automatically copy any
+		syntax files to the target system.
+
+		This option adds about 21.4 KB plus possibly a few KB of your
+		syntax files to the minimum 182 KB of Nano's non-tiny binary,
+		including nanorc support.
+
+		IMPORTANT: If you want to include any syntax definition files
+		(look for *.nanorc in the nano source package (doc/systax), define
+		or download your own files), you are advised to copy them somewhere
+		inside root/usr/share or packages/nano-x.y.z/root/usr/share. In
+		addition to the syntax files themselves you want to edit the nanorc
+		file to make nano aware of your favorite settings and syntax files.
 
 endmenu

@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 2.0.9)
+$(call PKG_INIT_BIN, 2.2.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www.nano-editor.org/dist/v2.0
+$(PKG)_SITE:=http://www.nano-editor.org/dist/v2.2
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nano
-$(PKG)_SOURCE_MD5:=2be94dc43fb60fff4626a2401a977220
+$(PKG)_SOURCE_MD5:=77a10a49589f975ce98350a4527a2ebf
 
 $(PKG)_DEPENDS_ON := ncurses
 
@@ -18,23 +18,23 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NANO_MULTIBUFFER
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NANO_COLOR_SYNTAX
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NANO_NANORC
 
-$(PKG)_CONFIGURE_OPTIONS += --enable-shared
-$(PKG)_CONFIGURE_OPTIONS += --disable-static
-$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --without-slang
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-utf8
 $(PKG)_CONFIGURE_OPTIONS += --disable-mouse
 $(PKG)_CONFIGURE_OPTIONS += --disable-speller
+$(PKG)_CONFIGURE_OPTIONS += --disable-extra
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),--enable-tiny)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_HELP),,--disable-help)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TABCOMP),,--disable-tabcomp)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_BROWSER),,--disable-browser)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_OPERATINGDIR),,--disable-operatingdir)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_WRAPPING),,--disable-wrapping)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_JUSTIFY),,--disable-justify)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_MULTIBUFFER),--enable-multibuffer)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_COLOR_SYNTAX),--enable-color)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_NANORC),--enable-nanorc)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),,$(if $(FREETZ_PACKAGE_NANO_HELP),--enable-help,--disable-help))
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),,$(if $(FREETZ_PACKAGE_NANO_TABCOMP),--enable-tabcomp,--disable-tabcomp))
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),,$(if $(FREETZ_PACKAGE_NANO_BROWSER),--enable-browser,--disable-browser))
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),,$(if $(FREETZ_PACKAGE_NANO_OPERATINGDIR),--enable-operatingdir,--disable-operatingdir))
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),,$(if $(FREETZ_PACKAGE_NANO_JUSTIFY),--enable-justify,--disable-justify))
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),,$(if $(FREETZ_PACKAGE_NANO_WRAPPING),--enable-wrapping,--disable-wrapping))
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_WRAPPING),$(if $(FREETZ_PACKAGE_NANO_WRAPPING_ROOT),--disable-wrapping-as-root,--enable-wrapping-as-root))
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_MULTIBUFFER),--enable-multibuffer,--disable-multibuffer)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_COLOR_SYNTAX),--enable-color,--disable-color)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_NANORC),--enable-nanorc,--disable-nanorc)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
