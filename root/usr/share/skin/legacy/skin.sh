@@ -5,6 +5,7 @@ cat << EOF
 <link rel="stylesheet" type="text/css" href="/style/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
+_cgi_print_extra_styles
 
 # custom width
 : ${_cgi_width:=$MOD_CGI_WIDTH}

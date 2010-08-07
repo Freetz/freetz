@@ -5,6 +5,7 @@ cat << EOF
 <link rel="stylesheet" type="text/css" href="/style/phoenix/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
+_cgi_print_extra_styles
 }
 
 _cgi_body_begin() {
