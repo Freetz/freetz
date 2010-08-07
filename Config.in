@@ -1364,7 +1364,14 @@ config FREETZ_REMOVE_DSLD
 
 config FREETZ_REMOVE_DTRACE
 	bool "Remove dtrace"
-	depends on FREETZ_HAS_PHONE
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3
 	default y
 	help
 		Remove /usr/bin/dtrace. This utility is only needed to trace ISDN D-channel.
