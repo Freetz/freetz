@@ -41,8 +41,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_SERVICES_LIST): $($(PKG)_SERVICES_LIST)
-	mkdir -p $(dir $@)
-	cp $^ $@
+	$(INSTALL_FILE)
 
 $(pkg):
 
