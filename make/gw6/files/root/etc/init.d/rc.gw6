@@ -19,13 +19,8 @@ config() {
 }
 
 start() {
-	modprobe ipv6
+	modprobe ipv6 2>/dev/null
 	modlib_startdaemon $DAEMON_BIN -f /mod/etc/$DAEMON.conf
-}
-
-stop() {
-	kill -HUP $(pidof gw6c) 2>/dev/null
-	sleep 1
 }
 
 case $1 in
