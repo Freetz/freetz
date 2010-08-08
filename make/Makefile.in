@@ -686,10 +686,6 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked $(pkg) $(pkg)-precompiled
 endef
 
-define PKG_UNPACKED__INT
-$(PKG)_FREETZ_CONFIG_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_config
-endef
-
 define PKG_UNPACKED_SOURCE__INT
 $(PKG)_SOURCE_DIR:
 	@mkdir -p $($(PKG)_SOURCE_DIR)
@@ -697,7 +693,10 @@ endef
 
 ## check for changed suboptions
 # should only be called if $(PKG)_REBUILD_SUBOPTS is defined
-define PKG_UNPACKED_CHECK_SUBOPTS__INT
+define PKG_UNPACKED_CHECK_SUBOPTS__INT1
+$(PKG)_FREETZ_CONFIG_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_config
+endef
+define PKG_UNPACKED_CHECK_SUBOPTS__INT2
 $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_FILE).temp
 	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null $(SILENT); then \
@@ -711,14 +710,13 @@ $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $($(PKG)_FREETZ_CONFIG_FILE)
 endef
 
 ## check for changed files in files and patches folder
-define PKG_UNPACKED_CHECK__INT
+define PKG_UNPACKED_CHECK_CHANGES__INT1
 $(PKG)_FREETZ_CHANGES_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_changes
 $(PKG)_FREETZ_PATCHES_BIN_SEARCH:=patches/.*\|$(pkg)\.mk\|Makefile\.in\|Config\.in
 $(PKG)_FREETZ_PATCHES_LIB_SEARCH:=patches/.*\.$(pkg).patch\|$(pkg).mk
 $(PKG)_FREETZ_FILES_BIN_SEARCH:=files/.*
 endef
-
-define PKG_UNPACKED_CHECK_CHANGES__INT
+define PKG_UNPACKED_CHECK_CHANGES__INT2
 $(PKG)_FREETZ_CHANGES_CHECK: $(PKG)_SOURCE_DIR
 	@find $($(PKG)_MAKE_DIR) -regex "^$($(PKG)_MAKE_DIR)/\($($(PKG)_FREETZ_PATCHES_$(PKG_TYPE)_SEARCH)\|$($(PKG)_FREETZ_FILES_$(PKG_TYPE)_SEARCH)\)" \
 		! -wholename '*/.svn*' -printf '%P\t%t\n' 2>/dev/null >$($(PKG)_FREETZ_CHANGES_FILE).temp
@@ -746,10 +744,11 @@ endef
 
 PKG_UNPACKED=$(eval $(PKG_UNPACKED_SOURCE__INT))
 ifeq ($(strip $(FREETZ_CHECK_CHANGED)),y)
-PKG_UNPACKED+=$(eval $(PKG_UNPACKED_CHECK__INT))$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT))
+PKG_UNPACKED+=$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT1))$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT2))
 endif
 PKG_UNPACKED+=$(eval $(PKG_UNPACKED_$(PKG_TYPE)__INT))
-PKG_UNPACKED+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED__INT))$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT)))
+PKG_UNPACKED+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT1))$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT2)))
+
 PKG_LOCALSOURCE_PACKAGE=$(eval $(PKG_LOCALSOURCE_PACKAGE__INT))
 
 ### Configure package
