@@ -1,43 +1,48 @@
 #!/bin/sh
 
 NANORC=/tmp/flash/nano/nanorc
+NANODIR=/mod/etc/default.nano
+NANOTMP=/tmp/.nanorc
+
+config() {
+	# editing nanorc is useful only if nano has been compiled with nanorc support
+	[ -z "$(nano -V 2>/dev/null | grep ' --enable-nanorc')" ] && return
+	modreg file nano nanorc "Nano's nanorc" 0 "nanorc"
+
+	# create a default nanorc if there is none
+	if [ ! -e $NANORC ]; then
+		echo -n 'Creating default nanorc...'
+		mkdir -p /tmp/flash/nano
+		cat $NANODIR/nanorc.options-tiny > $NANORC
+		[ -z "$(nano -V | grep ' --enable-tiny')" ] && cat $NANODIR/nanorc.options-fancy >> $NANORC
+		echo 'done.'
+	fi
+
+	#collect available syntax highlighting files
+	cat $NANORC > $NANOTMP
+	if [ -n "$(nano -V | grep ' --enable-color')" ]; then
+		for syntaxfile in /usr/share/nano/*.nanorc; do
+			echo "include \"$syntaxfile\"" >> $NANOTMP
+		done
+	fi
+}
 
 case $1 in
-        ""|load)
-                # editing nanorc is useful only if nano has been compiled with nanorc support
-                if [ ! -z $(nano -V | grep -o "enable-nanorc") ]; then
-                        # create a default nanorc if there is none until now
-                        if [ ! -e $NANORC ]; then
-                                echo -n 'Creating default nanorc...'
-                                mkdir -p /tmp/flash/nano
-                                cp /mod/etc/default.nano/nanorc.options-tiny $NANORC
-                                if [   -z $(nano -V | grep -o "enable-tiny") ]; then
-                                        cat /mod/etc/default.nano/nanorc.options-fancy >> $NANORC
-                                fi
-                                if [ ! -z $(nano -V | grep -o "enable-color") ]; then
-                                        cp /mod/etc/default.nano/nanorc.syntax /tmp/nanorc.syntax
-                                        for syntaxfile in /usr/share/nano/*
-                                        do
-                                                sed -ri 's&#(include \"[a-zA-Z0-9/]*/'$(echo $(basename $syntaxfile))'\")&\1&' /tmp/nanorc.syntax
-                                        done
-                                        cat /tmp/nanorc.syntax >> $NANORC
-                                        rm /tmp/nanorc.syntax
-                                fi
-                                echo 'done.'
-                        fi
-                        modreg file nano nanorc "Nano's nanorc" 0 "nanorc"
-                fi
-                modreg daemon --hide nano
-                ;;
-        unload)
-                modunreg file nano nanorc
-                modunreg daemon nano
-                ;;
-        *)
-                echo "Usage: $0 [load|unload]" 1>&2
-                exit 1
-                ;;
+	""|load)
+		modreg daemon --hide nano
+		config
+		;;
+	unload)
+		modunreg file nano nanorc
+		modunreg daemon nano
+		;;
+	config)
+		config
+		;;
+	*)
+		echo "Usage: $0 [load|unload|config]" 1>&2
+		exit 1
+		;;
 esac
 
 exit 0
-
