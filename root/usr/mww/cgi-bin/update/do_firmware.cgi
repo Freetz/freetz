@@ -6,7 +6,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
 %>
 
-<h1>2. $(lang de:"Firmware extrahieren, Update vorbereiten" en:"Extract firmware, prepare update")</h1>
+<h1>$(lang de:"Firmware extrahieren, Update vorbereiten" en:"Extract firmware, prepare update")</h1>
 
 <%
 cat /tmp/fw_update.log

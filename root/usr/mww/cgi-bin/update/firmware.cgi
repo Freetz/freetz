@@ -35,7 +35,7 @@ function CheckInput(form) {
 }
 </script>
 
-<h1>1. $(lang de:"Firmware hochladen" en:"Upload firmware")</h1>
+<h1>$(lang de:"Firmware hochladen" en:"Upload firmware")</h1>
 
 <p>$(lang
     de:"Im ersten Schritt ist ein Firmware-Image zum Upload auszuw&auml;hlen.
@@ -68,13 +68,13 @@ seconds."
 	<input type="checkbox" name="downgrade" value="yes">
 	$(lang de:"Downgrade auf niedrigere Version zulassen" en:"Allow downgrade to lower version")
 	</p>
-	<div class="btn"><input type=submit value="$(lang de:"Firmware hochladen" en:"Upload firmware")" style="width:150px"></div>
+	<div class="btn"><input type=submit value="$(lang de:"Firmware hochladen" en:"Upload firmware")" style="width:200px"></div>
 </form>
 <br style="clear: both;">
 <br>
 
 <form class="btn" action="external.cgi" method="GET">
-	<input type="submit" value="external (optional)" style="width:150px">
+	<input type="submit" value="external (optional)" style="width:200px">
 </form>
 
 EOF
