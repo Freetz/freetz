@@ -15,7 +15,7 @@ function CheckInput(form) {
 	downgrade=form.elements[4];
 
 	if (file_selector.value=="") {
-		alert("$(lang de:"Keine Firmware-Datei angegeben!" en:"No firmware file selected!")");
+		alert("$(lang de:"Keine Firmware-Datei angegeben!" en:"No firmware file provided!")");
 		return false;
 	}
 	if (radio_stop.checked) {
@@ -55,7 +55,8 @@ seconds."
 	<p>
 	$(lang de:"Firmware-Image" en:"Firmware image")
 	<input type=file size=50 id="fw_file">
-	</p><p>
+	</p>
+	<p>
 	$(lang de:"AVM-Dienste ..." en:"")<br>
 	<input type="radio" name="do_prepare" value="stop_avm">
 	$(lang de:"stoppen (bei Speichermangel)" en:"Stop AVM services (low available memory)")<br>
