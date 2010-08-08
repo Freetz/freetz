@@ -1,8 +1,3 @@
-#!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-. /usr/lib/libmodcgi.sh
-
 swap_file=$(cgi_param swap_file | tr -d .)
 swap_size=$(cgi_param swap_size | tr -d .)
 size=$(echo "$swap_size" | sed -re "s/^ *([0-9]+) $/\1/")
@@ -47,10 +42,10 @@ fi
 
 if $error; then
 	cat << EOF
-<form action="/cgi-bin/create_swap.cgi" method="post">
+<form action="/cgi-bin/exec.cgi/create-swap" method="post">
 <p>$(lang de:"Swap-Datei" en:"Swapfile"): <input type="text" name="swap_file" size="50" maxlength="50" value="$swap_file"></p>
 <p><input type="text" name="swap_size" size="3" maxlength="3" value="$swap_size" /> MB</p>
-<p><input type="button" value="$(lang de:"Swapfile anlegen" en:"Create swapfile")" onclick="location.href='/cgi-bin/create_swap.cgi?swap_file='+encodeURIComponent(document.forms[0].swap_file.value)+'&swap_size='+encodeURIComponent(document.forms[0].swap_size.value)" /></p>
+<p><input type="button" value="$(lang de:"Swapfile anlegen" en:"Create swapfile")" onclick="location.href='/cgi-bin/exec.cgi/create-swap?swap_file='+encodeURIComponent(document.forms[0].swap_file.value)+'&swap_size='+encodeURIComponent(document.forms[0].swap_size.value)" /></p>
 </form>
 EOF
 else
