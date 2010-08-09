@@ -1,7 +1,6 @@
 #!/bin/sh
 
 DAEMON=avm-firewall
-
 . /etc/init.d/modlibrc
 
 # Variablen fuer Pfade
@@ -10,65 +9,61 @@ REALCOPY=/var/tmp/firewall.ar7.copy
 CONFIG=/mod/etc/conf/avm-firewall.cfg
 TEMP1=/var/tmp/firewall.temp1
 
-case $1 in
-	""|load)
-		BOXID=$(sed -n 's/ProductID[ ]*//gp' /proc/sys/urlader/environment | tr -d '\t')
-		BOXOEM=$(cat /proc/sys/urlader/firmware_version)
-		# Original Regeln Kennzeichnen, falls noch nicht geschehen
-		if [ $(sed "/targets/q" $REAL | grep -c '/\*AVM\*/') -eq 0 ]; then
-			DEFar7=$(cat "/etc/default.$BOXID/$BOXOEM/ar7.cfg" | sed -n '/dslifaces/,/} {/p')
-			DEFli=$(echo "$DEFar7" | sed -n '/lowinput/,/}/p' | sed -n "s/^[ ]*\"//g ; /^permit\|^deny\|^reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\')
-			DEFho=$(echo "$DEFar7" | sed -n '/highoutput/,/}/p' | sed -n "s/^[ ]*\"//g ; /^permit\|^deny\|^reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\')
-			tmp='cat $REAL | sed "/dslifaces/,/lowoutput/ {/'$DEFli'/ s/^[ ]*\".*\"[,;][ ]*$/&\/*AVM*\/ /g}" | sed "/dslifaces/,/} {/  {/highoutput/,/}/ {/'$DEFho'/ s/^[ ]*\".*\"[,;][ ]*$/&\/*AVM*\/ /g}}" > $REALCOPY'
-			eval $tmp
-			cat $REALCOPY > $REAL
-		fi
-		;;
-esac
+config() {
+	# Suche nach Bereich von "dslifaces" bis "} {"
+	DSLIFACES=$(cat $REAL | sed -n '/dslifaces/,/} {/p')
+	# In diesem Bereich der von "lowinput" bis zu schliessenden Klammer
+	LOWINPUT=$(echo "$DSLIFACES" | sed -n '/lowinput/,/}/p')
+	# "policy" und "accesslit" String erzeugen
+	# nur policy ist immer da, denn leere Rulestabelle ist ohne accesslist-Eintrag!
+	POL=$(echo "$DSLIFACES" | sed '/policy/!d ; q' | sed 's/\(^.*= "\).*/\1/')
+	ACCL=$(echo "$POL" | sed 's/policy = "/accesslist = /')
+	SPACES=${ACCL//?/ }
+	RET=$'\n'
 
-# Suche nach Bereich von "dslifaces" bis "} {"
-DSLIFACES=$(cat $REAL | sed -n '/dslifaces/,/} {/p')
-# In diesem Bereich der von "lowinput" bis zu schliessenden Klammer
-LOWINPUT=$(echo "$DSLIFACES" | sed -n '/lowinput/,/}/p')
-# "policy" und "accesslit" String erzeugen
-# nur policy ist immer da, denn leere Rulestabelle ist ohne accesslist-Eintrag!
-POL=$(echo "$DSLIFACES" | sed '/policy/!d ; q' | sed 's/\(^.*= "\).*/\1/')
-ACCL=$(echo "$POL" | sed 's/policy = "/accesslist = /')
-SPACES=${ACCL//?/ }
-RET=$'\n'
+	# Die eigentlichen Rules rauslesen (Am Anfang Leereichen und " loeschen, am Ende die ", oder "; Kombination)
+	LIRULES=$(echo "$LOWINPUT" | sed -n "s/^[ ]*\(accesslist = \)*\"//g ; /^permit\|^deny\|^reject/ {s/\"[,;]//g;s/[ ]*$//gp}")
+	LIPOL=$(echo "$LOWINPUT" | grep "policy =" | sed 's/^.*policy.*"\(.*\)";/\1/')
 
-# Die eigentlichen Rules rauslesen (Am Anfang Leereichen und " loeschen, am Ende die ", oder "; Kombination)
-LIRULES=$(echo "$LOWINPUT" | sed -n "s/^[ ]*\(accesslist = \)*\"//g ; /^permit\|^deny\|^reject/ {s/\"[,;]//g;s/[ ]*$//gp}")
-LIPOL=$(echo "$LOWINPUT" | grep "policy =" | sed 's/^.*policy.*"\(.*\)";/\1/')
+	HIGHOUTPUT=$(echo "$DSLIFACES" | sed -n '/highoutput/,/}/p')
+	HORULES=$(echo "$HIGHOUTPUT" | sed -n "s/^[ ]*\(accesslist = \)*\"//g ; /^permit\|^deny\|^reject/ {s/\"[,;]//g;s/[ ]*$//gp}")
+	HOPOL=$(echo "$HIGHOUTPUT" | grep "policy =" | sed 's/^.*policy.*"\(.*\)";/\1/')
 
-HIGHOUTPUT=$(echo "$DSLIFACES" | sed -n '/highoutput/,/}/p')
-HORULES=$(echo "$HIGHOUTPUT" | sed -n "s/^[ ]*\(accesslist = \)*\"//g ; /^permit\|^deny\|^reject/ {s/\"[,;]//g;s/[ ]*$//gp}")
-HOPOL=$(echo "$HIGHOUTPUT" | grep "policy =" | sed 's/^.*policy.*"\(.*\)";/\1/')
+	# Die FWD-Rules rauslesen (Am Anfang Leereichen und alles bis zum " loeschen, am Ende die ", oder "; Kombination)
+	# dafuer wird der "gewuenschte Teil" im Ausdruck mit \( und \) eingefasst und mit \1 ersetzt
+	FWDRULES=$(echo "$DSLIFACES" | sed -n '/forwardrules/,/;/ { /shaper/ q ; s/^[^"]*"\(.*\)"[,;][ ]*/\1/gp}')
+	FWDSTART=$(echo "$DSLIFACES" | sed -n 's/lowinput.*/forwardrules = /p')
+	ENDBRACE=$(echo "$DSLIFACES" | sed -n 's/lowinput.*/\}/p')
+	FWDSPACES=${FWDSTART//?/ }
+}
 
-# Die FWD-Rules rauslesen (Am Anfang Leereichen und alles bis zum " loeschen, am Ende die ", oder "; Kombination)
-# dafuer wird der "gewuenschte Teil" im Ausdruck mit \( und \) eingefasst und mit \1 ersetzt
-FWDRULES=$(echo "$DSLIFACES" | sed -n '/forwardrules/,/;/ { /shaper/ q ; s/^[^"]*"\(.*\)"[,;][ ]*/\1/gp}')
-FWDSTART=$(echo "$DSLIFACES" | sed -n 's/lowinput.*/forwardrules = /p')
-ENDBRACE=$(echo "$DSLIFACES" | sed -n 's/lowinput.*/\}/p')
-FWDSPACES=${FWDSTART//?/ }
+load() {
+	BOXID=$(sed -n 's/ProductID[ ]*//gp' /proc/sys/urlader/environment | tr -d '\t')
+	BOXOEM=$(cat /proc/sys/urlader/firmware_version)
+	# Original Regeln Kennzeichnen, falls noch nicht geschehen
+	if [ $(sed "/targets/q" $REAL | grep -c '/\*AVM\*/') -eq 0 ]; then
+		DEFar7=$(cat "/etc/default.$BOXID/$BOXOEM/ar7.cfg" | sed -n '/dslifaces/,/} {/p')
+		DEFli=$(echo "$DEFar7" | sed -n '/lowinput/,/}/p' | sed -n "s/^[ ]*\"//g ; /^permit\|^deny\|^reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\')
+		DEFho=$(echo "$DEFar7" | sed -n '/highoutput/,/}/p' | sed -n "s/^[ ]*\"//g ; /^permit\|^deny\|^reject/ s/\"[,;][ ]*/%/gp" | tr '\n' '|' | sed 's/%|$//' | tr '%' '\')
+		tmp='cat $REAL | sed "/dslifaces/,/lowoutput/ {/'$DEFli'/ s/^[ ]*\".*\"[,;][ ]*$/&\/*AVM*\/ /g}" | sed "/dslifaces/,/} {/  {/highoutput/,/}/ {/'$DEFho'/ s/^[ ]*\".*\"[,;][ ]*$/&\/*AVM*\/ /g}}" > $REALCOPY'
+		eval $tmp
+		cat $REALCOPY > $REAL
+	fi
 
+	config
 
-case $1 in
-	""|load)
-		echo "$(cat $CONFIG | grep '_cgi\|_LOG')" > $CONFIG
-		echo "export AVM_FIREWALL_DO_ACTIVATE=''" >> $CONFIG
-		echo "export AVM_FIREWALL_GUI=''" >> $CONFIG
-		echo "export AVM_FIREWALL_RULESTABLE_LI='$LIRULES'" >> $CONFIG
-		echo "export AVM_FIREWALL_RULESTABLE_HO='$HORULES'" >> $CONFIG
-		echo "export AVM_FIREWALL_POLICY_LI='$LIPOL'" >> $CONFIG
-		echo "export AVM_FIREWALL_POLICY_HO='$HOPOL'" >> $CONFIG
-		echo "export AVM_FIREWALL_FORWARDINGRULES='$FWDRULES'" >> $CONFIG
-		;;
-esac
+	echo "$(cat $CONFIG | grep '_cgi\|_LOG')" > $CONFIG
+	echo "export AVM_FIREWALL_DO_ACTIVATE=''" >> $CONFIG
+	echo "export AVM_FIREWALL_GUI=''" >> $CONFIG
+	echo "export AVM_FIREWALL_RULESTABLE_LI='$LIRULES'" >> $CONFIG
+	echo "export AVM_FIREWALL_RULESTABLE_HO='$HORULES'" >> $CONFIG
+	echo "export AVM_FIREWALL_POLICY_LI='$LIPOL'" >> $CONFIG
+	echo "export AVM_FIREWALL_POLICY_HO='$HOPOL'" >> $CONFIG
+	echo "export AVM_FIREWALL_FORWARDINGRULES='$FWDRULES'" >> $CONFIG
+}
 
 save() {
-	modlib_loadconfig
-
+	config
 	if grep -q "*gui*" /mod/etc/conf/avm-firewall.cfg || [ "$1" = defaults_restored ]; then
 		echo "$(sed -e "s/\*gui\*//g" $CONFIG)" > $CONFIG
 		echo -n "Saving new firewall rules... "
@@ -96,28 +91,20 @@ case $1 in
 	""|load)
 		modreg cgi $DAEMON AVM-Firewall
 		modreg daemon --hide avm-firewall
+		load
 		;;
 	unload)
-		stop
 		modunreg cgi $DAEMON
 		modunreg daemon avm-firewall
-		;;
-	start)
-		;;
-	stop)
-		;;
-	restart)
-		;;
-	status)
+		config
 		;;
 	save)
 		save "$2"
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|save|status]" 1>&2
+		echo "Usage: $0 [load|unload|save]" 1>&2
 		exit 1
 		;;
 esac
 
 exit 0
-
