@@ -1,11 +1,11 @@
-$(call PKG_INIT_BIN, 5.1.2)
+$(call PKG_INIT_BIN, 5.4.2.1)
 $(PKG)_SOURCE:=net-snmp-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/net-snmp
+$(PKG)_SOURCE_MD5:=984932520143f0c8bf7b7ce1fc9e1da1
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/snmpd
-$(PKG)_TARGET_LIBS:=$($(PKG)_DEST_DIR)/usr/lib/*.so*
-$(PKG)_SOURCE_MD5:=8080555ab3f90011f25d5122042d9a8d
+$(PKG)_TARGET_LIBS:=$($(PKG)_DEST_LIBDIR)/*.so*
 
 NETSNMP_MIB_MODULES_INCLUDED:=\
 	host/hr_device \
@@ -18,7 +18,7 @@ NETSNMP_MIB_MODULES_INCLUDED:=\
 	host/hr_system \
 	mibII/at \
 	mibII/icmp \
-	mibII/interfaces \
+	mibII/ifTable \
 	mibII/ip \
 	mibII/snmp_mib \
 	mibII/sysORTable \
@@ -31,9 +31,9 @@ NETSNMP_MIB_MODULES_INCLUDED:=\
 	snmpv3/snmpMPDStats \
 	snmpv3/usmStats \
 	snmpv3/usmUser \
-	snmpv3mibs \
 	tunnel \
 	ucd-snmp/disk \
+	ucd-snmp/dlmod \
 	ucd-snmp/extensible \
 	ucd-snmp/loadave \
 	ucd-snmp/memory \
@@ -46,18 +46,29 @@ NETSNMP_MIB_MODULES_INCLUDED:=\
 NETSNMP_MIB_MODULES_EXCLUDED:=\
 	agent_mibs \
 	agentx \
+	disman/event \
+	disman/schedule \
 	host \
 	ieee802dot11 \
+	if-mib \
 	mibII \
 	notification \
+	notification-log-mib \
 	snmpv3mibs \
 	target \
+	tcp-mib \
 	ucd_snmp \
+	udp-mib \
 	utilities
 
-NETSNMP_TRANSPORTS_INCLUDED:=UDP
+NETSNMP_TRANSPORTS_INCLUDED:=Callback UDP
 
-NETSNMP_TRANSPORTS_EXCLUDED:=Callback TCP TCPv6 UDPv6 Unix
+NETSNMP_TRANSPORTS_EXCLUDED:=TCP TCPIPv6 Unix
+
+ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
+NETSNMP_TRANSPORTS_INCLUDED+=UDPIPv6
+$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
+endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_NETSNMP_WITH_OPENSSL)),y)
 $(PKG)_DEPENDS_ON := openssl
@@ -72,8 +83,10 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NETSNMP_WITH_ZLIB
 
 $(PKG)_CONFIGURE_ENV += ac_cv_CAN_USE_SYSCTL=no
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
-$(PKG)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --with-endianness=little
 $(PKG)_CONFIGURE_OPTIONS += --with-logfile=/var/log/snmpd.log
 $(PKG)_CONFIGURE_OPTIONS += --with-persistent-directory=/var/lib/snmp
@@ -82,7 +95,6 @@ $(PKG)_CONFIGURE_OPTIONS += --with-sys-contact=root@localhost
 $(PKG)_CONFIGURE_OPTIONS += --with-sys-location=Unknown
 $(PKG)_CONFIGURE_OPTIONS += --disable-applications
 $(PKG)_CONFIGURE_OPTIONS += --disable-debugging
-$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
 $(PKG)_CONFIGURE_OPTIONS += --disable-manuals
 $(PKG)_CONFIGURE_OPTIONS += --disable-mib-loading
 $(PKG)_CONFIGURE_OPTIONS += --disable-mibs
@@ -92,6 +104,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-mib-modules="$(NETSNMP_MIB_MODULES_INCLUDED)"
 $(PKG)_CONFIGURE_OPTIONS += --with-out-transports="$(NETSNMP_TRANSPORTS_EXCLUDED)"
 $(PKG)_CONFIGURE_OPTIONS += --with-transports="$(NETSNMP_TRANSPORTS_INCLUDED)"
 $(PKG)_CONFIGURE_OPTIONS += --without-opaque-special-types
+$(PKG)_CONFIGURE_OPTIONS += --without-elf
 $(PKG)_CONFIGURE_OPTIONS += --without-libwrap
 $(PKG)_CONFIGURE_OPTIONS += --without-rpm
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NETSNMP_WITH_OPENSSL),,--without-openssl)
@@ -106,9 +119,9 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
-	mkdir -p $(NETSNMP_DEST_DIR)/usr/lib
+	mkdir -p $(NETSNMP_DEST_LIBDIR)
 	for file in $$(find $(NETSNMP_DIR) -name 'libnetsnmp*.so*'); do \
-		cp -d $$file $(NETSNMP_DEST_DIR)/usr/lib/; \
+		cp -d $$file $(NETSNMP_DEST_LIBDIR)/; \
 	done
 	$(TARGET_STRIP) $(NETSNMP_TARGET_LIBS)
 

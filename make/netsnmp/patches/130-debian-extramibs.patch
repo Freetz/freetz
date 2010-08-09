@@ -1,769 +1,5 @@
---- EXAMPLE-trap.conf.orig	1970-01-01 01:00:00.000000000 +0100
-+++ EXAMPLE-trap.conf	2007-07-29 03:52:16.000000000 +0200
-@@ -0,0 +1,18 @@
-+###############################################################################
-+#
-+# EXAMPLE.conf:
-+#   An example configuration file for configuring the ucd-snmp snmptrapd agent.
-+#
-+###############################################################################
-+#
-+# This file is intended to only be an example.  If, however, you want
-+# to use it, it should be placed in /etc/snmp/snmptrapd.conf.
-+# When the snmptrapd agent starts up, this is where it will look for it.
-+#
-+# All lines beginning with a '#' are comments and are intended for you
-+# to read.  All other lines are configuration commands for the agent.
-+
-+#
-+# PLEASE: read the snmptrapd.conf(5) manual page as well!
-+#
-+
---- EXAMPLE.conf.def.orig	2003-02-25 15:04:06.000000000 +0100
-+++ EXAMPLE.conf.def	2007-07-29 03:52:16.000000000 +0200
-@@ -58,31 +58,37 @@
- # from):
- 
- #       sec.name  source          community
--com2sec local     localhost       COMMUNITY
--com2sec mynetwork NETWORK/24      COMMUNITY
-+com2sec paranoid  default         public
-+#com2sec readonly  default         public
-+#com2sec readwrite default         private
- 
- ####
- # Second, map the security names into group names:
- 
- #             	sec.model  sec.name
--group MyRWGroup	v1         local
--group MyRWGroup	v2c        local
--group MyRWGroup	usm        local
--group MyROGroup v1         mynetwork
--group MyROGroup v2c        mynetwork
--group MyROGroup usm        mynetwork
-+group MyROSystem v1        paranoid
-+group MyROSystem v2c       paranoid
-+group MyROSystem usm       paranoid
-+group MyROGroup v1         readonly
-+group MyROGroup v2c        readonly
-+group MyROGroup usm        readonly
-+group MyRWGroup v1         readwrite
-+group MyRWGroup v2c        readwrite
-+group MyRWGroup usm        readwrite
- 
- ####
- # Third, create a view for us to let the groups have rights to:
- 
- #           incl/excl subtree                          mask
- view all    included  .1                               80
-+view system included  .iso.org.dod.internet.mgmt.mib-2.system
- 
- ####
- # Finally, grant the 2 groups access to the 1 view with different
- # write permissions:
- 
- #                context sec.model sec.level match  read   write  notif
-+access MyROSystem ""     any       noauth    exact  system none   none
- access MyROGroup ""      any       noauth    exact  all    none   none
- access MyRWGroup ""      any       noauth    exact  all    all    none
- 
-@@ -100,8 +106,8 @@
- # value of an object whose value is given here will fail with an error
- # status of notWritable.
- 
--syslocation Right here, right now.
--syscontact Me <me@somewhere.org>
-+syslocation Unknown (configure /etc/snmp/snmpd.local.conf)
-+syscontact Root <root@localhost> (configure /etc/snmp/snmpd.local.conf)
- 
- # Example output of snmpwalk:
- #   % snmpwalk -v 1 -c public localhost system
-@@ -135,13 +141,13 @@
- #
- 
- #  Make sure mountd is running
--proc mountd
-+#proc mountd
- 
- #  Make sure there are no more than 4 ntalkds running, but 0 is ok too.
--proc ntalkd 4
-+#proc ntalkd 4
- 
- #  Make sure at least one sendmail, but less than or equal to 10 are running.
--proc sendmail 10 1
-+#proc sendmail 10 1
- 
- #  A snmpwalk of the prTable would look something like this:
- # 
-@@ -199,7 +205,7 @@
- #  ARGS:     optional arguments to be passed to the program
- 
- # a simple hello world
--exec echotest /bin/echo hello world
-+#exec echotest /bin/echo hello world
- 
- # Run a shell script containing:
- #
-@@ -250,7 +256,7 @@
- 
- # Check the / partition and make sure it contains at least 10 megs.
- 
--disk / 10000
-+#disk / 10000
- 
- # % snmpwalk -v 1 -c public localhost .EXTENSIBLEDOTMIB.DISKMIBNUM
- # enterprises.ucdavis.diskTable.dskEntry.diskIndex.1 = 0
-@@ -279,7 +285,7 @@
- # 15MAX:  Similar, but for 15 min average.
- 
- # Check for loads:
--load 12 14 14
-+#load 12 14 14
- 
- # % snmpwalk -v 1 -c public localhost .EXTENSIBLEDOTMIB.LOADAVEMIBNUM
- # enterprises.ucdavis.loadTable.laEntry.loadaveIndex.1 = 1
-@@ -365,7 +371,7 @@
- #           (commented out here since it requires that you place the
- #           script in the right location. (its not installed by default))
- 
--# pass .EXTENSIBLEDOTMIB.255 /bin/sh PREFIX/local/passtest
-+# pass .EXTENSIBLEDOTMIB.255 /bin/sh /usr/local/passtest
- 
- # % snmpwalk -v 1 -c public localhost .EXTENSIBLEDOTMIB.255
- # enterprises.ucdavis.255.1 = "life the universe and everything"
---- FAQ.orig	2004-08-07 10:02:45.000000000 +0200
-+++ FAQ	2007-07-29 03:52:16.000000000 +0200
-@@ -104,7 +104,7 @@
-    I don't understand the new access control stuff - what does it mean?
-    How do I configure SNMPv3 users?
-    The 'createUser' line disappears when I start the agent.  Why?
--   What's the difference between /var/ucd-snmp and /usr/local/share/snmp?
-+   What's the difference between /var/ucd-snmp and /usr/share/snmp?
-    My new agent is ignoring the old snmpd.conf file. Why?
-    Why am I getting "Connection refused"?
-    I'm getting errors about "bad security model" - why?
-@@ -620,7 +620,7 @@
- 
-   Firstly,
- 
--	cp MY-MIB.txt /usr/local/share/snmp/mibs
-+	cp MY-MIB.txt /usr/share/snmp/mibs
- 
-           or
- 
-@@ -639,7 +639,7 @@
-   Note that you need *both* steps.
-   The first command copies the file defining the new MIB to a
-   expected location for MIB files.  This defaults to
--  /usr/local/share/snmp/mibs (or PREFIX/share/snmp/mibs if the the
-+  /usr/share/snmp/mibs (or PREFIX/share/snmp/mibs if the the
-   suite was installed into a different base location).  Some
-   ready-packaged distributions (such as Linux RPM packages) may look
-   for MIB files in a different location, such as /etc/snmp/mibs - put
-@@ -1111,7 +1111,7 @@
-   If this is the case, then you can specify this interpreter
-   explicitly as part of the trap handle directive:
- 
--	traphandle default /usr/bin/perl /usr/local/bin/log_it
-+	traphandle default /usr/bin/perl /usr/bin/log_it
- 
-   Note that in this case, it's almost certain that you'll also
-   need to give the full path to the traphandle script (as shown)
-@@ -1263,7 +1263,7 @@
-   (if appropriate) the community string to use.
- 
-     Some of these (such as the MIB file location), might belong in a
--  shared snmp.conf file (typically /usr/local/share/snmp/snmp.conf or
-+  shared snmp.conf file (typically /usr/share/snmp/snmp.conf or
-   /etc/snmp/snmp.conf) to apply to all users of the system.  Others
-   (particularly the SNMPv3 security settings), are more likely to refer
-   to a particular user, and should go in a personal snmp.conf file
-@@ -1522,7 +1522,7 @@
- 
- 
-     Alternatively, the tools may be looking in the wrong place.
--  The default location for the mib files is /usr/local/share/snmp/mibs.
-+  The default location for the mib files is /usr/share/snmp/mibs.
-   Again, this is set when the suite is first configured and compiled.
-   This can be changed using the environmental variable 'MIBDIRS'
-   or the snmp.conf directive 'mibdirs'.
-@@ -2507,11 +2507,11 @@
- 
- 
- 
--What's the difference between /var/ucd-snmp and /usr/local/share/snmp?
-+What's the difference between /var/ucd-snmp and /usr/share/snmp?
- ---------------------------------------------------------------------
- 
-     Most "static" agent configuration should go in the traditional location
--  (typically /usr/local/share/snmp/snmpd.conf or /etc/snmp).   The
-+  (typically /usr/share/snmp/snmpd.conf or /etc/snmp).   The
-   /var/ucd-snmp (or /var/net-snmp) location is used for information set during
-   the running of the agent, which needs to be persistent between one run of
-   the agent and the next.
-@@ -2531,7 +2531,7 @@
-   distribution), with the current release installed from the source.
- 
-     The default location for this file with the basic distribution is
--  /usr/local/share/snmp/snmpd.conf (or PREFIX/share/snmp/snmpd.conf).
-+  /usr/share/snmp/snmpd.conf (or PREFIX/share/snmp/snmpd.conf).
-   Ready-installed versions often look for the file as /etc/snmpd.conf,
-   or /etc/snmp/snmpd.conf.  Try moving the old config file to the new
-   location, and restart the agent.
---- Makefile.in.orig	2004-08-04 14:48:14.000000000 +0200
-+++ Makefile.in	2007-07-29 03:52:16.000000000 +0200
-@@ -163,6 +163,11 @@
- 	   ( cd perl ; $(MAKE) clean ) ; \
- 	fi
- 
-+perlrealclean:
-+	@if test -f perl/Makefile; then \
-+	   ( cd perl ; $(MAKE) realclean ) ; \
-+	fi
-+
- #
- # make distclean completely removes all traces of building including
- # any files generated by configure itself.
---- Makefile.rules.orig	2004-02-13 23:42:28.000000000 +0100
-+++ Makefile.rules	2007-07-29 03:52:16.000000000 +0200
-@@ -301,7 +301,7 @@
- # cleaning targets
- #
- clean: cleansubdirs $(OTHERCLEANTODOS)
--	rm -f core ${OBJS} ${LOBJS} $(STANDARDCLEANTARGETS) $(OTHERCLEANTARGETS)
-+	rm -f -- core ${OBJS} ${LOBJS} $(STANDARDCLEANTARGETS) $(OTHERCLEANTARGETS)
- 	rm -rf .libs
- 
- cleansubdirs:
---- Makefile.top.orig	2004-08-07 09:29:36.000000000 +0200
-+++ Makefile.top	2007-07-29 03:52:16.000000000 +0200
-@@ -27,6 +27,7 @@
- snmplibdir	= $(datadir)/snmp
- mibdir		= $(snmplibdir)/mibs
- persistentdir	= @PERSISTENT_DIRECTORY@
-+sysconfdir	= @sysconfdir@
- INSTALL_PREFIX  = @INSTALL_PREFIX@
- 
- #
---- acconfig.h.orig	2004-06-28 20:54:17.000000000 +0200
-+++ acconfig.h	2007-07-29 03:52:16.000000000 +0200
-@@ -560,6 +560,9 @@
- /* define if you have getservbyname */
- #undef HAVE_GETSERVBYNAME
- 
-+/* define if you have dlopen */
-+#undef HAVE_DLOPEN
-+
- /* printing system */
- #undef HAVE_LPSTAT
- #undef LPSTAT_PATH
---- acinclude.m4.orig	1970-01-01 01:00:00.000000000 +0100
-+++ acinclude.m4	2007-07-29 03:52:16.000000000 +0200
-@@ -0,0 +1,193 @@
-+dnl @synopsis AC_PROMPT_USER_NO_DEFINE(VARIABLENAME,QUESTION,[DEFAULT])
-+dnl
-+dnl Asks a QUESTION and puts the results in VARIABLENAME with an optional
-+dnl DEFAULT value if the user merely hits return.
-+dnl
-+dnl @version 1.15
-+dnl @author Wes Hardaker <hardaker@users.sourceforge.net>
-+dnl
-+AC_DEFUN([AC_PROMPT_USER_NO_DEFINE],
-+dnl changequote(<<, >>) dnl
-+dnl <<
-+[
-+if test "x$defaults" = "xno"; then
-+echo $ac_n "$2 ($3): $ac_c"
-+read tmpinput
-+if test "$tmpinput" = "" -a "$3" != ""; then
-+  tmpinput="$3"
-+fi
-+eval $1=\"$tmpinput\"
-+else
-+tmpinput="$3"
-+eval $1=\"$tmpinput\"
-+fi
-+]
-+dnl >>
-+dnl changequote([, ])
-+) dnl done AC_PROMPT_USER
-+
-+dnl @synopsis AC_PROMPT_USER(VARIABLENAME,QUESTION,[DEFAULT],QUOTED)
-+dnl
-+dnl Asks a QUESTION and puts the results in VARIABLENAME with an optional
-+dnl DEFAULT value if the user merely hits return.  Also calls 
-+dnl AC_DEFINE_UNQUOTED() on the VARIABLENAME for VARIABLENAMEs that should
-+dnl be entered into the config.h file as well.  If QUOTED is "quoted" then
-+dnl the result will be defined within quotes.
-+dnl
-+dnl @version 1.15
-+dnl @author Wes Hardaker <hardaker@users.sourceforge.net>
-+dnl
-+AC_DEFUN([AC_PROMPT_USER],
-+[
-+MSG_CHECK=`echo "$2" | tail -1`
-+AC_CACHE_CHECK($MSG_CHECK, ac_cv_user_prompt_$1,
-+[echo "" >&AC_FD_MSG
-+AC_PROMPT_USER_NO_DEFINE($1,[$2],$3)
-+eval ac_cv_user_prompt_$1=\$$1
-+echo $ac_n "setting $MSG_CHECK to...  $ac_c" >&AC_FD_MSG
-+])
-+if test "$ac_cv_user_prompt_$1" != "none"; then
-+  if test "x$4" = "xquoted" -o "x$4" = "xQUOTED"; then
-+    AC_DEFINE_UNQUOTED($1,"$ac_cv_user_prompt_$1")
-+  else
-+    AC_DEFINE_UNQUOTED($1,$ac_cv_user_prompt_$1)
-+  fi
-+fi
-+]) dnl
-+
-+dnl @synopsis AC_CHECK_STRUCT_FOR(INCLUDES,STRUCT,MEMBER,DEFINE,[no])
-+dnl
-+dnl Checks STRUCT for MEMBER and defines DEFINE if found.
-+dnl
-+dnl @version 1.15
-+dnl @author Wes Hardaker <hardaker@users.sourceforge.net>
-+dnl
-+AC_DEFUN(AC_CHECK_STRUCT_FOR,[
-+
-+ac_safe_struct=`echo "$2" | sed 'y%./+-%__p_%'`
-+ac_safe_member=`echo "$3" | sed 'y%./+-%__p_%'`
-+ac_safe_all="ac_cv_struct_${ac_safe_struct}_has_${ac_safe_member}"
-+changequote(, )dnl
-+  ac_uc_define=STRUCT_`echo "${ac_safe_struct}_HAS_${ac_safe_member}" | sed 'y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%'`
-+changequote([, ])dnl
-+
-+AC_MSG_CHECKING([for $2.$3])
-+AC_CACHE_VAL($ac_safe_all,
-+[
-+if test "x$4" = "x"; then
-+  defineit="= 0"
-+elif test "x$4" = "xno"; then
-+  defineit=""
-+else
-+  defineit="$4"
-+fi
-+AC_TRY_COMPILE([
-+$1
-+],[
-+struct $2 testit; 
-+testit.$3 $defineit;
-+], eval "${ac_safe_all}=yes", eval "${ac_safe_all}=no" )
-+])
-+
-+if eval "test \"x$`echo ${ac_safe_all}`\" = \"xyes\""; then
-+  AC_MSG_RESULT(yes)
-+  AC_DEFINE_UNQUOTED($ac_uc_define)
-+else
-+  AC_MSG_RESULT(no)
-+fi
-+
-+])
-+
-+dnl AC_CHECK_IFNET_FOR(SUBSTRUCT,[no])
-+AC_DEFUN(AC_CHECK_IFNET_FOR,[
-+dnl check for $1 in struct ifnet
-+AC_CHECK_STRUCT_FOR([
-+#ifdef IFNET_NEEDS_KERNEL
-+#define _KERNEL 1
-+#endif
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#ifdef HAVE_SYS_TIME_H
-+#include <sys/time.h>
-+#endif
-+#include <net/if.h>
-+#ifdef HAVE_NET_IF_VAR_H
-+#include <net/if_var.h>
-+#endif
-+#ifdef HAVE_SYS_QUEUE_H
-+#include <sys/queue.h>
-+#endif
-+#ifdef linux
-+struct ifnet {
-+	char	*if_name;		/* name, e.g. "en" or "lo" */
-+	short	if_unit;		/* sub-unit for lower level driver */
-+	short	if_mtu;			/* maximum transmission unit */
-+	short	if_flags;		/* up/down, broadcast, etc. */
-+	int	if_metric;		/* routing metric (external only) */
-+	char    if_hwaddr [6];		/* ethernet address */
-+	int	if_type;		/* interface type: 1=generic,
-+					   28=slip, ether=6, loopback=24 */
-+	int	if_speed;		/* interface speed: in bits/sec */
-+
-+	struct sockaddr if_addr;	/* interface's address */
-+	struct sockaddr ifu_broadaddr;	/* broadcast address */
-+	struct sockaddr ia_subnetmask; 	/* interface's mask */
-+
-+	struct	ifqueue {
-+		int	ifq_len;
-+		int	ifq_drops;
-+	} if_snd;			/* output queue */
-+	int	if_ibytes;		/* octets received on interface */
-+	int	if_ipackets;		/* packets received on interface */
-+	int	if_ierrors;		/* input errors on interface */
-+        int     if_iqdrops;             /* input queue overruns */
-+	int	if_obytes;		/* octets sent on interface */
-+	int	if_opackets;		/* packets sent on interface */
-+	int	if_oerrors;		/* output errors on interface */
-+	int	if_collisions;		/* collisions on csma interfaces */
-+/* end statistics */
-+	struct	ifnet *if_next;
-+};
-+#endif
-+], ifnet, $1, $2)
-+])
-+
-+dnl
-+dnl Add a search path to the LIBS and CFLAGS variables
-+dnl
-+AC_DEFUN(AC_ADD_SEARCH_PATH,[
-+  if test "x$1" != x -a -d $1; then
-+     if test -d $1/lib; then
-+       LDFLAGS="-L$1/lib $LDFLAGS"
-+     fi
-+     if test -d $1/include; then
-+	CPPFLAGS="-I$1/include $CPPFLAGS"
-+     fi
-+  fi
-+])
-+
-+dnl
-+dnl Store information for displaying later.
-+dnl
-+AC_DEFUN(AC_MSG_CACHE_INIT,[
-+  rm -f configure-summary
-+])
-+
-+AC_DEFUN(AC_MSG_CACHE_ADD,[
-+  cat >> configure-summary << EOF
-+  $1
-+EOF
-+])
-+
-+AC_DEFUN(AC_MSG_CACHE_DISPLAY,[
-+  echo ""
-+  echo "---------------------------------------------------------"
-+  echo "            Net-SNMP configuration summary:"
-+  echo "---------------------------------------------------------"
-+  echo ""
-+  cat configure-summary
-+  echo ""
-+  echo "---------------------------------------------------------"
-+  echo ""
-+])
-+
---- agent/Makefile.in.orig	2003-10-14 15:30:48.000000000 +0200
-+++ agent/Makefile.in	2007-07-29 03:52:16.000000000 +0200
-@@ -82,7 +82,7 @@
- # libnetsnmpagent objects
- LIBAGENTOBJS=snmp_agent.o snmp_vars.o agent_read_config.o \
- 	agent_registry.o agent_index.o agent_trap.o kernel.o \
--	 agent_handler.o @OTHERAGENTLIBOBJS@
-+	 agent_handler.o @OTHERAGENTLIBOBJS@ @WRAPLIBS@
- LLIBAGENTOBJS=snmp_agent.lo snmp_vars.lo agent_read_config.lo \
- 	agent_registry.lo agent_index.lo agent_trap.lo kernel.lo \
- 	agent_handler.lo @OTHERAGENTLIBLOBJS@
-@@ -120,11 +120,11 @@
- 
- 
- libnetsnmpagent.$(LIB_EXTENSION)$(LIB_VERSION):    ${LLIBAGENTOBJS} libnetsnmpmibs.$(LIB_EXTENSION)$(LIB_VERSION)
--	$(LIB_LD_CMD) libnetsnmpagent.$(LIB_EXTENSION)$(LIB_VERSION) ${LLIBAGENTOBJS}  $(LIB_LD_LIBS)
-+	$(LIB_LD_CMD) libnetsnmpagent.$(LIB_EXTENSION)$(LIB_VERSION) ${LLIBAGENTOBJS}  $(LIB_LD_LIBS) $(AGENT_RELINK_LIBS)
- 	$(RANLIB) libnetsnmpagent.$(LIB_EXTENSION)$(LIB_VERSION)
- 
- libnetsnmpmibs.$(LIB_EXTENSION)$(LIB_VERSION):    ${LMIBOBJS}
--	$(LIB_LD_CMD) libnetsnmpmibs.$(LIB_EXTENSION)$(LIB_VERSION) ${LMIBOBJS}  $(LIB_LD_LIBS)
-+	$(LIB_LD_CMD) libnetsnmpmibs.$(LIB_EXTENSION)$(LIB_VERSION) ${LMIBOBJS}  $(LIB_LD_LIBS) $(MIBS_RELINK_LIBS) $(LIBSENSORS)
- 	$(RANLIB) libnetsnmpmibs.$(LIB_EXTENSION)$(LIB_VERSION)
- 
- embedperlinstall:
---- agent/helpers/Makefile.in.orig	2004-03-01 06:26:12.000000000 +0100
-+++ agent/helpers/Makefile.in	2007-07-29 03:52:16.000000000 +0200
-@@ -68,5 +68,5 @@
- all: standardall
- 
- libnetsnmphelpers.$(LIB_EXTENSION)$(LIB_VERSION):    ${LOBJS}
--	$(LIB_LD_CMD) libnetsnmphelpers.$(LIB_EXTENSION)$(LIB_VERSION) ${LOBJS}  $(LIB_LD_LIBS)
-+	$(LIB_LD_CMD) libnetsnmphelpers.$(LIB_EXTENSION)$(LIB_VERSION) ${LOBJS}  $(LIB_LD_LIBS) $(HELPERS_RELINK_LIBS)
- 	$(RANLIB) libnetsnmphelpers.$(LIB_EXTENSION)$(LIB_VERSION)
---- agent/mibgroup/agentx/protocol.h.orig	2002-04-20 09:30:01.000000000 +0200
-+++ agent/mibgroup/agentx/protocol.h	2007-07-29 03:52:16.000000000 +0200
-@@ -10,7 +10,7 @@
-      */
- 
- #define AGENTX_PORT	705
--#define AGENTX_SOCKET	"/var/agentx/master"
-+#define AGENTX_SOCKET	"/var/run/agentx"
- 
-     /*
-      * AgentX versions 
---- agent/mibgroup/mibII/interfaces.c.orig	2004-07-23 02:55:41.000000000 +0200
-+++ agent/mibgroup/mibII/interfaces.c	2007-07-29 03:52:17.000000000 +0200
-@@ -1512,14 +1512,28 @@
-     struct ifreq    ifrq;
-     struct ifnet  **ifnetaddr_ptr;
-     FILE           *devin;
--    unsigned long   rec_pkt, rec_oct, rec_err, rec_drop;
--    unsigned long   snd_pkt, snd_oct, snd_err, snd_drop, coll;
-     int             i, fd;
-     conf_if_list   *if_ptr;
-+#ifdef SCNuMAX
-+    uintmax_t       rec_pkt, rec_oct, rec_err, rec_drop, rec_mcast;
-+    uintmax_t       snd_pkt, snd_oct, snd_err, snd_drop, coll;
-+    const char     *scan_line_2_2 =
-+        "%"   SCNuMAX " %"  SCNuMAX " %"  SCNuMAX " %"  SCNuMAX
-+        " %*" SCNuMAX " %*" SCNuMAX " %*" SCNuMAX " %*" SCNuMAX
-+        " %"  SCNuMAX " %"  SCNuMAX " %"  SCNuMAX " %"  SCNuMAX
-+        " %*" SCNuMAX " %"  SCNuMAX;
-+    const char     *scan_line_2_0 =
-+        "%"   SCNuMAX " %"  SCNuMAX " %*" SCNuMAX " %*" SCNuMAX
-+        " %*" SCNuMAX " %"  SCNuMAX " %"  SCNuMAX " %*" SCNuMAX
-+        " %*" SCNuMAX " %"  SCNuMAX;
-+#else
-+    unsigned long   rec_pkt, rec_oct, rec_err, rec_drop;
-+    unsigned long   snd_pkt, snd_oct, snd_err, snd_drop, coll;
-     const char     *scan_line_2_2 =
-         "%lu %lu %lu %lu %*lu %*lu %*lu %*lu %lu %lu %lu %lu %*lu %lu";
-     const char     *scan_line_2_0 =
-         "%lu %lu %*lu %*lu %*lu %lu %lu %*lu %*lu %lu";
-+#endif
-     const char     *scan_line_to_use;
-     struct timeval et;                              /* elapsed time */
- 
-@@ -1598,6 +1612,10 @@
-         struct ifnet   *nnew;
-         char           *stats, *ifstart = line;
- 
-+	/* Ignore interfaces with no statistics. */
-+	if (strstr(line, "No statistics available."))
-+	    continue;
-+
-         if (line[strlen(line) - 1] == '\n')
-             line[strlen(line) - 1] = '\0';
- 
-@@ -1631,7 +1649,7 @@
-                                                &coll) != 5)) {
-             if ((scan_line_to_use == scan_line_2_2)
-                 && !strstr(line, "No statistics available"))
--                snmp_log(LOG_ERR,
-+                snmp_log(LOG_DEBUG,
-                          "/proc/net/dev data format error, line ==|%s|",
-                          line);
-             continue;
---- agent/mibgroup/smux/smux.c.orig	2004-02-04 12:25:20.000000000 +0100
-+++ agent/mibgroup/smux/smux.c	2007-07-29 03:52:17.000000000 +0200
-@@ -819,14 +819,14 @@
-     passwd[string_len] = '\0';
-     if (!smux_auth_peer(oid_name, oid_name_len, passwd, fd)) {
-         snmp_log(LOG_WARNING,
--                 "refused smux peer: oid %s, password %s, descr %s\n",
--                 oid_print, passwd, descr);
-+                 "refused smux peer: oid %s, descr %s\n",
-+                 oid_print, descr);
-         *fail = TRUE;
-         return ptr;
-     }
-     snmp_log(LOG_INFO,
--             "accepted smux peer: oid %s, password %s, descr %s\n",
--             oid_print, passwd, descr);
-+             "accepted smux peer: oid %s, descr %s\n",
-+             oid_print, descr);
-     *fail = FALSE;
-     return ptr;
- }
---- apps/Makefile.in.orig	2004-03-09 16:51:28.000000000 +0100
-+++ apps/Makefile.in	2007-07-29 03:52:17.000000000 +0200
-@@ -129,7 +129,7 @@
- 	$(LINK) -o $@ snmpdf.$(OSUFFIX) $(LOCAL_LIBS) ${LDFLAGS} ${LIBS} 
- 
- libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION): $(LLIBTRAPD_OBJS)
--	$(LIB_LD_CMD) libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION) ${LLIBTRAPD_OBJS}  $(LIB_LD_LIBS)
-+	$(LIB_LD_CMD) libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION) ${LLIBTRAPD_OBJS}  $(LIB_LD_LIBS) $(TRAPD_RELINK_LIBS)
- 	$(RANLIB) libnetsnmptrapd.$(LIB_EXTENSION)$(LIB_VERSION)
- 
- snmpinforminstall:
---- apps/snmpnetstat/if.c.orig	2002-04-20 09:30:10.000000000 +0200
-+++ apps/snmpnetstat/if.c	2007-07-29 03:52:17.000000000 +0200
-@@ -300,8 +300,9 @@
-             case IFINDEX:
-                 ifindex = *var->val.integer;
-                 for (cur_if = if_table;
--                     cur_if->ifindex != ifindex && cur_if->ifindex != 0;
--                     cur_if++);
-+                     cur_if < (if_table + cfg_nnets) &&
-+                     cur_if->ifindex != ifindex &&
-+                     cur_if->ifindex != 0; cur_if++);
-                 if (cur_if >= (if_table + cfg_nnets)) {
-                     fprintf(stderr,
-                             "Inconsistent reponse from server. Aborting\n");
-@@ -492,8 +493,14 @@
-             case IPIFINDEX:
-                 ifindex = *var->val.integer;
-                 for (cur_if = if_table;
--                     cur_if->ifindex != ifindex && cur_if->ifindex != 0;
--                     cur_if++);
-+                     cur_if < (if_table + cfg_nnets) &&
-+                     cur_if->ifindex != ifindex &&
-+                     cur_if->ifindex != 0; cur_if++);
-+                if (cur_if >= (if_table + cfg_nnets)) {
-+                    fprintf(stderr,
-+                            "Inconsistent reponse from server. Aborting.\n");
-+                    exit(0);
-+                }
-                 cur_if->ifindex = ifindex;
-                 break;
-             case IPADDR:
-@@ -567,8 +574,14 @@
-             case IFINDEX:
-                 ifindex = *var->val.integer;
-                 for (cur_if = if_table;
--                     cur_if->ifindex != ifindex && cur_if->ifindex != 0;
--                     cur_if++);
-+                     cur_if < (if_table + cfg_nnets) &&
-+                     cur_if->ifindex != ifindex &&
-+                     cur_if->ifindex != 0; cur_if++);
-+                if (cur_if >= (if_table + cfg_nnets)) {
-+                    fprintf(stderr,
-+                            "Inconsistent reponse from server. Aborting.\n");
-+                    exit(0);
-+                }
-                 cur_if->ifindex = ifindex;
-                 break;
-             case INOCTETS:
---- configure.in.orig	2004-06-23 00:06:40.000000000 +0200
-+++ configure.in	2007-07-29 03:52:17.000000000 +0200
-@@ -161,6 +161,9 @@
-     AC_DEFINE(SNMP_NO_DEBUGGING)
- fi
- 
-+AC_ARG_WITH(rpm,
-+[  --without-rpm                   Don't use RPM even if available.])
-+
- AC_ARG_WITH(dmalloc,
- [  --with-dmalloc=PATH             Use dmalloc library (www.dmalloc.com)],
-     if test "x$withval" = "xyes"; then
-@@ -1539,12 +1542,13 @@
-          AC_CHECK_LIB(RSAglue, RSA_PKCS1_RSAref)
-       fi
- 
--      AC_CHECK_LIB(crypto, EVP_md5)
-+      AC_CHECK_LIB(crypto, EVP_md5, [CRYPTOLIBS=-lcrypto], , )
-       AC_CHECK_FUNCS(AES_cfb128_encrypt)
-     fi
- elif test "x$askedpkcs" = "xyes"; then
-     AC_CHECK_LIB(pkcs11, C_Initialize)
- fi
-+AC_SUBST(CRYPTOLIBS)
- 
- # Check for libraries that the agent needs
- # saving old libraries
-@@ -1664,8 +1668,9 @@
- # Replace `main' with a function in -lkvm:
- AC_CHECK_LIB(kvm, kvm_read)
- # DYNAMIC MODULE SUPPORT
--AC_CHECK_LIB(dl, dlopen)
--AC_CHECK_FUNCS(dlopen)
-+AC_CHECK_FUNC(dlopen, AC_DEFINE(HAVE_DLOPEN),
-+	AC_CHECK_LIB(dl, dlopen, AC_DEFINE(HAVE_DLOPEN)
-+	LIBS="${LIBS} -ldl"))
- 
- AC_CHECK_FUNCS(kvm_openfiles nlist knlist kvm_getprocs)
- echo "$with_mib_modules" | grep "ucd-snmp/diskio" >/dev/null
-@@ -1979,7 +1984,7 @@
- 
- AC_MSG_RESULT([$ac_cv_type_ssize_t])
- if test $ac_cv_type_ssize_t = yes; then
--  AC_DEFINE(HAVE_SSIZE_T)
-+  AC_DEFINE(HAVE_SSIZE_T, 1, [Define if type ssize_t is available])
- fi
- 
- # Check ps args
---- local/Makefile.in.orig	2003-12-20 05:38:17.000000000 +0100
-+++ local/Makefile.in	2007-07-29 03:52:17.000000000 +0200
-@@ -58,7 +58,7 @@
- 
- mib2c.made: $(srcdir)/mib2c
- 	if test "x$(PERLPROG)" != "x" ; then \
--	  $(PERLPROG) -p -e 's%^#!.*/perl.*%#!$(PERLPROG)%;s#/usr/local/share/snmp#$(snmplibdir)#;' ${srcdir}/mib2c > mib2c.made; \
-+	  $(PERLPROG) -p -e 's%^#!.*/perl.*%#!$(PERLPROG)%;s#/usr/local/share/snmp#$(snmplibdir)#;s#/usr/local/etc/snmp#$(SNMPCONFPATH)#;' ${srcdir}/mib2c > mib2c.made; \
- 	else \
- 	  touch mib2c.made; \
-         fi
---- local/mib2c.orig	2004-06-15 16:26:37.000000000 +0200
-+++ local/mib2c	2007-07-29 03:52:17.000000000 +0200
-@@ -56,7 +56,8 @@
- if($ENV{MIB2C_DIR}) {
-   push @def_search_dirs, $ENV{MIB2C_DIR};
- }
--push @def_search_dirs, "/usr/local/share/snmp/";
-+push @def_search_dirs, "/etc/snmp/";
-+push @def_search_dirs, "/usr/share/snmp/";
- 
- 
- sub usage {
---- man/mib2c.1.def.orig	2003-10-02 20:04:19.000000000 +0200
-+++ man/mib2c.1.def	2007-07-29 03:52:17.000000000 +0200
-@@ -72,8 +72,9 @@
- .TP
- .BI -c " CONFIGFILE"
- Use CONFIGFILE when generating code.  These files will be searched for
--first in the current directory and then in the DATADIR directory
--(which is where the default mib2c configuration files can be found).
-+first in the current directory and then in /etc/snmp
-+(which is where the default mib2c configuration files can be found)
-+and finally in the DATADIR directory.
- Running mib2c without the -c CONFIGFILE option will display
- a description of the valid values for CONFIGFILE, that is,
- the available config files, including new ones that you might
---- man/mib_api.3.def.orig	2004-04-15 00:41:32.000000000 +0200
-+++ man/mib_api.3.def	2007-07-29 03:52:17.000000000 +0200
-@@ -5,7 +5,7 @@
- add_module_replacement,
- read_module, read_mib, read_all_mibs,
- read_objid, read_module_node,
--get_module_node, read_objid
-+get_module_node
- snmp_set_mib_warnings, snmp_set_save_descriptions,
- shutdown_mib,
- print_mib,
-@@ -34,9 +34,9 @@
- .PP
- .BI "void print_mib(FILE *" "fp" );
- .PP
--.BI "int read_objid(char *" "input" ", oid *" "output" ", int *" "out_len" );
-+.BI "int read_objid(char *" "input" ", oid *" "output" ", size_t *" "out_len" );
- .br
--.BI "int get_module_node(char *" "name" ", char *" "module" ", oid *" "objid" ", int *" "objidlen" );
-+.BI "int get_module_node(char *" "name" ", char *" "module" ", oid *" "objid" ", size_t *" "objidlen" );
- .PP
- .BI "void print_variable(const oid *" "objid" ", size_t " "objidlen" ", struct variable_list *" "variable" );
- .br
---- man/snmp_config.5.def.orig	2003-12-10 11:41:41.000000000 +0100
-+++ man/snmp_config.5.def	2007-07-29 03:52:17.000000000 +0200
-@@ -11,7 +11,7 @@
- found and read from.  By default, the applications look for
- configuration files in the following 4 directories, in order:
- SYSCONFDIR/snmp,
--DATADIR/snmp, LIBDIR/snmp, and $HOME/.snmp.  In each of these
-+/etc/snmp, LIBDIR/snmp, and $HOME/.snmp.  In each of these
- directories, it looks for files with the extension of both
- .IR conf " and " local.conf
- (reading the second ones last).  In this manner, there are
---- man/snmp_trap_api.3.def.orig	2003-09-29 04:58:18.000000000 +0200
-+++ man/snmp_trap_api.3.def	2007-07-29 03:52:17.000000000 +0200
-@@ -1,8 +1,7 @@
- .TH SNMP_TRAP_API 3 "7 Mar 2002" VVERSIONINFO "Net-SNMP"
- .UC 5
- .SH NAME
--send_easy_trap, send_trap_vars, send_v2trap - send TRAPs or INFORMs
--from a Net-SNMP MIB module
-+send_easy_trap, send_trap_vars, send_v2trap - send TRAPs or INFORMs from a Net-SNMP MIB module
- .SH SYNOPSIS
- .B #include <net-snmp/agent/agent_trap.h>
- .PP
---- mibs/BGP4-MIB.txt.orig	1970-01-01 01:00:00.000000000 +0100
-+++ mibs/BGP4-MIB.txt	2007-07-29 03:52:17.000000000 +0200
+--- /dev/null
++++ mibs/BGP4-MIB.txt
 @@ -0,0 +1,929 @@
 +    BGP4-MIB DEFINITIONS ::= BEGIN
 +
@@ -1694,8 +930,8 @@
 +            ::= { bgpMIBGroups 5 }
 +
 +    END
---- mibs/BRIDGE-MIB.txt.orig	1970-01-01 01:00:00.000000000 +0100
-+++ mibs/BRIDGE-MIB.txt	2007-07-29 03:52:17.000000000 +0200
+--- /dev/null
++++ mibs/BRIDGE-MIB.txt
 @@ -0,0 +1,1075 @@
 +BRIDGE-MIB DEFINITIONS ::= BEGIN
 +
@@ -2772,9 +2008,9 @@
 +    ::= 2
 +
 +END
---- mibs/GNOME-SMI.txt.orig	1970-01-01 01:00:00.000000000 +0100
-+++ mibs/GNOME-SMI.txt	2007-07-29 03:52:17.000000000 +0200
-@@ -0,0 +1,72 @@
+--- /dev/null
++++ mibs/GNOME-SMI.txt
+@@ -0,0 +1,88 @@
 +GNOME-SMI DEFINITIONS ::= BEGIN
 +
 +IMPORTS
@@ -2784,7 +2020,7 @@
 +		FROM SNMPv2-SMI;
 +
 +gnome MODULE-IDENTITY
-+	LAST-UPDATED "200312070000Z"
++	LAST-UPDATED "200709070000Z"
 +	ORGANIZATION "GNOME project"
 +	CONTACT-INFO
 +		"GNU Network Object Model Environment project
@@ -2795,8 +2031,8 @@
 +		Administrative contact for MIB module:
 +
 +		Jochen Friedrich
-+		Buedingerstr. 30b
-+		63546 Hammersbach
++		Ramsaystr. 9
++		63450 Hanau
 +		Germany 
 +
 +		email: jochen@scram.de"
@@ -2805,16 +2041,25 @@
 +
 +	-- revision history
 +
-+	REVISION "9809010000Z"  -- September 01, 1998
++	REVISION "200709070000Z"  -- Sep 07, 2007
 +	DESCRIPTION
-+		"Initial version."
++		"Fixed wrong enterprise number (how comes this
++		typo was unnoticed for so long?)."
++
++	REVISION "200505070000Z"  -- May 07, 2005
++	DESCRIPTION
++		"Added gnomeLDAP subtree for LDAP definitions."
 +
 +	REVISION "200312070000Z"  -- December 07, 2003
 +	DESCRIPTION
 +		"Added gnomeSysadmin subtree for GNOME project system administration.
 +		Updated contact info."
 +
-+	::= { enterprises 3317 }	-- assigned by IANA
++	REVISION "9809010000Z"  -- September 01, 1998
++	DESCRIPTION
++		"Initial version."
++
++	::= { enterprises 3319 }	-- assigned by IANA
 +
 +gnomeProducts OBJECT-IDENTITY
 +	STATUS	current
@@ -2844,30 +2089,18 @@
 +		MIB registrations."
 +	::= { gnome 4 }
 +
++gnomeLDAP OBJECT-IDENTITY
++	STATUS  current
++	DESCRIPTION
++		"gnomeLDAP defines the subtree for GNOME related LDAP
++		registrations."
++	::= { gnome 5 }
++
 +-- more to come if necessary.
 +
 +END
---- mibs/Makefile.in.orig	2004-06-18 20:11:15.000000000 +0200
-+++ mibs/Makefile.in	2007-07-29 03:52:17.000000000 +0200
-@@ -43,11 +43,15 @@
- UCDMIBS = UCD-SNMP-MIB.txt UCD-DEMO-MIB.txt UCD-IPFWACC-MIB.txt \
- 	UCD-DLMOD-MIB.txt UCD-DISKIO-MIB.txt
- 
-+EXTRAMIBS = BGP4-MIB.txt BRIDGE-MIB.txt GNOME-SMI.txt OSPF-MIB.txt \
-+	OSPF-TRAP-MIB.txt RIPv2-MIB.txt SOURCE-ROUTING-MIB.txt \
-+	LM-SENSORS-MIB.txt
-+
- DEFAULTMIBS = @default_mibs_install@
- 
- MIBS	= $(V1MIBS) $(V2MIBS) $(V3MIBS) $(RFCMIBS) \
- 	$(AGENTMIBS) $(IANAMIBS) \
--	$(NETSNMPMIBS) $(UCDMIBS) $(DEFAULTMIBS)
-+	$(NETSNMPMIBS) $(UCDMIBS) $(DEFAULTMIBS) $(EXTRAMIBS)
- 
- all: standardall
- 
---- mibs/OSPF-MIB.txt.orig	1970-01-01 01:00:00.000000000 +0100
-+++ mibs/OSPF-MIB.txt	2007-07-29 03:52:17.000000000 +0200
+--- /dev/null
++++ mibs/OSPF-MIB.txt
 @@ -0,0 +1,2723 @@
 +OSPF-MIB DEFINITIONS ::= BEGIN
 +
@@ -5592,8 +4825,8 @@
 +       ::= { ospfGroups 13 }
 +
 +END
---- mibs/OSPF-TRAP-MIB.txt.orig	1970-01-01 01:00:00.000000000 +0100
-+++ mibs/OSPF-TRAP-MIB.txt	2007-07-29 03:52:17.000000000 +0200
+--- /dev/null
++++ mibs/OSPF-TRAP-MIB.txt
 @@ -0,0 +1,443 @@
 +OSPF-TRAP-MIB DEFINITIONS ::= BEGIN
 +
@@ -6038,8 +5271,8 @@
 +
 +
 +END
---- mibs/RIPv2-MIB.txt.orig	1970-01-01 01:00:00.000000000 +0100
-+++ mibs/RIPv2-MIB.txt	2007-07-29 03:52:17.000000000 +0200
+--- /dev/null
++++ mibs/RIPv2-MIB.txt
 @@ -0,0 +1,530 @@
 +   RIPv2-MIB DEFINITIONS ::= BEGIN
 +
@@ -6571,8 +5804,8 @@
 +       "This group defines peer information for RIP-II systems."
 +    ::= { rip2Groups 4 }
 +END
---- mibs/SOURCE-ROUTING-MIB.txt.orig	1970-01-01 01:00:00.000000000 +0100
-+++ mibs/SOURCE-ROUTING-MIB.txt	2007-07-29 03:52:17.000000000 +0200
+--- /dev/null
++++ mibs/SOURCE-ROUTING-MIB.txt
 @@ -0,0 +1,452 @@
 +SOURCE-ROUTING-MIB DEFINITIONS ::= BEGIN
 +
@@ -7026,163 +6259,3 @@
 +    ::= { dot1dPortPairEntry 4 }
 +
 +END
---- net-snmp-config.in.orig	2004-06-17 15:39:28.000000000 +0200
-+++ net-snmp-config.in	2007-07-29 03:52:17.000000000 +0200
-@@ -113,13 +113,13 @@
-     #################################################### client lib
-     --libs)
-       # use this one == --netsnmp-libs + --external-libs
--      echo $NSC_LDFLAGS $NSC_LIBDIR -lnetsnmp $NSC_LIBS
-+      echo $NSC_LDFLAGS $NSC_LIBDIR -lnetsnmp $NSC_LIBS @WRAPLIBS@
-       ;;
-     --netsnmp-libs)
-       echo $NSC_LIBDIR -lnetsnmp
-       ;;
-     --external-libs)
--      echo $NSC_LDFLAGS $NSC_LIBS
-+      echo $NSC_LDFLAGS $NSC_LIBS @WRAPLIBS@
-       ;;
-     #################################################### agent lib
-     --base-agent-libs)
-@@ -130,13 +130,13 @@
-       ;;
-     --agent-libs)
-       # use this one == --netsnmp-agent-libs + --external-libs
--      echo $NSC_LDFLAGS $NSC_LIBDIR $NSC_BASE_AGENT_LIBS $NSC_AGENTLIBS
-+      echo $NSC_LDFLAGS $NSC_LIBDIR $NSC_BASE_AGENT_LIBS $NSC_AGENTLIBS @WRAPLIBS@
-       ;;
-     --netsnmp-agent-libs)
-       echo $NSC_LIBDIR $NSC_BASE_AGENT_LIBS
-       ;;
-     --external-agent-libs)
--      echo $NSC_LDFLAGS $NSC_AGENTLIBS
-+      echo $NSC_LDFLAGS $NSC_AGENTLIBS @WRAPLIBS@
-       ;;
-     ####################################################
-     --version)
-@@ -409,7 +409,7 @@
-         echo "Ack.  Can't create $tmpfile."
- 	exit 1
-       fi
--      cmd="@CC@ $cflags @CFLAGS@ @DEVFLAGS@ -I. -I@includedir@ -o $outname $tmpfile $cfiles $NSC_LDFLAGS -L$NSC_EXEC_PREFIX/lib -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs -lnetsnmp $NSC_AGENTLIBS $ldflags"
-+      cmd="@CC@ $cflags @CFLAGS@ @DEVFLAGS@ -I. -I@includedir@ -o $outname $tmpfile $cfiles $NSC_LDFLAGS -L$NSC_EXEC_PREFIX/lib -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs -lnetsnmp $NSC_AGENTLIBS @WRAPLIBS@ $ldflags"
-       echo "running: $cmd"
-       `$cmd`
-       if test "x$norm" != "x1" ; then
---- perl/agent/netsnmp_request_infoPtr.pm.orig	2002-09-19 22:38:24.000000000 +0200
-+++ perl/agent/netsnmp_request_infoPtr.pm	2007-07-29 03:52:17.000000000 +0200
-@@ -4,6 +4,7 @@
- 
- 1;
- __END__
-+
- =head1 NAME
- 
- NetSNMP::agent::netsnmp_request_infoPtr - Perl extension for request information
---- snmplib/Makefile.in.orig	2004-03-04 14:41:19.000000000 +0100
-+++ snmplib/Makefile.in	2007-07-29 03:52:17.000000000 +0200
-@@ -178,11 +178,11 @@
- 
- # how to build the libraries.
- libnetsnmp.$(LIB_EXTENSION)$(LIB_VERSION):    ${TOBJS}
--	$(LIB_LD_CMD) libnetsnmp.$(LIB_EXTENSION)$(LIB_VERSION) ${TOBJS}
-+	$(LIB_LD_CMD) libnetsnmp.$(LIB_EXTENSION)$(LIB_VERSION) ${TOBJS} @CRYPTOLIBS@
- 	$(RANLIB) libnetsnmp.$(LIB_EXTENSION)$(LIB_VERSION)
- 
- libsnmp.$(LIB_EXTENSION)$(LIB_VERSION):    ${TOBJS}
--	$(LIB_LD_CMD) libsnmp.$(LIB_EXTENSION)$(LIB_VERSION) ${TOBJS}
-+	$(LIB_LD_CMD) libsnmp.$(LIB_EXTENSION)$(LIB_VERSION) ${TOBJS} @CRYPTOLIBS@
- 	$(RANLIB) libsnmp.$(LIB_EXTENSION)$(LIB_VERSION)
- 
- #
---- snmplib/snmpUDPDomain.c.orig	2004-07-07 14:21:32.000000000 +0200
-+++ snmplib/snmpUDPDomain.c	2007-07-29 03:52:17.000000000 +0200
-@@ -233,18 +233,6 @@
-         netsnmp_transport_free(t);
-         return NULL;
-     }
--#ifdef  SO_BSDCOMPAT
--    /*
--     * Patch for Linux.  Without this, UDP packets that fail get an ICMP
--     * response.  Linux turns the failed ICMP response into an error message
--     * and return value, unlike all other OS's.  
--     */
--    {
--        int             one = 1;
--        setsockopt(t->sock, SOL_SOCKET, SO_BSDCOMPAT, (void *) &one,
--                   sizeof(one));
--    }
--#endif                          /*SO_BSDCOMPAT */
-     /*
-      * SO_REUSEADDR will allow multiple apps to open the same port at
-      * the same time. Only the last one to open the socket will get
---- snmplib/snmpUDPIPv6Domain.c.orig	2004-07-22 19:45:00.000000000 +0200
-+++ snmplib/snmpUDPIPv6Domain.c	2007-07-29 03:52:17.000000000 +0200
-@@ -249,17 +249,6 @@
-         netsnmp_transport_free(t);
-         return NULL;
-     }
--#ifdef  SO_BSDCOMPAT
--    /*
--     * Patch for Linux.  Without this, UDP packets that fail get an ICMP
--     * response.  Linux turns the failed ICMP response into an error message
--     * and return value, unlike all other OS's.  
--     */
--    {
--        int             one = 1;
--        setsockopt(t->sock, SOL_SOCKET, SO_BSDCOMPAT, &one, sizeof(one));
--    }
--#endif                          /*SO_BSDCOMPAT */
- 
-     /*
-      * Try to set the send and receive buffers to a reasonably large value, so
---- snmplib/snmp_logging.c.orig	2004-03-31 03:06:08.000000000 +0200
-+++ snmplib/snmp_logging.c	2007-07-29 03:52:17.000000000 +0200
-@@ -860,13 +860,14 @@
-     } else {
-         strcpy(sbuf, "");
-     }
--    newline = string[strlen(string) - 1] == '\n';	/* XXX - Eh ? */
- 
-     if (logh->imagic)
-        printf(         "%s%s", sbuf, string);
-     else
-        fprintf(stderr, "%s%s", sbuf, string);
- 
-+    newline = string[strlen(string) - 1] == '\n';	/* XXX - Eh ? */
-+
-     return 1;
- }
- 
---- snmplib/winservice.mc.orig	2002-04-20 09:30:21.000000000 +0200
-+++ snmplib/winservice.mc	2007-07-29 03:52:17.000000000 +0200
-@@ -1,11 +1,11 @@
--;//Message catalog for Windows Serivce Support routines
--;//To support event logging functionality
--;//By Raju Krishnappa(raju_krishnappa@yahoo.com)
--
--;//Message ID descriptions
--
--MessageId=100
--SymbolicName=DISPLAY_MSG
--Language=English
--%1.
--.
-+;//Message catalog for Windows Serivce Support routines
-+;//To support event logging functionality
-+;//By Raju Krishnappa(raju_krishnappa@yahoo.com)
-+
-+;//Message ID descriptions
-+
-+MessageId=100
-+SymbolicName=DISPLAY_MSG
-+Language=English
-+%1.
-+.
---- snmplib/winservice.rc.orig	2002-04-20 09:30:21.000000000 +0200
-+++ snmplib/winservice.rc	2007-07-29 03:52:17.000000000 +0200
-@@ -1,2 +1,2 @@
--LANGUAGE 0x9,0x1
--1 11 MSG00001.bin
-+LANGUAGE 0x9,0x1
-+1 11 MSG00001.bin
