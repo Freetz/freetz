@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 5.4.2.1)
+$(call PKG_INIT_BIN, 5.4.3)
 $(PKG)_SOURCE:=net-snmp-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=3513e39ee1a9d6c7581c508810b818f9
 $(PKG)_SITE:=@SF/net-snmp
-$(PKG)_SOURCE_MD5:=984932520143f0c8bf7b7ce1fc9e1da1
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/snmpd
@@ -114,6 +114,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(NETSNMP_DIR)
+#		LDFLAGS="$(TARGET_LDFLAGS) -lm -ldl"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
