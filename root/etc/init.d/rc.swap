@@ -4,12 +4,6 @@ DAEMON=swap
 CONF_NAME=mod
 . /etc/init.d/modlibrc
 
-case $1 in
-	autost*)
-		modlib_loadconfig
-		;;
-esac
-
 has_swap() {
 	sed '1d' /proc/swaps | grep -q ''
 }
@@ -54,13 +48,13 @@ stop() {
 }
 
 autohelper() {
-		if [ $# -ne 2 ]; then
-			echo "Usage: $0 [autostart|autostop] [file or partition]" 1>&2
-			return 1
-		fi
-		echo "$MOD_SWAP_FILE" | grep -q $2 || return
-		[ "$MOD_SWAP" != yes ] && return
-		$1 >> /var/log/mod_swap.log
+	if [ $# -ne 2 ]; then
+		echo "Usage: $0 [autostart|autostop] [file or partition]" 1>&2
+		return 1
+	fi
+	echo "$MOD_SWAP_FILE" | grep -q $2 || return
+	[ "$MOD_SWAP" != yes ] && return
+	$1 >> /var/log/mod_swap.log
 }
 
 case $1 in

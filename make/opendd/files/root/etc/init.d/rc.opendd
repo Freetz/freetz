@@ -4,12 +4,6 @@ DAEMON=opendd
 DAEMON_LONG_NAME=OpenDD
 . /etc/init.d/modlibrc
 
-case $1 in
-	run|cron)
-		modlib_loadconfig
-		;;
-esac
-
 PEM=/tmp/flash/opendd/opendd.pem
 
 set_cron() {

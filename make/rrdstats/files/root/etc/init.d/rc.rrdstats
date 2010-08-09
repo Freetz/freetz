@@ -7,12 +7,6 @@ PID_FILE=/var/run/${DAEMON}.pid
 HTTPD_PID_RRD=/var/run/webcfg-rrd.pid
 HTTPD_PID_ONE=/var/run/webcfg-one.pid
 
-case $1 in
-	backup|restore|status_webcfg-*)
-		modlib_loadconfig
-		;;
-esac
-
 config() {
 	for SUBDAEMON in rrd one; do
 		(

@@ -2,11 +2,10 @@
 
 scriptname=$0
 DAEMON=${scriptname##*/rc.}
-
 . /etc/init.d/modlibrc
 
 mypidof() {
-ps | grep $1 | grep /m[o]d/etc/${1}.conf | sed 's/^[ ]*//; s/\([0-9]*\)[ ].*/\1/' 
+	ps | grep $1 | grep /m[o]d/etc/${1}.conf | sed 's/^[ ]*//; s/\([0-9]*\)[ ].*/\1/' 
 }
 
 if [ ! -e /var/tmp/.openvpnfirstrun ]; then
@@ -17,16 +16,10 @@ fi
 
 case $1 in
 	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
-			exit 1
-		fi
-
 		modlib_addgroup openvpn
 		modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
 		mkdir -p /tmp/openvpn/etc
 		cp -f /etc/resolv.conf /tmp/openvpn/etc
-		modlib_loadconfig
 		;;
 esac
 

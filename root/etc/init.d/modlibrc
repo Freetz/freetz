@@ -34,6 +34,12 @@ stop() {
 	return 127
 }
 
+# reload:
+#   dummy function if "reload" is not defined in parent-script 
+reload() {
+	return 127
+}
+
 
 # modlib_addgroup:
 #   check for group name, create group if not found.
@@ -237,6 +243,7 @@ modlib_stop()
 # modlib_reload
 #   reloads the daemon with SIGHUP
 #   if available runs "config" of rc.$DAEMON
+#	reloads daemon with "reload" of rc.$DAEMON if available
 modlib_reload()
 {
 	local fn=$PID_FILE
@@ -245,8 +252,16 @@ modlib_reload()
 	case $? in
 		1)
 			config
-			kill -HUP $(cat "$fn") 2> /dev/null
+
+			reload 1
 			local status=$?
+			if [ $status -ne 127 ]; then
+				sleep 1
+			else
+				kill -HUP $(cat "$fn") 2> /dev/null
+				local status=$?
+			fi
+
 			if [ $status -eq 0 ]; then
 				echo 'done.'
 				return 0
@@ -262,7 +277,8 @@ modlib_reload()
 			;;
 		5)
 			config
-			killall -HUP $DAEMON_BIN 2>/dev/null 1>&2
+			reload 5
+			[ $? -eq 127 ] && killall -HUP $DAEMON_BIN 2>/dev/null 1>&2
 			echo 'inetd.'
 			return 0
 			;;
@@ -303,18 +319,6 @@ modlib_status()
 			;;
 	esac
 	return $retval
-}
-
-# modlib_loadconfig
-#    loads the configuration
-modlib_loadconfig()
-{
-	local CONF_FILE="/mod/etc/conf/${1-$CONF_NAME}.cfg"
-	if [ ! -r "$CONF_FILE" ]; then
-		echo "Error[${DAEMON_LONG_NAME}]: not configured" 1>&2
-		exit 1
-	fi
-	. "$CONF_FILE"
 }
 
 # modlib_startdaemon
@@ -387,11 +391,17 @@ modlib_start()
 	return 1
 }
 
+# modlib_loadconfig
+#    loads the configuration
+modlib_loadconfig()
+{
+	local CONF_FILE="/mod/etc/conf/${1-$CONF_NAME}.cfg"
+	if [ ! -r "$CONF_FILE" ]; then
+		echo "Error[${DAEMON_LONG_NAME}]: not configured" 1>&2
+		exit 1
+	fi
+	. "$CONF_FILE"
+}
+
 # load config
-if [ -n "$DAEMON" ]; then
-	case $1 in
-		""|load|unload|start|stop|restart|reload|status|config)
-			modlib_loadconfig
-			;;
-	esac
-fi
+[ -n "$DAEMON" ] && modlib_loadconfig
