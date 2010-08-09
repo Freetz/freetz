@@ -14,10 +14,15 @@ _cgi_id() {
 include() {
     source /usr/lib/mod/cgi/$1.sh
 }
+include cache
 include html
 include form
 include links
-include menu
+if [ "$MOD_DEV_NEW_MENU" = yes ]; then
+    include menu-new
+else
+    include menu
+fi
 include page
 include stat_bar
 include error

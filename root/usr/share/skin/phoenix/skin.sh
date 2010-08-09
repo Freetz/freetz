@@ -48,6 +48,7 @@ cat << EOF
 EOF
 }
 
+if [ "$MOD_DEV_NEW_MENU" = no ]; then
 _cgi_print_menu() {
 	local id=$1 sub= act_sub=
 	case $id in
@@ -60,3 +61,4 @@ _cgi_print_menu() {
 
 	_cgi_cached "menu_$sub" _cgi_menu "$sub" | _cgi_mark_active "$act_sub|$id"
 }
+fi
