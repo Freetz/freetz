@@ -6,7 +6,8 @@ print_error() {
 # complete error page
 cgi_error() {
 	local message=$1 id=$2
-	cgi_begin '$(lang de:"Fehler" en:"Error")' $id
+	cgi --id="$id"
+	cgi_begin '$(lang de:"Fehler" en:"Error")'
 	print_error "$message"
 	cgi_end
 }

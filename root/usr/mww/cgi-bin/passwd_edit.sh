@@ -1,4 +1,5 @@
-cgi_begin 'Passwort' 'password'
+cgi --id=password
+cgi_begin 'Passwort'
 
 cat << EOF
 <script type=text/javascript>

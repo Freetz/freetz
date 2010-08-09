@@ -7,7 +7,8 @@ stat_button() {
 	echo "<form action='/cgi-bin/exec.cgi/$1' method='post'><p><input type='submit' value='$2'></p></form>"
 }
 
-cgi_begin 'System' system
+cgi --id=system
+cgi_begin 'System'
 
 echo "<h1>$(lang de:"Box neustarten" en:"Restart box")</h1>"
 stat_button reboot '$(lang de:"Reboot" en:"Reboot")'

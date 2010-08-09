@@ -7,7 +7,8 @@ eval "$(modcgi oldpassword:password:replay mod_cgi)"
 } | modpasswd freetz > /dev/null 2>&1
 result=$?
 
-cgi_begin 'Passwort' 'password'
+cgi --id=password
+cgi_begin 'Passwort'
 
 if [ "$result" -ne 0 ]; then
 	echo '<h1>$(lang de:"Passwort wurde nicht ge&auml;ndert." en:"Password unchanged.")</h1>'

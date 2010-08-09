@@ -25,7 +25,7 @@ cat << EOF
 EOF
 }
 
-cgi_begin "$TITLE" extras
+cgi_begin "$TITLE"
 sec_begin "$NM_REMOVE"
 if [ -n "$QUERY_STRING" ]; then
 	cmd=$(cgi_param cmd)

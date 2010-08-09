@@ -3,7 +3,8 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-cgi_begin '$(lang de:"Konfiguration sichern/wiederherstellen" en:"Backup/restore configuration")' 'backup_restore'
+cgi --id=backup_restore
+cgi_begin '$(lang de:"Konfiguration sichern/wiederherstellen" en:"Backup/restore configuration")'
 
 cat << EOF
 <h1>$(lang de:"Sicherung" en:"Backup")</h1>

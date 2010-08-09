@@ -1,5 +1,9 @@
 _cgi_mark_active() {
-	sed -r "s# id=(['\"])($1)\1# class='active'&#"
+	sed -r "
+	    s# id=(['\"])($1)\1# class='active'&#
+	    s# id=\"[^\"]*\"##
+	    s# id='[^']*'##
+	"
 }
 
 _cgi_print_menu() {

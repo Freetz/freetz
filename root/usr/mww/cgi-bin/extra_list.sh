@@ -28,7 +28,8 @@ _cgi_extras() {
 	echo '</ul>'
 }
 
-cgi_begin 'Extras' 'extras'
+cgi --id=extras
+cgi_begin 'Extras'
 
 _cgi_cached extras _cgi_extras
 

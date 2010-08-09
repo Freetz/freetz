@@ -7,7 +7,7 @@ SELF='downlog'
 TITLE='$(lang de:"Downloader - Protokoll" en:"Downloader - log")'
 DOWNLOGFILE='/var/log/downloader.log'
 
-cgi_begin "$TITLE" extras
+cgi_begin "$TITLE"
 sec_begin "$DOWNLOGFILE"
 
 if [ -n "$QUERY_STRING" ]; then

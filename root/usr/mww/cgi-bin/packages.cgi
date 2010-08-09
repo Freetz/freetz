@@ -3,7 +3,8 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-cgi_begin '$(lang de:"Pakete" en:"Packages")' 'packages'
+cgi --id=packages
+cgi_begin '$(lang de:"Pakete" en:"Packages")'
 
 cat << EOF
 <h1>$(lang de:"Paket-Einstellungen" en:"Package settings")</h1>

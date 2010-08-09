@@ -20,6 +20,8 @@ IFS='|'
 set -- $(grep "^$pkg|.*|$cgi\$" "$EXTRA_REG")
 IFS=$OIFS
 
+cgi --id="extra:$pkg/$cgi"
+
 if [ "$sec_level" -gt "$3" ]; then
 	cgi_begin 'Extras'
 	echo '<h1>$(lang de:"Zusatz-Skript" en:"Additional script")</h1>'

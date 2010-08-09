@@ -5,7 +5,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 if [ "$sec_level" -gt "0" ]; then
 
-cgi_begin '$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")' 'rudishell'
+cgi --id=rudishell
+cgi_begin '$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")'
 echo '<p><div style="color: #800000;">$(lang de:"Rudi-Shell ist in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" en:"Rudi shell is not available at the current security level!")</div></p>'
 
 else

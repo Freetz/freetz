@@ -18,8 +18,10 @@ _cgi_option() {
 				/*|*:*) uri=$value ;;
 				*) uri="/style/$value" ;;
 			esac
-			_CGI_STYLES="$_CGI_STYLES $uri"
+			export _CGI_STYLES="$_CGI_STYLES $uri"
 			;;
+		id)
+			export _CGI_ID=$(_cgi_id "$value") ;;
 		*)
 			cgi_error "cgi: Unknown option '$opt'"
 			exit 1
@@ -56,13 +58,16 @@ cgi() {
 }
 
 cgi_begin() {
-    # disable functions
-    cgi() {
-	cgi_error "cgi must be called before cgi_begin"; exit 1
-    }
-local title=$1 id=${2:+$(_cgi_id "$2")}
-local CR=$'\r'
-cat << EOF
+	# disable functions
+	cgi() {
+		cgi_error "cgi must be called before cgi_begin"; exit 1
+	}
+	local title=$1 id=${2:+$(_cgi_id "$2")}
+	if [ -n "$_CGI_ID" ]; then
+		id=$_CGI_ID
+	fi
+	local CR=$'\r'
+	cat << EOF
 Content-Type: text/html; charset=ISO-8859-1${CR}
 Content-Language: $(lang de:"de" en:"en")${CR}
 Expires: 0${CR}
@@ -74,12 +79,12 @@ ${CR}
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 EOF
-_cgi_head "$title" "$id"
-cat << EOF
+	_cgi_head "$title" "$id"
+	cat << EOF
 </head>
-<body>
+<body id="$id">
 EOF
-_cgi_body_begin "$title" "$id"
+	_cgi_body_begin "$title" "$id"
 }
 
 cgi_end() {

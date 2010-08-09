@@ -5,7 +5,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 external_dir="$(cat /etc/external.dir 2>/dev/null || echo /var/media/ftp/uStor01/external)"
 
-cgi_begin '$(lang de:"external-Update" en:"external update")' firmware_update
+cgi --id=firmware_update
+cgi_begin '$(lang de:"external-Update" en:"external update")'
 
 cat << EOF
 <script type=text/javascript>

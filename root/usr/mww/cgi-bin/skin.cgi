@@ -9,7 +9,8 @@ CR=$'\r'
 invalid_skin() {
 	local name=$1
 	source /usr/lib/libmodcgi.sh
-	cgi_begin 'Skins' 'skin'
+	cgi --id=skin
+	cgi_begin 'Skins'
 	[ $# -gt 0 ] && print_error "$(lang 
 		de:"'$name' ist kein g&uuml;ltiger Skin."
 		en:"'$name' is not a valid skin."

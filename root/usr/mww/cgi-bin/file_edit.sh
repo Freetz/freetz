@@ -1,4 +1,5 @@
-cgi_begin "$TITLE" "file:$PACKAGE/$FILE_ID"
+cgi --id="file:$PACKAGE/$FILE_ID"
+cgi_begin "$TITLE"
 
 echo "<h1>$CAPTION</h1>"
 [ -n "$DESCRIPTION" ] && echo "<p>$DESCRIPTION</p>"

@@ -3,7 +3,8 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")' firmware_update
+cgi --id=firmware_update
+cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
 
 cat << EOF
 <script type="text/javascript">

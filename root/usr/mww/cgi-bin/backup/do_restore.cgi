@@ -2,7 +2,8 @@
 <%
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
-cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore configuration")' 'do_restore'
+cgi --id=do_restore
+cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore configuration")'
 %>
 <h1>$(lang de:"Wiederherstellung (Restore)" en:"Restore configuration")</h1>
 

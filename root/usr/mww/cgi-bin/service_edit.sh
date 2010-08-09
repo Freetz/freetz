@@ -46,8 +46,8 @@ stat_static() {
 	sec_end
 }
 
-cgi --style=mod/daemons.css
-cgi_begin '$(lang de:"Dienste" en:"Services")' 'daemons'
+cgi --style=mod/daemons.css --id=daemons
+cgi_begin '$(lang de:"Dienste" en:"Services")'
 
 view=$(cgi_param view | tr -d .)
 
