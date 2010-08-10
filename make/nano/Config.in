@@ -163,12 +163,15 @@ config FREETZ_PACKAGE_NANO_COLOR_SYNTAX
 		
 		If you want to include any syntax definition files by yourself
 		(look for *.nanorc in the nano source package (doc/systax), define
-		or download your own files), you are advised to copy them somewhere
-		inside make/nano/files/root/usr/share/nano/.
+		or download your own files), you are advised to copy them into
+		make/nano/files/root/usr/share/nano/ before compiling Freetz.
+		This way your snytax files are enabled automatically when saving
+		your customized nanorc via WebIf or on startup.
 		
 		You can select some of nano's default syntax highlighting files
-		to be integrated into the firmware image by the "Include syntax
-		highlighting files" option below.
+		to be integrated into the firmware image by the "Nano syntax
+		highlighting files" menu below (visible if this option is selected).
+		Files selected in the menu are also enabled automatically.
 
 menu "Nano syntax highlighting files"
 	depends FREETZ_PACKAGE_NANO_COLOR_SYNTAX
