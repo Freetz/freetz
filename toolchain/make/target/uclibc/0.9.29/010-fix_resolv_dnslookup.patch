@@ -1,0 +1,14 @@
+--- libc/inet/resolv.c.orig	2010-08-10 11:52:59.000000000 +0200
++++ libc/inet/resolv.c	2010-08-10 11:55:06.000000000 +0200
+@@ -925,10 +925,7 @@
+ 								break;
+ 							}
+ 						if (a->atype != type)
+-							{
+-								free(a->dotted);
+-								continue;
+-							}
++							continue;
+ 						a->add_count = h.ancount - j - 1;
+ 						if ((a->rdlength + sizeof(struct in_addr*)) * a->add_count > a->buflen)
+ 							{
