@@ -5,6 +5,10 @@ DAEMON=downloader
 
 ERRFILE=/var/tmp/downerr
 
+running() {
+	pidof downloader >/dev/null 2>&1
+	return $?
+}
 
 if [ "$DOWNLOADER_DEBUG" = "yes" ]; then
 	LOGFILE=/var/log/downloader.log
@@ -13,38 +17,44 @@ else
 	LOGFILE=/dev/null
 fi
 
-
 start() {
-	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1 
-	if [ "$DOWNLOADER_ENABLED" = "yes" ]; then
-		echo "Starting $DAEMON..."
-		echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
-			[ -n "$downfile" ]
-			echo -n "Download: $downfile..."
-			downloader $downfile >> $LOGFILE 2>&1
- 			errors=$?
-			if [ "$errors" -eq 0 ]; then
-				echo 'done.'
-			else
-				echo 'failed.'
-				echo $ERRORVAL > $ERRFILE
-			fi
-		done 
-		if [ -e $ERRFILE ]; then
-			rm $ERRFILE > /dev/null 2>&1 
-			echo "Download failed."
-			exit $ERRORVAL
-		else
-			echo "Download completed."
-		fi
-	else
-		echo "$DAEMON is disabled"
+	echo "Starting $DAEMON..."
+	
+	if running; then
+		echo 'already running.'
+		return 1
 	fi
-
+	
+	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1 
+	echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
+		[ -n "$downfile" ]
+		echo -n "Download: $downfile..."
+		downloader $downfile >> $LOGFILE 2>&1
+		errors=$?
+		if [ "$errors" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+			echo $ERRORVAL > $ERRFILE
+		fi
+	done 
+	if [ -e $ERRFILE ]; then
+		rm $ERRFILE > /dev/null 2>&1 
+		echo "Download failed."
+		exit $ERRORVAL
+	else
+		echo "Download completed."
+	fi
 }
 
 stop() {
 	echo -n "Stopping $DAEMON..."
+	
+	if ! running; then
+		echo 'not running.'
+		return 1
+	fi
+	
 	killall $DAEMON > /dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
@@ -82,16 +92,16 @@ remove() {
 case $1 in
 	""|load)
 		modreg cgi $DAEMON 'Downloader'
-		modreg extra $DAEMON '$(lang de:"Heruntergeladene Dateien löschen" en:"Remove downloaded files")' 1 'downremover'
+		modreg extra $DAEMON '$(lang de:"Heruntergeladene Dateien l&ouml;schen" en:"Remove downloaded files")' 1 'downremover'
 		modreg extra $DAEMON '$(lang de:"Protokoll ansehen" en:"View log file")' 1 'downlog'
 
 		modlib_start $DOWNLOADER_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi 'downloader'
 		modunreg extra $DAEMON 'downremover'
 		modunreg extra $DAEMON 'downlog'
+		stop
 		;;
 	start)
 		start
@@ -108,10 +118,10 @@ case $1 in
 		remove
 		;;
 	status)
-		if pidof "$DAEMON" >/dev/null; then
-			echo 'running'
-		else
+		if ! running; then
 			echo 'stopped'
+		else
+			echo 'running'
 		fi
 		;;
 	*)

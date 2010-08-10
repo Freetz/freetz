@@ -4,8 +4,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 SELF='downremover'
-TITLE='$(lang de:"Downloader - Aufräumen" en:"Downloader - Removing")'
-NM_REMOVE='$(lang de:"Aufräumen" en:"Removing")'
+TITLE='$(lang de:"Downloader - Aufr&auml;umen" en:"Downloader - Removing")'
+NM_REMOVE='$(lang de:"Aufr&auml;umen" en:"Removing")'
 
 cmd_button() {
 local name=${1:-cmd} act=$2 cmd=$3 label=$4 method=get
@@ -47,7 +47,7 @@ EOF
 else
 cat << EOF
 <p>
-$(lang de:"Alle vom Downloader heruntergeladenen Dateien vom Zielort löschen.<br>Bitte nicht vergessen vorher die dazugehörigen Dienste zu stoppen!" en:"Removing of all by Downloader downloaded files.<br>Please do not forget to stop before all appropriate services!")
+$(lang de:"Alle vom Downloader heruntergeladenen Dateien vom Zielort l&ouml;schen.<br>Bitte nicht vergessen vorher die dazugeh&ouml;rigen Dienste zu stoppen!" en:"Removing of all by Downloader downloaded files.<br>Please do not forget to stop before all appropriate services!")
 </p>
 EOF
 	cmd_button "" $SELF "remove" "$NM_REMOVE"

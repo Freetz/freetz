@@ -1,10 +1,21 @@
 #!/bin/sh
 
 DAEMON=bluez-utils
+DAEMON_LONG_NAME=bluetooth
 . /etc/init.d/modlibrc
 
+running() {
+	pidof hcid >/dev/null 2>&1
+	return $?
+}
+
 start() {
-	echo -n "Starting bluetooth ..."
+	echo -n "Starting $DAEMON_LONG_NAME..."
+
+	if running; then
+		echo 'already running.'
+		return 1
+	fi
 
 	# create PIN-File
 	echo $BLUEZ_UTILS_PIN >/tmp/bluetooth/pin
@@ -81,7 +92,12 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping bluetooth ..."
+	echo -n "Stopping $DAEMON_LONG_NAME..."
+
+	if ! running; then
+		echo 'not running.'
+		return 1
+	fi
 
 	killall -9 dund pand rfcomm >/dev/null 2>&1
 
@@ -124,6 +140,9 @@ case $1 in
 		modlib_start $BLUEZ_UTILS_ENABLED
 		;;
 	unload)
+		modunreg file bluez-utils
+		modunreg cgi bluez-utils
+		modunreg extra bluez-utils
 		stop
 		;;
 	start)
@@ -138,7 +157,7 @@ case $1 in
 		start
 		;;
 	status)
-		if [ -z "$(pidof hcid)" ]; then
+		if ! running; then
 			echo 'stopped'
 		else
 			echo 'running'

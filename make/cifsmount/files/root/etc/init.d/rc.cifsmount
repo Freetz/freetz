@@ -12,12 +12,21 @@ while [ "$i" -lt "$CIFSMOUNT_COUNT" ]; do
     CIFSMOUNT_LIST="$CIFSMOUNT_LIST $i"
 done
 
-start() {
+running() {
+	pidof cifsoplockd >/dev/null 2>&1 && pidof cifsdnotifyd >/dev/null 2>&1 && return 0
+	return 1
+}
 
-	echo -n 'mount cifs...'
+start() {
+	echo -n 'Starting cifs...'
+	
+	if running; then
+		echo 'already running.'
+		return 1
+	fi
+	
 	exitval=0
 	CIFSMNT_PATH=/usr/sbin
-
 	modprobe cifs
 	[ "$?" -gt 0 ] && exitval=1
 	
@@ -26,7 +35,7 @@ start() {
 		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
 		eval CIFSMOUNT_USER=\$CIFSMOUNT_USER$i
 		eval CIFSMOUNT_PASS=\$CIFSMOUNT_PASS$i
-		if [ "$CIFSMOUNT_MOUNTPOINT" != "" ]; then
+		if [ -n "$CIFSMOUNT_MOUNTPOINT" ]; then
 			echo "mount $CIFSMOUNT_SHARE..."
 			mkdir -p "$CIFSMOUNT_MOUNTPOINT"
 			$CIFSMNT_PATH/mount.cifs $CIFSMOUNT_SHARE $CIFSMOUNT_MOUNTPOINT -o user="$CIFSMOUNT_USER",pass="$CIFSMOUNT_PASS"
@@ -43,15 +52,20 @@ start() {
 }
 
 stop() {
-	echo -n 'unmount cifs...'
-	exitval=0
+	echo -n 'Stopping cifs...'
+	
+	if ! running; then
+		echo 'not running.'
+		return 1
+	fi
 
+	exitval=0
 	for i in $CIFSMOUNT_LIST; do
 		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
 		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
 		eval CIFSMOUNT_USER=\$CIFSMOUNT_USER$i
 		eval CIFSMOUNT_PASS=\$CIFSMOUNT_PASS$i
-		if [ "$CIFSMOUNT_MOUNTPOINT" != "" ]; then
+		if [ -n "$CIFSMOUNT_MOUNTPOINT" ]; then
 			echo "unmount $CIFSMOUNT_SHARE..."
 			umount $CIFSMOUNT_MOUNTPOINT
 			[ "$?" -gt 0 ] && exitval=1
@@ -62,7 +76,7 @@ stop() {
 
 	sleep 1
 
-	if [ "$exitval" -eq 0 -a -z "$(pidof cifsoplockd)" -a -z "$(pidof cifsdnotifyd)" ]; then
+	if running && [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
@@ -74,20 +88,11 @@ case $1 in
 	""|load)
 		modreg cgi cifsmount 'cifsmount'
 
-		if [ "$CIFSMOUNT_ENABLED" != "yes" ]; then
-			echo "cifsmount is disabled" 1>&2
-			exit 1
-		fi
-
-		if [ -n "$(pidof cifsoplockd)" -a -n "$(pidof cifsdnotifyd)" ]; then
-			echo "cifsmount already started."
-		else
-			start
-		fi
+		modlib_start $CIFSMOUNT_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi cifsmount
+		stop
 		;;
 	start)
 		start
@@ -101,7 +106,7 @@ case $1 in
 		start
 		;;
 	status)
-		if [ -z "$(pidof cifsoplockd cifsdnotifyd)" ]; then
+		if ! running; then
 			echo 'stopped'
 		else
 			echo 'running'

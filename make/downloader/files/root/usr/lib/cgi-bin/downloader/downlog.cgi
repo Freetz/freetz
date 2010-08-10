@@ -35,7 +35,7 @@ else
 		echo -n '<pre style="width: 500px;">'
 		html < "$DOWNLOGFILE"
 		echo '</pre>'
-		echo -n "<div class="btn"><form class="btn" action="$SELF"><input type="hidden" name="cmd" value="remove"><input type="submit" value='$(lang de:"Protokolldatei löschen" en:"Delete log file")'></form></div>"
+		echo -n "<div class="btn"><form class="btn" action="$SELF"><input type="hidden" name="cmd" value="remove"><input type="submit" value='$(lang de:"Protokolldatei l&ouml;schen" en:"Delete log file")'></form></div>"
 	else
 cat << EOF
 <pre>$DOWNLOGFILE $(lang de:"existiert nicht" en:"does not exist")</pre><p>

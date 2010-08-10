@@ -6,16 +6,22 @@ DAEMON=nfsd
 NFS_DIR=/var/lib/nfs
 PROCNFSD_DIR=/proc/fs/nfsd
 
+running() {
+	pidof portmap >/dev/null 2>&1 && pidof nfsd >/dev/null 2>&1 && pidof mountd >/dev/null 2>&1 && return 0
+	return 1
+}
+
 start() {
 	set -o noglob
 	echo -n 'Starting nfsd...'
 	
-	# portmap needs this
-	modlib_addgroup nobody
-	modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+	if running; then
+		echo 'already running.'
+		exit 1
+	fi
 	
 	if [ ! -e /etc/exports ]; then
-		echo "can't open /etc/exports"
+		echo "can't open /etc/exports...failed."
 		exit 1
 	fi
 
@@ -23,11 +29,9 @@ start() {
 
 	# Fill /proc/fs/nfsd
 	mount -t nfsd nfsd $PROCNFSD_DIR > /dev/null 2>&1
-
 	
 	# set max rsize/wsize supported by server to 64kb
-	[ -e $PROCNFSD_DIR/max_block_size ] && \
-		echo 65536 > $PROCNFSD_DIR/max_block_size
+	[ -e $PROCNFSD_DIR/max_block_size ] && echo 65536 > $PROCNFSD_DIR/max_block_size > /dev/null
 
 	mkdir -p $NFS_DIR
 	for file in etab rmtab xtab; do
@@ -48,12 +52,17 @@ start() {
 		echo 'done.'
 	else
 		echo 'failed.'
-		exit 1
+		return 1
 	fi
 }
 
 reload() {
-	echo -n 'Re-exporting directories...'
+	echo -n 'Re-exporting nfsd directories...'
+
+	if ! running; then
+		echo 'not running.'
+		return 1
+	fi
 
 	/usr/sbin/exportfs -r > /dev/null 2>&1
 	exitval=$?
@@ -68,6 +77,11 @@ reload() {
 stop() {
 	echo -n 'Stopping nfsd...'
 
+	if ! running; then
+		echo 'not running.'
+		return 1
+	fi
+	
 	killall mountd >/dev/null 2>&1
 	exitval1=$?
 	killall -9 nfsd > /dev/null 2>&1
@@ -92,9 +106,12 @@ case $1 in
 	""|load)
 		[ -d "/tmp/flash/nfsd" ] || mkdir -p /tmp/flash/nfsd
 		ln -fs /tmp/flash/nfsd/exports /var/tmp/exports
-		
-		modreg cgi 'nfsd' 'NFS-Server'
 
+		# portmap needs this
+		modlib_addgroup nobody
+		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+
+		modreg cgi 'nfsd' 'NFS-Server'
 		modreg file nfsd hosts_allow 'NFSD: hosts.allow' 1 "hosts_allow"
 		modreg file nfsd hosts_deny 'NFSD: hosts.deny' 1 "hosts_deny"
 		modreg file nfsd exports 'NFSD: exports' 1 "exports"
@@ -102,10 +119,9 @@ case $1 in
 		modlib_start $NFSD_ENABLED
 		;;
 	unload)
-		stop
 		modunreg file nfsd
 		modunreg cgi nfsd
-		
+		stop
 		rmmod nfsd lock sunrpc exportfs > /dev/null 2>&1
 		;;
 	start)
@@ -123,7 +139,7 @@ case $1 in
 		start
 		;;
 	status)
-		if [ -z "$(pidof nfsd)" ]; then
+		if ! running; then
 			echo 'stopped'
 		else
 			echo 'running'
