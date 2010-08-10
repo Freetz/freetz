@@ -1,10 +1,8 @@
-$FreeWRT$
-$MirOS: ports/misc/mc/patches/patch-src_key_c,v 1.1 2006/10/28 22:35:47 tg Exp $
---- src/key.c	2005-06-08 12:27:19.000000000 +0000
-+++ src/key.c	2007-03-20 13:32:10.000000000 +0000
-@@ -86,7 +86,7 @@ int mou_auto_repeat = 100;
- int double_click_speed = 250;
- int old_esc_mode = 0;
+--- src/key.c.orig	2009-02-01 20:30:21.000000000 +0100
++++ src/key.c	2010-08-10 23:14:53.923099023 +0200
+@@ -86,7 +86,7 @@
+ /* timeout for old_esc_mode in usec */
+ int keyboard_key_timeout = 1000000;	/* settable via env */
  
 -int use_8th_bit_as_meta = 0;
 +int use_8th_bit_as_meta = 1;
