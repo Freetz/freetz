@@ -82,7 +82,16 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON --input_file /mod/etc/$DAEMON.conf >/dev/null 2>&1
+	echo -n "Starting ${DAEMON}..."
+	config
+	$DAEMON --input_file /mod/etc/$DAEMON.conf >/dev/null 2>&1
+	local retval=$?
+	if [ $retval -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $retval
+	fi
 }
 
 case $1 in
