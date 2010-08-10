@@ -1,12 +1,10 @@
 #!/bin/sh
 
 DAEMON=mcabber
-
 . /etc/init.d/modlibrc
 
-start() {
-	echo -n 'Creating /var/mod/root/.mcabberrc ...'
-
+config() {
+	echo -n 'Creating $DAEMON configuration...'
 	(
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
@@ -15,66 +13,23 @@ start() {
 		fi
 
 	) > /var/mod/root/.mcabberrc
-
-	if [ -r "/var/mod/root/.mcabberrc" ]; then
-		echo ' done.'
-	else
-		echo ' failed.'
-		exit $exitval
-	fi
-}
-
-stop() {
-	if [ ! -e /var/mod/root/.mcabberrc ]; then
-		echo "No configfile to delete."
-		exit 0
-	else
-		echo -n 'Deleating /var/mod/root/.mcabberrc ...'
-		rm /var/mod/root/.mcabberrc
-		exitval=$?
-		if [ "$exitval" -eq 0 ]; then
-			echo ' done.'
-		else
-			echo ' failed.'
-			exit $exitval
-		fi
-	fi
+	echo 'done.'
 }
 
 case $1 in
 	""|load)
 		modreg cgi 'mcabber' 'Mcabber-Config'
-
-		if [ "$MCABBER_ENABLED" != "yes" ]; then
-			echo "Mcabber-Config is disabled" 1>&2
-			exit 1
-		fi
-
-		start
-		;;
-	start)
-		start
-		;;
-	stop)
-		stop
+		modreg daemon --hide mcabber
+		config
 		;;
 	unload)
-		stop
 		modunreg cgi 'mcabber'
 		;;
-	restart)
-		stop
-		start
-		;;
-	status)
-		if [ -r  "/var/mod/root/.mcabberrc" ]; then
-			echo 'running'
-		else
-			echo 'stopped'
-		fi
+	config)
+		config
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|config]" 1>&2
 		exit 1
 		;;
 esac
