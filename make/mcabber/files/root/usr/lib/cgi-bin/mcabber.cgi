@@ -9,7 +9,7 @@ sec_begin '$(lang de:"Information" en:"Information")'
 cat << EOF
 <p>
 <font size='1'>
-$(lang en:"When starting Mcabber-Config just the configfile (/var/mod/root/.mcabberrc) is created." "Beim Dtarten von Mcabber-Config wird nur die Configdatei(/var/mod/root/.mcabberrc) erstellt.")
+$(lang en:"When starting Mcabber-Config just the configfile (/var/mod/root/.mcabberrc) is created." "Beim Starten von Mcabber-Config wird nur die Configdatei(/var/mod/root/.mcabberrc) erstellt.")
 <br>
 $(lang en:"To start Mcabber you have to start it from the console." de:"Mcabber selber muss in der Konsole gestartet werden.")
 </font>
