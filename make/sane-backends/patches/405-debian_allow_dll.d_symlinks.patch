@@ -1,0 +1,11 @@
+--- backend/dll.c
++++ backend/dll.c
+@@ -809,7 +809,7 @@ read_dlld (void)
+ 
+       DBG (5, "sane_init/read_dlld: considering %s\n", conffile);
+ 
+-      if (lstat (conffile, &st) != 0)
++      if (stat (conffile, &st) != 0)
+         continue;
+ 
+       if (!S_ISREG (st.st_mode))

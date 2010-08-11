@@ -21,10 +21,10 @@ case $1 in
 	""|load)
 		[ ! -d $CONFDIR/dll.d ] && mkdir -p $CONFDIR/dll.d
 		for conf in /etc/default.$DAEMON/*.conf; do
-			[ -e $conf ] && ln -s $conf $CONFDIR/$(basename $conf)
+			[ -e $conf ] && ln -sf $conf $CONFDIR/$(basename $conf)
 		done
 		for conf in /etc/default.$DAEMON/dll.d/*; do
-			[ -e $conf ] && cp $conf $CONFDIR/dll.d/
+			[ -e $conf ] && ln -sf $conf $CONFDIR/dll.d/$(basename $conf)
 		done
 
 		modreg cgi 'sane-backends' 'SANE'
