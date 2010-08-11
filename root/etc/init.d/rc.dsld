@@ -5,21 +5,35 @@ DAEMON=dsld
 DAEMON_LONG_NAME="AVM dsld"
 PID_FILE=/var/run/${DAEMON}.pid
 
-TMPFILE=/tmp/.dsld.cmd
+TMPFILE_CMD=/tmp/.dsld.cmd
+TMPFILE_OPT=/tmp/.dsld.opt
 
 # include environment required for dsld restart
 [ -r /var/env.cache ] && . /var/env.cache
 
 start() {
 	echo -n "Starting ${DAEMON_LONG_NAME}..."
-	local DAEMON_CMD=`cat $TMPFILE 2>/dev/null`
-	if [ -z "$DAEMON_CMD" ]; then
+
+	if [ -e $TMPFILE_CMD ]; then
+		DAEMON_CMD="$(cat $TMPFILE_CMD)"
+	else
 		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
-		 	DAEMON_CMD_IGD="$(dsld -? 2>&1 | grep "igd" | sed 's/^[ \t]*//' | cut -c 1-3)"
+		 	DAEMON_CMD=" $(dsld -? 2>&1 | grep "igd" | sed 's/^[ \t]*//' | cut -c 1-3)"
 		fi
-		DAEMON_CMD="dsld -n $DAEMON_CMD_IGD"
+		DAEMON_CMD=" -i$DAEMON_CMD"
+		echo "$DAEMON_CMD" > $TMPFILE_CMD
 	fi
-	$DAEMON_CMD
+
+	if [ -e $TMPFILE_OPT ]; then
+		DAEMON_OPT="$(cat $TMPFILE_OPT)"
+	else
+		DAEMON_OPT=" -n"
+		echo "$DAEMON_OPT" > $TMPFILE_OPT
+	fi
+	
+	#remove duplicate arguments
+	DAEMON_ARGS="$(for arg in $DAEMON_CMD $DAEMON_OPT; do [ "$arg" != "dsld" ] && echo " $arg"; done |sort -u)"
+	dsld $DAEMON_ARGS
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
@@ -30,14 +44,27 @@ start() {
 }
 
 stop() {
+	[ -e $TMPFILE_OPT ] || echo " -n" > $TMPFILE_OPT
+	#save current arguments
 	local DAEMON_PID=$(cat $PID_FILE 2>/dev/null)
-	[ -n "$DAEMON_PID" ] && local DAEMON_CMD=$(xargs -0 < /proc/${DAEMON_PID}/cmdline)
-	[ -n "$DAEMON_CMD" ] && echo $DAEMON_CMD > $TMPFILE
+	if [ -n "$DAEMON_PID" ]; then
+		for arg in $(xargs -0 < /proc/${DAEMON_PID}/cmdline); do grep -q " $arg" $TMPFILE_OPT 2>/dev/null || echo " $arg"; done > $TMPFILE_CMD
+	fi
 	dsld -s
 }
 
 reload() {
 	dsld -I
+}
+
+set_options() {
+	DAEMON_OPT_NEW=" $*"
+	if [ " $(cat $TMPFILE_OPT 2>/dev/null)" != "$DAEMON_OPT_NEW" ]; then
+		DAEMON_STATUS="$(modlib_status)"
+		[ "$DAEMON_STATUS" != "stopped" ] && modlib_stop
+		echo "$DAEMON_OPT_NEW" > $TMPFILE_OPT	
+		[ "$DAEMON_STATUS" != "stopped" ] && modlib_start
+	fi
 }
 
 case $1 in
@@ -56,8 +83,11 @@ case $1 in
 	status)
 		modlib_status
 		;;
+	set_options)
+		$*
+		;;
 	*)
-		echo "Usage: $0 [start|stop|restart|reload|status]" 1>&2
+		echo "Usage: $0 [start|stop|restart|reload|status|set_options [dsld-options]]" 1>&2
 		exit 1
 		;;
 esac

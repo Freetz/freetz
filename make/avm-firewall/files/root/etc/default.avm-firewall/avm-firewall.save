@@ -11,22 +11,16 @@ pkg_apply_def()
 pkg_post_save()
 {
 	[ -f /mod/etc/conf/avm-firewall.cfg ] && . /mod/etc/conf/avm-firewall.cfg
-	. /var/env.cache
 	if echo "$AVM_FIREWALL_DO_ACTIVATE" | grep -q dsld; then
-#2DO: extend rc.dsld for that:
 		[ "$AVM_FIREWALL_LOG_DROPPED" != "yes" ] && LOGD="-n" || LOGD=""
 		[ "$AVM_FIREWALL_LOG" == "yes" ] && LOG ="-D AVM_FW" || LOG=""
-		echo -n "Restarting dsld ... "
-		dsld -s
-		sleep 1
-		killall -9 dsld 2> /dev/null
-		dsld $LOGD $LOG > /dev/null 2>&1
-		echo "done."
+		/etc/init.d/rc.dsld set_options $LOGD $LOG
 	else
 		[ "$AVM_FIREWALL_DO_ACTIVATE" ] && /etc/init.d/rc.dsld reload
 	fi
 	if echo "$AVM_FIREWALL_DO_ACTIVATE" | grep -q ctlmgr; then
 		echo -n "Restarting ctlmgr ... "
+		. /var/env.cache
 		ctlmgr -s
 		sleep 1
 		killall -9 ctlmgr 2> /dev/null
