@@ -43,6 +43,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 		egrep -v "^#\ " $$s | egrep -v "^#*$$" >$(PRIVOXY_DEST_DIR)/etc/privoxy/templates/$$d; \
 	done
 	for s in $(PRIVOXY_DIR)/default.filter $(PRIVOXY_DIR)/default.action \
+		$(PRIVOXY_DIR)/match-all.action $(PRIVOXY_DIR)/trust \
 		$(PRIVOXY_DIR)/user.action $(PRIVOXY_DIR)/user.filter; do \
 		d=$$(basename $$s); \
 		egrep -v "^#" $$s | egrep -v "^$$" >$(PRIVOXY_DEST_DIR)/etc/privoxy/$$d; \

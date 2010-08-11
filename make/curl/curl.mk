@@ -28,6 +28,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CURL_STATIC
 
 $(PKG)_CONFIGURE_ENV += curl_cv_writable_argv=yes
 
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CURL_STATIC),--disable-shared,--enable-shared)
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
@@ -39,7 +40,6 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-nonblocking
 $(PKG)_CONFIGURE_OPTIONS += --enable-file
 $(PKG)_CONFIGURE_OPTIONS += --enable-ftp
 $(PKG)_CONFIGURE_OPTIONS += --enable-http
-$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6
 $(PKG)_CONFIGURE_OPTIONS += --disable-ares
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-dict

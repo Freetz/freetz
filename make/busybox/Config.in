@@ -90,6 +90,13 @@ config FREETZ_BUSYBOX_ETHER_WAKE
 
 		This feature adds about 4 KB to BusyBox.
 
+config FREETZ_BUSYBOX_FAKEIDENTD
+	bool "fakeidentd"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'fakeidentd' command in busybox
+
 config FREETZ_BUSYBOX_FANCY_KEYS
 	bool "fancykeys"
 	depends on FREETZ_REPLACE_BUSYBOX
@@ -150,6 +157,13 @@ config FREETZ_BUSYBOX_FEATURE_IP_TUNNEL
 	bool "tunnel option"
 	depends on FREETZ_BUSYBOX_IP
 	default n
+
+config FREETZ_BUSYBOX_LAST
+	bool "last"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'last' command in busybox
 
 config FREETZ_BUSYBOX_LESS
 	bool "less"
@@ -228,6 +242,14 @@ config FREETZ_BUSYBOX_MDEV_EXEC
 	help
 		This adds support for an optional field to /etc/mdev.conf for
 		executing commands when devices are created/removed.
+
+config FREETZ_BUSYBOX_MODINFO
+	bool "modinfo"
+	depends on FREETZ_REPLACE_BUSYBOX
+	depends on ! FREETZ_PACKAGE_MODULE_INIT_TOOLS
+	default n
+	help
+		Include the 'modinfo' command in busybox
 
 config FREETZ_BUSYBOX_MOUNT_HELPERS
 	bool "mount helpers"
@@ -431,6 +453,13 @@ config FREETZ_BUSYBOX_WGET
 
 		This feature is required by any Freetz package.
 		But it is deselected when the wget package is selected.
+
+config FREETZ_BUSYBOX_WHO
+	bool "who"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'who' command in busybox
 
 config FREETZ_BUSYBOX_WHOAMI
 	bool "whoami"
