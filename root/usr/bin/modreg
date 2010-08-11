@@ -34,6 +34,7 @@ case $1 in
 	cgi)
 		replace "^$2|" /mod/etc/reg/cgi.reg "$2|$3"
 		rm -f /mod/var/cache/menu_packages
+		rm -rf /mod/var/cache/menu
 		;;
 	extra)
 		replace "^$2|.*|$5\$" /mod/etc/reg/extra.reg "$2|$3|$4|$5"
@@ -76,11 +77,13 @@ case $1 in
 			replace "^$pkg|$id|" /mod/etc/reg/file.reg "$pkg|$id|$title|$sec_level|$deffile"
 		fi
 		rm -f /mod/var/cache/menu_settings
+		rm -rf /mod/var/cache/menu
 		;;
 	status)
 		cgi=${4:-status}
 		replace "^$2|.*|$cgi\$" /mod/etc/reg/status.reg "$2|$3|$cgi"
 		rm -f /mod/var/cache/menu_status
+		rm -rf /mod/var/cache/menu
 		;;
 	daemon)
 		filename=$0

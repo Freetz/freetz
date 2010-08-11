@@ -1,21 +1,23 @@
 _cgi_mark_active() {
+    	local sub=$1 id=$2
 	sed -r "
-	    s# id=(['\"])($1)\1# class='active'&#
+	    s# id=(['\"])($id)\1# class='active'&#
+	    s#(<li)(>.* id=(['\"])($sub)\3)#\1 class='open'\2#
 	    s# id=\"[^\"]*\"##
 	    s# id='[^']*'##
+	    s# class='([^']*)' class='([^']*)'# class='\1 \2'#
 	"
 }
 
 _cgi_print_menu() {
 	local id=$1 sub
 	case $id in
-	    	settings) sub=mod ;;
 		status*|daemons) sub=status ;;
 		system|avmwif_*|rudi_*|firmware_*|backup_*) sub=system ;;
-		*:*) sub=${id#*:}; sub=${sub%%:*} ;;
+		*:*) sub=${id#*:}; sub="pkg:${sub%%:*}" ;;
 	esac
 
-	new_menu "$sub" | _cgi_mark_active "$id"
+	new_menu "$sub" | _cgi_mark_active "$sub" "$id"
 }
 
 MENU_CACHE=/mod/var/cache/menu
@@ -40,9 +42,7 @@ new_menu_deliver() {
 	new_menu_tree "$dir/status"
 	new_menu_tree "$dir/system"
 
-	new_menu_package_tree mod
 	while read -r pkg; do
-		[ "$pkg" = mod ] && continue
 		new_menu_package_tree "$pkg"
 	done < "$dir/packages"
 
@@ -63,7 +63,12 @@ new_menu_tree() {
 }
 
 new_menu_package_tree() {
-	local pkg=$1
+	local pkg=$1 sub
+	if [ "$sub" = "pkg:$pkg" ]; then
+	    sub=$pkg
+	else
+	    sub=
+	fi
 	new_menu_tree "$p/$pkg"
 }
 
@@ -79,9 +84,14 @@ new_menu_prepare() {
 		while IFS='|' read -r pkg title; do
 			echo "has_conf=yes" >> "$p/$pkg.meta"
 			echo "title=$(shell_escape "$title")" >> "$p/$pkg.meta"
-			touch "$p/$pkg.sub"
+			if [ ! -e "$p/$pkg.index" ]; then
+			    echo "$(href cgi "$pkg")" > "$p/$pkg.index"
+			fi
+			echo "<li><a id='$(_cgi_id "conf:$pkg")' class='conf' href='$(href cgi "$pkg")'>$(lang de:"Einstellungen" en:"Settings")</a></li>" > "$p/$pkg.sub"
 		done < /mod/etc/reg/cgi.reg
 	fi
+	echo "<li><a id='$(_cgi_id "conf:mod")' class='conf' href='$(href mod conf)'>$(lang de:"Einstellungen" en:"Settings")</a></li>" > "$p/mod.sub"
+	echo "$(href mod conf)" > "$p/mod.index"
 
 	if [ -r /mod/etc/reg/file.reg ]; then
 		local pkg id title sec def _
@@ -96,6 +106,9 @@ new_menu_prepare() {
 				SSH:*) title=${title#SSH: } ;;
 			esac
 			echo "<li><a id='$(_cgi_id "file:$pkg/$id")' class='file' href='$(href file "$pkg" "$id")'>$(html "$title")</a></li>" >> "$p/$pkg.sub"
+			if [ ! -e "$p/$pkg.index" ]; then
+			    echo "$(href file "$pkg" "$id")" > "$p/$pkg.index"
+			fi
 		done
 	fi
 
@@ -103,13 +116,18 @@ new_menu_prepare() {
 		while IFS='|' read -r pkg title sec cgi; do
 			[ -z "$title" ] && continue
 			echo "<li><a id='$(_cgi_id "extra:$pkg/$cgi")' class='extra' href='$(href extra "$pkg" "$cgi")'>$(html "$title")</a></li>" >> "$p/$pkg.sub"
+			if [ ! -e "$p/$pkg.index" ]; then
+			    echo "$(href extra "$pkg" "$cgi")" > "$p/$pkg.index"
+			fi
 		done < /mod/etc/reg/extra.reg
 	fi
 
 	# hard-coded packages
 	echo "title=Freetz" >> "$p/mod.meta"
 	echo "has_conf=yes" >> "$p/mod.meta"
-	echo "title=SSH" >> "$p/authorized-keys.meta"
+	if [ -e "$p/authorized-keys.sub" ]; then
+	    echo "title=SSH" >> "$p/authorized-keys.meta"
+	fi
 
 	# system menu
 	{
@@ -134,14 +152,16 @@ EOF
 		fi
 	} > "$dir/status.sub"
 
+	echo "mod" > "$dir/packages"
 	for i in "$p"/*.sub; do
 		pkg=${i##*/}; pkg=${pkg%.sub}
+		[ "$pkg" = mod ] && continue
 		title=$pkg
 		if [ -r "$p/$pkg.meta" ]; then
 			source "$p/$pkg.meta"
 		fi
 		echo "$title|$pkg"
-	done | sort | cut -d"|" -f2 > "$dir/packages"
+	done | sort | cut -d"|" -f2 >> "$dir/packages"
 
 	echo "<a id='status' href='$(href mod status)'>Status</a>" > "$dir/status"
 	echo "<a id='system' href='$(href mod system)'>System</a>" > "$dir/system"
@@ -150,7 +170,7 @@ EOF
 		new_menu_prepare_package "$pkg" > "$p/$pkg"
 	done < "$dir/packages"
 	
-	rm -f "$p"/*.meta
+	rm -f "$p"/*.meta "$p"/*.index
 }
 
 new_menu_prepare_package() {
@@ -160,11 +180,7 @@ new_menu_prepare_package() {
 	if [ -r "$p/$pkg.meta" ]; then
 		source "$p/$pkg.meta"
 	fi
-	if [ "$has_conf" = yes ]; then
-		echo -n "<a id='$(_cgi_id "pkg:$pkg")' class='conf' href='$(href cgi "$pkg")'>$(html "$title")</a>"
-	else
-		echo -n "<a href='/TODO'>$(html "$title")</a>"
-	fi
+	echo -n "<a id='$(_cgi_id "pkg:$pkg")' class='package' href='$(cat "$p/$pkg.index")'>$(html "$title")</a>"
 }
 
 shell_escape() {

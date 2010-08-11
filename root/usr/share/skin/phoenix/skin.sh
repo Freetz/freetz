@@ -52,7 +52,7 @@ if [ "$MOD_DEV_NEW_MENU" = no ]; then
 _cgi_print_menu() {
 	local id=$1 sub= act_sub=
 	case $id in
-		settings|file:*) act_sub=settings ;;
+		pkg:mod|file:*) act_sub=settings ;;
 		status*) act_sub=status ;;
 		system|avmwif_*|rudi_*|firmware_*|backup_*) act_sub=system ;;
 		packages|pkg:*) act_sub=packages ;;
