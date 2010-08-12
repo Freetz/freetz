@@ -154,7 +154,7 @@ new_menu_prepare() {
 	echo "title=Freetz" >> "$p/mod.meta"
 	echo "has_conf=yes" >> "$p/mod.meta"
 	if [ -e "$p/authorized-keys.sub" ]; then
-	    echo "title=SSH" >> "$p/authorized-keys.meta"
+		echo "title=SSH" >> "$p/authorized-keys.meta"
 	fi
 
 	# system menu
