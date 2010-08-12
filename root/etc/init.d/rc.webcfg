@@ -22,6 +22,7 @@ config() {
 }
 
 start() {
+    	DAEMON_ENV="WEBIF=mww"
 	modlib_startdaemon httpd -P "$PID_FILE" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h /usr/mww/ -r "Freetz"
 }
 
