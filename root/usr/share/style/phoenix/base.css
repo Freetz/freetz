@@ -150,17 +150,21 @@ ul.menu {
     display: block;
     padding: 0;
     margin: 0;
-    height: 6em;
+    position: relative;
+    float: left;
+    margin-bottom: 2em;
 }
 ul.menu a {
     display: block;
     padding: 3px 6px;
     border: none;
 }
-ul.menu li + li {
+ul.menu > li + li {
     border-left: 1px dotted #cccccc;
 }
-ul.menu a.active, ul.menu li.open > a {
+ul.menu a.active,
+ul.menu li.open > a,
+ul.menu li.open:hover > a {
     background: #cc0000;
     color: white;
     font-weight: bold;
@@ -168,20 +172,36 @@ ul.menu a.active, ul.menu li.open > a {
 ul.menu ul a {
     font-size: 80%;
 }
+ul.menu > li:hover > a {
+    background: #eeeeee;
+}
 ul.menu li {
     display: block;
+    float: left;
     padding: 0;
     margin: 0;
-    float: left;
+}
+ul.menu ul li {
+    float: none;
+}
+ul.menu > li {
+    position: relative;
 }
 ul.menu ul {
+    display: block;
     position: absolute;
-    padding: 0;
-    padding-left: 2em;
-    padding-right: 2em;
+    z-index: 5;
+    left: -1px;
+    background: white;
+    border: 1px dotted #cccccc;
     margin: 0;
-    margin-top: 5px;
-    left: 0;
+    padding: 0;
+}
+ul.menu ul {
+    display: none;
+}
+ul.menu li:hover ul {
+    display: block;
 }
 #content {
     clear: both;

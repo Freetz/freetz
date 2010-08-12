@@ -17,7 +17,7 @@ _cgi_print_menu() {
 		*:*) sub=${id#*:}; sub="pkg:${sub%%:*}" ;;
 	esac
 
-	new_menu "$sub" | _cgi_mark_active "$sub" "$id"
+	new_menu | _cgi_mark_active "$sub" "$id"
 }
 
 MENU_CACHE=/mod/var/cache/menu
@@ -37,7 +37,7 @@ new_menu_deliver() {
 
 	# assemble new menu
 
-	echo "<ul class='menu'>"
+	echo "<ul class='menu new'>"
 
 	new_menu_tree "$dir/status"
 	new_menu_tree "$dir/system"
@@ -54,7 +54,7 @@ new_menu_tree() {
 	local base=${path##*/}
 	echo -n "<li>"
 	cat "$path"
-	if [ "$base" = "$sub" -a -s "$path.sub" ]; then
+	if [ \( "$base" = "$sub" -o -z "$sub" \) -a -s "$path.sub" ]; then
 		echo "<ul>"
 		cat "$path.sub"
 		echo "</ul>"

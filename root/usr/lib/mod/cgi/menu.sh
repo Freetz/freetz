@@ -5,7 +5,7 @@ _cgi_mark_active() {
 _cgi_print_menu() {
 	local id=$1 sub
 	case $id in
-		pkg:mod|file:*) sub=settings ;;
+		conf:mod|file:*) sub=settings ;;
 		status*) sub=status ;;
 		system|avmwif_*|rudi_*|firmware_*|backup_*) sub=system ;;
 		*) sub=packages ;;
@@ -33,7 +33,7 @@ fi
 cat << EOF
 </li>
 <li><a id="daemons" href="$(href mod daemons)">$(lang de:"Dienste" en:"Services")</a></li>
-<li><a id="pkg:mod" href="$(href mod conf)">$(lang de:"Einstellungen" en:"Settings")</a>
+<li><a id="conf:mod" href="$(href mod conf)">$(lang de:"Einstellungen" en:"Settings")</a>
 EOF
 
 if [ "$sub" = settings -a -r /mod/etc/reg/file.reg ]; then
@@ -58,7 +58,7 @@ if [ "$sub" = packages -a -r /mod/etc/reg/cgi.reg ]; then
 	local pkg title
 	echo "<ul>"
 	while IFS='|' read -r pkg title; do
-		echo "<li><a id='$(_cgi_id "pkg:$pkg")' href='$(href cgi "$pkg")'>$(html "$title")</a></li>"
+		echo "<li><a id='$(_cgi_id "conf:$pkg")' href='$(href cgi "$pkg")'>$(html "$title")</a></li>"
 	done < /mod/etc/reg/cgi.reg
 	echo "</ul>"
 fi
