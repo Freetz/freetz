@@ -1,11 +1,11 @@
 _cgi_mark_active() {
-    	local sub=$1 id=$2
+	local sub=$1 id=$2
 	sed -r "
-	    s# id=(['\"])($id)\1# class='active'&#
-	    s#(<li)(>.* id=(['\"])($sub)\3)#\1 class='open'\2#
-	    s# id=\"[^\"]*\"##
-	    s# id='[^']*'##
-	    s# class='([^']*)' class='([^']*)'# class='\1 \2'#
+		s# id=(['\"])($id)\1# class='active'&#
+		s#(<li)(>.* id=(['\"])($sub)\3)#\1 class='open'\2#
+		s# id=\"[^\"]*\"##
+		s# id='[^']*'##
+		s# class='([^']*)' class='([^']*)'# class='\1 \2'#
 	"
 }
 _cgi_submenu() {
@@ -33,8 +33,8 @@ MENU_CACHE=/mod/var/cache/menu
 
 new_menu_init() {
 	if ! [ -d "$MENU_CACHE" ]; then
-	    source /usr/lib/libmodcgi.sh
-	    new_menu_prepare "$MENU_CACHE"
+		source /usr/lib/libmodcgi.sh
+		new_menu_prepare "$MENU_CACHE"
 	fi
 }
 
@@ -47,6 +47,7 @@ new_menu() {
 # display only the current submenu
 new_submenu() {
 	local sub=$1 dir=$MENU_CACHE
+	[ -z "$sub" ] && return
 	new_menu_init
 	
 	echo "<ul class='menu new sub'>"

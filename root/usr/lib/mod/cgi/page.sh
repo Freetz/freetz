@@ -82,7 +82,7 @@ EOF
 	_cgi_head "$title" "$id"
 	cat << EOF
 </head>
-<body id="$id">
+<body ${id:+id="$id"}>
 EOF
 	_cgi_body_begin "$title" "$id"
 }
