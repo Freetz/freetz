@@ -32,8 +32,8 @@ _cgi_print_submenu() {
 MENU_CACHE=/mod/var/cache/menu
 
 new_menu_init() {
-	if ! [ -d "$MENU_CACHE" ]; then
-		source /usr/lib/libmodcgi.sh
+	if [ ! -d "$MENU_CACHE" -o -e "$MENU_CACHE.stale" ]; then
+		rm -f "$MENU_CACHE.stale"
 		new_menu_prepare "$MENU_CACHE"
 	fi
 }
@@ -102,6 +102,7 @@ new_menu_package_tree() {
 new_menu_prepare() {
 	local dir=$1
 	local p="$dir/pkg"
+	rm -rf "$dir"
 	mkdir -p "$p"
 
 	# collect data for packages

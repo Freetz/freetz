@@ -19,7 +19,7 @@ case $1 in
 	cgi)
 		delete "^$2|" /mod/etc/reg/cgi.reg
 		rm -f /mod/var/cache/menu_packages
-		rm -rf /mod/var/cache/menu
+		touch /mod/var/cache/menu.stale
 		;;
 	extra)
 		delete "^$2|.*|${3:-[^|]*}\$" /mod/etc/reg/extra.reg
@@ -28,12 +28,12 @@ case $1 in
 	file)
 		delete "^${2}|${3:-[^|]*}|" /mod/etc/reg/file.reg
 		rm -f /mod/var/cache/menu_settings
-		rm -rf /mod/var/cache/menu
+		touch /mod/var/cache/menu.stale
 		;;
 	status)
 		delete "^$2|.*|${3:-[^|]*}\$" /mod/etc/reg/status.reg
 		rm -f /mod/var/cache/menu_status
-		rm -rf /mod/var/cache/menu
+		touch /mod/var/cache/menu.stale
 		;;
 	daemon)
 		delete "^${3:-[^|]*}|.*|$2\$" /mod/etc/reg/daemon.reg
