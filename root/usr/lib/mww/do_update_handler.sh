@@ -3,7 +3,6 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 . /usr/lib/libmodcgi.sh
 
-exec 1> /tmp/fw_update.log 2>&1
 indent() {
 	sed 's/^/  /' | html
 }
@@ -11,7 +10,15 @@ pre_exit() {
 	echo "</pre>"
 	exit "$@"
 }
+
+cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
+
+cat << EOF
+<h1>$(lang de:"Firmware extrahieren, Update vorbereiten" en:"Extract firmware, prepare update")</h1>
+EOF
+
 echo "<pre>"
+exec 3>&2 2>&1
 
 stop=${NAME%/*}
 downgrade=false
@@ -123,6 +130,8 @@ if [ ! -x /var/post_install ]; then
 	pre_exit 1
 fi
 indent < /var/post_install
+
+exec 2>&3 3>&-
 cat << EOF
 $(lang de:"ENDE DER DATEI" en:"END OF FILE")
 </pre>
@@ -139,4 +148,15 @@ You may still choose to interrupt this process by removing the script
 along with the rest of the extracted firmware components."
 )
 </p>
+<p>
 EOF
+
+back_button --title="$(lang de:"Zur&uuml;ck zur &Uuml;bersicht" en:"Back to main page")" mod status
+
+cat << EOF
+<form action="/cgi-bin/exec.cgi/reboot" method="post"><div class="btn"><input type="submit" value="Reboot"></div></form>
+</p>
+EOF
+
+cgi_end
+touch /tmp/fw_update.done
