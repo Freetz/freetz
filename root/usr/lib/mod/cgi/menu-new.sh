@@ -8,27 +8,53 @@ _cgi_mark_active() {
 	    s# class='([^']*)' class='([^']*)'# class='\1 \2'#
 	"
 }
-
-_cgi_print_menu() {
-	local id=$1 sub
+_cgi_submenu() {
+	local id=$1
 	case $id in
 		status*|daemons) sub=status ;;
 		system|avmwif_*|rudi_*|firmware_*|backup_*) sub=system ;;
 		*:*) sub=${id#*:}; sub="pkg:${sub%%:*}" ;;
 	esac
+	echo "$sub"
+}
 
+_cgi_print_menu() {
+	local id=$1
+	local sub=$(_cgi_submenu "$id")
 	new_menu | _cgi_mark_active "$sub" "$id"
+}
+_cgi_print_submenu() {
+	local id=$1
+	local sub=$(_cgi_submenu "$id")
+	new_submenu "$sub" | _cgi_mark_active "" "$id"
 }
 
 MENU_CACHE=/mod/var/cache/menu
 
-new_menu() {
-	local sub=$1
+new_menu_init() {
 	if ! [ -d "$MENU_CACHE" ]; then
 	    source /usr/lib/libmodcgi.sh
 	    new_menu_prepare "$MENU_CACHE"
 	fi
+}
+
+new_menu() {
+	local sub=$1
+	new_menu_init
 	new_menu_deliver "$MENU_CACHE" "$sub"
+}
+
+# display only the current submenu
+new_submenu() {
+	local sub=$1 dir=$MENU_CACHE
+	new_menu_init
+	
+	echo "<ul class='menu new sub'>"
+	case $sub in
+		pkg:*) cat "$dir/pkg/${sub#pkg:}.sub" ;;
+		*) cat "$dir/$sub.sub" ;;
+	esac
+	echo "</ul>"
 }
 
 new_menu_deliver() {

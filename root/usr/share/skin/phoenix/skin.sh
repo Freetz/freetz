@@ -18,7 +18,11 @@ cat << EOF
 <div id="container">
 EOF
 
-[ -n "$id" ] && _cgi_print_menu "$id"
+_cgi_print_menu "$id"
+if [ "$MOD_DEV_NEW_MENU" != no ]; then
+    _cgi_print_submenu "$id"
+fi
+
 echo "<div id='content'>"
 }
 
