@@ -3,6 +3,7 @@ $(PKG)_LIB_VERSION:=0.4.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=b43d95a0fa8c45f8bab3aec9672cf30c
 $(PKG)_SITE:=http://cloud.github.com/downloads/rvoicilas/inotify-tools
+$(PKG)_STARTLEVEL=10
 $(PKG)_INWAIT_BINARY:=$($(PKG)_DIR)/src/.libs/inotifywait
 $(PKG)_INWATCH_BINARY:=$($(PKG)_DIR)/src/.libs/inotifywatch
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/libinotifytools/src/.libs/libinotifytools.so.$($(PKG)_LIB_VERSION)

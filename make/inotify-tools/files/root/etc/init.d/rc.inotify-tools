@@ -1,48 +1,50 @@
 #!/bin/sh
 
+DAEMON=inotify-tools
+DAEMON_BIN=inotifywait
+DAEMON_LONG_NAME=inotify
+. /etc/init.d/modlibrc
+
 start() {
-	echo -n "Starting inotifywait..."
-	if ps | grep i[n]otifywait > /dev/null; then
-		echo "yet running - kill and restart..."
-		killall inotifywait
-		sleep 1
-	fi
-	inotifywait -c -r -m / \
+	echo -n "Starting $DAEMON_LONG_NAME..."
+	$DAEMON_BIN -c -r -m / \
 		@/dev @/proc @/var @/rom @/sto \
 		--exclude 'busybox|uClibc|libcrypt-0' \
-		>> /var/iw.log 2> /dev/null &
-	sleep 3
-	echo "done."
-}
-
-stop() {
-	echo -n "Stopping inotifywait..."
-	if ! ps | grep i[n]otifywait > /dev/null; then
-		echo "not running."
-		exit 1
-	fi
-	killall inotifywait
-	if [ "$?" -eq 0 ]; then
-		echo "done."
+		>> $INOTIFY_TOOLS_LOGFILE 2> /dev/null &
+	exitval=$?
+	pidof -s $DAEMON_BIN > $PID_FILE 2>/dev/null
+	if [ "$exitval" -eq 0 ] ; then
+		echo 'done.'
 	else
-		echo "failed."
-		exit 1
+		echo 'failed.'
+		exit $exitval
 	fi
+
 }
 
-case $1 in 
-	""|load|start|restart)
-		start
+case $1 in
+	""|load)
+		modreg cgi $DAEMON $DAEMON
+		modreg status $DAEMON $DAEMON inotify-tools_log
+
+		modlib_start $INOTIFY_TOOLS_ENABLED
 		;;
-	stop|unload)
-		stop
+	unload)
+		modunreg cgi $DAEMON
+		modunreg status $DAEMON inotify-tools_log
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
 		;;
 	status)
-		if ps | grep i[n]otifywait > /dev/null; then
-			echo "running"
-		else
-			echo "stopped"
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
