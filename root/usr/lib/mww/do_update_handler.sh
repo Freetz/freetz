@@ -3,109 +3,146 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 . /usr/lib/libmodcgi.sh
 
-indent() {
-	sed 's/^/  /' | html
+footer() {
+	echo "<p>"
+
+	back_button --title="$(lang de:"Zur&uuml;ck zur &Uuml;bersicht" en:"Back to main page")" mod status
+
+	cat << EOF
+<form action="/cgi-bin/exec.cgi/reboot" method="post"><div class="btn"><input type="submit" value="Reboot"></div></form>
+</p>
+EOF
+
+	cgi_end
+	touch /tmp/fw_update.done
 }
-pre_exit() {
+pre_begin() {
+	echo "<pre class='log'>"
+	exec 3>&2 2>&1
+}
+pre_end() {
+	exec 2>&3 3>&-
 	echo "</pre>"
+}
+do_exit() {
+	footer
 	exit "$@"
+}
+status() {
+	local status msg=$2
+	case $1 in
+		"done") status="$(lang de:"ERLEDIGT" en:"DONE")" ;;
+		"failed") status="$(lang de:"FEHLGESCHLAGEN" en:"FAILED")" ;;
+	esac
+	echo -n "<p><span class='status'>$status</span>"
+	[ -n "$msg" ] && echo -n " &ndash; $msg"
+	echo "</p>"
 }
 
 cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
 
 cat << EOF
-<h1>$(lang de:"Firmware extrahieren, Update vorbereiten" en:"Extract firmware, prepare update")</h1>
+<h1>$(lang
+	de:"Firmware extrahieren, Update vorbereiten"
+	en:"Extract firmware, prepare update"
+)</h1>
 EOF
-
-echo "<pre>"
-exec 3>&2 2>&1
 
 stop=${NAME%/*}
 downgrade=false
 case $NAME in
-    */downgrade) downgrade=true ;;
+	*/downgrade) downgrade=true ;;
 esac
 
 if $downgrade; then
-	echo "$(lang
-	    de:"Downgrade vorbereiten"
-	    en:"Prepare downgrade"
-	) ..."
-	/usr/bin/prepare-downgrade | indent
-	echo "$(lang de:"ERLEDIGT" en:"DONE")"
-	echo "</pre><pre>"
+	echo "<p>$(lang
+		de:"Downgrade vorbereiten"
+		en:"Prepare downgrade"
+	) ...</p>"
+	pre_begin
+	/usr/bin/prepare-downgrade
+	pre_end
+	status "done"
 fi
 
 if [ "$stop" = stop_avm ]; then
-	echo "$(lang
-	    de:"AVM-Dienste anhalten, Teil 1"
-	    en:"Stopping AVM services, part 1"
-	) (prepare_fwupgrade start) ..."
-	prepare_fwupgrade start 2>&1 | indent
-	echo "$(lang de:"ERLEDIGT" en:"DONE")"
-	echo "</pre><pre>"
+	echo "<p>$(lang
+		de:"AVM-Dienste anhalten, Teil 1"
+		en:"Stopping AVM services, part 1"
+	) (prepare_fwupgrade start) ...</p>"
+	pre_begin
+	prepare_fwupgrade start 2>&1
+	pre_end
+	status "done"
 fi
 
 if [ "$stop" = semistop_avm ]; then
-	echo "$(lang
-	    de:"AVM-Dienste teilweise anhalten, Teil 1"
-	    en:"Stopping AVM services partially, part 1"
-	) (prepare_fwupgrade start_from_internet) ..."
-	prepare_fwupgrade start_from_internet 2>&1 | indent
-	echo "$(lang de:"ERLEDIGT" en:"DONE")"
-	echo "</pre><pre>"
+	echo "<p>$(lang
+		de:"AVM-Dienste teilweise anhalten, Teil 1"
+		en:"Stopping AVM services partially, part 1"
+	) (prepare_fwupgrade start_from_internet) ...</p>"
+	pre_begin
+	prepare_fwupgrade start_from_internet 2>&1
+	pre_end
+	status "done"
 fi
 
-echo "$(lang de:"Firmware-Archiv extrahieren" en:"Extracting firmware archive") ..."
-tar_log=$(tar -f "$1" -C / -xv 2>&1)
+echo "<p>$(lang
+	de:"Firmware-Archiv extrahieren"
+	en:"Extracting firmware archive"
+) ...</p>"
+pre_begin
+tar -f "$1" -C / -xv 2>&1
 result=$?
-echo "$tar_log" | indent
+pre_end
 if [ $result -ne 0 ]; then
-	echo "$(lang de:"FEHLGESCHLAGEN" en:"FAILED")"
-	pre_exit 1
+	status "failed"
+	do_exit 1
 fi
-echo "$(lang de:"ERLEDIGT" en:"DONE")"
+status "done"
 
 if [ "$stop" != nostop_avm ]; then
-	echo "</pre><pre>"
-	echo "$(lang
-	    de:"AVM-Dienste anhalten, Teil 2"
-	    en:"Stopping AVM services, part 2"
-	) (prepare_fwupgrade end) ..."
-	prepare_fwupgrade end 2>&1 | indent
-	echo "$(lang de:"ERLEDIGT" en:"DONE")"
+	echo "<p>$(lang
+		de:"AVM-Dienste anhalten, Teil 2"
+		en:"Stopping AVM services, part 2"
+	) (prepare_fwupgrade end) ...</p>"
+	pre_begin
+	prepare_fwupgrade end 2>&1
+	pre_end
+	status "done"
 fi
 
 [ "$stop" = semistop_avm ] && ( sleep 30; reboot )&
 
 cat << EOF
-</pre><pre>
-$(lang
-    de:"Ausführen des Firmware-Installationsskripts"
-    en:"Executing firmware installation script"
-) /var/install ...
+<p>$(lang
+	de:"Ausführen des Firmware-Installationsskripts"
+	en:"Executing firmware installation script"
+) /var/install ...</p>
 EOF
 if [ ! -x /var/install ]; then
+	status "failed" "$(lang
+		de:"Installationsskript nicht gefunden oder nicht ausführbar."
+		en:"Installation script not found or not executable."
+	)"
 	cat << EOF
-$(lang
-    de:"FEHLGESCHLAGEN - Installationsskript nicht gefunden oder nicht ausführbar.
-
-Weiter ohne Neustart.
-Sie sollten bei Bedarf noch die extrahierten Dateien löschen."
-    en:"FAILED - installation script not found or not executable.
-
-Resuming without reboot.
-You may want to clean up the extracted files."
-)
+<p>$(lang 
+	de:"Weiter ohne Neustart. Sie sollten bei Bedarf noch die extrahierten
+	Dateien löschen."
+	en:"Resuming without reboot. You may want to clean up the extracted
+	files."
+)</p>
 EOF
-	pre_exit 1
+	do_exit 1
 fi
+
+pre_begin
 # Remove no-op original from var.tar
 rm -f /var/post_install
-inst_log=$(/var/install 2>&1)
+/var/install 2>&1
 result=$?
-echo "$inst_log" | indent
-unset inst_log
+pre_end
+
 case $result in
 	0) result_txt="INSTALL_SUCCESS_NO_REBOOT" ;;
 	1) result_txt="INSTALL_SUCCESS_REBOOT" ;;
@@ -118,45 +155,38 @@ case $result in
 	8) result_txt="INSTALL_DOWNGRADE_NEEDED" ;;
 	*) result_txt="$(lang de:"unbekannter Fehlercode" en:"unknown error code")" ;;
 esac
-echo "$(lang
-    de:"ERLEDIGT - Rückgabewert des Installationsskripts"
-    en:"DONE - installation script return code"
-) = $result ($result_txt)"
 
-echo "</pre><pre>"
-echo "$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")"
+status "done" "$(lang
+    de:"Rückgabewert des Installationsskripts"
+    en:"Installation script return code"
+): $result ($result_txt)"
+
+echo "<p>$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")</p>"
 if [ ! -x /var/post_install ]; then
-	echo "$(lang de:"KEINER - Nach-Installationsskript nicht gefunden oder nicht ausführbar." en:"NONE - post-installation script not found or not executable.")"
-	pre_exit 1
+	print_error "$(lang 
+		de:"Nach-Installationsskript nicht gefunden oder nicht ausführbar." 
+		en:"Post-installation script not found or not executable."
+	)"
+	pre_end
+	do_exit 1
 fi
-indent < /var/post_install
+pre_begin
+cat /var/post_install
+pre_end
 
-exec 2>&3 3>&-
 cat << EOF
-$(lang de:"ENDE DER DATEI" en:"END OF FILE")
-</pre>
-
 <p>
 $(lang
-    de:"Das Nach-Installationsskript läuft beim Neustart (reboot) und führt die
-darin definierten Aktionen aus, z.B. das tatsächliche Flashen der Firmware.
-Sie können immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie
-das Skript und den Rest der extrahierten Firmware-Komponenten löschen."
-    en:"The post-installation script will be executed upon reboot and perform
-the actions specified therein, e.g. the actual firmware flashing.
-You may still choose to interrupt this process by removing the script
-along with the rest of the extracted firmware components."
+	de:"Das Nach-Installationsskript läuft beim Neustart (reboot) und führt
+die darin definierten Aktionen aus, z.B. das tatsächliche Flashen der Firmware.
+Sie können immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie das
+Skript und den Rest der extrahierten Firmware-Komponenten löschen."
+	en:"The post-installation script will be executed upon reboot and
+perform the actions specified therein, e.g. the actual firmware flashing.  You
+may still choose to interrupt this process by removing the script along with
+the rest of the extracted firmware components."
 )
 </p>
-<p>
 EOF
 
-back_button --title="$(lang de:"Zur&uuml;ck zur &Uuml;bersicht" en:"Back to main page")" mod status
-
-cat << EOF
-<form action="/cgi-bin/exec.cgi/reboot" method="post"><div class="btn"><input type="submit" value="Reboot"></div></form>
-</p>
-EOF
-
-cgi_end
-touch /tmp/fw_update.done
+footer
