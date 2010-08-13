@@ -6,32 +6,59 @@ CONFIG=/mod/etc/conf/avm-firewall.cfg
 . /usr/lib/libmodcgi.sh
 . /mod/etc/conf/avm-firewall.cfg
 
-SUBNET="255.255.255.252 255.255.255.248 255.255.255.240 255.255.255.224 \
-        255.255.255.192 255.255.255.128 255.255.255.0 255.255.254.0 255.255.252.0 255.255.248.0 255.255.240.0 255.255.224.0 \
-        255.255.192.0 255.255.128.0 255.255.0.0 255.254.0.0 255.252.0.0 255.248.0.0 255.240.0.0 255.224.0.0 \
-        255.192.0.0 255.128.0.0 255.0.0.0 240.0.0.0"
+SUBNET="
+255.255.255.252
+255.255.255.248
+255.255.255.240
+255.255.255.224
+255.255.255.192
+255.255.255.128
+255.255.255.0
+255.255.254.0
+255.255.252.0
+255.255.248.0
+255.255.240.0
+255.255.224.0
+255.255.192.0
+255.255.128.0
+255.255.0.0
+255.254.0.0
+255.252.0.0
+255.248.0.0
+255.240.0.0
+255.224.0.0
+255.192.0.0
+255.128.0.0
+255.0.0.0
+240.0.0.0
+"
 
-echo "<font size='1'>$(lang en:"This GUI is for router mode only and is based on the ar7.cfg file. Changes will be active after next reboot \(or after checking the box at the bottom of the page\)." de:"Oberfl&auml;che zur AVM-Firewall (nur im Routermodus) bearbeitet die ar7.cfg. &Auml;nderungen werden durch Reboot oder durch Auswahl am Ende der Seite aktiviert.")</font>"
-
-sec_begin '$(lang en:"Mode" de:"Ansicht") Firewall / Port Forwarding'
 cat << EOF
-<input id="e1" type="radio" name="fwmode" value="firewall"checked onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[1].style.display = "block"; fieldsets[2].style.display = "block"; fieldsets[3].style.display = "none"; fieldsets[4].style.display = "none";'>
+<font size='1'>$(lang en:"This GUI is for router mode only and is based on the ar7.cfg file. Changes will be active after next reboot \(or after checking the box at the bottom of the page\)." de:"Oberfl&auml;che zur AVM-Firewall (nur im Routermodus) bearbeitet die ar7.cfg. &Auml;nderungen werden durch Reboot oder durch Auswahl am Ende der Seite aktiviert.")</font>
+
+<script>
+function byId(id) {
+	return document.getElementById(id);
+}
+</script>
+EOF
+
+sec_begin '$(lang en:"Mode" de:"Ansicht")'
+cat << EOF
+<input id="e1" type="radio" name="fwmode" value="firewall" checked onclick='byId("new-fw-rule").style.display = "block"; byId("fw-rules").style.display = "block"; byId("new-forward-rule").style.display = "none"; byId("forward-rules").style.display = "none";'>
 <label for="e1">Firewall</label>
-<input id="e2" type="radio" name="fwmode" value="fwd" onclick='var fieldsets = document.getElementsByTagName("fieldset");fieldsets[3].style.display = "block"; fieldsets[4].style.display = "block"; fieldsets[1].style.display = "none"; fieldsets[2].style.display = "none";'>
+<input id="e2" type="radio" name="fwmode" value="fwd" onclick='byId("new-forward-rule").style.display = "block"; byId("forward-rules").style.display = "block"; byId("new-fw-rule").style.display = "none"; byId("fw-rules").style.display = "none";'>
 <label for="e2">Port Forwarding</label>
 <div style="float: right;"><font size="1">Version: $VERSION</font></div>
 EOF
 
 sec_end
 
-sec_begin '$(lang en:"Firewall add new rule" de:"Neue Firewall-Regel")'
+sec_begin '$(lang en:"Firewall add new rule" de:"Neue Firewall-Regel")' new-fw-rule
 cat << EOF
 <p>
 <input type="hidden" name="gui" value="*gui*">
 <table border="0">
-EOF
-
-cat << EOF
 <tr><td>$(lang en:"Source Address" de:"Quell-Adresse"): </td>
 <td><select id="source_type" onchange='change_iptype(this.value, "id_ssubnet", "id_source"); build_new_rule()' > <option value="any">any</option>
     <option value="net">net</option> <option value="host">host</option>
@@ -42,7 +69,7 @@ cat << EOF
 EOF
 # netmask for source
         echo '<select style="display:none" id="id_ssubnet" onchange="build_new_rule()">'
-         for SUB in $SUBNET
+        for SUB in $SUBNET
         do
                 echo '<option title="ssubnet" value="'$SUB'">'$SUB'</option>'
         done
@@ -100,7 +127,7 @@ EOF
 echo $rulescount
 sec_end
 
-sec_begin '$(lang en:"Firewall rules" de:"Firewall-Regeln")'
+sec_begin '$(lang en:"Firewall rules" de:"Firewall-Regeln")' fw-rules
 cat << EOF
  
 <table width="100%"> <tr> <td><font color="red">$(lang en:"Incoming" de:"Eingehende Regeln")</font> (lowinput)<input type="radio" name="selectrules" id="id_li_rules" checked onclick='if (selrules=="ho"){allrules_ho=allrules}; selrules="li" ; allrules=allrules_li; Init_FW_Table()'> 
@@ -128,25 +155,17 @@ cat << EOF
 EOF
 row=0
 while [ $row -lt 50 ]; do
-    echo -n "<tr style='display:none' id='id_row_$row'><td bgcolor='#CDCDCD' width='20' align='center' id='id_rownum_$row'>$row</td>"
-    echo -n "<td><input type='text' size='24' title='Source' onblur='rebuild_rule ( this , \"source\" ,this.value);'></td>"
-    echo -n "<td><input type='text' size='24' title='Dest' onblur='rebuild_rule ( this , \"dest\" ,this.value);'></td>"
-    echo -n "<td><select onchange='rebuild_rule ( this , \"proto\" ,this.value);'>"
-    echo -n '<option value="ip">ip</option> <option value="tcp">tcp</option> <option value="udp">udp</option> <option value="icmp">icmp</option> </select>'
-    echo -n "</td><td><input type='text' size='13' title='Port' onblur='rebuild_rule ( this, \"param\" ,this.value);'></td><td align='center'>"
-    echo -n "<table><tr><td align='center'><img id='id_act_img_$row' src='/images/deny.gif' onclick='SelAct(this)'></td></tr><tr><td ><font size=1 id='id_act_txt_$row'>DENY</font></td></tr></table>"
-    echo -n "</td><td bgcolor='#CAE7FB'>&nbsp;<img src='/images/del.jpg' title='delete rule' onclick='removerule(this)'>"
-    echo -n "&nbsp;<img src='/images/clone.jpg' title='clone rule' onclick='cloneerule(this)'>"
-    echo -n "&nbsp;<img src='/images/up.jpg' align='top' title='move rule up' onclick='moverule(this, allrules, -1 );Init_FW_Table(); build_where_select();'>"
-    echo "&nbsp;<img src='/images/down.jpg' title='move rule down' onclick='moverule(this, allrules, 1 );Init_FW_Table(); build_where_select();'></td></tr>"
-let row++
+	cat << EOF
+<tr style='display:none' id='id_row_$row'><td bgcolor='#CDCDCD' width='20' align='center' id='id_rownum_$row'>$row</td><td><input type='text' size='24' title='Source' onblur='rebuild_rule(this, "source", this.value);'></td><td><input type='text' size='24' title='Dest' onblur='rebuild_rule(this, "dest", this.value);'></td><td><select onchange='rebuild_rule(this, "proto", this.value);'><option value="ip">ip</option> <option value="tcp">tcp</option> <option value="udp">udp</option> <option value="icmp">icmp</option> </select></td><td><input type='text' size='13' title='Port' onblur='rebuild_rule(this, "param", this.value);'></td><td align='center'><table><tr><td align='center'><img id='id_act_img_$row' src='/images/deny.gif' onclick='SelAct(this)'></td></tr><tr><td ><font size=1 id='id_act_txt_$row'>DENY</font></td></tr></table></td><td bgcolor='#CAE7FB'>&nbsp;<img src='/images/del.png' title='delete rule' onclick='removerule(this)'>&nbsp;<img src='/images/clone.png' title='clone rule' onclick='cloneerule(this)'>&nbsp;<img src='/images/up.png' align='top' title='move rule up' onclick='moverule(this, allrules, -1); Init_FW_Table(); build_where_select();'>&nbsp;<img src='/images/down.png' title='move rule down' onclick='moverule(this, allrules, 1); Init_FW_Table(); build_where_select();'></td></tr>
+EOF
+	let row++
 done
 echo '</table>'
 
 #EOF
 sec_end
  
-sec_begin '$(lang en:"Port forwarding add new rule" de:"Neue Port Forwarding-Regel")'
+sec_begin '$(lang en:"Port forwarding add new rule" de:"Neue Port Forwarding-Regel")' new-forward-rule
 cat << EOF
 <p>
 <table border="0">
@@ -182,7 +201,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")'
+sec_begin '$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")' forward-rules
 
 cat << EOF
 
@@ -199,7 +218,7 @@ $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln 
         </td><td><input type="text" size="24" title="Destination" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddest", this.value)'>
         </td><td><input type="text" size="10" title="DPort" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddport", this.value)'>
         </td><td><input type="text" title="Descr" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwdname", this.value)'>
-</td><td><center><img src="/images/del.jpg" title="delete rule" onclick='allfwdrules.splice(this.parentNode.parentNode.parentNode.rowIndex -3 ,1); fwdrulescount -= 1;Init_FWDTable()'>
+</td><td><center><img src="/images/del.png" title="delete rule" onclick='allfwdrules.splice(this.parentNode.parentNode.parentNode.rowIndex -3 ,1); fwdrulescount -= 1;Init_FWDTable()'>
         </center></td>
 	</tr>
 </table></p>
@@ -233,9 +252,10 @@ selrules="ho";
 showrules();
 allrules=allrules_li;
 selrules="li";
-var fieldsets = document.getElementsByTagName("fieldset");
-fieldsets[1].style.display = "block"; fieldsets[2].style.display = "block"; 
-fieldsets[3].style.display = "none"; fieldsets[4].style.display = "none"; 
+byId("new-fw-rule").style.display = "block";
+byId("fw-rules").style.display = "block"; 
+byId("new-forward-rule").style.display = "none";
+byId("forward-rules").style.display = "none"; 
 Init_FW_Table()
 build_new_rule()
 
@@ -569,6 +589,6 @@ cat << EOF
 <input type="hidden" name="do_activate" value=""></font>
 $(lang en:"Saving will <b>not</b> activate rules or new dsld switches by default! <b>To do so, some daemoms have to be restarted:</b>" de:"Regelwerk und dsld Schalter werden standardm&auml;&szlig;ig <b>nicht</b> aktiviert!  Dazu m&uuml;ssen AVM-Dienste neu gestartet werden:") <br />
 <img src="/images/blink!.gif" title="Attention!" valign="center"> &nbsp; <b>$(lang en:"This might crash your box or even restore factory defaults!" de:"Das kann zum Absturz oder sogar zum Werksreset f&uuml;hren!") </b> &nbsp;&nbsp;&nbsp; $(lang en:"Activate rules directly after saving" de:"Regeln gleich nach Speichern aktivieren") <input type="checkbox" value="dsld_ctlmgr" name="do_activate" ><br />
-<font size="1">($(lang en:"Safe way to activate the settings is only save them here and then restart the box" de:"Um die &Auml;derungen \"sicher\" zu aktivieren, hier nur \"&Uuml;bernehmen\" w&auml;hlen und dann die Box neu starten"))</font><br />
+<font size="1">($(lang en:"Safe way to activate the settings is only save them here and then restart the box" de:"Um die &Auml;nderungen \"sicher\" zu aktivieren, hier nur \"&Uuml;bernehmen\" w&auml;hlen und dann die Box neu starten"))</font><br />
 EOF
 

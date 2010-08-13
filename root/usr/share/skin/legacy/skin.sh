@@ -1,21 +1,21 @@
-_cgi_head() {
-local title=$1 id=$2
-cat << EOF
+skin_head() {
+	local title=$1 id=$2
+	cat << EOF
 <title>Freetz&nbsp;&ndash; $title</title>
-<link rel="stylesheet" type="text/css" href="/style/base.css">
+<link rel="stylesheet" type="text/css" href="/style/legacy/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
-_cgi_print_extra_styles
+	_cgi_print_extra_styles
 
-# custom width
-: ${_cgi_width:=$MOD_CGI_WIDTH}
-export _cgi_width
-let _cgi_total_width=_cgi_width+40
+	# custom width
+	: ${_cgi_width:=$MOD_CGI_WIDTH}
+	export _cgi_width
+	let _cgi_total_width=_cgi_width+40
 }
 
-_cgi_body_begin() {
-local title=$1 id=$2
-cat << EOF
+skin_body_begin() {
+	local title=$1 id=$2
+	cat << EOF
 <table id="edge" border="0" cellspacing="0" cellpadding="0" width="$_cgi_total_width">
 <colgroup><col width="20"><col width="*"><col width="20"></colgroup>
 <tr>
@@ -30,13 +30,12 @@ cat << EOF
 <td id="edge-left"></td>
 <td id="container">
 EOF
-
-[ -n "$id" ] && _cgi_print_menu "$id"
-echo "<div id='content'>"
+	[ -n "$id" ] && _cgi_print_menu "$id"
+	echo "<div id='content'>"
 }
 
-_cgi_body_end() {
-cat << EOF
+skin_body_end() {
+	cat << EOF
 </div>
 </td>
 <td id="edge-right"></td>
@@ -55,15 +54,15 @@ cat << EOF
 EOF
 }
 
-sec_begin() {
-cat << EOF
+skin_sec_begin() {
+	cat << EOF
 <fieldset>
 <legend>$1</legend>
 EOF
 }
 
-sec_end() {
-cat << EOF
+skin_sec_end() {
+	cat << EOF
 </fieldset>
 EOF
 }

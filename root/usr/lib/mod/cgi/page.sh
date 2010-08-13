@@ -79,41 +79,51 @@ ${CR}
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 EOF
-	_cgi_head "$title" "$id"
+	skin_head "$title" "$id"
 	cat << EOF
 </head>
 <body${id:+ id='$id'}>
 EOF
-	_cgi_body_begin "$title" "$id"
+	skin_body_begin "$title" "$id"
 }
 
 cgi_end() {
-_cgi_body_end
+skin_body_end
 cat << EOF
 </body>
 </html>
 EOF
 }
 
+sec_begin() {
+    local title=$1 id=$2
+    echo "<div class='section' ${id:+ id='$id'}>"
+    skin_sec_begin "$title"
+}
+sec_end() {
+    skin_sec_end
+    echo "</div>"
+}
+
 #
 # Simplistic versions of the functions to be overridden by skins
 #
-_cgi_head() {
+skin_head() {
 	local title=$1 id=$2
 	echo "<title>$title</title>"
 	_cgi_print_extra_styles
 }
-_cgi_body_begin() {
+skin_body_begin() {
 	local title=$1 id=$2
 	echo "<h1>$title</h1>"
 	_cgi_print_menu "$id"
 }
-_cgi_body_end() {
+skin_body_end() {
 	:
 }
-sec_begin() {
+skin_sec_begin() {
 	echo "<div class='sec'><h2>$1</h2>"
 }
-sec_end() {
+skin_sec_end() {
 	echo "</div>"
 }
