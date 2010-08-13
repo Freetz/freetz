@@ -1,6 +1,31 @@
 --- libc/sysdeps/linux/common/bits/in.h.orig	2010-08-11 20:57:17.000000000 +0200
 +++ libc/sysdeps/linux/common/bits/in.h	2010-08-11 21:04:06.000000000 +0200
-@@ -134,6 +134,8 @@
+@@ -106,13 +106,23 @@
+    The first word in the comment at the right is the data type used;
+    "bool" means a boolean value stored in an `int'.  */
+ #define IPV6_ADDRFORM		1
++#define IPV6_CHECKSUM		7
++ #include <linux/version.h>
++ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,14)
+ #define IPV6_2292PKTINFO	2
+ #define IPV6_2292HOPOPTS	3
+ #define IPV6_2292DSTOPTS	4
+ #define IPV6_2292RTHDR		5
+ #define IPV6_2292PKTOPTIONS	6
+-#define IPV6_CHECKSUM		7
+ #define IPV6_2292HOPLIMIT	8
++ #else
++#define IPV6_PKTINFO		2
++#define IPV6_HOPOPTS		3
++#define IPV6_DSTOPTS		4
++#define IPV6_RTHDR		5
++#define IPV6_PKTOPTIONS		6
++#define IPV6_HOPLIMIT		8
++ #endif
+ 
+ #define SCM_SRCRT		IPV6_RXSRCRT
+ 
+@@ -134,6 +144,8 @@
  #define IPV6_IPSEC_POLICY	34
  #define IPV6_XFRM_POLICY	35
  
@@ -9,22 +34,10 @@
  #define IPV6_RECVPKTINFO	49
  #define IPV6_PKTINFO		50
  #define IPV6_RECVHOPLIMIT	51
-@@ -148,6 +150,19 @@
+@@ -148,6 +160,7 @@
  
  #define IPV6_RECVTCLASS		66
  #define IPV6_TCLASS		67
-+ #else
-+#define IPV6_RECVPKTINFO	IPV6_2292PKTINFO
-+#define IPV6_PKTINFO		IPV6_2292PKTINFO
-+#define IPV6_RECVHOPLIMIT	IPV6_2292HOPLIMIT
-+#define IPV6_HOPLIMIT		IPV6_2292HOPLIMIT
-+#define IPV6_RECVHOPOPTS	IPV6_2292HOPOPTS
-+#define IPV6_HOPOPTS		IPV6_2292HOPOPTS
-+#define IPV6_RECVRTHDR		IPV6_2292RTHDR
-+#define IPV6_RTHDR		IPV6_2292RTHDR
-+#define IPV6_RECVDSTOPTS	IPV6_2292DSTOPTS
-+#define IPV6_DSTOPTS		IPV6_2292DSTOPTS
-+#define IPV6_PKTOPTIONS		IPV6_2292PKTOPTIONS
 + #endif
  
  /* Obsolete synonyms for the above.  */
