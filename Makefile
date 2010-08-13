@@ -536,8 +536,9 @@ check-builddir-version:
 		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
 		.svn -nt .config ]; then \
 		echo -n -e $(_Y); \
-		echo -e "ERROR: You have updated to newer svn version since last modifying your config. You"; \
-		echo -e "       have to run 'make oldconfig' or 'make menuconfig' once before building again."; \
+		echo "ERROR: You have updated to newer svn version since last modifying your config."; \
+		echo "       You have to run 'make oldconfig' or 'make menuconfig' once before"; \
+		echo "       building again."; \
 		echo -n -e $(_N); \
 		exit 3; \
 	fi; 
