@@ -20,7 +20,7 @@ IFS='|'
 set -- $(grep "^$pkg|.*|$cgi\$" "$EXTRA_REG")
 IFS=$OIFS
 
-cgi --id="extra:$pkg/$cgi"
+cgi --id="extra:$pkg/$cgi" --help="/packages/$pkg/$cgi"
 
 if [ "$sec_level" -gt "$3" ]; then
 	cgi_begin 'Extras'

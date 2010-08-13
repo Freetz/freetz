@@ -18,7 +18,7 @@ if [ -r "/mod/etc/default.$PACKAGE/$PACKAGE.cfg" ]; then
 	. /mod/etc/conf/$PACKAGE.cfg
 fi
 
-cgi --id="$MENU_ID"
+cgi --id="$MENU_ID" --help="/packages/$PACKAGE"
 cgi_begin "$PACKAGE_TITLE"
 
 if [ -x "/mod/usr/lib/cgi-bin/$PACKAGE.cgi" ]; then

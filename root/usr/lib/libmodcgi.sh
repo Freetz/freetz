@@ -34,6 +34,7 @@ include request
 include validation
 
 include_module menu
+include_module help
 
 #
 # Load the desired skin (very rough cookie parsing at the moment)

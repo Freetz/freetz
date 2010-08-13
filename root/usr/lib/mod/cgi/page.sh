@@ -1,5 +1,4 @@
 # A list of extra CSS stylesheets
-_CGI_STYLES=
 _cgi_print_extra_styles() {
 	local style
 	for style in $_CGI_STYLES; do
@@ -22,6 +21,8 @@ _cgi_option() {
 			;;
 		id)
 			export _CGI_ID=$(_cgi_id "$value") ;;
+		help)
+			export _CGI_HELP=$(_cgi_help_url "$value") ;;
 		*)
 			cgi_error "cgi: Unknown option '$opt'"
 			exit 1
