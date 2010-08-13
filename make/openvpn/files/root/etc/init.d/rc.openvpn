@@ -5,7 +5,7 @@ DAEMON=${scriptname##*/rc.}
 . /etc/init.d/modlibrc
 
 mypidof() {
-	ps | grep $1 | grep /m[o]d/etc/${1}.conf | sed 's/^[ ]*//; s/\([0-9]*\)[ ].*/\1/' 
+	ps | grep $1 | grep /m[o]d/etc/${1}.conf | sed 's/^[ ]*//; s/\([0-9]*\)[ ].*/\1/'
 }
 
 if [ ! -e /var/tmp/.openvpnfirstrun ]; then
@@ -24,12 +24,18 @@ case $1 in
 esac
 
 start() {
-	if [ ! -e "/tmp/flash/static.key" ]; then
-		echo "Creating static.key"
-		openvpn --genkey --secret /tmp/flash/static.key
-		/usr/bin/modsave flash
+	echo -n "Starting $DAEMON... "
+	if [ -e "/var/run/$DAEMON.pid" ]; then
+		echo "already started."
+		return 1;
 	fi
-	
+
+	if [ ! -e "/tmp/flash/static.key" ]; then
+		echo -n "creating static.key..."
+		openvpn --genkey --secret /tmp/flash/static.key
+		/usr/bin/modsave flash >/dev/null
+	fi
+
 	if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 		/tmp/flash/${DAEMON}_conf /mod/etc/${DAEMON}.conf
 	else
@@ -39,8 +45,6 @@ start() {
 	if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
 		cat /tmp/flash/${DAEMON}.extra >> /mod/etc/${DAEMON}.conf
 	fi
-
-	echo -n "Starting $DAEMON ... "
 
 	$DAEMON --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid
 	exitval=$?
@@ -52,32 +56,31 @@ start() {
 	fi
 	# if we have brctl, then try to add tap to "lan" if requestet (ignore errors)
 	if [ $(which brctl) ] && TAP=$(grep "#Helperline" /mod/etc/${DAEMON}.conf | grep -o tap[0-9] ); then
-		brctl addif lan $TAP 2> /dev/null 
+		brctl addif lan $TAP 2> /dev/null
 	fi
 }
 
 stop() {
-	
-	if [ -n "$(mypidof $DAEMON)" ];then
+	echo -n "Stopping ${DAEMON}... "
 
-		echo -n "Stopping ${DAEMON} ... "
-		killall $DAEMON > /dev/null 2>&1
-		exitval=$?
-
-		if [ "$exitval" -eq 0 ]; then
-			echo 'done.'
-		else
-			echo 'failed.'
-			exit $exitval
-		fi
-
+	if [ -z "$(mypidof $DAEMON)" ]; then
+		echo "not running."
+		return 1
 	fi
-	
+
+	killall $DAEMON > /dev/null 2>&1
+	exitval=$?
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+
 	rm -f /mod/etc/${DAEMON}.conf
 	rm -f /var/run/${DAEMON}.pid
-
 }
-
 
 case $1 in
 	""|load)
@@ -95,13 +98,9 @@ case $1 in
 		for d in $(echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' ); do
 			if [ "${as%%#*}" != "yes" ]; then
 				echo "$d is disabled" 1>&2
-			else 
-				if [ -e "/var/run/$d.pid" ]; then
-					echo "$d already started."
-				else	
-					DAEMON="$d"
-					start
-				fi
+			else
+				DAEMON="$d"
+				start
 			fi
 			as=${as#*#}
 		done
