@@ -2,10 +2,10 @@ _cgi_mark_active() {
 	local sub=$1 id=$2
 	sed -r "
 		s# id=(['\"])($id)\1# class='active'&#
-		s#(<li)(>.* id=(['\"])($sub)\3)#\1 class='open'\2#
+		s#(<li)([^>]*>.* id=(['\"])($sub)\3)#\1 class='open'\2#
 		s# id=\"[^\"]*\"##
 		s# id='[^']*'##
-		s# class='([^']*)' class='([^']*)'# class='\1 \2'#
+		s# class='([^']*)' class='([^']*)'# class='\1 \2'#g
 	"
 }
 _cgi_submenu() {
@@ -189,7 +189,8 @@ EOF
 			source "$p/$pkg.meta"
 		fi
 		echo "$title|$pkg"
-	done | sort | cut -d"|" -f2 >> "$dir/packages"
+	done | tr '[:upper:]' '[:lower:]' | sort |
+	    cut -d"|" -f2 >> "$dir/packages"
 
 	echo "<a id='status' href='$(href mod status)'>Status</a>" > "$dir/status"
 	echo "<a id='system' href='$(href mod system)'>System</a>" > "$dir/system"
