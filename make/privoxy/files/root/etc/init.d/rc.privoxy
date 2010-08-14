@@ -4,7 +4,6 @@ DAEMON=privoxy
 . /etc/init.d/modlibrc
 
 config() {
-
 	[ ! -d "/mod/etc/$DAEMON" ] && mkdir -p /mod/etc/$DAEMON
 	[ ! -r "/mod/etc/privoxy/default.filter" ] && ln -s /etc/privoxy/default.filter /mod/etc/privoxy/default.filter
 	[ ! -r "/mod/etc/privoxy/default.action" ] && ln -s /etc/privoxy/default.action /mod/etc/privoxy/default.action
@@ -15,6 +14,7 @@ config() {
 		else
 			/mod/etc/default.$DAEMON/${DAEMON}_conf
 		fi
+		[ -r "/tmp/flash/${DAEMON}.extra" ] && cat /tmp/flash/${DAEMON}.extra
 	) > /mod/etc/$DAEMON/config
 }
 
@@ -43,10 +43,9 @@ case $1 in
 		modlib_start $PRIVOXY_ENABLED
 		;;
 	unload)
-		stop
-
 		modunreg file privoxy
 		modunreg cgi privoxy
+		modlib_stop
 		;;
 	start)
 		modlib_start
