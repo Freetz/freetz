@@ -3,7 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Konfigurationsverwaltung" en:"Multiple Configurations")'
+sec_begin '$(lang de:"Konfigurationsverwaltung" en:"Multiple Configurations")' sec-conf
 
 cat << EOF
 <select id="id_act_config" name="my_config" size="1" style="width: 120px"  onchange="changeconf()"><option value="1">default</option></select>
@@ -245,7 +245,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Server-Einstellungen (bei Zertifikaten)" en:"Server Configuration (only with certs)")'
+sec_begin '$(lang de:"Server-Einstellungen (bei Zertifikaten)" en:"Server Configuration (only with certs)")' sec-server-conf
 
 cat << EOF
 Max. Clients: <input id="id_act_maxclients" type="text" size="4" maxlength="3" 
@@ -308,8 +308,6 @@ type="text"size="70" onblur='(local_additional[act_conf]=this.value); Consolidat
 <script>
 var act_conf=1;
 
-FIELDSET_CONFIG = 0
-FIELDSET_SERVER = 5
 variablen=[ "AUTOSTART", "DEBUG", "DEBUG_TIME", "LOCAL", "MODE", "REMOTE", "PORT", "PROTO", "IPV6", "TYPE", "BOX_IP", "BOX_MASK", "REMOTE_IP", "DHCP_RANGE", "LOCAL_NET", "REMOTE_NET", "DHCP_CLIENT", "MTU", "AUTH_TYPE", "CIPHER", "TLS_AUTH", "FLOAT", "KEEPALIVE", "KEEPALIVE_PING", "KEEPALIVE_TIMEOUT", "COMPLZO", "MAXCLIENTS", "CLIENT2CLIENT", "PUSH_DNS", "PUSH_WINS", "REDIRECT", "VERBOSE", "SHAPER", "UDP_FRAGMENT", "PULL", "LOGFILE", "MGMNT", "CLIENTS_DEFINED", "CLIENT_INFO", "CLIENT_IPS", "CLIENT_NAMES", "CLIENT_NETS", "CLIENT_MASKS", "CONFIG_NAMES", "ADDITIONAL", "OWN_KEYS", "NO_CERTTYPE", "TAP2LAN", "PARAM_1", "PARAM_2", "PARAM_3" ]
 
 function Init_Vars(){
@@ -581,7 +579,6 @@ function changeval(value) {
   if(!document.getElementsByTagName) return;
 
 local_cipher[act_conf]= document.getElementById("id_act_cipher").value ; 
-var fieldsets = document.getElementsByTagName("fieldset");
 
  if ( act_conf > 1 ){
   	document.getElementById("div_own_keys").style.display = "block";
@@ -597,12 +594,12 @@ var fieldsets = document.getElementsByTagName("fieldset");
   }
 
  if ( local_expert == "yes" ){
-	fieldsets[FIELDSET_CONFIG].style.display = "block";
+	document.getElementById("sec-conf").style.display = "block";
   	document.getElementById("div_expert").style.display = "block";
 	}
   else {
   	document.getElementById("div_expert").style.display = "none";
-	fieldsets[FIELDSET_CONFIG].style.display = "none";
+	document.getElementById("sec-conf").style.display = "none";
   }
 
  if ( document.getElementById("id_act_static").checked ){
@@ -626,8 +623,7 @@ var fieldsets = document.getElementsByTagName("fieldset");
   }
 	
   if ( document.getElementById("id_act_server").checked ){
-  	var fieldsets = document.getElementsByTagName("fieldset");
-  	fieldsets[FIELDSET_SERVER].style.display = "block";
+  	document.getElementById("sec-server-conf").style.display = "block";
 	document.getElementById("div_redirect").style.display = "none";
   	document.getElementById("div_dhcp").style.display = "block";
   	document.getElementById("div_configure_ip").style.display = "block";
@@ -644,7 +640,7 @@ var fieldsets = document.getElementsByTagName("fieldset");
 	    document.getElementById("div_set_remote_net").style.display = "block";
 	}
 	if ( document.getElementById("id_act_static").checked){
-		fieldsets[FIELDSET_SERVER].style.display = "none";
+		document.getElementById("sec-server-conf").style.display = "none";
 		document.getElementById("div_allow_clientinfos").style.display = "none";
 		document.getElementById("div_push_local_net").style.display = "none";
 		document.getElementById("div_dhcp").style.display = "none";
@@ -652,7 +648,7 @@ var fieldsets = document.getElementsByTagName("fieldset");
 		local_client2client[act_conf]=""; document.getElementById("id_act_c2c").checked = "";
 	} 
     	else{
-		fieldsets[FIELDSET_SERVER].style.display = "block";
+		document.getElementById("sec-server-conf").style.display = "block";
 		document.getElementById("div_allow_clientinfos").style.display = "block";
 		document.getElementById("div_dhcp").style.display = "block";
 		document.getElementById("div_push_local_net").style.display = "block";
@@ -683,7 +679,7 @@ var fieldsets = document.getElementsByTagName("fieldset");
 	}
     } 
     else {
-	fieldsets[FIELDSET_SERVER].style.display = "none";
+	document.getElementById("sec-server-conf").style.display = "none";
 	document.getElementById("div_dhcp").style.display = "none";
 	document.getElementById("div_port").style.display = "none";
 	document.getElementById("div_redirect").style.display = "inline";
