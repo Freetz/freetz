@@ -12,8 +12,7 @@ start() {
  
 	if [ "$BOXTYPE" = "7170" ];then
 	
-	echo -n 'Setting Ports...'
-	echo ''
+	echo 'Setting Ports ...'
 
 	# Port Mode
 	/sbin/$DAEMON spm 1 $CPMACCFG_MODE1
@@ -96,10 +95,8 @@ vlan() {
 		ifconfig eth2 down 2>/dev/null
 		ifconfig eth1 down 2>/dev/null
 		sleep 2
-		echo -n 'VLAN Settings...'
-		echo ''
-		echo -n "/sbin/$DAEMON ssms $SpecialMode..."
-		echo ''
+		echo 'VLAN Settings ...'
+		echo "/sbin/$DAEMON ssms $SpecialMode ..."
 		/sbin/$DAEMON ssms $SpecialMode
 		/sbin/$DAEMON ssm special
 	else

@@ -28,7 +28,7 @@ save() {
 		exit 1
 	fi
 
-	echo -n 'Writing /var/flash/freetz...'
+	echo -n 'Writing /var/flash/freetz ... '
 	cat $TMPFILE > /var/flash/freetz
 	rm -f $TMPFILE
 	echo 'done.'
@@ -37,11 +37,11 @@ save() {
 
 case $1 in
 	""|all)
-		echo -n 'Saving users, groups and passwords...'
+		echo -n 'Saving users, groups and passwords ... '
 		/usr/bin/modusers save
 		echo 'done.'
 
-		echo -n 'Saving config...'
+		echo -n 'Saving config ... '
 		/usr/bin/modconf save mod
 		if [ -e /etc/static.pkg ]; then
 			for pkg in "$(cat /etc/static.pkg)"; do

@@ -10,12 +10,12 @@ if [ "$1" != "freetz" -a "$1" != "all-mods" ]; then
 	exit 1
 fi
 
-echo -n 'Clearing freetz...'
+echo -n 'Clearing freetz ... '
 echo "clear_id $((0x3c))" > /proc/tffs
 echo 'done.'
 
 if [ "$1" = "all-mods" ]; then
-	echo -n 'Clearing other mods...'
+	echo -n 'Clearing other mods ... '
 	echo "clear_id $((0x62))" > /proc/tffs
 	echo "clear_id $((0x3b))" > /proc/tffs
 	echo "clear_id $((0x90))" > /proc/tffs

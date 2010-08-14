@@ -7,7 +7,7 @@ PID_FILE=/var/run/$DAEMON.$SPINDOWN_DEVICE.pid
 config() {
 	SYSFS=$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')
 	if [ -z "$SYSFS" ]; then
-		echo -n "Trying to mount sysfs..."
+		echo -n "Trying to mount sysfs ... "
 		mkdir -p /var/sys
 		mount sysfs /var/sys -t sysfs
 		exitval=$?

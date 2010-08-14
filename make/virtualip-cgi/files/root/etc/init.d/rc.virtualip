@@ -20,7 +20,7 @@ ipv4bcast () {
 }
 
 start() {
-	echo -n 'Setting up virtual network interface...'
+	echo -n 'Setting up virtual network interface ... '
 	
 	if [ -n "$(ifconfig | grep "$VIRTUALIP_INTERFACE")" ]; then
 		echo 'not running.'
@@ -40,7 +40,7 @@ start() {
 }
 
 stop() {
-	echo -n 'Deactivating virtual network interface...'
+	echo -n 'Deactivating virtual network interface ... '
 	
 	if [ -z "$(ifconfig | grep "$VIRTUALIP_INTERFACE")" ]; then
 		echo 'not running.'

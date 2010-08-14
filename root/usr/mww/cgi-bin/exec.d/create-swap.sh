@@ -6,7 +6,7 @@ error=true
 # redirect stderr to stdout so we see output in webif
 exec 2>&1
 
-cgi_begin "$(lang de:"Erstellen der Swap-Datei..." en:"Creation of swapfile...")"
+cgi_begin "$(lang de:"Erstellen der Swap-Datei ..." en:"Creation of swapfile ...")"
 
 if [ -z "$swap_size" ]; then
 	print_error "$(lang de:"Bitte die Gr&ouml;&szlig;e der Swap-Datei (in MB, zwischen 1 und 128) angeben" en:"Please specifiy size of swapfile (in MB, between 1 and 128)")."
@@ -19,7 +19,7 @@ elif [ 1 -gt "$size" -o 128 -lt "$size" ]; then
 else
 	echo -n "<pre>"
 
-	echo "$(lang de:"Erstelle leere Datei..." en:"Creating empty file...")"
+	echo "$(lang de:"Erstelle leere Datei ..." en:"Creating empty file ...")"
 	{
 		sleep 2
 		while killall -USR1 dd > /dev/null 2>&1; do
@@ -28,7 +28,7 @@ else
 	} &
 	sleep 1
 	if dd if=/dev/zero of="$swap_file" bs=1M count=$size; then
-		echo "$(lang de:"Bereite Datei f&uuml;r Swap-Benutzung vor..." en:"Preparing file for swap usage...")"
+		echo "$(lang de:"Bereite Datei f&uuml;r Swap-Benutzung vor ..." en:"Preparing file for swap usage ...")"
 		if mkswap "$swap_file"; then
 			error=false
 		else

@@ -20,7 +20,7 @@ config() {
 }
 
 start() {
-	echo -n 'Loading kernel modules ...'
+	echo -n 'Loading kernel modules ... '
 	for x in `find /lib/modules/2.6.*/kernel/crypto/*.ko /lib/modules/2.6.*/kernel/net/*/*.ko | sed 's%^.*/\([^/]*\)\.ko%\1%'`; do modprobe $x; done
 	config
 	setkey -f /mod/etc/racoon/setkey.conf

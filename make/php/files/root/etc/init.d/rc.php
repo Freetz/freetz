@@ -7,7 +7,7 @@ DAEMON=php
 start() {
 	[ ! -d /tmp/flash/php ] && mkdir /tmp/flash/php && mod_save=true
 	if [ ! -f /tmp/flash/php.ini ]; then
-		echo -n 'Setting up PHP ...'
+		echo -n 'Setting up PHP ... '
 		cp /etc/default.php/php.ini /tmp/flash/php.ini && mod_save=true
 		pidof lighttpd >/dev/null && /etc/init.d/rc.lighttpd restart
 		echo 'done.'

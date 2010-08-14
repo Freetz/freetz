@@ -213,7 +213,7 @@ cat << EOF
 </table>
 
 <font size="-2">
-$(lang de:"Devices: sda, sda1, sda2, sdb, ..." en:"Devices: sda, sda1, sda2, sdb, ...")
+$(lang de:"Devices: sda, sda1, sda2, sdb, ..." en:"Devices: sda, sda1, sda2, sdb,  ...")
 <br />
 $(lang de:"Maximal: Maximale Bandbreite in MegaByte/Sekunde, '0' f&uuml;r automatische Zuweisung" en:"Maximum: Maximum bandwidth megabytes per second, '0' for automatic allocation")
 </font>

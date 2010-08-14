@@ -98,7 +98,7 @@ do_mount ()
 		mnt_path=$FTPDIR/$mnt_name
 		if [ ! -d $mnt_path ]
 		then
-			echo "Mounting $mnt_name to device $mnt_dev..." > /dev/ttyS0
+			echo "Mounting $mnt_name to device $mnt_dev ..." > /dev/ttyS0
 			mkdir -p $mnt_path
 			break
 		else

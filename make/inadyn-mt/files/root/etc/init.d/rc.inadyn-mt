@@ -82,7 +82,7 @@ config() {
 }
 
 start() {
-	echo -n "Starting ${DAEMON}..."
+	echo -n "Starting ${DAEMON} ... "
 	config
 	$DAEMON --input_file /mod/etc/$DAEMON.conf >/dev/null 2>&1
 	local retval=$?

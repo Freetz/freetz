@@ -13,7 +13,7 @@ running() {
 
 start() {
 	set -o noglob
-	echo -n 'Starting nfsd...'
+	echo -n 'Starting nfsd ... '
 	
 	if running; then
 		echo 'already running.'
@@ -21,7 +21,7 @@ start() {
 	fi
 	
 	if [ ! -e /etc/exports ]; then
-		echo "can't open /etc/exports...failed."
+		echo "can't open /etc/exports ... failed."
 		exit 1
 	fi
 
@@ -57,7 +57,7 @@ start() {
 }
 
 reload() {
-	echo -n 'Re-exporting nfsd directories...'
+	echo -n 'Re-exporting nfsd directories ... '
 
 	if ! running; then
 		echo 'not running.'
@@ -75,7 +75,7 @@ reload() {
 }
 
 stop() {
-	echo -n 'Stopping nfsd...'
+	echo -n 'Stopping nfsd ... '
 
 	if ! running; then
 		echo 'not running.'

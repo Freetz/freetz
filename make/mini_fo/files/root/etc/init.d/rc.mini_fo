@@ -71,7 +71,7 @@ jffs2_mount() {
 			if [ $jffs2_ok -ne 0 ]; then
 				/bin/reinit_jffs2 -c /dev/mtdblock${jffs2_pat} -a -o /var/jffs2.image 
 				cp /var/jffs2.image /dev/mtdblock${jffs2_pat}
-				echo "copying image..."
+				echo "copying image ..."
 				rm /var/jffs2.image
 				echo "done."
 				mount -t jffs2 /dev/mtdblock${jffs2_pat} /sto

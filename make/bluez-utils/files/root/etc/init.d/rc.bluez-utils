@@ -10,7 +10,7 @@ running() {
 }
 
 start() {
-	echo -n "Starting $DAEMON_LONG_NAME..."
+	echo -n "Starting $DAEMON_LONG_NAME ... "
 
 	if running; then
 		echo 'already running.'
@@ -38,7 +38,7 @@ start() {
 	modprobe -q hci_usb >/dev/null 2>&1
 
 	if [ "$BLUEZ_UTILS_RFCOMM_START" = "yes" ]; then
-		echo -n "starting rfcomm ..."
+		echo -n "starting rfcomm ... "
 		modprobe -q rfcomm >/dev/null 2>&1
 	fi
 
@@ -47,7 +47,7 @@ start() {
 	exitval1=$?	
 
 	if [ "$BLUEZ_UTILS_SDPD_START" = "yes" ]; then
-		echo -n "starting sdpd ..."
+		echo -n "starting sdpd ... "
 		sdpd $BLUEZ_UTILS_SDPD_OPTIONS
 		exitval2=$?
 	else
@@ -55,31 +55,31 @@ start() {
 	fi
 
 	if [ "$BLUEZ_UTILS_RFCOMMPRG_START" = "yes" ]; then
-		echo -n "set rfcomm (rfcomm "$BLUEZ_UTILS_RFCOMMPRG_OPTIONS") ..."
+		echo -n "set rfcomm (rfcomm "$BLUEZ_UTILS_RFCOMMPRG_OPTIONS") ... "
 		rfcomm $BLUEZ_UTILS_RFCOMMPRG_OPTIONS
 	fi
 
 	if [ "$BLUEZ_UTILS_BNEP_START" = "yes" ]; then
-		echo -n "starting bnep ..."
+		echo -n "starting bnep ... "
 		modprobe -q bnep $BLUEZ_UTILS_BNEP_OPTIONS >/dev/null 2>&1
 	fi
 
 	if [ "$BLUEZ_UTILS_SDPTOOL_START" = "yes" ]; then
-		echo -n "starting sdptool ..."
+		echo -n "starting sdptool ... "
 		sdptool $BLUEZ_UTILS_SDPDTOOL_OPTIONS
 	fi
 
 	if [ "$BLUEZ_UTILS_PAND_START" = "yes" ]; then
-		echo -n "starting sdptool (sdptool "$BLUEZ_UTILS_PAND_SDPDTOOL_OPTIONS") ..."
+		echo -n "starting sdptool (sdptool "$BLUEZ_UTILS_PAND_SDPDTOOL_OPTIONS") ... "
 		sdptool $BLUEZ_UTILS_PAND_SDPDTOOL_OPTIONS 
-		echo -n "starting pand (pand "$BLUEZ_UTILS_PAND_OPTIONS") ..."
+		echo -n "starting pand (pand "$BLUEZ_UTILS_PAND_OPTIONS") ... "
 		pand $BLUEZ_UTILS_PAND_OPTIONS 
 	fi
 
 	if [ "$BLUEZ_UTILS_DUND_START" = "yes" ]; then
-		echo -n "starting sdptool (sdptool "$BLUEZ_UTILS_DUND_SDPDTOOL_OPTIONS") ..."
+		echo -n "starting sdptool (sdptool "$BLUEZ_UTILS_DUND_SDPDTOOL_OPTIONS") ... "
 		sdptool $BLUEZ_UTILS_DUND_SDPDTOOL_OPTIONS
-		echo -n "starting dund (dund "$BLUEZ_UTILS_DUND_OPTIONS") ..."
+		echo -n "starting dund (dund "$BLUEZ_UTILS_DUND_OPTIONS") ... "
 		dund $BLUEZ_UTILS_DUND_OPTIONS
 	fi
 
@@ -92,7 +92,7 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping $DAEMON_LONG_NAME..."
+	echo -n "Stopping $DAEMON_LONG_NAME ... "
 
 	if ! running; then
 		echo 'not running.'

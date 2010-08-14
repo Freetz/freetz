@@ -6,7 +6,7 @@ DAEMON_LONG_NAME=inotify
 . /etc/init.d/modlibrc
 
 start() {
-	echo -n "Starting $DAEMON_LONG_NAME..."
+	echo -n "Starting $DAEMON_LONG_NAME ... "
 	$DAEMON_BIN -c -r -m / \
 		@/dev @/proc @/var @/rom @/sto \
 		--exclude 'busybox|uClibc|libcrypt-0' \

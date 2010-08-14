@@ -210,7 +210,7 @@ modlib_stop()
 {
 	local fn=$PID_FILE
 	local id=$(cat "$fn" 2>/dev/null)
-	echo -n "Stopping ${DAEMON_LONG_NAME}..."
+	echo -n "Stopping ${DAEMON_LONG_NAME} ... "
 	if ! modlib_check_running; then
 		echo 'not running.'
 		return 0
@@ -247,7 +247,7 @@ modlib_stop()
 modlib_reload()
 {
 	local fn=$PID_FILE
-	echo -n "Reloading ${DAEMON_LONG_NAME}..."
+	echo -n "Reloading ${DAEMON_LONG_NAME} ... "
 	modlib_check_running
 	case $? in
 		1)
@@ -329,7 +329,7 @@ modlib_status()
 #    use $DAEMON_ENV for additional environment settings
 modlib_startdaemon()
 {
-	echo -n "Starting ${DAEMON_LONG_NAME}..."
+	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 	config
 
 	env - PATH="$PATH" $DAEMON_ENV "$@"
@@ -375,7 +375,7 @@ modlib_start()
 	modlib_check_running
 	case $? in
 		0)
-			echo "Starting ${DAEMON_LONG_NAME}...already running."
+			echo "Starting ${DAEMON_LONG_NAME} ... already running."
 			;;
 		3)
 			start

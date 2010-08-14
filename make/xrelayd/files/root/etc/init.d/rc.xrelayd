@@ -4,7 +4,7 @@ DAEMON=xrelayd
 . /etc/init.d/modlibrc
 
 start() {
-	echo "Starting xrelayd services..."
+	echo "Starting xrelayd services ..."
 	
 	if pidof "$DAEMON" >/dev/null; then
 		echo 'already running.'
@@ -18,7 +18,7 @@ start() {
 	
 	cat /tmp/flash/.xrelayd/xrelayd_svcs | grep -v "^#" | while read -r remote local comment; do
 		if [ -n "$remote" -a -n "$local" ]; then
-			echo -n "Starting xrelayd($remote>$local $comment)..."
+			echo -n "Starting xrelayd($remote>$local $comment) ... "
 			$DAEMON -D$XRELAYD_VERBOSE -d $remote -r $local -p $XRELAYD_KEY -A $XRELAYD_CERTCHAIN
 			if [ "$?" -eq 0 ]; then
 				echo 'done.'
@@ -31,7 +31,7 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping xrelayd services..."
+	echo -n "Stopping xrelayd services ... "
 
 	if ! pidof "$DAEMON" >/dev/null; then
 		echo 'not running.'

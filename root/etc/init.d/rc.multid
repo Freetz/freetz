@@ -12,7 +12,7 @@ TMPFILE_NTP=/tmp/.multid.ntp
 [ -r /var/env.cache ] && . /var/env.cache
 
 start() {
-	echo -n "Starting ${DAEMON_LONG_NAME}..."
+	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 
 	if [ -e $TMPFILE_IGD ]; then
 		DAEMON_CMD_IGD=$(cat $TMPFILE_IGD)

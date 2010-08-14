@@ -21,7 +21,7 @@ disconnect() {
 }
 
 start() {
-	echo -n 'Starting ppp-cgi...'
+	echo -n 'Starting ppp-cgi ... '
 	if [ -n "$(pidof ppp_observer ppp_dialer pppd)" ]; then
 		echo 'already running.'
 		exit 1
@@ -39,7 +39,7 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping ppp-cgi...'
+	echo -n 'Stopping ppp-cgi ... '
 	if [ -z "$(pidof ppp_observer ppp_dialer pppd)" ]; then
 		echo 'not running.'
 		return 1

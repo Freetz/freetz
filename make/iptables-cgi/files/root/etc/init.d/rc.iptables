@@ -26,11 +26,11 @@ start() {
 
 	lsmod | grep iptable_filter > /dev/null
 	if [ $? -eq 1 ]; then
-		echo 'Loading modules...'
+		echo 'Loading modules ...'
 		for MODUL in $MODULES; do
 			modprobe $MODUL > /dev/null 2>&1
 		done
-		echo 'Loading table list...'
+		echo 'Loading table list ...'
 		while read LINE; do
 			iptables $LINE
 		done < $SAVEFILE
@@ -39,7 +39,7 @@ start() {
 			sed -e "s/\*gui\*//g" /mod/etc/conf/iptables.cfg > /var/tmp/iptables_tmp
 			cat /var/tmp/iptables_tmp > /mod/etc/conf/iptables.cfg
 			rm /var/tmp/iptables_tmp
-			echo -n 'Modules are already loaded. Starting rule script...'
+			echo -n 'Modules are already loaded. Starting rule script ... '
 			CONFFILE="iptables.cfg"
 			CONFPATH="/mod/etc/conf"
 

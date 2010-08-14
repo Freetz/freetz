@@ -87,7 +87,7 @@ backup() {
 	_BACKUPNAME=$RRDSTATS_RRDBACKUP/$_TIMESTRING
 	if [ $(ls $RRDSTATS_RRDDATA/*.rrd 2>/dev/null | wc -w) -le 0 ]; then
 		[ "$1" != "silent" ] && echo "RRDstats "
-		echo -n 'backup skipped, no files found...'
+		echo -n 'backup skipped, no files found ... '
 		[ "$1" != "silent" ] && echo
 		return
 	fi
@@ -97,7 +97,7 @@ backup() {
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
 		if [ "$1" != "silent" ]; then
-			echo "Starting RRDstats...failed, not able to backup files."
+			echo "Starting RRDstats ... failed, not able to backup files."
 		else
 			echo 'backup failed, abort.'
 		fi
@@ -124,12 +124,12 @@ restore() {
 		modlib_stop
 	fi
 
-	[ "$1" != "silent" ] && echo -n 'RRDstats is restoring files...'
+	[ "$1" != "silent" ] && echo -n 'RRDstats is restoring files ... '
 	if [ $(ls $RRDSTATS_RRDBACKUP/* 2>/dev/null | wc -w) -le 0 ]; then
 		if [ "$1" != "silent" ]; then
 			echo 'skipped, no files found.'
 		else
-			echo 'Starting RRDstats...failed, no files to restore.'
+			echo 'Starting RRDstats ... failed, no files to restore.'
 		fi
 		exit 1
 	fi
@@ -141,7 +141,7 @@ restore() {
 		if [ "$1" != "silent" ]; then
 			echo 'failed.'
 		else
-			echo "Starting RRDstats...failed, not able to restore files."
+			echo "Starting RRDstats ... failed, not able to restore files."
 		fi
 		exit $exitval
 	else
@@ -188,7 +188,7 @@ case $1 in
 		[ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" = "yes" ] && echo 'inetd' || modlib_status
 		;;
 	backup)
-		echo -n 'RRDstats is creating a backup of .rrd files...'
+		echo -n 'RRDstats is creating a backup of .rrd files ... '
 		backup silent
 		echo "done."
 		;;

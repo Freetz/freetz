@@ -67,25 +67,25 @@ start()
 {
 	local status=1
 	local daemonname=""
-	echo -n "Starting $DAEMON_LONG_NAME..."
+	echo -n "Starting $DAEMON_LONG_NAME ... "
 	if [ "$AVM_FTP_ENABLED" != "no" ]; then
 		if [ -n "$BINARY" ]; then
 			daemonname="$(modlib_check_port $FTPD_PORT $DAEMON $CHECKCMD)"
 			status=$?
 			if [ "$FTPD_INETD" == "yes" ]; then
 				if [ "$status" -eq 0 ]; then
-					echo -n "(enabling over inetd)..."
+					echo -n "(enabling over inetd) ... "
 					set_parameters inetd
 					status=$?
-					[ "$status" -eq 22 ] && echo -n "(WARNING: multiple port allocation)..."
+					[ "$status" -eq 22 ] && echo -n "(WARNING: multiple port allocation) ... "
 				else
 					if [ "$status" -eq 2 -a "$daemonname" == "$DAEMON" ]
 					then
-						echo -n "(already running using inetd)..."
+						echo -n "(already running using inetd) ... "
 						status=0
 					else
 						[ "$status" -eq 2 ] && local over_inetd=" over inetd" || local over_inetd=""
-						echo -n "(Port $FTPD_PORT is busy by $daemonname$over_inetd)..."
+						echo -n "(Port $FTPD_PORT is busy by $daemonname$over_inetd) ... "
 					fi
 				fi
 			else
@@ -93,7 +93,7 @@ start()
 					set_parameters daemon
 					status=$?
 				else
-					echo -n "(Port $FTPD_PORT is busy by $daemonname)..."
+					echo -n "(Port $FTPD_PORT is busy by $daemonname) ... "
 				fi
 			fi
 		else
@@ -116,13 +116,13 @@ start()
 stop()
 {
 	local status=1
-	echo -n "Stopping ${DAEMON_LONG_NAME-$DAEMON}..."
+	echo -n "Stopping ${DAEMON_LONG_NAME-$DAEMON} ... "
 	if [ -n "$BINARY" ]; then
 		daemonname="$(modlib_check_port $FTPD_PORT $DAEMON)"
 		status=$?
 		if [ "$status" -eq 2 ]; then
 			if [ "$daemonname" == "$DAEMON" ]; then
-				echo -n "(disabling over inetd)..."
+				echo -n "(disabling over inetd) ... "
 				rm -f ${INETD_FTPD_CONFIG} > /dev/null 2>&1
 				modlib_reload_inetd > /dev/null 2>&1
 				status=$?

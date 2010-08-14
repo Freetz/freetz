@@ -111,14 +111,14 @@ if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 	apply_changes stop "$package"
 	echo
 	if ! $default; then
-		echo -n 'Saving settings...'
+		echo -n 'Saving settings ... '
 		echo "$settings" | modconf set "$package" -
 		echo 'done.'
-		echo -n "Saving $package.cfg..."
+		echo -n "Saving $package.cfg ... "
 		modconf save "$package"
 		echo 'done.'
 	else
-		echo -n 'Restoring defaults...'
+		echo -n 'Restoring defaults ... '
 		modconf default "$package"
 		echo 'done.'
 	fi

@@ -20,9 +20,9 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
     export DS_BCK_FILE='ds_mod'
     export FREETZ_BCK_FILE='freetz'
     rm -rf $BACKUP_DIR
-    echo "$(lang de:"Sicherungsdateien extrahieren" en:"Extracting backup files")..."
+    echo "$(lang de:"Sicherungsdateien extrahieren" en:"Extracting backup files") ..."
     tar xvzf $FORM_uploadfile
-    echo "$(lang de:"Konfiguration wiederherstellen" en:"Restoring configuration")..."
+    echo "$(lang de:"Konfiguration wiederherstellen" en:"Restoring configuration") ..."
     if [ -e "$BACKUP_DIR/$DS_BCK_FILE" ]; then
         echo "$(lang de:"Alte Sicherungsdatei gefunden" en:"Found old backup file")"
         mv $BACKUP_DIR/$DS_BCK_FILE $BACKUP_DIR/$FREETZ_BCK_FILE
@@ -42,12 +42,12 @@ cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore conf
        fi
       echo "$(lang de:"ERLEDIGT" en:"DONE")"
     fi
-    echo "$(lang de:"Sicherungsdateien entfernen" en:"Removing backup")..."
+    echo "$(lang de:"Sicherungsdateien entfernen" en:"Removing backup") ..."
     rm -rf $BACKUP_DIR
     rm -f $FORM_uploadfile
     echo "$(lang de:"ERLEDIGT" en:"DONE")"
     if [ "$FORM_restart" = "on" ]; then
-      echo "$(lang de:"Neustart in 5 Sekunden" en:"Restarting in 5 seconds")..."
+      echo "$(lang de:"Neustart in 5 Sekunden" en:"Restarting in 5 seconds") ..."
       (sleep 5; reboot)&
     fi
   } | html

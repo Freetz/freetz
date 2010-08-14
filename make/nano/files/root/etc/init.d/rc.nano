@@ -11,7 +11,7 @@ config() {
 
 	# create a default nanorc if there is none
 	if [ ! -e $NANORC ]; then
-		echo -n 'Creating default nanorc...'
+		echo -n 'Creating default nanorc ... '
 		mkdir -p /tmp/flash/nano
 		cat $NANODIR/nanorc.options-tiny > $NANORC
 		[ -z "$(nano -V | grep ' --enable-tiny')" ] && cat $NANODIR/nanorc.options-fancy >> $NANORC

@@ -16,7 +16,7 @@ fi
 
 cgi_begin '$(lang de:"Reinige" en:"Cleaning")'
 
-echo -n '<pre>starting cleaning...'
+echo -n '<pre>starting cleaning ... '
 
 if [ -z "$HP_UTILS_URI" ]; then
 	echo "error"

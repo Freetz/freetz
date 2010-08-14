@@ -18,7 +18,7 @@ else
 fi
 
 start() {
-	echo "Starting $DAEMON..."
+	echo "Starting $DAEMON ..."
 	
 	if running; then
 		echo 'already running.'
@@ -28,7 +28,7 @@ start() {
 	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1 
 	echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
 		[ -n "$downfile" ]
-		echo -n "Download: $downfile..."
+		echo -n "Download: $downfile ... "
 		downloader $downfile >> $LOGFILE 2>&1
 		errors=$?
 		if [ "$errors" -eq 0 ]; then
@@ -48,7 +48,7 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping $DAEMON..."
+	echo -n "Stopping $DAEMON ... "
 	
 	if ! running; then
 		echo 'not running.'
@@ -67,10 +67,10 @@ stop() {
 
 remove() {
 	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1 
-	echo "$DAEMON: Remove all downloaded files..."
+	echo "$DAEMON: Remove all downloaded files ..."
 	echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
 		[ -n "$downfile" ]
-		echo -n "Delete $downfile..."
+		echo -n "Delete $downfile ... "
 		downremover $downfile >> $LOGFILE 2>&1
 		errors=$?
 		if [ "$errors" -eq 0 ]; then

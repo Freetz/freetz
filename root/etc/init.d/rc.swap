@@ -9,7 +9,7 @@ has_swap() {
 }
 
 start() {
-	echo -n "Starting $DAEMON..."
+	echo -n "Starting $DAEMON ... "
 
 	if has_swap; then
 		echo 'already running.'
@@ -27,7 +27,7 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping $DAEMON..."
+	echo -n "Stopping $DAEMON ... "
 
 	if ! has_swap; then
 		echo 'not running.'

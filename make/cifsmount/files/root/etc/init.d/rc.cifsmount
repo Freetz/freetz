@@ -18,7 +18,7 @@ running() {
 }
 
 start() {
-	echo -n 'Starting cifs...'
+	echo -n 'Starting cifs ... '
 	
 	if running; then
 		echo 'already running.'
@@ -36,7 +36,7 @@ start() {
 		eval CIFSMOUNT_USER=\$CIFSMOUNT_USER$i
 		eval CIFSMOUNT_PASS=\$CIFSMOUNT_PASS$i
 		if [ -n "$CIFSMOUNT_MOUNTPOINT" ]; then
-			echo "mount $CIFSMOUNT_SHARE..."
+			echo "mount $CIFSMOUNT_SHARE ..."
 			mkdir -p "$CIFSMOUNT_MOUNTPOINT"
 			$CIFSMNT_PATH/mount.cifs $CIFSMOUNT_SHARE $CIFSMOUNT_MOUNTPOINT -o user="$CIFSMOUNT_USER",pass="$CIFSMOUNT_PASS"
 			[ "$?" -gt 0 ] && exitval=1
@@ -52,7 +52,7 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping cifs...'
+	echo -n 'Stopping cifs ... '
 	
 	if ! running; then
 		echo 'not running.'
@@ -66,7 +66,7 @@ stop() {
 		eval CIFSMOUNT_USER=\$CIFSMOUNT_USER$i
 		eval CIFSMOUNT_PASS=\$CIFSMOUNT_PASS$i
 		if [ -n "$CIFSMOUNT_MOUNTPOINT" ]; then
-			echo "unmount $CIFSMOUNT_SHARE..."
+			echo "unmount $CIFSMOUNT_SHARE ..."
 			umount $CIFSMOUNT_MOUNTPOINT
 			[ "$?" -gt 0 ] && exitval=1
 			#rmdir $CIFSMOUNT_MOUNTPOINT

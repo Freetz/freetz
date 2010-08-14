@@ -9,7 +9,7 @@ case $1 in
 		modreg file onlinechanged conf 'Onlinechanged' 0 "onlinechanged"
 		modreg daemon --hide onlinechanged
 		
-		echo -n 'Setting up onlinechanged scripting ...'
+		echo -n 'Setting up onlinechanged scripting ... '
 		[ ! -f /tmp/flash/$DAEMON-cgi ] && cp /etc/default.$DAEMON/$DAEMON-cgi /tmp/flash/
 		( sh /tmp/flash/$DAEMON-cgi start )&
 		echo 'done.'

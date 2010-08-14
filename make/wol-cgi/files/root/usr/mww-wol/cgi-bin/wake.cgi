@@ -14,9 +14,9 @@ if [ -z "$WOL_MAC" ]; then
 	exit 1
 fi
 
-cgi_begin '$(lang de:"Wecke '\"$WOL_MAC\"' auf..." en:"Wake up '\"$WOL_MAC\"'...")'
+cgi_begin '$(lang de:"Wecke '\"$WOL_MAC\"' auf ..." en:"Wake up '\"$WOL_MAC\"' ...")'
 
-echo -n '<pre>sending magic frame...'
+echo -n '<pre>sending magic frame ... '
 
 if [ -z "$WOL_INTERF" ]; then
 	$WOL_PROG "$WOL_MAC" >/dev/null 2>&1

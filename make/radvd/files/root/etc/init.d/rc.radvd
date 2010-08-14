@@ -21,7 +21,7 @@ setup_ipv6_interface() {
 	if [ "$RADVD_SETIPV6" == "yes" ]; then
 		ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
-			echo 'Set IPv6 address: $RADVD_ADDRESS...already set.'
+			echo 'Set IPv6 address: $RADVD_ADDRESS ... already set.'
 		else
 			ip -6 addr add $RADVD_ADDRESS dev $RADVD_INTERFACE
 		fi
@@ -35,7 +35,7 @@ shut_ipv6_interface() {
 		if [ $? -eq 0 ]; then
 			ip -6 addr del $RADVD_ADDRESS dev $RADVD_INTERFACE
 		else
-			echo -n 'IPv6 address already unset...'
+			echo -n 'IPv6 address already unset ... '
 		fi
 	fi
 	[ "$RADVD_FORWARD" == "yes" ] && echo 0 > /proc/sys/net/ipv6/conf/all/forwarding

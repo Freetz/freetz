@@ -1,8 +1,8 @@
 eval "$(modcgi branding mod_cgi)"
 
-cgi_begin '$(lang de:"Branding &auml;ndern" en:"Change branding")...'
+cgi_begin '$(lang de:"Branding &auml;ndern" en:"Change branding") ...'
 echo '<p>$(lang de:"Um die &Auml;nderungen wirksam zu machen, ist ein Neustart erforderlich." en:"You must reboot the device for the changes to take effect.")</p>'
-echo -n '<pre>set branding to '"'$MOD_CGI_BRANDING'"'...'
+echo -n '<pre>set branding to '"'$MOD_CGI_BRANDING'"' ... '
 success=0
 for i in $(ls /usr/www/); do
 	case $i in

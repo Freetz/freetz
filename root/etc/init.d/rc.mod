@@ -45,11 +45,11 @@ start() {
 	if [ -n "$plugins" ]; then
 		echo -n "Starting AVM-Plugins"
 		for plugin in $plugins; do
-			echo -n "...$(echo $plugin | sed 's/.*plugin-//;s/\/.*//')"
+			echo -n " ... $(echo $plugin | sed 's/.*plugin-//;s/\/.*//')"
 			$plugin start >/dev/null 2>&1
 			[ $? -ne 0 ] && echo -n "(failed)"
 		done
-		echo "...done."
+		echo " ... done."
 	fi
 
 	[ -r /tmp/flash/rc.custom ] && mv /tmp/flash/rc.custom /tmp/flash/mod/rc.custom

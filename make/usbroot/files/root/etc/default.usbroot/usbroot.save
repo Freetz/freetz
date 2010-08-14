@@ -10,17 +10,17 @@ pkg_post_save()
 		# if not root directory trim trailing slash
 		[ "$USBROOT_USBPATH" != '/' ] && USBROOT_USBPATH="${USBROOT_USBPATH%/}"
 
-		echo 'Saving settings...'
+		echo 'Saving settings ...'
 		/mod/etc/init.d/rc.usbroot store \
 			"$USBROOT_DEVICE:$USBROOT_FSTYPE${USBROOT_FSTYPE:+:}${USBROOT_USBPATH:-/}" \
 			"${USBROOT_MNTOPTIONS// /}"
 		echo 'done.'
 
-		echo 'Activating USB root...'
+		echo 'Activating USB root ...'
 		/mod/etc/init.d/rc.usbroot on
 		echo 'done.'
 	else
-		echo 'Deactivating USB root...'
+		echo 'Deactivating USB root ...'
 		/mod/etc/init.d/rc.usbroot off
 		echo 'done.'
 	fi

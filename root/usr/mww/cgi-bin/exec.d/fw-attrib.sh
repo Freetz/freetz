@@ -1,6 +1,6 @@
 cgi_begin '$(lang de:"Attribute bereinigen" en:"Clean up attributes")'
 echo '<p>$(lang de:"Entfernt Merker f&uuml;r \"nicht unterst&uuml;tzte &Auml;nderungen\"" en:"Cleans up marker for \"unauthorized changes\"")</p>'
-echo -n '<pre>$(lang de:"Bereinige Attribute" en:"Cleaning up attributes")...'
+echo -n '<pre>$(lang de:"Bereinige Attribute" en:"Cleaning up attributes") ...'
 major=$(grep tffs /proc/devices)
 tffs_major=${major%%tffs}
 rm -f /var/flash/fw_attrib

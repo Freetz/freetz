@@ -1,4 +1,4 @@
-cgi_begin "$(lang de:"Speichern" en:"Saving")..."
+cgi_begin "$(lang de:"Speichern" en:"Saving") ..."
 
 echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings"):</p>"
 
@@ -13,7 +13,7 @@ else
 	case $CONFIG_TYPE in
 		text)
 			eval "$(modcgi content mod_cgi)"
-			echo -n "Saving $PACKAGE/$FILE_ID..."
+			echo -n "Saving $PACKAGE/$FILE_ID ... "
 			echo "$MOD_CGI_CONTENT" > "$CONFIG_FILE"
 			echo 'done.'
 			eval "$CONFIG_SAVE"

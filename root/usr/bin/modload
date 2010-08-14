@@ -9,20 +9,20 @@ trap "rm -f $TMPFILE" EXIT
 
 [ -d "/tmp/flash" -a "$1" != "force" ] && exit 0
 
-echo -n "Loading $MODFILE..."
+echo -n "Loading $MODFILE ... "
 if cat $MODFILE > $TMPFILE 2> /dev/null; then
 	if tar -xf $TMPFILE -C /tmp/ 2> /dev/null; then
 		echo 'done.'
 	else
 		echo 'failed.'
-		echo -n "Creating $MODFILE..."
+		echo -n "Creating $MODFILE ... "
 		mkdir -p /tmp/flash
 		tar -cf $MODFILE -C /tmp flash
 		echo 'done.'
 	fi
 else
 	echo 'does not exist.'
-	echo -n "Creating $MODFILE..."
+	echo -n "Creating $MODFILE ... "
 	mkdir -p /tmp/flash
 	tar -cf $MODFILE -C /tmp flash
 	echo 'done.'
@@ -44,15 +44,15 @@ lnmod -d /etc/default.mod
 lnmod -d /usr/lib/cgi-bin/mod
 lnmod -x /usr/lib/cgi-bin/mod.cgi
 
-echo -n 'Loading users, groups and passwords...'
+echo -n 'Loading users, groups and passwords ... '
 /usr/bin/modusers load
 echo 'done.'
 
-echo -n 'Loading hosts...'
+echo -n 'Loading hosts ... '
 /usr/bin/modhosts load
 echo 'done.'
 
-echo -n 'Loading config...'
+echo -n 'Loading config ... '
 /usr/bin/modconf load mod
 if [ -e /etc/static.pkg ]; then
 	for pkg in $(cat /etc/static.pkg); do
@@ -66,7 +66,7 @@ if [ -e /etc/static.pkg ]; then
 fi
 echo 'done.'
 
-echo -n 'Loading modules...'
+echo -n 'Loading modules ... '
 [ -r /tmp/flash/modules ] && mv /tmp/flash/modules /tmp/flash/mod/modules
 if [ -r /tmp/flash/mod/modules ]; then
 	grep -v "^#" /tmp/flash/mod/modules | while read -r module; do

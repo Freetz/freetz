@@ -16,7 +16,7 @@ if [ -n "$QUERY_STRING" ]; then
 		remove)
 			echo "<pre>"
 			if [ -r "$DOWNLOGFILE" ]; then
-				echo -n "Delete $DOWNLOGFILE..."
+				echo -n "Delete $DOWNLOGFILE ... "
 				rm -f $DOWNLOGFILE
 				echo "done"
 			fi
