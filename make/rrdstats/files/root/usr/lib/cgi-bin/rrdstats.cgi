@@ -67,7 +67,7 @@ cat << EOF
 <p>
 <input type="hidden" name="webenabled" value="no">
 <input id="w1" type="checkbox" name="webenabled" value="yes"$webenabled_chk>
-<label for="w1">$(lang de:"Zus&auml;tzlichen Webserver aktiveren auf Port" en:"Activate additional webserver on port")</label>&nbsp;
+<label for="w1">$(lang de:"Zus&auml;tzlichen Webserver aktivieren auf Port" en:"Activate additional webserver on port")</label>&nbsp;
 <input type="text" name="webtcpport" size="4" maxlength="5" value="$(html "$RRDSTATS_WEBTCPPORT")">
 </p>
 EOF
@@ -292,7 +292,7 @@ cat << EOF
 <p>
 <input type="hidden" name="digitemp_http" value="no">
 <input id="d4" type="checkbox" name="digitemp_http" value="yes"$digitemp_http_chk>
-<label for="d4">$(lang de:"Webserver aktiveren auf Port" en:"Activate webserver on port")</label>&nbsp;
+<label for="d4">$(lang de:"Webserver aktivieren auf Port" en:"Activate webserver on port")</label>&nbsp;
 <input type="text" name="digitemp_port" size="4" maxlength="5" value="$(html "$RRDSTATS_DIGITEMP_PORT")">
 </p>
 
