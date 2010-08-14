@@ -3,7 +3,12 @@ UCLIBC_DIR:=$(TARGET_TOOLCHAIN_DIR)/uClibc-$(UCLIBC_VERSION)
 UCLIBC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/uclibc
 UCLIBC_SOURCE:=uClibc-$(UCLIBC_VERSION).tar.bz2
 UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
-UCLIBC_SOURCE_SITE2:=http://www.uclibc.org/downloads/old-releases
+ifeq ($(strip $(UCLIBC_VERSION)),0.9.28)
+UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads/old-releases
+endif
+ifeq ($(strip $(UCLIBC_VERSION)),0.9.29)
+UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads/old-releases
+endif
 
 UCLIBC_KERNEL_SOURCE_DIR:=$(KERNEL_SOURCE_DIR)
 UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DIR)
@@ -25,7 +30,7 @@ UCLIBC_LOCALE_DATA:=$(DL_DIR)/$(UCLIBC_SOURCE_LOCALE)
 
 
 $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) .config $(UCLIBC_SOURCE) $(UCLIBC_SOURCE_SITE) || $(DL_TOOL) $(DL_DIR) .config $(UCLIBC_SOURCE) $(UCLIBC_SOURCE_SITE2)
+	$(DL_TOOL) $(DL_DIR) .config $(UCLIBC_SOURCE) $(UCLIBC_SOURCE_SITE)
 
 uclibc-unpacked: $(UCLIBC_DIR)/.unpacked
 $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(UCLIBC_LOCALE_DATA)
