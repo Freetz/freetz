@@ -56,6 +56,8 @@ start() {
 	[ -r /tmp/flash/mod/rc.custom ] && . /tmp/flash/mod/rc.custom
 
 	[ -x /etc/init.d/rc.external ] && touch /tmp/.modstarted
+
+	/usr/lib/mod/menu-update
 }
 
 modreg_file() {
