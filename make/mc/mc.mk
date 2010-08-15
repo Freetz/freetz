@@ -11,6 +11,9 @@ ifneq ($(strip $(FREETZ_PACKAGE_MC_ONLINE_HELP)),y)
 $(PKG)_NOT_INCLUDED:=$($(PKG)_TARGET_HELP)
 endif
 
+$(PKG)_BUILD_PREREQ += automake-1.10
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the automake1.10 package
+
 $(PKG)_DEPENDS_ON := ncurses-terminfo
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
