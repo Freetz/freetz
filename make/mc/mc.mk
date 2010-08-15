@@ -2,9 +2,10 @@ $(call PKG_INIT_BIN, 4.6.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=ec92966f4d0c8b50c344fe901859ae2a
 $(PKG)_SITE:=http://www.midnight-commander.org/downloads
-$(PKG)_HELP:=$($(PKG)_MAKE_DIR)/files/root/usr/share/mc/mc.hlp
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc.bin
+$(PKG)_HELP:=$($(PKG)_MAKE_DIR)/files/root/usr/share/mc/mc.hlp
 $(PKG)_TARGET_HELP:=$($(PKG)_DEST_DIR)/usr/share/mc/mc.hlp
 ifneq ($(strip $(FREETZ_PACKAGE_MC_ONLINE_HELP)),y)
 $(PKG)_NOT_INCLUDED:=$($(PKG)_TARGET_HELP)
@@ -26,8 +27,6 @@ endif
 ifeq ($(strip $(FREETZ_PACKAGE_MC_WITH_NCURSES)),y)
 $(PKG)_DEPENDS_ON += ncurses
 endif
-
-$(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh ;
 
 $(PKG)_CONFIGURE_ENV += mc_cv_have_zipinfo=yes
 
@@ -65,22 +64,16 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_HELP): $($(PKG)_HELP)
-	mkdir -p $(dir $@)
-	cp $^ $@
+	$(INSTALL_FILE)
 
 $(pkg):
 
-ifeq ($(strip $(FREETZ_PACKAGE_MC_ONLINE_HELP)),y)
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_HELP)
-else
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
-endif
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(if $(FREETZ_PACKAGE_MC_ONLINE_HELP),$($(PKG)_TARGET_HELP))
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(MC_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(MC_TARGET_BINARY)
+	$(RM) $(MC_TARGET_BINARY) $(MC_TARGET_HELP)
 
 $(PKG_FINISH)
-
