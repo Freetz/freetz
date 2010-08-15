@@ -1,6 +1,6 @@
 /*
   Use the following command to test:
-    for l in en_US en_US.UTF-8 de_DE de_DE.UTF-8; do ./tst_nl_langinfo $l; done > tst_nl_langinfo.output
+    ( ./tst_nl_langinfo; for l in en_US en_US.UTF-8 de_DE de_DE.UTF-8; do ./tst_nl_langinfo $l; done ) > tst_nl_langinfo.output
   Run it once with the original firmware and once with the modified one. Both outputs should be identical.
 */
 
