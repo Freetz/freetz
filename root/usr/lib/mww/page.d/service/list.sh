@@ -1,3 +1,4 @@
+REG=/mod/etc/reg/daemon.reg
 source /usr/lib/mod/service.sh
 
 stat_avm() {

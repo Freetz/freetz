@@ -1,3 +1,6 @@
+EXTRA_REG=/mod/etc/reg/extra.reg
+[ -e "$EXTRA_REG" ] || touch "$EXTRA_REG"
+
 CGI_REG=/mod/etc/reg/cgi.reg
 
 _cgi_extras() {

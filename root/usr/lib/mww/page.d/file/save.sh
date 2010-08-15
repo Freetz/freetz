@@ -13,7 +13,7 @@ else
 	case $CONFIG_TYPE in
 		text)
 			eval "$(modcgi content mod_cgi)"
-			echo -n "Saving $PACKAGE/$FILE_ID ... "
+			echo -n "Saving $PACKAGE/$ID ... "
 			echo "$MOD_CGI_CONTENT" > "$CONFIG_FILE"
 			echo 'done.'
 			eval "$CONFIG_SAVE"
@@ -25,6 +25,6 @@ else
 	echo '</pre>'
 fi
 
-back_button file "$PACKAGE" "$FILE_ID"
+back_button file "$PACKAGE" "$ID"
 
 cgi_end

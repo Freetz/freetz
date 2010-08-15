@@ -43,15 +43,15 @@ _cgi_location() {
 	local out=$1; shift
 	local type=$1
 	case $type in
-		file)   "$out" "/cgi-bin/file.cgi/${2}/${3}" ;;
-		extra)  "$out" "/cgi-bin/extra.cgi/${2}/${3}" ;;
-		status) "$out" "/cgi-bin/pkgstatus.cgi/${2}/${3:-status}" ;;
+		file)   "$out" "/cgi-bin/file/${2}/${3}" ;;
+		extra)  "$out" "/cgi-bin/extra/${2}/${3}" ;;
+		status) "$out" "/cgi-bin/status/${2}/${3:-status}" ;;
 		cgi)    local pkg=$2; shift 2
-			"$out" "/cgi-bin/conf.cgi/$pkg" "$@" ;;
+			"$out" "/cgi-bin/conf/$pkg" "$@" ;;
 		mod)    case $2 in
 				""|status) "$out" "/cgi-bin/status.cgi" ;;
 				extras)    "$out" "/cgi-bin/extra.cgi" ;;
-				daemons)   "$out" "/cgi-bin/service.cgi" ;;
+				daemons)   "$out" "/cgi-bin/service" ;;
 				about)     "$out" "/cgi-bin/about.cgi" ;;
 				packages)  "$out" "/cgi-bin/packages.cgi" ;;
 				system)    "$out" "/cgi-bin/system.cgi" ;;

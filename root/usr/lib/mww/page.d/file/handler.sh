@@ -1,27 +1,16 @@
-#!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-. /usr/lib/libmodcgi.sh
-
 file_reg=/mod/etc/reg/file.reg
 [ -e "$file_reg" ] || touch "$file_reg"
 
-path_info PACKAGE FILE_ID _
-if ! valid package "$PACKAGE" || ! valid id "$FILE_ID"; then
-	cgi_error "Invalid path"
-	exit 2
-fi
-
 OIFS=$IFS
 IFS='|'
-set -- $(grep "^$PACKAGE|$FILE_ID|" "$file_reg")
+set -- $(grep "^$PACKAGE|$ID|" "$file_reg")
 IFS=$OIFS
 TITLE=$3 sec=$4 def=$5
 
 if [ $# -eq 0 ]; then
 	cgi_error "$(lang
-	    de:"Datei '$FILE_ID' des Pakets '$PACKAGE' ist unbekannt."
-	    en:"File '$FILE_ID' of package '$PACKAGE' is unknown."
+	    de:"Datei '$ID' des Pakets '$PACKAGE' ist unbekannt."
+	    en:"File '$ID' of package '$PACKAGE' is unknown."
 	)</p>"
 	exit
 fi
@@ -43,6 +32,6 @@ print_access_denied() {
 }
 
 case $REQUEST_METHOD in
-	POST)	source file_save.sh ;;
-	GET|*)	source file_edit.sh ;;
+	POST)	source "$HANDLER_DIR/save.sh" ;;
+	GET|*)	source "$HANDLER_DIR/edit.sh" ;;
 esac

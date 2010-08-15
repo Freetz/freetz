@@ -1,26 +1,11 @@
-#!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-. /usr/lib/libmodcgi.sh
-
 EXTRA_REG=/mod/etc/reg/extra.reg
-
 [ -e "$EXTRA_REG" ] || touch "$EXTRA_REG"
 
-if [ -z "$PATH_INFO" ]; then
-    	source extra_list.sh
-	exit
-fi
-
-path_info pkg cgi remaining_path
-if ! valid package "$pkg" || ! valid id "$cgi"; then
-	cgi_error "Invalid path"
-fi
 IFS='|'
-set -- $(grep "^$pkg|.*|$cgi\$" "$EXTRA_REG")
+set -- $(grep "^$PACKAGE|.*|$ID\$" "$EXTRA_REG")
 IFS=$OIFS
 
-cgi --id="extra:$pkg/$cgi" --help="/packages/$pkg/$cgi"
+cgi --id="extra:$PACKAGE/$ID" --help="/packages/$PACKAGE/$ID"
 
 if [ "$sec_level" -gt "$3" ]; then
 	cgi_begin 'Extras'
@@ -37,11 +22,9 @@ if [ "$sec_level" -gt "$3" ]; then
 	exit
 fi
 
-path="$pkg/$cgi"
+path="$PACKAGE/$ID"
 script="/mod/usr/lib/cgi-bin/$path.cgi"
 if [ -x "$script" ]; then
-	export PATH_INFO=$remaining_path
-	export SCRIPT_NAME="$SCRIPT_NAME/$path"
 	"$script"
 else
 	cgi_error "$(lang 

@@ -1,19 +1,14 @@
+REG=/mod/etc/reg/daemon.reg
 eval "$(modcgi cmd service)"
-path_info PACKAGE SERVICE_NAME _
-
-if ! valid package "$PACKAGE" || ! valid id "$SERVICE_NAME"; then
-	cgi_error "Invalid service '$(html "$PACKAGE/$SERVICE_NAME")'"
-	exit 2
-fi
 
 # retrieve package information
 if [ "$PACKAGE" = mod ]; then
 	# fallback (for base packages and AVM services)
-	description=$SERVICE_NAME
-	rcfile="/mod/etc/init.d/rc.$SERVICE_NAME"
+	description=$ID
+	rcfile="/mod/etc/init.d/rc.$ID"
 else
 	OIFS=$IFS; IFS="|"
-	set -- $(grep "^$SERVICE_NAME|.*|$PACKAGE\$" "$REG")
+	set -- $(grep "^$ID|.*|$PACKAGE\$" "$REG")
 	IFS=$OIFS
 	if [ $# -gt 0 ]; then
 		description=$2
@@ -21,7 +16,7 @@ else
 	fi
 fi
 if [ ! -x "$rcfile" ]; then
-	cgi_error "$(lang de:"Kein Skript f&uuml;r" en:"no script for") '$(html "${description:-$PACKAGE/$SERVICE_NAME}")'"
+	cgi_error "$(lang de:"Kein Skript f&uuml;r" en:"no script for") '$(html "${description:-$PACKAGE/$ID}")'"
 	exit 1
 fi
 

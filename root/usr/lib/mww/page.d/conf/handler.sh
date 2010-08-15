@@ -1,14 +1,3 @@
-#!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-source /usr/lib/libmodcgi.sh
-
-path_info PACKAGE _
-if ! valid package "$PACKAGE"; then
-	cgi_error "$PACKAGE: $(lang de:"Unbekanntes Paket" en:"Unknown package")"
-	exit
-fi
-
 if ! [ -r "/mod/etc/default.$PACKAGE/$PACKAGE.cfg" \
 	-o -r "/mod/etc/default.$PACKAGE/$PACKAGE.save" ]; then
 	cgi --id="conf:$PACKAGE"
@@ -34,6 +23,6 @@ fi
 MENU_ID="conf:$PACKAGE"
 
 case $REQUEST_METHOD in
-	POST)   source conf_save.sh ;;
-	GET|*)  source conf_edit.sh ;;
+	POST)   source "${HANDLER_DIR}/save.sh" ;;
+	GET|*)  source "${HANDLER_DIR}/edit.sh" ;;
 esac
