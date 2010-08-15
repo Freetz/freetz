@@ -24,6 +24,14 @@ pre_end() {
 	exec 2>&3 3>&-
 	echo "</pre>"
 }
+html_do() {
+    local exit
+    eval $({
+        { "$@"; echo exit=$? >&4; } | html
+    } 4>&1 >&9)
+    return $exit
+} 9>&1
+
 do_exit() {
 	footer
 	exit "$@"
@@ -60,7 +68,7 @@ if $downgrade; then
 		en:"Prepare downgrade"
 	) ...</p>"
 	pre_begin
-	/usr/bin/prepare-downgrade
+	/usr/bin/prepare-downgrade | html
 	pre_end
 	status "done"
 fi
@@ -71,7 +79,7 @@ if [ "$stop" = stop_avm ]; then
 		en:"Stopping AVM services, part 1"
 	) (prepare_fwupgrade start) ...</p>"
 	pre_begin
-	prepare_fwupgrade start 2>&1
+	prepare_fwupgrade start 2>&1 | html
 	pre_end
 	status "done"
 fi
@@ -82,7 +90,7 @@ if [ "$stop" = semistop_avm ]; then
 		en:"Stopping AVM services partially, part 1"
 	) (prepare_fwupgrade start_from_internet) ...</p>"
 	pre_begin
-	prepare_fwupgrade start_from_internet 2>&1
+	prepare_fwupgrade start_from_internet 2>&1 | html
 	pre_end
 	status "done"
 fi
@@ -92,7 +100,10 @@ echo "<p>$(lang
 	en:"Extracting firmware archive"
 ) ...</p>"
 pre_begin
-tar -f "$1" -C / -xv 2>&1
+untar() {
+	tar -f "$1" -C / -xv 2>&1
+}
+html_do untar "$1"
 result=$?
 pre_end
 if [ $result -ne 0 ]; then
@@ -107,7 +118,7 @@ if [ "$stop" != nostop_avm ]; then
 		en:"Stopping AVM services, part 2"
 	) (prepare_fwupgrade end) ...</p>"
 	pre_begin
-	prepare_fwupgrade end 2>&1
+	prepare_fwupgrade end 2>&1 | html
 	pre_end
 	status "done"
 fi
@@ -137,9 +148,12 @@ EOF
 fi
 
 pre_begin
-# Remove no-op original from var.tar
-rm -f /var/post_install
-/var/install 2>&1
+install() {
+	# Remove no-op original from var.tar
+	rm -f /var/post_install
+	/var/install 2>&1
+}
+html_do install
 result=$?
 pre_end
 
@@ -167,11 +181,10 @@ if [ ! -x /var/post_install ]; then
 		de:"Nach-Installationsskript nicht gefunden oder nicht ausführbar." 
 		en:"Post-installation script not found or not executable."
 	)"
-	pre_end
 	do_exit 1
 fi
 pre_begin
-cat /var/post_install
+html < /var/post_install
 pre_end
 
 cat << EOF
