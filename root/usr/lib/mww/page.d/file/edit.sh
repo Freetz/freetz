@@ -1,4 +1,3 @@
-cgi --id="file:$PACKAGE/$ID" --help="/packages/$PACKAGE/$ID"
 cgi_begin "$TITLE"
 
 echo "<h1>$CAPTION</h1>"

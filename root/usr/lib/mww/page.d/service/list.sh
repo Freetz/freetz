@@ -1,3 +1,4 @@
+cgi --id=daemons
 REG=/mod/etc/reg/daemon.reg
 source /usr/lib/mod/service.sh
 
@@ -47,7 +48,7 @@ stat_static() {
 	sec_end
 }
 
-cgi --style=mod/daemons.css --id=daemons
+cgi --style=mod/daemons.css
 cgi_begin '$(lang de:"Dienste" en:"Services")'
 
 view=$(cgi_param view | tr -d .)

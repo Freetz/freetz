@@ -31,6 +31,8 @@ print_access_denied() {
 	)</div>'
 }
 
+cgi --id="file:$PACKAGE/$ID" --help="/packages/$PACKAGE/$ID"
+
 case $REQUEST_METHOD in
 	POST)	source "$HANDLER_DIR/save.sh" ;;
 	GET|*)	source "$HANDLER_DIR/edit.sh" ;;

@@ -20,7 +20,8 @@ else
 	IFS=$OIFS
 	PACKAGE_TITLE=${2:-$PACKAGE}
 fi
-MENU_ID="conf:$PACKAGE"
+
+cgi --id="conf:$PACKAGE" --help="/packages/$PACKAGE"
 
 case $REQUEST_METHOD in
 	POST)   source "${HANDLER_DIR}/save.sh" ;;
