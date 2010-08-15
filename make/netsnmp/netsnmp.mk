@@ -5,7 +5,15 @@ $(PKG)_SITE:=@SF/net-snmp
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/snmpd
-$(PKG)_TARGET_LIBS:=$($(PKG)_DEST_LIBDIR)/*.so*
+
+# Libraries
+$(PKG)_LIB_VERISON:=15.1.2
+$(PKG)_LIB_SUFFIX:=so.$($(PKG)_LIB_VERISON)
+$(PKG)_LIBNAMES_SHORT:=snmp snmpagent snmpmibs snmphelpers
+$(PKG)_LIBNAMES_LONG:=$($(PKG)_LIBNAMES_SHORT:%=libnet%.$($(PKG)_LIB_SUFFIX))
+$(PKG)_LIBS_BUILD_DIR_SHORT:=snmplib agent agent agent/helpers
+$(PKG)_LIBS_BUILD_DIR:=$(join $($(PKG)_LIBS_BUILD_DIR_SHORT:%=$($(PKG)_DIR)/%/.libs/),$($(PKG)_LIBNAMES_LONG))
+$(PKG)_LIBS_TARGET_DIR:=$($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DEST_LIBDIR)/%)
 
 NETSNMP_MIB_MODULES_INCLUDED:=\
 	host/hr_device \
@@ -112,17 +120,12 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(NETSNMP_DIR) \
 		LDFLAGS="$(TARGET_LDFLAGS) -ldl"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
-	mkdir -p $(NETSNMP_DEST_LIBDIR)
-	for file in $$(find $(NETSNMP_DIR) -name 'libnetsnmp*.so*'); do \
-		cp -d $$file $(NETSNMP_DEST_LIBDIR)/; \
-	done
-	$(TARGET_STRIP) $(NETSNMP_TARGET_LIBS)
 
 	#mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/agent
 	#mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/library
@@ -131,9 +134,11 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	#cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/library
 	#cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/agent
 
+$(foreach library,$($(PKG)_LIBS_BUILD_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_PATH))))
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIBS_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NETSNMP_DIR) clean
