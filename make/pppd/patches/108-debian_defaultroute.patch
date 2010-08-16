@@ -1,5 +1,5 @@
---- pppd/ipcp.c.orig	2009-11-22 19:52:23.000000000 +0100
-+++ pppd/ipcp.c	2009-11-22 19:52:24.000000000 +0100
+--- pppd/ipcp.c.orig	2010-08-16 14:26:38.000000000 +0200
++++ pppd/ipcp.c	2010-08-16 14:26:38.000000000 +0200
 @@ -198,6 +198,14 @@
        "disable defaultroute option", OPT_ALIAS | OPT_A2CLR,
        &ipcp_wantoptions[0].default_route },
@@ -102,7 +102,7 @@
  	default_route_set[unit] = 0;
      }
 --- pppd/ipcp.h.orig	2009-11-16 23:26:07.000000000 +0100
-+++ pppd/ipcp.h	2009-11-22 19:52:24.000000000 +0100
++++ pppd/ipcp.h	2010-08-16 14:26:38.000000000 +0200
 @@ -70,6 +70,7 @@
      bool old_addrs;		/* Use old (IP-Addresses) option? */
      bool req_addr;		/* Ask peer to send IP address? */
@@ -111,8 +111,8 @@
      bool proxy_arp;		/* Make proxy ARP entry for peer? */
      bool neg_vj;		/* Van Jacobson Compression? */
      bool old_vj;		/* use old (short) form of VJ option? */
---- pppd/pppd.8.orig	2009-11-16 23:26:07.000000000 +0100
-+++ pppd/pppd.8	2009-11-22 19:52:24.000000000 +0100
+--- pppd/pppd.8.orig	2010-08-16 14:26:38.000000000 +0200
++++ pppd/pppd.8	2010-08-16 14:26:38.000000000 +0200
 @@ -121,6 +121,11 @@
  This entry is removed when the PPP connection is broken.  This option
  is privileged if the \fInodefaultroute\fR option has been specified.
@@ -125,7 +125,7 @@
  .B disconnect \fIscript
  Execute the command specified by \fIscript\fR, by passing it to a
  shell, after
-@@ -717,7 +722,12 @@
+@@ -725,7 +730,12 @@
  .TP
  .B nodefaultroute
  Disable the \fIdefaultroute\fR option.  The system administrator who
@@ -139,8 +139,8 @@
  can do so by placing this option in the /etc/ppp/options file.
  .TP
  .B nodeflate
---- pppd/pppd.h.orig	2009-11-22 19:52:23.000000000 +0100
-+++ pppd/pppd.h	2009-11-22 19:52:24.000000000 +0100
+--- pppd/pppd.h.orig	2010-08-16 14:26:38.000000000 +0200
++++ pppd/pppd.h	2010-08-16 14:26:38.000000000 +0200
 @@ -645,7 +645,7 @@
  int  cif6addr __P((int, eui64_t, eui64_t));
  				/* Remove an IPv6 address from i/f */
@@ -150,8 +150,8 @@
  				/* Create default route through i/f */
  int  cifdefaultroute __P((int, u_int32_t, u_int32_t));
  				/* Delete default route through i/f */
---- pppd/sys-linux.c.orig	2009-11-22 19:52:23.000000000 +0100
-+++ pppd/sys-linux.c	2009-11-22 19:52:24.000000000 +0100
+--- pppd/sys-linux.c.orig	2010-08-16 14:26:38.000000000 +0200
++++ pppd/sys-linux.c	2010-08-16 14:26:38.000000000 +0200
 @@ -206,6 +206,8 @@
  
  static int	if_is_up;	/* Interface has been marked up */
@@ -278,7 +278,7 @@
      return 1;
  }
 --- pppd/sys-solaris.c.orig	2009-11-16 23:26:07.000000000 +0100
-+++ pppd/sys-solaris.c	2009-11-22 19:52:24.000000000 +0100
++++ pppd/sys-solaris.c	2010-08-16 14:26:38.000000000 +0200
 @@ -2036,12 +2036,18 @@
   * sifdefaultroute - assign a default route through the address given.
   */
