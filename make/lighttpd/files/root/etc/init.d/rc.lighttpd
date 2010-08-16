@@ -32,6 +32,14 @@ start() {
 case $1 in
 	""|load)
 		mkdir -p /mod/etc/$DAEMON
+		mkdir -p /tmp/flash/$DAEMON
+
+		#for compatibility reason only, may be removed later
+		[ -e /tmp/flash/lighttpd_add ] && mv /tmp/flash/lighttpd_add /tmp/flash/lighttpd/add
+		[ -e /tmp/flash/lighttpd_crt.pem ] && mv /tmp/flash/lighttpd_crt.pem /tmp/flash/lighttpd/crt.pem
+		[ -e /tmp/flash/lighttpd_ca.pem ] && mv /tmp/flash/lighttpd_ca.pem /tmp/flash/lighttpd/ca.pem
+		[ -e /tmp/flash/lighttpd-htdigest.user ] && mv /tmp/flash/lighttpd-htdigest.user /tmp/flash/lighttpd/htdigest.user
+		[ -e /tmp/flash/lighttpd-rights.user ] && mv /tmp/flash/lighttpd-rights.user /tmp/flash/lighttpd/rights.user
 
 		modlib_addgroup wwwrun
 		modlib_adduser wwwrun -G wwwrun -s /bin/false -H -D -g "lighttpd account"

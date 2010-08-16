@@ -119,13 +119,13 @@ fi
 enable_ssl() {
 cat << EOF
 ssl.engine = "$LIGHTTPD_SSLENABLE"
-ssl.pemfile = "/tmp/flash/lighttpd_crt.pem"
+ssl.pemfile = "/tmp/flash/lighttpd/crt.pem"
 ssl.use-sslv2 = "disable"
 EOF
-if [ -r "/tmp/flash/lighttpd_ca.pem" ]; then
-	if grep -q "BEGIN CERTIFICATE" /tmp/flash/lighttpd_ca.pem; then
+if [ -r "/tmp/flash/lighttpd/ca.pem" ]; then
+	if grep -q "BEGIN CERTIFICATE" /tmp/flash/lighttpd/ca.pem; then
 cat << EOF
-ssl.ca-file = "/tmp/flash/lighttpd_ca.pem"
+ssl.ca-file = "/tmp/flash/lighttpd/ca.pem"
 EOF
 	fi
 fi
@@ -232,13 +232,13 @@ if [ "$(has_mod auth)" = "yes" -a "$LIGHTTPD_AUTH" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_auth" )
 auth.backend = "htdigest"
-auth.backend.htdigest.userfile = "/tmp/flash/lighttpd-htdigest.user"
+auth.backend.htdigest.userfile = "/tmp/flash/lighttpd/htdigest.user"
 EOF
-[ "$LIGHTTPD_CHROOT" = "yes" ] && getfiles "/tmp/flash/lighttpd-htdigest.user"
+[ "$LIGHTTPD_CHROOT" = "yes" ] && getfiles "/tmp/flash/lighttpd/htdigest.user"
 
 IFS="
 "
-authrequire=$(cat /tmp/flash/lighttpd-rights.user)
+authrequire=$(cat /tmp/flash/lighttpd/rights.user)
 virthost_auth=""
 out=""
 for i in $authrequire; do
@@ -251,7 +251,7 @@ for i in $authrequire; do
 	dir=$(echo $i | cut -d\" -f 2)
 	user=$(echo $i | cut -d\" -f 4)
 	out="$out \"$dir\" => ( \"method\" => \"$LIGHTTPD_AUTHMETH\", \"realm\" => \"lighttpd\", \"require\" => \"$user\" ),"
-done 
+done
 virthost_conf "$virthost_auth" "auth.require = ( $out )"
 fi
 
@@ -275,7 +275,7 @@ fi
 
 socketdir="/var/run/lighttpd"
 gendir "$socketdir"
-	
+
 genchroot() {
 #$1 prog
 #$2 chroot dir
@@ -335,6 +335,4 @@ if [ "$LIGHTTPD_CHROOT" = "yes" ]; then
 	cp /etc/hosts $LIGHTTPD_DOCROOT/etc
 fi
 
-if [ -f /tmp/flash/lighttpd_add ]; then
-	cat /tmp/flash/lighttpd_add
-fi
+[ -f /tmp/flash/lighttpd/add ] && cat /tmp/flash/lighttpd/add
