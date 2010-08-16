@@ -11,9 +11,6 @@ ifneq ($(strip $(FREETZ_PACKAGE_MC_ONLINE_HELP)),y)
 $(PKG)_NOT_INCLUDED:=$($(PKG)_TARGET_HELP)
 endif
 
-$(PKG)_BUILD_PREREQ += automake-1.10
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the automake1.10 package
-
 $(PKG)_DEPENDS_ON := ncurses-terminfo
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
@@ -53,6 +50,19 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_INTERNAL_EDITOR
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_SUBSHELL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_WITH_NCURSES
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_FORCE_GLIB12
+
+# Workaround mc's packaging problems. Note that this code is mc-4.6.2 specific.
+# Revise it (remove if necessary) if you're about to update mc to a newer version.
+$(PKG)_CONFIGURE_PRE_CMDS += \
+	if which automake-1.10 >/dev/null 2>&1; then \
+		: do nothing; \
+	elif which automake-1.11 >/dev/null 2>&1; then \
+		for f in config.guess config.sub depcomp install-sh missing; do \
+			ln -sf /usr/share/automake-1.11/$$$$f $(abspath $($(PKG)_DIR)/config)/; \
+		done; \
+	else \
+		$(call ERROR,1,automake 1.10.x or 1.11.x is required in order to build Midnight Commander. Please install one of these versions.) \
+	fi;
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
