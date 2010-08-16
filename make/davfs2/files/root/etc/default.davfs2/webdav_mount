@@ -18,7 +18,7 @@ modprobe coda
 if [ "$DAVFS2_MOUNTPOINT1" != "" ]; then
   echo "secrets /var/davfs2/secrets_1" > /var/davfs2/davfs2_1.conf
   if [ "$DAVFS2_SERVERCERT1" == "yes" ]; then
-    echo "servercert /var/tmp/flash/davfs_servercrt1.pem" >> /var/davfs2/davfs2_1.conf
+    echo "servercert /var/tmp/flash/davfs2/servercrt1.pem" >> /var/davfs2/davfs2_1.conf
   fi
   echo "ask_auth 0" >> /var/davfs2/davfs2_1.conf
   chmod 0600 /var/davfs2/secrets_1
@@ -30,7 +30,7 @@ fi
 if [ "$DAVFS2_MOUNTPOINT2" != "" ]; then
   echo "secrets /var/davfs2/secrets_2" > /var/davfs2/davfs2_2.conf
   if [ "$DAVFS2_SERVERCERT2" == "yes" ]; then
-    echo "servercert /var/tmp/flash/davfs_servercrt2.pem" >> /var/davfs2/davfs2_2.conf
+    echo "servercert /var/tmp/flash/davfs2/servercrt2.pem" >> /var/davfs2/davfs2_2.conf
   fi
   echo "ask_auth 0" >> /var/davfs2/davfs2_2.conf
   chmod 0600 /var/davfs2/secrets_2
@@ -42,7 +42,7 @@ fi
 if [ "$DAVFS2_MOUNTPOINT3" != "" ]; then
   echo "secrets /var/davfs2/secrets_3" > /var/davfs2/davfs2_3.conf
   if [ "$DAVFS2_SERVERCERT3" == "yes" ]; then
-    echo "servercert /var/tmp/flash/davfs_servercrt3.pem" >> /var/davfs2/davfs2_3.conf
+    echo "servercert /var/tmp/flash/davfs2/servercrt3.pem" >> /var/davfs2/davfs2_3.conf
   fi
   echo "ask_auth 0" >> /var/davfs2/davfs2_3.conf
   chmod 0600 /var/davfs2/secrets_3
