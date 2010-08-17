@@ -18,7 +18,7 @@ config() {
 			[ -r "/tmp/flash/httpd-${SUBDAEMON}.extra" ] && cat /tmp/flash/httpd-${SUBDAEMON}.extra
 		) > /mod/etc/httpd-${SUBDAEMON}.conf
 	done
-	
+
 	mkdir -p /tmp/rrdstats/
 	rm -f /tmp/rrdstats/digitemp_alert*
 	# kein "-p" wg externer Pfade!
@@ -26,7 +26,7 @@ config() {
 	mkdir $RRDSTATS_RRDTEMP 2>/dev/null
 	rm /var/mod/etc/statpix 2>/dev/null
 	ln -s $(echo "$RRDSTATS_RRDTEMP" | sed 's/\/*$//g') /var/mod/etc/statpix 2>/dev/null
-	
+
 	# show/hide digitemp
 	modunreg status rrdstats rrddt
 	modunreg file rrdstats
@@ -54,6 +54,7 @@ start() {
 	if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" -a "$RRDSTATS_DIGITEMP_INETD" != "yes" ]; then
 		webcfg-one -P "$HTTPD_PID_ONE"
 	fi
+	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd rrdstats
 
 	#wait for the correct pid
 	local DAEMON_PID="$(pidof -s rrdstats)"
@@ -79,7 +80,7 @@ stop() {
 stop_webserver() {
 	kill -9 "$(cat $HTTPD_PID_RRD 2>/dev/null)" 2>/dev/null
 	kill -9 "$(cat $HTTPD_PID_ONE 2>/dev/null)" 2>/dev/null
-	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd -n rrdstats >/dev/null
+	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd rrdstats >/dev/null
 }
 
 backup() {
@@ -182,10 +183,10 @@ case $1 in
 		modlib_status
 		;;
 	status_webcfg-one)
-		[ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" -a "$RRDSTATS_DIGITEMP_INETD" = "yes" ] && echo 'inetd' || modlib_status
+		[ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" -a "$RRDSTATS_DIGITEMP_INETD" = "yes" -a "$(modlib_status)" == "running" ] && echo 'inetd' || modlib_status
 		;;
 	status_webcfg-rrd)
-		[ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" = "yes" ] && echo 'inetd' || modlib_status
+		[ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" = "yes" -a "$(modlib_status)" == "running" ] && echo 'inetd' || modlib_status
 		;;
 	backup)
 		echo -n 'RRDstats is creating a backup of .rrd files ... '

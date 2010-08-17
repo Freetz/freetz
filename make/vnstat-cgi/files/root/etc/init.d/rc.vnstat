@@ -16,7 +16,7 @@ config() {
 		fi
 		[ -r "/tmp/flash/httpd-${SUBDAEMON}.extra" ] && cat /tmp/flash/httpd-${SUBDAEMON}.extra
 	) > /mod/etc/httpd-${SUBDAEMON}.conf
-	
+
 	mkdir $VNSTAT_DBDIR 2>/dev/null
 	mkdir -p /var/lib
 	rm -rf /var/lib/vnstat 2>/dev/null
@@ -52,7 +52,7 @@ config() {
 
 stop_webserver() {
 	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
-	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd -n vnstat >/dev/null 
+	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd vnstat >/dev/null
 }
 
 start() {
@@ -65,6 +65,7 @@ start() {
 		httpd -P $HTTPD_PID_VNS -p $VNSTAT_WEB_PORT $VNS_CONF -h /mod/pkg/vnstat/usr/mww-vns -r "vnstat"
 	fi
 	modlib_startdaemon $DAEMON_BIN -s -d --config /tmp/flash/vnstat/vnstat.conf
+	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd vnstat
 }
 
 stop() {
@@ -106,8 +107,8 @@ case $1 in
 	status)
 		modlib_status
 		;;
-	status_webcfg-vns) 
-		[ "$VNSTAT_WEBENABLED" = "yes" -a "$VNSTAT_WEB_INETD" = "yes" ] && echo 'inetd' || modlib_status
+	status_webcfg-vns)
+		[ "$VNSTAT_WEBENABLED" = "yes" -a "$VNSTAT_WEB_INETD" = "yes" -a "$(modlib_status)" == "running" ] && echo 'inetd' || modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
