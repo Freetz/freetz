@@ -110,7 +110,6 @@ new_menu_prepare() {
 	if [ -r /mod/etc/reg/cgi.reg ]; then
 		local pkg title
 		while IFS='|' read -r pkg title; do
-			echo "has_conf=yes" >> "$p/$pkg.meta"
 			echo "title=$(shell_escape "$title")" >> "$p/$pkg.meta"
 			if [ ! -e "$p/$pkg.index" ]; then
 			    echo "$(href cgi "$pkg")" > "$p/$pkg.index"
@@ -152,7 +151,6 @@ new_menu_prepare() {
 
 	# hard-coded packages
 	echo "title=Freetz" >> "$p/mod.meta"
-	echo "has_conf=yes" >> "$p/mod.meta"
 	if [ -e "$p/authorized-keys.sub" ]; then
 		echo "title=SSH" >> "$p/authorized-keys.meta"
 	fi
@@ -205,7 +203,6 @@ EOF
 new_menu_prepare_package() {
 	local pkg=$1
 	title=$pkg
-	has_conf=no
 	if [ -r "$p/$pkg.meta" ]; then
 		source "$p/$pkg.meta"
 	fi
