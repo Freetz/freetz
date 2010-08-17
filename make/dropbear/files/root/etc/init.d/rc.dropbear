@@ -25,7 +25,6 @@ pre_config() {
 		ln -s /tmp/flash/dropbear/rsa_host_key /mod/etc/ssh/rsa_host_key
 		ln -s /tmp/flash/dropbear/dss_host_key /mod/etc/ssh/dss_host_key
 	fi
-	
 }
 
 start() {
@@ -41,6 +40,10 @@ start() {
 
 	set -o noglob
 	modlib_startdaemon $DAEMON -p "$DROPBEAR_PORT" $DROPBEAR_OPTIONS
+}
+
+stop() {
+	killall dropbear
 }
 
 case $1 in
