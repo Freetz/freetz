@@ -83,7 +83,7 @@ case $1 in
 		[ ! -d "/tmp/flash/vnstat" ] && mkdir -p /tmp/flash/vnstat
 		[ ! -e "/tmp/flash/vnstat/vnstat.conf" ] && /etc/default.vnstat/vnstat_conf > /tmp/flash/vnstat/vnstat.conf
 
-		modreg file vnstat conf 'vnstat: vnstat.conf' 1 "vnstat_conf"
+		modreg file vnstat conf 'vnstat.conf' 1 "vnstat_conf"
 		modreg cgi vnstat vnstat
 
 		modlib_start $VNSTAT_ENABLED

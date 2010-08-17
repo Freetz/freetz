@@ -32,7 +32,7 @@ case $1 in
 		[ -r /tmp/flash/knockd.conf ] && mv /tmp/flash/knockd.conf /tmp/flash/knock/knockd.conf
 
 		modreg cgi 'knock' 'Knock'
-		modreg file knock conf 'Knockd: config' 0 "knockd_conf"
+		modreg file knock conf 'config' 0 "knockd_conf"
 
 		modlib_start $KNOCK_ENABLED		
 		;;

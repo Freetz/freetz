@@ -40,9 +40,9 @@ case "$1" in
 		_chown "$PERSISTENT_CONF_DIR" "$HOME_DIR"
 
 		modreg cgi 'siproxd' 'Siproxd'
-		modreg file siproxd conf 'Siproxd: conf' 0 "siproxd_conf"
-		modreg file siproxd reg 'Siproxd: reg' 0 "siproxdreg_conf"
-		modreg file siproxd pwd 'Siproxd: pwd' 0 "siproxdpwd_conf"
+		modreg file siproxd conf 'conf' 0 "siproxd_conf"
+		modreg file siproxd reg 'reg' 0 "siproxdreg_conf"
+		modreg file siproxd pwd 'pwd' 0 "siproxdpwd_conf"
 
 		modlib_start $SIPROXD_ENABLED
 		;;

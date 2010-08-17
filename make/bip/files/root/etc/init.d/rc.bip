@@ -29,7 +29,7 @@ case $1 in
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
 		[ ! -e "$CONFIG_USER" ] && cat /mod/etc/default.$DAEMON/bip_user.conf > $CONFIG_USER
 
-		modreg file $DAEMON user_conf 'Bip: user config' 1 "bip_user_conf"
+		modreg file $DAEMON user_conf 'user config' 1 "bip_user_conf"
 		modreg cgi $DAEMON Bip
 
 		modlib_start $BIP_ENABLED 

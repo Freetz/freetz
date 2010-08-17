@@ -112,9 +112,9 @@ case $1 in
 		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
 
 		modreg cgi 'nfsd' 'NFS-Server'
-		modreg file nfsd hosts_allow 'NFSD: hosts.allow' 1 "hosts_allow"
-		modreg file nfsd hosts_deny 'NFSD: hosts.deny' 1 "hosts_deny"
-		modreg file nfsd exports 'NFSD: exports' 1 "exports"
+		modreg file nfsd hosts_allow 'hosts.allow' 1 "hosts_allow"
+		modreg file nfsd hosts_deny 'hosts.deny' 1 "hosts_deny"
+		modreg file nfsd exports 'exports' 1 "exports"
 
 		modlib_start $NFSD_ENABLED
 		;;

@@ -95,7 +95,7 @@ case $1 in
 		[ -e /tmp/flash/ppp/options.pptp -a ! -e /mod/etc/ppp/options.pptp ] && ln -s /tmp/flash/ppp/options.pptp /mod/etc/ppp/options.pptp
 
 		modreg cgi 'pptp' 'PPTP'
-		modreg file pptp options 'PPTP: options.pptp' 0 "pptp_options"
+		modreg file pptp options 'options.pptp' 0 "pptp_options"
 
 		modlib_start $PPTP_ENABLED
 		;;

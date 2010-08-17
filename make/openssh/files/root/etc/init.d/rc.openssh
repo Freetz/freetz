@@ -74,8 +74,8 @@ stop() {
 case $1 in
 	""|load)
 		modreg cgi 'openssh' 'OpenSSH sshd'
-		modreg file openssh "dsa_key" "OpenSSH: dsa_key" 0 "dsa_key"
-		modreg file openssh "rsa_key" "OpenSSH: rsa_key" 0 "rsa_key"
+		modreg file openssh "dsa_key" "dsa_key" 0 "dsa_key"
+		modreg file openssh "rsa_key" "rsa_key" 0 "rsa_key"
 
 		mkdir /tmp/openssh
 		modlib_addgroup sshd

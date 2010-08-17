@@ -64,7 +64,7 @@ case $1 in
 		[ -r "/tmp/flash/${DAEMON}.extra" ] && mv "/tmp/flash/${DAEMON}.extra" "/tmp/flash/${DAEMON}/${DAEMON}.extra"
 
 		modreg cgi 'dnsmasq' 'Dnsmasq'
-		modreg file dnsmasq extra 'Dnsmasq: extra' 0 dnsmasq_extra
+		modreg file dnsmasq extra 'extra' 0 dnsmasq_extra
 
 		modlib_addgroup $DAEMON_GROUP
 		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP

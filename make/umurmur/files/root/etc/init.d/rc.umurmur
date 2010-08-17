@@ -16,7 +16,7 @@ case $1 in
 	""|load)
 		modreg cgi 'umurmur' 'uMurmur'
 		for i in umurmur_key umurmur_crt; do
-			modreg file umurmur "$i" "uMurmur: $i" 0 "$i"
+			modreg file umurmur "$i" "$i" 0 "$i"
 		done
 
 		mkdir -p /tmp/flash/umurmur

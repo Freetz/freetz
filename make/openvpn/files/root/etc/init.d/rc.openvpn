@@ -86,12 +86,12 @@ case $1 in
 	""|load)
 		if [ "$DAEMON" = "openvpn" ]; then
 			modreg cgi 'openvpn' 'OpenVPN'
-			modreg file openvpn 'box_crt' 'OpenVPN: Box Cert' 0 "box_crt"
-			modreg file openvpn 'box_key' 'OpenVPN: Private Key' 0 "box_key"
-			modreg file openvpn 'ca_crt' 'OpenVPN: CA Cert' 0 "ca_crt"
-			modreg file openvpn 'crl_pem' 'OpenVPN: CRL' 0 "crl_pem"
-			modreg file openvpn 'dh_pem' 'OpenVPN: DH Param' 0 "dh_pem"
-			modreg file openvpn 'static_key' 'OpenVPN: Static Key' 0 "static_key"
+			modreg file openvpn 'box_crt' 'Box Cert' 0 "box_crt"
+			modreg file openvpn 'box_key' 'Private Key' 0 "box_key"
+			modreg file openvpn 'ca_crt' 'CA Cert' 0 "ca_crt"
+			modreg file openvpn 'crl_pem' 'CRL' 0 "crl_pem"
+			modreg file openvpn 'dh_pem' 'DH Param' 0 "dh_pem"
+			modreg file openvpn 'static_key' 'Static Key' 0 "static_key"
 		fi
 		d_BU="$DAEMON"
 		as="${OPENVPN_AUTOSTART#*#}"

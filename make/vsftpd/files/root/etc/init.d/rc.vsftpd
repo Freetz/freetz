@@ -51,7 +51,7 @@ case $1 in
 
 		modreg cgi 'vsftpd' 'Vsftpd'
 		if ! strings /usr/sbin/vsftpd | grep -q "SSL support not compiled in"; then
-			modreg file vsftpd crt 'VSFTPD:Cert+Key' 0 "vsftpd_crt"
+			modreg file vsftpd crt 'Cert+Key' 0 "vsftpd_crt"
 		fi
 		
 		modlib_start $VSFTPD_ENABLED

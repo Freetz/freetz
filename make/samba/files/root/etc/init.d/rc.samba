@@ -21,8 +21,8 @@ case $1 in
 		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftp user"
 
 		modreg cgi samba "Samba"
-		modreg file samba shares '$(lang de:"Samba: Freigaben" en:"Samba: Shares")' 1 "shares"
-		modreg file samba sharesx '$(lang de:"Samba: Erweitert" en:"Samba: Options")' 1 "sharesx"
+		modreg file samba shares '$(lang de:"Freigaben" en:"Shares")' 1 "shares"
+		modreg file samba sharesx '$(lang de:"Erweitert" en:"Options")' 1 "sharesx"
 		modreg daemon --hide samba
 		
 		do_nmbd

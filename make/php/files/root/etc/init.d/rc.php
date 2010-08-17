@@ -19,7 +19,7 @@ start() {
 
 case $1 in
 	""|load)
-		modreg file php config 'PHP: php.ini' 0 "php_config"
+		modreg file php config 'php.ini' 0 "php_config"
 		;;
 	unload)
 		modlib_stop

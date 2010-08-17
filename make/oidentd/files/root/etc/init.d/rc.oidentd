@@ -14,7 +14,7 @@ case $1 in
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
 		[ ! -e "$CONF_FILE" ] && /etc/default.$DAEMON/oidentd_conf > $CONF_FILE
 
-		modreg file $DAEMON conf 'oidentd: oidentd.conf' 1 "oidentd_conf"
+		modreg file $DAEMON conf 'oidentd.conf' 1 "oidentd_conf"
 		modreg cgi $DAEMON oidentd
 
 		modlib_start $OIDENTD_ENABLED 

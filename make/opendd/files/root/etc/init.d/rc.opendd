@@ -66,7 +66,7 @@ case $1 in
 		[ ! -e $PEM ] && cat /mod/etc/default.$DAEMON/$DAEMON.pem > $PEM
 		
 		modreg cgi 'opendd' 'OpenDD'
-		modreg file opendd opendd_pem 'OpenDD: opendd.pem' 0 "opendd_pem"
+		modreg file opendd opendd_pem 'opendd.pem' 0 "opendd_pem"
 		modreg daemon --hide opendd
 		
 		if [ "$OPENDD_ENABLED" != "yes" ]; then

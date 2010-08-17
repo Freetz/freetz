@@ -226,8 +226,8 @@ stop () {
 case $1 in
 	""|load)
 		modreg cgi 'iptables' 'Iptables'
-		modreg file iptables rules 'Iptables: Rules' 0 "iptables"
-		modreg file iptables services 'Iptables: Services' 0 "services"
+		modreg file iptables rules 'Rules' 0 "iptables"
+		modreg file iptables services 'Services' 0 "services"
 
 		[ ! -r "/var/tmp/flash/iptables_services" ] && cp /mod/etc/default.iptables/iptables_services /var/tmp/flash/iptables_services
 		[ ! -r "/var/tmp/flash/iptables_rules" ] && touch /var/tmp/flash/iptables_rules

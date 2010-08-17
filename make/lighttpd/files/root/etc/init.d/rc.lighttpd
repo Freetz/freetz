@@ -47,16 +47,16 @@ case $1 in
 		modreg cgi 'lighttpd' 'lighttpd'
 
 		if has_ssl_support >/dev/null; then
-			modreg file lighttpd crt 'lighttpd: Cert/Key' 0 "lighttpd_crt"
-			modreg file lighttpd ca 'lighttpd: CA Cert' 0 "lighttpd_ca"
+			modreg file lighttpd crt 'Cert/Key' 0 "lighttpd_crt"
+			modreg file lighttpd ca 'CA Cert' 0 "lighttpd_ca"
 		fi
 
 		if has_mod auth >/dev/null; then
-			modreg file lighttpd user 'lighttpd: Accounts' 0 "lighttpd_user"
-			modreg file lighttpd rights 'lighttpd: Rights' 0 "lighttpd_rights"
+			modreg file lighttpd user 'Accounts' 0 "lighttpd_user"
+			modreg file lighttpd rights 'Rights' 0 "lighttpd_rights"
 		fi
 
-		modreg file lighttpd add 'lighttpd: Additional' 0 "lighttpd_add"
+		modreg file lighttpd add 'Additional' 0 "lighttpd_add"
 
 		modlib_start $LIGHTTPD_ENABLED
 		;;

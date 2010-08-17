@@ -85,7 +85,7 @@ case $1 in
 		chown $DAEMON_USER:$DAEMON_GROUP ${PID_FILE%/*}
 
 		modreg cgi "$DAEMON" "$DAEMON_LONG_NAME"
-		modreg file tor secret_id_key 'Tor: Secret ID Key' 0 "secret_id_key"
+		modreg file tor secret_id_key 'Secret ID Key' 0 "secret_id_key"
 		
 		modlib_start $TOR_ENABLED
 		;;

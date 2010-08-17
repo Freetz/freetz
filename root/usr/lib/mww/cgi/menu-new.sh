@@ -158,11 +158,6 @@ new_menu_prepare() {
 			echo "$_|$pkg|$id"
 		done  < /mod/etc/reg/file.reg | sort |
 		while IFS='|' read -r title sec def pkg id; do
-			# FIXME: Temporary title change
-			case $title in
-				Freetz:*) title=${title#Freetz: } ;;
-				SSH:*) title=${title#SSH: } ;;
-			esac
 			echo "<li><a id='$(_cgi_id "file:$pkg/$id")' class='file' href='$(href file "$pkg" "$id")'>$(html "$title")</a></li>" >> "$p/$pkg.sub"
 			if [ ! -e "$p/$pkg.index" ]; then
 			    echo "$(href file "$pkg" "$id")" > "$p/$pkg.index"
@@ -180,7 +175,7 @@ new_menu_prepare() {
 		done < /mod/etc/reg/extra.reg
 	fi
 
-	# hard-coded packages
+	# hard-coded packages; FIXME
 	echo "title=Freetz" >> "$p/mod.meta"
 	if [ -e "$p/authorized-keys.sub" ]; then
 		echo "title=SSH" >> "$p/authorized-keys.meta"

@@ -16,7 +16,7 @@ case $1 in
 		[ ! -e "$CONF_FILE" ] && /etc/default.$DAEMON/ngircd_conf > $CONF_FILE
 
 		modreg cgi 'ngircd' 'ngIRCd'
-		modreg file ngircd conf 'ngIRCd: config' 1 "ngircd_conf"
+		modreg file ngircd conf 'config' 1 "ngircd_conf"
 
 		modlib_start $NGIRCD_ENABLED 
 		;;

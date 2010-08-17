@@ -15,16 +15,16 @@ case $1 in
 		#[ -e "/tmp/flash/ppp/pap-secrets" -a ! -e /mod/etc/ppp/pap-secrets ] && ln -s /tmp/flash/ppp/pap_secrets /mod/etc/ppp/pap-secrets
 		#[ -e "/tmp/flash/ppp/options" -a ! -e /mod/etc/ppp/options ] && ln -s /tmp/flash/ppp/options /mod/etc/ppp/options
 
-		modreg file pppd 'chap_secrets' 'PPPD: chap-secrets' 0 "chap_secrets"
+		modreg file pppd 'chap_secrets' 'chap-secrets' 0 "chap_secrets"
 		modreg daemon --hide pppd
 
 		#deffile='/mod/etc/default.pppd/pap_secrets.def'
 		#[ -r "/tmp/flash/pap_secrets.def" ] && deffile='/tmp/flash/pap_secrets.def'
-		#modreg file 'pap_secrets' 'PPPD: pap-secrets' 0 "$deffile"
+		#modreg file 'pap_secrets' 'pap-secrets' 0 "$deffile"
 
 		#deffile='/mod/etc/default.pppd/pppd_options.def'
 		#[ -r "/tmp/flash/pppd_options.def" ] && deffile='/tmp/flash/pppd_options.def'
-		#modreg file 'pppd_options' 'PPPD: options' 0 "$deffile"
+		#modreg file 'pppd_options' 'options' 0 "$deffile"
 		;;
 	unload)
 		modunreg file pppd

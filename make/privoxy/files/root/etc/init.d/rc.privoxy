@@ -36,8 +36,8 @@ case $1 in
 		[ -r "/tmp/flash/privoxy/user.filter" ] || cp -f /etc/privoxy/user.filter /tmp/flash/privoxy/user.filter
 		[ -r "/tmp/flash/privoxy/user.action" ] || cp -f /etc/privoxy/user.action /tmp/flash/privoxy/user.action
 
-		modreg file privoxy user_filter 'Privoxy: user.filter' 0 "filter"
-		modreg file privoxy user_action 'Privoxy: user.actions' 0 "action"
+		modreg file privoxy user_filter 'user.filter' 0 "filter"
+		modreg file privoxy user_action 'user.actions' 0 "action"
 		modreg cgi 'privoxy' 'Privoxy'
 
 		modlib_start $PRIVOXY_ENABLED

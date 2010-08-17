@@ -41,8 +41,8 @@ case $1 in
 		[ -e "/tmp/flash/ppp/pptpd.conf" ] && ln -s /tmp/flash/ppp/pptpd.conf /mod/etc/ppp/pptpd.conf
 
 		modreg cgi 'pptpd' 'PPTPD'
-		modreg file pptpd options 'PPTPD: options.pptpd' 0 "pptpd_options"
-		modreg file pptpd conf 'PPTPD: pptpd.conf' 0 "pptpd_conf"
+		modreg file pptpd options 'options.pptpd' 0 "pptpd_options"
+		modreg file pptpd conf 'pptpd.conf' 0 "pptpd_conf"
 
 		modlib_start $PPTPD_ENABLED
 		;;

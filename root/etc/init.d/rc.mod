@@ -63,7 +63,7 @@ start() {
 modreg_file() {
 	local file=$1 sec_level=$2
 	local basename=${file//./_}
-	modreg file mod "$basename" "Freetz: $file" "$sec_level" "$basename"
+	modreg file mod "$basename" "$file" "$sec_level" "$basename"
 }
 
 register() {
