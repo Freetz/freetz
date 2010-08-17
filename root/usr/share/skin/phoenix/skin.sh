@@ -24,9 +24,7 @@ fi
 EOF
 
 	_cgi_print_menu "$id"
-	if [ "$MOD_DEV_NEW_MENU" != no ]; then
-		_cgi_print_submenu "$id"
-	fi
+	_cgi_print_submenu "$id"
 
 	echo "<div id='content'>"
 }
@@ -51,18 +49,3 @@ skin_sec_begin() {
 skin_sec_end() {
 	:
 }
-
-if [ "$WEBIF" = mww -a "$MOD_DEV_NEW_MENU" = no ]; then
-	_cgi_print_menu() {
-		local id=$1 sub= act_sub=
-		case $id in
-			pkg:mod|file:*) act_sub=settings ;;
-			status*) act_sub=status ;;
-			system|avmwif_*|rudi_*|firmware_*|backup_*) act_sub=system ;;
-			packages|pkg:*) act_sub=packages ;;
-		esac
-		: ${sub:=$act_sub}
-
-		_cgi_cached "menu_$sub" _cgi_menu "$sub" | _cgi_mark_active "$act_sub|$id"
-	}
-fi
