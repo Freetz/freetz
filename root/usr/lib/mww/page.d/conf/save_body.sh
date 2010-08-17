@@ -18,7 +18,7 @@ start_stop() {
 			[ "$oldstatus" != stopped -a "$newstatus" != inetd ] && "$rc" start
 			;;
 		stop)
-			[ "$oldstatus" == running ] && "$rc" stop
+			[ "$oldstatus" != stopped ] && "$rc" stop
 			;;
 	esac
 }
