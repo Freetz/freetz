@@ -26,13 +26,11 @@ fi
 
 _ftpd_users=$(/sbin/ftpd --help 2>&1 | grep "linux users")
 
-pid()
-{
+pid() {
 	cat "$PIDFILE"
 }
 
-set_parameters()
-{
+set_parameters() {
 	[ -z "$FTPD_TIMEOUT" ] && FTPD_TIMEOUT=30
 	[ -z "$FTPD_MAX_CLIENTS" ] && FTPD_MAX_CLIENTS=15
 	[ -z "$FTPD_HOST_STRING" ] && local ftp_host="$(echo $CONFIG_PRODUKT_NAME |tr -d ' ')" || local ftp_host="$FTPD_HOST_STRING"
@@ -47,103 +45,93 @@ set_parameters()
 			[ "$AVM_FTP_RO" != "no" ] && local ftp_options="$ftp_options -r"
 		fi
 	fi
-	if [ -n "$BINARY" ]; then
-		if [ -x "$BINARY" ]; then
-			if [ "$1" == "daemon" ]; then
-				${BINARY} ${ftp_daemon_opts}${ftp_options} -h ${ftp_host} > /dev/null 2>&1
-			else
-				[ "$CONFIG_WEBDAV" = "y" ] && local webdav_wrapper="/usr/bin/webdav_wrapper" || local webdav_wrapper=""
-				[ "$CONFIG_IPV6" = "y" ] && local ipv46="tcp6" || local ipv46="tcp"
-				[ ! -d $INETD_CONFIG_DIR ] && mkdir -p $INETD_CONFIG_DIR
-				echo "$FTPD_PORT stream $ipv46 nowait root $webdav_wrapper ${BINARY} ${BINARY} ${ftp_options} -h ${ftp_host}" > ${INETD_FTPD_CONFIG}
-				modlib_reload_inetd > /dev/null 2>&1
-			fi
+	if [ -x "$BINARY" ]; then
+		if [ "$1" == "daemon" ]; then
+			${BINARY} ${ftp_daemon_opts}${ftp_options} -h ${ftp_host} > /dev/null 2>&1
+		else
+			[ "$CONFIG_WEBDAV" = "y" ] && local webdav_wrapper="/usr/bin/webdav_wrapper" || local webdav_wrapper=""
+			[ "$CONFIG_IPV6" = "y" ] && local ipv46="tcp6" || local ipv46="tcp"
+			[ ! -d $INETD_CONFIG_DIR ] && mkdir -p $INETD_CONFIG_DIR
+			echo "$FTPD_PORT stream $ipv46 nowait root $webdav_wrapper ${BINARY} ${BINARY} ${ftp_options} -h ${ftp_host}" > ${INETD_FTPD_CONFIG}
+			modlib_reload_inetd > /dev/null 2>&1
 		fi
 	fi
 	return $?
 }
 
-start()
-{
+start() {
 	local status=1
 	local daemonname=""
 	echo -n "Starting $DAEMON_LONG_NAME ... "
-	if [ "$AVM_FTP_ENABLED" != "no" ]; then
-		if [ -n "$BINARY" ]; then
-			daemonname="$(modlib_check_port $FTPD_PORT $DAEMON $CHECKCMD)"
-			status=$?
-			if [ "$FTPD_INETD" == "yes" ]; then
-				if [ "$status" -eq 0 ]; then
-					echo -n "(enabling over inetd) ... "
-					set_parameters inetd
-					status=$?
-					[ "$status" -eq 22 ] && echo -n "(WARNING: multiple port allocation) ... "
-				else
-					if [ "$status" -eq 2 -a "$daemonname" == "$DAEMON" ]
-					then
-						echo -n "(already running using inetd) ... "
-						status=0
-					else
-						[ "$status" -eq 2 ] && local over_inetd=" over inetd" || local over_inetd=""
-						echo -n "(Port $FTPD_PORT is busy by $daemonname$over_inetd) ... "
-					fi
-				fi
-			else
-				if [ "$status" -eq 0 ]; then
-					set_parameters daemon
-					status=$?
-				else
-					echo -n "(Port $FTPD_PORT is busy by $daemonname) ... "
-				fi
-			fi
-		else
-			echo 'not found.'
-			return 1
-		fi
-	else
+	if [ "$AVM_FTP_ENABLED" == "no" ]; then
 		echo 'disabled.'
 		return 1
 	fi
+	if [ -n "$BINARY" ]; then
+		echo 'not found.'
+		return 1
+	fi
+	daemonname="$(modlib_check_port $FTPD_PORT $DAEMON $CHECKCMD)"
+	status=$?
+	if [ "$FTPD_INETD" == "yes" ]; then
+		if [ "$status" -eq 0 ]; then
+			echo -n "(enabling over inetd) ... "
+			set_parameters inetd
+			status=$?
+			[ "$status" -eq 22 ] && echo -n "(WARNING: multiple port allocation) ... "
+		else
+			if [ "$status" -eq 2 -a "$daemonname" == "$DAEMON" ]; then
+				echo -n "(already running using inetd) ... "
+				status=0
+			else
+				[ "$status" -eq 2 ] && local over_inetd=" over inetd" || local over_inetd=""
+				echo -n "(Port $FTPD_PORT is busy by $daemonname$over_inetd) ... "
+			fi
+		fi
+	else
+		if [ "$status" -eq 0 ]; then
+			set_parameters daemon
+			status=$?
+		else
+			echo -n "(Port $FTPD_PORT is busy by $daemonname) ... "
+		fi
+	fi
 	if [ "$status" -eq 0 ]; then
 		echo "done."
-		return 0
 	else
 		echo "failed."
 		return $status
 	fi
 }
 
-stop()
-{
+stop() {
 	local status=1
 	echo -n "Stopping ${DAEMON_LONG_NAME-$DAEMON} ... "
-	if [ -n "$BINARY" ]; then
-		daemonname="$(modlib_check_port $FTPD_PORT $DAEMON)"
-		status=$?
-		if [ "$status" -eq 2 ]; then
-			if [ "$daemonname" == "$DAEMON" ]; then
-				echo -n "(disabling over inetd) ... "
-				rm -f ${INETD_FTPD_CONFIG} > /dev/null 2>&1
-				modlib_reload_inetd > /dev/null 2>&1
-				status=$?
-			fi
-		else
-			local fn=${PID_FILE-/var/run/$DAEMON.pid}
-			if ! modlib_check_running; then
-				echo 'not running.'
-				return 0
-			fi
-			kill $(cat "$fn") 2> /dev/null
-			local status=$?
-			rm -f "$fn"
-		fi
-	else
+	if [ -z "$BINARY" ]; then
 		echo 'not found.'
 		return 1
 	fi
+	daemonname="$(modlib_check_port $FTPD_PORT $DAEMON)"
+	status=$?
+	if [ "$status" -eq 2 ]; then
+		if [ "$daemonname" == "$DAEMON" ]; then
+			echo -n "(disabling over inetd) ... "
+			rm -f ${INETD_FTPD_CONFIG} > /dev/null 2>&1
+			modlib_reload_inetd > /dev/null 2>&1
+			status=$?
+		fi
+	else
+		local fn=${PID_FILE-/var/run/$DAEMON.pid}
+		if ! modlib_check_running; then
+			echo 'not running.'
+			return 0
+		fi
+		kill $(cat "$fn") 2> /dev/null
+		local status=$?
+		rm -f "$fn"
+	fi
 	if [ "$status" -eq 0 ];	then
 		echo 'done.'
-		return 0
 	else
 		echo 'failed.'
 		return 1
@@ -155,16 +143,12 @@ case $1 in
 		[ -x /usr/lib/cgi-bin/$DAEMON.cgi ] && modreg cgi $DAEMON 'AVM-ftpd'
 		start
 		;;
-	""|unload)
+	""|unload)	#2DO: wtf?
 		stop
 		[ -x /usr/lib/cgi-bin/$DAEMON.cgi ] && modunreg cgi $DAEMON
 		;;
 	start)
-		if modlib_check_running; then
-			modlib_reload
-		else
-			start
-		fi
+		start
 		;;
 	stop)
 		stop
@@ -182,34 +166,30 @@ case $1 in
 		start
 		;;
 	status)
-		if [ "$AVM_FTP_ENABLED" != "no" ]; then
-			daemonname="$(modlib_check_port $FTPD_PORT $DAEMON)"
-			status=$?
-			if [ $status -eq 0 ]; then
-				[ "$FTPD_INETD" == "yes" ] && echo 'stopped (inetd)' || echo 'stopped'
-			else
-				case "$daemonname" in
-						"$DAEMON")
-							[ $status -eq 2 ] && echo 'running (inetd)' || echo 'running'
-							;;
-						*)
-							[ "$FTPD_INETD" == "yes" ] && echo 'stopped (inetd)' || echo 'stopped'
-							;;
-				esac
-			fi
-		else
+		if [ "$AVM_FTP_ENABLED" == "no" ]; then
 			echo 'disabled'
+			return
+		fi
+		daemonname="$(modlib_check_port $FTPD_PORT $DAEMON)"
+		status=$?
+		if [ $status -eq 0 ]; then
+			[ "$FTPD_INETD" == "yes" ] && echo 'stopped (inetd)' || echo 'stopped'
+		else
+			case "$daemonname" in
+					"$DAEMON")
+						[ $status -eq 2 ] && echo 'running (inetd)' || echo 'running'
+						;;
+					*)
+						[ "$FTPD_INETD" == "yes" ] && echo 'stopped (inetd)' || echo 'stopped'
+						;;
+			esac
 		fi
 		;;
 	pid)
 		pid
 		;;
 	reload)
-		if modlib_check_running; then
-			modlib_reload
-		else
-			start
-		fi
+		modlib_reload
 		;;
 	*)
 		echo "Usage: $0 [start|stop|kill|restart|status|pid|reload]" 1>&2
