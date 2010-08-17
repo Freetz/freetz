@@ -3,7 +3,8 @@ update_inetd() {
 		/usr/bin/modinetd "$1"
 	else
 		echo 'Not able to run modinetd, failed.'
-	fi}
+	fi
+}
 
 start_stop() {
 	local startORstop=$1
