@@ -25,17 +25,17 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 : ${PID_FILE:=/var/run/${DAEMON_BIN}.pid}
 
 # config:
-#   dummy function if "config" is not defined in parent-script 
+#   dummy function if "config" is not defined in parent-script
 config() { :; }
 
 # stop:
-#   dummy function if "stop" is not defined in parent-script 
+#   dummy function if "stop" is not defined in parent-script
 stop() {
 	return 127
 }
 
 # reload:
-#   dummy function if "reload" is not defined in parent-script 
+#   dummy function if "reload" is not defined in parent-script
 reload() {
 	return 127
 }
@@ -85,20 +85,7 @@ modlib_adduser()
 	fi
 }
 
-# modlib_reload_inetd
-#	check whether /etc/init.d/rc.inetd exists.
-#	reloads inetd. return status
-modlib_reload_inetd()
-{
-	local inetd_rc_script="/etc/init.d/rc.inetd"
-	if [ -x "$inetd_rc_script" ]; then
-		"$inetd_rc_script" reload
-	else
-		killall -HUP inetd
-	fi
-	return $?
-}
-
+#  (#2DO: move to inetd?, only used by rc.ftpd atm, ipv6-support?)
 # modlib_check_port
 #   checks if a port is occupied and by which daemon.
 #	parameters:
@@ -211,33 +198,44 @@ modlib_stop()
 	local fn=$PID_FILE
 	local id=$(cat "$fn" 2>/dev/null)
 	echo -n "Stopping ${DAEMON_LONG_NAME} ... "
-	if ! modlib_check_running; then
-		echo 'not running.'
-		return 0
-	fi
-	stop
-	if [ $? -ne 127 ]; then
-		sleep 1
-	else
-		local cnt=9
-		while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do
-			kill $id 2>/dev/null
-			sleep 1
-			let cnt--
-		done
-		if kill -0 $id 2>/dev/null; then
-			kill -9 $id 2>/dev/null
-			sleep 1
-		fi
-	fi
-	if ! kill -0 $id 2>/dev/null; then
-		rm -f "$fn"
-		echo 'done.'
-		return 0
-	else
-		echo 'failed.'
-		return 1
-	fi
+	modlib_check_running
+	case $? in
+		0)
+			stop
+			if [ $? -ne 127 ]; then
+				sleep 1
+			else
+				local cnt=9
+				while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do
+					kill $id 2>/dev/null
+					sleep 1
+					let cnt--
+				done
+				if kill -0 $id 2>/dev/null; then
+					kill -9 $id 2>/dev/null
+					sleep 1
+				fi
+			fi
+			if ! kill -0 $id 2>/dev/null; then
+				rm -f "$fn"
+				echo 'done.'
+			else
+				echo 'failed.'
+				return 1
+			fi
+			;;
+		3)
+			echo 'not running.'
+			;;
+		5)
+			killall $DAEMON_BIN 2>/dev/null
+			echo 'inetd instances killed, done.'
+			;;
+		*)
+			echo 'status unknown, failed.'
+			return 1
+			;;
+	esac
 }
 
 # modlib_reload
@@ -250,10 +248,10 @@ modlib_reload()
 	echo -n "Reloading ${DAEMON_LONG_NAME} ... "
 	modlib_check_running
 	case $? in
-		1)
+		0)
 			config
 
-			reload 1
+			reload 0
 			local status=$?
 			if [ $status -ne 127 ]; then
 				sleep 1
@@ -281,6 +279,10 @@ modlib_reload()
 			[ $? -eq 127 ] && killall -HUP $DAEMON_BIN 2>/dev/null 1>&2
 			echo 'inetd.'
 			return 0
+			;;
+		*)
+			echo 'status unknown, failed.'
+			return 1
 			;;
 		esac
 }

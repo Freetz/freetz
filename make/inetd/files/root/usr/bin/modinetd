@@ -1,21 +1,21 @@
 #!/bin/sh
 #
-# Usage: modinetd [-n] [package]
+# Usage: modinetd [package]
+
+icnf="/var/mod/etc/inetd.conf"
+touch $icnf
 
 usage() {
 	echo "Usage: $(basename $0) [options] [package]..."
 	echo "options:"
 	echo "  -h | --help       - print this help"
-	echo "  -n | --nosave     - do not modsave flash"
 	exit $1
 }
 
 inetd_conf_line() {
 	line="$inetdcfg_port\t$inetdcfg_sock\t$inetdcfg_proto\t$inetdcfg_flags"
 	line="$line\t$inetdcfg_user\t$inetdcfg_exe\t$inetdcfg_arg0 $inetdcfg_args"
-	if [ "$1" = escape ]; then
-		line=$(echo -n "$line" | sed -e 's@/@\\/@g')
-	fi
+	[ "$1" = escape ] && line=$(echo -n "$line" | sed -e 's@/@\\/@g')
 	echo -en "$line"
 }
 
@@ -28,9 +28,8 @@ update_inetd() {
 		exit 1
 	fi
 	echo -n "Updating inetd config for $pkg_name"
-	local icnf="/var/tmp/flash/inetd.conf"
 	. $pkg_path
-	
+
 	if [ "$pkg_name" != "$pkg_subd" ]; then
 		sub_status=$(/etc/init.d/rc.$pkg_name status_$pkg_subd)
 		echo -n " ($pkg_subd)"
@@ -40,7 +39,7 @@ update_inetd() {
 		pkg_inetd=$pkg_name
 	fi
 	echo -n ": "
-	
+
 	if ! grep -q "#:$pkg_inetd:" $icnf; then
 		echo >> $icnf
 		echo "#:$pkg_inetd: $inetdcfg_desc" >> $icnf
@@ -56,12 +55,29 @@ update_inetd() {
 	fi
 }
 
+update_inetd_avm() {
+	local pkg_file=$1
+	local pkg_name=$(echo $pkg_file | sed 's/^.*\///;s/\.inetd$//')
+	local pkg_desc="#:AVM-$pkg_name: AVM $pkg_name daemon"
+	echo -n "Updating inetd config for AVM $pkg_name: "
+	if [ -e $pkg_file ]; then
+		if ! grep -q "^$pkg_desc$" $icnf; then
+			echo >> $icnf
+			echo "$pkg_desc" >> $icnf
+			cat $pkg_file >> $icnf
+		fi
+		echo "active."
+	else
+		sed -i -e "N;/$pkg_desc/b1;b;:1 N;d" $icnf
+		echo "inactive."
+	fi
+}
+
 error() {
 	echo "$0: $*" 1>&2
 }
 
-save=true
-TEMP=$(getopt -o hn --long help,nosave -n "$(basename $0)" -- "$@")
+TEMP=$(getopt -o h --long help -n "$(basename $0)" -- "$@")
 
 [ $? == 0 ] || usage 1
 eval set -- "$TEMP"
@@ -69,33 +85,53 @@ eval set -- "$TEMP"
 while true; do
 	case $1 in
 		-h|--help) usage 0; shift ;;
-		-n|--nosave) save=false; shift ;;
 		--) shift ; break ;;
 		*) echo "Internal error!" ; exit 1 ;;
 	esac
 done
 
 if [ $# -eq 0 ]; then
+	echo 'Configuring inetd:'
+	# Freetz packages
 	for package in $(ls /etc/default.*/*.inetd); do
 		update_inetd $package
 	done
+	# AVM packages
+	for package in $(ls /var/mod/etc/inetd/*.inetd 2>/dev/null); do
+		update_inetd_avm $package
+	done
 else
 	for package; do
-		package_main=$(ls /etc/default.$package/*.inetd)
-		if [ -n "$package_main" ]; then
-			for package_sub in $package_main; do
-				update_inetd "$package_sub"
-			done
+		package_short="$(echo $package|sed 's/AVM-//')"
+		if [ "$package" == "$package_short" ]; then
+			# Freetz packages
+			package_main=$(ls /etc/default.$package/*.inetd 2>/dev/null)
+			if [ -n "$package_main" ]; then
+				for package_sub in $package_main; do
+					update_inetd "$package_sub"
+				done
+			else
+				error "package $package has no default inetd file"
+			fi
 		else
-			error "package $package has no default inetd file"
+			# AVM packages
+			update_inetd_avm /var/mod/etc/inetd/$package_short.inetd
 		fi
 	done
-	
+
 fi
 
-/etc/init.d/rc.inetd reload
-if $save; then
-	/usr/bin/modsave flash
-fi
+# check if we could listen on socket
+grep -vE "^$|^#" $icnf | while read line; do
+	local cleanline="$(echo "$line" | sed 's/\t/ /;s/ */ /;s/^ *//')"
+	local listener=$(echo "$cleanline" | cut -d " " -f1)
+	local ip_proto=$(echo "$cleanline" | cut -d " " -f3)
+	if [ "$(grep -E "$listener[[:space:]]*(stream|dgram|raw|seqpacket)[[:space:]]*$ip_proto" $icnf 2>/dev/null | wc -l)" -gt 1 ]; then
+		echo "WARNING: inetd could not listen on '$listener' multiple times:"
+		grep -E "$listener[[:space:]]*(stream|dgram|raw|seqpacket)[[:space:]]*$ip_proto" $icnf
+	fi
+done
+
+[ "$(/etc/init.d/rc.inetd status)" != "stopped" ] && /etc/init.d/rc.inetd reload
 
 exit 0

@@ -22,7 +22,7 @@ TEXT_ROWS=18
 [ -r "$def" ] && . "$def"
 
 allowed() {
-    ! [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$sec" ]
+    ! [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$sec" -o "$CONFIG_SAVE" == "false" ]
 }
 print_access_denied() {
 	echo '<div style="color: #800000;">$(lang

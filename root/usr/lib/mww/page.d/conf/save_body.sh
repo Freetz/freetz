@@ -1,8 +1,9 @@
 update_inetd() {
 	if [ -x /usr/bin/modinetd ]; then
-		/usr/bin/modinetd --nosave "$1"
-	fi
-}
+		/usr/bin/modinetd "$1"
+	else
+		echo 'Not able to run modinetd, failed.'
+	fi}
 
 start_stop() {
 	local startORstop=$1
@@ -50,7 +51,7 @@ esac
 package=$PACKAGE
 
 if $default; then
-	echo "<p>$(lang de:"Konfiguration zurücksetzen" en:"Restore default settings") ($PACKAGE_TITLE):</p>"
+	echo "<p>$(lang de:"Konfiguration zurï¿½cksetzen" en:"Restore default settings") ($PACKAGE_TITLE):</p>"
 else
 	echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings") ($PACKAGE_TITLE):</p>"
 fi
