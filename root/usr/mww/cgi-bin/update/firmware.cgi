@@ -59,11 +59,11 @@ automatically after 30 seconds."
 	</p>
 	<p>
 	<input type="radio" name="do_prepare" value="stop_avm">
-	$(lang de:"AVM Dienste stoppen (bei Speichermangel)" en:"Stop AVM services (less memory available)")<br>
+	$(lang de:"AVM-Dienste stoppen (bei Speichermangel)" en:"Stop AVM services (less memory available)")<br>
 	<input type="radio" name="do_prepare" value="semistop_avm">
-	$(lang de:"Einen Teil der AVM Dienste stoppen (bei Remote-Update)" en:"Stop some of the AVM services (remote firmware update)")<br>
+	$(lang de:"Einen Teil der AVM-Dienste stoppen (bei Remote-Update)" en:"Stop some of the AVM services (remote firmware update)")<br>
 	<input type="radio" name="do_prepare" value="nostop_avm" checked>
-	$(lang de:"AVM Dienste nicht stoppen (bei gen&uuml;gend Speicher bzw. Pseudo-Update ohne Reboot)" en:"Do not stop any AVM services (sufficient memory available or pseudo update without reboot)")
+	$(lang de:"AVM-Dienste nicht stoppen (bei gen&uuml;gend Speicher bzw. Pseudo-Update ohne Reboot)" en:"Do not stop any AVM services (sufficient memory available or pseudo update without reboot)")
 	</p>
 	<p>
 	<input type="checkbox" name="downgrade" value="yes">
