@@ -1,0 +1,81 @@
+#!/bin/sh
+
+DAEMON=streamripper
+STREAMRIPPER_FLASH_DIR=/tmp/flash/$DAEMON
+
+. /etc/init.d/modlibrc
+
+start() {
+	mkdir -p $STREAMRIPPER_FLASH_DIR
+
+	echo "Starting streamripper..."
+	for i in 1 2 3 4 5 ; do
+		eval STREAMRIPPER_SERVER=\$STREAMRIPPER_SERVER$i
+		if [ -n "$STREAMRIPPER_SERVER" ]; then
+			eval STREAMRIPPER_SERVER_ENABLED=\$STREAMRIPPER_SERVER${i}_ENABLED
+			eval STREAMRIPPER_NAME=\$STREAMRIPPER_NAME$i
+
+			[ -z "$STREAMRIPPER_NAME" ] && STREAMRIPPER_NAME=$STREAMRIPPER_SERVER   # in case Name is not set
+
+			if [ "$STREAMRIPPER_SERVER_ENABLED" == "yes" ]; then
+				echo "Connecting to $STREAMRIPPER_NAME..."
+					COMMAND_LINE="nohup streamripper $STREAMRIPPER_SERVER $STREAMRIPPER_STARTOPTIONS -d $STREAMRIPPER_MUSICDIR"
+					[ -s $STREAMRIPPER_FLASH_DIR/filter ] && COMMAND_LINE="$COMMAND_LINE -w  $STREAMRIPPER_FLASH_DIR/filter"
+					COMMAND_LINE="$COMMAND_LINE &"
+					eval $COMMAND_LINE
+				[ "$?" -gt 0 ] && exitval=1
+			fi
+		fi
+	done
+}
+
+stop() {
+	echo "Stopping streamripper..."
+	killall $DAEMON > /dev/null 2>&1
+}
+
+case "$1" in
+	""|load)
+		modreg cgi $DAEMON Streamripper
+		modreg file $DAEMON filter 'Streamripper Filter' 1 filter
+		modreg extra $DAEMON '$(lang de:"Liste gerippter Dateien" en:"List of ripped files")' 2 log
+
+		if [ "$STREAMRIPPER_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON filter
+		modunreg extra $DAEMON log
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+			echo 'stopped'
+		 else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
+
