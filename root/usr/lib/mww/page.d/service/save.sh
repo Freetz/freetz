@@ -1,3 +1,4 @@
+cgi --style=mod/daemons.css
 REG=/mod/etc/reg/daemon.reg
 eval "$(modcgi cmd service)"
 
@@ -31,8 +32,12 @@ case $SERVICE_CMD in
 esac
 
 cgi_begin "$message ..."
+echo "<div id='result'>"
 echo -n "<p>$message:</p><pre class='log'>"
 "$rcfile" "$SERVICE_CMD" | html
 echo '</pre>'
-back_button mod daemons
+echo "</div>"
+
+source "$HANDLER_DIR/list_body.sh"
+
 cgi_end
