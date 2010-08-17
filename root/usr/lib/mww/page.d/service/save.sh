@@ -31,7 +31,7 @@ case $SERVICE_CMD in
 esac
 
 cgi_begin "$message ..."
-echo -n "<p>$message:</p><pre>"
+echo -n "<p>$message:</p><pre class='log'>"
 "$rcfile" "$SERVICE_CMD" | html
 echo '</pre>'
 back_button mod daemons
