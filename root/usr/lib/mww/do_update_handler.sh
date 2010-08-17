@@ -9,7 +9,7 @@ footer() {
 	back_button --title="$(lang de:"Zur&uuml;ck zur &Uuml;bersicht" en:"Back to main page")" mod status
 
 	cat << EOF
-<form action="/cgi-bin/exec.cgi/reboot" method="post"><div class="btn"><input type="submit" value="Reboot"></div></form>
+<form action="/cgi-bin/exec.cgi/reboot" method="post"><div class="btn"><input type="submit" value="$(lang de:"Neustart" en:"Reboot")"></div></form>
 </p>
 EOF
 
@@ -86,8 +86,8 @@ fi
 
 if [ "$stop" = semistop_avm ]; then
 	echo "<p>$(lang
-		de:"AVM-Dienste teilweise anhalten, Teil 1"
-		en:"Stopping AVM services partially, part 1"
+	    de:"Einige der AVM-Dienste anhalten, Teil 1"
+	    en:"Stopping some of the AVM services, part 1"
 	) (prepare_fwupgrade start_from_internet) ...</p>"
 	pre_begin
 	prepare_fwupgrade start_from_internet 2>&1 | html
@@ -137,7 +137,7 @@ if [ ! -x /var/install ]; then
 		en:"Installation script not found or not executable."
 	)"
 	cat << EOF
-<p>$(lang 
+<p>$(lang
 	de:"Weiter ohne Neustart. Sie sollten bei Bedarf noch die extrahierten
 	Dateien löschen."
 	en:"Resuming without reboot. You may want to clean up the extracted
@@ -177,8 +177,8 @@ status "done" "$(lang
 
 echo "<p>$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")</p>"
 if [ ! -x /var/post_install ]; then
-	print_error "$(lang 
-		de:"Nach-Installationsskript nicht gefunden oder nicht ausführbar." 
+	print_error "$(lang
+		de:"Nach-Installationsskript nicht gefunden oder nicht ausführbar."
 		en:"Post-installation script not found or not executable."
 	)"
 	do_exit 1
