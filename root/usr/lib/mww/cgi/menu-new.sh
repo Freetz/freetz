@@ -31,35 +31,66 @@ _cgi_print_submenu() {
 
 MENU_CACHE=/mod/var/cache/menu
 
+# Beware: This function will change the working directory
 new_menu_init() {
-	if [ ! -d "$MENU_CACHE" -o -e "$MENU_CACHE.stale" ]; then
-		rm -f "$MENU_CACHE.stale"
-		new_menu_prepare "$MENU_CACHE"
-	fi
+	if ! [ -e "$MENU_CACHE.stale" ] && cd "$MENU_CACHE"; then
+		return
+	fi 2> /dev/null
+	rm -f "$MENU_CACHE.stale"
+
+	# prepare new menu in a private place
+	local base=${MENU_CACHE##*/}
+	local dir=${MENU_CACHE%/*}
+	local tmp="$MENU_CACHE.$$"
+	new_menu_prepare "$tmp/$base"
+
+	# set working directory to new menu to allow delivery
+	cd "$tmp/$base"
+
+	{ {
+		# replace main copy (perhaps multiple tries needed);
+		# last writer wins; this can be done asynchronously
+		local n=0
+		while ! mv "$tmp/$base" "$dir"; do
+			# remove old copy
+			mv "$MENU_CACHE" "$tmp/old.$n"
+			let n++
+		done 2>/dev/null
+
+		# give readers of old menu a chance
+		sleep 1
+
+		# clean up
+		rm -rf "$tmp"
+	} & } & # double fork to prevent zombies
 }
 
 new_menu() {
 	local sub=$1
-	new_menu_init
-	new_menu_deliver "$MENU_CACHE" "$sub"
+	(
+		new_menu_init
+		new_menu_deliver "$sub"
+	)
 }
 
 # display only the current submenu
 new_submenu() {
 	local sub=$1 dir=$MENU_CACHE
 	[ -z "$sub" ] && return
-	new_menu_init
-	
-	echo "<ul class='menu new sub'>"
-	case $sub in
-		pkg:*) cat "$dir/pkg/${sub#pkg:}.sub" ;;
-		*) cat "$dir/$sub.sub" ;;
-	esac
-	echo "</ul>"
+	(
+		new_menu_init
+		echo "<ul class='menu new sub'>"
+		case $sub in
+			pkg:*) cat "./pkg/${sub#pkg:}.sub" ;;
+			*) cat "./$sub.sub" ;;
+		esac
+		echo "</ul>"
+	)
 }
 
+# deliver menu from the current working directory
 new_menu_deliver() {
-	local dir=$1 sub=$2
+	local sub=$1 dir=.
 	local p="$dir/pkg"
 
 	# assemble new menu
