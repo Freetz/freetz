@@ -37,8 +37,8 @@ stop() {
 case "$1" in
 	""|load)
 		modreg cgi $DAEMON Streamripper
-		modreg file $DAEMON filter 'Streamripper Filter' 1 filter
-		modreg extra $DAEMON '$(lang de:"Liste gerippter Dateien" en:"List of ripped files")' 2 log
+		modreg file $DAEMON filter 'Filter' 1 "filter"
+		modreg extra $DAEMON '$(lang de:"Liste gerippter Dateien" en:"List of ripped files")' 2 "log"
 
 		if [ "$STREAMRIPPER_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
