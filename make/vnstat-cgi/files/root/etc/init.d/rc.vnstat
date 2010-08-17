@@ -50,13 +50,14 @@ config() {
 	done
 }
 
-stop_webserver() {
+stop_status() {
 	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
 	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd vnstat >/dev/null
+	modunreg status vnstat stats
 }
 
 start() {
-	stop_webserver
+	stop_status
 	if [ "$VNSTAT_WEBENABLED" = "yes" -a "$VNSTAT_WEB_INETD" != "yes" ]; then
 		if [ "$VNSTAT_WEB_AUTH" = yes ]; then
 			echo "/:$VNSTAT_WEB_USER:$(httpd -m $VNSTAT_WEB_PASS)" >/mod/etc/httpd-vns.conf
@@ -66,10 +67,11 @@ start() {
 	fi
 	modlib_startdaemon $DAEMON_BIN -s -d --config /tmp/flash/vnstat/vnstat.conf
 	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd vnstat
+	modreg status vnstat vnstat stats
 }
 
 stop() {
-	stop_webserver
+	stop_status
 	killall $DAEMON_BIN 2>/dev/null
 }
 
@@ -83,12 +85,10 @@ case $1 in
 
 		modreg file vnstat conf 'vnstat: vnstat.conf' 1 "vnstat_conf"
 		modreg cgi vnstat vnstat
-		modreg status vnstat vnstat stats
 
 		modlib_start $VNSTAT_ENABLED
 		;;
 	unload)
-		modunreg status vnstat stats
 		modunreg cgi vnstat
 		modunreg file vnstat
 		modlib_stop

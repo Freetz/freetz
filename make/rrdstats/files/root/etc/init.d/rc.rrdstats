@@ -45,9 +45,8 @@ start() {
 	[ "$RRDSTATS_SAVEBACKUP" = yes -a "$RRDSTATS_END_BACKUP" = no ] && backup
 	[ "$RRDSTATS_START_RESTORE" = yes ] && restore silent
 
+	stop_status
 	modlib_startdaemon start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
-
-	stop_webserver
 	if [ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" != "yes" ]; then
 		webcfg-rrd -P "$HTTPD_PID_RRD"
 	fi
@@ -55,6 +54,7 @@ start() {
 		webcfg-one -P "$HTTPD_PID_ONE"
 	fi
 	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd rrdstats
+	modreg status rrdstats RRDstats stats
 
 	#wait for the correct pid
 	local DAEMON_PID="$(pidof -s rrdstats)"
@@ -66,7 +66,7 @@ start() {
 }
 
 stop() {
-	stop_webserver
+	stop_status
 	local PID=$(cat "$fn" 2>/dev/null)
 	kill "$PID" 2>/dev/null
 	sleep 1
@@ -77,10 +77,12 @@ stop() {
 	[ "$RRDSTATS_SAVEBACKUP" = yes -a "$RRDSTATS_END_BACKUP" = yes ] && backup silent
 }
 
-stop_webserver() {
+stop_status() {
 	kill -9 "$(cat $HTTPD_PID_RRD 2>/dev/null)" 2>/dev/null
 	kill -9 "$(cat $HTTPD_PID_ONE 2>/dev/null)" 2>/dev/null
 	[ -x /etc/init.d/rc.inetd ] && /usr/bin/modinetd rrdstats >/dev/null
+	modunreg status rrdstats rrddt
+	modunreg status rrdstats stats
 }
 
 backup() {
@@ -158,14 +160,9 @@ case $1 in
 		;;
 	""|load)
 		modreg cgi rrdstats RRDstats
-		modreg status rrdstats RRDstats stats
-
-		config
 		modlib_start $RRDSTATS_ENABLED
 		;;
 	unload)
-		modunreg status rrdstats rrddt
-		modunreg status rrdstats stats
 		modunreg cgi rrdstats
 		modunreg file rrdstats
 		modlib_stop
