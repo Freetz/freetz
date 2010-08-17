@@ -51,7 +51,7 @@ esac
 package=$PACKAGE
 
 if $default; then
-	echo "<p>$(lang de:"Konfiguration zur�cksetzen" en:"Restore default settings") ($PACKAGE_TITLE):</p>"
+	echo "<p>$(lang de:"Konfiguration zur&uuml;cksetzen" en:"Restore default settings") ($PACKAGE_TITLE):</p>"
 else
 	echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings") ($PACKAGE_TITLE):</p>"
 fi
