@@ -5,6 +5,8 @@ config FREETZ_PACKAGE_NHIPT
 	# Be visible only if iptables is selected
 	requires FREETZ_PACKAGE_IPTABLES
 
-	# include some iptables modules and libs
-	select FREETZ_PACKAGE_IPTABLES_CGI
+	# select standard set of iptable modules and libs
+	select FREETZ_PACKAGE_IPTABLES_STANDARD_MODULES
 
+	help
+		New Iptables configuration interface.
