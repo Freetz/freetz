@@ -190,139 +190,6 @@ modlib_check_running()
 	fi
 }
 
-# modlib_stop
-#   stops the daemon
-#	kills daemon with "stop" of rc.$DAEMON if available
-modlib_stop()
-{
-	local fn=$PID_FILE
-	local id=$(cat "$fn" 2>/dev/null)
-	echo -n "Stopping ${DAEMON_LONG_NAME} ... "
-	modlib_check_running
-	case $? in
-		0)
-			stop
-			if [ $? -ne 127 ]; then
-				sleep 1
-			else
-				local cnt=9
-				while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do
-					kill $id 2>/dev/null
-					sleep 1
-					let cnt--
-				done
-				if kill -0 $id 2>/dev/null; then
-					kill -9 $id 2>/dev/null
-					sleep 1
-				fi
-			fi
-			if ! kill -0 $id 2>/dev/null; then
-				rm -f "$fn"
-				echo 'done.'
-			else
-				echo 'failed.'
-				return 1
-			fi
-			;;
-		3)
-			echo 'not running.'
-			;;
-		5)
-			killall $DAEMON_BIN 2>/dev/null
-			echo 'inetd instances killed, done.'
-			;;
-		*)
-			echo 'status unknown, failed.'
-			return 1
-			;;
-	esac
-}
-
-# modlib_reload
-#   reloads the daemon with SIGHUP
-#   if available runs "config" of rc.$DAEMON
-#	reloads daemon with "reload" of rc.$DAEMON if available
-modlib_reload()
-{
-	local fn=$PID_FILE
-	echo -n "Reloading ${DAEMON_LONG_NAME} ... "
-	modlib_check_running
-	case $? in
-		0)
-			config
-
-			reload 0
-			local status=$?
-			if [ $status -ne 127 ]; then
-				sleep 1
-			else
-				kill -HUP $(cat "$fn") 2> /dev/null
-				local status=$?
-			fi
-
-			if [ $status -eq 0 ]; then
-				echo 'done.'
-				return 0
-			else
-				rm -f "$fn"
-				echo 'failed.'
-				return 1
-			fi
-			;;
-		3)
-			echo 'not running.'
-			return 0
-			;;
-		5)
-			config
-			reload 5
-			[ $? -eq 127 ] && killall -HUP $DAEMON_BIN 2>/dev/null 1>&2
-			echo 'inetd.'
-			return 0
-			;;
-		*)
-			echo 'status unknown, failed.'
-			return 1
-			;;
-		esac
-}
-
-# modlib_restart
-#   restarts the daemon
-modlib_restart()
-{
-	modlib_stop
-	modlib_start
-}
-
-# modlib_status
-#   checks if the daemon is running
-#	return values:
-#	0:			running
-#	3:			stopped
-#	5:			inetd
-#	<other>:	unknown
-modlib_status()
-{
-	modlib_check_running
-	retval=$?
-	case $retval in
-		0)
-			echo 'running'
-			;;
-		3)
-			echo 'stopped'
-			;;
-		5)
-			echo 'inetd'
-			;;
-		*)
-			echo 'unknown'
-			;;
-	esac
-	return $retval
-}
-
 # modlib_startdaemon
 #    starts the binary with a clean environment
 #    "$@": commandline to execute
@@ -391,6 +258,139 @@ modlib_start()
 			;;
 	esac
 	return 1
+}
+
+# modlib_stop
+#   stops the daemon
+#	kills daemon with "stop" of rc.$DAEMON if available
+modlib_stop()
+{
+	local fn=$PID_FILE
+	local id=$(cat "$fn" 2>/dev/null)
+	echo -n "Stopping ${DAEMON_LONG_NAME} ... "
+	modlib_check_running
+	case $? in
+		0)
+			stop
+			if [ $? -ne 127 ]; then
+				sleep 1
+			else
+				local cnt=9
+				while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do
+					kill $id 2>/dev/null
+					sleep 1
+					let cnt--
+				done
+				if kill -0 $id 2>/dev/null; then
+					kill -9 $id 2>/dev/null
+					sleep 1
+				fi
+			fi
+			if ! kill -0 $id 2>/dev/null; then
+				rm -f "$fn"
+				echo 'done.'
+			else
+				echo 'failed.'
+				return 1
+			fi
+			;;
+		3)
+			echo 'not running.'
+			;;
+		5)
+			killall $DAEMON_BIN 2>/dev/null
+			echo 'inetd instances killed, done.'
+			;;
+		*)
+			echo 'status unknown, failed.'
+			return 1
+			;;
+	esac
+}
+
+# modlib_restart
+#   restarts the daemon
+modlib_restart()
+{
+	modlib_stop
+	modlib_start
+}
+
+# modlib_reload
+#   reloads the daemon with SIGHUP
+#   if available runs "config" of rc.$DAEMON
+#	reloads daemon with "reload" of rc.$DAEMON if available
+modlib_reload()
+{
+	local fn=$PID_FILE
+	echo -n "Reloading ${DAEMON_LONG_NAME} ... "
+	modlib_check_running
+	case $? in
+		0)
+			config
+
+			reload 0
+			local status=$?
+			if [ $status -ne 127 ]; then
+				sleep 1
+			else
+				kill -HUP $(cat "$fn") 2> /dev/null
+				local status=$?
+			fi
+
+			if [ $status -eq 0 ]; then
+				echo 'done.'
+				return 0
+			else
+				rm -f "$fn"
+				echo 'failed.'
+				return 1
+			fi
+			;;
+		3)
+			echo 'not running.'
+			return 0
+			;;
+		5)
+			config
+			reload 5
+			[ $? -eq 127 ] && killall -HUP $DAEMON_BIN 2>/dev/null 1>&2
+			echo 'inetd.'
+			return 0
+			;;
+		*)
+			echo 'status unknown, failed.'
+			return 1
+			;;
+		esac
+}
+
+# modlib_status
+#   checks if the daemon is running
+#	return values:
+#	0:			running
+#	3:			stopped
+#	5:			inetd
+#	<other>:	unknown
+modlib_status()
+{
+	modlib_check_running
+	retval=$?
+	case $retval in
+		0)
+			echo 'running'
+			;;
+		3)
+			echo 'stopped'
+			;;
+		5)
+			echo 'inetd'
+			;;
+		*)
+			echo 'unknown'
+			;;
+	esac
+	return $retval
 }
 
 # modlib_loadconfig
