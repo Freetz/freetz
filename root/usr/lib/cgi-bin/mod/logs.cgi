@@ -25,9 +25,7 @@ do_log() {
 if [ -n "$PATH_INFO" ]; then
     	class="full"
     	do_log() {
-	    	if [ "$PATH_INFO" = "$1" ]; then
-		    	show_log "$1"
-		fi
+	    	[ "$PATH_INFO" = "$1" ] && show_log "$1"
 	}
 fi
 
@@ -35,5 +33,6 @@ do_log /var/log/mod_load.log
 do_log /var/log/mod_net.log
 do_log /var/log/mod_voip.log
 do_log /var/log/mod.log
+do_log /var/log/mod_inetd.log
 do_log /var/log/mod_swap.log
 [ -r /etc/external.pkg ] && do_log /var/log/external.log

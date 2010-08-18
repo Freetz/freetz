@@ -91,7 +91,7 @@ while true; do
 done
 
 if [ $# -eq 0 ]; then
-	echo 'Configuring inetd:'
+	echo 'Configuring inetd: ...'
 	# Freetz packages
 	for package in $(ls /etc/default.*/*.inetd); do
 		update_inetd $package
@@ -100,6 +100,7 @@ if [ $# -eq 0 ]; then
 	for package in $(ls /var/mod/etc/inetd/*.inetd 2>/dev/null); do
 		update_inetd_avm $package
 	done
+	echo 'Configuring inetd: done.'
 else
 	for package; do
 		package_short="$(echo $package|sed 's/AVM-//')"

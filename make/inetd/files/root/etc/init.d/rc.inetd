@@ -3,6 +3,8 @@
 DAEMON=inetd
 . /etc/init.d/modlibrc
 
+INETD_LOGFILE=/var/log/mod_inetd.log
+
 start() {
 	modlib_startdaemon $DAEMON $INETD_OPTIONS
 }
@@ -12,7 +14,7 @@ case $1 in
 		modreg cgi 'inetd' 'Inetd'
 		modreg file inetd conf 'Inetd config' 0 "inetd_conf"
 
-		/usr/bin/modinetd
+		/usr/bin/modinetd 2>&1 >> $INETD_LOGFILE
 
 		modlib_start $INETD_ENABLED
 		;;
@@ -38,7 +40,8 @@ case $1 in
 		;;
 	config)
 		shift
-		/usr/bin/modinetd $*
+		echo >> $INETD_LOGFILE
+		/usr/bin/modinetd $* 2>&1 | tee -a $INETD_LOGFILE
 		modlib_reload
 		;;
 	*)
