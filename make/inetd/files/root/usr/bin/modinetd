@@ -123,12 +123,12 @@ fi
 
 # check if we could listen on socket
 grep -vE "^$|^#" $icnf | while read line; do
-	local cleanline="$(echo "$line" | sed 's/\t/ /;s/ */ /;s/^ *//')"
+	local cleanline="$(echo "$line" | sed 's/[[:space:]]*/ /g;s/^ //g')"
 	local listener=$(echo "$cleanline" | cut -d " " -f1)
 	local ip_proto=$(echo "$cleanline" | cut -d " " -f3)
 	if [ "$(grep -E "$listener[[:space:]]*(stream|dgram|raw|seqpacket)[[:space:]]*$ip_proto" $icnf 2>/dev/null | wc -l)" -gt 1 ]; then
-		echo "WARNING: inetd could not listen on '$listener' multiple times:"
-		grep -E "$listener[[:space:]]*(stream|dgram|raw|seqpacket)[[:space:]]*$ip_proto" $icnf
+		echo -n "WARNING: inetd could not listen on '$listener/$ip_proto' multiple times: "
+		grep "$line" -B1 $icnf | head -n1
 	fi
 done
 
