@@ -36,8 +36,13 @@ case $1 in
 	status)
 		modlib_status
 		;;
+	config)
+		shift
+		/usr/bin/modinetd $*
+		modlib_reload
+		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status|config [package]]" 1>&2
 		exit 1
 		;;
 esac

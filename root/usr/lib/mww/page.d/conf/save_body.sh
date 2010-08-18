@@ -1,8 +1,8 @@
 update_inetd() {
-	if [ -x /usr/bin/modinetd ]; then
-		/usr/bin/modinetd "$1"
+	if [ -x /etc/init.d/rc.inetd ]; then
+		/etc/init.d/rc.inetd config "$1"
 	else
-		echo 'Not able to run modinetd, failed.'
+		echo 'Not able to run rc.inetd, failed.'
 	fi
 }
 
