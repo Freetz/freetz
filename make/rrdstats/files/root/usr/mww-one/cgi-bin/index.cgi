@@ -1,1 +1,1 @@
-stats.cgi
+/usr/lib/cgi-bin/rrdstats/index-rrddt.cgi
