@@ -24,7 +24,7 @@ sec_begin '$(lang de:"Optionen" en:"Options")'
 cat << EOF
 <p>
 <input type="hidden" name="force_update" value="no">
-<input id="u1" type="checkbox" name="force_update" value="yes"$force_update_chk><label for="u1">$(lang de:"Sp&auml;testens nach 25 Tagen updaten (hierfür sollte crond noch aktiviert sein)." en:"Force update after 25 days (you should also enable crond).")</label>
+<input id="u1" type="checkbox" name="force_update" value="yes"$force_update_chk><label for="u1">$(lang de:"Sp&auml;testens nach 25 Tagen updaten (hierf&uuml;r sollte crond noch aktiviert sein)." en:"Force update after 25 days (you should also enable crond).")</label>
 </p>
 EOF
 
