@@ -18,12 +18,13 @@ EOF
 	foreach my $printer (sort keys %{$printers}) {
 		my $PRINTER = $printer;
 		$PRINTER =~ tr/a-z-/A-Z_/;
-		my $models = join(", ", @{${$printers}{$printer}});
+		my $models = join("\n\t\t\t", @{${$printers}{$printer}});
 		print <<EOF
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_$PRINTER
 		bool "$printer"
 		help
-			Supported models: $models
+			Supported models:
+			$models
 EOF
 	}
 
