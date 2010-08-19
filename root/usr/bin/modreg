@@ -38,6 +38,7 @@ case $1 in
 	extra)
 		replace "^$2|.*|$5\$" /mod/etc/reg/extra.reg "$2|$3|$4|$5"
 		rm -f /mod/var/cache/extras
+		touch /mod/var/cache/menu.stale
 		;;
 	file)
 		if [ $# -lt 6 ]; then

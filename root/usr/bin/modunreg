@@ -23,6 +23,7 @@ case $1 in
 	extra)
 		delete "^$2|.*|${3:-[^|]*}\$" /mod/etc/reg/extra.reg
 		rm -f /mod/var/cache/extras
+		touch /mod/var/cache/menu.stale
 		;;
 	file)
 		delete "^${2}|${3:-[^|]*}|" /mod/etc/reg/file.reg
