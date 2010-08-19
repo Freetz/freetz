@@ -26,7 +26,7 @@ start() {
 }
 
 stop() {
-	kill $(ps | grep pp[t]pd | grep -vE "rc.pp|pppd" | sed 's/^ *//g' | cut -f1 -d" ")
+	kill $(ps | grep pp[t]pd | grep -vE "rc.pp|pppd" | sed 's/^[^0-9]*\([0-9]*\).*/\1/')
 }
 
 case $1 in
