@@ -67,6 +67,8 @@ modreg_file() {
 }
 
 register() {
+	modreg cgi mod "Freetz"
+
 	modreg_file  .profile    0
 	modreg_file  hosts       1
 	modreg_file  modules     0

@@ -130,6 +130,19 @@ new_menu_package_tree() {
 	new_menu_tree "$p/$pkg"
 }
 
+new_menu_add_pkg_item() {
+	local type=$1 pkg=$2 id=$3 title=$4
+	local a_href a_id=$(_cgi_id "$type:$pkg${id:+/$id}") a_class=$type
+	case $type in
+		conf) a_href=$(href cgi "$pkg") ;;
+		*)    a_href=$(href "$type" "$pkg" "$id") ;;
+	esac
+	echo "<li><a id='$a_id' class='$a_class' href='$a_href'>$(html "$title")</a></li>" >> "$p/$pkg.sub"
+	if [ ! -e "$p/$pkg.index" ]; then
+		echo "$a_href" > "$p/$pkg.index"
+	fi
+}
+
 new_menu_prepare() {
 	local dir=$1
 	local p="$dir/pkg"
@@ -142,14 +155,9 @@ new_menu_prepare() {
 		local pkg title
 		while IFS='|' read -r pkg title; do
 			echo "title=$(shell_escape "$title")" >> "$p/$pkg.meta"
-			if [ ! -e "$p/$pkg.index" ]; then
-			    echo "$(href cgi "$pkg")" > "$p/$pkg.index"
-			fi
-			echo "<li><a id='$(_cgi_id "conf:$pkg")' class='conf' href='$(href cgi "$pkg")'>$(lang de:"Einstellungen" en:"Settings")</a></li>" > "$p/$pkg.sub"
+			new_menu_add_pkg_item conf "$pkg" "" "$title"
 		done < /mod/etc/reg/cgi.reg
 	fi
-	echo "<li><a id='$(_cgi_id "conf:mod")' class='conf' href='$(href mod conf)'>$(lang de:"Einstellungen" en:"Settings")</a></li>" > "$p/mod.sub"
-	echo "$(href mod conf)" > "$p/mod.index"
 
 	if [ -r /mod/etc/reg/file.reg ]; then
 		local pkg id title sec def _
@@ -158,25 +166,18 @@ new_menu_prepare() {
 			echo "$_|$pkg|$id"
 		done  < /mod/etc/reg/file.reg | sort |
 		while IFS='|' read -r title sec def pkg id; do
-			echo "<li><a id='$(_cgi_id "file:$pkg/$id")' class='file' href='$(href file "$pkg" "$id")'>$(html "$title")</a></li>" >> "$p/$pkg.sub"
-			if [ ! -e "$p/$pkg.index" ]; then
-			    echo "$(href file "$pkg" "$id")" > "$p/$pkg.index"
-			fi
+			new_menu_add_pkg_item file "$pkg" "$id" "$title"
 		done
 	fi
 
 	if [ -r /mod/etc/reg/extra.reg ]; then
 		while IFS='|' read -r pkg title sec cgi; do
 			[ -z "$title" ] && continue
-			echo "<li><a id='$(_cgi_id "extra:$pkg/$cgi")' class='extra' href='$(href extra "$pkg" "$cgi")'>$(html "$title")</a></li>" >> "$p/$pkg.sub"
-			if [ ! -e "$p/$pkg.index" ]; then
-			    echo "$(href extra "$pkg" "$cgi")" > "$p/$pkg.index"
-			fi
+			new_menu_add_pkg_item extra "$pkg" "$cgi" "$title"
 		done < /mod/etc/reg/extra.reg
 	fi
 
 	# hard-coded packages; FIXME
-	echo "title=Freetz" >> "$p/mod.meta"
 	if [ -e "$p/authorized-keys.sub" ]; then
 		echo "title=SSH" >> "$p/authorized-keys.meta"
 	fi
@@ -195,9 +196,7 @@ EOF
 	{
 		if [ -r /mod/etc/reg/status.reg ]; then
 			local pkg title cgi
-			cat << EOF
-<li><a id="daemons" href="$(href mod daemons)">$(lang de:"Dienste" en:"Services")</a></li>
-EOF
+			echo "<li><a id='daemons' href='$(href mod daemons)'>$(lang de:"Dienste" en:"Services")</a></li>"
 			while IFS='|' read -r pkg title cgi; do
 				echo "<li><a id='$(_cgi_id "status:$pkg/$cgi")' href='$(href status "$pkg" "$cgi")'>$(html "$title")</a></li>"
 			done < /mod/etc/reg/status.reg
@@ -229,9 +228,7 @@ EOF
 new_menu_prepare_package() {
 	local pkg=$1
 	title=$pkg
-	if [ -r "$p/$pkg.meta" ]; then
-		source "$p/$pkg.meta"
-	fi
+	[ -r "$p/$pkg.meta" ] && source "$p/$pkg.meta"
 	echo -n "<a id='$(_cgi_id "pkg:$pkg")' class='package' href='$(cat "$p/$pkg.index")'>$(html "$title")</a>"
 }
 

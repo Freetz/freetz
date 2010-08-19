@@ -33,7 +33,6 @@ usage() {
 case $1 in
 	cgi)
 		replace "^$2|" /mod/etc/reg/cgi.reg "$2|$3"
-		rm -f /mod/var/cache/menu_packages
 		touch /mod/var/cache/menu.stale
 		;;
 	extra)
@@ -76,13 +75,11 @@ case $1 in
 			esac
 			replace "^$pkg|$id|" /mod/etc/reg/file.reg "$pkg|$id|$title|$sec_level|$deffile"
 		fi
-		rm -f /mod/var/cache/menu_settings
 		touch /mod/var/cache/menu.stale
 		;;
 	status)
 		cgi=${4:-status}
 		replace "^$2|.*|$cgi\$" /mod/etc/reg/status.reg "$2|$3|$cgi"
-		rm -f /mod/var/cache/menu_status
 		touch /mod/var/cache/menu.stale
 		;;
 	daemon)
