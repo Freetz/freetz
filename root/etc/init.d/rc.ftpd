@@ -17,7 +17,7 @@ AVM_FTP_ENABLED=$(echo usbhost.ftp_server_enabled | usbcfgctl -s)
 WEBDAVCONTROL="/etc/webdav_control"
 INETD_CONFIG_DIR="/var/mod/etc/inetd"
 INETD_FTPD_CONFIG="$INETD_CONFIG_DIR/ftpd.inetd"
-
+INETD_RC_SCRIPT="/etc/init.d/rc.inetd"
 
 if [ -z "$FTPD_INETD" ]; then
 	[ -x /bin/inetdctl ] && FTPD_INETD="yes"
@@ -53,7 +53,7 @@ set_parameters() {
 			[ "$CONFIG_IPV6" = "y" ] && local ipv46="tcp6" || local ipv46="tcp"
 			[ ! -d $INETD_CONFIG_DIR ] && mkdir -p $INETD_CONFIG_DIR
 			echo "$FTPD_PORT stream $ipv46 nowait root $webdav_wrapper ${BINARY} ${BINARY} ${ftp_options} -h ${ftp_host}" > ${INETD_FTPD_CONFIG}
-			[ -x "$inetd_rc_script" ] && $inetd_rc_script config AVM-ftpd || killall -HUP inetd
+			[ -x "$INETD_RC_SCRIPT" ] && $INETD_RC_SCRIPT config AVM-ftpd >/dev/null || killall -HUP inetd
 		fi
 	fi
 	return $?
@@ -117,7 +117,7 @@ stop() {
 		if [ "$daemonname" == "$DAEMON" ]; then
 			echo -n "(disabling over inetd) ... "
 			rm -f ${INETD_FTPD_CONFIG} > /dev/null 2>&1
-			[ -x "$inetd_rc_script" ] && $inetd_rc_script config AVM-ftpd || killall -HUP inetd
+			[ -x "$INETD_RC_SCRIPT" ] && $INETD_RC_SCRIPT config AVM-ftpd >/dev/null || killall -HUP inetd
 			status=$?
 		fi
 	else
