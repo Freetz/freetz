@@ -31,7 +31,7 @@ stat_static() {
 	stat_begin
 
 	if [ -r "$REG" ]; then
-	    	# order by description
+		# order by description
 		while IFS='|' read -r daemon description rest; do
 			echo "$description|$daemon|$rest"
 		done < "$REG" | sort |

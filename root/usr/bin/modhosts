@@ -39,12 +39,12 @@ case $1 in
 
 		echo "nameserver 127.0.0.1" > /etc/resolv.conf
 		_domain=$(echo $_hostname |cut -d "." -f2-)
- 		[ -n "$_domain" ] && echo "domain $_domain" >> /etc/resolv.conf
+		[ -n "$_domain" ] && echo "domain $_domain" >> /etc/resolv.conf
 
 		rm -f /var/tmp/hosts
 		rm -f /var/tmp/ethers
 
- 		touch /var/tmp/hosts
+		touch /var/tmp/hosts
 		touch /var/tmp/ethers
 
 		[ -r /tmp/flash/exhosts ] && mv /tmp/flash/exhosts /tmp/flash/mod/hosts
@@ -61,9 +61,9 @@ case $1 in
 				done
 		fi
 
- 		if ! egrep "^127.0.0.1[[:space:]]" /var/tmp/hosts -q 2>/dev/null; then
- 			echo -e "127.0.0.1\tlocalhost" >> /var/tmp/hosts
- 		fi
+		if ! egrep "^127.0.0.1[[:space:]]" /var/tmp/hosts -q 2>/dev/null; then
+			echo -e "127.0.0.1\tlocalhost" >> /var/tmp/hosts
+		fi
 
 		ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
 		case $ethmode in
@@ -89,8 +89,8 @@ case $1 in
 		[ -z "$ipaddr" ] && ipaddr=$(ar7ipaddr $section $fallback)
 		[ -z "$ipaddr" ] && ipaddr=169.254.1.1
 		if ! egrep "^$ipaddr[[:space:]]" /var/tmp/hosts -q 2>/dev/null; then
- 			echo -e "$ipaddr\tfritz.box\t$_hostname" >> /var/tmp/hosts
- 		fi
+			echo -e "$ipaddr\tfritz.box\t$_hostname" >> /var/tmp/hosts
+		fi
 		;;
 	*)
 		echo "Usage: $0 [load]" 1>&2

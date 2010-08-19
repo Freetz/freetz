@@ -25,11 +25,11 @@ pre_end() {
 	echo "</pre>"
 }
 html_do() {
-    local exit
-    eval $({
-        { "$@"; echo exit=$? >&4; } | html
-    } 4>&1 >&9)
-    return $exit
+	local exit
+	eval $({
+		{ "$@"; echo exit=$? >&4; } | html
+	} 4>&1 >&9)
+	return $exit
 } 9>&1
 
 do_exit() {
@@ -66,7 +66,7 @@ if $downgrade; then
 	echo "<p>$(lang
 		de:"Downgrade vorbereiten"
 		en:"Prepare downgrade"
-	) ...</p>"
+	) ... </p>"
 	pre_begin
 	/usr/bin/prepare-downgrade | html
 	pre_end
@@ -77,7 +77,7 @@ if [ "$stop" = stop_avm ]; then
 	echo "<p>$(lang
 		de:"AVM-Dienste anhalten, Teil 1"
 		en:"Stopping AVM services, part 1"
-	) (prepare_fwupgrade start) ...</p>"
+	) (prepare_fwupgrade start) ... </p>"
 	pre_begin
 	prepare_fwupgrade start 2>&1 | html
 	pre_end
@@ -88,7 +88,7 @@ if [ "$stop" = semistop_avm ]; then
 	echo "<p>$(lang
 	    de:"Einige der AVM-Dienste anhalten, Teil 1"
 	    en:"Stopping some of the AVM services, part 1"
-	) (prepare_fwupgrade start_from_internet) ...</p>"
+	) (prepare_fwupgrade start_from_internet) ... </p>"
 	pre_begin
 	prepare_fwupgrade start_from_internet 2>&1 | html
 	pre_end
@@ -98,7 +98,7 @@ fi
 echo "<p>$(lang
 	de:"Firmware-Archiv extrahieren"
 	en:"Extracting firmware archive"
-) ...</p>"
+) ... </p>"
 pre_begin
 untar() {
 	tar -f "$1" -C / -xv 2>&1
@@ -116,7 +116,7 @@ if [ "$stop" != nostop_avm ]; then
 	echo "<p>$(lang
 		de:"AVM-Dienste anhalten, Teil 2"
 		en:"Stopping AVM services, part 2"
-	) (prepare_fwupgrade end) ...</p>"
+	) (prepare_fwupgrade end) ... </p>"
 	pre_begin
 	prepare_fwupgrade end 2>&1 | html
 	pre_end
@@ -129,7 +129,7 @@ cat << EOF
 <p>$(lang
 	de:"Ausführen des Firmware-Installationsskripts"
 	en:"Executing firmware installation script"
-) /var/install ...</p>
+) /var/install ... </p>
 EOF
 if [ ! -x /var/install ]; then
 	status "failed" "$(lang
@@ -171,8 +171,8 @@ case $result in
 esac
 
 status "done" "$(lang
-    de:"Rückgabewert des Installationsskripts"
-    en:"Installation script return code"
+	de:"Rückgabewert des Installationsskripts"
+	en:"Installation script return code"
 ): $result ($result_txt)"
 
 echo "<p>$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")</p>"

@@ -16,8 +16,8 @@ stat_button reboot '$(lang de:"Reboot" en:"Reboot")'
 echo "<h1>$(lang de:"Nicht unterst&uuml;tzte &Auml;nderungen" en:"Unauthorized changes")</h1>"
 cat << EOF
 <p>$(lang
-    de:"Diese Warnung l&auml;sst sich hier zur&uuml;cksetzen."
-    en:"This warning can be reset here."
+	de:"Diese Warnung l&auml;sst sich hier zur&uuml;cksetzen."
+	en:"This warning can be reset here."
 )</p>
 EOF
 

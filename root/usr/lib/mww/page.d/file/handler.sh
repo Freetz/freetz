@@ -9,8 +9,8 @@ TITLE=$3 sec=$4 def=$5
 
 if [ $# -eq 0 ]; then
 	cgi_error "$(lang
-	    de:"Datei '$ID' des Pakets '$PACKAGE' ist unbekannt."
-	    en:"File '$ID' of package '$PACKAGE' is unknown."
+		de:"Datei '$ID' des Pakets '$PACKAGE' ist unbekannt."
+		en:"File '$ID' of package '$PACKAGE' is unknown."
 	)</p>"
 	exit
 fi
@@ -22,7 +22,7 @@ TEXT_ROWS=18
 [ -r "$def" ] && . "$def"
 
 allowed() {
-    ! [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$sec" -o "$CONFIG_SAVE" == "false" ]
+	! [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$sec" -o "$CONFIG_SAVE" == "false" ]
 }
 print_access_denied() {
 	echo '<div style="color: #800000;">$(lang

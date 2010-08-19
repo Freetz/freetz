@@ -35,7 +35,7 @@ print_entry() {
 		if [ "$name" = "$open_entry" ]; then
 			echo "<small>&gt; $sub</small><br>"
 		else
-		    	print_entry "$type" "${name}_$sub"
+			print_entry "$type" "${name}_$sub"
 		fi
 	else
 		echo "$name<br>"
@@ -64,7 +64,7 @@ read_entries() {
 # Entries with the same $type shall have the same $sortkey.
 #
 preprocess_conf() {
-    	local file=$1
+	local file=$1
 	local lowercase="y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/;"
 	sed -nr "
 		s/=y$//
@@ -148,7 +148,7 @@ format_conf() {
 # Put everything together
 #
 if [ -r /etc/.config ]; then
-#    	echo "<pre>"; preprocess_conf /etc/.config | html; echo "</pre>"
+#	echo "<pre>"; preprocess_conf /etc/.config | html; echo "</pre>"
 	preprocess_conf /etc/.config | format_conf
 fi
 

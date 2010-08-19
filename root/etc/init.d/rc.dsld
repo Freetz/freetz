@@ -18,7 +18,7 @@ start() {
 		DAEMON_CMD="$(cat $TMPFILE_CMD)"
 	else
 		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
-		 	DAEMON_CMD=" $(dsld -? 2>&1 | grep "igd" | sed 's/^[ \t]*//' | cut -c 1-3)"
+			DAEMON_CMD=" $(dsld -? 2>&1 | grep "igd" | sed 's/^[ \t]*//' | cut -c 1-3)"
 		fi
 		DAEMON_CMD=" -i$DAEMON_CMD"
 		echo "$DAEMON_CMD" > $TMPFILE_CMD

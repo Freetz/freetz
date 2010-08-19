@@ -39,13 +39,13 @@ function CheckInput(form) {
 <h1>$(lang de:"Firmware hochladen" en:"Upload firmware")</h1>
 
 <p>$(lang
-    de:"Im ersten Schritt ist ein Firmware-Image zum Upload auszuw&auml;hlen.
+	de:"Im ersten Schritt ist ein Firmware-Image zum Upload auszuw&auml;hlen.
 Dieses Image wird auf die Box geladen und dort entpackt. Anschlie&szlig;end
 wird <i>/var/install</i> aufgerufen. Falls das erfolgreich ist, kann das Update
 mit einem Klick auf den Button &quot;Neustart&quot; ausgef&uuml;hrt werden. Bei
 Auswahl des Men&uuml;punkts f&uuml;r Remote-Update wird die Box nach 30 Sekunden
 automatisch neu gestartet."
-    en:"First you are encouraged to select a firmware image for uploading. This image
+	en:"First you are encouraged to select a firmware image for uploading. This image
 will be loaded to and extracted on the box. Subsequently, <i>/var/install</i>
 will be called. If successful, the update can be started by clicking the button
 &quot;Reboot&quot;. If &quot;remote firmware update&quot; is selected, the box restarts

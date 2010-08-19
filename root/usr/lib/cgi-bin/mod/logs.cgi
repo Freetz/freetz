@@ -23,9 +23,9 @@ do_log() {
 }
 
 if [ -n "$PATH_INFO" ]; then
-    	class="full"
-    	do_log() {
-	    	[ "$PATH_INFO" = "$1" ] && show_log "$1"
+	class="full"
+	do_log() {
+		[ "$PATH_INFO" = "$1" ] && show_log "$1"
 	}
 fi
 

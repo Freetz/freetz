@@ -213,7 +213,7 @@ EOF
 		fi
 		echo "$title|$pkg"
 	done | tr '[:upper:]' '[:lower:]' | sort |
-	    cut -d"|" -f2 >> "$dir/packages"
+		cut -d"|" -f2 >> "$dir/packages"
 
 	echo "<a id='status' href='$(href mod status)'>Status</a>" > "$dir/status"
 	echo "<a id='system' href='$(href mod system)'>System</a>" > "$dir/system"
@@ -221,7 +221,7 @@ EOF
 	while read -r pkg; do
 		new_menu_prepare_package "$pkg" > "$p/$pkg"
 	done < "$dir/packages"
-	
+
 	rm -f "$p"/*.meta "$p"/*.index
 }
 

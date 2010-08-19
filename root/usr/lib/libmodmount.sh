@@ -20,8 +20,8 @@ find_mnt_name ()
 
 mount_fs ()
 {
- # mount according to type of filesystem
- # return exit code: true - all went well; other - something went wrong
+# mount according to type of filesystem
+# return exit code: true - all went well; other - something went wrong
 	local dev_node=$1 # device node
 	local mnt_path=$2 # mount path
 	[ $# -ge 3 ] && local rw_mode=$3 || local rw_mode=rw # read/write mode
@@ -98,7 +98,7 @@ do_mount ()
 		mnt_path=$FTPDIR/$mnt_name
 		if [ ! -d $mnt_path ]
 		then
-			echo "Mounting $mnt_name to device $mnt_dev ..." > /dev/ttyS0
+			echo "Mounting $mnt_name to device $mnt_dev ... " > /dev/ttyS0
 			mkdir -p $mnt_path
 			break
 		else

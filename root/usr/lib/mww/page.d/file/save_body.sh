@@ -1,7 +1,7 @@
 echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings"):</p>"
 
 if ! allowed; then
-    	print_access_denied
+	print_access_denied
 else
 	echo -n "<pre class='log'>"
 

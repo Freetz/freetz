@@ -66,13 +66,13 @@ case $1 in
 #
 			oldstyle_id="${pkg}__$id"
 			case $desc in
-			    /*) deffile=$desc ;;
-			    *)
-				deffile="/tmp/flash/$pkg/$desc.def"
-				if [ ! -r "$deffile" ]; then
-				    deffile="/mod/etc/default.$pkg/$desc.def"
-				fi
-				;;
+				/*) deffile=$desc ;;
+				*)
+					deffile="/tmp/flash/$pkg/$desc.def"
+					if [ ! -r "$deffile" ]; then
+						deffile="/mod/etc/default.$pkg/$desc.def"
+					fi
+					;;
 			esac
 			replace "^$pkg|$id|" /mod/etc/reg/file.reg "$pkg|$id|$title|$sec_level|$deffile"
 		fi
