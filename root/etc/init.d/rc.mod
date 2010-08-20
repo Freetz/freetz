@@ -16,7 +16,9 @@ start() {
 
 	# Basic Packages
 	for pkg in crond swap telnetd webcfg websrv dsld ftpd multid; do
-		rc="/etc/init.d/rc.$pkg"
+		local pkg_default=/etc/default.$pkg
+		[ -d "$pkg_default" -a ! -e "/mod${pkg_default}" ] && ln -s "$pkg_default" "/mod${pkg_default}"
+		local rc="/etc/init.d/rc.$pkg"
 		[ -e "/mod$rc" ] || ln -s "$rc" "/mod$rc"
 	done
 
