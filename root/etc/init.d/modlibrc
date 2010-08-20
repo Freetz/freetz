@@ -180,6 +180,7 @@ modlib_check_port()
 #	use CONF_ENABLED for other variablename with manual/automatic/inetd in .cfg-file
 modlib_check_running()
 {
+	[ -n "$FORCE_STATUS" ] && return $FORCE_STATUS
 	[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:]- [:upper:]_))" == "inetd" ] && return 5
 	if [ -n "$DAEMON_CHECK" ]; then
 		for DAEMON_single in $DAEMON_CHECK; do
@@ -267,6 +268,17 @@ modlib_start()
 	return 1
 }
 
+# modlib_force_start
+#   forces start of the daemon
+modlib_force_start()
+{
+	if [ -x /etc/init.d/rc.inetd ]; then
+		config
+		/etc/init.d/rc.inetd config $DAEMON
+	fi
+	modlib_start
+}
+
 # modlib_stop
 #   stops the daemon
 #	kills daemon with "stop" of rc.$DAEMON if available
@@ -319,12 +331,33 @@ modlib_stop()
 	esac
 }
 
+# modlib_force_stop
+#   forces stop of the daemon
+modlib_force_stop() {
+	echo -n "Stopping ${DAEMON_LONG_NAME} forced ... "
+	FORCE_STATUS="0"
+	modlib_stop >/dev/null
+	if [ -e /etc/default.$DAEMON/*.inetd ]; then
+		FORCE_STATUS="5"
+		modlib_stop >/dev/null
+	fi
+	FORCE_STATUS=""
+	echo 'done.'
+}
+
 # modlib_restart
 #   restarts the daemon
 modlib_restart()
 {
 	modlib_stop
 	modlib_start
+}
+
+# modlib_force_restart
+#   forces restart of the daemon
+modlib_force_restart() {
+	modlib_force_stop
+	modlib_force_start
 }
 
 # modlib_reload

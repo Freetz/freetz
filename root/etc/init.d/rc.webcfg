@@ -1,6 +1,7 @@
 #!/bin/sh
 
-DAEMON=httpd
+DAEMON=webcfg
+DAEMON_BIN=httpd
 DAEMON_LONG_NAME="Freetz webinterface"
 PID_FILE=/var/run/webcfg.pid
 CONF_NAME=mod
@@ -12,7 +13,7 @@ config() {
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf
 		else
-			/mod/etc/default.mod/${DAEMON}_conf
+			/mod/etc/default.${DAEMON}/${DAEMON}_conf
 		fi
 
 		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
@@ -42,6 +43,9 @@ case $1 in
 	restart)
 		modlib_restart
 		;;
+	force-restart)
+		modlib_force_restart
+		;;
 	status)
 		modlib_status
 		;;
@@ -49,7 +53,7 @@ case $1 in
 		config
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|force-restart|status|config]" 1>&2
 		exit 1
 		;;
 esac

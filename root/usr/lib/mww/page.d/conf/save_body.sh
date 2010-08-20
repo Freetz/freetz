@@ -29,12 +29,10 @@ apply_changes() {
 	local package=$2
 	if [ "$package" = mod ]; then
 		start_stop $startORstop telnetd "$OLDSTATUS_telnetd"
-		#2DO: temporary fix to save "Freetz"-Settings
-		#start_stop $startORstop webcfg "$OLDSTATUS_webcfg"
 		start_stop $startORstop swap "$OLDSTATUS_swap"
-		#2DO: temporary fix to save "Freetz"-Settings
 		if [ "$startORstop" == "start" -a "$OLDSTATUS_webcfg" != "stopped" ]; then
-			echo "Please restart your FB to activate new settings of the webif ..."
+			echo "$(lang de:"Starte das Freetz-Webinterface in 9 Sekunden neu" en:"Restarting the Freetz webinterface in 9 seconds") ..."
+			(sleep 9 && /etc/init.d/rc.webcfg force-restart)&
 		fi
 		/usr/lib/mod/reg-status reload
 	else
