@@ -3,10 +3,10 @@ default_password_set() {
 }
 
 if default_password_set; then
-	echo '<p class="warning">$(lang
+	print_warning '$(lang
 		de:"Standard-Passwort gesetzt.
 			<a href=\"/cgi-bin/passwd.cgi\">Bitte &auml;ndern.</a> "
 		en:"Default password set.
 			<a href=\"/cgi-bin/passwd.cgi\">Please change.</a>"
-	)</p>'
+	)'
 fi
