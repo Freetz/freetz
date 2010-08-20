@@ -12,9 +12,9 @@ if [ "$sec_level" -gt "$3" ]; then
 	echo '<h1>$(lang de:"Zusatz-Skript" en:"Additional script")</h1>'
 	echo '<div style="color: #800000;">$(lang
 		de:"Dieses Zusatz-Skript in der aktuellen Sicherheitsstufe
-		    nicht verf&uuml;gbar!" 
+			nicht verf&uuml;gbar!" 
 		en:"This script is not available at the current security
-		    level!"
+			level!"
 		)</div>'
 	echo '<p>'
 	back_button --title="$(lang de:"Zu den Extras" en:"Goto extras")" mod extras

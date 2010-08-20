@@ -7,26 +7,26 @@ let _width=$_cgi_width-254
 divstyle="style='margin-top:6px;'"
 
 sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
- echo -n '<div '$divstyle'><b>$(lang de:"Boxtyp" en:"Box type"):</b> '$FREETZ_INFO_BOXTYPE'&nbsp;&nbsp;'
- echo -n '<b>$(lang de:"AVM-Firmwareversion:" en:"AVM firmware version:")</b> '$FREETZ_INFO_FIRMWAREVERSION'&nbsp;&nbsp;'
- echo '<b>$(lang de:"Sprache:" en:"Language:")</b> '$FREETZ_INFO_LANG'</div>'
- if [ -r /proc/version ]; then
+echo -n '<div '$divstyle'><b>$(lang de:"Boxtyp" en:"Box type"):</b> '$FREETZ_INFO_BOXTYPE'&nbsp;&nbsp;'
+echo -n '<b>$(lang de:"AVM-Firmwareversion:" en:"AVM firmware version:")</b> '$FREETZ_INFO_FIRMWAREVERSION'&nbsp;&nbsp;'
+echo '<b>$(lang de:"Sprache:" en:"Language:")</b> '$FREETZ_INFO_LANG'</div>'
+if [ -r /proc/version ]; then
 	_kernelversion=$(cat /proc/version | sed -e 's/Linux version //;s/#.*//')
- else
+else
 	_kernelversion=""
- fi
- if [ ! -z "$_kernelversion" ]; then
+fi
+if [ ! -z "$_kernelversion" ]; then
 	echo '<div '$divstyle'><b>Kernel$(lang de:"version" en:" version"):</b> '$_kernelversion'</div>'
- fi
- echo '<div '$divstyle'><b>FREETZ$(lang de:"-Version" en:" version"):</b> '$FREETZ_INFO_SUBVERSION'</div>'
+fi
+echo '<div '$divstyle'><b>FREETZ$(lang de:"-Version" en:" version"):</b> '$FREETZ_INFO_SUBVERSION'</div>'
 date_de_format=$(echo "$FREETZ_INFO_MAKEDATE" \
 		| sed -re 's/([0-9]{4})([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})([0-9]{2})(.*)/\3.\2.\1 \4\:\5\:\6/')
- echo '<div '$divstyle'><b>$(lang de:"Erstellungsdatum" en:"Creation date"):</b> '$date_de_format'</div>'
- echo '<div '$divstyle'><b>$(lang de:"Urspr&uuml;nglicher Dateiname" en:"Initial file name"):</b><br>'$FREETZ_INFO_IMAGE_NAME'</div>'
- if [ ! -z "$FREETZ_INFO_COMMENT" ]; then
+echo '<div '$divstyle'><b>$(lang de:"Erstellungsdatum" en:"Creation date"):</b> '$date_de_format'</div>'
+echo '<div '$divstyle'><b>$(lang de:"Urspr&uuml;nglicher Dateiname" en:"Initial file name"):</b><br>'$FREETZ_INFO_IMAGE_NAME'</div>'
+if [ ! -z "$FREETZ_INFO_COMMENT" ]; then
 	echo '<div '$divstyle'><b>$(lang de:"Benutzerdefinierte Informationen" en:"User defined information"):</b><br>'
 	echo "$FREETZ_INFO_COMMENT</div>"
- fi
+fi
 sec_end
 
 print_entry() {

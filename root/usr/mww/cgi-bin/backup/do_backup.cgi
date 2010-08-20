@@ -25,7 +25,7 @@ mkdir $BACKUP_DIR
 
 # Create temporary copies of those character streams in /var/flash
 for file in $(ls /var/flash); do
-  cat /var/flash/$file > $BACKUP_DIR/$file
+	cat /var/flash/$file > $BACKUP_DIR/$file
 done
 
 # Create backup and send it to client via stdout

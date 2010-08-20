@@ -86,8 +86,8 @@ fi
 
 if [ "$stop" = semistop_avm ]; then
 	echo "<p>$(lang
-	    de:"Einige der AVM-Dienste anhalten, Teil 1"
-	    en:"Stopping some of the AVM services, part 1"
+		de:"Einige der AVM-Dienste anhalten, Teil 1"
+		en:"Stopping some of the AVM services, part 1"
 	) (prepare_fwupgrade start_from_internet) ... </p>"
 	pre_begin
 	prepare_fwupgrade start_from_internet 2>&1 | html

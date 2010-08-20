@@ -123,9 +123,9 @@ new_menu_tree() {
 new_menu_package_tree() {
 	local pkg=$1 sub
 	if [ "$sub" = "pkg:$pkg" ]; then
-	    sub=$pkg
+		sub=$pkg
 	else
-	    sub=
+		sub=
 	fi
 	new_menu_tree "$p/$pkg"
 }

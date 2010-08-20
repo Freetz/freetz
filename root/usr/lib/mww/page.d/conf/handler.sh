@@ -13,7 +13,7 @@ CGI_REG=/mod/etc/reg/cgi.reg
 [ -e "$CGI_REG" ] || touch "$CGI_REG"
 
 if [ "$PACKAGE" = mod ]; then
-    	PACKAGE_TITLE='$(lang de:"Einstellungen" en:"Settings")'
+	PACKAGE_TITLE='$(lang de:"Einstellungen" en:"Settings")'
 else
 	OIFS=$IFS; IFS="|"
 	set -- $(grep "^$PACKAGE|" "$CGI_REG")

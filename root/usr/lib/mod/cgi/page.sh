@@ -89,21 +89,21 @@ EOF
 }
 
 cgi_end() {
-skin_body_end
-cat << EOF
+	skin_body_end
+	cat << EOF
 </body>
 </html>
 EOF
 }
 
 sec_begin() {
-    local title=$1 id=$2
-    echo "<div class='section' ${id:+ id='$id'}>"
-    skin_sec_begin "$title"
+	local title=$1 id=$2
+	echo "<div class='section' ${id:+ id='$id'}>"
+	skin_sec_begin "$title"
 }
 sec_end() {
-    skin_sec_end
-    echo "</div>"
+	skin_sec_end
+	echo "</div>"
 }
 
 #

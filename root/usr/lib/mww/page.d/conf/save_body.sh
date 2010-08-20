@@ -51,7 +51,7 @@ rc_status() {
 
 default=false
 case $QUERY_STRING in
-    	*default*) default=true ;;
+	*default*) default=true ;;
 esac
 
 package=$PACKAGE
@@ -70,9 +70,9 @@ back="mod status"
 unset OLDSTATUS_telnetd OLDSTATUS_webcfg OLDSTATUS_swap
 
 if $default; then
-    hook=def
+	hook=def
 else
-    hook=save
+	hook=save
 fi
 
 # default functions for $package.save
