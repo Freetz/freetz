@@ -1,12 +1,8 @@
 #!/bin/sh
 
 DAEMON=quagga
+DAEMON_CHECK=zebra
 . /etc/init.d/modlibrc
-
-running() {
-	pidof zebra >/dev/null 2>&1
-	return $?
-}
 
 case $1 in
 	""|load|start|restart)
@@ -31,39 +27,22 @@ esac
 start() {
 	echo -n 'Starting quagga:'
 
-	if running; then
-		echo ' already running.'
-		return 1
-	fi
-	
 	BE_QUIET='yes' /etc/init.d/quagga start
 	exitval=$?
-	
+
 	if [ "$exitval" -eq 0 ]; then
 		echo ', done.'
 	else
 		echo ', failed.'
-		exit $exitval
+		return $exitval
 	fi
 }
 
 stop() {
-	echo -n 'Stopping quagga:'
-
-	if ! running; then
-		echo ' not running.'
-		return 1
-	fi
-
 	BE_QUIET='yes' /etc/init.d/quagga stop
 	exitval=$?
-
-	if [ "$exitval" -eq 0 ]; then
-		echo ', done.'
-	else
-		echo ', failed.'
-		exit $exitval
-	fi
+	echo -n ', '
+	return $exitval
 }
 
 case $1 in
@@ -77,25 +56,19 @@ case $1 in
 	unload)
 		modunreg file quagga
 		modunreg cgi quagga
-		stop
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if ! running; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

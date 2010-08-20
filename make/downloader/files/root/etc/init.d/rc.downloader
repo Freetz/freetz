@@ -1,31 +1,22 @@
 #!/bin/sh
 
 DAEMON=downloader
+DAEMON_CHECK=downloader
 . /etc/init.d/modlibrc
 
 ERRFILE=/var/tmp/downerr
 
-running() {
-	pidof downloader >/dev/null 2>&1
-	return $?
-}
-
 if [ "$DOWNLOADER_DEBUG" = "yes" ]; then
 	LOGFILE=/var/log/downloader.log
-	[ -e $LOGFILE ] && rm -f $LOGFILE > /dev/null 2>&1 
+	[ -e $LOGFILE ] && rm -f $LOGFILE > /dev/null 2>&1
 else
 	LOGFILE=/dev/null
 fi
 
 start() {
 	echo "Starting $DAEMON ..."
-	
-	if running; then
-		echo 'already running.'
-		return 1
-	fi
-	
-	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1 
+
+	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1
 	echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
 		[ -n "$downfile" ]
 		echo -n "Download: $downfile ... "
@@ -37,9 +28,9 @@ start() {
 			echo 'failed.'
 			echo $ERRORVAL > $ERRFILE
 		fi
-	done 
+	done
 	if [ -e $ERRFILE ]; then
-		rm $ERRFILE > /dev/null 2>&1 
+		rm $ERRFILE > /dev/null 2>&1
 		echo "Download failed."
 		exit $ERRORVAL
 	else
@@ -48,25 +39,11 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping $DAEMON ... "
-	
-	if ! running; then
-		echo 'not running.'
-		return 1
-	fi
-	
 	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 remove() {
-	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1 
+	[ -e $ERRFILE ] && rm -f $ERRFILE > /dev/null 2>&1
 	echo "$DAEMON: Remove all downloaded files ..."
 	echo "$DOWNLOADER_FILES" | grep -v "^#" | while read -r downfile; do
 		[ -n "$downfile" ]
@@ -79,9 +56,9 @@ remove() {
 			echo 'failed.'
 			echo $ERRORVAL > $ERRFILE
 		fi
-	done 
+	done
 	if [ -e $ERRFILE ]; then
-		rm $ERRFILE > /dev/null 2>&1 
+		rm $ERRFILE > /dev/null 2>&1
 		echo "Remove failed."
 		exit $ERRORVAL
 	else
@@ -101,28 +78,22 @@ case $1 in
 		modunreg cgi 'downloader'
 		modunreg extra $DAEMON 'downremover'
 		modunreg extra $DAEMON 'downlog'
-		stop
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	remove)
 		remove
 		;;
 	status)
-		if ! running; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|remove|status]" 1>&2

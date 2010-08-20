@@ -2,20 +2,11 @@
 
 DAEMON=bluez-utils
 DAEMON_LONG_NAME=bluetooth
+DAEMON_CHECK=hcid
 . /etc/init.d/modlibrc
-
-running() {
-	pidof hcid >/dev/null 2>&1
-	return $?
-}
 
 start() {
 	echo -n "Starting $DAEMON_LONG_NAME ... "
-
-	if running; then
-		echo 'already running.'
-		return 1
-	fi
 
 	# create PIN-File
 	echo $BLUEZ_UTILS_PIN >/tmp/bluetooth/pin
@@ -44,7 +35,7 @@ start() {
 
 	# start daemons
 	hcid
-	exitval1=$?	
+	exitval1=$?
 
 	if [ "$BLUEZ_UTILS_SDPD_START" = "yes" ]; then
 		echo -n "starting sdpd ... "
@@ -71,9 +62,9 @@ start() {
 
 	if [ "$BLUEZ_UTILS_PAND_START" = "yes" ]; then
 		echo -n "starting sdptool (sdptool "$BLUEZ_UTILS_PAND_SDPDTOOL_OPTIONS") ... "
-		sdptool $BLUEZ_UTILS_PAND_SDPDTOOL_OPTIONS 
+		sdptool $BLUEZ_UTILS_PAND_SDPDTOOL_OPTIONS
 		echo -n "starting pand (pand "$BLUEZ_UTILS_PAND_OPTIONS") ... "
-		pand $BLUEZ_UTILS_PAND_OPTIONS 
+		pand $BLUEZ_UTILS_PAND_OPTIONS
 	fi
 
 	if [ "$BLUEZ_UTILS_DUND_START" = "yes" ]; then
@@ -87,25 +78,18 @@ start() {
 		echo 'done.'
 	else
 		echo 'failed.'
-		exit 1
+		return 1
 	fi
 }
 
 stop() {
-	echo -n "Stopping $DAEMON_LONG_NAME ... "
-
-	if ! running; then
-		echo 'not running.'
-		return 1
-	fi
-
 	killall -9 dund pand rfcomm >/dev/null 2>&1
 
 	if [ "$(ps | grep s[d]pd)" ]; then
 		killall -9 sdpd >/dev/null 2>&1
-		exitval2=$? 
+		exitval2=$?
 	else
-		exitval2=0 
+		exitval2=0
 	fi
 
 	killall -9 hcid >/dev/null 2>&1
@@ -113,12 +97,7 @@ stop() {
 
 	rmmod bnep rfcomm l2cap bluetooth hci_usb >/dev/null 2>&1
 
-	if [ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit 1
-	fi
+	[ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ] && return 0
 }
 
 case $1 in
@@ -143,25 +122,19 @@ case $1 in
 		modunreg file bluez-utils
 		modunreg cgi bluez-utils
 		modunreg extra bluez-utils
-		stop
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if ! running; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

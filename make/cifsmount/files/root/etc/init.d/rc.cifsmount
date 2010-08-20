@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=cifsmount
+DAEMON_CHECK="cifsoplockd cifsdnotifyd"
 . /etc/init.d/modlibrc
 
 # works only with applet seq enabled:
@@ -12,24 +13,14 @@ while [ "$i" -lt "$CIFSMOUNT_COUNT" ]; do
     CIFSMOUNT_LIST="$CIFSMOUNT_LIST $i"
 done
 
-running() {
-	pidof cifsoplockd >/dev/null 2>&1 && pidof cifsdnotifyd >/dev/null 2>&1 && return 0
-	return 1
-}
-
 start() {
 	echo -n 'Starting cifs ... '
-	
-	if running; then
-		echo 'already running.'
-		return 1
-	fi
-	
+
 	exitval=0
 	CIFSMNT_PATH=/usr/sbin
 	modprobe cifs
 	[ "$?" -gt 0 ] && exitval=1
-	
+
 	for i in $CIFSMOUNT_LIST; do
 		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
 		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
@@ -52,13 +43,6 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping cifs ... '
-	
-	if ! running; then
-		echo 'not running.'
-		return 1
-	fi
-
 	exitval=0
 	for i in $CIFSMOUNT_LIST; do
 		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
@@ -72,16 +56,8 @@ stop() {
 			#rmdir $CIFSMOUNT_MOUNTPOINT
 		fi
 	done
-	rmmod cifs
-
-	sleep 1
-
-	if running && [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit 1
-	fi
+	rmmod cifs 2>/dev/null
+	return $exitval
 }
 
 case $1 in
@@ -92,25 +68,19 @@ case $1 in
 		;;
 	unload)
 		modunreg cgi cifsmount
-		stop
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if ! running; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

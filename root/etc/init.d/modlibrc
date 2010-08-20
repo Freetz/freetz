@@ -13,6 +13,7 @@
 # CONF_ENABLED		${DAEMON}_ENABLED			variablename with starttype of daemon (yes,no,inetd) in .cfg-file
 # DAEMON_BIN		${DAEMON}					other binary name than $DAEMON
 # DAEMON_ENV		<empty>						additional environment settings
+# DAEMON_CHECK		<empty>						daemon(s) to check with pidof for running-status
 # PID_FILE			/var/run/${DAEMON_BIN}.pid	pid-file for DAEMON
 
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
@@ -180,6 +181,12 @@ modlib_check_port()
 modlib_check_running()
 {
 	[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:]- [:upper:]_))" == "inetd" ] && return 5
+	if [ -n "$DAEMON_CHECK" ]; then
+		for DAEMON_single in $DAEMON_CHECK; do
+			pidof $DAEMON_single >/dev/null 2>&1 || return 3
+		done
+		return 0
+	fi
 	local fn=$PID_FILE
 	[ ! -s "$fn" ] && return 3
 	if kill -0 $(cat "$fn") 2> /dev/null; then
@@ -272,26 +279,30 @@ modlib_stop()
 	case $? in
 		0)
 			stop
-			if [ $? -ne 127 ]; then
+			local retval=$?
+			if [ "$retval" -ne 127 ]; then
 				sleep 1
 			else
+				local retval=0
 				local cnt=9
 				while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do
 					kill $id 2>/dev/null
+					local retval=$?
 					sleep 1
 					let cnt--
 				done
 				if kill -0 $id 2>/dev/null; then
 					kill -9 $id 2>/dev/null
+					local retval=$?
 					sleep 1
 				fi
 			fi
-			if ! kill -0 $id 2>/dev/null; then
+			if ! kill -0 $id 2>/dev/null && [ "$retval" -eq 0 ]; then
 				rm -f "$fn"
 				echo 'done.'
 			else
 				echo 'failed.'
-				return 1
+				return $retval
 			fi
 			;;
 		3)
@@ -330,21 +341,21 @@ modlib_reload()
 			config
 
 			reload 0
-			local status=$?
-			if [ $status -ne 127 ]; then
+			local retval=$?
+			if [ $retval -ne 127 ]; then
 				sleep 1
 			else
 				kill -HUP $(cat "$fn") 2> /dev/null
-				local status=$?
+				local retval=$?
 			fi
 
-			if [ $status -eq 0 ]; then
+			if [ $retval -eq 0 ]; then
 				echo 'done.'
 				return 0
 			else
 				rm -f "$fn"
 				echo 'failed.'
-				return 1
+				return $retval
 			fi
 			;;
 		3)

@@ -1,9 +1,10 @@
 #!/bin/sh
 
 DAEMON=streamripper
-STREAMRIPPER_FLASH_DIR=/tmp/flash/$DAEMON
-
+DAEMON_CHECK=streamripper
 . /etc/init.d/modlibrc
+
+STREAMRIPPER_FLASH_DIR=/tmp/flash/$DAEMON
 
 start() {
 	mkdir -p $STREAMRIPPER_FLASH_DIR
@@ -19,18 +20,24 @@ start() {
 
 			if [ "$STREAMRIPPER_SERVER_ENABLED" == "yes" ]; then
 				echo "Connecting to $STREAMRIPPER_NAME..."
-					COMMAND_LINE="nohup streamripper $STREAMRIPPER_SERVER $STREAMRIPPER_STARTOPTIONS -d $STREAMRIPPER_MUSICDIR"
-					[ -s $STREAMRIPPER_FLASH_DIR/filter ] && COMMAND_LINE="$COMMAND_LINE -w  $STREAMRIPPER_FLASH_DIR/filter"
-					COMMAND_LINE="$COMMAND_LINE &"
-					eval $COMMAND_LINE
-				[ "$?" -gt 0 ] && exitval=1
+				COMMAND_LINE="nohup streamripper $STREAMRIPPER_SERVER $STREAMRIPPER_STARTOPTIONS -d $STREAMRIPPER_MUSICDIR"
+				[ -s $STREAMRIPPER_FLASH_DIR/filter ] && COMMAND_LINE="$COMMAND_LINE -w  $STREAMRIPPER_FLASH_DIR/filter"
+				COMMAND_LINE="$COMMAND_LINE &"
+				eval $COMMAND_LINE
+				[ "$exitval" != "0" ] && exitval=$?
 			fi
 		fi
 	done
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
 }
 
 stop() {
-	echo "Stopping streamripper..."
 	killall $DAEMON > /dev/null 2>&1
 }
 
@@ -40,36 +47,25 @@ case "$1" in
 		modreg file $DAEMON filter 'Filter' 1 "filter"
 		modreg extra $DAEMON '$(lang de:"Liste gerippter Dateien" en:"List of ripped files")' 2 "log"
 
-		if [ "$STREAMRIPPER_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1
-		fi
-
-		start
+		modlib_start $STREAMRIPPER_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi $DAEMON
 		modunreg file $DAEMON filter
 		modunreg extra $DAEMON log
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		 else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
