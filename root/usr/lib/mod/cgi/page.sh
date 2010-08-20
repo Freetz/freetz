@@ -21,6 +21,8 @@ _cgi_option() {
 			;;
 		id)
 			export _CGI_ID=$(_cgi_id "$value") ;;
+		width)
+			cgi_width_at_least "$value" ;;
 		help)
 			export _CGI_HELP=$(_cgi_help_url "$value") ;;
 		*)
@@ -80,6 +82,7 @@ ${CR}
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 EOF
+	cgi_width_setup
 	skin_head "$title" "$id"
 	cat << EOF
 </head>

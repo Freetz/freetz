@@ -7,10 +7,21 @@ skin_head() {
 EOF
 	_cgi_print_extra_styles
 
-	# custom width
-	: ${_cgi_width:=$MOD_CGI_WIDTH}
-	export _cgi_width
-	let _cgi_total_width=_cgi_width+40
+	# The width of the whole cgi: There are 40px border (left+right) and
+	# we leave 25px space between menu and content. We do not add the width
+	# of the menu if it is not shown.
+	let _cgi_total_width=_cgi_width+40+25${id:++150}
+
+	# As promised, we provide _cgi_width pixels to the content cgi
+	cat << EOF
+<style type="text/css">
+<!--
+#content {
+	width: ${_cgi_width}px;
+}
+-->
+</style>
+EOF
 }
 
 skin_body_begin() {
@@ -49,12 +60,19 @@ skin_body_end() {
 <div id="footer">
 <span class="datetime" title="$(lang de:"Systemzeit des Routers" en:"Router's system time")">$(date +'$(lang de:"%d.%m.%Y" en:"%m/%d/%Y") %H:%M')</span>&nbsp;&ndash;
 <span class="uptime" title="Uptime">$(uptime | sed -r 's/.*(up.*), load.*/\1/')</span>&nbsp;&ndash;
-<span class="opt">$(lang de:"optimiert f&uuml;r" en:"optimised for") Mozilla Firefox</span>
+<span class="opt">$(lang de:"optimiert f&uuml;r" en:"optimized for") Mozilla Firefox</span>
 </div>
 EOF
 }
 
 skin_sec_begin() {
+	# A fieldset adds a padding of 10px to the left and right, which is
+	# space the content cannot utilize. By altering _cgi_width, we somehow
+	# violate the rule "cgi application can use _cgi_width pixels just as
+	# requested in 'cgi --width=1234'", but sec_begin is optional! If the
+	# app really needs 1234px, then it should not use sec_begin() or it
+	# will live with the fact that we take away some pixels.
+	cgi_width_alter -20
 	cat << EOF
 <fieldset>
 <legend>$1</legend>
@@ -62,6 +80,7 @@ EOF
 }
 
 skin_sec_end() {
+	cgi_width_alter 20
 	cat << EOF
 </fieldset>
 EOF

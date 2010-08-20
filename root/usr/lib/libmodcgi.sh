@@ -32,6 +32,7 @@ include stat_bar
 include error
 include request
 include validation
+include width
 
 include_module menu
 include_module help

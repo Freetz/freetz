@@ -6,6 +6,20 @@ skin_head() {
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
 	_cgi_print_extra_styles
+
+	# There is padding in #container (2x30px), so make #world 60px bigger
+	# than _cgi_width, so the application can use _cgi_width pixels (as
+	# requested by the cgi via 'cgi --width=1234' or defined by the user)
+	let _world_width=_cgi_width+60
+	cat << EOF
+<style type="text/css">
+<!--
+#world {
+    max-width: ${_world_width}px;
+}
+-->
+</style>
+EOF
 }
 
 skin_body_begin() {
