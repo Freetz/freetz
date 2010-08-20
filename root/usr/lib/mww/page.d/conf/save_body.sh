@@ -31,8 +31,8 @@ apply_changes() {
 		start_stop $startORstop telnetd "$OLDSTATUS_telnetd"
 		start_stop $startORstop swap "$OLDSTATUS_swap"
 		if [ "$startORstop" == "start" -a "$OLDSTATUS_webcfg" != "stopped" ]; then
-			echo "$(lang de:"Starte das Freetz-Webinterface in 9 Sekunden neu" en:"Restarting the Freetz webinterface in 9 seconds") ..."
-			(sleep 9 && /etc/init.d/rc.webcfg force-restart)&
+			echo "$(lang de:"Starte das Freetz-Webinterface in 9 Sekunden neu" en:"Restarting the Freetz webinterface in 9 seconds")!"
+			/etc/init.d/rc.webcfg force-restart 9 >/dev/null 2>&1 &
 		fi
 		/usr/lib/mod/reg-status reload
 	else

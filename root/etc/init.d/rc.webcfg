@@ -44,6 +44,7 @@ case $1 in
 		modlib_restart
 		;;
 	force-restart)
+		[ $# -ge 2 ] && sleep $2 2>/dev/null
 		modlib_force_restart
 		;;
 	status)
