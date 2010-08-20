@@ -155,7 +155,7 @@ new_menu_prepare() {
 		local pkg title
 		while IFS='|' read -r pkg title; do
 			echo "title=$(shell_escape "$title")" >> "$p/$pkg.meta"
-			new_menu_add_pkg_item conf "$pkg" "" "$title"
+			new_menu_add_pkg_item conf "$pkg" "" "$(lang de:"Einstellungen" en:"Settings")"
 		done < /mod/etc/reg/cgi.reg
 	fi
 
