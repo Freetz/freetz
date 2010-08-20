@@ -8,20 +8,9 @@ EOF
 	_cgi_print_extra_styles
 
 	# The width of the whole cgi: There are 40px border (left+right) and
-	# we leave 25px space between menu and content. We do not add the width
+	# 35px space between menu and content. We do not add the width
 	# of the menu if it is not shown.
 	let _cgi_total_width=_cgi_width+40+25${id:++190}
-
-	# As promised, we provide _cgi_width pixels to the content cgi
-	cat << EOF
-<style type="text/css">
-<!--
-#content {
-	width: ${_cgi_width}px;
-}
--->
-</style>
-EOF
 }
 
 skin_body_begin() {
