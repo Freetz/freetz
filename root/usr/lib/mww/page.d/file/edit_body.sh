@@ -3,7 +3,7 @@ echo "<h1>$CAPTION</h1>"
 
 if ! allowed; then
 	print_access_denied
-elif readonly; then
+elif $readonly; then
 	print_info '$(lang
 		de:"Datei ist nur lesbar und kann nicht ge&auml;ndert werden." 
 		en:"Read-only file. It may not be modified."
