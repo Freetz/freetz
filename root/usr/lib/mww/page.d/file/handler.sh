@@ -22,14 +22,19 @@ TEXT_ROWS=18
 [ -r "$def" ] && . "$def"
 
 allowed() {
-	! [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$sec" -o "$CONFIG_SAVE" == "false" ]
+	! [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$sec" ]
 }
 print_access_denied() {
-	echo '<div style="color: #800000;">$(lang
+	print_warning '$(lang
 		de:"Konfiguration in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!"
 		en:"Settings are not available at current security level!"
-	)</div>'
+	)'
 }
+
+readonly=false
+if ! allowed || [ "$CONFIG_SAVE" == "false" ]; then
+    readonly=true
+fi
 
 cgi --id="file:$PACKAGE/$ID" --help="/packages/$PACKAGE/$ID"
 

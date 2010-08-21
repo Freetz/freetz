@@ -1,10 +1,13 @@
 echo "<h1>$CAPTION</h1>"
 [ -n "$DESCRIPTION" ] && echo "<p>$DESCRIPTION</p>"
 
-readonly=false
 if ! allowed; then
-	readonly=true
 	print_access_denied
+elif readonly; then
+	print_info '$(lang
+		de:"Datei ist nur lesbar und kann nicht ge&auml;ndert werden." 
+		en:"Read-only file. It may not be modified."
+	)'
 fi
 
 case $CONFIG_TYPE in
