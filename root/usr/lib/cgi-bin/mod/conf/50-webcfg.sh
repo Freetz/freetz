@@ -53,7 +53,7 @@ if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi
 fi
 cat << EOF
 <p><a href="/cgi-bin/skin.cgi" target="_blank">$(lang de:"Aussehen einstellen (Skins)" en:"Change look (skins)")</a></p>
-<p>$(lang de:"Breite der Freetz-Weboberfl&auml;che" en:"Width of the Freetz webinterface"): <input type="text" name="cgi_width" size="4" maxlength="4" value="$(html "$MOD_CGI_WIDTH")"></p>
+<p>$(lang de:"Breite des Hauptinhalts" en:"Width of the main content area"): <input type="text" name="cgi_width" size="4" maxlength="4" value="$(html "$MOD_CGI_WIDTH")"></p>
 EOF
 
 sec_end
