@@ -10,13 +10,12 @@ cgi --id="extra:$PACKAGE/$ID" --help="/packages/$PACKAGE/$ID"
 if [ "$sec_level" -gt "$3" ]; then
 	cgi_begin 'Extras'
 	echo '<h1>$(lang de:"Zusatz-Skript" en:"Additional script")</h1>'
-	echo '<div style="color: #800000;">$(lang
+	print_warning '$(lang
 		de:"Dieses Zusatz-Skript in der aktuellen Sicherheitsstufe
 			nicht verf&uuml;gbar!" 
 		en:"This script is not available at the current security
 			level!"
-		)</div>'
-	echo '<p>'
+		)'
 	back_button --title="$(lang de:"Zu den Extras" en:"Goto extras")" mod extras
 	cgi_end
 	exit

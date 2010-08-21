@@ -3,17 +3,21 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-if [ "$sec_level" -gt "0" ]; then
-
-cgi --id=rudishell
-cgi_begin '$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")'
-echo '<p><div style="color: #800000;">$(lang de:"Rudi-Shell ist in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" en:"Rudi shell is not available at the current security level!")</div></p>'
-
-else
+if [ "$sec_level" -gt 0 ]; then
+	cgi --id=rudishell
+	cgi_begin '$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")'
+	print_warning '$(lang
+		de:"Rudi-Shell ist in der aktuellen Sicherheitsstufe nicht
+		verf&uuml;gbar!"
+		en:"Rudi shell is not available at the current security level!"
+	)'
+	cgi_end
+	exit
+fi
 
 cgi_begin '$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")'
 cat << EOF
-	<script type=text/javascript>
+	<script type="text/javascript">
 		hist = Array()
 		function setShellOutput(txt) {
 			var parent = document.getElementById("shell_output")
@@ -72,6 +76,5 @@ cat << EOF
 EOF
 
 echo $$ > /var/run/rudi_shell.pid
-fi
 
 cgi_end
