@@ -3,29 +3,31 @@
 PATH=/mod/bin:/mod/usr/bin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
 . /etc/freetz_info.cfg
 
-let _width=$_cgi_width-254
 divstyle="style='margin-top:6px;'"
 
 sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
-echo -n '<div '$divstyle'><b>$(lang de:"Boxtyp" en:"Box type"):</b> '$FREETZ_INFO_BOXTYPE'&nbsp;&nbsp;'
-echo -n '<b>$(lang de:"AVM-Firmwareversion:" en:"AVM firmware version:")</b> '$FREETZ_INFO_FIRMWAREVERSION'&nbsp;&nbsp;'
-echo '<b>$(lang de:"Sprache:" en:"Language:")</b> '$FREETZ_INFO_LANG'</div>'
+
+cat << EOF
+<dl class="info">
+<dt>$(lang de:"Boxtyp" en:"Box type")</dt><dd>$FREETZ_INFO_BOXTYPE</dd>
+<dt>$(lang de:"AVM-Firmwareversion" en:"AVM firmware version")</dt><dd>$FREETZ_INFO_FIRMWAREVERSION</dd>
+<dt>$(lang de:"Sprache" en:"Language")</dt><dd>$FREETZ_INFO_LANG</dd>
+</dl>
+EOF
+unset -v _kernelversion
 if [ -r /proc/version ]; then
 	_kernelversion=$(cat /proc/version | sed -e 's/Linux version //;s/#.*//')
-else
-	_kernelversion=""
 fi
-if [ ! -z "$_kernelversion" ]; then
-	echo '<div '$divstyle'><b>Kernel$(lang de:"version" en:" version"):</b> '$_kernelversion'</div>'
+if [ -n "$_kernelversion" ]; then
+	echo "<dl class='info'><dt>Kernel$(lang de:"version" en:" version")</dt><dd>$_kernelversion</dd></dl>"
 fi
-echo '<div '$divstyle'><b>FREETZ$(lang de:"-Version" en:" version"):</b> '$FREETZ_INFO_SUBVERSION'</div>'
+echo "<dl class='info'><dt>Freetz$(lang de:"-Version" en:" version")</dt><dd>$FREETZ_INFO_SUBVERSION</dd></dl>"
 date_de_format=$(echo "$FREETZ_INFO_MAKEDATE" \
 		| sed -re 's/([0-9]{4})([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})([0-9]{2})(.*)/\3.\2.\1 \4\:\5\:\6/')
-echo '<div '$divstyle'><b>$(lang de:"Erstellungsdatum" en:"Creation date"):</b> '$date_de_format'</div>'
-echo '<div '$divstyle'><b>$(lang de:"Urspr&uuml;nglicher Dateiname" en:"Initial file name"):</b><br>'$FREETZ_INFO_IMAGE_NAME'</div>'
+echo "<dl class='info'><dt>$(lang de:"Erstellungsdatum" en:"Creation date")</dt><dd>$date_de_format</dd></dl>"
+echo "<dl class='info'><dt>$(lang de:"Urspr&uuml;nglicher Dateiname" en:"Initial file name")</dt><dd>$FREETZ_INFO_IMAGE_NAME</dd></dl>"
 if [ ! -z "$FREETZ_INFO_COMMENT" ]; then
-	echo '<div '$divstyle'><b>$(lang de:"Benutzerdefinierte Informationen" en:"User defined information"):</b><br>'
-	echo "$FREETZ_INFO_COMMENT</div>"
+	echo "<dl class='info'><dt>$(lang de:"Benutzerdefinierte Informationen" en:"User defined information")</dt><dd>$FREETZ_INFO_COMMENT</dd></dl>"
 fi
 sec_end
 
@@ -139,7 +141,8 @@ format_conf() {
 	</table>
 	<div $divstyle><br><a href="$(href extra mod do_download_config)"><b>.config:</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="$(href extra mod do_download_config)">$(lang de:"Herunterladen als Textdatei" en:"Download as text file")</a></div>
 	EOF
-	echo -n "<pre style='width: ${_width}px; max-height: 100px;'>"
+	let width=_cgi_width-30
+	echo -n "<pre style='width: ${width}px; max-height: 100px;'>"
 	html < /etc/.config
 	echo '</pre>'
 	sec_end
@@ -154,7 +157,8 @@ fi
 
 if [ ! -z "$FREETZ_INFO_EXTERNAL_FILES" ]; then
 	sec_begin '$(lang de:"Ausgelagerte Dateien" en:"Externalised files")'
-		echo -n "<pre style='width: ${_width}px; max-height: 100px;'>"
+		let width=_cgi_width-30
+		echo -n "<pre style='width: ${width}px; max-height: 100px;'>"
 		echo -n "$FREETZ_INFO_EXTERNAL_FILES"
 		echo '</pre>'
 	sec_end

@@ -8,9 +8,8 @@ EOF
 	_cgi_print_extra_styles
 
 	# The width of the whole cgi: There are 40px border (left+right) and
-	# 35px space between menu and content. We do not add the width
-	# of the menu if it is not shown.
-	let _cgi_total_width=_cgi_width+40+25${id:++190}
+	# and 225px margin-right if there is a menu.
+	let _cgi_total_width=_cgi_width+40${id:++225}
 }
 
 skin_body_begin() {
