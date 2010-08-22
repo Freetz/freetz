@@ -38,7 +38,7 @@
 +		-Lbin -lsmbd \
 +		$(LIBS) @POPTLIBS@
 +
-+bin/libsmbd.a: proto_exists $(SMBD_OBJ_BASE)
++bin/libsmbd.a: proto_exists $(SMBD_OBJ_BASE) bin/.dummy
 +	@echo Building $@
 +	@$(AR) cru bin/libsmbd.a $(SMBD_OBJ_BASE)
 +	@$(RANLIB) bin/libsmbd.a
