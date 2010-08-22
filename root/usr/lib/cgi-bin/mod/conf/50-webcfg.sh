@@ -39,13 +39,13 @@ fi
 if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" ]; then
 cat << EOF
 <input type="hidden" name="show_box_info" value="no">
-<input id="i1" type="checkbox" name="show_box_info" value="yes"$show_box_info_chk><label for="i1">$(lang de:"BOX-Info" en:"BOX info")</label>
+<input id="i1" type="checkbox" name="show_box_info" value="yes"$show_box_info_chk><label for="i1">$(lang de:"Box-Info" en:"Box info")</label>
 EOF
 fi
 if [ -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
 cat << EOF
 <input type="hidden" name="show_freetz_info" value="no">
-<input id="i2" type="checkbox" name="show_freetz_info" value="yes"$show_freetz_info_chk><label for="i2">$(lang de:"FREETZ-Info" en:"FREETZ info")</label>
+<input id="i2" type="checkbox" name="show_freetz_info" value="yes"$show_freetz_info_chk><label for="i2">$(lang de:"Freetz-Info" en:"Freetz info")</label>
 EOF
 fi
 if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
