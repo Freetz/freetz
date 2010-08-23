@@ -12,23 +12,25 @@ usage() {
 }
 
 sleeper() {
-	echo -n "Waiting for time-synchronisation: " >> $LOG_FILE
+	echo -n "Waiting for time-synchronisation:" >> $LOG_FILE
 	counter=225
+	spaceit=" "
 	while [ `date +%Y` -lt 2010 -a $counter -ne 0 ]; do
-		echo -n "." >> $LOG_FILE
+		echo -n "$spaceit." >> $LOG_FILE
+		spaceit=
 		[ "$MOD_EXTERNAL_WAIT_INFINITE" == "yes" ] || let counter=$counter-1
 		sleep 4
 	done
 	if [ `date +%Y` -lt 2010 ]; then
-		echo "timeout, failed." >> $LOG_FILE
+		echo " timeout, failed." >> $LOG_FILE
 		exit
 	fi
 	if [ `date +%Y` -gt $MOD_EXTERNAL_YEAR_MAX ]; then
-		echo "error, failed." >> $LOG_FILE
+		echo " error, failed." >> $LOG_FILE
 		[ -f /tmp/flash/mod/external.year ] && . /tmp/flash/mod/external.year
 		exit
 	fi
-	echo "done." >> $LOG_FILE
+	echo " done." >> $LOG_FILE
 }
 
 start() {
@@ -44,12 +46,14 @@ stop() {
 helper() {
 	if [ "$1" == "start" ]; then
 		if [ ! -e /tmp/.modstarted ]; then
-			echo -n "Waiting for mod-startup: " >> $LOG_FILE
+			echo -n "Waiting for mod-startup:" >> $LOG_FILE
+			spaceit=" "
 			while [ ! -e /tmp/.modstarted ]; do
-				echo -n "." >> $LOG_FILE
+				echo -n "$spaceit." >> $LOG_FILE
+				spaceit=
 				sleep 1
 			done
-			echo "done." >> $LOG_FILE
+			echo " done." >> $LOG_FILE
 		fi
 		[ "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && sleeper
 	fi
