@@ -4,21 +4,21 @@ config FREETZ_PACKAGE_DTMFBOX
 	select FREETZ_LIB_libcapi20
 	select FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
 	default n
-	help		
+	help
 		dtmfbox is a small softswitch application, that can be used to 
 		control different tasks over telephone keyboard (via DTMF).
 		The DTMF signals are handed over to a scriptfile or a plugin.
-		
+
 		While scriptfile/plugin running, you can answer an incoming call, 
 		record or play a wave file, make another call, bridge calls, etc.
-		
+
 		The scriptfiles included in this package, contain an 
 		answering machine, callback/callthrough script, reverse lookup, 
 		anti-callcenter script, weather forecast, webradio ...
 
 		The application can also be configured as registrar, to allow 
 		SIP client connects.
-				
+
 		http://dtmfbox.v3v.de
 
 menu "CAPI/SIP"
@@ -32,13 +32,13 @@ config FREETZ_PACKAGE_DTMFBOX_WITH_CAPI
 		Compile dtmfbox with CAPI support (ISDN/Analog)
 
 #config FREETZ_PACKAGE_DTMFBOX_WITH_REMOTE_CAPI
-#	bool "Remote CAPI support"	
+#	bool "Remote CAPI support"
 #	depends on FREETZ_PACKAGE_DTMFBOX_WITH_CAPI
 #	default n
 #	help
-#		Compile dtmfbox with Remote-CAPI support (ISDN/Analog).		
+#		Compile dtmfbox with Remote-CAPI support (ISDN/Analog).
 #		You can connect two Fritz!Boxes via capiotcp daemon (eg. repeater and base).
-#		
+#
 #		You will get 5 controllers additionally:
 #		1-5 are the internal controllers. 6-10 are the remote controllers.
 
@@ -95,29 +95,10 @@ endmenu
 menu "Misc"
 	depends on FREETZ_PACKAGE_DTMFBOX
 
-config FREETZ_PACKAGE_DTMFBOX_SVN
-	depends on FREETZ_PACKAGE_DTMFBOX
-	bool "Download from SVN"
-	default n
-	help		
-		Download latest dtmfbox from subversion repository.
-		This is the current development trunk.
-
-config FREETZ_PACKAGE_DTMFBOX_SVN_FORCE_LATEST_REV
-	depends on FREETZ_PACKAGE_DTMFBOX_SVN
-	bool "Always checkout latest revision and compile"
-	default y
-	help
-		Always latest revision from SVN repository without 
-		running 'dtmfbox-dirclean'.
-		
-		Everytime you run 'make', a complete checkout and
-		recompilation is performed.
-
 config FREETZ_PACKAGE_DTMFBOX_USE_DIFF_PATCH
 	depends on FREETZ_PACKAGE_DTMFBOX && FREETZ_REPLACE_BUSYBOX
 	bool "Use busybox patch and diff"
-	select FREETZ_BUSYBOX_DIFF 
+	select FREETZ_BUSYBOX_DIFF
 	select FREETZ_BUSYBOX_PATCH
 	default n
 	help
@@ -131,7 +112,7 @@ config FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE
 	help
 		Java Applet to make phone calls over webinterface. 
 		Beta!!
-		
+
 		+ 64 kb (Binary only)
 
 config FREETZ_PACKAGE_DTMFBOX_WITH_HELP
@@ -147,7 +128,7 @@ config FREETZ_PACKAGE_DTMFBOX_WITH_ESPEAK
 	select FREETZ_PACKAGE_ESPEAK
 	default n
 	help
-		Add package "eSpeak" to support Text2Speech.		
+		Add package "eSpeak" to support Text2Speech.
 		Attention: eSpeak is also supported over webstream!
 
 config FREETZ_PACKAGE_DTMFBOX_WITH_MADPLAY
