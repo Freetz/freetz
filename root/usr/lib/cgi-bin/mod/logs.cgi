@@ -1,9 +1,9 @@
 highlight() {
 	sed -r '
-		s#(failed|already running)\.$#<span class="failure">\1</span>.#
-		s#(disabled|inactive|not running)\.#<span class="disabled">\1</span>.#
-		s#(enabled| active|done).$#<span class="success">\1</span>.#
-		s#(external|inetd)\.$#<span class="foreign">\1</span>.#
+		s# (failed|already running)\.$# <span class="failure">\1</span>.#
+		s# (disabled|inactive|not running)\.# <span class="disabled">\1</span>.#
+		s# (enabled|active|done).$# <span class="success">\1</span>.#
+		s# (external)\.$# <span class="foreign">\1</span>.#
 	'
 }
 
@@ -33,6 +33,5 @@ do_log /var/log/mod_load.log
 do_log /var/log/mod_net.log
 do_log /var/log/mod_voip.log
 do_log /var/log/mod.log
-do_log /var/log/mod_inetd.log
 do_log /var/log/mod_swap.log
-[ -r /etc/external.pkg ] && do_log /var/log/external.log
+do_log /var/log/external.log

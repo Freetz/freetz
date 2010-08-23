@@ -239,14 +239,19 @@ modlib_startdaemon()
 modlib_start()
 {
 	local DAEMON_ENABLED=$1
-	if [ "$DAEMON_ENABLED" == "no" -o "$DAEMON_ENABLED" == "inetd" -a -x /etc/init.d/rc.inetd ]; then
-		if [ "$DAEMON_ENABLED" != "inetd" ]; then
-			echo "${DAEMON_LONG_NAME} is disabled." 1>&2
-		else
-			echo "${DAEMON_LONG_NAME} is started via inetd." 1>&2
-			config
-		fi
+	if [ "$DAEMON_ENABLED" == "no" ]; then
+		echo "${DAEMON_LONG_NAME} is disabled." 1>&2
 		exit 1
+	fi
+	if [ "$DAEMON_ENABLED" == "inetd" ]; then
+		if [ ! -x /etc/init.d/rc.inetd ]; then
+			echo "${DAEMON_LONG_NAME} could not find inetd, failed." 1>&2
+			exit 1
+		else
+			config
+			/etc/init.d/rc.inetd config $DAEMON
+			exit
+		fi
 	fi
 
 	modlib_check_running

@@ -27,7 +27,7 @@ update_inetd() {
 		error "package $pkg_name has no rc script"
 		exit 1
 	fi
-	echo -n "Updating inetd config for $pkg_name"
+	echo -n "$pkg_name"
 	. $pkg_path
 
 	if [ "$pkg_name" != "$pkg_subd" ]; then
@@ -38,7 +38,7 @@ update_inetd() {
 		sub_status=
 		pkg_inetd=$pkg_name
 	fi
-	echo -n ": "
+	echo -n " is updating inetd ... "
 
 	if ! grep -q "#:$pkg_inetd:" $icnf; then
 		echo >> $icnf
