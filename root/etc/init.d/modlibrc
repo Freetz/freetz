@@ -181,7 +181,9 @@ modlib_check_port()
 modlib_check_running()
 {
 	[ -n "$FORCE_STATUS" ] && return $FORCE_STATUS
-	[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:]- [:upper:]_))" == "inetd" ] && return 5
+	if [ -x /etc/init.d/rc.inetd ]; then
+		[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:]- [:upper:]_))" == "inetd" ] && return 5
+	fi
 	if [ -n "$DAEMON_CHECK" ]; then
 		for DAEMON_single in $DAEMON_CHECK; do
 			pidof $DAEMON_single >/dev/null 2>&1 || return 3
@@ -245,8 +247,7 @@ modlib_start()
 	fi
 	if [ "$DAEMON_ENABLED" == "inetd" ]; then
 		if [ ! -x /etc/init.d/rc.inetd ]; then
-			echo "${DAEMON_LONG_NAME} could not find inetd, failed." 1>&2
-			exit 1
+			echo "WARNING: ${DAEMON_LONG_NAME} could not find inetd." 1>&2
 		else
 			config
 			/etc/init.d/rc.inetd config $DAEMON
