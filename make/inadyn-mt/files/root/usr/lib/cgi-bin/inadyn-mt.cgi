@@ -50,27 +50,27 @@ cat << EOF
 
 <script>
 function changeaccount(value) {
-	document.getElementById("Acount0").style.display = "none";
-	document.getElementById("Acount1").style.display = "none";
-	document.getElementById("Acount2").style.display = "none";
-	document.getElementById("Acount3").style.display = "none";
-	document.getElementById("Acount4").style.display = "none";
+	document.getElementById("Account0").style.display = "none";
+	document.getElementById("Account1").style.display = "none";
+	document.getElementById("Account2").style.display = "none";
+	document.getElementById("Account3").style.display = "none";
+	document.getElementById("Account4").style.display = "none";
 
 	switch (value) {
 		case "0":
-			document.getElementById("Acount0").style.display = "block";
+			document.getElementById("Account0").style.display = "block";
 			break;
 		case "1":
-			document.getElementById("Acount1").style.display = "block";
+			document.getElementById("Account1").style.display = "block";
 			break;
 		case "2":
-			document.getElementById("Acount2").style.display = "block";
+			document.getElementById("Account2").style.display = "block";
 			break;
 		case "3":
-			document.getElementById("Acount3").style.display = "block";
+			document.getElementById("Account3").style.display = "block";
 			break;
 		case "4":
-			document.getElementById("Acount4").style.display = "block";
+			document.getElementById("Account4").style.display = "block";
 			break;
 		}
 
@@ -84,7 +84,7 @@ document.write("<p><SELECT NAME='dynaccount' onChange='changeaccount(value)'>" +
 "<OPTION VALUE='4'>Account 4</OPTION>" +
 "</SELECT></p>");
 
-document.write("<div id='Acount0' style='display:block'>" +
+document.write("<div id='Account0' style='display:block'>" +
 "<table id='mdns0' style='margin: auto'>" +
   "<tr>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
@@ -92,7 +92,7 @@ document.write("<div id='Acount0' style='display:block'>" +
       "<OPTION VALUE='dyndns.org' $dyndns0_sel>dyndns.org</OPTION>" +
       "<OPTION VALUE='dyndns.org-statdns' dstatdns0_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom0_sel>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE='afraid.org '$afraid0_sel>afraid.org</OPTION>" +
+      "<OPTION VALUE='afraid.org' $afraid0_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit0_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip0_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef0_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
@@ -117,7 +117,7 @@ document.write("<div id='Acount0' style='display:block'>" +
 "<p><input type='hidden' name='active0' value='no'><input id='a0' type='checkbox' name='active0' value='yes'$active0_chk><label for='a0'> $(lang de:"Account aktiv" en:"Account enabled")</label></p>" +
 "</div>");
 
-document.write("<div id='Acount1' style='display:none'>" +
+document.write("<div id='Account1' style='display:none'>" +
 "<table id='mdns1' style='margin: auto'>" +
   "<tr>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
@@ -125,7 +125,7 @@ document.write("<div id='Acount1' style='display:none'>" +
       "<OPTION VALUE='dyndns.org' $dyndns1_sel>dyndns.org</OPTION>" +
       "<OPTION VALUE='dyndns.org-statdns' dstatdns1_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom1_sel>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE='afraid.org '$afraid1_sel>afraid.org</OPTION>" +
+      "<OPTION VALUE='afraid.org' $afraid1_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit1_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip1_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef1_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
@@ -150,7 +150,7 @@ document.write("<div id='Acount1' style='display:none'>" +
 "<p><input type='hidden' name='active1' value='no'><input id='a1' type='checkbox' name='active1' value='yes'$active1_chk><label for='a1'> $(lang de:"Account aktiv" en:"Account enabled")</label></p>" +
 "</div>");
 
-document.write("<div id='Acount2' style='display:none'>" +
+document.write("<div id='Account2' style='display:none'>" +
 "<table id='mdns2' style='margin: auto'>" +
   "<tr>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
@@ -158,7 +158,7 @@ document.write("<div id='Acount2' style='display:none'>" +
       "<OPTION VALUE='dyndns.org' $dyndns2_sel>dyndns.org</OPTION>" +
       "<OPTION VALUE='dyndns.org-statdns' dstatdns2_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom2_sel>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE='afraid.org '$afraid2_sel>afraid.org</OPTION>" +
+      "<OPTION VALUE='afraid.org' $afraid2_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit2_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip2_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef2_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
@@ -184,7 +184,7 @@ document.write("<div id='Acount2' style='display:none'>" +
 "</div>");
 
 
-document.write("<div id='Acount3' style='display:none'>" +
+document.write("<div id='Account3' style='display:none'>" +
 "<table id='mdns3' style='margin: auto'>" +
   "<tr>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
@@ -192,7 +192,7 @@ document.write("<div id='Acount3' style='display:none'>" +
       "<OPTION VALUE='dyndns.org' $dyndns0_sel>dyndns.org</OPTION>" +
       "<OPTION VALUE='dyndns.org-statdns' dstatdns3_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom3_sel>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE='afraid.org '$afraid3_sel>afraid.org</OPTION>" +
+      "<OPTION VALUE='afraid.org' $afraid3_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit3_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip3_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef3_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
@@ -218,7 +218,7 @@ document.write("<div id='Acount3' style='display:none'>" +
 "</div>");
 
 
-document.write("<div id='Acount4' style='display:none'>" +
+document.write("<div id='Account4' style='display:none'>" +
 "<table id='mdns4' style='margin: auto'>" +
   "<tr>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
@@ -226,7 +226,7 @@ document.write("<div id='Acount4' style='display:none'>" +
       "<OPTION VALUE='dyndns.org' $dyndns4_sel>dyndns.org</OPTION>" +
       "<OPTION VALUE='dyndns.org-statdns' dstatdns4_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom4_sel>dyndns.org-custom</OPTION>" +
-      "<OPTION VALUE='afraid.org '$afraid4_sel>afraid.org</OPTION>" +
+      "<OPTION VALUE='afraid.org' $afraid4_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit4_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip4_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef4_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
