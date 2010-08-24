@@ -11,6 +11,6 @@ done
 if [ -e "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init" ]; then
 	modsed "s/KIDS=y/KIDS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init"
 else
-	modsed "s/CONFIG_KIDS=y/CONFIG_KIDS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
+	modsed "s/CONFIG_KIDS=.*$/CONFIG_KIDS=\"n\"/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
 fi
 
