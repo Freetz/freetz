@@ -301,7 +301,7 @@
  dnl
 --- init.c	2009-10-01 20:02:18.000000000 +0200
 +++ init.c	2010-02-22 00:35:18.000000000 +0100
-@@ -94,7 +94,7 @@
+@@ -96,7 +96,7 @@
     */
    if (options->pull
        && options->ping_rec_timeout_action == PING_UNDEF
@@ -310,7 +310,7 @@
      {
        options->ping_rec_timeout = PRE_PULL_INITIAL_PING_RESTART;
        options->ping_rec_timeout_action = PING_RESTART;
-@@ -933,7 +933,12 @@
+@@ -1151,7 +1151,12 @@
        const char *detail = "SUCCESS";
        if (c->c1.tuntap)
  	tun_local = c->c1.tuntap->local;
@@ -324,7 +324,7 @@
        if (flags & ISC_ERRORS)
  	detail = "ERROR";
        management_set_state (management,
-@@ -1335,7 +1340,7 @@
+@@ -1567,7 +1572,7 @@
  #ifdef ENABLE_OCC
    if (found & OPT_P_EXPLICIT_NOTIFY)
      {
@@ -333,7 +333,7 @@
  	{
  	  msg (D_PUSH, "OPTIONS IMPORT: --explicit-exit-notify can only be used with --proto udp");
  	  c->options.explicit_exit_notification = 0;
-@@ -1430,13 +1435,22 @@
+@@ -1662,13 +1667,22 @@
    switch (c->options.ce.proto)
      {
      case PROTO_UDPv4:
@@ -356,7 +356,7 @@
        sec = c->options.ce.connect_retry_seconds;
        break;
      }
-@@ -2572,7 +2586,7 @@
+@@ -2807,7 +2821,7 @@
  #ifdef WIN32
        msg (M_INFO, "NOTE: --fast-io is disabled since we are running on Windows");
  #else
@@ -365,7 +365,7 @@
  	msg (M_INFO, "NOTE: --fast-io is disabled since we are not using UDP");
        else
  	{
-@@ -2834,7 +2848,11 @@
+@@ -3083,7 +3097,11 @@
    /* link_socket_mode allows CM_CHILD_TCP
       instances to inherit acceptable fds
       from a top-level parent */
@@ -378,7 +378,7 @@
      {
        if (c->mode == CM_TOP)
  	link_socket_mode = LS_MODE_TCP_LISTEN;
-@@ -3117,17 +3135,8 @@
+@@ -3358,17 +3376,8 @@
  {
    CLEAR (*dest);
  
@@ -398,7 +398,7 @@
  
    dest->gc = gc_new ();
  
-@@ -3233,7 +3242,7 @@
+@@ -3474,7 +3483,7 @@
    dest->c2.es_owned = false;
  
    dest->c2.event_set = NULL;
@@ -409,7 +409,7 @@
  
 --- manage.c	2009-10-01 22:30:21.000000000 +0200
 +++ manage.c	2010-02-22 00:35:18.000000000 +0100
-@@ -1877,9 +1877,9 @@
+@@ -1957,9 +1957,9 @@
  	  /*
  	   * Initialize socket address
  	   */
@@ -422,7 +422,7 @@
  
  	  /*
  	   * Run management over tunnel, or
-@@ -1891,7 +1891,7 @@
+@@ -1971,7 +1971,7 @@
  	    }
  	  else
  	    {
@@ -431,7 +431,7 @@
  		(GETADDR_RESOLVE|GETADDR_WARN_ON_SIGNAL|GETADDR_FATAL, addr, 0, NULL, NULL);
  	    }
  	}
-@@ -2258,7 +2258,7 @@
+@@ -2427,7 +2427,7 @@
        && man->connection.state == MS_INITIAL)
      {
        /* listen on our local TUN/TAP IP address */
@@ -521,7 +521,7 @@
    ASSERT (mroute_extract_openvpn_sockaddr (&addr, &remote_si, false));
  
    if (netbits >= 0)
-@@ -2489,9 +2489,9 @@
+@@ -2496,9 +2496,9 @@
    int count = 0;
  
    CLEAR (saddr);
@@ -534,7 +534,7 @@
    if (mroute_extract_openvpn_sockaddr (&maddr, &saddr, true))
      {
        hash_iterator_init (m->iter, &hi, true);
-@@ -2642,16 +2642,24 @@
+@@ -2675,16 +2675,24 @@
  {
    ASSERT (top->options.mode == MODE_SERVER);
  
@@ -582,7 +582,7 @@
  		  || c->c2.max_recv_size_local < c->c2.max_send_size_remote))
 --- openvpn.8	2009-12-11 09:04:24.000000000 +0100
 +++ openvpn.8	2010-02-22 00:35:18.000000000 +0100
-@@ -5333,13 +5333,16 @@
+@@ -5360,13 +5360,16 @@
  script execution.
  .\"*********************************************************
  .TP
@@ -600,7 +600,7 @@
  .\"*********************************************************
  .TP
  .B trusted_port
-@@ -5351,7 +5354,7 @@
+@@ -5378,7 +5381,7 @@
  scripts.
  .\"*********************************************************
  .TP
@@ -609,7 +609,7 @@
  Actual IP address of connecting client or peer which has not been authenticated
  yet.  Sometimes used to
  .B nmap
-@@ -5363,6 +5366,9 @@
+@@ -5390,6 +5393,9 @@
  and
  .B --auth-user-pass-verify
  scripts.
@@ -644,7 +644,7 @@
    "--connect-retry n : For --proto tcp-client, number of seconds to wait\n"
    "                    between connection retries (default=%d).\n"
    "--connect-timeout n : For --proto tcp-client, connection timeout (in seconds).\n"
-@@ -1538,11 +1547,27 @@
+@@ -1685,11 +1694,27 @@
     * Sanity check on TCP mode options
     */
  
@@ -677,7 +677,7 @@
  
    /*
     * Sanity check on MTU parameters
-@@ -1551,7 +1576,7 @@
+@@ -1698,7 +1723,7 @@
      msg (M_USAGE, "only one of --tun-mtu or --link-mtu may be defined (note that --ifconfig implies --link-mtu %d)", LINK_MTU_DEFAULT);
  
  #ifdef ENABLE_OCC
@@ -686,7 +686,7 @@
      msg (M_USAGE, "--mtu-test only makes sense with --proto udp");
  #endif
  
-@@ -1564,7 +1589,8 @@
+@@ -1711,7 +1736,8 @@
     * Sanity check on --local, --remote, and --ifconfig
     */
  
@@ -696,7 +696,7 @@
        && ce->local_port == ce->remote_port)
      msg (M_USAGE, "--remote and --local addresses are the same");
    
-@@ -1629,16 +1655,20 @@
+@@ -1776,16 +1802,20 @@
     */
  
  #ifdef ENABLE_FRAGMENT
@@ -720,7 +720,7 @@
      msg (M_USAGE, "--remote MUST be used in TCP Client mode");
  
  #ifdef ENABLE_HTTP_PROXY
-@@ -1656,7 +1686,12 @@
+@@ -1803,7 +1833,12 @@
      msg (M_USAGE, "--socks-proxy can not be used in TCP Server mode");
  #endif
  
@@ -734,7 +734,7 @@
      msg (M_USAGE, "TCP server mode allows at most one --remote address");
  
  #if P2MP_SERVER
-@@ -1670,11 +1705,28 @@
+@@ -1817,11 +1852,28 @@
  	msg (M_USAGE, "--mode server only works with --dev tun or --dev tap");
        if (options->pull)
  	msg (M_USAGE, "--pull cannot be used with --mode server");
@@ -767,7 +767,7 @@
  #endif
        if (!options->tls_server)
  	msg (M_USAGE, "--mode server requires --tls-server");
-@@ -1702,9 +1754,17 @@
+@@ -1849,9 +1901,17 @@
  	msg (M_USAGE, "--inetd cannot be used with --mode server");
        if (options->ipchange)
  	msg (M_USAGE, "--ipchange cannot be used with --mode server (use --client-connect instead)");
@@ -788,7 +788,7 @@
  	msg (M_USAGE, "--connect-freq only works with --mode server --proto udp.  Try --max-clients instead.");
        if (!(dev == DEV_TYPE_TAP || (dev == DEV_TYPE_TUN && options->topology == TOP_SUBNET)) && options->ifconfig_pool_netmask)
  	msg (M_USAGE, "The third parameter to --ifconfig-pool (netmask) is only valid in --dev tap mode");
-@@ -1797,7 +1857,7 @@
+@@ -1944,7 +2004,7 @@
    /*
     * Check consistency of replay options
     */
@@ -797,7 +797,7 @@
        && (options->replay_window != defaults.replay_window
  	  || options->replay_time != defaults.replay_time))
      msg (M_USAGE, "--replay-window only makes sense with --proto udp");
-@@ -1966,6 +2026,10 @@
+@@ -2116,6 +2176,10 @@
      {
        if (ce->proto == PROTO_TCPv4)
  	ce->proto = PROTO_TCPv4_CLIENT;
@@ -825,7 +825,7 @@
  static inline void
 --- route.c	2009-10-01 20:02:18.000000000 +0200
 +++ route.c	2010-02-22 00:35:18.000000000 +0100
-@@ -572,13 +572,23 @@
+@@ -599,13 +599,23 @@
  	  if (!local)
  	    {
  	      /* route remote host to original default gateway */
@@ -856,8 +856,8 @@
  	    }
  
  	  /* route DHCP/DNS server traffic through original default gateway */
---- socket.c	2009-12-11 05:59:45.000000000 +0100
-+++ socket.c	2010-02-22 00:35:18.000000000 +0100
+--- socket.c	2010-07-26 08:15:03.000000000 +0200
++++ socket.c	2010-08-24 18:30:17.000000000 +0200
 @@ -37,23 +37,28 @@
  #include "memdbg.h"
  
@@ -894,7 +894,7 @@
  }
  
  /*
-@@ -247,6 +252,201 @@
+@@ -277,6 +282,201 @@
    return (flags & GETADDR_HOST_ORDER) ? ntohl (ia.s_addr) : ia.s_addr;
  }
  
@@ -1096,7 +1096,7 @@
  /*
   * We do our own inet_aton because the glibc function
   * isn't very good about error checking.
-@@ -381,20 +581,53 @@
+@@ -411,20 +611,53 @@
  	       bool *changed,
  	       const unsigned int sockflags)
  {
@@ -1161,7 +1161,7 @@
  }
  
  static int
-@@ -587,6 +820,44 @@
+@@ -617,6 +850,44 @@
    return sd;
  }
  
@@ -1206,7 +1206,7 @@
  static void
  create_socket (struct link_socket *sock)
  {
-@@ -594,6 +865,7 @@
+@@ -624,6 +895,7 @@
    if (sock->info.proto == PROTO_UDPv4)
      {
        sock->sd = create_socket_udp (sock->sockflags);
@@ -1214,7 +1214,7 @@
  
  #ifdef ENABLE_SOCKS
        if (sock->socks_proxy)
-@@ -605,6 +877,18 @@
+@@ -635,6 +907,18 @@
      {
        sock->sd = create_socket_tcp ();
      }
@@ -1233,7 +1233,7 @@
    else
      {
        ASSERT (0);
-@@ -642,7 +926,12 @@
+@@ -672,7 +956,12 @@
  		  struct link_socket_actual *act,
  		  const bool nowait)
  {
@@ -1247,7 +1247,7 @@
    socket_descriptor_t new_sd = SOCKET_UNDEFINED;
  
    CLEAR (*act);
-@@ -650,7 +939,7 @@
+@@ -680,7 +969,7 @@
  #ifdef HAVE_GETPEERNAME
    if (nowait)
      {
@@ -1256,7 +1256,7 @@
  
        if (!socket_defined (new_sd))
  	msg (D_LINK_ERRORS | M_ERRNO_SOCK, "TCP: getpeername() failed");
-@@ -663,7 +952,7 @@
+@@ -693,7 +982,7 @@
  #endif
    else
      {
@@ -1265,7 +1265,7 @@
      }
  
  #if 0 /* For debugging only, test the effect of accept() failures */
-@@ -679,7 +968,8 @@
+@@ -709,7 +998,8 @@
      {
        msg (D_LINK_ERRORS | M_ERRNO_SOCK, "TCP: accept(%d) failed", sd);
      }
@@ -1275,7 +1275,7 @@
      {
        msg (D_LINK_ERRORS, "TCP: Received strange incoming connection with unknown address length=%d", remote_len);
        openvpn_close_socket (new_sd);
-@@ -780,7 +1070,7 @@
+@@ -810,7 +1100,7 @@
  {
    struct gc_arena gc = gc_new ();
  
@@ -1284,7 +1284,7 @@
      {
        const int errnum = openvpn_errno_socket ();
        msg (M_FATAL, "%s: Socket bind failed on local address %s: %s",
-@@ -801,7 +1091,7 @@
+@@ -831,7 +1121,7 @@
  
  #ifdef CONNECT_NONBLOCK
    set_nonblock (sd);
@@ -1293,7 +1293,7 @@
    if (status)
      status = openvpn_errno_socket ();
    if (status == EINPROGRESS)
-@@ -859,7 +1149,7 @@
+@@ -889,7 +1179,7 @@
  	}
      }
  #else
@@ -1302,7 +1302,7 @@
    if (status)
      status = openvpn_errno_socket ();
  #endif
-@@ -937,7 +1227,20 @@
+@@ -967,7 +1257,20 @@
        if (*signal_received)
  	goto done;
  
@@ -1324,7 +1324,7 @@
        if (bind_local)
          socket_bind (*sd, local, "TCP Client");
        update_remote (remote_dynamic, remote, remote_changed, sockflags);
-@@ -1002,15 +1305,54 @@
+@@ -1032,15 +1335,54 @@
    /* resolve local address if undefined */
    if (!addr_defined (&sock->info.lsa->local))
      {
@@ -1385,7 +1385,7 @@
      }
    
    /* bind to local address/port */
-@@ -1033,14 +1375,32 @@
+@@ -1063,14 +1405,32 @@
  		volatile int *signal_received)
  {
    struct gc_arena gc = gc_new ();
@@ -1420,7 +1420,7 @@
  
  	  if (sock->remote_host)
  	    {
-@@ -1083,13 +1443,31 @@
+@@ -1113,13 +1473,31 @@
  		  ASSERT (0);
  		}
  
@@ -1459,7 +1459,7 @@
  	      dmsg (D_SOCKET_DEBUG, "RESOLVE_REMOTE flags=0x%04x phase=%d rrs=%d sig=%d status=%d",
  		   flags,
  		   phase,
-@@ -1109,8 +1487,19 @@
+@@ -1139,8 +1517,19 @@
  		  goto done;
  		}
  	    }
@@ -1481,7 +1481,7 @@
  	}
    
        /* should we re-use previous active remote address? */
-@@ -1227,7 +1616,11 @@
+@@ -1257,7 +1646,11 @@
    if (mode == LS_MODE_TCP_ACCEPT_FROM)
      {
        ASSERT (accept_from);
@@ -1494,7 +1494,7 @@
        ASSERT (!sock->inetd);
        sock->sd = accept_from->sd;
      }
-@@ -1351,7 +1744,11 @@
+@@ -1385,7 +1778,11 @@
  	goto done;
  
        /* TCP client/server */
@@ -1507,7 +1507,7 @@
  	{
  	  switch (sock->mode)
  	    {
-@@ -1386,7 +1783,11 @@
+@@ -1420,7 +1817,11 @@
  	      ASSERT (0);
  	    }
  	}
@@ -1520,7 +1520,7 @@
  	{
  
  #ifdef GENERAL_PROXY_SUPPORT
-@@ -1473,8 +1874,8 @@
+@@ -1507,8 +1908,8 @@
  	  sock->remote_port = sock->proxy_dest_port;
  	  sock->did_resolve_remote = false;
  
@@ -1531,7 +1531,7 @@
  
  	  resolve_remote (sock, 1, NULL, signal_received);
  
-@@ -1489,7 +1890,7 @@
+@@ -1523,7 +1924,7 @@
        if (remote_changed)
  	{
  	  msg (M_INFO, "TCP/UDP: Dynamic remote address changed during TCP connection establishment");
@@ -1540,7 +1540,7 @@
  	}
      }
  
-@@ -1678,13 +2079,20 @@
+@@ -1709,13 +2110,20 @@
  {
    struct gc_arena gc = gc_new ();
  
@@ -1567,7 +1567,7 @@
    gc_free (&gc);
  }
  
-@@ -1699,10 +2107,25 @@
+@@ -1730,10 +2138,25 @@
  {
    const struct link_socket_addr *lsa = info->lsa;
  
@@ -1595,7 +1595,7 @@
    else
      return 0;
  }
-@@ -1929,28 +2352,61 @@
+@@ -1960,28 +2383,61 @@
  		   const unsigned int flags,
  		   struct gc_arena *gc)
  {
@@ -1672,7 +1672,7 @@
  }
  
  const char *
-@@ -1970,12 +2426,40 @@
+@@ -2001,12 +2457,40 @@
        struct buffer out = alloc_buf_gc (128, gc);
        buf_printf (&out, "%s", print_sockaddr_ex (&act->dest, separator, flags, gc));
  #if ENABLE_IP_PKTINFO
@@ -1718,7 +1718,7 @@
  	}
  #endif
        return BSTR (&out);
-@@ -2012,20 +2496,39 @@
+@@ -2043,20 +2527,39 @@
  {
    char name_buf[256];
  
@@ -1768,7 +1768,7 @@
  }
  
  void
-@@ -2035,7 +2538,8 @@
+@@ -2066,7 +2569,8 @@
      {
        struct openvpn_sockaddr si;
        CLEAR (si);
@@ -1778,7 +1778,7 @@
        setenv_sockaddr (es, name_prefix, &si, flags);
      }
  }
-@@ -2056,16 +2560,63 @@
+@@ -2087,16 +2591,63 @@
  struct proto_names {
    const char *short_form;
    const char *display_form;
@@ -1847,7 +1847,7 @@
  int
  ascii2proto (const char* proto_name)
  {
-@@ -2105,6 +2656,45 @@
+@@ -2136,6 +2687,45 @@
    return BSTR (&out);
  }
  
@@ -1893,7 +1893,7 @@
  /*
   * Given a local proto, return local proto
   * if !remote, or compatible remote proto
-@@ -2119,10 +2709,15 @@
+@@ -2150,10 +2740,15 @@
    ASSERT (proto >= 0 && proto < PROTO_N);
    if (remote)
      {
@@ -1913,7 +1913,7 @@
      }
    return proto;
  }
-@@ -2181,10 +2776,24 @@
+@@ -2212,10 +2807,24 @@
  #if ENABLE_IP_PKTINFO
  
  #pragma pack(1) /* needed to keep structure size consistent for 32 vs. 64-bit architectures */
@@ -1940,7 +1940,7 @@
  };
  #pragma pack()
  
-@@ -2195,15 +2804,15 @@
+@@ -2226,15 +2835,15 @@
  				    struct link_socket_actual *from)
  {
    struct iovec iov;
@@ -1959,7 +1959,7 @@
    mesg.msg_namelen = fromlen;
    mesg.msg_control = &opi;
    mesg.msg_controllen = sizeof (opi);
-@@ -2220,9 +2829,21 @@
+@@ -2251,9 +2860,21 @@
  	  && cmsg->cmsg_len >= sizeof (opi))
  	{
  	  struct in_pktinfo *pkti = (struct in_pktinfo *) CMSG_DATA (cmsg);
@@ -1983,7 +1983,7 @@
      }
    return fromlen;
  }
-@@ -2234,18 +2855,20 @@
+@@ -2265,18 +2886,20 @@
  			    int maxsize,
  			    struct link_socket_actual *from)
  {
@@ -2010,7 +2010,7 @@
    return buf->len;
  }
  
-@@ -2282,26 +2905,54 @@
+@@ -2313,26 +2936,54 @@
    struct iovec iov;
    struct msghdr mesg;
    struct cmsghdr *cmsg;
@@ -2080,7 +2080,7 @@
    return sendmsg (sock->sd, &mesg, 0);
  }
  
-@@ -2322,11 +2973,11 @@
+@@ -2353,11 +3004,11 @@
        int status;
  
        /* reset buf to its initial state */
@@ -2094,7 +2094,7 @@
  	{
  	  stream_buf_get_next (&sock->stream_buf, &sock->reads.buf);
  	}
-@@ -2346,10 +2997,15 @@
+@@ -2377,10 +3028,15 @@
        ASSERT (ResetEvent (sock->reads.overlapped.hEvent));
        sock->reads.flags = 0;
  
@@ -2112,7 +2112,7 @@
  	  status = WSARecvFrom(
  			       sock->sd,
  			       wsabuf,
-@@ -2361,7 +3017,7 @@
+@@ -2392,7 +3048,7 @@
  			       &sock->reads.overlapped,
  			       NULL);
  	}
@@ -2121,7 +2121,7 @@
  	{
  	  sock->reads.addr_defined = false;
  	  status = WSARecv(
-@@ -2381,8 +3037,14 @@
+@@ -2412,8 +3068,14 @@
  
        if (!status) /* operation completed immediately? */
  	{
@@ -2136,7 +2136,7 @@
  
  	  sock->reads.iostate = IOSTATE_IMMEDIATE_RETURN;
  
-@@ -2441,12 +3103,22 @@
+@@ -2472,12 +3134,22 @@
        ASSERT (ResetEvent (sock->writes.overlapped.hEvent));
        sock->writes.flags = 0;
  
@@ -2162,7 +2162,7 @@
  
  	  status = WSASendTo(
  			       sock->sd,
-@@ -2459,7 +3131,7 @@
+@@ -2490,7 +3162,7 @@
  			       &sock->writes.overlapped,
  			       NULL);
  	}
@@ -2171,7 +2171,7 @@
  	{
  	  /* destination address for TCP writes was established on connection initiation */
  	  sock->writes.addr_defined = false;
-@@ -2598,13 +3270,44 @@
+@@ -2629,13 +3301,44 @@
    if (from)
      {
        if (ret >= 0 && io->addr_defined)
@@ -2218,8 +2218,8 @@
      }
    
    if (buf)
---- socket.h	2009-10-01 20:02:18.000000000 +0200
-+++ socket.h	2010-02-22 00:35:18.000000000 +0100
+--- socket.h	2010-07-12 03:54:09.000000000 +0200
++++ socket.h	2010-08-24 18:30:17.000000000 +0200
 @@ -70,7 +70,13 @@
  struct openvpn_sockaddr
  {
@@ -2285,7 +2285,7 @@
  
  #if UNIX_SOCK_SUPPORT
  
-@@ -450,6 +476,11 @@
+@@ -455,6 +481,11 @@
  #define GETADDR_UPDATE_MANAGEMENT_STATE (1<<8)
  #define GETADDR_RANDOMIZE             (1<<9)
  
@@ -2297,7 +2297,7 @@
  in_addr_t getaddr (unsigned int flags,
  		   const char *hostname,
  		   int resolve_retry_seconds,
-@@ -460,23 +491,38 @@
+@@ -472,23 +503,38 @@
   * Transport protocol naming and other details.
   */
  
@@ -2342,7 +2342,7 @@
  
  extern const int proto_overhead[];
  
-@@ -500,7 +546,7 @@
+@@ -512,7 +558,7 @@
  static inline bool
  link_socket_proto_connection_oriented (int proto)
  {
@@ -2351,7 +2351,7 @@
  }
  
  static inline bool
-@@ -515,7 +561,31 @@
+@@ -527,7 +573,31 @@
  static inline bool
  addr_defined (const struct openvpn_sockaddr *addr)
  {
@@ -2384,7 +2384,7 @@
  }
  
  static inline bool
-@@ -527,20 +597,50 @@
+@@ -539,20 +609,50 @@
  static inline bool
  addr_match (const struct openvpn_sockaddr *a1, const struct openvpn_sockaddr *a2)
  {
@@ -2440,7 +2440,7 @@
  }
  
  static inline bool
-@@ -553,6 +653,74 @@
+@@ -565,6 +665,74 @@
      : addr_port_match (a1, a2);
  }
  
@@ -2515,7 +2515,7 @@
  static inline bool
  link_socket_actual_match (const struct link_socket_actual *a1, const struct link_socket_actual *a2)
  {
-@@ -609,14 +777,18 @@
+@@ -621,14 +789,18 @@
  {
    if (buf->len > 0)
      {
@@ -2542,7 +2542,7 @@
      }
    return false;
  }
-@@ -722,7 +894,7 @@
+@@ -734,7 +906,7 @@
  		  int maxsize,
  		  struct link_socket_actual *from)
  {
@@ -2551,7 +2551,7 @@
      {
        int res;
  
-@@ -733,10 +905,10 @@
+@@ -745,10 +917,10 @@
  #endif
        return res;
      }
@@ -2564,7 +2564,7 @@
        return link_socket_read_tcp (sock, buf);
      }
    else
-@@ -791,13 +963,14 @@
+@@ -803,13 +975,14 @@
  					   struct buffer *buf,
  					   struct link_socket_actual *to);
  
@@ -2582,7 +2582,7 @@
  }
  
  static inline int
-@@ -828,11 +1001,11 @@
+@@ -840,11 +1013,11 @@
  		   struct buffer *buf,
  		   struct link_socket_actual *to)
  {
@@ -2681,7 +2681,7 @@
  	msg (M_WARN | M_ERRNO, "Can't set interface info: %s",
 --- win32.h	2009-11-20 14:09:14.000000000 +0100
 +++ win32.h	2010-02-22 00:35:18.000000000 +0100
-@@ -193,7 +193,10 @@
+@@ -195,7 +195,10 @@
    DWORD flags;
    int status;
    bool addr_defined;

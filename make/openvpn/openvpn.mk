@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.1.1)
+$(call PKG_INIT_BIN, 2.1.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=b273ed2b5ec8616fb9834cde8634bce7
+$(PKG)_SOURCE_MD5:=543a30dafcdefe1d67c0e47b80741755
 $(PKG)_SITE:=http://openvpn.net/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/openvpn
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
