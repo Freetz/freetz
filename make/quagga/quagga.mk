@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.99.16)
+$(call PKG_INIT_BIN, 0.99.17)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=350fb150be526cdfc4d2b093cb4d69a7
+$(PKG)_SOURCE_MD5:=37b9022adca04b03863d2d79787e643f
 $(PKG)_SITE:=http://www.quagga.net/download
 $(PKG)_STARTLEVEL=82
 
