@@ -1,0 +1,33 @@
+--- checkmaild.c	2008-03-09 01:39:26.000000000 +0100
++++ checkmaild.c	2010-08-25 22:19:28.000000000 +0200
+@@ -220,7 +220,7 @@
+ 	}
+ 
+ 	// check for update
+-	if(!startdelay || !intervall || !logging || !logmode  || !recvmail)
++	if(!startdelay || !logging || !logmode  || !recvmail)
+ 	{
+ 		slog ? syslog(LOG_DAEMON | LOG_INFO, "missing Param(s), update Config") : printf("CheckMailD <missing Param(s), update Config>\n");
+ 
+@@ -236,7 +236,7 @@
+ 			recvmail = 'Y';
+ 		}
+ 		
+-		if(!intervall)
++		if(intervall<0)
+ 		{
+ 			intervall = 15;
+ 		}
+@@ -2498,9 +2498,9 @@
+ 	free(NOTIFILE);
+ 	free(EVFILE);
+ 	
+-	/* LED Off */	
+-	if(lednot == 'Y')
+-		LEDOff(ledmajor);
++//	/* LED Off */	
++//	if(lednot == 'Y')
++//		LEDOff(ledmajor);
+ 	
+ 	time(&tt);	
+ 	strftime(timeinfo, sizeof(timeinfo), "%d.%m.%Y - %H:%M:%S", localtime(&tt));
