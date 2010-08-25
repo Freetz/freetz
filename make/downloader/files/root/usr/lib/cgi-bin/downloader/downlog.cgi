@@ -8,7 +8,7 @@ TITLE='$(lang de:"Downloader - Protokoll" en:"Downloader - log")'
 DOWNLOGFILE='/var/log/downloader.log'
 
 cgi_begin "$TITLE"
-sec_begin "$DOWNLOGFILE"
+echo "<h1>$DOWNLOGFILE</h1>"
 
 if [ -n "$QUERY_STRING" ]; then
 	cmd=$(cgi_param cmd)
@@ -32,7 +32,7 @@ EOF
 	esac
 else
 	if [ -r "$DOWNLOGFILE" ]; then
-		echo -n '<pre style="width: 500px;">'
+		echo -n '<pre class="log">'
 		html < "$DOWNLOGFILE"
 		echo '</pre>'
 		echo -n "<div class="btn"><form class="btn" action="$SELF"><input type="hidden" name="cmd" value="remove"><input type="submit" value='$(lang de:"Protokolldatei l&ouml;schen" en:"Delete log file")'></form></div>"
@@ -43,6 +43,5 @@ EOF
 	fi
 fi
 back_button cgi downloader
-sec_end
 
 cgi_end
