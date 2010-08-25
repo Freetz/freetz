@@ -6,7 +6,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /mod/etc/conf/rrdstats.cfg
 
 DATESTRING=$(date +'%Y-%m-%d %X')
-[ -n "$_cgi_width" ] && let WIDTH=$(($_cgi_width-230-100)) || let WIDTH="500"
+[ -n "$_cgi_width" ] && let WIDTH=_cgi_width-30 || let WIDTH=500
 let HEIGHT=$(($WIDTH*$RRDSTATS_DIMENSIONY/$RRDSTATS_DIMENSIONX))
 PERIODE="24h"
 RED=#EA644A
