@@ -1,10 +1,3 @@
-update_inetd() {
-	if [ -x /etc/init.d/rc.inetd ]; then
-		/etc/init.d/rc.inetd config "$1"
-	else
-		echo 'Not able to run rc.inetd, failed.'
-	fi
-}
 
 start_stop() {
 	local startORstop=$1
@@ -15,7 +8,7 @@ start_stop() {
 	case "$startORstop" in
 		start)
 			local newstatus=$(rc_status ${4-$2})
-			[ "$oldstatus" == inetd -o "$newstatus" == inetd ] && update_inetd "$package"
+			[ "$oldstatus" == inetd -o "$newstatus" == inetd ] && /etc/init.d/rc.inetd config "$package"
 			[ "$oldstatus" != stopped -a "$newstatus" != inetd ] && "$rc" start
 			;;
 		stop)
