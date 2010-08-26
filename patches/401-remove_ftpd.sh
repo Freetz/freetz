@@ -3,8 +3,8 @@ if [ "$FREETZ_HAS_USB_HOST" != "y" -o "$FREETZ_REMOVE_FTPD" == "y" ]; then
 	echo2 "Script rc.ftpd for AVM-ftpd was not integrated into image"
 	rm_files "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.ftpd"
 fi
-if [ "$FREETZ_PACKAGE_INETD" != "y" ]; then
-	echo2 "Files for inetd of AVM-smbd were not integrated into image"
+if [ "$FREETZ_HAS_USB_HOST" != "y" -o "$FREETZ_REMOVE_FTPD" == "y" -o "$FREETZ_PACKAGE_INETD" != "y" ]; then
+	echo2 "Files for inetd of AVM-ftpd were not integrated into image"
 	rm_files "${FILESYSTEM_MOD_DIR}/etc/default.ftpd/ftpd.inetd"
 		 "${FILESYSTEM_MOD_DIR}/bin/inetdftp"
 fi
