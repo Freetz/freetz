@@ -1,0 +1,18 @@
+#!/bin/sh
+[ -r /var/env.cache ] && . /var/env.cache
+# from AVM's /bin/inetdftp
+
+WEBDAVCONTROL=/etc/webdav_control
+
+test -x $WEBDAVCONTROL && $WEBDAVCONTROL start >/dev/null 2>&1 &
+
+AVM_FTP_OPTION=""
+if [ "$(echo usbhost.users_enabled|usbcfgctl -s)" == "yes" ] ; then
+	AVM_FTP_OPTION="-U"
+else
+	[ "$(echo usbhost.readonly|usbcfgctl -s)" != "no" ] && AVM_FTP_OPTION="-h"
+fi
+/sbin/ftpd -q -t 120 $AVM_FTP_OPTION -h $(echo $CONFIG_PRODUKT_NAME |tr -d " ")
+
+test -x $WEBDAVCONTROL && $WEBDAVCONTROL stop_last >/dev/null 2>&1 &
+

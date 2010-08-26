@@ -390,7 +390,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			done
 		fi
 	done
-	
+
 	echo0 "applying patches"
 
 	echo1 "applying patches (${FREETZ_TYPE_STRING}-${FREETZ_TYPE_LANG_STRING})"
@@ -954,11 +954,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Remove /etc/init.d/rc.external (for running services)
 	[ "$EXTERNAL_ENABLED" == "y" ] || rm "$MOD_DIR/filesystem/etc/init.d/rc.external"
-
-	# Remove /etc/init.d/rc.ftpd
-	if [ ! "$FREETZ_HAS_USB_HOST" == "y" ] || [ "$FREETZ_REMOVE_FTPD" == "y" ]; then
-		rm -f "$MOD_DIR/filesystem/etc/init.d/rc.ftpd" && echo2 "Starter script rc.ftpd for AVM-FTPD was not integrated into image"
-	fi
 
 	# Remove /usr/lib/libmodmount.sh
 	if [ "$FREETZ_PATCH_FREETZMOUNT" == "y" ]; then

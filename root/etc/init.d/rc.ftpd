@@ -4,7 +4,7 @@
 [ -r /var/env.cache ] && . /var/env.cache
 
 DAEMON=ftpd
-DAEMON_LONG_NAME="$DAEMON AVM FTP Server"
+DAEMON_LONG_NAME="AVM $DAEMON"
 
 [ -r "/mod/etc/conf/${CONF_NAME-$DAEMON}.cfg" ] || touch "/mod/etc/conf/${CONF_NAME-$DAEMON}.cfg" > /dev/null 2>&1
 
@@ -138,6 +138,11 @@ stop() {
 	fi
 }
 
+set_mode() {
+	echo $1 > /tmp/.status.$DAEMON
+	/etc/init.d/rc.inetd config $DAEMON
+}
+
 case $1 in
 	""|load)
 		[ -x /usr/lib/cgi-bin/$DAEMON.cgi ] && modreg cgi $DAEMON 'AVM-ftpd'
@@ -165,7 +170,17 @@ case $1 in
 		fi
 		start
 		;;
+	inetd_enable)
+		set_mode inetd
+		;;
+	inetd_disable)
+		set_mode stopped
+		;;
 	status)
+		if [ -r /tmp/.status.$DAEMON ]; then
+			cat /tmp/.status.$DAEMON 2>/dev/null
+			exit
+		fi
 		if [ "$AVM_FTP_ENABLED" == "no" ]; then
 			echo 'disabled'
 			return
@@ -192,7 +207,7 @@ case $1 in
 		modlib_reload
 		;;
 	*)
-		echo "Usage: $0 [start|stop|kill|restart|status|pid|reload]" 1>&2
+		echo "Usage: $0 [start|stop|kill|restart|inetd_enable|inetd_disable|status|pid|reload]" 1>&2
 		exit 1
 		;;
 esac

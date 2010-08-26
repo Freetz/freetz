@@ -1,79 +1,12 @@
 #!/bin/sh
 
-INETD_RC_SCRIPT="/etc/init.d/rc.inetd"
-INETD_FTPD_CONFIG="/var/mod/etc/inetd/ftpd.inetd"
-INETD_SMBD_CONFIG="/var/mod/etc/inetd/smbd.inetd"
-FTPD_RC_SCRIPT="/etc/init.d/rc.ftpd"
-SMBD_RC_SCRIPT="/etc/init.d/rc.smbd"
-
-use()
+usage()
 {
-	echo "use: inetdctl enable|disable servicename"
-	exit 127
+  echo "usage: inetdctl [enable|disable] [ftpd|smbd]"
+  exit 1
 }
 
-reload_inetd()
-{
-	if [ -x ${INETD_RC_SCRIPT} ]; then
-		${INETD_RC_SCRIPT} config AVM-$1
-	else
-		killall -HUP inetd
-	fi
-	return $?
-}
+[ "$1" != "enable" -a "$1" != "disable" ] && usage
+[ "$2" != "ftpd" -a "$2" != "smbd" ] && usage
+/etc/init.d/rc.$2 inetd_$1
 
-if [ "$CONFIG_WEBDAV" = "y" ]; then
-	WEBDAV_WRAPPER=/usr/bin/webdav_wrapper
-else
-	WEBDAV_WRAPPER=
-fi
-if [ "$CONFIG_IPV6" = "y" ]; then
-	TCP=tcp6
-else
-	TCP=tcp
-fi
-
-mkdir -p /var/mod/etc/inetd
-
-[ $# -ne 2 ] && use
-
-[ "$1" == "enable" ] && rc_command="start" || rc_command="stop"
-
-case "$2" in
-	ftpd)
-		if [ -x ${FTPD_RC_SCRIPT} ]; then
-			${FTPD_RC_SCRIPT} $rc_command
-		else
-			if [ "$1" == "enable" ]; then
-				# enable ftpd
-				PRODUCT_NAME_WITHOUT_SPACES=`echo $CONFIG_PRODUKT_NAME |tr -d " "`
-				echo "21 stream $TCP nowait root $WEBDAV_WRAPPER /sbin/ftpd /sbin/ftpd -q -t 120 -h $PRODUCT_NAME_WITHOUT_SPACES" > ${INETD_FTPD_CONFIG}
-			else
-				rm -f ${INETD_FTPD_CONFIG} > /dev/null 2>&1
-			fi
-			reload_inetd ftpd
-		fi
-		;;
-
-	smbd)
-		if [ -x ${SMBD_RC_SCRIPT} ]; then
-			${SMBD_RC_SCRIPT} $rc_command
-		else
-			if [ "$1" = "enable" ]; then
-				# enable smbd
-				echo "139 stream $TCP nowait root $WEBDAV_WRAPPER /sbin/smbd /sbin/smbd" > ${INETD_SMBD_CONFIG}
-				echo "445 stream $TCP nowait root $WEBDAV_WRAPPER /sbin/smbd /sbin/smbd" >> ${INETD_SMBD_CONFIG}
-			else
-				rm -f ${INETD_SMBD_CONFIG} > /dev/null 2>&1
-			fi
-			reload_inetd smbd
-		fi
-		;;
-
-	*)
-		echo servicename unknown
-		use
-		;;
-esac
-
-exit $?

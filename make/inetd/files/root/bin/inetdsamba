@@ -1,0 +1,12 @@
+#!/bin/sh
+[ -r /var/env.cache ] && . /var/env.cache
+# from AVM's /bin/inetdsamba
+
+WEBDAVCONTROL=/etc/webdav_control
+
+test -x $WEBDAVCONTROL && $WEBDAVCONTROL start >/dev/null 2>&1 &
+
+/sbin/smbd
+
+test -x $WEBDAVCONTROL && $WEBDAVCONTROL stop_last >/dev/null 2>&1 &
+

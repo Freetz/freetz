@@ -15,7 +15,7 @@ start() {
 	echo "rc.mod version $(cat /etc/.freetz-version)"
 
 	# Basic Packages
-	for pkg in crond swap telnetd webcfg websrv dsld ftpd multid; do
+	for pkg in crond swap telnetd webcfg websrv dsld ftpd smbd multid; do
 		local pkg_default=/etc/default.$pkg
 		[ -d "$pkg_default" -a ! -e "/mod${pkg_default}" ] && ln -s "$pkg_default" "/mod${pkg_default}"
 		local rc="/etc/init.d/rc.$pkg"
