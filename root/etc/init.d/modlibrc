@@ -245,14 +245,8 @@ modlib_start()
 		echo "${DAEMON_LONG_NAME} is disabled." 1>&2
 		exit 1
 	fi
-	if [ "$DAEMON_ENABLED" == "inetd" ]; then
-		if [ ! -x /etc/init.d/rc.inetd ]; then
-			echo "WARNING: ${DAEMON_LONG_NAME} could not find inetd." 1>&2
-		else
-			config
-			/etc/init.d/rc.inetd config $DAEMON
-			exit
-		fi
+	if [ "$DAEMON_ENABLED" == "inetd" -a ! -x /etc/init.d/rc.inetd ]; then
+		echo "WARNING: ${DAEMON_LONG_NAME} could not find inetd." 1>&2
 	fi
 
 	modlib_check_running
@@ -265,7 +259,8 @@ modlib_start()
 			return $?
 			;;
 		5)
-			echo "${DAEMON_LONG_NAME} is started via inetd." 1>&2
+			config
+			/etc/init.d/rc.inetd config $DAEMON
 			;;
 		*)
 			echo "${DAEMON_LONG_NAME} start prohibited, status is uncertain!" 1>&2

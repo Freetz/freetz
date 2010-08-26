@@ -8,8 +8,8 @@ start_stop() {
 	case "$startORstop" in
 		start)
 			local newstatus=$(rc_status ${4-$2})
-			[ "$oldstatus" == inetd -o "$newstatus" == inetd ] && /etc/init.d/rc.inetd config "$package"
-			[ "$oldstatus" != stopped -a "$newstatus" != inetd ] && "$rc" start
+			[ "$oldstatus" == inetd -a "$newstatus" != inetd ] && /etc/init.d/rc.inetd config "$package"
+			[ "$oldstatus" != stopped ] && "$rc" start
 			;;
 		stop)
 			[ "$oldstatus" != stopped ] && "$rc" stop
