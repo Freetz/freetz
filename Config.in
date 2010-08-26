@@ -2414,11 +2414,11 @@ menu "Plugin selection"
 
 	config FREETZ_AVMPLUGINS_SAMBA
 		bool "SAMBA"
+		depends on ! FREETZ_PACKAGE_SAMBA
 		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 		default n
 		help
 			Integrates AVM's Samba Fileserver
-			Not recommended if you are using Freetz-Samba!
 
 	config FREETZ_AVMPLUGINS_TAM
 		bool "TAM"
