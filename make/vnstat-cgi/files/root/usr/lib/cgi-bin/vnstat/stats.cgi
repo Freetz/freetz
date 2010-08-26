@@ -28,7 +28,7 @@ done
 #show pix
 if [ -n "$netif" ]; then
 	#subpages
-	echo "<h1>vnstat: $netif</h1>"
+	echo "<p><font size=+1><b>vnstat: $netif</b></font></p>"
 	for period in summary hours days months top10; do
 		[ $ifcnt -ne 1 ] && echo "<a href=\"$SCRIPT_NAME\" class='image'>"
 		gen_pic $netif $period
@@ -37,7 +37,7 @@ if [ -n "$netif" ]; then
 	[ $ifcnt -ne 1 ] && echo "<br><input type=\"button\" value=\"Back\" onclick=\"javascript:history.go(-1)\" />"
 else
 	#mainpage
-	echo "<h1>vnstat</h1>"
+	echo "<p><font size=+1><b>vnstat</b></font></p>"
 	[ -z "$VNSTAT_INTERFACES" ] && VNSTAT_INTERFACES=$(ls /var/lib/vnstat/ 2>/dev/null)
 	for dbfile in $VNSTAT_INTERFACES; do
 		echo "<a href=\"$SCRIPT_NAME?netif=$dbfile\" class='image'>"
