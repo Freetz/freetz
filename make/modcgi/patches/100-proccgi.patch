@@ -1,0 +1,340 @@
+--- proccgi/proccgi.c.orig	2006-04-04 21:45:45.574815688 +0200
++++ proccgi/proccgi.c	2006-04-04 21:55:39.985451536 +0200
+@@ -8,6 +8,12 @@
+  * fp@fpx.de
+  *
+  * Last changed 11/06/1997
++ *
++ * Patched by
++ * 
++ * Daniel Eiband
++ * eiband@online.de
++ *
+  */
+ 
+ #include <stdio.h>
+@@ -17,6 +23,15 @@
+ #include <memory.h>
+ 
+ /*
++ * Single linked string list
++ */
++
++struct llist {
++  char *str;
++  struct llist *next;
++};
++
++/*
+  * Duplicate string
+  */
+ 
+@@ -29,7 +44,7 @@
+     return NULL;
+ 
+   if ((result = (char *) malloc (strlen (string) + 1)) == NULL) {
+-    fprintf (stderr, "proccgi -- out of memory dupping %d bytes\n",
++    fprintf (stderr, "out of memory dupping %d bytes\n",
+ 	     (int) strlen (string));
+     return NULL;
+   }
+@@ -59,17 +74,17 @@
+       result = FP_strdup (p);
+   }
+   else if (strcmp (method, "POST") == 0) {
+-    if ((length = atoi (getenv ("CONTENT_LENGTH"))) == 0)
++    if ((length = atoi (getenv ("CONTENT_LENGTH"))) <= 0)
+       return NULL;
+ 
+     if ((result = malloc (length + 1)) == NULL) {
+-      fprintf (stderr, "proccgi -- out of memory allocating %d bytes\n",
++      fprintf (stderr, "out of memory allocating %d bytes\n",
+ 	       length);
+       return NULL;
+     }
+ 
+     if ((ts = fread (result, sizeof (char), length, stdin)) < length) {
+-      fprintf (stderr, "proccgi -- error reading post data, %d bytes read, %d expected\n",
++      fprintf (stderr, "error reading post data, %d bytes read, %d expected\n",
+ 	       ts, length);
+     }
+     result[length] = '\0';
+@@ -119,15 +134,110 @@
+ }
+ 
+ /*
++ * Parse input string and create a single linked string list
++ * of tokens delimited by ':' in the input string
++ */
++
++struct llist *
++ParseVars (char *arg)
++{
++  char *ptr, *data = FP_strdup (arg);
++  struct llist *newv, *list = NULL;
++  struct llist ** l = &list;
++  unsigned int i;
++
++  if (data == NULL)
++    return NULL;
++
++  ptr = strtok (data, ":");
++  while (ptr) {
++    if ((newv = malloc (sizeof (struct llist))) == NULL) {
++      fprintf (stderr, "out of memory allocating %d bytes\n",
++               sizeof (struct llist));
++      return NULL;
++    }
++
++    if ((newv->str = FP_strdup (ptr)) == NULL)
++      return NULL;
++
++    for (i = 0; i < strlen (newv->str); i++) {
++      if (isalnum (newv->str[i]))
++        newv->str[i] = toupper (newv->str[i]);
++      else if (newv->str[i] == '-')
++        newv->str[i] = '_';
++      else if (newv->str[i] != '_') {
++        fprintf (stderr, "not all vars are alpha-numeric!\n");
++        return NULL;
++      }
++    }
++
++    *l = newv;
++    l = &(newv->next);
++
++    ptr = strtok (NULL, ":");
++  }
++
++  free (data);
++  return list;
++}
++
++/*
++ * Free a single linked list of strings
++ */
++
++void
++FreeVars (struct llist *list)
++{
++  struct llist *c, *i = list;
++
++  while (i != NULL) {
++    c = i;
++    i = i->next;
++
++    if (c->str != NULL) {
++      free (c->str);
++    }
++    free (c);
++  }
++}
++
++/*
++ * Returns 1 if the input string is in the single linked
++ * string list, 0 otherwise
++ */
++
++int
++IsVar (char *var, struct llist *list)
++{
++  struct llist *i = list;
++
++  if (var == NULL) {
++    return 0;
++  }
++
++  while (i != NULL) {
++    if (i->str != NULL) {
++      if (strcmp (i->str, var) == 0)
++        return 1;
++    }
++    i = i->next;
++  }
++
++  return 0;
++}
++
++/*
+  * break into attribute/value pair. Mustn't use strtok, which is
+  * already used one level below. We assume that the attribute doesn't
+  * have any special characters.
+  */
+ 
+ void
+-HandleString (char *input)
++HandleString (char *prefix, char *input, struct llist *list)
+ {
+   char *data, *ptr, *p2;
++  char lastc = 0;
++  unsigned int i;
+ 
+   if (input == NULL) {
+     return;
+@@ -136,6 +246,10 @@
+   data = FP_strdup   (input);
+   ptr  = ParseString (data);
+ 
++  if (ptr == NULL) {
++    return;
++  }
++
+   /*
+    * Security:
+    *
+@@ -151,33 +265,107 @@
+   *ptr = '\0';
+   p2 = ptr+1;
+ 
+-  fprintf (stdout, "FORM_%s=\"", data);
++  for (i = 0; i < strlen(data); i++)
++    data[i] = toupper (data[i]);
++
++  if (IsVar (data, list) == 0)
++    return;
++
++  //fprintf (stdout, "FORM_%s=\"", data);
++  if (prefix == NULL)
++    fprintf (stdout, "MOD_%s=", data);
++  else
++    fprintf (stdout, "%s_%s=", prefix, data);
+ 
+   /*
+    * escape value
+    */
+ 
++  putc ('\'', stdout);
+   while (*p2) {
+     switch (*p2) {
+-    case '"': case '\\': case '`': case '$':
+-      putc ('\\', stdout);
++    case '\r':
++      putc ('\n', stdout);
++      break;
++    case '\n':
++      if (lastc != '\r')
++        putc ('\n', stdout);
++      break;
++    case '\'':
++      putc ('\'', stdout);
++      putc ('"', stdout);
++      putc ('\'', stdout);
++      putc ('"', stdout);
++      putc ('\'', stdout);
++      break;
+     default:
+-      putc (*p2,  stdout);
++      putc (*p2, stdout);
+       break;
+     }
++    lastc = *p2;
+     p2++;
+   }
+-  putc ('"',  stdout);
++  putc ('\'', stdout);
+   putc ('\n', stdout);
++
+   *ptr = '=';
+   free (data);
+ }
+ 
++/*
++ * Print short usage message to sterr
++ */
++
++void
++Usage (char *name)
++{
++  fprintf (stderr, "Usage: %s var1:var2:... [prefix]\n", name);
++}
++
++
+ int
+ main (int argc, char *argv[])
+ {
+   char *ptr, *data = LoadInput();
+-  int i;
++  unsigned int i;
++
++  char *prefix = NULL;
++  struct llist *list;
++
++  /*
++   * Read args
++   */
++
++  if (argc < 2 || argc > 3) {
++    Usage (argv[0]);
++    return 1;
++  }
++
++  list = ParseVars (argv[1]);
++
++  if (list == NULL) {
++    Usage (argv[0]);
++    return 1;
++  }
++
++  if (argc == 3) {
++    prefix = FP_strdup (argv[2]);
++
++    if (prefix == NULL) {
++      return 1;
++    }
++
++    for (i = 0; i < strlen (prefix); i++) {
++      if (isalnum (prefix[i]))
++        prefix[i] = toupper (prefix[i]);
++      else if (prefix[i] == '-')
++        prefix[i] = '_';
++      else if (prefix[i] != '_') {
++        fprintf (stderr, "prefix is not alpha-numeric!\n");
++        return 1;
++      }
++    }
++  }
+ 
+   /*
+    * Handle CGI data
+@@ -186,7 +374,7 @@
+   if (data) {
+     ptr = strtok (data, "&");
+     while (ptr) {
+-      HandleString (ptr);
++      HandleString (prefix, ptr, list);
+       ptr = strtok (NULL, "&");
+     }
+     free (data);
+@@ -198,21 +386,27 @@
+ 
+   if (getenv ("PATH_INFO") != NULL) {
+     data = FP_strdup (getenv ("PATH_INFO"));
++
++    if (data == NULL) {
++      return 1;
++    }
++
+     ptr = strtok (data, "/");
+     while (ptr) {
+-      HandleString (ptr);
++      HandleString (prefix, ptr, list);
+       ptr = strtok (NULL, "/");
+     }
+     free (data);
+   }
+ 
+   /*
+-   * Add args
++   * Cleanup
+    */
+ 
+-  for (i=1; i<argc; i++) {
+-    HandleString (argv[i]);
+-  }
++  if (prefix != NULL)
++    free (prefix);
++
++  FreeVars (list);
+ 
+   /*
+    * done
