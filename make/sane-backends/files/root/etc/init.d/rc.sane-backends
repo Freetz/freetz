@@ -2,19 +2,13 @@
 
 DAEMON=sane-backends
 DAEMON_BIN=saned
+DAEMON_CONFIG=/mod/etc/sane.d/$DAEMON_BIN.conf
 . /etc/init.d/modlibrc
 
 CONFDIR=/mod/etc/sane.d
 
 config() {
-	(
-		if [ -x "/tmp/flash/${DAEMON_BIN}_conf" ]; then
-			/tmp/flash/${DAEMON_BIN}_conf
-		else
-			/mod/etc/default.$DAEMON/${DAEMON_BIN}_conf
-		fi
-		[ -r "/tmp/flash/${DAEMON_BIN}.extra" ] && cat /tmp/flash/${DAEMON_BIN}.extra
-	) > $CONFDIR/$DAEMON_BIN.conf
+	modlib_config ${DAEMON_BIN}
 }
 
 case $1 in

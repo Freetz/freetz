@@ -5,17 +5,7 @@ DAEMON_BIN=gw6c
 . /etc/init.d/modlibrc
 
 config() {
-	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.$DAEMON/${DAEMON}_conf
-		fi
-
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
-	) > /mod/etc/$DAEMON.conf
+	modlib_config
 }
 
 start() {

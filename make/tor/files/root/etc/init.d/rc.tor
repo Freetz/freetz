@@ -2,6 +2,7 @@
 
 DAEMON=tor
 DAEMON_LONG_NAME="Tor Onion Router"
+DAEMON_CONFIG=/mod/etc/$DAEMON/torrc
 PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 . /etc/init.d/modlibrc
 
@@ -29,13 +30,7 @@ config() {
 	fi
 	
 	mkdir -p /mod/etc/$DAEMON
-	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.$DAEMON/${DAEMON}_conf
-		fi
-	) > /mod/etc/$DAEMON/torrc
+	modlib_config
 }
 
 start() {

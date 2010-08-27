@@ -5,11 +5,11 @@ DAEMON_BIN=umurmurd
 . /etc/init.d/modlibrc
 
 config() {
-	echo "$UMURMUR_CONFIG" > /mod/etc/$CONF_NAME.conf
+	echo "$UMURMUR_CONFIG" > $DAEMON_CONFIG
 }
 
 start() {
-	modlib_startdaemon $DAEMON_BIN -c /mod/etc/$CONF_NAME.conf -p /var/run/$DAEMON.pid $([ "$UMURMUR_REALTIME" = "yes" ] && echo -r)
+	modlib_startdaemon $DAEMON_BIN -c $DAEMON_CONFIG -p /var/run/$DAEMON.pid $([ "$UMURMUR_REALTIME" = "yes" ] && echo -r)
 }
 
 case $1 in

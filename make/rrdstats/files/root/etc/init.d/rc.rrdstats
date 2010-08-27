@@ -9,14 +9,7 @@ HTTPD_PID_ONE=/var/run/webcfg-one.pid
 
 config() {
 	for SUBDAEMON in rrd one; do
-		(
-			if [ -x "/tmp/flash/httpd-${SUBDAEMON}_conf" ]; then
-				/tmp/flash/httpd-${SUBDAEMON}_conf
-			else
-				/mod/etc/default.${DAEMON}/httpd-${SUBDAEMON}_conf
-			fi
-			[ -r "/tmp/flash/httpd-${SUBDAEMON}.extra" ] && cat /tmp/flash/httpd-${SUBDAEMON}.extra
-		) > /mod/etc/httpd-${SUBDAEMON}.conf
+		modlib_config httpd-$SUBDAEMON /mod/etc/httpd-${SUBDAEMON}.conf
 	done
 
 	mkdir -p /tmp/rrdstats/

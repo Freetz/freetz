@@ -11,23 +11,13 @@ DAEMON=nhipt
 #	echo "MAIN ENTERING ---$1" >> /var/tmp/log.log
 
 config() {
-	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.nhipt/${DAEMON}.cfg
-		fi
-
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
-	) > /mod/etc/$DAEMON.conf
+	modlib_config
 }
 
 start() {
 	config
 	# HIER KOMMEN DIE VERARBEITUNGEN REIN
-	echo "configuring nhipt gui ... $NHIPT_ROOT" 
+	echo "configuring nhipt gui ... $NHIPT_ROOT"
 	# Save settings to RAM-parameter file
 
 	if [ -z "$(lsmod | grep x_tables)" ]; then
@@ -40,7 +30,7 @@ start() {
 	fi
 	if [ -n "$(ps | grep nh[i]pd.pid)" ]; then
 		cgi_run='yes'
-	else 
+	else
 		cgi_run='no'
 	fi
 	if [ "$NHIPT_START_CGI" = "stopped" ]; then
@@ -60,7 +50,7 @@ start() {
 		fi
 	fi
 	if [ "$NHIPT_START_LOG" = "running" ]; then
-		if [ "$log_run" = "no" ]; then 
+		if [ "$log_run" = "no" ]; then
 			export NHIPT_START_LOG='start'
 		fi
 	fi

@@ -2,21 +2,14 @@
 
 DAEMON=lighttpd
 DAEMON_LONG_NAME="lighttpd web server"
+DAEMON_CONFIG="/mod/etc/$DAEMON/$DAEMON.conf"
 . /etc/init.d/modlibrc
 
 . /usr/bin/lighttpd_has
 
 
 config() {
-	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.$DAEMON/${DAEMON}_conf
-		fi
-		[ -r "/tmp/flash/${DAEMON}.extra" ] && cat /tmp/flash/${DAEMON}.extra
-	) > /mod/etc/$DAEMON/$DAEMON.conf
-
+	modlib_config
 	modunreg status lighttpd lighttpd-log
 	if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
 		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ "$(has_mod accesslog)" = "yes" -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
@@ -26,7 +19,7 @@ config() {
 }
 
 start() {
-	modlib_startdaemon LD_PRELOAD= $DAEMON -f /mod/etc/$DAEMON/$DAEMON.conf
+	modlib_startdaemon LD_PRELOAD= $DAEMON -f $DAEMON_CONFIG
 }
 
 case $1 in

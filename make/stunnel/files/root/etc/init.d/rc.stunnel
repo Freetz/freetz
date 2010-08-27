@@ -4,15 +4,8 @@ DAEMON=stunnel
 . /etc/init.d/modlibrc
 
 config() {
-	{
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.$DAEMON/stunnel_conf
-		fi
-		[ -r "/tmp/flash/${DAEMON}.extra" ] && cat /tmp/flash/${DAEMON}.extra
-		[ -r "/tmp/flash/stunnel_svcs" ] && cat /tmp/flash/stunnel_svcs
-	} > /mod/etc/${DAEMON}.conf
+	modlib_config
+	[ -r "/tmp/flash/stunnel_svcs" ] && cat /tmp/flash/stunnel_svcs >> $DAEMON_CONFIG
 }
 
 start() {

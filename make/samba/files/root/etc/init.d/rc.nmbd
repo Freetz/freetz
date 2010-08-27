@@ -3,17 +3,17 @@
 DAEMON=samba
 DAEMON_LONG_NAME="Samba-nmbd"
 DAEMON_BIN=nmbd
+DAEMON_CONFIG=/mod/etc/smb.conf
 CONF_ENABLED=SAMBA_NMBD_ENABLED
 . /etc/init.d/modlibrc
 
-CONF_FILE=/mod/etc/smb.conf
 
 config() {
-		/mod/etc/default.samba/samba_conf > $CONF_FILE
+	/mod/etc/default.samba/samba_conf > $DAEMON_CONFIG
 }
 
 start() {
-	modlib_startdaemon $DAEMON_BIN -D -s $CONF_FILE
+	modlib_startdaemon $DAEMON_BIN -D -s $DAEMON_CONFIG
 }
 
 case $1 in

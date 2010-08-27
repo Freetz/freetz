@@ -4,11 +4,10 @@ DAEMON=rsync
 MODPATH=/mod/etc
 CONF=$MODPATH/rsync.conf
 PID_FILE=/var/run/rsync.pid
-
 . /etc/init.d/modlibrc 
 
 config() {
-	/mod/etc/default.rsync/rsync_conf > $CONF
+	modlib_config
 }
 
 start() {

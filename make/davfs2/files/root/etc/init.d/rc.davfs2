@@ -16,14 +16,8 @@ config() {
 	#for compatibility reason only, may be removed later
 	[ -e /tmp/flash/davfs_servercrt${i}.pem ] && mv /tmp/flash/davfs_servercrt${i}.pem /tmp/flash/davfs2/servercrt${i}.pem
 	[ -e /tmp/flash/webdav_secrets_${i} ] && mv /tmp/flash/webdav_secrets_${i} /tmp/flash/davfs2/davfs2_secrets_${i}
-	(
-		if [ -x "/tmp/flash/davfs2/secrets_${i}" ]; then
-			/tmp/flash/davfs2/davfs2_secrets_${i}
-		else
-			/mod/etc/default.davfs2/davfs2_secrets_${i}
-		fi
-
-	) > /var/davfs2/secrets_${i}
+	[ -e /tmp/flash/davfs2/davfs2_secrets_${i} ] && mv /tmp/flash/davfs2/davfs2_secrets_${i} /tmp/flash/davfs2/davfs2_secrets_${i}_conf
+	modlib_config davfs2_secrets_${i} /var/davfs2/secrets_${i}
 	done
 
 	(

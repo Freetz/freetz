@@ -23,7 +23,7 @@ start() {
 	echo -n 'Setting up virtual network interface ... '
 	
 	if [ -n "$(ifconfig | grep "$VIRTUALIP_INTERFACE")" ]; then
-		echo 'not running.'
+		echo 'already running.'
 		exit 1
 	fi
 

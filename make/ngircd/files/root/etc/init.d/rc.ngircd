@@ -1,24 +1,22 @@
 #!/bin/sh
 
 DAEMON=ngircd
-CONF_FILE=/tmp/flash/$DAEMON/ngircd.conf
-PID_FILE=/var/run/$DAEMON.pid
-
+DAEMON_CONFIG=/tmp/flash/$DAEMON/ngircd.conf
 . /etc/init.d/modlibrc
 
 start() {
-	modlib_startdaemon $DAEMON -p -f $CONF_FILE $NGIRCD_CMDLINE
+	modlib_startdaemon $DAEMON -p -f $DAEMON_CONFIG $NGIRCD_CMDLINE
 }
 
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "$CONF_FILE" ] && /etc/default.$DAEMON/ngircd_conf > $CONF_FILE
+		[ ! -e "$DAEMON_CONFIG" ] && /etc/default.$DAEMON/ngircd_conf > $DAEMON_CONFIG
 
 		modreg cgi 'ngircd' 'ngIRCd'
 		modreg file ngircd conf 'config' 1 "ngircd_conf"
 
-		modlib_start $NGIRCD_ENABLED 
+		modlib_start $NGIRCD_ENABLED
 		;;
 	unload)
 		modunreg cgi $DAEMON

@@ -2,18 +2,12 @@
 
 DAEMON=hp-utils
 DAEMON_LONG_NAME="hp-utils webinterface"
+DAEMON_CONFIG=/mod/etc/httpd-${DAEMON}.conf
 PID_FILE=/var/run/webcfg-${DAEMON}.pid
 . /etc/init.d/modlibrc
 
 config() {
-	(
-		if [ -x "/tmp/flash/httpd-${DAEMON}_conf" ]; then
-			/tmp/flash/httpd-${DAEMON}_conf
-		else
-			/mod/etc/default.${DAEMON}/httpd-${DAEMON}_conf
-		fi
-		[ -r "/tmp/flash/httpd-${DAEMON}.extra" ] && cat /tmp/flash/httpd-${DAEMON}.extra
-	) > /mod/etc/httpd-${DAEMON}.conf
+	modlib_config httpd-${DAEMON}
 }
 
 start() {

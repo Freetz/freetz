@@ -11,6 +11,7 @@
 # DAEMON_LONG_NAME	${DAEMON}					full name of daemon to display in start/stop messages
 # CONF_NAME			${DAEMON}					config is in /mod/etc/conf/${CONF_NAME}.cfg
 # CONF_ENABLED		${DAEMON}_ENABLED			variablename with starttype of daemon (yes,no,inetd) in .cfg-file
+# DAEMON_CONFIG		/mod/etc/${DAEMON}.conf		modlib_config will generate this file
 # DAEMON_BIN		${DAEMON}					other binary name than $DAEMON
 # DAEMON_ENV		<empty>						additional environment settings
 # DAEMON_CHECK		<empty>						daemon(s) to check with pidof for running-status
@@ -22,6 +23,7 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 : ${DAEMON_LONG_NAME:=$DAEMON}
 : ${CONF_NAME:=$DAEMON}
 : ${CONF_ENABLED:=${DAEMON}_ENABLED}
+: ${DAEMON_CONFIG:=/mod/etc/${DAEMON}.conf}
 : ${DAEMON_BIN:=$DAEMON}
 : ${PID_FILE:=/var/run/${DAEMON_BIN}.pid}
 
@@ -47,8 +49,7 @@ reload() {
 #   No check is done for a change in the optional arguments!
 #	$1: group name
 #	$2-n: optional arguments for addgroup
-modlib_addgroup()
-{
+modlib_addgroup() {
 	local group=$1
 	shift
 	if grep -q "^$group:" /etc/group; then
@@ -68,8 +69,7 @@ modlib_addgroup()
 #   No check is done for a change in the optional arguments!
 #	$1: user name
 #	$2-n: optional arguments for adduser
-modlib_adduser()
-{
+modlib_adduser() {
 	local user=$1
 	shift
 	if grep -q "^$user:" /etc/passwd; then
@@ -95,8 +95,7 @@ modlib_adduser()
 #	$3: [optional] command: check(default), stop, kill
 #	$4: [optional] socket: t: TCP(default) u: UDP w: RAW
 #   returns: 0 free; 1 oneself; 2 inetd; 3 other daemon; 4 stop command failed; 5 kill command failed
-modlib_check_port()
-{
+modlib_check_port() {
 	local netport=${1:-21}
 	local daemonname=${2:-daemon}
 	local docommand=${3:-check}
@@ -178,8 +177,7 @@ modlib_check_port()
 #	 3:	stopped
 #	 5:	inetd
 #	use CONF_ENABLED for other variablename with manual/automatic/inetd in .cfg-file
-modlib_check_running()
-{
+modlib_check_running() {
 	[ -n "$FORCE_STATUS" ] && return $FORCE_STATUS
 	if [ -x /etc/init.d/rc.inetd ]; then
 		[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:]- [:upper:]_))" == "inetd" ] && return 5
@@ -200,14 +198,33 @@ modlib_check_running()
 	fi
 }
 
+# modlib_config
+#    creates /mod/etc/$DAEMON.conf
+#    parameters:
+#     $1 (optional): overwrites the $DAEMON part in input filenames
+#	  $2 (optional): overwrites output path+filename, default is $DAEMON_CONFIG (=/mod/etc/${DAEMON}.conf)
+modlib_config() {
+	local in_files=${1-$DAEMON}
+	local out_file=${2-$DAEMON_CONFIG}
+	(
+		if [ -x "/tmp/flash/${in_files}_conf" ]; then
+			/tmp/flash/${in_files}_conf
+		elif [ -x "/tmp/flash/${DAEMON}/${in_files}_conf" ]; then
+			/tmp/flash/${DAEMON}/${in_files}_conf
+		else
+			/mod/etc/default.${DAEMON}/${in_files}_conf
+		fi
+		cat /tmp/flash/${in_files}.extra /tmp/flash/${DAEMON}/${in_files}.extra 2>/dev/null
+	) > $out_file
+}
+
 # modlib_startdaemon
 #    starts the binary with a clean environment
 #    "$@": commandline to execute
 #    if available runs "config" of rc.$DAEMON
 #    use $DAEMON_BIN for other binary name than $DAEMON
 #    use $DAEMON_ENV for additional environment settings
-modlib_startdaemon()
-{
+modlib_startdaemon() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 	config
 
@@ -238,8 +255,7 @@ modlib_startdaemon()
 #    function "start" has to be defined in the calling script
 #    $1: value for DAEMON_ENABLED
 #    returns: 0=success or 1=error
-modlib_start()
-{
+modlib_start() {
 	local DAEMON_ENABLED=$1
 	if [ "$DAEMON_ENABLED" == "no" ]; then
 		echo "${DAEMON_LONG_NAME} is disabled." 1>&2
@@ -271,8 +287,7 @@ modlib_start()
 
 # modlib_force_start
 #   forces start of the daemon
-modlib_force_start()
-{
+modlib_force_start() {
 	if [ -x /etc/init.d/rc.inetd ]; then
 		config
 		/etc/init.d/rc.inetd config $DAEMON
@@ -283,8 +298,7 @@ modlib_force_start()
 # modlib_stop
 #   stops the daemon
 #	kills daemon with "stop" of rc.$DAEMON if available
-modlib_stop()
-{
+modlib_stop() {
 	local fn=$PID_FILE
 	local id=$(cat "$fn" 2>/dev/null)
 	echo -n "Stopping ${DAEMON_LONG_NAME} ... "
@@ -348,8 +362,7 @@ modlib_force_stop() {
 
 # modlib_restart
 #   restarts the daemon
-modlib_restart()
-{
+modlib_restart() {
 	modlib_stop
 	modlib_start
 }
@@ -365,8 +378,7 @@ modlib_force_restart() {
 #   reloads the daemon with SIGHUP
 #   if available runs "config" of rc.$DAEMON
 #	reloads daemon with "reload" of rc.$DAEMON if available
-modlib_reload()
-{
+modlib_reload() {
 	local fn=$PID_FILE
 	echo -n "Reloading ${DAEMON_LONG_NAME} ... "
 	modlib_check_running
@@ -417,8 +429,7 @@ modlib_reload()
 #	3:			stopped
 #	5:			inetd
 #	<other>:	unknown
-modlib_status()
-{
+modlib_status() {
 	modlib_check_running
 	retval=$?
 	case $retval in
@@ -440,8 +451,7 @@ modlib_status()
 
 # modlib_loadconfig
 #    loads the configuration
-modlib_loadconfig()
-{
+modlib_loadconfig() {
 	local CONF_FILE="/mod/etc/conf/${1-$CONF_NAME}.cfg"
 	if [ ! -r "$CONF_FILE" ]; then
 		echo "Error[${DAEMON_LONG_NAME}]: not configured" 1>&2

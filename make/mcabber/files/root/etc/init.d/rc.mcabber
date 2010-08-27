@@ -1,18 +1,12 @@
 #!/bin/sh
 
 DAEMON=mcabber
+DAEMON_CONFIG=/var/mod/root/.mcabberrc
 . /etc/init.d/modlibrc
 
 config() {
 	echo -n 'Creating $DAEMON configuration ... '
-	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.$DAEMON/${DAEMON}_conf
-		fi
-
-	) > /var/mod/root/.mcabberrc
+	modlib_config
 	echo 'done.'
 }
 

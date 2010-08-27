@@ -10,17 +10,7 @@ DAEMON_GROUP=nobody
 [ "$(/etc/init.d/rc.multid status)" != "running" ] && nomultid=y
 
 config() {
-	(
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.$DAEMON/${DAEMON}_conf
-		fi
-
-		if [ -r "/tmp/flash/${DAEMON}/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}/${DAEMON}.extra
-		fi
-	) > /mod/etc/$DAEMON.conf
+	modlib_config
 }
 
 start() {

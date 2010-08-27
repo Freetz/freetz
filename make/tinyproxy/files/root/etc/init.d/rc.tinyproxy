@@ -12,18 +12,7 @@ config() {
 		echo "Copying /etc/default.tinyproxy/default.filter to flash"
 		cp /mod/etc/default.tinyproxy/default.filter /tmp/flash/tinyproxy.filter
 	fi
-
-	{
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf
-		else
-			/mod/etc/default.$DAEMON/${DAEMON}_conf
-		fi
-
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra
-		fi
-	} > /mod/etc/$DAEMON.conf
+	modlib_config
 }
 
 start() {

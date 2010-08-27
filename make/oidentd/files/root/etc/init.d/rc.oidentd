@@ -1,18 +1,17 @@
 #!/bin/sh
 
 DAEMON=oidentd
+DAEMON_CONFIG=/tmp/flash/$DAEMON/oidentd.conf
 . /etc/init.d/modlibrc
 
-CONF_FILE=/tmp/flash/$DAEMON/oidentd.conf
-
 start() {
-	modlib_startdaemon oidentd -C $CONF_FILE $OIDENTD_CMDLINE
+	modlib_startdaemon oidentd -C $DAEMON_CONFIG $OIDENTD_CMDLINE
 }
 
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "$CONF_FILE" ] && /etc/default.$DAEMON/oidentd_conf > $CONF_FILE
+		[ ! -e "$DAEMON_CONFIG" ] && /etc/default.$DAEMON/oidentd_conf > $DAEMON_CONFIG
 
 		modreg file $DAEMON conf 'oidentd.conf' 1 "oidentd_conf"
 		modreg cgi $DAEMON oidentd
