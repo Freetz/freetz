@@ -1,0 +1,80 @@
+# modlibinetd only used by rc.inetd
+
+INETD_CONF="/var/mod/etc/inetd.conf"
+
+update_line() {
+	line="$inetdcfg_port\t$inetdcfg_sock\t$inetdcfg_proto\t$inetdcfg_flags"
+	line="$line\t$inetdcfg_user\t$inetdcfg_exe\t$inetdcfg_arg0 $inetdcfg_args"
+	[ "$1" = escape ] && line=$(echo -n "$line" | sed -e 's@/@\\/@g')
+	echo -en "$line"
+}
+
+update_file() {
+	local pkg_path=$1
+	local pkg_subd=$(echo $pkg_path | sed -e 's@^/etc/default\.[^/]*/\([^/]*\)\.inetd$@\1@')
+	local pkg_name=$(echo $pkg_path | sed -e 's@^/etc/default\.\([^/]*\)/[^/]*\.inetd$@\1@')
+	if [ ! -e "/etc/init.d/rc.$pkg_name" ]; then
+		echo "$DAEMON: package $pkg_name has no rc script, failed."
+		exit 1
+	fi
+	echo -n "$pkg_name"
+	. $pkg_path
+
+	if [ "$pkg_name" != "$pkg_subd" ]; then
+		sub_status=$(/etc/init.d/rc.$pkg_name status_$pkg_subd)
+		echo -n " ($pkg_subd)"
+		pkg_inetd=${pkg_name}_$pkg_subd
+	else
+		sub_status=
+		pkg_inetd=$pkg_name
+	fi
+	echo -n " is updating inetd ... "
+
+	if ! grep -q "#:$pkg_inetd:" $INETD_CONF; then
+		echo >> $INETD_CONF
+		echo "#:$pkg_inetd: $inetdcfg_desc" >> $INETD_CONF
+		echo "$(update_line)" >> $INETD_CONF
+	fi
+
+	if [ "inetd" == "$(/etc/init.d/rc.$pkg_name status)" -o "inetd" == "$sub_status" ]; then
+		sed -i -e "/#:$pkg_inetd:/ { n; s/^.*/$(update_line escape)/ }" $INETD_CONF
+		echo "active."
+	else
+		sed -i -e "/#:$pkg_inetd:/ { n; s/^[^#].*/#<off>#$(update_line escape)/ }" $INETD_CONF
+		echo "inactive."
+	fi
+}
+
+update_main() {
+	touch $INETD_CONF
+	if [ $# -eq 0 ]; then
+		echo -e '\nConfiguring inetd: ...'
+		for package in $(ls /etc/default.*/*.inetd); do
+			update_file $package
+		done
+		echo 'Configuring inetd: done.'
+	else
+		for package; do
+			package_main=$(ls /etc/default.$package/*.inetd 2>/dev/null)
+			if [ -n "$package_main" ]; then
+				for package_sub in $package_main; do
+					update_file "$package_sub"
+				done
+			else
+				echo "$DAEMON: package $package has no default inetd file, failed."
+			fi
+		done
+	fi
+
+	# check if we could listen on socket
+	grep -vE "^$|^#" $INETD_CONF | while read line; do
+		local cleanline="$(echo "$line" | sed 's/[[:space:]]*/ /g;s/^ //g')"
+		local listener=$(echo "$cleanline" | cut -d " " -f1)
+		local ip_proto=$(echo "$cleanline" | cut -d " " -f3)
+		if [ "$(grep -E "^$listener[[:space:]]*(stream|dgram|raw|seqpacket)[[:space:]]*$ip_proto" $INETD_CONF 2>/dev/null | wc -l)" -gt 1 ]; then
+			echo -n "WARNING: inetd could not listen on '$listener/$ip_proto' multiple times: "
+			grep "$line" -B1 $INETD_CONF | head -n1
+		fi
+	done
+}
+

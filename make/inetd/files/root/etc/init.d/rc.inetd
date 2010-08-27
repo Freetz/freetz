@@ -36,7 +36,8 @@ case $1 in
 		;;
 	config)
 		shift
-		/usr/bin/modinetd $*
+		. /etc/init.d/modlibinetd
+		update_main $*
 		if ! modlib_reload >/dev/null; then
 			echo "Reloading inetd failed."
 			exit 1
