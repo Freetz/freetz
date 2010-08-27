@@ -267,10 +267,17 @@ PKG_PREVENT_RPATH_HARDCODING__INT = \
 	$1;
 PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODING__INT,$(f)))
 
+# Change all variables var to $(PKG)_var
+#  $1 is a space separated list of variables
+#  $2 (optional) is the file to be patched, default ./$($(PKG)_BUILD_SUBDIR)/configure
+PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC = $(SED) -i -r $(foreach var,$1,-e 's/($(var))/$(PKG)_\1/g') $(if $2,$2,./$($(PKG)_BUILD_SUBDIR)/configure);
+
 # Change prefix of all ac_cv_* variables in $1 to $(pkg).
 #  $1 is allowed to be a space separated list of variables or a ready to be used sed pattern
 #  $2 (optional) is the file to be patched, default ./configure
 PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC = $(SED) -i -r -e 's/ac(_cv_('"$(shell echo "$(strip $1)" | tr " " "|")"'))/'"$(shell echo $(pkg) | tr '[\-\+]' '[_x]')"'\1/g' $(if $2,$2,./configure);
+# alternate Version, changes ac_cv_var to $(PKG)_ac_cv_var, not to $(pkg)_cv_var
+###PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC = $(call PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC,$(foreach var,$1,ac_cv_$(var)),$2)
 
 # Usage:
 # $(call REPLACE_LIBTOOL,$1,$2,$3)
