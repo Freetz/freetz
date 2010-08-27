@@ -28,6 +28,10 @@ $(PKG)_CONFIGURE_ENV += samba_cv_fpie=no
 $(PKG)_CONFIGURE_ENV += ac_cv_func_prctl=no
 $(PKG)_CONFIGURE_ENV += SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
 
+$(PKG)_CONFIGURE_ENV += fu_cv_sys_stat_statfs2_bsize=yes
+$(PKG)_CONFIGURE_ENV += $(PKG)_fu_cv_sys_stat_statvfs=no
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC,fu_cv_sys_stat_statvfs)
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-swat
 $(PKG)_CONFIGURE_OPTIONS += --disable-cups
 $(PKG)_CONFIGURE_OPTIONS += --disable-iprint
