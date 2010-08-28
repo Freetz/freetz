@@ -6,7 +6,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 echo "<h1>$INOTIFY_TOOLS_LOGFILE</h1>"
 if [ -r "$INOTIFY_TOOLS_LOGFILE" ]; then
-	echo -n '<pre class="log">'
+	echo -n '<pre class="log full">'
 	html < "$INOTIFY_TOOLS_LOGFILE"
 	echo '</pre>'
 else

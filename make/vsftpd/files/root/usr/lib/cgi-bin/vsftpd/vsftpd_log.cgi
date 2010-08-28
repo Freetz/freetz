@@ -7,7 +7,7 @@ LOGLINK=/var/log/mod_vsftpd.log
 
 echo "<h1>$LOGLINK ($(html "$(ls -al /var/log/mod_vsftpd.log | sed 's/.* -> //g')"))</h1>"
 if [ -r "$LOGLINK" ]; then
-	echo -n '<pre class="log">'
+	echo -n '<pre class="log full">'
 	html < "$LOGLINK"
 	echo '</pre>'
 else
