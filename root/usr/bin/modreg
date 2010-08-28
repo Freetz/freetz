@@ -12,8 +12,9 @@ replace() {
 	local regexp=$1 file=$2 data=$3
 	[ -e "$file" ] || touch "$file"
 
-	local content=$(grep -v "$regexp" "$file")
-	( echo "$data"; echo -n "$content" ) | sort > "$file"
+	{ echo "$data"; grep -v "$regexp" "$file"; } | sort > "$file.$$"
+	# replace $file atomically
+	mv "$file.$$" "$file"
 }
 
 usage() {

@@ -12,6 +12,7 @@ delete() {
 	local regexp=$1 file=$2
 	[ -e "$file" ] || touch "$file"
 
+	# replace $file atomically
 	sed -i "\\${char}$regexp${char}d" "$file"
 }
 
