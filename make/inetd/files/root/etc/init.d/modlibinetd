@@ -1,6 +1,7 @@
 # modlibinetd only used by rc.inetd
 
 INETD_CONF="/var/mod/etc/inetd.conf"
+[ "$INETD_IPV6_SUPPORT" == "yes" -a -d /proc/sys/net/ipv6 ] && local inetd_ipv6=6
 
 update_line() {
 	line="$inetdcfg_port\t$inetdcfg_sock\t$inetdcfg_proto\t$inetdcfg_flags"
@@ -18,7 +19,7 @@ update_file() {
 		exit 1
 	fi
 	echo -n "$pkg_name"
-	. $pkg_path
+	. $pkg_path "$inetd_ipv6"
 
 	if [ "$pkg_name" != "$pkg_subd" ]; then
 		sub_status=$(/etc/init.d/rc.$pkg_name status_$pkg_subd)

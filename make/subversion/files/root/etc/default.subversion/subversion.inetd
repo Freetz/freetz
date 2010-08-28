@@ -1,9 +1,10 @@
 . /mod/etc/conf/subversion.cfg
 [ -n "$SUBVERSION_BINDADDRESS" ] && local BINDADDRESS="${SUBVERSION_BINDADDRESS}:"
+echo "$BINDADDRESS" | grep "\." -vq && local BINDPROTO=$1
 inetdcfg_desc="subversion server"
 inetdcfg_port=${BINDADDRESS}$SUBVERSION_PORT
 inetdcfg_sock=stream
-inetdcfg_proto=tcp
+inetdcfg_proto=tcp$BINDPROTO
 inetdcfg_flags=nowait
 inetdcfg_user=svn:svn
 inetdcfg_exe=/usr/bin/svnserve
