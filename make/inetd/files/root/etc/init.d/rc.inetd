@@ -4,7 +4,7 @@ DAEMON=inetd
 . /etc/init.d/modlibrc
 
 start() {
-	[ "$INETD_IPV6_SUPPORT" == "yes" ] && modprobe ipv6
+	[ "$INETD_IPV6_SUPPORT" == "yes" ] && modprobe ipv6 2>/dev/null
 	modlib_startdaemon $DAEMON $INETD_OPTIONS
 }
 
