@@ -90,7 +90,7 @@ document.write("<div id='Account0' style='display:block'>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
     "<td><SELECT NAME='service0'>" +
       "<OPTION VALUE='dyndns.org' $dyndns0_sel>dyndns.org</OPTION>" +
-      "<OPTION VALUE='dyndns.org-statdns' dstatdns0_sel>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE='dyndns.org-statdns' $dstatdns0_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom0_sel>dyndns.org-custom</OPTION>" +
       "<OPTION VALUE='afraid.org' $afraid0_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit0_sel>zoneedit.com</OPTION>" +
@@ -123,7 +123,7 @@ document.write("<div id='Account1' style='display:none'>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
     "<td><SELECT NAME='service1'>" +
       "<OPTION VALUE='dyndns.org' $dyndns1_sel>dyndns.org</OPTION>" +
-      "<OPTION VALUE='dyndns.org-statdns' dstatdns1_sel>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE='dyndns.org-statdns' $dstatdns1_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom1_sel>dyndns.org-custom</OPTION>" +
       "<OPTION VALUE='afraid.org' $afraid1_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit1_sel>zoneedit.com</OPTION>" +
@@ -156,7 +156,7 @@ document.write("<div id='Account2' style='display:none'>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
     "<td><SELECT NAME='service2'>" +
       "<OPTION VALUE='dyndns.org' $dyndns2_sel>dyndns.org</OPTION>" +
-      "<OPTION VALUE='dyndns.org-statdns' dstatdns2_sel>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE='dyndns.org-statdns' $dstatdns2_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom2_sel>dyndns.org-custom</OPTION>" +
       "<OPTION VALUE='afraid.org' $afraid2_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit2_sel>zoneedit.com</OPTION>" +
@@ -190,7 +190,7 @@ document.write("<div id='Account3' style='display:none'>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
     "<td><SELECT NAME='service3'>" +
       "<OPTION VALUE='dyndns.org' $dyndns0_sel>dyndns.org</OPTION>" +
-      "<OPTION VALUE='dyndns.org-statdns' dstatdns3_sel>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE='dyndns.org-statdns' $dstatdns3_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom3_sel>dyndns.org-custom</OPTION>" +
       "<OPTION VALUE='afraid.org' $afraid3_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit3_sel>zoneedit.com</OPTION>" +
@@ -224,7 +224,7 @@ document.write("<div id='Account4' style='display:none'>" +
     "<td>$(lang de:"DNS Service" en:"DNS Service") : </td>" +
       "<td><SELECT NAME='service4'>" +
       "<OPTION VALUE='dyndns.org' $dyndns4_sel>dyndns.org</OPTION>" +
-      "<OPTION VALUE='dyndns.org-statdns' dstatdns4_sel>dyndns.org-statdns</OPTION>" +
+      "<OPTION VALUE='dyndns.org-statdns' $dstatdns4_sel>dyndns.org-statdns</OPTION>" +
       "<OPTION VALUE='dyndns.org-custom' $dcustom4_sel>dyndns.org-custom</OPTION>" +
       "<OPTION VALUE='afraid.org' $afraid4_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit4_sel>zoneedit.com</OPTION>" +
