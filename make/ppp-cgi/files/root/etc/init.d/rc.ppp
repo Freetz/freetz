@@ -1,6 +1,8 @@
 #!/bin/sh
 
 DAEMON=ppp
+DAEMON_LONG_NAME="ppp-cgi"
+DAEMON_CHECK="ppp_observer ppp_dialer pppd"
 . /etc/init.d/modlibrc
 
 disconnect() {
@@ -21,40 +23,25 @@ disconnect() {
 }
 
 start() {
-	echo -n 'Starting ppp-cgi ... '
-	if [ -n "$(pidof ppp_observer ppp_dialer pppd)" ]; then
-		echo 'already running.'
-		exit 1
-	fi
-	
+	echo -n 'Starting ${DAEMON_LONG_NAME} ... '
+
 	modprobe option
 	modprobe ppp_generic
 	modprobe ppp_async
 	modprobe ppp-deflate
 	modprobe slhc
-	
+
 	start-stop-daemon -n ppp_observer -a /etc/default.ppp/ppp_observer -b -q -S
 	[ -n "$PPP_DIAGTTY" ] && start-stop-daemon -n ppp_logger -a /etc/default.ppp/ppp_logger -b -q -S
 	echo 'done.'
 }
 
 stop() {
-	echo -n 'Stopping ppp-cgi ... '
-	if [ -z "$(pidof ppp_observer ppp_dialer pppd)" ]; then
-		echo 'not running.'
-		return 1
-	fi
 	killall -9 ppp_observer 2>/dev/null
 	killall -9 ppp_logger 2>/dev/null
 	kill $(cat /var/run/ppp_logger.pid 2>/dev/null) 2>/dev/null
-	rm -rf /tmp/ppp_logger.tmp 2>/dev/null	
+	rm -rf /tmp/ppp_logger.tmp 2>/dev/null
 	disconnect
-	if [ $? -ne 0 ]; then
-		echo 'failed.'
-		return 1
-	else
-		echo 'done.'
-	fi
 }
 
 case $1 in
@@ -77,32 +64,26 @@ case $1 in
 		modunreg cgi 'ppp'
 		modunreg status ppp ppplog
 		modunreg file ppp
-		stop
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 2
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -n "$(pidof ppp_observer ppp_dialer pppd)" ]; then
-			echo 'running'
-		else
-			echo 'stopped'
-		fi
+		modlib_status
 		;;
 	disconnect)
 		disconnect
 		exit $?
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|disconnect]" 1>&2
 		exit 1
 		;;
 esac
