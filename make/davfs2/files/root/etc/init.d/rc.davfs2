@@ -7,7 +7,6 @@ DAEMON_MOUNT=/mod/etc/webdav
 DAEMON_UMOUNT=/mod/etc/webdav_umount
 
 config() {
-	mkdir -p /tmp/flash/$DAEMON
 	mkdir -p /var/$DAEMON
 	mkdir -p /mod/home/$DAEMON
 	chown davfs2:davfs2 /mod/home/$DAEMON -R
@@ -19,6 +18,9 @@ config() {
 	[ -e /tmp/flash/davfs2/davfs2_secrets_${i} ] && mv /tmp/flash/davfs2/davfs2_secrets_${i} /tmp/flash/davfs2/davfs2_secrets_${i}_conf
 	modlib_config davfs2_secrets_${i} /var/davfs2/secrets_${i}
 	done
+	# to hide error messages
+	touch /etc/davfs2/davfs2.conf /etc/davfs2/secrets
+	chmod 600 /etc/davfs2/davfs2.conf /etc/davfs2/secrets
 
 	(
 		if [ -x "/tmp/flash/webdav_mount" ]; then
@@ -75,6 +77,7 @@ stop() {
 
 case $1 in
 	""|load)
+		mkdir -p /tmp/flash/$DAEMON
 		modlib_addgroup davfs2
 		modlib_adduser davfs2 -s /bin/false -D -S -H -G davfs2 -g 'davfs2'
 
