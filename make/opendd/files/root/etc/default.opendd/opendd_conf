@@ -1,0 +1,40 @@
+#!/bin/sh
+
+cat << EOF
+##do not change
+cert_path = /tmp/flash/opendd/opendd.pem
+iface = dsl:1
+runasdaemon = 0
+pidfile_path = /var/run/opendd.pid
+use_syslog = 1
+
+##accounts
+servername = $OPENDD_SERVER
+hostname = $OPENDD_HOST
+username = $OPENDD_USER
+password = $OPENDD_PASS
+
+##advanced
+wildcard = $OPENDD_WILDCARD
+EOF
+[ -n "$OPENDD_MX" ] && echo "mx = $OPENDD_MX"
+cat << EOF
+backupmx = $OPENDD_BACKUPMX
+offline = $OPENDD_OFFLINE
+
+##depends on make!
+use_ssl = $OPENDD_USE_SSL
+
+EOF
+
+if [ "$OPENDD_EMAIL_ENABLED" == "yes" ]; then
+cat << EOF
+##email
+mailfrom = $OPENDD_EMAIL_FROM
+mailto = $OPENDD_EMAIL_TO
+smtpservername = $OPENDD_EMAIL_SERVER
+smtpauthuser = $OPENDD_EMAIL_USER
+smtpauthpwd = $OPENDD_EMAIL_PASS
+EOF
+fi
+

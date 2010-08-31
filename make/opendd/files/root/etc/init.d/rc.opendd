@@ -4,8 +4,6 @@ DAEMON=opendd
 DAEMON_LONG_NAME=OpenDD
 . /etc/init.d/modlibrc
 
-PEM=/tmp/flash/opendd/opendd.pem
-
 set_cron() {
 	CRON_OLD="$(cat /tmp/crontab.opendd 2>/dev/null)"
 	[ "$OPENDD_ENABLED" == "yes" -a "$OPENDD_FORCE_UPDATE" == "yes" ] && CRON_NEW="45 5 * * *  /etc/init.d/rc.opendd cron"
@@ -29,15 +27,15 @@ run() {
 		exit 0
 	 fi
 
-	echo "$OPENDD_CONFIG" > /mod/etc/$DAEMON.conf
+	modlib_config
 	chmod 600 /mod/etc/$DAEMON.conf
-	
+
 	NEW_IP=$(get_ip -e 2>/dev/null)
 	if [ -z "$NEW_IP" ]; then
 		echo 'failed.'
 		exit 1
 	fi
-	
+
 	if [ "$OPENDD_FORCE_UPDATE" == "yes" ]; then
 		OLD_IP="$(cat /tmp/flash/opendd/opendd.ip 2>/dev/null)"
 		if [ "$OLD_IP" != "$NEW_IP" ]; then
@@ -55,7 +53,7 @@ run() {
 		fi
 	fi
 	update_ip $NEW_IP
-	
+
 	# return-value of opendd is always 0
 	echo 'done.'
 }
@@ -63,12 +61,12 @@ run() {
 case $1 in
 	""|load)
 		mkdir -p /tmp/flash/opendd
-		[ ! -e $PEM ] && cat /mod/etc/default.$DAEMON/$DAEMON.pem > $PEM
-		
+		[ ! -e /tmp/flash/opendd/opendd.pem ] && touch /tmp/flash/opendd/opendd.pem
+
 		modreg cgi 'opendd' 'OpenDD'
 		modreg file opendd opendd_pem 'opendd.pem' 0 "opendd_pem"
 		modreg daemon --hide opendd
-		
+
 		if [ "$OPENDD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled." 1>&2
 			exit 1
@@ -90,7 +88,7 @@ case $1 in
 	cron)
 		[ "$OPENDD_ENABLED" != "yes" ] && exit
 		logger -t info Run OpenDD by cron.
- 		run 	
+ 		run
 		;;
 	*)
 		echo "Usage: $0 [load|unload|run|config|cron]" 1>&2
