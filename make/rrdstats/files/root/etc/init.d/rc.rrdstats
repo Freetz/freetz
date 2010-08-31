@@ -38,6 +38,8 @@ start() {
 	[ "$RRDSTATS_SAVEBACKUP" = yes -a "$RRDSTATS_END_BACKUP" = no ] && backup
 	[ "$RRDSTATS_START_RESTORE" = yes ] && restore silent
 
+	stop_status
+
 	modlib_startdaemon start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
 	#wait for the correct pid
 	local DAEMON_PID="$(pidof -s rrdstats)"
@@ -47,7 +49,6 @@ start() {
 	done
 	[ -n "$DAEMON_PID" ] && echo $DAEMON_PID >${PID_FILE}
 
-	stop_status
 	if [ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" != "yes" ]; then
 		webcfg-rrd -P "$HTTPD_PID_RRD"
 	fi

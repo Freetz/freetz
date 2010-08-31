@@ -2,7 +2,7 @@
 
 . /usr/lib/libmodcgi.sh
 
-cgi_begin "RRDtool for DigiTemp"
+cgi_begin "DigiTemp"
 
 source /usr/lib/cgi-bin/rrdstats/rrddt.cgi
 
