@@ -5,9 +5,9 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /mod/etc/conf/rrdstats.cfg
 
-DATESTRING=$(date +'%Y-%m-%d %X')
+DATESTRING=$(date -R)
 [ -n "$_cgi_width" ] && let WIDTH=_cgi_width-145 || let WIDTH=500
-let HEIGHT=$(($WIDTH*$RRDSTATS_DIMENSIONY/$RRDSTATS_DIMENSIONX))
+let HEIGHT=$WIDTH*$RRDSTATS_DIMENSIONY/$RRDSTATS_DIMENSIONX
 PERIODE="24h"
 RED=#EA644A
 YELLOW=#ECD748
@@ -421,7 +421,7 @@ generate_graph() {
 					[ -z "$_COLOR" ] && _COLOR="#999999"
 					_SENSOR_GEN=" $_SENSOR_GEN \
 					 DEF:temp$_SENSOR_CUR=$FILE:temp:AVERAGE \
-					 LINE3:temp$_SENSOR_CUR$_COLOR:$_ALIAS(min/avg/max/cur)[°${_SENSOR_UOM:0:1}] \
+					 LINE3:temp$_SENSOR_CUR$_COLOR:$_ALIAS(min/avg/max/cur)[ï¿½${_SENSOR_UOM:0:1}] \
 					 GPRINT:temp$_SENSOR_CUR:MIN:\t%8.3lf \
 					 GPRINT:temp$_SENSOR_CUR:AVERAGE:%8.3lf \
 					 GPRINT:temp$_SENSOR_CUR:MAX:%8.3lf \
@@ -482,9 +482,9 @@ gen_main() {
 }
 
 graph=$(cgi_param graph | tr -d .)
-set_lazy "$RRDSTATS_NOTLAZYM"
 case $graph in
 	cpu|mem|swap|upt|tt0|tt1|tt2|tt3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
+		set_lazy "$RRDSTATS_NOTLAZYS"
 		heading=$(echo $graph | sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^diskio1$/$RRDSTATS_DISK_NAME1/g;s/^diskio2$/$RRDSTATS_DISK_NAME2/g;s/^diskio3$/$RRDSTATS_DISK_NAME3/g;s/^diskio4$/$RRDSTATS_DISK_NAME4/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
 		GROUP_PERIOD=$(cgi_param group | tr -d .)
 		[ -n "$GROUP_PERIOD" ] && heading="$heading [$GROUP_PERIOD]"
@@ -511,6 +511,7 @@ case $graph in
 		echo "<br><center><input type=\"button\" value=\"Back\" onclick=\"javascript:history.go(-1)\" /></center>"
 		;;
 	*)
+		set_lazy "$RRDSTATS_NOTLAZYM"
 		set_period "$RRDSTATS_PERIODMAIN"
 		echo "<center><h1>RRDtool Statistics - Overview</h1></center>"
 		case $RRD_DISPLAY_TYPE in
