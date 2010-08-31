@@ -26,7 +26,7 @@
  #ifndef NLMSG_TAIL
  #define NLMSG_TAIL(nmsg) \
  	((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
-@@ -360,20 +361,29 @@
+@@ -360,20 +361,31 @@
  		return 2;
  	return 0;
  }
@@ -38,12 +38,15 @@
  	static const char keywords[] ALIGN1 =
 +#ifdef IFLA_LINKINFO
  		"add\0""delete\0""set\0""show\0""lst\0""list\0";
++#define MAX_VALID_ARGUMENT_INDEX 5
 +#else
 +		"set\0""show\0""lst\0""list\0";
++#define MAX_VALID_ARGUMENT_INDEX 3
 +#endif
  	if (*argv) {
  		smalluint key = index_in_substrings(keywords, *argv);
- 		if (key > 5) /* invalid argument */
+-		if (key > 5) /* invalid argument */
++		if (key > MAX_VALID_ARGUMENT_INDEX) /* invalid argument */
  			bb_error_msg_and_die(bb_msg_invalid_arg, *argv, applet_name);
  		argv++;
 +#ifdef IFLA_LINKINFO
