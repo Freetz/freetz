@@ -34,7 +34,10 @@ if [ -n "$netif" ]; then
 		gen_pic $netif $period
 		[ $ifcnt -ne 1 ] && echo "</a>"
 	done
-	[ $ifcnt -ne 1 ] && echo "<br><input type=\"button\" value=\"Back\" onclick=\"javascript:history.go(-1)\" />"
+	if [ $ifcnt -ne 1 ]; then
+		[ -n "$HTTP_REFERER" ] && backdest="history.go(-1)" || backdest="window.location.href='$SCRIPT_NAME'"
+		echo "<br><input type=\"button\" value=\"Back\" onclick=\"javascript:$backdest\" />"
+	fi
 else
 	#mainpage
 	echo "<p><font size=+1><b>vnstat</b></font></p>"

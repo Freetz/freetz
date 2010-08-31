@@ -511,7 +511,8 @@ case $graph in
 			echo "</a></center>"
 			sec_end
 		done
-		echo "<br><center><input type=\"button\" value=\"Back\" onclick=\"javascript:history.go(-1)\" /></center>"
+		[ -n "$HTTP_REFERER" ] && backdest="history.go(-1)" || backdest="window.location.href='$SCRIPT_NAME'"
+		echo "<br><center><input type=\"button\" value=\"Back\" onclick=\"javascript:$backdest\" /></center>"
 		;;
 	*)
 		set_lazy "$RRDSTATS_NOTLAZYM"
