@@ -26,9 +26,6 @@ sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
 cat << EOF
 <p>
-<a href="$(href file oidentd conf)">$(lang de:"Zum Bearbeiten der oidentd.conf hier klicken." en:"To edit the oidentd.conf click here.")</a>
-</p>
-<p>
 $(lang de:"Optionale Parameter (au&szlig;er -I und -C):" en:"Optional parameters (except -I and -C):")
 <input type="text" name="cmdline" size="55" maxlength="250" value="$(html "$OIDENTD_CMDLINE")">
 </p>

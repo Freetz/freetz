@@ -18,17 +18,6 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Konfigurationsdateien" en:"Configuration files")'
-cat << EOF
-<p>
-<ul>
-<li><a href="$(href file ppp peers_options)">PEERS: options</a></li>
-<li><a href="$(href file ppp peers_chat)">PEERS: chat</a></li>
-</ul>
-</p>
-EOF
-sec_end
-
 sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 cat << EOF
 <p>

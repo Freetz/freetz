@@ -16,13 +16,11 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Konfigurationsdateien" en:"Configuration files")'
+sec_begin '$(lang de:"Weitere Konfigurationsdateien" en:"Other configuration files")'
 
 cat << EOF
 <ul>
 <li><a href="$(href file pppd chap_secrets)">PPPD: $(lang de:"chap-secrets bearbeiten" en:"edit chap-secrets")</a></li>
-<li><a href="$(href file pptpd options)">PPTPD: $(lang de:"options.pptpd bearbeiten" en:"edit options.pptpd")</a></li>
-<li><a href="$(href file pptpd conf)">PPTPD: $(lang de:"pptpd.conf bearbeiten" en:"edit pptpd.conf")</a></li>
 </ul>
 EOF
 

@@ -29,9 +29,6 @@ sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
 cat << EOF
 <p>
-<a href="$(href file vnstat conf)">$(lang de:"Zum Bearbeiten der vnstat.conf hier klicken." en:"To edit the vnstat.conf click here.")</a>
-</p>
-<p>
 $(lang de:"Datenbankverzeichnis" en:"Databse directory"):&nbsp;
 <input type="text" name="dbdir" size="42" maxlength="255" value="$(html "$VNSTAT_DBDIR")">
 </p>
@@ -64,10 +61,10 @@ if [ -x /etc/init.d/rc.inetd ]; then
 cat << EOF
 <p>
 <input type="hidden" name="web_inetd" value="no">
-<input id="a3" type="checkbox" name="web_inetd" value="yes"$web_inetd_chk><label for="a3">$(lang de:"Aktiviere inetd Nutzung" en:"Activate inetd support")</label> 
-</p> 
+<input id="a3" type="checkbox" name="web_inetd" value="yes"$web_inetd_chk><label for="a3">$(lang de:"Aktiviere inetd Nutzung" en:"Activate inetd support")</label>
+</p>
 EOF
-fi 	
+fi
 cat << EOF
 <p>
 <input type="hidden" name="web_auth" value="no">

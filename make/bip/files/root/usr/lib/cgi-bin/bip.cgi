@@ -4,8 +4,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 check "$BIP_ENABLED" yes:auto "*":man
-check "$BIP_LOG" true:log 
-check "$BIP_LOG_SYSTEM" true:log_system 
+check "$BIP_LOG" true:log
+check "$BIP_LOG_SYSTEM" true:log_system
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -22,9 +22,6 @@ sec_end
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
 cat << EOF
-<p>
-<a href="$(href file bip user_conf)">$(lang de:"Zum Bearbeiten der Konfiguration hier klicken." en:"To edit the configuration click here.")</a>
-</p>
 <h2>$(lang de:"Port:" en:"Port:")</h2>
 <p><input type="text" name="port" size="55" maxlength="250" value="$(html "$BIP_PORT")"></p>
 <p>

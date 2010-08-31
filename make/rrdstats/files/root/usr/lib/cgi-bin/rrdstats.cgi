@@ -98,7 +98,7 @@ cat << EOF
 <p>$(lang de:"Persistentes Verzeichnis" en:"Persistent folder"):&nbsp;<input type="text" name="rrddata" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDDATA")"></p>
 <p>$(lang de:"Aufzeichnungsintervall in Sekunden" en:"Log interval in seconds"):&nbsp;<input type="text" name="interval" size="3" maxlength="9" value="$(html "$RRDSTATS_INTERVAL")"></p>
 <p>
-$(lang de:"Dimensionsverh&auml;ltnis der Graphen" en:"Graph dimensions ratio"): 
+$(lang de:"Dimensionsverh&auml;ltnis der Graphen" en:"Graph dimensions ratio"):
 <input type="text" name="dimensionx" size="3" maxlength="9" value="$(html "$RRDSTATS_DIMENSIONX")">
 :
 <input type="text" name="dimensiony" size="3" maxlength="9" value="$(html "$RRDSTATS_DIMENSIONY")">
@@ -357,18 +357,6 @@ max:<input type="text" name="digitemp_u" size="3" maxlength="4" value="$(html "$
 <p>
 <input type="button" value="DigiTemp initialisieren" onclick="if (confirm('$(lang de:"Fortfahren?" en:"Proceed?")')==true) window.open('$(href extra rrdstats dt-init)','Initialisieren_von_DigiTemp','menubar=no,width=$INIT_WINDOW_WIDTH,height=600,toolbar=no,resizable=yes,scrollbars=yes');" /> &nbsp;&nbsp;
 <br><font size="-2">$(lang de:"Vor dem ersten Aktivieren oder nach Ver&auml;nderungen der Ger&auml;te ausf&uuml;hren" en:"Run this before the first start of if you change your devices")</font>
-
-EOF
-if [ "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
-cat << EOF
-<br><br>$(lang de:"Bearbeite Datei:" en:"Edit file:")
-&nbsp;<a href="$(href file rrdstats dt-conf)">conf</a>
-&nbsp;-&nbsp;<a href="$(href file rrdstats dt-alias)">alias</a>
-&nbsp;-&nbsp;<a href="$(href file rrdstats dt-group)">group</a>
-&nbsp;-&nbsp;<a href="$(href file rrdstats dt-alert)">alert</a>
-EOF
-fi
-cat << EOF
 </p>
 
 

@@ -15,14 +15,4 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Konfiguration bearbeiten" en:"Edit configuration")'
-
-cat << EOF
-<ul>
-<li><a href="$(href file nfsd exports)"> $(lang de:"/etc/exports bearbeiten" en:"edit /etc/exports")</a></li>
-<li><a href="$(href file nfsd hosts_allow)"> $(lang de:"/etc/hosts.allow bearbeiten" en:"edit /etc/hosts.allow")</a></li>
-<li><a href="$(href file nfsd hosts_deny)"> $(lang de:"/etc/hosts.deny bearbeiten" en:"edit /etc/hosts.deny")</a></li>
-
-</ul>
-EOF
 

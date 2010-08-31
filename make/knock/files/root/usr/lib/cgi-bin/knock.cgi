@@ -15,15 +15,6 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Anzeigen" en:"Show")'
-
-cat << EOF
-<ul>
-<li><a href="$(href file knockd conf)">$(lang de:"Knockd config bearbeiten" en:"Edit knockd config")</a></li>
-</ul>
-EOF
-
-sec_end
 sec_begin 'Port-Knock Server'
 
 cat << EOF

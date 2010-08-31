@@ -44,15 +44,9 @@ EOF
 fi
 
 sec_end
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
-cat << EOF
-<ul>
-<li><a href="$(href file samba shares)">$(lang de:"Eigene Freigaben" en:"Shares")</a></li>
-<li><a href="$(href file samba sharesx)">$(lang de:"Experten Optionen" en:"Advanced options")</a></li>
-</ul>
-EOF
 if [ -d /var/media/ftp ]; then
+sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 cat << EOF
 <p>
 <font size="-1">$(lang de:"Standard Freigabe(n) bitte im AVM WebIF festlegen:<br />Erweiterte Einstellungen > USB-Ger&auml;te > USB-Speicher" en:"Standard share(s), please specify in AVM WebIF: <br/> Advanced Preferences > USB devices > USB memory")</font>
@@ -60,9 +54,9 @@ cat << EOF
 <font size="-2">$(lang de:"Optionen: Netzwerkspeicher (an/aus) - Zugriffsberechtigung (rw/ro) - Kennwortschutz (ohne/setzen)" en:"Options: network storage (on / off) - Access Authorization (rw / ro) - Password protection (without / set)")</font>
 </p>
 EOF
+sec_end
 fi
 
-sec_end
 sec_begin '$(lang de:"Samba" en:"Samba")'
 
 cat << EOF
