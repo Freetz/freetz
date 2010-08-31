@@ -32,7 +32,7 @@
 +	echo 'WRAPPER_STATIC=$$(echo " $$@ " | sed -ne "s/.* -static .*/YES/p;t;aNO")' >> $(WRAPPER)
 +	echo 'if [ "$$WRAPPER_STATIC" = "YES" ]' >> $(WRAPPER)
 +	echo 'then' >> $(WRAPPER)
-+	echo "	WRAPPER_LIBS=\"$(STATIC_LIBS)\"" >> $(WRAPPER)
++	echo "	WRAPPER_LIBS=\"-Wl,--start-group $(STATIC_LIBS) -Wl,--end-group\"" >> $(WRAPPER)
 +	echo 'fi' >> $(WRAPPER)
  endif
 -	echo '	shift' >> $(WRAPPER)

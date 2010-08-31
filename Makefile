@@ -266,7 +266,7 @@ package-list: package-list-clean $(PACKAGES_LIST)
 	@mv .dynamic.tmp .dynamic
 
 package-list-clean:
-	@rm -f .static .dynamic
+	@$(RM) .static .dynamic
 
 ifeq ($(FWMOD_NOPACK),y)
 FWMOD_OPTS:=-u -m
@@ -416,7 +416,7 @@ config-clean-deps:
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
 	diff -U 0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
-	rm -f .config_tmp; \
+	$(RM) .config_tmp; \
 	}
 
 exclude-lists:
@@ -428,34 +428,27 @@ exclude-lists:
 
 common-clean:
 	./fwmod_custom clean
-	rm -f .static .dynamic
-	rm -f .exclude .exclude-dist-tmp
-	rm -f $(FW_IMAGES_DIR)/*
-	rm -rf $(BUILD_DIR)
+	$(RM) .static .dynamic .exclude .exclude-dist-tmp
+	$(RM) -r $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean: common-clean
-	rm -rf $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
-	rm -f .new-uclibc .old-uclibc
+	$(RM) -r $(BUILD_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
+	$(RM) .new-uclibc .old-uclibc
 	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
 		`[ -d $(ROOT_DIR)/usr/lib ] && echo $(ROOT_DIR)/usr/lib` \
-		-type d -name .svn -prune -false , -name "*.so*" -exec rm {} \;
-	find $(MAKE_DIR) -name ".*_config" -exec rm {} \;
+		-type d -name .svn -prune -false , -name "*.so*" -exec $(RM) {} \;
+	find $(MAKE_DIR) -name ".*_config" -exec $(RM) {} \;
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
-common-distclean: common-clean
-	rm -f .config .config.old .config.cmd .tmpconfig.h
-	rm -rf $(TOOLCHAIN_BUILD_DIR)
-	rm -rf $(DL_DIR) $(PACKAGES_DIR) $(SOURCE_DIR)
-	rm -f make/config.cache .new-uclibc .old-uclibc
-	find `[ -d $(ROOT_DIR)/lib ] && echo $(ROOT_DIR)/lib` \
-		`[ -d $(ROOT_DIR)/usr/lib ] && echo $(ROOT_DIR)/usr/lib` \
-		-type d -name .svn -prune -false , -name "*.so*" -exec rm {} \;
-	find $(MAKE_DIR) -name ".*_config" -exec rm {} \;
-	-rm -rf $(ADDON_DIR)/*
-	-cp .defstatic $(ADDON_DIR)/static.pkg
-	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
+common-distclean: common-dirclean
+	$(RM) .config .config.old .config.cmd .tmpconfig.h
+	-$(RM) -r $(ADDON_DIR)/*
+	$(RM) -r $(DL_DIR)
+	$(RM) -r $(FW_IMAGES_DIR)
+	$(RM) -r $(SOURCE_DIR)
+	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
 
 dist: distclean
 	version="$$(cat .version)"; \
@@ -474,7 +467,7 @@ dist: distclean
 		[ "$$curdir" == "$$dir" ] || mv "$$dir" "$$curdir"; \
 		cd "$$curdir"; \
 	)
-	rm -f .exclude-dist-tmp
+	$(RM) .exclude-dist-tmp
 
 # Check if last build was with older svn version
 check-builddir-version:

@@ -248,6 +248,7 @@ config FREETZ_MODULE_jbd
 
 config FREETZ_MODULE_lockd
 	bool "lockd.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_sunrpc
 	default n
 
@@ -261,16 +262,19 @@ config FREETZ_MODULE_minix
 
 config FREETZ_MODULE_nfsd
 	bool "nfsd.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_lockd
 	select FREETZ_MODULE_exportfs
 	default n
 	
 config FREETZ_MODULE_exportfs
 	bool "exportfs.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	default n
 
 config FREETZ_MODULE_nfs
 	bool "nfs.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	select FREETZ_MODULE_lockd
 	default n
 
@@ -363,6 +367,7 @@ config FREETZ_MODULE_rfcomm
 	
 config FREETZ_MODULE_sunrpc
 	bool "sunrpc.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1
 	default n
 
 endmenu
