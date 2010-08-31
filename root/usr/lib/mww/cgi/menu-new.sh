@@ -132,11 +132,8 @@ new_menu_package_tree() {
 
 new_menu_add_pkg_item() {
 	local type=$1 pkg=$2 id=$3 title=$4
-	local a_href a_id=$(_cgi_id "$type:$pkg${id:+/$id}") a_class=$type
-	case $type in
-		conf) a_href=$(href cgi "$pkg") ;;
-		*)    a_href=$(href "$type" "$pkg" "$id") ;;
-	esac
+	local a_id=$(_cgi_id "$type:$pkg${id:+/$id}") a_class=$type
+	local a_href=$(href "$type" "$pkg" "$id")
 	echo "<li><a id='$a_id' class='$a_class' href='$a_href'>$(html "$title")</a></li>" >> "$p/$pkg.sub"
 	if [ ! -e "$p/$pkg.index" ]; then
 		echo "$a_href" > "$p/$pkg.index"
@@ -150,13 +147,18 @@ new_menu_prepare() {
 	mkdir -p "$p"
 
 	# collect data for packages
-
-	if [ -r /mod/etc/reg/cgi.reg ]; then
+	if [ -r /mod/etc/reg/pkg.reg ]; then
 		local pkg title
 		while IFS='|' read -r pkg title; do
 			echo "title=$(shell_escape "$title")" >> "$p/$pkg.meta"
-			new_menu_add_pkg_item conf "$pkg" "" "$(lang de:"Einstellungen" en:"Settings")"
-		done < /mod/etc/reg/cgi.reg
+		done < /mod/etc/reg/pkg.reg
+	fi
+
+	if [ -r /mod/etc/reg/conf.reg ]; then
+		local pkg id title
+		while IFS='|' read -r pkg id title; do
+			new_menu_add_pkg_item conf "$pkg" "$id" "$title"
+		done < /mod/etc/reg/conf.reg
 	fi
 
 	if [ -r /mod/etc/reg/file.reg ]; then

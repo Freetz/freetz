@@ -46,6 +46,13 @@ _cgi_location() {
 		file)   "$out" "/cgi-bin/file/${2}/${3}" ;;
 		extra)  "$out" "/cgi-bin/extra/${2}/${3}" ;;
 		status) "$out" "/cgi-bin/status/${2}/${3:-status}" ;;
+		conf)
+			if [ "$3" = _index ]; then
+				"$out" "/cgi-bin/conf/${2}"
+			else
+				"$out" "/cgi-bin/conf/${2}/${3}"
+			fi
+			;;
 		cgi)    local pkg=$2; shift 2
 			"$out" "/cgi-bin/conf/$pkg" "$@" ;;
 		mod)    case $2 in
@@ -53,7 +60,6 @@ _cgi_location() {
 				extras)    "$out" "/cgi-bin/extra.cgi" ;;
 				daemons)   "$out" "/cgi-bin/service" ;;
 				about)     "$out" "/cgi-bin/about.cgi" ;;
-				packages)  "$out" "/cgi-bin/packages.cgi" ;;
 				system)    "$out" "/cgi-bin/system.cgi" ;;
 				conf)      _cgi_location "$out" cgi mod ;;
 				update)    "$out" "/cgi-bin/update/firmware.cgi" ;;

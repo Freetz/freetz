@@ -1,4 +1,3 @@
-
 start_stop() {
 	local startORstop=$1
 	local package=$2

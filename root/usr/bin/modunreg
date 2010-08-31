@@ -1,6 +1,8 @@
 #!/bin/sh
 #
 # Usage: modunreg cgi <pkg>
+#        modunreg pkg <pkg>
+#        modunreg conf <pkg> [<id>]
 #        modunreg extra <pkg> [<cgi-name>]
 #        modunreg file <pkg> [<id>]
 #        modunreg status <pkg> [<cgi-name>]
@@ -18,7 +20,14 @@ delete() {
 
 case $1 in
 	cgi)
-		delete "^$2|" /mod/etc/reg/cgi.reg
+		"$0" conf "$2" _index
+		;;
+	pkg)
+		delete "^$2|" /mod/etc/reg/pkg.reg
+		touch /mod/var/cache/menu.stale
+		;;
+	conf)
+		delete "^$2|${3:-[^|]*}|" /mod/etc/reg/conf.reg
 		touch /mod/var/cache/menu.stale
 		;;
 	extra)

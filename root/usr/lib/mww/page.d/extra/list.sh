@@ -1,14 +1,14 @@
 EXTRA_REG=/mod/etc/reg/extra.reg
 [ -e "$EXTRA_REG" ] || touch "$EXTRA_REG"
 
-CGI_REG=/mod/etc/reg/cgi.reg
+PKG_REG=/mod/etc/reg/pkg.reg
 
 _cgi_extras() {
 	if [ ! -s "$EXTRA_REG" ]; then
 		echo '<p><i>$(lang de:"keine Extras" en:"no extras")</i></p>'
 		return
 	fi
-	[ -e "$CGI_REG" ] || touch "$CGI_REG"
+	[ -e "$PKG_REG" ] || touch "$PKG_REG"
 
 	unset cur_pkg
 	while IFS='|' read -r pkg title sec cgi; do
@@ -17,7 +17,7 @@ _cgi_extras() {
 			if [ "$pkg" = "mod" ]; then
 				heading='$(lang de:"Mod-Extras" en:"Mod extras")'
 			else
-				IFS='|'; set -- $(grep "^$pkg|" "$CGI_REG")
+				IFS='|'; set -- $(grep "^$pkg|" "$PKG_REG")
 				heading=${2:-$pkg}
 			fi
 

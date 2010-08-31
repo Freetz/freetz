@@ -18,10 +18,16 @@ if [ -r "/mod/etc/default.$PACKAGE/$PACKAGE.cfg" ]; then
 	. /mod/etc/conf/$PACKAGE.cfg
 fi
 
-if [ -x "/mod/usr/lib/cgi-bin/$PACKAGE.cgi" ]; then
+if [ "$ID" = _index ]; then
+	cgi="/mod/usr/lib/cgi-bin/$PACKAGE.cgi"
+else
+	cgi="/mod/usr/lib/cgi-bin/$PACKAGE/$ID.cgi"
+fi
+
+if [ -x "$cgi" ]; then
 	frm_begin "$PACKAGE"
-	/mod/usr/lib/cgi-bin/$PACKAGE.cgi
+	"$cgi"
 	frm_end "$PACKAGE"
 else
-	print_error "$(lang de:"Kein Skript f&uuml;r das Paket" en:"no script for package") '$PACKAGE'."
+	print_error "$(lang de:"Kein Skript f&uuml;r" en:"No script for") '$PACKAGE/$ID'."
 fi

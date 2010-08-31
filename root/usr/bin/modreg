@@ -3,6 +3,8 @@
 # Register scripts/files/options for the freetz web interface
 #
 # Usage: modreg cgi <pkg> <title>
+#        modreg pkg <pkg> <title>
+#        modreg conf <pkg> <id> <title>
 #        modreg extra <pkg> <title> <sec-level> <cgi-name>
 #        modreg file <pkg> <id> <title> <sec-level> <desc-file>
 #        modreg status <pkg> <title> [<cgi-name>]
@@ -33,7 +35,15 @@ usage() {
 
 case $1 in
 	cgi)
-		replace "^$2|" /mod/etc/reg/cgi.reg "$2|$3"
+		"$0" pkg "$2" "$3"
+		"$0" conf "$2" _index "$(lang de:"Einstellungen" en:"Settings")"
+		;;
+	pkg)
+		replace "^$2|" /mod/etc/reg/pkg.reg "$2|$3"
+		touch /mod/var/cache/menu.stale
+		;;
+	conf)
+		replace "^$2|$3|" /mod/etc/reg/conf.reg "$2|$3|$4"
 		touch /mod/var/cache/menu.stale
 		;;
 	extra)

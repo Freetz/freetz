@@ -9,19 +9,24 @@ if ! [ -r "/mod/etc/default.$PACKAGE/$PACKAGE.cfg" \
 fi
 
 # retrieve metadata
-CGI_REG=/mod/etc/reg/cgi.reg
-[ -e "$CGI_REG" ] || touch "$CGI_REG"
+PKG_REG=/mod/etc/reg/pkg.reg
+[ -e "$PKG_REG" ] || touch "$PKG_REG"
 
 if [ "$PACKAGE" = mod ]; then
 	PACKAGE_TITLE='$(lang de:"Einstellungen" en:"Settings")'
 else
 	OIFS=$IFS; IFS="|"
-	set -- $(grep "^$PACKAGE|" "$CGI_REG")
+	set -- $(grep "^$PACKAGE|" "$PKG_REG")
 	IFS=$OIFS
 	PACKAGE_TITLE=${2:-$PACKAGE}
 fi
 
-cgi --id="conf:$PACKAGE" --help="/packages/$PACKAGE"
+[ -z "$ID" ] && ID=_index
+
+help="/packages/$PACKAGE"
+[ "$ID" = _index ] || help="$help/$ID"
+
+cgi --id="conf:$PACKAGE/$ID" --help="$help"
 
 case $REQUEST_METHOD in
 	POST)   source "${HANDLER_DIR}/save.sh" ;;
