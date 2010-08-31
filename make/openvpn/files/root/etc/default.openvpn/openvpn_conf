@@ -102,7 +102,7 @@ if [ "$MODE" == "server" ]; then
 		echo "push \"dhcp-option DNS $PUSH_DNS\"" >> $CONFFILE
 	fi
 	if [ "$PUSH_WINS" ]; then
-		echo "push \"dhcp-option DNS $PUSH_WINS\"" >> $CONFFILE
+		echo "push \"dhcp-option WINS $PUSH_WINS\"" >> $CONFFILE
 	fi
 	if [ "$REDIRECT" ]; then
 		echo "push \"redirect-gateway\"" >> $CONFFILE
@@ -129,6 +129,7 @@ if [ "$MODE" == "server" ]; then
 			fi 
 			echo "client-config-dir $CCD" >> $CONFFILE
 			echo "topology subnet" >> $CONFFILE
+			echo "push \"topology subnet\"" >> $CONFFILE
 			echo "max-clients  $MAXCLIENTS" >> $CONFFILE
 			if [ "$LOCAL_NET" ]; then
 				tmp="`echo $LOCAL_NET | sed 's/[[:space:]]*;[[:space:]]*/;/g'`"
