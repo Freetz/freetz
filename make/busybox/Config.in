@@ -473,7 +473,15 @@ menu "IPv6 Options"
 
 config FREETZ_BUSYBOX_FEATURE_PREFER_IPV4_ADDRESS
 	bool "Prefer IPv4 addresses"
-	default n
+	default y
+	help
+		If this option is off, the first returned address will be used.
+		This may cause problems when your DNS server is IPv6-capable and
+		is returning IPv6 host addresses too. If IPv6 address
+		precedes IPv4 one in DNS reply, busybox network applets
+		(e.g. wget) will use IPv6 address. On an IPv6-incapable host
+		or network applets will fail to connect to the host
+		using IPv6 address.
 
 config FREETZ_BUSYBOX_PING6
 	bool "ping6 command"
