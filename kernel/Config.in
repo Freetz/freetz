@@ -18,6 +18,10 @@ config FREETZ_MODULE_xvmalloc
 	depends on FREETZ_REPLACE_KERNEL
 	default n
 
+config FREETZ_MODULE_block2mtd
+	bool "block2mtd.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	default n
 endmenu
 
 menu "crypto"
@@ -196,11 +200,16 @@ config FREETZ_MODULE_ipaq
 	select FREETZ_MODULE_usbserial
 	default n
 
+config FREETZ_MODULE_cp2101
+	bool "cp2101.ko"
+	select FREETZ_MODULE_usbserial
+	default n
+
 config FREETZ_MODULE_pl2303
 	bool "pl2303.ko"
 	select FREETZ_MODULE_usbserial
 	default n
-	
+
 config FREETZ_MODULE_ftdi_sio
 	bool "ftdi_sio.ko"
 	select FREETZ_MODULE_usbserial
