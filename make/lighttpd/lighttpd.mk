@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.26)
+$(call PKG_INIT_BIN, 1.4.28)
 $(PKG)_SOURCE:=lighttpd-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=a682c8efce47a2f4263a247ba0813c9b
+$(PKG)_SOURCE_MD5:=586eb535d31ac299652495b058dd87c4
 $(PKG)_SITE:=http://download.lighttpd.net/lighttpd/releases-1.4.x/
 
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/src/lighttpd
@@ -79,6 +79,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-bzip2
 $(PKG)_CONFIGURE_OPTIONS += --without-fam
 $(PKG)_CONFIGURE_OPTIONS += --without-gdbm
 $(PKG)_CONFIGURE_OPTIONS += --without-ldap
+$(PKG)_CONFIGURE_OPTIONS += --without-libev
 $(PKG)_CONFIGURE_OPTIONS += --without-memcache
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre="yes"
 $(PKG)_CONFIGURE_OPTIONS += --without-valgrind
