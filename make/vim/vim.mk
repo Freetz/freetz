@@ -11,7 +11,15 @@ $(PKG)_DEPENDS_ON := ncurses
 $(PKG)_CONFIGURE_OPTIONS += --disable-gui
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtktest
 $(PKG)_CONFIGURE_OPTIONS += --disable-xim
+ifeq ($(strip $(FREETZ_PACKAGE_VIM_HUGE)),y) 
+$(PKG)_CONFIGURE_OPTIONS += --with-features=huge
+else
+ifeq ($(strip $(FREETZ_PACKAGE_VIM_NORMAL)),y)
+$(PKG)_CONFIGURE_OPTIONS += --with-features=normal
+else
 $(PKG)_CONFIGURE_OPTIONS += --with-features=tiny
+endif
+endif
 $(PKG)_CONFIGURE_OPTIONS += --without-x
 $(PKG)_CONFIGURE_OPTIONS += --disable-multibyte
 $(PKG)_CONFIGURE_OPTIONS += --disable-netbeans
