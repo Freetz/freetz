@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3.6.23.1)
+$(call PKG_INIT_BIN, 3.7.2)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-amalgamation-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ed585bb3d4e5c643843ebb1e318644ce
+$(PKG)_SOURCE_MD5:=bd9586208f48ba840467bcfd066a6fa9
 $(PKG)_SITE:=http://www.sqlite.org
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/sqlite3
