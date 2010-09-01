@@ -21,11 +21,11 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Filteregeln um bereits gerippte Dateien ergänzen" en:"Add ripped files to filter rules")'
+sec_begin '$(lang de:"Filteregeln um bereits gerippte Dateien erg&auml;nzen" en:"Add ripped files to filter rules")'
 
 cat << EOF
 <ul>
-<li><a href="$(href extra streamripper log)"> $(lang de:"Filterregeln ergänzen" en:"Complement filter rules")</a></li>
+<li><a href="$(href extra streamripper log)"> $(lang de:"Filterregeln erg&auml;nzen" en:"Complement filter rules")</a></li>
 </ul>
 EOF
 sec_end
