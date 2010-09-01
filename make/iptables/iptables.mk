@@ -7,10 +7,12 @@ $(PKG)_CONDITIONAL_PATCHES+=cond
 endif
 
 $(PKG)_BINARIES_ALL:=iptables ip6tables iptables-save iptables-restore
-$(PKG)_BINARIES:=$($(PKG)_BINARIES_ALL)
-$(PKG)_BINARIES:=$(filter-out $(if $(FREETZ_TARGET_IPV6_SUPPORT),,ip6tables),$($(PKG)_BINARIES))
-$(PKG)_BINARIES:=$(filter-out $(if $(FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE),,iptables-save),$($(PKG)_BINARIES))
-$(PKG)_BINARIES:=$(filter-out $(if $(FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE),,iptables-restore),$($(PKG)_BINARIES))
+$(PKG)_BINARIES:=\
+	$(filter-out \
+		$(if $(FREETZ_TARGET_IPV6_SUPPORT),,ip6tables) \
+		$(if $(FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE),,iptables-save iptables-restore), \
+		$($(PKG)_BINARIES_ALL) \
+	)
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/sbin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
