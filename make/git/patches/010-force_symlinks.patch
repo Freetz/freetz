@@ -8,7 +8,7 @@
  	ln -s git$X $@ 2>/dev/null || \
  	cp git$X $@
  
-@@ -1894,7 +1893,6 @@
+@@ -1895,7 +1894,6 @@
  
  $(REMOTE_CURL_ALIASES): $(REMOTE_CURL_PRIMARY)
  	$(QUIET_LNCP)$(RM) $@ && \
@@ -16,7 +16,7 @@
  	ln -s $< $@ 2>/dev/null || \
  	cp $< $@
  
-@@ -2053,9 +2051,9 @@
+@@ -2054,9 +2052,9 @@
  install: all
  	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(bindir_SQ)'
  	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(gitexec_instdir_SQ)'
@@ -28,7 +28,7 @@
  	$(MAKE) -C templates DESTDIR='$(DESTDIR_SQ)' install
  ifndef NO_PERL
  	$(MAKE) -C perl prefix='$(prefix_SQ)' DESTDIR='$(DESTDIR_SQ)' install
-@@ -2081,14 +2079,12 @@
+@@ -2082,14 +2080,12 @@
  		cp "$$bindir/git$X" "$$execdir/git$X"; } ; } && \
  	for p in $(BUILT_INS); do \
  		$(RM) "$$execdir/$$p" && \
