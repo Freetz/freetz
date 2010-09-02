@@ -87,6 +87,7 @@ stop() {
 		umount $(active_mounts) 2>/dev/null
 		sleep 1
 		let count--
+		[ "$count" -le 0 ] && break
 	done
 	[ "$count" -le 0 ] && umount -l $(active_mounts) 2>/dev/null
 	[ -n "$mpoints" ] && rmdir $mpoints
