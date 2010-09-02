@@ -23,7 +23,7 @@ config() {
 	chmod 600 $CONF_DIR/davfs2.conf $CONF_DIR/secrets
 
 	# AVM-account
-	if which wlancfgctl >/dev/null; then
+	if which webdavcfginfo >/dev/null; then
 		[ "$(webdavcfginfo -p enabled)" == "1" ] && DAVFS2_ENABLED0="yes"
 		DAVFS2_HOST0="$(webdavcfginfo -p host_url)"
 		DAVFS2_USER0="$(webdavcfginfo -p username)"
