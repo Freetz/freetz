@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.0.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=@SF/vtun
+$(PKG)_SITE:=@SF/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/vtund
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/vtund
 $(PKG)_STARTLEVEL=81
@@ -25,7 +25,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VTUN_WITH_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VTUN_WITH_SHAPER
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VTUN_STATIC
 
-$(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc/VTUN
+$(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc/vtun
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_VTUN_WITH_LZO),--with-lzo-headers=$(TARGET_TOOLCHAIN_STAGING_DIR)/include/lzo/ --with-lzo-lib,--disable-lzo)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_VTUN_WITH_ZLIB),,--disable-zlib)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_VTUN_WITH_SSL),--with-ssl-headers=$(TARGET_TOOLCHAIN_STAGING_DIR)/include/openssl/ --with-blowfish-headers=$(TARGET_TOOLCHAIN_STAGING_DIR)/include/openssl/ --with-ssl-lib,--disable-ssl)

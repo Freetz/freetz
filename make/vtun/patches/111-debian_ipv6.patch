@@ -1,0 +1,61 @@
+--- netlib.c.orig	2008-01-07 23:35:56.000000000 +0100
++++ netlib.c	2010-09-02 11:43:45.000000000 +0200
+@@ -228,21 +228,23 @@
+ 
+ int server_addr(struct sockaddr_in *addr, struct vtun_host *host)
+ {
+-     struct hostent * hent;
++     struct addrinfo hints, *aiptr;
+ 
+      memset(addr,0,sizeof(struct sockaddr_in));
+-     addr->sin_family = AF_INET;
+-     addr->sin_port = htons(vtun.bind_addr.port);
++     memset(&hints, '\0', sizeof(hints));
++     hints.ai_family = AF_INET;
+ 
+      /* Lookup server's IP address.
+       * We do it on every reconnect because server's IP 
+       * address can be dynamic.
+       */
+-     if( !(hent = gethostbyname(vtun.svr_name)) ){
++     if( getaddrinfo(vtun.svr_name, NULL, &hints, &aiptr) ){
+         vtun_syslog(LOG_ERR, "Can't resolv server address: %s", vtun.svr_name);
+         return -1;
+      }
+-     addr->sin_addr.s_addr = *(unsigned long *)hent->h_addr; 
++     memcpy(addr, aiptr->ai_addr, aiptr->ai_addrlen);
++     addr->sin_port = htons(vtun.bind_addr.port);
++     freeaddrinfo(aiptr);
+ 
+      host->sopt.raddr = strdup(inet_ntoa(addr->sin_addr));
+      host->sopt.rport = vtun.bind_addr.port;
+@@ -253,8 +255,11 @@
+ /* Set address by interface name, ip address or hostname */
+ int generic_addr(struct sockaddr_in *addr, struct vtun_addr *vaddr)
+ {
+-     struct hostent *hent;
++     struct addrinfo hints, *aiptr;
++
+      memset(addr, 0, sizeof(struct sockaddr_in));
++     memset(&hints, '\0', sizeof(hints));
++     hints.ai_family = AF_INET;
+   
+      addr->sin_family = AF_INET;
+   
+@@ -269,13 +274,14 @@
+ 	 }
+            break;
+         case VTUN_ADDR_NAME:
+-	 if (!(hent = gethostbyname(vaddr->name))) {
++	 if( getaddrinfo(vaddr->name, NULL, &hints, &aiptr) ){
+ 	    vtun_syslog(LOG_ERR,
+ 	                "Can't resolv local address %s",
+ 	                vaddr->name);
+ 	    return -1;
+            }
+-	 addr->sin_addr.s_addr = *(unsigned long *) hent->h_addr;
++	 memcpy(addr, aiptr->ai_addr, aiptr->ai_addrlen);
++	 freeaddrinfo(aiptr);
+            break;
+         default:
+            addr->sin_addr.s_addr = INADDR_ANY;
