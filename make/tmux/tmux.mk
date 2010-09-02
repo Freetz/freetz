@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 1.2)
-$(PKG)_SOURCE:=tmux-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=748fbe7bb5f86812e19bd6005ff21a5a
-$(PKG)_SITE:=@SF/tmux
+$(call PKG_INIT_BIN, 1.3)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=96e60cb206de2db0610b9fb6a64c2251
+$(PKG)_SITE:=@SF/$(pkg)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/tmux
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tmux
 
@@ -9,7 +10,7 @@ $(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_TMUX_STATIC
 
 $(PKG)_DEPENDS_ON := ncurses libevent
 
-$(PKG)_CFLAGS := -DLLONG_MIN=LONG_MIN -DLLONG_MAX=LONG_MAX -DIOV_MAX=1024 -DBUILD="\\\"$($(PKG)_VERSION)\\\""
+$(PKG)_CFLAGS := -std=gnu99 -D_GNU_SOURCE -DBUILD="\\\"$($(PKG)_VERSION)\\\""
 
 ifeq ($(strip $(FREETZ_PACKAGE_TMUX_STATIC)),y)
 $(PKG)_LDFLAGS += -static
