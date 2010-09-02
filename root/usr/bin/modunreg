@@ -1,12 +1,17 @@
 #!/bin/sh
-#
-# Usage: modunreg cgi <pkg>
-#        modunreg pkg <pkg>
-#        modunreg conf <pkg> [<id>]
-#        modunreg extra <pkg> [<cgi-name>]
-#        modunreg file <pkg> [<id>]
-#        modunreg status <pkg> [<cgi-name>]
-#        modunreg daemon <pkg> [<daemon>]
+PROGRAM=$0
+usage() {
+	cat >&2 << EOF
+Usage: $PROGRAM cgi    <pkg>
+       $PROGRAM pkg    <pkg>
+       $PROGRAM conf   <pkg> [<id>]
+       $PROGRAM extra  <pkg> [<id>]
+       $PROGRAM file   <pkg> [<id>]
+       $PROGRAM status <pkg> [<id>]
+       $PROGRAM daemon <pkg> [<id>]
+EOF
+	exit 1
+}
 
 char=$(echo -ne '\01')
 
@@ -47,12 +52,7 @@ case $1 in
 		delete "^${3:-[^|]*}|.*|$2\$" /mod/etc/reg/daemon.reg
 		;;
 	*)
-		echo "Usage: $0 cgi <pkg>" 1>&2
-		echo "       $0 extra <pkg> [<cgi-name>]" 1>&2
-		echo "       $0 file <pkg> [<id>]" 1>&2
-		echo "       $0 status <pkg> [<cgi-name>]" 1>&2
-		echo "       $0 daemon <pkg> [<daemon>]" 1>&2
-		exit 1
+		usage
 		;;
 esac
 

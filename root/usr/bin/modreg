@@ -2,13 +2,19 @@
 #
 # Register scripts/files/options for the freetz web interface
 #
-# Usage: modreg cgi <pkg> <title>
-#        modreg pkg <pkg> <title>
-#        modreg conf <pkg> <id> <title>
-#        modreg extra <pkg> <title> <sec-level> <cgi-name>
-#        modreg file <pkg> <id> <title> <sec-level> <desc-file>
-#        modreg status <pkg> <title> [<cgi-name>]
-#        modreg daemon [--disable] [--hide] [--rc-script <script>] [--name <description>] [--package <pkg>] <daemon>
+PROGRAM=$0
+usage() {
+	cat >&2 << EOF
+Usage: $PROGRAM cgi    <pkg> <title>
+       $PROGRAM pkg    <pkg> <title>
+       $PROGRAM conf   <pkg> <id> <title>
+       $PROGRAM extra  <pkg> <title> <sec-level> <id>
+       $PROGRAM file   <pkg> <id> <title> <sec-level> <desc-file>
+       $PROGRAM status <pkg> <title> [<id>]
+       $PROGRAM daemon [-d|--disable] [-h|--hide] [-r|--rc-script=<script>] [-n|--name=<description>] [-p|--package=<pkg>] <id>
+EOF
+	exit 1
+}
 
 replace() {
 	local regexp=$1 file=$2 data=$3
@@ -19,13 +25,12 @@ replace() {
 	mv "$file.$$" "$file"
 }
 
-usage() {
-	echo "Usage: $1 cgi <pkg> <title>" 1>&2
-	echo "       $1 extra <pkg> <title> <sec-level> <cgi-name>" 1>&2
-	echo "       $1 file <pkg> <id> <title> <sec-level> <desc-file>" 1>&2
-	echo "       $1 status <pkg> <title> [<cgi-name>]" 1>&2
-	echo "       $1 daemon [-d|--disable] [-h|--hide] [-r|--rc-script=<script>] [-n|--name=<description>] [-p|--package=<pkg>] <daemon>" 1>&2
-	exit 1
+file_exists_or_die() {
+	local file=$1
+	if [ ! -e "$file" ]; then
+		echo "$PROGRAM: File not found: $file" >&2
+		exit 1
+	fi
 }
 
 #
@@ -35,19 +40,30 @@ usage() {
 
 case $1 in
 	cgi)
-		"$0" pkg "$2" "$3"
-		"$0" conf "$2" _index "$(lang de:"Einstellungen" en:"Settings")"
+		pkg=$2 title=$3
+		"$0" pkg "$pkg" "$title"
+		"$0" conf "$pkg" _index "$(lang de:"Einstellungen" en:"Settings")"
 		;;
 	pkg)
-		replace "^$2|" /mod/etc/reg/pkg.reg "$2|$3"
+		pkg=$2 title=$3
+		replace "^$pkg|" /mod/etc/reg/pkg.reg "$pkg|$title"
 		touch /mod/var/cache/menu.stale
 		;;
 	conf)
-		replace "^$2|$3|" /mod/etc/reg/conf.reg "$2|$3|$4"
+		pkg=$2 id=$3 title=$4
+		if [ "$id" = _index ]; then
+			cgi="$pkg.cgi"
+		else
+			cgi="$pkg/$id.cgi"
+		fi
+		file_exists_or_die "/mod/usr/lib/cgi-bin/$cgi"
+		replace "^$pkg|$id|" /mod/etc/reg/conf.reg "$pkg|$id|$title"
 		touch /mod/var/cache/menu.stale
 		;;
 	extra)
-		replace "^$2|.*|$5\$" /mod/etc/reg/extra.reg "$2|$3|$4|$5"
+		pkg=$2 title=$3 sec_level=$4 id=$5
+		file_exists_or_die "/mod/usr/lib/cgi-bin/$pkg/$id.cgi"
+		replace "^$pkg|.*|$id\$" /mod/etc/reg/extra.reg "$pkg|$title|$sec_level|$id"
 		rm -f /mod/var/cache/extras
 		touch /mod/var/cache/menu.stale
 		;;
@@ -64,16 +80,12 @@ case $1 in
 # This style has the following advantages:
 #  1. All files of a package can be unregistered at once: modunreg file "$pkg"
 #  2. Files may be grouped/associated with a package in the Web interface
-#     (not done yet)
 #  3. We can derive the default locations of the description files:
 #     /mod/etc/default.$pkg/ and /tmp/flash/$pkg/
 #
 # If $desc is an absolute path it is taken as it is (previous behaviour).
 # A relative path chooses from the default description file or the
 # overriding version at the standard locations. The resulting path is stored.
-#
-# For the time being, $title may include a human-readable package name. Later,
-# this information ought to be retrieved from a package registration file.
 #
 			oldstyle_id="${pkg}__$id"
 			case $desc in
@@ -85,49 +97,52 @@ case $1 in
 					fi
 					;;
 			esac
+			file_exists_or_die "$deffile"
 			replace "^$pkg|$id|" /mod/etc/reg/file.reg "$pkg|$id|$title|$sec_level|$deffile"
 		fi
 		touch /mod/var/cache/menu.stale
 		;;
 	status)
-		cgi=${4:-status}
-		replace "^$2|.*|$cgi\$" /mod/etc/reg/status.reg "$2|$3|$cgi"
+		pkg=$2 title=$3 id=${4:-status}
+		file_exists_or_die "/mod/usr/lib/cgi-bin/$pkg/$id.cgi"
+		replace "^$2|.*|$id\$" /mod/etc/reg/status.reg "$2|$3|$id"
 		touch /mod/var/cache/menu.stale
 		;;
 	daemon)
-		filename=$0
 		shift
-		TEMP=$(getopt -o dhn:r:p: --long disable,hide,name:,rc-script:package: -n "$(basename $filename)" -- "$@")
+		TEMP=$(getopt -o dhn:r:p: --long disable,hide,name:,rc-script:,package: -n "$(basename "$PROGRAM")" -- "$@")
 
 		disable=false
 		hide=false
 		description=
 		package=
-		[ $? == 0 ] || usage $filename
+		[ $? == 0 ] || usage
 		eval set -- "$TEMP"
 
 		while true; do
 			case $1 in
-				-d|--disable) disable=true; shift ;;
-				-h|--hide)	hide=true; shift ;;
-				-n|--name) description=$2; shift 2 ;;
+				-d|--disable)   disable=true; shift ;;
+				-h|--hide)      hide=true; shift ;;
+				-n|--name)      description=$2; shift 2 ;;
 				-r|--rc-script) rcscript=$2; shift 2 ;;
-				-p|--package) package=$2; shift 2 ;;
-				--) shift ; break ;;
+				-p|--package)   package=$2; shift 2 ;;
+				--)             shift ; break ;;
 				*) echo "Internal error!" ; exit 1 ;;
 			esac
 		done
 
-		[ -n "$1" ] || usage $filename
+		[ -n "$1" ] || usage
 		daemon=$1
 		: ${description:=$daemon}
 		: ${rcscript:=rc.$daemon}
 		: ${package:=$daemon}
 
+		file_exists_or_die "/mod/etc/init.d/$rcscript"
+
 		replace "^$daemon|.*|$package\$" /mod/etc/reg/daemon.reg "$daemon|$description|$rcscript|$disable|$hide|$package"
 		;;
 	*)
-		usage $0
+		usage
 		;;
 esac
 
