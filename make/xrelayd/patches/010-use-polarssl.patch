@@ -130,3 +130,14 @@
                  ELOG("SSL handshake failed: %08x", ret);
                  return;
              }
+@@ -720,8 +720,8 @@
+         // generate key if desired
+         ILOG("Generating private key");
+         havege_init( &hs );
+-        rsa_init( &key, RSA_PKCS_V15, 0, havege_rand, &hs );
+-        ret = rsa_gen_key( &key, keysize, EXPONENT);
++        rsa_init( &key, RSA_PKCS_V15, 0);
++        ret = rsa_gen_key( &key, havege_rand, &hs , keysize, EXPONENT);
+         if(ret) {
+             ELOG("Failed to generate private key: %08x",ret);
+             goto fail;
