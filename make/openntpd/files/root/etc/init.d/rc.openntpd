@@ -7,12 +7,12 @@ DAEMON_BIN=ntpd
 config() {
 	modlib_config
 	[ -e "/var/db" ] || mkdir -p /var/db
-	[ -e "/mod/etc/ntpd.conf" ] || ln -s /tmp/flash/openntpd/ntpd.conf /mod/etc/ntpd.conf
+	[ -e "/mod/etc/ntpd.conf" ] || ln -s /tmp/flash/ntpd.conf /mod/etc/ntpd.conf
 }
 
 start() {
 	[ "$OPENNTPD_MULTID" == "no" ] && /etc/init.d/rc.multid ntp_disable  >/dev/null
-	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/openntpd/ntpd.conf
+	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/ntpd.conf
 }
 
 stop() {
@@ -22,9 +22,6 @@ stop() {
 
 case $1 in
 	""|load)
-		mkdir -p /tmp/flash/openntpd
-		#for compatibility reason only, may be removed later
-		[ -e /tmp/flash/ntpd.conf ] && mv /tmp/flash/ntpd.conf /tmp/flash/openntpd/ntpd.conf
 		modlib_adduser ntp -G users -D -S -g "NTP daemon"
 		mkdir -p /mod/home/ntp
 		chown root /mod/home/ntp -R
@@ -32,7 +29,7 @@ case $1 in
 
 		modreg cgi 'openntpd' 'Openntpd'
 		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file openntpd conf 'Openntpd config' 0 "openntpd_conf"
-
+		
 		modlib_start $OPENNTPD_ENABLED
 		;;
 	unload)
