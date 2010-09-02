@@ -2429,6 +2429,7 @@ menu "Plugin selection"
 
 	config FREETZ_AVMPLUGINS_WEBDAV
 		bool "WEBDAV"
+		depends on ! FREETZ_PACKAGE_DAVFS2
 		default y if FREETZ_TYPE_FON_WLAN_7270_16MB
 		default n
 		help
