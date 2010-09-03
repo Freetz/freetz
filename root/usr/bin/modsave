@@ -5,11 +5,7 @@
 save() {
 	TMPFILE=/tmp/.save.tmp
 
-	if [ -r /mod/etc/conf/mod.cfg ]; then
-		. /mod/etc/conf/mod.cfg
-	else
-		MOD_LIMIT=61440
-	fi
+	let MOD_LIMIT=32*1024
 
 	# not really a lock
 	if [ -e "$TMPFILE" ]; then
@@ -19,7 +15,8 @@ save() {
 
 	tar -cf $TMPFILE flash -C /tmp/
 
-	let size=$(wc -c < $TMPFILE)
+	# compressed config size must be less than 32 KB
+	size=$(gzip -c $TMPFILE | wc -c)
 
 	if [ "$size" -gt "$MOD_LIMIT" ]; then
 		rm -f $TMPFILE
@@ -29,9 +26,14 @@ save() {
 	fi
 
 	echo -n 'Writing /var/flash/freetz ... '
-	cat $TMPFILE > /var/flash/freetz
+	cat $TMPFILE > /var/flash/freetz 2>/dev/null
+	local rv=$?
 	rm -f $TMPFILE
-	echo 'done.'
+	if [ $rv -ne 0 ]; then
+		echo 'failed.'
+		echo 'Error: Could not save config file.'
+		exit $rv
+	fi
 	echo "$size bytes written."
 }
 
