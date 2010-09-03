@@ -60,11 +60,11 @@ modpatch()
 	local STATUS
 	if [ "$is_verbose" ]; then
 		echo2 "applying patch file $2"
-		patch ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
+		patch --force ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
 		STATUS=${PIPESTATUS[0]}
 		echo2 "----------------------------------------------------------------------"
 	else
-		patch ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
+		patch --force ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
 		STATUS=$?
 	fi
 	if [ $STATUS -gt 0 ]; then
