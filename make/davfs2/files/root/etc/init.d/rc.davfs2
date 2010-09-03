@@ -62,7 +62,7 @@ start() {
 		mkdir $point 2>/dev/null
 		mount -t davfs $host $point -o conf=$cfile,uid=ftpuser
 		local retpoint=$?
-		[ "$retpoint" -ne 0 ]; then
+		if [ "$retpoint" -ne 0 ]; then
 			retval=$retpoint
 			rmdir $point 2>/dev/null
 		fi
