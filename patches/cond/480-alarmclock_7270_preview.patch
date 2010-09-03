@@ -1,6 +1,6 @@
---- usr/www/all/html/de/home/home.html.orig	2010-08-18 16:35:00.387413334 +0200
-+++ usr/www/all/html/de/home/home.html	2010-08-18 16:35:00.757414391 +0200
-@@ -171,6 +171,11 @@
+--- usr/www/all/html/de/home/home.html.orig	2010-09-02 15:12:02.000000000 +0200
++++ usr/www/all/html/de/home/home.html	2010-09-03 09:44:52.000000000 +0200
+@@ -180,6 +180,11 @@
  <td class="tdLed">&nbsp;</td>
  <td><script type="text/javascript">document.write(WeckerDisplay(2));</script></td>
  </tr>
@@ -12,8 +12,8 @@
  </table>
  </div></div></div></div></div></div>
  <? include ../html/de/home/rbb_refresh.html ?>
---- usr/www/all/html/de/home/home.js.orig	2010-08-18 16:34:55.438664152 +0200
-+++ usr/www/all/html/de/home/home.js	2010-08-18 16:35:00.767418123 +0200
+--- usr/www/all/html/de/home/home.js.orig	2010-09-03 09:44:48.000000000 +0200
++++ usr/www/all/html/de/home/home.js	2010-09-03 09:44:52.000000000 +0200
 @@ -224,6 +224,7 @@
  var NachtEnabled = "<? query box:settings/night_time_control_enabled ?>";
  var Wecker1 = "<? query telcfg:settings/AlarmClock0/Active ?>";
@@ -39,7 +39,7 @@
  jslDisplay("trTam",g_tamActive > 0 || g_tamDisplay > 0);
  jslDisplay("trIntFax", g_intFaxActive == "1");
  jslDisplay("trSperre",RufsperreAktiv == true);
-@@ -1413,8 +1415,10 @@
+@@ -1416,8 +1418,10 @@
  }
  return DisplayString;
  }
@@ -50,7 +50,7 @@
  <? setvariable var:wnr '0' ?>
  var Active = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Active ?>";
  var Time = "<? query telcfg:settings/AlarmClock<? echo $var:wnr ?>/Time ?>";
-@@ -1424,13 +1428,29 @@
+@@ -1427,13 +1431,29 @@
  {
  return WeckerString(Active,Time,Num,Weekdays);
  }
@@ -80,7 +80,7 @@
  <? if eq $var:showPortfreigabe `1` `
  function PortfwDisplay(){
  var infotext="";
-@@ -1649,6 +1669,8 @@
+@@ -1652,6 +1672,8 @@
  jslSetValue("uiPostWeckernr",0);break;
  case 1:
  jslSetValue("uiPostWeckernr",1);break;
@@ -89,8 +89,8 @@
  }
  jslGoTo('fon','wecker');
  }
---- usr/www/all/html/de/fon/wecker.html.orig	2010-08-18 16:34:53.398661899 +0200
-+++ usr/www/all/html/de/fon/wecker.html	2010-08-18 16:35:00.767418123 +0200
+--- usr/www/all/html/de/fon/wecker.html.orig	2010-09-02 15:12:05.000000000 +0200
++++ usr/www/all/html/de/fon/wecker.html	2010-09-03 09:44:52.000000000 +0200
 @@ -3,14 +3,25 @@
  {?txtWakeupCall?}
  </div></div></div></div></div></div>
@@ -117,9 +117,9 @@
  <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
  <p class="mb10">{?388:3268?}</p>
  <p class="mb10">{?388:2396?}</p>
---- usr/www/all/html/de/fon/wecker.js.orig	2010-08-18 16:34:55.108668944 +0200
-+++ usr/www/all/html/de/fon/wecker.js	2010-08-18 16:35:00.767418123 +0200
-@@ -23,8 +23,9 @@
+--- usr/www/all/html/de/fon/wecker.js.orig	2010-09-02 15:11:56.000000000 +0200
++++ usr/www/all/html/de/fon/wecker.js	2010-09-03 09:44:52.000000000 +0200
+@@ -24,8 +24,9 @@
  var mCount = "<? query telcfg:settings/Foncontrol ?>";
  ` ?>
  var nr = jslGetValue("uiPostWeckernr");
