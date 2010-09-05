@@ -1,0 +1,90 @@
+#!/bin/sh
+
+DAEMON=external
+CONF_NAME=mod
+. /etc/init.d/modlibrc
+LOG_FILE=/var/log/$DAEMON.log
+
+usage() {
+	echo "Usage: $0 [start|stop] [mountpoint]" 1>&2
+	echo "Output is stored here: $LOG_FILE"
+	exit 1
+}
+
+sleeper() {
+	echo -n "Waiting for time-synchronisation:" >> $LOG_FILE
+	counter=225
+	spaceit=" "
+	while [ `date +%Y` -lt 2010 -a $counter -ne 0 ]; do
+		echo -n "$spaceit." >> $LOG_FILE
+		spaceit=
+		[ "$MOD_EXTERNAL_WAIT_INFINITE" == "yes" ] || let counter=$counter-1
+		sleep 4
+	done
+	if [ `date +%Y` -lt 2010 ]; then
+		echo " timeout, failed." >> $LOG_FILE
+		exit
+	fi
+	if [ `date +%Y` -gt $MOD_EXTERNAL_YEAR_MAX ]; then
+		echo " error, failed." >> $LOG_FILE
+		[ -f /tmp/flash/mod/external.year ] && . /tmp/flash/mod/external.year
+		exit
+	fi
+	echo " done." >> $LOG_FILE
+}
+
+start() {
+	modreg daemon $1
+	/etc/init.d/rc.$1 load >> $LOG_FILE 2>&1
+}
+
+stop() {
+	/etc/init.d/rc.$1 unload >> $LOG_FILE 2>&1
+	modunreg daemon $1
+}
+
+helper() {
+	if [ "$1" == "start" ]; then
+		if [ ! -e /tmp/.modstarted ]; then
+			echo -n "Waiting for mod-startup:" >> $LOG_FILE
+			spaceit=" "
+			while [ ! -e /tmp/.modstarted ]; do
+				echo -n "$spaceit." >> $LOG_FILE
+				spaceit=
+				sleep 1
+			done
+			echo " done." >> $LOG_FILE
+		fi
+		[ "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && sleeper
+	fi
+	echo -e "\n### $3 $2 @ `date "+%d.%m.%Y - %H:%M,%S"`" >> $LOG_FILE
+	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
+		[ -x "/etc/init.d/rc.$pkg" ] && echo " $EXTERNAL_SERVICES " | grep -q " $pkg " >/dev/null 2>&1 && $1 $pkg
+	done
+	[ -f /tmp/flash/mod/rc.external ] && . /tmp/flash/mod/rc.external $1 >> $LOG_FILE 2>&1
+}
+
+
+[ $# -ne 2 ] && usage
+cat /etc/external.dir 2>/dev/null | grep -q "$2" >/dev/null 2>&1 || exit
+if [ "$MOD_EXTERNAL_FREETZ_SERVICES" != "yes" ]; then
+	if [ -z "$MOD_EXTERNAL_OWN_SERVICES" ]; then
+		echo "No services selected." >> $LOG_FILE
+		exit
+	fi
+	EXTERNAL_SERVICES="$MOD_EXTERNAL_OWN_SERVICES"
+else
+	EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES"
+fi
+
+case $1 in
+	start)
+		helper start "$2" mounting
+		;;
+	stop)
+		helper stop "$2" unmounting
+		;;
+	*)
+		usage
+		;;
+esac

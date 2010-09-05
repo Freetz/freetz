@@ -450,6 +450,7 @@ comment "Custom options -------------------------"
 
 config FREETZ_INSTALL_BASE
 	bool
+	select FREETZ_PACKAGE_MOD
 	select FREETZ_LIB_ld_uClibc
 	select FREETZ_LIB_libcrypt
 	select FREETZ_LIB_libdl
@@ -460,6 +461,12 @@ config FREETZ_INSTALL_BASE
 	select FREETZ_LIB_librt
 	select FREETZ_LIB_libuClibc
 	select FREETZ_LIB_libfreetz if FREETZ_HAS_USB_HOST
+	default y
+	help
+		This is mandatory
+
+config FREETZ_PACKAGE_MOD
+	bool
 	default y
 	help
 		This is mandatory

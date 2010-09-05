@@ -1,0 +1,27 @@
+#!/bin/sh
+
+DAEMON=smbd
+DAEMON_LONG_NAME="AVM $DAEMON"
+
+set_mode() {
+	echo $1 > /tmp/.status.$DAEMON
+	/etc/init.d/rc.inetd config $DAEMON
+}
+
+case $1 in
+	inetd_enable)
+		set_mode inetd
+		;;
+	inetd_disable)
+		set_mode stopped
+		;;
+	status*)
+		cat /tmp/.status.$DAEMON 2>/dev/null
+		;;
+	*)
+		echo "Usage: $0 [inetd_enable|inetd_disable|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

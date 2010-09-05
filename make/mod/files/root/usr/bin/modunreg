@@ -1,0 +1,59 @@
+#!/bin/sh
+PROGRAM=$0
+usage() {
+	cat >&2 << EOF
+Usage: $PROGRAM cgi    <pkg>
+       $PROGRAM pkg    <pkg>
+       $PROGRAM conf   <pkg> [<id>]
+       $PROGRAM extra  <pkg> [<id>]
+       $PROGRAM file   <pkg> [<id>]
+       $PROGRAM status <pkg> [<id>]
+       $PROGRAM daemon <pkg> [<id>]
+EOF
+	exit 1
+}
+
+char=$(echo -ne '\01')
+
+delete() {
+	local regexp=$1 file=$2
+	[ -e "$file" ] || touch "$file"
+
+	# replace $file atomically
+	sed -i "\\${char}$regexp${char}d" "$file"
+}
+
+case $1 in
+	cgi)
+		"$0" conf "$2" _index
+		;;
+	pkg)
+		delete "^$2|" /mod/etc/reg/pkg.reg
+		touch /mod/var/cache/menu.stale
+		;;
+	conf)
+		delete "^$2|${3:-[^|]*}|" /mod/etc/reg/conf.reg
+		touch /mod/var/cache/menu.stale
+		;;
+	extra)
+		delete "^$2|.*|${3:-[^|]*}\$" /mod/etc/reg/extra.reg
+		rm -f /mod/var/cache/extras
+		touch /mod/var/cache/menu.stale
+		;;
+	file)
+		delete "^${2}|${3:-[^|]*}|" /mod/etc/reg/file.reg
+		touch /mod/var/cache/menu.stale
+		;;
+	status)
+		delete "^$2|.*|${3:-[^|]*}\$" /mod/etc/reg/status.reg
+		touch /mod/var/cache/menu.stale
+		;;
+	daemon)
+		delete "^${3:-[^|]*}|.*|$2\$" /mod/etc/reg/daemon.reg
+		;;
+	*)
+		usage
+		;;
+esac
+
+exit 0

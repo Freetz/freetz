@@ -41,7 +41,6 @@ DL_DIR:=dl
 INCLUDE_DIR:=include
 MAKE_DIR:=make
 PACKAGES_DIR_ROOT:=packages
-ROOT_DIR:=root
 SOURCE_DIR_ROOT:=source
 TOOLCHAIN_DIR:=toolchain
 TOOLS_DIR:=tools
@@ -97,7 +96,7 @@ $(error Running makefile as root is prohibited! Please build Freetz as normal us
 endif
 
 # Mod archive unpacked incorrectly (heuristics)? -> Error
-ifeq ($(shell MWW=root/usr/mww; \
+ifeq ($(shell MWW=make/mod/files/root/usr/mww; \
 	[ ! -L $$MWW/cgi-bin/index.cgi -o ! -x $$MWW/cgi-bin/status.cgi -o -x $$MWW/index.html ] \
 	&& echo y\
 ),y)
@@ -105,7 +104,7 @@ $(error File permissions or links are wrong! Please unpack Freetz on a filesyste
 endif
 
 # Folder root/ needs 755 permissions
-ifneq ($(shell stat -c %a root),755)
+ifneq ($(shell stat -c %a make/mod/files/root),755)
 $(error Please unpack/checkout again with umask set to 0022)
 endif
 
@@ -120,7 +119,7 @@ $(error Cygwin is not supported! Please use a real Linux environment.)
 endif
 
 # git-svn removes empty directories, check for one of them
-ifneq (OK,$(shell [ -d $(ROOT_DIR)/sys ] && echo OK ))
+ifneq (OK,$(shell [ -d make/mod/files/root/sys ] && echo OK ))
 $(error The empty directory root/sys is missing! Please do a clean checkout.)
 endif
 

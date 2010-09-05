@@ -581,17 +581,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
 		echo "installing mod base"
 
-		echo1 "copying files"
-		for rootDir in "${ROOT_DIR}" "${TARGET_SPECIFIC_ROOT_DIR}"; do
-			"$TAR" -c -C "${rootDir}" --exclude=./lib --exclude=./usr/lib --exclude=.svn \
-				--exclude=usr/share/terminfo . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-		done
-		"$TAR" -c -C "$ROOT_DIR" --exclude=.svn \
-			./usr/lib/{cgi-bin,mod,mww} | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-
-		mkdir -p "${FILESYSTEM_MOD_DIR}/usr/lib"
-		cp "${ROOT_DIR}/usr/lib/lib"*.sh "${FILESYSTEM_MOD_DIR}/usr/lib/"
-
 		# Emergency stop switch for execution of debug.cfg
 		sed -i -r 's#(\. /var/flash/debug\.cfg)#[ "$dbg_off" == "y" ] || \1#g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 		# Emergency stop switch for execution of Freetz as a whole
@@ -690,21 +679,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 				ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
 			fi
 		fi
-
-		if [ "$FREETZ_STYLE" == "grey" ]; then
-			echo1 "setting grey style as default"
-			mv ${FILESYSTEM_MOD_DIR}/usr/share/style/colorscheme-grey.css ${FILESYSTEM_MOD_DIR}/usr/share/style/colorscheme.css
-		else
-			echo1 "setting colored style as default"
-			mv ${FILESYSTEM_MOD_DIR}/usr/share/style/colorscheme-colored.css ${FILESYSTEM_MOD_DIR}/usr/share/style/colorscheme.css
-		fi
-		rm ${FILESYSTEM_MOD_DIR}/usr/share/style/colorscheme-*.css
-
-		# security level
-		echo1 "patching security level"
-		sed -i -e "s/sec_level=1/sec_level=$FREETZ_SECURITY_LEVEL/g" ${FILESYSTEM_MOD_DIR}/usr/lib/libmodcgi.sh
-
-		modlang "${BASE_DIR}/.language" "${FILESYSTEM_MOD_DIR}"
 	else
 		error 1 "installation of base system is mandatory"
 	fi
@@ -801,7 +775,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	echo0 "installing packages"
-
 	for pkg in $(static_packages); do
 		echo1 "${pkg}"
 		pkg_name=$(pkg_name "$pkg")
@@ -866,6 +839,39 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		if [ $? -ne 0 ]; then
 			error 1 "custom script returned error"
+		fi
+	fi
+
+	# Processing some options, must be done after base package is in place
+	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
+		echo0 "processing mod base options"
+		# color scheme
+		if [ "$FREETZ_STYLE" == "grey" ]; then
+			echo1 "setting grey style as default"
+			ln -s colorscheme-grey.css ${FILESYSTEM_MOD_DIR}/usr/share/style/colorscheme.css
+		else
+			echo1 "setting colored style as default"
+			ln -s colorscheme-colored.css ${FILESYSTEM_MOD_DIR}/usr/share/style/colorscheme.css
+		fi
+
+		# security level
+		echo1 "patching security level"
+		sed -i -e "s/sec_level=1/sec_level=$FREETZ_SECURITY_LEVEL/g" ${FILESYSTEM_MOD_DIR}/usr/lib/libmodcgi.sh
+
+		# external
+		[ ! "$EXTERNAL_ENABLED" == "y" ] && echo1 "libmodmount.sh was not integrated into image"
+		# freetz mount
+		[ ! "$FREETZ_PATCH_FREETZMOUNT" == "y" ] && echo1 "libmodmount.sh was not integrated into image"
+		# Box-Info
+		[ "$FREETZ_REMOVE_BOX_INFO" == "y" ] && echo1 "Box-Info cgi was not integrated into image"
+		# FREETZ-Info
+		[ "$FREETZ_REMOVE_FREETZ_INFO" == "y" ] && echo1 "FREETZ-Info cgis were not integrated into image"
+
+		# Packing .config into image
+		if [ ! "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
+			echo1 "integrating stripped .config file into image"
+			dot_config_file="$MOD_DIR/filesystem/etc/.config"
+			cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
 		fi
 	fi
 
@@ -950,46 +956,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		rm -rf libs_to_reduce
 		rm -f ${FILESYSTEM_MOD_DIR}/mklibs-progs
-	fi
-
-	# Remove /etc/init.d/rc.external (for running services)
-	[ "$EXTERNAL_ENABLED" == "y" ] || rm "$MOD_DIR/filesystem/etc/init.d/rc.external"
-
-	# Remove /usr/lib/libmodmount.sh
-	if [ "$FREETZ_PATCH_FREETZMOUNT" == "y" ]; then
-		if [ -e "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" ]; then
-			echo1 "libmodmount.sh was integrated into image"
-		fi
-	else
-		if [ -w "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" ]; then
-			rm "$MOD_DIR/filesystem/usr/lib/libmodmount.sh" && echo1 "libmodmount.sh was not integrated into image"
-		fi
-	fi
-
-	# Remove BOX-Info
-	if [ "$FREETZ_REMOVE_BOX_INFO" == "y" ]; then
-		echo1 "removing BOX-Info cgis from image"
-		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/box_info.cgi"
-	else
-		echo1 "BOX-Info cgi is integrated into image"
-	fi
-
-	# Remove FREETZ-Info
-	if [ "$FREETZ_REMOVE_FREETZ_INFO" == "y" ]; then
-		echo1 "removing FREETZ-Info cgis from image"
-		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/info.cgi"
-		rm "$MOD_DIR/filesystem/usr/lib/cgi-bin/mod/do_download_config.cgi"
-	else
-		echo1 "FREETZ-Info cgis are integrated into image"
-	fi
-
-	# Packing .config into image
-	if [ "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
-		echo1 ".config file was not integrated into image"
-	else
-		echo1 "integrating stripped .config file into image"
-		dot_config_file="$MOD_DIR/filesystem/etc/.config"
-		cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
 	fi
 
 	echo0 "stripping leftover unstripped binaries"

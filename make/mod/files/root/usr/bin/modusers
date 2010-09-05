@@ -1,0 +1,82 @@
+#!/bin/sh
+
+APPLET=${0##*/}
+
+usage() {
+	cat << EOF
+
+$0: get/put users, groups & passwords from/to save buffer
+Usage: $APPLET {load|save}
+
+Examples:
+  # Retrieve data from save buffer (*not* from TFFS)
+  $APPLET load
+
+  # Put data to save buffer (*not* to TFFS)
+  $APPLET save
+  # Make save buffer persistent in TFFS
+  modsave flash
+
+EOF
+}
+
+[ $# -eq 0 ] && usage && exit 0
+[ $# -ne 1 ] && usage >&2 && exit 1
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+FLASH_DIR=/tmp/flash
+USER_DIR=$FLASH_DIR/users
+TMP_DIR=/tmp
+FILES="passwd group shadow gshadow"
+
+make_user_dir()
+{
+	rm -rf $USER_DIR
+	mkdir -pm 700 $USER_DIR
+}
+
+save()
+{
+	make_user_dir
+	( cd $TMP_DIR && cp -a $FILES $USER_DIR	)
+}
+
+init_passwd()
+{
+	return 0
+#	WEBUI_PASSWD=$(allcfgconv -c -o - ar7 | sed -n -e '1,/webui/d' -e '/}/,$d' -e '/password/s/^.*"\(.*\)".*$/\1/p')
+#	CRYPT_PASSWD=$(httpd -m "$WEBUI_PASSWD")
+#	sed -i -e "s,^\(root:\)[^:]*\(.*\)$,\1${CRYPT_PASSWD}\2,g" $TMP_DIR/shadow
+#	/usr/bin/modconf set mod MOD_HTTPD_PASSWD=$(/usr/sbin/httpd -m "$WEBUI_PASSWD")
+}
+
+load()
+{
+	if ! [ -d "$USER_DIR" ]; then
+		make_user_dir
+		init_passwd
+	fi
+
+	for f in $FILES; do
+		if [ -e "$USER_DIR/$f" ]; then
+			cp -a "$USER_DIR/$f" "$TMP_DIR"
+			# BEGIN compat
+			# TODO: remove in one of the next releases
+			[ "$f" = "shadow" -o "$f" = "gshadow" ] && chmod 600 "$TMP_DIR/$f"
+			# END compat
+		fi
+	done
+}
+
+case $1 in
+	save)
+		save
+		;;
+	load)
+		load
+		;;
+	*)
+		usage >&2
+		exit 1
+		;;
+esac

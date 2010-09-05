@@ -1,0 +1,52 @@
+#!/bin/sh
+
+DAEMON=webcfg
+DAEMON_BIN=httpd
+DAEMON_LONG_NAME="Freetz webinterface"
+PID_FILE=/var/run/webcfg.pid
+CONF_NAME=mod
+CONF_ENABLED=MOD_HTTPD
+. /etc/init.d/modlibrc
+
+config() {
+	modlib_config
+}
+
+start() {
+	DAEMON_ENV="WEBIF=mww"
+	modlib_startdaemon httpd -P "$PID_FILE" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h /usr/mww/ -r "Freetz"
+}
+
+case $1 in
+	""|load)
+		modlib_start $MOD_HTTPD
+		;;
+	unload)
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	force-restart)
+		[ $# -ge 2 ] && sleep $2 2>/dev/null
+		modlib_force_restart
+		;;
+	status)
+		modlib_status
+		;;
+	config)
+		config
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|force-restart|status|config]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
