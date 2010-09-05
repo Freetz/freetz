@@ -32,7 +32,7 @@ case $1 in
 		chmod 0700 /mod/home/ntp -R
 
 		modreg cgi 'openntpd' 'Openntpd'
-		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file openntpd conf 'Openntpd config' 0 "openntpd_conf"
+		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file openntpd conf '$(lang de:"Konfiguration" en:"Configuration")' 0 "openntpd_conf"
 
 		modlib_start $OPENNTPD_ENABLED
 		;;

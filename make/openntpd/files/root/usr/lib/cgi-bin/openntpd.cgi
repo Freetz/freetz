@@ -27,11 +27,3 @@ cat << EOF
 EOF
 
 sec_end
-
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
-
-cat << EOF
-<ul><li><a href="$(href file openntpd conf)">$(lang de:"ntpd.conf bearbeiten" en:"Edit ntpd.conf")</a></li></ul>
-EOF
-
-sec_end
