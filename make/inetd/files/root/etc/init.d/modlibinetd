@@ -82,7 +82,7 @@ update_main() {
 			if grep "$line" -B1 $INETD_CONF | head -n1 | grep -q "^#"; then
 				grep "$line" -B1 $INETD_CONF | head -n1
 			else
-				grep "$line" $INETD_CONF
+				echo "$line"
 			fi
 		fi
 	done
