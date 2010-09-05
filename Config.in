@@ -861,12 +861,11 @@ comment "USB mounting ----------------------------"
 config FREETZ_PATCH_FREETZMOUNT
 	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
 	select FREETZ_USBSTORAGE_AUTOMOUNT
-	select FREETZ_PACKAGE_E2FSPROGS
-	select FREETZ_PACKAGE_E2FSPROGS_BLKID
-	default n
+	select FREETZ_PACKAGE_FSTYP if ! FREETZ_PATCH_FREETZMOUNT_BLKID
+	default y
 	help
 		1. Replaces and deselects usb-storage patch.
-		   - The names of USB storage directories can be defined by WebIF (default uStorXY) or by volume LABEL.
+		   - The names of USB storage directories can be defined by WebIF (default uStorXY) (or by volume LABEL).
 		2. Replaces and deselects autorun.sh/autoend.sh patch.
 		   - autorun/autoend behaviour can be activated/deactivated via WebIF.
 		   - autorun/autoend are useful to start/terminate applications located on USB devices, eg
@@ -876,9 +875,19 @@ config FREETZ_PATCH_FREETZMOUNT
 		   and FTP users to actually write to their own home directories.
 		4. Avoid deleting whole filesystems on USB devices.
 		5. Enhanced behaviour during mounting and unmounting.
-		6. NOTE: fstyp is not needed and could be deselected in Package-Selection->Testing.
 
 		It is highly recommended to select this patch.
+
+config FREETZ_PATCH_FREETZMOUNT_BLKID
+	bool "Provide mount-by-label feature"
+	depends on FREETZ_PATCH_FREETZMOUNT
+	select FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_PACKAGE_E2FSPROGS_BLKID
+	default n
+	help
+		This option selects blkid binary from e2fsprogs which provides the mount-by-label feature.
+
+		NOTE: fstyp is not needed in this case and could be deselected in Package-Selection->Testing.
 
 if ! FREETZ_PATCH_FREETZMOUNT
 config FREETZ_PATCH_USBSTORAGE
@@ -1435,9 +1444,12 @@ config FREETZ_REMOVE_MINID
 config FREETZ_REMOVE_NTFS
 	bool "Remove NTFS support"
 	depends on \
-			FREETZ_TYPE_FON_WLAN_7240 || \
-			( FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR ) || \
-			FREETZ_TYPE_FON_WLAN_7270_V3
+			! FREETZ_PACKAGE_NTFS && \
+			( \
+			  FREETZ_TYPE_FON_WLAN_7240 || \
+			  ( FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR ) || \
+			  FREETZ_TYPE_FON_WLAN_7270_V3 \
+			)
 	default n
 	help
 		Remove NTFS support

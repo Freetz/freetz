@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://tuxera.com/opensource
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ntfs-3g
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ntfs-3g
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/ntfs-3g
 
 $(PKG)_DEPENDS_ON := fuse
 

@@ -59,7 +59,7 @@
 +		mount -t ext3 $DEVNODE $MNTPATH -o noatime,nodiratime,rw,async
 +		;;
 +	ntfs)
-+		/usr/bin/ntfs-3g $DEVNODE $MNTPATH -o force
++		/bin/ntfs-3g $DEVNODE $MNTPATH -o force
 +		;;
 +	swap)
 +		/etc/init.d/rc.swap autostart $DEVNODE

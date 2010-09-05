@@ -29,13 +29,10 @@ mount_fs ()
 	[ $# -ge 5 ] && local ftp_gid=$5 || local ftp_gid=0 # ftp group id
 	local blkid_bin="/usr/sbin/blkid"
 	local fstyp_bin="/usr/bin/fstyp"
-	local avm_ntfs="/bin/ntfs-3g"
-	local freetz_ntfs="/usr/bin/ntfs-3g"
-	local ntfs_bin="" # ntfs binary
+	local ntfs_bin="/bin/ntfs-3g" # ntfs binary
 	local err_mo=1 # set mount error as default
 	local err_fst=1 # set file system detection error as default
-	[ -x $avm_ntfs ] && ntfs_bin=$avm_ntfs
-	[ -x $freetz_ntfs ] && ntfs_bin=$freetz_ntfs
+	[ -x $ntfs_bin ] || ntfs_bin=""
 	[ -x $fstyp_bin ] && local fs_type=$($fstyp_bin $mnt_dev 2>/dev/null) # fs type detection using fstyp binary
 	[ -x $blkid_bin ] && local fs_type=$($blkid_bin -s TYPE $mnt_dev 2>/dev/null | sed -e 's/.*TYPE="//;s/".*//') # fs type detection using blkid binary
 	[ -z "$fs_type" ] && local fs_type="unknown" # set unknown file system type if detection failed
