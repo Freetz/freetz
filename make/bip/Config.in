@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_BIP
-	bool "Bip 0.8.4 (binary only)"
+	bool "Bip 0.8.5"
 	default n
 	help
 		Bip is an IRC proxy, which means it keeps connected to your
@@ -33,9 +33,8 @@ config FREETZ_PACKAGE_BIP_WITH_OIDENTD
 	help
 		This option enables oidentd spoofing support for bip.
 
-config FREETZ_PACKAGE_BIP_OIDENTD 
-	bool "select oidentd package" 
- 	depends on FREETZ_PACKAGE_BIP_WITH_OIDENTD
-	select FREETZ_PACKAGE_OIDENTD 
+config FREETZ_PACKAGE_BIP_OIDENTD
+	bool "select oidentd package"
+	depends on FREETZ_PACKAGE_BIP_WITH_OIDENTD
+	select FREETZ_PACKAGE_OIDENTD
 	default n
-

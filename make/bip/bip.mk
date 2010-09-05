@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,0.8.4)
+$(call PKG_INIT_BIN,0.8.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=76fe2800efdfbe54bf72540e40a91150
+$(PKG)_SOURCE_MD5:=9109cdfb9125f40cd40e86f2b3b0e5d0
 $(PKG)_SITE:=http://bip.t1r.net/downloads
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
