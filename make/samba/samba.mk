@@ -16,21 +16,54 @@ ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_CONFIGURE_ENV += libreplace_cv_HAVE_IPV6=no
 endif
 
-$(PKG)_CONFIGURE_ENV += samba_cv_HAVE_GETTIMEOFDAY_TZ=yes
-$(PKG)_CONFIGURE_ENV += samba_cv_USE_SETREUID=yes
-$(PKG)_CONFIGURE_ENV += samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=yes
-$(PKG)_CONFIGURE_ENV += samba_cv_HAVE_IFACE_IFCONF=yes
-$(PKG)_CONFIGURE_ENV += samba_cv_HAVE_MMAP=yes
-$(PKG)_CONFIGURE_ENV += samba_cv_HAVE_FCNTL_LOCK=yes
-$(PKG)_CONFIGURE_ENV += samba_cv_HAVE_SECURE_MKSTEMP=yes
-$(PKG)_CONFIGURE_ENV += samba_cv_HAVE_NATIVE_ICONV=no
-$(PKG)_CONFIGURE_ENV += samba_cv_fpie=no
-$(PKG)_CONFIGURE_ENV += ac_cv_func_prctl=no
-$(PKG)_CONFIGURE_ENV += SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
+# TODO:
+# Set samba_cv_REALPATH_TAKES_NULL=yes when new 
+# Download Toolchain is on the mirrors
+$(PKG)_CONFIGURE_ENV += \
+	samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
+	samba_cv_USE_SETREUID=yes \
+	samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=yes \
+	samba_cv_HAVE_IFACE_IFCONF=yes \
+	samba_cv_HAVE_MMAP=yes \
+	samba_cv_HAVE_FCNTL_LOCK=yes \
+	samba_cv_HAVE_SECURE_MKSTEMP=yes \
+	samba_cv_HAVE_NATIVE_ICONV=no \
+	samba_cv_fpie=no \
+	ac_cv_func_prctl=no \
+	SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes \
+	samba_cv_HAVE_BROKEN_FCNTL64_LOCKS=no \
+	samba_cv_HAVE_BROKEN_GETGROUPS=no \
+	samba_cv_HAVE_BROKEN_READDIR_NAME=no \
+	samba_cv_HAVE_C99_VSNPRINTF=yes \
+	samba_cv_HAVE_DEV64_T=no \
+	samba_cv_HAVE_DEVICE_MAJOR_FN=yes \
+	samba_cv_HAVE_DEVICE_MINOR_FN=yes \
+	samba_cv_HAVE_FTRUNCATE_EXTEND=yes \
+	samba_cv_HAVE_IFACE_AIX=no \
+	samba_cv_HAVE_INO64_T=no \
+	samba_cv_HAVE_KERNEL_CHANGE_NOTIFY=no \
+	samba_cv_HAVE_KERNEL_SHARE_MODES=yes \
+	samba_cv_HAVE_MAKEDEV=yes \
+	samba_cv_HAVE_OFF64_T=no \
+	samba_cv_HAVE_STRUCT_FLOCK64=yes \
+	samba_cv_HAVE_TRUNCATED_SALT=no \
+	samba_cv_HAVE_UNSIGNED_CHAR=no \
+	samba_cv_HAVE_WORKING_AF_LOCAL=yes \
+	samba_cv_HAVE_Werror=yes \
+	samba_cv_REALPATH_TAKES_NULL=no \
+	samba_cv_REPLACE_INET_NTOA=no \
+	samba_cv_SIZEOF_DEV_T=yes \
+	samba_cv_SIZEOF_INO_T=yes \
+	samba_cv_SIZEOF_OFF_T=yes \
+	samba_cv_SIZEOF_TIME_T=no \
+	samba_cv_have_setresgid=yes \
+	samba_cv_have_setresuid=yes \
+	samba_cv_have_longlong=yes
 
 $(PKG)_CONFIGURE_ENV += fu_cv_sys_stat_statfs2_bsize=yes
 $(PKG)_CONFIGURE_ENV += $(PKG)_fu_cv_sys_stat_statvfs=no
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC,fu_cv_sys_stat_statvfs)
+
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-swat
 $(PKG)_CONFIGURE_OPTIONS += --disable-cups
