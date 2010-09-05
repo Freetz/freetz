@@ -1,7 +1,12 @@
-# modlibinetd only used by rc.inetd
+# modlibinetd is only used by rc.inetd
 
 INETD_CONF="/var/mod/etc/inetd.conf"
 [ "$INETD_IPV6_SUPPORT" == "yes" -a -d /proc/sys/net/ipv6 ] && local inetd_ipv6=6
+
+update_user() {
+	cat /tmp/flash/inetd/inetd.user 2>/dev/null > $INETD_CONF
+	[ "$?" -eq 0 ] && echo "# END OF CUSTOM CONFIG" >> $INETD_CONF
+}
 
 update_line() {
 	line="$inetdcfg_port\t$inetdcfg_sock\t$inetdcfg_proto\t$inetdcfg_flags"
@@ -47,9 +52,9 @@ update_file() {
 }
 
 update_main() {
-	touch $INETD_CONF
 	if [ $# -eq 0 ]; then
 		echo -e '\nConfiguring inetd: ...'
+		update_user
 		for package in $(ls /etc/default.*/*.inetd); do
 			update_file $package
 		done
@@ -74,8 +79,14 @@ update_main() {
 		local ip_proto=$(echo "$cleanline" | cut -d " " -f3)
 		if [ "$(grep -E "^$listener[[:space:]]*(stream|dgram|raw|seqpacket)[[:space:]]*$ip_proto" $INETD_CONF 2>/dev/null | wc -l)" -gt 1 ]; then
 			echo -n "WARNING: inetd could not listen on '$listener/$ip_proto' multiple times: "
-			grep "$line" -B1 $INETD_CONF | head -n1
+			if grep "$line" -B1 $INETD_CONF | head -n1 | grep -q "^#"; then
+				grep "$line" -B1 $INETD_CONF | head -n1
+			else
+				grep "$line" $INETD_CONF
+			fi
 		fi
 	done
 }
+
+[ ! -e $INETD_CONF ] && update_user
 
