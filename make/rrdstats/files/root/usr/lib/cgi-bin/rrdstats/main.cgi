@@ -520,7 +520,7 @@ case $graph in
 		echo "<center><font size=+1><b>Stats for last $periodnn</b></font></center>"
 		case $RRD_DISPLAY_TYPE in
 			rrddt)
-				ALL_GROUPS=$(grep -vE "^#|^$|^ " /var/tmp/flash/rrdstats/digitemp.group | tr -s " " | cut -d " " -f2 | uniq)
+				ALL_GROUPS=$(grep -vE "^#|^$|^ " /var/tmp/flash/rrdstats/digitemp.group 2>/dev/null | tr -s " " | cut -d " " -f2 | uniq)
 				[ -z "$ALL_GROUPS" ] && gen_main "one" "$curgroup" "$periodnn"
 				for curgroup in $ALL_GROUPS; do
 					gen_main "one" "$curgroup" "$periodnn" "$curgroup"
