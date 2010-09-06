@@ -668,17 +668,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 				cp -a $file "$dest/"
 			done
 		fi
-
-		if [ "$FREETZ_FAVICON_STRING" != "none" ]; then
-			echo1 "adding favicon(s) (${FREETZ_FAVICON_STRING})"
-			cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/freetz.ico" "${FILESYSTEM_MOD_DIR}/usr/share/favicon.ico"
-			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/mww/favicon.ico"
-
-			if [ -e "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" ]; then
-				cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
-				ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
-			fi
-		fi
 	else
 		error 1 "installation of base system is mandatory"
 	fi
@@ -853,11 +842,19 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo1 "setting colored style as default"
 			ln -s colorscheme-colored.css ${FILESYSTEM_MOD_DIR}/usr/share/style/colorscheme.css
 		fi
-
+		# favicon
+		if [ "$FREETZ_FAVICON_STRING" != "none" ]; then
+			echo1 "adding favicon(s) (${FREETZ_FAVICON_STRING})"
+			cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/freetz.ico" "${FILESYSTEM_MOD_DIR}/usr/share/favicon.ico"
+			ln -s "../share/favicon.ico" "${FILESYSTEM_MOD_DIR}/usr/mww/favicon.ico"
+			if [ -e "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" ]; then
+				cp "${FAVICON_DIR}/${FREETZ_FAVICON_STRING}/box.ico" "${HTML_LANG_MOD_DIR}/html/favicon.ico"
+				ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
+			fi
+		fi
 		# security level
 		echo1 "patching security level"
 		sed -i -e "s/sec_level=1/sec_level=$FREETZ_SECURITY_LEVEL/g" ${FILESYSTEM_MOD_DIR}/usr/lib/libmodcgi.sh
-
 		# external
 		[ ! "$EXTERNAL_ENABLED" == "y" ] && echo1 "rc.external was not integrated into image"
 		# freetz mount
@@ -866,7 +863,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ "$FREETZ_REMOVE_BOX_INFO" == "y" ] && echo1 "Box-Info cgi was not integrated into image"
 		# FREETZ-Info
 		[ "$FREETZ_REMOVE_FREETZ_INFO" == "y" ] && echo1 "FREETZ-Info cgis were not integrated into image"
-
 		# Packing .config into image
 		if [ ! "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
 			echo1 "integrating stripped .config file into image"
