@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2010.5.22)
+$(call PKG_INIT_BIN, 2010.8.8)
 $(PKG)_SOURCE:=ntfs-3g-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=caa08c73220a7106c76f697b7a7915ec
+$(PKG)_SOURCE_MD5:=6c109746c2708f679725a2ea441c61c6
 $(PKG)_SITE:=http://tuxera.com/opensource
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
