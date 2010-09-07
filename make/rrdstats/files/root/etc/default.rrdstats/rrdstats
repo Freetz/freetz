@@ -216,17 +216,17 @@ collect_one_sub() {
 	fi
 
 	onedata=""
-	onetrys="$RRDSTATS_DIGITEMP_RETRIES"
-	while [ -z "$onedata" -a "$onetrys" -ge 0 ]; do
-		let onetrys--
+	oneretries="$RRDSTATS_DIGITEMP_RETRIES"
+	while [ -z "$onedata" -a "$oneretries" -ge 0 ]; do
+		let oneretries--
 		onedata="$($_NICE digitemp $rs_param -t$1 -q -o%$_SENSOR_UOM -c$_SENSOR_CNF)"
 		oneretv=$?
-		[ "$onedate" = "$_SENSOR_ERR" -a "$RRDSTATS_DIGITEMP_RETRY85" = "yes" -a "$onetrys" -ge 0 ] && onedata=""
+		[ "$onedata" = "$_SENSOR_ERR" -a "$RRDSTATS_DIGITEMP_RETRY85" = "yes" -a "$oneretries" -ge 0 ] && onedata=""
 	done
 
 	if [ -n "$onedata" -a "$oneretv" -eq 0 ]; then
 		echo "$_CURRENT;$onedata;" >> $RRDSTATS_RRDDATA/one_00-$2_$_SENSOR_UOM.cvs
-		[ "$RRDSTATS_DIGITEMP85" = "yes" -a "$onedate" = "$_SENSOR_ERR" ] && return
+		[ "$RRDSTATS_DIGITEMP85" = "yes" -a "$onedata" = "$_SENSOR_ERR" ] && return
 		[ "$RRDSTATS_DIGITEMP_A" = "yes" ] && one_alert $onedata $2
 		$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd "N:$onedata" --template temp
 	fi
