@@ -352,6 +352,13 @@ config FREETZ_BUSYBOX_TAC
 	help
 		Reverse cat.
 
+config FREETZ_BUSYBOX_TAR_OLDGNU_COMPATIBILITY
+	bool "tar support for old header format"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		This option is required to unpack archives created in the old GNU format.
+
 config FREETZ_BUSYBOX_UDHCPC
 	bool "udhcpc"
 	depends on FREETZ_REPLACE_BUSYBOX
