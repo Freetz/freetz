@@ -31,6 +31,7 @@ check "$RRDSTATS_THOMSONTHG" yes:thomsonthg
 check "$RRDSTATS_THOMSONADV" yes:thomsonadv
 check "$RRDSTATS_DIGITEMP1W" yes:digitemp1w
 check "$RRDSTATS_DIGITEMP_C" yes:digitemp_c "*":digitemp_f
+check "$RRDSTATS_DIGITEMP_RETRY85" yes:digitemp_retry85
 check "$RRDSTATS_DIGITEMP85" yes:digitemp85
 check "$RRDSTATS_DIGITEMP_A" yes:digitemp_a
 check "$RRDSTATS_DIGITEMP_HTTP"  yes:digitemp_http
@@ -352,6 +353,17 @@ max:<input type="text" name="digitemp_u" size="3" maxlength="4" value="$(html "$
 <input type="hidden" name="digitemp_a" value="no">
 <input id="d3" type="checkbox" name="digitemp_a" value="yes"$digitemp_a_chk>
 <label for="d3">$(lang de:"Aktiviere Alarmierungs&uuml;berwachung" en:"Activate alert observer")</label>
+</p>
+
+<p>
+$(lang de:"Anzahl Wiederholungen, falls ein Sensor keinen Wert zur&uuml;ckliefert" en:"Count of retries, if a sensorc does not return a value"):
+<input type="text" name="digitemp_retries" size="2" maxlength="3" value="$(html "$RRDSTATS_DIGITEMP_RETRIES")">
+</p>
+
+<p>
+<input type="hidden" name="digitemp_retry85" value="no">
+<input id="d5" type="checkbox" name="digitemp_retry85" value="yes"$digitemp_retry85_chk>
+<label for="d5">$(lang de:"Wiederhole auch bei 85,000000&deg;C (Fehler und Werte)" en:"Retry also with 185.000000&deg;F (errors and values)")</label>
 </p>
 
 <p>

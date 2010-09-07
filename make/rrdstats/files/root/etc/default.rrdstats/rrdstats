@@ -23,7 +23,7 @@ collect_cpu() {
 			RRA:AVERAGE:0.5:1:576 \
 			RRA:AVERAGE:0.5:6:672 \
 			RRA:AVERAGE:0.5:24:732 \
-			RRA:AVERAGE:0.5:144:1460	
+			RRA:AVERAGE:0.5:144:1460
 	fi
 	cpudata=$(grep '^cpu ' /proc/stat 2>/dev/null | awk '{print "N:"$2":"$3":"$4":"$6+$7":"$5;}')
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $cpudata --template user:nice:syst:wait:idle
@@ -81,7 +81,7 @@ collect_upt() {
 
 collect_diskio() {
 	[ $# -eq 0 ] && return
-	case $1 in 
+	case $1 in
 		1)
 			DISK=$RRDSTATS_DISK_DEV1
 			;;
@@ -160,7 +160,7 @@ collect_thg() {
 
 collect_net() {
 	[ $# -eq 0 ] && return
-	case $1 in 
+	case $1 in
 		1)
 			IF=$RRDSTATS_INTERFACE1
 			;;
@@ -214,8 +214,16 @@ collect_one_sub() {
 			RRA:MIN:0.5:24:732   RRA:AVERAGE:0.5:24:732   RRA:MAX:0.5:24:732   \
 			RRA:MIN:0.5:144:1460 RRA:AVERAGE:0.5:144:1460 RRA:MAX:0.5:144:1460
 	fi
-	onedata=$($_NICE digitemp $rs_param -t$1 -q -o%$_SENSOR_UOM -c$_SENSOR_CNF)
-	oneretv=$?
+
+	onedata=""
+	onetrys="$RRDSTATS_DIGITEMP_RETRIES"
+	while [ -z "$onedata" -a "$onetrys" -ge 0 ]; do
+		let onetrys--
+		onedata="$($_NICE digitemp $rs_param -t$1 -q -o%$_SENSOR_UOM -c$_SENSOR_CNF)"
+		oneretv=$?
+		[ "$onedate" = "$_SENSOR_ERR" -a "$RRDSTATS_DIGITEMP_RETRY85" = "yes" -a "$onetrys" -ge 0 ] && onedata=""
+	done
+
 	if [ -n "$onedata" -a "$oneretv" -eq 0 ]; then
 		echo "$_CURRENT;$onedata;" >> $RRDSTATS_RRDDATA/one_00-$2_$_SENSOR_UOM.cvs
 		[ "$RRDSTATS_DIGITEMP85" = "yes" -a "$onedate" = "$_SENSOR_ERR" ] && return
@@ -278,6 +286,6 @@ while true; do
 	[ "$RRDSTATS_DIGITEMP1W" = yes ] && collect_one
 	[ $# -eq 0 ] && exit
 	_SLEEPER=$(( $_NEXTRUN-$(date +%s) ))
-	[ $_SLEEPER -gt 0 ] && sleep $_SLEEPER 
+	[ $_SLEEPER -gt 0 ] && sleep $_SLEEPER
 done
 

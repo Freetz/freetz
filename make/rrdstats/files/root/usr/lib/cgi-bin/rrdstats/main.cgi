@@ -491,7 +491,7 @@ case $graph in
 		else
 			heading="$GROUP_PERIOD"
 		fi
-		echo "<center><font size=+1><b>$heading stats</b></font></center>"
+		echo "<center><font size=+1><br><b>$heading stats</b></font></center>"
 
 		if [ $(echo "$graph" | sed 's/^tt./yes/') = yes -a "$RRDSTATS_THOMSONADV" = yes ]; then
 			echo "<br><center> \
@@ -517,7 +517,7 @@ case $graph in
 	*)
 		set_lazy "$RRDSTATS_NOTLAZYM"
 		set_period "$RRDSTATS_PERIODMAIN"
-		echo "<center><font size=+1><b>Stats for last $periodnn</b></font></center>"
+		echo "<center><font size=+1><br><b>Stats for last $periodnn</b></font></center>"
 		case $RRD_DISPLAY_TYPE in
 			rrddt)
 				ALL_GROUPS=$(grep -vE "^#|^$|^ " /var/tmp/flash/rrdstats/digitemp.group 2>/dev/null | tr -s " " | cut -d " " -f2 | uniq)
