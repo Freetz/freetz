@@ -1,17 +1,17 @@
---- usr/www/all/templates/menu_page_end.html.orig	2010-09-02 15:26:28.000000000 +0200
-+++ usr/www/all/templates/menu_page_end.html	2010-09-03 09:44:15.000000000 +0200
+--- usr/www/all/templates/menu_page_end.html.orig	2010-09-02 15:19:59.000000000 +0200
++++ usr/www/all/templates/menu_page_end.html	2010-09-03 09:39:07.000000000 +0200
 @@ -11,7 +11,8 @@
  box.out("<a href='http://www.avm.de/en/fritzclips' target='_blank'>{?22:958?}</a> | ")
  end
- box.out("<a href='"..os.getenv("CONFIG_ACCESSORY_URL").."' target='_blank'>{?22:2?}</a> | ")
+ box.out("<a href='"..href.get("/menus/programs.lua").."' >{?22:2?}</a> | ")
 -box.out("<a href='http://www.avm.de' target='_blank' style='margin-right:0px;'>www.avm.de</a> ")
-+box.out("<a href='http://www.avm.de' target='_blank' >www.avm.de</a> | ")
-+box.out("<a href='http://www.freetz.org' target='_blank' style='margin-right:0px;'>www.freetz.org</a>")
++box.out("<a href='http://www.avm.de' target='_blank'>www.avm.de</a> | ")
++box.out("<a href='http://www.freetz.org' target='_blank' style='margin-right:0px;'>www.freetz.org</a> ")
  end
  ?>
  </div>
---- usr/www/all/templates/menu_page_head.html.orig	2010-09-02 15:25:43.000000000 +0200
-+++ usr/www/all/templates/menu_page_head.html	2010-09-03 09:44:15.000000000 +0200
+--- usr/www/all/templates/menu_page_head.html.orig	2010-09-02 15:20:01.000000000 +0200
++++ usr/www/all/templates/menu_page_head.html	2010-09-03 09:39:07.000000000 +0200
 @@ -97,4 +97,23 @@
  box.out("</div>")
  end
@@ -37,7 +37,7 @@
 +</div>
  </div>
 --- usr/www/all/menus/menu_freetz.lua.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/menus/menu_freetz.lua	2010-09-03 09:44:15.000000000 +0200
++++ usr/www/all/menus/menu_freetz.lua	2010-09-03 09:39:07.000000000 +0200
 @@ -0,0 +1,16 @@
 +menu.add_item{
 +page = "/cgi-bin/freetz_status",
