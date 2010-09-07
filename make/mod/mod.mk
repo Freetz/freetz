@@ -14,7 +14,6 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	[ "$(FREETZ_STYLE_COLORED)" == "y" ] && echo "usr/share/style/colorscheme-grey.css" >> $@ || echo "usr/share/style/colorscheme-colored.css" >> $@; \
 	[ ! "$(FREETZ_HAS_USB_HOST)" == "y" -o "$(FREETZ_REMOVE_FTPD)" == "y" ] && echo "etc/init.d/rc.ftpd" >> $@; \
 	[ ! "$(FREETZ_HAS_USB_HOST)" == "y" -o "$(FREETZ_REMOVE_SMBD)" == "y" ] && [ ! "$(FREETZ_PACKAGE_SAMBA)" == "y" ] && echo "etc/init.d/rc.smbd" >> $@; \
-	[ ! "$(FREETZ_HAS_USB_HOST)" == "y" ] || ( [ "$FREETZ_REMOVE_SMBD" == "y" -o "$FREETZ_PACKAGE_SAMBA" == "y" ] && [ "$FREETZ_REMOVE_FTPD" == "y" ] ) && echo "/bin/inetdctl" >> $@; \
 	touch $@
 
 $(pkg)-precompiled:
