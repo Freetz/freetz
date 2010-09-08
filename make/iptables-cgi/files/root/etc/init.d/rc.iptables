@@ -16,11 +16,6 @@ else
   MODULES="$MODULES ipt_state ipt_mac ipt_multiport"
 fi
 
-fix_entry()
-{
-	eval $1=\$\( echo -n "\$$1" \| tr -dc \'0-9./a-zA-Z_-\' \)
-}
-
 start() {
 
 	if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
@@ -108,14 +103,6 @@ start() {
 				fi
 			fi
 
-			LIST="IPTABLES_RULE IPTABLES_CHAIN IPTABLES_POSITION IPTABLES_SOURCE \
-				IPTABLES_DESTINATION IPTABLES_PROTOKOLL IPTABLES_SPORT IPTABLES_DPORT \
-				IPTABLES_INPUT_INTERFACE IPTABLES_OUTPUT_INTERFACE IPTABLES_ACTION SPECIAL"
-
-			for i in $LIST; do
-				fix_entry $i
-			done
-
 			# Apply rule
 			echo "<br>"
 			echo "rule $IPTABLES_RULE"
@@ -198,13 +185,13 @@ save () {
 				if [ $? -eq 0 ]; then
 					I=""
 				fi
-				
+
 				# Check if output interface is available
 				echo $O | grep x > /dev/null
 				if [ $? -eq 0 ]; then
 					O=""
 				fi
-				
+
 
 				echo "$N-A $CHAIN $S $D $P $SPORT $DPORT $I $O -j $A" >> $SAVEFILE
 			fi
