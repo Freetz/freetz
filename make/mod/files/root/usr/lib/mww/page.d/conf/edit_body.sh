@@ -14,6 +14,21 @@ frm_end() {
 EOF
 }
 
+source /usr/lib/mod/service.sh
+SERVICE_REG=/mod/etc/reg/daemon.reg
+package_services() {
+	local selected_pkg=$1
+	grep -q "|$selected_pkg\$" "$SERVICE_REG" 2> /dev/null || return
+	sec_begin '$(lang de:"Dienste" en:"Services")'
+	stat_begin
+	while IFS='|' read -r daemon description rcscript disable hide pkg; do
+		[ "$pkg" = "$selected_pkg" ] || continue
+		stat_line "$pkg" "$daemon" "$description" "$rcscript" "$disable" "$hide"
+	done < "$SERVICE_REG"
+	stat_end
+	sec_end
+}
+
 if [ -r "/mod/etc/default.$PACKAGE/$PACKAGE.cfg" ]; then
 	. /mod/etc/conf/$PACKAGE.cfg
 fi
@@ -23,6 +38,8 @@ if [ "$ID" = _index ]; then
 else
 	cgi="/mod/usr/lib/cgi-bin/$PACKAGE/$ID.cgi"
 fi
+
+package_services "$PACKAGE"
 
 if [ -x "$cgi" ]; then
 	frm_begin "$PACKAGE"
