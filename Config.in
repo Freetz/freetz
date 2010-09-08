@@ -821,11 +821,13 @@ config FREETZ_PATCH_DSL_EXPERT
 
 config FREETZ_ADD_REGEXT_GUI
 	bool "Patch GUI to enable external SIP connections"
-	depends on ( \
-		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		(FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR_DSL) \
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7570 || \
+		( \
+			FREETZ_TYPE_FON_WLAN_7170 || \
+			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7270 || \
+			FREETZ_TYPE_FON_WLAN_7270_V3 \
 		) && FREETZ_TYPE_LANG_DE
 	default n
 	help
