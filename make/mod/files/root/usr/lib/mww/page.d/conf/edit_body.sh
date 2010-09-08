@@ -17,16 +17,20 @@ EOF
 source /usr/lib/mod/service.sh
 SERVICE_REG=/mod/etc/reg/daemon.reg
 package_services() {
-	local selected_pkg=$1
-	grep -q "|$selected_pkg\$" "$SERVICE_REG" 2> /dev/null || return
-	sec_begin '$(lang de:"Dienste" en:"Services")'
-	stat_begin
+	local selected_pkg=$1 count=0
 	while IFS='|' read -r daemon description rcscript disable hide pkg; do
-		[ "$pkg" = "$selected_pkg" ] || continue
+		[ "$pkg" = "$selected_pkg" -a "$hide" = false ] || continue
+		let count++
+		if [ $count -eq 1 ]; then
+			sec_begin '$(lang de:"Dienste" en:"Services")'
+			stat_begin
+		fi
 		stat_line "$pkg" "$daemon" "$description" "$rcscript" "$disable" "$hide"
 	done < "$SERVICE_REG"
-	stat_end
-	sec_end
+	if [ $count -gt 0 ]; then
+		stat_end
+		sec_end
+	fi
 }
 
 if [ -r "/mod/etc/default.$PACKAGE/$PACKAGE.cfg" ]; then

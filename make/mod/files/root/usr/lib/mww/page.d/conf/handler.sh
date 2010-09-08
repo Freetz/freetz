@@ -26,7 +26,7 @@ fi
 help="/packages/$PACKAGE"
 [ "$ID" = _index ] || help="$help/$ID"
 
-cgi --id="conf:$PACKAGE/$ID" --help="$help"
+cgi --id="conf:$PACKAGE/$ID" --help="$help" --style=mod/daemons.css
 
 case $REQUEST_METHOD in
 	POST)   source "${HANDLER_DIR}/save.sh" ;;
