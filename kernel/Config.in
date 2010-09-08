@@ -38,7 +38,7 @@ config FREETZ_MODULE_aes
 
 config FREETZ_MODULE_arc4
 	bool "arc4.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2 
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 
 config FREETZ_MODULE_blkcipher
@@ -61,12 +61,12 @@ config FREETZ_MODULE_cryptomgr
 
 config FREETZ_MODULE_sha1
 	bool "sha1.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2 
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 
 config FREETZ_MODULE_sha256
 	bool "sha256.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2 
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 
 endmenu
@@ -202,6 +202,9 @@ config FREETZ_MODULE_ipaq
 
 config FREETZ_MODULE_cp2101
 	bool "cp2101.ko"
+	depends on \
+		( FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_AVM_VERSION_04_80 ) || \
+		FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_usbserial
 	default n
 
@@ -252,12 +255,12 @@ menu "fs"
 
 
 config FREETZ_MODULE_cifs
-	bool "cifs.ko"   
-	default n 
+	bool "cifs.ko"
+	default n
 
 config FREETZ_MODULE_coda
-	bool "coda.ko"   
-	default n 
+	bool "coda.ko"
+	default n
 
 config FREETZ_MODULE_ext3
 	bool "ext3.ko"
@@ -327,7 +330,7 @@ config FREETZ_MODULE_nfsd
 	select FREETZ_MODULE_lockd
 	select FREETZ_MODULE_exportfs
 	default n
-	
+
 config FREETZ_MODULE_exportfs
 	bool "exportfs.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_13_1
@@ -383,11 +386,11 @@ config FREETZ_MODULE_vfat
 	bool "vfat.ko"
 	select FREETZ_MODULE_fat
 	default n
-	
+
 config FREETZ_MODULE_msdods
 	bool "msdos.ko"
 	default n
-	
+
 config FREETZ_MODULE_jffs2
 	bool "jffs2.ko"
 	default n
@@ -449,12 +452,12 @@ config FREETZ_MODULE_l2cap
 	bool "l2cap.ko"
 	select FREETZ_MODULE_bluetooth
 	default n
-	
+
 config FREETZ_MODULE_rfcomm
 	bool "rfcomm.ko"
 	select FREETZ_MODULE_l2cap
 	default n
-	
+
 config FREETZ_MODULE_sunrpc
 	bool "sunrpc.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_13_1
