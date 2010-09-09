@@ -4,20 +4,20 @@
 
 echo "daemonise = true"
 
-# set listening port
-if [ -n "$POLIPO_PORT" ]; then
-	echo "proxyPort = $POLIPO_PORT" 
-fi 
 
-# set listening IP
-if [ -n "$POLIPO_IP" ]; then
-	echo "proxyAddress = $POLIPO_IP" 
-fi 
+[ -n "${POLIPO_PORT// /}" ] && echo "proxyPort = $POLIPO_PORT" 
 
-# set allowed clients
-if [ -n "$POLIPO_CLIENTS" ]; then
-	echo "allowedClients = $POLIPO_CLIENTS" 
-fi 
+[ -n "${POLIPO_IP// /}" ] && echo "proxyAddress = \"$POLIPO_IP\"" 
+
+[ -n "${POLIPO_CLIENTS// /}" ] && echo "allowedClients = \"$POLIPO_CLIENTS\"" 
+
+[ -n "$POLIPO_DISABLESERVERSLIST" ] && echo "disableServersList = $POLIPO_DISABLESERVERSLIST" 
+
+[ -n "$POLIPO_DISABLEINDEXING" ] && echo "disableIndexing = $POLIPO_DISABLEINDEXING" 
+
+[ -n "$POLIPO_DISABLECONFIGURATION" ] && echo "disableConfiguration = $POLIPO_DISABLECONFIGURATION" 
+
+[ -n "$POLIPO_DISABLELOCALINTERFACE" ] && echo "disableLocalInterface = $POLIPO_DISABLELOCALINTERFACE" 
 
 # optional settings
 if [ -n "$POLIPO_OPTIONS" ]; then 
