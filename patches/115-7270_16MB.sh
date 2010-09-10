@@ -1,4 +1,4 @@
-isFreetzType 7270_16MB && isFreetzType LANG_DE || return 0
+isFreetzType 7270_V2 && ! isFreetzType LABOR || return 0
 
 echo1 "applying 16MB patch"
 sed -i \

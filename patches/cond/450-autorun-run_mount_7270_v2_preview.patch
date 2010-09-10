@@ -1,9 +1,9 @@
---- etc/hotplug/run_mount.orig	2010-02-23 20:03:42.000000000 +0100
-+++ etc/hotplug/run_mount	2010-02-23 20:04:15.000000000 +0100
-@@ -132,6 +132,10 @@
+--- etc/hotplug/run_mount.orig	2010-08-10 11:03:02.059740258 +0200
++++ etc/hotplug/run_mount	2010-08-10 11:03:02.479742241 +0200
+@@ -136,6 +136,10 @@
  /etc/ftpd_control reconfig
  fi
- test -x $TR069START && $TR069START $MNTNAME
+ test -x $TR069START && $TR069START "$MNTNAME"
 +/etc/init.d/rc.swap autostart $MNTPATH
 +AUTORUN=$MNTPATH/autorun.sh
 +[ -x $AUTORUN ] && $AUTORUN & 
