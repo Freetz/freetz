@@ -1,6 +1,6 @@
-diff -urpN libbb/lineedit.c libbb/lineedit.c
+diff -urpN busybox-1.17.2/libbb/lineedit.c libbb/lineedit.c
 --- libbb/lineedit.c	2010-08-23 02:44:35.000000000 +0200
-+++ libbb/lineedit.c	2010-09-02 12:45:22.987709229 +0200
++++ libbb/lineedit.c	2010-09-07 18:33:16.337067116 +0200
 @@ -156,7 +156,6 @@ struct lineedit_statics {
  
  	/* Formerly these were big buffers on stack: */
@@ -480,6 +480,15 @@ diff -urpN libbb/lineedit.c libbb/lineedit.c
 +				redraw(cmdedit_y, len >= 0 ? len : 0);
  			}
  		}
+ #endif
+@@ -2297,6 +2312,8 @@ int FAST_FUNC read_line_input(const char
+ 				 * or exit if len=0 and no chars to delete */
+ 				if (command_len == 0) {
+ 					errno = 0;
++
++		case -1:  /* error (e.g. EIO when tty is destroyed) */
+ #if ENABLE_FEATURE_EDITING_VI
+  prepare_to_die:
  #endif
 diff -urpN libbb/unicode.c libbb/unicode.c
 --- libbb/unicode.c	2010-08-23 02:44:35.000000000 +0200
