@@ -28,8 +28,14 @@
  	$(MAKE) -C templates DESTDIR='$(DESTDIR_SQ)' install
  ifndef NO_PERL
  	$(MAKE) -C perl prefix='$(prefix_SQ)' DESTDIR='$(DESTDIR_SQ)' install
-@@ -2082,14 +2080,12 @@
- 		cp "$$bindir/git$X" "$$execdir/git$X"; } ; } && \
+@@ -2085,20 +2083,17 @@
+ 	} && \
+ 	for p in $(filter $(install_bindir_programs),$(BUILT_INS)); do \
+ 		$(RM) "$$bindir/$$p" && \
+-		ln "$$bindir/git$X" "$$bindir/$$p" 2>/dev/null || \
+ 		ln -s "git$X" "$$bindir/$$p" 2>/dev/null || \
+ 		cp "$$bindir/git$X" "$$bindir/$$p" || exit; \
+ 	done && \
  	for p in $(BUILT_INS); do \
  		$(RM) "$$execdir/$$p" && \
 -		ln "$$execdir/git$X" "$$execdir/$$p" 2>/dev/null || \
