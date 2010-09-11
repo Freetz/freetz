@@ -48,7 +48,7 @@ config FREETZ_LIB_libcapi20
 
 menu "Crypto & SSL"
 
-comment "GMP ------------------------------------"
+comment "Math -----------------------------------"
 
 config FREETZ_LIB_libgmp
 	bool "GNU MP Bignum Library (libgmp.so)"
@@ -59,6 +59,17 @@ config FREETZ_LIB_libgmp
 		The GMP library provides arbitrary precision arithmetic, operating on
 		signed integers, rational numbers, and floating point numbers.
 		It can be used to implement cryptographic algorithms.
+
+config FREETZ_LIB_libmpfr
+	select FREETZ_LIB_libgmp
+	bool "GNU MPFR Library (libmpfr.so)"
+	default n
+	help
+		MPFR provides a library for multiple-precision floating-point
+		computation with correct rounding. The computation is both
+		efficient and has a well-defined semantics. It copies the good
+		ideas from the ANSI/IEEE-754 standard for double-precision
+		floating-point arithmetic (53-bit mantissa).
 
 comment "GnuPG ----------------------------------"
 

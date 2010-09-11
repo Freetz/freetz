@@ -217,6 +217,8 @@ config FREETZ_KERNEL_BINUTILS_VERSION
 	default "2.18"
 
 config FREETZ_TARGET_TOOLCHAIN
+	select FREETZ_LIB_libgmp
+	select FREETZ_LIB_libmpfr
 	bool "Build binutils and gcc for target" if FREETZ_BUILD_TOOLCHAIN
 	default n
 	help

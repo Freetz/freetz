@@ -1,13 +1,14 @@
 $(call PKG_INIT_LIB, 2.4.2)
 $(PKG)_LIB_VERSION:=1.2.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=89e59fe665e2b3ad44a6789f40b059a0
 $(PKG)_SITE:=http://www.mpfr.org/mpfr-$($(PKG)_VERSION)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmpfr.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=89e59fe665e2b3ad44a6789f40b059a0
 
-$(PKG)_DEPENDS_ON:= gmp
+$(PKG)_DEPENDS_ON := gmp
 
 $(PKG)_CONFIGURE_OPTIONS += --with-gmp-build=$(TARGET_TOOLCHAIN_STAGING_DIR)
 
@@ -16,6 +17,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-gmp-build=$(TARGET_TOOLCHAIN_STAGING_DIR)
 # configure it's safe simply to touch configure.in
 $(PKG)_PREVENT_AUTOCONF_CALL := touch -t 200001010000.00 $(abspath $(MPFR_DIR))/configure.in;
 $(PKG)_CONFIGURE_PRE_CMDS += $($(PKG)_PREVENT_AUTOCONF_CALL)
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -222,6 +222,14 @@ config EXTERNAL_FREETZ_LIB_libgmodule_2
 		externals these file(s):
 		 /usr/lib/freetz/libgmodule-2.0.so.0.2200.5
 
+config EXTERNAL_FREETZ_LIB_libgmp
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgmp
+	bool "libgmp"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libgmp.so.10.0.1
+
 config EXTERNAL_FREETZ_LIB_libgnutls
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgnutls
 	bool "libgnutls"
@@ -349,6 +357,14 @@ config EXTERNAL_FREETZ_LIB_libmenu
 	help
 		externals these file(s):
 		 /usr/lib/freetz/libmenu.so.5.7
+
+config EXTERNAL_FREETZ_LIB_libmpfr
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libmpfr
+	bool "libmpfr"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libmpfr.so.1.2.2
 
 config EXTERNAL_FREETZ_LIB_libncurses
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libncurses && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
