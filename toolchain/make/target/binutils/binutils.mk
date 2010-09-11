@@ -125,6 +125,7 @@ $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
 		$(TARGET_CONFIGURE_ENV) \
 		$(BINUTILS_DIR)/configure \
 		--prefix=/usr \
+		--with-sysroot=/ \
 		--exec-prefix=/usr \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(REAL_GNU_TARGET_NAME) \
