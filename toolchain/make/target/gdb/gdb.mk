@@ -79,13 +79,13 @@ endif
 	touch  $@
 
 $(GDB_TARGET_DIR)/gdb/gdb: $(GDB_TARGET_DIR)/.configured
-	PATH=$(TARGET_PATH) \
+	$(MAKE_ENV) \
 	    $(MAKE) CC=$(TARGET_CC) LDFLAGS="" \
 	    MT_CFLAGS="$(TARGET_CFLAGS)" -C $(GDB_TARGET_DIR)
 
 $(GDB_STAGING_DIR)/gdb: $(GDB_TARGET_DIR)/gdb/gdb | $(GDB_STAGING_DIR)
 	$(INSTALL_BINARY_STRIP)
-	
+
 gdb_target: ncurses-precompiled $(GDB_STAGING_DIR)/gdb
 
 gdb_target-source: $(DL_DIR)/$(GDB_SOURCE)
@@ -134,10 +134,10 @@ $(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.patched
 	touch  $@
 
 $(GDB_SERVER_DIR)/gdbserver: $(GDB_SERVER_DIR)/.configured
-	PATH=$(TARGET_PATH) \
+	$(MAKE_ENV) \
 		$(MAKE) CC=$(TARGET_CC) MT_CFLAGS="$(TARGET_CFLAGS)" \
 		-C $(GDB_SERVER_DIR)
-	
+
 $(GDB_STAGING_DIR)/gdbserver: $(GDB_SERVER_DIR)/gdbserver | $(GDB_STAGING_DIR)
 	$(INSTALL_BINARY_STRIP)
 
@@ -201,7 +201,7 @@ gdb-clean:
 	-$(MAKE) -C $(GDB_HOST_DIR) clean
 	-$(MAKE) -C $(GDB_SERVER_DIR) clean
 	-$(MAKE) -C $(GDB_DIR) clean
-	
+
 gdb-dirclean:
 	rm -rf $(GDB_DIR)
 	rm -rf $(GDB_HOST_DIR)
