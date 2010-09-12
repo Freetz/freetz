@@ -148,6 +148,18 @@ config FREETZ_TARGET_UCLIBC_REF
 	default "orig-4mb"	if FREETZ_TARGET_UCLIBC_CONFIG_4MB
 	default "orig-8mb"	if FREETZ_TARGET_UCLIBC_CONFIG_8MB
 
+config FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET
+	bool "Use reduced set of locales" if FREETZ_BUILD_TOOLCHAIN && FREETZ_UCLIBC_0_9_29_BASED_BOX
+	default n
+	help
+		This option causes only the following locales to be included into uClibc:
+		 - en_US
+		 - en_US.UTF-8
+		 - de_DE
+		 - de_DE.UTF-8
+
+		This saves about 235KB in the image and at run-time.
+
 config FREETZ_STATIC_TOOLCHAIN
 	bool "Build static toolchains" if FREETZ_BUILD_TOOLCHAIN
 	default n
