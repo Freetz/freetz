@@ -266,6 +266,8 @@ PKG_PREVENT_RPATH_HARDCODING__INT = \
 		$(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT2) \
 	$1;
 PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODING__INT,$(f)))
+# 1st level PKG_PREVENT_RPATH_HARDCODING
+PKG_PREVENT_RPATH_HARDCODING1 = $(subst $$$$,$$,$(call PKG_PREVENT_RPATH_HARDCODING,$1))
 
 # Change all variables var to $(PKG)_var
 #  $1 is a space separated list of variables

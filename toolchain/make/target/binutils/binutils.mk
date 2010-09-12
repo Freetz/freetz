@@ -1,28 +1,21 @@
 BINUTILS_VERSION:=$(TARGET_TOOLCHAIN_BINUTILS_VERSION)
 BINUTILS_SOURCE:=binutils-$(BINUTILS_VERSION).tar.bz2
+ifeq ($(TARGET_TOOLCHAIN_BINUTILS_MAJOR_VERSION),2.20)
 BINUTILS_SITE:=http://ftp.kernel.org/pub/linux/devel/binutils
+else
+BINUTILS_SITE:=http://ftp.gnu.org/gnu/binutils
+endif
 BINUTILS_DIR:=$(TARGET_TOOLCHAIN_DIR)/binutils-$(BINUTILS_VERSION)
 BINUTILS_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/binutils
 BINUTILS_DIR1:=$(BINUTILS_DIR)-build
 
-ifeq ($(BINUTILS_VERSION),2.19.1)
-BINUTILS_SITE:=http://ftp.gnu.org/gnu/binutils
-endif
-ifeq ($(BINUTILS_VERSION),2.19)
-BINUTILS_SITE:=http://ftp.gnu.org/gnu/binutils
-endif
-ifeq ($(BINUTILS_VERSION),2.18)
-BINUTILS_SITE:=http://ftp.gnu.org/gnu/binutils
-endif
-
 # We do not rely on the host's gmp/mpfr but use a known working one
-BINUTILS_HOST_PREREQ:=
-BINUTILS_TARGET_PREREQ:=
+BINUTILS_HOST_PREREQ=
+BINUTILS_TARGET_PREREQ=
 
 ifndef TARGET_TOOLCHAIN_NO_MPFR
-BINUTILS_HOST_PREREQ:=$(GMP_HOST_LIBRARY) $(MPFR_HOST_LIBRARY)
-
-BINUTILS_TARGET_PREREQ:=$(GMP_TARGET_LIBRARY) $(MPFR_TARGET_LIBRARY)
+BINUTILS_HOST_PREREQ+=$(GMP_HOST_BINARY) $(MPFR_HOST_BINARY)
+BINUTILS_TARGET_PREREQ+=$(GMP_TARGET_BINARY) $(MPFR_TARGET_BINARY)
 
 EXTRA_BINUTILS_CONFIG_OPTIONS+=--with-gmp=$(GMP_HOST_DIR)
 EXTRA_BINUTILS_CONFIG_OPTIONS+=--with-mpfr=$(MPFR_HOST_DIR)
@@ -37,6 +30,7 @@ else
 BINUTILS_EXTRA_MAKE_OPTIONS:=
 endif
 
+binutils-source: $(DL_DIR)/$(BINUTILS_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(BINUTILS_SOURCE)), $(strip $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)))
 $(DL_DIR)/$(BINUTILS_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(BINUTILS_SOURCE) $(BINUTILS_SITE)
@@ -55,7 +49,7 @@ $(BINUTILS_DIR)/.patched: $(BINUTILS_DIR)/.unpacked
 	done
 	touch $@
 
-$(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.patched
+$(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.patched $(BINUTILS_HOST_PREREQ)
 	mkdir -p $(BINUTILS_DIR1)
 	(cd $(BINUTILS_DIR1); $(RM) config.cache; \
 		CC="$(HOSTCC)" \
@@ -95,8 +89,6 @@ binutils-dependencies:
 		exit 1; \
 	fi;
 
-binutils-source: $(DL_DIR)/$(BINUTILS_SOURCE)
-
 binutils-clean:
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
 	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
@@ -104,11 +96,10 @@ binutils-clean:
 		tooldir=/usr build_tooldir=/usr uninstall
 	-$(MAKE) -C $(BINUTILS_DIR1) clean
 
-
 binutils-dirclean:
 	$(RM) -r $(BINUTILS_DIR1)
 
-binutils: uclibc-configured binutils-dependencies $(BINUTILS_HOST_PREREQ) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld
+binutils: uclibc-configured binutils-dependencies $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld
 
 .PHONY: binutils binutils-dependencies
 
@@ -118,7 +109,7 @@ binutils: uclibc-configured binutils-dependencies $(BINUTILS_HOST_PREREQ) $(TARG
 #
 #############################################################
 BINUTILS_DIR2:=$(BINUTILS_DIR)-target
-$(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
+$(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_TARGET_PREREQ)
 	mkdir -p $(BINUTILS_DIR2)
 	(cd $(BINUTILS_DIR2); $(RM) config.cache; \
 		CFLAGS_FOR_BUILD="-g -O2 $(HOST_CFLAGS)" \
@@ -138,18 +129,20 @@ $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
 	touch $@
 
 $(BINUTILS_DIR2)/binutils/objdump: $(BINUTILS_DIR2)/.configured
-	PATH=$(TARGET_PATH) $(MAKE) -C $(BINUTILS_DIR2) MAKEINFO=true all
+	$(MAKE_ENV) $(MAKE) -C $(BINUTILS_DIR2) MAKEINFO=true all
 
 $(TARGET_UTILS_DIR)/usr/bin/ld: $(BINUTILS_DIR2)/binutils/objdump
-	PATH=$(TARGET_PATH) \
-	$(MAKE1) DESTDIR=$(TARGET_UTILS_DIR) \
-		tooldir=/usr build_tooldir=/usr \
-		-C $(BINUTILS_DIR2) MAKEINFO=true install
+	$(MAKE_ENV) \
+	$(MAKE1) -C $(BINUTILS_DIR2) \
+		tooldir=/usr \
+		build_tooldir=/usr \
+		MAKEINFO=true \
+		DESTDIR=$(TARGET_UTILS_DIR) install
 	$(RM) -r $(TARGET_UTILS_DIR)/share/locale $(TARGET_UTILS_DIR)/usr/info \
 		$(TARGET_UTILS_DIR)/usr/man $(TARGET_UTILS_DIR)/usr/share/doc
 	-$(TARGET_STRIP) $(TARGET_UTILS_DIR)/usr/bin/* >/dev/null 2>&1
 
-binutils_target: $(BINUTILS_TARGET_PREREQ) $(TARGET_UTILS_DIR)/usr/bin/ld
+binutils_target: $(TARGET_UTILS_DIR)/usr/bin/ld
 
 binutils_target-clean:
 	$(RM) $(TARGET_UTILS_DIR)/usr/bin/{addr2line,ar,as,gprof,ld,nm,objcopy,objdump,ranlib,readelf,size,strings,strip}

@@ -74,6 +74,7 @@ $(GCC_DIR)/.patched: $(GCC_DIR)/.unpacked
 	for i in $(GCC_MAKE_DIR)/$(GCC_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GCC_DIR) $$i; \
 	done
+	for f in $$(find $(GCC_DIR) \( -name "configure" -o -name "config.rpath" \)); do $(call PKG_PREVENT_RPATH_HARDCODING1,$$f) done
 	touch $@
 
 ##############################################################################
@@ -244,8 +245,9 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 	touch $@
 
 $(GCC_BUILD_DIR3)/.compiled: $(GCC_BUILD_DIR3)/.configured
-	PATH=$(TARGET_PATH) \
-		$(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR3) all
+	$(MAKE_ENV) \
+		$(MAKE) -C $(GCC_BUILD_DIR3) \
+		$(GCC_EXTRA_MAKE_OPTIONS) all
 	touch $@
 
 #
@@ -259,8 +261,9 @@ GCC_INCLUDE_DIR:=include-fixed
 endif
 
 $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
-	PATH=$(TARGET_PATH) DESTDIR=$(TARGET_UTILS_DIR) \
-		$(MAKE1) -C $(GCC_BUILD_DIR3) install
+	$(MAKE_ENV) \
+		$(MAKE1) -C $(GCC_BUILD_DIR3) \
+		DESTDIR=$(TARGET_UTILS_DIR) install
 
 	# Remove broken specs file (cross compile flag is set)
 	$(RM) $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/specs
