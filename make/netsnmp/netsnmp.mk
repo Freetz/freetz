@@ -146,6 +146,6 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(NETSNMP_TARGET_BINARY)
-	$(RM) $(NETSNMP_TARGET_LIBS)
+	$(RM) $(NETSNMP_LIBS_TARGET_DIR)
 
 $(PKG_FINISH)
