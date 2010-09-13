@@ -192,28 +192,17 @@ TOOLS_SOURCE:=$(patsubst %,%-source,$(TOOLS))
 include $(TOOLS_DIR)/make/*.mk
 
 $(DL_DIR): $(DL_FW_DIR)
-	@mkdir -p $(DL_DIR)
-
-$(DL_FW_DIR):
-	@mkdir -p $(DL_FW_DIR)
-
 $(MIRROR_DIR): $(DL_DIR)
-	@mkdir -p $(MIRROR_DIR)
 
-$(BUILD_DIR):
-	@mkdir -p $(BUILD_DIR)
-
-$(PACKAGES_DIR_ROOT):
-	@mkdir -p $(PACKAGES_DIR_ROOT)
-
-$(SOURCE_DIR_ROOT):
-	@mkdir -p $(SOURCE_DIR_ROOT)
-
-$(TOOLCHAIN_BUILD_DIR):
-	@mkdir -p $(TOOLCHAIN_BUILD_DIR)
-
+$(DL_DIR) \
+$(DL_FW_DIR) \
+$(MIRROR_DIR) \
+$(BUILD_DIR) \
+$(PACKAGES_DIR_ROOT) \
+$(SOURCE_DIR_ROOT) \
+$(TOOLCHAIN_BUILD_DIR) \
 $(FW_IMAGES_DIR):
-	@mkdir -p $(FW_IMAGES_DIR)
+	@mkdir -p $@
 
 ifeq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
 
