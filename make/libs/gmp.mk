@@ -1,11 +1,12 @@
 $(call PKG_INIT_LIB, 5.0.1)
 $(PKG)_LIB_VERSION:=10.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=6bac6df75c192a13419dfd71d19240a7
 $(PKG)_SITE:=http://ftp.gnu.org/gnu/gmp
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgmp.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=6bac6df75c192a13419dfd71d19240a7
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -40,12 +41,12 @@ $(PKG_FINISH)
 
 # host version
 GMP_DIR2:=$(TOOLS_SOURCE_DIR)/gmp-$(GMP_VERSION)
-GMP_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build
+GMP_HOST_DIR:=$(abspath $(TOOLS_BUILD_DIR))
 GMP_HOST_BINARY:=$(GMP_HOST_DIR)/lib/libgmp.a
 
 $(GMP_DIR2)/.configured: $(GMP_DIR)/.unpacked
 	mkdir -p $(GMP_DIR2)
-	(cd $(GMP_DIR2); rm -rf config.cache; \
+	(cd $(GMP_DIR2); $(RM) -r config.cache; \
 		CC="$(TOOLS_CC)" \
 		$(FREETZ_BASE_DIR)/$(GMP_DIR)/configure \
 		--prefix=/ \
@@ -57,16 +58,16 @@ $(GMP_DIR2)/.configured: $(GMP_DIR)/.unpacked
 	)
 	touch $@
 
-$(GMP_HOST_BINARY): $(GMP_DIR2)/.configured
-	$(SUBMAKE) DESTDIR=$(GMP_HOST_DIR) \
-		-C $(GMP_DIR2) install
+$(GMP_HOST_BINARY): $(GMP_DIR2)/.configured | $(TOOLS_BUILD_DIR)
+	PATH=$(TARGET_PATH) $(MAKE) -C $(GMP_DIR2) DESTDIR=$(GMP_HOST_DIR) install
 
 host-libgmp: $(GMP_HOST_BINARY)
 
-host-libgmp-clean:
-	rm -rf $(GMP_HOST_DIR)
-	-$(SUBMAKE) -C $(GMP_DIR2) clean
+host-libgmp-uninstall:
+	$(RM) $(GMP_HOST_DIR)/lib/libgmp* $(GMP_HOST_DIR)/include/gmp*.h
 
-host-libgmp-dirclean:
-	#rm -rf $(GMP_HOST_DIR) $(GMP_DIR2)
-	rm -rf $(GMP_DIR2)
+host-libgmp-clean: host-libgmp-uninstall
+	-$(MAKE) -C $(GMP_DIR2) clean
+
+host-libgmp-dirclean: host-libgmp-uninstall
+	$(RM) -r $(GMP_DIR2)

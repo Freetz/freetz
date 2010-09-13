@@ -1,0 +1,23 @@
+--- Makefile.in
++++ Makefile.in
+@@ -1806,8 +1806,7 @@
+ 
+ info-am: $(INFO_DEPS)
+ 
+-install-data-am: install-includeHEADERS install-info-am \
+-	install-nobase_dist_docDATA
++install-data-am: install-includeHEADERS
+ 
+ install-dvi: install-dvi-recursive
+ 
+@@ -1933,8 +1932,8 @@
+ ps-am: $(PSS)
+ 
+ uninstall-am: uninstall-dvi-am uninstall-html-am \
+-	uninstall-includeHEADERS uninstall-info-am \
+-	uninstall-libLTLIBRARIES uninstall-nobase_dist_docDATA \
++	uninstall-includeHEADERS \
++	uninstall-libLTLIBRARIES \
+ 	uninstall-pdf-am uninstall-ps-am
+ 
+ .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \

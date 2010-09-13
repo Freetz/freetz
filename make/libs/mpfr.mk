@@ -49,7 +49,7 @@ $(PKG_FINISH)
 
 # host version
 MPFR_DIR2:=$(TOOLS_SOURCE_DIR)/mpfr-$(MPFR_VERSION)
-MPFR_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build
+MPFR_HOST_DIR:=$(abspath $(TOOLS_BUILD_DIR))
 MPFR_HOST_BINARY:=$(MPFR_HOST_DIR)/lib/libmpfr.a
 
 $(MPFR_DIR2)/.configured: $(MPFR_DIR)/.unpacked $(GMP_HOST_BINARY)
@@ -68,14 +68,16 @@ $(MPFR_DIR2)/.configured: $(MPFR_DIR)/.unpacked $(GMP_HOST_BINARY)
 	)
 	touch $@
 
-$(MPFR_HOST_BINARY): $(MPFR_DIR2)/.configured
-	$(SUBMAKE) DESTDIR=$(MPFR_HOST_DIR) -C $(MPFR_DIR2) install
+$(MPFR_HOST_BINARY): $(MPFR_DIR2)/.configured | $(TOOLS_BUILD_DIR)
+	PATH=$(TARGET_PATH) $(MAKE) -C $(MPFR_DIR2) DESTDIR=$(MPFR_HOST_DIR) install
 
 host-libmpfr: $(MPFR_HOST_BINARY)
 
-host-libmpfr-clean:
-	$(RM) -r $(MPFR_HOST_DIR)
-	-$(SUBMAKE) -C $(MPFR_DIR2) clean
+host-libmpfr-uninstall:
+	$(RM) $(MPFR_HOST_DIR)/lib/libmpfr* $(MPFR_HOST_DIR)/include/*mpfr*.h
 
-host-libmpfr-dirclean:
+host-libmpfr-clean: host-libmpfr-uninstall
+	-$(MAKE) -C $(MPFR_DIR2) clean
+
+host-libmpfr-dirclean: host-libmpfr-uninstall
 	$(RM) -r $(MPFR_DIR2)

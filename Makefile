@@ -51,6 +51,7 @@ BUILD_DIR_VERSION:=$(shell svnversion | grep -v exported 2> /dev/null)
 BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
 
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
+TOOLS_BUILD_DIR:=$(TOOLS_DIR)/$(BUILD_DIR)
 
 SED:=sed
 MAKE1=make
@@ -201,6 +202,7 @@ $(BUILD_DIR) \
 $(PACKAGES_DIR_ROOT) \
 $(SOURCE_DIR_ROOT) \
 $(TOOLCHAIN_BUILD_DIR) \
+$(TOOLS_BUILD_DIR) \
 $(FW_IMAGES_DIR):
 	@mkdir -p $@
 
@@ -498,6 +500,7 @@ common-distclean: common-dirclean
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(SOURCE_DIR_ROOT)
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
+	$(RM) -r $(TOOLS_BUILD_DIR)
 
 dist: distclean
 	version="$$(cat .version)"; \
