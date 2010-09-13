@@ -27,7 +27,7 @@ $(SQUASHFS3_DIR)/.unpacked: $(DL_DIR)/$(SQUASHFS3_SOURCE) | $(TOOLS_SOURCE_DIR)
 	touch $@
 
 $(MKSQUASHFS3_DIR)/mksquashfs3-lzma: $(SQUASHFS3_DIR)/.unpacked
-	$(MAKE) CXX="$(TOOLS_CXX)" EXTRA_CFLAGS="-fno-tree-pre" LZMA_DIR="$(SQUASHFS3_EXTERNAL_LZMA_DIR)" \
+	$(MAKE) CXX="$(TOOLS_CXX)" LZMA_DIR="$(SQUASHFS3_EXTERNAL_LZMA_DIR)" \
 		-C $(MKSQUASHFS3_DIR) mksquashfs3-lzma
 	touch -c $@
 
