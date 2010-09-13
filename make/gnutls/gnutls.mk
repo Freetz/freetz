@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.8.6)
-$(PKG)_LIB_VERSION:=26.14.12
+$(call PKG_INIT_BIN, 2.10.1)
+$(PKG)_LIB_VERSION:=26.16.9
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=eb0a6d7d3cb9ac684d971c14f9f6d3ba
+$(PKG)_SOURCE_MD5:=b614448d7fb43ea0d4f727e6302bbf0f
 $(PKG)_SITE:=ftp://ftp.gnu.org/pub/gnu/gnutls
 
 $(PKG)_CERTTOOL := certtool
@@ -33,6 +33,8 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,heade
 
 # rename all *read_file* functions to avoid name clashing
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,(f?read_file|read_binary_file),gnutls_\1,g' gl/*.{h,c} gl/tests/*.{h,c} lib/gl/*.{h,c} lib/gl/tests/*.{h,c} src/*.{h,c} lib/*.{h,c} lib/openpgp/*.{h,c};
+
+$(PKG)_CONFIGURE_ENV += ac_cv_path_GAA=false
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

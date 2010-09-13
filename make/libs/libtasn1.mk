@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.6)
+$(call PKG_INIT_LIB, 2.7)
 $(PKG)_LIB_VERSION:=3.1.9
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d410671e13038324336917ceed7470a5
+$(PKG)_SOURCE_MD5:=fade9f961ec7084dd91a9ba409ba7ab1
 $(PKG)_SITE:=http://ftp.gnu.org/gnu/libtasn1
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
