@@ -24,8 +24,9 @@ BINUTILS_TARGET_CONFIG_OPTIONS+=--with-gmp=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
 BINUTILS_TARGET_CONFIG_OPTIONS+=--with-mpfr=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
 endif
 
+BINUTILS_EXTRA_MAKE_OPTIONS :=
 ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
-BINUTILS_EXTRA_MAKE_OPTIONS:="LDFLAGS=-all-static"
+BINUTILS_EXTRA_MAKE_OPTIONS += "LDFLAGS=-all-static"
 endif
 
 binutils-source: $(DL_DIR)/$(BINUTILS_SOURCE)
@@ -71,19 +72,12 @@ $(BINUTILS_DIR1)/binutils/objdump: $(BINUTILS_DIR1)/.configured
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/binutils/objdump
 	$(MAKE1) -C $(BINUTILS_DIR1) MAKEINFO=true install
 
-binutils-dependencies:
-	@MISSING_PREREQ=""; \
-	for f in bison flex msgfmt; do \
-		if ! which $$f >/dev/null 2>&1; then MISSING_PREREQ="$$MISSING_PREREQ $$f"; fi; \
-	done; \
-	if [ -n "$$MISSING_PREREQ" ]; then \
-		echo -n -e "$(_Y)"; \
-		echo -e \
-			"ERROR: The following commands required for building of binutils-kernel are missing on your system:" \
-			`echo $$MISSING_PREREQ | sed -e 's| |, |g'`; \
-		echo -n -e "$(_N)"; \
-		exit 1; \
-	fi;
+binutils-clean:
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
+	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
+	-$(MAKE1) -C $(BINUTILS_DIR1) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) \
+		tooldir=/usr build_tooldir=/usr uninstall
+	-$(MAKE) -C $(BINUTILS_DIR1) clean
 
 binutils-dirclean:
 	$(RM) -r $(BINUTILS_DIR1)
