@@ -1,11 +1,12 @@
 $(call PKG_INIT_LIB, 0.16.1)
 $(PKG)_LIB_VERSION:=8.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=ftp://ftp.gnu.org/gnu/gettext/
+$(PKG)_SOURCE_MD5:=3d9ad24301c6d6b17ec30704a13fe127
+$(PKG)_SITE:=@GNU/$(pkg)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/gettext-runtime/intl/.libs/libintl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libintl.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=3d9ad24301c6d6b17ec30704a13fe127
 
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv

@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN,1.12)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=141461b9c04e454dc8933c9d1f2abf83
-$(PKG)_SITE:=http://ftp.gnu.org/gnu/wget
+$(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wget

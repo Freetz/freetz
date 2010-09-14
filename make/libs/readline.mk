@@ -2,7 +2,7 @@ $(call PKG_INIT_LIB, 6.1)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=fc2f7e714fe792db1ce6ddc4c9fb4ef3
-$(PKG)_SITE:=ftp://ftp.gnu.org/gnu/readline
+$(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_$(PKG)_BINARY:=$($(PKG)_DIR)/shlib/libreadline.so.$($(PKG)_LIB_VERSION)
 $(PKG)_HISTORY_BINARY:=$($(PKG)_DIR)/shlib/libhistory.so.$($(PKG)_LIB_VERSION)

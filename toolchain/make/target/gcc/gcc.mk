@@ -20,7 +20,7 @@
 
 GCC_VERSION:=$(TARGET_TOOLCHAIN_GCC_VERSION)
 GCC_SOURCE:=gcc-$(GCC_VERSION).tar.bz2
-GCC_SITE:=ftp://gcc.gnu.org/pub/gcc/releases/gcc-$(GCC_VERSION)
+GCC_SITE:=@GNU/gcc/gcc-$(GCC_VERSION)
 GCC_DIR:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)
 GCC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gcc
 

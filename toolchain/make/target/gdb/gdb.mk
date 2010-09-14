@@ -4,7 +4,7 @@
 #
 ######################################################################
 GDB_VERSION:=$(TARGET_TOOLCHAIN_GDB_VERSION)
-GDB_SITE:=http://ftp.gnu.org/gnu/gdb
+GDB_SITE:=@GNU/gdb
 GDB_SOURCE:=gdb-$(GDB_VERSION).tar.bz2
 GDB_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdb-$(GDB_VERSION)
 GDB_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gdb

@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 2.10.1)
 $(PKG)_LIB_VERSION:=26.16.9
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=b614448d7fb43ea0d4f727e6302bbf0f
-$(PKG)_SITE:=ftp://ftp.gnu.org/pub/gnu/gnutls
+$(PKG)_SITE:=@GNU/gnutls
 
 $(PKG)_CERTTOOL := certtool
 $(PKG)_UTILS := gnutls-cli gnutls-serv psktool srptool

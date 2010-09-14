@@ -1,8 +1,8 @@
 $(call PKG_INIT_BIN, 0.97.2)
 $(PKG)_LIB_VERSION:=0.0.0
-$(PKG)_SOURCE:=classpath-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=6a35347901ace03c31cc49751b338f31
-$(PKG)_SITE:=ftp://ftp.gnu.org/gnu/classpath
+$(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/mini.jar
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/share/classpath/mini.jar

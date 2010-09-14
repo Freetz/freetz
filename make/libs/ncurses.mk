@@ -2,7 +2,7 @@ $(call PKG_INIT_LIB, 5.7)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=cce05daf61a64501ef6cd8da1f727ec6
-$(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/ncurses
+$(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_LIBNAMES_SHORT := ncurses form menu panel
 $(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT:%=lib%.so.$($(PKG)_LIB_VERSION))

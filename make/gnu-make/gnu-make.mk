@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 3.82)
 $(PKG)_SOURCE:=make-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=1a11100f3c63fcf5753818e59d63088f
-$(PKG)_SITE:=http://ftp.gnu.org/pub/gnu/make
+$(PKG)_SITE:=@GNU/make
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/make-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/make
