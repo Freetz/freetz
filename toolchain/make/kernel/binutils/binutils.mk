@@ -8,8 +8,6 @@ BINUTILS_KERNEL_DIR1:=$(BINUTILS_KERNEL_DIR)-build
 
 ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS:="LDFLAGS=-all-static"
-else
-BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS:=
 endif
 
 ifneq ($(strip $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)), $(strip $(DL_DIR)/$(BINUTILS_SOURCE)))
@@ -48,19 +46,20 @@ $(BINUTILS_KERNEL_DIR1)/binutils/objdump: $(BINUTILS_KERNEL_DIR1)/.configured
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld: $(BINUTILS_KERNEL_DIR1)/binutils/objdump
 	$(MAKE1) -C $(BINUTILS_KERNEL_DIR1) install
 
-binutils-kernel-dependencies:
-	@if ! which bison > /dev/null ; then \
-		echo -e "\n\nYou must install 'bison' on your build machine\n"; \
+binutils-dependencies:
+	@MISSING_PREREQ=""; \
+	for f in bison flex msgfmt; do \
+		if ! which $$f >/dev/null 2>&1; then MISSING_PREREQ="$$MISSING_PREREQ $$f"; fi; \
+	done; \
+	if [ -n "$$MISSING_PREREQ" ]; then \
+		echo -n -e "$(_Y)"; \
+		echo -e \
+			"ERROR: The following commands required for building of binutils-kernel are missing on your system:" \
+			`echo $$MISSING_PREREQ | sed -e 's| |, |g'`; \
+		echo -n -e "$(_N)"; \
 		exit 1; \
 	fi;
-	@if ! which flex > /dev/null ; then \
-		echo -e "\n\nYou must install 'flex' on your build machine\n"; \
-		exit 1; \
-	fi;
-	@if ! which msgfmt > /dev/null ; then \
-		echo -e "\n\nYou must install 'gettext' on your build machine\n"; \
-		exit 1; \
-	fi;
+
 
 binutils-kernel-source: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 
@@ -74,6 +73,6 @@ binutils-kernel-clean:
 binutils-kernel-dirclean:
 	rm -rf $(BINUTILS_KERNEL_DIR1)
 
-binutils-kernel: binutils-kernel-dependencies $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld
+binutils-kernel: binutils-dependencies $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld
 
-.PHONY: binutils binutils-kernel-dependencies
+.PHONY: binutils binutils-dependencies

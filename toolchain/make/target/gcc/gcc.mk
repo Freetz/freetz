@@ -63,13 +63,10 @@ $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(GCC_SOURCE) $(GCC_SITE)
 
 gcc-unpacked: $(GCC_DIR)/.unpacked
-$(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE)
-	mkdir -p $(TARGET_TOOLCHAIN_DIR)
+$(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
+	$(RM) -r $(GCC_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GCC_SOURCE)
-	touch $@
 
-gcc-patched: $(GCC_DIR)/.patched
-$(GCC_DIR)/.patched: $(GCC_DIR)/.unpacked
 	set -e; \
 	for i in $(GCC_MAKE_DIR)/$(GCC_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GCC_DIR) $$i; \
@@ -84,7 +81,7 @@ $(GCC_DIR)/.patched: $(GCC_DIR)/.unpacked
 ##############################################################################
 GCC_BUILD_DIR1:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-initial
 
-$(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.patched $(GCC_INITIAL_PREREQ)
+$(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked $(GCC_INITIAL_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR1)
 	(cd $(GCC_BUILD_DIR1); $(RM) config.cache; \
 		PATH=$(TARGET_PATH) \
@@ -143,7 +140,7 @@ gcc_initial-dirclean:
 ##############################################################################
 GCC_BUILD_DIR2:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-final
 
-$(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.patched $(GCC_STAGING_PREREQ)
+$(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(GCC_STAGING_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR2)
 	# Important!  Required for limits.h to be fixed.
 	ln -sf ../include $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/sys-include

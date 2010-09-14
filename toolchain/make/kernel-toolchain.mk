@@ -1,23 +1,23 @@
 include $(TOOLCHAIN_DIR)/make/kernel/*/*.mk
 
-ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
-	CCACHE:=ccache-kernel
-endif
+KERNEL_TOOLCHAIN:=binutils-kernel gcc-kernel 
 
-KERNEL_TOOLCHAIN:=binutils-kernel gcc-kernel $(CCACHE)
+ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
+	KERNEL_TOOLCHAIN+=ccache-kernel
+endif
 
 $(KERNEL_TOOLCHAIN_DIR):
 	@mkdir -p $@
 
 $(KERNEL_TOOLCHAIN_STAGING_DIR):
-	@mkdir -p $@
-	@mkdir -p $@/bin
-	@mkdir -p $@/lib
+	@mkdir -p $@ $@/bin $@/lib
 	@mkdir -p $@/$(REAL_GNU_KERNEL_NAME)
 	@ln -snf ../lib $@/$(REAL_GNU_KERNEL_NAME)/lib
 
-kernel-toolchain: $(KERNEL_TOOLCHAIN_DIR) $(KERNEL_TOOLCHAIN_STAGING_DIR) \
-			$(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE) $(KERNEL_TOOLCHAIN)
+kernel-toolchain: $(KERNEL_TOOLCHAIN_DIR) \
+	$(KERNEL_TOOLCHAIN_STAGING_DIR) \
+	$(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE) \
+	$(KERNEL_TOOLCHAIN)
 
 kernel-toolchain-source: $(KERNEL_TOOLCHAIN_DIR) \
 	$(BINUTILS_KERNEL_DIR)/.unpacked \

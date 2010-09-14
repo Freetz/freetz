@@ -8,23 +8,23 @@ TARGET_TOOLCHAIN_SYSROOT=$(TARGET_TOOLCHAIN_PREFIX-gcc-final-phase)/usr/
 
 include $(TOOLCHAIN_DIR)/make/target/*/*.mk
 
+TARGET_TOOLCHAIN:=binutils gcc
+
 ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
-	CCACHE:=ccache
+	TARGET_TOOLCHAIN += ccache
 endif
 
 ifeq ($(strip $(FREETZ_TARGET_TOOLCHAIN)),y)
-	TARGETT:=binutils_target gcc_target uclibc_target
+	TARGET_TOOLCHAIN += binutils_target gcc_target uclibc_target
 endif
 
-TARGET_TOOLCHAIN:=binutils gcc $(CCACHE) $(TARGETT) uclibcxx libtool-host gdb
+TARGET_TOOLCHAIN += uclibcxx libtool-host gdb
 
 $(TARGET_TOOLCHAIN_DIR):
 	@mkdir -p $@
 
 $(TARGET_TOOLCHAIN_STAGING_DIR):
-	@mkdir -p $@
-	@mkdir -p $@/bin
-	@mkdir -p $@/lib
+	@mkdir -p $@ $@/bin $@/lib
 	@ln -snf . $@/usr
 	@mkdir -p $@/usr/$(REAL_GNU_TARGET_NAME)
 	@ln -snf ../lib $@/usr/$(REAL_GNU_TARGET_NAME)/lib

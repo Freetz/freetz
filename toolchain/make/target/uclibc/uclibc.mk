@@ -36,13 +36,10 @@ $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(UCLIBC_SOURCE) $(UCLIBC_SOURCE_SITE)
 
 uclibc-unpacked: $(UCLIBC_DIR)/.unpacked
-$(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME)
-	mkdir -p $(TARGET_TOOLCHAIN_DIR)
+$(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME) | $(TARGET_TOOLCHAIN_DIR)
+	$(RM) -r $(UCLIBC_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(UCLIBC_SOURCE)
-	touch $@
 
-uclibc-patched: $(UCLIBC_DIR)/.patched
-$(UCLIBC_DIR)/.patched: $(UCLIBC_DIR)/.unpacked
 	set -e; \
 	for i in $(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(UCLIBC_DIR) $$i; \
@@ -50,7 +47,7 @@ $(UCLIBC_DIR)/.patched: $(UCLIBC_DIR)/.unpacked
 	cp -dpf $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME) $(UCLIBC_DIR)/extra/locale/
 	touch $@
 
-$(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.patched
+$(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
 	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(UCLIBC_VERSION) $(UCLIBC_DIR)/.config
 ifeq ($(strip $(UCLIBC_VERSION)),0.9.28)
 	$(SED) -i -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(shell pwd)/$(UCLIBC_KERNEL_SOURCE_DIR)\",g' $(UCLIBC_DIR)/.config

@@ -26,8 +26,6 @@ endif
 
 ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 BINUTILS_EXTRA_MAKE_OPTIONS:="LDFLAGS=-all-static"
-else
-BINUTILS_EXTRA_MAKE_OPTIONS:=
 endif
 
 binutils-source: $(DL_DIR)/$(BINUTILS_SOURCE)
@@ -38,18 +36,16 @@ endif
 
 binutils-unpacked: $(BINUTILS_DIR)/.unpacked
 $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
+	$(RM) -r $(BINUTILS_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(BINUTILS_SOURCE)
-	touch $@
 
-binutils-patched: $(BINUTILS_DIR)/.patched
-$(BINUTILS_DIR)/.patched: $(BINUTILS_DIR)/.unpacked
 	set -e; \
 	for i in $(BINUTILS_MAKE_DIR)/$(BINUTILS_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(BINUTILS_DIR) $$i; \
 	done
 	touch $@
 
-$(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.patched $(BINUTILS_HOST_PREREQ)
+$(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_HOST_PREREQ)
 	mkdir -p $(BINUTILS_DIR1)
 	(cd $(BINUTILS_DIR1); $(RM) config.cache; \
 		CC="$(HOSTCC)" \
@@ -76,25 +72,18 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_D
 	$(MAKE1) -C $(BINUTILS_DIR1) MAKEINFO=true install
 
 binutils-dependencies:
-	@if ! which bison >/dev/null ; then \
-		echo -e "\n\nYou must install 'bison' on your build machine\n"; \
+	@MISSING_PREREQ=""; \
+	for f in bison flex msgfmt; do \
+		if ! which $$f >/dev/null 2>&1; then MISSING_PREREQ="$$MISSING_PREREQ $$f"; fi; \
+	done; \
+	if [ -n "$$MISSING_PREREQ" ]; then \
+		echo -n -e "$(_Y)"; \
+		echo -e \
+			"ERROR: The following commands required for building of binutils-kernel are missing on your system:" \
+			`echo $$MISSING_PREREQ | sed -e 's| |, |g'`; \
+		echo -n -e "$(_N)"; \
 		exit 1; \
 	fi;
-	@if ! which flex >/dev/null ; then \
-		echo -e "\n\nYou must install 'flex' on your build machine\n"; \
-		exit 1; \
-	fi;
-	@if ! which msgfmt >/dev/null ; then \
-		echo -e "\n\nYou must install 'gettext' on your build machine\n"; \
-		exit 1; \
-	fi;
-
-binutils-clean:
-	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
-	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
-	-$(MAKE1) -C $(BINUTILS_DIR1) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) \
-		tooldir=/usr build_tooldir=/usr uninstall
-	-$(MAKE) -C $(BINUTILS_DIR1) clean
 
 binutils-dirclean:
 	$(RM) -r $(BINUTILS_DIR1)

@@ -26,6 +26,7 @@ TARGET_TOOLCHAIN_BINUTILS_VERSION:=$(strip $(subst ",, $(FREETZ_TARGET_BINUTILS_
 TARGET_TOOLCHAIN_BINUTILS_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$(TARGET_TOOLCHAIN_BINUTILS_VERSION))
 
 TARGET_TOOLCHAIN_UCLIBC_REF:=$(strip $(subst ",, $(FREETZ_TARGET_UCLIBC_REF)))
+TARGET_TOOLCHAIN_GDB_VERSION:=$(strip $(subst ",, $(FREETZ_GDB_VERSION)))
 
 TARGET_TOOLCHAIN_SYMLINK:=$(FREETZ_BASE_DIR)/$(TOOLCHAIN_DIR)/target
 TARGET_TOOLCHAIN_SYMLINK_DOT_FILE:=$(FREETZ_BASE_DIR)/$(TOOLCHAIN_DIR)/.target
@@ -34,12 +35,13 @@ TARGET_TOOLCHAIN_DIR:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR_ROOT)/toolchain/target/$(T
 TARGET_TOOLCHAIN_STAGING_DIR:=$(FREETZ_BASE_DIR)/$(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME)
 TARGET_UTILS_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils
 
-TARGET_TOOLCHAIN_GDB_VERSION:=$(strip $(subst ",, $(FREETZ_GDB_VERSION)))
-
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
+include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
+include $(TOOLCHAIN_DIR)/make/target-toolchain.mk
 TOOLCHAIN+=kernel-toolchain
 TOOLCHAIN+=target-toolchain
 else
+include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 TOOLCHAIN:=download-toolchain
 endif
 
@@ -53,12 +55,17 @@ $(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE): $(TOPDIR)/.config
 	@ln -fs $(BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)/$(REAL_GNU_TARGET_NAME) $(TARGET_TOOLCHAIN_SYMLINK)
 	@touch $@
 
+toolchain-dirclean: kernel-toolchain-dirclean target-toolchain-dirclean 
+
+toolchain-distclean: kernel-toolchain-distclean target-toolchain-distclean 
+	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
+
 kernel-toolchain-distclean: kernel-toolchain-dirclean
-	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)
+	$(RM) -r $(SOURCE_DIR_ROOT)/toolchain/kernel
 	$(RM) $(TOOLCHAIN_DIR)/kernel
 	$(RM) $(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE)
 
 target-toolchain-distclean: target-toolchain-dirclean
-	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)
+	$(RM) -r $(SOURCE_DIR_ROOT)/toolchain/target
 	$(RM) $(TOOLCHAIN_DIR)/target
 	$(RM) $(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE)

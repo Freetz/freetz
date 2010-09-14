@@ -14,12 +14,10 @@ GLOBAL_LIBDIR=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
 #	$(DL_TOOL) $(DL_DIR) $(TOOLS_DOT_CONFIG) $(LIBTOOL_HOST_SOURCE) $(LIBTOOL_HOST_SITE) $(LIBTOOL_HOST_SOURCE_MD5)
 
 $(LIBTOOL_HOST_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE) | $(TOOLS_SOURCE_DIR)
+	$(RM) -r $(LIBTOOL_HOST_DIR)
 	mkdir -p $(LIBTOOL_HOST_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBTOOL_HOST_SOURCE)
-	touch $@
 
-
-$(LIBTOOL_HOST_DIR)/.patched: $(LIBTOOL_HOST_DIR)/.unpacked
 	for i in $(LIBTOOL_HOST_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(LIBTOOL_HOST_DIR) $$i; \
 	done
@@ -29,7 +27,7 @@ $(LIBTOOL_HOST_DIR)/.patched: $(LIBTOOL_HOST_DIR)/.unpacked
 	done; \
 	touch $@
 
-$(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.patched
+$(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.unpacked
 	(cd $(LIBTOOL_HOST_DIR); rm -rf config.cache; \
 		CC=$(TARGET_CC) \
 		CXX=$(TARGET_CXX) \

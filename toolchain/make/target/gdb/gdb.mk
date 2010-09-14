@@ -18,13 +18,10 @@ $(DL_DIR)/$(GDB_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(GDB_SOURCE) $(GDB_SITE)
 
 gdb-unpacked: $(GDB_DIR)/.unpacked
-$(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE)
-	mkdir -p $(TARGET_TOOLCHAIN_DIR)
+$(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
+	$(RM) -r $(GDB_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GDB_SOURCE)
-	touch $@
 
-gdb-patched: $(GDB_DIR)/.patched
-$(GDB_DIR)/.patched: $(GDB_DIR)/.unpacked
 	set -e; \
 	for i in $(GDB_MAKE_DIR)/$(GDB_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GDB_DIR) $$i; \
@@ -51,7 +48,7 @@ GDB_TARGET_CONFIGURE_VARS := \
 	bash_cv_have_mbstate_t=yes
 
 #TODO: ENABLE_LOCALE & DISABLE_GDBMI are never set
-$(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.patched
+$(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.unpacked
 	mkdir -p $(GDB_TARGET_DIR)
 	(cd $(GDB_TARGET_DIR); PATH=$(TARGET_PATH) \
 		gdb_cv_func_sigsetjmp=yes \
@@ -115,7 +112,7 @@ GDB_SERVER_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdbserver-$(GDB_VERSION)
 GDB_SERVER_BINARY_BUILDDIR:=$(GDB_SERVER_DIR)/gdbserver
 GDB_SERVER_BINARY_DESTDIR:=$(GDB_DESTDIR)/gdbserver
 
-$(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.patched
+$(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.unpacked
 	mkdir -p $(GDB_SERVER_DIR)
 	(cd $(GDB_SERVER_DIR); PATH=$(TARGET_PATH) \
 		$(TARGET_CONFIGURE_ENV) \
@@ -176,7 +173,7 @@ GDB_HOST_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdbhost-$(GDB_VERSION)
 GDB_HOST_BINARY_BUILDDIR:=$(GDB_HOST_DIR)/gdb/gdb
 GDB_HOST_BINARY_DESTDIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(TARGET_CROSS)gdb
 
-$(GDB_HOST_DIR)/.configured: $(GDB_DIR)/.patched
+$(GDB_HOST_DIR)/.configured: $(GDB_DIR)/.unpacked
 	mkdir -p $(GDB_HOST_DIR)
 	(cd $(GDB_HOST_DIR); PATH=$(TARGET_PATH) \
 		gdb_cv_func_sigsetjmp=yes \
