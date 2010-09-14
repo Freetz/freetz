@@ -9,6 +9,8 @@ $(PKG)_SOURCE_MD5:=916f65fa68d154621fc0cf1f405f2726
 
 $(PKG)_DEPENDS_ON := libusb
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 
