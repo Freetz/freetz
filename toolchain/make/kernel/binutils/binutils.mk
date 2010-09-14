@@ -11,6 +11,7 @@ ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS += "LDFLAGS=-all-static"
 endif
 
+binutils-kernel-source: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)), $(strip $(DL_DIR)/$(BINUTILS_SOURCE)))
 $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(BINUTILS_KERNEL_SOURCE) $(BINUTILS_KERNEL_SITE) $(BINUTILS_KERNEL_MD5)
@@ -60,9 +61,6 @@ binutils-dependencies:
 		echo -n -e "$(_N)"; \
 		exit 1; \
 	fi;
-
-
-binutils-kernel-source: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 
 binutils-kernel-clean:
 	rm -rf $(KERNEL_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \

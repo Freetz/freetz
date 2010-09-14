@@ -17,7 +17,6 @@ $(LIBTOOL_HOST_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE) | $(TOOLS_SOURCE
 	$(RM) -r $(LIBTOOL_HOST_DIR)
 	mkdir -p $(LIBTOOL_HOST_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(LIBTOOL_HOST_SOURCE)
-
 	for i in $(LIBTOOL_HOST_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(LIBTOOL_HOST_DIR) $$i; \
 	done

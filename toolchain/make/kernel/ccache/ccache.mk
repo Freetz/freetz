@@ -14,14 +14,13 @@ endif
 $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOOLCHAIN_DIR)
 	$(RM) -r $(CCACHE_KERNEL_DIR)
 	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
-
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
 	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache\",g" \
 		$(CCACHE_KERNEL_DIR)/execute.c
 	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(KERNEL_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
 		$(CCACHE_KERNEL_DIR)/ccache.c
-	mkdir -p $(CCACHE_KERNEL_DIR)/cache	
+	mkdir -p $(CCACHE_KERNEL_DIR)/cache
 	touch $@
 
 $(CCACHE_KERNEL_DIR)/.configured: $(CCACHE_KERNEL_DIR)/.unpacked

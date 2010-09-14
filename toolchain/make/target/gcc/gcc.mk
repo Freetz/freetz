@@ -60,6 +60,7 @@ GCC_STRIP_HOST_BINARIES:=true
 GCC_SHARED_LIBGCC:=--enable-shared
 EXTRA_GCC_CONFIG_OPTIONS:=--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp
 
+gcc-source: $(DL_DIR)/$(GCC_SOURCE)
 $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(GCC_SOURCE) $(GCC_SITE)
 
@@ -67,7 +68,6 @@ gcc-unpacked: $(GCC_DIR)/.unpacked
 $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	$(RM) -r $(GCC_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GCC_SOURCE)
-
 	set -e; \
 	for i in $(GCC_MAKE_DIR)/$(GCC_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GCC_DIR) $$i; \
@@ -196,8 +196,6 @@ cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-
 cross_compiler gcc: uclibc-configured binutils gcc_initial uclibc \
 	$(GCC_BUILD_DIR2)/.installed $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1
 
-gcc-source: $(DL_DIR)/$(GCC_SOURCE)
-
 gcc-clean: gcc-dirclean
 	for prog in cpp gcc gcc-[0-9]* protoize unprotoize gcov gccbug cc; do \
 		$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/{$(REAL_GNU_TARGET_NAME),$(GNU_TARGET_NAME)}-$$prog; \
@@ -262,10 +260,8 @@ $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
 	$(MAKE_ENV) \
 		$(MAKE1) -C $(GCC_BUILD_DIR3) \
 		DESTDIR=$(TARGET_UTILS_DIR) install
-
 	# Remove broken specs file (cross compile flag is set)
 	$(RM) $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/specs
-
 	-(cd $(TARGET_UTILS_DIR)/usr/bin && find -type f | xargs $(TARGET_STRIP) >/dev/null 2>&1)
 	-(cd $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR) && $(TARGET_STRIP) cc1 cc1plus collect2 >/dev/null 2>&1)
 	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* >/dev/null 2>&1)

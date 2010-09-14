@@ -33,6 +33,7 @@ endif
 
 GCC_KERNEL_STRIP_HOST_BINARIES:=true
 
+gcc-kernel-source: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 $(DL_DIR)/$(GCC_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(GCC_KERNEL_SOURCE) $(GCC_KERNEL_SITE) $(GCC_KERNEL_MD5)
 
@@ -78,8 +79,6 @@ ifeq ($(GCC_KERNEL_STRIP_HOST_BINARIES),true)
 endif
 
 gcc-kernel: binutils-kernel $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
-
-gcc-kernel-source: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 
 gcc-kernel-clean:
 	rm -rf $(GCC_KERNEL_BUILD_DIR)

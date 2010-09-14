@@ -1,6 +1,6 @@
 include $(TOOLCHAIN_DIR)/make/kernel/*/*.mk
 
-KERNEL_TOOLCHAIN:=binutils-kernel gcc-kernel 
+KERNEL_TOOLCHAIN:=binutils-kernel gcc-kernel
 
 ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
 	KERNEL_TOOLCHAIN+=ccache-kernel

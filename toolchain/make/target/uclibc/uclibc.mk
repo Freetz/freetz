@@ -32,6 +32,7 @@ endif
 $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(UCLIBC_LOCALE_DATA_FILENAME) $(UCLIBC_LOCALE_DATA_SITE)
 
+uclibc-source: $(DL_DIR)/$(UCLIBC_SOURCE)
 $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(UCLIBC_SOURCE) $(UCLIBC_SOURCE_SITE)
 
@@ -39,7 +40,6 @@ uclibc-unpacked: $(UCLIBC_DIR)/.unpacked
 $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME) | $(TARGET_TOOLCHAIN_DIR)
 	$(RM) -r $(UCLIBC_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(UCLIBC_SOURCE)
-
 	set -e; \
 	for i in $(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(UCLIBC_DIR) $$i; \
@@ -175,8 +175,6 @@ endif
 uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
 uclibc: $(cross_compiler) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0
-
-uclibc-source: $(DL_DIR)/$(UCLIBC_SOURCE)
 
 uclibc-configured-source: uclibc-source
 
