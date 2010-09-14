@@ -36,12 +36,9 @@ TARGET_TOOLCHAIN_STAGING_DIR:=$(FREETZ_BASE_DIR)/$(TOOLCHAIN_BUILD_DIR)/$(TARGET
 TARGET_UTILS_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
-include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
-include $(TOOLCHAIN_DIR)/make/target-toolchain.mk
 TOOLCHAIN+=kernel-toolchain
 TOOLCHAIN+=target-toolchain
 else
-include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 TOOLCHAIN:=download-toolchain
 endif
 
