@@ -203,6 +203,11 @@ $(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/li
 		UCLIBC_EXTRA_LDFLAGS="$(TARGET_LDFLAGS)" \
 		UCLIBC_EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
 		install_dev
+	# create two additional symlinks, required because libc.so is not really
+	# a shared lib, but a GNU ld script referencing the libs below
+	for f in libc.so.0 ld-uClibc.so.0; do \
+		ln -fs /lib/$$f $(TARGET_UTILS_DIR)/usr/lib/; \
+	done
 	# Install the kernel headers to the target dir if necessary
 	if [ ! -f $(TARGET_UTILS_DIR)/usr/include/linux/version.h ]; then \
 		cp -pLR $(TARGET_TOOLCHAIN_STAGING_DIR)/include/* \
