@@ -118,6 +118,13 @@ start()
 	fi
 }
 
+bootstatus()
+{
+	grep "kernel_args" /proc/sys/urlader/environment | grep -q "init\=/etc/init\.d/rc\.nfsroot" \
+			&& echo 'enabled' \
+			|| echo 'disabled'
+}
+
 if [ "$PPID" == "0" ]; then
 	echo "*** $0 called as an init process, start setting up NFS root ... ***"
 	start
@@ -131,7 +138,16 @@ if [ "$PPID" == "0" ]; then
 fi
 
 case $1 in
-	""|load|start|stop)
+	start|stop)
+		;;
+	""|load)
+		echo "nfsroot is $(bootstatus)"
+		# no webinterface
+		# modreg cgi 'nfsroot' 'NFS Root'
+		modreg daemon --disable nfsroot
+		;;
+	bootstatus)
+		bootstatus
 		;;
 	status)
 		grep -q " / nfs " /proc/mounts \

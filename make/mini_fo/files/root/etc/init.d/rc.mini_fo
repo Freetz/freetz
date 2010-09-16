@@ -8,22 +8,22 @@ usage()
 Usage: rc.mini_fo [on|off|status|store [ram|jffs2]|nostore]
 mini_fo root mount script - can only be called as an 'init' replacement.
 Parameters:
-  status     - check status of mini_fo root; returns 'running' if mini_fo mount 
+  status     - check status of mini_fo root; returns 'running' if mini_fo mount
                on '/' is active, 'stopped' otherwise.
-  bootstatus - check boot status of mini_fo, returns 'enabled' if mini_fo is 
+  bootstatus - check boot status of mini_fo, returns 'enabled' if mini_fo is
                configured as init process
   on         - activate replacing 'init' by 'rc.mini_fo' -> boot with mini_fo
-               root. Adds something like 'init=/etc/init.d/rc.mini_fo' to 
-	       bootloader environment variable 'kernel_args'.
+               root. Adds something like 'init=/etc/init.d/rc.mini_fo' to
+               bootloader environment variable 'kernel_args'.
   store      - store changed data storage location in bootloader environment for
                later use with 'mount'. Adds variable 'mini_fo' to bootloader
                environment, setting its value. If called without parameter, this
                option prints the current 'mini_fo' values.
   nostore    - remove mini_fo variable from bootloader environment. Even though
-               it does no harm to have the variable around in the environment 
-	       all the time, you may optionally remove it again using this 
-	       option.
-  off        - deactivate replacing 'init' by 'rc.mini_fo' -> boot without 
+               it does no harm to have the variable around in the environment
+               all the time, you may optionally remove it again using this
+               option.
+  off        - deactivate replacing 'init' by 'rc.mini_fo' -> boot without
                mini_fo root. Removes 'init' from bootloader environment variable
                'kernel_args'.
 Examples:
@@ -63,13 +63,13 @@ jffs2_mount() {
 		esac
 	done
 	if [ $jffs2_size -gt 0 ]; then
-		echo "[jffs2] load jffs2 module" 
+		echo "[jffs2] load jffs2 module"
 		if modprobe jffs2; then
 			echo "[jffs2] mount jffs "
 			mount -t jffs2 /dev/mtdblock${jffs2_pat} /sto
 			jffs2_ok=$?
 			if [ $jffs2_ok -ne 0 ]; then
-				/bin/reinit_jffs2 -c /dev/mtdblock${jffs2_pat} -a -o /var/jffs2.image 
+				/bin/reinit_jffs2 -c /dev/mtdblock${jffs2_pat} -a -o /var/jffs2.image
 				cp /var/jffs2.image /dev/mtdblock${jffs2_pat}
 				echo "copying image ..."
 				rm /var/jffs2.image
@@ -78,7 +78,7 @@ jffs2_mount() {
 				jffs2_ok=$?
 			fi
 			if [ $jffs2_ok -eq 0 ]; then
-				echo "[jffs2] write env variable jffs2_size to $jffs2_size" 
+				echo "[jffs2] write env variable jffs2_size to $jffs2_size"
 				echo "jffs2_size $jffs2_size" >/proc/sys/urlader/environment
 			fi
 		fi
@@ -166,6 +166,7 @@ case $1 in
 	""|load)
 		echo "mini_fo is $(bootstatus)"
 		modreg cgi 'mini_fo' 'Mini_fo'
+		modreg daemon --disable mini_fo
 		;;
 	unload)
 		modunreg cgi 'mini_fo'

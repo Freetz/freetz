@@ -260,7 +260,7 @@ load_usb_modules() {
 	esac
 
 	modprobe Piglet piglet_bitfile=$piglet_bitfile $piglet_load_params
-	
+
 	if [ $HWRevision = 102 ]; then
 		mount -t proc proc /proc > /dev/null 2>&1
 		mount -t tmpfs tmpfs /var > /dev/null 2>&1
@@ -268,12 +268,12 @@ load_usb_modules() {
 		modprobe tiatm firmware_load_file=/lib/modules/microvoip-dsl.bin annex=$ANNEX
 		modprobe isdn_fbox_fon4
 	fi
-	
+
 	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
 		modprobe usbahcicore AHCI_BaseAddress=0xbe008000 AHCI_RegisterOffset=0x4000 AHCI_IntLine=1
 	fi
-	
+
 	if [ $HWRevision = 102 ]; then
 		rmmod -f isdn_fbox_fon4 > /dev/null 2>&1
 		rmmod -f ubik2 > /dev/null 2>&1
@@ -506,6 +506,9 @@ case $1 in
 
 		# register with web frontend
 		modreg cgi 'usbroot' 'USB Root'
+
+		# disable status control buttons
+		modreg daemon --disable usbroot
 
 		# cleanup if usb root is running
 		get_env_var
