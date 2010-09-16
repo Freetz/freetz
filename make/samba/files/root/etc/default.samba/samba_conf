@@ -3,6 +3,9 @@
 CFGCTL=$(which usbcfgctl)
 [ -z "$CFGCTL" ] && CFGCTL=ar7cfgctl
 
+# usbcfgctl needs environment
+[ -r /var/env.cache ] && . /var/env.cache
+
 echo "### global"
 
 cat << EOF
