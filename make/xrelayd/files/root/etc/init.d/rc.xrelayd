@@ -5,17 +5,17 @@ DAEMON=xrelayd
 
 start() {
 	echo "Starting xrelayd services ..."
-	
+
 	if pidof "$DAEMON" >/dev/null; then
 		echo 'already running.'
 		exit 1
 	fi
-	
+
 	if [ ! -r "/tmp/flash/.xrelayd/xrelayd_svcs" ]; then
 		echo 'Error: services not found'
 		exit 1;
 	fi
-	
+
 	cat /tmp/flash/.xrelayd/xrelayd_svcs | grep -v "^#" | while read -r remote local comment; do
 		if [ -n "$remote" -a -n "$local" ]; then
 			echo -n "Starting xrelayd($remote>$local $comment) ... "
@@ -37,7 +37,7 @@ stop() {
 		echo 'not running.'
 		exit 1
 	fi
-	
+
 	killall -15 $DAEMON > /dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
@@ -61,9 +61,9 @@ case $1 in
 		modlib_start $XRELAYD_ENABLED
 		;;
 	unload)
-		stop
 		modunreg file xrelayd
 		modunreg cgi xrelayd
+		stop
 		;;
 	start)
 		start
