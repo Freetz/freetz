@@ -88,6 +88,11 @@ ifeq ($(strip $(FREETZ_LIB_libdnet)),y)
 LIBS+=libdnet
 endif
 
+ifeq ($(strip $(FREETZ_LIB_libosipparser2)),y)
+# libosip2 depends on libosipparser2
+LIBS+=libosip2
+endif
+
 #ifeq ($(strip $(FREETZ_LIB_libpjsip)),y)
 #LIBS+=libpjsip
 #endif
@@ -264,4 +269,8 @@ endif
 
 ifeq ($(strip $(FREETZ_LIB_libdaemon)),y)
 LIBS+=libdaemon
+endif
+
+ifeq ($(strip $(FREETZ_LIB_libmpfr)),y)
+LIBS+=mpfr
 endif
