@@ -43,6 +43,8 @@ $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE) | $(TARGET_TOOLCHAIN_DIR
 	for i in $(BINUTILS_MAKE_DIR)/$(BINUTILS_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(BINUTILS_DIR) $$i; \
 	done
+	# fool zlib test in all configure scripts so it doesn't find zlib and thus no zlib gets linked in
+	sed -i -r -e 's,(zlibVersion)([ \t]*[(][)]),\1WeDontWantZlib\2,g' $$(find $(BINUTILS_DIR) -name "configure" -type f)
 	touch $@
 
 $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_HOST_PREREQ)
