@@ -1,15 +1,12 @@
 #!/bin/sh
 
 DAEMON=xrelayd
+DAEMON_LONG_NAME="xrelayd services"
+DAEMON_CHECK="xrelayd"
 . /etc/init.d/modlibrc
 
 start() {
-	echo "Starting xrelayd services ..."
-
-	if pidof "$DAEMON" >/dev/null; then
-		echo 'already running.'
-		exit 1
-	fi
+	echo "Starting xrelayd services:"
 
 	if [ ! -r "/tmp/flash/.xrelayd/xrelayd_svcs" ]; then
 		echo 'Error: services not found'
@@ -18,7 +15,7 @@ start() {
 
 	cat /tmp/flash/.xrelayd/xrelayd_svcs | grep -v "^#" | while read -r remote local comment; do
 		if [ -n "$remote" -a -n "$local" ]; then
-			echo -n "Starting xrelayd($remote>$local $comment) ... "
+			echo -n "Starting xrelayd ($remote>$local $comment) ... "
 			$DAEMON -D$XRELAYD_VERBOSE -d $remote -r $local -p $XRELAYD_KEY -A $XRELAYD_CERTCHAIN
 			if [ "$?" -eq 0 ]; then
 				echo 'done.'
@@ -27,30 +24,15 @@ start() {
 			fi
 		fi
 	done
-	echo 'done.'
 }
 
 stop() {
-	echo -n "Stopping xrelayd services ... "
-
-	if ! pidof "$DAEMON" >/dev/null; then
-		echo 'not running.'
-		exit 1
-	fi
-
 	killall -15 $DAEMON > /dev/null 2>&1
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
 }
 
 case $1 in
 	""|load)
-		[ -d "/tmp/flash/.xrelayd" ] || mkdir /tmp/flash/.xrelayd
+		mkdir -p /tmp/flash/.xrelayd
 
 		modreg cgi 'xrelayd' 'XRelayd'
 
@@ -63,25 +45,19 @@ case $1 in
 	unload)
 		modunreg file xrelayd
 		modunreg cgi xrelayd
-		stop
+		modlib_stop
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
-		stop
+		modlib_stop
 		;;
 	restart)
-		stop
-		sleep 1
-		start
+		modlib_restart
 		;;
 	status)
-		if [ -z "$(pidof "$DAEMON")" ]; then
-			echo 'stopped'
-		else
-			echo 'running'
-		fi
+		modlib_status
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
