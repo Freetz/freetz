@@ -104,6 +104,7 @@ $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_TARGET_PREREQ
 		--host=$(REAL_GNU_TARGET_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
 		--disable-multilib \
+		--without-zlib \
 		$(DISABLE_NLS) \
 		$(BINUTILS_TARGET_CONFIG_OPTIONS) \
 		--disable-werror \
