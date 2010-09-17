@@ -6,7 +6,7 @@ usage()
   exit 1
 }
 
-# This script only controls AVMs ftpd and sbmd but not Freetz samba/smbd.
+# This script only controls AVM's ftpd and smbd but not Freetz samba/smbd.
 [ "$1" != "enable" -a "$1" != "disable" ] && usage
 [ "$2" != "ftpd" -a "$2" != "smbd" ] && usage
 [ -d /etc/default.$2 ] && /etc/init.d/rc.$2 inetd_$1
