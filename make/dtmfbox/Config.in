@@ -3,20 +3,21 @@ config FREETZ_PACKAGE_DTMFBOX
 	bool "dtmfbox v0.5.0"
 	select FREETZ_LIB_libcapi20
 	select FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
+	select FREETZ_BUSYBOX_REALPATH
 	default n
 	help
-		dtmfbox is a small softswitch application, that can be used to 
+		dtmfbox is a small softswitch application, that can be used to
 		control different tasks over telephone keyboard (via DTMF).
 		The DTMF signals are handed over to a scriptfile or a plugin.
 
-		While scriptfile/plugin running, you can answer an incoming call, 
+		While scriptfile/plugin running, you can answer an incoming call,
 		record or play a wave file, make another call, bridge calls, etc.
 
-		The scriptfiles included in this package, contain an 
-		answering machine, callback/callthrough script, reverse lookup, 
+		The scriptfiles included in this package, contain an
+		answering machine, callback/callthrough script, reverse lookup,
 		anti-callcenter script, weather forecast, webradio ...
 
-		The application can also be configured as registrar, to allow 
+		The application can also be configured as registrar, to allow
 		SIP client connects.
 
 		http://dtmfbox.v3v.de
@@ -110,7 +111,7 @@ config FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE
 	depends on FREETZ_PACKAGE_DTMFBOX
 	default y
 	help
-		Java Applet to make phone calls over webinterface. 
+		Java Applet to make phone calls over webinterface.
 		Beta!!
 
 		+ 64 kb (Binary only)
