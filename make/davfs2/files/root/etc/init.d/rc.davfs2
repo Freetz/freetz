@@ -45,6 +45,7 @@ config() {
 start() {
 	echo -n "Starting $DAEMON_LONG_NAME ... "
 	config
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 	local retval=0
 	for i in 0 1 2 3; do
@@ -55,7 +56,9 @@ start() {
 		local host="$(eval "echo \$DAVFS2_HOST${i}")"
 		local cfile="$CONF_DIR/davfs2_${i}.conf"
 		echo "secrets $CONF_DIR/secrets_${i}" > $cfile
-		[ "$cert" == "yes" ] && echo "servercert /var/tmp/flash/davfs2/servercrt${i}.pem" >> $cfile
+		if [ "$cert" == "yes" -a "$FREETZ_PACKAGE_DAVFS2_WITH_SSL" == "y" ]; then
+			echo "servercert /var/tmp/flash/davfs2/servercrt${i}.pem" >> $cfile
+		fi
 		[ "$uselocks" == "yes" ] && echo "use_locks 0" >> $cfile
 		echo "ask_auth 0" >> $cfile
 		chmod 600 $CONF_DIR/secrets_${i}

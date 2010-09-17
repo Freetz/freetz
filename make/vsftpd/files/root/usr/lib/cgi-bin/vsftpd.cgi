@@ -2,6 +2,7 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 check "$VSFTPD_ENABLED" yes:auto inetd "*":man
 check "$VSFTPD_ANONYMOUS" yes:anonym
@@ -40,7 +41,7 @@ cat << EOF
 EOF
 
 sec_end
-if [ "$VSFTPD_LOG_SYSLOG" != "yes" ]; then 
+if [ "$VSFTPD_LOG_SYSLOG" != "yes" ]; then
 sec_begin '$(lang de:"Anzeigen" en:"Show")'
 
 cat << EOF
@@ -78,7 +79,7 @@ cat << EOF
 EOF
 
 sec_end
-if ! strings /usr/sbin/vsftpd | grep -q "SSL support not compiled in"; then
+if [ "$FREETZ_PACKAGE_VSFTPD_WITH_SSL" == "y" ]; then
 sec_begin '$(lang de:"SSL-Einstellungen" en:"SSL Settings")'
 
 cat << EOF

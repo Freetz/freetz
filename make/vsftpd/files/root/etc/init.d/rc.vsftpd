@@ -17,14 +17,14 @@ config() {
 	echo "$VSFTPD_CHROOT_JAIL_LIST" | grep -v "^#" | while read -r line; do
 	[ -n "$line" ] && echo "$line" >> /mod/etc/vsftpd.chroot_list
 	done
-	
+
 	rm -f $LOG_LINK 2>/dev/null
 	if [ "$VSFTPD_LOG_SYSLOG" = "no" ]; then
 		ln -sf $VSFTPD_LOG_FILE $LOG_LINK
 		modreg status vsftpd Vsftpd vsftpd_log
 	else
 		modunreg status vsftpd vsftpd_log
-	fi	
+	fi
 }
 
 start() {
@@ -40,10 +40,9 @@ case $1 in
 		[ -e "/var/tmp/ftp" ] || ln -s /mod/home/ftp /var/tmp/ftp
 
 		modreg cgi 'vsftpd' 'Vsftpd'
-		if ! strings /usr/sbin/vsftpd | grep -q "SSL support not compiled in"; then
-			modreg file vsftpd crt 'Cert+Key' 0 "vsftpd_crt"
-		fi
-		
+		[ -r /etc/options.cfg ] && . /etc/options.cfg
+		[ "$FREETZ_PACKAGE_VSFTPD_WITH_SSL" == "y" ] && modreg file vsftpd crt 'Cert+Key' 0 "vsftpd_crt"
+
 		modlib_start $VSFTPD_ENABLED
 		;;
 	unload)
@@ -68,7 +67,7 @@ case $1 in
 		modlib_status
 		;;
 	config)
-		config	
+		config
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|reload|restart|status|config]" 1>&2

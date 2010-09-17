@@ -2,6 +2,7 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 check "$OPENDD_ENABLED" yes:auto "*":man
 check "$OPENDD_FORCE_UPDATE" yes:force_update
@@ -40,11 +41,15 @@ cat << EOF
 </p>
 <p>$(lang de:"Benutzername" en:"Username"): <input type="text" name="user" size="55" maxlength="250" value="$(html "$OPENDD_USER")"></p>
 <p>$(lang de:"Passwort" en:"Password"): <input type="password" name="pass" size="55" maxlength="250" value="$(html "$OPENDD_PASS")"></p>
+EOF
+if [ "$FREETZ_PACKAGE_OPENDD_WITH_SSL" == "y" ]; then
+cat << EOF
 <p>
 <input type="hidden" name="use_ssl" value="0">
 <input id="o1" type="checkbox" name="use_ssl" value="1"$use_ssl_chk><label for="o1"> $(lang de:"SSL nutzen (h&auml;ngt von der Binary ab)" en:"Use SSL (depends on your binary)")</label>
 </p>
 EOF
+fi
 sec_end
 
 sec_begin '$(lang de:"E-Mail" en:"E-Mail")'

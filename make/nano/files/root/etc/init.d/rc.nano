@@ -5,8 +5,10 @@ NANODIR=/mod/etc/default.nano
 NANOTMP=/tmp/.nanorc
 
 config() {
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
+
 	# editing nanorc is useful only if nano has been compiled with nanorc support
-	[ -z "$(nano -V 2>/dev/null | grep ' --enable-nanorc')" ] && return
+	[ "$FREETZ_PACKAGE_NANO_NANORC" != "y" ] && return
 	modreg file nano nanorc "Nano's nanorc" 0 "nanorc"
 
 	# create a default nanorc if there is none
@@ -14,13 +16,13 @@ config() {
 		echo -n 'Creating default nanorc ... '
 		mkdir -p /tmp/flash/nano
 		cat $NANODIR/nanorc.options-tiny > $NANORC
-		[ -z "$(nano -V | grep ' --enable-tiny')" ] && cat $NANODIR/nanorc.options-fancy >> $NANORC
+		[ "$FREETZ_PACKAGE_NANO_TINY" == "y" ] && cat $NANODIR/nanorc.options-fancy >> $NANORC
 		echo 'done.'
 	fi
 
 	#collect available syntax highlighting files
 	cat $NANORC > $NANOTMP
-	if [ -n "$(nano -V | grep ' --enable-color')" ]; then
+	if [ "$FREETZ_PACKAGE_NANO_COLOR_SYNTAX" == "y" ]; then
 		for syntaxfile in /usr/share/nano/*.nanorc; do
 			echo "include \"$syntaxfile\"" >> $NANOTMP
 		done

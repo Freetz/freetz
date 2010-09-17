@@ -1,4 +1,5 @@
 #!/bin/sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 cat << EOF
 ##do not change
@@ -23,9 +24,13 @@ backupmx = $OPENDD_BACKUPMX
 offline = $OPENDD_OFFLINE
 
 ##depends on make!
-use_ssl = $OPENDD_USE_SSL
-
 EOF
+
+if [ "$FREETZ_PACKAGE_OPENDD_WITH_SSL" == "y" ]; then
+	echo "use_ssl = $OPENDD_USE_SSL"
+else
+	echo "use_ssl = 0"
+fi
 
 if [ "$OPENDD_EMAIL_ENABLED" == "yes" ]; then
 cat << EOF

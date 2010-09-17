@@ -6,6 +6,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 check "$DAVFS2_ENABLED" yes:auto "*":man
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
@@ -61,7 +63,7 @@ document.write("<p><SELECT NAME='account' onChange='change(value)'>" +
 document.write("<div id='Acc0' style='display:block'>" +
 "<p><input type='hidden' name='enabled0' value=''><input type='checkbox' name='enabled0' value='yes' $([ "$(webdavcfginfo -p enabled 2>/dev/null)" == "1" ] && echo checked) DISABLED>$(lang en:"Account enabled" de:"Konto aktiv")</p>" +
 "<p><label id='acc0' for='r06'>Host: </label><input id='r06' type='text' name='host0' size='50' maxlength='255' value='$(html "$(webdavcfginfo -p host_url 2>/dev/null)")' DISABLED></p>" +
-"<p><input type='hidden' name='servercert0' value=''><input type='checkbox' name='servercert0' value='yes' $([ "$DAVFS2_SERVERCERT0" = yes ] && echo checked)>$(lang en:"Use certificate 0" de:"Zertifikat 0 nutzen")</p>" +
+"<p><input type='hidden' name='servercert0' value=''><input type='checkbox' name='servercert0' value='yes' $([ "$FREETZ_PACKAGE_DAVFS2_WITH_SSL" != "y" ] && echo DISABLED || ([ "$DAVFS2_SERVERCERT0" = yes ] && echo checked))>$(lang en:"Use certificate 0" de:"Zertifikat 0 nutzen")</p>" +
 "<p><label for='r03'>$(lang en:"Username" de:"Benutzername"): </label><input id='r03' type='text' name='user0' size='50' maxlength='255' value='$(html "$(webdavcfginfo -p username 2>/dev/null)")' DISABLED></p>" +
 "<p><label for='r04'>$(lang en:"Password" de:"Passwort"): </label><input id='r04' type='password' name='pass0' size='50' maxlength='255' value='$(html "$(webdavcfginfo -p password 2>/dev/null)")' DISABLED></p>" +
 "<p><input type='hidden' name='uselocks0' value=''><input type='checkbox' name='uselocks0' value='yes' $([ "$DAVFS2_USELOCKS0" = yes ] && echo checked)>$(lang en:"Deactivate use-locks" de:"Deaktiviere use-locks")</p>" +
@@ -73,7 +75,7 @@ document.write("<div id='Acc0' style='display:block'>" +
 document.write("<div id='Acc1' style='display:none'>" +
 "<p><input type='hidden' name='enabled1' value=''><input type='checkbox' name='enabled1' value='yes' $([ "$DAVFS2_ENABLED1" = yes ] && echo checked)>$(lang en:"Account enabled" de:"Konto aktiv")</p>" +
 "<p><label id='acc1' for='r16'>Host: </label><input id='r16' type='text' name='host1' size='50' maxlength='255' value='$(html "$DAVFS2_HOST1")'></p>" +
-"<p><input type='hidden' name='servercert1' value=''><input type='checkbox' name='servercert1' value='yes' $([ "$DAVFS2_SERVERCERT1" = yes ] && echo checked)>$(lang en:"Use certificate 1" de:"Zertifikat 1 nutzen")</p>" +
+"<p><input type='hidden' name='servercert1' value=''><input type='checkbox' name='servercert1' value='yes' $([ "$FREETZ_PACKAGE_DAVFS2_WITH_SSL" != "y" ] && echo DISABLED || ([ "$DAVFS2_SERVERCERT1" = yes ] && echo checked))>$(lang en:"Use certificate 1" de:"Zertifikat 1 nutzen")</p>" +
 "<p><label for='r13'>$(lang en:"Username" de:"Benutzername"): </label><input id='r13' type='text' name='user1' size='50' maxlength='255' value='$(html "$DAVFS2_USER1")'></p>" +
 "<p><label for='r14'>$(lang en:"Password" de:"Passwort"): </label><input id='r14' type='password' name='pass1' size='50' maxlength='255' value='$(html "$DAVFS2_PASS1")'></p>" +
 "<p><input type='hidden' name='uselocks1' value=''><input type='checkbox' name='uselocks1' value='yes' $([ "$DAVFS2_USELOCKS1" = yes ] && echo checked)>$(lang en:"Deactivate use-locks" de:"Deaktiviere use-locks")</p>" +
@@ -83,7 +85,7 @@ document.write("<div id='Acc1' style='display:none'>" +
 document.write("<div id='Acc2' style='display:none'>" +
 "<p><input type='hidden' name='enabled2' value=''><input type='checkbox' name='enabled2' value='yes' $([ "$DAVFS2_ENABLED2" = yes ] && echo checked)>$(lang en:"Account enabled" de:"Konto aktiv")</p>" +
 "<p><label id='acc2' for='r26'>Host: </label><input id='r26' type='text' name='host2' size='50' maxlength='255' value='$(html "$DAVFS2_HOST2")'></p>" +
-"<p><input type='hidden' name='servercert2' value=''><input type='checkbox' name='servercert2' value='yes' $([ "$DAVFS2_SERVERCERT2" = yes ] && echo checked)>$(lang en:"Use certificate 2" de:"Zertifikat 2 nutzen")</p>" +
+"<p><input type='hidden' name='servercert2' value=''><input type='checkbox' name='servercert2' value='yes' $([ "$FREETZ_PACKAGE_DAVFS2_WITH_SSL" != "y" ] && echo DISABLED || ([ "$DAVFS2_SERVERCERT2" = yes ] && echo checked))>$(lang en:"Use certificate 2" de:"Zertifikat 2 nutzen")</p>" +
 "<p><label for='r23'>$(lang en:"Username" de:"Benutzername"): </label><input id='r23' type='text' name='user2' size='50' maxlength='255' value='$(html "$DAVFS2_USER2")'></p>" +
 "<p><label for='r24'>$(lang en:"Password" de:"Passwort"): </label><input id='r24' type='password' name='pass2' size='50' maxlength='255' value='$(html "$DAVFS2_PASS2")'></p>" +
 "<p><input type='hidden' name='uselocks2' value=''><input type='checkbox' name='uselocks2' value='yes' $([ "$DAVFS2_USELOCKS2" = yes ] && echo checked)>$(lang en:"Deactivate use-locks" de:"Deaktiviere use-locks")</p>" +
@@ -93,7 +95,7 @@ document.write("<div id='Acc2' style='display:none'>" +
 document.write("<div id='Acc3' style='display:none'>" +
 "<p><input type='hidden' name='enabled3' value=''><input type='checkbox' name='enabled3' value='yes' $([ "$DAVFS2_ENABLED3" = yes ] && echo checked)>$(lang en:"Account enabled" de:"Konto aktiv")</p>" +
 "<p><label id='acc3' for='r36'>Host: </label><input id='r36' type='text' name='host3' size='50' maxlength='255' value='$(html "$DAVFS2_HOST3")'></p>" +
-"<p><input type='hidden' name='servercert3' value=''><input type='checkbox' name='servercert3' value='yes' $([ "$DAVFS2_SERVERCERT3" = yes ] && echo checked)>$(lang en:"Use certificate 3" de:"Zertifikat 3 nutzen")</p>" +
+"<p><input type='hidden' name='servercert3' value=''><input type='checkbox' name='servercert3' value='yes' $([ "$FREETZ_PACKAGE_DAVFS2_WITH_SSL" != "y" ] && echo DISABLED || ([ "$DAVFS2_SERVERCERT3" = yes ] && echo checked))>$(lang en:"Use certificate 3" de:"Zertifikat 3 nutzen")</p>" +
 "<p><label for='r33'>$(lang en:"Username" de:"Benutzername"): </label><input id='r33' type='text' name='user3' size='50' maxlength='255' value='$(html "$DAVFS2_USER3")'></p>" +
 "<p><label for='r34'>$(lang en:"Password" de:"Passwort"): </label><input id='r34' type='password' name='pass3' size='50' maxlength='255' value='$(html "$DAVFS2_PASS3")'></p>" +
 "<p><input type='hidden' name='uselocks3' value=''><input type='checkbox' name='uselocks3' value='yes' $([ "$DAVFS2_USELOCKS3" = yes ] && echo checked)>$(lang en:"Deactivate use-locks" de:"Deaktiviere use-locks")</p>" +

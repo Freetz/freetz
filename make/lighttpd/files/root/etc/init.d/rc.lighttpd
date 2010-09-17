@@ -5,14 +5,14 @@ DAEMON_LONG_NAME="lighttpd web server"
 DAEMON_CONFIG="/mod/etc/$DAEMON/$DAEMON.conf"
 . /etc/init.d/modlibrc
 
-. /usr/bin/lighttpd_has
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 
 config() {
 	modlib_config
 	modunreg status lighttpd lighttpd-log
 	if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
-		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ "$(has_mod accesslog)" = "yes" -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
+		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESSLOG" == "y" -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
 			modreg status lighttpd lighttpd-log lighttpd-log
 		fi
 	fi
@@ -39,12 +39,12 @@ case $1 in
 
 		modreg cgi 'lighttpd' 'lighttpd'
 
-		if has_ssl_support >/dev/null; then
+		if [ "$FREETZ_PACKAGE_LIGHTTPD_WITH_SSL" == "y" ]; then
 			modreg file lighttpd crt 'Cert/Key' 0 "lighttpd_crt"
 			modreg file lighttpd ca 'CA Cert' 0 "lighttpd_ca"
 		fi
 
-		if has_mod auth >/dev/null; then
+		if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_AUTH" == "y" ]; then
 			modreg file lighttpd user 'Accounts' 0 "lighttpd_user"
 			modreg file lighttpd rights 'Rights' 0 "lighttpd_rights"
 		fi
