@@ -39,7 +39,7 @@ config() {
 		modlib_config davfs2_secrets_${i} $CONF_DIR/secrets_${i}
 	done
 
-	modprobe coda
+	modprobe fuse 2>/dev/null
 }
 
 start() {
