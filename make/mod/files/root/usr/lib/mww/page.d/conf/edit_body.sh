@@ -22,7 +22,7 @@ package_services() {
 		[ "$pkg" = "$selected_pkg" -a "$hide" = false ] || continue
 		let count++
 		if [ $count -eq 1 ]; then
-			sec_begin '$(lang de:"Dienste" en:"Services")'
+			sec_begin '$(lang de:"Status" en:"Status")'
 			stat_begin
 		fi
 		stat_line "$pkg" "$daemon" "$description" "$rcscript" "$disable" "$hide"
