@@ -6,7 +6,7 @@ DAEMON=hd-idle
 config() {
 	## hd-idle needs sysfs to do what it should
 	[ -n "$(grep sysfs /proc/mounts | head -n 1 | awk '{print $2}')" ] && return
-		
+
 	echo -n "Trying to mount sysfs ... "
 	mkdir -p /var/sys
 	mount sysfs /var/sys -t sysfs
@@ -30,7 +30,7 @@ start() {
 }
 
 stop() {
-	echo -n "... ("
+	echo -n " ("
 	for I in $(pidof hd-idle); do
 		kill $I > /dev/null 2>&1
 		if [ "$?" -eq 0 ]; then
@@ -49,7 +49,6 @@ case $1 in
 		modlib_start $HD_IDLE_ENABLED
 		;;
 	unload)
-		stop
 		modunreg cgi 'hd-idle'
 		modlib_stop
 		;;
