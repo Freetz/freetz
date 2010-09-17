@@ -1,10 +1,13 @@
 #!/bin/sh
 
 CFGCTL=$(which usbcfgctl)
-[ -z "$CFGCTL" ] && CFGCTL=ar7cfgctl
+if [ -z "$CFGCTL" ]; then
+	CFGCTL=ar7cfgctl
+else
+	# usbcfgctl needs environment
+	[ -r /var/env.cache ] && . /var/env.cache
+fi
 
-# usbcfgctl needs environment
-[ -r /var/env.cache ] && . /var/env.cache
 
 echo "### global"
 

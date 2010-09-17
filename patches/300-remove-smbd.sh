@@ -1,4 +1,15 @@
-[ "$FREETZ_PACKAGE_SAMBA" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/bin/inetdsamba"
+[ "$FREETZ_HAS_USB_HOST" == "y" ] && \
+[ "$FREETZ_PACKAGE_SAMBA" == "y" ] && \
+sed -i -e "/killall smbd*$/d" \
+	-e "s/pidof smbd/pidof/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
+
+[ "$FREETZ_PACKAGE_SAMBA" == "y" ] && \
+( \
+	echo1 "remove AVM samba config"; \
+	rm_files "${FILESYSTEM_MOD_DIR}/etc/samba_config.tar"; \
+	rm_files "${FILESYSTEM_MOD_DIR}/bin/inetdsamba"; \
+)
+
 [ "$FREETZ_REMOVE_SMBD" == "y" ] || return 0
 echo1 "remove AVM-smbd files"
 rm_files "${FILESYSTEM_MOD_DIR}/sbin/smbd" \
