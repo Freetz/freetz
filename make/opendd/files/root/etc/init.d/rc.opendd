@@ -14,10 +14,9 @@ set_cron() {
 }
 
 update_ip() {
-	# create temporary interface dsl:1 with desired ip address
-	ifconfig dsl:1 $1
+	echo "$1" > /tmp/.opendd.ip
 	$DAEMON -c /mod/etc/$DAEMON.conf
-	ifconfig dsl:1 down
+	rm -rf /tmp/.opendd.ip 2>/dev/null
 }
 
 run() {
@@ -30,7 +29,7 @@ run() {
 	modlib_config
 	chmod 600 /mod/etc/$DAEMON.conf
 
-	NEW_IP=$(get_ip -e 2>/dev/null)
+	NEW_IP=$(get_ip $OPENDD_GET_IP_OPTION 2>/dev/null)
 	if [ -z "$NEW_IP" ]; then
 		echo 'failed.'
 		exit 1

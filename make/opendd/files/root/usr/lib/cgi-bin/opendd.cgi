@@ -30,6 +30,7 @@ cat << EOF
 <input type="hidden" name="force_update" value="no">
 <input id="u1" type="checkbox" name="force_update" value="yes"$force_update_chk><label for="u1">$(lang de:"Sp&auml;testens nach 25 Tagen updaten (hierf&uuml;r sollte crond noch aktiviert sein)." en:"Force update after 25 days (you should also enable crond).")</label>
 </p>
+<p>$(lang de:"Parameter f&uuml;e 'get_ip'" en:"Parameter of 'get_ip'"): <input type="text" name="get_ip_option" size="15" maxlength="250" value="$(html "$OPENDD_GET_IP_OPTION")"></p>
 EOF
 sec_end
 
@@ -37,7 +38,7 @@ sec_begin '$(lang de:"Account" en:"Account")'
 cat << EOF
 <p>$(lang de:"Server" en:"Server"): <input type="text" name="server" size="55" maxlength="250" value="$(html "$OPENDD_SERVER")"></p>
 <p>$(lang de:"Hostname" en:"Hostname"): <input type="text" name="host" size="55" maxlength="250" value="$(html "$OPENDD_HOST")">
-<br><font size=-2>$(lang de:"Mehrere mit Komme getrennt angeben" en:"Use comma to enter more than one").</font>
+<br><font size=-2>$(lang de:"Mehrere mit Kommata getrennt angeben" en:"Use commas to enter more than one").</font>
 </p>
 <p>$(lang de:"Benutzername" en:"Username"): <input type="text" name="user" size="55" maxlength="250" value="$(html "$OPENDD_USER")"></p>
 <p>$(lang de:"Passwort" en:"Password"): <input type="password" name="pass" size="55" maxlength="250" value="$(html "$OPENDD_PASS")"></p>
@@ -46,7 +47,7 @@ if [ "$FREETZ_PACKAGE_OPENDD_WITH_SSL" == "y" ]; then
 cat << EOF
 <p>
 <input type="hidden" name="use_ssl" value="0">
-<input id="o1" type="checkbox" name="use_ssl" value="1"$use_ssl_chk><label for="o1"> $(lang de:"SSL nutzen (h&auml;ngt von der Binary ab)" en:"Use SSL (depends on your binary)")</label>
+<input id="o1" type="checkbox" name="use_ssl" value="1"$use_ssl_chk><label for="o1"> $(lang de:"SSL nutzen)" en:"Use SSL")</label>
 </p>
 EOF
 fi
@@ -72,7 +73,7 @@ cat << EOF
 <input type="hidden" name="wildcard" value="0">
 <input id="a1" type="checkbox" name="wildcard" value="1"$wildcard_chk><label for="a1"> $(lang de:"Platzhalter" en:"Wildcard")</label>
 </p>
-<p>$(lang de:"Mailserver-Server" en:"Mailserver-Server"): <input type="text" name="mx" size="55" maxlength="250" value="$(html "$OPENDD_MX")"></p>
+<p>$(lang de:"MX-Server" en:"MX-server"): <input type="text" name="mx" size="55" maxlength="250" value="$(html "$OPENDD_MX")"></p>
 <p>
 <input type="hidden" name="backupmx" value="0">
 <input id="a2" type="checkbox" name="backupmx" value="1"$backupmx_chk><label for="a2"> $(lang de:"Host als Backup-Mailserver eintragen" en:"Use host as a backup mailserver")</label>
