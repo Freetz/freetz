@@ -8,7 +8,11 @@ start_stop() {
 		start)
 			local newstatus=$(rc_status ${4-$2})
 			[ "$oldstatus" == inetd -a "$newstatus" != inetd ] && /etc/init.d/rc.inetd config "$package"
-			[ "$oldstatus" != stopped ] && "$rc" start
+
+			# NB: This changes daemon's status when switching to inetd mode
+			# and daemon was stopped before. Please review when dynamic
+			# inetd is implemented.
+			[ "$oldstatus" != stopped -o "$newstatus" == inetd ] && "$rc" start
 			;;
 		stop)
 			[ "$oldstatus" != stopped ] && "$rc" stop
