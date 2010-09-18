@@ -495,7 +495,6 @@ common-dirclean: common-clean
 
 common-distclean: common-dirclean
 	$(RM) .config .config.old .config.cmd .tmpconfig.h
-	-$(RM) -r $(ADDON_DIR)/*
 	$(RM) -r $(DL_DIR)
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(SOURCE_DIR_ROOT)
