@@ -8,7 +8,7 @@ stat_avm() {
 	stat_line mod dsld
 	stat_line mod multid
 	stat_line mod telnetd
-	[ -x /etc/init.d/rc.ftpd ] && [ "$(echo usbhost.ftp_server_enabled | usbcfgctl -s)" != "no" ] && stat_line mod ftpd
+	[ -x /etc/init.d/rc.ftpd ] && stat_line mod ftpd
 
 	stat_end
 	sec_end
