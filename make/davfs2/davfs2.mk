@@ -14,11 +14,7 @@ $(PKG)_LIBS := \$$(NEON_LIBS)
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 $(PKG)_LIBS += -liconv
-else
-$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 endif
-
-$(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DAVFS2_WITH_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DAVFS2_WITH_ZLIB
