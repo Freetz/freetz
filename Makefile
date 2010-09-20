@@ -58,7 +58,7 @@ MAKE1=make
 MAKE=make -j$(FREETZ_JLEVEL)
 
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
-FAKEROOT_TOOL:=$(TOOLS_DIR)/fakeroot/bin/fakeroot
+FAKEROOT_TOOL:=$(TOOLS_DIR)/$(BUILD_DIR)/bin/fakeroot
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
