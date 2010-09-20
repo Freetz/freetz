@@ -55,8 +55,11 @@ if [ "$(echo usbhost.samba_server_enabled | $CFGCTL -s)" = "yes" ]; then
 			else
 				echo " read only = no"
 			fi
-
-			if [ "$(echo usbhost.password | $CFGCTL -s)" = "\"\"" ]; then
+			# AVM moved with 04.86 some variables to users section so try that first
+			# enabled, name, password, ...
+			local password="$(echo usbhost.users.password | $CFGCTL -s)"
+			[ -z "$password" ] && password="$(echo usbhost.password | $CFGCTL -s)"
+			if [ "$password" = "\"\"" ]; then
 				echo " guest ok = yes"
 			fi
 
