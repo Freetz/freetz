@@ -54,6 +54,7 @@ case $1 in
 		[ -r "/tmp/flash/${DAEMON}.extra" ] && mv "/tmp/flash/${DAEMON}.extra" "/tmp/flash/${DAEMON}/${DAEMON}.extra"
 
 		modreg cgi 'dnsmasq' 'Dnsmasq'
+		modreg daemon $DAEMON
 		modreg file dnsmasq extra 'extra' 0 dnsmasq_extra
 
 		modlib_addgroup $DAEMON_GROUP
@@ -65,6 +66,7 @@ case $1 in
 		;;
 	unload)
 		modunreg file dnsmasq
+		modunreg daemon $DAEMON
 		modunreg cgi dnsmasq
 		modlib_stop
 		;;

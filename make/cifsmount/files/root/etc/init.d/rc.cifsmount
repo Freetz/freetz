@@ -63,10 +63,12 @@ stop() {
 case $1 in
 	""|load)
 		modreg cgi cifsmount 'cifsmount'
+		modreg daemon $DAEMON
 
 		modlib_start $CIFSMOUNT_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi cifsmount
 		modlib_stop
 		;;

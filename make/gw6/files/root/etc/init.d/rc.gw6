@@ -16,10 +16,12 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi 'gw6' 'gw6'
+		modreg daemon $DAEMON
 
 		modlib_start $GW6_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'gw6'
 		modlib_stop
 		;;

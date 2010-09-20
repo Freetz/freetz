@@ -225,6 +225,7 @@ stop () {
 case $1 in
 	""|load)
 		modreg cgi 'iptables' 'Iptables'
+		modreg daemon $DAEMON
 		modreg file iptables rules 'Rules' 0 "iptables"
 		modreg file iptables services 'Services' 0 "services"
 
@@ -264,9 +265,10 @@ case $1 in
 		;;
 
 	unload)
-		stop
 		modunreg cgi iptables
+		modunreg daemon $DAEMON
 		modunreg file iptables
+		stop
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2

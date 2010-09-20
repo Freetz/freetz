@@ -44,12 +44,14 @@ stop() {
 case "$1" in
 	""|load)
 		modreg cgi $DAEMON Streamripper
+		modreg daemon $DAEMON
 		modreg file $DAEMON filter 'Filter' 1 "filter"
 		modreg extra $DAEMON '$(lang de:"Liste gerippter Dateien" en:"List of ripped files")' 2 "log"
 
 		modlib_start $STREAMRIPPER_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
 		modunreg file $DAEMON filter
 		modunreg extra $DAEMON log

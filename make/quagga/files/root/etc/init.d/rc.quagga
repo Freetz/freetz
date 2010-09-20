@@ -48,6 +48,7 @@ stop() {
 case $1 in
 	""|load)
 		modreg cgi 'quagga' 'Quagga'
+		modreg daemon $DAEMON
 		for daemon in $daemonlist; do
 			modreg file quagga "${daemon}_conf" "Quagga - $daemon.conf" 0 "${daemon}_conf"
 		done
@@ -55,6 +56,7 @@ case $1 in
 		;;
 	unload)
 		modunreg file quagga
+		modunreg daemon $DAEMON
 		modunreg cgi quagga
 		modlib_stop
 		;;

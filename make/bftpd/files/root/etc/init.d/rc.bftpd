@@ -20,10 +20,12 @@ case $1 in
 		[ -e "/var/tmp/ftp" ] || ln -sf /mod/home/ftp /var/tmp/ftp
 
 		modreg cgi 'bftpd' 'Bftpd'
+		modreg daemon $DAEMON
 
 		modlib_start $BFTPD_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'bftpd'
 		modlib_stop
 		;;

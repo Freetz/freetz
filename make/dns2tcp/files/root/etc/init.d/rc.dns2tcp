@@ -20,10 +20,12 @@ case $1 in
 		modlib_adduser $DAEMON -G $DAEMON -s /bin/false -H -D -g "dns2tcp account"
 
 		modreg cgi 'dns2tcp' 'DNS2TCP'
+		modreg daemon $DAEMON
 
 		modlib_start $DNS2TCP_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'dns2tcp'
 		modlib_stop
 		;;

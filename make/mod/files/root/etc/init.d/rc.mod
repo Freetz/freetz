@@ -37,7 +37,6 @@ start() {
 			if echo " $EXTERNAL_SERVICES $MOD_EXTERNAL_OWN_SERVICES " | grep -q " $pkg " >/dev/null 2>&1; then
 				echo "$pkg will be started by external."
 			else
-				modreg daemon $pkg
 				"/etc/init.d/rc.$pkg"
 			fi
 		fi

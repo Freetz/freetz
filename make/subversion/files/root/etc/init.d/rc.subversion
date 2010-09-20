@@ -73,11 +73,13 @@ case $1 in
 		modlib_adduser $DAEMON_USER -G $DAEMON_GROUP -s /bin/false -D -S -H -g "subversion account"
 
 		modreg cgi 'subversion' 'Subversion'
+		modreg daemon $DAEMON
 
 		modlib_start $SUBVERSION_ENABLED
 		;;
 	unload)
 		modunreg status subversion
+		modunreg daemon $DAEMON
 		modunreg cgi 'subversion'
 		modlib_stop
 		;;

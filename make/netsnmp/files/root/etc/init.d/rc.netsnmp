@@ -49,12 +49,14 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi 'netsnmp' 'Net-SNMP'
+		modreg daemon netsnmp
 		[ "$CFGFILE" != "/etc/snmp/snmpd.conf" ] && modreg file netsnmp conf 'snmpd.conf' 0 "snmpd_conf"
 
 		modlib_start $NETSNMP_ENABLED
 		;;
 	unload)
 		modunreg cgi netsnmp
+		modunreg daemon netsnmp
 		modunreg file netsnmp
 		modlib_stop
 		;;

@@ -108,6 +108,7 @@ case $1 in
 		[ ! -d "/tmp/bluetooth" ] && mkdir -p /tmp/bluetooth
 
 		modreg cgi 'bluez-utils' 'Bluez-Utils'
+		modreg daemon $DAEMON
 
 		modreg extra bluez-utils bluez-utils-help 2 bluez-utils-help
 		modreg file bluez-utils dun 'Bluez-Dun' 0 "dun"
@@ -120,6 +121,7 @@ case $1 in
 		;;
 	unload)
 		modunreg file bluez-utils
+		modunreg daemon $DAEMON
 		modunreg cgi bluez-utils
 		modunreg extra bluez-utils
 		modlib_stop

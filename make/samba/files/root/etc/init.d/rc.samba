@@ -24,15 +24,16 @@ case $1 in
 		modreg file samba shares '$(lang de:"Freigaben" en:"Shares")' 1 "shares"
 		modreg file samba sharesx '$(lang de:"Erweitert" en:"Options")' 1 "sharesx"
 		modreg daemon --hide samba
-		
+
 		do_nmbd
 		do_smbd
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg file samba
 		modunreg cgi samba
-		do_smbd stop
-		do_nmbd stop
+		do_smbd unload
+		do_nmbd unload
 		;;
 	start)
 		do_nmbd start
@@ -61,7 +62,7 @@ case $1 in
 		;;
 	config)
 		do_smbd config
-		do_nmbd config 
+		do_nmbd config
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|reload|status|config]" 1>&2

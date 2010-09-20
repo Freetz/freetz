@@ -17,10 +17,12 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi 'hp-utils' 'hp-utils'
+		modreg daemon $DAEMON
 
 		modlib_start $HP_UTILS_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'hp-utils'
 		modlib_stop
 		;;

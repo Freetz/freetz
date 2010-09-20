@@ -44,10 +44,12 @@ stop() {
 case $1 in
 	""|load)
 		modreg cgi 'radvd' 'radvd'
+		modreg daemon $DAEMON
 
 		modlib_start $RADVD_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'radvd'
 		modlib_stop
 		;;

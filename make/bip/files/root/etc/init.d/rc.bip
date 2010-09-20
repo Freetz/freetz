@@ -23,10 +23,12 @@ case $1 in
 
 		modreg file $DAEMON user_conf 'user config' 1 "bip_user_conf"
 		modreg cgi $DAEMON Bip
+		modreg daemon $DAEMON
 
 		modlib_start $BIP_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
 		modunreg file $DAEMON
 		modlib_stop

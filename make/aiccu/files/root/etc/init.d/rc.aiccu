@@ -18,7 +18,7 @@ start() {
 		echo "Starting of ${DAEMON} aborted, time is not synchronized."
 		exit 1
 	fi
-	
+
 	modprobe ipv6
 	modlib_startdaemon $DAEMON start /mod/etc/$DAEMON.conf
 	[ "$AICCU_RUNSCRIPT" == "yes" ] && /tmp/flash/aiccu/aiccu.sh $AICCU_INTERFACE
@@ -31,10 +31,12 @@ stop () {
 case $1 in
 	""|load)
 		modreg cgi 'aiccu' 'aiccu'
+		modreg daemon $DAEMON
 
 		modlib_start $AICCU_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'aiccu'
 		modlib_stop
 		;;

@@ -67,6 +67,7 @@ case $1 in
 		[ ! -e "/tmp/flash/ppp/peers/dun.chat" ] && /etc/default.${DAEMON}/peers_chat > /tmp/flash/ppp/peers/dun.chat
 
 		modreg cgi 'ppp' 'PPP'
+		modreg daemon $DAEMON
 		modreg status ppp ppp-cgi ppplog
 		modreg file ppp 'peers_options' 'PEERS: options' 0 "peers_options"
 		modreg file ppp 'peers_chat' 'PEERS: chat' 0 "peers_chat"
@@ -75,6 +76,7 @@ case $1 in
 		;;
 	unload)
 		modunreg cgi 'ppp'
+		modunreg daemon $DAEMON
 		modunreg status ppp ppplog
 		modunreg file ppp
 		stop

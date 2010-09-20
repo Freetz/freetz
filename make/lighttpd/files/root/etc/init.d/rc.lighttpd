@@ -38,6 +38,7 @@ case $1 in
 		modlib_adduser wwwrun -G wwwrun -s /bin/false -H -D -g "lighttpd account"
 
 		modreg cgi 'lighttpd' 'lighttpd'
+		modunreg daemon $DAEMON
 
 		if [ "$FREETZ_PACKAGE_LIGHTTPD_WITH_SSL" == "y" ]; then
 			modreg file lighttpd crt 'Cert/Key' 0 "lighttpd_crt"
@@ -56,6 +57,7 @@ case $1 in
 	unload)
 		modunreg status lighttpd lighttpd-log
 		modunreg file lighttpd
+		modunreg daemon $DAEMON
 		modunreg cgi lighttpd
 		modlib_stop
 		;;

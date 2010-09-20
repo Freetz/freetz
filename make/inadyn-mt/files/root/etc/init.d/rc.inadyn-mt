@@ -97,10 +97,12 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi $DAEMON 'Inadyn-mt'
+		modreg daemon $DAEMON
 
 		modlib_start $INADYN_MT_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
 		modlib_stop
 		;;

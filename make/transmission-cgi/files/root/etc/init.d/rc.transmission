@@ -149,10 +149,12 @@ case $1 in
 	""|load)
 		modlib_adduser $USERNAME -G $GROUPNAME -D -S -g "Torrent server"
 		modreg cgi 'transmission' 'Transmission'
+		modreg daemon $DAEMON
 
 		modlib_start $TRANSMISSION_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'transmission'
 		modlib_stop
 		;;

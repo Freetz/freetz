@@ -32,12 +32,14 @@ case $1 in
 		chmod 0700 /mod/home/ntp -R
 
 		modreg cgi 'openntpd' 'Openntpd'
+		modreg daemon $DAEMON
 		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file openntpd conf '$(lang de:"Konfiguration" en:"Configuration")' 0 "openntpd_conf"
 
 		modlib_start $OPENNTPD_ENABLED
 		;;
 	unload)
 		modunreg file openntpd
+		modunreg daemon $DAEMON
 		modunreg cgi openntpd
 		modlib_stop
 		;;

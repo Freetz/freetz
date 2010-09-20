@@ -74,6 +74,7 @@ case $1 in
 		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
 
 		modreg cgi 'nfsd' 'NFS-Server'
+		modreg daemon $DAEMON
 		modreg file nfsd hosts_allow 'hosts.allow' 1 "hosts_allow"
 		modreg file nfsd hosts_deny 'hosts.deny' 1 "hosts_deny"
 		modreg file nfsd exports 'exports' 1 "exports"
@@ -82,6 +83,7 @@ case $1 in
 		;;
 	unload)
 		modunreg file nfsd
+		modunreg daemon $DAEMON
 		modunreg cgi nfsd
 		modlib_stop
 		rmmod nfsd lock sunrpc exportfs > /dev/null 2>&1

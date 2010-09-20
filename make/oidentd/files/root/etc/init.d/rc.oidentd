@@ -15,12 +15,15 @@ case $1 in
 
 		modreg file $DAEMON conf 'oidentd.conf' 1 "oidentd_conf"
 		modreg cgi $DAEMON oidentd
+		modreg daemon $DAEMON
 
-		modlib_start $OIDENTD_ENABLED 
+		modlib_start $OIDENTD_ENABLED
 		;;
 	unload)
-		modunreg cgi $DAEMON
 		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+
 		modlib_stop
 		;;
 	start)

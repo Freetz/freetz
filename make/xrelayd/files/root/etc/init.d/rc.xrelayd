@@ -35,6 +35,7 @@ case $1 in
 		mkdir -p /tmp/flash/.xrelayd
 
 		modreg cgi 'xrelayd' 'XRelayd'
+		modreg daemon $DAEMON
 
 		modreg file xrelayd certchain 'Certificate' 0 "xrelayd_certchain"
 		modreg file xrelayd key 'Private Key' 0 "xrelayd_key"
@@ -44,6 +45,7 @@ case $1 in
 		;;
 	unload)
 		modunreg file xrelayd
+		modunreg daemon $DAEMON
 		modunreg cgi xrelayd
 		modlib_stop
 		;;

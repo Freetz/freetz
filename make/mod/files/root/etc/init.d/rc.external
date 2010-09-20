@@ -34,13 +34,11 @@ sleeper() {
 }
 
 start() {
-	modreg daemon $1
 	/etc/init.d/rc.$1 load >> $LOG_FILE 2>&1
 }
 
 stop() {
 	/etc/init.d/rc.$1 unload >> $LOG_FILE 2>&1
-	modunreg daemon $1
 }
 
 helper() {

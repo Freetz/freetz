@@ -17,14 +17,14 @@ start() {
 		SYSLOGD_OPTIONS="-L"
 
 		case $SYSLOGD_LOGGING in
-		circular_buffer) 
+		circular_buffer)
 			if [ ! -z "$SYSLOGD_BUFFER_MAXSIZE" ]; then
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C$SYSLOGD_BUFFER_MAXSIZE"
 			else
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C"
 			fi
 		;;
-		log_to_file)	
+		log_to_file)
 
 			if [ ! -z "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
 				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -O $SYSLOGD_ALTERNATIVE_LOGFILE "
@@ -46,19 +46,19 @@ start() {
 
 	if [ "$SYSLOGD_NETWORK" = "yes" ]; then
 		if [ ! -z "$SYSLOGD_PORT" -a "$SYSLOGD_PORT" -ne "514" ]; then
-			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -R $SYSLOGD_HOST:$SYSLOGD_PORT" 
+			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -R $SYSLOGD_HOST:$SYSLOGD_PORT"
 		else
 			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -R $SYSLOGD_HOST"
 		fi
 	fi
-	
+
 	#fallback
 	if [ -z "$SYSLOGD_OPTIONS" ] && [ -z "$SYSLOGD_EXPERT_OPTIONS" ]; then
 		SYSLOGD_OPTIONS="-b 1 -s 16"
 	fi
 
 	modlib_startdaemon $DAEMON $SYSLOGD_OPTIONS $SYSLOGD_EXPERT_OPTIONS
-	
+
 	if [ "$SYSLOGD_KLOGD" = "yes" ]; then
 		KLOGDOPTIONS=""
 		[ -n "$SYSLOGD_KLOGD_LEVEL" ] && KLOGDOPTIONS="-c $SYSLOGD_KLOGD_LEVEL"
@@ -85,10 +85,12 @@ stop () {
 case $1 in
 	""|load)
 		modreg cgi $DAEMON 'Syslogd'
+		modreg daemon $DAEMON
 
 		modlib_start $SYSLOGD_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
 		modlib_stop
 		;;

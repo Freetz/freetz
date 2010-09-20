@@ -17,10 +17,12 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi 'wol' 'Wake on LAN'
+		modreg daemon $DAEMON
 
-		modlib_start $WOL_ENABLED 
+		modlib_start $WOL_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'wol'
 		modlib_stop
 		;;

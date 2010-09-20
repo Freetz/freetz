@@ -22,13 +22,13 @@ config() {
 		fi
 		chown $DAEMON_USER:$DAEMON_GROUP "$TOR_DATADIRECTORY"
 	fi
-	
+
 	if [ "$TOR_RELAY_ENABLED" = "yes" ] && [ -e "$DAEMON_STORAGE/secret_id_key" ] && [ ! -e "$TOR_DATADIRECTORY/keys/secret_id_key" ]; then
 		mkdir -p $TOR_DATADIRECTORY/keys 2>/dev/null
 		ln -s $DAEMON_STORAGE/secret_id_key $TOR_DATADIRECTORY/keys/secret_id_key
 		chown $DAEMON_USER:$DAEMON_GROUP "$TOR_DATADIRECTORY/keys" -R
 	fi
-	
+
 	mkdir -p /mod/etc/$DAEMON
 	modlib_config
 }
@@ -80,12 +80,14 @@ case $1 in
 		chown $DAEMON_USER:$DAEMON_GROUP ${PID_FILE%/*}
 
 		modreg cgi "$DAEMON" "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
 		modreg file tor secret_id_key 'Secret ID Key' 0 "secret_id_key"
-		
+
 		modlib_start $TOR_ENABLED
 		;;
 	unload)
 		modunreg file tor
+		modunreg daemon $DAEMON
 		modunreg cgi "$DAEMON"
 		modlib_stop
 		;;

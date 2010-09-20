@@ -21,12 +21,14 @@ case "$1" in
 	""|load)
 		# build dir for control socket (needed for racconctl)
 		mkdir -p /var/run/racoon
-		
+
 		modreg cgi 'ipsec-tools' 'IPsec-tools'
-		
+		modreg daemon $DAEMON
+
 		modlib_start $IPSEC_TOOLS_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'ipsec-tools'
 		modlib_stop
 		;;

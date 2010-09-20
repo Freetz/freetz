@@ -19,10 +19,12 @@ stop() {
 case $1 in
 	""|load)
 		modreg cgi 'vtun' 'vtun'
+		modreg daemon vtun
 
 		modlib_start $VTUN_ENABLED
 		;;
 	unload)
+		modunreg daemon vtun
 		modunreg cgi 'vtun'
 		modlib_stop
 		;;

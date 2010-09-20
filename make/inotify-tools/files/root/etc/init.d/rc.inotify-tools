@@ -25,11 +25,13 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi $DAEMON $DAEMON
+		modreg daemon $DAEMON
 		modreg status $DAEMON $DAEMON inotify-tools_log
 
 		modlib_start $INOTIFY_TOOLS_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
 		modunreg status $DAEMON inotify-tools_log
 		modlib_stop

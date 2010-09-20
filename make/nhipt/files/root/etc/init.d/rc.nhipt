@@ -90,8 +90,9 @@ case $1 in
 		exit 0
 		;;
 	unload)
-		stop
+		modunreg daemon $DAEMON
 		modunreg cgi 'nhipt'
+		stop
 		;;
 	*)
 		echo "Usage: $0 [start|stop|restart|status]" 1>&2

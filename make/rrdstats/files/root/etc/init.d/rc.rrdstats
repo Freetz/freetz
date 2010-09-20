@@ -154,9 +154,11 @@ case $1 in
 		;;
 	""|load)
 		modreg cgi rrdstats RRDstats
+		modreg daemon $DAEMON
 		modlib_start $RRDSTATS_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi rrdstats
 		modunreg file rrdstats
 		modlib_stop

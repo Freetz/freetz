@@ -15,6 +15,7 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi 'umurmur' 'uMurmur'
+		modreg daemon $DAEMON
 		for i in umurmur_key umurmur_crt; do
 			modreg file umurmur "$i" "$i" 0 "$i"
 		done
@@ -24,6 +25,7 @@ case $1 in
 		modlib_start $UMURMUR_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'umurmur'
 		modunreg file umurmur
 		modlib_stop

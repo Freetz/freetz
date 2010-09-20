@@ -45,10 +45,12 @@ stop() {
 case $1 in
 	""|load)
 		modreg cgi 'hd-idle' 'HD-Idle'
+		modreg daemon $DAEMON
 
 		modlib_start $HD_IDLE_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'hd-idle'
 		modlib_stop
 		;;

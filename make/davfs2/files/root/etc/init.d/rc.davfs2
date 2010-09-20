@@ -110,6 +110,8 @@ case $1 in
 		modlib_adduser $DAEMON -s /bin/false -D -S -H -G $DAEMON -g $DAEMON_LONG_NAME
 
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
+		modreg daemon $DAEMON
+
 		for i in 0 1 2 3; do
 			modreg file $DAEMON servercrt$i "Server Zertifikat $i" 0 "davfs2_servercrt$i"
 		done
@@ -117,8 +119,9 @@ case $1 in
 		modlib_start $DAVFS2_ENABLED
 		;;
 	unload)
-		modunreg cgi davfs2
 		modunreg file davfs2
+		modunreg daemon $DAEMON
+		modunreg cgi davfs2
 		modlib_stop
 		;;
 	start)

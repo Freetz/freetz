@@ -33,12 +33,14 @@ case $1 in
 		modreg file privoxy user_filter 'user.filter' 0 "filter"
 		modreg file privoxy user_action 'user.actions' 0 "action"
 		modreg cgi 'privoxy' 'Privoxy'
+		modreg daemon $DAEMON
 
 		modlib_start $PRIVOXY_ENABLED
 		;;
 	unload)
-		modunreg file privoxy
+		modunreg daemon $DAEMON
 		modunreg cgi privoxy
+		modunreg file privoxy
 		modlib_stop
 		;;
 	start)

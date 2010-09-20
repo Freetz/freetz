@@ -11,10 +11,12 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi 'synce-dccm' 'SynCE DCCM'
+		modreg daemon $DAEMON
 
 		modlib_start $SYNCE_DCCM_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'synce-dccm'
 		modlib_stop
 		;;

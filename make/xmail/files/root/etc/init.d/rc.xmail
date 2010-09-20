@@ -113,7 +113,7 @@ start() {
 		echo "set up mail location ... failed."
 		exit 1
 	fi
-	
+
 	if [ ! -d "$XMAIL_MAILLOCATION" ]; then
 		echo "directory $XMAIL_MAILLOCATION not available ... failed."
 		exit 1
@@ -141,6 +141,7 @@ trap "rm -f /var/run/rc.$DAEMON.pid; exit 255" 1 2 3 15
 case $1 in
 	""|load)
 		modreg cgi 'xmail' 'XMail'
+		modreg daemon $DAEMON
 
 		if [ "$XMAIL_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled." 1>&2
@@ -151,6 +152,8 @@ case $1 in
 		echo $! > /var/run/rc.$DAEMON.pid
 		;;
 	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi xmail
 		modlib_stop
 		;;
 	start)

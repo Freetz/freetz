@@ -14,13 +14,15 @@ case $1 in
 		[ ! -e "$DAEMON_CONFIG" ] && /etc/default.$DAEMON/ngircd_conf > $DAEMON_CONFIG
 
 		modreg cgi 'ngircd' 'ngIRCd'
+		modreg daemon $DAEMON
 		modreg file ngircd conf 'config' 1 "ngircd_conf"
 
 		modlib_start $NGIRCD_ENABLED
 		;;
 	unload)
-		modunreg cgi $DAEMON
 		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
 		modlib_stop
 		;;
 	start)

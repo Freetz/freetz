@@ -40,6 +40,7 @@ case $1 in
 		[ -e "/var/tmp/ftp" ] || ln -s /mod/home/ftp /var/tmp/ftp
 
 		modreg cgi 'vsftpd' 'Vsftpd'
+		modreg daemon $DAEMON
 		[ -r /etc/options.cfg ] && . /etc/options.cfg
 		[ "$FREETZ_PACKAGE_VSFTPD_WITH_SSL" == "y" ] && modreg file vsftpd crt 'Cert+Key' 0 "vsftpd_crt"
 
@@ -48,6 +49,7 @@ case $1 in
 	unload)
 		modunreg file vsftpd
 		modunreg status vsftpd vsftpd_log
+		modunreg daemon $DAEMON
 		modunreg cgi vsftpd
 		modlib_stop
 		;;

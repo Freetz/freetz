@@ -32,12 +32,14 @@ case $1 in
 		[ -r /tmp/flash/knockd.conf ] && mv /tmp/flash/knockd.conf /tmp/flash/knock/knockd.conf
 
 		modreg cgi 'knock' 'Knock'
+		modreg daemon $DAEMON
 		modreg file knock conf 'config' 0 "knockd_conf"
 
-		modlib_start $KNOCK_ENABLED		
+		modlib_start $KNOCK_ENABLED
 		;;
 	unload)
 		modunreg file knock
+		modunreg daemon $DAEMON
 		modunreg cgi knock
 		modlib_stop
 		;;

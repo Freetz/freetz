@@ -60,14 +60,16 @@ stop() {
 case $1 in
 	""|load)
 		modreg cgi 'tinyproxy' 'tinyproxy'
+		modreg daemon $DAEMON
 
 		modreg file tinyproxy conf 'tinyproxy conf' 0 "tinyproxy_conf"
 		modreg file tinyproxy filter 'tinyproxy filter' 0 "tinyproxy_filter"
-		
+
 		modlib_start $TINYPROXY_ENABLED
 		;;
 	unload)
 		modunreg file tinyproxy
+		modunreg daemon $DAEMON
 		modunreg cgi tinyproxy
 		modlib_stop
 		;;

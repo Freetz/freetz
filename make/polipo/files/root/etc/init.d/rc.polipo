@@ -18,10 +18,12 @@ stop () {
 case $1 in
 	""|load)
 		modreg cgi 'polipo' 'Polipo-Proxy'
-		
+		modreg daemon $DAEMON
+
 		modlib_start $POLIPO_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'polipo'
 		modlib_stop
 		;;

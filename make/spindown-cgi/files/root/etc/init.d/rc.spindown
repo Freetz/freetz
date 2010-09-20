@@ -47,10 +47,12 @@ stop() {
 case $1 in
 	""|load)
 		modreg cgi 'spindown' 'Disk Spindown'
-		
+		modreg daemon $DAEMON
+
 		modlib_start $SPINDOWN_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'spindown'
 		modlib_stop
 		;;

@@ -19,11 +19,13 @@ start() {
 
 case $1 in
 	""|load)
+		modreg daemon --disable $DAEMON
 		modreg file php config 'php.ini' 0 "php_config"
 		;;
 	unload)
-		modlib_stop
 		modunreg file php
+		modunreg daemon $DAEMON
+		modlib_stop
 		;;
 	start)
 		start

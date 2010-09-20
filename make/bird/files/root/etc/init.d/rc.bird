@@ -87,15 +87,17 @@ stop() {
 case $1 in
 	''|load)
 		modreg cgi 'bird' 'BIRD'
+		modreg daemon $DAEMON
 		[ "$CFGFILE" != '/etc/bird.conf' ] && modreg file bird conf 'bird.conf' 0 "bird_conf"
 
 		[ "$BIRD_AUTOSTARTDELAY" -gt 0 -a "$BIRD_ENABLED" = 'yes' ] && sleep $BIRD_AUTOSTARTDELAY
 		modlib_start $BIRD_ENABLED
 		;;
 	unload)
-		stop
 		modunreg file bird
+		modunreg daemon $DAEMON
 		modunreg cgi bird
+		stop
 		;;
 	start)
 		modlib_start

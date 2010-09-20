@@ -17,10 +17,12 @@ start() {
 case $1 in
 	""|load)
 		modreg cgi $DAEMON 'Checkmail'
+		modreg daemon $DAEMON
 
 		modlib_start $CHECKMAILD_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
 		modlib_stop
 		;;

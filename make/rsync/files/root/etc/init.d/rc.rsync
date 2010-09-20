@@ -4,7 +4,7 @@ DAEMON=rsync
 MODPATH=/mod/etc
 CONF=$MODPATH/rsync.conf
 PID_FILE=/var/run/rsync.pid
-. /etc/init.d/modlibrc 
+. /etc/init.d/modlibrc
 
 config() {
 	modlib_config
@@ -14,11 +14,12 @@ start() {
 	modlib_startdaemon $DAEMON --daemon --config=$CONF --ipv4
 }
 
-case "$1" in 
+case "$1" in
 	""|load)
 		mkdir -p /tmp/flash/rsync
 
 		modreg cgi 'rsync' 'RSync-Server'
+		modreg daemon $DAEMON
 		modreg file rsync shares '$(lang de:"Freigaben" en:"Shares")' 1 "shares"
 		modreg file rsync sharesx '$(lang de:"Erweitert" en:"Options")' 1 "sharesx"
 
@@ -26,6 +27,7 @@ case "$1" in
 		;;
 	unload)
 		modunreg file rsync
+		modunreg daemon $DAEMON
 		modunreg cgi rsync
 		modlib_stop
 		;;

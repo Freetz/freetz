@@ -50,10 +50,12 @@ case $1 in
 		pre_config
 
 		modreg cgi 'dropbear' 'Dropbear'
+		modreg daemon $DAEMON
 
 		modlib_start $DROPBEAR_ENABLED
 		;;
 	unload)
+		modunreg daemon $DAEMON
 		modunreg cgi 'dropbear'
 		modlib_stop
 		;;
