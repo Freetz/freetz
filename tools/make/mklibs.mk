@@ -1,3 +1,7 @@
+ifeq ($(strip $(FREETZ_STRIP_LIBRARIES)),y)
+TOOLS+=mklibs
+endif
+
 MKLIBS_VERSION:=0.1.30
 MKLIBS_SOURCE:=mklibs_$(MKLIBS_VERSION).tar.gz
 MKLIBS_SOURCE_MD5:=15d20c45f786126e31aa3ac06fc08da5
@@ -8,7 +12,7 @@ MKLIBS_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build/bin
 MKLIBS_SCRIPT:=$(MKLIBS_DIR)/src/mklibs
 MKLIBS_TARGET_SCRIPT:=$(MKLIBS_DESTDIR)/mklibs
 MKLIBS_READELF_BINARY:=$(MKLIBS_DIR)/src/mklibs-readelf/mklibs-readelf
-MKLIBS_READELF_TARGET_BINARY:=$(MKLIBS_DESTDIR)/mklibs-readelf/mklibs-readelf
+MKLIBS_READELF_TARGET_BINARY:=$(MKLIBS_DESTDIR)/mklibs-readelf
 
 $(DL_DIR)/$(MKLIBS_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(TOOLS_DOT_CONFIG) $(MKLIBS_SOURCE) $(MKLIBS_SITE) $(MKLIBS_SOURCE_MD5)
@@ -22,7 +26,9 @@ $(MKLIBS_DIR)/.unpacked: $(DL_DIR)/$(MKLIBS_SOURCE) | $(TOOLS_SOURCE_DIR)
 	done
 	touch $@
 
-$(MKLIBS_DIR)/.configured $(MKLIBS_SCRIPT) $(MKLIBS_SCRIPT)-copy: $(MKLIBS_DIR)/.unpacked
+$(MKLIBS_SCRIPT) $(MKLIBS_SCRIPT)-copy: $(MKLIBS_DIR)/.unpacked
+
+$(MKLIBS_DIR)/.configured: $(MKLIBS_DIR)/.unpacked
 	(cd $(MKLIBS_DIR); rm -rf config.cache; \
 		./configure \
 		--prefix=/ \
@@ -54,4 +60,4 @@ mklibs-dirclean:
 	$(RM) -r $(MKLIBS_DIR)
 
 mklibs-distclean:
-	$(RM) -r $(MKLIBS_DESTDIR)
+	$(RM) -r $(MKLIBS_TARGET_SCRIPT) $(MKLIBS_TARGET_SCRIPT)-copy $(MKLIBS_READELF_TARGET_BINARY)

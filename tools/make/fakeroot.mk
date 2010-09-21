@@ -50,4 +50,4 @@ fakeroot-dirclean:
 	$(RM) -r $(FAKEROOT_DIR)
 
 fakeroot-distclean:
-	$(RM) -r $(FAKEROOT_DESTDIR)
+	$(RM) -r $(FAKEROOT_TARGET_SCRIPT) $(FAKEROOT_DESTDIR)/bin/faked $(FAKEROOT_DESTDIR)/lib/libfakeroot*
