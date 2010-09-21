@@ -7,8 +7,8 @@ MKLIBS_MAKE_DIR:=$(TOOLS_DIR)/make
 MKLIBS_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build/bin
 MKLIBS_SCRIPT:=$(MKLIBS_DIR)/src/mklibs
 MKLIBS_TARGET_SCRIPT:=$(MKLIBS_DESTDIR)/mklibs
-MKLIBS_READELF_BINARY:=$(MKLIBS_DIR)/src/mklibs-readelf
-MKLIBS_READELF_TARGET_BINARY:=$(MKLIBS_DESTDIR)/mklibs-readelf
+MKLIBS_READELF_BINARY:=$(MKLIBS_DIR)/src/mklibs-readelf/mklibs-readelf
+MKLIBS_READELF_TARGET_BINARY:=$(MKLIBS_DESTDIR)/mklibs-readelf/mklibs-readelf
 
 $(DL_DIR)/$(MKLIBS_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(TOOLS_DOT_CONFIG) $(MKLIBS_SOURCE) $(MKLIBS_SITE) $(MKLIBS_SOURCE_MD5)
@@ -22,15 +22,15 @@ $(MKLIBS_DIR)/.unpacked: $(DL_DIR)/$(MKLIBS_SOURCE) | $(TOOLS_SOURCE_DIR)
 	done
 	touch $@
 
-$(MKLIBS_DIR)/.configured: $(MKLIBS_DIR)/.unpacked
+$(MKLIBS_DIR)/.configured $(MKLIBS_SCRIPT) $(MKLIBS_SCRIPT)-copy: $(MKLIBS_DIR)/.unpacked
 	(cd $(MKLIBS_DIR); rm -rf config.cache; \
 		./configure \
 		--prefix=/ \
 		$(DISABLE_NLS) \
 	);
-	touch $(MKLIBS_DIR)/.configured
+	touch $@
 
-$(MKLIBS_SCRIPT) $(MKLIBS_SCRIPT)-copy $(MKLIBS_READELF_BINARY): $(MKLIBS_DIR)/.configured
+$(MKLIBS_READELF_BINARY): $(MKLIBS_DIR)/.configured
 	$(MAKE) -C $(MKLIBS_DIR) all
 
 $(MKLIBS_TARGET_SCRIPT): $(MKLIBS_SCRIPT)
@@ -41,7 +41,7 @@ $(MKLIBS_TARGET_SCRIPT)-copy: $(MKLIBS_SCRIPT)-copy
 	mkdir -p $(dir $@)
 	cp $^ $@
 
-$(MKLIBS_TARGET_READELF_BINARY): $(MKLIBS_READELF_BINARY)
+$(MKLIBS_READELF_TARGET_BINARY): $(MKLIBS_READELF_BINARY)
 	mkdir -p $(dir $@)
 	cp $^ $@
 
