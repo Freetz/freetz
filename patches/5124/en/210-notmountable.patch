@@ -1,23 +1,19 @@
---- usr/www/avme/html/de/home/home.js.orig	2009-01-28 15:51:56.000000000 +0100
-+++ usr/www/avme/html/de/home/home.js	2009-02-10 00:09:46.000000000 +0100
-@@ -621,12 +621,6 @@
- if (isNaN(nStor)) nStor = 0;
+--- usr/www/avme/html/de/home/home.js.orig	2009-11-12 15:13:06.000000000 +0100
++++ usr/www/avme/html/de/home/home.js	2010-09-21 17:23:16.000000000 +0200
+@@ -653,14 +653,13 @@
  var nPartTotal = Number("<? query ctlusb:settings/storage-part-total ?>");
- if (isNaN(nStor)) nPartTotal = 0;
+ if (isNaN(nPartTotal)) nPartTotal = 0;
+ var unplugOk = parseInt("<? query ctlusb:settings/unplug-ok ?>", 10) == 1;
 -if (nPartTotal > nStor) {
--var str="";
--str += "At least one USB drive or parts of it are not integrated. ";
--str += "<a href=\"javascript:jslGoTo('home', 'syslog');\">more information</a>";
--return str.fontcolor("#cc0000");
--}
- var strArr = new Array();
- if (nUsb == 0)
- {
-@@ -635,6 +629,7 @@
- strArr.push(g_usbConnected);
- return strArr.join(" ");
++if (nPartTotal > 0) {
+ var strStor = "";
+ if (unplugOk) {
+ strStor = "All USB storage devices were \"removed safely\" and can be removed now.";
  }
-+strArr.push(nStor + " of " + nPartTotal + " partitions mounted.");
- <? if eq '<? query aura:settings/enabled ?>' '1' `
- <? multiquery aura:settings/device/list(class,manufacturer,comment,client) `
- var strAura = UsbDeviceName("<? query aura:settings/$11 ?>", "$13","$14","$12");
+ else {
+-strStor = "At least one USB drive or parts of it are not integrated. ";
+-strStor += "<a href=\"javascript:jslGoTo('home', 'syslog');\">more information</a>";
++strStor = nStor + " of " + nPartTotal + " partitions mounted. ";
+ }
+ strArr.push(strStor);
+ }
