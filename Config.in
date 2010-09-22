@@ -904,34 +904,9 @@ config FREETZ_PATCH_FREETZMOUNT_BLKID
 
 		NOTE: fstyp is not needed in this case and could be deselected in Package-Selection->Testing.
 
-if ! FREETZ_PATCH_FREETZMOUNT
-config FREETZ_PATCH_USBSTORAGE
-	bool "Patch USB storage names, make FAT filesystems world-writable, automount feature"
-	default y
-	help
-		1. Change the name of USB storage dir to uStorXY
-
-		2. Auto-mounted USB storage devices will be fully accessible, i.e. it
-		   is now possible to put user home directories for (e.g. for FTP) on a
-		   FAT32-formatted partition and permit shell and FTP users to actually
-		   write to their own home directories.
-
-		3. Avoid deleting whole filesystem on usb devices.
-
-		It is highly recommended to select this patch.
-
-config FREETZ_AUTORUN_AUTOEND
-	bool "Execute autorun.sh/autoend.sh script on (un)mount"
-	default y
-	help
-		Useful to start/terminate applications located on USB devices, eg apache,
-		samba or even swapfiles.
-endif
-
 config FREETZ_USBSTORAGE_AUTOMOUNT
 	bool "Automount filesystems"
-	depends on FREETZ_PATCH_USBSTORAGE || FREETZ_PATCH_FREETZMOUNT
-	select FREETZ_PACKAGE_FSTYP if ! FREETZ_PATCH_FREETZMOUNT
+	depends on FREETZ_PATCH_FREETZMOUNT
 	default y
 	help
 		ext2, ext3, fat and ntfs filesystems are mounted automatically. Detection is done
