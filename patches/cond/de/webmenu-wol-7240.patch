@@ -1,22 +1,25 @@
---- usr/www/all/html/de/menus/menu2_homehome.html.orig	2009-12-15 13:58:08.522917909 +0100
-+++ usr/www/all/html/de/menus/menu2_homehome.html	2009-12-15 13:58:09.174171140 +0100
-@@ -58,6 +58,7 @@
- <? if eq $var:pagename energy `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
- <? if eq $var:pagename ecosettings `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
- <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','energy')">{?de.menus.menu2_homehome.html:105EnergyMonitor?}</a><span class="PTextOnly">{?de.menus.menu2_homehome.html:110EnergyMonitor?}</span></li>
--<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank">Freetz</a><span class="PTextOnly">Freetz</span></li>
-+<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank">Freetz Config</a><span class="PTextOnly">Freetz Config</span></li>
-+<li class="LMenuitemTop"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank">Freetz WOL</a><span class="PTextOnly">Freetz WOL</span></li>
- <li class="LMenubottom">&nbsp;</li>
- </ul>
---- usr/www/all/html/de/menus/menu2_konfig.html.orig	2009-12-15 13:58:08.522917909 +0100
-+++ usr/www/all/html/de/menus/menu2_konfig.html	2009-12-15 13:58:09.174171140 +0100
-@@ -79,6 +79,7 @@
- <li class="LMenuitemaktivTop"><img class="LMenuPfeil" src="../html/de/images/leer.gif" style="width:7px;"><a href="javascript:jslGoTo('software','extern')">{?txtPrograms?}</a><span class="PTextOnly">{?txtPrograms?}</span></li>
- ` ?>
- ` ?>
--<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank">Freetz</a><span class="PTextOnly">Freetz</span></li>
-+<li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank">Freetz Config</a><span class="PTextOnly">Freetz Config</span></li>
-+<li class="LMenuitemTop"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank">Freetz WOL</a><span class="PTextOnly">Freetz WOL</span></li>
- <li class="LMenubottom">&nbsp;</li>
- </ul>
+--- usr/www/all/templates/menu_page_head.html.orig	2010-08-03 22:37:31.567360363 +0200
++++ usr/www/all/templates/menu_page_head.html	2010-08-03 22:37:32.234860557 +0200
+@@ -116,4 +116,22 @@
+ </div>
+ </div>
+ </div>
++<div class="clear_float"></div>
++<div style="position:relative;top:-21px">
++<div class="small_bar_left_head"></div>
++<div class="small_bar_right_head"></div>
++<div class="small_bar_back_head">
++<div id="MainWizardhead" style="padding-top:2px;">
++<?lua
++menu.write_menu('freetz-wol')
++?>
++</div>
++</div>
++<div class="small_bar_left_bottom"></div>
++<div class="small_bar_right_bottom"></div>
++<div class="small_bar_back_bottom">
++<div id="MainWizardbottom">
++</div>
++</div>
++</div>
+ </div>

@@ -3,10 +3,13 @@ echo1 "remove mediasrv files"
 for files in \
 	lib/libsqlite3*.so* \
 	lib/libexif.so* \
+	lib/libmediasrv* \
 	lib/libpng.so* \
 	sbin/mediasrv \
 	sbin/start_mediasrv \
 	sbin/stop_mediasrv \
+	usr/bin/audio \
+	bin/playerd* \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done

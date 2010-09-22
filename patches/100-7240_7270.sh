@@ -25,8 +25,8 @@ echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_72* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7240
 
 echo2 "patching rc.S and rc.conf"
-if isFreetzType LABOR_CORE LABOR_NAS PREVIEW; then
-	modpatch ${FILESYSTEM_MOD_DIR} ${PATCHES_DIR}/cond/7240_7270_rc.S_piglet_labor_nas.patch || exit 2
+if isFreetzType LABOR_DSL LABOR_IPV6; then
+	modpatch ${FILESYSTEM_MOD_DIR} ${PATCHES_DIR}/cond/7240_7270_rc.S_piglet_labor.patch || exit 2
 else
 	modpatch ${FILESYSTEM_MOD_DIR} ${PATCHES_DIR}/cond/7240_7270_rc.S_piglet.patch || exit 2
 fi
