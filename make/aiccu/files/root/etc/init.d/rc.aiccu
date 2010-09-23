@@ -22,7 +22,13 @@ start() {
 	# try to load kernel module
 	[ -d /proc/sys/net/ipv6 ] || modprobe ipv6 2>/dev/null
 	modlib_startdaemon $DAEMON start /mod/etc/$DAEMON.conf
-	[ "$AICCU_RUNSCRIPT" == "yes" ] && /tmp/flash/aiccu/aiccu.sh $AICCU_INTERFACE
+	retval=$?
+	if [ "$AICCU_RUNSCRIPT" == "yes" ]; then
+		/tmp/flash/aiccu/aiccu.sh $AICCU_INTERFACE
+		[ "$?" -ne 0 ] && retval=$?
+	fi
+	return $retval
+
 }
 
 stop () {
