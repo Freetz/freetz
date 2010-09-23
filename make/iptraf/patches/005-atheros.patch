@@ -1,0 +1,40 @@
+--- src/ifaces.c	2009-11-28 18:45:44.000000000 +0000
++++ src/ifaces.c	2009-11-28 18:47:46.000000000 +0000
+@@ -32,14 +32,14 @@
+ #include "error.h"
+ 
+ extern int accept_unsupported_interfaces;
+-#define NUM_SUPPORTED_IFACES 26
++#define NUM_SUPPORTED_IFACES 27
+ 
+ extern int daemonized;
+ 
+ char ifaces[][6] =
+     { "lo", "eth", "sl", "ppp", "ippp", "plip", "isdn", "dvb",
+     "pvc", "hdlc", "ipsec", "sbni", "tr", "wvlan", "wlan", "sm2", "sm3",
+-    "pent", "lec", "brg", "tun", "tap", "cipcb", "tunl", "vlan"
++    "pent", "lec", "brg", "tun", "tap", "cipcb", "tunl", "vlan", "ath"
+ };
+ 
+ char *ltrim(char *buf)
+--- src/packet.c	2009-11-28 18:45:44.000000000 +0000
++++ src/packet.c	2009-11-28 18:48:06.000000000 +0000
+@@ -104,6 +104,8 @@
+             result = LINK_ETHERNET;
+         else if (strncmp(ifname, "tap", 3) == 0)
+             result = LINK_ETHERNET;
++        else if (strncmp(ifname, "ath", 3) == 0)
++            result = LINK_ETHERNET;
+         else if ((strncmp(ifname, "isdn", 4) == 0) && (isdn_fd != -1)) {
+             isdnent = isdn_table_lookup(isdnlist, ifname, isdn_fd);
+ 
+--- src/promisc.c	2009-11-28 18:45:44.000000000 +0000
++++ src/promisc.c	2009-11-28 18:48:28.000000000 +0000
+@@ -82,6 +82,7 @@
+ 
+             if ((strncmp(buf, "eth", 3) == 0) ||
+                 (strncmp(buf, "tr", 2) == 0) ||
++                (strncmp(buf, "ath", 3) == 0) ||
+ 		(strncmp(buf, "vlan", 4) == 0) ||
+                 (strncmp(ptmp->params.ifname, "wvlan", 4) == 0) ||
+                 (strncmp(ptmp->params.ifname, "lec", 3) == 0) ||

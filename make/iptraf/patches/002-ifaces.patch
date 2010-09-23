@@ -1,6 +1,5 @@
-diff -urN src/dirs.h iptraf-3.0.0.new/src/dirs.h
---- src/dirs.h	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/dirs.h	2006-04-16 16:08:27.000000000 +0200
+--- src/dirs.h.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/dirs.h	2010-09-23 16:19:09.000000000 +0200
 @@ -155,7 +155,6 @@
   */
  
@@ -9,18 +8,17 @@ diff -urN src/dirs.h iptraf-3.0.0.new/src/dirs.h
  
  /*
   * The rvnamed program file
-diff -urN src/hostmon.c iptraf-3.0.0.new/src/hostmon.c
---- src/hostmon.c	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/hostmon.c	2006-04-16 16:29:27.000000000 +0200
-@@ -30,7 +30,6 @@
- #include <netinet/in.h>
+--- src/hostmon.c.orig	2007-09-25 11:18:56.000000000 +0200
++++ src/hostmon.c	2010-09-23 16:19:09.000000000 +0200
+@@ -31,7 +31,6 @@
  #include <linux/if_packet.h>
  #include <linux/if_ether.h>
+ #include <linux/netdevice.h>
 -#include <linux/if_fddi.h>
  #include <linux/if_tr.h>
  #include <net/if_arp.h>
  #include <stdlib.h>
-@@ -293,8 +292,6 @@
+@@ -294,8 +293,6 @@
              wprintw(table->tabwin, "Ethernet");
          else if (entry->un.desc.linktype == LINK_PLIP)
              wprintw(table->tabwin, "PLIP");
@@ -29,7 +27,7 @@ diff -urN src/hostmon.c iptraf-3.0.0.new/src/hostmon.c
  
          wprintw(table->tabwin, " HW addr: %s", entry->un.desc.ascaddr);
  
-@@ -722,7 +719,7 @@
+@@ -723,7 +720,7 @@
      unsigned long long updtime_usec = 0;
  
      struct desclist elist;      /* Ethernet description list */
@@ -38,7 +36,7 @@ diff -urN src/hostmon.c iptraf-3.0.0.new/src/hostmon.c
      struct desclist *list = NULL;
  
      FILE *logfile = NULL;
-@@ -786,7 +783,6 @@
+@@ -787,7 +784,6 @@
  
      initethtab(&table, options->actmode);
      loaddesclist(&elist, LINK_ETHERNET, WITHETCETHERS);
@@ -46,7 +44,7 @@ diff -urN src/hostmon.c iptraf-3.0.0.new/src/hostmon.c
  
      if (logging) {
          if (strcmp(current_logfile, "") == 0) {
-@@ -900,9 +896,7 @@
+@@ -901,9 +897,7 @@
              if (pkt_result != PACKET_OK)
                  continue;
  
@@ -57,7 +55,7 @@ diff -urN src/hostmon.c iptraf-3.0.0.new/src/hostmon.c
  
                  if (fromaddr.sll_protocol == htons(ETH_P_IP))
                      is_ip = 1;
-@@ -920,12 +914,6 @@
+@@ -921,12 +915,6 @@
                      memcpy(scratch_daddr, ((struct ethhdr *) buf)->h_dest,
                             ETH_ALEN);
                      list = &elist;
@@ -70,9 +68,8 @@ diff -urN src/hostmon.c iptraf-3.0.0.new/src/hostmon.c
                  } else if (linktype == LINK_TR) {
                      memcpy(scratch_saddr, ((struct trh_hdr *) buf)->saddr,
                             TR_ALEN);
-diff -urN src/ifaces.c iptraf-3.0.0.new/src/ifaces.c
---- src/ifaces.c	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/ifaces.c	2006-04-16 16:10:10.000000000 +0200
+--- src/ifaces.c.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/ifaces.c	2010-09-23 16:19:09.000000000 +0200
 @@ -37,7 +37,7 @@
  extern int daemonized;
  
@@ -82,9 +79,8 @@ diff -urN src/ifaces.c iptraf-3.0.0.new/src/ifaces.c
      "pvc", "hdlc", "ipsec", "sbni", "tr", "wvlan", "wlan", "sm2", "sm3",
      "pent", "lec", "brg", "tun", "tap", "cipcb", "tunl", "vlan"
  };
-diff -urN src/landesc.c iptraf-3.0.0.new/src/landesc.c
---- src/landesc.c	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/landesc.c	2006-04-16 16:10:29.000000000 +0200
+--- src/landesc.c.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/landesc.c	2010-09-23 16:19:09.000000000 +0200
 @@ -83,8 +83,6 @@
  
      if (linktype == LINK_ETHERNET)
@@ -103,9 +99,8 @@ diff -urN src/landesc.c iptraf-3.0.0.new/src/landesc.c
  
      if (fd < 0) {
          etherr();
-diff -urN src/links.h iptraf-3.0.0.new/src/links.h
---- src/links.h	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/links.h	2006-04-16 16:10:39.000000000 +0200
+--- src/links.h.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/links.h	2010-09-23 16:19:09.000000000 +0200
 @@ -6,7 +6,6 @@
  #define LINK_ISDN_RAWIP		6
  #define LINK_ISDN_CISCOHDLC	7
@@ -114,9 +109,8 @@ diff -urN src/links.h iptraf-3.0.0.new/src/links.h
  #define LINK_FRAD		9
  #define LINK_DLCI		10
  #define LINK_TR			11
-diff -urN src/log.c iptraf-3.0.0.new/src/log.c
---- src/log.c	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/log.c	2006-04-16 16:10:53.000000000 +0200
+--- src/log.c.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/log.c	2010-09-23 16:19:09.000000000 +0200
 @@ -491,8 +491,6 @@
                          ptmp->un.desc.ascaddr);
              else if (ptmp->un.desc.linktype == LINK_PLIP)
@@ -126,9 +120,8 @@ diff -urN src/log.c iptraf-3.0.0.new/src/log.c
  
              if (ptmp->un.desc.withdesc)
                  fprintf(fd, " (%s)", ptmp->un.desc.desc);
-diff -urN src/options.c iptraf-3.0.0.new/src/options.c
---- src/options.c	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/options.c	2006-04-16 16:23:52.000000000 +0200
+--- src/options.c.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/options.c	2010-09-23 16:19:09.000000000 +0200
 @@ -68,8 +68,6 @@
      tx_additem(menu, NULL, NULL);
      tx_additem(menu, " ^E^thernet/PLIP host descriptions...",
@@ -148,18 +141,17 @@ diff -urN src/options.c iptraf-3.0.0.new/src/options.c
          }
  
          indicatesetting(row, options, statwin);
-diff -urN src/othptab.c iptraf-3.0.0.new/src/othptab.c
---- src/othptab.c	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/othptab.c	2006-04-16 16:24:21.000000000 +0200
-@@ -19,7 +19,6 @@
- #include <asm/types.h>
+--- src/othptab.c.orig	2007-09-25 11:47:35.000000000 +0200
++++ src/othptab.c	2010-09-23 16:19:09.000000000 +0200
+@@ -22,7 +22,6 @@
  #include <linux/if_ether.h>
  #include <linux/if_tr.h>
+ #include <linux/netdevice.h>
 -#include <linux/if_fddi.h>
  #include <winops.h>
  #include "arphdr.h"
  #include "options.h"
-@@ -139,11 +138,6 @@
+@@ -142,11 +141,6 @@
                          new_entry->smacaddr);
              convmacaddr(((struct ethhdr *) packet)->h_dest,
                          new_entry->dmacaddr);
@@ -171,7 +163,7 @@ diff -urN src/othptab.c iptraf-3.0.0.new/src/othptab.c
          } else if (linkproto == LINK_TR) {
              convmacaddr(((struct trh_hdr *) packet)->saddr,
                          new_entry->smacaddr);
-@@ -373,8 +367,7 @@
+@@ -376,8 +370,7 @@
          strcat(msgstring, scratchpad);
  
          if ((entry->linkproto == LINK_ETHERNET) ||
@@ -181,13 +173,12 @@ diff -urN src/othptab.c iptraf-3.0.0.new/src/othptab.c
              sprintf(scratchpad, " from %s to %s on %s",
                      entry->smacaddr, entry->dmacaddr, entry->iface);
  
-diff -urN src/packet.c iptraf-3.0.0.new/src/packet.c
---- src/packet.c	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/packet.c	2006-04-16 16:11:55.000000000 +0200
+--- src/packet.c.orig	2007-09-25 11:21:18.000000000 +0200
++++ src/packet.c	2010-09-23 16:19:09.000000000 +0200
 @@ -35,7 +35,6 @@
- #include <sys/ioctl.h>
  #include <linux/if_packet.h>
  #include <linux/if_ether.h>
+ #include <linux/netdevice.h>
 -#include <linux/if_fddi.h>
  #include <linux/if_tr.h>
  #include <linux/isdn.h>
@@ -231,9 +222,8 @@ diff -urN src/packet.c iptraf-3.0.0.new/src/packet.c
      case LINK_TR:
          /*
           * Token Ring patch supplied by Tomas Dvorak 
-diff -urN src/promisc.c iptraf-3.0.0.new/src/promisc.c
---- src/promisc.c	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/promisc.c	2006-04-16 16:12:56.000000000 +0200
+--- src/promisc.c.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/promisc.c	2010-09-23 16:19:09.000000000 +0200
 @@ -81,8 +81,8 @@
               */
  
@@ -253,9 +243,8 @@ diff -urN src/promisc.c iptraf-3.0.0.new/src/promisc.c
               (strncmp(ptmp->params.ifname, "tr", 2) == 0) ||
               (strncmp(ptmp->params.ifname, "wvlan", 4) == 0) ||
               (strncmp(ptmp->params.ifname, "lec", 3) == 0)) &&
-diff -urN src/rvnamed.h iptraf-3.0.0.new/src/rvnamed.h
---- src/rvnamed.h	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/rvnamed.h	2006-04-16 16:13:39.000000000 +0200
+--- src/rvnamed.h.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/rvnamed.h	2010-09-23 16:19:09.000000000 +0200
 @@ -1,9 +1,9 @@
  #include <netinet/in.h>
  #include <arpa/inet.h>
@@ -269,9 +258,8 @@ diff -urN src/rvnamed.h iptraf-3.0.0.new/src/rvnamed.h
  
  #define SOCKET_PREFIX	"isock"
  
-diff -urN src/tcptable.c iptraf-3.0.0.new/src/tcptable.c
---- src/tcptable.c	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/tcptable.c	2006-04-16 16:13:54.000000000 +0200
+--- src/tcptable.c.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/tcptable.c	2010-09-23 16:19:09.000000000 +0200
 @@ -600,8 +600,6 @@
  
          if ((linkproto == LINK_ETHERNET) || (linkproto == LINK_PLIP)) {
@@ -281,14 +269,13 @@ diff -urN src/tcptable.c iptraf-3.0.0.new/src/tcptable.c
          } else if (linkproto == LINK_TR) {
              convmacaddr(((struct trh_hdr *) packet)->saddr, newmacaddr);
          }
-diff -urN src/tcptable.h iptraf-3.0.0.new/src/tcptable.h
---- src/tcptable.h	2005-09-13 08:42:54.000000000 +0200
-+++ iptraf-3.0.0.new/src/tcptable.h	2006-04-16 16:14:03.000000000 +0200
-@@ -22,7 +22,6 @@
- #include <asm/types.h>
+--- src/tcptable.h.orig	2007-09-25 11:46:03.000000000 +0200
++++ src/tcptable.h	2010-09-23 16:19:09.000000000 +0200
+@@ -23,7 +23,6 @@
  #include <linux/if_packet.h>
  #include <linux/if_ether.h>
+ #include <linux/netdevice.h>
 -#include <linux/if_fddi.h>
  #include <linux/if_tr.h>
- #include <net/if.h>
+ // #include <net/if.h>
  #include <netinet/ip.h>

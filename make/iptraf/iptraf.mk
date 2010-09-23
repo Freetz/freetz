@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3.0.0)
+$(call PKG_INIT_BIN, 3.0.1)
 $(PKG)_SOURCE:=iptraf-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://iptraf.seul.org/pub/iptraf
-$(PKG)_SOURCE_MD5:=377371c28ee3c21a76f7024920649ea8
+$(PKG)_SOURCE_MD5:=004c2c005a1b78739e22bc49d33e244d
 
 $(PKG)_DEPENDS_ON := ncurses
 
