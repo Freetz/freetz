@@ -33,16 +33,8 @@ sleeper() {
 	echo " done." >> $LOG_FILE
 }
 
-start() {
-	/etc/init.d/rc.$1 load >> $LOG_FILE 2>&1
-}
-
-stop() {
-	/etc/init.d/rc.$1 unload >> $LOG_FILE 2>&1
-}
-
 helper() {
-	if [ "$1" == "start" ]; then
+	if [ "$1" == "load" ]; then
 		if [ ! -e /tmp/.modstarted ]; then
 			echo -n "Waiting for mod-startup:" >> $LOG_FILE
 			spaceit=" "
@@ -55,16 +47,18 @@ helper() {
 		fi
 		[ "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && sleeper
 	fi
-	echo -e "\n### $3 $2 @ `date "+%d.%m.%Y - %H:%M,%S"`" >> $LOG_FILE
+	echo -e "\n### ${1}ing $2 @ $(date "+%d.%m.%Y - %H:%M,%S")" >> $LOG_FILE
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
-		[ -x "/etc/init.d/rc.$pkg" ] && echo " $EXTERNAL_SERVICES " | grep -q " $pkg " >/dev/null 2>&1 && $1 $pkg
+		if echo " $EXTERNAL_SERVICES " | grep -q " $pkg "; then
+			[ -x /etc/init.d/rc.$pkg ] && /etc/init.d/rc.$pkg $1 >> $LOG_FILE 2>&1
+		fi
 	done
 	[ -f /tmp/flash/mod/rc.external ] && . /tmp/flash/mod/rc.external $1 >> $LOG_FILE 2>&1
 }
 
 
 [ $# -ne 2 ] && usage
-cat /etc/external.dir 2>/dev/null | grep -q "$2" >/dev/null 2>&1 || exit
+cat /etc/external.dir 2>/dev/null | grep -q "$2" || exit
 if [ "$MOD_EXTERNAL_FREETZ_SERVICES" != "yes" ]; then
 	if [ -z "$MOD_EXTERNAL_OWN_SERVICES" ]; then
 		echo "No services selected." >> $LOG_FILE
@@ -77,10 +71,10 @@ fi
 
 case $1 in
 	start)
-		helper start "$2" mounting
+		helper load $2
 		;;
 	stop)
-		helper stop "$2" unmounting
+		helper unload $2
 		;;
 	*)
 		usage
