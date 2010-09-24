@@ -19,10 +19,12 @@ start() {
 
 case $1 in
 	""|load)
+		modreg daemon -p mod webcfg
 		modlib_start $MOD_HTTPD
 		;;
 	unload)
 		modlib_stop
+		modunreg daemon mod webcfg
 		;;
 	start)
 		modlib_start

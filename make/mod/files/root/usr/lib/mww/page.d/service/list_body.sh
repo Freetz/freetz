@@ -5,10 +5,8 @@ stat_avm() {
 	sec_begin '$(lang de:"AVM-Dienste" en:"AVM services")'
 	stat_begin
 
-	stat_line mod dsld
-	stat_line mod multid
-	stat_line mod telnetd
-	[ -x /etc/init.d/rc.ftpd ] && stat_line mod ftpd
+	select_avm() [ "$1" = avm ]
+	stat_lines select_avm
 
 	stat_end
 	sec_end
@@ -18,27 +16,33 @@ stat_builtin() {
 	sec_begin '$(lang de:"Basis-Pakete" en:"Built-in packages")'
 	stat_begin
 
-	stat_line mod crond
-	stat_line mod swap
-	stat_line mod webcfg
+	select_mod() [ "$1" = mod ]
+	stat_lines select_mod
 
 	stat_end
 	sec_end
 }
 
-stat_static() {
-	sec_begin '$(lang de:"Statische Pakete" en:"Static packages")'
-	stat_begin
-
+stat_lines() {
+	local predicate=$1 # function name (signature: pkg=$1 id=$2)
 	if [ -r "$REG" ]; then
 		# order by description
 		while IFS='|' read -r daemon description rest; do
 			echo "$description|$daemon|$rest"
 		done < "$REG" | sort |
 		while IFS='|' read -r description daemon rcscript disable hide pkg; do
+			"$predicate" "$pkg" "$daemon" || continue
 			stat_line "$pkg" "$daemon" "$description" "$rcscript" "$disable" "$hide"
 		done
 	fi
+}
+
+stat_static() {
+	sec_begin '$(lang de:"Statische Pakete" en:"Static packages")'
+	stat_begin
+
+	select_static() [ "$1" != avm -a "$1" != mod ]
+	stat_lines select_static
 	if [ ! -s "$REG" ]; then
 		echo '<p><i>$(lang de:"keine statischen Pakete" en:"no static packages")</i></p>'
 	fi

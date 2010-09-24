@@ -68,6 +68,12 @@ set_options() {
 }
 
 case $1 in
+	""|load)
+		modreg daemon -p avm dsld
+		;;
+	unload)
+		modunreg daemon avm dsld
+		;;
 	start)
 		modlib_start
 		;;

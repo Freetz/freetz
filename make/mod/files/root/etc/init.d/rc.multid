@@ -74,6 +74,12 @@ ntp_mode() {
 }
 
 case $1 in
+	""|load)
+		modreg daemon -p avm multid
+		;;
+	unload)
+		modunreg daemon avm multid
+		;;
 	start)
 		modlib_start
 		;;

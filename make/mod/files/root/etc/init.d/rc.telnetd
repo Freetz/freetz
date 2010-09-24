@@ -16,10 +16,12 @@ stop() {
 
 case $1 in
 	""|load)
+		modreg daemon -p avm telnetd
 		modlib_start $MOD_TELNETD
 		;;
 	unload)
 		modlib_stop
+		modunreg daemon avm telnetd
 		;;
 	start)
 		modlib_start

@@ -45,8 +45,10 @@ set_mode() {
 
 case $1 in
 	""|load)
+		modreg daemon -p avm ftpd
 		;;
 	unload)
+		modunreg daemon avm ftpd
 		;;
 	start)
 		modlib_start

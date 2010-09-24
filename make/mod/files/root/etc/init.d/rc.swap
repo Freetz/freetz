@@ -64,9 +64,11 @@ case $1 in
 			exit 1
 		fi
 		echo "$DAEMON is enabled." 1>&2
+		modreg daemon -p mod swap
 		;;
 	unload)
 		stop
+		modunreg daemon mod swap
 		;;
 	start)
 		start
