@@ -74,9 +74,9 @@ else
 fi
 
 if [ "$OWN_KEYS" != "" -a $count -gt 1 ]; then
-	keypath="/tmp/flash/${prefix}/"
+	keypath="/tmp/flash/openvpn/${CONFIG_NAMES}_"
 else
-	keypath="/tmp/flash/"
+	keypath="/tmp/flash/openvpn/"
 fi
 
 if [ "$AUTH_TYPE" == "certs" ]; then
@@ -85,7 +85,7 @@ if [ "$AUTH_TYPE" == "certs" ]; then
 	echo "key ${keypath}box.key" >> $CONFFILE
 	if [ "$MODE" == "server" ]; then
 		echo "dh ${keypath}dh.pem" >> $CONFFILE
-		if [ -r "${keypath}crl.pem" ]; then
+		if [ -r "${keypath}crl.pem" -a "$(sed 's/[ \t]*//g' ${keypath}crl.pem)" ]; then
 			echo "crl-verify ${keypath}crl.pem" >> $CONFFILE
 		fi
 		echo "tls-server" >> $CONFFILE
