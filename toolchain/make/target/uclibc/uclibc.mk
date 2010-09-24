@@ -210,7 +210,7 @@ $(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/li
 	done
 	# Install the kernel headers to the target dir if necessary
 	if [ ! -f $(TARGET_UTILS_DIR)/usr/include/linux/version.h ]; then \
-		cp -pLR $(TARGET_TOOLCHAIN_STAGING_DIR)/include/* \
+		cp -pLR $(TARGET_TOOLCHAIN_STAGING_DIR)/include/{asm,asm-generic,linux} \
 			$(TARGET_UTILS_DIR)/usr/include/; \
 	fi
 	touch -c $@
