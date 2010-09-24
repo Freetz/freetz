@@ -241,14 +241,9 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 	touch $@
 
 $(GCC_BUILD_DIR3)/.compiled: $(GCC_BUILD_DIR3)/.configured
-	$(MAKE_ENV) \
-		$(MAKE) -C $(GCC_BUILD_DIR3) \
-		$(GCC_EXTRA_MAKE_OPTIONS) all
+	$(MAKE_ENV) $(MAKE) -C $(GCC_BUILD_DIR3) $(GCC_EXTRA_MAKE_OPTIONS) all
 	touch $@
 
-#
-# gcc-lib dir changes names to gcc with 3.4.mumble
-#
 GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
 ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.2)
 GCC_INCLUDE_DIR:=include
@@ -257,8 +252,7 @@ GCC_INCLUDE_DIR:=include-fixed
 endif
 
 $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
-	$(MAKE_ENV) \
-		$(MAKE1) -C $(GCC_BUILD_DIR3) \
+	$(MAKE_ENV) $(MAKE1) -C $(GCC_BUILD_DIR3) \
 		DESTDIR=$(TARGET_UTILS_DIR) install
 	# Remove broken specs file (cross compile flag is set)
 	$(RM) $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/specs
@@ -267,8 +261,7 @@ $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
 	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* >/dev/null 2>&1)
 	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libgcc_s.so.*.*.* >/dev/null 2>&1)
 	$(RM) $(TARGET_UTILS_DIR)/usr/lib/*.la*
-	$(RM) -r $(TARGET_UTILS_DIR)/share/locale $(TARGET_UTILS_DIR)/usr/info \
-		$(TARGET_UTILS_DIR)/usr/man $(TARGET_UTILS_DIR)/usr/share/doc
+	$(RM) -r $(TARGET_UTILS_DIR){/share/locale,/usr/info,/usr/man,/usr/share/info,/usr/share/man,/usr/share/doc}
 	# Work around problem of missing syslimits.h
 	if [ ! -f $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/$(GCC_INCLUDE_DIR)/syslimits.h ]; then \
 		echo "warning: working around missing syslimits.h"; \
@@ -279,8 +272,6 @@ $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
 	if [ ! -e $(TARGET_UTILS_DIR)/usr/bin/cc ]; then \
 		ln -snf gcc $(TARGET_UTILS_DIR)/usr/bin/cc; \
 	fi
-	# These are in /lib, so...
-	#$(RM) $(TARGET_UTILS_DIR)/usr/lib/libgcc_s*.so*
 	touch -c $@
 
 gcc_target: uclibc_target binutils_target $(TARGET_UTILS_DIR)/usr/bin/gcc

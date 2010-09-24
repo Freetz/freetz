@@ -81,13 +81,13 @@ endif
 gcc-kernel: binutils-kernel $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
 
 gcc-kernel-clean:
-	rm -rf $(GCC_KERNEL_BUILD_DIR)
+	$(RM) -r $(GCC_KERNEL_BUILD_DIR)
 	for prog in cpp gcc gcc-kernel-[0-9]* protoize unprotoize gcov gccbug cc; do \
-		rm -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-$$prog; \
-		rm -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_KERNEL_NAME)-$$prog; \
+		$(RM) -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-$$prog; \
+		$(RM) -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_KERNEL_NAME)-$$prog; \
 	done
 
 gcc-kernel-dirclean:
-	rm -rf $(GCC_KERNEL_BUILD_DIR) $(GCC_KERNEL_DIR)
+	$(RM) -r $(GCC_KERNEL_BUILD_DIR) $(GCC_KERNEL_DIR)
 
 .PHONY: gcc-kernel

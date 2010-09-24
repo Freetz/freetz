@@ -66,16 +66,18 @@ $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_HOST_PREREQ)
 	);
 	touch $@
 
-$(BINUTILS_DIR1)/binutils/objdump: $(BINUTILS_DIR1)/.configured
+$(BINUTILS_DIR1)/.compiled: $(BINUTILS_DIR1)/.configured
 	$(MAKE) -C $(BINUTILS_DIR1) MAKEINFO=true configure-host
 	$(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) MAKEINFO=true all
+	touch $@
 
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/binutils/objdump
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/.compiled
 	$(MAKE1) -C $(BINUTILS_DIR1) MAKEINFO=true install
 
 binutils-clean:
-	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
-	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
 	-$(MAKE1) -C $(BINUTILS_DIR1) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		tooldir=/usr build_tooldir=/usr uninstall
 	-$(MAKE) -C $(BINUTILS_DIR1) clean
@@ -113,26 +115,24 @@ $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_TARGET_PREREQ
 	)
 	touch $@
 
-$(BINUTILS_DIR2)/binutils/objdump: $(BINUTILS_DIR2)/.configured
+$(BINUTILS_DIR2)/.compiled: $(BINUTILS_DIR2)/.configured
 	$(MAKE_ENV) $(MAKE) -C $(BINUTILS_DIR2) MAKEINFO=true all
+	touch $@
 
-$(TARGET_UTILS_DIR)/usr/bin/ld: $(BINUTILS_DIR2)/binutils/objdump
-	$(MAKE_ENV) \
-	$(MAKE1) -C $(BINUTILS_DIR2) \
+$(TARGET_UTILS_DIR)/usr/bin/ld: $(BINUTILS_DIR2)/.compiled
+	$(MAKE_ENV) $(MAKE1) -C $(BINUTILS_DIR2) \
 		tooldir=/usr \
 		build_tooldir=/usr \
 		MAKEINFO=true \
 		DESTDIR=$(TARGET_UTILS_DIR) install
-	$(RM) -r $(TARGET_UTILS_DIR)/share/locale $(TARGET_UTILS_DIR)/usr/info \
-		$(TARGET_UTILS_DIR)/usr/man $(TARGET_UTILS_DIR)/usr/share/doc
+	$(RM) -r $(TARGET_UTILS_DIR){/share/locale,/usr/info,/usr/man,/usr/share/info,/usr/share/man,/usr/share/doc}
 	-$(TARGET_STRIP) $(TARGET_UTILS_DIR)/usr/bin/* >/dev/null 2>&1
 
 binutils_target: $(TARGET_UTILS_DIR)/usr/bin/ld
 
-binutils_target-clean:
+binutils_target-clean: binutils_target-dirclean
 	$(RM) $(TARGET_UTILS_DIR)/usr/bin/{addr2line,ar,as,gprof,ld,nm,objcopy,objdump,ranlib,readelf,size,strings,strip}
 	$(RM) $(TARGET_UTILS_DIR)/bin/$(REAL_GNU_TARGET_NAME)*
-	-$(MAKE) -C $(BINUTILS_DIR2) clean
 
 binutils_target-dirclean:
 	$(RM) -r $(BINUTILS_DIR2)

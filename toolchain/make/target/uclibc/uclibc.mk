@@ -217,8 +217,8 @@ $(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/li
 
 uclibc_target: cross_compiler uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a
 
-uclibc_target-clean:
-	$(RM) -r $(TARGET_UTILS_DIR)/usr/include $(TARGET_UTILS_DIR)/lib/libc.a
+uclibc_target-clean: uclibc_target-dirclean
+	$(RM) $(TARGET_UTILS_DIR)/lib/libc.a
 
 uclibc_target-dirclean:
 	$(RM) -r $(TARGET_UTILS_DIR)/usr/include
