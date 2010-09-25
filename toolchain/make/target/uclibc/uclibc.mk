@@ -80,6 +80,15 @@ endif
 		oldconfig
 	touch $@
 
+# $1 - source dir
+# $2 - target dir
+define UCLIBC_INSTALL_KERNEL_HEADERS
+	# install kernel headers to $(2)/usr/include if necessary
+	if [ ! -f $(2)/usr/include/linux/version.h ] ; then \
+		cp -pLR $(1)/{asm,asm-generic,linux} $(2)/usr/include/; \
+	fi;
+endef
+
 $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
@@ -88,15 +97,7 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(HOSTCC)" headers \
 		$(if $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28),install_dev,install_headers)
-	# Install the kernel headers to the first stage gcc include dir if necessary
-	if [ ! -f $(TARGET_TOOLCHAIN_STAGING_DIR)/include/linux/version.h ] ; then \
-		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include/ ; \
-		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include/ ; \
-		if [ -d $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic ] ; then \
-			cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
-			$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include/ ; \
-		fi; \
-	fi;
+	$(call UCLIBC_INSTALL_KERNEL_HEADERS,$(UCLIBC_KERNEL_HEADERS_DIR),$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR))
 	touch $@
 
 uclibc-menuconfig: $(UCLIBC_DIR)/.config
@@ -128,25 +129,17 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		DEVEL_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
 		install_runtime install_dev
-	# Install the kernel headers to the staging dir if necessary
-	if [ ! -f $(TARGET_TOOLCHAIN_STAGING_DIR)/include/linux/version.h ] ; then \
-		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
-		cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/linux $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
-		if [ -d $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic ] ; then \
-			cp -pLR $(UCLIBC_KERNEL_HEADERS_DIR)/asm-generic \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ ; \
-		fi; \
-	fi;
+	$(call UCLIBC_INSTALL_KERNEL_HEADERS,$(UCLIBC_KERNEL_HEADERS_DIR),$(TARGET_TOOLCHAIN_STAGING_DIR))
 	# Build the host utils.
 	$(MAKE1) -C $(UCLIBC_DIR)/utils \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		HOSTCC="$(HOSTCC)" \
 		hostutils
-	install -c $(UCLIBC_DIR)/utils/ldd.host $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ldd
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldd $(REAL_GNU_TARGET_NAME)-ldd)
-	install -c $(UCLIBC_DIR)/utils/ldconfig.host $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ldconfig
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/ldconfig $(REAL_GNU_TARGET_NAME)-ldconfig)
+	for i in ldd ldconfig; do \
+		install -c $(UCLIBC_DIR)/utils/$$i.host $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/$ii; \
+		ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/$$i $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$ii; \
+	done
 	touch -c $@
 
 $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
@@ -208,11 +201,7 @@ $(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/li
 	for f in libc.so.0 ld-uClibc.so.0; do \
 		ln -fs /lib/$$f $(TARGET_UTILS_DIR)/usr/lib/; \
 	done
-	# Install the kernel headers to the target dir if necessary
-	if [ ! -f $(TARGET_UTILS_DIR)/usr/include/linux/version.h ]; then \
-		cp -pLR $(TARGET_TOOLCHAIN_STAGING_DIR)/include/{asm,asm-generic,linux} \
-			$(TARGET_UTILS_DIR)/usr/include/; \
-	fi
+	$(call UCLIBC_INSTALL_KERNEL_HEADERS,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include,$(TARGET_UTILS_DIR))
 	touch -c $@
 
 uclibc_target: cross_compiler uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a
