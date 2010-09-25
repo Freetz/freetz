@@ -17,6 +17,7 @@ for files in \
 	lib/libhttp.so* \
 	lib/libmediacli.so* \
 	usr/share/ctlmgr/libmini.so \
+	etc/default.*/*/ringtone.wav \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
