@@ -14,6 +14,7 @@ function CheckInput(form) {
 	radio_semistop=form.elements[2];
 	radio_nostop=form.elements[3];
 	downgrade=form.elements[4];
+	delete_jffs2=form.elements[5];
 
 	if (file_selector.value=="") {
 		alert("$(lang de:"Keine Firmware-Datei angegeben!" en:"No firmware file provided!")");
@@ -30,6 +31,9 @@ function CheckInput(form) {
 	}
 	if (downgrade.checked) {
 		file_selector.name += "/downgrade";
+	}
+	if (delete_jffs2.checked) {
+		file_selector.name += "/delete_jffs2";
 	}
 
 	return true;
@@ -69,6 +73,18 @@ automatically after 30 seconds."
 	<input type="checkbox" name="downgrade" value="yes">
 	$(lang de:"Downgrade auf &auml;ltere Version zulassen" en:"Allow downgrade to older version")
 	</p>
+EOF
+
+if $(grep -q jffs2 /proc/mtd); then
+cat << EOF
+	<p>
+	<input id="jffs" type="checkbox" name"delete_jffs2" value="no">
+	<label for="jffs">$(lang de:"JFFS2 Partition l&ouml;schen" en:"Delete JFFS2 partition")</label>
+	</p>
+EOF
+fi
+
+cat << EOF
 	<div class="btn"><input type=submit value="$(lang de:"Firmware hochladen" en:"Upload firmware")" style="width:200px"></div>
 	<div style="clear: both; text-align: right;"><a href="external.cgi">$(lang de:"external-Datei hochladen (optional)" en:"upload external file (optional)")</a></div>
 </form>

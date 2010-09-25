@@ -58,9 +58,14 @@ EOF
 
 stop=${NAME%/*}
 downgrade=false
+delete_jffs2=false
 case $NAME in
-	*/downgrade) downgrade=true ;;
+	*/downgrade*) downgrade=true ;;
 esac
+case $NAME in
+	*/delete_jffs2*) delete_jffs2=true ;;
+esac
+
 
 if $downgrade; then
 	echo "<p>$(lang
@@ -151,6 +156,13 @@ pre_begin
 install() {
 	# Remove no-op original from var.tar
 	rm -f /var/post_install
+	# Delete jffs2
+	if $delete_jffs2; then
+		# set image size to max
+		sed -i -e 's|kernel_update_len=$Kernel_without_jffs2_size|kernel_update_len=$kernel_mtd_size|' /var/install
+		# unset jffs2_size env var
+		echo jffs2_size > /proc/sys/urlader/environment
+	fi
 	/var/install 2>&1
 }
 html_do install
