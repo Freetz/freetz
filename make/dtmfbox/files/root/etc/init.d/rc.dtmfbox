@@ -27,29 +27,28 @@ check_installed() {
 	fi
 }
 
-# Check for required busybox commands and link them to /var/tmp/busybox-tools
+# Check for required busybox commands
 #
 check_busybox() {
-	BB=$(which busybox)
 	BB_CMDS="du ftpput gzip gunzip head httpd mkfifo nc tail tar uudecode uuencode"
-	B_CMD_MISSING="0"
+	BB_CMD_MISSING="0"
 
-	if [ "$BB_CMD_MISSING" = "0" ]; then
-		echo -n "Testing $BB ... "
+	echo -n "Testing busybox ... "
 
-		for cmd in $BB_CMDS; do
-			if [ -z "$($BB --help | grep -e \"\b$cmd\")" ]; then
-				echo -n " $cmd is missing! "
-				BB_CMD_MISSING="1";
-				break;
-			fi
-		done
-		echo "done."
-	fi
+	for cmd in $BB_CMDS; do
+		if [ ! $(which $cmd) ]; then
+			echo -n "$cmd is missing! "
+			BB_CMD_MISSING="1";
+			break;
+		fi
+	done
 
 	if [ ! "$BB_CMD_MISSING" = "0" ]; then
+		echo "failed."
 		echo "Error: Please use busybox with needed applets enabled."
 		exit 1;
+	else
+		echo "done."
 	fi
 }
 
