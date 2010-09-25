@@ -1,6 +1,6 @@
 --- bfd/elf32-mips.c
 +++ bfd/elf32-mips.c
-@@ -1663,6 +1663,15 @@ static const struct ecoff_debug_swap mip
+@@ -1662,6 +1662,15 @@ static const struct ecoff_debug_swap mip
  #define elf_backend_plt_readonly	1
  #define elf_backend_plt_sym_val		_bfd_mips_elf_plt_sym_val
  
@@ -16,7 +16,7 @@
  #define elf_backend_discard_info	_bfd_mips_elf_discard_info
  #define elf_backend_ignore_discarded_relocs \
  					_bfd_mips_elf_ignore_discarded_relocs
-@@ -1687,6 +1696,8 @@ static const struct ecoff_debug_swap mip
+@@ -1686,6 +1695,8 @@ static const struct ecoff_debug_swap mip
  #define bfd_elf32_bfd_print_private_bfd_data \
  					_bfd_mips_elf_print_private_bfd_data
  
@@ -25,7 +25,7 @@
  /* Support for SGI-ish mips targets.  */
  #define TARGET_LITTLE_SYM		bfd_elf32_littlemips_vec
  #define TARGET_LITTLE_NAME		"elf32-littlemips"
-@@ -1790,6 +1801,7 @@ mips_vxworks_final_write_processing (bfd
+@@ -1789,6 +1800,7 @@ mips_vxworks_final_write_processing (bfd
  #undef elf_backend_additional_program_headers
  #undef elf_backend_modify_segment_map
  #undef elf_backend_symbol_processing
@@ -138,7 +138,7 @@
    ok = TRUE;
 --- bfd/elfxx-mips.h
 +++ bfd/elfxx-mips.h
-@@ -63,6 +63,9 @@ extern bfd_boolean _bfd_mips_elf_finish_
+@@ -64,6 +64,9 @@ extern bfd_boolean _bfd_mips_elf_finish_
  extern bfd_boolean _bfd_mips_vxworks_finish_dynamic_symbol
    (bfd *, struct bfd_link_info *, struct elf_link_hash_entry *,
     Elf_Internal_Sym *);
@@ -148,7 +148,7 @@
  extern bfd_boolean _bfd_mips_elf_finish_dynamic_sections
    (bfd *, struct bfd_link_info *);
  extern void _bfd_mips_elf_final_write_processing
-@@ -153,6 +156,15 @@ extern const struct bfd_elf_special_sect
+@@ -154,6 +157,15 @@ extern const struct bfd_elf_special_sect
  
  extern bfd_boolean _bfd_mips_elf_common_definition (Elf_Internal_Sym *);
  
@@ -161,9 +161,9 @@
 +extern void _bfd_mips_post_process_headers
 +  (bfd *abfd, struct bfd_link_info *link_info);
 +
- #define elf_backend_common_definition   _bfd_mips_elf_common_definition
- #define elf_backend_name_local_section_symbols \
-   _bfd_mips_elf_name_local_section_symbols
+ static inline bfd_boolean
+ gprel16_reloc_p (unsigned int r_type)
+ {
 --- gas/config/tc-mips.c
 +++ gas/config/tc-mips.c
 @@ -1897,6 +1897,12 @@ md_begin (void)
@@ -179,7 +179,7 @@
  
    if (! bfd_set_arch_mach (stdoutput, bfd_arch_mips, file_mips_arch))
      as_warn (_("Could not set architecture and machine"));
-@@ -11317,6 +11323,7 @@
+@@ -11319,6 +11325,7 @@
      OPTION_PDR,
      OPTION_NO_PDR,
      OPTION_MVXWORKS_PIC,
@@ -187,7 +187,7 @@
  #endif /* OBJ_ELF */
      OPTION_END_OF_ENUM    
    };
-@@ -11422,6 +11429,7 @@ struct option md_longopts[] =
+@@ -11424,6 +11431,7 @@ struct option md_longopts[] =
    {"mpdr", no_argument, NULL, OPTION_PDR},
    {"mno-pdr", no_argument, NULL, OPTION_NO_PDR},
    {"mvxworks-pic", no_argument, NULL, OPTION_MVXWORKS_PIC},
@@ -195,7 +195,7 @@
  #endif /* OBJ_ELF */
  
    {NULL, no_argument, NULL, 0}
-@@ -11862,6 +11870,11 @@ md_parse_option (int c, char *arg)
+@@ -11864,6 +11872,11 @@ md_parse_option (int c, char *arg)
      case OPTION_MVXWORKS_PIC:
        mips_pic = VXWORKS_PIC;
        break;
