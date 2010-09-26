@@ -186,15 +186,13 @@ uclibc-dirclean:
 #
 #############################################################
 
-$(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
+$(TARGET_UTILS_DIR)/usr/lib/libc.a: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_UTILS_DIR) \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=/ \
 		RUNTIME_PREFIX_LIB_FROM_DEVEL_PREFIX_LIB=/lib/ \
-		UCLIBC_EXTRA_LDFLAGS="$(TARGET_LDFLAGS)" \
-		UCLIBC_EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
 		install_dev
 	# create two additional symlinks, required because libc.so is not really
 	# a shared lib, but a GNU ld script referencing the libs below
