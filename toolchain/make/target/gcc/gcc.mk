@@ -74,7 +74,6 @@ GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
 define GCC_SET_HEADERS_TIMESTAMP
 $(if $(strip $(1)),\
 	if [ -d "$(strip $(1))/$(GCC_LIB_SUBDIR)" ] ; then \
-		cp -a $(strip $(1))/$(GCC_LIB_SUBDIR) $(strip $(1))/$(GCC_LIB_SUBDIR)-`date +%Y%m%d-%H%M%S`; \
 		find $(strip $(1))/$(GCC_LIB_SUBDIR) -name "*.h" -type f -exec touch -t $(if $(strip $(2)),$(strip $(2)),200001010000.00) \{\} \+; \
 	fi; \
 )
