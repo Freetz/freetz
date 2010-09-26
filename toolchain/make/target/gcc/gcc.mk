@@ -60,6 +60,26 @@ GCC_STRIP_HOST_BINARIES:=true
 GCC_SHARED_LIBGCC:=--enable-shared
 EXTRA_GCC_CONFIG_OPTIONS:=--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp
 
+GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
+# This macro exists for the following reason:
+#   uClibc depends on some gcc internal headers located under $(GCC_LIB_SUBDIR).
+#   uClibc is compiled using gcc-initial, after that gcc-final (which depends on uClibc)
+#   is compiled and installed into the same location as gcc-initial. The causes the headers
+#   under $(GCC_LIB_SUBDIR) to be installed again, i.e. overwritten. The files are absolutely
+#   identical they however get new timestamp, which causes uClibc to be recompiled, which
+#   in turn causes gcc-final to be recompiled.
+#   We workaround the problem by explicitly setting the timestamp of the headers to some fixed value.
+# $1 - base dir (most of time $(TARGET_TOOLCHAIN_STAGING_DIR))
+# $2 (optional) - timestamp to be used
+define GCC_SET_HEADERS_TIMESTAMP
+$(if $(strip $(1)),\
+	if [ -d "$(strip $(1))/$(GCC_LIB_SUBDIR)" ] ; then \
+		cp -a $(strip $(1))/$(GCC_LIB_SUBDIR) $(strip $(1))/$(GCC_LIB_SUBDIR)-`date +%Y%m%d-%H%M%S`; \
+		find $(strip $(1))/$(GCC_LIB_SUBDIR) -name "*.h" -type f -exec touch -t $(if $(strip $(2)),$(strip $(2)),200001010000.00) \{\} \+; \
+	fi; \
+)
+endef
+
 gcc-source: $(DL_DIR)/$(GCC_SOURCE)
 $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(GCC_SOURCE) $(GCC_SITE)
@@ -123,6 +143,7 @@ $(gcc_initial) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g
 		$(MAKE) -C $(GCC_BUILD_DIR1) \
 		install-gcc \
 		$(if $(GCC_BUILD_TARGET_LIBGCC),install-target-libgcc)
+	$(call GCC_SET_HEADERS_TIMESTAMP,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	touch $(gcc_initial)
 
@@ -178,6 +199,7 @@ $(GCC_BUILD_DIR2)/.compiled: $(GCC_BUILD_DIR2)/.configured
 
 $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	PATH=$(TARGET_PATH) $(MAKE) -C $(GCC_BUILD_DIR2) install
+	$(call GCC_SET_HEADERS_TIMESTAMP,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	# Strip the host binaries
 ifeq ($(GCC_STRIP_HOST_BINARIES),true)
@@ -246,7 +268,6 @@ $(GCC_BUILD_DIR3)/.compiled: $(GCC_BUILD_DIR3)/.configured
 	$(MAKE_ENV) $(MAKE) -C $(GCC_BUILD_DIR3) $(GCC_EXTRA_MAKE_OPTIONS) all
 	touch $@
 
-GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
 ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.2)
 GCC_INCLUDE_DIR:=include
 else
