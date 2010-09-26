@@ -16,3 +16,11 @@
  
  $(locale_OUT)/$(LOCALE_DATA_FILENAME):
  ifeq ($(UCLIBC_DOWNLOAD_PREGENERATED_LOCALE_DATA),y)
+@@ -215,6 +217,7 @@
+ # lt_defines.h/locale_data.c/uClibc_locale_data.h
+ 
+ $(locale_OUT)/uClibc_locale_data.h: $(locale_SRC)
++	touch -c $@
+ 
+ else
+ 
