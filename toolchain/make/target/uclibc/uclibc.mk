@@ -119,6 +119,14 @@ $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(gcc_initial)
 		RUNTIME_PREFIX=/ \
 		HOSTCC="$(HOSTCC)" \
 		all
+	# At this point uClibc is compiled and there is no reason for us to recompile it.
+	# Remove some FORCE rule dependencies causing parts of uClibc to be recompiled (without a need)
+	# over and over again each time make is invoked within uClibc dir (the actual target doesn't matter).
+	# This is a bit dirty workaround we actually should get rid of as soon as we find a better solution.
+	for i in $(UCLIBC_DIR)/Makerules $(UCLIBC_DIR)/extra/locale/Makefile.in; do \
+		cp -a "$$i" "$$i-with-FORCE"; \
+		sed -i -r -e '/[$$][(](top_builddir|locale_OUT)[)]%[.]o[sS]:.*FORCE.*/s, FORCE , ,g' $$i; \
+	done;
 	touch -c $@
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
