@@ -123,6 +123,7 @@ $(gcc_initial) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g
 		$(MAKE) -C $(GCC_BUILD_DIR1) \
 		install-gcc \
 		$(if $(GCC_BUILD_TARGET_LIBGCC),install-target-libgcc)
+	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	touch $(gcc_initial)
 
 gcc_initial: uclibc-configured binutils $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
@@ -177,6 +178,7 @@ $(GCC_BUILD_DIR2)/.compiled: $(GCC_BUILD_DIR2)/.configured
 
 $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	PATH=$(TARGET_PATH) $(MAKE) -C $(GCC_BUILD_DIR2) install
+	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	# Strip the host binaries
 ifeq ($(GCC_STRIP_HOST_BINARIES),true)
 	-strip --strip-all -R .note -R .comment $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-*
@@ -261,7 +263,7 @@ $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
 	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* >/dev/null 2>&1)
 	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libgcc_s.so.*.*.* >/dev/null 2>&1)
 	$(RM) $(TARGET_UTILS_DIR)/usr/lib/*.la*
-	$(RM) -r $(TARGET_UTILS_DIR){/share/locale,/usr/info,/usr/man,/usr/share/info,/usr/share/man,/usr/share/doc}
+	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_UTILS_DIR))
 	# Work around problem of missing syslimits.h
 	if [ ! -f $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/$(GCC_INCLUDE_DIR)/syslimits.h ]; then \
 		echo "warning: working around missing syslimits.h"; \

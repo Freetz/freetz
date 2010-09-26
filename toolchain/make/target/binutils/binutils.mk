@@ -73,6 +73,7 @@ $(BINUTILS_DIR1)/.compiled: $(BINUTILS_DIR1)/.configured
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/.compiled
 	$(MAKE1) -C $(BINUTILS_DIR1) MAKEINFO=true install
+	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 
 binutils-clean:
 	$(RM) -r \
@@ -125,7 +126,7 @@ $(TARGET_UTILS_DIR)/usr/bin/ld: $(BINUTILS_DIR2)/.compiled
 		build_tooldir=/usr \
 		MAKEINFO=true \
 		DESTDIR=$(TARGET_UTILS_DIR) install
-	$(RM) -r $(TARGET_UTILS_DIR){/share/locale,/usr/info,/usr/man,/usr/share/info,/usr/share/man,/usr/share/doc}
+	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_UTILS_DIR))
 	-$(TARGET_STRIP) $(TARGET_UTILS_DIR)/usr/bin/* >/dev/null 2>&1
 
 binutils_target: $(TARGET_UTILS_DIR)/usr/bin/ld

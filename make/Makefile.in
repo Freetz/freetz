@@ -355,6 +355,10 @@ $(if $(strip $(3)),$(strip $(3)),$($(PKG)_DEST_DIR))$(strip $(2))/$(notdir $(str
 	$(value INSTALL_LIBRARY_STRIP)
 endef
 
+define REMOVE_DOC_NLS_DIRS
+$(if $(strip $(1)),$(RM) -r $(addprefix $(strip $(1)),$(foreach p,/ /usr /share /usr/share,$(foreach d,info man doc locale,$(subst //,/,$(p)/$(d))))))
+endef
+
 # We want build output like:
 # "---> package/lynx: downloading... preparing... configuring... building... done."
 # Actually there are two problems:

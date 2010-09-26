@@ -202,6 +202,7 @@ $(TARGET_UTILS_DIR)/usr/lib/libc.a: | $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/li
 		ln -fs /lib/$$f $(TARGET_UTILS_DIR)/usr/lib/; \
 	done
 	$(call UCLIBC_INSTALL_KERNEL_HEADERS,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include,$(TARGET_UTILS_DIR))
+	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_UTILS_DIR))
 	touch -c $@
 
 uclibc_target: cross_compiler uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a
