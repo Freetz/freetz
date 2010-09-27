@@ -3,7 +3,7 @@ echo1 "remove mediasrv files"
 for files in \
 	lib/libexif.so* \
 	lib/libmediasrv.so* \
-	lib/libnetpbm.so*
+	lib/libnetpbm.so* \
 	lib/libpng.so* \
 	lib/libsqlite3*.so* \
 	sbin/mediasrv \
