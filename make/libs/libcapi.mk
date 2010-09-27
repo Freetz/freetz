@@ -1,11 +1,11 @@
-$(call PKG_INIT_LIB, 2.0)
+$(call PKG_INIT_LIB, 2.1)
 $(PKG)_LIB_VERSION:=3.0.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=af32d0a1a66e0d315d1cd47d2a3701a2
 $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/libcapi20.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libcapi20.so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/libcapi20.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=b29626746cf17edd9485fd80479b3216
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libcapi20.so.$($(PKG)_LIB_VERSION)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -39,6 +39,6 @@ $(pkg)-clean:
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/include/capicmd.h
 
 $(pkg)-uninstall:
-	$(RM) $(LIBCAPI_DEST_LIB)/libcapi*.so*
+	$(RM) $(LIBCAPI_TARGET_DIR)/libcapi*.so*
 
 $(PKG_FINISH)
