@@ -27,7 +27,7 @@ start() {
 
 	if [ "$TINYPROXY_CONFSERVER" == "yes" ]; then
 		echo -n "Starting the webserver for the proxy config file ... "
-		httpd -p $TINYPROXY_CONFSERVERPORT -h /mod/usr/mww_tinyproxy
+		httpd -p $TINYPROXY_CONFSERVERPORT -h /usr/mww_tinyproxy
 		echo "done."
 	fi
 }
@@ -44,7 +44,7 @@ stop() {
 
 	if [ "$TINYPROXY_CONFSERVER" == "yes" ]; then
 		echo -n "Stopping the webserver for the proxy config file ... "
-		pid=$(ps aux | egrep "httpd\ -p.*tinyproxy" | cut -d ' ' -f 2)
+		pid=$(ps | egrep "httpd\ -p.*tinyproxy" | cut -d ' ' -f 2)
 		kill -9 $pid > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
