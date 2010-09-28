@@ -201,7 +201,7 @@ config FREETZ_MODULE_ip_nat_tftp
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_conntrack_tftp if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-	
+
 config FREETZ_MODULE_iptable_filter
 	bool "iptable_filter.ko"
 	select FREETZ_MODULE_ip_tables
@@ -227,13 +227,13 @@ config FREETZ_MODULE_iptable_nat
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
-	
+
 config FREETZ_MODULE_iptable_raw
 	bool "iptable_raw.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_tables
 	default n
-	
+
 config FREETZ_MODULE_ip_tables
 	bool "ip_tables.ko"
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
@@ -242,7 +242,7 @@ config FREETZ_MODULE_ip_tables
 		iptables is a general, extensible packet identification framework.
 		The packet filtering and full NAT (masquerading, port forwarding,
 		etc) subsystems now use this.
-	
+
 config FREETZ_MODULE_ipt_connmark
 	bool "ipt_connmark.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_13_1
@@ -261,7 +261,7 @@ config FREETZ_MODULE_ipt_conntrack
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
 	default n
-	
+
 config FREETZ_MODULE_ipt_helper
 	bool "ipt_helper.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_13_1
@@ -287,10 +287,10 @@ config FREETZ_MODULE_ipt_layer7
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 	help
-		Say Y if you want to be able to classify connections (and their 
-		packets) based on regular expression matching of their application 
-		layer data. This is one way to classify applications such as 
-		peer-to-peer filesharing systems that do not always use the same 
+		Say Y if you want to be able to classify connections (and their
+		packets) based on regular expression matching of their application
+		layer data. This is one way to classify applications such as
+		peer-to-peer filesharing systems that do not always use the same
 		port.
 
 config FREETZ_MODULE_ipt_ipp2p
@@ -301,7 +301,7 @@ config FREETZ_MODULE_ipt_ipp2p
 	default n
 	help
 		This option makes possible to match some P2P packets
-		therefore helps controlling such traffic.	
+		therefore helps controlling such traffic.
 
 config FREETZ_MODULE_ipt_length
 	bool "ipt_length.ko"
@@ -391,6 +391,15 @@ config FREETZ_MODULE_ipt_multiport
 		Multiport matching allows you to match TCP or UDP packets based on
 		a series of source or destination ports: normally a rule can only
 		match a single range of ports.
+
+config FREETZ_MODULE_ipt_owner
+	bool "ipt_owner.ko"
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	default n
+	help
+		Packet owner matching allows you to match locally-generated packets
+		based on who created them: the user, group, process or session.
 
 config FREETZ_MODULE_ipt_REDIRECT
 	bool "ipt_REDIRECT.ko"
@@ -658,7 +667,7 @@ config FREETZ_MODULE_xt_realm
 		This option adds a `realm' match, which allows you to use the realm
 		key from the routing subsystem inside iptables.
 
-		This match pretty much resembles the CONFIG_NET_CLS_ROUTE4 option 
+		This match pretty much resembles the CONFIG_NET_CLS_ROUTE4 option
 		in tc world.
 
 config FREETZ_MODULE_xt_state
@@ -691,7 +700,7 @@ config FREETZ_MODULE_xt_tcpudp
 	bool "xt_tcpudp.ko"
 	select FREETZ_MODULE_x_tables
 	default n
-	
+
 config FREETZ_MODULE_xt_tcpmss
 	bool "xt_tcpmss.ko"
 	select FREETZ_MODULE_x_tables
@@ -950,7 +959,7 @@ config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 	default n
 	help
 		Shared Libraries for iptables
-		
+
 		Please note that some kernel modules have corresponding shared libraries
 		and vice versa, so please make sure to select both of them, if they are
 		needed for your purpose.
@@ -1378,7 +1387,7 @@ config FREETZ_LIB_libxt_SECMARK
 config FREETZ_LIB_libxt_standard
 	bool "libxt_standard.so"
 	default n
-		
+
 config FREETZ_LIB_libxt_state
 	bool "libxt_state.so"
 	select FREETZ_MODULE_xt_state if FREETZ_KERNEL_VERSION_2_6_19_2
