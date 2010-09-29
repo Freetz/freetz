@@ -710,9 +710,10 @@ endef
 define PKG_UNPACKED_CHECK_SUBOPTS__INT1
 $(PKG)_FREETZ_CONFIG_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_config
 endef
+_HASH_SIGN:=\#
 define PKG_UNPACKED_CHECK_SUBOPTS__INT2
 $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
-	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_FILE).temp
+	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_HASH_SIGN) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_FILE).temp
 	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null $(SILENT); then \
 		mv $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE); \
 		$($(PKG)_CLEAN_TARGET_DIR__INT) \
