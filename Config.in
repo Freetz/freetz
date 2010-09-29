@@ -992,6 +992,31 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 		Remove lib/modules/dsp_ur8/ur8-B-dsl.bin. This saves about 400 KB of
 		uncompressed data size.
 
+menu "Remove piglet file"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_TYPE_FON_WLAN_7170
+
+	config FREETZ_REMOVE_PIGLET_V1
+	bool "Remove 7170 v1 piglet file"
+	help 
+		The firmware of the 7170 contains two piglet files. Which one is needed depends
+		on the hardware version (v1 and v2) of your box. You can safely remove the
+		unneeded file.
+
+
+	config FREETZ_REMOVE_PIGLET_V2
+	bool "Remove 7170 v2 piglet file"
+	help 
+		The firmware of the 7170 contains two piglet files. Which one is needed depends
+		on the hardware version (v1 and v2) of your box. You can safely remove the
+		unneeded file.
+
+endmenu
+
+comment "WARNING: Both piglet files are selected for removal."
+	depends on \
+		FREETZ_REMOVE_PIGLET_V1 && \
+		FREETZ_REMOVE_PIGLET_V2
+
 config FREETZ_REMOVE_ASSISTANT
 	bool "Remove assistant"
 	default n
