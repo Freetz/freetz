@@ -5,14 +5,29 @@ DAEMON_LONG_NAME="Samba-smbd"
 DAEMON_BIN=smbd
 . /etc/init.d/modlibrc
 
-CONF_FILE=/mod/etc/smb.conf
+CONF_FILE=/mod/etc/samba/smb.conf
+CLEAR_FILE=/var/tmp/smbpasswd.cleartext
+PASS_FILE=/mod/etc/samba/smbpasswd
+USERS_MAP=/mod/etc/samba/users.map
+export SAMBA_SYSTEMUSER="ftpuser"
 
 config() {
-		/mod/etc/default.samba/samba_conf > $CONF_FILE
-		if [ -r /var/tmp/smbpasswd.cleartext ]; then
-			smbpasswd 2>/dev/null
-			rm /var/tmp/smbpasswd.cleartext
-		fi
+	mkdir -p /mod/etc/samba
+	/mod/etc/default.samba/samba_conf > $CONF_FILE
+
+	echo > $USERS_MAP; echo > $PASS_FILE
+
+	[ ! -z "$SAMBA_USER" ] &&
+		echo "$SAMBA_SYSTEMUSER = \"$SAMBA_USER\"" > $USERS_MAP
+
+	if [ ! -z "$SAMBA_PASSWORD" ]; then
+		uid=$(id -u $SAMBA_SYSTEMUSER)
+		echo "$SAMBA_SYSTEMUSER:$uid:$SAMBA_PASSWORD:[U          ]:LCT-00000001:" > $CLEAR_FILE
+	fi
+	if [ -r $CLEAR_FILE ]; then
+		smbpasswd 2>/dev/null
+		rm $CLEAR_FILE
+	fi
 }
 
 start() {
@@ -25,7 +40,7 @@ case $1 in
 			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi
 		modreg daemon -n samba-smbd -r rc.$DAEMON_BIN -p samba smbd
-		
+
 		modlib_start $SAMBA_ENABLED
 		;;
 	unload)

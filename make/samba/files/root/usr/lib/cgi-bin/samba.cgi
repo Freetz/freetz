@@ -60,7 +60,11 @@ fi
 sec_begin '$(lang de:"Samba" en:"Samba")'
 
 cat << EOF
-<br><p>$(lang de:"Netzwerkschnittstelle" en:"Network interface"):<br>
+<p><label for="s1">$(lang de:"Benutzername" en:"User name"):</label>
+<input id="s1" type="text" name="user" size="40" maxlength="255" value="$(html "$SAMBA_USER")"></p>
+<p><label for="s2">$(lang de:"Passwort" en:"Password"):</label>
+<input id="s2" type="password" name="password" size="40" maxlength="255" value="$(html "$SAMBA_PASSWORD")"></p>
+<p>$(lang de:"Netzwerkschnittstelle" en:"Network interface"):
 <input type="text" name="interfaces" size="40" maxlength="255" value="$(html "$SAMBA_INTERFACES")"><br>
 <font size="-2">$(lang de:"z.B.: 192.168.178.1/255.255.255.0 oder leer lassen f&uuml;r alle" en:"For example: 192.168.178.1/255.255.255.0 or leave blank for all")</font></P>
 <p>$(lang de:"Netbios Name" en:"Netbios Name"): <input type="text" name="netbios_name" size="20" maxlength="255" value="$(html "$SAMBA_NETBIOS_NAME")"></p>
