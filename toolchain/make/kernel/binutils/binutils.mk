@@ -48,6 +48,7 @@ $(BINUTILS_KERNEL_DIR1)/.compiled: $(BINUTILS_KERNEL_DIR1)/.configured
 
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld: $(BINUTILS_KERNEL_DIR1)/.compiled
 	$(MAKE1) -C $(BINUTILS_KERNEL_DIR1) install
+	$(call STRIP_TOOLCHAIN_BINARIES,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(BINUTILS_BINARIES_BIN),$(REAL_GNU_KERNEL_NAME),$(HOST_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(KERNEL_TOOLCHAIN_STAGING_DIR))
 
 binutils-dependencies:
@@ -64,15 +65,15 @@ binutils-dependencies:
 		exit 1; \
 	fi;
 
-binutils-kernel-clean:
-	$(RM) -r $(KERNEL_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
-	$(KERNEL_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
-	-$(MAKE1) -C $(BINUTILS_KERNEL_DIR1) DESTDIR=$(KERNEL_TOOLCHAIN_STAGING_DIR) \
-		tooldir=/usr build_tooldir=/usr uninstall
-	-$(MAKE) -C $(BINUTILS_KERNEL_DIR1) clean
+binutils-kernel-uninstall:
+	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(BINUTILS_BINARIES_BIN),$(REAL_GNU_KERNEL_NAME))
+	$(RM) -r $(KERNEL_TOOLCHAIN_STAGING_DIR)/lib/{libiberty*,ldscripts}
 
-binutils-kernel-dirclean:
+binutils-kernel-clean: binutils-kernel-uninstall
 	$(RM) -r $(BINUTILS_KERNEL_DIR1)
+
+binutils-kernel-dirclean: binutils-kernel-clean
+	$(RM) -r $(BINUTILS_KERNEL_DIR)
 
 binutils-kernel: binutils-dependencies $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld
 

@@ -56,7 +56,6 @@ ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 GCC_EXTRA_MAKE_OPTIONS += "LDFLAGS=-static"
 endif
 
-GCC_STRIP_HOST_BINARIES:=true
 GCC_SHARED_LIBGCC:=--enable-shared
 EXTRA_GCC_CONFIG_OPTIONS:=--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp
 
@@ -142,17 +141,20 @@ $(gcc_initial) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g
 		$(MAKE) -C $(GCC_BUILD_DIR1) \
 		install-gcc \
 		$(if $(GCC_BUILD_TARGET_LIBGCC),install-target-libgcc)
+	$(call GCC_INSTALL_COMMON,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_VERSION),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
 	$(call GCC_SET_HEADERS_TIMESTAMP,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	touch $(gcc_initial)
 
 gcc_initial: uclibc-configured binutils $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
 
-gcc_initial-clean: gcc_initial-dirclean
-	$(RM) -r $(GCC_DIR)
+gcc_initial-uninstall: gcc-uninstall
 
-gcc_initial-dirclean:
+gcc_initial-clean: gcc_initial-uninstall
 	$(RM) -r $(GCC_BUILD_DIR1)
+
+gcc_initial-dirclean: gcc_initial-clean gcc-dirclean gcc_target-dirclean
+	$(RM) -r $(GCC_DIR)
 
 ##############################################################################
 #
@@ -164,7 +166,7 @@ GCC_BUILD_DIR2:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-final
 
 $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(GCC_STAGING_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR2)
-	# Important!  Required for limits.h to be fixed.
+	# Important! Required for limits.h to be fixed.
 	ln -sf ../include $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/sys-include
 	(cd $(GCC_BUILD_DIR2); $(RM) config.cache; \
 		PATH=$(TARGET_PATH) \
@@ -198,34 +200,28 @@ $(GCC_BUILD_DIR2)/.compiled: $(GCC_BUILD_DIR2)/.configured
 
 $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	PATH=$(TARGET_PATH) $(MAKE) -C $(GCC_BUILD_DIR2) install
+	$(call GCC_INSTALL_COMMON,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_VERSION),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
 	$(call GCC_SET_HEADERS_TIMESTAMP,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
-	# Strip the host binaries
-ifeq ($(GCC_STRIP_HOST_BINARIES),true)
-	-strip --strip-all -R .note -R .comment $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-*
-endif
-	# Set up the symlinks to enable lying about target name.
-	set -e; \
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr; \
-		ln -sf $(REAL_GNU_TARGET_NAME) $(GNU_TARGET_NAME); \
-		cd bin; \
-		for app in $(REAL_GNU_TARGET_NAME)-* ; do \
-			ln -sf $${app} $(GNU_TARGET_NAME)$${app##$(REAL_GNU_TARGET_NAME)}; \
-		done; \
-	);
+	# set up the symlinks to enable lying about target name
+	ln -snf $(REAL_GNU_TARGET_NAME) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(GNU_TARGET_NAME)
+	$(call CREATE_TARGET_NAME_SYMLINKS,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_BINARIES_BIN),$(REAL_GNU_TARGET_NAME),$(GNU_TARGET_NAME))
 	touch $@
 
 cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
 cross_compiler gcc: uclibc-configured binutils gcc_initial uclibc \
 	$(GCC_BUILD_DIR2)/.installed $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1
 
-gcc-clean: gcc-dirclean
-	for prog in cpp gcc gcc-[0-9]* protoize unprotoize gcov gccbug cc; do \
-		$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/{$(REAL_GNU_TARGET_NAME),$(GNU_TARGET_NAME)}-$$prog; \
-	done
+gcc-uninstall:
+	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_BINARIES_BIN),$(REAL_GNU_TARGET_NAME))
+	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_BINARIES_BIN),$(GNU_TARGET_NAME))
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(GNU_TARGET_NAME)
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/{lib,libexec}/gcc
 
-gcc-dirclean:
+gcc-clean: gcc-uninstall
 	$(RM) -r $(GCC_BUILD_DIR2)
+
+gcc-dirclean: gcc-clean
 
 .PHONY: gcc gcc_initial
 
@@ -274,32 +270,28 @@ GCC_INCLUDE_DIR:=include-fixed
 endif
 
 $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
-	$(MAKE_ENV) $(MAKE1) -C $(GCC_BUILD_DIR3) \
-		DESTDIR=$(TARGET_UTILS_DIR) install
-	# Remove broken specs file (cross compile flag is set)
-	$(RM) $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/specs
-	-(cd $(TARGET_UTILS_DIR)/usr/bin && find -type f | xargs $(TARGET_STRIP) >/dev/null 2>&1)
-	-(cd $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR) && $(TARGET_STRIP) cc1 cc1plus collect2 >/dev/null 2>&1)
-	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* >/dev/null 2>&1)
-	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libgcc_s.so.*.*.* >/dev/null 2>&1)
-	$(RM) $(TARGET_UTILS_DIR)/usr/lib/*.la*
+	$(MAKE_ENV) $(MAKE1) -C $(GCC_BUILD_DIR3) DESTDIR=$(TARGET_UTILS_DIR) install
+	$(call GCC_INSTALL_COMMON,$(TARGET_UTILS_DIR)/usr,$(GCC_VERSION),$(REAL_GNU_TARGET_NAME),$(TARGET_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_UTILS_DIR))
-	# Work around problem of missing syslimits.h
+	# strip libraries
+	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* libgcc_s.so.1 >/dev/null 2>&1)
+	# remove broken specs file (cross compile flag is set) and *.la* files
+	$(RM) $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/specs $(TARGET_UTILS_DIR)/usr/lib/*.la*
+	# work around problem of missing syslimits.h
 	if [ ! -f $(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/$(GCC_INCLUDE_DIR)/syslimits.h ]; then \
 		echo "warning: working around missing syslimits.h"; \
 		cp -f $(TARGET_TOOLCHAIN_STAGING_DIR)/$(GCC_LIB_SUBDIR)/$(GCC_INCLUDE_DIR)/syslimits.h \
 			$(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/$(GCC_INCLUDE_DIR)/; \
 	fi
-	# Make sure we have 'cc'.
-	if [ ! -e $(TARGET_UTILS_DIR)/usr/bin/cc ]; then \
-		ln -snf gcc $(TARGET_UTILS_DIR)/usr/bin/cc; \
-	fi
 	touch -c $@
 
 gcc_target: uclibc_target binutils_target $(TARGET_UTILS_DIR)/usr/bin/gcc
 
-gcc_target-clean: gcc_target-dirclean
-	$(RM) $(TARGET_UTILS_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)*
+gcc_target-uninstall:
+	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_UTILS_DIR)/usr,$(GCC_BINARIES_BIN),$(REAL_GNU_TARGET_NAME))
+	$(RM) -r $(TARGET_UTILS_DIR)/usr/{lib,libexec}/gcc
 
-gcc_target-dirclean:
+gcc_target-clean: gcc_target-uninstall
 	$(RM) -r $(GCC_BUILD_DIR3)
+
+gcc_target-dirclean: gcc_target-clean

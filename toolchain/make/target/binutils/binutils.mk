@@ -73,18 +73,20 @@ $(BINUTILS_DIR1)/.compiled: $(BINUTILS_DIR1)/.configured
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/.compiled
 	$(MAKE1) -C $(BINUTILS_DIR1) MAKEINFO=true install
+	$(call STRIP_TOOLCHAIN_BINARIES,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
+	$(call CREATE_TARGET_NAME_SYMLINKS,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME),$(GNU_TARGET_NAME))
 
-binutils-clean:
-	$(RM) -r \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/*{ar,as,ld,nm,objdump,ranlib,strip} \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
-	-$(MAKE1) -C $(BINUTILS_DIR1) DESTDIR=$(TARGET_TOOLCHAIN_STAGING_DIR) \
-		tooldir=/usr build_tooldir=/usr uninstall
-	-$(MAKE) -C $(BINUTILS_DIR1) clean
+binutils-uninstall:
+	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME))
+	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(GNU_TARGET_NAME))
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
 
-binutils-dirclean:
+binutils-clean: binutils-uninstall
 	$(RM) -r $(BINUTILS_DIR1)
+
+binutils-dirclean: binutils-clean binutils_target-dirclean
+	$(RM) -r $(BINUTILS_DIR)
 
 binutils: uclibc-configured binutils-dependencies $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld
 
@@ -126,14 +128,15 @@ $(TARGET_UTILS_DIR)/usr/bin/ld: $(BINUTILS_DIR2)/.compiled
 		build_tooldir=/usr \
 		MAKEINFO=true \
 		DESTDIR=$(TARGET_UTILS_DIR) install
+	$(call STRIP_TOOLCHAIN_BINARIES,$(TARGET_UTILS_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME),$(TARGET_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_UTILS_DIR))
-	-$(TARGET_STRIP) $(TARGET_UTILS_DIR)/usr/bin/* >/dev/null 2>&1
 
 binutils_target: $(TARGET_UTILS_DIR)/usr/bin/ld
 
-binutils_target-clean: binutils_target-dirclean
-	$(RM) $(TARGET_UTILS_DIR)/usr/bin/{addr2line,ar,as,gprof,ld,nm,objcopy,objdump,ranlib,readelf,size,strings,strip}
-	$(RM) $(TARGET_UTILS_DIR)/bin/$(REAL_GNU_TARGET_NAME)*
+binutils_target-uninstall:
+	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_UTILS_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME))
 
-binutils_target-dirclean:
+binutils_target-clean: binutils_target-uninstall
 	$(RM) -r $(BINUTILS_DIR2)
+
+binutils_target-dirclean: binutils_target-clean

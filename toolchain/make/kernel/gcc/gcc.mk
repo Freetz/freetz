@@ -31,8 +31,6 @@ ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 GCC_KERNEL_EXTRA_MAKE_OPTIONS += "LDFLAGS=-static"
 endif
 
-GCC_KERNEL_STRIP_HOST_BINARIES:=true
-
 gcc-kernel-source: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 $(DL_DIR)/$(GCC_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(GCC_KERNEL_SOURCE) $(GCC_KERNEL_SITE) $(GCC_KERNEL_MD5)
@@ -73,22 +71,19 @@ $(GCC_KERNEL_BUILD_DIR)/.compiled: $(GCC_KERNEL_BUILD_DIR)/.configured
 
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc: $(GCC_KERNEL_BUILD_DIR)/.compiled
 	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE1) -C $(GCC_KERNEL_BUILD_DIR) install
+	$(call GCC_INSTALL_COMMON,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(GCC_KERNEL_VERSION),$(REAL_GNU_KERNEL_NAME),$(HOST_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(KERNEL_TOOLCHAIN_STAGING_DIR))
-	# Strip the host binaries
-ifeq ($(GCC_KERNEL_STRIP_HOST_BINARIES),true)
-	-strip --strip-all -R .note -R .comment $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-*
-endif
 
 gcc-kernel: binutils-kernel $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
 
-gcc-kernel-clean:
-	$(RM) -r $(GCC_KERNEL_BUILD_DIR)
-	for prog in cpp gcc gcc-kernel-[0-9]* protoize unprotoize gcov gccbug cc; do \
-		$(RM) -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-$$prog; \
-		$(RM) -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_KERNEL_NAME)-$$prog; \
-	done
+gcc-kernel-uninstall:
+	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(GCC_BINARIES_BIN),$(REAL_GNU_KERNEL_NAME))
+	$(RM) -r $(KERNEL_TOOLCHAIN_STAGING_DIR)/{lib,libexec}/gcc
 
-gcc-kernel-dirclean:
-	$(RM) -r $(GCC_KERNEL_BUILD_DIR) $(GCC_KERNEL_DIR)
+gcc-kernel-clean: gcc-kernel-uninstall
+	$(RM) -r $(GCC_KERNEL_BUILD_DIR)
+
+gcc-kernel-dirclean: gcc-kernel-clean
+	$(RM) -r $(GCC_KERNEL_DIR)
 
 .PHONY: gcc-kernel
