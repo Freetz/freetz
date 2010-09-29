@@ -29,7 +29,7 @@ start() {
 	/etc/init.d/rc.webcfg
 	/etc/init.d/rc.swap
 
-	/etc/init.d/rc.dsld
+	[ -x /etc/init.d/rc.dsld ] && /etc/init.d/rc.dsld
 	/etc/init.d/rc.multid
 	[ -x /etc/init.d/rc.ftpd ] && /etc/init.d/rc.ftpd
 
