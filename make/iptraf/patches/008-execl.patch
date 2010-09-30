@@ -1,0 +1,11 @@
+--- src/itrafmon.c.orig	2005-09-13 08:42:54.000000000 +0200
++++ src/itrafmon.c	2010-09-29 21:54:33.681147371 +0200
+@@ -508,7 +508,7 @@
+         indicate("Starting reverse lookup server");
+ 
+         if ((cpid = fork()) == 0) {
+-            execstat = execl(RVNDFILE, NULL);
++            execstat = execl(RVNDFILE, "rvnamed", (char *)NULL);
+ 
+             /* 
+              * execl() never returns, so if we reach this point, we have
