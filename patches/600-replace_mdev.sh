@@ -4,11 +4,16 @@ ln_file () {
 	echo2 "linking $2 to $1"
 	ln -s "$1" "$2"
 }
-
 echo1 "relocating stick'n'surf configuration program"
 mkdir -m 750 -p ${FILESYSTEM_MOD_DIR}/lib/mdev/misc
-mv ${FILESYSTEM_MOD_DIR}/etc/hotplug/avmusbwlanstart ${FILESYSTEM_MOD_DIR}/lib/mdev/misc
-chmod 750 ${FILESYSTEM_MOD_DIR}/lib/mdev/misc/avmusbwlanstart
+
+if [ -e ${FILESYSTEM_MOD_DIR}/etc/hotplug/avmusbwlanstart ]; then
+	mv ${FILESYSTEM_MOD_DIR}/etc/hotplug/avmusbwlanstart ${FILESYSTEM_MOD_DIR}/lib/mdev/misc
+	chmod 750 ${FILESYSTEM_MOD_DIR}/lib/mdev/misc/avmusbwlanstart
+else
+	mv ${FILESYSTEM_MOD_DIR}/sbin/avmstickandsurf ${FILESYSTEM_MOD_DIR}/lib/mdev/misc/avmusbwlanstart
+	chmod 750 ${FILESYSTEM_MOD_DIR}/lib/mdev/misc/avmusbwlanstart
+fi
 
 # remove original hotplug system
 echo1 "removing original hotplug subsystem"
@@ -35,7 +40,11 @@ echo1 "applying usb prepare fwupgrade patch"
 modsed "s/usb.pandu/storage/g" "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
 
 echo1 "applying usb post_install patch"
-	modpatch "$VARTAR_MOD_DIR" "${PATCHES_DIR}/cond/mdev_post_install.patch"
+if isFreetzType 7170; then
+	modpatch "$VARTAR_MOD_DIR" "${PATCHES_DIR}/cond/mdev_post_install_7170.patch"
+else
+	modpatch "$VARTAR_MOD_DIR" "${PATCHES_DIR}/cond/mdev_post_install_7270.patch"
+fi
 
 echo1 "set up local fstab"
 modpatch "$FILESYSTEM_MOD_DIR" "$PATCHES_DIR/cond/mdev_my_uuid.patch"

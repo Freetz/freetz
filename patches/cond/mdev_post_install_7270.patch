@@ -1,0 +1,14 @@
+--- var/post_install.orig	2009-03-02 19:38:51.000000000 +0100
++++ var/post_install	2009-03-02 19:40:29.000000000 +0100
+@@ -1,5 +1,10 @@
+ # ! /bin/sh
+
++if [ -x /etc/hotplug/storage ]; then
++	echo "stopping usb devices..."
++ 	/etc/hotplug/storage stop
++fi
++
+ # EWETEL
+ if [ -x /bin/smartmeter ] ; then
+     /bin/smartmeter stop
+
