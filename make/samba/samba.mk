@@ -100,7 +100,6 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	for target in headers all; do \
 	$(SUBMAKE) -C $(SAMBA_DIR)/source \
 		RANLIB="$(TARGET_RANLIB)" \
-		CODEPAGEDIR="/mod/usr/share/samba" \
 		$$target; \
 	done
 
