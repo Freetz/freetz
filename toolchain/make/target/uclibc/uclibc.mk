@@ -126,7 +126,7 @@ ifeq ($(or $(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_30)),$(strip $(FREETZ_TARG
 	# This is a bit dirty workaround we actually should get rid of as soon as we find a better solution.
 	for i in $(UCLIBC_DIR)/Makerules $(UCLIBC_DIR)/extra/locale/Makefile.in; do \
 		cp -a "$$i" "$$i-with-FORCE"; \
-		sed -i -r -e '/[$$][(](top_builddir|locale_OUT)[)]%[.]o[sS]:.*FORCE.*/s, FORCE , ,g' $$i; \
+		sed -i -r -e '/.*%[.]o[sS]:.*FORCE.*/s, FORCE , ,g' $$i; \
 	done;
 endif
 	touch -c $@
