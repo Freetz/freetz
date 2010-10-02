@@ -67,6 +67,7 @@ document.write("<div id='Acc0' style='display:block'>" +
 "<p><label for='r03'>$(lang en:"Username" de:"Benutzername"): </label><input id='r03' type='text' name='user0' size='50' maxlength='255' value='$(html "$(webdavcfginfo -p username 2>/dev/null)")' DISABLED></p>" +
 "<p><label for='r04'>$(lang en:"Password" de:"Passwort"): </label><input id='r04' type='password' name='pass0' size='50' maxlength='255' value='$(html "$(webdavcfginfo -p password 2>/dev/null)")' DISABLED></p>" +
 "<p><input type='hidden' name='uselocks0' value=''><input type='checkbox' name='uselocks0' value='yes' $([ "$DAVFS2_USELOCKS0" = yes ] && echo checked)>$(lang en:"Deactivate use-locks" de:"Deaktiviere use-locks")</p>" +
+"<p><input type='hidden' name='ifmatchbug0' value=''><input type='checkbox' name='ifmatchbug0' value='yes' $([ "$DAVFS2_IFMATCHBUG0" = yes ] && echo checked)>$(lang en:"Activate if_match_bug-option" de:"Aktiviere if_match_bug-Option")</p>" +
 "<p><label for='r05'>$(lang en:"Mountpoint" de:"Einh&auml;ngepunkt"): </label><input id='r05' type='text' name='mountpoint0' size='50' maxlength='255' value='$(html "/var/media/ftp/$(webdavcfginfo -p mountpoint 2>/dev/null)")' DISABLED></p>" +
 "<hr color='silver'>" +
 "<p>$(lang de:"Die Einstellungen dieses Kontos k&ouml;nnen nur mit dem AVM-Webinterface ge&auml;ndert werden" en:"Change the settings of the avm-account via the AVM webinterface.")</p>" +
@@ -79,6 +80,7 @@ document.write("<div id='Acc1' style='display:none'>" +
 "<p><label for='r13'>$(lang en:"Username" de:"Benutzername"): </label><input id='r13' type='text' name='user1' size='50' maxlength='255' value='$(html "$DAVFS2_USER1")'></p>" +
 "<p><label for='r14'>$(lang en:"Password" de:"Passwort"): </label><input id='r14' type='password' name='pass1' size='50' maxlength='255' value='$(html "$DAVFS2_PASS1")'></p>" +
 "<p><input type='hidden' name='uselocks1' value=''><input type='checkbox' name='uselocks1' value='yes' $([ "$DAVFS2_USELOCKS1" = yes ] && echo checked)>$(lang en:"Deactivate use-locks" de:"Deaktiviere use-locks")</p>" +
+"<p><input type='hidden' name='ifmatchbug1' value=''><input type='checkbox' name='ifmatchbug1' value='yes' $([ "$DAVFS2_IFMATCHBUG1" = yes ] && echo checked)>$(lang en:"Activate if_match_bug-option" de:"Aktiviere if_match_bug-Option")</p>" +
 "<p><label for='r15'>$(lang en:"Mountpoint" de:"Einh&auml;ngepunkt"): </label><input id='r15' type='text' name='mountpoint1' size='50' maxlength='255' value='$(html "$DAVFS2_MOUNTPOINT1")'></p>" +
 "</div>");
 
@@ -89,6 +91,7 @@ document.write("<div id='Acc2' style='display:none'>" +
 "<p><label for='r23'>$(lang en:"Username" de:"Benutzername"): </label><input id='r23' type='text' name='user2' size='50' maxlength='255' value='$(html "$DAVFS2_USER2")'></p>" +
 "<p><label for='r24'>$(lang en:"Password" de:"Passwort"): </label><input id='r24' type='password' name='pass2' size='50' maxlength='255' value='$(html "$DAVFS2_PASS2")'></p>" +
 "<p><input type='hidden' name='uselocks2' value=''><input type='checkbox' name='uselocks2' value='yes' $([ "$DAVFS2_USELOCKS2" = yes ] && echo checked)>$(lang en:"Deactivate use-locks" de:"Deaktiviere use-locks")</p>" +
+"<p><input type='hidden' name='ifmatchbug2' value=''><input type='checkbox' name='ifmatchbug2' value='yes' $([ "$DAVFS2_IFMATCHBUG2" = yes ] && echo checked)>$(lang en:"Activate if_match_bug-option" de:"Aktiviere if_match_bug-Option")</p>" +
 "<p><label for='r25'>$(lang en:"Mountpoint" de:"Einh&auml;ngepunkt"): </label><input id='r25' type='text' name='mountpoint2' size='50' maxlength='255' value='$(html "$DAVFS2_MOUNTPOINT2")'></p>" +
 "</div>");
 
@@ -99,6 +102,7 @@ document.write("<div id='Acc3' style='display:none'>" +
 "<p><label for='r33'>$(lang en:"Username" de:"Benutzername"): </label><input id='r33' type='text' name='user3' size='50' maxlength='255' value='$(html "$DAVFS2_USER3")'></p>" +
 "<p><label for='r34'>$(lang en:"Password" de:"Passwort"): </label><input id='r34' type='password' name='pass3' size='50' maxlength='255' value='$(html "$DAVFS2_PASS3")'></p>" +
 "<p><input type='hidden' name='uselocks3' value=''><input type='checkbox' name='uselocks3' value='yes' $([ "$DAVFS2_USELOCKS3" = yes ] && echo checked)>$(lang en:"Deactivate use-locks" de:"Deaktiviere use-locks")</p>" +
+"<p><input type='hidden' name='ifmatchbug3' value=''><input type='checkbox' name='ifmatchbug3' value='yes' $([ "$DAVFS2_IFMATCHBUG3" = yes ] && echo checked)>$(lang en:"Activate if_match_bug-option" de:"Aktiviere if_match_bug-Option")</p>" +
 "<p><label for='r35'>$(lang en:"Mountpoint" de:"Einh&auml;ngepunkt"): </label><input id='r35' type='text' name='mountpoint3' size='50' maxlength='255' value='$(html "$DAVFS2_MOUNTPOINT3")'></p>" +
 "</div>");
 

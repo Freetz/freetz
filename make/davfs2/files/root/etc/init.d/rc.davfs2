@@ -52,6 +52,7 @@ start() {
 		[ "$(eval "echo \$DAVFS2_ENABLED${i}")" != "yes" ] && continue
 		local cert="$(eval "echo \$DAVFS2_SERVERCERT${i}")"
 		local uselocks="$(eval "echo \$DAVFS2_USELOCKS${i}")"
+		local ifmatchbug="$(eval "echo \$DAVFS2_IFMATCHBUG${i}")"
 		local point="$(eval "echo \$DAVFS2_MOUNTPOINT${i}")"
 		local host="$(eval "echo \$DAVFS2_HOST${i}")"
 		local cfile="$CONF_DIR/davfs2_${i}.conf"
@@ -60,6 +61,7 @@ start() {
 			echo "servercert /var/tmp/flash/davfs2/servercrt${i}.pem" >> $cfile
 		fi
 		[ "$uselocks" == "yes" ] && echo "use_locks 0" >> $cfile
+		[ "$ifmatchbug" == "yes" ] && echo "if_match_bug 1" >> $cfile
 		echo "ask_auth 0" >> $cfile
 		chmod 600 $CONF_DIR/secrets_${i}
 		mkdir $point 2>/dev/null
