@@ -376,5 +376,14 @@ modlib_loadconfig() {
 	. "$CONF_FILE"
 }
 
+# for each parameter passed creates symlink httpd-$parameter pointing to httpd
+modlib_add_httpd_symlink() {
+	local HTTPD=$(which httpd)
+	while [[ "$1" != "" ]]; do
+		ln -sfn "$HTTPD" "/mod/$HTTPD-$1"
+		shift
+	done
+}
+
 # load config
 [ -n "$DAEMON" ] && modlib_loadconfig

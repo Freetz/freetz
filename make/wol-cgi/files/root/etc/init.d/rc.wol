@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=wol
+DAEMON_BIN=httpd-$DAEMON
 DAEMON_LONG_NAME="wol webinterface"
 DAEMON_CONFIG=/mod/etc/httpd-${DAEMON}.conf
 PID_FILE=/var/run/webcfg-${DAEMON}.pid
@@ -16,6 +17,8 @@ start() {
 
 case $1 in
 	""|load)
+		modlib_add_httpd_symlink $DAEMON
+
 		modreg cgi 'wol' 'Wake on LAN'
 		modreg daemon $DAEMON
 

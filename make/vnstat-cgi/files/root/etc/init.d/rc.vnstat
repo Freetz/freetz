@@ -56,7 +56,7 @@ start() {
 			echo "/:$VNSTAT_WEB_USER:$(httpd -m $VNSTAT_WEB_PASS)" >/mod/etc/httpd-vns.conf
 			VNS_CONF="-c /mod/etc/httpd-vns.conf"
 		fi
-		httpd -P $HTTPD_PID_VNS -p $VNSTAT_WEB_PORT $VNS_CONF -h /mod/pkg/vnstat/usr/mww-vns -r "vnstat"
+		webcfg-vns -P $HTTPD_PID_VNS
 	fi
 	modlib_startdaemon $DAEMON_BIN -s -d --config /tmp/flash/vnstat/vnstat.conf
 	[ -x /etc/init.d/rc.inetd ] && //etc/init.d/rc.inetd config vnstat
@@ -73,6 +73,8 @@ case $1 in
 		config
 		;;
 	""|load)
+		modlib_add_httpd_symlink vns
+
 		[ ! -d "/tmp/flash/vnstat" ] && mkdir -p /tmp/flash/vnstat
 		[ ! -e "/tmp/flash/vnstat/vnstat.conf" ] && /etc/default.vnstat/vnstat_conf > /tmp/flash/vnstat/vnstat.conf
 

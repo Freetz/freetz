@@ -151,6 +151,7 @@ case $1 in
 		config
 		;;
 	""|load)
+		modlib_add_httpd_symlink rrd one
 		modreg cgi rrdstats RRDstats
 		modreg extra rrdstats "" 2 dt-init
 		modreg daemon $DAEMON

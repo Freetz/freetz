@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DAEMON=webcfg
-DAEMON_BIN=httpd
+DAEMON_BIN=httpd-$DAEMON
 DAEMON_LONG_NAME="Freetz webinterface"
 PID_FILE=/var/run/webcfg.pid
 CONF_NAME=mod
@@ -13,12 +13,12 @@ config() {
 }
 
 start() {
-	DAEMON_ENV="WEBIF=mww"
-	modlib_startdaemon httpd -P "$PID_FILE" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h /usr/mww/ -r "Freetz"
+	modlib_startdaemon webcfg -P "$PID_FILE"
 }
 
 case $1 in
 	""|load)
+		modlib_add_httpd_symlink $DAEMON
 		modreg daemon -p mod webcfg
 		modlib_start $MOD_HTTPD
 		;;

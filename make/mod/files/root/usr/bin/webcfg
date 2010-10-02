@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=webcfg
+DAEMON_BIN=httpd-$DAEMON
 
 if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
 	echo "Error[$DAEMON]: not configured" 1>&2
@@ -12,4 +13,4 @@ fi
 homedir=/usr/mww/
 export WEBIF=mww
 
-exec httpd "$@" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "Freetz"
+exec $DAEMON_BIN "$@" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "Freetz"
