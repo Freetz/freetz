@@ -5,9 +5,6 @@ DAEMON_BIN=svnserve
 PID_FILE=/var/run/$DAEMON.pid
 . /etc/init.d/modlibrc
 
-DAEMON_USER=svn
-DAEMON_GROUP=svn
-
 echoDone() { echo 'done.'; }
 echoFailed() { echo 'failed.'; }
 echoFailedAndExit() { echoFailed; [ -n "$1" ] && exit $1 || exit 1; }
@@ -16,7 +13,7 @@ logfileOptions() {
 	modunreg status subversion
 	if [ "$SUBVERSION_LOGGING" = "yes" -a -n "$SUBVERSION_LOGFILE" ]; then
 		[ -f "$SUBVERSION_LOGFILE" ] || touch "$SUBVERSION_LOGFILE" >/dev/null 2>&1
-		if [ -f "$SUBVERSION_LOGFILE" ] && chown $DAEMON_USER:$DAEMON_GROUP "$SUBVERSION_LOGFILE" >/dev/null 2>&1; then
+		if [ -f "$SUBVERSION_LOGFILE" ] && chown $SUBVERSION_USER:$SUBVERSION_GROUP "$SUBVERSION_LOGFILE" >/dev/null 2>&1; then
 			modreg status subversion Subversion-Log subversion-log >/dev/null 2>&1
 			echo -n "--log-file $SUBVERSION_LOGFILE"
 		fi
@@ -45,10 +42,10 @@ config() {
 		exit 1
 	fi
 
-	chown -R $DAEMON_USER:$DAEMON_GROUP "$SUBVERSION_ROOT"
+	chown -R $SUBVERSION_USER:$SUBVERSION_GROUP "$SUBVERSION_ROOT"
 
 	[ -e $PID_FILE ] || echo -n > $PID_FILE
-	chown $DAEMON_USER:$DAEMON_GROUP $PID_FILE
+	chown $SUBVERSION_USER:$SUBVERSION_GROUP $PID_FILE
 }
 
 start() {
@@ -60,7 +57,7 @@ start() {
 	[ -n "$SUBVERSION_BINDADDRESS" ] && OPTIONS="$OPTIONS --listen-host $SUBVERSION_BINDADDRESS"
 	[ -n "$SUBVERSION_PORT" ] && OPTIONS="$OPTIONS --listen-port $SUBVERSION_PORT"
 
-	start-stop-daemon -S -N "$SUBVERSION_NICELEVEL" -x /usr/bin/$DAEMON_BIN -c $DAEMON_USER -q -- $OPTIONS --root "$SUBVERSION_ROOT" $(logfileOptions) \
+	start-stop-daemon -S -N "$SUBVERSION_NICELEVEL" -x /usr/bin/$DAEMON_BIN -c $SUBVERSION_USER:$SUBVERSION_GROUP -q -- $OPTIONS --root "$SUBVERSION_ROOT" $(logfileOptions) \
 	|| echoFailedAndExit
 
 	sleep 1
@@ -69,8 +66,8 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_addgroup $DAEMON_GROUP
-		modlib_adduser $DAEMON_USER -G $DAEMON_GROUP -s /bin/false -D -S -H -g "subversion account"
+		modlib_addgroup $SUBVERSION_GROUP
+		modlib_adduser $SUBVERSION_USER -G $SUBVERSION_GROUP -s /bin/false -D -S -H -g "subversion account"
 
 		modreg cgi 'subversion' 'Subversion'
 		modreg daemon $DAEMON
