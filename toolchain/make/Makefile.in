@@ -36,8 +36,7 @@ TARGET_TOOLCHAIN_STAGING_DIR:=$(FREETZ_BASE_DIR)/$(TOOLCHAIN_BUILD_DIR)/$(TARGET
 TARGET_UTILS_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/target-utils
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
-TOOLCHAIN+=kernel-toolchain
-TOOLCHAIN+=target-toolchain
+TOOLCHAIN:=kernel-toolchain target-toolchain
 else
 TOOLCHAIN:=download-toolchain
 endif

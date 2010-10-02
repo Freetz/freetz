@@ -357,11 +357,15 @@ test: $(BUILD_DIR)/modified
 	@echo "no tests defined"
 
 toolchain-depend: | $(TOOLCHAIN)
-toolchain: $(DL_DIR) $(SOURCE_DIR_ROOT) $(TOOLCHAIN)
+# Use KTV and TTV variables to provide new toolchain versions, i.e.
+#   make KTV=freetz-0.4 TTV=freetz-0.5 toolchain
+toolchain: $(DL_DIR) $(SOURCE_DIR_ROOT) $(TOOLCHAIN) tools
 	@echo
-	@echo "FINISHED: $(TOOLCHAIN_DIR)/kernel/ - glibc compiler for the kernel"
-	@echo "          $(TOOLCHAIN_DIR)/target/ - uClibc compiler for the userspace"
+	@echo "Creating toolchain tarballs ... "
+	@$(call TOOLCHAIN_CREATE_TARBALL,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(KTV))
+	@$(call TOOLCHAIN_CREATE_TARBALL,$(TARGET_TOOLCHAIN_STAGING_DIR),$(TTV))
 	@echo
+	@echo "FINISHED: new download toolchains can be found in $(DL_DIR)/"
 
 libs: $(DL_DIR) $(SOURCE_DIR_ROOT) $(LIBS_PRECOMPILED)
 

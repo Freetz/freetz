@@ -56,6 +56,7 @@ $(LIBTOOL_HOST_TARGET_SCRIPT): $(LIBTOOL_HOST_SCRIPT)
 		MAKEINFO=true \
 		-C $(LIBTOOL_HOST_DIR) \
 		install
+	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 
 libtool-host: uclibcxx $(LIBTOOL_HOST_TARGET_SCRIPT)
 
@@ -73,5 +74,4 @@ libtool-host-dirclean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libtoolize \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/libtool.m4 \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/ltdl.m4 \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/libtool/ \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/info/libtool.info
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/libtool/
