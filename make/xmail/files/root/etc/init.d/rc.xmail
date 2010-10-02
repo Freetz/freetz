@@ -81,26 +81,6 @@ configure() {
 	fi
 }
 
-stop () {
-	if [ -s /var/run/rc.$DAEMON.pid ]; then
-		kill $(cat /var/run/rc.$DAEMON.pid) > /dev/null 2>&1
-		exitval=$?
-		rm -f /var/run/rc.$DAEMON.pid
-		rm -f /var/run/XMail.pid
-		if [ "$exitval" -eq 0 ]; then
-			echo 'done.'
-		else
-			echo 'failed.'
-			exit $exitval
-		fi
-	else
-		modlib_stop
-	fi
-
-	cleanup
-
-}
-
 start() {
 	trap "rm -f /var/run/rc.$DAEMON.pid; exit 255" 0 1 2 3 15
 	echo -n "Starting $DAEMON_LONG_NAME ... "
@@ -154,7 +134,8 @@ case $1 in
 	unload)
 		modunreg daemon $DAEMON
 		modunreg cgi xmail
-		modlib_stop
+		[ -s /var/run/rc.$DAEMON.pid ] && PID_FILE=/var/run/rc.$DAEMON.pid
+		modlib_stop && cleanup
 		;;
 	start)
 		if [ -s /var/run/rc.$DAEMON.pid ]; then
@@ -169,7 +150,8 @@ case $1 in
 		echo $! > /var/run/rc.$DAEMON.pid
 		;;
 	stop)
-		stop
+		[ -s /var/run/rc.$DAEMON.pid ] && PID_FILE=/var/run/rc.$DAEMON.pid
+		modlib_stop && cleanup
 		;;
 	restart)
 		modlib_restart
