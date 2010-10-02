@@ -1,0 +1,12 @@
+. /mod/etc/conf/git.cfg
+[ -n "$GIT_BINDADDRESS" ] && local BINDADDRESS="${GIT_BINDADDRESS}:"
+echo "$BINDADDRESS" | grep "\." -vq && local BINDPROTO=$1
+inetdcfg_desc="git server"
+inetdcfg_port=${BINDADDRESS}$GIT_PORT
+inetdcfg_sock=stream
+inetdcfg_proto=tcp$BINDPROTO
+inetdcfg_flags=nowait
+inetdcfg_user=$GIT_USER:$GIT_GROUP
+inetdcfg_exe=/usr/bin/git-daemon
+inetdcfg_arg0=git-daemon
+inetdcfg_args="--inetd --enable=receive-pack --base-path=$GIT_ROOT"

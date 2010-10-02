@@ -1,0 +1,90 @@
+#!/bin/sh
+
+DAEMON=git
+DAEMON_BIN=git-daemon
+PID_FILE=/var/run/$DAEMON.pid
+. /etc/init.d/modlibrc
+
+echoDone() { echo 'done.'; }
+echoFailed() { echo 'failed.'; }
+echoFailedAndExit() { echoFailed; [ -n "$1" ] && exit $1 || exit 1; }
+
+config() {
+	if ! echo "$GIT_NICELEVEL" | egrep -q "^(-20|-?1?[0-9])$" >/dev/null 2>&1; then
+		echo -e "\nInvalid nice level ($GIT_NICELEVEL), nice level must be between -20 (the highest priority) and 19 (the lowest)."
+		echoFailedAndExit
+	fi
+
+	if [ -z "$GIT_ROOT" ]; then
+		echo -e "\nGit repository directory must not be empty."
+		echoFailedAndExit
+	fi
+
+	if [ ! -d "$GIT_ROOT" ]; then
+		echoFailed
+		echo "The git repository ($GIT_ROOT) does not exist."
+		echo "Create a new repository and/or change the path using freetz' webinterface."
+		echo
+		echo "To create a new git repository use the following commands:"
+		echo "    mkdir -p /srv"
+		echo "    git init --bare /srv/GITROOT"
+		echo "    touch srv/GITROOT/git-daemon-export-ok"
+		exit 1
+	fi
+
+	chown -R $GIT_USER:$GIT_GROUP "$GIT_ROOT"
+
+	[ -e $PID_FILE ] || echo -n > $PID_FILE
+	chown $GIT_USER:$GIT_GROUP $PID_FILE
+}
+
+start() {
+	echo -n "Starting $DAEMON_LONG_NAME ... "
+
+	config
+
+	local OPTIONS="--detach --enable=receive-pack --pid-file=$PID_FILE"
+	[ -n "$GIT_BINDADDRESS" ] && OPTIONS="$OPTIONS --listen=$GIT_BINDADDRESS"
+	[ -n "$GIT_PORT" ] && OPTIONS="$OPTIONS --port=$GIT_PORT"
+
+	start-stop-daemon -S -N "$GIT_NICELEVEL" -x /usr/bin/$DAEMON_BIN -c $GIT_USER:$GIT_GROUP -q -- $OPTIONS --base-path="$GIT_ROOT" || echoFailedAndExit
+
+	sleep 1
+	modlib_check_running && echoDone || echoFailedAndExit
+}
+
+case $1 in
+	""|load)
+		modlib_addgroup $GIT_GROUP
+		modlib_adduser $GIT_USER -G $GIT_GROUP -s /bin/false -D -S -H -g "git account"
+
+		modreg cgi 'git' 'Git'
+		modreg daemon $DAEMON
+
+		modlib_start $GIT_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg status git
+		modunreg cgi 'git'
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
