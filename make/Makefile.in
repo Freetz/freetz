@@ -734,7 +734,7 @@ endef
 define PKG_UNPACKED_CHECK_CHANGES__INT2
 $(PKG)_FREETZ_CHANGES_CHECK: $(PKG)_SOURCE_DIR
 	@find $($(PKG)_MAKE_DIR) -regex "^$($(PKG)_MAKE_DIR)/\($($(PKG)_FREETZ_PATCHES_$(PKG_TYPE)_SEARCH)\|$($(PKG)_FREETZ_FILES_$(PKG_TYPE)_SEARCH)\)" \
-		! -wholename '*/.svn*' -printf '%P\t%t\n' 2>/dev/null >$($(PKG)_FREETZ_CHANGES_FILE).temp
+		! -wholename '*/.svn*' -printf '%TY-%Tm-%Td %TH:%TM:%TS\t%P\n' 2>/dev/null | sort -k 3 >$($(PKG)_FREETZ_CHANGES_FILE).temp
 	@if [ -e $($(PKG)_FREETZ_CHANGES_FILE) ]; then \
 		for i in 1 2; do \
 			PATTERN=; \
