@@ -14,6 +14,13 @@ check_options() {
 
 echo1 "creating options.cfg"
 
+if [ "$FREETZ_REMOVE_DOT_CONFIG" != "y" ]; then
+
+echo2 "by symlinking it to .config"
+ln -snf .config $OPTIONS_CFG
+
+else
+
 check_options "$FREETZ_PACKAGE_DAVFS2" \
 	FREETZ_PACKAGE_DAVFS2_WITH_SSL
 check_options "$FREETZ_PACKAGE_LIGHTTPD" \
@@ -36,3 +43,4 @@ check_options "$FREETZ_PACKAGE_OPENDD" \
 check_options "$FREETZ_PACKAGE_VSFTPD" \
 	FREETZ_PACKAGE_VSFTPD_WITH_SSL
 
+fi
