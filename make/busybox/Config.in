@@ -280,7 +280,6 @@ config FREETZ_BUSYBOX_NICE
 
 		This command helps to use the niceness-levels on the box so you
 		can handle the system-ressources more porperly if you want
-		(note: no freetz-service uses this yet)
 
 config FREETZ_BUSYBOX_PATCH
 	bool "patch"
@@ -309,6 +308,15 @@ config FREETZ_BUSYBOX_REALPATH
 		Return the canonicalized absolute pathname. Used by Freetz script wrap_editors.
 
 		This feature adds about 2 KB to BusyBox.
+
+config FREETZ_BUSYBOX_RENICE
+	bool "renice"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'renice' tool in busybox
+
+		This feature adds about 0.3 KB to BusyBox.
 
 config FREETZ_BUSYBOX_SEQ
 	bool "seq"
