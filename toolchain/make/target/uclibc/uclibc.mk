@@ -145,9 +145,11 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		HOSTCC="$(HOSTCC)" \
+		BUILD_LDFLAGS="$(if $(FREETZ_STATIC_TOOLCHAIN),-static)" \
 		hostutils
 	for i in ldd ldconfig; do \
 		install -c $(UCLIBC_DIR)/utils/$$i.host $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/$$i; \
+		$(HOST_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/$$i; \
 		ln -sf ../$(REAL_GNU_TARGET_NAME)/bin/$$i $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i; \
 		ln -sf $(REAL_GNU_TARGET_NAME)-$$i $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(GNU_TARGET_NAME)-$$i; \
 	done

@@ -1,0 +1,25 @@
+--- utils/Makefile
++++ utils/Makefile
+@@ -78,19 +78,19 @@
+ endif
+ 
+ ldd.host: ldd.c
+-	$(HOSTCC) $(HOSTCFLAGS) -Wl,-s \
++	$(HOSTCC) $(HOSTCFLAGS) $(BUILD_LDFLAGS) \
+ 		-DUCLIBC_RUNTIME_PREFIX=\"$(RUNTIME_PREFIX)\" \
+ 		-DUCLIBC_LDSO=$(UCLIBC_LDSO) -I. -I../ldso/include \
+ 		$^ -o $@
+ 
+ ldconfig.host: ldconfig.c
+-	$(HOSTCC) $(HOSTCFLAGS) -Wl,-s \
++	$(HOSTCC) $(HOSTCFLAGS) $(BUILD_LDFLAGS) \
+ 		-DUCLIBC_RUNTIME_PREFIX=\"$(RUNTIME_PREFIX)\" \
+ 		-DUCLIBC_LDSO=$(UCLIBC_LDSO) -I. -I../ldso/include \
+ 		$^ -o $@
+ 
+ readelf.host: readelf.c
+-	$(HOSTCC) $(HOSTCFLAGS) -Wl,-s $^ -o $@
++	$(HOSTCC) $(HOSTCFLAGS) $(BUILD_LDFLAGS) $^ -o $@
+ 
+ clean:
+ 	$(RM) $(TARGETS) *.o *~ core *.target elf.h iconv *.host
