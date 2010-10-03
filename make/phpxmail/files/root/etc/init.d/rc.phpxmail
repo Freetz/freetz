@@ -9,8 +9,8 @@ config() {
 		cat /mod/etc/default.${DAEMON}/config.php.default > /tmp/flash/${DAEMON}/config.php
 		echo 'done.'
 	fi
-	if [ ! $(grep -se '^\*\.php\:' /mod/etc/httpd.conf) ]; then
-		echo "Warning[$DAEMON]: php ist not configured in /mod/etc/httpd.conf"
+	if [ ! $(grep -se '^\*\.php\:' /mod/etc/webcfg.conf) ]; then
+		echo "Warning[$DAEMON]: php ist not configured in /mod/etc/webcfg.conf"
 		return 1
 	fi
 }

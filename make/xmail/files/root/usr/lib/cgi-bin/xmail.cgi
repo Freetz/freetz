@@ -26,7 +26,7 @@ check "$XMAIL_SYSTEMLOG" yes:systemlog
 . /usr/lib/libmodredir.sh
 sec_begin '$(lang de:"PHPXmail" en:"PHPXmail")'
 cat << EOF
-<p>$(lang de:"Auf dieser Fritz!Box ist das PHPXMail Webfrontend installiert, klicken sie" en:"On this Fritz!Box is the PHPXMail webfrontend installed, so you can klick") <b><a style='font-size:14px;' target='_blank' href=/phpxmail/index.html>$(lang de:"hier" en:"here")</a></b>$(lang de:", um es zu starten." en:" to start it.")<p>
+<p>$(lang de:"Auf dieser Fritz!Box ist das PHPXMail Webfrontend installiert, klicken sie" en:"On this Fritz!Box is the PHPXMail webfrontend installed, so you can klick") <b><a style='font-size:14px;' target='_blank' href=/phpxmail/index.php>$(lang de:"hier" en:"here")</a></b>$(lang de:", um es zu starten." en:" to start it.")<p>
 EOF
 sec_end
 )
