@@ -380,7 +380,7 @@ modlib_loadconfig() {
 modlib_add_httpd_symlink() {
 	local HTTPD=$(which httpd)
 	while [[ "$1" != "" ]]; do
-		ln -sfn "$HTTPD" "/mod/$HTTPD-$1"
+		ln -sfn "$HTTPD" "/mod$HTTPD-$1"
 		shift
 	done
 }
