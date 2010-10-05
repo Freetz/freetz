@@ -2,7 +2,7 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
-. /usr/bin/lighttpd_has
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 CHROOT=$(cat /mod/etc/lighttpd/lighttpd.conf | grep "server.chroot" | cut -d\" -f 2)
 LOGA=$(cat /mod/etc/lighttpd/lighttpd.conf | grep "accesslog.filename" | cut -d\" -f 2)
@@ -12,7 +12,7 @@ if [ -n "$CHROOT" ]; then
 	LOGE="$CHROOT/$LOGE"
 fi
 
-if [ "$(has_mod accesslog)" = "yes" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESSLOG" = "y" ]; then
 	if [ -r "$LOGA" ]; then
 		echo "<h1>lighttpd access log $LOGA</h1>"
 		echo -n '<pre class="log">'

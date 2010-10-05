@@ -25,7 +25,7 @@ fi
 
 virthost_conf() {
 #$1, $2 and $3 are the same as in encloseWithHTTPHost
-if [ -n "$1" -a "$FREETZ_PACKAGE_LIGHTTPD_MOD_EVHOST" == "y" -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+if [ -n "$1" -a "$FREETZ_PACKAGE_LIGHTTPD_MOD_EVHOST" = "y" -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 	encloseWithHTTPHost "$@"
 else
 	echo -e "$2"
@@ -110,7 +110,7 @@ mkdir -p "$LIGHTTPD_DOCROOT/dev"
 chmod 666 "$LIGHTTPD_DOCROOT/dev/null"
 fi
 
-if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_DIRLISTING" == "y" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_DIRLISTING" = "y" ]; then
 out="dir-listing.activate = \"$LIGHTTPD_DIRLISTING\"\ndir-listing.encoding = \"$LIGHTTPD_DIRLISTINGENC\""
 virthost_conf "$LIGHTTPD_DIRLISTINGVIRT" "$out"
 fi
@@ -130,11 +130,11 @@ EOF
 fi
 }
 
-if [ "$FREETZ_PACKAGE_LIGHTTPD_WITH_SSL" == "y" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_WITH_SSL" = "y" ]; then
 if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 	if [ "$LIGHTTPD_SSLADDITIONAL" = "yes" ]; then
 		virtsrv=""
-		if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_EVHOST" == "y" -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+		if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_EVHOST" = "y" -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 			virtsrv=${LIGHTTPD_SSLVIRT// /|}
 		fi
 		echo "\$SERVER[\"socket\"] == \":$LIGHTTPD_SSLPORT\" {"
@@ -143,7 +143,7 @@ if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 		echo "}"
 		out=""
 		[ -n "$virtsrv" ] && out="url.access-deny = ( \"\" )"
-		if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_REDIRECT" == "y" -a "$LIGHTTPD_SSLREDIRECT" = "yes" ]; then
+		if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_REDIRECT" = "y" -a "$LIGHTTPD_SSLREDIRECT" = "yes" ]; then
 			echo "server.modules += ( \"mod_redirect\" )"
 			[ "$LIGHTTPD_SSLPORT" != "443" ] && REDIRECT_PORT_SUFFIX=":$LIGHTTPD_SSLPORT" || REDIRECT_PORT_SUFFIX=""
 			out="url.redirect = ( \"^/(.*)\" => \"https://%1${REDIRECT_PORT_SUFFIX}/\$1\" )"
@@ -182,7 +182,7 @@ cat << EOF
 server.errorlog-use-syslog = "enable"
 EOF
 	fi
-	if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESSLOG" == "y" ]; then
+	if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESSLOG" = "y" ]; then
 cat << EOF
 server.modules += ( "mod_accesslog" )
 EOF
@@ -199,7 +199,7 @@ EOF
 	fi
 fi
 
-if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_CGI" == "y" -a "$LIGHTTPD_MODCGI" = "yes" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_CGI" = "y" -a "$LIGHTTPD_MODCGI" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_cgi" )
 EOF
@@ -207,7 +207,7 @@ EOF
 	virthost_conf "$LIGHTTPD_MODCGIVIRT" "$out"
 fi
 
-if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_COMPRESS" == "y" -a "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_COMPRESS" = "y" -a "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_compress" )
 EOF
@@ -224,10 +224,10 @@ fi
 getfiles() {
 	dir=$(dirname $1)
 	mkdir -p "$LIGHTTPD_DOCROOT/$dir"
-	cp -rpf "/$1" "$LIGHTTPD_DOCROOT/$dir"
+	cp -rpf "$1" "$LIGHTTPD_DOCROOT/$dir"
 }
 
-if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_AUTH" == "y" -a "$LIGHTTPD_AUTH" = "yes" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_AUTH" = "y" -a "$LIGHTTPD_AUTH" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_auth" )
 auth.backend = "htdigest"
@@ -254,7 +254,7 @@ done
 virthost_conf "$virthost_auth" "auth.require = ( $out )"
 fi
 
-if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_STATUS" == "y" -a "$LIGHTTPD_MODSTATUS" = "yes" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_STATUS" = "y" -a "$LIGHTTPD_MODSTATUS" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_status" )
 status.enable-sort = "$LIGHTTPD_MODSTATUSSORT"
@@ -290,23 +290,58 @@ genchroot() {
 	done
 }
 
-if [ "$LIGHTTPD_MODFASTCGIPHP" = "yes" -a "$FREETZ_PACKAGE_LIGHTTPD_MOD_FASTCGI" == "y" ]; then
+# $1 phpEnabled as true/false
+# $2 rubyEnabled as true/false
+genFastcgiServer() {
+	echo "fastcgi.server = ("
+	$1 && echo "\t\".php\" => (( \"socket\" => \"$socketdir/php-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIPHPPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIPHPMAXPROC ))"
+	$1 && $2 && echo "\t,"
+	$2 && echo "\t\".rb\" => (( \"socket\" => \"$socketdir/ruby-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIRUBYPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIRUBYMAXPROC ))"
+	echo ")"
+}
+
+uniqTokens() { echo $@ | tr " " "\n" | sort -u; }
+appendToList() { echo $@; }
+
+[ "$LIGHTTPD_MODFASTCGIPHP" = "yes" -a "$FREETZ_PACKAGE_LIGHTTPD_MOD_FASTCGI" = "y" ] && _php=true || _php=false
+[ "$LIGHTTPD_MODFASTCGIRUBY" = "yes" -a "$FREETZ_PACKAGE_LIGHTTPD_MOD_FASTCGI" = "y" ] && _ruby=true || _ruby=false
+if $_php || $_ruby ; then
 cat << EOF
 server.modules += ( "mod_fastcgi" )
 EOF
-out="fastcgi.server = ( \".php\" => (( \"socket\" => \"$socketdir/php-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIPHPPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIPHPMAXPROC )) )"
-virthost_conf "$LIGHTTPD_MODFASTCGIPHPVIRT" "$out"
+
+$_php  && phpTokens=$(uniqTokens $LIGHTTPD_MODFASTCGIPHPVIRT)
+$_ruby && rubyTokens=$(uniqTokens $LIGHTTPD_MODFASTCGIRUBYVIRT)
+if [ -z "$phpTokens" -a -z "$rubyTokens" ]; then
+	virthost_conf "" "$(genFastcgiServer "$_php" "$_ruby")"
+else
+	$_php  && [ -z "$phpTokens" ]  && virthost_conf "" "$(genFastcgiServer "true" "false")"
+	$_ruby && [ -z "$rubyTokens" ] && virthost_conf "" "$(genFastcgiServer "false" "true")"
+	for i in $(uniqTokens $LIGHTTPD_MODFASTCGIPHPVIRT $LIGHTTPD_MODFASTCGIRUBYVIRT); do
+		(echo "$phpTokens" | grep -q "^${i}$" >/dev/null 2>&1) && inphp="true" || inphp="false"
+		(echo "$rubyTokens" | grep -q "^${i}$" >/dev/null 2>&1) && inruby="true" || inruby="false"
+		if $inphp && $inruby ; then
+			bothvirt=$(appendToList "$bothvirt" "$i")
+		elif $inphp; then
+			phpvirt=$(appendToList "$phpvirt" "$i")
+		elif $inruby; then
+			rubyvirt=$(appendToList "$rubyvirt" "$i")
+		fi
+	done
+	[ -n "$bothvirt" ] && virthost_conf "$bothvirt" "$(genFastcgiServer "true"  "true")"
+	[ -n "$phpvirt"  ] && virthost_conf "$phpvirt"  "$(genFastcgiServer "true"  "false")"
+	[ -n "$rubyvirt" ] && virthost_conf "$rubyvirt" "$(genFastcgiServer "false" "true")"
+fi
+
+if $_php ; then
 genchroot "$LIGHTTPD_MODFASTCGIPHPPATH" "$LIGHTTPD_DOCROOT"
 [ "$LIGHTTPD_CHROOT" = "yes" ] && getfiles "/tmp/flash/php.ini"
 [ "$LIGHTTPD_CHROOT" = "yes" ] && getfiles "/tmp/flash/php"
 fi
-if [ "$LIGHTTPD_MODFASTCGIRUBY" = "yes" -a "$FREETZ_PACKAGE_LIGHTTPD_MOD_FASTCGI" == "y" ]; then
-cat << EOF
-server.modules += ( "mod_fastcgi" )
-EOF
-out="fastcgi.server = ( \".rb\" => (( \"socket\" => \"$socketdir/ruby-fastcgi.socket\", \"bin-path\" => \"$LIGHTTPD_MODFASTCGIRUBYPATH\", \"max-procs\" => $LIGHTTPD_MODFASTCGIRUBYMAXPROC )) )"
-virthost_conf "$LIGHTTPD_MODFASTCGIRUBYVIRT" "$out"
+if $_ruby ; then
 genchroot "$LIGHTTPD_MODFASTCGIRUBYPATH" "$LIGHTTPD_DOCROOT"
+fi
+
 fi
 
 docroot=$LIGHTTPD_DOCROOT
@@ -314,7 +349,7 @@ if [ "$LIGHTTPD_CHROOT" = "yes" ]; then
 	docroot="/websites"
 	[ "$LIGHTTPD_VIRTHOST" = "yes" ] && mkdir -p "$LIGHTTPD_DOCROOT/websites/default"
 fi
-if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_EVHOST" == "y" -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_EVHOST" = "y" -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
 cat << EOF
 server.modules += ( "mod_evhost" )
 evhost.path-pattern = "$docroot/$LIGHTTPD_VIRTHOSTTYPE/"
