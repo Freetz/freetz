@@ -759,7 +759,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	${TOOLS_SUBDIR}/depmod.pl -b "$MODULES_DIR" \
 		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map 2> /dev/null
 	# add plugin kernel modules for 7270 if plugins are not enabled
-	if [ "$FREETZ_TYPE_FON_WLAN_7270" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
+	if [ "$FREETZ_TYPE_FON_WLAN_7270_V1" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
 		echo -e "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko\nkernel/drivers/char/audio/avm_audio.ko:\n" >> $MODULES_DIR/modules.dep
 	fi
 
