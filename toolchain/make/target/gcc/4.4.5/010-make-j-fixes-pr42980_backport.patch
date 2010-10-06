@@ -1,6 +1,5 @@
-diff --strip-trailing-cr -x CVS -x .svn -urN boehm-gc/Makefile.in boehm-gc/Makefile.in
---- boehm-gc/Makefile.in	2010-04-29 10:26:54.000000000 +0200
-+++ boehm-gc/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+--- boehm-gc/Makefile.in.orig	2010-10-01 10:26:18.000000000 +0200
++++ boehm-gc/Makefile.in	2010-10-06 14:59:48.631244451 +0200
 @@ -696,6 +696,7 @@
  
  install-am: all-am
@@ -18,10 +17,9 @@ diff --strip-trailing-cr -x CVS -x .svn -urN boehm-gc/Makefile.in boehm-gc/Makef
  
  install-info: install-info-recursive
  
-diff --strip-trailing-cr -x CVS -x .svn -urN libffi/Makefile.in libffi/Makefile.in
---- libffi/Makefile.in	2010-04-29 10:26:54.000000000 +0200
-+++ libffi/Makefile.in	2010-06-02 00:00:00.000000000 +0200
-@@ -1245,6 +1245,7 @@
+--- libffi/Makefile.in.orig	2010-10-01 10:26:18.000000000 +0200
++++ libffi/Makefile.in	2010-10-06 14:59:48.631244451 +0200
+@@ -1109,6 +1109,7 @@
  
  install-am: all-am
  	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -29,7 +27,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libffi/Makefile.in libffi/Makefile.
  
  installcheck: installcheck-recursive
  install-strip:
-@@ -1318,7 +1319,7 @@
+@@ -1182,7 +1183,7 @@
  
  install-data-am:
  
@@ -38,9 +36,8 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libffi/Makefile.in libffi/Makefile.
  
  install-info: install-info-recursive
  
-diff --strip-trailing-cr -x CVS -x .svn -urN libgcc/Makefile.in libgcc/Makefile.in
---- libgcc/Makefile.in	2009-04-10 01:23:07.000000000 +0200
-+++ libgcc/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+--- libgcc/Makefile.in.orig	2009-04-10 01:23:07.000000000 +0200
++++ libgcc/Makefile.in	2010-10-06 14:59:48.631244451 +0200
 @@ -106,7 +106,7 @@
  all-multi:
  	# If this is the top-level multilib, build all the other
@@ -59,10 +56,9 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libgcc/Makefile.in libgcc/Makefile.
  
  .PHONY: install install-shared install-libunwind
  
-diff --strip-trailing-cr -x CVS -x .svn -urN libgfortran/Makefile.in libgfortran/Makefile.in
---- libgfortran/Makefile.in	2010-04-29 10:26:54.000000000 +0200
-+++ libgfortran/Makefile.in	2010-06-02 00:00:00.000000000 +0200
-@@ -5942,6 +5942,7 @@
+--- libgfortran/Makefile.in.orig	2010-10-01 10:26:18.000000000 +0200
++++ libgfortran/Makefile.in	2010-10-06 14:59:48.641315991 +0200
+@@ -5299,6 +5299,7 @@
  
  install-am: all-am
  	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -70,7 +66,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libgfortran/Makefile.in libgfortran
  
  installcheck: installcheck-am
  install-strip:
-@@ -5984,7 +5985,7 @@
+@@ -5341,7 +5342,7 @@
  
  install-data-am:
  
@@ -79,10 +75,9 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libgfortran/Makefile.in libgfortran
  	install-toolexeclibLTLIBRARIES
  
  install-info: install-info-am
-diff --strip-trailing-cr -x CVS -x .svn -urN libgomp/Makefile.in libgomp/Makefile.in
---- libgomp/Makefile.in	2010-04-29 10:26:54.000000000 +0200
-+++ libgomp/Makefile.in	2010-06-02 00:00:00.000000000 +0200
-@@ -933,6 +933,7 @@
+--- libgomp/Makefile.in.orig	2010-10-01 10:26:18.000000000 +0200
++++ libgomp/Makefile.in	2010-10-06 14:59:48.641315991 +0200
+@@ -775,6 +775,7 @@
  
  install-am: all-am
  	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -90,7 +85,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libgomp/Makefile.in libgomp/Makefil
  
  installcheck: installcheck-recursive
  install-strip:
-@@ -979,7 +980,7 @@
+@@ -821,7 +822,7 @@
  install-data-am: install-info-am install-nodist_fincludeHEADERS \
  	install-nodist_libsubincludeHEADERS
  
@@ -99,9 +94,8 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libgomp/Makefile.in libgomp/Makefil
  	install-toolexeclibLTLIBRARIES
  
  install-info: install-info-recursive
-diff --strip-trailing-cr -x CVS -x .svn -urN libiberty/Makefile.in libiberty/Makefile.in
---- libiberty/Makefile.in	2008-10-22 15:30:19.000000000 +0200
-+++ libiberty/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+--- libiberty/Makefile.in.orig	2008-10-22 15:30:19.000000000 +0200
++++ libiberty/Makefile.in	2010-10-06 14:59:48.641315991 +0200
 @@ -101,7 +101,7 @@
  
  # FIXME: add @BUILD_INFO@ once we're sure it works for everyone.
@@ -128,10 +122,9 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libiberty/Makefile.in libiberty/Mak
  
  # needed-list is used by libstdc++.  NEEDED is the list of functions
  # to include there.  Do not add anything LGPL to this list; libstdc++
-diff --strip-trailing-cr -x CVS -x .svn -urN libjava/classpath/Makefile.in libjava/classpath/Makefile.in
---- libjava/classpath/Makefile.in	2009-02-25 22:40:28.000000000 +0100
-+++ libjava/classpath/Makefile.in	2010-06-02 00:00:00.000000000 +0200
-@@ -763,6 +763,7 @@
+--- libjava/classpath/Makefile.in.orig	2010-04-29 17:03:38.000000000 +0200
++++ libjava/classpath/Makefile.in	2010-10-06 14:59:48.641315991 +0200
+@@ -597,6 +597,7 @@
  
  install-am: all-am
  	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -139,7 +132,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libjava/classpath/Makefile.in libja
  
  installcheck: installcheck-recursive
  install-strip:
-@@ -802,7 +803,7 @@
+@@ -636,7 +637,7 @@
  
  install-data-am:
  
@@ -148,10 +141,9 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libjava/classpath/Makefile.in libja
  
  install-info: install-info-recursive
  
-diff --strip-trailing-cr -x CVS -x .svn -urN libjava/libltdl/Makefile.in libjava/libltdl/Makefile.in
---- libjava/libltdl/Makefile.in	2010-04-29 10:26:54.000000000 +0200
-+++ libjava/libltdl/Makefile.in	2010-06-02 00:00:00.000000000 +0200
-@@ -587,6 +587,7 @@
+--- libjava/libltdl/Makefile.in.orig	2010-10-01 10:26:18.000000000 +0200
++++ libjava/libltdl/Makefile.in	2010-10-06 14:59:48.641315991 +0200
+@@ -447,6 +447,7 @@
  
  install-am: all-am
  	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -159,7 +151,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libjava/libltdl/Makefile.in libjava
  
  installcheck: installcheck-am
  install-strip:
-@@ -629,7 +630,7 @@
+@@ -489,7 +490,7 @@
  
  install-data-am: install-data-local install-includeHEADERS
  
@@ -168,10 +160,9 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libjava/libltdl/Makefile.in libjava
  
  install-info: install-info-am
  
-diff --strip-trailing-cr -x CVS -x .svn -urN libjava/Makefile.in libjava/Makefile.in
---- libjava/Makefile.in	2010-04-29 10:26:54.000000000 +0200
-+++ libjava/Makefile.in	2010-06-02 00:00:00.000000000 +0200
-@@ -10338,6 +10338,7 @@
+--- libjava/Makefile.in.orig	2010-10-01 10:26:18.000000000 +0200
++++ libjava/Makefile.in	2010-10-06 14:59:48.641315991 +0200
+@@ -10105,6 +10105,7 @@
  
  install-am: all-am
  	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -179,7 +170,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libjava/Makefile.in libjava/Makefil
  
  installcheck: installcheck-recursive
  install-strip:
-@@ -10448,7 +10449,7 @@
+@@ -10215,7 +10216,7 @@
  
  install-exec-am: install-binPROGRAMS install-binSCRIPTS \
  	install-dbexecDATA install-dbexecLTLIBRARIES \
@@ -188,7 +179,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libjava/Makefile.in libjava/Makefil
  	install-toolexeclibLTLIBRARIES install-toolexecmainlibDATA
  	@$(NORMAL_INSTALL)
  	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
-@@ -12695,9 +12696,9 @@
+@@ -12460,9 +12461,9 @@
  maintainer-clean-recursive: maintainer-clean-multi
  
  all-multi:
@@ -200,10 +191,9 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libjava/Makefile.in libjava/Makefil
  mostlyclean-multi:
  	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
  clean-multi:
-diff --strip-trailing-cr -x CVS -x .svn -urN libmudflap/Makefile.in libmudflap/Makefile.in
---- libmudflap/Makefile.in	2008-09-26 18:37:32.000000000 +0200
-+++ libmudflap/Makefile.in	2010-06-02 00:00:00.000000000 +0200
-@@ -820,6 +820,7 @@
+--- libmudflap/Makefile.in.orig	2010-04-29 17:03:38.000000000 +0200
++++ libmudflap/Makefile.in	2010-10-06 14:59:48.651311303 +0200
+@@ -666,6 +666,7 @@
  
  install-am: all-am
  	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -211,7 +201,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libmudflap/Makefile.in libmudflap/M
  
  installcheck: installcheck-recursive
  install-strip:
-@@ -861,7 +862,7 @@
+@@ -707,7 +708,7 @@
  
  install-data-am: install-nobase_libsubincludeHEADERS
  
@@ -220,9 +210,8 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libmudflap/Makefile.in libmudflap/M
  
  install-info: install-info-recursive
  
-diff --strip-trailing-cr -x CVS -x .svn -urN libobjc/Makefile.in libobjc/Makefile.in
---- libobjc/Makefile.in	2009-04-10 01:23:07.000000000 +0200
-+++ libobjc/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+--- libobjc/Makefile.in.orig	2009-04-10 01:23:07.000000000 +0200
++++ libobjc/Makefile.in	2010-10-06 14:59:48.651311303 +0200
 @@ -140,7 +140,7 @@
  	"tooldir=$(tooldir)"
  
@@ -241,10 +230,9 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libobjc/Makefile.in libobjc/Makefil
  	@-$(LIBTOOL) --mode=finish $(DESTDIR)$(toolexeclibdir)
  
  # Copy Objective C headers to installation include directory.
-diff --strip-trailing-cr -x CVS -x .svn -urN libssp/Makefile.in libssp/Makefile.in
---- libssp/Makefile.in	2008-09-26 18:43:24.000000000 +0200
-+++ libssp/Makefile.in	2010-06-02 00:00:00.000000000 +0200
-@@ -688,6 +688,7 @@
+--- libssp/Makefile.in.orig	2010-04-29 17:03:38.000000000 +0200
++++ libssp/Makefile.in	2010-10-06 14:59:48.651311303 +0200
+@@ -548,6 +548,7 @@
  
  install-am: all-am
  	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -252,7 +240,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libssp/Makefile.in libssp/Makefile.
  
  installcheck: installcheck-am
  install-strip:
-@@ -729,7 +730,7 @@
+@@ -589,7 +590,7 @@
  
  install-data-am: install-nobase_libsubincludeHEADERS
  
@@ -261,10 +249,9 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libssp/Makefile.in libssp/Makefile.
  
  install-info: install-info-am
  
-diff --strip-trailing-cr -x CVS -x .svn -urN libstdc++-v3/Makefile.in libstdc++-v3/Makefile.in
---- libstdc++-v3/Makefile.in	2009-01-15 21:02:11.000000000 +0100
-+++ libstdc++-v3/Makefile.in	2010-06-02 00:00:00.000000000 +0200
-@@ -712,6 +712,7 @@
+--- libstdc++-v3/Makefile.in.orig	2010-04-29 17:03:38.000000000 +0200
++++ libstdc++-v3/Makefile.in	2010-10-06 14:59:48.651311303 +0200
+@@ -558,6 +558,7 @@
  
  install-am: all-am
  	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -272,7 +259,7 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libstdc++-v3/Makefile.in libstdc++-
  
  installcheck: installcheck-recursive
  install-strip:
-@@ -751,7 +752,7 @@
+@@ -597,7 +598,7 @@
  
  install-data-am:
  
@@ -281,9 +268,8 @@ diff --strip-trailing-cr -x CVS -x .svn -urN libstdc++-v3/Makefile.in libstdc++-
  
  install-info: install-info-recursive
  
-diff --strip-trailing-cr -x CVS -x .svn -urN Makefile.in Makefile.in
---- Makefile.in	2009-04-25 06:10:29.000000000 +0200
-+++ Makefile.in	2010-06-02 00:00:00.000000000 +0200
+--- Makefile.in.orig	2009-04-25 06:10:29.000000000 +0200
++++ Makefile.in	2010-10-06 14:59:48.671439218 +0200
 @@ -56132,6 +56132,7 @@
  all-target-libobjc: maybe-all-target-boehm-gc
  all-target-libstdc++-v3: maybe-all-target-libiberty
@@ -292,9 +278,8 @@ diff --strip-trailing-cr -x CVS -x .svn -urN Makefile.in Makefile.in
  all-target-libgloss: maybe-all-target-newlib
  all-target-winsup: maybe-all-target-libiberty
  all-target-winsup: maybe-all-target-libtermcap
-diff --strip-trailing-cr -x CVS -x .svn -urN zlib/Makefile.in zlib/Makefile.in
---- zlib/Makefile.in	2008-09-26 18:28:27.000000000 +0200
-+++ zlib/Makefile.in	2010-06-02 00:00:00.000000000 +0200
+--- zlib/Makefile.in.orig	2008-09-26 18:28:27.000000000 +0200
++++ zlib/Makefile.in	2010-10-06 14:59:48.671439218 +0200
 @@ -544,6 +544,7 @@
  
  install-am: all-am
