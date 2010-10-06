@@ -90,8 +90,9 @@ case $1 in
 		ipaddr=$(ar7ipaddr $section $devname)
 		[ -z "$ipaddr" ] && ipaddr=$(ar7ipaddr $section $fallback)
 		[ -z "$ipaddr" ] && ipaddr=169.254.1.1
+		[ -d /usr/www.nas ] && nas_hostname="fritz.nas\t"
 		if ! egrep "^$ipaddr[[:space:]]" /var/tmp/hosts -q 2>/dev/null; then
-			echo -e "$ipaddr\tfritz.box\t$_hostname" >> /var/tmp/hosts
+			echo -e "$ipaddr\tfritz.box\t$nas_hostname$_hostname" >> /var/tmp/hosts
 		fi
 		;;
 	*)
