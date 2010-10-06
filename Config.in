@@ -176,7 +176,8 @@ config FREETZ_TYPE_FON_WLAN_7270
 config FREETZ_TYPE_LABOR
 	bool "Beta/Labor"
 	depends on \
-		FREETZ_TYPE_FON_WLAN_7270
+		FREETZ_TYPE_FON_WLAN_7270 && \
+		! FREETZ_TYPE_FON_WLAN_7270_V1
 	default n
 	help
 		Enable this to compile the mod based on an AVM "beta/labor" firmware.
@@ -184,47 +185,16 @@ config FREETZ_TYPE_LABOR
 choice
 	prompt "Labor version"
 		depends on FREETZ_TYPE_LABOR
-		default FREETZ_TYPE_LABOR_IPV6
+		default FREETZ_TYPE_LABOR_PHONE
 
-	config FREETZ_TYPE_LABOR_CORE
-		bool "Streaming Stick"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270_V2 || \
-			FREETZ_TYPE_FON_WLAN_7270_V3
-		help
-			Labor Streaming Stick
-
-	config FREETZ_TYPE_LABOR_DSL
-		bool "DSL"
-		depends on \
-			( \
-			FREETZ_TYPE_FON_WLAN_7270_V2 || \
-			FREETZ_TYPE_FON_WLAN_7270_V3 \
-			)
-		help
-			FRITZ!Lab DSL: This release optimizes the DSL (Digital Subscriber
-			Line) software and adds related graphs.
-
-	config FREETZ_TYPE_LABOR_IPV6
-		bool "IPv6"
+	config FREETZ_TYPE_LABOR_PHONE
+		bool "Phone"
 		depends on \
 			FREETZ_TYPE_FON_WLAN_7270_V2 || \
 			FREETZ_TYPE_FON_WLAN_7270_V3
 		select FREETZ_TARGET_IPV6_SUPPORT
 		help
-			FRITZ!Lab IPV6: This release adds native IPv6 over PPP
-			(Internet Protocol Version 6) and 6to4 tunnels.
-
-#	config FREETZ_TYPE_PREVIEW
-#		bool "Preview"
-#		depends on \
-#			FREETZ_TYPE_FON_WLAN_7240 || \
-#			FREETZ_TYPE_FON_WLAN_7270_V1 || \
-#			FREETZ_TYPE_FON_WLAN_7270_V2 || \
-#			FREETZ_TYPE_FON_WLAN_7270_V3
-#		select FREETZ_TARGET_IPV6_SUPPORT
-#		help
-#			Preview Firmware
+			Phone Firmware
 endchoice
 
 config FREETZ_TYPE_ALIEN_HARDWARE
@@ -408,19 +378,11 @@ config FREETZ_TYPE_STRING
 	default "7150"						if FREETZ_TYPE_FON_7150
 	default "7170"						if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR
 	default "7240"						if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
-#	default "7240_preview"					if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_PREVIEW
 	default "7270_v1"					if FREETZ_TYPE_FON_WLAN_7270_V1 && ! FREETZ_TYPE_LABOR
-#	default "7270_v1_preview"				if FREETZ_TYPE_FON_WLAN_7270_V1 && FREETZ_TYPE_PREVIEW
 	default "7270_v2"					if FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_LABOR
-	default "7270_v2_labor_core"				if FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LABOR_CORE
-	default "7270_v2_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LABOR_DSL
-	default "7270_v2_labor_ipv6"				if FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LABOR_IPV6
-#	default "7270_v2_preview"				if FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_PREVIEW
+	default "7270_v2_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LABOR_PHONE
 	default "7270_v3"					if FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR
-	default "7270_v3_labor_core"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_CORE
-	default "7270_v3_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_DSL
-	default "7270_v3_labor_ipv6"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_IPV6
-#	default "7270_v3_preview"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_PREVIEW
+	default "7270_v3_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_PHONE
 	default "7570"						if FREETZ_TYPE_FON_WLAN_7570
 	default "W501V"						if FREETZ_TYPE_SPEEDPORT_W501V
 	default "custom"					if FREETZ_TYPE_CUSTOM
@@ -606,15 +568,12 @@ config FREETZ_HAS_AVM_IPV6
 	bool "HAS AVM IPv6"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_TARGET_IPV6_SUPPORT
 	default y		if \
-		FREETZ_TYPE_LABOR_IPV6 || \
 		( \
-			( \
-				FREETZ_TYPE_FON_WLAN_7240 || \
-				FREETZ_TYPE_FON_WLAN_7270_V2 || \
-				FREETZ_TYPE_FON_WLAN_7270_V3 \
-			) && FREETZ_TYPE_LANG_DE \
-			&& ! FREETZ_TYPE_LABOR \
-		)
+			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7270_V2 || \
+			FREETZ_TYPE_FON_WLAN_7270_V3 \
+		) && FREETZ_TYPE_LANG_DE \
+		&& ! FREETZ_TYPE_LABOR
 	default n
 	help
 		Select this if your original firmware has IPv6 support.
@@ -821,7 +780,6 @@ config FREETZ_PATCH_ENUM
 config FREETZ_PATCH_DSL_EXPERT
 	bool "Patch extended DSL settings"
 	depends on \
-		! FREETZ_TYPE_LABOR_DSL && \
 		! FREETZ_REMOVE_DSLD && \
 		FREETZ_TYPE_LANG_DE && \
 		( \
@@ -1938,8 +1896,6 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.82.image"		if	FREETZ_TYPE_FON_WLAN_7170 && \
 											FREETZ_TYPE_LANG_EN && \
 											FREETZ_TYPE_ANNEX_B
-	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.99-14119.image"		if	FREETZ_TYPE_FON_WLAN_7170 && \
-											FREETZ_TYPE_LABOR_DSL
 	default "FRITZ.Box_Fon_WLAN_7240.73.04.86.image"			if	FREETZ_TYPE_FON_WLAN_7240 && \
 											! FREETZ_TYPE_LABOR
 	default "FRITZ.Box_Fon_WLAN_7270_v1.54.04.86.image"			if	FREETZ_TYPE_FON_WLAN_7270_V1 && \
@@ -1948,24 +1904,15 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7270_v2.54.04.86.image"			if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
 											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
+	default "Labor_FRITZ.Box_Fon_WLAN_7270_v2.54.04.86-18377.image"		if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
+											FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7270_16.AnnexB.en-de-es-it-fr.54.04.81.image"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
 											! FREETZ_TYPE_LANG_DE
-	default "FRITZ.Box_Fon_WLAN_7270_LabStreaming_54.04.80-16540.image"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
-											FREETZ_TYPE_LABOR_CORE
-	default "FRITZ.Box_Fon_WLAN_7270_LabDSL.AnnexB.54.04.80-16750.image"	if	(FREETZ_TYPE_FON_WLAN_7270_V1 || \
-											FREETZ_TYPE_FON_WLAN_7270_V2) && \
-											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_16_LabIPV6.AnnexB.54.04.80-17603.image"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
-											FREETZ_TYPE_LABOR_IPV6
 	default "FRITZ.Box_Fon_WLAN_7270_v3.74.04.86.image"			if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabStreaming_74.04.80-16540.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
-											FREETZ_TYPE_LABOR_CORE
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabDSL.AnnexB.74.04.80-16750.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
-											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabIPV6.AnnexB.74.04.80-17603.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
-											FREETZ_TYPE_LABOR_IPV6
+	default "Labor_FRITZ.Box_Fon_WLAN_7270_v3.74.04.86-18377.image"		if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
+											FREETZ_TYPE_LABOR_PHONE
 	default "FRITZ.Box_Fon_WLAN_7570_vDSL.en-de-fr.75.04.82.image"		if	FREETZ_TYPE_FON_WLAN_7570
 	default "fritz.box_sl_wlan.09.04.34.image"				if	FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"				if	FREETZ_TYPE_WLAN_3030
@@ -2009,21 +1956,13 @@ config FREETZ_DL_SOURCE_MD5
 								FREETZ_TYPE_ANNEX_B
 	default "b612f315216adf3b230e4d99430194a8"	if	FREETZ_TYPE_FON_WLAN_7141
 	default "5c5ff2e39056220007f145b672d0adc8"	if	FREETZ_TYPE_FON_7150
-	default "72b48986aa26a6f0a16b2a4a2bfb7bb0"	if	FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && \
-								FREETZ_TYPE_LANG_DE
 	default "b81376dcd3efd5f996491132b5e7c833"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
 	default "9097a25bcb39f067766888036a28844a"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && \
 								FREETZ_TYPE_ANNEX_A
 	default "642eea123e85d1f6cde4481c6d8bd9a1"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && \
 								FREETZ_TYPE_ANNEX_B
 	default "608637791eba4833b5e2f1f7635d6c2d"	if	FREETZ_TYPE_FON_WLAN_7240
-	default "8a31925a07ab29acde3e5f6a44fb8ec8"	if	FREETZ_TYPE_FON_WLAN_7270_V1 && ! FREETZ_TYPE_LABOR && \
-								FREETZ_TYPE_LANG_DE
-	default "7be8675a6ebf21dc670669c044d00754"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_LABOR && \
-								FREETZ_TYPE_LANG_DE
 	default "a5f56166aa8ce2b9862e8e01db0e3c8d"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_LANG_DE
-	default "2aa3636383ed7d264eb4a9c4f1e2e80f"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR && \
-								FREETZ_TYPE_LANG_DE
 	default "53dce5f6876ea3a67eeb9fed950415f6"	if	FREETZ_TYPE_FON_WLAN_7570
 	default "f483cfab8da97207248f5e0703993a72"	if	FREETZ_TYPE_WLAN_3020
 	default "31653fb1ba044375ab389474951c1cf4"	if	FREETZ_TYPE_WLAN_3030
