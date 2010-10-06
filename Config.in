@@ -170,7 +170,7 @@ config FREETZ_TYPE_FON_WLAN_7270
 		FREETZ_TYPE_FON_WLAN_7270_V2 && \
 		FREETZ_TYPE_FON_WLAN_7270_V3
 	select FREETZ_TARGET_IPV6_SUPPORT if \
-		FREETZ_TYPE_LANG_DE && ! FREETZ_TYPE_LABOR
+		FREETZ_TYPE_LANG_DE
 	bool
 
 config FREETZ_TYPE_LABOR
@@ -572,8 +572,7 @@ config FREETZ_HAS_AVM_IPV6
 			FREETZ_TYPE_FON_WLAN_7240 || \
 			FREETZ_TYPE_FON_WLAN_7270_V2 || \
 			FREETZ_TYPE_FON_WLAN_7270_V3 \
-		) && FREETZ_TYPE_LANG_DE \
-		&& ! FREETZ_TYPE_LABOR
+		) && FREETZ_TYPE_LANG_DE
 	default n
 	help
 		Select this if your original firmware has IPv6 support.
@@ -628,7 +627,7 @@ config FREETZ_HAS_NAS
 			FREETZ_TYPE_FON_WLAN_7240 || \
 			FREETZ_TYPE_FON_WLAN_7270_V2 || \
 			FREETZ_TYPE_FON_WLAN_7270_V3 \
-		) && ! FREETZ_TYPE_LABOR
+		)
 	default n
 	help
 		Select this if you have a box with NAS support.
