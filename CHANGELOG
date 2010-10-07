@@ -5,6 +5,7 @@ Latest changes:
 === Freetz-1.1-stable ===
 
 - Updated packages and libs:
+    * callmonitor 1.15.2 (Adds features up to 1.18.5)
     * sane-backends 1.0.21
     * tor 0.2.1.26
 
@@ -44,7 +45,7 @@ See svn log for more details.
   * patch-system: use shell function modsed
 
 - New patches (read online help for more info):
-    * split tr069-remove-patches 
+    * split tr069-remove-patches
 
     * Update usbstorage patches
 - Updated packages and libs:
@@ -58,42 +59,42 @@ See svn log for more details.
     * fakeroot: bump version to 1.12.2
     * xdelta: Disable build because we don't make use of it
     * toolchains:
-      - add menuconfig option to adjust HOSTCC variable 
+      - add menuconfig option to adjust HOSTCC variable
       - add ccache for download- and kernel-toolchain
-      - add two patches for gcc-3.4.6  
-        + Fix failure with newer host gccs  
-        + Fix failure on some machines  
-    * uClibc-0.9.29: Add 2 patches from openwrt 
-    * kernel-toolchain: Add two patches for gcc-3.4.6  
-      + Fix failure with newer host gccs  
-      + Fix failure on some machines 
+      - add two patches for gcc-3.4.6
+        + Fix failure with newer host gccs
+        + Fix failure on some machines
+    * uClibc-0.9.29: Add 2 patches from openwrt
+    * kernel-toolchain: Add two patches for gcc-3.4.6
+      + Fix failure with newer host gccs
+      + Fix failure on some machines
     * Bump squashfs3 version to 3.4
 
 - New tools and hooks:
     * external
     * new make targets:
-      - check-downloads: checks all downloads for availability (also 
+      - check-downloads: checks all downloads for availability (also
         $(pkg)-check-downloads)
       - mirror: downloads all package downloads into dl/mirror (also
         $(pkg)-download-mirror). This makes hardlinks for dupes in dl/ and
         dl/mirror to save disk space.
     * Add patch that enhances posibilities of /bin/onlinechanged:
       Based on changes by AVM we execute 3 locations on a call to /bin/onlinechanged:
-      1. /var/tmp/onlinechanged (compatibility to old behaviour) 
+      1. /var/tmp/onlinechanged (compatibility to old behaviour)
       2. /etc/onlinechanged/*   (new AVM behaviour)
-      3. /tmp/flash/onlinechanged/* 
+      3. /tmp/flash/onlinechanged/*
       If a package needs actions on changes of online status create a script
       make/$package/files/root/etc/onlinechanged/$action_$package.
-    
+
 
 - New patches (read online help for more info):
-    * 7270:   
-      * Option to add Annex A firmware into image  
+    * 7270:
+      * Option to add Annex A firmware into image
       * Fix flashing of firmwares > 8 MB over webinterface
       * Add volume counter (7240, 7270)
-      * AVM Plugins can be reintegrated into firmware  
-    * Fix wrong usb mounts status message in AVM webinterface (7170, 7270)  
-    * Add new status bar design (optional) 
+      * AVM Plugins can be reintegrated into firmware
+    * Fix wrong usb mounts status message in AVM webinterface (7170, 7270)
+    * Add new status bar design (optional)
 
 
 - New packages, libs, modules:
@@ -114,7 +115,7 @@ See svn log for more details.
     * openssh 5.1p1
     * pciutils 3.0.0
     * portmap 6.0
-    * sablevm-sdk 
+    * sablevm-sdk
     * socat 1.6.0.1
     * squid 3.0.STABLE9
     * tcp_wrappers 7.6
@@ -142,7 +143,7 @@ See svn log for more details.
     * curl 7.19.4
     * cyassl 0.9.9
     * devmapper 1.02.27
-    * dropbear: fixed init script not to start dropbear a second time when already running 
+    * dropbear: fixed init script not to start dropbear a second time when already running
     * dns2tcp 0.4.3
     * dnsmasq 2.47
     * dtmfbox 0.5.0
@@ -165,7 +166,7 @@ See svn log for more details.
     * pjproject 1.0.1
     * popt 1.14
     * pptp 1.7.2
-    * ruby 1.8.6-p368 
+    * ruby 1.8.6-p368
     * rrdtool 1.2.30
     * strace 4.5.18
     * streamripper 1.64.0
@@ -191,9 +192,9 @@ See svn log for more details.
     + fix strip library function for 3170
     + tune behaviour of freetz_download (retries: 3, timeout: 20s)
     + Integrate new AVM open source packages (04.70 and 7270_04.70)
-    + rudishell: 
+    + rudishell:
       * show it only with security level 0
-      * don't allow to execute any code by clicking on a wrong url  
+      * don't allow to execute any code by clicking on a wrong url
 
 
 === release Freetz-1.0.1 ===
@@ -205,9 +206,9 @@ See svn log for more details.
           we added an uClibc version flag so that correct version is used
         + added simple check for old or new uClibc; if you change
           uClibc version most stuff has to be rebuilt
-        + Delete toolchain-distclean target for download toolchain 
-        + Add *-toolchain-{dir/dist}clean targets for download toolchain 
-        + fix some toolchain dependencies  
+        + Delete toolchain-distclean target for download toolchain
+        + Add *-toolchain-{dir/dist}clean targets for download toolchain
+        + fix some toolchain dependencies
         + adapt updates from buildroot
 
 - New tools and hooks:
@@ -218,14 +219,14 @@ See svn log for more details.
     * remove DECT-files and modules on W900V
 
 - New packages, libs, modules:
- 
+
 - Updated tools and hooks:
     * push_firmware now supports flashing from complete firmware images (by unpacking to tempfile)
 
 - Updated patches:
     * usbstorage: delete storage.sh patch and therefore add sed line to usbstorage.sh
     * remove tr069: remove tr069 stuff for 7170, 7270
-    * remove_dect: don't remove dect firmware files otherwise boot process will hang 
+    * remove_dect: don't remove dect firmware files otherwise boot process will hang
 
 - Updated packages and libs:
     * avm-firewall 2.0.4_rc2
@@ -273,7 +274,7 @@ See svn log for more details.
 - Web interface:
 
 - Other stuff:
-    * kernel: 
+    * kernel:
         + support for new sources (04.57)
         + add patch for multiple ftdi devices
         + add squashfs-3.3 patch for 2.6.19.2
@@ -307,7 +308,7 @@ See svn log for more details.
     * target toolchain:
         + uclibc: disable UCLIBC_HAS_FOPEN_LARGEFILE_MODE even if LFS is enabled
         + add uClibc-0.9.29 (doesn't work realy good and will be revised for
-          next release) 
+          next release)
     * download toolchain:
         + update because of above changes
     * Add squashfs3 utils
@@ -380,7 +381,7 @@ See svn log for more details.
     * samba
     * webmenu signed
     * webmenu wol
-    * usbstorage patch 
+    * usbstorage patch
         + enabled by default
         + use fstyp to automount ext2, ext3, vfat and ntfs filesystems
 
@@ -471,17 +472,17 @@ See svn log for more details.
     * autorun/autoend functionality for mass storage devices
     * use tmpfs instead of ramfs for /var
     * enabled more packages for inetd
-    * recover-eva: 
+    * recover-eva:
         + fix error that tools/tar wasn't found on some systems
         + fix booting kernel image directly from RAM
-    * fwmod: 
+    * fwmod:
         + add FWMOD_PATCH_TEST and FWMOD_NOPACK environment variable
           By setting these to y the build process can be interrupted after
           patching the firmware respectively before packing the firmware.
         + use "-no-exports, -no-progress and -no-sparse" as additional
           parameters for squashfs3
         + optimise the way FILESYSTEM_BLOCKSIZE is determined
-    * kernel: 
+    * kernel:
         + activate EPOLL support (needed by AVM phone book daemon (pbd))
         + reactivate "replace kernel" for firmwares with up to date sources
         + add kernel patch for squashfs3
@@ -489,14 +490,14 @@ See svn log for more details.
             + don't calculate hashsize, use 256 buckets
             + ip_conntrack_tcp_be_liberal=1
     * add extract-images, a little heuristic (and not very fast) tool which can
-      extract bootloaders (urlader.image) as well as hidden root kernel + 
-      SquashFS images (kernel.image) from any type of compound file, 
+      extract bootloaders (urlader.image) as well as hidden root kernel +
+      SquashFS images (kernel.image) from any type of compound file,
       e.g. recover-EXEs.
     * add hexgrep, an awk-driven tool for matching hex sequences in input files
       It shows decimal file offsets as well as the matched sequences, because
       the latter are regex-matched and can thus vary.
     * add shell script for unpacking LZMA-compressed Linux kernel to tools
-    * Rename tools/push_firmware.sh to tools/push_firmware and 
+    * Rename tools/push_firmware.sh to tools/push_firmware and
       tools/lib_report.sh to tools/lib_report in order to unify naming of shell
       scripts tools/*. For instance, tools/ds_* do not have '.sh' extensions
       either.
