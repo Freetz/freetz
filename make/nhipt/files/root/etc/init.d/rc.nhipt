@@ -1,8 +1,6 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
-
+BOOTFILE="/tmp/flash/nhiptboot.cfg"
 DEFAULT_MODULES="ip_tables iptable_filter x_tables ip_conntrack ip_conntrack_ftp ipt_LOG ipt_REJECT xt_multiport xt_state"
 DAEMON=nhipt
 
@@ -11,7 +9,7 @@ DAEMON=nhipt
 #	echo "MAIN ENTERING ---$1" >> /var/tmp/log.log
 
 config() {
-	modlib_config
+	[ ! -r "/var/tmp/nhipt.par" -a -e $BOOTFILE ] && . $BOOTFILE
 }
 
 start() {
@@ -46,7 +44,7 @@ start() {
 	fi
 	if [ "$NHIPT_START_CGI" = "running" ]; then
 		if [ "$cgi_run" = "no" ]; then
-			httpd -P /var/run/nhipd.pid -p $NHIPT_SERVERIP:$NHIPT_PORT -h $NHIPT_ROOT -c /mod/etc/httpd.conf -r Freetz
+			httpd -P /var/run/nhipd.pid -p $NHIPT_SERVERIP:$NHIPT_PORT -h $NHIPT_ROOT -c /mod/etc/webcfg.conf -r Freetz
 		fi
 	fi
 	if [ "$NHIPT_START_LOG" = "running" ]; then
@@ -64,6 +62,16 @@ stop() {
 }
 
 case $1 in
+	""|load)
+		modreg cgi $DAEMON NHIPT
+		modreg daemon --hide $DAEMON
+		start
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi 'nhipt'
+		stop
+		;;
 	start)
 		start
 		;;
@@ -77,25 +85,8 @@ case $1 in
 	status)
 		echo 'running'
 		;;
-	""|load)
-		# CGI registrieren
-		touch /var/tmp/flash/nhipt.diff
-		if [ ! -r "/var/tmp/nhipt.par" ]; then
-			chmod 644 /tmp/flash/nhiptboot.cfg
-			. /tmp/flash/nhiptboot.cfg
-		fi
-		modreg cgi $DAEMON NHIPT
-		modreg daemon --hide $DAEMON
-		echo "done."
-		exit 0
-		;;
-	unload)
-		modunreg daemon $DAEMON
-		modunreg cgi 'nhipt'
-		stop
-		;;
 	*)
-		echo "Usage: $0 [start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac

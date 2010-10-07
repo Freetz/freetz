@@ -1,24 +1,18 @@
 #!/bin/sh
 
-	post_string=""
-	if [ "$REQUEST_METHOD" = "POST" ]; then
-		read post_string
-	fi
-	for INPUT_INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
-		x=$x+"$INPUT_INTERFACE"
-	done
-	lanip="$(ifconfig | grep -v lan:0 | grep -A 2 lan | awk -F'[ :]+' '/inet addr/{print $4}')"
+post_string=""
+if [ "$REQUEST_METHOD" = "POST" ]; then
+	read post_string
+fi
+for INPUT_INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
+	x=$x+"$INPUT_INTERFACE"
+done
+lanip="$(ifconfig | grep -v lan:0 | grep -A 2 lan | awk -F'[ :]+' '/inet addr/{print $4}')"
 ###POSTBACK INTERFACE
-	if [ $QUERY_STRING != "" ] || [ $post_string != "" ] || [ "$NHIPT_CONFIG" = "box" ]
-	then
-
-
-
-
-
+if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = "box" ]; then
 
 # awk Error Lines + 20 = Real Line
-	    (awk -v IFCS=$x -v PSTR=$post_string -v QSTR=$QUERY_STRING -v LANIP=$lanip 'BEGIN { 
+	(awk -v IFCS=$x -v PSTR=$post_string -v QSTR=$QUERY_STRING -v LANIP=$lanip 'BEGIN { 
 		myIP = ENVIRON["REMOTE_ADDR"];
 		changed = 0; 		# FW CONFIGURATION CHANGED
 		dirchanged = 0; 	# DIRECTORIES CHANGED
@@ -284,9 +278,6 @@ function createStartSequence(logtarget){
 if (logtarget == 0) {
 if (myConf["BACK"] == ""){ myBackUp = ""; } else { myBackUp = "cat " BootTargetOld "nhipt.cfg > " myConf["BACK"] "/\"$(date +\"%Y-%m-%d-%H-%M-%S\")\"-nhipt.cfg\n";}
 ret = system("(" myBackUp "cat <<EOF > /var/tmp/nhipt.cfg \n#!/bin/sh\n\n" dsldoff bootdelay dsldon "\n\
-. /mod/etc/conf/mod.cfg\
-echo \"/:\\$MOD_HTTPD_USER:\\$MOD_HTTPD_PASSWD\" > /mod/etc/httpd.conf\n\
-httpd -P /var/run/nhipd.pid -p " LANIP ":" myPort " -h " myRoot " -c /mod/etc/httpd.conf -r Freetz\n \
 echo \"#!/bin/sh\" > /var/tmp/logfw.sh\necho \"\" >> /var/tmp/logfw.sh\
 echo \47running=\\$(ps | grep -v grep | grep -o iptlogger)\47 >> /var/tmp/logfw.sh\
 echo \47if [ -z \\$running ]\47 >> /var/tmp/logfw.sh\
@@ -517,8 +508,7 @@ function urldecode (s) {
  	}' 2>&1) >> /var/tmp/nhipt.log
 fi
 
-if [ "$NHIPT_CONFIG" = "box" ] 
-then 
+if [ "$NHIPT_CONFIG" = "box" ]; then 
 	echo "iptables reconfigured"
 else
 
@@ -539,7 +529,7 @@ if [ -n "$(lsmod | grep -e '^ip6table_raw')" ];		then ip6tables -t raw -S > /var
 	print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"  \"http://www.w3.org/TR/html4/strict.dtd\">";
 	print "<html xmlns=\"http://www.w3.org/1999/xhtml\" >";
 	print "<head>";
-	print "<title>NHIPT - IPTABLES FIREWALL ADMIN INTERFACE FOR FRITZ!BOX 7270</title>";
+	print "<title>NHIPT - IPTABLES FIREWALL ADMIN INTERFACE FOR FRITZ!BOX</title>";
 	print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />";
 	print "<meta http-equiv=\"pragma\" content=\"no-cache\">";
 	print "<meta http-equiv=\"expires\" content=\"-1\">";
