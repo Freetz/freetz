@@ -17,12 +17,13 @@ start() {
 	fi
 
 	swapon "$MOD_SWAP_FILE" 2>/dev/null
+	exitval=$?
 
-	if has_swap; then
+	if [ "$exitval" -eq 0 ] then
 		echo 'done.'
 	else
 		echo 'failed.'
-		exit 1
+		exit $exitval
 	fi
 }
 
@@ -34,10 +35,9 @@ stop() {
 		exit 1
 	fi
 
-	sed '1d' /proc/swaps |
-		while read swap _; do
-			swapoff $swap
-		done
+	sed '1d' /proc/swaps | while read swap _; do
+		swapoff $swap
+	done
 
 	if has_swap; then
 		echo 'failed.'
