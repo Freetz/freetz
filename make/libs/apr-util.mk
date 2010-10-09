@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 1.3.9)
+$(call PKG_INIT_LIB, 1.3.10)
 $(PKG)_MAJOR_VERSION:=1
-$(PKG)_LIB_VERSION:=0.3.9
+$(PKG)_LIB_VERSION:=0.3.10
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=29dd557f7bd891fc2bfdffcfa081db59
+$(PKG)_SOURCE_MD5:=6a6f501a1b2a45166b8ffd6df29204bb
 $(PKG)_SITE:=http://apache.mirroring.de/apr/
 $(PKG)_MAJOR_LIBNAME=libaprutil-$(APR_UTIL_MAJOR_VERSION)
 $(PKG)_LIBNAME=$($(PKG)_MAJOR_LIBNAME).so.$($(PKG)_LIB_VERSION)
@@ -27,6 +27,7 @@ $(PKG)_CONFIGURE_ENV += APR_BUILD_DIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share
 
 $(PKG)_CONFIGURE_OPTIONS += --with-apr="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-$(APR_UTIL_MAJOR_VERSION)-config"
 $(PKG)_CONFIGURE_OPTIONS += --with-berkeley-db=$(if $(FREETZ_LIB_libaprutil_WITH_LIBDB),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libaprutil_WITH_LIBDB),--with-dbm=db48)
 $(PKG)_CONFIGURE_OPTIONS += --with-expat="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-pgsql=no
 $(PKG)_CONFIGURE_OPTIONS += --without-sqlite2
