@@ -1,0 +1,12 @@
+--- lib/blkid/devname.c
++++ lib/blkid/devname.c
+@@ -53,6 +53,9 @@
+ 	if (!cache || !devname)
+ 		return NULL;
+ 
++	if (strncmp(devname, "/dev/mtd", 8) == 0)
++		return NULL;
++
+ 	list_for_each(p, &cache->bic_devs) {
+ 		tmp = list_entry(p, struct blkid_struct_dev, bid_devs);
+ 		if (strcmp(tmp->bid_name, devname))

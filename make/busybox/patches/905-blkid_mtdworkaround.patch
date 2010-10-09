@@ -1,0 +1,12 @@
+--- util-linux/volume_id/get_devname.c
++++ util-linux/volume_id/get_devname.c
+@@ -99,6 +99,9 @@
+ 	if (major(statbuf->st_rdev) == 2)
+ 		return TRUE;
+ 
++	if (strncmp(device, "/dev/mtd", 8) == 0)
++		return TRUE;
++
+ 	fd = open(device, O_RDONLY);
+ 	if (fd < 0)
+ 		return TRUE;
