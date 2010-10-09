@@ -21,17 +21,17 @@
  SRCS1=$(speak_SOURCES)
  OBJS1=$(patsubst %.cpp,%.o,$(SRCS1))
 -LIBS1=-lstdc++ $(LIB_AUDIO) -lpthread $(EXTRA_LIBS)
-+LIBS1=-static -lstdc++ $(EXTRA_LIBS)
++LIBS1=-lm $(EXTRA_LIBS)
  
  SRCS2=$(libespeak_SOURCES)
  OBJS2=$(patsubst %.cpp,x_%.o,$(SRCS2))
 -LIBS2=-lstdc++ $(LIB_AUDIO) -lpthread
-+LIBS2=-static -lstdc++ -Wl,-Bdynamic -lpthread
++LIBS2=-lpthread
  
  SRCS3 = espeak.cpp
  OBJS3=$(patsubst %.cpp,%.o,$(SRCS3))
 -LIBS3=-lstdc++ -L . -lespeak
-+LIBS3=-lstdc++ -L . -lespeak
++LIBS3=-lm -L . -lespeak
  
 -CXXFLAGS=-O2
 +CXXFLAGS=-Os -march=mips32 -mips32 -pipe
