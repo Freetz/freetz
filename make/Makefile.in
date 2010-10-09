@@ -112,10 +112,11 @@ TARGET_CONFIGURE_ENV += CXXFLAGS="$(TARGET_CFLAGS)"
 TARGET_CONFIGURE_ENV += LDFLAGS=""
 TARGET_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../lib/pkgconfig"
 
-CONFIG_CACHE_PATH:= $(FREETZ_BASE_DIR)/$(SOURCE_DIR)/config.cache
+CONFIG_CACHE_PATH := $(FREETZ_BASE_DIR)/$(SOURCE_DIR)/config.cache
+CONFIG_CACHE_BACKUP_DIR := $(FREETZ_BASE_DIR)/$(SOURCE_DIR)/_config.cache-backup
 # $1 optional suffix
 define BACKUP_CONFIG_CACHE
-if [ -e $(CONFIG_CACHE_PATH) ]; then cp -a $(CONFIG_CACHE_PATH) $(CONFIG_CACHE_PATH)-`date +%Y%m%d-%H%M%S`$(if $1,-$1,); fi;
+if [ -e $(CONFIG_CACHE_PATH) ]; then mkdir -p $(CONFIG_CACHE_BACKUP_DIR); cp -a $(CONFIG_CACHE_PATH) $(CONFIG_CACHE_BACKUP_DIR)/config.cache-`date +%Y%m%d-%H%M%S`$(if $1,-$1,); fi;
 endef
 
 # Common options for configure
