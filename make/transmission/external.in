@@ -1,10 +1,19 @@
+config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION
+	boolean "transmission"
+	default n
+	help
+
+menu transmission
+	depends on EXTERNAL_FREETZ_PACKAGE_TRANSMISSION
+
 config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_CLIENT
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION_CLIENT
 	bool "Transmission interactive client"
 	default n
 	help
 		external this file:
-		 /usr/bin/transmissioncli
+		 /usr/bin/transmission-cli
 
 config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_DAEMON
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION_DAEMON
@@ -22,6 +31,30 @@ config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_REMOTE
 		external these file(s):
 		 /usr/bin/transmission-remote
 
+config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_CREATE
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION_CREATE
+	bool "transmission-create"
+	default n
+	help
+		external these file(s):
+		 /usr/bin/transmission-create
+
+config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_EDIT
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION_EDIT
+	bool "transmission-edit"
+	default n
+	help
+		external these file(s):
+		 /usr/bin/transmission-edit
+
+config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_SHOW
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION_SHOW
+	bool "transmission-show"
+	default n
+	help
+		external these file(s):
+		 /usr/bin/transmission-show
+
 config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE
 	bool "Transmission web interface"
@@ -29,3 +62,5 @@ config EXTERNAL_FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE
 	help
 		external all files under
 		 /usr/share/transmission-web-home
+
+endmenu
