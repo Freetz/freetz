@@ -14,7 +14,7 @@ cleanup() {
 
 configure() {
 	cleanup
-
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	mkdir -p /mod/etc/$DAEMON
 
 	if [ "$XMAIL_UNPRIV" = "yes" ]; then
@@ -51,7 +51,7 @@ configure() {
 	else
 		CMDOPTS="$CMDOPTS -P-"
 	fi
-	if [ "$XMAIL_POP3S" = "yes" -a "$XMAIL_SSLSUPPORT" = 1 ]; then
+	if [ "$XMAIL_POP3S" = "yes" -a "$FREETZ_PACKAGE_XMAIL_WITH_SSL" == "y" ]; then
 		[ -n "$XMAIL_POP3SPORT" ] && CMDOPTS="$CMDOPTS -Bp $XMAIL_POP3SPORT"
 	else
 		CMDOPTS="$CMDOPTS -B-"
@@ -62,7 +62,7 @@ configure() {
 	else
 		CMDOPTS="$CMDOPTS -S-"
 	fi
-	if [ "$XMAIL_SSMTP" = "yes" -a "$XMAIL_SSLSUPPORT" = 1 ]; then
+	if [ "$XMAIL_SSMTP" = "yes" -a "$FREETZ_PACKAGE_XMAIL_WITH_SSL" == "y" ]; then
 		[ -n "$XMAIL_SSMTPPORT" ] && CMDOPTS="$CMDOPTS -Xp $XMAIL_SSMTPPORT"
 	else
 		CMDOPTS="$CMDOPTS -X-"
@@ -74,7 +74,7 @@ configure() {
 	else
 		CMDOPTS="$CMDOPTS -C-"
 	fi
-	if [ "$XMAIL_CTRLS" = "yes" -a "$XMAIL_SSLSUPPORT" = 1 ]; then
+	if [ "$XMAIL_CTRLS" = "yes" -a "$FREETZ_PACKAGE_XMAIL_WITH_SSL" == "y" ]; then
 		[ "$XMAIL_SYSTEMLOG" = "yes" -a "$XMAIL_CTRL" = "no" ] && CMDOPTS="$CMDOPTS -Cl"
 	else
 		CMDOPTS="$CMDOPTS -W-"
@@ -98,9 +98,6 @@ start() {
 		echo "directory $XMAIL_MAILLOCATION not available ... failed."
 		exit 1
 	fi
-
-	# Check for SSL support
-	/usr/lib/MailRoot/bin/CtrlClnt 2>&1 | grep -qe ' -S ' && XMAIL_SSLSUPPORT=1
 
 	configure
 
