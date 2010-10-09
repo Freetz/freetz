@@ -954,18 +954,22 @@ menu "Remove piglet file"
 
 	config FREETZ_REMOVE_PIGLET_V1
 	bool "Remove 7170 v1 piglet file"
-	help 
+	help
 		The firmware of the 7170 contains two piglet files. Which one is needed depends
 		on the hardware version (v1 and v2) of your box. You can safely remove the
 		unneeded file.
+
+		Hint: If "echo $HWRevision_BitFileCount" returns "1" you could select this patch.
 
 
 	config FREETZ_REMOVE_PIGLET_V2
 	bool "Remove 7170 v2 piglet file"
-	help 
+	help
 		The firmware of the 7170 contains two piglet files. Which one is needed depends
 		on the hardware version (v1 and v2) of your box. You can safely remove the
 		unneeded file.
+
+		Hint: If "echo $HWRevision_BitFileCount" returns "" (nothing) you could select this patch.
 
 endmenu
 
@@ -1955,7 +1959,7 @@ config FREETZ_DL_SOURCE_MD5
 								FREETZ_TYPE_ANNEX_B
 	default "b612f315216adf3b230e4d99430194a8"	if	FREETZ_TYPE_FON_WLAN_7141
 	default "5c5ff2e39056220007f145b672d0adc8"	if	FREETZ_TYPE_FON_7150
-	default "72b48986aa26a6f0a16b2a4a2bfb7bb0"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_DE 
+	default "72b48986aa26a6f0a16b2a4a2bfb7bb0"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_DE
 	default "b81376dcd3efd5f996491132b5e7c833"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
 	default "9097a25bcb39f067766888036a28844a"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && \
 								FREETZ_TYPE_ANNEX_A
