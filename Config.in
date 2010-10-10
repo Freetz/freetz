@@ -448,7 +448,7 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	depends on \
 		! FREETZ_TYPE_LABOR && \
 		! FREETZ_TYPE_FON_WLAN_7240 && \
-		! FREETZ_TYPE_FON_WLAN_7270 && \
+		! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE) && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN)
 	default y
 
@@ -459,7 +459,7 @@ config FREETZ_REPLACE_KERNEL
 					FREETZ_AVM_VERSION_3270_04_80 || \
 					FREETZ_AVM_VERSION_7270_04_80 || \
 					FREETZ_AVM_VERSION_7570_04_82 \
-				     )
+					)
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
