@@ -12,9 +12,8 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(IPUTILS_DIR) traceroute6 tracepath6 tracepath ping ping6 \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)"
-		
-		
+		CFLAGS="$(TARGET_CFLAGS) -D_GNU_SOURCE -Wstrict-prototypes"
+
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
