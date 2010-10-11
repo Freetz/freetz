@@ -125,6 +125,7 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked $(GCC_INITIAL_PREREQ)
 		--disable-libgomp \
 		--disable-libmudflap \
 		--disable-multilib \
+		--disable-tls \
 		$(GCC_DECIMAL_FLOAT) \
 		$(GCC_WITH_HOST_GMP) \
 		$(GCC_WITH_HOST_MPFR) \
@@ -190,6 +191,7 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(GCC_STAGING_PREREQ)
 		--disable-libgomp \
 		--disable-multilib \
 		--disable-libmudflap \
+		--disable-tls \
 		$(GCC_WITH_HOST_GMP) \
 		$(GCC_WITH_HOST_MPFR) \
 		$(GCC_SHARED_LIBGCC) \
