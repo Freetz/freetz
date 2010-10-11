@@ -31,6 +31,10 @@ $(call REPLACE_LIBTOOL,,src/scripts/install,)
 # so that it doesn't create shared libraries (i.e. set build_libtool_libs to no).
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-usb
+$(PKG)_CONFIGURE_OPTIONS += --enable-owhttpd
+$(PKG)_CONFIGURE_OPTIONS += --enable-owfs
+$(PKG)_CONFIGURE_OPTIONS += --enable-owftpd
+$(PKG)_CONFIGURE_OPTIONS += --enable-owserver
 $(PKG)_CONFIGURE_OPTIONS += --disable-tai8570
 $(PKG)_CONFIGURE_OPTIONS += --disable-thermocouple
 $(PKG)_CONFIGURE_OPTIONS += --disable-i2c
@@ -48,6 +52,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-owside
 $(PKG)_CONFIGURE_OPTIONS += --disable-owcapi
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-zero
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --with-libusb-config="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libusb-config"
 $(PKG)_CONFIGURE_OPTIONS += --with-fuseinclude="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include"
 $(PKG)_CONFIGURE_OPTIONS += --with-fuselib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"

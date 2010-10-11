@@ -10,8 +10,10 @@ $(PKG)_SOURCE_MD5:=4aa921c9d65af281d1a16d6c1788b15f
 $(PKG)_CONFIGURE_OPTIONS += --enable-pkgconfig
 $(PKG)_CONFIGURE_OPTIONS += --with-user=""
 $(PKG)_CONFIGURE_OPTIONS += --with-group=""
+$(PKG)_CONFIGURE_OPTIONS += --with-optimisation=""
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

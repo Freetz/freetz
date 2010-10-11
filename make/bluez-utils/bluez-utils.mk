@@ -18,7 +18,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 # as we (want to) build the package with no libusb support, change prefix of libusb related variables to ensure that no libusb dependent package is affected
 # as of version 2.25 --with-usb=no option doesn't affect anything, so we have to set ac_variable explcitly in order to get bluez-utils built with no usb support
 $(PKG)_CONFIGURE_OPTIONS += --with-usb=no
-$(PKG)_AC_VARIABLES := header_usb_h lib_usb_usb_open lib_usb_usb_get_busses lib_usb_usb_interrupt_read
+$(PKG)_AC_VARIABLES := header_usb_h lib_usb_usb_open lib_usb_usb_get_busses lib_usb_usb_interrupt_read header_fuse_h lib_fuse_fuse_main
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
 $(PKG)_CONFIGURE_ENV += $(foreach ac_variable,$($(PKG)_AC_VARIABLES),bluez_utils_cv_$(ac_variable)=no)
 
