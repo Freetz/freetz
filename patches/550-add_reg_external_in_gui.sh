@@ -3,7 +3,7 @@
 echo1 "adding GUI switch to set reg_from_outside"
 
 SEARCHSTR='-name fon_config_End.frm  -o -name fon_config.frm -o -name fon_config_IPPhone_1.[j|h]*'
-isFreetzType 7240 7270 && ! isFreetzType LABOR && SEARCHSTR="$SEARCHSTR"' -o -name fon1IPPhone*'
+isFreetzType 7240 7270 && SEARCHSTR="$SEARCHSTR"' -o -name fon1IPPhone*'
 
 for file_n in $(find ${FILESYSTEM_MOD_DIR}/usr/www/ -type f  \( $SEARCHSTR \) -print); do
 	case $(basename "$file_n") in
