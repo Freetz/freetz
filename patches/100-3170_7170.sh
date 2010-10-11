@@ -11,9 +11,9 @@ cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FILESY
 
 echo2 "deleting obsolete files"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit1"
-for i in bin/mini* bin/reinit_jffs2 bin/showvoipdstat bin/telephon.plugin bin/voip* etc/init.d/rc.voip etc/minid \
+for i in bin/mini* bin/playerd_tables bin/reinit_jffs2 bin/showvoipdstat bin/telephon.plugin bin/voip* etc/init.d/rc.voip etc/minid \
 	lib/libcapi* lib/libfon* lib/libmscodex* lib/libosip* lib/libphone* lib/librtp* lib/libsip* lib/libspeex* \
-	lib/libavmaudio* lib/libconverttopdf* lib/libavcodec* lib/libavformat* lib/libmedia* lib/libpop3* \
+	lib/libavmaudio* lib/libconverttopdf* lib/libavcodec* lib/libavformat* lib/libmedia* \
 	lib/modules/2.6.13.1-ohio/kernel/drivers/char/audio lib/modules/2.6.13.1-ohio/kernel/drivers/isdn \
 	lib/modules/2.6.13.1-ohio/kernel/drivers/net/rfcntl lib/modules/2.6.13.1-ohio/kernel/fs/jffs2 \
 	lib/modules/2.6.13.1-ohio/kernel/fs/isofs  usr/bin/capiotcp_server usr/bin/faxd usr/bin/pbd usr/bin/resettam \
