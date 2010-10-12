@@ -1,5 +1,5 @@
---- networking/libiproute/ipaddress.c	2010-07-25 00:12:43.000000000 +0200
-+++ networking/libiproute/ipaddress.c	2010-08-05 11:33:47.000000000 +0200
+--- networking/libiproute/ipaddress.c.orig	2010-10-09 21:57:14.000000000 +0200
++++ networking/libiproute/ipaddress.c	2010-10-12 13:15:41.000000000 +0200
 @@ -164,6 +164,7 @@
  		printf("master %s ", ll_idx_n2a(*(int*)RTA_DATA(tb[IFLA_MASTER]), b1));
  	}
@@ -16,9 +16,9 @@
  	if (G_filter.showqueue)
  		print_queuelen((char*)RTA_DATA(tb[IFLA_IFNAME]));
  
---- networking/libiproute/iplink.c	2010-07-25 00:12:43.000000000 +0200
-+++ networking/libiproute/iplink.c	2010-08-05 11:39:03.000000000 +0200
-@@ -274,6 +274,7 @@
+--- networking/libiproute/iplink.c.orig	2010-10-09 21:58:13.000000000 +0200
++++ networking/libiproute/iplink.c	2010-10-12 13:15:41.000000000 +0200
+@@ -279,6 +279,7 @@
  	return ipaddr_list_or_flush(argv, 0);
  }
  
@@ -26,7 +26,7 @@
  #ifndef NLMSG_TAIL
  #define NLMSG_TAIL(nmsg) \
  	((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
-@@ -360,20 +361,31 @@
+@@ -365,20 +366,31 @@
  		return 2;
  	return 0;
  }
