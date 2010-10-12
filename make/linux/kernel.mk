@@ -68,12 +68,14 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 			ln -sf ../../$$i $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; \
 		fi \
 	done
-	@if [ -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/avm_net_trace.h -a \
-		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h ]; then \
-			$(call MESSAGE, Linking  $(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h); \
-			ln -sf ../../drivers/char/avm_net_trace/avm_net_trace.h \
-				$(KERNEL_BUILD_ROOT_DIR)/include/linux/avm_net_trace.h; \
-	fi
+	@for i in avm_net_trace.h avm_net_trace_ioctl.h; do \
+		if [ -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/$$i -a \
+			! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$$i ]; then \
+				$(call MESSAGE, Linking  $(KERNEL_BUILD_ROOT_DIR)/include/linux/$$i); \
+				ln -sf ../../drivers/char/avm_net_trace/$$i \
+					$(KERNEL_BUILD_ROOT_DIR)/include/linux/$$i; \
+		fi \
+	done
 	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Makefile.26 -printf '%h\n'); do \
 		if [ ! -e $$i/Makefile ] ; then \
 			$(call MESSAGE, Linking  $$i/Makefile); \
