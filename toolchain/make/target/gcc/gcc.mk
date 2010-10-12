@@ -58,7 +58,7 @@ endif
 
 GCC_SHARED_LIBGCC:=--enable-shared
 EXTRA_GCC_CONFIG_OPTIONS:=--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_31)),y)
+ifneq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.4)
 # enable non-PIC for mips* targets
 EXTRA_GCC_CONFIG_OPTIONS += --with-mips-plt
