@@ -52,8 +52,8 @@ autohelper() {
 		echo "Usage: $0 [autostart|autostop] [file or partition]" 1>&2
 		return 1
 	fi
-	echo "$MOD_SWAP_FILE" | grep -q $2 || return
-	[ "$MOD_SWAP" != yes ] && return
+	echo "$MOD_SWAP_FILE" | grep -q $2 || exit 2 # not the defined swap-partition, abort
+	[ "$MOD_SWAP" != yes ] && exit 3 # auto-mode is disabled, abort
 	$1 >> /var/log/mod_swap.log
 }
 
