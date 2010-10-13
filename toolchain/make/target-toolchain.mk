@@ -21,7 +21,7 @@ ifeq ($(strip $(FREETZ_TARGET_TOOLCHAIN)),y)
 	TARGET_TOOLCHAIN += binutils_target gcc_target uclibc_target
 endif
 
-TARGET_TOOLCHAIN += uclibcxx libtool-host gdb
+TARGET_TOOLCHAIN += libtool-host gdb
 
 $(TARGET_TOOLCHAIN_DIR):
 	@mkdir -p $@
