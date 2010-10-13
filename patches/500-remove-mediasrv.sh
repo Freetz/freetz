@@ -9,6 +9,7 @@ for files in \
 	sbin/mediasrv \
 	sbin/start_mediasrv \
 	sbin/stop_mediasrv \
+	bin/playerd* \
 	bin/cjpeg \
 	bin/djpeg \
 	bin/pnm* \
