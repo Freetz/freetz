@@ -32,7 +32,10 @@ ${SCRIPTPATCHER} -fri ${RUN_MOUNT_FILE} -s "nicename" -o ${RUN_MOUNT_FILE} -n "$
 ${SCRIPTPATCHER} -fdi ${RUN_MOUNT_FILE} -s "do_mount" -o ${RUN_MOUNT_FILE} # delete do_mount()
 
 echo2 "patching /etc/hotplug/storage"
+${SCRIPTPATCHER} -fdi ${STORAGE_FILE} -s "do_umount_locked" -o ${STORAGE_FILE} # delete do_umount_locked()
 ${SCRIPTPATCHER} -fri ${STORAGE_FILE} -s "do_umount" -o ${STORAGE_FILE} -n "$RUN_LIBMODMOUNT" # replace do_umount()
 ${SCRIPTPATCHER} -fdi ${STORAGE_FILE} -s "hd_spindown_control" -o ${STORAGE_FILE} # delete hd_spindown_control()
 ${SCRIPTPATCHER} -tri ${STORAGE_FILE} -s "reload" -o ${STORAGE_FILE} -n "reload)$PATCHED_BY_FREETZ\nstorage_reload$PATCHED_BY_FREETZ\n;;" # replace case section reload)
 ${SCRIPTPATCHER} -tri ${STORAGE_FILE} -s "unplug" -o ${STORAGE_FILE} -n "unplug)$PATCHED_BY_FREETZ\nstorage_unplug "'$'"* $PATCHED_BY_FREETZ\n;;" # replace case section unplug)
+modsed "/remove)/a \
+	remove_swap "'$'"*$PATCHED_BY_FREETZ" ${STORAGE_FILE} # add removing of swap partitions to section remove)
