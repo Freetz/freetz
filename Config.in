@@ -1619,18 +1619,15 @@ config FREETZ_REMOVE_VOIP_ISDN
 config FREETZ_REMOVE_WEBDAV
 	bool "Remove webdav"
 	depends on \
-		! FREETZ_PACKAGE_DAVFS2 && \
-		( \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270_V2 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
 		FREETZ_TYPE_FON_WLAN_7570 || \
 		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3\
-		)
+		FREETZ_TYPE_WLAN_3270_V3
 	default n
 	help
-		Remove webdav (Online-Speicher) feature. Saves about 500 KB of
+		Remove webdav (Online-Speicher) feature. Saves about 510 KB of
 		uncompressed data size.
 
 config FREETZ_REMOVE_WLAN
