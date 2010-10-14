@@ -1441,6 +1441,24 @@ config FREETZ_REMOVE_NTFS
 		Be careful, mounting volumes with this filesystem will not work.
 		It saves about 118K compressed space in kernel.image.
 
+config FREETZ_REMOVE_PRINTSERV
+	bool "Remove printserv"
+	depends on FREETZ_HAS_USB_HOST
+	default n
+	help
+		Remove /sbin/printserv daemon. Select this patch if you don't want to
+		connect a printer to your box or if you plan to use usb/ip package.
+		Saves about 8 KB of compressed space.
+
+config FREETZ_REMOVE_PRINTSERV_MODULE
+	bool "Remove usblp kernel module"
+	depends on FREETZ_REMOVE_PRINTSERV && \
+		! FREETZ_MODULE_usblp
+	default n
+	help
+		Remove usblp kernel module. Without this module it's not possible to run
+		a printer on your box. Saves about 12 KB of compressed space.
+
 config FREETZ_REMOVE_RUNCLOCK
 	bool "Remove run_clock"
 	default n
