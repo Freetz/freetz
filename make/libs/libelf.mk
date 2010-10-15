@@ -21,6 +21,7 @@ $(PKG)_CONFIGURE_ENV += libelf_cv_struct_elf64_rel=yes
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-elf64=yes
+$(PKG)_CONFIGURE_OPTIONS += --enable-compat
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
