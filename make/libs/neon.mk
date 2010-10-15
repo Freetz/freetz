@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 0.29.3)
-$(PKG)_LIB_VERSION:=27.2.3
+$(call PKG_INIT_LIB, 0.29.5)
+$(PKG)_LIB_VERSION:=27.2.5
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ba1015b59c112d44d7797b62fe7bee51
+$(PKG)_SOURCE_MD5:=ff369e69ef0f0143beb5626164e87ae2
 $(PKG)_SITE:=http://www.webdav.org/neon
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libneon.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libneon.so.$($(PKG)_LIB_VERSION)
