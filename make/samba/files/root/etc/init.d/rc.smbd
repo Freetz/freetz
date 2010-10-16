@@ -14,20 +14,29 @@ config() {
 	mkdir -p /mod/etc/samba
 	/mod/etc/default.samba/samba_conf > $CONF_FILE
 
-	echo > $USERS_MAP
-	echo > $PASS_FILE
-
-	[ -n "$SAMBA_USER" ] &&
+	# create users.map, if needed
+	if [ -z "$SAMBA_USER" -o "$SAMBA_SYSTEMUSER" == "$SAMBA_USER" ]; then
+		echo > $USERS_MAP
+	else
 		echo "$SAMBA_SYSTEMUSER = \"$SAMBA_USER\"" > $USERS_MAP
-
-	if [ -n "$SAMBA_PASSWORD" ]; then
-		uid=$(id -u $SAMBA_SYSTEMUSER)
-		echo "$SAMBA_SYSTEMUSER:$uid:$SAMBA_PASSWORD:[UX         ]:LCT-00000001:" > $CLEAR_FILE
 	fi
+
+	# encrypt password, if a new was set
 	if [ -r $CLEAR_FILE ]; then
+		local SAMBA_PWD="$(cat $CLEAR_FILE | sed 's/|/:/g' | cut -d ":" -f3)"
+		local SAMBA_UID="$(id -u $SAMBA_SYSTEMUSER)"
+		echo "$SAMBA_SYSTEMUSER:$SAMBA_UID:$SAMBA_PWD:[UX         ]:LCT-00000001:" > $CLEAR_FILE
 		smbpasswd 2>/dev/null
 		rm $CLEAR_FILE
+		# make sure a password is set
+		if [ ! -r $PASS_FILE ]; then
+			echo "$PASS_FILE is not existing, failed."
+			exit 1
+		fi
 	fi
+
+	# samba complains if the file does not exist
+	[ -r $PASS_FILE ] || touch $PASS_FILE
 }
 
 start() {

@@ -49,9 +49,17 @@ if [ -d /var/media/ftp ]; then
 sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 cat << EOF
 <p>
-<font size="-1">$(lang de:"Standard Freigabe(n) bitte im AVM WebIF festlegen:<br />Erweiterte Einstellungen > USB-Ger&auml;te > USB-Speicher" en:"Standard share(s), please specify in AVM WebIF: <br/> Advanced Preferences > USB devices > USB memory")</font>
-<br />
-<font size="-2">$(lang de:"Optionen: Netzwerkspeicher (an/aus) - Zugriffsberechtigung (rw/ro) - Kennwortschutz (ohne/setzen)" en:"Options: network storage (on / off) - Access Authorization (rw / ro) - Password protection (without / set)")</font>
+$(lang de:"Standard Freigabe(n) bitte im AVM WebIF festlegen" en:"Standard share(s), please specify in AVM WebIF"):
+<ul>
+<li>$(lang de:"vor Firmware 04.86: Einstellungen > USB-Ger&auml;te > USB-Speicher" en:"before firmware 04.86: Preferences > USB devices > USB memory")</li>
+<li>$(lang de:"seit Firmware 04.86: Heimnetz > Speicher (NAS) > Sicherheit" en:"since firmware 04.86: Homenet > Storage (NAS) > Security")</li>
+</ul>
+$(lang de:"Optionen" en:"Options"):
+<ul>
+<li>$(lang de:"Netzwerkspeicher/NAS (an/aus)" en:"NAS/network-storage (on/off)")</li>
+<li>$(lang de:"Zugriffsberechtigung Heimnetz (lesen/schreiben)" en:"Access Authorization local lan (read/write)")</li>
+<li>$(lang de:"Kennwortschutz (ohne/setzen)" en:"Password protection (without/set)")</li>
+</ul>
 </p>
 EOF
 sec_end
@@ -62,8 +70,6 @@ sec_begin '$(lang de:"Samba" en:"Samba")'
 cat << EOF
 <p><label for="s1">$(lang de:"Benutzername" en:"User name"):</label>
 <input id="s1" type="text" name="user" size="40" maxlength="255" value="$(html "$SAMBA_USER")"></p>
-<p><label for="s2">$(lang de:"Passwort" en:"Password"):</label>
-<input id="s2" type="password" name="password" size="40" maxlength="255" value="$(html "$SAMBA_PASSWORD")"></p>
 <p>$(lang de:"Netzwerkschnittstelle" en:"Network interface"):
 <input type="text" name="interfaces" size="40" maxlength="255" value="$(html "$SAMBA_INTERFACES")"><br>
 <font size="-2">$(lang de:"z.B.: 192.168.178.1/255.255.255.0 oder leer lassen f&uuml;r alle" en:"For example: 192.168.178.1/255.255.255.0 or leave blank for all")</font></P>
