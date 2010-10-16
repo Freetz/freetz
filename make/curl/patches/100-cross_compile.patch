@@ -1,45 +1,6 @@
---- configure.orig	2010-06-05 00:32:04.000000000 +0200
-+++ configure	2010-07-14 22:11:30.315586740 +0200
-@@ -19754,16 +19754,6 @@
- rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-   fi
- 
--  if test "$OPENSSL_ENABLED" = "1"; then
--    if test -n "$LIB_OPENSSL"; then
--
--       LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$LIB_OPENSSL"
--       export LD_LIBRARY_PATH
--       { $as_echo "$as_me:${as_lineno-$LINENO}: Added $LIB_OPENSSL to LD_LIBRARY_PATH" >&5
--$as_echo "$as_me: Added $LIB_OPENSSL to LD_LIBRARY_PATH" >&6;}
--    fi
--  fi
--
- fi
- 
- 
-@@ -20221,19 +20211,6 @@
- fi
- 
- 
--      if test "x$USE_GNUTLS" = "xyes"; then
--        { $as_echo "$as_me:${as_lineno-$LINENO}: detected GnuTLS version $version" >&5
--$as_echo "$as_me: detected GnuTLS version $version" >&6;}
--
--        if test -n "$gtlslib"; then
--
--          LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$gtlslib"
--          export LD_LIBRARY_PATH
--          { $as_echo "$as_me:${as_lineno-$LINENO}: Added $gtlslib to LD_LIBRARY_PATH" >&5
--$as_echo "$as_me: Added $gtlslib to LD_LIBRARY_PATH" >&6;}
--        fi
--      fi
--
-     fi
- 
-   fi
---- configure.ac.orig	2010-06-05 00:30:04.000000000 +0200
-+++ configure.ac	2010-07-14 22:11:30.315586740 +0200
-@@ -1477,18 +1477,6 @@
+--- configure.ac
++++ configure.ac
+@@ -1495,18 +1495,6 @@
      ])
    fi
  
@@ -58,7 +19,7 @@
  fi
  
  dnl **********************************************************************
-@@ -1697,21 +1685,6 @@
+@@ -1715,21 +1703,6 @@
           CPPFLAGS="$CLEANCPPFLAGS"
         ])
  
@@ -80,3 +41,42 @@
      fi
  
    fi dnl GNUTLS not disabled
+--- configure
++++ configure
+@@ -19786,16 +19786,6 @@
+ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+   fi
+ 
+-  if test "$OPENSSL_ENABLED" = "1"; then
+-    if test -n "$LIB_OPENSSL"; then
+-
+-       LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$LIB_OPENSSL"
+-       export LD_LIBRARY_PATH
+-       { $as_echo "$as_me:${as_lineno-$LINENO}: Added $LIB_OPENSSL to LD_LIBRARY_PATH" >&5
+-$as_echo "$as_me: Added $LIB_OPENSSL to LD_LIBRARY_PATH" >&6;}
+-    fi
+-  fi
+-
+ fi
+ 
+ 
+@@ -20253,19 +20243,6 @@
+ fi
+ 
+ 
+-      if test "x$USE_GNUTLS" = "xyes"; then
+-        { $as_echo "$as_me:${as_lineno-$LINENO}: detected GnuTLS version $version" >&5
+-$as_echo "$as_me: detected GnuTLS version $version" >&6;}
+-
+-        if test -n "$gtlslib"; then
+-
+-          LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$gtlslib"
+-          export LD_LIBRARY_PATH
+-          { $as_echo "$as_me:${as_lineno-$LINENO}: Added $gtlslib to LD_LIBRARY_PATH" >&5
+-$as_echo "$as_me: Added $gtlslib to LD_LIBRARY_PATH" >&6;}
+-        fi
+-      fi
+-
+     fi
+ 
+   fi
