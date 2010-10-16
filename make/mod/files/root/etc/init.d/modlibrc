@@ -58,7 +58,7 @@ modlib_addgroup() {
 	echo -n "Looking for group '$group' ... "
 	if addgroup "$@" "$group"; then
 		echo -n "created - now saving to data buffer ... "
-		modusers save && echo "done" || echo "failed"
+		modusers save && echo "done." || echo "failed."
 	else
 		echo "not created - error occurred"
 	fi
@@ -79,7 +79,7 @@ modlib_adduser() {
 	local msg=$(adduser "$@" "$user" 2>&1)
 	if [ $? -eq 0 ]; then
 		echo -n "created - now saving to data buffer ... "
-		modusers save && echo "done" || echo "failed"
+		modusers save && echo "done." || echo "failed."
 	else
 		echo "not created - error occurred: $msg"
 		exit 1
