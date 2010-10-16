@@ -1,0 +1,55 @@
+--- lib/books/coupled/Makefile.am
++++ lib/books/coupled/Makefile.am
+@@ -1,3 +1,3 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-EXTRA_DIST = res_books_stereo.h res_books_51.h
++EXTRA_DIST = res_books_stereo.h
+--- lib/books/coupled/Makefile.in
++++ lib/books/coupled/Makefile.in
+@@ -184,7 +184,7 @@
+ target_vendor = @target_vendor@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-EXTRA_DIST = res_books_stereo.h res_books_51.h
++EXTRA_DIST = res_books_stereo.h
+ all: all-am
+ 
+ .SUFFIXES:
+--- lib/modes/Makefile.am
++++ lib/modes/Makefile.am
+@@ -3,4 +3,4 @@
+ EXTRA_DIST = floor_all.h psych_44.h residue_44.h setup_11.h setup_32.h \
+ 	     setup_8.h psych_11.h psych_8.h residue_44u.h setup_16.h \
+ 	     setup_44.h setup_X.h psych_16.h residue_16.h residue_8.h \
+-	     setup_22.h setup_44u.h setup_44p51.h residue_44p51.h
++	     setup_22.h setup_44u.h
+--- lib/modes/Makefile.in
++++ lib/modes/Makefile.in
+@@ -187,7 +187,7 @@
+ EXTRA_DIST = floor_all.h psych_44.h residue_44.h setup_11.h setup_32.h \
+ 	     setup_8.h psych_11.h psych_8.h residue_44u.h setup_16.h \
+ 	     setup_44.h setup_X.h psych_16.h residue_16.h residue_8.h \
+-	     setup_22.h setup_44u.h setup_44p51.h residue_44p51.h
++	     setup_22.h setup_44u.h
+ 
+ all: all-am
+ 
+--- lib/vorbisenc.c
++++ lib/vorbisenc.c
+@@ -154,7 +154,6 @@
+ 
+ #include "modes/setup_44.h"
+ #include "modes/setup_44u.h"
+-#include "modes/setup_44p51.h"
+ #include "modes/setup_32.h"
+ #include "modes/setup_8.h"
+ #include "modes/setup_11.h"
+@@ -164,7 +163,6 @@
+ 
+ static const ve_setup_data_template *const setup_list[]={
+   &ve_setup_44_stereo,
+-  &ve_setup_44_51,
+   &ve_setup_44_uncoupled,
+ 
+   &ve_setup_32_stereo,

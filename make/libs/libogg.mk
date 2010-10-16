@@ -1,12 +1,12 @@
-$(call PKG_INIT_LIB, 1.1.4)
-$(PKG)_LIB_VERSION:=0.6.0
+$(call PKG_INIT_LIB, 1.2.0)
+$(PKG)_LIB_VERSION:=0.7.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=10200ec22543841d9d1c23e0aed4e5e9
+$(PKG)_SOURCE_MD5:=c95b73759acfc30712beef6ce4e88efa
 $(PKG)_SITE:=http://downloads.xiph.org/releases/ogg
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
-
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -35,7 +35,8 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBOGG_DIR) clean
-	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libogg* \
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libogg* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/ogg* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ogg* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/ogg*

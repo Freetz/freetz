@@ -1,22 +1,26 @@
---- Makefile.am.orig	2010-02-21 11:40:10.000000000 +0100
-+++ Makefile.am	2010-02-21 11:44:48.000000000 +0100
-@@ -2,7 +2,7 @@
+--- Makefile.am
++++ Makefile.am
+@@ -2,11 +2,7 @@
  
- AUTOMAKE_OPTIONS = 1.6 foreign dist-zip dist-bzip2
+ AUTOMAKE_OPTIONS = 1.7 foreign dist-zip dist-bzip2
  
--SUBDIRS = m4 include vq lib examples test doc
+-SUBDIRS = m4 include vq lib test doc
+-
+-if BUILD_EXAMPLES 
+-SUBDIRS += examples 
+-endif 
 +SUBDIRS = include lib
  
  m4datadir = $(datadir)/aclocal
  m4data_DATA = vorbis.m4
---- Makefile.in.orig	2010-02-21 11:40:20.000000000 +0100
-+++ Makefile.in	2010-02-21 11:44:14.000000000 +0100
-@@ -227,7 +227,7 @@
- top_builddir = @top_builddir@
- top_srcdir = @top_srcdir@
- AUTOMAKE_OPTIONS = 1.6 foreign dist-zip dist-bzip2
--SUBDIRS = m4 include vq lib examples test doc
-+SUBDIRS = include lib 
- m4datadir = $(datadir)/aclocal
- m4data_DATA = vorbis.m4
- pkgconfigdir = $(libdir)/pkgconfig
+--- Makefile.in
++++ Makefile.in
+@@ -80,7 +80,7 @@
+   distclean-recursive maintainer-clean-recursive
+ ETAGS = etags
+ CTAGS = ctags
+-DIST_SUBDIRS = m4 include vq lib test doc examples
++DIST_SUBDIRS = include lib
+ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+ distdir = $(PACKAGE)-$(VERSION)
+ top_distdir = $(distdir)
