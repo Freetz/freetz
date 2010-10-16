@@ -25,7 +25,7 @@ socket options = TCP_NODELAY
 unix charset = ISO-8859-1
 preferred master = $SAMBA_MASTER
 os level = $SAMBA_OS_LEVEL
-security = SHARE
+security = share
 guest account = $SAMBA_SYSTEMUSER
 username map = /mod/etc/samba/users.map
 EOF
@@ -43,7 +43,40 @@ echo "### expert"
 
 echo "### default"
 
-if [ "$(echo usbhost.samba_server_enabled | $CFGCTL -s)" = "yes" ]; then
+if [ "$(echo usbhost.samba_server_enabled | $CFGCTL -s)" == "yes" ]; then
+
+	# AVM moved with 04.86 "password" to usbhost.users section
+	if cat /var/flash/usb.cfg 2>/dev/null \
+	  | sed -n '/^usbhost {/,/^}/p' \
+	  | sed -n '/^ *users {/,/^ *}/p' \
+	  | grep -q "^ *password = \".*\";$" \
+	  ; then
+		password_location="usbhost.users.password"
+	else
+		password_location="usbhost.password"
+	fi
+	password="$(echo $password_location | $CFGCTL -s)"
+
+	# AVM moved with 04.86 "readonly/local_write" to usbhost.acl_directories.access section
+	if cat /var/flash/usb.cfg 2>/dev/null \
+	  | sed -n '/^usbhost {/,/^}/p' \
+	  | sed -n '/^ *acl_directories {/,/^ *}/p' \
+	  | sed -n '/^ *access {/,/^ *}/p' \
+	  | grep -q "^ *local_write = .*;$" \
+	  ; then
+		if [ "$(echo usbhost.acl_directories.access.local_write | $CFGCTL -s)" == "yes" ]; then
+			readonly="no"
+		else
+			readonly="yes"
+		fi
+	else
+		if [ "$(echo usbhost.readonly | $CFGCTL -s)" == "yes" ]; then
+			readonly="yes"
+		else
+			readonly="no"
+		fi
+	fi
+
 	for SHARE in /var/media/ftp/*; do
 		if [ -d "$SHARE" ]; then
 			SHORTNAME=$(basename "$SHARE" | sed s/-Partition-/-/)
@@ -51,22 +84,9 @@ if [ "$(echo usbhost.samba_server_enabled | $CFGCTL -s)" = "yes" ]; then
 			echo "[$SHORTNAME]"
 			echo " path = $SHARE"
 			echo " user = $SAMBA_SYSTEMUSER"
-
-			if [ "$(echo usbhost.readonly | $CFGCTL -s)" = "yes" ]; then
-				echo " read only = yes"
-			else
-				echo " read only = no"
+			echo " read only = $readonly"
+			[ "$password" == "\"\"" ] && echo " guest ok = yes"
 			fi
-			# AVM moved with 04.86 some variables to users section so try that first
-			# enabled, name, password, ...
-			local password="$(echo usbhost.users.password | $CFGCTL -s)"
-			[ -z "$password" ] && password="$(echo usbhost.password | $CFGCTL -s)"
-			if [ "$password" = "\"\"" ]; then
-				echo " guest ok = yes"
-			fi
-
-			echo " write cache size = 65536"
-		fi
 	done
 fi
 
@@ -89,7 +109,6 @@ if [ -r "/tmp/flash/samba/shares" ]; then
 				options=""
 			fi
 			echo "$options" | grep -q "user =" >/dev/null 2>&1 || options="$options,user = $SAMBA_SYSTEMUSER"
-			echo "$options" | grep -q "write cache size =" >/dev/null 2>&1 || options="$options,write cache size = 65536"
 			options=$(echo -e "${options//,/\\n }")
 cat << EOF
 [${name//%20/ }]

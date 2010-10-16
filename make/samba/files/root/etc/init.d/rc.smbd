@@ -9,20 +9,20 @@ CONF_FILE=/mod/etc/samba/smb.conf
 CLEAR_FILE=/var/tmp/smbpasswd.cleartext
 PASS_FILE=/mod/etc/samba/smbpasswd
 USERS_MAP=/mod/etc/samba/users.map
-export SAMBA_SYSTEMUSER="ftpuser"
 
 config() {
 	mkdir -p /mod/etc/samba
 	/mod/etc/default.samba/samba_conf > $CONF_FILE
 
-	echo > $USERS_MAP; echo > $PASS_FILE
+	echo > $USERS_MAP
+	echo > $PASS_FILE
 
-	[ ! -z "$SAMBA_USER" ] &&
+	[ -n "$SAMBA_USER" ] &&
 		echo "$SAMBA_SYSTEMUSER = \"$SAMBA_USER\"" > $USERS_MAP
 
-	if [ ! -z "$SAMBA_PASSWORD" ]; then
+	if [ -n "$SAMBA_PASSWORD" ]; then
 		uid=$(id -u $SAMBA_SYSTEMUSER)
-		echo "$SAMBA_SYSTEMUSER:$uid:$SAMBA_PASSWORD:[U          ]:LCT-00000001:" > $CLEAR_FILE
+		echo "$SAMBA_SYSTEMUSER:$uid:$SAMBA_PASSWORD:[UX         ]:LCT-00000001:" > $CLEAR_FILE
 	fi
 	if [ -r $CLEAR_FILE ]; then
 		smbpasswd 2>/dev/null
