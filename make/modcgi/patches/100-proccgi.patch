@@ -1,5 +1,5 @@
---- proccgi/proccgi.c.orig	2006-04-04 21:45:45.574815688 +0200
-+++ proccgi/proccgi.c	2006-04-04 21:55:39.985451536 +0200
+--- proccgi/proccgi.c
++++ proccgi/proccgi.c
 @@ -8,6 +8,12 @@
   * fp@fpx.de
   *
@@ -59,7 +59,7 @@
  	       ts, length);
      }
      result[length] = '\0';
-@@ -119,15 +134,110 @@
+@@ -119,15 +134,113 @@
  }
  
  /*
@@ -89,14 +89,17 @@
 +    if ((newv->str = FP_strdup (ptr)) == NULL)
 +      return NULL;
 +
-+    for (i = 0; i < strlen (newv->str); i++) {
-+      if (isalnum (newv->str[i]))
-+        newv->str[i] = toupper (newv->str[i]);
-+      else if (newv->str[i] == '-')
-+        newv->str[i] = '_';
-+      else if (newv->str[i] != '_') {
-+        fprintf (stderr, "not all vars are alpha-numeric!\n");
-+        return NULL;
++    {
++      size_t len = strlen (newv->str);
++      for (i = 0; i < len; i++) {
++        if (isalnum (newv->str[i]))
++          newv->str[i] = toupper (newv->str[i]);
++        else if (newv->str[i] == '-')
++          newv->str[i] = '_';
++        else if (newv->str[i] != '_') {
++          fprintf (stderr, "not all vars are alpha-numeric!\n");
++          return NULL;
++        }
 +      }
 +    }
 +
@@ -171,7 +174,7 @@
  
    if (input == NULL) {
      return;
-@@ -136,6 +246,10 @@
+@@ -136,6 +249,10 @@
    data = FP_strdup   (input);
    ptr  = ParseString (data);
  
@@ -182,13 +185,16 @@
    /*
     * Security:
     *
-@@ -151,33 +265,107 @@
+@@ -151,33 +268,113 @@
    *ptr = '\0';
    p2 = ptr+1;
  
 -  fprintf (stdout, "FORM_%s=\"", data);
-+  for (i = 0; i < strlen(data); i++)
-+    data[i] = toupper (data[i]);
++  {
++    size_t len = strlen(data);
++    for (i = 0; i < len; i++)
++      data[i] = toupper (data[i]);
++  }
 +
 +  if (IsVar (data, list) == 0)
 +    return;
@@ -282,21 +288,24 @@
 +      return 1;
 +    }
 +
-+    for (i = 0; i < strlen (prefix); i++) {
-+      if (isalnum (prefix[i]))
-+        prefix[i] = toupper (prefix[i]);
-+      else if (prefix[i] == '-')
-+        prefix[i] = '_';
-+      else if (prefix[i] != '_') {
-+        fprintf (stderr, "prefix is not alpha-numeric!\n");
-+        return 1;
++    {
++      size_t len = strlen (prefix);
++      for (i = 0; i < len; i++) {
++        if (isalnum (prefix[i]))
++          prefix[i] = toupper (prefix[i]);
++        else if (prefix[i] == '-')
++          prefix[i] = '_';
++        else if (prefix[i] != '_') {
++          fprintf (stderr, "prefix is not alpha-numeric!\n");
++          return 1;
++        }
 +      }
 +    }
 +  }
  
    /*
     * Handle CGI data
-@@ -186,7 +374,7 @@
+@@ -186,7 +383,7 @@
    if (data) {
      ptr = strtok (data, "&");
      while (ptr) {
@@ -305,7 +314,7 @@
        ptr = strtok (NULL, "&");
      }
      free (data);
-@@ -198,21 +386,27 @@
+@@ -198,21 +395,27 @@
  
    if (getenv ("PATH_INFO") != NULL) {
      data = FP_strdup (getenv ("PATH_INFO"));
