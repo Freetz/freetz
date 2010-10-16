@@ -47,6 +47,17 @@ start() {
 	config
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
 
+	# abort on https if SSL is not enabled on build
+	if [ "$FREETZ_PACKAGE_DAVFS2_WITH_SSL" != "y" ]; then
+		for i in 0 1 2 3; do
+			[ "$(eval "echo \$DAVFS2_ENABLED${i}")" != "yes" ] && continue
+			if eval "echo \$DAVFS2_HOST${i}" | grep -q -i "^https://"; then
+				echo "https is not allowed due to missing SSL, failed."
+				exit 1
+			fi
+		done
+	fi
+
 	local retval=0
 	for i in 0 1 2 3; do
 		[ "$(eval "echo \$DAVFS2_ENABLED${i}")" != "yes" ] && continue
