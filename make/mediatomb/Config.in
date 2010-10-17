@@ -1,0 +1,29 @@
+config FREETZ_PACKAGE_MEDIATOMB
+	bool "mediatomb 0.12.1 (binary only)"
+	select FREETZ_LIB_libavformat if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_LIB_libavutil if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_PACKAGE_FFMPEG_PATENTED
+	select FREETZ_PACKAGE_FFMPEG_LIBDLNA_SUPPORT
+	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_LIB_libexif if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_LIB_libexpat if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_LIB_libpthread if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_LIB_libsqlite3 if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_LIB_libuClibc__ if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28 && ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	default n
+	help
+		MediaTomb is an open source (GPL) UPnP MediaServer with a nice
+		web user interface, it allows you to stream your digital media
+		through your home network and listen to/watch it on a variety
+		of UPnP compatible devices.
+
+config FREETZ_PACKAGE_MEDIATOMB_STATIC
+	bool "Create statically linked binary"
+	depends on FREETZ_PACKAGE_MEDIATOMB
+	default n
+	help
+		Activating this switch causes all libraries
+		mediatomb depends on to be linked in statically.

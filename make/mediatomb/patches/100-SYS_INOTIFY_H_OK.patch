@@ -1,0 +1,16 @@
+--- configure
++++ configure
+@@ -41582,6 +41582,13 @@
+ 
+ if test "x$INOTIFY_STATUS" = xyes; then
+ 
++# if system inotify header exists, go with it, otherwise take our own
++if test "x$ac_cv_header_sys_inotify_h" = xyes; then
++cat >>confdefs.h <<\_ACEOF
++#define SYS_INOTIFY_H_OK 1
++_ACEOF
++fi
++
+ cat >>confdefs.h <<\_ACEOF
+ #define HAVE_INOTIFY 1
+ _ACEOF

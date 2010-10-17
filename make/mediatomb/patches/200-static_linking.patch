@@ -1,0 +1,11 @@
+--- build/Makefile.in
++++ build/Makefile.in
+@@ -950,7 +950,7 @@
+ 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+ mediatomb$(EXEEXT): $(mediatomb_OBJECTS) $(mediatomb_DEPENDENCIES) 
+ 	@rm -f mediatomb$(EXEEXT)
+-	$(mediatomb_LINK) $(mediatomb_OBJECTS) $(mediatomb_LDADD) $(LIBS)
++	$(mediatomb_LINK) $(mediatomb_OBJECTS) $(mediatomb_LDADD) $(LIBS) $(STATIC_LINKING_LIBS)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
