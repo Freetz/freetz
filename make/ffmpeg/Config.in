@@ -1,0 +1,304 @@
+config FREETZ_PACKAGE_FFMPEG
+	bool "FFmpeg"
+	default n
+	help
+		FFmpeg is a complete, cross-platform solution to record,
+		convert and stream audio and video.
+
+menu "Configuration"
+	depends FREETZ_PACKAGE_FFMPEG
+
+config FREETZ_PACKAGE_FFMPEG_ffmpeg
+	bool "Include ffmpeg"
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavcodec
+	select FREETZ_LIB_libavdevice
+	select FREETZ_LIB_libavformat
+	select FREETZ_LIB_libavutil
+	select FREETZ_LIB_libpostproc
+	default n
+
+config FREETZ_PACKAGE_FFMPEG_ffserver
+	bool "Include ffserver (FFmpeg streaming server)"
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavcodec
+	select FREETZ_LIB_libavdevice
+	select FREETZ_LIB_libavformat
+	select FREETZ_LIB_libavutil
+	select FREETZ_LIB_libpostproc
+	select FREETZ_PACKAGE_FFMPEG_MUXER_ffm
+	select FREETZ_PACKAGE_FFMPEG_DEMUXER_ffm
+	select FREETZ_PACKAGE_FFMPEG_DEMUXER_rtsp
+	select FREETZ_PACKAGE_FFMPEG_PROTOCOL_rtp
+	default n
+
+config FREETZ_PACKAGE_FFMPEG_IPV6
+	bool "Enable IPv6"
+	depends on FREETZ_TARGET_IPV6_SUPPORT
+	default FREETZ_TARGET_IPV6_SUPPORT
+
+config FREETZ_PACKAGE_FFMPEG_PATENTED
+	bool "Include patented codecs and technologies"
+	default n
+
+config FREETZ_PACKAGE_FFMPEG_LIBDLNA_SUPPORT
+	bool "Include support for libdlna/ushare"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+	select FREETZ_PACKAGE_FFMPEG_DECODER_ac3
+	select FREETZ_PACKAGE_FFMPEG_DECODER_atrac3
+	select FREETZ_PACKAGE_FFMPEG_DECODER_h264
+	select FREETZ_PACKAGE_FFMPEG_DECODER_jpegls
+	select FREETZ_PACKAGE_FFMPEG_DECODER_mp3
+	select FREETZ_PACKAGE_FFMPEG_DECODER_mpeg1video
+	select FREETZ_PACKAGE_FFMPEG_DECODER_mpeg2video
+	select FREETZ_PACKAGE_FFMPEG_DECODER_mpeg4
+	select FREETZ_PACKAGE_FFMPEG_DECODER_mpeg4aac
+	select FREETZ_PACKAGE_FFMPEG_DECODER_mpegvideo
+	select FREETZ_PACKAGE_FFMPEG_DECODER_wmav1
+	select FREETZ_PACKAGE_FFMPEG_DECODER_wmav2
+	select FREETZ_PACKAGE_FFMPEG_DECODER_png
+	select FREETZ_PACKAGE_FFMPEG_DEMUXER_ac3
+	select FREETZ_PACKAGE_FFMPEG_DEMUXER_h264
+	select FREETZ_PACKAGE_FFMPEG_DEMUXER_mp3
+	select FREETZ_PACKAGE_FFMPEG_DEMUXER_mpegvideo
+	default n
+
+comment "Encoders ---"
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_ac3
+	bool "AC3"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+	select FREETZ_PACKAGE_FFMPEG_PARSER_ac3
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_jpegls
+	bool "JPEG-LS"
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_mpeg1video
+	bool "MPEG-1 Video"
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_mpeg2video
+	bool "MPEG-2 Video"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_mpeg4
+	bool "MPEG-4"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_pcm_s16be
+	bool "PCM signed 16-bit big-endian"
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_pcm_s16le
+	bool "PCM signed 16-bit little-endian"
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_png
+	bool "PNG"
+	select FREETZ_PACKAGE_FFMPEG_ENCODER_zlib
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_vorbis
+	bool "Vorbis"
+
+config FREETZ_PACKAGE_FFMPEG_ENCODER_zlib
+	bool "Zlib"
+
+comment "Decoders ---"
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_aac
+	bool "AAC (Advanced Audio Coding)"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+	select FREETZ_PACKAGE_FFMPEG_PARSER_aac
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_ac3
+	bool "AC3"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+	select FREETZ_PACKAGE_FFMPEG_PARSER_ac3
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_atrac3
+	bool "ATRAC3"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_gif
+	bool "GIF"
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_h264
+	bool "H.264"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_jpegls
+	bool "JPEG-LS"
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_mp2
+	bool "MP2 (MPEG Audio Layer 2)"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_mp3
+	bool "MP3 (MPEG Audio Layer 2)"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_mpegvideo
+	bool "MPEG Video"
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_mpeg1video
+	bool "MPEG-1 Video"
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_mpeg2video
+	bool "MPEG-2 Video"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_mpeg4
+	bool "MPEG-4"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_mpeg4aac
+	bool "MPEG-4 (AAC)"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_pcm_s16be
+	bool "PCM signed 16-bit big-endian"
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_pcm_s16le
+	bool "PCM signed 16-bit little-endian"
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_png
+	bool "PNG"
+	select FREETZ_PACKAGE_FFMPEG_DECODER_zlib
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_vorbis
+	bool "Vorbis"
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_wmav1
+	bool "WMAv1"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_wmav2
+	bool "WMAv2"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DECODER_zlib
+	bool "Zlib"
+
+comment "Muxers ---"
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_ac3
+	bool "AC3"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_ffm
+	bool "FFM (ffserver live feed)"
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_h264
+	bool "H.264"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_mp3
+	bool "MP3 (MPEG Audio Layer 3)"
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_mp4
+	bool "MP4"
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_mpeg1video
+	bool "MPEG-1 Video"
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_mpeg2video
+	bool "MPEG-2 Video"
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_mpegts
+	bool "MPEG-2 (TS)"
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_ogg
+	bool "Ogg"
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_oss
+	bool "OSS (Open Sound System playback)"
+
+config FREETZ_PACKAGE_FFMPEG_MUXER_rtp
+	bool "RTP"
+
+comment "Demuxers ---"
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_ac3
+	bool "AC3"
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_ffm
+	bool "FFM (ffserver live feed)"
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_h264
+	bool "H.264"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_mp3
+	bool "MP3 (MPEG Audio Layer 3)"
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_mpegvideo
+	bool "MPEG Video"
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_mpegps
+	bool "MPEG-2 (PS)"
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_mpegts
+	bool "MPEG-2 (TS)"
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_ogg
+	bool "Ogg"
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_rm
+	bool "RM"
+	help
+	  RealMedia format demuxer
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_rtsp
+	bool "RTSP"
+	select FREETZ_PACKAGE_FFMPEG_DEMUXER_rm
+	select FREETZ_PACKAGE_FFMPEG_DEMUXER_sdp
+
+config FREETZ_PACKAGE_FFMPEG_DEMUXER_sdp
+	bool "SDP"
+	select FREETZ_PACKAGE_FFMPEG_DEMUXER_mpegts
+
+comment "Parsers ---"
+
+config FREETZ_PACKAGE_FFMPEG_PARSER_aac
+	bool "AAC (Advanced Audio Coding)"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+
+config FREETZ_PACKAGE_FFMPEG_PARSER_ac3
+	bool "AC3"
+
+config FREETZ_PACKAGE_FFMPEG_PARSER_h264
+	bool "H.264"
+	depends FREETZ_PACKAGE_FFMPEG_PATENTED
+	select FREETZ_PACKAGE_FFMPEG_DECODER_h264
+
+config FREETZ_PACKAGE_FFMPEG_PARSER_mpegaudio
+	bool "MPEG Audio"
+
+config FREETZ_PACKAGE_FFMPEG_PARSER_mpegvideo
+	bool "MPEG Video"
+
+config FREETZ_PACKAGE_FFMPEG_PARSER_mpeg4video
+	bool "MPEG-4 Video"
+
+comment "Protocols ---"
+
+config FREETZ_PACKAGE_FFMPEG_PROTOCOL_file
+	bool "file:"
+
+config FREETZ_PACKAGE_FFMPEG_PROTOCOL_http
+	bool "http:"
+
+config FREETZ_PACKAGE_FFMPEG_PROTOCOL_pipe
+	bool "pipe:"
+
+config FREETZ_PACKAGE_FFMPEG_PROTOCOL_rtp
+	bool "rtp:"
+	select FREETZ_PACKAGE_FFMPEG_PROTOCOL_udp
+
+config FREETZ_PACKAGE_FFMPEG_PROTOCOL_tcp
+	bool "tcp:"
+
+config FREETZ_PACKAGE_FFMPEG_PROTOCOL_udp
+	bool "udp:"
+
+endmenu

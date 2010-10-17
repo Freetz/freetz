@@ -219,6 +219,10 @@ ifneq (,$(strip $(filter y,$(FREETZ_LIB_libblkid) $(FREETZ_LIB_libcom_err) $(FRE
 LIBS+=e2fsprogs
 endif
 
+ifneq (,$(strip $(filter y,$(FREETZ_LIB_libavcodec) $(FREETZ_LIB_libavdevice) $(FREETZ_LIB_libavformat) $(FREETZ_LIB_libavutil) $(FREETZ_LIB_libpostproc))))
+LIBS+=ffmpeg
+endif
+
 ifeq ($(strip $(FREETZ_LIB_libfuse)),y)
 LIBS+=fuse
 endif

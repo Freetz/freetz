@@ -1,0 +1,36 @@
+menu "FFmpeg libraries"
+
+config FREETZ_LIB_libavcodec
+	bool "libavcodec.so"
+	default n
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libz
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavutil
+
+config FREETZ_LIB_libavdevice
+	bool "libavdevice.so"
+	default n
+	select FREETZ_LIB_libpthread
+
+config FREETZ_LIB_libavformat
+	bool "libavformat.so"
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavcodec
+	select FREETZ_LIB_libavutil
+	default n
+
+config FREETZ_LIB_libavutil
+	bool "libavutil.so"
+	default n
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+
+config FREETZ_LIB_libpostproc
+	bool "libpostproc.so"
+	default n
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavutil
+
+endmenu
