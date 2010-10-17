@@ -465,6 +465,13 @@ config FREETZ_LIB_libevent
 		then add or remove events dynamically without having to change the event
 		loop.
 
+config FREETZ_LIB_libFLAC
+	bool "FLAC (libFLAC.so)"
+	select FREETZ_LIB_libm
+	default n
+	help
+		Free Lossless Audio Codec library.
+
 config FREETZ_LIB_libftdi
 	bool "libftdi (libftdi.so)"
 	select FREETZ_LIB_libusb
