@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.10)
+$(call PKG_INIT_BIN, 2.11)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=3b32d981d746abf8b0292c6ab01d10d4
+$(PKG)_SOURCE_MD5:=ef2b40ddc2c17a57c47bfe15b1f23cc4
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 
 $(PKG)_BINARIES_ALL_SHORT     := cli  daemon  remote  create  edit   show
@@ -33,8 +33,6 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(foreach flag,-O[0-9] -g -ggdb3,$(SED) -i -r -e 's
 # silence '*LARGEFILE* redefined' warnings
 $(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -type f -name "*.c" \
         -exec $(SED) -i -r -e 's|(\#define (_LARGEFILE(64)?_SOURCE))|\#ifndef \2\n\1\n\#endif|g' \{\} \+ ;
-# silence 'inlining failed in call to foo: optimizing for size and code size would grow'-warnings
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,-Winline,,g' ./configure;
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-mac
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk
