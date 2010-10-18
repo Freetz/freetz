@@ -1,0 +1,47 @@
+#!/bin/sh
+
+DAEMON=minidlna
+DAEMON_LONG_NAME=MiniDLNA
+. /etc/init.d/modlibrc
+
+config() {
+	mkdir $MINIDLNA_DB_DIR 2>/dev/null
+	[ -d $MINIDLNA_DB_DIR ] || return 1
+	modlib_config
+}
+
+start() {
+	modlib_startdaemon $DAEMON -f $DAEMON_CONFIG
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+
+		modlib_start $MINIDLNA_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
