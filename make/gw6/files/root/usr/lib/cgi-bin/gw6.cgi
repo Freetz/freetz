@@ -33,6 +33,11 @@ cat << EOF
     ($(lang de:"Leer lassen f&uuml;r anonymen Login" en:"Leave this empty for anonymous login"))</td>
 </tr>
 <tr>
+	<td>$(lang de:"Broker" en:"Broker"):</td>
+	<td><input type="text" name="broker" size="25" maxlength="99" value="$(html "$GW6_BROKER")">
+    ($(lang de:"Leer lassen f&uuml;r Vorgabe" en:"Leave this empty for default"))</td>
+</tr>
+<tr>
     <td>$(lang de:"Logging" en:"Logging"):</td>
     <td><input type="checkbox" name="logging" value="yes"$log_chk>$(lang de:"Nach /tmp/gw6c.log loggen." en:"Log to /tmp/gw6c.log.")</td>
 </tr>

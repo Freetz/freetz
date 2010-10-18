@@ -2,6 +2,7 @@
 
 GW6_SERVER='broker.freenet6.net'
 [ -z "$GW6_USERID" ] && GW6_SERVER='anon.freenet6.net'
+[ -n "$GW6_BROKER" ] && GW6_SERVER="$GW6_BROKER"
 
 GW6_HOST_TYPE='router'
 [ -z "$GW6_USERID" ] && GW6_HOST_TYPE='host'
@@ -24,15 +25,15 @@ cat << END_OF_CAT_SECTION
 ##########################      READ ME!      ################################
 #
 # Welcome to the Gateway6 Client configuration file.
-# In order to use the client, you need to modify the 'userid', 'passwd' and 
+# In order to use the client, you need to modify the 'userid', 'passwd' and
 # 'server' parameters below depending on which of these situations applies:
-# 
-# 1. If you created a Freenet6 account, enter your userid and password below. 
+#
+# 1. If you created a Freenet6 account, enter your userid and password below.
 #    Change the server name to "broker.freenet6.net" and auth_method to 'any'.
-# 2. If you would like to use Freenet6 without creating an account, 
-#    do not make any modifications and close this file. 
-# 3. If this software was provided by your ISP, enter the userid, password and 
-#    server name provided by your ISP below. 
+# 2. If you would like to use Freenet6 without creating an account,
+#    do not make any modifications and close this file.
+# 3. If this software was provided by your ISP, enter the userid, password and
+#    server name provided by your ISP below.
 #
 
 
@@ -52,20 +53,20 @@ passwd=$GW6_PASSWD
 
 #
 # Gateway6 Server:
-#   Specify a Gateway6 server name or IP address (provided by your ISP or 
-#   Freenet6). An optional port number can be added; the default port number 
+#   Specify a Gateway6 server name or IP address (provided by your ISP or
+#   Freenet6). An optional port number can be added; the default port number
 #   is 3653.
-#  
+#
 #   Examples:
 #     server=hostname # FQDN
 #     server=A.B.C.D  # IPv4 address
 #     server=[X:X::X:X] # IPv6 address
-#     server=hostname:port_number  
+#     server=hostname:port_number
 #     server=A.B.C.D:port_number
 #     server=[X:X::X:X]:port_number
 #
 #   Freenet6 account holders should enter broker.freenet6.net, otherwise use
-#   anon.freenet6.net. Your ISP may provide you with a different server name. 
+#   anon.freenet6.net. Your ISP may provide you with a different server name.
 #
 server=$GW6_SERVER
 #server=anon.freenet6.net
@@ -78,7 +79,7 @@ server=$GW6_SERVER
 #
 #   anonymous:      Sends no username or password
 #
-#   any:            The most secure method will be used. 
+#   any:            The most secure method will be used.
 #   passdss-3des-1: The password is sent encrypted.
 #   digest-md5:     The password is sent encrypted.
 #   plain:          Both username and password are sent as plain text.
@@ -93,7 +94,7 @@ auth_method=$GW6_AUTH_METHOD
 
 
 ########################## ROUTING CONFIGURATION ##############################
-# Use these parameters when you wish the client to act as a router and provide 
+# Use these parameters when you wish the client to act as a router and provide
 # IPv6 connectivity to IPv6-capable devices on your network.
 
 #
@@ -106,7 +107,7 @@ host_type=$GW6_HOST_TYPE
 
 #
 # Prefix Length:
-#   Length of the requested prefix. Valid values range between 0 and 64 when 
+#   Length of the requested prefix. Valid values range between 0 and 64 when
 #   using V6*V4 tunnel modes, and between 0 and 32 when using V4V6 tunnel mode.
 #
 #   prefixlen=<integer>
@@ -115,16 +116,16 @@ prefixlen=$GW6_PREFIX_LEN
 
 #
 # Advertisement Interface Prefix:
-#   Name of the interface that will be configured to send router advertisements. 
+#   Name of the interface that will be configured to send router advertisements.
 #   This is an interface index on Windows (ex: 4) and a name on Linux
-#   and BSD (ex: eth1 or fxp1). 
+#   and BSD (ex: eth1 or fxp1).
 #
 #   if_prefix=<interface name>
 #
 if_prefix=$GW6_IF_PREFIX
 
 #
-# DNS Server: 
+# DNS Server:
 #   A DNS server list to which the reverse prefix will be delegated. Servers
 #   are separated by the colon(:) delimiter.
 #
@@ -137,14 +138,14 @@ dns_server=
 
 #
 # Gateway6 Client Installation Directory:
-#   Directory where the Gateway6 Client will be installed. This value has been 
+#   Directory where the Gateway6 Client will be installed. This value has been
 #   set during installation.
 #
 gw6_dir=/usr/share/gw6
 
 #
 # Auto-Retry Connect and Delay:
-#   The time lapse, in seconds, between each reconnection in the case of a 
+#   The time lapse, in seconds, between each reconnection in the case of a
 #   timeout.
 #
 #   auto_retry_connect=<yes|no>
@@ -157,7 +158,7 @@ retry_delay=30
 
 #
 # Keepalive Feature and Message Interval:
-#   Indicates if and how often the client will send data to keep the tunnel 
+#   Indicates if and how often the client will send data to keep the tunnel
 #   active.
 #
 #   keepalive=<yes|no>
@@ -208,24 +209,24 @@ client_v6=auto
 
 #
 # Script Name:
-#   File name of the script to run to install the tunnel interface. The 
-#   scripts are located in the template directory under the client 
-#   installation directory. 
+#   File name of the script to run to install the tunnel interface. The
+#   scripts are located in the template directory under the client
+#   installation directory.
 #
 #   template=<checktunnel|freebsd|netbsd|openbsd|linux|windows|darwin|cisco|solaris>
 #
 #   Default value is set during installation.
-# 
+#
 template=linux
 
 #
-# Proxy client: 
-#   Indicates that this client will request a tunnel for another endpoint, 
-#   such as a Cisco router. 
+# Proxy client:
+#   Indicates that this client will request a tunnel for another endpoint,
+#   such as a Cisco router.
 #
 #   proxy_client=<yes|no>
 #
-#   NOTE: NAT traversal is not possible in proxy mode. 
+#   NOTE: NAT traversal is not possible in proxy mode.
 #
 proxy_client=no
 
@@ -235,16 +236,16 @@ proxy_client=no
 #
 # Broker List File Name:
 #   The 'broker_list' directive specifies the filename where the broker
-#   list received during broker redirection will be saved. 
+#   list received during broker redirection will be saved.
 #
 #   broker_list=<file_name>
-#  
+#
 broker_list=/tmp/tsp-broker-list.txt
 
 #
 # Last Server Used File Name:
 #   The 'last_server' directive specifies the filename where the address of
-#   the last broker to which a connection was successfully established will 
+#   the last broker to which a connection was successfully established will
 #   be saved.
 #
 #   last_server=<file_name>
@@ -253,9 +254,9 @@ last_server=/tmp/tsp-last-server.txt
 
 #
 # Always Use Last Known Working Server:
-#   The value of the 'always_use_same_server' directive determines whether the 
-#   client should always try to connect to the broker found in the 
-#   'last_server' directive filename. 
+#   The value of the 'always_use_same_server' directive determines whether the
+#   client should always try to connect to the broker found in the
+#   'last_server' directive filename.
 #
 #   always_use_same_server=<yes|no>
 #
@@ -266,7 +267,7 @@ always_use_same_server=no
 
 #
 # Log Verbosity Configuration:
-#   The format is 'log_<destination>=level', where possible values for 
+#   The format is 'log_<destination>=level', where possible values for
 #   'destination' are:
 #
 #   - console  (logging to the console [AKA stdout])
@@ -274,15 +275,15 @@ always_use_same_server=no
 #   - file     (logging to a file)
 #   - syslog   (logging to syslog [Unix only])
 #
-#   and 'level' is a digit between 0 and 3. A 'level' value of 0 disables 
-#   logging to the destination, while values 1 to 3 request increasing levels 
-#   of log verbosity and detail. If 'level' is not specified, a value of 1 is 
+#   and 'level' is a digit between 0 and 3. A 'level' value of 0 disables
+#   logging to the destination, while values 1 to 3 request increasing levels
+#   of log verbosity and detail. If 'level' is not specified, a value of 1 is
 #   assumed.
 #
 #   Example:
 #     log_file=3   (Maximal logging to a file)
 #     log_stderr=0 (Logging to standard error disabled)
-#     log_console= (Minimal logging to the console) 
+#     log_console= (Minimal logging to the console)
 #
 #   - Default configuration on Windows platforms:
 #
@@ -313,18 +314,18 @@ log_filename=$GW6_LOG_FILENAME
 
 #
 # Log File Rotation:
-#   When logging to file is requested using the 'log_file' directive, log file 
-#   rotation may be enabled. When enabled, the contents of the log file will 
-#   be moved to a backup file just before it reaches the maximum log file size 
+#   When logging to file is requested using the 'log_file' directive, log file
+#   rotation may be enabled. When enabled, the contents of the log file will
+#   be moved to a backup file just before it reaches the maximum log file size
 #   specified via this directive.
 #
-#   The name of the backup file is the name of the original log file with 
-#   '.<timestamp>' inserted before the file extension. If the file does not 
+#   The name of the backup file is the name of the original log file with
+#   '.<timestamp>' inserted before the file extension. If the file does not
 #   have an extension, '.<timestamp>' is appended to the name of the original
 #   log file. The timestamp specifies when the rotation occurred.
 #
-#   After the contents of the log file have been moved to the backup file, the 
-#   original file is cleared, and logging resumes at the beginning of the file. 
+#   After the contents of the log file have been moved to the backup file, the
+#   original file is cleared, and logging resumes at the beginning of the file.
 #
 #   log_rotation=<yes|no>
 #
@@ -332,8 +333,8 @@ log_rotation=yes
 
 #
 # Log File Rotation Size:
-#   The 'log_rotation_size' directive specifies the maximum size a log file may 
-#   reach before rotation occurs, if enabled. The value is expressed in 
+#   The 'log_rotation_size' directive specifies the maximum size a log file may
+#   reach before rotation occurs, if enabled. The value is expressed in
 #   kilobytes.
 #
 #   log_rotation_size=<16|32|128|1024>
@@ -343,7 +344,7 @@ log_rotation_size=16
 #
 # Deletion of rotated log files:
 #   The 'log_rotation_delete' directive specifies that no log backup will be
-#   kept. When rotation occurs, the file is immediately wiped out and a new 
+#   kept. When rotation occurs, the file is immediately wiped out and a new
 #   log file is started.
 #
 #   log_rotation_delete=<yes|no>
@@ -352,7 +353,7 @@ log_rotation_delete=no
 
 #
 # Syslog Logging Facility [Unix Only]:
-#   When logging to syslog is requested using the 'log_syslog' directive, the 
+#   When logging to syslog is requested using the 'log_syslog' directive, the
 #   facility to use may be specified using this directive.
 #
 #   syslog_facility=<USER|LOCAL[0-7]>
