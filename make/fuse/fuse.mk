@@ -19,8 +19,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_LAYOUT
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's|-D_FILE_OFFSET_BITS=64||g;' fuse.pc.in {example,lib,util}/Makefile.{am,in};
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's|^([ \t]*\#error .*-D_FILE_OFFSET_BITS=64.*)$$$$|/*\1*/|g;' include/fuse_common.h;
 
-$(PKG)_CONFIGURE_ENV += acl_cv_libext=a
-
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
