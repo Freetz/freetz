@@ -144,7 +144,7 @@ modlib_startdaemon() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 	config
 
-	env - PATH="$PATH" $DAEMON_ENV "$@"
+	env - PATH="$PATH" $DAEMON_ENV "$@" 1>&2
 	local rv=$?
 
 	if [ $rv -ne 0 ]; then
