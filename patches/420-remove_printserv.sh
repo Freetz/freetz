@@ -1,6 +1,12 @@
 [ "$FREETZ_REMOVE_PRINTSERV" == "y" ] || return 0
-echo1 "removing AVM's printserver"
-rm_files "${FILESYSTEM_MOD_DIR}/sbin/printserv"
+
+if [ "$FREETZ_PACKAGE_USBIP_WRAPPER" != "y" ]; then
+	echo1 "removing AVM's printserver"
+	rm_files "${FILESYSTEM_MOD_DIR}/sbin/printserv"
+else
+	echo1 "replacing AVM's printserver"
+	echo '/etc/init.d/rc.usbip reload >/dev/null' > "${FILESYSTEM_MOD_DIR}/sbin/printserv"
+fi
 
 [ "$FREETZ_REMOVE_PRINTSERV_MODULE" == "y" ] && \
 	rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/*/kernel/drivers/usb/class/usblp.ko
