@@ -3,14 +3,9 @@
 DAEMON=samba
 DAEMON_LONG_NAME="Samba-nmbd"
 DAEMON_BIN=nmbd
-DAEMON_CONFIG=/mod/etc/smb.conf
+DAEMON_CONFIG=/mod/etc/samba/smb.conf
 CONF_ENABLED=SAMBA_NMBD_ENABLED
 . /etc/init.d/modlibrc
-
-
-config() {
-	/mod/etc/default.samba/samba_conf > $DAEMON_CONFIG
-}
 
 start() {
 	modlib_startdaemon $DAEMON_BIN -D -s $DAEMON_CONFIG
@@ -22,7 +17,7 @@ case $1 in
 			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi
 		modreg daemon -n samba-nmbd -r rc.$DAEMON_BIN -p samba nmbd
-		
+
 		modlib_start $SAMBA_NMBD_ENABLED
 		;;
 	unload)
@@ -45,7 +40,7 @@ case $1 in
 		modlib_status
 		;;
 	config)
-		config
+		/etc/init.d/rc.samba config
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|reload|status|config]" 1>&2
