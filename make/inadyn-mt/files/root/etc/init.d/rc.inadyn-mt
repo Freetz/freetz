@@ -76,7 +76,7 @@ configure () {
 config() {
 	configure >/mod/etc/$DAEMON.conf
 	if [ 5 -gt $(cat /mod/etc/$DAEMON.conf | wc -l) ]; then
-		echo -n 'failed: not configured.' >&2
+		echo -n 'not configured, failed.'
 		exit 1
 	fi
 }
