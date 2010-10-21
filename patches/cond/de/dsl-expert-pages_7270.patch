@@ -12,14 +12,14 @@
 +<input type="hidden" name="sar:settings/DownstreamMarginOffset" value="<? query sar:settings/DownstreamMarginOffset ?>" id="iPostDownstreamMarginOffset">
 --- usr/www/avm/html/de/internet/labor_dsl.html.orig	1970-01-01 01:00:00.000000000 +0100
 +++ usr/www/avm/html/de/internet/labor_dsl.html	2010-07-27 12:23:37.000000000 +0200
-@@ -0,0 +1,123 @@
+@@ -0,0 +1,103 @@
 +<div id="content">
 +<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
 +DSL-Informationen
 +</div></div></div></div></div></div>
 +<div class="backframe"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="foredialog"><div class="ie_b10">
 +<ul class="tabs">
-+<li><a href="javascript:uiDoOverviewPage()">Übersicht</a></li>
++<li><a href="javascript:uiDoOverviewPage()">&Uuml;bersicht</a></li>
 +<li><a href="javascript:uiDoADSLPage()">DSL</a></li>
 +<li><a href="javascript:uiDoBitsPage()">Spektrum</a></li>
 +<li><a href="javascript:uiDoATMPage()">Statistik</a></li>
@@ -40,17 +40,18 @@
 +</div>
 +</fieldset>
 +<fieldset class="groups">
-+<legend class="mb10">Störungen durch Rundfunksender (RFI)</legend>
++<legend class="mb10">St&ouml;rungen durch Rundfunksender (RFI)</legend>
 +<div class="paramline">
 +<p><input type="checkbox" id="uiViewAutoRFI""/>Automatisch ermitteln</p>
 +</div>
++<br>
 +<div class="paramline">
-+<p class="paramname"><label for="uiViewRFI">Zusätzlicher RFI Träger</label></p>
++<p class="paramname"><label for="uiViewRFI">Zus&auml;tzlicher RFI Tr&auml;ger</label></p>
 +<p><input type="text" size="5" maxlength="3" id="uiViewRFI" class="Eingabefeld"/></p>
 +</div>
 +</fieldset>
 +<fieldset class="groups">
-+<legend class="mb10">Übertragungsraten</legend>
++<legend class="mb10">&Uuml;bertragungsraten</legend>
 +<div class="paramline">
 +<p class="paramname"><label for="uiViewMaxDownstreamRate">Maximale Downstream Rate (kbit/s)</label></p>
 +<p><input type="text" size="5" maxlength="5" id="uiViewMaxDownstreamRate" class="Eingabefeld"/></p>
@@ -61,74 +62,53 @@
 +</div>
 +</fieldset>
 +<fieldset class="groups">
-+<legend class="mb10">Übertragungsbereich ausblenden</legend>
++<legend class="mb10">&Uuml;bertragungsbereich im Downstream ausblenden</legend>
 +<div class="paramline">
-+<p class="paramname"><label for="uiViewDownstreamBlackoutBandStart">Trägerband im Downstream ausblenden Start</label></p>
++<p class="paramname"><label for="uiViewDownstreamBlackoutBandStart">Tr&auml;gerband ausblenden Start (Tr&auml;gernummer)</label></p>
 +<p><input type="text" size="5" maxlength="5" id="uiViewDownstreamBlackoutBandStart" class="Eingabefeld"/></p>
 +</div>
 +<div class="paramline">
-+<p class="paramname"><label for="uiViewDownstreamBlackoutBandEnd">Trägerband im Downstream ausblenden Ende</label></p>
++<p class="paramname"><label for="uiViewDownstreamBlackoutBandEnd">Tr&auml;gerband ausblenden Ende (Tr&auml;gernummer)</label></p>
 +<p><input type="text" size="5" maxlength="3" id="uiViewDownstreamBlackoutBandEnd" class="Eingabefeld"/></p>
 +</div>
 +</fieldset>
 +<fieldset class="groups">
-+<legend class="mb10">Signal/Rauschabstand (SNR-Margin)</legend>
++<legend class="mb10">St&ouml;rabstandsmarge (SNR-Margin)</legend>
 +<div class="paramline">
-+<p class="paramname" id="iShowDownstreamMarginOffset">Verändere Downstream SNR um (dB)</p>
 +<p>
-+<select id="SelectD_SNR" class="Eingabefeld" onchange="OnChangeDownstreamSNR(value)">
-+<option value="3">3</option>
-+<option value="2">2</option>
-+<option value="1">1</option>
-+<option value="0">0</option>
-+<option value="-1">-1</option>
-+<option value="-2">-2</option>
-+<option value="-3">-3</option>
-+</select>
-+</p>
++negative ganze Zahlen: kleinere St&ouml;rabstandsmarge (geringere Stabilit&auml;t) und  h&ouml;here Datenrate<br>
++positive ganze Zahlen: gr&ouml;&szlig;ere St&ouml;rabstandsmarge (h&ouml;here Stabilit&auml;t) und geringere Datenrate
++</p><br>
++<p class="paramname"><label for="iViewDownstreamMarginOffset">Ver&auml;ndere Downstream SNR-Margin um (ganze dB)</label></p>
++<p><input type="text" size="5" maxlength="3" id="iViewDownstreamMarginOffset" class="Eingabefeld"/></p>
 +</div>
 +</fieldset>
 +<fieldset class="groups">
 +<legend class="mb10">Anpassung der Sendeleistung/Powercutback (PCB)</legend>
 +<div class="paramline">
-+<p class="paramname" id="iShowDownstreamPcbOffset">Verändere Downstream PCB um (dB)</p>
 +<p>
-+<select id="SelectD_PCB" class="Eingabefeld" onchange="OnChangeDownstreamPCB(value)">
-+<option value="3">3</option>
-+<option value="2">2</option>
-+<option value="1">1</option>
-+<option value="0">0</option>
-+<option value="-1">-1</option>
-+<option value="-2">-2</option>
-+<option value="-3">-3</option>
-+</select>
++negative ganze Zahlen: Verst&auml;rkung der Sendeleistung (wird nicht immer unterst&uuml;zt)<br>
++positive ganze Zahlen: Abschw&auml;chung der Sendeleistung
 +</p>
++<br>
++<p class="paramname"><label for="iViewDownstreamPcbOffset">Ver&auml;ndere Downstream PCB um (ganze dB)</label></p>
++<p><input type="text" size="5" maxlength="3" id="iViewDownstreamPcbOffset" class="Eingabefeld"/></p>
 +</div>
 +<div class="paramline">
-+<p class="paramname" id="iShowUpstreamPcbOffset">Verändere Upstream PCB um (dB)</p>
-+<p>
-+<select id="SelectU_PCB" class="Eingabefeld" onchange="OnChangeUpstreamPCB(value)">
-+<option value="3">3</option>
-+<option value="2">2</option>
-+<option value="1">1</option>
-+<option value="0">0</option>
-+<option value="-1">-1</option>
-+<option value="-2">-2</option>
-+<option value="-3">-3</option>
-+</select>
-+</p>
++<p class="paramname"><label for="iViewUpstreamPcbOffset">Ver&auml;ndere Upstream PCB um (ganze dB)</label></p>
++<p><input type="text" size="5" maxlength="3" id="iViewUpstreamPcbOffset" class="Eingabefeld"/></p>
 +</div>
 +</fieldset>
 +<fieldset class="groups">
 +<legend class="mb10">Diverses</legend>
 +<div class="paramline">
-+<p><input type="checkbox" id="uiViewOptLongLine"/>Optimierung für lange Leitungen aktivieren</p>
++<p><input type="checkbox" id="uiViewOptLongLine"/>Optimierung f&uuml;r lange Leitungen aktivieren</p>
 +</div>
 +<div class="paramline">
-+<p><input type="checkbox" id="uiViewOptShortLine"/>Optimierung für kurze Leitungen aktivieren</p>
++<p><input type="checkbox" id="uiViewOptShortLine"/>Optimierung f&uuml;r kurze Leitungen aktivieren</p>
 +</div>
 +<div class="paramline">
-+<p><input type="checkbox" id="uiViewL2Off"/>Energiesparmodus für DSL aktivieren</p>
++<p><input type="checkbox" id="uiViewL2Off"/>Energiesparmodus f&uuml;r DSL aktivieren</p>
 +</div>
 +</fieldset>
 +<!-- Trenner einbauen -->
@@ -138,7 +118,7 @@
 +</div>
 --- usr/www/avm/html/de/internet/labor_dsl.js.orig	1970-01-01 01:00:00.000000000 +0100
 +++ usr/www/avm/html/de/internet/labor_dsl.js	2010-07-27 10:19:00.000000000 +0200
-@@ -0,0 +1,199 @@
+@@ -0,0 +1,159 @@
 +<!-- ../internet/labor_dsl.js -->
 +<? include ../html/$var:lang/internet/labor_dsl.inc ?>
 +<? setvariable var:dslguiversion "<? query sar:status/gui_version_number ?>" ?>
@@ -156,7 +136,7 @@
 +}
 +` ?>
 +.paramname { float: left; clear: both; width: 325px; text-align:left;margin-left: 2px;}
-+.groups { margin-top: 5px;margin-bottom: 10px;} 
++.groups { margin-top: 5px;margin-bottom: 10px;}
 +-->
 +</STYLE>
 +<script type="text/javascript">
@@ -172,48 +152,17 @@
 +}
 +function OnClickedOptStability() {
 +}
-+function GetValueFromComboIndex(index) {
-+var value = 0;
-+switch (index) {
-+case 0: value = 3; break;
-+case 1: value = 2; break;
-+case 2: value = 1; break;
-+case 3: value = 0; break;
-+case 4: value = -1; break;
-+case 5: value = -2; break;
-+case 6: value = -3; break;
-+default: value = 0;
-+}
-+return value;
-+}
-+function GetComboIndexFromValue(value) {
-+var index = 0;
-+switch (value) {
-+case "3": index = 0; break;
-+case "2": index = 1; break;
-+case "1": index = 2; break;
-+case "0": index = 3; break;
-+case "-1": index = 4; break;
-+case "-2": index = 5; break;
-+case "-3": index = 6; break;
-+default: index = 3;
-+}
-+return index;
-+}
-+function OnChangeDownstreamSNR(id) {
-+jslSetValue("iPostDownstreamMarginOffset",GetValueFromComboIndex(id));
-+}
-+function OnChangeDownstreamPCB(id) {
-+jslSetValue("iPostDownstreamPcbOffset",GetValueFromComboIndex(id));
-+}
-+function OnChangeUpstreamPCB(id) {
-+jslSetValue("iPostUpstreamPcbOffset",GetValueFromComboIndex(id));
-+}
 +function uiDoRefresh() {
 +}
-+var g_mldEingabeZahl = "Die Eingaben dürfen nur Ziffern enthalten.";
++var g_mldEingabeZahl = "Fehlerhafte Eingabe: Die Eingaben duerfen nur ganze Zahlen enthalten!";
 +function valIsZahl(nummer) {
 +if (nummer.match("[^0-9]") != null) return false;
++return true;
++}
++function valIsGanzeZahl(nummer) {
++if (nummer.match("[^\-0-9]") != null) return false;
++if (nummer.match("[0-9]-") != null) return false;
++if (nummer == "-" ) return false;
 +return true;
 +}
 +function uiDoOnLoad() {
@@ -252,18 +201,16 @@
 +jslCopyValue("uiViewRFI","uiPostRFI");
 +jslCopyValue("uiViewDownstreamBlackoutBandStart","uiPostDownstreamBlackoutBandStart");
 +jslCopyValue("uiViewDownstreamBlackoutBandEnd","uiPostDownstreamBlackoutBandEnd");
-+var dssnrSel = document.getElementById("SelectD_SNR");
-+var dspcbSel = document.getElementById("SelectD_PCB");
-+var uspcbSel = document.getElementById("SelectU_PCB");
-+dssnrSel.selectedIndex = GetComboIndexFromValue((jslGetValue("iPostDownstreamMarginOffset")/10).toString(10));
-+dspcbSel.selectedIndex = GetComboIndexFromValue(jslGetValue("iPostDownstreamPcbOffset"));
-+uspcbSel.selectedIndex = GetComboIndexFromValue(jslGetValue("iPostUpstreamPcbOffset"));
++jslCopyValue("iViewDownstreamMarginOffset","iPostDownstreamMarginOffset");
++document.getElementById("iViewDownstreamMarginOffset").value /= 10;
++jslCopyValue("iViewDownstreamPcbOffset","iPostDownstreamPcbOffset");
++jslCopyValue("iViewUpstreamPcbOffset","iPostUpstreamPcbOffset");
 +}
 +function uiDoHelp() {
 +jslPopHelp("hilfe_dslinfo_einstellungen");
 +}
 +function uiDoSave() {
-+alert("Bitte denken Sie daran, vor dem Update auf eine spätere Firmware die hier vorgenommenen Einstellungen wieder zurückzusetzen. Beachten Sie bitte auch die Hinweise in der Hilfe. Die Internetverbindung wird nun kurz getrennt.");
++alert("Denken Sie daran, die Einstellungen zurueckzusetzen, bevor Sie eine Firmware installieren, die die DSL Experteneinstellungen nicht enthaelt. Beachten Sie bitte auch die Hinweise in der Hilfe. Die Internetverbindung wird nun kurz getrennt.");
 +var z = 0;
 +var rfi = document.getElementById("uiViewAutoRFI");
 +var optlong = document.getElementById("uiViewOptLongLine");
@@ -299,12 +246,10 @@
 +( valIsZahl(jslGetValue("uiViewRFI")) ? jslCopyValue("uiPostRFI","uiViewRFI") : z++);
 +( valIsZahl(jslGetValue("uiViewDownstreamBlackoutBandStart")) ? jslCopyValue("uiPostDownstreamBlackoutBandStart","uiViewDownstreamBlackoutBandStart") : z++);
 +( valIsZahl(jslGetValue("uiViewDownstreamBlackoutBandEnd")) ? jslCopyValue("uiPostDownstreamBlackoutBandEnd","uiViewDownstreamBlackoutBandEnd") : z++);
-+var dssnr = document.getElementById("SelectD_SNR");
-+var dspcbSel = document.getElementById("SelectD_PCB");
-+var uspcbSel = document.getElementById("SelectU_PCB");
-+jslSetValue("iPostDownstreamMarginOffset",GetValueFromComboIndex(dssnr.selectedIndex)*10);
-+jslSetValue("iPostDownstreamPcbOffset",GetValueFromComboIndex(dspcbSel.selectedIndex));
-+jslSetValue("iPostUpstreamPcbOffset",GetValueFromComboIndex(uspcbSel.selectedIndex));
++( valIsGanzeZahl(jslGetValue("iViewDownstreamMarginOffset")) ? jslCopyValue("iPostDownstreamMarginOffset","iViewDownstreamMarginOffset") : z++);
++document.getElementById("iPostDownstreamMarginOffset").value *= 10;
++( valIsGanzeZahl(jslGetValue("iViewDownstreamPcbOffset")) ? jslCopyValue("iPostDownstreamPcbOffset","iViewDownstreamPcbOffset") : z++);
++( valIsGanzeZahl(jslGetValue("iViewUpstreamPcbOffset")) ? jslCopyValue("iPostUpstreamPcbOffset","iViewUpstreamPcbOffset") : z++);
 +if (z>0) alert(g_mldEingabeZahl);
 +jslFormSubmitEx("internet", "labor_dsl");
 +}
@@ -321,16 +266,11 @@
 +jslSetValue("uiPostRFI","0");
 +jslSetValue("uiPostDownstreamBlackoutBandStart","0");
 +jslSetValue("uiPostDownstreamBlackoutBandEnd","0");
-+var dssnrSel = document.getElementById("SelectD_SNR");
-+var dspcbSel = document.getElementById("SelectD_PCB");
-+var uspcbSel = document.getElementById("SelectU_PCB");
-+dssnrSel.selectedIndex = GetComboIndexFromValue(0);
-+dspcbSel.selectedIndex = GetComboIndexFromValue(0);
-+uspcbSel.selectedIndex = GetComboIndexFromValue(0);
 +jslSetValue("iPostDownstreamMarginOffset", 0);
 +jslSetValue("iPostDownstreamPcbOffset", 0);
 +jslSetValue("iPostUpstreamPcbOffset", 0);
 +jslSetValue("uiPostControlBitfield",0);
++alert("Die Standardeinstellungen werden nun wiederhergestellt und die Internetverbindung wird dazu nun kurz getrennt!");
 +jslFormSubmitEx("internet", "labor_dsl");
 +}
 +function uiDoFeedback()
