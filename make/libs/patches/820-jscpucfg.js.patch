@@ -1,0 +1,18 @@
+--- Makefile.in
++++ Makefile.in
+@@ -164,6 +164,7 @@
+ src/perlconnect/jsperl.o: src/perlconnect/jsperl.c
+ 	$(CC) $(CPPFLAGS) $(CLI_CPPFLAGS) $(CFLAGS) $(CLI_CFLAGS) -o $@ -c $<
+ 
++ifdef BUILD_JSCPUCFG
+ $(LIB_OBJS): src/jsautocfg.h
+ src/jsautocfg.h: jscpucfg
+ 	-rm -f $@ src/jsautocfg.h
+@@ -172,6 +173,7 @@
+ 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+ jscpucfg: jscpucfg.o
+ 	@$(LIBTOOL) --mode=link $(CC) $(LDFLAGS) -o jscpucfg jscpucfg.o $(LIBS)
++endif
+ src/jsopcode.h src/jsopcode.c: src/jsopcode.tbl
+ 
+ .PHONY: install
