@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.3p1)
+$(call PKG_INIT_BIN, 5.5p1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=13563dbf61f36ca9a1e4254260131041
+$(PKG)_SOURCE_MD5:=88633408f4cb1eb11ec7e2ec58b519eb
 $(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 
 # Binaries used:
