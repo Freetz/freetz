@@ -29,8 +29,8 @@ $(PKG)_LIBS_TARGET_DIR     := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%
 
 $(PKG)_ENCODERS  := ac3 jpegls mpeg1video mpeg2video mpeg4 pcm_s16be pcm_s16le png vorbis zlib
 $(PKG)_DECODERS  := aac ac3 atrac3 gif h264 jpegls mp2 mp3 mpeg1video mpeg2video mpeg4 mpeg4aac mpegvideo pcm_s16be pcm_s16le png vorbis wmav1 wmav2 zlib
-$(PKG)_MUXERS    := ac3 avi ffm h264 mp3 mp4 mpeg1video mpeg2video mpegts ogg oss rtp
-$(PKG)_DEMUXERS  := ac3 avi ffm h264 matroska mp3 mpegps mpegts mpegvideo ogg rm rtsp sdp v4l2
+$(PKG)_MUXERS    := ac3 avi ffm flv h264 matroska mp3 mp4 mpeg1video mpeg2video mpegts ogg oss rtp
+$(PKG)_DEMUXERS  := ac3 avi ffm flv h264 matroska mp3 mpegps mpegts mpegvideo ogg rm rtsp sdp v4l2
 $(PKG)_PARSERS   := aac ac3 h264 mpegaudio mpegvideo mpeg4video
 $(PKG)_PROTOCOLS := file http pipe rtp tcp udp
 
