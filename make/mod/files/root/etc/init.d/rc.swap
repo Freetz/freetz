@@ -59,12 +59,12 @@ autohelper() {
 
 case $1 in
 	""|load)
+		modreg daemon -p mod swap
 		if [ "$MOD_SWAP" != yes ]; then
 			echo "$DAEMON is disabled." 1>&2
 			exit 1
 		fi
 		echo "$DAEMON is enabled." 1>&2
-		modreg daemon -p mod swap
 		;;
 	unload)
 		stop
