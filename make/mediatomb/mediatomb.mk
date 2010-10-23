@@ -9,7 +9,11 @@ $(PKG)_SHARE_DIR:=/usr/share/mediatomb
 $(PKG)_TARGET_WEBIF:=$($(PKG)_DEST_DIR)$($(PKG)_SHARE_DIR)/web/index.html
 
 $(PKG)_DEPENDS_ON += uclibcxx curl expat ffmpeg libexif sqlite zlib
+ifeq ($(strip $(FREETZ_PACKAGE_MEDIATOMB_WITH_PLAYLIST_SUPPORT)),y)
+$(PKG)_DEPENDS_ON += js
+endif
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MEDIATOMB_WITH_PLAYLIST_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MEDIATOMB_STATIC
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpl-malloc
@@ -23,11 +27,20 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-sqlite3
 $(PKG)_CONFIGURE_OPTIONS += --enable-youtube
 $(PKG)_CONFIGURE_OPTIONS += --enable-zlib
 
+$(PKG)_INSTALL_SUBDIRS := config web
+ifeq ($(strip $(FREETZ_PACKAGE_MEDIATOMB_WITH_PLAYLIST_SUPPORT)),y)
+$(PKG)_INSTALL_SUBDIRS   += scripts/js
+$(PKG)_CONFIGURE_OPTIONS += --enable-libjs
+$(PKG)_CONFIGURE_OPTIONS += --with-js-h="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/js"
+$(PKG)_CONFIGURE_OPTIONS += --with-js-libs="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
+else
+$(PKG)_CONFIGURE_OPTIONS += --disable-libjs
+endif
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-ffmpegthumbnailer
 $(PKG)_CONFIGURE_OPTIONS += --disable-id3lib
 $(PKG)_CONFIGURE_OPTIONS += --disable-lastfmlib
 $(PKG)_CONFIGURE_OPTIONS += --disable-libextractor
-$(PKG)_CONFIGURE_OPTIONS += --disable-libjs
 $(PKG)_CONFIGURE_OPTIONS += --disable-libmagic
 $(PKG)_CONFIGURE_OPTIONS += --disable-libmp4v2
 $(PKG)_CONFIGURE_OPTIONS += --disable-mysql
@@ -45,7 +58,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_WEBIF): $($(PKG)_BINARY)
-	$(foreach d,config web,$(SUBMAKE) -C $(MEDIATOMB_DIR)/$(d) DESTDIR="$(abspath $(MEDIATOMB_DEST_DIR))" install;)
+	$(foreach d,$(MEDIATOMB_INSTALL_SUBDIRS),$(SUBMAKE) -C $(MEDIATOMB_DIR)/$(d) DESTDIR="$(abspath $(MEDIATOMB_DEST_DIR))" install;)
 	$(RM) $(MEDIATOMB_DEST_DIR)$(MEDIATOMB_SHARE_DIR)/mysql.sql
 	touch -c $@
 

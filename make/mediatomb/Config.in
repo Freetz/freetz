@@ -21,6 +21,15 @@ config FREETZ_PACKAGE_MEDIATOMB
 		through your home network and listen to/watch it on a variety
 		of UPnP compatible devices.
 
+config FREETZ_PACKAGE_MEDIATOMB_WITH_PLAYLIST_SUPPORT
+	bool "build with playlist support"
+	depends on FREETZ_PACKAGE_MEDIATOMB
+	select FREETZ_LIB_libjs if ! FREETZ_PACKAGE_MEDIATOMB_STATIC
+	default n
+	help
+		Build MediaTomb with playlist support. This requires
+		Mozilla JavaScript engine and increases image by about 700KB.
+
 config FREETZ_PACKAGE_MEDIATOMB_STATIC
 	bool "Create statically linked binary"
 	depends on FREETZ_PACKAGE_MEDIATOMB
