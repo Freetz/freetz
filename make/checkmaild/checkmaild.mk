@@ -12,7 +12,6 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) CROSS="$(TARGET_CROSS)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="-lpthread" \
 		-C $(CHECKMAILD_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)

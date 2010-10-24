@@ -11,7 +11,6 @@ $(PKG)_DEPENDS_ON := matrixssl
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PKG)_CONFIGURE_OPTIONS += --with-matrixssl-src="$(FREETZ_BASE_DIR)/$(MATRIXSSL_DIR)"
-$(PKG)_CONFIGURE_OPTIONS += LIBS="-lpthread"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -19,7 +18,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MATRIXTUNNEL_DIR)/src all
-		
+
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 

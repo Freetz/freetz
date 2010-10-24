@@ -16,8 +16,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MATRIXSSL_DIR)/src \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) $(FPIC) -DLINUX" \
-		CPPFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
+		LDFLAGS="-pthread" \
 		AR="$(TARGET_AR)" \
 		RANLIB="$(TARGET_RANLIB)" \
 		STRIP="$(TARGET_STRIP)"
