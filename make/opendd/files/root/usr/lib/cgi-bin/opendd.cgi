@@ -28,9 +28,9 @@ sec_begin '$(lang de:"Optionen" en:"Options")'
 cat << EOF
 <p>
 <input type="hidden" name="force_update" value="no">
-<input id="u1" type="checkbox" name="force_update" value="yes"$force_update_chk><label for="u1">$(lang de:"Sp&auml;testens nach 25 Tagen updaten (hierf&uuml;r sollte crond noch aktiviert sein)." en:"Force update after 25 days (you should also enable crond).")</label>
+<input id="u1" type="checkbox" name="force_update" value="yes"$force_update_chk><label for="u1">$(lang de:"Sp&auml;testens nach 25 Tagen updaten (hierf&uuml;r sollte crond aktiviert sein)." en:"Force update after 25 days (you should also enable crond).")</label>
 </p>
-<p>$(lang de:"Parameter f&uuml;e 'get_ip'" en:"Parameter of 'get_ip'"): <input type="text" name="get_ip_option" size="15" maxlength="250" value="$(html "$OPENDD_GET_IP_OPTION")"></p>
+<p>$(lang de:"Parameter f&uuml;r 'get_ip'" en:"Parameter of 'get_ip'"): <input type="text" name="get_ip_option" size="15" maxlength="250" value="$(html "$OPENDD_GET_IP_OPTION")"></p>
 EOF
 sec_end
 
@@ -47,7 +47,7 @@ if [ "$FREETZ_PACKAGE_OPENDD_WITH_SSL" == "y" ]; then
 cat << EOF
 <p>
 <input type="hidden" name="use_ssl" value="0">
-<input id="o1" type="checkbox" name="use_ssl" value="1"$use_ssl_chk><label for="o1"> $(lang de:"SSL nutzen)" en:"Use SSL")</label>
+<input id="o1" type="checkbox" name="use_ssl" value="1"$use_ssl_chk><label for="o1"> $(lang de:"SSL nutzen" en:"Use SSL")</label>
 </p>
 EOF
 fi
