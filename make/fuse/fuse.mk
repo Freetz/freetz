@@ -22,14 +22,17 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's|^([ \t]*\#error .*-D_FILE_OFFSET
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
-$(PKG)_CONFIGURE_OPTIONS += --enable-kernel-module
 $(PKG)_CONFIGURE_OPTIONS += --enable-lib
 $(PKG)_CONFIGURE_OPTIONS += --enable-util
 $(PKG)_CONFIGURE_OPTIONS += --disable-example
-$(PKG)_CONFIGURE_OPTIONS += --disable-auto-modprobe
-$(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-mtab
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
+
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13_1)),y)
+$(PKG)_CONFIGURE_OPTIONS += --enable-kernel-module
+$(PKG)_CONFIGURE_OPTIONS += --disable-auto-modprobe
+$(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -69,7 +72,8 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY) \
+		$(if $(FREETZ_KERNEL_VERSION_2_6_13_1),$($(PKG)_MOD_TARGET_BINARY))
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(FUSE_DIR) clean
