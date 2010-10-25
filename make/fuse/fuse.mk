@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.7.5)
+$(call PKG_INIT_BIN, 2.7.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=b428c526d86cf004cca0f8c83270445b
+$(PKG)_SOURCE_MD5:=319f12dffd6f7073628fefc980254f4a
 $(PKG)_SITE:=@SF/fuse
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/util/fusermount
