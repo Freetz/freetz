@@ -1,0 +1,14 @@
+config FREETZ_PACKAGE_SSHFS_FUSE
+	bool "sshfs-fuse 2.2 (binary only)"
+	select FREETZ_PACKAGE_FUSE
+	select FREETZ_PACKAGE_OPENSSH_CLIENT
+	select FREETZ_PACKAGE_OPENSSH_SFTPCLIENT
+	select FREETZ_LIB_libgthread_2
+	default n
+	help
+		This is a filesystem client based on the SSH File Transfer Protocol.
+		Since most SSH servers already support this protocol it is very easy to set up:
+		i.e. on the server side there's nothing to do.
+		On the client side mounting the filesystem is as easy as
+		logging into the server with ssh.
+
