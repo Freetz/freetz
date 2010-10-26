@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_USERMAN" == "y" ] || return 0
 echo1 "removing userman files"
-rm_files "${FILESYSTEM_MOD_DIR}/bin/usermand" \
+rm_files ${FILESYSTEM_MOD_DIR}/bin/userman* \
 	 $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name userman) \
 	 $(find ${HTML_LANG_MOD_DIR} -name 'userlist*' -o -name 'useradd*')
 for j in userlist useradd; do
