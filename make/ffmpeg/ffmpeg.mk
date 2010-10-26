@@ -3,13 +3,6 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=36c1045f013f6e8bac33a6200f1f554f
 $(PKG)_SITE:=http://www.ffmpeg.org/releases
 
-# TODO: gcc-4.2.x workaround, to be removed as soon as download-toolchain is updated
-ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.2)
-ifeq ($(strip $(FREETZ_DOWNLOAD_TOOLCHAIN)),y)
-$(PKG)_CONDITIONAL_PATCHES+=gcc-4.2.x-download-toolchain
-endif
-endif
-
 $(PKG)_DEPENDS_ON := zlib
 
 $(PKG)_BINARIES_ALL        := ffmpeg ffserver
