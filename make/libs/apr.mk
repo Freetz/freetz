@@ -26,13 +26,6 @@ $(PKG)_CONFIGURE_ENV += apr_cv_tcp_nodelay_with_cork=yes
 $(PKG)_CONFIGURE_ENV += apr_cv_pthreads_lib=-lpthread
 $(PKG)_CONFIGURE_OPTIONS += --enable-threads
 
-# TODO: remove the following lines as soon as download- and self-built-toolchains are synchronized
-ifeq ($(strip $(FREETZ_DOWNLOAD_TOOLCHAIN)),y)
-# workaround: enforce readdir usage as its implementation in uClibc is thread-safe
-$(PKG)_CONFIGURE_PRE_CMDS += sed -i -r -e 's,ac_cv_lib_c_r_readdir,apr_cv_lib_c_readdir_thread_safe,g' ./configure;
-$(PKG)_CONFIGURE_ENV += apr_cv_lib_c_readdir_thread_safe=yes
-endif
-
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-dso

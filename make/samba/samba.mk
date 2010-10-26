@@ -16,10 +16,6 @@ ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_CONFIGURE_ENV += libreplace_cv_HAVE_IPV6=no
 endif
 
-# TODO:
-# Set samba_cv_REALPATH_TAKES_NULL=yes when new 
-# Download Toolchain is on the mirrors
-$(PKG)_REBUILD_SUBOPTS += FREETZ_DOWNLOAD_TOOLCHAIN
 $(PKG)_CONFIGURE_ENV += \
 	samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
 	samba_cv_USE_SETREUID=yes \
@@ -51,7 +47,7 @@ $(PKG)_CONFIGURE_ENV += \
 	samba_cv_HAVE_UNSIGNED_CHAR=no \
 	samba_cv_HAVE_WORKING_AF_LOCAL=yes \
 	samba_cv_HAVE_Werror=yes \
-	samba_cv_REALPATH_TAKES_NULL=$(if $(FREETZ_DOWNLOAD_TOOLCHAIN),no,yes) \
+	samba_cv_REALPATH_TAKES_NULL=yes \
 	samba_cv_REPLACE_INET_NTOA=no \
 	samba_cv_SIZEOF_DEV_T=yes \
 	samba_cv_SIZEOF_INO_T=yes \
